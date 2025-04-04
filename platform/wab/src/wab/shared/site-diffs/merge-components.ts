@@ -28,11 +28,16 @@ import {
   removeWhere,
   switchType,
   tuple,
+  withoutFalsy,
   withoutNils,
   xIntersect,
   xSetDefault,
 } from "@/wab/shared/common";
-import { CodeComponent, isCodeComponent } from "@/wab/shared/core/components";
+import {
+  CodeComponent,
+  allComponentVariants,
+  isCodeComponent,
+} from "@/wab/shared/core/components";
 import { ChangeRecorder } from "@/wab/shared/core/observable-model";
 import { visitComponentRefs } from "@/wab/shared/core/sites";
 import {
@@ -63,6 +68,7 @@ import {
   isKnownRenderExpr,
   isKnownTplComponent,
   isKnownTplTag,
+  isKnownVariantsRef,
   isKnownVirtualRenderExpr,
 } from "@/wab/shared/model/classes";
 import { meta } from "@/wab/shared/model/classes-metas";
@@ -1600,6 +1606,18 @@ export function fixSwappedTplComponents(
   const rightCompByUuid = new Map(
     right.components.map((c) => [c.uuid, c] as const)
   );
+
+  /* We want to replace VSettings.args wrong variant with valid VariantGroup variant,
+   * hence we need to create a key with name instead of uuid in case parent exists,
+   * because uuid is different for the wrong variant that we want to replace
+   * and we won't be able to match it to any existing VariantGroup variant with uuid.
+   */
+  const toArgVariantKeyWithName = (variant: Variant) => {
+    return variant.parent
+      ? `${variant.parent.param.variable.name}:${variant.name}`
+      : toVariantKey(variant);
+  };
+
   merged.components.forEach((component) => {
     const ancestorComp = ancestorCompByUuid.get(component.uuid);
     const compA = leftCompByUuid.get(component.uuid);
@@ -1634,6 +1652,28 @@ export function fixSwappedTplComponents(
           tplMerged.vsettings.forEach((vs) => {
             removeWhere(vs.args, (arg) => !toComponentParams.has(arg.param));
           });
+
+          const componentVariantsMap = new Map(
+            allComponentVariants(tplMerged.component, {
+              includeSuperVariants: true,
+            }).map((v) => tuple(toArgVariantKeyWithName(v), v))
+          );
+
+          /* Fix a wrong Arg variant in VSettings by replacing it with a valid
+           * variant from a list of associated param VariantGroup's variants.
+           */
+          for (const vs of tplMerged.vsettings) {
+            for (const arg of vs.args) {
+              if (isKnownVariantsRef(arg.expr)) {
+                arg.expr.variants = withoutFalsy(
+                  arg.expr.variants.map((v) =>
+                    componentVariantsMap.get(toArgVariantKeyWithName(v))
+                  )
+                );
+              }
+            }
+          }
+
           removeWhere(
             component.states,
             (state) =>
