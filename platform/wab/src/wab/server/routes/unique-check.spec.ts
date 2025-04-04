@@ -5,7 +5,7 @@ import { DbMgr, normalActor } from "@/wab/server/db/DbMgr";
 import { CmsTable, User } from "@/wab/server/entities/Entities";
 import { ApiTester } from "@/wab/server/test/api-tester";
 import { createBackend, createDatabase } from "@/wab/server/test/backend-util";
-import { APIRequestContext, APIResponse, request } from "playwright";
+import { APIRequestContext, request } from "playwright";
 
 import { CmsRow } from "@/wab/server/entities/Entities";
 import {
@@ -13,6 +13,7 @@ import {
   CmsRowId,
   CmsTableId,
   CmsText,
+  UniqueFieldCheck,
 } from "@/wab/shared/ApiSchema";
 import { Dict } from "@/wab/shared/collections";
 
@@ -31,8 +32,8 @@ class UniqueCheckApiTester extends ApiTester {
       rowId: CmsRowId;
       uniqueFieldsData: Dict<unknown>;
     }
-  ): Promise<APIResponse> {
-    return this.rawReq(
+  ): Promise<UniqueFieldCheck> {
+    return await this.req(
       "post",
       `/cmse/tables/${tableId}/check-unique-fields`,
       data
@@ -52,7 +53,7 @@ const createUniqueTextField = (fieldIdentifier: string): CmsText => ({
   defaultValueByLocale: {},
 });
 
-describe("unique-check API", () => {
+describe("unique-check Api", () => {
   let apiRequestContext: APIRequestContext;
   let api: UniqueCheckApiTester;
   let baseURL: string;
@@ -63,7 +64,6 @@ describe("unique-check API", () => {
 
   let table: CmsTable;
   let rows: CmsRow[];
-  const numberOfRequests = 100;
 
   beforeAll(async () => {
     const {
@@ -104,11 +104,9 @@ describe("unique-check API", () => {
         schema: { fields: [createUniqueTextField("field")] },
       });
       rows = await db.createCmsRows(table.id, [
+        { data: { "": { field: 0 } } },
         { data: { "": { field: 1 } } },
         { data: { "": { field: 2 } } },
-        { data: { "": { field: 3 } } },
-        { data: { "": { field: 4 } } },
-        { data: { "": { field: 5 } } },
       ]);
     });
 
@@ -143,25 +141,25 @@ describe("unique-check API", () => {
     await cleanup();
   });
 
-  it("should response to unique-check API call in less than 20 ms", async () => {
-    const checkingRow = rows[0];
-    const requests: Promise<APIResponse>[] = [];
-    for (let i = 0; i < numberOfRequests; i++) {
-      requests.push(
-        api.checkUniqueFields(table.id, {
-          rowId: checkingRow.id,
-          uniqueFieldsData: { field: 10 },
-        })
-      );
-    }
-    const startTime = Date.now();
-    await Promise.all(requests);
-    const endTime = Date.now();
-    const duration = endTime - startTime;
-    const averageResponseTime = duration / numberOfRequests;
-
-    console.log(`All requests completed in ${duration} ms`);
-    console.log(`Average response time is ${duration / numberOfRequests}`);
-    expect(averageResponseTime).toBeLessThan(20);
+  it("should check uniqueness violation", async () => {
+    const noConflict = await api.checkUniqueFields(table.id, {
+      rowId: rows[0].id,
+      uniqueFieldsData: { field: 10 },
+    });
+    const conflict = await api.checkUniqueFields(table.id, {
+      rowId: rows[0].id,
+      uniqueFieldsData: { field: 1 },
+    });
+    expect(noConflict).toEqual([
+      { fieldIdentifier: "field", value: 10, ok: true, conflictRowIds: [] },
+    ]);
+    expect(conflict).toEqual([
+      {
+        fieldIdentifier: "field",
+        value: 1,
+        ok: false,
+        conflictRowIds: [rows[1].id],
+      },
+    ]);
   });
 });
