@@ -146,13 +146,14 @@ describe("unique-check Api", () => {
       rowId: rows[0].id,
       uniqueFieldsData: { field: 10 },
     });
+    expect(noConflict).toEqual([
+      { fieldIdentifier: "field", value: 10, ok: true, conflictRowIds: [] },
+    ]);
+
     const conflict = await api.checkUniqueFields(table.id, {
       rowId: rows[0].id,
       uniqueFieldsData: { field: 1 },
     });
-    expect(noConflict).toEqual([
-      { fieldIdentifier: "field", value: 10, ok: true, conflictRowIds: [] },
-    ]);
     expect(conflict).toEqual([
       {
         fieldIdentifier: "field",
