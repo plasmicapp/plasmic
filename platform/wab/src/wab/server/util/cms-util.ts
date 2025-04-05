@@ -326,17 +326,11 @@ const typeToPgType = (type: CmsTypeName) => {
   }
 };
 
-export const normalizeData = (value: unknown) => {
-  return value ?? "";
-};
-
-export const isConflicting = (val1: unknown, val2: unknown) => {
-  const normalizedVal1 = normalizeData(val1);
-  const normalizedVal2 = normalizeData(val2);
-  if (normalizedVal1 === "" && normalizedVal2 === "") {
+const isConflicting = (val1: unknown, val2: unknown) => {
+  if ((!val1 || val1 === "") && (!val2 || val2 === "")) {
     return false;
   }
-  return normalizedVal1 === normalizedVal2;
+  return val1 === val2;
 };
 
 /** If users turn on the unique attribute later,
