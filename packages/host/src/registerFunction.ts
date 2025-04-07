@@ -120,13 +120,9 @@ export interface PlainVoidType extends BaseParam {
 }
 export type VoidType = PlainVoidType | AnyType;
 
-export type RestrictedType<P, T> = T extends string
-  ? StringType<P, T>
-  : T extends number
-  ? NumberType<P, T>
-  : T extends boolean
-  ? BooleanType<P, T>
-  : T extends null
+type IsAny<T> = 0 extends 1 & T ? true : false;
+
+type CommonType<T> = T extends null
   ? NullType
   : T extends undefined
   ? UndefinedType
@@ -135,6 +131,24 @@ export type RestrictedType<P, T> = T extends string
   : T extends object
   ? ObjectType
   : AnyType;
+
+type AnyTyping<P, T> = T extends string
+  ? StringType<P, T>
+  : T extends number
+  ? NumberType<P, T>
+  : T extends boolean
+  ? BooleanType<P, T>
+  : CommonType<T>;
+
+export type RestrictedType<P, T> = IsAny<T> extends true
+  ? AnyTyping<P, T>
+  : [T] extends [string]
+  ? StringType<P, T>
+  : [T] extends [number]
+  ? NumberType<P, T>
+  : [T] extends [boolean]
+  ? BooleanType<P, T>
+  : CommonType<T>;
 
 export type ParamType<P, T> = RestrictedType<P, T>;
 

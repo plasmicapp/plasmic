@@ -12,7 +12,7 @@ type ChoicePropEditorProps<T extends OptionValue> = {
   attr: string;
   readOnly?: boolean;
   valueSetState?: ValueSetState;
-  options: (string | { label: string; value: T })[];
+  options: (string | number | boolean | { label: string; value: T })[];
   allowSearch?: boolean;
   onSearch?: (value: string) => void;
   filterOption?: boolean;
@@ -54,7 +54,7 @@ export function ChoicePropEditor<T extends OptionValue>(
         className="flex-fill SidebarSection__Container--NoBorder"
         onChange={onChange}
         options={options.map((v) =>
-          L.isString(v)
+          !L.isObject(v)
             ? { value: v as T, label: `${v}` }
             : { value: v.value, label: `${v.label}` }
         )}
@@ -69,7 +69,7 @@ export function ChoicePropEditor<T extends OptionValue>(
       value={value}
       onChange={onChange}
       options={options.map((v) =>
-        L.isString(v)
+        !L.isObject(v)
           ? { value: v, label: `${v}` }
           : { value: v.value, label: `${v.label}` }
       )}

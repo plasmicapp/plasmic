@@ -13,6 +13,7 @@ import SearchIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Search";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { TutorialEventsType } from "@/wab/client/tours/tutorials/tutorials-events";
 import {
+  StudioPropType,
   customFunctionId,
   wabTypeToPropType,
 } from "@/wab/shared/code-components/code-components";
@@ -158,14 +159,21 @@ export function ServerQueryOpDraftForm(props: {
             const curArg =
               param.argName in argsMap ? argsMap[param.argName][0] : undefined;
             const curExpr = curArg?.expr;
+            const propType =
+              studioCtx
+                .getRegisteredFunctionsMap()
+                .get(customFunctionId(value.func!))
+                ?.meta.params?.find((p) => p.name === param.argName) ??
+              wabTypeToPropType(param.type);
 
             return (
               <PropValueEditorContext.Provider value={propValueEditorContext}>
                 <InnerPropEditorRow
                   attr={param.argName}
-                  propType={wabTypeToPropType(param.type)}
+                  propType={propType as StudioPropType<any>}
                   expr={curExpr}
                   label={argLabel}
+                  valueSetState={curExpr ? "isSet" : undefined}
                   onChange={(expr) => {
                     if (expr == null) {
                       return;

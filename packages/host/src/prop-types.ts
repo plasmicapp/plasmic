@@ -375,7 +375,7 @@ export interface EventHandlerType<P> extends PropTypeBase<P> {
 export interface ChoiceTypeBase<P, T> extends PropTypeBaseDefault<P, T> {
   type: "choice";
   options:
-    | string[]
+    | (string | number | boolean)[]
     | {
         label: string;
         value: string | number | boolean;

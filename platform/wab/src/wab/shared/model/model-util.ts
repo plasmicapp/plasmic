@@ -99,7 +99,9 @@ export const typeFactory = {
   href: () => new HrefType({ name: "href" }),
   target: () => new TargetType({ name: "target" }),
   choice: (
-    options: string[] | { label: string; value: string | number | boolean }[]
+    options:
+      | (string | number | boolean)[]
+      | { label: string; value: string | number | boolean }[]
   ) => new Choice({ name: "choice", options }),
   instance: (component: Component) =>
     new ComponentInstance({ name: "instance", component }),

@@ -22,7 +22,7 @@ const UNSET_SELECT = {
 type EnumWithSearchPropEditor<T extends OptionValue> = {
   onDelete?: () => void;
   onSearch?: (value: string) => void;
-  options: (string | { label: string; value: T })[];
+  options: (string | number | boolean | { label: string; value: T })[];
   className?: string;
   readOnly?: boolean;
   filterOption?: boolean;
@@ -83,8 +83,8 @@ export function EnumWithSearchPropEditor<T extends OptionValue>(
       {...rest}
     >
       {options.map((option) =>
-        isString(option) ? (
-          <Select.Option key={option} value={stringify(option)}>
+        !isObject(option) ? (
+          <Select.Option key={option.toString()} value={stringify(option)}>
             {option}
           </Select.Option>
         ) : (

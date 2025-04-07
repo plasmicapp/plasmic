@@ -2300,6 +2300,10 @@ export function isArrayOfStrings(v: any): v is string[] {
   return isArray(v) && v.every(isString);
 }
 
+export function isArrayOfLiterals(v: any): v is (string | number | boolean)[] {
+  return isArray(v) && v.every((x) => !isObject(x));
+}
+
 /**
  * Simple hash function from
  */

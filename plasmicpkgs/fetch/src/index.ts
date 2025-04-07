@@ -77,7 +77,8 @@ const registerFetchParams: CustomFunctionMeta<typeof wrappedFetch> = {
     },
     {
       name: "method",
-      type: "string",
+      type: "choice",
+      options: ["GET", "POST", "PUT", "DELETE"],
     },
     {
       name: "headers",

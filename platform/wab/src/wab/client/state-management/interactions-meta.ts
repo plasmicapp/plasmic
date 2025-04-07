@@ -251,11 +251,11 @@ export const ACTIONS_META: Record<(typeof ACTIONS)[number], ActionType<any>> = {
       if (
         options.length > 0 &&
         !options
-          .map((opt) => (typeof opt === "string" ? opt : opt.value))
+          .map((opt) => (typeof opt !== "object" ? opt : opt.value))
           .includes(currValue)
       ) {
         args.operation = codeLit(
-          typeof options[0] === "string" ? options[0] : options[0].value
+          typeof options[0] !== "object" ? options[0] : options[0].value
         );
       }
     },
@@ -364,11 +364,11 @@ export const ACTIONS_META: Record<(typeof ACTIONS)[number], ActionType<any>> = {
       if (
         options.length > 0 &&
         !options
-          .map((opt) => (typeof opt === "string" ? opt : opt.value))
+          .map((opt) => (typeof opt !== "object" ? opt : opt.value))
           .includes(currValue)
       ) {
         args.operation = codeLit(
-          typeof options[0] === "string" ? options[0] : options[0].value
+          typeof options[0] !== "object" ? options[0] : options[0].value
         );
       }
       delete args.value;

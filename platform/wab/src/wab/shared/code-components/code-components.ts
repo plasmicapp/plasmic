@@ -31,6 +31,7 @@ import {
   ensure,
   ensureArray,
   hackyCast,
+  isArrayOfLiterals,
   isArrayOfStrings,
   isNumeric,
   maybe,
@@ -912,7 +913,7 @@ function typeCheckRegistrations(ctx: SiteCtx) {
                 break;
               case "choice":
                 if (
-                  !isArrayOfStrings(propType.options) &&
+                  !isArrayOfLiterals(propType.options) &&
                   !(
                     Array.isArray(propType.options) &&
                     propType.options.every(
@@ -2464,7 +2465,31 @@ export function registeredFunctionId(r: CustomFunctionRegistration) {
   }` as CustomFunctionId;
 }
 
-export function createCustomFunctionFromRegistration(
+function mapParamTypeToArgType(
+  paramReg: string | ParamType<any, any>
+): ArgType["type"] {
+  if (isString(paramReg)) {
+    return typeFactory.text();
+  }
+  if (isArray(paramReg.type)) {
+    return typeFactory.any();
+  }
+  if (paramReg.type === "choice") {
+    return typeFactory.choice(
+      Array.isArray(paramReg.options)
+        ? isArrayOfLiterals(paramReg.options)
+          ? paramReg.options
+          : paramReg.options.map((op) => ({
+              label: op.label,
+              value: op.value,
+            }))
+        : ["Dynamic options"]
+    );
+  }
+  return convertTsToWabType(paramReg.type ?? "string") as ArgType["type"];
+}
+
+function createCustomFunctionFromRegistration(
   functionReg: CustomFunctionRegistration,
   existingFunction?: CustomFunction
 ) {
@@ -2477,11 +2502,8 @@ export function createCustomFunctionFromRegistration(
     params:
       functionReg.meta.params?.map((paramReg: string | ParamType<any, any>) => {
         const name = isString(paramReg) ? paramReg : paramReg.name;
-        const argType = isString(paramReg)
-          ? typeFactory.text()
-          : isArray(paramReg.type)
-          ? typeFactory.any()
-          : (convertTsToWabType(paramReg.type ?? "string") as ArgType["type"]);
+
+        const argType = mapParamTypeToArgType(paramReg);
         const existingParam = existingParams.find((p) => p.argName === name);
         if (existingParam && existingParam.type.name === argType.name) {
           return existingParam;
@@ -4065,7 +4087,7 @@ export function wabTypeToPropType(type: Type): StudioPropType<any> {
     .when(Num, () => "number" as const)
     .when(Choice, (choiceType) => ({
       type: "choice" as const,
-      options: isArrayOfStrings(choiceType.options)
+      options: isArrayOfLiterals(choiceType.options)
         ? choiceType.options
         : choiceType.options.map((op) => ({
             label: op.label as string,
@@ -4494,6 +4516,7 @@ async function upsertRegisteredFunctions(
         if (
           [
             "undefined",
+            "choice",
             "object",
             "any",
             "string",
