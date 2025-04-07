@@ -52,6 +52,7 @@ import {
   getVersionForCanvasPackages,
 } from "@/wab/client/components/studio/studio-bundles";
 import { adjustGridStyleForCurZoom } from "@/wab/client/components/style-controls/GridEditor";
+import { makeVariantsController } from "@/wab/client/components/variants/VariantsController";
 import {
   AlertData,
   AlertSpec,
@@ -2441,7 +2442,24 @@ export class StudioCtx extends WithDbCtx {
         ? this.getArenaFrameForSetOfVariants(arena, variants) ?? baseFrame
         : baseFrame;
 
-      const viewCtx = await this.awaitViewCtxForFrame(frame);
+      let viewCtx: ViewCtx | undefined = undefined;
+      if (this.focusedMode) {
+        const vcontroller = makeVariantsController(this);
+        if (vcontroller && variants?.length) {
+          await this.change(
+            ({ success }) => {
+              vcontroller.onActivateCombo(variants);
+              vcontroller.onToggleTargetingOfActiveVariants();
+              return success();
+            },
+            { noUndoRecord: true }
+          );
+        }
+        // In focus mode, there's guaranteed to be only one visible ViewCtx, so always use that.
+        viewCtx = this.focusedOrFirstViewCtx();
+      }
+
+      viewCtx = viewCtx ?? (await this.awaitViewCtxForFrame(frame));
       if (viewCtx) {
         viewCtx.setStudioFocusByTpl(tpl);
       }
