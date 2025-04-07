@@ -103,7 +103,6 @@ import {
   ObjectPath,
   PageArena,
 } from "@/wab/shared/model/classes";
-import { naturalSort } from "@/wab/shared/sort";
 import { TableSchema } from "@plasmicapp/data-sources";
 import { executePlasmicDataOp } from "@plasmicapp/react-web/lib/data-sources";
 import { Dropdown, Menu } from "antd";
@@ -822,66 +821,18 @@ const buildItems = computedFn(
           Arenas
         </LabelWithDetailedTooltip>,
         "custom",
-        getSortedMixedArenas(studioCtx)
+        studioCtx.getSortedMixedArenas()
       ),
-      getSection("Pages", "page", getSortedPageArenas(studioCtx)),
+      getSection("Pages", "page", studioCtx.getSortedPageArenas()),
       getSection(
         "Components",
         "component",
-        getSortedComponentArenas(studioCtx)
+        studioCtx.getSortedComponentArenas()
       ),
     ]);
     return items;
   }
 );
-
-const getSortedComponentArenas = computedFn(function getSortedComponentArenas(
-  studioCtx: StudioCtx
-) {
-  const componentArenas: ComponentArena[] = [];
-  const addComponentArena = (compArena: ComponentArena) => {
-    componentArenas.push(compArena);
-    for (const subComp of compArena.component.subComps) {
-      const subArena = studioCtx.getDedicatedArena(subComp) as
-        | ComponentArena
-        | undefined;
-      if (subArena) {
-        addComponentArena(subArena);
-      }
-    }
-  };
-  for (const compArena of naturalSort(
-    studioCtx.site.componentArenas,
-    (it) => it.component.name
-  )) {
-    if (compArena.component.superComp) {
-      // Sub-components are added when dealing with super components
-      continue;
-    }
-
-    if (!studioCtx.canEditComponent(compArena.component)) {
-      continue;
-    }
-
-    addComponentArena(compArena);
-  }
-  return componentArenas;
-});
-
-const getSortedPageArenas = computedFn(function getSortedPageArenas(
-  studioCtx: StudioCtx
-) {
-  return naturalSort(
-    studioCtx.site.pageArenas,
-    (it) => it.component.name
-  ).filter((arena) => studioCtx.canEditComponent(arena.component));
-});
-
-const getSortedMixedArenas = computedFn(function getSortedMixedArenas(
-  studioCtx: StudioCtx
-) {
-  return studioCtx.contentEditorMode ? [] : studioCtx.site.arenas;
-});
 
 function ArenaTreeRow(props: RenderElementProps<ArenaPanelRow>) {
   const { value, treeState } = props;

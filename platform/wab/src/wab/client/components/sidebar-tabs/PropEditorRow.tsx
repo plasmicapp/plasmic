@@ -1033,6 +1033,7 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
                 if (!newParam) {
                   return;
                 }
+                console.log("DEBUGGING: onFinish with .change");
                 viewCtx.change(() => {
                   newParam.description = "metaProp";
                   const _expr = new VarRef({

@@ -1,3 +1,4 @@
+import { COMMANDS } from "@/wab/client/commands/command";
 import { WithContextMenu } from "@/wab/client/components/ContextMenu";
 import promptForMetadata from "@/wab/client/components/modals/ComponentMetadataModal";
 import { ComponentPropModal } from "@/wab/client/components/modals/ComponentPropModal";
@@ -10,12 +11,12 @@ import { EditableLabel } from "@/wab/client/components/widgets/EditableLabel";
 import { LabelWithDetailedTooltip } from "@/wab/client/components/widgets/LabelWithDetailedTooltip";
 import { VERT_MENU_ICON } from "@/wab/client/icons";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { toVarName } from "@/wab/shared/codegen/util";
 import { spawn } from "@/wab/shared/common";
 import {
   addOrEditComponentMetadata,
   removeComponentMetadata,
 } from "@/wab/shared/core/components";
-import { toVarName } from "@/wab/shared/codegen/util";
 import { Component } from "@/wab/shared/model/classes";
 import { Menu, notification } from "antd";
 import { observer } from "mobx-react";
@@ -52,8 +53,10 @@ export const ComponentMetaDataPropsSection = observer(
                 <BoolPropEditor
                   onChange={(val) => {
                     spawn(
-                      studioCtx.changeUnsafe(
-                        () => (component.editableByContentEditor = val)
+                      COMMANDS.component.settings.setEditableByContentEditor.execute(
+                        studioCtx,
+                        { value: val },
+                        { component }
                       )
                     );
                   }}
@@ -68,8 +71,12 @@ export const ComponentMetaDataPropsSection = observer(
                 <BoolPropEditor
                   onChange={(val) => {
                     spawn(
-                      studioCtx.changeUnsafe(
-                        () => (component.hiddenFromContentEditor = val)
+                      COMMANDS.component.settings.setHiddenFromContentEditor.execute(
+                        studioCtx,
+                        { value: val },
+                        {
+                          component,
+                        }
                       )
                     );
                   }}

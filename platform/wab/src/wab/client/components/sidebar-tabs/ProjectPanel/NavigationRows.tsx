@@ -152,7 +152,13 @@ export function NavigationArenaRow({
       }}
       onClick={async () => {
         onClose();
-        await COMMANDS.navigation.switchArena.execute(studioCtx, arena);
+        await COMMANDS.navigation.switchArena.execute(
+          studioCtx,
+          {
+            arena,
+          },
+          {}
+        );
       }}
       icon={<Icon icon={getArenaIcon(arena, studioCtx)} />}
       isSelected={studioCtx.currentArena === arena}

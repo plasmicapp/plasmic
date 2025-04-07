@@ -346,6 +346,7 @@ import {
   InvariantError,
   assertSiteInvariants,
 } from "@/wab/shared/site-invariants";
+import { naturalSort } from "@/wab/shared/sort";
 import {
   LEFT_TAB_PANEL_KEYS,
   LeftTabKey,
@@ -1758,6 +1759,47 @@ export class StudioCtx extends WithDbCtx {
   canEditComponent(component: Component) {
     return !this.contentEditorMode || component.editableByContentEditor;
   }
+
+  getSortedPageArenas = computedFn(() => {
+    return naturalSort(this.site.pageArenas, (it) => it.component.name).filter(
+      (arena) => this.canEditComponent(arena.component)
+    );
+  });
+
+  getSortedMixedArenas = computedFn(() => {
+    return this.contentEditorMode ? [] : this.site.arenas;
+  });
+
+  getSortedComponentArenas = computedFn(() => {
+    const componentArenas: ComponentArena[] = [];
+    const addComponentArena = (compArena: ComponentArena) => {
+      componentArenas.push(compArena);
+      for (const subComp of compArena.component.subComps) {
+        const subArena = this.getDedicatedArena(subComp) as
+          | ComponentArena
+          | undefined;
+        if (subArena) {
+          addComponentArena(subArena);
+        }
+      }
+    };
+    for (const compArena of naturalSort(
+      this.site.componentArenas,
+      (it) => it.component.name
+    )) {
+      if (compArena.component.superComp) {
+        // Sub-components are added when dealing with super components
+        continue;
+      }
+
+      if (!this.canEditComponent(compArena.component)) {
+        continue;
+      }
+
+      addComponentArena(compArena);
+    }
+    return componentArenas;
+  });
 
   /** Switches the branch and version only. */
   switchToBranch(

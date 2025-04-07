@@ -1,13 +1,21 @@
+import { COMMANDS } from "@/wab/client/commands/command";
 import { MenuBuilder } from "@/wab/client/components/menu-builder";
 import { PropEditorRow } from "@/wab/client/components/sidebar-tabs/PropEditorRow";
 import { VariableEditingModal } from "@/wab/client/components/sidebar-tabs/StateManagement/VariableEditingModal";
 import { SidebarModal } from "@/wab/client/components/sidebar/SidebarModal";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
+import { wabTypeToPropType } from "@/wab/shared/code-components/code-components";
 import { assert, ensure, spawn } from "@/wab/shared/common";
 import { canDeleteState } from "@/wab/shared/core/components";
 import { codeLit, getRawCode, tryExtractJson } from "@/wab/shared/core/exprs";
-import { wabTypeToPropType } from "@/wab/shared/code-components/code-components";
+import {
+  getStateDisplayName,
+  isPrivateState,
+  isReadonlyState,
+  StateAccessType,
+  StateVariableType,
+} from "@/wab/shared/core/states";
 import { evalCodeWithEnv } from "@/wab/shared/eval";
 import { VARIABLE_LOWER } from "@/wab/shared/Labels";
 import {
@@ -20,13 +28,6 @@ import {
   convertVariableTypeToPropType,
   convertVariableTypeToWabType,
 } from "@/wab/shared/model/model-util";
-import {
-  getStateDisplayName,
-  isPrivateState,
-  isReadonlyState,
-  StateAccessType,
-  StateVariableType,
-} from "@/wab/shared/core/states";
 import { Menu } from "antd";
 import React from "react";
 
@@ -148,10 +149,14 @@ export function useVariableRow({
     : (e?: MouseEvent) => {
         e?.stopPropagation();
         spawn(
-          studioCtx.change(({ success }) => {
-            studioCtx.siteOps().removeState(component, state);
-            return success();
-          })
+          COMMANDS.component.removeStateVariable.execute(
+            studioCtx,
+            {},
+            {
+              state,
+              component,
+            }
+          )
         );
       };
 
@@ -167,12 +172,17 @@ export function useVariableRow({
 
   const handleTempValueReset = () => {
     spawn(
-      studioCtx.change(({ success }) => {
-        vc.setCanvasStateValue(state, initialValue);
-        setDraft(undefined);
-        return success();
-      })
+      COMMANDS.component.resetStateValue.execute(
+        studioCtx,
+        {},
+        {
+          state,
+          viewCtx: vc,
+          component: vc.component,
+        }
+      )
     );
+    setDraft(undefined);
   };
 
   const menu = useVariableMenu({
@@ -221,10 +231,15 @@ export function useVariableRow({
                 state.variableType as StateVariableType
               )}
               onChange={(_expr) =>
-                studioCtx.change(({ success }) => {
-                  state.param.defaultExpr = _expr;
-                  return success();
-                })
+                COMMANDS.component.changeStateInitialValue.execute(
+                  studioCtx,
+                  {
+                    expr: _expr,
+                  },
+                  {
+                    state,
+                  }
+                )
               }
               disableLinkToProp={true}
               about={

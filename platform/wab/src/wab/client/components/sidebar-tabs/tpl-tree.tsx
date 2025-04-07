@@ -62,7 +62,7 @@ import {
   useForwardedRef,
 } from "@/wab/commons/components/ReactUtil";
 import { AnyArena } from "@/wab/shared/Arenas";
-import { assert, ensure, maybe, unexpected } from "@/wab/shared/common";
+import { assert, ensure, maybe, spawn, unexpected } from "@/wab/shared/common";
 import { isCodeComponent } from "@/wab/shared/core/components";
 import { tryExtractLit } from "@/wab/shared/core/exprs";
 import { Selectable } from "@/wab/shared/core/selection";
@@ -130,6 +130,7 @@ import * as React from "react";
 import { FixedSizeList } from "react-window";
 
 import { TplClip } from "@/wab/client/clipboard/local";
+import { COMMANDS } from "@/wab/client/commands/command";
 import CommentIndicatorIcon from "@/wab/client/components/comments/CommentIndicatorIcon";
 import { getSubjectVariantsKey } from "@/wab/client/components/comments/utils";
 import {
@@ -630,9 +631,18 @@ const TplTreeNode = observer(function TplTreeNode(props: {
           key={`${defaultEditing}`}
           onAbort={() => viewCtx.studioCtx.endRenamingOnPanel()}
           onEdit={(name) => {
-            viewCtx.change(() => {
-              viewCtx.getViewOps().renameTpl(name, item);
-            });
+            spawn(
+              COMMANDS.element.rename.execute(
+                viewCtx.studioCtx,
+                {
+                  name,
+                },
+                {
+                  tpl: item,
+                  viewCtx,
+                }
+              )
+            );
             viewCtx.studioCtx.endRenamingOnPanel();
           }}
           inputBoxPlaceholder="Element name"

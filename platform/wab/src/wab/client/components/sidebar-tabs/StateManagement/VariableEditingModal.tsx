@@ -1,7 +1,7 @@
+import { COMMANDS } from "@/wab/client/commands/command";
 import VariableEditingForm from "@/wab/client/components/sidebar-tabs/StateManagement/VariableEditingForm";
 import { SidebarModal } from "@/wab/client/components/sidebar/SidebarModal";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { spawn } from "@/wab/shared/common";
 import { VARIABLE_CAP } from "@/wab/shared/Labels";
 import { Component, State } from "@/wab/shared/model/classes";
 import startCase from "lodash/startCase";
@@ -28,25 +28,19 @@ export function VariableEditingModal({
     preventCancellingRef.current = false;
   }, [state]);
 
-  const onCancel = () => {
+  const onCancel = async () => {
     if (!state || preventCancellingRef.current) {
       return;
     }
-
-    spawn(
-      studioCtx
-        .change(({ success }) => {
-          try {
-            studioCtx.siteOps().removeState(component, state);
-          } catch {
-            // Not a problem if the state was already removed
-          }
-          return success();
-        })
-        .then(() => {
-          onClose();
-        })
+    await COMMANDS.component.removeStateVariable.execute(
+      studioCtx,
+      {},
+      {
+        state,
+        component,
+      }
     );
+    onClose();
   };
 
   return (

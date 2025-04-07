@@ -1,3 +1,4 @@
+import { COMMANDS } from "@/wab/client/commands/command";
 import ImplicitVariablesSection from "@/wab/client/components/sidebar-tabs/StateManagement/ImplicitVariablesSection";
 import { VariableEditingModal } from "@/wab/client/components/sidebar-tabs/StateManagement/VariableEditingModal";
 import VariableRow from "@/wab/client/components/sidebar-tabs/StateManagement/VariableRow";
@@ -10,26 +11,26 @@ import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
 import { DefaultVariablesSectionProps } from "@/wab/client/plasmic/plasmic_kit_state_management/PlasmicVariablesSection";
 import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { ensure, spawn } from "@/wab/shared/common";
+import { unwrap } from "@/wab/commons/failable-utils";
+import { ensure } from "@/wab/shared/common";
+import { codeLit } from "@/wab/shared/core/exprs";
 import { mkParamsForState } from "@/wab/shared/core/lang";
-import { VARIABLE_PLURAL_CAP } from "@/wab/shared/Labels";
-import { Component, State } from "@/wab/shared/model/classes";
 import {
   DEFAULT_STATE_ACCESS_TYPE,
   DEFAULT_STATE_VARIABLE_NAME,
   DEFAULT_STATE_VARIABLE_TYPE,
-  addComponentState,
   genOnChangeParamName,
   getDefaultValueForStateVariableType,
   mkState,
 } from "@/wab/shared/core/states";
+import { VARIABLE_PLURAL_CAP } from "@/wab/shared/Labels";
+import { Component, State } from "@/wab/shared/model/classes";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import cn from "classnames";
 import { groupBy } from "lodash";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { useState } from "react";
-import { codeLit } from "@/wab/shared/core/exprs";
 
 export function mkInitialState(sc: StudioCtx, component: Component) {
   const name = sc
@@ -100,15 +101,18 @@ function VariablesSection_(
             <IconLinkButton>
               <Icon
                 icon={PlusIcon}
-                onClick={() => {
-                  spawn(
-                    studioCtx.change(({ success }) => {
-                      const newState = mkInitialState(studioCtx, component);
-                      addComponentState(studioCtx.site, component, newState);
-                      setNewVariable(newState);
-                      return success();
-                    })
+                onClick={async () => {
+                  const newState = unwrap(
+                    await COMMANDS.component.addNewStateVariable.execute(
+                      studioCtx,
+                      {},
+                      {
+                        component,
+                      }
+                    )
                   );
+
+                  setNewVariable(newState);
                 }}
                 data-test-id="add-state-btn"
               />

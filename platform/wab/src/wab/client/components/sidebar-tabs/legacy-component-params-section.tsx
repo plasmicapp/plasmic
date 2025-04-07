@@ -1,3 +1,4 @@
+import { COMMANDS } from "@/wab/client/commands/command";
 import { WithContextMenu } from "@/wab/client/components/ContextMenu";
 import promptForMetadata from "@/wab/client/components/modals/ComponentMetadataModal";
 import { ComponentPropModal } from "@/wab/client/components/modals/ComponentPropModal";
@@ -82,8 +83,12 @@ export const LegacyComponentParamsSection = observer(
                 <BoolPropEditor
                   onChange={(val) => {
                     spawn(
-                      studioCtx.changeUnsafe(
-                        () => (component.editableByContentEditor = val)
+                      COMMANDS.component.settings.setEditableByContentEditor.execute(
+                        studioCtx,
+                        { value: val },
+                        {
+                          component,
+                        }
                       )
                     );
                   }}
@@ -98,8 +103,12 @@ export const LegacyComponentParamsSection = observer(
                 <BoolPropEditor
                   onChange={(val) => {
                     spawn(
-                      studioCtx.changeUnsafe(
-                        () => (component.hiddenFromContentEditor = val)
+                      COMMANDS.component.settings.setHiddenFromContentEditor.execute(
+                        studioCtx,
+                        { value: val },
+                        {
+                          component,
+                        }
                       )
                     );
                   }}
@@ -124,7 +133,13 @@ export const LegacyComponentParamsSection = observer(
                 <BoolPropEditor
                   onChange={(val) => {
                     spawn(
-                      studioCtx.changeUnsafe(() => (component.trapsFocus = val))
+                      COMMANDS.component.settings.setTrapFocus.execute(
+                        studioCtx,
+                        { value: val },
+                        {
+                          component,
+                        }
+                      )
                     );
                   }}
                   value={component.trapsFocus}
