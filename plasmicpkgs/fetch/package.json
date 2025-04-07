@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/fetch",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Plasmic registration call for fetch function",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
