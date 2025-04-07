@@ -375,6 +375,7 @@ function CmsEntryDetailsForm_(
       key: "uniqueness-message",
       content: `Checking uniqueness violation...`,
     });
+    console.log("lll ", updatedUniqueFields);
     const uniqueFieldsChecked: UniqueFieldCheck[] = await api.checkUniqueFields(
       table.id,
       {

@@ -327,7 +327,10 @@ const typeToPgType = (type: CmsTypeName) => {
 };
 
 const isConflicting = (val1: unknown, val2: unknown) => {
-  if ((!val1 || val1 === "") && (!val2 || val2 === "")) {
+  if (
+    (val1 === undefined || val1 === "") &&
+    (val2 === undefined || val2 === "")
+  ) {
     return false;
   }
   return val1 === val2;

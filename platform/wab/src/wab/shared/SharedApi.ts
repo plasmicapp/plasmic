@@ -1714,7 +1714,7 @@ export abstract class SharedApi {
     tableId: CmsTableId,
     opts: { rowId: CmsRowId; uniqueFieldsData: Dict<unknown> }
   ) {
-    return await this.post(`cmse/tables/${tableId}/check-unique-fields`, opts);
+    return await this.post(`/cmse/tables/${tableId}/check-unique-fields`, opts);
   }
 
   async deleteCmsRow(rowId: CmsRowId) {
