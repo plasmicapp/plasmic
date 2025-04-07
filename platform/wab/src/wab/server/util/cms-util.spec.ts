@@ -194,26 +194,35 @@ describe("getConflictingCmsRowIds", () => {
   const id3 = "3" as CmsRowId;
   let rows: CmsRow[] = [];
 
-  it("should ignore the current checking row and only check default locale data", () => {
+  it("should ignore the current checking row", () => {
+    rows = [
+      createRow(id1, { "": { field: 1 } }),
+      createRow(id2, { "": { field: 2 } }),
+      createRow(id3, { "": { field: 3 } }),
+    ];
+
+    expect(getConflictingCmsRowIds(rows, id1, "field", 1)).toEqual([]);
+    expect(getConflictingCmsRowIds(rows, id1, "field", 2)).toEqual([id2]);
+    expect(getConflictingCmsRowIds(rows, id1, "field", 3)).toEqual([id3]);
+
+    expect(getConflictingCmsRowIds(rows, id2, "field", 1)).toEqual([id1]);
+    expect(getConflictingCmsRowIds(rows, id2, "field", 2)).toEqual([]);
+    expect(getConflictingCmsRowIds(rows, id2, "field", 3)).toEqual([id3]);
+
+    expect(getConflictingCmsRowIds(rows, id3, "field", 1)).toEqual([id1]);
+    expect(getConflictingCmsRowIds(rows, id3, "field", 2)).toEqual([id2]);
+    expect(getConflictingCmsRowIds(rows, id3, "field", 3)).toEqual([]);
+  });
+
+  it("should only check default locale data", () => {
     rows = [
       createRow(id1, { "": { field: 1 }, us: { field: 4 } }),
       createRow(id2, { "": { field: 2 }, us: { field: 4 } }),
       createRow(id3, { "": { field: 3 }, us: { field: 4 } }),
     ];
 
-    expect(getConflictingCmsRowIds(rows, id1, "field", 1)).toEqual([]);
-    expect(getConflictingCmsRowIds(rows, id1, "field", 2)).toEqual([id2]);
-    expect(getConflictingCmsRowIds(rows, id1, "field", 3)).toEqual([id3]);
     expect(getConflictingCmsRowIds(rows, id1, "field", 4)).toEqual([]);
-
-    expect(getConflictingCmsRowIds(rows, id2, "field", 1)).toEqual([id1]);
-    expect(getConflictingCmsRowIds(rows, id2, "field", 2)).toEqual([]);
-    expect(getConflictingCmsRowIds(rows, id2, "field", 3)).toEqual([id3]);
     expect(getConflictingCmsRowIds(rows, id2, "field", 4)).toEqual([]);
-
-    expect(getConflictingCmsRowIds(rows, id3, "field", 1)).toEqual([id1]);
-    expect(getConflictingCmsRowIds(rows, id3, "field", 2)).toEqual([id2]);
-    expect(getConflictingCmsRowIds(rows, id3, "field", 3)).toEqual([]);
     expect(getConflictingCmsRowIds(rows, id3, "field", 4)).toEqual([]);
   });
 
@@ -230,7 +239,7 @@ describe("getConflictingCmsRowIds", () => {
     rows = [
       createRow(id1, { "": { field1: 1, field2: 2 } }),
       createRow(id2, { "": { field1: 2, field2: 1 } }),
-      createRow(id3, { "": { field1: 2, field2: 2 } }),
+      createRow(id3, { "": { field1: 0, field2: 0 } }),
     ];
     expect(getConflictingCmsRowIds(rows, id3, "field1", 1)).toEqual([id1]);
     expect(getConflictingCmsRowIds(rows, id3, "field2", 1)).toEqual([id2]);
