@@ -244,4 +244,15 @@ describe("getConflictingCmsRowIds", () => {
     expect(getConflictingCmsRowIds(rows, id3, "field1", 1)).toEqual([id1]);
     expect(getConflictingCmsRowIds(rows, id3, "field2", 1)).toEqual([id2]);
   });
+
+  it("should allow multiple empty values", () => {
+    rows = [
+      createRow(id1, { "": { field1: "", field2: "" } }),
+      createRow(id2, { "": { field1: undefined, field2: undefined } }),
+    ];
+    expect(getConflictingCmsRowIds(rows, id3, "field1", "")).toEqual([]);
+    expect(getConflictingCmsRowIds(rows, id3, "field2", "")).toEqual([]);
+    expect(getConflictingCmsRowIds(rows, id3, "field1", undefined)).toEqual([]);
+    expect(getConflictingCmsRowIds(rows, id3, "field2", undefined)).toEqual([]);
+  });
 });
