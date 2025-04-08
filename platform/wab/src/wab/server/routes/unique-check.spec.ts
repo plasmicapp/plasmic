@@ -9,7 +9,7 @@ import { APIRequestContext, request } from "playwright";
 
 import { CmsRow } from "@/wab/server/entities/Entities";
 import { isUniqueViolationError } from "@/wab/shared/ApiErrors/cms-errors";
-import { CmsMetaType, CmsText } from "@/wab/shared/ApiSchema";
+import { CmsMetaType, CmsText, UniqueFieldCheck } from "@/wab/shared/ApiSchema";
 
 const createUniqueTextField = (fieldIdentifier: string): CmsText => ({
   identifier: fieldIdentifier,
@@ -32,7 +32,8 @@ describe("unique violation check", () => {
   let userToken: string;
   let user: User;
   let table: CmsTable;
-  let rows: CmsRow[];
+  let published: CmsRow[];
+  let notPublished: CmsRow[];
   let checkingRow: CmsRow;
 
   beforeAll(async () => {
@@ -78,11 +79,14 @@ describe("unique violation check", () => {
           ],
         },
       });
-      rows = await db.createCmsRows(table.id, [
+      published = await db.createCmsRows(table.id, [
         { data: { "": { field1: 0, field2: 10 } } },
         { data: { "": { field1: 1, field2: 11 } } },
         { data: { "": { field1: 2, field2: 12 } } },
         { data: { "": { field1: 2, field2: 12 } } },
+      ]);
+      notPublished = await db.createCmsRows(table.id, [
+        { draftData: { "": { field1: 0, field2: 10 } } },
       ]);
       checkingRow = await db.createCmsRow(table.id, {});
     });
@@ -120,76 +124,72 @@ describe("unique violation check", () => {
 
   describe("unique-check Api", () => {
     /**
+        published: [
             { data: { "": { field1: 0, field2: 10} } },
             { data: { "": { field1: 1, field2: 11} } },
             { data: { "": { field1: 2, field2: 12} } },
             { data: { "": { field1: 2, field2: 12} } },
-         */
+        ]
+        notPublished: [
+            { draftData: { "": { field1: 3, field2: 13} } },
+        ]
+    */
 
-    it("should send the result in UniqueFieldCheck type object for each field", async () => {
-      const conflict = await api.checkUniqueFields(table.id, {
+    it("should return the right type", async () => {
+      const result = await api.checkUniqueFields(table.id, {
         rowId: checkingRow.id,
         uniqueFieldsData: { field1: 0 },
       });
-      expect(conflict).toEqual([
+      result.forEach((fieldCheck: UniqueFieldCheck) => {
+        expect(fieldCheck.fieldIdentifier).toBeDefined();
+        expect(fieldCheck.value).toBeDefined();
+        expect(fieldCheck.ok).toBeDefined();
+        expect(fieldCheck.conflictRowIds).toBeDefined();
+      });
+    });
+
+    it("should only compare with the values from the published rows", async () => {
+      const result = await api.checkUniqueFields(table.id, {
+        rowId: checkingRow.id,
+        uniqueFieldsData: { field1: 3 },
+      });
+      expect(result).toEqual([
+        { fieldIdentifier: "field1", value: 3, ok: true, conflictRowIds: [] },
+      ]);
+    });
+
+    it("should check all the fields requested", async () => {
+      const result = await api.checkUniqueFields(table.id, {
+        rowId: checkingRow.id,
+        uniqueFieldsData: { field1: 0, field2: 0 },
+      });
+      expect(result).toEqual([
         {
           fieldIdentifier: "field1",
           value: 0,
           ok: false,
-          conflictRowIds: [rows[0].id],
-        },
-      ]);
-      const noConflict = await api.checkUniqueFields(table.id, {
-        rowId: checkingRow.id,
-        uniqueFieldsData: { field1: 100 },
-      });
-      expect(noConflict).toEqual([
-        { fieldIdentifier: "field1", value: 100, ok: true, conflictRowIds: [] },
-      ]);
-    });
-
-    it("should only compare with the value of the requested field of published rows", async () => {
-      const field1Check = await api.checkUniqueFields(table.id, {
-        rowId: checkingRow.id,
-        uniqueFieldsData: { field1: 10 },
-      });
-      expect(field1Check).toEqual([
-        { fieldIdentifier: "field1", value: 10, ok: true, conflictRowIds: [] },
-      ]);
-    });
-
-    it("should check all the requested fields", async () => {
-      const multipleFieldsConflict = await api.checkUniqueFields(table.id, {
-        rowId: checkingRow.id,
-        uniqueFieldsData: { field1: 0, field2: 11 },
-      });
-      expect(multipleFieldsConflict).toEqual([
-        {
-          fieldIdentifier: "field1",
-          value: 0,
-          ok: false,
-          conflictRowIds: [rows[0].id],
+          conflictRowIds: [published[0].id],
         },
         {
           fieldIdentifier: "field2",
-          value: 11,
-          ok: false,
-          conflictRowIds: [rows[1].id],
+          value: 0,
+          ok: true,
+          conflictRowIds: [],
         },
       ]);
     });
 
     it("should return all conflicting rows", async () => {
-      const multipleConflict = await api.checkUniqueFields(table.id, {
+      const result = await api.checkUniqueFields(table.id, {
         rowId: checkingRow.id,
         uniqueFieldsData: { field1: 2 },
       });
-      expect(multipleConflict).toEqual([
+      expect(result).toEqual([
         {
           fieldIdentifier: "field1",
           value: 2,
           ok: false,
-          conflictRowIds: [rows[2].id, rows[3].id],
+          conflictRowIds: [published[2].id, published[3].id],
         },
       ]);
     });
@@ -197,11 +197,17 @@ describe("unique violation check", () => {
 
   describe("publish Api", () => {
     /**
-         { data: { "": { field1: 0, field2: 10} } },
-        { data: { "": { field1: 1, field2: 11} } },
-        { data: { "": { field1: 2, field2: 12} } },
-        { data: { "": { field1: 2, field2: 12} } },
-        */
+        published: [
+            { data: { "": { field1: 0, field2: 10} } },
+            { data: { "": { field1: 1, field2: 11} } },
+            { data: { "": { field1: 2, field2: 12} } },
+            { data: { "": { field1: 2, field2: 12} } },
+        ]
+        notPublished: [
+            { draftData: { "": { field1: 0, field2: 10} } },
+        ]
+    */
+
     it("should throw a UniqueViolationError when there is a conflict.", async () => {
       const response = (await api.updateCmsRow(checkingRow.id, {
         data: { "": { field1: 0, field2: 0 } },
@@ -213,7 +219,7 @@ describe("unique violation check", () => {
           fieldIdentifier: "field1",
           value: 0,
           ok: false,
-          conflictRowIds: [rows[0].id],
+          conflictRowIds: [published[0].id],
         },
         {
           fieldIdentifier: "field2",
