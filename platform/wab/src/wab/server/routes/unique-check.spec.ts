@@ -203,9 +203,6 @@ describe("unique violation check", () => {
             { data: { "": { field1: 2, field2: 12} } },
             { data: { "": { field1: 2, field2: 12} } },
         ]
-        notPublished: [
-            { draftData: { "": { field1: 0, field2: 10} } },
-        ]
     */
 
     it("should throw a UniqueViolationError when there is a conflict.", async () => {
