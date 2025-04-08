@@ -8,7 +8,7 @@ import { createBackend, createDatabase } from "@/wab/server/test/backend-util";
 import { APIRequestContext, request } from "playwright";
 
 import { CmsRow } from "@/wab/server/entities/Entities";
-import { UniqueViolationError } from "@/wab/shared/ApiErrors/cms-errors";
+import { isUniqueViolationError } from "@/wab/shared/ApiErrors/cms-errors";
 import { CmsMetaType, CmsText } from "@/wab/shared/ApiSchema";
 
 const createUniqueTextField = (fieldIdentifier: string): CmsText => ({
@@ -23,7 +23,7 @@ const createUniqueTextField = (fieldIdentifier: string): CmsText => ({
   defaultValueByLocale: {},
 });
 
-describe("unique-check Api", () => {
+describe("Publish Api", () => {
   let apiRequestContext: APIRequestContext;
   let api: ApiTester;
   let baseURL: string;
@@ -40,7 +40,7 @@ describe("unique-check Api", () => {
       dburi,
       dbname,
       cleanup: cleanupDatabase,
-    } = await createDatabase("unique_test");
+    } = await createDatabase("publish_unique_error");
     const con = await ensureDbConnection(dburi, dbname);
     await con.synchronize();
     await con.transaction(async (em) => {
@@ -118,128 +118,31 @@ describe("unique-check Api", () => {
     await cleanup();
   });
 
-  describe("unique-check Api", () => {
-    it("should send the result in UniqueFieldCheck type object for each field", async () => {
-      /**
-            { data: { "": { field1: 0, field2: 10} } },
-            { data: { "": { field1: 1, field2: 11} } },
-            { data: { "": { field1: 2, field2: 12} } },
-            { data: { "": { field1: 2, field2: 12} } },
-         */
-      const conflict = await api.checkUniqueFields(table.id, {
-        rowId: checkingRow.id,
-        uniqueFieldsData: { field1: 0 },
-      });
-      expect(conflict).toEqual([
-        {
-          fieldIdentifier: "field1",
-          value: 0,
-          ok: false,
-          conflictRowIds: [rows[0].id],
-        },
-      ]);
-      const noConflict = await api.checkUniqueFields(table.id, {
-        rowId: checkingRow.id,
-        uniqueFieldsData: { field1: 100 },
-      });
-      expect(noConflict).toEqual([
-        { fieldIdentifier: "field1", value: 100, ok: true, conflictRowIds: [] },
-      ]);
-    });
-
-    it("should only compare with the value of the requested field of published rows", async () => {
-      /**
-            { data: { "": { field1: 0, field2: 10} } },
-            { data: { "": { field1: 1, field2: 11} } },
-            { data: { "": { field1: 2, field2: 12} } },
-            { data: { "": { field1: 2, field2: 12} } },
-         */
-      const field1Check = await api.checkUniqueFields(table.id, {
-        rowId: checkingRow.id,
-        uniqueFieldsData: { field1: 10 },
-      });
-      expect(field1Check).toEqual([
-        { fieldIdentifier: "field1", value: 10, ok: true, conflictRowIds: [] },
-      ]);
-    });
-
-    it("should check all the requested fields", async () => {
-      /**
-            { data: { "": { field1: 0, field2: 10} } },
-            { data: { "": { field1: 1, field2: 11} } },
-            { data: { "": { field1: 2, field2: 12} } },
-            { data: { "": { field1: 2, field2: 12} } },
-         */
-      const multipleFieldsConflict = await api.checkUniqueFields(table.id, {
-        rowId: checkingRow.id,
-        uniqueFieldsData: { field1: 0, field2: 11 },
-      });
-      expect(multipleFieldsConflict).toEqual([
-        {
-          fieldIdentifier: "field1",
-          value: 0,
-          ok: false,
-          conflictRowIds: [rows[0].id],
-        },
-        {
-          fieldIdentifier: "field2",
-          value: 11,
-          ok: false,
-          conflictRowIds: [rows[1].id],
-        },
-      ]);
-    });
-
-    it("should return all conflicting rows", async () => {
-      /**
-            { data: { "": { field1: 0, field2: 10} } },
-            { data: { "": { field1: 1, field2: 11} } },
-            { data: { "": { field1: 2, field2: 12} } },
-            { data: { "": { field1: 2, field2: 12} } },
-         */
-      const multipleConflict = await api.checkUniqueFields(table.id, {
-        rowId: checkingRow.id,
-        uniqueFieldsData: { field1: 2 },
-      });
-      expect(multipleConflict).toEqual([
-        {
-          fieldIdentifier: "field1",
-          value: 2,
-          ok: false,
-          conflictRowIds: [rows[2].id, rows[3].id],
-        },
-      ]);
-    });
-  });
-
-  describe("unique check Error of Publish Api", () => {
-    it("should throw a UniqueViolationError when there is a conflict.", async () => {
-      /**
-            { data: { "": { field1: 0, field2: 10} } },
-            { data: { "": { field1: 1, field2: 11} } },
-            { data: { "": { field1: 2, field2: 12} } },
-            { data: { "": { field1: 2, field2: 12} } },
-         */
-      const publishRequest = async () =>
-        await api.updateCmsRow(checkingRow.id, {
-          data: { "": { field1: 0, field2: 10 } },
-        });
-      const expectedError = new UniqueViolationError([
-        {
-          fieldIdentifier: "field1",
-          value: 0,
-          ok: false,
-          conflictRowIds: [rows[0].id],
-        },
-        {
-          fieldIdentifier: "field2",
-          value: 10,
-          ok: false,
-          conflictRowIds: [rows[0].id],
-        },
-      ]);
-      console.log(expectedError);
-      expect(publishRequest).toThrowError(expectedError);
-    });
+  it("should throw a UniqueViolationError when there is a conflict.", async () => {
+    /**
+    { data: { "": { field1: 0, field2: 10} } },
+    { data: { "": { field1: 1, field2: 11} } },
+    { data: { "": { field1: 2, field2: 12} } },
+    { data: { "": { field1: 2, field2: 12} } },
+    */
+    const response = (await api.updateCmsRow(checkingRow.id, {
+      data: { "": { field1: 0, field2: 0 } },
+    })) as { error? };
+    expect("error" in response && isUniqueViolationError(response.error))
+      .toBeTrue;
+    expect(response.error.violations).toEqual([
+      {
+        fieldIdentifier: "field1",
+        value: 0,
+        ok: false,
+        conflictRowIds: [rows[0].id],
+      },
+      {
+        fieldIdentifier: "field2",
+        value: 0,
+        ok: true,
+        conflictRowIds: [],
+      },
+    ]);
   });
 });
