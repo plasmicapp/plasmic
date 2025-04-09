@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/plasmic-soundcloud",
-  "version": "0.0.57",
+  "version": "0.0.58",
   "description": "Plasmic Soundcloud components.",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -34,7 +34,7 @@
     }
   ],
   "devDependencies": {
-    "@plasmicapp/host": "1.0.213",
+    "@plasmicapp/host": "1.0.214",
     "@size-limit/preset-small-lib": "^7.0.8",
     "@types/dlv": "^1.1.2",
     "@types/react": "^18.0.27",
