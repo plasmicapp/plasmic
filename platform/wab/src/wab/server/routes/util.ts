@@ -8,7 +8,6 @@ import {
 import { User } from "@/wab/server/entities/Entities";
 import "@/wab/server/extensions";
 import { asyncTimed, callsToServerTiming } from "@/wab/server/timing-util";
-import type { Properties } from "@/wab/shared/analytics/Analytics";
 import {
   BadRequestError,
   ForbiddenError,
@@ -16,6 +15,7 @@ import {
 } from "@/wab/shared/ApiErrors/errors";
 import { CmsIdAndToken, ProjectIdAndToken } from "@/wab/shared/ApiSchema";
 import { asyncWrapper, omitNils } from "@/wab/shared/common";
+import type { Properties } from "@/wab/shared/observability/Analytics";
 import { NextFunction, Request, Response } from "express-serve-static-core";
 import L from "lodash";
 

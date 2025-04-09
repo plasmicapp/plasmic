@@ -9069,6 +9069,15 @@ axios@^1.7.2:
     form-data "^4.0.0"
     proxy-from-env "^1.1.0"
 
+axios@^1.7.4:
+  version "1.8.4"
+  resolved "https://registry.yarnpkg.com/axios/-/axios-1.8.4.tgz#78990bb4bc63d2cae072952d374835950a82f447"
+  integrity sha512-eBSYY4Y68NNlHbHBMdeDmKNtDgXWhQsJcGqzO3iLUM0GraQFSS9cVgPX5I9b3lbdFKyYoAEGAZF1DwhTaljNAw==
+  dependencies:
+    follow-redirects "^1.15.6"
+    form-data "^4.0.0"
+    proxy-from-env "^1.1.0"
+
 babel-core@^7.0.0-bridge.0:
   version "7.0.0-bridge.0"
   resolved "https://registry.yarnpkg.com/babel-core/-/babel-core-7.0.0-bridge.0.tgz#95a492ddd90f9b4e9a4a1da14eb335b87b634ece"
@@ -10330,7 +10339,12 @@ core-js-pure@^3.23.3:
   resolved "https://registry.yarnpkg.com/core-js-pure/-/core-js-pure-3.26.0.tgz#7ad8a5dd7d910756f3124374b50026e23265ca9a"
   integrity sha512-LiN6fylpVBVwT8twhhluD9TzXmZQQsr2I2eIKtWNbZI1XMfBT7CV18itaN6RA7EtQd/SDdRx/wzvAShX2HvhQA==
 
-core-js@^3.32.0, core-js@^3.8.0, core-js@~3.32.2:
+core-js@^3.32.0, core-js@^3.38.1, core-js@^3.8.0:
+  version "3.41.0"
+  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.41.0.tgz#57714dafb8c751a6095d028a7428f1fb5834a776"
+  integrity sha512-SJ4/EHwS36QMJd6h/Rg+GyR4A5xE0FSI3eZ+iBVpfqf1x0eTSg1smWLHrA+2jQThZSh97fmSgFSU8B61nxosxA==
+
+core-js@~3.32.2:
   version "3.32.2"
   resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.32.2.tgz#172fb5949ef468f93b4be7841af6ab1f21992db7"
   integrity sha512-pxXSw1mYZPDGvTQqEc5vgIb83jGQKFGYWY76z4a7weZXUolw3G+OvpZqSRcfYOoOVUQJYEPsWeQK8pKEnUtWxQ==
@@ -18215,13 +18229,22 @@ postgres-interval@^1.1.0:
   dependencies:
     xtend "^4.0.0"
 
-posthog-js@^1.139.0:
-  version "1.139.0"
-  resolved "https://registry.yarnpkg.com/posthog-js/-/posthog-js-1.139.0.tgz#be0cb2084b5e583413a6e3b1e67930dd0cddf202"
-  integrity sha512-FuYlxQFO0Dq5X1/bFEM8F+NgOqZiVh4fPVHHeOTWMkqVP+pCnODQitbtW0hgT0/EE665w0xpZBk93YavaZRhzQ==
+posthog-js@1.234.9:
+  version "1.234.9"
+  resolved "https://registry.yarnpkg.com/posthog-js/-/posthog-js-1.234.9.tgz#a9932adcb4f0ef4d000e0b788bd5111a9ee8dea4"
+  integrity sha512-Qxpg9YOlLa59lbkYcONZ9efmB6KTgkePnkhCTSnKIyUd826cs4J6VDTKHu+V/lugRtWLWB9R7CckvFE8QPaTbg==
   dependencies:
+    core-js "^3.38.1"
     fflate "^0.4.8"
     preact "^10.19.3"
+    web-vitals "^4.2.4"
+
+posthog-node@4.11.1:
+  version "4.11.1"
+  resolved "https://registry.yarnpkg.com/posthog-node/-/posthog-node-4.11.1.tgz#07d39a99efd8a4b94659ecfccb6728612f9125fe"
+  integrity sha512-Hdby0Rq2K1rzjHxQdUmFBEP2UqAR/tY4d0WbNp7GxkYUK0YZvAD15MkeorSo4b8X7zgosHfQJVRxGx0HWSYPBA==
+  dependencies:
+    axios "^1.7.4"
 
 prando@^6.0.1:
   version "6.0.1"
@@ -22685,6 +22708,11 @@ weak-lru-cache@^1.2.2:
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/weak-lru-cache/-/weak-lru-cache-1.2.2.tgz#fdbb6741f36bae9540d12f480ce8254060dccd19"
   integrity sha512-DEAoo25RfSYMuTGc9vPJzZcZullwIqRDSI9LOy+fkCJPi6hykCnfKaXTuPBDuXAUcqHXyOgFtHNp/kB2FjYHbw==
+
+web-vitals@^4.2.4:
+  version "4.2.4"
+  resolved "https://registry.yarnpkg.com/web-vitals/-/web-vitals-4.2.4.tgz#1d20bc8590a37769bd0902b289550936069184b7"
+  integrity sha512-r4DIlprAGwJ7YM11VZp4R884m0Vmgr6EAKe3P+kO0PPj3Unqyvv59rczf6UiGcb9Z8QxZVcqKNwv/g0WNdWwsw==
 
 webidl-conversions@^3.0.0:
   version "3.0.1"

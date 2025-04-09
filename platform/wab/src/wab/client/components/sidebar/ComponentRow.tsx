@@ -1,7 +1,3 @@
-import {
-  getEventDataForTplComponent,
-  trackInsertItem,
-} from "@/wab/client/analytics/events/insert-item";
 import { mkProjectLocation, openNewTab } from "@/wab/client/cli-routes";
 import RowItem from "@/wab/client/components/RowItem";
 import CommentIndicatorIcon from "@/wab/client/components/comments/CommentIndicatorIcon";
@@ -17,6 +13,10 @@ import { DraggableInsertable } from "@/wab/client/components/studio/add-drawer/D
 import { Matcher } from "@/wab/client/components/view-common";
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import { AddItemType } from "@/wab/client/definitions/insertables";
+import {
+  getEventDataForTplComponent,
+  trackInsertItem,
+} from "@/wab/client/observability/events/insert-item";
 import ComponentIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Component";
 import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";

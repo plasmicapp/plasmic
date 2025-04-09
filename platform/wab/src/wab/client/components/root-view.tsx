@@ -1,4 +1,3 @@
-import { analytics } from "@/wab/client/analytics";
 import { Api } from "@/wab/client/api";
 import {
   AppCtx,
@@ -49,14 +48,14 @@ import { AppView } from "@/wab/client/components/top-view";
 import * as widgets from "@/wab/client/components/widgets";
 import { providesAppCtx, useAppCtx } from "@/wab/client/contexts/AppContexts";
 import { useHostFrameCtxIfHostFrame } from "@/wab/client/frame-ctx/host-frame-ctx";
+import { analytics } from "@/wab/client/observability";
 import deployedVersions from "@/wab/client/plasmic-deployed.json";
 import { useForceUpdate } from "@/wab/client/useForceUpdate";
 import {
   promisifyMethods,
   PromisifyMethods,
 } from "@/wab/commons/promisify-methods";
-import { CmsDatabaseId } from "@/wab/shared/ApiSchema";
-import { isArenaType } from "@/wab/shared/Arenas";
+import { CmsDatabaseId, isArenaType } from "@/wab/shared/ApiSchema";
 import { FastBundler } from "@/wab/shared/bundler";
 import { ensure, hackyCast, spawn } from "@/wab/shared/common";
 import { isAdminTeamEmail } from "@/wab/shared/devflag-utils";

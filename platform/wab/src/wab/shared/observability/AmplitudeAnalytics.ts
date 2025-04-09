@@ -1,4 +1,7 @@
-import type { Analytics, Properties } from "@/wab/shared/analytics/Analytics";
+import type {
+  Analytics,
+  Properties,
+} from "@/wab/shared/observability/Analytics";
 import type {
   Identify as BrowserIdentify,
   Types as BrowserTypes,
@@ -16,9 +19,6 @@ type EventOptions = BrowserTypes.EventOptions | NodeTypes.EventOptions;
 const ANONYMOUS_EVENT_OPTIONS: EventOptions = {
   device_id: "FIXED_ANONYMOUS_ID",
 };
-
-/** This is a write-only API key that is publicly exposed. */
-export const AMPLITUDE_API_KEY = "1efde847a1dd16e6dbf8a242c1e2dd07";
 
 export class AmplitudeAnalytics implements Analytics {
   private eventOptions: EventOptions = ANONYMOUS_EVENT_OPTIONS;

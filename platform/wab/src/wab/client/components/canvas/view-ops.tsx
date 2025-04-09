@@ -130,10 +130,6 @@ import pluralize from "pluralize";
 import React from "react";
 
 import {
-  getEventDataForTplComponent,
-  trackInsertItem,
-} from "@/wab/client/analytics/events/insert-item";
-import {
   FrameClip,
   isStyleClip,
   StyleClip,
@@ -166,6 +162,10 @@ import { getBackgroundImageProps } from "@/wab/client/dom-utils";
 import { showError } from "@/wab/client/ErrorNotifications";
 import { FocusHeuristics } from "@/wab/client/focus-heuristics";
 import { renderCantAddMsg } from "@/wab/client/messages/parenting-msgs";
+import {
+  getEventDataForTplComponent,
+  trackInsertItem,
+} from "@/wab/client/observability/events/insert-item";
 import { promptComponentName, promptPageName } from "@/wab/client/prompts";
 import { getComboForAction } from "@/wab/client/shortcuts/studio/studio-shortcuts";
 import { ComponentCtx } from "@/wab/client/studio-ctx/component-ctx";

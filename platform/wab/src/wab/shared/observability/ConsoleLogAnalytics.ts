@@ -1,22 +1,20 @@
-import type { Analytics, Properties } from "@/wab/shared/analytics/Analytics";
+import type { Analytics } from "@/wab/shared/observability/Analytics";
+import { BaseAnalytics } from "@/wab/shared/observability/BaseAnalytics";
 
-export class ConsoleLogAnalytics implements Analytics {
-  private userId: string = "";
-  private baseEventProperties: Properties = {};
-
+export class ConsoleLogAnalytics extends BaseAnalytics implements Analytics {
   appendBaseEventProperties(newProperties) {
     console.log(`[analytics] appendBaseEventProperties`, newProperties);
-    Object.assign(this.baseEventProperties, newProperties);
+    super.appendBaseEventProperties(newProperties);
   }
 
   setUser(userId) {
     console.log(`[analytics] setUser "${userId}"`);
-    this.userId = userId;
+    super.setUser(userId);
   }
 
   setAnonymousUser() {
     console.log(`[analytics] setAnonymousUser`);
-    this.userId = "";
+    super.setAnonymousUser();
   }
 
   identify(userId, userProperties) {
@@ -29,7 +27,8 @@ export class ConsoleLogAnalytics implements Analytics {
       `[analytics] track user "${
         this.userId || "anonymous"
       }" event "${eventName}"`,
-      { ...this.baseEventProperties, ...eventProperties }
+      this.mergeEventProperties(eventProperties),
+      new Error()
     );
   }
 

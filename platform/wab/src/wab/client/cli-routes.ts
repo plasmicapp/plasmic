@@ -9,8 +9,8 @@ import {
   CmsRowRevisionId,
   CmsTableId,
   MainBranchId,
+  isArenaType,
 } from "@/wab/shared/ApiSchema";
-import { isArenaType } from "@/wab/shared/Arenas";
 import { ensure, uncheckedCast } from "@/wab/shared/common";
 import { DEVFLAGS } from "@/wab/shared/devflags";
 import { getPublicUrl } from "@/wab/shared/urls";

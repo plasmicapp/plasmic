@@ -1,5 +1,5 @@
 import * as Api from "@/wab/client/api";
-import { AppCtx, hideStarters } from "@/wab/client/app-ctx";
+import { AppCtx } from "@/wab/client/app-ctx";
 import {
   UU,
   getEmaiLVerificationRouteWithContinuation,
@@ -7,18 +7,18 @@ import {
   parseProjectLocation,
 } from "@/wab/client/cli-routes";
 import * as DbMod from "@/wab/client/db";
-import { asyncNever, spawn } from "@/wab/shared/common";
-import { getProjectFlags } from "@/wab/shared/devflags";
-import * as exprs from "@/wab/shared/core/exprs";
 import { ApiBranch, MainBranchId, ProjectId } from "@/wab/shared/ApiSchema";
 import { SiteInfo } from "@/wab/shared/SharedApi";
 import { $$$ } from "@/wab/shared/TplQuery";
 import { getBundle } from "@/wab/shared/bundles";
+import { asyncNever, spawn } from "@/wab/shared/common";
+import * as exprs from "@/wab/shared/core/exprs";
+import { unbundleSite } from "@/wab/shared/core/tagged-unbundle";
+import * as tpls from "@/wab/shared/core/tpls";
+import { getProjectFlags } from "@/wab/shared/devflags";
 import { instUtil } from "@/wab/shared/model/InstUtil";
 import { ProjectDependency } from "@/wab/shared/model/classes";
 import { fixPageHrefsToLocal } from "@/wab/shared/utils/split-site-utils";
-import { unbundleSite } from "@/wab/shared/core/tagged-unbundle";
-import * as tpls from "@/wab/shared/core/tpls";
 import { notification } from "antd";
 import * as React from "react";
 
@@ -81,9 +81,6 @@ export async function loadSiteDbCtx(
   siteInfo.workspaceTutorialDbs = workspaceTutorialDbs;
   siteInfo.isMainBranchProtected = isMainBranchProtected;
 
-  if (hideStarters(appCtx) && siteInfo.name.includes("Plasmic Levels")) {
-    throw new Error("Could not read property '__bundleInfo' of undefined");
-  }
   const bundle = getBundle(rev, appCtx.lastBundleVersion);
   const { site, depPkgs: depPkgVersions } = unbundleSite(
     bundler,

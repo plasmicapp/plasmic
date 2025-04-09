@@ -1,5 +1,4 @@
 import { handleError, normalizeError } from "@/wab/client/ErrorNotifications";
-import { initAnalytics } from "@/wab/client/analytics/analytics";
 import { isProjectPath, isTopFrame } from "@/wab/client/cli-routes";
 import { initClientFlags } from "@/wab/client/client-dev-flags";
 import { Root } from "@/wab/client/components/root-view";
@@ -8,8 +7,7 @@ import {
   HostFrameCtxProvider,
   useHostFrameCtxIfHostFrame,
 } from "@/wab/client/frame-ctx/host-frame-ctx";
-import { initMonitoring } from "@/wab/client/monitoring/monitoring";
-import DeploymentFlags from "@/wab/shared/DeploymentFlags";
+import { initObservability } from "@/wab/client/observability";
 import { isLiteralObject, swallow, tuple } from "@/wab/shared/common";
 import { DEVFLAGS, applyDevFlagOverrides } from "@/wab/shared/devflags";
 import * as Sentry from "@sentry/browser";
@@ -88,10 +86,7 @@ export function main() {
 
   applyDevFlagOverrides(initClientFlags(DEVFLAGS));
 
-  const production = DeploymentFlags.DEPLOYENV === "production";
-
-  const { posthogAnalytics } = initAnalytics(production);
-  initMonitoring(production, { posthogAnalytics });
+  initObservability();
 
   (window as any).commithash = COMMITHASH;
 

@@ -1,5 +1,5 @@
-import { analytics } from "@/wab/client/analytics";
 import { comboToKeyLabels } from "@/wab/client/components/studio/Shortcuts";
+import { analytics } from "@/wab/client/observability";
 import { MaybeWrap, joinReactNodes } from "@/wab/commons/components/ReactUtil";
 import { ensure, filterFalsy } from "@/wab/shared/common";
 import type { MenuProps } from "antd";

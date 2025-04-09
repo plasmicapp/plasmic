@@ -1,8 +1,5 @@
-import {
-  AMPLITUDE_API_KEY,
-  AmplitudeAnalytics,
-} from "@/wab/shared/analytics/AmplitudeAnalytics";
-import type { Analytics } from "@/wab/shared/analytics/Analytics";
+import { AmplitudeAnalytics } from "@/wab/shared/observability/AmplitudeAnalytics";
+import type { Analytics } from "@/wab/shared/observability/Analytics";
 import { createInstance, Identify } from "@amplitude/analytics-node";
 
 /**
@@ -11,8 +8,8 @@ import { createInstance, Identify } from "@amplitude/analytics-node";
  * The returned function produces {@link Analytics}.
  * The `Analytics` is designed to be scoped per request.
  */
-export function initAmplitudeNode(): () => Analytics {
+export function initAmplitudeNode(opts: { apiKey: string }): () => Analytics {
   const amplitude = createInstance();
-  amplitude.init(AMPLITUDE_API_KEY);
+  amplitude.init(opts.apiKey);
   return () => new AmplitudeAnalytics(Identify, amplitude);
 }

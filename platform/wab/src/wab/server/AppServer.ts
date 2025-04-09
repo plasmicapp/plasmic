@@ -1,4 +1,3 @@
-import { methodForwarder } from "@/wab/commons/methodForwarder";
 import * as Sentry from "@sentry/node";
 import * as Tracing from "@sentry/tracing";
 import * as bodyParser from "body-parser";
@@ -20,7 +19,6 @@ import * as path from "path";
 import { getConnection } from "typeorm";
 import v8 from "v8";
 // API keys and Passport configuration
-import { initAmplitudeNode } from "@/wab/server/analytics/amplitude-node";
 import { setupPassport } from "@/wab/server/auth/passport-cfg";
 import * as authRoutes from "@/wab/server/auth/routes";
 import { apiAuth } from "@/wab/server/auth/routes";
@@ -31,6 +29,7 @@ import { getDevFlagsMergedWithOverrides } from "@/wab/server/db/appconfig";
 import { createMailer } from "@/wab/server/emails/Mailer";
 import { ExpressSession } from "@/wab/server/entities/Entities";
 import "@/wab/server/extensions";
+import { initAnalyticsFactory } from "@/wab/server/observability";
 import { WabPromStats, trackPostgresPool } from "@/wab/server/promstats";
 import * as adminRoutes from "@/wab/server/routes/admin";
 import {
@@ -288,7 +287,6 @@ import {
   isApiError,
   transformErrors,
 } from "@/wab/shared/ApiErrors/errors";
-import { ConsoleLogAnalytics } from "@/wab/shared/analytics/ConsoleLogAnalytics";
 import { Bundler } from "@/wab/shared/bundler";
 import { mkShortId, safeCast, spawn } from "@/wab/shared/common";
 import { isAdminTeamEmail } from "@/wab/shared/devflag-utils";
@@ -491,13 +489,12 @@ function addMiddlewares(
     console.log("Skipping session store setup...");
   }
 
-  const newRequestScopedAnalytics = initAmplitudeNode();
+  const analyticsFactory = initAnalyticsFactory({
+    production: config.production,
+  });
   app.use(
     safeCast<RequestHandler>(async (req, res, next) => {
-      const analytics = newRequestScopedAnalytics();
-      req.analytics = config.production
-        ? analytics
-        : methodForwarder(new ConsoleLogAnalytics(), analytics);
+      req.analytics = analyticsFactory();
       req.analytics.appendBaseEventProperties({
         host: config.host,
         production: config.production,

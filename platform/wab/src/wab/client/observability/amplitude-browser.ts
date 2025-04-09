@@ -1,8 +1,5 @@
-import {
-  AMPLITUDE_API_KEY,
-  AmplitudeAnalytics,
-} from "@/wab/shared/analytics/AmplitudeAnalytics";
-import type { Analytics } from "@/wab/shared/analytics/Analytics";
+import { AmplitudeAnalytics } from "@/wab/shared/observability/AmplitudeAnalytics";
+import type { Analytics } from "@/wab/shared/observability/Analytics";
 import { createInstance, Identify } from "@amplitude/analytics-browser";
 
 /**
@@ -10,9 +7,9 @@ import { createInstance, Identify } from "@amplitude/analytics-browser";
  *
  * The returned `Analytics` is designed to be a singleton.
  */
-export function initAmplitudeBrowser(): Analytics {
+export function initAmplitudeBrowser(opts: { apiKey: string }): Analytics {
   const amplitude = createInstance();
-  amplitude.init(AMPLITUDE_API_KEY, {
+  amplitude.init(opts.apiKey, {
     autocapture: true,
   });
   return new AmplitudeAnalytics(Identify, amplitude);

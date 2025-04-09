@@ -1,5 +1,5 @@
 import { arrayReversed, removeFromArray } from "@/wab/commons/collections";
-import { ArenaType, arenaTypes } from "@/wab/shared/ApiSchema";
+import { ArenaType } from "@/wab/shared/ApiSchema";
 import {
   assert,
   ensure,
@@ -151,14 +151,6 @@ export function mkArenaFrame({
     viewMode: viewMode || FrameViewMode.Stretch,
     bgColor: null,
   });
-}
-
-export function isArenaType(x: string | null | undefined): x is ArenaType {
-  if (!x) {
-    return false;
-  } else {
-    return (arenaTypes as readonly string[]).includes(x);
-  }
 }
 
 /**

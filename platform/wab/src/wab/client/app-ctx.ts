@@ -525,19 +525,3 @@ export async function loadAppCtx(
   appCtx.ops = new AppOps({ appCtx });
   return appCtx;
 }
-
-export function hideHelp(appCtx: AppCtx) {
-  const { appConfig } = appCtx;
-  return appConfig.hideHelpForUsers.some(
-    (pattern) =>
-      appCtx.selfInfo && appCtx.selfInfo.email.match(new RegExp(pattern))
-  );
-}
-
-export function hideStarters(appCtx: AppCtx) {
-  const { appConfig } = appCtx;
-  return appConfig.hideStartersForUsers.some(
-    (pattern) =>
-      appCtx.selfInfo && appCtx.selfInfo.email.match(new RegExp(pattern))
-  );
-}

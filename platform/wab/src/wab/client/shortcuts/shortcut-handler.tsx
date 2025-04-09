@@ -1,4 +1,4 @@
-import { analytics } from "@/wab/client/analytics";
+import { analytics } from "@/wab/client/observability";
 import { Shortcuts } from "@/wab/client/shortcuts/shortcut";
 import Mousetrap, { ExtendedKeyboardEvent } from "mousetrap";
 import { useEffect, useState } from "react";

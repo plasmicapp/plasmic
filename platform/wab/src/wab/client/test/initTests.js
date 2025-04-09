@@ -4,7 +4,7 @@ global.DEPLOYENV = "test";
 // Set global variables BEFORE importing modules.
 // Importing modules may have side-effects that depend on these variables.
 
-import { initBrowserAnalytics } from "@/wab/client/analytics";
-import { ConsoleLogAnalytics } from "@/wab/shared/analytics/ConsoleLogAnalytics";
+import { _testonly } from "@/wab/client/observability";
+import { ConsoleLogAnalytics } from "@/wab/shared/observability/ConsoleLogAnalytics";
 
-initBrowserAnalytics(new ConsoleLogAnalytics());
+_testonly.setGlobalAnalytics(new ConsoleLogAnalytics());

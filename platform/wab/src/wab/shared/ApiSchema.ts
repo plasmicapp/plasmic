@@ -656,6 +656,14 @@ export const arenaTypes = ["custom", "page", "component"] as const;
 
 export type ArenaType = (typeof arenaTypes)[number];
 
+export function isArenaType(x: string | null | undefined): x is ArenaType {
+  if (!x) {
+    return false;
+  } else {
+    return (arenaTypes as readonly string[]).includes(x);
+  }
+}
+
 export interface PlayerViewInfo {
   branchId?: BranchId;
   arenaInfo?: ArenaInfo;

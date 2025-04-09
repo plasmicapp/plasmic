@@ -1,9 +1,3 @@
-import {
-  getEventDataForTplComponent,
-  InsertItemEventData,
-  InsertOpts,
-  trackInsertItem,
-} from "@/wab/client/analytics/events/insert-item";
 import { getComponentPresets } from "@/wab/client/code-components/code-presets";
 import { useFocusManager } from "@/wab/client/components/aria-utils";
 import {
@@ -57,6 +51,12 @@ import {
 } from "@/wab/client/definitions/insertables";
 import { DragInsertManager } from "@/wab/client/Dnd";
 import { useVirtualCombobox } from "@/wab/client/hooks/useVirtualCombobox";
+import {
+  getEventDataForTplComponent,
+  InsertItemEventData,
+  InsertOpts,
+  trackInsertItem,
+} from "@/wab/client/observability/events/insert-item";
 import {
   DefaultInsertPanelProps,
   PlasmicInsertPanel,

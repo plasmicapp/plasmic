@@ -338,8 +338,6 @@ const DEFAULT_DEVFLAGS = {
   productHuntPromo: false,
   freeTrialPromoDays: 60,
   createTeamPrompt: true,
-  hideHelpForUsers: [".*@example.com"],
-  hideStartersForUsers: [".*@example.com"],
   insertPanelContent: ensureType<InsertPanelConfig>({
     componentsLabel: "Custom components",
     aliases: {},

@@ -1,4 +1,3 @@
-import { analytics } from "@/wab/client/analytics";
 import { maybeConvertToHostLessProject } from "@/wab/client/code-components/code-components";
 import { BottomModalsProvider } from "@/wab/client/components/BottomModal";
 import { showPlasmicImgModal } from "@/wab/client/components/modals/PlasmicImgModal";
@@ -9,6 +8,7 @@ import {
   getReactWebBundle,
 } from "@/wab/client/components/studio/studio-bundles";
 import { fixStudioIframePositionAndOverflow } from "@/wab/client/dom-utils";
+import { analytics } from "@/wab/client/observability";
 import RocketsvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__RocketSvg";
 import { bindStudioShortcutHandlers } from "@/wab/client/shortcuts/studio/studio-shortcut-handlers";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
