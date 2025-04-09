@@ -17,7 +17,34 @@ function fetch_2(url: string, method: HTTPMethod, headers: Record<string, string
 export { fetch_2 as fetch }
 
 // @public (undocumented)
+export interface FetchProps {
+    // (undocumented)
+    body?: string | object;
+    // (undocumented)
+    headers?: Record<string, string>;
+    // (undocumented)
+    method?: string;
+    // (undocumented)
+    url?: string;
+}
+
+// @public (undocumented)
+export function graphqlFetch(url: string, method: HTTPMethod, headers: Record<string, string>, query?: {
+    query?: string;
+    variables?: object;
+}, varOverrides?: Record<string, any>): Promise<{
+    statusCode: number;
+    headers: {
+        [k: string]: string;
+    };
+    response: any;
+}>;
+
+// @public (undocumented)
 export function registerFetch(loader?: Registerable): void;
+
+// @public (undocumented)
+export function registerGraphqlFetch(loader?: Registerable): void;
 
 // (No @packageDocumentation comment for this package)
 

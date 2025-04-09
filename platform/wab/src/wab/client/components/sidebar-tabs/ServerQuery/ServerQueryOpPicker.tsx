@@ -46,6 +46,7 @@ import { Tab, Tabs } from "@/wab/client/components/widgets";
 import { allCustomFunctions } from "@/wab/shared/cached-selectors";
 import {
   executeCustomFunctionOp,
+  getCustomFunctionParams,
   useCustomFunctionOp,
 } from "@/wab/shared/core/custom-functions";
 import type { ServerQueryResult } from "@plasmicapp/react-web/lib/data-sources";
@@ -91,15 +92,33 @@ export function ServerQueryOpDraftForm(props: {
   const availableCustomFunction = allCustomFunctions(studioCtx.site).map(
     ({ customFunction }) => customFunction
   );
+  const argsMap = React.useMemo(
+    () => groupBy(value?.args ?? [], (arg) => arg.argType.argName),
+    [value]
+  );
+  const evaluatedArgs = React.useMemo(() => {
+    if (!value || !value.func || !value.args) {
+      return {};
+    }
+    const params = getCustomFunctionParams(
+      value as CustomFunctionExpr,
+      data,
+      exprCtx
+    );
+    return Object.keys(argsMap).reduce((acc, argName, index) => {
+      acc[argName] = params[index];
+      return acc;
+    }, {} as Record<string, any>);
+  }, [argsMap]);
   const propValueEditorContext = React.useMemo(() => {
     return {
-      componentPropValues: {},
+      componentPropValues: evaluatedArgs,
       ccContextData: {},
       exprCtx,
       schema,
       env: data,
     };
-  }, [schema, data, exprCtx]);
+  }, [schema, data, evaluatedArgs, exprCtx]);
 
   React.useEffect(() => {
     if (availableCustomFunction.length > 0 && !value?.func) {
@@ -110,8 +129,6 @@ export function ServerQueryOpDraftForm(props: {
       });
     }
   }, [value, availableCustomFunction]);
-
-  const argsMap = groupBy(value?.args ?? [], (arg) => arg.argType.argName);
 
   return (
     <div id="data-source-modal-draft-section">
@@ -287,9 +304,7 @@ function _ServerQueryOpPreview(props: {
               <React.Suspense>
                 {opResults != null ? (
                   <LazyCodePreview
-                    value={JSON.stringify({
-                      data: opResults,
-                    })}
+                    value={JSON.stringify(opResults)}
                     data={{}}
                     className="code-preview-inner"
                     opts={{

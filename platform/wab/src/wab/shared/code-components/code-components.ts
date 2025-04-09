@@ -2485,6 +2485,8 @@ function mapParamTypeToArgType(
             }))
         : ["Dynamic options"]
     );
+  } else if ((paramReg.type as any) === "code") {
+    return convertTsToWabType("string") as ArgType["type"];
   }
   return convertTsToWabType(paramReg.type ?? "string") as ArgType["type"];
 }
@@ -4522,6 +4524,7 @@ async function upsertRegisteredFunctions(
             "string",
             "number",
             "boolean",
+            "code",
             "true",
             "false",
             "null",

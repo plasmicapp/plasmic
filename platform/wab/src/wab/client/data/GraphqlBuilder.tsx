@@ -78,6 +78,7 @@ export default function GraphiqlWithExplorer({
     <div className="fill-height flex-col">
       <div className={"fill-height overflow-scroll standard-gql-ui"}>
         <GraphiQL
+          forcedTheme="light"
           fetcher={fetcher}
           query={query}
           onEditQuery={setQuery}

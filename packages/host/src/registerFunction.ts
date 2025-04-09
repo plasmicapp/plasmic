@@ -90,6 +90,19 @@ export type BooleanType<P, T extends boolean = boolean> =
   | ChoiceType<P, T>
   | AnyType;
 
+export type GraphQLValue = {
+  query: string;
+  variables?: Record<string, any>;
+};
+
+export interface GraphQLType<P> extends BaseParam {
+  type: "code";
+  lang: "graphql";
+  endpoint: string | ContextDependentConfig<P, string>;
+  method?: string | ContextDependentConfig<P, string>;
+  headers?: object | ContextDependentConfig<P, object>;
+}
+
 export interface PlainNullType extends BaseParam {
   type: "null";
 }
@@ -122,7 +135,9 @@ export type VoidType = PlainVoidType | AnyType;
 
 type IsAny<T> = 0 extends 1 & T ? true : false;
 
-type CommonType<T> = T extends null
+type CommonType<T> = T extends GraphQLValue
+  ? GraphQLType<T>
+  : T extends null
   ? NullType
   : T extends undefined
   ? UndefinedType
