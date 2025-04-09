@@ -53,6 +53,7 @@ export async function ensureDbConnection(
           // Set postgres pool size up from default of 10
           // https://node-postgres.com/api/pool
           max: maxConnections,
+          simple_query_mode: process.env.PG_SIMPLE_QUERY_MODE === "true",
         },
       },
       opts?.useEnvPassword && envPassword
