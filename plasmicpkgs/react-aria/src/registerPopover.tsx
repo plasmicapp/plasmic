@@ -12,31 +12,12 @@ import {
   registerComponentHelper,
   WithPlasmicCanvasComponentInfo,
 } from "./utils";
-import { pickAriaComponentVariants, WithVariants } from "./variant-utils";
-
-/*
-    NOTE: Placement should be managed as variants, not just props.
-    When `shouldFlip` is true, the placement prop may not represent the final position
-    (e.g., if placement is set to "bottom" but lacks space, the popover may flip to "top").
-    However, data-selectors will consistently indicate the actual placement of the popover.
-  */
-const POPOVER_VARIANTS = [
-  "placementTop" as const,
-  "placementBottom" as const,
-  "placementLeft" as const,
-  "placementRight" as const,
-];
-
-const { variants, withObservedValues } =
-  pickAriaComponentVariants(POPOVER_VARIANTS);
-
 export interface BasePopoverControlContextData {
   canMatchTriggerWidth?: boolean;
 }
 export interface BasePopoverProps
   extends React.ComponentProps<typeof Popover>,
     WithPlasmicCanvasComponentInfo,
-    WithVariants<typeof POPOVER_VARIANTS>,
     HasControlContextData<BasePopoverControlContextData> {
   className?: string;
   resetClassName?: string;
@@ -48,7 +29,6 @@ export interface BasePopoverProps
 export function BasePopover(props: BasePopoverProps) {
   const {
     resetClassName,
-    plasmicUpdateVariant,
     setControlContextData,
     matchTriggerWidth,
     ...restProps
@@ -102,18 +82,7 @@ export function BasePopover(props: BasePopoverProps) {
         }}
         {...mergedProps}
       >
-        {({ placement }) =>
-          withObservedValues(
-            children,
-            {
-              placementTop: placement === "top",
-              placementBottom: placement === "bottom",
-              placementLeft: placement === "left",
-              placementRight: placement === "right",
-            },
-            plasmicUpdateVariant
-          )
-        }
+        {children}
       </Popover>
     </>
   );
@@ -133,7 +102,6 @@ export function registerPopover(
       displayName: "Aria Popover",
       importPath: "@plasmicpkgs/react-aria/skinny/registerPopover",
       importName: "BasePopover",
-      variants,
       defaultStyles: {
         borderWidth: "1px",
         borderStyle: "solid",

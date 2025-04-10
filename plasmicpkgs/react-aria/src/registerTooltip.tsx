@@ -15,27 +15,11 @@ import {
   useIsOpen,
   WithPlasmicCanvasComponentInfo,
 } from "./utils";
-import { pickAriaComponentVariants, WithVariants } from "./variant-utils";
-
-// NOTE: Placement should be managed as variants, not just props.
-// When `shouldFlip` is true, the placement prop may not represent the final position
-// (e.g., if placement is set to "bottom" but lacks space, the tooltip may flip to "top").
-// However, data-selectors will consistently indicate the actual placement of the tooltip.
-const TOOLTIP_VARIANTS = [
-  "placementTop" as const,
-  "placementBottom" as const,
-  "placementLeft" as const,
-  "placementRight" as const,
-];
-
-const { variants, withObservedValues } =
-  pickAriaComponentVariants(TOOLTIP_VARIANTS);
 
 export interface BaseTooltipProps
   extends Omit<TooltipTriggerProps, "trigger">,
     TooltipProps,
-    WithPlasmicCanvasComponentInfo,
-    WithVariants<typeof TOOLTIP_VARIANTS> {
+    WithPlasmicCanvasComponentInfo {
   children: React.ReactElement<HTMLElement>;
   tooltipContent?: React.ReactElement;
   resetClassName?: string;
@@ -87,7 +71,6 @@ function ControlledBaseTooltip(props: BaseTooltipProps) {
     shouldFlip,
     className,
     onOpenChange = () => {},
-    plasmicUpdateVariant,
     __plasmic_selection_prop__,
   } = props;
 
@@ -141,18 +124,7 @@ function ControlledBaseTooltip(props: BaseTooltipProps) {
         onOpenChange={onOpenChange}
         placement={placement}
       >
-        {({ placement: _placement }) =>
-          withObservedValues(
-            <>{tooltipContent}</>,
-            {
-              placementTop: _placement === "top",
-              placementBottom: _placement === "bottom",
-              placementLeft: _placement === "left",
-              placementRight: _placement === "right",
-            },
-            plasmicUpdateVariant
-          )
-        }
+        {tooltipContent}
       </Tooltip>
     </Provider>
   );
@@ -228,7 +200,6 @@ export function registerTooltip(
       importPath: "@plasmicpkgs/react-aria/skinny/registerTooltip",
       importName: "BaseTooltip",
       isAttachment: true,
-      variants,
       props: {
         children: {
           type: "slot",
