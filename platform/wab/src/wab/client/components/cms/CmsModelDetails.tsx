@@ -244,11 +244,6 @@ function renderModelFieldForm(
         <Form.Item
           label={"Localized"}
           name={[...fieldPath, "localized"]}
-          help={
-            form.getFieldValue([...fullFieldPath, "unique"])
-              ? "The localized attribute cannot be selected when the field is unique."
-              : null
-          }
           required
         >
           <ValueSwitch
@@ -256,25 +251,24 @@ function renderModelFieldForm(
             onChange={(e: boolean) => {
               form.setFieldValue([...fullFieldPath, "localized"], e);
             }}
+            helperText={
+              form.getFieldValue([...fullFieldPath, "unique"]) &&
+              "The localized attribute cannot be selected when the field is unique."
+            }
           />
         </Form.Item>
       )}
       {![CmsMetaType.LIST, CmsMetaType.OBJECT].includes(selectedType) && (
-        <Form.Item
-          label={"Unique"}
-          name={[...fieldPath, "unique"]}
-          help={
-            form.getFieldValue([...fullFieldPath, "localized"])
-              ? "The unique attribute cannot be selected when the field is localized."
-              : null
-          }
-          required
-        >
+        <Form.Item label={"Unique"} name={[...fieldPath, "unique"]} required>
           <ValueSwitch
             disabled={form.getFieldValue([...fullFieldPath, "localized"])}
             onChange={(e: boolean) => {
               form.setFieldValue([...fullFieldPath, "unique"], e);
             }}
+            helperText={
+              form.getFieldValue([...fullFieldPath, "localized"]) &&
+              "The unique attribute cannot be selected when the field is localized."
+            }
           />
         </Form.Item>
       )}
