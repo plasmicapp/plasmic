@@ -6,9 +6,8 @@ import {
   TplExpsProvider,
 } from "@/wab/client/components/style-controls/StyleComponent";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
+import { PublicStyleSection } from "@/wab/shared/ApiSchema";
 import { isCodeComponent } from "@/wab/shared/core/components";
-import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
-import { TplComponent, TplTag } from "@/wab/shared/model/classes";
 import {
   isComponentRoot,
   isTplColumn,
@@ -16,8 +15,9 @@ import {
   isTplSlot,
   isTplTag,
 } from "@/wab/shared/core/tpls";
+import { TplComponent, TplTag } from "@/wab/shared/model/classes";
+import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import * as React from "react";
-import { PublicStyleSection } from "@/wab/shared/ApiSchema";
 
 export function SpacingSection({
   expsProvider,

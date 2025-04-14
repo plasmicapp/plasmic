@@ -2737,3 +2737,30 @@ export function getFormValue(expectedFormItems: ExpectedFormItem[]) {
   );
   return JSON.stringify(values, Object.keys(values).sort());
 }
+
+/**
+ * Set up custom app host for testing code components
+ * @param page - the page to host
+ */
+export function configureProjectAppHost(page: string) {
+  cy.wait(500);
+  cy.get(`[data-test-id="project-menu-btn"]`).click({ force: true });
+  cy.wait(500);
+  cy.get(`[data-test-id="configure-project"]`).click({ force: true });
+  cy.withinTopFrame(() => {
+    const plasmicHost = `http://localhost:${
+      Cypress.env("CUSTOM_HOST_PORT") || 3000
+    }/${page}`;
+    cy.get(`[data-test-id="host-url-input"]`).clear().type(plasmicHost);
+    cy.contains("Confirm").click();
+    cy.log(`Please make sure host-test package is running at ${plasmicHost}`);
+    cy.wait(3000);
+    cy.get(
+      `iframe[src^="http://localhost:${
+        Cypress.env("CUSTOM_HOST_PORT") || 3000
+      }/${page}"]`,
+      { timeout: 60000 }
+    );
+    cy.reload({ timeout: 120000 });
+  });
+}

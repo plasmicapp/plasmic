@@ -3056,17 +3056,50 @@ export function getAllEventHandlersForTpl(
 // TODO: If we want to attach event handlers to all tpl components we should
 // traverse the code-component react tree to find the root tag.
 export function getTplTagRoot(tplRoot: TplComponent): TplTag | undefined {
-  const findRoot = (root: TplNode): TplTag | undefined => {
+  const root = resolveTplRoot(tplRoot);
+  if (isTplCodeComponent(root)) {
+    return undefined;
+  }
+  if (isTplSlot(root)) {
+    return unexpected("TplSlot cannot be a root");
+  }
+  return root;
+}
+
+/**
+ * Checks recursively if a component's root element is a code component.
+ *
+ * @param tpl
+ * @returns boolean - true if the component's root element is a code component, or if any of its nested root elements are code components
+ */
+export function resolvesToCodeComponent(tpl: TplNode): tpl is TplCodeComponent {
+  const root = resolveTplRoot(tpl);
+  if (isTplCodeComponent(root)) {
+    return true;
+  }
+  return false;
+}
+
+/**
+ * Find recursively the root element for a component.
+ *
+ * @param tpl
+ * @returns TplTag | TplCodeComponent the innermost root element of the component
+ */
+export function resolveTplRoot(
+  tplRoot: TplNode
+): TplTag | TplSlot | TplCodeComponent {
+  const findRoot = (root: TplNode): TplTag | TplSlot | TplCodeComponent => {
     return switchType(root)
       .when(TplTag, (tpl) => tpl)
+      .when(TplSlot, (tpl) => tpl)
       .when(TplComponent, (tpl) => {
-        if (isCodeComponent(tpl.component)) {
-          return undefined;
+        if (isTplCodeComponent(tpl)) {
+          return tpl;
         } else {
           return findRoot(tpl.component.tplTree);
         }
       })
-      .when(TplSlot, (_tpl) => unexpected("TplSlot cannot be a root"))
       .result();
   };
   return findRoot(tplRoot);

@@ -10,7 +10,8 @@ import { createInstance, Identify } from "@amplitude/analytics-browser";
 export function initAmplitudeBrowser(opts: { apiKey: string }): Analytics {
   const amplitude = createInstance();
   amplitude.init(opts.apiKey, {
-    autocapture: true,
+    // TODO: Turned off because of PLA-12018
+    autocapture: false,
   });
   return new AmplitudeAnalytics(Identify, amplitude);
 }
