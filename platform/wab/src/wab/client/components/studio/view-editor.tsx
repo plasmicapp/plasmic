@@ -6,6 +6,7 @@ import { WritableClipboard } from "@/wab/client/clipboard/WritableClipboard";
 import { PLASMIC_CLIPBOARD_FORMAT } from "@/wab/client/clipboard/common";
 import { LocalClipboardAction } from "@/wab/client/clipboard/local";
 import { paste } from "@/wab/client/clipboard/paste";
+import AutoOpenBanner from "@/wab/client/components/AutoOpenBanner";
 import { BottomModals } from "@/wab/client/components/BottomModal";
 import { maybeShowContextMenu } from "@/wab/client/components/ContextMenu";
 import PageSettings from "@/wab/client/components/PageSettings";
@@ -1869,6 +1870,9 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
 
     return (
       <div className="canvas-editor">
+        {this.viewCtx()?.autoOpenedUuid && (
+          <AutoOpenBanner className="banner-bottom" />
+        )}
         {studioCtx.currentArena && (
           <>
             <InsertPanelWrapper />

@@ -13,11 +13,11 @@
 
 .plasmic_default_styles {
   --mixin-qP3g6Hd5AdC_text-decoration-line: none;
-  --mixin-qP3g6Hd5AdC_text-overflow: clip;
   --mixin-qP3g6Hd5AdC_font-family: "Inter", sans-serif;
   --mixin-qP3g6Hd5AdC_color: var(--token-0IloF6TmFvF);
   --mixin-qP3g6Hd5AdC_font-size: 12px;
   --mixin-qP3g6Hd5AdC_white-space: pre-wrap;
+  --mixin-qP3g6Hd5AdC_line-height: 1.5;
   --mixin-2zEfljePq9P_color: var(--token-VUsIDivgUss);
   --mixin-2zEfljePq9P_white-space: pre-wrap;
   --mixin-EEKi5Tu2fbK_white-space: pre-wrap;
@@ -90,7 +90,6 @@
   background-repeat: no-repeat;
   box-shadow: none;
   box-sizing: border-box;
-  text-decoration-line: none;
   margin: 0;
   border-width: 0px;
 }
@@ -378,6 +377,7 @@
   font-family: var(--mixin-qP3g6Hd5AdC_font-family);
   font-size: var(--mixin-qP3g6Hd5AdC_font-size);
   color: var(--mixin-qP3g6Hd5AdC_color);
+  line-height: var(--mixin-qP3g6Hd5AdC_line-height);
   white-space: var(--mixin-qP3g6Hd5AdC_white-space);
 }
 

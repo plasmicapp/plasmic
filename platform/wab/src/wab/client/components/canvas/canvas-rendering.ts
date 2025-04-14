@@ -1459,7 +1459,11 @@ function renderTplComponent(
     ctx.site
   );
 
-  const { rendered } = getVisibilityWithAutoOpen(ctx, node, effectiveVs);
+  const { rendered, autoOpened } = determineAutoOpenState(
+    ctx,
+    node,
+    effectiveVs
+  );
 
   if (!rendered) {
     return null;
@@ -1758,6 +1762,12 @@ function renderTplComponent(
   if (isCodeComponent(node.component)) {
     const codeComponentSelectionInfo = getAutoOpenSelectionInfo(ctx, node);
     props[INTERNAL_CC_CANVAS_SELECTION_PROP] = codeComponentSelectionInfo;
+    props["plasmicNotifyAutoOpenedContent"] = () => {
+      ctx.viewCtx.autoOpenedUuid =
+        node.component.params.find(
+          (p) => p.variable.name === codeComponentSelectionInfo.selectedSlotName
+        )?.uuid ?? node.uuid;
+    };
   }
 
   let elt = createPlasmicElementProxy(node, ctx, ComponentImpl, props);
@@ -2308,7 +2318,11 @@ function renderTplTag(
       effectiveVsWithoutDisabled
     );
 
-  const { rendered, style } = getVisibilityWithAutoOpen(ctx, node, effectiveVs);
+  const { rendered, style, autoOpened } = determineAutoOpenState(
+    ctx,
+    node,
+    effectiveVs
+  );
 
   if (!rendered) {
     return null;
@@ -2745,63 +2759,79 @@ function evalDataCondExpr(
   return !!dataCondResult;
 }
 
-function getVisibilityWithAutoOpen(
+function determineAutoOpenState(
   ctx: RenderingCtx,
   node: TplNode,
   effectiveVs: EffectiveVariantSetting
 ) {
-  const visibility = getEffectiveVsVisibility(effectiveVs);
+  function getVisibilityWithAutoOpen() {
+    const visibility = getEffectiveVsVisibility(effectiveVs);
 
-  switch (visibility) {
-    case TplVisibility.Visible: {
-      return {
-        rendered: true,
-      };
-    }
-
-    case TplVisibility.NotRendered:
-    case TplVisibility.CustomExpr: {
-      const dataCondResult = evalDataCondExpr(ctx, effectiveVs);
-      if (dataCondResult) {
+    switch (visibility) {
+      case TplVisibility.Visible: {
         return {
           rendered: true,
+          autoOpened: false,
         };
       }
 
-      if (!ctx.projectFlags.autoOpen2) {
+      case TplVisibility.NotRendered:
+      case TplVisibility.CustomExpr: {
+        const autoOpenInfo = getAutoOpenSelectionInfo(ctx, node);
+        const dataCondResult = evalDataCondExpr(ctx, effectiveVs);
+        if (dataCondResult) {
+          return {
+            rendered: true,
+            autoOpened: false,
+          };
+        }
+
+        if (!ctx.projectFlags.autoOpen2) {
+          return {
+            rendered: false,
+            autoOpened: false,
+          };
+        }
+
         return {
-          rendered: false,
+          rendered: autoOpenInfo.isSelected,
+          autoOpened: autoOpenInfo.isSelected,
         };
       }
 
-      const autoOpenInfo = getAutoOpenSelectionInfo(ctx, node);
-      return {
-        rendered: autoOpenInfo.isSelected,
-      };
-    }
+      case TplVisibility.DisplayNone: {
+        const autoOpenInfo = getAutoOpenSelectionInfo(ctx, node);
+        if (!ctx.projectFlags.autoOpen2) {
+          return {
+            rendered: true,
+            autoOpened: false,
+          };
+        }
 
-    case TplVisibility.DisplayNone: {
-      if (!ctx.projectFlags.autoOpen2) {
         return {
           rendered: true,
+          style: autoOpenInfo.isSelected
+            ? {
+                display: effectiveVs.rsh().get("display"),
+              }
+            : undefined,
+          autoOpened: autoOpenInfo.isSelected,
         };
       }
 
-      const autoOpenInfo = getAutoOpenSelectionInfo(ctx, node);
-      return {
-        rendered: true,
-        style: autoOpenInfo.isSelected
-          ? {
-              display: effectiveVs.rsh().get("display"),
-            }
-          : undefined,
-      };
-    }
-
-    default: {
-      unreachable(visibility);
+      default: {
+        unreachable(visibility);
+      }
     }
   }
+
+  const state = getVisibilityWithAutoOpen();
+
+  if (state.autoOpened) {
+    ctx.viewCtx.autoOpenedUuid = node.uuid;
+  }
+
+  return state;
 }
 
 function deriveTplTagChildren(
@@ -3198,7 +3228,7 @@ function renderTplSlot(
   ctx: RenderingCtx,
   activeVSettings: VariantSetting[]
 ): React.ReactElement | null {
-  const { rendered } = getVisibilityWithAutoOpen(
+  const { rendered, autoOpened } = determineAutoOpenState(
     ctx,
     node,
     new EffectiveVariantSetting(node, activeVSettings, ctx.site)

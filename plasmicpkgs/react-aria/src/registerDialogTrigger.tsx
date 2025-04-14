@@ -11,8 +11,8 @@ import {
 } from "./registerModal";
 import {
   CodeComponentMetaOverrides,
+  PlasmicCanvasProps,
   Registerable,
-  WithPlasmicCanvasComponentInfo,
   makeComponentName,
   registerComponentHelper,
   useIsOpen,
@@ -48,31 +48,24 @@ export function TriggerWrapper({ children, className }: TriggerWrapperProps) {
 
 export interface BaseDialogTriggerProps
   extends Omit<DialogTriggerProps, "children">,
-    WithPlasmicCanvasComponentInfo {
+    PlasmicCanvasProps {
   trigger?: React.ReactNode;
   dialog?: React.ReactNode;
   className?: string;
 }
 
 export function BaseDialogTrigger(props: BaseDialogTriggerProps) {
-  const {
-    trigger,
-    dialog,
-    isOpen,
-    className,
-    __plasmic_selection_prop__,
-    ...rest
-  } = props;
+  const { trigger, dialog, isOpen, className, ...rest } = props;
 
-  const isOpen2 = useIsOpen({
+  const canvasAwareIsOpen = useIsOpen({
     triggerSlotName: "trigger",
     isOpen,
-    __plasmic_selection_prop__,
+    props,
   });
 
   const mergedProps = {
     ...rest,
-    isOpen: isOpen2,
+    isOpen: canvasAwareIsOpen,
   };
 
   return (

@@ -10,16 +10,16 @@ import { TooltipTriggerProps, useTooltipTriggerState } from "react-stately";
 import { COMMON_STYLES, getCommonOverlayProps } from "./common";
 import {
   CodeComponentMetaOverrides,
+  PlasmicCanvasProps,
   Registerable,
   registerComponentHelper,
   useIsOpen,
-  WithPlasmicCanvasComponentInfo,
 } from "./utils";
 
 export interface BaseTooltipProps
   extends Omit<TooltipTriggerProps, "trigger">,
     TooltipProps,
-    WithPlasmicCanvasComponentInfo {
+    PlasmicCanvasProps {
   children: React.ReactElement<HTMLElement>;
   tooltipContent?: React.ReactElement;
   resetClassName?: string;
@@ -71,13 +71,12 @@ function ControlledBaseTooltip(props: BaseTooltipProps) {
     shouldFlip,
     className,
     onOpenChange = () => {},
-    __plasmic_selection_prop__,
   } = props;
 
   const isCanvasAwareOpen = useIsOpen({
     triggerSlotName: "children",
     isOpen,
-    __plasmic_selection_prop__,
+    props,
   });
 
   // The following is a custom implementation of the <TooltipTrigger /> component.

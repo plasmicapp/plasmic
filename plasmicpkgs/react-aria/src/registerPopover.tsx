@@ -10,14 +10,12 @@ import {
   makeComponentName,
   Registerable,
   registerComponentHelper,
-  WithPlasmicCanvasComponentInfo,
 } from "./utils";
 export interface BasePopoverControlContextData {
   canMatchTriggerWidth?: boolean;
 }
 export interface BasePopoverProps
   extends React.ComponentProps<typeof Popover>,
-    WithPlasmicCanvasComponentInfo,
     HasControlContextData<BasePopoverControlContextData> {
   className?: string;
   resetClassName?: string;

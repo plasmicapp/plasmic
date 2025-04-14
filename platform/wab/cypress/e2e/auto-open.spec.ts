@@ -2,7 +2,7 @@ import { DevFlagsType } from "../../src/wab/shared/devflags";
 import { Framed, removeCurrentProject, setupNewProject } from "../support/util";
 
 const pageName = "Homepage";
-
+type VisibilityType = "notVisible" | "notRendered" | "customExpr";
 describe("Auto Open", () => {
   let origDevFlags: DevFlagsType;
   beforeEach(() => {
@@ -83,10 +83,6 @@ describe("Auto Open", () => {
               frame: focusModeFrame,
               ...getTooltipMeta(),
             });
-            checkCcAutoOpen({
-              frame: focusModeFrame,
-              ...getSelectMeta(),
-            });
             cy.switchInteractiveMode();
             cy.justLog("Testing in interactive mode");
             checkCcAutoOpenInteractiveMode({
@@ -126,8 +122,6 @@ describe("Auto Open", () => {
 
           cy.justLog("Testing in design mode");
           cy.switchArena(pageName).then((pageFrame) => {
-            cy.selectRootNode();
-            cy.insertFromAddDrawer("Tooltip");
             checkCcAutoOpen({
               frame: pageFrame,
               ...getTooltipMeta(),
@@ -200,42 +194,141 @@ describe("Auto Open", () => {
       });
     });
 
-    it("should work if select is inside an auto-openable component", () => {
+    it("should work when auto-openable components are inside another auto-openable component", () => {
       cy.withinStudioIframe(() => {
         cy.createNewPageInOwnArena(pageName).then((pageFrame) => {
           cy.justLog("Testing in design mode");
+          const modalHiddenContent = "This is a Modal!";
+          const tooltipHiddenContent = "Hello from Tooltip!";
+          const tooltipVisibleContent = "Hover me!";
+          const selectHiddenContent = "Section Header.";
           cy.selectRootNode();
-          // Modal has isOpen=true by default in the registration, so we don't need to worry about it being open/closed
-          cy.insertFromAddDrawer("plasmic-react-aria-modal");
-          pageFrame.base().contains("This is a Modal!").should("exist");
-          cy.get(`[data-plasmic-prop="isOpen"]`).click(); // Modal has isOpen=true by default in the registration. We set isOpen to false so that it's an auto-opened node
-          cy.selectRootNode();
-          pageFrame.base().contains("This is a Modal!").should("not.exist");
-          cy.selectTreeNode(["Aria Modal"]);
-          pageFrame.base().contains("This is a Modal!").should("exist");
+          insertModalComponent();
+          assertAutoOpened(pageFrame, modalHiddenContent);
+          cy.autoOpenBanner().should("exist");
           cy.justType("{enter}{enter}"); // enter children slot
+          assertAutoOpened(pageFrame, modalHiddenContent);
+          cy.autoOpenBanner().should("exist");
+
           cy.insertFromAddDrawer("plasmic-react-aria-tooltip");
-          pageFrame.base().contains("Hover me!").should("exist");
-          pageFrame.base().contains("Hello from Tooltip!").should("exist");
-          cy.selectRootNode();
-          cy.wait(100);
-          pageFrame.base().contains("This is a Modal!").should("not.exist");
-          cy.selectTreeNode(["Aria Tooltip"]);
-          pageFrame.base().contains("This is a Modal!").should("exist"); // tooltip is inside children slot of modal, so modal is auto-opened here
-          pageFrame.base().contains("Hello from Tooltip!").should("exist");
+          assertAutoOpened(
+            pageFrame,
+            tooltipHiddenContent,
+            tooltipVisibleContent
+          );
+          assertAutoOpened(pageFrame, modalHiddenContent);
+          cy.autoOpenBanner().should("exist");
+
+          cy.selectTreeNode(["Slot: Trigger"]); // select trigger slot
+          assertHidden(pageFrame, tooltipHiddenContent, tooltipVisibleContent);
+          assertAutoOpened(pageFrame, modalHiddenContent);
+          cy.autoOpenBanner().should("exist");
+
+          cy.justType("{enter}"); // enter trigger slot
+          assertHidden(pageFrame, tooltipHiddenContent, tooltipVisibleContent);
+          assertAutoOpened(pageFrame, modalHiddenContent);
+          cy.autoOpenBanner().should("exist");
 
           cy.insertFromAddDrawer("plasmic-react-aria-select");
-          pageFrame.base().contains("This is a Modal!").should("exist");
-          pageFrame.base().contains("Section Header.").should("not.exist"); // TODO: This is "not.exist" because PLA-11850
+          // TODO: PLA-11850 Select does not auto-open on first render
+          // assertAutoOpened(pageFrame, selectHiddenContent);
+          assertAutoOpened(pageFrame, modalHiddenContent);
+          assertHidden(pageFrame, tooltipHiddenContent, tooltipVisibleContent);
+          cy.autoOpenBanner().should("exist");
+
           cy.selectRootNode();
-          cy.wait(100);
-          pageFrame.base().contains("This is a Modal!").should("not.exist");
+          assertHidden(pageFrame, modalHiddenContent);
+          assertHidden(pageFrame, selectHiddenContent);
+          assertHidden(pageFrame, tooltipHiddenContent);
+          assertHidden(pageFrame, tooltipVisibleContent); // the tooltip visible content is also hidden, because tooltip is inside modal, which is hidden
+          cy.autoOpenBanner().should("not.exist");
+
           cy.selectTreeNode(["Aria Select"]);
-          pageFrame.base().contains("This is a Modal!").should("exist"); // select is inside children slot of modal, so modal is auto-opened here
-          // pageFrame.base().contains("Section Header").should("exist"); // TODO: Failing because of PLA-11850
+          // TODO: PLA-11850 Select does not auto-open on first render
+          // assertAutoOpened(pageFrame, selectHiddenContent);
+          assertAutoOpened(pageFrame, modalHiddenContent);
+          // TODO: resurphased after revert of PLA-11850, because the select's auto-open was triggering tooltip to hide again.
+          // assertHidden(pageFrame, tooltipHiddenContent, tooltipVisibleContent);
+          cy.autoOpenBanner().should("exist");
+
           cy.selectTreeNode(["Aria Modal"]);
-          cy.selectTreeNode(["Aria Select"]);
-          pageFrame.base().contains("Section Header").should("exist");
+          assertHidden(pageFrame, selectHiddenContent);
+          assertAutoOpened(pageFrame, modalHiddenContent);
+          // TODO: resurphased after revert of PLA-11850, because the select's auto-open was triggering tooltip to hide again.
+          // assertHidden(pageFrame, tooltipHiddenContent, tooltipVisibleContent);
+          cy.autoOpenBanner().should("exist");
+        });
+      });
+    });
+
+    it("works while navigating through tpl tree nested within the auto-opened content", function () {
+      cy.withinStudioIframe(() => {
+        cy.createNewPageInOwnArena(pageName).then((pageFrame) => {
+          const modalHiddenContent = "This is a Modal!";
+          function assertModalAutoOpened() {
+            assertAutoOpened(pageFrame, modalHiddenContent);
+            cy.autoOpenBanner().should("exist");
+          }
+          function assertModalHidden() {
+            assertHidden(pageFrame, modalHiddenContent);
+            cy.autoOpenBanner().should("not.exist");
+          }
+          cy.justLog("Testing in design mode");
+          cy.selectRootNode();
+          insertModalComponent();
+          assertModalAutoOpened();
+          cy.justType("{enter}"); // select children slot
+          assertModalAutoOpened();
+          cy.justType("{enter}"); // select the vertical stack directly inside children slot
+          assertModalAutoOpened();
+          cy.justType("{enter}"); // select the children of vertical stack
+          assertModalAutoOpened();
+          cy.realPress("Tab"); // select next sibling
+          assertModalAutoOpened();
+          cy.realPress("Tab"); // select next sibling
+          assertModalAutoOpened();
+          cy.justType("{shift}{enter}"); // go back to vertical stack
+          assertModalAutoOpened();
+          cy.justType("{shift}{enter}"); // go back to children slot
+          assertModalAutoOpened();
+          cy.justType("{shift}{enter}"); // go back to modal
+          assertModalAutoOpened();
+          cy.justType("{shift}{enter}"); // go back to page
+          assertModalHidden();
+        });
+      });
+    });
+
+    // TODO: Skipping, because not sure how to simulate multi-selection in the tpl tree. Tried the shiftKey: true option in .click() inside selectTreeNode(), but it didn't work
+    xit("works with multi-selection", () => {
+      cy.withinStudioIframe(() => {
+        cy.createNewPageInOwnArena(pageName).then((pageFrame) => {
+          const modalHiddenContent = "This is a Modal!";
+          function assertModalAutoOpened() {
+            assertAutoOpened(pageFrame, modalHiddenContent);
+            cy.autoOpenBanner().should("exist");
+          }
+          function assertModalHidden() {
+            assertHidden(pageFrame, modalHiddenContent);
+            cy.autoOpenBanner().should("not.exist");
+          }
+          cy.justLog("Testing in design mode");
+          cy.selectRootNode();
+          insertModalComponent();
+          assertModalAutoOpened();
+          cy.insertFromAddDrawer("Text");
+          cy.renameTreeNode("Text1");
+          cy.insertFromAddDrawer("Text");
+          cy.renameTreeNode("Text2");
+          assertModalHidden();
+          cy.selectTreeNode(["Aria Modal"]);
+          assertModalHidden(); // modal is not the first one selected, so it's not auto-opened
+          cy.selectTreeNode(["Text2"]); // deselects Text2
+          assertModalAutoOpened(); // modal is the only one selected, so it's auto-opened
+          cy.selectTreeNode(["Text2"]); // adds Text2 back
+          assertModalAutoOpened(); // modal is still the FIRST one selected, so it's auto-opened
+          cy.selectTreeNode(["Aria Modal"]); // deselects modal
+          assertModalHidden(); // modal is no longer selected, so it's hidden
         });
       });
     });
@@ -249,16 +342,19 @@ describe("Auto Open", () => {
         cy.wait(1000);
         cy.get(`button[class*="expandAllButton"]`).click();
         cy.selectTreeNode(["Hover me!"]);
-        cy.convertToSlot();
-        cy.get(`[data-test-class="simple-text-box"]`).type(
-          "{selectall}Tooltip Trigger"
-        );
+        cy.convertToSlot("Tooltip Trigger");
+        cy.get(`[data-test-class="simple-text-box"]`);
         cy.selectTreeNode(["Hello from Tooltip!"]);
-        cy.convertToSlot();
-        cy.get(`[data-test-class="simple-text-box"]`).type(
-          "{selectall}Tooltip Contents"
-        );
+        cy.convertToSlot("Tooltip Contents");
       });
+    }
+
+    function insertModalComponent() {
+      cy.insertFromAddDrawer("plasmic-react-aria-modal");
+      cy.autoOpenBanner().should("not.exist"); // because the isOpen is defaulted to true in the registration
+      cy.get(`[data-plasmic-prop="isOpen"]`).click(); // Modal has isOpen=true by default in the registration. We set isOpen to false so that it's an auto-opened node
+      cy.autoOpenBanner().should("exist");
+      cy.justType("{esc}"); // blur the isOpen prop (so the focus switches back to the tpl tree)
     }
 
     function createTooltipParentComponent() {
@@ -270,16 +366,31 @@ describe("Auto Open", () => {
         cy.wait(1000);
         cy.get(`button[class*="expandAllButton"]`).click();
         cy.selectTreeNode(["Hover me!"]);
-        cy.convertToSlot();
-        cy.get(`[data-test-class="simple-text-box"]`).type(
-          "{selectall}Tooltip Parent Trigger"
-        );
+        cy.convertToSlot("Tooltip Parent Trigger");
         cy.selectTreeNode(["Hello from Tooltip!"]);
-        cy.convertToSlot();
-        cy.get(`[data-test-class="simple-text-box"]`).type(
-          "{selectall}Tooltip Parent Contents"
-        );
+        cy.convertToSlot("Tooltip Parent Contents");
       });
+    }
+
+    function assertHidden(
+      frame: Framed,
+      hiddenContent: string,
+      visibleContent?: string
+    ) {
+      if (visibleContent) {
+        frame.base().contains(visibleContent).should("exist");
+      }
+      frame.base().contains(hiddenContent).should("not.exist");
+    }
+    function assertAutoOpened(
+      frame: Framed,
+      hiddenContent: string,
+      visibleContent?: string
+    ) {
+      if (visibleContent) {
+        frame.base().contains(visibleContent).should("exist");
+      }
+      frame.base().contains(hiddenContent).should("exist");
     }
 
     function checkCcAutoOpen({
@@ -297,51 +408,55 @@ describe("Auto Open", () => {
       hiddenContent: string;
       visibleContent: string;
     }) {
-      frame.base().contains(visibleContent).should("exist");
-      // TODO: This currently fails for Select!
-      // frame
-      //   .base()
-      //   .contains(hiddenContent)
-      //   .should("exist");
+      function _assertHidden() {
+        assertHidden(frame, hiddenContent, visibleContent);
+        cy.autoOpenBanner().should("not.exist");
+      }
+      function _assertAutoOpened() {
+        assertAutoOpened(frame, hiddenContent, visibleContent);
+        cy.autoOpenBanner().should("exist");
+      }
+      // TODO: PLA-11850 Select does not auto-open on first render
       cy.selectRootNode();
-      cy.wait(100); // TODO: This is currently needed for Select, the test is flaky without it!
-      frame.base().contains(hiddenContent).should("not.exist");
       cy.selectTreeNode([ccDisplayName]);
-      frame.base().contains(hiddenContent).should("exist");
+      _assertAutoOpened();
       if (triggerSlotName) {
         cy.selectTreeNode([triggerSlotName]);
-        frame.base().contains(hiddenContent).should("not.exist");
+        _assertHidden();
       }
       if (otherSlotName) {
         cy.selectTreeNode([otherSlotName]);
-        frame.base().contains(hiddenContent).should("exist");
+        _assertAutoOpened();
       }
       cy.turnOffAutoOpenMode();
-      frame.base().contains(hiddenContent).should("not.exist");
+      _assertHidden();
       cy.selectRootNode(); // de-select the component
+      _assertHidden();
       cy.selectTreeNode([ccDisplayName]);
-      frame.base().contains(hiddenContent).should("not.exist");
+      _assertHidden();
+
       if (triggerSlotName) {
         cy.selectTreeNode([triggerSlotName]);
-        frame.base().contains(hiddenContent).should("not.exist");
+        _assertHidden();
       }
       if (otherSlotName) {
         cy.selectTreeNode([otherSlotName]);
-        frame.base().contains(hiddenContent).should("not.exist");
+        _assertHidden();
       }
       cy.turnOnAutoOpenMode();
-      frame.base().contains(hiddenContent).should("exist");
+      _assertAutoOpened();
       cy.selectRootNode(); // de-select the component
-      frame.base().contains(hiddenContent).should("not.exist");
+      _assertHidden();
       if (triggerSlotName) {
         cy.selectTreeNode([triggerSlotName]);
-        frame.base().contains(hiddenContent).should("not.exist");
+        _assertHidden();
       }
       if (otherSlotName) {
         cy.selectTreeNode([otherSlotName]);
-        frame.base().contains(hiddenContent).should("exist");
+        _assertAutoOpened();
       }
       cy.selectRootNode(); // de-select the component
+      _assertHidden();
     }
     function checkCcAutoOpenInteractiveMode({
       frame,
@@ -386,59 +501,172 @@ describe("Auto Open", () => {
     });
     it("auto-opens hidden elements", function () {
       cy.withinStudioIframe(() => {
+        const textNodeName = "MyText";
+        const verticalStackNodeName = "MyVerticalStack";
+        let childTextNodeName = "MyChildText";
         const textContents = "Starlight";
-        let selectedNodeName = "MyText";
+        const childTextContents = "Galaxy";
+
+        let checkParams = {
+          textNodeName,
+          textContents,
+        };
+
         function checkTextAutoOpen(
-          visibility: "notVisible" | "notRendered" | "customExpr",
+          visibility: VisibilityType,
+
           frame: Framed
         ) {
           const assertionPhrase =
             visibility === "notVisible" ? "be.visible" : "exist";
-          frame.base().contains(textContents).should(assertionPhrase); // auto-open does not need to wait for next selection, if the item is already selected
+          function assertHidden() {
+            frame
+              .base()
+              .contains(checkParams.textContents)
+              .should(`not.${assertionPhrase}`);
+            cy.autoOpenBanner().should("not.exist");
+          }
+
+          function assertAutoOpened() {
+            frame
+              .base()
+              .contains(checkParams.textContents)
+              .should(assertionPhrase);
+            cy.autoOpenBanner().should("exist");
+          }
+          assertAutoOpened(); // auto-open does not need to wait for next selection, if the item is already selec2ted
           cy.selectRootNode(); // de-select
-          frame.base().contains(textContents).should(`not.${assertionPhrase}`);
-          cy.selectTreeNode([selectedNodeName]);
-          frame.base().contains(textContents).should(assertionPhrase);
+          assertHidden();
+          cy.selectTreeNode([checkParams.textNodeName]);
+          assertAutoOpened();
           cy.turnOffAutoOpenMode();
-          frame.base().contains(textContents).should(`not.${assertionPhrase}`);
+          assertHidden();
           cy.turnOnAutoOpenMode();
+          assertAutoOpened();
           cy.selectRootNode(); // de-select
-          cy.selectTreeNode([selectedNodeName]);
-          frame.base().contains(textContents).should(assertionPhrase);
+          assertHidden();
+          cy.selectTreeNode([checkParams.textNodeName]);
+          assertAutoOpened();
         }
 
-        cy.createNewComponent("Text Component").then((compFrame) => {
+        function testAllVisibilities({
+          frame,
+          notRenderedParentNodeName,
+          isSlot = false,
+          isPlasmicComponent = false,
+        }: {
+          frame: Framed;
+          notRenderedParentNodeName?: string;
+          isSlot?: boolean;
+          isPlasmicComponent?: boolean;
+        }) {
+          const hasNotRenderedParent = !!notRenderedParentNodeName;
+          frame.base().contains(checkParams.textContents).should("exist");
+
+          if (hasNotRenderedParent) {
+            cy.selectTreeNode([notRenderedParentNodeName]);
+            cy.setNotRendered();
+          }
+
+          cy.selectTreeNode([checkParams.textNodeName]);
+
+          // Slots do not have display: none visibility option!
+          if (!isSlot && !isPlasmicComponent) {
+            // TODO: We do not test DisplayNone visibility for Plasmic component because the auto open feature currently does not work for Plasmic components having display: none
+            cy.log("Test DisplayNone visibility");
+            cy.setDisplayNone();
+            checkTextAutoOpen(
+              hasNotRenderedParent ? "notRendered" : "notVisible",
+              frame
+            );
+          }
+          cy.log("Test NotRendered visibility");
+          cy.setNotRendered();
+          checkTextAutoOpen("notRendered", frame);
+          cy.log("Test Dynamic visibility");
+          cy.setDynamicVisibility("false");
+          checkTextAutoOpen("customExpr", frame);
+          cy.log("Test Visible visibility");
+          cy.setVisible();
+          frame.base().contains(checkParams.textContents).should("exist");
+          if (notRenderedParentNodeName) {
+            cy.selectTreeNode([notRenderedParentNodeName]);
+          } else {
+            cy.selectRootNode();
+          }
+          // TODO: We do not test DisplayNone visibility for Plasmic component because the auto open feature currently does not work for Plasmic components having display: none
+          if (!isPlasmicComponent) {
+            cy.log("Test visibility toggle");
+            cy.toggleVisiblity(checkParams.textNodeName);
+            checkTextAutoOpen(
+              hasNotRenderedParent || isSlot ? "notRendered" : "notVisible",
+              frame
+            );
+
+            cy.toggleVisiblity(checkParams.textNodeName);
+            frame.base().contains(checkParams.textContents).should("exist");
+          }
+          if (notRenderedParentNodeName) {
+            cy.selectTreeNode([notRenderedParentNodeName]);
+            cy.setVisible();
+          }
+        }
+
+        cy.createNewComponent("Text Component").then((frame) => {
           cy.selectRootNode();
           cy.insertFromAddDrawer("Text");
-          cy.renameTreeNode(selectedNodeName);
+          cy.renameTreeNode(textNodeName);
           cy.getSelectedElt().dblclick({ force: true });
-          compFrame.enterIntoTplTextBlock(textContents);
-          compFrame.base().contains(textContents).should("exist");
-          cy.setDisplayNone();
-          checkTextAutoOpen("notVisible", compFrame);
-          cy.setNotRendered();
-          checkTextAutoOpen("notRendered", compFrame);
-          cy.setDynamicVisibility("false");
-          checkTextAutoOpen("customExpr", compFrame);
-          cy.withinLiveMode(() => {
-            // The hidden content stays hidden in live preview
-            cy.contains(textContents).should("not.exist");
+          frame.enterIntoTplTextBlock(textContents);
+
+          testAllVisibilities({ frame });
+
+          cy.insertFromAddDrawer("Vertical stack");
+          cy.renameTreeNode(verticalStackNodeName);
+          cy.insertFromAddDrawer("Text");
+          cy.renameTreeNode(childTextNodeName);
+          cy.getSelectedElt().dblclick({ force: true });
+          frame.enterIntoTplTextBlock(childTextContents);
+          checkParams = {
+            textNodeName: childTextNodeName,
+            textContents: childTextContents,
+          };
+          testAllVisibilities({
+            frame,
+            notRenderedParentNodeName: verticalStackNodeName,
           });
-          cy.setVisible();
+          cy.convertToSlot("children");
+          childTextNodeName = `Slot Target: "children"`;
+          checkParams = {
+            ...checkParams,
+            textNodeName: childTextNodeName,
+          };
+          testAllVisibilities({
+            frame,
+            notRenderedParentNodeName: verticalStackNodeName,
+            isSlot: true,
+          });
         });
 
-        cy.createNewPageInOwnArena(pageName).then((pageFrame) => {
+        cy.createNewPageInOwnArena(pageName).then((frame) => {
           cy.selectRootNode();
           cy.insertFromAddDrawer("Text Component");
-          selectedNodeName = "MyTextComp";
-          cy.renameTreeNode(selectedNodeName);
-          // TODO: This fails because the auto open feature currently does not work for components having display: none
-          // cy.setDisplayNone();
-          // checkTextAutoOpen("notVisible", pageFrame);
+          const compNodeName = "MyTextComp";
+          cy.renameTreeNode(compNodeName);
+          checkParams = {
+            ...checkParams,
+            textNodeName: compNodeName,
+          };
+          testAllVisibilities({ frame, isPlasmicComponent: true });
+          cy.selectTreeNode([compNodeName]);
           cy.setNotRendered();
-          checkTextAutoOpen("notRendered", pageFrame);
-          cy.setDynamicVisibility("false");
-          checkTextAutoOpen("customExpr", pageFrame);
+          cy.autoOpenBanner().should("exist");
+          cy.justType("{del}"); // delete the text
+          frame.base().contains(textContents).should(`not.exist`);
+          cy.autoOpenBanner().should("not.exist");
+          cy.undoTimes(1);
+          cy.autoOpenBanner().should("exist");
+
           cy.withinLiveMode(() => {
             // The hidden content stays hidden in live preview
             cy.contains(textContents).should("not.exist");

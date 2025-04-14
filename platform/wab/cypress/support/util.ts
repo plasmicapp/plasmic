@@ -770,17 +770,30 @@ export function setVisible() {
   cy.get('[data-plasmic-prop="display-visible"]').click();
 }
 
+/**
+ * Toggles the visibility of a node in the outline tab.
+ * @param nodeName - The name of the node to toggle visibility for.
+ */
+export function toggleVisiblity(nodeName: string) {
+  cy.getTreeNode([nodeName])
+    // hover to show the eye icon
+    .realHover()
+    .find('[class*="tpltree__label__visibility"]')
+    // click the eye icon in the tpl tree node
+    .click();
+}
+
 export function setDisplayNone() {
   cy.get('[data-plasmic-prop="display-not-visible"]').click();
 }
 
 export function setNotRendered() {
-  cy.get('[data-plasmic-prop="display-not-visible"]').rightclick();
+  cy.get('[data-plasmic-prop="display-visible"]').rightclick();
   cy.contains("Not rendered").click();
 }
 
 export function setDynamicVisibility(customCode: string) {
-  cy.get('[data-plasmic-prop="display-not-visible"]').rightclick();
+  cy.get('[data-plasmic-prop="display-visible"]').rightclick();
   cy.contains("Use dynamic value").click();
   cy.wait(500);
   cy.enterCustomCodeInDataPicker(customCode);
@@ -809,9 +822,14 @@ export function chooseFontSize(fontSize: string) {
   justType(fontSize + "{enter}");
 }
 
-export function convertToSlot() {
+export function convertToSlot(slotName?: string) {
   getSelectedElt().rightclick({ force: true });
   cy.contains("Convert to a slot").click({ force: true });
+  if (slotName) {
+    cy.get(`[data-test-class="simple-text-box"]`).type(
+      `{selectall}${slotName}`
+    );
+  }
 }
 
 export function getSelectedTreeNode() {
@@ -2564,6 +2582,10 @@ export function createFakeDataSource() {
     source: "fake",
     name: fakeDataSourceName,
   });
+}
+
+export function autoOpenBanner() {
+  cy.get(".canvas-editor").contains("Auto-showing hidden element.");
 }
 
 export function pressPublishButton() {

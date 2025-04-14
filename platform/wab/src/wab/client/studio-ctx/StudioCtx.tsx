@@ -2664,6 +2664,7 @@ export class StudioCtx extends WithDbCtx {
   }
   toggleAutoOpenMode() {
     this.isAutoOpenMode = !this.isAutoOpenMode;
+    this.viewCtxs.forEach((vc) => (vc.autoOpenedUuid = undefined));
   }
 
   private _showCommentsOverlay = observable.box(true);

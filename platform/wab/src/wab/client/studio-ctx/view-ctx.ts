@@ -434,6 +434,59 @@ export class ViewCtx extends WithDbCtx {
     }
   );
 
+  private _autoOpenedUuid = observable.box<string | undefined>();
+
+  get autoOpenedUuid() {
+    return this._autoOpenedUuid.get();
+  }
+
+  set autoOpenedUuid(val: string | undefined) {
+    this._autoOpenedUuid.set(val);
+  }
+
+  maybeClearAutoOpenedContentOnSelectionChange(
+    previousSelection: Selectable | null,
+    newSelection: Selectable | null
+  ) {
+    // nothing previously auto-opened, no need to clear
+    if (!this.autoOpenedUuid) {
+      return;
+    }
+
+    if (!previousSelection) {
+      return;
+    }
+
+    // nothing selected, clear
+    if (!newSelection) {
+      this.autoOpenedUuid = undefined;
+      return;
+    }
+    // If the first selection hasn't changed in multi-selection mode, no need to clear auto-opened content
+    if (previousSelection === newSelection) {
+      return;
+    }
+
+    const ancestor = this.focusedTplAncestorsThroughComponents()
+      .map((item) => item.node)
+      .find((tplOrSlotSel) =>
+        isSlotSelection(tplOrSlotSel)
+          ? tplOrSlotSel.slotParam.uuid === this.autoOpenedUuid
+          : tplOrSlotSel.uuid === this.autoOpenedUuid
+      );
+
+    // When we find an ancestor that matches the autoOpenedUuid:
+    // 1. If this ancestor is NOT a TplComponent, keep the autoOpenedUuid - it represents the
+    //    slot/tpltag containing the currently selected element
+    // 2. If this ancestor IS a TplComponent, clear the autoOpenedUuid - the new selection might be
+    //    in a trigger slot and we don't want to keep the component expanded
+    if (ancestor && !isKnownTplComponent(ancestor)) {
+      return;
+    }
+
+    this.autoOpenedUuid = undefined;
+  }
+
   private _xFocusedSelectables = observable.box<(Selectable | null)[]>([], {
     name: "ViewCtx.focusedSelectables",
   });
@@ -442,11 +495,25 @@ export class ViewCtx extends WithDbCtx {
   }
   set _focusedSelectables(objs: (Selectable | null)[]) {
     const current = this._xFocusedSelectables.get();
-    if (!arrayEq(objs, current)) {
+    // We need the comparator, because current is a proxy array, whereas objs is not.
+    if (
+      !arrayEq(objs, current, (a, b) => {
+        if (a instanceof SlotSelection && b instanceof SlotSelection) {
+          return (
+            a.slotParam.uuid === b.slotParam.uuid && a.val?.key === b.val?.key
+          );
+        }
+        return a === b;
+      })
+    ) {
       this._xFocusedSelectables.set(objs);
       this.tryBlurEditingText();
+
+      // When using multi-selection, we only apply auto-open behavior to the first selected item, hence the use of 0 index.
+      this.maybeClearAutoOpenedContentOnSelectionChange(current[0], objs[0]);
     }
   }
+
   private _xHighlightedAdoptees = observable.box<Adoptee[]>([], {
     name: "ViewCtx.highlightedAdoptees",
   });
@@ -1016,6 +1083,9 @@ export class ViewCtx extends WithDbCtx {
             // Removing of multi selection
             const idx = this._focusedSelectables.indexOf(finalVal);
             this._focusedSelectables.splice(idx, 1);
+            if (idx === 0) {
+              this.autoOpenedUuid = undefined;
+            }
             this._focusedTpls.splice(idx, 1);
             this._focusedDomElts.splice(idx, 1);
             this._focusedCloneKeys.splice(idx, 1);

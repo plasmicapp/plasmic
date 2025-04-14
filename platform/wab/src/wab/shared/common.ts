@@ -1890,8 +1890,15 @@ export function rotateStartingFrom<T>(
 /**
  * Shallow comparison of arrays.
  */
-export function arrayEq(xs: ReadonlyArray<any>, ys: ReadonlyArray<any>) {
-  return xs.length === ys.length && xs.every((x, i) => x === ys[i]);
+export function arrayEq(
+  xs: ReadonlyArray<any>,
+  ys: ReadonlyArray<any>,
+  comparator?: (a: any, b: any) => boolean
+) {
+  return (
+    xs.length === ys.length &&
+    xs.every((x, i) => (comparator ? comparator(x, ys[i]) : x === ys[i]))
+  );
 }
 
 export function isPrefixArray(xs: ReadonlyArray<any>, ys: ReadonlyArray<any>) {

@@ -4722,6 +4722,9 @@ export class ViewOps {
       .variantTplMgr()
       .getTargetVariantComboForNode(tpl, { forVisibility: true });
     setTplVisibility(tpl, combo, visibility);
+    if (visibility === TplVisibility.Visible) {
+      this.viewCtx().autoOpenedUuid = undefined;
+    }
   };
 
   setDataCond = (tpl: TplNode, cond: CustomCode | ObjectPath) => {

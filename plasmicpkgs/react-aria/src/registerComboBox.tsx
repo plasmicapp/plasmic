@@ -21,10 +21,10 @@ import {
   BaseControlContextDataForLists,
   HasControlContextData,
   makeComponentName,
+  PlasmicCanvasProps,
   Registerable,
   registerComponentHelper,
   useAutoOpen,
-  WithPlasmicCanvasComponentInfo,
 } from "./utils";
 import { pickAriaComponentVariants, WithVariants } from "./variant-utils";
 
@@ -37,7 +37,7 @@ const { variants: COMBOBOX_VARIANTS_DATA } =
 
 export interface BaseComboboxProps
   extends ComboBoxProps<{}>,
-    WithPlasmicCanvasComponentInfo,
+    PlasmicCanvasProps,
     WithVariants<typeof COMBOBOX_VARIANTS>,
     HasControlContextData<BaseControlContextDataForLists> {
   children?: React.ReactNode;
@@ -56,7 +56,7 @@ export interface BaseComboboxProps
   Note: It cannot be used as a hook like useAutoOpen() within the BaseSelect component
   because it needs access to SelectStateContext, which is only created in the BaseSelect component's render function.
   */
-function ComboboxAutoOpen(props: any) {
+function ComboboxAutoOpen(props: PlasmicCanvasProps) {
   const { open, close } = React.useContext(ComboBoxStateContext) ?? {};
 
   useAutoOpen({ props, open, close });
@@ -69,6 +69,8 @@ export function BaseComboBox(props: BaseComboboxProps) {
     children,
     setControlContextData,
     plasmicUpdateVariant,
+    __plasmic_selection_prop__,
+    plasmicNotifyAutoOpenedContent,
     className,
     isOpen: _isOpen, // uncontrolled if not selected in canvas/edit mode
     ...rest
@@ -111,7 +113,10 @@ export function BaseComboBox(props: BaseComboboxProps) {
         >
           {/* PlasmicInputContext is used by BaseInput */}
           <PlasmicInputContext.Provider value={{ isUncontrolled: true }}>
-            <ComboboxAutoOpen {...props} />
+            <ComboboxAutoOpen
+              __plasmic_selection_prop__={__plasmic_selection_prop__}
+              plasmicNotifyAutoOpenedContent={plasmicNotifyAutoOpenedContent}
+            />
             {children}
           </PlasmicInputContext.Provider>
         </PlasmicListBoxContext.Provider>

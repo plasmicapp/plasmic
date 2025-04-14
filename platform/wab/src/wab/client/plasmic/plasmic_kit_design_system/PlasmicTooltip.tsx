@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -140,26 +140,6 @@ function PlasmicTooltip__RenderFunc(props: {
     $refs,
   });
 
-  const [$ccVariants, setDollarCcVariants] = React.useState<
-    Record<string, boolean>
-  >({
-    placementTop: false,
-    placementBottom: false,
-    placementLeft: false,
-    placementRight: false,
-  });
-  const updateVariant = React.useCallback(
-    (changes: Record<string, boolean>) => {
-      setDollarCcVariants((prev) => {
-        if (!Object.keys(changes).some((k) => prev[k] !== changes[k])) {
-          return prev;
-        }
-        return { ...prev, ...changes };
-      });
-    },
-    []
-  );
-
   return (
     <BaseTooltip
       data-plasmic-name={"ariaTooltip"}
@@ -187,7 +167,6 @@ function PlasmicTooltip__RenderFunc(props: {
         );
       }}
       placement={args.placement}
-      plasmicUpdateVariant={updateVariant}
       resetClassName={classNames(
         projectcss.root_reset,
         projectcss.plasmic_default_styles,
@@ -287,15 +266,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicTooltip__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicTooltip__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicTooltip__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+    // Specify args directly as props
+    Omit<PlasmicTooltip__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

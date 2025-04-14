@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -13,15 +13,15 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
+  Flex as Flex__,
+  PlasmicLink as PlasmicLink__,
   StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
 } from "@plasmicapp/react-web";
+import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
@@ -48,8 +48,8 @@ export const PlasmicPromoBanner__ArgProps = new Array<ArgPropType>(
 );
 
 export type PlasmicPromoBanner__OverridesType = {
-  root?: p.Flex<"a">;
-  text?: p.Flex<"div">;
+  root?: Flex__<"a">;
+  text?: Flex__<"div">;
 };
 
 export interface DefaultPromoBannerProps {
@@ -75,7 +75,9 @@ function PlasmicPromoBanner__RenderFunc(props: {
           message: "Sign up!",
           bannerUrl: "https://studio.plasmic.app/signup",
         },
-        props.args
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
       ),
     [props.args]
   );
@@ -85,14 +87,12 @@ function PlasmicPromoBanner__RenderFunc(props: {
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
-
   return (
-    <a
+    <PlasmicLink__
       data-plasmic-name={"root"}
       data-plasmic-override={overrides.root}
       data-plasmic-root={true}
@@ -109,6 +109,7 @@ function PlasmicPromoBanner__RenderFunc(props: {
         sty.root
       )}
       href={args.bannerUrl}
+      platform={"react"}
     >
       <div
         data-plasmic-name={"text"}
@@ -131,7 +132,7 @@ function PlasmicPromoBanner__RenderFunc(props: {
           })()}
         </React.Fragment>
       </div>
-    </a>
+    </PlasmicLink__>
   ) as React.ReactElement | null;
 }
 
@@ -152,7 +153,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicPromoBanner__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
@@ -160,15 +160,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicPromoBanner__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicPromoBanner__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicPromoBanner__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+    // Specify args directly as props
+    Omit<PlasmicPromoBanner__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

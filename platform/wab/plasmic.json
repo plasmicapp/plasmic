@@ -1340,7 +1340,8 @@
       "indirect": false,
       "globalContextsFilePath": "",
       "splitsProviderFilePath": "",
-      "customFunctions": []
+      "customFunctions": [],
+      "jsBundleThemes": []
     },
     {
       "projectId": "aaggSgVS8yYsAwQffVQB4p",
@@ -1437,7 +1438,7 @@
     {
       "projectId": "29njzcsBEPR4koRddw4knF",
       "projectName": "[PlasmicKit] Alert Banner",
-      "version": ">=0.0.0",
+      "version": "latest",
       "cssFilePath": "wab/client/plasmic/PP__plasmickit_alert_banner.module.css",
       "components": [
         {
@@ -1465,15 +1466,35 @@
           "cssFilePath": "wab/client/plasmic/plasmic_kit_alert_banner/PlasmicPromoBanner.module.css",
           "scheme": "blackbox",
           "componentType": "component"
-        }
-      ],
-      "icons": [
+        },
         {
-          "id": "Ou2BoyYzU",
-          "name": "ChevronDownsvgIcon",
-          "moduleFilePath": "wab/client/plasmic/plasmic_kit_alert_banner/icons/PlasmicIcon__ChevronDownsvg.tsx"
+          "id": "LlDTs6h34ISG",
+          "name": "Banner",
+          "type": "managed",
+          "projectId": "29njzcsBEPR4koRddw4knF",
+          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_alert_banner/PlasmicBanner.tsx",
+          "importSpec": {
+            "modulePath": "wab/client/components/Banner.tsx"
+          },
+          "cssFilePath": "wab/client/plasmic/plasmic_kit_alert_banner/PlasmicBanner.module.css",
+          "scheme": "blackbox",
+          "componentType": "component"
+        },
+        {
+          "id": "ETj0D1AzSHQn",
+          "name": "AutoOpenBanner",
+          "type": "managed",
+          "projectId": "29njzcsBEPR4koRddw4knF",
+          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_alert_banner/PlasmicAutoOpenBanner.tsx",
+          "importSpec": {
+            "modulePath": "wab/client/components/AutoOpenBanner.tsx"
+          },
+          "cssFilePath": "wab/client/plasmic/plasmic_kit_alert_banner/PlasmicAutoOpenBanner.module.css",
+          "scheme": "blackbox",
+          "componentType": "component"
         }
       ],
+      "icons": [],
       "images": [],
       "projectApiToken": "tCKZNKmXrJdgAXgl2hMXTCgo95HgoZiCqOzWuPNTbRGZUQ376Cc2rj78tcaaVY6Bu2M14PCiQSxj3xRzndjw",
       "codeComponents": [
@@ -8502,6 +8523,11 @@
           "id": "FOJsdThB5rU-",
           "name": "CheckedCheckboxSvgIcon",
           "moduleFilePath": "wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__CheckedCheckboxSvg.tsx"
+        },
+        {
+          "id": "0dLCQ-imlG_u",
+          "name": "EyeExclamationSvgIcon",
+          "moduleFilePath": "wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__EyeExclamationSvg.tsx"
         }
       ],
       "images": [],
@@ -8523,8 +8549,7 @@
       "indirect": false,
       "globalContextsFilePath": "",
       "splitsProviderFilePath": "",
-      "customFunctions": [],
-      "jsBundleThemes": []
+      "customFunctions": []
     },
     {
       "projectId": "95xp9cYcv7HrNWpFWWhbcv",
@@ -11701,6 +11726,6 @@
   "postSyncCommands": [
     "git ls-files -m | xargs pre-commit run prettier --files"
   ],
-  "cliVersion": "0.1.336",
-  "$schema": "https://unpkg.com/@plasmicapp/cli@0.1.336/dist/plasmic.schema.json"
+  "cliVersion": "0.1.337",
+  "$schema": "https://unpkg.com/@plasmicapp/cli@0.1.337/dist/plasmic.schema.json"
 }

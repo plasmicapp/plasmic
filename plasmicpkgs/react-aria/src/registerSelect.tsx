@@ -19,8 +19,8 @@ import { POPOVER_COMPONENT_NAME } from "./registerPopover";
 import {
   BaseControlContextDataForLists,
   HasControlContextData,
+  PlasmicCanvasProps,
   Registerable,
-  WithPlasmicCanvasComponentInfo,
   extractPlasmicDataProps,
   makeComponentName,
   registerComponentHelper,
@@ -91,7 +91,7 @@ const { variants: SELECT_VARIANTS_DATA } =
 export interface BaseSelectProps
   extends SelectProps<{}>, // NOTE: We don't need generic type here since we don't use items prop (that needs it). We just need to make the type checker happy
     WithVariants<typeof SELECT_VARIANTS>,
-    WithPlasmicCanvasComponentInfo,
+    PlasmicCanvasProps,
     HasControlContextData<BaseControlContextDataForLists> {
   children?: React.ReactNode;
   className?: string;
@@ -109,6 +109,8 @@ export function BaseSelect(props: BaseSelectProps) {
     name,
     setControlContextData,
     plasmicUpdateVariant,
+    plasmicNotifyAutoOpenedContent,
+    __plasmic_selection_prop__,
     defaultSelectedKey,
     "aria-label": ariaLabel,
   } = props;
@@ -154,7 +156,10 @@ export function BaseSelect(props: BaseSelectProps) {
       aria-label={ariaLabel}
       {...extractPlasmicDataProps(props)}
     >
-      <SelectAutoOpen {...props} />
+      <SelectAutoOpen
+        __plasmic_selection_prop__={__plasmic_selection_prop__}
+        plasmicNotifyAutoOpenedContent={plasmicNotifyAutoOpenedContent}
+      />
       {/* PlasmicPopoverTriggerContext is used by BasePopover */}
       <PlasmicPopoverTriggerContext.Provider value={true}>
         {/* PlasmicListBoxContext is used by
