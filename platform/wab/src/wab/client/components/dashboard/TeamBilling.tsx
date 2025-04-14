@@ -235,7 +235,7 @@ function TeamBilling_(props: TeamBillingProps, ref: HTMLElementRefOf<"div">) {
                 "We'd love to speak to you about your experience with Plasmic and walk you through the cancellation. Click 'Confirm' to schedule an appointment with our team.",
             });
             if (confirmed) {
-              window.open("https://cal.com/yangatplasmic/csm", "_blank");
+              window.open("https://zcal.co/jason-plasmic/cancel", "_blank");
             }
             return;
           }
