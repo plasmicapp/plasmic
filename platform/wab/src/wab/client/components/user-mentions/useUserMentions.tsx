@@ -139,12 +139,12 @@ export function useUserMentions({
     const caretIndex = inputElement.selectionStart || 0;
     const { newValue, newCaretPosition } = typeTextAtCaretPosition(
       value,
-      "@",
+      " @",
       caretIndex
     );
 
     onValueChange(newValue);
-    setMentionText((prev) => `${prev}@`);
+    setMentionText((prev) => `${prev ?? ""}@`);
     setInputCaretPosition(newCaretPosition);
   }, [inputElement, value, setInputCaretPosition]);
 
