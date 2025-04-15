@@ -1,6 +1,7 @@
 import CommentPost from "@/wab/client/components/comments/CommentPost";
 import { TplCommentThread } from "@/wab/client/components/comments/utils";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { CommentThreadId } from "@/wab/shared/ApiSchema";
 import { observer } from "mobx-react";
 import * as React from "react";
@@ -10,7 +11,7 @@ export default observer(function RootComment({
   onThreadSelect,
 }: {
   commentThread: TplCommentThread;
-  onThreadSelect: (threadId: CommentThreadId) => void;
+  onThreadSelect: (threadId: CommentThreadId, viewCtx: ViewCtx) => void;
 }) {
   const studioCtx = useStudioCtx();
   const [comment] = commentThread.comments;
@@ -38,7 +39,10 @@ export default observer(function RootComment({
             commentThread.subject,
             commentThread.variants
           );
-          onThreadSelect(threadId);
+          const focusedViewCtx = studioCtx.focusedViewCtx();
+          if (focusedViewCtx) {
+            onThreadSelect(threadId, focusedViewCtx);
+          }
           studioCtx.tryZoomToFitSelection();
         }
       }}

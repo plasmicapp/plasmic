@@ -3653,9 +3653,10 @@ export class StudioCtx extends WithDbCtx {
     }
 
     // Adjust right zoom padding if the comments dialog is open
-    const rightZoomPadding = this.commentsCtx.openedViewCtx()
-      ? COMMENTS_DIALOG_RIGHT_ZOOM_PADDING
-      : DEFAULT_ZOOM_PADDING;
+    const rightZoomPadding =
+      this.commentsCtx.openedNewThread() || this.commentsCtx.openedThread()
+        ? COMMENTS_DIALOG_RIGHT_ZOOM_PADDING
+        : DEFAULT_ZOOM_PADDING;
 
     const scalerRect = frameToScalerRect(element.getBoundingClientRect(), vc);
     this.viewportCtx!.zoomToScalerBox(Box.fromRect(scalerRect), {

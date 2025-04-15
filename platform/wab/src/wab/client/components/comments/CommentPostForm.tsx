@@ -54,11 +54,10 @@ const CommentPostForm = observer(function CommentPostForm(
 
   const { openShareDialog } = useShareDialog();
 
+  const openedNewThread = commentsCtx.openedNewThread();
+
   // Either an existing thread should be selected, or a newThreadTpl should be set.
-  if (
-    (!commentsCtx.openedViewCtx() || !commentsCtx.openedThreadTpl()) &&
-    !threadId
-  ) {
+  if (!openedNewThread && !threadId) {
     return null;
   }
 
@@ -75,11 +74,9 @@ const CommentPostForm = observer(function CommentPostForm(
       commentsCtx.postThreadComment(threadId, commentData);
     } else {
       const location = {
-        subject: commentsCtx
-          .bundler()
-          .addrOf(ensure(commentsCtx.openedThreadTpl(), "")),
+        subject: commentsCtx.bundler().addrOf(ensure(openedNewThread?.tpl, "")),
         variants: getSetOfVariantsForViewCtx(
-          ensure(commentsCtx.openedViewCtx(), ""),
+          ensure(openedNewThread?.viewCtx, ""),
           commentsCtx.bundler()
         ).map((pv) => commentsCtx.bundler().addrOf(pv)),
       };

@@ -15,11 +15,11 @@ export const CommentsDialogs = observer(function CommentsDialogs(
 
   const commentsCtx = studioCtx.commentsCtx;
 
-  if (commentsCtx.openedThreadId()) {
+  if (commentsCtx.openedThread()) {
     return <ThreadCommentsDialog />;
   }
 
-  if (commentsCtx.openedThreadTpl()) {
+  if (commentsCtx.openedNewThread()) {
     return <CommentPostFormDialog />;
   }
 

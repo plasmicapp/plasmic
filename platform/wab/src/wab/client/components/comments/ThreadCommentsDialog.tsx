@@ -18,19 +18,19 @@ export const ThreadCommentsDialog = observer(function ThreadCommentsDialog(
 ) {
   const studioCtx = useStudioCtx();
   const commentsCtx = studioCtx.commentsCtx;
-  const viewCtx = commentsCtx.openedViewCtx();
+  const openedThread = commentsCtx.openedThread();
 
   const selectedThread = React.useMemo(
     () =>
       commentsCtx
         .computedData()
-        .allThreads.find((t) => t.id === commentsCtx.openedThreadId()),
-    [commentsCtx.computedData().allThreads, commentsCtx.openedThreadId()]
+        .allThreads.find((t) => t.id === openedThread?.threadId),
+    [commentsCtx.computedData().allThreads, openedThread?.threadId]
   );
 
   const threadSubject = selectedThread?.subject;
 
-  if (!threadSubject || !viewCtx) {
+  if (!threadSubject || !openedThread?.viewCtx) {
     return null;
   }
 
@@ -47,7 +47,9 @@ export const ThreadCommentsDialog = observer(function ThreadCommentsDialog(
             name: threadSubject.name || "Unnamed",
             type: summarizeTpl(
               threadSubject,
-              viewCtx.effectiveCurrentVariantSetting(threadSubject).rsh()
+              openedThread?.viewCtx
+                .effectiveCurrentVariantSetting(threadSubject)
+                .rsh()
             ),
           },
           canUpdateHistory: canUpdateThreadHistory,

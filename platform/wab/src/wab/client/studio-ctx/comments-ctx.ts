@@ -44,16 +44,25 @@ import { computedFn } from "mobx-utils";
 
 export const COMMENTS_DIALOG_RIGHT_ZOOM_PADDING = 320;
 
+export interface OpenedThread {
+  threadId: CommentThreadId;
+  viewCtx: ViewCtx;
+}
+
+export interface OpenedNewThread {
+  tpl: TplNamable;
+  viewCtx: ViewCtx;
+}
+
 export class CommentsCtx {
   private disposals: (() => void)[] = [];
 
-  private readonly _openedThreadId = observable.box<
-    CommentThreadId | undefined
-  >(undefined);
-  private readonly _openedNewThreadTpl = observable.box<TplNamable | undefined>(
+  private readonly _openedThread = observable.box<OpenedThread | undefined>(
     undefined
   );
-  private readonly _openedViewCtx = observable.box<ViewCtx>(undefined);
+  private readonly _openedNewThread = observable.box<
+    OpenedNewThread | undefined
+  >(undefined);
   private readonly _rawThreads = observable.array<ApiCommentThread>([], {
     deep: true,
   });
@@ -117,12 +126,12 @@ export class CommentsCtx {
     }
   );
 
-  openedThreadId() {
-    return this._openedThreadId.get();
+  openedThread() {
+    return this._openedThread.get();
   }
 
-  openedThreadTpl() {
-    return this._openedNewThreadTpl.get();
+  openedNewThread() {
+    return this._openedNewThread.get();
   }
 
   bundler() {
@@ -149,20 +158,10 @@ export class CommentsCtx {
     return this.studioCtx.siteInfo.id;
   }
 
-  openedViewCtx() {
-    return this._openedViewCtx.get();
-  }
-
-  openCommentThreadDialog(
-    threadId: CommentThreadId,
-    viewCtx?: ViewCtx | undefined // If undefined, the element or its corresponding view context must be in focus for correct behavior.
-  ) {
+  openCommentThreadDialog(threadId: CommentThreadId, viewCtx: ViewCtx) {
     runInAction(() => {
-      // Use the provided viewCtx, or fall back to the currently focused view context if not provided.
-      // This ensures the comment thread opens in the correct context, as the element should already be focused.
-      this._openedViewCtx.set(viewCtx || this.studioCtx.focusedViewCtx());
-      this._openedThreadId.set(threadId);
-      this._openedNewThreadTpl.set(undefined);
+      this._openedNewThread.set(undefined);
+      this._openedThread.set({ viewCtx, threadId });
     });
   }
 
@@ -197,9 +196,8 @@ export class CommentsCtx {
 
   openNewCommentDialog(viewCtx: ViewCtx, tpl: TplNamable) {
     runInAction(() => {
-      this._openedThreadId.set(undefined);
-      this._openedViewCtx.set(viewCtx);
-      this._openedNewThreadTpl.set(tpl);
+      this._openedThread.set(undefined);
+      this._openedNewThread.set({ viewCtx, tpl });
     });
   }
 
@@ -231,9 +229,8 @@ export class CommentsCtx {
 
   closeCommentDialogs() {
     runInAction(() => {
-      this._openedThreadId.set(undefined);
-      this._openedViewCtx.set(undefined);
-      this._openedNewThreadTpl.set(undefined);
+      this._openedNewThread.set(undefined);
+      this._openedThread.set(undefined);
     });
   }
 

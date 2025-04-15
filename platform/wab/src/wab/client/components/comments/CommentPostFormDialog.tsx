@@ -15,13 +15,13 @@ export const CommentPostFormDialog = observer(function CommentPostFormDialog(
   const studioCtx = useStudioCtx();
 
   const commentsCtx = studioCtx.commentsCtx;
-  const viewCtx = commentsCtx.openedViewCtx();
+  const openedNewThread = commentsCtx.openedNewThread();
 
-  const threadSubject = commentsCtx.openedThreadTpl();
-
-  if (!threadSubject || !viewCtx) {
+  if (!openedNewThread) {
     return null;
   }
+
+  const threadSubject = openedNewThread.tpl;
 
   return (
     <div className="CommentDialogContainer">
@@ -35,7 +35,9 @@ export const CommentPostFormDialog = observer(function CommentPostFormDialog(
             name: threadSubject.name || "Unnamed",
             type: summarizeTpl(
               threadSubject,
-              viewCtx.effectiveCurrentVariantSetting(threadSubject).rsh()
+              openedNewThread.viewCtx
+                .effectiveCurrentVariantSetting(threadSubject)
+                .rsh()
             ),
           },
         }}

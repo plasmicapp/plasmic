@@ -136,8 +136,8 @@ export const CommentsTab = observer(function CommentsTab(
               <RootComment
                 key={threadComment.id}
                 commentThread={threadComment}
-                onThreadSelect={(threadId) =>
-                  commentsCtx.openCommentThreadDialog(threadId)
+                onThreadSelect={(threadId, openedViewCtx) =>
+                  commentsCtx.openCommentThreadDialog(threadId, openedViewCtx)
                 }
               />
             )),
@@ -157,8 +157,8 @@ export const CommentsTab = observer(function CommentsTab(
                 <RootComment
                   key={commentThread.id}
                   commentThread={commentThread}
-                  onThreadSelect={(threadId) =>
-                    commentsCtx.openCommentThreadDialog(threadId)
+                  onThreadSelect={(threadId, openedViewCtx) =>
+                    commentsCtx.openCommentThreadDialog(threadId, openedViewCtx)
                   }
                 />
               )),

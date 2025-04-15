@@ -67,6 +67,7 @@ const CanvasCommentMarker = observer(function CanvasCommentMarker(props: {
 
   const threadComments = commentThread.comments;
   const [comment] = threadComments;
+  const openedThread = commentsCtx.openedThread();
   const subject = commentsCtx
     .bundler()
     .objByAddr(commentThread.location.subject) as TplNode;
@@ -74,7 +75,7 @@ const CanvasCommentMarker = observer(function CanvasCommentMarker(props: {
     commentsCtx.computedData().usersMap.get(ensureString(comment.createdById)),
     "Comment author should exist"
   );
-  const isSelected = commentsCtx.openedThreadId() === commentThread.id;
+  const isSelected = openedThread?.threadId === commentThread.id;
   return (
     <CanvasCommentOverlay
       offsetRight={offsetRight}
