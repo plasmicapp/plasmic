@@ -3,6 +3,10 @@ import type { KnipConfig } from "knip";
 const config: KnipConfig = {
   ignoreWorkspaces: [".", "packages/**/*", "plasmicpkgs/**/*"],
   workspaces: {
+    "platform/analytics": {
+      entry: ["src/entry-app.ts", "src/entry-prepare-salt.ts"],
+      project: ["**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}"],
+    },
     "platform/wab": {
       entry: ["**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}"],
       project: ["**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}"],
