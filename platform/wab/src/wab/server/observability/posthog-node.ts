@@ -1,5 +1,5 @@
 import { unexpected } from "@/wab/shared/common";
-import type { Analytics } from "@/wab/shared/observability/Analytics";
+import { Analytics, Properties } from "@/wab/shared/observability/Analytics";
 import { BaseAnalytics } from "@/wab/shared/observability/BaseAnalytics";
 import { PostHog } from "posthog-node";
 
@@ -25,7 +25,7 @@ class PostHogNodeAnalytics extends BaseAnalytics implements Analytics {
     super();
   }
 
-  identify(userId, userProperties) {
+  identify(userId: string, userProperties: Properties) {
     this.ph.identify({
       distinctId: userId,
       properties: userProperties,
@@ -33,11 +33,11 @@ class PostHogNodeAnalytics extends BaseAnalytics implements Analytics {
     this.setUser(userId);
   }
 
-  track(eventName, eventProperties) {
+  doTrack(eventName: string, eventProperties?: Properties) {
     this.ph.capture({
       distinctId: this.userId,
       event: eventName,
-      properties: this.mergeEventProperties(eventProperties),
+      properties: eventProperties,
     });
   }
 

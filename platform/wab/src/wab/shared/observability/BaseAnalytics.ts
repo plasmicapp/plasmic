@@ -1,4 +1,7 @@
-import type { Properties } from "@/wab/shared/observability/Analytics";
+import type {
+  Properties,
+  TrackOptions,
+} from "@/wab/shared/observability/Analytics";
 
 /**
  * For implementing a stateful Analytics implementation that keeps track of the
@@ -10,19 +13,49 @@ export abstract class BaseAnalytics {
   protected userId: string = "";
   protected baseEventProperties: Properties = {};
 
-  setUser(userId) {
+  setUser(userId: string): void {
     this.userId = userId;
   }
 
-  setAnonymousUser() {
+  setAnonymousUser(): void {
     this.userId = "";
   }
 
-  appendBaseEventProperties(newProperties) {
+  appendBaseEventProperties(newProperties: Properties): void {
     Object.assign(this.baseEventProperties, newProperties);
   }
 
-  protected mergeEventProperties(eventProperties: Properties) {
-    return { ...this.baseEventProperties, ...eventProperties };
+  track(
+    eventName: string,
+    eventProperties?: Properties,
+    opts?: TrackOptions
+  ): void {
+    const sampleThreshold = opts?.sampleThreshold;
+    if (sampleThreshold === undefined || Math.random() < sampleThreshold) {
+      // Merge event properties in this order (last takes precedence):
+      // 1. base event properties
+      // 2. specific event properties
+      // 3. sample threshold property (if present)
+      this.doTrack(
+        eventName,
+        this.mergeEventProperties(
+          eventProperties,
+          sampleThreshold
+            ? {
+                _sampleThreshold: sampleThreshold,
+              }
+            : undefined
+        )
+      );
+    }
+  }
+
+  protected abstract doTrack(
+    eventName: string,
+    eventProperties?: Properties
+  ): void;
+
+  private mergeEventProperties(p1?: Properties, p2?: Properties): Properties {
+    return { ...this.baseEventProperties, ...p1, ...p2 };
   }
 }

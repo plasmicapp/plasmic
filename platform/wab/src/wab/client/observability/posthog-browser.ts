@@ -1,4 +1,8 @@
-import type { Analytics } from "@/wab/shared/observability/Analytics";
+import type {
+  Analytics,
+  Properties,
+} from "@/wab/shared/observability/Analytics";
+import { BaseAnalytics } from "@/wab/shared/observability/BaseAnalytics";
 import { posthog, PostHog, PostHogConfig } from "posthog-js";
 
 /**
@@ -20,14 +24,16 @@ export function initPosthogBrowser(opts: {
   return new PostHogAnalytics(ph);
 }
 
-export class PostHogAnalytics implements Analytics {
-  constructor(readonly ph: PostHog) {}
+export class PostHogAnalytics extends BaseAnalytics implements Analytics {
+  constructor(readonly ph: PostHog) {
+    super();
+  }
 
-  appendBaseEventProperties(newProperties) {
+  appendBaseEventProperties(newProperties: Properties) {
     this.ph.register(newProperties);
   }
 
-  setUser(userId) {
+  setUser(userId: string) {
     this.ph.identify(userId);
   }
 
@@ -35,11 +41,11 @@ export class PostHogAnalytics implements Analytics {
     this.ph.reset();
   }
 
-  identify(userId, userProperties) {
+  identify(userId: string, userProperties: Properties) {
     this.ph.identify(userId, userProperties);
   }
 
-  track(eventName, eventProperties) {
+  doTrack(eventName: string, eventProperties?: Properties): void {
     this.ph.capture(eventName, eventProperties);
   }
 
