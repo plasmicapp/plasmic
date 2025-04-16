@@ -20,6 +20,7 @@ import { ensure, spawn } from "@/wab/shared/common";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { useState } from "react";
+import ReactDOM from "react-dom";
 
 export type CommentPostFormProps = DefaultCommentPostFormProps & {
   threadId?: CommentThreadId;
@@ -164,7 +165,7 @@ const CommentPostForm = observer(function CommentPostForm(
           },
         }}
       />
-      {userMentionsPopover}
+      {ReactDOM.createPortal(userMentionsPopover, document.body)}
     </>
   );
 });
