@@ -31,6 +31,9 @@
   max-width: 100%;
   min-width: 0;
 }
+.bodyInputisPreviewing:global(.__wab_instance):global(.__wab_instance) {
+  display: none;
+}
 .svg__fzlje {
   position: relative;
   height: 1em;
@@ -38,6 +41,18 @@
 .svg__wk3Cb {
   position: relative;
   height: 1em;
+}
+.body {
+  position: relative;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  min-width: 0;
+  display: none;
+  padding: var(--token-uzWT6AFCY);
+}
+.bodyisPreviewing {
+  display: block;
 }
 .freeBox__ekXz {
   display: flex;
@@ -83,6 +98,9 @@
 .shareProjectIcon:global(.__wab_instance) {
   max-width: 100%;
 }
+.shareProjectIconisEditing:global(.__wab_instance) {
+  display: none;
+}
 .svg__t3Ip6 {
   object-fit: cover;
   max-width: 100%;
@@ -97,6 +115,9 @@
 }
 .markdownHintsIcon:global(.__wab_instance) {
   max-width: 100%;
+}
+.markdownHintsIconisEditing:global(.__wab_instance) {
+  display: none;
 }
 .svg__kDvAo {
   object-fit: cover;
@@ -119,26 +140,33 @@
   flex-direction: row;
   align-items: stretch;
   justify-content: flex-start;
+  margin-left: calc(0px - var(--token-uzWT6AFCY));
+  width: calc(100% + var(--token-uzWT6AFCY));
 }
-.freeBoxisEditing__jbqOpZsQtK > :global(.__wab_flex-container) {
-  margin-left: calc(0px - 8px);
-  width: calc(100% + 8px);
-  margin-top: calc(0px - 0px);
-  height: calc(100% + 0px);
-}
-.freeBoxisEditing__jbqOpZsQtK > :global(.__wab_flex-container) > *,
-.freeBoxisEditing__jbqOpZsQtK
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > *,
-.freeBoxisEditing__jbqOpZsQtK > :global(.__wab_flex-container) > picture > img,
-.freeBoxisEditing__jbqOpZsQtK
+.freeBox__jbqOp > :global(.__wab_flex-container) > *,
+.freeBox__jbqOp > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
+.freeBox__jbqOp > :global(.__wab_flex-container) > picture > img,
+.freeBox__jbqOp
   > :global(.__wab_flex-container)
   > :global(.__wab_slot)
   > picture
   > img {
-  margin-left: 8px;
-  margin-top: 0px;
+  margin-left: var(--token-uzWT6AFCY);
+}
+.previewButton:global(.__wab_instance):global(.__wab_instance) {
+  max-width: 100%;
+}
+.svg__ldnse {
+  position: relative;
+  height: 1em;
+}
+.text__geIt {
+  white-space: pre;
+  padding-right: 0px;
+}
+.svg__haP8F {
+  position: relative;
+  height: 1em;
 }
 .cancelButton:global(.__wab_instance):global(.__wab_instance) {
   max-width: 100%;

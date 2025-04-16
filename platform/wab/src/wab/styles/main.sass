@@ -5820,8 +5820,19 @@ a, button.link-like
   user-select: text
   cursor: text
 
-.comment-body
+.markdown-body
   @extend .selectable-text
+  line-height: 0.5
+  *
+    margin: 0
+    padding: 0
+    line-height: 1.2
+  ul,
+  ol
+    margin-left: 1.5rem
+    line-height: 0.5
+    li
+      line-height: 0.8
   ul
     list-style-type: unset
     li
@@ -5829,6 +5840,7 @@ a, button.link-like
   ol
     li
       list-style-type: decimal
+
 .banner-bottom
   position: absolute !important
   bottom: 50px

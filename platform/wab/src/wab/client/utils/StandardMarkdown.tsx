@@ -47,6 +47,7 @@ export function StandardMarkdown(props: ComponentProps<typeof ReactMarkdown>) {
           return defaultLinkNode;
         },
       }}
+      className="markdown-body"
       {...props}
       children={processedChildren}
     />

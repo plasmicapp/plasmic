@@ -10,6 +10,7 @@ import {
 } from "@/wab/client/plasmic/plasmic_kit_comments/PlasmicCommentPostForm";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { getSetOfVariantsForViewCtx } from "@/wab/client/studio-ctx/view-ctx";
+import { StandardMarkdown } from "@/wab/client/utils/StandardMarkdown";
 import {
   ApiComment,
   CommentThreadId,
@@ -35,6 +36,7 @@ const CommentPostForm = observer(function CommentPostForm(
   const { threadId, isEditing, editComment, onSubmit, onCancel, ...rest } =
     props;
   const [value, setValue] = useState(editComment?.body || "");
+  const [isPreviewing, setIsPreviewing] = React.useState(false);
 
   const studioCtx = useStudioCtx();
 
@@ -64,7 +66,7 @@ const CommentPostForm = observer(function CommentPostForm(
 
   function isValidComment() {
     return (
-      value.trim().length > 0 || value.trim() !== editComment?.body?.trim()
+      value.trim().length > 0 && value.trim() !== editComment?.body?.trim()
     );
   }
 
@@ -106,7 +108,9 @@ const CommentPostForm = observer(function CommentPostForm(
     <>
       <PlasmicCommentPostForm
         {...rest}
+        isPreviewing={isPreviewing}
         isEditing={isEditing}
+        body={<StandardMarkdown>{value}</StandardMarkdown>}
         bodyInput={{
           autoComplete: "off",
           placeholder: "Add a comment",
@@ -134,6 +138,7 @@ const CommentPostForm = observer(function CommentPostForm(
             } else {
               spawn(handleAddComment());
             }
+            setIsPreviewing(false);
           },
           disabled: !isValidComment(),
         }}
@@ -141,6 +146,12 @@ const CommentPostForm = observer(function CommentPostForm(
           onClick: () => {
             onCancel?.();
           },
+        }}
+        previewButton={{
+          onClick: () => {
+            setIsPreviewing(!isPreviewing);
+          },
+          disabled: value.trim().length === 0,
         }}
         markdownHintsIcon={{
           render: (iconProps, HintIconComponent) => {
