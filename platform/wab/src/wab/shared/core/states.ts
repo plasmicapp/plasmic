@@ -617,10 +617,8 @@ export function* findRecursiveImplicitStates(site: Site, state: State) {
 }
 
 export function removeImplicitStates(site: Site, state: State) {
-  for (const {
-    component: refComponent,
-    state: refState,
-  } of findRecursiveImplicitStates(site, state)) {
+  const usages = [...findRecursiveImplicitStates(site, state)];
+  for (const { component: refComponent, state: refState } of usages) {
     removeComponentState(site, refComponent, refState);
   }
 }
