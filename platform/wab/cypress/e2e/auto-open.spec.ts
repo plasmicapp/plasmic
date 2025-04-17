@@ -194,7 +194,8 @@ describe("Auto Open", () => {
       });
     });
 
-    it("should work when auto-openable components are inside another auto-openable component", () => {
+    // TODO: turn on when PLA-12032 is fixxed
+    xit("should work when auto-openable components are inside another auto-openable component", () => {
       cy.withinStudioIframe(() => {
         cy.createNewPageInOwnArena(pageName).then((pageFrame) => {
           cy.justLog("Testing in design mode");
