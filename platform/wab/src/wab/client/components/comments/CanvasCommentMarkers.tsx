@@ -84,6 +84,7 @@ const CanvasCommentMarker = observer(function CanvasCommentMarker(props: {
       className={"CommentMarker"}
       onClick={(e) => {
         if (!isSelected) {
+          e.stopPropagation();
           commentsCtx.openCommentThreadDialog(commentThread.id, viewCtx);
         }
       }}
@@ -147,7 +148,10 @@ export function CanvasAddCommentMarker(props: {
       <Tooltip title="New comment">
         <AddCommentMarker
           icon={{
-            onClick: () => commentsCtx.openNewCommentDialog(viewCtx, tpl),
+            onClick: (e) => {
+              e.stopPropagation();
+              commentsCtx.openNewCommentDialog(viewCtx, tpl);
+            },
           }}
         />
       </Tooltip>
