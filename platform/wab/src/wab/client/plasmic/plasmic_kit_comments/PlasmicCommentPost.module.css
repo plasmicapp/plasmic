@@ -13,6 +13,14 @@
 .rootthread {
   padding: var(--token-8b4HJYZr1yuK);
 }
+.roothoverBox {
+  box-shadow: 0px 12px 60px 0px #00000026, 0px 12px 32px -16px #0009321f;
+  background: var(--token-rqQDmopteQdV);
+  width: 300px;
+  border-radius: var(--token-XnnXV8YSKg9w);
+  padding: var(--token-XnnXV8YSKg9w);
+  border: 1px solid var(--token-JpKJ41ZaDWOC);
+}
 .root:hover {
   background: var(--token-9jh0BkCENS);
 }
@@ -59,6 +67,9 @@
   flex-shrink: 0;
   padding: 0px;
 }
+.avatarContainerhoverBox {
+  display: none;
+}
 .img {
   object-fit: cover;
   max-width: 100%;
@@ -68,11 +79,13 @@
 .img > picture > img {
   object-fit: cover;
 }
-.text {
+.freeBox___079IS {
+  display: flex;
+  flex-direction: column;
   position: relative;
+  align-items: flex-start;
+  justify-content: center;
   width: 100%;
-  height: auto;
-  max-width: 800px;
   min-width: 0;
 }
 .userFullName {
@@ -80,7 +93,6 @@
 }
 .timestamp {
   color: var(--token-PTyaboLP9ZK);
-  padding: 0px 0px 0px 4px;
 }
 .actions {
   display: flex;
@@ -96,6 +108,9 @@
 .actionsisDeleted {
   display: none;
 }
+.actionshoverBox {
+  display: none;
+}
 .btnMore:global(.__wab_instance):global(.__wab_instance) {
   position: relative;
   opacity: 0;
@@ -106,6 +121,9 @@
   display: none;
 }
 .btnMoreisDeleted:global(.__wab_instance):global(.__wab_instance) {
+  flex-shrink: 0;
+}
+.btnMorehoverBox:global(.__wab_instance):global(.__wab_instance) {
   flex-shrink: 0;
 }
 .root:hover .btnMore:global(.__wab_instance):global(.__wab_instance) {
@@ -144,6 +162,9 @@
 .freeBoxisEditing___5UHnquz8Vl {
   padding-left: 0px;
 }
+.freeBoxhoverBox___5UHnqbLDov {
+  padding-left: 0px;
+}
 .subjectLabel {
   width: 100%;
   height: auto;
@@ -171,10 +192,13 @@
 .freeBoxisEditing__dc1JVuz8Vl {
   display: none;
 }
+.freeBoxhoverBox__dc1JVbLDov {
+  max-height: 200px;
+  overflow: auto;
+}
 .body {
   width: 100%;
   height: auto;
-  max-width: 800px;
   min-width: 0;
 }
 .bodyisDeleted {
@@ -217,6 +241,9 @@
   display: none;
 }
 .reactionsContainerisDeleted {
+  display: none;
+}
+.reactionsContainerhoverBox {
   display: none;
 }
 .reactionButton__cMbVc:global(.__wab_instance) {
@@ -275,11 +302,18 @@
 .repliesLinkthread:global(.__wab_instance) {
   display: flex;
 }
+.repliesLinkhoverBox:global(.__wab_instance) {
+  align-self: flex-start;
+  display: flex;
+}
 .svg__zSW5 {
   display: flex;
   position: relative;
   object-fit: cover;
   height: 1em;
+}
+.texthoverBox {
+  color: var(--token-RTPypKCJE4bm);
 }
 .svg__lotPp {
   display: flex;

@@ -7,7 +7,7 @@
   display: flex;
   position: relative;
   flex-direction: column;
-  background: var(--token-rqQDmopteQdV);
+  background: var(--token-D666zt2IZPL);
   width: 20px;
   height: 20px;
   align-items: center;
@@ -15,20 +15,20 @@
   border-radius: var(--token-YwPV7bN0RvD8);
 }
 .icon:hover .freeBox {
-  background: var(--token-D666zt2IZPL);
+  background: var(--token-rqQDmopteQdV);
 }
 .svg {
   display: flex;
   position: relative;
   object-fit: cover;
-  color: var(--token-D666zt2IZPL);
+  color: var(--token-rqQDmopteQdV);
   left: auto;
   top: auto;
   height: 1em;
   flex-shrink: 0;
 }
 .icon:hover .svg {
-  color: var(--token-rqQDmopteQdV);
+  color: var(--token-D666zt2IZPL);
 }
 .svg___8Tbb3 {
   display: flex;

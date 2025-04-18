@@ -4555,13 +4555,9 @@ $resizer_size: 8px
   background-color: rgba($active-fg, 0.1)
 
 .CommentMarkerContainer
-  z-index: 11
-  &:hover
-    z-index: 12
   &:hover > .CommentMarkerOverlay
     display: unset
 .CommentMarkerContainerSelected
-  z-index: 13
   .CommentMarkerOverlay
     display: unset
 .CommentMarkerOverlay
@@ -4587,28 +4583,12 @@ $resizer_size: 8px
 
 .CommentMarkerInitial
   @include popup-box-hoverable
-.CommentMarkerHover
-  @include popup-box-hoverable
-  display: none
-  position: absolute
-  top: 0
-  left: 0
 
 .AddCommentMarker
   pointer-events: initial
   position: absolute
   right: 0%
   bottom: calc(100% + 4px)
-
-
-.CommentMarkerContainer:hover:not(.CommentMarkerContainerSelected) .CommentMarkerHover
-  display: unset
-.CommentMarkerContainerSelected
-  display: unset
-.CommentMarker:hover, .CommentMarkerContainerSelected
-  .CommentMarkerInitial
-    visibility: hidden
-    opacity: 0
 
 .ReactionBtn
   opacity: 0

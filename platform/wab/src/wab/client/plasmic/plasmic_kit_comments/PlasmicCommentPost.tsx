@@ -51,19 +51,22 @@ export type PlasmicCommentPost__VariantMembers = {
   isEditing: "isEditing";
   isDeleted: "isDeleted";
   canUpdateHistory: "canUpdateHistory";
+  hoverBox: "hoverBox";
 };
 export type PlasmicCommentPost__VariantsArgs = {
   thread?: SingleBooleanChoiceArg<"thread">;
   isEditing?: SingleBooleanChoiceArg<"isEditing">;
   isDeleted?: SingleBooleanChoiceArg<"isDeleted">;
   canUpdateHistory?: SingleBooleanChoiceArg<"canUpdateHistory">;
+  hoverBox?: SingleBooleanChoiceArg<"hoverBox">;
 };
 type VariantPropType = keyof PlasmicCommentPost__VariantsArgs;
 export const PlasmicCommentPost__VariantProps = new Array<VariantPropType>(
   "thread",
   "isEditing",
   "isDeleted",
-  "canUpdateHistory"
+  "canUpdateHistory",
+  "hoverBox"
 );
 
 export type PlasmicCommentPost__ArgsType = {};
@@ -74,7 +77,6 @@ export type PlasmicCommentPost__OverridesType = {
   root?: Flex__<"div">;
   avatarContainer?: Flex__<"div">;
   img?: Flex__<typeof PlasmicImg__>;
-  text?: Flex__<"div">;
   userFullName?: Flex__<"span">;
   timestamp?: Flex__<"span">;
   actions?: Flex__<"div">;
@@ -87,6 +89,7 @@ export type PlasmicCommentPost__OverridesType = {
   svg?: Flex__<"svg">;
   commentPostForm?: Flex__<typeof CommentPostForm>;
   repliesLink?: Flex__<typeof Button>;
+  text?: Flex__<"div">;
 };
 
 export interface DefaultCommentPostProps {
@@ -94,6 +97,7 @@ export interface DefaultCommentPostProps {
   isEditing?: SingleBooleanChoiceArg<"isEditing">;
   isDeleted?: SingleBooleanChoiceArg<"isDeleted">;
   canUpdateHistory?: SingleBooleanChoiceArg<"canUpdateHistory">;
+  hoverBox?: SingleBooleanChoiceArg<"hoverBox">;
   className?: string;
 }
 
@@ -154,6 +158,12 @@ function PlasmicCommentPost__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) =>
           $props.canUpdateHistory,
       },
+      {
+        path: "hoverBox",
+        type: "private",
+        variableType: "variant",
+        initFunc: ({ $props, $state, $queries, $ctx }) => $props.hoverBox,
+      },
     ],
     [$props, $ctx, $refs]
   );
@@ -180,6 +190,7 @@ function PlasmicCommentPost__RenderFunc(props: {
         plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
         sty.root,
         {
+          [sty.roothoverBox]: hasVariant($state, "hoverBox", "hoverBox"),
           [sty.rootisEditing]: hasVariant($state, "isEditing", "isEditing"),
           [sty.rootthread]: hasVariant($state, "thread", "thread"),
         }
@@ -194,6 +205,11 @@ function PlasmicCommentPost__RenderFunc(props: {
             "canUpdateHistory",
             "canUpdateHistory"
           ),
+          [sty.freeBoxhoverBox__sfn9IbLDov]: hasVariant(
+            $state,
+            "hoverBox",
+            "hoverBox"
+          ),
           [sty.freeBoxisEditing__sfn9Iuz8Vl]: hasVariant(
             $state,
             "isEditing",
@@ -205,13 +221,20 @@ function PlasmicCommentPost__RenderFunc(props: {
         <div
           data-plasmic-name={"avatarContainer"}
           data-plasmic-override={overrides.avatarContainer}
-          className={classNames(projectcss.all, sty.avatarContainer)}
+          className={classNames(projectcss.all, sty.avatarContainer, {
+            [sty.avatarContainerhoverBox]: hasVariant(
+              $state,
+              "hoverBox",
+              "hoverBox"
+            ),
+          })}
         >
           <PlasmicImg__
             data-plasmic-name={"img"}
             data-plasmic-override={overrides.img}
             alt={""}
             className={classNames(sty.img, {
+              [sty.imghoverBox]: hasVariant($state, "hoverBox", "hoverBox"),
               [sty.imgisEditing]: hasVariant($state, "isEditing", "isEditing"),
             })}
             displayHeight={"auto"}
@@ -229,63 +252,39 @@ function PlasmicCommentPost__RenderFunc(props: {
             }}
           />
         </div>
-        <div
-          data-plasmic-name={"text"}
-          data-plasmic-override={overrides.text}
-          className={classNames(
-            projectcss.all,
-            projectcss.__wab_text,
-            sty.text,
-            { [sty.textthread]: hasVariant($state, "thread", "thread") }
-          )}
-        >
-          <React.Fragment>
-            <React.Fragment>{""}</React.Fragment>
-            {
-              <span
-                data-plasmic-name={"userFullName"}
-                data-plasmic-override={overrides.userFullName}
-                className={classNames(
-                  projectcss.all,
-                  projectcss.span,
-                  projectcss.__wab_text,
-                  projectcss.plasmic_default__inline,
-                  sty.userFullName
-                )}
-              >
-                {"User Name"}
-              </span>
-            }
-            <React.Fragment> </React.Fragment>
-            {
-              <span
-                data-plasmic-name={"timestamp"}
-                data-plasmic-override={overrides.timestamp}
-                className={classNames(
-                  projectcss.all,
-                  projectcss.span,
-                  projectcss.__wab_text,
-                  projectcss.plasmic_default__inline,
-                  sty.timestamp,
-                  {
-                    [sty.timestampisDeleted]: hasVariant(
-                      $state,
-                      "isDeleted",
-                      "isDeleted"
-                    ),
-                    [sty.timestampthread]: hasVariant(
-                      $state,
-                      "thread",
-                      "thread"
-                    ),
-                  }
-                )}
-              >
-                {"3 hours ago"}
-              </span>
-            }
-            <React.Fragment>{""}</React.Fragment>
-          </React.Fragment>
+        <div className={classNames(projectcss.all, sty.freeBox___079IS)}>
+          <span
+            data-plasmic-name={"userFullName"}
+            data-plasmic-override={overrides.userFullName}
+            className={classNames(
+              projectcss.all,
+              projectcss.span,
+              projectcss.__wab_text,
+              sty.userFullName
+            )}
+          >
+            {"User Name"}
+          </span>
+          <span
+            data-plasmic-name={"timestamp"}
+            data-plasmic-override={overrides.timestamp}
+            className={classNames(
+              projectcss.all,
+              projectcss.span,
+              projectcss.__wab_text,
+              sty.timestamp,
+              {
+                [sty.timestampisDeleted]: hasVariant(
+                  $state,
+                  "isDeleted",
+                  "isDeleted"
+                ),
+                [sty.timestampthread]: hasVariant($state, "thread", "thread"),
+              }
+            )}
+          >
+            {"3 hours ago"}
+          </span>
         </div>
         <div
           data-plasmic-name={"actions"}
@@ -296,6 +295,7 @@ function PlasmicCommentPost__RenderFunc(props: {
               "canUpdateHistory",
               "canUpdateHistory"
             ),
+            [sty.actionshoverBox]: hasVariant($state, "hoverBox", "hoverBox"),
             [sty.actionsisDeleted]: hasVariant(
               $state,
               "isDeleted",
@@ -308,6 +308,7 @@ function PlasmicCommentPost__RenderFunc(props: {
             data-plasmic-name={"btnMore"}
             data-plasmic-override={overrides.btnMore}
             className={classNames("__wab_instance", sty.btnMore, {
+              [sty.btnMorehoverBox]: hasVariant($state, "hoverBox", "hoverBox"),
               [sty.btnMoreisDeleted]: hasVariant(
                 $state,
                 "isDeleted",
@@ -339,6 +340,11 @@ function PlasmicCommentPost__RenderFunc(props: {
       </Stack__>
       <div
         className={classNames(projectcss.all, sty.freeBox___5UHnq, {
+          [sty.freeBoxhoverBox___5UHnqbLDov]: hasVariant(
+            $state,
+            "hoverBox",
+            "hoverBox"
+          ),
           [sty.freeBoxisEditing___5UHnquz8Vl]: hasVariant(
             $state,
             "isEditing",
@@ -380,6 +386,11 @@ function PlasmicCommentPost__RenderFunc(props: {
         ) : null}
         <div
           className={classNames(projectcss.all, sty.freeBox__dc1JV, {
+            [sty.freeBoxhoverBox__dc1JVbLDov]: hasVariant(
+              $state,
+              "hoverBox",
+              "hoverBox"
+            ),
             [sty.freeBoxisEditing__dc1JVuz8Vl]: hasVariant(
               $state,
               "isEditing",
@@ -405,6 +416,7 @@ function PlasmicCommentPost__RenderFunc(props: {
                   "canUpdateHistory",
                   "canUpdateHistory"
                 ),
+                [sty.bodyhoverBox]: hasVariant($state, "hoverBox", "hoverBox"),
                 [sty.bodyisDeleted]: hasVariant(
                   $state,
                   "isDeleted",
@@ -430,6 +442,11 @@ function PlasmicCommentPost__RenderFunc(props: {
           data-plasmic-override={overrides.reactionsContainer}
           hasGap={true}
           className={classNames(projectcss.all, sty.reactionsContainer, {
+            [sty.reactionsContainerhoverBox]: hasVariant(
+              $state,
+              "hoverBox",
+              "hoverBox"
+            ),
             [sty.reactionsContainerisDeleted]: hasVariant(
               $state,
               "isDeleted",
@@ -500,11 +517,26 @@ function PlasmicCommentPost__RenderFunc(props: {
         data-plasmic-name={"repliesLink"}
         data-plasmic-override={overrides.repliesLink}
         className={classNames("__wab_instance", sty.repliesLink, {
+          [sty.repliesLinkhoverBox]: hasVariant($state, "hoverBox", "hoverBox"),
           [sty.repliesLinkthread]: hasVariant($state, "thread", "thread"),
         })}
         type={["link"]}
       >
-        {"3 replies"}
+        <div
+          data-plasmic-name={"text"}
+          data-plasmic-override={overrides.text}
+          className={classNames(
+            projectcss.all,
+            projectcss.__wab_text,
+            sty.text,
+            {
+              [sty.texthoverBox]: hasVariant($state, "hoverBox", "hoverBox"),
+              [sty.textthread]: hasVariant($state, "thread", "thread"),
+            }
+          )}
+        >
+          {"3 replies"}
+        </div>
       </Button>
     </div>
   ) as React.ReactElement | null;
@@ -515,7 +547,6 @@ const PlasmicDescendants = {
     "root",
     "avatarContainer",
     "img",
-    "text",
     "userFullName",
     "timestamp",
     "actions",
@@ -528,10 +559,10 @@ const PlasmicDescendants = {
     "svg",
     "commentPostForm",
     "repliesLink",
+    "text",
   ],
   avatarContainer: ["avatarContainer", "img"],
   img: ["img"],
-  text: ["text", "userFullName", "timestamp"],
   userFullName: ["userFullName"],
   timestamp: ["timestamp"],
   actions: ["actions", "btnMore", "threadHistoryStatus"],
@@ -543,7 +574,8 @@ const PlasmicDescendants = {
   btnAddReaction: ["btnAddReaction", "svg"],
   svg: ["svg"],
   commentPostForm: ["commentPostForm"],
-  repliesLink: ["repliesLink"],
+  repliesLink: ["repliesLink", "text"],
+  text: ["text"],
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -552,7 +584,6 @@ type NodeDefaultElementType = {
   root: "div";
   avatarContainer: "div";
   img: typeof PlasmicImg__;
-  text: "div";
   userFullName: "span";
   timestamp: "span";
   actions: "div";
@@ -565,6 +596,7 @@ type NodeDefaultElementType = {
   svg: "svg";
   commentPostForm: typeof CommentPostForm;
   repliesLink: typeof Button;
+  text: "div";
 };
 
 type ReservedPropsType = "variants" | "args" | "overrides";
@@ -629,7 +661,6 @@ export const PlasmicCommentPost = Object.assign(
     // Helper components rendering sub-elements
     avatarContainer: makeNodeComponent("avatarContainer"),
     img: makeNodeComponent("img"),
-    text: makeNodeComponent("text"),
     userFullName: makeNodeComponent("userFullName"),
     timestamp: makeNodeComponent("timestamp"),
     actions: makeNodeComponent("actions"),
@@ -642,6 +673,7 @@ export const PlasmicCommentPost = Object.assign(
     svg: makeNodeComponent("svg"),
     commentPostForm: makeNodeComponent("commentPostForm"),
     repliesLink: makeNodeComponent("repliesLink"),
+    text: makeNodeComponent("text"),
 
     // Metadata about props expected for PlasmicCommentPost
     internalVariantProps: PlasmicCommentPost__VariantProps,

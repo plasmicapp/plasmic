@@ -2,7 +2,6 @@ import { CanvasTransformedBox } from "@/wab/client/components/canvas/CanvasTrans
 import { useRerenderOnUserBodyChange } from "@/wab/client/components/canvas/UserBodyObserver";
 import { AddCommentMarker } from "@/wab/client/components/comments/AddCommentMarker";
 import { CommentMarker } from "@/wab/client/components/comments/CommentMarker";
-import { CommentMarkerHoverDialog } from "@/wab/client/components/comments/CommentMarkerHoverDialog";
 import CommentPost from "@/wab/client/components/comments/CommentPost";
 import {
   getSubjectVariantsKey,
@@ -28,7 +27,7 @@ import {
 import { ArenaFrame, ObjInst, TplNode } from "@/wab/shared/model/classes";
 import { mkSemVerSiteElement } from "@/wab/shared/site-diffs";
 import Chroma from "@/wab/shared/utils/color-utils";
-import { Tooltip } from "antd";
+import { Popover, Tooltip } from "antd";
 import classNames from "classnames";
 import $ from "jquery";
 import { observer } from "mobx-react";
@@ -37,10 +36,10 @@ import { createPortal } from "react-dom";
 
 const HORIZONTAL_MARKER_OFFSET = 12;
 const ADD_COMMENT_MARKER_MARGIN = 20;
+const COMMENT_MARKER_INITIAL_Z_INDEX = 12;
 
 function ObjInstLabel(props: { subject: ObjInst }) {
   const { subject } = props;
-
   const item = mkSemVerSiteElement(subject as any);
   const typeName = item.type;
   const objName = item.name;
@@ -61,8 +60,10 @@ const CanvasCommentMarker = observer(function CanvasCommentMarker(props: {
   commentThread: TplCommentThread;
   viewCtx: ViewCtx;
   offsetRight: number;
+  zIndex: number;
+  onHoverChange: (hovering: boolean) => void;
 }) {
-  const { commentThread, viewCtx, offsetRight } = props;
+  const { commentThread, viewCtx, offsetRight, zIndex, onHoverChange } = props;
   const commentsCtx = viewCtx.studioCtx.commentsCtx;
 
   const threadComments = commentThread.comments;
@@ -76,6 +77,7 @@ const CanvasCommentMarker = observer(function CanvasCommentMarker(props: {
     "Comment author should exist"
   );
   const isSelected = openedThread?.threadId === commentThread.id;
+
   return (
     <CanvasCommentOverlay
       offsetRight={offsetRight}
@@ -89,25 +91,40 @@ const CanvasCommentMarker = observer(function CanvasCommentMarker(props: {
         }
       }}
       isSelected={isSelected}
+      zIndex={zIndex}
     >
-      <CommentMarker className={"CommentMarkerInitial"}>
-        <Avatar user={author} size="small" />
-      </CommentMarker>
-      <div className={"CommentMarkerHover"}>
-        <CommentMarkerHoverDialog>
-          <CommentPost
-            comment={comment}
-            commentThread={commentThread}
-            subjectLabel={<ObjInstLabel subject={subject} />}
-            isThread
-            repliesLinkLabel={
-              threadComments.length > 1
-                ? `${threadComments.length - 1} replies`
-                : "Reply"
-            }
-          />
-        </CommentMarkerHoverDialog>
-      </div>
+      <Popover
+        key={isSelected ? "selected" : `${comment.id}-not-selected`}
+        overlayClassName={"NoPaddingPopover NoBackgroundStyles"}
+        placement={"top"}
+        trigger={["hover"]}
+        destroyTooltipOnHide
+        showArrow={false}
+        content={
+          !isSelected ? (
+            <CommentPost
+              comment={comment}
+              commentThread={commentThread}
+              subjectLabel={<ObjInstLabel subject={subject} />}
+              hoverBox
+              repliesLinkLabel={
+                threadComments.length > 1
+                  ? `${threadComments.length - 1} replies`
+                  : null
+              }
+            />
+          ) : null
+        }
+      >
+        <div
+          onMouseEnter={() => onHoverChange(true)}
+          onMouseLeave={() => onHoverChange(false)}
+        >
+          <CommentMarker className={"CommentMarkerInitial"}>
+            <Avatar user={author} size="small" showToolTip={false} />
+          </CommentMarker>
+        </div>
+      </Popover>
     </CanvasCommentOverlay>
   );
 });
@@ -159,6 +176,55 @@ export function CanvasAddCommentMarker(props: {
   );
 }
 
+const CanvasSubjectCommentMarkers = observer(
+  function CanvasSubjectCommentMarkers({
+    subjectCommentThreads,
+    viewCtx,
+  }: {
+    subjectCommentThreads: TplCommentThread[];
+    viewCtx: ViewCtx;
+  }) {
+    const [hoveredThreadId, setHoveredThreadId] = React.useState<string | null>(
+      null
+    );
+    const commentsCtx = viewCtx.studioCtx.commentsCtx;
+    const openedThreadId = commentsCtx.openedThread()?.threadId;
+
+    const focusedIndex = subjectCommentThreads.findIndex(
+      (t) => t.id === (hoveredThreadId ?? openedThreadId)
+    );
+
+    return (
+      <>
+        {subjectCommentThreads.map((commentThread, index, arr) => {
+          let zIndex;
+          if (focusedIndex === -1) {
+            // No hover or selection — use base decreasing z-index
+            zIndex = COMMENT_MARKER_INITIAL_Z_INDEX;
+          } else {
+            // Calculate relative to the focused (hovered/selected) index
+            const distance = Math.abs(index - focusedIndex);
+            zIndex = arr.length + COMMENT_MARKER_INITIAL_Z_INDEX - distance;
+          }
+
+          return (
+            <CanvasCommentMarker
+              key={commentThread.id}
+              offsetRight={index * HORIZONTAL_MARKER_OFFSET}
+              zIndex={zIndex}
+              commentThread={commentThread}
+              viewCtx={viewCtx}
+              onHoverChange={(hovering) =>
+                setHoveredThreadId(hovering ? commentThread.id : null)
+              }
+            />
+          );
+        })}
+      </>
+    );
+  }
+);
+
 export const CanvasCommentMarkers = observer(function CanvasCommentMarkers({
   arenaFrame,
 }: {
@@ -166,10 +232,8 @@ export const CanvasCommentMarkers = observer(function CanvasCommentMarkers({
   arenaFrame: ArenaFrame;
 }) {
   const studioCtx = useStudioCtx();
-
-  const commentsCtx = studioCtx.commentsCtx;
-
   const viewCtx = studioCtx.tryGetViewCtxForFrame(arenaFrame);
+  const commentsCtx = studioCtx.commentsCtx;
   const focusedTpls = withoutNils(viewCtx?.focusedTpls() ?? []);
 
   useRerenderOnUserBodyChange(studioCtx, viewCtx);
@@ -183,18 +247,17 @@ export const CanvasCommentMarkers = observer(function CanvasCommentMarkers({
 
   return (
     <>
-      {focusedTpls.map((focusedTpl) => (
-        <CanvasAddCommentMarker viewCtx={viewCtx} tpl={focusedTpl} />
+      {focusedTpls.map((tpl) => (
+        <CanvasAddCommentMarker key={tpl.uuid} viewCtx={viewCtx} tpl={tpl} />
       ))}
-      {[...threadsGroupedBySubject.values()].map((subjectCommentThreads) =>
-        subjectCommentThreads.map((commentThread, index) => (
-          <CanvasCommentMarker
-            offsetRight={index * HORIZONTAL_MARKER_OFFSET}
-            key={commentThread.id}
-            commentThread={commentThread}
+      {[...threadsGroupedBySubject.entries()].map(
+        ([subjectKey, subjectCommentThreads]) => (
+          <CanvasSubjectCommentMarkers
+            key={subjectKey}
+            subjectCommentThreads={subjectCommentThreads}
             viewCtx={viewCtx}
           />
-        ))
+        )
       )}
     </>
   );
@@ -208,6 +271,7 @@ export const CanvasCommentOverlay = observer(function CanvasCommentOverlay({
   className,
   isSelected,
   offsetRight,
+  zIndex = COMMENT_MARKER_INITIAL_Z_INDEX,
 }: {
   tpl: TplNode;
   children?: ReactNode;
@@ -216,6 +280,7 @@ export const CanvasCommentOverlay = observer(function CanvasCommentOverlay({
   className?: string;
   isSelected?: boolean;
   offsetRight: number;
+  zIndex?: number;
 }) {
   // We directly use the render count here to make this component depend on it and re-render every time the render count changes
   // This is necessary for elements that are visible in the canvas conditionally (e.g. auto opened elements)
@@ -247,15 +312,14 @@ export const CanvasCommentOverlay = observer(function CanvasCommentOverlay({
       relativeTo={"arena"}
       $elt={$elt}
       viewCtx={viewCtx}
+      style={{ zIndex }}
       className={classNames({
         "ElementHighlightBoxContainer CommentMarkerContainer": true,
         CommentMarkerContainerSelected: isSelected,
       })}
     >
       <div
-        className={classNames({
-          "ElementHighlightBoxRendered CommentMarkerOverlay": true,
-        })}
+        className="ElementHighlightBoxRendered CommentMarkerOverlay"
         style={{
           borderColor: Chroma(color).alpha(0.1).css(),
           backgroundColor: Chroma(color).alpha(0.2).css(),
@@ -264,9 +328,7 @@ export const CanvasCommentOverlay = observer(function CanvasCommentOverlay({
       <div
         className={className}
         onClick={onClick}
-        style={{
-          right: `calc(0% + ${offsetRight}px)`,
-        }}
+        style={{ right: `calc(0% + ${offsetRight}px)` }}
       >
         {children}
       </div>
