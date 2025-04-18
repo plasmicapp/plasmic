@@ -35,8 +35,10 @@ import React, { ReactNode } from "react";
 import { createPortal } from "react-dom";
 
 const HORIZONTAL_MARKER_OFFSET = 12;
-const ADD_COMMENT_MARKER_MARGIN = 20;
+const ADD_COMMENT_MARKER_MARGIN = 10;
+const ADD_COMMENT_INDIVIDUAL_MARKER_MARGIN = 20;
 const COMMENT_MARKER_INITIAL_Z_INDEX = 12;
+const THREAD_MARKER_MARGIN = 30;
 
 function ObjInstLabel(props: { subject: ObjInst }) {
   const { subject } = props;
@@ -159,7 +161,9 @@ export function CanvasAddCommentMarker(props: {
       className={"AddCommentMarker"}
       offsetRight={
         // push the add comment marker to right if comment marker any exist
-        offsetRight ? offsetRight + ADD_COMMENT_MARKER_MARGIN : offsetRight
+        offsetRight
+          ? THREAD_MARKER_MARGIN + offsetRight + ADD_COMMENT_MARKER_MARGIN
+          : ADD_COMMENT_INDIVIDUAL_MARKER_MARGIN
       }
     >
       <Tooltip title="New comment">
@@ -200,7 +204,7 @@ const CanvasSubjectCommentMarkers = observer(
           let zIndex;
           if (focusedIndex === -1) {
             // No hover or selection — use base decreasing z-index
-            zIndex = COMMENT_MARKER_INITIAL_Z_INDEX;
+            zIndex = COMMENT_MARKER_INITIAL_Z_INDEX + arr.length - index;
           } else {
             // Calculate relative to the focused (hovered/selected) index
             const distance = Math.abs(index - focusedIndex);
@@ -210,7 +214,9 @@ const CanvasSubjectCommentMarkers = observer(
           return (
             <CanvasCommentMarker
               key={commentThread.id}
-              offsetRight={index * HORIZONTAL_MARKER_OFFSET}
+              offsetRight={
+                THREAD_MARKER_MARGIN + index * HORIZONTAL_MARKER_OFFSET
+              }
               zIndex={zIndex}
               commentThread={commentThread}
               viewCtx={viewCtx}
@@ -328,7 +334,9 @@ export const CanvasCommentOverlay = observer(function CanvasCommentOverlay({
       <div
         className={className}
         onClick={onClick}
-        style={{ right: `calc(0% + ${offsetRight}px)` }}
+        style={{
+          right: `calc(0% - ${offsetRight}px)`,
+        }}
       >
         {children}
       </div>
