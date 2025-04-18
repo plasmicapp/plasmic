@@ -819,7 +819,7 @@ test.describe(`@plasmicpkgs/react-aria code components`, async () => {
       });
       test(`Slider`, async ({ page }) => {
         const valueEl = page.locator("#value");
-        const outputEl = page.locator("output");
+        const outputEl = page.locator("output > div:first-child");
         const thumbEl = page.locator("input");
         const disabledToggleEl = page.getByText("Set disabled");
 
@@ -830,14 +830,12 @@ test.describe(`@plasmicpkgs/react-aria code components`, async () => {
           "slider"
         );
 
-        // TODO: Aria Slider Output cannot be componentized because it misses the Slider context in standalone mode. Track in issue #PLA-11916
-        // const sliderOutputVariants = ["disabled"];
-        // const sliderOutputStateChecker = new StateChecker(
-        //   page,
-        //   sliderOutputVariants,
-        //   undefined,
-        //   "output"
-        // );
+        const sliderOutputVariants = ["disabled"];
+        const sliderOutputStateChecker = new StateChecker(
+          page,
+          sliderOutputVariants,
+          "slider-output"
+        );
 
         const sliderTrackVariants = ["hovered"];
         const sliderTrackStateChecker = new StateChecker(
@@ -865,6 +863,7 @@ test.describe(`@plasmicpkgs/react-aria code components`, async () => {
         await sliderStateChecker.checkState({});
         await sliderTrackStateChecker.checkState({});
         await sliderThumbStateChecker.checkState({});
+        await sliderOutputStateChecker.checkState({});
 
         await page.keyboard.press("Tab");
         await sliderStateChecker.checkState({});
@@ -873,6 +872,7 @@ test.describe(`@plasmicpkgs/react-aria code components`, async () => {
           focused: true,
           focusVisible: true,
         });
+        await sliderOutputStateChecker.checkState({});
 
         await thumbEl.press("ArrowRight");
         await expect(outputEl).toHaveText("51");
@@ -911,16 +911,18 @@ test.describe(`@plasmicpkgs/react-aria code components`, async () => {
         await sliderStateChecker.checkState({ disabled: true });
         await sliderTrackStateChecker.checkState({});
         await sliderThumbStateChecker.checkState({ disabled: true });
+        await sliderOutputStateChecker.checkState({ disabled: true });
 
         await disabledToggleEl.click();
         await sliderStateChecker.checkState({});
         await sliderTrackStateChecker.checkState({});
         await sliderThumbStateChecker.checkState({});
+        await sliderOutputStateChecker.checkState({});
       });
 
       test(`Range Slider`, async ({ page }) => {
         const valueEl = page.locator("#value");
-        const outputEl = page.locator("output");
+        const outputEl = page.locator("output > div:first-child");
         const thumb1 = page.locator("input").nth(0);
         const thumb2 = page.locator("input").nth(1);
         const disabledToggleEl = page.getByText("Set disabled");
@@ -932,14 +934,12 @@ test.describe(`@plasmicpkgs/react-aria code components`, async () => {
           "slider"
         );
 
-        // TODO: Aria Slider Output cannot be componentized because it misses the Slider context in standalone mode. Track in issue #PLA-11916
-        // const sliderOutputVariants = ["disabled"];
-        // const sliderOutputStateChecker = new StateChecker(
-        //   page,
-        //   sliderOutputVariants,
-        //   undefined,
-        //   "output"
-        // );
+        const sliderOutputVariants = ["disabled"];
+        const sliderOutputStateChecker = new StateChecker(
+          page,
+          sliderOutputVariants,
+          "slider-output"
+        );
 
         const sliderTrackVariants = ["hovered"];
         const sliderTrackStateChecker = new StateChecker(
@@ -971,6 +971,7 @@ test.describe(`@plasmicpkgs/react-aria code components`, async () => {
         await sliderTrackStateChecker.checkState({});
         await sliderThumb1StateChecker.checkState({});
         await sliderThumb2StateChecker.checkState({});
+        await sliderOutputStateChecker.checkState({});
 
         await expect(outputEl).toHaveText("25,75");
         await expect(valueEl).toHaveText("25, 75");
@@ -989,6 +990,7 @@ test.describe(`@plasmicpkgs/react-aria code components`, async () => {
           focused: true,
           focusVisible: true,
         });
+        await sliderOutputStateChecker.checkState({});
 
         await thumb2.press("ArrowRight");
         await sliderThumb1StateChecker.checkState({});
@@ -1015,12 +1017,14 @@ test.describe(`@plasmicpkgs/react-aria code components`, async () => {
         await sliderTrackStateChecker.checkState({});
         await sliderThumb1StateChecker.checkState({ disabled: true });
         await sliderThumb2StateChecker.checkState({ disabled: true });
+        await sliderOutputStateChecker.checkState({ disabled: true });
 
         await disabledToggleEl.click();
         await sliderStateChecker.checkState({});
         await sliderTrackStateChecker.checkState({});
         await sliderThumb1StateChecker.checkState({});
         await sliderThumb2StateChecker.checkState({});
+        await sliderOutputStateChecker.checkState({});
       });
     });
   }

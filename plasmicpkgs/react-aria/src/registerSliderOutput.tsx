@@ -1,6 +1,7 @@
 import React from "react";
-import { SliderOutput } from "react-aria-components";
+import { Slider, SliderOutput } from "react-aria-components";
 import { COMMON_STYLES } from "./common";
+import { PlasmicSliderContext } from "./contexts";
 import {
   CodeComponentMetaOverrides,
   Registerable,
@@ -22,7 +23,8 @@ const { variants, withObservedValues } = pickAriaComponentVariants(
 
 export function BaseSliderOutput(props: BaseSliderOutputProps) {
   const { plasmicUpdateVariant, children, ...rest } = props;
-  return (
+  const isStandalone = !React.useContext(PlasmicSliderContext);
+  const sliderOutput = (
     <SliderOutput {...rest} style={COMMON_STYLES}>
       {({ isDisabled }) =>
         withObservedValues(
@@ -35,6 +37,13 @@ export function BaseSliderOutput(props: BaseSliderOutputProps) {
       }
     </SliderOutput>
   );
+
+  if (isStandalone) {
+    return (
+      <Slider style={{ height: "100%", width: "100%" }}>{sliderOutput}</Slider>
+    );
+  }
+  return sliderOutput;
 }
 
 export const SLIDER_OUTPUT_COMPONENT_NAME = makeComponentName("sliderOutput");

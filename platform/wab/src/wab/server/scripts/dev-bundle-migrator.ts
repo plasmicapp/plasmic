@@ -60,6 +60,7 @@ const paths = [
   "../loader-tests/data/slick-slider.json",
   "../loader-tests/data/plasmic-antd5.json",
   "../loader-tests/data/data-source-basic.json",
+  "../loader-tests/data/react-aria.json",
   "src/wab/shared/site-diffs/_tests_/bundles/code-components-with-same-name.json",
   "src/wab/shared/site-diffs/_tests_/bundles/rich-text-conflict.json",
   "src/wab/shared/site-diffs/_tests_/bundles/test-tpl-merge.json",
