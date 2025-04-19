@@ -168,6 +168,7 @@ function renderModelFieldForm(
             };
             if ([CmsMetaType.LIST, CmsMetaType.OBJECT].includes(meta.type)) {
               meta.fields = [];
+              meta["unique"] = false;
             }
             const blob = jsonClone(form.getFieldValue([]));
             L.set(blob, fullFieldPath, meta);
@@ -245,7 +246,30 @@ function renderModelFieldForm(
           name={[...fieldPath, "localized"]}
           required
         >
-          <ValueSwitch />
+          <ValueSwitch
+            disabled={form.getFieldValue([...fullFieldPath, "unique"])}
+            onChange={(e: boolean) => {
+              form.setFieldValue([...fullFieldPath, "localized"], e);
+            }}
+            helperText={
+              form.getFieldValue([...fullFieldPath, "unique"]) &&
+              "The localized attribute cannot be selected when the field is unique."
+            }
+          />
+        </Form.Item>
+      )}
+      {![CmsMetaType.LIST, CmsMetaType.OBJECT].includes(selectedType) && (
+        <Form.Item label={"Unique"} name={[...fieldPath, "unique"]} required>
+          <ValueSwitch
+            disabled={form.getFieldValue([...fullFieldPath, "localized"])}
+            onChange={(e: boolean) => {
+              form.setFieldValue([...fullFieldPath, "unique"], e);
+            }}
+            helperText={
+              form.getFieldValue([...fullFieldPath, "localized"]) &&
+              "The unique attribute cannot be selected when the field is localized."
+            }
+          />
         </Form.Item>
       )}
       <Form.Item
@@ -647,6 +671,7 @@ function ModelFields({
                       helperText: "",
                       required: false,
                       hidden: false,
+                      unique: false,
                       type: CmsMetaType.TEXT,
                       defaultValueByLocale: {},
                     })
