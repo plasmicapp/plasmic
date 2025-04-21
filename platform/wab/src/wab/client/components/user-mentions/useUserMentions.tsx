@@ -137,9 +137,10 @@ export function useUserMentions({
     }
 
     const caretIndex = inputElement.selectionStart || 0;
+    const prevCharacter = value[caretIndex - 1];
     const { newValue, newCaretPosition } = typeTextAtCaretPosition(
       value,
-      " @",
+      caretIndex === 0 || /\s/.test(prevCharacter) ? "@" : " @",
       caretIndex
     );
 
