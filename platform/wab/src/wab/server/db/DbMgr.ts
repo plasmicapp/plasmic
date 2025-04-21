@@ -7225,15 +7225,15 @@ export class DbMgr implements MigrationDbMgr {
     }
   ): Promise<UniqueFieldCheck[]> {
     const connection = getConnection();
-    const sql = `SELECT id FROM cms_row WHERE "tableId" = '${tableId}'`;
+    const sql = `SELECT id FROM cms_row WHERE "tableId" = '${tableId}' AND "deletedAt" IS NULL`;
     return Promise.all(
       Object.entries(opts.uniqueFieldsData).map(
         async ([fieldIdentifier, value]) => {
-          const condition = ` AND data -> '' @> '{"${fieldIdentifier}" : ${value}}' AND "deletedAt" IS NULL`;
-          const conflictRowsIdColumn = await connection.query(sql + condition);
-          const conflictRowIds = conflictRowsIdColumn.map(
-            (idColumn) => idColumn.id
+          const data = ` AND data -> '' @> '{"${fieldIdentifier}" : ${value}}'`;
+          const results: { id: CmsRowId }[] = await connection.query(
+            sql + data
           );
+          const conflictRowIds = results.map((result) => result.id);
           return {
             fieldIdentifier: fieldIdentifier,
             value: value,

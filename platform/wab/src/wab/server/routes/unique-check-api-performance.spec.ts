@@ -5,10 +5,8 @@ import { DbMgr, normalActor } from "@/wab/server/db/DbMgr";
 import { CmsTable, User } from "@/wab/server/entities/Entities";
 import { ApiTester } from "@/wab/server/test/api-tester";
 import { createBackend, createDatabase } from "@/wab/server/test/backend-util";
+import { CmsMetaType, CmsRowId, CmsText } from "@/wab/shared/ApiSchema";
 import { APIRequestContext, request } from "playwright";
-
-import { CmsRow } from "@/wab/server/entities/Entities";
-import { CmsMetaType, CmsText } from "@/wab/shared/ApiSchema";
 
 const createUniqueTextField = (fieldIdentifier: string): CmsText => ({
   identifier: fieldIdentifier,
@@ -30,7 +28,8 @@ let cleanup: () => Promise<void>;
 let userToken: string;
 let user: User;
 let table: CmsTable;
-let checkingRow: CmsRow;
+let numOfRows: number;
+let count: number;
 
 beforeAll(async () => {
   const {
@@ -76,23 +75,20 @@ beforeAll(async () => {
       },
     });
   });
-  const numOfRows = 10;
+  numOfRows = 10000;
   const tempDate = new Date().toISOString();
   for (let i = 0; i < numOfRows; i++) {
     const sql = `insert into cms_row (id, "tableId", "createdAt", "updatedAt", data, rank) values ('${i}', '${table.id}', '${tempDate}', '${tempDate}', '{"": {"field1": ${i}, "field2": ${i}}}', '');`;
     await con.query(sql);
   }
-  checkingRow = await con.query(
-    `insert into cms_row (id, "tableId", "createdAt", "updatedAt", rank) values ('${numOfRows}', '${table.id}', '${tempDate}', '${tempDate}', '');`
-  );
-  console.log("count...", await con.query("SELECT COUNT(*) FROM cms_row"));
+  count = await con.query("SELECT COUNT(*) FROM cms_row");
   const { host, cleanup: cleanupBackend } = await createBackend(dburi);
   baseURL = `${host}/api/v1`;
   cleanup = async () => {
     await cleanupBackend();
     await cleanupDatabase();
   };
-});
+}, 600000);
 
 describe("unique-check performance test", () => {
   beforeEach(async () => {
@@ -113,17 +109,26 @@ describe("unique-check performance test", () => {
   test("with many rows", async () => {
     const start = Date.now();
     const result = await api.checkUniqueFields(table.id, {
-      rowId: checkingRow.id,
+      rowId: "1" as CmsRowId,
       uniqueFieldsData: { field1: 0 },
     });
     const end = Date.now();
-    console.log(start, "->", end, ", duration: ", end - start);
+    console.log(
+      "Result... ",
+      count,
+      " rows : (",
+      start,
+      "->",
+      end,
+      ") duration: ",
+      end - start
+    );
     expect(result).toEqual([
       {
         fieldIdentifier: "field1",
         value: 0,
         ok: false,
-        conflictRowIds: [String(0)],
+        conflictRowIds: ["0"],
       },
     ]);
   });
