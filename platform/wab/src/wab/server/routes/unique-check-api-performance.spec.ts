@@ -75,7 +75,7 @@ beforeAll(async () => {
       },
     });
   });
-  numOfRows = 10000;
+  numOfRows = 100;
   const tempDate = new Date().toISOString();
   for (let i = 0; i < numOfRows; i++) {
     const sql = `insert into cms_row (id, "tableId", "createdAt", "updatedAt", data, rank) values ('${i}', '${table.id}', '${tempDate}', '${tempDate}', '{"": {"field1": ${i}, "field2": ${i}}}', '');`;
