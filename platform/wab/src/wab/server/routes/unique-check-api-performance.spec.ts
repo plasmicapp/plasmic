@@ -30,8 +30,6 @@ let cleanup: () => Promise<void>;
 let userToken: string;
 let user: User;
 let table: CmsTable;
-let firstRow: CmsRow;
-let lastRow: CmsRow;
 let checkingRow: CmsRow;
 
 beforeAll(async () => {
@@ -77,20 +75,17 @@ beforeAll(async () => {
         ],
       },
     });
-    const numOfRows = 1000;
-    firstRow = await db.createCmsRow(table.id, {
-      data: { "": { field1: 0, field2: 0 } },
-    });
-    for (let i = 1; i <= numOfRows; i++) {
-      await db.createCmsRow(table.id, {
-        data: { "": { field1: i, field2: i } },
-      });
-    }
-    lastRow = await db.createCmsRow(table.id, {
-      data: { "": { field1: 0, field2: 0 } },
-    });
-    checkingRow = await db.createCmsRow(table.id, {});
   });
+  const numOfRows = 10;
+  const tempDate = new Date().toISOString();
+  for (let i = 0; i < numOfRows; i++) {
+    const sql = `insert into cms_row (id, "tableId", "createdAt", "updatedAt", data, rank) values ('${i}', '${table.id}', '${tempDate}', '${tempDate}', '{"": {"field1": ${i}, "field2": ${i}}}', '');`;
+    await con.query(sql);
+  }
+  checkingRow = await con.query(
+    `insert into cms_row (id, "tableId", "createdAt", "updatedAt", rank) values ('${numOfRows}', '${table.id}', '${tempDate}', '${tempDate}', '');`
+  );
+  console.log("count...", await con.query("SELECT COUNT(*) FROM cms_row"));
   const { host, cleanup: cleanupBackend } = await createBackend(dburi);
   baseURL = `${host}/api/v1`;
   cleanup = async () => {
@@ -122,14 +117,13 @@ describe("unique-check performance test", () => {
       uniqueFieldsData: { field1: 0 },
     });
     const end = Date.now();
-    console.log(start, "->", end);
-    console.log("it takes: ", end - start);
+    console.log(start, "->", end, ", duration: ", end - start);
     expect(result).toEqual([
       {
         fieldIdentifier: "field1",
         value: 0,
         ok: false,
-        conflictRowIds: [firstRow.id, lastRow.id],
+        conflictRowIds: [String(0)],
       },
     ]);
   });
