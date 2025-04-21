@@ -1,4 +1,4 @@
-import React, { useCallback, useId, useRef, useState } from "react";
+import React, { useCallback, useContext, useId, useRef, useState } from "react";
 import { mergeProps, useFocusWithin, useHover } from "react-aria";
 import {
   Provider,
@@ -105,7 +105,6 @@ function ControlledBaseTooltip(props: BaseTooltipProps) {
         className={className}
         tooltipId={state.isOpen ? tooltipId : undefined}
         isDisabled={isDisabled}
-        onOpenChange={onOpenChange}
         triggerOnFocusOnly={trigger === "focus"}
       >
         {children}
@@ -131,7 +130,6 @@ function ControlledBaseTooltip(props: BaseTooltipProps) {
 
 interface TriggerWrapperProps {
   children: React.ReactElement;
-  onOpenChange: (isOpen: boolean) => void;
   isDisabled: boolean;
   triggerOnFocusOnly: boolean;
   tooltipId?: string;
@@ -147,31 +145,22 @@ interface TriggerWrapperProps {
 // https://github.com/adobe/react-spectrum/discussions/5119#discussioncomment-7084661
 const TriggerWrapper = React.forwardRef<HTMLDivElement, TriggerWrapperProps>(
   function TriggerWrapper_(
-    {
-      children,
-      onOpenChange,
-      isDisabled,
-      triggerOnFocusOnly,
-      tooltipId,
-      className,
-    },
+    { children, isDisabled, triggerOnFocusOnly, tooltipId, className },
     ref: React.Ref<HTMLDivElement>
   ) {
+    const state = useContext(TooltipTriggerStateContext)!;
+
     const { hoverProps } = useHover({
       isDisabled,
-      onHoverStart: () => !triggerOnFocusOnly && onOpenChange(true),
-      onHoverEnd: () => !triggerOnFocusOnly && onOpenChange(false),
+      onHoverStart: () => !triggerOnFocusOnly && state.open(),
+      onHoverEnd: () => !triggerOnFocusOnly && state.close(),
     });
 
     // useFocusWithin captures focus events for all nested focusable elements
     const { focusWithinProps } = useFocusWithin({
       isDisabled,
-      onFocusWithin: () => {
-        onOpenChange(true);
-      },
-      onBlurWithin: () => {
-        onOpenChange(false);
-      },
+      onFocusWithin: () => state.open(),
+      onBlurWithin: () => state.close(),
     });
 
     const mergedProps = mergeProps(hoverProps, focusWithinProps, {
