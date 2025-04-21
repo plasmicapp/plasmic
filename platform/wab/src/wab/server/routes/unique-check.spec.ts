@@ -123,18 +123,6 @@ describe("unique violation check", () => {
   });
 
   describe("unique-check Api", () => {
-    /**
-        published: [
-            { data: { "": { field1: 0, field2: 10} } },
-            { data: { "": { field1: 1, field2: 11} } },
-            { data: { "": { field1: 2, field2: 12} } },
-            { data: { "": { field1: 2, field2: 12} } },
-        ]
-        notPublished: [
-            { draftData: { "": { field1: 3, field2: 13} } },
-        ]
-    */
-
     it("should return the right type", async () => {
       const result = await api.checkUniqueFields(table.id, {
         rowId: checkingRow.id,
@@ -196,15 +184,6 @@ describe("unique violation check", () => {
   });
 
   describe("publish Api", () => {
-    /**
-        published: [
-            { data: { "": { field1: 0, field2: 10} } },
-            { data: { "": { field1: 1, field2: 11} } },
-            { data: { "": { field1: 2, field2: 12} } },
-            { data: { "": { field1: 2, field2: 12} } },
-        ]
-    */
-
     it("should throw a UniqueViolationError when there is a conflict.", async () => {
       const response = (await api.updateCmsRow(checkingRow.id, {
         data: { "": { field1: 0, field2: 0 } },

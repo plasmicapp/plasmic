@@ -194,6 +194,10 @@ describe("getConflictingCmsRowIds", () => {
   const id3 = "3" as CmsRowId;
   let rows: CmsRow[] = [];
 
+  beforeEach(() => {
+    rows = [];
+  });
+
   it("should ignore the current checking row", () => {
     rows = [
       createRow(id1, { "": { field: 1 } }),

@@ -101,7 +101,6 @@ import {
 } from "@/wab/server/tutorialdb/tutorialdb-utils";
 import { generateSomeApiToken } from "@/wab/server/util/Tokens";
 import {
-  getConflictingCmsRowIds,
   makeSqlCondition,
   makeTypedFieldSql,
   normalizeTableSchema,
@@ -280,6 +279,7 @@ import {
   Raw,
   Repository,
   SelectQueryBuilder,
+  getConnection,
 } from "typeorm";
 import * as uuid from "uuid";
 
@@ -7224,22 +7224,24 @@ export class DbMgr implements MigrationDbMgr {
       uniqueFieldsData: Dict<unknown>;
     }
   ): Promise<UniqueFieldCheck[]> {
-    const publishedRows = await this.getPublishedRows(tableId);
-    return Object.entries(opts.uniqueFieldsData).map(
-      ([fieldIdentifier, value]) => {
-        const conflictRowIds = getConflictingCmsRowIds(
-          publishedRows,
-          opts.rowId,
-          fieldIdentifier,
-          value
-        );
-        return {
-          fieldIdentifier: fieldIdentifier,
-          value: value,
-          ok: conflictRowIds.length === 0,
-          conflictRowIds: conflictRowIds,
-        };
-      }
+    const connection = getConnection();
+    const sql = `SELECT id FROM cms_row WHERE "tableId" = '${tableId}'`;
+    return Promise.all(
+      Object.entries(opts.uniqueFieldsData).map(
+        async ([fieldIdentifier, value]) => {
+          const condition = ` AND data -> '' @> '{"${fieldIdentifier}" : ${value}}' AND "deletedAt" IS NULL`;
+          const conflictRowsIdColumn = await connection.query(sql + condition);
+          const conflictRowIds = conflictRowsIdColumn.map(
+            (idColumn) => idColumn.id
+          );
+          return {
+            fieldIdentifier: fieldIdentifier,
+            value: value,
+            ok: conflictRowIds.length === 0,
+            conflictRowIds: conflictRowIds,
+          };
+        }
+      )
     );
   }
 
