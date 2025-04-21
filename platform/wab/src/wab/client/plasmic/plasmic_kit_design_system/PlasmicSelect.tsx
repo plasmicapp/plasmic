@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -56,6 +56,7 @@ export type PlasmicSelect__VariantMembers = {
   hasIcon: "hasIcon";
   size: "small" | "tiny";
   font: "bold";
+  textAlign: "left" | "right";
 };
 export type PlasmicSelect__VariantsArgs = {
   showPlaceholder?: SingleBooleanChoiceArg<"showPlaceholder">;
@@ -67,6 +68,7 @@ export type PlasmicSelect__VariantsArgs = {
   hasIcon?: SingleBooleanChoiceArg<"hasIcon">;
   size?: SingleChoiceArg<"small" | "tiny">;
   font?: MultiChoiceArg<"bold">;
+  textAlign?: SingleChoiceArg<"left" | "right">;
 };
 type VariantPropType = keyof PlasmicSelect__VariantsArgs;
 export const PlasmicSelect__VariantProps = new Array<VariantPropType>(
@@ -76,7 +78,8 @@ export const PlasmicSelect__VariantProps = new Array<VariantPropType>(
   "type",
   "hasIcon",
   "size",
-  "font"
+  "font",
+  "textAlign"
 );
 
 export type PlasmicSelect__ArgsType = {
@@ -125,6 +128,7 @@ export interface DefaultSelectProps extends pp.BaseSelectProps {
   hasIcon?: SingleBooleanChoiceArg<"hasIcon">;
   size?: SingleChoiceArg<"small" | "tiny">;
   font?: MultiChoiceArg<"bold">;
+  textAlign?: SingleChoiceArg<"left" | "right">;
 }
 
 const PlasmicSelectContext = React.createContext<
@@ -215,6 +219,12 @@ function PlasmicSelect__RenderFunc(props: {
         valueProp: "value",
         onChangeProp: "onChange",
       },
+      {
+        path: "textAlign",
+        type: "private",
+        variableType: "variant",
+        initFunc: ({ $props, $state, $queries, $ctx }) => $props.textAlign,
+      },
     ],
     [$props, $ctx, $refs]
   );
@@ -265,6 +275,7 @@ function PlasmicSelect__RenderFunc(props: {
               "showPlaceholder",
               "showPlaceholder"
             ),
+            [sty.roottextAlign_right]: hasVariant($state, "textAlign", "right"),
             [sty.roottype_bordered]: hasVariant($state, "type", "bordered"),
             [sty.roottype_hugging]: hasVariant($state, "type", "hugging"),
             [sty.roottype_seamless]: hasVariant($state, "type", "seamless"),
@@ -301,6 +312,11 @@ function PlasmicSelect__RenderFunc(props: {
               ),
               [sty.triggersize_small]: hasVariant($state, "size", "small"),
               [sty.triggersize_tiny]: hasVariant($state, "size", "tiny"),
+              [sty.triggertextAlign_right]: hasVariant(
+                $state,
+                "textAlign",
+                "right"
+              ),
               [sty.triggertype_bordered]: hasVariant(
                 $state,
                 "type",
@@ -340,6 +356,11 @@ function PlasmicSelect__RenderFunc(props: {
                 $state,
                 "showPlaceholder",
                 "showPlaceholder"
+              ),
+              [sty.contentContainertextAlign_right]: hasVariant(
+                $state,
+                "textAlign",
+                "right"
               ),
             })}
           >
@@ -426,6 +447,11 @@ function PlasmicSelect__RenderFunc(props: {
                       "showPlaceholder",
                       "showPlaceholder"
                     ),
+                    [sty.slotTargetPlaceholdertextAlign_right]: hasVariant(
+                      $state,
+                      "textAlign",
+                      "right"
+                    ),
                   }),
                 })
               : null}
@@ -446,6 +472,11 @@ function PlasmicSelect__RenderFunc(props: {
                 $state,
                 "showPlaceholder",
                 "showPlaceholder"
+              ),
+              [sty.dropdownIcontextAlign_right]: hasVariant(
+                $state,
+                "textAlign",
+                "right"
               ),
               [sty.dropdownIcontype_bordered]: hasVariant(
                 $state,
@@ -710,15 +741,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicSelect__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicSelect__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicSelect__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+    // Specify args directly as props
+    Omit<PlasmicSelect__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

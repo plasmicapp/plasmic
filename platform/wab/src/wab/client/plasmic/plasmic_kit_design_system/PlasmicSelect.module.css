@@ -112,6 +112,12 @@
   margin-left: 4px;
   margin-top: 0px;
 }
+.contentContainertextAlign_right {
+  margin-right: var(--token-uzWT6AFCY);
+}
+.contentContainertextAlign_right > :global(.__wab_flex-container) {
+  justify-content: flex-end;
+}
 .slotTargetIcon {
   color: var(--token-UunsGa2Y3t3);
 }

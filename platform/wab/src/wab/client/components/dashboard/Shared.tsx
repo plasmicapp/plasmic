@@ -1,13 +1,14 @@
 import styles from "@/wab/client/components/dashboard/dashboard.module.scss";
 import { Avatar, MoreUsersAvatar } from "@/wab/client/components/studio/Avatar";
 import { ClickStopper } from "@/wab/client/components/widgets";
+import { Modal } from "@/wab/client/components/widgets/Modal";
 import ShareDialogContent from "@/wab/client/components/widgets/plasmic/ShareDialogContent";
 import {
   DefaultSharedProps,
   PlasmicShared,
 } from "@/wab/client/plasmic/plasmic_kit_dashboard/PlasmicShared";
-import { filterMapTruthy } from "@/wab/shared/common";
 import { ApiPermission, ApiResource } from "@/wab/shared/ApiSchema";
+import { filterMapTruthy } from "@/wab/shared/common";
 import {
   convertToTaggedResourceId,
   filterDirectResourcePerms,
@@ -15,7 +16,6 @@ import {
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import * as L from "lodash";
 import * as React from "react";
-import { Modal } from "@/wab/client/components/widgets/Modal";
 
 interface SharedProps extends DefaultSharedProps {
   resource: ApiResource;
@@ -88,7 +88,6 @@ function Shared_(props: SharedProps, ref: HTMLElementRefOf<"button">) {
           onCancel={() => setModal(false)}
           modalRender={() => (
             <ShareDialogContent
-              className="ant-modal-content"
               resource={resource}
               perms={perms}
               closeDialog={() => setModal(false)}

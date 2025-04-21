@@ -1,9 +1,9 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
-import React from "react";
 import { classNames } from "@plasmicapp/react-web";
+import React from "react";
 
 export type FrameStretchIconProps = React.ComponentProps<"svg"> & {
   title?: string;

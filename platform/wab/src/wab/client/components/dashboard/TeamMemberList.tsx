@@ -152,7 +152,6 @@ function TeamMemberList_(
           onCancel={() => setSharedModal(false)}
           modalRender={() => (
             <ShareDialogContent
-              className="ant-modal-content"
               resource={{ type: "team", resource: team }}
               perms={perms}
               closeDialog={() => setSharedModal(false)}

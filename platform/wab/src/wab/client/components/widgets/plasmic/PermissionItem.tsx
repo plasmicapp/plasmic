@@ -26,7 +26,7 @@ export const contentCreatorTooltip = (
     zIndex={200000}
     title="Can edit pages using existing components, and can update CMS content."
   >
-    content creator
+    Content creator
   </Tooltip>
 );
 export const designerTooltip = (
@@ -34,22 +34,22 @@ export const designerTooltip = (
     zIndex={200000}
     title="Can update Plasmic designs including all styling and layout. Can create design components."
   >
-    designer
+    Designer
   </Tooltip>
 );
 export const developerTooltip = (
   <Tooltip zIndex={200000} title="Can update anything including model schemas.">
-    developer
+    Developer
   </Tooltip>
 );
 export const commenterTooltip = (
   <Tooltip zIndex={200000} title="Can view and comment on content.">
-    commenter
+    Commenter
   </Tooltip>
 );
 export const viewerTooltip = (
   <Tooltip zIndex={200000} title="Can view content.">
-    viewer
+    Viewer
   </Tooltip>
 );
 

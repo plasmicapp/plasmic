@@ -25,6 +25,7 @@ import PermissionItem, {
 import PP__ShareDialogContent from "@/wab/client/components/widgets/plasmic/PlasmicShareDialogContent";
 import { useAppCtx } from "@/wab/client/contexts/AppContexts";
 import { useTopFrameCtxMaybe } from "@/wab/client/frame-ctx/top-frame-ctx";
+import { analytics } from "@/wab/client/observability";
 import {
   ApiPermission,
   ApiResource,
@@ -52,7 +53,7 @@ import {
   resourceTypeIdField,
 } from "@/wab/shared/perms";
 import { getPublicUrl } from "@/wab/shared/urls";
-import { notification } from "antd";
+import { Menu, notification } from "antd";
 import copy from "copy-to-clipboard";
 import L from "lodash";
 import React, { useEffect, useState } from "react";
@@ -220,28 +221,24 @@ function ShareDialogContent(props: ShareDialogContentProps) {
   }
 
   const shareByLinkAllowed =
-    resource.type === "project"
-      ? !resource.resource.inviteOnly
-      : resource.type === "team"
-      ? !!resource.resource.defaultAccessLevel
-      : false;
+    resource.type === "team" ? !!resource.resource.defaultAccessLevel : false;
   const noShareByLink =
     resource.type === "team" && !!resource.resource.defaultAccessLevel
       ? ownAccessLevelRank <
         accessLevelRank(resource.resource.defaultAccessLevel)
       : false;
 
-  const updateProject = async (
-    inviteOnly: boolean,
-    defaultAccessLevel: GrantableAccessLevel
-  ) => {
+  const parsedQueryParams = new URLSearchParams(appCtx.history.location.search);
+  const arenaId = parsedQueryParams.get("arena");
+  const arenaType = parsedQueryParams.get("arena_type");
+
+  const updateProject = async (inviteOnly: boolean) => {
     assert(resource.type === "project", 'Resource type must be "project"');
     const data = await maybeShowPaywall(
       appCtx,
       async () =>
         await appCtx.api.setSiteInfo(resource.resource.id, {
           inviteOnly,
-          defaultAccessLevel,
         })
     );
     await updateResourceCallback?.(data);
@@ -371,14 +368,11 @@ function ShareDialogContent(props: ShareDialogContentProps) {
         isDisabled: submitting || !canInvite,
       }}
       shareByLinkPermDropdown={
-        resource.type !== "workspace" && resource.resource.defaultAccessLevel
+        resource.type === "team" && resource.resource.defaultAccessLevel
           ? {
               "aria-label": "Default permission for link sharing",
               value: resource.resource.defaultAccessLevel,
-              onChange: (value) =>
-                resource.type === "project"
-                  ? updateProject(false, value as GrantableAccessLevel)
-                  : updateTeam(value as GrantableAccessLevel),
+              onChange: (value) => updateTeam(value as GrantableAccessLevel),
               children: [
                 <Select.Option value="viewer">{viewerTooltip}</Select.Option>,
                 ...(canHaveCommenterRole
@@ -427,6 +421,26 @@ function ShareDialogContent(props: ShareDialogContentProps) {
             }
           : undefined
       }
+      everyoneElseDropdown={{
+        value:
+          resource.type === "project" && resource.resource.inviteOnly
+            ? "none"
+            : "viewer",
+        "aria-label": `Everyone else permission`,
+        onChange: (key) => {
+          const inviteOnly = key === "none" ? true : false;
+          spawn(updateProject(inviteOnly));
+        },
+        isDisabled: !canEdit,
+        children: [
+          <Select.Option key="none" value="none">
+            None
+          </Select.Option>,
+          <Select.Option key="viewer" value="viewer">
+            {viewerTooltip}
+          </Select.Option>,
+        ],
+      }}
       newUserEmail={{
         onChange: (e) => {
           setEmail(e.target.value);
@@ -441,19 +455,7 @@ function ShareDialogContent(props: ShareDialogContentProps) {
         onClick: invite,
       }}
       copyLink={
-        resource.type === "project"
-          ? {
-              onClick: () =>
-                copy(
-                  new URL(
-                    U.project({
-                      projectId: resource.resource.id,
-                    }),
-                    getPublicUrl()
-                  ).toString()
-                ),
-            }
-          : resource.type === "team"
+        resource.type === "team"
           ? {
               onClick: () => copy(getTeamInviteLink(resource.resource)),
             }
@@ -461,22 +463,14 @@ function ShareDialogContent(props: ShareDialogContentProps) {
       }
       noShareByLink={noShareByLink}
       shareByLinkSwitch={
-        resource.type !== "workspace"
+        resource.type === "team"
           ? {
               isDisabled: !canEdit,
               onChange: (checked: boolean) => {
                 if (checked) {
-                  spawn(
-                    resource.type === "project"
-                      ? updateProject(false, "viewer")
-                      : updateTeam("viewer")
-                  );
+                  spawn(updateTeam("viewer"));
                 } else {
-                  spawn(
-                    resource.type === "project"
-                      ? updateProject(true, "viewer")
-                      : updateTeam(null)
-                  );
+                  spawn(updateTeam(null));
                 }
               },
             }
@@ -495,13 +489,23 @@ function ShareDialogContent(props: ShareDialogContentProps) {
           resource.type === "workspace"
         ),
       }}
-      cascadeWorkspace={
+      workspaceName={
         resource.type === "project" &&
         resource.resource.workspaceId &&
         resource.resource.workspaceName
           ? {
               props: {
                 children: resource.resource.workspaceName,
+              },
+            }
+          : undefined
+      }
+      workspaceLink={
+        resource.type === "project" &&
+        resource.resource.workspaceId &&
+        resource.resource.workspaceName
+          ? {
+              props: {
                 href: U.workspace({
                   workspaceId: resource.resource.workspaceId,
                 }),
@@ -511,14 +515,8 @@ function ShareDialogContent(props: ShareDialogContentProps) {
             }
           : undefined
       }
-      cascadeTeam={{
+      teamLink={{
         props: {
-          children:
-            resource.type === "project" && resource.resource.teamName
-              ? resource.resource.teamName
-              : resource.type === "workspace"
-              ? resource.resource.team.name
-              : undefined,
           href:
             resource.type === "project" && resource.resource.teamId
               ? U.org({ teamId: resource.resource.teamId })
@@ -528,6 +526,82 @@ function ShareDialogContent(props: ShareDialogContentProps) {
           target: "_blank",
         },
         wrap: (node) => <ClickStopper>{node}</ClickStopper>,
+      }}
+      teamName={{
+        props: {
+          children:
+            resource.type === "project" && resource.resource.teamName
+              ? resource.resource.teamName
+              : resource.type === "workspace"
+              ? resource.resource.team.name
+              : undefined,
+        },
+      }}
+      projectActionMenu={{
+        onClick: () => {
+          analytics().track("project-copy-menu", {
+            item: "button-copy-project-link",
+          });
+          copy(
+            new URL(
+              U.project({
+                projectId: resource.resource.id,
+              }),
+              getPublicUrl()
+            ).toString()
+          );
+        },
+        menu: () => (
+          <Menu>
+            <Menu.Item
+              onClick={() => {
+                analytics().track("project-copy-menu", {
+                  item: "copy-project-link",
+                });
+                copy(
+                  new URL(
+                    U.project({
+                      projectId: resource.resource.id,
+                    }),
+                    getPublicUrl()
+                  ).toString()
+                );
+              }}
+            >
+              Copy project link
+            </Menu.Item>
+            <Menu.Item
+              onClick={() => {
+                analytics().track("project-copy-menu", {
+                  item: "copy-current-arena-link",
+                });
+                copy(window.location.href);
+              }}
+            >
+              Copy link to current arena
+            </Menu.Item>
+            {arenaId && arenaType !== "custom" && (
+              <Menu.Item
+                onClick={() => {
+                  analytics().track("project-copy-menu", {
+                    item: "copy-current-arena-preview-link",
+                  });
+                  copy(
+                    new URL(
+                      U.projectPreview({
+                        projectId: resource.resource.id,
+                        previewPath: arenaId,
+                      }),
+                      getPublicUrl()
+                    ).toString()
+                  );
+                }}
+              >
+                Copy current arena preview link
+              </Menu.Item>
+            )}
+          </Menu>
+        ),
       }}
     />
   );

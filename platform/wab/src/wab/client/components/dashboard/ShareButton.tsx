@@ -1,3 +1,4 @@
+import { Modal } from "@/wab/client/components/widgets/Modal";
 import ShareDialogContent from "@/wab/client/components/widgets/plasmic/ShareDialogContent";
 import {
   DefaultShareButtonProps,
@@ -5,7 +6,6 @@ import {
 } from "@/wab/client/plasmic/plasmic_kit_dashboard/PlasmicShareButton";
 import { ApiPermission, ApiResource } from "@/wab/shared/ApiSchema";
 import * as React from "react";
-import { Modal } from "@/wab/client/components/widgets/Modal";
 
 interface ShareButtonProps extends DefaultShareButtonProps {
   resource: ApiResource;
@@ -25,7 +25,6 @@ function ShareButton(props: ShareButtonProps) {
           onCancel={() => setModal(false)}
           modalRender={() => (
             <ShareDialogContent
-              className="ant-modal-content"
               resource={resource}
               perms={perms}
               closeDialog={() => setModal(false)}

@@ -1,17 +1,18 @@
 import sty from "@/wab/client/components/TopFrame/TopBar/TopBarModal.module.css";
-import React, { ComponentProps } from "react";
 import { Modal } from "@/wab/client/components/widgets/Modal";
+import React, { ComponentProps } from "react";
 
 export function TopBarModal(
   props: ComponentProps<typeof Modal> & {
     children?: React.ReactNode;
     onClose?: () => void;
+    open?: boolean;
   }
 ) {
-  const { children, onClose, ...rest } = props;
+  const { children, onClose, open = true, ...rest } = props;
   return (
     <Modal
-      visible={true}
+      open={open}
       footer={null}
       closable={false}
       maskClosable={true}

@@ -1,6 +1,6 @@
 /** @format */
 
-import { TopBarModal } from "@/wab/client/components/TopFrame/TopBar/TopBarModal";
+import { Modal } from "@/wab/client/components/widgets/Modal";
 import ShareDialogContent from "@/wab/client/components/widgets/plasmic/ShareDialogContent";
 import { useTopFrameCtx } from "@/wab/client/frame-ctx/top-frame-ctx";
 import { ApiPermission, ApiProject } from "@/wab/shared/ApiSchema";
@@ -23,37 +23,30 @@ export const ShareModal = observer(function ShareModal({
   setShowShareModal,
 }: ShareModalProps) {
   const { hostFrameApi } = useTopFrameCtx();
+
   return (
-    <>
-      {showShareModal && (
-        <TopBarModal
-          title={
-            <>
-              Share <strong>{project.name}</strong>
-            </>
-          }
-          closable
-          onClose={() => setShowShareModal(false)}
-        >
-          <ShareDialogContent
-            closeDialog={() => setShowShareModal(false)}
-            perms={perms}
-            reloadPerms={async () => {
-              await hostFrameApi.refreshSiteInfo();
-              refreshProjectAndPerms();
-            }}
-            updateResourceCallback={async () => {
-              await hostFrameApi.refreshSiteInfo();
-              refreshProjectAndPerms();
-            }}
-            resource={{
-              type: "project",
-              resource: project,
-            }}
-          />
-        </TopBarModal>
+    <Modal
+      onCancel={() => setShowShareModal(false)}
+      open={showShareModal}
+      modalRender={() => (
+        <ShareDialogContent
+          closeDialog={() => setShowShareModal(false)}
+          perms={perms}
+          reloadPerms={async () => {
+            await hostFrameApi.refreshSiteInfo();
+            refreshProjectAndPerms();
+          }}
+          updateResourceCallback={async () => {
+            await hostFrameApi.refreshSiteInfo();
+            refreshProjectAndPerms();
+          }}
+          resource={{
+            type: "project",
+            resource: project,
+          }}
+        />
       )}
-    </>
+    />
   );
 });
 

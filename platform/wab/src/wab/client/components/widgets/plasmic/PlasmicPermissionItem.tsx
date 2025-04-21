@@ -39,7 +39,7 @@ import Select__Option from "../Select__Option"; // plasmic-import: rr-LWdMni2G/c
 import "@plasmicapp/react-web/lib/plasmic.css";
 
 import plasmic_plasmic_kit_color_tokens_css from "../../../plasmic/plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import plasmic_plasmic_kit_design_system_deprecated_css from "../../../plasmic/PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
+import plasmic_plasmic_kit_design_system_css from "../../../plasmic/PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import projectcss from "../../../plasmic/PP__plasmickit_share_dialog.module.css"; // plasmic-import: kA1Hysr5ZeimtATHTDJz5B/projectcss
 import sty from "./PlasmicPermissionItem.module.css"; // plasmic-import: GFrmKeyhlA/css
 
@@ -169,7 +169,7 @@ function PlasmicPermissionItem__RenderFunc(props: {
         projectcss.plasmic_default_styles,
         projectcss.plasmic_mixins,
         projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_deprecated_css.plasmic_tokens,
+        plasmic_plasmic_kit_design_system_css.plasmic_tokens,
         plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
         sty.root,
         {
@@ -190,6 +190,7 @@ function PlasmicPermissionItem__RenderFunc(props: {
         hasGap={true}
         className={classNames(projectcss.all, sty.freeBox, {
           [sty.freeBoxloading]: hasVariant($state, "loading", "loading"),
+          [sty.freeBoxrole_owner]: hasVariant($state, "role", "owner"),
         })}
       >
         {(hasVariant($state, "role", "owner") ? true : false) ? (
@@ -203,9 +204,21 @@ function PlasmicPermissionItem__RenderFunc(props: {
               { [sty.ownerrole_owner]: hasVariant($state, "role", "owner") }
             )}
           >
-            {hasVariant($state, "role", "owner") ? "owner" : "Enter some text"}
+            {hasVariant($state, "role", "owner") ? "Owner" : "Enter some text"}
           </div>
         ) : null}
+        {(hasVariant($state, "loading", "loading") ? true : false)
+          ? renderPlasmicSlot({
+              defaultContents: (
+                <ResetIcon
+                  className={classNames(projectcss.all, sty.svg__vmeQb)}
+                  role={"img"}
+                />
+              ),
+
+              value: args.spinner,
+            })
+          : null}
         <IconButton
           data-plasmic-name={"deleteBtn"}
           data-plasmic-override={overrides.deleteBtn}
@@ -262,7 +275,8 @@ function PlasmicPermissionItem__RenderFunc(props: {
                 return;
               }
             }}
-            type={"bordered"}
+            textAlign={"right"}
+            type={"seamless"}
             value={generateStateValueProp($state, ["roleDropdown", "value"])}
           >
             <Select__Option
@@ -291,18 +305,6 @@ function PlasmicPermissionItem__RenderFunc(props: {
             </Select__Option>
           </Select>
         ) : null}
-        {(hasVariant($state, "loading", "loading") ? true : false)
-          ? renderPlasmicSlot({
-              defaultContents: (
-                <ResetIcon
-                  className={classNames(projectcss.all, sty.svg__vmeQb)}
-                  role={"img"}
-                />
-              ),
-
-              value: args.spinner,
-            })
-          : null}
       </Stack__>
     </Stack__>
   ) as React.ReactElement | null;
