@@ -28,25 +28,29 @@ export const ShareModal = observer(function ShareModal({
     <Modal
       onCancel={() => setShowShareModal(false)}
       open={showShareModal}
-      modalRender={() => (
-        <ShareDialogContent
-          closeDialog={() => setShowShareModal(false)}
-          perms={perms}
-          reloadPerms={async () => {
-            await hostFrameApi.refreshSiteInfo();
-            refreshProjectAndPerms();
-          }}
-          updateResourceCallback={async () => {
-            await hostFrameApi.refreshSiteInfo();
-            refreshProjectAndPerms();
-          }}
-          resource={{
-            type: "project",
-            resource: project,
-          }}
-        />
-      )}
-    />
+      footer={false}
+      closable={false}
+      maskClosable={true}
+      width={500}
+      wrapClassName="no-padding-ant-modal"
+    >
+      <ShareDialogContent
+        closeDialog={() => setShowShareModal(false)}
+        perms={perms}
+        reloadPerms={async () => {
+          await hostFrameApi.refreshSiteInfo();
+          refreshProjectAndPerms();
+        }}
+        updateResourceCallback={async () => {
+          await hostFrameApi.refreshSiteInfo();
+          refreshProjectAndPerms();
+        }}
+        resource={{
+          type: "project",
+          resource: project,
+        }}
+      />
+    </Modal>
   );
 });
 
