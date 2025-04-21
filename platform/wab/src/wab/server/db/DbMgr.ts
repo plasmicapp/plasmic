@@ -7229,9 +7229,9 @@ export class DbMgr implements MigrationDbMgr {
     return Promise.all(
       Object.entries(opts.uniqueFieldsData).map(
         async ([fieldIdentifier, value]) => {
-          const data = ` AND data -> '' @> '{"${fieldIdentifier}" : ${value}}'`;
+          const dataCheck = ` AND data -> '' @> '{"${fieldIdentifier}" : ${value}}'`;
           const results: { id: CmsRowId }[] = await connection.query(
-            sql + data
+            sql + dataCheck
           );
           const conflictRowIds = results.map((result) => result.id);
           return {
