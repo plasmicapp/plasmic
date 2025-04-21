@@ -1,16 +1,13 @@
-import { CmsRow, CmsTable } from "@/wab/server/entities/Entities";
+import { CmsTable } from "@/wab/server/entities/Entities";
 import { BadRequestError } from "@/wab/shared/ApiErrors/errors";
 import {
   CmsFieldMeta,
   CmsMetaType,
-  CmsRowData,
-  CmsRowId,
   CmsTableSchema,
   CmsTypeName,
   FilterClause,
   FilterCond,
 } from "@/wab/shared/ApiSchema";
-import { getDefaultLocale } from "@/wab/shared/cms";
 import { toVarName } from "@/wab/shared/codegen/util";
 import { Dict } from "@/wab/shared/collections";
 import { assert, withoutNils } from "@/wab/shared/common";
@@ -324,35 +321,4 @@ const typeToPgType = (type: CmsTypeName) => {
     default:
       throw new BadRequestError(`Cannot filter by a column of type ${type}`);
   }
-};
-
-const isConflicting = (val1: unknown, val2: unknown) => {
-  if (
-    (val1 === undefined || val1 === "") &&
-    (val2 === undefined || val2 === "")
-  ) {
-    return false;
-  }
-  return val1 === val2;
-};
-
-/** If users turn on the unique attribute later,
- there might be multiple conflicting rows. */
-export const getConflictingCmsRowIds = (
-  publishedRows: CmsRow[],
-  currentRowId: CmsRowId,
-  fieldIdentifier: string,
-  value: unknown
-): CmsRowId[] => {
-  const conflictingCmsRowIds = publishedRows
-    .filter((publishedRow) => {
-      const publishedValue = getDefaultLocale(publishedRow.data as CmsRowData)[
-        fieldIdentifier
-      ];
-      return (
-        publishedRow.id !== currentRowId && isConflicting(publishedValue, value)
-      );
-    })
-    .map((row) => row.id);
-  return conflictingCmsRowIds;
 };
