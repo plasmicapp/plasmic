@@ -385,10 +385,6 @@
   > picture
   > img {
   overflow: hidden;
-  transition-property: all;
-  transition-duration: 1s;
-  -webkit-transition-property: all;
-  -webkit-transition-duration: 1s;
 }
 .slotTargetChildrensize_large {
   font-size: 24px;
@@ -446,6 +442,9 @@
 }
 .roottype_purple:hover .slotTargetChildrentype_purple {
   color: var(--token-ZaJGjVCo3Ue);
+}
+.roottype_black:hover .slotTargetChildrentype_black {
+  color: var(--token-UunsGa2Y3t3);
 }
 .rootwithRedBackgroundHover:hover .slotTargetChildrenwithRedBackgroundHover {
   color: var(--token-Y2CWh0ci95a);

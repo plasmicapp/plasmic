@@ -16,7 +16,7 @@
 .roothoverBox {
   box-shadow: 0px 12px 60px 0px #00000026, 0px 12px 32px -16px #0009321f;
   background: var(--token-rqQDmopteQdV);
-  width: 300px;
+  max-width: 300px;
   border-radius: var(--token-XnnXV8YSKg9w);
   padding: var(--token-XnnXV8YSKg9w);
   border: 1px solid var(--token-JpKJ41ZaDWOC);
@@ -280,7 +280,7 @@
   object-fit: cover;
   height: 1em;
 }
-.svg__uEq9Y {
+.svg__qD4K {
   display: flex;
   position: relative;
   object-fit: cover;
@@ -306,7 +306,7 @@
   align-self: flex-start;
   display: flex;
 }
-.svg__zSW5 {
+.svg__qz8Gb {
   display: flex;
   position: relative;
   object-fit: cover;
@@ -315,7 +315,7 @@
 .texthoverBox {
   color: var(--token-RTPypKCJE4bm);
 }
-.svg__lotPp {
+.svg___82GjE {
   display: flex;
   position: relative;
   object-fit: cover;
