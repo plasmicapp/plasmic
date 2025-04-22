@@ -194,8 +194,7 @@ describe("Auto Open", () => {
       });
     });
 
-    // TODO: turn on when PLA-12032 is fixxed
-    xit("should work when auto-openable components are inside another auto-openable component", () => {
+    it("should work when auto-openable components are inside another auto-openable component", () => {
       cy.withinStudioIframe(() => {
         cy.createNewPageInOwnArena(pageName).then((pageFrame) => {
           cy.justLog("Testing in design mode");
@@ -237,6 +236,7 @@ describe("Auto Open", () => {
           assertHidden(pageFrame, tooltipHiddenContent, tooltipVisibleContent);
           cy.autoOpenBanner().should("exist");
 
+          cy.wait(100);
           cy.selectRootNode();
           assertHidden(pageFrame, modalHiddenContent);
           assertHidden(pageFrame, selectHiddenContent);
@@ -248,7 +248,7 @@ describe("Auto Open", () => {
           // TODO: PLA-11850 Select does not auto-open on first render
           // assertAutoOpened(pageFrame, selectHiddenContent);
           assertAutoOpened(pageFrame, modalHiddenContent);
-          // TODO: resurphased after revert of PLA-11850, because the select's auto-open was triggering tooltip to hide again.
+          // TODO: PLA-12032 resurphased after revert of PLA-11850, because the select's auto-open was triggering tooltip to hide again.
           // assertHidden(pageFrame, tooltipHiddenContent, tooltipVisibleContent);
           cy.autoOpenBanner().should("exist");
 
@@ -353,9 +353,13 @@ describe("Auto Open", () => {
     function insertModalComponent() {
       cy.insertFromAddDrawer("plasmic-react-aria-modal");
       cy.autoOpenBanner().should("not.exist"); // because the isOpen is defaulted to true in the registration
-      cy.get(`[data-plasmic-prop="isOpen"]`).click(); // Modal has isOpen=true by default in the registration. We set isOpen to false so that it's an auto-opened node
+      cy.get(`[data-test-id="prop-editor-row-isOpen"] label`)
+        .eq(0)
+        .rightclick();
+      cy.contains("Use dynamic value").click();
+      cy.contains("Switch to Code").click();
+      cy.resetMonacoEditorToCode(`false`);
       cy.autoOpenBanner().should("exist");
-      cy.justType("{esc}"); // blur the isOpen prop (so the focus switches back to the tpl tree)
     }
 
     function createTooltipParentComponent() {
