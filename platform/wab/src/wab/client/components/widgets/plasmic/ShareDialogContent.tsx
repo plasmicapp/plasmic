@@ -136,9 +136,9 @@ function ShareDialogContent(props: ShareDialogContentProps) {
       : resource.resource.id;
 
   const ownAccessLevelRank = accessLevelRank(ownAccessLevel);
-  // Anyone can invite to a resource if they have at least viewer access
+  // Anyone can invite to a resource if they have at least content access
   // but it will require editor access to update invite by link
-  const canInvite = ownAccessLevelRank >= accessLevelRank("viewer");
+  const canInvite = ownAccessLevelRank >= accessLevelRank("content");
   const canEdit = ownAccessLevelRank >= accessLevelRank("editor");
   const canHaveCommenterRole =
     canEdit &&
@@ -329,7 +329,7 @@ function ShareDialogContent(props: ShareDialogContentProps) {
             }}
             isDisabled={
               !tier.contentRole ||
-              ownAccessLevelRank < accessLevelRank("viewer")
+              ownAccessLevelRank < accessLevelRank("content")
             }
           >
             {tier.contentRole ? (
