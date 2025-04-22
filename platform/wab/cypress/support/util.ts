@@ -770,15 +770,22 @@ export function setVisible() {
   cy.get('[data-plasmic-prop="display-visible"]').click();
 }
 
+export function getVisibilityToggle(nodeName: string) {
+  return (
+    cy
+      .getTreeNode([nodeName])
+      // hover to show the eye icon
+      .realHover()
+      .find('[class*="tpltree__label__visibility"]')
+  );
+}
+
 /**
  * Toggles the visibility of a node in the outline tab.
  * @param nodeName - The name of the node to toggle visibility for.
  */
 export function toggleVisiblity(nodeName: string) {
-  cy.getTreeNode([nodeName])
-    // hover to show the eye icon
-    .realHover()
-    .find('[class*="tpltree__label__visibility"]')
+  getVisibilityToggle(nodeName)
     // click the eye icon in the tpl tree node
     .click();
 }

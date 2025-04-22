@@ -240,4 +240,40 @@ describe("Style sections", function () {
       });
     });
   });
+  it("Should not have visibility toggle if visibility style section is not enabled", function () {
+    cy.withinStudioIframe(() => {
+      cy.createNewPageInOwnArena("NewPage").then(() => {
+        // NOTE: You can find these code component registrations in the host-test app at platform/host-test/pages/plasmic-host-style-sections.tsx
+        const componentVisibilityConfig = [
+          {
+            ccName: "NoStyleSections",
+            shouldHaveToggle: false,
+          },
+          {
+            ccName: "S_visibility",
+            shouldHaveToggle: true,
+          },
+          {
+            ccName: "S_background",
+            shouldHaveToggle: false,
+          },
+          {
+            ccName: "All",
+            shouldHaveToggle: true,
+          },
+        ];
+
+        componentVisibilityConfig.forEach(({ ccName, shouldHaveToggle }) => {
+          const assertionPhrase = shouldHaveToggle ? "exist" : "not.exist";
+          cy.insertFromAddDrawer(ccName);
+          cy.renameTreeNode(ccName);
+          cy.getVisibilityToggle(ccName).should(assertionPhrase);
+          cy.extractComponentNamed(`Comp${ccName}`);
+          cy.getVisibilityToggle(`Comp${ccName}`).should(assertionPhrase);
+          cy.extractComponentNamed(`CompComp${ccName}`);
+          cy.getVisibilityToggle(`CompComp${ccName}`).should(assertionPhrase);
+        });
+      });
+    });
+  });
 });

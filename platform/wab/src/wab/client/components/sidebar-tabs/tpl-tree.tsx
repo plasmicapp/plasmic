@@ -66,7 +66,7 @@ import { assert, ensure, maybe, spawn, unexpected } from "@/wab/shared/common";
 import { isCodeComponent } from "@/wab/shared/core/components";
 import { tryExtractLit } from "@/wab/shared/core/exprs";
 import { Selectable } from "@/wab/shared/core/selection";
-import { SlotSelection } from "@/wab/shared/core/slots";
+import { isSlotSelection, SlotSelection } from "@/wab/shared/core/slots";
 import * as Tpls from "@/wab/shared/core/tpls";
 import {
   clone,
@@ -448,7 +448,7 @@ const TplTreeNode = observer(function TplTreeNode(props: {
         </Tooltip>
       );
     }
-    if (!Tpls.canToggleVisibility(item, viewCtx)) {
+    if (isSlotSelection(item) || !Tpls.canToggleVisibility(item, viewCtx)) {
       // Can only toggle visibility for tags, components.  But we still want to
       // take up space here so things line up vertically.
       return (
