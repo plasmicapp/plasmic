@@ -35,15 +35,16 @@ export type PlasmicAutoOpenBanner__VariantsArgs = {};
 type VariantPropType = keyof PlasmicAutoOpenBanner__VariantsArgs;
 export const PlasmicAutoOpenBanner__VariantProps = new Array<VariantPropType>();
 
-export type PlasmicAutoOpenBanner__ArgsType = {};
+export type PlasmicAutoOpenBanner__ArgsType = { onHide?: (event: any) => void };
 type ArgPropType = keyof PlasmicAutoOpenBanner__ArgsType;
-export const PlasmicAutoOpenBanner__ArgProps = new Array<ArgPropType>();
+export const PlasmicAutoOpenBanner__ArgProps = new Array<ArgPropType>("onHide");
 
 export type PlasmicAutoOpenBanner__OverridesType = {
   root?: Flex__<typeof Banner>;
 };
 
 export interface DefaultAutoOpenBannerProps {
+  onHide?: (event: any) => void;
   className?: string;
 }
 
@@ -83,9 +84,11 @@ function PlasmicAutoOpenBanner__RenderFunc(props: {
       data-plasmic-override={overrides.root}
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
+      actionLabel1={"Hide"}
       className={classNames("__wab_instance", sty.root)}
       iconType={"autoOpen"}
       message={"Auto-showing hidden element."}
+      onClickAction1={args.onHide}
       size={"small"}
       type={"_default"}
     />

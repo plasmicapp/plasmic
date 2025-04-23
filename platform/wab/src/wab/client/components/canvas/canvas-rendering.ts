@@ -1274,7 +1274,7 @@ function getAutoOpenSelectionInfo(ctx: RenderingCtx, node: TplNode) {
       // Ensuring that the depencies are tracked
       const isInteractive = ctx.viewCtx.studioCtx.isInteractiveMode;
       const isAutoOpenMode = ctx.viewCtx.studioCtx.isAutoOpenMode;
-
+      const disabledAutoOpenUuid = ctx.viewCtx.disabledAutoOpenUuid;
       // The reason why we are using the focusedTplDeepAncestorPath is because
       // we can't rely on ValNodes or the dom to determine if a node is selected
       // or not. Since code components are able to conditonally render content
@@ -1289,7 +1289,13 @@ function getAutoOpenSelectionInfo(ctx: RenderingCtx, node: TplNode) {
       const path = ctx.viewCtx.focusedTplAncestorsThroughComponents();
       const nodeIdx = path?.findIndex((s) => s.node === node) ?? -1;
 
-      if (isInteractive || !isAutoOpenMode || !path || nodeIdx === -1) {
+      if (
+        isInteractive ||
+        !isAutoOpenMode ||
+        disabledAutoOpenUuid ||
+        !path ||
+        nodeIdx === -1
+      ) {
         return {
           id: node.uuid,
           isSelected: false,

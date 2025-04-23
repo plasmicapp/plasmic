@@ -1871,7 +1871,12 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
     return (
       <div className="canvas-editor">
         {this.viewCtx()?.autoOpenedUuid && (
-          <AutoOpenBanner className="banner-bottom" />
+          <AutoOpenBanner
+            onHide={() => {
+              this.viewCtx()!.forceCloseAutoOpen();
+            }}
+            className="banner-bottom"
+          />
         )}
         {studioCtx.currentArena && (
           <>

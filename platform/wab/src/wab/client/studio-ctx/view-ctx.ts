@@ -441,27 +441,58 @@ export class ViewCtx extends WithDbCtx {
   }
 
   set autoOpenedUuid(val: string | undefined) {
+    if (val === this.autoOpenedUuid) {
+      return;
+    }
     this._autoOpenedUuid.set(val);
+  }
+
+  resetAutoOpenState() {
+    this.autoOpenedUuid = undefined;
+    this.disabledAutoOpenUuid = undefined;
+  }
+
+  forceCloseAutoOpen() {
+    this.disabledAutoOpenUuid = this.autoOpenedUuid;
+    this.autoOpenedUuid = undefined;
+  }
+
+  /**
+   * Disables auto-open behaviour for a specific uuid.
+   * This can be used to temporarily disable auto-open behaviour, even when the auto open mode is enabled.
+   */
+  private _disabledAutoOpenUuid = observable.box<string | undefined>(undefined);
+
+  get disabledAutoOpenUuid() {
+    return this._disabledAutoOpenUuid.get();
+  }
+
+  set disabledAutoOpenUuid(val: string | undefined) {
+    this._disabledAutoOpenUuid.set(val);
   }
 
   maybeClearAutoOpenedContentOnSelectionChange(
     previousSelection: Selectable | null,
     newSelection: Selectable | null
   ) {
-    // nothing previously auto-opened, no need to clear
     if (!this.autoOpenedUuid) {
+      if (this.disabledAutoOpenUuid) {
+        this.resetAutoOpenState();
+      }
       return;
     }
 
+    // nothing previously auto-opened, no need to clear
     if (!previousSelection) {
       return;
     }
 
     // nothing selected, clear
     if (!newSelection) {
-      this.autoOpenedUuid = undefined;
+      this.resetAutoOpenState();
       return;
     }
+
     // If the first selection hasn't changed in multi-selection mode, no need to clear auto-opened content
     if (previousSelection === newSelection) {
       return;
@@ -484,7 +515,7 @@ export class ViewCtx extends WithDbCtx {
       return;
     }
 
-    this.autoOpenedUuid = undefined;
+    this.resetAutoOpenState();
   }
 
   private _xFocusedSelectables = observable.box<(Selectable | null)[]>([], {
@@ -1084,7 +1115,7 @@ export class ViewCtx extends WithDbCtx {
             const idx = this._focusedSelectables.indexOf(finalVal);
             this._focusedSelectables.splice(idx, 1);
             if (idx === 0) {
-              this.autoOpenedUuid = undefined;
+              this.resetAutoOpenState();
             }
             this._focusedTpls.splice(idx, 1);
             this._focusedDomElts.splice(idx, 1);

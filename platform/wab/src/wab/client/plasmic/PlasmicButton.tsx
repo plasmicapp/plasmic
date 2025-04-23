@@ -105,6 +105,7 @@ export const PlasmicButton__VariantProps = new Array<VariantPropType>(
 
 export type PlasmicButton__ArgsType = {
   isSubmit?: boolean;
+  onClick?: (event: any) => void;
   startIcon?: React.ReactNode;
   children?: React.ReactNode;
   caption?: React.ReactNode;
@@ -113,6 +114,7 @@ export type PlasmicButton__ArgsType = {
 type ArgPropType = keyof PlasmicButton__ArgsType;
 export const PlasmicButton__ArgProps = new Array<ArgPropType>(
   "isSubmit",
+  "onClick",
   "startIcon",
   "children",
   "caption",
@@ -128,6 +130,7 @@ export type PlasmicButton__OverridesType = {
 
 export interface DefaultButtonProps {
   isSubmit?: boolean;
+  onClick?: (event: any) => void;
   startIcon?: React.ReactNode;
   children?: React.ReactNode;
   caption?: React.ReactNode;
@@ -401,6 +404,7 @@ function PlasmicButton__RenderFunc(props: {
         }
       )}
       disabled={hasVariant($state, "disabled", "disabled") ? true : undefined}
+      onClick={args.onClick}
       data-plasmic-trigger-props={[triggerRootHoverProps]}
     >
       {(hasVariant($state, "withIcons", "startIcon") ? true : false) ? (

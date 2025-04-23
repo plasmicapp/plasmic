@@ -12,7 +12,7 @@ interface ButtonProps
   extends DefaultButtonProps,
     Omit<
       React.ComponentProps<"button">,
-      "type" | "disabled" | "color" | "key"
+      "type" | "disabled" | "color" | "key" | "onClick"
     > {
   tooltip?: React.ReactNode;
   href?: string;

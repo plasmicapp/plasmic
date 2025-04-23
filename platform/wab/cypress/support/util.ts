@@ -398,6 +398,14 @@ export function turnOnAutoOpenMode() {
   cy.contains("Turn on auto-open mode").click();
 }
 
+export function hideAutoOpen() {
+  cy.autoOpenBanner()
+    .parents(".banner-bottom")
+    .find("button")
+    .contains("Hide")
+    .click();
+}
+
 export function refreshFocusedArena() {
   cy.get("#refresh-canvas-btn").click();
   cy.wait(1000);

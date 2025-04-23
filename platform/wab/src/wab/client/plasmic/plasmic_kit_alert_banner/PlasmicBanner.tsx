@@ -38,7 +38,6 @@ import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_syst
 import sty from "./PlasmicBanner.module.css"; // plasmic-import: LlDTs6h34ISG/css
 
 import CloseIcon from "../plasmic_kit/PlasmicIcon__Close"; // plasmic-import: hy7vKrgdAZwW4/icon
-import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
 import EyeExclamationSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__EyeExclamationSvg"; // plasmic-import: 0dLCQ-imlG_u/icon
 import WarningTriangleSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__WarningTriangleSvg"; // plasmic-import: S0L-xosWD/icon
 
@@ -70,6 +69,8 @@ export type PlasmicBanner__ArgsType = {
   actionLabel1?: string;
   actionLabel2?: string;
   dismissible?: boolean;
+  onClickAction1?: (event: any) => void;
+  onClickAction2?: (event: any) => void;
 };
 type ArgPropType = keyof PlasmicBanner__ArgsType;
 export const PlasmicBanner__ArgProps = new Array<ArgPropType>(
@@ -77,7 +78,9 @@ export const PlasmicBanner__ArgProps = new Array<ArgPropType>(
   "message",
   "actionLabel1",
   "actionLabel2",
-  "dismissible"
+  "dismissible",
+  "onClickAction1",
+  "onClickAction2"
 );
 
 export type PlasmicBanner__OverridesType = {
@@ -88,6 +91,7 @@ export type PlasmicBanner__OverridesType = {
   action2Btn?: Flex__<typeof Button>;
   visit?: Flex__<"div">;
   dismissBtn?: Flex__<"div">;
+  svg?: Flex__<"svg">;
 };
 
 export interface DefaultBannerProps {
@@ -96,6 +100,8 @@ export interface DefaultBannerProps {
   actionLabel1?: string;
   actionLabel2?: string;
   dismissible?: boolean;
+  onClickAction1?: (event: any) => void;
+  onClickAction2?: (event: any) => void;
   type?: SingleChoiceArg<"_default" | "error" | "info">;
   size?: SingleChoiceArg<"_default" | "small">;
   block?: SingleBooleanChoiceArg<"block">;
@@ -311,7 +317,13 @@ function PlasmicBanner__RenderFunc(props: {
       <Stack__
         as={"div"}
         hasGap={true}
-        className={classNames(projectcss.all, sty.freeBox__fMtNr)}
+        className={classNames(projectcss.all, sty.freeBox__fMtNr, {
+          [sty.freeBoxtype__default__fMtNrMyqB3]: hasVariant(
+            $state,
+            "type",
+            "_default"
+          ),
+        })}
       >
         {(() => {
           try {
@@ -330,29 +342,21 @@ function PlasmicBanner__RenderFunc(props: {
             data-plasmic-name={"action1Btn"}
             data-plasmic-override={overrides.action1Btn}
             className={classNames("__wab_instance", sty.action1Btn, {
+              [sty.action1Btntype__default]: hasVariant(
+                $state,
+                "type",
+                "_default"
+              ),
               [sty.action1Btntype_error]: hasVariant($state, "type", "error"),
               [sty.action1Btntype_info]: hasVariant($state, "type", "info"),
             })}
-            endIcon={
-              <ChevronDownSvgIcon
-                className={classNames(projectcss.all, sty.svg__jmW69)}
-                role={"img"}
-              />
-            }
-            startIcon={
-              false ? (
-                <svg
-                  className={classNames(projectcss.all, sty.svg__e7Ku3)}
-                  role={"img"}
-                />
-              ) : null
-            }
+            onClick={args.onClickAction1}
             type={
               hasVariant($state, "type", "info")
                 ? ["backlitInfo"]
                 : hasVariant($state, "type", "error")
                 ? ["backlitError"]
-                : ["primary"]
+                : ["link"]
             }
           >
             <div
@@ -402,27 +406,13 @@ function PlasmicBanner__RenderFunc(props: {
               [sty.action2Btntype_error]: hasVariant($state, "type", "error"),
               [sty.action2Btntype_info]: hasVariant($state, "type", "info"),
             })}
-            endIcon={
-              <ChevronDownSvgIcon
-                className={classNames(projectcss.all, sty.svg__hBfx5)}
-                role={"img"}
-              />
-            }
-            size={"wide"}
-            startIcon={
-              false ? (
-                <svg
-                  className={classNames(projectcss.all, sty.svg__x9ZQe)}
-                  role={"img"}
-                />
-              ) : null
-            }
+            onClick={args.onClickAction2}
             type={
               hasVariant($state, "type", "info")
                 ? ["backlitInfo"]
                 : hasVariant($state, "type", "error")
                 ? ["backlitError"]
-                : ["primary"]
+                : ["link"]
             }
           >
             <div
@@ -471,22 +461,12 @@ function PlasmicBanner__RenderFunc(props: {
             className={classNames(projectcss.all, sty.dismissBtn)}
           >
             <CloseIcon
-              className={classNames(projectcss.all, sty.svg__wSMfq, {
-                [sty.svgsize_small__wSMfq3Mvt8]: hasVariant(
-                  $state,
-                  "size",
-                  "small"
-                ),
-                [sty.svgtype_error__wSMfqAyvH7]: hasVariant(
-                  $state,
-                  "type",
-                  "error"
-                ),
-                [sty.svgtype_info__wSMfqCq87W]: hasVariant(
-                  $state,
-                  "type",
-                  "info"
-                ),
+              data-plasmic-name={"svg"}
+              data-plasmic-override={overrides.svg}
+              className={classNames(projectcss.all, sty.svg, {
+                [sty.svgsize_small]: hasVariant($state, "size", "small"),
+                [sty.svgtype_error]: hasVariant($state, "type", "error"),
+                [sty.svgtype_info]: hasVariant($state, "type", "info"),
               })}
               role={"img"}
             />
@@ -506,13 +486,15 @@ const PlasmicDescendants = {
     "action2Btn",
     "visit",
     "dismissBtn",
+    "svg",
   ],
   icon: ["icon"],
   action1Btn: ["action1Btn", "visit2"],
   visit2: ["visit2"],
   action2Btn: ["action2Btn", "visit"],
   visit: ["visit"],
-  dismissBtn: ["dismissBtn"],
+  dismissBtn: ["dismissBtn", "svg"],
+  svg: ["svg"],
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -525,6 +507,7 @@ type NodeDefaultElementType = {
   action2Btn: typeof Button;
   visit: "div";
   dismissBtn: "div";
+  svg: "svg";
 };
 
 type ReservedPropsType = "variants" | "args" | "overrides";
@@ -593,6 +576,7 @@ export const PlasmicBanner = Object.assign(
     action2Btn: makeNodeComponent("action2Btn"),
     visit: makeNodeComponent("visit"),
     dismissBtn: makeNodeComponent("dismissBtn"),
+    svg: makeNodeComponent("svg"),
 
     // Metadata about props expected for PlasmicBanner
     internalVariantProps: PlasmicBanner__VariantProps,

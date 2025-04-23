@@ -421,7 +421,7 @@ describe("Auto Open", () => {
         assertAutoOpened(frame, hiddenContent, visibleContent);
         cy.autoOpenBanner().should("exist");
       }
-      // TODO: PLA-11850 Select does not auto-open on first render
+      // TODO: PLA-11850 Select does not auto-open on first render, so we de-select it first by selecting the root node
       cy.selectRootNode();
       cy.selectTreeNode([ccDisplayName]);
       _assertAutoOpened();
@@ -448,8 +448,11 @@ describe("Auto Open", () => {
         cy.selectTreeNode([otherSlotName]);
         _assertHidden();
       }
+      cy.log("Testing Hide button in auto-open banner");
       cy.turnOnAutoOpenMode();
       _assertAutoOpened();
+      cy.hideAutoOpen();
+      _assertHidden();
       cy.selectRootNode(); // de-select the component
       _assertHidden();
       if (triggerSlotName) {
@@ -459,6 +462,8 @@ describe("Auto Open", () => {
       if (otherSlotName) {
         cy.selectTreeNode([otherSlotName]);
         _assertAutoOpened();
+        cy.hideAutoOpen();
+        _assertHidden();
       }
       cy.selectRootNode(); // de-select the component
       _assertHidden();

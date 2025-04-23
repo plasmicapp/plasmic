@@ -63,6 +63,7 @@ function computeHashFromStableFields(node: TplNode, ctx: RenderingCtx) {
     JSON.stringify(ctx.visibilityOptions),
     ctx.isDraggingObject,
     ctx.viewCtx.studioCtx.isAutoOpenMode,
+    ctx.viewCtx.disabledAutoOpenUuid,
   ];
 }
 
