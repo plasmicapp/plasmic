@@ -524,8 +524,8 @@ describe("Auto Open", () => {
 
         function checkTextAutoOpen(
           visibility: VisibilityType,
-
-          frame: Framed
+          frame: Framed,
+          hasNotRenderedParent?: boolean
         ) {
           const assertionPhrase =
             visibility === "notVisible" ? "be.visible" : "exist";
@@ -544,7 +544,12 @@ describe("Auto Open", () => {
               .should(assertionPhrase);
             cy.autoOpenBanner().should("exist");
           }
-          assertAutoOpened(); // auto-open does not need to wait for next selection, if the item is already selec2ted
+          if (hasNotRenderedParent) {
+            assertAutoOpened(); // auto-open does not need to wait for next selection, if the parent is already auto-opened
+          } else {
+            assertHidden(); // Auto-open hidden element on next selection only (PLA-11958)
+          }
+          cy.wait(400);
           cy.selectRootNode(); // de-select
           assertHidden();
           cy.selectTreeNode([checkParams.textNodeName]);
@@ -576,6 +581,7 @@ describe("Auto Open", () => {
           if (hasNotRenderedParent) {
             cy.selectTreeNode([notRenderedParentNodeName]);
             cy.setNotRendered();
+            cy.selectRootNode();
           }
 
           cy.selectTreeNode([checkParams.textNodeName]);
@@ -587,15 +593,18 @@ describe("Auto Open", () => {
             cy.setDisplayNone();
             checkTextAutoOpen(
               hasNotRenderedParent ? "notRendered" : "notVisible",
-              frame
+              frame,
+              hasNotRenderedParent
             );
           }
           cy.log("Test NotRendered visibility");
+          cy.setVisible();
           cy.setNotRendered();
-          checkTextAutoOpen("notRendered", frame);
+          checkTextAutoOpen("notRendered", frame, hasNotRenderedParent);
           cy.log("Test Dynamic visibility");
+          cy.setVisible();
           cy.setDynamicVisibility("false");
-          checkTextAutoOpen("customExpr", frame);
+          checkTextAutoOpen("customExpr", frame, hasNotRenderedParent);
           cy.log("Test Visible visibility");
           cy.setVisible();
           frame.base().contains(checkParams.textContents).should("exist");
@@ -610,7 +619,8 @@ describe("Auto Open", () => {
             cy.toggleVisiblity(checkParams.textNodeName);
             checkTextAutoOpen(
               hasNotRenderedParent || isSlot ? "notRendered" : "notVisible",
-              frame
+              frame,
+              hasNotRenderedParent
             );
 
             cy.toggleVisiblity(checkParams.textNodeName);
@@ -669,7 +679,11 @@ describe("Auto Open", () => {
           };
           testAllVisibilities({ frame, isPlasmicComponent: true });
           cy.selectTreeNode([compNodeName]);
+          cy.justLog("Test undo functionality");
           cy.setNotRendered();
+          cy.autoOpenBanner().should("not.exist"); // Auto-open hidden element on next selection only
+          cy.selectRootNode();
+          cy.selectTreeNode([compNodeName]);
           cy.autoOpenBanner().should("exist");
           cy.justType("{del}"); // delete the text
           frame.base().contains(textContents).should(`not.exist`);

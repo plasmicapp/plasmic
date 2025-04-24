@@ -4724,6 +4724,8 @@ export class ViewOps {
     setTplVisibility(tpl, combo, visibility);
     if (visibility === TplVisibility.Visible) {
       this.viewCtx().resetAutoOpenState();
+    } else {
+      this.viewCtx().disabledAutoOpenUuid = tpl.uuid;
     }
   };
 

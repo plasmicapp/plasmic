@@ -475,8 +475,26 @@ export class ViewCtx extends WithDbCtx {
     previousSelection: Selectable | null,
     newSelection: Selectable | null
   ) {
+    // The if block below handles Auto-opening of hidden element on next selection only after its visibility style has changed.
     if (!this.autoOpenedUuid) {
-      if (this.disabledAutoOpenUuid) {
+      // We don't always want to clear disabledAutoOpenUuid. There are certain cases where we should keep it regardless of selection change.
+      // These cases are handled by the if/else-if blocks below
+      if (
+        !isSlotSelection(newSelection) &&
+        newSelection?.tpl.uuid === this.disabledAutoOpenUuid
+      ) {
+        // NOTE: The user is on node-A in the outline tab, and they click on the visibility toggle of node-B
+        // The visibility takes effect, setting disabledAutoOpenUuid,
+        // The selection happens later. i.e. node selection happened after visibility toggle has taken effect.
+        // since this is still the first selection of node-B while its visibility has changed, we want to keep the disabledAutoOpenUuid, so it stays hidden till its next selection.
+        // So, do not clear auto-open state here
+      } else if (!newSelection && this.disabledAutoOpenUuid) {
+        // NOTE: This is the case with dynamic visibility,
+        // when the data picker is opened and the expression evaluates to false, the disabledAutoOpenUuid is set.
+        // when the data picker is closed, the newSelection is unnecessarily set to null for a bit (this technically does not make sense, but is the current behaviour)
+        // we don't want to clear the disabledAutoOpenUuids in this case either, because the node-A
+        // So, do not clear auto-open state here
+      } else {
         this.resetAutoOpenState();
       }
       return;
