@@ -58,6 +58,11 @@ export function isValidCommentThread(
     return false;
   }
 
+  // hide thread if it has no non-deleted comments
+  if (!thread.comments.some((comment) => !comment.deletedAt)) {
+    return false;
+  }
+
   const variants = thread.location.variants.map((addr) =>
     bundler.objByAddr(addr)
   );

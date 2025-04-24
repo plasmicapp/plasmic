@@ -33,6 +33,8 @@ function ThreadComments_(
 ) {
   const { commentThread, ...rest } = props;
 
+  const bottomRef = React.useRef<HTMLDivElement>(null);
+
   const sortedThreadItems = React.useMemo(() => {
     return [...commentThread.comments, ...commentThread.commentThreadHistories]
       .map<[Item, Date]>((item) => [item, new Date(item.createdAt)])
@@ -40,26 +42,38 @@ function ThreadComments_(
       .map((pair) => pair[0]);
   }, [commentThread.comments, commentThread.commentThreadHistories]);
 
+  // Scroll to the last item on mount or when new items are added
+  React.useEffect(() => {
+    if (bottomRef.current) {
+      bottomRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [sortedThreadItems.length]);
+
   return (
     <PlasmicThreadComments
       root={{ ref }}
       {...rest}
       commentsList={{
-        children: sortedThreadItems.map((item, index) => {
-          if (isComment(item)) {
-            return (
-              <CommentPost
-                key={item.id}
-                comment={item}
-                commentThread={commentThread}
-              />
-            );
-          } else if (isCommentThreadHistory(item)) {
-            return <ThreadHistory history={item} />;
-          } else {
-            unexpected();
-          }
-        }),
+        children: (
+          <>
+            {sortedThreadItems.map((item) => {
+              if (isComment(item)) {
+                return (
+                  <CommentPost
+                    key={item.id}
+                    comment={item}
+                    commentThread={commentThread}
+                  />
+                );
+              } else if (isCommentThreadHistory(item)) {
+                return <ThreadHistory key={item.id} history={item} />;
+              } else {
+                unexpected();
+              }
+            })}
+            <div ref={bottomRef} />
+          </>
+        ),
       }}
     />
   );

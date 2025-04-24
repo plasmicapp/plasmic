@@ -7089,14 +7089,6 @@ export function isUserProjectEditor(
   return checkAccessLevelRank(user, project, perms, "editor");
 }
 
-export function isUserProjectOwner(
-  user: ApiUser | null,
-  project: ApiProject,
-  perms: ApiPermission[]
-) {
-  return checkAccessLevelRank(user, project, perms, "owner");
-}
-
 export function cssPropsForInvertTransform(
   curZoom: number,
   orgSize?: { width?: number; height?: number },

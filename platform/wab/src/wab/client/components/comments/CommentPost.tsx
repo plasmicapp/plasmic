@@ -2,14 +2,12 @@ import { ReactionsByEmoji } from "@/wab/client/components/comments/ReactionsByEm
 import { TplCommentThread } from "@/wab/client/components/comments/utils";
 import { Avatar } from "@/wab/client/components/studio/Avatar";
 import { ClickStopper } from "@/wab/client/components/widgets";
-import { useAppCtx } from "@/wab/client/contexts/AppContexts";
 import {
   DefaultCommentPostProps,
   PlasmicCommentPost,
 } from "@/wab/client/plasmic/plasmic_kit_comments/PlasmicCommentPost";
 import {
   canUpdateHistory,
-  isUserProjectOwner,
   useStudioCtx,
 } from "@/wab/client/studio-ctx/StudioCtx";
 import { StandardMarkdown } from "@/wab/client/utils/StandardMarkdown";
@@ -31,52 +29,6 @@ export interface CommentPostProps extends DefaultCommentPostProps {
   isThread?: boolean;
 }
 
-function CommentMenuOptions(props: {
-  comment: ApiComment;
-  isThread?: boolean;
-  onEdit?: (comment: ApiComment) => void;
-}) {
-  const { comment, isThread, onEdit } = props;
-
-  const studioCtx = useStudioCtx();
-  const appCtx = useAppCtx();
-
-  const isOwner = isUserProjectOwner(
-    appCtx.selfInfo,
-    studioCtx.siteInfo,
-    studioCtx.siteInfo.perms
-  );
-
-  const commentsCtx = studioCtx.commentsCtx;
-
-  return (
-    <Menu>
-      {!comment.deletedAt && !isThread && (
-        <>
-          <Menu.Item
-            key="edit"
-            disabled={!(isOwner || appCtx.selfInfo?.id === comment.createdById)}
-            onClick={() => {
-              onEdit?.(comment);
-            }}
-          >
-            Edit comment
-          </Menu.Item>
-          <Menu.Item
-            key="remove"
-            disabled={!(isOwner || appCtx.selfInfo?.id === comment.createdById)}
-            onClick={() => {
-              commentsCtx.deleteComment(comment.id);
-            }}
-          >
-            Delete comment
-          </Menu.Item>
-        </>
-      )}
-    </Menu>
-  );
-}
-
 function CommentPost_(props: CommentPostProps, ref: HTMLElementRefOf<"div">) {
   const {
     comment,
@@ -91,6 +43,7 @@ function CommentPost_(props: CommentPostProps, ref: HTMLElementRefOf<"div">) {
 
   const studioCtx = useStudioCtx();
   const commentsCtx = studioCtx.commentsCtx;
+  const appCtx = studioCtx.appCtx;
 
   const author = ensure(
     commentsCtx.computedData().usersMap.get(ensureString(comment.createdById)),
@@ -152,14 +105,31 @@ function CommentPost_(props: CommentPostProps, ref: HTMLElementRefOf<"div">) {
       btnMore={{
         wrap: (node) => <ClickStopper preventDefault>{node}</ClickStopper>,
         props: {
-          menu: (
-            <CommentMenuOptions
-              comment={comment}
-              isThread={isThread}
-              onEdit={() => {
-                setIsEditing(true);
-              }}
-            />
+          menu: () => (
+            <Menu>
+              {!comment.deletedAt &&
+                !isThread &&
+                appCtx.selfInfo?.id === comment.createdById && (
+                  <>
+                    <Menu.Item
+                      key="edit"
+                      onClick={() => {
+                        setIsEditing(true);
+                      }}
+                    >
+                      Edit comment
+                    </Menu.Item>
+                    <Menu.Item
+                      key="remove"
+                      onClick={() => {
+                        commentsCtx.deleteComment(comment.id);
+                      }}
+                    >
+                      Delete comment
+                    </Menu.Item>
+                  </>
+                )}
+            </Menu>
           ),
         },
       }}

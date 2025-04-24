@@ -45,7 +45,7 @@ const CommentPostForm = observer(function CommentPostForm(
   const inputElementId = `comment-post-input-${editComment?.id}`;
 
   const {
-    onKeyHandler,
+    onKeyHandler: onMentionKeyHandler,
     onSelectHandler,
     userMentionsPopover,
     handleMentionClick,
@@ -104,6 +104,31 @@ const CommentPostForm = observer(function CommentPostForm(
     setValue("");
   };
 
+  const onKeyHandler = (e: React.KeyboardEvent<HTMLInputElement>): void => {
+    const { key, ctrlKey, metaKey } = e;
+
+    const isSubmitCombo = (ctrlKey || metaKey) && key === "Enter";
+
+    if (isSubmitCombo) {
+      e.preventDefault();
+      if (isValidComment()) {
+        spawn(handleSubmit());
+      }
+      return;
+    }
+
+    onMentionKeyHandler(e);
+  };
+
+  const handleSubmit = async () => {
+    if (isEditing) {
+      spawn(handleEditComment(editComment));
+    } else {
+      spawn(handleAddComment());
+    }
+    setIsPreviewing(false);
+  };
+
   return (
     <>
       <PlasmicCommentPostForm
@@ -132,14 +157,7 @@ const CommentPostForm = observer(function CommentPostForm(
           onSelect: onSelectHandler,
         }}
         submitButton={{
-          onClick: async () => {
-            if (isEditing) {
-              spawn(handleEditComment(editComment));
-            } else {
-              spawn(handleAddComment());
-            }
-            setIsPreviewing(false);
-          },
+          onClick: handleSubmit,
           disabled: !isValidComment(),
         }}
         cancelButton={{

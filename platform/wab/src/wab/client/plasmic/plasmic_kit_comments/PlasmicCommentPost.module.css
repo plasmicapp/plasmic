@@ -17,6 +17,10 @@
   box-shadow: 0px 12px 60px 0px #00000026, 0px 12px 32px -16px #0009321f;
   background: var(--token-rqQDmopteQdV);
   max-width: 300px;
+  width: auto;
+  justify-self: flex-start;
+  min-width: 200px;
+  display: inline-flex;
   border-radius: var(--token-XnnXV8YSKg9w);
   padding: var(--token-XnnXV8YSKg9w);
   border: 1px solid var(--token-JpKJ41ZaDWOC);
