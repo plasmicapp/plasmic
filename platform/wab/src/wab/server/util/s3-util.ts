@@ -24,6 +24,9 @@ export async function upsertS3CacheEntry<T>(opts: {
     const data = deserialize(serialized);
     return data;
   } catch (err) {
+    if (err.code === "TimeoutError") {
+      throw err;
+    }
     console.log(`S3 cache miss for ${bucket} ${key}; computing`);
     const content = await f();
     const serialized = serialize(content);
