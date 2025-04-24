@@ -348,7 +348,7 @@ export function ComponentPropModal(props: {
                     <Menu>
                       <Menu.Item
                         onClick={() => {
-                          setDefaultExpr(undefined);
+                          setPreviewExpr(undefined);
                         }}
                       >
                         Unset
