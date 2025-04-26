@@ -1,11 +1,7 @@
 import { _testOnlyUserMentionsUtils } from "@/wab/client/components/user-mentions/useUserMentions";
 
-const {
-  getTokenStartIndex,
-  findMentionText,
-  completeMention,
-  typeTextAtCaretPosition,
-} = _testOnlyUserMentionsUtils;
+const { getTokenStartIndex, findMentionText, typeTextAtCaretPosition } =
+  _testOnlyUserMentionsUtils;
 
 describe("getTokenStartIndex", () => {
   it("should return the current index when at the start of a string", () => {
@@ -91,63 +87,6 @@ describe("findMentionText", () => {
     expect(findMentionText("Hello @<John_Doe>", 16)).toBe("John_Doe");
     expect(findMentionText("Hello @<John_Doe>", 17)).toBe(undefined);
     expect(findMentionText("Hello @<John_Doe>.Hi", 20)).toBe(undefined);
-  });
-});
-
-describe("completeMention", () => {
-  it("should replace mention text with email and maintain cursor position", () => {
-    // Basic case: replace @John with @john@example.com
-    const result1 = completeMention("Hello @<John", 12, "john@example.com");
-    expect(result1.newValue).toBe("Hello @<john@example.com> ");
-    expect(result1.newCaretPosition).toBe(26);
-
-    // When mention is at the start of the string
-    const result2 = completeMention("@<Jane there", 6, "jane@example.com");
-    expect(result2.newValue).toBe("@<jane@example.com>  there");
-    expect(result2.newCaretPosition).toBe(20);
-  });
-
-  it("should correctly handle partial mentions", () => {
-    // Partial mention: @Jo -> @john@example.com
-    const result = completeMention("Hello @<Jo", 10, "john@example.com");
-    expect(result.newValue).toBe("Hello @<john@example.com> ");
-    expect(result.newCaretPosition).toBe(26);
-  });
-
-  it("should handle text after the mention", () => {
-    // Text after mention: "Hello @John there" -> "Hello @john@example.com there"
-    const result = completeMention(
-      "Hello @<John there",
-      12,
-      "john@example.com"
-    );
-    expect(result.newValue).toBe("Hello @<john@example.com>  there");
-    expect(result.newCaretPosition).toBe(26);
-  });
-
-  it("should handle mentions in the middle of text", () => {
-    // Mention in the middle: "Start @John end" -> "Start @john@example.com end"
-    const result = completeMention("Start @<John end", 12, "john@example.com");
-    expect(result.newValue).toBe("Start @<john@example.com>  end");
-    expect(result.newCaretPosition).toBe(26);
-
-    // Complete an existing mention by keeping the caret in the middle of it.
-    const result2 = completeMention(
-      "Start @<john@example.com end",
-      10,
-      "john@example.com"
-    );
-    expect(result2.newValue).toBe(
-      "Start @<john@example.com> hn@example.com end"
-    );
-    expect(result2.newCaretPosition).toBe(26);
-  });
-
-  it("should handle just the @< symbol correctly", () => {
-    // Just @ symbol: "Hello @" -> "Hello @john@example.com "
-    const result = completeMention("Hello @<", 8, "john@example.com");
-    expect(result.newValue).toBe("Hello @<john@example.com> ");
-    expect(result.newCaretPosition).toBe(26);
   });
 });
 

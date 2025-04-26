@@ -66,38 +66,23 @@ export function useUserMentions({
     },
   });
 
-  const setInputCaretPosition = useCallback(
-    (caretIndex: number) => {
-      // Use setTimeout to ensure this happens after the state update
-      setTimeout(() => {
-        if (inputElement) {
-          inputElement.focus();
-          inputElement.setSelectionRange(caretIndex, caretIndex);
-        }
-      }, 0);
+  const insertText = useCallback(
+    (text: string) => {
+      if (inputElement) {
+        inputElement.focus();
+        document.execCommand("insertText", false, text);
+
+        const newCaretIndex = (inputElement.selectionStart || 0) + text.length;
+        inputElement.setSelectionRange(newCaretIndex, newCaretIndex);
+        setMentionText(undefined);
+      }
     },
     [inputElement]
   );
 
-  const handleSelectUser = useCallback(
-    (selectedUser: ApiUser) => {
-      if (!inputElement) {
-        return;
-      }
-
-      const caretIndex = inputElement.selectionStart || 0;
-      const { newValue, newCaretPosition } = completeMention(
-        value,
-        caretIndex,
-        selectedUser.email
-      );
-
-      onValueChange(newValue);
-      setMentionText(undefined);
-      setInputCaretPosition(newCaretPosition);
-    },
-    [onValueChange, value, inputElement, setInputCaretPosition]
-  );
+  const handleSelectUser = (selectedUser: ApiUser) => {
+    insertText(`<${selectedUser.email}> `);
+  };
 
   const onKeyHandler = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -138,16 +123,10 @@ export function useUserMentions({
 
     const caretIndex = inputElement.selectionStart || 0;
     const prevCharacter = value[caretIndex - 1];
-    const { newValue, newCaretPosition } = typeTextAtCaretPosition(
-      value,
-      caretIndex === 0 || /\s/.test(prevCharacter) ? "@" : " @",
-      caretIndex
-    );
 
-    onValueChange(newValue);
+    insertText(caretIndex === 0 || /\s/.test(prevCharacter) ? "@" : " @");
     setMentionText((prev) => `${prev ?? ""}@`);
-    setInputCaretPosition(newCaretPosition);
-  }, [inputElement, value, setInputCaretPosition]);
+  }, [inputElement, value, insertText]);
 
   const userMentionsPopover = mentionActive ? (
     <DropdownOverlay
@@ -209,21 +188,6 @@ function findMentionText(value: string, caretIndex: number) {
   return match.groups.mentionText;
 }
 
-function completeMention(
-  value: string,
-  caretIndex: number,
-  selectedUserEmail: string
-) {
-  const tokenStart = getTokenStartIndex(value, caretIndex);
-
-  return typeTextAtCaretPosition(
-    value,
-    `@<${selectedUserEmail}> `,
-    tokenStart,
-    caretIndex
-  );
-}
-
 function typeTextAtCaretPosition(
   value: string,
   text: string,
@@ -245,7 +209,6 @@ function typeTextAtCaretPosition(
 
 export const _testOnlyUserMentionsUtils = {
   getTokenStartIndex,
-  completeMention,
   findMentionText,
   typeTextAtCaretPosition,
 };
