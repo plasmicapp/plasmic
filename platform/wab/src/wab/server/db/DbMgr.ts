@@ -7418,7 +7418,10 @@ export class DbMgr implements MigrationDbMgr {
           field === "_createdAt" ||
           field === "_updatedAt"
         ) {
-          builder = builder.addOrderBy(`"${field.replace("_", "")}"`, dir);
+          builder = builder.addOrderBy(
+            `Date(r.${field.replace("_", "")})`,
+            dir
+          );
         }
       }
     } else {
