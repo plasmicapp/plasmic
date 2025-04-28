@@ -33,7 +33,6 @@ import {
 import { PlasmicPublishFlowDialog__VariantMembers } from "@/wab/client/plasmic/plasmic_kit_continuous_deployment/PlasmicPublishFlowDialog";
 import { TutorialEventsType } from "@/wab/client/tours/tutorials/tutorials-events";
 import { trackEvent } from "@/wab/client/tracking";
-import { spawn, waitUntil } from "@/wab/shared/common";
 import {
   ApiBranch,
   ApiProject,
@@ -41,6 +40,7 @@ import {
   GitActionParams,
   GitWorkflowJobStep,
 } from "@/wab/shared/ApiSchema";
+import { spawn, waitUntil } from "@/wab/shared/common";
 import { notification } from "antd";
 import L from "lodash";
 import { observer } from "mobx-react";
@@ -361,7 +361,7 @@ export const PublishFlowDialogWrapper = observer(
             enabled: vebSaveVersion.enable,
           };
           const _statusPlasmicHosting: StatusPlasmicHosting = {
-            enabled: vebSaveVersion.enable,
+            enabled: vebPlasmicHosting.enable,
             revalidateResult: undefined,
             revalidateResponse: undefined,
           };

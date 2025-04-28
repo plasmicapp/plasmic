@@ -55,6 +55,7 @@ function SubsectionPlasmicHosting_(
     setVisibleEnableBlock,
     ...rest
   } = props;
+
   const domainValidator = new DomainValidator(
     appCtx.appConfig.plasmicHostingSubdomainSuffix
   );
@@ -68,6 +69,10 @@ function SubsectionPlasmicHosting_(
       setVisibleEnableBlock(visible, false, true);
     }
   }, [JSON.stringify(setup.domains)]);
+
+  if (props.view === "status" && !status?.enabled) {
+    return null;
+  }
 
   return (
     <>
