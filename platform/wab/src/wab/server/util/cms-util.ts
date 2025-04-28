@@ -259,8 +259,9 @@ export function makeSqlCondition(
       } else if (key === "_id") {
         ands.push(`id ${buildFilterCond(key, clause[key])}`);
       } else if (key === "_createdAt" || key === "_updatedAt") {
-        const column = `"${key.replace("_", "")}"`;
-        ands.push(`Date(${column}) ${buildFilterCond(key, clause[key])}`);
+        ands.push(
+          `Date("${key.replace("_", "")}") ${buildFilterCond(key, clause[key])}`
+        );
       } else if (key === "$and") {
         const sub = clause[key];
         assert(Array.isArray(sub), "All subclauses should be arrays");
