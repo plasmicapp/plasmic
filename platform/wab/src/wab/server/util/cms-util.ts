@@ -205,7 +205,6 @@ export function makeSqlCondition(
   };
 
   const buildFilterCond = (field: string, cond: FilterCond) => {
-    console.log("checking...", cond);
     // TODO: type checking against field meta
     if (
       typeof cond === "string" ||
@@ -260,10 +259,8 @@ export function makeSqlCondition(
       } else if (key === "_id") {
         ands.push(`id ${buildFilterCond(key, clause[key])}`);
       } else if (key === "_createdAt" || key === "_updatedAt") {
-        const normalizedKey = `"${key.replace("_", "")}"`;
-        ands.push(
-          `Date(${normalizedKey}) ${buildFilterCond(key, clause[key])}`
-        );
+        const column = `"${key.replace("_", "")}"`;
+        ands.push(`Date(${column}) ${buildFilterCond(key, clause[key])}`);
       } else if (key === "$and") {
         const sub = clause[key];
         assert(Array.isArray(sub), "All subclauses should be arrays");
