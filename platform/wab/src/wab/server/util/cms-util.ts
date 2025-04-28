@@ -260,7 +260,7 @@ export function makeSqlCondition(
         ands.push(`id ${buildFilterCond(key, clause[key])}`);
       } else if (key === "_createdAt" || key === "_updatedAt") {
         ands.push(
-          `Date("${key.replace("_", "")}") ${buildFilterCond(key, clause[key])}`
+          `"${key.replace("_", "")}" ${buildFilterCond(key, clause[key])}`
         );
       } else if (key === "$and") {
         const sub = clause[key];
