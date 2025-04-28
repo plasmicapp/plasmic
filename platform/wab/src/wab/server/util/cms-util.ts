@@ -256,9 +256,11 @@ export function makeSqlCondition(
         } else {
           ands.push(filterCond);
         }
-      } else if (key === "_id") {
-        ands.push(`id ${buildFilterCond(key, clause[key])}`);
-      } else if (key === "_createdAt" || key === "_updatedAt") {
+      } else if (
+        key === "_id" ||
+        key === "_createdAt" ||
+        key === "_updatedAt"
+      ) {
         ands.push(
           `"${key.replace("_", "")}" ${buildFilterCond(key, clause[key])}`
         );
