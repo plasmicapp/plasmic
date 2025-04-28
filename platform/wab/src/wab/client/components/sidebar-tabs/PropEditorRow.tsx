@@ -118,6 +118,7 @@ import {
   FunctionExpr,
   GenericEventHandler,
   ImageAssetRef,
+  isKnownClassNamePropType,
   isKnownCustomCode,
   isKnownExpr,
   isKnownFunctionExpr,
@@ -668,7 +669,8 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
     viewCtx &&
     tpl &&
     viewCtx.tplMgr().canLinkToProp(tpl) &&
-    (!wabType || !isRenderableType(wabType));
+    (!wabType ||
+      (!isKnownClassNamePropType(wabType) && !isRenderableType(wabType)));
 
   const schema = studioCtx.customFunctionsSchema();
 
