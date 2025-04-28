@@ -522,9 +522,59 @@ describe("Auto Open", () => {
           textContents,
         };
 
-        function checkTextAutoOpen(
-          visibility: VisibilityType,
+        function checkAutoOpen(
+          nodeName: string,
+          isAutoOpenable: boolean,
+          assertHidden: Function,
+          assertAutoOpened: Function
+        ) {
+          if (!isAutoOpenable) {
+            assertHidden();
+            cy.selectRootNode(); // de-select
+            assertHidden();
+            cy.selectTreeNode([nodeName]);
+            assertHidden();
+            return;
+          }
+
+          cy.selectRootNode(); // de-select
+          assertHidden();
+          cy.selectTreeNode([nodeName]);
+          assertAutoOpened();
+          cy.turnOffAutoOpenMode();
+          assertHidden();
+          cy.turnOnAutoOpenMode();
+          assertAutoOpened();
+          cy.selectRootNode(); // de-select
+          assertHidden();
+          cy.selectTreeNode([nodeName]);
+          assertAutoOpened();
+        }
+
+        function checkImageAutoOpen(
           frame: Framed,
+          visibility: VisibilityType,
+          nodeName: string
+        ) {
+          const assertionPhrase =
+            visibility === "notVisible" ? "be.visible" : "exist";
+          function assertHidden() {
+            frame.base().find("img").should(`not.${assertionPhrase}`);
+            cy.autoOpenBanner().should("not.exist");
+          }
+
+          function assertAutoOpened() {
+            frame.base().find("img").should(assertionPhrase);
+            cy.autoOpenBanner().should("exist");
+          }
+
+          checkAutoOpen(nodeName, true, assertHidden, assertAutoOpened);
+        }
+
+        function checkTextAutoOpen(
+          frame: Framed,
+          isAutoOpenable: boolean,
+          visibility: VisibilityType,
           hasNotRenderedParent?: boolean
         ) {
           const assertionPhrase =
@@ -544,24 +594,20 @@ describe("Auto Open", () => {
               .should(assertionPhrase);
             cy.autoOpenBanner().should("exist");
           }
+
           if (hasNotRenderedParent) {
             assertAutoOpened(); // auto-open does not need to wait for next selection, if the parent is already auto-opened
           } else {
             assertHidden(); // Auto-open hidden element on next selection only (PLA-11958)
           }
           cy.wait(400);
-          cy.selectRootNode(); // de-select
-          assertHidden();
-          cy.selectTreeNode([checkParams.textNodeName]);
-          assertAutoOpened();
-          cy.turnOffAutoOpenMode();
-          assertHidden();
-          cy.turnOnAutoOpenMode();
-          assertAutoOpened();
-          cy.selectRootNode(); // de-select
-          assertHidden();
-          cy.selectTreeNode([checkParams.textNodeName]);
-          assertAutoOpened();
+
+          checkAutoOpen(
+            checkParams.textNodeName,
+            isAutoOpenable,
+            assertHidden,
+            assertAutoOpened
+          );
         }
 
         function testAllVisibilities({
@@ -587,24 +633,34 @@ describe("Auto Open", () => {
           cy.selectTreeNode([checkParams.textNodeName]);
 
           // Slots do not have display: none visibility option!
-          if (!isSlot && !isPlasmicComponent) {
-            // TODO: We do not test DisplayNone visibility for Plasmic component because the auto open feature currently does not work for Plasmic components having display: none
+          if (!isSlot) {
             cy.log("Test DisplayNone visibility");
             cy.setDisplayNone();
-            checkTextAutoOpen(
-              hasNotRenderedParent ? "notRendered" : "notVisible",
-              frame,
-              hasNotRenderedParent
-            );
+            // TODO: PLA-12068 the auto open feature currently does not work for Plasmic components having display: none
+            if (isPlasmicComponent) {
+              checkTextAutoOpen(
+                frame,
+                false,
+                hasNotRenderedParent ? "notRendered" : "notVisible"
+              );
+            } else {
+              checkTextAutoOpen(
+                frame,
+                true,
+                hasNotRenderedParent ? "notRendered" : "notVisible",
+                hasNotRenderedParent
+              );
+            }
           }
+
           cy.log("Test NotRendered visibility");
           cy.setVisible();
           cy.setNotRendered();
-          checkTextAutoOpen("notRendered", frame, hasNotRenderedParent);
+          checkTextAutoOpen(frame, true, "notRendered", hasNotRenderedParent);
           cy.log("Test Dynamic visibility");
           cy.setVisible();
           cy.setDynamicVisibility("false");
-          checkTextAutoOpen("customExpr", frame, hasNotRenderedParent);
+          checkTextAutoOpen(frame, true, "customExpr", hasNotRenderedParent);
           cy.log("Test Visible visibility");
           cy.setVisible();
           frame.base().contains(checkParams.textContents).should("exist");
@@ -613,13 +669,14 @@ describe("Auto Open", () => {
           } else {
             cy.selectRootNode();
           }
-          // TODO: We do not test DisplayNone visibility for Plasmic component because the auto open feature currently does not work for Plasmic components having display: none
+          // TODO: PLA-12068 We do not test DisplayNone visibility for Plasmic component because the auto open feature currently does not work for Plasmic components having display: none
           if (!isPlasmicComponent) {
             cy.log("Test visibility toggle");
             cy.toggleVisiblity(checkParams.textNodeName);
             checkTextAutoOpen(
-              hasNotRenderedParent || isSlot ? "notRendered" : "notVisible",
               frame,
+              true,
+              hasNotRenderedParent || isSlot ? "notRendered" : "notVisible",
               hasNotRenderedParent
             );
 
@@ -632,6 +689,24 @@ describe("Auto Open", () => {
           }
         }
 
+        function testAllImageVisbilities(frame: Framed) {
+          frame.base().find("img").should("exist");
+          cy.log("Test DisplayNone visibility");
+          cy.setDisplayNone();
+          checkImageAutoOpen(frame, "notVisible", "MyImage");
+          cy.log("Test NotRendered visibility");
+          cy.setVisible();
+          cy.setNotRendered();
+          checkImageAutoOpen(frame, "notRendered", "MyImage");
+          cy.log("Test Dynamic visibility");
+          cy.setVisible();
+          cy.setDynamicVisibility("false");
+          checkImageAutoOpen(frame, "customExpr", "MyImage");
+          cy.log("Test Visible visibility");
+          cy.setVisible();
+          frame.base().find("img").should("exist");
+        }
+
         cy.createNewComponent("Text Component").then((frame) => {
           cy.selectRootNode();
           cy.insertFromAddDrawer("Text");
@@ -640,6 +715,12 @@ describe("Auto Open", () => {
           frame.enterIntoTplTextBlock(textContents);
 
           testAllVisibilities({ frame });
+
+          cy.justLog("Test Image");
+          frame.base().find("img").should("not.exist");
+          cy.insertFromAddDrawer("Image");
+          cy.renameTreeNode("MyImage");
+          testAllImageVisbilities(frame);
 
           cy.insertFromAddDrawer("Vertical stack");
           cy.renameTreeNode(verticalStackNodeName);
@@ -695,6 +776,22 @@ describe("Auto Open", () => {
             // The hidden content stays hidden in live preview
             cy.contains(textContents).should("not.exist");
           });
+        });
+
+        cy.createNewPageInOwnArena("Test Section").then((frame) => {
+          cy.selectRootNode();
+          const nodeName = "My Section";
+          const text = "My section text";
+          cy.insertFromAddDrawer("Page section");
+          cy.renameTreeNode(nodeName);
+          cy.insertFromAddDrawer("Text");
+          cy.getSelectedElt().dblclick({ force: true });
+          frame.enterIntoTplTextBlock(text);
+          checkParams = {
+            textContents: text,
+            textNodeName: nodeName,
+          };
+          testAllVisibilities({ frame });
         });
       });
     });

@@ -64,6 +64,23 @@ export enum TplVisibility {
   CustomExpr = "customExpr",
 }
 
+/**
+  We need to override a display:none from
+  another vsetting. Unfortunately there's no literal opposite of
+  display:none; we have to set display to _something_ to override it, but
+  to what? There's no perfect answer here, which is why we want
+  to avoid doing this as much as possible.  We use some heuristics:
+*/
+export function normalizeDisplayValue(displayVal: string) {
+  if (displayVal === CONTENT_LAYOUT) {
+    // For content layout, we set display to grid to make it visible
+    return "grid";
+  } else {
+    // For everything else, this should be a valid display value
+    return displayVal;
+  }
+}
+
 export function getVisibilityLabel(visibility: TplVisibility) {
   switch (visibility) {
     case TplVisibility.Visible:
@@ -230,30 +247,16 @@ export function appendVisibilityStylesForTpl(
     );
 
     if (needsToOverrideOtherVs) {
-      // Now, we now really needs to override a display:none from
-      // another vsetting. Unfortunately there's no literal opposite of
-      // display:none; we have to set display to _something_ to override it, but
-      // to what? There's no perfect answer here, which is why we wanted
-      // to avoid doing this as much as possible.  We use some heuristics:
-      const normVisibleDisplay = (displayVal: string) => {
-        if (displayVal === CONTENT_LAYOUT) {
-          // For content layout, we set display to grid to make it visible
-          return "grid";
-        } else {
-          // For everything else, this should be a valid display value
-          return displayVal;
-        }
-      };
       if (rsh.has("display")) {
         // if there's an explicit `display` for this vs, then use it;
-        m.set("display", normVisibleDisplay(rsh.get("display")));
+        m.set("display", normalizeDisplayValue(rsh.get("display")));
       } else if (isTplTag(tpl)) {
         // else for tags, there should be a `display` set on the base,
         // so we use the base variant's `display`.
         const baseVs = tryGetBaseVariantSetting(tpl);
         if (baseVs) {
           const baseRsh = RSH(baseVs.rs, tpl);
-          m.set("display", normVisibleDisplay(baseRsh.get("display")));
+          m.set("display", normalizeDisplayValue(baseRsh.get("display")));
         }
       } else if (isTplComponent(tpl)) {
         // For component instances, there should not be a `display` set
@@ -269,15 +272,10 @@ export function appendVisibilityStylesForTpl(
           vs.variants
         );
         if (componentDisplay) {
-          m.set("display", normVisibleDisplay(componentDisplay));
+          m.set("display", normalizeDisplayValue(componentDisplay));
         }
       }
     }
-  }
-  if (isTplTag(tpl) && tpl.tag === "img" && m.has("display")) {
-    // We use !important to make sure the CSS will override the rule for
-    // `.__wab_slot > .__wab_img-wrapper` (which has higher specificity)
-    m.set("display", m.get("display") + " !important");
   }
   m.delete(PLASMIC_DISPLAY_NONE);
 }

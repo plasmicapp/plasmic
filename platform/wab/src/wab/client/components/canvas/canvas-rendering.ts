@@ -288,6 +288,7 @@ import {
 import {
   TplVisibility,
   getEffectiveVsVisibility,
+  normalizeDisplayValue,
 } from "@/wab/shared/visibility-utils";
 import type { usePlasmicInvalidate } from "@plasmicapp/data-sources";
 import { DataDict, mkMetaName } from "@plasmicapp/host";
@@ -1465,11 +1466,7 @@ function renderTplComponent(
     ctx.site
   );
 
-  const { rendered, autoOpened } = determineAutoOpenState(
-    ctx,
-    node,
-    effectiveVs
-  );
+  const { rendered } = determineAutoOpenState(ctx, node, effectiveVs);
 
   if (!rendered) {
     return null;
@@ -2324,11 +2321,7 @@ function renderTplTag(
       effectiveVsWithoutDisabled
     );
 
-  const { rendered, style, autoOpened } = determineAutoOpenState(
-    ctx,
-    node,
-    effectiveVs
-  );
+  const { rendered, style } = determineAutoOpenState(ctx, node, effectiveVs);
 
   if (!rendered) {
     return null;
@@ -2807,7 +2800,8 @@ function determineAutoOpenState(
 
       case TplVisibility.DisplayNone: {
         const autoOpenInfo = getAutoOpenSelectionInfo(ctx, node);
-        if (!ctx.projectFlags.autoOpen2) {
+        // Auto Open is not yet supported for TplComponents / images with Visibility.DisplayNone
+        if (!ctx.projectFlags.autoOpen2 || isTplComponent(node)) {
           return {
             rendered: true,
             autoOpened: false,
@@ -2818,7 +2812,9 @@ function determineAutoOpenState(
           rendered: true,
           style: autoOpenInfo.isSelected
             ? {
-                display: effectiveVs.rsh().get("display"),
+                display: normalizeDisplayValue(
+                  effectiveVs.rsh().get("display")
+                ),
               }
             : undefined,
           autoOpened: autoOpenInfo.isSelected,
@@ -3234,7 +3230,7 @@ function renderTplSlot(
   ctx: RenderingCtx,
   activeVSettings: VariantSetting[]
 ): React.ReactElement | null {
-  const { rendered, autoOpened } = determineAutoOpenState(
+  const { rendered } = determineAutoOpenState(
     ctx,
     node,
     new EffectiveVariantSetting(node, activeVSettings, ctx.site)
