@@ -25,7 +25,10 @@ export function useUserMentions({
   const mentionActive = mentionText !== undefined;
 
   const studioCtx = useStudioCtx();
-  const users = getUniqueUsersFromApiPermissions(studioCtx.siteInfo.perms);
+  const users = React.useMemo(
+    () => getUniqueUsersFromApiPermissions(studioCtx.siteInfo.perms),
+    [studioCtx.siteInfo.perms]
+  );
 
   const filteredUsers = users.filter(
     (user) =>

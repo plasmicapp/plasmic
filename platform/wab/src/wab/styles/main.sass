@@ -4001,9 +4001,21 @@ $color-stops-width: 100%
   & > *
     position: relative
 
+  .CommentDialogContainer
+    position: absolute
+    top: 10px
+    right: 10px
+    z-index: 999
+    height: calc(100% - 20px)
+    pointer-events: none
+
 .canvas-editor__canvas-container__focus_mode
   grid-template-rows: 50px auto
   grid-template-areas: "topbar" "clipper"
+
+  .CommentDialogContainer
+      top: 60px
+      height: calc(100% - 70px)
 
 .canvas-editor__watch-mode
   position: absolute !important
@@ -4569,13 +4581,6 @@ $resizer_size: 8px
   right: 0%
   bottom: 100%
 
-.CommentDialogContainer
-  position: absolute
-  top: 10px
-  right: 10px
-  z-index: 999
-  height: calc(100% - 20px)
-  pointer-events: none
 
   section
     max-height: 100% !important

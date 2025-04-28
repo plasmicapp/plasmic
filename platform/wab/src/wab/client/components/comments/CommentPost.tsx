@@ -16,6 +16,7 @@ import { fullName } from "@/wab/shared/ApiSchemaUtil";
 import { ensure, ensureString, maybe } from "@/wab/shared/common";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { Menu } from "antd";
+import copy from "copy-to-clipboard";
 import { groupBy } from "lodash";
 import moment from "moment";
 import * as React from "react";
@@ -107,28 +108,34 @@ function CommentPost_(props: CommentPostProps, ref: HTMLElementRefOf<"div">) {
         props: {
           menu: () => (
             <Menu>
-              {!comment.deletedAt &&
-                !isThread &&
-                appCtx.selfInfo?.id === comment.createdById && (
-                  <>
-                    <Menu.Item
-                      key="edit"
-                      onClick={() => {
-                        setIsEditing(true);
-                      }}
-                    >
-                      Edit comment
-                    </Menu.Item>
-                    <Menu.Item
-                      key="remove"
-                      onClick={() => {
-                        commentsCtx.deleteComment(comment.id);
-                      }}
-                    >
-                      Delete comment
-                    </Menu.Item>
-                  </>
-                )}
+              <Menu.Item
+                key="copy"
+                onClick={() => {
+                  copy(comment.body);
+                }}
+              >
+                Copy text
+              </Menu.Item>
+              {appCtx.selfInfo?.id === comment.createdById && (
+                <>
+                  <Menu.Item
+                    key="edit"
+                    onClick={() => {
+                      setIsEditing(true);
+                    }}
+                  >
+                    Edit comment
+                  </Menu.Item>
+                  <Menu.Item
+                    key="remove"
+                    onClick={() => {
+                      commentsCtx.deleteComment(comment.id);
+                    }}
+                  >
+                    Delete comment
+                  </Menu.Item>
+                </>
+              )}
             </Menu>
           ),
         },

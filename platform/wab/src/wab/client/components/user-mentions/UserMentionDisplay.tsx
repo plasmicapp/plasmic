@@ -20,7 +20,10 @@ function UserMentionDisplay_(
   const { email, defaultEmailDisplay, ...plasmicProps } = props;
 
   const studioCtx = useStudioCtx();
-  const users = getUniqueUsersFromApiPermissions(studioCtx.siteInfo.perms);
+  const users = React.useMemo(
+    () => getUniqueUsersFromApiPermissions(studioCtx.siteInfo.perms),
+    [studioCtx.siteInfo.perms]
+  );
   const mentionedUser = users.find((user) => user.email === email);
 
   if (!mentionedUser) {
