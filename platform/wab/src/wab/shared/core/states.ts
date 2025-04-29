@@ -1349,7 +1349,7 @@ export const extractLit = (
     return expr;
   }
   if (isKnownImageAssetRef(expr)) {
-    return expr.asset;
+    return expr;
   }
   return tryExtractLit(expr);
 };

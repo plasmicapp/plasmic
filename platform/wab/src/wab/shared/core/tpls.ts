@@ -481,7 +481,8 @@ export function mkTplComponentX(obj: MkTplComponentParams) {
                     .when(Array, (_expr: ChildNode[]) =>
                       processRenderables(_expr)
                     )
-                    .elseUnsafe(() => Exprs.codeLit(expr)),
+                    .when(String, (_expr) => Exprs.codeLit(_expr))
+                    .result(),
             })
           );
         }

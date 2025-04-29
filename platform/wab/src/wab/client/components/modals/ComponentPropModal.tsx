@@ -1,4 +1,5 @@
 import { PropValueEditor } from "@/wab/client/components/sidebar-tabs/PropValueEditor";
+import ParamSection from "@/wab/client/components/sidebar-tabs/StateManagement/ParamSection";
 import { SidebarModal } from "@/wab/client/components/sidebar/SidebarModal";
 import {
   IconLinkButton,
@@ -12,13 +13,20 @@ import Select from "@/wab/client/components/widgets/Select";
 import Textbox from "@/wab/client/components/widgets/Textbox";
 import DotsVerticalIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__DotsVertical";
 import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
-import PlasmicParamSection from "@/wab/client/plasmic/plasmic_kit_state_management/PlasmicParamSection";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import {
   getPropTypeType,
+  PropTypeType,
+  StudioPropType,
   wabTypeToPropType,
 } from "@/wab/shared/code-components/code-components";
-import { assert, ensure, mkShortId, spawn } from "@/wab/shared/common";
+import {
+  assert,
+  ensure,
+  mkShortId,
+  spawn,
+  unexpected,
+} from "@/wab/shared/common";
 import { canRenameParam } from "@/wab/shared/core/components";
 import { clone, codeLit, tryExtractJson } from "@/wab/shared/core/exprs";
 import { mkParam } from "@/wab/shared/core/lang";
@@ -28,8 +36,11 @@ import {
   Component,
   Expr,
   FunctionType,
+  isKnownDataSourceOpExpr,
+  isKnownEventHandler,
   isKnownExpr,
   isKnownFunctionType,
+  isKnownImageAssetRef,
   isKnownPageHref,
   isKnownRenderableType,
   isKnownRenderFuncType,
@@ -42,61 +53,99 @@ import { Menu } from "antd";
 import { isNaN } from "lodash";
 import React from "react";
 
-function getComponentParamTypeOptions() {
-  return [
-    { value: "text", label: "Text", isPrimitive: () => true },
-    { value: "num", label: "Number", isPrimitive: () => true },
-    { value: "bool", label: "Toggle", isPrimitive: () => true },
-    { value: "any", label: "Object", isPrimitive: () => true },
-    // queryData is just a json object, and so counts as "primitive"
-    { value: "queryData", label: "Query data", isPrimitive: () => true },
-    { value: "eventHandler", label: "Function", isPrimitive: () => false },
-    {
-      value: "href",
-      label: "Link URL",
-      isPrimitive: (val) => !isKnownPageHref(val),
-    },
-    { value: "dateString", label: "Date", isPrimitive: () => true },
-    { value: "dateRangeStrings", label: "Date range", isPrimitive: () => true },
-    {
-      value: "color",
-      label: "Color",
-      isPrimitive: (val) => !isKnownStyleTokenRef(val),
-    },
-  ] as const;
+/**
+ * We have lots of prop/param types.
+ * This value can be one of the following types:
+ * - WAB param type
+ * - Component prop type (see @plasmicapp/host prop-types.ts)
+ */
+type PropTypeData = {
+  value: Param["type"]["name"] | PropTypeType;
+  label: string;
+  /** The JSON type for the prop type, or false if it must be an Expr. */
+  jsonType: false | "boolean" | "number" | "string" | "any";
+  /** The Expr's typeguard check function like `isKnownPageHref`. */
+  exprTypeGuard?: (expr: Expr) => boolean;
+};
+
+// Check that the values match @plasmicapp/host prop-types.ts
+const COMPONENT_PARAM_TYPES_CONFIG = [
+  { value: "text", label: "Text", jsonType: "string" },
+  { value: "num", label: "Number", jsonType: "number" },
+  { value: "bool", label: "Toggle", jsonType: "boolean" },
+  { value: "any", label: "Object", jsonType: "any" }, // any / Object = JsonValue, NOT JsonObject
+  {
+    value: "queryData",
+    label: "Query data",
+    jsonType: "any",
+    exprTypeGuard: isKnownDataSourceOpExpr,
+  },
+  {
+    value: "eventHandler",
+    label: "Function",
+    jsonType: false,
+    exprTypeGuard: isKnownEventHandler,
+  },
+  {
+    value: "href",
+    label: "Link URL",
+    jsonType: "string", // can be external URL
+    exprTypeGuard: isKnownPageHref, // can be local page href
+  },
+  { value: "dateString", label: "Date", jsonType: "string" },
+  { value: "dateRangeStrings", label: "Date range", jsonType: "string" },
+  {
+    value: "color",
+    label: "Color",
+    jsonType: "string", // can be CSS color
+    exprTypeGuard: isKnownStyleTokenRef, // can be token
+  },
+  {
+    value: "img",
+    label: "Image",
+    jsonType: "string", // can be external image URL
+    exprTypeGuard: isKnownImageAssetRef, // can be image asset
+  },
+] as const satisfies readonly PropTypeData[];
+
+function getComponentParamTypeOption(
+  paramType: ComponentParamTypeOptions
+): PropTypeData | undefined {
+  return COMPONENT_PARAM_TYPES_CONFIG.find((opt) => opt.value === paramType);
 }
 
-function getComponentParamTypeOption(paramType: ComponentParamTypeOptions) {
-  return getComponentParamTypeOptions().find((opt) => opt.value === paramType);
-}
+type ComponentParamTypeOptions =
+  (typeof COMPONENT_PARAM_TYPES_CONFIG)[number]["value"];
 
-type ComponentParamTypeOptions = ReturnType<
-  typeof getComponentParamTypeOptions
->[number]["value"];
-
-function isDefaultValueValid(paramType: ComponentParamTypeOptions, val: Expr) {
-  const option = getComponentParamTypeOption(paramType);
-  if (!option) {
+function isExprValid(propTypeData: PropTypeData | undefined, val: Expr) {
+  // There may be some prop types we haven't handled when linking code component props.
+  if (!propTypeData) {
     return true;
   }
-  if (option.isPrimitive(val)) {
-    const lit = tryExtractJson(val);
-    if (paramType === "num") {
-      const numeric = typeof lit === "string" ? +lit : lit;
-      return !isNaN(numeric);
-    } else if (paramType === "bool") {
-      return typeof lit === "boolean";
-    } else if (paramType === "any") {
-      return typeof lit === "object";
-    }
-  } else if (paramType === "href") {
-    if (isKnownPageHref(val)) {
+
+  if (propTypeData.exprTypeGuard?.(val)) {
+    return true;
+  } else if (propTypeData.jsonType) {
+    if (propTypeData.jsonType === "any") {
       return true;
     }
+
     const lit = tryExtractJson(val);
-    return typeof lit === "string";
+    if (propTypeData.jsonType === "number") {
+      const numeric = typeof lit === "string" ? +lit : lit;
+      return !isNaN(numeric);
+    } else if (propTypeData.jsonType === "boolean") {
+      return typeof lit === "boolean";
+    } else if (propTypeData.jsonType === "string") {
+      return typeof lit === "string";
+    } else {
+      unexpected(
+        `invalid jsonData ${propTypeData.jsonType} on propTypeData: ${propTypeData.value}`
+      );
+    }
+  } else {
+    unexpected(`invalid propTypeData: ${propTypeData.value}`);
   }
-  return true;
 }
 
 export function ComponentPropModal(props: {
@@ -128,6 +177,9 @@ export function ComponentPropModal(props: {
       ? "eventHandler"
       : (type?.name as ComponentParamTypeOptions)) ?? "text"
   );
+
+  const paramTypeData = getComponentParamTypeOption(paramType);
+
   const [defaultExpr, setDefaultExpr] = React.useState<Expr | undefined>(
     existingParam && existingParam.defaultExpr
       ? existingParam.defaultExpr
@@ -154,8 +206,9 @@ export function ComponentPropModal(props: {
     () =>
       paramName &&
       paramType &&
-      (defaultExpr == null || isDefaultValueValid(paramType, defaultExpr)),
-    [paramName, paramType, type, defaultExpr]
+      (defaultExpr === undefined || isExprValid(paramTypeData, defaultExpr)) &&
+      (previewExpr === undefined || isExprValid(paramTypeData, previewExpr)),
+    [paramName, paramType, type, defaultExpr, previewExpr]
   );
 
   const onSave = async () => {
@@ -226,7 +279,6 @@ export function ComponentPropModal(props: {
   if (getPropTypeType(propEditorType) === "dataSourceOpData") {
     propEditorType = wabTypeToPropType(typeFactory["any"]());
   }
-  const paramTypeOptions = getComponentParamTypeOption(paramType);
 
   const modalContent = (
     <form
@@ -235,134 +287,8 @@ export function ComponentPropModal(props: {
         spawn(onSave());
       }}
     >
-      <PlasmicParamSection
-        paramName={{
-          props: {
-            defaultValue: paramName,
-            onChange: (e) => setParamName(e.target.value),
-            "data-test-id": "prop-name",
-            disabled: !canRename,
-          },
-        }}
+      <ParamSection
         fixedParamType={!!type}
-        existingParamType={{
-          value: type && smartHumanize(typeDisplayName(type, true)),
-          disabled: true,
-        }}
-        paramType={{
-          props: {
-            value: paramType,
-            onChange: (val) => {
-              if (val) {
-                setParamType(val as ComponentParamTypeOptions);
-                setDefaultExpr(val === "bool" ? codeLit(false) : undefined);
-                setIsLocalizable(false);
-              }
-            },
-            children: getComponentParamTypeOptions().map(({ value, label }) => (
-              <Select.Option value={value} textValue={label} key={value}>
-                {label}
-              </Select.Option>
-            )),
-            "data-test-id": "prop-type",
-          },
-        }}
-        defaultValue={{
-          render: () =>
-            paramType !== "eventHandler" && (
-              <div className="generic-prop-editor" data-test-id="default-value">
-                <PropValueEditor
-                  label={existingParam?.variable.name ?? "New prop"}
-                  value={
-                    paramTypeOptions?.isPrimitive(defaultExpr) && defaultExpr
-                      ? tryExtractJson(defaultExpr)
-                      : defaultExpr
-                  }
-                  onChange={(val) => {
-                    setDefaultExpr(
-                      val == null || val === ""
-                        ? undefined
-                        : isKnownExpr(val)
-                        ? val
-                        : paramTypeOptions?.isPrimitive(val)
-                        ? codeLit(val)
-                        : undefined
-                    );
-                  }}
-                  propType={ensure(
-                    propEditorType,
-                    "propEditorType should only be undefined if paramType equals eventHandler"
-                  )}
-                  attr="default-value"
-                />
-                <IFrameAwareDropdownMenu
-                  menu={
-                    <Menu>
-                      <Menu.Item
-                        onClick={() => {
-                          setDefaultExpr(undefined);
-                        }}
-                      >
-                        Unset
-                      </Menu.Item>
-                    </Menu>
-                  }
-                >
-                  <IconButton>
-                    <DotsVerticalIcon />
-                  </IconButton>
-                </IFrameAwareDropdownMenu>
-              </div>
-            ),
-        }}
-        previewValue={{
-          render: () =>
-            paramType !== "eventHandler" && (
-              <div className="generic-prop-editor">
-                <PropValueEditor
-                  label={existingParam?.variable.name ?? "New prop"}
-                  value={
-                    paramTypeOptions?.isPrimitive(previewExpr) && previewExpr
-                      ? tryExtractJson(previewExpr)
-                      : previewExpr
-                  }
-                  onChange={(val) => {
-                    setPreviewExpr(
-                      val == null || val === ""
-                        ? undefined
-                        : isKnownExpr(val)
-                        ? val
-                        : paramTypeOptions?.isPrimitive(previewExpr)
-                        ? codeLit(val)
-                        : undefined
-                    );
-                  }}
-                  propType={ensure(
-                    propEditorType,
-                    "propEditorType should only be undefined if paramType equals eventHandler"
-                  )}
-                  attr="preview-value"
-                />
-                <IFrameAwareDropdownMenu
-                  menu={
-                    <Menu>
-                      <Menu.Item
-                        onClick={() => {
-                          setPreviewExpr(undefined);
-                        }}
-                      >
-                        Unset
-                      </Menu.Item>
-                    </Menu>
-                  }
-                >
-                  <IconButton>
-                    <DotsVerticalIcon />
-                  </IconButton>
-                </IFrameAwareDropdownMenu>
-              </div>
-            ),
-        }}
         defaultArgs={defaultArgs.map((arg) => (
           <LabeledListItem
             key={arg.key}
@@ -392,13 +318,13 @@ export function ComponentPropModal(props: {
               }
               data-test-id="arg-type"
             >
-              {getComponentParamTypeOptions()
-                .filter((opt) => opt.isPrimitive)
-                .map(({ value, label }) => (
-                  <Select.Option value={value} textValue={label} key={value}>
-                    {label}
-                  </Select.Option>
-                ))}
+              {COMPONENT_PARAM_TYPES_CONFIG.filter(
+                (opt) => !!opt.jsonType && !("exprTypeGuard" in opt)
+              ).map(({ value, label }) => (
+                <Select.Option value={value} textValue={label} key={value}>
+                  {label}
+                </Select.Option>
+              ))}
             </Select>
           </LabeledListItem>
         ))}
@@ -423,23 +349,86 @@ export function ComponentPropModal(props: {
             ? "localizable"
             : undefined
         }
-        localizableSwitch={{
-          isChecked: isLocalizable,
-          onChange: (val) => setIsLocalizable(val),
-        }}
         hideEventArgs={!!type && paramType === "eventHandler"}
-        confirmBtn={{
-          props: {
-            disabled: !isValid,
-            htmlType: "submit",
-            onClick: () => {
-              spawn(onSave());
+        overrides={{
+          paramName: {
+            props: {
+              defaultValue: paramName,
+              onChange: (e) => setParamName(e.target.value),
+              "data-test-id": "prop-name",
+              disabled: !canRename,
             },
-            "data-test-id": "prop-submit",
           },
+          existingParamType: {
+            value: type && smartHumanize(typeDisplayName(type, true)),
+            disabled: true,
+          },
+          paramType: {
+            props: {
+              value: paramType,
+              onChange: (val) => {
+                if (val) {
+                  setParamType(val as ComponentParamTypeOptions);
+                  setDefaultExpr(val === "bool" ? codeLit(false) : undefined);
+                  setIsLocalizable(false);
+                }
+              },
+              children: COMPONENT_PARAM_TYPES_CONFIG.map(({ value, label }) => (
+                <Select.Option value={value} textValue={label} key={value}>
+                  {label}
+                </Select.Option>
+              )),
+              "data-test-id": "prop-type",
+            },
+          },
+          defaultValue: {
+            render: () =>
+              paramType !== "eventHandler" && (
+                <PropValueEditorWithMenu
+                  attr="default-value"
+                  label={paramName || "New prop"}
+                  propType={ensure(
+                    propEditorType,
+                    "propEditorType should only be undefined if paramType equals eventHandler"
+                  )}
+                  propTypeData={paramTypeData}
+                  value={defaultExpr}
+                  onChange={setDefaultExpr}
+                />
+              ),
+          },
+          previewValue: {
+            render: () =>
+              paramType !== "eventHandler" && (
+                <PropValueEditorWithMenu
+                  attr="preview-value"
+                  label={paramName || "New prop"}
+                  propType={ensure(
+                    propEditorType,
+                    "propEditorType should only be undefined if paramType equals eventHandler"
+                  )}
+                  propTypeData={paramTypeData}
+                  value={previewExpr}
+                  onChange={setPreviewExpr}
+                />
+              ),
+          },
+          localizableSwitch: {
+            isChecked: isLocalizable,
+            onChange: (val) => setIsLocalizable(val),
+          },
+          confirmBtn: {
+            props: {
+              disabled: !isValid,
+              htmlType: "submit",
+              onClick: () => {
+                spawn(onSave());
+              },
+              "data-test-id": "prop-submit",
+            },
+          },
+          cancelBtn: { onClick: () => onFinish() },
         }}
-        cancelBtn={{ onClick: () => onFinish() }}
-        // isInvalid={false}
       />
     </form>
   );
@@ -471,6 +460,61 @@ export function ComponentPropModal(props: {
     );
   }
 }
+
+/** Wraps a PropValueEditor and menu for unsetting the value. */
+const PropValueEditorWithMenu: React.FC<{
+  attr: "default-value" | "preview-value";
+  label: string;
+  propType: StudioPropType<any>;
+  propTypeData: PropTypeData | undefined;
+  value: Expr | undefined;
+  onChange: (expr: Expr | undefined) => void;
+}> = ({ attr, label, value, onChange, propType, propTypeData }) => {
+  return (
+    <div className="generic-prop-editor" data-test-id={attr}>
+      <PropValueEditor
+        attr={attr}
+        label={label}
+        value={
+          value === undefined
+            ? undefined
+            : propTypeData?.exprTypeGuard?.(value)
+            ? value
+            : propTypeData?.jsonType
+            ? tryExtractJson(value)
+            : undefined
+        }
+        onChange={(val) => {
+          const expr =
+            val == null || val === ""
+              ? undefined
+              : isKnownExpr(val)
+              ? val
+              : codeLit(val);
+          if (expr === undefined || isExprValid(propTypeData, expr)) {
+            onChange(expr);
+          } else {
+            unexpected(
+              `PropValueEditor returned value that doesn't satisfy ${propTypeData?.value}`
+            );
+          }
+        }}
+        propType={propType}
+      />
+      <IFrameAwareDropdownMenu
+        menu={
+          <Menu>
+            <Menu.Item onClick={() => onChange(undefined)}>Unset</Menu.Item>
+          </Menu>
+        }
+      >
+        <IconButton>
+          <DotsVerticalIcon />
+        </IconButton>
+      </IFrameAwareDropdownMenu>
+    </div>
+  );
+};
 
 function deriveArgTypes(type: FunctionType) {
   return type.params.map((arg) => ({

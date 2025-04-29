@@ -430,6 +430,15 @@ export type StudioPropType<P> =
   | FormDataConnectionPropType<P>
   | DynamicPropType<P>;
 
+type ExtractType<T> = T extends { type: string }
+  ? T["type"] extends string
+    ? T["type"]
+    : never
+  : never;
+
+export type PropTypeType = ExtractType<PropType<any>>;
+export type StudioPropTypeType = ExtractType<StudioPropType<any>>;
+
 type BuiltinComponentsType = Record<string, ComponentRegistration>;
 
 export class CodeComponentsRegistry {
@@ -3562,11 +3571,13 @@ export function isPlainObjectPropType(
   );
 }
 
-export function getPropTypeType(propType: StudioPropType<any> | undefined) {
+export function getPropTypeType(
+  propType: StudioPropType<any> | undefined
+): StudioPropTypeType | undefined {
   if (!propType) {
     return undefined;
   } else if (typeof propType === "string") {
-    return propType;
+    return propType as StudioPropTypeType;
   } else if (isReactImplControl(propType)) {
     return undefined;
   } else {

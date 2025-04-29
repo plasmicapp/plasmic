@@ -8,14 +8,18 @@ import Chip from "@/wab/client/components/widgets/Chip";
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { assert } from "@/wab/shared/common";
 import { removeFromArray } from "@/wab/commons/collections";
-import { clone as cloneExpr, codeLit, tryExtractJson } from "@/wab/shared/core/exprs";
 import {
   maybePropTypeToDisplayName,
   StudioPropType,
 } from "@/wab/shared/code-components/code-components";
-import { CanvasEnv } from "@/wab/shared/eval";
+import { assert } from "@/wab/shared/common";
+import {
+  clone as cloneExpr,
+  codeLit,
+  tryExtractJson,
+  tryExtractString,
+} from "@/wab/shared/core/exprs";
 import {
   CollectionExpr,
   ensureKnownMapExpr,
@@ -28,10 +32,6 @@ import {
 } from "@/wab/shared/model/classes";
 import omit from "lodash/omit";
 import React from "react";
-
-interface StudioEnv {
-  env: CanvasEnv;
-}
 
 const RULE_EDITORS: {
   name: string;
@@ -61,7 +61,7 @@ const RULE_EDITORS: {
     type: {
       type: "number",
       hidden: (props) =>
-        !["max", "min"].includes(tryExtractJson(props.ruleType)),
+        !["max", "min"].includes(tryExtractString(props.ruleType) || ""),
       displayName: "Length",
     },
   },
@@ -69,7 +69,8 @@ const RULE_EDITORS: {
     name: "pattern",
     type: {
       type: "string",
-      hidden: (props) => !["pattern"].includes(tryExtractJson(props.ruleType)),
+      hidden: (props) =>
+        !["pattern"].includes(tryExtractString(props.ruleType) || ""),
       displayName: "Pattern",
     },
   },

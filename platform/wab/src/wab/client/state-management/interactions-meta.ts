@@ -186,7 +186,7 @@ export const ACTIONS_META: Record<(typeof ACTIONS)[number], ActionType<any>> = {
             UpdateVariableOperations.Increment,
             UpdateVariableOperations.Splice,
             UpdateVariableOperations.Toggle,
-          ].includes(tryExtractJson(operation)),
+          ].includes(tryExtractJson(operation) as UpdateVariableOperations),
       },
       startIndex: {
         type: "number",
@@ -828,7 +828,7 @@ export function generateActionMetaForGlobalAction(
             })
           ),
         isFunctionTypeAttachedToModel: false,
-        parametersMeta: (_args, ctx: InteractionContextData) =>
+        parametersMeta: (_args, _ctx: InteractionContextData) =>
           globalAction.parameters,
         currentInteraction: (_props, ctx: InteractionContextData) =>
           ctx.currentInteraction,

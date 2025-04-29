@@ -4,6 +4,7 @@ import { DataPickerTypesSchema } from "@/wab/client/components/sidebar-tabs/Data
 import { useDataSourceOpExprBottomModals } from "@/wab/client/components/sidebar-tabs/DataSource/DataSourceOpPicker";
 import { ValueSetState } from "@/wab/client/components/sidebar/sidebar-helpers";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { JsonValue } from "@/wab/shared/core/lang";
 import { DATA_QUERY_PLURAL_CAP } from "@/wab/shared/Labels";
 import {
   Component,
@@ -27,15 +28,13 @@ export function DataSourceOpDataPicker({
   allowedOps,
   "data-plasmic-prop": dataPlasmicProp,
 }: {
-  value: boolean | number | string | null | undefined | {} | any[] | Expr;
+  value: JsonValue | Expr | undefined;
   env: { [key: string]: any } | undefined;
   schema?: DataPickerTypesSchema;
   component?: Component;
   valueSetState?: ValueSetState;
   readOnly?: boolean;
-  onChange: (
-    value: boolean | number | string | null | undefined | {} | any[] | Expr
-  ) => void;
+  onChange: (value: JsonValue | Expr | undefined) => void;
   allowedOps?: string[];
   "data-plasmic-prop"?: string;
 }) {

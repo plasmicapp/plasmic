@@ -8,8 +8,8 @@ import { PlainLinkButton } from "@/wab/client/components/widgets";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { MaybeWrap } from "@/wab/commons/components/ReactUtil";
 import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
-import { ImageAsset, isKnownImageAsset } from "@/wab/shared/model/classes";
 import { isEditable } from "@/wab/shared/core/sites";
+import { ImageAsset, isKnownImageAsset } from "@/wab/shared/model/classes";
 import { placeholderImgUrl } from "@/wab/shared/urls";
 import { Tooltip } from "antd";
 import L from "lodash";
@@ -20,7 +20,7 @@ export const ImagePropEditor = observer(function ImagePropEditor(props: {
   attr: string;
   studioCtx: StudioCtx;
   value?: ImageAsset | string;
-  onPicked: (picked: ImageAsset | string) => void;
+  onPicked: (picked: ImageAsset | string | undefined) => void;
   type: ImageAssetType;
   readOnly?: boolean;
 }) {

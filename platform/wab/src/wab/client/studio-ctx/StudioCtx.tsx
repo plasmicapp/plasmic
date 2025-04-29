@@ -235,6 +235,7 @@ import {
   isPlainComponent,
 } from "@/wab/shared/core/components";
 import { tryExtractJson } from "@/wab/shared/core/exprs";
+import { JsonValue } from "@/wab/shared/core/lang";
 import {
   ComponentContext,
   ModelChange,
@@ -5881,7 +5882,7 @@ export class StudioCtx extends WithDbCtx {
           const maybeParam = params.find(
             (param) => param.variable.name === prop.name
           );
-          let value = undefined;
+          let value: JsonValue | undefined = undefined;
           if (maybeArg) {
             value = tryExtractJson(maybeArg.expr);
           } else if (maybeParam?.defaultExpr) {

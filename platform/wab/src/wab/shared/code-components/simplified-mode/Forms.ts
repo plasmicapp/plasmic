@@ -1,5 +1,6 @@
-import { ensure, isNonNil } from "@/wab/shared/common";
 import { unwrap } from "@/wab/commons/failable-utils";
+import { elementSchemaToTpl } from "@/wab/shared/code-components/code-components";
+import { ensure, isNonNil } from "@/wab/shared/common";
 import {
   clone as cloneExpr,
   codeLit,
@@ -7,8 +8,18 @@ import {
   isRealCodeExpr,
   isRealCodeExprEnsuringType,
   tryExtractJson,
+  tryExtractString,
 } from "@/wab/shared/core/exprs";
-import { elementSchemaToTpl } from "@/wab/shared/code-components/code-components";
+import { allComponents as getAllComponents } from "@/wab/shared/core/sites";
+import { SlotSelection } from "@/wab/shared/core/slots";
+import {
+  clone as cloneTpl,
+  getParamVariable,
+  getTplComponentArgByParamName,
+  mkTplComponent,
+  mkTplInlinedText,
+  TplCodeComponent,
+} from "@/wab/shared/core/tpls";
 import {
   Arg,
   Component,
@@ -27,16 +38,6 @@ import { getSingleTplComponentFromArg } from "@/wab/shared/SlotUtils";
 import { TplMgr } from "@/wab/shared/TplMgr";
 import { $$$ } from "@/wab/shared/TplQuery";
 import { ensureBaseVariantSetting } from "@/wab/shared/Variants";
-import { allComponents as getAllComponents } from "@/wab/shared/core/sites";
-import { SlotSelection } from "@/wab/shared/core/slots";
-import {
-  clone as cloneTpl,
-  getParamVariable,
-  getTplComponentArgByParamName,
-  mkTplComponent,
-  mkTplInlinedText,
-  TplCodeComponent,
-} from "@/wab/shared/core/tpls";
 import {
   buttonComponentName,
   formItemComponentName,
@@ -89,7 +90,7 @@ export const createLabelRenderExprFromFormItem = (
   const text = isRealCodeExpr(formItem.label)
     ? undefined
     : isKnownExpr(formItem.label)
-    ? tryExtractJson(formItem.label)
+    ? tryExtractString(formItem.label)
     : formItem.label;
   const labelTpl = mkTplInlinedText(text ?? "", [baseVariant], "div", {
     baseVariant,
@@ -129,10 +130,12 @@ export function generateTplsFromFormItems(
       if (isKnownCompositeExpr(itemArg.expr)) {
         return deserCompositeExprMaybe(itemArg.expr);
       }
-      return tryExtractJson(itemArg.expr);
+      return tryExtractJson(itemArg.expr) as FormItemProps[] | undefined;
     }
     if (itemParam.defaultExpr) {
-      return tryExtractJson(itemParam.defaultExpr);
+      return tryExtractJson(itemParam.defaultExpr) as
+        | FormItemProps[]
+        | undefined;
     }
     return undefined;
   };
@@ -141,9 +144,9 @@ export function generateTplsFromFormItems(
 
   if (isNonNil(formItems)) {
     for (const formItem of formItems) {
-      const inputType: InputType = isKnownExpr(formItem.inputType)
-        ? tryExtractJson(formItem.inputType)
-        : formItem.inputType;
+      const inputType: InputType | undefined = isKnownExpr(formItem.inputType)
+        ? (tryExtractJson(formItem.inputType) as InputType)
+        : undefined;
       const labelRenderExpr = createLabelRenderExprFromFormItem(
         formItem,
         baseVariant
@@ -159,6 +162,7 @@ export function generateTplsFromFormItems(
       ).tpl as TplComponent;
       const inputTplBaseVs = ensureBaseVariantSetting(inputTpl);
       if (
+        inputType &&
         [InputType.Select, InputType.RadioGroup].includes(inputType) &&
         formItem.options
       ) {

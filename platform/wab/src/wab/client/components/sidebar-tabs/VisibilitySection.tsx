@@ -26,16 +26,18 @@ import {
   makeVariantedStylesHelperFromCurrentCtx,
 } from "@/wab/client/utils/style-utils";
 import { getVisibilityChoicesForTpl } from "@/wab/client/utils/tpl-client-utils";
-import { ensureInstance } from "@/wab/shared/common";
 import { isTokenRef, TokenType } from "@/wab/commons/StyleToken";
+import { ensureInstance } from "@/wab/shared/common";
 import {
   clone,
   codeLit,
   createExprForDataPickerValue,
   extractValueSavedFromDataPicker,
   isFallbackSet,
+  tryExtractBoolean,
   tryExtractJson,
 } from "@/wab/shared/core/exprs";
+import { isTplCodeComponent } from "@/wab/shared/core/tpls";
 import { computeDefinedIndicator } from "@/wab/shared/defined-indicator";
 import {
   CustomCode,
@@ -54,7 +56,6 @@ import {
   hasVisibilitySetting,
   TplVisibility,
 } from "@/wab/shared/visibility-utils";
-import { isTplCodeComponent } from "@/wab/shared/core/tpls";
 import { Menu } from "antd";
 import cn from "classnames";
 import { observer } from "mobx-react";
@@ -387,7 +388,7 @@ function VisibilitySection_(props: {
                 }}
                 value={
                   customCode.fallback
-                    ? tryExtractJson(customCode.fallback)
+                    ? tryExtractBoolean(customCode.fallback)
                     : undefined
                 }
                 defaultValueHint={false}

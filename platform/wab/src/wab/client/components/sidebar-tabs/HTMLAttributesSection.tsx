@@ -25,6 +25,7 @@ import {
   extractReferencedParam,
   isAllowedDefaultExpr,
   tryExtractLit,
+  tryExtractString,
 } from "@/wab/shared/core/exprs";
 import { ComponentPropOrigin } from "@/wab/shared/core/lang";
 import { alwaysVisibleHTMLAttributes, metaSvc } from "@/wab/shared/core/metas";
@@ -92,7 +93,7 @@ export function getInputTagType(tpl: TplTag) {
     "Tpl should have base variant"
   );
   const expr = vs.attrs.type;
-  return (expr && tryExtractLit(expr)) || "text";
+  return (expr && tryExtractString(expr)) || "text";
 }
 
 export function getEditableTagAttrs(viewCtx: ViewCtx, tpl: TplTag) {

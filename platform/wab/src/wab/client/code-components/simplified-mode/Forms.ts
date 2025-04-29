@@ -494,9 +494,11 @@ export function updateFormComponentMode(
     });
     if (formItems && Array.isArray(formItems)) {
       for (const formItem of formItems) {
-        const inputType: InputType = isKnownExpr(formItem.inputType)
-          ? tryExtractJson(formItem.inputType)
-          : formItem.inputType;
+        const inputType = (
+          isKnownExpr(formItem.inputType)
+            ? tryExtractJson(formItem.inputType)
+            : formItem.inputType
+        ) as InputType | undefined;
         const labelRenderExpr = createLabelRenderExprFromFormItem(
           formItem,
           baseVariant
@@ -515,6 +517,7 @@ export function updateFormComponentMode(
         ).tpl as TplComponent;
 
         if (
+          inputType &&
           [InputType.Select, InputType.RadioGroup].includes(inputType) &&
           formItem.options
         ) {

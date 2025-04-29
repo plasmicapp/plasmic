@@ -1,4 +1,3 @@
-//@ts-ignore
 import ContextMenuIndicator from "@/wab/client/components/ContextMenuIndicator/ContextMenuIndicator";
 import { ComponentPropModal } from "@/wab/client/components/modals/ComponentPropModal";
 import { DataPickerEditor } from "@/wab/client/components/sidebar-tabs/ComponentProps/DataPickerEditor";
@@ -88,8 +87,9 @@ import {
   isRealCodeExpr,
   renderable,
   summarizeExpr,
-  tryExtractLit,
+  tryExtractJson,
 } from "@/wab/shared/core/exprs";
+import { JsonValue } from "@/wab/shared/core/lang";
 import {
   getTplTextBlockContent,
   isTplRawString,
@@ -269,16 +269,16 @@ function isQuery(_expr: Expr | undefined) {
   );
 }
 
-export function extractLitFromMaybeRenderable(
+function extractLitFromMaybeRenderable(
   expr: Expr | undefined | null,
   viewCtx: ViewCtx | undefined
-): [any, boolean] {
+): [JsonValue | Expr | undefined, boolean] {
   if (!expr) {
     return [undefined, true];
   }
 
   return switchType(expr)
-    .when(RenderExpr, (renderExpr): [any, boolean] => {
+    .when(RenderExpr, (renderExpr): [string | undefined, boolean] => {
       if (renderExpr.tpl.length === 0 || !viewCtx) {
         return [undefined, true];
       }
@@ -307,21 +307,20 @@ export function extractLitFromMaybeRenderable(
         MapExpr,
         CollectionExpr,
         CustomFunctionExpr,
+        ImageAssetRef,
       ],
-      (_expr): [any, boolean] => [_expr, true]
+      (_expr): [Expr, boolean] => [_expr, true]
     )
-    .when(ImageAssetRef, (imageAssetRef): [any, boolean] => [
-      imageAssetRef.asset,
-      true,
-    ])
-    .when(CustomCode, (customCode): [any, boolean] => {
+    .when(CustomCode, (customCode): [JsonValue | Expr | undefined, boolean] => {
       if (isRealCodeExpr(customCode)) {
         return [expr, true];
       }
-      return tuple(tryExtractLit(expr), true);
+      return tuple(tryExtractJson(expr), true);
     })
-    .when([StyleExpr, StrongFunctionArg], (_expr): [any, boolean] =>
-      tuple(tryExtractLit(expr), true)
+    .when(
+      [StyleExpr, StrongFunctionArg],
+      (_expr): [JsonValue | undefined, boolean] =>
+        tuple(tryExtractJson(expr), true)
     )
     .result();
 }
@@ -1035,7 +1034,6 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
                 if (!newParam) {
                   return;
                 }
-                console.log("DEBUGGING: onFinish with .change");
                 viewCtx.change(() => {
                   newParam.description = "metaProp";
                   const _expr = new VarRef({

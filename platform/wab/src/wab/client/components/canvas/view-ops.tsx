@@ -3352,11 +3352,6 @@ export class ViewOps {
       }
 
       for (const item of uniqAdoptees) {
-        const itemRect = item.domBox.rect();
-        const parentOffset = new Pt(
-          itemRect.left - parentRect.left,
-          itemRect.top - parentRect.top
-        );
         const opts = isStack ? { keepFree: false } : undefined;
         this.insertAsChild(item.val.tpl, cmptTpl, opts);
       }
@@ -4634,7 +4629,7 @@ export class ViewOps {
           imageUri = mkImageAssetRef(asset);
         }
       } else {
-        imageUri = exprs.tryExtractLit(srcAttr);
+        imageUri = exprs.tryExtractString(srcAttr);
       }
 
       if (!imageUri) {
@@ -5068,7 +5063,7 @@ export function getMergedTextArg(tpl: TplComponent) {
     return slotParams[0][1];
   } else {
     const childrenSlot = slotParams.find(
-      ([p, t]) => p.variable.name === "children"
+      ([p, _t]) => p.variable.name === "children"
     );
     if (childrenSlot) {
       return childrenSlot[1];

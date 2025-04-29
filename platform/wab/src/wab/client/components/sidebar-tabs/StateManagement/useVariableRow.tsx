@@ -8,7 +8,7 @@ import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { wabTypeToPropType } from "@/wab/shared/code-components/code-components";
 import { assert, ensure, spawn } from "@/wab/shared/common";
 import { canDeleteState } from "@/wab/shared/core/components";
-import { codeLit, getRawCode, tryExtractJson } from "@/wab/shared/core/exprs";
+import { codeLit, getRawCode, tryExtractString } from "@/wab/shared/core/exprs";
 import {
   getStateDisplayName,
   isPrivateState,
@@ -272,7 +272,7 @@ export function useVariableRow({
                 ? {
                     source: "setNonVariable",
                     prop: "preview-value",
-                    value: tryExtractJson(expr),
+                    value: tryExtractString(expr) || "",
                   }
                 : { source: "none" }
             }
