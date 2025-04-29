@@ -18,7 +18,6 @@ export type ContextDependentConfig<P, R> = (...args: ControlContext<P>) => R;
 
 export interface BaseParam {
   name: string;
-  displayName?: string;
   description?: string;
   isOptional?: boolean;
   isRestParameter?: boolean;
@@ -236,6 +235,10 @@ export interface CustomFunctionMeta<F extends (...args: any[]) => any> {
    * whenever accessing the function.
    */
   namespace?: string;
+  /**
+   * A display name for the function. It will be shown only in studio.
+   */
+  displayName?: string;
   /**
    * Documentation for the registered function.
    */
