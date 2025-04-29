@@ -61,7 +61,7 @@ function DataPickerCodeEditorLayout_(
             ref={editorRef}
             key={codeEditorKey}
             hideLineNumbers={true}
-            language={"javascript"}
+            language={"typescript"}
             defaultValue={defaultValue}
             data={data}
             onSave={onSave}
