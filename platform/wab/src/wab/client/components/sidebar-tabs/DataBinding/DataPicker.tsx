@@ -2,6 +2,7 @@ import type { FullCodeEditor } from "@/wab/client/components/coding/FullCodeEdit
 import {
   checkDisallowedUseOfLibs,
   checkStrSizeLimit,
+  checkSyntaxError,
 } from "@/wab/client/components/sidebar-tabs/ComponentProps/CodeEditor";
 import DataPickerColumn from "@/wab/client/components/sidebar-tabs/DataBinding/DataPickerColumn";
 import DataPickerGlobalSearchResultsItem from "@/wab/client/components/sidebar-tabs/DataBinding/DataPickerGlobalSearchResultsItem";
@@ -38,11 +39,9 @@ import { DEVFLAGS } from "@/wab/shared/devflags";
 import { pathToString } from "@/wab/shared/eval/expression-parser";
 import { Interaction } from "@/wab/shared/model/classes";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
-import { notification } from "antd";
 import { head, mapValues } from "lodash";
 import deepGet from "lodash/get";
 import * as React from "react";
-import { monaco } from "react-monaco-editor";
 import { useUpdateEffect } from "react-use";
 
 type Column = {
@@ -350,43 +349,12 @@ function DataPicker_(props: DataPickerProps, ref: HTMLElementRefOf<"div">) {
     const stringValue =
       typeof value === "object" && value ? pathToString(value) : value;
 
-    const trySave = (val: string, syntaxErrors?: monaco.editor.IMarker[]) => {
+    const trySave = (val: string) => {
       if (!checkStrSizeLimit(val)) {
         return false;
       }
 
-      // Some errors seem to be not under the user's control,
-      // they probably relate to the context provided to the monaco editor.
-      const excludedSyntaxErrors = [
-        // There seems to be a global 'event' variable,
-        // In the interactions Run Code action, there seems to be another declaration of event in the data picker context,
-        // which is why this error is thrown every time.
-        // So we filter this error out.
-        "Cannot redeclare block-scoped variable 'event'.",
-        // This appears in the Text component's onClick interaction (Run code action) and is not up to the user to fix.
-        "Cannot find namespace 'React'.",
-      ];
-
-      const effectiveSyntaxErrors = syntaxErrors?.filter(
-        (err) => !excludedSyntaxErrors.includes(err.message)
-      );
-
-      if (effectiveSyntaxErrors?.length) {
-        notification.warn({
-          message: "Syntax error",
-          description: (
-            <div>
-              <p>
-                The expression has a syntax error, it's required to fix it
-                before saving.
-              </p>
-              <p>
-                <b>Error: </b>
-                {effectiveSyntaxErrors[0].message}
-              </p>
-            </div>
-          ),
-        });
+      if (!checkSyntaxError(val)) {
         return false;
       }
 
@@ -427,10 +395,8 @@ function DataPicker_(props: DataPickerProps, ref: HTMLElementRefOf<"div">) {
           }}
           saveButton={{
             onClick: () => {
-              const val = editorRef.current?.getValue();
-              const errors = editorRef.current?.getErrors();
-              if (val && trySave(val, errors)) {
-                onChange(val);
+              if (editorRef.current && trySave(editorRef.current.getValue())) {
+                onChange(editorRef.current.getValue());
               }
             },
           }}

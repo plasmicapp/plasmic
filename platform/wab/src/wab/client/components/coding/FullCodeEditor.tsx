@@ -42,7 +42,6 @@ export interface FullCodeEditor {
   getValue: () => string;
   /** Reset to the default value. */
   resetValue: () => void;
-  getErrors: () => monaco.editor.IMarker[];
 }
 
 export const FullCodeEditor = React.forwardRef(
@@ -107,7 +106,6 @@ export const FullCodeEditor = React.forwardRef(
     const [containerEl, setContainerEl] = React.useState<HTMLElement | null>(
       null
     );
-    let modelUri: monaco.Uri | undefined;
     const editorActions = useMonacoEditor(containerEl, {
       modelFilePath: createFilePathWithExtension(fileName, language),
       modelLanguage: language,
@@ -144,7 +142,6 @@ export const FullCodeEditor = React.forwardRef(
         }
       },
       onAfterEditorCreate: function* (editor, actions) {
-        modelUri = editor.getModel()?.uri;
         yield editor.onDidChangeModelContent(() => {
           handlersRef.current.onChange?.(actions.getUserValue());
         });
@@ -164,10 +161,6 @@ export const FullCodeEditor = React.forwardRef(
       () => ({
         getValue: () => editorActions?.getUserValue() ?? "",
         resetValue: () => editorActions?.resetUserValue(defaultValue),
-        getErrors: () =>
-          monaco.editor.getModelMarkers({
-            resource: modelUri,
-          }) ?? [],
       }),
       [editorActions, defaultValue]
     );

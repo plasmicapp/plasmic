@@ -10,6 +10,7 @@ import { readUploadedFileAsText } from "@/wab/client/dom-utils";
 import { MaybeWrap } from "@/wab/commons/components/ReactUtil";
 import { ensure, swallow } from "@/wab/shared/common";
 import { tryEvalExpr } from "@/wab/shared/eval";
+import { isValidJavaScriptCode } from "@/wab/shared/parser-utils";
 import { hasUnexpected$$Usage } from "@/wab/shared/utils/regex-dollardollar";
 import { notification, Tooltip } from "antd";
 import { default as classNames } from "classnames";
@@ -36,6 +37,25 @@ export function checkStrSizeLimit(val: string) {
         "This long content will be embedded into your page, which will increase load time.",
     });
   }
+  return true;
+}
+
+export function checkSyntaxError(val: string) {
+  try {
+    return (
+      isValidJavaScriptCode(`(${val})`) ||
+      isValidJavaScriptCode(val, { throwIfInvalid: true })
+    );
+  } catch (err) {
+    if (err instanceof SyntaxError) {
+      notification.warn({
+        message: "Syntax error",
+        description: `The expression has a syntax error, it's required to fix it before saving. ${err.message}`,
+      });
+      return false;
+    }
+  }
+
   return true;
 }
 
