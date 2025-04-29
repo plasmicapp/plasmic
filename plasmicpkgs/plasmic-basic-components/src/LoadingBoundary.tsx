@@ -2,9 +2,7 @@ import { DataProvider, useDataEnv } from "@plasmicapp/host";
 import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
-import * as plasmicQuery from "@plasmicapp/query";
-import React, { Suspense, useState } from "react";
-import { useIsomorphicLayoutEffect } from "./common";
+import React, { Suspense } from "react";
 
 interface LoadingBoundaryProps {
   loadingState?: React.ReactNode;
