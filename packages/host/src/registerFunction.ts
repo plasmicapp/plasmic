@@ -18,6 +18,7 @@ export type ContextDependentConfig<P, R> = (...args: ControlContext<P>) => R;
 
 export interface BaseParam {
   name: string;
+  displayName?: string;
   description?: string;
   isOptional?: boolean;
   isRestParameter?: boolean;

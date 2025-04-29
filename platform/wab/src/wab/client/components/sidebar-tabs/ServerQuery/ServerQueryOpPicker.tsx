@@ -130,6 +130,11 @@ export function ServerQueryOpDraftForm(props: {
     }
   }, [value, availableCustomFunction]);
 
+  const groupedCustomFunctions = groupBy(
+    availableCustomFunction,
+    (fn) => fn.namespace ?? null
+  );
+
   return (
     <div id="data-source-modal-draft-section">
       {showQueryName && (
@@ -159,12 +164,22 @@ export function ServerQueryOpDraftForm(props: {
             });
           }}
         >
-          {availableCustomFunction.map((fn) => {
-            const functionId = customFunctionId(fn);
+          {Object.keys(groupedCustomFunctions).map((namespace) => {
+            const isNullGroup = namespace === "null";
             return (
-              <StyleSelect.Option key={fn.uid} value={functionId}>
-                {smartHumanize(functionId)}
-              </StyleSelect.Option>
+              <StyleSelect.OptionGroup
+                title={!isNullGroup ? smartHumanize(namespace) : undefined}
+                noTitle={isNullGroup}
+              >
+                {groupedCustomFunctions[namespace].map((fn) => {
+                  const functionId = customFunctionId(fn);
+                  return (
+                    <StyleSelect.Option key={fn.uid} value={functionId}>
+                      {smartHumanize(fn.importName)}
+                    </StyleSelect.Option>
+                  );
+                })}
+              </StyleSelect.OptionGroup>
             );
           })}
         </StyleSelect>
