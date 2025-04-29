@@ -126,182 +126,111 @@ class SizeSection_ extends StyleComponent<
         hasMore
         data-test-id="size-section"
       >
-        {(renderMaybeCollapsibleRows) => (
-          <div>
-            {isSvg(this.props.expsProvider) && (
-              <Alert
-                className="mb-sm"
-                type="warning"
-                showIcon={true}
-                message={
-                  <div>
-                    SVGs have no default size, so setting width to hug or auto
-                    will cause it to stretch to fill the parent container.
-                  </div>
-                }
-              />
-            )}
-            {renderMaybeCollapsibleRows([
-              {
-                collapsible: false,
-                content: (
-                  <FullRow>
-                    <SizeControl
-                      prop="width"
-                      expsProvider={this.props.expsProvider}
-                      vsh={vsh}
-                      // TODO: experimenting with nested content
-                      // layout sections that can be resized
-                      // isDisabled={
-                      //   isDeepContentLayout && isDeepContentLayoutChild
-                      // }
-                      // disabledTooltip={
-                      //   isDeepContentLayout && isDeepContentLayoutChild
-                      //     ? "Nested page sections are always full-bleed"
-                      //     : undefined
-                      // }
-                    />
-                  </FullRow>
-                ),
-              },
-              {
-                collapsible: !isSetOrInherited(
-                  getValueSetState(...this.definedIndicators("min-width"))
-                ),
-                content: (
-                  <FullRow>
-                    <LabeledStyleDimItem
-                      label="Min Width"
-                      styleName={`min-width`}
-                      dimOpts={{
-                        ...tokenTypeDimOpts(TokenType.Spacing),
-                        min: 0,
-                        extraOptions: ["auto"],
-                      }}
-                      tokenType={TokenType.Spacing}
-                      vsh={vsh}
-                    />
-                  </FullRow>
-                ),
-              },
-              {
-                collapsible: !isSetOrInherited(
-                  getValueSetState(...this.definedIndicators("max-width"))
-                ),
-                content: (
-                  <FullRow>
-                    <LabeledStyleDimItem
-                      label="Max Width"
-                      styleName={`max-width`}
-                      dimOpts={{
-                        ...tokenTypeDimOpts(TokenType.Spacing),
-                        min: 0,
-                        extraOptions: ["none"],
-                      }}
-                      tokenType={TokenType.Spacing}
-                      vsh={vsh}
-                    />
-                  </FullRow>
-                ),
-              },
-              {
-                collapsible: false,
-                content: (
-                  <>
-                    <SectionSeparator className="mv-m" />
-                    <FullRow>
-                      <SizeControl
-                        prop="height"
-                        expsProvider={this.props.expsProvider}
-                        vsh={vsh}
-                      />
-                    </FullRow>
-                  </>
-                ),
-              },
-              {
-                collapsible: !isSetOrInherited(
-                  getValueSetState(...this.definedIndicators("min-height"))
-                ),
-                content: (
-                  <FullRow>
-                    <LabeledStyleDimItem
-                      label="Min Height"
-                      styleName={`min-height`}
-                      dimOpts={{
-                        ...tokenTypeDimOpts(TokenType.Spacing),
-                        min: 0,
-                        extraOptions: ["auto"],
-                      }}
-                      tokenType={TokenType.Spacing}
-                      vsh={vsh}
-                    />
-                  </FullRow>
-                ),
-              },
-              {
-                collapsible: !isSetOrInherited(
-                  getValueSetState(...this.definedIndicators("max-height"))
-                ),
-                content: (
-                  <FullRow>
-                    <LabeledStyleDimItem
-                      label="Max Height"
-                      styleName={`max-height`}
-                      dimOpts={{
-                        ...tokenTypeDimOpts(TokenType.Spacing),
-                        min: 0,
-                        extraOptions: ["none"],
-                      }}
-                      tokenType={TokenType.Spacing}
-                      vsh={vsh}
-                    />
-                  </FullRow>
-                ),
-              },
-              {
-                collapsible:
-                  !isSetOrInherited(
-                    getValueSetState(
-                      ...this.definedIndicators("flex-grow", "flex-shrink")
-                    )
-                  ) &&
-                  !isSetOrInherited(
-                    getValueSetState(...this.definedIndicators("flex-basis"))
-                  ),
-                content: <SectionSeparator className="mv-m" />,
-              },
-              {
-                collapsible: !isSetOrInherited(
-                  getValueSetState(
-                    ...this.definedIndicators("flex-grow", "flex-shrink")
-                  )
-                ),
-                content: (
-                  <FlexGrowControls expsProvider={this.props.expsProvider} />
-                ),
-              },
-              {
-                collapsible: !isSetOrInherited(
-                  getValueSetState(...this.definedIndicators("flex-basis"))
-                ),
-                content: (
-                  <LabeledStyleDimItemRow
-                    label="Flex basis"
-                    styleName="flex-basis"
-                    dimOpts={{
-                      ...dimOpts,
-                      extraOptions: ["auto"],
-                    }}
-                    tokenType={TokenType.Spacing}
-                    vsh={vsh}
-                    definedIndicator={this.definedIndicators("flex-basis")}
-                  />
-                ),
-              },
-            ])}
-          </div>
-        )}
+        <div>
+          {isSvg(this.props.expsProvider) && (
+            <Alert
+              className="mb-sm"
+              type="warning"
+              showIcon={true}
+              message={
+                <div>
+                  SVGs have no default size, so setting width to hug or auto
+                  will cause it to stretch to fill the parent container.
+                </div>
+              }
+            />
+          )}
+
+          <FullRow twinCols>
+            <SizeControl
+              // this is Width"
+              prop="width"
+              expsProvider={this.props.expsProvider}
+              vsh={vsh}
+              // TODO: experimenting with nested content
+              // layout sections that can be resized
+              // isDisabled={
+              //   isDeepContentLayout && isDeepContentLayoutChild
+              // }
+              // disabledTooltip={
+              //   isDeepContentLayout && isDeepContentLayoutChild
+              //     ? "Nested page sections are always full-bleed"
+              //     : undefined
+              // }
+            />
+            <SizeControl
+              prop="height"
+              expsProvider={this.props.expsProvider}
+              vsh={vsh}
+            />
+          </FullRow>
+
+          <FullRow twinCols>
+            <LabeledStyleDimItem
+              label="Min W"
+              styleName={`min-width`}
+              dimOpts={{
+                ...tokenTypeDimOpts(TokenType.Spacing),
+                min: 0,
+                extraOptions: ["auto"],
+              }}
+              tokenType={TokenType.Spacing}
+              vsh={vsh}
+              labelSize="small"
+            />
+            <LabeledStyleDimItem
+              label="Min H"
+              styleName={`min-height`}
+              dimOpts={{
+                ...tokenTypeDimOpts(TokenType.Spacing),
+                min: 0,
+                extraOptions: ["auto"],
+              }}
+              tokenType={TokenType.Spacing}
+              vsh={vsh}
+              labelSize="small"
+            />
+          </FullRow>
+          <FullRow twinCols>
+            <LabeledStyleDimItem
+              label="Max W"
+              styleName={`max-width`}
+              dimOpts={{
+                ...tokenTypeDimOpts(TokenType.Spacing),
+                min: 0,
+                extraOptions: ["none"],
+              }}
+              tokenType={TokenType.Spacing}
+              vsh={vsh}
+              labelSize="small"
+            />
+            <LabeledStyleDimItem
+              label="Max H"
+              styleName={`max-height`}
+              dimOpts={{
+                ...tokenTypeDimOpts(TokenType.Spacing),
+                min: 0,
+                extraOptions: ["none"],
+              }}
+              tokenType={TokenType.Spacing}
+              vsh={vsh}
+              labelSize="small"
+            />
+          </FullRow>
+
+          <FlexGrowControls expsProvider={this.props.expsProvider} />
+          <LabeledStyleDimItemRow
+            label="Flex basis"
+            styleName="flex-basis"
+            dimOpts={{
+              ...dimOpts,
+              extraOptions: ["auto"],
+            }}
+            tokenType={TokenType.Spacing}
+            vsh={vsh}
+            definedIndicator={this.definedIndicators("flex-basis")}
+          />
+        </div>
       </StylePanelSection>
     );
   }
@@ -473,6 +402,7 @@ const SizeControl = observer(function SizeRow(props: {
       label={capitalizeFirst(prop)}
       className={S.dimField}
       styleName={prop}
+      labelSize="small"
       initialMenuItems={() =>
         new DimManip(
           expsProvider.studioCtx,
@@ -642,10 +572,8 @@ const FlexGrowControls = observer(function FlexGrowControls(props: {
 
   return (
     <>
-      <FullRow>
+      <FullRow twinCols>
         {renderSizing("flex-grow", "Grow", "Grow to fill available space")}
-      </FullRow>
-      <FullRow>
         {renderSizing("flex-shrink", "Shrink", "Shrink if not enough space")}
       </FullRow>
     </>
@@ -654,7 +582,7 @@ const FlexGrowControls = observer(function FlexGrowControls(props: {
 
 function toDisplay(val: string, stretchLabel: string, isRoot: boolean) {
   if (val === "wrap") {
-    val = "Hug content";
+    val = "Hug";
   } else if (val === CONTENT_LAYOUT_FULL_BLEED) {
     val = "Full bleed";
     if (isRoot) {
@@ -672,7 +600,7 @@ function toDisplay(val: string, stretchLabel: string, isRoot: boolean) {
 }
 
 function fromDisplay(val: string, stretchLabel: string) {
-  if (val === "Hug content") {
+  if (val === "Hug") {
     val = "wrap";
   } else if (val === "Full bleed") {
     val = CONTENT_LAYOUT_FULL_BLEED;
