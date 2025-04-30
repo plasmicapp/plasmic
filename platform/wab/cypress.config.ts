@@ -32,10 +32,6 @@ export default defineConfig({
       return config;
     },
     baseUrl: "http://localhost:3003",
-    retries: {
-      runMode: 3, // Retries when running in CI or `cypress run`
-      openMode: 1, // Retries when running interactively in `cypress open`
-    },
   },
   reporter: "mocha-reporter-gha",
 
