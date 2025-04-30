@@ -217,7 +217,7 @@
     "@plasmicapp/react-web": "^0.2.383",
     "@plasmicpkgs/antd5": "^0.0.284",
     "@plasmicpkgs/commerce-local": "^0.0.214",
-    "@plasmicpkgs/plasmic-basic-components": "^0.0.240",
+    "@plasmicpkgs/plasmic-basic-components": "^0.0.241",
     "@plasmicpkgs/plasmic-embed-css": "^0.1.201",
     "@plasmicpkgs/react-aria": "^0.0.135",
     "@popperjs/core": "2.11.6",
