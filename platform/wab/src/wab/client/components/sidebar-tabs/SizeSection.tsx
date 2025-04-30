@@ -2,8 +2,6 @@ import { WithContextMenu } from "@/wab/client/components/ContextMenu";
 import S from "@/wab/client/components/sidebar-tabs/SizeSection.module.scss";
 import {
   FullRow,
-  getValueSetState,
-  isSetOrInherited,
   LabeledItemRow,
   LabeledStyleDimItem,
   LabeledStyleDimItemRow,
@@ -22,18 +20,9 @@ import {
   useStyleComponent,
 } from "@/wab/client/components/style-controls/StyleComponent";
 import { Icon as IconComponent } from "@/wab/client/components/widgets/Icon";
-import { IconButton } from "@/wab/client/components/widgets/IconButton";
-import { Icon } from "@/wab/client/components/widgets/Icon";
-import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
 import { DimManip } from "@/wab/client/DimManip";
-import {
-  default as PlasmicIcon__Stretch,
-  default as StretchIcon,
-} from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Stretch";
-import {
-  default as PlasmicIcon__Wrap,
-  default as WrapIcon,
-} from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Wrap";
+import { default as StretchIcon } from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Stretch";
+import { default as WrapIcon } from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Wrap";
 import WidthFullBleedIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__WidthFullBleed";
 import WidthStandardStretchIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__WidthStandardStretch";
 import WidthWideIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__WidthWide";
@@ -64,11 +53,8 @@ import { capitalizeFirst } from "@/wab/shared/strs";
 import { $$$ } from "@/wab/shared/TplQuery";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import { Alert, Menu } from "antd";
-import cn from "classnames";
 import { observer } from "mobx-react";
 import React from "react";
-import ChevronUpSvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__ChevronUpSvg";
-import ChevronDownSvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg";
 
 interface SizePanelSectionState {
   isOpen: boolean;
@@ -83,19 +69,6 @@ class SizeSection_ extends StyleComponent<
     this.state = {
       isOpen: true,
     };
-    this.onClick = this.onClick.bind(this);
-  }
-
-  async onClick() {
-    const { isOpen } = this.state;
-
-    if (isOpen) {
-      await this.studioCtx().change(({ success }) => {
-        return success();
-      });
-    }
-
-    this.setState({ isOpen: !isOpen });
   }
 
   render() {
@@ -103,26 +76,6 @@ class SizeSection_ extends StyleComponent<
     const vsh =
       this.props.vsh ??
       makeVariantedStylesHelperFromCurrentCtx(this.studioCtx());
-
-    const isMinMaxWidthSet = isSetOrInherited(
-      getValueSetState(...this.definedIndicators("min-width", "max-width"))
-    );
-
-    const isMinMaxHeightSet = isSetOrInherited(
-      getValueSetState(...this.definedIndicators("min-width", "max-width"))
-    );
-
-    const tpl =
-      this.props.expsProvider instanceof TplExpsProvider
-        ? this.props.expsProvider.tpl
-        : undefined;
-    const deepLayoutParent = tpl
-      ? $$$(tpl).layoutParent({ throughSlot: true }).maybeOneTpl()
-      : undefined;
-    const isDeepContentLayoutChild =
-      !!deepLayoutParent && isContentLayoutTpl(deepLayoutParent);
-    const isDeepContentLayout =
-      !!tpl && isContentLayoutTpl(tpl, { deep: true });
 
     return (
       <StylePanelSection
@@ -140,15 +93,6 @@ class SizeSection_ extends StyleComponent<
         ]}
         title={"Size"}
         data-test-id="size-section"
-        onHeaderClick={this.onClick}
-        emptyBody={this.state.isOpen ? false : true}
-        controls={
-          <IconButton onClick={this.onClick}>
-            <Icon
-              icon={this.state.isOpen ? ChevronUpSvgIcon : ChevronDownSvgIcon}
-            />
-          </IconButton>
-        }
       >
         <>
           {isSvg(this.props.expsProvider) && (
@@ -439,74 +383,6 @@ const SizeControl = observer(function SizeRow(props: {
         ).renderConvertMenuItems()
       }
       disabledTooltip={disabledTooltip}
-      // rightExtras={
-      //   !isDisabled && (
-      //     <div className={S.toggleIcons}>
-      //       {value !== "stretch" && (
-      //         <IconButton
-      //           size="small"
-      //           type="clear"
-      //           tooltip={
-      //             isDeepContentLayoutChild && prop === "width"
-      //               ? "Stretch standard"
-      //               : "Stretch"
-      //           }
-      //           onClick={() => setProp("stretch")}
-      //           className={cn(S.toggleSizingIcon, {
-      //             [S.toggleSizingIcon__height]: prop === "height",
-      //           })}
-      //         >
-      //           <IconComponent
-      //             icon={
-      //               isDeepContentLayoutChild && prop === "width"
-      //                 ? WidthStandardStretchIcon
-      //                 : PlasmicIcon__Stretch
-      //             }
-      //           />
-      //         </IconButton>
-      //       )}
-      //       {value !== "wrap" && value !== "auto" && (
-      //         <IconButton
-      //           size="small"
-      //           type="clear"
-      //           tooltip={"Hug content"}
-      //           onClick={() => setProp("wrap")}
-      //           className={cn(S.toggleSizingIcon, {
-      //             [S.toggleSizingIcon__height]: prop === "height",
-      //           })}
-      //         >
-      //           <IconComponent icon={PlasmicIcon__Wrap} />
-      //         </IconButton>
-      //       )}
-      //       {prop === "width" && isDeepContentLayoutChild && !isRoot && (
-      //         <>
-      //           {value !== CONTENT_LAYOUT_WIDE && (
-      //             <IconButton
-      //               size="small"
-      //               type="clear"
-      //               tooltip={"Stretch wide"}
-      //               onClick={() => setProp(CONTENT_LAYOUT_WIDE)}
-      //               className={S.toggleSizingIcon}
-      //             >
-      //               <IconComponent icon={WidthWideIcon} />
-      //             </IconButton>
-      //           )}
-      //           {value !== CONTENT_LAYOUT_FULL_BLEED && (
-      //             <IconButton
-      //               size="small"
-      //               type="clear"
-      //               tooltip={"Stretch full bleed"}
-      //               onClick={() => setProp(CONTENT_LAYOUT_FULL_BLEED)}
-      //               className={S.toggleSizingIcon}
-      //             >
-      //               <IconComponent icon={WidthFullBleedIcon} />
-      //             </IconButton>
-      //           )}
-      //         </>
-      //       )}
-      //     </div>
-      //   )
-      // }
       dimOpts={{
         disabled: isDisabled || !isResizable,
         extraOptions,
@@ -517,7 +393,6 @@ const SizeControl = observer(function SizeRow(props: {
         allowedUnits: isRoot
           ? getLengthUnits("px").filter((x) => x !== "%")
           : getLengthUnits("px"),
-        // hideArrow: true,
       }}
       tokenType={TokenType.Spacing}
       vsh={vsh}
