@@ -14,9 +14,6 @@
   justify-content: center;
   border-radius: var(--token-YwPV7bN0RvD8);
 }
-.icon:hover .freeBox {
-  background: var(--token-rqQDmopteQdV);
-}
 .svg {
   display: flex;
   position: relative;
@@ -26,9 +23,6 @@
   top: auto;
   height: 1em;
   flex-shrink: 0;
-}
-.icon:hover .svg {
-  color: var(--token-D666zt2IZPL);
 }
 .svg__edNvh {
   display: flex;
