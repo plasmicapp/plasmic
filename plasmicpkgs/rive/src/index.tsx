@@ -68,54 +68,57 @@ const RivePlayer = React.forwardRef<RiveInputs, RiveComponentProps>(
 
     React.useImperativeHandle(
       ref,
-      () => ({
-        setBoolean(name: string, value: boolean, stateMachine?: string) {
-          setInput(StateMachineInputType.Boolean, name, value, stateMachine);
-        },
-        setNumber(name: string, value: number, stateMachine?: string) {
-          setInput(StateMachineInputType.Number, name, value, stateMachine);
-        },
-        fire(name: string, stateMachine?: string) {
-          setInput(StateMachineInputType.Trigger, name, null, stateMachine);
-        },
-        play(animationName: string) {
-          rive?.play(animationName);
-        },
-        pause(animationName: string) {
-          rive?.pause(animationName);
-        },
-      }),
+      () => {
+        function setInput(
+          inputType: StateMachineInputType,
+          inputName: string,
+          value: any = null,
+          stateMachine: string | null = null
+        ) {
+          const inputs = rive?.stateMachineInputs(
+            stateMachine || (stateMachines as string)
+          );
+          (inputs || []).forEach((i: any) => {
+            if (i.type !== inputType) {
+              console.warn(
+                `PlasmicRive: Input type mismatch: expected ${inputType}, got ${i.type}`
+              );
+            }
+            if (i.name === inputName) {
+              switch (inputType) {
+                case StateMachineInputType.Trigger:
+                  i.fire();
+                  break;
+                case StateMachineInputType.Number:
+                case StateMachineInputType.Boolean:
+                  i.value = value;
+                  break;
+              }
+            }
+          });
+        }
+    
+        return (
+          {
+            setBoolean(name: string, value: boolean, stateMachine?: string) {
+              setInput(StateMachineInputType.Boolean, name, value, stateMachine);
+            },
+            setNumber(name: string, value: number, stateMachine?: string) {
+              setInput(StateMachineInputType.Number, name, value, stateMachine);
+            },
+            fire(name: string, stateMachine?: string) {
+              setInput(StateMachineInputType.Trigger, name, null, stateMachine);
+            },
+            play(animationName: string) {
+              rive?.play(animationName);
+            },
+            pause(animationName: string) {
+              rive?.pause(animationName);
+            },
+          });
+      },
       [rive]
     );
-
-    function setInput(
-      inputType: StateMachineInputType,
-      inputName: string,
-      value: any = null,
-      stateMachine: string | null = null
-    ) {
-      const inputs = rive?.stateMachineInputs(
-        stateMachine || (stateMachines as string)
-      );
-      (inputs || []).forEach((i: any) => {
-        if (i.type !== inputType) {
-          console.warn(
-            `PlasmicRive: Input type mismatch: expected ${inputType}, got ${i.type}`
-          );
-        }
-        if (i.name === inputName) {
-          switch (inputType) {
-            case StateMachineInputType.Trigger:
-              i.fire();
-              break;
-            case StateMachineInputType.Number:
-            case StateMachineInputType.Boolean:
-              i.value = value;
-              break;
-          }
-        }
-      });
-    }
 
     // In Plasmic Studio, force a remount by changing the key when any relevant prop changes
     const studioKey = React.useMemo(
