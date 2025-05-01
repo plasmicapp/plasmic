@@ -1185,6 +1185,16 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
       return;
     }
 
+    // Close comment dialogs if either thread exists without interaction
+    const openedNewThread = targetVc.studioCtx.commentsCtx.openedNewThread();
+    const openedThread = targetVc.studioCtx.commentsCtx.openedThread();
+    if (
+      (openedNewThread && !openedNewThread.interacted) ||
+      (openedThread && !openedThread.interacted)
+    ) {
+      targetVc.studioCtx.commentsCtx.closeCommentDialogs();
+    }
+
     const focusedSelectables = targetVc.focusedSelectables();
     const focusable = targetVc.getViewOps().getFinalFocusable(closest).val;
 

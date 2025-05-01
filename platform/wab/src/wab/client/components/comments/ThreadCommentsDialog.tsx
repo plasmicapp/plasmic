@@ -7,6 +7,7 @@ import {
   canUpdateHistory,
   useStudioCtx,
 } from "@/wab/client/studio-ctx/StudioCtx";
+import { OnClickAway } from "@/wab/commons/components/OnClickAway";
 import { summarizeTpl } from "@/wab/shared/core/tpls";
 import { observer } from "mobx-react";
 import * as React from "react";
@@ -34,37 +35,53 @@ export const ThreadCommentsDialog = observer(function ThreadCommentsDialog(
     return null;
   }
 
+  const handleClickOutside = () => {
+    if (!openedThread?.interacted) {
+      commentsCtx.closeCommentDialogs();
+    }
+  };
+
+  const markThreadAsInteracted = () => {
+    openedThread.interacted = true;
+  };
+
   const canUpdateThreadHistory = canUpdateHistory(studioCtx, selectedThread);
 
   return (
-    <div className="CommentDialogContainer">
-      <PlasmicThreadCommentsDialog
-        commentsDialogHead={{
-          close: {
-            onClick: () => commentsCtx.closeCommentDialogs(),
-          },
-          commentsHeader: {
-            name: threadSubject.name || "Unnamed",
-            type: summarizeTpl(
-              threadSubject,
-              openedThread?.viewCtx
-                .effectiveCurrentVariantSetting(threadSubject)
-                .rsh()
-            ),
-          },
-          canUpdateHistory: canUpdateThreadHistory,
-          threadHistoryStatus: {
+    <OnClickAway onDone={handleClickOutside}>
+      <div
+        className="CommentDialogContainer"
+        onClick={markThreadAsInteracted}
+        onKeyDown={markThreadAsInteracted}
+      >
+        <PlasmicThreadCommentsDialog
+          commentsDialogHead={{
+            close: {
+              onClick: () => commentsCtx.closeCommentDialogs(),
+            },
+            commentsHeader: {
+              name: threadSubject.name || "Unnamed",
+              type: summarizeTpl(
+                threadSubject,
+                openedThread?.viewCtx
+                  .effectiveCurrentVariantSetting(threadSubject)
+                  .rsh()
+              ),
+            },
+            canUpdateHistory: canUpdateThreadHistory,
+            threadHistoryStatus: {
+              commentThread: selectedThread,
+            },
+          }}
+          threadComments={{
             commentThread: selectedThread,
-          },
-        }}
-        threadComments={{
-          commentThread: selectedThread,
-        }}
-        replyForm={{
-          render: () => <CommentPostForm threadId={selectedThread.id} />,
-        }}
-        {...props}
-      />
-    </div>
+          }}
+          replyForm={{
+            render: () => <CommentPostForm threadId={selectedThread.id} />,
+          }}
+          {...props}
+        />
+      </div>
+    </OnClickAway>
   );
 });

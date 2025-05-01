@@ -47,11 +47,13 @@ export const COMMENTS_DIALOG_RIGHT_ZOOM_PADDING = 320;
 export interface OpenedThread {
   threadId: CommentThreadId;
   viewCtx: ViewCtx;
+  interacted: boolean;
 }
 
 export interface OpenedNewThread {
   tpl: TplNamable;
   viewCtx: ViewCtx;
+  interacted: boolean;
 }
 
 export class CommentsCtx {
@@ -161,7 +163,7 @@ export class CommentsCtx {
   openCommentThreadDialog(threadId: CommentThreadId, viewCtx: ViewCtx) {
     runInAction(() => {
       this._openedNewThread.set(undefined);
-      this._openedThread.set({ viewCtx, threadId });
+      this._openedThread.set({ viewCtx, threadId, interacted: false });
     });
   }
 
@@ -197,7 +199,7 @@ export class CommentsCtx {
   openNewCommentDialog(viewCtx: ViewCtx, tpl: TplNamable) {
     runInAction(() => {
       this._openedThread.set(undefined);
-      this._openedNewThread.set({ viewCtx, tpl });
+      this._openedNewThread.set({ viewCtx, tpl, interacted: false });
     });
   }
 
