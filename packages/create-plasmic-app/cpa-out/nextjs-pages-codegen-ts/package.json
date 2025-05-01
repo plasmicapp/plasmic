@@ -9,9 +9,9 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@plasmicapp/cli": "^0.1.331",
-    "@plasmicapp/react-web": "^0.2.353",
-    "next": "14.2.15",
+    "@plasmicapp/cli": "^0.1.337",
+    "@plasmicapp/react-web": "^0.2.381",
+    "next": "14.2.20",
     "react": "^18",
     "react-dom": "^18"
   },
@@ -20,7 +20,7 @@
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "eslint": "^8",
-    "eslint-config-next": "14.2.15",
+    "eslint-config-next": "14.2.20",
     "typescript": "^5"
   }
 }

@@ -8,6 +8,4 @@ function Button_(props, ref) {
 
 const Button = React.forwardRef(Button_);
 
-export default Object.assign(Button, {
-  __plumeType: "button"
-});
+export default Object.assign(Button, { __plumeType: "button" });

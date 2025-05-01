@@ -26,6 +26,7 @@ const PlasmicGatsbyPage = ({ data, location }) => {
     <PlasmicRootProvider
       loader={initPlasmicLoaderWithRegistrations(plasmicOptions)}
       prefetchedData={plasmicComponents}
+      pageRoute={pageMeta.path}
       pageParams={pageMeta.params}
       pageQuery={Object.fromEntries(new URLSearchParams(location.search))}
       Head={Helmet}
