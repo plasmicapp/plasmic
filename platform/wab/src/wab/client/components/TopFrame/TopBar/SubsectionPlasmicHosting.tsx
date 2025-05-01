@@ -64,7 +64,8 @@ function SubsectionPlasmicHosting_(
 
   React.useEffect(() => {
     if (setup.domains.length > 0) {
-      setVisibleEnableBlock(true, true, false);
+      // This subsection is always blocked, because the user does not have a choice here - the app is always published due to ISR if they save a version
+      setVisibleEnableBlock(true, true, true);
     } else {
       setVisibleEnableBlock(visible, false, true);
     }

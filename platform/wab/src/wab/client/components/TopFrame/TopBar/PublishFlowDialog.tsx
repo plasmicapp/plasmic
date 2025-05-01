@@ -34,9 +34,9 @@ import {
   PlasmicPublishFlowDialog__VariantMembers,
 } from "@/wab/client/plasmic/plasmic_kit_continuous_deployment/PlasmicPublishFlowDialog";
 import { TutorialEventsType } from "@/wab/client/tours/tutorials/tutorials-events";
+import { ApiBranch, ApiProject } from "@/wab/shared/ApiSchema";
 import { spawn } from "@/wab/shared/common";
 import { DEVFLAGS } from "@/wab/shared/devflags";
-import { ApiBranch, ApiProject } from "@/wab/shared/ApiSchema";
 import { prodUrlForProject } from "@/wab/shared/project-urls";
 import type {
   ChangeLogEntry,
@@ -340,7 +340,7 @@ function PublishFlowDialog(props: PublishFlowDialogProps) {
             });
             subsectionMeta.plasmicHosting.setVisibleEnableBlock(
               true,
-              true,
+              false, // We don't have any domains set yet, so the action is disabled
               true
             );
           },
