@@ -1028,7 +1028,7 @@ export const FullRow = React.forwardRef(function FullRow(
           ? {
               display: "grid",
               gridTemplateColumns: "1fr ".repeat(props.children.length),
-              gridColumnGap: 24,
+              gridColumnGap: 28,
             }
           : {}),
         ...(props.hidden ? { visibility: "hidden" } : {}),
