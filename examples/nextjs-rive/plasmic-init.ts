@@ -1,5 +1,5 @@
 import { initPlasmicLoader } from "@plasmicapp/loader-nextjs";
-import { registerPlasmicRive } from "@plasmicpkgs/plasmic-rive";
+import { registerPlasmicRive } from "@plasmicpkgs/rive";
 
 export const PLASMIC = initPlasmicLoader({
 
