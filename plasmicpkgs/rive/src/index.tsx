@@ -26,38 +26,41 @@ interface RiveInputs {
 const RivePlayer = React.forwardRef<RiveInputs, RiveComponentProps>(
   ({ layout, className, onStateChange, stateMachines, ...props }, ref) => {
     const inEditor = usePlasmicCanvasContext();
-    const riveLayout = layout
-      ? new Layout({
-          fit: layout.fit,
-          alignment: layout.alignment,
-          minX: layout.minX,
-          minY: layout.minY,
-          maxX: layout.maxX,
-          maxY: layout.maxY,
-        })
-      : undefined;
 
     const riveParams = React.useMemo(
-      () => ({
-        src: props.src,
-        artboard: props.artboard,
-        animations: props.animations,
-        stateMachines,
-        layout: riveLayout,
-        autoplay: inEditor ? props.studioAutoplay : props.autoplay,
-        onStateChange: (event: any) => {
-          if (onStateChange) {
-            onStateChange(event);
-          }
-        },
-      }),
+      () => {
+        const riveLayout = layout
+        ? new Layout({
+            fit: layout.fit,
+            alignment: layout.alignment,
+            minX: layout.minX,
+            minY: layout.minY,
+            maxX: layout.maxX,
+            maxY: layout.maxY,
+          })
+        : undefined;
+  
+        return ({
+          src: props.src,
+          artboard: props.artboard,
+          animations: props.animations,
+          stateMachines,
+          layout: riveLayout,
+          autoplay: inEditor ? props.studioAutoplay : props.autoplay,
+          onStateChange: (event: any) => {
+            if (onStateChange) {
+              onStateChange(event);
+            }
+          },
+        });
+      },
       [
         props.src,
         props.artboard,
         props.animations,
         props.autoplay,
         props.studioAutoplay,
-        riveLayout,
+        layout,
         stateMachines,
         inEditor,
         onStateChange,
