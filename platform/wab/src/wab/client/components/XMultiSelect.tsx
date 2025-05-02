@@ -339,9 +339,7 @@ class _XMultiSelect<Item> extends React.Component<
                         })
                       )}{" "}
                       {this.props.showDropdownArrow ? (
-                        <div className="align-self-center">
-                          {CHEVRON_BOTTOM_ICON}
-                        </div>
+                        <div className="flex-center">{CHEVRON_BOTTOM_ICON}</div>
                       ) : undefined}
                     </div>
                   </div>

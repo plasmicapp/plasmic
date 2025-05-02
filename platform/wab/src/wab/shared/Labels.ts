@@ -5,8 +5,6 @@ export const ARENAS_CAP = "Custom arenas";
 export const ARENA_CAP = "Custom arena";
 export const ARENA_LOWER = ARENA_CAP.toLowerCase();
 
-export const A_FRAME_LOWER = "an artboard";
-
 export const VARIABLE_CAP = "State variable";
 export const VARIABLE_LOWER = VARIABLE_CAP.toLowerCase();
 
@@ -37,6 +35,12 @@ export const COMPONENT_PROP_LOWER = COMPONENT_PROP_CAP.toLowerCase();
 export const COMPONENT_PROP_PLURAL_CAP = "Props";
 export const COMPONENT_PROP_PLURAL_LOWER =
   COMPONENT_PROP_PLURAL_CAP.toLowerCase();
+
+/**
+ * Verb for resetting/clearing/removing a prop/style value,
+ * resulting in the prop/style reverting to its default value.
+ */
+export const RESET_CAP = "Remove";
 
 export const CONTAINER_LOWER = "box";
 export const STACK_LOWER = "stack";

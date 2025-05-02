@@ -508,7 +508,7 @@ const PropValueEditorWithMenu: React.FC<{
           </Menu>
         }
       >
-        <IconButton>
+        <IconButton data-test-id={`${attr}-menu-btn`}>
           <DotsVerticalIcon />
         </IconButton>
       </IFrameAwareDropdownMenu>

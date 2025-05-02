@@ -39,6 +39,7 @@ import {
 } from "@/wab/shared/core/exprs";
 import { isTplCodeComponent } from "@/wab/shared/core/tpls";
 import { computeDefinedIndicator } from "@/wab/shared/defined-indicator";
+import { RESET_CAP } from "@/wab/shared/Labels";
 import {
   CustomCode,
   ensureKnownCustomCode,
@@ -154,6 +155,18 @@ function VisibilitySection_(props: {
   const visibilityMenu = () => {
     const builder = new MenuBuilder();
     builder.genSection(undefined, (push) => {
+      if (targetVisibilityVs && hasVisibilitySetting(targetVisibilityVs)) {
+        push(
+          <Menu.Item
+            hidden={
+              !targetVisibilityVs || !hasVisibilitySetting(targetVisibilityVs)
+            }
+            onClick={handleUnsetVisibility}
+          >
+            {RESET_CAP} <strong>Visibility</strong> style
+          </Menu.Item>
+        );
+      }
       push(
         <Menu.Item
           key={"not-rendered"}
@@ -163,17 +176,6 @@ function VisibilitySection_(props: {
           {getVisibilityLabel(TplVisibility.NotRendered)}
         </Menu.Item>
       );
-      if (targetVisibilityVs && hasVisibilitySetting(targetVisibilityVs)) {
-        push(
-          <Menu.Item
-            children="Unset visibility"
-            hidden={
-              !targetVisibilityVs || !hasVisibilitySetting(targetVisibilityVs)
-            }
-            onClick={handleUnsetVisibility}
-          />
-        );
-      }
     });
     builder.genSection(undefined, (push) => {
       push(

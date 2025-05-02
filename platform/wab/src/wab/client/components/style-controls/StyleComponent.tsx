@@ -70,6 +70,7 @@ import {
   MIXIN_CAP,
   MIXIN_LOWER,
   MIXINS_CAP,
+  RESET_CAP,
   TOKEN_CAP,
   TOKENS_CAP,
   VARIANTS_CAP,
@@ -427,20 +428,21 @@ export function createStyleContextMenu(
 
   builder.genSection(undefined, (push) => {
     if (opts.displayStyleName) {
+      const label = getLabelForStyleName(opts.displayStyleName);
       push(
         <Menu.Item
           key={opts.displayStyleName}
           onClick={() => resetStyle(opts.displayStyleName!)}
         >
-          Remove <strong>{getLabelForStyleName(opts.displayStyleName)}</strong>{" "}
-          style
+          {RESET_CAP} <strong>{label}</strong> style
         </Menu.Item>
       );
     } else {
       for (const styleName of shownStyleNames) {
+        const label = getLabelForStyleName(styleName);
         push(
           <Menu.Item key={styleName} onClick={() => resetStyle(styleName)}>
-            Remove <strong>{getLabelForStyleName(styleName)}</strong> style
+            {RESET_CAP} <strong>{label}</strong> style
           </Menu.Item>
         );
       }
@@ -448,7 +450,7 @@ export function createStyleContextMenu(
 
     push(
       <Menu.Item key={"reset-all"} onClick={() => resetAllStyles()}>
-        Remove all styles
+        {RESET_CAP} all styles
       </Menu.Item>
     );
   });
@@ -800,7 +802,7 @@ function StylePanelSection_(
             });
           }}
         >
-          Remove all <strong>{title}</strong> styles
+          {RESET_CAP} all <strong>{title}</strong> styles
         </Menu.Item>
       );
       builder.genSub(

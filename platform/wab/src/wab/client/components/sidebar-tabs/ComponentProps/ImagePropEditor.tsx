@@ -5,6 +5,9 @@ import {
   ImgInfo,
 } from "@/wab/client/components/style-controls/ImageSelector";
 import { PlainLinkButton } from "@/wab/client/components/widgets";
+import { Icon } from "@/wab/client/components/widgets/Icon";
+import { IconButton } from "@/wab/client/components/widgets/IconButton";
+import TrashIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Trash";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { MaybeWrap } from "@/wab/commons/components/ReactUtil";
 import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
@@ -35,45 +38,52 @@ export const ImagePropEditor = observer(function ImagePropEditor(props: {
   const [pickingImage, setPickingImage] = React.useState(false);
 
   return (
-    <div className={"flex-fill flex-col overflow-hidden"}>
-      {!pickingImage && (
-        <ImgInfo
-          url={uri ?? ""}
-          extended
-          imagePreview={
+    <div className={"flex-fill flex-row justify-between overflow-hidden"}>
+      <ImgInfo
+        url={uri ?? ""}
+        extended
+        imagePreview={
+          <PlainLinkButton onClick={() => !readOnly && setPickingImage(true)}>
+            <ImagePreview
+              uri={uri ?? placeholderImgUrl()}
+              style={{
+                width: 48,
+                height: 32,
+              }}
+              className="mr-ch img-thumb-border"
+              size="cover"
+            />
+          </PlainLinkButton>
+        }
+        filename={
+          <MaybeWrap
+            cond={asset ? isEditable(studioCtx.site, asset) : false}
+            wrapper={(x) =>
+              readOnly ? (
+                <Tooltip title="Replace image...">
+                  {x as React.ReactElement}
+                </Tooltip>
+              ) : (
+                (x as React.ReactElement)
+              )
+            }
+          >
             <PlainLinkButton onClick={() => !readOnly && setPickingImage(true)}>
-              <ImagePreview
-                uri={uri ?? placeholderImgUrl()}
-                style={{
-                  width: 48,
-                  height: 32,
-                }}
-                className="mr-ch img-thumb-border"
-                size="cover"
-              />
+              {asset ? asset.name : !readOnly ? "Choose an image..." : ""}
             </PlainLinkButton>
-          }
-          filename={
-            <MaybeWrap
-              cond={asset ? isEditable(studioCtx.site, asset) : false}
-              wrapper={(x) =>
-                readOnly ? (
-                  <Tooltip title="Replace image...">
-                    {x as React.ReactElement}
-                  </Tooltip>
-                ) : (
-                  (x as React.ReactElement)
-                )
-              }
-            >
-              <PlainLinkButton
-                onClick={() => !readOnly && setPickingImage(true)}
-              >
-                {asset ? asset.name : !readOnly ? "Choose an image..." : ""}
-              </PlainLinkButton>
-            </MaybeWrap>
-          }
-        />
+          </MaybeWrap>
+        }
+      />
+      {value && (
+        <IconButton
+          className={"flex-start"}
+          hoverText={"Remove image"}
+          onClick={(ev) => {
+            onPicked(undefined);
+          }}
+        >
+          <Icon icon={TrashIcon} />
+        </IconButton>
       )}
       {pickingImage && (
         <SidebarModal

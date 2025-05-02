@@ -426,6 +426,73 @@ export function linkNewProp(propName?: string, defaultValue?: string) {
   cy.get(`button[data-test-id="prop-submit"]`).click();
 }
 
+/**
+ * Add a component prop to the current component.
+ * defaultValue and previewValue only work for typeable values like "string" or "number"
+ */
+export function createComponentProp(opts: {
+  propName: string;
+  propType: string;
+  defaultValue?: string;
+  previewValue?: string;
+}) {
+  cy.switchToComponentDataTab();
+  cy.get(`[data-test-id="add-prop-btn"]`).click();
+  cy.selectPropOption(`[data-test-id="prop-type"]`, { key: opts.propType });
+  cy.get(`[data-test-id="prop-name"]`).type(opts.propName);
+
+  if (opts.defaultValue) {
+    cy.get(`input[data-plasmic-prop="default-value"]`).type(opts.defaultValue);
+  }
+
+  if (opts.previewValue) {
+    cy.get(`input[data-plasmic-prop="preview-value"]`).type(opts.previewValue);
+  }
+
+  cy.get(`button[data-test-id="prop-submit"]`).click();
+  cy.wait(500);
+}
+
+export function openComponentPropModal(propName: string) {
+  cy.switchToComponentDataTab();
+  cy.contains(propName).rightclick();
+  cy.contains("Configure prop").click();
+}
+
+export function setComponentPropDefaultValue(
+  propName: string,
+  defaultValue: string | undefined
+) {
+  cy.openComponentPropModal(propName);
+  if (defaultValue !== undefined) {
+    cy.get(`input[data-plasmic-prop="default-value"]`).type(
+      "{selectall}{backspace}" + defaultValue
+    );
+  } else {
+    cy.get(`button[data-test-id="default-value-menu-btn"]`).click();
+    cy.contains("Unset").click();
+  }
+  cy.get(`button[data-test-id="prop-submit"]`).click();
+  cy.wait(500);
+}
+
+export function setComponentPropPreviewValue(
+  propName: string,
+  previewValue: string | undefined
+) {
+  cy.openComponentPropModal(propName);
+  if (previewValue !== undefined) {
+    cy.get(`input[data-plasmic-prop="preview-value"]`).type(
+      "{selectall}{backspace}" + previewValue
+    );
+  } else {
+    cy.get(`button[data-test-id="preview-value-menu-btn"]`).click();
+    cy.contains("Unset").click();
+  }
+  cy.get(`button[data-test-id="prop-submit"]`).click();
+  cy.wait(500);
+}
+
 export function createNewEventHandler(
   eventName: string,
   args: { name: string; type: string }[]
@@ -564,6 +631,10 @@ export class Framed {
 }
 
 export function justType(key: string) {
+  if (!key) {
+    return;
+  }
+
   cy.wait(500);
   if (PLATFORM !== "osx") {
     key = key.replace(/cmd/g, "ctrl");
@@ -2150,8 +2221,17 @@ export function repeatOnCustomCode(code: string) {
   cy.resetMonacoEditorToCode(code);
 }
 
-export function getPropEditorRow(name: string) {
-  return cy.get('[data-test-id="prop-editor-row-' + name + '"]');
+export function getPropEditorRow(prop: string) {
+  return cy.contains('[data-test-id^="prop-editor-row-"]', prop);
+}
+
+export function removePropValue(prop: string) {
+  cy.getPropEditorRow(prop).rightclick();
+  cy.contains(`Remove ${prop} prop`).click();
+}
+
+export function propAddItem(prop: string) {
+  cy.getPropEditorRow(prop).contains("Add item").click();
 }
 
 export function enterCustomCodeInDataPicker(code: string) {
@@ -2622,10 +2702,6 @@ export function showMoreInSidebarModal() {
   cy.get('#object-prop-editor-modal [data-test-id="show-extra-content"]')
     .last()
     .click();
-}
-
-export function addItemDataPlasmicProp(prop: string) {
-  cy.getPropEditorRow(prop).contains("Add item").click();
 }
 
 export const TUTORIAL_DB_TYPE = "northwind";

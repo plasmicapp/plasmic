@@ -1,5 +1,3 @@
-import { getDataPlasmicProp } from "../support/util";
-
 describe("hostless-sanity-io", function () {
   it("can put sanity fetcher with sanity field, fetch and show data", function () {
     // Create intercept to stub API calls
@@ -125,8 +123,7 @@ describe("hostless-sanity-io", function () {
             });
 
             // Unset document type
-            getDataPlasmicProp("docType").rightclick();
-            cy.contains("Unset Document type").click();
+            cy.removePropValue("Document type");
 
             // Put a GROQ query
             cy.clickDataPlasmicProp("groq");
