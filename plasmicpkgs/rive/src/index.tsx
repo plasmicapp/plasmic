@@ -199,6 +199,7 @@ export const riveMetaDescriptor: CodeComponentMeta<RiveComponentProps> = {
       displayName: "Layout",
       description:
         "(optional) Layout object to define how animations are displayed on the canvas.",
+        nameFunc: (item:any) => item ? `${item.fit} / ${item.alignment}` : undefined,
       advanced: true,
       fields: {
         fit: {
