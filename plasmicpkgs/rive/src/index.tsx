@@ -257,6 +257,10 @@ export const riveMetaDescriptor: CodeComponentMeta<RiveComponentProps> = {
       ],
     },
   },
+  defaultStyles: {  
+    minHeight: "60vh",  
+    width: "stretch"  
+  },  
   refActions: {
     setBoolean: {
       description: "Set the Rive Input",
