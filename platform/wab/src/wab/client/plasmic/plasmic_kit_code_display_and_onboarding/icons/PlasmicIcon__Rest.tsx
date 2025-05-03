@@ -1,15 +1,15 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
-import React from "react";
 import { classNames } from "@plasmicapp/react-web";
+import React from "react";
 
-export type Icon4IconProps = React.ComponentProps<"svg"> & {
+export type RestIconProps = React.ComponentProps<"svg"> & {
   title?: string;
 };
 
-export function Icon4Icon(props: Icon4IconProps) {
+export function RestIcon(props: RestIconProps) {
   const { className, style, title, ...restProps } = props;
   return (
     <svg
@@ -36,5 +36,5 @@ export function Icon4Icon(props: Icon4IconProps) {
   );
 }
 
-export default Icon4Icon;
+export default RestIcon;
 /* prettier-ignore-end */

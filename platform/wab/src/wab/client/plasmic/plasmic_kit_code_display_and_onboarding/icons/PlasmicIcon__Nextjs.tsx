@@ -1,15 +1,15 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
-import React from "react";
 import { classNames } from "@plasmicapp/react-web";
+import React from "react";
 
-export type Icon2IconProps = React.ComponentProps<"svg"> & {
+export type NextjsIconProps = React.ComponentProps<"svg"> & {
   title?: string;
 };
 
-export function Icon2Icon(props: Icon2IconProps) {
+export function NextjsIcon(props: NextjsIconProps) {
   const { className, style, title, ...restProps } = props;
   return (
     <svg
@@ -42,5 +42,5 @@ export function Icon2Icon(props: Icon2IconProps) {
   );
 }
 
-export default Icon2Icon;
+export default NextjsIcon;
 /* prettier-ignore-end */

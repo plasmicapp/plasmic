@@ -5555,18 +5555,18 @@
       "icons": [
         {
           "id": "XYB65iJ0Dd",
-          "name": "Icon2Icon",
-          "moduleFilePath": "wab/client/plasmic/plasmic_kit_code_display_and_onboarding/icons/PlasmicIcon__Icon2.tsx"
+          "name": "NextjsIcon",
+          "moduleFilePath": "wab/client/plasmic/plasmic_kit_code_display_and_onboarding/icons/PlasmicIcon__Nextjs.tsx"
         },
         {
           "id": "tVE40jlrgY",
-          "name": "Icon3Icon",
-          "moduleFilePath": "wab/client/plasmic/plasmic_kit_code_display_and_onboarding/icons/PlasmicIcon__Icon3.tsx"
+          "name": "GraphqlIcon",
+          "moduleFilePath": "wab/client/plasmic/plasmic_kit_code_display_and_onboarding/icons/PlasmicIcon__Graphql.tsx"
         },
         {
           "id": "0QyD0vO4WB",
-          "name": "Icon4Icon",
-          "moduleFilePath": "wab/client/plasmic/plasmic_kit_code_display_and_onboarding/icons/PlasmicIcon__Icon4.tsx"
+          "name": "RestIcon",
+          "moduleFilePath": "wab/client/plasmic/plasmic_kit_code_display_and_onboarding/icons/PlasmicIcon__Rest.tsx"
         },
         {
           "id": "iHJMrwqTt",
@@ -5576,68 +5576,55 @@
       ],
       "images": [
         {
-          "id": "4aenVcuh9S",
-          "name": "image",
-          "filePath": "wab/client/plasmic/plasmic_kit_code_display_and_onboarding/images/image.svg"
-        },
-        {
-          "id": "5p4uXQWPj5",
-          "name": "image 2",
-          "filePath": "wab/client/plasmic/plasmic_kit_code_display_and_onboarding/images/image2.svg"
-        },
-        {
           "id": "HFAyqV1qc2",
-          "name": "image 3",
-          "filePath": "wab/client/plasmic/plasmic_kit_code_display_and_onboarding/images/image3.svg"
-        },
-        {
-          "id": "NQxLvC-N5t",
-          "name": "image 4",
-          "filePath": "wab/client/plasmic/plasmic_kit_code_display_and_onboarding/images/image4.svg"
+          "name": "gatsby",
+          "filePath": "wab/client/plasmic/plasmic_kit_code_display_and_onboarding/images/gatsby.svg"
         },
         {
           "id": "Sk5qCRrjj2",
-          "name": "image 5",
-          "filePath": "wab/client/plasmic/plasmic_kit_code_display_and_onboarding/images/image5.svg"
+          "name": "php",
+          "filePath": "wab/client/plasmic/plasmic_kit_code_display_and_onboarding/images/php.svg"
         },
         {
           "id": "GLPcV-_90n",
-          "name": "image 6",
-          "filePath": "wab/client/plasmic/plasmic_kit_code_display_and_onboarding/images/image6.svg"
-        },
-        {
-          "id": "X3GRCRbae1",
-          "name": "image 7",
-          "filePath": "wab/client/plasmic/plasmic_kit_code_display_and_onboarding/images/image7.svg"
+          "name": "javascript",
+          "filePath": "wab/client/plasmic/plasmic_kit_code_display_and_onboarding/images/javascript.svg"
         },
         {
           "id": "gyW-GjPYh",
-          "name": "image 8",
-          "filePath": "wab/client/plasmic/plasmic_kit_code_display_and_onboarding/images/image8.png"
+          "name": "hydrogen",
+          "filePath": "wab/client/plasmic/plasmic_kit_code_display_and_onboarding/images/hydrogen.png"
         },
         {
           "id": "pu_IajWxD",
-          "name": "image 9",
-          "filePath": "wab/client/plasmic/plasmic_kit_code_display_and_onboarding/images/image9.png"
+          "name": "remix",
+          "filePath": "wab/client/plasmic/plasmic_kit_code_display_and_onboarding/images/remix.png"
+        },
+        {
+          "id": "sERoZ_FuGIf4",
+          "name": "tanstack",
+          "filePath": "wab/client/plasmic/plasmic_kit_code_display_and_onboarding/images/tanstack.png"
         }
       ],
       "codeComponents": [
         {
           "id": "oO7ExdUoV3",
           "name": "PlasmicHead",
+          "displayName": "hostless-plasmic-head",
           "componentImportPath": "@plasmicapp/react-web"
         },
         {
           "id": "wJ_Zj0doAI",
           "name": "Fetcher",
-          "componentImportPath": "@plasmicapp/data-sources"
+          "displayName": "plasmic-data-source-fetcher",
+          "componentImportPath": "@plasmicapp/react-web/lib/data-sources"
         }
       ],
       "projectApiToken": "3fXpGeJRKUtki3BjZYejcOf4aelbtrgQusidUlvDAYx430OSNcXCjoowZYTxxlghNlfx4TelnEJxHKzJNg",
       "indirect": false,
       "globalContextsFilePath": "",
-      "jsBundleThemes": [],
-      "splitsProviderFilePath": ""
+      "splitsProviderFilePath": "",
+      "customFunctions": []
     },
     {
       "projectId": "sDniSX4oPUZFyk2sXXb3nh",
@@ -10549,7 +10536,8 @@
         }
       ],
       "splitsProviderFilePath": "",
-      "customFunctions": []
+      "customFunctions": [],
+      "jsBundleThemes": []
     },
     {
       "projectId": "frhoorZk3bxNXU73uUyvHm",
@@ -11622,12 +11610,6 @@
         "name": "Screen",
         "projectId": "4nEqjj19Sbp3EVnBkgQMP1",
         "contextFilePath": "wab/client/plasmic/plasmic_kit_data_expressions/PlasmicGlobalVariant__Screen.tsx"
-      },
-      {
-        "id": "Ta6D_8i6B7dH",
-        "name": "Screen",
-        "projectId": "pTmuho7nuNtDcvZAf2kJgx",
-        "contextFilePath": "wab/client/plasmic/plasmic_kit_code_display_and_onboarding/PlasmicGlobalVariant__Screen.tsx"
       },
       {
         "id": "BW9kEyJ7_p",

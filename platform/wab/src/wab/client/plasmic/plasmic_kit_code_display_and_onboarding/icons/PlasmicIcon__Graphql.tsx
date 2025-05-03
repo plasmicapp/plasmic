@@ -1,15 +1,15 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
-import React from "react";
 import { classNames } from "@plasmicapp/react-web";
+import React from "react";
 
-export type Icon3IconProps = React.ComponentProps<"svg"> & {
+export type GraphqlIconProps = React.ComponentProps<"svg"> & {
   title?: string;
 };
 
-export function Icon3Icon(props: Icon3IconProps) {
+export function GraphqlIcon(props: GraphqlIconProps) {
   const { className, style, title, ...restProps } = props;
   return (
     <svg
@@ -70,5 +70,5 @@ export function Icon3Icon(props: Icon3IconProps) {
   );
 }
 
-export default Icon3Icon;
+export default GraphqlIcon;
 /* prettier-ignore-end */
