@@ -2,11 +2,11 @@ import { CmsTable } from "@/wab/server/entities/Entities";
 import { BadRequestError } from "@/wab/shared/ApiErrors/errors";
 import {
   CmsFieldMeta,
+  CmsMetaType,
   CmsTableSchema,
   CmsTypeName,
   FilterClause,
   FilterCond,
-  CmsMetaType,
 } from "@/wab/shared/ApiSchema";
 import { toVarName } from "@/wab/shared/codegen/util";
 import { Dict } from "@/wab/shared/collections";
@@ -256,8 +256,14 @@ export function makeSqlCondition(
         } else {
           ands.push(filterCond);
         }
-      } else if (key === "_id") {
-        ands.push(`id ${buildFilterCond(key, clause[key])}`);
+      } else if (
+        key === "_id" ||
+        key === "_createdAt" ||
+        key === "_updatedAt"
+      ) {
+        ands.push(
+          `"${key.replace("_", "")}" ${buildFilterCond(key, clause[key])}`
+        );
       } else if (key === "$and") {
         const sub = clause[key];
         assert(Array.isArray(sub), "All subclauses should be arrays");
