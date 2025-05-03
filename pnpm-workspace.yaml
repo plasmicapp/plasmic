@@ -55,6 +55,7 @@ packages:
   - plasmicpkgs/plasmic-yotpo
   - plasmicpkgs/radix-ui
   - plasmicpkgs/react-aria
+  - plasmicpkgs/rive
   - plasmicpkgs/react-audio-player
   - plasmicpkgs/react-awesome-reveal
   - plasmicpkgs/react-chartjs-2
