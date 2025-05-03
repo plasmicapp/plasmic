@@ -447,11 +447,6 @@
   dependencies:
     socket.io-client "^4.1.2"
 
-"@plasmicpkgs/plasmic-rive@file:.yalc/@plasmicpkgs/plasmic-rive":
-  version "1.0.0"
-  dependencies:
-    "@rive-app/react-canvas" "^4.18.8"
-
 "@rive-app/canvas@2.27.1":
   version "2.27.1"
   resolved "https://registry.yarnpkg.com/@rive-app/canvas/-/canvas-2.27.1.tgz#ca0607cc852bdbe8748a9311bbbc21225cd5e97d"

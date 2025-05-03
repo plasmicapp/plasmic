@@ -1,14 +1,14 @@
+import { usePlasmicCanvasContext } from "@plasmicapp/host";
 import registerComponent, {
   CodeComponentMeta,
 } from "@plasmicapp/host/registerComponent";
-import React from "react";
 import {
+  Layout,
   RiveProps,
   StateMachineInputType,
   useRive,
-  Layout,
 } from "@rive-app/react-canvas";
-import { usePlasmicCanvasContext } from "@plasmicapp/host";
+import React from "react";
 
 type RiveComponentProps = RiveProps & {
   className: string;
@@ -27,9 +27,8 @@ const RivePlayer = React.forwardRef<RiveInputs, RiveComponentProps>(
   ({ layout, className, onStateChange, stateMachines, ...props }, ref) => {
     const inEditor = usePlasmicCanvasContext();
 
-    const riveParams = React.useMemo(
-      () => {
-        const riveLayout = layout
+    const riveParams = React.useMemo(() => {
+      const riveLayout = layout
         ? new Layout({
             fit: layout.fit,
             alignment: layout.alignment,
@@ -39,33 +38,31 @@ const RivePlayer = React.forwardRef<RiveInputs, RiveComponentProps>(
             maxY: layout.maxY,
           })
         : undefined;
-  
-        return ({
-          src: props.src,
-          artboard: props.artboard,
-          animations: props.animations,
-          stateMachines,
-          layout: riveLayout,
-          autoplay: inEditor ? props.studioAutoplay : props.autoplay,
-          onStateChange: (event: any) => {
-            if (onStateChange) {
-              onStateChange(event);
-            }
-          },
-        });
-      },
-      [
-        props.src,
-        props.artboard,
-        props.animations,
-        props.autoplay,
-        props.studioAutoplay,
-        layout,
+
+      return {
+        src: props.src,
+        artboard: props.artboard,
+        animations: props.animations,
         stateMachines,
-        inEditor,
-        onStateChange,
-      ]
-    );
+        layout: riveLayout,
+        autoplay: inEditor ? props.studioAutoplay : props.autoplay,
+        onStateChange: (event: any) => {
+          if (onStateChange) {
+            onStateChange(event);
+          }
+        },
+      };
+    }, [
+      props.src,
+      props.artboard,
+      props.animations,
+      props.autoplay,
+      props.studioAutoplay,
+      layout,
+      stateMachines,
+      inEditor,
+      onStateChange,
+    ]);
 
     const { rive, RiveComponent } = useRive(riveParams);
 
@@ -100,25 +97,24 @@ const RivePlayer = React.forwardRef<RiveInputs, RiveComponentProps>(
             }
           });
         }
-    
-        return (
-          {
-            setBoolean(name: string, value: boolean, stateMachine?: string) {
-              setInput(StateMachineInputType.Boolean, name, value, stateMachine);
-            },
-            setNumber(name: string, value: number, stateMachine?: string) {
-              setInput(StateMachineInputType.Number, name, value, stateMachine);
-            },
-            fire(name: string, stateMachine?: string) {
-              setInput(StateMachineInputType.Trigger, name, null, stateMachine);
-            },
-            play(animationName: string) {
-              rive?.play(animationName);
-            },
-            pause(animationName: string) {
-              rive?.pause(animationName);
-            },
-          });
+
+        return {
+          setBoolean(name: string, value: boolean, stateMachine?: string) {
+            setInput(StateMachineInputType.Boolean, name, value, stateMachine);
+          },
+          setNumber(name: string, value: number, stateMachine?: string) {
+            setInput(StateMachineInputType.Number, name, value, stateMachine);
+          },
+          fire(name: string, stateMachine?: string) {
+            setInput(StateMachineInputType.Trigger, name, null, stateMachine);
+          },
+          play(animationName: string) {
+            rive?.play(animationName);
+          },
+          pause(animationName: string) {
+            rive?.pause(animationName);
+          },
+        };
       },
       [rive]
     );
@@ -157,8 +153,8 @@ const RivePlayer = React.forwardRef<RiveInputs, RiveComponentProps>(
 export const riveMetaDescriptor: CodeComponentMeta<RiveComponentProps> = {
   name: "rive",
   displayName: "Rive",
-  importName: "Rive",
-  importPath: "@plasmicpkgs/plasmic-rive",
+  importName: "RivePlayer",
+  importPath: "@plasmicpkgs/rive",
   description: "Rive animation component",
 
   props: {
@@ -199,7 +195,8 @@ export const riveMetaDescriptor: CodeComponentMeta<RiveComponentProps> = {
       displayName: "Layout",
       description:
         "(optional) Layout object to define how animations are displayed on the canvas.",
-        nameFunc: (item:any) => item ? `${item.fit} / ${item.alignment}` : undefined,
+      nameFunc: (item: any) =>
+        item ? `${item.fit} / ${item.alignment}` : undefined,
       advanced: true,
       fields: {
         fit: {
@@ -257,10 +254,10 @@ export const riveMetaDescriptor: CodeComponentMeta<RiveComponentProps> = {
       ],
     },
   },
-  defaultStyles: {  
-    minHeight: "60vh",  
-    width: "stretch"  
-  },  
+  defaultStyles: {
+    minHeight: "60vh",
+    width: "stretch",
+  },
   refActions: {
     setBoolean: {
       description: "Set the Rive Input",
