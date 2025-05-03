@@ -1,46 +1,9 @@
 {
   "name": "@plasmicapp/loader-svelte",
-  "version": "0.0.364",
-  "main": "dist/index.js",
-  "module": "dist/index.mjs",
-  "svelte": "src/index.js",
-  "scripts": {
-    "build": "NODE_ENV=production rollup -c",
-    "dev": "rollup -c",
-    "prepublishOnly": "npm run build"
-  },
-  "files": [
-    "dist",
-    "src"
-  ],
-  "keywords": [
-    "svelte"
-  ],
-  "license": "MIT",
-  "peerDependencies": {
-    "svelte": "^3.42.4"
-  },
-  "devDependencies": {
-    "@rollup/plugin-commonjs": "^20.0.0",
-    "@rollup/plugin-inject": "^4.0.2",
-    "@rollup/plugin-node-resolve": "^13.0.4",
-    "@rollup/plugin-replace": "^3.0.0",
-    "@rollup/plugin-typescript": "^8.2.5",
-    "@tsconfig/svelte": "^2.0.1",
-    "rollup": "^2.56.3",
-    "rollup-plugin-analyzer": "^4.0.0",
-    "rollup-plugin-bundle-size": "^1.0.3",
-    "rollup-plugin-inject": "^3.0.2",
-    "rollup-plugin-polyfill-node": "^0.7.0",
-    "rollup-plugin-svelte": "^7.1.0",
-    "rollup-plugin-terser": "^7.0.2",
-    "svelte": "^3.42.4",
-    "svelte-check": "^2.2.5",
-    "svelte-preprocess": "^4.9.1"
-  },
-  "dependencies": {
-    "@plasmicapp/loader-react": "1.0.384",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+  "description": "(DEPRECATED) Plasmic loader SDK for Svelte",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/plasmicapp/plasmic.git",
+    "directory": "packages/loader-svelte"
   }
 }

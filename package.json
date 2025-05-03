@@ -93,7 +93,6 @@
     "packages/loader-nextjs",
     "packages/loader-react",
     "packages/loader-splits",
-    "packages/loader-svelte",
     "packages/nextjs-app-router",
     "packages/prepass",
     "packages/query",
