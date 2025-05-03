@@ -1,8 +1,3 @@
-Steps to publish a new version.
+# @plasmicapp/loader-angular
 
-- Bump version in src/package.json
-
-- Run the following commands:
-  yarn build
-  cd dist
-  npm publish --access public
+This package has been deprecated as we focus our efforts on React.

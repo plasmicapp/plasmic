@@ -6,7 +6,7 @@ yarn install
 
 # Some packages require running `yarn install` on their directory to
 # build successfully.
-for package in packages/loader-angular packages/react-web-runtime platform/host-test; do
+for package in packages/react-web-runtime platform/host-test; do
   pushd $package
   yarn install
   popd
