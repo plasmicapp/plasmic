@@ -11,6 +11,7 @@ interface SwitchProps extends DefaultSwitchProps {
   disabledTooltip?: React.ReactNode;
   tooltip?: React.ReactNode;
   "data-test-id"?: string;
+  helperText?: string;
 }
 
 function Switch_({ className, ...props }: SwitchProps, ref: SwitchRef) {
@@ -37,6 +38,8 @@ function Switch_({ className, ...props }: SwitchProps, ref: SwitchRef) {
       )}
     >
       {content}
+      <pre> </pre>
+      {props.helperText}
     </div>
   );
 }

@@ -1,3 +1,8 @@
+import {
+  UniqueViolationError,
+  isUniqueViolationError,
+} from "@/wab/shared/ApiErrors/cms-errors";
+
 export abstract class ApiError extends Error {
   name = "ApiError";
   statusCode = 400;
@@ -125,6 +130,9 @@ export function transformErrors(err: Error): Error {
   const transformedErrType = errorNameRegistry[err.name];
   if (transformedErrType) {
     err = new transformedErrType(err.message);
+  }
+  if (isUniqueViolationError(err)) {
+    err = new UniqueViolationError(err.violations);
   }
   return err;
 }
