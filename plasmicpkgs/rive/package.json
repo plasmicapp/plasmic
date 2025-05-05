@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/rive",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Plasmic registration call for rive animation",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
