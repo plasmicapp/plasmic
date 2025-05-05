@@ -33,7 +33,7 @@ const argv = yargs
   )
   .option("platform", {
     describe: "Target platform",
-    choices: ["", "nextjs", "gatsby", "react"],
+    choices: ["", "nextjs", "gatsby", "react", "tanstack"],
   })
   .option("scheme", {
     describe: "Plasmic integration scheme",
@@ -172,6 +172,11 @@ async function run(): Promise<void> {
       {
         name: "Gatsby",
         value: "gatsby",
+      },
+      {
+        name: "TanStack Start",
+        short: "TanStack Start",
+        value: "tanstack",
       },
       {
         name: "React (Vite)",

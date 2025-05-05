@@ -24,7 +24,7 @@ import { DEFAULT_SPLITS_PROVIDER_NAME } from "./sync-splits-provider";
 
 export interface ExportArgs extends CommonArgs {
   projects: readonly string[];
-  platform: "" | "react" | "nextjs" | "gatsby";
+  platform: "" | "react" | "nextjs" | "gatsby" | "tanstack";
   codeLang: "" | "ts" | "js";
   styleScheme: "" | "css" | "css-modules";
   imagesScheme: "" | "inlined" | "files";

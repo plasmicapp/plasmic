@@ -57,6 +57,13 @@ export const PlasmicLinkInternal = React.forwardRef(
       });
     }
 
+    if (props.platform === "tanstack" && isInternalHref(props.href)) {
+      return React.createElement(props.component, {
+        ...omit(props, "component", "platform", "href"),
+        ...{ to: props.href, ref },
+      });
+    }
+
     return <a {...omit(props, "component", "platform")} ref={ref} />;
   }
 );

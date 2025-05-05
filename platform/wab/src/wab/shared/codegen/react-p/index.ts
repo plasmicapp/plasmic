@@ -77,6 +77,7 @@ import {
   makePageMetadataOutput,
   renderPageHead,
   serializePageMetadata,
+  serializeTanStackHead,
 } from "@/wab/shared/codegen/react-p/page-metadata";
 import {
   getExternalParams,
@@ -868,6 +869,17 @@ const __wrapUserPromise = globalThis.__PlasmicWrapUserPromise ?? (async (loc, pr
         : ""
     }
 
+    ${
+      ctx.exportOpts.platform === "tanstack"
+        ? `function useTanStackRouter() {
+          try {
+            return useRouter();
+          } catch {}
+          return undefined;
+        }`
+        : ""
+    }
+
     ${renderFunc}
 
     ${plumePlugin ? plumePlugin.genHook(ctx) : ""}
@@ -875,6 +887,8 @@ const __wrapUserPromise = globalThis.__PlasmicWrapUserPromise ?? (async (loc, pr
     ${descendantsLookup}
 
     ${nodeComponents}
+
+    ${opts.platform === "tanstack" ? serializeTanStackHead(ctx, component) : ""}
 
     export default ${componentName};
     /* prettier-ignore-end */
@@ -1067,7 +1081,8 @@ export function nodeJsName(component: Component, node: TplNode) {
 function renderFullViewportStyle(ctx: SerializerBaseContext): string {
   if (
     ctx.exportOpts.platform === "gatsby" ||
-    ctx.exportOpts.platform === "nextjs"
+    ctx.exportOpts.platform === "nextjs" ||
+    ctx.exportOpts.platform === "tanstack"
   ) {
     return `
       <style>{\`
@@ -1230,6 +1245,11 @@ export function serializeComponentLocalVars(ctx: SerializerBaseContext) {
     ${
       ctx.exportOpts.platform === "nextjs"
         ? `const __nextRouter = useNextRouter();`
+        : ""
+    }
+    ${
+      ctx.exportOpts.platform === "tanstack"
+        ? `const __tanstackRouter = useTanStackRouter();`
         : ""
     }
     const $ctx = useDataEnv?.() || {};
@@ -1610,7 +1630,7 @@ function serializeTplTag(ctx: SerializerBaseContext, node: TplTag) {
 
 export function makeComponentAliases(
   referencedComps: Component[],
-  platform: "react" | "nextjs" | "gatsby"
+  platform: "react" | "nextjs" | "gatsby" | "tanstack"
 ) {
   const aliases = new Map<Component, string>();
   const usedNames = new Set<string>(getPlatformImportComponents(platform));
@@ -2391,7 +2411,10 @@ export function serializeDefaultExternalProps(
     return plugin.genDefaultExternalProps(ctx, opts);
   }
 
-  if (isPageComponent(ctx.component) && ctx.exportOpts.platform === "nextjs") {
+  if (
+    isPageComponent(ctx.component) &&
+    ["nextjs", "tanstack"].includes(ctx.exportOpts.platform)
+  ) {
     return `
       export interface ${makeDefaultExternalPropsName(component)} {
         ${ctx.useRSC ? serializeServerQueryEntryType(component) ?? "" : ""}
@@ -2450,16 +2473,19 @@ function serializePageAwareSkeletonWrapperTs(
 
   const rscNodeComponentName = makePlasmicServerRscComponentName(component);
 
-  const plasmicModuleImports = [
-    ctx.useRSC ? rscNodeComponentName : nodeComponentName,
-  ];
+  const nodeComponentNameImport = ctx.useRSC
+    ? rscNodeComponentName
+    : nodeComponentName;
+
+  const plasmicModuleImports = [nodeComponentNameImport];
 
   let content = ctx.useRSC
       ? `<${rscNodeComponentName} params={params} searchParams={searchParams} />`
       : `<${nodeComponentName} />`,
     getStaticProps = "",
     componentPropsDecl = "",
-    componentPropsSig = "";
+    componentPropsSig = "",
+    tanstackRouteInfo = "";
   if (opts.platform === "nextjs") {
     if (isNextjsAppDir) {
       componentPropsSig = `{ params, searchParams }: {
@@ -2488,6 +2514,28 @@ searchParams?: Promise<Record<string, string | string[] | undefined>>;
     >
       ${content}
     </PageParamsProvider__>`;
+  } else if (opts.platform === "tanstack") {
+    const headOptionsImport = `${nodeComponentNameImport}__HeadOptions`;
+    plasmicModuleImports.push(headOptionsImport);
+
+    const componentPathStr = component.pageMeta?.path || "/";
+    tanstackRouteInfo = `export const Route = createFileRoute("${componentPathStr}")({
+      head: () => ({
+        meta: [...${headOptionsImport}.meta],
+        links: [
+          ...${headOptionsImport}.links,
+        ]
+      }),
+      component: ${componentName},
+    });`;
+
+    content = `<PageParamsProvider__
+        route={Route.fullPath}
+        params={Route.useParams()}
+        query={Route.useSearch()}
+      >
+        <${nodeComponentName} />
+      </PageParamsProvider__>`;
   }
 
   let globalContextsImport = "";
@@ -2512,6 +2560,9 @@ searchParams?: Promise<Record<string, string | string[] | undefined>>;
         : opts.platform === "gatsby"
         ? `// Gatsby "wrapRootElement" function
            // (https://www.gatsbyjs.com/docs/reference/config-files/gatsby-ssr#wrapRootElement).`
+        : opts.platform === "tanstack"
+        ? `// TanStack Router __root Route
+           // (https://tanstack.com/router/latest/docs/framework/react/guide/tanstack-start#the-root-of-your-application).`
         : `// a component that wraps all page components of your application.`
     }`;
   }
@@ -2546,6 +2597,8 @@ searchParams?: Promise<Record<string, string | string[] | undefined>>;
         : isPageComponent(component) && opts.platform === "gatsby"
         ? `import type { PageProps } from "gatsby";
         export { Head };`
+        : isPageComponent(component) && opts.platform === "tanstack"
+        ? `import { createFileRoute } from "@tanstack/react-router";`
         : ""
     }
 
@@ -2554,6 +2607,8 @@ searchParams?: Promise<Record<string, string | string[] | undefined>>;
     ${getStaticProps}
 
     ${componentPropsDecl}
+
+    ${tanstackRouteInfo}
 
     ${
       isNextjsAppDir && isPageComponent(component) ? "async " : ""

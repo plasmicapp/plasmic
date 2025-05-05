@@ -2365,7 +2365,9 @@ export async function genCode(req: Request, res: Response) {
     );
   }
   const platform =
-    req.body.platform === "nextjs" || req.body.platform === "gatsby"
+    req.body.platform === "nextjs" ||
+    req.body.platform === "gatsby" ||
+    req.body.platform === "tanstack"
       ? req.body.platform
       : "react";
   const platformOptions = req.body.platformOptions || {};

@@ -1237,6 +1237,8 @@ interactionEffect?: Flex__<"div">;
     
 
     
+
+    
     function PlasmicButton__RenderFunc(
       props: {
         variants: PlasmicButton__VariantsArgs,
@@ -1265,6 +1267,7 @@ interactionEffect?: Flex__<"div">;
       ...variants,
     };
 
+    
     
     const $ctx = useDataEnv?.() || {};
     const refsRef = React.useRef({});
@@ -2376,6 +2379,8 @@ interactionEffect: makeNodeComponent("interactionEffect"),
     );
   
 
+    
+
     export default PlasmicButton;
     /* prettier-ignore-end */
   
@@ -2607,6 +2612,8 @@ text?: Flex__<"div">;
     
 
     
+
+    
     function PlasmicHelloWorld__RenderFunc(
       props: {
         variants: PlasmicHelloWorld__VariantsArgs,
@@ -2635,6 +2642,7 @@ text?: Flex__<"div">;
       ...variants,
     };
 
+    
     
     const $ctx = useDataEnv?.() || {};
     const refsRef = React.useRef({});
@@ -2761,6 +2769,8 @@ text: "div"
       }
     );
   
+
+    
 
     export default PlasmicHelloWorld;
     /* prettier-ignore-end */
@@ -3596,6 +3606,8 @@ scrollableContent?: Flex__<"div">;
     
 
     
+
+    
     function PlasmicModalDialog__RenderFunc(
       props: {
         variants: PlasmicModalDialog__VariantsArgs,
@@ -3626,6 +3638,7 @@ scrollableContent?: Flex__<"div">;
       ...variants,
     };
 
+    
     
     const $ctx = useDataEnv?.() || {};
     const refsRef = React.useRef({});
@@ -3995,6 +4008,8 @@ scrollableContent: makeNodeComponent("scrollableContent"),
     );
   
 
+    
+
     export default PlasmicModalDialog;
     /* prettier-ignore-end */
   
@@ -4243,6 +4258,8 @@ freeBox?: Flex__<"div">;
     
 
     
+
+    
     function PlasmicMyOverlayArrow__RenderFunc(
       props: {
         variants: PlasmicMyOverlayArrow__VariantsArgs,
@@ -4271,6 +4288,7 @@ freeBox?: Flex__<"div">;
       ...variants,
     };
 
+    
     
     const $ctx = useDataEnv?.() || {};
     const refsRef = React.useRef({});
@@ -4410,6 +4428,8 @@ freeBox: "div"
       }
     );
   
+
+    
 
     export default PlasmicMyOverlayArrow;
     /* prettier-ignore-end */
@@ -4905,6 +4925,8 @@ helloWorld?: Flex__<typeof HelloWorld>;
     
 
     
+
+    
     function PlasmicNewPage__RenderFunc(
       props: {
         variants: PlasmicNewPage__VariantsArgs,
@@ -4933,6 +4955,7 @@ helloWorld?: Flex__<typeof HelloWorld>;
       ...variants,
     };
 
+    
     
     const $ctx = useDataEnv?.() || {};
     const refsRef = React.useRef({});
@@ -5215,6 +5238,8 @@ helloWorld: makeNodeComponent("helloWorld"),
       }
     );
   
+
+    
 
     export default PlasmicNewPage;
     /* prettier-ignore-end */
@@ -5544,6 +5569,8 @@ svg?: Flex__<"svg">;
     
 
     
+
+    
     function PlasmicPopover__RenderFunc(
       props: {
         variants: PlasmicPopover__VariantsArgs,
@@ -5574,6 +5601,7 @@ svg?: Flex__<"svg">;
       ...variants,
     };
 
+    
     
     const $ctx = useDataEnv?.() || {};
     const refsRef = React.useRef({});
@@ -5784,6 +5812,8 @@ svg: "svg"
       }
     );
   
+
+    
 
     export default PlasmicPopover;
     /* prettier-ignore-end */
@@ -6129,6 +6159,8 @@ popover?: Flex__<typeof Popover>;
     
 
     
+
+    
     function PlasmicPopoverDialog__RenderFunc(
       props: {
         variants: PlasmicPopoverDialog__VariantsArgs,
@@ -6159,6 +6191,7 @@ popover?: Flex__<typeof Popover>;
       ...variants,
     };
 
+    
     
     const $ctx = useDataEnv?.() || {};
     const refsRef = React.useRef({});
@@ -6358,6 +6391,8 @@ popover: typeof Popover
       }
     );
   
+
+    
 
     export default PlasmicPopoverDialog;
     /* prettier-ignore-end */
@@ -6766,6 +6801,8 @@ svg?: Flex__<"svg">;
     
 
     
+
+    
     function PlasmicTooltip__RenderFunc(
       props: {
         variants: PlasmicTooltip__VariantsArgs,
@@ -6797,6 +6834,7 @@ svg?: Flex__<"svg">;
       ...variants,
     };
 
+    
     
     const $ctx = useDataEnv?.() || {};
     const refsRef = React.useRef({});
@@ -7042,6 +7080,8 @@ svg: "svg"
       }
     );
   
+
+    
 
     export default PlasmicTooltip;
     /* prettier-ignore-end */

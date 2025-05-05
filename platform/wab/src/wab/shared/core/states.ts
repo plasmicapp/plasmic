@@ -757,7 +757,7 @@ type DistributedKeyOf<T> = T extends any ? keyof T : never;
 
 interface SiteCtx {
   projectId: string;
-  platform: "nextjs" | "gatsby" | "react";
+  platform: "nextjs" | "gatsby" | "react" | "tanstack";
   projectFlags: DevFlagsType;
   inStudio: boolean;
 }

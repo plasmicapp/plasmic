@@ -528,6 +528,16 @@ function makeImportPath(
   if (stripExt) {
     result = stripExtension(result);
   }
+
+  if (
+    result.endsWith(".css") &&
+    context.config.platform === "tanstack" &&
+    context.config.style.scheme === "css"
+  ) {
+    // In Tanstack we import css as url such as ".css?url" at the moment
+    result = `${result}?url`;
+  }
+
   return result;
 }
 

@@ -73,7 +73,7 @@ export function emptyChecksumBundle(): ChecksumBundle {
   };
 }
 
-export type ExportPlatform = "react" | "nextjs" | "gatsby";
+export type ExportPlatform = "react" | "nextjs" | "gatsby" | "tanstack";
 
 export type ExportPlatformOptions = {
   nextjs?: {

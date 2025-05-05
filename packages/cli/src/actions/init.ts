@@ -20,6 +20,7 @@ import {
   detectGatsby,
   detectNextJs,
   detectNextJsAppDir,
+  detectTanStackApp,
   detectTypescript,
 } from "../utils/envdetect";
 import { existsBuffered } from "../utils/file-utils";
@@ -33,7 +34,7 @@ import { confirmWithUser } from "../utils/user-utils";
 
 export interface InitArgs extends CommonArgs {
   host: string;
-  platform: "" | "react" | "nextjs" | "gatsby";
+  platform: "" | "react" | "nextjs" | "gatsby" | "tanstack";
   codeLang: "" | "ts" | "js";
   codeScheme: "" | "blackbox";
   styleScheme: "" | "css" | "css-modules";
@@ -97,13 +98,22 @@ function createInitConfig(opts: Omit<InitArgs, "baseDir">): PlasmicConfig {
         pagesDir: opts.pagesDir,
       },
     }),
+    ...(opts.platform === "tanstack" && {
+      tanstackConfig: {
+        pagesDir: opts.pagesDir,
+      },
+    }),
     code: {
       ...(opts.codeLang && { lang: opts.codeLang }),
       ...(opts.codeScheme && { scheme: opts.codeScheme }),
       ...(opts.reactRuntime && { reactRuntime: opts.reactRuntime }),
     },
     style: {
-      ...(opts.styleScheme && { scheme: opts.styleScheme }),
+      ...(opts.styleScheme && {
+        // Css Modules is not supported yet in SSR for TanStack
+        // https://github.com/TanStack/router/issues/3023
+        scheme: opts.platform === "tanstack" ? "css" : opts.styleScheme,
+      }),
     },
     images: {
       ...(opts.imagesScheme && { scheme: opts.imagesScheme }),
@@ -165,6 +175,8 @@ async function deriveInitAnswers(
     ? "nextjs"
     : detectGatsby()
     ? "gatsby"
+    : detectTanStackApp()
+    ? "tanstack"
     : detectCreateReactApp()
     ? "react"
     : "";
@@ -172,7 +184,8 @@ async function deriveInitAnswers(
   const isNext = platform === "nextjs";
   const isNextAppDir = isNext && detectNextJsAppDir();
   const isGatsby = platform === "gatsby";
-  const isGeneric = !isCra && !isNext && !isGatsby;
+  const isTanStack = platform === "tanstack";
+  const isGeneric = !isCra && !isNext && !isGatsby && !isTanStack;
   const isTypescript = detectTypescript();
 
   if (isNext) {
@@ -183,6 +196,8 @@ async function deriveInitAnswers(
     }
   } else if (isGatsby) {
     logger.info("Detected Gatsby...");
+  } else if (isTanStack) {
+    logger.info("Detected TanStack router app...");
   } else if (isCra) {
     logger.info("Detected create-react-app...");
   }
@@ -192,6 +207,8 @@ async function deriveInitAnswers(
     ? getNextDefaults(plasmicRootDir, isNextAppDir)
     : isGatsby
     ? getGatsbyDefaults(plasmicRootDir)
+    : isTanStack
+    ? getTanStackDefaults(plasmicRootDir)
     : isCra
     ? getCraDefaults(plasmicRootDir)
     : getGenericDefaults(plasmicRootDir);
@@ -473,6 +490,36 @@ function getGatsbyDefaults(plasmicRootDir: string): DefaultDeriver {
   };
 }
 
+function getTanStackDefaults(plasmicRootDir: string): DefaultDeriver {
+  const projectRootDir = findPackageJsonDir(plasmicRootDir) ?? plasmicRootDir;
+  return {
+    srcDir: path.relative(
+      plasmicRootDir,
+      path.join(projectRootDir, "src", "components")
+    ),
+    pagesDir: (srcDir: string) => {
+      const absSrcDir = path.join(plasmicRootDir, srcDir);
+      const absPagesDir = path.join(projectRootDir, "src", "routes");
+      const relDir = path.relative(absSrcDir, absPagesDir);
+      return relDir;
+    },
+    styleScheme: "css",
+    imagesScheme: "public-files",
+    imagesPublicDir: (srcDir: string) =>
+      path.relative(
+        path.join(plasmicRootDir, srcDir),
+        path.join(projectRootDir, "public")
+      ),
+    imagesPublicUrlPrefix: "/",
+    alwaysDerived: [
+      "styleScheme",
+      "imagesScheme",
+      "imagesPublicDir",
+      "pagesDir",
+    ],
+  };
+}
+
 function getCraDefaults(plasmicRootDir: string): DefaultDeriver {
   const projectRootDir = findPackageJsonDir(plasmicRootDir) ?? plasmicRootDir;
   return {
@@ -519,7 +566,7 @@ const INIT_ARGS_DESCRIPTION: {
   platform: {
     shortDescription: "Target platform",
     longDescription: "Target platform to generate code for",
-    choices: ["react", "nextjs", "gatsby"],
+    choices: ["react", "nextjs", "gatsby", "tanstack"],
   },
   codeLang: {
     shortDescription: "Target language",

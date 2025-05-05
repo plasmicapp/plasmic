@@ -32,6 +32,12 @@ async function run() {
       });
       if (scheme === "codegen") {
         allArgSets.push({
+          platform: "tanstack",
+          scheme,
+          typescript,
+        });
+
+        allArgSets.push({
           platform: "react",
           scheme,
           typescript,

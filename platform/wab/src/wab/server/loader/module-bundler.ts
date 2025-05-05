@@ -102,7 +102,7 @@ export interface AssetModule {
 }
 
 type BundleOpts = {
-  platform: "react" | "nextjs" | "gatsby";
+  platform: "react" | "nextjs" | "gatsby" | "tanstack";
   mode: "production" | "development";
   loaderVersion: number;
   browserOnly: boolean;

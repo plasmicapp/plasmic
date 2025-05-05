@@ -102,4 +102,51 @@ describe("defaultPagePath", () => {
       )
     ).toBe("../app/not-index/page.tsx");
   });
+  it("handles tanstack pagesDir", () => {
+    expect(
+      defaultPagePath(
+        {
+          config: {
+            platform: "tanstack",
+            tanstackConfig: { pagesDir: "../routes" },
+          },
+        },
+        "/index.tsx"
+      )
+    ).toBe("../routes/index.tsx");
+    expect(
+      defaultPagePath(
+        {
+          config: {
+            platform: "tanstack",
+            tanstackConfig: { pagesDir: "../routes" },
+          },
+        },
+        "/nested/index.tsx"
+      )
+    ).toBe("../routes/nested/index.tsx");
+
+    expect(
+      defaultPagePath(
+        {
+          config: {
+            platform: "tanstack",
+            tanstackConfig: { pagesDir: "../routes" },
+          },
+        },
+        "/post.tsx"
+      )
+    ).toBe("../routes/post/index.tsx");
+    expect(
+      defaultPagePath(
+        {
+          config: {
+            platform: "tanstack",
+            tanstackConfig: { pagesDir: "../routes" },
+          },
+        },
+        "/post/[postId].tsx"
+      )
+    ).toBe("../routes/post/$postId/index.tsx");
+  });
 });
