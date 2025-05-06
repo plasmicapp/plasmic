@@ -11,7 +11,25 @@ import { makeCustomRoot_file_router_codegen } from "./templates/file-router/root
 export const tanstackStrategy: CPAStrategy = {
   create: async (args) => {
     const { projectPath } = args;
-    const createCommand = `npx create-tsrouter-app@latest ${projectPath} --template file-router --add-ons start`;
+
+    /* create-tsrouter-app package receives the projectName as an argument, when we provide a fullProjectPath, it creates
+    package.json with name having the fullProjectPath causing illegal characters in the name field error.
+
+      To avoid this behaviour, we will ensure the fullProjectPath exists
+      1. we get the projectName (tanstack-codegen-ts), and parentDir (/private/tmp/cpa-out)
+      2. change directory to parentDir and execute the command with projectName
+     */
+    const fullProjectPath = path.isAbsolute(projectPath)
+      ? projectPath
+      : path.resolve(process.cwd(), projectPath);
+
+    await fs.mkdir(fullProjectPath, { recursive: true });
+
+    const projectName = path.basename(fullProjectPath);
+    const parentDir = path.dirname(fullProjectPath);
+    process.chdir(parentDir);
+
+    const createCommand = `npx create-tsrouter-app@latest ${projectName} --template file-router --add-ons start`;
 
     await spawnOrFail(createCommand);
   },
