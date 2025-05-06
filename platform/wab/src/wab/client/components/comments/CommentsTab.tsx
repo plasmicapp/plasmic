@@ -2,15 +2,14 @@ import RootComment from "@/wab/client/components/comments/RootComment";
 import {
   CommentFilter,
   FilterValueToLabel,
-  getThreadsFromFocusedComponent,
+  partitionThreadsForComponents,
 } from "@/wab/client/components/comments/utils";
-import { useViewCtxMaybe } from "@/wab/client/contexts/StudioContexts";
 import {
   DefaultCommentsTabProps,
   PlasmicCommentsTab,
 } from "@/wab/client/plasmic/plasmic_kit_comments/PlasmicCommentsTab";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { isTplNamable } from "@/wab/shared/core/tpls";
+import { isDedicatedArena } from "@/wab/shared/Arenas";
 import { Dropdown, Menu } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
@@ -28,25 +27,40 @@ export const CommentsTab = observer(function CommentsTab(
   props: CommentsTabProps
 ) {
   const studioCtx = useStudioCtx();
-  const viewCtx = useViewCtxMaybe();
 
-  let focusedTpl = viewCtx?.focusedTpl();
-  if (!isTplNamable(focusedTpl)) {
-    focusedTpl = null;
-  }
-
-  const currentComponent = studioCtx.currentComponent;
-
-  const commentsCtx = studioCtx.commentsCtx;
-
-  if (!currentComponent) {
+  const currentArena = studioCtx.currentArena;
+  if (!currentArena) {
     return null;
   }
 
+  const isDedicatedCurrentArena = isDedicatedArena(currentArena);
+
+  const commentsCtx = studioCtx.commentsCtx;
+
   const threads = commentsCtx.filteredThreads();
 
-  const { focusedComponentThreads, otherComponentsThreads } =
-    getThreadsFromFocusedComponent(threads, currentComponent, focusedTpl);
+  const { currentComponents, name, type } = React.useMemo(() => {
+    if (isDedicatedCurrentArena) {
+      return {
+        name: currentArena.component.name,
+        type: currentArena.component.type,
+        currentComponents: [currentArena.component],
+      };
+    } else {
+      return {
+        name: currentArena.name,
+        type: "Arena",
+        currentComponents: currentArena.children.map(
+          (child) => child.container.component
+        ),
+      };
+    }
+  }, [currentArena]);
+
+  const { current, other } = partitionThreadsForComponents(
+    threads,
+    currentComponents
+  );
 
   const projectId = studioCtx.siteInfo.id;
   const branchId = studioCtx.branchInfo()?.id;
@@ -124,15 +138,15 @@ export const CommentsTab = observer(function CommentsTab(
           ),
         }}
         currentHeader={{
-          name: currentComponent.name,
-          type: currentComponent.type,
+          name,
+          type,
           showCount: true,
-          count: `${focusedComponentThreads.length}`,
+          count: `${current.length}`,
         }}
         currentThreads={{
-          noComments: focusedComponentThreads.length === 0,
+          noComments: current.length === 0,
           threads: {
-            children: focusedComponentThreads.map((threadComment) => (
+            children: current.map((threadComment) => (
               <RootComment
                 key={threadComment.id}
                 commentThread={threadComment}
@@ -144,16 +158,16 @@ export const CommentsTab = observer(function CommentsTab(
           },
         }}
         restHeader={{
-          wrap: (node) => otherComponentsThreads.length > 0 && node,
+          wrap: (node) => other.length > 0 && node,
           props: {
-            count: `${otherComponentsThreads.length}`,
+            count: `${other.length}`,
           },
         }}
         restThreads={{
-          wrap: (node) => otherComponentsThreads.length > 0 && node,
+          wrap: (node) => other.length > 0 && node,
           props: {
             threads: {
-              children: otherComponentsThreads.map((commentThread) => (
+              children: other.map((commentThread) => (
                 <RootComment
                   key={commentThread.id}
                   commentThread={commentThread}

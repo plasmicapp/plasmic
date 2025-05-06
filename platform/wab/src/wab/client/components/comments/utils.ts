@@ -124,19 +124,17 @@ export function getCommentThreadsWithModelMetadata(
     .map((thread) => getCommentThreadWithModelMetadata(bundler, thread));
 }
 
-export function getThreadsFromFocusedComponent(
+export function partitionThreadsForComponents(
   threads: TplCommentThreads,
-  focusedComponent: Component,
-  focusedTpl: TplNode | null | undefined
+  components: Component[]
 ) {
-  const [focusedComponentThreads, otherComponentsThreads] = partition(
-    [...threads],
-    (thread) => thread.ownerComponent === focusedComponent
+  const [current, other] = partition([...threads], (thread) =>
+    components.includes(thread.ownerComponent)
   );
 
   return {
-    focusedComponentThreads: focusedComponentThreads,
-    otherComponentsThreads: otherComponentsThreads,
+    current,
+    other,
   };
 }
 

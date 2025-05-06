@@ -3,6 +3,7 @@ import { TplCommentThread } from "@/wab/client/components/comments/utils";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { CommentThreadId } from "@/wab/shared/ApiSchema";
+import { assert } from "@/wab/shared/common";
 import { observer } from "mobx-react";
 import * as React from "react";
 
@@ -33,18 +34,21 @@ export default observer(function RootComment({
           .tplMgr()
           .findComponentContainingTpl(commentThread.subject);
 
-        if (ownerComponent) {
-          await studioCtx.setStudioFocusOnTpl(
-            ownerComponent,
-            commentThread.subject,
-            commentThread.variants
-          );
-          const focusedViewCtx = studioCtx.focusedViewCtx();
-          if (focusedViewCtx) {
-            onThreadSelect(threadId, focusedViewCtx);
-          }
-          studioCtx.tryZoomToFitSelection();
+        assert(
+          ownerComponent,
+          () => `No owningComponent found for Tpl ${commentThread.subject.uuid}`
+        );
+        await studioCtx.setStudioFocusOnTpl(
+          ownerComponent,
+          commentThread.subject,
+          commentThread.variants
+        );
+
+        const focusedViewCtx = studioCtx.focusedViewCtx();
+        if (focusedViewCtx) {
+          onThreadSelect(threadId, focusedViewCtx);
         }
+        studioCtx.tryZoomToFitSelection();
       }}
     />
   );

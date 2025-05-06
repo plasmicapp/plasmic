@@ -231,6 +231,7 @@ import {
   extractParamsFromPagePath,
   getRealParams,
   isCodeComponent,
+  isFrameComponent,
   isPageComponent,
   isPlainComponent,
 } from "@/wab/shared/core/components";
@@ -2419,9 +2420,51 @@ export class StudioCtx extends WithDbCtx {
     tpl: TplNode,
     variants?: VariantCombo
   ) {
-    if (this.focusedViewCtx()?.component === component && !variants?.length) {
-      this.focusedViewCtx()?.setStudioFocusByTpl(tpl);
+    // If the current focused ViewCtx is already on the target component and no variant switching is needed
+    const currentViewCtx = this.focusedViewCtx();
+    if (currentViewCtx?.component === component && !variants?.length) {
+      currentViewCtx.setStudioFocusByTpl(tpl);
       return;
+    }
+
+    // when component is a frame (artboard) or we're in a custom arena
+    if (isFrameComponent(component) || isMixedArena(this.currentArena)) {
+      const arenasToSearch = isFrameComponent(component)
+        ? this.site.arenas
+        : this.currentArena
+        ? [this.currentArena]
+        : [];
+
+      const arenaFramePairs = withoutNils(
+        arenasToSearch.map((arena) => {
+          const baseFrame = getArenaFrames(arena).find(
+            (frame) => frame.container.component === component
+          );
+          const frame = variants?.length
+            ? this.getArenaFrameForSetOfVariants(arena, variants)
+            : baseFrame;
+          return frame ? { arena, frame } : undefined;
+        })
+      );
+
+      const match = arenaFramePairs[0];
+      if (match) {
+        const { arena, frame } = match;
+
+        // If it's an artboard, switch to its arena
+        if (isFrameComponent(component)) {
+          await this.change(({ success }) => {
+            this.switchToArena(arena);
+            return success();
+          });
+        }
+
+        const viewCtx = await this.awaitViewCtxForFrame(frame);
+        if (viewCtx) {
+          viewCtx.setStudioFocusByTpl(tpl);
+        }
+        return;
+      }
     }
 
     const arena = unwrap(
@@ -2467,34 +2510,41 @@ export class StudioCtx extends WithDbCtx {
     }
   }
 
-  getArenaFrameForSetOfVariants(
-    arena: ComponentArena | PageArena,
-    variants: VariantCombo
-  ) {
+  getArenaFrameForSetOfVariants(arena: AnyArena, variants: VariantCombo) {
     const frames = getArenaFrames(arena);
-    const allComponentVariantsMap = keyBy(
-      allComponentVariants(arena.component),
-      (v) => v.uuid
-    );
-    const allGlobalVariantsMap = keyBy(
-      allGlobalVariants(this.site, { includeDeps: "direct" }),
-      (v) => v.uuid
-    );
+    const components = new Set<Component>();
+    if (isMixedArena(arena)) {
+      for (const frame of frames) {
+        components.add(frame.container.component);
+      }
+    } else {
+      components.add(arena.component);
+    }
+    for (const component of components) {
+      const allComponentVariantsMap = keyBy(
+        allComponentVariants(component),
+        (v) => v.uuid
+      );
+      const allGlobalVariantsMap = keyBy(
+        allGlobalVariants(this.site, { includeDeps: "direct" }),
+        (v) => v.uuid
+      );
 
-    for (const frame of frames) {
-      const frameVariants = [
-        ...Object.keys(frame.pinnedVariants).map(
-          (uuid) => allComponentVariantsMap[uuid]
-        ),
-        ...Object.keys(frame.pinnedGlobalVariants).map(
-          (uuid) => allGlobalVariantsMap[uuid]
-        ),
-        ...frame.targetVariants,
-        ...frame.targetGlobalVariants,
-      ].filter((v) => isKnownVariant(v));
+      for (const frame of frames) {
+        const frameVariants = [
+          ...Object.keys(frame.pinnedVariants).map(
+            (uuid) => allComponentVariantsMap[uuid]
+          ),
+          ...Object.keys(frame.pinnedGlobalVariants).map(
+            (uuid) => allGlobalVariantsMap[uuid]
+          ),
+          ...frame.targetVariants,
+          ...frame.targetGlobalVariants,
+        ].filter((v) => isKnownVariant(v));
 
-      if (setEquals(new Set(variants), new Set(frameVariants))) {
-        return frame;
+        if (setEquals(new Set(variants), new Set(frameVariants))) {
+          return frame;
+        }
       }
     }
 
