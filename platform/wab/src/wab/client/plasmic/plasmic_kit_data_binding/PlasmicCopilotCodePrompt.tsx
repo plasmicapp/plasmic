@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -13,17 +13,20 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
+  Flex as Flex__,
+  PlasmicImg as PlasmicImg__,
   SingleChoiceArg,
+  Stack as Stack__,
   StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
   hasVariant,
+  useDollarState,
 } from "@plasmicapp/react-web";
+import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+
 import CopilotMsg from "../../components/CopilotMsg"; // plasmic-import: CdMYaSGMjG/component
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
 import IconButton from "../../components/widgets/IconButton"; // plasmic-import: LPry-TF4j22a/component
@@ -37,8 +40,8 @@ import projectcss from "./plasmic_plasmic_kit_data_binding.module.css"; // plasm
 import sty from "./PlasmicCopilotCodePrompt.module.css"; // plasmic-import: SdMPiPjcB9G/css
 
 import HistoryIcon from "../plasmic_kit/PlasmicIcon__History"; // plasmic-import: 6ZOswzsUR/icon
-import ClosesvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__CloseSvg"; // plasmic-import: DhvEHyCHT/icon
-import SendsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__SendSvg"; // plasmic-import: h2npYh74m/icon
+import CloseSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__CloseSvg"; // plasmic-import: DhvEHyCHT/icon
+import SendSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__SendSvg"; // plasmic-import: h2npYh74m/icon
 import Icon2Icon from "./icons/PlasmicIcon__Icon2"; // plasmic-import: udef47udLQ/icon
 import Icon3Icon from "./icons/PlasmicIcon__Icon3"; // plasmic-import: EfDOV4MDLj/icon
 import imageUYmVmRYjy from "./images/image.png"; // plasmic-import: UYmVmRYjy/picture
@@ -53,51 +56,55 @@ export type PlasmicCopilotCodePrompt__VariantMembers = {
     | "quotaExceeded"
     | "history"
     | "historyEmpty";
+  type: "ui" | "sql" | "customCode";
 };
 export type PlasmicCopilotCodePrompt__VariantsArgs = {
   state?: SingleChoiceArg<
     "ready" | "loading" | "error" | "quotaExceeded" | "history" | "historyEmpty"
   >;
+  type?: SingleChoiceArg<"ui" | "sql" | "customCode">;
 };
 type VariantPropType = keyof PlasmicCopilotCodePrompt__VariantsArgs;
 export const PlasmicCopilotCodePrompt__VariantProps =
-  new Array<VariantPropType>("state");
+  new Array<VariantPropType>("state", "type");
 
 export type PlasmicCopilotCodePrompt__ArgsType = {};
 type ArgPropType = keyof PlasmicCopilotCodePrompt__ArgsType;
 export const PlasmicCopilotCodePrompt__ArgProps = new Array<ArgPropType>();
 
 export type PlasmicCopilotCodePrompt__OverridesType = {
-  root?: p.Flex<"div">;
-  openCopilotBtn?: p.Flex<typeof Button>;
-  popoverPlaceholder?: p.Flex<"div">;
-  sizerContainer?: p.Flex<"div">;
-  promptDialog?: p.Flex<"div">;
-  headerContainer?: p.Flex<"div">;
-  promptLabel?: p.Flex<"div">;
-  history?: p.Flex<"h6">;
-  rightButtons?: p.Flex<"div">;
-  historyBtn?: p.Flex<typeof IconButton>;
-  cancelBtn?: p.Flex<typeof IconButton>;
-  contents?: p.Flex<"div">;
-  historyContainer?: p.Flex<"div">;
-  historyEmptyMsg?: p.Flex<"div">;
-  historyContents?: p.Flex<"div">;
-  historyBottomDiv?: p.Flex<"div">;
-  onLoadTrigger?: p.Flex<typeof p.PlasmicImg>;
-  promptContainer?: p.Flex<"div">;
-  promptInput?: p.Flex<typeof Textbox>;
-  runPromptBtn?: p.Flex<typeof IconButton>;
-  errorMessage?: p.Flex<"div">;
-  quotaExceededMsg?: p.Flex<"div">;
-  reply?: p.Flex<typeof CopilotMsg>;
+  root?: Flex__<"div">;
+  openCopilotBtn?: Flex__<typeof Button>;
+  freeBox?: Flex__<"div">;
+  text?: Flex__<"div">;
+  popoverPlaceholder?: Flex__<"div">;
+  sizerContainer?: Flex__<"div">;
+  promptDialog?: Flex__<"div">;
+  headerContainer?: Flex__<"div">;
+  promptLabel?: Flex__<"div">;
+  history?: Flex__<"h6">;
+  rightButtons?: Flex__<"div">;
+  historyBtn?: Flex__<typeof IconButton>;
+  cancelBtn?: Flex__<typeof IconButton>;
+  contents?: Flex__<"div">;
+  historyContainer?: Flex__<"div">;
+  historyEmptyMsg?: Flex__<"div">;
+  historyContents?: Flex__<"div">;
+  historyBottomDiv?: Flex__<"div">;
+  onLoadTrigger?: Flex__<typeof PlasmicImg__>;
+  promptContainer?: Flex__<"div">;
+  promptInput?: Flex__<typeof Textbox>;
+  runPromptBtn?: Flex__<typeof IconButton>;
+  errorMessage?: Flex__<"div">;
+  quotaExceededMsg?: Flex__<"div">;
+  reply?: Flex__<typeof CopilotMsg>;
 };
 
 export interface DefaultCopilotCodePromptProps {
   state?: SingleChoiceArg<
     "ready" | "loading" | "error" | "quotaExceeded" | "history" | "historyEmpty"
   >;
-
+  type?: SingleChoiceArg<"ui" | "sql" | "customCode">;
   className?: string;
 }
 
@@ -111,20 +118,27 @@ function PlasmicCopilotCodePrompt__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
-
-  const stateSpecs: Parameters<typeof p.useDollarState>[0] = React.useMemo(
+  const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
         path: "state",
@@ -132,11 +146,16 @@ function PlasmicCopilotCodePrompt__RenderFunc(props: {
         variableType: "variant",
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.state,
       },
+      {
+        path: "type",
+        type: "private",
+        variableType: "variant",
+        initFunc: ({ $props, $state, $queries, $ctx }) => $props.type,
+      },
     ],
-
     [$props, $ctx, $refs]
   );
-  const $state = p.useDollarState(stateSpecs, {
+  const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
@@ -144,7 +163,7 @@ function PlasmicCopilotCodePrompt__RenderFunc(props: {
   });
 
   return (
-    <p.Stack
+    <Stack__
       as={"div"}
       data-plasmic-name={"root"}
       data-plasmic-override={overrides.root}
@@ -170,42 +189,81 @@ function PlasmicCopilotCodePrompt__RenderFunc(props: {
           [sty.rootstate_history]: hasVariant($state, "state", "history"),
           [sty.rootstate_loading]: hasVariant($state, "state", "loading"),
           [sty.rootstate_ready]: hasVariant($state, "state", "ready"),
+          [sty.roottype_sql]: hasVariant($state, "type", "sql"),
+          [sty.roottype_ui]: hasVariant($state, "type", "ui"),
         }
       )}
     >
-      <Button
-        data-plasmic-name={"openCopilotBtn"}
-        data-plasmic-override={overrides.openCopilotBtn}
-        caption={"Caption"}
-        className={classNames("__wab_instance", sty.openCopilotBtn, {
-          [sty.openCopilotBtnstate_error]: hasVariant($state, "state", "error"),
-          [sty.openCopilotBtnstate_loading]: hasVariant(
-            $state,
-            "state",
-            "loading"
-          ),
-          [sty.openCopilotBtnstate_ready]: hasVariant($state, "state", "ready"),
-        })}
-        disabled={hasVariant($state, "state", "loading") ? true : undefined}
-        size={"small"}
-        type={["primary", "chip"]}
-      >
-        <Icon2Icon
-          className={classNames(projectcss.all, sty.svg__ubknx, {
-            [sty.svgstate_error__ubknXmAOr]: hasVariant(
+      {(hasVariant($state, "type", "ui") ? false : true) ? (
+        <Button
+          data-plasmic-name={"openCopilotBtn"}
+          data-plasmic-override={overrides.openCopilotBtn}
+          caption={"Caption"}
+          className={classNames("__wab_instance", sty.openCopilotBtn, {
+            [sty.openCopilotBtnstate_error]: hasVariant(
               $state,
               "state",
               "error"
             ),
-            [sty.svgstate_loading__ubknXa4Pzr]: hasVariant(
+            [sty.openCopilotBtnstate_loading]: hasVariant(
               $state,
               "state",
               "loading"
             ),
+            [sty.openCopilotBtnstate_ready]: hasVariant(
+              $state,
+              "state",
+              "ready"
+            ),
+            [sty.openCopilotBtntype_ui]: hasVariant($state, "type", "ui"),
           })}
-          role={"img"}
-        />
-      </Button>
+          disabled={hasVariant($state, "state", "loading") ? true : undefined}
+          size={"small"}
+          type={["primary", "chip"]}
+        >
+          <div
+            data-plasmic-name={"freeBox"}
+            data-plasmic-override={overrides.freeBox}
+            className={classNames(projectcss.all, sty.freeBox, {
+              [sty.freeBoxtype_ui]: hasVariant($state, "type", "ui"),
+            })}
+          >
+            <div
+              data-plasmic-name={"text"}
+              data-plasmic-override={overrides.text}
+              className={classNames(
+                projectcss.all,
+                projectcss.__wab_text,
+                sty.text,
+                { [sty.texttype_ui]: hasVariant($state, "type", "ui") }
+              )}
+            >
+              {"Generate design"}
+            </div>
+            <Icon2Icon
+              className={classNames(projectcss.all, sty.svg__ubknx, {
+                [sty.svgstate_error__ubknXmAOr]: hasVariant(
+                  $state,
+                  "state",
+                  "error"
+                ),
+                [sty.svgstate_loading__ubknXa4Pzr]: hasVariant(
+                  $state,
+                  "state",
+                  "loading"
+                ),
+                [sty.svgstate_ready__ubknxPecJh]: hasVariant(
+                  $state,
+                  "state",
+                  "ready"
+                ),
+                [sty.svgtype_ui__ubknXaCnTb]: hasVariant($state, "type", "ui"),
+              })}
+              role={"img"}
+            />
+          </div>
+        </Button>
+      ) : null}
       {(
         hasVariant($state, "state", "historyEmpty")
           ? true
@@ -255,6 +313,7 @@ function PlasmicCopilotCodePrompt__RenderFunc(props: {
               "state",
               "ready"
             ),
+            [sty.popoverPlaceholdertype_ui]: hasVariant($state, "type", "ui"),
           })}
         >
           <div
@@ -291,9 +350,10 @@ function PlasmicCopilotCodePrompt__RenderFunc(props: {
                 "state",
                 "ready"
               ),
+              [sty.sizerContainertype_ui]: hasVariant($state, "type", "ui"),
             })}
           >
-            <p.Stack
+            <Stack__
               as={"div"}
               data-plasmic-name={"promptDialog"}
               data-plasmic-override={overrides.promptDialog}
@@ -319,6 +379,7 @@ function PlasmicCopilotCodePrompt__RenderFunc(props: {
                   "state",
                   "ready"
                 ),
+                [sty.promptDialogtype_ui]: hasVariant($state, "type", "ui"),
               })}
             >
               <div
@@ -380,6 +441,11 @@ function PlasmicCopilotCodePrompt__RenderFunc(props: {
                         "state",
                         "quotaExceeded"
                       ),
+                      [sty.promptLabeltype_ui]: hasVariant(
+                        $state,
+                        "type",
+                        "ui"
+                      ),
                     }
                   )}
                 >
@@ -438,6 +504,11 @@ function PlasmicCopilotCodePrompt__RenderFunc(props: {
                         "state",
                         "history"
                       ),
+                      [sty.historyBtnstate_ready]: hasVariant(
+                        $state,
+                        "state",
+                        "ready"
+                      ),
                     })}
                     size={"small"}
                   >
@@ -452,6 +523,11 @@ function PlasmicCopilotCodePrompt__RenderFunc(props: {
                           $state,
                           "state",
                           "history"
+                        ),
+                        [sty.svgstate_ready__nhiayPecJh]: hasVariant(
+                          $state,
+                          "state",
+                          "ready"
                         ),
                       })}
                       role={"img"}
@@ -474,14 +550,14 @@ function PlasmicCopilotCodePrompt__RenderFunc(props: {
                     })}
                     size={"small"}
                   >
-                    <ClosesvgIcon
+                    <CloseSvgIcon
                       className={classNames(projectcss.all, sty.svg__ySl6)}
                       role={"img"}
                     />
                   </IconButton>
                 </div>
               </div>
-              <p.Stack
+              <Stack__
                 as={"div"}
                 data-plasmic-name={"contents"}
                 data-plasmic-override={overrides.contents}
@@ -556,7 +632,7 @@ function PlasmicCopilotCodePrompt__RenderFunc(props: {
                         ? "No data"
                         : "Enter some text"}
                     </div>
-                    <p.Stack
+                    <Stack__
                       as={"div"}
                       data-plasmic-name={"historyContents"}
                       data-plasmic-override={overrides.historyContents}
@@ -633,7 +709,7 @@ function PlasmicCopilotCodePrompt__RenderFunc(props: {
                         )}
                         rightMargin={true}
                       />
-                    </p.Stack>
+                    </Stack__>
                     <div
                       data-plasmic-name={"historyBottomDiv"}
                       data-plasmic-override={overrides.historyBottomDiv}
@@ -655,7 +731,7 @@ function PlasmicCopilotCodePrompt__RenderFunc(props: {
                       )}
                       id={"history-bottom-div"}
                     >
-                      <p.PlasmicImg
+                      <PlasmicImg__
                         data-plasmic-name={"onLoadTrigger"}
                         data-plasmic-override={overrides.onLoadTrigger}
                         alt={""}
@@ -708,6 +784,7 @@ function PlasmicCopilotCodePrompt__RenderFunc(props: {
                               })()
                             : undefined;
                           if (
+                            $steps["runCode"] != null &&
                             typeof $steps["runCode"] === "object" &&
                             typeof $steps["runCode"].then === "function"
                           ) {
@@ -735,7 +812,7 @@ function PlasmicCopilotCodePrompt__RenderFunc(props: {
                     </div>
                   </div>
                 ) : null}
-                <p.Stack
+                <Stack__
                   as={"div"}
                   data-plasmic-name={"promptContainer"}
                   data-plasmic-override={overrides.promptContainer}
@@ -777,8 +854,17 @@ function PlasmicCopilotCodePrompt__RenderFunc(props: {
                         "state",
                         "ready"
                       ),
+                      [sty.promptInputtype_ui]: hasVariant(
+                        $state,
+                        "type",
+                        "ui"
+                      ),
                     })}
-                    placeholder={'e.g. "Current month name"'}
+                    placeholder={
+                      hasVariant($state, "type", "ui")
+                        ? 'e.g. "Generate a hero section"'
+                        : 'e.g. "Current month name"'
+                    }
                     styleType={["gray"]}
                   />
 
@@ -807,7 +893,7 @@ function PlasmicCopilotCodePrompt__RenderFunc(props: {
                       hasVariant($state, "state", "ready") ? true : undefined
                     }
                   >
-                    <SendsvgIcon
+                    <SendSvgIcon
                       className={classNames(projectcss.all, sty.svg__hRxiI, {
                         [sty.svgstate_ready__hRxiIPecJh]: hasVariant(
                           $state,
@@ -818,7 +904,7 @@ function PlasmicCopilotCodePrompt__RenderFunc(props: {
                       role={"img"}
                     />
                   </IconButton>
-                </p.Stack>
+                </Stack__>
                 {(hasVariant($state, "state", "loading") ? true : false) ? (
                   <Icon3Icon
                     className={classNames(projectcss.all, sty.svg__x55Ap, {
@@ -905,12 +991,12 @@ function PlasmicCopilotCodePrompt__RenderFunc(props: {
                     ),
                   })}
                 />
-              </p.Stack>
-            </p.Stack>
+              </Stack__>
+            </Stack__>
           </div>
         </div>
       ) : null}
-    </p.Stack>
+    </Stack__>
   ) as React.ReactElement | null;
 }
 
@@ -918,6 +1004,8 @@ const PlasmicDescendants = {
   root: [
     "root",
     "openCopilotBtn",
+    "freeBox",
+    "text",
     "popoverPlaceholder",
     "sizerContainer",
     "promptDialog",
@@ -940,8 +1028,9 @@ const PlasmicDescendants = {
     "quotaExceededMsg",
     "reply",
   ],
-
-  openCopilotBtn: ["openCopilotBtn"],
+  openCopilotBtn: ["openCopilotBtn", "freeBox", "text"],
+  freeBox: ["freeBox", "text"],
+  text: ["text"],
   popoverPlaceholder: [
     "popoverPlaceholder",
     "sizerContainer",
@@ -965,7 +1054,6 @@ const PlasmicDescendants = {
     "quotaExceededMsg",
     "reply",
   ],
-
   sizerContainer: [
     "sizerContainer",
     "promptDialog",
@@ -988,7 +1076,6 @@ const PlasmicDescendants = {
     "quotaExceededMsg",
     "reply",
   ],
-
   promptDialog: [
     "promptDialog",
     "headerContainer",
@@ -1010,7 +1097,6 @@ const PlasmicDescendants = {
     "quotaExceededMsg",
     "reply",
   ],
-
   headerContainer: [
     "headerContainer",
     "promptLabel",
@@ -1019,7 +1105,6 @@ const PlasmicDescendants = {
     "historyBtn",
     "cancelBtn",
   ],
-
   promptLabel: ["promptLabel"],
   history: ["history"],
   rightButtons: ["rightButtons", "historyBtn", "cancelBtn"],
@@ -1039,7 +1124,6 @@ const PlasmicDescendants = {
     "quotaExceededMsg",
     "reply",
   ],
-
   historyContainer: [
     "historyContainer",
     "historyEmptyMsg",
@@ -1047,7 +1131,6 @@ const PlasmicDescendants = {
     "historyBottomDiv",
     "onLoadTrigger",
   ],
-
   historyEmptyMsg: ["historyEmptyMsg"],
   historyContents: ["historyContents"],
   historyBottomDiv: ["historyBottomDiv", "onLoadTrigger"],
@@ -1065,6 +1148,8 @@ type DescendantsType<T extends NodeNameType> =
 type NodeDefaultElementType = {
   root: "div";
   openCopilotBtn: typeof Button;
+  freeBox: "div";
+  text: "div";
   popoverPlaceholder: "div";
   sizerContainer: "div";
   promptDialog: "div";
@@ -1079,7 +1164,7 @@ type NodeDefaultElementType = {
   historyEmptyMsg: "div";
   historyContents: "div";
   historyBottomDiv: "div";
-  onLoadTrigger: typeof p.PlasmicImg;
+  onLoadTrigger: typeof PlasmicImg__;
   promptContainer: "div";
   promptInput: typeof Textbox;
   runPromptBtn: typeof IconButton;
@@ -1093,7 +1178,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicCopilotCodePrompt__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
@@ -1101,15 +1185,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicCopilotCodePrompt__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicCopilotCodePrompt__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicCopilotCodePrompt__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+    // Specify args directly as props
+    Omit<PlasmicCopilotCodePrompt__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;
@@ -1123,7 +1207,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicCopilotCodePrompt__ArgProps,
           internalVariantPropNames: PlasmicCopilotCodePrompt__VariantProps,
         }),
@@ -1150,6 +1234,8 @@ export const PlasmicCopilotCodePrompt = Object.assign(
   {
     // Helper components rendering sub-elements
     openCopilotBtn: makeNodeComponent("openCopilotBtn"),
+    freeBox: makeNodeComponent("freeBox"),
+    text: makeNodeComponent("text"),
     popoverPlaceholder: makeNodeComponent("popoverPlaceholder"),
     sizerContainer: makeNodeComponent("sizerContainer"),
     promptDialog: makeNodeComponent("promptDialog"),

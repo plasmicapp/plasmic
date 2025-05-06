@@ -2,9 +2,12 @@ import CopilotMsg from "@/wab/client/components/CopilotMsg";
 import { dataPickerShouldHideKey } from "@/wab/client/components/sidebar-tabs/DataBinding/DataPickerUtil";
 import { TextboxRef } from "@/wab/client/components/widgets/Textbox";
 import { useAsyncStrict } from "@/wab/client/hooks/useAsyncStrict";
-import PlasmicCopilotCodePrompt from "@/wab/client/plasmic/plasmic_kit_data_binding/PlasmicCopilotCodePrompt";
+import PlasmicCopilotCodePrompt, {
+  PlasmicCopilotCodePrompt__VariantsArgs,
+} from "@/wab/client/plasmic/plasmic_kit_data_binding/PlasmicCopilotCodePrompt";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { trackEvent } from "@/wab/client/tracking";
+import { CopilotResponseData } from "@/wab/shared/ApiSchema";
 import {
   ensure,
   isPrimitive,
@@ -13,7 +16,6 @@ import {
   unexpected,
   withoutNils,
 } from "@/wab/shared/common";
-import { CopilotResponseData } from "@/wab/shared/ApiSchema";
 import { DataSourceSchema } from "@plasmicapp/data-sources";
 import { Popover, Tooltip } from "antd";
 import { isString, range } from "lodash";
@@ -28,10 +30,12 @@ export interface CopilotCodePromptProps {
   onUpdate: (newValue: string) => void;
   // A brief description of what the expression is supposed to be used for
   context?: string;
-  isSql?: boolean;
+  type: PlasmicCopilotCodePrompt__VariantsArgs["type"];
   // Only set when `isSql` is true
   dataSourceSchema?: DataSourceSchema;
-  className: string;
+  className?: string;
+  defaultDialogOpen?: boolean;
+  onDialogOpenChange?: (open: boolean) => void;
 }
 
 export const CopilotCodePrompt = observer(function CopilotCodePrompt({
@@ -39,58 +43,23 @@ export const CopilotCodePrompt = observer(function CopilotCodePrompt({
   currentValue,
   data,
   context,
-  isSql,
+  type,
   dataSourceSchema,
   className,
+  defaultDialogOpen,
+  onDialogOpenChange,
 }: CopilotCodePromptProps) {
   const [prompt, setPrompt] = React.useState("");
   const [submittedPrompt, setSubmittedPrompt] = React.useState("");
-  const [openDialog, setOpenDialog] = React.useState(false);
+  const [openDialog, setOpenDialog] = React.useState(
+    defaultDialogOpen ?? false
+  );
   const [showHistory, setShowHistory] = React.useState(false);
   const promptInputRef: React.Ref<TextboxRef> = React.useRef<TextboxRef>(null);
   const applyBtnRef: React.Ref<HTMLDivElement> =
     React.useRef<HTMLDivElement>(null);
   const studioCtx = useStudioCtx();
-  const historyType = isSql ? "sql" : "custom-code";
-
-  /*
-  function executeRequest(request: CreateChatCompletionRequest) {
-    console.log("#### request", request);
-    return studioCtx.appCtx.api
-      .queryCopilot({
-        type: "debug",
-        projectId: studioCtx.siteInfo.id,
-        // This is the only real payload at the moment
-        rawDebug: JSON.stringify(request),
-        useClaude: studioCtx.appCtx.appConfig.copilotClaude,
-      })
-      .then((x) => {
-        const res = JSON.parse(
-          ensure(x.rawDebug, "")
-        ) as CopilotResponseData;
-        console.log("#### response ", x, res);
-        return res;
-      });
-  }
-
-  const copilotResponse = useAsyncStrict(async () => {
-    if (!submittedPrompt) {
-      // Prompt not ready yet
-      return undefined;
-    }
-    if (false as boolean) {
-      return "CopilotRateLimitExceededError";
-    }
-    return (await createAndRunCopilotSqlCodeChain({
-      projectId: studioCtx.siteInfo.id,
-      currentCode: processCurrentCode(currentValue),
-      data: processData(data),
-      dataSourceSchema: ensure(dataSourceSchema, ""),
-      executeRequest,
-      goal: prompt,
-    })).composed;
-  }, [submittedPrompt]);
-  */
+  const historyType = type === "sql" ? "sql" : "custom-code";
 
   const copilotResponse = useAsyncStrict(async () => {
     if (!submittedPrompt) {
@@ -101,12 +70,17 @@ export const CopilotCodePrompt = observer(function CopilotCodePrompt({
     try {
       const result = await studioCtx.appCtx.api
         .queryCopilot({
-          ...(!isSql
-            ? { type: "code", context }
-            : {
+          ...(type === "sql"
+            ? {
                 type: "code-sql",
                 schema: ensure(dataSourceSchema, () => `Missing schema`),
-              }),
+              }
+            : type === "ui"
+            ? {
+                type: "ui",
+                context,
+              }
+            : { type: "code", context }),
           projectId: studioCtx.siteInfo.id,
           currentCode: processCurrentCode(currentValue),
           data: processData(data),
@@ -168,6 +142,7 @@ export const CopilotCodePrompt = observer(function CopilotCodePrompt({
   return (
     <PlasmicCopilotCodePrompt
       className={className}
+      type={type}
       promptContainer={{
         style: {
           zIndex: 1,
@@ -198,7 +173,10 @@ export const CopilotCodePrompt = observer(function CopilotCodePrompt({
       }}
       openCopilotBtn={{
         props: {
-          onClick: () => setOpenDialog(true),
+          onClick: () => {
+            setOpenDialog(true);
+            onDialogOpenChange?.(true);
+          },
         },
         wrap: (elt) => (
           <Tooltip title={"Open Copilot"} mouseEnterDelay={0.5}>
@@ -226,8 +204,13 @@ export const CopilotCodePrompt = observer(function CopilotCodePrompt({
           <Popover
             defaultOpen
             showArrow={false}
-            placement="leftTop"
-            onOpenChange={(visible) => !visible && setOpenDialog(false)}
+            placement={type === "ui" ? "top" : "leftTop"}
+            onOpenChange={(visible) => {
+              if (!visible) {
+                setOpenDialog(false);
+                onDialogOpenChange?.(false);
+              }
+            }}
             trigger="click"
             content={
               <FocusScope autoFocus contain>
@@ -258,6 +241,7 @@ export const CopilotCodePrompt = observer(function CopilotCodePrompt({
         onClick: () => {
           setShowHistory(false);
           setOpenDialog(false);
+          onDialogOpenChange?.(false);
         },
         tooltip: "Close",
       }}
@@ -281,12 +265,14 @@ export const CopilotCodePrompt = observer(function CopilotCodePrompt({
                   onClick: () => {
                     onUpdate(historyResponse);
                     setOpenDialog(false);
+                    onDialogOpenChange?.(false);
                     setShowHistory(false);
                   },
                   onKeyPress: (e) => {
                     if (e.key === "Enter") {
                       onUpdate(historyResponse);
                       setOpenDialog(false);
+                      onDialogOpenChange?.(false);
                       setShowHistory(false);
                     }
                   },
@@ -334,12 +320,14 @@ export const CopilotCodePrompt = observer(function CopilotCodePrompt({
                             onClick: () => {
                               onUpdate(ensure(newCode, "No message"));
                               setOpenDialog(false);
+                              onDialogOpenChange?.(false);
                               setShowHistory(false);
                             },
                             onKeyPress: (e) => {
                               if (e.key === "Enter") {
                                 onUpdate(ensure(newCode, "No message"));
                                 setOpenDialog(false);
+                                onDialogOpenChange?.(false);
                                 setShowHistory(false);
                               }
                             },

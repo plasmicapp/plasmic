@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -13,23 +13,24 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
+  Flex as Flex__,
   StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
 } from "@plasmicapp/react-web";
+import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
 import sty from "./PlasmicViewAsButton.module.css"; // plasmic-import: MJoB9g7giNL/css
 
-export type PlasmicViewAsButton__VariantMembers = {};
+createPlasmicElementProxy;
 
+export type PlasmicViewAsButton__VariantMembers = {};
 export type PlasmicViewAsButton__VariantsArgs = {};
 type VariantPropType = keyof PlasmicViewAsButton__VariantsArgs;
 export const PlasmicViewAsButton__VariantProps = new Array<VariantPropType>();
@@ -39,20 +40,14 @@ type ArgPropType = keyof PlasmicViewAsButton__ArgsType;
 export const PlasmicViewAsButton__ArgProps = new Array<ArgPropType>();
 
 export type PlasmicViewAsButton__OverridesType = {
-  root?: p.Flex<typeof Button>;
+  root?: Flex__<typeof Button>;
 };
 
 export interface DefaultViewAsButtonProps {
   className?: string;
 }
 
-const __wrapUserFunction =
-  globalThis.__PlasmicWrapUserFunction ?? ((loc, fn) => fn());
-const __wrapUserPromise =
-  globalThis.__PlasmicWrapUserPromise ??
-  (async (loc, promise) => {
-    return await promise;
-  });
+const $$ = {};
 
 function PlasmicViewAsButton__RenderFunc(props: {
   variants: PlasmicViewAsButton__VariantsArgs;
@@ -62,13 +57,13 @@ function PlasmicViewAsButton__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const $ctx = ph.useDataEnv?.() || {};
   const args = React.useMemo(
     () =>
       Object.assign(
         {},
-
-        props.args
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
       ),
     [props.args]
   );
@@ -78,12 +73,9 @@ function PlasmicViewAsButton__RenderFunc(props: {
     ...variants,
   };
 
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
-
-  const currentUser = p.useCurrentUser?.() || {};
-
-  const [$queries, setDollarQueries] = React.useState({});
 
   return (
     <Button
@@ -92,9 +84,9 @@ function PlasmicViewAsButton__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames("__wab_instance", sty.root)}
-      font={"dim" as const}
+      font={"dim"}
       pointerCursor={true}
-      size={"small" as const}
+      size={"small"}
       type={["clear"]}
       withIcons={["endIcon"]}
     >
@@ -118,25 +110,25 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicViewAsButton__OverridesType,
   DescendantsType<T>
 >;
-
-type NodeComponentProps<T extends NodeNameType> = {
+type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
-  variants?: PlasmicViewAsButton__VariantsArgs;
-  args?: PlasmicViewAsButton__ArgsType;
-  overrides?: NodeOverridesType<T>;
-} & Omit<PlasmicViewAsButton__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-  // Specify args directly as props
-  Omit<PlasmicViewAsButton__ArgsType, ReservedPropsType> &
-  // Specify overrides for each element directly as props
-  Omit<
-    NodeOverridesType<T>,
-    ReservedPropsType | VariantPropType | ArgPropType
-  > &
-  // Specify props for the root element
-  Omit<
-    Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
-    ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
-  >;
+  {
+    variants?: PlasmicViewAsButton__VariantsArgs;
+    args?: PlasmicViewAsButton__ArgsType;
+    overrides?: NodeOverridesType<T>;
+  } & Omit<PlasmicViewAsButton__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+    // Specify args directly as props
+    Omit<PlasmicViewAsButton__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
+      NodeOverridesType<T>,
+      ReservedPropsType | VariantPropType | ArgPropType
+    > &
+    // Specify props for the root element
+    Omit<
+      Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
+      ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
+    >;
 
 function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
   type PropsType = NodeComponentProps<NodeName> & { key?: React.Key };
@@ -147,7 +139,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicViewAsButton__ArgProps,
           internalVariantPropNames: PlasmicViewAsButton__VariantProps,
         }),

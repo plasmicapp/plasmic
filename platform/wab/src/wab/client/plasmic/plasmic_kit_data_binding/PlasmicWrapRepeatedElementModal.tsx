@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -13,15 +13,16 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
+  Flex as Flex__,
+  Stack as Stack__,
   StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
 } from "@plasmicapp/react-web";
+import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+
 import WrapRepeatedElementOption from "../../components/sidebar-tabs/DataBinding/WrapRepeatedElementOption"; // plasmic-import: QcDtYmEqee/component
 
 import "@plasmicapp/react-web/lib/plasmic.css";
@@ -45,14 +46,14 @@ export const PlasmicWrapRepeatedElementModal__ArgProps =
   new Array<ArgPropType>();
 
 export type PlasmicWrapRepeatedElementModal__OverridesType = {
-  root?: p.Flex<"div">;
-  modalWrapRepeatedElement?: p.Flex<"div">;
-  frame28?: p.Flex<"div">;
-  frame27?: p.Flex<"div">;
-  frame25?: p.Flex<"div">;
-  rectangle16?: p.Flex<"div">;
-  rectangle17?: p.Flex<"div">;
-  rectangle18?: p.Flex<"div">;
+  root?: Flex__<"div">;
+  modalWrapRepeatedElement?: Flex__<"div">;
+  frame28?: Flex__<"div">;
+  frame27?: Flex__<"div">;
+  frame25?: Flex__<"div">;
+  rectangle16?: Flex__<"div">;
+  rectangle17?: Flex__<"div">;
+  rectangle18?: Flex__<"div">;
 };
 
 export interface DefaultWrapRepeatedElementModalProps {
@@ -69,18 +70,25 @@ function PlasmicWrapRepeatedElementModal__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
-
-  const currentUser = p.useCurrentUser?.() || {};
 
   return (
     <div
@@ -99,14 +107,14 @@ function PlasmicWrapRepeatedElementModal__RenderFunc(props: {
         sty.root
       )}
     >
-      <p.Stack
+      <Stack__
         as={"div"}
         data-plasmic-name={"modalWrapRepeatedElement"}
         data-plasmic-override={overrides.modalWrapRepeatedElement}
         hasGap={true}
         className={classNames(projectcss.all, sty.modalWrapRepeatedElement)}
       >
-        <p.Stack
+        <Stack__
           as={"div"}
           data-plasmic-name={"frame28"}
           data-plasmic-override={overrides.frame28}
@@ -131,8 +139,8 @@ function PlasmicWrapRepeatedElementModal__RenderFunc(props: {
           >
             {"This is a repeated element, how do you want to wrap it?"}
           </div>
-        </p.Stack>
-        <p.Stack
+        </Stack__>
+        <Stack__
           as={"div"}
           data-plasmic-name={"frame27"}
           data-plasmic-override={overrides.frame27}
@@ -153,7 +161,7 @@ function PlasmicWrapRepeatedElementModal__RenderFunc(props: {
             )}
             slot={"Wrap all the repeated elements in a single wrapper"}
             wrapRepeatedContainer={
-              <p.Stack
+              <Stack__
                 as={"div"}
                 data-plasmic-name={"frame25"}
                 data-plasmic-override={overrides.frame25}
@@ -177,13 +185,13 @@ function PlasmicWrapRepeatedElementModal__RenderFunc(props: {
                   data-plasmic-override={overrides.rectangle18}
                   className={classNames(projectcss.all, sty.rectangle18)}
                 />
-              </p.Stack>
+              </Stack__>
             }
           >
             {"Wrap all items"}
           </WrapRepeatedElementOption>
-        </p.Stack>
-      </p.Stack>
+        </Stack__>
+      </Stack__>
     </div>
   ) as React.ReactElement | null;
 }
@@ -199,7 +207,6 @@ const PlasmicDescendants = {
     "rectangle17",
     "rectangle18",
   ],
-
   modalWrapRepeatedElement: [
     "modalWrapRepeatedElement",
     "frame28",
@@ -209,7 +216,6 @@ const PlasmicDescendants = {
     "rectangle17",
     "rectangle18",
   ],
-
   frame28: ["frame28"],
   frame27: ["frame27", "frame25", "rectangle16", "rectangle17", "rectangle18"],
   frame25: ["frame25", "rectangle16", "rectangle17", "rectangle18"],
@@ -236,7 +242,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicWrapRepeatedElementModal__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
@@ -244,15 +249,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicWrapRepeatedElementModal__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicWrapRepeatedElementModal__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicWrapRepeatedElementModal__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+    // Specify args directly as props
+    Omit<PlasmicWrapRepeatedElementModal__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;
@@ -266,7 +271,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicWrapRepeatedElementModal__ArgProps,
           internalVariantPropNames:
             PlasmicWrapRepeatedElementModal__VariantProps,

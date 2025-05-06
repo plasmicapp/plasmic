@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -13,18 +13,20 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
+  Flex as Flex__,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
+  Stack as Stack__,
   StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
   hasVariant,
+  useDollarState,
 } from "@plasmicapp/react-web";
+import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+
 import CopilotLikeDislike from "../../components/CopilotLikeDislike"; // plasmic-import: -LDNJojbDZD/component
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
 import Textbox from "../../components/widgets/Textbox"; // plasmic-import: pA22NEzDCsn_/component
@@ -62,15 +64,15 @@ type ArgPropType = keyof PlasmicCopilotMsg__ArgsType;
 export const PlasmicCopilotMsg__ArgProps = new Array<ArgPropType>();
 
 export type PlasmicCopilotMsg__OverridesType = {
-  root?: p.Flex<"div">;
-  code?: p.Flex<"div">;
-  prompt?: p.Flex<"div">;
-  copilotLikeDislike?: p.Flex<typeof CopilotLikeDislike>;
-  applyBtn?: p.Flex<"div">;
-  feedbackTextbox?: p.Flex<typeof Textbox>;
-  submitFeedbackBtn?: p.Flex<typeof Button>;
-  feedbackSubmittedContainer?: p.Flex<"div">;
-  svg?: p.Flex<"svg">;
+  root?: Flex__<"div">;
+  code?: Flex__<"div">;
+  prompt?: Flex__<"div">;
+  copilotLikeDislike?: Flex__<typeof CopilotLikeDislike>;
+  applyBtn?: Flex__<"div">;
+  feedbackTextbox?: Flex__<typeof Textbox>;
+  submitFeedbackBtn?: Flex__<typeof Button>;
+  feedbackSubmittedContainer?: Flex__<"div">;
+  svg?: Flex__<"svg">;
 };
 
 export interface DefaultCopilotMsgProps {
@@ -90,20 +92,27 @@ function PlasmicCopilotMsg__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
-
-  const stateSpecs: Parameters<typeof p.useDollarState>[0] = React.useMemo(
+  const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
         path: "userPrompt",
@@ -124,10 +133,9 @@ function PlasmicCopilotMsg__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.feedback,
       },
     ],
-
     [$props, $ctx, $refs]
   );
-  const $state = p.useDollarState(stateSpecs, {
+  const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
@@ -135,7 +143,7 @@ function PlasmicCopilotMsg__RenderFunc(props: {
   });
 
   return (
-    <p.Stack
+    <Stack__
       as={"div"}
       data-plasmic-name={"root"}
       data-plasmic-override={overrides.root}
@@ -410,7 +418,7 @@ function PlasmicCopilotMsg__RenderFunc(props: {
         </Button>
       ) : null}
       {(hasVariant($state, "feedback", "submitted") ? true : false) ? (
-        <p.Stack
+        <Stack__
           as={"div"}
           data-plasmic-name={"feedbackSubmittedContainer"}
           data-plasmic-override={overrides.feedbackSubmittedContainer}
@@ -456,9 +464,9 @@ function PlasmicCopilotMsg__RenderFunc(props: {
           >
             {"Your feedback has been received!\nThank you for your help."}
           </div>
-        </p.Stack>
+        </Stack__>
       ) : null}
-    </p.Stack>
+    </Stack__>
   ) as React.ReactElement | null;
 }
 
@@ -474,7 +482,6 @@ const PlasmicDescendants = {
     "feedbackSubmittedContainer",
     "svg",
   ],
-
   code: ["code"],
   prompt: ["prompt"],
   copilotLikeDislike: ["copilotLikeDislike"],
@@ -504,7 +511,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicCopilotMsg__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
@@ -512,15 +518,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicCopilotMsg__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicCopilotMsg__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicCopilotMsg__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+    // Specify args directly as props
+    Omit<PlasmicCopilotMsg__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;
@@ -534,7 +540,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicCopilotMsg__ArgProps,
           internalVariantPropNames: PlasmicCopilotMsg__VariantProps,
         }),

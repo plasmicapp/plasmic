@@ -99,8 +99,6 @@
   max-width: 100%;
   color: #e3e3e0;
   height: 100%;
-  width: 1em;
-  flex-shrink: 0;
   min-height: 0;
 }
 .branchSegment {
@@ -119,8 +117,6 @@
   max-width: 100%;
   color: #e3e3e0;
   height: 100%;
-  width: 1em;
-  flex-shrink: 0;
   min-height: 0;
 }
 .arenaSegment {
@@ -183,8 +179,6 @@
   max-width: 100%;
   color: #e3e3e0;
   height: 100%;
-  width: 1em;
-  flex-shrink: 0;
   min-height: 0;
 }
 .svgmode_preview__u6BdQqMfAz {
@@ -267,14 +261,11 @@
 .freeTrial:global(.__wab_instance) {
   max-width: 100%;
   position: relative;
-  display: flex;
 }
 .svg__wdih6 {
   position: relative;
   object-fit: cover;
   max-width: 100%;
-  width: 1em;
-  flex-shrink: 0;
   height: 1em;
   display: none;
 }
@@ -314,17 +305,39 @@
   position: relative;
   object-fit: cover;
   color: var(--token-UunsGa2Y3t3);
-  width: 1em;
   height: 1em;
 }
-.commentButton:global(.__wab_instance) {
-  position: relative;
+.livePopOutButton:global(.__wab_instance):global(.__wab_instance) {
+  width: 32px;
   flex-shrink: 0;
+}
+.freeBox__tYUhw {
+  display: flex;
+  flex-direction: row;
+  position: relative;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  min-width: 0;
   margin: 0px 10px 0px 20px;
+}
+.freeBoxmode_preview__tYUhwQMfAz {
+  display: none;
+}
+.commentButton:global(.__wab_instance) {
+  flex-shrink: 0;
 }
 .commentButtonmode_preview:global(.__wab_instance) {
   flex-shrink: 0;
-  display: none;
+}
+.aiButton:global(.__wab_instance) {
+  max-width: 100%;
+  flex-shrink: 0;
+}
+.aiButtonmode_preview:global(.__wab_instance) {
+  flex-shrink: 0;
 }
 .freeBox___3DoVm {
   display: flex;
@@ -345,9 +358,6 @@
   > picture
   > img {
   margin-left: 8px;
-}
-.codeButtonmode_preview:global(.__wab_instance) {
-  display: flex;
 }
 .shareButton:global(.__wab_instance):global(.__wab_instance) {
   position: relative;
@@ -382,8 +392,5 @@
   height: 1.5rem;
 }
 .avatar > picture > img {
-  object-fit: cover;
-}
-.avatar > :global(.__wab_img-spacer) > img {
   object-fit: cover;
 }

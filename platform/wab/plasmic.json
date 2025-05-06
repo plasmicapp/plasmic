@@ -4774,6 +4774,19 @@
           "cssFilePath": "wab/client/plasmic/plasmic_kit_top_bar/PlasmicCommentButton.module.css",
           "scheme": "blackbox",
           "componentType": "component"
+        },
+        {
+          "id": "BqSsxlQdj2F0",
+          "name": "AiButton",
+          "type": "managed",
+          "projectId": "6CrqkTcB6gSAHoA8c8zpNz",
+          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_top_bar/PlasmicAiButton.tsx",
+          "importSpec": {
+            "modulePath": "wab/client/components/AiButton.tsx"
+          },
+          "cssFilePath": "wab/client/plasmic/plasmic_kit_top_bar/PlasmicAiButton.module.css",
+          "scheme": "blackbox",
+          "componentType": "component"
         }
       ],
       "icons": [
@@ -4812,8 +4825,9 @@
       ],
       "indirect": false,
       "globalContextsFilePath": "",
-      "jsBundleThemes": [],
-      "splitsProviderFilePath": ""
+      "splitsProviderFilePath": "",
+      "customFunctions": [],
+      "jsBundleThemes": []
     },
     {
       "projectId": "m8VxGcigeLAEXFe8c12w5Q",
@@ -9376,8 +9390,8 @@
       "icons": [
         {
           "id": "aeyQLybWj1P",
-          "name": "ChecksvgIcon",
-          "moduleFilePath": "wab/client/plasmic/plasmic_kit_data_binding/icons/PlasmicIcon__Checksvg.tsx"
+          "name": "CheckSvgIcon",
+          "moduleFilePath": "wab/client/plasmic/plasmic_kit_data_binding/icons/PlasmicIcon__CheckSvg.tsx"
         },
         {
           "id": "T7O74SQvscm",
@@ -9429,8 +9443,7 @@
         }
       ],
       "customFunctions": [],
-      "splitsProviderFilePath": "",
-      "jsBundleThemes": []
+      "splitsProviderFilePath": ""
     },
     {
       "projectId": "28Ba3BDvRe7EiWdfFNnLB6",

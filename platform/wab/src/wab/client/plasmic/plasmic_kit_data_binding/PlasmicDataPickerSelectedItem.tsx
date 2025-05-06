@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -13,17 +13,18 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
+  Flex as Flex__,
   SingleBooleanChoiceArg,
+  Stack as Stack__,
   StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
   hasVariant,
+  useDollarState,
 } from "@plasmicapp/react-web";
+import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
@@ -49,9 +50,9 @@ type ArgPropType = keyof PlasmicDataPickerSelectedItem__ArgsType;
 export const PlasmicDataPickerSelectedItem__ArgProps = new Array<ArgPropType>();
 
 export type PlasmicDataPickerSelectedItem__OverridesType = {
-  root?: p.Flex<"div">;
-  itemName?: p.Flex<"div">;
-  slash?: p.Flex<"div">;
+  root?: Flex__<"div">;
+  itemName?: Flex__<"div">;
+  slash?: Flex__<"div">;
 };
 
 export interface DefaultDataPickerSelectedItemProps {
@@ -69,20 +70,27 @@ function PlasmicDataPickerSelectedItem__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
-
-  const stateSpecs: Parameters<typeof p.useDollarState>[0] = React.useMemo(
+  const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
         path: "lastItem",
@@ -91,10 +99,9 @@ function PlasmicDataPickerSelectedItem__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.lastItem,
       },
     ],
-
     [$props, $ctx, $refs]
   );
-  const $state = p.useDollarState(stateSpecs, {
+  const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
@@ -102,7 +109,7 @@ function PlasmicDataPickerSelectedItem__RenderFunc(props: {
   });
 
   return (
-    <p.Stack
+    <Stack__
       as={"div"}
       data-plasmic-name={"root"}
       data-plasmic-override={overrides.root}
@@ -145,7 +152,7 @@ function PlasmicDataPickerSelectedItem__RenderFunc(props: {
       >
         {"/"}
       </div>
-    </p.Stack>
+    </Stack__>
   ) as React.ReactElement | null;
 }
 
@@ -168,7 +175,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicDataPickerSelectedItem__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
@@ -176,15 +182,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicDataPickerSelectedItem__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicDataPickerSelectedItem__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicDataPickerSelectedItem__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+    // Specify args directly as props
+    Omit<PlasmicDataPickerSelectedItem__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;
@@ -198,7 +204,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicDataPickerSelectedItem__ArgProps,
           internalVariantPropNames: PlasmicDataPickerSelectedItem__VariantProps,
         }),

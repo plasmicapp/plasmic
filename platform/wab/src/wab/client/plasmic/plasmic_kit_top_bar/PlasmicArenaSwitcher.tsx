@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -13,17 +13,19 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
+  Flex as Flex__,
+  PlasmicIcon as PlasmicIcon__,
   SingleChoiceArg,
   StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
   hasVariant,
+  useDollarState,
 } from "@plasmicapp/react-web";
+import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
 
 import "@plasmicapp/react-web/lib/plasmic.css";
@@ -33,17 +35,17 @@ import sty from "./PlasmicArenaSwitcher.module.css"; // plasmic-import: OAMl2pw5
 
 import MixedArenaIcon from "../plasmic_kit_design_system/icons/PlasmicIcon__MixedArena"; // plasmic-import: ArS5N_7TRj/icon
 import PageIcon from "../plasmic_kit_design_system/icons/PlasmicIcon__Page"; // plasmic-import: p8KOsO82kk/icon
-import ArrowRightsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ArrowRightSvg"; // plasmic-import: 9Jv8jb253/icon
-import ComponentsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ComponentSvg"; // plasmic-import: vJVrKlrDD/icon
+import ArrowRightSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ArrowRightSvg"; // plasmic-import: 9Jv8jb253/icon
+import ComponentSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ComponentSvg"; // plasmic-import: vJVrKlrDD/icon
+
+createPlasmicElementProxy;
 
 export type PlasmicArenaSwitcher__VariantMembers = {
   arenaType: "page" | "component" | "mixed";
 };
-
 export type PlasmicArenaSwitcher__VariantsArgs = {
   arenaType?: SingleChoiceArg<"page" | "component" | "mixed">;
 };
-
 type VariantPropType = keyof PlasmicArenaSwitcher__VariantsArgs;
 export const PlasmicArenaSwitcher__VariantProps = new Array<VariantPropType>(
   "arenaType"
@@ -54,10 +56,10 @@ type ArgPropType = keyof PlasmicArenaSwitcher__ArgsType;
 export const PlasmicArenaSwitcher__ArgProps = new Array<ArgPropType>();
 
 export type PlasmicArenaSwitcher__OverridesType = {
-  root?: p.Flex<typeof Button>;
-  svg?: p.Flex<"svg">;
-  freeBox?: p.Flex<"div">;
-  text?: p.Flex<"div">;
+  root?: Flex__<typeof Button>;
+  svg?: Flex__<"svg">;
+  freeBox?: Flex__<"div">;
+  text?: Flex__<"div">;
 };
 
 export interface DefaultArenaSwitcherProps {
@@ -65,13 +67,7 @@ export interface DefaultArenaSwitcherProps {
   className?: string;
 }
 
-const __wrapUserFunction =
-  globalThis.__PlasmicWrapUserFunction ?? ((loc, fn) => fn());
-const __wrapUserPromise =
-  globalThis.__PlasmicWrapUserPromise ??
-  (async (loc, promise) => {
-    return await promise;
-  });
+const $$ = {};
 
 function PlasmicArenaSwitcher__RenderFunc(props: {
   variants: PlasmicArenaSwitcher__VariantsArgs;
@@ -81,13 +77,13 @@ function PlasmicArenaSwitcher__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const $ctx = ph.useDataEnv?.() || {};
   const args = React.useMemo(
     () =>
       Object.assign(
         {},
-
-        props.args
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
       ),
     [props.args]
   );
@@ -97,14 +93,11 @@ function PlasmicArenaSwitcher__RenderFunc(props: {
     ...variants,
   };
 
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
-
-  const [$queries, setDollarQueries] = React.useState({});
-
-  const stateSpecs = React.useMemo(
+  const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
         path: "arenaType",
@@ -113,10 +106,14 @@ function PlasmicArenaSwitcher__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.arenaType,
       },
     ],
-
-    [$props, $ctx]
+    [$props, $ctx, $refs]
   );
-  const $state = p.useDollarState(stateSpecs, { $props, $ctx, $queries });
+  const $state = useDollarState(stateSpecs, {
+    $props,
+    $ctx,
+    $queries: {},
+    $refs,
+  });
 
   return (
     <Button
@@ -125,19 +122,19 @@ function PlasmicArenaSwitcher__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames("__wab_instance", sty.root)}
-      font={"bold" as const}
+      font={"bold"}
       startIcon={
-        <p.PlasmicIcon
+        <PlasmicIcon__
           data-plasmic-name={"svg"}
           data-plasmic-override={overrides.svg}
           PlasmicIconType={
             hasVariant($state, "arenaType", "mixed")
               ? MixedArenaIcon
               : hasVariant($state, "arenaType", "component")
-              ? ComponentsvgIcon
+              ? ComponentSvgIcon
               : hasVariant($state, "arenaType", "page")
               ? PageIcon
-              : ArrowRightsvgIcon
+              : ArrowRightSvgIcon
           }
           className={classNames(projectcss.all, sty.svg, {
             [sty.svgarenaType_component]: hasVariant(
@@ -154,37 +151,31 @@ function PlasmicArenaSwitcher__RenderFunc(props: {
       type={["clear"]}
       withIcons={["endIcon", "startIcon"]}
     >
-      {true ? (
+      <div
+        data-plasmic-name={"freeBox"}
+        data-plasmic-override={overrides.freeBox}
+        className={classNames(projectcss.all, sty.freeBox)}
+      >
         <div
-          data-plasmic-name={"freeBox"}
-          data-plasmic-override={overrides.freeBox}
-          className={classNames(projectcss.all, sty.freeBox)}
+          data-plasmic-name={"text"}
+          data-plasmic-override={overrides.text}
+          className={classNames(
+            projectcss.all,
+            projectcss.__wab_text,
+            sty.text,
+            {
+              [sty.textarenaType_mixed]: hasVariant(
+                $state,
+                "arenaType",
+                "mixed"
+              ),
+              [sty.textarenaType_page]: hasVariant($state, "arenaType", "page"),
+            }
+          )}
         >
-          <div
-            data-plasmic-name={"text"}
-            data-plasmic-override={overrides.text}
-            className={classNames(
-              projectcss.all,
-              projectcss.__wab_text,
-              sty.text,
-              {
-                [sty.textarenaType_mixed]: hasVariant(
-                  $state,
-                  "arenaType",
-                  "mixed"
-                ),
-                [sty.textarenaType_page]: hasVariant(
-                  $state,
-                  "arenaType",
-                  "page"
-                ),
-              }
-            )}
-          >
-            {"Arena Name"}
-          </div>
+          {"Arena Name"}
         </div>
-      ) : null}
+      </div>
     </Button>
   ) as React.ReactElement | null;
 }
@@ -210,25 +201,25 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicArenaSwitcher__OverridesType,
   DescendantsType<T>
 >;
-
-type NodeComponentProps<T extends NodeNameType> = {
+type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
-  variants?: PlasmicArenaSwitcher__VariantsArgs;
-  args?: PlasmicArenaSwitcher__ArgsType;
-  overrides?: NodeOverridesType<T>;
-} & Omit<PlasmicArenaSwitcher__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-  // Specify args directly as props
-  Omit<PlasmicArenaSwitcher__ArgsType, ReservedPropsType> &
-  // Specify overrides for each element directly as props
-  Omit<
-    NodeOverridesType<T>,
-    ReservedPropsType | VariantPropType | ArgPropType
-  > &
-  // Specify props for the root element
-  Omit<
-    Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
-    ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
-  >;
+  {
+    variants?: PlasmicArenaSwitcher__VariantsArgs;
+    args?: PlasmicArenaSwitcher__ArgsType;
+    overrides?: NodeOverridesType<T>;
+  } & Omit<PlasmicArenaSwitcher__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+    // Specify args directly as props
+    Omit<PlasmicArenaSwitcher__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
+      NodeOverridesType<T>,
+      ReservedPropsType | VariantPropType | ArgPropType
+    > &
+    // Specify props for the root element
+    Omit<
+      Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
+      ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
+    >;
 
 function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
   type PropsType = NodeComponentProps<NodeName> & { key?: React.Key };
@@ -239,7 +230,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicArenaSwitcher__ArgProps,
           internalVariantPropNames: PlasmicArenaSwitcher__VariantProps,
         }),

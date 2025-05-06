@@ -36,7 +36,6 @@
   position: relative;
   object-fit: cover;
   max-width: 100%;
-  width: 1em;
   height: 1em;
 }
 .svgstate_like__tYoHlYkBI {
@@ -46,7 +45,6 @@
   display: flex;
   position: relative;
   object-fit: cover;
-  width: 1em;
   height: 1em;
 }
 .dislikeBtn:global(.__wab_instance) {
@@ -66,7 +64,6 @@
   position: relative;
   object-fit: cover;
   max-width: 100%;
-  width: 1em;
   height: 1em;
 }
 .svgstate_dislike__uQuhx5IumH {
@@ -76,6 +73,5 @@
   display: flex;
   position: relative;
   object-fit: cover;
-  width: 1em;
   height: 1em;
 }

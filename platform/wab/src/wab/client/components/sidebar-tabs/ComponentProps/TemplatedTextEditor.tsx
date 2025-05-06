@@ -376,7 +376,7 @@ export const TemplatedTextEditor = React.forwardRef<
                   ) as SlateDescendant[],
                 });
               }}
-              isSql
+              type={"sql"}
               dataSourceSchema={dataSourceSchema}
               currentValue={templatedString?.text
                 .map((v) =>

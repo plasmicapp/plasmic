@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -13,18 +13,19 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
+  Flex as Flex__,
   SingleBooleanChoiceArg,
   StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
   hasVariant,
+  renderPlasmicSlot,
+  useDollarState,
   useTrigger,
 } from "@plasmicapp/react-web";
+import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
@@ -33,16 +34,16 @@ import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_
 import projectcss from "./plasmic_plasmic_kit_top_bar.module.css"; // plasmic-import: 6CrqkTcB6gSAHoA8c8zpNz/projectcss
 import sty from "./PlasmicTitleEditable.module.css"; // plasmic-import: MAl3yYpW3c/css
 
-import EditsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__EditSvg"; // plasmic-import: _Qa2gdunG/icon
+import EditSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__EditSvg"; // plasmic-import: _Qa2gdunG/icon
+
+createPlasmicElementProxy;
 
 export type PlasmicTitleEditable__VariantMembers = {
   disabled: "disabled";
 };
-
 export type PlasmicTitleEditable__VariantsArgs = {
   disabled?: SingleBooleanChoiceArg<"disabled">;
 };
-
 type VariantPropType = keyof PlasmicTitleEditable__VariantsArgs;
 export const PlasmicTitleEditable__VariantProps = new Array<VariantPropType>(
   "disabled"
@@ -52,7 +53,6 @@ export type PlasmicTitleEditable__ArgsType = {
   children?: React.ReactNode;
   icon?: React.ReactNode;
 };
-
 type ArgPropType = keyof PlasmicTitleEditable__ArgsType;
 export const PlasmicTitleEditable__ArgProps = new Array<ArgPropType>(
   "children",
@@ -60,7 +60,7 @@ export const PlasmicTitleEditable__ArgProps = new Array<ArgPropType>(
 );
 
 export type PlasmicTitleEditable__OverridesType = {
-  root?: p.Flex<"div">;
+  root?: Flex__<"div">;
 };
 
 export interface DefaultTitleEditableProps {
@@ -70,13 +70,7 @@ export interface DefaultTitleEditableProps {
   className?: string;
 }
 
-const __wrapUserFunction =
-  globalThis.__PlasmicWrapUserFunction ?? ((loc, fn) => fn());
-const __wrapUserPromise =
-  globalThis.__PlasmicWrapUserPromise ??
-  (async (loc, promise) => {
-    return await promise;
-  });
+const $$ = {};
 
 function PlasmicTitleEditable__RenderFunc(props: {
   variants: PlasmicTitleEditable__VariantsArgs;
@@ -86,13 +80,13 @@ function PlasmicTitleEditable__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const $ctx = ph.useDataEnv?.() || {};
   const args = React.useMemo(
     () =>
       Object.assign(
         {},
-
-        props.args
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
       ),
     [props.args]
   );
@@ -102,14 +96,11 @@ function PlasmicTitleEditable__RenderFunc(props: {
     ...variants,
   };
 
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
-
-  const [$queries, setDollarQueries] = React.useState({});
-
-  const stateSpecs = React.useMemo(
+  const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
         path: "disabled",
@@ -118,10 +109,14 @@ function PlasmicTitleEditable__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.disabled,
       },
     ],
-
-    [$props, $ctx]
+    [$props, $ctx, $refs]
   );
-  const $state = p.useDollarState(stateSpecs, { $props, $ctx, $queries });
+  const $state = useDollarState(stateSpecs, {
+    $props,
+    $ctx,
+    $queries: {},
+    $refs,
+  });
 
   const [isRootHover, triggerRootHoverProps] = useTrigger("useHover", {});
   const triggers = {
@@ -147,15 +142,14 @@ function PlasmicTitleEditable__RenderFunc(props: {
       )}
       data-plasmic-trigger-props={[triggerRootHoverProps]}
     >
-      {p.renderPlasmicSlot({
+      {renderPlasmicSlot({
         defaultContents: "Enter some text",
         value: args.children,
       })}
-
       {(triggers.hover_root ? true : false)
-        ? p.renderPlasmicSlot({
+        ? renderPlasmicSlot({
             defaultContents: (
-              <EditsvgIcon
+              <EditSvgIcon
                 className={classNames(projectcss.all, sty.svg__uFjIs)}
                 role={"img"}
               />
@@ -183,25 +177,25 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicTitleEditable__OverridesType,
   DescendantsType<T>
 >;
-
-type NodeComponentProps<T extends NodeNameType> = {
+type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
-  variants?: PlasmicTitleEditable__VariantsArgs;
-  args?: PlasmicTitleEditable__ArgsType;
-  overrides?: NodeOverridesType<T>;
-} & Omit<PlasmicTitleEditable__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-  // Specify args directly as props
-  Omit<PlasmicTitleEditable__ArgsType, ReservedPropsType> &
-  // Specify overrides for each element directly as props
-  Omit<
-    NodeOverridesType<T>,
-    ReservedPropsType | VariantPropType | ArgPropType
-  > &
-  // Specify props for the root element
-  Omit<
-    Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
-    ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
-  >;
+  {
+    variants?: PlasmicTitleEditable__VariantsArgs;
+    args?: PlasmicTitleEditable__ArgsType;
+    overrides?: NodeOverridesType<T>;
+  } & Omit<PlasmicTitleEditable__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+    // Specify args directly as props
+    Omit<PlasmicTitleEditable__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
+      NodeOverridesType<T>,
+      ReservedPropsType | VariantPropType | ArgPropType
+    > &
+    // Specify props for the root element
+    Omit<
+      Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
+      ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
+    >;
 
 function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
   type PropsType = NodeComponentProps<NodeName> & { key?: React.Key };
@@ -212,7 +206,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicTitleEditable__ArgProps,
           internalVariantPropNames: PlasmicTitleEditable__VariantProps,
         }),

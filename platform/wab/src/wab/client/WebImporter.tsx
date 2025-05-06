@@ -4,62 +4,26 @@ import {
   ensureViewCtxOrThrowUserError,
 } from "@/wab/client/clipboard/common";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { assertNever, withoutNils } from "@/wab/shared/common";
+import {
+  WIComponent,
+  WIContainer,
+  WIElement,
+  WIText,
+} from "@/wab/client/web-importer/types";
 import { unwrap } from "@/wab/commons/failable-utils";
+import { assertNever, withoutNils } from "@/wab/shared/common";
 import { code } from "@/wab/shared/core/exprs";
 import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
+import { TplTagType } from "@/wab/shared/core/tpls";
+import { RawText, TplNode } from "@/wab/shared/model/classes";
 import { RSH } from "@/wab/shared/RuleSetHelpers";
 import { VariantTplMgr } from "@/wab/shared/VariantTplMgr";
-import { RawText, TplNode } from "@/wab/shared/model/classes";
-import { TplTagType } from "@/wab/shared/core/tpls";
-
-type WIStyles = Record<string, Record<string, string>>;
-
-type SanitizedWIStyles = Record<
-  string,
-  {
-    safe: Record<string, string>;
-    unsafe: Record<string, string>;
-  }
->;
-
-interface WIBase {
-  type: string;
-  tag: string;
-  unsanitizedStyles: WIStyles;
-  styles: SanitizedWIStyles;
-}
-
-interface WIContainer extends WIBase {
-  type: "container";
-  children: WIElement[];
-  attrs: Record<string, string>;
-}
-
-interface WIText extends WIBase {
-  type: "text";
-  text: string;
-}
-
-interface WISVG extends WIBase {
-  type: "svg";
-  outerHtml: string;
-  width: number;
-  height: number;
-}
-
-interface WIComponent extends WIBase {
-  type: "component";
-  component: string;
-}
-
-type WIElement = WIContainer | WIText | WISVG | WIComponent;
 
 const WI_IMPORTER_HEADER = "__wab_plasmic_wi_importer;";
 
 export async function pasteFromWebImporter(
   text,
-  { studioCtx, cursorClientPt, insertRelLoc }: PasteArgs
+  pasteArgs: PasteArgs
 ): Promise<PasteResult> {
   if (!text.startsWith(WI_IMPORTER_HEADER)) {
     return {
@@ -67,11 +31,18 @@ export async function pasteFromWebImporter(
     };
   }
 
-  const viewCtx = ensureViewCtxOrThrowUserError(studioCtx);
-
   const wiTree = JSON.parse(
     text.substring(WI_IMPORTER_HEADER.length)
   ) as WIElement;
+
+  return processWebImporterTree(wiTree, pasteArgs);
+}
+
+export async function processWebImporterTree(
+  wiTree: WIElement,
+  { studioCtx, cursorClientPt, insertRelLoc }: PasteArgs
+): Promise<PasteResult> {
+  const viewCtx = ensureViewCtxOrThrowUserError(studioCtx);
 
   return {
     handled: true,

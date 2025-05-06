@@ -32,8 +32,6 @@
   transition-property: transform;
   transition-duration: 0.2s;
   margin-right: 4px;
-  width: 1em;
-  flex-shrink: 0;
   height: 1em;
   -webkit-transition-property: transform;
   -webkit-transition-duration: 0.2s;
@@ -47,8 +45,6 @@
   max-width: 100%;
   color: var(--token-fVn5vRhXJxQ);
   margin-right: 4px;
-  width: 1em;
-  flex-shrink: 0;
   height: 1em;
 }
 .envLabelText {

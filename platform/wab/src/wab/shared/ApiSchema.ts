@@ -2017,11 +2017,20 @@ export interface QueryCopilotDebugRequest extends QueryCopilotResquestBase {
   dataSourcesDebug?: true;
 }
 
+export interface QueryCopilotUiRequest extends QueryCopilotResquestBase {
+  type: "ui";
+  data: any;
+  currentCode?: string;
+  context?: string;
+  goal: string;
+}
+
 export type QueryCopilotRequest =
   | QueryCopilotChatRequest
   | QueryCopilotCodeRequest
   | QueryCopilotSqlCodeRequest
-  | QueryCopilotDebugRequest;
+  | QueryCopilotDebugRequest
+  | QueryCopilotUiRequest;
 
 export interface QueryCopilotResponse {
   dataSourcesDebug?: string;

@@ -28,6 +28,7 @@ import {
   isReusableComponent,
 } from "@/wab/shared/core/components";
 import { isAdminTeamEmail } from "@/wab/shared/devflag-utils";
+import { DEVFLAGS } from "@/wab/shared/devflags";
 import { pruneUnusedImageAssets } from "@/wab/shared/prune-site";
 import { naturalSort } from "@/wab/shared/sort";
 import {
@@ -452,6 +453,14 @@ function _TopBar({ preview }: TopBarProps) {
           props: {
             active: studioCtx.showCommentsPanel,
             onClick: () => studioCtx.toggleCommentsPanel(),
+          },
+        }}
+        aiButton={{
+          wrap: DEVFLAGS.enableUiCopilot ? undefined : () => null,
+          props: {
+            active: studioCtx.showUiCopilot,
+            onClick: () =>
+              studioCtx.openUiCopilotDialog(!studioCtx.showUiCopilot),
           },
         }}
         // TODO: We are currently not showing the live popout button on

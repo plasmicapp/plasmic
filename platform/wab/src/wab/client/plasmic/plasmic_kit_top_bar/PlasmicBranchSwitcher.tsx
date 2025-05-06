@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -13,15 +13,15 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
+  Flex as Flex__,
   StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
 } from "@plasmicapp/react-web";
+import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
 
 import "@plasmicapp/react-web/lib/plasmic.css";
@@ -29,10 +29,11 @@ import "@plasmicapp/react-web/lib/plasmic.css";
 import projectcss from "./plasmic_plasmic_kit_top_bar.module.css"; // plasmic-import: 6CrqkTcB6gSAHoA8c8zpNz/projectcss
 import sty from "./PlasmicBranchSwitcher.module.css"; // plasmic-import: IQWpmX8J3t/css
 
-import GitBranchsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__GitBranchSvg"; // plasmic-import: 4OBJfCUZH/icon
+import GitBranchSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__GitBranchSvg"; // plasmic-import: 4OBJfCUZH/icon
+
+createPlasmicElementProxy;
 
 export type PlasmicBranchSwitcher__VariantMembers = {};
-
 export type PlasmicBranchSwitcher__VariantsArgs = {};
 type VariantPropType = keyof PlasmicBranchSwitcher__VariantsArgs;
 export const PlasmicBranchSwitcher__VariantProps = new Array<VariantPropType>();
@@ -42,21 +43,15 @@ type ArgPropType = keyof PlasmicBranchSwitcher__ArgsType;
 export const PlasmicBranchSwitcher__ArgProps = new Array<ArgPropType>();
 
 export type PlasmicBranchSwitcher__OverridesType = {
-  root?: p.Flex<typeof Button>;
-  svg?: p.Flex<"svg">;
+  root?: Flex__<typeof Button>;
+  svg?: Flex__<"svg">;
 };
 
 export interface DefaultBranchSwitcherProps {
   className?: string;
 }
 
-const __wrapUserFunction =
-  globalThis.__PlasmicWrapUserFunction ?? ((loc, fn) => fn());
-const __wrapUserPromise =
-  globalThis.__PlasmicWrapUserPromise ??
-  (async (loc, promise) => {
-    return await promise;
-  });
+const $$ = {};
 
 function PlasmicBranchSwitcher__RenderFunc(props: {
   variants: PlasmicBranchSwitcher__VariantsArgs;
@@ -66,13 +61,13 @@ function PlasmicBranchSwitcher__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const $ctx = ph.useDataEnv?.() || {};
   const args = React.useMemo(
     () =>
       Object.assign(
         {},
-
-        props.args
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
       ),
     [props.args]
   );
@@ -82,12 +77,9 @@ function PlasmicBranchSwitcher__RenderFunc(props: {
     ...variants,
   };
 
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
-
-  const currentUser = p.useCurrentUser?.() || {};
-
-  const [$queries, setDollarQueries] = React.useState({});
 
   return (
     <Button
@@ -96,9 +88,9 @@ function PlasmicBranchSwitcher__RenderFunc(props: {
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       className={classNames("__wab_instance", sty.root)}
-      font={"bold" as const}
+      font={"bold"}
       startIcon={
-        <GitBranchsvgIcon
+        <GitBranchSvgIcon
           data-plasmic-name={"svg"}
           data-plasmic-override={overrides.svg}
           className={classNames(projectcss.all, sty.svg)}
@@ -130,25 +122,25 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicBranchSwitcher__OverridesType,
   DescendantsType<T>
 >;
-
-type NodeComponentProps<T extends NodeNameType> = {
+type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
-  variants?: PlasmicBranchSwitcher__VariantsArgs;
-  args?: PlasmicBranchSwitcher__ArgsType;
-  overrides?: NodeOverridesType<T>;
-} & Omit<PlasmicBranchSwitcher__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-  // Specify args directly as props
-  Omit<PlasmicBranchSwitcher__ArgsType, ReservedPropsType> &
-  // Specify overrides for each element directly as props
-  Omit<
-    NodeOverridesType<T>,
-    ReservedPropsType | VariantPropType | ArgPropType
-  > &
-  // Specify props for the root element
-  Omit<
-    Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
-    ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
-  >;
+  {
+    variants?: PlasmicBranchSwitcher__VariantsArgs;
+    args?: PlasmicBranchSwitcher__ArgsType;
+    overrides?: NodeOverridesType<T>;
+  } & Omit<PlasmicBranchSwitcher__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+    // Specify args directly as props
+    Omit<PlasmicBranchSwitcher__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
+      NodeOverridesType<T>,
+      ReservedPropsType | VariantPropType | ArgPropType
+    > &
+    // Specify props for the root element
+    Omit<
+      Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
+      ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
+    >;
 
 function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
   type PropsType = NodeComponentProps<NodeName> & { key?: React.Key };
@@ -159,7 +151,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicBranchSwitcher__ArgProps,
           internalVariantPropNames: PlasmicBranchSwitcher__VariantProps,
         }),

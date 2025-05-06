@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -13,17 +13,19 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
+  Flex as Flex__,
   SingleChoiceArg,
+  Stack as Stack__,
   StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
   hasVariant,
+  renderPlasmicSlot,
+  useDollarState,
 } from "@plasmicapp/react-web";
+import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
@@ -63,9 +65,9 @@ export const PlasmicDataPickerGlobalSearchResultsItem__ArgProps =
   new Array<ArgPropType>("itemName", "itemPath");
 
 export type PlasmicDataPickerGlobalSearchResultsItem__OverridesType = {
-  root?: p.Flex<"div">;
-  freeBox?: p.Flex<"div">;
-  previewValue?: p.Flex<"div">;
+  root?: Flex__<"div">;
+  freeBox?: Flex__<"div">;
+  previewValue?: Flex__<"div">;
 };
 
 export interface DefaultDataPickerGlobalSearchResultsItemProps {
@@ -74,7 +76,6 @@ export interface DefaultDataPickerGlobalSearchResultsItemProps {
   variableType?: SingleChoiceArg<
     "string" | "number" | "boolean" | "object" | "array" | "undefined" | "func"
   >;
-
   className?: string;
 }
 
@@ -88,20 +89,27 @@ function PlasmicDataPickerGlobalSearchResultsItem__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
-
-  const stateSpecs: Parameters<typeof p.useDollarState>[0] = React.useMemo(
+  const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
         path: "variableType",
@@ -110,10 +118,9 @@ function PlasmicDataPickerGlobalSearchResultsItem__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.variableType,
       },
     ],
-
     [$props, $ctx, $refs]
   );
-  const $state = p.useDollarState(stateSpecs, {
+  const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
@@ -159,7 +166,7 @@ function PlasmicDataPickerGlobalSearchResultsItem__RenderFunc(props: {
         }
       )}
     >
-      <p.Stack
+      <Stack__
         as={"div"}
         data-plasmic-name={"freeBox"}
         data-plasmic-override={overrides.freeBox}
@@ -177,7 +184,7 @@ function PlasmicDataPickerGlobalSearchResultsItem__RenderFunc(props: {
           ),
         })}
       >
-        {p.renderPlasmicSlot({
+        {renderPlasmicSlot({
           defaultContents: "Path / To / Item /",
           value: args.itemPath,
           className: classNames(sty.slotTargetItemPath, {
@@ -188,12 +195,12 @@ function PlasmicDataPickerGlobalSearchResultsItem__RenderFunc(props: {
             ),
           }),
         })}
-        {p.renderPlasmicSlot({
+        {renderPlasmicSlot({
           defaultContents: "Name",
           value: args.itemName,
           className: classNames(sty.slotTargetItemName),
         })}
-      </p.Stack>
+      </Stack__>
       <div
         data-plasmic-name={"previewValue"}
         data-plasmic-override={overrides.previewValue}
@@ -277,7 +284,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicDataPickerGlobalSearchResultsItem__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
@@ -289,15 +295,18 @@ type NodeComponentProps<T extends NodeNameType> =
     PlasmicDataPickerGlobalSearchResultsItem__VariantsArgs,
     ReservedPropsType
   > &
-    /* Specify args directly as props*/ Omit<
+    // Specify args directly as props
+    Omit<
       PlasmicDataPickerGlobalSearchResultsItem__ArgsType,
       ReservedPropsType
     > &
-    /* Specify overrides for each element directly as props*/ Omit<
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;
@@ -311,7 +320,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames:
             PlasmicDataPickerGlobalSearchResultsItem__ArgProps,
           internalVariantPropNames:

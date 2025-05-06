@@ -7,6 +7,7 @@ import { pasteText } from "@/wab/client/clipboard/text";
 import { InsertRelLoc } from "@/wab/client/components/canvas/view-ops";
 import { reportError, showError } from "@/wab/client/ErrorNotifications";
 import { pasteFromFigma } from "@/wab/client/figma";
+import { pasteFromHtmlImporter } from "@/wab/client/HtmlImporter";
 import { isCopyState } from "@/wab/client/insertable-templates";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { pasteFromWebImporter } from "@/wab/client/WebImporter";
@@ -98,6 +99,11 @@ async function pasteRouter(
       const figmaResult = await pasteFromFigma(textContent, args);
       if (figmaResult.handled) {
         return figmaResult.success;
+      }
+
+      const htmlImporterResult = await pasteFromHtmlImporter(textContent, args);
+      if (htmlImporterResult.handled) {
+        return htmlImporterResult.success;
       }
 
       const wiImporterResult = await pasteFromWebImporter(textContent, args);

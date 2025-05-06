@@ -29,8 +29,28 @@
   display: flex;
   position: relative;
   object-fit: cover;
-  width: 1em;
   height: 1em;
+}
+.freeBox {
+  display: flex;
+  flex-direction: row;
+  position: relative;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  min-width: 0;
+}
+.text {
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  min-width: 0;
+  display: none;
+}
+.texttype_ui {
+  display: block;
 }
 .svg__ubknx {
   position: relative;
@@ -38,12 +58,12 @@
   width: 24px;
   height: 18px;
   color: var(--token-N1gO6v-RIEn);
+  flex-shrink: 0;
 }
 .svg__phj6M {
   display: flex;
   position: relative;
   object-fit: cover;
-  width: 1em;
   height: 1em;
 }
 .popoverPlaceholder {
@@ -94,6 +114,9 @@
   width: auto;
   height: 300px;
   flex-shrink: 0;
+}
+.sizerContainertype_ui {
+  height: auto;
 }
 .promptDialog {
   display: flex;
@@ -180,6 +203,9 @@
   position: relative;
   flex-shrink: 0;
 }
+.historyBtnstate_ready:global(.__wab_instance) {
+  flex-shrink: 0;
+}
 .historyBtnstate_history:global(.__wab_instance) {
   flex-shrink: 0;
 }
@@ -203,7 +229,6 @@
   display: flex;
   position: relative;
   object-fit: cover;
-  width: 1em;
   height: 1em;
 }
 .cancelBtn:global(.__wab_instance) {
@@ -227,7 +252,6 @@
   display: flex;
   position: relative;
   object-fit: cover;
-  width: 1em;
   height: 1em;
 }
 .contents {
@@ -364,9 +388,6 @@
 .onLoadTrigger > picture > img {
   object-fit: cover;
 }
-.onLoadTrigger > :global(.__wab_img-spacer) > img {
-  object-fit: cover;
-}
 .onLoadTriggerstate_history {
   width: 1px;
   opacity: 0;
@@ -458,7 +479,6 @@
   display: flex;
   position: relative;
   object-fit: cover;
-  width: 1em;
   height: 1em;
 }
 .svg__x55Ap {

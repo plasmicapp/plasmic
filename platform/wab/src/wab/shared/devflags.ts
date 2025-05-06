@@ -408,6 +408,8 @@ const DEFAULT_DEVFLAGS = {
       "Your login session has expired. Please reload to log in again.",
   },
   showCopilot: true,
+  allowHtmlPaste: false,
+  enableUiCopilot: false,
 
   hostLessWorkspaceId: undefined as WorkspaceId | undefined,
   manuallyUpdatedHostLessProjectIds: [] as string[],
@@ -644,6 +646,8 @@ export function applyPlasmicUserDevFlagOverrides(target: DevFlagsType) {
     previewSteps: true,
     autoOpen: true,
     autoOpen2: true,
+    allowHtmlPaste: true,
+    enableUiCopilot: true,
   } as Partial<DevFlagsType>);
 }
 

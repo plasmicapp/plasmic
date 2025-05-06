@@ -180,6 +180,7 @@
     "@ant-design/pro-components": "Must be 2.6.4. Earlier doesn't support newer antd, later incurs a disallowed dynamic require of antd/es/layout/Sider. https://app.shortcut.com/plasmic/story/37043/richlayout-always-initially-loads-with-dark-background"
   },
   "dependencies": {
+    "@adobe/css-tools": "^4.4.2",
     "@amplitude/analytics-browser": "2.11.1",
     "@amplitude/analytics-node": "1.3.6",
     "@apidevtools/swagger-parser": "^10.0.2",
@@ -414,6 +415,7 @@
     "slate-react": "^0.81.0",
     "socket.io": "^4.6.2",
     "socket.io-client": "^4.6.1",
+    "specificity": "^1.0.0",
     "sql-highlight": "^4.3.2",
     "sqlstring": "^2.3.3",
     "stream-browserify": "^3.0.0",

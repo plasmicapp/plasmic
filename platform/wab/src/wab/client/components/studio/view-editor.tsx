@@ -9,6 +9,7 @@ import { paste } from "@/wab/client/clipboard/paste";
 import AutoOpenBanner from "@/wab/client/components/AutoOpenBanner";
 import { BottomModals } from "@/wab/client/components/BottomModal";
 import { maybeShowContextMenu } from "@/wab/client/components/ContextMenu";
+import { CopilotUiPrompt } from "@/wab/client/components/CopilotUiPrompt";
 import PageSettings from "@/wab/client/components/PageSettings";
 import { CanvasDndOverlay } from "@/wab/client/components/canvas/CanvasDndOverlay";
 import { isCanvasOverlay } from "@/wab/client/components/canvas/CanvasFrame";
@@ -2093,10 +2094,16 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
             studioCtx.setFocusedBottomModalIndex(newIndex)
           }
         />
+        {studioCtx.showUiCopilot ? (
+          <div className="canvas-editor__ui_copilot">
+            <CopilotUiPrompt />
+          </div>
+        ) : null}
       </div>
     );
   }
 }
+
 export const ViewEditor = observer(ViewEditor_);
 
 const RightPane = observer(function RightPane(props: {

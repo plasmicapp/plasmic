@@ -7,7 +7,6 @@
   position: relative;
   object-fit: cover;
   color: var(--token-0IloF6TmFvF);
-  width: 1em;
   height: 1em;
 }
 .freeBox {
@@ -33,6 +32,5 @@
   display: flex;
   position: relative;
   object-fit: cover;
-  width: 1em;
   height: 1em;
 }

@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -13,18 +13,22 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
+  Flex as Flex__,
+  PlasmicLink as PlasmicLink__,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
+  Stack as Stack__,
   StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
   hasVariant,
+  renderPlasmicSlot,
+  useDollarState,
 } from "@plasmicapp/react-web";
+import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+
 import DataPickerCodeEditorLayout from "../../components/sidebar-tabs/DataBinding/DataPickerCodeEditorLayout"; // plasmic-import: yN9xaawDlts/component
 import DataPickerColumn from "../../components/sidebar-tabs/DataBinding/DataPickerColumn"; // plasmic-import: xmF37LmWYE/component
 import DataPickerColumnItem from "../../components/sidebar-tabs/DataBinding/DataPickerColumnItem"; // plasmic-import: fa3uzsyXr0/component
@@ -41,9 +45,9 @@ import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_
 import projectcss from "./plasmic_plasmic_kit_data_binding.module.css"; // plasmic-import: w2GXN278dkQ2gQTVQnPehW/projectcss
 import sty from "./PlasmicDataPicker.module.css"; // plasmic-import: cbEBf9RLgx/css
 
-import PlaysvgIcon from "../plasmic_kit/PlasmicIcon__PlaySvg"; // plasmic-import: j39GoLwZnf7-v/icon
-import ArrowRightsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ArrowRightSvg"; // plasmic-import: 9Jv8jb253/icon
-import ChevronDownsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
+import PlaySvgIcon from "../plasmic_kit/PlasmicIcon__PlaySvg"; // plasmic-import: j39GoLwZnf7-v/icon
+import ArrowRightSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ArrowRightSvg"; // plasmic-import: 9Jv8jb253/icon
+import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
 
 createPlasmicElementProxy;
 
@@ -104,25 +108,25 @@ export const PlasmicDataPicker__ArgProps = new Array<ArgPropType>(
 );
 
 export type PlasmicDataPicker__OverridesType = {
-  root?: p.Flex<"div">;
-  header?: p.Flex<"div">;
-  title?: p.Flex<"div">;
-  stateSwitch?: p.Flex<"a">;
-  advancedSwitch?: p.Flex<"a">;
-  unlinkButton?: p.Flex<"a">;
-  addQueryBtn?: p.Flex<"a">;
-  addVariableBtn?: p.Flex<"a">;
-  link?: p.Flex<"a">;
-  searchbox?: p.Flex<typeof Searchbox>;
-  items?: p.Flex<"div">;
-  searchResults?: p.Flex<typeof DataPickerGlobalSearchResults>;
-  dataPickerColumnItem?: p.Flex<typeof DataPickerColumnItem>;
-  codeEditor?: p.Flex<typeof DataPickerCodeEditorLayout>;
-  footer?: p.Flex<"div">;
-  deleteButton?: p.Flex<typeof Button>;
-  runButton?: p.Flex<typeof Button>;
-  cancelButton?: p.Flex<typeof Button>;
-  saveButton?: p.Flex<typeof Button>;
+  root?: Flex__<"div">;
+  header?: Flex__<"div">;
+  title?: Flex__<"div">;
+  stateSwitch?: Flex__<"a">;
+  advancedSwitch?: Flex__<"a">;
+  unlinkButton?: Flex__<"a">;
+  addQueryBtn?: Flex__<"a">;
+  addVariableBtn?: Flex__<"a">;
+  link?: Flex__<"a">;
+  searchbox?: Flex__<typeof Searchbox>;
+  items?: Flex__<"div">;
+  searchResults?: Flex__<typeof DataPickerGlobalSearchResults>;
+  dataPickerColumnItem?: Flex__<typeof DataPickerColumnItem>;
+  codeEditor?: Flex__<typeof DataPickerCodeEditorLayout>;
+  footer?: Flex__<"div">;
+  deleteButton?: Flex__<typeof Button>;
+  runButton?: Flex__<typeof Button>;
+  cancelButton?: Flex__<typeof Button>;
+  saveButton?: Flex__<typeof Button>;
 };
 
 export interface DefaultDataPickerProps {
@@ -154,20 +158,27 @@ function PlasmicDataPicker__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
-
-  const stateSpecs: Parameters<typeof p.useDollarState>[0] = React.useMemo(
+  const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
         path: "withSearchResult",
@@ -248,10 +259,9 @@ function PlasmicDataPicker__RenderFunc(props: {
           $props.isRunCodeInteraction,
       },
     ],
-
     [$props, $ctx, $refs]
   );
-  const $state = p.useDollarState(stateSpecs, {
+  const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
@@ -352,7 +362,7 @@ function PlasmicDataPicker__RenderFunc(props: {
             ? "Edit code"
             : "Select data"}
         </div>
-        <p.Stack
+        <Stack__
           as={"div"}
           hasGap={true}
           className={classNames(projectcss.all, sty.freeBox__kLjUi, {
@@ -378,7 +388,7 @@ function PlasmicDataPicker__RenderFunc(props: {
               ? false
               : true
           ) ? (
-            <a
+            <PlasmicLink__
               data-plasmic-name={"stateSwitch"}
               data-plasmic-override={overrides.stateSwitch}
               className={classNames(
@@ -424,11 +434,12 @@ function PlasmicDataPicker__RenderFunc(props: {
                   ),
                 }
               )}
+              platform={"react"}
             >
               {hasVariant($state, "codeEditing", "codeEditing")
                 ? "Switch to Data Picker"
                 : "Switch to Code"}
-            </a>
+            </PlasmicLink__>
           ) : null}
           {(
             hasVariant($state, "withoutStateSwitch", "withoutStateSwitch")
@@ -471,7 +482,7 @@ function PlasmicDataPicker__RenderFunc(props: {
               ? false
               : false
           ) ? (
-            <a
+            <PlasmicLink__
               data-plasmic-name={"advancedSwitch"}
               data-plasmic-override={overrides.advancedSwitch}
               className={classNames(
@@ -517,11 +528,12 @@ function PlasmicDataPicker__RenderFunc(props: {
                   ),
                 }
               )}
+              platform={"react"}
             >
               {hasVariant($state, "advancedToggle", "hide")
                 ? "Hide advanced fields"
                 : "Show advanced fields"}
-            </a>
+            </PlasmicLink__>
           ) : null}
           {(
             hasVariant($state, "advancedToggle", "hide")
@@ -565,7 +577,7 @@ function PlasmicDataPicker__RenderFunc(props: {
             </div>
           ) : null}
           {(hasVariant($state, "withUnlink", "withUnlink") ? true : false) ? (
-            <a
+            <PlasmicLink__
               data-plasmic-name={"unlinkButton"}
               data-plasmic-override={overrides.unlinkButton}
               className={classNames(
@@ -591,9 +603,10 @@ function PlasmicDataPicker__RenderFunc(props: {
                   ),
                 }
               )}
+              platform={"react"}
             >
               {"Remove dynamic value"}
-            </a>
+            </PlasmicLink__>
           ) : null}
           {(hasVariant($state, "withUnlink", "withUnlink") ? true : false) ? (
             <div
@@ -623,7 +636,7 @@ function PlasmicDataPicker__RenderFunc(props: {
               {"|"}
             </div>
           ) : null}
-          <a
+          <PlasmicLink__
             data-plasmic-name={"addQueryBtn"}
             data-plasmic-override={overrides.addQueryBtn}
             className={classNames(
@@ -654,9 +667,10 @@ function PlasmicDataPicker__RenderFunc(props: {
                 ),
               }
             )}
+            platform={"react"}
           >
             {"Add new Data Fetch"}
-          </a>
+          </PlasmicLink__>
           {(
             hasVariant($state, "withAddQuery", "withAddQuery") ? true : false
           ) ? (
@@ -687,7 +701,7 @@ function PlasmicDataPicker__RenderFunc(props: {
               {"|"}
             </div>
           ) : null}
-          <a
+          <PlasmicLink__
             data-plasmic-name={"addVariableBtn"}
             data-plasmic-override={overrides.addVariableBtn}
             className={classNames(
@@ -723,11 +737,12 @@ function PlasmicDataPicker__RenderFunc(props: {
                 ),
               }
             )}
+            platform={"react"}
           >
             {hasVariant($state, "withAddVariable", "withAddVariable")
               ? "Add new State Variable"
               : "Add new Query"}
-          </a>
+          </PlasmicLink__>
           <div
             className={classNames(
               projectcss.all,
@@ -754,7 +769,7 @@ function PlasmicDataPicker__RenderFunc(props: {
           >
             {"|"}
           </div>
-          <a
+          <PlasmicLink__
             data-plasmic-name={"link"}
             data-plasmic-override={overrides.link}
             className={classNames(
@@ -806,11 +821,12 @@ function PlasmicDataPicker__RenderFunc(props: {
               }
             )}
             href={"https://docs.plasmic.app/learn/dynamic-values/"}
+            platform={"react"}
             target={"_blank"}
           >
             {"Help"}
-          </a>
-        </p.Stack>
+          </PlasmicLink__>
+        </Stack__>
       </div>
       {(
         hasVariant($state, "empty", "empty")
@@ -875,7 +891,7 @@ function PlasmicDataPicker__RenderFunc(props: {
             ? false
             : true
         )
-          ? p.renderPlasmicSlot({
+          ? renderPlasmicSlot({
               defaultContents: (
                 <React.Fragment>
                   <DataPickerColumn
@@ -1094,7 +1110,6 @@ function PlasmicDataPicker__RenderFunc(props: {
                   </DataPickerColumn>
                 </React.Fragment>
               ),
-
               value: args.children,
             })
           : null}
@@ -1250,7 +1265,14 @@ function PlasmicDataPicker__RenderFunc(props: {
                 className={classNames(
                   projectcss.all,
                   projectcss.__wab_text,
-                  sty.text__ukOhu
+                  sty.text__ukOhu,
+                  {
+                    [sty.textcodeEditing__ukOhuSjavw]: hasVariant(
+                      $state,
+                      "codeEditing",
+                      "codeEditing"
+                    ),
+                  }
                 )}
               >
                 {"$ctx.strapiItem.name"}
@@ -1294,7 +1316,7 @@ function PlasmicDataPicker__RenderFunc(props: {
           </div>
         ) : null}
       </div>
-      <p.Stack
+      <Stack__
         as={"div"}
         data-plasmic-name={"footer"}
         data-plasmic-override={overrides.footer}
@@ -1361,7 +1383,7 @@ function PlasmicDataPicker__RenderFunc(props: {
               ? false
               : true
           ) ? (
-            <p.Stack
+            <Stack__
               as={"div"}
               hasGap={true}
               className={classNames(projectcss.all, sty.freeBox__ruRlY, {
@@ -1421,7 +1443,7 @@ function PlasmicDataPicker__RenderFunc(props: {
                 </div>
               ) : null}
               {(hasVariant($state, "empty", "empty") ? false : true) ? (
-                <p.Stack
+                <Stack__
                   as={"div"}
                   hasGap={true}
                   className={classNames(projectcss.all, sty.freeBox__q6R5H, {
@@ -1432,7 +1454,7 @@ function PlasmicDataPicker__RenderFunc(props: {
                     ),
                   })}
                 >
-                  {p.renderPlasmicSlot({
+                  {renderPlasmicSlot({
                     defaultContents: (
                       <React.Fragment>
                         <DataPickerSelectedItem
@@ -1451,19 +1473,18 @@ function PlasmicDataPicker__RenderFunc(props: {
                         />
                       </React.Fragment>
                     ),
-
                     value: args.selectedItem,
                   })}
-                </p.Stack>
+                </Stack__>
               ) : null}
-            </p.Stack>
+            </Stack__>
           ) : null}
           {(
             hasVariant($state, "hasExpectedValues", "hasExpectedValues")
               ? true
               : false
           ) ? (
-            <p.Stack
+            <Stack__
               as={"div"}
               hasGap={true}
               className={classNames(projectcss.all, sty.freeBox__d7XVv, {
@@ -1516,16 +1537,16 @@ function PlasmicDataPicker__RenderFunc(props: {
                 {"Expected values:"}
               </div>
               <div className={classNames(projectcss.all, sty.freeBox__nBnS)}>
-                {p.renderPlasmicSlot({
+                {renderPlasmicSlot({
                   defaultContents: '"isBold", "softBlue", true',
                   value: args.expectedValues,
                   className: classNames(sty.slotTargetExpectedValues),
                 })}
               </div>
-            </p.Stack>
+            </Stack__>
           ) : null}
         </div>
-        <p.Stack
+        <Stack__
           as={"div"}
           hasGap={true}
           className={classNames(projectcss.all, sty.freeBox__d1Wr2, {
@@ -1568,7 +1589,7 @@ function PlasmicDataPicker__RenderFunc(props: {
                 ),
               })}
               endIcon={
-                <ChevronDownsvgIcon
+                <ChevronDownSvgIcon
                   className={classNames(projectcss.all, sty.svg__isguJ)}
                   role={"img"}
                 />
@@ -1576,7 +1597,7 @@ function PlasmicDataPicker__RenderFunc(props: {
               font={"dim"}
               size={"wide"}
               startIcon={
-                <ArrowRightsvgIcon
+                <ArrowRightSvgIcon
                   className={classNames(projectcss.all, sty.svg__s27J4)}
                   role={"img"}
                 />
@@ -1618,14 +1639,14 @@ function PlasmicDataPicker__RenderFunc(props: {
               })}
               color={"darkRed"}
               endIcon={
-                <ChevronDownsvgIcon
+                <ChevronDownSvgIcon
                   className={classNames(projectcss.all, sty.svg__uLbeH)}
                   role={"img"}
                 />
               }
               size={"wide"}
               startIcon={
-                <PlaysvgIcon
+                <PlaySvgIcon
                   className={classNames(projectcss.all, sty.svg__gqcvY)}
                   role={"img"}
                 />
@@ -1678,7 +1699,7 @@ function PlasmicDataPicker__RenderFunc(props: {
               ),
             })}
             endIcon={
-              <ChevronDownsvgIcon
+              <ChevronDownSvgIcon
                 className={classNames(projectcss.all, sty.svg__zeTa)}
                 role={"img"}
               />
@@ -1686,7 +1707,7 @@ function PlasmicDataPicker__RenderFunc(props: {
             font={"dim"}
             size={"wide"}
             startIcon={
-              <ArrowRightsvgIcon
+              <ArrowRightSvgIcon
                 className={classNames(projectcss.all, sty.svg__n5BIg)}
                 role={"img"}
               />
@@ -1711,14 +1732,14 @@ function PlasmicDataPicker__RenderFunc(props: {
               ),
             })}
             endIcon={
-              <ChevronDownsvgIcon
+              <ChevronDownSvgIcon
                 className={classNames(projectcss.all, sty.svg__dR6Kf)}
                 role={"img"}
               />
             }
             size={"wide"}
             startIcon={
-              <ArrowRightsvgIcon
+              <ArrowRightSvgIcon
                 className={classNames(projectcss.all, sty.svg__wYlpN)}
                 role={"img"}
               />
@@ -1727,8 +1748,8 @@ function PlasmicDataPicker__RenderFunc(props: {
           >
             {"Save"}
           </Button>
-        </p.Stack>
-      </p.Stack>
+        </Stack__>
+      </Stack__>
     </div>
   ) as React.ReactElement | null;
 }
@@ -1755,7 +1776,6 @@ const PlasmicDescendants = {
     "cancelButton",
     "saveButton",
   ],
-
   header: [
     "header",
     "title",
@@ -1766,7 +1786,6 @@ const PlasmicDescendants = {
     "addVariableBtn",
     "link",
   ],
-
   title: ["title"],
   stateSwitch: ["stateSwitch"],
   advancedSwitch: ["advancedSwitch"],
@@ -1815,7 +1834,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicDataPicker__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
@@ -1823,15 +1841,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicDataPicker__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicDataPicker__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicDataPicker__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+    // Specify args directly as props
+    Omit<PlasmicDataPicker__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;
@@ -1845,7 +1863,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicDataPicker__ArgProps,
           internalVariantPropNames: PlasmicDataPicker__VariantProps,
         }),

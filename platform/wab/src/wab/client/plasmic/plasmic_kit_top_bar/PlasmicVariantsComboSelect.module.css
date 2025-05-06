@@ -5,10 +5,10 @@
   align-items: center;
   justify-content: flex-start;
 }
-.root:focus-within {
+.root___focusVisibleWithin {
   outline: none;
 }
-.root___focusVisibleWithin {
+.root:focus-within {
   outline: none;
 }
 .root:hover:not(:focus-within) {
@@ -24,13 +24,11 @@
   display: flex;
   position: relative;
   object-fit: cover;
-  width: 1em;
   height: 1em;
 }
 .svg__nPGjK {
   display: flex;
   position: relative;
   object-fit: cover;
-  width: 1em;
   height: 1em;
 }

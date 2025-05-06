@@ -2586,6 +2586,16 @@ export class StudioCtx extends WithDbCtx {
     this._showCommentsPanel.set(!this.showCommentsPanel);
   }
 
+  private _showUiCopilot = observable.box(false);
+
+  get showUiCopilot() {
+    return this._showUiCopilot.get();
+  }
+
+  openUiCopilotDialog(isOpen: boolean) {
+    this._showUiCopilot.set(isOpen);
+  }
+
   private _xLeftPaneWidth = observable.box(LEFT_PANE_INIT_WIDTH);
   get leftPaneWidth() {
     if (!this.leftTabKey) {
