@@ -27515,7 +27515,7 @@
         }
       },
       "deps": [],
-      "version": "243-merge-duplicate-variants"
+      "version": "244-add-custom-function-display-name"
     }
   ],
   [
@@ -29157,7 +29157,7 @@
         }
       },
       "deps": ["5325bdab-f6eb-4f26-874d-07b1e74aeeab"],
-      "version": "243-merge-duplicate-variants"
+      "version": "244-add-custom-function-display-name"
     }
   ]
 ]

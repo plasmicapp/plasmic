@@ -436,6 +436,7 @@ export const modelConflictsMeta: ModelConflictsMeta = {
     importName: "generic",
     importPath: "generic",
     namespace: "generic",
+    displayName: "generic",
     params: {
       arrayType: "ordered",
       conflictType: "merge",

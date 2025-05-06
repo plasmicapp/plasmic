@@ -40,6 +40,7 @@ function mkCustomFunctionExpr(
       namespace: "",
       importName: name,
       importPath: "",
+      displayName: null,
       defaultExport: false,
       params: params.map((p) => typeFactory.arg(p, typeFactory.text())),
       isQuery: true,

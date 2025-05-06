@@ -224,6 +224,7 @@ CustomFunction
   importName: String
   defaultExport: Bool
   namespace: String?
+  displayName: String?
   params: [ArgType]
   isQuery: Bool
 

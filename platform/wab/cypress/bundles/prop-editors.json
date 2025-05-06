@@ -27349,7 +27349,7 @@
         }
       },
       "deps": [],
-      "version": "243-merge-duplicate-variants"
+      "version": "244-add-custom-function-display-name"
     }
   ],
   [
@@ -52827,7 +52827,7 @@
         "DuESJECNxPHt": { "tpl": [], "__type": "VirtualRenderExpr" }
       },
       "deps": ["968565bc-2862-4179-aa20-deebd3879e08"],
-      "version": "243-merge-duplicate-variants"
+      "version": "244-add-custom-function-display-name"
     }
   ]
 ]

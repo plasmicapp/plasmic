@@ -1304,7 +1304,7 @@
           }
         },
         "deps": [],
-        "version": "243-merge-duplicate-variants"
+        "version": "244-add-custom-function-display-name"
       },
       "projectId": "cpkeUeeErCd6XAniAHq8xq",
       "version": "0.0.1",
@@ -2845,7 +2845,7 @@
           }
         },
         "deps": [],
-        "version": "243-merge-duplicate-variants"
+        "version": "244-add-custom-function-display-name"
       }
     },
     {
@@ -4370,7 +4370,7 @@
           "55543038": { "text": ["arg3"], "__type": "TemplatedString" }
         },
         "deps": [],
-        "version": "243-merge-duplicate-variants"
+        "version": "244-add-custom-function-display-name"
       }
     }
   ]

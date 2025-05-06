@@ -2124,7 +2124,7 @@
         }
       },
       "deps": [],
-      "version": "243-merge-duplicate-variants"
+      "version": "244-add-custom-function-display-name"
     }
   ],
   [
@@ -4571,7 +4571,7 @@
         }
       },
       "deps": ["7349d209-ded6-417a-aa97-05311f8b93c4"],
-      "version": "243-merge-duplicate-variants"
+      "version": "244-add-custom-function-display-name"
     }
   ]
 ]

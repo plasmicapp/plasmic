@@ -785,7 +785,7 @@
         }
       },
       "deps": [],
-      "version": "243-merge-duplicate-variants"
+      "version": "244-add-custom-function-display-name"
     }
   ],
   [
@@ -1883,7 +1883,7 @@
         }
       },
       "deps": ["c30818bb-2f70-4079-bc4d-65eaecf566f6"],
-      "version": "243-merge-duplicate-variants"
+      "version": "244-add-custom-function-display-name"
     }
   ]
 ]

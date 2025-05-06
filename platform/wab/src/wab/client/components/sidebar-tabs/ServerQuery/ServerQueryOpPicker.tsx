@@ -175,7 +175,7 @@ export function ServerQueryOpDraftForm(props: {
                   const functionId = customFunctionId(fn);
                   return (
                     <StyleSelect.Option key={fn.uid} value={functionId}>
-                      {smartHumanize(fn.importName)}
+                      {fn.displayName ?? smartHumanize(fn.importName)}
                     </StyleSelect.Option>
                   );
                 })}

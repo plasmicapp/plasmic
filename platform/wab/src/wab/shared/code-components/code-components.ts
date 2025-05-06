@@ -2510,6 +2510,7 @@ function createCustomFunctionFromRegistration(
     importName: functionReg.meta.name,
     importPath: functionReg.meta.importPath,
     namespace: functionReg.meta.namespace ?? null,
+    displayName: functionReg.meta.displayName ?? null,
     params:
       functionReg.meta.params?.map((paramReg: string | ParamType<any, any>) => {
         const name = isString(paramReg) ? paramReg : paramReg.name;
@@ -4586,6 +4587,7 @@ async function upsertRegisteredFunctions(
           "namespace",
           "description",
           "typescriptDeclaration",
+          "displayName",
         ] as const) {
           if (
             !isString(functionReg.meta[prop]) &&
@@ -4687,7 +4689,7 @@ async function upsertRegisteredFunctions(
             "importName" | "namespace" | "typeTag" | "uid"
           > = pick(
             createCustomFunctionFromRegistration(functionReg, existing),
-            ["defaultExport", "importPath", "params", "isQuery"]
+            ["defaultExport", "importPath", "params", "isQuery", "displayName"]
           );
           if (
             Object.entries(updateableFields).some(
@@ -4803,7 +4805,13 @@ async function upsertRegisteredFunctions(
                   "importName" | "namespace" | "typeTag" | "uid"
                 > = pick(
                   createCustomFunctionFromRegistration(functionReg, existing),
-                  ["defaultExport", "importPath", "params", "isQuery"]
+                  [
+                    "defaultExport",
+                    "importPath",
+                    "params",
+                    "isQuery",
+                    "displayName",
+                  ]
                 );
                 customFunctionUsages.forEach((usage) => {
                   usage.ownerComponent.serverQueries

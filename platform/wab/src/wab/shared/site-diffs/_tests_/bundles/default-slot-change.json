@@ -2129,7 +2129,7 @@
           }
         },
         "deps": [],
-        "version": "243-merge-duplicate-variants"
+        "version": "244-add-custom-function-display-name"
       },
       "projectId": "draijZF6gtxjcZgKwMFy9R",
       "version": "1.0.0",
@@ -4281,7 +4281,7 @@
           }
         },
         "deps": [],
-        "version": "243-merge-duplicate-variants"
+        "version": "244-add-custom-function-display-name"
       }
     },
     {
@@ -6403,7 +6403,7 @@
           }
         },
         "deps": [],
-        "version": "243-merge-duplicate-variants"
+        "version": "244-add-custom-function-display-name"
       }
     }
   ]

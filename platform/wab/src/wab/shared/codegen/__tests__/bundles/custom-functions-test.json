@@ -1340,7 +1340,8 @@
           "namespace": "math",
           "params": [],
           "isQuery": false,
-          "__type": "CustomFunction"
+          "__type": "CustomFunction",
+          "displayName": null
         },
         "-hD0qzX8Rbv7": {
           "importPath": "./functions",
@@ -1349,7 +1350,8 @@
           "namespace": "math",
           "params": [],
           "isQuery": false,
-          "__type": "CustomFunction"
+          "__type": "CustomFunction",
+          "displayName": null
         },
         "1wavIcOhMzR6": {
           "importPath": "./functions",
@@ -1358,7 +1360,8 @@
           "namespace": null,
           "params": [],
           "isQuery": false,
-          "__type": "CustomFunction"
+          "__type": "CustomFunction",
+          "displayName": null
         },
         "SOeWExDqMzIL": {
           "expr": { "__ref": "Q2V4gWoP0oq8" },
@@ -1454,7 +1457,7 @@
         }
       },
       "deps": [],
-      "version": "243-merge-duplicate-variants"
+      "version": "244-add-custom-function-display-name"
     }
   ]
 ]

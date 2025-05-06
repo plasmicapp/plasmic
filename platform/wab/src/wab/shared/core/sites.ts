@@ -453,6 +453,7 @@ export function cloneCustomFunction(
     defaultExport: customFunction.defaultExport,
     importName: customFunction.importName,
     importPath: customFunction.importPath,
+    displayName: customFunction.displayName,
     namespace: customFunction.namespace,
     params: [],
     isQuery: customFunction.isQuery,
