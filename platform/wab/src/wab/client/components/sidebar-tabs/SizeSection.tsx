@@ -56,19 +56,9 @@ import { Alert, Menu } from "antd";
 import { observer } from "mobx-react";
 import React from "react";
 
-interface SizePanelSectionState {
-  isOpen: boolean;
-}
-
-class SizeSection_ extends StyleComponent<
-  StyleComponentProps,
-  SizePanelSectionState
-> {
+class SizeSection_ extends StyleComponent<StyleComponentProps> {
   constructor(props: StyleComponentProps) {
     super(props);
-    this.state = {
-      isOpen: true,
-    };
   }
 
   render() {
@@ -94,114 +84,108 @@ class SizeSection_ extends StyleComponent<
         title={"Size"}
         data-test-id="size-section"
       >
-        <>
-          {isSvg(this.props.expsProvider) && (
-            <Alert
-              className="mb-sm"
-              type="warning"
-              showIcon={true}
-              message={
-                <div>
-                  SVGs have no default size, so setting width to hug or auto
-                  will cause it to stretch to fill the parent container.
-                </div>
-              }
-            />
-          )}
-          {this.state.isOpen && (
-            <>
-              <FullRow twinCols>
-                <SizeControl
-                  // this is Width"
-                  prop="width"
-                  expsProvider={this.props.expsProvider}
-                  vsh={vsh}
-                  // TODO: experimenting with nested content
-                  // layout sections that can be resized
-                  // isDisabled={
-                  //   isDeepContentLayout && isDeepContentLayoutChild
-                  // }
-                  // disabledTooltip={
-                  //   isDeepContentLayout && isDeepContentLayoutChild
-                  //     ? "Nested page sections are always full-bleed"
-                  //     : undefined
-                  // }
-                />
-                <SizeControl
-                  prop="height"
-                  expsProvider={this.props.expsProvider}
-                  vsh={vsh}
-                />
-              </FullRow>
+        {isSvg(this.props.expsProvider) && (
+          <Alert
+            className="mb-sm"
+            type="warning"
+            showIcon={true}
+            message={
+              <div>
+                SVGs have no default size, so setting width to hug or auto will
+                cause it to stretch to fill the parent container.
+              </div>
+            }
+          />
+        )}
+        <FullRow twinCols>
+          <SizeControl
+            // this is Width"
+            prop="width"
+            expsProvider={this.props.expsProvider}
+            vsh={vsh}
+            // TODO: experimenting with nested content
+            // layout sections that can be resized
+            // isDisabled={
+            //   isDeepContentLayout && isDeepContentLayoutChild
+            // }
+            // disabledTooltip={
+            //   isDeepContentLayout && isDeepContentLayoutChild
+            //     ? "Nested page sections are always full-bleed"
+            //     : undefined
+            // }
+          />
+          <SizeControl
+            prop="height"
+            expsProvider={this.props.expsProvider}
+            vsh={vsh}
+          />
+        </FullRow>
 
-              <FullRow twinCols>
-                <LabeledStyleDimItem
-                  label="Min W"
-                  styleName={`min-width`}
-                  dimOpts={{
-                    ...tokenTypeDimOpts(TokenType.Spacing),
-                    min: 0,
-                    extraOptions: ["auto"],
-                  }}
-                  tokenType={TokenType.Spacing}
-                  vsh={vsh}
-                  labelSize="small"
-                />
-                <LabeledStyleDimItem
-                  label="Min H"
-                  styleName={`min-height`}
-                  dimOpts={{
-                    ...tokenTypeDimOpts(TokenType.Spacing),
-                    min: 0,
-                    extraOptions: ["auto"],
-                  }}
-                  tokenType={TokenType.Spacing}
-                  vsh={vsh}
-                  labelSize="small"
-                />
-              </FullRow>
-              <FullRow twinCols>
-                <LabeledStyleDimItem
-                  label="Max W"
-                  styleName={`max-width`}
-                  dimOpts={{
-                    ...tokenTypeDimOpts(TokenType.Spacing),
-                    min: 0,
-                    extraOptions: ["none"],
-                  }}
-                  tokenType={TokenType.Spacing}
-                  vsh={vsh}
-                  labelSize="small"
-                />
-                <LabeledStyleDimItem
-                  label="Max H"
-                  styleName={`max-height`}
-                  dimOpts={{
-                    ...tokenTypeDimOpts(TokenType.Spacing),
-                    min: 0,
-                    extraOptions: ["none"],
-                  }}
-                  tokenType={TokenType.Spacing}
-                  vsh={vsh}
-                  labelSize="small"
-                />
-              </FullRow>
+        <FullRow twinCols>
+          <LabeledStyleDimItem
+            label="Min W"
+            styleName={`min-width`}
+            dimOpts={{
+              ...tokenTypeDimOpts(TokenType.Spacing),
+              min: 0,
+              extraOptions: ["auto"],
+            }}
+            tokenType={TokenType.Spacing}
+            vsh={vsh}
+            labelSize="small"
+          />
+          <LabeledStyleDimItem
+            label="Min H"
+            styleName={`min-height`}
+            dimOpts={{
+              ...tokenTypeDimOpts(TokenType.Spacing),
+              min: 0,
+              extraOptions: ["auto"],
+            }}
+            tokenType={TokenType.Spacing}
+            vsh={vsh}
+            labelSize="small"
+          />
+        </FullRow>
+        <FullRow twinCols>
+          <LabeledStyleDimItem
+            label="Max W"
+            styleName={`max-width`}
+            dimOpts={{
+              ...tokenTypeDimOpts(TokenType.Spacing),
+              min: 0,
+              extraOptions: ["none"],
+            }}
+            tokenType={TokenType.Spacing}
+            vsh={vsh}
+            labelSize="small"
+          />
+          <LabeledStyleDimItem
+            label="Max H"
+            styleName={`max-height`}
+            dimOpts={{
+              ...tokenTypeDimOpts(TokenType.Spacing),
+              min: 0,
+              extraOptions: ["none"],
+            }}
+            tokenType={TokenType.Spacing}
+            vsh={vsh}
+            labelSize="small"
+          />
+        </FullRow>
 
-              <FlexGrowControls expsProvider={this.props.expsProvider} />
-              <LabeledStyleDimItemRow
-                label="Flex basis"
-                styleName="flex-basis"
-                dimOpts={{
-                  ...dimOpts,
-                  extraOptions: ["auto"],
-                }}
-                tokenType={TokenType.Spacing}
-                vsh={vsh}
-                definedIndicator={this.definedIndicators("flex-basis")}
-              />
-            </>
-          )}
-        </>
+        <FlexGrowControls expsProvider={this.props.expsProvider} />
+        <LabeledStyleDimItemRow
+          label="Flex basis"
+          styleName="flex-basis"
+          dimOpts={{
+            ...dimOpts,
+            extraOptions: ["auto"],
+          }}
+          tokenType={TokenType.Spacing}
+          vsh={vsh}
+          definedIndicator={this.definedIndicators("flex-basis")}
+        />
       </StylePanelSection>
     );
   }
