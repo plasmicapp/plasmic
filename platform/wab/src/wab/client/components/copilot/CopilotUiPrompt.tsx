@@ -1,5 +1,5 @@
 import { InsertRelLoc } from "@/wab/client/components/canvas/view-ops";
-import CopilotCodePrompt from "@/wab/client/components/CopilotCodePrompt";
+import { CopilotPromptDialog } from "@/wab/client/components/copilot/CopilotPromptDialog";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { parseHtmlToWebImporterTree } from "@/wab/client/web-importer/html-parser";
 import { processWebImporterTree } from "@/wab/client/WebImporter";
@@ -12,9 +12,9 @@ function CopilotUiPrompt() {
     : undefined;
 
   return (
-    <CopilotCodePrompt
+    <CopilotPromptDialog
       type={"ui"}
-      defaultDialogOpen={true}
+      dialogOpen={studioCtx.showUiCopilot}
       onDialogOpenChange={(isOpen) => {
         studioCtx.openUiCopilotDialog(isOpen);
       }}

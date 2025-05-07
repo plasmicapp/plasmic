@@ -1,13 +1,8 @@
 import CopilotMsg from "@/wab/client/components/CopilotMsg";
-import { dataPickerShouldHideKey } from "@/wab/client/components/sidebar-tabs/DataBinding/DataPickerUtil";
-import { TextboxRef } from "@/wab/client/components/widgets/Textbox";
-import { useAsyncStrict } from "@/wab/client/hooks/useAsyncStrict";
-import PlasmicCopilotCodePrompt, {
-  PlasmicCopilotCodePrompt__VariantsArgs,
-} from "@/wab/client/plasmic/plasmic_kit_data_binding/PlasmicCopilotCodePrompt";
-import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { trackEvent } from "@/wab/client/tracking";
-import { CopilotResponseData } from "@/wab/shared/ApiSchema";
+import {
+  DefaultCopilotPromptDialogProps,
+  PlasmicCopilotPromptDialog,
+} from "@/wab/client/plasmic/plasmic_kit_data_binding/PlasmicCopilotPromptDialog";
 import {
   ensure,
   isPrimitive,
@@ -16,29 +11,34 @@ import {
   unexpected,
   withoutNils,
 } from "@/wab/shared/common";
-import { DataSourceSchema } from "@plasmicapp/data-sources";
 import { Popover, Tooltip } from "antd";
-import { isString, range } from "lodash";
-import { observer } from "mobx-react";
-import React from "react";
+import * as React from "react";
 import { FocusScope } from "react-aria";
+
+import { dataPickerShouldHideKey } from "@/wab/client/components/sidebar-tabs/DataBinding/DataPickerUtil";
+import { TextboxRef } from "@/wab/client/components/widgets/Textbox";
+import { useAsyncStrict } from "@/wab/client/hooks/useAsyncStrict";
+import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { trackEvent } from "@/wab/client/tracking";
+import { CopilotResponseData } from "@/wab/shared/ApiSchema";
+import { DataSourceSchema } from "@plasmicapp/data-sources";
+import { isString, range } from "lodash";
 import defer = setTimeout;
 
-export interface CopilotCodePromptProps {
+export interface CopilotPromptDialogProps
+  extends DefaultCopilotPromptDialogProps {
   data?: any;
   currentValue?: string;
   onUpdate: (newValue: string) => void;
   // A brief description of what the expression is supposed to be used for
   context?: string;
-  type: PlasmicCopilotCodePrompt__VariantsArgs["type"];
   // Only set when `isSql` is true
   dataSourceSchema?: DataSourceSchema;
-  className?: string;
-  defaultDialogOpen?: boolean;
-  onDialogOpenChange?: (open: boolean) => void;
+  dialogOpen: boolean;
+  onDialogOpenChange: (open: boolean) => void;
 }
 
-export const CopilotCodePrompt = observer(function CopilotCodePrompt({
+function CopilotPromptDialog_({
   onUpdate,
   currentValue,
   data,
@@ -46,14 +46,11 @@ export const CopilotCodePrompt = observer(function CopilotCodePrompt({
   type,
   dataSourceSchema,
   className,
-  defaultDialogOpen,
+  dialogOpen,
   onDialogOpenChange,
-}: CopilotCodePromptProps) {
+}: CopilotPromptDialogProps) {
   const [prompt, setPrompt] = React.useState("");
   const [submittedPrompt, setSubmittedPrompt] = React.useState("");
-  const [openDialog, setOpenDialog] = React.useState(
-    defaultDialogOpen ?? false
-  );
   const [showHistory, setShowHistory] = React.useState(false);
   const promptInputRef: React.Ref<TextboxRef> = React.useRef<TextboxRef>(null);
   const applyBtnRef: React.Ref<HTMLDivElement> =
@@ -140,7 +137,7 @@ export const CopilotCodePrompt = observer(function CopilotCodePrompt({
   const suggestionHistory = studioCtx.getCopilotHistory(historyType);
 
   return (
-    <PlasmicCopilotCodePrompt
+    <PlasmicCopilotPromptDialog
       className={className}
       type={type}
       promptContainer={{
@@ -171,19 +168,6 @@ export const CopilotCodePrompt = observer(function CopilotCodePrompt({
           fontSize: 16,
         },
       }}
-      openCopilotBtn={{
-        props: {
-          onClick: () => {
-            setOpenDialog(true);
-            onDialogOpenChange?.(true);
-          },
-        },
-        wrap: (elt) => (
-          <Tooltip title={"Open Copilot"} mouseEnterDelay={0.5}>
-            {elt}
-          </Tooltip>
-        ),
-      }}
       runPromptBtn={{
         props: {
           onClick: () => setSubmittedPrompt(prompt.trim()),
@@ -207,7 +191,6 @@ export const CopilotCodePrompt = observer(function CopilotCodePrompt({
             placement={type === "ui" ? "top" : "leftTop"}
             onOpenChange={(visible) => {
               if (!visible) {
-                setOpenDialog(false);
                 onDialogOpenChange?.(false);
               }
             }}
@@ -240,7 +223,6 @@ export const CopilotCodePrompt = observer(function CopilotCodePrompt({
       cancelBtn={{
         onClick: () => {
           setShowHistory(false);
-          setOpenDialog(false);
           onDialogOpenChange?.(false);
         },
         tooltip: "Close",
@@ -264,14 +246,12 @@ export const CopilotCodePrompt = observer(function CopilotCodePrompt({
                 applyBtn={{
                   onClick: () => {
                     onUpdate(historyResponse);
-                    setOpenDialog(false);
                     onDialogOpenChange?.(false);
                     setShowHistory(false);
                   },
                   onKeyPress: (e) => {
                     if (e.key === "Enter") {
                       onUpdate(historyResponse);
-                      setOpenDialog(false);
                       onDialogOpenChange?.(false);
                       setShowHistory(false);
                     }
@@ -289,7 +269,7 @@ export const CopilotCodePrompt = observer(function CopilotCodePrompt({
             "0 3px 6px -4px rgba(0, 0, 0, 0.12), 0 6px 16px 0 rgba(0, 0, 0, 0.08), 0 9px 28px 8px rgba(0, 0, 0, 0.05)",
         },
       }}
-      {...(openDialog
+      {...(dialogOpen
         ? showHistory
           ? suggestionHistory.length > 0
             ? {
@@ -319,14 +299,12 @@ export const CopilotCodePrompt = observer(function CopilotCodePrompt({
                           applyBtn: {
                             onClick: () => {
                               onUpdate(ensure(newCode, "No message"));
-                              setOpenDialog(false);
                               onDialogOpenChange?.(false);
                               setShowHistory(false);
                             },
                             onKeyPress: (e) => {
                               if (e.key === "Enter") {
                                 onUpdate(ensure(newCode, "No message"));
-                                setOpenDialog(false);
                                 onDialogOpenChange?.(false);
                                 setShowHistory(false);
                               }
@@ -349,53 +327,6 @@ export const CopilotCodePrompt = observer(function CopilotCodePrompt({
         : {})}
     />
   );
-});
-
-function processData(data: Record<string, any>) {
-  const depthRange = range(7, 2, -1);
-  for (const maxDepth of depthRange) {
-    const rec = (v: any, depth: number, path: (string | number)[]) => {
-      if (isPrimitive(v)) {
-        if (isString(v) && v.length > 25) {
-          return `${v.slice(0, 20)}...`;
-        }
-        return v;
-      }
-      if (depth > maxDepth) {
-        return Array.isArray(v) ? [] : {};
-      }
-      if (Array.isArray(v)) {
-        return (v.length > 3 ? [...v.slice(0, 3), "... (long array"] : v).map(
-          (val, i) => rec(val, depth + 1, [...path, i])
-        );
-      } else {
-        return Object.fromEntries(
-          withoutNils(
-            Object.keys(v).map((key) =>
-              swallow(() =>
-                typeof v[key] === "function" ||
-                dataPickerShouldHideKey(key, v, path, {
-                  showAdvancedFields: true,
-                })
-                  ? null
-                  : ([key, rec(v[key], depth + 1, [...path, key])] as const)
-              )
-            )
-          ).slice(0, 50)
-        );
-      }
-    };
-    const res = rec(data, 1, []);
-    // Max data size
-    const THRESHOLD = 2500;
-    if (
-      (JSON.stringify(res)?.length ?? 0) <= THRESHOLD ||
-      maxDepth === last(depthRange)
-    ) {
-      return res;
-    }
-  }
-  unexpected();
 }
 
 function processCurrentCode(currentCode: string | undefined) {
@@ -444,4 +375,52 @@ function trackCopilotQuery({
   });
 }
 
-export default CopilotCodePrompt;
+function processData(data: Record<string, any>) {
+  const depthRange = range(7, 2, -1);
+  for (const maxDepth of depthRange) {
+    const rec = (v: any, depth: number, path: (string | number)[]) => {
+      if (isPrimitive(v)) {
+        if (isString(v) && v.length > 25) {
+          return `${v.slice(0, 20)}...`;
+        }
+        return v;
+      }
+      if (depth > maxDepth) {
+        return Array.isArray(v) ? [] : {};
+      }
+      if (Array.isArray(v)) {
+        return (v.length > 3 ? [...v.slice(0, 3), "... (long array"] : v).map(
+          (val, i) => rec(val, depth + 1, [...path, i])
+        );
+      } else {
+        return Object.fromEntries(
+          withoutNils(
+            Object.keys(v).map((key) =>
+              swallow(() =>
+                typeof v[key] === "function" ||
+                dataPickerShouldHideKey(key, v, path, {
+                  showAdvancedFields: true,
+                })
+                  ? null
+                  : ([key, rec(v[key], depth + 1, [...path, key])] as const)
+              )
+            )
+          ).slice(0, 50)
+        );
+      }
+    };
+    const res = rec(data, 1, []);
+    // Max data size
+    const THRESHOLD = 2500;
+    if (
+      (JSON.stringify(res)?.length ?? 0) <= THRESHOLD ||
+      maxDepth === last(depthRange)
+    ) {
+      return res;
+    }
+  }
+  unexpected();
+}
+
+const CopilotPromptDialog = React.forwardRef(CopilotPromptDialog_);
+export { CopilotPromptDialog };

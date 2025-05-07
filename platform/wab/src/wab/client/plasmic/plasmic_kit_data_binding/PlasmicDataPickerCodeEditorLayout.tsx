@@ -27,7 +27,7 @@ import {
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
-import CopilotCodePrompt from "../../components/CopilotCodePrompt"; // plasmic-import: SdMPiPjcB9G/component
+import { CopilotCodePrompt } from "../../components/copilot/CopilotCodePrompt"; // plasmic-import: SdMPiPjcB9G/component
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 

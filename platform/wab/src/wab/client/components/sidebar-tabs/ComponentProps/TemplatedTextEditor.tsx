@@ -1,6 +1,6 @@
-import { ContextMenuContext } from "@/wab/client/components/ContextMenuIndicator/ContextMenuIndicator";
-import CopilotCodePrompt from "@/wab/client/components/CopilotCodePrompt";
 import { resetNodes as doResetNodes } from "@/wab/client/components/canvas/slate";
+import { ContextMenuContext } from "@/wab/client/components/ContextMenuIndicator/ContextMenuIndicator";
+import { CopilotCodePrompt } from "@/wab/client/components/copilot/CopilotCodePrompt";
 import styles from "@/wab/client/components/sidebar-tabs/ComponentProps/TemplatedTextEditor.module.scss";
 import DataPicker, {
   DataPickerTypesSchema,

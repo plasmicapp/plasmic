@@ -9355,7 +9355,8 @@
           "projectId": "w2GXN278dkQ2gQTVQnPehW",
           "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_data_binding/PlasmicCopilotCodePrompt.tsx",
           "importSpec": {
-            "modulePath": "wab/client/components/CopilotCodePrompt.tsx"
+            "modulePath": "wab/client/components/copilot/CopilotCodePrompt.tsx",
+            "exportName": "CopilotCodePrompt"
           },
           "cssFilePath": "wab/client/plasmic/plasmic_kit_data_binding/PlasmicCopilotCodePrompt.module.css",
           "scheme": "blackbox",
@@ -9384,6 +9385,20 @@
             "modulePath": "wab/client/components/CopilotLikeDislike.tsx"
           },
           "cssFilePath": "wab/client/plasmic/plasmic_kit_data_binding/PlasmicCopilotLikeDislike.module.css",
+          "scheme": "blackbox",
+          "componentType": "component"
+        },
+        {
+          "id": "-zGA-erYhCmv",
+          "name": "CopilotPromptDialog",
+          "type": "managed",
+          "projectId": "w2GXN278dkQ2gQTVQnPehW",
+          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_data_binding/PlasmicCopilotPromptDialog.tsx",
+          "importSpec": {
+            "modulePath": "wab/client/components/copilot/CopilotPromptDialog.tsx",
+            "exportName": "CopilotPromptDialog"
+          },
+          "cssFilePath": "wab/client/plasmic/plasmic_kit_data_binding/PlasmicCopilotPromptDialog.module.css",
           "scheme": "blackbox",
           "componentType": "component"
         }

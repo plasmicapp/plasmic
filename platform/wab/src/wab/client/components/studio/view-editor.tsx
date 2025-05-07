@@ -9,7 +9,6 @@ import { paste } from "@/wab/client/clipboard/paste";
 import AutoOpenBanner from "@/wab/client/components/AutoOpenBanner";
 import { BottomModals } from "@/wab/client/components/BottomModal";
 import { maybeShowContextMenu } from "@/wab/client/components/ContextMenu";
-import { CopilotUiPrompt } from "@/wab/client/components/CopilotUiPrompt";
 import PageSettings from "@/wab/client/components/PageSettings";
 import { CanvasDndOverlay } from "@/wab/client/components/canvas/CanvasDndOverlay";
 import { isCanvasOverlay } from "@/wab/client/components/canvas/CanvasFrame";
@@ -30,6 +29,7 @@ import { closestTaggedNonTextDomElt } from "@/wab/client/components/canvas/studi
 import { getMergedTextArg } from "@/wab/client/components/canvas/view-ops";
 import { CommentsDialogs } from "@/wab/client/components/comments/CommentsDialogs";
 import CommentsTab from "@/wab/client/components/comments/CommentsTab";
+import { CopilotUiPrompt } from "@/wab/client/components/copilot/CopilotUiPrompt";
 import { DevContainer } from "@/wab/client/components/dev";
 import InsertPanelWrapper from "@/wab/client/components/insert-panel/InsertPanelWrapper";
 import { PreviewCtx } from "@/wab/client/components/live/PreviewCtx";
