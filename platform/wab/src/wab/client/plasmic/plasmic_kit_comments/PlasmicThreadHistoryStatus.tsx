@@ -22,7 +22,6 @@ import {
   deriveRenderOpts,
   hasVariant,
   useDollarState,
-  useTrigger,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
@@ -123,11 +122,6 @@ function PlasmicThreadHistoryStatus__RenderFunc(props: {
     $refs,
   });
 
-  const [isRootHover, triggerRootHoverProps] = useTrigger("useHover", {});
-  const triggers = {
-    hover_root: isRootHover,
-  };
-
   return (
     <div
       data-plasmic-name={"root"}
@@ -145,7 +139,6 @@ function PlasmicThreadHistoryStatus__RenderFunc(props: {
         sty.root,
         { [sty.rootresolved]: hasVariant($state, "resolved", "resolved") }
       )}
-      data-plasmic-trigger-props={[triggerRootHoverProps]}
     >
       <Tooltip
         data-plasmic-name={"tooltip"}
@@ -180,14 +173,9 @@ function PlasmicThreadHistoryStatus__RenderFunc(props: {
             }
             size={"medium"}
             type={
-              hasVariant($state, "resolved", "resolved") && triggers.hover_root
-                ? ["black"]
-                : triggers.hover_root
-                ? ["gray"]
-                : hasVariant($state, "resolved", "resolved")
-                ? ["black"]
-                : undefined
+              hasVariant($state, "resolved", "resolved") ? ["black"] : undefined
             }
+            withBackgroundHover={true}
           >
             <CheckedCheckboxSvgIcon
               data-plasmic-name={"svg"}

@@ -15,6 +15,7 @@ import * as React from "react";
 
 import {
   Flex as Flex__,
+  PlasmicIcon as PlasmicIcon__,
   SingleBooleanChoiceArg,
   Stack as Stack__,
   StrictProps,
@@ -60,7 +61,6 @@ export type PlasmicCommentsDialogHead__OverridesType = {
   root?: Flex__<"div">;
   head?: Flex__<"div">;
   commentsHeader?: Flex__<typeof CommentsHeader>;
-  freeBox?: Flex__<"div">;
   threadHistoryStatus?: Flex__<typeof ThreadHistoryStatus>;
   close?: Flex__<typeof IconButton>;
   svg?: Flex__<"svg">;
@@ -157,11 +157,9 @@ function PlasmicCommentsDialogHead__RenderFunc(props: {
 
         <Stack__
           as={"div"}
-          data-plasmic-name={"freeBox"}
-          data-plasmic-override={overrides.freeBox}
           hasGap={true}
-          className={classNames(projectcss.all, sty.freeBox, {
-            [sty.freeBoxcanUpdateHistory]: hasVariant(
+          className={classNames(projectcss.all, sty.freeBox__zvXog, {
+            [sty.freeBoxcanUpdateHistory__zvXoGrIxi6]: hasVariant(
               $state,
               "canUpdateHistory",
               "canUpdateHistory"
@@ -180,26 +178,41 @@ function PlasmicCommentsDialogHead__RenderFunc(props: {
             })}
           />
 
-          <IconButton
-            data-plasmic-name={"close"}
-            data-plasmic-override={overrides.close}
-            size={"medium"}
-            type={["seamless"]}
-            withBackgroundHover={true}
+          <div
+            className={classNames(projectcss.all, sty.freeBox__smvQk, {
+              [sty.freeBoxcanUpdateHistory__smvQKrIxi6]: hasVariant(
+                $state,
+                "canUpdateHistory",
+                "canUpdateHistory"
+              ),
+            })}
           >
-            <CloseIcon
-              data-plasmic-name={"svg"}
-              data-plasmic-override={overrides.svg}
-              className={classNames(projectcss.all, sty.svg, {
-                [sty.svgcanUpdateHistory]: hasVariant(
-                  $state,
-                  "canUpdateHistory",
-                  "canUpdateHistory"
-                ),
-              })}
-              role={"img"}
-            />
-          </IconButton>
+            <IconButton
+              data-plasmic-name={"close"}
+              data-plasmic-override={overrides.close}
+              size={"medium"}
+              type={[]}
+              withBackgroundHover={true}
+            >
+              <PlasmicIcon__
+                data-plasmic-name={"svg"}
+                data-plasmic-override={overrides.svg}
+                PlasmicIconType={
+                  hasVariant($state, "canUpdateHistory", "canUpdateHistory")
+                    ? CloseIcon
+                    : CloseIcon
+                }
+                className={classNames(projectcss.all, sty.svg, {
+                  [sty.svgcanUpdateHistory]: hasVariant(
+                    $state,
+                    "canUpdateHistory",
+                    "canUpdateHistory"
+                  ),
+                })}
+                role={"img"}
+              />
+            </IconButton>
+          </div>
         </Stack__>
       </div>
       <ListSectionSeparator
@@ -216,22 +229,13 @@ const PlasmicDescendants = {
     "root",
     "head",
     "commentsHeader",
-    "freeBox",
     "threadHistoryStatus",
     "close",
     "svg",
     "listSectionSeparator",
   ],
-  head: [
-    "head",
-    "commentsHeader",
-    "freeBox",
-    "threadHistoryStatus",
-    "close",
-    "svg",
-  ],
+  head: ["head", "commentsHeader", "threadHistoryStatus", "close", "svg"],
   commentsHeader: ["commentsHeader"],
-  freeBox: ["freeBox", "threadHistoryStatus", "close", "svg"],
   threadHistoryStatus: ["threadHistoryStatus"],
   close: ["close", "svg"],
   svg: ["svg"],
@@ -244,7 +248,6 @@ type NodeDefaultElementType = {
   root: "div";
   head: "div";
   commentsHeader: typeof CommentsHeader;
-  freeBox: "div";
   threadHistoryStatus: typeof ThreadHistoryStatus;
   close: typeof IconButton;
   svg: "svg";
@@ -313,7 +316,6 @@ export const PlasmicCommentsDialogHead = Object.assign(
     // Helper components rendering sub-elements
     head: makeNodeComponent("head"),
     commentsHeader: makeNodeComponent("commentsHeader"),
-    freeBox: makeNodeComponent("freeBox"),
     threadHistoryStatus: makeNodeComponent("threadHistoryStatus"),
     close: makeNodeComponent("close"),
     svg: makeNodeComponent("svg"),
