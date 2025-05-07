@@ -145,47 +145,6 @@ export function serializeTanStackHead(
   const canonical = page.pageMeta?.canonical;
   const exportName = makeTanStackHeadOptionsExportName(page);
 
-  const shouldRenderHead = title || description || ogImageSrc || canonical;
-  if (!shouldRenderHead || ctx.exportOpts.skipHead) {
-    return `export const ${exportName} = {
-  meta: [],
-  links: []
-};`;
-  }
-
-  const metaEntries: string[] = [];
-  metaEntries.push(
-    `{ name: "twitter:card", content: ${
-      ogImageSrc ? `"summary_large_image"` : `"summary"`
-    } }`
-  );
-
-  if (title) {
-    const titleKey = serializePageMetadataKey(ctx, "title");
-    metaEntries.push(
-      `{ key: "title", title: ${titleKey} }`,
-      `{ key: "og:title", property: "og:title", content: ${titleKey} }`,
-      `{ key: "twitter:title", name: "twitter:title", content: ${titleKey} }`
-    );
-  }
-
-  if (description) {
-    const descriptionKey = serializePageMetadataKey(ctx, "description");
-    metaEntries.push(
-      `{ key: "description", name: "description", content: ${descriptionKey} }`,
-      `{ key: "og:description", property: "og:description", content: ${descriptionKey} }`,
-      `{ key: "twitter:description", name: "twitter:description", content: ${descriptionKey} }`
-    );
-  }
-
-  if (ogImageSrc) {
-    const ogImageSrcKey = serializePageMetadataKey(ctx, "ogImageSrc");
-    metaEntries.push(
-      `{ key: "og:image", property: "og:image", content: ${ogImageSrcKey} }`,
-      `{ key: "twitter:image", name: "twitter:image", content: ${ogImageSrcKey} }`
-    );
-  }
-
   const linkEntries: string[] = [
     `{ rel: "stylesheet", href: defaultcss }`,
     `{ rel: "stylesheet", href: projectcss }`,
@@ -196,15 +155,54 @@ export function serializeTanStackHead(
     linkEntries.unshift(`{ rel: "stylesheet", href: globalcss }`);
   }
 
-  if (canonical) {
-    const canonicalKey = serializePageMetadataKey(ctx, "canonical");
-    linkEntries.push(`{ rel: "canonical", href: ${canonicalKey} }`);
+  const metaEntries: string[] = [];
+  if (!ctx.exportOpts.skipHead) {
+    metaEntries.push(
+      `{ name: "twitter:card", content: ${
+        ogImageSrc ? `"summary_large_image"` : `"summary"`
+      } }`
+    );
+
+    if (title) {
+      const titleKey = serializePageMetadataKey(ctx, "title");
+      metaEntries.push(
+        `{ key: "title", title: ${titleKey} }`,
+        `{ key: "og:title", property: "og:title", content: ${titleKey} }`,
+        `{ key: "twitter:title", name: "twitter:title", content: ${titleKey} }`
+      );
+    }
+
+    if (description) {
+      const descriptionKey = serializePageMetadataKey(ctx, "description");
+      metaEntries.push(
+        `{ key: "description", name: "description", content: ${descriptionKey} }`,
+        `{ key: "og:description", property: "og:description", content: ${descriptionKey} }`,
+        `{ key: "twitter:description", name: "twitter:description", content: ${descriptionKey} }`
+      );
+    }
+
+    if (ogImageSrc) {
+      const ogImageSrcKey = serializePageMetadataKey(ctx, "ogImageSrc");
+      metaEntries.push(
+        `{ key: "og:image", property: "og:image", content: ${ogImageSrcKey} }`,
+        `{ key: "twitter:image", name: "twitter:image", content: ${ogImageSrcKey} }`
+      );
+    }
+
+    if (canonical) {
+      const canonicalKey = serializePageMetadataKey(ctx, "canonical");
+      linkEntries.push(`{ rel: "canonical", href: ${canonicalKey} }`);
+    }
   }
 
   return `export const ${exportName} = {
-  meta: [
+  meta: ${
+    metaEntries.length
+      ? `[
     ${metaEntries.join(",\n    ")}
-  ],
+  ]`
+      : "[]"
+  },
   links: [
     ${linkEntries.join(",\n    ")}
   ]
