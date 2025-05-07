@@ -2,6 +2,7 @@ import { Mailer } from "@/wab/server/emails/Mailer";
 import {
   Comment,
   CommentReaction,
+  CommentThread,
   CommentThreadHistory,
   Project,
   User,
@@ -14,6 +15,7 @@ export interface Notification {
   user: User;
   project: Project;
   rootComment: Comment;
+  commentThread: CommentThread;
   entry: Entry;
   timestamp: Date;
 }
@@ -57,8 +59,8 @@ function getNotification(notification: Notification) {
   return `<p><strong>${userFullName}</strong> reacted to your comment</p>`;
 }
 
-function getRootNotification(comment: Comment) {
-  return `<p>${comment.body} ${
+function getRootNotification(comment: Comment, threadUrl: string) {
+  return `<p><a href="${threadUrl}" target="_blank">${comment.body}</a> ${
     comment.createdBy
       ? `by <strong>${comment.createdBy.firstName} ${comment.createdBy.lastName}</strong>`
       : ""
@@ -89,7 +91,7 @@ export async function sendUserNotificationEmail(
     const projectName = threadNotifications.values().next().value[0]
       .project.name;
 
-    emailBodyContent += `<div><h2>New updates in project: <a href="${projectUrl}">${projectName}</a></h2>`;
+    emailBodyContent += `<div><h2>New updates in project: <a href="${projectUrl}" target="_blank">${projectName}</a></h2>`;
 
     // Process each thread in the project
 
@@ -99,9 +101,15 @@ export async function sendUserNotificationEmail(
       }
 
       userEmail = notifications[0].user.email;
+      const commentThread = notifications[0].commentThread;
 
       emailBodyContent += `<hr>${getRootNotification(
-        notifications[0].rootComment
+        notifications[0].rootComment,
+        commentThread.branch?.name
+          ? `${projectUrl}?branch=${encodeURIComponent(
+              commentThread.branch.name
+            )}`
+          : projectUrl
       )}`;
 
       // Skip the first notification if it's a COMMENT and its comment is the same as rootComment

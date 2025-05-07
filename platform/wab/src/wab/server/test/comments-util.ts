@@ -3,11 +3,16 @@ import {
   Entry,
   Notification,
 } from "@/wab/server/emails/comment-notification-email";
-import { Permission, Project, User } from "@/wab/server/entities/Entities";
-import { withDb } from "@/wab/server/test/backend-util";
+import {
+  Branch,
+  Permission,
+  Project,
+  User,
+} from "@/wab/server/entities/Entities";
+import { withBranch } from "@/wab/server/test/branching-utils";
 import { CommentThreadId } from "@/wab/shared/ApiSchema";
 import { accessLevelRank } from "@/wab/shared/EntUtil";
-import { withoutNils } from "@/wab/shared/common";
+import { ensure, withoutNils } from "@/wab/shared/common";
 import { Connection } from "typeorm";
 
 async function setupNotifications(
@@ -47,25 +52,29 @@ export async function withEndUserNotificationSetup(
     users: User[];
     project: Project;
     userDbs: (() => DbMgr)[];
+    branch: Branch;
   }) => Promise<void>
 ) {
-  await withDb(async (sudo, users, userDbs, project, em) => {
-    await setupNotifications(sudo, userDbs, users, project);
+  await withBranch(
+    async (branch, _helpers, sudo, users, userDbs, project, em) => {
+      await setupNotifications(sudo, userDbs, users, project);
 
-    const permissions = await sudo.getPermissionsForProject(project.id);
-    const projectUsers = getUniqueUsersWithCommentAccess(permissions).sort(
-      (a, b) => a.email.localeCompare(b.email)
-    );
-    const threadProject = await sudo.getProjectById(project.id);
+      const permissions = await sudo.getPermissionsForProject(project.id);
+      const projectUsers = getUniqueUsersWithCommentAccess(permissions).sort(
+        (a, b) => a.email.localeCompare(b.email)
+      );
+      const threadProject = await sudo.getProjectById(project.id);
 
-    await f({
-      sudo,
-      users: projectUsers,
-      dbCon: em.connection,
-      project: threadProject,
-      userDbs,
-    });
-  });
+      await f({
+        sudo,
+        users: projectUsers,
+        dbCon: em.connection,
+        project: threadProject,
+        userDbs,
+        branch,
+      });
+    }
+  );
 }
 
 export async function createNotification(
@@ -77,6 +86,11 @@ export async function createNotification(
   sudo: DbMgr
 ): Promise<Notification> {
   const threadComments = await sudo.getCommentsForThread(commentThreadId);
+  const commentThreads = await sudo.getUnnotifiedCommentThreads(new Date());
+  const commentThread = ensure(
+    commentThreads.find((thread) => thread.id === commentThreadId),
+    "commentThread must exist"
+  );
   if (entry.type === "COMMENT") {
     let comment = entry.comment;
     const unnotifiedComments = await sudo.getUnnotifiedCommentsByThreadIds(
@@ -89,6 +103,7 @@ export async function createNotification(
       project,
       rootComment: threadComments[0],
       timestamp,
+      commentThread,
       entry: {
         ...entry,
         comment,
@@ -108,6 +123,7 @@ export async function createNotification(
       project,
       rootComment: threadComments[0],
       timestamp,
+      commentThread,
       entry: {
         ...entry,
         history,
@@ -127,6 +143,7 @@ export async function createNotification(
     project,
     rootComment: threadComments[0],
     timestamp,
+    commentThread,
     entry: {
       ...entry,
       reaction,

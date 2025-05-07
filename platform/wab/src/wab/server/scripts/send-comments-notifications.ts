@@ -267,7 +267,8 @@ async function processThreadForUser(
       user,
       notificationSettings,
       comment,
-      completeThreadComments
+      completeThreadComments,
+      commentThread
     );
 
     if (commentNotification) {
@@ -287,7 +288,8 @@ async function processCommentForUser(
   user: User,
   notificationSettings: ApiNotificationSettings,
   comment: Comment,
-  completeThreadComments: Comment[]
+  completeThreadComments: Comment[],
+  commentThread: CommentThread
 ): Promise<Notification | null> {
   const isReply =
     completeThreadComments.findIndex((tc) => tc.id === comment.id) > 0;
@@ -315,6 +317,7 @@ async function processCommentForUser(
     project: project,
     rootComment: rootComment,
     timestamp: comment.createdAt,
+    commentThread: commentThread,
     entry: {
       type: "COMMENT",
       comment,
@@ -355,6 +358,7 @@ async function processThreadHistoriesForUser(
             user,
             project,
             rootComment,
+            commentThread: commentThreadHistory.commentThread,
             timestamp: commentThreadHistory.createdAt,
             entry: {
               type: "THREAD_HISTORY",
@@ -390,6 +394,10 @@ async function processCommentReactionForProject(
         comment.createdBy,
         "Comment user does not exist"
       );
+      const commentThread = ensure(
+        comment.commentThread,
+        "Comment commentThread does not exist"
+      );
 
       const notificationSettings = await getUserNotificationSetting(
         ctx.dbManager,
@@ -407,6 +415,7 @@ async function processCommentReactionForProject(
           project,
           timestamp: commentReaction.createdAt,
           rootComment,
+          commentThread,
           entry: {
             type: "REACTION",
             reaction: commentReaction,

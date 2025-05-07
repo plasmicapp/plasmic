@@ -66,9 +66,11 @@ describe("sendUserNotificationEmail", () => {
         const expectedEmailBody = normalizeHtml(
           `<p> You have new activity in your projects:</p> <div><h2>New updates in project: <a href="https://studio.plasmic.app/projects/${
             project.id
-          }">${project.name}</a></h2><hr><p>${
-            user1Comment.body
-          } by <strong>${fullName(
+          }" target="_blank">${
+            project.name
+          }</a></h2><hr><p><a href="https://studio.plasmic.app/projects/${
+            project.id
+          }" target="_blank">${user1Comment.body}</a> by <strong>${fullName(
             users[1]
           )}</strong></p></div> <p>If you wish  to modify your notification settings, please visit the appropriate section in Plasmic Studio.</p>`
         );
@@ -135,7 +137,7 @@ describe("sendUserNotificationEmail", () => {
         );
 
         const user0CommentThreadHistory =
-          await await userDbs[0]().resolveThreadInProject(
+          await userDbs[0]().resolveThreadInProject(
             uuid.v4() as ThreadHistoryId,
             user0comment.commentThreadId,
             true
@@ -202,13 +204,17 @@ describe("sendUserNotificationEmail", () => {
         const expectedEmailBody = normalizeHtml(
           `<p> You have new activity in your projects:</p> <div><h2>New updates in project: <a href="https://studio.plasmic.app/projects/${
             project.id
-          }">${project.name}</a></h2><hr><p>${
-            user0comment.body
-          } by <strong>${fullName(
+          }" target="_blank">${
+            project.name
+          }</a></h2><hr><p><a href="https://studio.plasmic.app/projects/${
+            project.id
+          }" target="_blank">${user0comment.body}</a> by <strong>${fullName(
             users[0]
           )}</strong></p><ul><li><p>Thread was resolved by <strong>${fullName(
             users[0]
-          )}</strong></p></li></ul><hr><p>comment text by <strong>${fullName(
+          )}</strong></p></li></ul><hr><p><a href="https://studio.plasmic.app/projects/${
+            project.id
+          }" target="_blank">comment text</a> by <strong>${fullName(
             users[1]
           )}</strong></p><ul><li><p><strong>${fullName(
             users[0]
@@ -254,7 +260,7 @@ describe("sendUserNotificationEmail", () => {
         });
 
         // user 0 comment
-        const user0comment = await await userDbs[0]().postRootCommentInProject(
+        const user0comment = await userDbs[0]().postRootCommentInProject(
           { projectId: project.id },
           {
             body: "comment text",
@@ -266,7 +272,7 @@ describe("sendUserNotificationEmail", () => {
 
         // user 0 comment in project 2
         const user0commentInProject2 =
-          await await userDbs[0]().postRootCommentInProject(
+          await userDbs[0]().postRootCommentInProject(
             { projectId: project2.id },
             {
               body: "comment text",
@@ -277,7 +283,7 @@ describe("sendUserNotificationEmail", () => {
           );
 
         // User 1 comment
-        const user1Comment = await await userDbs[1]().postRootCommentInProject(
+        const user1Comment = await userDbs[1]().postRootCommentInProject(
           { projectId: project.id },
           {
             body: "comment text",
@@ -296,7 +302,7 @@ describe("sendUserNotificationEmail", () => {
         );
 
         const user0CommentThreadHistory =
-          await await userDbs[0]().resolveThreadInProject(
+          await userDbs[0]().resolveThreadInProject(
             uuid.v4() as ThreadHistoryId,
             user0comment.commentThreadId,
             true
@@ -381,17 +387,175 @@ describe("sendUserNotificationEmail", () => {
         const expectedEmailBody = normalizeHtml(
           `<p> You have new activity in your projects:</p> <div><h2>New updates in project: <a href="https://studio.plasmic.app/projects/${
             project.id
-          }">${project.name}</a></h2><hr><p>comment text by <strong>${fullName(
+          }" target="_blank">${
+            project.name
+          }</a></h2><hr><p><a href="https://studio.plasmic.app/projects/${
+            project.id
+          }" target="_blank">comment text</a> by <strong>${fullName(
             users[0]
           )}</strong></p><ul><li><p>Thread was resolved by <strong>${fullName(
             users[0]
-          )}</strong></p></li></ul><hr><p>comment text by <strong>${fullName(
+          )}</strong></p></li></ul><hr><p><a href="https://studio.plasmic.app/projects/${
+            project.id
+          }" target="_blank">comment text</a> by <strong>${fullName(
             users[1]
           )}</strong></p><ul><li><p><strong>${fullName(
             users[0]
           )}</strong> reacted to your comment</p></li></ul></div><div><h2>New updates in project: <a href="https://studio.plasmic.app/projects/${
             project2.id
-          }">${project2.name}</a></h2><hr><p>comment text by <strong>${fullName(
+          }" target="_blank">${
+            project2.name
+          }</a></h2><hr><p><a href="https://studio.plasmic.app/projects/${
+            project2.id
+          }" target="_blank">comment text</a> by <strong>${fullName(
+            users[0]
+          )}</strong></p></div> <p>If you wish to modify your notification settings, please visit the appropriate section in Plasmic Studio.</p>`
+        );
+
+        await sendUserNotificationEmail(
+          mailer,
+          notifications,
+          req.config.host,
+          config.mailFrom,
+          req.config.mailBcc // Optional BCC
+        );
+
+        // Get the actual email body sent
+        const receivedHtml = normalizeHtml(
+          mailer.sendMail.mock.calls[0][0].html
+        );
+
+        // Assert that the normalized HTML matches
+        expect(receivedHtml).toBe(expectedEmailBody);
+
+        // Assert other email properties
+        expect(mailer.sendMail).toHaveBeenCalledWith({
+          from: config.mailFrom,
+          to: users[1].email,
+          bcc: req.config.mailBcc,
+          subject: "New Activity in Your Projects",
+          html: expect.any(String), // Already tested above
+        });
+      }
+    );
+  });
+  it("sends an email with notifications grouped by project for multiple notifications in multiple branches", async () => {
+    await withEndUserNotificationSetup(
+      async ({ sudo, users, project, userDbs, branch }) => {
+        const { req, config, mailer } = setupEmailTest();
+        const branch2 = await userDbs[0]().createBranchFromLatestPkgVersion(
+          project.id,
+          {
+            name: `my-branch-2`,
+          }
+        );
+
+        // user 0 comment in main branch
+        const user0comment = await userDbs[0]().postRootCommentInProject(
+          { projectId: project.id },
+          {
+            body: "comment text",
+            location: { subject: { uuid: "", iid: "" }, variants: [] },
+            commentId: uuid.v4() as CommentId,
+            commentThreadId: uuid.v4() as CommentThreadId,
+          }
+        );
+
+        // user 0 comment in branch 1
+        const user0commentInBranch1 =
+          await userDbs[0]().postRootCommentInProject(
+            { projectId: project.id, branchId: branch.id },
+            {
+              body: "comment text",
+              location: { subject: { uuid: "", iid: "" }, variants: [] },
+              commentId: uuid.v4() as CommentId,
+              commentThreadId: uuid.v4() as CommentThreadId,
+            }
+          );
+
+        // user 0 comment in branch 2
+        const user0commentInBranch2 =
+          await userDbs[0]().postRootCommentInProject(
+            { projectId: project.id, branchId: branch2.id },
+            {
+              body: "comment text",
+              location: { subject: { uuid: "", iid: "" }, variants: [] },
+              commentId: uuid.v4() as CommentId,
+              commentThreadId: uuid.v4() as CommentThreadId,
+            }
+          );
+
+        // Mock input
+        const notifications: Map<
+          ProjectId,
+          Map<CommentThreadId, Notification[]>
+        > = new Map<ProjectId, Map<CommentThreadId, Notification[]>>([
+          [
+            project.id,
+            new Map([
+              [
+                user0comment.commentThreadId,
+                [
+                  await createNotification(
+                    user0comment.commentThreadId,
+                    users[1],
+                    project,
+                    user0comment.createdAt,
+                    { type: "COMMENT", comment: user0comment },
+                    sudo
+                  ),
+                ],
+              ],
+              [
+                user0commentInBranch1.commentThreadId,
+                [
+                  await createNotification(
+                    user0commentInBranch1.commentThreadId,
+                    users[1],
+                    project,
+                    user0commentInBranch1.createdAt,
+                    { type: "COMMENT", comment: user0commentInBranch1 },
+                    sudo
+                  ),
+                ],
+              ],
+              [
+                user0commentInBranch2.commentThreadId,
+                [
+                  await createNotification(
+                    user0commentInBranch2.commentThreadId,
+                    users[1],
+                    project,
+                    user0commentInBranch2.createdAt,
+                    { type: "COMMENT", comment: user0commentInBranch2 },
+                    sudo
+                  ),
+                ],
+              ],
+            ]),
+          ],
+        ]);
+
+        const expectedEmailBody = normalizeHtml(
+          `<p> You have new activity in your projects:</p> <div><h2>New updates in project: <a href="https://studio.plasmic.app/projects/${
+            project.id
+          }" target="_blank">${
+            project.name
+          }</a></h2><hr><p><a href="https://studio.plasmic.app/projects/${
+            project.id
+          }" target="_blank">${user0comment.body}</a> by <strong>${fullName(
+            users[0]
+          )}</strong></p><hr><p><a href="https://studio.plasmic.app/projects/${
+            project.id
+          }?branch=${branch.name}" target="_blank">${
+            user0commentInBranch1.body
+          }</a> by <strong>${fullName(
+            users[0]
+          )}</strong></p><hr><p><a href="https://studio.plasmic.app/projects/${
+            project.id
+          }?branch=${branch2.name}" target="_blank">${
+            user0commentInBranch2.body
+          }</a> by <strong>${fullName(
             users[0]
           )}</strong></p></div> <p>If you wish to modify your notification settings, please visit the appropriate section in Plasmic Studio.</p>`
         );

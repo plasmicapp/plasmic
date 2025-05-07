@@ -9646,6 +9646,7 @@ export class DbMgr implements MigrationDbMgr {
     return await this.commentThreads()
       .createQueryBuilder("thread")
       .where("thread.deletedAt IS NULL")
+      .leftJoinAndSelect("thread.branch", "branch")
       .andWhere(
         "(thread.lastEmailedAt is NULL OR (thread.updatedAt > thread.lastEmailedAt AND thread.updatedAt <= :before))",
         { before }
@@ -9689,6 +9690,7 @@ export class DbMgr implements MigrationDbMgr {
     return await this.commentThreadHistory()
       .createQueryBuilder("threadHistory")
       .leftJoinAndSelect("threadHistory.commentThread", "thread")
+      .leftJoinAndSelect("thread.branch", "branch")
       .leftJoinAndSelect("threadHistory.createdBy", "createdBy")
       .where("thread.id IN (:...threadIds)", { threadIds })
       .andWhere(
@@ -9713,6 +9715,7 @@ export class DbMgr implements MigrationDbMgr {
       .createQueryBuilder("commentReaction")
       .leftJoinAndSelect("commentReaction.comment", "comment")
       .leftJoinAndSelect("comment.commentThread", "thread")
+      .leftJoinAndSelect("thread.branch", "branch")
       .leftJoinAndSelect("commentReaction.createdBy", "reactionCreator")
       .leftJoinAndSelect("comment.createdBy", "commentCreator")
       .where("thread.id IN (:...threadIds)", { threadIds })
