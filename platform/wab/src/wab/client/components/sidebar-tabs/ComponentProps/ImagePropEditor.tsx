@@ -39,41 +39,51 @@ export const ImagePropEditor = observer(function ImagePropEditor(props: {
 
   return (
     <div className={"flex-fill flex-row justify-between overflow-hidden"}>
-      <ImgInfo
-        url={uri ?? ""}
-        extended
-        imagePreview={
-          <PlainLinkButton onClick={() => !readOnly && setPickingImage(true)}>
-            <ImagePreview
-              uri={uri ?? placeholderImgUrl()}
-              style={{
-                width: 48,
-                height: 32,
-              }}
-              className="mr-ch img-thumb-border"
-              size="cover"
-            />
-          </PlainLinkButton>
-        }
-        filename={
-          <MaybeWrap
-            cond={asset ? isEditable(studioCtx.site, asset) : false}
-            wrapper={(x) =>
-              readOnly ? (
-                <Tooltip title="Replace image...">
-                  {x as React.ReactElement}
-                </Tooltip>
-              ) : (
-                (x as React.ReactElement)
-              )
+      {
+        // https://linear.app/plasmic/issue/PLA-12109
+        // Without `!pickingImage &&`, SidebarModal errors (not sure why).
+        !pickingImage && (
+          <ImgInfo
+            url={uri ?? ""}
+            extended
+            imagePreview={
+              <PlainLinkButton
+                onClick={() => !readOnly && setPickingImage(true)}
+              >
+                <ImagePreview
+                  uri={uri ?? placeholderImgUrl()}
+                  style={{
+                    width: 48,
+                    height: 32,
+                  }}
+                  className="mr-ch img-thumb-border"
+                  size="cover"
+                />
+              </PlainLinkButton>
             }
-          >
-            <PlainLinkButton onClick={() => !readOnly && setPickingImage(true)}>
-              {asset ? asset.name : !readOnly ? "Choose an image..." : ""}
-            </PlainLinkButton>
-          </MaybeWrap>
-        }
-      />
+            filename={
+              <MaybeWrap
+                cond={asset ? isEditable(studioCtx.site, asset) : false}
+                wrapper={(x) =>
+                  readOnly ? (
+                    <Tooltip title="Replace image...">
+                      {x as React.ReactElement}
+                    </Tooltip>
+                  ) : (
+                    (x as React.ReactElement)
+                  )
+                }
+              >
+                <PlainLinkButton
+                  onClick={() => !readOnly && setPickingImage(true)}
+                >
+                  {asset ? asset.name : !readOnly ? "Choose an image..." : ""}
+                </PlainLinkButton>
+              </MaybeWrap>
+            }
+          />
+        )
+      }
       {value && (
         <IconButton
           className={"flex-start"}
