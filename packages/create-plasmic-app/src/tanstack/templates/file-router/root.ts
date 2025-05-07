@@ -1,7 +1,7 @@
 import { JsOrTs } from "../../../utils/types";
 
 export function makeCustomRoot_file_router_codegen(_jsOrTs: JsOrTs): string {
-  return `import { createRootRoute, HeadContent, Outlet, Scripts, Link } from '@tanstack/react-router'
+  return `import { createRootRoute, HeadContent, Outlet, Scripts } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
 import { PlasmicRootProvider } from "@plasmicapp/react-web"
 import appCss from "../styles.css?url";
@@ -17,7 +17,7 @@ export const Route = createRootRoute({
   }),
   component: () => (
     <RootDocument>
-      <PlasmicRootProvider Link={Link}>
+      <PlasmicRootProvider>
         <Outlet />
         <TanStackRouterDevtools />
       </PlasmicRootProvider>
