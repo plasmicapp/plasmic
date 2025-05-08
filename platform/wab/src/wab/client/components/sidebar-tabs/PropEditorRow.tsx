@@ -166,7 +166,7 @@ export interface ControlExtras {
 }
 
 interface PropEditorContextData {
-  componentPropValues: Record<string, any>;
+  componentPropValues: Record<string, any> | any[];
   ccContextData: any;
   invalidArg?: InvalidArgMeta;
   tpl?: TplTag | TplComponent;

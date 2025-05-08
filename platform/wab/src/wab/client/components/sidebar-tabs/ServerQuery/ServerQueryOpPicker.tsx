@@ -50,6 +50,7 @@ import {
   useCustomFunctionOp,
 } from "@/wab/shared/core/custom-functions";
 import type { ServerQueryResult } from "@plasmicapp/react-web/lib/data-sources";
+import useSWR from "swr";
 
 const LazyCodePreview = React.lazy(
   () => import("@/wab/client/components/coding/CodePreview")
@@ -110,15 +111,48 @@ export function ServerQueryOpDraftForm(props: {
       return acc;
     }, {} as Record<string, any>);
   }, [argsMap]);
+
+  const { dataKey, fetcher, funcParamsValues } = React.useMemo(() => {
+    const func = value?.func;
+    if (!func) {
+      return {
+        dataKey: null,
+        fetcher: null,
+        funcParamsValues: [],
+      };
+    }
+    const registeredMeta = studioCtx
+      .getRegisteredFunctionsMap()
+      .get(customFunctionId(func))?.meta;
+
+    const fnContext = registeredMeta?.fnContext;
+    if (!fnContext) {
+      return {
+        dataKey: null,
+        fetcher: null,
+        funcParamsValues: [],
+      };
+    }
+
+    const params = func.params.map((param) => evaluatedArgs[param.argName]);
+
+    return {
+      ...fnContext(...params),
+      funcParamsValues: params,
+    };
+  }, [studioCtx, value?.func, evaluatedArgs]);
+
+  const { data: ccContextData } = useSWR(dataKey, fetcher);
+
   const propValueEditorContext = React.useMemo(() => {
     return {
-      componentPropValues: evaluatedArgs,
-      ccContextData: {},
+      componentPropValues: funcParamsValues ?? [],
+      ccContextData,
       exprCtx,
       schema,
       env: data,
     };
-  }, [schema, data, evaluatedArgs, exprCtx]);
+  }, [schema, data, funcParamsValues, exprCtx, ccContextData]);
 
   React.useEffect(() => {
     if (availableCustomFunction.length > 0 && !value?.func) {
@@ -155,11 +189,14 @@ export function ServerQueryOpDraftForm(props: {
             if (value?.func && id === customFunctionId(value.func)) {
               return;
             }
+
+            const func = availableCustomFunction.find(
+              (fn) => customFunctionId(fn) === id
+            );
+
             onChange({
               ...value,
-              func: availableCustomFunction.find(
-                (fn) => customFunctionId(fn) === id
-              ),
+              func,
               args: [],
             });
           }}
