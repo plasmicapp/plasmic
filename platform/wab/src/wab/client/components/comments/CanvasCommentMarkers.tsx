@@ -8,10 +8,6 @@ import {
   TplCommentThread,
 } from "@/wab/client/components/comments/utils";
 import { Avatar } from "@/wab/client/components/studio/Avatar";
-import {
-  BASE_VARIANT_COLOR,
-  NON_BASE_VARIANT_COLOR,
-} from "@/wab/client/components/studio/GlobalCssVariables";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import {
   getSetOfVariantsForViewCtx,
@@ -26,9 +22,7 @@ import {
 } from "@/wab/shared/core/tpls";
 import { ArenaFrame, ObjInst, TplNode } from "@/wab/shared/model/classes";
 import { mkSemVerSiteElement } from "@/wab/shared/site-diffs";
-import Chroma from "@/wab/shared/utils/color-utils";
 import { Popover, Tooltip } from "antd";
-import classNames from "classnames";
 import $ from "jquery";
 import { observer } from "mobx-react";
 import React, { ReactNode } from "react";
@@ -92,7 +86,6 @@ const CanvasCommentMarker = observer(function CanvasCommentMarker(props: {
           commentsCtx.openCommentThreadDialog(commentThread.id, viewCtx);
         }
       }}
-      isSelected={isSelected}
       zIndex={zIndex}
     >
       <Popover
@@ -275,7 +268,6 @@ export const CanvasCommentOverlay = observer(function CanvasCommentOverlay({
   viewCtx,
   onClick,
   className,
-  isSelected,
   offsetRight,
   zIndex = COMMENT_MARKER_INITIAL_Z_INDEX,
 }: {
@@ -284,7 +276,6 @@ export const CanvasCommentOverlay = observer(function CanvasCommentOverlay({
   viewCtx: ViewCtx;
   onClick?: (e: any) => void;
   className?: string;
-  isSelected?: boolean;
   offsetRight: number;
   zIndex?: number;
 }) {
@@ -309,28 +300,14 @@ export const CanvasCommentOverlay = observer(function CanvasCommentOverlay({
     isTplVariantable(tpl) &&
     viewCtx.variantTplMgr().isTargetingNonBaseVariant(tpl);
 
-  const color = isTargetingSomeNonBaseVariant
-    ? NON_BASE_VARIANT_COLOR
-    : BASE_VARIANT_COLOR;
-
   return createPortal(
     <CanvasTransformedBox
       relativeTo={"arena"}
       $elt={$elt}
       viewCtx={viewCtx}
       style={{ zIndex }}
-      className={classNames({
-        "ElementHighlightBoxContainer CommentMarkerContainer": true,
-        CommentMarkerContainerSelected: isSelected,
-      })}
+      className="ElementHighlightBoxContainer"
     >
-      <div
-        className="ElementHighlightBoxRendered CommentMarkerOverlay"
-        style={{
-          borderColor: Chroma(color).alpha(0.1).css(),
-          backgroundColor: Chroma(color).alpha(0.2).css(),
-        }}
-      />
       <div
         className={className}
         onClick={onClick}
