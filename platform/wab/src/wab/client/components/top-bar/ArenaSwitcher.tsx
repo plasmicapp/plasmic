@@ -18,7 +18,8 @@ import {
 import { Popover } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
-
+import { buildArenaRowMenu } from "@/wab/client/components/sidebar-tabs/ProjectPanel/NavigationRows";
+import { AnyArena } from "@/wab/shared/Arenas";
 export type ArenaSwitcherProps = DefaultArenaSwitcherProps;
 
 const ArenaSwitcher = observer(function ArenaSwitcher(
@@ -27,6 +28,14 @@ const ArenaSwitcher = observer(function ArenaSwitcher(
   const studioCtx = useStudioCtx();
   const [visible, setVisible] = React.useState(false);
   const popoverRef = React.useRef<HTMLDivElement>(null);
+  const [contextMenu, setContextMenu] = React.useState<{
+    x: number;
+    y: number;
+  } | null>(null);
+
+  // I haven't completed the the renaming section yet
+  // I think I need to make the the text in the dropdown button editable for this to work
+  const [renaming, setRenaming] = React.useState(false);
 
   useSignalListener(
     studioCtx.showProjectPanelRequested,
@@ -50,7 +59,24 @@ const ArenaSwitcher = observer(function ArenaSwitcher(
     },
   });
 
-  const currentArena = studioCtx.currentArena;
+  const handleClose = () => {
+    setContextMenu(null);
+  };
+
+  React.useEffect(() => {
+    const handleClick = () => {
+      if (contextMenu) {
+        setContextMenu(null);
+      }
+    };
+
+    document.addEventListener("click", handleClick);
+    return () => {
+      document.removeEventListener("click", handleClick);
+    };
+  }, [contextMenu]);
+
+  const currentArena = studioCtx.currentArena as AnyArena;
   const currentArenaName = currentArena ? getArenaName(currentArena) : "";
 
   const [popoverWidth, setPopoverWidth] = React.useState(300);
@@ -63,52 +89,89 @@ const ArenaSwitcher = observer(function ArenaSwitcher(
     }
   );
 
+  // importing the buildArenaRowMenu function from the NavigationRows file
+  // this is one place where I think I might be doing this incorrectly
+  // I'm wondering if I should just separate this function out into its own component then import
+  const ContextMenu = buildArenaRowMenu({
+    arena: currentArena,
+    studioCtx,
+    setRenaming,
+    onClose: handleClose,
+  });
+
   return (
-    <Popover
-      placement="bottomLeft"
-      content={
-        <>
-          <NavigationDropdown
-            ref={popoverRef}
-            onClose={() => {
-              setVisible(false);
-            }}
-          />
-          <XDraggable onStart={onDragStart} onDrag={onDrag} onStop={onDragStop}>
-            <div className="left-pane-resizer auto-pointer-events" />
-          </XDraggable>
-        </>
-      }
-      overlayInnerStyle={{ width: popoverWidth, borderRadius: 12 }}
-      open={visible}
-      id="proj-nav-popover"
-      overlayClassName={"ant-popover--dropdown-like"}
-    >
-      <PlasmicArenaSwitcher
-        onClick={() => {
-          studioCtx.showProjectPanel();
-        }}
-        arenaType={
-          isComponentArena(currentArena)
-            ? "component"
-            : isPageArena(currentArena)
-            ? "page"
-            : "mixed"
-        }
-        root={{
-          children: (
-            <span
-              className="fill-width text-ellipsis inline-block"
-              style={{ maxWidth: 300 }}
+    <>
+      <Popover
+        placement="bottomLeft"
+        content={
+          <>
+            <NavigationDropdown
+              ref={popoverRef}
+              onClose={() => {
+                setVisible(false);
+              }}
+            />
+            <XDraggable
+              onStart={onDragStart}
+              onDrag={onDrag}
+              onStop={onDragStop}
             >
-              {currentArenaName}
-            </span>
-          ),
-        }}
-        id="proj-nav-button"
-        {...props}
-      />
-    </Popover>
+              <div className="left-pane-resizer auto-pointer-events" />
+            </XDraggable>
+          </>
+        }
+        overlayInnerStyle={{ width: popoverWidth, borderRadius: 12 }}
+        open={visible}
+        id="proj-nav-popover"
+        overlayClassName={"ant-popover--dropdown-like"}
+      >
+        <PlasmicArenaSwitcher
+          onClick={() => {
+            studioCtx.showProjectPanel();
+          }}
+          onContextMenu={(e) => {
+            e.preventDefault();
+            setContextMenu({ x: e.clientX, y: e.clientY });
+          }}
+          arenaType={
+            isComponentArena(currentArena)
+              ? "component"
+              : isPageArena(currentArena)
+              ? "page"
+              : "mixed"
+          }
+          root={{
+            children: (
+              <span
+                className="fill-width text-ellipsis inline-block"
+                style={{ maxWidth: 300 }}
+              >
+                {currentArenaName}
+              </span>
+            ),
+          }}
+          id="proj-nav-button"
+          {...props}
+        />
+      </Popover>
+      {contextMenu && (
+        <div
+          // testing out styles here
+          style={{
+            position: "fixed",
+            top: contextMenu.y,
+            left: contextMenu.x,
+            backgroundColor: "white",
+            // z-index isn't really working how I expected bacause the other sidebar overlaps it.
+            zIndex: 9999,
+            boxShadow:
+              "0 0 0 1px rgba(0, 0, 0, 0.03), 2px 2px 10px rgba(0, 0, 0, 0.1)",
+          }}
+        >
+          <ContextMenu />
+        </div>
+      )}
+    </>
   );
 });
 
