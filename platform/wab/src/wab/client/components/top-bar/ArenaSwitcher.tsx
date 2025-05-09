@@ -18,6 +18,9 @@ import {
 import { Popover } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
+import { buildArenaRowMenu } from "@/wab/client/components/sidebar-tabs/ProjectPanel/NavigationRows";
+import { AnyArena } from "@/wab/shared/Arenas";
+import { MenuType, useContextMenu } from "@/wab/client/components/ContextMenu";
 
 export type ArenaSwitcherProps = DefaultArenaSwitcherProps;
 
@@ -50,7 +53,11 @@ const ArenaSwitcher = observer(function ArenaSwitcher(
     },
   });
 
-  const currentArena = studioCtx.currentArena;
+  const handleClose = () => {
+    setVisible(false);
+  };
+
+  const currentArena = studioCtx.currentArena as AnyArena;
   const currentArenaName = currentArena ? getArenaName(currentArena) : "";
 
   const [popoverWidth, setPopoverWidth] = React.useState(300);
@@ -62,6 +69,14 @@ const ArenaSwitcher = observer(function ArenaSwitcher(
       },
     }
   );
+
+  const menu: MenuType = buildArenaRowMenu({
+    arena: currentArena,
+    studioCtx,
+    onClose: handleClose,
+  });
+
+  const contextMenuProps = useContextMenu({ menu });
 
   return (
     <Popover
@@ -106,6 +121,7 @@ const ArenaSwitcher = observer(function ArenaSwitcher(
           ),
         }}
         id="proj-nav-button"
+        {...contextMenuProps}
         {...props}
       />
     </Popover>

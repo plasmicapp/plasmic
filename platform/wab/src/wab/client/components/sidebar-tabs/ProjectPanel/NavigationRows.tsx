@@ -97,7 +97,7 @@ export function NavigationFolderRow({
   );
 }
 
-interface NavigationArenaRowProps {
+export interface NavigationArenaRowProps {
   arena: AnyArena;
   matcher: Matcher;
   indentMultiplier: number;
@@ -231,7 +231,7 @@ function getArenaIcon(arena: AnyArena, studioCtx: StudioCtx) {
     .result();
 }
 
-function buildArenaRowMenu({
+export function buildArenaRowMenu({
   arena,
   setRenaming,
   studioCtx,
@@ -239,7 +239,7 @@ function buildArenaRowMenu({
 }: {
   arena: AnyArena;
   onClose: () => void;
-  setRenaming: (val: boolean) => void;
+  setRenaming?: (val: boolean) => void;
   studioCtx: StudioCtx;
 }) {
   return () => {
@@ -321,7 +321,11 @@ function buildArenaRowMenu({
         focusNewComponent: true,
       });
 
-    const onRename = () => setRenaming(true);
+    const onRename = () => {
+      if (setRenaming) {
+        setRenaming(true);
+      }
+    };
 
     const onRequestEditingInNewArtboard = () =>
       studioCtx.changeUnsafe(() =>
@@ -407,15 +411,17 @@ function buildArenaRowMenu({
         )}
         {menuSection(
           "component-actions",
-          <Menu.Item
-            key="rename"
-            onClick={(e) => {
-              e.domEvent.stopPropagation();
-              onRename();
-            }}
-          >
-            <strong>Rename</strong> {getSiteItemTypeName(arena)}
-          </Menu.Item>,
+          setRenaming ? (
+            <Menu.Item
+              key="rename"
+              onClick={(e) => {
+                e.domEvent.stopPropagation();
+                onRename();
+              }}
+            >
+              <strong>Rename</strong> {getSiteItemTypeName(arena)}
+            </Menu.Item>
+          ) : null,
           <Menu.Item
             key="duplicate"
             hidden={!shouldShowItem.duplicate}
