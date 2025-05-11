@@ -23,7 +23,7 @@ export type SanitizedWIStyles = Record<
 >;
 
 export interface WIBase {
-  type: string;
+  type: "container" | "text" | "svg" | "component";
   tag: string;
   unsanitizedStyles: WIStyles;
   styles: SanitizedWIStyles;

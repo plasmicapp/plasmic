@@ -203,20 +203,20 @@ function fixCSSValue(key: string, value: string) {
       const terms = combination.split(/([+\-*/])/);
       // get the likely biggest term
       if (terms.some((term) => term.includes("vh"))) {
-        return terms.find((term) => term.includes("vh"))!;
+        return terms.find((term) => term.includes("vh"))!.trim();
       }
       if (terms.some((term) => term.includes("vw"))) {
-        return terms.find((term) => term.includes("vw"))!;
+        return terms.find((term) => term.includes("vw"))!.trim();
       }
       if (terms.some((term) => term.includes("px"))) {
-        return terms.find((term) => term.includes("px"))!;
+        return terms.find((term) => term.includes("px"))!.trim();
       }
-      return terms[0];
+      return terms[0].trim();
     }
 
     if (value.startsWith("env(")) {
       const envTerms = value.slice(4, -1).split(/\s*,\s*/);
-      return envTerms[1];
+      return envTerms[1]?.trim();
     }
 
     if (value === "inline-flex") {
@@ -678,7 +678,10 @@ function getElementsWITree(
     }
 
     if (paragraphTags.has(tag)) {
-      const text = (elt as HTMLElement).innerText.trim();
+      /* elt.innerText is undefined in jsdom environment, so we won't be able to test it.
+         https://github.com/testing-library/dom-testing-library/issues/853
+       */
+      const text = ((elt as HTMLElement).textContent ?? "").trim();
       if (!text) {
         return null;
       }
@@ -842,5 +845,8 @@ export async function parseHtmlToWebImporterTree(htmlString: string) {
   document.body.appendChild(element);
   const defaultStyles = window.getComputedStyle(element);
   const wiTree = getElementsWITree(root, variables, defaultStyles);
+
   return { wiTree, fontDefinitions, variables };
 }
+
+export const _testOnlyUtils = { fixCSSValue };
