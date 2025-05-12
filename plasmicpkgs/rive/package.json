@@ -4,17 +4,17 @@
   "description": "Plasmic registration call for rive animation",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "module": "dist/plasmic-rive.esm.js",
+  "module": "dist/rive.esm.js",
   "files": [
     "dist"
   ],
   "size-limit": [
     {
-      "path": "dist/plasmic-rive.cjs.production.min.js",
+      "path": "dist/rive.cjs.production.min.js",
       "limit": "10 KB"
     },
     {
-      "path": "dist/plasmic-rive.esm.js",
+      "path": "dist/rive.esm.js",
       "limit": "10 KB"
     }
   ],

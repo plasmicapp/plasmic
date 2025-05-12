@@ -3442,6 +3442,13 @@
   dependencies:
     react-youtube "9.0.2"
 
+"@plasmicpkgs/rive@^0.0.2":
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/rive/-/rive-0.0.2.tgz#33633c13c8d72a0c53d4227d69a642aa840d68a9"
+  integrity sha512-gxsUH/lBWGI8o+Q0vePeT8RKfqyWF8De3FTck/kbGuXOvSaJTv9fewRC5weoEG3OeKC+g11p8X4YkGtWmRGUyQ==
+  dependencies:
+    "@rive-app/react-canvas" "^4.18.8"
+
 "@plasmicpkgs/tiptap@^0.0.3":
   version "0.0.3"
   resolved "https://registry.yarnpkg.com/@plasmicpkgs/tiptap/-/tiptap-0.0.3.tgz#dea0d529030a3217855666b2e1a182cf235ea2c5"
@@ -5045,6 +5052,18 @@
   integrity sha512-VlZQxwGnt1jtQ18D6JqdIF+uFZo525WEqrfp9BOc3COPpK4+AWCgdnAWL+ho6imWcoINlGjR/+3b6y5C1vBVEA==
   dependencies:
     type-fest "^2.19.0"
+
+"@rive-app/canvas@2.27.1":
+  version "2.27.1"
+  resolved "https://registry.yarnpkg.com/@rive-app/canvas/-/canvas-2.27.1.tgz#ca0607cc852bdbe8748a9311bbbc21225cd5e97d"
+  integrity sha512-TnRZdwS/y6RvoTwaZJVlG91NP+m97WcXgSY08wY8R8m8iyVQtpvkRN9oNKwlh46YHPAqGTafaqOzxc7H7ijZDw==
+
+"@rive-app/react-canvas@^4.18.8":
+  version "4.19.0"
+  resolved "https://registry.yarnpkg.com/@rive-app/react-canvas/-/react-canvas-4.19.0.tgz#de616837f5bc213c3114525e4d22f0cae8eae3be"
+  integrity sha512-jyho5d2nYpjAEkh7a/fEUUzzSR3BlIowXt/Iv+AXGGdC4Y/Kzz0DgnLpdlBtOGedTERZjUYBLXHpnJRMY/LPAQ==
+  dependencies:
+    "@rive-app/canvas" "2.27.1"
 
 "@sanity/client@^6.2.0":
   version "6.2.0"

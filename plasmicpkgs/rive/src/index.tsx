@@ -8,23 +8,41 @@ import {
   StateMachineInputType,
   useRive,
 } from "@rive-app/react-canvas";
-import React from "react";
+import React, { useEffect } from "react";
 
-type RiveComponentProps = RiveProps & {
+export type RiveControlContextData = {
+  animationNames?: string[];
+  stateMachineNames?: string[];
+};
+
+export type RiveComponentProps = RiveProps & {
   className: string;
   autoplay: boolean;
   studioAutoplay: boolean;
   onStateChange?: (event: any) => void;
+  setControlContextData?: (ctxData: RiveControlContextData) => void;
 };
 
-interface RiveInputs {
+export interface RiveInputs {
   setBoolean(name: string, value: boolean): void;
   setNumber(name: string, value: number): void;
   fire(name: string): void;
+  play(animationName: string): void;
+  pause(animationName: string): void;
 }
 
-const RivePlayer = React.forwardRef<RiveInputs, RiveComponentProps>(
-  ({ layout, className, onStateChange, stateMachines, ...props }, ref) => {
+export const RivePlayer = React.forwardRef<RiveInputs, RiveComponentProps>(
+  (
+    {
+      layout,
+      className,
+      onStateChange,
+      stateMachines,
+      setControlContextData,
+      ...props
+    },
+    ref
+  ) => {
     const inEditor = usePlasmicCanvasContext();
 
     const riveParams = React.useMemo(() => {
@@ -65,6 +83,13 @@ const RivePlayer = React.forwardRef<RiveInputs, RiveComponentProps>(
     ]);
 
     const { rive, RiveComponent } = useRive(riveParams);
+
+    useEffect(() => {
+      setControlContextData?.({
+        animationNames: rive?.animationNames,
+        stateMachineNames: rive?.stateMachineNames,
+      });
+    }, [rive, setControlContextData]);
 
     React.useImperativeHandle(
       ref,
@@ -165,10 +190,14 @@ export const riveMetaDescriptor: CodeComponentMeta<RiveComponentProps> = {
       description: "URL to the .riv file (exported from Rive)",
     },
     stateMachines: {
-      type: "string",
+      type: "choice",
+      multiSelect: true,
       displayName: "State Machines",
       description: "(optional) Name of state machine to load.",
       advanced: true,
+      options: (_props, ctx) => {
+        return ctx?.stateMachineNames || [];
+      },
     },
     autoplay: {
       type: "boolean",
@@ -236,10 +265,14 @@ export const riveMetaDescriptor: CodeComponentMeta<RiveComponentProps> = {
       },
     },
     animations: {
-      type: "string",
+      type: "choice",
+      multiSelect: true,
       displayName: "Animations",
       description: "(optional) Name or list of names of animations to play.",
       advanced: true,
+      options: (_props, ctx) => {
+        return ctx?.animationNames || [];
+      },
     },
     onStateChange: {
       type: "eventHandler",
@@ -346,5 +379,3 @@ export function registerPlasmicRive(loader?: {
     registerComponent(RivePlayer, riveMetaDescriptor);
   }
 }
-
-export default RivePlayer;

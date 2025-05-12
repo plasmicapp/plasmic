@@ -59,5 +59,6 @@
   "jquery",
   "dayjs",
   "react-aria",
+  "rive",
   "fetch"
 ]
