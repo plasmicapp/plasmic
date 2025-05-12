@@ -70,6 +70,7 @@ import {
   typeFactory,
 } from "@/wab/shared/model/model-util";
 import { SiteInfo } from "@/wab/shared/SharedApi";
+import { smartHumanize } from "@/wab/shared/strs";
 import { isStandaloneVariantGroup } from "@/wab/shared/Variants";
 import { mkMetaName } from "@plasmicapp/host";
 import { GlobalActionRegistration } from "@plasmicapp/host/registerGlobalContext";
@@ -472,7 +473,7 @@ export const ACTIONS_META: Record<(typeof ACTIONS)[number], ActionType<any>> = {
           return Object.entries(actions).map(
             ([aname, ameta]: [string, any]) => ({
               value: aname,
-              label: ameta.displayName ?? aname,
+              label: ameta.displayName ?? smartHumanize(aname),
             })
           );
         },
