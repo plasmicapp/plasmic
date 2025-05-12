@@ -56,7 +56,7 @@
     "@plasmicpkgs/react-slick": "^0.0.237",
     "@plasmicpkgs/react-twitter-widgets": "^0.0.214",
     "@plasmicpkgs/react-youtube": "^7.13.220",
-    "@plasmicpkgs/rive": "^0.0.2",
+    "@plasmicpkgs/rive": "^0.0.3",
     "@plasmicpkgs/tiptap": "^0.0.3",
     "ant-design-pro-form-stub": "link:./internal_pkgs/ant-design-pro-form-stub",
     "antd": "^5.7.3",

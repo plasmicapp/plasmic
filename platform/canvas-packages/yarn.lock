@@ -3686,10 +3686,10 @@
   dependencies:
     react-youtube "9.0.2"
 
-"@plasmicpkgs/rive@^0.0.2":
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/@plasmicpkgs/rive/-/rive-0.0.2.tgz#33633c13c8d72a0c53d4227d69a642aa840d68a9"
-  integrity sha512-gxsUH/lBWGI8o+Q0vePeT8RKfqyWF8De3FTck/kbGuXOvSaJTv9fewRC5weoEG3OeKC+g11p8X4YkGtWmRGUyQ==
+"@plasmicpkgs/rive@^0.0.3":
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/rive/-/rive-0.0.3.tgz#f6e7e0b26648b0f5e304340fbbd8813828c35e07"
+  integrity sha512-8ZhEibapc+mqlQUHDgUiNts+sVuEj42T1lW75pVMBuQbiRp5rsDj4UVqUDMOZsqOULB8g/l6tWPcxDDCoBr+EA==
   dependencies:
     "@rive-app/react-canvas" "^4.18.8"
 
