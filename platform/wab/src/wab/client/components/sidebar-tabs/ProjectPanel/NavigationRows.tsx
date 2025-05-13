@@ -167,7 +167,6 @@ export function NavigationArenaRow({
       {...pageRowProps}
     >
       <EditableLabel
-        // I think this is what I need to use to make the text on that button editable
         value={fullArenaName}
         editing={renaming}
         labelFactory={({ className, ...restProps }) => (
@@ -232,7 +231,6 @@ function getArenaIcon(arena: AnyArena, studioCtx: StudioCtx) {
     .result();
 }
 
-// this is the function im calling in the other file.
 export function buildArenaRowMenu({
   arena,
   setRenaming,
