@@ -34,7 +34,7 @@ import {
   CmsTableId,
   UniqueFieldCheck,
 } from "@/wab/shared/ApiSchema";
-import { getUniqueFieldsData } from "@/wab/shared/cms";
+import { getNullUniqueFieldsData, getUniqueFieldsData } from "@/wab/shared/cms";
 import { Dict } from "@/wab/shared/collections";
 import { spawn } from "@/wab/shared/common";
 import { DEVFLAGS } from "@/wab/shared/devflags";
@@ -48,11 +48,30 @@ import { Prompt, Route, useHistory, useRouteMatch } from "react-router";
 import { useBeforeUnload, useInterval } from "react-use";
 
 export type CmsEntryDetailsProps = DefaultCmsEntryDetailsProps;
-export type UniqueFieldStatus = {
-  value: unknown;
-  status: "not started" | "pending" | "ok" | "violation";
-  conflictEntryIds: CmsRowId[];
-};
+export type UniqueFieldStatus =
+  | {
+      value: unknown;
+      status: "not started" | "pending" | "ok";
+    }
+  | {
+      value: unknown;
+      status: "violation";
+      conflictRowId: CmsRowId;
+    };
+
+function dataToUniqueStatus(
+  uniqueData: Dict<unknown>,
+  status: "not started" | "pending" | "ok"
+): Dict<UniqueFieldStatus> {
+  const uniqueStatus: Dict<UniqueFieldStatus> = {};
+  Object.entries(uniqueData).forEach(([fieldIdentifier, fieldValue]) => {
+    uniqueStatus[fieldIdentifier] = {
+      value: fieldValue,
+      status: status,
+    };
+  });
+  return uniqueStatus as Dict<UniqueFieldStatus>;
+}
 
 function getRowIdentifierText(
   table: ApiCmsTable,
@@ -135,7 +154,7 @@ export function renderContentEntryFormFields(
     <>
       {table.schema.fields
         .filter((field: CmsFieldMeta) => !field.hidden)
-        .map((field: CmsFieldMeta, index) => (
+        .map((field: CmsFieldMeta) => (
           <React.Fragment key={field.identifier}>
             <ContentEntryFormContext.Provider
               value={{
@@ -202,7 +221,44 @@ function CmsEntryDetailsForm_(
 
   const [uniqueFieldsStatus, setUniqueFieldsStatus] = React.useState<
     Dict<UniqueFieldStatus>
-  >(initializeUniqueStatus());
+  >(() => {
+    if (row.draftData) {
+      const uniqueDraftFields = getUniqueFieldsData(
+        table,
+        row.draftData as CmsRowData
+      );
+      return dataToUniqueStatus(uniqueDraftFields, "not started");
+    } else {
+      const uniquePublishedFields = getUniqueFieldsData(
+        table,
+        row.data as CmsRowData
+      );
+      return dataToUniqueStatus(uniquePublishedFields, "ok");
+    }
+  });
+  const handleUniqueFieldChecks = React.useCallback(
+    (checks: UniqueFieldCheck[]) => {
+      setUniqueFieldsStatus((prev) => {
+        const copy = { ...prev };
+        checks.forEach((check) => {
+          if (check.conflictRowId) {
+            copy[check.fieldIdentifier] = {
+              value: check.value,
+              status: "violation",
+              conflictRowId: check.conflictRowId,
+            };
+          } else {
+            copy[check.fieldIdentifier] = {
+              value: check.value,
+              status: "ok",
+            };
+          }
+        });
+        return copy;
+      });
+    },
+    [setUniqueFieldsStatus]
+  );
 
   const isSomeUniqueStatus = (status: string) => {
     return Object.values(uniqueFieldsStatus).some(
@@ -246,11 +302,11 @@ function CmsEntryDetailsForm_(
       .map((f) => f.identifier);
     return isEqual(
       mapValues(
-        pickBy(data1, (v, k) => !isNil(v)),
+        pickBy(data1, (v, _k) => !isNil(v)),
         (v) => pickBy(v, (v2, k) => !isNil(v2) && fields?.includes(k))
       ),
       mapValues(
-        pickBy(data2, (v, k) => !isNil(v)),
+        pickBy(data2, (v, _k) => !isNil(v)),
         (v) => pickBy(v, (v2, k) => !isNil(v2) && fields?.includes(k))
       )
     );
@@ -263,7 +319,7 @@ function CmsEntryDetailsForm_(
       return Object.fromEntries(
         Object.entries(obj)
           .map(([key, value]) => [key, removeUndefined(value)])
-          .filter(([key, value]) => value !== undefined)
+          .filter(([_key, value]) => value !== undefined)
       );
     } else {
       return obj;
@@ -328,71 +384,41 @@ function CmsEntryDetailsForm_(
     setInConflict(true);
   };
 
-  function dataToUniqueStatus(uniqueData: Dict<unknown>, status: string) {
-    const uniqueStatus = {};
-    Object.entries(uniqueData).forEach(([fieldIdentifier, fieldValue]) => {
-      uniqueStatus[fieldIdentifier] = {
-        value: fieldValue,
-        status: status,
-        conflictEntryIds: [],
-      } as UniqueFieldStatus;
-    });
-    return uniqueStatus as Dict<UniqueFieldStatus>;
-  }
-
-  function initializeUniqueStatus() {
-    const uniqueFieldsIdentifier = table.schema.fields
-      .filter((f) => f.unique)
-      .map((f) => f.identifier);
-    if (row.draftData) {
-      const uniqueDraftFields = getUniqueFieldsData(
-        uniqueFieldsIdentifier,
-        row.draftData as CmsRowData
-      );
-      return dataToUniqueStatus(uniqueDraftFields, "not started");
-    }
-    /** If the data equals the published data. */
-    const uniquePublishedFields = getUniqueFieldsData(
-      uniqueFieldsIdentifier,
-      row.data as CmsRowData
-    );
-    return dataToUniqueStatus(uniquePublishedFields, "ok");
-  }
-
   async function checkUniqueness() {
-    const updatedUniqueFields = {};
+    const updatedUniqueFields = Object.entries(uniqueFieldsStatus).reduce(
+      (acc, [fieldIdentifier, fieldStatus]) => {
+        if (fieldStatus.status === "not started") {
+          acc[fieldIdentifier] = fieldStatus.value;
+        }
+        return acc;
+      },
+      {}
+    );
+
+    if (Object.keys(updatedUniqueFields).length === 0) {
+      return;
+    }
+
     setUniqueFieldsStatus((prev) => {
       const copy = { ...prev };
-      Object.entries(copy).map(([fieldIdentifier, fieldStatus]) => {
-        if (fieldStatus.status === "not started") {
-          updatedUniqueFields[fieldIdentifier] = fieldStatus.value;
-          copy[fieldIdentifier].status = "pending";
-        }
+      Object.keys(updatedUniqueFields).forEach((fieldIdentifier) => {
+        copy[fieldIdentifier] = { ...copy[fieldIdentifier], status: "pending" };
       });
       return copy;
     });
-    await message.loading({
+
+    const hideLoadingMessage = message.loading({
       key: "uniqueness-message",
       content: `Checking uniqueness violation...`,
     });
-    const uniqueFieldsChecked: UniqueFieldCheck[] = await api.checkUniqueFields(
-      table.id,
-      {
-        rowId: row.id,
-        uniqueFieldsData: updatedUniqueFields,
-      }
-    );
-    setUniqueFieldsStatus((prev) => {
-      const copy = { ...prev };
-      uniqueFieldsChecked.forEach((uniqueCheck) => {
-        const identifier = uniqueCheck.fieldIdentifier;
-        if (copy[identifier].value === uniqueCheck.value) {
-          copy[identifier].status = uniqueCheck.ok ? "ok" : "violation";
-          copy[identifier].conflictEntryIds = uniqueCheck.conflictRowIds;
-        }
-      });
-      return copy;
+
+    const checks = await api.checkUniqueFields(table.id, {
+      rowId: row.id,
+      uniqueFieldsData: updatedUniqueFields,
     });
+    hideLoadingMessage();
+
+    handleUniqueFieldChecks(checks);
     try {
       await form.validateFields();
     } catch (err) {
@@ -416,7 +442,7 @@ function CmsEntryDetailsForm_(
       setHasUnsavedChanges(false);
     } catch (err) {
       setSaving(false);
-      if (err.statusCode === 400) {
+      if (err.statusCode === 409) {
         warnConflict();
       }
     }
@@ -519,28 +545,25 @@ function CmsEntryDetailsForm_(
         }}
         labelCol={{ span: 8 }}
         wrapperCol={{ span: 16 }}
-        onValuesChange={(changedValues, allValues) => {
+        onValuesChange={(changedValues: CmsRowData, allValues) => {
           if (Object.keys(changedValues).length > 0) {
             setHasUnsavedChanges(hasChanges());
             setHasUnpublishedChanges(hasPublishableChanges());
             console.log({ changedFields: changedValues, allFields: allValues });
             setUniqueFieldsStatus((prev) => {
-              const uniqueFieldsIdentifier = table.schema.fields
-                .filter((f) => f.unique)
-                .map((f) => f.identifier);
               const changedUniqueData = getUniqueFieldsData(
-                uniqueFieldsIdentifier,
-                changedValues as CmsRowData
+                table,
+                changedValues
               );
-              const changedUniqueStatus = dataToUniqueStatus(
-                changedUniqueData,
-                "not started"
+              const nullUniqueData = getNullUniqueFieldsData(
+                table,
+                changedValues
               );
-              const copy = { ...prev };
-              Object.keys(changedUniqueStatus).forEach((fieldIdentifier) => {
-                copy[fieldIdentifier] = changedUniqueStatus[fieldIdentifier];
-              });
-              return copy;
+              return {
+                ...prev,
+                ...dataToUniqueStatus(changedUniqueData, "not started"),
+                ...dataToUniqueStatus(nullUniqueData, "ok"),
+              };
             });
           }
         }}
@@ -641,21 +664,7 @@ function CmsEntryDetailsForm_(
                           }
                         } catch (err) {
                           if (isUniqueViolationError(err)) {
-                            const checkedUniqueFields: UniqueFieldCheck[] =
-                              err.violations;
-                            setUniqueFieldsStatus((prev) => {
-                              const copy = { ...prev };
-                              checkedUniqueFields.forEach((uniqueField) => {
-                                copy[
-                                  uniqueField.fieldIdentifier
-                                ].conflictEntryIds = uniqueField.conflictRowIds;
-                                copy[uniqueField.fieldIdentifier].value =
-                                  uniqueField.value;
-                                copy[uniqueField.fieldIdentifier].status =
-                                  uniqueField.ok ? "ok" : "violation";
-                              });
-                              return copy;
-                            });
+                            handleUniqueFieldChecks(err.violations);
                             await form.validateFields();
                           } else {
                             throw err;

@@ -14,7 +14,7 @@ import Button from "@/wab/client/components/widgets/Button";
 import "@/wab/client/components/widgets/ColorPicker/Pickr.overrides.scss";
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import Select from "@/wab/client/components/widgets/Select";
-import Switch from "@/wab/client/components/widgets/Switch";
+import { Switch, SwitchProps } from "@/wab/client/components/widgets/Switch";
 import { useAppCtx } from "@/wab/client/contexts/AppContexts";
 import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
 import {
@@ -74,13 +74,11 @@ export function useContentEntryFormContext(): ContentEntryFormContextValue {
   );
 }
 
-export function ValueSwitch(props: any) {
+export function ValueSwitch(
+  props: SwitchProps & { disabled?: boolean; value?: boolean }
+) {
   return (
-    <Switch
-      {...props}
-      isDisabled={props.disabled}
-      isChecked={props.isChecked && props.value}
-    />
+    <Switch {...props} isDisabled={props.disabled} isChecked={props.value} />
   );
 }
 
@@ -249,6 +247,9 @@ function MaybeFormItem({
   typeName,
   name,
   label,
+  maxChars,
+  minChars,
+  uniqueStatus,
   ...props
 }: Omit<FormItemProps, "name"> & {
   typeName: CmsTypeName;
@@ -259,32 +260,31 @@ function MaybeFormItem({
 }) {
   const history = useHistory();
   const match = useRRouteMatch(UU.cmsEntry);
-  const unique = props.uniqueStatus;
   const commonRules = [
     { required: props.required, message: "Field is required" },
     {
       warningOnly: true,
-      validator: (_, value) => {
+      validator: () => {
         if (
-          unique &&
-          unique.status === "violation" &&
-          unique.conflictEntryIds.length > 0
+          uniqueStatus &&
+          uniqueStatus.status === "violation" &&
+          uniqueStatus.conflictRowId
         ) {
-          const firstConflictingRow = unique.conflictEntryIds[0];
           const conflictingRowRoute = UU.cmsEntry.fill({
             ...match!.params,
-            rowId: firstConflictingRow,
+            rowId: uniqueStatus.conflictRowId,
           });
           return Promise.reject(
             <>
-              This field should have unique data to publish entry.{" "}
+              This unique field value conflicts with the published version of{" "}
               <a
                 onClick={() => {
                   history.push(conflictingRowRoute);
                 }}
               >
-                See conflicting entry
+                this entry
               </a>
+              .
             </>
           );
         }
@@ -294,8 +294,8 @@ function MaybeFormItem({
   ];
   const typeSpecificRules =
     [CmsMetaType.TEXT, CmsMetaType.RICH_TEXT].includes(typeName) &&
-    (props.minChars !== undefined || props.maxChars !== undefined)
-      ? [{ max: props.maxChars }, { min: props.minChars }]
+    (minChars !== undefined || maxChars !== undefined)
+      ? [{ max: maxChars }, { min: minChars }]
       : [];
 
   const rules = [...commonRules, ...typeSpecificRules];

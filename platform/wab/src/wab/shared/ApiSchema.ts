@@ -1406,7 +1406,7 @@ export const cmsFieldMetaDefaults: CmsBaseType<unknown> = {
   localized: false,
   unique: false,
   defaultValueByLocale: {},
-} as const;
+};
 
 export interface CmsDatabaseExtraData {
   /** The additional non-default locales available in this database. Does not include the default ("") locale. */
@@ -2126,9 +2126,8 @@ export enum StudioRoomMessageTypes {
 export interface UniqueFieldCheck {
   fieldIdentifier: string;
   value: unknown;
-  /** If there are no conflicts. */
-  ok: boolean;
-  conflictRowIds: CmsRowId[];
+  /** The ID of the conflicting row, if any. */
+  conflictRowId: CmsRowId | null;
 }
 
 /**

@@ -171,6 +171,7 @@ import {
   TrustedHostsListResponse,
   TryMergeRequest,
   TryMergeResponse,
+  UniqueFieldCheck,
   UpdateHostUrlRequest,
   UpdateHostUrlResponse,
   UpdateNotificationSettingsRequest,
@@ -1714,7 +1715,7 @@ export abstract class SharedApi {
   async checkUniqueFields(
     tableId: CmsTableId,
     opts: { rowId: CmsRowId; uniqueFieldsData: Dict<unknown> }
-  ) {
+  ): Promise<UniqueFieldCheck[]> {
     return await this.post(`/cmse/tables/${tableId}/check-unique-fields`, opts);
   }
 

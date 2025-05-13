@@ -304,11 +304,12 @@ export function makeSqlCondition(
   };
 }
 
-const typeToPgType = (type: CmsTypeName) => {
+export const typeToPgType = (type: CmsTypeName) => {
   switch (type) {
     case CmsMetaType.TEXT:
-      return "text";
     case CmsMetaType.LONG_TEXT:
+    case CmsMetaType.REF:
+    case CmsMetaType.ENUM:
       return "text";
     case CmsMetaType.BOOLEAN:
       return "boolean";
@@ -316,8 +317,6 @@ const typeToPgType = (type: CmsTypeName) => {
       return "numeric";
     case CmsMetaType.DATE_TIME:
       return "timestamp";
-    case CmsMetaType.REF:
-      return "text";
     default:
       throw new BadRequestError(`Cannot filter by a column of type ${type}`);
   }

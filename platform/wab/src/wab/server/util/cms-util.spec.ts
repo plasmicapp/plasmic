@@ -1,5 +1,6 @@
-import { traverseSchemaFields } from "@/wab/server/util/cms-util";
+import { traverseSchemaFields, typeToPgType } from "@/wab/server/util/cms-util";
 import { CmsFieldMeta } from "@/wab/shared/ApiSchema";
+import { ALLOWED_UNIQUE_TYPES } from "@/wab/shared/cms";
 
 const createField = (
   identifier: string,
@@ -14,6 +15,7 @@ const createField = (
   required: false,
   hidden: false,
   localized: false,
+  unique: false,
   defaultValueByLocale: {},
   fields: fields || [],
   ...override,
@@ -148,5 +150,13 @@ describe("traverseSchemaFields", () => {
         createField("childField2", "number"),
       ]),
     ]);
+  });
+});
+
+describe("typeToPgType", () => {
+  it("should support all ALLOWED_UNIQUE_TYPES", () => {
+    ALLOWED_UNIQUE_TYPES.forEach((type) => {
+      expect(typeToPgType(type)).toBeDefined();
+    });
   });
 });

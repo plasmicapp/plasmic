@@ -281,7 +281,6 @@ import {
   Raw,
   Repository,
   SelectQueryBuilder,
-  getConnection,
 } from "typeorm";
 import * as uuid from "uuid";
 
@@ -7222,21 +7221,48 @@ export class DbMgr implements MigrationDbMgr {
       uniqueFieldsData: Dict<unknown>;
     }
   ): Promise<UniqueFieldCheck[]> {
-    const connection = getConnection();
-    const sql = `SELECT id FROM cms_row WHERE "tableId" = '${tableId}' AND "deletedAt" IS NULL`;
+    const table = await this.getCmsTableById(tableId);
+    await this.checkCmsDatabasePerms(table.databaseId, "content");
+
+    // Check if unique fields have violations.
+    const uniqueFieldsData = getUniqueFieldsData(table, {
+      "": opts.uniqueFieldsData,
+    });
+    const finalData = Object.entries(uniqueFieldsData).filter(
+      ([_field, value]) => value !== null && value !== undefined
+    );
+    if (finalData.length === 0) {
+      throw new BadRequestError("No unique fields to check");
+    }
+
+    const { condition, params } = makeSqlCondition(
+      table,
+      {
+        $or: finalData.map(([field, value]) => ({
+          [field]: value,
+        })),
+      },
+      { useDraft: false }
+    );
+
+    const rows = await this.cmsRows()
+      .createQueryBuilder("r")
+      .where("r.tableId = :tableId", { tableId })
+      .andWhere("r.deletedAt IS NULL")
+      .andWhere("r.data IS NOT NULL")
+      .andWhere("r.id != :rowId", { rowId: opts.rowId })
+      .andWhere(condition)
+      .setParameters(params)
+      .getMany();
     return Promise.all(
       Object.entries(opts.uniqueFieldsData).map(
         async ([fieldIdentifier, value]) => {
-          const dataCheck = ` AND data -> '' @> '{"${fieldIdentifier}" : ${value}}'`;
-          const results: { id: CmsRowId }[] = await connection.query(
-            sql + dataCheck
-          );
-          const conflictRowIds = results.map((result) => result.id);
           return {
             fieldIdentifier: fieldIdentifier,
             value: value,
-            ok: conflictRowIds.length === 0,
-            conflictRowIds: conflictRowIds,
+            conflictRowId:
+              rows.find((row) => row.data?.[""]?.[fieldIdentifier] === value)
+                ?.id ?? null,
           };
         }
       )
@@ -7295,23 +7321,19 @@ export class DbMgr implements MigrationDbMgr {
     };
     if ("data" in opts) {
       row.data = mergedData(row.data, opts.data);
-      const uniqueFieldIdentifiers = table.schema.fields
-        .filter((field) => !field.hidden && field.unique)
-        .map((field) => field.identifier);
-      if (uniqueFieldIdentifiers.length > 0) {
-        /* Check if unique fields have violations. */
-        if (opts.data) {
-          const uniqueFieldsData = getUniqueFieldsData(
-            uniqueFieldIdentifiers,
-            opts.data as CmsRowData
-          );
-          const uniqueFieldsCheck = await this.checkUniqueFields(table.id, {
-            rowId: row.id,
-            uniqueFieldsData: uniqueFieldsData,
-          });
-          if (uniqueFieldsCheck.some((field) => !field.ok)) {
-            throw new UniqueViolationError(uniqueFieldsCheck);
-          }
+
+      // Check if unique fields have violations.
+      const uniqueFieldsData = getUniqueFieldsData(
+        table,
+        row.data as CmsRowData
+      );
+      if (Object.keys(uniqueFieldsData).length > 0) {
+        const uniqueFieldsCheck = await this.checkUniqueFields(table.id, {
+          rowId: row.id,
+          uniqueFieldsData: uniqueFieldsData,
+        });
+        if (uniqueFieldsCheck.some((field) => field.conflictRowId)) {
+          throw new UniqueViolationError(uniqueFieldsCheck);
         }
       }
     }
