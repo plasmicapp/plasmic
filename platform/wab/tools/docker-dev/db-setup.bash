@@ -27,7 +27,7 @@ echo $psql
 echo $service
 
 # This will only work on systems with `service`. Best-effort.
-$service postgresql start || true
+#$service postgresql start || true
 
 # createdb are missing on some platforms, like Macports postgresql4-server.
 
