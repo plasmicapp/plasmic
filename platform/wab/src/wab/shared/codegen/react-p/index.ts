@@ -281,6 +281,7 @@ import {
   isTplTag,
   isTplTagOrComponent,
   isTplTextBlock,
+  resolveTplRoot,
   summarizeTpl,
   tplHasRef,
 } from "@/wab/shared/core/tpls";
@@ -2421,7 +2422,7 @@ export function serializeDefaultExternalProps(
       }
     `;
   }
-  const root = component.tplTree;
+  const root = resolveTplRoot(component.tplTree);
   const params = getExternalParams(ctx);
   return `
     export interface ${
