@@ -241,7 +241,7 @@ export function buildArenaRowMenu({
 }: {
   arena: AnyArena;
   onClose: () => void;
-  setRenaming: (val: boolean) => void;
+  setRenaming?: (val: boolean) => void;
   studioCtx: StudioCtx;
 }) {
   return () => {
@@ -323,7 +323,11 @@ export function buildArenaRowMenu({
         focusNewComponent: true,
       });
 
-    const onRename = () => setRenaming(true);
+    const onRename = () => {
+      if (setRenaming) {
+        setRenaming(true);
+      }
+    };
 
     const onRequestEditingInNewArtboard = () =>
       studioCtx.changeUnsafe(() =>
@@ -409,15 +413,17 @@ export function buildArenaRowMenu({
         )}
         {menuSection(
           "component-actions",
-          <Menu.Item
-            key="rename"
-            onClick={(e) => {
-              e.domEvent.stopPropagation();
-              onRename();
-            }}
-          >
-            <strong>Rename</strong> {getSiteItemTypeName(arena)}
-          </Menu.Item>,
+          setRenaming ? (
+            <Menu.Item
+              key="rename"
+              onClick={(e) => {
+                e.domEvent.stopPropagation();
+                onRename();
+              }}
+            >
+              <strong>Rename</strong> {getSiteItemTypeName(arena)}
+            </Menu.Item>
+          ) : null,
           <Menu.Item
             key="duplicate"
             hidden={!shouldShowItem.duplicate}

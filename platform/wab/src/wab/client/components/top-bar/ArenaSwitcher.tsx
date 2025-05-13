@@ -20,6 +20,9 @@ import { observer } from "mobx-react";
 import * as React from "react";
 import { buildArenaRowMenu } from "@/wab/client/components/sidebar-tabs/ProjectPanel/NavigationRows";
 import { AnyArena } from "@/wab/shared/Arenas";
+import { EditableLabel } from "@/wab/client/components/widgets/EditableLabel/EditableLabel";
+import cn from "classnames";
+
 export type ArenaSwitcherProps = DefaultArenaSwitcherProps;
 
 const ArenaSwitcher = observer(function ArenaSwitcher(
@@ -95,7 +98,6 @@ const ArenaSwitcher = observer(function ArenaSwitcher(
   const ContextMenu = buildArenaRowMenu({
     arena: currentArena,
     studioCtx,
-    setRenaming,
     onClose: handleClose,
   });
 
@@ -162,7 +164,6 @@ const ArenaSwitcher = observer(function ArenaSwitcher(
             top: contextMenu.y,
             left: contextMenu.x,
             backgroundColor: "white",
-            // z-index isn't really working how I expected bacause the other sidebar overlaps it.
             zIndex: 9999,
             boxShadow:
               "0 0 0 1px rgba(0, 0, 0, 0.03), 2px 2px 10px rgba(0, 0, 0, 0.1)",
