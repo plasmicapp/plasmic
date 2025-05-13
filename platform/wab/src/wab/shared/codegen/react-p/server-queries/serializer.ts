@@ -7,7 +7,7 @@ import {
 import { isServerQueryWithOperation } from "@/wab/shared/codegen/react-p/server-queries/utils";
 import { SerializerBaseContext } from "@/wab/shared/codegen/react-p/types";
 import { ExportOpts } from "@/wab/shared/codegen/types";
-import { jsLiteral } from "@/wab/shared/codegen/util";
+import { jsLiteral, toVarName } from "@/wab/shared/codegen/util";
 import { ExprCtx, asCode, stripParens } from "@/wab/shared/core/exprs";
 import { Component, CustomFunctionExpr } from "@/wab/shared/model/classes";
 import { groupBy } from "lodash";
@@ -67,7 +67,9 @@ export function serializeServerQueryEntryType(component: Component) {
 ${SERVER_QUERIES_VAR_NAME}?: {
 ${component.serverQueries
   .filter(isServerQueryWithOperation)
-  .map((query) => `${query.name}: ${makeServerQueryOpType(query.op)};`)
+  .map(
+    (query) => `${toVarName(query.name)}: ${makeServerQueryOpType(query.op)};`
+  )
   .join("\n")}
 };
 `.trim();
