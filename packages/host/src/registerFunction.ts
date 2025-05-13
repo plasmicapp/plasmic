@@ -7,7 +7,11 @@ export type ControlContext<P> = [
   /**
    * props
    */
-  P
+  P,
+  /**
+   * context data
+   */
+  any
 ];
 
 /**
@@ -282,6 +286,19 @@ export interface CustomFunctionMeta<F extends (...args: any[]) => any> {
    * not specified, it's considered `false`.
    */
   isDefaultExport?: boolean;
+
+  /**
+   * A function that takes the function arguments and returns a data key
+   * and a fetcher function.
+   * The data key is used to cache the result of the fetcher, and should only
+   * include the arguments that are used to fetch the data.
+   * The result of the fetcher will be used as the context of the function
+   * in studio and should return a promise.
+   */
+  fnContext?: (...args: Partial<Parameters<F>>) => {
+    dataKey: string;
+    fetcher: () => Promise<any>;
+  };
 }
 
 export interface CustomFunctionRegistration {
