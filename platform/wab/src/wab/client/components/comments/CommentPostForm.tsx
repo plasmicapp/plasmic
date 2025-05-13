@@ -8,41 +8,29 @@ import {
   DefaultCommentPostFormProps,
   PlasmicCommentPostForm,
 } from "@/wab/client/plasmic/plasmic_kit_comments/PlasmicCommentPostForm";
-import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { getSetOfVariantsForViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { StandardMarkdown } from "@/wab/client/utils/StandardMarkdown";
-import {
-  ApiComment,
-  CommentThreadId,
-  RootCommentData,
-  ThreadCommentData,
-} from "@/wab/shared/ApiSchema";
-import { ensure, spawn } from "@/wab/shared/common";
+import { spawn } from "@/wab/shared/common";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { useState } from "react";
 import ReactDOM from "react-dom";
 
 export type CommentPostFormProps = DefaultCommentPostFormProps & {
-  threadId?: CommentThreadId;
-  editComment?: ApiComment;
+  /** ID for the input element. */
+  id: string;
+  defaultValue: string;
   onCancel?: () => void;
-  onSubmit?: () => void;
+  onSubmit?: (value: string) => void;
 };
 
 const CommentPostForm = observer(function CommentPostForm(
   props: CommentPostFormProps
 ) {
-  const { threadId, isEditing, editComment, onSubmit, onCancel, ...rest } =
-    props;
-  const [value, setValue] = useState(editComment?.body || "");
+  const { id, defaultValue, onSubmit, onCancel, isEditing, ...rest } = props;
+  const [value, setValue] = useState(defaultValue);
   const [isPreviewing, setIsPreviewing] = React.useState(false);
 
-  const studioCtx = useStudioCtx();
-
-  const commentsCtx = studioCtx.commentsCtx;
-
-  const inputElementId = `comment-post-input-${editComment?.id}`;
+  const inputElementId = `comment-post-input-${id}`;
 
   const {
     onKeyHandler: onMentionKeyHandler,
@@ -57,52 +45,9 @@ const CommentPostForm = observer(function CommentPostForm(
 
   const { openShareDialog } = useShareDialog();
 
-  const openedNewThread = commentsCtx.openedNewThread();
-
-  // Either an existing thread should be selected, or a newThreadTpl should be set.
-  if (!openedNewThread && !threadId) {
-    return null;
-  }
-
   function isValidComment() {
-    return (
-      value.trim().length > 0 && value.trim() !== editComment?.body?.trim()
-    );
+    return value.trim().length > 0 && value.trim() !== defaultValue.trim();
   }
-
-  const handleAddComment = async () => {
-    setValue("");
-    if (threadId) {
-      const commentData: Omit<ThreadCommentData, "id"> = { body: value };
-      commentsCtx.postThreadComment(threadId, commentData);
-    } else {
-      const location = {
-        subject: commentsCtx.bundler().addrOf(ensure(openedNewThread?.tpl, "")),
-        variants: getSetOfVariantsForViewCtx(
-          ensure(openedNewThread?.viewCtx, ""),
-          commentsCtx.bundler()
-        ).map((pv) => commentsCtx.bundler().addrOf(pv)),
-      };
-      const commentData: Omit<
-        RootCommentData,
-        "commentThreadId" | "commentId"
-      > = {
-        body: value,
-        location,
-      };
-      commentsCtx.postRootComment(commentData);
-      commentsCtx.closeCommentDialogs();
-    }
-    onSubmit?.();
-  };
-
-  const handleEditComment = async (updatedComment?: ApiComment) => {
-    if (updatedComment && value.trim() !== updatedComment.body.trim()) {
-      commentsCtx.editComment(updatedComment.id, value.trim());
-    }
-    onSubmit?.();
-    setValue("");
-  };
 
   const onKeyHandler = (e: React.KeyboardEvent<HTMLInputElement>): void => {
     const { key, ctrlKey, metaKey } = e;
@@ -121,11 +66,8 @@ const CommentPostForm = observer(function CommentPostForm(
   };
 
   const handleSubmit = async () => {
-    if (isEditing) {
-      spawn(handleEditComment(editComment));
-    } else {
-      spawn(handleAddComment());
-    }
+    setValue("");
+    onSubmit?.(value);
     setIsPreviewing(false);
   };
 
@@ -148,7 +90,7 @@ const CommentPostForm = observer(function CommentPostForm(
           onChange: (val) => {
             if (val === undefined) {
               // Plexus Input triggers onChange with undefined on first render even if we pass a controlled value
-              setValue(isEditing ? editComment?.body || "" : "");
+              setValue(defaultValue);
             } else {
               setValue(val);
             }
