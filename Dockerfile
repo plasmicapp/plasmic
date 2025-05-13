@@ -33,5 +33,5 @@ EXPOSE 3003
 # At the moment yarn setup-all have to be done at runtime because it run migration and so need to have db up
 CMD ["sh", "-c", "cd /plasmic && yarn setup-all && cd /plasmic/platform/wab && yarn seed && cd /plasmic && yarn dev"]
 
-# The issue i have here is that plume-pkg-mgr.ts update is searching for a user added by seed, but seed have to be run after setup-all who run the plume update
+# The supposed issue i have here is that plume-pkg-mgr.ts update is searching for a user added by seed, but seed have to be run after setup-all who run the plume update
 # Le serpent se mord la queue
