@@ -1,0 +1,144 @@
+{
+  "platform": "react",
+  "code": {
+    "lang": "ts",
+    "scheme": "blackbox",
+    "reactRuntime": "classic"
+  },
+  "style": {
+    "scheme": "css",
+    "defaultStyleCssFilePath": "plasmic/plasmic__default_style.css"
+  },
+  "images": {
+    "scheme": "cdn"
+  },
+  "tokens": {
+    "scheme": "theo",
+    "tokensFilePath": "plasmic-tokens.theo.json"
+  },
+  "srcDir": ".",
+  "defaultPlasmicDir": "./plasmic",
+  "projects": [
+    {
+      "projectId": "taNK5uwsoPrzfpYmBVwUwX",
+      "projectApiToken": "EKres2MHDVs8Cct7T4vCVNPW1Bzl4lDDOiKLS3exsLnEXCw3loVZxFeaLyopZst8dg3JPD1ZhVYjAEwPN0Q",
+      "projectName": "[PlasmicKit] Email Templates",
+      "version": "latest",
+      "cssFilePath": "plasmic/plasmic_kit_email_templates/plasmic.css",
+      "components": [
+        {
+          "id": "1YzUicnY5mUG",
+          "name": "TemplateTestEmail",
+          "type": "managed",
+          "projectId": "taNK5uwsoPrzfpYmBVwUwX",
+          "renderModuleFilePath": "plasmic/plasmic_kit_email_templates/PlasmicTemplateTestEmail.tsx",
+          "importSpec": {
+            "modulePath": "TemplateTestEmail.tsx"
+          },
+          "cssFilePath": "plasmic/plasmic_kit_email_templates/PlasmicTemplateTestEmail.css",
+          "scheme": "blackbox",
+          "componentType": "component"
+        },
+        {
+          "id": "coNtjSHoDNSq",
+          "name": "Layout",
+          "type": "managed",
+          "projectId": "taNK5uwsoPrzfpYmBVwUwX",
+          "renderModuleFilePath": "plasmic/plasmic_kit_email_templates/PlasmicLayout.tsx",
+          "importSpec": {
+            "modulePath": "Layout.tsx"
+          },
+          "cssFilePath": "plasmic/plasmic_kit_email_templates/PlasmicLayout.css",
+          "scheme": "blackbox",
+          "componentType": "component"
+        }
+      ],
+      "icons": [],
+      "images": [],
+      "indirect": false,
+      "globalContextsFilePath": "",
+      "splitsProviderFilePath": "",
+      "codeComponents": [
+        {
+          "id": "kBW5yqq3IuW5",
+          "name": "PlasmicHead",
+          "displayName": "hostless-plasmic-head",
+          "componentImportPath": "@plasmicapp/react-web"
+        },
+        {
+          "id": "nYY3DhgUD9Q2",
+          "name": "Fetcher",
+          "displayName": "plasmic-data-source-fetcher",
+          "componentImportPath": "@plasmicapp/react-web/lib/data-sources"
+        },
+        {
+          "id": "oy2tNUrSNuyD",
+          "name": "EmailContainer",
+          "displayName": "plasmic-email-container",
+          "componentImportPath": "@/wab/server/emails/components.tsx"
+        },
+        {
+          "id": "ni9IJwUvaPYp",
+          "name": "EmailButton",
+          "displayName": "plasmic-email-button",
+          "componentImportPath": "@/wab/server/emails/components.tsx"
+        },
+        {
+          "id": "7eMX-ae3z_Os",
+          "name": "EmailText",
+          "displayName": "plasmic-email-text",
+          "componentImportPath": "@/wab/server/emails/components.tsx"
+        },
+        {
+          "id": "BfZldbVXl9VI",
+          "name": "EmailImage",
+          "displayName": "plasmic-email-image",
+          "componentImportPath": "@/wab/server/emails/components.tsx"
+        },
+        {
+          "id": "7zgaUp0DUGtR",
+          "name": "EmailLink",
+          "displayName": "plasmic-email-link",
+          "componentImportPath": "@/wab/server/emails/components.tsx"
+        },
+        {
+          "id": "jhsSTRsuisaZ",
+          "name": "EmailMarkdown",
+          "displayName": "plasmic-email-markdown",
+          "componentImportPath": "@/wab/server/emails/components.tsx"
+        },
+        {
+          "id": "0uJtDjGRiPZA",
+          "name": "EmailHeading",
+          "displayName": "plasmic-email-heading",
+          "componentImportPath": "@/wab/server/emails/components.tsx"
+        },
+        {
+          "id": "xWkqfjbn8oyX",
+          "name": "EmailRow",
+          "displayName": "plasmic-email-row",
+          "componentImportPath": "@/wab/server/emails/components.tsx"
+        },
+        {
+          "id": "pVqOLFd6uDdb",
+          "name": "EmailColumn",
+          "displayName": "plasmic-email-column",
+          "componentImportPath": "@/wab/server/emails/components.tsx"
+        },
+        {
+          "id": "ccI_uNhThjcT",
+          "name": "EmailSection",
+          "displayName": "plasmic-email-section",
+          "componentImportPath": "@/wab/server/emails/components.tsx"
+        }
+      ],
+      "customFunctions": []
+    }
+  ],
+  "globalVariants": {
+    "variantGroups": []
+  },
+  "wrapPagesWithGlobalContexts": true,
+  "cliVersion": "0.1.338",
+  "$schema": "https://unpkg.com/@plasmicapp/cli@0.1.338/dist/plasmic.schema.json"
+}
