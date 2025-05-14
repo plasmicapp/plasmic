@@ -25,13 +25,10 @@ COPY . /plasmic/
 RUN cd /plasmic && \
  mkdir /$HOME/.plasmic && \
  cp platform/wab/tools/docker-dev/secrets.json /$HOME/.plasmic/secrets.json && \
- npm install -g concurrently nx
+ npm install -g concurrently nx && \
+ yarn setup && \
+ yarn setup:canvas-packages
 
-# Open port 3003
-EXPOSE 3003
+EXPOSE 3003 3004 3005 9229
 
-# At the moment yarn setup-all have to be done at runtime because it run migration and so need to have db up
-CMD ["sh", "-c", "cd /plasmic && yarn setup-all && cd /plasmic/platform/wab && yarn seed && cd /plasmic && yarn dev"]
-
-# The supposed issue i have here is that plume-pkg-mgr.ts update is searching for a user added by seed, but seed have to be run after setup-all who run the plume update
-# Le serpent se mord la queue
+CMD ["sh", "-c", "cd /plasmic/platform/wab && yarn typeorm migration:run && yarn migrate-dev-bundles && yarn seed && yarn plume:dev update && cd /plasmic && yarn dev"]
