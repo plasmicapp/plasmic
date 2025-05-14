@@ -13,7 +13,6 @@ RUN apk add --no-cache \
  py3-pip \
  postgresql-client \
  sudo \
- rsync \
  build-base && \
  echo "fs.inotify.max_user_watches=524288" >> /etc/sysctl.conf && \
  sysctl -p /etc/sysctl.conf
@@ -25,7 +24,6 @@ COPY . /plasmic/
 RUN cd /plasmic && \
  mkdir /$HOME/.plasmic && \
  cp platform/wab/tools/docker-dev/secrets.json /$HOME/.plasmic/secrets.json && \
- npm install -g concurrently nx && \
  yarn setup && \
  yarn setup:canvas-packages
 
