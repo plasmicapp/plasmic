@@ -22,6 +22,9 @@ services:
       context: .
     ports:
       - "3003:3003"
+      - "3004:3004"
+      - "3005:3005"
+      - "9229:9229"
     depends_on:
       plasmic-db:
         condition: service_healthy
