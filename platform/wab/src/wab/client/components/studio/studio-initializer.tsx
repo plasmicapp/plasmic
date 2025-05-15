@@ -15,6 +15,7 @@ import { providesViewCtx } from "@/wab/client/contexts/StudioContexts";
 import { HostFrameCtx } from "@/wab/client/frame-ctx/host-frame-ctx";
 import { checkRootSubHostVersion } from "@/wab/client/frame-ctx/windows";
 import { initStudioCtx } from "@/wab/client/init-view-ctx";
+import "@/wab/client/moment-config";
 import "@/wab/client/react-global-hook/globalHook"; // Run once studio loads to inject our hook
 import { initializePlasmicExtension } from "@/wab/client/screenshot-util";
 import {
