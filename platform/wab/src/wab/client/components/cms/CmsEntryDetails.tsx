@@ -294,8 +294,8 @@ function CmsEntryDetailsForm_(
   }, [form]);
 
   const dataEquals = (
-    data1: Dict<Dict<unknown>> | null | undefined,
-    data2: Dict<Dict<unknown>> | null | undefined
+    data1: CmsRowData | null | undefined,
+    data2: CmsRowData | null | undefined
   ) => {
     const fields = table.schema.fields
       .filter((f) => !f.hidden)

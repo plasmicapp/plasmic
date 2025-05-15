@@ -13,6 +13,7 @@ import {
   ApiCmseRow,
   ApiCreateCmsRowsResponse,
   CmsDatabaseId,
+  CmsRowData,
   CmsRowId,
   CmsRowRevisionId,
   CmsTableId,
@@ -21,7 +22,6 @@ import {
   TeamId,
   WorkspaceId,
 } from "@/wab/shared/ApiSchema";
-import { Dict } from "@/wab/shared/collections";
 import { ensureArray, ensureString, ensureType } from "@/wab/shared/common";
 import { UploadedFile } from "express-fileupload";
 import { Request, Response } from "express-serve-static-core";
@@ -249,7 +249,7 @@ function projectRows(rows: ApiCmseRow[], fields: string[]) {
   }));
 }
 
-function projectRowData(data: Dict<Dict<unknown>>, fields: string[]) {
+function projectRowData(data: CmsRowData, fields: string[]) {
   return mapValues(data, (langData) => pick(langData, ...fields));
 }
 

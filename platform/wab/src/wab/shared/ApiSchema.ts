@@ -1457,8 +1457,8 @@ export interface ApiCmsWriteRow extends ApiEntityBase<CmsRowId> {
 export interface ApiCmseRow extends ApiEntityBase<CmsRowId> {
   tableId: string;
   identifier: string | null;
-  data: Dict<Dict<unknown>> | null;
-  draftData: Dict<Dict<unknown>> | null;
+  data: CmsRowData | null;
+  draftData: CmsRowData | null;
   revision: number | null;
 }
 
@@ -1469,7 +1469,7 @@ export interface ApiCmseRowRevisionMeta
 }
 
 export interface ApiCmseRowRevision extends ApiCmseRowRevisionMeta {
-  data: Dict<Dict<unknown>>;
+  data: CmsRowData;
 }
 
 export interface ApiCmsQuery {

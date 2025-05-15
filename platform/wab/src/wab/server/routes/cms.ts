@@ -34,7 +34,7 @@ function toApiCmsRow(
     updatedAt: row.updatedAt,
     identifier: row.identifier,
     data: projectCmsData(
-      (useDraft ? row.draftData ?? row.data : row.data) ?? {},
+      (useDraft ? row.draftData ?? row.data : row.data) ?? { "": {} },
       fieldMetaMap,
       locale
     ),

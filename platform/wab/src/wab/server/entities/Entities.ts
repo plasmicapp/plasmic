@@ -11,6 +11,7 @@ import type {
   BranchStatus,
   CmsDatabaseExtraData,
   CmsDatabaseId,
+  CmsRowData,
   CmsRowId,
   CmsTableId,
   CmsTableSchema,
@@ -1164,10 +1165,10 @@ export class CmsRow extends Base<"CmsRowId"> {
   rank: string;
 
   @Column("jsonb", { nullable: true })
-  data: Dict<Dict<unknown>> | null;
+  data: CmsRowData | null;
 
   @Column("jsonb", { nullable: true })
-  draftData: Dict<Dict<unknown>> | null;
+  draftData: CmsRowData | null;
 
   @Column("integer", { nullable: true })
   revision: number | null;

@@ -1,7 +1,7 @@
 import { ApiCmsTable, CmsMetaType, CmsRowData } from "@/wab/shared/ApiSchema";
 
 export function getDefaultLocale(data: CmsRowData) {
-  return data[""];
+  return data[""] || {}; // fallback to `{}` in case DB data is missing default locale
 }
 
 export const ALLOWED_UNIQUE_TYPES = [

@@ -3,6 +3,7 @@ import { BadRequestError } from "@/wab/shared/ApiErrors/errors";
 import {
   CmsFieldMeta,
   CmsMetaType,
+  CmsRowData,
   CmsTableSchema,
   CmsTypeName,
   FilterClause,
@@ -40,7 +41,7 @@ export function makeFieldMetaMap(schema: CmsTableSchema, fields?: string[]) {
 }
 
 export function projectCmsData(
-  data: Dict<Dict<unknown> | undefined>,
+  data: CmsRowData,
   fieldMetaMap: Record<string, CmsFieldMeta>,
   locale: string
 ) {
@@ -59,12 +60,12 @@ export function projectCmsData(
 }
 
 export function normalizeCmsData(
-  data: Dict<unknown> | undefined,
+  data: CmsRowData | undefined,
   fieldMetaMap: Record<string, CmsFieldMeta>,
   locales?: string[]
-): Dict<Dict<unknown>> {
+): CmsRowData {
   if (!data) {
-    return {};
+    return { "": {} };
   }
   return Object.fromEntries(
     ["", ...(locales ?? [])].map((locale) => [
@@ -94,11 +95,11 @@ export function normalizeCmsData(
         )
       ),
     ])
-  );
+  ) as CmsRowData;
 }
 
 export function denormalizeCmsData(
-  data: Dict<Dict<unknown>> | null,
+  data: CmsRowData | null,
   tableSchema: CmsFieldMeta[],
   locales?: string[]
 ): Dict<unknown> | null {

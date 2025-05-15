@@ -596,7 +596,7 @@ export async function checkWeakPassword(password: string | undefined) {
   }
 }
 
-function pickKnownFieldsByLocale(table: CmsTable, x: Dict<Dict<unknown>>) {
+function pickKnownFieldsByLocale(table: CmsTable, x: CmsRowData) {
   return L.mapValues(x, (values) =>
     pick(values, ...table.schema.fields.map((f) => f.identifier))
   );
@@ -7132,8 +7132,8 @@ export class DbMgr implements MigrationDbMgr {
     tableId: CmsTableId,
     opts: {
       identifier?: string;
-      data?: Dict<Dict<unknown>> | null;
-      draftData?: Dict<Dict<unknown>> | null;
+      data?: CmsRowData | null;
+      draftData?: CmsRowData | null;
     }
   ) {
     const [row] = await this.createCmsRows(tableId, [opts]);
@@ -7149,8 +7149,8 @@ export class DbMgr implements MigrationDbMgr {
     tableId: CmsTableId,
     rowInputs: {
       identifier?: string;
-      data?: Dict<Dict<unknown>> | null;
-      draftData?: Dict<Dict<unknown>> | null;
+      data?: CmsRowData | null;
+      draftData?: CmsRowData | null;
     }[]
   ) {
     const table = await this.getCmsTableById(tableId);
@@ -7173,15 +7173,15 @@ export class DbMgr implements MigrationDbMgr {
     );
 
     const rows = rowInputs.map((opts) => {
-      const data: Dict<Dict<unknown>> | null = opts.data
+      const data: CmsRowData | null = opts.data
         ? L.merge({}, defaults, pickKnownFieldsByLocale(table, opts.data))
         : null;
-      const draftData: Dict<Dict<unknown>> | null =
+      const draftData: CmsRowData | null =
         opts.draftData || !opts.data
           ? L.merge(
               {},
               defaults,
-              pickKnownFieldsByLocale(table, opts.draftData || {})
+              pickKnownFieldsByLocale(table, opts.draftData || { "": {} })
             )
           : null;
 
@@ -7274,8 +7274,8 @@ export class DbMgr implements MigrationDbMgr {
     opts: {
       rank?: string;
       identifier?: string;
-      data?: Dict<Dict<unknown>>;
-      draftData?: Dict<Dict<unknown>> | null;
+      data?: CmsRowData;
+      draftData?: CmsRowData | null;
       revision?: number;
       noMerge?: boolean;
     }
@@ -7296,9 +7296,9 @@ export class DbMgr implements MigrationDbMgr {
       );
     }
     const mergedData = (
-      existing: Record<string, any> | null,
-      update: Record<string, any> | null | undefined
-    ) => {
+      existing: CmsRowData | null,
+      update: CmsRowData | null | undefined
+    ): CmsRowData | null => {
       if (update == null) {
         return null;
       }
@@ -7323,17 +7323,16 @@ export class DbMgr implements MigrationDbMgr {
       row.data = mergedData(row.data, opts.data);
 
       // Check if unique fields have violations.
-      const uniqueFieldsData = getUniqueFieldsData(
-        table,
-        row.data as CmsRowData
-      );
-      if (Object.keys(uniqueFieldsData).length > 0) {
-        const uniqueFieldsCheck = await this.checkUniqueFields(table.id, {
-          rowId: row.id,
-          uniqueFieldsData: uniqueFieldsData,
-        });
-        if (uniqueFieldsCheck.some((field) => field.conflictRowId)) {
-          throw new UniqueViolationError(uniqueFieldsCheck);
+      if (row.data) {
+        const uniqueFieldsData = getUniqueFieldsData(table, row.data);
+        if (Object.keys(uniqueFieldsData).length > 0) {
+          const uniqueFieldsCheck = await this.checkUniqueFields(table.id, {
+            rowId: row.id,
+            uniqueFieldsData: uniqueFieldsData,
+          });
+          if (uniqueFieldsCheck.some((field) => field.conflictRowId)) {
+            throw new UniqueViolationError(uniqueFieldsCheck);
+          }
         }
       }
     }
