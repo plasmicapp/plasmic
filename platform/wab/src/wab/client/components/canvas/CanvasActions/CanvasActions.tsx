@@ -165,17 +165,8 @@ function CanvasActions_(props: { arena: AnyArena; arenaFrame: ArenaFrame }) {
 
   useRerenderOnUserBodyChange(studioCtx, viewCtx);
 
-  const shouldHideCanvasActions =
-    studioCtx.freestyleState() ||
-    studioCtx.dragInsertState() ||
-    studioCtx.isResizingFocusedArenaFrame ||
-    !studioCtx.showDevControls ||
-    studioCtx.screenshotting ||
-    studioCtx.isTransforming() ||
-    studioCtx.isResizeDragging;
-
   const valRoot = globalHookCtx.frameUidToValRoot.get(props.arenaFrame.uid);
-  if (!viewCtx || !valRoot || shouldHideCanvasActions) {
+  if (!viewCtx || !valRoot || studioCtx.shouldHideUIOverlay()) {
     return null;
   }
   const invalidArgs = flattenVals(valRoot).filter((valNode) => {

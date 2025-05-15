@@ -2728,6 +2728,18 @@ export class StudioCtx extends WithDbCtx {
     this.viewCtxs.forEach((vc) => vc.resetAutoOpenState());
   }
 
+  shouldHideUIOverlay(includeResizing = true): boolean {
+    return Boolean(
+      this.freestyleState() ||
+        this.dragInsertState() ||
+        this.isResizingFocusedArenaFrame ||
+        !this.showDevControls ||
+        this.screenshotting ||
+        this.isTransforming() ||
+        (includeResizing && this.isResizeDragging)
+    );
+  }
+
   private _showCommentsOverlay = observable.box(true);
   get showCommentsOverlay() {
     return this._showCommentsOverlay.get();
