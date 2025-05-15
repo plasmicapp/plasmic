@@ -34,7 +34,7 @@ import {
   CmsTableId,
   UniqueFieldCheck,
 } from "@/wab/shared/ApiSchema";
-import { getNullUniqueFieldsData, getUniqueFieldsData } from "@/wab/shared/cms";
+import { getUniqueFieldsData } from "@/wab/shared/cms";
 import { Dict } from "@/wab/shared/collections";
 import { spawn } from "@/wab/shared/common";
 import { DEVFLAGS } from "@/wab/shared/devflags";
@@ -555,10 +555,9 @@ function CmsEntryDetailsForm_(
                 table,
                 changedValues
               );
-              const nullUniqueData = getNullUniqueFieldsData(
-                table,
-                changedValues
-              );
+              const nullUniqueData = getUniqueFieldsData(table, changedValues, {
+                nulls: "only",
+              });
               return {
                 ...prev,
                 ...dataToUniqueStatus(changedUniqueData, "not started"),
