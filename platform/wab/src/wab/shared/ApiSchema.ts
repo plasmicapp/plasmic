@@ -2019,11 +2019,14 @@ export interface QueryCopilotDebugRequest extends QueryCopilotResquestBase {
   dataSourcesDebug?: true;
 }
 
+export type CopilotImage = {
+  type: "png" | "jpeg" | "jpg" | "gif" | "webp";
+  base64: string;
+};
+
 export interface QueryCopilotUiRequest extends QueryCopilotResquestBase {
   type: "ui";
-  data: any;
-  currentCode?: string;
-  context?: string;
+  images: Array<CopilotImage>;
   goal: string;
 }
 
@@ -2040,9 +2043,11 @@ export interface QueryCopilotResponse {
   response: string;
   typeDebug?: string;
 }
-export interface CopilotResponseData extends WholeChatCompletionResponse {
+
+export type CopilotResponseData = {
+  data: WholeChatCompletionResponse;
   copilotInteractionId: CopilotInteractionId;
-}
+};
 
 export interface SendCopilotFeedbackRequest {
   id: CopilotInteractionId;

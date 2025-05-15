@@ -71,16 +71,23 @@ function CopilotPromptDialog_({
             ? {
                 type: "code-sql",
                 schema: ensure(dataSourceSchema, () => `Missing schema`),
+                currentCode: processCurrentCode(currentValue),
+                data: processData(data),
               }
             : type === "ui"
             ? {
                 type: "ui",
                 context,
+                // Passing in empty list for type completion, data will be added in FE integration.
+                images: [],
               }
-            : { type: "code", context }),
+            : {
+                type: "code",
+                context,
+                currentCode: processCurrentCode(currentValue),
+                data: processData(data),
+              }),
           projectId: studioCtx.siteInfo.id,
-          currentCode: processCurrentCode(currentValue),
-          data: processData(data),
           goal: prompt,
           ...(studioCtx.appCtx.appConfig.copilotClaude
             ? { useClaude: true }
@@ -91,7 +98,7 @@ function CopilotPromptDialog_({
           return res;
         });
 
-      const resultCode = result.data.choices[0]?.message?.content;
+      const resultCode = result.data.choices[0]?.message?.content || undefined;
 
       if (resultCode) {
         studioCtx.addToCopilotHistory(historyType, {

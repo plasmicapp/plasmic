@@ -209,6 +209,7 @@ import {
   withoutNils,
   xor,
 } from "@/wab/shared/common";
+import { CreateChatCompletionRequest } from "@/wab/shared/copilot/prompt-utils";
 import {
   cloneSite,
   fixAppAuthRefs,
@@ -263,7 +264,6 @@ import { Draft, createDraft, finishDraft } from "immer";
 import * as _ from "lodash";
 import L, { fromPairs, omit, pick, uniq } from "lodash";
 import moment from "moment";
-import { CreateChatCompletionRequest } from "openai";
 import ShortUuid from "short-uuid";
 import type { Opaque } from "type-fest";
 import {

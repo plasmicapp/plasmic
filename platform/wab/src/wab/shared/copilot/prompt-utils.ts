@@ -1,8 +1,14 @@
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
-import { OpenAIWrapper } from "@/wab/server/copilot/llms";
+import { CopilotImage } from "@/wab/shared/ApiSchema";
 import { DataSourceSchema } from "@plasmicapp/data-sources";
 import GPT3Tokenizer from "gpt3-tokenizer";
-import { CreateChatCompletionRequest } from "openai";
+import OpenAI from "openai";
+import {
+  ChatCompletion,
+  ChatCompletionContentPartImage,
+  ChatCompletionCreateParamsNonStreaming,
+  ChatCompletionRole,
+} from "openai/resources/chat/completions";
 
 export interface Issue {
   message: string;
@@ -20,6 +26,16 @@ export const humanJson = (x: any) => mdCode(JSON.stringify(x, null, 2), "");
 export const json = (x: any) => mdCode(JSON.stringify(x), "");
 export const nakedJson = (x: any) => JSON.stringify(x, null, 2);
 export const typescript = (x: string) => mdCode(x, "ts");
+
+export type CreateChatCompletionRequest =
+  ChatCompletionCreateParamsNonStreaming;
+
+export type CreateChatCompletionRequestOptions = OpenAI.RequestOptions;
+
+export type ChatCompletionRequestMessageRoleEnum = ChatCompletionRole;
+
+export type ChatCompletionRequestContentPartImage =
+  ChatCompletionContentPartImage;
 
 export function showCompletionRequest(
   createChatCompletionRequest: CreateChatCompletionRequest
@@ -39,10 +55,7 @@ ${chat}
 `.trim();
 }
 
-export type WholeChatCompletionResponse = Pick<
-  Awaited<ReturnType<OpenAIWrapper["createChatCompletion"]>>,
-  "data"
->;
+export type WholeChatCompletionResponse = ChatCompletion;
 
 export interface ModelInteraction {
   request: Promise<CreateChatCompletionRequest>;
@@ -71,6 +84,14 @@ export interface CopilotSqlCodeChainProps {
   // Stringify-able data
   data: Record<string, any>;
   dataSourceSchema: DataSourceSchema;
+  executeRequest: (
+    request: CreateChatCompletionRequest
+  ) => Promise<WholeChatCompletionResponse>;
+  goal: string;
+}
+
+export interface CopilotUiChainProps {
+  images: Array<CopilotImage>;
   executeRequest: (
     request: CreateChatCompletionRequest
   ) => Promise<WholeChatCompletionResponse>;
