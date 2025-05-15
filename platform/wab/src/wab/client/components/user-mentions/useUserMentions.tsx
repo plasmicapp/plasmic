@@ -12,12 +12,10 @@ import { regex } from "regex";
 export function useUserMentions({
   popoverOffset = 0,
   value,
-  onValueChange,
   inputSelector,
 }: {
   popoverOffset?: number;
   value: string;
-  onValueChange: (newValue: string) => void;
   inputSelector: string;
 }) {
   const [highlightIndex, setHighlightIndex] = useState(0);
@@ -70,22 +68,43 @@ export function useUserMentions({
   });
 
   const insertText = useCallback(
-    (text: string) => {
+    (text: string, opts?: { start?: number; end?: number }) => {
       if (inputElement) {
         inputElement.focus();
+
+        if (opts?.start || opts?.end) {
+          inputElement.setSelectionRange(
+            opts?.start ?? null,
+            opts?.end ?? null
+          );
+        }
+
         document.execCommand("insertText", false, text);
 
-        const newCaretIndex = (inputElement.selectionStart || 0) + text.length;
-        inputElement.setSelectionRange(newCaretIndex, newCaretIndex);
         setMentionText(undefined);
       }
     },
     [inputElement]
   );
 
-  const handleSelectUser = (selectedUser: ApiUser) => {
-    insertText(`<${selectedUser.email}> `);
-  };
+  const handleSelectUser = useCallback(
+    (selectedUser: ApiUser) => {
+      if (!inputElement) {
+        return;
+      }
+
+      const caret = inputElement.selectionStart || 0;
+      const tokenStart = getTokenStartIndex(value, caret);
+      /* tokenStart points to the @ character, we want to select after @ till
+       * current cursor position and replace it with the insert text.
+       */
+      insertText(`<${selectedUser.email}> `, {
+        start: tokenStart + 1,
+        end: caret,
+      });
+    },
+    [inputElement, value]
+  );
 
   const onKeyHandler = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {

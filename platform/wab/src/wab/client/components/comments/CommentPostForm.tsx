@@ -39,7 +39,6 @@ const CommentPostForm = observer(function CommentPostForm(
     handleMentionClick,
   } = useUserMentions({
     value,
-    onValueChange: setValue,
     inputSelector: `#${inputElementId}`,
   });
 
