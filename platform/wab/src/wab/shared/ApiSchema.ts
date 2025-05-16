@@ -2019,8 +2019,11 @@ export interface QueryCopilotDebugRequest extends QueryCopilotResquestBase {
   dataSourcesDebug?: true;
 }
 
+export const copilotImageTypes = ["png", "jpeg", "jpg", "gif", "webp"] as const;
+export type CopilotImageType = (typeof copilotImageTypes)[number];
+
 export type CopilotImage = {
-  type: "png" | "jpeg" | "jpg" | "gif" | "webp";
+  type: CopilotImageType;
   base64: string;
 };
 

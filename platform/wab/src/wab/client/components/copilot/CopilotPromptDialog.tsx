@@ -15,12 +15,21 @@ import { Popover, Tooltip } from "antd";
 import * as React from "react";
 import { FocusScope } from "react-aria";
 
+import { CopilotPromptImage } from "@/wab/client/components/copilot/CopilotPromptImage";
 import { dataPickerShouldHideKey } from "@/wab/client/components/sidebar-tabs/DataBinding/DataPickerUtil";
+import { ImageUploader } from "@/wab/client/components/style-controls/ImageSelector";
 import { TextboxRef } from "@/wab/client/components/widgets/Textbox";
 import { useAsyncStrict } from "@/wab/client/hooks/useAsyncStrict";
+import ImageUploadsIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__ImageUploads";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { trackEvent } from "@/wab/client/tracking";
-import { CopilotResponseData } from "@/wab/shared/ApiSchema";
+import {
+  CopilotImage,
+  CopilotImageType,
+  copilotImageTypes,
+  CopilotResponseData,
+} from "@/wab/shared/ApiSchema";
+import { asDataUrl, parseDataUrl } from "@/wab/shared/data-urls";
 import { DataSourceSchema } from "@plasmicapp/data-sources";
 import { isString, range } from "lodash";
 import defer = setTimeout;
@@ -48,10 +57,12 @@ function CopilotPromptDialog_({
   className,
   dialogOpen,
   onDialogOpenChange,
+  showImageUpload,
 }: CopilotPromptDialogProps) {
   const [prompt, setPrompt] = React.useState("");
   const [submittedPrompt, setSubmittedPrompt] = React.useState("");
   const [showHistory, setShowHistory] = React.useState(false);
+  const [images, setImages] = React.useState<CopilotImage[]>([]);
   const promptInputRef: React.Ref<TextboxRef> = React.useRef<TextboxRef>(null);
   const applyBtnRef: React.Ref<HTMLDivElement> =
     React.useRef<HTMLDivElement>(null);
@@ -78,8 +89,7 @@ function CopilotPromptDialog_({
             ? {
                 type: "ui",
                 context,
-                // Passing in empty list for type completion, data will be added in FE integration.
-                images: [],
+                images,
               }
             : {
                 type: "code",
@@ -147,6 +157,49 @@ function CopilotPromptDialog_({
     <PlasmicCopilotPromptDialog
       className={className}
       type={type}
+      showImageUpload={showImageUpload}
+      imageUploadIcon={{
+        render: () => {
+          return (
+            <ImageUploader
+              onUploaded={async (image, _file) => {
+                const dataUrl = parseDataUrl(image.url);
+                setImages((prev) => [
+                  ...prev,
+                  {
+                    type: dataUrl.mediaType.split("/")[1] as CopilotImageType,
+                    base64: dataUrl.data,
+                  },
+                ]);
+              }}
+              accept={copilotImageTypes.map((t) => `.${t}`).join(",")}
+              isDisabled={false}
+            >
+              <div className="flex dimfg p-sm">
+                <ImageUploadsIcon />
+              </div>
+            </ImageUploader>
+          );
+        },
+      }}
+      imageUploadContainer={{
+        wrapChildren: () => {
+          return images.map((image) => (
+            <CopilotPromptImage
+              img={{
+                src: asDataUrl(image.base64, `image/${image.type}`, "base64"),
+              }}
+              closeIconContainer={{
+                onClick: () => {
+                  setImages((prev) =>
+                    prev.filter((img) => img.base64 !== image.base64)
+                  );
+                },
+              }}
+            />
+          ));
+        },
+      }}
       promptContainer={{
         style: {
           zIndex: 1,

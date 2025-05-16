@@ -15,7 +15,9 @@ import * as React from "react";
 
 import {
   Flex as Flex__,
+  PlasmicIcon as PlasmicIcon__,
   PlasmicImg as PlasmicImg__,
+  SingleBooleanChoiceArg,
   SingleChoiceArg,
   Stack as Stack__,
   StrictProps,
@@ -39,6 +41,7 @@ import projectcss from "./plasmic_plasmic_kit_data_binding.module.css"; // plasm
 import sty from "./PlasmicCopilotPromptDialog.module.css"; // plasmic-import: -zGA-erYhCmv/css
 
 import HistoryIcon from "../plasmic_kit/PlasmicIcon__History"; // plasmic-import: 6ZOswzsUR/icon
+import ImageUploadsIcon from "../plasmic_kit/PlasmicIcon__ImageUploads"; // plasmic-import: 0e-yZ0qeSHb12/icon
 import CloseSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__CloseSvg"; // plasmic-import: DhvEHyCHT/icon
 import SendSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__SendSvg"; // plasmic-import: h2npYh74m/icon
 import Icon3Icon from "./icons/PlasmicIcon__Icon3"; // plasmic-import: EfDOV4MDLj/icon
@@ -55,16 +58,18 @@ export type PlasmicCopilotPromptDialog__VariantMembers = {
     | "history"
     | "historyEmpty";
   type: "ui" | "sql" | "code";
+  showImageUpload: "showImageUpload";
 };
 export type PlasmicCopilotPromptDialog__VariantsArgs = {
   state?: SingleChoiceArg<
     "ready" | "loading" | "error" | "quotaExceeded" | "history" | "historyEmpty"
   >;
   type?: SingleChoiceArg<"ui" | "sql" | "code">;
+  showImageUpload?: SingleBooleanChoiceArg<"showImageUpload">;
 };
 type VariantPropType = keyof PlasmicCopilotPromptDialog__VariantsArgs;
 export const PlasmicCopilotPromptDialog__VariantProps =
-  new Array<VariantPropType>("state", "type");
+  new Array<VariantPropType>("state", "type", "showImageUpload");
 
 export type PlasmicCopilotPromptDialog__ArgsType = {};
 type ArgPropType = keyof PlasmicCopilotPromptDialog__ArgsType;
@@ -88,7 +93,9 @@ export type PlasmicCopilotPromptDialog__OverridesType = {
   onLoadTrigger?: Flex__<typeof PlasmicImg__>;
   promptContainer?: Flex__<"div">;
   promptInput?: Flex__<typeof Textbox>;
+  imageUploadIcon?: Flex__<"svg">;
   runPromptBtn?: Flex__<typeof IconButton>;
+  imageUploadContainer?: Flex__<"div">;
   errorMessage?: Flex__<"div">;
   quotaExceededMsg?: Flex__<"div">;
   reply?: Flex__<typeof CopilotMsg>;
@@ -99,6 +106,7 @@ export interface DefaultCopilotPromptDialogProps {
     "ready" | "loading" | "error" | "quotaExceeded" | "history" | "historyEmpty"
   >;
   type?: SingleChoiceArg<"ui" | "sql" | "code">;
+  showImageUpload?: SingleBooleanChoiceArg<"showImageUpload">;
   className?: string;
 }
 
@@ -146,6 +154,13 @@ function PlasmicCopilotPromptDialog__RenderFunc(props: {
         variableType: "variant",
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.type,
       },
+      {
+        path: "showImageUpload",
+        type: "private",
+        variableType: "variant",
+        initFunc: ({ $props, $state, $queries, $ctx }) =>
+          $props.showImageUpload,
+      },
     ],
     [$props, $ctx, $refs]
   );
@@ -158,7 +173,11 @@ function PlasmicCopilotPromptDialog__RenderFunc(props: {
 
   return (
     (
-      hasVariant($state, "state", "historyEmpty")
+      hasVariant($state, "showImageUpload", "showImageUpload")
+        ? true
+        : hasVariant($state, "type", "ui")
+        ? true
+        : hasVariant($state, "state", "historyEmpty")
         ? true
         : hasVariant($state, "state", "history")
         ? true
@@ -187,6 +206,11 @@ function PlasmicCopilotPromptDialog__RenderFunc(props: {
           plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
           sty.popoverPlaceholder,
           {
+            [sty.popoverPlaceholdershowImageUpload]: hasVariant(
+              $state,
+              "showImageUpload",
+              "showImageUpload"
+            ),
             [sty.popoverPlaceholderstate_error]: hasVariant(
               $state,
               "state",
@@ -217,6 +241,7 @@ function PlasmicCopilotPromptDialog__RenderFunc(props: {
               "state",
               "ready"
             ),
+            [sty.popoverPlaceholdertype_ui]: hasVariant($state, "type", "ui"),
           }
         )}
       >
@@ -261,6 +286,11 @@ function PlasmicCopilotPromptDialog__RenderFunc(props: {
             data-plasmic-override={overrides.promptDialog}
             hasGap={true}
             className={classNames(projectcss.all, sty.promptDialog, {
+              [sty.promptDialogshowImageUpload]: hasVariant(
+                $state,
+                "showImageUpload",
+                "showImageUpload"
+              ),
               [sty.promptDialogstate_historyEmpty]: hasVariant(
                 $state,
                 "state",
@@ -390,6 +420,11 @@ function PlasmicCopilotPromptDialog__RenderFunc(props: {
               data-plasmic-override={overrides.contents}
               hasGap={true}
               className={classNames(projectcss.all, sty.contents, {
+                [sty.contentsshowImageUpload]: hasVariant(
+                  $state,
+                  "showImageUpload",
+                  "showImageUpload"
+                ),
                 [sty.contentsstate_historyEmpty]: hasVariant(
                   $state,
                   "state",
@@ -593,6 +628,11 @@ function PlasmicCopilotPromptDialog__RenderFunc(props: {
                 data-plasmic-override={overrides.promptContainer}
                 hasGap={true}
                 className={classNames(projectcss.all, sty.promptContainer, {
+                  [sty.promptContainershowImageUpload]: hasVariant(
+                    $state,
+                    "showImageUpload",
+                    "showImageUpload"
+                  ),
                   [sty.promptContainerstate_historyEmpty]: hasVariant(
                     $state,
                     "state",
@@ -614,6 +654,11 @@ function PlasmicCopilotPromptDialog__RenderFunc(props: {
                   data-plasmic-name={"promptInput"}
                   data-plasmic-override={overrides.promptInput}
                   className={classNames("__wab_instance", sty.promptInput, {
+                    [sty.promptInputshowImageUpload]: hasVariant(
+                      $state,
+                      "showImageUpload",
+                      "showImageUpload"
+                    ),
                     [sty.promptInputstate_ready_type_ui]:
                       hasVariant($state, "type", "ui") &&
                       hasVariant($state, "state", "ready"),
@@ -625,6 +670,47 @@ function PlasmicCopilotPromptDialog__RenderFunc(props: {
                       : 'e.g. "Current month name"'
                   }
                   styleType={["gray"]}
+                  suffixIcon={
+                    <PlasmicIcon__
+                      data-plasmic-name={"imageUploadIcon"}
+                      data-plasmic-override={overrides.imageUploadIcon}
+                      PlasmicIconType={
+                        hasVariant($state, "showImageUpload", "showImageUpload")
+                          ? ImageUploadsIcon
+                          : CloseSvgIcon
+                      }
+                      className={classNames(
+                        projectcss.all,
+                        sty.imageUploadIcon,
+                        {
+                          [sty.imageUploadIconshowImageUpload]: hasVariant(
+                            $state,
+                            "showImageUpload",
+                            "showImageUpload"
+                          ),
+                          [sty.imageUploadIconstate_ready_showImageUpload_type_ui]:
+                            hasVariant(
+                              $state,
+                              "showImageUpload",
+                              "showImageUpload"
+                            ) &&
+                            hasVariant($state, "state", "ready") &&
+                            hasVariant($state, "type", "ui"),
+                          [sty.imageUploadIcontype_ui]: hasVariant(
+                            $state,
+                            "type",
+                            "ui"
+                          ),
+                        }
+                      )}
+                      role={"img"}
+                    />
+                  }
+                  withIcons={
+                    hasVariant($state, "showImageUpload", "showImageUpload")
+                      ? ["withSuffix"]
+                      : undefined
+                  }
                 />
 
                 <IconButton
@@ -651,6 +737,30 @@ function PlasmicCopilotPromptDialog__RenderFunc(props: {
                   />
                 </IconButton>
               </Stack__>
+              <Stack__
+                as={"div"}
+                data-plasmic-name={"imageUploadContainer"}
+                data-plasmic-override={overrides.imageUploadContainer}
+                hasGap={true}
+                className={classNames(
+                  projectcss.all,
+                  sty.imageUploadContainer,
+                  {
+                    [sty.imageUploadContainershowImageUpload]: hasVariant(
+                      $state,
+                      "showImageUpload",
+                      "showImageUpload"
+                    ),
+                    [sty.imageUploadContainershowImageUpload_type_ui]:
+                      hasVariant(
+                        $state,
+                        "showImageUpload",
+                        "showImageUpload"
+                      ) && hasVariant($state, "type", "ui"),
+                  }
+                )}
+              />
+
               {(hasVariant($state, "state", "loading") ? true : false) ? (
                 <Icon3Icon
                   className={classNames(projectcss.all, sty.svg__qXcOj, {
@@ -705,6 +815,11 @@ function PlasmicCopilotPromptDialog__RenderFunc(props: {
                 data-plasmic-name={"reply"}
                 data-plasmic-override={overrides.reply}
                 className={classNames("__wab_instance", sty.reply, {
+                  [sty.replyshowImageUpload]: hasVariant(
+                    $state,
+                    "showImageUpload",
+                    "showImageUpload"
+                  ),
                   [sty.replystate_quotaExceeded]: hasVariant(
                     $state,
                     "state",
@@ -740,7 +855,9 @@ const PlasmicDescendants = {
     "onLoadTrigger",
     "promptContainer",
     "promptInput",
+    "imageUploadIcon",
     "runPromptBtn",
+    "imageUploadContainer",
     "errorMessage",
     "quotaExceededMsg",
     "reply",
@@ -762,7 +879,9 @@ const PlasmicDescendants = {
     "onLoadTrigger",
     "promptContainer",
     "promptInput",
+    "imageUploadIcon",
     "runPromptBtn",
+    "imageUploadContainer",
     "errorMessage",
     "quotaExceededMsg",
     "reply",
@@ -783,7 +902,9 @@ const PlasmicDescendants = {
     "onLoadTrigger",
     "promptContainer",
     "promptInput",
+    "imageUploadIcon",
     "runPromptBtn",
+    "imageUploadContainer",
     "errorMessage",
     "quotaExceededMsg",
     "reply",
@@ -810,7 +931,9 @@ const PlasmicDescendants = {
     "onLoadTrigger",
     "promptContainer",
     "promptInput",
+    "imageUploadIcon",
     "runPromptBtn",
+    "imageUploadContainer",
     "errorMessage",
     "quotaExceededMsg",
     "reply",
@@ -826,9 +949,16 @@ const PlasmicDescendants = {
   historyContents: ["historyContents"],
   historyBottomDiv: ["historyBottomDiv", "onLoadTrigger"],
   onLoadTrigger: ["onLoadTrigger"],
-  promptContainer: ["promptContainer", "promptInput", "runPromptBtn"],
-  promptInput: ["promptInput"],
+  promptContainer: [
+    "promptContainer",
+    "promptInput",
+    "imageUploadIcon",
+    "runPromptBtn",
+  ],
+  promptInput: ["promptInput", "imageUploadIcon"],
+  imageUploadIcon: ["imageUploadIcon"],
   runPromptBtn: ["runPromptBtn"],
+  imageUploadContainer: ["imageUploadContainer"],
   errorMessage: ["errorMessage"],
   quotaExceededMsg: ["quotaExceededMsg"],
   reply: ["reply"],
@@ -854,7 +984,9 @@ type NodeDefaultElementType = {
   onLoadTrigger: typeof PlasmicImg__;
   promptContainer: "div";
   promptInput: typeof Textbox;
+  imageUploadIcon: "svg";
   runPromptBtn: typeof IconButton;
+  imageUploadContainer: "div";
   errorMessage: "div";
   quotaExceededMsg: "div";
   reply: typeof CopilotMsg;
@@ -936,7 +1068,9 @@ export const PlasmicCopilotPromptDialog = Object.assign(
     onLoadTrigger: makeNodeComponent("onLoadTrigger"),
     promptContainer: makeNodeComponent("promptContainer"),
     promptInput: makeNodeComponent("promptInput"),
+    imageUploadIcon: makeNodeComponent("imageUploadIcon"),
     runPromptBtn: makeNodeComponent("runPromptBtn"),
+    imageUploadContainer: makeNodeComponent("imageUploadContainer"),
     errorMessage: makeNodeComponent("errorMessage"),
     quotaExceededMsg: makeNodeComponent("quotaExceededMsg"),
     reply: makeNodeComponent("reply"),

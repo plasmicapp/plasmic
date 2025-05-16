@@ -14,6 +14,7 @@ function CopilotUiPrompt() {
   return (
     <CopilotPromptDialog
       type={"ui"}
+      showImageUpload={true}
       dialogOpen={studioCtx.showUiCopilot}
       onDialogOpenChange={(isOpen) => {
         studioCtx.openUiCopilotDialog(isOpen);

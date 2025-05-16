@@ -27,6 +27,12 @@
 .popoverPlaceholderstate_historyEmpty {
   display: flex;
 }
+.popoverPlaceholdertype_ui {
+  display: flex;
+}
+.popoverPlaceholdershowImageUpload {
+  display: flex;
+}
 .sizerContainer {
   display: flex;
   position: relative;
@@ -361,7 +367,7 @@
   width: 1.25rem;
   height: 1.25rem;
 }
-.svg__eTyN9 {
+.imageUploadIcon {
   display: flex;
   position: relative;
   object-fit: cover;
@@ -390,6 +396,49 @@
   position: relative;
   object-fit: cover;
   height: 1em;
+}
+.imageUploadContainer {
+  flex-direction: row;
+  position: relative;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  min-width: 0;
+  display: none;
+}
+.imageUploadContainer > :global(.__wab_flex-container) {
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: flex-start;
+  min-width: 0;
+}
+.imageUploadContainershowImageUpload {
+  display: flex;
+}
+.imageUploadContainershowImageUpload > :global(.__wab_flex-container) {
+  justify-content: flex-start;
+  align-items: center;
+  margin-left: calc(0px - 8px);
+  width: calc(100% + 8px);
+  margin-top: calc(0px - 0px);
+  height: calc(100% + 0px);
+}
+.imageUploadContainershowImageUpload > :global(.__wab_flex-container) > *,
+.imageUploadContainershowImageUpload
+  > :global(.__wab_flex-container)
+  > :global(.__wab_slot)
+  > *,
+.imageUploadContainershowImageUpload
+  > :global(.__wab_flex-container)
+  > picture
+  > img,
+.imageUploadContainershowImageUpload
+  > :global(.__wab_flex-container)
+  > :global(.__wab_slot)
+  > picture
+  > img {
+  margin-left: 8px;
+  margin-top: 0px;
 }
 .svg__qXcOj {
   object-fit: cover;
