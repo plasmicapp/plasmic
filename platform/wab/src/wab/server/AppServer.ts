@@ -2145,14 +2145,17 @@ function corsPreflight() {
     allowedHeaders: "*",
   });
 
-  const handler: express.RequestHandler = (req, res, next) => {
-    // cors response should be very cacheable by Cloudfront
-    res.set(
-      "Cache-Control",
-      `max-age=${30 * 24 * 60 * 60}, s-maxage=${30 * 24 * 60 * 60}`
-    );
-    corsHandler(req, res, next);
-  };
+  const handler: express.RequestHandler = safeCast<RequestHandler>(
+    async (req, res, next) => {
+      // cors response should be very cacheable by Cloudfront
+      await req.resolveTransaction();
+      res.set(
+        "Cache-Control",
+        `max-age=${30 * 24 * 60 * 60}, s-maxage=${30 * 24 * 60 * 60}`
+      );
+      corsHandler(req, res, next);
+    }
+  );
   return handler;
 }
 
