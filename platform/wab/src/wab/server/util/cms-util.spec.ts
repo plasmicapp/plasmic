@@ -406,7 +406,7 @@ describe("makeSqlCondition", () => {
     });
   });
 
-  it.skip("considers $in with zero arguments as FALSE", () => {
+  it("considers $in with zero arguments as FALSE", () => {
     expect(
       makeSqlCondition(
         TEST_TABLE,

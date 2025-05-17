@@ -264,8 +264,11 @@ export function makeSqlCondition(
           throw new BadRequestError(
             `Unexpected "in" operand: ${JSON.stringify(vals)}`
           );
+        } else if (vals.length === 0) {
+          return "FALSE";
+        } else {
+          return `${fieldSql} IN (:...${getValParam(vals)})`;
         }
-        return `${fieldSql} IN (:...${getValParam(vals)})`;
       } else if ("$gt" in cond) {
         return `${fieldSql} > :${getValParam(cond.$gt)}`;
       } else if ("$ge" in cond) {
