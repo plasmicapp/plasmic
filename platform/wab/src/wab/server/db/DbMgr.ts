@@ -7490,17 +7490,23 @@ export class DbMgr implements MigrationDbMgr {
     if (query.order) {
       for (const order of query.order) {
         const field = typeof order === "string" ? order : order.field;
+        const dir =
+          typeof order === "string"
+            ? "ASC"
+            : order.dir === "asc"
+            ? "ASC"
+            : "DESC";
         if (field in fieldToMeta) {
-          const dir =
-            typeof order === "string"
-              ? "ASC"
-              : order.dir === "asc"
-              ? "ASC"
-              : "DESC";
           builder = builder.addOrderBy(
             makeTypedFieldSql(fieldToMeta[field], opts),
             dir
           );
+        } else if (
+          field === "_id" ||
+          field === "_createdAt" ||
+          field === "_updatedAt"
+        ) {
+          builder = builder.addOrderBy(`r.${field.replace("_", "")}`, dir);
         }
       }
     } else {
