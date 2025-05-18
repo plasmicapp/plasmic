@@ -144,6 +144,7 @@
     "plasmicpkgs/react-scroll-parallax",
     "plasmicpkgs/react-slick",
     "plasmicpkgs/react-twitter-widgets",
-    "plasmicpkgs/react-youtube"
+    "plasmicpkgs/react-youtube",
+    "plasmicpkgs-dev"
   ]
 }
