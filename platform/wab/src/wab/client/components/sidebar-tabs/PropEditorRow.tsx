@@ -14,6 +14,7 @@ import { getInputTagType } from "@/wab/client/components/sidebar-tabs/HTMLAttrib
 import { PropValueEditor } from "@/wab/client/components/sidebar-tabs/PropValueEditor";
 import WarningIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__WarningTriangleSvg";
 
+import { extractExpectedValues } from "@/wab/client/components/sidebar-tabs/DataBinding/DataPickerUtil";
 import {
   getValueSetState,
   InvariantablePropTooltip,
@@ -886,7 +887,7 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
         setVisible={setIsDataPickerVisible}
         data={canvasEnv}
         flatten={true}
-        expectedValues={(propType as any)?.exprHint ?? undefined}
+        expectedValues={extractExpectedValues(propType)}
         schema={schema}
       />
     );
