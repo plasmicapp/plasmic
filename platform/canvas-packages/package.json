@@ -32,7 +32,7 @@
     "@plasmicpkgs/lottie-react": "^0.0.208",
     "@plasmicpkgs/plasmic-basic-components": "^0.0.243",
     "@plasmicpkgs/plasmic-chakra-ui": "^0.0.47",
-    "@plasmicpkgs/plasmic-cms": "^0.0.281",
+    "@plasmicpkgs/plasmic-cms": "^0.0.282",
     "@plasmicpkgs/plasmic-content-stack": "^0.0.171",
     "@plasmicpkgs/plasmic-contentful": "^0.0.159",
     "@plasmicpkgs/plasmic-embed-css": "^0.1.202",
