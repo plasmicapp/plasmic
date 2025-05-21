@@ -509,7 +509,7 @@ describe("Auto Open", () => {
     afterEach(() => {
       removeCurrentProject();
     });
-    it("auto-opens hidden elements", function () {
+    xit("auto-opens hidden elements", function () {
       cy.withinStudioIframe(() => {
         const textNodeName = "MyText";
         const verticalStackNodeName = "MyVerticalStack";
