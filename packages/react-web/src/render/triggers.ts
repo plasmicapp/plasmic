@@ -4,11 +4,16 @@ import {
 } from "@react-aria/focus";
 import {
   HoverResult,
+<<<<<<< HEAD
   PressResult,
   useHover as useAriaHover,
   usePress as useAriaPress,
 } from "@react-aria/interactions";
 
+=======
+  useHover as useAriaHover,
+} from "@react-aria/interactions";
+>>>>>>> 390a340558 (fix: used react-aria/interactions useHover inside useHover in triggers.ts)
 import * as React from "react";
 
 type FocusHookResult = [boolean, FocusRingAria["focusProps"]];
