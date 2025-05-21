@@ -266,13 +266,22 @@ export function createUseScreenVariants(
     fileName: "triggers.ts",
     content: `
 import * as React from "react";
-import { useFocusRing as useAriaFocusRing } from "@react-aria/focus";
 import {
+  FocusRingAria,
+  useFocusRing as useAriaFocusRing,
+} from "@react-aria/focus";
+import {
+  HoverResult,
+  PressResult,
   useHover as useAriaHover,
   usePress as useAriaPress,
 } from "@react-aria/interactions";
 
-function useFocused(opts: { isTextInput?: boolean }) {
+type FocusHookResult = [boolean, FocusRingAria["focusProps"]];
+type HoverHookResult = [boolean, HoverResult["hoverProps"]];
+type PressHookResult = [boolean, PressResult["pressProps"]];
+
+function useFocused(opts: { isTextInput?: boolean }): FocusHookResult {
   const { isFocused, focusProps } = useAriaFocusRing({
     within: false,
     isTextInput: opts.isTextInput,
@@ -281,7 +290,7 @@ function useFocused(opts: { isTextInput?: boolean }) {
   return [isFocused, focusProps];
 }
 
-function useFocusVisible(opts: { isTextInput?: boolean }) {
+function useFocusVisible(opts: { isTextInput?: boolean }): FocusHookResult {
   const { isFocusVisible, focusProps } = useAriaFocusRing({
     within: false,
     isTextInput: opts.isTextInput,
@@ -290,7 +299,7 @@ function useFocusVisible(opts: { isTextInput?: boolean }) {
   return [isFocusVisible, focusProps];
 }
 
-function useFocusedWithin(opts: { isTextInput?: boolean }) {
+function useFocusedWithin(opts: { isTextInput?: boolean }): FocusHookResult {
   const { isFocused, focusProps } = useAriaFocusRing({
     within: true,
     isTextInput: opts.isTextInput,
@@ -299,7 +308,7 @@ function useFocusedWithin(opts: { isTextInput?: boolean }) {
   return [isFocused, focusProps];
 }
 
-function useFocusVisibleWithin(opts: { isTextInput?: boolean }) {
+function useFocusVisibleWithin(opts: { isTextInput?: boolean }): FocusHookResult {
   const { isFocusVisible, focusProps } = useAriaFocusRing({
     within: true,
     isTextInput: opts.isTextInput,
@@ -308,12 +317,12 @@ function useFocusVisibleWithin(opts: { isTextInput?: boolean }) {
   return [isFocusVisible, focusProps];
 }
 
-function useHover() {
+function useHover(): HoverHookResult {
   const { isHovered, hoverProps } = useAriaHover({});
   return [isHovered, hoverProps];
 }
 
-function usePressed() {
+function usePressed(): PressHookResult {
   const { isPressed, pressProps } = useAriaPress({});
   return [isPressed, pressProps];
 }
