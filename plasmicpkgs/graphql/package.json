@@ -1,11 +1,11 @@
 {
-  "name": "@plasmicpkgs/fetch",
-  "version": "0.0.5",
-  "description": "Plasmic registration call for fetch function",
+  "name": "@plasmicpkgs/graphql",
+  "version": "0.0.1",
+  "description": "Plasmic registration for GraphQL",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/plasmicapp/plasmic.git",
-    "directory": "plasmicpkgs/fetch"
+    "directory": "plasmicpkgs/graphql"
   },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -29,9 +29,11 @@
   },
   "devDependencies": {
     "@plasmicapp/host": "1.0.217",
+    "@plasmicpkgs/fetch": "0.0.5",
     "typescript": "^5.7.3"
   },
   "peerDependencies": {
-    "@plasmicapp/host": "^1.0.211"
+    "@plasmicapp/host": "^1.0.211",
+    "@plasmicpkgs/fetch": "^0.0.5"
   }
 }

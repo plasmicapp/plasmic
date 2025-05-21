@@ -10,6 +10,8 @@
     "@plasmicapp/loader-nextjs": "^1",
     "@plasmicpkgs/commerce": "*",
     "@plasmicpkgs/commerce-shopify": "*",
+    "@plasmicpkgs/fetch": "*",
+    "@plasmicpkgs/graphql": "*",
     "@plasmicpkgs/plasmic-cms": "*",
     "next": "^15",
     "react": "^19",

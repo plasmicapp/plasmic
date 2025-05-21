@@ -5,10 +5,14 @@ import { registerWithDevMeta } from "@/plasmic-register-dev-meta";
 import { PlasmicRootProvider } from "@plasmicapp/loader-nextjs";
 import { registerAll as registerCommerce } from "@plasmicpkgs/commerce";
 import { registerAll as registerShopify } from "@plasmicpkgs/commerce-shopify";
+import { registerFetch } from "@plasmicpkgs/fetch";
+import { registerGraphQL } from "@plasmicpkgs/graphql";
 import { registerAll as registerCms } from "@plasmicpkgs/plasmic-cms";
 import React from "react";
 
 function register() {
+  registerFetch(PLASMIC);
+  registerGraphQL(PLASMIC);
   registerCms(PLASMIC);
   registerCommerce(PLASMIC);
   registerShopify(PLASMIC);
