@@ -1,11 +1,14 @@
 {
   "name": "@plasmicpkgs/graphql",
-  "version": "0.0.2",
+  "version": "0.0.0",
   "description": "Plasmic registration for GraphQL",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/plasmicapp/plasmic.git",
     "directory": "plasmicpkgs/graphql"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",

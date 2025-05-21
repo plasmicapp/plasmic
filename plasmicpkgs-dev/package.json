@@ -11,7 +11,7 @@
     "@plasmicpkgs/commerce": "*",
     "@plasmicpkgs/commerce-shopify": "*",
     "@plasmicpkgs/fetch": "0.0.6",
-    "@plasmicpkgs/graphql": "0.0.2",
+    "@plasmicpkgs/graphql": "0.0.0",
     "@plasmicpkgs/plasmic-cms": "*",
     "next": "^15",
     "react": "^19",
