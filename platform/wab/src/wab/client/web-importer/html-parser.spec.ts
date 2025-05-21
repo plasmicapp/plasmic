@@ -258,10 +258,15 @@ describe("fixCSSValue", () => {
     });
   });
 
-  it("returns background gradient for backgroundColor with rgb", () => {
+  it("returns background gradient for backgroundColor with rgb or var", () => {
     const rgb = "rgb(10, 20, 30)";
     expect(fixCSSValue("background-color", rgb)).toEqual({
       background: `linear-gradient(${rgb}, ${rgb})`,
+    });
+
+    const token = "var(--token-abc)";
+    expect(fixCSSValue("background-color", token)).toEqual({
+      background: `linear-gradient(${token}, ${token})`,
     });
   });
 
@@ -269,10 +274,15 @@ describe("fixCSSValue", () => {
     expect(fixCSSValue("background-color", "#fff")).toEqual({});
   });
 
-  it("returns background gradient for background with rgb", () => {
+  it("returns background gradient for background with rgb or var", () => {
     const rgb = "rgb(10, 20, 30)";
     expect(fixCSSValue("background", rgb)).toEqual({
       background: `linear-gradient(${rgb}, ${rgb})`,
+    });
+
+    const token = "var(--token-abc)";
+    expect(fixCSSValue("background", token)).toEqual({
+      background: `linear-gradient(${token}, ${token})`,
     });
   });
 

@@ -23,6 +23,7 @@ import { useAsyncStrict } from "@/wab/client/hooks/useAsyncStrict";
 import ImageUploadsIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__ImageUploads";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { trackEvent } from "@/wab/client/tracking";
+import { TokenType } from "@/wab/commons/StyleToken";
 import {
   CopilotImage,
   CopilotImageType,
@@ -90,6 +91,12 @@ function CopilotPromptDialog_({
                 type: "ui",
                 context,
                 images,
+                tokens: studioCtx.site.styleTokens.map((t) => ({
+                  name: t.name,
+                  uuid: t.uuid,
+                  type: t.type as TokenType,
+                  value: t.value,
+                })),
               }
             : {
                 type: "code",

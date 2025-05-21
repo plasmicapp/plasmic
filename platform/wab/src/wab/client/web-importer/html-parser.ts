@@ -329,16 +329,17 @@ function fixCSSValue(key: string, value: string) {
   }
 
   if (fixedKey === "backgroundColor") {
-    if (fixedValue.startsWith("rgb")) {
+    if (fixedValue.startsWith("rgb") || fixedValue.startsWith("var")) {
       return {
         background: `linear-gradient(${fixedValue}, ${fixedValue})`,
       };
     }
+
     return {};
   }
 
   if (fixedKey === "background") {
-    if (fixedValue.startsWith("rgb")) {
+    if (fixedValue.startsWith("rgb") || fixedValue.startsWith("var")) {
       function transformStyleString(styleString: string) {
         const separatorIndex = styleString.indexOf(")") + 1;
         const color = styleString.slice(0, separatorIndex);
@@ -452,36 +453,6 @@ function getStylesForNode(
       ) {
         delete baseStyles[key];
         continue;
-      }
-    }
-  }
-
-  for (const context of Object.keys(styles)) {
-    const contextStyles = styles[context];
-    for (const [key, value] of Object.entries(contextStyles)) {
-      if (isVariable(value)) {
-        const computedStyles = window.getComputedStyle(node as Element);
-        contextStyles[key] = computedStyles.getPropertyValue(key);
-        // const resolvedValue = resolveVariable(value);
-        // if (resolvedValue) {
-        //   contextStyles[key] = resolvedValue;
-        // } else {
-        //   delete contextStyles[key];
-        // }
-      }
-    }
-  }
-
-  for (const context of Object.keys(styles)) {
-    if (Object.keys(styles[context]).length === 0) {
-      delete styles[context];
-    } else {
-      const contextStyles = styles[context];
-      for (const key of Object.keys(contextStyles)) {
-        const value = contextStyles[key];
-        if (isVariable(value)) {
-          delete contextStyles[key];
-        }
       }
     }
   }
