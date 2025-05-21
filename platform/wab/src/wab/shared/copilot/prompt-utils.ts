@@ -1,5 +1,5 @@
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
-import { CopilotImage } from "@/wab/shared/ApiSchema";
+import { CopilotImage, CopilotToken } from "@/wab/shared/ApiSchema";
 import { DataSourceSchema } from "@plasmicapp/data-sources";
 import GPT3Tokenizer from "gpt3-tokenizer";
 import OpenAI from "openai";
@@ -96,4 +96,5 @@ export interface CopilotUiChainProps {
     request: CreateChatCompletionRequest
   ) => Promise<WholeChatCompletionResponse>;
   goal: string;
+  tokens?: CopilotToken[];
 }

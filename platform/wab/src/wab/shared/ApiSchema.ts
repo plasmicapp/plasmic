@@ -2027,10 +2027,18 @@ export type CopilotImage = {
   base64: string;
 };
 
+export type CopilotToken = {
+  name: string;
+  type: TokenType;
+  uuid: string;
+  value: string;
+};
+
 export interface QueryCopilotUiRequest extends QueryCopilotResquestBase {
   type: "ui";
   images: Array<CopilotImage>;
   goal: string;
+  tokens?: CopilotToken[];
 }
 
 export type QueryCopilotRequest =
