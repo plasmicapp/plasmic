@@ -1,6 +1,6 @@
 {
   "name": "plasmicpkgs-dev",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -10,8 +10,8 @@
     "@plasmicapp/loader-nextjs": "^1",
     "@plasmicpkgs/commerce": "*",
     "@plasmicpkgs/commerce-shopify": "*",
-    "@plasmicpkgs/fetch": "0.0.6",
-    "@plasmicpkgs/graphql": "0.0.0",
+    "@plasmicpkgs/fetch": "0.0.7",
+    "@plasmicpkgs/graphql": "0.0.1",
     "@plasmicpkgs/plasmic-cms": "*",
     "next": "^15",
     "react": "^19",
