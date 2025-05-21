@@ -131,12 +131,6 @@ export class ReactHookSpec {
     );
   };
 
-  getTriggerEvents = () => {
-    return getTriggerableSelectors(this.sv).flatMap(
-      (opt) => opt.trigger?.eventPropNames ?? []
-    );
-  };
-
   private static getReactHookName = (
     sv: Variant,
     nodeNamer: NodeNamer,
