@@ -3449,10 +3449,10 @@
     react-hook-form "^7.28.0"
     swr "^1.2.2"
 
-"@plasmicpkgs/fetch@^0.0.5":
-  version "0.0.5"
-  resolved "https://registry.yarnpkg.com/@plasmicpkgs/fetch/-/fetch-0.0.5.tgz#bce8789de1eedd4f7f4cfd8afef949759a241c4c"
-  integrity sha512-k/mMg3cUAb3MeG3+gn45F02QuB+fAesvd2Tthw8B3gfXz1vFAyYDtjVMf6YY44SaVVl9HcSTVUEBiOSCiVNFhg==
+"@plasmicpkgs/fetch@^0.0.7":
+  version "0.0.7"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/fetch/-/fetch-0.0.7.tgz#500464b9178b5eda0b3ab00fd763f38c97e72484"
+  integrity sha512-9T5qzxXdEu2ixu5VchcGMEDsdnfNErkVD9LqSeGyZZxIuMwqwcIYNMseBsTRsJOq047c7BiqYgYGrV7dAI3DQg==
 
 "@plasmicpkgs/framer-motion@^0.0.215":
   version "0.0.215"

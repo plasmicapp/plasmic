@@ -27,7 +27,7 @@
     "@plasmicpkgs/commerce-saleor": "^0.0.179",
     "@plasmicpkgs/commerce-shopify": "^0.0.223",
     "@plasmicpkgs/commerce-swell": "^0.0.224",
-    "@plasmicpkgs/fetch": "^0.0.5",
+    "@plasmicpkgs/fetch": "^0.0.7",
     "@plasmicpkgs/framer-motion": "^0.0.215",
     "@plasmicpkgs/lottie-react": "^0.0.208",
     "@plasmicpkgs/plasmic-basic-components": "^0.0.243",
