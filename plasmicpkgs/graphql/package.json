@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/graphql",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Plasmic registration for GraphQL",
   "repository": {
     "type": "git",
@@ -29,7 +29,7 @@
   },
   "devDependencies": {
     "@plasmicapp/host": "1.0.217",
-    "@plasmicpkgs/fetch": "0.0.5",
+    "@plasmicpkgs/fetch": "0.0.6",
     "typescript": "^5.7.3"
   },
   "peerDependencies": {
