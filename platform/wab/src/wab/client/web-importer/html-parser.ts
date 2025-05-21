@@ -9,6 +9,7 @@ import {
   textStylesKeys,
   translationTable,
 } from "@/wab/client/web-importer/constants";
+import { parseBoxShadows } from "@/wab/client/web-importer/css-utils";
 import {
   compareSpecificity,
   getSpecificity,
@@ -351,6 +352,12 @@ function fixCSSValue(key: string, value: string) {
       };
     }
     return {};
+  }
+
+  if (fixedKey === "boxShadow") {
+    return {
+      boxShadow: parseBoxShadows(fixedValue),
+    };
   }
 
   return {

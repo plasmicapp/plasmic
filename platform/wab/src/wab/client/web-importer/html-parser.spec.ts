@@ -280,6 +280,31 @@ describe("fixCSSValue", () => {
     expect(fixCSSValue("background", "url(image.png)")).toEqual({});
   });
 
+  it("parse box-shadow value properly", () => {
+    expect(fixCSSValue("box-shadow", "5px 10px rgba(0,0,0,0.5)")).toEqual({
+      boxShadow: "5px 10px 0px 0px rgba(0,0,0,0.5)",
+    });
+    expect(fixCSSValue("box-shadow", "rgba(0,0,0,0.5) 5px 10px")).toEqual({
+      boxShadow: "5px 10px 0px 0px rgba(0,0,0,0.5)",
+    });
+    expect(
+      fixCSSValue("box-shadow", "5px 10px 15px 20px rgba(0,0,0,0.5)")
+    ).toEqual({
+      boxShadow: "5px 10px 15px 20px rgba(0,0,0,0.5)",
+    });
+
+    // convert multiple box shadow properly
+    expect(
+      fixCSSValue(
+        "box-shadow",
+        "5px 10px rgba(0,0,0,0.5), rgba(0,0,0,0.5) 5px 10px"
+      )
+    ).toEqual({
+      boxShadow:
+        "5px 10px 0px 0px rgba(0,0,0,0.5), 5px 10px 0px 0px rgba(0,0,0,0.5)",
+    });
+  });
+
   it("return proper translated key if translation key is available", () => {
     const initialKeys = [
       "rowGap",
