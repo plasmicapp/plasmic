@@ -194,6 +194,11 @@ export const makeTypedFieldSql = (
   fieldMetaMap: FieldMetaMap,
   opts: { useDraft?: boolean }
 ) => {
+  // Quick fix for user submitting invalid request
+  if (!field) {
+    return null;
+  }
+
   const dataRef = makeDataRef(opts);
   if (field === "_id") {
     return "r.id";
