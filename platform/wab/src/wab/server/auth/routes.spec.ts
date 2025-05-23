@@ -1,11 +1,9 @@
 /** @jest-environment node */
-import { ApiTester } from "@/wab/server/test/api-tester";
+import { SharedApiTester } from "@/wab/server/test/api-tester";
 import { createBackend, createDatabase } from "@/wab/server/test/backend-util";
-import { APIRequestContext, request } from "playwright";
 
 describe("auth", () => {
-  let apiRequestContext: APIRequestContext;
-  let api: ApiTester;
+  let api: SharedApiTester;
   let baseURL: string;
   let cleanup: () => Promise<void>;
 
@@ -21,15 +19,12 @@ describe("auth", () => {
   });
 
   beforeEach(async () => {
-    apiRequestContext = await request.newContext({
-      baseURL,
-    });
-    api = new ApiTester(apiRequestContext, baseURL);
+    api = new SharedApiTester(baseURL);
     await api.refreshCsrfToken();
   });
 
   afterEach(async () => {
-    await apiRequestContext.dispose();
+    await api.dispose();
   });
 
   afterAll(async () => {
@@ -105,7 +100,8 @@ describe("auth", () => {
 
   describe("login", () => {
     it("is rate limited", async () => {
-      api = new ApiTester(apiRequestContext, baseURL, {
+      await api.dispose();
+      api = new SharedApiTester(baseURL, {
         "x-plasmic-test-rate-limit": "true",
       });
       await api.refreshCsrfToken();

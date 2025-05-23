@@ -1,25 +1,28 @@
+import { Project } from "@/wab/server/entities/Entities";
 import { ApiUser } from "@/wab/shared/ApiSchema";
+import { LowerHttpMethod } from "@/wab/shared/HttpClientUtil";
 import { SharedApi } from "@/wab/shared/SharedApi";
-import { APIRequestContext } from "playwright";
+import { APIRequestContext, APIResponse, request } from "playwright";
 
 interface ApiTesterRequestOptions {
   headers?: { [name: string]: string };
   maxRedirects?: number;
 }
 
-export class ApiTester extends SharedApi {
+/** Base API tester that makes HTTP requests. Nothing domain specific here. */
+export class ApiTester {
+  private readonly apiRequestContextPromise: Promise<APIRequestContext>;
+
   constructor(
-    private readonly api: APIRequestContext,
     private readonly baseURL: string,
     private readonly baseHeaders: { [name: string]: string } = {}
   ) {
-    super();
+    this.apiRequestContextPromise = request.newContext({
+      baseURL,
+    });
   }
 
-  protected setUser(_user: ApiUser): void {}
-  protected clearUser(): void {}
-
-  protected async req(
+  async req(
     method: "get" | "post" | "put" | "delete" | "patch",
     url: string,
     data?: {} | undefined,
@@ -40,19 +43,99 @@ export class ApiTester extends SharedApi {
     }
   }
 
-  protected async rawReq(
-    method: "get" | "post" | "put" | "delete" | "patch",
+  async rawReq(
+    method: LowerHttpMethod,
     url: string,
     data?: {} | undefined,
     { headers, ...opts }: ApiTesterRequestOptions = {}
   ) {
     const mergedHeaders = { ...this.baseHeaders, ...headers };
     console.info("HTTP request", method, url, mergedHeaders, data);
-    return this.api.fetch(`${this.baseURL}${url}`, {
+    const apiRequestContext = await this.apiRequestContextPromise;
+    return apiRequestContext.fetch(`${this.baseURL}${url}`, {
       method,
       headers: mergedHeaders,
       data,
       ...opts,
     });
+  }
+
+  async dispose() {
+    const apiRequestContext = await this.apiRequestContextPromise;
+    await apiRequestContext.dispose();
+  }
+}
+
+/** For testing SharedApi, i.e. APIs that our app use. */
+export class SharedApiTester extends SharedApi {
+  readonly apiTester: ApiTester;
+
+  constructor(baseURL: string, baseHeaders: { [name: string]: string } = {}) {
+    super();
+    this.apiTester = new ApiTester(baseURL, baseHeaders);
+  }
+
+  protected setUser(_user: ApiUser): void {}
+  protected clearUser(): void {}
+
+  protected async req(
+    method: LowerHttpMethod,
+    url: string,
+    data?: {},
+    opts?: {
+      headers: { [name: string]: string };
+    },
+    hideDataOnError?: boolean,
+    noErrorTransform?: boolean
+  ) {
+    return this.apiTester.req(
+      method,
+      url,
+      data,
+      opts,
+      hideDataOnError,
+      noErrorTransform
+    );
+  }
+
+  async dispose() {
+    await this.apiTester.dispose();
+  }
+}
+
+/** For testing our public API, e.g. data.plasmic.app. */
+export class PublicApiTester extends ApiTester {
+  constructor(baseURL: string, baseHeaders: { [name: string]: string } = {}) {
+    super(baseURL, baseHeaders);
+  }
+
+  async getPublishedLoaderAssets(
+    projects: Project[],
+    queryParams: {
+      platform?: string;
+      nextjsAppDir?: string;
+      browserOnly?: string;
+      loaderVersion?: string;
+      i18nKeyScheme?: string;
+      i18nTagPrefix?: string;
+      skipHead?: string;
+    }
+  ): Promise<APIResponse> {
+    const queryString = new URLSearchParams(queryParams);
+    projects.forEach((p) => queryString.append("projectId", p.id));
+    const projectTokens = projects
+      .map((p) => `${p.id}:${p.projectApiToken}`)
+      .join(",");
+    return this.rawReq(
+      "get",
+      `/loader/code/published?${queryString.toString()}`,
+      undefined,
+      {
+        headers: {
+          "x-plasmic-api-project-tokens": projectTokens,
+        },
+        maxRedirects: 0, // do not follow
+      }
+    );
   }
 }
