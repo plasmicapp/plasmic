@@ -1,7 +1,12 @@
+import {
+  FocusRingAria,
+  useFocusRing as useAriaFocusRing,
+} from "@react-aria/focus";
 import * as React from "react";
-import { useFocusRing as useAriaFocusRing } from "@react-aria/focus";
 
-function useFocused(opts: { isTextInput?: boolean }) {
+type FocusHookResult = [boolean, FocusRingAria["focusProps"]];
+
+function useFocused(opts: { isTextInput?: boolean }): FocusHookResult {
   const { isFocused, focusProps } = useAriaFocusRing({
     within: false,
     isTextInput: opts.isTextInput,
@@ -10,7 +15,7 @@ function useFocused(opts: { isTextInput?: boolean }) {
   return [isFocused, focusProps];
 }
 
-function useFocusVisible(opts: { isTextInput?: boolean }) {
+function useFocusVisible(opts: { isTextInput?: boolean }): FocusHookResult {
   const { isFocusVisible, focusProps } = useAriaFocusRing({
     within: false,
     isTextInput: opts.isTextInput,
@@ -19,7 +24,7 @@ function useFocusVisible(opts: { isTextInput?: boolean }) {
   return [isFocusVisible, focusProps];
 }
 
-function useFocusedWithin(opts: { isTextInput?: boolean }) {
+function useFocusedWithin(opts: { isTextInput?: boolean }): FocusHookResult {
   const { isFocused, focusProps } = useAriaFocusRing({
     within: true,
     isTextInput: opts.isTextInput,
@@ -28,7 +33,9 @@ function useFocusedWithin(opts: { isTextInput?: boolean }) {
   return [isFocused, focusProps];
 }
 
-function useFocusVisibleWithin(opts: { isTextInput?: boolean }) {
+function useFocusVisibleWithin(opts: {
+  isTextInput?: boolean;
+}): FocusHookResult {
   const { isFocusVisible, focusProps } = useAriaFocusRing({
     within: true,
     isTextInput: opts.isTextInput,

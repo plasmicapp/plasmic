@@ -58,25 +58,24 @@ describe("state-management-dependents", function () {
 
         cy.withinLiveMode(() => {
           options.forEach((opt) => {
-            cy.get("#plasmic-app div")
-              .get("button")
-              .parent()
-              .within(() => {
-                cy.get("select").select(opt, { force: true });
-              });
-            cy.get("#plasmic-app div")
-              .find(`input[value=${opt}]`)
-              .should("have.length", 1);
-            cy.get("#plasmic-app div")
-              .find(`input[value=${opt.toUpperCase()}]`)
-              .should("have.length", 1);
-            cy.get("#plasmic-app div").get("input").eq(1).type("hello");
-            cy.get("#plasmic-app div")
-              .find(`input[value=${opt}hello]`)
-              .should("have.length", 1);
-            cy.get("#plasmic-app div")
-              .find(`input[value=${opt.toUpperCase()}HELLO]`)
-              .should("have.length", 1);
+            cy.get("#plasmic-app > div").within(() => {
+              cy.get("button")
+                .parent()
+                .within(() => {
+                  cy.get("select").select(opt, { force: true });
+                });
+              cy.get(`input[value=${opt}]`).should("have.length", 1);
+              cy.get(`input[value=${opt.toUpperCase()}]`).should(
+                "have.length",
+                1
+              );
+              cy.get(`input[value=${opt}]`).type("hello");
+              cy.get(`input[value=${opt}hello]`).should("have.length", 1);
+              cy.get(`input[value=${opt.toUpperCase()}HELLO]`).should(
+                "have.length",
+                1
+              );
+            });
           });
         });
       });
