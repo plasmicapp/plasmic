@@ -30,6 +30,7 @@ export {
 } from "@plasmicapp/loader-react";
 export type {
   CodeComponentMeta,
+  CustomFunctionMeta,
   PlasmicTranslator,
   PropType,
   TokenRegistration,

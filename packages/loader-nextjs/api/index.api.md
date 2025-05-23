@@ -11,6 +11,7 @@ import { CodeComponentMeta } from '@plasmicapp/loader-react';
 import { ComponentLookupSpec } from '@plasmicapp/loader-react';
 import { ComponentMeta } from '@plasmicapp/loader-react/react-server-conditional';
 import { ComponentRenderData } from '@plasmicapp/loader-react/react-server-conditional';
+import { CustomFunctionMeta } from '@plasmicapp/loader-react';
 import { DataCtxReader } from '@plasmicapp/loader-react';
 import { DataProvider } from '@plasmicapp/loader-react';
 import { FetchComponentDataOpts as FetchComponentDataOpts_2 } from '@plasmicapp/loader-react';
@@ -50,6 +51,8 @@ export { CodeComponentMeta }
 export { ComponentMeta }
 
 export { ComponentRenderData }
+
+export { CustomFunctionMeta }
 
 export { DataCtxReader }
 

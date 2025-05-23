@@ -92,6 +92,11 @@ export interface ComponentRenderData {
 // @public (undocumented)
 export const convertBundlesToComponentRenderData: (bundles: LoaderBundleOutput_2[], compMetas: ComponentMeta[]) => ComponentRenderData | null;
 
+// @public (undocumented)
+export type CustomFunctionMeta<F extends (...args: any[]) => any> = Omit<CustomFunctionMeta_2<F>, "importPath"> & {
+    importPath?: string;
+};
+
 export { DataCtxReader }
 
 export { DataProvider }

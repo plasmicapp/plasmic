@@ -13,6 +13,7 @@ import { CodeComponentMeta } from '@plasmicapp/loader-react';
 import { ComponentLookupSpec } from '@plasmicapp/loader-react';
 import { ComponentMeta } from '@plasmicapp/loader-react/react-server-conditional';
 import { ComponentRenderData } from '@plasmicapp/loader-react/react-server-conditional';
+import { CustomFunctionMeta } from '@plasmicapp/loader-react';
 import { DataCtxReader } from '@plasmicapp/loader-react';
 import { DataProvider } from '@plasmicapp/loader-react';
 import { ExtractPlasmicQueryData } from '@plasmicapp/nextjs-app-router';
