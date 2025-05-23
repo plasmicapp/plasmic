@@ -477,11 +477,12 @@ export abstract class SharedApi {
   clonePublishedTemplate(
     projectId: string,
     name?: string,
-    workspaceId?: WorkspaceId
+    workspaceId?: WorkspaceId,
+    version?: string
   ): Promise<CloneProjectResponse> {
     return this.post(
       `/templates/${projectId}/clone`,
-      ensureType<CloneProjectRequest>({ name, workspaceId })
+      ensureType<CloneProjectRequest>({ name, workspaceId, version })
     );
   }
 

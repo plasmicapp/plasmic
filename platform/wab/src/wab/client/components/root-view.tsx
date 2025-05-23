@@ -150,12 +150,38 @@ function LoggedInContainer(props: LoggedInContainerProps) {
           <Route
             exact
             path={UU.starter.pattern}
-            render={({ match }) => {
+            render={({ match, location }) => {
               const starter = getStarter(
                 appCtx.appConfig.starterSections,
                 match.params.starterTag
               );
-              return <FromStarterTemplate appCtx={appCtx} starter={starter} />;
+              return (
+                <FromStarterTemplate
+                  appCtx={appCtx}
+                  {...starter}
+                  path={location.pathname}
+                />
+              );
+            }}
+          />
+          <Route
+            exact
+            path={UU.fork.pattern}
+            render={({ match, location }) => {
+              // NOTE: Temporarily re-using the FromStarterTemplate component to fork a public project
+              // TODO (later): Fork a private project using listingId
+              const baseProjectId = match.params.projectId;
+              const { pathname, search } = location;
+              const version =
+                new URLSearchParams(search).get("version") ?? undefined; // gets the query param "version" from the URL
+              return (
+                <FromStarterTemplate
+                  appCtx={appCtx}
+                  baseProjectId={baseProjectId}
+                  path={pathname}
+                  version={version}
+                />
+              );
             }}
           />
           <Route

@@ -3845,6 +3845,7 @@ export class DbMgr implements MigrationDbMgr {
       workspaceId?: WorkspaceId;
       hostUrl?: string;
       ownerEmail?: string;
+      version?: string;
     }
   ) {
     await this.checkProjectPerms(projectId, "viewer", "clone");
@@ -3857,7 +3858,10 @@ export class DbMgr implements MigrationDbMgr {
     if (!fromPkg) {
       throw new NotFoundError(`Unknown template project id ${projectId}`);
     }
-    const fromPkgVersion = await this.tryGetPkgVersion(fromPkg.id);
+    const fromPkgVersion = await this.tryGetPkgVersion(
+      fromPkg.id,
+      opts.version
+    );
     if (!fromPkgVersion) {
       throw new NotFoundError(
         `Template project id ${projectId} does not have a published version to clone`

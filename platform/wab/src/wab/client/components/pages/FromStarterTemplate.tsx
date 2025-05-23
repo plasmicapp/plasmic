@@ -1,19 +1,22 @@
 import { AppCtx } from "@/wab/client/app-ctx";
 import { U, UU } from "@/wab/client/cli-routes";
 import { Spinner } from "@/wab/client/components/widgets";
-import { spawn } from "@/wab/shared/common";
-import { StarterProjectConfig } from "@/wab/shared/devflags";
 import { WorkspaceId } from "@/wab/shared/ApiSchema";
+import { spawn } from "@/wab/shared/common";
 import * as React from "react";
 
 export function FromStarterTemplate(props: {
   appCtx: AppCtx;
-  starter: StarterProjectConfig;
+  projectId?: string;
+  baseProjectId?: string;
+  name?: string;
+  path: string;
   workspaceId?: WorkspaceId;
+  version?: string;
 }) {
-  const { appCtx, starter, workspaceId } = props;
+  const { appCtx, projectId, baseProjectId, name, path, workspaceId, version } =
+    props;
 
-  const { projectId, baseProjectId, name } = starter;
   React.useEffect(() => {
     const createProject = async () => {
       if (projectId) {
@@ -27,7 +30,8 @@ export function FromStarterTemplate(props: {
           await appCtx.api.clonePublishedTemplate(
             baseProjectId,
             name,
-            workspaceId
+            workspaceId,
+            version
           );
         return newProjectId;
       }
@@ -42,15 +46,10 @@ export function FromStarterTemplate(props: {
         })
       );
     } else if (!appCtx.selfInfo) {
-      appCtx.router.routeTo(
-        UU.login.fill({}, { continueTo: `/starters/${starter.tag}` })
-      );
+      appCtx.router.routeTo(UU.login.fill({}, { continueTo: path }));
     } else {
       appCtx.router.routeTo(
-        UU.emailVerification.fill(
-          {},
-          { continueTo: `/starters/${starter.tag}` }
-        )
+        UU.emailVerification.fill({}, { continueTo: path })
       );
     }
   }, [projectId, baseProjectId, appCtx, name]);

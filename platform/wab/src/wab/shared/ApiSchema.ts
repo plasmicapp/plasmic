@@ -525,6 +525,7 @@ export interface CloneProjectRequest {
   workspaceId?: WorkspaceId;
   branchName?: string;
   hostUrl?: string;
+  version?: string;
 }
 
 export interface CloneProjectResponse {

@@ -220,6 +220,9 @@ export class RouteSet {
   starter = new R<{
     starterTag: string;
   }>("/starters/:starterTag");
+  fork = new R<{
+    projectId: string;
+  }>("/fork/:projectId");
   admin = new R<{
     tab: string | undefined;
   }>("/admin/:tab?");

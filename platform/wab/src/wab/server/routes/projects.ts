@@ -307,12 +307,13 @@ export async function clonePublishedTemplate(req: Request, res: Response) {
   if (!pkg) {
     throw new NotFoundError(`Unknown template project id ${projectId}`);
   }
-  const { name, workspaceId, hostUrl }: CloneProjectRequest = req.body;
+  const { name, workspaceId, hostUrl, version }: CloneProjectRequest = req.body;
   const project = await mgr.clonePublishedTemplate(projectId, req.bundler, {
     name,
     workspaceId,
     hostUrl,
     ownerEmail: req.user?.email,
+    version,
   });
   userAnalytics(req).track({
     event: "Clone template",
