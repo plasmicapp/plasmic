@@ -14,20 +14,20 @@ import {
   makeDatabaseCacheKey,
   QueryResultProvider,
   RowProvider,
+  TableSchemaProvider,
   TablesProvider,
   useCount,
   useDatabase,
   useRow,
   useTables,
   useTablesWithDataLoaded,
-  TableSchemaProvider,
 } from "./context";
 import {
   ApiCmsRow,
   ApiCmsTable,
   CmsFieldMeta,
-  CmsType,
   CmsMetaType,
+  CmsType,
 } from "./schema";
 import { mkFieldOptions, mkTableOptions } from "./util";
 
@@ -297,6 +297,7 @@ export const cmsQueryRepeaterMeta: ComponentMeta<CmsQueryRepeaterProps> = {
       displayName: "Limit",
       description: "Maximum number of entries to fetch (0 for unlimited).",
       defaultValue: 0,
+      min: 0,
       hidden: (ps) => ps.mode === "count",
     },
     offset: {
@@ -304,6 +305,7 @@ export const cmsQueryRepeaterMeta: ComponentMeta<CmsQueryRepeaterProps> = {
       displayName: "Offset",
       description:
         "Skips this number of rows in the result set; used in combination with limit to build pagination",
+      min: 0,
       hidden: (ps) => ps.mode === "count",
     },
     fields: {

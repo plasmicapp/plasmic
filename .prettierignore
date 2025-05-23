@@ -12,6 +12,7 @@ storybook-static/
 /packages/create-plasmic-app/cpa-out/
 /packages/react-web/lib/**
 /packages/**/api/
+/plasmicpkgs/**/api/
 /platform/loader-tests/data/**/*.json
 /platform/wab/deps/
 /platform/wab/public/static/

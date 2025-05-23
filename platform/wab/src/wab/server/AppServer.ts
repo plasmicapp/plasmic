@@ -58,6 +58,7 @@ import {
   upsertDatabaseTables,
 } from "@/wab/server/routes/cms";
 import {
+  checkUniqueFields,
   cloneDatabase,
   cloneRow,
   cmsFileUpload,
@@ -825,6 +826,10 @@ export function addCmsEditorRoutes(app: express.Application) {
   app.put("/api/v1/cmse/rows/:rowId", withNext(updateRow));
   app.delete("/api/v1/cmse/rows/:rowId", withNext(deleteRow));
   app.post("/api/v1/cmse/rows/:rowId/clone", withNext(cloneRow));
+  app.post(
+    "/api/v1/cmse/tables/:tableId/check-unique-fields",
+    withNext(checkUniqueFields)
+  );
   app.get("/api/v1/cmse/row-revisions/:revId", withNext(getRowRevision));
 
   app.post(
@@ -2140,14 +2145,17 @@ function corsPreflight() {
     allowedHeaders: "*",
   });
 
-  const handler: express.RequestHandler = (req, res, next) => {
-    // cors response should be very cacheable by Cloudfront
-    res.set(
-      "Cache-Control",
-      `max-age=${30 * 24 * 60 * 60}, s-maxage=${30 * 24 * 60 * 60}`
-    );
-    corsHandler(req, res, next);
-  };
+  const handler: express.RequestHandler = safeCast<RequestHandler>(
+    async (req, res, next) => {
+      // cors response should be very cacheable by Cloudfront
+      await req.resolveTransaction();
+      res.set(
+        "Cache-Control",
+        `max-age=${30 * 24 * 60 * 60}, s-maxage=${30 * 24 * 60 * 60}`
+      );
+      corsHandler(req, res, next);
+    }
+  );
   return handler;
 }
 

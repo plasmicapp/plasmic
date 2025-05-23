@@ -90,7 +90,7 @@ function CmsEntriesList_(
           const row = await api.createCmsRow(tableId, {
             identifier: undefined,
             data: null,
-            draftData: {},
+            draftData: { "": {} },
           });
           await mutateTableRows(tableId);
           history.push(

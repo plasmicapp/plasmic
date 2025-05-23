@@ -107,6 +107,7 @@
     "plasmicpkgs/commerce-providers/*",
     "plasmicpkgs/fetch",
     "plasmicpkgs/framer-motion",
+    "plasmicpkgs/graphql",
     "plasmicpkgs/keen-slider",
     "plasmicpkgs/lottie-react",
     "plasmicpkgs/plasmic-basic-components",
@@ -144,6 +145,7 @@
     "plasmicpkgs/react-scroll-parallax",
     "plasmicpkgs/react-slick",
     "plasmicpkgs/react-twitter-widgets",
-    "plasmicpkgs/react-youtube"
+    "plasmicpkgs/react-youtube",
+    "plasmicpkgs-dev"
   ]
 }

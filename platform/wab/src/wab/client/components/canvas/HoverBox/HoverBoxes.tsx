@@ -1055,14 +1055,7 @@ function HoverBoxes_(props: { studioCtx: StudioCtx }) {
 
   const viewCtx = studioCtx.focusedViewCtx();
 
-  const shouldHideHoverBox =
-    studioCtx.freestyleState() ||
-    studioCtx.dragInsertState() ||
-    studioCtx.isResizingFocusedArenaFrame ||
-    !studioCtx.showDevControls ||
-    studioCtx.screenshotting ||
-    studioCtx.isTransforming() ||
-    !viewCtx;
+  const shouldHideHoverBox = studioCtx.shouldHideUIOverlay(false) || !viewCtx;
 
   const forceUpdate = useForceUpdate();
 

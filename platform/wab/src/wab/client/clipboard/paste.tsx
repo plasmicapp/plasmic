@@ -101,11 +101,6 @@ async function pasteRouter(
         return figmaResult.success;
       }
 
-      const htmlImporterResult = await pasteFromHtmlImporter(textContent, args);
-      if (htmlImporterResult.handled) {
-        return htmlImporterResult.success;
-      }
-
       const wiImporterResult = await pasteFromWebImporter(textContent, args);
       if (wiImporterResult.handled) {
         return wiImporterResult.success;
@@ -121,6 +116,11 @@ async function pasteRouter(
     }
 
     if (textContent) {
+      const htmlImporterResult = await pasteFromHtmlImporter(textContent, args);
+      if (htmlImporterResult.handled) {
+        return htmlImporterResult.success;
+      }
+
       // TODO: work with rich text as well
       const textResult = await pasteText(textContent, args);
       if (textResult.handled) {

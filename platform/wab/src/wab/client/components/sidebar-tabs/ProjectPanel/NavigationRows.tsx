@@ -1,48 +1,31 @@
+import { COMMANDS } from "@/wab/client/commands/command";
+import CommentIndicatorIcon from "@/wab/client/components/comments/CommentIndicatorIcon";
 import RowGroup, { RowGroupProps } from "@/wab/client/components/RowGroup";
 import RowItem from "@/wab/client/components/RowItem";
+import { ArenaContextMenu } from "@/wab/client/components/sidebar-tabs/ProjectPanel/ArenaContextMenu";
+import { NavigationDropdownContext } from "@/wab/client/components/sidebar-tabs/ProjectPanel/NavigationDropdown";
 import { Matcher } from "@/wab/client/components/view-common";
+import { EditableLabel } from "@/wab/client/components/widgets/EditableLabel";
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import IconButton from "@/wab/client/components/widgets/IconButton";
+import ComponentIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Component";
+import GearIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Gear";
 import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
+import MixedArenaIcon from "@/wab/client/plasmic/plasmic_kit_design_system/icons/PlasmicIcon__MixedArena";
+import PageIcon from "@/wab/client/plasmic/plasmic_kit_design_system/icons/PlasmicIcon__Page";
 import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import {
   AnyArena,
   getArenaName,
   isComponentArena,
-  isDedicatedArena,
-  isMixedArena,
   isPageArena,
 } from "@/wab/shared/Arenas";
-import {
-  isPageComponent,
-  isReusableComponent,
-  PageComponent,
-} from "@/wab/shared/core/components";
+import { ensure, maybe, spawn, switchType } from "@/wab/shared/common";
+import { PageComponent } from "@/wab/shared/core/components";
 import { getFolderDisplayName } from "@/wab/shared/folders/folders-util";
-import {
-  Arena,
-  Component,
-  ComponentArena,
-  PageArena,
-} from "@/wab/shared/model/classes";
-import * as React from "react";
-
-import { COMMANDS } from "@/wab/client/commands/command";
-import CommentIndicatorIcon from "@/wab/client/components/comments/CommentIndicatorIcon";
-import { menuSection } from "@/wab/client/components/menu-builder";
-import promptDeleteComponent from "@/wab/client/components/modals/componentDeletionModal";
-import { NavigationDropdownContext } from "@/wab/client/components/sidebar-tabs/ProjectPanel/NavigationDropdown";
-import { EditableLabel } from "@/wab/client/components/widgets/EditableLabel";
-import ComponentIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Component";
-import GearIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Gear";
-import MixedArenaIcon from "@/wab/client/plasmic/plasmic_kit_design_system/icons/PlasmicIcon__MixedArena";
-import PageIcon from "@/wab/client/plasmic/plasmic_kit_design_system/icons/PlasmicIcon__Page";
-import { componentsReferecerToPageHref } from "@/wab/shared/cached-selectors";
-import { assert, ensure, maybe, spawn, switchType } from "@/wab/shared/common";
-import { isAdminTeamEmail } from "@/wab/shared/devflag-utils";
-import { naturalSort } from "@/wab/shared/sort";
-import { Menu } from "antd";
+import { Arena, ComponentArena, PageArena } from "@/wab/shared/model/classes";
 import cn from "classnames";
+import * as React from "react";
 
 export const HEADER_HEIGHT = 36;
 export const PAGE_HEIGHT = 42;
@@ -97,7 +80,7 @@ export function NavigationFolderRow({
   );
 }
 
-interface NavigationArenaRowProps {
+export interface NavigationArenaRowProps {
   arena: AnyArena;
   matcher: Matcher;
   indentMultiplier: number;
@@ -120,7 +103,6 @@ export function NavigationArenaRow({
   const displayName = isStandalone
     ? fullArenaName
     : getFolderDisplayName(fullArenaName);
-  const menu = buildArenaRowMenu({ arena, setRenaming, studioCtx, onClose });
   const isPage = isPageArena(arena);
   const pathName = isPage ? arena.component.pageMeta?.path : undefined;
 
@@ -163,7 +145,14 @@ export function NavigationArenaRow({
       icon={<Icon icon={getArenaIcon(arena, studioCtx)} />}
       isSelected={studioCtx.currentArena === arena}
       menuSize="small"
-      menu={menu}
+      menu={
+        <ArenaContextMenu
+          studioCtx={studioCtx}
+          arena={arena}
+          onSelectRename={() => setRenaming(true)}
+          onClose={onClose}
+        />
+      }
       {...pageRowProps}
     >
       <EditableLabel
@@ -229,303 +218,4 @@ function getArenaIcon(arena: AnyArena, studioCtx: StudioCtx) {
     .when(PageArena, () => PageIcon)
     .when(ComponentArena, () => ComponentIcon)
     .result();
-}
-
-function buildArenaRowMenu({
-  arena,
-  setRenaming,
-  studioCtx,
-  onClose,
-}: {
-  arena: AnyArena;
-  onClose: () => void;
-  setRenaming: (val: boolean) => void;
-  studioCtx: StudioCtx;
-}) {
-  return () => {
-    const currentArena = studioCtx.currentArena;
-    const component = isDedicatedArena(arena) ? arena.component : undefined;
-
-    const isSubComp = !!component && !!component.superComp;
-    const isSuperComp = !!component && component.subComps.length > 0;
-    const isAdmin = isAdminTeamEmail(
-      studioCtx.appCtx.selfInfo?.email,
-      studioCtx.appCtx.appConfig
-    );
-
-    const doReplaceAllInstances = (toComp: Component) => {
-      spawn(studioCtx.siteOps().swapComponents(component!, toComp));
-    };
-
-    const componentToReplaceAllInstancesItem = (comp: Component) => {
-      return (
-        <Menu.Item
-          key={comp.uuid}
-          hidden={!isReusableComponent(comp) || comp === component}
-          onClick={() => doReplaceAllInstances(comp)}
-        >
-          {comp.name}
-        </Menu.Item>
-      );
-    };
-
-    const replaceAllInstancesMenuItems = [
-      ...menuSection(
-        "local",
-        ...naturalSort(studioCtx.site.components, (c) => c.name).map((comp) =>
-          componentToReplaceAllInstancesItem(comp)
-        )
-      ),
-      ...studioCtx.site.projectDependencies.flatMap((dep) =>
-        menuSection(
-          "imported",
-          ...naturalSort(dep.site.components, (c) => c.name).map((comp) =>
-            componentToReplaceAllInstancesItem(comp)
-          )
-        )
-      ),
-    ];
-
-    const contentEditorMode = studioCtx.contentEditorMode;
-
-    const shouldShowItem = {
-      duplicate:
-        isDedicatedArena(arena) &&
-        !isSubComp &&
-        (!contentEditorMode || (component && isPageComponent(component))),
-      editInNewArtboard:
-        isMixedArena(currentArena) &&
-        isDedicatedArena(arena) &&
-        !contentEditorMode,
-      convertToComponent:
-        component && isPageComponent(component) && !contentEditorMode,
-      convertToPage:
-        component &&
-        isReusableComponent(component) &&
-        !isSubComp &&
-        !isSuperComp &&
-        !contentEditorMode,
-      delete:
-        !isSubComp &&
-        (!contentEditorMode || (component && isPageComponent(component))),
-      findReferences: component && isReusableComponent(component),
-      replaceAllInstances:
-        component &&
-        isReusableComponent(component) &&
-        replaceAllInstancesMenuItems.length !== 0 &&
-        !contentEditorMode,
-    };
-
-    const onDuplicate = () =>
-      studioCtx.siteOps().tryDuplicatingComponent(component!, {
-        focusNewComponent: true,
-      });
-
-    const onRename = () => setRenaming(true);
-
-    const onRequestEditingInNewArtboard = () =>
-      studioCtx.changeUnsafe(() =>
-        studioCtx.siteOps().createNewFrameForMixedArena(component!)
-      );
-
-    const onConvertToComponent = () => {
-      assert(
-        component && isPageComponent(component),
-        "Can only convert Page to component if it exists"
-      );
-      return studioCtx.siteOps().convertPageToComponent(component);
-    };
-
-    const onConvertToPage = () =>
-      studioCtx.changeObserved(
-        () => [component!],
-        ({ success }) => {
-          studioCtx.siteOps().convertComponentToPage(component!);
-          return success();
-        }
-      );
-
-    const onFindReferences = () =>
-      studioCtx.changeUnsafe(
-        () => (studioCtx.findReferencesComponent = component)
-      );
-
-    const onDelete = async () => {
-      const confirmation = await promptDeleteComponent(
-        getSiteItemTypeName(arena),
-        getArenaName(arena)
-      );
-      if (!confirmation) {
-        return;
-      }
-      await studioCtx.changeObserved(
-        () => {
-          return isDedicatedArena(arena) && isPageComponent(arena.component)
-            ? Array.from(
-                componentsReferecerToPageHref(studioCtx.site, arena.component)
-              )
-            : [];
-        },
-        ({ success }) => {
-          if (isDedicatedArena(arena)) {
-            studioCtx.siteOps().tryRemoveComponent(arena.component);
-          } else if (isMixedArena(arena)) {
-            studioCtx.siteOps().removeMixedArena(arena);
-          }
-          return success();
-        }
-      );
-    };
-
-    return (
-      <Menu
-        onClick={(e) => {
-          e.domEvent.stopPropagation();
-          // Auto-close the popover except for these actions
-          if (
-            ![
-              "rename",
-              "duplicate",
-              "convertToComponent",
-              "convertToPage",
-            ].includes(e.key)
-          ) {
-            onClose();
-          }
-        }}
-        id="proj-item-menu"
-      >
-        {menuSection(
-          "references",
-          <Menu.Item
-            key="references"
-            hidden={!shouldShowItem.findReferences}
-            onClick={onFindReferences}
-          >
-            <strong>Find</strong> all references
-          </Menu.Item>
-        )}
-        {menuSection(
-          "component-actions",
-          <Menu.Item
-            key="rename"
-            onClick={(e) => {
-              e.domEvent.stopPropagation();
-              onRename();
-            }}
-          >
-            <strong>Rename</strong> {getSiteItemTypeName(arena)}
-          </Menu.Item>,
-          <Menu.Item
-            key="duplicate"
-            hidden={!shouldShowItem.duplicate}
-            onClick={onDuplicate}
-          >
-            <strong>Duplicate</strong> {getSiteItemTypeName(arena)}
-          </Menu.Item>
-        )}
-        {menuSection(
-          "artboard-actions",
-          <Menu.Item
-            key="editInNewArtboard"
-            hidden={!shouldShowItem.editInNewArtboard}
-            onClick={onRequestEditingInNewArtboard}
-          >
-            <strong>Edit</strong> in new artboard
-          </Menu.Item>,
-          <Menu.Item
-            key="convertToComponent"
-            hidden={!shouldShowItem.convertToComponent}
-            onClick={onConvertToComponent}
-          >
-            <strong>Convert</strong> to reusable component
-          </Menu.Item>,
-          <Menu.Item
-            key="convertToPage"
-            hidden={!shouldShowItem.convertToPage}
-            onClick={onConvertToPage}
-          >
-            <strong>Convert</strong> to page component
-          </Menu.Item>
-        )}
-        {shouldShowItem.replaceAllInstances &&
-          menuSection(
-            "replace",
-            <Menu.SubMenu
-              key="replaceAllInstances"
-              title={
-                <span>
-                  <strong>Replace</strong> all instances of this component
-                  with...
-                </span>
-              }
-            >
-              {replaceAllInstancesMenuItems}
-            </Menu.SubMenu>
-          )}
-        {menuSection(
-          "delete",
-          <Menu.Item
-            key="delete"
-            onClick={onDelete}
-            hidden={!shouldShowItem.delete}
-          >
-            <strong>Delete</strong> {getSiteItemTypeName(arena)}
-          </Menu.Item>
-        )}
-        {isAdmin &&
-          menuSection(
-            "debug",
-            <Menu.SubMenu key="debug" title={"Debug"}>
-              {component && (
-                <Menu.SubMenu
-                  key="site-splitting"
-                  title="Site-splitting utilities"
-                >
-                  {isPageComponent(component) && (
-                    <Menu.Item
-                      key="delete-preserve-links"
-                      onClick={async () =>
-                        studioCtx.changeObserved(
-                          () => [
-                            component,
-                            ...componentsReferecerToPageHref(
-                              studioCtx.site,
-                              component
-                            ),
-                          ],
-                          ({ success }) => {
-                            studioCtx
-                              .tplMgr()
-                              .removeComponentGroup([component], {
-                                convertPageHrefToCode: true,
-                              });
-                            return success();
-                          }
-                        )
-                      }
-                    >
-                      <strong>Delete</strong> page, but convert PageHref to
-                      links
-                    </Menu.Item>
-                  )}
-                </Menu.SubMenu>
-              )}
-            </Menu.SubMenu>
-          )}
-      </Menu>
-    );
-  };
-}
-
-function getSiteItemTypeName(item: AnyArena) {
-  if (isMixedArena(item)) {
-    return "arena";
-  } else if (isComponentArena(item)) {
-    return "component";
-  } else if (isPageArena(item)) {
-    return "page";
-  } else {
-    return "folder";
-  }
 }

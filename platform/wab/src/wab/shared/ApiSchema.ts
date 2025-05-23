@@ -1248,6 +1248,7 @@ export interface CmsBaseType<T> {
   required: boolean;
   hidden: boolean;
   localized: boolean;
+  unique: boolean;
   /** The empty string "" locale is the default locale. */
   defaultValueByLocale: Dict<T>;
 }
@@ -1403,8 +1404,9 @@ export const cmsFieldMetaDefaults: CmsBaseType<unknown> = {
   required: false,
   hidden: false,
   localized: false,
+  unique: false,
   defaultValueByLocale: {},
-} as const;
+};
 
 export interface CmsDatabaseExtraData {
   /** The additional non-default locales available in this database. Does not include the default ("") locale. */
@@ -1455,8 +1457,8 @@ export interface ApiCmsWriteRow extends ApiEntityBase<CmsRowId> {
 export interface ApiCmseRow extends ApiEntityBase<CmsRowId> {
   tableId: string;
   identifier: string | null;
-  data: Dict<Dict<unknown>> | null;
-  draftData: Dict<Dict<unknown>> | null;
+  data: CmsRowData | null;
+  draftData: CmsRowData | null;
   revision: number | null;
 }
 
@@ -1467,7 +1469,7 @@ export interface ApiCmseRowRevisionMeta
 }
 
 export interface ApiCmseRowRevision extends ApiCmseRowRevisionMeta {
-  data: Dict<Dict<unknown>>;
+  data: CmsRowData;
 }
 
 export interface ApiCmsQuery {
@@ -2017,12 +2019,26 @@ export interface QueryCopilotDebugRequest extends QueryCopilotResquestBase {
   dataSourcesDebug?: true;
 }
 
+export const copilotImageTypes = ["png", "jpeg", "jpg", "gif", "webp"] as const;
+export type CopilotImageType = (typeof copilotImageTypes)[number];
+
+export type CopilotImage = {
+  type: CopilotImageType;
+  base64: string;
+};
+
+export type CopilotToken = {
+  name: string;
+  type: TokenType;
+  uuid: string;
+  value: string;
+};
+
 export interface QueryCopilotUiRequest extends QueryCopilotResquestBase {
   type: "ui";
-  data: any;
-  currentCode?: string;
-  context?: string;
+  images: Array<CopilotImage>;
   goal: string;
+  tokens?: CopilotToken[];
 }
 
 export type QueryCopilotRequest =
@@ -2038,9 +2054,11 @@ export interface QueryCopilotResponse {
   response: string;
   typeDebug?: string;
 }
-export interface CopilotResponseData extends WholeChatCompletionResponse {
+
+export type CopilotResponseData = {
+  data: WholeChatCompletionResponse;
   copilotInteractionId: CopilotInteractionId;
-}
+};
 
 export interface SendCopilotFeedbackRequest {
   id: CopilotInteractionId;
@@ -2119,4 +2137,26 @@ export interface SendEmailsResponse {
 
 export enum StudioRoomMessageTypes {
   commentsUpdate = "commentsUpdate",
+}
+
+export interface UniqueFieldCheck {
+  fieldIdentifier: string;
+  value: unknown;
+  /** The ID of the conflicting row, if any. */
+  conflictRowId: CmsRowId | null;
+}
+
+/**
+ * CMS row data is the mapping of locale to data.
+ *
+ * Locale is defined in the database, and data schema is defined in the table.
+ * The mapping always includes the default locale, represented with an empty string ("") key.
+ * Other locales are optional.
+ *
+ * This data type represents what's stored in the database, not what's output by the API.
+ * In the API, the locales that are missing a value falls back to the default locale's value.
+ */
+export interface CmsRowData {
+  [""]: Dict<unknown>;
+  [locale: string]: Dict<unknown>;
 }

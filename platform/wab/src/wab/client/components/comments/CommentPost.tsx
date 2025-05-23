@@ -1,3 +1,4 @@
+import CommentPostForm from "@/wab/client/components/comments/CommentPostForm";
 import { ReactionsByEmoji } from "@/wab/client/components/comments/ReactionsByEmoji";
 import { TplCommentThread } from "@/wab/client/components/comments/utils";
 import { Avatar } from "@/wab/client/components/studio/Avatar";
@@ -75,15 +76,22 @@ function CommentPost_(props: CommentPostProps, ref: HTMLElementRefOf<"div">) {
       isEditing={isEditing}
       isDeleted={Boolean(comment.deletedAt)}
       commentPostForm={{
-        isEditing,
-        editComment: comment,
-        threadId: comment.commentThreadId,
-        onSubmit: () => {
-          setIsEditing(false);
-        },
-        onCancel: () => {
-          setIsEditing(false);
-        },
+        render: () => (
+          <CommentPostForm
+            isEditing
+            id={comment.id}
+            defaultValue={comment.body}
+            onSubmit={(value: string) => {
+              if (value.trim() !== comment.body.trim()) {
+                commentsCtx.editComment(comment.id, value.trim());
+              }
+              setIsEditing(false);
+            }}
+            onCancel={() => {
+              setIsEditing(false);
+            }}
+          />
+        ),
       }}
       canUpdateHistory={canUpdateThreadHistory}
       timestamp={moment(comment.createdAt).fromNow()}

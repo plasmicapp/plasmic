@@ -101,6 +101,7 @@ import {
 } from "@/wab/server/tutorialdb/tutorialdb-utils";
 import { generateSomeApiToken } from "@/wab/server/util/Tokens";
 import {
+  makeFieldMetaMap,
   makeSqlCondition,
   makeTypedFieldSql,
   normalizeTableSchema,
@@ -108,6 +109,7 @@ import {
 } from "@/wab/server/util/cms-util";
 import { stringToPair } from "@/wab/server/util/hash";
 import { KnownProvider } from "@/wab/server/util/passport-multi-oauth2";
+import { UniqueViolationError } from "@/wab/shared/ApiErrors/cms-errors";
 import {
   BadRequestError,
   CopilotRateLimitExceededError,
@@ -124,6 +126,7 @@ import {
   BranchId,
   CmsDatabaseId,
   CmsIdAndToken,
+  CmsRowData,
   CmsRowId,
   CmsRowRevisionId,
   CmsTableId,
@@ -157,6 +160,7 @@ import {
   TeamWhiteLabelInfo,
   ThreadHistoryId,
   TutorialDbId,
+  UniqueFieldCheck,
   UserId,
   WorkspaceId,
   branchStatuses,
@@ -177,6 +181,7 @@ import {
 } from "@/wab/shared/Labels";
 import { Bundler } from "@/wab/shared/bundler";
 import { getBundle } from "@/wab/shared/bundles";
+import { getUniqueFieldsData } from "@/wab/shared/cms";
 import { toVarName } from "@/wab/shared/codegen/util";
 import { Dict, mkIdMap, safeHas } from "@/wab/shared/collections";
 import {
@@ -205,6 +210,7 @@ import {
   withoutNils,
   xor,
 } from "@/wab/shared/common";
+import { CreateChatCompletionRequest } from "@/wab/shared/copilot/prompt-utils";
 import {
   cloneSite,
   fixAppAuthRefs,
@@ -250,6 +256,7 @@ import {
   MergeStep,
   tryMerge,
 } from "@/wab/shared/site-diffs/merge-core";
+import * as Sentry from "@sentry/node";
 import bcrypt from "bcrypt";
 import crypto from "crypto";
 import fs from "fs";
@@ -258,7 +265,6 @@ import { Draft, createDraft, finishDraft } from "immer";
 import * as _ from "lodash";
 import L, { fromPairs, omit, pick, uniq } from "lodash";
 import moment from "moment";
-import { CreateChatCompletionRequest } from "openai";
 import ShortUuid from "short-uuid";
 import type { Opaque } from "type-fest";
 import {
@@ -591,7 +597,7 @@ export async function checkWeakPassword(password: string | undefined) {
   }
 }
 
-function pickKnownFieldsByLocale(table: CmsTable, x: Dict<Dict<unknown>>) {
+function pickKnownFieldsByLocale(table: CmsTable, x: CmsRowData) {
   return L.mapValues(x, (values) =>
     pick(values, ...table.schema.fields.map((f) => f.identifier))
   );
@@ -7127,8 +7133,8 @@ export class DbMgr implements MigrationDbMgr {
     tableId: CmsTableId,
     opts: {
       identifier?: string;
-      data?: Dict<Dict<unknown>> | null;
-      draftData?: Dict<Dict<unknown>> | null;
+      data?: CmsRowData | null;
+      draftData?: CmsRowData | null;
     }
   ) {
     const [row] = await this.createCmsRows(tableId, [opts]);
@@ -7144,8 +7150,8 @@ export class DbMgr implements MigrationDbMgr {
     tableId: CmsTableId,
     rowInputs: {
       identifier?: string;
-      data?: Dict<Dict<unknown>> | null;
-      draftData?: Dict<Dict<unknown>> | null;
+      data?: CmsRowData | null;
+      draftData?: CmsRowData | null;
     }[]
   ) {
     const table = await this.getCmsTableById(tableId);
@@ -7168,15 +7174,15 @@ export class DbMgr implements MigrationDbMgr {
     );
 
     const rows = rowInputs.map((opts) => {
-      const data: Dict<Dict<unknown>> | null = opts.data
+      const data: CmsRowData | null = opts.data
         ? L.merge({}, defaults, pickKnownFieldsByLocale(table, opts.data))
         : null;
-      const draftData: Dict<Dict<unknown>> | null =
+      const draftData: CmsRowData | null =
         opts.draftData || !opts.data
           ? L.merge(
               {},
               defaults,
-              pickKnownFieldsByLocale(table, opts.draftData || {})
+              pickKnownFieldsByLocale(table, opts.draftData || { "": {} })
             )
           : null;
 
@@ -7209,13 +7215,68 @@ export class DbMgr implements MigrationDbMgr {
     );
   }
 
+  async checkUniqueFields(
+    tableId: CmsTableId,
+    opts: {
+      rowId: CmsRowId;
+      uniqueFieldsData: Dict<unknown>;
+    }
+  ): Promise<UniqueFieldCheck[]> {
+    const table = await this.getCmsTableById(tableId);
+    await this.checkCmsDatabasePerms(table.databaseId, "content");
+
+    // Check if unique fields have violations.
+    const uniqueFieldsData = getUniqueFieldsData(table, {
+      "": opts.uniqueFieldsData,
+    });
+    const finalData = Object.entries(uniqueFieldsData).filter(
+      ([_field, value]) => value !== null && value !== undefined
+    );
+    if (finalData.length === 0) {
+      throw new BadRequestError("No unique fields to check");
+    }
+
+    const { condition, params } = makeSqlCondition(
+      table,
+      {
+        $or: finalData.map(([field, value]) => ({
+          [field]: value,
+        })),
+      },
+      { useDraft: false }
+    );
+
+    const rows = await this.cmsRows()
+      .createQueryBuilder("r")
+      .where("r.tableId = :tableId", { tableId })
+      .andWhere("r.deletedAt IS NULL")
+      .andWhere("r.data IS NOT NULL")
+      .andWhere("r.id != :rowId", { rowId: opts.rowId })
+      .andWhere(condition)
+      .setParameters(params)
+      .getMany();
+    return Promise.all(
+      Object.entries(opts.uniqueFieldsData).map(
+        async ([fieldIdentifier, value]) => {
+          return {
+            fieldIdentifier: fieldIdentifier,
+            value: value,
+            conflictRowId:
+              rows.find((row) => row.data?.[""]?.[fieldIdentifier] === value)
+                ?.id ?? null,
+          };
+        }
+      )
+    );
+  }
+
   async updateCmsRow(
     rowId: CmsRowId,
     opts: {
       rank?: string;
       identifier?: string;
-      data?: Dict<Dict<unknown>>;
-      draftData?: Dict<Dict<unknown>> | null;
+      data?: CmsRowData;
+      draftData?: CmsRowData | null;
       revision?: number;
       noMerge?: boolean;
     }
@@ -7236,9 +7297,9 @@ export class DbMgr implements MigrationDbMgr {
       );
     }
     const mergedData = (
-      existing: Record<string, any> | null,
-      update: Record<string, any> | null | undefined
-    ) => {
+      existing: CmsRowData | null,
+      update: CmsRowData | null | undefined
+    ): CmsRowData | null => {
       if (update == null) {
         return null;
       }
@@ -7259,9 +7320,22 @@ export class DbMgr implements MigrationDbMgr {
         }
       );
     };
-
     if ("data" in opts) {
       row.data = mergedData(row.data, opts.data);
+
+      // Check if unique fields have violations.
+      if (row.data) {
+        const uniqueFieldsData = getUniqueFieldsData(table, row.data);
+        if (Object.keys(uniqueFieldsData).length > 0) {
+          const uniqueFieldsCheck = await this.checkUniqueFields(table.id, {
+            rowId: row.id,
+            uniqueFieldsData: uniqueFieldsData,
+          });
+          if (uniqueFieldsCheck.some((field) => field.conflictRowId)) {
+            throw new UniqueViolationError(uniqueFieldsCheck);
+          }
+        }
+      }
     }
     if ("draftData" in opts) {
       /* on publish, we set draft data to null, and then we should use
@@ -7356,21 +7430,42 @@ export class DbMgr implements MigrationDbMgr {
     return await this.entMgr.save(copiedRow);
   }
 
+  async getPublishedRows(tableId: CmsTableId) {
+    const publishedRows = await this.entMgr.find(CmsRow, {
+      tableId: tableId,
+      data: Not(IsNull()),
+      deletedAt: IsNull(),
+    });
+    if (publishedRows.length > 500) {
+      Sentry.captureEvent({
+        message: "The result of the db query contains more than 500 rows.",
+        extra: {
+          tableId: tableId,
+        },
+      });
+    }
+    return publishedRows;
+  }
+
   // TODO We are always querying just the default locale.
   async queryCmsRows(
     tableId: CmsTableId,
     query: ApiCmsQuery,
     opts: { useDraft?: boolean } = {}
   ) {
+    if (query.offset && query.offset < 0) {
+      throw new BadRequestError("offset field cannot be negative");
+    }
+    if (query.limit && query.limit < 0) {
+      throw new BadRequestError("limit field cannot be negative");
+    }
+
     const table = await this.getCmsTableById(tableId);
     await this.checkCmsDatabasePerms(
       table.databaseId,
       opts.useDraft ? "content" : "viewer"
     );
 
-    const fieldToMeta = Object.fromEntries(
-      table.schema.fields.map((f) => [f.identifier, f])
-    );
     let builder = this.cmsRows()
       .createQueryBuilder("r")
       .where("r.tableId = :tableId", { tableId })
@@ -7398,19 +7493,18 @@ export class DbMgr implements MigrationDbMgr {
     }
 
     if (query.order) {
+      const fieldMetaMap = makeFieldMetaMap(table.schema);
       for (const order of query.order) {
         const field = typeof order === "string" ? order : order.field;
-        if (field in fieldToMeta) {
+        const fieldSql = makeTypedFieldSql(field, fieldMetaMap, opts);
+        if (fieldSql) {
           const dir =
             typeof order === "string"
               ? "ASC"
               : order.dir === "asc"
               ? "ASC"
               : "DESC";
-          builder = builder.addOrderBy(
-            makeTypedFieldSql(fieldToMeta[field], opts),
-            dir
-          );
+          builder = builder.addOrderBy(fieldSql, dir);
         }
       }
     } else {

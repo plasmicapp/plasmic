@@ -237,7 +237,10 @@ export const CanvasCommentMarkers = observer(function CanvasCommentMarkers({
 
   useRerenderOnUserBodyChange(studioCtx, viewCtx);
 
-  if (!viewCtx || !viewCtx.isVisible()) {
+  const shouldHideCommentMarker =
+    studioCtx.shouldHideUIOverlay() || !viewCtx || !viewCtx.isVisible();
+
+  if (shouldHideCommentMarker) {
     return null;
   }
 

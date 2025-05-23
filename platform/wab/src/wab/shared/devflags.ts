@@ -565,6 +565,7 @@ const DEFAULT_DEVFLAGS = {
 
   autoOpen: false,
   autoOpen2: false,
+  cmsUniqueFields: false,
 };
 
 Object.assign(DEFAULT_DEVFLAGS, DEFAULT_DEVFLAG_OVERRIDES);
@@ -648,6 +649,7 @@ export function applyPlasmicUserDevFlagOverrides(target: DevFlagsType) {
     autoOpen2: true,
     allowHtmlPaste: true,
     enableUiCopilot: true,
+    cmsUniqueFields: true,
   } as Partial<DevFlagsType>);
 }
 

@@ -13,6 +13,7 @@ import {
   isTplComponent,
   isTplFromComponent,
   isTplTextBlock,
+  resolveTplRoot,
 } from "@/wab/shared/core/tpls";
 import {
   AnyType,
@@ -451,7 +452,7 @@ export function nodeConformsToType(
       isTplFromComponent(node, type.component) ||
       (opts?.allowRootWrapper &&
         isTplComponent(node) &&
-        isTplFromComponent(node.component.tplTree, type.component))
+        isTplFromComponent(resolveTplRoot(node), type.component))
     );
   } else if (isKnownPlumeInstance(type)) {
     return (

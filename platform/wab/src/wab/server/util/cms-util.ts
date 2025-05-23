@@ -2,15 +2,16 @@ import { CmsTable } from "@/wab/server/entities/Entities";
 import { BadRequestError } from "@/wab/shared/ApiErrors/errors";
 import {
   CmsFieldMeta,
+  CmsMetaType,
+  CmsRowData,
   CmsTableSchema,
   CmsTypeName,
   FilterClause,
   FilterCond,
-  CmsMetaType,
 } from "@/wab/shared/ApiSchema";
 import { toVarName } from "@/wab/shared/codegen/util";
 import { Dict } from "@/wab/shared/collections";
-import { assert, withoutNils } from "@/wab/shared/common";
+import { withoutNils } from "@/wab/shared/common";
 
 export function traverseSchemaFields(
   fields: CmsFieldMeta[],
@@ -27,7 +28,12 @@ export function traverseSchemaFields(
   return fields;
 }
 
-export function makeFieldMetaMap(schema: CmsTableSchema, fields?: string[]) {
+export type FieldMetaMap = { [key: string]: CmsFieldMeta };
+
+export function makeFieldMetaMap(
+  schema: CmsTableSchema,
+  fields?: string[]
+): FieldMetaMap {
   const fieldsToUse = schema.fields.filter((f) => {
     if (fields && fields.length > 0) {
       // projection specified, so follow it exactly
@@ -40,7 +46,7 @@ export function makeFieldMetaMap(schema: CmsTableSchema, fields?: string[]) {
 }
 
 export function projectCmsData(
-  data: Dict<Dict<unknown> | undefined>,
+  data: CmsRowData,
   fieldMetaMap: Record<string, CmsFieldMeta>,
   locale: string
 ) {
@@ -59,12 +65,12 @@ export function projectCmsData(
 }
 
 export function normalizeCmsData(
-  data: Dict<unknown> | undefined,
+  data: CmsRowData | undefined,
   fieldMetaMap: Record<string, CmsFieldMeta>,
   locales?: string[]
-): Dict<Dict<unknown>> {
+): CmsRowData {
   if (!data) {
-    return {};
+    return { "": {} };
   }
   return Object.fromEntries(
     ["", ...(locales ?? [])].map((locale) => [
@@ -94,11 +100,11 @@ export function normalizeCmsData(
         )
       ),
     ])
-  );
+  ) as CmsRowData;
 }
 
 export function denormalizeCmsData(
-  data: Dict<Dict<unknown>> | null,
+  data: CmsRowData | null,
   tableSchema: CmsFieldMeta[],
   locales?: string[]
 ): Dict<unknown> | null {
@@ -172,16 +178,55 @@ export function normalizeTableSchema(schema: CmsTableSchema) {
 // SQL helpers
 //
 
-export const makeTypedFieldSql = (
-  fieldMeta: CmsFieldMeta,
-  opts: { useDraft?: boolean }
-) => {
-  const dataRef = opts.useDraft
+function makeDataRef(opts: { useDraft?: boolean }) {
+  return opts.useDraft
     ? `(CASE WHEN r.draftData IS NOT NULL THEN r.draftData ELSE r.data END)`
     : `r.data`;
-  return `(${dataRef}->''->>'${fieldMeta.identifier}')::${typeToPgType(
-    fieldMeta.type
-  )}`;
+}
+
+/**
+ * Assumes `r` is the alias for the `cms_row` table.
+ * Returns a psql expression for the given field.
+ * Returns null if the given field was not recognized.
+ */
+export const makeTypedFieldSql = (
+  field: string,
+  fieldMetaMap: FieldMetaMap,
+  opts: { useDraft?: boolean }
+) => {
+  const dataRef = makeDataRef(opts);
+  if (field === "_id") {
+    return "r.id";
+  }
+
+  // Simple field access
+  const meta = fieldMetaMap[field];
+  if (meta) {
+    return `(${dataRef}->''->>'${meta.identifier}')::${typeToPgType(
+      meta.type
+    )}`;
+  }
+
+  // TODO: handle more than one level of nesting
+  // TODO: allow escaping "." in field identifier
+  if (field.includes(".")) {
+    const [objectField, nestedField] = field.split(".");
+
+    const objectFieldMeta = fieldMetaMap[objectField];
+    if (objectFieldMeta && objectFieldMeta.type === CmsMetaType.OBJECT) {
+      const nestedFieldMeta = objectFieldMeta.fields.find(
+        (f) => f.identifier === nestedField
+      );
+
+      if (nestedFieldMeta) {
+        return `(${dataRef}->''->'${objectFieldMeta.identifier}'->>'${
+          nestedFieldMeta.identifier
+        }')::${typeToPgType(nestedFieldMeta.type)}`;
+      }
+    }
+  }
+
+  return null;
 };
 
 export function makeSqlCondition(
@@ -189,12 +234,7 @@ export function makeSqlCondition(
   condition: FilterClause,
   opts: { useDraft?: boolean }
 ) {
-  const dataRef = opts.useDraft
-    ? `(CASE WHEN r.draftData IS NOT NULL THEN r.draftData ELSE r.data END)`
-    : `r.data`;
-  const fieldToMeta = Object.fromEntries(
-    table.schema.fields.map((f) => [f.identifier, f])
-  );
+  const fieldMetaMap = makeFieldMetaMap(table.schema);
 
   let valCount = 0;
   const valParams: Record<string, any> = {};
@@ -204,14 +244,19 @@ export function makeSqlCondition(
     return valParam;
   };
 
-  const buildFilterCond = (field: string, cond: FilterCond) => {
+  const buildFilterExprSql = (fieldSql: string, cond: FilterCond): string => {
     // TODO: type checking against field meta
     if (
       typeof cond === "string" ||
       typeof cond === "number" ||
       typeof cond === "boolean"
     ) {
-      return `= :${getValParam(cond)}`;
+      const eqExpr = `${fieldSql} = :${getValParam(cond)}`;
+      if (cond === "false" || cond === false) {
+        return `(${eqExpr} OR ${fieldSql} IS NULL)`;
+      } else {
+        return eqExpr;
+      }
     } else if (typeof cond === "object") {
       if ("$in" in cond) {
         const vals = cond.$in;
@@ -219,18 +264,21 @@ export function makeSqlCondition(
           throw new BadRequestError(
             `Unexpected "in" operand: ${JSON.stringify(vals)}`
           );
+        } else if (vals.length === 0) {
+          return "FALSE";
+        } else {
+          return `${fieldSql} IN (:...${getValParam(vals)})`;
         }
-        return `IN (:...${getValParam(vals)})`;
       } else if ("$gt" in cond) {
-        return `> :${getValParam(cond.$gt)}`;
+        return `${fieldSql} > :${getValParam(cond.$gt)}`;
       } else if ("$ge" in cond) {
-        return `>= :${getValParam(cond.$ge)}`;
+        return `${fieldSql} >= :${getValParam(cond.$ge)}`;
       } else if ("$lt" in cond) {
-        return `< :${getValParam(cond.$lt)}`;
+        return `${fieldSql} < :${getValParam(cond.$lt)}`;
       } else if ("$le" in cond) {
-        return `<= :${getValParam(cond.$le)}`;
+        return `${fieldSql} <= :${getValParam(cond.$le)}`;
       } else if ("$regex" in cond) {
-        return `~* :${getValParam(cond.$regex)}`;
+        return `${fieldSql} ~* :${getValParam(cond.$regex)}`;
       }
     }
     throw new BadRequestError(
@@ -238,64 +286,42 @@ export function makeSqlCondition(
     );
   };
 
-  const readTypedField = (field: string) => {
-    const meta = fieldToMeta[field];
-    return makeTypedFieldSql(meta, opts);
-  };
-
-  const buildFilterClause = (clause: FilterClause) => {
+  const buildFilterClause = (clause: FilterClause): string => {
     const ands: string[] = [];
     for (const key of Object.keys(clause)) {
-      if (key in fieldToMeta) {
-        const filterCond = `${readTypedField(key)} ${buildFilterCond(
-          key,
-          clause[key]
-        )}`;
-        if (clause[key] === "false" || clause[key] === false) {
-          ands.push(`(${filterCond} OR ${readTypedField(key)} IS NULL)`);
-        } else {
-          ands.push(filterCond);
-        }
-      } else if (key === "_id") {
-        ands.push(`id ${buildFilterCond(key, clause[key])}`);
-      } else if (key === "$and") {
+      // First, check if the key is a logical operator.
+      if (key === "$and") {
         const sub = clause[key];
-        assert(Array.isArray(sub), "All subclauses should be arrays");
-        ands.push(`(${sub.map(buildFilterClause).join(" AND ")})`);
+        if (!Array.isArray(sub)) {
+          throw new BadRequestError(
+            `Unexpected "and" operand: ${JSON.stringify(sub)}`
+          );
+        }
+        ands.push(andSql(sub.map(buildFilterClause)));
       } else if (key === "$or") {
         const sub = clause[key];
-        assert(Array.isArray(sub), "All subclauses should be arrays");
-        ands.push(`(${sub.map(buildFilterClause).join(" OR ")})`);
+        if (!Array.isArray(sub)) {
+          throw new BadRequestError(
+            `Unexpected "or" operand: ${JSON.stringify(sub)}`
+          );
+        }
+        ands.push(orSql(sub.map(buildFilterClause)));
       } else if (key === "$not") {
         ands.push(`NOT (${buildFilterClause(clause[key]!)})`);
-      } else if (key.includes(".")) {
-        const [objectField, nestedField] = key.split(".");
-
-        const objectFieldMeta = table.schema.fields.find(
-          (f) => f.identifier === objectField && f.type === CmsMetaType.OBJECT
-        );
-
-        if (objectFieldMeta && objectFieldMeta.type === CmsMetaType.OBJECT) {
-          const nestedFieldMeta = objectFieldMeta.fields.find(
-            (f) => f.identifier === nestedField
-          );
-
-          if (objectField in fieldToMeta && nestedFieldMeta) {
-            const filterCond = `(${dataRef}->''->'${
-              objectFieldMeta.identifier
-            }'->>'${nestedFieldMeta.identifier}')::${typeToPgType(
-              nestedFieldMeta.type
-            )} ${buildFilterCond(key, clause[key])}`;
-            ands.push(filterCond);
-          }
-        } else {
-          throw new BadRequestError(`Unknown filter operator ${key}`);
-        }
       } else {
-        throw new BadRequestError(`Unknown filter operator ${key}`);
+        // Finally, check if the key is a field.
+        const fieldSql = makeTypedFieldSql(key, fieldMetaMap, opts);
+        if (!fieldSql) {
+          throw new BadRequestError(
+            `Unknown field or logical operator "${key}"`
+          );
+        }
+
+        ands.push(buildFilterExprSql(fieldSql, clause[key]));
       }
     }
-    return ands.join(" AND ");
+
+    return andSql(ands);
   };
 
   return {
@@ -304,11 +330,12 @@ export function makeSqlCondition(
   };
 }
 
-const typeToPgType = (type: CmsTypeName) => {
+export const typeToPgType = (type: CmsTypeName) => {
   switch (type) {
     case CmsMetaType.TEXT:
-      return "text";
     case CmsMetaType.LONG_TEXT:
+    case CmsMetaType.REF:
+    case CmsMetaType.ENUM:
       return "text";
     case CmsMetaType.BOOLEAN:
       return "boolean";
@@ -316,9 +343,25 @@ const typeToPgType = (type: CmsTypeName) => {
       return "numeric";
     case CmsMetaType.DATE_TIME:
       return "timestamp";
-    case CmsMetaType.REF:
-      return "text";
     default:
       throw new BadRequestError(`Cannot filter by a column of type ${type}`);
   }
 };
+
+function andSql(clauses: string[]) {
+  return combineSql(clauses, " AND ");
+}
+
+function orSql(clauses: string[]) {
+  return combineSql(clauses, " OR ");
+}
+
+function combineSql(clauses: string[], sep: string) {
+  if (clauses.length === 0) {
+    return "TRUE";
+  } else if (clauses.length === 1) {
+    return clauses[0];
+  } else {
+    return clauses.map((c) => `(${c})`).join(sep);
+  }
+}

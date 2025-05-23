@@ -7,7 +7,7 @@ import { Tooltip } from "antd";
 import classNames from "classnames";
 import * as React from "react";
 
-interface SwitchProps extends DefaultSwitchProps {
+export interface SwitchProps extends DefaultSwitchProps {
   disabledTooltip?: React.ReactNode;
   tooltip?: React.ReactNode;
   "data-test-id"?: string;
@@ -41,7 +41,7 @@ function Switch_({ className, ...props }: SwitchProps, ref: SwitchRef) {
   );
 }
 
-const Switch = React.forwardRef(Switch_);
+export const Switch = React.forwardRef(Switch_);
 
 export default Object.assign(Switch, {
   __plumeType: "switch",

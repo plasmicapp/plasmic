@@ -1,0 +1,39 @@
+.root {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  position: relative;
+  border-radius: 4px;
+  border: 1px solid var(--token-sBh7BFhgAybb);
+}
+.root:hover {
+  border-color: var(--token-XeFw4MGauXBT);
+}
+.img {
+  object-fit: cover;
+  max-width: 100%;
+  width: 50px;
+  flex-shrink: 0;
+  border-radius: 4px;
+}
+.img > picture > img {
+  object-fit: cover;
+}
+.svg {
+  object-fit: cover;
+  max-width: 100%;
+  position: absolute;
+  top: -8px;
+  width: 16px;
+  height: 16px;
+  right: -8px;
+  flex-shrink: 0;
+  display: none;
+}
+.root:hover .svg {
+  display: block;
+}

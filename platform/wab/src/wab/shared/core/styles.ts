@@ -2093,7 +2093,6 @@ export interface TriggerCondition {
   hookName: string;
   isOpposite?: boolean;
   alwaysByHook?: boolean;
-  eventPropNames?: string[];
 }
 
 export function getTriggerableSelectors(sv: Variant) {
@@ -2182,7 +2181,6 @@ export const pseudoSelectors = (() => {
               hookName: trigger.hookName,
               isOpposite: true,
               alwaysByHook: trigger.alwaysByHook,
-              eventPropNames: trigger.eventPropNames,
             }
           : undefined
       );
@@ -2201,11 +2199,9 @@ export const pseudoSelectors = (() => {
   // them to code-merger's CodeVersion.rename list!
   addSelector("Hover", ":hover", undefined, false, {
     hookName: "useHover",
-    eventPropNames: ["onMouseEnter", "onMouseLeave"],
   });
   addSelector("Pressed", ":active", undefined, false, {
     hookName: "usePressed",
-    eventPropNames: ["onMouseDown", "onMouseUp"],
   });
   addSelector(
     "Focused",
@@ -2214,7 +2210,6 @@ export const pseudoSelectors = (() => {
     false,
     {
       hookName: "useFocused",
-      eventPropNames: ["onFocus", "onBlur"],
     }
   );
   addSelector(
@@ -2226,12 +2221,10 @@ export const pseudoSelectors = (() => {
       hookName: "useFocusVisible",
       // No wide cross browser support yet
       alwaysByHook: true,
-      eventPropNames: ["onFocus", "onBlur"],
     }
   );
   addSelector("Focused Within", ":focus-within", undefined, true, {
     hookName: "useFocusedWithin",
-    eventPropNames: ["onFocus", "onBlur"],
   });
   addSelector(
     "Focus Visible Within",
@@ -2242,7 +2235,6 @@ export const pseudoSelectors = (() => {
       hookName: "useFocusVisibleWithin",
       // Not a real selector; https://github.com/WICG/focus-visible/issues/151
       alwaysByHook: true,
-      eventPropNames: ["onFocus", "onBlur"],
     }
   );
   addSelector("Disabled", ":disabled", ["input", "textarea", "button"], false);

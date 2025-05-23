@@ -6,14 +6,14 @@ type Registerable = {
   registerFunction: typeof registerFunction;
 };
 
-class CustomError extends Error {
-  info: Record<string, any>;
-  status: number;
-  constructor(message: string, info: Record<string, string>, status: number) {
-    super(message);
-    this.name = "CustomError";
-    this.info = info;
-    this.status = status;
+class HttpError extends Error {
+  constructor(
+    statusText: string,
+    readonly info: unknown,
+    readonly status: number
+  ) {
+    super(statusText);
+    this.name = "HttpError";
   }
 }
 
@@ -53,14 +53,13 @@ function maybeParseJSON(json: string) {
   }
 }
 
-export interface FetchProps {
-  url?: string;
-  method?: string;
-  body?: string | object;
-  headers?: Record<string, string>;
-}
-
-async function performFetch({ url, method, body, headers }: FetchProps) {
+// Don't override the global fetch
+async function wrappedFetch(
+  url: string,
+  method: HTTPMethod,
+  headers: Record<string, string>,
+  body?: string | object
+) {
   if (!url) {
     throw new Error("Please specify a URL to fetch");
   }
@@ -92,23 +91,14 @@ async function performFetch({ url, method, body, headers }: FetchProps) {
   // If the status code is not in the range 200-299,
   // we still try to parse and throw it.
   if (!response.ok) {
-    throw new CustomError(response.statusText, maybeJson, response.status);
+    throw new HttpError(response.statusText, maybeJson, response.status);
   }
 
   return {
     statusCode: response.status,
     headers: Object.fromEntries(response.headers.entries()),
-    response: maybeJson,
+    body: maybeJson,
   };
-}
-
-async function wrappedFetch(
-  url: string,
-  method: HTTPMethod,
-  headers: Record<string, string>,
-  body?: string | object
-) {
-  return await performFetch({ url, method, headers, body });
 }
 
 export { wrappedFetch as fetch };
@@ -142,80 +132,5 @@ export function registerFetch(loader?: Registerable) {
     loader.registerFunction(wrappedFetch, registerFetchParams);
   } else {
     registerFunction(wrappedFetch, registerFetchParams);
-  }
-}
-
-export async function graphqlFetch(
-  url: string,
-  method: HTTPMethod,
-  headers: Record<string, string>,
-  query?: { query?: string; variables?: object },
-  varOverrides?: Record<string, any>
-) {
-  let fetchProps: FetchProps;
-  method = method ?? "POST";
-
-  if (method === "GET") {
-    // https://graphql.org/learn/serving-over-http/#get-request-and-parameters
-    const urlWithQueryParams = new URL(url ?? "");
-    urlWithQueryParams.searchParams.set("query", query?.query ?? "{}");
-    urlWithQueryParams.searchParams.set(
-      "variables",
-      JSON.stringify({ ...query?.variables, ...varOverrides })
-    );
-    fetchProps = {
-      url: urlWithQueryParams.toString(),
-      method,
-      headers,
-    };
-  } else {
-    fetchProps = {
-      body: { ...query, variables: { ...query?.variables, ...varOverrides } },
-      url,
-      method,
-      headers,
-    };
-  }
-
-  return performFetch(fetchProps);
-}
-
-const registerGraphqlFetchParams: CustomFunctionMeta<typeof graphqlFetch> = {
-  name: "graphqlFetch",
-  importPath: "@plasmicpkgs/fetch",
-  params: [
-    {
-      name: "url",
-      type: "string",
-    },
-    {
-      name: "method",
-      type: "choice",
-      options: ["GET", "POST", "PUT", "DELETE"],
-    },
-    {
-      name: "headers",
-      type: "object",
-    },
-    {
-      name: "query",
-      type: "code",
-      lang: "graphql",
-      headers: (props: any) => props.headers,
-      endpoint: (props: any) => props.url ?? "",
-    },
-    {
-      name: "varOverrides",
-      type: "object",
-    },
-  ],
-  // TODO: remove as any when "code" type is available
-} as any;
-
-export function registerGraphqlFetch(loader?: Registerable) {
-  if (loader) {
-    loader.registerFunction(graphqlFetch, registerGraphqlFetchParams);
-  } else {
-    registerFunction(graphqlFetch, registerGraphqlFetchParams);
   }
 }

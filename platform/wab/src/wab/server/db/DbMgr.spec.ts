@@ -12,7 +12,13 @@ import {
   User,
 } from "@/wab/server/entities/Entities";
 import { getTeamAndWorkspace, withDb } from "@/wab/server/test/backend-util";
-import { ApiCmsQuery, CmsMetaType, CmsTableId } from "@/wab/shared/ApiSchema";
+import { BadRequestError } from "@/wab/shared/ApiErrors/errors";
+import {
+  ApiCmsQuery,
+  CmsMetaType,
+  CmsTableId,
+  FilterClause,
+} from "@/wab/shared/ApiSchema";
 import { ensure, filterMapTruthy } from "@/wab/shared/common";
 import { AccessLevel } from "@/wab/shared/EntUtil";
 import L from "lodash";
@@ -39,6 +45,7 @@ describe("DbMgr.CMS", () => {
               hidden: false,
               required: true,
               localized: false,
+              unique: false,
               helperText: "",
               identifier: "title",
               defaultValueByLocale: {},
@@ -49,6 +56,7 @@ describe("DbMgr.CMS", () => {
               hidden: false,
               required: false,
               localized: false,
+              unique: false,
               helperText: "",
               identifier: "description",
               defaultValueByLocale: {},
@@ -68,6 +76,7 @@ describe("DbMgr.CMS", () => {
               hidden: false,
               required: false,
               localized: false,
+              unique: false,
               helperText: "",
               identifier: "username",
               defaultValueByLocale: {},
@@ -87,6 +96,7 @@ describe("DbMgr.CMS", () => {
               hidden: false,
               required: true,
               localized: false,
+              unique: false,
               helperText: "",
               identifier: "comment",
               defaultValueByLocale: {},
@@ -98,6 +108,7 @@ describe("DbMgr.CMS", () => {
               tableId: postsTable.id,
               required: true,
               localized: false,
+              unique: false,
               helperText: "",
               identifier: "postId",
               defaultValueByLocale: {},
@@ -113,6 +124,7 @@ describe("DbMgr.CMS", () => {
                   tableId: usersTable.id,
                   required: false,
                   localized: false,
+                  unique: false,
                   helperText: "",
                   identifier: "username",
                   defaultValueByLocale: {},
@@ -128,6 +140,7 @@ describe("DbMgr.CMS", () => {
                       tableId: postsTable.id,
                       required: false,
                       localized: false,
+                      unique: false,
                       helperText: "",
                       identifier: "postId",
                       defaultValueByLocale: {},
@@ -138,6 +151,7 @@ describe("DbMgr.CMS", () => {
                       hidden: false,
                       required: false,
                       localized: false,
+                      unique: false,
                       helperText: "",
                       identifier: "likedAt",
                       defaultValueByLocale: {},
@@ -146,6 +160,7 @@ describe("DbMgr.CMS", () => {
                   hidden: false,
                   required: false,
                   localized: false,
+                  unique: false,
                   helperText: "",
                   identifier: "metadata",
                   defaultValueByLocale: {},
@@ -154,6 +169,7 @@ describe("DbMgr.CMS", () => {
               hidden: false,
               required: false,
               localized: false,
+              unique: false,
               helperText: "",
               identifier: "likes",
               defaultValueByLocale: {},
@@ -335,6 +351,7 @@ describe("DbMgr.CMS", () => {
               required: false,
               hidden: false,
               localized: false,
+              unique: false,
               defaultValueByLocale: {},
             },
           ],
@@ -385,6 +402,7 @@ describe("DbMgr.CMS", () => {
               required: false,
               hidden: false,
               localized: false,
+              unique: false,
               defaultValueByLocale: {},
             },
           ],
@@ -417,6 +435,7 @@ describe("DbMgr.CMS", () => {
               required: false,
               hidden: false,
               localized: false,
+              unique: false,
               defaultValueByLocale: {},
             },
           ],
@@ -436,6 +455,7 @@ describe("DbMgr.CMS", () => {
               required: false,
               hidden: false,
               localized: false,
+              unique: false,
               defaultValueByLocale: {},
             },
             {
@@ -446,6 +466,7 @@ describe("DbMgr.CMS", () => {
               required: false,
               hidden: false,
               localized: false,
+              unique: false,
               defaultValueByLocale: {},
             },
           ],
@@ -517,8 +538,10 @@ describe("DbMgr.CMS", () => {
       );
     }
 
-    const count = await db.countCmsRows(tableId, query, opts);
-    expect(count).toEqual(expected.length);
+    if (query.limit === undefined || query.limit === 0) {
+      const count = await db.countCmsRows(tableId, query, opts);
+      expect(count).toEqual(expected.length);
+    }
   };
 
   it("can query for rows", () =>
@@ -543,6 +566,7 @@ describe("DbMgr.CMS", () => {
               required: false,
               hidden: false,
               localized: false,
+              unique: false,
               defaultValueByLocale: {},
             },
             {
@@ -553,6 +577,7 @@ describe("DbMgr.CMS", () => {
               required: false,
               hidden: false,
               localized: false,
+              unique: false,
               defaultValueByLocale: {},
             },
             {
@@ -563,6 +588,7 @@ describe("DbMgr.CMS", () => {
               required: false,
               hidden: false,
               localized: false,
+              unique: false,
               defaultValueByLocale: {},
             },
             {
@@ -573,6 +599,7 @@ describe("DbMgr.CMS", () => {
               required: false,
               hidden: false,
               localized: false,
+              unique: false,
               defaultValueByLocale: {},
             },
             {
@@ -583,6 +610,7 @@ describe("DbMgr.CMS", () => {
               required: false,
               hidden: false,
               localized: false,
+              unique: false,
               defaultValueByLocale: {},
             },
           ],
@@ -743,37 +771,84 @@ describe("DbMgr.CMS", () => {
         false
       );
 
-      await expectCmsRows(
-        db1(),
-        people.id,
-        {
-          where: {
-            $or: [
+      const whereBlueAndBetween30And70: FilterClause = {
+        $or: [
+          {
+            $and: [
               {
-                $and: [
-                  {
-                    age: {
-                      $gt: 30,
-                    },
-                  },
-                  {
-                    age: {
-                      $lt: 70,
-                    },
-                  },
-                ],
+                age: {
+                  $gt: 30,
+                },
               },
               {
-                color: {
-                  $in: ["Blue"],
+                age: {
+                  $lt: 70,
                 },
               },
             ],
           },
+          {
+            color: {
+              $in: ["Blue"],
+            },
+          },
+        ],
+      };
+
+      await expectCmsRows(
+        db1(),
+        people.id,
+        {
+          where: whereBlueAndBetween30And70,
           order: [{ field: "age", dir: "desc" }],
         },
         [p4, p2, p1],
         true
+      );
+
+      await expectCmsRows(
+        db1(),
+        people.id,
+        {
+          where: whereBlueAndBetween30And70,
+          order: [{ field: "age", dir: "asc" }],
+          limit: 2,
+        },
+        [p1, p2],
+        true
+      );
+
+      await expectCmsRows(
+        db1(),
+        people.id,
+        {
+          where: whereBlueAndBetween30And70,
+          order: [{ field: "age", dir: "asc" }],
+          limit: 2,
+          offset: 2,
+        },
+        [p4],
+        true
+      );
+
+      await expect(
+        db1().queryCmsRows(people.id, {
+          where: whereBlueAndBetween30And70,
+          order: [{ field: "age", dir: "asc" }],
+          limit: -1,
+        })
+      ).rejects.toThrowError(
+        new BadRequestError("limit field cannot be negative")
+      );
+
+      await expect(
+        db1().queryCmsRows(people.id, {
+          where: whereBlueAndBetween30And70,
+          order: [{ field: "age", dir: "asc" }],
+          offset: -1,
+        })
+      ).rejects.toThrowError(
+        new BadRequestError("offset field cannot be negative")
       );
     }));
 
@@ -799,6 +874,7 @@ describe("DbMgr.CMS", () => {
               required: false,
               hidden: false,
               localized: false,
+              unique: false,
               defaultValueByLocale: {},
             },
             {
@@ -809,6 +885,7 @@ describe("DbMgr.CMS", () => {
               required: false,
               hidden: false,
               localized: false,
+              unique: false,
               defaultValueByLocale: {},
             },
           ],

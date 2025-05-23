@@ -39,6 +39,7 @@ import {
   CmsTypeMeta,
   CmsTypeName,
 } from "@/wab/shared/ApiSchema";
+import { ALLOWED_UNIQUE_TYPES } from "@/wab/shared/cms";
 import {
   ensureType,
   jsonClone,
@@ -48,6 +49,7 @@ import {
   uniqueName,
 } from "@/wab/shared/common";
 import { extractParamsFromPagePath } from "@/wab/shared/core/components";
+import { DEVFLAGS } from "@/wab/shared/devflags";
 import { httpMethods } from "@/wab/shared/HttpClientUtil";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import {
@@ -66,7 +68,12 @@ import * as React from "react";
 import { Prompt, useHistory } from "react-router";
 import { useBeforeUnload } from "react-use";
 
-export type CmsModelDetailsProps = DefaultCmsModelDetailsProps;
+const NESTED_TYPES = [CmsMetaType.LIST, CmsMetaType.OBJECT];
+
+const COLUMN_ITEM_PROPS = {
+  style: { width: "150px" },
+  labelCol: { span: 24 },
+};
 
 function renderTypeSpecificSubform(
   database: ApiCmsDatabase,
@@ -95,14 +102,22 @@ function renderTypeSpecificSubform(
         })}
       </ContentEntryFormContext.Provider>
       {[CmsMetaType.TEXT, CmsMetaType.LONG_TEXT].includes(typeName) && (
-        <>
-          <Form.Item label={"Min chars"} name={[...fieldPath, "minChars"]}>
+        <div className={"flex-row gap-sm"}>
+          <Form.Item
+            {...COLUMN_ITEM_PROPS}
+            label={"Min chars"}
+            name={[...fieldPath, "minChars"]}
+          >
             <InputNumber />
           </Form.Item>
-          <Form.Item label={"Max chars"} name={[...fieldPath, "maxChars"]}>
+          <Form.Item
+            {...COLUMN_ITEM_PROPS}
+            label={"Max chars"}
+            name={[...fieldPath, "maxChars"]}
+          >
             <InputNumber />
           </Form.Item>
-        </>
+        </div>
       )}
     </>
   );
@@ -119,7 +134,7 @@ function renderModelFieldForm(
   fullFieldsPath: any[],
   handles: any,
   locales: string[],
-  hasLocalization: boolean
+  isNested: boolean
 ) {
   function moveBy(delta: number) {
     const fields = form.getFieldValue(fullFieldsPath);
@@ -149,7 +164,7 @@ function renderModelFieldForm(
         <Select
           type={"bordered"}
           onChange={(value) => {
-            const meta = cmsFieldMetaDefaults as any;
+            const meta: any = { ...cmsFieldMetaDefaults };
             for (const key in meta) {
               meta[key] = form.getFieldValue(fullFieldPath)[key];
             }
@@ -160,14 +175,17 @@ function renderModelFieldForm(
             // defaultValues are the most important fields to reset.
             meta.defaultValueByLocale = {
               "": undefined,
-              ...(hasLocalization
+              ...(!isNested
                 ? Object.fromEntries(
                     locales.map((locale) => tuple(locale, undefined))
                   )
                 : {}),
             };
-            if ([CmsMetaType.LIST, CmsMetaType.OBJECT].includes(meta.type)) {
+            if (NESTED_TYPES.includes(meta.type)) {
               meta.fields = [];
+            }
+            if (!ALLOWED_UNIQUE_TYPES.includes(meta.type)) {
+              meta.unique = false;
             }
             const blob = jsonClone(form.getFieldValue([]));
             L.set(blob, fullFieldPath, meta);
@@ -206,7 +224,7 @@ function renderModelFieldForm(
                 </Select>
               </Form.Item>
             )}
-            {[CmsMetaType.LIST, CmsMetaType.OBJECT].includes(
+            {NESTED_TYPES.includes(
               getFieldValue([...fullFieldPath, "type"])
             ) && (
               <Form.Item
@@ -218,7 +236,7 @@ function renderModelFieldForm(
                   tableId={tableId}
                   fieldsPath={[...fieldPath, "fields"]}
                   fullFieldsPath={[...fullFieldPath, "fields"]}
-                  hasLocalization={false}
+                  isNested={true}
                 />
               </Form.Item>
             )}
@@ -230,23 +248,58 @@ function renderModelFieldForm(
           <FieldOptions fieldsPath={[...fieldPath, "options"]} />
         </Form.Item>
       )}
-      {![CmsMetaType.LIST, CmsMetaType.OBJECT].includes(selectedType) && (
+      <div className={"flex-row gap-sm"}>
+        {!NESTED_TYPES.includes(selectedType) && (
+          <Form.Item
+            {...COLUMN_ITEM_PROPS}
+            label={"Required"}
+            name={[...fieldPath, "required"]}
+          >
+            <ValueSwitch />
+          </Form.Item>
+        )}
         <Form.Item
-          label={"Required"}
-          name={[...fieldPath, "required"]}
-          required
+          {...COLUMN_ITEM_PROPS}
+          label={"Hidden"}
+          name={[...fieldPath, "hidden"]}
         >
           <ValueSwitch />
         </Form.Item>
-      )}
-      {hasLocalization && (
-        <Form.Item
-          label={"Localized"}
-          name={[...fieldPath, "localized"]}
-          required
-        >
-          <ValueSwitch />
-        </Form.Item>
+      </div>
+      {!isNested && (
+        <div className={"flex-row gap-sm"}>
+          <Form.Item
+            {...COLUMN_ITEM_PROPS}
+            label={"Localized"}
+            name={[...fieldPath, "localized"]}
+          >
+            <ValueSwitch
+              disabled={form.getFieldValue([...fullFieldPath, "unique"])}
+              tooltip={
+                form.getFieldValue([...fullFieldPath, "unique"])
+                  ? "Unique fields cannot be localized."
+                  : undefined
+              }
+            />
+          </Form.Item>
+          {DEVFLAGS.cmsUniqueFields &&
+            ALLOWED_UNIQUE_TYPES.includes(selectedType) && (
+              <Form.Item
+                {...COLUMN_ITEM_PROPS}
+                label={"Unique"}
+                name={[...fieldPath, "unique"]}
+              >
+                <ValueSwitch
+                  disabled={form.getFieldValue([...fullFieldPath, "localized"])}
+                  tooltip={
+                    form.getFieldValue([...fullFieldPath, "localized"])
+                      ? "Localized fields cannot be unique."
+                      : undefined
+                  }
+                />
+              </Form.Item>
+            )}
+        </div>
       )}
       <Form.Item
         label={"Helper text"}
@@ -285,16 +338,13 @@ function renderModelFieldForm(
               databaseId,
               form,
               getFieldValue([...fullFieldPath, "type"]),
-              getFieldValue([...fullFieldPath, "localized"]) && hasLocalization,
+              getFieldValue([...fullFieldPath, "localized"]) && !isNested,
               fieldPath,
               locales,
               getFieldValue([...fullFieldPath])
             )}
           </React.Fragment>
         )}
-      </Form.Item>
-      <Form.Item label={"Hidden"} name={[...fieldPath, "hidden"]}>
-        <ValueSwitch />
       </Form.Item>
       <Form.Item>
         <div className={"flex gap-sm"}>
@@ -335,7 +385,9 @@ function renderModelFieldForm(
   );
 }
 
-function CmsModelDetails_(
+export type CmsModelDetailsProps = DefaultCmsModelDetailsProps;
+
+export function CmsModelDetails_(
   props: CmsModelDetailsProps,
   ref: HTMLElementRefOf<"div">
 ) {
@@ -528,7 +580,7 @@ function CmsModelDetails_(
                 tableId={tableId}
                 fieldsPath={["schema", "fields"]}
                 fullFieldsPath={["schema", "fields"]}
-                hasLocalization={true}
+                isNested={false}
               />
             </div>
           }
@@ -550,13 +602,13 @@ function ModelFields({
   tableId,
   fieldsPath,
   fullFieldsPath,
-  hasLocalization,
+  isNested,
 }: {
   database: ApiCmsDatabase;
   tableId: CmsTableId;
   fieldsPath: any[];
   fullFieldsPath: any[];
-  hasLocalization: boolean;
+  isNested: boolean;
 }) {
   const form = Form.useFormInstance();
 
@@ -621,7 +673,7 @@ function ModelFields({
                         fullFieldsPath,
                         handles,
                         database.extraData.locales,
-                        hasLocalization
+                        isNested
                       )
                     }
                   </Form.Item>
@@ -647,6 +699,7 @@ function ModelFields({
                       helperText: "",
                       required: false,
                       hidden: false,
+                      unique: false,
                       type: CmsMetaType.TEXT,
                       defaultValueByLocale: {},
                     })

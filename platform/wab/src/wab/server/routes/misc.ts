@@ -5,6 +5,8 @@ import { ensureInstance, ensureType } from "@/wab/shared/common";
 import S3 from "aws-sdk/clients/s3";
 import { Request, Response } from "express-serve-static-core";
 
+const CLIP_BUCKET = process.env.CLIP_BUCKET ?? "plasmic-clips";
+
 export async function getAppConfig(req: Request, res: Response) {
   const config = req.devflags;
   res.json({ config });
@@ -12,9 +14,9 @@ export async function getAppConfig(req: Request, res: Response) {
 
 export async function putClip(req: Request, res: Response) {
   const { clipId } = req.params;
-  const s3 = new S3();
+  const s3 = new S3({ endpoint: process.env.S3_ENDPOINT });
   await s3
-    .upload({ Bucket: "plasmic-clips", Key: clipId, Body: req.body.content })
+    .upload({ Bucket: CLIP_BUCKET, Key: clipId, Body: req.body.content })
     .promise();
   userAnalytics(req).track({
     event: "Figma put clip",
@@ -28,7 +30,7 @@ export async function getClip(req: Request, res: Response) {
   const s3 = new S3({ endpoint: process.env.S3_ENDPOINT });
   const result = await s3
     .getObject({
-      Bucket: "plasmic-clips",
+      Bucket: CLIP_BUCKET,
       Key: clipId,
     })
     .promise();

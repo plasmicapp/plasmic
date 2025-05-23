@@ -74,7 +74,8 @@ async function fetchData(catchall: string[] | undefined) {
     notFound();
   }
 
-  // Prefetching query data is no longer required, because React Server Components does that for us now!
+  // Prefetching query data in data-fetching components in app router.
+  // TODO: Use server functions/queries instead.
   const prefetchedQueryData = undefined;
 
   return { prefetchedData, prefetchedQueryData };

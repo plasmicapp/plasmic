@@ -258,10 +258,15 @@ describe("fixCSSValue", () => {
     });
   });
 
-  it("returns background gradient for backgroundColor with rgb", () => {
+  it("returns background gradient for backgroundColor with rgb or var", () => {
     const rgb = "rgb(10, 20, 30)";
     expect(fixCSSValue("background-color", rgb)).toEqual({
       background: `linear-gradient(${rgb}, ${rgb})`,
+    });
+
+    const token = "var(--token-abc)";
+    expect(fixCSSValue("background-color", token)).toEqual({
+      background: `linear-gradient(${token}, ${token})`,
     });
   });
 
@@ -269,15 +274,45 @@ describe("fixCSSValue", () => {
     expect(fixCSSValue("background-color", "#fff")).toEqual({});
   });
 
-  it("returns background gradient for background with rgb", () => {
+  it("returns background gradient for background with rgb or var", () => {
     const rgb = "rgb(10, 20, 30)";
     expect(fixCSSValue("background", rgb)).toEqual({
       background: `linear-gradient(${rgb}, ${rgb})`,
+    });
+
+    const token = "var(--token-abc)";
+    expect(fixCSSValue("background", token)).toEqual({
+      background: `linear-gradient(${token}, ${token})`,
     });
   });
 
   it("returns empty object for background when not rgb", () => {
     expect(fixCSSValue("background", "url(image.png)")).toEqual({});
+  });
+
+  it("parse box-shadow value properly", () => {
+    expect(fixCSSValue("box-shadow", "5px 10px rgba(0,0,0,0.5)")).toEqual({
+      boxShadow: "5px 10px 0px 0px rgba(0,0,0,0.5)",
+    });
+    expect(fixCSSValue("box-shadow", "rgba(0,0,0,0.5) 5px 10px")).toEqual({
+      boxShadow: "5px 10px 0px 0px rgba(0,0,0,0.5)",
+    });
+    expect(
+      fixCSSValue("box-shadow", "5px 10px 15px 20px rgba(0,0,0,0.5)")
+    ).toEqual({
+      boxShadow: "5px 10px 15px 20px rgba(0,0,0,0.5)",
+    });
+
+    // convert multiple box shadow properly
+    expect(
+      fixCSSValue(
+        "box-shadow",
+        "5px 10px rgba(0,0,0,0.5), rgba(0,0,0,0.5) 5px 10px"
+      )
+    ).toEqual({
+      boxShadow:
+        "5px 10px 0px 0px rgba(0,0,0,0.5), 5px 10px 0px 0px rgba(0,0,0,0.5)",
+    });
   });
 
   it("return proper translated key if translation key is available", () => {

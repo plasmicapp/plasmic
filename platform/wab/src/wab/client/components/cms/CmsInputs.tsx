@@ -1,9 +1,12 @@
-import { UU } from "@/wab/client/cli-routes";
+import { useRRouteMatch, UU } from "@/wab/client/cli-routes";
 import {
   useCmsRows,
   useCmsTableMaybe,
 } from "@/wab/client/components/cms/cms-contexts";
-import { getRowIdentifierNode } from "@/wab/client/components/cms/CmsEntryDetails";
+import {
+  getRowIdentifierNode,
+  UniqueFieldStatus,
+} from "@/wab/client/components/cms/CmsEntryDetails";
 import { isCmsTextLike } from "@/wab/client/components/cms/utils";
 import { PublicLink } from "@/wab/client/components/PublicLink";
 import { FileUploader, Spinner } from "@/wab/client/components/widgets";
@@ -11,7 +14,7 @@ import Button from "@/wab/client/components/widgets/Button";
 import "@/wab/client/components/widgets/ColorPicker/Pickr.overrides.scss";
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import Select from "@/wab/client/components/widgets/Select";
-import Switch from "@/wab/client/components/widgets/Switch";
+import { Switch, SwitchProps } from "@/wab/client/components/widgets/Switch";
 import { useAppCtx } from "@/wab/client/contexts/AppContexts";
 import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
 import {
@@ -45,6 +48,7 @@ import moment from "moment";
 import * as React from "react";
 import { createContext, ReactElement, ReactNode, useContext } from "react";
 import { GrNewWindow } from "react-icons/all";
+import { useHistory } from "react-router";
 const LazyRichTextEditor = React.lazy(
   () => import("@/wab/client/components/RichTextEditor")
 );
@@ -70,8 +74,12 @@ export function useContentEntryFormContext(): ContentEntryFormContextValue {
   );
 }
 
-export function ValueSwitch(props: any) {
-  return <Switch {...props} isChecked={props.value} />;
+export function ValueSwitch(
+  props: SwitchProps & { disabled?: boolean; value?: boolean }
+) {
+  return (
+    <Switch {...props} isDisabled={props.disabled} isChecked={props.value} />
+  );
 }
 
 // TODO make sure this is in the local timezone
@@ -239,20 +247,55 @@ function MaybeFormItem({
   typeName,
   name,
   label,
+  maxChars,
+  minChars,
+  uniqueStatus,
   ...props
 }: Omit<FormItemProps, "name"> & {
   typeName: CmsTypeName;
   name: NamePathz;
   maxChars?: number;
   minChars?: number;
+  uniqueStatus?: UniqueFieldStatus;
 }) {
+  const history = useHistory();
+  const match = useRRouteMatch(UU.cmsEntry);
   const commonRules = [
     { required: props.required, message: "Field is required" },
+    {
+      warningOnly: true,
+      validator: () => {
+        if (
+          uniqueStatus &&
+          uniqueStatus.status === "violation" &&
+          uniqueStatus.conflictRowId
+        ) {
+          const conflictingRowRoute = UU.cmsEntry.fill({
+            ...match!.params,
+            rowId: uniqueStatus.conflictRowId,
+          });
+          return Promise.reject(
+            <>
+              This unique field value conflicts with the published version of{" "}
+              <a
+                onClick={() => {
+                  history.push(conflictingRowRoute);
+                }}
+              >
+                this entry
+              </a>
+              .
+            </>
+          );
+        }
+        return Promise.resolve();
+      },
+    },
   ];
   const typeSpecificRules =
     [CmsMetaType.TEXT, CmsMetaType.RICH_TEXT].includes(typeName) &&
-    (props.minChars !== undefined || props.maxChars !== undefined)
-      ? [{ max: props.maxChars }, { min: props.minChars }]
+    (minChars !== undefined || maxChars !== undefined)
+      ? [{ max: maxChars }, { min: minChars }]
       : [];
 
   const rules = [...commonRules, ...typeSpecificRules];
@@ -572,6 +615,7 @@ interface MaybeLocalizedInputProps {
   fieldPathSuffix: string[];
   formItemProps: FormItemProps;
   typeName: CmsTypeName;
+  uniqueStatus?: UniqueFieldStatus;
 }
 
 export function renderMaybeLocalizedInput({
@@ -584,6 +628,7 @@ export function renderMaybeLocalizedInput({
   formItemProps,
   typeName,
   required,
+  uniqueStatus,
 }: MaybeLocalizedInputProps) {
   return (
     <ContentEntryFormContext.Consumer>
@@ -609,6 +654,7 @@ export function renderMaybeLocalizedInput({
               required={required}
               typeName={typeName}
               {...formItemProps}
+              uniqueStatus={uniqueStatus}
               name={[...fieldPath, "", ...fieldPathSuffix]}
             >
               {children}
@@ -643,6 +689,7 @@ export function renderMaybeLocalizedInput({
                       maxChars={maxChars}
                       minChars={minChars}
                       required={required}
+                      uniqueStatus={uniqueStatus}
                       typeName={typeName}
                       name={[...fieldPath, locale, ...fieldPathSuffix]}
                       noStyle

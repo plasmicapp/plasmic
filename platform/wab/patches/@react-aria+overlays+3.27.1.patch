@@ -1,13 +1,15 @@
 diff --git a/node_modules/@react-aria/overlays/dist/calculatePosition.mjs b/node_modules/@react-aria/overlays/dist/calculatePosition.mjs
-index 6bdd0f3..3181a16 100644
+index 2b4d227..ec760d0 100644
 --- a/node_modules/@react-aria/overlays/dist/calculatePosition.mjs
 +++ b/node_modules/@react-aria/overlays/dist/calculatePosition.mjs
-@@ -110,8 +110,9 @@ containerDimensions, padding, containerOffsetWithBoundary) {
+@@ -113,8 +113,11 @@ containerDimensions, padding, containerOffsetWithBoundary) {
      // Note that these values are with respect to the visual viewport (aka 0,0 is the top left of the viewport)
      let boundaryStartEdge = boundaryDimensions.scroll[$edcf132a9284368a$var$AXIS[axis]] + padding;
      let boundaryEndEdge = boundarySize + boundaryDimensions.scroll[$edcf132a9284368a$var$AXIS[axis]] - padding;
 -    let startEdgeOffset = offset - containerScroll + containerOffsetWithBoundary[axis] - boundaryDimensions[$edcf132a9284368a$var$AXIS[axis]];
 -    let endEdgeOffset = offset - containerScroll + size + containerOffsetWithBoundary[axis] - boundaryDimensions[$edcf132a9284368a$var$AXIS[axis]];
++    // Fixes location of top/left/right/bottom input overlays.
++    // Test with components.spec.ts.
 +    // https://github.com/adobe/react-spectrum/issues/6333
 +    let startEdgeOffset = offset - containerScroll + containerOffsetWithBoundary[axis];
 +    let endEdgeOffset = offset - containerScroll + size + containerOffsetWithBoundary[axis];

@@ -236,6 +236,18 @@ export class CommentsCtx {
     });
   }
 
+  // Close comment dialogs if either thread exists without interaction
+  maybeCloseCommentDialogs = () => {
+    const currentOpenedNewThread = this.openedNewThread();
+    const currentOpenedThread = this.openedThread();
+    if (
+      (currentOpenedNewThread && !currentOpenedNewThread.interacted) ||
+      (currentOpenedThread && !currentOpenedThread.interacted)
+    ) {
+      this.closeCommentDialogs();
+    }
+  };
+
   dispose() {
     this.disposals.forEach((d) => d());
   }
