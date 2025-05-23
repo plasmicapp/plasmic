@@ -19,6 +19,7 @@ export type CommentPostFormProps = DefaultCommentPostFormProps & {
   /** ID for the input element. */
   id: string;
   defaultValue: string;
+  onChange?: (value: string) => void;
   onCancel?: () => void;
   onSubmit?: (value: string) => void;
 };
@@ -26,7 +27,8 @@ export type CommentPostFormProps = DefaultCommentPostFormProps & {
 const CommentPostForm = observer(function CommentPostForm(
   props: CommentPostFormProps
 ) {
-  const { id, defaultValue, onSubmit, onCancel, isEditing, ...rest } = props;
+  const { id, defaultValue, onSubmit, onCancel, isEditing, onChange, ...rest } =
+    props;
   const [value, setValue] = useState(defaultValue);
   const [isPreviewing, setIsPreviewing] = React.useState(false);
 
@@ -45,7 +47,14 @@ const CommentPostForm = observer(function CommentPostForm(
   const { openShareDialog } = useShareDialog();
 
   function isValidComment() {
-    return value.trim().length > 0 && value.trim() !== defaultValue.trim();
+    const trimmedValue = value.trim();
+    if (trimmedValue.length === 0) {
+      return false;
+    }
+    if (isEditing && trimmedValue === defaultValue.trim()) {
+      return false;
+    }
+    return true;
   }
 
   const onKeyHandler = (e: React.KeyboardEvent<HTMLInputElement>): void => {
@@ -92,6 +101,9 @@ const CommentPostForm = observer(function CommentPostForm(
               setValue(defaultValue);
             } else {
               setValue(val);
+              if (onChange) {
+                onChange(val);
+              }
             }
           },
           onKeyDown: onKeyHandler,

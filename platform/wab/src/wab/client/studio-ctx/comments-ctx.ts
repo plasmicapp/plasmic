@@ -24,6 +24,7 @@ import {
   ThreadCommentData,
   ThreadHistoryId,
 } from "@/wab/shared/ApiSchema";
+import { AnyArena } from "@/wab/shared/Arenas";
 import { mkIdMap } from "@/wab/shared/collections";
 import {
   extractMentionedEmails,
@@ -76,6 +77,10 @@ export class CommentsCtx {
     ApiNotificationSettings | undefined
   >(undefined);
   private _commentsFilter = observable.box<CommentFilter>("all");
+  private readonly _drafts = {
+    arenas: new WeakMap<AnyArena, string>(),
+    threads: new WeakMap<ApiCommentThread, string>(),
+  };
 
   constructor(private readonly studioCtx: StudioCtx) {
     this.disposals.push(
@@ -250,6 +255,30 @@ export class CommentsCtx {
 
   dispose() {
     this.disposals.forEach((d) => d());
+  }
+
+  getArenaDraft(arena: AnyArena): string {
+    return this._drafts.arenas.get(arena) || "";
+  }
+
+  setArenaDraft(arena: AnyArena, body: string) {
+    this._drafts.arenas.set(arena, body);
+  }
+
+  clearArenaDraft(arena: AnyArena) {
+    this._drafts.arenas.delete(arena);
+  }
+
+  getThreadDraft(thread: ApiCommentThread): string {
+    return this._drafts.threads.get(thread) || "";
+  }
+
+  setThreadDraft(thread: ApiCommentThread, body: string) {
+    this._drafts.threads.set(thread, body);
+  }
+
+  clearThreadDraft(thread: ApiCommentThread) {
+    this._drafts.threads.delete(thread);
   }
 
   private createThread(commentData: RootCommentData): ApiCommentThread {

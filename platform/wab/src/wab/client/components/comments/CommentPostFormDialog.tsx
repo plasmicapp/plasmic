@@ -33,6 +33,10 @@ export const CommentPostFormDialog = observer(function CommentPostFormDialog({
   const markThreadAsInteracted = () => {
     openedNewThread.interacted = true;
   };
+  const currentArena = ensure(
+    studioCtx.currentArena,
+    "Current arena should exist"
+  );
 
   const threadSubject = openedNewThread.tpl;
 
@@ -63,7 +67,7 @@ export const CommentPostFormDialog = observer(function CommentPostFormDialog({
             render: () => (
               <CommentPostForm
                 id={"new"}
-                defaultValue={""}
+                defaultValue={commentsCtx.getArenaDraft(currentArena)}
                 onSubmit={(value: string) => {
                   const location = {
                     subject: commentsCtx
@@ -78,8 +82,12 @@ export const CommentPostFormDialog = observer(function CommentPostFormDialog({
                     body: value,
                     location,
                   });
+                  commentsCtx.clearArenaDraft(currentArena);
                   commentsCtx.closeCommentDialogs();
                 }}
+                onChange={(value) =>
+                  commentsCtx.setArenaDraft(currentArena, value)
+                }
               />
             ),
           }}

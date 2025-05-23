@@ -82,12 +82,16 @@ export const ThreadCommentsDialog = observer(function ThreadCommentsDialog({
             render: () => (
               <CommentPostForm
                 id={selectedThread.id}
-                defaultValue={""}
+                defaultValue={commentsCtx.getThreadDraft(selectedThread)}
                 onSubmit={(value: string) => {
                   commentsCtx.postThreadComment(selectedThread.id, {
                     body: value,
                   });
+                  commentsCtx.clearThreadDraft(selectedThread);
                 }}
+                onChange={(value) =>
+                  commentsCtx.setThreadDraft(selectedThread, value)
+                }
               />
             ),
           }}
