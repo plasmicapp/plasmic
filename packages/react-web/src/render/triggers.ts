@@ -2,6 +2,11 @@ import {
   FocusRingAria,
   useFocusRing as useAriaFocusRing,
 } from "@react-aria/focus";
+import {
+  useHover as useAriaHover,
+  usePress as useAriaPress,
+} from "@react-aria/interactions";
+
 import * as React from "react";
 
 type FocusHookResult = [boolean, FocusRingAria["focusProps"]];
@@ -45,25 +50,13 @@ function useFocusVisibleWithin(opts: {
 }
 
 function useHover() {
-  const [isHover, setHover] = React.useState(false);
-  return [
-    isHover,
-    {
-      onMouseEnter: () => setHover(true),
-      onMouseLeave: () => setHover(false),
-    },
-  ];
+  const { isHovered, hoverProps } = useAriaHover({});
+  return [isHovered, hoverProps];
 }
 
 function usePressed() {
-  const [isPressed, setPressed] = React.useState(false);
-  return [
-    isPressed,
-    {
-      onMouseDown: () => setPressed(true),
-      onMouseUp: () => setPressed(false),
-    },
-  ];
+  const { isPressed, pressProps } = useAriaPress({});
+  return [isPressed, pressProps];
 }
 
 const TRIGGER_TO_HOOK = {

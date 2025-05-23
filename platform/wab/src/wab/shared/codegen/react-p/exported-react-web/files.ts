@@ -267,6 +267,10 @@ export function createUseScreenVariants(
     content: `
 import * as React from "react";
 import { useFocusRing as useAriaFocusRing } from "@react-aria/focus";
+import {
+  useHover as useAriaHover,
+  usePress as useAriaPress,
+} from "@react-aria/interactions";
 
 function useFocused(opts: { isTextInput?: boolean }) {
   const { isFocused, focusProps } = useAriaFocusRing({
@@ -305,25 +309,13 @@ function useFocusVisibleWithin(opts: { isTextInput?: boolean }) {
 }
 
 function useHover() {
-  const [isHover, setHover] = React.useState(false);
-  return [
-    isHover,
-    {
-      onMouseEnter: () => setHover(true),
-      onMouseLeave: () => setHover(false),
-    },
-  ];
+  const { isHovered, hoverProps } = useAriaHover({});
+  return [isHovered, hoverProps];
 }
 
 function usePressed() {
-  const [isPressed, setPressed] = React.useState(false);
-  return [
-    isPressed,
-    {
-      onMouseDown: () => setPressed(true),
-      onMouseUp: () => setPressed(false),
-    },
-  ];
+  const { isPressed, pressProps } = useAriaPress({});
+  return [isPressed, pressProps];
 }
 
 const TRIGGER_TO_HOOK = {

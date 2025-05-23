@@ -1264,9 +1264,9 @@ export function addRegisteredVariantFromVariantsTab(variantName: string) {
 export function selectVariant(groupName: string, variantName: string) {
   cy.switchToComponentDataTab();
   getVariantRow(groupName, variantName)
-    .trigger("mouseover")
+    .trigger("pointerover")
     .within(($row) => {
-      $row.trigger("mouseenter");
+      $row.trigger("pointerenter");
       cy.get(`[data-test-class="variant-record-button-start"]`).click();
     });
 }
@@ -1283,7 +1283,7 @@ export function ensureGlobalVariantsPanelIsOpen() {
 
 export function deselectVariant(groupName: string, variantName: string) {
   getVariantRow(groupName, variantName)
-    .trigger("mouseover")
+    .trigger("pointerover")
     .within(() => {
       cy.get(`[data-test-class="variant-record-button-stop"]`).click();
     });
@@ -1294,7 +1294,7 @@ export function activateVariantFromGroup(
   variantName: string
 ) {
   getVariantRow(groupName, variantName)
-    .trigger("mouseover")
+    .trigger("pointerover")
     .within(($el) => {
       console.log(
         "GOT ELT",
@@ -1307,7 +1307,7 @@ export function activateVariantFromGroup(
 
 export function deactivateVariant(groupName: string, variantName: string) {
   getVariantRow(groupName, variantName)
-    .trigger("mouseover")
+    .trigger("pointerover")
     .within(() => {
       cy.get(`[data-test-class="variant-pin-button-deactivate"]`).click();
     });
