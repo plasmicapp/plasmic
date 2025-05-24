@@ -1,6 +1,6 @@
 // Must initialize globals early so that imported code can detect what
 // environment we're running in.
-import { DEFAULT_DATABASE_URI } from "@/wab/server/config";
+import { loadConfig } from "@/wab/server/config";
 import { getLastBundleVersion } from "@/wab/server/db/BundleMigrator";
 import { ensureDbConnection } from "@/wab/server/db/DbCon";
 import { initDb } from "@/wab/server/db/DbInitUtil";
@@ -34,7 +34,8 @@ if (require.main === module) {
 }
 
 async function main() {
-  const con = await ensureDbConnection(DEFAULT_DATABASE_URI, "default");
+  const config = loadConfig();
+  const con = await ensureDbConnection(config.databaseUri, "default");
   await con.transaction(async (em) => {
     await initDb(em);
     await seedTestDb(em);
