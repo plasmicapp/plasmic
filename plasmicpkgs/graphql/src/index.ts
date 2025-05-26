@@ -56,16 +56,15 @@ const registerGraphqlFetchParams: CustomFunctionMeta<typeof fetchGraphQL> = {
       name: "query",
       type: "code",
       lang: "graphql",
-      headers: (props: any) => props.headers,
-      endpoint: (props: any) => props.url ?? "",
+      headers: (params) => params[2],
+      endpoint: (params) => params[0] ?? "",
     },
     {
       name: "varOverrides",
       type: "object",
     },
   ],
-  // TODO: remove as any when "code" type is available
-} as any;
+};
 
 export function registerGraphQL(loader?: Registerable) {
   if (loader) {
