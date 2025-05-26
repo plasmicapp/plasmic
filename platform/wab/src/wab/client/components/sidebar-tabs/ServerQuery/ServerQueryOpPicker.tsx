@@ -125,16 +125,16 @@ export function ServerQueryOpDraftForm(props: {
       .getRegisteredFunctionsMap()
       .get(customFunctionId(func))?.meta;
 
+    const params = func.params.map((param) => evaluatedArgs[param.argName]);
+
     const fnContext = registeredMeta?.fnContext;
     if (!fnContext) {
       return {
         dataKey: null,
         fetcher: null,
-        funcParamsValues: [],
+        funcParamsValues: params,
       };
     }
-
-    const params = func.params.map((param) => evaluatedArgs[param.argName]);
 
     return {
       ...fnContext(...params),
