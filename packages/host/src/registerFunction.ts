@@ -7,7 +7,7 @@ export type ControlContext<P> = [
   /**
    * props
    */
-  P,
+  Partial<P>,
   /**
    * context data
    */
@@ -139,8 +139,8 @@ export type VoidType = PlainVoidType | AnyType;
 
 type IsAny<T> = 0 extends 1 & T ? true : false;
 
-type CommonType<T> = T extends GraphQLValue
-  ? GraphQLType<T>
+type CommonType<P, T> = T extends GraphQLValue
+  ? GraphQLType<P>
   : T extends null
   ? NullType
   : T extends undefined
@@ -157,7 +157,7 @@ type AnyTyping<P, T> = T extends string
   ? NumberType<P, T>
   : T extends boolean
   ? BooleanType<P, T>
-  : CommonType<T>;
+  : CommonType<P, T>;
 
 export type RestrictedType<P, T> = IsAny<T> extends true
   ? AnyTyping<P, T>
@@ -167,7 +167,7 @@ export type RestrictedType<P, T> = IsAny<T> extends true
   ? NumberType<P, T>
   : [T] extends [boolean]
   ? BooleanType<P, T>
-  : CommonType<T>;
+  : CommonType<P, T>;
 
 export type ParamType<P, T> = RestrictedType<P, T>;
 
