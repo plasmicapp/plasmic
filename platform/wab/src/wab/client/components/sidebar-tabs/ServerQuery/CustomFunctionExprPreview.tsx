@@ -15,8 +15,8 @@ import * as React from "react";
 
 export const CustomFunctionExprPreview = observer(
   function CustomFunctionExprPreview(props: {
-    title: React.ReactNode;
     expr: CustomFunctionExpr;
+    title?: React.ReactNode;
     env?: Record<string, any>;
     exprCtx: ExprCtx;
   }) {

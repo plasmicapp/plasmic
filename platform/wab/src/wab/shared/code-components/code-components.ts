@@ -10,10 +10,10 @@ import { ensureVariantSetting, mkBaseVariant } from "@/wab/shared/Variants";
 import { AddItemKey } from "@/wab/shared/add-item-keys";
 import {
   allCustomFunctions,
+  cachedExprsInSite,
   componentToReferencers,
   componentToTplComponents,
   computedProjectFlags,
-  findCustomFunctionUsages,
   flattenComponent,
 } from "@/wab/shared/cached-selectors";
 import {
@@ -104,6 +104,7 @@ import {
   TplTagType,
   cloneType,
   findAllInstancesOfComponent,
+  findExprsInInteraction,
   flattenTpls,
   getTplComponentsInSite,
   isEventHandlerKeyForAttr,
@@ -173,6 +174,8 @@ import {
   ensureKnownPropParam,
   ensureKnownTplTag,
   isKnownClassNamePropType,
+  isKnownCustomFunctionExpr,
+  isKnownEventHandler,
   isKnownPropParam,
   isKnownRenderFuncType,
   isKnownRenderableType,
@@ -293,6 +296,12 @@ export type DataSourceOpPropType<P> = PropTypeBaseDefault<P, Expr> & {
   allowWriteOps?: boolean;
   allowedOps?: ContextDependentConfig<P, string[]>;
 };
+export type CustomFunctionOpPropType<P> = PropTypeBaseDefault<P, Expr> & {
+  type: "customFunctionOp";
+  currentInteraction: ContextDependentConfig<P, Interaction>;
+  eventHandlerKey: ContextDependentConfig<P, EventHandlerKeyType>;
+  allowedOps?: ContextDependentConfig<P, string[]>;
+};
 export type FunctionPropType<P> = PropTypeBaseDefault<P, Expr> & {
   type: "function";
   control?: StudioPropType<any>;
@@ -404,8 +413,13 @@ export type FormDataConnectionPropType<P> = PropTypeBase<P> & {
   type: "formDataConnection";
 };
 
+export type AnyPropType<P> = PropTypeBaseDefault<P, any> & {
+  type: "any";
+};
+
 export type StudioPropType<P> =
   | PropType<P>
+  | AnyPropType<P>
   | VariablePropType<P>
   | VariantGroupPropType<P>
   | VariantPropType<P>
@@ -418,6 +432,7 @@ export type StudioPropType<P> =
   | EventHandlerPropType<P>
   | ThemeStylesPropType<P>
   | DataSourceOpPropType<P>
+  | CustomFunctionOpPropType<P>
   | InteractionPropType<P>
   | HrefPropType<P>
   | TplRefPropType<P>
@@ -4042,6 +4057,7 @@ export function propTypeToWabType(
             case "variantGroup":
             case "dataSelector":
             case "dataSourceOp":
+            case "customFunctionOp":
             case "functionArgs":
             case "varRef":
             case "variable":
@@ -4054,6 +4070,7 @@ export function propTypeToWabType(
             case "controlMode":
             case "formDataConnection":
             case "dynamic":
+            case "any":
               // This does include an `any` fall-through.
               return success(
                 convertTsToWabType(
@@ -4762,21 +4779,24 @@ async function upsertRegisteredFunctions(
           functionNamespaces.add(functionReg.meta.namespace);
         }
       }
-      const customFunctionUsages = findCustomFunctionUsages(site);
+      const exprRefs = cachedExprsInSite(site).map((ref) => {
+        return {
+          ownerComponent: ref.ownerComponent,
+          exprRefs: ref.exprRefs.filter(
+            (exprRef) =>
+              (isKnownEventHandler(exprRef.expr) &&
+                exprRef.expr.interactions.some(
+                  (interaction) =>
+                    findExprsInInteraction(interaction).filter((expr) =>
+                      isKnownCustomFunctionExpr(expr)
+                    ).length > 0
+                )) ||
+              isKnownCustomFunctionExpr(exprRef.expr)
+          ),
+        };
+      });
 
-      ctx.observeComponents(
-        customFunctionUsages
-          .filter((usage) => {
-            return usage.customFunctions.some(
-              (fn) =>
-                removedFunctions.has(fn) ||
-                updatedFunctionRegs.some(
-                  (reg) => registeredFunctionId(reg) === customFunctionId(fn)
-                )
-            );
-          })
-          .map((usage) => usage.ownerComponent)
-      );
+      ctx.observeComponents(exprRefs.map((ref) => ref.ownerComponent));
 
       if (
         newFunctionRegs.length > 0 ||
@@ -4813,27 +4833,6 @@ async function upsertRegisteredFunctions(
                     "displayName",
                   ]
                 );
-                customFunctionUsages.forEach((usage) => {
-                  usage.ownerComponent.serverQueries
-                    .filter((serverQuery) => {
-                      return serverQuery.op?.func === existing;
-                    })
-                    .map((serverQuery) => {
-                      removeWhere(
-                        serverQuery.op!.args,
-                        (arg) =>
-                          !updateableFields.params.find(
-                            (param) => param === arg.argType
-                          )
-                      );
-                    });
-                  removeWhere(
-                    usage.ownerComponent.serverQueries,
-                    (serverQuery) =>
-                      !!serverQuery.op?.func &&
-                      removedFunctions.has(serverQuery.op.func)
-                  );
-                });
 
                 Object.assign(existing, updateableFields);
                 updatedFunctions.push(existing);
@@ -4846,13 +4845,45 @@ async function upsertRegisteredFunctions(
               removeWhere(site.customFunctions, (customFunction) =>
                 removedFunctions.has(customFunction)
               );
-              customFunctionUsages.forEach((usage) => {
+
+              exprRefs.forEach((usage) => {
+                // Remove from server queries
                 removeWhere(
                   usage.ownerComponent.serverQueries,
                   (serverQuery) =>
                     !!serverQuery.op?.func &&
                     removedFunctions.has(serverQuery.op.func)
                 );
+
+                usage.exprRefs.forEach((ref) => {
+                  const expr = ref.expr;
+                  // Update params
+                  if (isKnownCustomFunctionExpr(expr)) {
+                    const updatedRegistration = updatedFunctions.find(
+                      (fn) => fn === expr.func
+                    );
+                    if (!updatedRegistration) {
+                      return;
+                    }
+                    removeWhere(
+                      expr.args,
+                      (arg) =>
+                        !updatedRegistration.params.find(
+                          (param) => param === arg.argType
+                        )
+                    );
+                  } else if (isKnownEventHandler(expr)) {
+                    // Remove from event handlers
+                    expr.interactions.forEach((interaction) => {
+                      removeWhere(
+                        interaction.args,
+                        (arg) =>
+                          isKnownCustomFunctionExpr(arg.expr) &&
+                          removedFunctions.has(arg.expr.func)
+                      );
+                    });
+                  }
+                });
               });
 
               fns.onUpdatedCustomFunctions?.({

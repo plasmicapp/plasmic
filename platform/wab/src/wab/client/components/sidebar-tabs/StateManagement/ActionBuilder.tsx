@@ -27,17 +27,18 @@ import {
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { TutorialEventsType } from "@/wab/client/tours/tutorials/tutorials-events";
-import { assert, ensureInstance, spawn } from "@/wab/shared/common";
 import { HighlightBlinker } from "@/wab/commons/components/HighlightBlinker";
 import { combineProps } from "@/wab/commons/components/ReactUtil";
-import { codeLit, InteractionConditionalMode } from "@/wab/shared/core/exprs";
-import { mkNameArg } from "@/wab/shared/core/lang";
 import {
   HighlightInteractionRequest,
   isPlainObjectPropType,
   maybePropTypeToDisplayName,
   propTypeToWabType,
 } from "@/wab/shared/code-components/code-components";
+import { assert, ensureInstance, spawn } from "@/wab/shared/common";
+import { codeLit, InteractionConditionalMode } from "@/wab/shared/core/exprs";
+import { mkNameArg } from "@/wab/shared/core/lang";
+import { EventHandlerKeyType } from "@/wab/shared/core/tpls";
 import {
   Component,
   CustomCode,
@@ -52,7 +53,6 @@ import {
   TplTag,
 } from "@/wab/shared/model/classes";
 import { renameInteractionAndFixExprs } from "@/wab/shared/refactoring";
-import { EventHandlerKeyType } from "@/wab/shared/core/tpls";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { Popover } from "antd";
 import { isEmpty } from "lodash";
@@ -281,6 +281,7 @@ function ActionBuilder_(
                         ([__, meta]) =>
                           !meta.hidden?.({
                             siteInfo: sc.siteInfo,
+                            flags: sc.appCtx.appConfig,
                           })
                       )
                       .map(([aName, aMeta]) => (

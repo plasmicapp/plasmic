@@ -66,13 +66,8 @@ export function ServerQueryOpDraftForm(props: {
   readOnly?: boolean;
   env: Record<string, any> | undefined;
   schema?: DataPickerTypesSchema;
-  onUpdateSourceFetchError?: (error: Error | undefined) => void;
   isDisabled?: boolean;
   showQueryName?: boolean;
-  /**
-   * Whether only read operations are allowed
-   */
-  readOpsOnly?: boolean;
   allowedOps?: string[];
   exprCtx: ExprCtx;
 }) {
@@ -83,8 +78,6 @@ export function ServerQueryOpDraftForm(props: {
     readOnly,
     env: data,
     schema,
-    readOpsOnly,
-    onUpdateSourceFetchError,
     allowedOps,
     showQueryName,
     exprCtx,
@@ -386,10 +379,6 @@ export const ServerQueryOpExprFormAndPreview = observer(
     env: Record<string, any> | undefined;
     schema?: DataPickerTypesSchema;
     parent?: ComponentServerQuery | TplNode;
-    /**
-     * Whether only read operations are allowed
-     */
-    readOpsOnly?: boolean;
     allowedOps?: string[];
     exprCtx: ExprCtx;
     interaction?: Interaction;
@@ -402,7 +391,6 @@ export const ServerQueryOpExprFormAndPreview = observer(
       env,
       schema,
       parent,
-      readOpsOnly,
       allowedOps,
       exprCtx,
     } = props;
@@ -412,9 +400,6 @@ export const ServerQueryOpExprFormAndPreview = observer(
       queryName: isKnownComponentServerQuery(parent) ? parent.name : undefined,
       ...(value ? clone(value) : {}),
     }));
-    const [sourceFetchError, setSourceFetchError] = React.useState<
-      Error | undefined
-    >(undefined);
     const [isExecuting, setIsExecuting] = React.useState(false);
     const [executeQueue, setExecuteQueue] = React.useState<
       CustomFunctionExpr[]
@@ -485,8 +470,6 @@ export const ServerQueryOpExprFormAndPreview = observer(
                 env={env}
                 schema={schema}
                 isDisabled={readOnly}
-                readOpsOnly={readOpsOnly}
-                onUpdateSourceFetchError={setSourceFetchError}
                 allowedOps={allowedOps}
                 showQueryName={isKnownComponentServerQuery(parent)}
                 exprCtx={exprCtx}
@@ -496,7 +479,6 @@ export const ServerQueryOpExprFormAndPreview = observer(
               <Button
                 id="data-source-modal-save-btn"
                 type="primary"
-                disabled={!!sourceFetchError}
                 onClick={saveOpExpr}
               >
                 Save

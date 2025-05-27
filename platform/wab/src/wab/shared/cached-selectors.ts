@@ -57,7 +57,6 @@ import {
   getNonVariantParams,
   getParamNames,
   isCodeComponent,
-  isPageComponent,
   isPlumeComponent,
   tryGetVariantGroupValueFromArg,
 } from "@/wab/shared/core/components";
@@ -116,6 +115,7 @@ import {
   VariantGroup,
   VariantSetting,
   isKnownCustomCode,
+  isKnownCustomFunctionExpr,
   isKnownDataSourceOpExpr,
   isKnownImageAssetRef,
   isKnownPageHref,
@@ -537,29 +537,6 @@ export const allCustomFunctions = maybeComputedFn(function allCustomFunctions(
   return customFunctions;
 });
 
-export const findCustomFunctionUsages = maybeComputedFn(
-  function findCustomFunctionUsages(site: Site) {
-    return withoutNils(
-      site.components.map((component) => {
-        if (
-          !isPageComponent(component) ||
-          component.serverQueries.length === 0
-        ) {
-          return undefined;
-        }
-        return {
-          ownerComponent: component,
-          customFunctions: withoutNils(
-            component.serverQueries.map((serverQuery) => {
-              return serverQuery.op?.func;
-            })
-          ),
-        };
-      })
-    );
-  }
-);
-
 export const allCodeLibraries = maybeComputedFn(function allCodeLibraries(
   rootSite: Site
 ) {
@@ -585,6 +562,23 @@ export const cachedExprsInComponent = maybeComputedFn(
   }
 );
 
+export const cachedExprsInSite = maybeComputedFn(function cachedExprsInSite(
+  site: Site
+) {
+  return withoutNils(
+    site.components.map((component) => {
+      const exprRefs = cachedExprsInComponent(component);
+      if (exprRefs.length === 0) {
+        return undefined;
+      }
+      return {
+        ownerComponent: component,
+        exprRefs,
+      };
+    })
+  );
+});
+
 export const customFunctionsAndLibsUsedByComponent = maybeComputedFn(
   function customFunctionsAndLibsUsedByComponent(
     site: Site,
@@ -592,15 +586,20 @@ export const customFunctionsAndLibsUsedByComponent = maybeComputedFn(
   ) {
     const codeExprs = filterFalsy(
       cachedExprsInComponent(component).map(
-        ({ expr }) => isKnownCustomCode(expr) && isRealCodeExpr(expr) && expr
+        ({ expr }) =>
+          ((isKnownCustomCode(expr) && isRealCodeExpr(expr)) ||
+            isKnownCustomFunctionExpr(expr)) &&
+          expr
       )
     );
     const usedFunctionIds = new Set<string>(
       withoutNils([
-        ...codeExprs.flatMap(({ code }) => parse$$PropertyAccesses(code)),
-        ...component.serverQueries.map((sq) =>
-          sq.op ? customFunctionId(sq.op.func) : null
-        ),
+        ...codeExprs.flatMap((expr) => {
+          if (isKnownCustomCode(expr)) {
+            return parse$$PropertyAccesses(expr.code);
+          }
+          return customFunctionId(expr.func);
+        }),
       ])
     );
     const codeLibraryByJsIdentifier = new Map(

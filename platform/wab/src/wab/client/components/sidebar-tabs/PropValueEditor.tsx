@@ -38,6 +38,7 @@ import {
   PropEditorRow,
   usePropValueEditorContext,
 } from "@/wab/client/components/sidebar-tabs/PropEditorRow";
+import { CustomFunctionEditor } from "@/wab/client/components/sidebar-tabs/ServerQuery/CustomFunctionEditor";
 import {
   StyleExprButton,
   StyleExprSpec,
@@ -107,6 +108,7 @@ import {
   ensureKnownFunctionType,
   ensureKnownVarRef,
   ensureKnownVariantsRef,
+  isKnownCustomFunctionExpr,
   isKnownDataSourceOpExpr,
   isKnownEventHandler,
   isKnownExpr,
@@ -761,6 +763,31 @@ const PropValueEditor_ = (
         readOpsOnly={!(propType as any).allowWriteOps}
         schema={schema}
         parent={!propType.allowWriteOps ? tpl : undefined}
+        allowedOps={allowedOps}
+        component={component}
+        interaction={_getContextDependentValue(propType.currentInteraction)}
+        viewCtx={viewCtx}
+        tpl={tpl}
+        eventHandlerKey={_getContextDependentValue(propType.eventHandlerKey)}
+      />
+    );
+  } else if (
+    isPlainObjectPropType(propType) &&
+    propType.type === "customFunctionOp"
+  ) {
+    assert(
+      isKnownCustomFunctionExpr(value) || value === undefined,
+      "Value is expected to be either a CustomFunctionExpr or undefined"
+    );
+    const allowedOps = _getContextDependentValue(propType.allowedOps);
+    return (
+      <CustomFunctionEditor
+        queryKey={`${tpl?.uuid ?? ""}-${
+          ccContextData?.currentInteraction?.uuid ?? ""
+        }-${attr}`}
+        key={value?.uid}
+        value={value}
+        onChange={onChange}
         allowedOps={allowedOps}
         component={component}
         interaction={_getContextDependentValue(propType.currentInteraction)}

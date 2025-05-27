@@ -37,12 +37,14 @@ import { CanvasEnv } from "@/wab/shared/eval";
 import {
   DATA_SOURCE_LOWER,
   DATA_SOURCE_OPERATION_LOWER,
+  SERVER_QUERY_LOWER,
   VARIABLE_LOWER,
 } from "@/wab/shared/Labels";
 import {
   CollectionExpr,
   Component,
   CustomCode,
+  ensureKnownCustomFunctionExpr,
   ensureKnownDataSourceOpExpr,
   ensureKnownFunctionType,
   ensureKnownObjectPath,
@@ -94,7 +96,7 @@ export interface ActionType<P> {
   parameters: {
     [parameter: string]: StudioPropType<P>;
   };
-  hidden?: (ctx: { siteInfo: SiteInfo }) => boolean;
+  hidden?: (ctx: { siteInfo: SiteInfo; flags: typeof DEVFLAGS }) => boolean;
   getDefaultName: (
     component: Component,
     args: { [arg in DistributedKeyOf<P>]: Expr | undefined },
@@ -132,6 +134,7 @@ const ACTIONS = [
   "logout",
   "navigation",
   "dataSourceOp",
+  "customFunctionOp",
 ] as const;
 
 export const ACTIONS_META: Record<(typeof ACTIONS)[number], ActionType<any>> = {
@@ -402,6 +405,38 @@ export const ACTIONS_META: Record<(typeof ACTIONS)[number], ActionType<any>> = {
       return startCase(`${ctx?.sourceMeta?.source} ${dataOpExpr.opName}`);
     },
     getDefaultArgs: () => ({}),
+  },
+  customFunctionOp: {
+    displayName: `Use ${SERVER_QUERY_LOWER}`,
+    parameters: {
+      customFunctionOp: {
+        type: "customFunctionOp",
+        displayName: `Configure ${DATA_SOURCE_OPERATION_LOWER}`,
+        currentInteraction: (_props, ctx: InteractionContextData) =>
+          ctx.currentInteraction,
+        eventHandlerKey: (_props, ctx: InteractionContextData) =>
+          ctx.eventHandlerKey,
+        disableDynamicValue: true,
+      },
+      continueOnError: {
+        type: "boolean",
+        displayName: "Continue on error",
+        disableDynamicValue: true,
+      },
+    },
+    getDefaultName: (_, { customFunctionOp }) => {
+      if (!customFunctionOp) {
+        return `Use ${SERVER_QUERY_LOWER}`;
+      }
+      const expr = ensureKnownCustomFunctionExpr(customFunctionOp);
+      return startCase(
+        `${expr.func.namespace} ${
+          expr.func.displayName ?? expr.func.importName
+        }`
+      );
+    },
+    getDefaultArgs: () => ({}),
+    hidden: ({ flags }) => !flags.serverQueries,
   },
   navigation: {
     displayName: "Go to page",

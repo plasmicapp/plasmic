@@ -56,7 +56,7 @@ const ServerQueryRow = observer(
     const openServerQueryModal = () => {
       serverQueryModal.open({
         value: query.op ?? undefined,
-        onSave: handleDataSourceOpChange,
+        onSave: handleCustomFunctionExprChange,
         onCancel: serverQueryModal.close,
         env,
         schema,
@@ -65,7 +65,7 @@ const ServerQueryRow = observer(
       });
     };
 
-    const handleDataSourceOpChange = async (
+    const handleCustomFunctionExprChange = async (
       newOp: CustomFunctionExpr,
       opExprName?: string
     ) => {

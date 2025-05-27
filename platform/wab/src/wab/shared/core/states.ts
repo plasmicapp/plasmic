@@ -1114,6 +1114,20 @@ export const initBuiltinActions = (siteCtx: SiteCtx) =>
         }
       }`,
     },
+    customFunctionOp: {
+      parameters: {},
+      function: `async ({ customFunctionOp, continueOnError }) => {
+        try {
+          const response = await customFunctionOp;
+          return response;
+        } catch(e) {
+          if(!continueOnError) {
+            throw(e);
+          }
+          return e;
+        }
+      }`,
+    },
     invalidateDataQuery: {
       parameters: {},
       function: `async ({ queryInvalidation }) => {

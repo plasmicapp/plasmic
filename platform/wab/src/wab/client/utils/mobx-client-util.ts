@@ -13,5 +13,5 @@ export function observer<T extends IReactComponent<P>, P = any>(
     dependOnGlobalObservable();
     return baseComponent(props, ref);
   };
-  return mobxObserver(wrappedComponent);
+  return mobxObserver(wrappedComponent) as T;
 }
