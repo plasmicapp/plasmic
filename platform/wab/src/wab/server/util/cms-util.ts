@@ -1,13 +1,13 @@
 import { CmsTable } from "@/wab/server/entities/Entities";
+import { FilterClause, FilterCond } from "@/wab/shared/api/cms";
 import { BadRequestError } from "@/wab/shared/ApiErrors/errors";
 import {
   CmsFieldMeta,
+  CmsLocaleSpecificData,
   CmsMetaType,
   CmsRowData,
   CmsTableSchema,
   CmsTypeName,
-  FilterClause,
-  FilterCond,
 } from "@/wab/shared/ApiSchema";
 import { toVarName } from "@/wab/shared/codegen/util";
 import { Dict } from "@/wab/shared/collections";
@@ -49,13 +49,17 @@ export function projectCmsData(
   data: CmsRowData,
   fieldMetaMap: Record<string, CmsFieldMeta>,
   locale: string
-) {
+): CmsLocaleSpecificData {
   const dataDic = data[locale] ?? data[""];
   return Object.fromEntries(
     withoutNils(
       Object.entries(fieldMetaMap).map(([key, meta]) => {
         const val = dataDic?.[key] ?? data[""]?.[key];
-        if (!val || !conformsToType(val, meta.type)) {
+        if (
+          val === null ||
+          val === undefined ||
+          !conformsToType(val, meta.type)
+        ) {
           return undefined;
         }
         return [key, val];
@@ -194,11 +198,6 @@ export const makeTypedFieldSql = (
   fieldMetaMap: FieldMetaMap,
   opts: { useDraft?: boolean }
 ) => {
-  // Quick fix for user submitting invalid request
-  if (!field) {
-    return null;
-  }
-
   const dataRef = makeDataRef(opts);
   if (field === "_id") {
     return "r.id";

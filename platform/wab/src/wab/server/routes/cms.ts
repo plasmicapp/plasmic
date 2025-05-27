@@ -9,15 +9,16 @@ import {
   normalizeCmsData,
   projectCmsData,
 } from "@/wab/server/util/cms-util";
+import { ApiCmsQuery, publicCmsReadsContract } from "@/wab/shared/api/cms";
 import {
-  ApiCmsQuery,
   ApiCmsTable,
   CmsDatabaseId,
   CmsFieldMeta,
   CmsRowId,
   CmsTableSchema,
 } from "@/wab/shared/ApiSchema";
-import { ensure, ensureString } from "@/wab/shared/common";
+import { ensure } from "@/wab/shared/common";
+import { initServer } from "@ts-rest/express";
 import { NextFunction } from "express";
 import { Request, Response } from "express-serve-static-core";
 import { differenceBy } from "lodash";
@@ -30,8 +31,8 @@ function toApiCmsRow(
 ) {
   return {
     id: row.id,
-    createdAt: row.createdAt,
-    updatedAt: row.updatedAt,
+    createdAt: row.createdAt.toISOString(),
+    updatedAt: row.updatedAt.toISOString(),
     identifier: row.identifier,
     data: projectCmsData(
       (useDraft ? row.draftData ?? row.data : row.data) ?? { "": {} },
@@ -48,40 +49,57 @@ async function getTableByIdentifier(mgr: DbMgr, req: Request) {
   );
 }
 
-export async function queryTable(req: Request, res: Response) {
-  const mgr = userDbMgr(req);
-  const table = await getTableByIdentifier(mgr, req);
+const s = initServer();
+export const publicCmsReadsServer = s.router(publicCmsReadsContract, {
+  queryTable: async ({ params, query, req }) => {
+    const dbMgr = userDbMgr(req as any); // TODO
+    const table = await dbMgr.getCmsTableByIdentifier(
+      params.dbId,
+      params.tableIdentifier
+    );
 
-  // Query is encoded as the q= query param, a JSON string
-  const query = JSON.parse(ensureString(req.query.q ?? "{}")) as ApiCmsQuery;
-  const locale = fixLocale((req.query.locale ?? "") as string);
-  const useDraft = shouldUseDraft(req);
-  const rows = await mgr.queryCmsRows(table.id, query, { useDraft });
-  const metaMap = makeFieldMetaMap(table.schema, query.fields);
-  res.json({
-    rows: rows.map((r) => toApiCmsRow(r, useDraft, metaMap, locale)),
-  });
-}
+    const cmsQuery: ApiCmsQuery = query.q || {};
+    const locale = fixLocale(query.locale ?? "");
+    const useDraft = query.draft === "1";
+    const rows = await dbMgr.queryCmsRows(table.id, cmsQuery, { useDraft });
+    const metaMap = makeFieldMetaMap(table.schema, cmsQuery.fields);
+    await (req as any).resolveTransaction(); // TODO
+    return {
+      status: 200,
+      body: {
+        rows: rows.map((r) => toApiCmsRow(r, useDraft, metaMap, locale)),
+      },
+    };
+  },
+  countTable: async ({ params, query, req }) => {
+    const dbMgr = userDbMgr(req as any); // TODO
+    const table = await dbMgr.getCmsTableByIdentifier(
+      params.dbId,
+      params.tableIdentifier
+    );
 
-export async function countTable(req: Request, res: Response) {
-  const mgr = userDbMgr(req);
-  const table = await getTableByIdentifier(mgr, req);
-
-  // Query is encoded as the q= query param, a JSON string
-  const query = JSON.parse(ensureString(req.query.q ?? "{}"));
-  const useDraft = shouldUseDraft(req);
-  const count = await mgr.countCmsRows(table.id, query, { useDraft });
-  res.json({
-    count,
-  });
-}
-
-export async function getDatabase(req: Request, res: Response) {
-  const databaseId = req.params.dbId;
-  const mgr = userDbMgr(req);
-  const database = await mgr.getCmsDatabaseById(databaseId as CmsDatabaseId);
-  res.json(await makeApiDatabase(mgr, database));
-}
+    const cmsQuery: Pick<ApiCmsQuery, "where"> = query.q || {};
+    const useDraft = query.draft === "1";
+    const count = await dbMgr.countCmsRows(table.id, cmsQuery, { useDraft });
+    await (req as any).resolveTransaction(); // TODO
+    return {
+      status: 200,
+      body: {
+        count,
+      },
+    };
+  },
+  getDatabase: async ({ params, req }) => {
+    const mgr = userDbMgr(req as any); // TODO
+    const database = await mgr.getCmsDatabaseById(params.dbId);
+    const apiDatabase = await makeApiDatabase(mgr, database);
+    await (req as any).resolveTransaction(); // TODO
+    return {
+      status: 200,
+      body: apiDatabase,
+    };
+  },
+});
 
 export async function upsertDatabaseTables(req: Request, res: Response) {
   const databaseId: CmsDatabaseId = toOpaque(req.params.dbId);
@@ -232,10 +250,6 @@ export async function publicCreateRows(req: Request, res: Response) {
 
 function shouldPublish(req: Request) {
   return req.query.publish === "1";
-}
-
-function shouldUseDraft(req: Request) {
-  return req.query.draft === "1";
 }
 
 function fixLocale(locale: string) {

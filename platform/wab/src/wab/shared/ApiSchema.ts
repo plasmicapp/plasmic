@@ -1475,31 +1475,6 @@ export interface ApiCmseRowRevision extends ApiCmseRowRevisionMeta {
   data: CmsRowData;
 }
 
-export interface ApiCmsQuery {
-  where?: FilterClause;
-  limit?: number;
-  offset?: number;
-  order?: (string | { field: string; dir: "asc" | "desc" })[];
-  fields?: string[];
-}
-
-export interface FilterClause {
-  $and?: FilterClause[];
-  $or?: FilterClause[];
-  $not?: FilterClause;
-  [field: string]: any;
-}
-
-type PrimitiveFilterCond = string | number | boolean;
-export type FilterCond =
-  | PrimitiveFilterCond
-  | { $in: PrimitiveFilterCond[] }
-  | { $gt: PrimitiveFilterCond }
-  | { $ge: PrimitiveFilterCond }
-  | { $lt: PrimitiveFilterCond }
-  | { $le: PrimitiveFilterCond }
-  | { $regex: PrimitiveFilterCond };
-
 export type CmsUploadedFile = {
   name: string;
   url: string;
@@ -2160,6 +2135,8 @@ export interface UniqueFieldCheck {
  * In the API, the locales that are missing a value falls back to the default locale's value.
  */
 export interface CmsRowData {
-  [""]: Dict<unknown>;
-  [locale: string]: Dict<unknown>;
+  [""]: CmsLocaleSpecificData;
+  [locale: string]: CmsLocaleSpecificData;
 }
+
+export type CmsLocaleSpecificData = Dict<unknown>;

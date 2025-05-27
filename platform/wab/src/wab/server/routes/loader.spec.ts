@@ -55,7 +55,7 @@ describe("loader", () => {
     });
 
     const { host, cleanup: cleanupBackend } = await createBackend(dburi);
-    baseURL = `${host}/api/v1`;
+    baseURL = host;
 
     cleanup = async () => {
       await cleanupBackend();

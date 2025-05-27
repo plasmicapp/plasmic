@@ -10,12 +10,11 @@ import { CmsMetaType, CmsRowId } from "@/wab/shared/ApiSchema";
 
 const ROWS = 10;
 
-describe("unique violation check", () => {
+describe("CMS tests", () => {
   let api: SharedApiTester;
   let baseURL: string;
   let cleanup: () => Promise<void>;
 
-  let userToken: string;
   let user: User;
   let table: CmsTable;
   let published: CmsRow[];
@@ -71,8 +70,6 @@ describe("unique violation check", () => {
       user = userAndProjects.user;
 
       const db = new DbMgr(em, normalActor(user.id));
-      const pat = await db.createPersonalApiToken(user.id);
-      userToken = pat.token;
 
       const team = await db.createTeam("team");
       const workspace = await db.createWorkspace({
@@ -141,10 +138,7 @@ describe("unique violation check", () => {
   });
 
   beforeEach(async () => {
-    api = new SharedApiTester(baseURL, {
-      "x-plasmic-api-user": user.email,
-      "x-plasmic-api-token": userToken,
-    });
+    api = new SharedApiTester(baseURL);
     await api.refreshCsrfToken();
     await api.login({
       email: "user@example.com",

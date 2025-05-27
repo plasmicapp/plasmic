@@ -12,13 +12,8 @@ import {
   User,
 } from "@/wab/server/entities/Entities";
 import { getTeamAndWorkspace, withDb } from "@/wab/server/test/backend-util";
-import { BadRequestError } from "@/wab/shared/ApiErrors/errors";
-import {
-  ApiCmsQuery,
-  CmsMetaType,
-  CmsTableId,
-  FilterClause,
-} from "@/wab/shared/ApiSchema";
+import { ApiCmsQuery, FilterClause } from "@/wab/shared/api/cms";
+import { CmsMetaType, CmsTableId } from "@/wab/shared/ApiSchema";
 import { ensure, filterMapTruthy } from "@/wab/shared/common";
 import { AccessLevel } from "@/wab/shared/EntUtil";
 import L from "lodash";
@@ -837,9 +832,7 @@ describe("DbMgr.CMS", () => {
           order: [{ field: "age", dir: "asc" }],
           limit: -1,
         })
-      ).rejects.toThrowError(
-        new BadRequestError("limit field cannot be negative")
-      );
+      ).rejects.toThrowError(new Error("limit field cannot be negative"));
 
       await expect(
         db1().queryCmsRows(people.id, {
@@ -847,9 +840,7 @@ describe("DbMgr.CMS", () => {
           order: [{ field: "age", dir: "asc" }],
           offset: -1,
         })
-      ).rejects.toThrowError(
-        new BadRequestError("offset field cannot be negative")
-      );
+      ).rejects.toThrowError(new Error("offset field cannot be negative"));
     }));
 
   it("can publish rows", () =>

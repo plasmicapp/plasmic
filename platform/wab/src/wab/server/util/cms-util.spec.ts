@@ -421,18 +421,6 @@ describe("makeSqlCondition", () => {
     });
   });
 
-  it("throws error if $in operand is not array", () => {
-    expect(() =>
-      makeSqlCondition(
-        TEST_TABLE,
-        {
-          textField: { $in: "value" },
-        },
-        { useDraft: false }
-      )
-    ).toThrowError(new BadRequestError(`Unexpected "in" operand: "value"`));
-  });
-
   it("works with $regex", () => {
     expect(
       makeSqlCondition(
@@ -489,21 +477,6 @@ describe("makeSqlCondition", () => {
     });
   });
 
-  it("throws error if $and operand is not array", () => {
-    expect(() =>
-      makeSqlCondition(
-        TEST_TABLE,
-        {
-          // @ts-expect-error: TS not happy, but user could supply unknown
-          $and: "not array",
-        },
-        { useDraft: false }
-      )
-    ).toThrowError(
-      new BadRequestError(`Unexpected "and" operand: "not array"`)
-    );
-  });
-
   it("works with $or", () => {
     expect(
       makeSqlCondition(
@@ -521,19 +494,6 @@ describe("makeSqlCondition", () => {
         val1: 42,
       },
     });
-  });
-
-  it("throws error if $or operand is not array", () => {
-    expect(() =>
-      makeSqlCondition(
-        TEST_TABLE,
-        {
-          // @ts-expect-error: TS not happy, but user could supply unknown
-          $or: "not array",
-        },
-        { useDraft: false }
-      )
-    ).toThrowError(new BadRequestError(`Unexpected "or" operand: "not array"`));
   });
 
   it("works with $not", () => {
@@ -605,20 +565,6 @@ describe("makeSqlCondition", () => {
         val7: ["value1", "value2", "value3"],
       },
     });
-  });
-
-  it("throws error if field/operator is unknown", () => {
-    expect(() =>
-      makeSqlCondition(
-        TEST_TABLE,
-        {
-          textField: { $unknown: "value" },
-        },
-        { useDraft: false }
-      )
-    ).toThrow(
-      new BadRequestError(`Unknown filter condition {"$unknown":"value"}`)
-    );
   });
 
   it("throws error is field is unknown", () => {

@@ -1,11 +1,13 @@
 import { Project } from "@/wab/server/entities/Entities";
+import { publicCmsReadsContract } from "@/wab/shared/api/cms";
 import { ApiUser } from "@/wab/shared/ApiSchema";
 import { LowerHttpMethod } from "@/wab/shared/HttpClientUtil";
 import { SharedApi } from "@/wab/shared/SharedApi";
+import { initClient, InitClientReturn, initContract } from "@ts-rest/core";
 import { APIRequestContext, APIResponse, request } from "playwright";
 
 interface ApiTesterRequestOptions {
-  headers?: { [name: string]: string };
+  headers?: { [name: string]: string | null };
   maxRedirects?: number;
 }
 
@@ -49,7 +51,15 @@ export class ApiTester {
     data?: {} | undefined,
     { headers, ...opts }: ApiTesterRequestOptions = {}
   ) {
-    const mergedHeaders = { ...this.baseHeaders, ...headers };
+    const mergedHeaders = { ...this.baseHeaders };
+    Object.entries(headers ?? {}).forEach(([name, value]) => {
+      if (value === null) {
+        delete mergedHeaders[name];
+      } else {
+        mergedHeaders[name] = value;
+      }
+    });
+
     console.info("HTTP request", method, url, mergedHeaders, data);
     const apiRequestContext = await this.apiRequestContextPromise;
     return apiRequestContext.fetch(`${this.baseURL}${url}`, {
@@ -103,10 +113,21 @@ export class SharedApiTester extends SharedApi {
   }
 }
 
+const c = initContract();
+const publicContract = c.router({
+  publicCmsReadsContract,
+});
+
 /** For testing our public API, e.g. data.plasmic.app. */
 export class PublicApiTester extends ApiTester {
+  readonly tsRestClient: InitClientReturn<typeof publicContract, any>;
+
   constructor(baseURL: string, baseHeaders: { [name: string]: string } = {}) {
     super(baseURL, baseHeaders);
+    this.tsRestClient = initClient(publicContract, {
+      baseUrl: baseURL,
+      baseHeaders,
+    });
   }
 
   async getPublishedLoaderAssets(
@@ -128,7 +149,7 @@ export class PublicApiTester extends ApiTester {
       .join(",");
     return this.rawReq(
       "get",
-      `/loader/code/published?${queryString.toString()}`,
+      `/api/v1/loader/code/published?${queryString.toString()}`,
       undefined,
       {
         headers: {
@@ -138,4 +159,16 @@ export class PublicApiTester extends ApiTester {
       }
     );
   }
+}
+
+/** Expects the ts-rest response to have a status and narrows the type. */
+export function expectStatus<
+  Response extends { status: number; headers: unknown; body: unknown },
+  ExpectedStatus extends number
+>(
+  res: Response,
+  status: ExpectedStatus
+): Response extends { status: ExpectedStatus } ? Response : never {
+  expect(res.status).toEqual(status);
+  return res as Response extends { status: ExpectedStatus } ? Response : never;
 }

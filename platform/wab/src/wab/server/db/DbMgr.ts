@@ -118,7 +118,6 @@ import {
 } from "@/wab/shared/ApiErrors/errors";
 import {
   ApiBranch,
-  ApiCmsQuery,
   ApiFeatureTier,
   ApiNotificationSettings,
   ApiTeamMeta,
@@ -179,6 +178,7 @@ import {
   PERSONAL_WORKSPACE,
   WORKSPACE_CAP,
 } from "@/wab/shared/Labels";
+import { ApiCmsQuery } from "@/wab/shared/api/cms";
 import { Bundler } from "@/wab/shared/bundler";
 import { getBundle } from "@/wab/shared/bundles";
 import { getUniqueFieldsData } from "@/wab/shared/cms";
@@ -7416,10 +7416,10 @@ export class DbMgr implements MigrationDbMgr {
     opts: { useDraft?: boolean } = {}
   ) {
     if (query.offset && query.offset < 0) {
-      throw new BadRequestError("offset field cannot be negative");
+      throw new Error("offset field cannot be negative");
     }
     if (query.limit && query.limit < 0) {
-      throw new BadRequestError("limit field cannot be negative");
+      throw new Error("limit field cannot be negative");
     }
 
     const table = await this.getCmsTableById(tableId);

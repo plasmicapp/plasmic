@@ -41,6 +41,19 @@ export class StaleCliError extends ApiError {
 export class BadRequestError extends ApiError {
   name = "BadRequestError";
   statusCode = 400;
+  issues?: unknown;
+  constructor(
+    message?: string,
+    {
+      issues,
+      ...errorOptions
+    }: ErrorOptions & {
+      issues?: unknown;
+    } = {}
+  ) {
+    super(message, errorOptions);
+    this.issues = issues;
+  }
 }
 
 export class AuthError extends ApiError {
