@@ -57,6 +57,7 @@ export type PlasmicTemplateTestEmail__OverridesType = {
 export interface DefaultTemplateTestEmailProps {
   title?: string;
   content?: string;
+  className?: string;
 }
 
 const $$ = {};
@@ -113,9 +114,19 @@ function PlasmicTemplateTestEmail__RenderFunc(props: {
             throw e;
           }
         })()}
+        className={classNames(
+          "__wab_instance",
+          "TemplateTestEmail__emailHeading__mk3Qb"
+        )}
       />
 
-      <EmailText children={"Hello, world!"} />
+      <EmailText
+        children={"Hello, world!"}
+        className={classNames(
+          "__wab_instance",
+          "TemplateTestEmail__emailText__d56R8"
+        )}
+      />
 
       <EmailText
         children={(() => {
@@ -131,6 +142,10 @@ function PlasmicTemplateTestEmail__RenderFunc(props: {
             throw e;
           }
         })()}
+        className={classNames(
+          "__wab_instance",
+          "TemplateTestEmail__emailText__uFoMu"
+        )}
       />
     </Layout>
   ) as React.ReactElement | null;

@@ -6,10 +6,156 @@ import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
 
 // NOTE: Customize the email template by changing the component name and its props below
-const TEMPLATE_NAME = "TemplateTestEmail"; // The Plasmic component name representing an email template
+const TEMPLATE_NAME = "TemplateComments"; // The Plasmic component name representing an email template
 const TEMPLATE_PROPS = {
-  title: "Test Email",
-  content: "This is test content.",
+  projectName: "Plexus Main",
+  projectUrl: "https://studio.plasmic.app",
+  userName: "Sarah Ahmed",
+  comments: [
+    {
+      name: "Dinesh C.",
+      avatarUrl: "",
+      comment:
+        "🔥 really impressive! The structure is solid, and I can see the thought you put into it. A couple of minor tweaks with the colors, and I think it’ll be even more amazing.",
+    },
+    {
+      name: "Sarah A.",
+      avatarUrl: "",
+      comment: "# Hello\nworld",
+    },
+    {
+      name: "John D.",
+      avatarUrl: "",
+      comment: "Good!",
+    },
+  ],
+  replies: [
+    {
+      rootComment: {
+        name: "Sarah Ahmed",
+        body: "🔥 really impressive! The structure is solid, and I can see the thought you put into it. A couple of minor tweaks with the colors, and I think it’ll be even more amazing.",
+      },
+      replies: [
+        {
+          name: "John D.",
+          avatarUrl: "",
+          comment: "Sounds good!",
+        },
+        {
+          name: "Sarah A.",
+          avatarUrl: "",
+          comment: "Ok!",
+        },
+      ],
+    },
+    {
+      rootComment: {
+        name: "Hannah Amin",
+        body: "Lorem Ipsum dolor sit amit",
+      },
+      replies: [
+        {
+          name: "John D.",
+          avatarUrl: "",
+          comment: "Great!",
+        },
+      ],
+    },
+  ],
+  mentions: [
+    {
+      name: "Dinesh C.",
+      avatarUrl: "",
+      comment:
+        "🔥 really impressive! The structure is solid, and I can see the thought you put into it. A couple of minor tweaks with the colors, and I think it’ll be even more amazing.",
+    },
+    {
+      name: "Sarah A.",
+      avatarUrl: "",
+      comment: "Here!",
+    },
+    {
+      name: "John D.",
+      avatarUrl: "",
+      comment: "Good!",
+    },
+  ],
+  reactions: [
+    {
+      comment: "This is a great feature!",
+      reactions: [
+        {
+          name: "John Doe",
+          emoji: "👍",
+        },
+        {
+          name: "Jane Smith",
+          emoji: "👍",
+        },
+        {
+          name: "Alex Johnson",
+          emoji: "🔥",
+        },
+      ],
+    },
+    {
+      comment: "Let's implement this change",
+      reactions: [
+        {
+          name: "Sarah Wilson",
+          emoji: "✅",
+        },
+        {
+          name: "Mike Brown",
+          emoji: "👍",
+        },
+      ],
+    },
+    {
+      comment: "I found a bug in this section",
+      reactions: [
+        {
+          name: "Emily Davis",
+          emoji: "👏",
+        },
+      ],
+    },
+    {
+      comment: "The design looks perfect",
+      reactions: [
+        {
+          name: "Chris Taylor",
+          emoji: "👍",
+        },
+      ],
+    },
+  ],
+  resolutions: [
+    {
+      name: "John Doe",
+      resolved: true,
+      rootComment: {
+        body: "cc: @<sarah@plasmic.app> Can you increase the font size?",
+        name: "Chris Taylor",
+      },
+    },
+    {
+      name: "John Doe",
+      resolved: false,
+      rootComment: {
+        body: "Remove the padding",
+        name: "Sarah Ahmed",
+      },
+    },
+    {
+      name: "Alex Johnson",
+      resolved: true,
+      rootComment: {
+        body: "Add a border",
+        name: "Ali Ahmed",
+      },
+    },
+  ],
 }; // The props to pass to the Plasmic component
 
 const html = await generateEmailHtml(TEMPLATE_NAME, TEMPLATE_PROPS);

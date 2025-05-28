@@ -9,10 +9,19 @@ import {
   Project,
   User,
 } from "@/wab/server/entities/Entities";
+import {
+  NotificationsByProject,
+  NotificationsByUser,
+} from "@/wab/server/scripts/send-comments-notifications";
 import { withBranch } from "@/wab/server/test/branching-utils";
-import { CommentThreadId } from "@/wab/shared/ApiSchema";
+import {
+  BranchId,
+  CommentThreadId,
+  ProjectId,
+  UserId,
+} from "@/wab/shared/ApiSchema";
 import { accessLevelRank } from "@/wab/shared/EntUtil";
-import { ensure, withoutNils } from "@/wab/shared/common";
+import { ensure, withoutNils, xGroupBy } from "@/wab/shared/common";
 import { Connection } from "typeorm";
 
 async function setupNotifications(
@@ -74,6 +83,44 @@ export async function withEndUserNotificationSetup(
         branch,
       });
     }
+  );
+}
+
+export function createNotificationsByUser(
+  data: {
+    projectId: ProjectId;
+    branchId?: BranchId;
+    userId: UserId;
+    notificationsByThread: Map<CommentThreadId, Notification[]>;
+  }[]
+): NotificationsByUser {
+  const groupedByUser = xGroupBy(data, (d) => d.userId);
+  return new Map(
+    Array.from(groupedByUser.entries()).map(([userId, items]) => [
+      userId,
+      createNotificationsByProject(items),
+    ])
+  );
+}
+
+export function createNotificationsByProject(
+  data: {
+    projectId: ProjectId;
+    branchId?: BranchId;
+    notificationsByThread: Map<CommentThreadId, Notification[]>;
+  }[]
+): NotificationsByProject {
+  const groupedByProject = xGroupBy(data, (d) => d.projectId);
+  return new Map(
+    Array.from(groupedByProject.entries()).map(([projectId, items]) => [
+      projectId,
+      new Map(
+        items.map(({ branchId, notificationsByThread: notifications }) => [
+          branchId ?? "main",
+          notifications,
+        ])
+      ),
+    ])
   );
 }
 

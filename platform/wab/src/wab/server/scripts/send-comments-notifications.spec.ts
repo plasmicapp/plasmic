@@ -5,6 +5,7 @@ import {
 } from "@/wab/server/scripts/send-comments-notifications";
 import {
   createNotification,
+  createNotificationsByUser,
   withEndUserNotificationSetup,
 } from "@/wab/server/test/comments-util";
 import {
@@ -92,76 +93,68 @@ describe("sendCommentsNotificationEmails", () => {
         const { notificationsByUser, recentCommentThreads } =
           await processUnnotifiedCommentsNotifications(sudo);
 
-        const expectedNotification = new Map([
-          [
-            users[0].id,
-            new Map([
+        const expectedNotification = createNotificationsByUser([
+          {
+            userId: users[0].id,
+            projectId: project.id,
+            notificationsByThread: new Map([
               [
-                project.id,
-                new Map([
-                  [
+                user1ReplyToUser0Comment.commentThreadId,
+                [
+                  await createNotification(
                     user1ReplyToUser0Comment.commentThreadId,
-                    [
-                      await createNotification(
-                        user1ReplyToUser0Comment.commentThreadId,
-                        users[0],
-                        project,
+                    users[0],
+                    project,
 
-                        user1ReplyToUser0Comment.createdAt,
-                        { type: "COMMENT", comment: user1ReplyToUser0Comment },
-                        sudo
-                      ),
-                    ],
-                  ],
-                ]),
+                    user1ReplyToUser0Comment.createdAt,
+                    { type: "COMMENT", comment: user1ReplyToUser0Comment },
+                    sudo
+                  ),
+                ],
               ],
             ]),
-          ],
-          [
-            users[2].id,
-            new Map([
+          },
+          {
+            userId: users[2].id,
+            projectId: project.id,
+            notificationsByThread: new Map([
               [
-                project.id,
-                new Map([
-                  [
+                user0comment.commentThreadId,
+                [
+                  await createNotification(
                     user0comment.commentThreadId,
-                    [
-                      await createNotification(
-                        user0comment.commentThreadId,
-                        users[2],
-                        project,
-                        user0comment.createdAt,
-                        { type: "COMMENT", comment: user0comment },
-                        sudo
-                      ),
-                      await createNotification(
-                        user1ReplyToUser0Comment.commentThreadId,
-                        users[2],
-                        project,
+                    users[2],
+                    project,
+                    user0comment.createdAt,
+                    { type: "COMMENT", comment: user0comment },
+                    sudo
+                  ),
+                  await createNotification(
+                    user1ReplyToUser0Comment.commentThreadId,
+                    users[2],
+                    project,
 
-                        user1ReplyToUser0Comment.createdAt,
-                        { type: "COMMENT", comment: user1ReplyToUser0Comment },
-                        sudo
-                      ),
-                    ],
-                  ],
-                  [
+                    user1ReplyToUser0Comment.createdAt,
+                    { type: "COMMENT", comment: user1ReplyToUser0Comment },
+                    sudo
+                  ),
+                ],
+              ],
+              [
+                user1Comment.commentThreadId,
+                [
+                  await createNotification(
                     user1Comment.commentThreadId,
-                    [
-                      await createNotification(
-                        user1Comment.commentThreadId,
-                        users[2],
-                        project,
-                        user1Comment.createdAt,
-                        { type: "COMMENT", comment: user1Comment },
-                        sudo
-                      ),
-                    ],
-                  ],
-                ]),
+                    users[2],
+                    project,
+                    user1Comment.createdAt,
+                    { type: "COMMENT", comment: user1Comment },
+                    sudo
+                  ),
+                ],
               ],
             ]),
-          ],
+          },
         ]);
 
         // Check if the notificationsByUser structure is correct
@@ -199,51 +192,47 @@ describe("sendCommentsNotificationEmails", () => {
           await processUnnotifiedCommentsNotifications(sudo);
 
         // Expect user 0 not to be notified about their own reply
-        const expectedNotification = new Map([
-          [
-            users[2].id,
-            new Map([
+        const expectedNotification = createNotificationsByUser([
+          {
+            projectId: project.id,
+            userId: users[2].id,
+            notificationsByThread: new Map([
               [
-                project.id,
-                new Map([
-                  [
+                user0comment.commentThreadId,
+                [
+                  await createNotification(
                     user0comment.commentThreadId,
-                    [
-                      await createNotification(
-                        user0comment.commentThreadId,
-                        users[2],
-                        project,
-                        user0comment.createdAt,
-                        { type: "COMMENT", comment: user0comment },
-                        sudo
-                      ),
-                      await createNotification(
-                        user0Reply.commentThreadId,
-                        users[2],
-                        project,
-                        user0Reply.createdAt,
-                        { type: "COMMENT", comment: user0Reply },
-                        sudo
-                      ),
-                    ],
-                  ],
-                  [
+                    users[2],
+                    project,
+                    user0comment.createdAt,
+                    { type: "COMMENT", comment: user0comment },
+                    sudo
+                  ),
+                  await createNotification(
+                    user0Reply.commentThreadId,
+                    users[2],
+                    project,
+                    user0Reply.createdAt,
+                    { type: "COMMENT", comment: user0Reply },
+                    sudo
+                  ),
+                ],
+              ],
+              [
+                user1Comment.commentThreadId,
+                [
+                  await createNotification(
                     user1Comment.commentThreadId,
-                    [
-                      await createNotification(
-                        user1Comment.commentThreadId,
-                        users[2],
-                        project,
-                        user1Comment.createdAt,
-                        { type: "COMMENT", comment: user1Comment },
-                        sudo
-                      ),
-                    ],
-                  ],
-                ]),
+                    users[2],
+                    project,
+                    user1Comment.createdAt,
+                    { type: "COMMENT", comment: user1Comment },
+                    sudo
+                  ),
+                ],
               ],
             ]),
-          ],
+          },
         ]);
 
         expect(notificationsByUser).toEqual(expectedNotification);
@@ -301,6 +290,7 @@ describe("sendCommentsNotificationEmails", () => {
           notificationsByUser
             .get(users[1].id)
             ?.get(project.id)
+            ?.get("main")
             ?.get(user0comment.commentThreadId)
         ).toBeUndefined();
         // user 1 will be notified about user 0 reply to their comment
@@ -308,6 +298,7 @@ describe("sendCommentsNotificationEmails", () => {
           notificationsByUser
             .get(users[1].id)
             ?.get(project.id)
+            ?.get("main")
             ?.get(user1Comment.commentThreadId)?.length
         ).toBe(1);
 
@@ -403,30 +394,26 @@ describe("sendCommentsNotificationEmails", () => {
           await processUnnotifiedCommentsNotifications(sudo);
 
         // Ensure user 0 is notified about the reply
-        const expectedNotification = new Map([
-          [
-            users[0].id,
-            new Map([
+        const expectedNotification = createNotificationsByUser([
+          {
+            projectId: project.id,
+            userId: users[0].id,
+            notificationsByThread: new Map([
               [
-                project.id,
-                new Map([
-                  [
+                user0comment.commentThreadId,
+                [
+                  await createNotification(
                     user0comment.commentThreadId,
-                    [
-                      await createNotification(
-                        user0comment.commentThreadId,
-                        users[0],
-                        project,
-                        user1Reply.createdAt,
-                        { type: "COMMENT", comment: user1Reply },
-                        sudo
-                      ),
-                    ],
-                  ],
-                ]),
+                    users[0],
+                    project,
+                    user1Reply.createdAt,
+                    { type: "COMMENT", comment: user1Reply },
+                    sudo
+                  ),
+                ],
               ],
             ]),
-          ],
+          },
         ]);
 
         expect(notificationsByUser).toEqual(expectedNotification);
@@ -497,66 +484,58 @@ describe("sendCommentsNotificationEmails", () => {
           await processUnnotifiedCommentsNotifications(sudo);
 
         // Validate notifications
-        const expectedNotification = new Map([
-          [
-            users[0].id,
-            new Map([
+        const expectedNotification = createNotificationsByUser([
+          {
+            userId: users[0].id,
+            projectId: project.id,
+            notificationsByThread: new Map([
               [
-                project.id,
-                new Map([
-                  [
+                user0Comment.commentThreadId,
+                [
+                  await createNotification(
                     user0Comment.commentThreadId,
-                    [
-                      await createNotification(
-                        user0Comment.commentThreadId,
-                        users[0],
-                        project,
-                        user1Reply.createdAt,
-                        { type: "COMMENT", comment: user1Reply },
-                        sudo
-                      ),
-                    ],
-                  ],
-                ]),
+                    users[0],
+                    project,
+                    user1Reply.createdAt,
+                    { type: "COMMENT", comment: user1Reply },
+                    sudo
+                  ),
+                ],
               ],
             ]),
-          ],
-          [
-            users[1].id,
-            new Map([
+          },
+          {
+            userId: users[1].id,
+            projectId: project.id,
+            notificationsByThread: new Map([
               [
-                project.id,
-                new Map([
-                  [
+                user0Comment.commentThreadId,
+                [
+                  await createNotification(
                     user0Comment.commentThreadId,
-                    [
-                      await createNotification(
-                        user0Comment.commentThreadId,
-                        users[1],
-                        project,
-                        user0Comment.createdAt,
-                        { type: "COMMENT", comment: user0Comment },
-                        sudo
-                      ),
-                    ],
-                  ],
-                  [
-                    user1Comment.commentThreadId,
-                    [
-                      await createNotification(
-                        user2Reply.commentThreadId,
-                        users[1],
-                        project,
-                        user2Reply.createdAt,
-                        { type: "COMMENT", comment: user2Reply },
-                        sudo
-                      ),
-                    ],
-                  ],
-                ]),
+                    users[1],
+                    project,
+                    user0Comment.createdAt,
+                    { type: "COMMENT", comment: user0Comment },
+                    sudo
+                  ),
+                ],
+              ],
+              [
+                user1Comment.commentThreadId,
+                [
+                  await createNotification(
+                    user2Reply.commentThreadId,
+                    users[1],
+                    project,
+                    user2Reply.createdAt,
+                    { type: "COMMENT", comment: user2Reply },
+                    sudo
+                  ),
+                ],
               ],
             ]),
-          ],
+          },
         ]);
 
         expect(notificationsByUser.get(users[1].id)).toEqual(
@@ -607,56 +586,48 @@ describe("sendCommentsNotificationEmails", () => {
           await processUnnotifiedCommentsNotifications(sudo);
 
         // Check if the notificationsByUser structure is correct
-        const expectedNotification: NotificationsByUser = new Map([
-          [
-            users[1].id,
-            new Map([
+        const expectedNotification = createNotificationsByUser([
+          {
+            userId: users[1].id,
+            projectId: project.id,
+            notificationsByThread: new Map([
               [
-                project.id,
-                new Map([
-                  [
+                user0comment.commentThreadId,
+                [
+                  await createNotification(
                     user0comment.commentThreadId,
-                    [
-                      await createNotification(
-                        user0comment.commentThreadId,
-                        users[1],
-                        project,
-                        commentThreadResolvedHistoryForUser0Comment.createdAt,
-                        {
-                          type: "THREAD_HISTORY",
-                          history: commentThreadResolvedHistoryForUser0Comment,
-                        },
-                        sudo
-                      ),
-                    ],
-                  ],
-                ]),
+                    users[1],
+                    project,
+                    commentThreadResolvedHistoryForUser0Comment.createdAt,
+                    {
+                      type: "THREAD_HISTORY",
+                      history: commentThreadResolvedHistoryForUser0Comment,
+                    },
+                    sudo
+                  ),
+                ],
               ],
             ]),
-          ],
-          [
-            users[0].id,
-            new Map([
+          },
+          {
+            userId: users[0].id,
+            projectId: project.id,
+            notificationsByThread: new Map([
               [
-                project.id,
-                new Map([
-                  [
+                user1ReplyToUser0Comment.commentThreadId,
+                [
+                  await createNotification(
                     user1ReplyToUser0Comment.commentThreadId,
-                    [
-                      await createNotification(
-                        user1ReplyToUser0Comment.commentThreadId,
-                        users[0],
-                        project,
-                        user1ReplyToUser0Comment.createdAt,
-                        { type: "COMMENT", comment: user1ReplyToUser0Comment },
-                        sudo
-                      ),
-                    ],
-                  ],
-                ]),
+                    users[0],
+                    project,
+                    user1ReplyToUser0Comment.createdAt,
+                    { type: "COMMENT", comment: user1ReplyToUser0Comment },
+                    sudo
+                  ),
+                ],
               ],
             ]),
-          ],
+          },
         ]);
 
         expect(notificationsByUser).toEqual(expectedNotification);
@@ -704,68 +675,59 @@ describe("sendCommentsNotificationEmails", () => {
           await processUnnotifiedCommentsNotifications(sudo);
 
         // Check if the notificationsByUser structure is correct
-        const expectedNotification: NotificationsByUser = new Map([
-          [
-            users[1].id,
-            new Map([
+        const expectedNotification = createNotificationsByUser([
+          {
+            userId: users[1].id,
+            projectId: project.id,
+            notificationsByThread: new Map([
               [
-                project.id,
-                new Map([
-                  [
+                user0comment.commentThreadId,
+                [
+                  await createNotification(
                     user0comment.commentThreadId,
-                    [
-                      await createNotification(
-                        user0comment.commentThreadId,
-                        users[1],
-                        project,
-                        commentThreadResolvedHistoryForUser0Comment.createdAt,
-                        {
-                          type: "THREAD_HISTORY",
-                          history: commentThreadResolvedHistoryForUser0Comment,
-                        },
-                        sudo
-                      ),
-                      await createNotification(
-                        user0comment.commentThreadId,
-                        users[1],
-                        project,
-                        commentThreadUnResolvedHistoryForUser0Comment.createdAt,
-                        {
-                          type: "THREAD_HISTORY",
-                          history:
-                            commentThreadUnResolvedHistoryForUser0Comment,
-                        },
-                        sudo
-                      ),
-                    ],
-                  ],
-                ]),
+                    users[1],
+                    project,
+                    commentThreadResolvedHistoryForUser0Comment.createdAt,
+                    {
+                      type: "THREAD_HISTORY",
+                      history: commentThreadResolvedHistoryForUser0Comment,
+                    },
+                    sudo
+                  ),
+                  await createNotification(
+                    user0comment.commentThreadId,
+                    users[1],
+                    project,
+                    commentThreadUnResolvedHistoryForUser0Comment.createdAt,
+                    {
+                      type: "THREAD_HISTORY",
+                      history: commentThreadUnResolvedHistoryForUser0Comment,
+                    },
+                    sudo
+                  ),
+                ],
               ],
             ]),
-          ],
-          [
-            users[0].id,
-            new Map([
+          },
+          {
+            userId: users[0].id,
+            projectId: project.id,
+            notificationsByThread: new Map([
               [
-                project.id,
-                new Map([
-                  [
+                user1ReplyToUser0Comment.commentThreadId,
+                [
+                  await createNotification(
                     user1ReplyToUser0Comment.commentThreadId,
-                    [
-                      await createNotification(
-                        user1ReplyToUser0Comment.commentThreadId,
-                        users[0],
-                        project,
-                        user1ReplyToUser0Comment.createdAt,
-                        { type: "COMMENT", comment: user1ReplyToUser0Comment },
-                        sudo
-                      ),
-                    ],
-                  ],
-                ]),
+                    users[0],
+                    project,
+                    user1ReplyToUser0Comment.createdAt,
+                    { type: "COMMENT", comment: user1ReplyToUser0Comment },
+                    sudo
+                  ),
+                ],
               ],
             ]),
-          ],
+          },
         ]);
 
         expect(notificationsByUser).toEqual(expectedNotification);
@@ -811,56 +773,48 @@ describe("sendCommentsNotificationEmails", () => {
           await processUnnotifiedCommentsNotifications(sudo);
 
         // Check if the notificationsByUser structure is correct
-        const expectedNotification: NotificationsByUser = new Map([
-          [
-            users[0].id,
-            new Map([
+        const expectedNotification = createNotificationsByUser([
+          {
+            userId: users[0].id,
+            projectId: project.id,
+            notificationsByThread: new Map([
               [
-                project.id,
-                new Map([
-                  [
+                user1ReplyToUser0Comment.commentThreadId,
+                [
+                  await createNotification(
                     user1ReplyToUser0Comment.commentThreadId,
-                    [
-                      await createNotification(
-                        user1ReplyToUser0Comment.commentThreadId,
-                        users[0],
-                        project,
-                        user1ReplyToUser0Comment.createdAt,
-                        { type: "COMMENT", comment: user1ReplyToUser0Comment },
-                        sudo
-                      ),
-                    ],
-                  ],
-                ]),
+                    users[0],
+                    project,
+                    user1ReplyToUser0Comment.createdAt,
+                    { type: "COMMENT", comment: user1ReplyToUser0Comment },
+                    sudo
+                  ),
+                ],
               ],
             ]),
-          ],
-          [
-            users[1].id,
-            new Map([
+          },
+          {
+            userId: users[1].id,
+            projectId: project.id,
+            notificationsByThread: new Map([
               [
-                project.id,
-                new Map([
-                  [
+                user0comment.commentThreadId,
+                [
+                  await createNotification(
                     user0comment.commentThreadId,
-                    [
-                      await createNotification(
-                        user0comment.commentThreadId,
-                        users[1],
-                        project,
-                        commentThreadResolvedHistoryForUser0Comment.createdAt,
-                        {
-                          type: "THREAD_HISTORY",
-                          history: commentThreadResolvedHistoryForUser0Comment,
-                        },
-                        sudo
-                      ),
-                    ],
-                  ],
-                ]),
+                    users[1],
+                    project,
+                    commentThreadResolvedHistoryForUser0Comment.createdAt,
+                    {
+                      type: "THREAD_HISTORY",
+                      history: commentThreadResolvedHistoryForUser0Comment,
+                    },
+                    sudo
+                  ),
+                ],
               ],
             ]),
-          ],
+          },
         ]);
 
         expect(notificationsByUser).toEqual(expectedNotification);
@@ -902,30 +856,26 @@ describe("sendCommentsNotificationEmails", () => {
           await processUnnotifiedCommentsNotifications(sudo);
 
         // Check if the notificationsByUser structure is correct
-        const expectedNotification: NotificationsByUser = new Map([
-          [
-            users[0].id,
-            new Map([
+        const expectedNotification = createNotificationsByUser([
+          {
+            userId: users[0].id,
+            projectId: project.id,
+            notificationsByThread: new Map([
               [
-                project.id,
-                new Map([
-                  [
+                user1ReplyToUser0Comment.commentThreadId,
+                [
+                  await createNotification(
                     user1ReplyToUser0Comment.commentThreadId,
-                    [
-                      await createNotification(
-                        user1ReplyToUser0Comment.commentThreadId,
-                        users[0],
-                        project,
-                        user1ReplyToUser0Comment.createdAt,
-                        { type: "COMMENT", comment: user1ReplyToUser0Comment },
-                        sudo
-                      ),
-                    ],
-                  ],
-                ]),
+                    users[0],
+                    project,
+                    user1ReplyToUser0Comment.createdAt,
+                    { type: "COMMENT", comment: user1ReplyToUser0Comment },
+                    sudo
+                  ),
+                ],
               ],
             ]),
-          ],
+          },
         ]);
 
         expect(notificationsByUser).toEqual(expectedNotification);
@@ -965,56 +915,48 @@ describe("sendCommentsNotificationEmails", () => {
           await processUnnotifiedCommentsNotifications(sudo);
 
         // Check if the notificationsByUser structure is correct
-        const expectedNotification: NotificationsByUser = new Map([
-          [
-            users[0].id,
-            new Map([
+        const expectedNotification = createNotificationsByUser([
+          {
+            userId: users[0].id,
+            projectId: project.id,
+            notificationsByThread: new Map([
               [
-                project.id,
-                new Map([
-                  [
+                user1ReplyToUser0Comment.commentThreadId,
+                [
+                  await createNotification(
                     user1ReplyToUser0Comment.commentThreadId,
-                    [
-                      await createNotification(
-                        user1ReplyToUser0Comment.commentThreadId,
-                        users[0],
-                        project,
-                        user1ReplyToUser0Comment.createdAt,
-                        { type: "COMMENT", comment: user1ReplyToUser0Comment },
-                        sudo
-                      ),
-                    ],
-                  ],
-                ]),
+                    users[0],
+                    project,
+                    user1ReplyToUser0Comment.createdAt,
+                    { type: "COMMENT", comment: user1ReplyToUser0Comment },
+                    sudo
+                  ),
+                ],
               ],
             ]),
-          ],
-          [
-            users[1].id,
-            new Map([
+          },
+          {
+            userId: users[1].id,
+            projectId: project.id,
+            notificationsByThread: new Map([
               [
-                project.id,
-                new Map([
-                  [
+                user1Comment.commentThreadId,
+                [
+                  await createNotification(
                     user1Comment.commentThreadId,
-                    [
-                      await createNotification(
-                        user1Comment.commentThreadId,
-                        users[1],
-                        project,
-                        user0CommentReaction.createdAt,
-                        {
-                          type: "REACTION",
-                          reaction: user0CommentReaction,
-                        },
-                        sudo
-                      ),
-                    ],
-                  ],
-                ]),
+                    users[1],
+                    project,
+                    user0CommentReaction.createdAt,
+                    {
+                      type: "REACTION",
+                      reaction: user0CommentReaction,
+                    },
+                    sudo
+                  ),
+                ],
               ],
             ]),
-          ],
+          },
         ]);
 
         expect(notificationsByUser).toEqual(expectedNotification);
@@ -1055,30 +997,26 @@ describe("sendCommentsNotificationEmails", () => {
           await processUnnotifiedCommentsNotifications(sudo);
 
         // Check if the notificationsByUser structure is correct
-        const expectedNotification: NotificationsByUser = new Map([
-          [
-            users[0].id,
-            new Map([
+        const expectedNotification = createNotificationsByUser([
+          {
+            userId: users[0].id,
+            projectId: project.id,
+            notificationsByThread: new Map([
               [
-                project.id,
-                new Map([
-                  [
+                user1ReplyToUser0Comment.commentThreadId,
+                [
+                  await createNotification(
                     user1ReplyToUser0Comment.commentThreadId,
-                    [
-                      await createNotification(
-                        user1ReplyToUser0Comment.commentThreadId,
-                        users[0],
-                        project,
-                        user1ReplyToUser0Comment.createdAt,
-                        { type: "COMMENT", comment: user1ReplyToUser0Comment },
-                        sudo
-                      ),
-                    ],
-                  ],
-                ]),
+                    users[0],
+                    project,
+                    user1ReplyToUser0Comment.createdAt,
+                    { type: "COMMENT", comment: user1ReplyToUser0Comment },
+                    sudo
+                  ),
+                ],
               ],
             ]),
-          ],
+          },
         ]);
 
         expect(notificationsByUser).toEqual(expectedNotification);
@@ -1112,30 +1050,26 @@ describe("sendCommentsNotificationEmails", () => {
           await processUnnotifiedCommentsNotifications(sudo);
 
         // Check if the notificationsByUser structure is correct
-        const expectedNotification: NotificationsByUser = new Map([
-          [
-            users[0].id,
-            new Map([
+        const expectedNotification = createNotificationsByUser([
+          {
+            userId: users[0].id,
+            projectId: project.id,
+            notificationsByThread: new Map([
               [
-                project.id,
-                new Map([
-                  [
+                user1ReplyToUser0Comment.commentThreadId,
+                [
+                  await createNotification(
                     user1ReplyToUser0Comment.commentThreadId,
-                    [
-                      await createNotification(
-                        user1ReplyToUser0Comment.commentThreadId,
-                        users[0],
-                        project,
-                        user1ReplyToUser0Comment.createdAt,
-                        { type: "COMMENT", comment: user1ReplyToUser0Comment },
-                        sudo
-                      ),
-                    ],
-                  ],
-                ]),
+                    users[0],
+                    project,
+                    user1ReplyToUser0Comment.createdAt,
+                    { type: "COMMENT", comment: user1ReplyToUser0Comment },
+                    sudo
+                  ),
+                ],
               ],
             ]),
-          ],
+          },
         ]);
 
         expect(notificationsByUser).toEqual(expectedNotification);
@@ -1175,20 +1109,25 @@ describe("sendCommentsNotificationEmails", () => {
                 project.id,
                 new Map([
                   [
-                    user1Comment.commentThreadId,
-                    [
-                      await createNotification(
+                    "main",
+                    new Map([
+                      [
                         user1Comment.commentThreadId,
-                        users[1],
-                        project,
-                        user0CommentReaction.createdAt,
-                        {
-                          type: "REACTION",
-                          reaction: user0CommentReaction,
-                        },
-                        sudo
-                      ),
-                    ],
+                        [
+                          await createNotification(
+                            user1Comment.commentThreadId,
+                            users[1],
+                            project,
+                            user0CommentReaction.createdAt,
+                            {
+                              type: "REACTION",
+                              reaction: user0CommentReaction,
+                            },
+                            sudo
+                          ),
+                        ],
+                      ],
+                    ]),
                   ],
                 ]),
               ],
@@ -1231,56 +1170,48 @@ describe("sendCommentsNotificationEmails", () => {
         // user 0 for user 1 reply, while user 1 will be notified for user 0 reaction on user 1 comment
 
         // Check if the notificationsByUser structure is correct
-        const expectedNotification: NotificationsByUser = new Map([
-          [
-            users[0].id,
-            new Map([
+        const expectedNotification = createNotificationsByUser([
+          {
+            userId: users[0].id,
+            projectId: project.id,
+            notificationsByThread: new Map([
               [
-                project.id,
-                new Map([
-                  [
+                user1ReplyToUser0Comment.commentThreadId,
+                [
+                  await createNotification(
                     user1ReplyToUser0Comment.commentThreadId,
-                    [
-                      await createNotification(
-                        user1ReplyToUser0Comment.commentThreadId,
-                        users[0],
-                        project,
-                        user1ReplyToUser0Comment.createdAt,
-                        { type: "COMMENT", comment: user1ReplyToUser0Comment },
-                        sudo
-                      ),
-                    ],
-                  ],
-                ]),
+                    users[0],
+                    project,
+                    user1ReplyToUser0Comment.createdAt,
+                    { type: "COMMENT", comment: user1ReplyToUser0Comment },
+                    sudo
+                  ),
+                ],
               ],
             ]),
-          ],
-          [
-            users[1].id,
-            new Map([
+          },
+          {
+            userId: users[1].id,
+            projectId: project.id,
+            notificationsByThread: new Map([
               [
-                project.id,
-                new Map([
-                  [
+                user1Comment.commentThreadId,
+                [
+                  await createNotification(
                     user1Comment.commentThreadId,
-                    [
-                      await createNotification(
-                        user1Comment.commentThreadId,
-                        users[1],
-                        project,
-                        user0CommentReaction.createdAt,
-                        {
-                          type: "REACTION",
-                          reaction: user0CommentReaction,
-                        },
-                        sudo
-                      ),
-                    ],
-                  ],
-                ]),
+                    users[1],
+                    project,
+                    user0CommentReaction.createdAt,
+                    {
+                      type: "REACTION",
+                      reaction: user0CommentReaction,
+                    },
+                    sudo
+                  ),
+                ],
               ],
             ]),
-          ],
+          },
         ]);
 
         expect(notificationsByUser).toEqual(expectedNotification);
@@ -1314,30 +1245,26 @@ describe("sendCommentsNotificationEmails", () => {
           await processUnnotifiedCommentsNotifications(sudo);
 
         // Check if the notificationsByUser structure is correct
-        const expectedNotification: NotificationsByUser = new Map([
-          [
-            users[0].id,
-            new Map([
+        const expectedNotification = createNotificationsByUser([
+          {
+            userId: users[0].id,
+            projectId: project.id,
+            notificationsByThread: new Map([
               [
-                project.id,
-                new Map([
-                  [
+                user1ReplyToUser0Comment.commentThreadId,
+                [
+                  await createNotification(
                     user1ReplyToUser0Comment.commentThreadId,
-                    [
-                      await createNotification(
-                        user1ReplyToUser0Comment.commentThreadId,
-                        users[0],
-                        project,
-                        user1ReplyToUser0Comment.createdAt,
-                        { type: "COMMENT", comment: user1ReplyToUser0Comment },
-                        sudo
-                      ),
-                    ],
-                  ],
-                ]),
+                    users[0],
+                    project,
+                    user1ReplyToUser0Comment.createdAt,
+                    { type: "COMMENT", comment: user1ReplyToUser0Comment },
+                    sudo
+                  ),
+                ],
               ],
             ]),
-          ],
+          },
         ]);
 
         expect(notificationsByUser).toEqual(expectedNotification);
@@ -1379,20 +1306,25 @@ describe("sendCommentsNotificationEmails", () => {
                 project.id,
                 new Map([
                   [
-                    user0comment.commentThreadId,
-                    [
-                      await createNotification(
+                    "main",
+                    new Map([
+                      [
                         user0comment.commentThreadId,
-                        users[1],
-                        project,
-                        user0CommentThreadHistory.createdAt,
-                        {
-                          type: "THREAD_HISTORY",
-                          history: user0CommentThreadHistory,
-                        },
-                        sudo
-                      ),
-                    ],
+                        [
+                          await createNotification(
+                            user0comment.commentThreadId,
+                            users[1],
+                            project,
+                            user0CommentThreadHistory.createdAt,
+                            {
+                              type: "THREAD_HISTORY",
+                              history: user0CommentThreadHistory,
+                            },
+                            sudo
+                          ),
+                        ],
+                      ],
+                    ]),
                   ],
                 ]),
               ],
@@ -1436,56 +1368,48 @@ describe("sendCommentsNotificationEmails", () => {
         // user 0 and 2 will be notified for user 1 comment, while user 1 will be notified for user 0 reaction on user 1 comment
 
         // only user 1 has participated, user 1 will be notified for thread history and comment, user 0 is not notified for it's self thread history updated
-        const expectedNotification: NotificationsByUser = new Map([
-          [
-            users[0].id,
-            new Map([
+        const expectedNotification = createNotificationsByUser([
+          {
+            userId: users[0].id,
+            projectId: project.id,
+            notificationsByThread: new Map([
               [
-                project.id,
-                new Map([
-                  [
+                user1ReplyToUser0Comment.commentThreadId,
+                [
+                  await createNotification(
                     user1ReplyToUser0Comment.commentThreadId,
-                    [
-                      await createNotification(
-                        user1ReplyToUser0Comment.commentThreadId,
-                        users[0],
-                        project,
-                        user1ReplyToUser0Comment.createdAt,
-                        { type: "COMMENT", comment: user1ReplyToUser0Comment },
-                        sudo
-                      ),
-                    ],
-                  ],
-                ]),
+                    users[0],
+                    project,
+                    user1ReplyToUser0Comment.createdAt,
+                    { type: "COMMENT", comment: user1ReplyToUser0Comment },
+                    sudo
+                  ),
+                ],
               ],
             ]),
-          ],
-          [
-            users[1].id,
-            new Map([
+          },
+          {
+            userId: users[1].id,
+            projectId: project.id,
+            notificationsByThread: new Map([
               [
-                project.id,
-                new Map([
-                  [
+                user0comment.commentThreadId,
+                [
+                  await createNotification(
                     user0comment.commentThreadId,
-                    [
-                      await createNotification(
-                        user0comment.commentThreadId,
-                        users[1],
-                        project,
-                        user0CommentThreadHistory.createdAt,
-                        {
-                          type: "THREAD_HISTORY",
-                          history: user0CommentThreadHistory,
-                        },
-                        sudo
-                      ),
-                    ],
-                  ],
-                ]),
+                    users[1],
+                    project,
+                    user0CommentThreadHistory.createdAt,
+                    {
+                      type: "THREAD_HISTORY",
+                      history: user0CommentThreadHistory,
+                    },
+                    sudo
+                  ),
+                ],
               ],
             ]),
-          ],
+          },
         ]);
 
         expect(notificationsByUser).toEqual(expectedNotification);
@@ -1522,55 +1446,47 @@ describe("sendCommentsNotificationEmails", () => {
         const { notificationsByUser, recentCommentThreads } =
           await processUnnotifiedCommentsNotifications(sudo);
 
-        const expectedNotification = new Map([
-          [
-            users[0].id,
-            new Map([
+        const expectedNotification = createNotificationsByUser([
+          {
+            userId: users[0].id,
+            projectId: project.id,
+            notificationsByThread: new Map([
               [
-                project.id,
-                new Map([
-                  [
+                user1ReplyToUser0Comment.commentThreadId,
+                [
+                  await createNotification(
                     user1ReplyToUser0Comment.commentThreadId,
-                    [
-                      await createNotification(
-                        user1ReplyToUser0Comment.commentThreadId,
-                        users[0],
-                        project,
+                    users[0],
+                    project,
 
-                        user1ReplyToUser0Comment.createdAt,
-                        { type: "COMMENT", comment: user1ReplyToUser0Comment },
-                        sudo
-                      ),
-                    ],
-                  ],
-                ]),
+                    user1ReplyToUser0Comment.createdAt,
+                    { type: "COMMENT", comment: user1ReplyToUser0Comment },
+                    sudo
+                  ),
+                ],
               ],
             ]),
-          ],
-          [
-            users[2].id,
-            new Map([
+          },
+          {
+            userId: users[2].id,
+            projectId: project.id,
+            notificationsByThread: new Map([
               [
-                project.id,
-                new Map([
-                  [
+                user0comment.commentThreadId,
+                [
+                  // user 2 is mentioned because user was mentioned
+                  await createNotification(
                     user0comment.commentThreadId,
-                    [
-                      // user 2 is mentioned because user was mentioned
-                      await createNotification(
-                        user0comment.commentThreadId,
-                        users[2],
-                        project,
-                        user1ReplyToUser0Comment.createdAt,
-                        { type: "COMMENT", comment: user1ReplyToUser0Comment },
-                        sudo
-                      ),
-                    ],
-                  ],
-                ]),
+                    users[2],
+                    project,
+                    user1ReplyToUser0Comment.createdAt,
+                    { type: "COMMENT", comment: user1ReplyToUser0Comment },
+                    sudo
+                  ),
+                ],
               ],
             ]),
-          ],
+          },
         ]);
 
         // Check if the notificationsByUser structure is correct
@@ -1608,31 +1524,27 @@ describe("sendCommentsNotificationEmails", () => {
         const { notificationsByUser, recentCommentThreads } =
           await processUnnotifiedCommentsNotifications(sudo);
 
-        const expectedNotification = new Map([
-          [
-            users[0].id,
-            new Map([
+        const expectedNotification = createNotificationsByUser([
+          {
+            userId: users[0].id,
+            projectId: project.id,
+            notificationsByThread: new Map([
               [
-                project.id,
-                new Map([
-                  [
+                user1ReplyToUser0Comment.commentThreadId,
+                [
+                  await createNotification(
                     user1ReplyToUser0Comment.commentThreadId,
-                    [
-                      await createNotification(
-                        user1ReplyToUser0Comment.commentThreadId,
-                        users[0],
-                        project,
+                    users[0],
+                    project,
 
-                        user1ReplyToUser0Comment.createdAt,
-                        { type: "COMMENT", comment: user1ReplyToUser0Comment },
-                        sudo
-                      ),
-                    ],
-                  ],
-                ]),
+                    user1ReplyToUser0Comment.createdAt,
+                    { type: "COMMENT", comment: user1ReplyToUser0Comment },
+                    sudo
+                  ),
+                ],
               ],
             ]),
-          ],
+          },
         ]);
 
         // Check if the notificationsByUser structure is correct
@@ -1675,55 +1587,47 @@ describe("sendCommentsNotificationEmails", () => {
         const { notificationsByUser, recentCommentThreads } =
           await processUnnotifiedCommentsNotifications(sudo);
 
-        const expectedNotification = new Map([
-          [
-            users[0].id,
-            new Map([
+        const expectedNotification = createNotificationsByUser([
+          {
+            userId: users[0].id,
+            projectId: project.id,
+            notificationsByThread: new Map([
               [
-                project.id,
-                new Map([
-                  [
+                user1ReplyToUser0Comment.commentThreadId,
+                [
+                  await createNotification(
                     user1ReplyToUser0Comment.commentThreadId,
-                    [
-                      await createNotification(
-                        user1ReplyToUser0Comment.commentThreadId,
-                        users[0],
-                        project,
+                    users[0],
+                    project,
 
-                        user1ReplyToUser0Comment.createdAt,
-                        { type: "COMMENT", comment: user1ReplyToUser0Comment },
-                        sudo
-                      ),
-                    ],
-                  ],
-                ]),
+                    user1ReplyToUser0Comment.createdAt,
+                    { type: "COMMENT", comment: user1ReplyToUser0Comment },
+                    sudo
+                  ),
+                ],
               ],
             ]),
-          ],
-          [
-            users[2].id,
-            new Map([
+          },
+          {
+            userId: users[2].id,
+            projectId: project.id,
+            notificationsByThread: new Map([
               [
-                project.id,
-                new Map([
-                  [
+                user0comment.commentThreadId,
+                [
+                  // user 2 is mentioned because user was mentioned
+                  await createNotification(
                     user0comment.commentThreadId,
-                    [
-                      // user 2 is mentioned because user was mentioned
-                      await createNotification(
-                        user0comment.commentThreadId,
-                        users[2],
-                        project,
-                        user1ReplyToUser0Comment.createdAt,
-                        { type: "COMMENT", comment: user1ReplyToUser0Comment },
-                        sudo
-                      ),
-                    ],
-                  ],
-                ]),
+                    users[2],
+                    project,
+                    user1ReplyToUser0Comment.createdAt,
+                    { type: "COMMENT", comment: user1ReplyToUser0Comment },
+                    sudo
+                  ),
+                ],
               ],
             ]),
-          ],
+          },
         ]);
 
         // Check if the notificationsByUser structure is correct
@@ -1761,31 +1665,27 @@ describe("sendCommentsNotificationEmails", () => {
         const { notificationsByUser, recentCommentThreads } =
           await processUnnotifiedCommentsNotifications(sudo);
 
-        const expectedNotification = new Map([
-          [
-            users[0].id,
-            new Map([
+        const expectedNotification = createNotificationsByUser([
+          {
+            userId: users[0].id,
+            projectId: project.id,
+            notificationsByThread: new Map([
               [
-                project.id,
-                new Map([
-                  [
+                user1ReplyToUser0Comment.commentThreadId,
+                [
+                  await createNotification(
                     user1ReplyToUser0Comment.commentThreadId,
-                    [
-                      await createNotification(
-                        user1ReplyToUser0Comment.commentThreadId,
-                        users[0],
-                        project,
+                    users[0],
+                    project,
 
-                        user1ReplyToUser0Comment.createdAt,
-                        { type: "COMMENT", comment: user1ReplyToUser0Comment },
-                        sudo
-                      ),
-                    ],
-                  ],
-                ]),
+                    user1ReplyToUser0Comment.createdAt,
+                    { type: "COMMENT", comment: user1ReplyToUser0Comment },
+                    sudo
+                  ),
+                ],
               ],
             ]),
-          ],
+          },
         ]);
 
         // Check if the notificationsByUser structure is correct
@@ -1847,128 +1747,118 @@ describe("sendCommentsNotificationEmails", () => {
         const { notificationsByUser, recentCommentThreads } =
           await processUnnotifiedCommentsNotifications(sudo);
 
-        const expectedNotification = new Map([
-          [
-            users[0].id,
-            new Map([
+        const expectedNotification = createNotificationsByUser([
+          {
+            userId: users[0].id,
+            projectId: project.id,
+            notificationsByThread: new Map([
               [
-                project.id,
-                new Map([
-                  [
+                user1Comment.commentThreadId,
+                [
+                  await createNotification(
                     user1Comment.commentThreadId,
-                    [
-                      await createNotification(
-                        user1Comment.commentThreadId,
-                        users[0],
-                        project,
+                    users[0],
+                    project,
 
-                        user1Comment.createdAt,
-                        { type: "COMMENT", comment: user1Comment },
-                        sudo
-                      ),
-                      await createNotification(
-                        user2Reply.commentThreadId,
-                        users[0],
-                        project,
-
-                        user2Reply.createdAt,
-                        { type: "COMMENT", comment: user2Reply },
-                        sudo
-                      ),
-                      await createNotification(
-                        commentThreadUnResolvedHistoryForUser1Comment.commentThreadId,
-                        users[0],
-                        project,
-
-                        commentThreadUnResolvedHistoryForUser1Comment.createdAt,
-                        {
-                          type: "THREAD_HISTORY",
-                          history:
-                            commentThreadUnResolvedHistoryForUser1Comment,
-                        },
-                        sudo
-                      ),
-                    ],
-                  ],
-                  [
-                    user0comment.commentThreadId,
-                    [
-                      await createNotification(
-                        user0comment.commentThreadId,
-                        users[0],
-                        project,
-
-                        user2MentionUser1.createdAt,
-                        {
-                          type: "COMMENT",
-                          comment: user2MentionUser1,
-                        },
-                        sudo
-                      ),
-                      await createNotification(
-                        user0comment.commentThreadId,
-                        users[0],
-                        project,
-
-                        user1Reaction.createdAt,
-                        { type: "REACTION", reaction: user1Reaction },
-                        sudo
-                      ),
-                    ],
-                  ],
-                ]),
-              ],
-            ]),
-          ],
-          [
-            users[1].id,
-            new Map([
-              [
-                project.id,
-                new Map([
-                  [
+                    user1Comment.createdAt,
+                    { type: "COMMENT", comment: user1Comment },
+                    sudo
+                  ),
+                  await createNotification(
                     user2Reply.commentThreadId,
-                    [
-                      await createNotification(
-                        user2Reply.commentThreadId,
-                        users[1],
-                        project,
-                        user2Reply.createdAt,
-                        { type: "COMMENT", comment: user2Reply },
-                        sudo
-                      ),
-                      await createNotification(
-                        commentThreadUnResolvedHistoryForUser1Comment.commentThreadId,
-                        users[1],
-                        project,
+                    users[0],
+                    project,
 
-                        commentThreadUnResolvedHistoryForUser1Comment.createdAt,
-                        {
-                          type: "THREAD_HISTORY",
-                          history:
-                            commentThreadUnResolvedHistoryForUser1Comment,
-                        },
-                        sudo
-                      ),
-                    ],
-                  ],
-                  [
-                    user2MentionUser1.commentThreadId,
-                    [
-                      await createNotification(
-                        user2MentionUser1.commentThreadId,
-                        users[1],
-                        project,
-                        user2MentionUser1.createdAt,
-                        { type: "COMMENT", comment: user2MentionUser1 },
-                        sudo
-                      ),
-                    ],
-                  ],
-                ]),
+                    user2Reply.createdAt,
+                    { type: "COMMENT", comment: user2Reply },
+                    sudo
+                  ),
+                  await createNotification(
+                    commentThreadUnResolvedHistoryForUser1Comment.commentThreadId,
+                    users[0],
+                    project,
+
+                    commentThreadUnResolvedHistoryForUser1Comment.createdAt,
+                    {
+                      type: "THREAD_HISTORY",
+                      history: commentThreadUnResolvedHistoryForUser1Comment,
+                    },
+                    sudo
+                  ),
+                ],
+              ],
+              [
+                user0comment.commentThreadId,
+                [
+                  await createNotification(
+                    user0comment.commentThreadId,
+                    users[0],
+                    project,
+
+                    user2MentionUser1.createdAt,
+                    {
+                      type: "COMMENT",
+                      comment: user2MentionUser1,
+                    },
+                    sudo
+                  ),
+                  await createNotification(
+                    user0comment.commentThreadId,
+                    users[0],
+                    project,
+
+                    user1Reaction.createdAt,
+                    { type: "REACTION", reaction: user1Reaction },
+                    sudo
+                  ),
+                ],
               ],
             ]),
-          ],
+          },
+          {
+            userId: users[1].id,
+            projectId: project.id,
+            notificationsByThread: new Map([
+              [
+                user2Reply.commentThreadId,
+                [
+                  await createNotification(
+                    user2Reply.commentThreadId,
+                    users[1],
+                    project,
+                    user2Reply.createdAt,
+                    { type: "COMMENT", comment: user2Reply },
+                    sudo
+                  ),
+                  await createNotification(
+                    commentThreadUnResolvedHistoryForUser1Comment.commentThreadId,
+                    users[1],
+                    project,
+
+                    commentThreadUnResolvedHistoryForUser1Comment.createdAt,
+                    {
+                      type: "THREAD_HISTORY",
+                      history: commentThreadUnResolvedHistoryForUser1Comment,
+                    },
+                    sudo
+                  ),
+                ],
+              ],
+              [
+                user2MentionUser1.commentThreadId,
+                [
+                  await createNotification(
+                    user2MentionUser1.commentThreadId,
+                    users[1],
+                    project,
+                    user2MentionUser1.createdAt,
+                    { type: "COMMENT", comment: user2MentionUser1 },
+                    sudo
+                  ),
+                ],
+              ],
+            ]),
+          },
         ]);
 
         expect(notificationsByUser).toEqual(expectedNotification);
@@ -2014,53 +1904,45 @@ describe("sendCommentsNotificationEmails", () => {
 
         // Check if the notificationsByUser structure is correct
         // user 1 not be notified of self reaction
-        const expectedNotification: NotificationsByUser = new Map([
-          [
-            users[0].id,
-            new Map([
+        const expectedNotification = createNotificationsByUser([
+          {
+            userId: users[0].id,
+            projectId: project.id,
+            notificationsByThread: new Map([
               [
-                project.id,
-                new Map([
-                  [
+                user1ReplyToUser0Comment.commentThreadId,
+                [
+                  await createNotification(
                     user1ReplyToUser0Comment.commentThreadId,
-                    [
-                      await createNotification(
-                        user1ReplyToUser0Comment.commentThreadId,
-                        users[0],
-                        project,
-                        user1ReplyToUser0Comment.createdAt,
-                        { type: "COMMENT", comment: user1ReplyToUser0Comment },
-                        sudo
-                      ),
-                    ],
-                  ],
-                ]),
+                    users[0],
+                    project,
+                    user1ReplyToUser0Comment.createdAt,
+                    { type: "COMMENT", comment: user1ReplyToUser0Comment },
+                    sudo
+                  ),
+                ],
               ],
             ]),
-          ],
-          [
-            users[1].id,
-            new Map([
+          },
+          {
+            userId: users[1].id,
+            projectId: project.id,
+            notificationsByThread: new Map([
               [
-                project.id,
-                new Map([
-                  [
+                user1Comment.commentThreadId,
+                [
+                  await createNotification(
                     user1Comment.commentThreadId,
-                    [
-                      await createNotification(
-                        user1Comment.commentThreadId,
-                        users[1],
-                        project,
-                        user1CommentReaction.createdAt,
-                        { type: "REACTION", reaction: user1CommentReaction },
-                        sudo
-                      ),
-                    ],
-                  ],
-                ]),
+                    users[1],
+                    project,
+                    user1CommentReaction.createdAt,
+                    { type: "REACTION", reaction: user1CommentReaction },
+                    sudo
+                  ),
+                ],
               ],
             ]),
-          ],
+          },
         ]);
 
         expect(notificationsByUser).toEqual(expectedNotification);

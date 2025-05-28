@@ -8,6 +8,7 @@ import {
   Link,
   type LinkProps,
   Markdown,
+  type MarkdownProps,
   Row,
   Section,
   Text,
@@ -19,10 +20,6 @@ const COMMON_STYLES = {
 };
 
 function applyCommonStyles({ style, ...rest }: any) {
-  console.log("sarah style", {
-    ...(style ?? {}),
-    ...COMMON_STYLES,
-  });
   return {
     style: {
       ...(style ?? {}),
@@ -41,11 +38,14 @@ export const EmailContainer = withCommonStyles(Container);
 export const EmailText = withCommonStyles(Text);
 export const EmailImage = withCommonStyles(Img);
 export const EmailHr = withCommonStyles(Hr);
-export const EmailMarkdown = withCommonStyles(Markdown);
 export const EmailHeading = withCommonStyles(Heading);
 export const EmailRow = withCommonStyles(Row);
 export const EmailColumn = withCommonStyles(Column);
 export const EmailSection = withCommonStyles(Section);
+
+export const EmailMarkdown = ({ children, ...props }: MarkdownProps) => {
+  return <Markdown {...applyCommonStyles(props)}>{children ?? ""}</Markdown>;
+};
 
 export const EmailLink = (
   props: LinkProps & {

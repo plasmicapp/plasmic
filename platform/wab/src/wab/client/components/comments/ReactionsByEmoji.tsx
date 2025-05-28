@@ -4,29 +4,15 @@ import PlasmicReactionButton from "@/wab/client/plasmic/plasmic_kit_comments/Pla
 import EmojiPlusSvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__EmojiPlusSvg";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { OnClickAway } from "@/wab/commons/components/OnClickAway";
-import {
-  ApiCommentReaction,
-  CommentId,
-  CommentReactionId,
-} from "@/wab/shared/ApiSchema";
+import { ApiCommentReaction, CommentId } from "@/wab/shared/ApiSchema";
 import { fullName } from "@/wab/shared/ApiSchemaUtil";
-import { ensure, mkUuid } from "@/wab/shared/common";
+import { REACTIONS } from "@/wab/shared/comments-utils";
+import { ensure } from "@/wab/shared/common";
 import { Tooltip } from "antd";
 import Popover from "antd/lib/popover";
 import EmojiPicker, { Emoji } from "emoji-picker-react";
 import { Dictionary } from "lodash";
 import * as React from "react";
-
-// Reactions using unicode emojis hex codes
-const REACTIONS = [
-  "1f44d", // 👍
-  "1f44f", // 👏
-  "1f4af", // 💯
-  "2705", // ✅
-  "1f525", // 🔥
-  "274c", // ❌
-  "1f44e", // 👎
-];
 
 function ReactionsPopover(props: { commentId: CommentId }) {
   const { commentId } = props;
@@ -50,7 +36,7 @@ function ReactionsPopover(props: { commentId: CommentId }) {
               <EmojiPicker
                 reactionsDefaultOpen
                 allowExpandReactions={false}
-                reactions={REACTIONS}
+                reactions={Object.keys(REACTIONS)}
                 onEmojiClick={async (emoji) => {
                   commentsCtx.addReactionToComment(commentId, {
                     emojiName: emoji.unified,

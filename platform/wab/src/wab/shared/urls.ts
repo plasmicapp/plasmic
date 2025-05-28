@@ -77,8 +77,14 @@ export function extractProjectIdFromUrlOrId(rawProjectUrlOrId: string) {
   return projectId;
 }
 
-export function createProjectUrl(host: string, projectId: string) {
-  return `${host}/projects/${projectId}`;
+export function createProjectUrl(
+  host: string,
+  projectId: string,
+  branchName?: string
+) {
+  return `${host}/projects/${projectId}${
+    branchName ? `?branch=${encodeURIComponent(branchName)}` : ""
+  }`;
 }
 
 export function createWorkspaceUrl(host: string, workspaceId: string) {

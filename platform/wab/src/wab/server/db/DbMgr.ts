@@ -10113,7 +10113,10 @@ export class DbMgr implements MigrationDbMgr {
       comment.commentThreadId
     );
     await this.entMgr.save([commentThread, reaction]);
-    return reaction;
+    return {
+      ...reaction,
+      comment,
+    } as CommentReaction;
   }
 
   async removeCommentReaction(

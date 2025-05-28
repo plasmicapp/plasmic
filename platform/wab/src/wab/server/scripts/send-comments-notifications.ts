@@ -18,6 +18,7 @@ import {
 import { logError } from "@/wab/server/server-util";
 import {
   ApiNotificationSettings,
+  BranchId,
   CommentId,
   CommentThreadId,
   ProjectId,
@@ -32,10 +33,12 @@ import { ensure, withoutNils, xGroupBy, xMapValues } from "@/wab/shared/common";
 
 const COMMENTS_NOTIFICATION_LOCK = "comments_notification_lock";
 
-export type NotificationsByUser = Map<
-  UserId,
-  Map<ProjectId, Map<CommentThreadId, Notification[]>>
+export type NotificationsByProject = Map<
+  ProjectId,
+  Map<BranchId | "main", Map<CommentThreadId, Notification[]>>
 >;
+
+export type NotificationsByUser = Map<UserId, NotificationsByProject>;
 
 class Context {
   readonly completeThreadComments: Map<CommentThreadId, Comment[]> = new Map();
@@ -147,7 +150,7 @@ export async function processUnnotifiedCommentsNotifications(
   }
 
   const notificationsByUser =
-    groupNotificationsByUserProjectAndThread(notifications);
+    groupNotificationsByUserProjectBranchAndThread(notifications);
 
   return {
     notificationsByUser,
@@ -529,7 +532,7 @@ async function getUserNotificationSetting(
   );
 }
 
-function groupNotificationsByUserProjectAndThread(
+function groupNotificationsByUserProjectBranchAndThread(
   notifications: Notification[]
 ): NotificationsByUser {
   // Sort notifications by timestamp in ascending order
@@ -550,17 +553,31 @@ function groupNotificationsByUserProjectAndThread(
       xGroupBy(notificationsForUser, (notification) => notification.project.id)
   );
 
-  // Step 3: For each project, group by thread ID
-  const notificationsByUserProjectAndThread = xMapValues(
+  // Step 3: For each project, group by branch ID
+  const notificationsByUserProjectAndBranch = xMapValues(
     notificationsByUserAndProject,
     (notificationsForProject) =>
-      xMapValues(notificationsForProject, (notificationsForThread) =>
+      xMapValues(notificationsForProject, (notificationsForBranch) =>
         xGroupBy(
-          notificationsForThread,
-          (notification) => notification.rootComment.commentThreadId
+          notificationsForBranch,
+          (notification) => notification.commentThread.branchId || "main"
         )
       )
   );
 
-  return notificationsByUserProjectAndThread;
+  // Step 4: For each branch, group by thread ID
+  const notificationsByUserProjectBranchAndThread = xMapValues(
+    notificationsByUserProjectAndBranch,
+    (notificationsForProject) =>
+      xMapValues(notificationsForProject, (notificationsForBranch) =>
+        xMapValues(notificationsForBranch, (notificationsForThread) =>
+          xGroupBy(
+            notificationsForThread,
+            (notification) => notification.rootComment.commentThreadId
+          )
+        )
+      )
+  );
+
+  return notificationsByUserProjectBranchAndThread;
 }

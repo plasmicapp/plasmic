@@ -18,7 +18,9 @@ export async function generateEmailHtml(templateName: string, props: any) {
           />
         </Head>
       </Head>
-      <Body style={{ backgroundColor: "#eeeeee", padding: "24px" }}>
+      <Body
+        style={{ backgroundColor: "#eeeeee", padding: "24px", borderRadius: 7 }}
+      >
         <Template {...props} />
       </Body>
     </Html>

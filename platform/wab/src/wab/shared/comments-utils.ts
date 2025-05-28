@@ -7,6 +7,17 @@ const pEmailLocal = pattern`[a-zA-Z0-9.!#$%&'+*\/=?^_\`\{\|\}~\-]+`; // letters,
 const pDomainPart = pattern`[a-zA-Z0-9](?:[a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?`; // Domain segment (letters, numbers, hyphens)
 const pDot = pattern`\.`;
 
+// Reactions using unicode emojis hex codes
+export const REACTIONS = {
+  "1f44d": "👍",
+  "1f44f": "👏",
+  "1f4af": "💯",
+  "2705": "✅",
+  "1f525": "🔥",
+  "274c": "❌",
+  "1f44e": "👎",
+};
+
 export const MENTION_EMAIL_REGEX = regex("g")`
   @<                        # Start of mention @<
   (?<email>                 # Named capture group for the email

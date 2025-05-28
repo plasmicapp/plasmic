@@ -12,7 +12,9 @@ import {
   EmailText,
 } from "@/wab/server/emails/components";
 import { PlasmicCanvasHost } from "@plasmicapp/host";
-import registerComponent from "@plasmicapp/host/registerComponent";
+import registerComponent, {
+  StyleSection,
+} from "@plasmicapp/host/registerComponent";
 import type { LinkProps } from "@react-email/components";
 import React from "react";
 import { createRoot } from "react-dom/client";
@@ -35,14 +37,15 @@ const componentNames = {
   horizontalRule: makeComponentName("hr"),
 };
 
-const IMPORT_PATH = "@/wab/server/emails/components.tsx";
+const COMPONENTS_IMPORT_PATH = "@/wab/server/emails/components.tsx";
+const STYLE_SECTIONS: StyleSection[] = ["visibility"]; // set to false after PLA-12167
 
 registerComponent(EmailContainer, {
   name: componentNames.container,
   displayName: "Email Container",
-  importPath: IMPORT_PATH,
+  importPath: COMPONENTS_IMPORT_PATH,
   importName: "EmailContainer",
-  styleSections: false,
+  styleSections: STYLE_SECTIONS,
   props: {
     style: {
       type: "object",
@@ -58,9 +61,9 @@ registerComponent(EmailContainer, {
 registerComponent(EmailButton, {
   name: componentNames.button,
   displayName: "Email Button",
-  importPath: IMPORT_PATH,
+  importPath: COMPONENTS_IMPORT_PATH,
   importName: "EmailButton",
-  styleSections: false,
+  styleSections: STYLE_SECTIONS,
   props: {
     href: {
       type: "string",
@@ -85,9 +88,9 @@ registerComponent(EmailButton, {
 registerComponent(EmailText, {
   name: componentNames.text,
   displayName: "Email Text",
-  importPath: IMPORT_PATH,
+  importPath: COMPONENTS_IMPORT_PATH,
   importName: "EmailText",
-  styleSections: false,
+  styleSections: STYLE_SECTIONS,
   props: {
     style: {
       type: "object",
@@ -102,10 +105,13 @@ registerComponent(EmailText, {
 registerComponent(EmailImage, {
   name: componentNames.image,
   displayName: "Email Image",
-  importPath: IMPORT_PATH,
+  importPath: COMPONENTS_IMPORT_PATH,
   importName: "EmailImage",
-  styleSections: false,
+  styleSections: STYLE_SECTIONS,
   props: {
+    style: {
+      type: "object",
+    },
     src: {
       type: "imageUrl",
       required: true,
@@ -129,9 +135,9 @@ registerComponent(EmailImage, {
 registerComponent(EmailHr, {
   name: componentNames.horizontalRule,
   displayName: "Email Horizontal Rule",
-  importPath: IMPORT_PATH,
+  importPath: COMPONENTS_IMPORT_PATH,
   importName: "EmailHr",
-  styleSections: false,
+  styleSections: STYLE_SECTIONS,
   props: {
     style: {
       type: "object",
@@ -142,9 +148,9 @@ registerComponent(EmailHr, {
 registerComponent(EmailLink, {
   name: componentNames.link,
   displayName: "Email Link",
-  importPath: IMPORT_PATH,
+  importPath: COMPONENTS_IMPORT_PATH,
   importName: "EmailLink",
-  styleSections: false,
+  styleSections: STYLE_SECTIONS,
   props: {
     style: {
       type: "object",
@@ -180,11 +186,12 @@ registerComponent(EmailLink, {
 registerComponent(EmailMarkdown, {
   name: componentNames.markdown,
   displayName: "Email Markdown",
-  importPath: IMPORT_PATH,
+  importPath: COMPONENTS_IMPORT_PATH,
   importName: "EmailMarkdown",
-  styleSections: false,
+  styleSections: STYLE_SECTIONS,
   props: {
     children: {
+      displayName: "Content",
       type: "string",
       description:
         "Contains the markdown content that will be rendered in the email template",
@@ -207,9 +214,9 @@ registerComponent(EmailMarkdown, {
 registerComponent(EmailHeading, {
   name: componentNames.heading,
   displayName: "Email Heading",
-  importPath: IMPORT_PATH,
+  importPath: COMPONENTS_IMPORT_PATH,
   importName: "EmailHeading",
-  styleSections: false,
+  styleSections: STYLE_SECTIONS,
   props: {
     as: {
       type: "choice",
@@ -230,16 +237,16 @@ registerComponent(EmailHeading, {
 registerComponent(EmailRow, {
   name: componentNames.row,
   displayName: "Email Row",
-  importPath: IMPORT_PATH,
+  importPath: COMPONENTS_IMPORT_PATH,
   importName: "EmailRow",
-  styleSections: false,
+  styleSections: STYLE_SECTIONS,
   props: {
     style: {
       type: "object",
     },
     children: {
       type: "slot",
-      // allowedComponents: Object.values(componentNames), // TODO: Uncomment after PLA-12156
+      allowedComponents: Object.values(componentNames),
       allowRootWrapper: true,
       description: "Content to be displayed in the row",
     },
@@ -249,9 +256,9 @@ registerComponent(EmailRow, {
 registerComponent(EmailColumn, {
   name: componentNames.column,
   displayName: "Email Column",
-  importPath: IMPORT_PATH,
+  importPath: COMPONENTS_IMPORT_PATH,
   importName: "EmailColumn",
-  styleSections: false,
+  styleSections: STYLE_SECTIONS,
   props: {
     style: {
       type: "object",
@@ -280,9 +287,9 @@ registerComponent(EmailColumn, {
 registerComponent(EmailSection, {
   name: componentNames.section,
   displayName: "Email Section",
-  importPath: IMPORT_PATH,
+  importPath: COMPONENTS_IMPORT_PATH,
   importName: "EmailSection",
-  styleSections: false,
+  styleSections: STYLE_SECTIONS,
   props: {
     style: {
       type: "object",
