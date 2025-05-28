@@ -20,6 +20,7 @@ services:
   plasmic-wab:
     build:
       context: .
+      dockerfile: ./platform/wab/tools/docker-dev/Dockerfile
     ports:
       - "3003:3003"
       - "3004:3004"
