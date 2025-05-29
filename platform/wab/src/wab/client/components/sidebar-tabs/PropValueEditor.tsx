@@ -553,6 +553,7 @@ const PropValueEditor_ = (
           return (
             <PropEditorRow
               {...props}
+              env={env}
               // don't expose model data to code components
               componentPropValues={innerComponentPropValues}
               ccContextData={innerCcContextData}
