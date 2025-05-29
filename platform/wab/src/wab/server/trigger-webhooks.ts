@@ -1,12 +1,21 @@
+import { unbundlePkgVersion } from "@/wab/server/db/DbBundleLoader";
 import { DbMgr } from "@/wab/server/db/DbMgr";
-import { ApiProjectWebhook } from "@/wab/shared/ApiSchema";
+import { NotFoundError } from "@/wab/shared/ApiErrors/errors";
+import { ApiProjectWebhook, ProjectId } from "@/wab/shared/ApiSchema";
+import { Bundler } from "@/wab/shared/bundler";
+import { withoutNils } from "@/wab/shared/common";
+import {
+  compareSites,
+  ExternalChangeData,
+  getExternalChangeData,
+} from "@/wab/shared/site-diffs";
 import axios, { AddressFamily, Method } from "axios";
 import dns from "dns";
 import isPrivateIp from "private-ip";
 export async function triggerWebhook(
   mgr: DbMgr,
   projectId: string,
-  webhook: Omit<ApiProjectWebhook, "id">
+  webhook: Omit<ApiProjectWebhook, "id" | "includeChangeData">
 ) {
   const response = await triggerWebhookOnly(webhook);
   const method = webhook.method as Method;
@@ -15,7 +24,7 @@ export async function triggerWebhook(
 }
 
 export async function triggerWebhookOnly(
-  webhook: Omit<ApiProjectWebhook, "id">
+  webhook: Omit<ApiProjectWebhook, "id" | "includeChangeData">
 ) {
   const method = webhook.method as Method;
   const url = webhook.url;
@@ -78,4 +87,53 @@ async function addEvent(
     status: response?.status || 0,
     response: response?.data || "",
   });
+}
+
+export async function mkWebhookPagesModified(
+  mgr: DbMgr,
+  projectId: ProjectId
+): Promise<ExternalChangeData> {
+  const pkg = await mgr.getPkgByProjectId(projectId);
+  if (!pkg) {
+    return {
+      importedProjectsChanged: [],
+      pagesChanged: [],
+    };
+  }
+  const latestPkgVersionIds = await mgr.getLatestPkgVersionIds(
+    projectId,
+    undefined,
+    pkg?.id,
+    2
+  );
+  if (latestPkgVersionIds.length !== 2) {
+    return {
+      importedProjectsChanged: [],
+      pagesChanged: [],
+    };
+  }
+
+  const sites = withoutNils(
+    await Promise.all(
+      latestPkgVersionIds.map(async (id) => {
+        const bundler = new Bundler();
+        const pkgVersion = await mgr.getPkgVersionById(id);
+        if (!pkgVersion) {
+          throw new NotFoundError(`PkgVersion ${id} not found`);
+        }
+        return (await unbundlePkgVersion(mgr, bundler, pkgVersion)).site;
+      })
+    )
+  );
+
+  if (sites.length !== 2) {
+    return {
+      importedProjectsChanged: [],
+      pagesChanged: [],
+    };
+  }
+
+  const changeLogs = compareSites(sites[1], sites[0]);
+
+  return getExternalChangeData(changeLogs);
 }

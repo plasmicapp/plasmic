@@ -7,9 +7,10 @@ import styles from "@/wab/client/components/webhooks/WebhooksItem.module.scss";
 import Select from "@/wab/client/components/widgets/Select";
 import TrashIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Trash";
 import PresetsIcon from "@/wab/client/plasmic/plasmic_kit_design_system/PlasmicIcon__Presets";
+import { StandardMarkdown } from "@/wab/client/utils/StandardMarkdown";
 import { ApiProjectWebhook } from "@/wab/shared/ApiSchema";
 import { httpMethods } from "@/wab/shared/HttpClientUtil";
-import { Menu } from "antd";
+import { Menu, Popover } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
 
@@ -146,6 +147,35 @@ const WebhooksItem = observer(function WebhooksItem(props: WebhooksItemProps) {
             w.payload = e.target.value;
             setWebhook(w);
           },
+        }}
+        sendPlasmicDataSwitch={{
+          "aria-label": "Send Plasmic data",
+          isChecked: webhook.includeChangeData ?? false,
+          onChange: (val) => {
+            const w = { ...webhook };
+            w.includeChangeData = val;
+            setWebhook(w);
+          },
+        }}
+        sendDataInfo={{
+          wrap: (node) => (
+            <Popover
+              trigger={["hover", "click"]}
+              mouseEnterDelay={0.3}
+              overlayStyle={{ zIndex: 1080 }}
+              content={
+                <StandardMarkdown>
+                  {`
+Whether to send information about the changes in the project.
+
+[Learn more in the docs](https://docs.plasmic.app/learn/webhooks/).
+                  `}
+                </StandardMarkdown>
+              }
+            >
+              {node}
+            </Popover>
+          ),
         }}
         {...rest}
       />

@@ -1403,7 +1403,7 @@
     {
       "name": "Spectrum/Gray/50",
       "type": "color",
-      "value": "rgb(122,125,130)",
+      "value": "#7A7D82",
       "category": "color",
       "meta": {
         "projectId": "fpbcKyXdMTvY59T4C5fjcC",
@@ -6668,16 +6668,6 @@
       "meta": {
         "projectId": "dyzP6dbCdycwJpqiR2zkwe",
         "id": "aUCjnzhayS"
-      }
-    },
-    {
-      "name": "white",
-      "type": "color",
-      "value": "rgb(255,255,255)",
-      "category": "color",
-      "meta": {
-        "projectId": "fpbcKyXdMTvY59T4C5fjcC",
-        "id": "iv-M1hAwV"
       }
     },
     {

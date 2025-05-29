@@ -4,7 +4,7 @@
   position: relative;
   width: 480px;
   overflow: hidden;
-  background: var(--token-iv-M1hAwV);
+  background: var(--token-iR8SeEwQZ);
   border-radius: 0.25rem;
 }
 .freeBox__spuop {
@@ -95,7 +95,7 @@
   width: 1rem;
   height: 1rem;
 }
-.svg__sEvJw {
+.svg__oq50W {
   display: flex;
   position: relative;
   object-fit: cover;
@@ -360,12 +360,12 @@
   box-shadow: inset 0px 0px 0px 2px var(--token-XH9PcvIOG8Q);
   outline: none;
 }
+.root .customDomainInput::placeholder {
+  color: var(--token-t68i-MG5Bw);
+}
 .rootcustomDomain_preliminaryError
   .customDomainInputcustomDomain_preliminaryError:focus {
   outline: none;
-}
-.root .customDomainInput::placeholder {
-  color: var(--token-t68i-MG5Bw);
 }
 .customDomainPreliminaryErrorFeedback:global(.__wab_instance) {
   position: relative;

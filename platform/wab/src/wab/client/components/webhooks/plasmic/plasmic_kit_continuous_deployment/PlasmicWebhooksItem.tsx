@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -21,6 +21,8 @@ import {
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  generateStateOnChangeProp,
+  generateStateValueProp,
   hasVariant,
   renderPlasmicSlot,
   useDollarState,
@@ -30,6 +32,7 @@ import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 import Checkbox from "../../../widgets/Checkbox"; // plasmic-import: W-rO7NZqPjZ/component
 import MenuButton from "../../../widgets/MenuButton"; // plasmic-import: h69wHrrKtL/component
 import Select from "../../../widgets/Select"; // plasmic-import: j_4IQyOWK2b/component
+import Switch from "../../../widgets/Switch"; // plasmic-import: b35JDgXpbiF/component
 import WebhookHeader from "../../WebhookHeader"; // plasmic-import: OkB-fXuJPc/component
 
 import "@plasmicapp/react-web/lib/plasmic.css";
@@ -39,7 +42,8 @@ import plasmic_plasmic_kit_color_tokens_css from "../../../../plasmic/plasmic_ki
 import projectcss from "../../../modals/plasmic/plasmic_kit_project_settings/plasmic_plasmic_kit_project_settings.module.css"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/projectcss
 import sty from "./PlasmicWebhooksItem.module.css"; // plasmic-import: mSgnlB96I5A/css
 
-import PlussvgIcon from "../../../../plasmic/plasmic_kit_icons/icons/PlasmicIcon__PlusSvg"; // plasmic-import: sQKgd2GNr/icon
+import InfoIcon from "../../../../plasmic/plasmic_kit/PlasmicIcon__Info"; // plasmic-import: BjAly3N4fWuWe/icon
+import PlusSvgIcon from "../../../../plasmic/plasmic_kit_icons/icons/PlasmicIcon__PlusSvg"; // plasmic-import: sQKgd2GNr/icon
 
 createPlasmicElementProxy;
 
@@ -54,9 +58,7 @@ export const PlasmicWebhooksItem__VariantProps = new Array<VariantPropType>(
   "expanded"
 );
 
-export type PlasmicWebhooksItem__ArgsType = {
-  headers?: React.ReactNode;
-};
+export type PlasmicWebhooksItem__ArgsType = { headers?: React.ReactNode };
 type ArgPropType = keyof PlasmicWebhooksItem__ArgsType;
 export const PlasmicWebhooksItem__ArgProps = new Array<ArgPropType>("headers");
 
@@ -67,8 +69,9 @@ export type PlasmicWebhooksItem__OverridesType = {
   svg?: Flex__<"svg">;
   url?: Flex__<"input">;
   menuButton?: Flex__<typeof MenuButton>;
-  text?: Flex__<"div">;
   payload?: Flex__<"textarea">;
+  sendDataInfo?: Flex__<"svg">;
+  sendPlasmicDataSwitch?: Flex__<typeof Switch>;
 };
 
 export interface DefaultWebhooksItemProps {
@@ -87,7 +90,16 @@ function PlasmicWebhooksItem__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
@@ -106,8 +118,25 @@ function PlasmicWebhooksItem__RenderFunc(props: {
         variableType: "variant",
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.expanded,
       },
+      {
+        path: "checkbox.isChecked",
+        type: "private",
+        variableType: "boolean",
+        initFunc: ({ $props, $state, $queries, $ctx }) => undefined,
+      },
+      {
+        path: "method.value",
+        type: "private",
+        variableType: "text",
+        initFunc: ({ $props, $state, $queries, $ctx }) => undefined,
+      },
+      {
+        path: "sendPlasmicDataSwitch.isChecked",
+        type: "private",
+        variableType: "boolean",
+        initFunc: ({ $props, $state, $queries, $ctx }) => undefined,
+      },
     ],
-
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -157,6 +186,25 @@ function PlasmicWebhooksItem__RenderFunc(props: {
               data-plasmic-override={overrides.checkbox}
               children={null}
               className={classNames("__wab_instance", sty.checkbox)}
+              isChecked={
+                generateStateValueProp($state, ["checkbox", "isChecked"]) ??
+                false
+              }
+              onChange={async (...eventArgs: any) => {
+                ((...eventArgs) => {
+                  generateStateOnChangeProp($state, ["checkbox", "isChecked"])(
+                    eventArgs[0]
+                  );
+                }).apply(null, eventArgs);
+
+                if (
+                  eventArgs.length > 1 &&
+                  eventArgs[1] &&
+                  eventArgs[1]._plasmic_state_init_
+                ) {
+                  return;
+                }
+              }}
             />
 
             <Select
@@ -164,13 +212,29 @@ function PlasmicWebhooksItem__RenderFunc(props: {
               data-plasmic-override={overrides.method}
               className={classNames("__wab_instance", sty.method)}
               icon={
-                <PlussvgIcon
+                <PlusSvgIcon
                   data-plasmic-name={"svg"}
                   data-plasmic-override={overrides.svg}
                   className={classNames(projectcss.all, sty.svg)}
                   role={"img"}
                 />
               }
+              onChange={async (...eventArgs: any) => {
+                ((...eventArgs) => {
+                  generateStateOnChangeProp($state, ["method", "value"])(
+                    eventArgs[0]
+                  );
+                }).apply(null, eventArgs);
+
+                if (
+                  eventArgs.length > 1 &&
+                  eventArgs[1] &&
+                  eventArgs[1]._plasmic_state_init_
+                ) {
+                  return;
+                }
+              }}
+              value={generateStateValueProp($state, ["method", "value"])}
             />
           </Stack__>
           <input
@@ -218,7 +282,6 @@ function PlasmicWebhooksItem__RenderFunc(props: {
                   <WebhookHeader />
                 </React.Fragment>
               ),
-
               value: args.headers,
             })}
           </Stack__>
@@ -234,14 +297,12 @@ function PlasmicWebhooksItem__RenderFunc(props: {
             })}
           >
             <div
-              data-plasmic-name={"text"}
-              data-plasmic-override={overrides.text}
               className={classNames(
                 projectcss.all,
                 projectcss.__wab_text,
-                sty.text,
+                sty.text___0EkOd,
                 {
-                  [sty.textexpanded]: hasVariant(
+                  [sty.textexpanded___0EkOdaCjOc]: hasVariant(
                     $state,
                     "expanded",
                     "expanded"
@@ -274,6 +335,77 @@ function PlasmicWebhooksItem__RenderFunc(props: {
               value={""}
             />
           </Stack__>
+          <Stack__
+            as={"div"}
+            hasGap={true}
+            className={classNames(projectcss.all, sty.freeBox__paNzq, {
+              [sty.freeBoxexpanded__paNzQaCjOc]: hasVariant(
+                $state,
+                "expanded",
+                "expanded"
+              ),
+            })}
+          >
+            <Stack__
+              as={"div"}
+              hasGap={true}
+              className={classNames(projectcss.all, sty.freeBox___5X7VS)}
+            >
+              <div
+                className={classNames(
+                  projectcss.all,
+                  projectcss.__wab_text,
+                  sty.text___1YZlP,
+                  {
+                    [sty.textexpanded___1YZlPaCjOc]: hasVariant(
+                      $state,
+                      "expanded",
+                      "expanded"
+                    ),
+                  }
+                )}
+              >
+                {"Send Data?"}
+              </div>
+              <InfoIcon
+                data-plasmic-name={"sendDataInfo"}
+                data-plasmic-override={overrides.sendDataInfo}
+                className={classNames(projectcss.all, sty.sendDataInfo)}
+                role={"img"}
+              />
+            </Stack__>
+            <Switch
+              data-plasmic-name={"sendPlasmicDataSwitch"}
+              data-plasmic-override={overrides.sendPlasmicDataSwitch}
+              children={null}
+              className={classNames(
+                "__wab_instance",
+                sty.sendPlasmicDataSwitch
+              )}
+              isChecked={
+                generateStateValueProp($state, [
+                  "sendPlasmicDataSwitch",
+                  "isChecked",
+                ]) ?? false
+              }
+              onChange={async (...eventArgs: any) => {
+                ((...eventArgs) => {
+                  generateStateOnChangeProp($state, [
+                    "sendPlasmicDataSwitch",
+                    "isChecked",
+                  ])(eventArgs[0]);
+                }).apply(null, eventArgs);
+
+                if (
+                  eventArgs.length > 1 &&
+                  eventArgs[1] &&
+                  eventArgs[1]._plasmic_state_init_
+                ) {
+                  return;
+                }
+              }}
+            />
+          </Stack__>
         </Stack__>
       ) : null}
       <div className={classNames(projectcss.all, sty.freeBox__uuv93)} />
@@ -289,17 +421,18 @@ const PlasmicDescendants = {
     "svg",
     "url",
     "menuButton",
-    "text",
     "payload",
+    "sendDataInfo",
+    "sendPlasmicDataSwitch",
   ],
-
   checkbox: ["checkbox"],
   method: ["method", "svg"],
   svg: ["svg"],
   url: ["url"],
   menuButton: ["menuButton"],
-  text: ["text"],
   payload: ["payload"],
+  sendDataInfo: ["sendDataInfo"],
+  sendPlasmicDataSwitch: ["sendPlasmicDataSwitch"],
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -311,8 +444,9 @@ type NodeDefaultElementType = {
   svg: "svg";
   url: "input";
   menuButton: typeof MenuButton;
-  text: "div";
   payload: "textarea";
+  sendDataInfo: "svg";
+  sendPlasmicDataSwitch: typeof Switch;
 };
 
 type ReservedPropsType = "variants" | "args" | "overrides";
@@ -320,7 +454,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicWebhooksItem__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
@@ -328,15 +461,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicWebhooksItem__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicWebhooksItem__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicWebhooksItem__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+    // Specify args directly as props
+    Omit<PlasmicWebhooksItem__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;
@@ -381,8 +514,9 @@ export const PlasmicWebhooksItem = Object.assign(
     svg: makeNodeComponent("svg"),
     url: makeNodeComponent("url"),
     menuButton: makeNodeComponent("menuButton"),
-    text: makeNodeComponent("text"),
     payload: makeNodeComponent("payload"),
+    sendDataInfo: makeNodeComponent("sendDataInfo"),
+    sendPlasmicDataSwitch: makeNodeComponent("sendPlasmicDataSwitch"),
 
     // Metadata about props expected for PlasmicWebhooksItem
     internalVariantProps: PlasmicWebhooksItem__VariantProps,

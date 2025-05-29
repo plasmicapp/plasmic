@@ -4491,49 +4491,14 @@
           "moduleFilePath": "wab/client/plasmic/plasmic_kit_continuous_deployment/icons/PlasmicIcon__Icon.tsx"
         },
         {
-          "id": "anZFqaYK2M",
-          "name": "Icon2Icon",
-          "moduleFilePath": "wab/client/plasmic/plasmic_kit_continuous_deployment/icons/PlasmicIcon__Icon2.tsx"
-        },
-        {
-          "id": "zMVsaewMxW",
-          "name": "Icon3Icon",
-          "moduleFilePath": "wab/client/plasmic/plasmic_kit_continuous_deployment/icons/PlasmicIcon__Icon3.tsx"
-        },
-        {
           "id": "ICm0kU5OI3",
           "name": "Icon4Icon",
           "moduleFilePath": "wab/client/plasmic/plasmic_kit_continuous_deployment/icons/PlasmicIcon__Icon4.tsx"
         },
         {
-          "id": "yiQHJGuy_d",
-          "name": "Icon5Icon",
-          "moduleFilePath": "wab/client/plasmic/plasmic_kit_continuous_deployment/icons/PlasmicIcon__Icon5.tsx"
-        },
-        {
-          "id": "VVMOwNy6jE2",
-          "name": "ChevronNewIcon",
-          "moduleFilePath": "wab/client/plasmic/plasmic_kit_continuous_deployment/icons/PlasmicIcon__ChevronNew.tsx"
-        },
-        {
-          "id": "7rXqDBDnr6J",
-          "name": "ChevronRightIcon",
-          "moduleFilePath": "wab/client/plasmic/plasmic_kit_continuous_deployment/icons/PlasmicIcon__ChevronRight.tsx"
-        },
-        {
-          "id": "eN66f1laxk2",
-          "name": "ChevronDownsvgIcon",
-          "moduleFilePath": "wab/client/plasmic/plasmic_kit_continuous_deployment/icons/PlasmicIcon__ChevronDownsvg.tsx"
-        },
-        {
-          "id": "8bD27nDcBRQ",
-          "name": "ChevronUpsvgIcon",
-          "moduleFilePath": "wab/client/plasmic/plasmic_kit_continuous_deployment/icons/PlasmicIcon__ChevronUpsvg.tsx"
-        },
-        {
           "id": "mwpa_Gia6i",
-          "name": "Spinner1S200PxsvgIcon",
-          "moduleFilePath": "wab/client/plasmic/plasmic_kit_continuous_deployment/icons/PlasmicIcon__Spinner1S200Pxsvg.tsx"
+          "name": "Spinner1S200PxSvgIcon",
+          "moduleFilePath": "wab/client/plasmic/plasmic_kit_continuous_deployment/icons/PlasmicIcon__Spinner1S200PxSvg.tsx"
         }
       ],
       "images": [
@@ -4571,8 +4536,7 @@
       "indirect": false,
       "globalContextsFilePath": "",
       "splitsProviderFilePath": "",
-      "customFunctions": [],
-      "jsBundleThemes": []
+      "customFunctions": []
     },
     {
       "projectId": "6CrqkTcB6gSAHoA8c8zpNz",

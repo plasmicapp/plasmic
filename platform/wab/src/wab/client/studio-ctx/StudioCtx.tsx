@@ -4508,7 +4508,7 @@ export class StudioCtx extends WithDbCtx {
   }
 
   //
-  // Indicate wheter we are transforming an element, with css transforms.
+  // Indicate whether we are transforming an element, with css transforms.
   // This is needed to hide the HoverBox during the change
   //
   private _isTransformingObject = observable.box<boolean>(false);

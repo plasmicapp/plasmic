@@ -1066,6 +1066,7 @@ export interface ApiProjectWebhook {
   url: string;
   headers: Array<WebhookHeader> | undefined;
   payload: string | undefined;
+  includeChangeData: boolean | null;
 }
 export const apiProjectWebhookFields = [
   "id",
@@ -1073,6 +1074,7 @@ export const apiProjectWebhookFields = [
   "url",
   "headers",
   "payload",
+  "includeChangeData",
 ] as const;
 
 export interface ApiProjectWebhookEvent {

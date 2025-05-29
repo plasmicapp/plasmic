@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -34,7 +34,7 @@ import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_syst
 import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
 import sty from "./PlasmicErrorFeedback.module.css"; // plasmic-import: 6ztKJ9-EG9Y/css
 
-import WarningTrianglesvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__WarningTriangleSvg"; // plasmic-import: S0L-xosWD/icon
+import WarningTriangleSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__WarningTriangleSvg"; // plasmic-import: S0L-xosWD/icon
 
 createPlasmicElementProxy;
 
@@ -49,9 +49,7 @@ export const PlasmicErrorFeedback__VariantProps = new Array<VariantPropType>(
   "warning"
 );
 
-export type PlasmicErrorFeedback__ArgsType = {
-  children?: React.ReactNode;
-};
+export type PlasmicErrorFeedback__ArgsType = { children?: React.ReactNode };
 type ArgPropType = keyof PlasmicErrorFeedback__ArgsType;
 export const PlasmicErrorFeedback__ArgProps = new Array<ArgPropType>(
   "children"
@@ -78,7 +76,16 @@ function PlasmicErrorFeedback__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
@@ -98,7 +105,6 @@ function PlasmicErrorFeedback__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.warning,
       },
     ],
-
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -128,7 +134,7 @@ function PlasmicErrorFeedback__RenderFunc(props: {
         { [sty.rootwarning]: hasVariant($state, "warning", "warning") }
       )}
     >
-      <WarningTrianglesvgIcon
+      <WarningTriangleSvgIcon
         data-plasmic-name={"svg"}
         data-plasmic-override={overrides.svg}
         className={classNames(projectcss.all, sty.svg, {
@@ -149,7 +155,6 @@ function PlasmicErrorFeedback__RenderFunc(props: {
             {"Requires repo to be public."}
           </div>
         ),
-
         value: args.children,
         className: classNames(sty.slotTargetChildren, {
           [sty.slotTargetChildrenwarning]: hasVariant(
@@ -180,7 +185,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicErrorFeedback__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
@@ -188,15 +192,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicErrorFeedback__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicErrorFeedback__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicErrorFeedback__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+    // Specify args directly as props
+    Omit<PlasmicErrorFeedback__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

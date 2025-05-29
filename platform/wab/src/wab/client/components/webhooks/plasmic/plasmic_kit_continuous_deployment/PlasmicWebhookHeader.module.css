@@ -51,24 +51,24 @@
   padding: 0.5rem;
   border: 1px solid var(--token-eBt2ZgqRUCz);
 }
+.root .keyInput::placeholder {
+  color: var(--token-UunsGa2Y3t3);
+}
 .root .keyInput:focus {
   box-shadow: 0px 0px 0px 2px #0091ff80;
   outline: none;
-}
-.root .keyInput::placeholder {
-  color: var(--token-UunsGa2Y3t3);
 }
 .valueInput {
   border-radius: 4px;
   padding: 0.5rem;
   border: 1px solid var(--token-eBt2ZgqRUCz);
 }
+.root .valueInput::placeholder {
+  color: var(--token-UunsGa2Y3t3);
+}
 .root .valueInput:focus {
   box-shadow: 0px 0px 0px 2px #0091ff80;
   outline: none;
-}
-.root .valueInput::placeholder {
-  color: var(--token-UunsGa2Y3t3);
 }
 .freeBox__pVez5 {
   display: flex;

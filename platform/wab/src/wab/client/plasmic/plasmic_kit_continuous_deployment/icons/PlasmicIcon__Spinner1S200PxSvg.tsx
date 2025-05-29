@@ -1,15 +1,15 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
-import React from "react";
 import { classNames } from "@plasmicapp/react-web";
+import React from "react";
 
-export type Spinner1S200PxsvgIconProps = React.ComponentProps<"svg"> & {
+export type Spinner1S200PxSvgIconProps = React.ComponentProps<"svg"> & {
   title?: string;
 };
 
-export function Spinner1S200PxsvgIcon(props: Spinner1S200PxsvgIconProps) {
+export function Spinner1S200PxSvgIcon(props: Spinner1S200PxSvgIconProps) {
   const { className, style, title, ...restProps } = props;
   return (
     <svg
@@ -273,5 +273,5 @@ export function Spinner1S200PxsvgIcon(props: Spinner1S200PxsvgIconProps) {
   );
 }
 
-export default Spinner1S200PxsvgIcon;
+export default Spinner1S200PxSvgIcon;
 /* prettier-ignore-end */

@@ -1629,6 +1629,22 @@ export function describeValueOrType(x: any): string {
     : x.constructor.modelTypeName ?? x.constructor.name;
 }
 
+export function stableJsonStringify(x: any, exclude: Set<string>): string {
+  return JSON.stringify(x, (_, value) =>
+    value instanceof Object && !(value instanceof Array)
+      ? Object.keys(value)
+          .sort()
+          .reduce((sortedObject, key) => {
+            if (exclude.has(key)) {
+              return sortedObject;
+            }
+            sortedObject[key] = value[key];
+            return sortedObject;
+          }, {})
+      : value
+  );
+}
+
 export function ensureInstanceAbstract<T>(x: any, type: Function): T {
   check(x instanceof type, () => mkUnexpectedTypeMsg([type], x));
   return x as T;

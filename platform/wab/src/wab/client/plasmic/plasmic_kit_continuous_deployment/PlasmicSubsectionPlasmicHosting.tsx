@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -24,6 +24,8 @@ import {
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  generateStateOnChangeProp,
+  generateStateValueProp,
   hasVariant,
   renderPlasmicSlot,
   useDollarState,
@@ -46,10 +48,10 @@ import sty from "./PlasmicSubsectionPlasmicHosting.module.css"; // plasmic-impor
 import CloseIcon from "../plasmic_kit/PlasmicIcon__Close"; // plasmic-import: hy7vKrgdAZwW4/icon
 import OpenIcon from "../plasmic_kit/PlasmicIcon__Open"; // plasmic-import: 7D0GDLdF72udM/icon
 import TriangleBottomIcon from "../plasmic_kit/PlasmicIcon__TriangleBottom"; // plasmic-import: A8NQUZ7Lg1OHO/icon
-import ArrowRightsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ArrowRightSvg"; // plasmic-import: 9Jv8jb253/icon
-import ChevronDownsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
-import GlobesvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__GlobeSvg"; // plasmic-import: gcxY0Mwvj/icon
-import PlussvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__PlusSvg"; // plasmic-import: sQKgd2GNr/icon
+import ArrowRightSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ArrowRightSvg"; // plasmic-import: 9Jv8jb253/icon
+import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
+import GlobeSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__GlobeSvg"; // plasmic-import: gcxY0Mwvj/icon
+import PlusSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__PlusSvg"; // plasmic-import: sQKgd2GNr/icon
 import image2DAmIiITwd from "./images/image2.svg"; // plasmic-import: dAMIiI_twd/picture
 
 createPlasmicElementProxy;
@@ -113,7 +115,16 @@ function PlasmicSubsectionPlasmicHosting__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
@@ -138,8 +149,19 @@ function PlasmicSubsectionPlasmicHosting__RenderFunc(props: {
         variableType: "variant",
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.view,
       },
+      {
+        path: "checkbox.isChecked",
+        type: "private",
+        variableType: "boolean",
+        initFunc: ({ $props, $state, $queries, $ctx }) => undefined,
+      },
+      {
+        path: "pushAs.value",
+        type: "private",
+        variableType: "text",
+        initFunc: ({ $props, $state, $queries, $ctx }) => undefined,
+      },
     ],
-
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -197,6 +219,25 @@ function PlasmicSubsectionPlasmicHosting__RenderFunc(props: {
               data-plasmic-override={overrides.checkbox}
               children={null}
               className={classNames("__wab_instance", sty.checkbox)}
+              isChecked={
+                generateStateValueProp($state, ["checkbox", "isChecked"]) ??
+                false
+              }
+              onChange={async (...eventArgs: any) => {
+                ((...eventArgs) => {
+                  generateStateOnChangeProp($state, ["checkbox", "isChecked"])(
+                    eventArgs[0]
+                  );
+                }).apply(null, eventArgs);
+
+                if (
+                  eventArgs.length > 1 &&
+                  eventArgs[1] &&
+                  eventArgs[1]._plasmic_state_init_
+                ) {
+                  return;
+                }
+              }}
             />
 
             {false ? (
@@ -252,14 +293,14 @@ function PlasmicSubsectionPlasmicHosting__RenderFunc(props: {
             data-plasmic-name={"removeButton"}
             data-plasmic-override={overrides.removeButton}
             endIcon={
-              <ChevronDownsvgIcon
+              <ChevronDownSvgIcon
                 className={classNames(projectcss.all, sty.svg__sAuG)}
                 role={"img"}
               />
             }
             size={"small"}
             startIcon={
-              <ArrowRightsvgIcon
+              <ArrowRightSvgIcon
                 className={classNames(projectcss.all, sty.svg__kbdb)}
                 role={"img"}
               />
@@ -295,7 +336,7 @@ function PlasmicSubsectionPlasmicHosting__RenderFunc(props: {
                 />
               }
               startIcon={
-                <ArrowRightsvgIcon
+                <ArrowRightSvgIcon
                   className={classNames(projectcss.all, sty.svg__t3Mr3)}
                   role={"img"}
                 />
@@ -420,14 +461,14 @@ function PlasmicSubsectionPlasmicHosting__RenderFunc(props: {
                     sty.reviewChangesButton
                   )}
                   endIcon={
-                    <ChevronDownsvgIcon
+                    <ChevronDownSvgIcon
                       className={classNames(projectcss.all, sty.svg___6Rgi)}
                       role={"img"}
                     />
                   }
                   size={"small"}
                   startIcon={
-                    <ArrowRightsvgIcon
+                    <ArrowRightSvgIcon
                       className={classNames(projectcss.all, sty.svg__fhc3P)}
                       role={"img"}
                     />
@@ -466,7 +507,7 @@ function PlasmicSubsectionPlasmicHosting__RenderFunc(props: {
                   ),
                 })}
               >
-                <GlobesvgIcon
+                <GlobeSvgIcon
                   className={classNames(projectcss.all, sty.svg__gwk1, {
                     [sty.svgview_setup__gwk1JswHi]: hasVariant(
                       $state,
@@ -504,14 +545,14 @@ function PlasmicSubsectionPlasmicHosting__RenderFunc(props: {
                   data-plasmic-override={overrides.retryButton}
                   className={classNames("__wab_instance", sty.retryButton)}
                   endIcon={
-                    <ChevronDownsvgIcon
+                    <ChevronDownSvgIcon
                       className={classNames(projectcss.all, sty.svg__neiw)}
                       role={"img"}
                     />
                   }
                   size={"wide"}
                   startIcon={
-                    <ArrowRightsvgIcon
+                    <ArrowRightSvgIcon
                       className={classNames(projectcss.all, sty.svg__x8NOs)}
                       role={"img"}
                     />
@@ -531,7 +572,7 @@ function PlasmicSubsectionPlasmicHosting__RenderFunc(props: {
                     sty.removeGithubButton
                   )}
                   endIcon={
-                    <ChevronDownsvgIcon
+                    <ChevronDownSvgIcon
                       className={classNames(projectcss.all, sty.svg__qpbxf)}
                       role={"img"}
                     />
@@ -559,7 +600,7 @@ function PlasmicSubsectionPlasmicHosting__RenderFunc(props: {
                   ),
                 })}
                 endIcon={
-                  <ChevronDownsvgIcon
+                  <ChevronDownSvgIcon
                     className={classNames(projectcss.all, sty.svg__dB19)}
                     role={"img"}
                   />
@@ -603,13 +644,13 @@ function PlasmicSubsectionPlasmicHosting__RenderFunc(props: {
                       data-plasmic-name={"showOptionsButton"}
                       data-plasmic-override={overrides.showOptionsButton}
                       endIcon={
-                        <ChevronDownsvgIcon
+                        <ChevronDownSvgIcon
                           className={classNames(projectcss.all, sty.svg__oGuul)}
                           role={"img"}
                         />
                       }
                       startIcon={
-                        <ArrowRightsvgIcon
+                        <ArrowRightSvgIcon
                           className={classNames(projectcss.all, sty.svg__sgEkn)}
                           role={"img"}
                         />
@@ -661,12 +702,32 @@ function PlasmicSubsectionPlasmicHosting__RenderFunc(props: {
                       data-plasmic-override={overrides.pushAs}
                       className={classNames("__wab_instance", sty.pushAs)}
                       icon={
-                        <PlussvgIcon
+                        <PlusSvgIcon
                           className={classNames(projectcss.all, sty.svg__qtaBp)}
                           role={"img"}
                         />
                       }
+                      onChange={async (...eventArgs: any) => {
+                        ((...eventArgs) => {
+                          generateStateOnChangeProp($state, [
+                            "pushAs",
+                            "value",
+                          ])(eventArgs[0]);
+                        }).apply(null, eventArgs);
+
+                        if (
+                          eventArgs.length > 1 &&
+                          eventArgs[1] &&
+                          eventArgs[1]._plasmic_state_init_
+                        ) {
+                          return;
+                        }
+                      }}
                       type={"bordered"}
+                      value={generateStateValueProp($state, [
+                        "pushAs",
+                        "value",
+                      ])}
                     />
                   </Stack__>
                   <Stack__
@@ -853,7 +914,6 @@ const PlasmicDescendants = {
     "steps",
     "githubPagesDelayNotice",
   ],
-
   checkbox: ["checkbox"],
   img: ["img"],
   removeButton: ["removeButton"],
@@ -903,7 +963,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicSubsectionPlasmicHosting__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
@@ -911,15 +970,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicSubsectionPlasmicHosting__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicSubsectionPlasmicHosting__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicSubsectionPlasmicHosting__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+    // Specify args directly as props
+    Omit<PlasmicSubsectionPlasmicHosting__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

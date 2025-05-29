@@ -387,6 +387,7 @@ export const updatableWebhookFields = [
   "url",
   "headers",
   "payload",
+  "includeChangeData",
 ] as const;
 
 export type UpdatableWebhookFields = Pick<
@@ -3330,10 +3331,14 @@ export class DbMgr implements MigrationDbMgr {
     return revision;
   }
 
-  async getPreviousPkgId(
+  /**
+   * Get the latest `limit` pkgVersion, ordered from the latest to the oldest.
+   */
+  async getLatestPkgVersionIds(
     projectId: ProjectId,
     branchId: BranchId | undefined,
-    pkgId: string
+    pkgId: string,
+    limit: number
   ) {
     const graph = await this.getCommitGraphForProject(projectId as ProjectId);
     const branchHead = graph.branches[branchId ?? MainBranchId];
@@ -3355,17 +3360,19 @@ export class DbMgr implements MigrationDbMgr {
         )
         .getRawMany();
 
-    const { id: prevPkgVersionId } = previousVersions.reduce<{
-      id?: PkgVersionId;
-      version?: string;
-    }>(({ id: id1, version: version1 }, { id: id2, version: version2 }) => {
-      if (!version1 || (version2 && semver.gt(version2, version1))) {
-        return { id: id2, version: version2 };
-      } else {
-        return { id: id1, version: version1 };
-      }
-    }, {});
-    return prevPkgVersionId;
+    const latestPkgVersionIds = previousVersions
+      .sort((a, b) => {
+        if (!a.version) {
+          return 1;
+        }
+        if (!b.version) {
+          return -1;
+        }
+        return semver.gt(a.version, b.version) ? -1 : 1;
+      })
+      .slice(0, limit)
+      .map((v) => v.id);
+    return latestPkgVersionIds;
   }
 
   async computeNextProjectVersion(
@@ -3389,15 +3396,18 @@ export class DbMgr implements MigrationDbMgr {
       ? this.getProjectRevision(projectId, revisionNum, branchId)
       : this.getLatestProjectRev(projectId, { branchId }));
     if (pkg) {
-      const prevPkgVersionId = await this.getPreviousPkgId(
+      const prevPkgVersionIds = await this.getLatestPkgVersionIds(
         projectId as ProjectId,
         branchId,
-        pkg.id
+        pkg.id,
+        1
       );
-      if (prevPkgVersionId) {
+      if (prevPkgVersionIds.length === 1) {
         const bundler = new Bundler();
         const publishedSite = await unbundleProjectFromData(this, bundler, rev);
-        const prevPkgVersion = await this.getPkgVersionById(prevPkgVersionId);
+        const prevPkgVersion = await this.getPkgVersionById(
+          prevPkgVersionIds[0]
+        );
         const prevUnbundled = await unbundlePkgVersion(
           this,
           bundler,
@@ -3461,14 +3471,17 @@ export class DbMgr implements MigrationDbMgr {
     }
 
     if (!version) {
-      const prevPkgVersionId = await this.getPreviousPkgId(
+      const prevPkgVersionIds = await this.getLatestPkgVersionIds(
         projectId as ProjectId,
         branchId,
-        pkg.id
+        pkg.id,
+        1
       );
 
-      if (prevPkgVersionId) {
-        const prevPkgVersion = await this.getPkgVersionById(prevPkgVersionId);
+      if (prevPkgVersionIds.length === 1) {
+        const prevPkgVersion = await this.getPkgVersionById(
+          prevPkgVersionIds[0]
+        );
         const prevUnbundled = await unbundlePkgVersion(
           this,
           bundler,
@@ -4589,12 +4602,14 @@ export class DbMgr implements MigrationDbMgr {
     url,
     headers,
     payload,
+    includeChangeData,
   }: {
     projectId: string;
     method: string;
     url: string;
     headers: Array<WebhookHeader>;
     payload: string;
+    includeChangeData: boolean;
   }) {
     await this.checkProjectPerms(projectId, "designer", "create webhook");
     const webhook = this.entMgr.create(ProjectWebhook, {
@@ -4604,6 +4619,7 @@ export class DbMgr implements MigrationDbMgr {
       url,
       headers,
       payload,
+      includeChangeData,
     });
     await this.entMgr.save(webhook);
     return webhook;

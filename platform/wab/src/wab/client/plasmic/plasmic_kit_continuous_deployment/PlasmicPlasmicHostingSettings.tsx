@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -23,6 +23,8 @@ import {
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  generateStateOnChangeProp,
+  generateStateValueProp,
   hasVariant,
   useDollarState,
 } from "@plasmicapp/react-web";
@@ -42,10 +44,10 @@ import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_token
 import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import sty from "./PlasmicPlasmicHostingSettings.module.css"; // plasmic-import: aFapl-YUjv9/css
 
-import ArrowRightsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ArrowRightSvg"; // plasmic-import: 9Jv8jb253/icon
-import ChevronDownsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
-import EditsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__EditSvg"; // plasmic-import: _Qa2gdunG/icon
-import SharesvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ShareSvg"; // plasmic-import: vRB2dtcKk/icon
+import ArrowRightSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ArrowRightSvg"; // plasmic-import: 9Jv8jb253/icon
+import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
+import EditSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__EditSvg"; // plasmic-import: _Qa2gdunG/icon
+import ShareSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ShareSvg"; // plasmic-import: vRB2dtcKk/icon
 import Trash2SvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__Trash2Svg"; // plasmic-import: nS4_I75qv/icon
 
 createPlasmicElementProxy;
@@ -58,7 +60,6 @@ export type PlasmicPlasmicHostingSettings__VariantsArgs = {
   customDomain?: SingleChoiceArg<
     "preliminaryError" | "added" | "invalid" | "loading"
   >;
-
   subdomain?: MultiChoiceArg<"success" | "error" | "invalid" | "loading">;
 };
 type VariantPropType = keyof PlasmicPlasmicHostingSettings__VariantsArgs;
@@ -104,7 +105,6 @@ export interface DefaultPlasmicHostingSettingsProps {
   customDomain?: SingleChoiceArg<
     "preliminaryError" | "added" | "invalid" | "loading"
   >;
-
   subdomain?: MultiChoiceArg<"success" | "error" | "invalid" | "loading">;
   className?: string;
 }
@@ -119,7 +119,16 @@ function PlasmicPlasmicHostingSettings__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
@@ -144,8 +153,13 @@ function PlasmicPlasmicHostingSettings__RenderFunc(props: {
         variableType: "variant",
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.subdomain,
       },
+      {
+        path: "showBadge.isChecked",
+        type: "private",
+        variableType: "boolean",
+        initFunc: ({ $props, $state, $queries, $ctx }) => undefined,
+      },
     ],
-
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -295,7 +309,7 @@ function PlasmicPlasmicHostingSettings__RenderFunc(props: {
                 })}
                 withBackgroundHover={true}
               >
-                <SharesvgIcon
+                <ShareSvgIcon
                   className={classNames(projectcss.all, sty.svg__itTbv)}
                   role={"img"}
                 />
@@ -483,14 +497,14 @@ function PlasmicPlasmicHostingSettings__RenderFunc(props: {
                   : undefined
               }
               endIcon={
-                <ChevronDownsvgIcon
+                <ChevronDownSvgIcon
                   className={classNames(projectcss.all, sty.svg__zyJq4)}
                   role={"img"}
                 />
               }
               size={"wide"}
               startIcon={
-                <ArrowRightsvgIcon
+                <ArrowRightSvgIcon
                   className={classNames(projectcss.all, sty.svg__wqrFn)}
                   role={"img"}
                 />
@@ -561,14 +575,14 @@ function PlasmicPlasmicHostingSettings__RenderFunc(props: {
                   data-plasmic-override={overrides.refreshButton7}
                   caption={"Caption"}
                   endIcon={
-                    <ChevronDownsvgIcon
+                    <ChevronDownSvgIcon
                       className={classNames(projectcss.all, sty.svg__vFRdg)}
                       role={"img"}
                     />
                   }
                   size={"wide"}
                   startIcon={
-                    <EditsvgIcon
+                    <EditSvgIcon
                       className={classNames(projectcss.all, sty.svg__onUd8)}
                       role={"img"}
                     />
@@ -584,7 +598,7 @@ function PlasmicPlasmicHostingSettings__RenderFunc(props: {
                   caption={"Caption"}
                   color={"red"}
                   endIcon={
-                    <ChevronDownsvgIcon
+                    <ChevronDownSvgIcon
                       className={classNames(projectcss.all, sty.svg__aAjVi)}
                       role={"img"}
                     />
@@ -800,14 +814,14 @@ function PlasmicPlasmicHostingSettings__RenderFunc(props: {
                   : undefined
               }
               endIcon={
-                <ChevronDownsvgIcon
+                <ChevronDownSvgIcon
                   className={classNames(projectcss.all, sty.svg__v6ZT7)}
                   role={"img"}
                 />
               }
               size={"wide"}
               startIcon={
-                <ArrowRightsvgIcon
+                <ArrowRightSvgIcon
                   className={classNames(projectcss.all, sty.svg___5Gb8V)}
                   role={"img"}
                 />
@@ -882,7 +896,6 @@ function PlasmicPlasmicHostingSettings__RenderFunc(props: {
                     </React.Fragment>
                   </PlasmicLink__>
                 }
-
                 <React.Fragment>{" or "}</React.Fragment>
                 {
                   <PlasmicLink__
@@ -907,7 +920,6 @@ function PlasmicPlasmicHostingSettings__RenderFunc(props: {
                     </React.Fragment>
                   </PlasmicLink__>
                 }
-
                 <React.Fragment>{"."}</React.Fragment>
               </React.Fragment>
             </div>
@@ -966,6 +978,25 @@ function PlasmicPlasmicHostingSettings__RenderFunc(props: {
               data-plasmic-override={overrides.showBadge}
               children={null}
               className={classNames("__wab_instance", sty.showBadge)}
+              isChecked={
+                generateStateValueProp($state, ["showBadge", "isChecked"]) ??
+                false
+              }
+              onChange={async (...eventArgs: any) => {
+                ((...eventArgs) => {
+                  generateStateOnChangeProp($state, ["showBadge", "isChecked"])(
+                    eventArgs[0]
+                  );
+                }).apply(null, eventArgs);
+
+                if (
+                  eventArgs.length > 1 &&
+                  eventArgs[1] &&
+                  eventArgs[1]._plasmic_state_init_
+                ) {
+                  return;
+                }
+              }}
             />
           </Stack__>
           <Stack__
@@ -1075,7 +1106,6 @@ const PlasmicDescendants = {
     "faviconForm",
     "faviconControlContainer",
   ],
-
   subdomainForm: [
     "subdomainForm",
     "subdomainLabel",
@@ -1092,7 +1122,6 @@ const PlasmicDescendants = {
     "refreshButton7",
     "refreshButton8",
   ],
-
   subdomainLabel: ["subdomainLabel"],
   iconButton: ["iconButton"],
   subdomainInput: ["subdomainInput"],
@@ -1102,7 +1131,6 @@ const PlasmicDescendants = {
     "subdomainErrorFeedback",
     "domainErrorMessage7",
   ],
-
   subdomainErrorFeedback: ["subdomainErrorFeedback", "domainErrorMessage7"],
   domainErrorMessage7: ["domainErrorMessage7"],
   saveSubdomainButton: ["saveSubdomainButton"],
@@ -1113,7 +1141,6 @@ const PlasmicDescendants = {
     "refreshButton7",
     "refreshButton8",
   ],
-
   errorFeedback: ["errorFeedback", "domainErrorMessage8"],
   domainErrorMessage8: ["domainErrorMessage8"],
   refreshButton7: ["refreshButton7"],
@@ -1125,13 +1152,11 @@ const PlasmicDescendants = {
     "domainErrorMessage9",
     "addCustomDomainButton",
   ],
-
   customDomainInput: ["customDomainInput"],
   customDomainPreliminaryErrorFeedback: [
     "customDomainPreliminaryErrorFeedback",
     "domainErrorMessage9",
   ],
-
   domainErrorMessage9: ["domainErrorMessage9"],
   addCustomDomainButton: ["addCustomDomainButton"],
   domainCard: ["domainCard"],
@@ -1182,7 +1207,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicPlasmicHostingSettings__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
@@ -1190,15 +1214,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicPlasmicHostingSettings__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicPlasmicHostingSettings__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicPlasmicHostingSettings__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+    // Specify args directly as props
+    Omit<PlasmicPlasmicHostingSettings__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

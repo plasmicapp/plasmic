@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -23,6 +23,8 @@ import {
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  generateStateOnChangeProp,
+  generateStateValueProp,
   hasVariant,
   renderPlasmicSlot,
   useDollarState,
@@ -42,8 +44,8 @@ import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_syst
 import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
 import sty from "./PlasmicSubsectionWebhooks.module.css"; // plasmic-import: 9EUA-QZFp69/css
 
-import ArrowRightsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ArrowRightSvg"; // plasmic-import: 9Jv8jb253/icon
-import ChevronDownsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
+import ArrowRightSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ArrowRightSvg"; // plasmic-import: 9Jv8jb253/icon
+import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
 import Icon4Icon from "./icons/PlasmicIcon__Icon4"; // plasmic-import: ICm0kU5OI3/icon
 
 createPlasmicElementProxy;
@@ -96,7 +98,16 @@ function PlasmicSubsectionWebhooks__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
@@ -121,8 +132,13 @@ function PlasmicSubsectionWebhooks__RenderFunc(props: {
         variableType: "variant",
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.view,
       },
+      {
+        path: "checkbox.isChecked",
+        type: "private",
+        variableType: "boolean",
+        initFunc: ({ $props, $state, $queries, $ctx }) => undefined,
+      },
     ],
-
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -197,6 +213,26 @@ function PlasmicSubsectionWebhooks__RenderFunc(props: {
                     "status"
                   ),
                 })}
+                isChecked={
+                  generateStateValueProp($state, ["checkbox", "isChecked"]) ??
+                  false
+                }
+                onChange={async (...eventArgs: any) => {
+                  ((...eventArgs) => {
+                    generateStateOnChangeProp($state, [
+                      "checkbox",
+                      "isChecked",
+                    ])(eventArgs[0]);
+                  }).apply(null, eventArgs);
+
+                  if (
+                    eventArgs.length > 1 &&
+                    eventArgs[1] &&
+                    eventArgs[1]._plasmic_state_init_
+                  ) {
+                    return;
+                  }
+                }}
               />
             ) : null}
             {(hasVariant($state, "view", "status") ? true : false) ? (
@@ -236,14 +272,14 @@ function PlasmicSubsectionWebhooks__RenderFunc(props: {
               data-plasmic-name={"removeButton"}
               data-plasmic-override={overrides.removeButton}
               endIcon={
-                <ChevronDownsvgIcon
+                <ChevronDownSvgIcon
                   className={classNames(projectcss.all, sty.svg__jp1Mp)}
                   role={"img"}
                 />
               }
               size={"small"}
               startIcon={
-                <ArrowRightsvgIcon
+                <ArrowRightSvgIcon
                   className={classNames(projectcss.all, sty.svg__wgXwS)}
                   role={"img"}
                 />
@@ -363,7 +399,6 @@ function PlasmicSubsectionWebhooks__RenderFunc(props: {
                   />
                 </React.Fragment>
               ),
-
               value: args.children,
             })}
           </div>
@@ -386,14 +421,14 @@ function PlasmicSubsectionWebhooks__RenderFunc(props: {
                 data-plasmic-override={overrides.viewHistoryButton}
                 className={classNames("__wab_instance", sty.viewHistoryButton)}
                 endIcon={
-                  <ChevronDownsvgIcon
+                  <ChevronDownSvgIcon
                     className={classNames(projectcss.all, sty.svg__eQsdn)}
                     role={"img"}
                   />
                 }
                 size={"wide"}
                 startIcon={
-                  <ArrowRightsvgIcon
+                  <ArrowRightSvgIcon
                     className={classNames(projectcss.all, sty.svg__aPvi5)}
                     role={"img"}
                   />
@@ -415,14 +450,14 @@ function PlasmicSubsectionWebhooks__RenderFunc(props: {
                 data-plasmic-override={overrides.addButton}
                 className={classNames("__wab_instance", sty.addButton)}
                 endIcon={
-                  <ChevronDownsvgIcon
+                  <ChevronDownSvgIcon
                     className={classNames(projectcss.all, sty.svg___2JJuo)}
                     role={"img"}
                   />
                 }
                 size={"wide"}
                 startIcon={
-                  <ArrowRightsvgIcon
+                  <ArrowRightSvgIcon
                     className={classNames(projectcss.all, sty.svg__yoP2)}
                     role={"img"}
                   />
@@ -543,7 +578,6 @@ const PlasmicDescendants = {
     "addButton",
     "history",
   ],
-
   checkbox: ["checkbox"],
   removeButton: ["removeButton"],
   description: ["description"],
@@ -571,7 +605,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicSubsectionWebhooks__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
@@ -579,15 +612,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicSubsectionWebhooks__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicSubsectionWebhooks__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicSubsectionWebhooks__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+    // Specify args directly as props
+    Omit<PlasmicSubsectionWebhooks__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

@@ -454,6 +454,9 @@ export class ProjectWebhook extends Base<"ProjectWebhookId"> {
 
   @Column("text")
   payload: string;
+
+  @Column("boolean", { nullable: true })
+  includeChangeData: boolean | null;
 }
 
 @Entity()

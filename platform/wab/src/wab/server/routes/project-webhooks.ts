@@ -1,25 +1,36 @@
-import { ensureType } from "@/wab/shared/common";
 import { userDbMgr } from "@/wab/server/routes/util";
-import { triggerWebhook } from "@/wab/server/trigger-webhooks";
+import {
+  mkWebhookPagesModified,
+  triggerWebhook,
+} from "@/wab/server/trigger-webhooks";
 import {
   ApiProjectWebhook,
   ApiProjectWebhookEvent,
   apiProjectWebhookFields,
+  ProjectId,
   ProjectWebhookEventsResponse,
 } from "@/wab/shared/ApiSchema";
+import { ensureString, ensureType } from "@/wab/shared/common";
 import { Request, Response } from "express-serve-static-core";
 import _ from "lodash";
 
 export async function triggerProjectWebhook(req: Request, res: Response) {
-  const { projectId } = req.params;
+  const projectId = ensureString(req.params.projectId) as ProjectId;
   const mgr = userDbMgr(req);
   await mgr.checkProjectPerms(projectId, "content", "trigger webhook");
+
+  const payload = req.body?.includeChangeData
+    ? {
+        payload: req.body?.payload,
+        ...(await mkWebhookPagesModified(mgr, projectId)),
+      }
+    : req.body?.payload;
 
   const webhook = {
     method: req.body.method,
     url: req.body.url,
     headers: req.body.headers,
-    payload: req.body.payload,
+    payload: payload,
   };
 
   const event = ensureType<ApiProjectWebhookEvent>(
@@ -41,7 +52,7 @@ export async function getProjectWebhooks(req: Request, res: Response) {
 
 export async function createProjectWebhook(req: Request, res: Response) {
   const { projectId } = req.params;
-  const { url, method, headers, payload } = req.body ?? {};
+  const { url, method, headers, payload, includeChangeData } = req.body ?? {};
   const mgr = userDbMgr(req);
   const webhook = await mgr.createProjectWebhook({
     projectId,
@@ -49,6 +60,7 @@ export async function createProjectWebhook(req: Request, res: Response) {
     url: url ?? "",
     headers: headers ?? [],
     payload: payload ?? "",
+    includeChangeData: includeChangeData ?? false,
   });
   res.json({
     webhook: ensureType<ApiProjectWebhook>(
@@ -59,7 +71,7 @@ export async function createProjectWebhook(req: Request, res: Response) {
 
 export async function updateProjectWebhook(req: Request, res: Response) {
   const { webhookId } = req.params;
-  const { url, method, headers, payload } = req.body;
+  const { url, method, headers, payload, includeChangeData } = req.body;
   const mgr = userDbMgr(req);
   const webhook = await mgr.updateProjectWebhook({
     id: webhookId,
@@ -67,6 +79,7 @@ export async function updateProjectWebhook(req: Request, res: Response) {
     method,
     headers,
     payload,
+    includeChangeData,
   });
   res.json({
     webhook: ensureType<ApiProjectWebhook>(

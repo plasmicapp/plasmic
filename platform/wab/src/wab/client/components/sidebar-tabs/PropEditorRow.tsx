@@ -686,7 +686,7 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
       expr && canvasEnv && isDynamicExpr(expr)
         ? tryEvalExpr(asCode(expr, exprCtx).code, canvasEnv)
         : undefined,
-    [expr ? hashExpr(expr, exprCtx) : undefined, canvasEnv]
+    [expr ? hashExpr(studioCtx.site, expr, exprCtx) : undefined, canvasEnv]
   );
 
   const readOnly = !!(

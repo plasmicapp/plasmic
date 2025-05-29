@@ -674,7 +674,7 @@ function mkInitFuncHash(
 ) {
   const initFuncExpr = mkInitFuncExpr(state, variantCombo, viewCtx, exprCtx);
   return initFuncExpr
-    ? `${state.variableType}${hashExpr(initFuncExpr, exprCtx)}`
+    ? `${state.variableType}${hashExpr(viewCtx.site, initFuncExpr, exprCtx)}`
     : "";
 }
 
