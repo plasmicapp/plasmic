@@ -951,7 +951,7 @@ function hashRuleSet(site: Site, rs: RuleSet) {
     });
   return `
     ${JSON.stringify(rsValues)}
-    ${rs.mixins
+    ${[...rs.mixins]
       .sort((a, b) => a.uuid.localeCompare(b.uuid))
       .map((m) => hashRuleSet(site, m.rs))
       .join("")}
