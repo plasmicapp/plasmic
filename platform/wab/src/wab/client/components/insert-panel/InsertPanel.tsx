@@ -139,7 +139,7 @@ import { placeholderImgUrl } from "@/wab/shared/urls";
 import { Menu } from "antd";
 import cn from "classnames";
 import { UseComboboxGetItemPropsOptions } from "downshift";
-import L, { groupBy, last, uniq } from "lodash";
+import L, { groupBy, last, sortBy, uniq } from "lodash";
 import memoizeOne from "memoize-one";
 import { observer } from "mobx-react";
 import * as React from "react";
@@ -1064,6 +1064,11 @@ const familyKeyRank = new Map<
   ["imported-packages", 1],
   ["hostless-packages", 2],
 ]);
+// Ranking each section key when sorting with an active search on.
+const searchSectionKeyRank = new Map<string | undefined, number>([
+  [undefined, 0],
+  ["insertable-templates", 1],
+]);
 
 interface AddItemGroup {
   key: string;
@@ -1556,19 +1561,6 @@ export function buildAddItemGroups({
     items: [...group.items],
   }));
 
-  // We clone all items to avoid having duplicates in groupedItems, because
-  // that can cause issues with react-window's lists.
-  groupedItems.forEach((group) => {
-    group.items = group.items.map((i) => L.clone(i));
-  });
-
-  groupedItems.sort((a, b) => {
-    return (
-      (familyKeyRank.get(a.familyKey) ?? 99) -
-      (familyKeyRank.get(b.familyKey) ?? 99)
-    );
-  });
-
   if (matcher.hasQuery()) {
     groupedItems.forEach((group) => {
       if (matcher.matches(group.label)) {
@@ -1612,6 +1604,20 @@ export function buildAddItemGroups({
       group.items = group.items.filter((item) => !unmatchedItems.has(item));
     });
   }
+
+  // We clone all items to avoid having duplicates in groupedItems, because
+  // that can cause issues with react-window's lists.
+  groupedItems.forEach((group) => {
+    group.items = group.items.map((i) => L.clone(i));
+  });
+
+  // Different sorts based on whether we have a search query or not.
+  groupedItems = sortBy(groupedItems, (item) => {
+    if (matcher.hasQuery()) {
+      return searchSectionKeyRank.get(item.sectionKey) ?? 0;
+    }
+    return familyKeyRank.get(item.familyKey) ?? 0;
+  });
 
   let recentItems = allRecentItems;
 
