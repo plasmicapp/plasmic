@@ -2524,7 +2524,7 @@ async function getLatestRevisionSynced(
 export async function getProjectMeta(req: Request, res: Response) {
   const projectId = req.params.projectId;
   const mgr = userDbMgr(req);
-  await mgr.checkProjectPerms(projectId, "viewer", "View project meta", false);
+  await mgr.checkProjectPerms(projectId, "viewer", "View project meta");
   res.json(await makeProjectMeta(mgr, projectId));
 }
 

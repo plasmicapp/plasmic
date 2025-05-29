@@ -1315,7 +1315,7 @@ describe("DbMgr", () => {
       }));
   });
 
-  it('ensures users can join "open" (link-shared) projects by themselves, but workspaces/teams are always closed', () =>
+  it("ensures user can access inviteOnly=false projects without a explicit permission nor workspace/team permission", () =>
     withDb(async (sudo, [user1, user2], [db1, db2, db3], project) => {
       const { team, workspace } = await getTeamAndWorkspace(db1());
 
@@ -1324,11 +1324,9 @@ describe("DbMgr", () => {
 
       await sudo.updateProject({ id: project.id, inviteOnly: false });
 
-      await db2().getLatestProjectRev(project.id);
+      await expect(db2().getLatestProjectRev(project.id)).not.toReject();
       const perms = await db2().getPermissionsForProject(project.id);
-      expect(perms.find((perm) => perm.userId === user2.id)).toMatchObject({
-        accessLevel: "viewer",
-      });
+      expect(perms.find((perm) => perm.userId === user2.id)).toBeUndefined();
     }));
 
   it("enforces permissions", () =>

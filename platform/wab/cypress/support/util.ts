@@ -31,7 +31,6 @@ import {
   StateVariableType,
 } from "../../src/wab/shared/core/states";
 import { DevFlagsType } from "../../src/wab/shared/devflags";
-import { GrantableAccessLevel } from "../../src/wab/shared/EntUtil";
 import { HostLessPackageInfo, State } from "../../src/wab/shared/model/classes";
 import bundles from "../bundles";
 
@@ -1589,7 +1588,6 @@ export function setupNewProject({
   devFlags = {},
   name,
   email = "user2@example.com",
-  defaultAccessLevel,
   inviteOnly,
   skipTours = true,
 }: {
@@ -1597,7 +1595,6 @@ export function setupNewProject({
   devFlags?: Partial<DevFlagsType>;
   name?: string;
   email?: string;
-  defaultAccessLevel?: GrantableAccessLevel;
   inviteOnly?: boolean;
   skipTours?: boolean;
 } = {}): Cypress.Chainable<string> {
@@ -1620,9 +1617,6 @@ export function setupNewProject({
     })
     .then(() => {
       const body: SetSiteInfoReq = {};
-      if (defaultAccessLevel !== undefined) {
-        body.defaultAccessLevel = defaultAccessLevel;
-      }
       if (inviteOnly !== undefined) {
         body.inviteOnly = inviteOnly;
       }
