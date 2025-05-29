@@ -42,15 +42,6 @@ module.exports = {
   ],
   rules: {
     curly: "error",
-    // Maybe not needed, from public-packages
-    // "@typescript-eslint/no-empty-interface": "off",
-    // "@typescript-eslint/ban-ts-comment": "off",
-    "@typescript-eslint/triple-slash-reference": [
-      "error",
-      {
-        types: "always",
-      },
-    ],
     "no-restricted-properties": [
       "error",
       {
@@ -205,6 +196,13 @@ module.exports = {
       },
     ],
     "@typescript-eslint/no-var-requires": "off",
+    "@typescript-eslint/triple-slash-reference": [
+      "error",
+      {
+        types: "always",
+      },
+    ],
+    "jest/no-conditional-expect": "off",
   },
   env: {
     es6: true,
