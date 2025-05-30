@@ -36,3 +36,5 @@ bower_components/
 node_modules/
 storybook-static/
 .nx/
+# ignore decrypted yaml files by sops
+*.dec.*
