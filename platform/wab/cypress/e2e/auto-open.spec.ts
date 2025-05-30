@@ -509,289 +509,327 @@ describe("Auto Open", () => {
     afterEach(() => {
       removeCurrentProject();
     });
-    xit("auto-opens hidden elements", function () {
-      cy.withinStudioIframe(() => {
-        const textNodeName = "MyText";
-        const verticalStackNodeName = "MyVerticalStack";
-        let childTextNodeName = "MyChildText";
-        const textContents = "Starlight";
-        const childTextContents = "Galaxy";
-
-        let checkParams = {
-          textNodeName,
-          textContents,
-        };
-
-        function checkAutoOpen(
-          nodeName: string,
-          isAutoOpenable: boolean,
-          assertHidden: Function,
-          assertAutoOpened: Function
-        ) {
-          if (!isAutoOpenable) {
-            assertHidden();
-            cy.selectRootNode(); // de-select
-            assertHidden();
-            cy.selectTreeNode([nodeName]);
-            assertHidden();
-            return;
-          }
-
+    describe("auto-opens hidden elements", function () {
+      function checkAutoOpen(
+        nodeName: string,
+        isAutoOpenable: boolean,
+        assertHidden: Function,
+        assertAutoOpened: Function
+      ) {
+        if (!isAutoOpenable) {
+          assertHidden();
           cy.selectRootNode(); // de-select
           assertHidden();
           cy.selectTreeNode([nodeName]);
-          assertAutoOpened();
-          cy.turnOffAutoOpenMode();
           assertHidden();
-          cy.turnOnAutoOpenMode();
-          assertAutoOpened();
-          cy.selectRootNode(); // de-select
-          assertHidden();
-          cy.selectTreeNode([nodeName]);
-          assertAutoOpened();
+          return;
         }
 
-        function checkImageAutoOpen(
-          frame: Framed,
-          visibility: VisibilityType,
-          nodeName: string
-        ) {
-          const assertionPhrase =
-            visibility === "notVisible" ? "be.visible" : "exist";
-          function assertHidden() {
-            frame.base().find("img").should(`not.${assertionPhrase}`);
-            cy.autoOpenBanner().should("not.exist");
-          }
+        cy.selectRootNode(); // de-select
+        assertHidden();
+        cy.selectTreeNode([nodeName]);
+        assertAutoOpened();
+        cy.turnOffAutoOpenMode();
+        assertHidden();
+        cy.turnOnAutoOpenMode();
+        assertAutoOpened();
+        cy.selectRootNode(); // de-select
+        assertHidden();
+        cy.selectTreeNode([nodeName]);
+        assertAutoOpened();
+      }
 
-          function assertAutoOpened() {
-            frame.base().find("img").should(assertionPhrase);
-            cy.autoOpenBanner().should("exist");
-          }
-
-          checkAutoOpen(nodeName, true, assertHidden, assertAutoOpened);
+      function checkImageAutoOpen(
+        frame: Framed,
+        visibility: VisibilityType,
+        nodeName: string
+      ) {
+        const assertionPhrase =
+          visibility === "notVisible" ? "be.visible" : "exist";
+        function assertHidden() {
+          frame.base().find("img").should(`not.${assertionPhrase}`);
+          cy.autoOpenBanner().should("not.exist");
         }
 
-        function checkTextAutoOpen(
-          frame: Framed,
-          isAutoOpenable: boolean,
-          visibility: VisibilityType,
-          hasNotRenderedParent?: boolean
-        ) {
-          const assertionPhrase =
-            visibility === "notVisible" ? "be.visible" : "exist";
-          function assertHidden() {
-            frame
-              .base()
-              .contains(checkParams.textContents)
-              .should(`not.${assertionPhrase}`);
-            cy.autoOpenBanner().should("not.exist");
-          }
-
-          function assertAutoOpened() {
-            frame
-              .base()
-              .contains(checkParams.textContents)
-              .should(assertionPhrase);
-            cy.autoOpenBanner().should("exist");
-          }
-
-          if (hasNotRenderedParent) {
-            assertAutoOpened(); // auto-open does not need to wait for next selection, if the parent is already auto-opened
-          } else {
-            assertHidden(); // Auto-open hidden element on next selection only (PLA-11958)
-          }
-          cy.wait(400);
-
-          checkAutoOpen(
-            checkParams.textNodeName,
-            isAutoOpenable,
-            assertHidden,
-            assertAutoOpened
-          );
+        function assertAutoOpened() {
+          frame.base().find("img").should(assertionPhrase);
+          cy.autoOpenBanner().should("exist");
         }
 
-        function testAllVisibilities({
-          frame,
-          notRenderedParentNodeName,
-          isSlot = false,
-          isPlasmicComponent = false,
-        }: {
-          frame: Framed;
-          notRenderedParentNodeName?: string;
-          isSlot?: boolean;
-          isPlasmicComponent?: boolean;
-        }) {
-          const hasNotRenderedParent = !!notRenderedParentNodeName;
-          frame.base().contains(checkParams.textContents).should("exist");
+        checkAutoOpen(nodeName, true, assertHidden, assertAutoOpened);
+      }
 
-          if (hasNotRenderedParent) {
-            cy.selectTreeNode([notRenderedParentNodeName]);
-            cy.setNotRendered();
-            cy.selectRootNode();
-          }
+      function checkTextAutoOpen(
+        frame: Framed,
+        isAutoOpenable: boolean,
+        visibility: VisibilityType,
+        textContents: string,
+        nodeName: string,
+        hasNotRenderedParent?: boolean
+      ) {
+        const assertionPhrase =
+          visibility === "notVisible" ? "be.visible" : "exist";
+        function assertHidden() {
+          frame.base().contains(textContents).should(`not.${assertionPhrase}`);
+          cy.autoOpenBanner().should("not.exist");
+        }
 
-          cy.selectTreeNode([checkParams.textNodeName]);
+        function assertAutoOpened() {
+          frame.base().contains(textContents).should(assertionPhrase);
+          cy.autoOpenBanner().should("exist");
+        }
 
-          // Slots do not have display: none visibility option!
-          if (!isSlot) {
-            cy.log("Test DisplayNone visibility");
-            cy.setDisplayNone();
-            // TODO: PLA-12068 the auto open feature currently does not work for Plasmic components having display: none
-            if (isPlasmicComponent) {
-              checkTextAutoOpen(
-                frame,
-                false,
-                hasNotRenderedParent ? "notRendered" : "notVisible"
-              );
-            } else {
-              checkTextAutoOpen(
-                frame,
-                true,
-                hasNotRenderedParent ? "notRendered" : "notVisible",
-                hasNotRenderedParent
-              );
-            }
-          }
+        if (hasNotRenderedParent) {
+          assertAutoOpened(); // auto-open does not need to wait for next selection, if the parent is already auto-opened
+        } else {
+          assertHidden(); // Auto-open hidden element on next selection only (PLA-11958)
+        }
+        cy.wait(400);
 
-          cy.log("Test NotRendered visibility");
-          cy.setVisible();
+        checkAutoOpen(nodeName, isAutoOpenable, assertHidden, assertAutoOpened);
+      }
+
+      function testAllVisibilities({
+        frame,
+        notRenderedParentNodeName,
+        text,
+        nodeName,
+        isSlot = false,
+        isPlasmicComponent = false,
+      }: {
+        frame: Framed;
+        text: string;
+        nodeName: string;
+        notRenderedParentNodeName?: string;
+        isSlot?: boolean;
+        isPlasmicComponent?: boolean;
+      }) {
+        const hasNotRenderedParent = !!notRenderedParentNodeName;
+        frame.base().contains(text).should("exist");
+
+        if (hasNotRenderedParent) {
+          cy.selectTreeNode([notRenderedParentNodeName]);
           cy.setNotRendered();
-          checkTextAutoOpen(frame, true, "notRendered", hasNotRenderedParent);
-          cy.log("Test Dynamic visibility");
-          cy.setVisible();
-          cy.setDynamicVisibility("false");
-          checkTextAutoOpen(frame, true, "customExpr", hasNotRenderedParent);
-          cy.log("Test Visible visibility");
-          cy.setVisible();
-          frame.base().contains(checkParams.textContents).should("exist");
-          if (notRenderedParentNodeName) {
-            cy.selectTreeNode([notRenderedParentNodeName]);
+          cy.selectRootNode();
+        }
+
+        cy.selectTreeNode([nodeName]);
+
+        // Slots do not have display: none visibility option!
+        if (!isSlot) {
+          cy.log("Test DisplayNone visibility");
+          cy.setDisplayNone();
+          // TODO: PLA-12068 the auto open feature currently does not work for Plasmic components having display: none
+          if (isPlasmicComponent) {
+            checkTextAutoOpen(
+              frame,
+              false,
+              hasNotRenderedParent ? "notRendered" : "notVisible",
+              text,
+              nodeName,
+              hasNotRenderedParent
+            );
           } else {
-            cy.selectRootNode();
-          }
-          // TODO: PLA-12068 We do not test DisplayNone visibility for Plasmic component because the auto open feature currently does not work for Plasmic components having display: none
-          if (!isPlasmicComponent) {
-            cy.log("Test visibility toggle");
-            cy.toggleVisiblity(checkParams.textNodeName);
             checkTextAutoOpen(
               frame,
               true,
-              hasNotRenderedParent || isSlot ? "notRendered" : "notVisible",
+              hasNotRenderedParent ? "notRendered" : "notVisible",
+              text,
+              nodeName,
               hasNotRenderedParent
             );
-
-            cy.toggleVisiblity(checkParams.textNodeName);
-            frame.base().contains(checkParams.textContents).should("exist");
-          }
-          if (notRenderedParentNodeName) {
-            cy.selectTreeNode([notRenderedParentNodeName]);
-            cy.setVisible();
           }
         }
 
-        function testAllImageVisbilities(frame: Framed) {
-          frame.base().find("img").should("exist");
-          cy.log("Test DisplayNone visibility");
-          cy.setDisplayNone();
-          checkImageAutoOpen(frame, "notVisible", "MyImage");
-          cy.log("Test NotRendered visibility");
-          cy.setVisible();
-          cy.setNotRendered();
-          checkImageAutoOpen(frame, "notRendered", "MyImage");
-          cy.log("Test Dynamic visibility");
-          cy.setVisible();
-          cy.setDynamicVisibility("false");
-          checkImageAutoOpen(frame, "customExpr", "MyImage");
-          cy.log("Test Visible visibility");
-          cy.setVisible();
-          frame.base().find("img").should("exist");
+        cy.log("Test NotRendered visibility");
+        cy.setVisible();
+        cy.setNotRendered();
+        checkTextAutoOpen(
+          frame,
+          true,
+          "notRendered",
+          text,
+          nodeName,
+          hasNotRenderedParent
+        );
+        cy.log("Test Dynamic visibility");
+        cy.setVisible();
+        cy.setDynamicVisibility("false");
+        checkTextAutoOpen(
+          frame,
+          true,
+          "customExpr",
+          text,
+          nodeName,
+          hasNotRenderedParent
+        );
+        cy.log("Test Visible visibility");
+        cy.setVisible();
+        frame.base().contains(text).should("exist");
+        if (notRenderedParentNodeName) {
+          cy.selectTreeNode([notRenderedParentNodeName]);
+        } else {
+          cy.selectRootNode();
         }
-
-        cy.createNewComponent("Text Component").then((frame) => {
-          cy.selectRootNode();
-          cy.insertFromAddDrawer("Text");
-          cy.renameTreeNode(textNodeName);
-          cy.getSelectedElt().dblclick({ force: true });
-          frame.enterIntoTplTextBlock(textContents);
-
-          testAllVisibilities({ frame });
-
-          cy.justLog("Test Image");
-          frame.base().find("img").should("not.exist");
-          cy.insertFromAddDrawer("Image");
-          cy.renameTreeNode("MyImage");
-          testAllImageVisbilities(frame);
-
-          cy.insertFromAddDrawer("Vertical stack");
-          cy.renameTreeNode(verticalStackNodeName);
-          cy.insertFromAddDrawer("Text");
-          cy.renameTreeNode(childTextNodeName);
-          cy.getSelectedElt().dblclick({ force: true });
-          frame.enterIntoTplTextBlock(childTextContents);
-          checkParams = {
-            textNodeName: childTextNodeName,
-            textContents: childTextContents,
-          };
-          testAllVisibilities({
+        // TODO: PLA-12068 We do not test DisplayNone visibility for Plasmic component because the auto open feature currently does not work for Plasmic components having display: none
+        if (!isPlasmicComponent) {
+          cy.log("Test visibility toggle");
+          cy.toggleVisiblity(nodeName);
+          checkTextAutoOpen(
             frame,
-            notRenderedParentNodeName: verticalStackNodeName,
+            true,
+            hasNotRenderedParent || isSlot ? "notRendered" : "notVisible",
+            text,
+            nodeName,
+            hasNotRenderedParent
+          );
+
+          cy.toggleVisiblity(nodeName);
+          frame.base().contains(text).should("exist");
+        }
+        if (notRenderedParentNodeName) {
+          cy.selectTreeNode([notRenderedParentNodeName]);
+          cy.setVisible();
+        }
+      }
+
+      function testAllImageVisbilities(frame: Framed) {
+        frame.base().find("img").should("exist");
+        cy.log("Test DisplayNone visibility");
+        cy.setDisplayNone();
+        // DisplayNone is not supported for Plasmic components
+        checkImageAutoOpen(frame, "notVisible", "MyImage");
+        cy.log("Test NotRendered visibility");
+        cy.setVisible();
+        cy.setNotRendered();
+        checkImageAutoOpen(frame, "notRendered", "MyImage");
+        cy.log("Test Dynamic visibility");
+        cy.setVisible();
+        cy.setDynamicVisibility("false");
+        checkImageAutoOpen(frame, "customExpr", "MyImage");
+        cy.log("Test Visible visibility");
+        cy.setVisible();
+        frame.base().find("img").should("exist");
+      }
+
+      it("works for Plasmic components", function () {
+        cy.withinStudioIframe(() => {
+          const nodeName = "MyText";
+          const text = "Starlight";
+          cy.createNewComponent("Text Component").then((frame) => {
+            cy.insertFromAddDrawer("Text");
+            cy.renameTreeNode(nodeName);
+            cy.getSelectedElt().dblclick({ force: true });
+            frame.enterIntoTplTextBlock(text);
+            testAllVisibilities({ frame, text, nodeName });
           });
-          cy.convertToSlot("children");
-          childTextNodeName = `Slot Target: "children"`;
-          checkParams = {
-            ...checkParams,
-            textNodeName: childTextNodeName,
-          };
-          testAllVisibilities({
-            frame,
-            notRenderedParentNodeName: verticalStackNodeName,
-            isSlot: true,
+          cy.createNewPageInOwnArena(pageName).then((frame) => {
+            cy.selectRootNode();
+            cy.insertFromAddDrawer("Text Component");
+            cy.renameTreeNode(nodeName);
+            testAllVisibilities({
+              frame,
+              text,
+              nodeName,
+              isPlasmicComponent: true,
+            });
           });
         });
+      });
 
-        cy.createNewPageInOwnArena(pageName).then((frame) => {
-          cy.selectRootNode();
-          cy.insertFromAddDrawer("Text Component");
-          const compNodeName = "MyTextComp";
-          cy.renameTreeNode(compNodeName);
-          checkParams = {
-            ...checkParams,
-            textNodeName: compNodeName,
-          };
-          testAllVisibilities({ frame, isPlasmicComponent: true });
-          cy.selectTreeNode([compNodeName]);
-          cy.justLog("Test undo functionality");
-          cy.setNotRendered();
-          cy.autoOpenBanner().should("not.exist"); // Auto-open hidden element on next selection only
-          cy.selectRootNode();
-          cy.selectTreeNode([compNodeName]);
-          cy.autoOpenBanner().should("exist");
-          cy.justType("{del}"); // delete the text
-          frame.base().contains(textContents).should(`not.exist`);
-          cy.autoOpenBanner().should("not.exist");
-          cy.undoTimes(1);
-          cy.autoOpenBanner().should("exist");
-
-          cy.withinLiveMode(() => {
-            // The hidden content stays hidden in live preview
-            cy.contains(textContents).should("not.exist");
+      it("works for images", function () {
+        cy.withinStudioIframe(() => {
+          cy.createNewPageInOwnArena(pageName).then((frame) => {
+            cy.insertFromAddDrawer("Image");
+            cy.renameTreeNode("MyImage");
+            testAllImageVisbilities(frame);
           });
         });
+      });
 
-        cy.createNewPageInOwnArena("Test Section").then((frame) => {
-          cy.selectRootNode();
-          const nodeName = "My Section";
-          const text = "My section text";
-          cy.insertFromAddDrawer("Page section");
-          cy.renameTreeNode(nodeName);
-          cy.insertFromAddDrawer("Text");
-          cy.getSelectedElt().dblclick({ force: true });
-          frame.enterIntoTplTextBlock(text);
-          checkParams = {
-            textContents: text,
-            textNodeName: nodeName,
-          };
-          testAllVisibilities({ frame });
+      it("works for section", function () {
+        cy.withinStudioIframe(() => {
+          const nodeName = "MySection";
+          const text = "Starlight";
+          cy.createNewPageInOwnArena(pageName).then((frame) => {
+            cy.insertFromAddDrawer("Page section");
+            cy.renameTreeNode(nodeName);
+            cy.insertFromAddDrawer("Text");
+            cy.getSelectedElt().dblclick({ force: true });
+            frame.enterIntoTplTextBlock(text);
+            testAllVisibilities({ frame, text, nodeName });
+          });
+        });
+      });
+
+      it("works for a child node whose parent is hidden", function () {
+        cy.withinStudioIframe(() => {
+          cy.createNewPageInOwnArena(pageName).then((frame) => {
+            const parentNodeName = "MyParent";
+            const nodeName = "MyText";
+            const text = "Starlight";
+            cy.insertFromAddDrawer("Vertical stack");
+            cy.renameTreeNode(parentNodeName);
+            cy.insertFromAddDrawer("Text");
+            cy.renameTreeNode(nodeName);
+            cy.getSelectedElt().dblclick({ force: true });
+            frame.enterIntoTplTextBlock(text);
+            testAllVisibilities({
+              frame,
+              text,
+              nodeName,
+              notRenderedParentNodeName: parentNodeName,
+            });
+          });
+        });
+      });
+
+      it("works for a slot", () => {
+        cy.withinStudioIframe(() => {
+          const nodeName = "MyText";
+          const text = "Starlight";
+          cy.createNewComponent("Text Component").then((frame) => {
+            cy.insertFromAddDrawer("Text");
+            cy.renameTreeNode(nodeName);
+            cy.getSelectedElt().dblclick({ force: true });
+            frame.enterIntoTplTextBlock(text);
+            cy.convertToSlot("children");
+            cy.selectRootNode();
+            testAllVisibilities({
+              frame,
+              text,
+              nodeName: `Slot Target: "children"`,
+              isSlot: true,
+            });
+          });
+        });
+      });
+
+      it("works with undo functionality", function () {
+        cy.withinStudioIframe(() => {
+          const nodeName = "MyText";
+          const text = "Starlight";
+          cy.createNewPageInOwnArena(pageName).then((frame) => {
+            cy.selectRootNode();
+            cy.insertFromAddDrawer("Text");
+            cy.renameTreeNode(nodeName);
+            cy.justLog("Test undo functionality");
+            cy.setNotRendered();
+            cy.autoOpenBanner().should("not.exist"); // Auto-open hidden element on next selection only
+            cy.selectRootNode();
+            cy.selectTreeNode([nodeName]);
+            cy.autoOpenBanner().should("exist");
+            cy.justType("{del}"); // delete the text
+            frame.base().contains(text).should(`not.exist`);
+            cy.autoOpenBanner().should("not.exist");
+            cy.undoTimes(1);
+            cy.autoOpenBanner().should("exist");
+
+            cy.withinLiveMode(() => {
+              // The hidden content stays hidden in live preview
+              cy.contains(text).should("not.exist");
+            });
+          });
         });
       });
     });
