@@ -337,7 +337,8 @@
           "helpers": null,
           "defaultSlotContents": {},
           "variants": {},
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "refActions": []
         },
         "5592022": {
           "uuid": "2hnzR1_1GXX",
@@ -591,7 +592,8 @@
           "helpers": null,
           "defaultSlotContents": {},
           "variants": {},
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "refActions": []
         },
         "5592050": {
           "uuid": "qy36JdSFn7Z",
@@ -12412,7 +12414,7 @@
         }
       },
       "deps": [],
-      "version": "244-add-custom-function-display-name"
+      "version": "245-code-component-meta-add-refActions"
     }
   ]
 ]

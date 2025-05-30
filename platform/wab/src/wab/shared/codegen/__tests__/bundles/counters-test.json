@@ -235,7 +235,8 @@
           "helpers": null,
           "defaultSlotContents": {},
           "variants": {},
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "refActions": []
         },
         "14363010": {
           "type": { "__ref": "14363028" },
@@ -385,7 +386,8 @@
           "helpers": null,
           "defaultSlotContents": {},
           "variants": {},
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "refActions": []
         },
         "14363018": { "name": "title", "uuid": "B20rzmZ_36", "__type": "Var" },
         "14363019": { "name": "text", "__type": "Text" },
@@ -9495,7 +9497,7 @@
         }
       },
       "deps": [],
-      "version": "244-add-custom-function-display-name"
+      "version": "245-code-component-meta-add-refActions"
     }
   ]
 ]

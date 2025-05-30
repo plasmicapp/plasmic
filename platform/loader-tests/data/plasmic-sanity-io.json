@@ -219,7 +219,8 @@
             }
           },
           "variants": {},
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "refActions": []
         },
         "10603012": {
           "type": { "__ref": "10603037" },
@@ -288,7 +289,8 @@
           "helpers": null,
           "defaultSlotContents": {},
           "variants": {},
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "refActions": []
         },
         "10603016": {
           "type": { "__ref": "16376005" },
@@ -458,7 +460,8 @@
           "helpers": null,
           "defaultSlotContents": {},
           "variants": {},
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "refActions": []
         },
         "10603025": {
           "variants": [{ "__ref": "10867007" }],
@@ -929,7 +932,7 @@
         }
       },
       "deps": [],
-      "version": "244-add-custom-function-display-name"
+      "version": "245-code-component-meta-add-refActions"
     }
   ],
   [
@@ -2064,7 +2067,7 @@
         }
       },
       "deps": ["4536e610-f7b7-43b7-b45e-172856a7e132"],
-      "version": "244-add-custom-function-display-name"
+      "version": "245-code-component-meta-add-refActions"
     }
   ]
 ]

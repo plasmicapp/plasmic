@@ -10510,7 +10510,8 @@
           "helpers": null,
           "defaultSlotContents": {},
           "variants": {},
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "refActions": []
         },
         "63011010": {
           "type": { "__ref": "63011028" },
@@ -10660,7 +10661,8 @@
           "helpers": null,
           "defaultSlotContents": {},
           "variants": {},
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "refActions": []
         },
         "63011018": { "name": "title", "uuid": "FabHFh-IiQ", "__type": "Var" },
         "63011019": { "name": "text", "__type": "Text" },
@@ -11599,7 +11601,7 @@
         }
       },
       "deps": [],
-      "version": "244-add-custom-function-display-name"
+      "version": "245-code-component-meta-add-refActions"
     }
   ]
 ]

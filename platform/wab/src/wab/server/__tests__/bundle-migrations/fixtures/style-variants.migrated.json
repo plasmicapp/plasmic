@@ -688,6 +688,7 @@
       "helpers": null,
       "defaultSlotContents": {},
       "variants": {},
+      "refActions": [],
       "__type": "CodeComponentMeta"
     },
     "GlEmF5V4BvG0": {
@@ -838,6 +839,7 @@
       "helpers": null,
       "defaultSlotContents": {},
       "variants": {},
+      "refActions": [],
       "__type": "CodeComponentMeta"
     },
     "LXATOWxNSms0": { "name": "text", "__type": "Text" },
@@ -1260,6 +1262,7 @@
       "helpers": null,
       "defaultSlotContents": {},
       "variants": {},
+      "refActions": [],
       "__type": "CodeComponentMeta"
     },
     "TozjRkFxHzWW": {
@@ -1312,6 +1315,7 @@
         "a": { "__ref": "G8MeoATgjZHn" },
         "b": { "__ref": "H4h3oXKmAibU" }
       },
+      "refActions": [],
       "__type": "CodeComponentMeta"
     },
     "4w91y2IM4Eyw": {
@@ -1892,5 +1896,5 @@
     }
   },
   "deps": [],
-  "version": "244-add-custom-function-display-name"
+  "version": "245-code-component-meta-add-refActions"
 }

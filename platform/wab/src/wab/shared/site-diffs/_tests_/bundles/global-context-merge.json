@@ -682,7 +682,8 @@
             "helpers": null,
             "defaultSlotContents": {},
             "variants": {},
-            "__type": "CodeComponentMeta"
+            "__type": "CodeComponentMeta",
+            "refActions": []
           },
           "Fvmfvud2xzlF": {
             "type": { "__ref": "q6r05UR3mlFM" },
@@ -832,7 +833,8 @@
             "helpers": null,
             "defaultSlotContents": {},
             "variants": {},
-            "__type": "CodeComponentMeta"
+            "__type": "CodeComponentMeta",
+            "refActions": []
           },
           "JqBHMKZ47aPh": { "name": "text", "__type": "Text" },
           "bhhuM5HU0rud": {
@@ -966,7 +968,7 @@
           }
         },
         "deps": [],
-        "version": "244-add-custom-function-display-name"
+        "version": "245-code-component-meta-add-refActions"
       },
       "projectId": "jktPeioPm3Q1RvAsGWDSCe",
       "version": "0.0.1",
@@ -1667,7 +1669,8 @@
             "helpers": null,
             "defaultSlotContents": {},
             "variants": {},
-            "__type": "CodeComponentMeta"
+            "__type": "CodeComponentMeta",
+            "refActions": []
           },
           "Fvmfvud2xzlF": {
             "type": { "__ref": "q6r05UR3mlFM" },
@@ -1817,7 +1820,8 @@
             "helpers": null,
             "defaultSlotContents": {},
             "variants": {},
-            "__type": "CodeComponentMeta"
+            "__type": "CodeComponentMeta",
+            "refActions": []
           },
           "JqBHMKZ47aPh": { "name": "text", "__type": "Text" },
           "bhhuM5HU0rud": {
@@ -2086,7 +2090,8 @@
             "helpers": null,
             "defaultSlotContents": {},
             "variants": {},
-            "__type": "CodeComponentMeta"
+            "__type": "CodeComponentMeta",
+            "refActions": []
           },
           "eCJaS3ruXAuc": {
             "variants": [{ "__ref": "u1X-vg-VO0Ac" }],
@@ -2172,7 +2177,7 @@
           }
         },
         "deps": [],
-        "version": "244-add-custom-function-display-name"
+        "version": "245-code-component-meta-add-refActions"
       }
     },
     {
@@ -2857,7 +2862,8 @@
             "helpers": null,
             "defaultSlotContents": {},
             "variants": {},
-            "__type": "CodeComponentMeta"
+            "__type": "CodeComponentMeta",
+            "refActions": []
           },
           "Fvmfvud2xzlF": {
             "type": { "__ref": "q6r05UR3mlFM" },
@@ -3007,7 +3013,8 @@
             "helpers": null,
             "defaultSlotContents": {},
             "variants": {},
-            "__type": "CodeComponentMeta"
+            "__type": "CodeComponentMeta",
+            "refActions": []
           },
           "JqBHMKZ47aPh": { "name": "text", "__type": "Text" },
           "bhhuM5HU0rud": {
@@ -3276,7 +3283,8 @@
             "helpers": null,
             "defaultSlotContents": {},
             "variants": {},
-            "__type": "CodeComponentMeta"
+            "__type": "CodeComponentMeta",
+            "refActions": []
           },
           "ivdl0USvCJJp": {
             "variants": [{ "__ref": "u1X-vg-VO0Ac" }],
@@ -3362,7 +3370,7 @@
           }
         },
         "deps": [],
-        "version": "244-add-custom-function-display-name"
+        "version": "245-code-component-meta-add-refActions"
       }
     }
   ]

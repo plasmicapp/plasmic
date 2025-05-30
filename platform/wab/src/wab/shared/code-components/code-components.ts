@@ -27,6 +27,7 @@ import {
 import { paramToVarName, toVarName } from "@/wab/shared/codegen/util";
 import {
   CustomError,
+  arrayEqIgnoreOrder,
   assert,
   ensure,
   ensureArray,
@@ -68,7 +69,7 @@ import {
   mkComponent,
   removeComponentParam,
 } from "@/wab/shared/core/components";
-import { ExprCtx, asCode } from "@/wab/shared/core/exprs";
+import { ExprCtx, asCode, tryExtractString } from "@/wab/shared/core/exprs";
 import {
   ParamExportType,
   mkParam,
@@ -106,6 +107,7 @@ import {
   findAllInstancesOfComponent,
   findExprsInInteraction,
   flattenTpls,
+  getAllEventHandlersForTpl,
   getTplComponentsInSite,
   isEventHandlerKeyForAttr,
   isEventHandlerKeyForFuncType,
@@ -174,6 +176,7 @@ import {
   ensureKnownPropParam,
   ensureKnownTplTag,
   isKnownClassNamePropType,
+  isKnownCustomCode,
   isKnownCustomFunctionExpr,
   isKnownEventHandler,
   isKnownPropParam,
@@ -181,6 +184,7 @@ import {
   isKnownRenderableType,
   isKnownStateParam,
   isKnownStyleExpr,
+  isKnownTplRef,
   isKnownVirtualRenderExpr,
 } from "@/wab/shared/model/classes";
 import {
@@ -456,6 +460,16 @@ export type StudioPropTypeType = ExtractType<StudioPropType<any>>;
 
 type BuiltinComponentsType = Record<string, ComponentRegistration>;
 
+type RemovedInteraction = {
+  codeComponent: CodeComponent;
+  interaction: Interaction;
+};
+
+type ComponentInteractionToClear = {
+  component: Component;
+  interactions: RemovedInteraction[];
+};
+
 export class CodeComponentsRegistry {
   constructor(
     private win: Window | typeof globalThis,
@@ -712,6 +726,7 @@ export async function syncCodeComponents(
     // At this point, we've added all the new components and removed
     // all the removed components.
 
+    run(await checkCodeComponentRefActions(ctx));
     run(await refreshCodeComponentMetas(ctx, fns));
     run(await checkComponentPropsAndStates(ctx, newComponents, fns, opts));
     run(await checkParentComponents(ctx));
@@ -1330,6 +1345,100 @@ async function fixCodeComponentsVariants(
   });
 }
 
+async function checkCodeComponentRefActions(ctx: SiteCtx) {
+  const removedRefActions = new Map<CodeComponent, string[]>();
+  ctx.site.components.forEach((component) => {
+    // Identify refActions that existed previously but are missing in the latest metadata
+    if (isCodeComponent(component)) {
+      const meta = ctx.codeComponentsRegistry
+        .getRegisteredComponentsAndContextsMap()
+        .get(component.name)?.meta;
+
+      const currentActions = Array.from(component.codeComponentMeta.refActions);
+      const metaRefActions = (meta as any)?.refActions ?? {};
+      const newActions = new Set(Object.keys(metaRefActions));
+
+      const removedActions = currentActions.filter(
+        (action) => !newActions.has(action)
+      );
+      if (removedActions.length > 0) {
+        removedRefActions.set(component, removedActions);
+      }
+    }
+  });
+  const componentsToClear: ComponentInteractionToClear[] = [];
+  // Clean up interactions that reference removed ref actions
+  for (const component of ctx.site.components) {
+    for (const tpl of flattenTpls(component.tplTree)) {
+      for (const { expr } of getAllEventHandlersForTpl(component, tpl)) {
+        if (!isKnownEventHandler(expr)) {
+          continue;
+        }
+        const componentToClear: ComponentInteractionToClear = {
+          component,
+          interactions: [],
+        };
+        for (const interaction of expr.interactions) {
+          if (
+            interaction.actionName !== "invokeRefAction" ||
+            interaction.args.length < 2
+          ) {
+            continue;
+          }
+          const [firstArg, secondArg] = interaction.args;
+          if (
+            !isKnownTplRef(firstArg.expr) ||
+            !isTplComponent(firstArg.expr.tpl) ||
+            !isKnownCustomCode(secondArg.expr) ||
+            !isCodeComponent(firstArg.expr.tpl.component)
+          ) {
+            continue;
+          }
+          const componentRemovedRefActions = removedRefActions.get(
+            firstArg.expr.tpl.component
+          );
+          const actionName = tryExtractString(secondArg.expr);
+          if (
+            componentRemovedRefActions &&
+            actionName &&
+            componentRemovedRefActions.includes(actionName)
+          ) {
+            componentToClear.interactions.push({
+              interaction,
+              codeComponent: firstArg.expr.tpl.component,
+            });
+          }
+        }
+        if (componentToClear.interactions.length > 0) {
+          componentsToClear.push(componentToClear);
+        }
+      }
+    }
+  }
+  ctx.observeComponents(componentsToClear.map(({ component }) => component));
+  return ctx.change<never>(
+    ({ success }) => {
+      for (const componentToClear of componentsToClear) {
+        for (const removedInteraction of componentToClear.interactions) {
+          const meta = ctx.codeComponentsRegistry
+            .getRegisteredComponentsAndContextsMap()
+            .get(removedInteraction.codeComponent.name)?.meta;
+          const interaction = removedInteraction.interaction;
+
+          // Keep the action element if other refActions exist in the new meta; otherwise, remove both action and element
+          if (meta?.refActions) {
+            interaction.args = [interaction.args[0]];
+          } else {
+            interaction.args = [];
+          }
+        }
+      }
+      return success();
+    },
+    { noUndoRecord: true }
+  );
+}
+
 async function refreshCodeComponentMetas(
   ctx: SiteCtx,
   fns: CodeComponentSyncCallbackFns
@@ -1352,7 +1461,6 @@ async function refreshCodeComponentMetas(
     })
   );
   const componentsToRename: Component[] = [];
-
   return ctx.change<never>(
     ({ success, run }) => {
       componentsToUpdate.forEach(({ component, meta }) => {
@@ -1370,6 +1478,7 @@ async function refreshCodeComponentMetas(
           allInstances: findAllInstancesOfComponent(ctx.site, component),
         };
       });
+
       ctx.observeComponents(
         allComponentInstances.flatMap(({ allInstances }) =>
           allInstances
@@ -1424,6 +1533,12 @@ function refreshCodeComponentMeta(
         mustBeNamed = true;
       }
       c.codeComponentMeta.hasRef = !!(meta as any).refActions;
+
+      const newRefActions = meta.refActions ? Object.keys(meta.refActions) : [];
+      const existingRefActions = c.codeComponentMeta.refActions ?? [];
+      if (!arrayEqIgnoreOrder(existingRefActions, newRefActions)) {
+        c.codeComponentMeta.refActions = newRefActions;
+      }
 
       // Explicitly not handling defaultSlotContents, which is handled by
       // refreshDefaultSlotContents()
@@ -3489,6 +3604,9 @@ export function mkCodeComponent(
       providesData: !!meta.providesData,
       isRepeatable: isGlobalContextMeta(meta) || (meta.isRepeatable ?? true),
       hasRef: !!(meta as any).refActions,
+      refActions: (meta as any).refActions
+        ? Object.keys((meta as any).refActions)
+        : [],
       styleSections: isGlobalContextMeta(meta) || !!meta.styleSections,
       helpers: mkCodeComponentHelperFromMeta(meta) ?? null,
       // explicitly not handling defaultSlotContents, which is done by

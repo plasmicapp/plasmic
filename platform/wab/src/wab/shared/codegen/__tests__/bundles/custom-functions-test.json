@@ -406,7 +406,8 @@
           "helpers": null,
           "defaultSlotContents": {},
           "variants": {},
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "refActions": []
         },
         "5xd_u-JP1gew": {
           "uuid": "WxYff_NPVJvK",
@@ -667,7 +668,8 @@
           "helpers": null,
           "defaultSlotContents": {},
           "variants": {},
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "refActions": []
         },
         "f2E7_tNnXWGs": {
           "uuid": "wzTkMnXfRlz9",
@@ -1457,7 +1459,7 @@
         }
       },
       "deps": [],
-      "version": "244-add-custom-function-display-name"
+      "version": "245-code-component-meta-add-refActions"
     }
   ]
 ]

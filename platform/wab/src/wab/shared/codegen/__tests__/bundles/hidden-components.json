@@ -5,51 +5,27 @@
       "root": "62885001",
       "map": {
         "3691501": {
-          "rows": [
-            {
-              "__ref": "3691502"
-            }
-          ],
+          "rows": [{ "__ref": "3691502" }],
           "__type": "ArenaFrameGrid"
         },
-        "3691502": {
-          "cols": [],
-          "rowKey": null,
-          "__type": "ArenaFrameRow"
-        },
+        "3691502": { "cols": [], "rowKey": null, "__type": "ArenaFrameRow" },
         "14363001": {
           "uuid": "g_kAJdKAcN",
           "name": "hostless-plasmic-head",
           "params": [
-            {
-              "__ref": "14363003"
-            },
-            {
-              "__ref": "14363004"
-            },
-            {
-              "__ref": "14363005"
-            },
-            {
-              "__ref": "14363006"
-            }
+            { "__ref": "14363003" },
+            { "__ref": "14363004" },
+            { "__ref": "14363005" },
+            { "__ref": "14363006" }
           ],
           "states": [],
-          "tplTree": {
-            "__ref": "14363007"
-          },
+          "tplTree": { "__ref": "14363007" },
           "editableByContentEditor": true,
           "hiddenFromContentEditor": false,
-          "variants": [
-            {
-              "__ref": "14363008"
-            }
-          ],
+          "variants": [{ "__ref": "14363008" }],
           "variantGroups": [],
           "pageMeta": null,
-          "codeComponentMeta": {
-            "__ref": "14363009"
-          },
+          "codeComponentMeta": { "__ref": "14363009" },
           "type": "code",
           "subComps": [],
           "superComp": null,
@@ -57,48 +33,30 @@
           "templateInfo": null,
           "metadata": {},
           "dataQueries": [],
+          "serverQueries": [],
           "figmaMappings": [],
           "alwaysAutoName": false,
           "trapsFocus": false,
-          "__type": "Component",
-          "serverQueries": []
+          "__type": "Component"
         },
         "14363002": {
           "uuid": "sFp5XzlGf-",
           "name": "plasmic-data-source-fetcher",
           "params": [
-            {
-              "__ref": "14363010"
-            },
-            {
-              "__ref": "14363011"
-            },
-            {
-              "__ref": "14363012"
-            },
-            {
-              "__ref": "14363013"
-            },
-            {
-              "__ref": "14363014"
-            }
+            { "__ref": "14363010" },
+            { "__ref": "14363011" },
+            { "__ref": "14363012" },
+            { "__ref": "14363013" },
+            { "__ref": "14363014" }
           ],
           "states": [],
-          "tplTree": {
-            "__ref": "14363015"
-          },
+          "tplTree": { "__ref": "14363015" },
           "editableByContentEditor": true,
           "hiddenFromContentEditor": false,
-          "variants": [
-            {
-              "__ref": "14363016"
-            }
-          ],
+          "variants": [{ "__ref": "14363016" }],
           "variantGroups": [],
           "pageMeta": null,
-          "codeComponentMeta": {
-            "__ref": "14363017"
-          },
+          "codeComponentMeta": { "__ref": "14363017" },
           "type": "code",
           "subComps": [],
           "superComp": null,
@@ -106,19 +64,15 @@
           "templateInfo": null,
           "metadata": {},
           "dataQueries": [],
+          "serverQueries": [],
           "figmaMappings": [],
           "alwaysAutoName": true,
           "trapsFocus": false,
-          "__type": "Component",
-          "serverQueries": []
+          "__type": "Component"
         },
         "14363003": {
-          "type": {
-            "__ref": "14363019"
-          },
-          "variable": {
-            "__ref": "14363018"
-          },
+          "type": { "__ref": "14363019" },
+          "variable": { "__ref": "14363018" },
           "uuid": "950Z_ur5Lk",
           "enumValues": [],
           "origin": null,
@@ -137,12 +91,8 @@
           "__type": "PropParam"
         },
         "14363004": {
-          "type": {
-            "__ref": "14363021"
-          },
-          "variable": {
-            "__ref": "14363020"
-          },
+          "type": { "__ref": "14363021" },
+          "variable": { "__ref": "14363020" },
           "uuid": "BohKJs6_fT",
           "enumValues": [],
           "origin": null,
@@ -161,12 +111,8 @@
           "__type": "PropParam"
         },
         "14363005": {
-          "type": {
-            "__ref": "14363023"
-          },
-          "variable": {
-            "__ref": "14363022"
-          },
+          "type": { "__ref": "14363023" },
+          "variable": { "__ref": "14363022" },
           "uuid": "Jr4XEl1q4y",
           "enumValues": [],
           "origin": null,
@@ -185,12 +131,8 @@
           "__type": "PropParam"
         },
         "14363006": {
-          "type": {
-            "__ref": "14363025"
-          },
-          "variable": {
-            "__ref": "14363024"
-          },
+          "type": { "__ref": "14363025" },
+          "variable": { "__ref": "14363024" },
           "uuid": "CqrWUFW243",
           "enumValues": [],
           "origin": null,
@@ -218,24 +160,20 @@
           "uuid": "2qPJxfusu4",
           "parent": null,
           "locked": null,
-          "vsettings": [
-            {
-              "__ref": "14363026"
-            }
-          ],
+          "vsettings": [{ "__ref": "14363026" }],
           "__type": "TplTag"
         },
         "14363008": {
           "uuid": "2aL1a7vQo",
           "name": "base",
           "selectors": null,
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null,
           "parent": null,
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant",
-          "codeComponentName": null,
-          "codeComponentVariantKeys": null
+          "__type": "Variant"
         },
         "14363009": {
           "importPath": "@plasmicapp/react-web",
@@ -259,15 +197,12 @@
           "helpers": null,
           "defaultSlotContents": {},
           "variants": {},
+          "refActions": [],
           "__type": "CodeComponentMeta"
         },
         "14363010": {
-          "type": {
-            "__ref": "14363028"
-          },
-          "variable": {
-            "__ref": "14363027"
-          },
+          "type": { "__ref": "14363028" },
+          "variable": { "__ref": "14363027" },
           "uuid": "ZWqKK8Ogu7",
           "enumValues": [],
           "origin": null,
@@ -286,12 +221,8 @@
           "__type": "PropParam"
         },
         "14363011": {
-          "type": {
-            "__ref": "14363030"
-          },
-          "variable": {
-            "__ref": "14363029"
-          },
+          "type": { "__ref": "14363030" },
+          "variable": { "__ref": "14363029" },
           "uuid": "zl30J74PQPM",
           "enumValues": [],
           "origin": null,
@@ -310,15 +241,9 @@
           "__type": "PropParam"
         },
         "14363012": {
-          "type": {
-            "__ref": "14363032"
-          },
-          "tplSlot": {
-            "__ref": "14363037"
-          },
-          "variable": {
-            "__ref": "14363031"
-          },
+          "type": { "__ref": "14363032" },
+          "tplSlot": { "__ref": "14363037" },
+          "variable": { "__ref": "14363031" },
           "uuid": "p5FVs5Gsukd",
           "enumValues": [],
           "origin": null,
@@ -337,12 +262,8 @@
           "__type": "SlotParam"
         },
         "14363013": {
-          "type": {
-            "__ref": "14363034"
-          },
-          "variable": {
-            "__ref": "14363033"
-          },
+          "type": { "__ref": "14363034" },
+          "variable": { "__ref": "14363033" },
           "uuid": "3ZTdKL9TCdP",
           "enumValues": [],
           "origin": null,
@@ -361,12 +282,8 @@
           "__type": "PropParam"
         },
         "14363014": {
-          "type": {
-            "__ref": "14363036"
-          },
-          "variable": {
-            "__ref": "14363035"
-          },
+          "type": { "__ref": "14363036" },
+          "variable": { "__ref": "14363035" },
           "uuid": "5h0oEbI4coe",
           "enumValues": [],
           "origin": null,
@@ -387,35 +304,27 @@
         "14363015": {
           "tag": "div",
           "name": null,
-          "children": [
-            {
-              "__ref": "14363037"
-            }
-          ],
+          "children": [{ "__ref": "14363037" }],
           "type": "other",
           "codeGenType": null,
           "columnsSetting": null,
           "uuid": "vRYK6dpo7g",
           "parent": null,
           "locked": null,
-          "vsettings": [
-            {
-              "__ref": "14363038"
-            }
-          ],
+          "vsettings": [{ "__ref": "14363038" }],
           "__type": "TplTag"
         },
         "14363016": {
           "uuid": "MuWeo6EUKH",
           "name": "base",
           "selectors": null,
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null,
           "parent": null,
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant",
-          "codeComponentName": null,
-          "codeComponentVariantKeys": null
+          "__type": "Variant"
         },
         "14363017": {
           "importPath": "@plasmicapp/react-web/lib/data-sources",
@@ -439,79 +348,40 @@
           "helpers": null,
           "defaultSlotContents": {},
           "variants": {},
+          "refActions": [],
           "__type": "CodeComponentMeta"
         },
-        "14363018": {
-          "name": "title",
-          "uuid": "B20rzmZ_36",
-          "__type": "Var"
-        },
-        "14363019": {
-          "name": "text",
-          "__type": "Text"
-        },
+        "14363018": { "name": "title", "uuid": "B20rzmZ_36", "__type": "Var" },
+        "14363019": { "name": "text", "__type": "Text" },
         "14363020": {
           "name": "description",
           "uuid": "7aNYtFdCcV",
           "__type": "Var"
         },
-        "14363021": {
-          "name": "text",
-          "__type": "Text"
-        },
-        "14363022": {
-          "name": "image",
-          "uuid": "RsNgFtyxJy",
-          "__type": "Var"
-        },
-        "14363023": {
-          "name": "img",
-          "__type": "Img"
-        },
+        "14363021": { "name": "text", "__type": "Text" },
+        "14363022": { "name": "image", "uuid": "RsNgFtyxJy", "__type": "Var" },
+        "14363023": { "name": "img", "__type": "Img" },
         "14363024": {
           "name": "canonical",
           "uuid": "SmwOmk6lEl",
           "__type": "Var"
         },
-        "14363025": {
-          "name": "text",
-          "__type": "Text"
-        },
+        "14363025": { "name": "text", "__type": "Text" },
         "14363026": {
-          "variants": [
-            {
-              "__ref": "14363008"
-            }
-          ],
+          "variants": [{ "__ref": "14363008" }],
           "args": [],
           "attrs": {},
-          "rs": {
-            "__ref": "14363039"
-          },
+          "rs": { "__ref": "14363039" },
           "dataCond": null,
           "dataRep": null,
           "text": null,
           "columnsConfig": null,
           "__type": "VariantSetting"
         },
-        "14363027": {
-          "name": "dataOp",
-          "uuid": "wrdCC_EPK-",
-          "__type": "Var"
-        },
-        "14363028": {
-          "name": "any",
-          "__type": "AnyType"
-        },
-        "14363029": {
-          "name": "name",
-          "uuid": "WDte5ZupDsQ",
-          "__type": "Var"
-        },
-        "14363030": {
-          "name": "text",
-          "__type": "Text"
-        },
+        "14363027": { "name": "dataOp", "uuid": "wrdCC_EPK-", "__type": "Var" },
+        "14363028": { "name": "any", "__type": "AnyType" },
+        "14363029": { "name": "name", "uuid": "WDte5ZupDsQ", "__type": "Var" },
+        "14363030": { "name": "text", "__type": "Text" },
         "14363031": {
           "name": "children",
           "uuid": "qdRu96qdNf7",
@@ -519,11 +389,7 @@
         },
         "14363032": {
           "name": "renderFunc",
-          "params": [
-            {
-              "__ref": "14363040"
-            }
-          ],
+          "params": [{ "__ref": "14363040" }],
           "allowed": [],
           "allowRootWrapper": null,
           "__type": "RenderFuncType"
@@ -533,47 +399,27 @@
           "uuid": "h-kVdoe4Eaf",
           "__type": "Var"
         },
-        "14363034": {
-          "name": "num",
-          "__type": "Num"
-        },
+        "14363034": { "name": "num", "__type": "Num" },
         "14363035": {
           "name": "pageIndex",
           "uuid": "yq3U8MgnK8W",
           "__type": "Var"
         },
-        "14363036": {
-          "name": "num",
-          "__type": "Num"
-        },
+        "14363036": { "name": "num", "__type": "Num" },
         "14363037": {
-          "param": {
-            "__ref": "14363012"
-          },
+          "param": { "__ref": "14363012" },
           "defaultContents": [],
           "uuid": "Q2SI3PiZsJa",
-          "parent": {
-            "__ref": "14363015"
-          },
+          "parent": { "__ref": "14363015" },
           "locked": null,
-          "vsettings": [
-            {
-              "__ref": "14363041"
-            }
-          ],
+          "vsettings": [{ "__ref": "14363041" }],
           "__type": "TplSlot"
         },
         "14363038": {
-          "variants": [
-            {
-              "__ref": "14363016"
-            }
-          ],
+          "variants": [{ "__ref": "14363016" }],
           "args": [],
           "attrs": {},
-          "rs": {
-            "__ref": "14363042"
-          },
+          "rs": { "__ref": "14363042" },
           "dataCond": null,
           "dataRep": null,
           "text": null,
@@ -581,10 +427,7 @@
           "__type": "VariantSetting"
         },
         "14363039": {
-          "values": {
-            "display": "flex",
-            "flex-direction": "row"
-          },
+          "values": { "display": "flex", "flex-direction": "row" },
           "mixins": [],
           "__type": "RuleSet"
         },
@@ -592,22 +435,14 @@
           "name": "arg",
           "argName": "$queries",
           "displayName": null,
-          "type": {
-            "__ref": "14363045"
-          },
+          "type": { "__ref": "14363045" },
           "__type": "ArgType"
         },
         "14363041": {
-          "variants": [
-            {
-              "__ref": "14363016"
-            }
-          ],
+          "variants": [{ "__ref": "14363016" }],
           "args": [],
           "attrs": {},
-          "rs": {
-            "__ref": "14363046"
-          },
+          "rs": { "__ref": "14363046" },
           "dataCond": null,
           "dataRep": null,
           "text": null,
@@ -615,44 +450,21 @@
           "__type": "VariantSetting"
         },
         "14363042": {
-          "values": {
-            "display": "flex",
-            "flex-direction": "row"
-          },
+          "values": { "display": "flex", "flex-direction": "row" },
           "mixins": [],
           "__type": "RuleSet"
         },
-        "14363045": {
-          "name": "any",
-          "__type": "AnyType"
-        },
-        "14363046": {
-          "values": {},
-          "mixins": [],
-          "__type": "RuleSet"
-        },
+        "14363045": { "name": "any", "__type": "AnyType" },
+        "14363046": { "values": {}, "mixins": [], "__type": "RuleSet" },
         "14363049": {
           "uuid": "iFqCt8OVI9",
           "name": "_Card",
-          "params": [
-            {
-              "__ref": "14364338"
-            },
-            {
-              "__ref": "XfLVmOI9u1V1"
-            }
-          ],
+          "params": [{ "__ref": "14364338" }, { "__ref": "XfLVmOI9u1V1" }],
           "states": [],
-          "tplTree": {
-            "__ref": "14363051"
-          },
+          "tplTree": { "__ref": "14363051" },
           "editableByContentEditor": false,
           "hiddenFromContentEditor": false,
-          "variants": [
-            {
-              "__ref": "14363052"
-            }
-          ],
+          "variants": [{ "__ref": "14363052" }],
           "variantGroups": [],
           "pageMeta": null,
           "codeComponentMeta": null,
@@ -663,88 +475,56 @@
           "templateInfo": null,
           "metadata": {},
           "dataQueries": [],
+          "serverQueries": [],
           "figmaMappings": [],
           "alwaysAutoName": false,
           "trapsFocus": false,
-          "__type": "Component",
-          "serverQueries": []
+          "__type": "Component"
         },
         "14363050": {
-          "component": {
-            "__ref": "14363049"
-          },
-          "matrix": {
-            "__ref": "14363053"
-          },
-          "customMatrix": {
-            "__ref": "14363054"
-          },
+          "component": { "__ref": "14363049" },
+          "matrix": { "__ref": "14363053" },
+          "customMatrix": { "__ref": "14363054" },
           "__type": "ComponentArena"
         },
         "14363051": {
           "tag": "div",
           "name": null,
-          "children": [
-            {
-              "__ref": "-LtQwlpe_Wy9"
-            }
-          ],
+          "children": [{ "__ref": "-LtQwlpe_Wy9" }],
           "type": "other",
           "codeGenType": null,
           "columnsSetting": null,
           "uuid": "T-ytTXQ42",
           "parent": null,
           "locked": null,
-          "vsettings": [
-            {
-              "__ref": "14363055"
-            }
-          ],
+          "vsettings": [{ "__ref": "14363055" }],
           "__type": "TplTag"
         },
         "14363052": {
           "uuid": "3-xWChNvZ_",
           "name": "base",
           "selectors": null,
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null,
           "parent": null,
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant",
-          "codeComponentName": null,
-          "codeComponentVariantKeys": null
+          "__type": "Variant"
         },
         "14363053": {
-          "rows": [
-            {
-              "__ref": "14363056"
-            }
-          ],
+          "rows": [{ "__ref": "14363056" }],
           "__type": "ArenaFrameGrid"
         },
         "14363054": {
-          "rows": [
-            {
-              "__ref": "14363057"
-            }
-          ],
+          "rows": [{ "__ref": "14363057" }],
           "__type": "ArenaFrameGrid"
         },
         "14363055": {
-          "variants": [
-            {
-              "__ref": "14363052"
-            }
-          ],
+          "variants": [{ "__ref": "14363052" }],
           "args": [],
-          "attrs": {
-            "data-testid": {
-              "__ref": "lLqFxdV1xwlX"
-            }
-          },
-          "rs": {
-            "__ref": "14363058"
-          },
+          "attrs": { "data-testid": { "__ref": "lLqFxdV1xwlX" } },
+          "rs": { "__ref": "14363058" },
           "dataCond": null,
           "dataRep": null,
           "text": null,
@@ -752,19 +532,11 @@
           "__type": "VariantSetting"
         },
         "14363056": {
-          "cols": [
-            {
-              "__ref": "14363059"
-            }
-          ],
+          "cols": [{ "__ref": "14363059" }],
           "rowKey": null,
           "__type": "ArenaFrameRow"
         },
-        "14363057": {
-          "cols": [],
-          "rowKey": null,
-          "__type": "ArenaFrameRow"
-        },
+        "14363057": { "cols": [], "rowKey": null, "__type": "ArenaFrameRow" },
         "14363058": {
           "values": {
             "display": "flex",
@@ -780,28 +552,18 @@
           "__type": "RuleSet"
         },
         "14363059": {
-          "frame": {
-            "__ref": "14363067"
-          },
-          "cellKey": {
-            "__ref": "14363052"
-          },
+          "frame": { "__ref": "14363067" },
+          "cellKey": { "__ref": "14363052" },
           "__type": "ArenaFrameCell"
         },
         "14363067": {
           "uuid": "GvnV4Clmvu",
           "width": 613,
           "height": 340,
-          "container": {
-            "__ref": "14363068"
-          },
+          "container": { "__ref": "14363068" },
           "lang": "English",
           "pinnedVariants": {},
-          "targetVariants": [
-            {
-              "__ref": "14363052"
-            }
-          ],
+          "targetVariants": [{ "__ref": "14363052" }],
           "pinnedGlobalVariants": {},
           "targetGlobalVariants": [],
           "viewMode": "centered",
@@ -813,41 +575,25 @@
         },
         "14363068": {
           "name": null,
-          "component": {
-            "__ref": "14363049"
-          },
+          "component": { "__ref": "14363049" },
           "uuid": "aOxL_VqrLX",
           "parent": null,
           "locked": null,
-          "vsettings": [
-            {
-              "__ref": "14363069"
-            }
-          ],
+          "vsettings": [{ "__ref": "14363069" }],
           "__type": "TplComponent"
         },
         "14363069": {
-          "variants": [
-            {
-              "__ref": "62885068"
-            }
-          ],
+          "variants": [{ "__ref": "62885068" }],
           "args": [],
           "attrs": {},
-          "rs": {
-            "__ref": "14363070"
-          },
+          "rs": { "__ref": "14363070" },
           "dataCond": null,
           "dataRep": null,
           "text": null,
           "columnsConfig": null,
           "__type": "VariantSetting"
         },
-        "14363070": {
-          "values": {},
-          "mixins": [],
-          "__type": "RuleSet"
-        },
+        "14363070": { "values": {}, "mixins": [], "__type": "RuleSet" },
         "14363087": {
           "uuid": "LZ8ods6C6lA",
           "name": "check.svg",
@@ -869,19 +615,13 @@
           "__type": "ImageAsset"
         },
         "14364338": {
-          "type": {
-            "__ref": "2o0X1c2b3P6s"
-          },
-          "variable": {
-            "__ref": "14364339"
-          },
+          "type": { "__ref": "2o0X1c2b3P6s" },
+          "variable": { "__ref": "14364339" },
           "uuid": "DyFOtLqdID",
           "enumValues": [],
           "origin": null,
           "exportType": "External",
-          "defaultExpr": {
-            "__ref": "CtD4fdLfYXxg"
-          },
+          "defaultExpr": { "__ref": "CtD4fdLfYXxg" },
           "previewExpr": null,
           "propEffect": null,
           "description": "metaProp",
@@ -901,70 +641,26 @@
         },
         "62885001": {
           "components": [
-            {
-              "__ref": "62885002"
-            },
-            {
-              "__ref": "14363001"
-            },
-            {
-              "__ref": "14363002"
-            },
-            {
-              "__ref": "14363049"
-            },
-            {
-              "__ref": "4K6U0ALP7ugT"
-            }
+            { "__ref": "62885002" },
+            { "__ref": "14363001" },
+            { "__ref": "14363002" },
+            { "__ref": "14363049" },
+            { "__ref": "4K6U0ALP7ugT" }
           ],
           "arenas": [],
-          "pageArenas": [
-            {
-              "__ref": "62885061"
-            },
-            {
-              "__ref": "kGtfOdrtj8mX"
-            }
-          ],
-          "componentArenas": [
-            {
-              "__ref": "14363050"
-            }
-          ],
-          "globalVariantGroups": [
-            {
-              "__ref": "62885055"
-            }
-          ],
+          "pageArenas": [{ "__ref": "62885061" }, { "__ref": "kGtfOdrtj8mX" }],
+          "componentArenas": [{ "__ref": "14363050" }],
+          "globalVariantGroups": [{ "__ref": "62885055" }],
           "userManagedFonts": [],
-          "globalVariant": {
-            "__ref": "62885068"
-          },
+          "globalVariant": { "__ref": "62885068" },
           "styleTokens": [],
           "mixins": [],
-          "themes": [
-            {
-              "__ref": "62885075"
-            }
-          ],
-          "activeTheme": {
-            "__ref": "62885075"
-          },
-          "imageAssets": [
-            {
-              "__ref": "14363087"
-            },
-            {
-              "__ref": "14363088"
-            }
-          ],
+          "themes": [{ "__ref": "62885075" }],
+          "activeTheme": { "__ref": "62885075" },
+          "imageAssets": [{ "__ref": "14363087" }, { "__ref": "14363088" }],
           "projectDependencies": [],
-          "activeScreenVariantGroup": {
-            "__ref": "62885055"
-          },
-          "flags": {
-            "usePlasmicImg": true
-          },
+          "activeScreenVariantGroup": { "__ref": "62885055" },
+          "flags": { "usePlasmicImg": true },
           "hostLessPackageInfo": null,
           "globalContexts": [],
           "splits": [],
@@ -980,20 +676,12 @@
           "name": "Homepage",
           "params": [],
           "states": [],
-          "tplTree": {
-            "__ref": "62885003"
-          },
+          "tplTree": { "__ref": "62885003" },
           "editableByContentEditor": true,
           "hiddenFromContentEditor": false,
-          "variants": [
-            {
-              "__ref": "62885007"
-            }
-          ],
+          "variants": [{ "__ref": "62885007" }],
           "variantGroups": [],
-          "pageMeta": {
-            "__ref": "62885060"
-          },
+          "pageMeta": { "__ref": "62885060" },
           "codeComponentMeta": null,
           "type": "page",
           "subComps": [],
@@ -1002,28 +690,20 @@
           "templateInfo": null,
           "metadata": {},
           "dataQueries": [],
+          "serverQueries": [],
           "figmaMappings": [],
           "alwaysAutoName": false,
           "trapsFocus": false,
-          "__type": "Component",
-          "serverQueries": []
+          "__type": "Component"
         },
         "62885003": {
           "tag": "div",
           "name": null,
           "children": [
-            {
-              "__ref": "62885004"
-            },
-            {
-              "__ref": "xROL1uuYpXGp"
-            },
-            {
-              "__ref": "1Gt1E59CZYeE"
-            },
-            {
-              "__ref": "K-_DLw9GUu1c"
-            }
+            { "__ref": "62885004" },
+            { "__ref": "xROL1uuYpXGp" },
+            { "__ref": "1Gt1E59CZYeE" },
+            { "__ref": "K-_DLw9GUu1c" }
           ],
           "type": "other",
           "codeGenType": null,
@@ -1031,37 +711,20 @@
           "uuid": "y25OVXFLGLSD",
           "parent": null,
           "locked": null,
-          "vsettings": [
-            {
-              "__ref": "62885040"
-            },
-            {
-              "__ref": "62885053"
-            }
-          ],
+          "vsettings": [{ "__ref": "62885040" }, { "__ref": "62885053" }],
           "__type": "TplTag"
         },
         "62885004": {
           "tag": "section",
           "name": null,
-          "children": [
-            {
-              "__ref": "62885005"
-            }
-          ],
+          "children": [{ "__ref": "62885005" }],
           "type": "other",
           "codeGenType": null,
           "columnsSetting": null,
           "uuid": "1m0ZaovFbAjr",
-          "parent": {
-            "__ref": "62885003"
-          },
+          "parent": { "__ref": "62885003" },
           "locked": null,
-          "vsettings": [
-            {
-              "__ref": "62885026"
-            }
-          ],
+          "vsettings": [{ "__ref": "62885026" }],
           "__type": "TplTag"
         },
         "62885005": {
@@ -1072,33 +735,19 @@
           "codeGenType": null,
           "columnsSetting": null,
           "uuid": "kpZWMz5kmzEW",
-          "parent": {
-            "__ref": "62885004"
-          },
+          "parent": { "__ref": "62885004" },
           "locked": null,
-          "vsettings": [
-            {
-              "__ref": "62885006"
-            }
-          ],
+          "vsettings": [{ "__ref": "62885006" }],
           "__type": "TplTag"
         },
         "62885006": {
-          "variants": [
-            {
-              "__ref": "62885007"
-            }
-          ],
+          "variants": [{ "__ref": "62885007" }],
           "args": [],
           "attrs": {},
-          "rs": {
-            "__ref": "62885008"
-          },
+          "rs": { "__ref": "62885008" },
           "dataCond": null,
           "dataRep": null,
-          "text": {
-            "__ref": "1mbV1Vmyo5t2"
-          },
+          "text": { "__ref": "1mbV1Vmyo5t2" },
           "columnsConfig": null,
           "__type": "VariantSetting"
         },
@@ -1106,13 +755,13 @@
           "uuid": "eXaNvHZOkpNm",
           "name": "base",
           "selectors": null,
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null,
           "parent": null,
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant",
-          "codeComponentName": null,
-          "codeComponentVariantKeys": null
+          "__type": "Variant"
         },
         "62885008": {
           "values": {
@@ -1127,16 +776,10 @@
           "__type": "RuleSet"
         },
         "62885026": {
-          "variants": [
-            {
-              "__ref": "62885007"
-            }
-          ],
+          "variants": [{ "__ref": "62885007" }],
           "args": [],
           "attrs": {},
-          "rs": {
-            "__ref": "62885027"
-          },
+          "rs": { "__ref": "62885027" },
           "dataCond": null,
           "dataRep": null,
           "text": null,
@@ -1162,16 +805,10 @@
           "__type": "RuleSet"
         },
         "62885040": {
-          "variants": [
-            {
-              "__ref": "62885007"
-            }
-          ],
+          "variants": [{ "__ref": "62885007" }],
           "args": [],
           "attrs": {},
-          "rs": {
-            "__ref": "62885041"
-          },
+          "rs": { "__ref": "62885041" },
           "dataCond": null,
           "dataRep": null,
           "text": null,
@@ -1197,16 +834,10 @@
           "__type": "RuleSet"
         },
         "62885053": {
-          "variants": [
-            {
-              "__ref": "62885054"
-            }
-          ],
+          "variants": [{ "__ref": "62885054" }],
           "args": [],
           "attrs": {},
-          "rs": {
-            "__ref": "62885059"
-          },
+          "rs": { "__ref": "62885059" },
           "dataCond": null,
           "dataRep": null,
           "text": null,
@@ -1217,37 +848,25 @@
           "uuid": "Iw1PegnUDE7A_",
           "name": "Mobile only",
           "selectors": null,
-          "parent": {
-            "__ref": "62885055"
-          },
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null,
+          "parent": { "__ref": "62885055" },
           "mediaQuery": "(min-width:0px) and (max-width:768px)",
           "description": null,
           "forTpl": null,
-          "__type": "Variant",
-          "codeComponentName": null,
-          "codeComponentVariantKeys": null
+          "__type": "Variant"
         },
         "62885055": {
           "type": "global-screen",
-          "param": {
-            "__ref": "62885056"
-          },
+          "param": { "__ref": "62885056" },
           "uuid": "-MvgymA1_MPux",
-          "variants": [
-            {
-              "__ref": "62885054"
-            }
-          ],
+          "variants": [{ "__ref": "62885054" }],
           "multi": true,
           "__type": "GlobalVariantGroup"
         },
         "62885056": {
-          "type": {
-            "__ref": "62885058"
-          },
-          "variable": {
-            "__ref": "62885057"
-          },
+          "type": { "__ref": "62885058" },
+          "variable": { "__ref": "62885057" },
           "uuid": "6w4Wg_v6xiFpq",
           "enumValues": [],
           "origin": null,
@@ -1270,15 +889,8 @@
           "uuid": "ZR6EMjVpcY1gq",
           "__type": "Var"
         },
-        "62885058": {
-          "name": "text",
-          "__type": "Text"
-        },
-        "62885059": {
-          "values": {},
-          "mixins": [],
-          "__type": "RuleSet"
-        },
+        "62885058": { "name": "text", "__type": "Text" },
+        "62885059": { "values": {}, "mixins": [], "__type": "RuleSet" },
         "62885060": {
           "path": "/",
           "params": {},
@@ -1291,43 +903,22 @@
           "__type": "PageMeta"
         },
         "62885061": {
-          "component": {
-            "__ref": "62885002"
-          },
-          "matrix": {
-            "__ref": "62885062"
-          },
-          "customMatrix": {
-            "__ref": "3691501"
-          },
+          "component": { "__ref": "62885002" },
+          "matrix": { "__ref": "62885062" },
+          "customMatrix": { "__ref": "3691501" },
           "__type": "PageArena"
         },
         "62885062": {
-          "rows": [
-            {
-              "__ref": "62885063"
-            }
-          ],
+          "rows": [{ "__ref": "62885063" }],
           "__type": "ArenaFrameGrid"
         },
         "62885063": {
-          "cols": [
-            {
-              "__ref": "62885064"
-            },
-            {
-              "__ref": "62885070"
-            }
-          ],
-          "rowKey": {
-            "__ref": "62885007"
-          },
+          "cols": [{ "__ref": "62885064" }, { "__ref": "62885070" }],
+          "rowKey": { "__ref": "62885007" },
           "__type": "ArenaFrameRow"
         },
         "62885064": {
-          "frame": {
-            "__ref": "62885065"
-          },
+          "frame": { "__ref": "62885065" },
           "cellKey": null,
           "__type": "ArenaFrameCell"
         },
@@ -1335,16 +926,10 @@
           "uuid": "hPzw2-RIAfQ9Q",
           "width": 1440,
           "height": 768,
-          "container": {
-            "__ref": "62885066"
-          },
+          "container": { "__ref": "62885066" },
           "lang": "English",
           "pinnedVariants": {},
-          "targetVariants": [
-            {
-              "__ref": "62885007"
-            }
-          ],
+          "targetVariants": [{ "__ref": "62885007" }],
           "pinnedGlobalVariants": {},
           "targetGlobalVariants": [],
           "viewMode": "stretch",
@@ -1356,30 +941,18 @@
         },
         "62885066": {
           "name": null,
-          "component": {
-            "__ref": "62885002"
-          },
+          "component": { "__ref": "62885002" },
           "uuid": "6Y9ix7r64Qek6",
           "parent": null,
           "locked": null,
-          "vsettings": [
-            {
-              "__ref": "62885067"
-            }
-          ],
+          "vsettings": [{ "__ref": "62885067" }],
           "__type": "TplComponent"
         },
         "62885067": {
-          "variants": [
-            {
-              "__ref": "62885068"
-            }
-          ],
+          "variants": [{ "__ref": "62885068" }],
           "args": [],
           "attrs": {},
-          "rs": {
-            "__ref": "62885069"
-          },
+          "rs": { "__ref": "62885069" },
           "dataCond": null,
           "dataRep": null,
           "text": null,
@@ -1390,23 +963,17 @@
           "uuid": "14i4PWoFRuvRm",
           "name": "base",
           "selectors": null,
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null,
           "parent": null,
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant",
-          "codeComponentName": null,
-          "codeComponentVariantKeys": null
+          "__type": "Variant"
         },
-        "62885069": {
-          "values": {},
-          "mixins": [],
-          "__type": "RuleSet"
-        },
+        "62885069": { "values": {}, "mixins": [], "__type": "RuleSet" },
         "62885070": {
-          "frame": {
-            "__ref": "62885071"
-          },
+          "frame": { "__ref": "62885071" },
           "cellKey": null,
           "__type": "ArenaFrameCell"
         },
@@ -1414,20 +981,12 @@
           "uuid": "H9ozxQRjzYdPN",
           "width": 414,
           "height": 736,
-          "container": {
-            "__ref": "62885072"
-          },
+          "container": { "__ref": "62885072" },
           "lang": "English",
           "pinnedVariants": {},
           "targetVariants": [],
-          "pinnedGlobalVariants": {
-            "Iw1PegnUDE7A_": true
-          },
-          "targetGlobalVariants": [
-            {
-              "__ref": "62885054"
-            }
-          ],
+          "pinnedGlobalVariants": { "Iw1PegnUDE7A_": true },
+          "targetGlobalVariants": [{ "__ref": "62885054" }],
           "viewMode": "stretch",
           "bgColor": null,
           "name": "",
@@ -1437,91 +996,43 @@
         },
         "62885072": {
           "name": null,
-          "component": {
-            "__ref": "62885002"
-          },
+          "component": { "__ref": "62885002" },
           "uuid": "YtlcBrGVXDVHI",
           "parent": null,
           "locked": null,
-          "vsettings": [
-            {
-              "__ref": "62885073"
-            }
-          ],
+          "vsettings": [{ "__ref": "62885073" }],
           "__type": "TplComponent"
         },
         "62885073": {
-          "variants": [
-            {
-              "__ref": "62885068"
-            }
-          ],
+          "variants": [{ "__ref": "62885068" }],
           "args": [],
           "attrs": {},
-          "rs": {
-            "__ref": "62885074"
-          },
+          "rs": { "__ref": "62885074" },
           "dataCond": null,
           "dataRep": null,
           "text": null,
           "columnsConfig": null,
           "__type": "VariantSetting"
         },
-        "62885074": {
-          "values": {},
-          "mixins": [],
-          "__type": "RuleSet"
-        },
+        "62885074": { "values": {}, "mixins": [], "__type": "RuleSet" },
         "62885075": {
-          "defaultStyle": {
-            "__ref": "62885076"
-          },
+          "defaultStyle": { "__ref": "62885076" },
           "styles": [
-            {
-              "__ref": "62885091"
-            },
-            {
-              "__ref": "62885099"
-            },
-            {
-              "__ref": "62885107"
-            },
-            {
-              "__ref": "62885111"
-            },
-            {
-              "__ref": "62885119"
-            },
-            {
-              "__ref": "62885127"
-            },
-            {
-              "__ref": "62885152"
-            },
-            {
-              "__ref": "62885160"
-            },
-            {
-              "__ref": "62885185"
-            },
-            {
-              "__ref": "62885196"
-            },
-            {
-              "__ref": "62885207"
-            },
-            {
-              "__ref": "62885215"
-            },
-            {
-              "__ref": "62885222"
-            },
-            {
-              "__ref": "62885226"
-            },
-            {
-              "__ref": "62885229"
-            }
+            { "__ref": "62885091" },
+            { "__ref": "62885099" },
+            { "__ref": "62885107" },
+            { "__ref": "62885111" },
+            { "__ref": "62885119" },
+            { "__ref": "62885127" },
+            { "__ref": "62885152" },
+            { "__ref": "62885160" },
+            { "__ref": "62885185" },
+            { "__ref": "62885196" },
+            { "__ref": "62885207" },
+            { "__ref": "62885215" },
+            { "__ref": "62885222" },
+            { "__ref": "62885226" },
+            { "__ref": "62885229" }
           ],
           "layout": null,
           "addItemPrefs": {},
@@ -1530,9 +1041,7 @@
         },
         "62885076": {
           "name": "Default Typography",
-          "rs": {
-            "__ref": "62885077"
-          },
+          "rs": { "__ref": "62885077" },
           "preview": null,
           "uuid": "WrBbwj7AG_dL",
           "forTheme": true,
@@ -1560,16 +1069,12 @@
         },
         "62885091": {
           "selector": "h1",
-          "style": {
-            "__ref": "62885092"
-          },
+          "style": { "__ref": "62885092" },
           "__type": "ThemeStyle"
         },
         "62885092": {
           "name": "Default \"h1\"",
-          "rs": {
-            "__ref": "62885093"
-          },
+          "rs": { "__ref": "62885093" },
           "preview": null,
           "uuid": "SOrH2-piLBXf",
           "forTheme": true,
@@ -1589,16 +1094,12 @@
         },
         "62885099": {
           "selector": "h2",
-          "style": {
-            "__ref": "62885100"
-          },
+          "style": { "__ref": "62885100" },
           "__type": "ThemeStyle"
         },
         "62885100": {
           "name": "Default \"h2\"",
-          "rs": {
-            "__ref": "62885101"
-          },
+          "rs": { "__ref": "62885101" },
           "preview": null,
           "uuid": "H7zKtFC98GbJ",
           "forTheme": true,
@@ -1618,16 +1119,12 @@
         },
         "62885107": {
           "selector": "a",
-          "style": {
-            "__ref": "62885108"
-          },
+          "style": { "__ref": "62885108" },
           "__type": "ThemeStyle"
         },
         "62885108": {
           "name": "Default \"a\"",
-          "rs": {
-            "__ref": "62885109"
-          },
+          "rs": { "__ref": "62885109" },
           "preview": null,
           "uuid": "EzvC6JLudAJt",
           "forTheme": true,
@@ -1635,24 +1132,18 @@
           "__type": "Mixin"
         },
         "62885109": {
-          "values": {
-            "color": "#0070f3"
-          },
+          "values": { "color": "#0070f3" },
           "mixins": [],
           "__type": "RuleSet"
         },
         "62885111": {
           "selector": "h3",
-          "style": {
-            "__ref": "62885112"
-          },
+          "style": { "__ref": "62885112" },
           "__type": "ThemeStyle"
         },
         "62885112": {
           "name": "Default \"h3\"",
-          "rs": {
-            "__ref": "62885113"
-          },
+          "rs": { "__ref": "62885113" },
           "preview": null,
           "uuid": "qloEW3al7ShM",
           "forTheme": true,
@@ -1672,16 +1163,12 @@
         },
         "62885119": {
           "selector": "h4",
-          "style": {
-            "__ref": "62885120"
-          },
+          "style": { "__ref": "62885120" },
           "__type": "ThemeStyle"
         },
         "62885120": {
           "name": "Default \"h4\"",
-          "rs": {
-            "__ref": "62885121"
-          },
+          "rs": { "__ref": "62885121" },
           "preview": null,
           "uuid": "PTgOftsOldbk",
           "forTheme": true,
@@ -1701,16 +1188,12 @@
         },
         "62885127": {
           "selector": "code",
-          "style": {
-            "__ref": "62885128"
-          },
+          "style": { "__ref": "62885128" },
           "__type": "ThemeStyle"
         },
         "62885128": {
           "name": "Default \"code\"",
-          "rs": {
-            "__ref": "62885129"
-          },
+          "rs": { "__ref": "62885129" },
           "preview": null,
           "uuid": "Lnva58L1xulY",
           "forTheme": true,
@@ -1747,16 +1230,12 @@
         },
         "62885152": {
           "selector": "blockquote",
-          "style": {
-            "__ref": "62885153"
-          },
+          "style": { "__ref": "62885153" },
           "__type": "ThemeStyle"
         },
         "62885153": {
           "name": "Default \"blockquote\"",
-          "rs": {
-            "__ref": "62885154"
-          },
+          "rs": { "__ref": "62885154" },
           "preview": null,
           "uuid": "ZYZaxTU8zo8XP",
           "forTheme": true,
@@ -1776,16 +1255,12 @@
         },
         "62885160": {
           "selector": "pre",
-          "style": {
-            "__ref": "62885161"
-          },
+          "style": { "__ref": "62885161" },
           "__type": "ThemeStyle"
         },
         "62885161": {
           "name": "Default \"pre\"",
-          "rs": {
-            "__ref": "62885162"
-          },
+          "rs": { "__ref": "62885162" },
           "preview": null,
           "uuid": "4EHyE6ul8K5zF",
           "forTheme": true,
@@ -1822,16 +1297,12 @@
         },
         "62885185": {
           "selector": "ul",
-          "style": {
-            "__ref": "62885186"
-          },
+          "style": { "__ref": "62885186" },
           "__type": "ThemeStyle"
         },
         "62885186": {
           "name": "Default \"ul\"",
-          "rs": {
-            "__ref": "62885187"
-          },
+          "rs": { "__ref": "62885187" },
           "preview": null,
           "uuid": "whHJCzEF4Exdx",
           "forTheme": true,
@@ -1854,16 +1325,12 @@
         },
         "62885196": {
           "selector": "ol",
-          "style": {
-            "__ref": "62885197"
-          },
+          "style": { "__ref": "62885197" },
           "__type": "ThemeStyle"
         },
         "62885197": {
           "name": "Default \"ol\"",
-          "rs": {
-            "__ref": "62885198"
-          },
+          "rs": { "__ref": "62885198" },
           "preview": null,
           "uuid": "muDhaFoygqglX",
           "forTheme": true,
@@ -1886,16 +1353,12 @@
         },
         "62885207": {
           "selector": "h5",
-          "style": {
-            "__ref": "62885208"
-          },
+          "style": { "__ref": "62885208" },
           "__type": "ThemeStyle"
         },
         "62885208": {
           "name": "Default \"h5\"",
-          "rs": {
-            "__ref": "62885209"
-          },
+          "rs": { "__ref": "62885209" },
           "preview": null,
           "uuid": "w3jaYB6vGoROj",
           "forTheme": true,
@@ -1915,16 +1378,12 @@
         },
         "62885215": {
           "selector": "h6",
-          "style": {
-            "__ref": "62885216"
-          },
+          "style": { "__ref": "62885216" },
           "__type": "ThemeStyle"
         },
         "62885216": {
           "name": "Default \"h6\"",
-          "rs": {
-            "__ref": "62885217"
-          },
+          "rs": { "__ref": "62885217" },
           "preview": null,
           "uuid": "F_qpYVRvn54KX",
           "forTheme": true,
@@ -1943,16 +1402,12 @@
         },
         "62885222": {
           "selector": "a:hover",
-          "style": {
-            "__ref": "62885223"
-          },
+          "style": { "__ref": "62885223" },
           "__type": "ThemeStyle"
         },
         "62885223": {
           "name": "Default \"a:hover\"",
-          "rs": {
-            "__ref": "62885224"
-          },
+          "rs": { "__ref": "62885224" },
           "preview": null,
           "uuid": "FhMazc7GkfuxX",
           "forTheme": true,
@@ -1960,78 +1415,51 @@
           "__type": "Mixin"
         },
         "62885224": {
-          "values": {
-            "color": "#3291ff"
-          },
+          "values": { "color": "#3291ff" },
           "mixins": [],
           "__type": "RuleSet"
         },
         "62885226": {
           "selector": "li",
-          "style": {
-            "__ref": "62885227"
-          },
+          "style": { "__ref": "62885227" },
           "__type": "ThemeStyle"
         },
         "62885227": {
           "name": "Default \"li\"",
-          "rs": {
-            "__ref": "62885228"
-          },
+          "rs": { "__ref": "62885228" },
           "preview": null,
           "uuid": "HhZGTBvz3oXeH",
           "forTheme": true,
           "variantedRs": [],
           "__type": "Mixin"
         },
-        "62885228": {
-          "values": {},
-          "mixins": [],
-          "__type": "RuleSet"
-        },
+        "62885228": { "values": {}, "mixins": [], "__type": "RuleSet" },
         "62885229": {
           "selector": "p",
-          "style": {
-            "__ref": "62885230"
-          },
+          "style": { "__ref": "62885230" },
           "__type": "ThemeStyle"
         },
         "62885230": {
           "name": "Default \"p\"",
-          "rs": {
-            "__ref": "62885231"
-          },
+          "rs": { "__ref": "62885231" },
           "preview": null,
           "uuid": "u07KibhRJ5rmE",
           "forTheme": true,
           "variantedRs": [],
           "__type": "Mixin"
         },
-        "62885231": {
-          "values": {},
-          "mixins": [],
-          "__type": "RuleSet"
-        },
+        "62885231": { "values": {}, "mixins": [], "__type": "RuleSet" },
         "4K6U0ALP7ugT": {
-          "__type": "Component",
           "uuid": "mHW07BKyuq9S",
           "name": "_Testpage",
           "params": [],
           "states": [],
-          "tplTree": {
-            "__ref": "PQhea8FdOh9z"
-          },
+          "tplTree": { "__ref": "PQhea8FdOh9z" },
           "editableByContentEditor": true,
           "hiddenFromContentEditor": false,
-          "variants": [
-            {
-              "__ref": "rhrbeEltjl8G"
-            }
-          ],
+          "variants": [{ "__ref": "rhrbeEltjl8G" }],
           "variantGroups": [],
-          "pageMeta": {
-            "__ref": "_NHBVXZ3o_Oi"
-          },
+          "pageMeta": { "__ref": "_NHBVXZ3o_Oi" },
           "codeComponentMeta": null,
           "type": "page",
           "subComps": [],
@@ -2043,29 +1471,19 @@
           "serverQueries": [],
           "figmaMappings": [],
           "alwaysAutoName": false,
-          "trapsFocus": false
+          "trapsFocus": false,
+          "__type": "Component"
         },
         "kGtfOdrtj8mX": {
-          "__type": "PageArena",
-          "component": {
-            "__ref": "4K6U0ALP7ugT"
-          },
-          "matrix": {
-            "__ref": "SrBF31vnlg78"
-          },
-          "customMatrix": {
-            "__ref": "BVF6DkeDxD-q"
-          }
+          "component": { "__ref": "4K6U0ALP7ugT" },
+          "matrix": { "__ref": "SrBF31vnlg78" },
+          "customMatrix": { "__ref": "BVF6DkeDxD-q" },
+          "__type": "PageArena"
         },
         "PQhea8FdOh9z": {
-          "__type": "TplTag",
           "tag": "div",
           "name": null,
-          "children": [
-            {
-              "__ref": "bJazvDBpS1PF"
-            }
-          ],
+          "children": [{ "__ref": "bJazvDBpS1PF" }],
           "type": "other",
           "codeGenType": null,
           "columnsSetting": null,
@@ -2073,16 +1491,12 @@
           "parent": null,
           "locked": null,
           "vsettings": [
-            {
-              "__ref": "t6wf2IxGB-Z8"
-            },
-            {
-              "__ref": "Qg8Ata_gLTK2"
-            }
-          ]
+            { "__ref": "t6wf2IxGB-Z8" },
+            { "__ref": "Qg8Ata_gLTK2" }
+          ],
+          "__type": "TplTag"
         },
         "rhrbeEltjl8G": {
-          "__type": "Variant",
           "uuid": "uIcbL6-PVjym",
           "name": "base",
           "selectors": null,
@@ -2091,10 +1505,10 @@
           "parent": null,
           "mediaQuery": null,
           "description": null,
-          "forTpl": null
+          "forTpl": null,
+          "__type": "Variant"
         },
         "_NHBVXZ3o_Oi": {
-          "__type": "PageMeta",
           "path": "/test-page",
           "params": {},
           "query": {},
@@ -2102,102 +1516,63 @@
           "description": "",
           "canonical": null,
           "roleId": null,
-          "openGraphImage": null
+          "openGraphImage": null,
+          "__type": "PageMeta"
         },
         "SrBF31vnlg78": {
-          "__type": "ArenaFrameGrid",
-          "rows": [
-            {
-              "__ref": "8DlJlo5jjjKO"
-            }
-          ]
+          "rows": [{ "__ref": "8DlJlo5jjjKO" }],
+          "__type": "ArenaFrameGrid"
         },
         "BVF6DkeDxD-q": {
-          "__type": "ArenaFrameGrid",
-          "rows": [
-            {
-              "__ref": "C4uCaOeCJtjQ"
-            }
-          ]
+          "rows": [{ "__ref": "C4uCaOeCJtjQ" }],
+          "__type": "ArenaFrameGrid"
         },
         "bJazvDBpS1PF": {
-          "__type": "TplTag",
           "tag": "section",
           "name": null,
-          "children": [
-            {
-              "__ref": "MYkoxtUY1oeS"
-            }
-          ],
+          "children": [{ "__ref": "MYkoxtUY1oeS" }],
           "type": "other",
           "codeGenType": null,
           "columnsSetting": null,
           "uuid": "V7pu4ciNPYkx",
-          "parent": {
-            "__ref": "PQhea8FdOh9z"
-          },
+          "parent": { "__ref": "PQhea8FdOh9z" },
           "locked": null,
-          "vsettings": [
-            {
-              "__ref": "rS8LzMHq9MhY"
-            }
-          ]
+          "vsettings": [{ "__ref": "rS8LzMHq9MhY" }],
+          "__type": "TplTag"
         },
         "t6wf2IxGB-Z8": {
-          "__type": "VariantSetting",
-          "variants": [
-            {
-              "__ref": "rhrbeEltjl8G"
-            }
-          ],
+          "variants": [{ "__ref": "rhrbeEltjl8G" }],
           "args": [],
           "attrs": {},
-          "rs": {
-            "__ref": "QwlrXj9bgNQ2"
-          },
+          "rs": { "__ref": "QwlrXj9bgNQ2" },
           "dataCond": null,
           "dataRep": null,
           "text": null,
-          "columnsConfig": null
+          "columnsConfig": null,
+          "__type": "VariantSetting"
         },
         "Qg8Ata_gLTK2": {
-          "__type": "VariantSetting",
-          "variants": [
-            {
-              "__ref": "62885054"
-            }
-          ],
+          "variants": [{ "__ref": "62885054" }],
           "args": [],
           "attrs": {},
-          "rs": {
-            "__ref": "vq57P4RNqCT8"
-          },
+          "rs": { "__ref": "vq57P4RNqCT8" },
           "dataCond": null,
           "dataRep": null,
           "text": null,
-          "columnsConfig": null
+          "columnsConfig": null,
+          "__type": "VariantSetting"
         },
         "8DlJlo5jjjKO": {
-          "__type": "ArenaFrameRow",
-          "cols": [
-            {
-              "__ref": "U93znYoRRk_u"
-            },
-            {
-              "__ref": "M3e7h9fwGMQa"
-            }
-          ],
-          "rowKey": {
-            "__ref": "rhrbeEltjl8G"
-          }
+          "cols": [{ "__ref": "U93znYoRRk_u" }, { "__ref": "M3e7h9fwGMQa" }],
+          "rowKey": { "__ref": "rhrbeEltjl8G" },
+          "__type": "ArenaFrameRow"
         },
         "C4uCaOeCJtjQ": {
-          "__type": "ArenaFrameRow",
           "cols": [],
-          "rowKey": null
+          "rowKey": null,
+          "__type": "ArenaFrameRow"
         },
         "MYkoxtUY1oeS": {
-          "__type": "TplTag",
           "tag": "h1",
           "name": null,
           "children": [],
@@ -2205,35 +1580,23 @@
           "codeGenType": null,
           "columnsSetting": null,
           "uuid": "9HjpGVkqNF4t",
-          "parent": {
-            "__ref": "bJazvDBpS1PF"
-          },
+          "parent": { "__ref": "bJazvDBpS1PF" },
           "locked": null,
-          "vsettings": [
-            {
-              "__ref": "zvla8CF3NjZG"
-            }
-          ]
+          "vsettings": [{ "__ref": "zvla8CF3NjZG" }],
+          "__type": "TplTag"
         },
         "rS8LzMHq9MhY": {
-          "__type": "VariantSetting",
-          "variants": [
-            {
-              "__ref": "rhrbeEltjl8G"
-            }
-          ],
+          "variants": [{ "__ref": "rhrbeEltjl8G" }],
           "args": [],
           "attrs": {},
-          "rs": {
-            "__ref": "lXkPEnqwADdn"
-          },
+          "rs": { "__ref": "lXkPEnqwADdn" },
           "dataCond": null,
           "dataRep": null,
           "text": null,
-          "columnsConfig": null
+          "columnsConfig": null,
+          "__type": "VariantSetting"
         },
         "QwlrXj9bgNQ2": {
-          "__type": "RuleSet",
           "values": {
             "display": "flex",
             "position": "relative",
@@ -2248,48 +1611,32 @@
             "padding-left": "24px",
             "flex-row-gap": "24px"
           },
-          "mixins": []
+          "mixins": [],
+          "__type": "RuleSet"
         },
-        "vq57P4RNqCT8": {
-          "__type": "RuleSet",
-          "values": {},
-          "mixins": []
-        },
+        "vq57P4RNqCT8": { "values": {}, "mixins": [], "__type": "RuleSet" },
         "U93znYoRRk_u": {
-          "__type": "ArenaFrameCell",
-          "frame": {
-            "__ref": "DeoQftZYWYBW"
-          },
-          "cellKey": null
+          "frame": { "__ref": "DeoQftZYWYBW" },
+          "cellKey": null,
+          "__type": "ArenaFrameCell"
         },
         "M3e7h9fwGMQa": {
-          "__type": "ArenaFrameCell",
-          "frame": {
-            "__ref": "fqj4YTzb4xOz"
-          },
-          "cellKey": null
+          "frame": { "__ref": "fqj4YTzb4xOz" },
+          "cellKey": null,
+          "__type": "ArenaFrameCell"
         },
         "zvla8CF3NjZG": {
-          "__type": "VariantSetting",
-          "variants": [
-            {
-              "__ref": "rhrbeEltjl8G"
-            }
-          ],
+          "variants": [{ "__ref": "rhrbeEltjl8G" }],
           "args": [],
           "attrs": {},
-          "rs": {
-            "__ref": "96kAysLKpI6n"
-          },
+          "rs": { "__ref": "96kAysLKpI6n" },
           "dataCond": null,
           "dataRep": null,
-          "text": {
-            "__ref": "IZu2VRIW9aaW"
-          },
-          "columnsConfig": null
+          "text": { "__ref": "IZu2VRIW9aaW" },
+          "columnsConfig": null,
+          "__type": "VariantSetting"
         },
         "lXkPEnqwADdn": {
-          "__type": "RuleSet",
           "values": {
             "display": "flex",
             "position": "relative",
@@ -2304,58 +1651,44 @@
             "padding-top": "96px",
             "flex-row-gap": "16px"
           },
-          "mixins": []
+          "mixins": [],
+          "__type": "RuleSet"
         },
         "DeoQftZYWYBW": {
-          "__type": "ArenaFrame",
           "uuid": "feb9FJu-HzK9",
           "width": 1440,
           "height": 768,
-          "container": {
-            "__ref": "9D3gz7Rawdsz"
-          },
+          "container": { "__ref": "9D3gz7Rawdsz" },
           "lang": "English",
           "pinnedVariants": {},
-          "targetVariants": [
-            {
-              "__ref": "rhrbeEltjl8G"
-            }
-          ],
+          "targetVariants": [{ "__ref": "rhrbeEltjl8G" }],
           "pinnedGlobalVariants": {},
           "targetGlobalVariants": [],
           "viewMode": "stretch",
           "bgColor": null,
           "name": "",
           "top": null,
-          "left": null
+          "left": null,
+          "__type": "ArenaFrame"
         },
         "fqj4YTzb4xOz": {
-          "__type": "ArenaFrame",
           "uuid": "B5CbGpz17vnV",
           "width": 414,
           "height": 736,
-          "container": {
-            "__ref": "dCgrM8ZqFtUW"
-          },
+          "container": { "__ref": "dCgrM8ZqFtUW" },
           "lang": "English",
           "pinnedVariants": {},
-          "targetVariants": [
-            {
-              "__ref": "rhrbeEltjl8G"
-            }
-          ],
-          "pinnedGlobalVariants": {
-            "Iw1PegnUDE7A_": true
-          },
+          "targetVariants": [{ "__ref": "rhrbeEltjl8G" }],
+          "pinnedGlobalVariants": { "Iw1PegnUDE7A_": true },
           "targetGlobalVariants": [],
           "viewMode": "stretch",
           "bgColor": null,
           "name": "",
           "top": null,
-          "left": null
+          "left": null,
+          "__type": "ArenaFrame"
         },
         "96kAysLKpI6n": {
-          "__type": "RuleSet",
           "values": {
             "position": "relative",
             "width": "stretch",
@@ -2364,89 +1697,57 @@
             "margin-bottom": "32px",
             "text-align": "center"
           },
-          "mixins": []
+          "mixins": [],
+          "__type": "RuleSet"
         },
         "IZu2VRIW9aaW": {
-          "__type": "RawText",
           "markers": [],
-          "text": "This is a hidden page"
+          "text": "This is a hidden page",
+          "__type": "RawText"
         },
         "9D3gz7Rawdsz": {
-          "__type": "TplComponent",
           "name": null,
-          "component": {
-            "__ref": "4K6U0ALP7ugT"
-          },
+          "component": { "__ref": "4K6U0ALP7ugT" },
           "uuid": "EVMEk3NNl8pe",
           "parent": null,
           "locked": null,
-          "vsettings": [
-            {
-              "__ref": "P0LBVYPatfMn"
-            }
-          ]
+          "vsettings": [{ "__ref": "P0LBVYPatfMn" }],
+          "__type": "TplComponent"
         },
         "dCgrM8ZqFtUW": {
-          "__type": "TplComponent",
           "name": null,
-          "component": {
-            "__ref": "4K6U0ALP7ugT"
-          },
+          "component": { "__ref": "4K6U0ALP7ugT" },
           "uuid": "v-R8Rjt8tZVT",
           "parent": null,
           "locked": null,
-          "vsettings": [
-            {
-              "__ref": "aHOOLGOO7J8q"
-            }
-          ]
+          "vsettings": [{ "__ref": "aHOOLGOO7J8q" }],
+          "__type": "TplComponent"
         },
         "P0LBVYPatfMn": {
-          "__type": "VariantSetting",
-          "variants": [
-            {
-              "__ref": "62885068"
-            }
-          ],
+          "variants": [{ "__ref": "62885068" }],
           "args": [],
           "attrs": {},
-          "rs": {
-            "__ref": "ESfYGg1jo_5S"
-          },
+          "rs": { "__ref": "ESfYGg1jo_5S" },
           "dataCond": null,
           "dataRep": null,
           "text": null,
-          "columnsConfig": null
+          "columnsConfig": null,
+          "__type": "VariantSetting"
         },
         "aHOOLGOO7J8q": {
-          "__type": "VariantSetting",
-          "variants": [
-            {
-              "__ref": "62885068"
-            }
-          ],
+          "variants": [{ "__ref": "62885068" }],
           "args": [],
           "attrs": {},
-          "rs": {
-            "__ref": "Qx9cdaw6Dg-Q"
-          },
+          "rs": { "__ref": "Qx9cdaw6Dg-Q" },
           "dataCond": null,
           "dataRep": null,
           "text": null,
-          "columnsConfig": null
+          "columnsConfig": null,
+          "__type": "VariantSetting"
         },
-        "ESfYGg1jo_5S": {
-          "__type": "RuleSet",
-          "values": {},
-          "mixins": []
-        },
-        "Qx9cdaw6Dg-Q": {
-          "__type": "RuleSet",
-          "values": {},
-          "mixins": []
-        },
+        "ESfYGg1jo_5S": { "values": {}, "mixins": [], "__type": "RuleSet" },
+        "Qx9cdaw6Dg-Q": { "values": {}, "mixins": [], "__type": "RuleSet" },
         "-LtQwlpe_Wy9": {
-          "__type": "TplTag",
           "tag": "div",
           "name": null,
           "children": [],
@@ -2454,37 +1755,23 @@
           "codeGenType": null,
           "columnsSetting": null,
           "uuid": "URaT0VgY76b2",
-          "parent": {
-            "__ref": "14363051"
-          },
+          "parent": { "__ref": "14363051" },
           "locked": null,
-          "vsettings": [
-            {
-              "__ref": "AEADCFEcuiwJ"
-            }
-          ]
+          "vsettings": [{ "__ref": "AEADCFEcuiwJ" }],
+          "__type": "TplTag"
         },
         "AEADCFEcuiwJ": {
-          "__type": "VariantSetting",
-          "variants": [
-            {
-              "__ref": "14363052"
-            }
-          ],
+          "variants": [{ "__ref": "14363052" }],
           "args": [],
           "attrs": {},
-          "rs": {
-            "__ref": "8lGG5-DxuYUC"
-          },
+          "rs": { "__ref": "8lGG5-DxuYUC" },
           "dataCond": null,
           "dataRep": null,
-          "text": {
-            "__ref": "spSEgdHgJRz6"
-          },
-          "columnsConfig": null
+          "text": { "__ref": "spSEgdHgJRz6" },
+          "columnsConfig": null,
+          "__type": "VariantSetting"
         },
         "8lGG5-DxuYUC": {
-          "__type": "RuleSet",
           "values": {
             "position": "relative",
             "width": "stretch",
@@ -2492,211 +1779,115 @@
             "max-width": "100%",
             "text-align": "center"
           },
-          "mixins": []
+          "mixins": [],
+          "__type": "RuleSet"
         },
         "1mbV1Vmyo5t2": {
-          "__type": "RawText",
           "markers": [],
-          "text": "Homepage"
+          "text": "Homepage",
+          "__type": "RawText"
         },
         "xROL1uuYpXGp": {
-          "__type": "TplComponent",
           "name": "_Card",
-          "component": {
-            "__ref": "14363049"
-          },
+          "component": { "__ref": "14363049" },
           "uuid": "HSrehVx-WSR3",
-          "parent": {
-            "__ref": "62885003"
-          },
+          "parent": { "__ref": "62885003" },
           "locked": null,
-          "vsettings": [
-            {
-              "__ref": "sVBxkH8bHzQH"
-            }
-          ]
+          "vsettings": [{ "__ref": "sVBxkH8bHzQH" }],
+          "__type": "TplComponent"
         },
         "sVBxkH8bHzQH": {
-          "__type": "VariantSetting",
-          "variants": [
-            {
-              "__ref": "62885007"
-            }
-          ],
-          "args": [
-            {
-              "__ref": "icxADAwFS20j"
-            },
-            {
-              "__ref": "eyTwF0u6nc93"
-            }
-          ],
+          "variants": [{ "__ref": "62885007" }],
+          "args": [{ "__ref": "icxADAwFS20j" }, { "__ref": "eyTwF0u6nc93" }],
           "attrs": {},
-          "rs": {
-            "__ref": "Z7VAg6sGbaAx"
-          },
+          "rs": { "__ref": "Z7VAg6sGbaAx" },
           "dataCond": null,
           "dataRep": null,
           "text": null,
-          "columnsConfig": null
+          "columnsConfig": null,
+          "__type": "VariantSetting"
         },
         "Z7VAg6sGbaAx": {
-          "__type": "RuleSet",
-          "values": {
-            "max-width": "100%"
-          },
-          "mixins": []
+          "values": { "max-width": "100%" },
+          "mixins": [],
+          "__type": "RuleSet"
         },
         "1Gt1E59CZYeE": {
-          "__type": "TplComponent",
           "name": "_Card 2",
-          "component": {
-            "__ref": "14363049"
-          },
+          "component": { "__ref": "14363049" },
           "uuid": "I-dCG81e5mfJ",
-          "parent": {
-            "__ref": "62885003"
-          },
+          "parent": { "__ref": "62885003" },
           "locked": null,
-          "vsettings": [
-            {
-              "__ref": "AYmL5ubEv6Hw"
-            }
-          ]
+          "vsettings": [{ "__ref": "AYmL5ubEv6Hw" }],
+          "__type": "TplComponent"
         },
         "K-_DLw9GUu1c": {
-          "__type": "TplComponent",
           "name": "_Card 3",
-          "component": {
-            "__ref": "14363049"
-          },
+          "component": { "__ref": "14363049" },
           "uuid": "PHK-8XSWdft7",
-          "parent": {
-            "__ref": "62885003"
-          },
+          "parent": { "__ref": "62885003" },
           "locked": null,
-          "vsettings": [
-            {
-              "__ref": "kPd5x89RttlI"
-            }
-          ]
+          "vsettings": [{ "__ref": "kPd5x89RttlI" }],
+          "__type": "TplComponent"
         },
         "AYmL5ubEv6Hw": {
-          "__type": "VariantSetting",
-          "variants": [
-            {
-              "__ref": "62885007"
-            }
-          ],
-          "args": [
-            {
-              "__ref": "GKUYNrgIEjwM"
-            },
-            {
-              "__ref": "ct5Jo61S9P8t"
-            }
-          ],
+          "variants": [{ "__ref": "62885007" }],
+          "args": [{ "__ref": "GKUYNrgIEjwM" }, { "__ref": "ct5Jo61S9P8t" }],
           "attrs": {},
-          "rs": {
-            "__ref": "3lSsGv_NMpFZ"
-          },
+          "rs": { "__ref": "3lSsGv_NMpFZ" },
           "dataCond": null,
           "dataRep": null,
           "text": null,
-          "columnsConfig": null
+          "columnsConfig": null,
+          "__type": "VariantSetting"
         },
         "kPd5x89RttlI": {
-          "__type": "VariantSetting",
-          "variants": [
-            {
-              "__ref": "62885007"
-            }
-          ],
-          "args": [
-            {
-              "__ref": "4ObMZw1SxXQW"
-            },
-            {
-              "__ref": "B9zYr3pbJggq"
-            }
-          ],
+          "variants": [{ "__ref": "62885007" }],
+          "args": [{ "__ref": "4ObMZw1SxXQW" }, { "__ref": "B9zYr3pbJggq" }],
           "attrs": {},
-          "rs": {
-            "__ref": "EvvV6dl1SXmy"
-          },
+          "rs": { "__ref": "EvvV6dl1SXmy" },
           "dataCond": null,
           "dataRep": null,
           "text": null,
-          "columnsConfig": null
+          "columnsConfig": null,
+          "__type": "VariantSetting"
         },
         "3lSsGv_NMpFZ": {
-          "__type": "RuleSet",
-          "values": {
-            "max-width": "100%"
-          },
-          "mixins": []
+          "values": { "max-width": "100%" },
+          "mixins": [],
+          "__type": "RuleSet"
         },
         "EvvV6dl1SXmy": {
-          "__type": "RuleSet",
-          "values": {
-            "max-width": "100%"
-          },
-          "mixins": []
+          "values": { "max-width": "100%" },
+          "mixins": [],
+          "__type": "RuleSet"
         },
         "icxADAwFS20j": {
-          "__type": "Arg",
-          "param": {
-            "__ref": "14364338"
-          },
-          "expr": {
-            "__ref": "NRpCnaO_mVDM"
-          }
+          "param": { "__ref": "14364338" },
+          "expr": { "__ref": "NRpCnaO_mVDM" },
+          "__type": "Arg"
         },
-        "NRpCnaO_mVDM": {
-          "__type": "TemplatedString",
-          "text": ["card-1"]
-        },
+        "NRpCnaO_mVDM": { "text": ["card-1"], "__type": "TemplatedString" },
         "GKUYNrgIEjwM": {
-          "__type": "Arg",
-          "param": {
-            "__ref": "14364338"
-          },
-          "expr": {
-            "__ref": "ezpyIA-9h2Pr"
-          }
+          "param": { "__ref": "14364338" },
+          "expr": { "__ref": "ezpyIA-9h2Pr" },
+          "__type": "Arg"
         },
-        "ezpyIA-9h2Pr": {
-          "__type": "TemplatedString",
-          "text": ["card-2"]
-        },
+        "ezpyIA-9h2Pr": { "text": ["card-2"], "__type": "TemplatedString" },
         "4ObMZw1SxXQW": {
-          "__type": "Arg",
-          "param": {
-            "__ref": "14364338"
-          },
-          "expr": {
-            "__ref": "dr-17nsydOsX"
-          }
+          "param": { "__ref": "14364338" },
+          "expr": { "__ref": "dr-17nsydOsX" },
+          "__type": "Arg"
         },
-        "dr-17nsydOsX": {
-          "__type": "TemplatedString",
-          "text": ["card-3"]
-        },
+        "dr-17nsydOsX": { "text": ["card-3"], "__type": "TemplatedString" },
         "XfLVmOI9u1V1": {
-          "__type": "PropParam",
-          "type": {
-            "__ref": "jlOzOu13taVE"
-          },
-          "variable": {
-            "__ref": "z8RVmgxd-SVY"
-          },
+          "type": { "__ref": "jlOzOu13taVE" },
+          "variable": { "__ref": "z8RVmgxd-SVY" },
           "uuid": "8UT-wKJWRrRy",
           "enumValues": [],
           "origin": null,
           "exportType": "External",
-          "defaultExpr": {
-            "__ref": "YGx15qY8dI1I"
-          },
+          "defaultExpr": { "__ref": "YGx15qY8dI1I" },
           "previewExpr": null,
           "propEffect": null,
           "description": "metaProp",
@@ -2706,90 +1897,62 @@
           "isMainContentSlot": false,
           "required": false,
           "mergeWithParent": false,
-          "isLocalizable": false
+          "isLocalizable": false,
+          "__type": "PropParam"
         },
         "z8RVmgxd-SVY": {
-          "__type": "Var",
           "name": "text",
-          "uuid": "eGfzTZuG7qmx"
+          "uuid": "eGfzTZuG7qmx",
+          "__type": "Var"
         },
         "spSEgdHgJRz6": {
-          "__type": "ExprText",
-          "expr": {
-            "__ref": "RYU3hSxGlSyL"
-          },
-          "html": false
+          "expr": { "__ref": "RYU3hSxGlSyL" },
+          "html": false,
+          "__type": "ExprText"
         },
         "RYU3hSxGlSyL": {
-          "__type": "ObjectPath",
           "path": ["$props", "text"],
-          "fallback": null
+          "fallback": null,
+          "__type": "ObjectPath"
         },
         "eyTwF0u6nc93": {
-          "__type": "Arg",
-          "param": {
-            "__ref": "XfLVmOI9u1V1"
-          },
-          "expr": {
-            "__ref": "bCJngeTQ-dUP"
-          }
+          "param": { "__ref": "XfLVmOI9u1V1" },
+          "expr": { "__ref": "bCJngeTQ-dUP" },
+          "__type": "Arg"
         },
-        "bCJngeTQ-dUP": {
-          "__type": "TemplatedString",
-          "text": ["Card 1"]
-        },
+        "bCJngeTQ-dUP": { "text": ["Card 1"], "__type": "TemplatedString" },
         "ct5Jo61S9P8t": {
-          "__type": "Arg",
-          "param": {
-            "__ref": "XfLVmOI9u1V1"
-          },
-          "expr": {
-            "__ref": "nEt3A6_8_6Is"
-          }
+          "param": { "__ref": "XfLVmOI9u1V1" },
+          "expr": { "__ref": "nEt3A6_8_6Is" },
+          "__type": "Arg"
         },
-        "nEt3A6_8_6Is": {
-          "__type": "TemplatedString",
-          "text": ["Card 2"]
-        },
+        "nEt3A6_8_6Is": { "text": ["Card 2"], "__type": "TemplatedString" },
         "B9zYr3pbJggq": {
-          "__type": "Arg",
-          "param": {
-            "__ref": "XfLVmOI9u1V1"
-          },
-          "expr": {
-            "__ref": "b2Nr7wG9tofr"
-          }
+          "param": { "__ref": "XfLVmOI9u1V1" },
+          "expr": { "__ref": "b2Nr7wG9tofr" },
+          "__type": "Arg"
         },
-        "b2Nr7wG9tofr": {
-          "__type": "TemplatedString",
-          "text": ["Card 3"]
-        },
-        "2o0X1c2b3P6s": {
-          "__type": "Text",
-          "name": "text"
-        },
+        "b2Nr7wG9tofr": { "text": ["Card 3"], "__type": "TemplatedString" },
+        "2o0X1c2b3P6s": { "name": "text", "__type": "Text" },
         "CtD4fdLfYXxg": {
-          "__type": "CustomCode",
           "code": "\"default-id\"",
-          "fallback": null
+          "fallback": null,
+          "__type": "CustomCode"
         },
         "lLqFxdV1xwlX": {
-          "__type": "CustomCode",
           "code": "($props.testName)",
-          "fallback": null
+          "fallback": null,
+          "__type": "CustomCode"
         },
-        "jlOzOu13taVE": {
-          "__type": "Text",
-          "name": "text"
-        },
+        "jlOzOu13taVE": { "name": "text", "__type": "Text" },
         "YGx15qY8dI1I": {
-          "__type": "CustomCode",
           "code": "\"Default Card\"",
-          "fallback": null
+          "fallback": null,
+          "__type": "CustomCode"
         }
       },
       "deps": [],
-      "version": "240-set-plume-default-component"
+      "version": "245-code-component-meta-add-refActions"
     }
   ]
 ]

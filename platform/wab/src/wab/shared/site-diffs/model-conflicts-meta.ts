@@ -694,6 +694,9 @@ export const modelConflictsMeta: ModelConflictsMeta = {
     styleSections: "generic",
     defaultSlotContents: "contents",
     variants: "generic",
+    refActions: {
+      arrayType: "atomic",
+    },
   },
   Component: {
     codeComponentMeta: "generic",

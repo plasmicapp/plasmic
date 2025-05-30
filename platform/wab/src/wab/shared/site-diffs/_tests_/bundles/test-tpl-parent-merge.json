@@ -683,6 +683,7 @@
             "helpers": null,
             "defaultSlotContents": {},
             "variants": {},
+            "refActions": [],
             "__type": "CodeComponentMeta"
           },
           "tM26pBGnQzmh": {
@@ -833,6 +834,7 @@
             "helpers": null,
             "defaultSlotContents": {},
             "variants": {},
+            "refActions": [],
             "__type": "CodeComponentMeta"
           },
           "HsMlqvXjJ-Sh": { "name": "text", "__type": "Text" },
@@ -1208,7 +1210,7 @@
           }
         },
         "deps": [],
-        "version": "240-set-plume-default-component"
+        "version": "245-code-component-meta-add-refActions"
       },
       "projectId": "pC2jRmcov3iBGmrqWaP53P",
       "version": "0.0.1",
@@ -1909,6 +1911,7 @@
             "helpers": null,
             "defaultSlotContents": {},
             "variants": {},
+            "refActions": [],
             "__type": "CodeComponentMeta"
           },
           "tM26pBGnQzmh": {
@@ -2059,6 +2062,7 @@
             "helpers": null,
             "defaultSlotContents": {},
             "variants": {},
+            "refActions": [],
             "__type": "CodeComponentMeta"
           },
           "HsMlqvXjJ-Sh": { "name": "text", "__type": "Text" },
@@ -2386,7 +2390,6 @@
             "__type": "RuleSet"
           },
           "rlqcpjky9SE8": {
-            "__type": "TplTag",
             "tag": "div",
             "name": null,
             "children": [
@@ -2400,10 +2403,10 @@
             "uuid": "TYBsdDwd-h8k",
             "parent": null,
             "locked": null,
-            "vsettings": [{ "__ref": "K0x_TcYx7oB0" }]
+            "vsettings": [{ "__ref": "K0x_TcYx7oB0" }],
+            "__type": "TplTag"
           },
           "K0x_TcYx7oB0": {
-            "__type": "VariantSetting",
             "variants": [{ "__ref": "AsCXliuv9QYk" }],
             "args": [],
             "attrs": {},
@@ -2411,25 +2414,25 @@
             "dataCond": { "__ref": "RWK_5IVuSlxw" },
             "dataRep": null,
             "text": null,
-            "columnsConfig": null
+            "columnsConfig": null,
+            "__type": "VariantSetting"
           },
           "vS9dGfeHDdsv": {
-            "__type": "RuleSet",
             "values": {
               "display": "flex",
               "flex-direction": "column",
               "position": "relative",
               "plasmic-display-none": "false"
             },
-            "mixins": []
+            "mixins": [],
+            "__type": "RuleSet"
           },
           "RWK_5IVuSlxw": {
-            "__type": "CustomCode",
             "code": "true",
-            "fallback": null
+            "fallback": null,
+            "__type": "CustomCode"
           },
           "_U8Wa537gH4i": {
-            "__type": "TplTag",
             "tag": "div",
             "name": null,
             "children": [{ "__ref": "NajSKmN3BL6k" }],
@@ -2439,10 +2442,10 @@
             "uuid": "LOBy_zY3gTPF",
             "parent": { "__ref": "rlqcpjky9SE8" },
             "locked": null,
-            "vsettings": [{ "__ref": "h_AdmjBsLNJD" }]
+            "vsettings": [{ "__ref": "h_AdmjBsLNJD" }],
+            "__type": "TplTag"
           },
           "h_AdmjBsLNJD": {
-            "__type": "VariantSetting",
             "variants": [{ "__ref": "AsCXliuv9QYk" }],
             "args": [],
             "attrs": {},
@@ -2450,20 +2453,21 @@
             "dataCond": null,
             "dataRep": null,
             "text": null,
-            "columnsConfig": null
+            "columnsConfig": null,
+            "__type": "VariantSetting"
           },
           "FHXOYQmlsye5": {
-            "__type": "RuleSet",
             "values": {
               "display": "flex",
               "flex-direction": "column",
               "position": "relative"
             },
-            "mixins": []
+            "mixins": [],
+            "__type": "RuleSet"
           }
         },
         "deps": [],
-        "version": "240-set-plume-default-component"
+        "version": "245-code-component-meta-add-refActions"
       }
     },
     {
@@ -2961,7 +2965,6 @@
             "__type": "Site"
           },
           "7tSrYtt59Eez": {
-            "__type": "Component",
             "uuid": "DTxe3yuuz162",
             "name": "hostless-plasmic-head",
             "params": [
@@ -2988,10 +2991,10 @@
             "serverQueries": [],
             "figmaMappings": [],
             "alwaysAutoName": false,
-            "trapsFocus": false
+            "trapsFocus": false,
+            "__type": "Component"
           },
           "GDmJ0X48iiMz": {
-            "__type": "Component",
             "uuid": "ykZQsZmqCfQD",
             "name": "plasmic-data-source-fetcher",
             "params": [
@@ -3019,10 +3022,10 @@
             "serverQueries": [],
             "figmaMappings": [],
             "alwaysAutoName": true,
-            "trapsFocus": false
+            "trapsFocus": false,
+            "__type": "Component"
           },
           "Gf6fKoKqZxnQ": {
-            "__type": "PropParam",
             "type": { "__ref": "HsMlqvXjJ-Sh" },
             "variable": { "__ref": "FfXq4rE9IJIl" },
             "uuid": "TJy_D6C8Vw3T",
@@ -3039,10 +3042,10 @@
             "isMainContentSlot": false,
             "required": false,
             "mergeWithParent": false,
-            "isLocalizable": false
+            "isLocalizable": false,
+            "__type": "PropParam"
           },
           "yCduUA7RqBC1": {
-            "__type": "PropParam",
             "type": { "__ref": "JpwGNA9E8it2" },
             "variable": { "__ref": "nh20fDeWECz9" },
             "uuid": "IkhqYw83HhLk",
@@ -3059,10 +3062,10 @@
             "isMainContentSlot": false,
             "required": false,
             "mergeWithParent": false,
-            "isLocalizable": false
+            "isLocalizable": false,
+            "__type": "PropParam"
           },
           "c_auo0k-kNxh": {
-            "__type": "PropParam",
             "type": { "__ref": "k-zLscp63nPt" },
             "variable": { "__ref": "5ov1giNDLJO3" },
             "uuid": "JNryYx0tw9Jg",
@@ -3079,10 +3082,10 @@
             "isMainContentSlot": false,
             "required": false,
             "mergeWithParent": false,
-            "isLocalizable": false
+            "isLocalizable": false,
+            "__type": "PropParam"
           },
           "sIxWwHxTnH0H": {
-            "__type": "PropParam",
             "type": { "__ref": "acoGDT0iBNpE" },
             "variable": { "__ref": "QCcjJN-PEOD9" },
             "uuid": "mt7YtdrB-wpF",
@@ -3099,10 +3102,10 @@
             "isMainContentSlot": false,
             "required": false,
             "mergeWithParent": false,
-            "isLocalizable": false
+            "isLocalizable": false,
+            "__type": "PropParam"
           },
           "JiZMXvo_B27l": {
-            "__type": "TplTag",
             "tag": "div",
             "name": null,
             "children": [],
@@ -3112,10 +3115,10 @@
             "uuid": "aKf7eJYdSpQK",
             "parent": null,
             "locked": null,
-            "vsettings": [{ "__ref": "sjUR1kwFnRwp" }]
+            "vsettings": [{ "__ref": "sjUR1kwFnRwp" }],
+            "__type": "TplTag"
           },
           "WUulaetOj1f4": {
-            "__type": "Variant",
             "uuid": "UyMecyTyRpsg",
             "name": "base",
             "selectors": null,
@@ -3124,10 +3127,10 @@
             "parent": null,
             "mediaQuery": null,
             "description": null,
-            "forTpl": null
+            "forTpl": null,
+            "__type": "Variant"
           },
           "9cxV4NXOF1Eu": {
-            "__type": "CodeComponentMeta",
             "importPath": "@plasmicapp/react-web",
             "defaultExport": false,
             "displayName": "Page Metadata Override",
@@ -3148,10 +3151,11 @@
             "styleSections": false,
             "helpers": null,
             "defaultSlotContents": {},
-            "variants": {}
+            "variants": {},
+            "refActions": [],
+            "__type": "CodeComponentMeta"
           },
           "tM26pBGnQzmh": {
-            "__type": "PropParam",
             "type": { "__ref": "Py-Ki33T4zqs" },
             "variable": { "__ref": "poPY1epU04U_" },
             "uuid": "ZqoNlhEz7wHn",
@@ -3168,10 +3172,10 @@
             "isMainContentSlot": false,
             "required": false,
             "mergeWithParent": false,
-            "isLocalizable": false
+            "isLocalizable": false,
+            "__type": "PropParam"
           },
           "YBvQM05vOCd8": {
-            "__type": "PropParam",
             "type": { "__ref": "9ojvnX0RDHUY" },
             "variable": { "__ref": "MypXtAp22hTO" },
             "uuid": "1SNFQIfys2LJ",
@@ -3188,10 +3192,10 @@
             "isMainContentSlot": false,
             "required": false,
             "mergeWithParent": false,
-            "isLocalizable": false
+            "isLocalizable": false,
+            "__type": "PropParam"
           },
           "X0aJUipLG2qZ": {
-            "__type": "SlotParam",
             "type": { "__ref": "Esm9ioA20L6U" },
             "tplSlot": { "__ref": "C3bTq7UsImFX" },
             "variable": { "__ref": "ci0vEzM1Okk0" },
@@ -3209,10 +3213,10 @@
             "isMainContentSlot": false,
             "required": false,
             "mergeWithParent": false,
-            "isLocalizable": false
+            "isLocalizable": false,
+            "__type": "SlotParam"
           },
           "cM6WoJgGN9p6": {
-            "__type": "PropParam",
             "type": { "__ref": "a8GlKGjIOspv" },
             "variable": { "__ref": "3TsQ3oyNw5A0" },
             "uuid": "dm6NsKFnJ-Im",
@@ -3229,10 +3233,10 @@
             "isMainContentSlot": false,
             "required": false,
             "mergeWithParent": false,
-            "isLocalizable": false
+            "isLocalizable": false,
+            "__type": "PropParam"
           },
           "R82w0l3zTj8P": {
-            "__type": "PropParam",
             "type": { "__ref": "7SJWkNAsR5mC" },
             "variable": { "__ref": "x16Z4jI22HpW" },
             "uuid": "MIBnQVJbusyM",
@@ -3249,10 +3253,10 @@
             "isMainContentSlot": false,
             "required": false,
             "mergeWithParent": false,
-            "isLocalizable": false
+            "isLocalizable": false,
+            "__type": "PropParam"
           },
           "jmgcnnGbIayA": {
-            "__type": "TplTag",
             "tag": "div",
             "name": null,
             "children": [{ "__ref": "C3bTq7UsImFX" }],
@@ -3262,10 +3266,10 @@
             "uuid": "NU_PPMUnOA2k",
             "parent": null,
             "locked": null,
-            "vsettings": [{ "__ref": "2-tAcmfekACd" }]
+            "vsettings": [{ "__ref": "2-tAcmfekACd" }],
+            "__type": "TplTag"
           },
           "U1fETmzLrDvy": {
-            "__type": "Variant",
             "uuid": "7RyTzHU6chgZ",
             "name": "base",
             "selectors": null,
@@ -3274,10 +3278,10 @@
             "parent": null,
             "mediaQuery": null,
             "description": null,
-            "forTpl": null
+            "forTpl": null,
+            "__type": "Variant"
           },
           "-RLsIagayxoi": {
-            "__type": "CodeComponentMeta",
             "importPath": "@plasmicapp/react-web/lib/data-sources",
             "defaultExport": false,
             "displayName": "Data Fetcher",
@@ -3298,34 +3302,35 @@
             "styleSections": false,
             "helpers": null,
             "defaultSlotContents": {},
-            "variants": {}
+            "variants": {},
+            "refActions": [],
+            "__type": "CodeComponentMeta"
           },
-          "HsMlqvXjJ-Sh": { "__type": "Text", "name": "text" },
+          "HsMlqvXjJ-Sh": { "name": "text", "__type": "Text" },
           "FfXq4rE9IJIl": {
-            "__type": "Var",
             "name": "title",
-            "uuid": "Zus7gosYBv49"
+            "uuid": "Zus7gosYBv49",
+            "__type": "Var"
           },
-          "JpwGNA9E8it2": { "__type": "Text", "name": "text" },
+          "JpwGNA9E8it2": { "name": "text", "__type": "Text" },
           "nh20fDeWECz9": {
-            "__type": "Var",
             "name": "description",
-            "uuid": "0QkzQUDnLosO"
+            "uuid": "0QkzQUDnLosO",
+            "__type": "Var"
           },
-          "k-zLscp63nPt": { "__type": "Img", "name": "img" },
+          "k-zLscp63nPt": { "name": "img", "__type": "Img" },
           "5ov1giNDLJO3": {
-            "__type": "Var",
             "name": "image",
-            "uuid": "z-ujfGXlI0kW"
+            "uuid": "z-ujfGXlI0kW",
+            "__type": "Var"
           },
-          "acoGDT0iBNpE": { "__type": "Text", "name": "text" },
+          "acoGDT0iBNpE": { "name": "text", "__type": "Text" },
           "QCcjJN-PEOD9": {
-            "__type": "Var",
             "name": "canonical",
-            "uuid": "QTk1AzQ5PJjK"
+            "uuid": "QTk1AzQ5PJjK",
+            "__type": "Var"
           },
           "sjUR1kwFnRwp": {
-            "__type": "VariantSetting",
             "variants": [{ "__ref": "WUulaetOj1f4" }],
             "args": [],
             "attrs": {},
@@ -3333,55 +3338,55 @@
             "dataCond": null,
             "dataRep": null,
             "text": null,
-            "columnsConfig": null
+            "columnsConfig": null,
+            "__type": "VariantSetting"
           },
-          "Py-Ki33T4zqs": { "__type": "AnyType", "name": "any" },
+          "Py-Ki33T4zqs": { "name": "any", "__type": "AnyType" },
           "poPY1epU04U_": {
-            "__type": "Var",
             "name": "dataOp",
-            "uuid": "COrHCD_dXRY7"
+            "uuid": "COrHCD_dXRY7",
+            "__type": "Var"
           },
-          "9ojvnX0RDHUY": { "__type": "Text", "name": "text" },
+          "9ojvnX0RDHUY": { "name": "text", "__type": "Text" },
           "MypXtAp22hTO": {
-            "__type": "Var",
             "name": "name",
-            "uuid": "RedtIrPHNcGX"
+            "uuid": "RedtIrPHNcGX",
+            "__type": "Var"
           },
           "Esm9ioA20L6U": {
-            "__type": "RenderFuncType",
             "name": "renderFunc",
             "params": [{ "__ref": "vvgKK1DyqfFZ" }],
             "allowed": [],
-            "allowRootWrapper": null
+            "allowRootWrapper": null,
+            "__type": "RenderFuncType"
           },
           "ci0vEzM1Okk0": {
-            "__type": "Var",
             "name": "children",
-            "uuid": "sPHPqqtmpc5O"
+            "uuid": "sPHPqqtmpc5O",
+            "__type": "Var"
           },
-          "a8GlKGjIOspv": { "__type": "Num", "name": "num" },
+          "a8GlKGjIOspv": { "name": "num", "__type": "Num" },
           "3TsQ3oyNw5A0": {
-            "__type": "Var",
             "name": "pageSize",
-            "uuid": "2czjTwAgIFlm"
+            "uuid": "2czjTwAgIFlm",
+            "__type": "Var"
           },
-          "7SJWkNAsR5mC": { "__type": "Num", "name": "num" },
+          "7SJWkNAsR5mC": { "name": "num", "__type": "Num" },
           "x16Z4jI22HpW": {
-            "__type": "Var",
             "name": "pageIndex",
-            "uuid": "asLgKhWei5rE"
+            "uuid": "asLgKhWei5rE",
+            "__type": "Var"
           },
           "C3bTq7UsImFX": {
-            "__type": "TplSlot",
             "param": { "__ref": "X0aJUipLG2qZ" },
             "defaultContents": [],
             "uuid": "BmVA_hQmL8d7",
             "parent": { "__ref": "jmgcnnGbIayA" },
             "locked": null,
-            "vsettings": [{ "__ref": "8zlvPw2ZVndf" }]
+            "vsettings": [{ "__ref": "8zlvPw2ZVndf" }],
+            "__type": "TplSlot"
           },
           "2-tAcmfekACd": {
-            "__type": "VariantSetting",
             "variants": [{ "__ref": "U1fETmzLrDvy" }],
             "args": [],
             "attrs": {},
@@ -3389,22 +3394,22 @@
             "dataCond": null,
             "dataRep": null,
             "text": null,
-            "columnsConfig": null
+            "columnsConfig": null,
+            "__type": "VariantSetting"
           },
           "0nl2t92bak4M": {
-            "__type": "RuleSet",
             "values": { "display": "flex", "flex-direction": "row" },
-            "mixins": []
+            "mixins": [],
+            "__type": "RuleSet"
           },
           "vvgKK1DyqfFZ": {
-            "__type": "ArgType",
             "name": "arg",
             "argName": "$queries",
             "displayName": null,
-            "type": { "__ref": "CkhPTs_WsfH6" }
+            "type": { "__ref": "CkhPTs_WsfH6" },
+            "__type": "ArgType"
           },
           "8zlvPw2ZVndf": {
-            "__type": "VariantSetting",
             "variants": [{ "__ref": "U1fETmzLrDvy" }],
             "args": [],
             "attrs": {},
@@ -3412,17 +3417,17 @@
             "dataCond": null,
             "dataRep": null,
             "text": null,
-            "columnsConfig": null
+            "columnsConfig": null,
+            "__type": "VariantSetting"
           },
           "L-uYzgtewvyB": {
-            "__type": "RuleSet",
             "values": { "display": "flex", "flex-direction": "row" },
-            "mixins": []
+            "mixins": [],
+            "__type": "RuleSet"
           },
-          "CkhPTs_WsfH6": { "__type": "AnyType", "name": "any" },
-          "c-Aax4PzFNkV": { "__type": "RuleSet", "values": {}, "mixins": [] },
+          "CkhPTs_WsfH6": { "name": "any", "__type": "AnyType" },
+          "c-Aax4PzFNkV": { "values": {}, "mixins": [], "__type": "RuleSet" },
           "afQbzdWfVGlV": {
-            "__type": "Component",
             "uuid": "cKUBNcwrK8RR",
             "name": "Post",
             "params": [],
@@ -3444,16 +3449,16 @@
             "serverQueries": [],
             "figmaMappings": [],
             "alwaysAutoName": false,
-            "trapsFocus": false
+            "trapsFocus": false,
+            "__type": "Component"
           },
           "spQ9NfBdkj_j": {
-            "__type": "ComponentArena",
             "component": { "__ref": "afQbzdWfVGlV" },
             "matrix": { "__ref": "JcaklCItYU6s" },
-            "customMatrix": { "__ref": "se5W8X-JxVE_" }
+            "customMatrix": { "__ref": "se5W8X-JxVE_" },
+            "__type": "ComponentArena"
           },
           "zxExNGOK2aBk": {
-            "__type": "TplTag",
             "tag": "div",
             "name": null,
             "children": [
@@ -3466,10 +3471,10 @@
             "uuid": "-4G1vuVkbapc",
             "parent": null,
             "locked": null,
-            "vsettings": [{ "__ref": "NDWHLb8dcEhT" }]
+            "vsettings": [{ "__ref": "NDWHLb8dcEhT" }],
+            "__type": "TplTag"
           },
           "AsCXliuv9QYk": {
-            "__type": "Variant",
             "uuid": "a8LWDu0Wnrpl",
             "name": "base",
             "selectors": null,
@@ -3478,18 +3483,18 @@
             "parent": null,
             "mediaQuery": null,
             "description": null,
-            "forTpl": null
+            "forTpl": null,
+            "__type": "Variant"
           },
           "JcaklCItYU6s": {
-            "__type": "ArenaFrameGrid",
-            "rows": [{ "__ref": "DXGXS2VzwYoc" }]
+            "rows": [{ "__ref": "DXGXS2VzwYoc" }],
+            "__type": "ArenaFrameGrid"
           },
           "se5W8X-JxVE_": {
-            "__type": "ArenaFrameGrid",
-            "rows": [{ "__ref": "by9_gkmGf7k6" }]
+            "rows": [{ "__ref": "by9_gkmGf7k6" }],
+            "__type": "ArenaFrameGrid"
           },
           "NDWHLb8dcEhT": {
-            "__type": "VariantSetting",
             "variants": [{ "__ref": "AsCXliuv9QYk" }],
             "args": [],
             "attrs": {},
@@ -3497,20 +3502,20 @@
             "dataCond": null,
             "dataRep": null,
             "text": null,
-            "columnsConfig": null
+            "columnsConfig": null,
+            "__type": "VariantSetting"
           },
           "DXGXS2VzwYoc": {
-            "__type": "ArenaFrameRow",
             "cols": [{ "__ref": "cyqU9YYtTAQW" }],
-            "rowKey": null
+            "rowKey": null,
+            "__type": "ArenaFrameRow"
           },
           "by9_gkmGf7k6": {
-            "__type": "ArenaFrameRow",
             "cols": [],
-            "rowKey": null
+            "rowKey": null,
+            "__type": "ArenaFrameRow"
           },
           "-uI_gqunj2IZ": {
-            "__type": "RuleSet",
             "values": {
               "display": "flex",
               "flex-direction": "column",
@@ -3518,15 +3523,15 @@
               "width": "wrap",
               "height": "wrap"
             },
-            "mixins": []
+            "mixins": [],
+            "__type": "RuleSet"
           },
           "cyqU9YYtTAQW": {
-            "__type": "ArenaFrameCell",
             "frame": { "__ref": "vdR1u2z007Rb" },
-            "cellKey": { "__ref": "AsCXliuv9QYk" }
+            "cellKey": { "__ref": "AsCXliuv9QYk" },
+            "__type": "ArenaFrameCell"
           },
           "vdR1u2z007Rb": {
-            "__type": "ArenaFrame",
             "uuid": "mdmlZ-_KuoBF",
             "width": 1180,
             "height": 540,
@@ -3540,19 +3545,19 @@
             "bgColor": null,
             "name": "",
             "top": null,
-            "left": null
+            "left": null,
+            "__type": "ArenaFrame"
           },
           "yCkqiduHibcK": {
-            "__type": "TplComponent",
             "name": null,
             "component": { "__ref": "afQbzdWfVGlV" },
             "uuid": "sAywDMoGoHQC",
             "parent": null,
             "locked": null,
-            "vsettings": [{ "__ref": "F940WcLaGTpN" }]
+            "vsettings": [{ "__ref": "F940WcLaGTpN" }],
+            "__type": "TplComponent"
           },
           "F940WcLaGTpN": {
-            "__type": "VariantSetting",
             "variants": [{ "__ref": "g2iR-zfEQKuu" }],
             "args": [],
             "attrs": {},
@@ -3560,11 +3565,11 @@
             "dataCond": null,
             "dataRep": null,
             "text": null,
-            "columnsConfig": null
+            "columnsConfig": null,
+            "__type": "VariantSetting"
           },
-          "iz2BBhQ4xKQE": { "__type": "RuleSet", "values": {}, "mixins": [] },
+          "iz2BBhQ4xKQE": { "values": {}, "mixins": [], "__type": "RuleSet" },
           "ZqBCC7wIL_O3": {
-            "__type": "TplTag",
             "tag": "div",
             "name": null,
             "children": [{ "__ref": "NajSKmN3BL6k" }],
@@ -3574,10 +3579,10 @@
             "uuid": "GYGsa93MZR2J",
             "parent": { "__ref": "zxExNGOK2aBk" },
             "locked": null,
-            "vsettings": [{ "__ref": "Liqtz_aQgiPa" }]
+            "vsettings": [{ "__ref": "Liqtz_aQgiPa" }],
+            "__type": "TplTag"
           },
           "Liqtz_aQgiPa": {
-            "__type": "VariantSetting",
             "variants": [{ "__ref": "AsCXliuv9QYk" }],
             "args": [],
             "attrs": {},
@@ -3585,19 +3590,19 @@
             "dataCond": null,
             "dataRep": null,
             "text": null,
-            "columnsConfig": null
+            "columnsConfig": null,
+            "__type": "VariantSetting"
           },
           "G0a88BdRZdCn": {
-            "__type": "RuleSet",
             "values": {
               "display": "flex",
               "flex-direction": "column",
               "position": "relative"
             },
-            "mixins": []
+            "mixins": [],
+            "__type": "RuleSet"
           },
           "5yY_MWhkboPk": {
-            "__type": "TplTag",
             "tag": "div",
             "name": null,
             "children": [],
@@ -3607,10 +3612,10 @@
             "uuid": "4ay_IWirDvyn",
             "parent": { "__ref": "zxExNGOK2aBk" },
             "locked": null,
-            "vsettings": [{ "__ref": "tp1S5B0X9lpX" }]
+            "vsettings": [{ "__ref": "tp1S5B0X9lpX" }],
+            "__type": "TplTag"
           },
           "tp1S5B0X9lpX": {
-            "__type": "VariantSetting",
             "variants": [{ "__ref": "AsCXliuv9QYk" }],
             "args": [],
             "attrs": {},
@@ -3618,19 +3623,19 @@
             "dataCond": null,
             "dataRep": null,
             "text": null,
-            "columnsConfig": null
+            "columnsConfig": null,
+            "__type": "VariantSetting"
           },
           "yNajsI_DMfNQ": {
-            "__type": "RuleSet",
             "values": {
               "display": "flex",
               "flex-direction": "column",
               "position": "relative"
             },
-            "mixins": []
+            "mixins": [],
+            "__type": "RuleSet"
           },
           "NajSKmN3BL6k": {
-            "__type": "TplTag",
             "tag": "div",
             "name": null,
             "children": [],
@@ -3640,10 +3645,10 @@
             "uuid": "jY-ynorDL62x",
             "parent": { "__ref": "ZqBCC7wIL_O3" },
             "locked": null,
-            "vsettings": [{ "__ref": "-fVKGclaIc_C" }]
+            "vsettings": [{ "__ref": "-fVKGclaIc_C" }],
+            "__type": "TplTag"
           },
           "-fVKGclaIc_C": {
-            "__type": "VariantSetting",
             "variants": [{ "__ref": "AsCXliuv9QYk" }],
             "args": [],
             "attrs": {},
@@ -3651,20 +3656,21 @@
             "dataCond": null,
             "dataRep": null,
             "text": null,
-            "columnsConfig": null
+            "columnsConfig": null,
+            "__type": "VariantSetting"
           },
           "anARePPIZS8K": {
-            "__type": "RuleSet",
             "values": {
               "display": "flex",
               "flex-direction": "column",
               "position": "relative"
             },
-            "mixins": []
+            "mixins": [],
+            "__type": "RuleSet"
           }
         },
         "deps": [],
-        "version": "240-set-plume-default-component"
+        "version": "245-code-component-meta-add-refActions"
       }
     }
   ]

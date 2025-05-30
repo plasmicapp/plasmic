@@ -332,7 +332,8 @@
           "helpers": null,
           "defaultSlotContents": {},
           "variants": {},
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "refActions": []
         },
         "WUDj0RM3vV48": {
           "type": { "__ref": "1KaJxutOa_J5" },
@@ -541,7 +542,8 @@
           "helpers": null,
           "defaultSlotContents": {},
           "variants": {},
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "refActions": []
         },
         "CKBtARqpD7tj": {
           "type": { "__ref": "HCAXUQT2TgYW" },
@@ -630,7 +632,8 @@
           "helpers": null,
           "defaultSlotContents": {},
           "variants": {},
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "refActions": []
         },
         "VDTDvYhGib6J": {
           "type": { "__ref": "eEHvH4elOi1R" },
@@ -740,7 +743,8 @@
           "helpers": null,
           "defaultSlotContents": {},
           "variants": {},
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "refActions": []
         },
         "sNx5Qldg9Nab": {
           "type": { "__ref": "g_UMhhObU_hY" },
@@ -870,7 +874,8 @@
           "helpers": null,
           "defaultSlotContents": {},
           "variants": {},
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "refActions": []
         },
         "kkpcXDSfHMg7": {
           "type": { "__ref": "MLvTIts4j9G6" },
@@ -979,7 +984,8 @@
           "helpers": null,
           "defaultSlotContents": {},
           "variants": {},
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "refActions": []
         },
         "Y8jIe067p742": { "name": "text", "__type": "Text" },
         "Dq-O_5-MpDWf": {
@@ -1442,7 +1448,8 @@
           "helpers": null,
           "defaultSlotContents": {},
           "variants": {},
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "refActions": []
         },
         "jEpoTKUq5x4p": {
           "name": "func",
@@ -1522,7 +1529,7 @@
         }
       },
       "deps": [],
-      "version": "244-add-custom-function-display-name"
+      "version": "245-code-component-meta-add-refActions"
     }
   ],
   [
@@ -2231,7 +2238,8 @@
           "helpers": null,
           "defaultSlotContents": {},
           "variants": {},
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "refActions": []
         },
         "uUDZiFhtjqZb": {
           "type": { "__ref": "yPVxoY4xuAC4" },
@@ -2381,7 +2389,8 @@
           "helpers": null,
           "defaultSlotContents": {},
           "variants": {},
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "refActions": []
         },
         "1vuvbD0cJ4Up": { "name": "text", "__type": "Text" },
         "SHDlsS19Tf72": {
@@ -12206,7 +12215,7 @@
         "ppmsVxHk1e_-": { "text": ["interval"], "__type": "TemplatedString" }
       },
       "deps": ["a3a6a4ab-6ef7-466e-8589-a26854d0253c"],
-      "version": "244-add-custom-function-display-name"
+      "version": "245-code-component-meta-add-refActions"
     }
   ]
 ]

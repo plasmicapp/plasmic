@@ -173,7 +173,8 @@
             ]
           },
           "variants": {},
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "refActions": []
         },
         "uTs6_QB9_j9o": { "name": "text", "__type": "Text" },
         "UrPUUnofTnx4": {
@@ -433,7 +434,7 @@
         }
       },
       "deps": [],
-      "version": "244-add-custom-function-display-name"
+      "version": "245-code-component-meta-add-refActions"
     }
   ],
   [
@@ -1130,7 +1131,8 @@
           "helpers": null,
           "defaultSlotContents": {},
           "variants": {},
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "refActions": []
         },
         "mrioyw9MDYES": {
           "type": { "__ref": "52-kKkKq6NiW" },
@@ -1280,7 +1282,8 @@
           "helpers": null,
           "defaultSlotContents": {},
           "variants": {},
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "refActions": []
         },
         "4ghiC-lruuSI": { "name": "text", "__type": "Text" },
         "Yhi1znCN9Igk": {
@@ -2117,7 +2120,7 @@
         }
       },
       "deps": ["1f6fbbaf-82a8-43b5-abd3-ead1dee4ab4c"],
-      "version": "244-add-custom-function-display-name"
+      "version": "245-code-component-meta-add-refActions"
     }
   ]
 ]

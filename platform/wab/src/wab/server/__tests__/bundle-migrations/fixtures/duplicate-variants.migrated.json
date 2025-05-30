@@ -409,6 +409,7 @@
       "helpers": null,
       "defaultSlotContents": {},
       "variants": {},
+      "refActions": [],
       "__type": "CodeComponentMeta"
     },
     "g4QFEDePhhDS": {
@@ -666,6 +667,7 @@
       "helpers": null,
       "defaultSlotContents": {},
       "variants": {},
+      "refActions": [],
       "__type": "CodeComponentMeta"
     },
     "TNazQaDTLOc1": {
@@ -1965,5 +1967,5 @@
     }
   },
   "deps": [],
-  "version": "244-add-custom-function-display-name"
+  "version": "245-code-component-meta-add-refActions"
 }

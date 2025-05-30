@@ -282,7 +282,8 @@
           "helpers": null,
           "defaultSlotContents": {},
           "variants": {},
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "refActions": []
         },
         "MNPxg3RpWkPG": {
           "uuid": "ZLEARI2Ib_Lz",
@@ -543,7 +544,8 @@
           "helpers": null,
           "defaultSlotContents": {},
           "variants": {},
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "refActions": []
         },
         "g1Ae5397e-Hh": {
           "uuid": "5DOwG81twq46",
@@ -4072,7 +4074,7 @@
         }
       },
       "deps": [],
-      "version": "244-add-custom-function-display-name"
+      "version": "245-code-component-meta-add-refActions"
     }
   ],
   [
@@ -4767,7 +4769,8 @@
           "helpers": null,
           "defaultSlotContents": {},
           "variants": {},
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "refActions": []
         },
         "GnuQXLqzIgIb": {
           "type": { "__ref": "Gyn1rdezvdoT" },
@@ -4917,7 +4920,8 @@
           "helpers": null,
           "defaultSlotContents": {},
           "variants": {},
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "refActions": []
         },
         "AUVjH-xBykMM": { "name": "text", "__type": "Text" },
         "kJCF2JOsaoOU": {
@@ -5530,7 +5534,7 @@
         }
       },
       "deps": [],
-      "version": "244-add-custom-function-display-name"
+      "version": "245-code-component-meta-add-refActions"
     }
   ]
 ]

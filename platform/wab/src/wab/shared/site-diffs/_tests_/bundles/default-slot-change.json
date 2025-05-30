@@ -688,7 +688,8 @@
             "helpers": null,
             "defaultSlotContents": {},
             "variants": {},
-            "__type": "CodeComponentMeta"
+            "__type": "CodeComponentMeta",
+            "refActions": []
           },
           "nhPtM8j6X84D": {
             "type": { "__ref": "hx3LJT0zz7Q7" },
@@ -838,7 +839,8 @@
             "helpers": null,
             "defaultSlotContents": {},
             "variants": {},
-            "__type": "CodeComponentMeta"
+            "__type": "CodeComponentMeta",
+            "refActions": []
           },
           "3oKp5S94WjHQ": { "name": "text", "__type": "Text" },
           "zuftQdXnLzvb": {
@@ -2129,7 +2131,7 @@
           }
         },
         "deps": [],
-        "version": "244-add-custom-function-display-name"
+        "version": "245-code-component-meta-add-refActions"
       },
       "projectId": "draijZF6gtxjcZgKwMFy9R",
       "version": "1.0.0",
@@ -2849,7 +2851,8 @@
             "helpers": null,
             "defaultSlotContents": {},
             "variants": {},
-            "__type": "CodeComponentMeta"
+            "__type": "CodeComponentMeta",
+            "refActions": []
           },
           "nhPtM8j6X84D": {
             "type": { "__ref": "hx3LJT0zz7Q7" },
@@ -2999,7 +3002,8 @@
             "helpers": null,
             "defaultSlotContents": {},
             "variants": {},
-            "__type": "CodeComponentMeta"
+            "__type": "CodeComponentMeta",
+            "refActions": []
           },
           "3oKp5S94WjHQ": { "name": "text", "__type": "Text" },
           "zuftQdXnLzvb": {
@@ -4281,7 +4285,7 @@
           }
         },
         "deps": [],
-        "version": "244-add-custom-function-display-name"
+        "version": "245-code-component-meta-add-refActions"
       }
     },
     {
@@ -4971,7 +4975,8 @@
             "helpers": null,
             "defaultSlotContents": {},
             "variants": {},
-            "__type": "CodeComponentMeta"
+            "__type": "CodeComponentMeta",
+            "refActions": []
           },
           "nhPtM8j6X84D": {
             "type": { "__ref": "hx3LJT0zz7Q7" },
@@ -5121,7 +5126,8 @@
             "helpers": null,
             "defaultSlotContents": {},
             "variants": {},
-            "__type": "CodeComponentMeta"
+            "__type": "CodeComponentMeta",
+            "refActions": []
           },
           "3oKp5S94WjHQ": { "name": "text", "__type": "Text" },
           "zuftQdXnLzvb": {
@@ -6403,7 +6409,7 @@
           }
         },
         "deps": [],
-        "version": "244-add-custom-function-display-name"
+        "version": "245-code-component-meta-add-refActions"
       }
     }
   ]

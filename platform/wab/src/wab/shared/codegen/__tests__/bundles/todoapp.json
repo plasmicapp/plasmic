@@ -1563,7 +1563,8 @@
           "helpers": null,
           "defaultSlotContents": {},
           "variants": {},
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "refActions": []
         },
         "26369010": {
           "type": { "__ref": "26369028" },
@@ -1713,7 +1714,8 @@
           "helpers": null,
           "defaultSlotContents": {},
           "variants": {},
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "refActions": []
         },
         "26369018": { "name": "title", "uuid": "2p6AcT23Gi", "__type": "Var" },
         "26369019": { "name": "text", "__type": "Text" },
@@ -12469,7 +12471,7 @@
         }
       },
       "deps": [],
-      "version": "244-add-custom-function-display-name"
+      "version": "245-code-component-meta-add-refActions"
     }
   ]
 ]

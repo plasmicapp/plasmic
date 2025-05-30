@@ -168,6 +168,7 @@
       "helpers": null,
       "defaultSlotContents": {},
       "variants": {},
+      "refActions": [],
       "__type": "CodeComponentMeta"
     },
     "Lkkn1NhKdTlS": {
@@ -425,6 +426,7 @@
       "helpers": null,
       "defaultSlotContents": {},
       "variants": {},
+      "refActions": [],
       "__type": "CodeComponentMeta"
     },
     "eorX1CoEZz0q": {
@@ -2533,5 +2535,5 @@
     "uhQFT6I68Y8J": { "values": {}, "mixins": [], "__type": "RuleSet" }
   },
   "deps": [],
-  "version": "244-add-custom-function-display-name"
+  "version": "245-code-component-meta-add-refActions"
 }

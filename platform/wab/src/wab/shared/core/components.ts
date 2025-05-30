@@ -497,6 +497,7 @@ export function cloneCodeComponentMeta(
         helpers: cloneCodeComponentHelpers(codeMeta.helpers),
         defaultSlotContents: cloneDeep(codeMeta.defaultSlotContents),
         variants: cloneCodeComponentVariantMeta(codeMeta.variants),
+        refActions: codeMeta.refActions,
       })
     : null;
 }

@@ -383,6 +383,7 @@ CodeComponentMeta
   # where Any is PlasmicElement|PlasmicElement[]
   defaultSlotContents: Map[String, Any]
   variants: Map[String, CodeComponentVariantMeta]
+  refActions: [String]
 Component
   @Const uuid: String
   name: String
