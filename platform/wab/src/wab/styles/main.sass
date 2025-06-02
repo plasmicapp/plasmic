@@ -1,3 +1,5 @@
+@use "sass:color"
+
 @import './_vars.sass'
 @import './_mixins.sass'
 @import './_utils.sass'
@@ -25,18 +27,18 @@ $grabbing: url(../../../public/static/img/closedhand.cur) 10 7, default
 
 $controlbg: #505050
 $insetbg: #131516
-$insetbg: darken($bg, 3%)
+$insetbg: color.adjust($bg, $lightness: -3%)
 $slightly-darker: #212426
 $tab-bar-color: #2B3237
 
-$selected-control-color: lighten($btn-color, 20%)
+$selected-control-color: color.adjust($btn-color, $lightness: 20%)
 
 $swatch-size: 24px
 
 //$dimmer-highlight: adjust-hue(#444858, -40deg)
 //$dimmer-highlight: rgba($active-color, .4)
 $dimmer-highlight: #444858
-$dim-highlight: darken($dimmer-highlight, 5%)
+$dim-highlight: color.adjust($dimmer-highlight, $lightness: -5%)
 $dim-selected: #2E3F48
 $darkener: rgba(black, 0.3)
 
@@ -357,7 +359,7 @@ button
   @extend .form-control-transition
   min-height: $section-list-item-height
   color: $fg
-  &:placeholder
+  &::placeholder
     color: $dimdimfg
   &:disabled
     color: $dimfg
@@ -623,8 +625,8 @@ h5, h6
   border-bottom: 8px solid gray
   cursor: pointer
   &:hover
-    border-right: 8px solid lighten(gray, 10%)
-    border-bottom: 8px solid lighten(gray, 10%)
+    border-right: 8px solid color.adjust(gray, $lightness: 10%)
+    border-bottom: 8px solid color.adjust(gray, $lightness: 10%)
 
 .stmt-block__menu-button
   position: absolute
@@ -674,10 +676,10 @@ h5, h6
 .modal
   background: $bg
   box-shadow: 2px 2px 40px black
-  @include clearfix
   display: flex
   flex-direction: column
   height: 100%
+  @include clearfix
 
 p:first-child
   margin-top: 0
@@ -1218,10 +1220,10 @@ a.btn-link
   &:focus
     @include focused
 .non-link-btn--disabled, a.plain-link--disabled
-  color: darken($fg, 30%)
+  color: color.adjust($fg, $lightness: -30%)
   cursor: initial
   &:hover
-    color: darken($fg, 30%)
+    color: color.adjust($fg, $lightness: -30%)
 
 .icon-link-btn
   @include dead-center
@@ -1631,7 +1633,7 @@ a.btn-link
 .list-box-item--clickable
   cursor: pointer
   &:hover
-    background-color: lighten($btn-color, 5%)
+    background-color: color.adjust($btn-color, $lightness: 5%)
 
 .list-box-item__img
   width: 48px
@@ -2313,12 +2315,12 @@ a.btn-link
     opacity: 1
 
 .project__name-link
-  color: lighten($fg, 20%)
+  color: color.adjust($fg, $lightness: 20%)
 
 @mixin project__btn
   text-transform: uppercase
   &:hover
-    color: lighten($fg, 20%)
+    color: color.adjust($fg, $lightness: 20%)
 
 .project__main-btn
   @include cover
@@ -2344,7 +2346,7 @@ a.btn-link
   display: inline-block
   padding: 15px
   &:hover
-    background: darken($tab-bar-color, 5%)
+    background: color.adjust($tab-bar-color, $lightness: -5%)
 .major-tab--active
   background: black
   &:hover
@@ -2358,7 +2360,7 @@ a.btn-link
   display: inline-block
   padding: 15px
   &:hover
-    color: lighten($fg, 5%)
+    color: color.adjust($fg, $lightness: 5%)
 .major-sub-tab__link--active
   @extend .strong
   color: #B8B8B8
@@ -2456,7 +2458,7 @@ a.btn-link
 .checkbox__box
   display: inline-block
   margin-right: .5em
-  background: darken($bg, 5%)
+  background: color.adjust($bg, $lightness: -5%)
   border: 2px solid black
   color: #3BBFFF
   width: calc(1.5em)
@@ -3269,7 +3271,7 @@ input[type="checkbox"]:checked + .checkbox__repr
   display: block
   padding: 4px 6px
   &:hover
-    background: lighten($insetbg, 3%)
+    background: color.adjust($insetbg, $lightness: 3%)
 
 .panel-row + .value-preview-row
   margin-top: 4px
@@ -3294,7 +3296,7 @@ input[type="checkbox"]:checked + .checkbox__repr
 .value-preview--editable
   cursor: pointer
   &:hover
-    background: lighten($insetbg, 3%)
+    background: color.adjust($insetbg, $lightness: 3%)
 
 .light-error
   color: $light-error-fg
@@ -3733,9 +3735,9 @@ $color-stops-width: 100%
   background: $panel-bg
   padding: 12px 0
 .menu-group
-  &:not(:first)
+  &:not(::first)
     padding-top: 8px
-  &:not(:last)
+  &:not(::last)
     padding-bottom: 8px
     border-bottom: 1px solid gray
 .menu-item__link

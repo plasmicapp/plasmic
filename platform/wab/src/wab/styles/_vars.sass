@@ -1,3 +1,5 @@
+@use "sass:color"
+
 @import './_tokens.sass'
 
 // Backgrounds
@@ -40,7 +42,7 @@ $lightener: rgba(0, 0, 0, 0.1)
 $lightener2: rgba(0, 0, 0, 0.2)
 
 $fg-active: $brightfg
-$dimfg-active: lighten($fg, 20%)
+$dimfg-active: color.adjust($fg, $lightness: 20%)
 $disabled-fg: rgba($fg, 0.5)
 
 $active-color: $blue9
