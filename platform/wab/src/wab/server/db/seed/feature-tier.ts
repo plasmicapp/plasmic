@@ -72,7 +72,7 @@ const teamFt: FeatureTier = {
   analytics: true,
   contentRole: true,
   designerRole: true,
-  editContentCreatorMode: true,
+  editContentCreatorMode: false,
   localization: true,
   splitContent: true,
   privateUsersIncluded: null,
