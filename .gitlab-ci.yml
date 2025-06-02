@@ -1,3 +1,17 @@
+stages:
+  - build
+  - deploy
+
+image: docker:cli
+
+before_script:
+  - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+
+variables:
+  DOCKER_HOST: unix:///var/run/docker.sock
+  GIT_DEPTH: 0
+  GIT_STRATEGY: clone
+
 build:
   stage: build
   variables:
