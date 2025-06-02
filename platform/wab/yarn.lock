@@ -4121,10 +4121,10 @@
     fast-deep-equal "^3.1.3"
     valtio "^1.6.3"
 
-"@plasmicpkgs/antd5@^0.0.289":
-  version "0.0.289"
-  resolved "https://registry.yarnpkg.com/@plasmicpkgs/antd5/-/antd5-0.0.289.tgz#f0e02dc6a3b99ec07d4f68adf0f54f1d1c216a8a"
-  integrity sha512-BvBduTUw/aEc7ZDBSeDuAqq9N634nct+yZ2Lk6kHS67aNeisXdIr+bVQZrPyZw+CpsAjYftahkmfCI1TeIMYTQ==
+"@plasmicpkgs/antd5@^0.0.290":
+  version "0.0.290"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/antd5/-/antd5-0.0.290.tgz#4052dd569ff48637422ff4b430afb4e95b706d3e"
+  integrity sha512-1XeVBLVgw4WRNcN+E2BB3/DaA9ty24Kc1zpFkoZoL+9J0XwFCAaJyy9lY2jZC2AiywTJm8g0rVOSW6JcavDdJg==
   dependencies:
     antd "^5.12.7"
     classnames "^2.3.2"
@@ -4163,10 +4163,10 @@
   resolved "https://registry.yarnpkg.com/@plasmicpkgs/plasmic-embed-css/-/plasmic-embed-css-0.1.203.tgz#85199bd3a0867d1d51f4a0f7e019c3967dffcd71"
   integrity sha512-IfQEfZJRX473gG+Z4YbTEviOQBxXELpNkGp9vdcGrAmAOtU6vFJ47zJv4P/mxw/FgqA4HWiiIXvYzhz6OgRyQA==
 
-"@plasmicpkgs/react-aria@^0.0.137":
-  version "0.0.137"
-  resolved "https://registry.yarnpkg.com/@plasmicpkgs/react-aria/-/react-aria-0.0.137.tgz#e228a1633fb7e8e12e0d715b6793236e285549da"
-  integrity sha512-vRT3FC3x3qopE1R4FdEIcQIC7qwOU6QWTv3A/K4zJULMP3oHimQy9X99vIViYmY4IDUCvvnzszXo1/EhSsU3/Q==
+"@plasmicpkgs/react-aria@^0.0.138":
+  version "0.0.138"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/react-aria/-/react-aria-0.0.138.tgz#cea2f1dca0159d36930702b5c906e1e4895601fe"
+  integrity sha512-DlFD7gTJXJ4qwTMjuDRjd9Yg6hMrRsRu1V9ovKamipxpHEQZJwBgJx/SOduvabrC1NYOvOSGpFAnNYvH4Q20Vg==
   dependencies:
     "@react-aria/i18n" "^3.11.0"
     "@react-aria/utils" "^3.24.0"

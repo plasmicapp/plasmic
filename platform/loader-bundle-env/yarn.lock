@@ -3151,10 +3151,10 @@
   resolved "https://registry.yarnpkg.com/@plasmicpkgs/airtable/-/airtable-0.0.232.tgz#b41ea5e8acc266288fbbf8be4429cfe7cd73fc5c"
   integrity sha512-j9s4ci+l2FFDkxp+f9z4uHlUs4VbOiIwk7PdgUo0ScN9HpLw2YCtoUp8a+zfZ8nFDpRMiTmkmAo/est6y3TdJw==
 
-"@plasmicpkgs/antd5@^0.0.289":
-  version "0.0.289"
-  resolved "https://registry.yarnpkg.com/@plasmicpkgs/antd5/-/antd5-0.0.289.tgz#f0e02dc6a3b99ec07d4f68adf0f54f1d1c216a8a"
-  integrity sha512-BvBduTUw/aEc7ZDBSeDuAqq9N634nct+yZ2Lk6kHS67aNeisXdIr+bVQZrPyZw+CpsAjYftahkmfCI1TeIMYTQ==
+"@plasmicpkgs/antd5@^0.0.290":
+  version "0.0.290"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/antd5/-/antd5-0.0.290.tgz#4052dd569ff48637422ff4b430afb4e95b706d3e"
+  integrity sha512-1XeVBLVgw4WRNcN+E2BB3/DaA9ty24Kc1zpFkoZoL+9J0XwFCAaJyy9lY2jZC2AiywTJm8g0rVOSW6JcavDdJg==
   dependencies:
     antd "^5.12.7"
     classnames "^2.3.2"
@@ -3162,10 +3162,10 @@
     fast-deep-equal "^3.1.3"
     lodash "^4.17.21"
 
-"@plasmicpkgs/antd@^2.0.139":
-  version "2.0.139"
-  resolved "https://registry.yarnpkg.com/@plasmicpkgs/antd/-/antd-2.0.139.tgz#4d929fa83d6681fb19c3f3c80e1a070d61d26df6"
-  integrity sha512-Gdfa6Y8D13bDxO+Wg2ITfAfUzFFnpmHGauTLN1LZIT9pgLvBt6jEbo4X9mfmwklq2ptmmdHD5fQPGxc6fHSaqQ==
+"@plasmicpkgs/antd@^2.0.140":
+  version "2.0.140"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/antd/-/antd-2.0.140.tgz#f0eaf42c8e5697921670d61cf5286e83bc7690f1"
+  integrity sha512-ZQFsUvhZRjTb7YpHbiLV3pQm+lr5FyKuTlcY4cNrrw+SFFYD9hUYVmzfNNI1JR4K5oeMDf/ZzdC2WCq6VVCjdA==
   dependencies:
     antd "^4.19.5"
 
@@ -3399,10 +3399,10 @@
     lucide-react "^0.279.0"
     remeda "^1.27.0"
 
-"@plasmicpkgs/react-aria@^0.0.137":
-  version "0.0.137"
-  resolved "https://registry.yarnpkg.com/@plasmicpkgs/react-aria/-/react-aria-0.0.137.tgz#e228a1633fb7e8e12e0d715b6793236e285549da"
-  integrity sha512-vRT3FC3x3qopE1R4FdEIcQIC7qwOU6QWTv3A/K4zJULMP3oHimQy9X99vIViYmY4IDUCvvnzszXo1/EhSsU3/Q==
+"@plasmicpkgs/react-aria@^0.0.138":
+  version "0.0.138"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/react-aria/-/react-aria-0.0.138.tgz#cea2f1dca0159d36930702b5c906e1e4895601fe"
+  integrity sha512-DlFD7gTJXJ4qwTMjuDRjd9Yg6hMrRsRu1V9ovKamipxpHEQZJwBgJx/SOduvabrC1NYOvOSGpFAnNYvH4Q20Vg==
   dependencies:
     "@react-aria/i18n" "^3.11.0"
     "@react-aria/utils" "^3.24.0"
