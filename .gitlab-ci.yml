@@ -12,7 +12,7 @@ variables:
   GIT_DEPTH: 0
   GIT_STRATEGY: clone
 
-build:
+build-the-plasmic-wab-docker-image:
   stage: build
   variables:
     DOCKER_IMAGE: ${CI_REGISTRY_IMAGE}:$CI_COMMIT_SHORT_SHA
@@ -22,6 +22,8 @@ build:
 
 publish-production-image-to-the-registry:
   stage: deploy
+  dependencies:
+    - build-the-plasmic-wab-docker-image
   script:
     - docker pull ${CI_REGISTRY_IMAGE}:$CI_COMMIT_SHORT_SHA
     - docker tag ${CI_REGISTRY_IMAGE}:$CI_COMMIT_SHORT_SHA ${CI_REGISTRY_IMAGE}:production
