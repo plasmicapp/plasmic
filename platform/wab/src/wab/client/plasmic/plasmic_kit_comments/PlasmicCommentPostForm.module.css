@@ -31,6 +31,10 @@
   max-width: 100%;
   min-width: 0;
 }
+.freeBoxisPreviewing__njtN0ZvkP {
+  max-height: 300px;
+  overflow: auto;
+}
 .bodyInputisPreviewing:global(.__wab_instance):global(.__wab_instance) {
   display: none;
 }
