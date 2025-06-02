@@ -1,0 +1,43 @@
+stages:
+  - build
+  - deploy
+
+image: docker:cli
+
+before_script:
+  - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+
+variables:
+  DOCKER_HOST: unix:///var/run/docker.sock
+  GIT_DEPTH: 0
+  GIT_STRATEGY: clone
+  DOCKER_DRIVER: overlay2
+
+build:
+  stage: build
+  variables:
+    DOCKER_IMAGE: ${CI_REGISTRY_IMAGE}:$CI_COMMIT_SHORT_SHA
+  script:
+    - docker build -f Dockerfile -t $DOCKER_IMAGE .
+    - docker push $DOCKER_IMAGE
+
+publish-short-sha-image-to-the-registry:
+  stage: deploy
+  variables:
+    DOCKER_IMAGE: ${CI_REGISTRY_IMAGE}:$CI_COMMIT_SHORT_SHA
+  script:
+    - docker build -f ./platform/wab/tools/docker-dev/Dockerfile -t $DOCKER_IMAGE .
+    - docker push $DOCKER_IMAGE
+
+publish-production-image-to-the-registry:
+  stage: deploy
+  variables:
+    DOCKER_DRIVER: overlay2
+    DOCKER_IMAGE: registry.gitlab.com/getbunker-france-nuage/france-nuage/site-web:production
+  script:
+    - docker build -f ./platform/wab/tools/docker-dev/Dockerfile -t $DOCKER_IMAGE .
+    - docker push $DOCKER_IMAGE
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master"'
+      when: on_success
+    - when: never
