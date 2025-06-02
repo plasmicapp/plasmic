@@ -1,43 +1,65 @@
-FROM ubuntu:20.04
+# --- Build stage ---
+FROM node:18-alpine AS builder
 
-# Config
-ENV TZ=America/Los_Angeles
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+ENV PLASMIC_HOME=/plasmic
 
-# Install dependencies
+WORKDIR $PLASMIC_HOME
 
-# System setup
-RUN apt update
-RUN apt install -y sudo build-essential python3 python3-pip virtualenvwrapper git wget curl screen postgresql
+# Install system deps
+RUN apk add --no-cache \
+    bash \
+    git \
+    curl \
+    wget \
+    python3 \
+    py3-pip \
+    postgresql-client \
+    build-base
 
-## Node.js
-RUN curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -
-RUN apt-get install -y nodejs
-RUN npm install -g yarn
-RUN npm install -g typescript
+# Copy only dependency files first for caching
+COPY package.json yarn.lock ./
 
-## pip
-RUN pip3 install --upgrade git-review
-RUN pip3 install nodeenv
-RUN nodeenv -n 14.7.0 /root/.node/14.7.0/
+# Install deps early for cache
+RUN yarn install --frozen-lockfile --prefer-offline
 
-# Entrypoint
-RUN echo "#!/bin/sh \n\
-echo "fs.inotify.max_user_watches before update" \n\
-cat /etc/sysctl.conf | grep fs.inotify \n\
-echo "______________________________________________updating inotify ____________________________________" \n\
-echo fs.inotify.max_user_watches=524288 | tee -a /etc/sysctl.conf && sysctl -p \n\
-echo "updated value is" \n\
-cat /etc/sysctl.conf | grep fs.inotify \n\
-exec bash \
-" >> /usr/local/bin/entrypoint.sh
-RUN chmod +x /usr/local/bin/entrypoint.sh
-RUN ln -s `which pip3` /usr/bin/pip
+# Then copy rest of the app
+COPY . .
 
-# Secrets config
-ADD secrets.json /root/.plasmic/
+# Secrets setup and build tools
+RUN mkdir -p /tmp/.plasmic && \
+    cp platform/wab/tools/docker-dev/secrets.json /tmp/.plasmic/secrets.json && \
+    sed -i -e 's/"host": "localhost"/"host": "plasmic-db"/' -e '/"database": "wab"/a "password": "SEKRET",' platform/wab/ormconfig.json && \
+    yarn setup && \
+    yarn setup:canvas-packages && \
+    yarn cache clean
 
-# Expose server port
-EXPOSE 3003
+# --- Final stage ---
+FROM node:18-alpine
 
-ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+ENV PLASMIC_HOME=/plasmic \
+    HOME=/home/plasmic
+
+# Create non-root user and prepare env
+RUN addgroup -S plasmic && \
+    adduser -S plasmic -G plasmic && \
+    apk add --no-cache \
+    bash \
+    git \
+    postgresql-client && \
+    echo "fs.inotify.max_user_watches=524288" >> /etc/sysctl.conf && \
+    sysctl -p && \
+    mkdir -p $HOME && \
+    chown -R plasmic:plasmic $HOME
+
+USER plasmic
+
+WORKDIR $PLASMIC_HOME
+
+# Copy built app and secrets with correct ownership
+COPY --chown=plasmic:plasmic --from=builder /plasmic $PLASMIC_HOME
+COPY --chown=plasmic:plasmic --from=builder /tmp/.plasmic $HOME/.plasmic
+
+EXPOSE 3003 3004 3005
+
+ENTRYPOINT ["sh", "-c"]
+CMD ["cd platform/wab && yarn typeorm migration:run && yarn migrate-dev-bundles && yarn seed && yarn plume:dev update && cd /plasmic && yarn dev"]
