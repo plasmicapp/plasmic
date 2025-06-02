@@ -47,8 +47,7 @@ function createNameProp<T>(): PropType<T> {
     type: "string",
     description: "Name for this field if it is part of a form",
     displayName: "Form field key",
-    // hidden: hasParent,
-    hidden: () => true, // hiding required prop until the release of Aria Forms
+    hidden: hasParent,
     advanced: true,
   };
 }
