@@ -1,41 +1,15 @@
-.root {
-  display: flex;
-  position: relative;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 100%;
+.root:global(.__wab_instance) {
   max-width: 100%;
-  flex-shrink: 0;
-  cursor: pointer;
-  min-height: 0;
-  padding: 6px;
-}
-.rootactive {
-  background: var(--token-N3uwCfNqv);
-}
-.root:hover {
-  background: var(--token-bV4cCeIniS6);
-}
-.rootactive:hover {
-  background: var(--token-dqEx_KxIoYV);
 }
 .svg {
   display: flex;
   position: relative;
   object-fit: cover;
-  width: 20px;
-  height: 20px;
-  flex-shrink: 0;
-  color: var(--token-UunsGa2Y3t3);
+  height: 1em;
 }
-.svgactive {
-  color: var(--token-iR8SeEwQZ);
-}
-.root:hover .svg {
-  color: var(--token-PHHWT_HMuS1);
-}
-.rootactive:hover .svgactive {
-  color: var(--token-VUsIDivgUss);
+.svg__eI {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  height: 1em;
 }

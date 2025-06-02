@@ -4536,7 +4536,8 @@
       "indirect": false,
       "globalContextsFilePath": "",
       "splitsProviderFilePath": "",
-      "customFunctions": []
+      "customFunctions": [],
+      "jsBundleThemes": []
     },
     {
       "projectId": "6CrqkTcB6gSAHoA8c8zpNz",
@@ -4790,8 +4791,7 @@
       "indirect": false,
       "globalContextsFilePath": "",
       "splitsProviderFilePath": "",
-      "customFunctions": [],
-      "jsBundleThemes": []
+      "customFunctions": []
     },
     {
       "projectId": "m8VxGcigeLAEXFe8c12w5Q",
@@ -9437,7 +9437,8 @@
         }
       ],
       "customFunctions": [],
-      "splitsProviderFilePath": ""
+      "splitsProviderFilePath": "",
+      "jsBundleThemes": []
     },
     {
       "projectId": "28Ba3BDvRe7EiWdfFNnLB6",
@@ -10204,19 +10205,6 @@
           "cssFilePath": "wab/client/plasmic/plasmic_kit_insert_panel/PlasmicSpacer.module.css",
           "scheme": "blackbox",
           "componentType": "component"
-        },
-        {
-          "id": "LAxjR8HGkN",
-          "name": "Homepage",
-          "type": "managed",
-          "projectId": "4B48dRthR8uGgyaBYpWthR",
-          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_insert_panel/PlasmicHomepage.tsx",
-          "importSpec": {
-            "modulePath": "wab/client/components/insert-panel/Homepage.tsx"
-          },
-          "cssFilePath": "wab/client/plasmic/plasmic_kit_insert_panel/PlasmicHomepage.module.css",
-          "scheme": "blackbox",
-          "componentType": "page"
         },
         {
           "id": "bulTqUMaa2",

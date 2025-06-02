@@ -209,12 +209,12 @@ function PlasmicTopBar__RenderFunc(props: {
     $refs,
   });
 
-  const [isN14012264Hover, triggerN14012264HoverProps] = useTrigger(
+  const [isN54740233Hover, triggerN54740233HoverProps] = useTrigger(
     "useHover",
     {}
   );
   const triggers = {
-    hover_14012264: isN14012264Hover,
+    hover_54740233: isN54740233Hover,
   };
 
   return (
@@ -278,7 +278,7 @@ function PlasmicTopBar__RenderFunc(props: {
           >
             <PlasmicIcon__
               PlasmicIconType={
-                triggers.hover_14012264 ? MarkFullColorIcon : MarkIcon
+                triggers.hover_54740233 ? MarkFullColorIcon : MarkIcon
               }
               className={classNames(projectcss.all, sty.svg__jQrU5, {
                 [sty.svgmode_preview__jQrU5QMfAz]: hasVariant(
@@ -288,7 +288,7 @@ function PlasmicTopBar__RenderFunc(props: {
                 ),
               })}
               role={"img"}
-              data-plasmic-trigger-props={[triggerN14012264HoverProps]}
+              data-plasmic-trigger-props={[triggerN54740233HoverProps]}
             />
           </PlasmicLink__>
         </div>
@@ -610,7 +610,9 @@ function PlasmicTopBar__RenderFunc(props: {
             })}
           />
 
-          <div
+          <Stack__
+            as={"div"}
+            hasGap={true}
             className={classNames(projectcss.all, sty.freeBox__tYUhw, {
               [sty.freeBoxmode_preview__tYUhwQMfAz]: hasVariant(
                 $state,
@@ -642,7 +644,7 @@ function PlasmicTopBar__RenderFunc(props: {
                 ),
               })}
             />
-          </div>
+          </Stack__>
         </div>
         <Stack__
           as={"div"}

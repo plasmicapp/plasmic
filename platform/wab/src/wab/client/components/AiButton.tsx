@@ -4,7 +4,6 @@ import {
   DefaultAiButtonProps,
   PlasmicAiButton,
 } from "@/wab/client/plasmic/plasmic_kit_top_bar/PlasmicAiButton";
-import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import * as React from "react";
 
 // Your component props start with props for variants and slots you defined
@@ -22,7 +21,7 @@ import * as React from "react";
 // total control over the props for your component.
 export type AiButtonProps = DefaultAiButtonProps;
 
-function AiButton_(props: AiButtonProps, ref: HTMLElementRefOf<"div">) {
+function AiButton(props: AiButtonProps) {
   // Use PlasmicAiButton to render this component as it was
   // designed in Plasmic, by activating the appropriate variants,
   // attaching the appropriate event handlers, etc.  You
@@ -38,8 +37,7 @@ function AiButton_(props: AiButtonProps, ref: HTMLElementRefOf<"div">) {
   // By default, we are just piping all AiButtonProps here, but feel free
   // to do whatever works for you.
 
-  return <PlasmicAiButton root={{ ref }} {...props} />;
+  return <PlasmicAiButton {...props} />;
 }
 
-const AiButton = React.forwardRef(AiButton_);
 export default AiButton;

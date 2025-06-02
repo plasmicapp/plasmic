@@ -25,10 +25,10 @@ import {
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
+import IconButton from "../../components/widgets/IconButton"; // plasmic-import: LPry-TF4j22a/component
+
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import projectcss from "./plasmic_plasmic_kit_top_bar.module.css"; // plasmic-import: 6CrqkTcB6gSAHoA8c8zpNz/projectcss
 import sty from "./PlasmicCommentButton.module.css"; // plasmic-import: JnxWw8hitac/css
 
@@ -52,7 +52,7 @@ type ArgPropType = keyof PlasmicCommentButton__ArgsType;
 export const PlasmicCommentButton__ArgProps = new Array<ArgPropType>();
 
 export type PlasmicCommentButton__OverridesType = {
-  root?: Flex__<"div">;
+  root?: Flex__<typeof IconButton>;
   svg?: Flex__<"svg">;
 };
 
@@ -110,32 +110,25 @@ function PlasmicCommentButton__RenderFunc(props: {
   });
 
   return (
-    <div
+    <IconButton
       data-plasmic-name={"root"}
       data-plasmic-override={overrides.root}
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
-      className={classNames(
-        projectcss.all,
-        projectcss.root_reset,
-        projectcss.plasmic_default_styles,
-        projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_deprecated_css.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
-        sty.root,
-        { [sty.rootactive]: hasVariant($state, "active", "active") }
-      )}
+      className={classNames("__wab_instance", sty.root, {
+        [sty.rootactive]: hasVariant($state, "active", "active"),
+      })}
+      size={"medium"}
+      type={hasVariant($state, "active", "active") ? ["primary"] : undefined}
+      withBackgroundHover={true}
     >
       <SpeechBubbleSvgIcon
         data-plasmic-name={"svg"}
         data-plasmic-override={overrides.svg}
-        className={classNames(projectcss.all, sty.svg, {
-          [sty.svgactive]: hasVariant($state, "active", "active"),
-        })}
+        className={classNames(projectcss.all, sty.svg)}
         role={"img"}
       />
-    </div>
+    </IconButton>
   ) as React.ReactElement | null;
 }
 
@@ -147,7 +140,7 @@ type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
   (typeof PlasmicDescendants)[T][number];
 type NodeDefaultElementType = {
-  root: "div";
+  root: typeof IconButton;
   svg: "svg";
 };
 
