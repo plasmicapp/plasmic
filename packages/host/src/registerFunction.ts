@@ -1,3 +1,5 @@
+import { Nullish } from "./type-utils";
+
 const root = globalThis as any;
 
 /**
@@ -65,31 +67,33 @@ export type ChoiceType<P, T> =
   | MultiChoiceType<P, T>
   | CustomChoiceType<P, T>;
 
-export interface PlainStringType<T extends string = string> extends BaseParam {
+export interface PlainStringType<T extends Nullish<string> = string>
+  extends BaseParam {
   type: "string" | `'${T}'`;
 }
 
-export type StringType<P, T extends string = string> =
+export type StringType<P, T extends Nullish<string> = string> =
   | "string"
   | PlainStringType<T>
   | ChoiceType<P, T>
   | AnyType;
 
-export interface PlainNumberType<T extends number = number> extends BaseParam {
+export interface PlainNumberType<T extends Nullish<number> = number>
+  extends BaseParam {
   type: "number" | `${number extends T ? number : T}`;
 }
 
-export type NumberType<P, T extends number = number> =
+export type NumberType<P, T extends Nullish<number> = number> =
   | PlainNumberType<T>
   | ChoiceType<P, T>
   | AnyType;
 
-export interface PlainBooleanType<T extends boolean = boolean>
+export interface PlainBooleanType<T extends Nullish<boolean> = boolean>
   extends BaseParam {
   type: "boolean" | `${boolean extends T ? boolean : T}`;
 }
 
-export type BooleanType<P, T extends boolean = boolean> =
+export type BooleanType<P, T extends Nullish<boolean> = boolean> =
   | PlainBooleanType<T>
   | ChoiceType<P, T>
   | AnyType;
@@ -161,11 +165,11 @@ type AnyTyping<P, T> = T extends string
 
 export type RestrictedType<P, T> = IsAny<T> extends true
   ? AnyTyping<P, T>
-  : [T] extends [string]
+  : [T] extends [Nullish<string>]
   ? StringType<P, T>
-  : [T] extends [number]
+  : [T] extends [Nullish<number>]
   ? NumberType<P, T>
-  : [T] extends [boolean]
+  : [T] extends [Nullish<boolean>]
   ? BooleanType<P, T>
   : CommonType<P, T>;
 
