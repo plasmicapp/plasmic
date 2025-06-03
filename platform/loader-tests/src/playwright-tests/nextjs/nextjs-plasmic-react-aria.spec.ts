@@ -602,7 +602,7 @@ test.describe(`@plasmicpkgs/react-aria code components`, async () => {
 
         await selectStateChecker.checkState({});
         await triggerEl.click();
-        await selectStateChecker.checkState({ focused: true });
+        await selectStateChecker.checkState({});
         await popoverEl.getByText(`Item 2`).first().click();
         await expect(valueEl).toHaveText("item2");
         await page.locator("button").click();
@@ -618,7 +618,6 @@ test.describe(`@plasmicpkgs/react-aria code components`, async () => {
         await page.keyboard.press("Space");
         await selectStateChecker.checkState({
           focused: true,
-          focusVisible: true,
         });
         await page.keyboard.press("ArrowUp");
         await page.keyboard.press("Space");

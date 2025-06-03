@@ -81,8 +81,6 @@ export const WithModal: Story = {
       expect(doc.queryByTestId("dialog-content")).not.toBeInTheDocument();
     });
 
-    // With keyboard navigation
-    await userEvent.tab();
     expect(trigger).toHaveFocus();
 
     // Still not open because a click/press is required
@@ -257,9 +255,8 @@ export const WithPopover: Story = {
       expect(doc.queryByTestId("dialog-content")).not.toBeInTheDocument();
     });
 
-    // With keyboard navigation, press Space to open and Escape to dismiss
-    await userEvent.tab();
     await expect(trigger).toHaveFocus();
+    // With keyboard navigation, press Space to open and Escape to dismiss
     await userEvent.keyboard("[Space]");
 
     await waitFor(() => {

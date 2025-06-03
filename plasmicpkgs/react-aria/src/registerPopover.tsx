@@ -44,11 +44,13 @@ export function BasePopover(props: BasePopoverProps) {
    2. The popover is NOT standalone or inside a Select/Combobox (focus trapping is already handled in Select/Combobox). A way to identify this is by the presence of a DialogTrigger context.
  */
   const { children, ...mergedProps } = mergeProps(
-    {
-      // isNonModal: Whether the popover is non-modal, i.e. elements outside the popover may be interacted with by assistive technologies.
-      // Setting isNonModal to true in edit mode (canvas) means that the popover will not prevent the user from interacting with the canvas while the popover is open.
-      isNonModal: canvasContext && !canvasContext.interactive,
-    },
+    canvasContext && !canvasContext.interactive
+      ? {
+          // isNonModal: Whether the popover is non-modal, i.e. elements outside the popover may be interacted with by assistive technologies.
+          // Setting isNonModal to true in edit mode (canvas) means that the popover will not prevent the user from interacting with the canvas while the popover is open.
+          isNonModal: true,
+        }
+      : undefined,
     restProps,
     { className: `${resetClassName}` },
     // Override some props if the popover is standalone
