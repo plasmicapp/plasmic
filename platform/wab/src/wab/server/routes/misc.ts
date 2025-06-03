@@ -14,7 +14,7 @@ export async function getAppConfig(req: Request, res: Response) {
 
 export async function putClip(req: Request, res: Response) {
   const { clipId } = req.params;
-  const s3 = new S3({ endpoint: process.env.S3_ENDPOINT });
+  const s3 = new S3({ accessKeyId: process.env.S3_ACCESS_KEY_ID, secretAccessKey: process.env.S3_SECRET_ACCESS_KEY, endpoint: process.env.S3_ENDPOINT });
   await s3
     .upload({ Bucket: CLIP_BUCKET, Key: clipId, Body: req.body.content })
     .promise();
@@ -27,7 +27,7 @@ export async function putClip(req: Request, res: Response) {
 
 export async function getClip(req: Request, res: Response) {
   const { clipId } = req.params;
-  const s3 = new S3({ endpoint: process.env.S3_ENDPOINT });
+  const s3 = new S3({ accessKeyId: process.env.S3_ACCESS_KEY_ID, secretAccessKey: process.env.S3_SECRET_ACCESS_KEY, endpoint: process.env.S3_ENDPOINT });
   const result = await s3
     .getObject({
       Bucket: CLIP_BUCKET,

@@ -54,6 +54,8 @@ export async function runCypressTest(opts: {
     if (result.status === "failed" && diffFiles.length > 0) {
       console.log("Diff files", diffFiles);
       const s3 = new S3({
+        accessKeyId: process.env.S3_ACCESS_KEY_ID,
+        secretAccessKey: process.env.S3_SECRET_ACCESS_KEY,
         endpoint: process.env.S3_ENDPOINT,
       });
       for (const diffFile of diffFiles) {

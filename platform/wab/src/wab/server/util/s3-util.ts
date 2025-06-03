@@ -10,7 +10,7 @@ export async function upsertS3CacheEntry<T>(opts: {
   deserialize: (str: string) => T;
 }) {
   const { bucket, key, compute: f, serialize, deserialize } = opts;
-  const s3 = new S3({ endpoint: process.env.S3_ENDPOINT });
+  const s3 = new S3({ accessKeyId: process.env.S3_ACCESS_KEY_ID, secretAccessKey: process.env.S3_SECRET_ACCESS_KEY, endpoint: process.env.S3_ENDPOINT });
 
   try {
     const obj = await s3
@@ -54,7 +54,7 @@ export async function uploadFilesToS3(opts: {
   files: Record<string, string>;
 }) {
   const { bucket, key, files } = opts;
-  const s3 = new S3({ endpoint: process.env.S3_ENDPOINT });
+  const s3 = new S3({ accessKeyId: process.env.S3_ACCESS_KEY_ID, secretAccessKey: process.env.S3_SECRET_ACCESS_KEY, endpoint: process.env.S3_ENDPOINT });
   await Promise.all(
     Object.entries(files).map(async ([file, content]) => {
       await s3

@@ -71,6 +71,8 @@ export async function uploadFileToS3(
       try {
         const { Location } = await new S3({
           endpoint: process.env.S3_ENDPOINT,
+          accessKeyId: process.env.S3_ACCESS_KEY_ID,
+          secretAccessKey: process.env.S3_SECRET_ACCESS_KEY,
         })
           .upload({
             Bucket: siteAssetsBucket,
