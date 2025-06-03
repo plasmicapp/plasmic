@@ -29,12 +29,6 @@ import {
   EmailLink,
 } from "@/wab/server/emails/components.tsx"; // plasmic-import: pVqOLFd6uDdb/codeComponent
 
-import "@plasmicapp/react-web/lib/plasmic.css";
-import "../plasmic__default_style.css"; // plasmic-import: global/defaultcss
-
-import "./plasmic.css"; // plasmic-import: taNK5uwsoPrzfpYmBVwUwX/projectcss
-import "./PlasmicFooterSocialIcon.css"; // plasmic-import: 8Wh2IAEsoffQ/css
-
 createPlasmicElementProxy;
 
 export type PlasmicFooterSocialIcon__VariantMembers = {};

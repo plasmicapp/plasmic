@@ -25,12 +25,6 @@ import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
 import { EmailSection, EmailText } from "@/wab/server/emails/components.tsx"; // plasmic-import: ccI_uNhThjcT/codeComponent
 
-import "@plasmicapp/react-web/lib/plasmic.css";
-import "../plasmic__default_style.css"; // plasmic-import: global/defaultcss
-
-import "./plasmic.css"; // plasmic-import: taNK5uwsoPrzfpYmBVwUwX/projectcss
-import "./PlasmicAtomsCard.css"; // plasmic-import: 2cidd9ockVoM/css
-
 createPlasmicElementProxy;
 
 export type PlasmicAtomsCard__VariantMembers = {};

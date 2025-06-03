@@ -35,12 +35,6 @@ import CommentsReplies from "../../CommentsReplies"; // plasmic-import: I_o0WZFf
 import CommentsResolutions from "../../CommentsResolutions"; // plasmic-import: rUeSkh2_5k3b/component
 import Layout from "../../Layout"; // plasmic-import: coNtjSHoDNSq/component
 
-import "@plasmicapp/react-web/lib/plasmic.css";
-import "../plasmic__default_style.css"; // plasmic-import: global/defaultcss
-
-import "./plasmic.css"; // plasmic-import: taNK5uwsoPrzfpYmBVwUwX/projectcss
-import "./PlasmicTemplateComments.css"; // plasmic-import: dNwSNaiJfR5y/css
-
 createPlasmicElementProxy;
 
 export type PlasmicTemplateComments__VariantMembers = {};

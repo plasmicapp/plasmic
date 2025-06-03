@@ -24,12 +24,6 @@ import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
 import { EmailText } from "@/wab/server/emails/components.tsx"; // plasmic-import: 7eMX-ae3z_Os/codeComponent
 
-import "@plasmicapp/react-web/lib/plasmic.css";
-import "../plasmic__default_style.css"; // plasmic-import: global/defaultcss
-
-import "./plasmic.css"; // plasmic-import: taNK5uwsoPrzfpYmBVwUwX/projectcss
-import "./PlasmicFooterText.css"; // plasmic-import: q0dOUzxbuGpk/css
-
 createPlasmicElementProxy;
 
 export type PlasmicFooterText__VariantMembers = {};

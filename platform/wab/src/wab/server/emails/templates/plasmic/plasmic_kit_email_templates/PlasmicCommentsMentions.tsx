@@ -28,12 +28,6 @@ import AtomsCard from "../../AtomsCard"; // plasmic-import: 2cidd9ockVoM/compone
 import CommentsComment from "../../CommentsComment"; // plasmic-import: NUaRKxTU3gYx/component
 import CommentsHeader from "../../CommentsHeader"; // plasmic-import: aekteDGKbn5u/component
 
-import "@plasmicapp/react-web/lib/plasmic.css";
-import "../plasmic__default_style.css"; // plasmic-import: global/defaultcss
-
-import "./plasmic.css"; // plasmic-import: taNK5uwsoPrzfpYmBVwUwX/projectcss
-import "./PlasmicCommentsMentions.css"; // plasmic-import: xmHJRn1lA9BZ/css
-
 createPlasmicElementProxy;
 
 export type PlasmicCommentsMentions__VariantMembers = {};

@@ -31,12 +31,6 @@ import {
 } from "@/wab/server/emails/components.tsx"; // plasmic-import: xWkqfjbn8oyX/codeComponent
 import AtomsCard from "../../AtomsCard"; // plasmic-import: 2cidd9ockVoM/component
 
-import "@plasmicapp/react-web/lib/plasmic.css";
-import "../plasmic__default_style.css"; // plasmic-import: global/defaultcss
-
-import "./plasmic.css"; // plasmic-import: taNK5uwsoPrzfpYmBVwUwX/projectcss
-import "./PlasmicComment.css"; // plasmic-import: NUaRKxTU3gYx/css
-
 createPlasmicElementProxy;
 
 export type PlasmicComment__VariantMembers = {};

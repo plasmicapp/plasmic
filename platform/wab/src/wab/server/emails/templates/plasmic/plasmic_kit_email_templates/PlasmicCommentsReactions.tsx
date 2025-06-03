@@ -26,12 +26,6 @@ import { EmailRow, EmailSection } from "@/wab/server/emails/components.tsx"; // 
 import AtomsCard from "../../AtomsCard"; // plasmic-import: 2cidd9ockVoM/component
 import CommentsComment from "../../CommentsComment"; // plasmic-import: NUaRKxTU3gYx/component
 
-import "@plasmicapp/react-web/lib/plasmic.css";
-import "../plasmic__default_style.css"; // plasmic-import: global/defaultcss
-
-import "./plasmic.css"; // plasmic-import: taNK5uwsoPrzfpYmBVwUwX/projectcss
-import "./PlasmicCommentsReactions.css"; // plasmic-import: akS-yd3gJU3j/css
-
 createPlasmicElementProxy;
 
 export type PlasmicCommentsReactions__VariantMembers = {};

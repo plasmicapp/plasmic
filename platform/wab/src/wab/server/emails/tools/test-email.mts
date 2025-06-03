@@ -1,4 +1,4 @@
-import { generateEmailHtml } from "@/wab/server/emails/templates/generate";
+import { generateEmailHtml } from "@/wab/server/emails/tools/generate";
 import * as fs from "fs";
 import nodemailer from "nodemailer";
 import * as path from "path";
@@ -6,7 +6,7 @@ import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
 
 // NOTE: Customize the email template by changing the component name and its props below
-const TEMPLATE_NAME = "TemplateComments"; // The Plasmic component name representing an email template
+const TEMPLATE_NAME = "Comments"; // The Plasmic component name representing an email template
 const TEMPLATE_PROPS = {
   projectName: "Plexus Main",
   projectUrl: "https://studio.plasmic.app",

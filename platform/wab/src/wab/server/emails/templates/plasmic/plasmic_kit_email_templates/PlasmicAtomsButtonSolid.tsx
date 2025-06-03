@@ -24,12 +24,6 @@ import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
 import { EmailButton } from "@/wab/server/emails/components.tsx"; // plasmic-import: ni9IJwUvaPYp/codeComponent
 
-import "@plasmicapp/react-web/lib/plasmic.css";
-import "../plasmic__default_style.css"; // plasmic-import: global/defaultcss
-
-import "./plasmic.css"; // plasmic-import: taNK5uwsoPrzfpYmBVwUwX/projectcss
-import "./PlasmicAtomsButtonSolid.css"; // plasmic-import: 5PPvgjCI8WyM/css
-
 createPlasmicElementProxy;
 
 export type PlasmicAtomsButtonSolid__VariantMembers = {};

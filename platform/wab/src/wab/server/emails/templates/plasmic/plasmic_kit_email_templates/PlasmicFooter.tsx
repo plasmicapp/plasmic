@@ -24,12 +24,6 @@ import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
 import { EmailLink, EmailSection } from "@/wab/server/emails/components.tsx"; // plasmic-import: ccI_uNhThjcT/codeComponent
 
-import "@plasmicapp/react-web/lib/plasmic.css";
-import "../plasmic__default_style.css"; // plasmic-import: global/defaultcss
-
-import "./plasmic.css"; // plasmic-import: taNK5uwsoPrzfpYmBVwUwX/projectcss
-import "./PlasmicFooter.css"; // plasmic-import: XGWqRhmEjwRw/css
-
 createPlasmicElementProxy;
 
 export type PlasmicFooter__VariantMembers = {};

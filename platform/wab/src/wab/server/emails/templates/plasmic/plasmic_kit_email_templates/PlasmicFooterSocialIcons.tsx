@@ -25,12 +25,6 @@ import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 import { EmailRow } from "@/wab/server/emails/components.tsx"; // plasmic-import: xWkqfjbn8oyX/codeComponent
 import FooterSocialIcon from "../../FooterSocialIcon"; // plasmic-import: 8Wh2IAEsoffQ/component
 
-import "@plasmicapp/react-web/lib/plasmic.css";
-import "../plasmic__default_style.css"; // plasmic-import: global/defaultcss
-
-import "./plasmic.css"; // plasmic-import: taNK5uwsoPrzfpYmBVwUwX/projectcss
-import "./PlasmicFooterSocialIcons.css"; // plasmic-import: iVIFERpAtmin/css
-
 createPlasmicElementProxy;
 
 export type PlasmicFooterSocialIcons__VariantMembers = {};

@@ -31,12 +31,6 @@ import {
   EmailText,
 } from "@/wab/server/emails/components.tsx"; // plasmic-import: xWkqfjbn8oyX/codeComponent
 
-import "@plasmicapp/react-web/lib/plasmic.css";
-import "../plasmic__default_style.css"; // plasmic-import: global/defaultcss
-
-import "./plasmic.css"; // plasmic-import: taNK5uwsoPrzfpYmBVwUwX/projectcss
-import "./PlasmicCommentsComment.css"; // plasmic-import: NUaRKxTU3gYx/css
-
 createPlasmicElementProxy;
 
 export type PlasmicCommentsComment__VariantMembers = {};

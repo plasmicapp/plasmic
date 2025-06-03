@@ -1,10 +1,13 @@
 import { removeClassesFromEmailHtml } from "@/wab/server/emails/email-html";
+import TemplateComments from "@/wab/server/emails/templates/TemplateComments";
 import { Body, Font, Head, Html, render } from "@react-email/components";
 import React from "react";
 
-export async function generateEmailHtml(templateName: string, props: any) {
-  const module = await import(`./${templateName}.tsx`);
-  const Template = module.default;
+export async function generateEmailHtml(templateName: "Comments", props: any) {
+  const Template = templateName === "Comments" ? TemplateComments : undefined;
+  if (!Template) {
+    throw new Error(`Template ${templateName} not found`);
+  }
   const html = await render(
     <Html lang="en" dir="ltr">
       <Head>

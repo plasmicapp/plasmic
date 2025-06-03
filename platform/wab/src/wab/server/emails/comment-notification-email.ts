@@ -1,6 +1,6 @@
 import { Mailer } from "@/wab/server/emails/Mailer";
-import { generateEmailHtml } from "@/wab/server/emails/templates/generate";
 import { TemplateCommentsProps } from "@/wab/server/emails/templates/TemplateComments";
+import { generateEmailHtml } from "@/wab/server/emails/tools/generate";
 import {
   Comment,
   CommentReaction,
@@ -189,7 +189,7 @@ export async function sendUserNotificationEmail(
         }
       });
 
-      const html = await generateEmailHtml("TemplateComments", templateProps);
+      const html = await generateEmailHtml("Comments", templateProps);
 
       // Send the email
       await mailer.sendMail({

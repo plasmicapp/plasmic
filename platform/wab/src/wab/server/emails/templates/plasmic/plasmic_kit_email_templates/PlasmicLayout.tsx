@@ -30,12 +30,6 @@ import {
 } from "@/wab/server/emails/components.tsx"; // plasmic-import: oy2tNUrSNuyD/codeComponent
 import Footer from "../../Footer"; // plasmic-import: XGWqRhmEjwRw/component
 
-import "@plasmicapp/react-web/lib/plasmic.css";
-import "../plasmic__default_style.css"; // plasmic-import: global/defaultcss
-
-import "./plasmic.css"; // plasmic-import: taNK5uwsoPrzfpYmBVwUwX/projectcss
-import "./PlasmicLayout.css"; // plasmic-import: coNtjSHoDNSq/css
-
 createPlasmicElementProxy;
 
 export type PlasmicLayout__VariantMembers = {};
