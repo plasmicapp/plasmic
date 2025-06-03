@@ -171,9 +171,9 @@ console.log(`HTML saved to ${outputPath}. Open in the browser to preview!`);
 
 if (args.email) {
   const transporter = nodemailer.createTransport({
-    host: "email-smtp.us-west-2.amazonaws.com",
-    port: 587,
-    secure: false,
+    host: "smtp-relay.brevo.com",
+    port: 465,
+    secure: true,
     auth: {
       user: process.env.EMAIL_SMTP_USER,
       pass: process.env.EMAIL_SMTP_PASSWORD,
