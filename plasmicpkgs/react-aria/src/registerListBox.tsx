@@ -1,3 +1,4 @@
+import { usePlasmicCanvasContext } from "@plasmicapp/host";
 import React, { useCallback, useEffect, useState } from "react";
 import { Key, ListBox, ListBoxRenderProps } from "react-aria-components";
 import { COMMON_STYLES } from "./common";
@@ -71,6 +72,7 @@ export function BaseListBox(props: BaseListBoxProps) {
   const context = React.useContext(PlasmicListBoxContext);
   const isStandalone = !context;
   const [ids, setIds] = useState<string[]>([]);
+  const inEditor = usePlasmicCanvasContext();
 
   const idManager = useIdManager(setIds, context?.idManager);
 
@@ -98,6 +100,9 @@ export function BaseListBox(props: BaseListBoxProps) {
       defaultSelectedKeys={normalizeSelectedKeys(defaultSelectedKeys)}
       className={classNameProp}
       style={COMMON_STYLES}
+      // `shouldUseVirtualFocus` is not part of the ListBox prop types, but it’s passed through to useListBox, which does support it.
+      // In editor, we use virtual focus to prevent the listbox from stealing focus
+      {...(inEditor ? { shouldUseVirtualFocus: true } : {})}
       {...rest}
     >
       {children}

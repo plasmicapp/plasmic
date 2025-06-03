@@ -230,8 +230,7 @@ describe("Auto Open", () => {
           cy.autoOpenBanner().should("exist");
 
           cy.insertFromAddDrawer("plasmic-react-aria-select");
-          // TODO: PLA-11850 Select does not auto-open on first render
-          // assertAutoOpened(pageFrame, selectHiddenContent);
+          assertAutoOpened(pageFrame, selectHiddenContent);
           assertAutoOpened(pageFrame, modalHiddenContent);
           assertHidden(pageFrame, tooltipHiddenContent, tooltipVisibleContent);
           cy.autoOpenBanner().should("exist");
@@ -245,18 +244,15 @@ describe("Auto Open", () => {
           cy.autoOpenBanner().should("not.exist");
 
           cy.selectTreeNode(["Aria Select"]);
-          // TODO: PLA-11850 Select does not auto-open on first render
-          // assertAutoOpened(pageFrame, selectHiddenContent);
+          assertAutoOpened(pageFrame, selectHiddenContent);
           assertAutoOpened(pageFrame, modalHiddenContent);
-          // TODO: PLA-12032 resurphased after revert of PLA-11850, because the select's auto-open was triggering tooltip to hide again.
-          // assertHidden(pageFrame, tooltipHiddenContent, tooltipVisibleContent);
+          assertHidden(pageFrame, tooltipHiddenContent, tooltipVisibleContent);
           cy.autoOpenBanner().should("exist");
 
           cy.selectTreeNode(["Aria Modal"]);
           assertHidden(pageFrame, selectHiddenContent);
           assertAutoOpened(pageFrame, modalHiddenContent);
-          // TODO: resurphased after revert of PLA-11850, because the select's auto-open was triggering tooltip to hide again.
-          // assertHidden(pageFrame, tooltipHiddenContent, tooltipVisibleContent);
+          assertHidden(pageFrame, tooltipHiddenContent, tooltipVisibleContent);
           cy.autoOpenBanner().should("exist");
         });
       });
@@ -421,8 +417,6 @@ describe("Auto Open", () => {
         assertAutoOpened(frame, hiddenContent, visibleContent);
         cy.autoOpenBanner().should("exist");
       }
-      // TODO: PLA-11850 Select does not auto-open on first render, so we de-select it first by selecting the root node
-      cy.selectRootNode();
       cy.selectTreeNode([ccDisplayName]);
       _assertAutoOpened();
       if (triggerSlotName) {

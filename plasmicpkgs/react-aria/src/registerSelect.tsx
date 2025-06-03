@@ -32,32 +32,7 @@ import { WithVariants, pickAriaComponentVariants } from "./variant-utils";
 // because it needs access to SelectStateContext, which is only created in the BaseSelect component's render function.
 function SelectAutoOpen(props: any) {
   const { open, close } = React.useContext(SelectStateContext) ?? {};
-  useAutoOpen({
-    props,
-    open: () => {
-      open?.();
-      // using settimeout because the focus is not immediately available
-      setTimeout(() => {
-        /*
-          When the select's popover is opened in the canvas, the listbox gains focus, trapping the keyboard focus within it. Pressing the up or down arrow keys navigates through the listbox items.
-          However, there are three issues with this behavior:
-
-            1. Focus should not be triggered in canvas (non-interactive mode)
-            2. Canvas (non-interactive mode) should remain non-interactive: Navigation between listbox items or selection using the space key should not be possible.
-            3. Keyboard hotkeys (e.g., backspace, undo) stop working: Key presses are absorbed by the listbox, breaking the expected behavior for shortcuts like backspace or undo (reference).
-
-          To resolve this, we need to call document.activeElement.blur() to remove focus from the listbox.
-
-          However, since the select component is a code component embedded within the artboard iframe, the keyboard hotkeys (e.g., backspace, undo) will not work,
-          because they only function in the parent iframe (__wab_studio-frame).
-          To ensure hotkeys work properly, we need to shift focus from the active element in the child iframe (artboard iframe) to the parent iframe (__wab_studio-frame) by using window.parent.
-        */
-        (window.parent.document.activeElement as HTMLElement)?.blur?.();
-      }, 1);
-    },
-    close,
-  });
-
+  useAutoOpen({ props, open, close });
   return null;
 }
 
