@@ -1,7 +1,8 @@
 # --- Build stage ---
 FROM node:18-alpine AS builder
 
-ENV PLASMIC_HOME=/plasmic
+ENV PLASMIC_HOME=/plasmic \
+    PYTHON=/usr/bin/python3
 
 WORKDIR $PLASMIC_HOME
 
@@ -28,7 +29,7 @@ COPY . .
 # Secrets setup and build tools
 RUN mkdir -p /tmp/.plasmic && \
     cp platform/wab/tools/docker-dev/secrets.json /tmp/.plasmic/secrets.json && \
-    sed -i -e 's/"host": "localhost"/"host": "plasmic-db"/' -e '/"database": "wab"/a "password": "SEKRET",' platform/wab/ormconfig.json && \
+    sed -i -e 's/"host": "localhost"/"host": "plasmic-db"/' -e '/"database": "wab"/a "password": "w1G_xJzN8.q9Q2_nRyY1CxzW.o257dtta.ZxUakSu",' platform/wab/ormconfig.json && \
     yarn setup && \
     yarn setup:canvas-packages && \
     yarn cache clean
@@ -59,7 +60,7 @@ WORKDIR $PLASMIC_HOME
 COPY --chown=plasmic:plasmic --from=builder /plasmic $PLASMIC_HOME
 COPY --chown=plasmic:plasmic --from=builder /tmp/.plasmic $HOME/.plasmic
 
-EXPOSE 3003 3004 3005
+EXPOSE 3003-3010 3020 9229
 
 ENTRYPOINT ["sh", "-c"]
 CMD ["cd platform/wab && yarn typeorm migration:run && yarn migrate-dev-bundles && yarn seed && yarn plume:dev update && cd /plasmic && yarn dev"]
