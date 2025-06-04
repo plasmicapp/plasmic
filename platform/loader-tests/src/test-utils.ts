@@ -57,6 +57,8 @@ export async function runCypressTest(opts: {
         accessKeyId: process.env.S3_ACCESS_KEY_ID,
         secretAccessKey: process.env.S3_SECRET_ACCESS_KEY,
         endpoint: process.env.S3_ENDPOINT,
+        sslEnabled: process.env.S3_SSL_ENABLED,
+        s3ForcePathStyle: process.env.S3_FORCE_PATH_STYLE,
       });
       for (const diffFile of diffFiles) {
         const { Location } = await s3
