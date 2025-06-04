@@ -970,6 +970,17 @@ function upgradeProjectDep(
 
   const oldAssets = [...oldToNewAsset.keys()];
 
+  /**
+   * Fix reference to new StyleTokenRef, if expr is an ImageAssetRef
+   */
+  function fixStyleTokenRefForExpr(expr: Expr) {
+    if (isKnownStyleTokenRef(expr) && oldToNewToken.has(expr.token)) {
+      expr.token = getOrCloneNewToken(expr.token);
+    } else if (isFallbackSet(expr)) {
+      fixStyleTokenRefForExpr(expr.fallback!);
+    }
+  }
+
   // For HRefs: tries to fix the referenced page, and returns true if the
   // expr should be deleted because it references a no longer existing page
   const shouldDeletePageHRef = (expr: Expr) => {
@@ -1151,9 +1162,10 @@ function upgradeProjectDep(
     if (isTplImage(tpl)) {
       // For images, replace ImageAsset references to new ones
       for (const vs of tpl.vsettings) {
-        Object.entries(vs.attrs).forEach(([_key, value]) =>
-          fixAssetRefForExpr(tplMgr, value, oldToNewAsset)
-        );
+        Object.entries(vs.attrs).forEach(([_key, value]) => {
+          fixAssetRefForExpr(tplMgr, value, oldToNewAsset);
+          fixStyleTokenRefForExpr(value);
+        });
       }
     }
 
@@ -1369,6 +1381,16 @@ function upgradeProjectDep(
           param.defaultExpr = null;
         } else {
           fixAssetRefForExpr(tplMgr, param.defaultExpr, oldToNewAsset);
+          fixStyleTokenRefForExpr(param.defaultExpr);
+        }
+      }
+
+      if (param.previewExpr) {
+        if (shouldDeletePageHRef(param.previewExpr)) {
+          param.previewExpr = null;
+        } else {
+          fixAssetRefForExpr(tplMgr, param.previewExpr, oldToNewAsset);
+          fixStyleTokenRefForExpr(param.previewExpr);
         }
       }
     });
