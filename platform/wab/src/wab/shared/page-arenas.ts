@@ -40,6 +40,7 @@ import {
 import { ResponsiveStrategy } from "@/wab/shared/responsiveness";
 import {
   ensureVariantSetting,
+  isBaseVariant,
   isGlobalVariant,
   isPrivateStyleVariant,
   isScreenVariant,
@@ -95,6 +96,14 @@ export function makePageArenaFrame(
     component,
     targetVariants: [...locals],
     targetGlobalVariants: [...globals],
+    pinnedVariants: Object.fromEntries(
+      locals
+        .filter((local) => !isBaseVariant(local))
+        .map((local) => [local.uuid, true])
+    ),
+    pinnedGlobalVariants: Object.fromEntries(
+      globals.map((global) => [global.uuid, true])
+    ),
     viewMode: FrameViewMode.Stretch,
   });
   ensureVariantSetting(frame.container, [site.globalVariant]);

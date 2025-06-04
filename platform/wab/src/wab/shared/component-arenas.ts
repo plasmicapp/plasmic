@@ -205,6 +205,14 @@ export function makeComponentArenaFrame({
     component: component,
     targetVariants: [...locals],
     targetGlobalVariants: [...globals],
+    pinnedVariants: Object.fromEntries(
+      locals
+        .filter((local) => !isBaseVariant(local))
+        .map((local) => [local.uuid, true])
+    ),
+    pinnedGlobalVariants: Object.fromEntries(
+      globals.map((global) => [global.uuid, true])
+    ),
     name: "",
     width: getComponentArenaWidthFromScreenVariant(globals) || width,
     height,
