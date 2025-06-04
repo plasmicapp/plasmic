@@ -172,7 +172,7 @@ export function setup(opts_?: { demoMode?: boolean }) {
   cy.visit("/");
 
   cy.get("input[name=email]").type("user2@example.com");
-  cy.get("input[name=password]").type("!53kr3tz!");
+  cy.get("input[name=password]").type("d53vh4d8.b42x3yryMM435yd4_d53vh4d8.b42x3yryMM435yd4");
   cy.get("button[type=submit]").click();
 
   cy.contains('a[href="/projects"]', "All projects");
@@ -1842,7 +1842,7 @@ export function revertToVersion(version: string) {
   cy.switchToTreeTab();
 }
 
-export function login(email = "user2@example.com", password = "!53kr3tz!") {
+export function login(email = "user2@example.com", password = "d53vh4d8.b42x3yryMM435yd4_d53vh4d8.b42x3yryMM435yd4") {
   cy.fetchCsrf()
     .request({
       url: "/api/v1/auth/login",

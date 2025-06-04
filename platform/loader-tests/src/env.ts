@@ -4,7 +4,7 @@ const DEFAULT_ENV = {
   NPM_REGISTRY: "https://registry.npmjs.org",
   WAB_HOST: "http://127.0.0.1:3003",
   WAB_USER_EMAIL: "admin@admin.example.com",
-  WAB_USER_PASSWORD: "!53kr3tz!",
+  WAB_USER_PASSWORD: "d53vh4d8.b42x3yryMM435yd4_d53vh4d8.b42x3yryMM435yd4",
 };
 
 type EnvVar = keyof typeof DEFAULT_ENV;

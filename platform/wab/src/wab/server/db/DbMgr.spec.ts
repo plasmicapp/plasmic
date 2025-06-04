@@ -1494,7 +1494,7 @@ describe("DbMgr.user", () => {
     await withDb(async (sudo, _users, _dbs, _project, em) => {
       const user = await sudo.createUser({
         email: "user@domain.com",
-        password: "!53kr3tz!",
+        password: "d53vh4d8.b42x3yryMM435yd4_d53vh4d8.b42x3yryMM435yd4",
         firstName: "Firstname",
         lastName: "Lastname",
         needsTeamCreationPrompt: false,

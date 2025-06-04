@@ -19,7 +19,7 @@ describe("create-data-source", function () {
     Cypress.env("dataSourceName", dataSourceName);
     cy.get(`[data-test-id="postgres-connection-string"]`).click();
     cy.get(`[data-test-id="prompt"]`).click();
-    cy.justType("postgresql://wronguser:SEKRET@localhost:5432/postgres");
+    cy.justType("postgresql://wronguser:w1G_xJzN8.q9Q2_nRyY1CxzW.o257dtta.ZxUakSu@localhost:5432/postgres");
     cy.get(`[data-test-id="prompt-submit"]`).last().click();
     // Assert values
     cy.get(`[data-test-id="host"]`).should("have.value", "localhost");

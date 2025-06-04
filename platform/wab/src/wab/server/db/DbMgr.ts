@@ -569,7 +569,7 @@ export function generateId() {
 }
 
 /** Only used for development users in non-prod environments. */
-export const DEFAULT_DEV_PASSWORD = "!53kr3tz!";
+export const DEFAULT_DEV_PASSWORD = "d53vh4d8.b42x3yryMM435yd4_d53vh4d8.b42x3yryMM435yd4";
 
 export async function checkWeakPassword(password: string | undefined) {
   if (

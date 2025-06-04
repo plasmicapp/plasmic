@@ -32,7 +32,7 @@ describe("Signup flow", function () {
         // Switch to signup form.
         cy.contains("Create account", { timeout: 120000 }).click();
         cy.get("input[name=email]").type(randomUserEmail);
-        cy.get("input[name=password]").type("!53kr3tz!");
+        cy.get("input[name=password]").type("d53vh4d8.b42x3yryMM435yd4_d53vh4d8.b42x3yryMM435yd4");
         cy.get("input[name=firstName]").type("Fakey");
         cy.get("input[name=lastName]").type("Fake");
         cy.get("button[type=submit]:contains(Sign up)").click();

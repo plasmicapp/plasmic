@@ -38,7 +38,7 @@ test.describe(`Plasmic Auth`, async () => {
       await page
         .getByPlaceholder("Email address")
         .fill("admin@admin.example.com");
-      await page.getByPlaceholder("Password").fill("!53kr3tz!");
+      await page.getByPlaceholder("Password").fill("d53vh4d8.b42x3yryMM435yd4_d53vh4d8.b42x3yryMM435yd4");
 
       const waitForNormalUserPagePromise = page.waitForURL("**/normal-user**");
       await page.getByRole("button", { name: "Sign in", exact: true }).click();
@@ -109,7 +109,7 @@ test.describe(`Plasmic Auth`, async () => {
       await page
         .getByPlaceholder("Email address")
         .fill("admin@admin.example.com");
-      await page.getByPlaceholder("Password").fill("!53kr3tz!");
+      await page.getByPlaceholder("Password").fill("d53vh4d8.b42x3yryMM435yd4_d53vh4d8.b42x3yryMM435yd4");
 
       // Wait for page 2
       const waitForPage2Promise = page.waitForURL("**/page-2**");
