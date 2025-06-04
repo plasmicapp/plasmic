@@ -10,7 +10,7 @@ export async function upsertS3CacheEntry<T>(opts: {
   deserialize: (str: string) => T;
 }) {
   const { bucket, key, compute: f, serialize, deserialize } = opts;
-  const s3 = new S3({ accessKeyId: process.env.S3_ACCESS_KEY_ID, secretAccessKey: process.env.S3_SECRET_ACCESS_KEY, endpoint: process.env.S3_ENDPOINT, sslEnabled: process.env.S3_SSL_ENABLED, s3ForcePathStyle: process.env.S3_FORCE_PATH_STYLE, });
+  const s3 = new S3({ accessKeyId: process.env.S3_ACCESS_KEY_ID, secretAccessKey: process.env.S3_SECRET_ACCESS_KEY, endpoint: process.env.S3_ENDPOINT, sslEnabled: process.env.S3_SSL_ENABLED, s3ForcePathStyle: process.env.S3_FORCE_PATH_STYLE, region: process.env.S3_REGION, });
 
   try {
     const obj = await s3
@@ -54,7 +54,7 @@ export async function uploadFilesToS3(opts: {
   files: Record<string, string>;
 }) {
   const { bucket, key, files } = opts;
-  const s3 = new S3({ accessKeyId: process.env.S3_ACCESS_KEY_ID, secretAccessKey: process.env.S3_SECRET_ACCESS_KEY, endpoint: process.env.S3_ENDPOINT, sslEnabled: process.env.S3_SSL_ENABLED, s3ForcePathStyle: process.env.S3_FORCE_PATH_STYLE, });
+  const s3 = new S3({ accessKeyId: process.env.S3_ACCESS_KEY_ID, secretAccessKey: process.env.S3_SECRET_ACCESS_KEY, endpoint: process.env.S3_ENDPOINT, sslEnabled: process.env.S3_SSL_ENABLED, s3ForcePathStyle: process.env.S3_FORCE_PATH_STYLE, region: process.env.S3_REGION, });
   await Promise.all(
     Object.entries(files).map(async ([file, content]) => {
       await s3

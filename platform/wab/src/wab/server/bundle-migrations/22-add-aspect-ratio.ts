@@ -32,6 +32,7 @@ export const migrate: BundledMigrationFn = async (bundle) => {
           endpoint: process.env.S3_ENDPOINT,
           sslEnabled: process.env.S3_SSL_ENABLED,
           s3ForcePathStyle: process.env.S3_FORCE_PATH_STYLE,
+          region: process.env.S3_REGION,
         })
           .getObject({
             Bucket: siteAssetsBucket,

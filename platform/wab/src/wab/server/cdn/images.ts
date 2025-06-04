@@ -75,6 +75,7 @@ export async function uploadFileToS3(
           secretAccessKey: process.env.S3_SECRET_ACCESS_KEY,
           sslEnabled: process.env.S3_SSL_ENABLED,
           s3ForcePathStyle: process.env.S3_FORCE_PATH_STYLE,
+          region: process.env.S3_REGION,
         })
           .upload({
             Bucket: siteAssetsBucket,
