@@ -124,54 +124,55 @@ const CanvasCommentMarker = observer(function CanvasCommentMarker(props: {
   );
 });
 
-export function CanvasAddCommentMarker(props: {
-  viewCtx: ViewCtx;
-  tpl: TplNode;
-}) {
-  const { viewCtx, tpl } = props;
-  const commentsCtx = viewCtx.studioCtx.commentsCtx;
-  const commentStats = commentsCtx.computedData().commentStatsByVariant;
-  const spotlightComponent = viewCtx?.currentComponentCtx()?.component();
-  const ownerComponent = tryGetTplOwnerComponent(tpl);
+export const CanvasAddCommentMarker = observer(
+  function CanvasAddCommentMarker(props: { viewCtx: ViewCtx; tpl: TplNode }) {
+    const { viewCtx, tpl } = props;
+    const commentsCtx = viewCtx.studioCtx.commentsCtx;
+    const commentStats = commentsCtx.computedData().commentStatsByVariant;
+    const spotlightComponent = viewCtx?.currentComponentCtx()?.component();
+    const ownerComponent = tryGetTplOwnerComponent(tpl);
+    const isRecording = viewCtx.isEditingNonBaseVariant;
 
-  // Don't show the add comment marker if the component is in spotlight mode
-  // and is a child of the spotlighted component.
-  const isSpotlightChild = ownerComponent === spotlightComponent;
+    // Don't show the add comment marker if the component is in spotlight mode
+    // and is a child of the spotlighted component.
+    const isSpotlightChild = ownerComponent === spotlightComponent;
 
-  if (!ownerComponent || !isTplNamable(tpl) || isSpotlightChild) {
-    return null;
+    if (!ownerComponent || !isTplNamable(tpl) || isSpotlightChild) {
+      return null;
+    }
+
+    const variants = getSetOfVariantsForViewCtx(viewCtx, viewCtx.bundler());
+
+    const offsetRight =
+      (commentStats.get(getSubjectVariantsKey(tpl, variants))?.commentCount ||
+        0) * HORIZONTAL_MARKER_OFFSET;
+    return (
+      <CanvasCommentOverlay
+        tpl={tpl}
+        viewCtx={viewCtx}
+        className={"AddCommentMarker"}
+        offsetRight={
+          // push the add comment marker to right if comment marker any exist
+          offsetRight
+            ? THREAD_MARKER_MARGIN + offsetRight + ADD_COMMENT_MARKER_MARGIN
+            : ADD_COMMENT_INDIVIDUAL_MARKER_MARGIN
+        }
+      >
+        <Tooltip title="New comment">
+          <AddCommentMarker
+            isRecording={isRecording}
+            icon={{
+              onClick: (e) => {
+                e.stopPropagation();
+                commentsCtx.openNewCommentDialog(viewCtx, tpl);
+              },
+            }}
+          />
+        </Tooltip>
+      </CanvasCommentOverlay>
+    );
   }
-
-  const variants = getSetOfVariantsForViewCtx(viewCtx, viewCtx.bundler());
-
-  const offsetRight =
-    (commentStats.get(getSubjectVariantsKey(tpl, variants))?.commentCount ||
-      0) * HORIZONTAL_MARKER_OFFSET;
-  return (
-    <CanvasCommentOverlay
-      tpl={tpl}
-      viewCtx={viewCtx}
-      className={"AddCommentMarker"}
-      offsetRight={
-        // push the add comment marker to right if comment marker any exist
-        offsetRight
-          ? THREAD_MARKER_MARGIN + offsetRight + ADD_COMMENT_MARKER_MARGIN
-          : ADD_COMMENT_INDIVIDUAL_MARKER_MARGIN
-      }
-    >
-      <Tooltip title="New comment">
-        <AddCommentMarker
-          icon={{
-            onClick: (e) => {
-              e.stopPropagation();
-              commentsCtx.openNewCommentDialog(viewCtx, tpl);
-            },
-          }}
-        />
-      </Tooltip>
-    </CanvasCommentOverlay>
-  );
-}
+);
 
 const CanvasSubjectCommentMarkers = observer(
   function CanvasSubjectCommentMarkers({

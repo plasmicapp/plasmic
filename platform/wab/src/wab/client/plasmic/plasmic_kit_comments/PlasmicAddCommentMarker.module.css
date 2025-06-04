@@ -14,6 +14,9 @@
   justify-content: center;
   border-radius: var(--token-YwPV7bN0RvD8);
 }
+.freeBoxisRecording {
+  background: var(--token-iDpByWoW0eF);
+}
 .svg {
   display: flex;
   position: relative;

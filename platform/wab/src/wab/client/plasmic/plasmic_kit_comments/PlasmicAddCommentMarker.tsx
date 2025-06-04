@@ -15,10 +15,13 @@ import * as React from "react";
 
 import {
   Flex as Flex__,
+  SingleBooleanChoiceArg,
   StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  hasVariant,
+  useDollarState,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
@@ -33,11 +36,16 @@ import SpeechBubblePlusSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__Spe
 
 createPlasmicElementProxy;
 
-export type PlasmicAddCommentMarker__VariantMembers = {};
-export type PlasmicAddCommentMarker__VariantsArgs = {};
+export type PlasmicAddCommentMarker__VariantMembers = {
+  isRecording: "isRecording";
+};
+export type PlasmicAddCommentMarker__VariantsArgs = {
+  isRecording?: SingleBooleanChoiceArg<"isRecording">;
+};
 type VariantPropType = keyof PlasmicAddCommentMarker__VariantsArgs;
-export const PlasmicAddCommentMarker__VariantProps =
-  new Array<VariantPropType>();
+export const PlasmicAddCommentMarker__VariantProps = new Array<VariantPropType>(
+  "isRecording"
+);
 
 export type PlasmicAddCommentMarker__ArgsType = {};
 type ArgPropType = keyof PlasmicAddCommentMarker__ArgsType;
@@ -50,6 +58,7 @@ export type PlasmicAddCommentMarker__OverridesType = {
 };
 
 export interface DefaultAddCommentMarkerProps {
+  isRecording?: SingleBooleanChoiceArg<"isRecording">;
   className?: string;
 }
 
@@ -83,6 +92,24 @@ function PlasmicAddCommentMarker__RenderFunc(props: {
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
+  const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
+    () => [
+      {
+        path: "isRecording",
+        type: "private",
+        variableType: "variant",
+        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isRecording,
+      },
+    ],
+    [$props, $ctx, $refs]
+  );
+  const $state = useDollarState(stateSpecs, {
+    $props,
+    $ctx,
+    $queries: {},
+    $refs,
+  });
+
   return (
     <IconButton
       data-plasmic-name={"icon"}
@@ -95,7 +122,13 @@ function PlasmicAddCommentMarker__RenderFunc(props: {
       <div
         data-plasmic-name={"freeBox"}
         data-plasmic-override={overrides.freeBox}
-        className={classNames(projectcss.all, sty.freeBox)}
+        className={classNames(projectcss.all, sty.freeBox, {
+          [sty.freeBoxisRecording]: hasVariant(
+            $state,
+            "isRecording",
+            "isRecording"
+          ),
+        })}
       >
         <SpeechBubblePlusSvgIcon
           data-plasmic-name={"svg"}
