@@ -9,6 +9,7 @@ import {
 import * as DbMod from "@/wab/client/db";
 import { ApiBranch, MainBranchId, ProjectId } from "@/wab/shared/ApiSchema";
 import { SiteInfo } from "@/wab/shared/SharedApi";
+import * as slotUtils from "@/wab/shared/SlotUtils";
 import { $$$ } from "@/wab/shared/TplQuery";
 import { getBundle } from "@/wab/shared/bundles";
 import { asyncNever, spawn } from "@/wab/shared/common";
@@ -99,6 +100,7 @@ export async function loadSiteDbCtx(
     fixPageHrefsToLocal,
   };
   (window as any).dbg.exprs = exprs;
+  (window as any).dbg.slotUtils = slotUtils;
 
   const rawSiteApi = new Api.SiteApi({ siteId, api: baseApi });
   const siteApi = new Api.BundlingSiteApi({ bundler, siteApi: rawSiteApi });
