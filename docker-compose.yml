@@ -22,9 +22,7 @@ services:
       context: .
       dockerfile: ./platform/wab/tools/docker-dev/Dockerfile
     ports:
-      - "3003-3010:3003-3010"
-      - "3020:3020"
-      - "9229:9229"
+      - "3004:3004"
     depends_on:
       plasmic-db:
         condition: service_healthy
@@ -44,8 +42,7 @@ services:
       - DATABASE_URI=postgres://wab:w1G_xJzN8.q9Q2_nRyY1CxzW.o257dtta.ZxUakSu@plasmic-db:5432/wab
       - WAB_DBNAME=wab
       - WAB_DBPASSWORD=w1G_xJzN8.q9Q2_nRyY1CxzW.o257dtta.ZxUakSu
-      - NODE_ENV=production
-      - SESSION_SECRET=v32xeg4ex3drx45GCESRE_gc2x35g4v2t_5xg4c23vx4t25sv4ct3g
+      - SESSION_SECRET=w1G_xJzN8.q9Q2_nRyY1CxzW.o257dtta.ZxUakSu
       - HOST=localhost
     tty: true
     stdin_open: true

@@ -30,7 +30,7 @@ export async function withDb(
             email: `yang${num}@test.com`,
             firstName: `Yang ${num}`,
             lastName: "Zhang",
-            password: "d53vh4d8.b42x3yryMM435yd4_d53vh4d8.b42x3yryMM435yd4",
+            password: "d53vh4d8.b42x3y_ryMM435yd4",
             needsIntroSplash: false,
             needsSurvey: false,
             needsTeamCreationPrompt: false,

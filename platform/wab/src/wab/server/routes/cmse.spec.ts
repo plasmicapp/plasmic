@@ -142,7 +142,7 @@ describe("CMS tests", () => {
     await api.refreshCsrfToken();
     await api.login({
       email: "user@example.com",
-      password: "d53vh4d8.b42x3yryMM435yd4_d53vh4d8.b42x3yryMM435yd4",
+      password: "d53vh4d8.b42x3y_ryMM435yd4",
     });
   });
 

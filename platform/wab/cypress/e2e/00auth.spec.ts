@@ -11,7 +11,7 @@ describe("Authentication", function () {
     // The very first step can take Cypress a long time to load for some reason,
     // esp. on jenkins.
     cy.get("input[name=email]", { timeout: 120000 }).type("user2@example.com");
-    cy.get("input[name=password]").type("d53vh4d8.b42x3yryMM435yd4_d53vh4d8.b42x3yryMM435yd4");
+    cy.get("input[name=password]").type("d53vh4d8.b42x3y_ryMM435yd4");
     cy.get("button[type=submit]").click();
 
     cy.contains('a[href="/projects"]', "All projects");

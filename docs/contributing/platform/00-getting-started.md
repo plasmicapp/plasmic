@@ -133,7 +133,7 @@ If you have freshly reset the DB, the following users will be created for you
 - user@example.com
 - user2@example.com
 
-The password for these accounts is `d53vh4d8.b42x3yryMM435yd4_d53vh4d8.b42x3yryMM435yd4`.
+The password for these accounts is `d53vh4d8.b42x3y_ryMM435yd4`.
 
 WARNING: Avoid testing with the admin@admin.example.com user.
 By default, the admin.example.com domain is considered an admin and has
