@@ -59,7 +59,12 @@ function useHover(): HoverHookResult {
 }
 
 function usePressed(): PressHookResult {
-  const { isPressed, pressProps } = useAriaPress({});
+  const { isPressed, pressProps } = useAriaPress({
+    onPress: (e) => e.continuePropagation(),
+    onPressStart: (e) => e.continuePropagation(),
+    onPressEnd: (e) => e.continuePropagation(),
+    onPressUp: (e) => e.continuePropagation(),
+  });
   return [isPressed, pressProps];
 }
 
