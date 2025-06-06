@@ -17,7 +17,7 @@ import {
   toVarName,
 } from "@/wab/shared/codegen/util";
 import {
-  makeGlobalVariantGroupContextName,
+  makeGlobalVariantGroupContextProviderName,
   makeGlobalVariantGroupFileName,
 } from "@/wab/shared/codegen/variants";
 import { ensure, ensureArray } from "@/wab/shared/common";
@@ -380,7 +380,7 @@ export function makeGlobalGroupImports(
           ? makeGlobalVariantIdFileName(vg)
           : makeGlobalVariantGroupFileName(vg);
 
-        return `import {${makeGlobalVariantGroupContextName(
+        return `import {${makeGlobalVariantGroupContextProviderName(
           vg
         )}} from "./${stripExtension(groupFileName)}"; // plasmic-import: ${
           vg.uuid
@@ -400,7 +400,7 @@ export function wrapGlobalProvider(
     // We don't need to wrap ScreenVariantProvider anymore
     return content;
   } else {
-    const contextName = makeGlobalVariantGroupContextName(vg);
+    const contextProviderName = makeGlobalVariantGroupContextProviderName(vg);
     const value =
       activeVariants.length === 0
         ? "undefined"
@@ -408,11 +408,11 @@ export function wrapGlobalProvider(
         ? jsLiteral(activeVariants.map((v) => toVarName(v.name)))
         : jsLiteral(toVarName(activeVariants[0].name));
     return `
-      <${contextName}.Provider value={${value}}>
+      <${contextProviderName} value={${value}}>
         ${curlyBrackets ? "{" : ""}
         ${content}
         ${curlyBrackets ? "}" : ""}
-      </${contextName}.Provider>
+      </${contextProviderName}>
     `;
   }
 }
@@ -427,13 +427,13 @@ export function wrapGlobalProviderWithCustomValue(
     // We don't need to wrap ScreenVariantProvider anymore
     return content;
   } else {
-    const contextName = makeGlobalVariantGroupContextName(vg);
+    const contextProviderName = makeGlobalVariantGroupContextProviderName(vg);
     return `
-      <${contextName}.Provider value={${value}}>
+      <${contextProviderName} value={${value}}>
         ${curlyBrackets ? "{" : ""}
         ${content}
         ${curlyBrackets ? "}" : ""}
-      </${contextName}.Provider>
+      </${contextProviderName}>
     `;
   }
 }

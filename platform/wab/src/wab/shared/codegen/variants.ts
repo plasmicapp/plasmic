@@ -69,8 +69,10 @@ function serializeGlobalVariantGroup(
   vg: VariantGroup,
   opts: Partial<ExportOpts>
 ) {
-  const valueType = makeGlobalVariantGroupValueTypeName(vg);
+  const valueTypeName = makeGlobalVariantGroupValueTypeName(vg);
   const contextName = makeGlobalVariantGroupContextName(vg);
+  const contextProviderName = makeGlobalVariantGroupContextProviderName(vg);
+  const contextType = makeGlobalVariantGroupContextType(vg);
 
   let serializedHook = `
 export function ${makeGlobalVariantGroupUseName(vg)}() {
@@ -118,22 +120,36 @@ export function ${makeGlobalVariantGroupUseName(vg)}() {
     import * as React from "react";
     import { createUseScreenVariants } from "${getReactWebPackageName(opts)}";
 
-    export type ${valueType} = ${serializeVariantGroupMembersType(vg)};
-    export const ${contextName} = React.createContext<${
-    vg.multi ? `${valueType}[]` : valueType
-  } | undefined>("${DEFAULT_CONTEXT_VALUE}" as any);
+    export type ${valueTypeName} = ${serializeVariantGroupMembersType(vg)};
+    export const ${contextName} = React.createContext<${contextType}>("${DEFAULT_CONTEXT_VALUE}" as any);
+    export function ${contextProviderName}(props: React.PropsWithChildren<{value: ${contextType}}>) {
+      return (
+        <${contextName}.Provider value={props.value}>
+          {props.children}
+        </${contextName}.Provider>
+      );
+    }
     ${serializedHook}
     export default ${contextName};
     /* prettier-ignore-end */
   `;
 }
 
-export function makeGlobalVariantGroupValueTypeName(vg: VariantGroup) {
+function makeGlobalVariantGroupValueTypeName(vg: VariantGroup) {
   return `${toClassName(vg.param.variable.name)}Value`;
 }
 
-export function makeGlobalVariantGroupContextName(vg: VariantGroup) {
+function makeGlobalVariantGroupContextType(vg: VariantGroup) {
+  const valueType = makeGlobalVariantGroupValueTypeName(vg);
+  return `${vg.multi ? `${valueType}[]` : valueType} | undefined`;
+}
+
+function makeGlobalVariantGroupContextName(vg: VariantGroup) {
   return `${toClassName(vg.param.variable.name)}Context`;
+}
+
+export function makeGlobalVariantGroupContextProviderName(vg: VariantGroup) {
+  return `${makeGlobalVariantGroupContextName(vg)}Provider`;
 }
 
 export function makeGlobalVariantGroupUseName(vg: VariantGroup) {
