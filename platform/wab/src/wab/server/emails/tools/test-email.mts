@@ -158,43 +158,48 @@ const TEMPLATE_PROPS = {
   ],
 }; // The props to pass to the Plasmic component
 
-const html = await generateEmailHtml(TEMPLATE_NAME, TEMPLATE_PROPS);
+// On définit la fonction principale async pour pouvoir utiliser await
+async function main() {
+  // --- DEBUT DU CODE ENVELOPPÉ ---
+  const html = await generateEmailHtml(TEMPLATE_NAME, TEMPLATE_PROPS);
 
-const args = await yargs(hideBin(process.argv)).option("email", {
-  type: "string",
-  description: "Email address to send the email to",
-}).argv;
+  const args = await yargs(hideBin(process.argv)).option("email", {
+    type: "string",
+    description: "Email address to send the email to",
+  }).argv;
 
-const outputPath = `out/${TEMPLATE_NAME}.html`;
-await writeHtmlToFile(html, outputPath);
-console.log(`HTML saved to ${outputPath}. Open in the browser to preview!`);
+  const outputPath = `out/${TEMPLATE_NAME}.html`;
+  await writeHtmlToFile(html, outputPath);
+  console.log(`HTML saved to ${outputPath}. Open in the browser to preview!`);
 
-if (args.email) {
-  const transporter = nodemailer.createTransport({
-    host: process.env.EMAIL_SMTP_HOST,
-    port: parseInt(process.env.EMAIL_SMTP_PORT || '587', 10),
-    secure: process.env.EMAIL_SMTP_USE_TLS === 'true',
-    auth: {
-      user: process.env.EMAIL_SMTP_USER,
-      pass: process.env.EMAIL_SMTP_PASSWORD,
-    },
-  });
+  if (args.email) {
+    const transporter = nodemailer.createTransport({
+      host: process.env.EMAIL_SMTP_HOST,
+      port: parseInt(process.env.EMAIL_SMTP_PORT || "587", 10),
+      secure: process.env.EMAIL_SMTP_USE_TLS === "true",
+      auth: {
+        user: process.env.EMAIL_SMTP_USER,
+        pass: process.env.EMAIL_SMTP_PASSWORD,
+      },
+    });
 
-  transporter.sendMail(
-    {
-      from: "test@plasmic.app",
-      to: [args.email],
-      subject: "Test email",
-      html,
-    },
-    (err, info) => {
-      if (err) {
-        console.error(err);
-        return;
+    transporter.sendMail(
+      {
+        from: "test@plasmic.app",
+        to: [args.email],
+        subject: "Test email",
+        html,
+      },
+      (err, info) => {
+        if (err) {
+          console.error(err);
+          return;
+        }
+        console.log(`Email sent to ${args.email}. Email ID: ${info.messageId}`);
       }
-      console.log(`Email sent to ${args.email}. Email ID: ${info.messageId}`);
-    }
-  );
+    );
+  }
+  // --- FIN DU CODE ENVELOPPÉ ---
 }
 
 /**
@@ -223,3 +228,9 @@ export async function writeHtmlToFile(
     });
   });
 }
+
+// On exécute la fonction main et on gère les erreurs
+main().catch((err) => {
+  console.error(err);
+  process.exit(1);
+});
