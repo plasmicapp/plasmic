@@ -1,6 +1,7 @@
 {
   "name": "wab",
   "version": "0.0.1",
+  "type": "module",
   "description": "Plasmic main codebase",
   "private": true,
   "engines": {
@@ -21,6 +22,7 @@
     "host-server": "bash tools/host-server.bash",
     "socket-server": "npm run run-ts -- src/wab/server/app-socket-backend-real.ts",
     "build": "rsbuild build",
+    "build:backend": "NODE_OPTIONS='--max-old-space-size=16384' tsc -p tsconfig.tools.json",
     "cypress:open": "cypress open",
     "migrate-dev-bundles": "npm run run-ts -- src/wab/server/scripts/dev-bundle-migrator.ts",
     "db:eval-corpus": "npm run run-ts -- src/wab/server/copilot/internal/sandbox/corpus-eval.ts",
@@ -49,6 +51,7 @@
     "gen:plasmic-tokens-sass": "npm run run-ts -- tools/gen-theo.ts src/wab/styles/plasmic-tokens.theo.json src/wab/styles/_tokens.sass",
     "gen:plasmic-tokens-ts": "npm run run-ts -- tools/gen-theo.ts src/wab/styles/plasmic-tokens.theo.json src/wab/styles/_tokens.ts",
     "start-backend": "pm2 start ./node_modules/.bin/ts-node -i 1 --wait-ready --listen-timeout 19999 --kill-timeout 7999 -- -T -P tsconfig.tools.json src/wab/server/main.ts",
+    "start-backend:prod": "pm2 start dist/src/wab/server/main.js --name plasmic-wab -i 1 --wait-ready --listen-timeout 19999 --kill-timeout 7999",
     "perftool": "npm run run-ts -- tools/perf.ts",
     "build-css": "sass src/wab/styles/canvas/:dev-build/static/styles/canvas/",
     "watch-css": "npm run build-css && sass src/wab/styles/canvas/:dev-build/static/styles/canvas/ -w",

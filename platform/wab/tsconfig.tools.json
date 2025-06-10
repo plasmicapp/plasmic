@@ -1,9 +1,9 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "module": "commonjs",
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "target": "es2022",
     "jsx": "react"
-    //    "target": "es6",
-    //    "lib": ["es7", "es2017.sharedmemory"]
   }
 }
