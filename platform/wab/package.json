@@ -51,7 +51,7 @@
     "gen:plasmic-tokens-sass": "npm run run-ts -- tools/gen-theo.ts src/wab/styles/plasmic-tokens.theo.json src/wab/styles/_tokens.sass",
     "gen:plasmic-tokens-ts": "npm run run-ts -- tools/gen-theo.ts src/wab/styles/plasmic-tokens.theo.json src/wab/styles/_tokens.ts",
     "start-backend": "pm2 start ./node_modules/.bin/ts-node -i 1 --wait-ready --listen-timeout 19999 --kill-timeout 7999 -- -T -P tsconfig.tools.json src/wab/server/main.ts",
-    "start-backend:prod": "pm2 start dist/wab/server/main.js --name plasmic-wab -i 1 --wait-ready --listen-timeout 19999 --kill-timeout 7999 --node-args='-r tsconfig-paths/register'",
+    "start-backend:prod": "pm2-runtime start dist/wab/server/main.js --name plasmic-wab --node-args='-r tsconfig-paths/register'",
     "perftool": "npm run run-ts -- tools/perf.ts",
     "build-css": "sass src/wab/styles/canvas/:dev-build/static/styles/canvas/",
     "watch-css": "npm run build-css && sass src/wab/styles/canvas/:dev-build/static/styles/canvas/ -w",
