@@ -138,6 +138,7 @@ import {
   FrameViewMode,
   IArenaFrame,
   cloneArenaFrame,
+  doesFrameVariantMatch,
   ensureActivatedScreenVariantsForArena,
   ensureActivatedScreenVariantsForFrameByWidth,
   getArenaFrames,
@@ -207,7 +208,6 @@ import {
   maybe,
   mkShortId,
   removeWhere,
-  setEquals,
   spawn,
   spawnWrapper,
   swallow,
@@ -322,7 +322,6 @@ import {
   isKnownArenaFrame,
   isKnownComponentArena,
   isKnownProjectDependency,
-  isKnownVariant,
   isKnownVariantSetting,
 } from "@/wab/shared/model/classes";
 import { modelSchemaHash } from "@/wab/shared/model/classes-metas";
@@ -2422,7 +2421,7 @@ export class StudioCtx extends WithDbCtx {
   ) {
     // If the current focused ViewCtx is already on the target component and no variant switching is needed
     const currentViewCtx = this.focusedViewCtx();
-    if (currentViewCtx?.component === component && !variants?.length) {
+    if (currentViewCtx?.component === component && !variants) {
       currentViewCtx.setStudioFocusByTpl(tpl);
       return;
     }
@@ -2441,7 +2440,7 @@ export class StudioCtx extends WithDbCtx {
             (frame) => frame.container.component === component
           );
           const frame = variants?.length
-            ? this.getArenaFrameForSetOfVariants(arena, variants)
+            ? this.getArenaFrameForSetOfVariants(arena, variants)?.frame
             : baseFrame;
           return frame ? { arena, frame } : undefined;
         })
@@ -2481,10 +2480,15 @@ export class StudioCtx extends WithDbCtx {
         "Current arena should be a page or component arena"
       );
       const baseFrame = getComponentArenaBaseFrame(arena);
-
-      const frame = variants?.length
-        ? this.getArenaFrameForSetOfVariants(arena, variants) ?? baseFrame
-        : baseFrame;
+      const hasVariants = !!variants?.length;
+      const arenaDetails = hasVariants
+        ? this.getArenaFrameForSetOfVariants(arena, variants) ??
+          this.getComponentFrameForSetOfVariantsInCustomArenas(
+            arena.component,
+            variants
+          )
+        : null;
+      const frame = arenaDetails?.frame ?? baseFrame;
 
       let viewCtx: ViewCtx | undefined = undefined;
       if (this.focusedMode) {
@@ -2503,6 +2507,17 @@ export class StudioCtx extends WithDbCtx {
         viewCtx = this.focusedOrFirstViewCtx();
       }
 
+      // switch to custom arena, as awaitViewCtxForFrame cannot create viewCtx for non visible custom arena
+      if (
+        arenaDetails &&
+        arenaDetails?.arena !== arena &&
+        isMixedArena(arenaDetails?.arena)
+      ) {
+        await this.change(({ success }) => {
+          this.switchToArena(arenaDetails?.arena);
+          return success();
+        });
+      }
       viewCtx = viewCtx ?? (await this.awaitViewCtxForFrame(frame));
       if (viewCtx) {
         viewCtx.setStudioFocusByTpl(tpl);
@@ -2510,7 +2525,10 @@ export class StudioCtx extends WithDbCtx {
     }
   }
 
-  getArenaFrameForSetOfVariants(arena: AnyArena, variants: VariantCombo) {
+  getArenaFrameForSetOfVariants(
+    arena: AnyArena,
+    variants: VariantCombo
+  ): { arena: AnyArena; frame: ArenaFrame } | undefined {
     const frames = getArenaFrames(arena);
     const components = new Set<Component>();
     if (isMixedArena(arena)) {
@@ -2531,19 +2549,49 @@ export class StudioCtx extends WithDbCtx {
       );
 
       for (const frame of frames) {
-        const frameVariants = [
-          ...Object.keys(frame.pinnedVariants).map(
-            (uuid) => allComponentVariantsMap[uuid]
-          ),
-          ...Object.keys(frame.pinnedGlobalVariants).map(
-            (uuid) => allGlobalVariantsMap[uuid]
-          ),
-          ...frame.targetVariants,
-          ...frame.targetGlobalVariants,
-        ].filter((v) => isKnownVariant(v));
+        if (
+          doesFrameVariantMatch(
+            frame,
+            variants,
+            allComponentVariantsMap,
+            allGlobalVariantsMap
+          )
+        ) {
+          return { arena, frame };
+        }
+      }
+    }
 
-        if (setEquals(new Set(variants), new Set(frameVariants))) {
-          return frame;
+    return undefined;
+  }
+
+  getComponentFrameForSetOfVariantsInCustomArenas(
+    component: Component,
+    variants: VariantCombo
+  ): { arena: AnyArena; frame: ArenaFrame } | undefined {
+    const allComponentVariantsMap = keyBy(
+      allComponentVariants(component),
+      (v) => v.uuid
+    );
+    const allGlobalVariantsMap = keyBy(
+      allGlobalVariants(this.site, { includeDeps: "direct" }),
+      (v) => v.uuid
+    );
+    const customArenas = this.getSortedMixedArenas();
+    for (const customArena of customArenas) {
+      const customArenaFrames = getArenaFrames(customArena);
+      for (const customArenaFrame of customArenaFrames) {
+        if (customArenaFrame.container.component === component) {
+          if (
+            doesFrameVariantMatch(
+              customArenaFrame,
+              variants,
+              allComponentVariantsMap,
+              allGlobalVariantsMap
+            )
+          ) {
+            return { arena: customArena, frame: customArenaFrame };
+          }
         }
       }
     }

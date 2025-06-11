@@ -6,6 +6,7 @@ import {
   last,
   mkShortId,
   pairwise,
+  setEquals,
   switchType,
   withoutNils,
 } from "@/wab/shared/common";
@@ -83,6 +84,7 @@ import {
   getPartitionedScreenVariants,
   getPartitionedScreenVariantsByTargetVariant,
   isScreenVariant,
+  VariantCombo,
 } from "@/wab/shared/Variants";
 import { has, isArray, isEmpty, keyBy, orderBy } from "lodash";
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
@@ -987,4 +989,19 @@ export function getGridRowLabels(arena: AnyArena | null | undefined): string[] {
 
 export function hasScreenVariantArenaFrame(frame: ArenaFrame) {
   return frame.targetGlobalVariants.some((v) => isScreenVariant(v));
+}
+
+export function doesFrameVariantMatch(
+  frame: ArenaFrame,
+  variants: VariantCombo,
+  componentVariants: Record<string, Variant | undefined>,
+  globalVariants: Record<string, Variant | undefined>
+): boolean {
+  const frameVariants = [
+    ...Object.keys(frame.pinnedVariants).map((uuid) => componentVariants[uuid]),
+    ...Object.keys(frame.pinnedGlobalVariants).map(
+      (uuid) => globalVariants[uuid]
+    ),
+  ].filter(isKnownVariant);
+  return setEquals(new Set(variants), new Set(frameVariants));
 }

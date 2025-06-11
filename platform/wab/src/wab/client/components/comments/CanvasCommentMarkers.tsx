@@ -10,7 +10,7 @@ import {
 import { Avatar } from "@/wab/client/components/studio/Avatar";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import {
-  getSetOfVariantsForViewCtx,
+  getSetOfPinnedVariantsForViewCtx,
   ViewCtx,
 } from "@/wab/client/studio-ctx/view-ctx";
 import { AnyArena } from "@/wab/shared/Arenas";
@@ -141,7 +141,10 @@ export const CanvasAddCommentMarker = observer(
       return null;
     }
 
-    const variants = getSetOfVariantsForViewCtx(viewCtx, viewCtx.bundler());
+    const variants = getSetOfPinnedVariantsForViewCtx(
+      viewCtx,
+      viewCtx.bundler()
+    );
 
     const offsetRight =
       (commentStats.get(getSubjectVariantsKey(tpl, variants))?.commentCount ||

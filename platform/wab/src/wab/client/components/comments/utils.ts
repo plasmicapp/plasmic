@@ -1,6 +1,7 @@
 import { CommentsCtx } from "@/wab/client/studio-ctx/comments-ctx";
+import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import {
-  getSetOfVariantsForViewCtx,
+  getSetOfPinnedVariantsForViewCtx,
   ViewCtx,
 } from "@/wab/client/studio-ctx/view-ctx";
 import { ApiCommentThread } from "@/wab/shared/ApiSchema";
@@ -14,6 +15,7 @@ import {
   tryGetTplOwnerComponent,
 } from "@/wab/shared/core/tpls";
 import {
+  ArenaFrame,
   Component,
   isKnownVariant,
   ObjInst,
@@ -124,12 +126,16 @@ export function getCommentThreadsWithModelMetadata(
     .map((thread) => getCommentThreadWithModelMetadata(bundler, thread));
 }
 
-export function partitionThreadsForComponents(
+export function partitionThreadsForFrames(
   threads: TplCommentThreads,
-  components: Component[]
+  arenaFrames: ArenaFrame[],
+  studioCtx: StudioCtx
 ) {
   const [current, other] = partition([...threads], (thread) =>
-    components.includes(thread.ownerComponent)
+    arenaFrames.find((arenaFrame) => {
+      const vc = studioCtx.tryGetViewCtxForFrame(arenaFrame);
+      return vc && isCommentForFrame(vc, thread);
+    })
   );
 
   return {
@@ -267,7 +273,7 @@ export function isCommentForFrame(
     viewCtx.component === ownerComponent &&
     xSymmetricDifference(
       commentThread.variants,
-      getSetOfVariantsForViewCtx(viewCtx, bundler)
+      getSetOfPinnedVariantsForViewCtx(viewCtx, bundler)
     ).length === 0;
   return isForFrame;
 }

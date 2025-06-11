@@ -48,7 +48,7 @@ import {
   useStudioCtx,
 } from "@/wab/client/studio-ctx/StudioCtx";
 import {
-  getSetOfVariantsForViewCtx,
+  getSetOfPinnedVariantsForViewCtx,
   ViewCtx,
 } from "@/wab/client/studio-ctx/view-ctx";
 import { TutorialEventsType } from "@/wab/client/tours/tutorials/tutorials-events";
@@ -716,7 +716,10 @@ const TplTreeNode = observer(function TplTreeNode(props: {
     };
 
     if (viewCtx.studioCtx.focusedMode) {
-      const variants = getSetOfVariantsForViewCtx(viewCtx, viewCtx.bundler());
+      const variants = getSetOfPinnedVariantsForViewCtx(
+        viewCtx,
+        viewCtx.bundler()
+      );
       const commentStatsByVariant = commentsCtx
         .computedData()
         .commentStatsByVariant.get(getSubjectVariantsKey(tpl, variants));

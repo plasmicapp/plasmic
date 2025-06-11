@@ -5,7 +5,7 @@ import {
 } from "@/wab/client/plasmic/plasmic_kit_comments/PlasmicCommentPostFormDialog";
 import { OpenedNewThread } from "@/wab/client/studio-ctx/comments-ctx";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { getSetOfVariantsForViewCtx } from "@/wab/client/studio-ctx/view-ctx";
+import { getSetOfPinnedVariantsForViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { OnClickAway } from "@/wab/commons/components/OnClickAway";
 import { ensure } from "@/wab/shared/common";
 import { summarizeTpl } from "@/wab/shared/core/tpls";
@@ -73,7 +73,7 @@ export const CommentPostFormDialog = observer(function CommentPostFormDialog({
                     subject: commentsCtx
                       .bundler()
                       .addrOf(ensure(openedNewThread.tpl, "")),
-                    variants: getSetOfVariantsForViewCtx(
+                    variants: getSetOfPinnedVariantsForViewCtx(
                       ensure(openedNewThread.viewCtx, ""),
                       commentsCtx.bundler()
                     ).map((pv) => commentsCtx.bundler().addrOf(pv)),

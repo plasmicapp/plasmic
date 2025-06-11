@@ -2,14 +2,18 @@ import RootComment from "@/wab/client/components/comments/RootComment";
 import {
   CommentFilter,
   FilterValueToLabel,
-  partitionThreadsForComponents,
+  partitionThreadsForFrames,
 } from "@/wab/client/components/comments/utils";
 import {
   DefaultCommentsTabProps,
   PlasmicCommentsTab,
 } from "@/wab/client/plasmic/plasmic_kit_comments/PlasmicCommentsTab";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { isDedicatedArena } from "@/wab/shared/Arenas";
+import {
+  AnyArena,
+  getArenaFrames,
+  isDedicatedArena,
+} from "@/wab/shared/Arenas";
 import { Dropdown, Menu } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
@@ -23,6 +27,23 @@ export const notifyAboutKeyToLabel = {
 
 export type CommentsTabProps = DefaultCommentsTabProps;
 
+function getArenaDetails(currentArena: AnyArena) {
+  const isDedicatedCurrentArena = isDedicatedArena(currentArena);
+  if (isDedicatedCurrentArena) {
+    return {
+      name: currentArena.component.name,
+      type: currentArena.component.type,
+      currentFrames: getArenaFrames(currentArena),
+    };
+  } else {
+    return {
+      name: currentArena.name,
+      type: "Arena",
+      currentFrames: currentArena.children,
+    };
+  }
+}
+
 export const CommentsTab = observer(function CommentsTab(
   props: CommentsTabProps
 ) {
@@ -33,33 +54,16 @@ export const CommentsTab = observer(function CommentsTab(
     return null;
   }
 
-  const isDedicatedCurrentArena = isDedicatedArena(currentArena);
-
   const commentsCtx = studioCtx.commentsCtx;
 
   const threads = commentsCtx.filteredThreads();
 
-  const { currentComponents, name, type } = React.useMemo(() => {
-    if (isDedicatedCurrentArena) {
-      return {
-        name: currentArena.component.name,
-        type: currentArena.component.type,
-        currentComponents: [currentArena.component],
-      };
-    } else {
-      return {
-        name: currentArena.name,
-        type: "Arena",
-        currentComponents: currentArena.children.map(
-          (child) => child.container.component
-        ),
-      };
-    }
-  }, [currentArena]);
+  const { currentFrames, name, type } = getArenaDetails(currentArena);
 
-  const { current, other } = partitionThreadsForComponents(
+  const { current, other } = partitionThreadsForFrames(
     threads,
-    currentComponents
+    currentFrames,
+    studioCtx
   );
 
   const projectId = studioCtx.siteInfo.id;

@@ -2647,7 +2647,7 @@ export function ensureVariantRs(
   return vs.rs;
 }
 
-export function getSetOfVariantsForViewCtx(
+export function getSetOfPinnedVariantsForViewCtx(
   viewCtx: ViewCtx,
   bundler: FastBundler
 ) {
@@ -2655,8 +2655,6 @@ export function getSetOfVariantsForViewCtx(
     [
       ...viewCtx.currentComponentStackFrame().getPinnedVariants().keys(),
       ...viewCtx.globalFrame.getPinnedVariants().keys(),
-      ...viewCtx.currentComponentStackFrame().getTargetVariants(),
-      ...viewCtx.globalFrame.getTargetVariants(),
     ],
     (v) => bundler.addrOf(v)?.iid
   );
