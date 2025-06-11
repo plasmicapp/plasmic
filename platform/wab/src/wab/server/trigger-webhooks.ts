@@ -11,7 +11,8 @@ import {
 } from "@/wab/shared/site-diffs";
 import axios, { AddressFamily, Method } from "axios";
 import dns from "dns";
-import isPrivateIp from "private-ip";
+// Ligne supprimée : import isPrivateIp from "private-ip";
+
 export async function triggerWebhook(
   mgr: DbMgr,
   projectId: string,
@@ -38,6 +39,10 @@ export async function triggerWebhookOnly(
   // Prevent reaching internal IPs.
   const hostname = new URL(url).hostname;
   const ip = await dns.promises.lookup(hostname);
+  
+  // Ligne ajoutée : On fait l'importation dynamiquement ici
+  const isPrivateIp = (await import('private-ip')).default;
+  
   const isPrivate = isPrivateIp(ip.address);
 
   let response: { status: number; data: string };
