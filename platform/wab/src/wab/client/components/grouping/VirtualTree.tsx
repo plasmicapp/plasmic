@@ -13,11 +13,13 @@ export interface RenderElementProps<T> {
     isOpen: boolean;
     toggleExpand: () => void;
   };
+  isSelected?: boolean;
 }
 
-export interface VirtualTreeRef {
+export interface VirtualTreeRef<T = unknown> {
   expandAll: () => void;
   collapseAll: () => void;
+  getVisibleNodes: () => LinearTreeNode<T>[];
 }
 
 type Key = string;
@@ -38,6 +40,7 @@ interface TreeRowData<T> {
     matcher: Matcher;
     nodes: LinearTreeNode<T>[];
     renderElement: RenderElement<T>;
+    selectedIndex?: number;
     toggleExpand: (key: Key) => void;
   };
 }
@@ -51,11 +54,12 @@ interface VirtualTreeProps<T> {
   getNodeHeight: (node: T) => number;
   renderElement: RenderElement<T>;
   defaultOpenKeys?: "all" | Key[];
+  selectedIndex?: number;
 }
 
 export const VirtualTree = React.forwardRef(function <T>(
   props: VirtualTreeProps<T>,
-  ref: React.ForwardedRef<VirtualTreeRef>
+  ref: React.ForwardedRef<VirtualTreeRef<T>>
 ) {
   const {
     rootNodes,
@@ -66,6 +70,7 @@ export const VirtualTree = React.forwardRef(function <T>(
     getNodeHeight,
     renderElement,
     defaultOpenKeys,
+    selectedIndex,
   } = props;
 
   const listRef = React.useRef<VariableSizeList>(null);
@@ -79,7 +84,8 @@ export const VirtualTree = React.forwardRef(function <T>(
       getNodeChildren,
       getNodeSearchText,
       getNodeHeight,
-      defaultOpenKeys
+      defaultOpenKeys,
+      selectedIndex
     );
 
   React.useImperativeHandle(
@@ -87,8 +93,9 @@ export const VirtualTree = React.forwardRef(function <T>(
     () => ({
       expandAll,
       collapseAll,
+      getVisibleNodes: () => nodeData.treeData.nodes,
     }),
-    [expandAll, collapseAll]
+    [expandAll, collapseAll, nodeData]
   );
 
   const getItemSize = React.useMemo(() => {
@@ -125,7 +132,7 @@ export const VirtualTree = React.forwardRef(function <T>(
     </ListSpace>
   );
 }) as <T>(
-  props: VirtualTreeProps<T> & React.RefAttributes<VirtualTreeRef>
+  props: VirtualTreeProps<T> & React.RefAttributes<VirtualTreeRef<T>>
 ) => React.JSX.Element;
 
 const genericMemo: <T>(
@@ -147,6 +154,7 @@ const Row = genericMemo(
     data: TreeRowData<T>;
   }) => {
     const node = data.treeData.nodes[index];
+    const isSelected = data.treeData.selectedIndex === index;
     return (
       <TreeNodeRow
         key={node.key}
@@ -158,6 +166,7 @@ const Row = genericMemo(
         canOpen={node.canOpen}
         isOpen={node.isOpen}
         matcher={data.treeData.matcher}
+        isSelected={isSelected}
         toggleExpand={data.treeData.toggleExpand}
         renderElement={data.treeData.renderElement}
       />
@@ -175,6 +184,7 @@ interface TreeNodeRowProps<T> {
   isOpen: boolean;
   canOpen: boolean;
   matcher: Matcher;
+  isSelected?: boolean;
   toggleExpand: (key: Key) => void;
   renderElement: RenderElement<T>;
 }
@@ -190,6 +200,7 @@ const TreeNodeRow = <T,>(props: TreeNodeRowProps<T>) => {
     matcher,
     toggleExpand,
     renderElement,
+    isSelected,
   } = props;
   const onClickHandle = React.useMemo(() => {
     return () => toggleExpand(nodeKey);
@@ -213,6 +224,7 @@ const TreeNodeRow = <T,>(props: TreeNodeRowProps<T>) => {
       {renderElement({
         value,
         treeState,
+        isSelected,
       })}
     </li>
   );
@@ -226,7 +238,8 @@ function useTreeData<T>(
   getNodeChildren: (node: T) => T[],
   getNodeSearchText: (node: T) => string,
   getNodeHeight: (node: T) => number,
-  defaultOpenKeys?: "all" | Key[]
+  defaultOpenKeys?: "all" | Key[],
+  selectedIndex?: number
 ) {
   const matcher = React.useMemo(() => {
     return new Matcher(query?.trim() ?? "");
@@ -296,6 +309,7 @@ function useTreeData<T>(
         matcher,
         renderElement,
         toggleExpand,
+        selectedIndex,
       },
     }),
     [visibleNodes, matcher, toggleExpand]

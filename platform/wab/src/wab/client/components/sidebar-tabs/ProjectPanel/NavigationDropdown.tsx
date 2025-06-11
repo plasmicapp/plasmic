@@ -1,3 +1,4 @@
+import { COMMANDS } from "@/wab/client/commands/command";
 import {
   RenderElementProps,
   VirtualTree,
@@ -50,7 +51,7 @@ import {
 import { testIds } from "@/wab/client/test-helpers/test-ids";
 import { StandardMarkdown } from "@/wab/client/utils/StandardMarkdown";
 import { valueAsString } from "@/wab/commons/values";
-import { ArenaType } from "@/wab/shared/ApiSchema";
+import { ArenaType, isArenaType } from "@/wab/shared/ApiSchema";
 import { AnyArena, getArenaName } from "@/wab/shared/Arenas";
 import { ARENAS_DESCRIPTION, ARENA_LOWER } from "@/wab/shared/Labels";
 import { tryGetMainContentSlotTarget } from "@/wab/shared/SlotUtils";
@@ -60,6 +61,7 @@ import { getHostLessComponents } from "@/wab/shared/code-components/code-compone
 import { toVarName } from "@/wab/shared/codegen/util";
 import {
   assert,
+  mod,
   swallow,
   switchType,
   unreachable,
@@ -312,13 +314,20 @@ function NavigationDropdown_(
 
   const searchInputRef = studioCtx.projectSearchInputRef;
   const [debouncedQuery, setDebouncedQuery] = React.useState("");
+  const [selectedIndex, setSelectedIndex] = React.useState<number | undefined>(
+    undefined
+  );
+  React.useEffect(() => {
+    const firstIdx = nextSelectionRow(undefined, 1);
+    setSelectedIndex(firstIdx);
+  }, [debouncedQuery]);
   const debouncedSetQuery = React.useCallback(
     debounce((value: string) => {
       setDebouncedQuery(value);
     }, 500),
     [setDebouncedQuery]
   );
-  const treeRef = useRef<VirtualTreeRef>(null);
+  const treeRef = useRef<VirtualTreeRef<ArenaPanelRow>>(null);
   const expandAll = React.useCallback(() => {
     treeRef.current?.expandAll();
   }, [treeRef.current]);
@@ -363,6 +372,27 @@ function NavigationDropdown_(
   const contextValue = React.useMemo((): NavigationDropdownContextValue => {
     return { onClose };
   }, [onClose]);
+
+  const nextSelectionRow = (
+    currentIndex: number | undefined,
+    direction: 1 | -1
+  ): number | undefined => {
+    const visibleRows = treeRef.current?.getVisibleNodes() ?? [];
+
+    // Only arena types are selectable
+    const selectable = visibleRows
+      .map((row, idx) => ({ row, idx }))
+      .filter(({ row }) => isArenaType(row.value?.type));
+
+    if (selectable.length === 0) {
+      return undefined;
+    }
+    const startPos =
+      selectable.findIndex(({ idx }) => idx === currentIndex) ?? 0;
+    const nextPos = mod(startPos + direction, selectable.length);
+
+    return selectable[nextPos].idx;
+  };
 
   const onRequestAdding = (arenaType: ArenaType) => async () => {
     onClose();
@@ -722,12 +752,35 @@ function NavigationDropdown_(
               searchInput: {
                 ref: searchInputRef,
                 autoFocus: true,
-                onKeyUp: (e) => {
+                onKeyUp: async (e) => {
                   if (
                     e.key === "Escape" &&
                     debouncedQuery.trim().length === 0
                   ) {
                     onClose();
+                  } else if (e.key === "ArrowDown") {
+                    setSelectedIndex((i) => nextSelectionRow(i, 1));
+                    e.preventDefault();
+                  } else if (e.key === "ArrowUp") {
+                    setSelectedIndex((i) => nextSelectionRow(i, -1));
+                    e.preventDefault();
+                  } else if (e.key === "Enter") {
+                    if (selectedIndex) {
+                      const visibleRows =
+                        treeRef.current?.getVisibleNodes() ?? [];
+                      const row = visibleRows[selectedIndex];
+
+                      // If the node is an arena, navigate on Enter
+                      if (isArenaType(row.value?.type)) {
+                        e.preventDefault();
+                        onClose();
+                        await COMMANDS.navigation.switchArena.execute(
+                          studioCtx,
+                          { arena: row.value.arena },
+                          {}
+                        );
+                      }
+                    }
                   }
                 },
                 "data-test-id": "nav-dropdown-search-input",
@@ -755,6 +808,7 @@ function NavigationDropdown_(
                   query={debouncedQuery}
                   renderElement={ArenaTreeRow}
                   defaultOpenKeys={"all"}
+                  selectedIndex={selectedIndex}
                 />
               </div>
             </ListStack>
@@ -835,7 +889,7 @@ const buildItems = computedFn(
 );
 
 function ArenaTreeRow(props: RenderElementProps<ArenaPanelRow>) {
-  const { value, treeState } = props;
+  const { value, treeState, isSelected } = props;
   switch (value.type) {
     case "header":
       return (
@@ -867,6 +921,7 @@ function ArenaTreeRow(props: RenderElementProps<ArenaPanelRow>) {
           matcher={treeState.matcher}
           indentMultiplier={treeState.level}
           isStandalone={value.isStandalone}
+          isSelected={isSelected}
         />
       );
     case "any":

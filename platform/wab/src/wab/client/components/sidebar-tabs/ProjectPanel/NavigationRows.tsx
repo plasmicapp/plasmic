@@ -85,6 +85,7 @@ export interface NavigationArenaRowProps {
   matcher: Matcher;
   indentMultiplier: number;
   isStandalone?: boolean;
+  isSelected?: boolean;
 }
 
 export function NavigationArenaRow({
@@ -92,6 +93,7 @@ export function NavigationArenaRow({
   matcher,
   indentMultiplier,
   isStandalone,
+  isSelected,
 }: NavigationArenaRowProps) {
   const [renaming, setRenaming] = React.useState(false);
   const studioCtx = useStudioCtx();
@@ -143,7 +145,7 @@ export function NavigationArenaRow({
         );
       }}
       icon={<Icon icon={getArenaIcon(arena, studioCtx)} />}
-      isSelected={studioCtx.currentArena === arena}
+      isSelected={isSelected ?? studioCtx.currentArena === arena}
       menuSize="small"
       menu={
         <ArenaContextMenu
