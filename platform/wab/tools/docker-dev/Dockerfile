@@ -54,7 +54,6 @@ USER plasmic
 WORKDIR $PLASMIC_HOME
 
 # Copy built app and secrets with correct ownership
-# On copie tout depuis le builder, y compris le dossier /dist nouvellement créé
 COPY --chown=plasmic:plasmic --from=builder /plasmic $PLASMIC_HOME
 COPY --chown=plasmic:plasmic --from=builder /tmp/.plasmic $HOME/.plasmic
 
