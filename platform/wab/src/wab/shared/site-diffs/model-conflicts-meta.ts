@@ -21,6 +21,7 @@ import { meta } from "@/wab/shared/model/classes-metas";
 import { isWeakRefField, Type } from "@/wab/shared/model/model-meta";
 import { NodeCtx } from "@/wab/shared/model/model-tree-util";
 import {
+  mergeComponentUpdatedAt,
   mergeComponentVariants,
   mergeTplNodeChildren,
   mergeVSettings,
@@ -776,6 +777,10 @@ export const modelConflictsMeta: ModelConflictsMeta = {
     },
     alwaysAutoName: "generic",
     trapsFocus: "generic",
+    updatedAt: {
+      conflictType: "special",
+      handler: mergeComponentUpdatedAt,
+    },
   },
   FigmaComponentMapping: {
     figmaComponentName: "generic",

@@ -528,7 +528,8 @@
             "figmaMappings": [],
             "alwaysAutoName": false,
             "trapsFocus": false,
-            "__type": "Component"
+            "__type": "Component",
+            "updatedAt": null
           },
           "TO5_tsJ2rxq7": {
             "uuid": "XNcPoW5tB7Uk",
@@ -559,7 +560,8 @@
             "figmaMappings": [],
             "alwaysAutoName": true,
             "trapsFocus": false,
-            "__type": "Component"
+            "__type": "Component",
+            "updatedAt": null
           },
           "IGtKvsQdnWeM": {
             "type": { "__ref": "3oKp5S94WjHQ" },
@@ -989,7 +991,8 @@
             "figmaMappings": [],
             "alwaysAutoName": false,
             "trapsFocus": false,
-            "__type": "Component"
+            "__type": "Component",
+            "updatedAt": null
           },
           "1kRWeS0cq1ZP": {
             "component": { "__ref": "8yK7aI7AMEgx" },
@@ -1323,7 +1326,8 @@
             "figmaMappings": [],
             "alwaysAutoName": false,
             "trapsFocus": false,
-            "__type": "Component"
+            "__type": "Component",
+            "updatedAt": null
           },
           "tzzp3JKJ2vki": {
             "component": { "__ref": "8YRyvzzFFKxR" },
@@ -1532,7 +1536,8 @@
             "figmaMappings": [],
             "alwaysAutoName": false,
             "trapsFocus": false,
-            "__type": "Component"
+            "__type": "Component",
+            "updatedAt": null
           },
           "tIsSKbgI4WLQ": {
             "component": { "__ref": "GT3W9zV1CrDq" },
@@ -2131,7 +2136,7 @@
           }
         },
         "deps": [],
-        "version": "245-code-component-meta-add-refActions"
+        "version": "246-add-component-updated-at"
       },
       "projectId": "draijZF6gtxjcZgKwMFy9R",
       "version": "1.0.0",
@@ -2691,7 +2696,8 @@
             "figmaMappings": [],
             "alwaysAutoName": false,
             "trapsFocus": false,
-            "__type": "Component"
+            "__type": "Component",
+            "updatedAt": null
           },
           "TO5_tsJ2rxq7": {
             "uuid": "XNcPoW5tB7Uk",
@@ -2722,7 +2728,8 @@
             "figmaMappings": [],
             "alwaysAutoName": true,
             "trapsFocus": false,
-            "__type": "Component"
+            "__type": "Component",
+            "updatedAt": null
           },
           "IGtKvsQdnWeM": {
             "type": { "__ref": "3oKp5S94WjHQ" },
@@ -3152,7 +3159,8 @@
             "figmaMappings": [],
             "alwaysAutoName": false,
             "trapsFocus": false,
-            "__type": "Component"
+            "__type": "Component",
+            "updatedAt": null
           },
           "1kRWeS0cq1ZP": {
             "component": { "__ref": "8yK7aI7AMEgx" },
@@ -3486,7 +3494,8 @@
             "figmaMappings": [],
             "alwaysAutoName": false,
             "trapsFocus": false,
-            "__type": "Component"
+            "__type": "Component",
+            "updatedAt": null
           },
           "tzzp3JKJ2vki": {
             "component": { "__ref": "8YRyvzzFFKxR" },
@@ -3695,7 +3704,8 @@
             "figmaMappings": [],
             "alwaysAutoName": false,
             "trapsFocus": false,
-            "__type": "Component"
+            "__type": "Component",
+            "updatedAt": null
           },
           "tIsSKbgI4WLQ": {
             "component": { "__ref": "GT3W9zV1CrDq" },
@@ -4285,7 +4295,7 @@
           }
         },
         "deps": [],
-        "version": "245-code-component-meta-add-refActions"
+        "version": "246-add-component-updated-at"
       }
     },
     {
@@ -4815,7 +4825,8 @@
             "figmaMappings": [],
             "alwaysAutoName": false,
             "trapsFocus": false,
-            "__type": "Component"
+            "__type": "Component",
+            "updatedAt": null
           },
           "TO5_tsJ2rxq7": {
             "uuid": "XNcPoW5tB7Uk",
@@ -4846,7 +4857,8 @@
             "figmaMappings": [],
             "alwaysAutoName": true,
             "trapsFocus": false,
-            "__type": "Component"
+            "__type": "Component",
+            "updatedAt": null
           },
           "IGtKvsQdnWeM": {
             "type": { "__ref": "3oKp5S94WjHQ" },
@@ -5276,7 +5288,8 @@
             "figmaMappings": [],
             "alwaysAutoName": false,
             "trapsFocus": false,
-            "__type": "Component"
+            "__type": "Component",
+            "updatedAt": null
           },
           "1kRWeS0cq1ZP": {
             "component": { "__ref": "8yK7aI7AMEgx" },
@@ -5610,7 +5623,8 @@
             "figmaMappings": [],
             "alwaysAutoName": false,
             "trapsFocus": false,
-            "__type": "Component"
+            "__type": "Component",
+            "updatedAt": null
           },
           "tzzp3JKJ2vki": {
             "component": { "__ref": "8YRyvzzFFKxR" },
@@ -5819,7 +5833,8 @@
             "figmaMappings": [],
             "alwaysAutoName": false,
             "trapsFocus": false,
-            "__type": "Component"
+            "__type": "Component",
+            "updatedAt": null
           },
           "tIsSKbgI4WLQ": {
             "component": { "__ref": "GT3W9zV1CrDq" },
@@ -6409,7 +6424,7 @@
           }
         },
         "deps": [],
-        "version": "245-code-component-meta-add-refActions"
+        "version": "246-add-component-updated-at"
       }
     }
   ]

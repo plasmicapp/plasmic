@@ -126,7 +126,8 @@
           "figmaMappings": [],
           "alwaysAutoName": false,
           "trapsFocus": false,
-          "__type": "Component"
+          "__type": "Component",
+          "updatedAt": null
         },
         "ZEE1qbzSeuSN": {
           "type": { "__ref": "ejSM67D97QE-" },
@@ -1288,7 +1289,7 @@
         }
       },
       "deps": [],
-      "version": "245-code-component-meta-add-refActions"
+      "version": "246-add-component-updated-at"
     }
   ],
   [
@@ -1837,7 +1838,8 @@
           "figmaMappings": [],
           "alwaysAutoName": false,
           "trapsFocus": false,
-          "__type": "Component"
+          "__type": "Component",
+          "updatedAt": null
         },
         "5eA2NrDMnU4V": {
           "uuid": "bbfPDeUbdIxB",
@@ -1868,7 +1870,8 @@
           "figmaMappings": [],
           "alwaysAutoName": true,
           "trapsFocus": false,
-          "__type": "Component"
+          "__type": "Component",
+          "updatedAt": null
         },
         "XEPISKeF1Su5": {
           "type": { "__ref": "mkofqeljrS4N" },
@@ -2300,7 +2303,8 @@
           "figmaMappings": [],
           "alwaysAutoName": false,
           "trapsFocus": false,
-          "__type": "Component"
+          "__type": "Component",
+          "updatedAt": null
         },
         "UTZQfVbb6_JD": {
           "component": { "__ref": "ZOm9KRROsVGC" },
@@ -2553,7 +2557,8 @@
           "figmaMappings": [],
           "alwaysAutoName": false,
           "trapsFocus": true,
-          "__type": "Component"
+          "__type": "Component",
+          "updatedAt": null
         },
         "nF3BO_KVW0Q5": {
           "component": { "__ref": "P8hUdZkGBYov" },
@@ -8684,7 +8689,8 @@
           "figmaMappings": [],
           "alwaysAutoName": false,
           "trapsFocus": true,
-          "__type": "Component"
+          "__type": "Component",
+          "updatedAt": null
         },
         "0zqw-xWELi39": {
           "component": { "__ref": "CUEv0dZhpMRo" },
@@ -13938,7 +13944,7 @@
         }
       },
       "deps": ["1397401c-b15c-47b2-8659-9b44c397e887"],
-      "version": "245-code-component-meta-add-refActions"
+      "version": "246-add-component-updated-at"
     }
   ]
 ]

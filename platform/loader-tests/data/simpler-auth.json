@@ -537,7 +537,8 @@
           "figmaMappings": [],
           "alwaysAutoName": false,
           "trapsFocus": false,
-          "__type": "Component"
+          "__type": "Component",
+          "updatedAt": null
         },
         "2VH-5YdWosjy": {
           "uuid": "Bv3aRg6doUcD",
@@ -568,7 +569,8 @@
           "figmaMappings": [],
           "alwaysAutoName": true,
           "trapsFocus": false,
-          "__type": "Component"
+          "__type": "Component",
+          "updatedAt": null
         },
         "hSSsIgYX9Ez_": {
           "uuid": "fdq84SoGgUkZ",
@@ -593,7 +595,8 @@
           "figmaMappings": [],
           "alwaysAutoName": false,
           "trapsFocus": false,
-          "__type": "Component"
+          "__type": "Component",
+          "updatedAt": null
         },
         "a8rMN9AF25rn": {
           "uuid": "gzzccGfYfnC_",
@@ -618,7 +621,8 @@
           "figmaMappings": [],
           "alwaysAutoName": false,
           "trapsFocus": false,
-          "__type": "Component"
+          "__type": "Component",
+          "updatedAt": null
         },
         "uhJY0og8JLqe": {
           "uuid": "oXQ62Fv4aXXe",
@@ -643,7 +647,8 @@
           "figmaMappings": [],
           "alwaysAutoName": false,
           "trapsFocus": false,
-          "__type": "Component"
+          "__type": "Component",
+          "updatedAt": null
         },
         "zc3muSrtBGCI": {
           "uuid": "HJKweunsdmsG",
@@ -707,7 +712,8 @@
           "figmaMappings": [],
           "alwaysAutoName": false,
           "trapsFocus": true,
-          "__type": "Component"
+          "__type": "Component",
+          "updatedAt": null
         },
         "J7HHtq-clz9l": {
           "uuid": "HL30oCyfwH5U",
@@ -732,7 +738,8 @@
           "figmaMappings": [],
           "alwaysAutoName": false,
           "trapsFocus": false,
-          "__type": "Component"
+          "__type": "Component",
+          "updatedAt": null
         },
         "y3Gi1ZRR3zFC": {
           "uuid": "aorRODuPYl3R",
@@ -757,7 +764,8 @@
           "figmaMappings": [],
           "alwaysAutoName": false,
           "trapsFocus": false,
-          "__type": "Component"
+          "__type": "Component",
+          "updatedAt": null
         },
         "QaKiYYH09Wmz": {
           "component": { "__ref": "hSSsIgYX9Ez_" },
@@ -9409,7 +9417,7 @@
         }
       },
       "deps": [],
-      "version": "245-code-component-meta-add-refActions"
+      "version": "246-add-component-updated-at"
     }
   ]
 ]

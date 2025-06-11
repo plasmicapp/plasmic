@@ -243,3 +243,4 @@ platform/wab/src/wab/server/bundle-migrations/242-remove-duplicate-variants.ts
 platform/wab/src/wab/server/bundle-migrations/243-merge-duplicate-variants.ts
 platform/wab/src/wab/server/bundle-migrations/244-add-custom-function-display-name.ts
 platform/wab/src/wab/server/bundle-migrations/245-code-component-meta-add-refActions.ts
+platform/wab/src/wab/server/bundle-migrations/246-add-component-updated-at.ts

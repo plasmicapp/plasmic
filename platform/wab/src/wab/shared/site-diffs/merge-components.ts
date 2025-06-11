@@ -1990,3 +1990,42 @@ export const tryMergeGlobalContexts: MergeSpecialFieldHandler<Site> = (
   });
   return directConflicts;
 };
+
+export const mergeComponentUpdatedAt: MergeSpecialFieldHandler<Component> = (
+  ancestorCtx,
+  leftCtx,
+  rightCtx,
+  mergedCtx
+) => {
+  // Components special handlers should only be called when all the nodes exist
+  const [ancestor, left, right, merged] = [
+    ancestorCtx,
+    leftCtx,
+    rightCtx,
+    mergedCtx,
+  ].map((ctx) =>
+    ensure(ctx.node, () => `mergeComponentUpdatedAt expects all nodes to exist`)
+  );
+
+  const isLeftUnchanged = left.updatedAt === ancestor.updatedAt;
+  const isRightUnchanged = right.updatedAt === ancestor.updatedAt;
+
+  if (isLeftUnchanged && isRightUnchanged) {
+    assert(
+      merged.updatedAt === ancestor.updatedAt,
+      () => `Merged component should have the same updatedAt as the ancestor`
+    );
+  } else if (isLeftUnchanged) {
+    merged.updatedAt = right.updatedAt;
+  } else if (isRightUnchanged) {
+    merged.updatedAt = left.updatedAt;
+  } else {
+    // If the component was changed in both left and right, we need to set a new updatedAt
+    // it means that there was some parallel work, so even if it's conflict-less, we will
+    // set a new updatedAt to make sure it will be a meaningful value for future merges.
+    merged.updatedAt = Date.now();
+  }
+
+  // No conflicts, it won't be controlled by the user
+  return [];
+};

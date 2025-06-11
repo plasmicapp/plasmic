@@ -410,6 +410,8 @@ Component
   figmaMappings: [FigmaComponentMapping]
   alwaysAutoName: Bool
   trapsFocus: Bool
+  # A timestamp of when the component was last updated
+  updatedAt: Number?
 NameArg
   name: String
   expr: Expr

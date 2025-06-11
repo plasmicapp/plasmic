@@ -79,7 +79,8 @@
       "figmaMappings": [],
       "alwaysAutoName": false,
       "trapsFocus": false,
-      "__type": "Component"
+      "__type": "Component",
+      "updatedAt": null
     },
     "3": {
       "type": { "__ref": "56656001" },
@@ -284,7 +285,8 @@
       "figmaMappings": [],
       "alwaysAutoName": false,
       "trapsFocus": false,
-      "__type": "Component"
+      "__type": "Component",
+      "updatedAt": null
     },
     "35": {
       "type": { "__ref": "56656002" },
@@ -800,7 +802,8 @@
       "figmaMappings": [],
       "alwaysAutoName": false,
       "trapsFocus": false,
-      "__type": "Component"
+      "__type": "Component",
+      "updatedAt": null
     },
     "160": {
       "type": { "__ref": "56656003" },
@@ -2174,7 +2177,8 @@
       "figmaMappings": [],
       "alwaysAutoName": false,
       "trapsFocus": false,
-      "__type": "Component"
+      "__type": "Component",
+      "updatedAt": null
     },
     "479": {
       "type": { "__ref": "56656004" },
@@ -2574,7 +2578,8 @@
       "figmaMappings": [],
       "alwaysAutoName": false,
       "trapsFocus": false,
-      "__type": "Component"
+      "__type": "Component",
+      "updatedAt": null
     },
     "543": {
       "type": { "__ref": "56656005" },
@@ -4919,5 +4924,5 @@
     }
   },
   "deps": [],
-  "version": "245-code-component-meta-add-refActions"
+  "version": "246-add-component-updated-at"
 }

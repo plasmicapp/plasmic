@@ -22,6 +22,7 @@ const paths = [
   "src/wab/shared/codegen/__tests__/bundles/todoapp.json",
   "src/wab/shared/codegen/__tests__/bundles/form-with-reset-input.json",
   "src/wab/shared/codegen/__tests__/bundles/people-list-explicit-states.json",
+  "src/wab/shared/codegen/__tests__/bundles/people-list-implicit-states.json",
   "src/wab/shared/codegen/__tests__/bundles/hidden-components.json",
   "src/wab/shared/codegen/__tests__/bundles/aria-code-components.json",
   "src/wab/shared/codegen/__tests__/bundles/custom-functions-test.json",

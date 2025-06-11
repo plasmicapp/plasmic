@@ -528,6 +528,7 @@
       "figmaMappings": [],
       "alwaysAutoName": false,
       "trapsFocus": false,
+      "updatedAt": null,
       "__type": "Component"
     },
     "wEKiWocCR6xm": {
@@ -559,6 +560,7 @@
       "figmaMappings": [],
       "alwaysAutoName": true,
       "trapsFocus": false,
+      "updatedAt": null,
       "__type": "Component"
     },
     "Sa1eOk_qaeNs": {
@@ -986,6 +988,7 @@
       "figmaMappings": [],
       "alwaysAutoName": false,
       "trapsFocus": false,
+      "updatedAt": null,
       "__type": "Component"
     },
     "JtisrN1NusHg": {
@@ -1067,6 +1070,7 @@
       "figmaMappings": [],
       "alwaysAutoName": false,
       "trapsFocus": false,
+      "updatedAt": null,
       "__type": "Component"
     },
     "mvwHRdv1InhQ": {
@@ -1092,6 +1096,7 @@
       "figmaMappings": [],
       "alwaysAutoName": false,
       "trapsFocus": false,
+      "updatedAt": null,
       "__type": "Component"
     },
     "ODYH7XXUJL_L": {
@@ -1523,6 +1528,7 @@
       "figmaMappings": [],
       "alwaysAutoName": false,
       "trapsFocus": false,
+      "updatedAt": null,
       "__type": "Component"
     },
     "PRONifsSgL21": {
@@ -1896,5 +1902,5 @@
     }
   },
   "deps": [],
-  "version": "245-code-component-meta-add-refActions"
+  "version": "246-add-component-updated-at"
 }

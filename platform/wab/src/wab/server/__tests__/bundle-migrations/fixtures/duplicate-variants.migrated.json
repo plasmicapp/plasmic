@@ -240,6 +240,7 @@
       "figmaMappings": [],
       "alwaysAutoName": false,
       "trapsFocus": false,
+      "updatedAt": null,
       "__type": "Component"
     },
     "l48uZs_rmwCb": {
@@ -440,6 +441,7 @@
       "figmaMappings": [],
       "alwaysAutoName": false,
       "trapsFocus": false,
+      "updatedAt": null,
       "__type": "Component"
     },
     "yQzYxfOjcPav": {
@@ -699,6 +701,7 @@
       "figmaMappings": [],
       "alwaysAutoName": true,
       "trapsFocus": false,
+      "updatedAt": null,
       "__type": "Component"
     },
     "rGMWWtk3goPJ": {
@@ -1354,6 +1357,7 @@
       "figmaMappings": [],
       "alwaysAutoName": false,
       "trapsFocus": false,
+      "updatedAt": null,
       "__type": "Component"
     },
     "6uQPxF2blZbU": {
@@ -1618,6 +1622,7 @@
       "figmaMappings": [],
       "alwaysAutoName": false,
       "trapsFocus": false,
+      "updatedAt": null,
       "__type": "Component"
     },
     "DSSqF3w0uDkw": {
@@ -1967,5 +1972,5 @@
     }
   },
   "deps": [],
-  "version": "245-code-component-meta-add-refActions"
+  "version": "246-add-component-updated-at"
 }

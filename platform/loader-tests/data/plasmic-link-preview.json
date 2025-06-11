@@ -95,7 +95,8 @@
           "figmaMappings": [],
           "alwaysAutoName": false,
           "trapsFocus": false,
-          "__type": "Component"
+          "__type": "Component",
+          "updatedAt": null
         },
         "AH4eAKS-ti91": {
           "type": { "__ref": "uTs6_QB9_j9o" },
@@ -434,7 +435,7 @@
         }
       },
       "deps": [],
-      "version": "245-code-component-meta-add-refActions"
+      "version": "246-add-component-updated-at"
     }
   ],
   [
@@ -971,7 +972,8 @@
           "figmaMappings": [],
           "alwaysAutoName": false,
           "trapsFocus": false,
-          "__type": "Component"
+          "__type": "Component",
+          "updatedAt": null
         },
         "mX2xRV88AfNw": {
           "uuid": "RUhtyXVHBWMJ",
@@ -1002,7 +1004,8 @@
           "figmaMappings": [],
           "alwaysAutoName": true,
           "trapsFocus": false,
-          "__type": "Component"
+          "__type": "Component",
+          "updatedAt": null
         },
         "w8JelNinn9se": {
           "type": { "__ref": "4ghiC-lruuSI" },
@@ -1429,7 +1432,8 @@
           "figmaMappings": [],
           "alwaysAutoName": false,
           "trapsFocus": false,
-          "__type": "Component"
+          "__type": "Component",
+          "updatedAt": null
         },
         "JgBc3Q_Rmdog": {
           "component": { "__ref": "FSC0WCHK0gr8" },
@@ -2120,7 +2124,7 @@
         }
       },
       "deps": ["1f6fbbaf-82a8-43b5-abd3-ead1dee4ab4c"],
-      "version": "245-code-component-meta-add-refActions"
+      "version": "246-add-component-updated-at"
     }
   ]
 ]

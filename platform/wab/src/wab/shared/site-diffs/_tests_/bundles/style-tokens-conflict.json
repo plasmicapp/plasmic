@@ -523,7 +523,8 @@
             "figmaMappings": [],
             "alwaysAutoName": false,
             "trapsFocus": false,
-            "__type": "Component"
+            "__type": "Component",
+            "updatedAt": null
           },
           "F_d9L-fvVYyV": {
             "uuid": "rU-rji0HG7v2",
@@ -554,7 +555,8 @@
             "figmaMappings": [],
             "alwaysAutoName": true,
             "trapsFocus": false,
-            "__type": "Component"
+            "__type": "Component",
+            "updatedAt": null
           },
           "ijxbm0FnPZtU": {
             "type": { "__ref": "JqBHMKZ47aPh" },
@@ -981,7 +983,8 @@
             "figmaMappings": [],
             "alwaysAutoName": false,
             "trapsFocus": false,
-            "__type": "Component"
+            "__type": "Component",
+            "updatedAt": null
           },
           "4VGm2j5r_gNF": {
             "component": { "__ref": "VPQPTgBcDtyW" },
@@ -1176,7 +1179,7 @@
           }
         },
         "deps": [],
-        "version": "245-code-component-meta-add-refActions"
+        "version": "246-add-component-updated-at"
       },
       "projectId": "jktPeioPm3Q1RvAsGWDSCe",
       "version": "3.0.0",
@@ -1745,7 +1748,8 @@
             "figmaMappings": [],
             "alwaysAutoName": false,
             "trapsFocus": false,
-            "__type": "Component"
+            "__type": "Component",
+            "updatedAt": null
           },
           "F_d9L-fvVYyV": {
             "uuid": "rU-rji0HG7v2",
@@ -1776,7 +1780,8 @@
             "figmaMappings": [],
             "alwaysAutoName": true,
             "trapsFocus": false,
-            "__type": "Component"
+            "__type": "Component",
+            "updatedAt": null
           },
           "ijxbm0FnPZtU": {
             "type": { "__ref": "JqBHMKZ47aPh" },
@@ -2203,7 +2208,8 @@
             "figmaMappings": [],
             "alwaysAutoName": false,
             "trapsFocus": false,
-            "__type": "Component"
+            "__type": "Component",
+            "updatedAt": null
           },
           "4VGm2j5r_gNF": {
             "component": { "__ref": "VPQPTgBcDtyW" },
@@ -2389,7 +2395,7 @@
           }
         },
         "deps": [],
-        "version": "245-code-component-meta-add-refActions"
+        "version": "246-add-component-updated-at"
       }
     },
     {
@@ -2914,7 +2920,8 @@
             "figmaMappings": [],
             "alwaysAutoName": false,
             "trapsFocus": false,
-            "__type": "Component"
+            "__type": "Component",
+            "updatedAt": null
           },
           "F_d9L-fvVYyV": {
             "uuid": "rU-rji0HG7v2",
@@ -2945,7 +2952,8 @@
             "figmaMappings": [],
             "alwaysAutoName": true,
             "trapsFocus": false,
-            "__type": "Component"
+            "__type": "Component",
+            "updatedAt": null
           },
           "ijxbm0FnPZtU": {
             "type": { "__ref": "JqBHMKZ47aPh" },
@@ -3372,7 +3380,8 @@
             "figmaMappings": [],
             "alwaysAutoName": false,
             "trapsFocus": false,
-            "__type": "Component"
+            "__type": "Component",
+            "updatedAt": null
           },
           "4VGm2j5r_gNF": {
             "component": { "__ref": "VPQPTgBcDtyW" },
@@ -3558,7 +3567,7 @@
           }
         },
         "deps": [],
-        "version": "245-code-component-meta-add-refActions"
+        "version": "246-add-component-updated-at"
       }
     }
   ]

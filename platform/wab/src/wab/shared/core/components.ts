@@ -354,6 +354,7 @@ export function mkComponent(obj: {
     figmaMappings: obj.figmaMappings ?? [],
     alwaysAutoName: obj.alwaysAutoName ?? false,
     trapsFocus: obj.trapsFocus ?? false,
+    updatedAt: Date.now(),
   });
   return component;
 }
@@ -754,6 +755,8 @@ export function cloneComponent(
     ),
     alwaysAutoName: fromComponent.alwaysAutoName,
     trapsFocus: fromComponent.trapsFocus,
+    // We could use fromComponent.updatedAt, but we will keep the value semantically correct
+    updatedAt: Date.now(),
   });
 
   const fixQueryRef = (ref: QueryRef | string) => {

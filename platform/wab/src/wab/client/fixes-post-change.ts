@@ -110,6 +110,10 @@ export function fixupForChanges(
     });
   }
 
+  [changes, summary] = applyFix(() => {
+    fixupComponentUpdatedAt(summary);
+  });
+
   // Now do view-related fixes
 
   [changes, summary] = applyFix(() => {
@@ -124,6 +128,12 @@ export function fixupForChanges(
   });
 
   return tuple(changes, summary);
+}
+
+function fixupComponentUpdatedAt(summary: ChangeSummary) {
+  for (const component of summary.updatedComponents) {
+    component.updatedAt = Date.now();
+  }
 }
 
 function fixupFocusedFrameIfRemoved(studioCtx: StudioCtx) {
