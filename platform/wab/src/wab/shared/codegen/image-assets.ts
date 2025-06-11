@@ -49,7 +49,7 @@ import {
 } from "@/wab/shared/model/classes";
 import L, { last } from "lodash";
 import mime from "mime/lite";
-import { makeImportedPictureRef } from "src/wab/shared/codegen/react-p/image";
+import { makeImportedPictureRef } from "@/wab/shared/codegen/react-p/image";
 
 export function extractUsedIconAssetsForComponents(
   site: Site,

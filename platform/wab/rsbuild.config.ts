@@ -132,7 +132,7 @@ export default defineConfig({
   },
   source: {
     entry: {
-      index: "src/wab/client/main.tsx",
+      index: "@/wab/client/main.tsx",
     },
   },
   output: {

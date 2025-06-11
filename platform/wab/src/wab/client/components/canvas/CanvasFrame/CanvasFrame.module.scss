@@ -1,5 +1,5 @@
-@import "src/wab/styles/css-variables";
-@import "src/wab/styles/tokens";
+@import "@/wab/styles/css-variables";
+@import "@/wab/styles/tokens";
 
 .root:hover {
   & .artboardSelectionHandle:not(:hover) {

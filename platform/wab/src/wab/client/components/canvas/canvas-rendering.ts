@@ -306,7 +306,7 @@ import {
 import { IObservableValue, comparer, computed, observable } from "mobx";
 import { computedFn } from "mobx-utils";
 import type React from "react";
-import { maybeMakePlasmicImgSrc } from "src/wab/shared/codegen/react-p/image";
+import { maybeMakePlasmicImgSrc } from "@/wab/shared/codegen/react-p/image";
 import defer = setTimeout;
 
 export const hasLoadingBoundaryKey = "plasmicInternalHasLoadingBoundary";

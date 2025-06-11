@@ -15,7 +15,7 @@ import { capCamelCase } from "../src/wab/shared/common";
 import { L } from "../src/wab/shared/core/deps";
 
 async function main() {
-  for (const path of glob.sync("src/wab/client/icons/*.svg")) {
+  for (const path of glob.sync("@/wab/client/icons/*.svg")) {
     const content = fs
       .readFileSync(path, { encoding: "utf8" })
       .replace(/#050505/g, "currentcolor");

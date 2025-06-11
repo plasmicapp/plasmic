@@ -60,7 +60,7 @@ import {
   sortedVariantCombos,
 } from "@/wab/shared/variant-sort";
 import L, { sortBy } from "lodash";
-import { shouldUsePlasmicImg } from "src/wab/shared/codegen/react-p/image";
+import { shouldUsePlasmicImg } from "@/wab/shared/codegen/react-p/image";
 
 export function makeCssClassNameForVariantCombo(
   variantCombo: Variant[],
