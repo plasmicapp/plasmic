@@ -57,3 +57,18 @@ export const getAttributes = (item?: Record<string, any>) => {
   const { documentId: _documentId, locale: _locale, ...rest } = item;
   return rest;
 };
+
+export function filterFields(collectionData: any[]) {
+  return collectionData.flatMap((item: any) => {
+    const attributes = getAttributes(item);
+    const displayableFields = Object.keys(attributes).filter((field) => {
+      const value = attributes[field];
+      const maybeMime = getAttributes(value?.data)?.mime;
+      return (
+        typeof value !== "object" ||
+        (typeof maybeMime === "string" && maybeMime.startsWith("image"))
+      );
+    });
+    return displayableFields;
+  });
+}

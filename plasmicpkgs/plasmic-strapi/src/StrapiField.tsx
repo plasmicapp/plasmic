@@ -21,7 +21,7 @@ export const strapiFieldMeta: ComponentMeta<StrapiFieldProps> = {
   props: {
     path: {
       type: "choice",
-      options: (props, ctx) => {
+      options: (_, ctx) => {
         return ctx?.fields ?? [];
       },
       displayName: "Field",

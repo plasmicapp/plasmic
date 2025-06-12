@@ -92,18 +92,10 @@ export function ServerQueryOpDraftForm(props: {
   );
   const evaluatedArgs = React.useMemo(() => {
     if (!value || !value.func || !value.args) {
-      return {};
+      return [];
     }
-    const params = getCustomFunctionParams(
-      value as CustomFunctionExpr,
-      data,
-      exprCtx
-    );
-    return Object.keys(argsMap).reduce((acc, argName, index) => {
-      acc[argName] = params[index];
-      return acc;
-    }, {} as Record<string, any>);
-  }, [argsMap]);
+    return getCustomFunctionParams(value as CustomFunctionExpr, data, exprCtx);
+  }, [value]);
 
   const { dataKey, fetcher, funcParamsValues } = React.useMemo(() => {
     const func = value?.func;
@@ -118,20 +110,18 @@ export function ServerQueryOpDraftForm(props: {
       .getRegisteredFunctionsMap()
       .get(customFunctionId(func))?.meta;
 
-    const params = func.params.map((param) => evaluatedArgs[param.argName]);
-
     const fnContext = registeredMeta?.fnContext;
     if (!fnContext) {
       return {
         dataKey: null,
         fetcher: null,
-        funcParamsValues: params,
+        funcParamsValues: evaluatedArgs,
       };
     }
 
     return {
-      ...fnContext(...params),
-      funcParamsValues: params,
+      ...fnContext(...evaluatedArgs),
+      funcParamsValues: evaluatedArgs,
     };
   }, [studioCtx, value?.func, evaluatedArgs]);
 

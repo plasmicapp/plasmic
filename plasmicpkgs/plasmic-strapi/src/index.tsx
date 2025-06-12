@@ -40,6 +40,7 @@ export function registerAll(loader?: {
   _registerComponent(StrapiField, strapiFieldMeta);
 }
 
+export * from "./custom-functions";
 export { StrapiCollection, strapiCollectionMeta } from "./StrapiCollection";
 export {
   StrapiCredentialsProvider,

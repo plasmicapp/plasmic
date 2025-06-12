@@ -2,9 +2,16 @@
   "name": "@plasmicpkgs/plasmic-strapi",
   "version": "0.1.169",
   "description": "Plasmic Strapi components.",
-  "main": "dist/index.js",
-  "typings": "dist/index.d.ts",
-  "module": "dist/index.mjs",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "module": "./dist/index.esm.js",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.esm.js",
+      "require": "./dist/index.js"
+    }
+  },
   "publishConfig": {
     "access": "public"
   },
@@ -12,7 +19,9 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsup-node src/index.tsx --dts --format esm,cjs --target es2019",
+    "build": "yarn build:types && yarn build:index",
+    "build:types": "yarn tsc",
+    "build:index": "node ../../build.mjs ./src/index.tsx --use-client",
     "test": "TEST_CWD=`pwd` yarn --cwd=../.. test --passWithNoTests",
     "prepublishOnly": "npm run build",
     "size": "size-limit",
@@ -27,7 +36,7 @@
       "limit": "10 KB"
     },
     {
-      "path": "dist/index.mjs",
+      "path": "dist/index.esm.js",
       "limit": "10 KB"
     }
   ],
@@ -45,12 +54,9 @@
     "@types/qs": "^6.9.7",
     "@types/react": "^18.0.27",
     "@types/react-dom": "^18.0.10",
-    "husky": "^7.0.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "size-limit": "^7.0.8",
-    "tslib": "^2.3.1",
-    "tsup": "^7.2.0",
     "typescript": "^5.2.2"
   }
 }

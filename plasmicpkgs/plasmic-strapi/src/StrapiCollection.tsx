@@ -2,10 +2,10 @@ import { ComponentMeta, DataProvider, repeatedElement } from "@plasmicapp/host";
 import { usePlasmicQueryData } from "@plasmicapp/query";
 import { pascalCase } from "change-case";
 import get from "dlv";
-import * as qs from "qs";
 import React, { ReactNode } from "react";
+import { queryStrapi } from "./custom-functions";
 import { useStrapiCredentials } from "./StrapiCredentialsProvider";
-import { getAttributes, modulePath, queryParameters, uniq } from "./utils";
+import { filterFields, modulePath, queryParameters, uniq } from "./utils";
 
 const makeDataProviderName = (collection: string) =>
   `currentStrapi${pascalCase(collection)}Item`;
@@ -60,31 +60,31 @@ export const strapiCollectionMeta: ComponentMeta<StrapiCollectionProps> = {
       type: "choice",
       displayName: "Filter field",
       description: "Field (from Collection) to filter by",
-      options: (props, ctx) => ctx?.strapiFields ?? [],
-      hidden: (props, ctx) => !props.name,
+      options: (_, ctx) => ctx?.strapiFields ?? [],
+      hidden: (props) => !props.name,
     },
     filterParameter: {
       type: "choice",
       displayName: "Filter Parameter",
       description: "Field Parameter filter by",
-      options: (props, ctx) => {
+      options: () => {
         return queryParameters.map((item: any) => ({
           label: item?.label,
           value: item?.value,
         }));
       },
-      hidden: (props, ctx) => !props.filterField,
+      hidden: (props) => !props.filterField,
     },
     filterValue: {
       type: "string",
       displayName: "Filter value",
       description: "Value to filter by, should be of filter field type",
-      hidden: (props, ctx) => !props.filterParameter,
+      hidden: (props) => !props.filterParameter,
     },
     limit: {
       type: "number",
       displayName: "Limit",
-      description: "Maximum n umber of collections to fetch (0 for unlimited).",
+      description: "Maximum number of collections to fetch (0 for unlimited).",
     },
     noLayout: {
       type: "boolean",
@@ -114,48 +114,24 @@ export function StrapiCollection({
   noAutoRepeat,
   setControlContextData,
 }: StrapiCollectionProps) {
-  const creds = useStrapiCredentials();
+  const { host, token } = useStrapiCredentials();
 
-  if (!creds.host) {
+  if (!host) {
     return <div>Please specify a host.</div>;
   }
 
-  const query = creds.host + "/api/" + name;
-
   const cacheKey = JSON.stringify({
-    creds,
+    host,
+    token,
     name,
     filterField,
     filterValue,
     filterParameter,
   });
 
-  const data = usePlasmicQueryData<any[] | null>(cacheKey, async () => {
-    if (!query) {
-      return null;
-    }
-
-    const requestInit: any = { method: "GET" };
-    if (creds.token) {
-      requestInit.headers = { Authorization: "Bearer " + creds.token };
-    }
-
-    const queryParams = qs.stringify({
-      ...(filterField && filterParameter && filterValue
-        ? {
-            filters: {
-              [filterField]: {
-                [filterParameter]: filterValue,
-              },
-            },
-          }
-        : {}),
-      populate: "*",
-    });
-
-    const resp = await fetch(`${query}?${queryParams}`, requestInit);
-    return resp.json();
-  });
+  const data = usePlasmicQueryData<any[] | null>(cacheKey, async () =>
+    queryStrapi(host, token, name, filterField, filterValue, filterParameter)
+  );
 
   if (!data?.data) {
     return (
@@ -171,21 +147,10 @@ export function StrapiCollection({
 
   const collectionData = get(data.data, ["data"]) as any[];
 
-  const filterFields = collectionData.flatMap((item: any) => {
-    const attributes = getAttributes(item);
-    const displayableFields = Object.keys(attributes).filter((field) => {
-      const value = attributes[field];
-      const maybeMime = getAttributes(value?.data)?.mime;
-      return (
-        typeof value !== "object" ||
-        (typeof maybeMime === "string" && maybeMime.startsWith("image"))
-      );
-    });
-    return displayableFields;
-  });
+  const filteredFields = filterFields(collectionData);
 
   setControlContextData?.({
-    strapiFields: uniq(filterFields ?? []),
+    strapiFields: uniq(filteredFields ?? []),
   });
   if (filterParameter && !filterValue && !filterField) {
     return <div>Please specify a Filter Field and a Filter Value</div>;
