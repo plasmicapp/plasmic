@@ -13,3 +13,16 @@ Development of plasmicpkgs requires an [app host](https://docs.plasmic.app/learn
 ## Testing
 
 Please set up Storybook tests. Refer to the [react-aria](./react-aria) package as a reference.
+
+## Build Configuration Setup
+
+For building common/smaller packages, copy the most updated `tsconfig.json` and build scripts from the `plasmicpkgs/fetch` directory to ensure consistent build configuration across the project. The fetch package contains the latest and most refined build setup that should be used as the template for other packages.
+
+**Files to copy:**
+
+- `tsconfig.json` - TypeScript compiler configuration
+- Build scripts from `package.json` - Latest build pipeline setup
+
+This ensures all packages use the same build standards and TypeScript configuration as the reference implementation in the fetch package.
+
+If the package requires a `/skinny` folder, then you need to use rollup as in `plasmicpkgs/antd5` or edit build.mjs to support it.
