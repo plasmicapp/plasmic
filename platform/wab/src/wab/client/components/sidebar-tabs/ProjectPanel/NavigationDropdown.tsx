@@ -358,6 +358,14 @@ function NavigationDropdown_(
     return { onClose };
   }, [onClose]);
 
+  const navigateToArena = React.useCallback(
+    async (arena: AnyArena) => {
+      onClose();
+      await COMMANDS.navigation.switchArena.execute(studioCtx, { arena }, {});
+    },
+    [onClose, studioCtx]
+  );
+
   const onRequestAdding = (arenaType: ArenaType) => async () => {
     onClose();
     let componentInfo: NewComponentInfo | undefined;
@@ -665,6 +673,55 @@ function NavigationDropdown_(
     defaultOpenKeys: "all",
   });
 
+  function ArenaTreeRow(props: RenderElementProps<ArenaPanelRow>) {
+    const { value, treeState } = props;
+    switch (value.type) {
+      case "header":
+        return (
+          <NavigationHeaderRow
+            onAdd={value.onAdd}
+            groupSize={value.count}
+            isOpen={treeState.isOpen}
+            toggleExpand={treeState.toggleExpand}
+          >
+            {treeState.matcher.boldSnippets(value.name)}
+          </NavigationHeaderRow>
+        );
+      case "folder-element":
+        return (
+          <NavigationFolderRow
+            groupSize={value.count}
+            isOpen={treeState.isOpen}
+            indentMultiplier={treeState.level}
+          >
+            {treeState.matcher.boldSnippets(value.name)}
+          </NavigationFolderRow>
+        );
+      case "custom":
+      case "page":
+      case "component":
+        return (
+          <NavigationArenaRow
+            arena={value.arena}
+            matcher={treeState.matcher}
+            indentMultiplier={treeState.level}
+            isStandalone={value.isStandalone}
+            isSelected={treeState.isSelected}
+            onClick={navigateToArena}
+          />
+        );
+      case "any":
+        return (
+          <NavigationAnyRow
+            element={value.element}
+            matcher={treeState.matcher}
+          />
+        );
+      default:
+        unreachable(value);
+    }
+  }
+
   return (
     <div className={styles.root} ref={outerRef} {...testIds.projectPanel}>
       <FocusScope contain>
@@ -755,12 +812,7 @@ function NavigationDropdown_(
                       // If the node is an arena, navigate on Enter
                       if (isArenaType(row.value?.type)) {
                         e.preventDefault();
-                        onClose();
-                        await COMMANDS.navigation.switchArena.execute(
-                          studioCtx,
-                          { arena: row.value.arena },
-                          {}
-                        );
+                        await navigateToArena(row.value.arena);
                       }
                     }
                   }
@@ -866,48 +918,3 @@ const buildItems = computedFn(
     return items;
   }
 );
-
-function ArenaTreeRow(props: RenderElementProps<ArenaPanelRow>) {
-  const { value, treeState } = props;
-  switch (value.type) {
-    case "header":
-      return (
-        <NavigationHeaderRow
-          onAdd={value.onAdd}
-          groupSize={value.count}
-          isOpen={treeState.isOpen}
-          toggleExpand={treeState.toggleExpand}
-        >
-          {treeState.matcher.boldSnippets(value.name)}
-        </NavigationHeaderRow>
-      );
-    case "folder-element":
-      return (
-        <NavigationFolderRow
-          groupSize={value.count}
-          isOpen={treeState.isOpen}
-          indentMultiplier={treeState.level}
-        >
-          {treeState.matcher.boldSnippets(value.name)}
-        </NavigationFolderRow>
-      );
-    case "custom":
-    case "page":
-    case "component":
-      return (
-        <NavigationArenaRow
-          arena={value.arena}
-          matcher={treeState.matcher}
-          indentMultiplier={treeState.level}
-          isStandalone={value.isStandalone}
-          isSelected={treeState.isSelected}
-        />
-      );
-    case "any":
-      return (
-        <NavigationAnyRow element={value.element} matcher={treeState.matcher} />
-      );
-    default:
-      unreachable(value);
-  }
-}
