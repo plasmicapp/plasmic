@@ -3592,10 +3592,10 @@
     change-case "^4.1.2"
     dlv "^1.1.3"
 
-"@plasmicpkgs/plasmic-strapi@^0.1.169":
-  version "0.1.169"
-  resolved "https://registry.yarnpkg.com/@plasmicpkgs/plasmic-strapi/-/plasmic-strapi-0.1.169.tgz#3c4d217bc592f174839b0f0aa06ab51888c3fa50"
-  integrity sha512-As6ZhTADrZwaWqTYFGmyWm5osXfB3M4klkVSb9eriAG3XIFpPJySMPfMeEUioE7dOZZnt1I4YzO/bkfiy7fH8g==
+"@plasmicpkgs/plasmic-strapi@^0.1.170":
+  version "0.1.170"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/plasmic-strapi/-/plasmic-strapi-0.1.170.tgz#c749d137258f7d8ec887aee683438296daaf9cf9"
+  integrity sha512-+nFfXWEey/cll//CngDkTN5gcp9NGAqBy7gUIrufed1SdDX2ObQP7qFgQGThK2lpf+W4ADEwgFUQ7yu/y3cAeg==
   dependencies:
     "@types/dlv" "^1.1.2"
     change-case "^4.1.2"
