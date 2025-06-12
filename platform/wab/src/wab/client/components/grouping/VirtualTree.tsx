@@ -1,7 +1,8 @@
-import { Matcher } from "@/wab/client/components/view-common";
-import { ListSpace } from "@/wab/client/components/widgets/ListStack";
 import * as React from "react";
 import { VariableSizeList, areEqual } from "react-window";
+import { Matcher } from "@/wab/client/components/view-common";
+import { ListSpace } from "@/wab/client/components/widgets/ListStack";
+import { mod } from "@/wab/shared/common";
 
 export interface RenderElementProps<T> {
   value: T;
@@ -11,92 +12,52 @@ export interface RenderElementProps<T> {
     level: number;
     canOpen: boolean;
     isOpen: boolean;
+    isSelected?: boolean;
     toggleExpand: () => void;
   };
-  isSelected?: boolean;
 }
 
-export interface VirtualTreeRef<T = unknown> {
-  expandAll: () => void;
-  collapseAll: () => void;
-  getVisibleNodes: () => LinearTreeNode<T>[];
-}
-
-type Key = string;
+type NodeKey = string;
 
 type RenderElement<T> = React.FunctionComponent<RenderElementProps<T>>;
 
-interface LinearTreeNode<T> {
+type SelectDirection = 1 | -1;
+
+export interface LinearTreeNode<T> {
   value: T;
-  key: Key;
+  key: NodeKey;
   level: number;
-  parentKey?: Key;
+  parentKey?: NodeKey;
   isOpen: boolean;
   canOpen: boolean;
 }
 
-interface TreeRowData<T> {
+export interface TreeRowData<T> {
   treeData: {
     matcher: Matcher;
     nodes: LinearTreeNode<T>[];
     renderElement: RenderElement<T>;
     selectedIndex?: number;
-    toggleExpand: (key: Key) => void;
+    toggleExpand: (key: NodeKey) => void;
   };
 }
 
 interface VirtualTreeProps<T> {
   rootNodes: T[];
-  query?: string;
-  getNodeKey: (node: T) => Key;
-  getNodeChildren: (node: T) => T[];
-  getNodeSearchText: (node: T) => string;
-  getNodeHeight: (node: T) => number;
   renderElement: RenderElement<T>;
-  defaultOpenKeys?: "all" | Key[];
-  selectedIndex?: number;
+  nodeData: TreeRowData<T>;
+  nodeKey: (index: number, data: TreeRowData<T>) => string;
+  nodeHeights: number[];
+  expandAll: () => void;
+  collapseAll: () => void;
 }
 
 export const VirtualTree = React.forwardRef(function <T>(
-  props: VirtualTreeProps<T>,
-  ref: React.ForwardedRef<VirtualTreeRef<T>>
+  props: VirtualTreeProps<T>
 ) {
-  const {
-    rootNodes,
-    query,
-    getNodeKey,
-    getNodeChildren,
-    getNodeSearchText,
-    getNodeHeight,
-    renderElement,
-    defaultOpenKeys,
-    selectedIndex,
-  } = props;
+  const { nodeData, nodeKey, nodeHeights } = props;
 
   const listRef = React.useRef<VariableSizeList>(null);
-
-  const { nodeData, nodeKey, nodeHeights, expandAll, collapseAll } =
-    useTreeData(
-      rootNodes,
-      query,
-      renderElement,
-      getNodeKey,
-      getNodeChildren,
-      getNodeSearchText,
-      getNodeHeight,
-      defaultOpenKeys,
-      selectedIndex
-    );
-
-  React.useImperativeHandle(
-    ref,
-    () => ({
-      expandAll,
-      collapseAll,
-      getVisibleNodes: () => nodeData.treeData.nodes,
-    }),
-    [expandAll, collapseAll, nodeData]
-  );
 
   const getItemSize = React.useMemo(() => {
     return (index: number) => {
@@ -109,7 +70,7 @@ export const VirtualTree = React.forwardRef(function <T>(
       // the cached state of the virtual list
       listRef.current.resetAfterIndex(0);
     }
-  }, [JSON.stringify(nodeHeights)]);
+  }, [JSON.stringify(nodeHeights), nodeData?.treeData.selectedIndex]);
 
   return (
     <ListSpace space={5000}>
@@ -131,9 +92,7 @@ export const VirtualTree = React.forwardRef(function <T>(
       }
     </ListSpace>
   );
-}) as <T>(
-  props: VirtualTreeProps<T> & React.RefAttributes<VirtualTreeRef<T>>
-) => React.JSX.Element;
+}) as <T>(props: VirtualTreeProps<T>) => React.JSX.Element;
 
 const genericMemo: <T>(
   component: T,
@@ -177,15 +136,15 @@ const Row = genericMemo(
 
 interface TreeNodeRowProps<T> {
   style?: React.CSSProperties;
-  nodeKey: Key;
+  nodeKey: NodeKey;
   value: T;
   level: number;
-  parentKey?: Key;
+  parentKey?: NodeKey;
   isOpen: boolean;
   canOpen: boolean;
   matcher: Matcher;
   isSelected?: boolean;
-  toggleExpand: (key: Key) => void;
+  toggleExpand: (key: NodeKey) => void;
   renderElement: RenderElement<T>;
 }
 
@@ -211,9 +170,10 @@ const TreeNodeRow = <T,>(props: TreeNodeRowProps<T>) => {
       level,
       canOpen: canOpen,
       isOpen: isOpen,
+      isSelected,
       toggleExpand: () => toggleExpand(nodeKey),
     };
-  }, [matcher, level, canOpen, isOpen, toggleExpand]);
+  }, [matcher, level, canOpen, isOpen, isSelected, toggleExpand]);
   return (
     <li
       className="flex"
@@ -224,27 +184,48 @@ const TreeNodeRow = <T,>(props: TreeNodeRowProps<T>) => {
       {renderElement({
         value,
         treeState,
-        isSelected,
       })}
     </li>
   );
 };
 
-function useTreeData<T>(
-  nodes: T[],
-  query: string = "",
-  renderElement: RenderElement<T>,
-  getNodeKey: (node: T) => Key,
-  getNodeChildren: (node: T) => T[],
-  getNodeSearchText: (node: T) => string,
-  getNodeHeight: (node: T) => number,
-  defaultOpenKeys?: "all" | Key[],
-  selectedIndex?: number
-) {
+interface UseTreeDataProps<T> {
+  nodes: T[];
+  query: string;
+  renderElement: RenderElement<T>;
+  getNodeKey: (node: T) => NodeKey;
+  getNodeChildren: (node: T) => T[];
+  getNodeSearchText: (node: T) => string;
+  getNodeHeight: (node: T) => number;
+  isNodeSelectable?: (node: T) => boolean;
+  defaultOpenKeys?: "all" | NodeKey[];
+}
+
+interface UseTreeData<T> {
+  nodeData: TreeRowData<T>;
+  nodeKey: (index: number, data: TreeRowData<T>) => string;
+  nodeHeights: number[];
+  selectedIndex?: number;
+  expandAll: () => void;
+  collapseAll: () => void;
+  selectNextRow: (direction: SelectDirection) => void;
+}
+
+export function useTreeData<T>({
+  nodes,
+  query = "",
+  renderElement,
+  getNodeKey,
+  getNodeChildren,
+  getNodeSearchText,
+  getNodeHeight,
+  isNodeSelectable,
+  defaultOpenKeys,
+}: UseTreeDataProps<T>): UseTreeData<T> {
   const matcher = React.useMemo(() => {
     return new Matcher(query?.trim() ?? "");
   }, [query]);
-  const [expandedNodes, setExpandedNodes] = React.useState<Set<Key>>(
+  const [expandedNodes, setExpandedNodes] = React.useState<Set<NodeKey>>(
     new Set(
       defaultOpenKeys === "all"
         ? getAllNodeKeys(nodes, getNodeKey, getNodeChildren)
@@ -252,7 +233,7 @@ function useTreeData<T>(
     )
   );
   const toggleExpand = React.useCallback(
-    (key: Key) => {
+    (key: NodeKey) => {
       setExpandedNodes((set) => {
         if (set.has(key)) {
           set.delete(key);
@@ -285,10 +266,29 @@ function useTreeData<T>(
     ]
   );
 
+  const [selectedIndex, setSelectedIndex] = React.useState<number>();
+
+  // Reset selectionIndex when visibleNodes change
+  React.useEffect(() => {
+    setSelectedIndex((prev) => {
+      // if we already have a valid selection, keep it
+      if (
+        prev !== undefined &&
+        prev < visibleNodes.length &&
+        isNodeSelectable?.(visibleNodes[prev].value)
+      ) {
+        return prev;
+      }
+      // otherwise pick the first selectable node
+      const first = visibleNodes.findIndex((n) => isNodeSelectable?.(n.value));
+      return first >= 0 ? first : undefined;
+    });
+  }, [visibleNodes]);
+
   // In case we delete the last children of a opened node,
   // we need to remove the node from the expanded nodes set.
   React.useEffect(() => {
-    const fixedExpandedNodes = new Set<Key>(expandedNodes);
+    const fixedExpandedNodes = new Set<NodeKey>(expandedNodes);
     visibleNodes.forEach((node) => {
       if (
         getNodeChildren(node.value).length === 0 &&
@@ -312,7 +312,7 @@ function useTreeData<T>(
         selectedIndex,
       },
     }),
-    [visibleNodes, matcher, toggleExpand]
+    [visibleNodes, matcher, toggleExpand, selectedIndex]
   );
   const nodeKey = React.useCallback(
     (index: number, data: TreeRowData<T>) => data.treeData.nodes[index].key,
@@ -331,20 +331,45 @@ function useTreeData<T>(
     [visibleNodes]
   );
 
+  const selectNextRow = React.useCallback(
+    (direction: SelectDirection) => {
+      setSelectedIndex((current) => {
+        const selectable = visibleNodes
+          .map((n, i) => ({ node: n.value, idx: i }))
+          .filter(({ node }) => isNodeSelectable?.(node));
+
+        if (selectable.length === 0) {
+          return undefined;
+        }
+        // If no selection, jump to the first one
+        if (current === undefined) {
+          return selectable[0].idx;
+        }
+
+        const pos = selectable.findIndex(({ idx }) => idx === current);
+        const nextPos = mod(pos + direction, selectable.length);
+        return selectable[nextPos].idx;
+      });
+    },
+    [visibleNodes, isNodeSelectable]
+  );
+
   return {
     nodeData,
     nodeKey,
     nodeHeights,
     expandAll,
+    selectedIndex,
     collapseAll,
+    selectNextRow,
   };
 }
 
 function buildVisibleNodes<T>(
   rootNodes: T[],
   matcher: Matcher,
-  expandedNodes: Set<Key>,
-  getNodeKey: (node: T) => Key,
+  expandedNodes: Set<NodeKey>,
+  getNodeKey: (node: T) => NodeKey,
   getNodeChildren: (node: T) => T[],
   getNodeSearchText: (node: T) => string
 ): LinearTreeNode<T>[] {
@@ -353,7 +378,7 @@ function buildVisibleNodes<T>(
 
   const pushVisibleNodes = (
     node: T,
-    parentKey: Key | undefined,
+    parentKey: NodeKey | undefined,
     depth: number,
     addAllChildren: boolean
   ): boolean => {

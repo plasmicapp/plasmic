@@ -1,8 +1,8 @@
 import { COMMANDS } from "@/wab/client/commands/command";
 import {
-  RenderElementProps,
   VirtualTree,
-  VirtualTreeRef,
+  useTreeData,
+  RenderElementProps,
 } from "@/wab/client/components/grouping/VirtualTree";
 import { KeyboardShortcut } from "@/wab/client/components/menu-builder";
 import { showTemporaryPrompt } from "@/wab/client/components/quick-modals";
@@ -61,7 +61,6 @@ import { getHostLessComponents } from "@/wab/shared/code-components/code-compone
 import { toVarName } from "@/wab/shared/codegen/util";
 import {
   assert,
-  mod,
   swallow,
   switchType,
   unreachable,
@@ -111,7 +110,7 @@ import { Dropdown, Menu } from "antd";
 import { debounce } from "lodash";
 import { observer } from "mobx-react";
 import { computedFn } from "mobx-utils";
-import React, { useRef } from "react";
+import React from "react";
 import { FocusScope } from "react-aria";
 
 interface Header {
@@ -314,26 +313,12 @@ function NavigationDropdown_(
 
   const searchInputRef = studioCtx.projectSearchInputRef;
   const [debouncedQuery, setDebouncedQuery] = React.useState("");
-  const [selectedIndex, setSelectedIndex] = React.useState<number | undefined>(
-    undefined
-  );
-  React.useEffect(() => {
-    const firstIdx = nextSelectionRow(undefined, 1);
-    setSelectedIndex(firstIdx);
-  }, [debouncedQuery]);
   const debouncedSetQuery = React.useCallback(
     debounce((value: string) => {
       setDebouncedQuery(value);
     }, 500),
     [setDebouncedQuery]
   );
-  const treeRef = useRef<VirtualTreeRef<ArenaPanelRow>>(null);
-  const expandAll = React.useCallback(() => {
-    treeRef.current?.expandAll();
-  }, [treeRef.current]);
-  const collapseAll = React.useCallback(() => {
-    treeRef.current?.collapseAll();
-  }, [treeRef.current]);
 
   const getRowKey = React.useCallback((row: ArenaPanelRow) => {
     return row.key;
@@ -372,27 +357,6 @@ function NavigationDropdown_(
   const contextValue = React.useMemo((): NavigationDropdownContextValue => {
     return { onClose };
   }, [onClose]);
-
-  const nextSelectionRow = (
-    currentIndex: number | undefined,
-    direction: 1 | -1
-  ): number | undefined => {
-    const visibleRows = treeRef.current?.getVisibleNodes() ?? [];
-
-    // Only arena types are selectable
-    const selectable = visibleRows
-      .map((row, idx) => ({ row, idx }))
-      .filter(({ row }) => isArenaType(row.value?.type));
-
-    if (selectable.length === 0) {
-      return undefined;
-    }
-    const startPos =
-      selectable.findIndex(({ idx }) => idx === currentIndex) ?? 0;
-    const nextPos = mod(startPos + direction, selectable.length);
-
-    return selectable[nextPos].idx;
-  };
 
   const onRequestAdding = (arenaType: ArenaType) => async () => {
     onClose();
@@ -682,6 +646,25 @@ function NavigationDropdown_(
 
   const items = buildItems(studioCtx, onRequestAdding);
 
+  const {
+    nodeData,
+    nodeKey,
+    nodeHeights,
+    expandAll,
+    collapseAll,
+    selectNextRow,
+  } = useTreeData<ArenaPanelRow>({
+    nodes: items,
+    query: debouncedQuery,
+    renderElement: ArenaTreeRow,
+    getNodeKey: getRowKey,
+    getNodeChildren: getRowChildren,
+    getNodeSearchText: getRowSearchText,
+    getNodeHeight: getRowHeight,
+    isNodeSelectable: (row) => isArenaType(row.type),
+    defaultOpenKeys: "all",
+  });
+
   return (
     <div className={styles.root} ref={outerRef} {...testIds.projectPanel}>
       <FocusScope contain>
@@ -759,16 +742,15 @@ function NavigationDropdown_(
                   ) {
                     onClose();
                   } else if (e.key === "ArrowDown") {
-                    setSelectedIndex((i) => nextSelectionRow(i, 1));
+                    selectNextRow(1);
                     e.preventDefault();
                   } else if (e.key === "ArrowUp") {
-                    setSelectedIndex((i) => nextSelectionRow(i, -1));
+                    selectNextRow(-1);
                     e.preventDefault();
                   } else if (e.key === "Enter") {
-                    if (selectedIndex) {
-                      const visibleRows =
-                        treeRef.current?.getVisibleNodes() ?? [];
-                      const row = visibleRows[selectedIndex];
+                    const sel = nodeData.treeData.selectedIndex;
+                    if (sel !== undefined) {
+                      const row = nodeData.treeData.nodes[sel];
 
                       // If the node is an arena, navigate on Enter
                       if (isArenaType(row.value?.type)) {
@@ -799,16 +781,13 @@ function NavigationDropdown_(
             <ListStack>
               <div style={{ height: 500 }}>
                 <VirtualTree
-                  ref={treeRef}
                   rootNodes={items}
-                  getNodeKey={getRowKey}
-                  getNodeChildren={getRowChildren}
-                  getNodeSearchText={getRowSearchText}
-                  getNodeHeight={getRowHeight}
-                  query={debouncedQuery}
                   renderElement={ArenaTreeRow}
-                  defaultOpenKeys={"all"}
-                  selectedIndex={selectedIndex}
+                  nodeData={nodeData}
+                  nodeKey={nodeKey}
+                  nodeHeights={nodeHeights}
+                  expandAll={expandAll}
+                  collapseAll={collapseAll}
                 />
               </div>
             </ListStack>
@@ -889,7 +868,7 @@ const buildItems = computedFn(
 );
 
 function ArenaTreeRow(props: RenderElementProps<ArenaPanelRow>) {
-  const { value, treeState, isSelected } = props;
+  const { value, treeState } = props;
   switch (value.type) {
     case "header":
       return (
@@ -921,7 +900,7 @@ function ArenaTreeRow(props: RenderElementProps<ArenaPanelRow>) {
           matcher={treeState.matcher}
           indentMultiplier={treeState.level}
           isStandalone={value.isStandalone}
-          isSelected={isSelected}
+          isSelected={treeState.isSelected}
         />
       );
     case "any":
