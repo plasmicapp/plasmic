@@ -15,14 +15,13 @@ export * from "./exports";
 const root = globalThis as any;
 
 if (root.__Sub == null) {
-  // Creating a side effect here by logging, so that vite won't
-  // ignore this block for whatever reason. Hiding this for now
-  // as users are complaining; will have to check if this has
-  // been fixed with vite.
-  // console.log("Plasmic: Setting up app host dependencies");
+  const ReactMajorVersion = parseInt(React.version.split(".")[0], 10);
+  const ReactDOMClient =
+    ReactMajorVersion >= 19 ? require("react-dom/client") : undefined;
   root.__Sub = {
     React,
     ReactDOM,
+    ReactDOMClient,
     jsxRuntime,
     jsxDevRuntime,
     PlasmicQuery,
