@@ -147,7 +147,12 @@ export function ArenaContextMenu({
   const onDelete = async () => {
     const confirmation = await promptDeleteComponent(
       getSiteItemTypeName(arena),
-      getArenaName(arena)
+      getArenaName(arena),
+      isDedicatedArena(arena)
+        ? studioCtx.commentsCtx
+            .computedData()
+            .commentStatsByComponent.get(arena.component.uuid)?.commentCount
+        : undefined
     );
     if (!confirmation) {
       return;

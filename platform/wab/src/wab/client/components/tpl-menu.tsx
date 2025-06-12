@@ -184,7 +184,9 @@ function pushSlotSelectionMenu(
     push(
       <Menu.Item
         key="clear-slot"
-        onClick={async () => viewCtx.getViewOps().tryDelete({ tpl: node })}
+        onClick={async () =>
+          await viewCtx.getViewOps().tryDelete({ tpl: node })
+        }
       >
         Clear slot content
       </Menu.Item>
@@ -912,8 +914,8 @@ export function makeTplMenu(
       push(
         <Menu.Item
           key="delete"
-          onClick={() =>
-            viewCtx.getViewOps().tryDelete({
+          onClick={async () =>
+            await viewCtx.getViewOps().tryDelete({
               tpl: tpls,
               forceDelete: true,
             })

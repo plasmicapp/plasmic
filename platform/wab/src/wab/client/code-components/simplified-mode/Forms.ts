@@ -17,7 +17,7 @@ import {
   createLabelRenderExprFromFormItem,
   inputTypeToElementSchema,
 } from "@/wab/shared/code-components/simplified-mode/Forms";
-import { assert, ensure } from "@/wab/shared/common";
+import { assert, ensure, spawn } from "@/wab/shared/common";
 import {
   ExprCtx,
   clone as cloneExpr,
@@ -453,10 +453,13 @@ export function updateFormComponentMode(
     const { formItems: newFormItems, firstButton } =
       extractFormItemsFromAdvancedMode(tpl);
     // remove old submit slot
-    viewCtx.viewOps.tryDelete({
-      tpl: submitSlot,
-      forceDelete: true,
-    });
+    spawn(
+      viewCtx.viewOps.tryDelete({
+        tpl: submitSlot,
+        forceDelete: true,
+        skipCommentsConfirmation: true,
+      })
+    );
 
     if (firstButton) {
       viewCtx.viewOps.insertAsChild(cloneTpl(firstButton), submitSlot);
@@ -481,17 +484,23 @@ export function updateFormComponentMode(
       );
 
     //delete chilren
-    viewCtx.viewOps.tryDelete({
-      tpl: childrenSlot,
-      forceDelete: true,
-    });
+    spawn(
+      viewCtx.viewOps.tryDelete({
+        tpl: childrenSlot,
+        forceDelete: true,
+        skipCommentsConfirmation: true,
+      })
+    );
     viewCtx.setStudioFocusByTpl(tpl);
   } else if (newMode === "advanced") {
     //delete chilren
-    viewCtx.viewOps.tryDelete({
-      tpl: childrenSlot,
-      forceDelete: true,
-    });
+    spawn(
+      viewCtx.viewOps.tryDelete({
+        tpl: childrenSlot,
+        forceDelete: true,
+        skipCommentsConfirmation: true,
+      })
+    );
     if (formItems && Array.isArray(formItems)) {
       for (const formItem of formItems) {
         const inputType = (
@@ -587,10 +596,13 @@ export function updateFormComponentMode(
               `"${inputTpl.component.name}" should have a "children" slot`
             ),
           });
-          viewCtx.viewOps.tryDelete({
-            tpl: checkboxChildrenSlot,
-            forceDelete: true,
-          });
+          spawn(
+            viewCtx.viewOps.tryDelete({
+              tpl: checkboxChildrenSlot,
+              forceDelete: true,
+              skipCommentsConfirmation: true,
+            })
+          );
           viewCtx.viewOps.insertAsChild(labelRenderExpr.tpl[0], inputTpl);
         }
       }
@@ -613,10 +625,13 @@ export function updateFormComponentMode(
         submitSlot
       );
     }
-    viewCtx.viewOps.tryDelete({
-      tpl: submitSlot,
-      forceDelete: true,
-    });
+    spawn(
+      viewCtx.viewOps.tryDelete({
+        tpl: submitSlot,
+        forceDelete: true,
+        skipCommentsConfirmation: true,
+      })
+    );
     unsetTplComponentArg(tpl, getParamVariable(tpl, "formItems"));
     unsetTplComponentArg(tpl, getParamVariable(tpl, "dataFormItems"));
     unsetTplComponentArg(tpl, getParamVariable(tpl, "data"));

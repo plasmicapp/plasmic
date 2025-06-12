@@ -177,8 +177,8 @@ describe("computeCommentStats", () =>
     } = computeCommentStats(commentThreads);
     expect(commentStatsByComponent).toEqual(
       new Map([
-        [xs1[0].uuid, { commentCount: 2, replyCount: 2 }],
-        [xs2[0].uuid, { commentCount: 3, replyCount: 2 }],
+        [component1.uuid, { commentCount: 2, replyCount: 2 }],
+        [component2.uuid, { commentCount: 3, replyCount: 2 }],
       ])
     );
     expect(commentStatsBySubject).toEqual(

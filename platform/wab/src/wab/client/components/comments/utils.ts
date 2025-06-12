@@ -193,7 +193,7 @@ export function computeCommentStats(threads: TplCommentThreads): {
         const [commentThread] = commentThreads;
         const ownerComponent = tryGetTplOwnerComponent(commentThread.subject);
         if (ownerComponent) {
-          const ownerUuid = ownerComponent.tplTree.uuid;
+          const ownerUuid = ownerComponent.uuid;
           const componentStats = getOrSetMap<string, CommentsStats>(
             commentStatsByComponent,
             ownerUuid,

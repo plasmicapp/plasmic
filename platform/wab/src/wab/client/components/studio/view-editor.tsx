@@ -503,7 +503,10 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
           })
         ),
       DELETE: (e: KeyboardEvent) => this.handleDelete(e, { forceDelete: true }),
-      HIDE: (e: KeyboardEvent) => this.handleDelete(e, { forceDelete: false }),
+      HIDE: (e: KeyboardEvent) =>
+        this.handleDelete(e, {
+          forceDelete: false,
+        }),
       ENTER_EDIT: (e: KeyboardEvent) =>
         this.handleHotkey(e, async () =>
           this.props.studioCtx.changeUnsafe(() => {

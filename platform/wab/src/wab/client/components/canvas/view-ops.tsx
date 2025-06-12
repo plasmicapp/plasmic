@@ -1651,12 +1651,14 @@ export class ViewOps {
     return true;
   }
 
-  tryDelete({
+  async tryDelete({
     tpl: _target,
     forceDelete,
+    skipCommentsConfirmation = false,
   }: {
     tpl?: TplNode | SlotSelection | (TplNode | SlotSelection | null)[] | null;
     forceDelete?: boolean;
+    skipCommentsConfirmation?: boolean;
   }) {
     if (_target == null) {
       _target = this.viewCtx().focusedTplsOrSlotSelections();
@@ -1737,8 +1739,11 @@ export class ViewOps {
             {!onlyRootSelected && (
               <strong>
                 <LinkButton
-                  onClick={() => {
-                    this.tryDelete({ tpl: tpls, forceDelete: true });
+                  onClick={async () => {
+                    await this.tryDelete({
+                      tpl: tpls,
+                      forceDelete: true,
+                    });
                     notification.close(key);
                   }}
                 >
@@ -1861,6 +1866,42 @@ export class ViewOps {
           redistributeColumnsSizes(parent, this.viewCtx().variantTplMgr());
         }
       };
+
+      if (!skipCommentsConfirmation) {
+        const commentStatsBySubject =
+          this.studioCtx().commentsCtx.computedData().commentStatsBySubject;
+
+        const commentsCount = tpls
+          .flatMap((tpl) => Tpls.flattenTpls(tpl))
+          .reduce((count, tpl) => {
+            return (
+              count + (commentStatsBySubject.get(tpl.uuid)?.commentCount || 0)
+            );
+          }, 0);
+
+        if (commentsCount > 0) {
+          const isElementPlural = tpls.length > 1;
+          const isCommentPlural = commentsCount > 1;
+
+          const confirm = await reactConfirm({
+            title: `Delete ${
+              isElementPlural ? "elements" : "element"
+            } with unresolved ${isCommentPlural ? "comments" : "comment"}?`,
+            message: `${
+              isElementPlural ? "Elements include" : "Element includes"
+            } ${commentsCount} unresolved ${
+              isCommentPlural ? "comments" : "comment"
+            }. You will still be able to view the ${
+              isCommentPlural ? "comments" : "comment"
+            } in the comments panel.`,
+            confirmLabel: `Delete ${isElementPlural ? "elements" : "element"}`,
+          });
+
+          if (!confirm) {
+            return;
+          }
+        }
+      }
 
       this.change(() => {
         const nextFocus = this.findNearestFocusable(tpls[0], {
@@ -2062,6 +2103,7 @@ export class ViewOps {
         await this.tryDelete({
           tpl: copied,
           forceDelete: DEVFLAGS.unconditionalEdits,
+          skipCommentsConfirmation: !DEVFLAGS.unconditionalEdits,
         });
       }
     }

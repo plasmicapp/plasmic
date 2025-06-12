@@ -201,7 +201,13 @@ const PageRow = observer(function PageRow(props: {
         <Menu.Item
           key="delete"
           onClick={async () => {
-            const confirmation = await promptDeleteComponent("page", page.name);
+            const confirmation = await promptDeleteComponent(
+              "page",
+              page.name,
+              studioCtx.commentsCtx
+                .computedData()
+                .commentStatsByComponent.get(page.uuid)?.commentCount
+            );
             if (!confirmation) {
               return;
             }

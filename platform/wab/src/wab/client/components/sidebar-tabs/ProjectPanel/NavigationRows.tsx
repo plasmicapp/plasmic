@@ -203,7 +203,7 @@ function getArenaIcon(arena: AnyArena, studioCtx: StudioCtx) {
   if (isPageArena(arena) || isComponentArena(arena)) {
     const commentsStats = studioCtx.commentsCtx
       .computedData()
-      .commentStatsByComponent.get(arena.component.tplTree.uuid);
+      .commentStatsByComponent.get(arena.component.uuid);
     if (commentsStats && studioCtx.showCommentsPanel) {
       return () => (
         <CommentIndicatorIcon
