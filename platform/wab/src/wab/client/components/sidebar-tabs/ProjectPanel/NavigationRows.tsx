@@ -1,4 +1,3 @@
-import { COMMANDS } from "@/wab/client/commands/command";
 import CommentIndicatorIcon from "@/wab/client/components/comments/CommentIndicatorIcon";
 import RowGroup, { RowGroupProps } from "@/wab/client/components/RowGroup";
 import RowItem from "@/wab/client/components/RowItem";
@@ -85,6 +84,8 @@ export interface NavigationArenaRowProps {
   matcher: Matcher;
   indentMultiplier: number;
   isStandalone?: boolean;
+  isSelected?: boolean;
+  onClick: (arena: AnyArena) => void;
 }
 
 export function NavigationArenaRow({
@@ -92,6 +93,8 @@ export function NavigationArenaRow({
   matcher,
   indentMultiplier,
   isStandalone,
+  isSelected,
+  onClick,
 }: NavigationArenaRowProps) {
   const [renaming, setRenaming] = React.useState(false);
   const studioCtx = useStudioCtx();
@@ -132,18 +135,9 @@ export function NavigationArenaRow({
         height: isPage ? PAGE_HEIGHT : ROW_HEIGHT,
         paddingLeft: indentMultiplier * 16 + 12,
       }}
-      onClick={async () => {
-        onClose();
-        await COMMANDS.navigation.switchArena.execute(
-          studioCtx,
-          {
-            arena,
-          },
-          {}
-        );
-      }}
+      onClick={() => onClick(arena)}
       icon={<Icon icon={getArenaIcon(arena, studioCtx)} />}
-      isSelected={studioCtx.currentArena === arena}
+      isSelected={isSelected ?? studioCtx.currentArena === arena}
       menuSize="small"
       menu={
         <ArenaContextMenu
