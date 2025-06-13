@@ -756,8 +756,11 @@ export class SiteOps {
     return { asset, iconColor: opts.iconColor };
   }
 
-  async createFrameForNewComponent() {
-    const componentInfo = await promptComponentTemplate(this.studioCtx);
+  async createFrameForNewComponent(folderPath?: string) {
+    const componentInfo = await promptComponentTemplate(
+      this.studioCtx,
+      folderPath
+    );
     if (!componentInfo) {
       return;
     }
