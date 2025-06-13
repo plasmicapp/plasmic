@@ -1,8 +1,8 @@
-import * as React from "react";
-import { VariableSizeList, areEqual } from "react-window";
 import { Matcher } from "@/wab/client/components/view-common";
 import { ListSpace } from "@/wab/client/components/widgets/ListStack";
 import { mod } from "@/wab/shared/common";
+import * as React from "react";
+import { VariableSizeList, areEqual } from "react-window";
 
 export interface RenderElementProps<T> {
   value: T;
@@ -13,6 +13,7 @@ export interface RenderElementProps<T> {
     canOpen: boolean;
     isOpen: boolean;
     isSelected?: boolean;
+    nodeAction?: NodeAction<T>;
     toggleExpand: () => void;
   };
 }
@@ -23,6 +24,8 @@ type RenderElement<T> = React.FunctionComponent<RenderElementProps<T>>;
 
 type SelectDirection = 1 | -1;
 
+type NodeAction<T> = (node: T) => Promise<void>;
+
 export interface LinearTreeNode<T> {
   value: T;
   key: NodeKey;
@@ -32,12 +35,13 @@ export interface LinearTreeNode<T> {
   canOpen: boolean;
 }
 
-export interface TreeRowData<T> {
+interface TreeRowData<T> {
   treeData: {
     matcher: Matcher;
     nodes: LinearTreeNode<T>[];
     renderElement: RenderElement<T>;
     selectedIndex?: number;
+    nodeAction?: NodeAction<T>;
     toggleExpand: (key: NodeKey) => void;
   };
 }
@@ -127,6 +131,7 @@ const Row = genericMemo(
         matcher={data.treeData.matcher}
         isSelected={isSelected}
         toggleExpand={data.treeData.toggleExpand}
+        nodeAction={data.treeData.nodeAction}
         renderElement={data.treeData.renderElement}
       />
     );
@@ -144,6 +149,7 @@ interface TreeNodeRowProps<T> {
   canOpen: boolean;
   matcher: Matcher;
   isSelected?: boolean;
+  nodeAction?: NodeAction<T>;
   toggleExpand: (key: NodeKey) => void;
   renderElement: RenderElement<T>;
 }
@@ -158,6 +164,7 @@ const TreeNodeRow = <T,>(props: TreeNodeRowProps<T>) => {
     isOpen,
     matcher,
     toggleExpand,
+    nodeAction,
     renderElement,
     isSelected,
   } = props;
@@ -171,9 +178,10 @@ const TreeNodeRow = <T,>(props: TreeNodeRowProps<T>) => {
       canOpen: canOpen,
       isOpen: isOpen,
       isSelected,
+      nodeAction,
       toggleExpand: () => toggleExpand(nodeKey),
     };
-  }, [matcher, level, canOpen, isOpen, isSelected, toggleExpand]);
+  }, [matcher, level, canOpen, isOpen, isSelected, nodeAction, toggleExpand]);
   return (
     <li
       className="flex"
@@ -197,6 +205,7 @@ interface UseTreeDataProps<T> {
   getNodeChildren: (node: T) => T[];
   getNodeSearchText: (node: T) => string;
   getNodeHeight: (node: T) => number;
+  nodeAction?: NodeAction<T>;
   isNodeSelectable?: (node: T) => boolean;
   defaultOpenKeys?: "all" | NodeKey[];
 }
@@ -219,6 +228,7 @@ export function useTreeData<T>({
   getNodeChildren,
   getNodeSearchText,
   getNodeHeight,
+  nodeAction,
   isNodeSelectable,
   defaultOpenKeys,
 }: UseTreeDataProps<T>): UseTreeData<T> {
@@ -310,6 +320,7 @@ export function useTreeData<T>({
         renderElement,
         toggleExpand,
         selectedIndex,
+        nodeAction,
       },
     }),
     [visibleNodes, matcher, toggleExpand, selectedIndex]

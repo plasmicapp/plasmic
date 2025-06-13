@@ -1,8 +1,8 @@
 import { COMMANDS } from "@/wab/client/commands/command";
 import {
+  RenderElementProps,
   VirtualTree,
   useTreeData,
-  RenderElementProps,
 } from "@/wab/client/components/grouping/VirtualTree";
 import { KeyboardShortcut } from "@/wab/client/components/menu-builder";
 import { showTemporaryPrompt } from "@/wab/client/components/quick-modals";
@@ -304,6 +304,14 @@ export const NavigationDropdown = observer(
   React.forwardRef(NavigationDropdown_)
 );
 
+function isArenaRow(
+  row: ArenaPanelRow
+): row is ComponentArenaData | CustomArenaData | PageArenaData {
+  return (
+    row.type === "custom" || row.type === "page" || row.type === "component"
+  );
+}
+
 function NavigationDropdown_(
   { onClose }: NavigationDropdownProps,
   outerRef: React.Ref<HTMLDivElement>
@@ -322,6 +330,11 @@ function NavigationDropdown_(
 
   const getRowKey = React.useCallback((row: ArenaPanelRow) => {
     return row.key;
+  }, []);
+  const rowAction = React.useCallback(async (row: ArenaPanelRow) => {
+    if (isArenaRow(row)) {
+      await navigateToArena(row.arena);
+    }
   }, []);
   const getRowChildren = React.useCallback((row: ArenaPanelRow) => {
     if ("items" in row) {
@@ -669,58 +682,10 @@ function NavigationDropdown_(
     getNodeChildren: getRowChildren,
     getNodeSearchText: getRowSearchText,
     getNodeHeight: getRowHeight,
+    nodeAction: rowAction,
     isNodeSelectable: (row) => isArenaType(row.type),
     defaultOpenKeys: "all",
   });
-
-  function ArenaTreeRow(props: RenderElementProps<ArenaPanelRow>) {
-    const { value, treeState } = props;
-    switch (value.type) {
-      case "header":
-        return (
-          <NavigationHeaderRow
-            onAdd={value.onAdd}
-            groupSize={value.count}
-            isOpen={treeState.isOpen}
-            toggleExpand={treeState.toggleExpand}
-          >
-            {treeState.matcher.boldSnippets(value.name)}
-          </NavigationHeaderRow>
-        );
-      case "folder-element":
-        return (
-          <NavigationFolderRow
-            groupSize={value.count}
-            isOpen={treeState.isOpen}
-            indentMultiplier={treeState.level}
-          >
-            {treeState.matcher.boldSnippets(value.name)}
-          </NavigationFolderRow>
-        );
-      case "custom":
-      case "page":
-      case "component":
-        return (
-          <NavigationArenaRow
-            arena={value.arena}
-            matcher={treeState.matcher}
-            indentMultiplier={treeState.level}
-            isStandalone={value.isStandalone}
-            isSelected={treeState.isSelected}
-            onClick={navigateToArena}
-          />
-        );
-      case "any":
-        return (
-          <NavigationAnyRow
-            element={value.element}
-            matcher={treeState.matcher}
-          />
-        );
-      default:
-        unreachable(value);
-    }
-  }
 
   return (
     <div className={styles.root} ref={outerRef} {...testIds.projectPanel}>
@@ -918,3 +883,49 @@ const buildItems = computedFn(
     return items;
   }
 );
+
+function ArenaTreeRow(props: RenderElementProps<ArenaPanelRow>) {
+  const { value, treeState } = props;
+  switch (value.type) {
+    case "header":
+      return (
+        <NavigationHeaderRow
+          onAdd={value.onAdd}
+          groupSize={value.count}
+          isOpen={treeState.isOpen}
+          toggleExpand={treeState.toggleExpand}
+        >
+          {treeState.matcher.boldSnippets(value.name)}
+        </NavigationHeaderRow>
+      );
+    case "folder-element":
+      return (
+        <NavigationFolderRow
+          groupSize={value.count}
+          isOpen={treeState.isOpen}
+          indentMultiplier={treeState.level}
+        >
+          {treeState.matcher.boldSnippets(value.name)}
+        </NavigationFolderRow>
+      );
+    case "custom":
+    case "page":
+    case "component":
+      return (
+        <NavigationArenaRow
+          arena={value.arena}
+          matcher={treeState.matcher}
+          indentMultiplier={treeState.level}
+          isStandalone={value.isStandalone}
+          isSelected={treeState.isSelected}
+          onClick={() => treeState.nodeAction?.(value)}
+        />
+      );
+    case "any":
+      return (
+        <NavigationAnyRow element={value.element} matcher={treeState.matcher} />
+      );
+    default:
+      unreachable(value);
+  }
+}
