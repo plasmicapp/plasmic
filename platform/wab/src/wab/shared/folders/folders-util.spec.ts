@@ -7,7 +7,7 @@ import {
 
 describe("createFolderTreeStructure", () => {
   it("should create a tree structure from given array", () => {
-    const pathPrefix = "test-";
+    const pathPrefix = "test";
     const items = [
       { name: "////" }, // only slashes
       { name: "folder1/file1" },
@@ -23,20 +23,20 @@ describe("createFolderTreeStructure", () => {
       {
         type: "folder",
         name: "folder1",
-        path: "test-folder1",
+        path: "test_folder1",
         items: [{ name: "folder1/file1" }, { name: "folder1/file2" }],
-        count: 2,
+        count: 2
       },
       {
         type: "folder",
         name: "folder2",
-        path: "test-folder2",
+        path: "test_folder2",
         items: [
           { name: "/folder2/file3/" },
           {
             type: "folder",
             name: "folder3",
-            path: "test-folder2-folder3",
+            path: "test_folder2/folder3",
             items: [
               { name: " folder2 / folder3/ file4" },
               { name: "folder2/folder3/file5" },

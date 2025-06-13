@@ -236,7 +236,7 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
     const makeTokensItems = (tokens: StyleToken[], dep?: ProjectDependency) => {
       tokens = naturalSort(tokens, (token) => getFolderTrimmed(token.name));
       const tokenTree = createFolderTreeStructure(tokens, {
-        pathPrefix: `${tokenType}-`,
+        pathPrefix: tokenType,
         getName: (item) => item.name,
         mapper: (item) => mapToTokenPanelRow(item, getTokenValue, dep),
       });
