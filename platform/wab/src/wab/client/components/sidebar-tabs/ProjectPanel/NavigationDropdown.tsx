@@ -128,6 +128,7 @@ interface FolderElement {
   key: string;
   items: ArenaPanelRow[];
   count: number;
+  onAdd: () => Promise<void>;
 }
 
 interface PageArenaData {
@@ -191,18 +192,24 @@ function mapToArenaData(
 }
 
 export function mapToArenaPanelRow(
-  item: AnyArena | InternalFolder<AnyArena>
+  item: AnyArena | InternalFolder<AnyArena>,
+  sectionType: ArenaType,
+  onRequestAdding: RequestAdding
 ): ArenaPanelRow {
   if (!isFolder(item)) {
     return mapToArenaData(item);
   }
+  const type = "folder-element" as const;
 
   return {
-    type: "folder-element" as const,
+    type,
     key: item.path,
     name: item.name,
-    items: item.items.map((i) => mapToArenaPanelRow(i)),
+    items: item.items.map((i) =>
+      mapToArenaPanelRow(i, sectionType, onRequestAdding)
+    ),
     count: item.count,
+    onAdd: onRequestAdding(sectionType, item.name),
   };
 }
 
@@ -379,18 +386,20 @@ function NavigationDropdown_(
     [onClose, studioCtx]
   );
 
-  const onRequestAdding = (arenaType: ArenaType) => async () => {
+  const onRequestAdding = (arenaType: ArenaType, p?: string) => async () => {
     onClose();
     let componentInfo: NewComponentInfo | undefined;
+    const folderPath = p && `${p}/`;
+
     switch (arenaType) {
       case "custom":
         await studioCtx.changeUnsafe(() => {
-          studioCtx.addArena();
+          studioCtx.addArena(folderPath);
         });
         break;
 
       case "component":
-        componentInfo = await promptComponentTemplate(studioCtx);
+        componentInfo = await promptComponentTemplate(studioCtx, folderPath);
         if (!componentInfo) {
           return;
         }
@@ -403,7 +412,7 @@ function NavigationDropdown_(
         break;
 
       case "page": {
-        const chosenTemplate = await promptPageTemplate(studioCtx);
+        const chosenTemplate = await promptPageTemplate(studioCtx, folderPath);
         if (!chosenTemplate) {
           return;
         }
@@ -438,7 +447,10 @@ function NavigationDropdown_(
             info = await studioCtx.appCtx.app.withSpinner(
               buildInsertableExtraInfo(
                 studioCtx,
-                chosenTemplate as { projectId: string; componentName: string },
+                chosenTemplate as {
+                  projectId: string;
+                  componentName: string;
+                },
                 screenVariant
               )
             );
@@ -815,11 +827,13 @@ function NavigationDropdown_(
   );
 }
 
+type RequestAdding = (
+  type: ArenaType,
+  folderName?: string
+) => () => Promise<void>;
+
 const buildItems = computedFn(
-  (
-    studioCtx: StudioCtx,
-    onRequestAdding: (type: ArenaType) => () => Promise<void>
-  ) => {
+  (studioCtx: StudioCtx, onRequestAdding: RequestAdding) => {
     const getSection = (
       title: React.ReactNode,
       arenaSection: ArenaType,
@@ -828,7 +842,8 @@ const buildItems = computedFn(
       const tree = createFolderTreeStructure(items, {
         pathPrefix: `${title}-`,
         getName: (item) => getFolderTrimmed(getArenaName(item)),
-        mapper: (item) => mapToArenaPanelRow(item),
+        mapper: (item) =>
+          mapToArenaPanelRow(item, arenaSection, onRequestAdding),
       });
 
       return {
@@ -904,6 +919,8 @@ function ArenaTreeRow(props: RenderElementProps<ArenaPanelRow>) {
           groupSize={value.count}
           isOpen={treeState.isOpen}
           indentMultiplier={treeState.level}
+          onAdd={value.onAdd}
+          toggleExpand={treeState.toggleExpand}
         >
           {treeState.matcher.boldSnippets(value.name)}
         </NavigationFolderRow>

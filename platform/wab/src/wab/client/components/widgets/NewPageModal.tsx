@@ -28,10 +28,11 @@ interface NewPageModalProps
   onSubmit: (info: NewPageInfo) => void;
   onCancel: () => void;
   studioCtx: StudioCtx;
+  folderPath?: string;
 }
 
 function NewPageModal(props: NewPageModalProps) {
-  const { onSubmit, onCancel, studioCtx, ...rest } = props;
+  const { onSubmit, onCancel, studioCtx, folderPath, ...rest } = props;
 
   const [type, setType] = useState<NewPageType>("blank");
   const [componentName, setComponentName] = React.useState<string | undefined>(
@@ -42,6 +43,12 @@ function NewPageModal(props: NewPageModalProps) {
   );
   const [name, setName] = React.useState("");
   const nameRef = React.useRef<TextboxRef>(null);
+
+  React.useEffect(() => {
+    if (folderPath !== undefined) {
+      setName(folderPath);
+    }
+  }, [folderPath]);
 
   const isApp = studioCtx.siteInfo.hasAppAuth;
   const contentEditorMode = studioCtx.contentEditorMode;

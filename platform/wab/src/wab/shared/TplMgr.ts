@@ -1123,6 +1123,11 @@ export class TplMgr {
     return arena;
   }
 
+  addArenaWithPrefix(prefix?: string) {
+    const rawName = this.getUniqueArenaName();
+    return this.addArena(`${prefix ?? ""}${rawName}`);
+  }
+
   removeArena(arena: Arena) {
     remove(this.site().arenas, arena);
 
