@@ -1791,9 +1791,14 @@ export class TplMgr {
     });
   }
 
-  addToken(opts: { name?: string; tokenType: TokenType; value?: string }) {
+  addToken(opts: {
+    name?: string;
+    prefix?: string;
+    tokenType: TokenType;
+    value?: string;
+  }) {
     const token = new StyleToken({
-      name: this.getUniqueTokenName(opts.name),
+      name: this.getUniqueTokenName(opts.name, opts.prefix),
       type: opts.tokenType,
       value: opts.value || "",
       uuid: mkShortId(),
@@ -2060,9 +2065,11 @@ export class TplMgr {
     return newToken;
   }
 
-  getUniqueTokenName(name?: string) {
+  getUniqueTokenName(name?: string, prefix = "") {
     const existingNames = this.site().styleTokens.map((t) => t.name);
-    return uniqueName(existingNames, name || "Unnamed Style Token", {
+    const base = `${prefix}${name ?? "Unnamed Style Token"}`;
+
+    return uniqueName(existingNames, base, {
       separator: " ",
       normalize: toVarName,
     });
