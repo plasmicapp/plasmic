@@ -4,7 +4,7 @@ services:
     image: postgres:15
     restart: always
     environment:
-      - POSTGRES_PASSWORD=w1G_xJzN8.q9Q2_nRyY1CxzW.o257dtta.ZxUakSu
+      - POSTGRES_PASSWORD=SEKRET
     ports:
       - "5432:5432"
     volumes:
@@ -20,30 +20,20 @@ services:
   plasmic-wab:
     build:
       context: .
-      dockerfile: ./platform/wab/tools/docker-dev/Dockerfile
+      dockerfile: ./platform/wab/tools/docker-dev/Dockerfile.dev
     ports:
+      - "3003:3003"
       - "3004:3004"
+      - "3005:3005"
+      - "9229:9229"
     depends_on:
       plasmic-db:
         condition: service_healthy
     environment:
-      - EMAIL_SMTP_HOST=smtp-relay.brevo.com
-      - EMAIL_SMTP_PORT=465
-      - EMAIL_SMTP_USE_TLS=true
-      - EMAIL_SMTP_USER=
-      - EMAIL_SMTP_PASSWORD=
-      - SITE_ASSETS_BUCKET=plasmic-site-assets
-      - S3_ENDPOINT=
-      - S3_ACCESS_KEY_ID=
-      - S3_SECRET_ACCESS_KEY=
-      - S3_SSL_ENABLED=true
-      - S3_FORCE_PATH_STYLE=true
-      - S3_REGION=fr
-      - DATABASE_URI=postgres://wab:w1G_xJzN8.q9Q2_nRyY1CxzW.o257dtta.ZxUakSu@plasmic-db:5432/wab
-      - WAB_DBNAME=wab
-      - WAB_DBPASSWORD=w1G_xJzN8.q9Q2_nRyY1CxzW.o257dtta.ZxUakSu
-      - SESSION_SECRET=w1G_xJzN8.q9Q2_nRyY1CxzW.o257dtta.ZxUakSu
-      - HOST=localhost
+      - DATABASE_URI=postgres://wab:SEKRET@plasmic-db:5432/wab
+      - WAB_DBNAME=plasmic-db
+      - WAB_DBPASSWORD=SEKRET
+      - NODE_ENV=development
     tty: true
     stdin_open: true
 
