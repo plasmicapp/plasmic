@@ -26,6 +26,7 @@ import { isAdminTeamEmail } from "@/wab/shared/devflag-utils";
 import {
   Folder as InternalFolder,
   createFolderTreeStructure,
+  getFolderWithSlash,
   isFolder,
 } from "@/wab/shared/folders/folders-util";
 import { Component, ProjectDependency } from "@/wab/shared/model/classes";
@@ -40,6 +41,8 @@ interface Folder {
   key: string;
   items: ComponentPanelRow[];
   count: number;
+  path?: string;
+  onAdd?: () => Promise<void>;
 }
 
 interface ComponentData {
@@ -51,8 +54,11 @@ interface ComponentData {
 
 type ComponentPanelRow = Folder | ComponentData;
 
+type AddComponent = (folderName?: string) => () => Promise<void>;
+
 function mapToComponentPanelRow(
   item: Component | InternalFolder<Component>,
+  onAddComponent: AddComponent,
   dep?: ProjectDependency
 ): ComponentPanelRow {
   if (!isFolder(item)) {
@@ -68,8 +74,12 @@ function mapToComponentPanelRow(
     type: "folder-component" as const,
     key: item.path,
     name: item.name,
-    items: item.items.map((i) => mapToComponentPanelRow(i, dep)),
+    path: item.path,
+    items: item.items.map((i) =>
+      mapToComponentPanelRow(i, onAddComponent, dep)
+    ),
     count: item.count,
+    onAdd: onAddComponent(item.path),
   };
 }
 
@@ -108,6 +118,13 @@ const LeftComponentsPanel = observer(function LeftComponentsPanel() {
     studioCtx.appCtx.appConfig
   );
 
+  const onAddComponent: AddComponent = (folderName) => {
+    return async () => {
+      const folderPath = getFolderWithSlash(folderName);
+      await studioCtx.siteOps().createFrameForNewComponent(folderPath);
+    };
+  };
+
   const makeCompsItems = (
     comps: Component[],
     pathPrefix: string,
@@ -128,7 +145,7 @@ const LeftComponentsPanel = observer(function LeftComponentsPanel() {
     const componentTree = createFolderTreeStructure(comps, {
       pathPrefix,
       getName: (item) => getFolderComponentTrimmedName(item),
-      mapper: (item) => mapToComponentPanelRow(item, dep),
+      mapper: (item) => mapToComponentPanelRow(item, onAddComponent, dep),
     });
 
     return { items: componentTree, count: comps.length };
@@ -147,7 +164,7 @@ const LeftComponentsPanel = observer(function LeftComponentsPanel() {
               isReusableComponent(c) &&
               (isHostLessPackage(dep.site) || !isCodeComponent(c))
           ),
-          `${dep.uuid}-`,
+          dep.uuid,
           dep
         );
         return {
@@ -197,7 +214,7 @@ const LeftComponentsPanel = observer(function LeftComponentsPanel() {
             type: "folder" as const,
             name: "Code components",
             key: `$code-components-folder`,
-            ...makeCompsItems(codeComponents, "$code-components-folder-"),
+            ...makeCompsItems(codeComponents, "$code-components-folder"),
           },
         ]
       : []),
@@ -296,6 +313,7 @@ const ComponentTreeRow = (props: RenderElementProps<ComponentPanelRow>) => {
           isOpen={treeState.isOpen}
           groupSize={value.count}
           indentMultiplier={treeState.level}
+          onAdd={value.onAdd}
         />
       );
     case "component":

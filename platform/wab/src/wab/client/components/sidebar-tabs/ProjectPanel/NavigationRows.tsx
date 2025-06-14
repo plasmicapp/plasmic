@@ -31,9 +31,27 @@ export const HEADER_HEIGHT = 36;
 export const PAGE_HEIGHT = 42;
 export const ROW_HEIGHT = 32;
 
-interface NavigationHeaderRowProps extends RowGroupProps {
+interface RowAddActionProps extends Pick<RowGroupProps, "isOpen"> {
   onAdd: () => Promise<void>;
   toggleExpand: () => void;
+}
+
+type NavigationHeaderRowProps = RowGroupProps & RowAddActionProps;
+
+function RowAddAction({ onAdd, toggleExpand, isOpen }: RowAddActionProps) {
+  return (
+    <IconButton
+      onClick={async (e) => {
+        e.stopPropagation();
+        await onAdd();
+        if (!isOpen) {
+          toggleExpand();
+        }
+      }}
+    >
+      <Icon icon={PlusIcon} />
+    </IconButton>
+  );
 }
 
 export function NavigationHeaderRow({
@@ -46,35 +64,27 @@ export function NavigationHeaderRow({
       style={{ height: HEADER_HEIGHT }}
       className="bt-dim"
       showActions={true}
-      actions={
-        <IconButton
-          onClick={async (e) => {
-            e.stopPropagation();
-            await onAdd();
-            if (!props.isOpen) {
-              toggleExpand();
-            }
-          }}
-        >
-          <Icon icon={PlusIcon} />
-        </IconButton>
-      }
+      actions={RowAddAction({ onAdd, toggleExpand, isOpen: props.isOpen })}
       {...props}
     />
   );
 }
 
-interface NavigationFolderRowProps extends RowGroupProps {
+interface NavigationFolderRowProps extends RowGroupProps, RowAddActionProps {
   indentMultiplier: number;
 }
 
 export function NavigationFolderRow({
+  onAdd,
+  toggleExpand,
   indentMultiplier,
   ...props
 }: NavigationFolderRowProps) {
   return (
     <RowGroup
       style={{ height: ROW_HEIGHT, paddingLeft: indentMultiplier * 16 + 12 }}
+      showActions={true}
+      actions={RowAddAction({ onAdd, toggleExpand, isOpen: props.isOpen })}
       {...props}
     />
   );
