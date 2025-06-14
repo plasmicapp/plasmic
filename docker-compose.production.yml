@@ -52,12 +52,12 @@ services:
       context: .
       dockerfile: ./platform/wab/tools/docker-dev/Dockerfile.frontend
     ports:
-      - "3003:3003"
+      - "80:80"
     environment:
-      - PORT=3003
+      - PORT=80
       - BACKEND_HOST=plasmic-wab
       - BACKEND_PORT=3004
-      - PUBLIC_URL=http://localhost:3003
+      - PUBLIC_URL=http://localhost:80
 
 volumes:
   postgres_data:

@@ -38,21 +38,8 @@ RUN yarn setup && \
 # --- Final stage ----------------------------------------------------------------------
 FROM nginx:stable-alpine
 
-RUN <<EOF > /etc/nginx/conf.d/default.conf
-server {
-    listen 3003;
-    server_name localhost;
+COPY platform/wab/tools/docker-dev/nginx.conf /etc/nginx/conf.d/default.conf
 
-    location / {
-        root /usr/share/nginx/html;
-        index index.html;
-        # NOTE : Les '$' doivent être échappés (\$) pour ne pas être interprétés par le shell.
-        try_files \$uri \$uri/ /index.html;
-    }
-}
-EOF
-
-# Copy built app and secrets with correct ownership
 COPY --from=builder /plasmic/platform/wab/build /usr/share/nginx/html
 
-EXPOSE 3003
+EXPOSE 80
