@@ -26,7 +26,7 @@ export const checkoutCreate = async (fetch: any) => {
   const options: Cookies.CookieAttributes = {
     expires: SWELL_COOKIE_EXPIRE,
     sameSite: "none",
-    secure: true
+    secure: process.env.NODE_ENV === 'production' && process.env.ALLOW_INSECURE_COOKIES !== 'true',
   }
   if (checkoutUrl) {
     Cookies.set(SWELL_CHECKOUT_URL_COOKIE, checkoutUrl, options)

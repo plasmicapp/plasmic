@@ -174,7 +174,7 @@ async function main() {
 
   if (args.email) {
     const transporter = nodemailer.createTransport({
-      host: process.env.EMAIL_SMTP_HOST,
+      host: process.env.EMAIL_SMTP_HOST || "email-smtp.us-west-2.amazonaws.com",
       port: parseInt(process.env.EMAIL_SMTP_PORT || "587", 10),
       secure: process.env.EMAIL_SMTP_USE_TLS === "true",
       auth: {

@@ -17,7 +17,7 @@ build-the-plasmic-wab-docker-image:
   variables:
     DOCKER_IMAGE: ${CI_REGISTRY_IMAGE}:$CI_COMMIT_SHORT_SHA
   script:
-    - docker build -f ./platform/wab/tools/docker-dev/Dockerfile -t $DOCKER_IMAGE .
+    - docker build -f ./platform/wab/tools/docker-dev/Dockerfile.dev -t $DOCKER_IMAGE .
     - docker push $DOCKER_IMAGE
 
 publish-release-image-to-the-registry:
