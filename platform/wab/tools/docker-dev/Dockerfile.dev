@@ -28,7 +28,7 @@ COPY . .
 # Secrets setup and build tools
 RUN mkdir -p /tmp/.plasmic && \
     cp platform/wab/tools/docker-dev/secrets.json /tmp/.plasmic/secrets.json && \
-    sed -i -e 's/"host": "localhost"/"host": "plasmic-db"/' -e '/"database": "wab"/a "password": "SEKRET",' platform/wab/ormconfig.json && \
+    sed -i -e 's/"host": "localhost"/"host": "plasmic-db"/' -e '/"database": "wab"/a "password": "w1G_xJzN8.q9Q2_nRyY1CxzW.o257dtta.ZxUakSu",' platform/wab/ormconfig.json && \
     yarn setup && \
     yarn setup:canvas-packages && \
     yarn cache clean

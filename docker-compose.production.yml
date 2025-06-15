@@ -44,9 +44,9 @@ services:
       WAB_DBNAME: wab
       WAB_DBPASSWORD: w1G_xJzN8.q9Q2_nRyY1CxzW.o257dtta.ZxUakSu
       SESSION_SECRET: esv32grc4se284ydrbh24t8fv4h2s5cf23rxs5fd34tvty4d8bvt48tdr
-      HOST: 0.0.0.0
+      HOST: localhost
       MAIL_CONFIG: |
-        {"mailFrom": "Plasmic <no-reply@france-nuage.fr>"}
+        {"mailFrom": "Plasmic <no-reply@your-project.com>"}
       #Permit the app to work in production mode with http (with insecure cookies)
       ALLOW_INSECURE_COOKIES: true
     tty: true

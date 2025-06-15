@@ -4,7 +4,7 @@ services:
     image: postgres:15
     restart: always
     environment:
-      - POSTGRES_PASSWORD=SEKRET
+      - POSTGRES_PASSWORD=w1G_xJzN8.q9Q2_nRyY1CxzW.o257dtta.ZxUakSu
     ports:
       - "5432:5432"
     volumes:
@@ -30,9 +30,9 @@ services:
       plasmic-db:
         condition: service_healthy
     environment:
-      - DATABASE_URI=postgres://wab:SEKRET@plasmic-db:5432/wab
+      - DATABASE_URI=postgres://wab:w1G_xJzN8.q9Q2_nRyY1CxzW.o257dtta.ZxUakSu@plasmic-db:5432/wab
       - WAB_DBNAME=plasmic-db
-      - WAB_DBPASSWORD=SEKRET
+      - WAB_DBPASSWORD=w1G_xJzN8.q9Q2_nRyY1CxzW.o257dtta.ZxUakSu
       - NODE_ENV=development
     tty: true
     stdin_open: true
