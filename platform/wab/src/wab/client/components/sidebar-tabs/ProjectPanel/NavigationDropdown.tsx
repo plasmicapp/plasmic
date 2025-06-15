@@ -17,6 +17,7 @@ import {
   DataSourceTablePicker,
   INVALID_DATA_SOURCE_MESSAGE,
 } from "@/wab/client/components/sidebar-tabs/DataSource/DataSourceTablePicker";
+import { deleteArenas } from "@/wab/client/components/sidebar-tabs/ProjectPanel/ArenaContextMenu";
 import {
   ArenaData,
   ArenaPanelRow,
@@ -665,16 +666,37 @@ function NavigationDropdown_(
       }
     };
 
+  const getFolderArenas = (folder: FolderElement): AnyArena[] => {
+    const result: AnyArena[] = [];
+
+    for (const item of folder.items) {
+      switch (item.type) {
+        case "folder-element":
+          result.push(...getFolderArenas(item));
+          break;
+        case "page":
+        case "custom":
+        case "component":
+          result.push(item.arena);
+          break;
+        default:
+          break;
+      }
+    }
+    return result;
+  };
+
   const onDeleteFolder = async (folder: FolderElement) => {
     const confirmation = await promptDeleteFolder(
       getArenaDisplay(folder.sectionType),
       getFolderWithSlash(folder.name),
       folder.count
     );
-    // TODO -- delete folder and contents
-    console.log("Delete folder", confirmation);
+    if (confirmation) {
+      await deleteArenas(studioCtx, getFolderArenas(folder));
+    }
   };
-  const onFolderRenamed = async (folder: FolderElement, newName: string) => {
+  const onFolderRenamed = (folder: FolderElement, newName: string) => {
     // TODO -- rename folder and contents
     console.log("Rename folder", folder.name, newName);
   };

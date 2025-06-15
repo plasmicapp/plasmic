@@ -21,6 +21,33 @@ import { naturalSort } from "@/wab/shared/sort";
 import { Menu } from "antd";
 import * as React from "react";
 
+export const deleteArenas = async (
+  studioCtx: StudioCtx,
+  arenas: AnyArena[]
+) => {
+  const allRefs = arenas.flatMap((arena) =>
+    isDedicatedArena(arena) && isPageComponent(arena.component)
+      ? Array.from(
+          componentsReferecerToPageHref(studioCtx.site, arena.component)
+        )
+      : []
+  );
+
+  await studioCtx.changeObserved(
+    () => allRefs,
+    ({ success }) => {
+      for (const arena of arenas) {
+        if (isDedicatedArena(arena)) {
+          studioCtx.siteOps().tryRemoveComponent(arena.component);
+        } else if (isMixedArena(arena)) {
+          studioCtx.siteOps().removeMixedArena(arena);
+        }
+      }
+      return success();
+    }
+  );
+};
+
 /**
  * Context menu shown when right-clicking an arena row.
  *
@@ -157,23 +184,7 @@ export function ArenaContextMenu({
     if (!confirmation) {
       return;
     }
-    await studioCtx.changeObserved(
-      () => {
-        return isDedicatedArena(arena) && isPageComponent(arena.component)
-          ? Array.from(
-              componentsReferecerToPageHref(studioCtx.site, arena.component)
-            )
-          : [];
-      },
-      ({ success }) => {
-        if (isDedicatedArena(arena)) {
-          studioCtx.siteOps().tryRemoveComponent(arena.component);
-        } else if (isMixedArena(arena)) {
-          studioCtx.siteOps().removeMixedArena(arena);
-        }
-        return success();
-      }
-    );
+    await deleteArenas(studioCtx, [arena]);
   };
 
   return (
