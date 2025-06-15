@@ -5,6 +5,7 @@ import {
   RenderElementProps,
   useTreeData,
 } from "@/wab/client/components/grouping/VirtualTree";
+import promptDeleteFolder from "@/wab/client/components/modals/folderDeletionModal";
 import {
   ComponentFolder,
   ComponentFolderActions,
@@ -34,6 +35,7 @@ import {
   createFolderTreeStructure,
   getFolderWithSlash,
   isFolder,
+  replaceFolderName,
 } from "@/wab/shared/folders/folders-util";
 import { Component, ProjectDependency } from "@/wab/shared/model/classes";
 import { naturalSort } from "@/wab/shared/sort";
@@ -74,6 +76,23 @@ function mapToComponentPanelRow({
   };
 }
 
+const getFolderComponents = (folder: ComponentFolder): Component[] => {
+  const result: Component[] = [];
+
+  for (const item of folder.items) {
+    switch (item.type) {
+      case "folder":
+      case "folder-component":
+        result.push(...getFolderComponents(item));
+        break;
+      case "component":
+        result.push(item.component);
+        break;
+    }
+  }
+  return result;
+};
+
 const LeftComponentsPanel = observer(function LeftComponentsPanel() {
   const studioCtx = useStudioCtx();
   const [debouncedQuery, setDebouncedQuery] = React.useState("");
@@ -110,12 +129,37 @@ const LeftComponentsPanel = observer(function LeftComponentsPanel() {
   );
 
   const onDeleteFolder = React.useCallback(
-    async (folder: ComponentFolder) => {},
+    async (folder: ComponentFolder) => {
+      const confirmation = await promptDeleteFolder(
+        "component",
+        getFolderWithSlash(folder.name),
+        folder.count
+      );
+      if (confirmation) {
+        await studioCtx.changeUnsafe(() => {
+          const components = getFolderComponents(folder);
+          for (const component of components) {
+            studioCtx.siteOps().tryRemoveComponent(component);
+          }
+        });
+      }
+      // TODO - ensure the new folder is expanded by explicitly controlling VirtualTree openKeys
+    },
     [studioCtx]
   );
 
   const onFolderRenamed = React.useCallback(
-    async (folder: ComponentFolder, newName: string) => {},
+    async (folder: ComponentFolder, newName: string) => {
+      const { oldPath, newPath } = replaceFolderName(folder.key, newName);
+
+      await studioCtx.changeUnsafe(() => {
+        const components = getFolderComponents(folder);
+        for (const component of components) {
+          const newComponentName = component.name.replace(oldPath, newPath);
+          studioCtx.siteOps().tryRenameComponent(component, newComponentName);
+        }
+      });
+    },
     [studioCtx]
   );
 

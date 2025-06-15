@@ -16,7 +16,7 @@ import {
 } from "react";
 
 export type EditableLabelProps = {
-  onEdit?: (val: string) => boolean | void;
+  onEdit?: (val: string) => boolean | void | Promise<void>;
   value: string;
   programmaticallyTriggered?: boolean;
   inputBoxPlaceholder?: string;

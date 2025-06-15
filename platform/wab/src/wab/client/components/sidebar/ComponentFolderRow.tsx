@@ -1,7 +1,9 @@
 import RowGroup from "@/wab/client/components/RowGroup";
 import { FolderContextMenu } from "@/wab/client/components/sidebar-tabs/ProjectPanel/FolderContextMenu";
 import { Matcher } from "@/wab/client/components/view-common";
+import { EditableLabel } from "@/wab/client/components/widgets/EditableLabel";
 import { Component } from "@/wab/shared/model/classes";
+import cn from "classnames";
 import { observer } from "mobx-react";
 import * as React from "react";
 
@@ -52,6 +54,7 @@ export const ComponentFolderRow = observer(function ComponentFolderRow(
   const { onAddComponent, onDeleteFolder, onFolderRenamed } = folder.actions;
 
   const [renaming, setRenaming] = React.useState(false);
+  const labelClass = renaming ? "no-select fill-width" : "no-select";
 
   return (
     <RowGroup
@@ -77,7 +80,24 @@ export const ComponentFolderRow = observer(function ComponentFolderRow(
       }
       actions={<div></div>}
     >
-      {matcher.boldSnippets(folder.name)}
+      <EditableLabel
+        value={folder.name}
+        editing={renaming}
+        shrinkLabel={true}
+        labelFactory={({ className, ...restProps }) => (
+          <div className={cn(labelClass, className)} {...restProps} />
+        )}
+        onEdit={async (newName) => {
+          await onFolderRenamed(folder, newName);
+          setRenaming(false);
+        }}
+        // We need to programmatically trigger editing, because otherwise
+        // double-click will both trigger the editing and also trigger a
+        // navigation to the item
+        programmaticallyTriggered
+      >
+        <div className="flex-col">{matcher.boldSnippets(folder.name)}</div>
+      </EditableLabel>
     </RowGroup>
   );
 });

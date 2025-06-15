@@ -374,15 +374,9 @@ export const TokenFolderRow = observer(function TokenFolderRow(
             {...restProps}
           />
         )}
-        onEdit={(newName) => {
-          folder
-            .onRename(folder, newName)
-            .then(() => {
-              setRenaming(false);
-            })
-            .catch(() => {
-              // TODO
-            });
+        onEdit={async (newName) => {
+          await folder.onRename(folder, newName);
+          setRenaming(false);
         }}
         // We need to programmatically trigger editing, because otherwise
         // double-click will both trigger the editing and also trigger a
