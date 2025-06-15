@@ -16,7 +16,6 @@ import type domAlign from "dom-align";
 import type $ from "jquery";
 import type React from "react";
 import type ReactDOM from "react-dom";
-import type ReactDOMClient from "react-dom/client";
 import type * as jsxDevRuntime from "react/jsx-dev-runtime";
 import type * as jsxRuntime from "react/jsx-runtime";
 import type ResizeObserver from "resize-observer-polyfill";
@@ -209,7 +208,6 @@ export interface SubDeps {
   hostVersion: string | undefined;
   React: typeof React;
   ReactDOM: typeof ReactDOM;
-  ReactDOMClient?: typeof ReactDOMClient;
   jsxRuntime?: typeof jsxRuntime;
   jsxDevRuntime?: typeof jsxDevRuntime;
   ResizeObserver: typeof ResizeObserver;
