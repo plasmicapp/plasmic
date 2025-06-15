@@ -5,13 +5,19 @@ import {
   RenderElementProps,
   useTreeData,
 } from "@/wab/client/components/grouping/VirtualTree";
+import promptDeleteFolder from "@/wab/client/components/modals/folderDeletionModal";
 import MultiAssetsActions from "@/wab/client/components/sidebar/MultiAssetsActions";
 import { TokenEditModal } from "@/wab/client/components/sidebar/TokenEditModal";
 import TokenTypeHeader from "@/wab/client/components/sidebar/TokenTypeHeader";
 import {
+  OnAddToken,
+  OnDeleteFolder,
+  OnFolderRenamed,
   TOKEN_ROW_HEIGHT,
   TokenControlsContext,
+  TokenFolder,
   TokenFolderRow,
+  TokenPanelRow,
   TokenRow,
 } from "@/wab/client/components/sidebar/token-controls";
 import { Matcher } from "@/wab/client/components/view-common";
@@ -36,6 +42,7 @@ import {
   getFolderTrimmed,
   getFolderWithSlash,
   isFolder,
+  replaceFolderName,
 } from "@/wab/shared/folders/folders-util";
 import { ProjectDependency, StyleToken } from "@/wab/shared/model/classes";
 import { naturalSort } from "@/wab/shared/sort";
@@ -44,40 +51,27 @@ import { debounce, groupBy, partition } from "lodash";
 import { observer } from "mobx-react";
 import * as React from "react";
 
-interface Header {
-  type: "header";
+interface TokenRowActions {
+  onAdd: OnAddToken;
+  onDeleteFolder: OnDeleteFolder;
+  onFolderRenamed: OnFolderRenamed;
+}
+
+interface TokenToPanelRowProps {
+  item: StyleToken | InternalFolder<StyleToken>;
   tokenType: TokenType;
-  key: string;
-  items: TokenPanelRow[];
-  count: number;
+  getTokenValue: (token: StyleToken) => TokenValue;
+  actions: TokenRowActions;
+  dep?: ProjectDependency;
 }
 
-interface Folder {
-  type: "folder" | "folder-token";
-  tokenType: TokenType;
-  path?: string;
-  name: string;
-  key: string;
-  items: TokenPanelRow[];
-  count: number;
-}
-
-interface TokenData {
-  type: "token";
-  key: string;
-  token: StyleToken;
-  value: TokenValue;
-  importedFrom?: string;
-}
-
-type TokenPanelRow = Header | Folder | TokenData;
-
-function mapToTokenPanelRow(
-  item: StyleToken | InternalFolder<StyleToken>,
-  tokenType: TokenType,
-  getTokenValue: (token: StyleToken) => TokenValue,
-  dep?: ProjectDependency
-): TokenPanelRow {
+function mapToTokenPanelRow({
+  item,
+  tokenType,
+  getTokenValue,
+  actions,
+  dep,
+}: TokenToPanelRowProps): TokenPanelRow {
   if (!isFolder(item)) {
     return {
       type: "token" as const,
@@ -95,9 +89,12 @@ function mapToTokenPanelRow(
     name: item.name,
     path: item.path,
     items: item.items.map((i) =>
-      mapToTokenPanelRow(i, tokenType, getTokenValue, dep)
+      mapToTokenPanelRow({ item: i, tokenType, getTokenValue, dep, actions })
     ),
     count: item.count,
+    onAdd: actions.onAdd,
+    onDelete: actions.onDeleteFolder,
+    onRename: actions.onFolderRenamed,
   };
 }
 
@@ -189,6 +186,61 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
     [studioCtx, setJustAdded, setEditToken]
   );
 
+  const getFolderTokens = (folder: TokenFolder): StyleToken[] => {
+    const result: StyleToken[] = [];
+
+    for (const item of folder.items) {
+      switch (item.type) {
+        case "folder":
+        case "folder-token":
+          result.push(...getFolderTokens(item));
+          break;
+        case "token":
+          result.push(item.token);
+          break;
+        case "header":
+          break;
+      }
+    }
+    return result;
+  };
+
+  const onDeleteFolder = React.useCallback(
+    async (folder: TokenFolder) => {
+      const confirmation = await promptDeleteFolder(
+        "token",
+        getFolderWithSlash(folder.name),
+        folder.count
+      );
+      if (confirmation) {
+        await studioCtx.siteOps().tryDeleteTokens(getFolderTokens(folder));
+      }
+    },
+    [studioCtx]
+  );
+
+  const onFolderRenamed = React.useCallback(
+    async (folder: TokenFolder, newName: string) => {
+      const { oldPath, newPath } = replaceFolderName(folder.key, newName);
+      await studioCtx.changeUnsafe(() => {
+        const tokens = getFolderTokens(folder);
+        for (const token of tokens) {
+          const oldTokenName = token.name;
+          const newTokenName = oldTokenName.replace(oldPath, newPath);
+          studioCtx.tplMgr().renameToken(token, newTokenName);
+        }
+      });
+      // TODO - ensure the new folder is expanded by explicitly controlling VirtualTree openKeys
+    },
+    [studioCtx]
+  );
+
+  const actions: TokenRowActions = {
+    onAdd,
+    onDeleteFolder,
+    onFolderRenamed,
+  };
+
   const onDuplicate = React.useCallback(
     async (token: StyleToken) => {
       await studioCtx.change(({ success }) => {
@@ -250,7 +302,13 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
         pathPrefix: tokenType,
         getName: (item) => item.name,
         mapper: (item) =>
-          mapToTokenPanelRow(item, tokenType, getTokenValue, dep),
+          mapToTokenPanelRow({
+            item,
+            tokenType,
+            getTokenValue,
+            dep,
+            actions,
+          }),
       });
       return { items: tokenTree, count: tokens.length };
     };
@@ -276,6 +334,9 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
               ).filter((t) => t.type === tokenType),
               dep
             ),
+            onAdd,
+            onRename: onFolderRenamed,
+            onDelete: onDeleteFolder,
           };
         })
         .filter((dep) => dep.count > 0);
@@ -297,6 +358,9 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
               tokenType,
               name: "Registered tokens",
               key: `$${tokenType}-registered-folder`,
+              onAdd,
+              onRename: onFolderRenamed,
+              onDelete: onDeleteFolder,
               ...makeTokensItems(registeredTokens),
             },
           ]
@@ -492,13 +556,11 @@ const TokenTreeRow = (props: RenderElementProps<TokenPanelRow>) => {
     case "folder-token":
       return (
         <TokenFolderRow
-          name={value.name}
-          tokenType={value.tokenType}
-          path={value.path}
+          folder={value}
           matcher={treeState.matcher}
           isOpen={treeState.isOpen}
-          groupSize={value.count}
           indentMultiplier={treeState.level - 1}
+          toggleExpand={treeState.toggleExpand}
         />
       );
     case "token":

@@ -106,6 +106,7 @@ import {
   getFolderTrimmed,
   getFolderWithSlash,
   isFolder,
+  replaceFolderName,
 } from "@/wab/shared/folders/folders-util";
 import { InsertableTemplateComponentExtraInfo } from "@/wab/shared/insertable-templates/types";
 import { ARENAS_DESCRIPTION, ARENA_LOWER } from "@/wab/shared/Labels";
@@ -707,16 +708,12 @@ function NavigationDropdown_(
   );
   const onFolderRenamed = React.useCallback(
     (folder: FolderElement, newName: string) => {
-      const oldPrefix = getFolderWithSlash(folder.key);
-
-      // Replace only the final folder segment in the path
-      //  [^/]+(?=\/$) "one or more non-slashes" only if followed by a trailing slash
-      const newPrefix = oldPrefix.replace(/[^/]+(?=\/$)/, newName);
+      const { oldPath, newPath } = replaceFolderName(folder.key, newName);
 
       const renameProps: RenameArenaProps[] = getFolderArenas(folder).map(
         (arena) => {
           const oldArenaName = getArenaName(arena);
-          const newArenaName = oldArenaName.replace(oldPrefix, newPrefix);
+          const newArenaName = oldArenaName.replace(oldPath, newPath);
           return { arena, newName: newArenaName };
         }
       );

@@ -1,16 +1,16 @@
 // eslint-disable-next-line no-restricted-imports
 import RowGroup from "@/wab/client/components/RowGroup";
 import { MenuBuilder } from "@/wab/client/components/menu-builder";
+import { FolderContextMenu } from "@/wab/client/components/sidebar-tabs/ProjectPanel/FolderContextMenu";
 import ColorTokenControl from "@/wab/client/components/sidebar/ColorTokenControl";
 import GeneralTokenControl from "@/wab/client/components/sidebar/GeneralTokenControl";
 import { useMultiAssetsActions } from "@/wab/client/components/sidebar/MultiAssetsActions";
 import { ColorSidebarPopup } from "@/wab/client/components/style-controls/ColorButton";
 import ColorSwatch from "@/wab/client/components/style-controls/ColorSwatch";
 import { Matcher } from "@/wab/client/components/view-common";
+import { EditableLabel } from "@/wab/client/components/widgets/EditableLabel";
 import { Icon } from "@/wab/client/components/widgets/Icon";
-import IconButton from "@/wab/client/components/widgets/IconButton";
 import { SimpleTextbox } from "@/wab/client/components/widgets/SimpleTextbox";
-import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
 import TokenIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Token";
 import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { TokenType, TokenValue } from "@/wab/commons/StyleToken";
@@ -22,12 +22,54 @@ import { maybeTokenRefCycle } from "@/wab/shared/core/styles";
 import { StyleToken } from "@/wab/shared/model/classes";
 import { canCreateAlias } from "@/wab/shared/ui-config-utils";
 import { Menu, notification } from "antd";
+import cn from "classnames";
 import { sortBy } from "lodash";
 import { observer } from "mobx-react";
 import React from "react";
 import { FaArrowRight } from "react-icons/fa";
 
 export const TOKEN_ROW_HEIGHT = 32;
+
+export interface TokenHeader {
+  type: "header";
+  tokenType: TokenType;
+  key: string;
+  items: TokenPanelRow[];
+  count: number;
+}
+
+export type OnAddToken = (
+  type: TokenType,
+  folderName?: string
+) => Promise<void>;
+export type OnFolderRenamed = (
+  folder: TokenFolder,
+  newName: string
+) => Promise<void>;
+export type OnDeleteFolder = (folder: TokenFolder) => Promise<void>;
+
+export interface TokenFolder {
+  type: "folder" | "folder-token";
+  tokenType: TokenType;
+  path?: string;
+  name: string;
+  key: string;
+  items: TokenPanelRow[];
+  count: number;
+  onAdd: OnAddToken;
+  onRename: OnFolderRenamed;
+  onDelete: OnDeleteFolder;
+}
+
+export interface TokenData {
+  type: "token";
+  key: string;
+  token: StyleToken;
+  value: TokenValue;
+  importedFrom?: string;
+}
+
+export type TokenPanelRow = TokenHeader | TokenFolder | TokenData;
 
 export const TokenControlsContext = React.createContext<{
   vsh: VariantedStylesHelper | undefined;
@@ -282,27 +324,21 @@ export const TokenRow = observer(function TokenRow(props: {
   );
 });
 
-export const TokenFolderRow = observer(function TokenFolderRow(props: {
-  name: string;
-  path?: string;
-  tokenType: TokenType;
+interface TokenFolderRowProps {
+  folder: TokenFolder;
   matcher: Matcher;
-  groupSize: number;
   indentMultiplier: number;
   isOpen: boolean;
-}) {
-  const {
-    name,
-    path,
-    tokenType,
-    matcher,
-    groupSize,
-    indentMultiplier,
-    isOpen,
-  } = props;
-  const tokenControls = useTokenControls();
+  toggleExpand: () => void;
+}
+
+export const TokenFolderRow = observer(function TokenFolderRow(
+  props: TokenFolderRowProps
+) {
+  const { folder, matcher, indentMultiplier, isOpen, toggleExpand } = props;
   const studioCtx = useStudioCtx();
   const readOnly = isTokenReadOnly(studioCtx);
+  const [renaming, setRenaming] = React.useState(false);
 
   return (
     <RowGroup
@@ -310,25 +346,51 @@ export const TokenFolderRow = observer(function TokenFolderRow(props: {
         height: TOKEN_ROW_HEIGHT,
         paddingLeft: getLeftPadding(indentMultiplier),
       }}
-      groupSize={groupSize}
+      groupSize={folder.count}
       isOpen={isOpen}
       showActions={!readOnly}
-      actions={
-        !readOnly && (
-          <IconButton
-            onClick={async (e) => {
-              if (isOpen) {
-                e.stopPropagation();
-              }
-              await tokenControls.onAdd(tokenType, path);
-            }}
-          >
-            <Icon icon={PlusIcon} />
-          </IconButton>
-        )
+      menu={
+        <FolderContextMenu
+          onAdd={async () => {
+            if (!isOpen) {
+              toggleExpand();
+            }
+            await folder.onAdd(folder.tokenType, folder.path);
+          }}
+          arenaDisplay={"token"}
+          onSelectRename={() => setRenaming(true)}
+          onDelete={() => folder.onDelete(folder)}
+        />
       }
+      actions={<div></div>}
     >
-      {matcher.boldSnippets(name)}
+      <EditableLabel
+        value={folder.name}
+        editing={renaming}
+        shrinkLabel={true}
+        labelFactory={({ className, ...restProps }) => (
+          <div
+            className={cn("no-select fill-width", className)}
+            {...restProps}
+          />
+        )}
+        onEdit={(newName) => {
+          folder
+            .onRename(folder, newName)
+            .then(() => {
+              setRenaming(false);
+            })
+            .catch(() => {
+              // TODO
+            });
+        }}
+        // We need to programmatically trigger editing, because otherwise
+        // double-click will both trigger the editing and also trigger a
+        // navigation to the item
+        programmaticallyTriggered
+      >
+        <div className="flex-col">{matcher.boldSnippets(folder.name)}</div>
+      </EditableLabel>
     </RowGroup>
   );
 });

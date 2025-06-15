@@ -28,7 +28,7 @@ export function createFolderTreeStructure<T, K>(
   const { pathPrefix, getName, mapper } = opts;
 
   // Ensure prefix is always separated by underscore
-  const prefix = pathPrefix && `${pathPrefix}_`
+  const prefix = pathPrefix && `${pathPrefix}_`;
 
   const tree: (T | Folder<T>)[] = [];
 
@@ -81,29 +81,40 @@ function insertIntoTree<T>(
     treeNode = children[len - 1] as Folder<T>;
   }
 
-  insertIntoTree(
-    item,
-    treeNode.items,
-    folders,
-    index + 1,
-    newPath
-  );
+  insertIntoTree(item, treeNode.items, folders, index + 1, newPath);
   treeNode.count++;
 }
 
 /**
  * Get the un-prefixed folder path with a slash appended. The prefix is
- * the text up to the first underscore, e.g. Page_Group1/Group2 
+ * the text up to the first underscore, e.g. Page_Group1/Group2
  * @param name - Folder path with prefix
  * @returns Plain folder path with slash
  */
 export function getFolderWithSlash(name?: string): string {
   if (!name) {
-    return '';
+    return "";
   }
-  const prefixEnd = name.indexOf('_');
+  const prefixEnd = name.indexOf("_");
   const path = prefixEnd >= 0 ? name.slice(prefixEnd + 1) : name;
   return `${path}/`;
+}
+
+/**
+ * Replace a prefixed folder's name and keep the rest of the path intact
+ * @param name - Full folder path
+ * @param newName - New folder name
+ * @returns Original path without prefix and renamed path
+ */
+export function replaceFolderName(
+  path: string,
+  newName: string
+): { oldPath: string; newPath: string } {
+  const oldPath = getFolderWithSlash(path);
+
+  // Replace only the final folder segment in the path
+  //  [^/]+(?=\/$) "one or more non-slashes" only if followed by a trailing slash
+  return { oldPath, newPath: oldPath.replace(/[^/]+(?=\/$)/, newName) };
 }
 
 export function getFolderTrimmed(name: string) {
