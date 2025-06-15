@@ -5,7 +5,12 @@ import {
   RenderElementProps,
   useTreeData,
 } from "@/wab/client/components/grouping/VirtualTree";
-import { ComponentFolderRow } from "@/wab/client/components/sidebar/ComponentFolderRow";
+import {
+  ComponentFolder,
+  ComponentFolderActions,
+  ComponentFolderRow,
+  ComponentPanelRow,
+} from "@/wab/client/components/sidebar/ComponentFolderRow";
 import { ComponentRow } from "@/wab/client/components/sidebar/ComponentRow";
 import { PlasmicLeftComponentsPanel } from "@/wab/client/plasmic/plasmic_kit_left_pane/PlasmicLeftComponentsPanel";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
@@ -36,32 +41,17 @@ import { debounce } from "lodash";
 import { observer } from "mobx-react";
 import * as React from "react";
 
-interface Folder {
-  type: "folder" | "folder-component";
-  name: string;
-  key: string;
-  items: ComponentPanelRow[];
-  count: number;
-  path?: string;
-  onAdd?: () => Promise<void>;
+interface ComponentToPanelRowProps {
+  item: Component | InternalFolder<Component>;
+  dep?: ProjectDependency;
+  actions: ComponentFolderActions;
 }
 
-interface ComponentData {
-  type: "component";
-  key: string;
-  component: Component;
-  importedFrom?: string;
-}
-
-type ComponentPanelRow = Folder | ComponentData;
-
-type AddComponent = (folderName?: string) => () => Promise<void>;
-
-function mapToComponentPanelRow(
-  item: Component | InternalFolder<Component>,
-  onAddComponent: AddComponent,
-  dep?: ProjectDependency
-): ComponentPanelRow {
+function mapToComponentPanelRow({
+  item,
+  dep,
+  actions,
+}: ComponentToPanelRowProps): ComponentPanelRow {
   if (!isFolder(item)) {
     return {
       type: "component" as const,
@@ -77,10 +67,10 @@ function mapToComponentPanelRow(
     name: item.name,
     path: item.path,
     items: item.items.map((i) =>
-      mapToComponentPanelRow(i, onAddComponent, dep)
+      mapToComponentPanelRow({ item: i, dep, actions })
     ),
     count: item.count,
-    onAdd: onAddComponent(item.path),
+    actions,
   };
 }
 
@@ -119,12 +109,32 @@ const LeftComponentsPanel = observer(function LeftComponentsPanel() {
     studioCtx.appCtx.appConfig
   );
 
-  const onAddComponent: AddComponent = (folderName) => {
-    return async () => {
+  const onDeleteFolder = React.useCallback(
+    async (folder: ComponentFolder) => {},
+    [studioCtx]
+  );
+
+  const onFolderRenamed = React.useCallback(
+    async (folder: ComponentFolder, newName: string) => {},
+    [studioCtx]
+  );
+
+  const onAddComponent = React.useCallback(
+    async (folderName?: string) => {
       const folderPath = getFolderWithSlash(folderName);
       await studioCtx.siteOps().createFrameForNewComponent(folderPath);
-    };
-  };
+    },
+    [studioCtx]
+  );
+
+  const actions: ComponentFolderActions = React.useMemo(
+    () => ({
+      onAddComponent,
+      onDeleteFolder,
+      onFolderRenamed,
+    }),
+    [onAddComponent, onDeleteFolder, onFolderRenamed]
+  );
 
   const makeCompsItems = (
     comps: Component[],
@@ -146,13 +156,13 @@ const LeftComponentsPanel = observer(function LeftComponentsPanel() {
     const componentTree = createFolderTreeStructure(comps, {
       pathPrefix,
       getName: (item) => getFolderComponentTrimmedName(item),
-      mapper: (item) => mapToComponentPanelRow(item, onAddComponent, dep),
+      mapper: (item) => mapToComponentPanelRow({ item, dep, actions }),
     });
 
     return { items: componentTree, count: comps.length };
   };
 
-  const makeDepsItems = (deps: ProjectDependency[]): Folder[] => {
+  const makeDepsItems = (deps: ProjectDependency[]): ComponentFolder[] => {
     deps = naturalSort(deps, (dep) =>
       studioCtx.projectDependencyManager.getNiceDepName(dep)
     );
@@ -177,6 +187,7 @@ const LeftComponentsPanel = observer(function LeftComponentsPanel() {
           // shown in the Code components section
           items: items,
           count: count,
+          actions,
         };
       })
       .filter((folder) => folder.count > 0);
@@ -215,6 +226,7 @@ const LeftComponentsPanel = observer(function LeftComponentsPanel() {
             type: "folder" as const,
             name: "Code components",
             key: `$code-components-folder`,
+            actions,
             ...makeCompsItems(codeComponents, "$code-components-folder"),
           },
         ]
@@ -230,6 +242,7 @@ const LeftComponentsPanel = observer(function LeftComponentsPanel() {
               (sum, folder) => sum + folder.count,
               0
             ),
+            actions,
           },
         ]
       : []),
@@ -257,7 +270,7 @@ const LeftComponentsPanel = observer(function LeftComponentsPanel() {
               // shown in the Code components section
               items: pageComponents,
               count: pageComponents.length,
-            } as Folder;
+            } as ComponentFolder;
           })
           .filter(isNonNil)
       : []),
@@ -321,12 +334,11 @@ const ComponentTreeRow = (props: RenderElementProps<ComponentPanelRow>) => {
     case "folder-component":
       return (
         <ComponentFolderRow
-          name={value.name}
+          folder={value}
           matcher={treeState.matcher}
           isOpen={treeState.isOpen}
-          groupSize={value.count}
           indentMultiplier={treeState.level}
-          onAdd={value.onAdd}
+          toggleExpand={treeState.toggleExpand}
         />
       );
     case "component":

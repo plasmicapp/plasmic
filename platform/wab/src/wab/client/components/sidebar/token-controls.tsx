@@ -357,7 +357,7 @@ export const TokenFolderRow = observer(function TokenFolderRow(
             }
             await folder.onAdd(folder.tokenType, folder.path);
           }}
-          arenaDisplay={"token"}
+          itemDisplay={"token"}
           onSelectRename={() => setRenaming(true)}
           onDelete={() => folder.onDelete(folder)}
         />

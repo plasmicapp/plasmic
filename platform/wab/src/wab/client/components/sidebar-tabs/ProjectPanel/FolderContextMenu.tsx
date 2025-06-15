@@ -5,18 +5,18 @@ import * as React from "react";
 /**
  * Context menu shown when right-clicking a folder row.
  *
- * @param arenaDisplay text to indicate the type of arenas in the folder
+ * @param itemDisplay text to indicate the type of items in the folder
  * @param onAdd callback when add is clicked
  * @param onSelectRename callback when rename is clicked
  * @param onDelete callback when delete is clicked
  */
 export function FolderContextMenu({
-  arenaDisplay,
+  itemDisplay,
   onAdd,
   onSelectRename,
   onDelete,
 }: {
-  arenaDisplay: string;
+  itemDisplay: string;
   onAdd: () => void;
   onSelectRename: () => void;
   onDelete: () => void;
@@ -26,7 +26,7 @@ export function FolderContextMenu({
       {menuSection(
         "add",
         <Menu.Item key="add" onClick={onAdd}>
-          <strong>Add</strong> {arenaDisplay}
+          <strong>Add</strong> {itemDisplay}
         </Menu.Item>
       )}
       {menuSection(

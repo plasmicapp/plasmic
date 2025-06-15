@@ -154,7 +154,7 @@ export function NavigationFolderRow({
             }
             await folder.onAdd();
           }}
-          arenaDisplay={getArenaDisplay(folder.sectionType)}
+          itemDisplay={getArenaDisplay(folder.sectionType)}
           onSelectRename={() => setRenaming(true)}
           onDelete={() => folder.onDelete(folder)}
         />
