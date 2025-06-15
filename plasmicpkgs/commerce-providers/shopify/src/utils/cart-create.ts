@@ -37,7 +37,7 @@ export const cartCreate = async (
   if (cart) {
     const options: Cookies.CookieAttributes = {
       expires: SHOPIFY_COOKIE_EXPIRE,
-      sameSite: "none",
+      sameSite: process.env.NODE_ENV === 'production' && process.env.ALLOW_INSECURE_COOKIES !== 'true' ? 'none' : 'lax',
       secure: process.env.NODE_ENV === 'production' && process.env.ALLOW_INSECURE_COOKIES !== 'true',,
     };
     Cookies.set(SHOPIFY_CART_ID_COOKIE, cart.id, options);

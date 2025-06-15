@@ -15,7 +15,7 @@ export const checkoutCreate = async (fetch: any): Promise<CheckoutCreate> => {
   if (checkoutId) {
     const options: Cookies.CookieAttributes = {
       expires: 60 * 60 * 24 * 30,
-      sameSite: "none",
+      sameSite: process.env.NODE_ENV === 'production' && process.env.ALLOW_INSECURE_COOKIES !== 'true' ? 'none' : 'lax',
       secure: process.env.NODE_ENV === 'production' && process.env.ALLOW_INSECURE_COOKIES !== 'true',,
     }
     Cookies.set(CHECKOUT_ID_COOKIE, value, options)

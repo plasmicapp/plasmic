@@ -3,7 +3,7 @@ import Cookies from "js-cookie";
 import { LOCAL_CART_ID, LOCAL_CART_OBJ } from "../const";
 
 const options: Cookies.CookieAttributes = {
-  sameSite: "none",
+  sameSite: process.env.NODE_ENV === 'production' && process.env.ALLOW_INSECURE_COOKIES !== 'true' ? 'none' : 'lax',
   secure: process.env.NODE_ENV === 'production' && process.env.ALLOW_INSECURE_COOKIES !== 'true',,
 };
 

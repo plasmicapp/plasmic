@@ -2177,7 +2177,7 @@ export function makeExpressSessionMiddleware(config: Config) {
         // a huge pain because secure:true must accompany
         // sameSite:none, which means you'd have to run
         // all the dev servers in https mode.
-        sameSite: "none",
+        sameSite: process.env.NODE_ENV === 'production' && process.env.ALLOW_INSECURE_COOKIES !== 'true' ? 'none' : 'lax',
         secure: process.env.NODE_ENV === 'production' && process.env.ALLOW_INSECURE_COOKIES !== 'true',
       }),
     },

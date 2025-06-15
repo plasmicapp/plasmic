@@ -25,7 +25,7 @@ export const checkoutCreate = async (fetch: any) => {
   const checkoutUrl = cart?.checkout_url
   const options: Cookies.CookieAttributes = {
     expires: SWELL_COOKIE_EXPIRE,
-    sameSite: "none",
+    sameSite: process.env.NODE_ENV === 'production' && process.env.ALLOW_INSECURE_COOKIES !== 'true' ? 'none' : 'lax',
     secure: process.env.NODE_ENV === 'production' && process.env.ALLOW_INSECURE_COOKIES !== 'true',
   }
   if (checkoutUrl) {
