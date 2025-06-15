@@ -2,9 +2,7 @@
 
 Thank you for your interest in contributing to Plasmic! We appreciate all the contributions we receive, from issue reports to code changes.
 
-[//]: # (Not sure how to help? Check out [good first issues]&#40;https://github.com/plasmicapp/plasmic/issues&#41;!)
-
-If you're interested in implementing a non-trivial code change, please create an issue first, so that we can discuss the approach.
+Before getting started, get in touch with our team first on [Slack](https://plasmic.app/slack) or our [Community Forum](https://forum.plasmic.app/).
 
 ## Contributor License Agreement
 
@@ -49,8 +47,9 @@ To get started, please see the [the getting started guide](docs/contributing/pla
 ### Getting started
 
 ```
-yarn
-yarn lerna bootstrap  # inter-links all the lerna-managed packages together
+pip install pre-commit
+pre-commit install --install-hooks
+yarn setup-all
 ```
 
 We also make use of [Verdaccio](https://verdaccio.org/) to locally test packages. This just stands up a local npm registry that you can publish your test packages to.
@@ -192,7 +191,7 @@ The above general contribution instructions also apply to plasmicpkgs, so read t
 
 Before starting, we recommend reading our docs for Code Components:
 
-- [Docs on code components][code component docs]
+- [Docs on code components][https://docs.plasmic.app/learn/code-components/]
 
 ### Creating a new package
 
@@ -215,25 +214,25 @@ So a typical `package.json` might look like this:
 
 ```json
 {
-   "devDependencies": {
-      "@plasmicapp/data-sources": "0.1.53",
-      "@plasmicapp/host": "1.0.119",
-      "@size-limit/preset-small-lib": "^4.11.0",
-      "@types/node": "^14.0.26",
-      "size-limit": "^4.11.0",
-      "tsdx": "^0.14.1",
-      "tslib": "^2.2.0",
-      "typescript": "^3.9.7"
-   },
-   "peerDependencies": {
-      "@plasmicapp/data-sources": ">=0.1.52",
-      "@plasmicapp/host": ">=1.0.0",
-      "react": ">=16.8.0",
-      "react-dom": ">=16.8.0"
-   },
-   "dependencies": {
-      "memoize-one": "^6.0.0"
-   }
+  "devDependencies": {
+    "@plasmicapp/data-sources": "0.1.53",
+    "@plasmicapp/host": "1.0.119",
+    "@size-limit/preset-small-lib": "^4.11.0",
+    "@types/node": "^14.0.26",
+    "size-limit": "^4.11.0",
+    "tsdx": "^0.14.1",
+    "tslib": "^2.2.0",
+    "typescript": "^3.9.7"
+  },
+  "peerDependencies": {
+    "@plasmicapp/data-sources": ">=0.1.52",
+    "@plasmicapp/host": ">=1.0.0",
+    "react": ">=16.8.0",
+    "react-dom": ">=16.8.0"
+  },
+  "dependencies": {
+    "memoize-one": "^6.0.0"
+  }
 }
 ```
 
