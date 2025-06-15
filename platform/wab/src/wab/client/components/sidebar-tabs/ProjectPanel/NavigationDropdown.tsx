@@ -1,4 +1,5 @@
 import { COMMANDS } from "@/wab/client/commands/command";
+import { RenameArenaProps } from "@/wab/client/components/canvas/site-ops";
 import {
   RenderElementProps,
   VirtualTree,
@@ -21,6 +22,8 @@ import { deleteArenas } from "@/wab/client/components/sidebar-tabs/ProjectPanel/
 import {
   ArenaData,
   ArenaPanelRow,
+  ComponentArenaData,
+  CustomArenaData,
   FolderElement,
   HEADER_HEIGHT,
   NavigationAnyRow,
@@ -30,6 +33,7 @@ import {
   OnDeleteFolder,
   OnFolderRenamed,
   PAGE_HEIGHT,
+  PageArenaData,
   ROW_HEIGHT,
   getArenaDisplay,
 } from "@/wab/client/components/sidebar-tabs/ProjectPanel/NavigationRows";
@@ -61,14 +65,12 @@ import { StandardMarkdown } from "@/wab/client/utils/StandardMarkdown";
 import { valueAsString } from "@/wab/commons/values";
 import { ArenaType, isArenaType } from "@/wab/shared/ApiSchema";
 import { AnyArena, getArenaName } from "@/wab/shared/Arenas";
-import { ARENAS_DESCRIPTION, ARENA_LOWER } from "@/wab/shared/Labels";
-import { tryGetMainContentSlotTarget } from "@/wab/shared/SlotUtils";
-import { addEmptyQuery } from "@/wab/shared/TplMgr";
-import { $$$ } from "@/wab/shared/TplQuery";
 import { getHostLessComponents } from "@/wab/shared/code-components/code-components";
 import { toVarName } from "@/wab/shared/codegen/util";
 import {
   assert,
+  maybe,
+  spawn,
   swallow,
   switchType,
   unreachable,
@@ -106,6 +108,7 @@ import {
   isFolder,
 } from "@/wab/shared/folders/folders-util";
 import { InsertableTemplateComponentExtraInfo } from "@/wab/shared/insertable-templates/types";
+import { ARENAS_DESCRIPTION, ARENA_LOWER } from "@/wab/shared/Labels";
 import {
   Arena,
   ComponentArena,
@@ -113,6 +116,9 @@ import {
   ObjectPath,
   PageArena,
 } from "@/wab/shared/model/classes";
+import { tryGetMainContentSlotTarget } from "@/wab/shared/SlotUtils";
+import { addEmptyQuery } from "@/wab/shared/TplMgr";
+import { $$$ } from "@/wab/shared/TplQuery";
 import { TableSchema } from "@plasmicapp/data-sources";
 import { executePlasmicDataOp } from "@plasmicapp/react-web/lib/data-sources";
 import { Dropdown, Menu } from "antd";
@@ -686,20 +692,44 @@ function NavigationDropdown_(
     return result;
   };
 
-  const onDeleteFolder = async (folder: FolderElement) => {
-    const confirmation = await promptDeleteFolder(
-      getArenaDisplay(folder.sectionType),
-      getFolderWithSlash(folder.name),
-      folder.count
-    );
-    if (confirmation) {
-      await deleteArenas(studioCtx, getFolderArenas(folder));
-    }
-  };
-  const onFolderRenamed = (folder: FolderElement, newName: string) => {
-    // TODO -- rename folder and contents
-    console.log("Rename folder", folder.name, newName);
-  };
+  const onDeleteFolder = React.useCallback(
+    async (folder: FolderElement) => {
+      const confirmation = await promptDeleteFolder(
+        getArenaDisplay(folder.sectionType),
+        getFolderWithSlash(folder.name),
+        folder.count
+      );
+      if (confirmation) {
+        await deleteArenas(studioCtx, getFolderArenas(folder));
+      }
+    },
+    [studioCtx]
+  );
+  const onFolderRenamed = React.useCallback(
+    (folder: FolderElement, newName: string) => {
+      const oldPrefix = getFolderWithSlash(folder.key);
+
+      // Replace only the final folder segment in the path
+      //  [^/]+(?=\/$) "one or more non-slashes" only if followed by a trailing slash
+      const newPrefix = oldPrefix.replace(/[^/]+(?=\/$)/, newName);
+
+      const renameProps: RenameArenaProps[] = getFolderArenas(folder).map(
+        (arena) => {
+          const oldArenaName = getArenaName(arena);
+          const newArenaName = oldArenaName.replace(oldPrefix, newPrefix);
+          return { arena, newName: newArenaName };
+        }
+      );
+
+      if (renameProps.length) {
+        maybe(studioCtx.siteOps().tryRenameArenas(renameProps), (p) =>
+          spawn(p)
+        );
+      }
+    },
+    // TODO - ensure the new folder is expanded by explicitly controlling VirtualTree openKeys
+    [studioCtx]
+  );
   const items = buildItems(studioCtx, {
     onRequestAdding,
     onDeleteFolder,

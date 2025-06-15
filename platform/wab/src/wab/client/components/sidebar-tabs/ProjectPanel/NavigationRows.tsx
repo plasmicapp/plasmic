@@ -141,6 +141,7 @@ export function NavigationFolderRow({
   toggleExpand,
 }: NavigationFolderRowProps) {
   const [renaming, setRenaming] = React.useState(false);
+  const labelClass = renaming ? "no-select fill-width" : "no-select";
   return (
     <RowGroup
       style={{ height: ROW_HEIGHT, paddingLeft: indentMultiplier * 16 + 12 }}
@@ -167,7 +168,7 @@ export function NavigationFolderRow({
         editing={renaming}
         shrinkLabel={true}
         labelFactory={({ className, ...restProps }) => (
-          <div className={cn("no-select", className)} {...restProps} />
+          <div className={cn(labelClass, className)} {...restProps} />
         )}
         onEdit={(newName) => {
           folder.onRename(folder, newName);
