@@ -5,6 +5,7 @@ import {
   useTreeData,
 } from "@/wab/client/components/grouping/VirtualTree";
 import { KeyboardShortcut } from "@/wab/client/components/menu-builder";
+import promptDeleteFolder from "@/wab/client/components/modals/folderDeletionModal";
 import { showTemporaryPrompt } from "@/wab/client/components/quick-modals";
 import {
   getOpIdForDataSourceOpExpr,
@@ -17,13 +18,19 @@ import {
   INVALID_DATA_SOURCE_MESSAGE,
 } from "@/wab/client/components/sidebar-tabs/DataSource/DataSourceTablePicker";
 import {
+  ArenaData,
+  ArenaPanelRow,
+  FolderElement,
   HEADER_HEIGHT,
   NavigationAnyRow,
   NavigationArenaRow,
   NavigationFolderRow,
   NavigationHeaderRow,
+  OnDeleteFolder,
+  OnFolderRenamed,
   PAGE_HEIGHT,
   ROW_HEIGHT,
+  getArenaDisplay,
 } from "@/wab/client/components/sidebar-tabs/ProjectPanel/NavigationRows";
 import styles from "@/wab/client/components/sidebar-tabs/ProjectPanel/ProjectPanelTop.module.scss";
 import Button from "@/wab/client/components/widgets/Button";
@@ -114,55 +121,6 @@ import { computedFn } from "mobx-utils";
 import React from "react";
 import { FocusScope } from "react-aria";
 
-interface Header {
-  type: "header";
-  name: React.ReactNode;
-  key: string;
-  items: ArenaPanelRow[];
-  count: number;
-  onAdd: () => Promise<void>;
-}
-
-interface FolderElement {
-  type: "folder-element";
-  name: string;
-  key: string;
-  items: ArenaPanelRow[];
-  count: number;
-  onAdd: () => Promise<void>;
-}
-
-interface PageArenaData {
-  type: "page";
-  key: string;
-  arena: PageArena;
-  isStandalone?: boolean;
-}
-
-interface CustomArenaData {
-  type: "custom";
-  key: string;
-  arena: Arena;
-  isStandalone?: boolean;
-}
-
-interface ComponentArenaData {
-  type: "component";
-  key: string;
-  arena: ComponentArena;
-  isStandalone?: boolean;
-}
-
-interface AnyData {
-  type: "any";
-  key: string;
-  element: React.ReactNode;
-}
-
-type ArenaData = ComponentArenaData | CustomArenaData | PageArenaData;
-
-type ArenaPanelRow = Header | FolderElement | ArenaData | AnyData;
-
 function mapToArenaData(
   arena: AnyArena,
   opts: { keyPrefix: string; isStandalone?: boolean } = {
@@ -192,11 +150,23 @@ function mapToArenaData(
     .result();
 }
 
-export function mapToArenaPanelRow(
-  item: AnyArena | InternalFolder<AnyArena>,
-  sectionType: ArenaType,
-  onRequestAdding: RequestAdding
-): ArenaPanelRow {
+interface ArenaRowActions {
+  onRequestAdding: RequestAdding;
+  onDeleteFolder: OnDeleteFolder;
+  onFolderRenamed: OnFolderRenamed;
+}
+
+interface ArenaToPanelRowProps {
+  item: AnyArena | InternalFolder<AnyArena>;
+  sectionType: ArenaType;
+  actions: ArenaRowActions;
+}
+
+export function mapToArenaPanelRow({
+  item,
+  sectionType,
+  actions,
+}: ArenaToPanelRowProps): ArenaPanelRow {
   if (!isFolder(item)) {
     return mapToArenaData(item);
   }
@@ -206,11 +176,18 @@ export function mapToArenaPanelRow(
     type,
     key: item.path,
     name: item.name,
+    sectionType,
     items: item.items.map((i) =>
-      mapToArenaPanelRow(i, sectionType, onRequestAdding)
+      mapToArenaPanelRow({
+        item: i,
+        sectionType,
+        actions,
+      })
     ),
     count: item.count,
-    onAdd: onRequestAdding(sectionType, item.path),
+    onAdd: actions.onRequestAdding(sectionType, item.path),
+    onDelete: actions.onDeleteFolder,
+    onRename: actions.onFolderRenamed,
   };
 }
 
@@ -688,7 +665,24 @@ function NavigationDropdown_(
       }
     };
 
-  const items = buildItems(studioCtx, onRequestAdding);
+  const onDeleteFolder = async (folder: FolderElement) => {
+    const confirmation = await promptDeleteFolder(
+      getArenaDisplay(folder.sectionType),
+      getFolderWithSlash(folder.name),
+      folder.count
+    );
+    // TODO -- delete folder and contents
+    console.log("Delete folder", confirmation);
+  };
+  const onFolderRenamed = async (folder: FolderElement, newName: string) => {
+    // TODO -- rename folder and contents
+    console.log("Rename folder", folder.name, newName);
+  };
+  const items = buildItems(studioCtx, {
+    onRequestAdding,
+    onDeleteFolder,
+    onFolderRenamed,
+  });
 
   const {
     nodeData,
@@ -844,7 +838,7 @@ type RequestAdding = (
 ) => () => Promise<void>;
 
 const buildItems = computedFn(
-  (studioCtx: StudioCtx, onRequestAdding: RequestAdding) => {
+  (studioCtx: StudioCtx, actions: ArenaRowActions) => {
     const getSection = (
       title: React.ReactNode,
       arenaSection: ArenaType,
@@ -854,7 +848,7 @@ const buildItems = computedFn(
         pathPrefix: `${title}`,
         getName: (item) => getFolderTrimmed(getArenaName(item)),
         mapper: (item) =>
-          mapToArenaPanelRow(item, arenaSection, onRequestAdding),
+          mapToArenaPanelRow({ item, sectionType: arenaSection, actions }),
       });
 
       return {
@@ -863,7 +857,7 @@ const buildItems = computedFn(
         name: title,
         items: tree,
         count: items.length,
-        onAdd: onRequestAdding(arenaSection),
+        onAdd: actions.onRequestAdding(arenaSection),
       };
     };
     const recentArenas = studioCtx.recentArenas;
@@ -927,14 +921,12 @@ function ArenaTreeRow(props: RenderElementProps<ArenaPanelRow>) {
     case "folder-element":
       return (
         <NavigationFolderRow
-          groupSize={value.count}
+          folder={value}
+          matcher={treeState.matcher}
           isOpen={treeState.isOpen}
           indentMultiplier={treeState.level}
-          onAdd={value.onAdd}
           toggleExpand={treeState.toggleExpand}
-        >
-          {treeState.matcher.boldSnippets(value.name)}
-        </NavigationFolderRow>
+        />
       );
     case "custom":
     case "page":
