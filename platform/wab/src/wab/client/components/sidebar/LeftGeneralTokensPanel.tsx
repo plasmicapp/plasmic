@@ -34,6 +34,7 @@ import {
   Folder as InternalFolder,
   createFolderTreeStructure,
   getFolderTrimmed,
+  getFolderWithSlash,
   isFolder,
 } from "@/wab/shared/folders/folders-util";
 import { ProjectDependency, StyleToken } from "@/wab/shared/model/classes";
@@ -53,6 +54,8 @@ interface Header {
 
 interface Folder {
   type: "folder" | "folder-token";
+  tokenType: TokenType;
+  path?: string;
   name: string;
   key: string;
   items: TokenPanelRow[];
@@ -71,6 +74,7 @@ type TokenPanelRow = Header | Folder | TokenData;
 
 function mapToTokenPanelRow(
   item: StyleToken | InternalFolder<StyleToken>,
+  tokenType: TokenType,
   getTokenValue: (token: StyleToken) => TokenValue,
   dep?: ProjectDependency
 ): TokenPanelRow {
@@ -86,9 +90,13 @@ function mapToTokenPanelRow(
 
   return {
     type: "folder-token" as const,
+    tokenType,
     key: item.path,
     name: item.name,
-    items: item.items.map((i) => mapToTokenPanelRow(i, getTokenValue, dep)),
+    path: item.path,
+    items: item.items.map((i) =>
+      mapToTokenPanelRow(i, tokenType, getTokenValue, dep)
+    ),
     count: item.count,
   };
 }
@@ -171,10 +179,13 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
   }, []);
 
   const onAdd = React.useCallback(
-    async (type: TokenType) => {
+    async (type: TokenType, folderName?: string) => {
+      const folderPath = getFolderWithSlash(folderName);
+
       await studioCtx.change(({ success }) => {
         const initialValue = tokenTypeDefaults(type);
         const token = studioCtx.tplMgr().addToken({
+          prefix: folderPath,
           tokenType: type,
           value: initialValue,
         });
@@ -248,9 +259,10 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
       ) => {
         tokens = naturalSort(tokens, (token) => getFolderTrimmed(token.name));
         const tokenTree = createFolderTreeStructure(tokens, {
-          pathPrefix: `${tokenType}-`,
+          pathPrefix: tokenType,
           getName: (item) => item.name,
-          mapper: (item) => mapToTokenPanelRow(item, getTokenValue, dep),
+          mapper: (item) =>
+            mapToTokenPanelRow(item, tokenType, getTokenValue, dep),
         });
         return { items: tokenTree, count: tokens.length };
       };
@@ -263,6 +275,7 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
           .map((dep) => {
             return {
               type: "folder" as const,
+              tokenType,
               name: studioCtx.projectDependencyManager.getNiceDepName(dep),
               key: `${tokenType}-${dep.uuid}`,
               // We only include registered tokens if they're from a hostless
@@ -293,6 +306,7 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
           ? [
               {
                 type: "folder" as const,
+                tokenType,
                 name: "Registered tokens",
                 key: `$${tokenType}-registered-folder`,
                 ...makeTokensItems(registeredTokens),
@@ -464,6 +478,8 @@ const TokenTreeRow = (props: RenderElementProps<TokenPanelRow>) => {
       return (
         <TokenFolderRow
           name={value.name}
+          tokenType={value.tokenType}
+          path={value.path}
           matcher={treeState.matcher}
           isOpen={treeState.isOpen}
           groupSize={value.count}

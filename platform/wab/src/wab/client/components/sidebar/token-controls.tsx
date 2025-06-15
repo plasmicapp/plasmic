@@ -8,7 +8,9 @@ import { ColorSidebarPopup } from "@/wab/client/components/style-controls/ColorB
 import ColorSwatch from "@/wab/client/components/style-controls/ColorSwatch";
 import { Matcher } from "@/wab/client/components/view-common";
 import { Icon } from "@/wab/client/components/widgets/Icon";
+import IconButton from "@/wab/client/components/widgets/IconButton";
 import { SimpleTextbox } from "@/wab/client/components/widgets/SimpleTextbox";
+import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
 import TokenIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Token";
 import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { TokenType, TokenValue } from "@/wab/commons/StyleToken";
@@ -32,7 +34,7 @@ export const TokenControlsContext = React.createContext<{
   resolver: TokenValueResolver;
   onDuplicate: (token: StyleToken) => Promise<void>;
   onSelect: (token: StyleToken) => void;
-  onAdd: (tokenType: TokenType) => Promise<void>;
+  onAdd: (tokenType: TokenType, folderName?: string) => Promise<void>;
   expandedHeaders: Set<TokenType>;
   setExpandedHeaders: React.Dispatch<React.SetStateAction<Set<TokenType>>>;
 } | null>(null);
@@ -43,6 +45,15 @@ export function useTokenControls() {
     "useTokenControls must be used within a TokenControlsProvider"
   );
 }
+
+export const isTokenReadOnly = (studioCtx: StudioCtx) => {
+  const uiConfig = studioCtx.getCurrentUiConfig();
+  const canCreateToken = canCreateAlias(uiConfig, "token");
+
+  return (
+    !canCreateToken || studioCtx.getLeftTabPermission("tokens") === "readable"
+  );
+};
 
 export const newTokenValueAllowed = (
   token: StyleToken,
@@ -273,12 +284,25 @@ export const TokenRow = observer(function TokenRow(props: {
 
 export const TokenFolderRow = observer(function TokenFolderRow(props: {
   name: string;
+  path?: string;
+  tokenType: TokenType;
   matcher: Matcher;
   groupSize: number;
   indentMultiplier: number;
   isOpen: boolean;
 }) {
-  const { name, matcher, groupSize, indentMultiplier, isOpen } = props;
+  const {
+    name,
+    path,
+    tokenType,
+    matcher,
+    groupSize,
+    indentMultiplier,
+    isOpen,
+  } = props;
+  const tokenControls = useTokenControls();
+  const studioCtx = useStudioCtx();
+  const readOnly = isTokenReadOnly(studioCtx);
 
   return (
     <RowGroup
@@ -288,6 +312,21 @@ export const TokenFolderRow = observer(function TokenFolderRow(props: {
       }}
       groupSize={groupSize}
       isOpen={isOpen}
+      showActions={!readOnly}
+      actions={
+        !readOnly && (
+          <IconButton
+            onClick={async (e) => {
+              if (isOpen) {
+                e.stopPropagation();
+              }
+              await tokenControls.onAdd(tokenType, path);
+            }}
+          >
+            <Icon icon={PlusIcon} />
+          </IconButton>
+        )
+      }
     >
       {matcher.boldSnippets(name)}
     </RowGroup>

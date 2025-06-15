@@ -26,10 +26,11 @@ interface NewComponentModalProps
   onSubmit: (info: NewComponentInfo) => void;
   onCancel: () => void;
   studioCtx: StudioCtx;
+  folderPath?: string;
 }
 
 function NewComponentModal(props: NewComponentModalProps) {
-  const { onSubmit, onCancel, studioCtx, ...rest } = props;
+  const { onSubmit, onCancel, studioCtx, folderPath, ...rest } = props;
 
   const [expanded, setExpanded] = React.useState(false);
   const [templateName, setTemplateName] = React.useState<string | undefined>(
@@ -37,6 +38,12 @@ function NewComponentModal(props: NewComponentModalProps) {
   );
   const [name, setName] = React.useState("");
   const nameRef = React.useRef<TextboxRef>(null);
+
+  React.useEffect(() => {
+    if (folderPath !== undefined) {
+      setName(folderPath);
+    }
+  }, [folderPath]);
 
   const templates = flattenInsertableTemplatesByType(
     studioCtx.appCtx.appConfig.insertableTemplates,
@@ -101,6 +108,7 @@ function NewComponentModal(props: NewComponentModalProps) {
         onClick: () => setExpanded(!expanded),
         type: "button",
       }}
+      isPage={false}
       {...rest}
     >
       <NewComponentSection>

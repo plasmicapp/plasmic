@@ -2224,8 +2224,8 @@ export class StudioCtx extends WithDbCtx {
     { name: "isArenaVisible" }
   );
 
-  addArena() {
-    const arena = this.tplMgr().addArena();
+  addArena(prefix?: string) {
+    const arena = this.tplMgr().addArenaWithPrefix(prefix);
     this.switchToArena(arena);
     return arena;
   }

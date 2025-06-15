@@ -111,7 +111,10 @@ export async function promptPageName(
   });
 }
 
-export async function promptComponentTemplate(studioCtx: StudioCtx) {
+export async function promptComponentTemplate(
+  studioCtx: StudioCtx,
+  folderPath?: string
+) {
   return await showTemporaryPrompt<NewComponentInfo>((onSubmit, onCancel) => (
     <Modal
       visible={true}
@@ -125,13 +128,17 @@ export async function promptComponentTemplate(studioCtx: StudioCtx) {
           onSubmit={onSubmit}
           onCancel={onCancel}
           studioCtx={studioCtx}
+          folderPath={folderPath}
         />
       )}
     />
   ));
 }
 
-export async function promptPageTemplate(studioCtx: StudioCtx) {
+export async function promptPageTemplate(
+  studioCtx: StudioCtx,
+  folderPath?: string
+) {
   return await showTemporaryPrompt<NewPageInfo>((onSubmit, onCancel) => (
     <Modal
       width={775}
@@ -146,6 +153,7 @@ export async function promptPageTemplate(studioCtx: StudioCtx) {
           onSubmit={onSubmit}
           onCancel={onCancel}
           studioCtx={studioCtx}
+          folderPath={folderPath}
         />
       )}
     />
