@@ -4,7 +4,6 @@ import { TplExpsProvider } from "@/wab/client/components/style-controls/StyleCom
 import { getRootSub } from "@/wab/client/frame-ctx/windows";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { ensure } from "@/wab/shared/common";
 import { TplComponent } from "@/wab/shared/model/classes";
 import type {
   CustomControl,
@@ -12,7 +11,8 @@ import type {
 } from "@plasmicapp/host/dist/prop-types";
 import domAlign from "dom-align";
 import $ from "jquery";
-import React, { useEffect } from "react";
+import React from "react";
+import { Root } from "react-dom/client";
 
 interface CustomPropEditorProps {
   viewCtx?: ViewCtx;
@@ -45,18 +45,14 @@ function InnerCustomPropEditorWithViewCtx({
   ccContextData,
   propName,
 }: CustomPropEditorProps & { viewCtx: ViewCtx }) {
-  const containerRef = React.useRef<HTMLDivElement>(null);
+  const actionRef = React.useRef<HTMLDivElement>(null);
+  const propRef = React.useRef<HTMLDivElement>(null);
   const expsProvider = new TplExpsProvider(viewCtx, tpl);
   const sub = viewCtx.canvasCtx.Sub;
-  const studioOps = useStudioOps(
-    viewCtx,
-    containerRef.current,
-    tpl,
-    expsProvider
-  );
+  const studioOps = useStudioOps(viewCtx, actionRef.current, tpl, expsProvider);
   useCustomPropEditor(
     sub,
-    containerRef,
+    propRef,
     studioOps,
     value,
     onChange,
@@ -66,7 +62,12 @@ function InnerCustomPropEditorWithViewCtx({
     propName
   );
 
-  return <div ref={containerRef} style={{ display: "contents" }} />;
+  return (
+    <>
+      <div ref={actionRef} style={{ display: "contents" }} />
+      <div ref={propRef} style={{ display: "contents" }} />
+    </>
+  );
 }
 
 function InnerCustomPropEditor({
@@ -105,6 +106,7 @@ function useCustomPropEditor(
   ccContextData: any,
   propName: string
 ) {
+  const root = React.useRef<Root | null>(null);
   const studioCtx = useStudioCtx();
   const projectData = studioCtx.getProjectData();
   const FullscreenModal = React.useMemo(
@@ -131,37 +133,44 @@ function useCustomPropEditor(
     [sub]
   );
 
-  // Must not use useUnmount due to React 17 cleanup: https://reactjs.org/blog/2020/08/10/react-v17-rc.html#effect-cleanup-timing
-  useEffect(() => {
-    const container = ensure(containerRef.current, "Must be mounted");
+  React.useEffect(() => {
     return () => {
-      sub.ReactDOM.unmountComponentAtNode(container);
+      if (root.current) {
+        root.current.unmount();
+      } else if (containerRef.current && sub.ReactDOM.unmountComponentAtNode) {
+        sub.ReactDOM.unmountComponentAtNode(containerRef.current);
+      }
     };
   }, []);
+
   React.useEffect(() => {
-    if (containerRef.current) {
-      const node = containerRef.current;
-      sub.ReactDOM.render(
-        sub.React.createElement(
-          sub.GenericErrorBoundary,
-          {
-            className: "error-boundary",
-          },
-          // TODO: Remove as any
-          sub.React.createElement(impl, {
-            value,
-            componentProps: componentPropValues,
-            contextData: ccContextData,
-            updateValue: onChange,
-            FullscreenModal,
-            SideModal,
-            studioOps,
-            projectData: projectData,
-            studioDocument: window.document,
-          } as any)
-        ),
-        node
-      );
+    if (!containerRef.current) {
+      return;
+    }
+    if (sub.ReactDOMClient && !root.current) {
+      root.current = sub.ReactDOMClient.createRoot(containerRef.current);
+    }
+    const renderElement = sub.React.createElement(
+      sub.GenericErrorBoundary,
+      {
+        className: "error-boundary",
+      },
+      sub.React.createElement(impl, {
+        value,
+        componentProps: componentPropValues,
+        contextData: ccContextData,
+        updateValue: onChange,
+        FullscreenModal,
+        SideModal,
+        studioOps,
+        projectData: projectData,
+        studioDocument: window.document,
+      })
+    );
+    if (root.current) {
+      root.current.render(renderElement);
+    } else {
+      sub.ReactDOM.render(renderElement, containerRef.current);
     }
   }, [
     containerRef.current,
@@ -171,5 +180,4 @@ function useCustomPropEditor(
     onChange,
     sub,
   ]);
-  return <div ref={containerRef} style={{ display: "contents" }} />;
 }
