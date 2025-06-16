@@ -223,7 +223,7 @@ async function bundleModulesEsbuild(
             build.onResolve(
               {
                 filter:
-                  /^@plasmicapp\/host\/(registerComponent|registerGlobalContext|registerTrait|registerToken)$/,
+                  /^@plasmicapp\/host\/(registerComponent|registerGlobalContext|registerTrait|registerToken|registerFunction)$/,
               },
               async (args) => {
                 const newPath = path.join(
