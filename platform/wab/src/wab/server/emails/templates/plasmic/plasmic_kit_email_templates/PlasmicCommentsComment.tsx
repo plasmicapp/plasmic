@@ -29,7 +29,7 @@ import {
   EmailMarkdown,
   EmailRow,
   EmailText,
-} from "@/wab/server/emails/components.tsx"; // plasmic-import: xWkqfjbn8oyX/codeComponent
+} from "@/wab/server/emails/components"; // plasmic-import: xWkqfjbn8oyX/codeComponent
 
 createPlasmicElementProxy;
 

@@ -270,67 +270,67 @@
           "id": "oy2tNUrSNuyD",
           "name": "EmailContainer",
           "displayName": "plasmic-email-container",
-          "componentImportPath": "@/wab/server/emails/components.tsx"
+          "componentImportPath": "@/wab/server/emails/components"
         },
         {
           "id": "ni9IJwUvaPYp",
           "name": "EmailButton",
           "displayName": "plasmic-email-button",
-          "componentImportPath": "@/wab/server/emails/components.tsx"
+          "componentImportPath": "@/wab/server/emails/components"
         },
         {
           "id": "7eMX-ae3z_Os",
           "name": "EmailText",
           "displayName": "plasmic-email-text",
-          "componentImportPath": "@/wab/server/emails/components.tsx"
+          "componentImportPath": "@/wab/server/emails/components"
         },
         {
           "id": "BfZldbVXl9VI",
           "name": "EmailImage",
           "displayName": "plasmic-email-image",
-          "componentImportPath": "@/wab/server/emails/components.tsx"
+          "componentImportPath": "@/wab/server/emails/components"
         },
         {
           "id": "7zgaUp0DUGtR",
           "name": "EmailLink",
           "displayName": "plasmic-email-link",
-          "componentImportPath": "@/wab/server/emails/components.tsx"
+          "componentImportPath": "@/wab/server/emails/components"
         },
         {
           "id": "jhsSTRsuisaZ",
           "name": "EmailMarkdown",
           "displayName": "plasmic-email-markdown",
-          "componentImportPath": "@/wab/server/emails/components.tsx"
+          "componentImportPath": "@/wab/server/emails/components"
         },
         {
           "id": "0uJtDjGRiPZA",
           "name": "EmailHeading",
           "displayName": "plasmic-email-heading",
-          "componentImportPath": "@/wab/server/emails/components.tsx"
+          "componentImportPath": "@/wab/server/emails/components"
         },
         {
           "id": "xWkqfjbn8oyX",
           "name": "EmailRow",
           "displayName": "plasmic-email-row",
-          "componentImportPath": "@/wab/server/emails/components.tsx"
+          "componentImportPath": "@/wab/server/emails/components"
         },
         {
           "id": "pVqOLFd6uDdb",
           "name": "EmailColumn",
           "displayName": "plasmic-email-column",
-          "componentImportPath": "@/wab/server/emails/components.tsx"
+          "componentImportPath": "@/wab/server/emails/components"
         },
         {
           "id": "ccI_uNhThjcT",
           "name": "EmailSection",
           "displayName": "plasmic-email-section",
-          "componentImportPath": "@/wab/server/emails/components.tsx"
+          "componentImportPath": "@/wab/server/emails/components"
         },
         {
           "id": "0Mjv6KY43Hfd",
           "name": "EmailHr",
           "displayName": "plasmic-email-hr",
-          "componentImportPath": "@/wab/server/emails/components.tsx"
+          "componentImportPath": "@/wab/server/emails/components"
         }
       ],
       "customFunctions": []

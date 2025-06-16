@@ -27,7 +27,7 @@ import {
   EmailRow,
   EmailSection,
   EmailText,
-} from "@/wab/server/emails/components.tsx"; // plasmic-import: ccI_uNhThjcT/codeComponent
+} from "@/wab/server/emails/components"; // plasmic-import: ccI_uNhThjcT/codeComponent
 import AtomsButtonOutline from "../../AtomsButtonOutline"; // plasmic-import: 5OdShbT02UoK/component
 import AtomsCard from "../../AtomsCard"; // plasmic-import: 2cidd9ockVoM/component
 import CommentsComment from "../../CommentsComment"; // plasmic-import: NUaRKxTU3gYx/component

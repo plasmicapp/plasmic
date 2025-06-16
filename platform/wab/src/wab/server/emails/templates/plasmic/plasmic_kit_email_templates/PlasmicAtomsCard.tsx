@@ -23,7 +23,7 @@ import {
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
-import { EmailSection, EmailText } from "@/wab/server/emails/components.tsx"; // plasmic-import: ccI_uNhThjcT/codeComponent
+import { EmailSection, EmailText } from "@/wab/server/emails/components"; // plasmic-import: ccI_uNhThjcT/codeComponent
 
 createPlasmicElementProxy;
 
