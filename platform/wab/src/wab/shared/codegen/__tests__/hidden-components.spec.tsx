@@ -22,7 +22,7 @@ describe("tests codegen for components starting with an underscore", () => {
     dir.removeCallback();
   });
   it("should generate code for components starting with an underscore", async () => {
-    const importFromProject = await codegen(dir.name, site);
+    const { importFromProject } = await codegen(dir.name, site);
 
     // Card component's display name is "_Card" (see the bundle file)
     const Card = (await importFromProject("Card.js")).default;
@@ -48,7 +48,7 @@ describe("tests codegen for components starting with an underscore", () => {
   }, 300000);
 
   it("should not generate code for pages starting with an underscore", async () => {
-    const importFromProject = await codegen(dir.name, site);
+    const { importFromProject } = await codegen(dir.name, site);
     await expect(importFromProject("Testpage.js")).rejects.toThrow();
   }, 300000);
 });

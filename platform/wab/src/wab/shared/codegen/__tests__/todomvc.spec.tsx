@@ -22,7 +22,7 @@ describe("todolist blackbox codegen", () => {
   });
 
   it("should work", async () => {
-    const importFromProject = await codegen(dir.name, site);
+    const { importFromProject } = await codegen(dir.name, site);
     // Import the root component from js
     const ThemeContext = await importFromProject(
       "PlasmicGlobalVariant__Theme.js"

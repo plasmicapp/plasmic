@@ -20,7 +20,7 @@ describe("todo app codegen", () => {
     dir.removeCallback();
   });
   it("should work", async () => {
-    const importFromProject = await codegen(dir.name, site);
+    const { importFromProject } = await codegen(dir.name, site);
 
     const Homepage = (await importFromProject("Homepage.js")).default;
 

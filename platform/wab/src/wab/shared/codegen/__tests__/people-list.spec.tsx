@@ -6,10 +6,10 @@ import { Bundle, Bundler } from "@/wab/shared/bundler";
 import _explicitStatesBundle from "@/wab/shared/codegen/__tests__/bundles/people-list-explicit-states.json";
 import _implicitStatesBundle from "@/wab/shared/codegen/__tests__/bundles/people-list-implicit-states.json";
 import { codegen } from "@/wab/shared/codegen/codegen-tests-util";
+import { last } from "@/wab/shared/common";
 import { Site } from "@/wab/shared/model/classes";
 import "core-js";
 import * as React from "react";
-import { last } from "@/wab/shared/common";
 import tmp from "tmp";
 
 describe("todo app codegen", () => {
@@ -25,7 +25,7 @@ describe("todo app codegen", () => {
   // builder with implicit states and with explicit states (manually creating value/onChange)."
   const peopleBuilderTest = async (projectBundle: Bundle) => {
     const site = new Bundler().unbundle(projectBundle, "") as Site;
-    const importFromProject = await codegen(dir.name, site);
+    const { importFromProject } = await codegen(dir.name, site);
 
     const Homepage = (await importFromProject("Homepage.js")).default;
 
