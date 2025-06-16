@@ -38,7 +38,7 @@ services:
       S3_SECRET_ACCESS_KEY: 
       S3_SSL_ENABLED: true
       S3_FORCE_PATH_STYLE: true
-      S3_REGION: fr
+      S3_REGION: 
       DATABASE_URI: postgres://wab:w1G_xJzN8.q9Q2_nRyY1CxzW.o257dtta.ZxUakSu@plasmic-db:5432/wab
       PUBLIC_URL: http://localhost:80
       WAB_DBNAME: wab

@@ -68,11 +68,6 @@ describe("loader", () => {
       "x-plasmic-api-user": user.email,
       "x-plasmic-api-token": userToken,
     });
-    await api.refreshCsrfToken();
-    await api.login({
-      email: "user@example.com",
-      password: "d53vh4d8.b42x3y_ryMM435yd4",
-    });
   });
 
   afterEach(async () => {
