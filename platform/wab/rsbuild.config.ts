@@ -28,12 +28,12 @@ const publicUrl: string =
   process.env.PUBLIC_URL ?? (isProd ? homepage : `http://localhost:${port}`);
 
 console.log(`
-🚀 Démarrage de Rsbuild...
+🚀 Staring Rsbuild...
 ------------------------------------
   Mode         : ${buildEnv}
   Commit       : ${commitHash}
-  URL du frontend : ${publicUrl}
-  URL du backend : http://${backendHost}:${backendPort}
+  Frontend URL : ${publicUrl}
+  Backend URL  : http://${backendHost}:${backendPort}
 ------------------------------------
 `);
 

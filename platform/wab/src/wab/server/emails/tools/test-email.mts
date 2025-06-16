@@ -160,7 +160,6 @@ const TEMPLATE_PROPS = {
 
 // On définit la fonction principale async pour pouvoir utiliser await
 async function main() {
-  // --- DEBUT DU CODE ENVELOPPÉ ---
   const html = await generateEmailHtml(TEMPLATE_NAME, TEMPLATE_PROPS);
 
   const args = await yargs(hideBin(process.argv)).option("email", {
@@ -199,7 +198,6 @@ async function main() {
       }
     );
   }
-  // --- FIN DU CODE ENVELOPPÉ ---
 }
 
 /**

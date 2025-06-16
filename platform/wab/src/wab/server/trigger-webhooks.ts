@@ -11,7 +11,6 @@ import {
 } from "@/wab/shared/site-diffs";
 import axios, { AddressFamily, Method } from "axios";
 import dns from "dns";
-// Ligne supprimée : import isPrivateIp from "private-ip";
 
 export async function triggerWebhook(
   mgr: DbMgr,
