@@ -17,7 +17,7 @@ test.describe(`Plasmic Radix UI Popover`, async () => {
         ctx = await setupNextJs({
           bundleFile: "radix-ui/popover.json",
           projectName: "Radix UI Popover",
-          npmRegistry: getEnvVar("NPM_REGISTRY"),
+          npmRegistry: getEnvVar("NPM_CONFIG_REGISTRY"),
           codegenHost: getEnvVar("WAB_HOST"),
           removeComponentsPage: true,
           loaderVersion,

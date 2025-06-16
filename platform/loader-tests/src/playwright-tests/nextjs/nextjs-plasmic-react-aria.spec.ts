@@ -21,7 +21,7 @@ test.describe(`@plasmicpkgs/react-aria code components`, async () => {
           // The bundle is also uploaded to prod Studio here: https://studio.plasmic.app/projects/9zkDzeeVx9yuu2MYdRNK5C/-/Button-Test?arena_type=page&arena=vK-15KIgmOKG
           bundleFile: "react-aria.json",
           projectName: "Plexus Loader Test",
-          npmRegistry: getEnvVar("NPM_REGISTRY"),
+          npmRegistry: getEnvVar("NPM_CONFIG_REGISTRY"),
           codegenHost: getEnvVar("WAB_HOST"),
           removeComponentsPage: true,
           loaderVersion,

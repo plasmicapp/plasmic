@@ -17,7 +17,7 @@ test.describe(`Tiptap`, async () => {
         ctx = await setupNextJs({
           bundleFile: "tiptap.json",
           projectName: "Tiptap",
-          npmRegistry: getEnvVar("NPM_REGISTRY"),
+          npmRegistry: getEnvVar("NPM_CONFIG_REGISTRY"),
           codegenHost: getEnvVar("WAB_HOST"),
           removeComponentsPage: true,
           loaderVersion,

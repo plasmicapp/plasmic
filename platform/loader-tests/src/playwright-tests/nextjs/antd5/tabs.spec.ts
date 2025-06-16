@@ -47,7 +47,7 @@ test.describe(`Plasmic Antd5 Tabs`, async () => {
         ctx = await setupNextJs({
           bundleFile: "antd5/tabs.json",
           projectName: "Antd5 Tabs",
-          npmRegistry: getEnvVar("NPM_REGISTRY"),
+          npmRegistry: getEnvVar("NPM_CONFIG_REGISTRY"),
           codegenHost: getEnvVar("WAB_HOST"),
           removeComponentsPage: true,
           loaderVersion,

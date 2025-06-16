@@ -12,7 +12,7 @@ describe.skip("Plasmic Strapi", () => {
     ctx = await setupNextJs({
       bundleFile: "plasmic-strapi.json",
       projectName: "Strapi Project",
-      npmRegistry: getEnvVar("NPM_REGISTRY"),
+      npmRegistry: getEnvVar("NPM_CONFIG_REGISTRY"),
       codegenHost: getEnvVar("WAB_HOST"),
       removeComponentsPage: true,
     });

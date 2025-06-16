@@ -31,7 +31,7 @@ test.describe(`Plasmic Radix UI Dialog`, async () => {
         ctx = await setupNextJs({
           bundleFile: "radix-ui/dialog.json",
           projectName: "Radix UI Dialog",
-          npmRegistry: getEnvVar("NPM_REGISTRY"),
+          npmRegistry: getEnvVar("NPM_CONFIG_REGISTRY"),
           codegenHost: getEnvVar("WAB_HOST"),
           removeComponentsPage: true,
           loaderVersion,

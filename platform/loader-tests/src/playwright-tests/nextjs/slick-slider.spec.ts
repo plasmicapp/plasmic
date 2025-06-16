@@ -17,7 +17,7 @@ test.describe(`Plasmic Slick Slider`, async () => {
         ctx = await setupNextJs({
           bundleFile: "slick-slider.json",
           projectName: "Slick Slider",
-          npmRegistry: getEnvVar("NPM_REGISTRY"),
+          npmRegistry: getEnvVar("NPM_CONFIG_REGISTRY"),
           codegenHost: getEnvVar("WAB_HOST"),
           removeComponentsPage: true,
           loaderVersion,

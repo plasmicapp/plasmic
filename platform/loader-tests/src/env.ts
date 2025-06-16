@@ -1,7 +1,7 @@
 import process from "process";
 
 const DEFAULT_ENV = {
-  NPM_REGISTRY: "https://registry.npmjs.org",
+  NPM_CONFIG_REGISTRY: "https://registry.npmjs.org",
   WAB_HOST: "http://127.0.0.1:3003",
   WAB_USER_EMAIL: "admin@admin.example.com",
   WAB_USER_PASSWORD: "!53kr3tz!",
@@ -11,7 +11,7 @@ type EnvVar = keyof typeof DEFAULT_ENV;
 
 export function getEnvVar(variable: EnvVar) {
   let value = process.env[variable] ?? DEFAULT_ENV[variable];
-  if (variable === "WAB_HOST" || variable === "NPM_REGISTRY") {
+  if (variable === "WAB_HOST" || variable === "NPM_CONFIG_REGISTRY") {
     value = maybeSwapWithDockerLocalhost(value);
   }
   return value;

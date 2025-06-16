@@ -35,7 +35,7 @@ test.describe(`Plasmic Link Preview`, async () => {
         ctx = await setupNextJs({
           bundleFile: "plasmic-link-preview.json",
           projectName: "Plasmic Link Preview",
-          npmRegistry: getEnvVar("NPM_REGISTRY"),
+          npmRegistry: getEnvVar("NPM_CONFIG_REGISTRY"),
           codegenHost: getEnvVar("WAB_HOST"),
           removeComponentsPage: true,
           loaderVersion,

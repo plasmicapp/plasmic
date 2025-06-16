@@ -11,7 +11,7 @@ describe.each(LOADER_NEXTJS_VERSIONS)(
       ctx = await setupNextJs({
         bundleFile: "app-hosting.json",
         projectName: "App Hosting Example",
-        npmRegistry: getEnvVar("NPM_REGISTRY"),
+        npmRegistry: getEnvVar("NPM_CONFIG_REGISTRY"),
         codegenHost: getEnvVar("WAB_HOST"),
         removeComponentsPage: true,
         loaderVersion,
