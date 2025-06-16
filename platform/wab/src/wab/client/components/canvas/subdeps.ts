@@ -16,204 +16,49 @@ import type domAlign from "dom-align";
 import type $ from "jquery";
 import type React from "react";
 import type ReactDOM from "react-dom";
+import type ReactDOMClient from "react-dom/client";
 import type * as jsxDevRuntime from "react/jsx-dev-runtime";
 import type * as jsxRuntime from "react/jsx-runtime";
 import type ResizeObserver from "resize-observer-polyfill";
 import type * as slate from "slate";
 import type * as slateReact from "slate-react";
 
-export const tags = [
-  // HTML
-  "a",
-  "abbr",
-  "address",
-  "area",
-  "article",
-  "aside",
-  "audio",
-  "b",
-  "base",
-  "bdi",
-  "bdo",
-  "big",
-  "blockquote",
-  "body",
-  "br",
-  "button",
-  "canvas",
-  "caption",
-  "cite",
-  "code",
-  "col",
-  "colgroup",
-  "data",
-  "datalist",
-  "dd",
-  "del",
-  "details",
-  "dfn",
-  "dialog",
-  "div",
-  "dl",
-  "dt",
-  "em",
-  "embed",
-  "fieldset",
-  "figcaption",
-  "figure",
-  "footer",
-  "form",
-  "h1",
-  "h2",
-  "h3",
-  "h4",
-  "h5",
-  "h6",
-  "head",
-  "header",
-  "hgroup",
-  "hr",
-  "html",
-  "i",
-  "iframe",
-  "img",
-  "input",
-  "ins",
-  "kbd",
-  "keygen",
-  "label",
-  "legend",
-  "li",
-  "link",
-  "main",
-  "map",
-  "mark",
-  "menu",
-  "menuitem",
-  "meta",
-  "meter",
-  "nav",
-  "noindex",
-  "noscript",
-  "object",
-  "ol",
-  "optgroup",
-  "option",
-  "output",
-  "p",
-  "param",
-  "picture",
-  "pre",
-  "progress",
-  "q",
-  "rp",
-  "rt",
-  "ruby",
-  "s",
-  "samp",
-  "slot",
-  "script",
-  "section",
-  "select",
-  "small",
-  "source",
-  "span",
-  "strong",
-  "style",
-  "sub",
-  "summary",
-  "sup",
-  "table",
-  "template",
-  "tbody",
-  "td",
-  "textarea",
-  "tfoot",
-  "th",
-  "thead",
-  "time",
-  "title",
-  "tr",
-  "track",
-  "u",
-  "ul",
-  "var",
-  "video",
-  "wbr",
-  "webview",
-
-  // SVG
-  "svg",
-
-  "animate",
-  "animateMotion",
-  "animateTransform",
-  "circle",
-  "clipPath",
-  "defs",
-  "desc",
-  "ellipse",
-  "feBlend",
-  "feColorMatrix",
-  "feComponentTransfer",
-  "feComposite",
-  "feConvolveMatrix",
-  "feDiffuseLighting",
-  "feDisplacementMap",
-  "feDistantLight",
-  "feDropShadow",
-  "feFlood",
-  "feFuncA",
-  "feFuncB",
-  "feFuncG",
-  "feFuncR",
-  "feGaussianBlur",
-  "feImage",
-  "feMerge",
-  "feMergeNode",
-  "feMorphology",
-  "feOffset",
-  "fePointLight",
-  "feSpecularLighting",
-  "feSpotLight",
-  "feTile",
-  "feTurbulence",
-  "filter",
-  "foreignObject",
-  "g",
-  "image",
-  "line",
-  "linearGradient",
-  "marker",
-  "mask",
-  "metadata",
-  "mpath",
-  "path",
-  "pattern",
-  "polygon",
-  "polyline",
-  "radialGradient",
-  "rect",
-  "stop",
-  "switch",
-  "symbol",
-  "text",
-  "textPath",
-  "tspan",
-  "use",
-  "view",
-] as const;
-
-export interface SubDeps {
+// Most (not all) of these deps are provided by @plasmicapp/host.
+// TODO: Clearly indicate where each dep comes from.
+export type SubDeps = {
   hostVersion: string | undefined;
   React: typeof React;
   ReactDOM: typeof ReactDOM;
+  // Only available in @plasmicapp/host@>=2.0.0
+  ReactDOMClient?: typeof ReactDOMClient;
   jsxRuntime?: typeof jsxRuntime;
   jsxDevRuntime?: typeof jsxDevRuntime;
+  setPlasmicRootNode: (node: React.ReactElement | null) => void;
+  repeatedElement: RepeatedElementFnType;
+  setRepeatedElementFn?: (fn: RepeatedElementFnType) => void;
+  PlasmicCanvasContext?: typeof PlasmicCanvasContext;
+  PlasmicQuery?: typeof PlasmicQuery;
+  PageParamsProvider: typeof PageParamsProvider;
+  DataProvider: typeof DataProvider;
+  DataContext: typeof DataContext;
+  useDataEnv: typeof useDataEnv;
+  DataCtxReader: typeof DataCtxReader;
+  reactWeb: typeof ReactWeb;
+  dataSources?: typeof PlasmicDataSources;
+  dataSourcesContext: typeof PlasmicDataSourcesContext;
+  useGlobalActions?: typeof useGlobalActions;
+} & CanvasPkgs;
+
+// Make sure this matches the type in canvas-packages/src/index.ts
+interface CanvasPkgs {
   ResizeObserver: typeof ResizeObserver;
+  GenericErrorBoundary: React.ComponentType<{ className?: string }>;
   slate: typeof slate;
   slateReact: typeof slateReact;
-  localElement: typeof Element;
+  localElement?: typeof Element;
+  createModal: (
+    props: Pick<ModalProps, InternalModalProps>
+  ) => (restProps: Omit<ModalProps, InternalModalProps>) => JSX.Element;
   createThumbnail: (
     element: HTMLElement,
     opts?: {
@@ -224,24 +69,6 @@ export interface SubDeps {
       includeQueryParams?: boolean;
     }
   ) => Promise<string>;
-  setPlasmicRootNode: (node: React.ReactElement | null) => void;
-  repeatedElement: RepeatedElementFnType;
-  setRepeatedElementFn?: (fn: RepeatedElementFnType) => void;
-  GenericErrorBoundary: React.ComponentType<{ className?: string }>;
-  PlasmicCanvasContext?: typeof PlasmicCanvasContext;
-  PlasmicQuery?: typeof PlasmicQuery;
-  PageParamsProvider: typeof PageParamsProvider;
-  DataProvider: typeof DataProvider;
-  DataContext: typeof DataContext;
-  useDataEnv: typeof useDataEnv;
-  createModal: (
-    props: Pick<ModalProps, InternalModalProps>
-  ) => (restProps: Omit<ModalProps, InternalModalProps>) => JSX.Element;
-  DataCtxReader: typeof DataCtxReader;
-  reactWeb: typeof ReactWeb;
-  dataSources?: typeof PlasmicDataSources;
-  dataSourcesContext: typeof PlasmicDataSourcesContext;
-  useGlobalActions?: typeof useGlobalActions;
 }
 
 type InternalModalProps =

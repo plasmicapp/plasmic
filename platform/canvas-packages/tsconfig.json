@@ -5,12 +5,12 @@
     "moduleResolution": "node",
     "lib": ["es7", "dom", "esnext", "esnext.asynciterable", "esnext.array"],
     "skipLibCheck": true,
-    // Following is for the compiler invoked by webstorm
-    "outDir": "build",
+    "noEmit": true,
     "sourceMap": true,
     "jsx": "react",
     "esModuleInterop": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "strict": true
   },
   "files": ["src/index.ts"],
   "include": ["src/**/*"],
