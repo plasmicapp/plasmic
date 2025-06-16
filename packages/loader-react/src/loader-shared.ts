@@ -273,7 +273,6 @@ interface BuiltinRegisteredModules {
   "@plasmicapp/query": typeof import("@plasmicapp/query");
   "@plasmicapp/data-sources-context": typeof import("@plasmicapp/data-sources-context");
   "@plasmicapp/host": typeof import("@plasmicapp/host");
-  "@plasmicapp/host/registerFunction": typeof import("@plasmicapp/host").registerFunction;
   "@plasmicapp/loader-runtime-registry": {
     components: Record<string, React.ComponentType<any>>;
     globalVariantHooks: Record<string, () => any>;

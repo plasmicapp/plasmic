@@ -44,7 +44,6 @@ import { default as React_3 } from 'react';
 import { reactDom } from 'react-dom';
 import { reactJsxDevRuntime } from 'react/jsx-dev-runtime';
 import { reactJsxRuntime } from 'react/jsx-runtime';
-import { registerFunction } from '@plasmicapp/host';
 import { Registry } from '@plasmicapp/loader-core';
 import { repeatedElement } from '@plasmicapp/host';
 import { Split } from '@plasmicapp/loader-fetcher';

@@ -62,7 +62,6 @@ export class InternalPlasmicComponentLoader extends BaseInternalPlasmicComponent
         "@plasmicapp/query": PlasmicQuery,
         "@plasmicapp/data-sources-context": PlasmicDataSourcesContext,
         "@plasmicapp/host": PlasmicHost,
-        "@plasmicapp/host/registerFunction": internalSetRegisteredFunction,
         "@plasmicapp/loader-runtime-registry": {
           components: SUBSTITUTED_COMPONENTS,
           globalVariantHooks: SUBSTITUTED_GLOBAL_VARIANT_HOOKS,

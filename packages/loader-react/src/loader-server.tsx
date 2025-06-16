@@ -25,7 +25,6 @@ import {
   SUBSTITUTED_GLOBAL_VARIANT_HOOKS,
   ServerProvidedContext,
   ServerProvidedData,
-  customFunctionImportAlias,
   internalSetRegisteredFunction,
 } from "./loader-shared";
 import { swrSerialize } from "./swr-util";
@@ -395,7 +394,6 @@ export class InternalPrepassPlasmicLoader extends BaseInternalPlasmicComponentLo
             usePlasmicCanvasComponentInfo: () => null,
           };
         })(),
-        "@plasmicapp/host/registerFunction": internalSetRegisteredFunction,
         "@plasmicapp/loader-runtime-registry": {
           components: SUBSTITUTED_COMPONENTS,
           globalVariantHooks: SUBSTITUTED_GLOBAL_VARIANT_HOOKS,
@@ -483,7 +481,7 @@ export class InternalPrepassPlasmicLoader extends BaseInternalPlasmicComponentLo
     fn: F,
     meta: CustomFunctionMeta<F>
   ) {
-    REGISTERED_CUSTOM_FUNCTIONS[customFunctionImportAlias(meta)] = fn;
+    internalSetRegisteredFunction(fn, meta);
   }
 
   registerGlobalContext<T extends React.ComponentType<any>>(
