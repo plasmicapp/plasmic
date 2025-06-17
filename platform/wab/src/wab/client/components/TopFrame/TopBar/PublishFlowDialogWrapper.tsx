@@ -396,7 +396,7 @@ export const PublishFlowDialogWrapper = observer(
           const _statusWebhooks: StatusWebhooks = {
             enabled: vebWebhooks.enable,
             enabledWebhooks: webhooks
-              .filter((w) => w.enable)
+              .filter((w) => w.enable && !!w.url)
               .map((w) => L.omit(w, "enable")),
           };
 
