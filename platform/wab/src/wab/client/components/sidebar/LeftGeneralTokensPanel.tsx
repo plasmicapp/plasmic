@@ -3,9 +3,10 @@
 import {
   RenderElementProps,
   VirtualTree,
+  getFolderKeyChanges,
   useTreeData,
 } from "@/wab/client/components/grouping/VirtualTree";
-import promptDeleteFolder from "@/wab/client/components/modals/folderDeletionModal";
+import { promptDeleteFolder } from "@/wab/client/components/modals/folderDeletionModal";
 import MultiAssetsActions from "@/wab/client/components/sidebar/MultiAssetsActions";
 import { TokenEditModal } from "@/wab/client/components/sidebar/TokenEditModal";
 import TokenTypeHeader from "@/wab/client/components/sidebar/TokenTypeHeader";
@@ -176,23 +177,30 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
     [studioCtx, setJustAdded, setEditToken]
   );
 
-  const getFolderTokens = (folder: TokenFolder): StyleToken[] => {
-    const result: StyleToken[] = [];
+  const getFolderTokens = (
+    items: TokenPanelRow[]
+  ): { tokens: StyleToken[]; folders: TokenFolder[] } => {
+    const tokens: StyleToken[] = [];
+    const folders: TokenFolder[] = [];
 
-    for (const item of folder.items) {
+    for (const item of items) {
       switch (item.type) {
         case "folder":
-        case "folder-token":
-          result.push(...getFolderTokens(item));
+        case "folder-token": {
+          folders.push(item);
+          const children = getFolderTokens(item.items);
+          tokens.push(...children.tokens);
+          folders.push(...children.folders);
           break;
+        }
         case "token":
-          result.push(item.token);
+          tokens.push(item.token);
           break;
         case "header":
           break;
       }
     }
-    return result;
+    return { tokens, folders };
   };
 
   const onDeleteFolder = React.useCallback(
@@ -203,7 +211,8 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
         folder.count
       );
       if (confirmation) {
-        await studioCtx.siteOps().tryDeleteTokens(getFolderTokens(folder));
+        const { tokens } = getFolderTokens([folder]);
+        await studioCtx.siteOps().tryDeleteTokens(tokens);
       }
     },
     [studioCtx]
@@ -211,16 +220,19 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
 
   const onFolderRenamed = React.useCallback(
     async (folder: TokenFolder, newName: string) => {
-      const { oldPath, newPath } = replaceFolderName(folder.key, newName);
+      const pathData = replaceFolderName(folder.key, newName);
+      const { tokens, folders } = getFolderTokens([folder]);
+
       await studioCtx.changeUnsafe(() => {
-        const tokens = getFolderTokens(folder);
+        const { oldPath, newPath } = pathData;
         for (const token of tokens) {
           const oldTokenName = token.name;
           const newTokenName = oldTokenName.replace(oldPath, newPath);
           studioCtx.tplMgr().renameToken(token, newTokenName);
         }
       });
-      // TODO - ensure the new folder is expanded by explicitly controlling VirtualTree openKeys
+      const keyChanges = getFolderKeyChanges(folders, pathData);
+      renameGroup(keyChanges);
     },
     [studioCtx]
   );
@@ -448,17 +460,23 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
     [tokenSectionItems]
   );
 
-  const { nodeData, nodeKey, nodeHeights, expandAll, collapseAll } =
-    useTreeData<TokenPanelRow>({
-      nodes: treeItems,
-      query: debouncedQuery,
-      renderElement: TokenTreeRow,
-      getNodeKey: getRowKey,
-      getNodeChildren: getRowChildren,
-      getNodeSearchText: getRowSearchText,
-      getNodeHeight: getRowHeight,
-      defaultOpenKeys: "all",
-    });
+  const {
+    nodeData,
+    nodeKey,
+    nodeHeights,
+    renameGroup,
+    expandAll,
+    collapseAll,
+  } = useTreeData<TokenPanelRow>({
+    nodes: treeItems,
+    query: debouncedQuery,
+    renderElement: TokenTreeRow,
+    getNodeKey: getRowKey,
+    getNodeChildren: getRowChildren,
+    getNodeSearchText: getRowSearchText,
+    getNodeHeight: getRowHeight,
+    defaultOpenKeys: "all",
+  });
 
   return (
     <>

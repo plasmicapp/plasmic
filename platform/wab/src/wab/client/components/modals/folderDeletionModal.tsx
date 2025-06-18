@@ -1,7 +1,7 @@
 import { confirm } from "@/wab/client/components/quick-modals";
 import pluralize from "pluralize";
 
-async function promptDeleteFolder(itemType, path, itemCount = 0) {
+export async function promptDeleteFolder(itemType, path, itemCount = 0) {
   return confirm({
     title: "Confirm deletion",
     confirmLabel: "Delete",
@@ -15,5 +15,3 @@ async function promptDeleteFolder(itemType, path, itemCount = 0) {
     }`,
   });
 }
-
-export default promptDeleteFolder;

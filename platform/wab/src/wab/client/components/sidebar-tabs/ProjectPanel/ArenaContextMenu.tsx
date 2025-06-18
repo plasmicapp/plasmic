@@ -1,5 +1,5 @@
 import { menuSection } from "@/wab/client/components/menu-builder";
-import promptDeleteComponent from "@/wab/client/components/modals/componentDeletionModal";
+import { promptDeleteComponent } from "@/wab/client/components/modals/componentDeletionModal";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import {
   AnyArena,

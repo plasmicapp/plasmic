@@ -100,6 +100,11 @@ export function getFolderWithSlash(name?: string): string {
   return `${path}/`;
 }
 
+export interface ReplacedFolderName {
+  oldPath: string;
+  newPath: string;
+}
+
 /**
  * Replace a prefixed folder's name and keep the rest of the path intact
  * @param name - Full folder path
@@ -109,7 +114,7 @@ export function getFolderWithSlash(name?: string): string {
 export function replaceFolderName(
   path: string,
   newName: string
-): { oldPath: string; newPath: string } {
+): ReplacedFolderName {
   const oldPath = getFolderWithSlash(path);
 
   // Replace only the final folder segment in the path

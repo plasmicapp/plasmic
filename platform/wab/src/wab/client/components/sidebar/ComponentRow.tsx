@@ -4,7 +4,7 @@ import CommentIndicatorIcon from "@/wab/client/components/comments/CommentIndica
 import { MenuBuilder } from "@/wab/client/components/menu-builder";
 import { DefaultComponentKindModal } from "@/wab/client/components/modals/DefaultComponentKindModal";
 import { showModalToRefreshCodeComponentProps } from "@/wab/client/components/modals/codeComponentModals";
-import promptDeleteComponent from "@/wab/client/components/modals/componentDeletionModal";
+import { promptDeleteComponent } from "@/wab/client/components/modals/componentDeletionModal";
 import {
   reactPrompt,
   showTemporaryPrompt,

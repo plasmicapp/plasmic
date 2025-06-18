@@ -3,10 +3,11 @@ import { RenameArenaProps } from "@/wab/client/components/canvas/site-ops";
 import {
   RenderElementProps,
   VirtualTree,
+  getFolderKeyChanges,
   useTreeData,
 } from "@/wab/client/components/grouping/VirtualTree";
 import { KeyboardShortcut } from "@/wab/client/components/menu-builder";
-import promptDeleteFolder from "@/wab/client/components/modals/folderDeletionModal";
+import { promptDeleteFolder } from "@/wab/client/components/modals/folderDeletionModal";
 import { showTemporaryPrompt } from "@/wab/client/components/quick-modals";
 import {
   getOpIdForDataSourceOpExpr,
@@ -655,24 +656,31 @@ function NavigationDropdown_(
     }
   };
 
-  const getFolderArenas = (folder: FolderElement): AnyArena[] => {
-    const result: AnyArena[] = [];
+  const getFolderArenas = (
+    items: ArenaPanelRow[]
+  ): { arenas: AnyArena[]; folders: FolderElement[] } => {
+    const arenas: AnyArena[] = [];
+    const folders: FolderElement[] = [];
 
-    for (const item of folder.items) {
+    for (const item of items) {
       switch (item.type) {
-        case "folder-element":
-          result.push(...getFolderArenas(item));
+        case "folder-element": {
+          folders.push(item);
+          const children = getFolderArenas(item.items);
+          arenas.push(...children.arenas);
+          folders.push(...children.folders);
           break;
+        }
         case "page":
         case "custom":
         case "component":
-          result.push(item.arena);
+          arenas.push(item.arena);
           break;
         default:
           break;
       }
     }
-    return result;
+    return { arenas, folders };
   };
 
   const onDeleteFolder = React.useCallback(
@@ -683,27 +691,30 @@ function NavigationDropdown_(
         folder.count
       );
       if (confirmation) {
-        await deleteArenas(studioCtx, getFolderArenas(folder));
+        const { arenas } = getFolderArenas([folder]);
+        await deleteArenas(studioCtx, arenas);
       }
     },
     [studioCtx]
   );
   const onFolderRenamed = React.useCallback(
     (folder: FolderElement, newName: string) => {
-      const { oldPath, newPath } = replaceFolderName(folder.key, newName);
+      const pathData = replaceFolderName(folder.key, newName);
+      const { oldPath, newPath } = pathData;
+      const { arenas, folders } = getFolderArenas([folder]);
 
-      const renameProps: RenameArenaProps[] = getFolderArenas(folder).map(
-        (arena) => {
-          const oldArenaName = getArenaName(arena);
-          const newArenaName = oldArenaName.replace(oldPath, newPath);
-          return { arena, newName: newArenaName };
-        }
-      );
+      const renameProps: RenameArenaProps[] = arenas.map((arena) => {
+        const oldArenaName = getArenaName(arena);
+        const newArenaName = oldArenaName.replace(oldPath, newPath);
+        return { arena, newName: newArenaName };
+      });
 
       if (renameProps.length) {
         maybe(studioCtx.siteOps().tryRenameArenas(renameProps), (p) =>
           spawn(p)
         );
+        const keyChanges = getFolderKeyChanges(folders, pathData);
+        renameGroup(keyChanges);
       }
     },
     // TODO - ensure the new folder is expanded by explicitly controlling VirtualTree openKeys
@@ -726,6 +737,7 @@ function NavigationDropdown_(
     nodeHeights,
     expandAll,
     collapseAll,
+    renameGroup,
     selectNextRow,
   } = useTreeData<ArenaPanelRow>({
     nodes: items,
