@@ -21,6 +21,7 @@ import {
 import { deleteArenas } from "@/wab/client/components/sidebar-tabs/ProjectPanel/ArenaContextMenu";
 import {
   ArenaData,
+  ArenaFolderActions,
   ArenaPanelRow,
   ComponentArenaData,
   CustomArenaData,
@@ -30,8 +31,6 @@ import {
   NavigationArenaRow,
   NavigationFolderRow,
   NavigationHeaderRow,
-  OnDeleteFolder,
-  OnFolderRenamed,
   PAGE_HEIGHT,
   PageArenaData,
   ROW_HEIGHT,
@@ -158,16 +157,10 @@ function mapToArenaData(
     .result();
 }
 
-interface ArenaRowActions {
-  onRequestAdding: RequestAdding;
-  onDeleteFolder: OnDeleteFolder;
-  onFolderRenamed: OnFolderRenamed;
-}
-
 interface ArenaToPanelRowProps {
   item: AnyArena | InternalFolder<AnyArena>;
   sectionType: ArenaType;
-  actions: ArenaRowActions;
+  actions: ArenaFolderActions;
 }
 
 export function mapToArenaPanelRow({
@@ -184,6 +177,7 @@ export function mapToArenaPanelRow({
     type,
     key: item.path,
     name: item.name,
+    path: item.path,
     sectionType,
     items: item.items.map((i) =>
       mapToArenaPanelRow({
@@ -193,9 +187,7 @@ export function mapToArenaPanelRow({
       })
     ),
     count: item.count,
-    onAdd: actions.onRequestAdding(sectionType, item.path),
-    onDelete: actions.onDeleteFolder,
-    onRename: actions.onFolderRenamed,
+    actions,
   };
 }
 
@@ -372,306 +364,296 @@ function NavigationDropdown_(
     [onClose, studioCtx]
   );
 
-  const onRequestAdding =
-    (arenaType: ArenaType, folderName?: string) => async () => {
-      onClose();
-      let componentInfo: NewComponentInfo | undefined;
-      const folderPath = getFolderWithSlash(folderName);
+  const onAddArena = async (arenaType: ArenaType, folderName?: string) => {
+    onClose();
+    let componentInfo: NewComponentInfo | undefined;
+    const folderPath = getFolderWithSlash(folderName);
 
-      switch (arenaType) {
-        case "custom":
-          await studioCtx.changeUnsafe(() => {
-            studioCtx.addArena(folderPath);
+    switch (arenaType) {
+      case "custom":
+        await studioCtx.changeUnsafe(() => {
+          studioCtx.addArena(folderPath);
+        });
+        break;
+
+      case "component":
+        componentInfo = await promptComponentTemplate(studioCtx, folderPath);
+        if (!componentInfo) {
+          return;
+        }
+        await studioCtx.changeUnsafe(() => {
+          studioCtx.addComponent(componentInfo!.name, {
+            type: ComponentType.Plain,
+            ...componentInfo,
           });
-          break;
+        });
+        break;
 
-        case "component":
-          componentInfo = await promptComponentTemplate(studioCtx, folderPath);
-          if (!componentInfo) {
-            return;
-          }
-          await studioCtx.changeUnsafe(() => {
-            studioCtx.addComponent(componentInfo!.name, {
-              type: ComponentType.Plain,
-              ...componentInfo,
-            });
-          });
-          break;
+      case "page": {
+        const chosenTemplate = await promptPageTemplate(studioCtx, folderPath);
+        if (!chosenTemplate) {
+          return;
+        }
 
-        case "page": {
-          const chosenTemplate = await promptPageTemplate(
-            studioCtx,
-            folderPath
-          );
-          if (!chosenTemplate) {
-            return;
-          }
+        const mkPage = async () =>
+          await studioCtx.changeUnsafe<PageComponent>(() => {
+            const page_ = studioCtx.addComponent(chosenTemplate.name, {
+              type: ComponentType.Page,
+            }) as PageComponent;
 
-          const mkPage = async () =>
-            await studioCtx.changeUnsafe<PageComponent>(() => {
-              const page_ = studioCtx.addComponent(chosenTemplate.name, {
-                type: ComponentType.Page,
-              }) as PageComponent;
-
-              if (info) {
-                replaceWithPageTemplate(studioCtx, page_, info);
-              }
-
-              return page_;
-            });
-
-          let info: InsertableTemplateComponentExtraInfo | undefined =
-            undefined;
-          switch (chosenTemplate.type) {
-            case "blank": {
-              await mkPage();
-              break;
+            if (info) {
+              replaceWithPageTemplate(studioCtx, page_, info);
             }
-            case "template": {
-              assert(
-                chosenTemplate.projectId && chosenTemplate.componentName,
-                ""
-              );
 
-              const { screenVariant } =
-                await getScreenVariantToInsertableTemplate(studioCtx);
-              info = await studioCtx.appCtx.app.withSpinner(
-                buildInsertableExtraInfo(
-                  studioCtx,
-                  chosenTemplate as {
-                    projectId: string;
-                    componentName: string;
+            return page_;
+          });
+
+        let info: InsertableTemplateComponentExtraInfo | undefined = undefined;
+        switch (chosenTemplate.type) {
+          case "blank": {
+            await mkPage();
+            break;
+          }
+          case "template": {
+            assert(
+              chosenTemplate.projectId && chosenTemplate.componentName,
+              ""
+            );
+
+            const { screenVariant } =
+              await getScreenVariantToInsertableTemplate(studioCtx);
+            info = await studioCtx.appCtx.app.withSpinner(
+              buildInsertableExtraInfo(
+                studioCtx,
+                chosenTemplate as {
+                  projectId: string;
+                  componentName: string;
+                },
+                screenVariant
+              )
+            );
+
+            await mkPage();
+            break;
+          }
+          case "dynamic": {
+            // First, ask what to create a dynamic page over.
+            const dynpageResponse = await showTemporaryPrompt<
+              [LookupSpec, TableSchema]
+            >((onSubmit, onCancel) =>
+              providesStudioCtx(studioCtx)(
+                providesAppCtx(studioCtx.appCtx)(
+                  <Modal
+                    title={`Create dynamic page template`}
+                    visible={true}
+                    footer={null}
+                    onCancel={() => onCancel()}
+                  >
+                    <DataSourceTablePickerWrapper
+                      studioCtx={studioCtx}
+                      onSubmit={onSubmit}
+                    />
+                  </Modal>
+                )
+              )
+            );
+            if (!dynpageResponse) {
+              return;
+            }
+            const [lookupSpec, tableSchema] = dynpageResponse;
+
+            await studioCtx.app.withSpinner(
+              (async () => {
+                // *Now* create the page.
+                const page = await mkPage();
+
+                // Prep
+                const { lookupFields, tableLabel, tableId, sourceType } =
+                  lookupSpec;
+                const tableSym = toVarName(tableLabel ?? tableId);
+                const sourceMeta = getDataSourceMeta(sourceType);
+
+                // Try getting an arbitrary object.
+                // Issue a getMany query without filters. Could be slow!
+                const listRecords = ensureDataSourceStandardQuery(
+                  sourceMeta,
+                  "getList"
+                )(lookupSpec.sourceId, lookupSpec.tableId);
+                const { api } = studioCtx.appCtx;
+                listRecords.opId = await getOpIdForDataSourceOpExpr(
+                  api,
+                  listRecords,
+                  {
+                    projectFlags: studioCtx.projectFlags(),
+                    component: page,
+                    inStudio: true,
                   },
-                  screenVariant
-                )
-              );
+                  studioCtx.siteInfo.id
+                );
+                const maybeEvalResult =
+                  swallow(() =>
+                    tryEvalExpr(
+                      asCode(listRecords, {
+                        projectFlags: studioCtx.projectFlags(),
+                        component: page,
+                        inStudio: true,
+                      }).code,
+                      {}
+                    )
+                  ) ?? undefined;
+                const result = maybeEvalResult
+                  ? await executePlasmicDataOp(maybeEvalResult.val)
+                  : undefined;
+                const initialValues = Object.fromEntries(
+                  lookupFields.map((field) => [
+                    field,
+                    result?.data[0]?.[field] ?? "value",
+                  ])
+                );
 
-              await mkPage();
-              break;
-            }
-            case "dynamic": {
-              // First, ask what to create a dynamic page over.
-              const dynpageResponse = await showTemporaryPrompt<
-                [LookupSpec, TableSchema]
-              >((onSubmit, onCancel) =>
-                providesStudioCtx(studioCtx)(
-                  providesAppCtx(studioCtx.appCtx)(
-                    <Modal
-                      title={`Create dynamic page template`}
-                      visible={true}
-                      footer={null}
-                      onCancel={() => onCancel()}
-                    >
-                      <DataSourceTablePickerWrapper
-                        studioCtx={studioCtx}
-                        onSubmit={onSubmit}
-                      />
-                    </Modal>
-                  )
-                )
-              );
-              if (!dynpageResponse) {
-                return;
-              }
-              const [lookupSpec, tableSchema] = dynpageResponse;
-
-              await studioCtx.app.withSpinner(
-                (async () => {
-                  // *Now* create the page.
-                  const page = await mkPage();
-
-                  // Prep
-                  const { lookupFields, tableLabel, tableId, sourceType } =
-                    lookupSpec;
-                  const tableSym = toVarName(tableLabel ?? tableId);
-                  const sourceMeta = getDataSourceMeta(sourceType);
-
-                  // Try getting an arbitrary object.
-                  // Issue a getMany query without filters. Could be slow!
-                  const listRecords = ensureDataSourceStandardQuery(
-                    sourceMeta,
-                    "getList"
-                  )(lookupSpec.sourceId, lookupSpec.tableId);
-                  const { api } = studioCtx.appCtx;
-                  listRecords.opId = await getOpIdForDataSourceOpExpr(
-                    api,
-                    listRecords,
-                    {
-                      projectFlags: studioCtx.projectFlags(),
-                      component: page,
-                      inStudio: true,
-                    },
-                    studioCtx.siteInfo.id
-                  );
-                  const maybeEvalResult =
-                    swallow(() =>
-                      tryEvalExpr(
-                        asCode(listRecords, {
-                          projectFlags: studioCtx.projectFlags(),
-                          component: page,
-                          inStudio: true,
-                        }).code,
-                        {}
-                      )
-                    ) ?? undefined;
-                  const result = maybeEvalResult
-                    ? await executePlasmicDataOp(maybeEvalResult.val)
-                    : undefined;
-                  const initialValues = Object.fromEntries(
-                    lookupFields.map((field) => [
-                      field,
-                      result?.data[0]?.[field] ?? "value",
-                    ])
-                  );
-
-                  // Create the lookup query that the dynamic page will use.
-                  // It references $ctx.params.FIELD
-                  const lookupValue = {
-                    value: Object.fromEntries(
-                      lookupFields.map((field, idx) => [
-                        field,
-                        `{{${idx + 1}}}`,
-                      ])
-                    ),
-                    bindings: Object.fromEntries(
-                      lookupFields.map((field, idx) => {
-                        const path = new ObjectPath({
-                          path: ["$ctx", "params", field],
-                          fallback: null,
-                        });
-                        const fieldType =
-                          tableSchema.fields.find((f) => f.id === field)
-                            ?.type ?? "text";
-                        return [
-                          `{{${idx + 1}}}`,
-                          ["text", "string"].includes(fieldType)
-                            ? mkTemplatedStringOfOneDynExpr(path)
-                            : path,
-                        ];
-                      })
-                    ),
-                  };
-                  const getOneQuery = ensureDataSourceStandardQuery(
-                    sourceMeta,
-                    "getOne"
-                  )(lookupSpec.sourceId, tableSchema, lookupValue);
-                  getOneQuery.opId = await getOpIdForDataSourceOpExpr(
-                    studioCtx.appCtx.api,
-                    getOneQuery,
-                    {
-                      projectFlags: studioCtx.projectFlags(),
-                      component: page,
-                      inStudio: true,
-                    },
-                    studioCtx.siteInfo.id
-                  );
-
-                  // Update the page path info with the path URL.
-                  // Fill in the initialValue we got as the default preview value for the param.
-                  // And add name h1.
-                  await studioCtx.changeUnsafe(() => {
-                    studioCtx
-                      .tplMgr()
-                      .changePagePath(
-                        page,
-                        `/${encodeURIComponent(tableSym)}/${lookupFields
-                          .map((field) => `[${field}]`)
-                          .join("/")}`
-                      );
-                    // Make sure to convert these to strings, since query params are always strings (not numbers etc.).
-                    for (const field of lookupFields) {
-                      page.pageMeta.params[field] = valueAsString(
-                        initialValues[field]
-                      );
-                    }
-
-                    // Find first h1 or insert h1 into first page section within main slot or root.
-                    function createH1() {
-                      const baseVariant = page.variants[0];
-                      const newTpl = mkTplInlinedText(
-                        "Name",
-                        [baseVariant],
-                        "h1"
-                      );
-
-                      // If there is a main slot, must insert there, or else root (assuming it's a container).
-                      const root =
-                        tryGetMainContentSlotTarget(page.tplTree) ??
-                        (isTplContainer(page.tplTree)
-                          ? page.tplTree
-                          : undefined);
-
-                      // Find a page section or else insert into slot/root.
-                      const targetParent =
-                        flattenTpls(page.tplTree).find(
-                          (tpl) => isTplTag(tpl) && tpl.tag === "section"
-                        ) ?? root;
-                      if (!targetParent) {
-                        return undefined;
-                      }
-
-                      $$$(targetParent).prepend(newTpl);
-
-                      // Try also adding a RichDetails component, if installed.
-                      // We're only adding this if inserting a new title.
-                      // We don't try this if we found some existing h1.
-                      const richDetailsComponent = getHostLessComponents(
-                        studioCtx.site
-                      ).find((c) => c.name === "hostless-rich-details");
-                      if (richDetailsComponent) {
-                        $$$(newTpl).after(
-                          mkTplComponentX({
-                            component: richDetailsComponent,
-                            baseVariant,
-                            args: {
-                              data: new ObjectPath({
-                                path: ["$queries", "query", "data", 0],
-                                fallback: codeLit(null),
-                              }),
-                            },
-                          })
-                        );
-                      }
-                      return newTpl;
-                    }
-
-                    // Add the title as well.
-                    const tplTitle =
-                      flattenTpls(page.tplTree).find((tpl) =>
-                        isTplTextBlock(tpl, "h1")
-                      ) ?? createH1();
-                    if (tplTitle) {
-                      // Set its dynamic value.
-                      const bestField =
-                        orderFieldsByRanking(
-                          tableSchema.fields,
-                          rankedFieldsForDisplayName,
-                          true
-                        )[0]?.id ?? lookupFields[0];
-                      tplTitle.vsettings[0].text = new ExprText({
-                        expr: code(
-                          `(${pathToString([
-                            "$queries.query.data[0]",
-                            bestField,
-                          ])})`,
-                          codeLit("Page title")
-                        ),
-                        html: false,
+                // Create the lookup query that the dynamic page will use.
+                // It references $ctx.params.FIELD
+                const lookupValue = {
+                  value: Object.fromEntries(
+                    lookupFields.map((field, idx) => [field, `{{${idx + 1}}}`])
+                  ),
+                  bindings: Object.fromEntries(
+                    lookupFields.map((field, idx) => {
+                      const path = new ObjectPath({
+                        path: ["$ctx", "params", field],
+                        fallback: null,
                       });
+                      const fieldType =
+                        tableSchema.fields.find((f) => f.id === field)?.type ??
+                        "text";
+                      return [
+                        `{{${idx + 1}}}`,
+                        ["text", "string"].includes(fieldType)
+                          ? mkTemplatedStringOfOneDynExpr(path)
+                          : path,
+                      ];
+                    })
+                  ),
+                };
+                const getOneQuery = ensureDataSourceStandardQuery(
+                  sourceMeta,
+                  "getOne"
+                )(lookupSpec.sourceId, tableSchema, lookupValue);
+                getOneQuery.opId = await getOpIdForDataSourceOpExpr(
+                  studioCtx.appCtx.api,
+                  getOneQuery,
+                  {
+                    projectFlags: studioCtx.projectFlags(),
+                    component: page,
+                    inStudio: true,
+                  },
+                  studioCtx.siteInfo.id
+                );
+
+                // Update the page path info with the path URL.
+                // Fill in the initialValue we got as the default preview value for the param.
+                // And add name h1.
+                await studioCtx.changeUnsafe(() => {
+                  studioCtx
+                    .tplMgr()
+                    .changePagePath(
+                      page,
+                      `/${encodeURIComponent(tableSym)}/${lookupFields
+                        .map((field) => `[${field}]`)
+                        .join("/")}`
+                    );
+                  // Make sure to convert these to strings, since query params are always strings (not numbers etc.).
+                  for (const field of lookupFields) {
+                    page.pageMeta.params[field] = valueAsString(
+                      initialValues[field]
+                    );
+                  }
+
+                  // Find first h1 or insert h1 into first page section within main slot or root.
+                  function createH1() {
+                    const baseVariant = page.variants[0];
+                    const newTpl = mkTplInlinedText(
+                      "Name",
+                      [baseVariant],
+                      "h1"
+                    );
+
+                    // If there is a main slot, must insert there, or else root (assuming it's a container).
+                    const root =
+                      tryGetMainContentSlotTarget(page.tplTree) ??
+                      (isTplContainer(page.tplTree) ? page.tplTree : undefined);
+
+                    // Find a page section or else insert into slot/root.
+                    const targetParent =
+                      flattenTpls(page.tplTree).find(
+                        (tpl) => isTplTag(tpl) && tpl.tag === "section"
+                      ) ?? root;
+                    if (!targetParent) {
+                      return undefined;
                     }
 
-                    // Now add the query we prepared earlier as well.
-                    const pageQuery = addEmptyQuery(page, "query");
-                    pageQuery.op = getOneQuery;
-                  });
-                })()
-              );
-              break;
-            }
+                    $$$(targetParent).prepend(newTpl);
+
+                    // Try also adding a RichDetails component, if installed.
+                    // We're only adding this if inserting a new title.
+                    // We don't try this if we found some existing h1.
+                    const richDetailsComponent = getHostLessComponents(
+                      studioCtx.site
+                    ).find((c) => c.name === "hostless-rich-details");
+                    if (richDetailsComponent) {
+                      $$$(newTpl).after(
+                        mkTplComponentX({
+                          component: richDetailsComponent,
+                          baseVariant,
+                          args: {
+                            data: new ObjectPath({
+                              path: ["$queries", "query", "data", 0],
+                              fallback: codeLit(null),
+                            }),
+                          },
+                        })
+                      );
+                    }
+                    return newTpl;
+                  }
+
+                  // Add the title as well.
+                  const tplTitle =
+                    flattenTpls(page.tplTree).find((tpl) =>
+                      isTplTextBlock(tpl, "h1")
+                    ) ?? createH1();
+                  if (tplTitle) {
+                    // Set its dynamic value.
+                    const bestField =
+                      orderFieldsByRanking(
+                        tableSchema.fields,
+                        rankedFieldsForDisplayName,
+                        true
+                      )[0]?.id ?? lookupFields[0];
+                    tplTitle.vsettings[0].text = new ExprText({
+                      expr: code(
+                        `(${pathToString([
+                          "$queries.query.data[0]",
+                          bestField,
+                        ])})`,
+                        codeLit("Page title")
+                      ),
+                      html: false,
+                    });
+                  }
+
+                  // Now add the query we prepared earlier as well.
+                  const pageQuery = addEmptyQuery(page, "query");
+                  pageQuery.op = getOneQuery;
+                });
+              })()
+            );
+            break;
           }
         }
       }
-    };
+    }
+  };
 
   const getFolderArenas = (folder: FolderElement): AnyArena[] => {
     const result: AnyArena[] = [];
@@ -727,11 +709,16 @@ function NavigationDropdown_(
     // TODO - ensure the new folder is expanded by explicitly controlling VirtualTree openKeys
     [studioCtx]
   );
-  const items = buildItems(studioCtx, {
-    onRequestAdding,
-    onDeleteFolder,
-    onFolderRenamed,
-  });
+
+  const actions: ArenaFolderActions = React.useMemo(
+    () => ({
+      onAddArena,
+      onDeleteFolder,
+      onFolderRenamed,
+    }),
+    [onAddArena, onDeleteFolder, onFolderRenamed]
+  );
+  const items = buildItems(studioCtx, actions);
 
   const {
     nodeData,
@@ -767,7 +754,8 @@ function NavigationDropdown_(
               tooltip: contentEditorMode
                 ? "Create new page"
                 : "Create new page or component",
-              onClick: contentEditorMode ? onRequestAdding("page") : undefined,
+              onClick: () =>
+                contentEditorMode ? onAddArena("page") : undefined,
             },
             wrap: contentEditorMode
               ? undefined
@@ -777,16 +765,16 @@ function NavigationDropdown_(
                     children={plusButton}
                     overlay={
                       <Menu>
-                        <Menu.Item onClick={onRequestAdding("page")}>
+                        <Menu.Item onClick={() => onAddArena("page")}>
                           New <strong>page</strong>
                         </Menu.Item>
                         {!contentEditorMode && (
-                          <Menu.Item onClick={onRequestAdding("component")}>
+                          <Menu.Item onClick={() => onAddArena("component")}>
                             New <strong>component</strong>
                           </Menu.Item>
                         )}
                         {!contentEditorMode && (
-                          <Menu.Item onClick={onRequestAdding("custom")}>
+                          <Menu.Item onClick={() => onAddArena("custom")}>
                             <LabelWithDetailedTooltip
                               tooltip={ARENAS_DESCRIPTION}
                             >
@@ -881,13 +869,8 @@ function NavigationDropdown_(
   );
 }
 
-type RequestAdding = (
-  type: ArenaType,
-  folderName?: string
-) => () => Promise<void>;
-
 const buildItems = computedFn(
-  (studioCtx: StudioCtx, actions: ArenaRowActions) => {
+  (studioCtx: StudioCtx, actions: ArenaFolderActions) => {
     const getSection = (
       title: React.ReactNode,
       arenaSection: ArenaType,
@@ -906,7 +889,7 @@ const buildItems = computedFn(
         name: title,
         items: tree,
         count: items.length,
-        onAdd: actions.onRequestAdding(arenaSection),
+        onAdd: () => actions.onAddArena(arenaSection),
       };
     };
     const recentArenas = studioCtx.recentArenas;

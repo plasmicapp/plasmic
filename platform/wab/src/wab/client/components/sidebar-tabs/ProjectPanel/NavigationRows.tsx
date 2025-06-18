@@ -73,20 +73,30 @@ export type ArenaData = ComponentArenaData | CustomArenaData | PageArenaData;
 
 export type ArenaPanelRow = Header | FolderElement | ArenaData | AnyData;
 
+export type OnAddArena = (
+  type: ArenaType,
+  folderName?: string
+) => Promise<void>;
+
 export type OnDeleteFolder = (folder: FolderElement) => Promise<void>;
 
 export type OnFolderRenamed = (folder: FolderElement, newName: string) => void;
+
+export interface ArenaFolderActions {
+  onAddArena: OnAddArena;
+  onDeleteFolder: OnDeleteFolder;
+  onFolderRenamed: OnFolderRenamed;
+}
 
 export interface FolderElement {
   type: "folder-element";
   name: string;
   sectionType: ArenaType;
+  path?: string;
   key: string;
   items: ArenaPanelRow[];
   count: number;
-  onAdd: () => Promise<void>;
-  onRename: OnFolderRenamed;
-  onDelete: OnDeleteFolder;
+  actions: ArenaFolderActions;
 }
 
 interface NavigationHeaderRowProps extends RowGroupProps {
@@ -142,6 +152,7 @@ export function NavigationFolderRow({
 }: NavigationFolderRowProps) {
   const [renaming, setRenaming] = React.useState(false);
   const labelClass = renaming ? "no-select fill-width" : "no-select";
+  const { onAddArena, onDeleteFolder, onFolderRenamed } = folder.actions;
   return (
     <RowGroup
       style={{ height: ROW_HEIGHT, paddingLeft: indentMultiplier * 16 + 12 }}
@@ -152,11 +163,11 @@ export function NavigationFolderRow({
             if (!isOpen) {
               toggleExpand();
             }
-            await folder.onAdd();
+            await onAddArena(folder.sectionType, folder.path);
           }}
           itemDisplay={getArenaDisplay(folder.sectionType)}
           onSelectRename={() => setRenaming(true)}
-          onDelete={() => folder.onDelete(folder)}
+          onDelete={() => onDeleteFolder(folder)}
         />
       }
       actions={<div></div>}
@@ -171,7 +182,7 @@ export function NavigationFolderRow({
           <div className={cn(labelClass, className)} {...restProps} />
         )}
         onEdit={(newName) => {
-          folder.onRename(folder, newName);
+          onFolderRenamed(folder, newName);
           setRenaming(false);
         }}
         // We need to programmatically trigger editing, because otherwise

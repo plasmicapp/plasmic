@@ -25,10 +25,12 @@ export interface ComponentData {
 }
 
 export type ComponentPanelRow = ComponentFolder | ComponentData;
+
 export type OnFolderRenamed = (
   folder: ComponentFolder,
   newName: string
 ) => Promise<void>;
+
 export type OnDeleteFolder = (folder: ComponentFolder) => Promise<void>;
 
 export type OnAddComponent = (folderName?: string) => Promise<void>;

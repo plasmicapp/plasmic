@@ -42,11 +42,19 @@ export type OnAddToken = (
   type: TokenType,
   folderName?: string
 ) => Promise<void>;
+
 export type OnFolderRenamed = (
   folder: TokenFolder,
   newName: string
 ) => Promise<void>;
+
 export type OnDeleteFolder = (folder: TokenFolder) => Promise<void>;
+
+export interface TokenFolderActions {
+  onAddToken: OnAddToken;
+  onDeleteFolder: OnDeleteFolder;
+  onFolderRenamed: OnFolderRenamed;
+}
 
 export interface TokenFolder {
   type: "folder" | "folder-token";
@@ -56,9 +64,7 @@ export interface TokenFolder {
   key: string;
   items: TokenPanelRow[];
   count: number;
-  onAdd: OnAddToken;
-  onRename: OnFolderRenamed;
-  onDelete: OnDeleteFolder;
+  actions: TokenFolderActions;
 }
 
 export interface TokenData {
@@ -336,6 +342,7 @@ export const TokenFolderRow = observer(function TokenFolderRow(
   props: TokenFolderRowProps
 ) {
   const { folder, matcher, indentMultiplier, isOpen, toggleExpand } = props;
+  const { onAddToken, onDeleteFolder, onFolderRenamed } = folder.actions;
   const studioCtx = useStudioCtx();
   const readOnly = isTokenReadOnly(studioCtx);
   const [renaming, setRenaming] = React.useState(false);
@@ -355,11 +362,11 @@ export const TokenFolderRow = observer(function TokenFolderRow(
             if (!isOpen) {
               toggleExpand();
             }
-            await folder.onAdd(folder.tokenType, folder.path);
+            await onAddToken(folder.tokenType, folder.path);
           }}
           itemDisplay={"token"}
           onSelectRename={() => setRenaming(true)}
-          onDelete={() => folder.onDelete(folder)}
+          onDelete={() => onDeleteFolder(folder)}
         />
       }
       actions={<div></div>}
@@ -375,7 +382,7 @@ export const TokenFolderRow = observer(function TokenFolderRow(
           />
         )}
         onEdit={async (newName) => {
-          await folder.onRename(folder, newName);
+          await onFolderRenamed(folder, newName);
           setRenaming(false);
         }}
         // We need to programmatically trigger editing, because otherwise
