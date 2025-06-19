@@ -59,7 +59,7 @@ import {
 } from "@/wab/shared/model/classes";
 import { unsetTplVariantableAttr } from "@/wab/shared/TplMgr";
 import { tryGetBaseVariantSetting } from "@/wab/shared/Variants";
-import { notification, Popover, Select } from "antd";
+import { Menu, notification, Popover, Select } from "antd";
 import { RefSelectProps } from "antd/lib/select";
 import L, { keyBy, orderBy, uniq, without } from "lodash";
 import { observer } from "mobx-react";

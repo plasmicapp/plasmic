@@ -63,7 +63,7 @@ const Button = React.forwardRef(function Button(
         props: {
           href,
           className: className ? `${className} btn-link` : "btn-link",
-          type: props.htmlType ?? "button",
+          type: htmlType ?? "button",
           ref,
           "data-test-id": dataTestId,
           target,

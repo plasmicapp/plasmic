@@ -12,6 +12,7 @@ import { ValuePreview } from "@/wab/client/components/sidebar-tabs/data-tab";
 import { DataPickerTypesSchema } from "@/wab/client/components/sidebar-tabs/DataBinding/DataPicker";
 import { getInputTagType } from "@/wab/client/components/sidebar-tabs/HTMLAttributesSection";
 import {
+  AddQueryParamButton,
   URLParamTooltip,
   URLParamType,
 } from "@/wab/client/components/sidebar-tabs/PageURLParametersSection";
@@ -27,6 +28,7 @@ import {
 } from "@/wab/client/components/sidebar/sidebar-helpers";
 import { TplExpsProvider } from "@/wab/client/components/style-controls/StyleComponent";
 import { InlineIcon } from "@/wab/client/components/widgets";
+import Button from "@/wab/client/components/widgets/Button";
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import InfoIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Info";
 import LinkIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Link";
@@ -65,7 +67,6 @@ import {
 } from "@/wab/shared/common";
 import { getContextDependentValue } from "@/wab/shared/context-dependent-value";
 import {
-  extractParamsFromPagePath,
   getComponentDisplayName,
   getParamDisplayName,
   getRealParams,
@@ -160,7 +161,7 @@ import { getTplComponentArg, unsetTplComponentArg } from "@/wab/shared/TplMgr";
 import { $$$ } from "@/wab/shared/TplQuery";
 import { isBaseVariant } from "@/wab/shared/Variants";
 import { ensureBaseVariantSetting } from "@/wab/shared/VariantTplMgr";
-import { Menu, Tooltip } from "antd";
+import { InputRef, Menu, Popover, Tooltip } from "antd";
 import { capitalize, isString, keyBy } from "lodash";
 import { observer } from "mobx-react";
 import React, { useMemo } from "react";
@@ -1220,13 +1221,21 @@ interface PageHrefRowsProps
   maybeWrapExpr: MaybeUnwrapExpr;
 }
 
-type TypedURLParams = { param: string; type: URLParamType }[];
+type TypedURLParams = {
+  param: string;
+  type: URLParamType;
+  showIndicator: boolean;
+}[];
 
 const makeTypedURLParams = (
   params: Record<string, string>,
   type: URLParamType
 ): TypedURLParams => {
-  return Object.keys(params).map((param) => ({ param, type }));
+  return Object.keys(params).map((param) => ({
+    param,
+    type,
+    showIndicator: true,
+  }));
 };
 
 function PageHrefRows({
@@ -1245,55 +1254,111 @@ function PageHrefRows({
   // const pathParams = extractParamsFromPagePath(meta.path)
   const pathParams = makeTypedURLParams(meta.params, "Path");
   const queryParams = makeTypedURLParams(meta.query, "Query");
-  return [...pathParams, ...queryParams].map(({ param, type }) => {
-    return (
-      <InnerPropEditorRow
-        key={param}
-        expr={expr.params[param]}
-        attr={param}
-        propType={"string"}
-        label={param}
-        subtitle={<URLParamTooltip type={type} />}
-        definedIndicator={definedIndicator}
-        onChange={(paramValue) => {
-          const newExpr = clone(expr);
-          if (paramValue) {
-            const newValue = ensureInstance(
-              paramValue,
-              TemplatedString,
-              CustomCode,
-              ObjectPath,
-              VarRef
-            );
-            if (type === "Path") {
-              newExpr.params[param] = newValue;
-            } else if (type === "Query") {
-              newExpr.query[param] = newValue;
+  const extraQuery: TypedURLParams = Object.keys(expr.query)
+    .filter((q) => !meta.query[q])
+    .map((param) => ({ param, type: "Query", showIndicator: false }));
+  const ParamRows = [...pathParams, ...queryParams, ...extraQuery].map(
+    ({ param, type, showIndicator }) => {
+      return (
+        <InnerPropEditorRow
+          key={param}
+          expr={type === "Path" ? expr.params[param] : expr.query[param]}
+          attr={param}
+          propType={"string"}
+          label={param}
+          subtitle={<URLParamTooltip type={type} />}
+          definedIndicator={showIndicator ? definedIndicator : undefined}
+          onChange={(paramValue) => {
+            const newExpr = clone(expr);
+            if (paramValue) {
+              const newValue = ensureInstance(
+                paramValue,
+                TemplatedString,
+                CustomCode,
+                ObjectPath,
+                VarRef
+              );
+              if (type === "Path") {
+                newExpr.params[param] = newValue;
+              } else if (type === "Query") {
+                newExpr.query[param] = newValue;
+              }
+            } else {
+              if (type === "Path") {
+                delete newExpr.params[param];
+              } else if (type === "Query") {
+                delete newExpr.query[param];
+              }
             }
-          } else {
+            onChange(maybeWrapExpr(newExpr));
+          }}
+          onDelete={() => {
+            const newExpr = clone(expr);
             if (type === "Path") {
               delete newExpr.params[param];
             } else if (type === "Query") {
               delete newExpr.query[param];
             }
+            onChange(maybeWrapExpr(newExpr));
+          }}
+          disableLinkToProp={disableLinkToProp}
+          disableDynamicValue={disableDynamicValue}
+          icon={<div className="property-connector-line-icon" />}
+        />
+      );
+    }
+  );
+  return (
+    <>
+      {ParamRows}
+      <div className="flex flex-hcenter fill-width">
+        <AddQueryParamButton
+          onAdd={(key) => {
+            const newExpr = clone(expr);
+            newExpr.query[key] = new TemplatedString({
+              text: ["test"],
+            });
+            onChange(maybeWrapExpr(newExpr));
+          }}
+        >
+          <Button
+            className="flex-no-shrink"
+            type={"clear"}
+            size={"wide"}
+            data-test-id="add-fragment"
+            tooltip={
+              <div>
+                Add a query param, used in the URL as:
+                <p>
+                  <span style={{ opacity: 0.5 }}>abc.com</span>
+                  <strong>?page=3</strong>
+                </p>{" "}
+              </div>
+            }
+          >
+            <span className="text-set">?</span>
+          </Button>
+        </AddQueryParamButton>
+        <Button
+          className="flex-no-shrink"
+          type={"clear"}
+          size={"wide"}
+          data-test-id="add-fragment"
+          tooltip={
+            <div>
+              Add a fragment, used in the URL as:
+              <p>
+                <span style={{ opacity: 0.5 }}>abc.com</span>
+                <strong>#fragment</strong>
+              </p>{" "}
+            </div>
           }
-          onChange(maybeWrapExpr(newExpr));
-        }}
-        onDelete={() => {
-          const newExpr = clone(expr);
-          if (type === "Path") {
-            delete newExpr.params[param];
-          } else if (type === "Query") {
-            delete newExpr.query[param];
-          }
-          onChange(maybeWrapExpr(newExpr));
-        }}
-        disableLinkToProp={disableLinkToProp}
-        disableDynamicValue={disableDynamicValue}
-        icon={<div className="property-connector-line-icon" />}
-      />
-    );
-  });
+        >
+          <span className="text-set">#</span>
+        </Button>
+      </div>
+    </>
+  );
 }
 
 function isBooleanPropType(propType: StudioPropType<any>) {
