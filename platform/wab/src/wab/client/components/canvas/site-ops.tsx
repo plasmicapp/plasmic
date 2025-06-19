@@ -189,6 +189,11 @@ import L from "lodash";
 import pluralize from "pluralize";
 import React from "react";
 
+export interface RenameArenaProps {
+  arena: Arena | PageArena | ComponentArena;
+  newName: string;
+}
+
 /**
  * Place for site-wide logic that both performs data model manipulation
  * (usually just by deferring to TplMgr), and updates client state.
@@ -756,8 +761,11 @@ export class SiteOps {
     return { asset, iconColor: opts.iconColor };
   }
 
-  async createFrameForNewComponent() {
-    const componentInfo = await promptComponentTemplate(this.studioCtx);
+  async createFrameForNewComponent(folderPath?: string) {
+    const componentInfo = await promptComponentTemplate(
+      this.studioCtx,
+      folderPath
+    );
     if (!componentInfo) {
       return;
     }
@@ -928,23 +936,32 @@ export class SiteOps {
     }
   }
 
-  tryRenameArena(arena: Arena | PageArena | ComponentArena, newName: string) {
-    if (getArenaName(arena) === newName) {
+  tryRenameArenas(entries: RenameArenaProps[]) {
+    if (entries.length === 0) {
       return;
     }
-
     return this.studioCtx.changeUnsafe(() => {
-      switchType(arena)
-        .when(Arena, (it) => this.tplMgr.renameArena(it, newName))
-        .when([PageArena, ComponentArena], (it) =>
-          this.tryRenameComponent(it.component, newName)
-        );
+      for (const { arena, newName } of entries) {
+        const oldName = getArenaName(arena);
+        if (oldName === newName) {
+          continue;
+        }
 
-      // Replace the URL if this is the current arena
-      if (arena === this.studioCtx.currentArena) {
-        this.studioCtx.switchToArena(arena, { replace: true });
+        switchType(arena)
+          .when(Arena, (it) => this.tplMgr.renameArena(it, newName))
+          .when([PageArena, ComponentArena], (it) =>
+            this.tryRenameComponent(it.component, newName)
+          );
+
+        if (arena === this.studioCtx.currentArena) {
+          this.studioCtx.switchToArena(arena, { replace: true });
+        }
       }
     });
+  }
+
+  tryRenameArena(arena: Arena | PageArena | ComponentArena, newName: string) {
+    return this.tryRenameArenas([{ arena, newName }]);
   }
 
   tryRenameComponent(component: Component, newName: string) {

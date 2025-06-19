@@ -16,7 +16,7 @@ import {
 } from "react";
 
 export type EditableLabelProps = {
-  onEdit?: (val: string) => boolean | void;
+  onEdit?: (val: string) => boolean | void | Promise<void>;
   value: string;
   programmaticallyTriggered?: boolean;
   inputBoxPlaceholder?: string;
@@ -36,6 +36,8 @@ export type EditableLabelProps = {
   doubleClickToEdit?: boolean;
   defaultEditing?: boolean;
   editing?: boolean;
+  // Shrinks label width to content when not editing
+  shrinkLabel?: boolean;
   children?: React.ReactNode;
   onAbort?: () => void;
   allowEmptyString?: boolean;
@@ -97,6 +99,7 @@ const EditableLabel_: ForwardRefRenderFunction<
     programmaticallyTriggered = false,
     defaultEditing = false,
     editing = false,
+    shrinkLabel = false,
     onAbort,
     children,
     inputBoxClassName,
@@ -225,7 +228,7 @@ const EditableLabel_: ForwardRefRenderFunction<
     ...restProps,
     value,
     className: cn(
-      "flex-fill",
+      (_editing || !shrinkLabel) && "flex-fill",
       "text-ellipsis-wrappable",
       _editing && styles.fullWidthLabelEditing,
       { "selectable-text": isTextSelectable }

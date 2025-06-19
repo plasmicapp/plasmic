@@ -3,6 +3,7 @@ import { isNonNil, last } from "@/wab/shared/common";
 export interface Folder<T> {
   type: "folder";
   name: string;
+  // Prefixed folder path
   path: string;
   items: (T | Folder<T>)[];
   count: number;
@@ -11,7 +12,7 @@ export interface Folder<T> {
 /**
  * Create a tree structure from a given array by splitting the `name` in "/".
  * @param items - The array of items to create the folder tree structure from.
- * @param pathPrefix - The prefix to use for the path of the folders.
+ * @param pathPrefix - The prefix to use for the path of the folders. Must not include underscore.
  * @param getName - A function that returns the `name` of an item.
  * @param mapper - A function that maps an item or folder to the desired output type.
  * @returns The array of items with the folder tree structure applied.
@@ -26,6 +27,9 @@ export function createFolderTreeStructure<T, K>(
 ): K[] {
   const { pathPrefix, getName, mapper } = opts;
 
+  // Ensure prefix is always separated by underscore
+  const prefix = pathPrefix && `${pathPrefix}_`;
+
   const tree: (T | Folder<T>)[] = [];
 
   items.forEach((item) => {
@@ -33,7 +37,7 @@ export function createFolderTreeStructure<T, K>(
       .split("/")
       .map((str) => str.trim())
       .filter((str) => !!str);
-    insertIntoTree(item, tree, folders, 0, pathPrefix);
+    insertIntoTree(item, tree, folders, 0, prefix);
   });
 
   return tree.map((item) => mapper(item));
@@ -61,7 +65,7 @@ function insertIntoTree<T>(
     return;
   }
 
-  const newPath = `${path}${index !== 0 ? "-" : ""}${folders[index]}`;
+  const newPath = `${path}${index !== 0 ? "/" : ""}${folders[index]}`;
   let treeNode: Folder<T> | undefined = children.find(
     (currentNode): currentNode is Folder<T> =>
       isFolder(currentNode) && currentNode.name === folders[index]
@@ -79,6 +83,43 @@ function insertIntoTree<T>(
 
   insertIntoTree(item, treeNode.items, folders, index + 1, newPath);
   treeNode.count++;
+}
+
+/**
+ * Get the un-prefixed folder path with a slash appended. The prefix is
+ * the text up to the first underscore, e.g. Page_Group1/Group2
+ * @param name - Folder path with prefix
+ * @returns Plain folder path with slash
+ */
+export function getFolderWithSlash(name?: string): string {
+  if (!name) {
+    return "";
+  }
+  const prefixEnd = name.indexOf("_");
+  const path = prefixEnd >= 0 ? name.slice(prefixEnd + 1) : name;
+  return `${path}/`;
+}
+
+export interface ReplacedFolderName {
+  oldPath: string;
+  newPath: string;
+}
+
+/**
+ * Replace a prefixed folder's name and keep the rest of the path intact
+ * @param name - Full folder path
+ * @param newName - New folder name
+ * @returns Original path without prefix and renamed path
+ */
+export function replaceFolderName(
+  path: string,
+  newName: string
+): ReplacedFolderName {
+  const oldPath = getFolderWithSlash(path);
+
+  // Replace only the final folder segment in the path
+  //  [^/]+(?=\/$) "one or more non-slashes" only if followed by a trailing slash
+  return { oldPath, newPath: oldPath.replace(/[^/]+(?=\/$)/, newName) };
 }
 
 export function getFolderTrimmed(name: string) {

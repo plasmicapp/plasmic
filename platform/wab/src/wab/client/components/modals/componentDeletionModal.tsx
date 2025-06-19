@@ -1,6 +1,10 @@
 import { confirm } from "@/wab/client/components/quick-modals";
 
-async function promptDeleteComponent(itemType, itemName, commentCount = 0) {
+export async function promptDeleteComponent(
+  itemType,
+  itemName,
+  commentCount = 0
+) {
   const commentLabel = commentCount > 1 ? "comments" : "comment";
   return confirm({
     title: "Confirm deletion",
@@ -12,5 +16,3 @@ async function promptDeleteComponent(itemType, itemName, commentCount = 0) {
     }`,
   });
 }
-
-export default promptDeleteComponent;

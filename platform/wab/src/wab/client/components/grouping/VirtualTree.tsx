@@ -1,8 +1,12 @@
 import { Matcher } from "@/wab/client/components/view-common";
 import { ListSpace } from "@/wab/client/components/widgets/ListStack";
 import { mod } from "@/wab/shared/common";
+import {
+  getFolderTrimmed,
+  ReplacedFolderName,
+} from "@/wab/shared/folders/folders-util";
 import * as React from "react";
-import { VariableSizeList, areEqual } from "react-window";
+import { areEqual, VariableSizeList } from "react-window";
 
 export interface RenderElementProps<T> {
   value: T;
@@ -217,7 +221,30 @@ interface UseTreeData<T> {
   selectedIndex?: number;
   expandAll: () => void;
   collapseAll: () => void;
+  renameGroup: (keyChanges: KeyChanges) => void;
   selectNextRow: (direction: SelectDirection) => void;
+}
+
+type KeyChanges = { oldKey: NodeKey; newKey: NodeKey }[];
+
+/**
+ * Get data for renaming groups in the VirtualTree, based on a list of folders
+ * affected by the rename and the path that was updated.
+ * @param folders List of affected folders (assumes `key` matches useTreeData.getNodeKey)
+ * @param pathChange Renamed path data
+ * @returns KeyChange for each folder
+ */
+export function getFolderKeyChanges(
+  folders: { key: string }[],
+  pathChange: ReplacedFolderName
+): KeyChanges {
+  return folders.map((f) => ({
+    oldKey: f.key,
+    newKey: f.key.replace(
+      getFolderTrimmed(pathChange.oldPath),
+      getFolderTrimmed(pathChange.newPath)
+    ),
+  }));
 }
 
 export function useTreeData<T>({
@@ -249,6 +276,21 @@ export function useTreeData<T>({
           set.delete(key);
         } else {
           set.add(key);
+        }
+        return new Set(set);
+      });
+    },
+    [setExpandedNodes]
+  );
+
+  const renameGroup = React.useCallback(
+    (keyChanges: KeyChanges) => {
+      setExpandedNodes((set) => {
+        for (const change of keyChanges) {
+          if (set.has(change.oldKey)) {
+            set.delete(change.oldKey);
+            set.add(change.newKey);
+          }
         }
         return new Set(set);
       });
@@ -372,6 +414,7 @@ export function useTreeData<T>({
     expandAll,
     selectedIndex,
     collapseAll,
+    renameGroup,
     selectNextRow,
   };
 }
