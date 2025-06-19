@@ -200,7 +200,7 @@ export function clone(_expr: Expr): Expr {
             Object.entries(expr.params).map(([k, v]) => [k, clone(v)])
           ),
           query: Object.fromEntries(
-            Object.entries(expr.params).map(([k, v]) => [k, clone(v)])
+            Object.entries(expr.query).map(([k, v]) => [k, clone(v)])
           ),
           fragment: expr.fragment && clone(expr.fragment),
         })
@@ -450,6 +450,20 @@ const _asCode = maybeComputedFn(
           path = path
             .replace(`[[${key}]]`, valueExpr)
             .replace(`[${key}]`, valueExpr);
+        }
+        const queryEntries = Object.entries(expr.query || {});
+        if (queryEntries.length > 0) {
+          const qs = queryEntries
+            .map(([key, value]) => {
+              const exprCode = getCodeExpressionWithFallback(
+                asCode(value, exprCtx),
+                exprCtx
+              );
+              return `${encodeURIComponent(key)}=${"${" + exprCode + "}"}`;
+            })
+            .join("&");
+
+          path += `?${qs}`;
         }
         return code("(`" + path + "`)");
       })

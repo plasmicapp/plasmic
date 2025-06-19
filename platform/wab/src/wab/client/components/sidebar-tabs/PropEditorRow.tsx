@@ -11,6 +11,10 @@ import {
 import { ValuePreview } from "@/wab/client/components/sidebar-tabs/data-tab";
 import { DataPickerTypesSchema } from "@/wab/client/components/sidebar-tabs/DataBinding/DataPicker";
 import { getInputTagType } from "@/wab/client/components/sidebar-tabs/HTMLAttributesSection";
+import {
+  URLParamTooltip,
+  URLParamType,
+} from "@/wab/client/components/sidebar-tabs/PageURLParametersSection";
 import { PropValueEditor } from "@/wab/client/components/sidebar-tabs/PropValueEditor";
 import WarningIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__WarningTriangleSvg";
 
@@ -551,6 +555,7 @@ const isMenuEmpty = (menu: React.ReactElement) => {
 interface PropEditorRowProps {
   expr: DeepReadonly<Expr> | undefined;
   label: string;
+  subtitle?: React.ReactNode;
   definedIndicator?: DefinedIndicatorType;
   valueSetState?: ValueSetState;
   onChange: (expr: Expr | undefined) => void;
@@ -605,6 +610,7 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
   const {
     about = maybePropTypeToAbout(props.propType),
     label,
+    subtitle,
     attr,
     definedIndicator = { source: "none" },
     propType,
@@ -849,7 +855,7 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
   const renderEditorForReferencedParam = () => {
     assert(
       referencedParam,
-      "trying to render a referencedParam editor without a referecend param"
+      "trying to render a referencedParam editor without a referenced param"
     );
     assert(ownerComponent, "referenced params should have an owner component");
     return (
@@ -975,6 +981,7 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
                 ) : null}
               </div>
             }
+            subtitle={subtitle}
             definedIndicator={definedIndicator}
             layout={layout}
             menu={!isMenuEmpty(contextMenu) ? contextMenu : undefined}
@@ -1049,47 +1056,16 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
               }}
             />
           )}
-          {isPageHref(expr) &&
-            extractParamsFromPagePath(
-              ensure(
-                expr.page.pageMeta,
-                "PageHref is expected to contain a page"
-              ).path
-            ).map((param) => {
-              return (
-                <InnerPropEditorRow
-                  key={param}
-                  expr={expr.params[param]}
-                  attr={param}
-                  propType={"string"}
-                  label={param}
-                  definedIndicator={definedIndicator}
-                  onChange={(paramValue) => {
-                    const newExpr = clone(expr);
-                    if (paramValue) {
-                      newExpr.params[param] = ensureInstance(
-                        paramValue,
-                        TemplatedString,
-                        CustomCode,
-                        ObjectPath,
-                        VarRef
-                      );
-                    } else {
-                      delete newExpr.params[param];
-                    }
-                    onChange(maybeWrapExpr(newExpr));
-                  }}
-                  onDelete={() => {
-                    const newExpr = clone(expr) as PageHref;
-                    delete newExpr.params[param];
-                    onChange(maybeWrapExpr(newExpr));
-                  }}
-                  disableLinkToProp={props.disableLinkToProp}
-                  disableDynamicValue={props.disableDynamicValue}
-                  icon={<div className="property-connector-line-icon" />}
-                />
-              );
-            })}
+          {isPageHref(expr) && (
+            <PageHrefRows
+              expr={expr}
+              definedIndicator={definedIndicator}
+              disableLinkToProp={props.disableLinkToProp}
+              disableDynamicValue={props.disableDynamicValue}
+              maybeWrapExpr={maybeWrapExpr}
+              onChange={onChange}
+            />
+          )}
           {isCustomCode &&
             !(isKnownQueryData(wabType) && isQuery(expr)) &&
             allowDynamicValue &&
@@ -1169,7 +1145,7 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
             (() => {
               assert(
                 referencedParam,
-                "trying to render a referencedParam editor without a referecend param"
+                "trying to render a referencedParam editor without a referenced param"
               );
               assert(
                 ownerComponent,
@@ -1232,6 +1208,94 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
   );
 }
 
+interface PageHrefRowsProps
+  extends Pick<
+    PropEditorRowProps,
+    | "onChange"
+    | "definedIndicator"
+    | "disableLinkToProp"
+    | "disableDynamicValue"
+  > {
+  expr: PageHref;
+  maybeWrapExpr: MaybeUnwrapExpr;
+}
+
+type TypedURLParams = { param: string; type: URLParamType }[];
+
+const makeTypedURLParams = (
+  params: Record<string, string>,
+  type: URLParamType
+): TypedURLParams => {
+  return Object.keys(params).map((param) => ({ param, type }));
+};
+
+function PageHrefRows({
+  expr,
+  definedIndicator,
+  disableLinkToProp,
+  disableDynamicValue,
+  maybeWrapExpr,
+  onChange,
+}: PageHrefRowsProps) {
+  const meta = ensure(
+    expr.page.pageMeta,
+    "PageHref is expected to contain a page"
+  );
+  // TODO -- why was this done instead of Object.keys(meta.params) ?
+  // const pathParams = extractParamsFromPagePath(meta.path)
+  const pathParams = makeTypedURLParams(meta.params, "Path");
+  const queryParams = makeTypedURLParams(meta.query, "Query");
+  return [...pathParams, ...queryParams].map(({ param, type }) => {
+    return (
+      <InnerPropEditorRow
+        key={param}
+        expr={expr.params[param]}
+        attr={param}
+        propType={"string"}
+        label={param}
+        subtitle={<URLParamTooltip type={type} />}
+        definedIndicator={definedIndicator}
+        onChange={(paramValue) => {
+          const newExpr = clone(expr);
+          if (paramValue) {
+            const newValue = ensureInstance(
+              paramValue,
+              TemplatedString,
+              CustomCode,
+              ObjectPath,
+              VarRef
+            );
+            if (type === "Path") {
+              newExpr.params[param] = newValue;
+            } else if (type === "Query") {
+              newExpr.query[param] = newValue;
+            }
+          } else {
+            if (type === "Path") {
+              delete newExpr.params[param];
+            } else if (type === "Query") {
+              delete newExpr.query[param];
+            }
+          }
+          onChange(maybeWrapExpr(newExpr));
+        }}
+        onDelete={() => {
+          const newExpr = clone(expr);
+          if (type === "Path") {
+            delete newExpr.params[param];
+          } else if (type === "Query") {
+            delete newExpr.query[param];
+          }
+          onChange(maybeWrapExpr(newExpr));
+        }}
+        disableLinkToProp={disableLinkToProp}
+        disableDynamicValue={disableDynamicValue}
+        icon={<div className="property-connector-line-icon" />}
+      />
+    );
+  });
+}
+
 function isBooleanPropType(propType: StudioPropType<any>) {
   if (["boolean", "target"].includes(getPropTypeType(propType) ?? "")) {
     return true;
@@ -1283,7 +1347,13 @@ export function getExtraEnvFromPropType(
   }
 }
 
-function getExprTransformationBasedOnPropType(propType: StudioPropType<any>) {
+type MaybeWrapExpr = (x: Expr | undefined | null) => Expr | undefined;
+type MaybeUnwrapExpr = (x: Expr | undefined | null) => Expr | undefined;
+
+function getExprTransformationBasedOnPropType(propType: StudioPropType<any>): {
+  maybeWrapExpr: MaybeWrapExpr;
+  maybeUnwrapExpr: MaybeUnwrapExpr;
+} {
   if (isPlainObjectPropType(propType) && propType.type === "function") {
     const argNames =
       "argTypes" in propType

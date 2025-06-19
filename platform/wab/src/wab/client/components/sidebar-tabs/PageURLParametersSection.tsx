@@ -14,7 +14,13 @@ import { LabelWithDetailedTooltip } from "@/wab/client/components/widgets/LabelW
 import { LabeledListItem } from "@/wab/client/components/widgets/LabeledListItem";
 import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { ensure, maybe, maybeFirst, swallow, unexpected } from "@/wab/shared/common";
+import {
+  ensure,
+  maybe,
+  maybeFirst,
+  swallow,
+  unexpected,
+} from "@/wab/shared/common";
 import { valueAsString } from "@/wab/commons/values";
 import { extractParamsFromPagePath } from "@/wab/shared/core/components";
 import {
@@ -37,9 +43,47 @@ import { isEqual, size } from "lodash";
 import { observer } from "mobx-react";
 import React, { useMemo, useState } from "react";
 
+export type URLParamType = "Path" | "Query";
+
+export function URLParamTooltip(props: { type: URLParamType }) {
+  return (
+    <Tooltip
+      title={
+        props.type === "Query" ? (
+          <>
+            URL query parameters look like{" "}
+            <code>
+              ?search=pants&<strong>page=3</strong>
+            </code>
+            . They are optional, always contain text values, come after ? and
+            are separated by &.
+          </>
+        ) : props.type === "Path" ? (
+          <>
+            Path parameters look like{" "}
+            <code>
+              /posts/<strong>42</strong>
+            </code>{" "}
+            or{" "}
+            <code>
+              /products/<strong>rainbow-sandals</strong>
+            </code>
+            . They are required, always contain text values, and must occupy a
+            whole path segment in between slashes.
+          </>
+        ) : (
+          unexpected()
+        )
+      }
+    >
+      {props.type} param
+    </Tooltip>
+  );
+}
+
 const URLParameterRow = observer(
   (props: {
-    type: "Path" | "URL Query";
+    type: URLParamType;
     label: string;
     value: string;
     onChange: (key: string, value: string) => void;
@@ -72,39 +116,7 @@ const URLParameterRow = observer(
     return (
       <LabeledListItem
         data-test-id="page-param-name"
-        subtitle={
-          <Tooltip
-            title={
-              props.type === "URL Query" ? (
-                <>
-                  URL query parameters look like{" "}
-                  <code>
-                    ?search=pants&<strong>page=3</strong>
-                  </code>
-                  . They are optional, always contain text values, come after ?
-                  and are separated by &.
-                </>
-              ) : props.type === "Path" ? (
-                <>
-                  Path parameters look like{" "}
-                  <code>
-                    /posts/<strong>42</strong>
-                  </code>{" "}
-                  or{" "}
-                  <code>
-                    /products/<strong>rainbow-sandals</strong>
-                  </code>
-                  . They are required, always contain text values, and must
-                  occupy a whole path segment in between slashes.
-                </>
-              ) : (
-                unexpected()
-              )
-            }
-          >
-            {props.type} param
-          </Tooltip>
-        }
+        subtitle={<URLParamTooltip type={props.type} />}
         withSubtitle
         label={props.label}
         padding={"noContent"}
@@ -342,7 +354,7 @@ const PageURLParametersSection = observer(function PageQueryPanel(props: {
         {urlSearchParams.map((key) => (
           <URLParameterRow
             key={`search-${key}`}
-            type={"URL Query"}
+            type={"Query"}
             label={key}
             value={pageMeta.query[key]}
             onChange={handleSearchParamValueChange}
