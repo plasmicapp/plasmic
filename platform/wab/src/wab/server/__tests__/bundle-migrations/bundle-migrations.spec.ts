@@ -6,7 +6,7 @@ import * as Prettier from "prettier";
 // temporarily change this to true to write input and expected bundles
 const WRITE_FILES = false;
 
-const FIXTURES_DIR = "src/wab/server/__tests__/bundle-migrations/fixtures";
+const FIXTURES_DIR = "@/wab/server/__tests__/bundle-migrations/fixtures";
 const EXPECTED_EXT = ".migrated.json";
 const PRETTIER_OPTS: Prettier.Options = {
   parser: "json",

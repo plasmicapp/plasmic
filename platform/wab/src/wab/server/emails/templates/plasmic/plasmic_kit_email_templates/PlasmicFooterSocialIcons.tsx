@@ -22,7 +22,7 @@ import {
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
-import { EmailRow } from "@/wab/server/emails/components.tsx"; // plasmic-import: xWkqfjbn8oyX/codeComponent
+import { EmailRow } from "@/wab/server/emails/components"; // plasmic-import: xWkqfjbn8oyX/codeComponent
 import FooterSocialIcon from "../../FooterSocialIcon"; // plasmic-import: 8Wh2IAEsoffQ/component
 
 createPlasmicElementProxy;

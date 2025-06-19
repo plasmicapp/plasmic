@@ -27,7 +27,7 @@ import {
   EmailColumn,
   EmailImage,
   EmailLink,
-} from "@/wab/server/emails/components.tsx"; // plasmic-import: pVqOLFd6uDdb/codeComponent
+} from "@/wab/server/emails/components"; // plasmic-import: pVqOLFd6uDdb/codeComponent
 
 createPlasmicElementProxy;
 

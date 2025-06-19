@@ -54,7 +54,7 @@ import {
   isKnownStyleExpr,
 } from "@/wab/shared/model/classes";
 import { isImageType, wabToTsType } from "@/wab/shared/model/model-util";
-import { getSerializedImgSrcForAsset } from "src/wab/shared/codegen/react-p/image";
+import { getSerializedImgSrcForAsset } from "@/wab/shared/codegen/react-p/image";
 
 export function getExternalParams(ctx: SerializerBaseContext) {
   const argParams = getArgParams(ctx);

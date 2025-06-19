@@ -4,7 +4,7 @@ import {
   ProjectRevision,
   PromotionCode,
 } from "@/wab/server/entities/Entities";
-import "@/wab/server/extensions.ts";
+import "@/wab/server/extensions";
 import { mkApiDataSource } from "@/wab/server/routes/data-source";
 import {
   mkApiAppAuthConfig,

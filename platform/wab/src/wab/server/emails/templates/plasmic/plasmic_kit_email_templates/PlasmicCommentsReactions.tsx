@@ -22,7 +22,7 @@ import {
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
-import { EmailRow, EmailSection } from "@/wab/server/emails/components.tsx"; // plasmic-import: ccI_uNhThjcT/codeComponent
+import { EmailRow, EmailSection } from "@/wab/server/emails/components"; // plasmic-import: ccI_uNhThjcT/codeComponent
 import AtomsCard from "../../AtomsCard"; // plasmic-import: 2cidd9ockVoM/component
 import CommentsComment from "../../CommentsComment"; // plasmic-import: NUaRKxTU3gYx/component
 

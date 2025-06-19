@@ -172,7 +172,7 @@ async function main() {
     }
     const sortedMeta = L.sortBy(outMeta, (x) => x.component);
     fs.writeFileSync(
-      "src/wab/shared/foreign-components/foreign-react-" + pkg + "-gen.ts",
+      "@/wab/shared/foreign-components/foreign-react-" + pkg + "-gen.ts",
       genSource(sortedMeta)
     );
   }
@@ -201,7 +201,7 @@ async function main() {
     }
 
     fs.writeFileSync(
-      "src/wab/component-metas/react-meta-gen.ts",
+      "@/wab/component-metas/react-meta-gen.ts",
       genSource(outElts)
     );
   } else if (pkg === "bootstrap") {

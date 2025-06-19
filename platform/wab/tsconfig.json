@@ -20,7 +20,7 @@
     // break).
     //
     // [1]: https://github.com/Microsoft/TypeScript/issues/15230#issuecomment-466624686
-    "allowJs": false,
+    "allowJs": true,
     "allowSyntheticDefaultImports": true,
     "alwaysStrict": true,
     "baseUrl": "./",
@@ -36,7 +36,7 @@
     "isolatedModules": true,
     "jsx": "react",
     "moduleResolution": "node",
-    "noEmit": true,
+    "noEmit": false,
     "noErrorTruncation": true,
     "noFallthroughCasesInSwitch": true,
     // Not worth it
@@ -61,7 +61,7 @@
     "acceptance-tests",
     "webpack",
     "jest",
-    "src/wab/client/test/setupTests.ts",
+    "@/wab/client/test/setupTests.ts",
     "__tests__"
   ]
 }

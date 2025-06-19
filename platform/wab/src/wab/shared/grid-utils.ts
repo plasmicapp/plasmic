@@ -53,8 +53,14 @@ export function parseGridCssPropsToSpec(
     rsh.get("display") === "grid",
     "Grid element is expected to have display:grid"
   );
+  
+  const columns = parseProp(
+    "grid-template-columns",
+    "axisTemplate"
+  ) as GridSpec["gridTemplateColumns"];
+
   return {
-    gridTemplateColumns: parseProp("grid-template-columns", "axisTemplate"),
+    gridTemplateColumns: columns,
   };
 }
 

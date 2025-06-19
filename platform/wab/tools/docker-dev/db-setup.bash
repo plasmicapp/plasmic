@@ -2,7 +2,7 @@
 
 set -o errexit -o nounset
 
-PGPASSWORD="SEKRET"
+PGPASSWORD="w1G_xJzN8.q9Q2_nRyY1CxzW.o257dtta.ZxUakSu"
 cat > ~/.pgpass << EOF
 localhost:5432:*:wab:$PGPASSWORD
 localhost:5432:*:cypress:$PGPASSWORD

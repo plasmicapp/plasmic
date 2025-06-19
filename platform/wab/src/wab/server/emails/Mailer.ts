@@ -33,9 +33,13 @@ export function createMailer() {
   if (process.env.NODE_ENV === "production") {
     return new NodeMailer(
       createTransport({
-        host: "email-smtp.us-west-2.amazonaws.com",
-        port: 587,
-        auth: getSmtpAuth(),
+        host: process.env.EMAIL_SMTP_HOST || "email-smtp.us-west-2.amazonaws.com",
+        port: parseInt(process.env.EMAIL_SMTP_PORT || "587", 10),
+        secure: process.env.EMAIL_SMTP_USE_TLS === "true",
+        auth: {
+          user: process.env.EMAIL_SMTP_USER,
+          pass: process.env.EMAIL_SMTP_PASSWORD,
+        },
       })
     );
   } else {

@@ -335,7 +335,7 @@ import {
 import { JsIdentifier } from "@/wab/shared/utils/regex-js-identifier";
 import { makeVariantComboSorter } from "@/wab/shared/variant-sort";
 import L from "lodash";
-import { shouldUsePlasmicImg } from "src/wab/shared/codegen/react-p/image";
+import { shouldUsePlasmicImg } from "@/wab/shared/codegen/react-p/image";
 import type { SetRequired } from "type-fest";
 
 export function exportStyleConfig(

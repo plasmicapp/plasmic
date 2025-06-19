@@ -113,7 +113,7 @@ export const compressedReactMetaString = \`${JSON.stringify(
   )}\`;
 `;
 
-  const outputFile = "src/wab/component-metas/react-meta-gen-compressed.ts";
+  const outputFile = "@/wab/component-metas/react-meta-gen-compressed.ts";
   fs.writeFileSync(outputFile, source);
 }
 

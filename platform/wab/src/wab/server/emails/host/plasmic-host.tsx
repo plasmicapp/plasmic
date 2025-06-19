@@ -37,7 +37,7 @@ const componentNames = {
   horizontalRule: makeComponentName("hr"),
 };
 
-const COMPONENTS_IMPORT_PATH = "@/wab/server/emails/components.tsx";
+const COMPONENTS_IMPORT_PATH = "@/wab/server/emails/components";
 const STYLE_SECTIONS: StyleSection[] = ["visibility"]; // set to false after PLA-12167
 
 registerComponent(EmailContainer, {

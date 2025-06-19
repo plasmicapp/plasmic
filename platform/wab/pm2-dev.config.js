@@ -16,7 +16,7 @@ function getPlasmicHostingApps() {
     {
       name: "codegen-backend",
       script: "yarn",
-      args: ["run-ts", "src/wab/server/codegen-backend.ts"],
+      args: ["run-ts", "@/wab/server/codegen-backend.ts"],
       time: true,
       env: {
         BACKEND_PORT: 3008,

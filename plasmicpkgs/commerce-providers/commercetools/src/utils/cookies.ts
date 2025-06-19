@@ -3,8 +3,8 @@ import { COMMERCETOOLS_COOKIE_EXPIRE } from '../const'
 
 const options: CookieAttributes = {
   expires: COMMERCETOOLS_COOKIE_EXPIRE,
-  sameSite: "none",
-  secure: true
+  sameSite: process.env.NODE_ENV === 'production' && process.env.ALLOW_INSECURE_COOKIES !== 'true' ? 'none' : 'lax',
+  secure: process.env.NODE_ENV === 'production' && process.env.ALLOW_INSECURE_COOKIES !== 'true',
 }
 
 export const getCookies = <T>(name: string) => {

@@ -292,7 +292,7 @@ export async function executeDataSourceStudioOperationHandler(
     undefined,
     true
   );
-  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Origin", process.env.PUBLIC_URL || "http://localhost");
   res.json(data);
 }
 

@@ -1,7 +1,7 @@
 import { Request, Response } from "express-serve-static-core";
 
 export async function getFakeTweets(req: Request, res: Response) {
-  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Origin", process.env.PUBLIC_URL || "http://localhost");
 
   res.json([
     {
@@ -104,7 +104,7 @@ export async function getFakeTweets(req: Request, res: Response) {
 }
 
 export async function getFakeTasks(req: Request, res: Response) {
-  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Origin", process.env.PUBLIC_URL || "http://localhost");
 
   res.json([
     {
@@ -141,7 +141,7 @@ export async function getFakeTasks(req: Request, res: Response) {
 }
 
 export async function getFakePlans(req: Request, res: Response) {
-  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Origin", process.env.PUBLIC_URL || "http://localhost");
 
   res.json([
     {
@@ -181,7 +181,7 @@ export async function getFakePlans(req: Request, res: Response) {
 }
 
 export async function getFakeBlurbs(req: Request, res: Response) {
-  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Origin", process.env.PUBLIC_URL || "http://localhost");
 
   res.json([
     {
@@ -212,7 +212,7 @@ export async function getFakeBlurbs(req: Request, res: Response) {
 }
 
 export async function getFakePosts(req: Request, res: Response) {
-  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Origin", process.env.PUBLIC_URL || "http://localhost");
 
   res.json([
     {
@@ -251,7 +251,7 @@ export async function getFakePosts(req: Request, res: Response) {
 }
 
 export async function getFakeTestimonials(req: Request, res: Response) {
-  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Origin", process.env.PUBLIC_URL || "http://localhost");
 
   res.json([
     {

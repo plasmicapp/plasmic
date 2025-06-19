@@ -23,15 +23,18 @@ const port: number = process.env.PORT ? +process.env.PORT : 3003;
 const backendPort: number = process.env.BACKEND_PORT
   ? +process.env.BACKEND_PORT
   : 3004;
+const backendHost: string = process.env.BACKEND_HOST ?? "localhost";
 const publicUrl: string =
   process.env.PUBLIC_URL ?? (isProd ? homepage : `http://localhost:${port}`);
 
-console.log(`Starting rsbuild...
-- commitHash: ${commitHash}
-- buildEnv: ${buildEnv}
-- publicUrl: ${publicUrl}
-- port: ${port}
-- backendPort: ${backendPort}
+console.log(`
+🚀 Staring Rsbuild...
+------------------------------------
+  Mode         : ${buildEnv}
+  Commit       : ${commitHash}
+  Frontend URL : ${publicUrl}
+  Backend URL  : http://${backendHost}:${backendPort}
+------------------------------------
 `);
 
 /**
@@ -127,12 +130,12 @@ export default defineConfig({
   server: {
     port,
     proxy: {
-      "/api": `http://localhost:${backendPort}`,
+      "/api": `http://${backendHost}:${backendPort}`,
     },
   },
   source: {
     entry: {
-      index: "src/wab/client/main.tsx",
+      index: "@/wab/client/main.tsx",
     },
   },
   output: {

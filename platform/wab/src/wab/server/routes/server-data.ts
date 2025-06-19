@@ -186,7 +186,7 @@ export function executeDataSourceOperationWithCurrentUserHandler(
     const opString = req.body.opId as string;
     const op = await getDataSourceOperation(reqMgr, dataSourceId, opString);
 
-    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Origin", process.env.PUBLIC_URL || "http://localhost");
 
     const currentUserInfo = await getCurrentUserInfo(req, reqMgr, op);
 

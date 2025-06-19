@@ -7,7 +7,7 @@ describe("model-util", () => {
   it("works", () => {
     const bundle = JSON.parse(
       readFileSync(
-        "src/wab/shared/codegen/__tests__/bundles/todomvc.json",
+        "@/wab/shared/codegen/__tests__/bundles/todomvc.json",
         "utf8"
       )
     );

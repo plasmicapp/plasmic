@@ -28,7 +28,7 @@ import {
   EmailImage,
   EmailRow,
   EmailText,
-} from "@/wab/server/emails/components.tsx"; // plasmic-import: xWkqfjbn8oyX/codeComponent
+} from "@/wab/server/emails/components"; // plasmic-import: xWkqfjbn8oyX/codeComponent
 import AtomsCard from "../../AtomsCard"; // plasmic-import: 2cidd9ockVoM/component
 
 createPlasmicElementProxy;
