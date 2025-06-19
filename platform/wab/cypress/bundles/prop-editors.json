@@ -27457,7 +27457,7 @@
         }
       },
       "deps": [],
-      "version": "246-add-component-updated-at"
+      "version": "247-add-page-href-query-fragment"
     }
   ],
   [
@@ -28238,7 +28238,9 @@
             "id1": { "__ref": "3015503" },
             "id2": { "__ref": "3015504" }
           },
-          "__type": "PageHref"
+          "__type": "PageHref",
+          "query": {},
+          "fragment": null
         },
         "3015503": {
           "code": "\"value\"",
@@ -35209,7 +35211,9 @@
             "id1": { "__ref": "5022615" },
             "id2": { "__ref": "5022616" }
           },
-          "__type": "PageHref"
+          "__type": "PageHref",
+          "query": {},
+          "fragment": null
         },
         "5022615": { "text": ["123"], "__type": "TemplatedString" },
         "5022616": {
@@ -53020,7 +53024,7 @@
         "DuESJECNxPHt": { "tpl": [], "__type": "VirtualRenderExpr" }
       },
       "deps": ["968565bc-2862-4179-aa20-deebd3879e08"],
-      "version": "246-add-component-updated-at"
+      "version": "247-add-page-href-query-fragment"
     }
   ]
 ]

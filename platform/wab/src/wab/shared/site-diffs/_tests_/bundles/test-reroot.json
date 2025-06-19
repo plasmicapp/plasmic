@@ -1166,7 +1166,7 @@
           }
         },
         "deps": [],
-        "version": "246-add-component-updated-at"
+        "version": "247-add-page-href-query-fragment"
       },
       "projectId": "3Ly8WyuoJ263bQVv2eUgq7",
       "version": "0.0.1",
@@ -2326,7 +2326,7 @@
           }
         },
         "deps": [],
-        "version": "246-add-component-updated-at"
+        "version": "247-add-page-href-query-fragment"
       },
       "projectId": "3Ly8WyuoJ263bQVv2eUgq7",
       "version": "0.0.1",
@@ -3510,7 +3510,7 @@
           }
         },
         "deps": [],
-        "version": "246-add-component-updated-at"
+        "version": "247-add-page-href-query-fragment"
       }
     },
     {
@@ -4658,7 +4658,7 @@
           }
         },
         "deps": [],
-        "version": "246-add-component-updated-at"
+        "version": "247-add-page-href-query-fragment"
       }
     }
   ]

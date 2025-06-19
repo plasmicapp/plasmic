@@ -93,7 +93,14 @@ export function HrefEditor(props: {
           codeLit(""),
         ])
       );
-      submitVal(new PageHref({ page: v.item, params: defaultParams }));
+      submitVal(
+        new PageHref({
+          page: v.item,
+          params: defaultParams,
+          query: {},
+          fragment: null,
+        })
+      );
     } else {
       submitVal(v.item);
     }

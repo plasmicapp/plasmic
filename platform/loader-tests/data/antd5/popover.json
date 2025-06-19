@@ -27623,7 +27623,7 @@
         }
       },
       "deps": [],
-      "version": "246-add-component-updated-at"
+      "version": "247-add-page-href-query-fragment"
     }
   ],
   [
@@ -29155,7 +29155,7 @@
         }
       },
       "deps": ["47880b20-ae72-4924-a248-cc7dd1e09863"],
-      "version": "246-add-component-updated-at"
+      "version": "247-add-page-href-query-fragment"
     }
   ]
 ]

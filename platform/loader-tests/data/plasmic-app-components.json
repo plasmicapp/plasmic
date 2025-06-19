@@ -4081,7 +4081,7 @@
         }
       },
       "deps": [],
-      "version": "246-add-component-updated-at"
+      "version": "247-add-page-href-query-fragment"
     }
   ],
   [
@@ -31327,7 +31327,7 @@
         }
       },
       "deps": [],
-      "version": "246-add-component-updated-at"
+      "version": "247-add-page-href-query-fragment"
     }
   ],
   [
@@ -31768,7 +31768,7 @@
         }
       },
       "deps": [],
-      "version": "246-add-component-updated-at"
+      "version": "247-add-page-href-query-fragment"
     }
   ],
   [
@@ -32082,7 +32082,7 @@
         "5531023": { "values": {}, "mixins": [], "__type": "RuleSet" }
       },
       "deps": [],
-      "version": "246-add-component-updated-at"
+      "version": "247-add-page-href-query-fragment"
     }
   ],
   [
@@ -34577,7 +34577,9 @@
         "3668302": {
           "page": { "__ref": "5753002" },
           "params": {},
-          "__type": "PageHref"
+          "__type": "PageHref",
+          "query": {},
+          "fragment": null
         },
         "3668303": { "text": ["Home"], "__type": "TemplatedString" },
         "3668304": { "text": ["Unhighlighted"], "__type": "TemplatedString" },
@@ -36827,7 +36829,7 @@
         "65a542ff-c445-4eae-8300-db6b033274a2",
         "5878a35c-1286-432e-b733-feab6baae378"
       ],
-      "version": "246-add-component-updated-at"
+      "version": "247-add-page-href-query-fragment"
     }
   ]
 ]

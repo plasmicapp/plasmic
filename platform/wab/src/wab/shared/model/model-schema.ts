@@ -588,6 +588,8 @@ Expr
   PageHref
     @WeakRef page: Component
     params: Map[String, TemplatedString | CustomCode | ObjectPath | VarRef]
+    query: Map[String, TemplatedString | CustomCode | ObjectPath | VarRef]
+    fragment: TemplatedString? | CustomCode? | ObjectPath? | VarRef?
   VariantsRef
     @WeakRef variants: [Variant]
   ObjectPath

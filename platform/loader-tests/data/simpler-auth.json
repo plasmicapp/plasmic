@@ -8982,7 +8982,9 @@
         "bu_D1Yd2gxXG": {
           "page": { "__ref": "J7HHtq-clz9l" },
           "params": {},
-          "__type": "PageHref"
+          "__type": "PageHref",
+          "query": {},
+          "fragment": null
         },
         "g3wMLg3cYMxm": {
           "variants": [{ "__ref": "AALHp7VW3AZi" }],
@@ -9053,7 +9055,9 @@
         "dezVtJC0Vo7t": {
           "page": { "__ref": "y3Gi1ZRR3zFC" },
           "params": {},
-          "__type": "PageHref"
+          "__type": "PageHref",
+          "query": {},
+          "fragment": null
         },
         "w8N6d22MPfi9": {
           "variants": [{ "__ref": "jY5r_aRO-4Eb" }],
@@ -9124,7 +9128,9 @@
         "KmPhOJQ7WOPA": {
           "page": { "__ref": "uhJY0og8JLqe" },
           "params": {},
-          "__type": "PageHref"
+          "__type": "PageHref",
+          "query": {},
+          "fragment": null
         },
         "OD4ygA56ibQC": {
           "variants": [{ "__ref": "1sj2PKIZW7Yv" }],
@@ -9417,7 +9423,7 @@
         }
       },
       "deps": [],
-      "version": "246-add-component-updated-at"
+      "version": "247-add-page-href-query-fragment"
     }
   ]
 ]

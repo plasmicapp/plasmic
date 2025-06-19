@@ -8029,7 +8029,9 @@
         "61957132": {
           "page": { "__ref": "40989008" },
           "params": {},
-          "__type": "PageHref"
+          "__type": "PageHref",
+          "query": {},
+          "fragment": null
         },
         "61957133": {
           "name": null,
@@ -8207,7 +8209,9 @@
         "61957167": {
           "page": { "__ref": "40989008" },
           "params": {},
-          "__type": "PageHref"
+          "__type": "PageHref",
+          "query": {},
+          "fragment": null
         },
         "61957168": { "markers": [], "text": "Go back", "__type": "RawText" },
         "61957169": {
@@ -20324,7 +20328,7 @@
         }
       },
       "deps": [],
-      "version": "246-add-component-updated-at"
+      "version": "247-add-page-href-query-fragment"
     }
   ]
 ]

@@ -199,6 +199,10 @@ export function clone(_expr: Expr): Expr {
           params: Object.fromEntries(
             Object.entries(expr.params).map(([k, v]) => [k, clone(v)])
           ),
+          query: Object.fromEntries(
+            Object.entries(expr.params).map(([k, v]) => [k, clone(v)])
+          ),
+          fragment: expr.fragment && clone(expr.fragment),
         })
     )
     .when(

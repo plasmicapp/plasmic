@@ -154,6 +154,8 @@ export const handledWeakRefPaths: Path[] = [
     [["CustomCode", "fallback"], ...exprWithWeakRef],
     [["ObjectPath", "fallback"], ...exprWithWeakRef],
     [["PageHref", "params"], ...exprWithWeakRef],
+    [["PageHref", "query"], ...exprWithWeakRef],
+    [["PageHref", "fragment"], ...exprWithWeakRef],
     [["FunctionArg", "expr"], ...exprWithWeakRef],
     [["CollectionExpr", "exprs"], ...exprWithWeakRef],
     [["MapExpr", "mapExpr"], ...exprWithWeakRef],

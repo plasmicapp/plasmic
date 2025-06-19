@@ -2523,7 +2523,7 @@
           }
         },
         "deps": [],
-        "version": "246-add-component-updated-at"
+        "version": "247-add-page-href-query-fragment"
       },
       "projectId": "2YAtuqUruz4SscKrr5g25x",
       "version": "0.0.1",
@@ -4735,7 +4735,7 @@
           "53903362": { "values": {}, "mixins": [], "__type": "RuleSet" }
         },
         "deps": [],
-        "version": "246-add-component-updated-at"
+        "version": "247-add-page-href-query-fragment"
       }
     },
     {
@@ -7426,7 +7426,7 @@
           }
         },
         "deps": [],
-        "version": "246-add-component-updated-at"
+        "version": "247-add-page-href-query-fragment"
       }
     }
   ]

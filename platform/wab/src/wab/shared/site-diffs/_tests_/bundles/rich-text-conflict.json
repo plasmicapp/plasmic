@@ -1038,7 +1038,7 @@
           }
         },
         "deps": [],
-        "version": "246-add-component-updated-at"
+        "version": "247-add-page-href-query-fragment"
       },
       "projectId": "aH1hFXMTo8YybdGp5ScZNk",
       "version": "0.0.1",
@@ -2081,7 +2081,7 @@
           }
         },
         "deps": [],
-        "version": "246-add-component-updated-at"
+        "version": "247-add-page-href-query-fragment"
       }
     },
     {
@@ -3112,7 +3112,7 @@
           }
         },
         "deps": [],
-        "version": "246-add-component-updated-at"
+        "version": "247-add-page-href-query-fragment"
       }
     }
   ]

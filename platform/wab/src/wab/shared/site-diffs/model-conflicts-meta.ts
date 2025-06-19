@@ -1139,7 +1139,12 @@ export const modelConflictsMeta: ModelConflictsMeta = {
   TplRef: { tpl: "generic" },
   StyleTokenRef: { token: "generic" },
   ImageAssetRef: { asset: "generic" },
-  PageHref: { params: "generic", page: "generic" },
+  PageHref: {
+    params: "generic",
+    query: "generic",
+    fragment: "generic",
+    page: "generic",
+  },
   VariantsRef: {
     variants: {
       arrayType: "unordered",
