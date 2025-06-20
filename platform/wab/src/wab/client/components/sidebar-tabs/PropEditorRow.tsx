@@ -84,6 +84,7 @@ import {
   ExprCtx,
   extractReferencedParam,
   extractValueSavedFromDataPicker,
+  getCodeExpressionWithFallback,
   hasDynamicParts,
   isAllowedDefaultExpr,
   isDynamicExpr,
@@ -165,6 +166,7 @@ import { Menu, Tooltip } from "antd";
 import { capitalize, isString, keyBy } from "lodash";
 import { observer } from "mobx-react";
 import React, { useMemo } from "react";
+import { getPageHrefPath } from "@/wab/shared/utils/url-utils";
 
 export interface ControlExtras {
   path: (number | string)[];
@@ -684,7 +686,7 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
 
   const schema = studioCtx.customFunctionsSchema();
 
-  const exprCtx = {
+  const exprCtx: ExprCtx = {
     projectFlags: studioCtx.projectFlags(),
     component: ownerComponent ?? null,
     inStudio: true,
@@ -1060,6 +1062,8 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
           {isPageHref(expr) && (
             <PageHrefRows
               expr={expr}
+              exprCtx={exprCtx}
+              canvasEnv={canvasEnv}
               definedIndicator={definedIndicator}
               disableLinkToProp={props.disableLinkToProp}
               disableDynamicValue={props.disableDynamicValue}
@@ -1218,6 +1222,8 @@ interface PageHrefRowsProps
     | "disableDynamicValue"
   > {
   expr: PageHref;
+  exprCtx: ExprCtx;
+  canvasEnv: Record<string, any>;
   maybeWrapExpr: MaybeUnwrapExpr;
 }
 
@@ -1229,6 +1235,8 @@ type TypedURLParams = {
 
 function PageHrefRows({
   expr,
+  exprCtx,
+  canvasEnv,
   definedIndicator,
   disableLinkToProp,
   disableDynamicValue,
@@ -1303,8 +1311,38 @@ function PageHrefRows({
   );
   return (
     <>
+      <PageHrefPreview expr={expr} exprCtx={exprCtx} canvasEnv={canvasEnv} />
       {ParamRows}
-      <div className="flex flex-hcenter fill-width">
+      {expr.fragment != null && (
+        <InnerPropEditorRow
+          key={"fragment"}
+          expr={expr.fragment}
+          attr={"fragment"}
+          propType={"string"}
+          label={"Fragment"}
+          onChange={(paramValue) => {
+            const newExpr = clone(expr);
+            const newValue = ensureInstance(
+              paramValue,
+              TemplatedString,
+              CustomCode,
+              ObjectPath,
+              VarRef
+            );
+            newExpr.fragment = newValue;
+            onChange(maybeWrapExpr(newExpr));
+          }}
+          onDelete={() => {
+            const newExpr = clone(expr);
+            newExpr.fragment = null;
+            onChange(maybeWrapExpr(newExpr));
+          }}
+          disableLinkToProp={disableLinkToProp}
+          disableDynamicValue={disableDynamicValue}
+          icon={<div className="property-connector-line-icon" />}
+        />
+      )}
+      <div className="panel-row flex-hcenter">
         <HrefQueryPopover
           expr={expr}
           pageQuery={meta.query}
@@ -1332,25 +1370,63 @@ function PageHrefRows({
             <span className="text-set">?</span>
           </Button>
         </HrefQueryPopover>
-        <Button
-          className="flex-no-shrink"
-          type={"clear"}
-          size={"wide"}
-          data-test-id="add-fragment"
-          tooltip={
-            <div>
-              Add a fragment, used in the URL as:
-              <p>
-                <span style={{ opacity: 0.5 }}>abc.com</span>
-                <strong>#fragment</strong>
-              </p>{" "}
-            </div>
-          }
-        >
-          <span className="text-set">#</span>
-        </Button>
+        {expr.fragment == null && (
+          <Button
+            className="flex-no-shrink"
+            type={"clear"}
+            size={"wide"}
+            data-test-id="add-fragment"
+            tooltip={
+              <div>
+                Add a fragment, used in the URL as:
+                <p>
+                  <span style={{ opacity: 0.5 }}>abc.com</span>
+                  <strong>#fragment</strong>
+                </p>{" "}
+              </div>
+            }
+            onClick={() => {
+              const newExpr = clone(expr);
+              newExpr.fragment = codeLit("");
+              onChange(maybeWrapExpr(newExpr));
+            }}
+          >
+            <span className="text-set">#</span>
+          </Button>
+        )}
       </div>
     </>
+  );
+}
+
+function PageHrefPreview(props: {
+  expr: PageHref;
+  exprCtx: ExprCtx;
+  canvasEnv: Record<string, any>;
+}) {
+  const { expr, exprCtx, canvasEnv } = props;
+  const valueFilter = (value) => {
+    const exprCode = getCodeExpressionWithFallback(
+      asCode(value, exprCtx),
+      exprCtx
+    );
+    const evaluated = tryEvalExpr(exprCode, canvasEnv);
+    if (evaluated.val) {
+      return evaluated.val;
+    }
+    return "value";
+  };
+  const preview = getPageHrefPath({ expr, valueFilter });
+  return (
+    <LabeledItemRow
+      data-test-id={`prop-editor-row-href-preview`}
+      label={"Preview"}
+      noMenuButton
+    >
+      <div className="flex flex-vcenter justify-start flex-fill">
+        <ValuePreview val={preview} />
+      </div>
+    </LabeledItemRow>
   );
 }
 

@@ -43,13 +43,15 @@ import { isEqual, size } from "lodash";
 import { observer } from "mobx-react";
 import React, { useMemo, useState } from "react";
 
-export type URLParamType = "Path" | "Query";
+export type URLParamType = "Path" | "Query" | "Fragment";
 
 export function URLParamTooltip(props: { type: URLParamType }) {
+  const { type } = props;
+  const text = type === "Fragment" ? type : `${type} param`;
   return (
     <Tooltip
       title={
-        props.type === "Query" ? (
+        type === "Query" ? (
           <>
             URL query parameters look like{" "}
             <code>
@@ -58,7 +60,7 @@ export function URLParamTooltip(props: { type: URLParamType }) {
             . They are optional, always contain text values, come after ? and
             are separated by &.
           </>
-        ) : props.type === "Path" ? (
+        ) : type === "Path" ? (
           <>
             Path parameters look like{" "}
             <code>
@@ -71,12 +73,21 @@ export function URLParamTooltip(props: { type: URLParamType }) {
             . They are required, always contain text values, and must occupy a
             whole path segment in between slashes.
           </>
+        ) : type === "Fragment" ? (
+          <>
+            A fragment looks like{" "}
+            <code>
+              /posts#<strong>42</strong>
+            </code>
+            . It is optional, always contain text values, and come after # at
+            the end of the URL.
+          </>
         ) : (
           unexpected()
         )
       }
     >
-      {props.type} param
+      {text}
     </Tooltip>
   );
 }

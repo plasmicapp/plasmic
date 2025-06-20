@@ -102,6 +102,7 @@ import { tryEvalExpr } from "@/wab/shared/eval";
 import { pathToString } from "@/wab/shared/eval/expression-parser";
 import { maybeComputedFn } from "@/wab/shared/mobx-util";
 import { maybeConvertToIife } from "@/wab/shared/parser-utils";
+import { getPageHrefPath } from "@/wab/shared/utils/url-utils";
 import L, { escapeRegExp, groupBy, isString, mapValues, set } from "lodash";
 
 export interface ExprCtx {
@@ -440,31 +441,14 @@ const _asCode = maybeComputedFn(
         code(JSON.stringify(expr.asset.dataUri || ""))
       )
       .when(PageHref, (expr) => {
-        assert(expr.page.pageMeta, "PageHref is expected to contain a page");
-        let path = expr.page.pageMeta.path;
-        for (const [key, value] of Object.entries(expr.params)) {
-          const valueExpr =
-            "${" +
-            getCodeExpressionWithFallback(asCode(value, exprCtx), exprCtx) +
-            "}";
-          path = path
-            .replace(`[[${key}]]`, valueExpr)
-            .replace(`[${key}]`, valueExpr);
-        }
-        const queryEntries = Object.entries(expr.query || {});
-        if (queryEntries.length > 0) {
-          const qs = queryEntries
-            .map(([key, value]) => {
-              const exprCode = getCodeExpressionWithFallback(
-                asCode(value, exprCtx),
-                exprCtx
-              );
-              return `${encodeURIComponent(key)}=${"${" + exprCode + "}"}`;
-            })
-            .join("&");
-
-          path += `?${qs}`;
-        }
+        const valueFilter = (value) => {
+          const exprCode = getCodeExpressionWithFallback(
+            asCode(value, exprCtx),
+            exprCtx
+          );
+          return "${" + exprCode + "}";
+        };
+        const path = getPageHrefPath({ expr, valueFilter });
         return code("(`" + path + "`)");
       })
       .when(ObjectPath, (expr) =>

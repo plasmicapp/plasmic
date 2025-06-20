@@ -1,4 +1,17 @@
+import { assert } from "@/wab/shared/common";
 import { extractParamsFromPagePath } from "@/wab/shared/core/components";
+import {
+  asCode,
+  ExprCtx,
+  getCodeExpressionWithFallback,
+} from "@/wab/shared/core/exprs";
+import {
+  CustomCode,
+  ObjectPath,
+  PageHref,
+  TemplatedString,
+  VarRef,
+} from "@/wab/shared/model/classes";
 import { matchesPagePath } from "@plasmicapp/loader-react";
 
 /**
@@ -74,4 +87,43 @@ export function getMatchingPagePathParams(
   }
 
   return params;
+}
+
+type PageHrefParamType = TemplatedString | CustomCode | ObjectPath | VarRef;
+
+interface GetPageHrefPathProps {
+  expr: PageHref;
+  valueFilter: (value: PageHrefParamType) => string;
+}
+
+/**
+ * Converts a PageHref expr to path/URL.
+ * Includes rendered path params, query params, and fragment.
+ */
+export function getPageHrefPath({
+  expr,
+  valueFilter,
+}: GetPageHrefPathProps): string {
+  assert(expr.page.pageMeta, "PageHref is expected to contain a page");
+  let path = expr.page.pageMeta.path;
+  for (const [key, value] of Object.entries(expr.params)) {
+    const valueExpr = valueFilter(value);
+    path = path.replace(`[[${key}]]`, valueExpr).replace(`[${key}]`, valueExpr);
+  }
+  const queryEntries = Object.entries(expr.query || {});
+  if (queryEntries.length > 0) {
+    const qs = queryEntries
+      .map(([key, value]) => {
+        const valueExpr = valueFilter(value);
+        return `${encodeURIComponent(key)}=${valueExpr}`;
+      })
+      .join("&");
+
+    path += `?${qs}`;
+  }
+  if (expr.fragment != null) {
+    const fragExpr = valueFilter(expr.fragment);
+    path += `#${fragExpr}`;
+  }
+  return path;
 }
