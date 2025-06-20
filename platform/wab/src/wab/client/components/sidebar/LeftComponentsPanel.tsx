@@ -324,7 +324,8 @@ const LeftComponentsPanel = observer(function LeftComponentsPanel() {
               // shown in the Code components section
               items: pageComponents,
               count: pageComponents.length,
-            } as ComponentFolder;
+              actions,
+            };
           })
           .filter(isNonNil)
       : []),
