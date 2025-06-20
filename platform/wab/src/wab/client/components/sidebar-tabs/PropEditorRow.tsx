@@ -1,6 +1,7 @@
 import ContextMenuIndicator from "@/wab/client/components/ContextMenuIndicator/ContextMenuIndicator";
 import { ComponentPropModal } from "@/wab/client/components/modals/ComponentPropModal";
 import { DataPickerEditor } from "@/wab/client/components/sidebar-tabs/ComponentProps/DataPickerEditor";
+import { HrefQueryPopover } from "@/wab/client/components/sidebar-tabs/ComponentProps/HrefQueryPopover";
 import {
   AUTOCOMPLETE_OPTIONS,
   FallbackEditor,
@@ -12,7 +13,6 @@ import { ValuePreview } from "@/wab/client/components/sidebar-tabs/data-tab";
 import { DataPickerTypesSchema } from "@/wab/client/components/sidebar-tabs/DataBinding/DataPicker";
 import { getInputTagType } from "@/wab/client/components/sidebar-tabs/HTMLAttributesSection";
 import {
-  AddQueryParamButton,
   URLParamTooltip,
   URLParamType,
 } from "@/wab/client/components/sidebar-tabs/PageURLParametersSection";
@@ -161,7 +161,7 @@ import { getTplComponentArg, unsetTplComponentArg } from "@/wab/shared/TplMgr";
 import { $$$ } from "@/wab/shared/TplQuery";
 import { isBaseVariant } from "@/wab/shared/Variants";
 import { ensureBaseVariantSetting } from "@/wab/shared/VariantTplMgr";
-import { InputRef, Menu, Popover, Tooltip } from "antd";
+import { Menu, Tooltip } from "antd";
 import { capitalize, isString, keyBy } from "lodash";
 import { observer } from "mobx-react";
 import React, { useMemo } from "react";
@@ -1227,17 +1227,6 @@ type TypedURLParams = {
   showIndicator: boolean;
 }[];
 
-const makeTypedURLParams = (
-  params: Record<string, string>,
-  type: URLParamType
-): TypedURLParams => {
-  return Object.keys(params).map((param) => ({
-    param,
-    type,
-    showIndicator: true,
-  }));
-};
-
 function PageHrefRows({
   expr,
   definedIndicator,
@@ -1250,14 +1239,18 @@ function PageHrefRows({
     expr.page.pageMeta,
     "PageHref is expected to contain a page"
   );
-  // TODO -- why was this done instead of Object.keys(meta.params) ?
-  // const pathParams = extractParamsFromPagePath(meta.path)
-  const pathParams = makeTypedURLParams(meta.params, "Path");
-  const queryParams = makeTypedURLParams(meta.query, "Query");
-  const extraQuery: TypedURLParams = Object.keys(expr.query)
-    .filter((q) => !meta.query[q])
-    .map((param) => ({ param, type: "Query", showIndicator: false }));
-  const ParamRows = [...pathParams, ...queryParams, ...extraQuery].map(
+  const pathParams: TypedURLParams = Object.keys(meta.params).map((param) => ({
+    param,
+    type: "Path",
+    showIndicator: true,
+  }));
+  const queryParams: TypedURLParams = Object.keys(expr.query).map((param) => ({
+    param,
+    type: "Query",
+    showIndicator: !!meta.query[param],
+  }));
+
+  const ParamRows = [...pathParams, ...queryParams].map(
     ({ param, type, showIndicator }) => {
       return (
         <InnerPropEditorRow
@@ -1312,12 +1305,12 @@ function PageHrefRows({
     <>
       {ParamRows}
       <div className="flex flex-hcenter fill-width">
-        <AddQueryParamButton
+        <HrefQueryPopover
+          expr={expr}
+          pageQuery={meta.query}
           onAdd={(key) => {
             const newExpr = clone(expr);
-            newExpr.query[key] = new TemplatedString({
-              text: ["test"],
-            });
+            newExpr.query[key] = new TemplatedString({ text: [""] });
             onChange(maybeWrapExpr(newExpr));
           }}
         >
@@ -1338,7 +1331,7 @@ function PageHrefRows({
           >
             <span className="text-set">?</span>
           </Button>
-        </AddQueryParamButton>
+        </HrefQueryPopover>
         <Button
           className="flex-no-shrink"
           type={"clear"}

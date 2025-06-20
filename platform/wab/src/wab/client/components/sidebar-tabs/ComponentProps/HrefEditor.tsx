@@ -90,14 +90,11 @@ export function HrefEditor(props: {
       const defaultParams = Object.fromEntries(
         Object.keys(v.item.pageMeta?.params ?? {}).map((k) => [k, codeLit("")])
       );
-      const defaultQuery = Object.fromEntries(
-        Object.keys(v.item.pageMeta?.query ?? {}).map((k) => [k, codeLit("")])
-      );
       submitVal(
         new PageHref({
           page: v.item,
           params: defaultParams,
-          query: defaultQuery,
+          query: {},
           fragment: null,
         })
       );
