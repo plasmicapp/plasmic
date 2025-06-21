@@ -1356,7 +1356,7 @@ function PageHrefRows({
             className="flex-no-shrink"
             type={"clear"}
             size={"wide"}
-            data-test-id="add-fragment"
+            data-test-id="add-query-param"
             tooltip={
               <div>
                 Add a query param, used in the URL as:
