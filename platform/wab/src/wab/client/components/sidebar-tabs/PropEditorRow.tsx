@@ -1233,6 +1233,14 @@ type TypedURLParams = {
   showIndicator: boolean;
 }[];
 
+type DeletePageHrefProps =
+  | { type: "Fragment" }
+  | { type: "Path" | "Query"; param: string };
+
+type UpdatePageHrefProps = DeletePageHrefProps & {
+  paramValue: Expr | undefined;
+};
+
 function PageHrefRows({
   expr,
   exprCtx,
@@ -1258,6 +1266,38 @@ function PageHrefRows({
     showIndicator: !!meta.query[param],
   }));
 
+  const updatePageHrefField = (props: UpdatePageHrefProps) => {
+    const { type, paramValue } = props;
+    const newExpr = clone(expr);
+    const newValue = ensureInstance(
+      paramValue,
+      TemplatedString,
+      CustomCode,
+      ObjectPath,
+      VarRef
+    );
+    if (type === "Path") {
+      newExpr.params[props.param] = newValue;
+    } else if (type === "Query") {
+      newExpr.query[props.param] = newValue;
+    } else if (type === "Fragment") {
+      newExpr.fragment = newValue;
+    }
+    onChange(maybeWrapExpr(newExpr));
+  };
+
+  const deletePageHrefField = (props: DeletePageHrefProps) => {
+    const newExpr = clone(expr);
+    if (props.type === "Path") {
+      delete newExpr.params[props.param];
+    } else if (props.type === "Query") {
+      delete newExpr.query[props.param];
+    } else if (props.type === "Fragment") {
+      newExpr.fragment = null;
+    }
+    onChange(maybeWrapExpr(newExpr));
+  };
+
   const ParamRows = [...pathParams, ...queryParams].map(
     ({ param, type, showIndicator }) => {
       return (
@@ -1270,37 +1310,14 @@ function PageHrefRows({
           subtitle={<URLParamTooltip type={type} />}
           definedIndicator={showIndicator ? definedIndicator : undefined}
           onChange={(paramValue) => {
-            const newExpr = clone(expr);
             if (paramValue) {
-              const newValue = ensureInstance(
-                paramValue,
-                TemplatedString,
-                CustomCode,
-                ObjectPath,
-                VarRef
-              );
-              if (type === "Path") {
-                newExpr.params[param] = newValue;
-              } else if (type === "Query") {
-                newExpr.query[param] = newValue;
-              }
+              updatePageHrefField({ type, param, paramValue });
             } else {
-              if (type === "Path") {
-                delete newExpr.params[param];
-              } else if (type === "Query") {
-                delete newExpr.query[param];
-              }
+              deletePageHrefField({ type, param });
             }
-            onChange(maybeWrapExpr(newExpr));
           }}
           onDelete={() => {
-            const newExpr = clone(expr);
-            if (type === "Path") {
-              delete newExpr.params[param];
-            } else if (type === "Query") {
-              delete newExpr.query[param];
-            }
-            onChange(maybeWrapExpr(newExpr));
+            deletePageHrefField({ type, param });
           }}
           disableLinkToProp={disableLinkToProp}
           disableDynamicValue={disableDynamicValue}
@@ -1321,21 +1338,10 @@ function PageHrefRows({
           propType={"string"}
           label={"Fragment"}
           onChange={(paramValue) => {
-            const newExpr = clone(expr);
-            const newValue = ensureInstance(
-              paramValue,
-              TemplatedString,
-              CustomCode,
-              ObjectPath,
-              VarRef
-            );
-            newExpr.fragment = newValue;
-            onChange(maybeWrapExpr(newExpr));
+            updatePageHrefField({ type: "Fragment", paramValue });
           }}
           onDelete={() => {
-            const newExpr = clone(expr);
-            newExpr.fragment = null;
-            onChange(maybeWrapExpr(newExpr));
+            deletePageHrefField({ type: "Fragment" });
           }}
           disableLinkToProp={disableLinkToProp}
           disableDynamicValue={disableDynamicValue}
