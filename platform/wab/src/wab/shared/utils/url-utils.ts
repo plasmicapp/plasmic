@@ -5,13 +5,8 @@ import {
   ExprCtx,
   getCodeExpressionWithFallback,
 } from "@/wab/shared/core/exprs";
-import {
-  CustomCode,
-  ObjectPath,
-  PageHref,
-  TemplatedString,
-  VarRef,
-} from "@/wab/shared/model/classes";
+import { tryEvalExpr, TryEvalExprResult } from "@/wab/shared/eval";
+import { PageHref } from "@/wab/shared/model/classes";
 import { matchesPagePath } from "@plasmicapp/loader-react";
 
 /**
@@ -89,32 +84,39 @@ export function getMatchingPagePathParams(
   return params;
 }
 
-type PageHrefParamType = TemplatedString | CustomCode | ObjectPath | VarRef;
-
 interface GetPageHrefPathProps {
   expr: PageHref;
-  valueFilter: (value: PageHrefParamType) => string;
+  exprCtx: ExprCtx;
 }
 
 /**
- * Converts a PageHref expr to path/URL.
- * Includes rendered path params, query params, and fragment.
+ * Converts a PageHref expr to path/URL with.
+ * Includes path params, query params, and fragment rendered as code.
  */
-export function getPageHrefPath({
+export function pageHrefPathToCode({
   expr,
-  valueFilter,
+  exprCtx,
 }: GetPageHrefPathProps): string {
   assert(expr.page.pageMeta, "PageHref is expected to contain a page");
+
+  const valueToCode = (value) => {
+    const exprCode = getCodeExpressionWithFallback(
+      asCode(value, exprCtx),
+      exprCtx
+    );
+    return "${" + exprCode + "}";
+  };
+
   let path = expr.page.pageMeta.path;
   for (const [key, value] of Object.entries(expr.params)) {
-    const valueExpr = valueFilter(value);
+    const valueExpr = valueToCode(value);
     path = path.replace(`[[${key}]]`, valueExpr).replace(`[${key}]`, valueExpr);
   }
   const queryEntries = Object.entries(expr.query || {});
   if (queryEntries.length > 0) {
     const qs = queryEntries
       .map(([key, value]) => {
-        const valueExpr = valueFilter(value);
+        const valueExpr = valueToCode(value);
         return `${encodeURIComponent(key)}=${valueExpr}`;
       })
       .join("&");
@@ -122,8 +124,23 @@ export function getPageHrefPath({
     path += `?${qs}`;
   }
   if (expr.fragment != null) {
-    const fragExpr = valueFilter(expr.fragment);
+    const fragExpr = valueToCode(expr.fragment);
     path += `#${fragExpr}`;
   }
-  return path;
+  return "(`" + path + "`)";
+}
+
+export interface EvalPageHrefProps {
+  expr: PageHref;
+  exprCtx: ExprCtx;
+  canvasEnv: Record<string, any>;
+}
+
+export function evalPageHrefPath({
+  expr,
+  exprCtx,
+  canvasEnv,
+}: EvalPageHrefProps): TryEvalExprResult {
+  const code = pageHrefPathToCode({ expr, exprCtx });
+  return tryEvalExpr(code, canvasEnv);
 }

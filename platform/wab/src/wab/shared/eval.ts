@@ -169,11 +169,16 @@ export function evalCodeWithEnv(
   }
 }
 
+export interface TryEvalExprResult {
+  val: any | undefined;
+  err: Error | undefined;
+}
+
 export function tryEvalExpr(
   code: string,
   data: Record<string, any>,
   currGlobalThis: typeof globalThis = globalThis
-) {
+): TryEvalExprResult {
   try {
     return { val: evalCodeWithEnv(code, data, currGlobalThis), err: undefined };
   } catch (e) {

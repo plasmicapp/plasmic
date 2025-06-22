@@ -84,7 +84,6 @@ import {
   ExprCtx,
   extractReferencedParam,
   extractValueSavedFromDataPicker,
-  getCodeExpressionWithFallback,
   hasDynamicParts,
   isAllowedDefaultExpr,
   isDynamicExpr,
@@ -166,7 +165,10 @@ import { Menu, Tooltip } from "antd";
 import { capitalize, isString, keyBy } from "lodash";
 import { observer } from "mobx-react";
 import React, { useMemo } from "react";
-import { getPageHrefPath } from "@/wab/shared/utils/url-utils";
+import {
+  evalPageHrefPath,
+  EvalPageHrefProps,
+} from "@/wab/shared/utils/url-utils";
 
 export interface ControlExtras {
   path: (number | string)[];
@@ -1405,24 +1407,8 @@ function PageHrefRows({
   );
 }
 
-function PageHrefPreview(props: {
-  expr: PageHref;
-  exprCtx: ExprCtx;
-  canvasEnv: Record<string, any>;
-}) {
-  const { expr, exprCtx, canvasEnv } = props;
-  const valueFilter = (value) => {
-    const exprCode = getCodeExpressionWithFallback(
-      asCode(value, exprCtx),
-      exprCtx
-    );
-    const evaluated = tryEvalExpr(exprCode, canvasEnv);
-    if (evaluated.val) {
-      return evaluated.val;
-    }
-    return "value";
-  };
-  const preview = getPageHrefPath({ expr, valueFilter });
+function PageHrefPreview(props: EvalPageHrefProps) {
+  const preview = evalPageHrefPath(props);
   return (
     <LabeledItemRow
       data-test-id={`prop-editor-row-href-preview`}
@@ -1430,7 +1416,7 @@ function PageHrefPreview(props: {
       noMenuButton
     >
       <div className="flex flex-vcenter justify-start flex-fill">
-        <ValuePreview val={preview} />
+        <ValuePreview val={preview.val} err={preview.err} />
       </div>
     </LabeledItemRow>
   );

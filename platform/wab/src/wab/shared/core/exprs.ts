@@ -102,7 +102,7 @@ import { tryEvalExpr } from "@/wab/shared/eval";
 import { pathToString } from "@/wab/shared/eval/expression-parser";
 import { maybeComputedFn } from "@/wab/shared/mobx-util";
 import { maybeConvertToIife } from "@/wab/shared/parser-utils";
-import { getPageHrefPath } from "@/wab/shared/utils/url-utils";
+import { pageHrefPathToCode } from "@/wab/shared/utils/url-utils";
 import L, { escapeRegExp, groupBy, isString, mapValues, set } from "lodash";
 
 export interface ExprCtx {
@@ -441,15 +441,7 @@ const _asCode = maybeComputedFn(
         code(JSON.stringify(expr.asset.dataUri || ""))
       )
       .when(PageHref, (expr) => {
-        const valueFilter = (value) => {
-          const exprCode = getCodeExpressionWithFallback(
-            asCode(value, exprCtx),
-            exprCtx
-          );
-          return "${" + exprCode + "}";
-        };
-        const path = getPageHrefPath({ expr, valueFilter });
-        return code("(`" + path + "`)");
+        return code(pageHrefPathToCode({ expr, exprCtx }));
       })
       .when(ObjectPath, (expr) =>
         code(`(${pathToString(expr.path)})`, expr.fallback)
