@@ -1,6 +1,5 @@
 import { TokenType } from "@/wab/commons/StyleToken";
 import { removeFromArray } from "@/wab/commons/collections";
-import * as cssPegParser from "@/wab/gen/cssPegParser";
 import { RSH } from "@/wab/shared/RuleSetHelpers";
 import { getSlotParams, isSlot } from "@/wab/shared/SlotUtils";
 import { TplMgr } from "@/wab/shared/TplMgr";
@@ -120,7 +119,12 @@ import {
   mkTplInlinedText,
   mkTplTagX,
 } from "@/wab/shared/core/tpls";
-import { getCssInitial, normProp, parseCssShorthand } from "@/wab/shared/css";
+import {
+  getCssInitial,
+  normProp,
+  parseCss,
+  parseCssShorthand,
+} from "@/wab/shared/css";
 import { AddItemPrefs, getDefaultStyles } from "@/wab/shared/default-styles";
 import { standardCorners, standardSides } from "@/wab/shared/geom";
 import { convertSelfContainerType } from "@/wab/shared/layoututils";
@@ -3152,7 +3156,7 @@ export function parseStyles(
   // box-shadow
   if ("box-shadow" in styles) {
     try {
-      cssPegParser.parse(styles["box-shadow"], { startRule: "boxShadows" });
+      parseCss(styles["box-shadow"], { startRule: "boxShadows" });
       sanitized["box-shadow"] = styles["box-shadow"];
     } catch {
       const err = new Error(
@@ -3194,7 +3198,7 @@ export function parseStyles(
           let layerStr = bgStyles["background"]?.[i];
           if (layerStr) {
             try {
-              layer = cssPegParser.parse(layerStr, {
+              layer = parseCss(layerStr, {
                 startRule: "backgroundLayer",
               });
             } catch {
@@ -3207,7 +3211,7 @@ export function parseStyles(
                     color,
                     new ColorFill({ color }).showCss()
                   );
-                  layer = cssPegParser.parse(layerStr, {
+                  layer = parseCss(layerStr, {
                     startRule: "backgroundLayer",
                   });
                 }
@@ -3221,7 +3225,7 @@ export function parseStyles(
             }
             if (bgStyles["background-image"]?.[i]) {
               try {
-                return cssPegParser.parse(bgStyles["background-image"]?.[i], {
+                return parseCss(bgStyles["background-image"]?.[i], {
                   startRule: "backgroundImage",
                 });
               } catch {}
@@ -3264,9 +3268,7 @@ export function parseStyles(
       background.filterNoneLayers();
       const bgStyle = background.showCss();
       // Parse the final result to make sure it's correct
-      parseCssValue("background", bgStyle).forEach((val: string) =>
-        cssPegParser.parse(val, { startRule: "backgroundLayer" })
-      );
+      parseCss(bgStyle, { startRule: "background" });
       sanitized["background"] = bgStyle || "none";
     } catch (err) {
       console.log(

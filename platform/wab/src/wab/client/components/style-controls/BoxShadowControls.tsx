@@ -1,4 +1,3 @@
-import { BoxShadow, Dim } from "@/wab/shared/core/bg-styles";
 import {
   FullRow,
   LabeledItem,
@@ -12,7 +11,7 @@ import StyleToggleButtonGroup from "@/wab/client/components/style-controls/Style
 import { ColorPicker } from "@/wab/client/components/widgets/ColorPicker";
 import { DimTokenSpinner } from "@/wab/client/components/widgets/DimTokenSelector";
 import { ensure } from "@/wab/shared/common";
-import { parseCssNumericNew } from "@/wab/shared/css";
+import { BoxShadow, Dim } from "@/wab/shared/core/bg-styles";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import { observer } from "mobx-react";
 import React from "react";
@@ -75,7 +74,7 @@ class _BoxShadowPanel extends StyleComponent<BoxShadowPanelProps> {
               ref={this.firstInputRef}
               value={shadow.x.showCss()}
               onChange={(val) =>
-                this.handleChange(() => (shadow.x = parseDim(val || "0px")))
+                this.handleChange(() => (shadow.x = Dim.fromCss(val || "0px")))
               }
               noClear
               allowedUnits={["px"]}
@@ -87,7 +86,7 @@ class _BoxShadowPanel extends StyleComponent<BoxShadowPanelProps> {
             <DimTokenSpinner
               value={shadow.y.showCss()}
               onChange={(val) =>
-                this.handleChange(() => (shadow.y = parseDim(val || "0px")))
+                this.handleChange(() => (shadow.y = Dim.fromCss(val || "0px")))
               }
               noClear
               allowedUnits={["px"]}
@@ -101,7 +100,9 @@ class _BoxShadowPanel extends StyleComponent<BoxShadowPanelProps> {
             <DimTokenSpinner
               value={shadow.blur.showCss()}
               onChange={(val) =>
-                this.handleChange(() => (shadow.blur = parseDim(val || "0px")))
+                this.handleChange(
+                  () => (shadow.blur = Dim.fromCss(val || "0px"))
+                )
               }
               noClear
               allowedUnits={["px"]}
@@ -114,7 +115,7 @@ class _BoxShadowPanel extends StyleComponent<BoxShadowPanelProps> {
               value={shadow.spread.showCss()}
               onChange={(val) =>
                 this.handleChange(
-                  () => (shadow.spread = parseDim(val || "0px"))
+                  () => (shadow.spread = Dim.fromCss(val || "0px"))
                 )
               }
               noClear
@@ -142,11 +143,3 @@ class _BoxShadowPanel extends StyleComponent<BoxShadowPanelProps> {
   }
 }
 export const BoxShadowPanel = observer(_BoxShadowPanel);
-
-function parseDim(str: string) {
-  const { num, units } = ensure(
-    parseCssNumericNew(str),
-    "Unexpected undefined css numeric value"
-  );
-  return new Dim(num, units);
-}

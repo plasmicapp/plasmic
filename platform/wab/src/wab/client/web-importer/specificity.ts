@@ -1,15 +1,13 @@
 import { SELF_SELECTOR } from "@/wab/client/web-importer/constants";
-import { CssCommonPositionAST } from "@adobe/css-tools";
+import { CssLocation } from "css-tree";
 import * as specificity from "specificity";
-
-type Position = CssCommonPositionAST["position"];
 
 export interface SpecificityWithPosition {
   isDirectlyOnElement: boolean;
   byId: number;
   byClass: number;
   byType: number;
-  position: Position;
+  loc?: CssLocation;
 }
 
 export function compareSpecificity(
@@ -31,15 +29,15 @@ export function compareSpecificity(
   if (a.byType !== b.byType) {
     return a.byType - b.byType;
   }
-  if (a.position?.start?.line !== b.position?.start?.line) {
-    return (a.position?.start?.line ?? 0) - (b.position?.start?.line ?? 0);
+  if (a.loc?.start?.line !== b.loc?.start?.line) {
+    return (a.loc?.start?.line ?? 0) - (b.loc?.start?.line ?? 0);
   }
-  return (a.position?.start?.column ?? 0) - (b.position?.start?.column ?? 0);
+  return (a.loc?.start?.column ?? 0) - (b.loc?.start?.column ?? 0);
 }
 
 export function getSpecificity(
   selector: string,
-  position?: Position
+  loc?: CssLocation
 ): SpecificityWithPosition {
   if (selector === SELF_SELECTOR) {
     return {
@@ -47,7 +45,7 @@ export function getSpecificity(
       byId: 0,
       byClass: 0,
       byType: 0,
-      position,
+      loc,
     };
   }
 
@@ -60,6 +58,6 @@ export function getSpecificity(
     byId: spec_id,
     byClass: spec_class,
     byType: spec_type,
-    position,
+    loc,
   };
 }

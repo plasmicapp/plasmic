@@ -1,3 +1,4 @@
+import * as cssPegParser from "@/wab/gen/cssPegParser";
 import {
   chunkPairs,
   ensure,
@@ -6,6 +7,12 @@ import {
   tryParseNumLit,
   tuple,
 } from "@/wab/shared/common";
+import {
+  Background,
+  BackgroundLayer,
+  BoxShadows,
+  LinearGradient,
+} from "@/wab/shared/core/bg-styles";
 import {
   createNumericSize,
   ensureUnit,
@@ -18,6 +25,7 @@ import {
 } from "@/wab/shared/geom";
 import { RuleSet } from "@/wab/shared/model/classes";
 import CssInitials from "css-initials";
+import { generate, Value } from "css-tree";
 import {
   camelCase,
   flatten,
@@ -501,4 +509,115 @@ export function camelCssPropsToKebab(props: CSSProperties) {
   return Object.fromEntries(
     Object.entries(props).map(([k, v]) => tuple(normProp(k), v))
   );
+}
+
+export const shorthandProperties = [
+  "padding",
+  "margin",
+  "inset",
+  "borderRadius",
+  "borderWidth",
+  "borderStyle",
+  "borderColor",
+] as const;
+export type ShorthandProperty = (typeof shorthandProperties)[number];
+
+export function parseShorthandProperties(
+  property: ShorthandProperty,
+  valueNode: Value
+) {
+  const value = generate(valueNode);
+  const parts = parseCssShorthand(value);
+
+  const [top, right, bottom, left] = parts;
+  switch (property) {
+    case "padding": {
+      return {
+        paddingTop: top,
+        paddingRight: right,
+        paddingBottom: bottom,
+        paddingLeft: left,
+      };
+    }
+
+    case "margin": {
+      return {
+        marginTop: top,
+        marginRight: right,
+        marginBottom: bottom,
+        marginLeft: left,
+      };
+    }
+
+    case "inset": {
+      return {
+        top,
+        right,
+        bottom,
+        left,
+      };
+    }
+
+    case "borderRadius": {
+      return {
+        borderTopLeftRadius: top,
+        borderTopRightRadius: right,
+        borderBottomRightRadius: bottom,
+        borderBottomLeftRadius: left,
+      };
+    }
+
+    case "borderWidth":
+    case "borderStyle":
+    case "borderColor": {
+      const propType = property.slice("border".length);
+      return {
+        [`borderTop${propType}`]: top,
+        [`borderRight${propType}`]: right,
+        [`borderBottom${propType}`]: bottom,
+        [`borderLeft${propType}`]: left,
+      };
+    }
+
+    default:
+      return {};
+  }
+}
+
+export function parseCss(
+  value: string,
+  opts: {
+    startRule:
+      | (string & {})
+      | "boxShadows"
+      | "backgroundImage"
+      | "background"
+      | "linearGradient";
+  }
+) {
+  if (opts.startRule === "boxShadows") {
+    return ensure(BoxShadows.fromCss(value), "Expected BoxShadow but got null");
+  } else if (opts.startRule === "linearGradient") {
+    return ensure(
+      LinearGradient.fromCss(value),
+      "Expected LinearGradient but got null"
+    );
+  } else if (opts.startRule === "backgroundLayer") {
+    return ensure(
+      BackgroundLayer.fromCss(value),
+      "Expected BackgroundLayer but got null"
+    );
+  } else if (opts.startRule === "backgroundImage") {
+    return ensure(
+      BackgroundLayer.fromCss(value)?.image,
+      "Expected BackgroundLayer image but got null"
+    );
+  } else if (opts.startRule === "background") {
+    return ensure(
+      Background.fromCss(value),
+      "Expected BackgroundLayer image but got null"
+    );
+  } else {
+    return cssPegParser.parse(value, opts);
+  }
 }

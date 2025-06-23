@@ -1,4 +1,3 @@
-import * as cssPegParser from "@/wab/gen/cssPegParser";
 import { BadRequestError } from "@/wab/shared/ApiErrors/errors";
 import { UpsertTokenReq } from "@/wab/shared/ApiSchema";
 import { MIXIN_CAP } from "@/wab/shared/Labels";
@@ -9,7 +8,7 @@ import { toVarName } from "@/wab/shared/codegen/util";
 import { ensure, tuple, unexpected, withoutNils } from "@/wab/shared/common";
 import { DependencyWalkScope } from "@/wab/shared/core/project-deps";
 import { allTokensOfType } from "@/wab/shared/core/sites";
-import { getLengthUnits } from "@/wab/shared/css";
+import { getLengthUnits, parseCss } from "@/wab/shared/css";
 import { Mixin, Site, StyleToken } from "@/wab/shared/model/classes";
 import CSSEscape from "css.escape";
 import L from "lodash";
@@ -406,7 +405,7 @@ export function addOrUpsertTokens(site: Site, tokens: UpsertTokenReq[]) {
     const normalizedName = normalize(token.name);
     if (token.type === "BoxShadow") {
       try {
-        cssPegParser.parse(token.value, { startRule: "boxShadows" });
+        parseCss(token.value, { startRule: "boxShadows" });
       } catch {
         throw new BadRequestError(
           `Couldn't parse BoxShadow value: ${token.value}`

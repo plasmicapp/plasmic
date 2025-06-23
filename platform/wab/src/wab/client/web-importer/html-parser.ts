@@ -9,7 +9,6 @@ import {
   textStylesKeys,
   translationTable,
 } from "@/wab/client/web-importer/constants";
-import { parseBoxShadows } from "@/wab/client/web-importer/css-utils";
 import {
   compareSpecificity,
   getSpecificity,
@@ -21,37 +20,39 @@ import {
   WIRule,
   WIStyles,
 } from "@/wab/client/web-importer/types";
-import { assert, ensure, ensureType, withoutNils } from "@/wab/shared/common";
+import { ensure, ensureType, withoutNils } from "@/wab/shared/common";
 import {
-  CssDeclarationAST,
-  CssFontFaceAST,
-  CssMediaAST,
-  CssRuleAST,
-  parse,
-} from "@adobe/css-tools";
+  parseCss,
+  parseShorthandProperties,
+  shorthandProperties,
+  ShorthandProperty,
+} from "@/wab/shared/css";
+import { findAllAndMap } from "@/wab/shared/css/css-tree-utils";
+import {
+  Atrule,
+  CssNode,
+  parse as cssParse,
+  Declaration,
+  generate,
+  Rule,
+  Selector,
+  walk,
+} from "css-tree";
 import { camelCase, isElement } from "lodash";
 
 export function generateId() {
   return Math.random().toString(36).substr(2, 9);
 }
 
-async function getStyleSheet(document: Document) {
-  const styleSheetsContent = [...document.styleSheets].map((ss) => {
-    let content = "";
-    try {
-      content = [...ss.cssRules]
-        .map((cssRule) => {
-          return cssRule.cssText;
-        })
-        .join("\n");
-    } catch (e) {}
-    return {
-      href: ss.href,
-      content,
-    };
+function getStyleSheet(document: Document) {
+  const styleElements = document.querySelectorAll("style");
+  let css = "";
+
+  styleElements.forEach((styleElement) => {
+    css += styleElement.textContent + "\n";
   });
 
-  return styleSheetsContent.map((s) => s.content).join("\n");
+  return css.trim();
 }
 
 function traverseNodes(node: Node, callback: (node: Node) => void) {
@@ -101,29 +102,20 @@ function ensureNodeWiRulesContext(_node: Node, context: string) {
 function addNodeWIRule(
   context: string,
   selector: string,
-  rule: CssRuleAST,
+  declarations: Declaration[],
   _node: Node
 ) {
   const node = _node as any;
   ensureNodeWiRulesContext(_node, context);
 
-  const declarations = rule.declarations ?? [];
-
   const wiRules = withoutNils(
-    declarations.map((d) => {
-      if (d.type === "comment") {
-        return null;
-      }
-      const decl = ensureType<CssDeclarationAST>(d);
-      if (!decl.property) {
-        return null;
-      }
+    declarations.map((decl) => {
       return {
         styles: {
-          [decl.property!]: decl.value,
+          [decl.property]: generate(decl.value),
         },
         selector,
-        specificity: getSpecificity(selector, decl.position),
+        specificity: getSpecificity(selector, decl.loc),
       };
     })
   );
@@ -176,10 +168,6 @@ function isVariable(value: string) {
 
 function fixCSSValue(key: string, value: string) {
   if (!value) {
-    return {};
-  }
-
-  if (key === "content") {
     return {};
   }
 
@@ -237,127 +225,26 @@ function fixCSSValue(key: string, value: string) {
 
   const fixedValue = getFixedValue();
 
-  if (fixedKey === "borderColor") {
-    return {
-      borderTopColor: fixedValue,
-      borderRightColor: fixedValue,
-      borderBottomColor: fixedValue,
-      borderLeftColor: fixedValue,
-    };
-  }
-
-  if (fixedKey === "borderStyle") {
-    return {
-      borderTopStyle: fixedValue,
-      borderRightStyle: fixedValue,
-      borderBottomStyle: fixedValue,
-      borderLeftStyle: fixedValue,
-    };
-  }
-
-  if (fixedKey === "borderWidth") {
-    return {
-      borderTopWidth: fixedValue,
-      borderRightWidth: fixedValue,
-      borderBottomWidth: fixedValue,
-      borderLeftWidth: fixedValue,
-    };
-  }
-
-  if (fixedKey === "borderRadius") {
-    return {
-      borderTopLeftRadius: fixedValue,
-      borderTopRightRadius: fixedValue,
-      borderBottomRightRadius: fixedValue,
-      borderBottomLeftRadius: fixedValue,
-    };
-  }
-
-  if (fixedKey === "overflowWrap") {
-    if (fixedValue === "break-word") {
-      return {};
-    }
-    return {
-      [fixedKey]: fixedValue,
-    };
-  }
-
-  if (fixedKey === "padding") {
-    const tokens = fixedValue.split(/\s+/);
-    const all: string[] = [];
-    for (let i = 0; i < 4; i++) {
-      all.push(tokens[i] ?? tokens[i % 2] ?? tokens[0]);
-    }
-    return {
-      paddingTop: all[0],
-      paddingRight: all[1],
-      paddingBottom: all[2],
-      paddingLeft: all[3],
-    };
-  }
-
-  if (fixedKey === "boxSizing") {
+  const valueNode = cssParse(fixedValue, { context: "value" });
+  if (valueNode.type !== "Value") {
     return {};
   }
 
-  if (fixedKey === "margin") {
-    const tokens = fixedValue.split(/\s+/);
-    const all: string[] = [];
-    for (let i = 0; i < 4; i++) {
-      all.push(tokens[i] ?? tokens[i % 2] ?? tokens[0]);
-    }
+  if (shorthandProperties.includes(fixedKey as ShorthandProperty)) {
+    return parseShorthandProperties(fixedKey as ShorthandProperty, valueNode);
+  }
+
+  if (fixedKey === "background" || fixedKey === "backgroundColor") {
     return {
-      marginTop: all[0],
-      marginRight: all[1],
-      marginBottom: all[2],
-      marginLeft: all[3],
+      background: parseCss(fixedValue, {
+        startRule: "background",
+      }).showCss(),
     };
-  }
-
-  if (fixedKey === "inset") {
-    const tokens = fixedValue.split(/\s+/);
-    const all: string[] = [];
-    for (let i = 0; i < 4; i++) {
-      all.push(tokens[i] ?? tokens[i % 2] ?? tokens[0]);
-    }
-    return {
-      top: all[0],
-      right: all[1],
-      bottom: all[2],
-      left: all[3],
-    };
-  }
-
-  if (fixedKey === "backgroundColor") {
-    if (fixedValue.startsWith("rgb") || fixedValue.startsWith("var")) {
-      return {
-        background: `linear-gradient(${fixedValue}, ${fixedValue})`,
-      };
-    }
-
-    return {};
-  }
-
-  if (fixedKey === "background") {
-    if (fixedValue.startsWith("rgb") || fixedValue.startsWith("var")) {
-      function transformStyleString(styleString: string) {
-        const separatorIndex = styleString.indexOf(")") + 1;
-        const color = styleString.slice(0, separatorIndex);
-        const rest = styleString.slice(separatorIndex);
-        return `linear-gradient(${color}, ${color})`;
-      }
-
-      const transformedValue = transformStyleString(fixedValue);
-      return {
-        background: transformedValue,
-      };
-    }
-    return {};
   }
 
   if (fixedKey === "boxShadow") {
     return {
-      boxShadow: parseBoxShadows(fixedValue),
+      boxShadow: parseCss(fixedValue, { startRule: "boxShadows" }).showCss(),
     };
   }
 
@@ -715,8 +602,6 @@ export async function parseHtmlToWebImporterTree(htmlString: string) {
   const parser = new DOMParser();
   const document = parser.parseFromString(htmlString, "text/html");
 
-  const styleSheet = await getStyleSheet(document);
-
   const root = document.body;
 
   traverseNodes(root, (node) => {
@@ -725,99 +610,134 @@ export async function parseHtmlToWebImporterTree(htmlString: string) {
     addSelfStyleRule(node);
   });
 
-  const parsedStyleSheet = parse(styleSheet);
-
-  assert(
-    parsedStyleSheet.type === "stylesheet",
-    () => `Expected type to be "stylesheet" but got ${parsedStyleSheet.type}`
-  );
-
-  const rules = ensure(
-    parsedStyleSheet.stylesheet,
-    "Expected non-nullish stylesheet"
-  ).rules;
+  const styleSheet = getStyleSheet(document);
+  const parsedStylesheet = cssParse(styleSheet, { positions: true });
 
   function storeRuleRelationToNodes(
     context: string,
-    selector: string,
-    rule: CssRuleAST
+    selectors: Selector[],
+    declarations: Declaration[]
   ) {
-    const nodes = document.querySelectorAll(selector);
+    for (const selectorNode of selectors) {
+      const selector = generate(selectorNode);
 
-    if (nodes.length === 0) {
-      return;
-    }
+      let nodes: NodeListOf<Element>;
+      try {
+        nodes = document.querySelectorAll(selector);
+      } catch (error) {
+        /* Ignore invalid selectors like keyframe percentages, etc.
+         * This can happen with @keyframes selectors like "0%", "from", "to"
+         * or other at-rule specific selectors that aren't valid DOM selectors
+         */
+        if (
+          error instanceof DOMException &&
+          error.name === "SyntaxError" &&
+          error.message.includes("is not a valid selector")
+        ) {
+          continue;
+        } else {
+          throw error;
+        }
+      }
 
-    for (const node of nodes) {
-      const wiID = getInternalId(node);
-      if (!wiID) {
+      if (nodes.length === 0) {
         continue;
       }
 
-      addNodeWIRule(context, selector, rule, node);
+      for (const node of nodes) {
+        const wiID = getInternalId(node);
+        if (!wiID) {
+          continue;
+        }
+
+        addNodeWIRule(context, selector, declarations, node);
+      }
     }
   }
 
   const variables = new Map<string, string>();
+  const fontDefinitions: string[] = [];
 
-  function processRule(context: string, rule: CssRuleAST) {
-    const declarations = rule.declarations ?? [];
-    for (const decl of declarations) {
-      if (decl.type === "comment") {
-        continue;
+  function extractSelectorsFromPrelude(prelude: CssNode) {
+    const selectors: Selector[] = [];
+    walk(prelude, function (selectorNode) {
+      if (selectorNode.type === "Selector") {
+        selectors.push(selectorNode);
       }
-      const declaration = ensureType<CssDeclarationAST>(decl);
-      if (declaration.property?.startsWith("--") && declaration.value) {
-        variables.set(declaration.property, declaration.value);
+    });
+    return selectors;
+  }
+
+  function extractDeclarationsFromBlock(block: CssNode) {
+    const declarations: Declaration[] = [];
+
+    walk(block, function (blockNode) {
+      if (blockNode.type === "Declaration") {
+        declarations.push(blockNode);
       }
-    }
+    });
 
-    const selectors = rule.selectors;
+    return declarations;
+  }
 
-    if (!selectors) {
+  function processRule(rule: Rule, context: string) {
+    const selectors = extractSelectorsFromPrelude(rule.prelude);
+    const declarations = extractDeclarationsFromBlock(rule.block);
+
+    storeRuleRelationToNodes(context, selectors, declarations);
+  }
+
+  function processMediaRule(atrule: Atrule) {
+    // @ rules such as @import, @charset etc does not require block so block can be null here.
+    if (!atrule.block) {
       return;
     }
 
-    for (const selector of selectors) {
-      storeRuleRelationToNodes(context, selector, rule);
-    }
-  }
-
-  const fontDefinitions: string[] = [];
-
-  for (const _rule of rules) {
-    if (_rule.type === "rule") {
-      processRule(BASE_VARIANT, ensureType<CssRuleAST>(_rule));
-    } else if (_rule.type === "media") {
-      const media = ensureType<CssMediaAST>(_rule);
-      const mediaCond = ensure(
-        media.media,
-        "Expected media to have media condition"
-      );
-      const mediaRules = media.rules ?? [];
-      for (const subRule of mediaRules) {
-        if (subRule.type === "rule") {
-          processRule(mediaCond, ensureType<CssRuleAST>(subRule));
-        }
+    // TODO: Handle breakpoints
+    const mediaCondition = atrule.prelude ? generate(atrule.prelude) : ""; // gives (max-width: 600px) etc
+    walk(atrule.block, function (mediaNode) {
+      if (mediaNode.type === "Rule") {
+        processRule(mediaNode, mediaCondition);
       }
-    } else if (_rule.type === "font-face") {
-      const fontFace = ensureType<CssFontFaceAST>(_rule);
-      const declarations = fontFace.declarations ?? [];
-      const fontDef = declarations
-        .map((decl) => {
-          if (decl.type === "comment") {
-            return "";
-          }
-          const declaration = ensureType<CssDeclarationAST>(decl);
-          if (declaration.property && declaration.value) {
-            return `\t${declaration.property}: ${declaration.value};`;
-          }
-          return "";
-        })
-        .join("\n");
-      fontDefinitions.push(`@font-face {\n${fontDef}\n}`);
-    }
+    });
   }
+
+  function processFontFaceRule(atrule: Atrule) {
+    // @ rules such as @import, @charset etc does not require block so block can be null here.
+    if (!atrule.block) {
+      return;
+    }
+
+    const declarationNodes = findAllAndMap(
+      atrule.block.children.toArray(),
+      (node) => (node.type === "Declaration" ? node : null)
+    );
+    const declarations = declarationNodes.map((decl) =>
+      declarations.push(`\t${decl.property}: ${generate(decl.value)};`)
+    );
+
+    fontDefinitions.push(`@font-face {\n${declarations.join("\n")}\n}`);
+  }
+
+  walk(parsedStylesheet, function (node) {
+    switch (node.type) {
+      case "Rule":
+        processRule(node, BASE_VARIANT);
+        break;
+
+      case "Atrule": {
+        if (node.name === "media") {
+          processMediaRule(node);
+        } else if (node.name === "fontFace") {
+          processFontFaceRule(node);
+        }
+        break;
+      }
+
+      default:
+        break;
+    }
+  });
 
   const element = document.createElement("div");
   document.body.appendChild(element);

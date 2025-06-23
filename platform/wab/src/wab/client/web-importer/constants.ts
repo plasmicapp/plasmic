@@ -133,6 +133,8 @@ export const translationTable = {
 };
 
 export const ignoredStyles = new Set<string>([
+  "content",
+  "boxSizing",
   "webkitBoxAlign",
   "webkitBoxPack",
   "webkitBoxFlex",

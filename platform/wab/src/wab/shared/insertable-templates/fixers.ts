@@ -7,12 +7,7 @@ import {
   mkTokenRef,
   replaceAllTokenRefs,
 } from "@/wab/commons/StyleToken";
-import {
-  RSH,
-  RuleSetHelpers,
-  joinCssValues,
-  splitCssValue,
-} from "@/wab/shared/RuleSetHelpers";
+import { RSH, RuleSetHelpers } from "@/wab/shared/RuleSetHelpers";
 import { TplMgr } from "@/wab/shared/TplMgr";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import {
@@ -41,6 +36,7 @@ import {
   isTplTextBlock,
   walkTpls,
 } from "@/wab/shared/core/tpls";
+import { joinCssValues, splitCssValue } from "@/wab/shared/css/parse";
 import { InsertableTemplateTokenResolution } from "@/wab/shared/devflags";
 import { getEffectiveVariantSettingForInsertable } from "@/wab/shared/effective-variant-setting";
 import {

@@ -103,6 +103,79 @@ describe("parseHtmlToWebImporterTree", () => {
       styles: {},
     });
   });
+
+  it("extracts stylesheet styles properly", async () => {
+    const html = `<style>
+.container {
+  display: flex;
+  margin: 10px;
+  color: #0000ff;
+}
+
+.heading {
+  color: rgb(0,0,255);
+}
+</style>
+<div class="container"><h1 class="heading">Blue Heading 1</h1></div>`;
+    const { wiTree: rootEl } = await parseHtmlToWebImporterTree(html);
+
+    assert(rootEl, "rootEl should not be null");
+
+    expect(rootEl).toMatchObject<WIElement>({
+      type: "container",
+      tag: "div",
+      attrs: {},
+      children: [
+        {
+          type: "container",
+          tag: "div",
+          attrs: { class: "container" },
+          children: [
+            {
+              type: "text",
+              tag: "h1",
+              text: "Blue Heading 1",
+              unsanitizedStyles: {
+                base: {
+                  color: "rgb(0,0,255)",
+                },
+              },
+              styles: {
+                base: {
+                  safe: {
+                    color: "rgb(0,0,255)",
+                  },
+                  unsafe: {},
+                },
+              },
+            },
+          ],
+          unsanitizedStyles: {
+            base: {
+              display: "flex",
+              "flex-direction": "row",
+              margin: "10px",
+            },
+          },
+          styles: {
+            base: {
+              safe: {
+                display: "flex",
+                flexDirection: "row",
+                marginTop: "10px",
+                marginBottom: "10px",
+                marginLeft: "10px",
+                marginRight: "10px",
+              },
+              unsafe: {},
+            },
+          },
+        },
+      ],
+      unsanitizedStyles: {},
+      styles: {},
+    });
+  });
 });
 
 describe("fixCSSValue", () => {
@@ -159,9 +232,9 @@ describe("fixCSSValue", () => {
     });
   });
 
-  it("transforms 'transparent' into rgba(0, 0, 0, 0)", () => {
+  it("transforms 'transparent' into rgba(0,0,0,0)", () => {
     expect(fixCSSValue("background-color", "transparent")).toEqual({
-      background: "linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0))",
+      background: "linear-gradient(rgba(0,0,0,0), rgba(0,0,0,0))",
     });
   });
 
@@ -199,10 +272,6 @@ describe("fixCSSValue", () => {
       borderBottomRightRadius: "5px",
       borderBottomLeftRadius: "5px",
     });
-  });
-
-  it("returns empty object for overflowWrap 'break-word'", () => {
-    expect(fixCSSValue("overflow-wrap", "break-word")).toEqual({});
   });
 
   it("returns property for overflowWrap when not 'break-word'", () => {
@@ -259,35 +328,39 @@ describe("fixCSSValue", () => {
   });
 
   it("returns background gradient for backgroundColor with rgb or var", () => {
-    const rgb = "rgb(10, 20, 30)";
+    const rgb = "rgb(10,20,30)";
     expect(fixCSSValue("background-color", rgb)).toEqual({
       background: `linear-gradient(${rgb}, ${rgb})`,
     });
 
     const token = "var(--token-abc)";
     expect(fixCSSValue("background-color", token)).toEqual({
-      background: `linear-gradient(${token}, ${token})`,
+      background: token,
     });
   });
 
   it("returns empty object for backgroundColor when not rgb", () => {
-    expect(fixCSSValue("background-color", "#fff")).toEqual({});
+    expect(fixCSSValue("background-color", "#fff")).toEqual({
+      background: `linear-gradient(#fff, #fff)`,
+    });
   });
 
   it("returns background gradient for background with rgb or var", () => {
-    const rgb = "rgb(10, 20, 30)";
+    const rgb = "rgb(10,20,30)";
     expect(fixCSSValue("background", rgb)).toEqual({
       background: `linear-gradient(${rgb}, ${rgb})`,
     });
 
     const token = "var(--token-abc)";
     expect(fixCSSValue("background", token)).toEqual({
-      background: `linear-gradient(${token}, ${token})`,
+      background: token,
     });
   });
 
   it("returns empty object for background when not rgb", () => {
-    expect(fixCSSValue("background", "url(image.png)")).toEqual({});
+    expect(fixCSSValue("background", "url(image.png)")).toEqual({
+      background: `url("image.png")`,
+    });
   });
 
   it("parse box-shadow value properly", () => {

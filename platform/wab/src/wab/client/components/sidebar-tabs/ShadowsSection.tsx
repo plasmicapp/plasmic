@@ -20,7 +20,6 @@ import { makeVariantedStylesHelperFromCurrentCtx } from "@/wab/client/utils/styl
 import { removeFromArray } from "@/wab/commons/collections";
 import { MaybeWrap } from "@/wab/commons/components/ReactUtil";
 import { derefTokenRefs, tryParseTokenRef } from "@/wab/commons/StyleToken";
-import * as cssPegParser from "@/wab/gen/cssPegParser";
 import { arrayMoveIndex } from "@/wab/shared/collections";
 import { BoxShadow, BoxShadows, Dim } from "@/wab/shared/core/bg-styles";
 import {
@@ -29,6 +28,7 @@ import {
   allStyleTokens,
 } from "@/wab/shared/core/sites";
 import { CssVarResolver } from "@/wab/shared/core/styles";
+import { parseCss } from "@/wab/shared/css";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import { Tooltip } from "antd";
 import { observer } from "mobx-react";
@@ -82,7 +82,7 @@ class _ShadowsPanelSection extends StyleComponent<
       if (v === "none") {
         return new BoxShadows([]);
       } else {
-        return cssPegParser.parse(v, { startRule: "boxShadows" });
+        return parseCss(v, { startRule: "boxShadows" });
       }
     })();
     const { inspectedShadow, index } = this.state;

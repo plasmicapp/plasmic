@@ -21,12 +21,7 @@ import {
 import { DeepReadonly, DeepReadonlyArray } from "@/wab/commons/types";
 import * as cssPegParser from "@/wab/gen/cssPegParser";
 import { getArenaFrames } from "@/wab/shared/Arenas";
-import {
-  RSH,
-  RuleSetHelpers,
-  readonlyRSH,
-  splitCssValue,
-} from "@/wab/shared/RuleSetHelpers";
+import { RSH, RuleSetHelpers, readonlyRSH } from "@/wab/shared/RuleSetHelpers";
 import { isStyledTplSlot } from "@/wab/shared/SlotUtils";
 import { $$$ } from "@/wab/shared/TplQuery";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
@@ -138,8 +133,10 @@ import {
   getCssOverrides,
   getTagsWithCssOverrides,
   normProp,
+  parseCss,
   showCssShorthand,
 } from "@/wab/shared/css";
+import { splitCssValue } from "@/wab/shared/css/parse";
 import { imageDataUriToBlob } from "@/wab/shared/data-urls";
 import { ThemeTagSource } from "@/wab/shared/defined-indicator";
 import { getProjectFlags } from "@/wab/shared/devflags";
@@ -3229,7 +3226,7 @@ export function deriveBackgroundStyles(
   backgroundCssValue: string
 ) {
   const vals: string[] = splitCssValue("background", backgroundCssValue);
-  const lastLayer: BackgroundLayer = cssPegParser.parse(vals[vals.length - 1], {
+  const lastLayer: BackgroundLayer = parseCss(vals[vals.length - 1], {
     startRule: "backgroundLayer",
   });
   ensureInstance(lastLayer, BackgroundLayer);
@@ -3245,7 +3242,7 @@ export function deriveBackgroundStyles(
         // might have been modified due to preferBackgroundColorOverColorFill
         // and not be recognized by our parser
         .slice(0, vals.length - 1)
-        .map((v) => cssPegParser.parse(v, { startRule: "backgroundLayer" })),
+        .map((v) => parseCss(v, { startRule: "backgroundLayer" })),
       lastLayer,
     ];
     // "background-clip: text" must be set globally, separated and after

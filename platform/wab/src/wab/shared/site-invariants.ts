@@ -1,5 +1,4 @@
 import { isTokenRef, tryParseTokenRef } from "@/wab/commons/StyleToken";
-import * as cssPegParser from "@/wab/gen/cssPegParser";
 import { AnyArena, getArenaFrames, isMixedArena } from "@/wab/shared/Arenas";
 import { MIXIN_LOWER } from "@/wab/shared/Labels";
 import { getTplSlot, isSlot } from "@/wab/shared/SlotUtils";
@@ -51,7 +50,6 @@ import {
 } from "@/wab/shared/core/sites";
 import { isPrivateState } from "@/wab/shared/core/states";
 import { isValidStyleProp } from "@/wab/shared/core/style-props";
-import { parseCssValue } from "@/wab/shared/core/styles";
 import {
   ancestorsUp,
   isTplComponent,
@@ -60,6 +58,7 @@ import {
   isTplVariantable,
   tplChildren,
 } from "@/wab/shared/core/tpls";
+import { parseCss } from "@/wab/shared/css";
 import { maybeComputedFn } from "@/wab/shared/mobx-util";
 import { instUtil } from "@/wab/shared/model/InstUtil";
 import {
@@ -728,9 +727,7 @@ function* _genTplErrors(site: Site, component: Component, tpl: TplNode) {
         }
         if (sty === "background") {
           try {
-            parseCssValue("background", val).forEach((v) =>
-              cssPegParser.parse(v, { startRule: "backgroundLayer" })
-            );
+            parseCss(val, { startRule: "background" });
           } catch (err) {
             yield new InvariantError(
               "Failed to parse background: " + err.message

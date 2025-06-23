@@ -21,7 +21,7 @@ import {
   fromFilterStringToObj,
 } from "@/wab/shared/core/filter-effect-utils";
 import { allColorTokens } from "@/wab/shared/core/sites";
-import { joinCssValues, splitCssValue } from "@/wab/shared/RuleSetHelpers";
+import { joinCssValues, splitCssValue } from "@/wab/shared/css/parse";
 import { capitalize } from "lodash";
 import { observer } from "mobx-react";
 import React, { useState } from "react";
