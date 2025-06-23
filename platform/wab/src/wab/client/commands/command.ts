@@ -1,3 +1,4 @@
+import { renameArenaCommand } from "@/wab/client/commands/arena/renameArena";
 import { addNewStateVariableCommand } from "@/wab/client/commands/component/addNewStateVariable";
 import { changeStateInitialValueCommand } from "@/wab/client/commands/component/changeStateInitialValue";
 import { changeStateVariableAccessTypeCommand } from "@/wab/client/commands/component/changeStateVariableAccessType";
@@ -17,6 +18,9 @@ import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 export const COMMANDS = {
   navigation: {
     switchArena: switchArenaCommand,
+  },
+  arena: {
+    renameArena: renameArenaCommand,
   },
   component: {
     addNewStateVariable: addNewStateVariableCommand,

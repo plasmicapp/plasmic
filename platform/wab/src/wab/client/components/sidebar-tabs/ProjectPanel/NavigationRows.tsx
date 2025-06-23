@@ -1,3 +1,4 @@
+import { COMMANDS } from "@/wab/client/commands/command";
 import CommentIndicatorIcon from "@/wab/client/components/comments/CommentIndicatorIcon";
 import RowGroup, { RowGroupProps } from "@/wab/client/components/RowGroup";
 import RowItem from "@/wab/client/components/RowItem";
@@ -21,7 +22,7 @@ import {
   isComponentArena,
   isPageArena,
 } from "@/wab/shared/Arenas";
-import { ensure, maybe, spawn, switchType } from "@/wab/shared/common";
+import { ensure, spawn, switchType } from "@/wab/shared/common";
 import { PageComponent } from "@/wab/shared/core/components";
 import { getFolderDisplayName } from "@/wab/shared/folders/folders-util";
 import { ARENA_LOWER } from "@/wab/shared/Labels";
@@ -276,8 +277,15 @@ export function NavigationArenaRow({
           />
         )}
         onEdit={(newName) => {
-          maybe(studioCtx.siteOps().tryRenameArena(arena, newName), (p) =>
-            spawn(p)
+          spawn(
+            COMMANDS.arena.renameArena.execute(
+              studioCtx,
+              {
+                arena,
+                newName,
+              },
+              {}
+            )
           );
           setRenaming(false);
         }}

@@ -1,5 +1,5 @@
+import { RenameArenaProps } from "@/wab/client/commands/arena/renameArena";
 import { COMMANDS } from "@/wab/client/commands/command";
-import { RenameArenaProps } from "@/wab/client/components/canvas/site-ops";
 import {
   RenderElementProps,
   VirtualTree,
@@ -69,7 +69,6 @@ import { getHostLessComponents } from "@/wab/shared/code-components/code-compone
 import { toVarName } from "@/wab/shared/codegen/util";
 import {
   assert,
-  maybe,
   spawn,
   swallow,
   switchType,
@@ -710,8 +709,11 @@ function NavigationDropdown_(
       });
 
       if (renameProps.length) {
-        maybe(studioCtx.siteOps().tryRenameArenas(renameProps), (p) =>
-          spawn(p)
+        spawn(
+          studioCtx.change(({ success }) => {
+            studioCtx.siteOps().tryRenameArenas(renameProps);
+            return success();
+          })
         );
         const keyChanges = getFolderKeyChanges(folders, pathData);
         renameGroup(keyChanges);

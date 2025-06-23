@@ -1,6 +1,7 @@
 import { AppCtx } from "@/wab/client/app-ctx";
 import { U } from "@/wab/client/cli-routes";
 import { FrameClip } from "@/wab/client/clipboard/local";
+import { RenameArenaProps } from "@/wab/client/commands/arena/renameArena";
 import { toast } from "@/wab/client/components/Messages";
 import { promptRemapCodeComponent } from "@/wab/client/components/modals/codeComponentModals";
 import {
@@ -188,11 +189,6 @@ import { notification } from "antd";
 import L from "lodash";
 import pluralize from "pluralize";
 import React from "react";
-
-export interface RenameArenaProps {
-  arena: Arena | PageArena | ComponentArena;
-  newName: string;
-}
 
 /**
  * Place for site-wide logic that both performs data model manipulation
@@ -940,28 +936,23 @@ export class SiteOps {
     if (entries.length === 0) {
       return;
     }
-    return this.studioCtx.changeUnsafe(() => {
-      for (const { arena, newName } of entries) {
-        const oldName = getArenaName(arena);
-        if (oldName === newName) {
-          continue;
-        }
-
-        switchType(arena)
-          .when(Arena, (it) => this.tplMgr.renameArena(it, newName))
-          .when([PageArena, ComponentArena], (it) =>
-            this.tryRenameComponent(it.component, newName)
-          );
-
-        if (arena === this.studioCtx.currentArena) {
-          this.studioCtx.switchToArena(arena, { replace: true });
-        }
+    for (const { arena, newName } of entries) {
+      const oldName = getArenaName(arena);
+      if (oldName === newName) {
+        continue;
       }
-    });
-  }
 
-  tryRenameArena(arena: Arena | PageArena | ComponentArena, newName: string) {
-    return this.tryRenameArenas([{ arena, newName }]);
+      switchType(arena)
+        .when(Arena, (it) => this.studioCtx.tplMgr().renameArena(it, newName))
+        .when([PageArena, ComponentArena], (it) =>
+          this.studioCtx.siteOps().tryRenameComponent(it.component, newName)
+        );
+
+      // Switch to currentArena to force the URL to update with the new name
+      if (arena === this.studioCtx.currentArena) {
+        this.studioCtx.switchToArena(arena, { replace: true });
+      }
+    }
   }
 
   tryRenameComponent(component: Component, newName: string) {
