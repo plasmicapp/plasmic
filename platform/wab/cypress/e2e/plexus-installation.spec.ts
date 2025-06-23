@@ -104,7 +104,6 @@ describe("Plexus Installation", function () {
         cy.createNewPage("New page").then(() => {
           verifyInitialState();
           PLEXUS_INSERTABLES.forEach((item) => {
-            cy.openProjectPanel();
             getFilteredComponentsInProjectPanel(startCase(item.name)).should(
               "not.exist"
             );

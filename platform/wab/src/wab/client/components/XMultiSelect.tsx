@@ -175,7 +175,6 @@ class _XMultiSelect<Item> extends React.Component<
                               {...downshift.getItemProps({
                                 item,
                                 index,
-                                key,
                               })}
                             >
                               {renderOption(item)}

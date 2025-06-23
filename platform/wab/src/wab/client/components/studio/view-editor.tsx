@@ -2011,7 +2011,7 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
                         {!studioCtx.isInteractiveMode && (
                           <HoverBoxes studioCtx={studioCtx} />
                         )}
-                        <MeasureTool ref="measuretool" />
+                        <MeasureTool />
                         <FreestyleBox />
                         <input
                           className="hidden-image-selector"

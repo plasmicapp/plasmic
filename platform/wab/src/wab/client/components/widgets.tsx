@@ -469,7 +469,6 @@ export class ListBox extends React.Component<ListBoxProps, ListBoxState> {
     //  https://github.com/facebook/react/issues/6807.
     let addButton = (
       <PlainLinkButton
-        ref={"adder"}
         className={"list-box__add-placeholder"}
         onClick={this.props.onAdd}
         type="button"

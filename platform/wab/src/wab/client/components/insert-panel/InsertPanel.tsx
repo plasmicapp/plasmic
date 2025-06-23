@@ -752,7 +752,7 @@ const Row = React.memo(function Row(props: {
   const itemWidth = shouldShowCompact(firstItem) ? compactItemWidth : "100%";
 
   return (
-    <li
+    <ul
       style={{
         ...style,
         display: "flex",
@@ -926,7 +926,7 @@ const Row = React.memo(function Row(props: {
           assertNever(virtualItem);
         }
       })}
-    </li>
+    </ul>
   );
 },
 areEqual);

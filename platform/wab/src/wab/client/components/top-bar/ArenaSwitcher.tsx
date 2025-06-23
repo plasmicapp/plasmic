@@ -97,7 +97,11 @@ const ArenaSwitcher = observer(function ArenaSwitcher(
     >
       <PlasmicArenaSwitcher
         onClick={() => {
-          studioCtx.showProjectPanel();
+          if (visible) {
+            setVisible(false);
+          } else {
+            studioCtx.showProjectPanel();
+          }
         }}
         arenaType={
           isComponentArena(currentArena)
