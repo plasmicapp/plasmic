@@ -3,7 +3,6 @@ import { TplCommentThread } from "@/wab/client/components/comments/utils";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { CommentThreadId } from "@/wab/shared/ApiSchema";
-import { assert } from "@/wab/shared/common";
 import { observer } from "mobx-react";
 import * as React from "react";
 
@@ -30,25 +29,27 @@ export default observer(function RootComment({
           : "Reply"
       }
       onClick={async () => {
-        const ownerComponent = studioCtx
-          .tplMgr()
-          .findComponentContainingTpl(commentThread.subject);
+        const { subjectInfo } = commentThread;
+        // if subject not present it means that element is deleted and we need to show comment thread without focusing
+        if (!subjectInfo) {
+          const focusedViewCtx = studioCtx.focusedOrFirstViewCtx();
+          if (focusedViewCtx) {
+            onThreadSelect(threadId, focusedViewCtx);
+          }
+        } else {
+          const { subject, ownerComponent, variants } = subjectInfo;
+          await studioCtx.setStudioFocusOnTpl(
+            ownerComponent,
+            subject,
+            variants
+          );
 
-        assert(
-          ownerComponent,
-          () => `No owningComponent found for Tpl ${commentThread.subject.uuid}`
-        );
-        await studioCtx.setStudioFocusOnTpl(
-          ownerComponent,
-          commentThread.subject,
-          commentThread.variants
-        );
-
-        const focusedViewCtx = studioCtx.focusedViewCtx();
-        if (focusedViewCtx) {
-          onThreadSelect(threadId, focusedViewCtx);
+          const focusedViewCtx = studioCtx.focusedViewCtx();
+          if (focusedViewCtx) {
+            onThreadSelect(threadId, focusedViewCtx);
+          }
+          studioCtx.tryZoomToFitSelection();
         }
-        studioCtx.tryZoomToFitSelection();
       }}
     />
   );

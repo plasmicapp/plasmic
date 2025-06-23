@@ -9,7 +9,6 @@ import {
   useStudioCtx,
 } from "@/wab/client/studio-ctx/StudioCtx";
 import { OnClickAway } from "@/wab/commons/components/OnClickAway";
-import { ensure } from "@/wab/shared/common";
 import { summarizeTpl } from "@/wab/shared/core/tpls";
 import { observer } from "mobx-react";
 import * as React from "react";
@@ -27,15 +26,16 @@ export const ThreadCommentsDialog = observer(function ThreadCommentsDialog({
 
   const selectedThread = React.useMemo(
     () =>
-      ensure(
-        commentsCtx
-          .computedData()
-          .allThreads.find((t) => t.id === openedThread.threadId),
-        "could not find opened thread"
-      ),
+      commentsCtx
+        .computedData()
+        .allThreads.find((t) => t.id === openedThread.threadId),
     [commentsCtx.computedData().allThreads, openedThread.threadId]
   );
-  const threadSubject = selectedThread.subject;
+  if (!selectedThread) {
+    commentsCtx.closeCommentDialogs();
+    return null;
+  }
+  const subjectInfo = selectedThread.subjectInfo;
 
   const handleClickOutside = () => {
     if (!openedThread.interacted) {
@@ -61,15 +61,20 @@ export const ThreadCommentsDialog = observer(function ThreadCommentsDialog({
             close: {
               onClick: () => commentsCtx.closeCommentDialogs(),
             },
-            commentsHeader: {
-              name: threadSubject.name || "Unnamed",
-              type: summarizeTpl(
-                threadSubject,
-                openedThread?.viewCtx
-                  .effectiveCurrentVariantSetting(threadSubject)
-                  .rsh()
-              ),
-            },
+            commentsHeader: subjectInfo
+              ? {
+                  name: subjectInfo.subject.name || "Unnamed element",
+                  type: summarizeTpl(
+                    subjectInfo.subject,
+                    openedThread.viewCtx
+                      .effectiveCurrentVariantSetting(subjectInfo.subject)
+                      .rsh()
+                  ),
+                }
+              : {
+                  name: "Deleted element",
+                  type: "",
+                },
             canUpdateHistory: canUpdateThreadHistory,
             threadHistoryStatus: {
               commentThread: selectedThread,

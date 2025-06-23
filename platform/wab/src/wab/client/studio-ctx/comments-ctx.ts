@@ -95,6 +95,7 @@ export class CommentsCtx {
 
   private readonly _computedData = computedFn(() => {
     const allThreads = getCommentThreadsWithModelMetadata(
+      this.studioCtx,
       this.bundler(),
       this._rawThreads
     );
@@ -128,7 +129,7 @@ export class CommentsCtx {
         this.computedData().unresolvedThreads.filter((commentThread) =>
           isCommentForFrame(viewCtx, commentThread)
         ),
-        (commentThread) => commentThread.subject.uuid
+        (commentThread) => commentThread.subjectInfo?.subject.uuid
       );
     }
   );

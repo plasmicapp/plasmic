@@ -6,9 +6,10 @@ import {
 } from "@/wab/client/studio-ctx/view-ctx";
 import { ApiCommentThread } from "@/wab/shared/ApiSchema";
 import { Bundler } from "@/wab/shared/bundler";
-import { assert, getOrSetMap, xSymmetricDifference } from "@/wab/shared/common";
+import { getOrSetMap, xSymmetricDifference } from "@/wab/shared/common";
+import { allComponentVariants } from "@/wab/shared/core/components";
+import { allGlobalVariants } from "@/wab/shared/core/sites";
 import {
-  getTplOwnerComponent,
   isTplNamable,
   summarizeTplNamable,
   TplNamable,
@@ -23,18 +24,30 @@ import {
   Variant,
 } from "@/wab/shared/model/classes";
 import { toVariantComboKey } from "@/wab/shared/Variants";
-import { groupBy, partition } from "lodash";
+import { groupBy, keyBy, partition } from "lodash";
 import { toJS } from "mobx";
 
-type LocalizedCommentThread = ApiCommentThread & {
-  location: NonNullable<ApiCommentThread["location"]>;
-};
-
-export interface TplCommentThread extends LocalizedCommentThread {
+/**
+ * Subject info for a comment thread
+ *
+ * variants will be Undefined if the variant associated with
+ * the comment thread has been deleted
+ */
+export interface SubjectInfo {
   subject: TplNamable;
-  variants: Variant[];
-  label: string;
+  variants: Variant[] | undefined;
   ownerComponent: Component;
+}
+
+/**
+ * Comment thread with subject info
+ *
+ * subjectInfo will be undefined if the
+ * subject of the comment thread was deleted
+ */
+export interface TplCommentThread extends ApiCommentThread {
+  label: string;
+  subjectInfo?: SubjectInfo;
 }
 
 export type TplCommentThreads = TplCommentThread[];
@@ -46,84 +59,79 @@ export const FilterValueToLabel: Record<CommentFilter, string> = {
   resolved: "Resolved",
 };
 
-export function isValidCommentThread(
-  bundler: Bundler,
-  thread: ApiCommentThread
-): thread is LocalizedCommentThread {
-  if (!thread.location) {
-    return false;
-  }
-
-  const subject = bundler.objByAddr(thread.location.subject);
-  // The subject has been deleted since the comment was created
-  if (!subject) {
-    return false;
-  }
-
+export function hasNonDeletedComments(thread: ApiCommentThread): boolean {
   // hide thread if it has no non-deleted comments
-  if (!thread.comments.some((comment) => !comment.deletedAt)) {
-    return false;
-  }
-
-  const variants = thread.location.variants.map((addr) =>
-    bundler.objByAddr(addr)
-  );
-
-  const hasInvalidVariant = variants.some((variant) => !variant);
-  // It's possible that the variant was deleted, so we will filter out those
-  // comments too
-  if (hasInvalidVariant) {
-    return false;
-  }
-
-  // The object is not a TplNamable
-  if (!isTplNamable(subject)) {
-    return false;
-  }
-
-  // The object can be removed from the bundle during the session
-  // so we check if it has an owner component
-  const ownerComponent = tryGetTplOwnerComponent(subject);
-  return !!ownerComponent;
+  return thread.comments.some((comment) => !comment.deletedAt);
 }
 
 export function getCommentThreadWithModelMetadata(
+  studioCtx: StudioCtx,
   bundler: Bundler,
-  thread: LocalizedCommentThread
+  thread: ApiCommentThread
 ): TplCommentThread {
-  const inst = bundler.objByAddr(thread.location.subject);
-  assert(isTplNamable(inst), "Comment thread subject must be a TplNamable");
+  const subject = bundler.objByAddr(thread.location.subject);
+  const isSubjectNamable = isTplNamable(subject);
+  const ownerComponent = isSubjectNamable
+    ? tryGetTplOwnerComponent(subject)
+    : undefined;
+  const commentThread = toJS(thread); // to ensure MobX observers detect all changes in thread
 
-  const variants = thread.location.variants.map((variantAddr) => {
+  if (!ownerComponent || !isSubjectNamable) {
+    return {
+      ...commentThread,
+      subjectInfo: undefined,
+      label: "Deleted element",
+    };
+  }
+  const allComponentVariantsMap = keyBy(
+    allComponentVariants(ownerComponent),
+    (v) => v.uuid
+  );
+  const allGlobalVariantsMap = keyBy(
+    allGlobalVariants(studioCtx.site, { includeDeps: "direct" }),
+    (v) => v.uuid
+  );
+  const variants = thread.location.variants.reduce(function (
+    filtered: Variant[],
+    variantAddr
+  ) {
     const variantInst = bundler.objByAddr(variantAddr);
-    assert(
-      isKnownVariant(variantInst),
-      "Comment thread must be on valid variant"
-    );
-    return variantInst;
-  });
-
-  const subject = inst;
-  const ownerComponent = getTplOwnerComponent(subject);
+    if (
+      isKnownVariant(variantInst) &&
+      (allComponentVariantsMap[variantInst.uuid] ||
+        allGlobalVariantsMap[variantInst.uuid])
+    ) {
+      filtered.push(variantInst);
+    }
+    return filtered;
+  },
+  []);
+  const hasDeletedVariants =
+    thread.location.variants.length !== variants.length;
 
   return {
-    ...toJS(thread), // to ensure MobX observers detect all changes in thread
-    subject,
-    variants,
-    label: summarizeTplNamable(subject),
-    ownerComponent,
+    ...commentThread,
+    subjectInfo: {
+      subject,
+      ownerComponent,
+      variants: hasDeletedVariants ? undefined : variants,
+    },
+    label: hasDeletedVariants
+      ? "Deleted variant"
+      : summarizeTplNamable(subject),
   };
 }
 
 export function getCommentThreadsWithModelMetadata(
+  studioCtx: StudioCtx,
   bundler: Bundler,
   threads: ApiCommentThread[]
 ): TplCommentThreads {
   return threads
-    .filter((thread): thread is LocalizedCommentThread =>
-      isValidCommentThread(bundler, thread)
-    )
-    .map((thread) => getCommentThreadWithModelMetadata(bundler, thread));
+    .filter((thread) => hasNonDeletedComments(thread))
+    .map((thread) =>
+      getCommentThreadWithModelMetadata(studioCtx, bundler, thread)
+    );
 }
 
 export function partitionThreadsForFrames(
@@ -163,9 +171,17 @@ export function computeCommentStats(threads: TplCommentThreads): {
   commentStatsByComponent: CommentStatsMap;
   commentStatsByVariant: CommentStatsMap;
 } {
+  // filtered out threads with undefined(deleted) subject or variants
+  const filteredThreads = threads.filter(
+    (
+      thread
+    ): thread is TplCommentThread & {
+      subjectInfo: SubjectInfo & { variants: Variant[] };
+    } => !!thread.subjectInfo && !!thread.subjectInfo.variants
+  );
   const threadsGroupedBySubject = groupBy(
-    threads,
-    (commentThread) => commentThread.subject.uuid
+    filteredThreads,
+    (commentThread) => commentThread.subjectInfo.subject.uuid
   );
 
   const commentStatsBySubject: CommentStatsMap = new Map();
@@ -191,7 +207,9 @@ export function computeCommentStats(threads: TplCommentThreads): {
         );
 
         const [commentThread] = commentThreads;
-        const ownerComponent = tryGetTplOwnerComponent(commentThread.subject);
+        const ownerComponent =
+          commentThread.subjectInfo.subject &&
+          tryGetTplOwnerComponent(commentThread.subjectInfo.subject);
         if (ownerComponent) {
           const ownerUuid = ownerComponent.uuid;
           const componentStats = getOrSetMap<string, CommentsStats>(
@@ -210,8 +228,11 @@ export function computeCommentStats(threads: TplCommentThreads): {
     }
   );
 
-  const threadsGroupedByVariants = groupBy(threads, (commentThread) =>
-    getSubjectVariantsKey(commentThread.subject, commentThread.variants)
+  const threadsGroupedByVariants = groupBy(filteredThreads, (commentThread) =>
+    getSubjectVariantsKey(
+      commentThread.subjectInfo.subject,
+      commentThread.subjectInfo.variants
+    )
   );
 
   Object.entries(threadsGroupedByVariants).forEach(
@@ -263,16 +284,16 @@ export function isCommentForFrame(
   commentThread: TplCommentThread
 ) {
   const bundler = viewCtx.bundler();
-  const subject = bundler.objByAddr(commentThread.location.subject);
-
-  const ownerComponent = viewCtx
-    .tplMgr()
-    .findComponentContainingTpl(subject as TplNode);
+  if (!commentThread.subjectInfo) {
+    return false;
+  }
+  const { variants, ownerComponent } = commentThread.subjectInfo;
 
   const isForFrame =
     viewCtx.component === ownerComponent &&
+    variants &&
     xSymmetricDifference(
-      commentThread.variants,
+      variants,
       getSetOfPinnedVariantsForViewCtx(viewCtx, bundler)
     ).length === 0;
   return isForFrame;

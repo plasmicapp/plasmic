@@ -85,8 +85,10 @@ describe("computeCommentStats", () =>
     const commentThreads: TplCommentThreads = [
       {
         id: "5adfa1dd-57b4-4e25-9e1d-da71674711b2",
-        subject: xs1[1],
-        variants: [v0],
+        subjectInfo: {
+          subject: xs1[1],
+          variants: [v0],
+        },
         resolved: false,
         comments: [
           {
@@ -108,8 +110,10 @@ describe("computeCommentStats", () =>
       } as TplCommentThread,
       {
         id: "6adfa1dd-57b4-4e25-9e1d-da71674711b2",
-        subject: xs1[2],
-        variants: [v1SingleChoiceVariants[0]],
+        subjectInfo: {
+          subject: xs1[2],
+          variants: [v1SingleChoiceVariants[0]],
+        },
         resolved: false,
         comments: [
           {
@@ -121,8 +125,10 @@ describe("computeCommentStats", () =>
       } as TplCommentThread,
       {
         id: "7adfa1dd-57b4-4e25-9e1d-da71674711b2",
-        subject: xs2[3],
-        variants: [v0],
+        subjectInfo: {
+          subject: xs2[3],
+          variants: [v0],
+        },
         resolved: false,
         comments: [
           {
@@ -139,8 +145,10 @@ describe("computeCommentStats", () =>
       } as TplCommentThread,
       {
         id: "8adfa1dd-57b4-4e25-9e1d-da71674711b2",
-        subject: xs2[4],
-        variants: [v0],
+        subjectInfo: {
+          subject: xs2[4],
+          variants: [v0],
+        },
         resolved: false,
         comments: [
           {
@@ -152,8 +160,10 @@ describe("computeCommentStats", () =>
       } as TplCommentThread,
       {
         id: "5adfa1dd-57b4-4e25-9e1d-da71674711b3",
-        subject: xs2[4],
-        variants: [v2SingleChoiceVariants[0]],
+        subjectInfo: {
+          subject: xs2[4],
+          variants: [v2SingleChoiceVariants[0]],
+        },
         resolved: false,
         comments: [
           {
