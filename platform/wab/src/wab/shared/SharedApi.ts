@@ -140,6 +140,8 @@ import {
   QueryCopilotFeedbackResponse,
   QueryCopilotRequest,
   QueryCopilotResponse,
+  QueryCopilotUiRequest,
+  QueryCopilotUiResponse,
   ResetPasswordRequest,
   ResetPasswordResponse,
   ResolveThreadRequest,
@@ -2259,6 +2261,12 @@ export abstract class SharedApi {
     request: QueryCopilotRequest
   ): Promise<QueryCopilotResponse> {
     return this.post(`/copilot`, request, true);
+  }
+
+  async queryUiCopilot(
+    request: QueryCopilotUiRequest
+  ): Promise<QueryCopilotUiResponse> {
+    return this.post(`/copilot/ui`, request, true);
   }
 
   async sendCopilotFeedback(request: SendCopilotFeedbackRequest) {

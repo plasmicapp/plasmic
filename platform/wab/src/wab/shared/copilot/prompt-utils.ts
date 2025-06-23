@@ -1,14 +1,15 @@
-// eslint-disable-next-line @typescript-eslint/no-restricted-imports
+import { tokenTypes } from "@/wab/commons/StyleToken";
 import { CopilotImage, CopilotToken } from "@/wab/shared/ApiSchema";
 import { DataSourceSchema } from "@plasmicapp/data-sources";
 import GPT3Tokenizer from "gpt3-tokenizer";
 import OpenAI from "openai";
 import {
   ChatCompletion,
-  ChatCompletionContentPartImage,
   ChatCompletionCreateParamsNonStreaming,
   ChatCompletionRole,
 } from "openai/resources/chat/completions";
+import { ResponseCreateParamsBase } from "openai/resources/responses/responses";
+import { z } from "zod";
 
 export interface Issue {
   message: string;
@@ -33,9 +34,6 @@ export type CreateChatCompletionRequest =
 export type CreateChatCompletionRequestOptions = OpenAI.RequestOptions;
 
 export type ChatCompletionRequestMessageRoleEnum = ChatCompletionRole;
-
-export type ChatCompletionRequestContentPartImage =
-  ChatCompletionContentPartImage;
 
 export function showCompletionRequest(
   createChatCompletionRequest: CreateChatCompletionRequest
@@ -90,11 +88,41 @@ export interface CopilotSqlCodeChainProps {
   goal: string;
 }
 
+export type LLMParseResponsesRequest = ResponseCreateParamsBase;
+
 export interface CopilotUiChainProps {
-  images: Array<CopilotImage>;
-  executeRequest: (
-    request: CreateChatCompletionRequest
-  ) => Promise<WholeChatCompletionResponse>;
   goal: string;
+  images?: Array<CopilotImage>;
   tokens?: CopilotToken[];
 }
+
+// Structured Response schemas
+const CopilotUiGenerateHtmlActionSchema = z.object({
+  name: z.literal("insert-html"),
+  data: z.object({
+    html: z.string(),
+  }),
+});
+
+const CopilotUiTokenActionSchema = z.object({
+  name: z.literal("add-token"),
+  data: z.object({
+    tokenType: z.enum(tokenTypes),
+    name: z
+      .string()
+      .describe(
+        "A unique token name. Make sure it's in the format of existing tokens if available"
+      ),
+    value: z
+      .string()
+      .describe("Token value including unit such as 10px, 1.5rem, #fff123 etc"),
+  }),
+});
+
+export const CopilotUiActionsSchema = z.object({
+  actions: z.array(
+    z.union([CopilotUiGenerateHtmlActionSchema, CopilotUiTokenActionSchema])
+  ),
+});
+
+export type CopilotUiActions = z.infer<typeof CopilotUiActionsSchema>;

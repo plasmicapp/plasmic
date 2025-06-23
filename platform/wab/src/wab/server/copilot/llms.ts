@@ -173,9 +173,13 @@ export class AnthropicWrapper {
   };
 }
 
+export function getOpenAI() {
+  return new OpenAI({ apiKey: openaiApiKey });
+}
+
 export const createOpenAIClient = (_?: DbMgr) =>
   new OpenAIWrapper(
-    new OpenAI({ apiKey: openaiApiKey }),
+    getOpenAI(),
     new DynamoDbCache(
       new DynamoDBClient({
         ...(dynamoDbCredentials

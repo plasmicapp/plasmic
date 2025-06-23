@@ -210,7 +210,10 @@ import {
   withoutNils,
   xor,
 } from "@/wab/shared/common";
-import { CreateChatCompletionRequest } from "@/wab/shared/copilot/prompt-utils";
+import {
+  CreateChatCompletionRequest,
+  LLMParseResponsesRequest,
+} from "@/wab/shared/copilot/prompt-utils";
 import {
   cloneSite,
   fixAppAuthRefs,
@@ -5934,7 +5937,7 @@ export class DbMgr implements MigrationDbMgr {
     userPrompt: string;
     response: string;
     model: "gpt" | "claude";
-    request: CreateChatCompletionRequest;
+    request: CreateChatCompletionRequest | LLMParseResponsesRequest;
   }) {
     await this.checkProjectPerms(projectId, "content", "run copilot");
     const copilotInteraction = this.copilotInteractions().create({

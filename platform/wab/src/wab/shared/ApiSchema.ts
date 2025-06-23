@@ -5,6 +5,10 @@
 import { TokenType } from "@/wab/commons/StyleToken";
 import { Bundle } from "@/wab/shared/bundles";
 import { Dict } from "@/wab/shared/collections";
+import {
+  CopilotUiActions,
+  WholeChatCompletionResponse,
+} from "@/wab/shared/copilot/prompt-utils";
 import { DataSourceType } from "@/wab/shared/data-sources-meta/data-source-registry";
 import {
   LabeledValue,
@@ -18,19 +22,17 @@ import {
 } from "@/wab/shared/devflags";
 import { AccessLevel, GrantableAccessLevel } from "@/wab/shared/EntUtil";
 import { PkgVersionInfo, RevInfo, SiteInfo } from "@/wab/shared/SharedApi";
+import { ChangeLogEntry, SemVerReleaseType } from "@/wab/shared/site-diffs";
 import {
   DirectConflictPickMap,
   MergeStep,
 } from "@/wab/shared/site-diffs/merge-core";
+import { UiConfig } from "@/wab/shared/ui-config-utils";
 import type { DataSourceSchema } from "@plasmicapp/data-sources";
 import { PlasmicElement } from "@plasmicapp/host/dist/element-types";
 import Stripe from "stripe";
 import { MakeADT } from "ts-adt/MakeADT";
 import type { JsonValue, Opaque } from "type-fest";
-
-import { WholeChatCompletionResponse } from "@/wab/shared/copilot/prompt-utils";
-import { ChangeLogEntry, SemVerReleaseType } from "@/wab/shared/site-diffs";
-import { UiConfig } from "@/wab/shared/ui-config-utils";
 
 export type UserId = Opaque<string, "UserId">;
 export type ProjectId = Opaque<string, "ProjectId">;
@@ -2023,8 +2025,7 @@ export type QueryCopilotRequest =
   | QueryCopilotChatRequest
   | QueryCopilotCodeRequest
   | QueryCopilotSqlCodeRequest
-  | QueryCopilotDebugRequest
-  | QueryCopilotUiRequest;
+  | QueryCopilotDebugRequest;
 
 export interface QueryCopilotResponse {
   dataSourcesDebug?: string;
@@ -2032,6 +2033,11 @@ export interface QueryCopilotResponse {
   response: string;
   typeDebug?: string;
 }
+
+export type QueryCopilotUiResponse = {
+  data: CopilotUiActions | null;
+  copilotInteractionId: CopilotInteractionId;
+};
 
 export type CopilotResponseData = {
   data: WholeChatCompletionResponse;
