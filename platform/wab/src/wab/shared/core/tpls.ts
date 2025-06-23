@@ -2421,9 +2421,13 @@ export function pushExprs(exprs: Expr[], expr: Expr | null | undefined) {
       exprs.push(...findExprsInInteraction(interaction));
     }
   } else if (isKnownPageHref(expr)) {
-    for (const arg of Object.values(expr.params)) {
-      pushExprs(exprs, arg);
+    for (const param of Object.values(expr.params)) {
+      pushExprs(exprs, param);
     }
+    for (const query of Object.values(expr.query)) {
+      pushExprs(exprs, query);
+    }
+    pushExprs(exprs, expr.fragment);
   } else if (isKnownCollectionExpr(expr)) {
     for (const _expr of expr.exprs) {
       pushExprs(exprs, _expr);
