@@ -32,6 +32,7 @@ export interface BaseTextAreaProps
     HasControlContextData,
     WithVariants<typeof TEXTAREA_VARIANTS> {
   className?: string;
+  resize?: string;
 }
 
 export const inputHelpers = {
@@ -53,6 +54,7 @@ function BaseTextArea_(
     plasmicUpdateVariant,
     setControlContextData,
     value,
+    resize,
     ...restProps
   } = props;
 
@@ -75,7 +77,10 @@ function BaseTextArea_(
     hoverProps,
     {
       value: isDefined(textFieldContext) ? undefined : value,
-      style: COMMON_STYLES,
+      style: {
+        ...COMMON_STYLES,
+        ...(resize ? { resize } : {}),
+      },
       className,
     }
   );
@@ -155,6 +160,19 @@ export function registerTextArea(
           "onBeforeInput",
           "onInput",
         ]),
+        resize: {
+          type: "choice",
+          description: "Controls if and how the element can be resized.",
+          options: [
+            "both",
+            "horizontal",
+            "vertical",
+            "block",
+            "inline",
+            "none",
+          ],
+          defaultValueHint: "both",
+        },
       },
       states: {
         value: {
