@@ -155,10 +155,10 @@ export class DbCtx {
 
   private createRecorder(site: Site) {
     const incrementalObservables = this.appCtx.appConfig.incrementalObservables;
-    return new ChangeRecorder(
-      site,
-      instUtil,
-      [
+    return new ChangeRecorder({
+      inst: site,
+      _instUtil: instUtil,
+      excludeFields: [
         // Skip tracking parent pointers, which is a big source of cycles and
         // is just a redundant pointer anyway; if parent bas changed, something
         // else has also changed.
@@ -176,18 +176,18 @@ export class DbCtx {
         // styles, etc.
         meta.getFieldByName("ProjectDependency", "site"),
       ],
-      [],
-      (obj) =>
+      excludeClasses: [],
+      isExternalRef: (obj) =>
         !!maybe(
           this.bundler().addrOf(obj),
           (addr) => addr.uuid !== this.siteInfo.id
         ),
-      undefined,
-      incrementalObservables
+      visitNodeListener: undefined,
+      skipInitialObserveFields: incrementalObservables
         ? [meta.getFieldByName("Component", "tplTree")]
         : undefined,
-      incrementalObservables
-    );
+      incremental: incrementalObservables,
+    });
   }
 }
 

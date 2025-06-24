@@ -1456,16 +1456,25 @@ export class ChangeRecorder implements IChangeRecorder {
   private observedCompsCache: Map<Component, Date> = new Map();
   private componentsInContext = new Array<Component>(2);
 
-  constructor(
-    inst: ObjInst,
-    _instUtil: InstUtil,
-    excludeFields?: Field[],
-    excludeClasses?: Class[],
-    isExternalRef?: (obj: ObjInst) => boolean,
-    visitNodeListener?: (inst: ObjInst) => void,
-    skipInitialObserveFields?: Field[],
-    incremental?: boolean
-  ) {
+  constructor({
+    inst,
+    _instUtil,
+    excludeFields,
+    excludeClasses,
+    isExternalRef,
+    visitNodeListener,
+    skipInitialObserveFields,
+    incremental,
+  }: {
+    inst: ObjInst;
+    _instUtil: InstUtil;
+    excludeFields?: Field[];
+    excludeClasses?: Class[];
+    isExternalRef?: (obj: ObjInst) => boolean;
+    visitNodeListener?: (inst: ObjInst) => void;
+    skipInitialObserveFields?: Field[];
+    incremental?: boolean;
+  }) {
     this.observableState = observeModel(inst, {
       instUtil: _instUtil,
       listener: (change) => {
@@ -1515,6 +1524,27 @@ export class ChangeRecorder implements IChangeRecorder {
     }
 
     return observedResult;
+  }
+
+  /**
+   * Ensures that the tplTree of the given components are observed, without pushing any component
+   * to the observedCompsCache. Since it's not in the cache, it will be disposed when the recorder
+   * is disposed, it won't be affected by the pruning logic.
+   */
+  ensureObservedComponents(components: Component[]) {
+    components.forEach((component) => {
+      if (!mobxHack.isObserved(component)) {
+        throw new Error(
+          `Component ${component.name} is not observed, but it should be`
+        );
+      }
+      if (!mobxHack.isObserved(component.tplTree)) {
+        this.observableState.observeInstField(
+          component,
+          meta.getFieldByName("Component", "tplTree")
+        );
+      }
+    });
   }
 
   private disposeOldComponents() {

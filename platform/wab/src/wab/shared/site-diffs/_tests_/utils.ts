@@ -1,6 +1,6 @@
 import { TokenType } from "@/wab/commons/StyleToken";
 import { ProjectFullDataResponse } from "@/wab/shared/ApiSchema";
-import { Bundler, FastBundler } from "@/wab/shared/bundler";
+import { Bundle, Bundler, FastBundler } from "@/wab/shared/bundler";
 import {
   assert,
   ensure,
@@ -294,61 +294,59 @@ export async function fetchLastBundleVersion() {
   lastBundleVersion = await getLastBundleVersion();
 }
 
-export function testMerge({
-  ancestorSite = createSite(),
-  a = () => {},
-  b = () => {},
+export function applyTestMerge({
+  ancestorBundle,
+  ancestorUuid,
+  aBundle,
+  aUuid,
+  bBundle,
+  bUuid,
   directConflictsPicks,
-  useLegacyResolveConflicts = false,
 }: {
-  ancestorSite: Site;
-  a: (site: Site, tplMgr: TplMgr) => void;
-  b: (site: Site, tplMgr: TplMgr) => void;
+  ancestorBundle: Bundle;
+  ancestorUuid: string;
+  aBundle: Bundle;
+  aUuid: string;
+  bBundle: Bundle;
+  bUuid: string;
   directConflictsPicks?: BranchSide[];
-  useLegacyResolveConflicts?: boolean;
-}): TestResult {
-  const ancestorUuid = mkUuid();
-  const bundler = new Bundler();
-
-  const bundle = bundler.bundle(ancestorSite, ancestorUuid, lastBundleVersion);
-
-  const aUuid = mkUuid();
-  const draftASite = bundler.unbundle(jsonClone(bundle), aUuid) as Site;
-  a(draftASite, new TplMgr({ site: draftASite }));
-  const finalABundle = bundler.bundle(draftASite, aUuid, lastBundleVersion);
-  const bUuid = mkUuid();
-  const draftBSite = bundler.unbundle(jsonClone(bundle), bUuid) as Site;
-  b(draftBSite, new TplMgr({ site: draftBSite }));
-  const finalBBundle = bundler.bundle(draftBSite, bUuid, lastBundleVersion);
+}) {
   const mergedUuid = mkUuid();
 
   // We want to use a new bundler with no instances in the cache
   const cleanedUpBundler = new Bundler();
-  ancestorSite = ensureKnownSite(
+  const ancestorSite = ensureKnownSite(
     cleanedUpBundler.unbundle(
-      jsonClone(bundle),
+      jsonClone(ancestorBundle),
       ancestorUuid,
       lastBundleVersion
     )
   );
   const aSite = ensureKnownSite(
-    cleanedUpBundler.unbundle(jsonClone(finalABundle), aUuid, lastBundleVersion)
+    cleanedUpBundler.unbundle(jsonClone(aBundle), aUuid, lastBundleVersion)
   );
   const bSite = ensureKnownSite(
-    cleanedUpBundler.unbundle(jsonClone(finalBBundle), bUuid, lastBundleVersion)
+    cleanedUpBundler.unbundle(jsonClone(bBundle), bUuid, lastBundleVersion)
   );
 
   // Make sure the initial sites are valid
   const fastBundler = new FastBundler();
-  fastBundler.unbundleAndRecomputeParents(jsonClone(bundle), ancestorUuid);
-  fastBundler.unbundleAndRecomputeParents(jsonClone(finalABundle), aUuid);
-  fastBundler.unbundleAndRecomputeParents(jsonClone(finalBBundle), bUuid);
+  fastBundler.unbundleAndRecomputeParents(
+    jsonClone(ancestorBundle),
+    ancestorUuid
+  );
+  fastBundler.unbundleAndRecomputeParents(jsonClone(aBundle), aUuid);
+  fastBundler.unbundleAndRecomputeParents(jsonClone(bBundle), bUuid);
   assertSiteInvariants(ancestorSite);
   assertSiteInvariants(aSite);
   assertSiteInvariants(bSite);
 
   const mergedSite = ensureKnownSite(
-    cleanedUpBundler.unbundle(jsonClone(bundle), mergedUuid, lastBundleVersion)
+    cleanedUpBundler.unbundle(
+      jsonClone(ancestorBundle),
+      mergedUuid,
+      lastBundleVersion
+    )
   );
 
   const result: MergeStep & { preMergedSite?: Site } = tryMerge(
@@ -392,7 +390,7 @@ export function testMerge({
 
     const newMergedUuid = mkUuid();
     const newMergedSite = cleanedUpBundler.unbundle(
-      jsonClone(bundle),
+      jsonClone(ancestorBundle),
       newMergedUuid
     ) as Site;
 
@@ -417,6 +415,64 @@ export function testMerge({
   // Check that we are not leaking any unexpected dependencies!
   expect(mergedBundle.deps).toEqual([]);
   return { preMergedSite: ancestorSite, ...result };
+}
+
+export function testMerge({
+  ancestorSite = createSite(),
+  a = () => {},
+  b = () => {},
+  directConflictsPicks,
+  useLegacyResolveConflicts = false,
+  changeUpdatedAt = true,
+}: {
+  ancestorSite: Site | (() => Site);
+  a: (site: Site, tplMgr: TplMgr) => void;
+  b: (site: Site, tplMgr: TplMgr) => void;
+  directConflictsPicks?: BranchSide[];
+  useLegacyResolveConflicts?: boolean;
+  changeUpdatedAt?: boolean;
+}): TestResult {
+  const ancestorUuid = mkUuid();
+  const bundler = new Bundler();
+
+  const bundle = bundler.bundle(
+    typeof ancestorSite === "function" ? ancestorSite() : ancestorSite,
+    ancestorUuid,
+    lastBundleVersion
+  );
+
+  const aUuid = mkUuid();
+  const draftASite = bundler.unbundle(jsonClone(bundle), aUuid) as Site;
+  a(draftASite, new TplMgr({ site: draftASite }));
+
+  const bUuid = mkUuid();
+  const draftBSite = bundler.unbundle(jsonClone(bundle), bUuid) as Site;
+  b(draftBSite, new TplMgr({ site: draftBSite }));
+
+  if (changeUpdatedAt) {
+    // We need to set the updatedAt to ensure that the components have different updatedAt and that they are considered updated
+    // so that we don't ignore them, since we are not applying the changes with studioCtx.change
+    draftASite.components.forEach((component) => {
+      component.updatedAt = 1;
+    });
+    // We set to 2, just to be different from 1, but not necessary
+    draftBSite.components.forEach((component) => {
+      component.updatedAt = 2;
+    });
+  }
+
+  const finalABundle = bundler.bundle(draftASite, aUuid, lastBundleVersion);
+  const finalBBundle = bundler.bundle(draftBSite, bUuid, lastBundleVersion);
+
+  return applyTestMerge({
+    ancestorBundle: bundle,
+    ancestorUuid,
+    aBundle: finalABundle,
+    aUuid,
+    bBundle: finalBBundle,
+    bUuid,
+    directConflictsPicks,
+  });
 }
 
 export function testMergeFromJsonBundle(

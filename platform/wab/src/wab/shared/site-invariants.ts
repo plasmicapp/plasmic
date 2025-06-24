@@ -92,20 +92,29 @@ export class InvariantError extends Error {
   }
 }
 
-export function assertSiteInvariants(site: Site) {
-  const errors: InvariantError[] = Array.from(genSiteErrors(site));
+export function assertSiteInvariants(
+  site: Site,
+  componentUuidsToSkip?: Set<string>
+) {
+  const errors: InvariantError[] = Array.from(
+    genSiteErrors(site, componentUuidsToSkip)
+  );
   if (errors.length > 0) {
     console.error("Site invariant errors", errors);
     throw errors[0];
   }
 }
 
-export function* genSiteErrors(site: Site) {
+export function* genSiteErrors(site: Site, componentUuidsToSkip?: Set<string>) {
   const componentNames = new Set<string>();
   componentToVariants = new WeakMap();
   siteToGlobalVariants = new WeakMap();
   siteToValidRefs = new WeakMap();
   for (const component of site.components) {
+    if (componentUuidsToSkip?.has(component.uuid)) {
+      continue;
+    }
+
     yield* genComponentErrors(site, component);
     // Only count Plasmic components that are not sub components
     if (!isPlasmicComponent(component) || component.superComp) {

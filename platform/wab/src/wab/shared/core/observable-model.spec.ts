@@ -757,7 +757,10 @@ describe("observeModel", () => {
     const expr = mkExpr({ value: value });
     child1.attrs["key"] = expr;
 
-    const recorder = new ChangeRecorder(hackyCast(node), instUtil);
+    const recorder = new ChangeRecorder({
+      inst: hackyCast(node),
+      _instUtil: instUtil,
+    });
 
     const doWork = (fail: boolean) => {
       node.children.push(child2);

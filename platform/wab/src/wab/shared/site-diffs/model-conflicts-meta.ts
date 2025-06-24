@@ -1,24 +1,27 @@
 import { Leaves, Paths } from "@/wab/commons/types";
+import { isSlot } from "@/wab/shared/SlotUtils";
+import { TplMgr } from "@/wab/shared/TplMgr";
 import { Bundler } from "@/wab/shared/bundler";
 import {
+  TypeStamped,
   assert,
   ensure,
   ensureInstance,
   switchType,
-  TypeStamped,
   unexpected,
 } from "@/wab/shared/common";
 import {
   isCodeComponent,
   isFrameComponent,
 } from "@/wab/shared/core/components";
+import { ChangeRecorder } from "@/wab/shared/core/observable-model";
 import * as classes from "@/wab/shared/model/classes";
 import {
   HostLessPackageInfo,
   ProjectDependency,
 } from "@/wab/shared/model/classes";
 import { meta } from "@/wab/shared/model/classes-metas";
-import { isWeakRefField, Type } from "@/wab/shared/model/model-meta";
+import { Type, isWeakRefField } from "@/wab/shared/model/model-meta";
 import { NodeCtx } from "@/wab/shared/model/model-tree-util";
 import {
   mergeComponentUpdatedAt,
@@ -33,8 +36,6 @@ import {
   DirectConflictPickMap,
   generateIidForInst,
 } from "@/wab/shared/site-diffs/merge-core";
-import { isSlot } from "@/wab/shared/SlotUtils";
-import { TplMgr } from "@/wab/shared/TplMgr";
 import { isString } from "lodash";
 
 export type MaybeWithPrefix<T extends string | null> = T extends null
@@ -91,7 +92,8 @@ export type MergeSpecialFieldHandler<
   rightCtx: NodeCtx<Cls>,
   mergedCtx: NodeCtx<Cls>,
   bundler: Bundler,
-  picks: DirectConflictPickMap | undefined
+  picks: DirectConflictPickMap | undefined,
+  recorder: ChangeRecorder
 ) => DirectConflict[];
 
 export type FieldConflictDescriptorMeta<
@@ -351,8 +353,16 @@ export const modelConflictsMeta: ModelConflictsMeta = {
       forceRename: true,
       excludeFromRename: (c) => isCodeComponent(c) || isFrameComponent(c),
       conflictType: "special",
-      handler: (ancestor, left, right, merged, bundler, picks) =>
-        tryMergeComponents(ancestor, left, right, merged, bundler, picks),
+      handler: (ancestor, left, right, merged, bundler, picks, recorder) =>
+        tryMergeComponents(
+          ancestor,
+          left,
+          right,
+          merged,
+          bundler,
+          picks,
+          recorder
+        ),
     },
     defaultComponents: "generic",
     defaultPageRoleId: "generic",
@@ -360,8 +370,16 @@ export const modelConflictsMeta: ModelConflictsMeta = {
     globalContexts: {
       arrayType: "unordered",
       conflictType: "special",
-      handler: (ancestor, left, right, merged, bundler, picks) =>
-        tryMergeGlobalContexts(ancestor, left, right, merged, bundler, picks),
+      handler: (ancestor, left, right, merged, bundler, picks, recorder) =>
+        tryMergeGlobalContexts(
+          ancestor,
+          left,
+          right,
+          merged,
+          bundler,
+          picks,
+          recorder
+        ),
     },
     globalVariant: "unexpected",
     globalVariantGroups: {
@@ -753,8 +771,16 @@ export const modelConflictsMeta: ModelConflictsMeta = {
     },
     variants: {
       conflictType: "special",
-      handler: (ancestor, left, right, merged, bundler, picks) =>
-        mergeComponentVariants(ancestor, left, right, merged, bundler, picks),
+      handler: (ancestor, left, right, merged, bundler, picks, recorder) =>
+        mergeComponentVariants(
+          ancestor,
+          left,
+          right,
+          merged,
+          bundler,
+          picks,
+          recorder
+        ),
     },
     dataQueries: {
       arrayType: "ordered",

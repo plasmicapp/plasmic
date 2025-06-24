@@ -235,7 +235,6 @@ import {
   ProjectDependency,
   Site,
 } from "@/wab/shared/model/classes";
-import { withoutUids } from "@/wab/shared/model/model-meta";
 import { ratePasswordStrength } from "@/wab/shared/password-strength";
 import {
   ResourceId,
@@ -8060,18 +8059,6 @@ export class DbMgr implements MigrationDbMgr {
       }
     );
 
-    // Check that there are no outstanding changes in destination
-    const { site: latestToPkgVersionSite } = await unbundlePkgVersion(
-      this,
-      bundler,
-      latestToPkgVersion
-    );
-    const { site: latestFromPkgVersionSite } = await unbundlePkgVersion(
-      this,
-      bundler,
-      latestFromPkgVersion
-    );
-
     const extras = {
       ancestorPkgVersionId: ancestorPkgVersion.id,
       ancestorPkgVersionString: ancestorPkgVersion.version,
@@ -8082,11 +8069,8 @@ export class DbMgr implements MigrationDbMgr {
       toPkgVersionString: latestToPkgVersion.version,
       pkgId: pkg.id,
       fromHasOutstandingChanges:
-        JSON.stringify(withoutUids(latestFromSite)) !==
-        JSON.stringify(withoutUids(latestFromPkgVersionSite)),
-      toHasOutstandingChanges:
-        JSON.stringify(withoutUids(latestToSite)) !==
-        JSON.stringify(withoutUids(latestToPkgVersionSite)),
+        latestFromRev.id !== latestFromPkgVersion.revisionId,
+      toHasOutstandingChanges: latestToRev.id !== latestToPkgVersion.revisionId,
     };
 
     const fromHostUrl = fromBranchId
