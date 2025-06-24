@@ -683,7 +683,7 @@ export function updateModules(doc: Document, modules: CodeModule[]) {
       if (err.message.startsWith("[host-app-error]")) {
         setErrorMessage(err.message);
       } else {
-        setErrorMessage(\`Failed to load the preview - please refresh the browser to try again. \n\nIf the problem persits, please report a bug to Plasmic team. Thank you!\n\n\${err}\`);
+        setErrorMessage(\`Failed to load the preview - please refresh the browser to try again. \n\nIf the problem persists, please report a bug to Plasmic team. Thank you!\n\n\${err}\`);
       }
 
       window.postMessage({

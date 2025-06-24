@@ -6816,7 +6816,8 @@ config({
 
 			var name = load.address;
 
-			if (content[name]){
+      // Allow empty modules, for example when no CSS is required for a component.
+			if (content[name] != null){
 				load.source = content[name];
 				return content[name];
 			}
