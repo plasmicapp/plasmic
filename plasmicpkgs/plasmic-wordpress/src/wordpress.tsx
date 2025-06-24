@@ -8,16 +8,8 @@ import {
 import { usePlasmicQueryData } from "@plasmicapp/query";
 import get from "dlv";
 import React, { ReactNode, useContext } from "react";
-import { queryOperators } from "./utils";
-
-export function ensure<T>(x: T | null | undefined): T {
-  if (x === null || x === undefined) {
-    debugger;
-    throw new Error(`Value must not be undefined or null`);
-  } else {
-    return x;
-  }
-}
+import { queryWordpress } from "./custom-functions";
+import { ensure, QueryOperator, queryOperators } from "./utils";
 
 const modulePath = "@plasmicpkgs/plasmic-wordpress";
 
@@ -25,8 +17,9 @@ interface WordpressProviderProps {
   wordpressUrl?: string;
 }
 
-const CredentialsContext =
-  React.createContext<WordpressProviderProps | undefined>(undefined);
+const CredentialsContext = React.createContext<
+  WordpressProviderProps | undefined
+>(undefined);
 
 export const WordpressProviderMeta: GlobalContextMeta<WordpressProviderProps> =
   {
@@ -60,10 +53,10 @@ interface WordpressFetcherProps {
   children?: ReactNode;
   className?: string;
   noLayout?: boolean;
-  queryType?: string;
+  queryType?: "posts" | "pages";
   noAutoRepeat?: boolean;
   limit?: number;
-  queryOperator?: string;
+  queryOperator?: QueryOperator;
   filterValue?: string;
   setControlContextData?: (data: {
     posts?: { value: string; label: string }[];
@@ -108,20 +101,20 @@ export const WordpressFetcherMeta: ComponentMeta<WordpressFetcherProps> = {
       type: "choice",
       displayName: "Query Operator",
       description: "Filter Parameter filter by",
-      options: (props, ctx) => {
+      options: () => {
         return queryOperators.map((item: any) => ({
           label: item?.label,
           value: item?.value,
         }));
       },
-      hidden: (props, ctx) => !props.queryType,
+      hidden: (props) => !props.queryType,
     },
 
     filterValue: {
       type: "string",
       displayName: "Filter value",
       description: "Value to filter",
-      hidden: (props, ctx) => !props.queryOperator,
+      hidden: (props) => !props.queryOperator,
     },
     limit: {
       type: "number",
@@ -154,88 +147,33 @@ export function WordpressFetcher({
   children,
   className,
   noLayout,
-  setControlContextData,
 }: WordpressFetcherProps) {
-  const creds = ensure(useContext(CredentialsContext));
+  const { wordpressUrl } = ensure(
+    useContext(CredentialsContext),
+    "WordpressFetcher must be used within a WordpressProvider"
+  );
   const cacheKey = JSON.stringify({
     queryOperator,
     filterValue,
     limit,
     queryType,
-    creds,
+    wordpressUrl,
   });
 
-  const { data: posts } = usePlasmicQueryData<any | null>(
-    queryType === "posts" ? `${cacheKey}/posts` : null,
+  const { data: data } = usePlasmicQueryData<any | null>(
+    queryType && wordpressUrl ? cacheKey : null,
     async () => {
-      const url = `${creds.wordpressUrl}/wp-json/wp/v2/posts`;
-      let query;
-      if (limit) {
-        query = `${url}?per_page=${limit}`;
-      } else {
-        query = url;
-      }
-
-      const resp = await fetch(query);
-      return await resp.json();
+      return queryWordpress(
+        ensure(wordpressUrl, "Wordpress URL must be specified"),
+        ensure(queryType, "Query Type must be specified"),
+        queryOperator,
+        filterValue,
+        limit
+      );
     }
   );
 
-  const { data: pages } = usePlasmicQueryData<any | null>(
-    queryType === "pages" ? `${cacheKey}/pages` : null,
-    async () => {
-      const url = `${creds.wordpressUrl}/wp-json/wp/v2/pages`;
-      let query;
-      if (limit) {
-        query = `${url}?per_page=${limit}`;
-      } else {
-        query = url;
-      }
-
-      const resp = await fetch(query);
-      return await resp.json();
-    }
-  );
-  
-  setControlContextData?.({
-    posts: posts?.map((post: any) => ({ value: post.id, label: post.slug })),
-    pages: pages?.map((page: any) => ({ value: page.id, label: page.slug })),
-  });
-
-  const { data: filteredPages } = usePlasmicQueryData<any | null>(
-    queryType === "pages" && queryOperator && filterValue
-      ? `${cacheKey}/pages/filtered`
-      : null,
-    async () => {
-      const url = `${creds.wordpressUrl}/wp-json/wp/v2/pages?${queryOperator}=${filterValue}`;
-      let query;
-      if (limit) {
-        query = `${url}&per_page=${limit}`;
-      } else {
-        query = url;
-      }
-
-      const resp = await fetch(query);
-      return await resp.json();
-    }
-  );
-  const { data: filteredPosts } = usePlasmicQueryData<any | null>(
-    queryType === "posts" && queryOperator && filterValue
-      ? `${cacheKey}/posts/filtered`
-      : null,
-    async () => {
-      const url = `${creds.wordpressUrl}/wp-json/wp/v2/posts?${queryOperator}=${filterValue}`;
-      let query;
-      if (limit) {
-        query = `${url}&per_page=${limit}`;
-      } else {
-        query = url;
-      }
-
-      const resp = await fetch(query);
-      return await resp.json();
-    }
-  );
+  const hasFilter = queryOperator && filterValue;
 
   if (!queryType) {
     return <div>Please specify query type</div>;
@@ -247,86 +185,22 @@ export function WordpressFetcher({
   if (!queryOperator && filterValue) {
     return <div>Please specify Query Operator</div>;
   }
-
-  let renderedData;
-
-  if (queryType === "posts" && posts && !filteredPosts) {
-    renderedData = noAutoRepeat
-      ? children
-      : posts?.map((post: any, i: number) => (
-          <DataProvider
-            key={post.id}
-            name={"wordpressItem"}
-            data={post}
-            hidden={true}
-          >
-            <DataProvider name={"currentWordpressPost"} data={post}>
-              {repeatedElement(i, children)}
-            </DataProvider>
-          </DataProvider>
-        ));
-  } else if (queryType === "pages" && pages && !filteredPages) {
-    renderedData = noAutoRepeat
-      ? children
-      : pages?.map((page: any, i: number) => (
-          <DataProvider
-            key={page.id}
-            name={"wordpressItem"}
-            data={page}
-            hidden={true}
-          >
-            <DataProvider name={"currentWordpressPage"} data={page}>
-              {repeatedElement(i, children)}
-            </DataProvider>
-          </DataProvider>
-        ));
-  } else if (queryType === "pages" && filteredPages) {
-    if (!filteredPages && queryOperator === "pages") {
-      return <div>Please make sure queryType is pages</div>;
-    }
-    if (filteredPages.length === 0) {
-      return <div>No published pages found</div>;
-    }
-    renderedData = noAutoRepeat
-      ? children
-      : filteredPages?.map((page: any, i: number) => (
-          <DataProvider
-            key={page.id}
-            name={"wordpressItem"}
-            data={page}
-            hidden={true}
-          >
-            <DataProvider name={"currentWordpressPage"} data={page}>
-              {repeatedElement(i, children)}
-            </DataProvider>
-          </DataProvider>
-        ));
-  } else if (queryType === "posts" && filteredPosts) {
-    if (!filteredPosts && queryOperator === "posts") {
-      return <div>Please make sure queryType is posts</div>;
-    }
-
-    if (filteredPosts.length === 0) {
-      return <div>No published posts found</div>;
-    }
-
-    renderedData = filteredPosts?.map((page: any, i: number) => (
-      <DataProvider
-        key={page.id}
-        name={"wordpressItem"}
-        data={page}
-        hidden={true}
-      >
-        <DataProvider name={"currentWordpressPost"} data={page}>
-          {repeatedElement(i, children)}
-        </DataProvider>
-      </DataProvider>
-    ));
-  } else {
-    return <div>Please choose the Query Type in order to render the data</div>;
+  if (hasFilter && data.length === 0) {
+    return <div>No published {queryType} found</div>;
   }
 
-  const response = [pages, posts];
+  const currentName = `currentWordpress${
+    queryType === "posts" ? "Post" : "Page"
+  }`;
+  const renderedData = noAutoRepeat
+    ? children
+    : data?.map((item: any, i: number) => (
+        <DataProvider key={item.id} name={currentName} data={item}>
+          {repeatedElement(i, children)}
+        </DataProvider>
+      ));
+
+  const response = data;
   return (
     <DataProvider data={response} name="wordpressItems">
       {noLayout ? (
@@ -366,20 +240,15 @@ export const WordpressFieldMeta: ComponentMeta<WordpressFieldProps> = {
     },
   },
 };
-export function WordpressField({
-  className,
-  field,
-  setControlContextData,
-}: WordpressFieldProps) {
-  const item = useSelector("wordpressItem");
+export function WordpressField({ className, field }: WordpressFieldProps) {
+  const currentPost = useSelector("currentWordpressPost");
+  const currentPage = useSelector("currentWordpressPage");
+
+  const item = currentPost || currentPage;
 
   if (!item) {
     return <div>WordpressField must be used within a WordpressFetcher </div>;
   }
-
-  setControlContextData?.({
-    data: item,
-  });
 
   if (!field) {
     return <div>Please specify a valid path or select a field.</div>;
