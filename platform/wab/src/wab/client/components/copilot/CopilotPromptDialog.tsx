@@ -23,11 +23,13 @@ import { useAsyncStrict } from "@/wab/client/hooks/useAsyncStrict";
 import ImageUploadsIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__ImageUploads";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { trackEvent } from "@/wab/client/tracking";
+import { TokenType } from "@/wab/commons/StyleToken";
 import {
   CopilotImage,
   CopilotImageType,
   copilotImageTypes,
   CopilotResponseData,
+  QueryCopilotUiResponse,
 } from "@/wab/shared/ApiSchema";
 import { asDataUrl, parseDataUrl } from "@/wab/shared/data-urls";
 import { DataSourceSchema } from "@plasmicapp/data-sources";
@@ -76,33 +78,52 @@ function CopilotPromptDialog_({
     }
 
     try {
-      const result = await studioCtx.appCtx.api
-        .queryCopilot({
-          ...(type === "sql"
-            ? {
-                type: "code-sql",
-                schema: ensure(dataSourceSchema, () => `Missing schema`),
-                currentCode: processCurrentCode(currentValue),
-                data: processData(data),
-              }
-            : {
-                type: "code",
-                context,
-                currentCode: processCurrentCode(currentValue),
-                data: processData(data),
-              }),
-          projectId: studioCtx.siteInfo.id,
-          goal: prompt,
-          ...(studioCtx.appCtx.appConfig.copilotClaude
-            ? { useClaude: true }
-            : {}),
-        })
-        .then((x) => {
-          const res: CopilotResponseData = JSON.parse(x.response);
-          return res;
-        });
+      let result: CopilotResponseData | QueryCopilotUiResponse;
 
-      const resultCode = result.data.choices[0]?.message?.content || undefined;
+      if (type === "sql" || type === "code") {
+        result = await studioCtx.appCtx.api
+          .queryCopilot({
+            ...(type === "sql"
+              ? {
+                  type: "code-sql",
+                  schema: ensure(dataSourceSchema, () => `Missing schema`),
+                  currentCode: processCurrentCode(currentValue),
+                  data: processData(data),
+                }
+              : {
+                  type: "code",
+                  context,
+                  currentCode: processCurrentCode(currentValue),
+                  data: processData(data),
+                }),
+            projectId: studioCtx.siteInfo.id,
+            goal: prompt,
+            ...(studioCtx.appCtx.appConfig.copilotClaude
+              ? { useClaude: true }
+              : {}),
+          })
+          .then((x) => {
+            const res: CopilotResponseData = JSON.parse(x.response);
+            return res;
+          });
+      } else {
+        result = await studioCtx.appCtx.api.queryUiCopilot({
+          type: "ui",
+          goal: prompt,
+          projectId: studioCtx.siteInfo.id,
+          images,
+          tokens: studioCtx.site.styleTokens.map((t) => ({
+            name: t.name,
+            uuid: t.uuid,
+            type: t.type as TokenType,
+            value: t.value,
+          })),
+        });
+      }
+
+      const resultCode = isCopilotChatCompletionResponse(result)
+        ? result.data.choices[0]?.message?.content || undefined
+        : JSON.stringify(result.data);
 
       if (resultCode) {
         studioCtx.addToCopilotHistory(historyType, {
@@ -133,8 +154,11 @@ function CopilotPromptDialog_({
   }, [submittedPrompt]);
 
   const newCode =
+    copilotResponse.value &&
     copilotResponse.value !== "CopilotRateLimitExceededError"
-      ? copilotResponse.value?.data?.choices[0].message?.content
+      ? isCopilotChatCompletionResponse(copilotResponse.value)
+        ? copilotResponse.value?.data?.choices[0].message?.content
+        : JSON.stringify(copilotResponse.value.data)
       : undefined;
 
   React.useEffect(() => {
@@ -474,6 +498,12 @@ function processData(data: Record<string, any>) {
     }
   }
   unexpected();
+}
+
+function isCopilotChatCompletionResponse(
+  result: QueryCopilotUiResponse | CopilotResponseData
+): result is CopilotResponseData {
+  return !!result.data && "choices" in result.data;
 }
 
 const CopilotPromptDialog = React.forwardRef(CopilotPromptDialog_);

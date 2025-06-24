@@ -10,6 +10,7 @@ import { setHiddenFromContentEditorCommand } from "@/wab/client/commands/compone
 import { setTrapFocusCommand } from "@/wab/client/commands/component/settings/setTrapFocus";
 import { renameCommand } from "@/wab/client/commands/element/rename";
 import { switchArenaCommand } from "@/wab/client/commands/navigation/switchArena";
+import { addTokenCommand } from "@/wab/client/commands/token/addToken";
 import { Command } from "@/wab/client/commands/types";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 
@@ -33,6 +34,9 @@ export const COMMANDS = {
   },
   element: {
     rename: renameCommand,
+  },
+  token: {
+    addToken: addTokenCommand,
   },
 };
 

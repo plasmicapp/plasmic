@@ -487,3 +487,10 @@ export function addOrUpsertTokens(site: Site, tokens: UpsertTokenReq[]) {
     }
   });
 }
+
+export function findTokenByNameOrUuid(searchStr: string, opts: { site: Site }) {
+  return opts.site.styleTokens.find(
+    (token) =>
+      toVarName(token.name) === toVarName(searchStr) || token.uuid === searchStr
+  );
+}

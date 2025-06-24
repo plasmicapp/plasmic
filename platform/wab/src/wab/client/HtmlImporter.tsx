@@ -21,7 +21,7 @@ export async function pasteFromHtmlImporter(
   }
 
   const { wiTree } = await studioCtx.app.withSpinner(
-    parseHtmlToWebImporterTree(htmlString)
+    parseHtmlToWebImporterTree(htmlString, studioCtx.site)
   );
 
   if (!wiTree) {

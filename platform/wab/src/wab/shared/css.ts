@@ -11,6 +11,7 @@ import {
   Background,
   BackgroundLayer,
   BoxShadows,
+  ColorFill,
   LinearGradient,
 } from "@/wab/shared/core/bg-styles";
 import {
@@ -590,6 +591,7 @@ export function parseCss(
     startRule:
       | (string & {})
       | "boxShadows"
+      | "backgroundColor"
       | "backgroundImage"
       | "background"
       | "linearGradient";
@@ -612,6 +614,8 @@ export function parseCss(
       BackgroundLayer.fromCss(value)?.image,
       "Expected BackgroundLayer image but got null"
     );
+  } else if (opts.startRule === "backgroundColor") {
+    return ensure(ColorFill.fromCss(value), "Expected ColorFill but got null");
   } else if (opts.startRule === "background") {
     return ensure(
       Background.fromCss(value),

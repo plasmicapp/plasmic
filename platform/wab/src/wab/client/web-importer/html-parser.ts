@@ -20,6 +20,7 @@ import {
   WIRule,
   WIStyles,
 } from "@/wab/client/web-importer/types";
+import { findTokenByNameOrUuid } from "@/wab/commons/StyleToken";
 import { ensure, ensureType, withoutNils } from "@/wab/shared/common";
 import {
   parseCss,
@@ -28,6 +29,7 @@ import {
   ShorthandProperty,
 } from "@/wab/shared/css";
 import { findAllAndMap } from "@/wab/shared/css/css-tree-utils";
+import { Site } from "@/wab/shared/model/classes";
 import {
   Atrule,
   CssNode,
@@ -234,7 +236,15 @@ function fixCSSValue(key: string, value: string) {
     return parseShorthandProperties(fixedKey as ShorthandProperty, valueNode);
   }
 
-  if (fixedKey === "background" || fixedKey === "backgroundColor") {
+  if (fixedKey === "backgroundColor") {
+    return {
+      background: parseCss(fixedValue, {
+        startRule: "backgroundColor",
+      }).showCss(),
+    };
+  }
+
+  if (fixedKey === "background") {
     return {
       background: parseCss(fixedValue, {
         startRule: "background",
@@ -270,7 +280,8 @@ function splitStylesBySafety(styles: Record<string, string>) {
 function getStylesForNode(
   node: Node,
   variables: Map<string, string>,
-  defaultStyles: CSSStyleDeclaration
+  defaultStyles: CSSStyleDeclaration,
+  site: Site
 ) {
   function resolveVariable(value: string) {
     if (isVariable(value)) {
@@ -340,6 +351,26 @@ function getStylesForNode(
       ) {
         delete baseStyles[key];
         continue;
+      }
+    }
+  }
+
+  // Ensure token value exists in the project.
+  for (const context of Object.keys(styles)) {
+    const contextStyles = styles[context];
+    for (const [key, value] of Object.entries(contextStyles)) {
+      if (isVariable(value)) {
+        contextStyles[key] = value.replace(
+          /var\(--token-([^)]+)\)/g,
+          (_match, tokenIdentifier) => {
+            const token = findTokenByNameOrUuid(tokenIdentifier, { site });
+            return token ? `var(--token-${token.uuid})` : "";
+          }
+        );
+
+        if (!contextStyles[key]) {
+          delete contextStyles[key];
+        }
       }
     }
   }
@@ -475,7 +506,8 @@ function isLikelyEmptyContainer(containerNode: WIContainer) {
 function getElementsWITree(
   node: Node,
   variables: Map<string, string>,
-  defaultStyles: CSSStyleDeclaration
+  defaultStyles: CSSStyleDeclaration,
+  site: Site
 ) {
   // Adapted from platform/wab/src/wab/client/WebImporter.tsx (convertImportableDomToTpl)
   function rec(
@@ -510,7 +542,7 @@ function getElementsWITree(
       return null;
     }
 
-    const allStyles = getStylesForNode(elt, variables, defaultStyles);
+    const allStyles = getStylesForNode(elt, variables, defaultStyles, site);
     const { nonTextStyles: styles, textStyles: newTextInheritanceStyles } =
       extractTextStyles(allStyles);
 
@@ -598,7 +630,10 @@ function getElementsWITree(
   return rec(node, {});
 }
 
-export async function parseHtmlToWebImporterTree(htmlString: string) {
+export async function parseHtmlToWebImporterTree(
+  htmlString: string,
+  site: Site
+) {
   const parser = new DOMParser();
   const document = parser.parseFromString(htmlString, "text/html");
 
@@ -742,7 +777,7 @@ export async function parseHtmlToWebImporterTree(htmlString: string) {
   const element = document.createElement("div");
   document.body.appendChild(element);
   const defaultStyles = window.getComputedStyle(element);
-  const wiTree = getElementsWITree(root, variables, defaultStyles);
+  const wiTree = getElementsWITree(root, variables, defaultStyles, site);
 
   return { wiTree, fontDefinitions, variables };
 }
