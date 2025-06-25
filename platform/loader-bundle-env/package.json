@@ -44,7 +44,7 @@
     "@plasmicpkgs/plasmic-sanity-io": "^1.0.201",
     "@plasmicpkgs/plasmic-strapi": "^0.1.173",
     "@plasmicpkgs/plasmic-tabs": "^0.0.63",
-    "@plasmicpkgs/plasmic-wordpress": "^0.0.143",
+    "@plasmicpkgs/plasmic-wordpress": "^0.0.144",
     "@plasmicpkgs/plasmic-wordpress-graphql": "^0.0.138",
     "@plasmicpkgs/radix-ui": "^0.0.80",
     "@plasmicpkgs/react-aria": "^0.0.146",
