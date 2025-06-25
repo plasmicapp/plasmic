@@ -1,0 +1,118 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  position: relative;
+  background: none;
+  min-width: 0;
+  border-radius: 4px;
+}
+.root:focus-within {
+  outline: none;
+}
+.inputArea {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  width: 100%;
+  background: var(--token-iCBCh1BQyu-W);
+  min-width: 0;
+  border-radius: 4px;
+  border: 1px solid var(--token-sBh7BFhgAybb);
+}
+.root:hover .inputArea {
+  background: var(--token-11LpBV8ry6Ok);
+}
+.root:focus-within .inputArea {
+  outline-width: thin;
+  outline-style: solid;
+  outline-color: var(--token-qP8a3gYPq7fd);
+}
+.textAreaInput:global(.__wab_instance):global(.__wab_instance) {
+  max-width: 100%;
+  width: 100%;
+  transform: none;
+  max-height: 100px;
+  min-width: 0;
+}
+.root:focus-within
+  .textAreaInput:global(.__wab_instance):global(.__wab_instance) {
+  outline: none;
+}
+.freeBox {
+  display: flex;
+  flex-direction: row;
+  position: relative;
+  align-items: center;
+  justify-content: flex-end;
+  width: 100%;
+  background: none;
+  min-width: 0;
+  padding: var(--token-YwPV7bN0RvD8);
+}
+.freeBoxshowImageUpload {
+  justify-content: space-between;
+}
+.imageUploadIcon:global(.__wab_instance) {
+  max-width: 100%;
+  flex-shrink: 0;
+  display: none;
+}
+.imageUploadIconshowImageUpload:global(.__wab_instance) {
+  flex-shrink: 0;
+  display: flex;
+}
+.svg__iSr6 {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  width: 32px;
+  height: 32px;
+}
+.svg__zanAj {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  height: 1em;
+}
+.runPromptBtn:global(.__wab_instance) {
+  max-width: 100%;
+  flex-shrink: 0;
+}
+.svg__qv73J {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  width: 32px;
+  height: 32px;
+  transform: rotateX(0deg) rotateY(0deg) rotateZ(90deg);
+  color: var(--token-qP8a3gYPq7fd);
+}
+.root:focus-within .svg__qv73J {
+  outline: none;
+}
+.svg__biujt {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  height: 1em;
+}
+.imageUploadContainer {
+  flex-direction: row;
+  position: relative;
+  align-items: stretch;
+  justify-content: flex-start;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  padding-top: var(--token-YwPV7bN0RvD8);
+  min-width: 0;
+  display: none;
+}
+.imageUploadContainershowImageUpload {
+  display: flex;
+}

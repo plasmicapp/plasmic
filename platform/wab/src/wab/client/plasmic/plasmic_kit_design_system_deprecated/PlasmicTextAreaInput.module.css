@@ -35,6 +35,13 @@
 .ariaTextAreatype_plain[data-hovered]:global(.__wab_instance) {
   background: var(--token-iCBCh1BQyu-W);
 }
+.ariaTextAreatype_minimal:global(.__wab_instance) {
+  box-shadow: none;
+  background: none;
+}
+.ariaTextAreatype_minimal[data-focused]:global(.__wab_instance) {
+  outline-style: none;
+}
 .ariaTextAreaflat_top:global(.__wab_instance) {
   border-top-left-radius: 0rem;
   border-top-right-radius: 0rem;

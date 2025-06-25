@@ -18,9 +18,9 @@ import { FocusScope } from "react-aria";
 import { CopilotPromptImage } from "@/wab/client/components/copilot/CopilotPromptImage";
 import { dataPickerShouldHideKey } from "@/wab/client/components/sidebar-tabs/DataBinding/DataPickerUtil";
 import { ImageUploader } from "@/wab/client/components/style-controls/ImageSelector";
-import { TextboxRef } from "@/wab/client/components/widgets/Textbox";
 import { useAsyncStrict } from "@/wab/client/hooks/useAsyncStrict";
 import ImageUploadsIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__ImageUploads";
+import { isSubmitKeyCombo } from "@/wab/client/shortcuts/shortcut";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { trackEvent } from "@/wab/client/tracking";
 import { TokenType } from "@/wab/commons/StyleToken";
@@ -47,6 +47,8 @@ export interface CopilotPromptDialogProps
   dataSourceSchema?: DataSourceSchema;
   dialogOpen: boolean;
   onDialogOpenChange: (open: boolean) => void;
+  showImageUpload?: boolean;
+  maxLength?: number;
 }
 
 function CopilotPromptDialog_({
@@ -60,16 +62,24 @@ function CopilotPromptDialog_({
   dialogOpen,
   onDialogOpenChange,
   showImageUpload,
+  maxLength,
 }: CopilotPromptDialogProps) {
   const [prompt, setPrompt] = React.useState("");
   const [submittedPrompt, setSubmittedPrompt] = React.useState("");
   const [showHistory, setShowHistory] = React.useState(false);
   const [images, setImages] = React.useState<CopilotImage[]>([]);
-  const promptInputRef: React.Ref<TextboxRef> = React.useRef<TextboxRef>(null);
+  const promptInputRef: React.Ref<HTMLTextAreaElement> =
+    React.useRef<HTMLTextAreaElement>(null);
   const applyBtnRef: React.Ref<HTMLDivElement> =
     React.useRef<HTMLDivElement>(null);
   const studioCtx = useStudioCtx();
   const historyType = type === "sql" ? "sql" : "custom-code";
+
+  React.useEffect(() => {
+    if (dialogOpen && promptInputRef.current) {
+      promptInputRef.current.focus();
+    }
+  }, [dialogOpen, promptInputRef.current]);
 
   const copilotResponse = useAsyncStrict(async () => {
     if (!submittedPrompt) {
@@ -170,101 +180,98 @@ function CopilotPromptDialog_({
   }, [newCode]);
 
   const suggestionHistory = studioCtx.getCopilotHistory(historyType);
+  const isValidPrompt =
+    prompt && prompt.trim() !== submittedPrompt && !copilotResponse.loading;
 
   return (
     <PlasmicCopilotPromptDialog
       className={className}
       type={type}
-      showImageUpload={showImageUpload}
-      imageUploadIcon={{
-        render: () => {
-          return (
-            <ImageUploader
-              onUploaded={async (image, _file) => {
-                const dataUrl = parseDataUrl(image.url);
-                setImages((prev) => [
-                  ...prev,
-                  {
-                    type: dataUrl.mediaType.split("/")[1] as CopilotImageType,
-                    base64: dataUrl.data,
-                  },
-                ]);
-              }}
-              accept={copilotImageTypes.map((t) => `.${t}`).join(",")}
-              isDisabled={false}
-            >
-              <div className="flex dimfg p-sm">
-                <ImageUploadsIcon />
-              </div>
-            </ImageUploader>
-          );
-        },
-      }}
-      imageUploadContainer={{
-        wrapChildren: () => {
-          return images.map((image) => (
-            <CopilotPromptImage
-              img={{
-                src: asDataUrl(image.base64, `image/${image.type}`, "base64"),
-              }}
-              closeIconContainer={{
-                onClick: () => {
-                  setImages((prev) =>
-                    prev.filter((img) => img.base64 !== image.base64)
-                  );
-                },
-              }}
-            />
-          ));
-        },
-      }}
       promptContainer={{
         style: {
           zIndex: 1,
         },
       }}
       promptInput={{
-        value: prompt,
-        ref: promptInputRef,
-        onChange: (e) => setPrompt(e.target.value),
-        onKeyDown: (e) => {
-          if (
-            e.key === "Enter" &&
-            prompt.trim() !== submittedPrompt &&
-            !copilotResponse.loading
-          ) {
-            setSubmittedPrompt(prompt.trim());
-            promptInputRef.current?.blur();
-            applyBtnRef.current?.focus();
-          }
+        imageUploadIcon: {
+          render: () =>
+            showImageUpload ? (
+              <ImageUploader
+                onUploaded={async (image, _file) => {
+                  const dataUrl = parseDataUrl(image.url);
+                  setImages((prev) => [
+                    ...prev,
+                    {
+                      type: dataUrl.mediaType.split("/")[1] as CopilotImageType,
+                      base64: dataUrl.data,
+                    },
+                  ]);
+                }}
+                accept={copilotImageTypes.map((t) => `.${t}`).join(",")}
+                isDisabled={false}
+              >
+                <div className="flex dimfg p-sm">
+                  <ImageUploadsIcon />
+                </div>
+              </ImageUploader>
+            ) : null,
         },
-        autoFocus: true,
-        maxLength: 500,
+        imageUploadContainer: {
+          wrapChildren: () => {
+            return images.map((image) => (
+              <CopilotPromptImage
+                img={{
+                  src: asDataUrl(image.base64, `image/${image.type}`, "base64"),
+                }}
+                closeIconContainer={{
+                  onClick: () => {
+                    setImages((prev) =>
+                      prev.filter((img) => img.base64 !== image.base64)
+                    );
+                  },
+                }}
+              />
+            ));
+          },
+        },
+        runPromptBtn: {
+          props: {
+            onClick: () => setSubmittedPrompt(prompt.trim()),
+            disabled: !isValidPrompt,
+          },
+          wrap: (elt) => (
+            <Tooltip title={"Run Copilot"} mouseEnterDelay={0.5}>
+              {elt}
+            </Tooltip>
+          ),
+        },
+        showImageUpload,
+        textAreaInput: {
+          value: prompt,
+          inputRef: promptInputRef,
+          maxLength,
+          rows: 1,
+          autoFocus: true,
+          onChange: (value) => setPrompt(value),
+          onKeyDown: (e) => {
+            if (isValidPrompt && isSubmitKeyCombo(e)) {
+              e.preventDefault();
+              setSubmittedPrompt(prompt.trim());
+              promptInputRef.current?.blur();
+              applyBtnRef.current?.focus();
+            }
+          },
+        },
       }}
       history={{
         style: {
           fontSize: 16,
         },
       }}
-      runPromptBtn={{
-        props: {
-          onClick: () => setSubmittedPrompt(prompt.trim()),
-          ...(prompt &&
-          prompt.trim() !== submittedPrompt &&
-          !copilotResponse.loading
-            ? {}
-            : { disabled: true }),
-        },
-        wrap: (elt) => (
-          <Tooltip title={"Run Copilot"} mouseEnterDelay={0.5}>
-            {elt}
-          </Tooltip>
-        ),
-      }}
       popoverPlaceholder={{
         render: ({ children }) => (
           <Popover
-            defaultOpen
+            open={dialogOpen}
             showArrow={false}
             placement={type === "ui" ? "top" : "leftTop"}
             onOpenChange={(visible) => {

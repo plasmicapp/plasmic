@@ -30,9 +30,6 @@
 .popoverPlaceholdertype_ui {
   display: flex;
 }
-.popoverPlaceholdershowImageUpload {
-  display: flex;
-}
 .sizerContainer {
   display: flex;
   position: relative;
@@ -40,8 +37,8 @@
   align-items: center;
   justify-content: flex-start;
   width: auto;
-  height: 300px;
   max-width: 100%;
+  height: 300px;
   flex-shrink: 0;
 }
 .sizerContainerstate_ready {
@@ -150,7 +147,7 @@
 .svgstate_historyEmpty__yiwDtWeNsL {
   color: #1b1b18;
 }
-.svg__nlzH4 {
+.svg__xGQgh {
   display: flex;
   position: relative;
   object-fit: cover;
@@ -167,7 +164,7 @@
   width: 24px;
   height: 24px;
 }
-.svg__lsxvP {
+.svg___2WBl4 {
   display: flex;
   position: relative;
   object-fit: cover;
@@ -357,88 +354,6 @@
 }
 .promptInput:global(.__wab_instance) {
   max-width: 100%;
-  width: 100%;
-  min-width: 0;
-}
-.svg__otsrG {
-  display: flex;
-  position: relative;
-  object-fit: cover;
-  width: 1.25rem;
-  height: 1.25rem;
-}
-.imageUploadIcon {
-  display: flex;
-  position: relative;
-  object-fit: cover;
-  width: 1.25rem;
-  height: 1.25rem;
-}
-.runPromptBtn:global(.__wab_instance) {
-  max-width: 100%;
-  position: relative;
-  flex-shrink: 0;
-}
-.runPromptBtnstate_ready:global(.__wab_instance) {
-  flex-shrink: 0;
-}
-.svg___0Fj0S {
-  position: relative;
-  object-fit: cover;
-  max-width: 100%;
-  width: 32px;
-  height: 32px;
-  transform: rotateX(0deg) rotateY(0deg) rotateZ(90deg);
-  color: #0091ff;
-}
-.svg__wwBvo {
-  display: flex;
-  position: relative;
-  object-fit: cover;
-  height: 1em;
-}
-.imageUploadContainer {
-  flex-direction: row;
-  position: relative;
-  width: 100%;
-  height: auto;
-  max-width: 100%;
-  min-width: 0;
-  display: none;
-}
-.imageUploadContainer > :global(.__wab_flex-container) {
-  flex-direction: row;
-  align-items: stretch;
-  justify-content: flex-start;
-  min-width: 0;
-}
-.imageUploadContainershowImageUpload {
-  display: flex;
-}
-.imageUploadContainershowImageUpload > :global(.__wab_flex-container) {
-  justify-content: flex-start;
-  align-items: center;
-  margin-left: calc(0px - 8px);
-  width: calc(100% + 8px);
-  margin-top: calc(0px - 0px);
-  height: calc(100% + 0px);
-}
-.imageUploadContainershowImageUpload > :global(.__wab_flex-container) > *,
-.imageUploadContainershowImageUpload
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > *,
-.imageUploadContainershowImageUpload
-  > :global(.__wab_flex-container)
-  > picture
-  > img,
-.imageUploadContainershowImageUpload
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  margin-left: 8px;
-  margin-top: 0px;
 }
 .svg__qXcOj {
   object-fit: cover;

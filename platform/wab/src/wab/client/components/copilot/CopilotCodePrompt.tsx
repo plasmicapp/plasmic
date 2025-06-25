@@ -51,6 +51,7 @@ export const CopilotCodePrompt = observer(function CopilotCodePrompt({
               context={context}
               dataSourceSchema={dataSourceSchema}
               type={type}
+              maxLength={500}
             />
           </>
         ),

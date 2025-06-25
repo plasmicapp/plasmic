@@ -8,6 +8,7 @@ import {
   DefaultCommentPostFormProps,
   PlasmicCommentPostForm,
 } from "@/wab/client/plasmic/plasmic_kit_comments/PlasmicCommentPostForm";
+import { isSubmitKeyCombo } from "@/wab/client/shortcuts/shortcut";
 import { StandardMarkdown } from "@/wab/client/utils/StandardMarkdown";
 import { spawn } from "@/wab/shared/common";
 import { observer } from "mobx-react";
@@ -58,11 +59,7 @@ const CommentPostForm = observer(function CommentPostForm(
   }
 
   const onKeyHandler = (e: React.KeyboardEvent<HTMLInputElement>): void => {
-    const { key, ctrlKey, metaKey } = e;
-
-    const isSubmitCombo = (ctrlKey || metaKey) && key === "Enter";
-
-    if (isSubmitCombo) {
+    if (isSubmitKeyCombo(e)) {
       e.preventDefault();
       if (isValidComment()) {
         spawn(handleSubmit());

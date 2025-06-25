@@ -9380,6 +9380,20 @@
           "cssFilePath": "wab/client/plasmic/plasmic_kit_data_binding/PlasmicCopilotPromptImage.module.css",
           "scheme": "blackbox",
           "componentType": "component"
+        },
+        {
+          "id": "pnV7KLVDUyoz",
+          "name": "CopilotPromptInput",
+          "type": "managed",
+          "projectId": "w2GXN278dkQ2gQTVQnPehW",
+          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_data_binding/PlasmicCopilotPromptInput.tsx",
+          "importSpec": {
+            "modulePath": "wab/client/components/copilot/CopilotPromptInput.tsx",
+            "exportName": "CopilotPromptInput"
+          },
+          "cssFilePath": "wab/client/plasmic/plasmic_kit_data_binding/PlasmicCopilotPromptInput.module.css",
+          "scheme": "blackbox",
+          "componentType": "component"
         }
       ],
       "icons": [
@@ -9438,8 +9452,7 @@
         }
       ],
       "customFunctions": [],
-      "splitsProviderFilePath": "",
-      "jsBundleThemes": []
+      "splitsProviderFilePath": ""
     },
     {
       "projectId": "28Ba3BDvRe7EiWdfFNnLB6",
@@ -10532,7 +10545,8 @@
         }
       ],
       "splitsProviderFilePath": "",
-      "customFunctions": []
+      "customFunctions": [],
+      "jsBundleThemes": []
     },
     {
       "projectId": "frhoorZk3bxNXU73uUyvHm",

@@ -1,5 +1,6 @@
 import { PLATFORM } from "@/wab/client/platform";
 import { ensureArray } from "@/wab/shared/common";
+import isHotkey from "is-hotkey";
 
 export interface Shortcut<Action extends string = string> {
   /** String identifier for this shortcut. */
@@ -117,4 +118,8 @@ function maybeTransformCombos<Action extends string>(
   } else {
     return shortcuts;
   }
+}
+
+export function isSubmitKeyCombo(e: React.KeyboardEvent): boolean {
+  return isHotkey("mod+enter")(e.nativeEvent);
 }
