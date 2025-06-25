@@ -90,7 +90,20 @@ function CopilotPromptDialog_({
     try {
       let result: CopilotResponseData | QueryCopilotUiResponse;
 
-      if (type === "sql" || type === "code") {
+      if (type === "ui") {
+        result = await studioCtx.appCtx.api.queryUiCopilot({
+          type: "ui",
+          goal: prompt,
+          projectId: studioCtx.siteInfo.id,
+          images,
+          tokens: studioCtx.site.styleTokens.map((t) => ({
+            name: t.name,
+            uuid: t.uuid,
+            type: t.type as TokenType,
+            value: t.value,
+          })),
+        });
+      } else {
         result = await studioCtx.appCtx.api
           .queryCopilot({
             ...(type === "sql"
@@ -116,19 +129,6 @@ function CopilotPromptDialog_({
             const res: CopilotResponseData = JSON.parse(x.response);
             return res;
           });
-      } else {
-        result = await studioCtx.appCtx.api.queryUiCopilot({
-          type: "ui",
-          goal: prompt,
-          projectId: studioCtx.siteInfo.id,
-          images,
-          tokens: studioCtx.site.styleTokens.map((t) => ({
-            name: t.name,
-            uuid: t.uuid,
-            type: t.type as TokenType,
-            value: t.value,
-          })),
-        });
       }
 
       const resultCode = isCopilotChatCompletionResponse(result)
