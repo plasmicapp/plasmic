@@ -31,11 +31,13 @@ async function run() {
         typescript,
       });
       if (scheme === "codegen") {
-        allArgSets.push({
-          platform: "tanstack",
-          scheme,
-          typescript,
-        });
+        if (typescript) {
+          allArgSets.push({
+            platform: "tanstack",
+            scheme,
+            typescript,
+          });
+        }
 
         allArgSets.push({
           platform: "react",

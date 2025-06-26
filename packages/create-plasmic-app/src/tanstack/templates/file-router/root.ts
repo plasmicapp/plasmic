@@ -1,6 +1,4 @@
-import { JsOrTs } from "../../../utils/types";
-
-export function makeCustomRoot_file_router_codegen(_jsOrTs: JsOrTs): string {
+export function makeCustomRoot_file_router_codegen(): string {
   return `import { createRootRoute, HeadContent, Outlet, Scripts } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
 import { PlasmicRootProvider } from "@plasmicapp/react-web"

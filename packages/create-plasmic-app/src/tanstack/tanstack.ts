@@ -43,17 +43,26 @@ export const tanstackStrategy: CPAStrategy = {
     }
   },
   overwriteConfig: async (args) => {
-    const { projectPath, jsOrTs } = args;
+    const { projectPath } = args;
 
     /* We need to provide @plasmicapp/* packages in noExternal ssr packages for
      * them to work properly during ssr phase.
      */
-    if (jsOrTs === "ts") {
-      await fs.writeFile(
-        path.join(projectPath, "vite.config.ts"),
-        makeCustomViteConfig_file_router_codegen()
-      );
-    }
+    await fs.writeFile(
+      path.join(projectPath, "vite.config.ts"),
+      makeCustomViteConfig_file_router_codegen()
+    );
+
+    // Disable verbatimModuleSyntax in tsconfig.json
+    const tsconfigPath = path.join(projectPath, "tsconfig.json");
+    const tsconfigContent = await fs.readFile(tsconfigPath, "utf8");
+    await fs.writeFile(
+      tsconfigPath,
+      tsconfigContent.replace(
+        `"verbatimModuleSyntax": true`,
+        `"verbatimModuleSyntax": false`
+      )
+    );
   },
   generateFiles: (args) => {
     return generateFilesFileRouterTemplate(args);
@@ -65,7 +74,7 @@ export const tanstackStrategy: CPAStrategy = {
 };
 
 async function generateFilesFileRouterTemplate(args: GenerateFilesArgs) {
-  const { projectPath, scheme, jsOrTs, projectId, projectApiToken } = args;
+  const { projectPath, scheme, projectId, projectApiToken } = args;
 
   // Delete existing pages
   deleteGlob(path.join(projectPath, "src/routes", "*.*"));
@@ -77,13 +86,13 @@ async function generateFilesFileRouterTemplate(args: GenerateFilesArgs) {
   } else {
     // ./src/routes/__root.tsx
     await fs.writeFile(
-      path.join(projectPath, "src/routes", `__root.${jsOrTs}x`),
-      makeCustomRoot_file_router_codegen(jsOrTs)
+      path.join(projectPath, "src/routes", "__root.tsx"),
+      makeCustomRoot_file_router_codegen()
     );
 
     // ./src/routes/plasmic-host.tsx
     await fs.writeFile(
-      path.join(projectPath, "src/routes", `plasmic-host.${jsOrTs}x`),
+      path.join(projectPath, "src/routes", "plasmic-host.tsx"),
       makePlasmicHostPage_fileRouter_codegen()
     );
 
