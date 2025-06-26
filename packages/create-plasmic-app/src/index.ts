@@ -176,22 +176,24 @@ async function run(): Promise<void> {
   const jsOrTs: JsOrTs =
     platform === "tanstack"
       ? "ts"
-      : await maybePrompt({
+      : (await maybePrompt({
           name: "typescript",
           message: "What language do you want to use?",
           type: "list",
           choices: () => [
             {
               name: "TypeScript",
-              value: "ts",
+              value: true,
             },
             {
               name: "JavaScript",
-              value: "js",
+              value: false,
             },
           ],
-          default: "ts",
-        });
+          default: true,
+        }))
+      ? "ts"
+      : "js";
 
   // Scheme to use for Plasmic integration
   // - loader only available for gatsby/next.js
