@@ -59,24 +59,20 @@ export const reactStrategy: CPAStrategy = {
     const { projectPath, jsOrTs } = args;
 
     if (jsOrTs === "ts") {
-      const tsConfigJsonPath = path.join(projectPath, "tsconfig.app.json");
-      let tsConfigJson = await fs.readFile(tsConfigJsonPath, "utf8");
+      const tsconfigPath = path.join(projectPath, "tsconfig.app.json");
+      let tsconfigContent = await fs.readFile(tsconfigPath, "utf8");
+      tsconfigContent = tsconfigContent
+        // Disable verbatimModuleSyntax
+        .replace(
+          `"verbatimModuleSyntax": true`,
+          `"verbatimModuleSyntax": false`
+        )
+        /* In our codegen, we have components where React is imported but not used, we need to
+            turn off the `noUnusedLocals` rule to ensure the project builds successfully.
+           */
+        .replace(`"noUnusedLocals": true`, `"noUnusedLocals": false`);
 
-      /* tsconfig.app.json has comments such as /* Bundler mode */ /* Linting */
-      /* We need to remove them before parsing the json */
-      tsConfigJson = tsConfigJson.replace(/\/\*[\s\S]*?\*\//g, "");
-      tsConfigJson = tsConfigJson.replace(/\/\/.*$/gm, "");
-
-      const tsConfig = JSON.parse(tsConfigJson);
-      /* In our codegen, we have components where React is imported but not used, we need to
-        turn off the `noUnusedLocals` rule to ensure the project builds successfully.
-       */
-      tsConfig.compilerOptions = {
-        ...tsConfig.compilerOptions,
-        noUnusedLocals: false,
-      };
-
-      await fs.writeFile(tsConfigJsonPath, JSON.stringify(tsConfig, null, 2));
+      await fs.writeFile(tsconfigPath, tsconfigContent);
     }
   },
   generateFiles: async ({
