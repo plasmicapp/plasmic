@@ -1955,4 +1955,22 @@ describe("sendCommentsNotificationEmails", () => {
       }
     );
   });
+  it("should not send notifications if there is no activity", async () => {
+    await withEndUserNotificationSetup(
+      async ({ sudo, users, project, userDbs }) => {
+        await userDbs[2]().updateNotificationSettings(users[2].id, project.id, {
+          notifyAbout: "all",
+        });
+
+        const { notificationsByUser, recentCommentThreads } =
+          await processUnnotifiedCommentsNotifications(sudo);
+
+        // Check if the notificationsByUser structure is correct
+        expect(notificationsByUser).toEqual(new Map());
+
+        // Check if the processed threads match the recentThreads
+        expect(recentCommentThreads).toEqual([]);
+      }
+    );
+  });
 });
