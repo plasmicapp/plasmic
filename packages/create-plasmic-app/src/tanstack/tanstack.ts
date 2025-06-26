@@ -4,7 +4,7 @@ import { spawnOrFail } from "../utils/cmd-utils";
 import { installCodegenDeps, runCodegenSync } from "../utils/codegen";
 import { deleteGlob } from "../utils/file-utils";
 import { CPAStrategy, GenerateFilesArgs } from "../utils/strategy";
-import { makeCustomAppConfig_file_router_codegen } from "./templates/file-router/config";
+import { makeCustomViteConfig_file_router_codegen } from "./templates/file-router/config";
 import { makePlasmicHostPage_fileRouter_codegen } from "./templates/file-router/plasmic-host";
 import { makeCustomRoot_file_router_codegen } from "./templates/file-router/root";
 
@@ -50,8 +50,8 @@ export const tanstackStrategy: CPAStrategy = {
      */
     if (jsOrTs === "ts") {
       await fs.writeFile(
-        path.join(projectPath, "app.config.ts"),
-        makeCustomAppConfig_file_router_codegen()
+        path.join(projectPath, "vite.config.ts"),
+        makeCustomViteConfig_file_router_codegen()
       );
     }
   },

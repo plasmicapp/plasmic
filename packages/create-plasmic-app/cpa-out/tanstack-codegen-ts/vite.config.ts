@@ -1,5 +1,4 @@
-export function makeCustomViteConfig_file_router_codegen(): string {
-  return `import { defineConfig } from 'vite'
+import { defineConfig } from 'vite'
 import { tanstackStart } from '@tanstack/react-start/plugin/vite'
 import viteTsConfigPaths from 'vite-tsconfig-paths'
 import tailwindcss from '@tailwindcss/vite'
@@ -25,5 +24,3 @@ const config = defineConfig({
 })
 
 export default config
-`;
-}

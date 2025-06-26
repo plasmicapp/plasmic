@@ -13,3 +13,7 @@
 !**/*.jsx
 !**/*.ts
 !**/*.tsx
+
+# for tanstack start
+.tanstack/
+.nitro/
