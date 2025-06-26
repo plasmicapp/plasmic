@@ -5,44 +5,25 @@ import {
 } from "@/wab/client/web-importer/html-parser";
 import { WIElement } from "@/wab/client/web-importer/types";
 import { TokenType } from "@/wab/commons/StyleToken";
+import { toVarName } from "@/wab/shared/codegen/util";
 import { assert } from "@/wab/shared/common";
 import { createSite } from "@/wab/shared/core/sites";
 import { TplMgr } from "@/wab/shared/TplMgr";
 
-const { fixCSSValue } = _testOnlyUtils;
+const { fixCSSValue, renameTokenVarNameToUuid } = _testOnlyUtils;
 
 describe("parseHtmlToWebImporterTree", () => {
   const site = createSite();
-  const tplMgr = new TplMgr({ site });
-  const colorPrimaryToken = tplMgr.addToken({
-    tokenType: TokenType.Color,
-    name: "Brand/Brand",
-    value: "#3594F0",
-  });
-  const colorPrimaryForegroundToken = tplMgr.addToken({
-    tokenType: TokenType.Color,
-    name: "Neutral/Neutral",
-    value: "#374151",
-  });
-  const fontSizeMdToken = tplMgr.addToken({
-    tokenType: TokenType.FontSize,
-    name: "Font-MD",
-    value: "1rem",
-  });
 
   it("parses a simple span with text", async () => {
     const html = "<span>plasmic</span>";
-    const {
-      wiTree: rootEl,
-      fontDefinitions,
-      variables,
-    } = await parseHtmlToWebImporterTree(html, site);
+    const { wiTree: rootEl, fontDefinitions } =
+      await parseHtmlToWebImporterTree(html, site);
 
     assert(rootEl, "rootEl should not be null");
 
     // no @font-face definitions or CSS variables
     expect(fontDefinitions).toEqual([]);
-    expect(variables.size).toBe(0);
 
     // root is a container whose first child is the span we provided
     expect(rootEl).toMatchObject<Partial<WIElement>>({
@@ -197,70 +178,61 @@ describe("parseHtmlToWebImporterTree", () => {
       styles: {},
     });
   });
+});
 
-  // Disabling the test case for now as JSDom environment doesn't parse the custom properties properly and set values to empty instead.
-  xit("extracts token values properly", async () => {
-    const html = `<div style="background-color: var(--token-${colorPrimaryToken.name});">
-      <h1 style="font-size: var(--token-${fontSizeMdToken.name}); color: var(--token-${colorPrimaryForegroundToken.uuid});">
-        Heading 1
-      </h1>
-    </div>`;
+describe("renameTokenVarNameToUuid", () => {
+  const site = createSite();
+  const tplMgr = new TplMgr({ site });
+  const colorPrimaryToken = tplMgr.addToken({
+    tokenType: TokenType.Color,
+    name: "Brand/Brand",
+    value: "#3594F0",
+  });
+  const colorPrimaryForegroundToken = tplMgr.addToken({
+    tokenType: TokenType.Color,
+    name: "Neutral/Neutral",
+    value: "#374151",
+  });
 
-    const { wiTree: rootEl } = await parseHtmlToWebImporterTree(html, site);
+  it("Rename token variable name to token uuid ", async () => {
+    // "returns empty string for invalid token"
+    expect(
+      renameTokenVarNameToUuid("var(--token-unknown-token)", site)
+    ).toBeNull();
 
-    assert(rootEl, "rootEl should not be null");
+    // "transform a valid token name to token uuid"
+    expect(
+      renameTokenVarNameToUuid(
+        `var(--token-${toVarName(colorPrimaryToken.name)})`,
+        site
+      )
+    ).toEqual(`var(--token-${colorPrimaryToken.uuid})`);
 
-    expect(rootEl).toMatchObject<WIElement>({
-      type: "container",
-      tag: "div",
-      attrs: {},
-      children: [
-        {
-          type: "container",
-          tag: "div",
-          attrs: {
-            style: `background-color: var(--token-${colorPrimaryToken.name});`,
-          },
-          children: [
-            {
-              type: "text",
-              tag: "h1",
-              text: "Heading 1",
-              unsanitizedStyles: {
-                base: {
-                  color: `var(--token-${colorPrimaryForegroundToken.uuid})`,
-                  "font-size": `var(--token-${fontSizeMdToken.uuid}`,
-                },
-              },
-              styles: {
-                base: {
-                  safe: {
-                    color: `var(--token-${colorPrimaryForegroundToken.uuid})`,
-                    fontSize: `var(--token-${fontSizeMdToken.uuid}`,
-                  },
-                  unsafe: {},
-                },
-              },
-            },
-          ],
-          unsanitizedStyles: {
-            base: {
-              "background-color": `var(--token-${colorPrimaryToken.uuid})`,
-            },
-          },
-          styles: {
-            base: {
-              safe: {
-                background: `linear-gradient(var(--token-${colorPrimaryToken.uuid}), var(--token-${colorPrimaryToken.uuid}))`,
-              },
-              unsafe: {},
-            },
-          },
-        },
-      ],
-      unsanitizedStyles: {},
-      styles: {},
-    });
+    // "transform multiple valid token names properly"
+    expect(
+      renameTokenVarNameToUuid(
+        `linear-gradient(var(--token-${toVarName(
+          colorPrimaryToken.name
+        )}), var(--token-${toVarName(colorPrimaryForegroundToken.name)}))`,
+        site
+      )
+    ).toEqual(
+      `linear-gradient(var(--token-${colorPrimaryToken.uuid}), var(--token-${colorPrimaryForegroundToken.uuid}))`
+    );
+
+    // "return empty string if one of the tokens is invalid"
+    expect(
+      renameTokenVarNameToUuid(
+        `linear-gradient(var(--token-unknown-token), var(--token-${toVarName(
+          colorPrimaryForegroundToken.name
+        )}))`,
+        site
+      )
+    ).toBeNull();
+
+    expect(
+      renameTokenVarNameToUuid(`1px var(--token-border-color) solid`, site)
+    ).toBeNull();
   });
 });
 

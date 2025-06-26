@@ -164,10 +164,6 @@ function computeStylesFromWIRules(rules: WIRule[]) {
   return styles;
 }
 
-function isVariable(value: string) {
-  return value.startsWith("var(");
-}
-
 function fixCSSValue(key: string, value: string) {
   if (!value) {
     return {};
@@ -277,29 +273,29 @@ function splitStylesBySafety(styles: Record<string, string>) {
   };
 }
 
+function renameTokenVarNameToUuid(value: string, site: Site) {
+  let unmatchedTokenFound = false;
+  const fixedValue = value.replaceAll(
+    /var\(--token-([^)]+)\)/g,
+    (_match, tokenIdentifier) => {
+      const token = findTokenByNameOrUuid(tokenIdentifier, { site });
+      if (token) {
+        return `var(--token-${token.uuid})`;
+      }
+
+      unmatchedTokenFound = true;
+      return "";
+    }
+  );
+
+  return unmatchedTokenFound ? null : fixedValue;
+}
+
 function getStylesForNode(
   node: Node,
-  variables: Map<string, string>,
   defaultStyles: CSSStyleDeclaration,
   site: Site
 ) {
-  function resolveVariable(value: string) {
-    if (isVariable(value)) {
-      const varName = value.slice(4, -1).trim();
-      const varValue = variables.get(varName);
-      if (!varValue) {
-        return undefined;
-      }
-
-      if (!isVariable(varValue)) {
-        return varValue;
-      } else {
-        return resolveVariable(varValue);
-      }
-    }
-    return value;
-  }
-
   const wiID = ensure(getInternalId(node), "Expected node to have wiID");
 
   const rules = ensureType<Record<string, WIRule[]>>((node as any).__wi_rules);
@@ -356,21 +352,13 @@ function getStylesForNode(
   }
 
   // Ensure token value exists in the project.
-  for (const context of Object.keys(styles)) {
-    const contextStyles = styles[context];
+  for (const [_contextKey, contextStyles] of Object.entries(styles)) {
     for (const [key, value] of Object.entries(contextStyles)) {
-      if (isVariable(value)) {
-        contextStyles[key] = value.replace(
-          /var\(--token-([^)]+)\)/g,
-          (_match, tokenIdentifier) => {
-            const token = findTokenByNameOrUuid(tokenIdentifier, { site });
-            return token ? `var(--token-${token.uuid})` : "";
-          }
-        );
-
-        if (!contextStyles[key]) {
-          delete contextStyles[key];
-        }
+      const fixedValue = renameTokenVarNameToUuid(value, site);
+      if (fixedValue === null) {
+        delete contextStyles[key];
+      } else {
+        contextStyles[key] = fixedValue;
       }
     }
   }
@@ -505,7 +493,6 @@ function isLikelyEmptyContainer(containerNode: WIContainer) {
 
 function getElementsWITree(
   node: Node,
-  variables: Map<string, string>,
   defaultStyles: CSSStyleDeclaration,
   site: Site
 ) {
@@ -542,7 +529,7 @@ function getElementsWITree(
       return null;
     }
 
-    const allStyles = getStylesForNode(elt, variables, defaultStyles, site);
+    const allStyles = getStylesForNode(elt, defaultStyles, site);
     const { nonTextStyles: styles, textStyles: newTextInheritanceStyles } =
       extractTextStyles(allStyles);
 
@@ -690,7 +677,6 @@ export async function parseHtmlToWebImporterTree(
     }
   }
 
-  const variables = new Map<string, string>();
   const fontDefinitions: string[] = [];
 
   function extractSelectorsFromPrelude(prelude: CssNode) {
@@ -777,9 +763,9 @@ export async function parseHtmlToWebImporterTree(
   const element = document.createElement("div");
   document.body.appendChild(element);
   const defaultStyles = window.getComputedStyle(element);
-  const wiTree = getElementsWITree(root, variables, defaultStyles, site);
+  const wiTree = getElementsWITree(root, defaultStyles, site);
 
-  return { wiTree, fontDefinitions, variables };
+  return { wiTree, fontDefinitions };
 }
 
-export const _testOnlyUtils = { fixCSSValue };
+export const _testOnlyUtils = { fixCSSValue, renameTokenVarNameToUuid };
