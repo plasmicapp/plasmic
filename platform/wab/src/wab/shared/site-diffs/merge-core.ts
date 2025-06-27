@@ -2065,16 +2065,16 @@ export function tryMerge(
     },
     // We skip observing the tplTree field of components, since we will only want to observe the ones that were updated.
     // This is the same setup used in the studio.
-    skipInitialObserveFields: [meta.getFieldByName("Component", "tplTree")],
-    incremental: true,
+    // skipInitialObserveFields: [meta.getFieldByName("Component", "tplTree")],
+    // incremental: true,
   });
 
   // Observe the components that were updated, since we need to track them for tree operations.
-  recorder.ensureObservedComponents(
-    mergedSite.components.filter((component) =>
-      updatedComponentsUuids.has(component.uuid)
-    )
-  );
+  // recorder.ensureObservedComponents(
+  //   mergedSite.components.filter((component) =>
+  //     updatedComponentsUuids.has(component.uuid)
+  //   )
+  // );
 
   const { autoReconciliations } = runMergeFnAndApplyFixes(
     ancestor,
