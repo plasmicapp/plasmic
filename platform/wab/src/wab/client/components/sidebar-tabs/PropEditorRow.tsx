@@ -159,16 +159,16 @@ import {
 import { hashExpr } from "@/wab/shared/site-diffs";
 import { getTplComponentArg, unsetTplComponentArg } from "@/wab/shared/TplMgr";
 import { $$$ } from "@/wab/shared/TplQuery";
+import {
+  evalPageHrefPath,
+  EvalPageHrefProps,
+} from "@/wab/shared/utils/url-utils";
 import { isBaseVariant } from "@/wab/shared/Variants";
 import { ensureBaseVariantSetting } from "@/wab/shared/VariantTplMgr";
 import { Menu, Tooltip } from "antd";
 import { capitalize, isString, keyBy } from "lodash";
 import { observer } from "mobx-react";
 import React, { useMemo } from "react";
-import {
-  evalPageHrefPath,
-  EvalPageHrefProps,
-} from "@/wab/shared/utils/url-utils";
 
 export interface ControlExtras {
   path: (number | string)[];
@@ -1361,10 +1361,9 @@ function PageHrefRows({
           }}
         >
           <Button
-            className="flex-no-shrink"
-            type={"clear"}
-            size={"wide"}
             data-test-id="add-query-param"
+            font={"dim"}
+            size="small"
             tooltip={
               <div>
                 Add a query param, used in the URL as:
@@ -1375,14 +1374,13 @@ function PageHrefRows({
               </div>
             }
           >
-            <span className="text-set">?</span>
+            <span className="text-set">Add Query</span>
           </Button>
         </HrefQueryPopover>
         {expr.fragment == null && (
           <Button
-            className="flex-no-shrink"
-            type={"clear"}
-            size={"wide"}
+            className="ml-sm"
+            size="small"
             data-test-id="add-fragment"
             tooltip={
               <div>
@@ -1399,7 +1397,7 @@ function PageHrefRows({
               onChange(maybeWrapExpr(newExpr));
             }}
           >
-            <span className="text-set">#</span>
+            <span className="text-set">Fragment</span>
           </Button>
         )}
       </div>
@@ -1408,15 +1406,15 @@ function PageHrefRows({
 }
 
 function PageHrefPreview(props: EvalPageHrefProps) {
-  const preview = evalPageHrefPath(props);
+  const { val, err } = evalPageHrefPath(props);
   return (
     <LabeledItemRow
       data-test-id={`prop-editor-row-href-preview`}
       label={"Preview"}
       noMenuButton
     >
-      <div className="flex flex-vcenter justify-start flex-fill">
-        <ValuePreview val={preview.val} err={preview.err} />
+      <div className="flex flex-vcenter justify-start flex-fill token-ref-cycle-item">
+        <span className={err && "value-preview--error"}>{val ?? err}</span>
       </div>
     </LabeledItemRow>
   );
