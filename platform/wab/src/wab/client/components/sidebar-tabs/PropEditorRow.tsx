@@ -571,22 +571,24 @@ interface PropEditorRowProps {
 }
 
 function canLinkPropToParam(type: Type, existingParam: Param) {
-  if (type.name === "href") {
-    return typesEqual(type, existingParam.type);
+  const existingType = existingParam.type;
+  if (isKnownFunctionType(existingType) !== isKnownFunctionType(type)) {
+    return false;
   }
-  if (isKnownFunctionType(type)) {
-    if (
-      !isKnownFunctionType(existingParam.type) ||
-      type.params.length !== existingParam.type.params.length
-    ) {
+  if (isKnownFunctionType(type) && isKnownFunctionType(existingType)) {
+    // both types are function types
+    if (type.params.length !== existingType.params.length) {
       return false;
     }
-    return strictZip(type.params, existingParam.type.params).every(
+    return strictZip(type.params, existingType.params).every(
       ([argType1, argType2]) =>
         // Not using typesEqual because it is more strict
         // For example, it checks if the function arg names are equal
         argType1.type.name === argType2.type.name
     );
+  }
+  if (type.name === "href") {
+    return typesEqual(type, existingType);
   }
   return true;
 }
