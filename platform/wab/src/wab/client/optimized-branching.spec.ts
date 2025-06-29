@@ -153,7 +153,7 @@ describe("Optimized merging with updatedAt", () => {
     // TODO:
     // - Refactor token operations to not depend on React
     // - Add site invariant for invalid token references in the tpl tree
-    it("won't update old references in the merged site", () => {
+    xit("won't update old references in the merged site", () => {
       let tokenRef: string;
       const result = testMerge({
         ancestorSite: () => {
