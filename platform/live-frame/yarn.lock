@@ -112,21 +112,21 @@
   resolved "https://registry.yarnpkg.com/@plasmicapp/data-sources-context/-/data-sources-context-0.1.21.tgz#fcf7ead9d9576084ff9fdcc3eadc4a5856119866"
   integrity sha512-DF86rstDK2zs/aTbPOUTWwXiVmFG2GDxXYvztIfXUNtuCvNDJKAZK2thYaULv9bGTRitPKWlwcz0zAMjYRHavQ==
 
-"@plasmicapp/data-sources@0.1.182":
-  version "0.1.182"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/data-sources/-/data-sources-0.1.182.tgz#cb7f606e07973b05ed70a7745caefb0ddf35766b"
-  integrity sha512-qvAGrTbsaASoBCo0/qgxxulS5aTlusCDha17S9eFGOSbGNqt/nx+xgCFSx4kkjnNpgArxOGTmb3PNghhlJTKVw==
+"@plasmicapp/data-sources@0.1.186":
+  version "0.1.186"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/data-sources/-/data-sources-0.1.186.tgz#347202feeca1c8d0630b7246ca4b923e81cd83cf"
+  integrity sha512-nWFeX478jl4hGA922JWfugk9vLvl8ckDxyom6xsL3R4Mx4OvDZ9+ZKUuHxMQn5CUT2JnPU9eIy7hHlI9ZJxRQA==
   dependencies:
     "@plasmicapp/data-sources-context" "0.1.21"
-    "@plasmicapp/host" "1.0.218"
+    "@plasmicapp/host" "1.0.222"
     "@plasmicapp/isomorphic-unfetch" "1.0.3"
     "@plasmicapp/query" "0.1.79"
     fast-stringify "^2.0.0"
 
-"@plasmicapp/host@1.0.218":
-  version "1.0.218"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/host/-/host-1.0.218.tgz#55f6883115783acb422f232898ba264321dd4238"
-  integrity sha512-U6iQ6sEVnoHA0t2h2CLmLtkhSXcrko7bc+NF9XLGigZIZooKqYpo9RckvBONDZ4gtBGjYnkaICU9wIERWo2Vvg==
+"@plasmicapp/host@1.0.222":
+  version "1.0.222"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/host/-/host-1.0.222.tgz#fbb084a5d9ea092cef2c44e908763e989bcd20fa"
+  integrity sha512-YBcl040Sb4NOGpt5c/BkaLQz61bRq8NPwKho8cq070f2L0HmIm+nBzQw7CdoubTrTcIgyxDwXG4Nv+ZbvarPOQ==
   dependencies:
     "@plasmicapp/query" "0.1.79"
     csstype "^3.1.2"

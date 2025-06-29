@@ -3993,19 +3993,10 @@
     "@plasmicapp/query" "0.1.79"
     fast-stringify "^2.0.0"
 
-"@plasmicapp/host@1.0.222":
+"@plasmicapp/host@1.0.222", "@plasmicapp/host@^1.0.222":
   version "1.0.222"
   resolved "https://registry.yarnpkg.com/@plasmicapp/host/-/host-1.0.222.tgz#fbb084a5d9ea092cef2c44e908763e989bcd20fa"
   integrity sha512-YBcl040Sb4NOGpt5c/BkaLQz61bRq8NPwKho8cq070f2L0HmIm+nBzQw7CdoubTrTcIgyxDwXG4Nv+ZbvarPOQ==
-  dependencies:
-    "@plasmicapp/query" "0.1.79"
-    csstype "^3.1.2"
-    window-or-global "^1.0.1"
-
-"@plasmicapp/host@^2.0.0-test.0":
-  version "2.0.0-test.0"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/host/-/host-2.0.0-test.0.tgz#55640ea17d02082c253c0b70adf0e27004d9e8d8"
-  integrity sha512-No6Lt0EycyzW+dumwKiGTa21w8eeGqDEfJPSOz5HbcLPYWIXefBPIkA6GsQkfd3MJPE3LPsNpc61Y2ldV6cVEg==
   dependencies:
     "@plasmicapp/query" "0.1.79"
     csstype "^3.1.2"

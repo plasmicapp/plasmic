@@ -16,7 +16,7 @@
     "@faker-js/faker": "^8.2.0",
     "@plasmicapp/auth-react": "^0.0.22",
     "@plasmicapp/data-sources-context": "^0.1.21",
-    "@plasmicapp/host": "^2.0.0-test.0",
+    "@plasmicapp/host": "^1.0.222",
     "@plasmicapp/react-web": "^0.2.393",
     "@plasmicpkgs/airtable": "^0.0.236",
     "@plasmicpkgs/antd": "^2.0.144",
