@@ -131,14 +131,13 @@ function CopilotPromptDialog_({
           });
       }
 
-      const resultCode = isCopilotChatCompletionResponse(result)
-        ? result.data.choices[0]?.message?.content || undefined
-        : JSON.stringify(result.data);
+      const replyMessage = getReplyMessage(result);
 
-      if (resultCode) {
+      if (replyMessage.response) {
         studioCtx.addToCopilotHistory(historyType, {
           prompt: submittedPrompt,
-          response: resultCode,
+          response: replyMessage.response,
+          displayMessage: replyMessage.displayMessage,
           id: result.copilotInteractionId,
         });
       }
@@ -148,7 +147,7 @@ function CopilotPromptDialog_({
         currentValue,
         data,
         prompt,
-        result: resultCode,
+        result: replyMessage.response,
       });
 
       return result;
@@ -163,25 +162,61 @@ function CopilotPromptDialog_({
     // `data` changes due to state updates in the canvas
   }, [submittedPrompt]);
 
-  const newCode =
-    copilotResponse.value &&
-    copilotResponse.value !== "CopilotRateLimitExceededError"
-      ? isCopilotChatCompletionResponse(copilotResponse.value)
-        ? copilotResponse.value?.data?.choices[0].message?.content
-        : JSON.stringify(copilotResponse.value.data)
-      : undefined;
+  const replyMessage = getReplyMessage(copilotResponse.value);
 
   React.useEffect(() => {
     defer(() => {
-      if (newCode && applyBtnRef.current) {
+      if (replyMessage?.response && applyBtnRef.current) {
         applyBtnRef.current.focus();
       }
     });
-  }, [newCode]);
+  }, [replyMessage?.response]);
 
   const suggestionHistory = studioCtx.getCopilotHistory(historyType);
   const isValidPrompt =
     prompt && prompt.trim() !== submittedPrompt && !copilotResponse.loading;
+
+  function getReplyMessage(
+    value:
+      | CopilotResponseData
+      | QueryCopilotUiResponse
+      | "CopilotRateLimitExceededError"
+      | undefined
+  ) {
+    if (!value || value === "CopilotRateLimitExceededError") {
+      return { response: undefined, displayMessage: undefined };
+    }
+
+    const response = isCopilotChatCompletionResponse(value)
+      ? value?.data?.choices[0].message?.content ?? undefined
+      : JSON.stringify(value.data);
+
+    const messageParts: string[] = [];
+
+    if (!isCopilotChatCompletionResponse(value)) {
+      const actions = value.data?.actions || [];
+      const hasHtmlDesign =
+        actions.filter((action) => action.name === "insert-html")?.length > 0;
+      if (hasHtmlDesign) {
+        messageParts.push("- A new HTML design snippet is ready to be used.");
+      }
+
+      const newTokensCount =
+        actions.filter((action) => action.name === "add-token")?.length ?? 0;
+      if (newTokensCount > 0) {
+        messageParts.push(
+          `- ${newTokensCount} new token${
+            newTokensCount > 1 ? "s" : ""
+          } is ready to be used.`
+        );
+      }
+    }
+
+    return {
+      response,
+      displayMessage: type === "ui" ? messageParts.join("\n") : response,
+    };
+  }
 
   return (
     <PlasmicCopilotPromptDialog
@@ -320,12 +355,17 @@ function CopilotPromptDialog_({
       }}
       historyContents={{
         children: suggestionHistory.map(
-          ({ prompt: historyPrompt, response: historyResponse, id }) => (
+          ({
+            prompt: historyPrompt,
+            response: historyResponse,
+            displayMessage: historyDisplayMessage,
+            id,
+          }) => (
             <>
               <CopilotMsg userPrompt prompt={historyPrompt} />
               <CopilotMsg
                 rightMargin
-                code={historyResponse}
+                code={historyDisplayMessage}
                 key={id}
                 copilotInteractionId={id}
                 applyBtn={{
@@ -376,20 +416,24 @@ function CopilotPromptDialog_({
           : (() => {
               return {
                 state: "ready",
-                ...(newCode
+                ...(replyMessage.response
                   ? {
                       reply: {
                         props: {
                           key: copilotResponse.value?.copilotInteractionId,
                           applyBtn: {
                             onClick: () => {
-                              onUpdate(ensure(newCode, "No message"));
+                              onUpdate(
+                                ensure(replyMessage.response, "No message")
+                              );
                               onDialogOpenChange?.(false);
                               setShowHistory(false);
                             },
                             onKeyPress: (e) => {
                               if (e.key === "Enter") {
-                                onUpdate(ensure(newCode, "No message"));
+                                onUpdate(
+                                  ensure(replyMessage.response, "No message")
+                                );
                                 onDialogOpenChange?.(false);
                                 setShowHistory(false);
                               }
@@ -398,7 +442,7 @@ function CopilotPromptDialog_({
                           },
                           copilotInteractionId:
                             copilotResponse.value?.copilotInteractionId,
-                          code: newCode,
+                          code: replyMessage.displayMessage,
                         },
                       },
                     }

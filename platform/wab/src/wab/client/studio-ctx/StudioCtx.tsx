@@ -7082,6 +7082,7 @@ interface CopilotInteraction {
   prompt: string;
   id: CopilotInteractionId;
   response: string;
+  displayMessage?: string;
 }
 
 interface OnboardingTourState {
