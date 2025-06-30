@@ -7,7 +7,7 @@ import {
   TemplatedString,
 } from "@/wab/shared/model/classes";
 import {
-  pageHrefPathToCode,
+  evalPageHrefPath,
   substituteUrlParams,
 } from "@/wab/shared/utils/url-utils";
 
@@ -51,6 +51,7 @@ function templated(val: string | string[]): TemplatedString | ObjectPath {
 
 describe("pageHrefPathToCode", () => {
   let exprCtx: ExprCtx;
+  let canvasEnv: Record<string, any>;
 
   const makePageHref = (
     props: Partial<PageHref> & { path: string }
@@ -74,30 +75,30 @@ describe("pageHrefPathToCode", () => {
       component: null,
       inStudio: true,
     };
+    canvasEnv = {};
   });
 
-  it("converts PageHref to path code", () => {
+  it("converts PageHref to path code and evaluates", () => {
     // Plain PageHref
     let expr = makePageHref({ path: "/mypage" });
-    expect(pageHrefPathToCode({ expr, exprCtx })).toEqual("(`/mypage`)");
+    let result = evalPageHrefPath({ expr, exprCtx, canvasEnv });
+    expect(result).toEqual({ val: "/mypage", err: undefined });
 
     // PageHref with single param
     expr = makePageHref({
       path: "/mypage/[p1]",
       params: { p1: templated("test") },
     });
-    expect(pageHrefPathToCode({ expr, exprCtx })).toEqual(
-      '(`/mypage/${"test"}`)'
-    );
+    result = evalPageHrefPath({ expr, exprCtx, canvasEnv });
+    expect(result).toEqual({ val: "/mypage/test", err: undefined });
 
     // PageHref with param and query
     expr = makePageHref({
       path: "/mypage/[p1]",
       query: { q1: templated("123") },
     });
-    expect(pageHrefPathToCode({ expr, exprCtx })).toEqual(
-      '(`/mypage/[p1]?q1=${"123"}`)'
-    );
+    result = evalPageHrefPath({ expr, exprCtx, canvasEnv });
+    expect(result).toEqual({ val: "/mypage/[p1]?q1=123", err: undefined });
 
     // PageHref with param, query, and fragment
     expr = makePageHref({
@@ -106,22 +107,28 @@ describe("pageHrefPathToCode", () => {
       query: { q1: templated("123") },
       fragment: templated("frag"),
     });
-    expect(pageHrefPathToCode({ expr, exprCtx })).toEqual(
-      '(`/mypage/${"test"}?q1=${"123"}#${"frag"}`)'
-    );
+    result = evalPageHrefPath({ expr, exprCtx, canvasEnv });
+    expect(result).toEqual({ val: "/mypage/test?q1=123#frag", err: undefined });
 
     // PageHref with dynamic value
-    const varCode = `\${(
-      $state.test
-    )}`;
     expr = makePageHref({
       path: "/mypage/[p1]",
       params: { p1: templated(["$state", "test"]) },
       query: { q1: templated(["$state", "test"]) },
       fragment: templated(["$state", "test"]),
     });
-    expect(pageHrefPathToCode({ expr, exprCtx })).toEqual(
-      `(\`/mypage/${varCode}?q1=${varCode}#${varCode}\`)`
+    // Failure case (missing state in canvasEnv)
+    result = evalPageHrefPath({ expr, exprCtx, canvasEnv });
+    expect(result.val).toEqual(undefined);
+    expect(result.err?.toString()).toEqual(
+      "ReferenceError: $state is not defined"
     );
+    // With expected canvasEnv state
+    canvasEnv = { $state: { test: "myval" } };
+    result = evalPageHrefPath({ expr, exprCtx, canvasEnv });
+    expect(result).toEqual({
+      val: "/mypage/myval?q1=myval#myval",
+      err: undefined,
+    });
   });
 });

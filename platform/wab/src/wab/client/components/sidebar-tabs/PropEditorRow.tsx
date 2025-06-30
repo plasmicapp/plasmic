@@ -1397,7 +1397,7 @@ function PageHrefRows({
               onChange(maybeWrapExpr(newExpr));
             }}
           >
-            <span className="text-set">Fragment</span>
+            <span className="text-set">Add Fragment</span>
           </Button>
         )}
       </div>
