@@ -54,6 +54,8 @@ export const PlasmicAiButton__ArgProps = new Array<ArgPropType>();
 export type PlasmicAiButton__OverridesType = {
   root?: Flex__<typeof IconButton>;
   svg?: Flex__<"svg">;
+  freeBox?: Flex__<"div">;
+  text?: Flex__<"div">;
 };
 
 export interface DefaultAiButtonProps {
@@ -128,13 +130,36 @@ function PlasmicAiButton__RenderFunc(props: {
         className={classNames(projectcss.all, sty.svg)}
         role={"img"}
       />
+
+      <div
+        data-plasmic-name={"freeBox"}
+        data-plasmic-override={overrides.freeBox}
+        className={classNames(projectcss.all, sty.freeBox, {
+          [sty.freeBoxactive]: hasVariant($state, "active", "active"),
+        })}
+      >
+        <div
+          data-plasmic-name={"text"}
+          data-plasmic-override={overrides.text}
+          className={classNames(
+            projectcss.all,
+            projectcss.__wab_text,
+            sty.text,
+            { [sty.textactive]: hasVariant($state, "active", "active") }
+          )}
+        >
+          {"\u03b2eta"}
+        </div>
+      </div>
     </IconButton>
   ) as React.ReactElement | null;
 }
 
 const PlasmicDescendants = {
-  root: ["root", "svg"],
+  root: ["root", "svg", "freeBox", "text"],
   svg: ["svg"],
+  freeBox: ["freeBox", "text"],
+  text: ["text"],
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -142,6 +167,8 @@ type DescendantsType<T extends NodeNameType> =
 type NodeDefaultElementType = {
   root: typeof IconButton;
   svg: "svg";
+  freeBox: "div";
+  text: "div";
 };
 
 type ReservedPropsType = "variants" | "args" | "overrides";
@@ -205,6 +232,8 @@ export const PlasmicAiButton = Object.assign(
   {
     // Helper components rendering sub-elements
     svg: makeNodeComponent("svg"),
+    freeBox: makeNodeComponent("freeBox"),
+    text: makeNodeComponent("text"),
 
     // Metadata about props expected for PlasmicAiButton
     internalVariantProps: PlasmicAiButton__VariantProps,
