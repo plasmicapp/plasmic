@@ -39,7 +39,7 @@ export async function upsertS3CacheEntry<T>(opts: {
         })
         .promise();
     } catch (e) {
-      if (process.env.NODE_ENV !== "development") {
+      if (process.env.NODE_ENV === "production") {
         throw e;
       }
       console.error("Unable to add content to S3", e);
