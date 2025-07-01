@@ -85,7 +85,7 @@ const VariantSection = observer(function VariantSection(
       }
       showSettings={!!onClickSettings}
       settingsButton={{ onClick: onClickSettings }}
-      menuButton={{ menu }}
+      menuButton={menu ? { props: { ...contextMenuProps } } : undefined}
       state={isEmpty ? "empty" : undefined}
       dragHandle={{
         style: {
