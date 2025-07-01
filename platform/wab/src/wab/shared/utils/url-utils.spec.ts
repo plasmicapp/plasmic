@@ -78,54 +78,64 @@ describe("pageHrefPathToCode", () => {
     canvasEnv = {};
   });
 
-  it("converts PageHref to path code and evaluates", () => {
-    // Plain PageHref
-    let expr = makePageHref({ path: "/mypage" });
-    let result = evalPageHrefPath({ expr, exprCtx, canvasEnv });
+  it("evaluates PageHref with path and evaluates", () => {
+    const expr = makePageHref({ path: "/mypage" });
+    const result = evalPageHrefPath({ expr, exprCtx, canvasEnv });
     expect(result).toEqual({ val: "/mypage", err: undefined });
+  });
 
-    // PageHref with single param
-    expr = makePageHref({
+  it("evaluates PageHref with path param and evaluates", () => {
+    const expr = makePageHref({
       path: "/mypage/[p1]",
       params: { p1: templated("test") },
     });
-    result = evalPageHrefPath({ expr, exprCtx, canvasEnv });
+    const result = evalPageHrefPath({ expr, exprCtx, canvasEnv });
     expect(result).toEqual({ val: "/mypage/test", err: undefined });
+  });
 
-    // PageHref with param and query
-    expr = makePageHref({
+  it("evaluates PageHref with query and evaluates", () => {
+    const expr = makePageHref({
       path: "/mypage/[p1]",
       query: { q1: templated("123") },
     });
-    result = evalPageHrefPath({ expr, exprCtx, canvasEnv });
+    const result = evalPageHrefPath({ expr, exprCtx, canvasEnv });
     expect(result).toEqual({ val: "/mypage/[p1]?q1=123", err: undefined });
+  });
 
-    // PageHref with param, query, and fragment
-    expr = makePageHref({
+  it("evaluates PageHref with query/fragment and evaluates", () => {
+    const expr = makePageHref({
       path: "/mypage/[p1]",
       params: { p1: templated("test") },
       query: { q1: templated("123") },
       fragment: templated("frag"),
     });
-    result = evalPageHrefPath({ expr, exprCtx, canvasEnv });
+    const result = evalPageHrefPath({ expr, exprCtx, canvasEnv });
     expect(result).toEqual({ val: "/mypage/test?q1=123#frag", err: undefined });
+  });
 
-    // PageHref with dynamic value
-    expr = makePageHref({
+  it("fails to evaluate PageHref with missing state", () => {
+    const expr = makePageHref({
       path: "/mypage/[p1]",
       params: { p1: templated(["$state", "test"]) },
       query: { q1: templated(["$state", "test"]) },
       fragment: templated(["$state", "test"]),
     });
-    // Failure case (missing state in canvasEnv)
-    result = evalPageHrefPath({ expr, exprCtx, canvasEnv });
+    const result = evalPageHrefPath({ expr, exprCtx, canvasEnv });
     expect(result.val).toEqual(undefined);
     expect(result.err?.toString()).toEqual(
       "ReferenceError: $state is not defined"
     );
-    // With expected canvasEnv state
+  });
+
+  it("evaluates PageHref with query and evaluates", () => {
+    const expr = makePageHref({
+      path: "/mypage/[p1]",
+      params: { p1: templated(["$state", "test"]) },
+      query: { q1: templated(["$state", "test"]) },
+      fragment: templated(["$state", "test"]),
+    });
     canvasEnv = { $state: { test: "myval" } };
-    result = evalPageHrefPath({ expr, exprCtx, canvasEnv });
+    const result = evalPageHrefPath({ expr, exprCtx, canvasEnv });
     expect(result).toEqual({
       val: "/mypage/myval?q1=myval#myval",
       err: undefined,
