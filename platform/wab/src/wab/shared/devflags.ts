@@ -566,6 +566,8 @@ const DEFAULT_DEVFLAGS = {
   cmsUniqueFields: false,
   // Disable auth and backend integrations for new projects
   rscRelease: false,
+  // Overrides rscRelease to allow using integrations in a project.
+  enableDataQueries: false,
 };
 
 Object.assign(DEFAULT_DEVFLAGS, DEFAULT_DEVFLAG_OVERRIDES);
@@ -648,6 +650,7 @@ export function applyPlasmicUserDevFlagOverrides(target: DevFlagsType) {
     allowHtmlPaste: true,
     enableUiCopilot: true,
     cmsUniqueFields: true,
+    enableDataQueries: true,
   } as Partial<DevFlagsType>);
 }
 

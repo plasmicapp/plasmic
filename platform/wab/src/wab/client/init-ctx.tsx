@@ -12,6 +12,7 @@ import { SiteInfo } from "@/wab/shared/SharedApi";
 import * as slotUtils from "@/wab/shared/SlotUtils";
 import { $$$ } from "@/wab/shared/TplQuery";
 import { getBundle } from "@/wab/shared/bundles";
+import { findAllDataSourceOpExpr } from "@/wab/shared/cached-selectors";
 import { asyncNever, spawn } from "@/wab/shared/common";
 import * as exprs from "@/wab/shared/core/exprs";
 import { unbundleSite } from "@/wab/shared/core/tagged-unbundle";
@@ -91,6 +92,13 @@ export async function loadSiteDbCtx(
   );
   appCtx.appConfig = getProjectFlags(site, appCtx.appConfig);
   spawn(checkDepPkgHosts(appCtx, siteInfo, depPkgVersions));
+
+  // Enable data queries after RSC release if any components already use them.
+  // Occurs after applyPlasmicUserDevFlagOverrides, so skip if already enabled
+  if (!appCtx.appConfig.enableDataQueries) {
+    appCtx.appConfig.enableDataQueries =
+      !appCtx.appConfig.rscRelease || !!findAllDataSourceOpExpr(site).length;
+  }
 
   (window as any).dbg.site = site;
   (window as any).dbg.instUtil = instUtil;

@@ -397,6 +397,7 @@ export const ACTIONS_META: Record<(typeof ACTIONS)[number], ActionType<any>> = {
         disableDynamicValue: true,
       },
     },
+    hidden: (ctx) => !ctx.flags.enableDataQueries,
     getDefaultName: (_, { dataOp }, ctx) => {
       if (!dataOp) {
         return `Use ${DATA_SOURCE_LOWER}`;

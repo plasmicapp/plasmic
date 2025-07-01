@@ -34,50 +34,62 @@ function WorkspaceDataSources_(
   ref: HTMLElementRefOf<"div">
 ) {
   const [isEditing, setIsEditing] = React.useState<"new" | ApiDataSource>();
-  const showTutorialDBs = isAdminTeamEmail(
-    appCtx.selfInfo?.email,
-    appCtx.appConfig
-  );
+  const isAdmin = isAdminTeamEmail(appCtx.selfInfo?.email, appCtx.appConfig);
+  const allowNewDataSources =
+    isAdmin ||
+    appCtx.appConfig.enableDataQueries ||
+    !appCtx.appConfig.rscRelease;
+
+  const showIntegrations = allowNewDataSources || !!dataSources.length;
   return (
-    <>
-      <PlasmicWorkspaceDataSources
-        root={{ ref }}
-        {...props}
-        sources={{
-          render: () =>
-            dataSources
-              .filter(
-                (source) =>
-                  (showTutorialDBs || source.source !== "tutorialdb") &&
-                  matcher.matches(source.name)
-              )
-              .map((source) => (
-                <DataSource
-                  appCtx={appCtx}
-                  source={source}
-                  readOnly={readOnly}
-                  matcher={matcher}
-                  onClick={() => !readOnly && setIsEditing(source)}
-                  onUpdate={onUpdate}
-                />
-              )),
-        }}
-        newDataSource={{
-          onClick: () => !readOnly && setIsEditing("new"),
-        }}
-        viewer={readOnly}
-      />
-      {isEditing && (
-        <DataSourceModal
-          appCtx={appCtx}
-          editingDataSource={isEditing}
-          onDone={() => setIsEditing(undefined)}
-          workspaceId={workspaceId}
-          key={isEditing === "new" ? "new" : isEditing?.id}
-          onUpdate={onUpdate}
+    showIntegrations && (
+      <>
+        <PlasmicWorkspaceDataSources
+          root={{ ref }}
+          {...props}
+          sources={{
+            render: () =>
+              dataSources
+                .filter(
+                  (source) =>
+                    (isAdmin || source.source !== "tutorialdb") &&
+                    matcher.matches(source.name)
+                )
+                .map((source) => (
+                  <DataSource
+                    appCtx={appCtx}
+                    source={source}
+                    readOnly={readOnly}
+                    matcher={matcher}
+                    onClick={() => !readOnly && setIsEditing(source)}
+                    onUpdate={onUpdate}
+                  />
+                )),
+          }}
+          newDataSource={{
+            onClick: () => !readOnly && setIsEditing("new"),
+          }}
+          viewer={readOnly}
+          overrides={{
+            newDataSource: !allowNewDataSources
+              ? () => {
+                  return <></>;
+                }
+              : undefined,
+          }}
         />
-      )}
-    </>
+        {isEditing && (
+          <DataSourceModal
+            appCtx={appCtx}
+            editingDataSource={isEditing}
+            onDone={() => setIsEditing(undefined)}
+            workspaceId={workspaceId}
+            key={isEditing === "new" ? "new" : isEditing?.id}
+            onUpdate={onUpdate}
+          />
+        )}
+      </>
+    )
   );
 }
 
