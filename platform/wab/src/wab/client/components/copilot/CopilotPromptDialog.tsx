@@ -191,23 +191,23 @@ function CopilotPromptDialog_({
       ? value?.data?.choices[0].message?.content ?? undefined
       : JSON.stringify(value.data);
 
-    const messageParts: string[] = [];
+    const messageParts: string[] = [`Click "Apply" to add:`];
 
     if (!isCopilotChatCompletionResponse(value)) {
       const actions = value.data?.actions || [];
       const hasHtmlDesign =
         actions.filter((action) => action.name === "insert-html")?.length > 0;
       if (hasHtmlDesign) {
-        messageParts.push("- A new HTML design snippet is ready to be used.");
+        messageParts.push("• HTML content to current selection location");
       }
 
       const newTokensCount =
         actions.filter((action) => action.name === "add-token")?.length ?? 0;
       if (newTokensCount > 0) {
         messageParts.push(
-          `- ${newTokensCount} new token${
+          `• ${newTokensCount} token${
             newTokensCount > 1 ? "s" : ""
-          } is ready to be used.`
+          } token to this project`
         );
       }
     }
