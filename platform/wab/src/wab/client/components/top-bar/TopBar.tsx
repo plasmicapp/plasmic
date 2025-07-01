@@ -113,8 +113,12 @@ function _TopBar({ preview }: TopBarProps) {
                   Configure custom app host
                 </Menu.Item>
               );
-
-              if (appCtx.appConfig.appAuth && !isWhiteLabelUser) {
+              // After RSCs are released, only show auth config if the app already uses it
+              const showAuth =
+                (!appCtx.appConfig.rscRelease ||
+                  studioCtx.siteInfo.hasAppAuth) &&
+                !isWhiteLabelUser;
+              if (showAuth) {
                 push2(
                   <Menu.Item
                     key="app-auth"

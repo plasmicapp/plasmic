@@ -503,8 +503,6 @@ const DEFAULT_DEVFLAGS = {
   disableBranching: false,
   branchingTeamIds: [] as TeamId[],
   commitsOnBranches: false,
-  appAuth: false,
-  advancedAppAuth: false,
   serverPublishProjectIds: [] as ProjectId[],
   focusable: false,
   envPanel: false,
@@ -566,6 +564,8 @@ const DEFAULT_DEVFLAGS = {
   autoOpen: false,
   autoOpen2: false,
   cmsUniqueFields: false,
+  // Disable auth and backend integrations for new projects
+  rscRelease: false,
 };
 
 Object.assign(DEFAULT_DEVFLAGS, DEFAULT_DEVFLAG_OVERRIDES);
@@ -625,7 +625,6 @@ export function applyPlasmicUserDevFlagOverrides(target: DevFlagsType) {
     refActions: true,
     logToConsole: true,
     rightTabs: true,
-    appAuth: true,
     focusable: true,
     envPanel: true,
     interactiveCanvas: true,
@@ -638,7 +637,6 @@ export function applyPlasmicUserDevFlagOverrides(target: DevFlagsType) {
     schemaDrivenForms: true,
     onboardingTours: true,
     showInsertableTemplateComponents: true,
-    advancedAppAuth: true,
     posthog: true,
     linting: true,
     componentThumbnails: false,
