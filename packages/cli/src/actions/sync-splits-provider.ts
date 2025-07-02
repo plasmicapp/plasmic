@@ -33,12 +33,12 @@ export async function syncSplitsProvider(
       );
     }
     if (context.config.code.lang === "js") {
-      projectMeta.splitsProviderBundle.module = await formatScript(
+      projectMeta.splitsProviderBundle.module = formatScript(
         tsxToJsx(projectMeta.splitsProviderBundle.module),
         baseDir
       );
     }
-    await writeFileContent(
+    writeFileContent(
       context,
       resourcePath,
       projectMeta.splitsProviderBundle.module,

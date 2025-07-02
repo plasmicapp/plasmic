@@ -92,42 +92,47 @@ export async function exportProjectsCli(opts: ExportArgs): Promise<void> {
   const writeProj = async (bundle: ProjectBundle) => {
     await ensureImageAssetContents(bundle.imageAssets);
     const outPath = path.resolve(opts.outDir);
-    const writeFile = async (fileName: string, content: string | Buffer) => {
+    const promises: Promise<void>[] = [];
+    const writeFile = (fileName: string, content: string | Buffer) => {
       if (typeof content === "string" && !opts.skipFormatting) {
-        content = await formatAsLocal(content, fileName, opts.outDir);
+        content = formatAsLocal(content, fileName, opts.outDir);
       }
       const projectName = snakeCase(bundle.projectConfig.projectName);
-      await fs.mkdir(path.join(outPath, projectName), { recursive: true });
-      await fs.writeFile(path.join(outPath, projectName, fileName), content);
+      promises.push(
+        (async () => {
+          await fs.mkdir(path.join(outPath, projectName), { recursive: true });
+          await fs.writeFile(
+            path.join(outPath, projectName, fileName),
+            content
+          );
+        })()
+      );
     };
     for (const comp of bundle.components) {
-      await writeFile(comp.skeletonModuleFileName, comp.skeletonModule);
-      await writeFile(comp.cssFileName, comp.cssRules);
+      writeFile(comp.skeletonModuleFileName, comp.skeletonModule);
+      writeFile(comp.cssFileName, comp.cssRules);
     }
     for (const icon of bundle.iconAssets) {
-      await writeFile(icon.fileName, icon.module);
+      writeFile(icon.fileName, icon.module);
     }
     for (const gv of bundle.globalVariants) {
-      await writeFile(gv.contextFileName, gv.contextModule);
+      writeFile(gv.contextFileName, gv.contextModule);
     }
 
     for (const img of bundle.imageAssets) {
-      await writeFile(img.fileName, Buffer.from(img.blob, "base64"));
+      writeFile(img.fileName, Buffer.from(img.blob, "base64"));
     }
 
-    await writeFile(
-      bundle.projectConfig.cssFileName,
-      bundle.projectConfig.cssRules
-    );
+    writeFile(bundle.projectConfig.cssFileName, bundle.projectConfig.cssRules);
     if (bundle.projectConfig.globalContextBundle) {
-      await writeFile(
+      writeFile(
         `${DEFAULT_GLOBAL_CONTEXTS_NAME}.${extx}`,
         bundle.projectConfig.globalContextBundle.contextModule
       );
     }
 
     if (bundle.projectConfig.splitsProviderBundle) {
-      await writeFile(
+      writeFile(
         `${DEFAULT_SPLITS_PROVIDER_NAME}.${extx}`,
         bundle.projectConfig.splitsProviderBundle.module
       );
@@ -135,9 +140,11 @@ export async function exportProjectsCli(opts: ExportArgs): Promise<void> {
 
     if (bundle.projectConfig.reactWebExportedFiles) {
       for (const file of bundle.projectConfig.reactWebExportedFiles) {
-        await writeFile(file.fileName, file.content);
+        writeFile(file.fileName, file.content);
       }
     }
+
+    await Promise.all(promises);
   };
 
   await Promise.all(result.map((res) => writeProj(res)));
@@ -308,28 +315,28 @@ async function exportProjects(api: PlasmicApi, opts: ExportOpts) {
     for (const proj of result) {
       for (const comp of proj.components) {
         [comp.skeletonModuleFileName, comp.skeletonModule] =
-          await maybeConvertTsxToJsx(
+          maybeConvertTsxToJsx(
             comp.skeletonModuleFileName,
             comp.skeletonModule,
             "."
           );
       }
       for (const icon of proj.iconAssets) {
-        [icon.fileName, icon.module] = await maybeConvertTsxToJsx(
+        [icon.fileName, icon.module] = maybeConvertTsxToJsx(
           icon.fileName,
           icon.module,
           "."
         );
       }
       for (const gv of proj.globalVariants) {
-        [gv.contextFileName, gv.contextModule] = await maybeConvertTsxToJsx(
+        [gv.contextFileName, gv.contextModule] = maybeConvertTsxToJsx(
           gv.contextFileName,
           gv.contextModule,
           "."
         );
       }
       if (proj.projectConfig.globalContextBundle) {
-        const res = await maybeConvertTsxToJsx(
+        const res = maybeConvertTsxToJsx(
           `${DEFAULT_GLOBAL_CONTEXTS_NAME}.tsx`,
           proj.projectConfig.globalContextBundle.contextModule,
           "."
@@ -337,7 +344,7 @@ async function exportProjects(api: PlasmicApi, opts: ExportOpts) {
         proj.projectConfig.globalContextBundle.contextModule = res[1];
       }
       if (proj.projectConfig.splitsProviderBundle) {
-        const res = await maybeConvertTsxToJsx(
+        const res = maybeConvertTsxToJsx(
           `${DEFAULT_SPLITS_PROVIDER_NAME}.tsx`,
           proj.projectConfig.splitsProviderBundle.module,
           "."

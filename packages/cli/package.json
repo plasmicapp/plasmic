@@ -10,13 +10,10 @@
   "bin": {
     "plasmic": "./dist/index.js"
   },
-  "scriptsComments": {
-    "test/wtest": "jest@<30 needs --experimental-vm-modules for ESM compat"
-  },
   "scripts": {
-    "wtest": "NODE_OPTIONS=--experimental-vm-modules jest --colors --watchAll",
-    "test": "NODE_OPTIONS=--experimental-vm-modules jest --colors",
-    "test:debug": "node --experimental-vm-modules --inspect-brk node_modules/.bin/jest --runInBand --watch",
+    "wtest": "jest --colors --watchAll",
+    "test": "jest --colors",
+    "test:debug": "node --inspect-brk node_modules/.bin/jest --runInBand --watch",
     "build": "bash build.sh",
     "plasmic": "ts-node src/index.ts",
     "prepublishOnly": "npm run build"
@@ -71,7 +68,7 @@
     "open": "^8.0.9",
     "pako": "^1.0.11",
     "path": "^0.12.7",
-    "prettier": "^3.6.2",
+    "prettier": "^2.0.5",
     "semver": "^7.3.2",
     "socket.io-client": "^4.1.2",
     "tmp": "^0.2.1",

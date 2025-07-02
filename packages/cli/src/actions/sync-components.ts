@@ -310,7 +310,7 @@ export async function syncProjectComponents(
           force: !shouldRegenerate,
         }
       );
-      const formattedCssRules = await formatAsLocal(
+      const formattedCssRules = formatAsLocal(
         cssRules,
         compConfig.cssFilePath,
         baseDir

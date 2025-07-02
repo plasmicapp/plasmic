@@ -579,39 +579,39 @@ async function syncProject(
 
   // Convert from TSX => JSX
   if (context.config.code.lang === "js") {
-    for (const c of projectBundle.components) {
-      [c.renderModuleFileName, c.renderModule] = await maybeConvertTsxToJsx(
+    projectBundle.components.forEach((c) => {
+      [c.renderModuleFileName, c.renderModule] = maybeConvertTsxToJsx(
         c.renderModuleFileName,
         c.renderModule,
         opts.baseDir
       );
-      [c.skeletonModuleFileName, c.skeletonModule] = await maybeConvertTsxToJsx(
+      [c.skeletonModuleFileName, c.skeletonModule] = maybeConvertTsxToJsx(
         c.skeletonModuleFileName,
         c.skeletonModule,
         opts.baseDir
       );
-    }
-    for (const icon of projectBundle.iconAssets) {
-      [icon.fileName, icon.module] = await maybeConvertTsxToJsx(
+    });
+    projectBundle.iconAssets.forEach((icon) => {
+      [icon.fileName, icon.module] = maybeConvertTsxToJsx(
         icon.fileName,
         icon.module,
         opts.baseDir
       );
-    }
-    for (const gv of projectBundle.globalVariants) {
-      [gv.contextFileName, gv.contextModule] = await maybeConvertTsxToJsx(
+    });
+    projectBundle.globalVariants.forEach((gv) => {
+      [gv.contextFileName, gv.contextModule] = maybeConvertTsxToJsx(
         gv.contextFileName,
         gv.contextModule,
         opts.baseDir
       );
-    }
-    for (const theme of projectBundle.projectConfig.jsBundleThemes || []) {
-      [theme.themeFileName, theme.themeModule] = await maybeConvertTsxToJsx(
+    });
+    (projectBundle.projectConfig.jsBundleThemes || []).forEach((theme) => {
+      [theme.themeFileName, theme.themeModule] = maybeConvertTsxToJsx(
         theme.themeFileName,
         theme.themeModule,
         opts.baseDir
       );
-    }
+    });
   }
   await syncGlobalVariants(
     context,
@@ -637,7 +637,7 @@ async function syncProject(
     indirect
   );
   syncCodeComponentsMeta(context, projectId, projectBundle.codeComponentMetas);
-  syncCustomFunctionsMeta(
+  await syncCustomFunctionsMeta(
     context,
     projectId,
     projectBundle.customFunctionMetas
@@ -741,7 +741,7 @@ async function syncProjectConfig(
   projectLock.lang = context.config.code.lang;
 
   if (projectBundle.cssRules) {
-    const formattedCssRules = await formatAsLocal(
+    const formattedCssRules = formatAsLocal(
       projectBundle.cssRules,
       projectConfig.cssFilePath,
       baseDir
@@ -783,7 +783,7 @@ async function syncProjectConfig(
       themeConfig = { themeFilePath, bundleName: theme.bundleName };
       projectConfig.jsBundleThemes.push(themeConfig);
     }
-    const formatted = await formatAsLocal(
+    const formatted = formatAsLocal(
       theme.themeModule,
       themeConfig.themeFilePath
     );

@@ -108,7 +108,7 @@ export async function syncProjectIconAssets(
     await writeFileContent(
       context,
       iconConfig.moduleFilePath,
-      await formatAsLocal(bundle.module, iconConfig.moduleFilePath, baseDir),
+      formatAsLocal(bundle.module, iconConfig.moduleFilePath, baseDir),
       {
         force: !isNew,
       }
