@@ -22,7 +22,8 @@ export async function syncSplitsProvider(
   projectMeta: ProjectMetaBundle,
   projectConfig: ProjectConfig,
   projectLock: ProjectLock,
-  checksums: ChecksumBundle
+  checksums: ChecksumBundle,
+  baseDir: string
 ) {
   const resourcePath = getSplitsProviderResourcePath(context, projectConfig);
   if (checksums.splitsProviderChecksum && projectMeta.splitsProviderBundle) {
@@ -33,7 +34,8 @@ export async function syncSplitsProvider(
     }
     if (context.config.code.lang === "js") {
       projectMeta.splitsProviderBundle.module = await formatScript(
-        tsxToJsx(projectMeta.splitsProviderBundle.module)
+        tsxToJsx(projectMeta.splitsProviderBundle.module),
+        baseDir
       );
     }
     await writeFileContent(

@@ -13,6 +13,6 @@ export async function fixImports(opts: FixImportsArgs) {
     GLOBAL_SETTINGS.skipFormatting = true;
   }
   const context = await getContext(opts, { enableSkipAuth: true });
-  await updateConfig(context, context.config);
-  await fixAllImportStatements(context);
+  await updateConfig(context, context.config, opts.baseDir);
+  await fixAllImportStatements(context, opts.baseDir);
 }

@@ -127,7 +127,7 @@ export async function runNecessaryMigrations(
       const prev = readConfig(configFile, false);
       const next = migrationFunc(prev, context);
       next.cliVersion = version;
-      await writeConfig(configFile, next);
+      await writeConfig(configFile, next, baseDir);
     }
 
     const lockMigrationFunc = LOCK_MIGRATIONS[version];
@@ -135,7 +135,7 @@ export async function runNecessaryMigrations(
       const prev = maybeReadLock();
       if (prev) {
         const next = lockMigrationFunc(prev, context);
-        await writeLock(lockFile, next);
+        await writeLock(lockFile, next, baseDir);
       }
     }
   }
@@ -144,6 +144,6 @@ export async function runNecessaryMigrations(
   const latestConfig = readConfig(configFile, false);
   if (latestConfig.cliVersion !== cliVersion) {
     latestConfig.cliVersion = cliVersion;
-    await writeConfig(configFile, latestConfig);
+    await writeConfig(configFile, latestConfig, baseDir);
   }
 }

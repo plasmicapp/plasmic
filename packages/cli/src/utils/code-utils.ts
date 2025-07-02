@@ -41,6 +41,7 @@ import { assert, flatMap } from "./lang-utils";
 export async function formatAsLocal(
   content: string,
   filePath: string,
+  baseDir: string,
   defaultOpts?: Options
 ): Promise<string> {
   if (GLOBAL_SETTINGS.skipFormatting) {
@@ -52,7 +53,7 @@ export async function formatAsLocal(
   // createPlasmicElementProxy.  So we're going to stop for now until we find
   // a better solution, like maybe letting user specify a prettier config
   // file in plasmic.json
-  // const opts = resolveConfig.sync() || defaultOpts;
+  // const opts = resolveConfig.sync(baseDir) || defaultOpts;
   const opts: Options = {
     trailingComma: "none",
     ...defaultOpts,
@@ -69,6 +70,7 @@ export async function formatAsLocal(
 
 async function nodeToFormattedCode(
   n: Node,
+  baseDir: string,
   unformatted?: boolean,
   commentsToRemove?: Set<string>
 ): Promise<string> {
@@ -78,7 +80,7 @@ async function nodeToFormattedCode(
   }).code;
   return unformatted
     ? c
-    : await formatAsLocal(c, "/tmp/x.tsx", {
+    : await formatAsLocal(c, "/tmp/x.tsx", baseDir, {
         arrowParens: "avoid",
       });
 }
@@ -233,6 +235,7 @@ export async function replaceImports(
   fromPath: string,
   fixImportContext: FixImportContext,
   removeImportDirective: boolean,
+  baseDir: string,
   changed = false
 ): Promise<string> {
   [code, changed] = filterUnformattedMarker(code, changed);
@@ -497,7 +500,7 @@ export async function replaceImports(
     return code;
   }
 
-  return nodeToFormattedCode(file, !changed, commentsToRemove);
+  return nodeToFormattedCode(file, baseDir, !changed, commentsToRemove);
 }
 
 function throwMissingReference(
@@ -621,6 +624,7 @@ export const mkFixImportContext = (config: PlasmicConfig): FixImportContext => {
  */
 export async function fixAllImportStatements(
   context: PlasmicContext,
+  baseDir: string,
   summary?: Map<string, ComponentUpdateSummary>
 ) {
   logger.info("Fixing import statements...");
@@ -630,7 +634,12 @@ export async function fixAllImportStatements(
   for (const project of config.projects) {
     for (const compConfig of project.components) {
       try {
-        await fixRscModulesImports(context, fixImportContext, compConfig);
+        await fixRscModulesImports(
+          context,
+          baseDir,
+          fixImportContext,
+          compConfig
+        );
       } catch (err) {
         lastError = err;
       }
@@ -648,7 +657,8 @@ export async function fixAllImportStatements(
             context,
             compConfig,
             fixImportContext,
-            fixSkeletonModule
+            fixSkeletonModule,
+            baseDir
           );
         } catch (err) {
           logger.error(
@@ -661,7 +671,7 @@ export async function fixAllImportStatements(
   }
 
   try {
-    await fixGlobalContextImportStatements(context, fixImportContext);
+    await fixGlobalContextImportStatements(context, fixImportContext, baseDir);
   } catch (err) {
     logger.error(
       `Error encountered while fixing imports for global contexts: ${err}`
@@ -670,7 +680,7 @@ export async function fixAllImportStatements(
   }
 
   try {
-    await fixSplitsProviderImportStatements(context, fixImportContext);
+    await fixSplitsProviderImportStatements(context, fixImportContext, baseDir);
   } catch (err) {
     logger.error(
       `Error encountered while fixing imports for splits provider: ${err}`
@@ -687,7 +697,8 @@ async function fixComponentImportStatements(
   context: PlasmicContext,
   compConfig: ComponentConfig,
   fixImportContext: FixImportContext,
-  fixSkeletonModule: boolean
+  fixSkeletonModule: boolean,
+  baseDir: string
 ) {
   // If ComponentConfig.importPath is still a local file, we best-effort also fix up the import statements there.
   if (
@@ -699,7 +710,8 @@ async function fixComponentImportStatements(
       context,
       compConfig.importSpec.modulePath,
       fixImportContext,
-      true
+      true,
+      baseDir
     );
   }
 
@@ -726,6 +738,7 @@ async function fixComponentImportStatements(
     compConfig.renderModuleFilePath,
     fixImportContext,
     false,
+    baseDir,
     renderModuleChanged
   );
 }
@@ -735,6 +748,7 @@ async function fixFileImportStatements(
   srcDirFilePath: string,
   fixImportContext: FixImportContext,
   removeImportDirective: boolean,
+  baseDir: string,
   fileHasChanged = false
 ) {
   const filePath = makeFilePath(context, srcDirFilePath);
@@ -753,6 +767,7 @@ async function fixFileImportStatements(
     srcDirFilePath,
     fixImportContext,
     removeImportDirective,
+    baseDir,
     fileHasChanged
   );
   if (prevContent !== newContent) {
@@ -814,17 +829,21 @@ export const tsxToJsx = (code: string) => {
 
 export async function maybeConvertTsxToJsx(
   fileName: string,
-  content: string
+  content: string,
+  baseDir: string
 ): Promise<[string, string]> {
   if (fileName.endsWith("tsx")) {
     const jsFileName = stripExtension(fileName) + ".jsx";
-    const jsContent = await formatScript(tsxToJsx(content));
+    const jsContent = await formatScript(tsxToJsx(content), baseDir);
     return [jsFileName, jsContent];
   }
   return [fileName, content];
 }
 
-export async function formatScript(code: string): Promise<string> {
+export async function formatScript(
+  code: string,
+  baseDir: string
+): Promise<string> {
   const file = parser.parse(code, {
     strictMode: true,
     sourceType: "module",
@@ -846,12 +865,12 @@ export async function formatScript(code: string): Promise<string> {
     },
   });
 
-  const withmarkers = await nodeToFormattedCode(file, true);
+  const withmarkers = await nodeToFormattedCode(file, baseDir, true);
   const withNewLines = withmarkers.replace(
     new RegExp(`"${newLineMarker}"`, "g"),
     "\n"
   );
-  return await formatAsLocal(withNewLines, "/tmp/x.tsx", {
+  return await formatAsLocal(withNewLines, "/tmp/x.tsx", baseDir, {
     printWidth: 80,
     tabWidth: 2,
     useTabs: false,
@@ -860,7 +879,8 @@ export async function formatScript(code: string): Promise<string> {
 
 async function fixGlobalContextImportStatements(
   context: PlasmicContext,
-  fixImportContext: FixImportContext
+  fixImportContext: FixImportContext,
+  baseDir: string
 ) {
   for (const project of context.config.projects) {
     if (!project.globalContextsFilePath) continue;
@@ -884,6 +904,7 @@ async function fixGlobalContextImportStatements(
       resourcePath,
       fixImportContext,
       false,
+      baseDir,
       true
     );
 
@@ -897,7 +918,8 @@ async function fixGlobalContextImportStatements(
 
 async function fixSplitsProviderImportStatements(
   context: PlasmicContext,
-  fixImportContext: FixImportContext
+  fixImportContext: FixImportContext,
+  baseDir: string
 ) {
   for (const project of context.config.projects) {
     if (!project.splitsProviderFilePath) continue;
@@ -921,6 +943,7 @@ async function fixSplitsProviderImportStatements(
       resourcePath,
       fixImportContext,
       false,
+      baseDir,
       true
     );
 
@@ -934,6 +957,7 @@ async function fixSplitsProviderImportStatements(
 
 export async function fixRscModulesImports(
   context: PlasmicContext,
+  baseDir: string,
   fixImportContext: FixImportContext,
   compConfig: ComponentConfig
 ) {
@@ -952,7 +976,8 @@ export async function fixRscModulesImports(
         context,
         modulePath,
         fixImportContext,
-        false
+        false,
+        baseDir
       );
     } catch (err) {
       logger.error(

@@ -352,7 +352,7 @@ export async function sync(
     }
 
     // Now we know config.components are all correct, so we can go ahead and fix up all the import statements
-    await fixAllImportStatements(context, summary);
+    await fixAllImportStatements(context, opts.baseDir, summary);
 
     const codegenVersion = await context.api.latestCodegenVersion();
     context.lock.projects.forEach((p) => {
@@ -365,7 +365,7 @@ export async function sync(
       }
     });
     // Write the new ComponentConfigs to disk
-    await updateConfig(context, context.config);
+    await updateConfig(context, context.config, baseDir);
   };
 
   // Perform the actual sync
@@ -582,29 +582,34 @@ async function syncProject(
     for (const c of projectBundle.components) {
       [c.renderModuleFileName, c.renderModule] = await maybeConvertTsxToJsx(
         c.renderModuleFileName,
-        c.renderModule
+        c.renderModule,
+        opts.baseDir
       );
       [c.skeletonModuleFileName, c.skeletonModule] = await maybeConvertTsxToJsx(
         c.skeletonModuleFileName,
-        c.skeletonModule
+        c.skeletonModule,
+        opts.baseDir
       );
     }
     for (const icon of projectBundle.iconAssets) {
       [icon.fileName, icon.module] = await maybeConvertTsxToJsx(
         icon.fileName,
-        icon.module
+        icon.module,
+        opts.baseDir
       );
     }
     for (const gv of projectBundle.globalVariants) {
       [gv.contextFileName, gv.contextModule] = await maybeConvertTsxToJsx(
         gv.contextFileName,
-        gv.contextModule
+        gv.contextModule,
+        opts.baseDir
       );
     }
     for (const theme of projectBundle.projectConfig.jsBundleThemes || []) {
       [theme.themeFileName, theme.themeModule] = await maybeConvertTsxToJsx(
         theme.themeFileName,
-        theme.themeModule
+        theme.themeModule,
+        opts.baseDir
       );
     }
   }
@@ -613,7 +618,8 @@ async function syncProject(
     projectBundle.projectConfig,
     projectBundle.globalVariants,
     projectBundle.checksums,
-    branchName
+    branchName,
+    opts.baseDir
   );
 
   await syncProjectConfig(
@@ -627,6 +633,7 @@ async function syncProject(
     opts.forceOverwrite,
     summary,
     projectBundle.checksums,
+    opts.baseDir,
     indirect
   );
   syncCodeComponentsMeta(context, projectId, projectBundle.codeComponentMetas);
@@ -646,7 +653,8 @@ async function syncProject(
     branchName,
     projectVersion,
     projectBundle.iconAssets,
-    projectBundle.checksums
+    projectBundle.checksums,
+    opts.baseDir
   );
   await syncProjectImageAssets(
     context,
@@ -691,6 +699,7 @@ async function syncProjectConfig(
   forceOverwrite: boolean,
   summary: Map<string, ComponentUpdateSummary>,
   checksums: ChecksumBundle,
+  baseDir: string,
   indirect: boolean
 ) {
   const defaultCssFilePath = defaultResourcePath(
@@ -734,7 +743,8 @@ async function syncProjectConfig(
   if (projectBundle.cssRules) {
     const formattedCssRules = await formatAsLocal(
       projectBundle.cssRules,
-      projectConfig.cssFilePath
+      projectConfig.cssFilePath,
+      baseDir
     );
 
     // Write out project css
@@ -795,7 +805,8 @@ async function syncProjectConfig(
     projectBundle,
     projectConfig,
     projectLock,
-    checksums
+    checksums,
+    baseDir
   );
 
   await syncSplitsProvider(
@@ -803,7 +814,8 @@ async function syncProjectConfig(
     projectBundle,
     projectConfig,
     projectLock,
-    checksums
+    checksums,
+    baseDir
   );
 
   // Write out components
@@ -815,7 +827,8 @@ async function syncProjectConfig(
     forceOverwrite,
     summary,
     projectLock,
-    checksums
+    checksums,
+    baseDir
   );
 }
 
