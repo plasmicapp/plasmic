@@ -263,18 +263,9 @@ export async function replaceImports(
       return;
     }
     changed = true;
-
-    // Remove Plasmic import directives after import statements, like in
-    // `import Button from "./Button"; // plasmic-import: 4SYnkOQLd5/component`
-    // Import directives should be removed for skeleton files, since they are
-    // edited by the user and therefore run through linters.
-    // When linters remove unused imports, these comments might be left intact.
-    // To avoid this, remove the comments.
-    // https://linear.app/plasmic/issue/PLA-427
     if (removeImportDirective) {
       commentsToRemove.add(stmt.trailingComments?.[0].value || "");
     }
-
     const type = spec.type;
     const uuid = spec.id;
     if (type === "component") {
