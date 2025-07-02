@@ -368,17 +368,15 @@ export interface FileLock {
   assetId: string;
 }
 
-/** Maps projectId to version. */
-export interface DependencyVersions {
-  [projectId: string]: string;
-}
-
 export interface ProjectLock {
   projectId: string;
   branchName: string;
   // The exact version that was last synced
   version: string;
-  dependencies: DependencyVersions;
+  dependencies: {
+    // Maps from projectId => exact version
+    [projectId: string]: string;
+  };
   // The language during last sync
   lang: "ts" | "js";
   // One for each file whose checksum is computed

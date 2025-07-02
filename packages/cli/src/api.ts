@@ -5,7 +5,6 @@ import {
   CodeConfig,
   CustomFunctionConfig,
   DEFAULT_HOST,
-  DependencyVersions,
   FontConfig,
   I18NConfig,
   ImagesConfig,
@@ -108,7 +107,9 @@ export interface ProjectVersionMeta {
   version: string;
   projectName: string;
   componentIds: string[];
-  dependencies: DependencyVersions;
+  dependencies: {
+    [projectId: string]: string;
+  };
   indirect: boolean;
 }
 

@@ -12,7 +12,7 @@ import {
   StyleTokensMap,
   VersionResolution,
 } from "../api";
-import { AuthConfig, DependencyVersions } from "../utils/config-utils";
+import { AuthConfig } from "../utils/config-utils";
 import { ensure } from "../utils/lang-utils";
 import * as semver from "../utils/semver";
 
@@ -30,7 +30,9 @@ export interface MockProject {
   version: string;
   projectName: string;
   components: MockComponent[];
-  dependencies: DependencyVersions;
+  dependencies: {
+    [projectId: string]: string;
+  };
 }
 export interface MockComponent {
   id: string;
@@ -64,7 +66,11 @@ function mockProjectToProjectVersionMeta(
   };
 }
 
-/** Adds project to mock API */
+/**
+ * Call this in test to setup the data model
+ * @param id componentId
+ * @param comp MockComponent
+ */
 function addMockProject(proj: MockProject) {
   const projectId = proj.projectId;
   const branchName = proj.branchName;
@@ -89,84 +95,27 @@ function addMockProject(proj: MockProject) {
   }
 }
 
-const reComponentComment = /^\/\* (CSS|RENDER|SKELETON) (\{[^\n]*}) \*\/\n/;
-
 /**
  * Used to interpret data that's stored in the "codegen" files from the Mock server
+ * @param data
  */
-function stringToMockComponent(code?: string): MockComponent | undefined {
-  if (!code) {
-    return undefined;
+function stringToMockComponent(data?: string): MockComponent | undefined {
+  if (!data) {
+    return;
   }
-
-  const match = code.match(reComponentComment);
-  if (!match) {
-    return undefined;
-  }
-
-  return JSON.parse(match[2]);
+  const withoutComments = data.startsWith("//") ? data.slice(2) : data;
+  const cleaned = withoutComments.trim();
+  return JSON.parse(cleaned);
 }
 
 /**
- * Generates test code resembling CSS rules.
- *
- * The first line of this code is a comment that can be read by test function
- * `stringToMockComponent`.
+ * Used to write mock data into files for testing.
+ * Useful to see what version was written
+ * Need to prefix with a comment to satisfy the parser used in `fixAllImports`
+ * @param component
  */
-function genCssRules(component: MockComponent): string {
-  return `/* CSS ${JSON.stringify(component)} */
-.all { box-sizing: border-box; }
-`;
-}
-
-/**
- * Generates test code resembling a render module.
- *
- * The first line of this code is a comment that can be read by test function
- * `stringToMockComponent`.
- *
- * Includes imports for dependencies.
- */
-function genRenderModule(component: MockComponent): string {
-  const project = PROJECTS.find((p) => p.projectId === component.projectId)!;
-  const depIds = Object.keys(project.dependencies);
-  const deps = PROJECTS.filter((p) => depIds.includes(p.projectId));
-  return `/* RENDER ${JSON.stringify(component)} */
-
-${deps.map((dep) =>
-  // single quotes should be rewritten by Prettier
-  dep.components.map(
-    (depComp) =>
-      `import ${depComp.name} from '../${depComp.name}'; // plasmic-import: ${depComp.id}/component`
-  )
-)}
-
-export const Plasmic${component.name} = {};
-export default Plasmic${component.name};
-`;
-}
-
-/**
- * Generates test code resembling a skeleton module.
- *
- * The first line of this code is a comment that can be read by test function
- * `stringToMockComponent`.
- *
- * Includes imports for dependencies.
- */
-function genSkeletonModule(component: MockComponent): string {
-  const project = PROJECTS.find((p) => p.projectId === component.projectId)!;
-  const depIds = Object.keys(project.dependencies);
-  const deps = PROJECTS.filter((p) => depIds.includes(p.projectId));
-  return `/* SKELETON ${JSON.stringify(component)} */
-
-import Plasmic${component.name} from "plasmic/Plasmic${
-    component.name
-  }"; // plasmic-import: ${component.id}/component
-
-export const ${component.name} = Plasmic${component.name};
-export default ${component.name};
-`;
+function mockComponentToString(component: MockComponent): string {
+  return "// " + JSON.stringify(component);
 }
 
 function getMockProject(
@@ -213,9 +162,9 @@ function genFilename(base: string, suffix: string) {
 
 function genComponentBundle(component: MockComponent): ComponentBundle {
   return {
-    renderModule: genRenderModule(component),
-    skeletonModule: genSkeletonModule(component),
-    cssRules: genCssRules(component),
+    renderModule: mockComponentToString(component),
+    skeletonModule: mockComponentToString(component),
+    cssRules: `theClass {color: blue;}`,
     renderModuleFileName: genFilename(component.name, "tsx"),
     skeletonModuleFileName: component.name + ".tsx",
     cssFileName: genFilename(component.name, "css"),
