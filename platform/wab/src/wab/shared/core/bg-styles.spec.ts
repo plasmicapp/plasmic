@@ -314,6 +314,30 @@ describe("bg-styles", function () {
         attachment: "local",
       })
     );
+
+    // parse background-size auto properly.
+    expect(
+      BackgroundLayer.fromCss(
+        `linear-gradient(90deg, black 50%, #fff 70%) 10% 15px / auto auto repeat padding-box border-box local`
+      )
+    ).toEqual(
+      new BackgroundLayer({
+        image: new LinearGradient({
+          repeating: false,
+          angle: 90,
+          stops: tuple(
+            new Stop("black", new Dim(50, "%")),
+            new Stop("#fff", new Dim(70, "%"))
+          ),
+        }),
+        position: "10% 15px",
+        size: "auto auto",
+        repeat: "repeat",
+        origin: "padding-box",
+        clip: "border-box",
+        attachment: "local",
+      })
+    );
   });
 
   it("should parse Background fromCss", function () {

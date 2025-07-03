@@ -11,7 +11,7 @@ export function isBackgroundPositionKeyword(value: string) {
   );
 }
 
-export const backgroundSizeKeywords = ["cover", "contain"] as const;
+export const backgroundSizeKeywords = ["cover", "contain", "auto"] as const;
 
 export type BackgroundSizeKeyword = (typeof backgroundSizeKeywords)[number];
 
