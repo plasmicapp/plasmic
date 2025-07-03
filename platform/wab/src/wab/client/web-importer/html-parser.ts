@@ -625,6 +625,12 @@ export async function parseHtmlToWebImporterTree(
   const document = parser.parseFromString(htmlString, "text/html");
 
   const root = document.body;
+  /* document.body is the root element that translates to a vertical stack and wraps the rest of the design
+   * In most of the cases, we need to stretch the design after the html paste so we are considering it to be a better
+   * default value for the width. Note that this won't work with Document layout since it has additional special values
+   * such as "plasmic-layout-full-bleed" and "plasmic-layout-wide" which sets additional grid-column-start and grid-column-end css.
+   */
+  root.setAttribute("style", `width: 100%;`);
 
   traverseNodes(root, (node) => {
     setInternalId(node);
