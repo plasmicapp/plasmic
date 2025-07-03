@@ -126,9 +126,11 @@ import {
   ApiUser,
   ArenaType,
   BranchId,
+  CopilotImage,
   CopilotInteractionId,
   InitServerInfo,
   MainBranchId,
+  QueryCopilotUiResponse,
   ServerSessionsInfo,
   TemplateSpec,
   UpdatePlayerViewRequest,
@@ -6615,16 +6617,36 @@ export class StudioCtx extends WithDbCtx {
     { name: "getProjectData" }
   );
 
-  private _copilotHistory = observable.map<string, CopilotInteraction[]>();
+  private _copilotHistory = observable.map<CopilotType, CopilotInteraction[]>();
 
-  addToCopilotHistory(type: string, copilotInteraction: CopilotInteraction) {
+  addToCopilotHistory(
+    type: "ui",
+    copilotInteraction: CopilotInteraction<QueryCopilotUiResponse["data"]>
+  ): void;
+  addToCopilotHistory(
+    type: "code" | "sql",
+    copilotInteraction: CopilotInteraction<string>
+  ): void;
+  addToCopilotHistory(
+    type: CopilotType,
+    copilotInteraction: CopilotInteraction<unknown>
+  ): void;
+  addToCopilotHistory(
+    type: CopilotType,
+    copilotInteraction: CopilotInteraction<unknown>
+  ): void {
     this._copilotHistory.set(type, [
       ...(this._copilotHistory.get(type) ?? []),
       copilotInteraction,
     ]);
   }
 
-  getCopilotHistory(type: string) {
+  getCopilotHistory(
+    type: "ui"
+  ): CopilotInteraction<QueryCopilotUiResponse["data"]>[];
+  getCopilotHistory(type: "code" | "sql"): CopilotInteraction<string>[];
+  getCopilotHistory(type: CopilotType): CopilotInteraction<unknown>[];
+  getCopilotHistory(type: CopilotType): CopilotInteraction<unknown>[] {
     return [...(this._copilotHistory.get(type) ?? [])];
   }
 
@@ -7078,10 +7100,17 @@ export class StudioCtx extends WithDbCtx {
   };
 }
 
-interface CopilotInteraction {
+export type CopilotType = "ui" | "code" | "sql";
+
+export type CopilotPrompt = {
+  prompt: string;
+  images: CopilotImage[];
+};
+
+export interface CopilotInteraction<T = unknown> {
   prompt: string;
   id: CopilotInteractionId;
-  response: string;
+  response: T;
   displayMessage?: string;
 }
 

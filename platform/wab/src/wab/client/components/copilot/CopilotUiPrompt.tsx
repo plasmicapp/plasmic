@@ -4,6 +4,7 @@ import { CopilotPromptDialog } from "@/wab/client/components/copilot/CopilotProm
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { parseHtmlToWebImporterTree } from "@/wab/client/web-importer/html-parser";
 import { processWebImporterTree } from "@/wab/client/WebImporter";
+import { TokenType } from "@/wab/commons/StyleToken";
 import { QueryCopilotUiResponse } from "@/wab/shared/ApiSchema";
 import { spawn } from "@/wab/shared/common";
 import * as React from "react";
@@ -15,17 +16,62 @@ function CopilotUiPrompt() {
     : undefined;
 
   return (
-    <CopilotPromptDialog
+    <CopilotPromptDialog<QueryCopilotUiResponse["data"]>
       type={"ui"}
       showImageUpload={true}
       dialogOpen={studioCtx.showUiCopilot}
       onDialogOpenChange={(isOpen) => {
         studioCtx.openUiCopilotDialog(isOpen);
       }}
-      onUpdate={async (newValue) => {
-        const copilotUiData = JSON.parse(
-          newValue
-        ) as unknown as QueryCopilotUiResponse["data"];
+      onCopilotSubmit={async ({ prompt, images }) => {
+        const result = await studioCtx.appCtx.api.queryUiCopilot({
+          type: "ui",
+          goal: prompt,
+          projectId: studioCtx.siteInfo.id,
+          images,
+          tokens: studioCtx.site.styleTokens.map((t) => ({
+            name: t.name,
+            uuid: t.uuid,
+            type: t.type as TokenType,
+            value: t.value,
+          })),
+        });
+
+        const response = result.data;
+
+        const messageParts: string[] = [];
+
+        if (response) {
+          const actions = response.actions;
+          const hasHtmlDesign =
+            actions.filter((action) => action.name === "insert-html")?.length >
+            0;
+          if (hasHtmlDesign) {
+            messageParts.push(
+              "• A new HTML design snippet is ready to be used"
+            );
+          }
+
+          const newTokensCount =
+            actions.filter((action) => action.name === "add-token")?.length ??
+            0;
+          if (newTokensCount > 0) {
+            messageParts.push(
+              `• ${newTokensCount} new token${
+                newTokensCount > 1 ? "s" : ""
+              } is ready to be used`
+            );
+          }
+        }
+
+        return {
+          response,
+          displayMessage: messageParts.join("\n"),
+          copilotInteractionId: result.copilotInteractionId,
+        };
+      }}
+      onCopilotApply={async (newValue) => {
+        const copilotUiData = newValue;
         if (!copilotUiData) {
           return;
         }
