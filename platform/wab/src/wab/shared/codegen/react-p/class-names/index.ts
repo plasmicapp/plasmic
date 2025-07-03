@@ -3,10 +3,10 @@ import {
   isBaseRuleVariant,
   isBaseVariant,
   isCodeComponentVariant,
-  isScreenVariant,
   isStandaloneVariantGroup,
   isValidComboForToken,
 } from "@/wab/shared/Variants";
+import { getContextGlobalVariantsWithVariantedTokens } from "@/wab/shared/codegen/react-p/global-variants";
 import {
   NodeNamer,
   getExportedComponentName,
@@ -22,10 +22,6 @@ import {
   shortPlasmicPrefix,
 } from "@/wab/shared/codegen/react-p/serialize-utils";
 import { SerializerBaseContext } from "@/wab/shared/codegen/react-p/types";
-import {
-  extractUsedGlobalVariantCombosForTokens,
-  extractUsedTokensForComponents,
-} from "@/wab/shared/codegen/style-tokens";
 import { TargetEnv } from "@/wab/shared/codegen/types";
 import {
   ensureJsIdentifier,
@@ -235,25 +231,14 @@ const makeCssClassExprsForVariantedTokens = (ctx: SerializerBaseContext) => {
     )
   );
 
-  const tokens = new Set([
-    ...extractUsedTokensForComponents(ctx.site, [component], {
-      expandMixins: true,
-      derefTokens: true,
-    }),
-    ...ctx.componentGenHelper.siteHelper.usedTokensForTheme(),
-  ]);
-
-  const globalVariantCombos = extractUsedGlobalVariantCombosForTokens(
-    ctx.site,
-    tokens
-  );
+  // Context global variants require className to render their CSS changes.
   // Screen variants are rendered through media query
-  const nonScreenGlobalVariantCombos = Array.from(globalVariantCombos)
-    .map((vc) => vc.filter((v) => !isScreenVariant(v)))
-    .filter((vc) => vc.length > 0);
-  if (nonScreenGlobalVariantCombos.length > 0) {
+  const contextGlobalVariantCombos =
+    getContextGlobalVariantsWithVariantedTokens(ctx.site).map((v) => [v]);
+
+  if (contextGlobalVariantCombos.length > 0) {
     const sorter = makeGlobalVariantComboSorter(ctx.site);
-    sortedVariantCombos(nonScreenGlobalVariantCombos, sorter).forEach((vc) => {
+    sortedVariantCombos(contextGlobalVariantCombos, sorter).forEach((vc) => {
       let comboClassNameExpr: string;
       if (useCssModules) {
         // If we're using css modules, we need to make sure we reference

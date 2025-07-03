@@ -143,8 +143,7 @@ export function exportReactPlain(
   const nodeNamer = makeNodeNamer(component);
   const reactHookSpecs = deriveReactHookSpecs(component, nodeNamer);
   const projectFlags = getProjectFlags(site);
-  // The array of global variants used for non css purpose, including visibility
-  // change and text change.
+
   const usedGlobalVariantGroups = getUsedGlobalVariantGroups(
     site,
     component,

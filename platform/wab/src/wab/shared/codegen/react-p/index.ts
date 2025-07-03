@@ -586,8 +586,6 @@ export function exportReactPresentational(
     opts.whitespaceNormal = true;
   }
 
-  // The array of global variants used for non css purpose, including visibility
-  // change and text change.
   const usedGlobalVariantGroups = getUsedGlobalVariantGroups(
     site,
     component,
