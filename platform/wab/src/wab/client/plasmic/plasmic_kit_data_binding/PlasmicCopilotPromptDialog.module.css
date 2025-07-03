@@ -216,6 +216,7 @@
   min-width: 0;
 }
 .historyContainerstate_history {
+  max-height: 300px;
   display: flex;
 }
 .historyContainerstate_historyEmpty {

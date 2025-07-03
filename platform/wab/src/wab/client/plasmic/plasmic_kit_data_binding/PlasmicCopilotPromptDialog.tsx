@@ -217,6 +217,7 @@ function PlasmicCopilotPromptDialog__RenderFunc(props: {
               "state",
               "ready"
             ),
+            [sty.popoverPlaceholdertype_sql]: hasVariant($state, "type", "sql"),
             [sty.popoverPlaceholdertype_ui]: hasVariant($state, "type", "ui"),
           }
         )}
@@ -253,6 +254,7 @@ function PlasmicCopilotPromptDialog__RenderFunc(props: {
             [sty.sizerContainerstate_ready_type_ui]:
               hasVariant($state, "type", "ui") &&
               hasVariant($state, "state", "ready"),
+            [sty.sizerContainertype_sql]: hasVariant($state, "type", "sql"),
             [sty.sizerContainertype_ui]: hasVariant($state, "type", "ui"),
           })}
         >
@@ -285,6 +287,7 @@ function PlasmicCopilotPromptDialog__RenderFunc(props: {
               [sty.promptDialogstate_ready_type_ui]:
                 hasVariant($state, "type", "ui") &&
                 hasVariant($state, "state", "ready"),
+              [sty.promptDialogtype_sql]: hasVariant($state, "type", "sql"),
               [sty.promptDialogtype_ui]: hasVariant($state, "type", "ui"),
             })}
           >
@@ -292,10 +295,20 @@ function PlasmicCopilotPromptDialog__RenderFunc(props: {
               data-plasmic-name={"headerContainer"}
               data-plasmic-override={overrides.headerContainer}
               className={classNames(projectcss.all, sty.headerContainer, {
+                [sty.headerContainerstate_quotaExceeded]: hasVariant(
+                  $state,
+                  "state",
+                  "quotaExceeded"
+                ),
                 [sty.headerContainerstate_ready]: hasVariant(
                   $state,
                   "state",
                   "ready"
+                ),
+                [sty.headerContainertype_sql]: hasVariant(
+                  $state,
+                  "type",
+                  "sql"
                 ),
               })}
             >
@@ -340,6 +353,11 @@ function PlasmicCopilotPromptDialog__RenderFunc(props: {
                       $state,
                       "state",
                       "history"
+                    ),
+                    [sty.historystate_ready]: hasVariant(
+                      $state,
+                      "state",
+                      "ready"
                     ),
                   }
                 )}
@@ -402,6 +420,7 @@ function PlasmicCopilotPromptDialog__RenderFunc(props: {
                   "state",
                   "history"
                 ),
+                [sty.contentstype_sql]: hasVariant($state, "type", "sql"),
               })}
             >
               {(
@@ -424,6 +443,11 @@ function PlasmicCopilotPromptDialog__RenderFunc(props: {
                       $state,
                       "state",
                       "history"
+                    ),
+                    [sty.historyContainerstate_quotaExceeded]: hasVariant(
+                      $state,
+                      "state",
+                      "quotaExceeded"
                     ),
                   })}
                 >
@@ -468,6 +492,11 @@ function PlasmicCopilotPromptDialog__RenderFunc(props: {
                         "state",
                         "history"
                       ),
+                      [sty.historyContentsstate_quotaExceeded]: hasVariant(
+                        $state,
+                        "state",
+                        "quotaExceeded"
+                      ),
                     })}
                   >
                     <CopilotMsg
@@ -505,7 +534,22 @@ function PlasmicCopilotPromptDialog__RenderFunc(props: {
                   <div
                     data-plasmic-name={"historyBottomDiv"}
                     data-plasmic-override={overrides.historyBottomDiv}
-                    className={classNames(projectcss.all, sty.historyBottomDiv)}
+                    className={classNames(
+                      projectcss.all,
+                      sty.historyBottomDiv,
+                      {
+                        [sty.historyBottomDivstate_history]: hasVariant(
+                          $state,
+                          "state",
+                          "history"
+                        ),
+                        [sty.historyBottomDivstate_quotaExceeded]: hasVariant(
+                          $state,
+                          "state",
+                          "quotaExceeded"
+                        ),
+                      }
+                    )}
                     id={"history-bottom-div"}
                   >
                     <PlasmicImg__
@@ -522,6 +566,11 @@ function PlasmicCopilotPromptDialog__RenderFunc(props: {
                           $state,
                           "state",
                           "history"
+                        ),
+                        [sty.onLoadTriggerstate_quotaExceeded]: hasVariant(
+                          $state,
+                          "state",
+                          "quotaExceeded"
                         ),
                       })}
                       displayHeight={
@@ -651,6 +700,11 @@ function PlasmicCopilotPromptDialog__RenderFunc(props: {
                       "state",
                       "loading"
                     ),
+                    [sty.svgstate_ready__qXcOj65H5W]: hasVariant(
+                      $state,
+                      "state",
+                      "ready"
+                    ),
                   })}
                   role={"img"}
                 />
@@ -667,6 +721,11 @@ function PlasmicCopilotPromptDialog__RenderFunc(props: {
                       $state,
                       "state",
                       "error"
+                    ),
+                    [sty.errorMessagestate_ready]: hasVariant(
+                      $state,
+                      "state",
+                      "ready"
                     ),
                   }
                 )}
@@ -685,6 +744,11 @@ function PlasmicCopilotPromptDialog__RenderFunc(props: {
                       $state,
                       "state",
                       "quotaExceeded"
+                    ),
+                    [sty.quotaExceededMsgstate_ready]: hasVariant(
+                      $state,
+                      "state",
+                      "ready"
                     ),
                   }
                 )}
