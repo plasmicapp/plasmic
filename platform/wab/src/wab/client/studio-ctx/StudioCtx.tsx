@@ -11,9 +11,9 @@ import { invalidationKey } from "@/wab/client/api";
 import { getProjectReleases } from "@/wab/client/api-hooks";
 import { storageViewAsKey } from "@/wab/client/app-auth/constants";
 import {
-  UU,
   mkProjectLocation,
   parseProjectLocation,
+  parseRoute,
 } from "@/wab/client/cli-routes";
 import { LocalClipboard } from "@/wab/client/clipboard/local";
 import { syncCodeComponentsAndHandleErrors } from "@/wab/client/code-components/code-components";
@@ -334,6 +334,7 @@ import {
 } from "@/wab/shared/model/model-change-util";
 import { reorderPageArenaCols } from "@/wab/shared/page-arenas";
 import { getAccessLevelToResource } from "@/wab/shared/perms";
+import { APP_ROUTES } from "@/wab/shared/route/app-routes";
 import {
   DeletedAssetsSummary,
   getEmptyDeletedAssetsSummary,
@@ -708,7 +709,11 @@ export class StudioCtx extends WithDbCtx {
     this.fontManager = new FontManager(this.site);
     this.fontManager.installAllUsedFonts([$(document.head)]);
 
-    this.isDocs = !!UU.projectDocs.parse(location.pathname, false);
+    this.isDocs = !!parseRoute(
+      APP_ROUTES.projectDocs,
+      location.pathname,
+      false
+    );
 
     spawn(
       this.getProjectReleases().then((releases) =>

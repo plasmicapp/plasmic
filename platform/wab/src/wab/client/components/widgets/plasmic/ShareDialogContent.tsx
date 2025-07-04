@@ -1,4 +1,3 @@
-import { U } from "@/wab/client/cli-routes";
 import TextWithInfo from "@/wab/client/components/TextWithInfo";
 import PermissionsTab from "@/wab/client/components/app-auth/PermissionsTab";
 import { useAppAuthConfig } from "@/wab/client/components/app-auth/app-auth-contexts";
@@ -52,6 +51,8 @@ import {
   getAccessLevelToResource,
   resourceTypeIdField,
 } from "@/wab/shared/perms";
+import { APP_ROUTES } from "@/wab/shared/route/app-routes";
+import { fillRoute } from "@/wab/shared/route/route";
 import { getPublicUrl } from "@/wab/shared/urls";
 import { Menu, notification } from "antd";
 import copy from "copy-to-clipboard";
@@ -80,7 +81,7 @@ export const personalProjectPaywallMessage = (
 
 export function getTeamInviteLink(team: ApiTeam) {
   const url = new URL(
-    U.org({
+    fillRoute(APP_ROUTES.org, {
       teamId: team.id,
     }),
     getPublicUrl()
@@ -506,7 +507,7 @@ function ShareDialogContent(props: ShareDialogContentProps) {
         resource.resource.workspaceName
           ? {
               props: {
-                href: U.workspace({
+                href: fillRoute(APP_ROUTES.workspace, {
                   workspaceId: resource.resource.workspaceId,
                 }),
                 target: "_blank",
@@ -519,9 +520,9 @@ function ShareDialogContent(props: ShareDialogContentProps) {
         props: {
           href:
             resource.type === "project" && resource.resource.teamId
-              ? U.org({ teamId: resource.resource.teamId })
+              ? fillRoute(APP_ROUTES.org, { teamId: resource.resource.teamId })
               : resource.type === "workspace"
-              ? U.org({ teamId: resource.resource.team.id })
+              ? fillRoute(APP_ROUTES.org, { teamId: resource.resource.team.id })
               : undefined,
           target: "_blank",
         },
@@ -544,7 +545,7 @@ function ShareDialogContent(props: ShareDialogContentProps) {
           });
           copy(
             new URL(
-              U.project({
+              fillRoute(APP_ROUTES.project, {
                 projectId: resource.resource.id,
               }),
               getPublicUrl()
@@ -560,7 +561,7 @@ function ShareDialogContent(props: ShareDialogContentProps) {
                 });
                 copy(
                   new URL(
-                    U.project({
+                    fillRoute(APP_ROUTES.project, {
                       projectId: resource.resource.id,
                     }),
                     getPublicUrl()
@@ -588,7 +589,7 @@ function ShareDialogContent(props: ShareDialogContentProps) {
                   });
                   copy(
                     new URL(
-                      U.projectPreview({
+                      fillRoute(APP_ROUTES.projectPreview, {
                         projectId: resource.resource.id,
                         previewPath: arenaId,
                       }),

@@ -1,4 +1,3 @@
-import { UU } from "@/wab/client/cli-routes";
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import NewComponentItem from "@/wab/client/components/widgets/NewComponentItem";
 import NewComponentSection from "@/wab/client/components/widgets/NewComponentSection";
@@ -11,6 +10,7 @@ import {
 } from "@/wab/client/plasmic/plasmic_kit_new_component/PlasmicNewComponentModal";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { InsertableTemplatesItem } from "@/wab/shared/devflags";
+import { APP_ROUTES } from "@/wab/shared/route/app-routes";
 import { Tooltip } from "antd";
 import * as React from "react";
 import { useState } from "react";
@@ -176,7 +176,7 @@ function NewPageModal(props: NewPageModalProps) {
                         if (!template) {
                           return;
                         }
-                        const route = UU.projectFullPreview.pattern
+                        const route = APP_ROUTES.projectFullPreview.pattern
                           .replace(":projectId", comp.projectId)
                           .replace(":previewPath*", template.component.uuid);
                         window.open(route, "_blank");

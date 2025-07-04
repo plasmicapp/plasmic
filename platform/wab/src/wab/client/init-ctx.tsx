@@ -1,7 +1,6 @@
 import * as Api from "@/wab/client/api";
 import { AppCtx } from "@/wab/client/app-ctx";
 import {
-  UU,
   getEmaiLVerificationRouteWithContinuation,
   getLoginRouteWithContinuation,
   parseProjectLocation,
@@ -20,6 +19,8 @@ import * as tpls from "@/wab/shared/core/tpls";
 import { getProjectFlags } from "@/wab/shared/devflags";
 import { instUtil } from "@/wab/shared/model/InstUtil";
 import { ProjectDependency } from "@/wab/shared/model/classes";
+import { APP_ROUTES } from "@/wab/shared/route/app-routes";
+import { fillRoute } from "@/wab/shared/route/route";
 import { fixPageHrefsToLocal } from "@/wab/shared/utils/split-site-utils";
 import { notification } from "antd";
 import * as React from "react";
@@ -151,7 +152,7 @@ export async function checkDepPkgHosts(
             imports components from{" "}
             <a
               target="_blank"
-              href={UU.project.fill({
+              href={fillRoute(APP_ROUTES.project, {
                 projectId: pkgVersion.pkg.pkg?.projectId,
               })}
             >

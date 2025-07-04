@@ -3,7 +3,6 @@ import {
   NonAuthComponent,
   NonAuthComponentProps,
 } from "@/wab/client/app-ctx";
-import { UU } from "@/wab/client/cli-routes";
 import { PublicLink } from "@/wab/client/components/PublicLink";
 import { Avatar } from "@/wab/client/components/studio/Avatar";
 import { HelpButton } from "@/wab/client/components/top-bar/HelpButton";
@@ -14,6 +13,8 @@ import { Icon } from "@/wab/client/components/widgets/Icon";
 import MarkFullColorIcon from "@/wab/client/plasmic/plasmic_kit_design_system/PlasmicIcon__MarkFullColor";
 import ChevronDownsvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg";
 import { ensure } from "@/wab/shared/common";
+import { APP_ROUTES } from "@/wab/shared/route/app-routes";
+import { fillRoute } from "@/wab/shared/route/route";
 import { Dropdown, Menu } from "antd";
 import * as React from "react";
 import { ReactNode } from "react";
@@ -64,7 +65,9 @@ export class NormalLayout extends AppComponent {
     const menu = (
       <Menu>
         <Menu.Item>
-          <PublicLink href={UU.settings.fill({})}>Settings</PublicLink>
+          <PublicLink href={fillRoute(APP_ROUTES.settings, {})}>
+            Settings
+          </PublicLink>
         </Menu.Item>
         <Menu.Item
           onClick={async () => {

@@ -11,9 +11,7 @@ import {
   getLoginRouteWithContinuation,
   getRouteContinuation,
   isProjectPath,
-  mkProjectLocation,
   Router,
-  UU,
 } from "@/wab/client/cli-routes";
 import AllProjectsPage from "@/wab/client/components/dashboard/AllProjectsPage";
 import MyPlayground from "@/wab/client/components/dashboard/MyPlayground";
@@ -55,7 +53,7 @@ import {
   promisifyMethods,
   PromisifyMethods,
 } from "@/wab/commons/promisify-methods";
-import { CmsDatabaseId, isArenaType } from "@/wab/shared/ApiSchema";
+import { CmsDatabaseId } from "@/wab/shared/ApiSchema";
 import { FastBundler } from "@/wab/shared/bundler";
 import { ensure, hackyCast, spawn } from "@/wab/shared/common";
 import { isAdminTeamEmail } from "@/wab/shared/devflag-utils";
@@ -63,6 +61,8 @@ import { StarterSectionConfig } from "@/wab/shared/devflags";
 import { accessLevelRank } from "@/wab/shared/EntUtil";
 import { getAccessLevelToResource } from "@/wab/shared/perms";
 import { getMaximumTierFromTeams } from "@/wab/shared/pricing/pricing-utils";
+import { APP_ROUTES } from "@/wab/shared/route/app-routes";
+import { fillRoute } from "@/wab/shared/route/route";
 import * as React from "react";
 import { Redirect, Route, Switch, useHistory, useLocation } from "react-router";
 
@@ -102,7 +102,7 @@ function LoggedInContainer(props: LoggedInContainerProps) {
   function projectRoute() {
     return (
       <Route
-        path={UU.project.pattern}
+        path={APP_ROUTES.project.pattern}
         render={({ match }) => (
           <LazyViewInitializer
             appCtx={appCtx}
@@ -149,7 +149,7 @@ function LoggedInContainer(props: LoggedInContainerProps) {
         <Switch>
           <Route
             exact
-            path={UU.starter.pattern}
+            path={APP_ROUTES.starter.pattern}
             render={({ match, location }) => {
               const starter = getStarter(
                 appCtx.appConfig.starterSections,
@@ -166,7 +166,7 @@ function LoggedInContainer(props: LoggedInContainerProps) {
           />
           <Route
             exact
-            path={UU.fork.pattern}
+            path={APP_ROUTES.fork.pattern}
             render={({ match, location }) => {
               // NOTE: Temporarily re-using the FromStarterTemplate component to fork a public project
               // TODO (later): Fork a private project using listingId
@@ -186,10 +186,11 @@ function LoggedInContainer(props: LoggedInContainerProps) {
           />
           <Route
             exact
-            path={UU.teamCreation.pattern}
+            path={APP_ROUTES.teamCreation.pattern}
             render={({ match, location }) => (
               <Redirect
-                to={UU.orgCreation.fill(
+                to={fillRoute(
+                  APP_ROUTES.orgCreation,
                   match.params,
                   Object.fromEntries(new URLSearchParams(location.search))
                 )}
@@ -198,7 +199,7 @@ function LoggedInContainer(props: LoggedInContainerProps) {
           />
           <Route
             exact
-            path={UU.orgCreation.pattern}
+            path={APP_ROUTES.orgCreation.pattern}
             render={() => (
               <NormalNonAuthLayout nonAuthCtx={nonAuthCtx}>
                 <TeamCreation />
@@ -209,7 +210,8 @@ function LoggedInContainer(props: LoggedInContainerProps) {
             render={() =>
               selfInfo.needsSurvey ? (
                 <Redirect
-                  to={UU.survey.fill(
+                  to={fillRoute(
+                    APP_ROUTES.survey,
                     {},
                     {
                       continueTo: getRouteContinuation(),
@@ -218,7 +220,8 @@ function LoggedInContainer(props: LoggedInContainerProps) {
                 />
               ) : selfInfo.waitingEmailVerification ? (
                 <Redirect
-                  to={UU.emailVerification.fill(
+                  to={fillRoute(
+                    APP_ROUTES.emailVerification,
                     {},
                     {
                       continueTo: getRouteContinuation(),
@@ -227,7 +230,8 @@ function LoggedInContainer(props: LoggedInContainerProps) {
                 />
               ) : selfInfo.needsTeamCreationPrompt ? (
                 <Redirect
-                  to={UU.orgCreation.fill(
+                  to={fillRoute(
+                    APP_ROUTES.orgCreation,
                     {},
                     {
                       continueTo: getRouteContinuation(),
@@ -236,57 +240,26 @@ function LoggedInContainer(props: LoggedInContainerProps) {
                 />
               ) : (
                 <Switch>
-                  {/* TODO: Remove this redirect and all code for UU.projectBranchArena after 2024. */}
-                  <Route
-                    path={UU.projectBranchArena.pattern}
-                    render={({ location }) => {
-                      // Call parse() because Route.render() doesn't decode params.
-                      const match = ensure(
-                        UU.projectBranchArena.parse(location.pathname),
-                        "parse failed unexpectedly"
-                      );
-                      const {
-                        projectId,
-                        branchName,
-                        branchVersion,
-                        arenaName,
-                        arenaType: maybeArenaType,
-                      } = match.params;
-                      const arenaType = isArenaType(maybeArenaType)
-                        ? maybeArenaType
-                        : undefined;
-                      return (
-                        <Redirect
-                          to={mkProjectLocation({
-                            projectId,
-                            slug: arenaName,
-                            branchName,
-                            branchVersion,
-                            arenaType,
-                            arenaUuidOrNameOrPath: arenaName,
-                          })}
-                        />
-                      );
-                    }}
-                  />
                   {projectRoute()}
                   <Route
                     exact
-                    path={UU.dashboard.pattern}
-                    render={() => <Redirect to={UU.allProjects.fill({})} />}
+                    path={APP_ROUTES.dashboard.pattern}
+                    render={() => (
+                      <Redirect to={fillRoute(APP_ROUTES.allProjects, {})} />
+                    )}
                   />
                   <Route
                     exact
-                    path={UU.allProjects.pattern}
+                    path={APP_ROUTES.allProjects.pattern}
                     render={() => <AllProjectsPage />}
                   />
                   <Route
                     exact
-                    path={UU.playground.pattern}
+                    path={APP_ROUTES.playground.pattern}
                     render={() => <MyPlayground />}
                   />
                   <Route
-                    path={UU.workspace.pattern}
+                    path={APP_ROUTES.workspace.pattern}
                     render={({ match }) => (
                       <WorkspacePage
                         key={match.params.workspaceId}
@@ -296,10 +269,11 @@ function LoggedInContainer(props: LoggedInContainerProps) {
                   />
                   <Route
                     exact
-                    path={UU.team.pattern}
+                    path={APP_ROUTES.team.pattern}
                     render={({ match, location }) => (
                       <Redirect
-                        to={UU.org.fill(
+                        to={fillRoute(
+                          APP_ROUTES.org,
                           match.params,
                           Object.fromEntries(
                             new URLSearchParams(location.search)
@@ -310,7 +284,7 @@ function LoggedInContainer(props: LoggedInContainerProps) {
                   />
                   <Route
                     exact
-                    path={UU.org.pattern}
+                    path={APP_ROUTES.org.pattern}
                     render={({ match }) => (
                       <TeamPage
                         key={match.params.teamId}
@@ -319,7 +293,7 @@ function LoggedInContainer(props: LoggedInContainerProps) {
                     )}
                   />
                   <Route
-                    path={UU.cmsRoot.pattern}
+                    path={APP_ROUTES.cmsRoot.pattern}
                     render={({ match }) => (
                       <widgets.ObserverLoadable
                         loader={() => import("./cms/CmsRoot")}
@@ -334,10 +308,11 @@ function LoggedInContainer(props: LoggedInContainerProps) {
                     )}
                   />
                   <Route
-                    path={UU.teamSettings.pattern}
+                    path={APP_ROUTES.teamSettings.pattern}
                     render={({ match, location }) => (
                       <Redirect
-                        to={UU.orgSettings.fill(
+                        to={fillRoute(
+                          APP_ROUTES.orgSettings,
                           match.params,
                           Object.fromEntries(
                             new URLSearchParams(location.search)
@@ -347,7 +322,7 @@ function LoggedInContainer(props: LoggedInContainerProps) {
                     )}
                   />
                   <Route
-                    path={UU.orgSettings.pattern}
+                    path={APP_ROUTES.orgSettings.pattern}
                     render={({ match, location }) => {
                       const teamId = match.params.teamId;
                       // Block viewers from seeing the settings page.
@@ -368,7 +343,8 @@ function LoggedInContainer(props: LoggedInContainerProps) {
                       ) {
                         return (
                           <Redirect
-                            to={UU.org.fill(
+                            to={fillRoute(
+                              APP_ROUTES.org,
                               match.params,
                               Object.fromEntries(
                                 new URLSearchParams(location.search)
@@ -381,19 +357,22 @@ function LoggedInContainer(props: LoggedInContainerProps) {
                     }}
                   />
                   <Route
-                    path={UU.orgSupport.pattern}
+                    path={APP_ROUTES.orgSupport.pattern}
                     render={({ match }) => (
                       <TeamSupportRedirect teamId={match.params.teamId} />
                     )}
                   />
                   <Route
                     exact
-                    path={UU.settings.pattern}
+                    path={APP_ROUTES.settings.pattern}
                     render={() => <SettingsPage appCtx={appCtx} />}
                   />
                   <Route
                     exact
-                    path={[UU.admin.pattern, UU.adminTeams.pattern]}
+                    path={[
+                      APP_ROUTES.admin.pattern,
+                      APP_ROUTES.adminTeams.pattern,
+                    ]}
                     render={() =>
                       isAdminTeamEmail(selfInfo.email, appCtx.appConfig) ? (
                         <NormalLayout appCtx={appCtx}>
@@ -406,7 +385,7 @@ function LoggedInContainer(props: LoggedInContainerProps) {
                   />
                   <Route
                     exact
-                    path={UU.importProjectsFromProd.pattern}
+                    path={APP_ROUTES.importProjectsFromProd.pattern}
                     render={() =>
                       isAdminTeamEmail(selfInfo.email, appCtx.appConfig) ? (
                         <NormalLayout appCtx={appCtx}>
@@ -419,12 +398,12 @@ function LoggedInContainer(props: LoggedInContainerProps) {
                   />
                   <Route
                     exact
-                    path={UU.discourseConnectClient.pattern}
+                    path={APP_ROUTES.discourseConnectClient.pattern}
                     render={() => <DiscourseConnectClient />}
                   />
                   <Route
                     exact
-                    path={UU.plasmicInit.pattern}
+                    path={APP_ROUTES.plasmicInit.pattern}
                     render={({ match }) => (
                       <InitTokenPage
                         appCtx={appCtx}
@@ -434,10 +413,11 @@ function LoggedInContainer(props: LoggedInContainerProps) {
                   />
                   <Route
                     exact
-                    path={UU.teamAnalytics.pattern}
+                    path={APP_ROUTES.teamAnalytics.pattern}
                     render={({ match, location }) => (
                       <Redirect
-                        to={UU.orgAnalytics.fill(
+                        to={fillRoute(
+                          APP_ROUTES.orgAnalytics,
                           match.params,
                           Object.fromEntries(
                             new URLSearchParams(location.search)
@@ -448,7 +428,7 @@ function LoggedInContainer(props: LoggedInContainerProps) {
                   />
                   <Route
                     exact
-                    path={UU.orgAnalytics.pattern}
+                    path={APP_ROUTES.orgAnalytics.pattern}
                     render={({ match }) => (
                       <LazyTeamAnalytics teamId={match.params.teamId} />
                     )}
@@ -567,7 +547,7 @@ export function Root() {
                     <Switch>
                       <Route
                         exact
-                        path={UU.login.pattern}
+                        path={APP_ROUTES.login.pattern}
                         render={() => (
                           <>
                             <PromoBanner />
@@ -583,7 +563,7 @@ export function Root() {
                       />
                       <Route
                         exact
-                        path={UU.survey.pattern}
+                        path={APP_ROUTES.survey.pattern}
                         render={() => (
                           <NormalNonAuthLayout nonAuthCtx={nonAuthCtx}>
                             <SurveyForm />
@@ -592,7 +572,7 @@ export function Root() {
                       />
                       <Route
                         exact
-                        path={UU.emailVerification.pattern}
+                        path={APP_ROUTES.emailVerification.pattern}
                         render={() =>
                           !appCtx.selfInfo ? (
                             <Redirect to={getLoginRouteWithContinuation()} />
@@ -605,7 +585,7 @@ export function Root() {
                       />
                       <Route
                         exact
-                        path={UU.signup.pattern}
+                        path={APP_ROUTES.signup.pattern}
                         render={() => (
                           <>
                             <PromoBanner />
@@ -621,7 +601,7 @@ export function Root() {
                       />
                       <Route
                         exact
-                        path={UU.sso.pattern}
+                        path={APP_ROUTES.sso.pattern}
                         render={() => (
                           <NormalNonAuthLayout nonAuthCtx={nonAuthCtx}>
                             {documentTitle("Log in with SSO")}
@@ -631,7 +611,7 @@ export function Root() {
                       />
                       <Route
                         exact
-                        path={UU.logout.pattern}
+                        path={APP_ROUTES.logout.pattern}
                         render={() => {
                           spawn(appCtx.logout());
                           return null;
@@ -639,7 +619,7 @@ export function Root() {
                       />
                       <Route
                         exact
-                        path={UU.authorize.pattern}
+                        path={APP_ROUTES.authorize.pattern}
                         render={() => (
                           <NormalNonAuthLayout nonAuthCtx={nonAuthCtx}>
                             <AppAuthPage />
@@ -648,7 +628,7 @@ export function Root() {
                       />
                       <Route
                         exact
-                        path={UU.forgotPassword.pattern}
+                        path={APP_ROUTES.forgotPassword.pattern}
                         render={() => (
                           <NormalNonAuthLayout nonAuthCtx={nonAuthCtx}>
                             {documentTitle("Forgot password")}
@@ -658,7 +638,7 @@ export function Root() {
                       />
                       <Route
                         exact
-                        path={UU.resetPassword.pattern}
+                        path={APP_ROUTES.resetPassword.pattern}
                         render={() => (
                           <NormalNonAuthLayout nonAuthCtx={nonAuthCtx}>
                             {documentTitle("Reset password")}
@@ -668,7 +648,7 @@ export function Root() {
                       />
                       <Route
                         exact
-                        path={UU.githubCallback.pattern}
+                        path={APP_ROUTES.githubCallback.pattern}
                         render={() => (
                           <GithubCallback nonAuthCtx={nonAuthCtx} />
                         )}

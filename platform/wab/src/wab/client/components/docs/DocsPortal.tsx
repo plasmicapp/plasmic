@@ -1,6 +1,5 @@
-import DocsPortalBranches from "@/wab/client/components/docs/DocsPortalBranches";
-import { UU } from "@/wab/client/cli-routes";
 import { BottomModalsProvider } from "@/wab/client/components/BottomModal";
+import DocsPortalBranches from "@/wab/client/components/docs/DocsPortalBranches";
 import {
   DocsPortalCtx,
   providesDocsPortalCtx,
@@ -11,6 +10,7 @@ import { HostFrameCtx } from "@/wab/client/frame-ctx/host-frame-ctx";
 import { PlasmicDocsPortal } from "@/wab/client/plasmic/plasmic_kit_docs_portal/PlasmicDocsPortal";
 import CodegenTypeContext from "@/wab/client/plasmic/plasmic_kit_docs_portal/PlasmicGlobalVariant__CodegenType";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { APP_ROUTES } from "@/wab/shared/route/app-routes";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { useState } from "react";
@@ -57,7 +57,7 @@ const DocsPortal = observer(function DocsPortal(props: DocsPortalProps) {
     >
       <TopFrameObserver />
       <Switch>
-        <Route path={UU.projectDocs.pattern} exact>
+        <Route path={APP_ROUTES.projectDocs.pattern} exact>
           <DocsPortalBranches />
         </Route>
         <Route>

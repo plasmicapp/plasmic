@@ -1,15 +1,14 @@
 import { AppCtx } from "@/wab/client/app-ctx";
-import { U } from "@/wab/client/cli-routes";
 import { ConnectOAuthButton } from "@/wab/client/components/auth/ConnectOAuth";
 import styles from "@/wab/client/components/auth/ConnectOAuth.module.scss";
 import { reactPrompt } from "@/wab/client/components/quick-modals";
 import { SectionSeparator } from "@/wab/client/components/sidebar/sidebar-helpers";
 import { ListBox, ListBoxItem } from "@/wab/client/components/widgets";
 import Button from "@/wab/client/components/widgets/Button";
+import { Modal } from "@/wab/client/components/widgets/Modal";
 import Select from "@/wab/client/components/widgets/Select";
 import { Textbox } from "@/wab/client/components/widgets/Textbox";
 import { useApi } from "@/wab/client/contexts/AppContexts";
-import { ensure, notNil } from "@/wab/shared/common";
 import GLogo from "@/wab/commons/images/g-logo.png";
 import {
   ApiDataSource,
@@ -18,6 +17,7 @@ import {
   ListAuthIntegrationsResponse,
   WorkspaceId,
 } from "@/wab/shared/ApiSchema";
+import { ensure, notNil } from "@/wab/shared/common";
 import {
   DataSourceType,
   getAllPublicDataSourceMetas,
@@ -31,11 +31,12 @@ import {
 } from "@/wab/shared/data-sources-meta/data-sources";
 import { POSTGRES_META } from "@/wab/shared/data-sources-meta/postgres-meta";
 import { DATA_SOURCE_CAP, DATA_SOURCE_LOWER } from "@/wab/shared/Labels";
+import { APP_ROUTES } from "@/wab/shared/route/app-routes";
+import { fillRoute } from "@/wab/shared/route/route";
 import { Alert, Form, FormInstance, Input, notification } from "antd";
 import jsonrepair from "jsonrepair";
 import { isEqual, noop } from "lodash";
 import React from "react";
-import { Modal } from "@/wab/client/components/widgets/Modal";
 import useSWR, { useSWRConfig } from "swr";
 import type { SetRequired } from "type-fest";
 
@@ -773,7 +774,7 @@ function AirtableSignInButton(props: {
       onStart={onStart}
       onSuccess={onSuccess}
       onFailure={onFailure}
-      url={U.airtableAuth({})}
+      url={fillRoute(APP_ROUTES.airtableAuth, {})}
       waitingChildren={"Signing into airtable..."}
       disabled={disabled}
     >
@@ -796,7 +797,7 @@ function GoogleSheetsSignInButton(props: {
       onStart={onStart}
       onSuccess={onSuccess}
       onFailure={onFailure}
-      url={U.googleSheetsAuth({})}
+      url={fillRoute(APP_ROUTES.googleSheetsAuth, {})}
       waitingChildren={"Connect to Google"}
       disabled={disabled}
       style={{

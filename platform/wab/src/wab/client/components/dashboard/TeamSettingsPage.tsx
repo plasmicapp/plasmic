@@ -1,9 +1,10 @@
-import { UU } from "@/wab/client/cli-routes";
 import {
   DefaultTeamSettingsPageProps,
   PlasmicTeamSettingsPage,
 } from "@/wab/client/plasmic/plasmic_kit_dashboard/PlasmicTeamSettingsPage";
 import { TeamId } from "@/wab/shared/ApiSchema";
+import { APP_ROUTES } from "@/wab/shared/route/app-routes";
+import { fillRoute } from "@/wab/shared/route/route";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import * as React from "react";
 
@@ -22,7 +23,7 @@ function TeamSettingsPage_(
       defaultLayout={{
         helpButton: {
           props: {
-            href: UU.orgSupport.fill({ teamId }),
+            href: fillRoute(APP_ROUTES.orgSupport, { teamId }),
           },
         },
       }}

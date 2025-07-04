@@ -1,6 +1,6 @@
 import { storageViewAsKey } from "@/wab/client/app-auth/constants";
 import { AppCtx } from "@/wab/client/app-ctx";
-import { isHostFrame, UU } from "@/wab/client/cli-routes";
+import { isHostFrame } from "@/wab/client/cli-routes";
 import { syncCodeComponentsAndHandleErrors } from "@/wab/client/code-components/code-components";
 import importAndRetry from "@/wab/client/components/dynamic-import";
 import {
@@ -27,6 +27,7 @@ import { isHostLessPackage } from "@/wab/shared/core/sites";
 import { initBuiltinActions } from "@/wab/shared/core/states";
 import { PLEXUS_STORAGE_KEY } from "@/wab/shared/insertables";
 import { makeGlobalObservable } from "@/wab/shared/mobx-util";
+import { APP_ROUTES } from "@/wab/shared/route/app-routes";
 import { notification } from "antd";
 import { observer } from "mobx-react";
 import React from "react";
@@ -227,9 +228,8 @@ class StudioInitializer_ extends React.Component<
                 <Route
                   exact
                   path={[
-                    UU.project.pattern,
-                    UU.projectSlug.pattern,
-                    UU.projectBranchArena.pattern,
+                    APP_ROUTES.project.pattern,
+                    APP_ROUTES.projectSlug.pattern,
                   ]}
                   render={() => {
                     return (
@@ -241,7 +241,7 @@ class StudioInitializer_ extends React.Component<
                   }}
                 />
                 <Route
-                  path={UU.projectDocs.pattern}
+                  path={APP_ROUTES.projectDocs.pattern}
                   render={() => (
                     <>
                       {this.hideStudio()}
@@ -264,8 +264,8 @@ class StudioInitializer_ extends React.Component<
                 />
                 <Route
                   path={[
-                    UU.projectPreview.pattern,
-                    UU.projectFullPreview.pattern,
+                    APP_ROUTES.projectPreview.pattern,
+                    APP_ROUTES.projectFullPreview.pattern,
                   ]}
                   render={() => {
                     return (

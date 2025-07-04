@@ -1,5 +1,5 @@
 import { AppCtx } from "@/wab/client/app-ctx";
-import { isHostFrame, U } from "@/wab/client/cli-routes";
+import { isHostFrame } from "@/wab/client/cli-routes";
 import TeamPicker from "@/wab/client/components/modals/TeamPicker";
 import UpsellCheckout from "@/wab/client/components/modals/UpsellCheckout";
 import UpsellConfirm from "@/wab/client/components/modals/UpsellConfirm";
@@ -8,10 +8,9 @@ import {
   showTemporaryInfo,
   showTemporaryPrompt,
 } from "@/wab/client/components/quick-modals";
+import { Modal } from "@/wab/client/components/widgets/Modal";
 import { getStripePromise } from "@/wab/client/deps-client";
 import { useAsyncStrict } from "@/wab/client/hooks/useAsyncStrict";
-import { assert, assertNever, ensure } from "@/wab/shared/common";
-import { DEVFLAGS } from "@/wab/shared/devflags";
 import {
   ApiFeatureTier,
   ApiTeam,
@@ -19,9 +18,13 @@ import {
   BillingFrequency,
   MayTriggerPaywall,
 } from "@/wab/shared/ApiSchema";
+import { assert, assertNever, ensure } from "@/wab/shared/common";
+import { DEVFLAGS } from "@/wab/shared/devflags";
 import { accessLevelRank } from "@/wab/shared/EntUtil";
 import { ORGANIZATION_LOWER } from "@/wab/shared/Labels";
 import { isUpgradableTier } from "@/wab/shared/pricing/pricing-utils";
+import { APP_ROUTES } from "@/wab/shared/route/app-routes";
+import { fillRoute } from "@/wab/shared/route/route";
 import {
   CardNumberElement,
   Elements,
@@ -31,7 +34,6 @@ import {
 import { PaymentIntentResult, SetupIntentResult } from "@stripe/stripe-js";
 import { Alert, Form } from "antd";
 import * as React from "react";
-import { Modal } from "@/wab/client/components/widgets/Modal";
 import { MakeADT } from "ts-adt/MakeADT";
 
 const DEFAULT_BILLING_FREQUENCY = "year";
@@ -617,7 +619,9 @@ export async function maybeShowPaywall<T>(
         "Unable to upgrade plan. Please try again or contact team@plasmic.app."
     );
   }
-  await showUpsellConfirm(U.orgSettings({ teamId: billing.team.id }));
+  await showUpsellConfirm(
+    fillRoute(APP_ROUTES.orgSettings, { teamId: billing.team.id })
+  );
 
   return maybeShowPaywall(appCtx, action, args);
 }

@@ -1,5 +1,4 @@
 // eslint-disable-next-line no-restricted-imports
-import { UU } from "@/wab/client/cli-routes";
 import { showTemporaryInfo } from "@/wab/client/components/quick-modals";
 import { AnonymousAvatar, Avatar } from "@/wab/client/components/studio/Avatar";
 import { FigmaModalContent } from "@/wab/client/components/studio/FigmaModalContent";
@@ -39,6 +38,8 @@ import { spawn, unexpected } from "@/wab/shared/common";
 import { DEVFLAGS } from "@/wab/shared/devflags";
 import { BASE_URL } from "@/wab/shared/discourse/config";
 import { MIXINS_CAP } from "@/wab/shared/Labels";
+import { APP_ROUTES } from "@/wab/shared/route/app-routes";
+import { fillRoute } from "@/wab/shared/route/route";
 import {
   getLeftTabPermission,
   LeftTabKey,
@@ -315,7 +316,9 @@ Help
           type: "item",
           icon: <HelpsvgIcon />,
           label: "Help",
-          href: UU.orgSupport.fill({ teamId: studioCtx.siteInfo.teamId! }),
+          href: fillRoute(APP_ROUTES.orgSupport, {
+            teamId: studioCtx.siteInfo.teamId!,
+          }),
           cond: !isWhiteLabelUser,
         },
       },

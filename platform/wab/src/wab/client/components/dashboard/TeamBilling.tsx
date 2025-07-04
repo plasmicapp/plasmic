@@ -1,5 +1,4 @@
 import { AppCtx } from "@/wab/client/app-ctx";
-import { U } from "@/wab/client/cli-routes";
 import {
   promptBilling,
   showUpsellConfirm,
@@ -29,6 +28,8 @@ import { isAdminTeamEmail } from "@/wab/shared/devflag-utils";
 import { DEVFLAGS } from "@/wab/shared/devflags";
 import { ORGANIZATION_CAP } from "@/wab/shared/Labels";
 import { isUpgradableTier } from "@/wab/shared/pricing/pricing-utils";
+import { APP_ROUTES } from "@/wab/shared/route/app-routes";
+import { fillRoute } from "@/wab/shared/route/route";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { notification } from "antd";
 import * as React from "react";
@@ -118,7 +119,9 @@ function TeamBilling_(props: TeamBillingProps, ref: HTMLElementRefOf<"div">) {
         description: promptResult.errorMsg,
       });
     } else if (promptResult.type === "success") {
-      await showUpsellConfirm(U.orgSettings({ teamId: team.id }));
+      await showUpsellConfirm(
+        fillRoute(APP_ROUTES.orgSettings, { teamId: team.id })
+      );
     }
 
     // Refresh the latest team data
@@ -148,7 +151,9 @@ function TeamBilling_(props: TeamBillingProps, ref: HTMLElementRefOf<"div">) {
       });
     } else if (promptResult.type === "success") {
       // TODO: custom confirm, currently using same as for upsell
-      await showUpsellConfirm(U.orgSettings({ teamId: team.id }));
+      await showUpsellConfirm(
+        fillRoute(APP_ROUTES.orgSettings, { teamId: team.id })
+      );
     }
 
     // Refresh the latest team data

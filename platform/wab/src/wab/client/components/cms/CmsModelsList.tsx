@@ -1,4 +1,3 @@
-import { UU } from "@/wab/client/cli-routes";
 import {
   useCmsDatabase,
   useMutateTables,
@@ -12,6 +11,8 @@ import {
   PlasmicCmsModelsList,
 } from "@/wab/client/plasmic/plasmic_kit_cms/PlasmicCmsModelsList";
 import { CmsDatabaseId, CmsTableId } from "@/wab/shared/ApiSchema";
+import { APP_ROUTES } from "@/wab/shared/route/app-routes";
+import { fillRoute } from "@/wab/shared/route/route";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { partition, sortBy } from "lodash";
 import * as React from "react";
@@ -77,7 +78,10 @@ function CmsModelsList_(
           });
           await mutateTables(databaseId);
           history.push(
-            UU.cmsModelSchema.fill({ databaseId, tableId: table.id })
+            fillRoute(APP_ROUTES.cmsModelSchema, {
+              databaseId,
+              tableId: table.id,
+            })
           );
         },
         "data-test-id": "addModelButton",

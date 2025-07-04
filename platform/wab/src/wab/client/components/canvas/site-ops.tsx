@@ -1,5 +1,4 @@
 import { AppCtx } from "@/wab/client/app-ctx";
-import { U } from "@/wab/client/cli-routes";
 import { FrameClip } from "@/wab/client/clipboard/local";
 import { RenameArenaProps } from "@/wab/client/commands/arena/renameArena";
 import { toast } from "@/wab/client/components/Messages";
@@ -179,6 +178,8 @@ import {
   ResponsiveStrategy,
   frameSizeGroups,
 } from "@/wab/shared/responsiveness";
+import { APP_ROUTES } from "@/wab/shared/route/app-routes";
+import { fillRoute } from "@/wab/shared/route/route";
 import { removeSvgIds } from "@/wab/shared/svg-utils";
 import {
   TplVisibility,
@@ -858,7 +859,10 @@ export class SiteOps {
             return (
               <li key={dep.uid}>
                 {projectId ? (
-                  <a href={U.project({ projectId })} target="_blank">
+                  <a
+                    href={fillRoute(APP_ROUTES.project, { projectId })}
+                    target="_blank"
+                  >
                     {dep.name}
                   </a>
                 ) : (

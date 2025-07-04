@@ -1,21 +1,14 @@
 import {
-  R,
   SEARCH_PARAM_BRANCH,
-  U,
-  UU,
   mkProjectLocation,
   parseProjectLocation,
+  parseRoute,
 } from "@/wab/client/cli-routes";
 import { showCanvasPageNavigationNotification } from "@/wab/client/components/canvas/studio-canvas-util";
 import { ClientPinManager } from "@/wab/client/components/variants/ClientPinManager";
 import { HostFrameCtx } from "@/wab/client/frame-ctx/host-frame-ctx";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { ensure, hackyCast, spawn, spawnWrapper, tuple } from "@/wab/shared/common";
 import { withProvider } from "@/wab/commons/components/ContextUtil";
-import {
-  allComponentNonStyleVariants,
-  allComponentVariants,
-} from "@/wab/shared/core/components";
 import { MainBranchId, ProjectId } from "@/wab/shared/ApiSchema";
 import { getFrameHeight } from "@/wab/shared/Arenas";
 import { FramePinManager } from "@/wab/shared/PinManager";
@@ -26,12 +19,25 @@ import {
   isScreenVariant,
 } from "@/wab/shared/Variants";
 import { toVarName } from "@/wab/shared/codegen/util";
+import {
+  ensure,
+  hackyCast,
+  spawn,
+  spawnWrapper,
+  tuple,
+} from "@/wab/shared/common";
+import {
+  allComponentNonStyleVariants,
+  allComponentVariants,
+} from "@/wab/shared/core/components";
+import { allGlobalVariants } from "@/wab/shared/core/sites";
 import { Component, Variant } from "@/wab/shared/model/classes";
+import { APP_ROUTES } from "@/wab/shared/route/app-routes";
+import { Route, fillRoute } from "@/wab/shared/route/route";
 import {
   getMatchingPagePathParams,
   substituteUrlParams,
 } from "@/wab/shared/utils/url-utils";
-import { allGlobalVariants } from "@/wab/shared/core/sites";
 import * as Sentry from "@sentry/browser";
 import { notification } from "antd";
 import { Location, LocationDescriptorObject } from "history";
@@ -255,7 +261,7 @@ export class PreviewCtx {
 
     history.push(
       this.previousLocation ||
-        U.project({ projectId: this.studioCtx.siteInfo.id })
+        fillRoute(APP_ROUTES.project, { projectId: this.studioCtx.siteInfo.id })
     );
   }
 
@@ -310,9 +316,9 @@ export class PreviewCtx {
     }
 
     let full = false;
-    let matchRoute = UU.projectPreview.parse(location.pathname);
+    let matchRoute = parseRoute(APP_ROUTES.projectPreview, location.pathname);
     if (!matchRoute) {
-      matchRoute = UU.projectFullPreview.parse(location.pathname);
+      matchRoute = parseRoute(APP_ROUTES.projectFullPreview, location.pathname);
       if (matchRoute) {
         full = true;
       }
@@ -541,9 +547,10 @@ function isVariantActive(
   );
 }
 
-function mkPreviewPathname<
-  T extends Record<keyof T, string | undefined | string[]>
->(route: R<T>, params: T) {
+function mkPreviewPathname<PathParams extends {}>(
+  route: Route<PathParams>,
+  params: PathParams
+) {
   // We do not use cli-routes U/R.fill because formatRoute (from
   // react-router-named-routes) does not currently support parameters
   // with asterisks.
@@ -565,7 +572,7 @@ function mkPreviewRoute(
   const { full, componentPath, pageQuery } = previewData;
 
   const pathname = mkPreviewPathname(
-    full ? UU.projectFullPreview : UU.projectPreview,
+    full ? APP_ROUTES.projectFullPreview : APP_ROUTES.projectPreview,
     {
       projectId,
       previewPath:

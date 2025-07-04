@@ -62,27 +62,6 @@ describe("routing", () => {
         );
         cy.get("#proj-nav-button").contains("FirstArena");
       });
-
-      cy.openProject({
-        projectId,
-        appendPath: "/branch/main@latest/page/My%2FPage",
-      }).withinStudioIframe(() => {
-        // visiting old URL should redirect us to new URL
-        cy.url().should("include", `/-/My%2FPage?arena_type=page&arena=`);
-        cy.get("#proj-nav-button").contains("My/Page");
-      });
-
-      cy.openProject({
-        projectId,
-        appendPath: "/branch/main@latest/component/MyComponent",
-      }).withinStudioIframe(() => {
-        // visiting old URL should redirect us to new URL
-        cy.url().should(
-          "include",
-          `/-/MyComponent?arena_type=component&arena=`
-        );
-        cy.get("#proj-nav-button").contains("MyComponent");
-      });
     });
   });
 });

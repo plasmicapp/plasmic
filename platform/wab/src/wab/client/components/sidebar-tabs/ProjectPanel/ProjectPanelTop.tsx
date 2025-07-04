@@ -1,5 +1,5 @@
 import { apiKey } from "@/wab/client/api";
-import { SEARCH_PARAM_BRANCH, UU } from "@/wab/client/cli-routes";
+import { SEARCH_PARAM_BRANCH, parseRoute } from "@/wab/client/cli-routes";
 import { menuSection } from "@/wab/client/components/menu-builder";
 import {
   reactConfirm,
@@ -27,6 +27,7 @@ import {
 } from "@/wab/shared/ApiSchema";
 import { validateBranchName } from "@/wab/shared/ApiSchemaUtil";
 import { assert, ensure, spawnWrapper, withoutNils } from "@/wab/shared/common";
+import { APP_ROUTES } from "@/wab/shared/route/app-routes";
 import { Menu, Tooltip, notification } from "antd";
 import { trimStart } from "lodash";
 import { observer } from "mobx-react";
@@ -358,7 +359,8 @@ function BranchPanelTop_(
               dismissSearch();
               if (
                 studioCtx.isLiveMode &&
-                UU.projectPreview.parse(
+                parseRoute(
+                  APP_ROUTES.projectPreview,
                   studioCtx.appCtx.history.location.pathname
                 )
               ) {

@@ -1,5 +1,4 @@
 import { useNonAuthCtx } from "@/wab/client/app-ctx";
-import { U } from "@/wab/client/cli-routes";
 import { useAppAuthPubConfig } from "@/wab/client/components/app-auth/app-auth-contexts";
 import { GoogleSignInButton } from "@/wab/client/components/auth/ConnectOAuth";
 import {
@@ -15,6 +14,8 @@ import { useAppCtx } from "@/wab/client/contexts/AppContexts";
 import MarkFullColorIcon from "@/wab/client/plasmic/plasmic_kit_design_system/PlasmicIcon__MarkFullColor";
 import { trackEvent } from "@/wab/client/tracking";
 import { ApiUser } from "@/wab/shared/ApiSchema";
+import { APP_ROUTES } from "@/wab/shared/route/app-routes";
+import { fillRoute } from "@/wab/shared/route/route";
 import { getPublicUrl } from "@/wab/shared/urls";
 import { Button, Divider, Input, notification, Spin, Tooltip } from "antd";
 import $ from "jquery";
@@ -309,7 +310,7 @@ export function AppAuthForm({
                 content: "Unexpected error occurred logging in.",
               });
             }}
-            googleAuthUrl={U.googleAuth({})}
+            googleAuthUrl={fillRoute(APP_ROUTES.googleAuth, {})}
           >
             {mode === "sign in" ? "Sign in with Google" : "Sign up with Google"}
           </GoogleSignInButton>

@@ -1,9 +1,10 @@
 import {
+  ProjectLocationParams,
   mkProjectLocation,
   parseProjectLocation as parseProjectLocationActual,
-  ProjectLocationParams,
-  R,
+  parseRoute,
 } from "@/wab/client/cli-routes";
+import { Route, fillRoute, route } from "@/wab/shared/route/route";
 import { Location, LocationDescriptorObject } from "history";
 
 interface AB {
@@ -11,13 +12,14 @@ interface AB {
   b: string;
 }
 
-const abRoute: R<AB> = new R("/:a/:b");
+const abRoute = route<AB>("/:a/:b");
 
 interface ABRepeated {
   a: string;
   b: undefined | string | string[];
 }
-const abRepeatedRoute: R<ABRepeated> = new R("/:a/:b*");
+
+const abRepeatedRoute = route<ABRepeated>("/:a/:b*");
 
 /** parseProjectLocation that makes it easier to specify a Location object. */
 function parseProjectLocation({
@@ -38,62 +40,65 @@ function parseProjectLocation({
 
 describe("R", () => {
   it("fails to parse", () => {
-    expect(abRoute.parse("/foo", false)).toBeNull();
-    expect(abRoute.parse("/foo", true)).toBeNull();
-    expect(abRoute.parse("/foo/bar", false)?.params).toEqual({
+    expect(parseRoute(abRoute, "/foo", false)).toBeNull();
+    expect(parseRoute(abRoute, "/foo", true)).toBeNull();
+    expect(parseRoute(abRoute, "/foo/bar", false)?.params).toEqual({
       a: "foo",
       b: "bar",
     });
-    expect(abRoute.parse("/foo/bar", true)?.params).toEqual({
+    expect(parseRoute(abRoute, "/foo/bar", true)?.params).toEqual({
       a: "foo",
       b: "bar",
     });
-    expect(abRoute.parse("/foo/bar/qux", false)?.params).toEqual({
+    expect(parseRoute(abRoute, "/foo/bar/qux", false)?.params).toEqual({
       a: "foo",
       b: "bar",
     });
-    expect(abRoute.parse("/foo/bar/qux", true)).toBeNull();
-    expect(abRepeatedRoute.parse("/foo", false)?.params).toEqual({
+    expect(parseRoute(abRoute, "/foo/bar/qux", true)).toBeNull();
+    expect(parseRoute(abRepeatedRoute, "/foo", false)?.params).toEqual({
       a: "foo",
       b: undefined,
     });
-    expect(abRepeatedRoute.parse("/foo", true)?.params).toEqual({
+    expect(parseRoute(abRepeatedRoute, "/foo", true)?.params).toEqual({
       a: "foo",
       b: undefined,
     });
-    expect(abRepeatedRoute.parse("/foo/bar", false)?.params).toEqual({
+    expect(parseRoute(abRepeatedRoute, "/foo/bar", false)?.params).toEqual({
       a: "foo",
       b: "bar",
     });
-    expect(abRepeatedRoute.parse("/foo/bar", true)?.params).toEqual({
+    expect(parseRoute(abRepeatedRoute, "/foo/bar", true)?.params).toEqual({
       a: "foo",
       b: "bar",
     });
-    expect(abRepeatedRoute.parse("/foo/bar/qux", false)?.params).toEqual({
+    expect(parseRoute(abRepeatedRoute, "/foo/bar/qux", false)?.params).toEqual({
       a: "foo",
       b: "bar/qux",
     });
-    expect(abRepeatedRoute.parse("/foo/bar/qux", true)?.params).toEqual({
+    expect(parseRoute(abRepeatedRoute, "/foo/bar/qux", true)?.params).toEqual({
       a: "foo",
       b: "bar/qux",
     });
   });
 
   it("fills and parses", () => {
-    function expectFillParse<
-      T extends Record<keyof T, string | undefined | string[]>
-    >(route: R<T>, params: T, expectedPath: string, expectedParams?: T) {
+    function expectFillParse<PathParams extends {}>(
+      r: Route<PathParams>,
+      params: PathParams,
+      expectedPath: string,
+      expectedParams?: PathParams
+    ) {
       // sometimes the parsed params have a different shape than the input params
       expectedParams = expectedParams || params;
 
-      const path = route.fill(params);
+      const path = fillRoute(r, params);
       expect(path).toBe(expectedPath);
 
-      const match = route.parse(path, false);
+      const match = parseRoute(r, path, false);
       expect(match).toBeTruthy();
       expect(match?.params).toEqual(expectedParams);
 
-      const exactMatch = route.parse(path, true);
+      const exactMatch = parseRoute(r, path, true);
       expect(exactMatch).toBeTruthy();
       expect(exactMatch?.params).toEqual(expectedParams);
     }

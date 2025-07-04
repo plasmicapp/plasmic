@@ -1,5 +1,4 @@
 import { apiKey } from "@/wab/client/api";
-import { U } from "@/wab/client/cli-routes";
 import { SimpleConfetti } from "@/wab/client/components/SimpleConfetti";
 import { topFrameTourSignals } from "@/wab/client/components/TopFrame/TopFrameChrome";
 import { TutorialEventsType } from "@/wab/client/tours/tutorials/tutorials-events";
@@ -14,6 +13,8 @@ import {
   TopFrameTutorialStep,
 } from "@/wab/client/tours/tutorials/tutorials-types";
 import { RevalidatePlasmicHostingResponse } from "@/wab/shared/ApiSchema";
+import { APP_ROUTES } from "@/wab/shared/route/app-routes";
+import { fillRoute } from "@/wab/shared/route/route";
 import { notification } from "antd";
 import { createElement } from "react";
 import { render } from "react-dom";
@@ -139,7 +140,7 @@ And don't forget to:
     });
   },
   onSecondary: async () => {
-    location.href = U.dashboard({});
+    location.href = fillRoute(APP_ROUTES.dashboard, {});
   },
   secondaryButtonText: "Exit to dashboard",
 };

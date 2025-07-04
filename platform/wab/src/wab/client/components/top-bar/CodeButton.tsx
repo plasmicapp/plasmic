@@ -1,4 +1,3 @@
-import { U } from "@/wab/client/cli-routes";
 import { useAppCtx, useTopFrameApi } from "@/wab/client/contexts/AppContexts";
 import { useCodegenType } from "@/wab/client/hooks/useCodegenType";
 import CirclesvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__CircleSvg";
@@ -7,6 +6,8 @@ import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { toClassName } from "@/wab/shared/codegen/util";
 import { spawn } from "@/wab/shared/common";
 import { isPlasmicComponent } from "@/wab/shared/core/components";
+import { APP_ROUTES } from "@/wab/shared/route/app-routes";
+import { fillRoute } from "@/wab/shared/route/route";
 import { PlasmicIcon } from "@plasmicapp/react-web";
 import { Menu, Tooltip } from "antd";
 import { defer } from "lodash";
@@ -40,12 +41,12 @@ export const CodeButton = observer(function CodeButton() {
     hasClicked &&
     isFocusedComponentPlasmicComponent &&
     focusedComponentNameOrUuid
-      ? U.projectDocsComponent({
+      ? fillRoute(APP_ROUTES.projectDocsComponent, {
           projectId: studioCtx.siteInfo.id,
           componentIdOrClassName: focusedComponentNameOrUuid,
           codegenType,
         })
-      : U.projectDocs({
+      : fillRoute(APP_ROUTES.projectDocs, {
           projectId: studioCtx.siteInfo.id,
         });
 

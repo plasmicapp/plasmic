@@ -1,4 +1,3 @@
-import { U } from "@/wab/client/cli-routes";
 import { promptMoveToWorkspace } from "@/wab/client/components/dashboard/dashboard-actions";
 import EditableResourceName from "@/wab/client/components/EditableResourceName";
 import { HostConfig } from "@/wab/client/components/HostConfig";
@@ -10,18 +9,20 @@ import { ClickStopper } from "@/wab/client/components/widgets";
 import { Textbox } from "@/wab/client/components/widgets/Textbox";
 import { useAppCtx } from "@/wab/client/contexts/AppContexts";
 import { PlasmicProjectListItem } from "@/wab/client/plasmic/plasmic_kit/PlasmicProjectListItem";
-import { ensure } from "@/wab/shared/common";
 import { InlineEdit } from "@/wab/commons/components/InlineEdit";
 import { OnClickAway } from "@/wab/commons/components/OnClickAway";
 import { Stated } from "@/wab/commons/components/Stated";
-import { DEVFLAGS } from "@/wab/shared/devflags";
 import { ApiPermission, ApiProject } from "@/wab/shared/ApiSchema";
+import { ensure } from "@/wab/shared/common";
+import { DEVFLAGS } from "@/wab/shared/devflags";
 import { accessLevelRank } from "@/wab/shared/EntUtil";
 import { PERSONAL_WORKSPACE } from "@/wab/shared/Labels";
 import {
   getAccessLevelToParent,
   getAccessLevelToResource,
 } from "@/wab/shared/perms";
+import { APP_ROUTES } from "@/wab/shared/route/app-routes";
+import { fillRoute } from "@/wab/shared/route/route";
 import { Menu, notification } from "antd";
 import moment from "moment";
 import React from "react";
@@ -75,7 +76,7 @@ function ProjectListItem(props: ProjectListItemProps) {
           as: PublicLink,
           props: {
             className: props.className,
-            href: U.project({
+            href: fillRoute(APP_ROUTES.project, {
               projectId: project.id,
             }),
           },
@@ -101,8 +102,10 @@ function ProjectListItem(props: ProjectListItemProps) {
             onClick: () => {
               history.push(
                 project.workspaceId === personalWorkspace?.id
-                  ? U.playground({})
-                  : U.workspace({ workspaceId: project.workspaceId || "" })
+                  ? fillRoute(APP_ROUTES.playground, {})
+                  : fillRoute(APP_ROUTES.workspace, {
+                      workspaceId: project.workspaceId || "",
+                    })
               );
             },
           },
@@ -209,7 +212,7 @@ function ProjectListItem(props: ProjectListItemProps) {
                       );
 
                     history.push(
-                      U.project({
+                      fillRoute(APP_ROUTES.project, {
                         projectId: newProjectId,
                       })
                     );

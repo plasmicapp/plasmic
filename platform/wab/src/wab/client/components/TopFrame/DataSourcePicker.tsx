@@ -1,4 +1,3 @@
-import { UU } from "@/wab/client/cli-routes";
 import { DataSourceModal } from "@/wab/client/components/modals/DataSourceModal";
 import { Spinner } from "@/wab/client/components/widgets";
 import Button from "@/wab/client/components/widgets/Button";
@@ -19,6 +18,8 @@ import {
   DATA_SOURCE_LOWER,
   DATA_SOURCE_PLURAL_LOWER,
 } from "@/wab/shared/Labels";
+import { APP_ROUTES } from "@/wab/shared/route/app-routes";
+import { fillRoute } from "@/wab/shared/route/route";
 import { Form } from "antd";
 import React from "react";
 import useSWR from "swr";
@@ -197,7 +198,7 @@ export function DataSourcePicker({
               <a
                 target={"_blank"}
                 href={
-                  UU.workspace.fill({
+                  fillRoute(APP_ROUTES.workspace, {
                     workspaceId: thisProjectsWorkspace.id,
                   }) + "#tab=dataSources"
                 }

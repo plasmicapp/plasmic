@@ -1,21 +1,23 @@
-import { U, UU } from "@/wab/client/cli-routes";
+import { parseRoute } from "@/wab/client/cli-routes";
 import {
   resolveCollisionsForComponentProp,
   serializeToggledComponent,
   updateComponentCode,
 } from "@/wab/client/components/docs/serialize-docs-preview";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { ensure, spawn } from "@/wab/shared/common";
 import { withProvider } from "@/wab/commons/components/ContextUtil";
+import { toClassName, toVarName } from "@/wab/shared/codegen/util";
+import { ensure, spawn } from "@/wab/shared/common";
 import {
   isCodeComponent,
   isFrameComponent,
   isSubComponent,
 } from "@/wab/shared/core/components";
 import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
-import { toClassName, toVarName } from "@/wab/shared/codegen/util";
-import { Component, ImageAsset, Param } from "@/wab/shared/model/classes";
 import { TplNamable } from "@/wab/shared/core/tpls";
+import { Component, ImageAsset, Param } from "@/wab/shared/model/classes";
+import { APP_ROUTES } from "@/wab/shared/route/app-routes";
+import { fillRoute } from "@/wab/shared/route/route";
 import { History } from "history";
 import { action, makeObservable, observable } from "mobx";
 import React from "react";
@@ -273,17 +275,20 @@ export class DocsPortalCtx {
     const icons = this.studioCtx.site.imageAssets.filter(
       (icon) => icon.type === ImageAssetType.Icon && !!icon.dataUri
     );
-    const matchDocs = UU.projectDocs.parse(path, false);
+    const matchDocs = parseRoute(APP_ROUTES.projectDocs, path, false);
     if (!matchDocs) {
       // Not a Docs Portal URL
       return;
     }
 
-    const matchComponent = UU.projectDocsComponent.parse(path);
-    const matchIcon = UU.projectDocsIcon.parse(path);
-    const matchComponents = UU.projectDocsComponents.parse(path);
-    const matchIcons = UU.projectDocsIcons.parse(path);
-    const matchCodegenType = UU.projectDocsCodegenType.parse(path);
+    const matchComponent = parseRoute(APP_ROUTES.projectDocsComponent, path);
+    const matchIcon = parseRoute(APP_ROUTES.projectDocsIcon, path);
+    const matchComponents = parseRoute(APP_ROUTES.projectDocsComponents, path);
+    const matchIcons = parseRoute(APP_ROUTES.projectDocsIcons, path);
+    const matchCodegenType = parseRoute(
+      APP_ROUTES.projectDocsCodegenType,
+      path
+    );
     const codegenType = [
       matchComponent,
       matchIcon,
@@ -309,7 +314,7 @@ export class DocsPortalCtx {
       if (components.length !== 0) {
         // Redirects to first component
         replace(
-          U.projectDocsComponent({
+          fillRoute(APP_ROUTES.projectDocsComponent, {
             projectId: projectId,
             componentIdOrClassName:
               toClassName(components[0].name) || components[0].uuid,
@@ -323,7 +328,7 @@ export class DocsPortalCtx {
         } else {
           // Redirects to docs/components
           replace(
-            U.projectDocsComponents({
+            fillRoute(APP_ROUTES.projectDocsComponents, {
               projectId: projectId,
               codegenType,
             })
@@ -335,7 +340,7 @@ export class DocsPortalCtx {
       if (icons.length !== 0) {
         // Redirects to first icon
         replace(
-          U.projectDocsIcon({
+          fillRoute(APP_ROUTES.projectDocsIcon, {
             projectId: projectId,
             iconIdOrClassName: toClassName(icons[0].name) || icons[0].uuid,
             codegenType,
@@ -348,7 +353,7 @@ export class DocsPortalCtx {
         } else {
           // Redirects to docs/icons
           replace(
-            U.projectDocsIcons({
+            fillRoute(APP_ROUTES.projectDocsIcons, {
               projectId: projectId,
               codegenType,
             })
@@ -380,7 +385,7 @@ export class DocsPortalCtx {
       );
       if (!icon) {
         replace(
-          U.projectDocs({
+          fillRoute(APP_ROUTES.projectDocs, {
             projectId: projectId,
           })
         );

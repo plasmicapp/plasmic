@@ -1,5 +1,5 @@
 import { Api, setUser } from "@/wab/client/api";
-import { isHostFrame, Router, UU } from "@/wab/client/cli-routes";
+import { isHostFrame, Router } from "@/wab/client/cli-routes";
 import { getClientDevFlagOverrides } from "@/wab/client/client-dev-flags";
 import { maybeShowPaywall } from "@/wab/client/components/modals/PricingModal";
 import { StarterGroupProps } from "@/wab/client/components/StarterGroup";
@@ -25,6 +25,8 @@ import {
   DEVFLAGS,
   DevFlagsType,
 } from "@/wab/shared/devflags";
+import { APP_ROUTES } from "@/wab/shared/route/app-routes";
+import { fillRoute } from "@/wab/shared/route/route";
 import { notification } from "antd";
 import { History } from "history";
 import $ from "jquery";
@@ -198,7 +200,7 @@ export class AppCtx {
     // Explicitly setting window.location.href, instead of
     // using router, to make sure we completely clear in-page
     // js state
-    window.location.href = UU.login.fill({});
+    window.location.href = fillRoute(APP_ROUTES.login, {});
   }
 
   isWhiteLabelUser() {

@@ -1,4 +1,4 @@
-import { useRRouteMatch, UU } from "@/wab/client/cli-routes";
+import { useRRouteMatch } from "@/wab/client/cli-routes";
 import {
   useCmsRows,
   useCmsTableMaybe,
@@ -28,6 +28,8 @@ import {
   CmsUploadedFile,
 } from "@/wab/shared/ApiSchema";
 import { assert, ensure, ensureType } from "@/wab/shared/common";
+import { APP_ROUTES } from "@/wab/shared/route/app-routes";
+import { fillRoute } from "@/wab/shared/route/route";
 import { PlasmicImg } from "@plasmicapp/react-web";
 import Pickr from "@simonwep/pickr";
 import "@simonwep/pickr/dist/themes/nano.min.css";
@@ -259,7 +261,7 @@ function MaybeFormItem({
   uniqueStatus?: UniqueFieldStatus;
 }) {
   const history = useHistory();
-  const match = useRRouteMatch(UU.cmsEntry);
+  const match = useRRouteMatch(APP_ROUTES.cmsEntry);
   const commonRules = [
     { required: props.required, message: "Field is required" },
     {
@@ -270,7 +272,7 @@ function MaybeFormItem({
           uniqueStatus.status === "violation" &&
           uniqueStatus.conflictRowId
         ) {
-          const conflictingRowRoute = UU.cmsEntry.fill({
+          const conflictingRowRoute = fillRoute(APP_ROUTES.cmsEntry, {
             ...match!.params,
             rowId: uniqueStatus.conflictRowId,
           });
@@ -701,7 +703,7 @@ export function renderMaybeLocalizedInput({
               ))}
               <div>
                 <PublicLink
-                  href={UU.cmsSettings.fill({ databaseId })}
+                  href={fillRoute(APP_ROUTES.cmsSettings, { databaseId })}
                   target={"_blank"}
                 >
                   Setup locales <GrNewWindow />

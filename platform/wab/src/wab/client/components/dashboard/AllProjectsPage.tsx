@@ -1,4 +1,3 @@
-import { U } from "@/wab/client/cli-routes";
 import { documentTitle } from "@/wab/client/components/dashboard/page-utils";
 import {
   PaywallError,
@@ -11,6 +10,8 @@ import {
   DefaultAllProjectsPageProps,
   PlasmicAllProjectsPage,
 } from "@/wab/client/plasmic/plasmic_kit_dashboard/PlasmicAllProjectsPage";
+import { APP_ROUTES } from "@/wab/shared/route/app-routes";
+import { fillRoute } from "@/wab/shared/route/route";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import * as querystring from "querystring";
 import * as React from "react";
@@ -58,8 +59,10 @@ function AllProjectsPage_(
     }
     // Success
     const team = billing.team;
-    await showUpsellConfirm(U.orgSettings({ teamId: team.id }));
-    history.push(U.org({ teamId: team.id }));
+    await showUpsellConfirm(
+      fillRoute(APP_ROUTES.orgSettings, { teamId: team.id })
+    );
+    history.push(fillRoute(APP_ROUTES.org, { teamId: team.id }));
   }, [search]);
 
   return (

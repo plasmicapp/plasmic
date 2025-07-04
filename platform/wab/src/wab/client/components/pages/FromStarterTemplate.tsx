@@ -1,8 +1,9 @@
 import { AppCtx } from "@/wab/client/app-ctx";
-import { U, UU } from "@/wab/client/cli-routes";
 import { Spinner } from "@/wab/client/components/widgets";
 import { WorkspaceId } from "@/wab/shared/ApiSchema";
 import { spawn } from "@/wab/shared/common";
+import { APP_ROUTES } from "@/wab/shared/route/app-routes";
+import { fillRoute } from "@/wab/shared/route/route";
 import * as React from "react";
 
 export function FromStarterTemplate(props: {
@@ -41,15 +42,19 @@ export function FromStarterTemplate(props: {
       spawn(
         createProject().then((newProjectId) => {
           if (newProjectId) {
-            location.href = U.project({ projectId: newProjectId });
+            location.href = fillRoute(APP_ROUTES.project, {
+              projectId: newProjectId,
+            });
           }
         })
       );
     } else if (!appCtx.selfInfo) {
-      appCtx.router.routeTo(UU.login.fill({}, { continueTo: path }));
+      appCtx.router.routeTo(
+        fillRoute(APP_ROUTES.login, {}, { continueTo: path })
+      );
     } else {
       appCtx.router.routeTo(
-        UU.emailVerification.fill({}, { continueTo: path })
+        fillRoute(APP_ROUTES.emailVerification, {}, { continueTo: path })
       );
     }
   }, [projectId, baseProjectId, appCtx, name]);

@@ -1,10 +1,12 @@
-import { isPlasmicPath, U } from "@/wab/client/cli-routes";
+import { isPlasmicPath } from "@/wab/client/cli-routes";
 import "@/wab/client/components/pages/AuthForm.sass";
 import { PageFooter } from "@/wab/client/components/pages/PageFooter";
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import { useAppCtx } from "@/wab/client/contexts/AppContexts";
 import MarkFullColorIcon from "@/wab/client/plasmic/plasmic_kit_design_system/PlasmicIcon__MarkFullColor";
 import { SurveyRequest } from "@/wab/shared/ApiSchema";
+import { APP_ROUTES } from "@/wab/shared/route/app-routes";
+import { fillRoute } from "@/wab/shared/route/route";
 import { AutoComplete, Button, Form, Tooltip } from "antd";
 import * as React from "react";
 import { ReactNode, useState } from "react";
@@ -24,7 +26,7 @@ export function SurveyForm() {
   const nextPath =
     continueToPath && isPlasmicPath(continueToPath)
       ? continueToPath
-      : U.emailVerification({});
+      : fillRoute(APP_ROUTES.emailVerification, {});
 
   const [form] = Form.useForm();
 

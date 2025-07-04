@@ -1,10 +1,11 @@
-import { U } from "@/wab/client/cli-routes";
 import {
   promptBilling,
   PromptBillingArgs,
   showUpsellConfirm,
 } from "@/wab/client/components/modals/PricingModal";
 import { spawn } from "@/wab/shared/common";
+import { APP_ROUTES } from "@/wab/shared/route/app-routes";
+import { fillRoute } from "@/wab/shared/route/route";
 import React from "react";
 
 export const UpsellModal = (
@@ -16,7 +17,9 @@ export const UpsellModal = (
     const response = await promptBilling(props);
 
     if (response?.type === "success") {
-      await showUpsellConfirm(U.orgSettings({ teamId: response.team.id }));
+      await showUpsellConfirm(
+        fillRoute(APP_ROUTES.orgSettings, { teamId: response.team.id })
+      );
     }
 
     props.setShowUpsellForm(undefined);

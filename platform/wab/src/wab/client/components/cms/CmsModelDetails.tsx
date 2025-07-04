@@ -1,4 +1,4 @@
-import { useRRouteMatch, UU } from "@/wab/client/cli-routes";
+import { useRRouteMatch } from "@/wab/client/cli-routes";
 import {
   useCmsDatabase,
   useCmsTable,
@@ -51,6 +51,8 @@ import {
 import { extractParamsFromPagePath } from "@/wab/shared/core/components";
 import { DEVFLAGS } from "@/wab/shared/devflags";
 import { httpMethods } from "@/wab/shared/HttpClientUtil";
+import { APP_ROUTES } from "@/wab/shared/route/app-routes";
+import { fillRoute } from "@/wab/shared/route/route";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import {
   Collapse,
@@ -392,7 +394,7 @@ export function CmsModelDetails_(
   ref: HTMLElementRefOf<"div">
 ) {
   const api = useApi();
-  const match = useRRouteMatch(UU.cmsModelSchema)!;
+  const match = useRRouteMatch(APP_ROUTES.cmsModelSchema)!;
   const history = useHistory();
   const { databaseId, tableId } = match.params;
   const [showSettingsModal, setShowSettingsModal] = React.useState(false);
@@ -540,7 +542,9 @@ export function CmsModelDetails_(
                     if (confirmed) {
                       await api.deleteCmsTable(tableId);
                       await mutateTable(databaseId, tableId);
-                      history.push(UU.cmsSchemaRoot.fill({ databaseId }));
+                      history.push(
+                        fillRoute(APP_ROUTES.cmsSchemaRoot, { databaseId })
+                      );
                     }
                   }}
                 >

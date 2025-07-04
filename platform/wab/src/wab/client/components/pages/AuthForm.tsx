@@ -1,5 +1,5 @@
 import { NonAuthCtx, useNonAuthCtx } from "@/wab/client/app-ctx";
-import { isPlasmicPath, U, UU } from "@/wab/client/cli-routes";
+import { isPlasmicPath } from "@/wab/client/cli-routes";
 import {
   GoogleSignInButton,
   useAuthPopup,
@@ -10,12 +10,15 @@ import { LinkButton } from "@/wab/client/components/widgets";
 import { useAppCtx } from "@/wab/client/contexts/AppContexts";
 import { ApiUser, UserId } from "@/wab/shared/ApiSchema";
 import { mkUuid, spawnWrapper } from "@/wab/shared/common";
+import { APP_ROUTES } from "@/wab/shared/route/app-routes";
+import { fillRoute } from "@/wab/shared/route/route";
 import { Button, Divider, Input, notification } from "antd";
 import $ from "jquery";
 import * as React from "react";
 import { useState } from "react";
 import { Redirect } from "react-router-dom";
 import useSWR from "swr";
+
 const LazyPasswordStrengthBar = React.lazy(
   () => import("@/wab/client/components/PasswordStrengthBar")
 );
@@ -182,10 +185,11 @@ export function AuthForm({ mode, onLoggedIn }: AuthFormProps) {
         appCtx.router.routeTo(nextPath);
       } else {
         appCtx.router.routeTo(
-          UU.survey.fill(
+          fillRoute(
+            APP_ROUTES.survey,
             {},
             {
-              continueTo: U.emailVerification({}),
+              continueTo: fillRoute(APP_ROUTES.emailVerification, {}),
             }
           )
         );
@@ -218,7 +222,7 @@ export function AuthForm({ mode, onLoggedIn }: AuthFormProps) {
                       content: "Unexpected error occurred logging in.",
                     });
                   }}
-                  googleAuthUrl={U.googleAuth({})}
+                  googleAuthUrl={fillRoute(APP_ROUTES.googleAuth, {})}
                 >
                   {mode === "sign in"
                     ? "Sign in with Google"
@@ -554,14 +558,14 @@ function setMode(nonAuthCtx: NonAuthCtx, newMode: Mode) {
   const nextPath = getNextPath();
   nonAuthCtx.router.routeTo(
     newMode === "sign in"
-      ? UU.login.fill({}, { continueTo: nextPath })
+      ? fillRoute(APP_ROUTES.login, {}, { continueTo: nextPath })
       : newMode === "sign up"
-      ? UU.signup.fill({}, { continueTo: nextPath })
+      ? fillRoute(APP_ROUTES.signup, {}, { continueTo: nextPath })
       : newMode === "sso"
-      ? UU.sso.fill({}, { continueTo: nextPath })
+      ? fillRoute(APP_ROUTES.sso, {}, { continueTo: nextPath })
       : newMode === "forgot password"
-      ? UU.forgotPassword.fill({}, { continueTo: nextPath })
-      : UU.resetPassword.fill({}, { continueTo: nextPath })
+      ? fillRoute(APP_ROUTES.forgotPassword, {}, { continueTo: nextPath })
+      : fillRoute(APP_ROUTES.resetPassword, {}, { continueTo: nextPath })
   );
 }
 
@@ -569,7 +573,7 @@ function getNextPath() {
   const continueToPath = new URLSearchParams(location.search).get("continueTo");
   return continueToPath && isPlasmicPath(continueToPath)
     ? continueToPath
-    : U.dashboard({});
+    : fillRoute(APP_ROUTES.dashboard, {});
 }
 
 function createFakeUser(

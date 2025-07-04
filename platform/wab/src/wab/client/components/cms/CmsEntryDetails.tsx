@@ -1,4 +1,3 @@
-import { UU } from "@/wab/client/cli-routes";
 import {
   useCmsDatabase,
   useCmsRow,
@@ -38,6 +37,8 @@ import { getUniqueFieldsData } from "@/wab/shared/cms";
 import { Dict } from "@/wab/shared/collections";
 import { spawn } from "@/wab/shared/common";
 import { DEVFLAGS } from "@/wab/shared/devflags";
+import { APP_ROUTES } from "@/wab/shared/route/app-routes";
+import { fillRoute } from "@/wab/shared/route/route";
 import { substituteUrlParams } from "@/wab/shared/utils/url-utils";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { Drawer, Form, Menu, message, notification, Tooltip } from "antd";
@@ -510,14 +511,14 @@ function CmsEntryDetailsForm_(
         message={"You have unsaved changes, are you sure?"}
       />
       <Route
-        path={UU.cmsEntryRevisions.pattern}
+        path={APP_ROUTES.cmsEntryRevisions.pattern}
         render={() => (
           <Drawer
             title={"Entry revisions"}
             placement="right"
             onClose={() =>
               history.push(
-                UU.cmsEntry.fill({
+                fillRoute(APP_ROUTES.cmsEntry, {
                   databaseId: database.id,
                   tableId: table.id,
                   rowId: row.id,
@@ -779,7 +780,7 @@ function CmsEntryDetailsForm_(
                       await api.deleteCmsRow(row.id);
                       await mutateRow();
                       history.push(
-                        UU.cmsModelContent.fill({
+                        fillRoute(APP_ROUTES.cmsModelContent, {
                           databaseId: database.id,
                           tableId: table.id,
                         })
@@ -793,7 +794,7 @@ function CmsEntryDetailsForm_(
             ),
           }}
           historyButton={{
-            href: UU.cmsEntryRevisions.fill({
+            href: fillRoute(APP_ROUTES.cmsEntryRevisions, {
               databaseId: database.id,
               tableId: table.id,
               rowId: row.id,
@@ -846,7 +847,7 @@ function CmsEntryDetailsForm_(
             await mutateTableRows(table.id);
             setShowDuplicateModal(false);
             history.push(
-              UU.cmsEntry.fill({
+              fillRoute(APP_ROUTES.cmsEntry, {
                 databaseId: database.id,
                 tableId: table.id,
                 rowId: clonedRow.id,

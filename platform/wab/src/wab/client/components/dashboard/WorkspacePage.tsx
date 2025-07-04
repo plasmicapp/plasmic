@@ -1,4 +1,3 @@
-import { UU } from "@/wab/client/cli-routes";
 import { documentTitle } from "@/wab/client/components/dashboard/page-utils";
 import { Spinner } from "@/wab/client/components/widgets";
 import { useAppCtx } from "@/wab/client/contexts/AppContexts";
@@ -12,6 +11,8 @@ import {
   PlasmicWorkspacePage,
 } from "@/wab/client/plasmic/plasmic_kit_dashboard/PlasmicWorkspacePage";
 import { WorkspaceId } from "@/wab/shared/ApiSchema";
+import { APP_ROUTES } from "@/wab/shared/route/app-routes";
+import { fillRoute } from "@/wab/shared/route/route";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { uniqBy } from "lodash";
 import * as React from "react";
@@ -72,7 +73,9 @@ function WorkspacePage_(
           helpButton: workspace
             ? {
                 props: {
-                  href: UU.orgSupport.fill({ teamId: workspace.team.id }),
+                  href: fillRoute(APP_ROUTES.orgSupport, {
+                    teamId: workspace.team.id,
+                  }),
                 },
               }
             : undefined,
