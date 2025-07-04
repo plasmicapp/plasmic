@@ -21,6 +21,12 @@ services:
     build:
       context: .
       dockerfile: ./platform/wab/tools/docker-dev/Dockerfile
+    volumes:
+      # Mount your local code into the container
+      - .:/plasmic
+      # Use an anonymous volume to prevent local node_modules from overwriting the container's
+      - /plasmic/node_modules
+      - /plasmic/platform/wab/node_modules
     ports:
       - "3003:3003"
       - "3004:3004"
@@ -34,6 +40,8 @@ services:
       - WAB_DBNAME=plasmic-db
       - WAB_DBPASSWORD=SEKRET
       - NODE_ENV=development
+      # This environment variable makes file watching more reliable.
+      - CHOKIDAR_USEPOLLING=true
     tty: true
     stdin_open: true
 
