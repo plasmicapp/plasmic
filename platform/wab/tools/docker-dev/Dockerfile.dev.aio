@@ -28,7 +28,6 @@ COPY . .
 # Secrets setup and build tools
 RUN mkdir -p /tmp/.plasmic && \
     cp platform/wab/tools/docker-dev/secrets.json /tmp/.plasmic/secrets.json && \
-    sed -i -e 's/"host": "localhost"/"host": "plasmic-db"/' -e '/"database": "wab"/a "password": "SEKRET",' platform/wab/ormconfig.json && \
     yarn setup && \
     yarn setup:canvas-packages && \
     yarn cache clean
@@ -62,4 +61,14 @@ COPY --chown=plasmic:plasmic --from=builder /tmp/.plasmic $HOME/.plasmic
 EXPOSE 3003 3004 3005
 
 ENTRYPOINT ["sh", "-c"]
-CMD ["cd platform/wab && yarn typeorm migration:run && yarn migrate-dev-bundles && yarn seed && yarn plume:dev update && cd /plasmic && yarn dev"]
+CMD ["cd platform/wab && \
+    sed -i -e 's/\"host\": \"localhost\"/\"host\": \"plasmic-db\"/' \
+           -e '/\"database\": \"wab\"/a \"password\": \"SEKRET\",' \
+           ./ormconfig.json && \
+    yarn typeorm migration:run && \
+    yarn migrate-dev-bundles && \
+    yarn seed && \
+    yarn plume:dev update && \
+    cd /plasmic && \
+    yarn dev \
+"]

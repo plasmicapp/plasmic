@@ -20,13 +20,24 @@ services:
   plasmic-wab:
     build:
       context: .
-      dockerfile: ./platform/wab/tools/docker-dev/Dockerfile
+      dockerfile: ./platform/wab/tools/docker-dev/Dockerfile.dev.aio
     volumes:
-      # Mount your local code into the container
+      # 1. Mount your local source code into the container
       - .:/plasmic
-      # Use an anonymous volume to prevent local node_modules from overwriting the container's
+
+      # 2. Create anonymous volumes to preserve container files from being overwritten
+      # --- Node Modules ---
       - /plasmic/node_modules
       - /plasmic/platform/wab/node_modules
+      - /plasmic/platform/sub/node_modules
+      - /plasmic/platform/canvas-packages/node_modules
+      - /plasmic/platform/live-frame/node_modules
+      - /plasmic/platform/react-web-bundle/node_modules
+      - /plasmic/platform/loader-bundle-env/node_modules
+      - /plasmic/platform/loader-html-hydrate/node_modules
+
+      # --- Build Caches ---
+      - /home/plasmic/.cache/ms-playwright
     ports:
       - "3003:3003"
       - "3004:3004"
