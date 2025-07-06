@@ -168,6 +168,10 @@ export function ComponentPropModal(props: {
     suggestedName,
   } = props;
 
+  const componentParamTypes = studioCtx.appCtx.appConfig.enableDataQueries
+    ? COMPONENT_PARAM_TYPES_CONFIG
+    : COMPONENT_PARAM_TYPES_CONFIG.filter((type) => type.value !== "queryData");
+
   const type = props.type ?? existingParam?.type;
   const [paramName, setParamName] = React.useState(
     existingParam?.variable.name ?? suggestedName ?? ""
@@ -318,13 +322,13 @@ export function ComponentPropModal(props: {
               }
               data-test-id="arg-type"
             >
-              {COMPONENT_PARAM_TYPES_CONFIG.filter(
-                (opt) => !!opt.jsonType && !("exprTypeGuard" in opt)
-              ).map(({ value, label }) => (
-                <Select.Option value={value} textValue={label} key={value}>
-                  {label}
-                </Select.Option>
-              ))}
+              {componentParamTypes
+                .filter((opt) => !!opt.jsonType && !("exprTypeGuard" in opt))
+                .map(({ value, label }) => (
+                  <Select.Option value={value} textValue={label} key={value}>
+                    {label}
+                  </Select.Option>
+                ))}
             </Select>
           </LabeledListItem>
         ))}
@@ -373,7 +377,7 @@ export function ComponentPropModal(props: {
                   setIsLocalizable(false);
                 }
               },
-              children: COMPONENT_PARAM_TYPES_CONFIG.map(({ value, label }) => (
+              children: componentParamTypes.map(({ value, label }) => (
                 <Select.Option value={value} textValue={label} key={value}>
                   {label}
                 </Select.Option>
