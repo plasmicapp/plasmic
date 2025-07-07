@@ -1,10 +1,14 @@
+import { latestTag } from "@/wab/commons/semver";
+import { encodeUriParams } from "@/wab/commons/urls";
 import {
+  ArenaType,
   CmsDatabaseId,
   CmsRowId,
   CmsRowRevisionId,
   CmsTableId,
+  MainBranchId,
 } from "@/wab/shared/ApiSchema";
-import { route } from "@/wab/shared/route/route";
+import { fillRoute, route } from "@/wab/shared/route/route";
 
 export const APP_ROUTES = {
   dashboard: route("/"),
@@ -165,3 +169,64 @@ export const APP_ROUTES = {
   webImporterSandbox: route("/sandbox/web-importer"),
   importProjectsFromProd: route("/import-projects-from-prod"),
 };
+
+export const SEARCH_PARAM_BRANCH = "branch";
+export const SEARCH_PARAM_VERSION = "version";
+export const SEARCH_PARAM_ARENA_TYPE = "arena_type";
+export const SEARCH_PARAM_ARENA = "arena";
+export const SEARCH_PARAM_COMMENT = "comment";
+
+export interface ProjectLocationParams {
+  projectId: string;
+  slug: string | undefined;
+  branchName: MainBranchId | string;
+  branchVersion: typeof latestTag | string;
+  arenaType: ArenaType | undefined;
+  arenaUuidOrNameOrPath: string | undefined;
+  isPreview?: boolean;
+  threadId?: string;
+}
+
+export function mkProjectLocation({
+  projectId,
+  slug,
+  branchName,
+  branchVersion,
+  arenaType,
+  arenaUuidOrNameOrPath,
+  threadId,
+}: ProjectLocationParams): {
+  pathname: string;
+  search?: string;
+} {
+  const searchParams: [string, string][] = [];
+  if (branchName !== MainBranchId) {
+    searchParams.push([SEARCH_PARAM_BRANCH, branchName]);
+  }
+  if (branchVersion !== latestTag) {
+    searchParams.push([SEARCH_PARAM_VERSION, branchVersion]);
+  }
+  if (arenaType) {
+    searchParams.push([SEARCH_PARAM_ARENA_TYPE, arenaType]);
+  }
+  if (arenaUuidOrNameOrPath) {
+    searchParams.push([SEARCH_PARAM_ARENA, arenaUuidOrNameOrPath]);
+  }
+  if (threadId) {
+    searchParams.push([SEARCH_PARAM_COMMENT, threadId]);
+  }
+  const search =
+    searchParams.length === 0 ? undefined : "?" + encodeUriParams(searchParams);
+  const pathname = slug
+    ? fillRoute(APP_ROUTES.projectSlug, {
+        projectId,
+        slug,
+      })
+    : fillRoute(APP_ROUTES.project, {
+        projectId,
+      });
+  return {
+    pathname,
+    search,
+  };
+}

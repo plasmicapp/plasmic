@@ -1,4 +1,4 @@
-import { mkProjectLocation, openNewTab } from "@/wab/client/cli-routes";
+import { openNewTab } from "@/wab/client/cli-routes";
 import { isStyleClip } from "@/wab/client/clipboard/local";
 import { makeFrameMenu } from "@/wab/client/components/frame-menu";
 import {
@@ -63,6 +63,7 @@ import {
   RawText,
   TplNode,
 } from "@/wab/shared/model/classes";
+import { mkProjectLocation } from "@/wab/shared/route/app-routes";
 import {
   isTplAutoSizable,
   isTplDefaultSized,

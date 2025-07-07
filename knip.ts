@@ -30,7 +30,7 @@ const config: KnipConfig = {
 
         // below deps are not verified to actually be needed
 
-        "url", // used by cli-routes?
+        "url", // used by route.ts?
 
         // used by jest?
         "@babel/plugin-proposal-decorators",

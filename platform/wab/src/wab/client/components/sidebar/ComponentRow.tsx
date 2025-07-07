@@ -1,4 +1,4 @@
-import { mkProjectLocation, openNewTab } from "@/wab/client/cli-routes";
+import { openNewTab } from "@/wab/client/cli-routes";
 import RowItem from "@/wab/client/components/RowItem";
 import CommentIndicatorIcon from "@/wab/client/components/comments/CommentIndicatorIcon";
 import { MenuBuilder } from "@/wab/client/components/menu-builder";
@@ -45,6 +45,7 @@ import {
 } from "@/wab/shared/core/components";
 import { isTplComponent } from "@/wab/shared/core/tpls";
 import { Component } from "@/wab/shared/model/classes";
+import { mkProjectLocation } from "@/wab/shared/route/app-routes";
 import { Menu, Popover, notification } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";

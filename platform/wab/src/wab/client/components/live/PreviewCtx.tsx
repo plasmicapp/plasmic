@@ -1,9 +1,4 @@
-import {
-  SEARCH_PARAM_BRANCH,
-  mkProjectLocation,
-  parseProjectLocation,
-  parseRoute,
-} from "@/wab/client/cli-routes";
+import { parseProjectLocation, parseRoute } from "@/wab/client/cli-routes";
 import { showCanvasPageNavigationNotification } from "@/wab/client/components/canvas/studio-canvas-util";
 import { ClientPinManager } from "@/wab/client/components/variants/ClientPinManager";
 import { HostFrameCtx } from "@/wab/client/frame-ctx/host-frame-ctx";
@@ -32,7 +27,11 @@ import {
 } from "@/wab/shared/core/components";
 import { allGlobalVariants } from "@/wab/shared/core/sites";
 import { Component, Variant } from "@/wab/shared/model/classes";
-import { APP_ROUTES } from "@/wab/shared/route/app-routes";
+import {
+  APP_ROUTES,
+  SEARCH_PARAM_BRANCH,
+  mkProjectLocation,
+} from "@/wab/shared/route/app-routes";
 import { Route, fillRoute } from "@/wab/shared/route/route";
 import {
   getMatchingPagePathParams,

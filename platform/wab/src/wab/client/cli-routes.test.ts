@@ -1,9 +1,11 @@
 import {
-  ProjectLocationParams,
-  mkProjectLocation,
   parseProjectLocation as parseProjectLocationActual,
   parseRoute,
 } from "@/wab/client/cli-routes";
+import {
+  ProjectLocationParams,
+  mkProjectLocation,
+} from "@/wab/shared/route/app-routes";
 import { Route, fillRoute, route } from "@/wab/shared/route/route";
 import { Location, LocationDescriptorObject } from "history";
 

@@ -10,11 +10,7 @@ import { zoomJump } from "@/wab/client/Zoom";
 import { invalidationKey } from "@/wab/client/api";
 import { getProjectReleases } from "@/wab/client/api-hooks";
 import { storageViewAsKey } from "@/wab/client/app-auth/constants";
-import {
-  mkProjectLocation,
-  parseProjectLocation,
-  parseRoute,
-} from "@/wab/client/cli-routes";
+import { parseProjectLocation, parseRoute } from "@/wab/client/cli-routes";
 import { LocalClipboard } from "@/wab/client/clipboard/local";
 import { syncCodeComponentsAndHandleErrors } from "@/wab/client/code-components/code-components";
 import { CodeFetchersRegistry } from "@/wab/client/code-fetchers";
@@ -334,7 +330,7 @@ import {
 } from "@/wab/shared/model/model-change-util";
 import { reorderPageArenaCols } from "@/wab/shared/page-arenas";
 import { getAccessLevelToResource } from "@/wab/shared/perms";
-import { APP_ROUTES } from "@/wab/shared/route/app-routes";
+import { APP_ROUTES, mkProjectLocation } from "@/wab/shared/route/app-routes";
 import {
   DeletedAssetsSummary,
   getEmptyDeletedAssetsSummary,

@@ -1,20 +1,20 @@
 /** @format */
 
 import { latestTag } from "@/wab/commons/semver";
-import { encodeUriParams } from "@/wab/commons/urls";
-import { ArenaType, MainBranchId, isArenaType } from "@/wab/shared/ApiSchema";
+import { MainBranchId, isArenaType } from "@/wab/shared/ApiSchema";
 import { ensure } from "@/wab/shared/common";
 import { DEVFLAGS } from "@/wab/shared/devflags";
-import { APP_ROUTES } from "@/wab/shared/route/app-routes";
+import {
+  APP_ROUTES,
+  ProjectLocationParams,
+  SEARCH_PARAM_ARENA,
+  SEARCH_PARAM_ARENA_TYPE,
+  SEARCH_PARAM_BRANCH,
+  SEARCH_PARAM_VERSION,
+} from "@/wab/shared/route/app-routes";
 import { Route, fillRoute } from "@/wab/shared/route/route";
 import { getPublicUrl } from "@/wab/shared/urls";
-import {
-  History,
-  Location,
-  LocationDescriptor,
-  LocationDescriptorObject,
-  createPath,
-} from "history";
+import { History, Location, LocationDescriptor, createPath } from "history";
 import { trimStart } from "lodash";
 import { match as Match, matchPath, useRouteMatch } from "react-router-dom";
 
@@ -55,21 +55,6 @@ export function isProjectPath(pathname: string) {
     parseRoute(APP_ROUTES.project, pathname) ||
     parseRoute(APP_ROUTES.projectSlug, pathname)
   );
-}
-
-export const SEARCH_PARAM_BRANCH = "branch";
-const SEARCH_PARAM_VERSION = "version";
-const SEARCH_PARAM_ARENA_TYPE = "arena_type";
-const SEARCH_PARAM_ARENA = "arena";
-
-export interface ProjectLocationParams {
-  projectId: string;
-  slug: string | undefined;
-  branchName: MainBranchId | string;
-  branchVersion: typeof latestTag | string;
-  arenaType: ArenaType | undefined;
-  arenaUuidOrNameOrPath: string | undefined;
-  isPreview?: boolean;
 }
 
 export function parseProjectLocation(
@@ -130,44 +115,6 @@ export function parseProjectLocation(
   }
 
   return undefined;
-}
-
-export function mkProjectLocation({
-  projectId,
-  slug,
-  branchName,
-  branchVersion,
-  arenaType,
-  arenaUuidOrNameOrPath,
-}: ProjectLocationParams): LocationDescriptorObject {
-  const searchParams: [string, string][] = [];
-  if (branchName !== MainBranchId) {
-    searchParams.push([SEARCH_PARAM_BRANCH, branchName]);
-  }
-  if (branchVersion !== latestTag) {
-    searchParams.push([SEARCH_PARAM_VERSION, branchVersion]);
-  }
-  if (arenaType) {
-    searchParams.push([SEARCH_PARAM_ARENA_TYPE, arenaType]);
-  }
-  if (arenaUuidOrNameOrPath) {
-    searchParams.push([SEARCH_PARAM_ARENA, arenaUuidOrNameOrPath]);
-  }
-  const search =
-    searchParams.length === 0 ? undefined : "?" + encodeUriParams(searchParams);
-  const pathname = slug
-    ? fillRoute(APP_ROUTES.projectSlug, {
-        projectId,
-        slug,
-      })
-    : fillRoute(APP_ROUTES.project, {
-        projectId,
-      });
-
-  return {
-    pathname,
-    search,
-  };
 }
 
 export function openNewTab(location: LocationDescriptor) {
