@@ -65,14 +65,7 @@ export const personalProjectPaywallMessage = (
     workspace, so it is limited to {DEVFLAGS.freeTier.maxUsers} editors and no
     A/B testing or custom targeting. Please move the project into a{" "}
     {ORGANIZATION_LOWER} whose plan supports a larger number of seats, or{" "}
-    <a
-      href={
-        DEVFLAGS.useNewFeatureTiers
-          ? "https://plasmic.app/team-plan"
-          : "https://plasmic.app/growth-team"
-      }
-      target="_blank"
-    >
+    <a href="https://www.plasmic.app/pricing" target="_blank">
       create such a {ORGANIZATION_LOWER}
     </a>
     .
