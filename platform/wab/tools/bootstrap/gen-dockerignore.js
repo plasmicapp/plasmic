@@ -18,11 +18,8 @@ create-react-app-new/
 static-*.tgz
 `;
 
-// Need plasmic-deployed.json, as it needs to be generated
-// outside of docker (needs access to git).
-// Also need loader-hydrate.*, as it was generated from yarn build
+// Need loader-hydrate.*, as it was generated from yarn build
 const REMOVED_CONTENT = `
-src/wab/client/plasmic-deployed.json
 public/static/js/loader-hydrate.*
 `;
 

@@ -8,7 +8,6 @@
 /build/
 /src/wab/shared/model/classes.ts
 /src/wab/shared/model/classes-metas.ts
-/src/wab/client/plasmic-deployed.json
 /server/.cachedev-build/
 dev-build
 /src/wab/styles/_tokens.sass

@@ -47,7 +47,6 @@ import * as widgets from "@/wab/client/components/widgets";
 import { providesAppCtx, useAppCtx } from "@/wab/client/contexts/AppContexts";
 import { useHostFrameCtxIfHostFrame } from "@/wab/client/frame-ctx/host-frame-ctx";
 import { analytics } from "@/wab/client/observability";
-import deployedVersions from "@/wab/client/plasmic-deployed.json";
 import { useForceUpdate } from "@/wab/client/useForceUpdate";
 import {
   promisifyMethods,
@@ -113,13 +112,6 @@ function LoggedInContainer(props: LoggedInContainerProps) {
       />
     );
   }
-
-  const selfEmail = selfInfo?.email;
-  React.useEffect(() => {
-    if (isAdminTeamEmail(selfEmail, appCtx.appConfig)) {
-      console.log("Deployed versions", deployedVersions);
-    }
-  }, [selfEmail]);
 
   const currentLocation = useLocation();
 

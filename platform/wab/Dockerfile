@@ -21,15 +21,8 @@ RUN yarn install --frozen-lockfile && yarn cypress cache clear
 
 COPY --chown=normaluser . .
 
-# We copy plasmic-deployed.json, which has been stuffed into .tmp,
-# to its rightful place. We do this because we don't want `make` to
-# generate it, as generating it requires using `git`, and `.git` is
-# being .dockerignore-ed
-COPY --chown=normaluser .tmp/plasmic-deployed.json /home/normaluser/src/wab/client/
-
-# Run make, but touch src/wab/client/plasmic-deployed.json so it
-# doesn't get made (see above)
-RUN mkdir -p src/wab/gen/ && touch src/wab/client/plasmic-deployed.json && make
+# Run make
+RUN mkdir -p src/wab/gen/ && make
 
 RUN rm -rf ./node_modules
 RUN yarn install --production --frozen-lockfile && yarn cache clean
