@@ -2244,7 +2244,9 @@ export class StudioCtx extends WithDbCtx {
       }
     }
     if (this.arenaViewStates.size > DEVFLAGS.liveArenas) {
-      const entries = Array.from(this.arenaViewStates.entries());
+      const entries = Array.from<[AnyArena, ArenaViewInfo]>(
+        this.arenaViewStates.entries()
+      );
       const arenasToFree = orderBy(
         entries.filter(([arena, _info]) => arena !== this.currentArena),
         ([_arena, info]) => info.lastAccess,
