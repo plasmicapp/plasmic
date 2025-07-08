@@ -20,7 +20,7 @@ services:
   plasmic-wab:
     build:
       context: .
-      dockerfile: ./platform/wab/tools/docker-dev/Dockerfile.dev.aio
+      dockerfile: ./platform/wab/tools/docker-dev/Dockerfile
     volumes:
       # 1. Mount your local source code into the container
       - .:/plasmic
