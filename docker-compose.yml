@@ -21,15 +21,6 @@ services:
     build:
       context: .
       dockerfile: ./platform/wab/tools/docker-dev/Dockerfile.dev.aio
-    command: # Override the default dockerfile startup command here for debugging purpose
-    - | 
-      jq '(.host = "plasmic-db") | (.password //= "SEKRET")' ormconfig.json > tmp.json && mv tmp.json ormconfig.json && \
-      yarn typeorm migration:run && \
-      yarn migrate-dev-bundles && \
-      yarn seed && \
-      yarn plume:dev update && \
-      cd /plasmic && \
-      yarn dev
     volumes:
       # 1. Mount your local source code into the container
       - .:/plasmic
@@ -46,7 +37,6 @@ services:
       
       # --- Generated files ---
       - plasmic_public:/plasmic/platform/wab/public
-      - plasmic_wab_client:/plasmic/platform/wab/src/wab/client
       - plasmic_wab_gen:/plasmic/platform/wab/src/wab/gen
       - plasmic_wab_shared_model:/plasmic/platform/wab/src/wab/shared/model
       - plasmic_generated_styles:/plasmic/platform/wab/src/wab/styles
