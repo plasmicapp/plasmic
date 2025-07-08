@@ -70,7 +70,7 @@ type ArgPropType = keyof PlasmicCopilotPromptDialog__ArgsType;
 export const PlasmicCopilotPromptDialog__ArgProps = new Array<ArgPropType>();
 
 export type PlasmicCopilotPromptDialog__OverridesType = {
-  popoverPlaceholder?: Flex__<"div">;
+  rootContainer?: Flex__<"div">;
   sizerContainer?: Flex__<"div">;
   promptDialog?: Flex__<"div">;
   headerContainer?: Flex__<"div">;
@@ -155,631 +155,581 @@ function PlasmicCopilotPromptDialog__RenderFunc(props: {
   });
 
   return (
-    (
-      hasVariant($state, "type", "ui")
-        ? true
-        : hasVariant($state, "state", "historyEmpty")
-        ? true
-        : hasVariant($state, "state", "history")
-        ? true
-        : hasVariant($state, "state", "quotaExceeded")
-        ? true
-        : hasVariant($state, "state", "error")
-        ? true
-        : hasVariant($state, "state", "loading")
-        ? true
-        : hasVariant($state, "state", "ready")
-        ? true
-        : false
-    ) ? (
+    <div
+      data-plasmic-name={"rootContainer"}
+      data-plasmic-override={overrides.rootContainer}
+      data-plasmic-root={true}
+      data-plasmic-for-node={forNode}
+      className={classNames(
+        projectcss.all,
+        projectcss.root_reset,
+        projectcss.plasmic_default_styles,
+        projectcss.plasmic_mixins,
+        projectcss.plasmic_tokens,
+        plasmic_plasmic_kit_design_system_css.plasmic_tokens,
+        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
+        sty.rootContainer,
+        {
+          [sty.rootContainerstate_error]: hasVariant($state, "state", "error"),
+          [sty.rootContainerstate_historyEmpty]: hasVariant(
+            $state,
+            "state",
+            "historyEmpty"
+          ),
+          [sty.rootContainerstate_history]: hasVariant(
+            $state,
+            "state",
+            "history"
+          ),
+          [sty.rootContainerstate_loading]: hasVariant(
+            $state,
+            "state",
+            "loading"
+          ),
+          [sty.rootContainerstate_quotaExceeded]: hasVariant(
+            $state,
+            "state",
+            "quotaExceeded"
+          ),
+          [sty.rootContainerstate_ready]: hasVariant($state, "state", "ready"),
+          [sty.rootContainertype_sql]: hasVariant($state, "type", "sql"),
+          [sty.rootContainertype_ui]: hasVariant($state, "type", "ui"),
+        }
+      )}
+    >
       <div
-        data-plasmic-name={"popoverPlaceholder"}
-        data-plasmic-override={overrides.popoverPlaceholder}
-        data-plasmic-root={true}
-        data-plasmic-for-node={forNode}
-        className={classNames(
-          projectcss.all,
-          projectcss.root_reset,
-          projectcss.plasmic_default_styles,
-          projectcss.plasmic_mixins,
-          projectcss.plasmic_tokens,
-          plasmic_plasmic_kit_design_system_css.plasmic_tokens,
-          plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
-          sty.popoverPlaceholder,
-          {
-            [sty.popoverPlaceholderstate_error]: hasVariant(
-              $state,
-              "state",
-              "error"
-            ),
-            [sty.popoverPlaceholderstate_historyEmpty]: hasVariant(
+        data-plasmic-name={"sizerContainer"}
+        data-plasmic-override={overrides.sizerContainer}
+        className={classNames(projectcss.all, sty.sizerContainer, {
+          [sty.sizerContainerstate_error]: hasVariant($state, "state", "error"),
+          [sty.sizerContainerstate_history]: hasVariant(
+            $state,
+            "state",
+            "history"
+          ),
+          [sty.sizerContainerstate_loading]: hasVariant(
+            $state,
+            "state",
+            "loading"
+          ),
+          [sty.sizerContainerstate_quotaExceeded]: hasVariant(
+            $state,
+            "state",
+            "quotaExceeded"
+          ),
+          [sty.sizerContainerstate_ready]: hasVariant($state, "state", "ready"),
+          [sty.sizerContainerstate_ready_type_ui]:
+            hasVariant($state, "type", "ui") &&
+            hasVariant($state, "state", "ready"),
+          [sty.sizerContainertype_sql]: hasVariant($state, "type", "sql"),
+          [sty.sizerContainertype_ui]: hasVariant($state, "type", "ui"),
+        })}
+      >
+        <Stack__
+          as={"div"}
+          data-plasmic-name={"promptDialog"}
+          data-plasmic-override={overrides.promptDialog}
+          hasGap={true}
+          className={classNames(projectcss.all, sty.promptDialog, {
+            [sty.promptDialogstate_historyEmpty]: hasVariant(
               $state,
               "state",
               "historyEmpty"
             ),
-            [sty.popoverPlaceholderstate_history]: hasVariant(
+            [sty.promptDialogstate_history]: hasVariant(
               $state,
               "state",
               "history"
             ),
-            [sty.popoverPlaceholderstate_loading]: hasVariant(
+            [sty.promptDialogstate_loading]: hasVariant(
               $state,
               "state",
               "loading"
             ),
-            [sty.popoverPlaceholderstate_quotaExceeded]: hasVariant(
-              $state,
-              "state",
-              "quotaExceeded"
-            ),
-            [sty.popoverPlaceholderstate_ready]: hasVariant(
-              $state,
-              "state",
-              "ready"
-            ),
-            [sty.popoverPlaceholdertype_sql]: hasVariant($state, "type", "sql"),
-            [sty.popoverPlaceholdertype_ui]: hasVariant($state, "type", "ui"),
-          }
-        )}
-      >
-        <div
-          data-plasmic-name={"sizerContainer"}
-          data-plasmic-override={overrides.sizerContainer}
-          className={classNames(projectcss.all, sty.sizerContainer, {
-            [sty.sizerContainerstate_error]: hasVariant(
-              $state,
-              "state",
-              "error"
-            ),
-            [sty.sizerContainerstate_history]: hasVariant(
-              $state,
-              "state",
-              "history"
-            ),
-            [sty.sizerContainerstate_loading]: hasVariant(
-              $state,
-              "state",
-              "loading"
-            ),
-            [sty.sizerContainerstate_quotaExceeded]: hasVariant(
-              $state,
-              "state",
-              "quotaExceeded"
-            ),
-            [sty.sizerContainerstate_ready]: hasVariant(
-              $state,
-              "state",
-              "ready"
-            ),
-            [sty.sizerContainerstate_ready_type_ui]:
+            [sty.promptDialogstate_ready]: hasVariant($state, "state", "ready"),
+            [sty.promptDialogstate_ready_type_ui]:
               hasVariant($state, "type", "ui") &&
               hasVariant($state, "state", "ready"),
-            [sty.sizerContainertype_sql]: hasVariant($state, "type", "sql"),
-            [sty.sizerContainertype_ui]: hasVariant($state, "type", "ui"),
+            [sty.promptDialogtype_sql]: hasVariant($state, "type", "sql"),
+            [sty.promptDialogtype_ui]: hasVariant($state, "type", "ui"),
           })}
         >
-          <Stack__
-            as={"div"}
-            data-plasmic-name={"promptDialog"}
-            data-plasmic-override={overrides.promptDialog}
-            hasGap={true}
-            className={classNames(projectcss.all, sty.promptDialog, {
-              [sty.promptDialogstate_historyEmpty]: hasVariant(
+          <div
+            data-plasmic-name={"headerContainer"}
+            data-plasmic-override={overrides.headerContainer}
+            className={classNames(projectcss.all, sty.headerContainer, {
+              [sty.headerContainerstate_quotaExceeded]: hasVariant(
                 $state,
                 "state",
-                "historyEmpty"
+                "quotaExceeded"
               ),
-              [sty.promptDialogstate_history]: hasVariant(
-                $state,
-                "state",
-                "history"
-              ),
-              [sty.promptDialogstate_loading]: hasVariant(
-                $state,
-                "state",
-                "loading"
-              ),
-              [sty.promptDialogstate_ready]: hasVariant(
+              [sty.headerContainerstate_ready]: hasVariant(
                 $state,
                 "state",
                 "ready"
               ),
-              [sty.promptDialogstate_ready_type_ui]:
-                hasVariant($state, "type", "ui") &&
-                hasVariant($state, "state", "ready"),
-              [sty.promptDialogtype_sql]: hasVariant($state, "type", "sql"),
-              [sty.promptDialogtype_ui]: hasVariant($state, "type", "ui"),
+              [sty.headerContainertype_sql]: hasVariant($state, "type", "sql"),
             })}
           >
             <div
-              data-plasmic-name={"headerContainer"}
-              data-plasmic-override={overrides.headerContainer}
-              className={classNames(projectcss.all, sty.headerContainer, {
-                [sty.headerContainerstate_quotaExceeded]: hasVariant(
-                  $state,
-                  "state",
-                  "quotaExceeded"
-                ),
-                [sty.headerContainerstate_ready]: hasVariant(
-                  $state,
-                  "state",
-                  "ready"
-                ),
-                [sty.headerContainertype_sql]: hasVariant(
-                  $state,
-                  "type",
-                  "sql"
-                ),
-              })}
+              data-plasmic-name={"promptLabel"}
+              data-plasmic-override={overrides.promptLabel}
+              className={classNames(
+                projectcss.all,
+                projectcss.__wab_text,
+                sty.promptLabel,
+                {
+                  [sty.promptLabelstate_historyEmpty]: hasVariant(
+                    $state,
+                    "state",
+                    "historyEmpty"
+                  ),
+                  [sty.promptLabelstate_history]: hasVariant(
+                    $state,
+                    "state",
+                    "history"
+                  ),
+                }
+              )}
             >
-              <div
-                data-plasmic-name={"promptLabel"}
-                data-plasmic-override={overrides.promptLabel}
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.promptLabel,
-                  {
-                    [sty.promptLabelstate_historyEmpty]: hasVariant(
+              {"Describe what you want to get:"}
+            </div>
+            <h6
+              data-plasmic-name={"history"}
+              data-plasmic-override={overrides.history}
+              className={classNames(
+                projectcss.all,
+                projectcss.h6,
+                projectcss.__wab_text,
+                sty.history,
+                {
+                  [sty.historystate_historyEmpty]: hasVariant(
+                    $state,
+                    "state",
+                    "historyEmpty"
+                  ),
+                  [sty.historystate_history]: hasVariant(
+                    $state,
+                    "state",
+                    "history"
+                  ),
+                  [sty.historystate_ready]: hasVariant(
+                    $state,
+                    "state",
+                    "ready"
+                  ),
+                }
+              )}
+            >
+              {"Suggestion history"}
+            </h6>
+            <div
+              data-plasmic-name={"rightButtons"}
+              data-plasmic-override={overrides.rightButtons}
+              className={classNames(projectcss.all, sty.rightButtons)}
+            >
+              <IconButton
+                data-plasmic-name={"historyBtn"}
+                data-plasmic-override={overrides.historyBtn}
+                className={classNames("__wab_instance", sty.historyBtn)}
+                size={"small"}
+              >
+                <HistoryIcon
+                  className={classNames(projectcss.all, sty.svg__yiwDt, {
+                    [sty.svgstate_historyEmpty__yiwDtWeNsL]: hasVariant(
                       $state,
                       "state",
                       "historyEmpty"
                     ),
-                    [sty.promptLabelstate_history]: hasVariant(
+                    [sty.svgstate_history__yiwDtFmeFi]: hasVariant(
                       $state,
                       "state",
                       "history"
                     ),
-                  }
-                )}
+                  })}
+                  role={"img"}
+                />
+              </IconButton>
+              <IconButton
+                data-plasmic-name={"cancelBtn"}
+                data-plasmic-override={overrides.cancelBtn}
+                className={classNames("__wab_instance", sty.cancelBtn)}
+                size={"small"}
               >
-                {"Describe what you want to get:"}
-              </div>
-              <h6
-                data-plasmic-name={"history"}
-                data-plasmic-override={overrides.history}
-                className={classNames(
-                  projectcss.all,
-                  projectcss.h6,
-                  projectcss.__wab_text,
-                  sty.history,
-                  {
-                    [sty.historystate_historyEmpty]: hasVariant(
-                      $state,
-                      "state",
-                      "historyEmpty"
-                    ),
-                    [sty.historystate_history]: hasVariant(
-                      $state,
-                      "state",
-                      "history"
-                    ),
-                    [sty.historystate_ready]: hasVariant(
-                      $state,
-                      "state",
-                      "ready"
-                    ),
-                  }
-                )}
-              >
-                {"Suggestion history"}
-              </h6>
+                <CloseSvgIcon
+                  className={classNames(projectcss.all, sty.svg__w7MBv)}
+                  role={"img"}
+                />
+              </IconButton>
+            </div>
+          </div>
+          <Stack__
+            as={"div"}
+            data-plasmic-name={"contents"}
+            data-plasmic-override={overrides.contents}
+            hasGap={true}
+            className={classNames(projectcss.all, sty.contents, {
+              [sty.contentsstate_historyEmpty]: hasVariant(
+                $state,
+                "state",
+                "historyEmpty"
+              ),
+              [sty.contentsstate_history]: hasVariant(
+                $state,
+                "state",
+                "history"
+              ),
+              [sty.contentstype_sql]: hasVariant($state, "type", "sql"),
+            })}
+          >
+            {(
+              hasVariant($state, "state", "historyEmpty")
+                ? true
+                : hasVariant($state, "state", "history")
+                ? true
+                : false
+            ) ? (
               <div
-                data-plasmic-name={"rightButtons"}
-                data-plasmic-override={overrides.rightButtons}
-                className={classNames(projectcss.all, sty.rightButtons)}
+                data-plasmic-name={"historyContainer"}
+                data-plasmic-override={overrides.historyContainer}
+                className={classNames(projectcss.all, sty.historyContainer, {
+                  [sty.historyContainerstate_historyEmpty]: hasVariant(
+                    $state,
+                    "state",
+                    "historyEmpty"
+                  ),
+                  [sty.historyContainerstate_history]: hasVariant(
+                    $state,
+                    "state",
+                    "history"
+                  ),
+                  [sty.historyContainerstate_quotaExceeded]: hasVariant(
+                    $state,
+                    "state",
+                    "quotaExceeded"
+                  ),
+                })}
               >
-                <IconButton
-                  data-plasmic-name={"historyBtn"}
-                  data-plasmic-override={overrides.historyBtn}
-                  className={classNames("__wab_instance", sty.historyBtn)}
-                  size={"small"}
-                >
-                  <HistoryIcon
-                    className={classNames(projectcss.all, sty.svg__yiwDt, {
-                      [sty.svgstate_historyEmpty__yiwDtWeNsL]: hasVariant(
+                <div
+                  data-plasmic-name={"historyEmptyMsg"}
+                  data-plasmic-override={overrides.historyEmptyMsg}
+                  className={classNames(
+                    projectcss.all,
+                    projectcss.__wab_text,
+                    sty.historyEmptyMsg,
+                    {
+                      [sty.historyEmptyMsgstate_historyEmpty]: hasVariant(
                         $state,
                         "state",
                         "historyEmpty"
                       ),
-                      [sty.svgstate_history__yiwDtFmeFi]: hasVariant(
+                      [sty.historyEmptyMsgstate_history]: hasVariant(
                         $state,
                         "state",
                         "history"
                       ),
-                    })}
-                    role={"img"}
-                  />
-                </IconButton>
-                <IconButton
-                  data-plasmic-name={"cancelBtn"}
-                  data-plasmic-override={overrides.cancelBtn}
-                  className={classNames("__wab_instance", sty.cancelBtn)}
-                  size={"small"}
+                    }
+                  )}
                 >
-                  <CloseSvgIcon
-                    className={classNames(projectcss.all, sty.svg__w7MBv)}
-                    role={"img"}
-                  />
-                </IconButton>
-              </div>
-            </div>
-            <Stack__
-              as={"div"}
-              data-plasmic-name={"contents"}
-              data-plasmic-override={overrides.contents}
-              hasGap={true}
-              className={classNames(projectcss.all, sty.contents, {
-                [sty.contentsstate_historyEmpty]: hasVariant(
-                  $state,
-                  "state",
-                  "historyEmpty"
-                ),
-                [sty.contentsstate_history]: hasVariant(
-                  $state,
-                  "state",
-                  "history"
-                ),
-                [sty.contentstype_sql]: hasVariant($state, "type", "sql"),
-              })}
-            >
-              {(
-                hasVariant($state, "state", "historyEmpty")
-                  ? true
-                  : hasVariant($state, "state", "history")
-                  ? true
-                  : false
-              ) ? (
-                <div
-                  data-plasmic-name={"historyContainer"}
-                  data-plasmic-override={overrides.historyContainer}
-                  className={classNames(projectcss.all, sty.historyContainer, {
-                    [sty.historyContainerstate_historyEmpty]: hasVariant(
+                  {hasVariant($state, "state", "historyEmpty")
+                    ? "No data"
+                    : "Enter some text"}
+                </div>
+                <Stack__
+                  as={"div"}
+                  data-plasmic-name={"historyContents"}
+                  data-plasmic-override={overrides.historyContents}
+                  hasGap={true}
+                  className={classNames(projectcss.all, sty.historyContents, {
+                    [sty.historyContentsstate_historyEmpty]: hasVariant(
                       $state,
                       "state",
                       "historyEmpty"
                     ),
-                    [sty.historyContainerstate_history]: hasVariant(
+                    [sty.historyContentsstate_history]: hasVariant(
                       $state,
                       "state",
                       "history"
                     ),
-                    [sty.historyContainerstate_quotaExceeded]: hasVariant(
+                    [sty.historyContentsstate_quotaExceeded]: hasVariant(
                       $state,
                       "state",
                       "quotaExceeded"
                     ),
                   })}
                 >
-                  <div
-                    data-plasmic-name={"historyEmptyMsg"}
-                    data-plasmic-override={overrides.historyEmptyMsg}
+                  <CopilotMsg
                     className={classNames(
-                      projectcss.all,
-                      projectcss.__wab_text,
-                      sty.historyEmptyMsg,
-                      {
-                        [sty.historyEmptyMsgstate_historyEmpty]: hasVariant(
-                          $state,
-                          "state",
-                          "historyEmpty"
-                        ),
-                        [sty.historyEmptyMsgstate_history]: hasVariant(
-                          $state,
-                          "state",
-                          "history"
-                        ),
-                      }
+                      "__wab_instance",
+                      sty.copilotMsg__cScMq
                     )}
-                  >
-                    {hasVariant($state, "state", "historyEmpty")
-                      ? "No data"
-                      : "Enter some text"}
-                  </div>
-                  <Stack__
-                    as={"div"}
-                    data-plasmic-name={"historyContents"}
-                    data-plasmic-override={overrides.historyContents}
-                    hasGap={true}
-                    className={classNames(projectcss.all, sty.historyContents, {
-                      [sty.historyContentsstate_historyEmpty]: hasVariant(
+                    userPrompt={true}
+                  />
+
+                  <CopilotMsg
+                    className={classNames(
+                      "__wab_instance",
+                      sty.copilotMsg__kbV
+                    )}
+                    rightMargin={true}
+                  />
+
+                  <CopilotMsg
+                    className={classNames(
+                      "__wab_instance",
+                      sty.copilotMsg__sfkbS
+                    )}
+                    userPrompt={true}
+                  />
+
+                  <CopilotMsg
+                    className={classNames(
+                      "__wab_instance",
+                      sty.copilotMsg__yboe1
+                    )}
+                    rightMargin={true}
+                  />
+                </Stack__>
+                <div
+                  data-plasmic-name={"historyBottomDiv"}
+                  data-plasmic-override={overrides.historyBottomDiv}
+                  className={classNames(projectcss.all, sty.historyBottomDiv, {
+                    [sty.historyBottomDivstate_history]: hasVariant(
+                      $state,
+                      "state",
+                      "history"
+                    ),
+                    [sty.historyBottomDivstate_quotaExceeded]: hasVariant(
+                      $state,
+                      "state",
+                      "quotaExceeded"
+                    ),
+                  })}
+                  id={"history-bottom-div"}
+                >
+                  <PlasmicImg__
+                    data-plasmic-name={"onLoadTrigger"}
+                    data-plasmic-override={overrides.onLoadTrigger}
+                    alt={""}
+                    className={classNames(sty.onLoadTrigger, {
+                      [sty.onLoadTriggerstate_historyEmpty]: hasVariant(
                         $state,
                         "state",
                         "historyEmpty"
                       ),
-                      [sty.historyContentsstate_history]: hasVariant(
+                      [sty.onLoadTriggerstate_history]: hasVariant(
                         $state,
                         "state",
                         "history"
                       ),
-                      [sty.historyContentsstate_quotaExceeded]: hasVariant(
+                      [sty.onLoadTriggerstate_quotaExceeded]: hasVariant(
                         $state,
                         "state",
                         "quotaExceeded"
                       ),
                     })}
-                  >
-                    <CopilotMsg
-                      className={classNames(
-                        "__wab_instance",
-                        sty.copilotMsg__cScMq
-                      )}
-                      userPrompt={true}
-                    />
+                    displayHeight={
+                      hasVariant($state, "state", "historyEmpty")
+                        ? "1px"
+                        : hasVariant($state, "state", "history")
+                        ? "1px"
+                        : "auto"
+                    }
+                    displayMaxHeight={"none"}
+                    displayMaxWidth={"100%"}
+                    displayMinHeight={"0"}
+                    displayMinWidth={"0"}
+                    displayWidth={
+                      hasVariant($state, "state", "historyEmpty")
+                        ? "1px"
+                        : hasVariant($state, "state", "history")
+                        ? "1px"
+                        : "auto"
+                    }
+                    loading={"eager"}
+                    onLoad={async (event) => {
+                      const $steps = {};
 
-                    <CopilotMsg
-                      className={classNames(
-                        "__wab_instance",
-                        sty.copilotMsg__kbV
-                      )}
-                      rightMargin={true}
-                    />
-
-                    <CopilotMsg
-                      className={classNames(
-                        "__wab_instance",
-                        sty.copilotMsg__sfkbS
-                      )}
-                      userPrompt={true}
-                    />
-
-                    <CopilotMsg
-                      className={classNames(
-                        "__wab_instance",
-                        sty.copilotMsg__yboe1
-                      )}
-                      rightMargin={true}
-                    />
-                  </Stack__>
-                  <div
-                    data-plasmic-name={"historyBottomDiv"}
-                    data-plasmic-override={overrides.historyBottomDiv}
-                    className={classNames(
-                      projectcss.all,
-                      sty.historyBottomDiv,
-                      {
-                        [sty.historyBottomDivstate_history]: hasVariant(
-                          $state,
-                          "state",
-                          "history"
-                        ),
-                        [sty.historyBottomDivstate_quotaExceeded]: hasVariant(
-                          $state,
-                          "state",
-                          "quotaExceeded"
-                        ),
+                      $steps["runCode"] = true
+                        ? (() => {
+                            const actionArgs = {
+                              customFunction: async () => {
+                                return document
+                                  .getElementById("history-bottom-div")
+                                  .scrollIntoView();
+                              },
+                            };
+                            return (({ customFunction }) => {
+                              return customFunction();
+                            })?.apply(null, [actionArgs]);
+                          })()
+                        : undefined;
+                      if (
+                        $steps["runCode"] != null &&
+                        typeof $steps["runCode"] === "object" &&
+                        typeof $steps["runCode"].then === "function"
+                      ) {
+                        $steps["runCode"] = await $steps["runCode"];
                       }
-                    )}
-                    id={"history-bottom-div"}
-                  >
-                    <PlasmicImg__
-                      data-plasmic-name={"onLoadTrigger"}
-                      data-plasmic-override={overrides.onLoadTrigger}
-                      alt={""}
-                      className={classNames(sty.onLoadTrigger, {
-                        [sty.onLoadTriggerstate_historyEmpty]: hasVariant(
-                          $state,
-                          "state",
-                          "historyEmpty"
-                        ),
-                        [sty.onLoadTriggerstate_history]: hasVariant(
-                          $state,
-                          "state",
-                          "history"
-                        ),
-                        [sty.onLoadTriggerstate_quotaExceeded]: hasVariant(
-                          $state,
-                          "state",
-                          "quotaExceeded"
-                        ),
-                      })}
-                      displayHeight={
-                        hasVariant($state, "state", "historyEmpty")
-                          ? "1px"
-                          : hasVariant($state, "state", "history")
-                          ? "1px"
-                          : "auto"
-                      }
-                      displayMaxHeight={"none"}
-                      displayMaxWidth={"100%"}
-                      displayMinHeight={"0"}
-                      displayMinWidth={"0"}
-                      displayWidth={
-                        hasVariant($state, "state", "historyEmpty")
-                          ? "1px"
-                          : hasVariant($state, "state", "history")
-                          ? "1px"
-                          : "auto"
-                      }
-                      loading={"eager"}
-                      onLoad={async (event) => {
-                        const $steps = {};
-
-                        $steps["runCode"] = true
-                          ? (() => {
-                              const actionArgs = {
-                                customFunction: async () => {
-                                  return document
-                                    .getElementById("history-bottom-div")
-                                    .scrollIntoView();
-                                },
-                              };
-                              return (({ customFunction }) => {
-                                return customFunction();
-                              })?.apply(null, [actionArgs]);
-                            })()
-                          : undefined;
-                        if (
-                          $steps["runCode"] != null &&
-                          typeof $steps["runCode"] === "object" &&
-                          typeof $steps["runCode"].then === "function"
-                        ) {
-                          $steps["runCode"] = await $steps["runCode"];
-                        }
-                      }}
-                      src={
-                        hasVariant($state, "state", "historyEmpty")
-                          ? {
-                              src: imageUYmVmRYjy,
-                              fullWidth: 1,
-                              fullHeight: 1,
-                              aspectRatio: undefined,
-                            }
-                          : hasVariant($state, "state", "history")
-                          ? {
-                              src: imageUYmVmRYjy,
-                              fullWidth: 1,
-                              fullHeight: 1,
-                              aspectRatio: undefined,
-                            }
-                          : undefined
-                      }
-                    />
-                  </div>
+                    }}
+                    src={
+                      hasVariant($state, "state", "historyEmpty")
+                        ? {
+                            src: imageUYmVmRYjy,
+                            fullWidth: 1,
+                            fullHeight: 1,
+                            aspectRatio: undefined,
+                          }
+                        : hasVariant($state, "state", "history")
+                        ? {
+                            src: imageUYmVmRYjy,
+                            fullWidth: 1,
+                            fullHeight: 1,
+                            aspectRatio: undefined,
+                          }
+                        : undefined
+                    }
+                  />
                 </div>
-              ) : null}
-              <Stack__
-                as={"div"}
-                data-plasmic-name={"promptContainer"}
-                data-plasmic-override={overrides.promptContainer}
-                hasGap={true}
-                className={classNames(projectcss.all, sty.promptContainer, {
-                  [sty.promptContainerstate_historyEmpty]: hasVariant(
+              </div>
+            ) : null}
+            <Stack__
+              as={"div"}
+              data-plasmic-name={"promptContainer"}
+              data-plasmic-override={overrides.promptContainer}
+              hasGap={true}
+              className={classNames(projectcss.all, sty.promptContainer, {
+                [sty.promptContainerstate_historyEmpty]: hasVariant(
+                  $state,
+                  "state",
+                  "historyEmpty"
+                ),
+                [sty.promptContainerstate_history]: hasVariant(
+                  $state,
+                  "state",
+                  "history"
+                ),
+                [sty.promptContainerstate_ready]: hasVariant(
+                  $state,
+                  "state",
+                  "ready"
+                ),
+              })}
+            >
+              <CopilotPromptInput
+                data-plasmic-name={"promptInput"}
+                data-plasmic-override={overrides.promptInput}
+                className={classNames("__wab_instance", sty.promptInput, {
+                  [sty.promptInputstate_loading]: hasVariant(
                     $state,
                     "state",
-                    "historyEmpty"
+                    "loading"
                   ),
-                  [sty.promptContainerstate_history]: hasVariant(
+                  [sty.promptInputstate_ready]: hasVariant(
                     $state,
                     "state",
-                    "history"
+                    "ready"
                   ),
-                  [sty.promptContainerstate_ready]: hasVariant(
+                  [sty.promptInputstate_ready_type_ui]:
+                    hasVariant($state, "type", "ui") &&
+                    hasVariant($state, "state", "ready"),
+                  [sty.promptInputtype_sql]: hasVariant($state, "type", "sql"),
+                  [sty.promptInputtype_ui]: hasVariant($state, "type", "ui"),
+                })}
+                placeholder={
+                  hasVariant($state, "type", "ui")
+                    ? 'e.g. "Generate a hero section"'
+                    : undefined
+                }
+              />
+            </Stack__>
+            {(hasVariant($state, "state", "loading") ? true : false) ? (
+              <Icon3Icon
+                className={classNames(projectcss.all, sty.svg__qXcOj, {
+                  [sty.svgstate_loading__qXcOj4AmlM]: hasVariant(
+                    $state,
+                    "state",
+                    "loading"
+                  ),
+                  [sty.svgstate_ready__qXcOj65H5W]: hasVariant(
                     $state,
                     "state",
                     "ready"
                   ),
                 })}
-              >
-                <CopilotPromptInput
-                  data-plasmic-name={"promptInput"}
-                  data-plasmic-override={overrides.promptInput}
-                  className={classNames("__wab_instance", sty.promptInput, {
-                    [sty.promptInputstate_loading]: hasVariant(
-                      $state,
-                      "state",
-                      "loading"
-                    ),
-                    [sty.promptInputstate_ready]: hasVariant(
-                      $state,
-                      "state",
-                      "ready"
-                    ),
-                    [sty.promptInputstate_ready_type_ui]:
-                      hasVariant($state, "type", "ui") &&
-                      hasVariant($state, "state", "ready"),
-                    [sty.promptInputtype_sql]: hasVariant(
-                      $state,
-                      "type",
-                      "sql"
-                    ),
-                    [sty.promptInputtype_ui]: hasVariant($state, "type", "ui"),
-                  })}
-                  placeholder={
-                    hasVariant($state, "type", "ui")
-                      ? 'e.g. "Generate a hero section"'
-                      : undefined
-                  }
-                />
-              </Stack__>
-              {(hasVariant($state, "state", "loading") ? true : false) ? (
-                <Icon3Icon
-                  className={classNames(projectcss.all, sty.svg__qXcOj, {
-                    [sty.svgstate_loading__qXcOj4AmlM]: hasVariant(
-                      $state,
-                      "state",
-                      "loading"
-                    ),
-                    [sty.svgstate_ready__qXcOj65H5W]: hasVariant(
-                      $state,
-                      "state",
-                      "ready"
-                    ),
-                  })}
-                  role={"img"}
-                />
-              ) : null}
-              <div
-                data-plasmic-name={"errorMessage"}
-                data-plasmic-override={overrides.errorMessage}
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.errorMessage,
-                  {
-                    [sty.errorMessagestate_error]: hasVariant(
-                      $state,
-                      "state",
-                      "error"
-                    ),
-                    [sty.errorMessagestate_ready]: hasVariant(
-                      $state,
-                      "state",
-                      "ready"
-                    ),
-                  }
-                )}
-              >
-                {"Error! \ud83d\ude14"}
-              </div>
-              <div
-                data-plasmic-name={"quotaExceededMsg"}
-                data-plasmic-override={overrides.quotaExceededMsg}
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.quotaExceededMsg,
-                  {
-                    [sty.quotaExceededMsgstate_quotaExceeded]: hasVariant(
-                      $state,
-                      "state",
-                      "quotaExceeded"
-                    ),
-                    [sty.quotaExceededMsgstate_ready]: hasVariant(
-                      $state,
-                      "state",
-                      "ready"
-                    ),
-                  }
-                )}
-              >
-                {hasVariant($state, "state", "quotaExceeded")
-                  ? "Oops!\nYou have exceeded the daily limit for using Plasmic Copilot.\nPlease come back tomorrow or at a later time to continue using the service."
-                  : "Enter some text"}
-              </div>
-              <CopilotMsg
-                data-plasmic-name={"reply"}
-                data-plasmic-override={overrides.reply}
-                className={classNames("__wab_instance", sty.reply, {
-                  [sty.replystate_quotaExceeded]: hasVariant(
+                role={"img"}
+              />
+            ) : null}
+            <div
+              data-plasmic-name={"errorMessage"}
+              data-plasmic-override={overrides.errorMessage}
+              className={classNames(
+                projectcss.all,
+                projectcss.__wab_text,
+                sty.errorMessage,
+                {
+                  [sty.errorMessagestate_error]: hasVariant(
+                    $state,
+                    "state",
+                    "error"
+                  ),
+                  [sty.errorMessagestate_ready]: hasVariant(
+                    $state,
+                    "state",
+                    "ready"
+                  ),
+                }
+              )}
+            >
+              {"Error! \ud83d\ude14"}
+            </div>
+            <div
+              data-plasmic-name={"quotaExceededMsg"}
+              data-plasmic-override={overrides.quotaExceededMsg}
+              className={classNames(
+                projectcss.all,
+                projectcss.__wab_text,
+                sty.quotaExceededMsg,
+                {
+                  [sty.quotaExceededMsgstate_quotaExceeded]: hasVariant(
                     $state,
                     "state",
                     "quotaExceeded"
                   ),
-                  [sty.replystate_ready]: hasVariant($state, "state", "ready"),
-                })}
-              />
-            </Stack__>
+                  [sty.quotaExceededMsgstate_ready]: hasVariant(
+                    $state,
+                    "state",
+                    "ready"
+                  ),
+                }
+              )}
+            >
+              {hasVariant($state, "state", "quotaExceeded")
+                ? "Oops!\nYou have exceeded the daily limit for using Plasmic Copilot.\nPlease come back tomorrow or at a later time to continue using the service."
+                : "Enter some text"}
+            </div>
+            <CopilotMsg
+              data-plasmic-name={"reply"}
+              data-plasmic-override={overrides.reply}
+              className={classNames("__wab_instance", sty.reply, {
+                [sty.replystate_quotaExceeded]: hasVariant(
+                  $state,
+                  "state",
+                  "quotaExceeded"
+                ),
+                [sty.replystate_ready]: hasVariant($state, "state", "ready"),
+              })}
+            />
           </Stack__>
-        </div>
+        </Stack__>
       </div>
-    ) : null
+    </div>
   ) as React.ReactElement | null;
 }
 
 const PlasmicDescendants = {
-  popoverPlaceholder: [
-    "popoverPlaceholder",
+  rootContainer: [
+    "rootContainer",
     "sizerContainer",
     "promptDialog",
     "headerContainer",
@@ -888,7 +838,7 @@ type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
   (typeof PlasmicDescendants)[T][number];
 type NodeDefaultElementType = {
-  popoverPlaceholder: "div";
+  rootContainer: "div";
   sizerContainer: "div";
   promptDialog: "div";
   headerContainer: "div";
@@ -957,7 +907,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       forNode: nodeName,
     });
   };
-  if (nodeName === "popoverPlaceholder") {
+  if (nodeName === "rootContainer") {
     func.displayName = "PlasmicCopilotPromptDialog";
   } else {
     func.displayName = `PlasmicCopilotPromptDialog.${nodeName}`;
@@ -967,7 +917,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
 
 export const PlasmicCopilotPromptDialog = Object.assign(
   // Top-level PlasmicCopilotPromptDialog renders the root element
-  makeNodeComponent("popoverPlaceholder"),
+  makeNodeComponent("rootContainer"),
   {
     // Helper components rendering sub-elements
     sizerContainer: makeNodeComponent("sizerContainer"),

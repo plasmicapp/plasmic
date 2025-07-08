@@ -3,7 +3,7 @@ import {
   DefaultCopilotPromptDialogProps,
   PlasmicCopilotPromptDialog,
 } from "@/wab/client/plasmic/plasmic_kit_data_binding/PlasmicCopilotPromptDialog";
-import { Popover, Tooltip } from "antd";
+import { Tooltip } from "antd";
 import * as React from "react";
 import { FocusScope } from "react-aria";
 
@@ -18,6 +18,7 @@ import { isSubmitKeyCombo } from "@/wab/client/shortcuts/shortcut";
 import { CopilotPrompt, CopilotType } from "@/wab/client/studio-ctx/StudioCtx";
 import { CopilotImageType, copilotImageTypes } from "@/wab/shared/ApiSchema";
 import { asDataUrl, parseDataUrl } from "@/wab/shared/data-urls";
+import cn from "classnames";
 import defer = setTimeout;
 
 export interface CopilotPromptDialogProps<Response>
@@ -85,7 +86,6 @@ function CopilotPromptDialog<Response>({
 
   return (
     <PlasmicCopilotPromptDialog
-      className={className}
       type={type}
       promptContainer={{
         style: {
@@ -181,42 +181,13 @@ function CopilotPromptDialog<Response>({
           fontSize: 16,
         },
       }}
-      popoverPlaceholder={{
-        render: ({ children }) => (
-          <Popover
-            open={dialogOpen}
-            showArrow={false}
-            placement={type === "ui" ? "top" : "leftTop"}
-            onOpenChange={(visible) => {
-              if (!visible) {
-                onDialogOpenChange?.(false);
-              }
-            }}
-            trigger="click"
-            content={
-              <FocusScope autoFocus contain>
-                <div className="flex-col flex-vcenter flex-align-start pre copilot-no-background">
-                  {children}
-                </div>
-              </FocusScope>
-            }
-            overlayClassName="copilot-no-background"
-          >
-            {
-              <div
-                style={{
-                  position: "absolute",
-                  top: 0,
-                  left: "calc(100% - 40px)",
-                  right: 0,
-                  bottom: 0,
-                  zIndex: 0,
-                  margin: 0,
-                }}
-              ></div>
-            }
-          </Popover>
-        ),
+      rootContainer={{
+        render: ({ className: rootClassname, children }) =>
+          dialogOpen ? (
+            <FocusScope autoFocus>
+              <div className={cn(rootClassname, className)}>{children}</div>
+            </FocusScope>
+          ) : null,
       }}
       cancelBtn={{
         onClick: () => {

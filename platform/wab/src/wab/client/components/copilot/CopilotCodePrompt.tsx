@@ -47,7 +47,7 @@ export const CopilotCodePrompt = observer(function CopilotCodePrompt({
       openCopilotBtn={{
         props: {
           onClick: () => {
-            setDialogOpen(true);
+            setDialogOpen(!dialogOpen);
           },
         },
         wrap: (elt) => (
@@ -56,6 +56,7 @@ export const CopilotCodePrompt = observer(function CopilotCodePrompt({
               {elt}
             </Tooltip>
             <CopilotPromptDialog<string>
+              className={"CopilotCodePromptDialog"}
               dialogOpen={dialogOpen}
               onDialogOpenChange={(open) => setDialogOpen(open)}
               onCopilotApply={onUpdate}

@@ -17,6 +17,7 @@ function CopilotUiPrompt() {
 
   return (
     <CopilotPromptDialog<QueryCopilotUiResponse["data"]>
+      className={"CopilotUiPromptDialog"}
       type={"ui"}
       showImageUpload={true}
       dialogOpen={studioCtx.showUiCopilot}

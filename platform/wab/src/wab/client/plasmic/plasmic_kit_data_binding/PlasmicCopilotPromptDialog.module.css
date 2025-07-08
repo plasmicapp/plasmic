@@ -1,4 +1,4 @@
-.popoverPlaceholder {
+.rootContainer {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -7,28 +7,6 @@
   height: auto;
   max-width: 100%;
   position: relative;
-  padding: 24px;
-}
-.popoverPlaceholderstate_ready {
-  display: flex;
-}
-.popoverPlaceholderstate_loading {
-  display: flex;
-}
-.popoverPlaceholderstate_error {
-  display: flex;
-}
-.popoverPlaceholderstate_quotaExceeded {
-  display: flex;
-}
-.popoverPlaceholderstate_history {
-  display: flex;
-}
-.popoverPlaceholderstate_historyEmpty {
-  display: flex;
-}
-.popoverPlaceholdertype_ui {
-  display: flex;
 }
 .sizerContainer {
   display: flex;

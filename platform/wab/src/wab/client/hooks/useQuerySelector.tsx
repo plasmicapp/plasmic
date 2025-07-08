@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-interface Selected<T extends HTMLElement> {
+interface Selected<T extends HTMLElement | Element[]> {
   dom: T;
   selector: string;
 }

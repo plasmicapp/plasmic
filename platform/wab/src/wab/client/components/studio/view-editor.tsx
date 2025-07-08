@@ -1959,6 +1959,7 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
                 />
               )}
               <CommentsDialogs studioCtx={studioCtx} />
+              {studioCtx.showUiCopilot ? <CopilotUiPrompt /> : null}
               {studioCtx.showDevControls && (
                 <div className="canvas-editor__top-pane">
                   <div className="canvas-editor__top-pane__floating-elements-container">
@@ -2090,11 +2091,6 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
             studioCtx.setFocusedBottomModalIndex(newIndex)
           }
         />
-        {studioCtx.showUiCopilot ? (
-          <div className="canvas-editor__ui_copilot">
-            <CopilotUiPrompt />
-          </div>
-        ) : null}
       </div>
     );
   }

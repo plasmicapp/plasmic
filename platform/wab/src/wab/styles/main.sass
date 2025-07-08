@@ -3208,10 +3208,6 @@ input[type="checkbox"]:checked + .checkbox__repr
   max-height: 80px
   overflow: auto
 
-.copilot-no-background, .copilot-no-background > .ant-popover-content, .copilot-no-background > .ant-popover-content > .ant-popover-inner, .copilot-no-background > .ant-popover-content > .ant-popover-inner > .ant-popover-inner-content
-  background: transparent
-  box-shadow: none
-
 .completions
   display: flex
   height: 240px
@@ -3943,10 +3939,8 @@ $color-stops-width: 100%
   z-index: 1
   pointer-events: auto
 
-.canvas-editor__ui_copilot
-  position: absolute
-  top: 20px
-  right: 50%
+.CopilotCodePromptDialog
+  z-index: 10
 
 .canvas-editor__canvas
   position: relative
@@ -4020,6 +4014,11 @@ $color-stops-width: 100%
     > *
       pointer-events: auto
 
+  .CopilotUiPromptDialog
+    z-index: 10
+    position: absolute
+    top: 10px
+
 .canvas-editor__canvas-container__focus_mode
   grid-template-rows: 50px auto
   grid-template-areas: "topbar" "clipper"
@@ -4027,6 +4026,11 @@ $color-stops-width: 100%
   .CommentDialogContainer
       top: 60px
       height: calc(100% - 70px)
+
+  .CopilotUiPromptDialog
+    z-index: 10
+    position: absolute
+    top: 60px
 
 .canvas-editor__watch-mode
   position: absolute !important
