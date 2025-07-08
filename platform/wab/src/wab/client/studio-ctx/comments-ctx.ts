@@ -33,6 +33,7 @@ import {
 import {
   assert,
   ensure,
+  mkShortUuid,
   mkUuid,
   sortBy,
   spawn,
@@ -431,8 +432,8 @@ export class CommentsCtx {
     const api = this.studioCtx.appCtx.api;
     const optimisticRootCommentData = {
       ...commentData,
-      commentThreadId: mkUuid() as CommentThreadId,
-      commentId: mkUuid() as CommentId,
+      commentThreadId: mkShortUuid<CommentThreadId>(),
+      commentId: mkShortUuid<CommentId>(),
     };
     this.spawnHandlingErrors(
       api.postRootComment(

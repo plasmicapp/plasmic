@@ -1,5 +1,3 @@
-/** @format */
-
 import { sequentially } from "@/wab/commons/asyncutil";
 import { removeFromArray } from "@/wab/commons/collections";
 import * as semver from "@/wab/commons/semver";
@@ -193,6 +191,7 @@ import {
   ensureString,
   filterMapTruthy,
   generate,
+  isShortUuidV4,
   isUuidV4,
   jsonClone,
   last,
@@ -200,6 +199,7 @@ import {
   maybeOne,
   mergeSane,
   mkShortId,
+  mkShortUuid,
   mkUuid,
   only,
   pairwise,
@@ -267,7 +267,6 @@ import { Draft, createDraft, finishDraft } from "immer";
 import * as _ from "lodash";
 import L, { fromPairs, omit, pick, uniq } from "lodash";
 import moment from "moment";
-import ShortUuid from "short-uuid";
 import type { Opaque } from "type-fest";
 import {
   DeepPartial,
@@ -285,7 +284,6 @@ import {
   Repository,
   SelectQueryBuilder,
 } from "typeorm";
-import * as uuid from "uuid";
 
 export const updatableUserFields = [
   "firstName",
@@ -438,8 +436,6 @@ export class PwnedPasswordError extends DbMgrError {
 export class MismatchPasswordError extends DbMgrError {
   name = "MismatchPasswordError";
 }
-
-export const shortUuid = ShortUuid();
 
 export function checkPermissions(
   predicate: boolean,
@@ -1057,10 +1053,9 @@ export class DbMgr implements MigrationDbMgr {
     genShortUuid?: boolean;
   }): StampNewFields {
     const actorUserId = this.tryGetNormalActorId() ?? null;
-    const UUID = uuid.v4();
     const date = new Date();
     return {
-      id: opts?.genShortUuid ? shortUuid.fromUUID(UUID) : opts?.id || UUID,
+      id: opts?.id ?? (opts?.genShortUuid ? mkShortUuid() : mkUuid()),
       createdAt: date,
       createdById: actorUserId,
       updatedAt: date,
@@ -2072,7 +2067,7 @@ export class DbMgr implements MigrationDbMgr {
     this.allowAnyone();
     const { secret, hashSecret } = generateSecretToken();
     const newPasswordReset = this.resetPasswords().create({
-      id: uuid.v4(),
+      id: mkUuid(),
       createdAt: new Date(),
       updatedAt: new Date(),
       forUser: user,
@@ -2131,7 +2126,7 @@ export class DbMgr implements MigrationDbMgr {
     this.allowAnyone();
     const { secret, hashSecret } = generateSecretToken();
     const newEmailVerification = this.emailVerifications().create({
-      id: uuid.v4(),
+      id: mkUuid(),
       createdAt: new Date(),
       updatedAt: new Date(),
       forUser: user,
@@ -9787,7 +9782,7 @@ export class DbMgr implements MigrationDbMgr {
       "post comment"
     );
     const { id, body, threadId } = data;
-    if (!isUuidV4(id)) {
+    if (!isUuidV4(id) && !isShortUuidV4(id)) {
       throw new BadRequestError(
         "Invalid UUID format: 'id' must be a valid UUID."
       );
@@ -9827,12 +9822,12 @@ export class DbMgr implements MigrationDbMgr {
       "post comment"
     );
     const { commentThreadId, commentId, location, body } = data;
-    if (!isUuidV4(commentThreadId)) {
+    if (!isUuidV4(commentThreadId) && !isShortUuidV4(commentThreadId)) {
       throw new BadRequestError(
         "Invalid UUID format: 'commentThreadId' must be a valid UUID."
       );
     }
-    if (!isUuidV4(commentId)) {
+    if (!isUuidV4(commentId) && !isShortUuidV4(commentId)) {
       throw new BadRequestError(
         "Invalid UUID format: 'commentId' must be a valid UUID."
       );
@@ -9884,7 +9879,7 @@ export class DbMgr implements MigrationDbMgr {
       );
     }
 
-    if (!isUuidV4(id)) {
+    if (!isUuidV4(id) && !isShortUuidV4(id)) {
       throw new BadRequestError(
         "Invalid UUID format: 'id' must be a valid UUID."
       );
@@ -10019,7 +10014,7 @@ export class DbMgr implements MigrationDbMgr {
       "commenter",
       "post comment reaction"
     );
-    if (!isUuidV4(id)) {
+    if (!isUuidV4(id) && !isShortUuidV4(id)) {
       throw new BadRequestError(
         "Invalid UUID format: 'id' must be a valid UUID."
       );

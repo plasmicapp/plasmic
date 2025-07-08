@@ -10,11 +10,16 @@ import {
   indent2braces,
   interleave,
   intersectSets,
+  isShortUuidV4,
+  isUuidV4,
   isValidIsoDate,
   longestCommonPrefix,
   mapify,
   maybe,
   mergeSets,
+  mkShortId,
+  mkShortUuid,
+  mkUuid,
   multimap,
   nthWhere,
   proxy,
@@ -230,6 +235,41 @@ describe("interleave", () =>
     expect(interleave(tuple(0, 2), tuple(1, 3))).toEqual([0, 1, 2, 3]);
     return expect(interleave([0, 2, 4], tuple(1, 3))).toEqual([0, 1, 2, 3, 4]);
   }));
+
+describe("mkShortId", () => {
+  it("generates short id (nanoid)", () => {
+    const id = mkShortId();
+    expect(id).toHaveLength(12);
+  });
+});
+
+describe("mkShortUuid/isShortUuidV4", () => {
+  it("generates and validates valid values", () => {
+    const id = mkShortUuid();
+    expect(id).toHaveLength(22);
+    expect(isShortUuidV4(id)).toBeTrue();
+  });
+  it("does not validate invalid values", () => {
+    expect(isShortUuidV4("")).toBeFalse();
+    expect(isShortUuidV4("not-short-uuid-v4")).toBeFalse();
+    expect(isShortUuidV4(mkUuid())).toBeFalse();
+    expect(isShortUuidV4(mkShortId())).toBeFalse();
+  });
+});
+
+describe("mkUuid/isUuidV4", () => {
+  it("generates and validates valid values", () => {
+    const id = mkUuid();
+    expect(id).toHaveLength(36);
+    expect(isUuidV4(id)).toBeTruthy();
+  });
+  it("does not validate invalid values", () => {
+    expect(isUuidV4("")).toBeFalse();
+    expect(isUuidV4("not-uuid-v4")).toBeFalse();
+    expect(isUuidV4(mkShortId())).toBeFalse();
+    expect(isUuidV4(mkShortUuid())).toBeFalse();
+  });
+});
 
 describe("replace", () =>
   it("should work", () => expect(replace([2, 4, 6], 4, 5)).toEqual([2, 5, 6])));

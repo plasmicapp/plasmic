@@ -126,14 +126,6 @@ export function makePlasmicMixinsClassName(opts: ClassNameOpts) {
 
 export const shortPlasmicPrefix = "ρ";
 
-export type VariantChecker = (variant: Variant) => string;
-
-export const safeShortUuid = (shortUuid: string) => {
-  // The shortId we use in https://github.com/dylang/shortid may contain "-",
-  // which is not safe for JS identifier.
-  return shortUuid.replace(/-/g, "$");
-};
-
 export type NodeNamer = (node: TplNode) => string | undefined;
 
 export function makeStylesImports(
