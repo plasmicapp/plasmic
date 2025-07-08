@@ -21,6 +21,15 @@ services:
     build:
       context: .
       dockerfile: ./platform/wab/tools/docker-dev/Dockerfile
+    command: # Override the default dockerfile startup command here to edit the ormconfig that will be overwrited by the mounting of the local source code
+      - | 
+        jq '(.host = "plasmic-db") | (.password //= "SEKRET")' ormconfig.json > tmp.json && mv tmp.json ormconfig.json && \
+        yarn typeorm migration:run && \
+        yarn migrate-dev-bundles && \
+        yarn seed && \
+        yarn plume:dev update && \
+        cd /plasmic && \
+        yarn dev
     volumes:
       # 1. Mount your local source code into the container
       - .:/plasmic

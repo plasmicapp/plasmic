@@ -12,6 +12,7 @@ RUN apk add --no-cache \
     python3 \
     py3-pip \
     postgresql-client \
+    jq \
     build-base
 
 # Copy only dependency files first for caching
@@ -26,6 +27,9 @@ COPY . .
 # Secrets setup and build tools
 RUN mkdir -p /tmp/.plasmic && \
     cp platform/wab/tools/docker-dev/secrets.json /tmp/.plasmic/secrets.json && \
+    cd platform/wab && \
+    jq '(.host = "plasmic-db") | (.password //= "SEKRET")' ormconfig.json > tmp.json && mv tmp.json ormconfig.json && \
+    cd /plasmic && \
     yarn setup && \
     yarn setup:canvas-packages && \
     yarn cache clean
@@ -53,11 +57,9 @@ COPY --chown=plasmic:plasmic --from=builder /tmp/.plasmic /home/plasmic/.plasmic
 EXPOSE 3003 3004 3005
 
 ENTRYPOINT ["sh", "-c"]
-CMD [" jq '(.host = \"plasmic-db\") | (.password //= \"SEKRET\")' ormconfig.json > tmp.json && mv tmp.json ormconfig.json && \
-    yarn typeorm migration:run && \
+CMD ["yarn typeorm migration:run && \
     yarn migrate-dev-bundles && \
     yarn seed && \
     yarn plume:dev update && \
     cd /plasmic && \
-    yarn dev \
-"]
+    yarn dev"]
