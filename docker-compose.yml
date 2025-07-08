@@ -74,6 +74,5 @@ volumes:
   plasmic_playwright_cache:
   plasmic_generated_styles:
   plasmic_public:
-  plasmic_wab_client:
   plasmic_wab_gen:
   plasmic_wab_shared_model:
