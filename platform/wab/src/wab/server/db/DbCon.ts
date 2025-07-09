@@ -1,3 +1,5 @@
+import "@/wab/server/db/pg-type-parsers";
+
 import { stringToPair } from "@/wab/server/util/hash";
 import * as Sentry from "@sentry/node";
 import { parse as parseDbUri } from "pg-connection-string";

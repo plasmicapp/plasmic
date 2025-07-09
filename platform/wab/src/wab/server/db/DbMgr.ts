@@ -1909,7 +1909,7 @@ export class DbMgr implements MigrationDbMgr {
   async updateUser({
     id,
     ...fields
-  }: { id: string } & Partial<UpdatableUserFields>) {
+  }: { id: UserId } & Partial<UpdatableUserFields>) {
     this.checkUserIdIsSelf(id);
     fields = _.pick(fields, ...updatableUserFields);
     const user = await this.getUserById(id);
@@ -1917,7 +1917,7 @@ export class DbMgr implements MigrationDbMgr {
     return await this.entMgr.save(user);
   }
 
-  async updateAdminMode({ id, disabled }: { id: string; disabled: boolean }) {
+  async updateAdminMode({ id, disabled }: { id: UserId; disabled: boolean }) {
     this.checkUserIdIsSelf(id);
     const user = await this.getUserById(id);
     if (!loadConfig().adminEmails.includes(user.email)) {
@@ -6024,7 +6024,7 @@ export class DbMgr implements MigrationDbMgr {
   // Personal API tokens.
   //
 
-  async createPersonalApiToken(userId?: string) {
+  async createPersonalApiToken(userId?: UserId) {
     userId = this.checkUserIdIsSelf(userId);
     this.allowAnyone();
     const token = generateSomeApiToken();
@@ -6060,7 +6060,7 @@ export class DbMgr implements MigrationDbMgr {
     return undefined;
   }
 
-  async listPersonalApiTokens(userId?: string) {
+  async listPersonalApiTokens(userId?: UserId) {
     userId = this.checkUserIdIsSelf(userId);
     const apiTokens = await this.personalApiTokens().find({
       where: { userId },
@@ -6079,7 +6079,7 @@ export class DbMgr implements MigrationDbMgr {
     }
   }
 
-  checkUserIdIsSelf(userId?: string) {
+  checkUserIdIsSelf(userId?: UserId) {
     if (this.actor.type === "NormalUser") {
       if (userId && userId !== this.actor.userId) {
         throw new ForbiddenError("Can only do this for self.");
