@@ -9,6 +9,8 @@ import { toVarName } from "@/wab/shared/codegen/util";
 import { assert } from "@/wab/shared/common";
 import { createSite } from "@/wab/shared/core/sites";
 import { TplMgr } from "@/wab/shared/TplMgr";
+import { readFileSync } from "fs";
+import path from "path";
 
 const { fixCSSValue, renameTokenVarNameToUuid } = _testOnlyUtils;
 
@@ -463,5 +465,21 @@ describe("fixCSSValue", () => {
 
   it("ensure camelCase key translation for any key", () => {
     expect(fixCSSValue("z-index", "100")).toEqual({ zIndex: "100" });
+  });
+});
+
+describe("snapshot tests", () => {
+  const site = createSite();
+
+  it("parse landing page html properly", async () => {
+    const landingPageFilePath = path.join(
+      __dirname,
+      "test/data/landing-page.html"
+    );
+    const landingPageHtml = readFileSync(landingPageFilePath, "utf8");
+
+    const output = await parseHtmlToWebImporterTree(landingPageHtml, site);
+
+    expect(output).toMatchSnapshot();
   });
 });

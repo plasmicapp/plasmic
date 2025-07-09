@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StyleHub - Premium Fashion & Lifestyle</title>
+  <style>
+      @font-face {
+          font-family: 'Roboto';
+          font-style: normal;
+          font-weight: 300;
+          font-display: auto;
+          src: url('https://fonts.gstatic.com/s/roboto/v30/KFOlCnqEu92Fr1MmSU5fBBc4AMP6lQ.woff2') format('woff2');
+          unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+      }
+
+      @font-face {
+          font-family: 'Roboto';
+          font-style: normal;
+          font-weight: 400;
+          font-display: auto;
+          src: url('https://fonts.gstatic.com/s/roboto/v30/KFOmCnqEu92Fr1Mu4mxKKTU1Kg.woff2') format('woff2');
+          unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+      }
+
+      @font-face {
+          font-family: 'Roboto';
+          font-style: normal;
+          font-weight: 500;
+          font-display: auto;
+          src: url('https://fonts.gstatic.com/s/roboto/v30/KFOlCnqEu92Fr1MmEU9fBBc4AMP6lQ.woff2') format('woff2');
+          unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+      }
+
+      @font-face {
+          font-family: 'Roboto';
+          font-style: normal;
+          font-weight: 700;
+          font-display: auto;
+          src: url('https://fonts.gstatic.com/s/roboto/v30/KFOlCnqEu92Fr1MmWUlfBBc4AMP6lQ.woff2') format('woff2');
+          unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+      }
+      * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+      }
+
+      body {
+          font-family: 'Roboto', sans-serif;
+          line-height: 1.6;
+          color: #333;
+      }
+
+      .container {
+          width: 100%;
+          max-width: 1200px;
+          margin: 0 auto;
+          padding: 0 20px;
+      }
+
+      /* Header */
+      header {
+          background: linear-gradient(#2C3E50, #34495E);
+          color: #fff;
+          box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+          position: sticky;
+          top: 0;
+          z-index: 100;
+      }
+
+      nav {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 1rem 0;
+      }
+
+      .nav-links {
+          display: flex;
+          list-style: none;
+          gap: 2rem;
+      }
+
+      .nav-links a {
+          text-decoration: none;
+          font-weight: 500;
+      }
+
+      .nav-links a:hover {
+          color: #e74c3c;
+      }
+
+      .nav-actions {
+          display: flex;
+          gap: 1rem;
+          align-items: center;
+      }
+
+      .contact-button {
+          background: #e74c3c;
+          color: white;
+          padding: 0.5rem 1rem;
+          border-radius: 25px;
+          text-decoration: none;
+          font-weight: bold;
+      }
+
+      .contact-button:hover {
+          background: #c0392b;
+      }
+
+      /* Hero Section */
+      .hero {
+          background: radial-gradient(circle at 30% 50%, #667eea 0%, #764ba2 50%, #4a5568 100%);
+          color: white;
+          padding: 4rem 0;
+          text-align: center;
+      }
+
+      .hero h1 {
+          font-size: 3rem;
+          margin-bottom: 1rem;
+      }
+
+      .hero p {
+          font-size: 1.2rem;
+          margin-bottom: 2rem;
+          opacity: 0.9;
+      }
+
+      .cta-button {
+          display: inline-block;
+          background: #e74c3c;
+          color: white;
+          padding: 1rem 2rem;
+          text-decoration: none;
+          border-radius: 30px;
+          font-weight: bold;
+          font-size: 1.1rem;
+      }
+
+      .cta-button:hover {
+          background: #c0392b;
+      }
+
+      /* Features Section */
+      .features {
+          padding: 4rem 0;
+          background: radial-gradient(ellipse at center, #f8f9fa 0%, #e9ecef 100%),
+            url('https://images.unsplash.com/photo-1441986300917-64674bd600d8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80') center/cover no-repeat;
+      }
+
+      .features h2 {
+          text-align: center;
+          font-size: 2.5rem;
+          margin-bottom: 3rem;
+          color: #2c3e50;
+      }
+
+      .features-container {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 2rem;
+          justify-content: center;
+      }
+
+      .feature-card {
+          background: radial-gradient(circle at top left, #ffffff 0%, #f8f9fa 100%);
+          padding: 2rem;
+          border-radius: 10px;
+          box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+          text-align: center;
+          flex: 1;
+          min-width: 250px;
+          max-width: 300px;
+      }
+
+      .feature-icon {
+          font-size: 3rem;
+          margin-bottom: 1rem;
+      }
+
+      .feature-card h3 {
+          font-size: 1.3rem;
+          margin-bottom: 1rem;
+          color: #2c3e50;
+      }
+
+
+
+      /* Newsletter Section */
+      .newsletter {
+          background: radial-gradient(circle at 70% 30%, #2c3e50 0%, #34495e 50%, #1a252f 100%);
+          color: white;
+          padding: 3rem 0;
+          text-align: center;
+      }
+
+      .newsletter h2 {
+          font-size: 2rem;
+          margin-bottom: 1rem;
+      }
+
+      .newsletter p {
+          margin-bottom: 2rem;
+          opacity: 0.9;
+      }
+
+      .newsletter-form {
+          display: flex;
+          justify-content: center;
+          gap: 1rem;
+          max-width: 400px;
+          margin: 0 auto;
+      }
+
+      .newsletter-form input {
+          flex: 1;
+          padding: 0.8rem;
+          border: none;
+          border-radius: 25px;
+      }
+
+      .newsletter-form button {
+          background: #e74c3c;
+          color: white;
+          padding: 0.8rem 1.5rem;
+          border: none;
+          border-radius: 25px;
+          cursor: pointer;
+          font-weight: bold;
+      }
+
+      .newsletter-form button:hover {
+          background: #c0392b;
+      }
+
+      /* Footer */
+      footer {
+          background: #1a252f;
+          color: white;
+          padding: 3rem 0 1rem;
+      }
+
+      .footer-content {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+          gap: 2rem;
+          margin-bottom: 2rem;
+          justify-content: space-between;
+      }
+
+      .footer-section {
+          flex: 1;
+          min-width: 200px;
+      }
+
+      .footer-section h3 {
+          margin-bottom: 1rem;
+          color: #e74c3c;
+      }
+
+      .footer-section ul {
+          list-style: none;
+      }
+
+      .footer-section ul li {
+          margin-bottom: 0.5rem;
+      }
+
+      .footer-section ul li a {
+          color: #ccc;
+          text-decoration: none;
+      }
+
+      .footer-section ul li a:hover {
+          color: white;
+      }
+
+      /* Responsive Design */
+      @media (max-width: 768px) {
+          .nav-links {
+              display: none;
+          }
+
+          .hero h1 {
+              font-size: 2rem;
+          }
+
+          .newsletter-form {
+              flex-direction: column;
+              gap: 1rem;
+          }
+      }
+  </style>
+</head>
+<body>
+<header>
+  <nav class="container">
+    <div style="font-size: 1.8rem; font-weight: bold; color: #fff5cc;">StyleHub</div>
+    <ul class="nav-links">
+      <li><a href="#home">Home</a></li>
+      <li><a href="#features">Features</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <div class="nav-actions">
+      <a href="#contact" class="contact-button">Contact Us</a>
+    </div>
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="container">
+    <h1>Discover Your Style</h1>
+    <p>Premium fashion and lifestyle products curated just for you</p>
+    <a href="#features" class="cta-button">Shop Now</a>
+  </div>
+</section>
+
+<section class="features">
+  <div class="container">
+    <h2>Why Choose StyleHub?</h2>
+    <div class="features-container">
+      <div class="feature-card">
+        <div class="feature-icon">🚚</div>
+        <h3>Free Shipping</h3>
+        <p>Free shipping on orders over $50. Fast and reliable delivery to your doorstep.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔒</div>
+        <h3>Secure Payment</h3>
+        <p>Your payment information is protected with industry-leading security measures.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">↩️</div>
+        <h3>Easy Returns</h3>
+        <p>30-day hassle-free returns. Not satisfied? We'll make it right.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">💎</div>
+        <h3>Premium Quality</h3>
+        <p>Carefully selected products that meet our high standards for quality and style.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="newsletter">
+  <div class="container">
+    <h2>Stay Updated</h2>
+    <p>Subscribe to our newsletter for exclusive offers and new arrivals</p>
+    <form class="newsletter-form">
+      <input type="email" placeholder="Enter your email" required>
+      <button type="submit">Subscribe</button>
+    </form>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="footer-content">
+      <div class="footer-section">
+        <h3>Quick Links</h3>
+        <ul>
+          <li><a href="#home">Home</a></li>
+          <li><a href="#features">Features</a></li>
+          <li><a href="#about">About Us</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h3>Customer Service</h3>
+        <ul>
+          <li><a href="#">Shipping Info</a></li>
+          <li><a href="#">Returns</a></li>
+          <li><a href="#">Size Guide</a></li>
+          <li><a href="#">FAQ</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h3>Connect</h3>
+        <ul>
+          <li><a href="#">Facebook</a></li>
+          <li><a href="#">Instagram</a></li>
+          <li><a href="#">Twitter</a></li>
+          <li><a href="#">Pinterest</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Newsletter form submission
+  const newsletterForm = document.querySelector('.newsletter-form');
+  newsletterForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const email = e.target.querySelector('input[type="email"]').value;
+    alert(`Thank you for subscribing with ${email}!`);
+    e.target.reset();
+  });
+
+  // Smooth scrolling for navigation links
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+      e.preventDefault();
+      const target = document.querySelector(this.getAttribute('href'));
+      if (target) {
+        target.scrollIntoView({
+          behavior: 'smooth'
+        });
+      }
+    });
+  });
+</script>
+</body>
+</html>

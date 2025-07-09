@@ -739,8 +739,8 @@ export async function parseHtmlToWebImporterTree(
       atrule.block.children.toArray(),
       (node) => (node.type === "Declaration" ? node : null)
     );
-    const declarations = declarationNodes.map((decl) =>
-      declarations.push(`\t${decl.property}: ${generate(decl.value)};`)
+    const declarations = declarationNodes.map(
+      (decl) => `\t${decl.property}: ${generate(decl.value)};`
     );
 
     fontDefinitions.push(`@font-face {\n${declarations.join("\n")}\n}`);
@@ -748,21 +748,24 @@ export async function parseHtmlToWebImporterTree(
 
   walk(parsedStylesheet, function (node) {
     switch (node.type) {
-      case "Rule":
+      case "Rule": {
         processRule(node, BASE_VARIANT);
-        break;
+        return walk.skip;
+      }
 
       case "Atrule": {
         if (node.name === "media") {
           processMediaRule(node);
-        } else if (node.name === "fontFace") {
+          // walk.skip prevents the walk from traversing the same subtree that's
+          // already traversed inside processMediaRule
+        } else if (node.name === "font-face") {
           processFontFaceRule(node);
         }
-        break;
+        return walk.skip;
       }
 
       default:
-        break;
+        return;
     }
   });
 
