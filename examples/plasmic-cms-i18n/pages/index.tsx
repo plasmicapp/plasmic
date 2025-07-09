@@ -14,16 +14,17 @@ export default function IndexPage(props: {
   plasmicData?: ComponentRenderData;
   queryCache?: Record<string, any>;
 }) {
-  const { plasmicData, queryCache } = props;
   const router = useRouter();
-  if (!plasmicData || plasmicData.entryCompMetas.length === 0) {
-    return <Error statusCode={404} />;
-  }
-  const pageMeta = plasmicData.entryCompMetas[0];
 
   // The locale will be set when the `localeSelect` element is changed.
   // The locale is passed into the CMS global context to update the content.
   const [locale, setLocale] = useState<string>("en");
+
+  const { plasmicData, queryCache } = props;
+  if (!plasmicData || plasmicData.entryCompMetas.length === 0) {
+    return <Error statusCode={404} />;
+  }
+  const pageMeta = plasmicData.entryCompMetas[0];
 
   return (
     <PlasmicRootProvider
