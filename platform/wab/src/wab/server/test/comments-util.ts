@@ -24,25 +24,6 @@ import { accessLevelRank } from "@/wab/shared/EntUtil";
 import { ensure, withoutNils, xGroupBy } from "@/wab/shared/common";
 import { Connection } from "typeorm";
 
-async function setupNotifications(
-  mgr: DbMgr,
-  userMgrs: (() => DbMgr)[],
-  users: User[],
-  project: Project
-) {
-  // Add users to project
-  await userMgrs[0]().grantProjectPermissionByEmail(
-    project.id,
-    users[1].email,
-    "editor"
-  );
-  await userMgrs[0]().grantProjectPermissionByEmail(
-    project.id,
-    users[2].email,
-    "editor"
-  );
-}
-
 function getUniqueUsersWithCommentAccess(permissions: Permission[]): User[] {
   const users = withoutNils(
     permissions
@@ -66,8 +47,25 @@ export async function withEndUserNotificationSetup(
 ) {
   await withBranch(
     async (branch, _helpers, sudo, users, userDbs, project, em) => {
-      await setupNotifications(sudo, userDbs, users, project);
+      const user1Db = userDbs[0]();
+      await user1Db.grantProjectPermissionByEmail(
+        project.id,
+        users[1].email,
+        "editor"
+      );
+      await user1Db.grantProjectPermissionByEmail(
+        project.id,
+        users[2].email,
+        "editor"
+      );
+      await user1Db.grantProjectPermissionByEmail(
+        project.id,
+        users[3].email,
+        "editor"
+      );
 
+      // Need to get entities in a specific way for send-comments-notifications.spec.ts
+      // TODO: fix the test to be less specific
       const permissions = await sudo.getPermissionsForProject(project.id);
       const projectUsers = getUniqueUsersWithCommentAccess(permissions).sort(
         (a, b) => a.email.localeCompare(b.email)
@@ -82,6 +80,9 @@ export async function withEndUserNotificationSetup(
         userDbs,
         branch,
       });
+    },
+    {
+      numUsers: 4,
     }
   );
 }

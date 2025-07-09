@@ -1128,7 +1128,7 @@ describe("DbMgr", () => {
       const { team, workspace } = await getTeamAndWorkspace(db1());
       // project2 is always deleted.
       const { project: project2 } = await db1().createProject({
-        name: "My project 2",
+        name: "My Project 2",
         workspaceId: workspace.id,
       });
       await db1().deleteProject(project2.id, SkipSafeDelete);
@@ -1166,7 +1166,7 @@ describe("DbMgr", () => {
       const { team, workspace } = await getTeamAndWorkspace(db1());
       // project2 is always deleted.
       const { project: project2 } = await db1().createProject({
-        name: "My project 2",
+        name: "My Project 2",
       });
       await db1().getProjectById(project2.id);
       await db1().deleteProject(project2.id, SkipSafeDelete);

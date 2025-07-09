@@ -54,10 +54,11 @@ export async function withBranch(
       helpers: [mainHelpers: Helpers, branchHelpers: Helpers],
       ...rest: DbTestArgs
     ]
-  ) => Promise<void>
+  ) => Promise<void>,
+  opts?: { numUsers?: number }
 ) {
   return withDb(async (...args) => {
-    const [sudo, [user1], [db1], project] = args;
+    const [_sudo, _users, [db1], project] = args;
     const mainHelpers = new Helpers(db1(), project.id);
 
     await mainHelpers.save(basicSite());
@@ -74,7 +75,7 @@ export async function withBranch(
     });
     const branchHelpers = new Helpers(db1(), project.id, branch.id);
     return f(branch, [mainHelpers, branchHelpers], ...args);
-  });
+  }, opts);
 }
 
 export function withTokens(baseSite: Site, tokens: Record<string, number>) {

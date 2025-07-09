@@ -1,10 +1,9 @@
-import { sequentially } from "@/wab/commons/asyncutil";
 import { runAppServer } from "@/wab/server/app-backend-real";
 import { ensureDbConnection } from "@/wab/server/db/DbCon";
 import { initDb } from "@/wab/server/db/DbInitUtil";
 import { DbMgr, normalActor, SUPER_USER } from "@/wab/server/db/DbMgr";
 import { Project, User } from "@/wab/server/entities/Entities";
-import { ensure } from "@/wab/shared/common";
+import { ensure, range } from "@/wab/shared/common";
 import getPort from "get-port";
 import { customAlphabet } from "nanoid";
 import { lowercase, numbers } from "nanoid-dictionary";
@@ -18,17 +17,22 @@ export async function withDb(
     project: Project,
     em: EntityManager,
     dburi: string
-  ) => Promise<void>
+  ) => Promise<void>,
+  opts?: {
+    numUsers?: number;
+  }
 ): Promise<void> {
   await withDatabase(async (dburi, dbname) => {
     const con = await ensureDbConnection(dburi, dbname);
     await con.transaction(async (em) => {
       const sudo = new DbMgr(em, SUPER_USER);
-      const users = await sequentially(
-        [1, 2, 3].map(async (num) => {
+      const users = await Promise.all(
+        range(1, opts?.numUsers ?? 3, true).map(async (num) => {
           const user = await sudo.createUser({
             email: `yang${num}@test.com`,
-            firstName: `Yang ${num}`,
+            firstName: `Yang${
+              num === 1 ? "one" : num === 2 ? "two" : num === 3 ? "three" : num
+            }`,
             lastName: "Zhang",
             password: "!53kr3tz!",
             needsIntroSplash: false,
@@ -45,7 +49,7 @@ export async function withDb(
       );
       const { workspace } = await getTeamAndWorkspace(dbs[0]());
       const { project } = await dbs[0]().createProject({
-        name: `My project`,
+        name: `My Project`,
         workspaceId: workspace.id,
       });
       await f(sudo, users, dbs, project, em, dburi);
