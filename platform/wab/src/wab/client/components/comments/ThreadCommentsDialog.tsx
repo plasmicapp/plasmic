@@ -32,14 +32,14 @@ export const ThreadCommentsDialog = observer(function ThreadCommentsDialog({
     [commentsCtx.computedData().allThreads, openedThread.threadId]
   );
   if (!selectedThread) {
-    commentsCtx.closeCommentDialogs();
+    commentsCtx.closeCommentThreadDialog();
     return null;
   }
   const subjectInfo = selectedThread.subjectInfo;
 
   const handleClickOutside = () => {
     if (!openedThread.interacted) {
-      commentsCtx.closeCommentDialogs();
+      commentsCtx.closeCommentThreadDialog();
     }
   };
 
@@ -59,17 +59,20 @@ export const ThreadCommentsDialog = observer(function ThreadCommentsDialog({
         <PlasmicThreadCommentsDialog
           commentsDialogHead={{
             close: {
-              onClick: () => commentsCtx.closeCommentDialogs(),
+              onClick: () => commentsCtx.closeCommentThreadDialog(),
+              "data-test-id": "thread-comment-dialog-close-btn",
             },
             commentsHeader: subjectInfo
               ? {
                   name: subjectInfo.subject.name || "Unnamed element",
-                  type: summarizeTpl(
-                    subjectInfo.subject,
-                    openedThread.viewCtx
-                      .effectiveCurrentVariantSetting(subjectInfo.subject)
-                      .rsh()
-                  ),
+                  type: openedThread.viewCtx
+                    ? summarizeTpl(
+                        subjectInfo.subject,
+                        openedThread.viewCtx
+                          .effectiveCurrentVariantSetting(subjectInfo.subject)
+                          .rsh()
+                      )
+                    : "",
                 }
               : {
                   name: "Deleted element",

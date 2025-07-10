@@ -26,7 +26,7 @@ export const CommentPostFormDialog = observer(function CommentPostFormDialog({
 
   const handleClickOutside = () => {
     if (!openedNewThread.interacted) {
-      commentsCtx.closeCommentDialogs();
+      commentsCtx.closeNewThreadDialog();
     }
   };
 
@@ -51,7 +51,7 @@ export const CommentPostFormDialog = observer(function CommentPostFormDialog({
           {...props}
           commentsDialogHead={{
             close: {
-              onClick: () => commentsCtx.closeCommentDialogs(),
+              onClick: () => commentsCtx.closeNewThreadDialog(),
             },
             commentsHeader: {
               name: threadSubject.name || "Unnamed",
@@ -83,7 +83,7 @@ export const CommentPostFormDialog = observer(function CommentPostFormDialog({
                     location,
                   });
                   commentsCtx.clearArenaDraft(currentArena);
-                  commentsCtx.closeCommentDialogs();
+                  commentsCtx.closeNewThreadDialog();
                 }}
                 onChange={(value) =>
                   commentsCtx.setArenaDraft(currentArena, value)

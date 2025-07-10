@@ -27,7 +27,6 @@ import {
   EmailMarkdown,
   EmailRow,
 } from "@/wab/server/emails/components.tsx"; // plasmic-import: 7zgaUp0DUGtR/codeComponent
-import AtomsButtonOutline from "../../AtomsButtonOutline"; // plasmic-import: 5OdShbT02UoK/component
 import CommentsComments from "../../CommentsComments"; // plasmic-import: t8pedfUoDPO4/component
 import CommentsMentions from "../../CommentsMentions"; // plasmic-import: xmHJRn1lA9BZ/component
 import CommentsReactions from "../../CommentsReactions"; // plasmic-import: akS-yd3gJU3j/component
@@ -72,7 +71,6 @@ export type PlasmicTemplateComments__OverridesType = {
   commentsReplies?: Flex__<typeof CommentsReplies>;
   commentsComments?: Flex__<typeof CommentsComments>;
   commentsReactions?: Flex__<typeof CommentsReactions>;
-  atomsButtonOutline?: Flex__<typeof AtomsButtonOutline>;
   commentsResolutions?: Flex__<typeof CommentsResolutions>;
   emailMarkdown?: Flex__<typeof EmailMarkdown>;
 };
@@ -138,7 +136,7 @@ function PlasmicTemplateComments__RenderFunc(props: {
           "TemplateComments__emailLink__sLzLo"
         )}
         href={args.projectUrl}
-        style={{ fontSize: 11, color: "#000000", marginBottom: 0 }}
+        style={{ fontSize: 16, color: "#006DCBF2", marginBottom: 0 }}
         text={args.projectName}
         type={"text"}
       />
@@ -295,6 +293,19 @@ function PlasmicTemplateComments__RenderFunc(props: {
                   }
                 })()}
                 key={currentIndex}
+                link={(() => {
+                  try {
+                    return currentItem.link;
+                  } catch (e) {
+                    if (
+                      e instanceof TypeError ||
+                      e?.plasmicType === "PlasmicUndefinedDataError"
+                    ) {
+                      return "https://studio.plasmic.app/";
+                    }
+                    throw e;
+                  }
+                })()}
                 name={args.userName}
                 projectUrl={args.projectUrl}
                 reactions={(() => {
@@ -313,16 +324,6 @@ function PlasmicTemplateComments__RenderFunc(props: {
               />
             );
           })}
-          <AtomsButtonOutline
-            data-plasmic-name={"atomsButtonOutline"}
-            data-plasmic-override={overrides.atomsButtonOutline}
-            className={classNames(
-              "__wab_instance",
-              "TemplateComments__atomsButtonOutline__qG7FQ"
-            )}
-            href={args.projectUrl}
-            text={"View in Plasmic"}
-          />
         </EmailRow>
       ) : null}
       {(() => {
@@ -399,7 +400,6 @@ const PlasmicDescendants = {
     "commentsReplies",
     "commentsComments",
     "commentsReactions",
-    "atomsButtonOutline",
     "commentsResolutions",
     "emailMarkdown",
   ],
@@ -408,7 +408,6 @@ const PlasmicDescendants = {
   commentsReplies: ["commentsReplies"],
   commentsComments: ["commentsComments"],
   commentsReactions: ["commentsReactions"],
-  atomsButtonOutline: ["atomsButtonOutline"],
   commentsResolutions: ["commentsResolutions"],
   emailMarkdown: ["emailMarkdown"],
 } as const;
@@ -422,7 +421,6 @@ type NodeDefaultElementType = {
   commentsReplies: typeof CommentsReplies;
   commentsComments: typeof CommentsComments;
   commentsReactions: typeof CommentsReactions;
-  atomsButtonOutline: typeof AtomsButtonOutline;
   commentsResolutions: typeof CommentsResolutions;
   emailMarkdown: typeof EmailMarkdown;
 };
@@ -492,7 +490,6 @@ export const PlasmicTemplateComments = Object.assign(
     commentsReplies: makeNodeComponent("commentsReplies"),
     commentsComments: makeNodeComponent("commentsComments"),
     commentsReactions: makeNodeComponent("commentsReactions"),
-    atomsButtonOutline: makeNodeComponent("atomsButtonOutline"),
     commentsResolutions: makeNodeComponent("commentsResolutions"),
     emailMarkdown: makeNodeComponent("emailMarkdown"),
 

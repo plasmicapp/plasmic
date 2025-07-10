@@ -337,7 +337,19 @@ function PlasmicCommentsReplies__RenderFunc(props: {
                   "__wab_instance",
                   "CommentsReplies__atomsButtonOutline__sfuMu"
                 )}
-                href={args.projectUrl}
+                href={(() => {
+                  try {
+                    return currentItem.link;
+                  } catch (e) {
+                    if (
+                      e instanceof TypeError ||
+                      e?.plasmicType === "PlasmicUndefinedDataError"
+                    ) {
+                      return undefined;
+                    }
+                    throw e;
+                  }
+                })()}
                 text={"View in Plasmic"}
               />
             </AtomsCard>

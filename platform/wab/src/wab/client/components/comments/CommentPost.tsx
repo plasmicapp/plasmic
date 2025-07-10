@@ -66,7 +66,10 @@ function CommentPost_(props: CommentPostProps, ref: HTMLElementRefOf<"div">) {
   return (
     <PlasmicCommentPost
       className="CommentPost"
-      root={{ ref: popoverTargetRef }}
+      root={{
+        ref: popoverTargetRef,
+        "data-test-id": `comment-post-${commentThread.id}`,
+      }}
       {...rest}
       body={
         comment.deletedAt ? null : (

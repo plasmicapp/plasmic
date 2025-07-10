@@ -16,10 +16,13 @@ import * as React from "react";
 import {
   Flex as Flex__,
   PlasmicImg as PlasmicImg__,
+  SingleBooleanChoiceArg,
   StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  hasVariant,
+  useDollarState,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
@@ -30,14 +33,20 @@ import {
   EmailRow,
   EmailText,
 } from "@/wab/server/emails/components.tsx"; // plasmic-import: xWkqfjbn8oyX/codeComponent
+import AtomsButtonOutline from "../../AtomsButtonOutline"; // plasmic-import: 5OdShbT02UoK/component
 
 createPlasmicElementProxy;
 
-export type PlasmicCommentsComment__VariantMembers = {};
-export type PlasmicCommentsComment__VariantsArgs = {};
+export type PlasmicCommentsComment__VariantMembers = {
+  withLink: "withLink";
+};
+export type PlasmicCommentsComment__VariantsArgs = {
+  withLink?: SingleBooleanChoiceArg<"withLink">;
+};
 type VariantPropType = keyof PlasmicCommentsComment__VariantsArgs;
-export const PlasmicCommentsComment__VariantProps =
-  new Array<VariantPropType>();
+export const PlasmicCommentsComment__VariantProps = new Array<VariantPropType>(
+  "withLink"
+);
 
 export type PlasmicCommentsComment__ArgsType = {
   avatarUrl?: React.ComponentProps<typeof PlasmicImg__>["src"];
@@ -45,6 +54,7 @@ export type PlasmicCommentsComment__ArgsType = {
   content?: string;
   emoji?: string;
   aboutCommentText?: string;
+  link?: string;
 };
 type ArgPropType = keyof PlasmicCommentsComment__ArgsType;
 export const PlasmicCommentsComment__ArgProps = new Array<ArgPropType>(
@@ -52,7 +62,8 @@ export const PlasmicCommentsComment__ArgProps = new Array<ArgPropType>(
   "name",
   "content",
   "emoji",
-  "aboutCommentText"
+  "aboutCommentText",
+  "link"
 );
 
 export type PlasmicCommentsComment__OverridesType = {
@@ -60,6 +71,7 @@ export type PlasmicCommentsComment__OverridesType = {
   emailRow?: Flex__<typeof EmailRow>;
   emailImage?: Flex__<typeof EmailImage>;
   emailMarkdown?: Flex__<typeof EmailMarkdown>;
+  atomsButtonOutline?: Flex__<typeof AtomsButtonOutline>;
 };
 
 export interface DefaultCommentsCommentProps {
@@ -68,6 +80,8 @@ export interface DefaultCommentsCommentProps {
   content?: string;
   emoji?: string;
   aboutCommentText?: string;
+  link?: string;
+  withLink?: SingleBooleanChoiceArg<"withLink">;
   className?: string;
 }
 
@@ -108,6 +122,24 @@ function PlasmicCommentsComment__RenderFunc(props: {
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
+  const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
+    () => [
+      {
+        path: "withLink",
+        type: "private",
+        variableType: "variant",
+        initFunc: ({ $props, $state, $queries, $ctx }) => $props.withLink,
+      },
+    ],
+    [$props, $ctx, $refs]
+  );
+  const $state = useDollarState(stateSpecs, {
+    $props,
+    $ctx,
+    $queries: {},
+    $refs,
+  });
+
   return (
     <EmailRow
       data-plasmic-name={"root"}
@@ -120,7 +152,14 @@ function PlasmicCommentsComment__RenderFunc(props: {
         "plasmic_default_styles",
         "plasmic_mixins",
         "plasmic_tokens",
-        "CommentsComment__root__pLkHm"
+        "CommentsComment__root__pLkHm",
+        {
+          CommentsComment__rootwithLink__pLkHm2Fzk7: hasVariant(
+            $state,
+            "withLink",
+            "withLink"
+          ),
+        }
       )}
     >
       {(() => {
@@ -155,8 +194,20 @@ function PlasmicCommentsComment__RenderFunc(props: {
         data-plasmic-override={overrides.emailRow}
         className={classNames(
           "__wab_instance",
-          "CommentsComment__emailRow___8Ibd0"
+          "CommentsComment__emailRow___8Ibd0",
+          {
+            CommentsComment__emailRowwithLink___8Ibd02Fzk7: hasVariant(
+              $state,
+              "withLink",
+              "withLink"
+            ),
+          }
         )}
+        style={
+          hasVariant($state, "withLink", "withLink")
+            ? { marginBottom: 8 }
+            : undefined
+        }
       >
         <EmailColumn
           align={"left"}
@@ -252,22 +303,52 @@ function PlasmicCommentsComment__RenderFunc(props: {
             children={args.content}
             className={classNames(
               "__wab_instance",
-              "CommentsComment__emailMarkdown___2GLvC"
+              "CommentsComment__emailMarkdown___2GLvC",
+              {
+                CommentsComment__emailMarkdownwithLink___2GLvC2Fzk7: hasVariant(
+                  $state,
+                  "withLink",
+                  "withLink"
+                ),
+              }
             )}
             markdownContainerStyles={{ fontSize: 14, whiteSpace: "normal" }}
             markdownCustomStyles={{ p: { fontSize: 14, margin: 0 } }}
           />
         </EmailColumn>
       </EmailRow>
+      {(hasVariant($state, "withLink", "withLink") ? true : false) ? (
+        <AtomsButtonOutline
+          data-plasmic-name={"atomsButtonOutline"}
+          data-plasmic-override={overrides.atomsButtonOutline}
+          className={classNames(
+            "__wab_instance",
+            "CommentsComment__atomsButtonOutline__qDPkf",
+            {
+              CommentsComment__atomsButtonOutlinewithLink__qDPkf2Fzk7:
+                hasVariant($state, "withLink", "withLink"),
+            }
+          )}
+          href={args.link}
+          text={"View in Plasmic"}
+        />
+      ) : null}
     </EmailRow>
   ) as React.ReactElement | null;
 }
 
 const PlasmicDescendants = {
-  root: ["root", "emailRow", "emailImage", "emailMarkdown"],
+  root: [
+    "root",
+    "emailRow",
+    "emailImage",
+    "emailMarkdown",
+    "atomsButtonOutline",
+  ],
   emailRow: ["emailRow", "emailImage", "emailMarkdown"],
   emailImage: ["emailImage"],
   emailMarkdown: ["emailMarkdown"],
+  atomsButtonOutline: ["atomsButtonOutline"],
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -277,6 +358,7 @@ type NodeDefaultElementType = {
   emailRow: typeof EmailRow;
   emailImage: typeof EmailImage;
   emailMarkdown: typeof EmailMarkdown;
+  atomsButtonOutline: typeof AtomsButtonOutline;
 };
 
 type ReservedPropsType = "variants" | "args" | "overrides";
@@ -342,6 +424,7 @@ export const PlasmicCommentsComment = Object.assign(
     emailRow: makeNodeComponent("emailRow"),
     emailImage: makeNodeComponent("emailImage"),
     emailMarkdown: makeNodeComponent("emailMarkdown"),
+    atomsButtonOutline: makeNodeComponent("atomsButtonOutline"),
 
     // Metadata about props expected for PlasmicCommentsComment
     internalVariantProps: PlasmicCommentsComment__VariantProps,

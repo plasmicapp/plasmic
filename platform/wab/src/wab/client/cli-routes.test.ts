@@ -222,10 +222,11 @@ describe("mkProjectLocation/parseProjectLocation", () => {
         branchVersion: "latest",
         arenaType: "component",
         arenaUuidOrNameOrPath: "ARENA_UUID",
+        threadId: "THREAD_ID",
       },
       {
         pathname: "/projects/PROJECT_ID",
-        search: "?arena_type=component&arena=ARENA_UUID",
+        search: "?arena_type=component&arena=ARENA_UUID&comment=THREAD_ID",
       }
     );
     expectMkParse(
@@ -269,6 +270,21 @@ describe("mkProjectLocation/parseProjectLocation", () => {
         pathname: "/projects/PROJECT_ID/-/THIS-IS-A-SLUG",
         search:
           "?branch=FEATURE&version=1.2.3&arena_type=page&arena=ARENA_UUID",
+      }
+    );
+    expectMkParse(
+      {
+        projectId: "PROJECT_ID",
+        slug: undefined,
+        branchName: "main",
+        branchVersion: "latest",
+        arenaType: undefined,
+        arenaUuidOrNameOrPath: undefined,
+        threadId: "THREAD_ID",
+      },
+      {
+        pathname: "/projects/PROJECT_ID",
+        search: "?comment=THREAD_ID",
       }
     );
   });

@@ -87,9 +87,12 @@ const CommentPostForm = observer(function CommentPostForm(
           autoComplete: "off",
           placeholder: "Add a comment",
           textAreaInput: {
-            id: inputElementId,
-            rows: 5,
-            type: "soft",
+            props: {
+              id: inputElementId,
+              rows: 5,
+              type: "soft",
+              "data-test-id": "comment-post-text-area",
+            },
           },
           value,
           onChange: (val) => {
@@ -107,8 +110,11 @@ const CommentPostForm = observer(function CommentPostForm(
           onSelect: onSelectHandler,
         }}
         submitButton={{
-          onClick: handleSubmit,
-          disabled: !isValidComment(),
+          props: {
+            onClick: handleSubmit,
+            disabled: !isValidComment(),
+            "data-test-id": "comment-post-submit-button",
+          },
         }}
         cancelButton={{
           onClick: () => {

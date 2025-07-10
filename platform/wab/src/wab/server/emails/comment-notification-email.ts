@@ -10,6 +10,7 @@ import {
   User,
 } from "@/wab/server/entities/Entities";
 import { NotificationsByProject } from "@/wab/server/scripts/send-comments-notifications";
+import { MainBranchId } from "@/wab/shared/ApiSchema";
 import {
   fullName,
   fullNameLastAbbreviated,
@@ -17,6 +18,7 @@ import {
 } from "@/wab/shared/ApiSchemaUtil";
 import { extractMentionedEmails, REACTIONS } from "@/wab/shared/comments-utils";
 import { assert } from "@/wab/shared/common";
+import { mkProjectLocation } from "@/wab/shared/route/app-routes";
 import { createProjectUrl } from "@/wab/shared/urls";
 
 export interface Notification {
@@ -52,6 +54,24 @@ export interface HistoryEntry {
   type: "THREAD_HISTORY";
   history: CommentThreadHistory;
 }
+
+export const getThreadUrl = (
+  host: string,
+  projectId: string,
+  threadId: string,
+  branchName?: string
+) => {
+  const projectLocation = mkProjectLocation({
+    projectId: projectId,
+    branchName: branchName || MainBranchId,
+    threadId,
+    slug: undefined,
+    branchVersion: "latest",
+    arenaType: undefined,
+    arenaUuidOrNameOrPath: undefined,
+  });
+  return `${host}${projectLocation.pathname}${projectLocation.search || ""}`;
+};
 
 const getUserFullName = (user: User | null) =>
   user ? fullName(user) : "Unknown User";
@@ -124,7 +144,11 @@ export async function sendUserNotificationEmail(
       };
 
       notifications.forEach((notification) => {
-        const { entry, rootComment } = notification;
+        const {
+          entry,
+          rootComment,
+          commentThread: notificationCommentThread,
+        } = notification;
 
         if (isCommentEntry(entry)) {
           const { comment } = entry;
@@ -134,6 +158,12 @@ export async function sendUserNotificationEmail(
             avatarUrl: comment.createdBy?.avatarUrl,
             commentId: comment.id,
             comment: comment.body,
+            link: getThreadUrl(
+              host,
+              project.id,
+              notificationCommentThread.id,
+              branchName
+            ),
           };
           const mentionedEmails = extractMentionedEmails(comment.body);
           if (mentionedEmails.includes(userEmail)) {
@@ -153,6 +183,12 @@ export async function sendUserNotificationEmail(
                   body: rootComment.body ?? "",
                   id: rootComment.id,
                 },
+                link: getThreadUrl(
+                  host,
+                  project.id,
+                  notificationCommentThread.id,
+                  branchName
+                ),
                 replies: [commentData],
               });
             }
@@ -173,6 +209,12 @@ export async function sendUserNotificationEmail(
             templateProps.reactions.push({
               commentId: reaction.commentId,
               comment: reaction.comment?.body ?? "",
+              link: getThreadUrl(
+                host,
+                project.id,
+                notificationCommentThread.id,
+                branchName
+              ),
               reactions: [{ name, emoji: REACTIONS[reaction.data.emojiName] }],
             });
           }
@@ -183,6 +225,12 @@ export async function sendUserNotificationEmail(
           templateProps.resolutions.push({
             name,
             resolved: history.resolved,
+            link: getThreadUrl(
+              host,
+              project.id,
+              notificationCommentThread.id,
+              branchName
+            ),
             rootComment: {
               body: rootComment.body ?? "",
               name: getUserFullName(rootComment.createdBy),

@@ -23,7 +23,6 @@ import {
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
 import { EmailRow, EmailSection } from "@/wab/server/emails/components.tsx"; // plasmic-import: ccI_uNhThjcT/codeComponent
-import AtomsButtonOutline from "../../AtomsButtonOutline"; // plasmic-import: 5OdShbT02UoK/component
 import AtomsCard from "../../AtomsCard"; // plasmic-import: 2cidd9ockVoM/component
 import CommentsComment from "../../CommentsComment"; // plasmic-import: NUaRKxTU3gYx/component
 
@@ -50,7 +49,6 @@ export type PlasmicCommentsResolutions__OverridesType = {
   emailRow?: Flex__<typeof EmailRow>;
   atomsCard?: Flex__<typeof AtomsCard>;
   commentsComment?: Flex__<typeof CommentsComment>;
-  atomsButtonOutline?: Flex__<typeof AtomsButtonOutline>;
 };
 
 export interface DefaultCommentsResolutionsProps {
@@ -178,6 +176,19 @@ function PlasmicCommentsResolutions__RenderFunc(props: {
                     throw e;
                   }
                 })()}
+                link={(() => {
+                  try {
+                    return currentItem.link;
+                  } catch (e) {
+                    if (
+                      e instanceof TypeError ||
+                      e?.plasmicType === "PlasmicUndefinedDataError"
+                    ) {
+                      return undefined;
+                    }
+                    throw e;
+                  }
+                })()}
                 name={(() => {
                   try {
                     return currentItem.rootComment.name;
@@ -191,37 +202,21 @@ function PlasmicCommentsResolutions__RenderFunc(props: {
                     throw e;
                   }
                 })()}
+                withLink={true}
               />
             </AtomsCard>
           </EmailRow>
         );
       })}
-      <AtomsButtonOutline
-        data-plasmic-name={"atomsButtonOutline"}
-        data-plasmic-override={overrides.atomsButtonOutline}
-        className={classNames(
-          "__wab_instance",
-          "CommentsResolutions__atomsButtonOutline___8XLie"
-        )}
-        href={args.projectUrl}
-        text={"View in Plasmic"}
-      />
     </EmailSection>
   ) as React.ReactElement | null;
 }
 
 const PlasmicDescendants = {
-  root: [
-    "root",
-    "emailRow",
-    "atomsCard",
-    "commentsComment",
-    "atomsButtonOutline",
-  ],
+  root: ["root", "emailRow", "atomsCard", "commentsComment"],
   emailRow: ["emailRow", "atomsCard", "commentsComment"],
   atomsCard: ["atomsCard", "commentsComment"],
   commentsComment: ["commentsComment"],
-  atomsButtonOutline: ["atomsButtonOutline"],
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -231,7 +226,6 @@ type NodeDefaultElementType = {
   emailRow: typeof EmailRow;
   atomsCard: typeof AtomsCard;
   commentsComment: typeof CommentsComment;
-  atomsButtonOutline: typeof AtomsButtonOutline;
 };
 
 type ReservedPropsType = "variants" | "args" | "overrides";
@@ -297,7 +291,6 @@ export const PlasmicCommentsResolutions = Object.assign(
     emailRow: makeNodeComponent("emailRow"),
     atomsCard: makeNodeComponent("atomsCard"),
     commentsComment: makeNodeComponent("commentsComment"),
-    atomsButtonOutline: makeNodeComponent("atomsButtonOutline"),
 
     // Metadata about props expected for PlasmicCommentsResolutions
     internalVariantProps: PlasmicCommentsResolutions__VariantProps,

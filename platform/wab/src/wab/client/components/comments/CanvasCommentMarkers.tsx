@@ -83,7 +83,7 @@ const CanvasCommentMarker = observer(function CanvasCommentMarker(props: {
       onClick={(e) => {
         if (!isSelected) {
           e.stopPropagation();
-          commentsCtx.openCommentThreadDialog(commentThread.id, viewCtx);
+          commentsCtx.openCommentThreadDialog(commentThread.id, true);
         }
       }}
       zIndex={zIndex}
@@ -115,7 +115,10 @@ const CanvasCommentMarker = observer(function CanvasCommentMarker(props: {
           onMouseEnter={() => onHoverChange(true)}
           onMouseLeave={() => onHoverChange(false)}
         >
-          <CommentMarker className={"CommentMarkerInitial"}>
+          <CommentMarker
+            className={"CommentMarkerInitial"}
+            data-test-id={`comment-marker-${commentThread.id}`}
+          >
             <Avatar user={author} size="small" showToolTip={false} />
           </CommentMarker>
         </div>

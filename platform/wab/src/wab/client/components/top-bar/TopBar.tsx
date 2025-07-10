@@ -461,6 +461,7 @@ function _TopBar({ preview }: TopBarProps) {
           props: {
             active: studioCtx.showCommentsPanel,
             onClick: () => studioCtx.toggleCommentsPanel(),
+            "data-test-id": "top-comment-icon",
           },
         }}
         aiButton={{

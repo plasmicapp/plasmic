@@ -39,13 +39,15 @@ export type PlasmicCommentsReactions__ArgsType = {
   reactions?: any;
   comment?: string;
   name?: string;
+  link?: string;
 };
 type ArgPropType = keyof PlasmicCommentsReactions__ArgsType;
 export const PlasmicCommentsReactions__ArgProps = new Array<ArgPropType>(
   "projectUrl",
   "reactions",
   "comment",
-  "name"
+  "name",
+  "link"
 );
 
 export type PlasmicCommentsReactions__OverridesType = {
@@ -60,6 +62,7 @@ export interface DefaultCommentsReactionsProps {
   reactions?: any;
   comment?: string;
   name?: string;
+  link?: string;
   className?: string;
 }
 
@@ -78,6 +81,7 @@ function PlasmicCommentsReactions__RenderFunc(props: {
       Object.assign(
         {
           projectUrl: "https://plasmic.app",
+          link: "https://studio.plasmic.app/",
         },
         Object.fromEntries(
           Object.entries(props.args).filter(([_, v]) => v !== undefined)
@@ -171,7 +175,21 @@ function PlasmicCommentsReactions__RenderFunc(props: {
                 throw e;
               }
             })()}
+            link={(() => {
+              try {
+                return $props.link;
+              } catch (e) {
+                if (
+                  e instanceof TypeError ||
+                  e?.plasmicType === "PlasmicUndefinedDataError"
+                ) {
+                  return undefined;
+                }
+                throw e;
+              }
+            })()}
             name={args.name}
+            withLink={true}
           />
         </AtomsCard>
       </EmailRow>

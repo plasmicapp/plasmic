@@ -2849,3 +2849,54 @@ export function configureProjectAppHost(page: string) {
     cy.reload({ timeout: 120000 });
   });
 }
+
+/**
+ * Delete selected element with comments
+ */
+export function deleteSelectionWithComments() {
+  cy.getSelectedElt().rightclick({ force: true });
+  cy.contains("Delete").click();
+  cy.get(".ant-modal").should("exist");
+  cy.get('[data-test-id="confirm"]').click();
+  cy.get(".ant-modal").should("not.exist");
+}
+
+/**
+ * Adds a new comment thread to the currently selected element
+ */
+export function addCommentToSelection(text: string) {
+  cy.getSelectedElt().rightclick({ force: true });
+  cy.contains("Add comment").click();
+  cy.get("[data-test-id='comment-post-text-area']").type(text);
+  cy.get("[data-test-id='comment-post-submit-button']").click();
+}
+
+/**
+ * Opens the comment thread dialog for a specific thread
+ */
+export function openCommentThread(threadId: string) {
+  cy.get(`[data-test-id='comment-marker-${threadId}']`).click();
+}
+
+/**
+ * Closes the currently open comment thread dialog
+ */
+export function closeCommentThread() {
+  cy.get("[data-test-id='thread-comment-dialog-close-btn']").click();
+}
+
+/**
+ * Open comments tab
+ */
+export function openCommentTab() {
+  cy.get("[data-test-id='top-comment-icon']").click();
+  cy.get(".comments-tab").should("exist");
+}
+
+/**
+ * Click comment thread in comments tab
+ */
+export function clickCommentPost(threadId: string) {
+  cy.get(`[data-test-id='comment-post-${threadId}']`).click();
+  cy.get(".comments-tab").should("exist");
+}

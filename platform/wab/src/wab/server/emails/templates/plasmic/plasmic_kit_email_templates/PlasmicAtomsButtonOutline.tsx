@@ -67,6 +67,7 @@ function PlasmicAtomsButtonOutline__RenderFunc(props: {
       Object.assign(
         {
           text: "Button",
+          href: "https://plasmic.app",
         },
         Object.fromEntries(
           Object.entries(props.args).filter(([_, v]) => v !== undefined)

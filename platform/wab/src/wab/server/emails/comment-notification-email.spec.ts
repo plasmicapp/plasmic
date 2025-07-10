@@ -8,6 +8,7 @@ jest.spyOn(React, "useLayoutEffect").mockImplementation(React.useEffect);
 // END
 
 import {
+  getThreadUrl,
   Notification,
   sendUserNotificationEmail,
 } from "@/wab/server/emails/comment-notification-email";
@@ -140,7 +141,17 @@ describe("sendUserNotificationEmail", () => {
         );
 
         const projectLink = getProjectLink(projectId);
-        assertLinks(links, [{ url: projectLink, count: 3 }]);
+        assertLinks(links, [
+          { url: projectLink, count: 2 },
+          {
+            url: getThreadUrl(
+              req.config.host,
+              project.id,
+              user1Comment.commentThreadId
+            ),
+            count: 1,
+          },
+        ]);
 
         expect(receivedHtmlContent).toEqual(
           `My ProjectYangtwo Zhang left a commentYangtwo ZhangThis looks great!View in Plasmic${FOOTER_TEXT}`
@@ -221,7 +232,17 @@ describe("sendUserNotificationEmail", () => {
         );
 
         const projectLink = getProjectLink(projectId);
-        assertLinks(links, [{ url: projectLink, count: 3 }]);
+        assertLinks(links, [
+          { url: projectLink, count: 2 },
+          {
+            url: getThreadUrl(
+              req.config.host,
+              project.id,
+              reply.commentThreadId
+            ),
+            count: 1,
+          },
+        ]);
 
         expect(receivedHtmlContent).toEqual(
           `My ProjectYangtwo Zhang replied to a commentYangone ZhangThis looks great!
@@ -303,7 +324,17 @@ View in Plasmic${FOOTER_TEXT}`
         );
 
         const projectLink = getProjectLink(projectId);
-        assertLinks(links, [{ url: projectLink, count: 3 }]);
+        assertLinks(links, [
+          { url: projectLink, count: 2 },
+          {
+            url: getThreadUrl(
+              req.config.host,
+              project.id,
+              user1Comment.commentThreadId
+            ),
+            count: 1,
+          },
+        ]);
 
         expect(receivedHtmlContent).toEqual(
           `My ProjectYangtwo Zhang reacted to your comment💯Yangone ZhangThis looks great!
@@ -376,8 +407,16 @@ View in Plasmic${FOOTER_TEXT}`
 
         const projectLink = getProjectLink(projectId);
         assertLinks(links, [
-          { url: projectLink, count: 3 },
+          { url: projectLink, count: 2 },
           { url: "mailto:yang1@test.com", count: 1 },
+          {
+            url: getThreadUrl(
+              req.config.host,
+              project.id,
+              user1Comment.commentThreadId
+            ),
+            count: 1,
+          },
         ]);
 
         expect(receivedHtmlContent).toEqual(
@@ -456,7 +495,17 @@ View in Plasmic${FOOTER_TEXT}`
         );
 
         const projectLink = getProjectLink(projectId);
-        assertLinks(links, [{ url: projectLink, count: 3 }]);
+        assertLinks(links, [
+          { url: projectLink, count: 2 },
+          {
+            url: getThreadUrl(
+              req.config.host,
+              project.id,
+              user1Comment.commentThreadId
+            ),
+            count: 1,
+          },
+        ]);
 
         expect(receivedHtmlContent).toEqual(
           `My ProjectYangtwo Zhang resolved a commentYangone ZhangThis looks great!
@@ -754,27 +803,66 @@ View in Plasmic${FOOTER_TEXT}`
         const { text: receivedHtmlContent, links } = extractTextAndLinks(
           mailer.sendMail.mock.calls[0][0].html
         );
-
         const projectLink = getProjectLink(projectId);
         assertLinks(links, [
-          { url: projectLink, count: 8 },
+          { url: projectLink, count: 2 },
           { url: "mailto:yang1@test.com", count: 3 },
+          {
+            url: getThreadUrl(
+              req.config.host,
+              project.id,
+              rootComments[0].commentThreadId
+            ),
+            count: 4,
+          },
+          {
+            url: getThreadUrl(
+              req.config.host,
+              project.id,
+              rootComments[1].commentThreadId
+            ),
+            count: 3,
+          },
+          {
+            url: getThreadUrl(
+              req.config.host,
+              project.id,
+              rootComments[2].commentThreadId
+            ),
+            count: 1,
+          },
+          {
+            url: getThreadUrl(
+              req.config.host,
+              project.id,
+              rootComments[3].commentThreadId
+            ),
+            count: 1,
+          },
+          {
+            url: getThreadUrl(
+              req.config.host,
+              project.id,
+              rootComments[4].commentThreadId
+            ),
+            count: 1,
+          },
         ]);
 
         expect(receivedHtmlContent).toEqual(
           `My ProjectYangthree Zhang and others mentioned you in 2 commentsYangthree Zhangcc: @yang1@test.com
-Yangtwo ZhangHey @yang1@test.com, can you look into this?
+View in PlasmicYangtwo ZhangHey @yang1@test.com, can you look into this?
 View in PlasmicYangthree Zhang and others replied to these commentsYangone ZhangThis looks great!
 NEW COMMENTSYangthree ZhangI agree...
 Yangtwo ZhangThanks
 View in PlasmicYangone ZhangCan you increase the font size?
 NEW COMMENTSYangthree Zhang20px?
 View in PlasmicYangtwo Zhang and others left 2 commentsYangtwo Zhangyang1@test.com reverted this change
-Yangthree ZhangLooks good to me!
+View in PlasmicYangthree ZhangLooks good to me!
 View in PlasmicYangtwo Zhang and 1 others reacted to your comment👍Yangone ZhangThis looks great!
-Yangthree Zhang reacted to your comment✅Yangone ZhangCan you increase the font size?
+View in PlasmicYangthree Zhang reacted to your comment✅Yangone ZhangCan you increase the font size?
 View in PlasmicYangthree Zhang reopened a commentYangone ZhangThis looks great!
-Yangthree Zhang resolved a commentYangone ZhangCan you increase the font size?
+View in PlasmicYangthree Zhang resolved a commentYangone ZhangCan you increase the font size?
 View in Plasmic${FOOTER_TEXT}`
         );
 
@@ -885,7 +973,15 @@ View in Plasmic${FOOTER_TEXT}`
         } = extractTextAndLinks(call1.html);
         const project1Link = getProjectLink(project.id);
         assertLinks(receivedLinksForProject1, [
-          { url: project1Link, count: 3 },
+          { url: project1Link, count: 2 },
+          {
+            url: getThreadUrl(
+              req.config.host,
+              project.id,
+              user0Comment.commentThreadId
+            ),
+            count: 1,
+          },
         ]);
         expect(receivedHtmlForProject1).toEqual(
           `My ProjectYangone Zhang left a commentYangone Zhangcomment text in project 1
@@ -898,7 +994,15 @@ View in Plasmic${FOOTER_TEXT}`
         } = extractTextAndLinks(call2.html);
         const project2Link = getProjectLink(project2.id);
         assertLinks(receivedLinksForProject2, [
-          { url: project2Link, count: 3 },
+          { url: project2Link, count: 2 },
+          {
+            url: getThreadUrl(
+              req.config.host,
+              project2.id,
+              user0CommentInProject2.commentThreadId
+            ),
+            count: 1,
+          },
         ]);
         expect(receivedHtmlForProject2).toEqual(
           `My Project 2Yangone Zhang left a commentYangone Zhangcomment text in project 2
@@ -1018,7 +1122,17 @@ View in Plasmic${FOOTER_TEXT}`
 
         const projectLink = getProjectLink(project.id);
 
-        assertLinks(linksMainBranch, [{ url: projectLink, count: 3 }]);
+        assertLinks(linksMainBranch, [
+          { url: projectLink, count: 2 },
+          {
+            url: getThreadUrl(
+              req.config.host,
+              project.id,
+              user0comment.commentThreadId
+            ),
+            count: 1,
+          },
+        ]);
 
         expect(receivedHtmlMainBranch).toEqual(
           `My ProjectYangone Zhang left a commentYangone Zhangcomment text in main branch
@@ -1039,7 +1153,16 @@ View in Plasmic${FOOTER_TEXT}`
         );
 
         assertLinks(linksFeatureBranch, [
-          { url: projectLinkFeatureBranch, count: 3 },
+          { url: projectLinkFeatureBranch, count: 2 },
+          {
+            url: getThreadUrl(
+              req.config.host,
+              project.id,
+              user0commentInBranch.commentThreadId,
+              branch2.name
+            ),
+            count: 1,
+          },
         ]);
 
         expect(receivedHtmlFeatureBranchBranch).toEqual(

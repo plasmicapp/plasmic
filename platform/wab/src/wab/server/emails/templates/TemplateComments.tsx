@@ -26,6 +26,7 @@ type ReplyData = {
     body: string;
     name: string;
   };
+  link: string;
   replies: {
     name: string;
     avatarUrl?: string | null;
@@ -36,6 +37,7 @@ type ReplyData = {
 type ReactionData = {
   commentId: string;
   comment: string;
+  link: string;
   reactions: {
     name: string;
     emoji: string;
@@ -45,6 +47,7 @@ type ReactionData = {
 type ResolutionData = {
   name: string;
   resolved: boolean;
+  link: string;
   rootComment: {
     name: string;
     body: string;
@@ -53,6 +56,7 @@ type ResolutionData = {
 
 type CommentData = {
   name: string;
+  link: string;
   avatarUrl?: string | null;
   commentId: string;
   comment: string;

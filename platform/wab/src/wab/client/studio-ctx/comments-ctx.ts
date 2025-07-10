@@ -1,5 +1,6 @@
 import {
   CommentFilter,
+  CommentsStats,
   computeCommentStats,
   getCommentThreadsWithModelMetadata,
   isCommentForFrame,
@@ -40,6 +41,7 @@ import {
   xGroupBy,
 } from "@/wab/shared/common";
 import { TplNamable } from "@/wab/shared/core/tpls";
+import { SEARCH_PARAM_COMMENT } from "@/wab/shared/route/app-routes";
 import { partition } from "lodash";
 import { autorun, observable, runInAction } from "mobx";
 import { computedFn } from "mobx-utils";
@@ -48,7 +50,7 @@ export const COMMENTS_DIALOG_RIGHT_ZOOM_PADDING = 320;
 
 export interface OpenedThread {
   threadId: CommentThreadId;
-  viewCtx: ViewCtx;
+  viewCtx?: ViewCtx;
   interacted: boolean;
 }
 
@@ -67,13 +69,11 @@ export class CommentsCtx {
   private readonly _openedNewThread = observable.box<
     OpenedNewThread | undefined
   >(undefined);
-  private readonly _rawThreads = observable.array<ApiCommentThread>([], {
-    deep: true,
-  });
-  private readonly _rawUsers = observable.array<ApiUser>([], { deep: true });
-  private readonly _rawReactions = observable.array<ApiCommentReaction>([], {
-    deep: true,
-  });
+  private readonly _commentsResponse = observable.box<{
+    threads: ApiCommentThread[];
+    users: ApiUser[];
+    reactions: ApiCommentReaction[];
+  } | null>(null);
   private readonly _selfNotificationSettings = observable.box<
     ApiNotificationSettings | undefined
   >(undefined);
@@ -82,6 +82,7 @@ export class CommentsCtx {
     arenas: new WeakMap<AnyArena, string>(),
     threads: new WeakMap<ApiCommentThread, string>(),
   };
+  private _skipZoomOnFocus = false;
 
   constructor(private readonly studioCtx: StudioCtx) {
     this.disposals.push(
@@ -94,11 +95,29 @@ export class CommentsCtx {
     );
   }
 
+  private ensureCommentsResponse() {
+    return ensure(this._commentsResponse.get(), "Comments data not loaded");
+  }
+
   private readonly _computedData = computedFn(() => {
+    const response = this._commentsResponse.get();
+    if (!response) {
+      return {
+        allThreads: [],
+        unresolvedThreads: [],
+        resolvedThreads: [],
+        commentStatsBySubject: new Map<string, CommentsStats>(),
+        commentStatsByComponent: new Map<string, CommentsStats>(),
+        commentStatsByVariant: new Map<string, CommentsStats>(),
+        usersMap: new Map<string, ApiUser>(),
+        reactionsByCommentId: new Map<string, ApiCommentReaction[]>(),
+      };
+    }
+
     const allThreads = getCommentThreadsWithModelMetadata(
       this.studioCtx,
       this.bundler(),
-      this._rawThreads
+      response.threads
     );
     const [resolvedThreads, unresolvedThreads] = partition(
       allThreads,
@@ -112,9 +131,9 @@ export class CommentsCtx {
       commentStatsBySubject: commentStats.commentStatsBySubject,
       commentStatsByComponent: commentStats.commentStatsByComponent,
       commentStatsByVariant: commentStats.commentStatsByVariant,
-      usersMap: mkIdMap(this._rawUsers),
+      usersMap: mkIdMap(response.users),
       reactionsByCommentId: xGroupBy(
-        sortBy(this._rawReactions, (r) => +new Date(r.createdAt)),
+        sortBy(response.reactions, (r) => +new Date(r.createdAt)),
         (r) => r.commentId
       ),
     };
@@ -167,11 +186,13 @@ export class CommentsCtx {
     return this.studioCtx.siteInfo.id;
   }
 
-  openCommentThreadDialog(threadId: CommentThreadId, viewCtx: ViewCtx) {
-    runInAction(() => {
-      this._openedNewThread.set(undefined);
-      this._openedThread.set({ viewCtx, threadId, interacted: false });
-    });
+  /**
+   * Returns the current value and resets it.
+   */
+  getAndResetSkipZoomOnFocus(): boolean {
+    const value = this._skipZoomOnFocus;
+    this._skipZoomOnFocus = false;
+    return value;
   }
 
   filteredThreads() {
@@ -203,12 +224,71 @@ export class CommentsCtx {
     return unresolvedThreads;
   }
 
+  private getQueryParams(): URLSearchParams {
+    return new URLSearchParams(this.studioCtx.appCtx.history.location.search);
+  }
+
+  closeNewThreadDialog() {
+    this._openedNewThread.set(undefined);
+  }
+
   openNewCommentDialog(viewCtx: ViewCtx, tpl: TplNamable) {
     runInAction(() => {
       this._openedThread.set(undefined);
       this._openedNewThread.set({ viewCtx, tpl, interacted: false });
     });
   }
+
+  /**
+   * Opens the comment thread dialog for the given thread.
+   * `viewCtx` will be undefined for deleted subject threads.
+   */
+  handleOpenCommentThreadDialog(threadId: CommentThreadId, viewCtx?: ViewCtx) {
+    runInAction(() => {
+      this._openedNewThread.set(undefined);
+      this._openedThread.set({ viewCtx, threadId, interacted: false });
+    });
+  }
+
+  handleCloseThreadDialog() {
+    this._openedThread.set(undefined);
+  }
+
+  openCommentThreadDialog(threadId: string, skipZoom?: boolean) {
+    if (skipZoom) {
+      this._skipZoomOnFocus = skipZoom;
+    }
+    const history = this.studioCtx.appCtx.history;
+    const queryParams = this.getQueryParams();
+    if (queryParams.get(SEARCH_PARAM_COMMENT) === threadId) {
+      return;
+    }
+    queryParams.set(SEARCH_PARAM_COMMENT, threadId);
+    history.push({
+      search: queryParams.toString(),
+    });
+  }
+
+  closeCommentThreadDialog() {
+    const history = this.studioCtx.appCtx.history;
+    const queryParams = this.getQueryParams();
+    queryParams.delete(SEARCH_PARAM_COMMENT);
+    history.push({
+      search: queryParams.toString(),
+    });
+  }
+
+  // Close comment dialogs if either thread exists without interaction
+  maybeCloseCommentDialogs = () => {
+    const currentOpenedNewThread = this.openedNewThread();
+    const currentOpenedThread = this.openedThread();
+    if (currentOpenedNewThread && !currentOpenedNewThread.interacted) {
+      this.closeNewThreadDialog();
+    }
+    if (currentOpenedThread && !currentOpenedThread.interacted) {
+      this.handleCloseThreadDialog();
+    }
+  };
 
   async fetchComments() {
     const projectId = this.studioCtx.siteInfo.id;
@@ -222,9 +302,11 @@ export class CommentsCtx {
         await this.studioCtx.appCtx.api.getComments(projectId, branchId);
 
       runInAction(() => {
-        this._rawThreads.replace(response.threads);
-        this._rawUsers.replace(response.users);
-        this._rawReactions.replace(response.reactions);
+        this._commentsResponse.set({
+          threads: response.threads,
+          users: response.users,
+          reactions: response.reactions,
+        });
         this._selfNotificationSettings.set(response.selfNotificationSettings);
       });
     } catch (err) {
@@ -236,24 +318,20 @@ export class CommentsCtx {
     }
   }
 
-  closeCommentDialogs() {
-    runInAction(() => {
-      this._openedNewThread.set(undefined);
-      this._openedThread.set(undefined);
+  async waitForInitialCommentsLoad() {
+    if (this._commentsResponse.get() !== null) {
+      return;
+    }
+
+    await new Promise<void>((resolve) => {
+      const disposer = autorun(() => {
+        if (this._commentsResponse.get() !== null) {
+          disposer();
+          resolve();
+        }
+      });
     });
   }
-
-  // Close comment dialogs if either thread exists without interaction
-  maybeCloseCommentDialogs = () => {
-    const currentOpenedNewThread = this.openedNewThread();
-    const currentOpenedThread = this.openedThread();
-    if (
-      (currentOpenedNewThread && !currentOpenedNewThread.interacted) ||
-      (currentOpenedThread && !currentOpenedThread.interacted)
-    ) {
-      this.closeCommentDialogs();
-    }
-  };
 
   dispose() {
     this.disposals.forEach((d) => d());
@@ -301,7 +379,11 @@ export class CommentsCtx {
       ...commonFields,
     };
     runInAction(() => {
-      this._rawThreads.unshift(newThread);
+      const commentResponse = this.ensureCommentsResponse();
+      this._commentsResponse.set({
+        ...commentResponse,
+        threads: [newThread, ...commentResponse.threads],
+      });
     });
     return newThread;
   }
@@ -319,42 +401,62 @@ export class CommentsCtx {
       ...commonFields,
     };
     runInAction(() => {
-      const thread = this._rawThreads.find((t) => t.id === threadId);
-      if (thread) {
-        thread.comments.push(newComment);
-      }
+      const commentResponse = this.ensureCommentsResponse();
+      const threads = commentResponse.threads.map((thread) => {
+        if (thread.id === threadId) {
+          return {
+            ...thread,
+            comments: [...thread.comments, newComment],
+          };
+        }
+        return thread;
+      });
+      this._commentsResponse.set({
+        ...commentResponse,
+        threads,
+      });
     });
     return newComment;
   }
 
   private editCommentBody(commentId: CommentId, body: string) {
     runInAction(() => {
-      const thread = this._rawThreads.find((t) =>
-        t.comments.some((c) => c.id === commentId)
-      );
-      if (thread) {
-        const comment = thread.comments.find((c) => c.id === commentId);
-        if (comment) {
-          comment.body = body;
-          comment.updatedAt = new Date().toISOString();
-        }
-      }
+      const commentResponse = this.ensureCommentsResponse();
+      const threads = commentResponse.threads.map((thread) => ({
+        ...thread,
+        comments: thread.comments.map((comment) =>
+          comment.id === commentId
+            ? { ...comment, body, updatedAt: new Date().toISOString() }
+            : comment
+        ),
+      }));
+      this._commentsResponse.set({
+        ...commentResponse,
+        threads,
+      });
     });
   }
 
   private deleteThreadComment(commentId: CommentId) {
     runInAction(() => {
-      const thread = this._rawThreads.find((t) =>
-        t.comments.some((c) => c.id === commentId)
-      );
-      if (thread) {
-        const comment = thread.comments.find((c) => c.id === commentId);
-        if (comment) {
-          comment.body = "";
-          comment.deletedAt = new Date().toISOString();
-          comment.deletedById = this.studioCtx.appCtx.selfInfo?.id!;
-        }
-      }
+      const commentResponse = this.ensureCommentsResponse();
+      const threads = commentResponse.threads.map((thread) => ({
+        ...thread,
+        comments: thread.comments.map((comment) =>
+          comment.id === commentId
+            ? {
+                ...comment,
+                body: "",
+                deletedAt: new Date().toISOString(),
+                deletedById: this.studioCtx.appCtx.selfInfo?.id!,
+              }
+            : comment
+        ),
+      }));
+      this._commentsResponse.set({
+        ...commentResponse,
+        threads,
+      });
     });
   }
 
@@ -372,17 +474,22 @@ export class CommentsCtx {
       ...commonFields,
     };
     runInAction(() => {
-      this._rawReactions.push(newReaction);
+      const commentResponse = this.ensureCommentsResponse();
+      this._commentsResponse.set({
+        ...commentResponse,
+        reactions: [...commentResponse.reactions, newReaction],
+      });
     });
     return newReaction;
   }
 
   private removeReaction(reactionId: CommentReactionId) {
     runInAction(() => {
-      const index = this._rawReactions.findIndex((r) => r.id === reactionId);
-      if (index !== -1) {
-        this._rawReactions.splice(index, 1);
-      }
+      const commentResponse = this.ensureCommentsResponse();
+      this._commentsResponse.set({
+        ...commentResponse,
+        reactions: commentResponse.reactions.filter((r) => r.id !== reactionId),
+      });
     });
   }
 
@@ -400,11 +507,23 @@ export class CommentsCtx {
       ...commonFields,
     };
     runInAction(() => {
-      const thread = this._rawThreads.find((t) => t.id === threadId);
-      if (thread) {
-        thread.commentThreadHistories.push(newHistory);
-        thread.resolved = resolved;
-      }
+      const commentResponse = this.ensureCommentsResponse();
+      const threads = commentResponse.threads.map((thread) =>
+        thread.id === threadId
+          ? {
+              ...thread,
+              commentThreadHistories: [
+                ...thread.commentThreadHistories,
+                newHistory,
+              ],
+              resolved,
+            }
+          : thread
+      );
+      this._commentsResponse.set({
+        ...commentResponse,
+        threads,
+      });
     });
     return newHistory;
   }
@@ -452,7 +571,7 @@ export class CommentsCtx {
     const api = this.studioCtx.appCtx.api;
     const optimisticThreadCommentData = {
       ...commentData,
-      id: mkUuid() as CommentId,
+      id: mkShortUuid<CommentId>(),
     };
     this.spawnHandlingErrors(
       api.postThreadComment(
@@ -467,7 +586,7 @@ export class CommentsCtx {
 
   editThread(threadId: CommentThreadId, resolved: boolean) {
     const api = this.studioCtx.appCtx.api;
-    const id = mkUuid() as ThreadHistoryId;
+    const id = mkUuid<ThreadHistoryId>();
     this.spawnHandlingErrors(
       api.editThread(this.projectId(), this.branchId(), threadId, {
         id,
@@ -500,7 +619,7 @@ export class CommentsCtx {
     data: Omit<CommentReactionData, "id">
   ): ApiCommentReaction {
     const api = this.studioCtx.appCtx.api;
-    const id = mkUuid() as CommentReactionId;
+    const id = mkUuid<CommentReactionId>();
     this.spawnHandlingErrors(
       api.addReactionToComment(
         id,
