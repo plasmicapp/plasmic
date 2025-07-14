@@ -20,7 +20,39 @@ services:
   plasmic-wab:
     build:
       context: .
-      dockerfile: ./platform/wab/tools/docker-dev/Dockerfile
+      dockerfile: ./platform/wab/tools/docker-dev/Dockerfile.dev.aio
+    command: # Override the default dockerfile startup command here for debugging purpose
+    - | 
+      jq '(.host = "plasmic-db") | (.password //= "SEKRET")' ormconfig.json > tmp.json && mv tmp.json ormconfig.json && \
+      yarn typeorm migration:run && \
+      yarn migrate-dev-bundles && \
+      yarn seed && \
+      yarn plume:dev update && \
+      cd /plasmic && \
+      yarn dev
+    volumes:
+      # 1. Mount your local source code into the container
+      - .:/plasmic
+      # 2. Use named volumes to preserve built container files from being overwritten by unbuilt local code
+      # --- Node Modules (Existing) ---
+      - plasmic_node_modules:/plasmic/node_modules
+      - plasmic_wab_node_modules:/plasmic/platform/wab/node_modules
+      - plasmic_sub_node_modules:/plasmic/platform/sub/node_modules
+      - plasmic_canvas_node_modules:/plasmic/platform/canvas-packages/node_modules
+      - plasmic_live_frame_node_modules:/plasmic/platform/live-frame/node_modules
+      - plasmic_react_web_bundle_node_modules:/plasmic/platform/react-web-bundle/node_modules
+      - plasmic_loader_bundle_env_node_modules:/plasmic/platform/loader-bundle-env/node_modules
+      - plasmic_loader_html_hydrate_node_modules:/plasmic/platform/loader-html-hydrate/node_modules
+      
+      # --- Generated files ---
+      - plasmic_public:/plasmic/platform/wab/public
+      - plasmic_wab_client:/plasmic/platform/wab/src/wab/client
+      - plasmic_wab_gen:/plasmic/platform/wab/src/wab/gen
+      - plasmic_wab_shared_model:/plasmic/platform/wab/src/wab/shared/model
+      - plasmic_generated_styles:/plasmic/platform/wab/src/wab/styles
+
+      # --- Build Caches ---
+      - plasmic_playwright_cache:/home/plasmic/.cache/ms-playwright
     ports:
       - "3003:3003"
       - "3004:3004"
@@ -34,8 +66,24 @@ services:
       - WAB_DBNAME=plasmic-db
       - WAB_DBPASSWORD=SEKRET
       - NODE_ENV=development
+      # This environment variable makes file watching more reliable.
+      - CHOKIDAR_USEPOLLING=true
     tty: true
     stdin_open: true
 
 volumes:
   postgres_data:
+  plasmic_node_modules:
+  plasmic_wab_node_modules:
+  plasmic_sub_node_modules:
+  plasmic_canvas_node_modules:
+  plasmic_live_frame_node_modules:
+  plasmic_react_web_bundle_node_modules:
+  plasmic_loader_bundle_env_node_modules:
+  plasmic_loader_html_hydrate_node_modules:
+  plasmic_playwright_cache:
+  plasmic_generated_styles:
+  plasmic_public:
+  plasmic_wab_client:
+  plasmic_wab_gen:
+  plasmic_wab_shared_model:
