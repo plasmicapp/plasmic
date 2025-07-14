@@ -50,8 +50,6 @@ services:
       - plasmic_wab_shared_model:/plasmic/platform/wab/src/wab/shared/model
       - plasmic_generated_styles:/plasmic/platform/wab/src/wab/styles
 
-      # --- Build Caches ---
-      - plasmic_playwright_cache:/home/plasmic/.cache/ms-playwright
     ports:
       - "3003:3003"
       - "3004:3004"
@@ -80,7 +78,6 @@ volumes:
   plasmic_react_web_bundle_node_modules:
   plasmic_loader_bundle_env_node_modules:
   plasmic_loader_html_hydrate_node_modules:
-  plasmic_playwright_cache:
   plasmic_generated_styles:
   plasmic_public:
   plasmic_wab_gen:
