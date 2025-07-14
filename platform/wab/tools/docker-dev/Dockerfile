@@ -1,9 +1,7 @@
 # --- Build stage ---
 FROM node:18-alpine AS builder
 
-ENV PLASMIC_HOME=/plasmic
-
-WORKDIR $PLASMIC_HOME
+WORKDIR /plasmic
 
 # Install system deps
 RUN apk add --no-cache \
@@ -14,6 +12,7 @@ RUN apk add --no-cache \
     python3 \
     py3-pip \
     postgresql-client \
+    jq \
     build-base
 
 # Copy only dependency files first for caching
@@ -28,7 +27,9 @@ COPY . .
 # Secrets setup and build tools
 RUN mkdir -p /tmp/.plasmic && \
     cp platform/wab/tools/docker-dev/secrets.json /tmp/.plasmic/secrets.json && \
-    sed -i -e 's/"host": "localhost"/"host": "plasmic-db"/' -e '/"database": "wab"/a "password": "SEKRET",' platform/wab/ormconfig.json && \
+    cd platform/wab && \
+    jq '(.host = "plasmic-db") | (.password //= "SEKRET")' ormconfig.json > tmp.json && mv tmp.json ormconfig.json && \
+    cd /plasmic && \
     yarn setup && \
     yarn setup:canvas-packages && \
     yarn cache clean
@@ -36,16 +37,10 @@ RUN mkdir -p /tmp/.plasmic && \
 # --- Final stage ---
 FROM node:18-alpine
 
-ENV PLASMIC_HOME=/plasmic \
-    HOME=/home/plasmic
-
 # Create non-root user and prepare env
 RUN addgroup -S plasmic && \
     adduser -S plasmic -G plasmic && \
-    apk add --no-cache \
-    bash \
-    git \
-    postgresql-client && \
+    apk add --no-cache git jq bash && \
     echo "fs.inotify.max_user_watches=524288" >> /etc/sysctl.conf && \
     sysctl -p && \
     mkdir -p $HOME && \
@@ -53,13 +48,18 @@ RUN addgroup -S plasmic && \
 
 USER plasmic
 
-WORKDIR $PLASMIC_HOME
+WORKDIR /plasmic/platform/wab
 
 # Copy built app and secrets with correct ownership
-COPY --chown=plasmic:plasmic --from=builder /plasmic $PLASMIC_HOME
-COPY --chown=plasmic:plasmic --from=builder /tmp/.plasmic $HOME/.plasmic
+COPY --chown=plasmic:plasmic --from=builder /plasmic /plasmic
+COPY --chown=plasmic:plasmic --from=builder /tmp/.plasmic /home/plasmic/.plasmic
 
 EXPOSE 3003 3004 3005
 
 ENTRYPOINT ["sh", "-c"]
-CMD ["cd platform/wab && yarn typeorm migration:run && yarn migrate-dev-bundles && yarn seed && yarn plume:dev update && cd /plasmic && yarn dev"]
+CMD ["yarn typeorm migration:run && \
+    yarn migrate-dev-bundles && \
+    yarn seed && \
+    yarn plume:dev update && \
+    cd /plasmic && \
+    yarn dev"]
