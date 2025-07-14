@@ -3049,14 +3049,14 @@ export class StudioCtx extends WithDbCtx {
       this.siteInfo.perms
     );
     return (
-      this.appCtx.appConfig.comments ||
-      (accessLevelRank(accessLevel) >= accessLevelRank("commenter") &&
-        ((this.siteInfo.teamId &&
+      (this.appCtx.appConfig.comments ||
+        (this.siteInfo.teamId &&
           this.appCtx.appConfig.commentsTeamIds.includes(
             this.siteInfo.teamId
           )) ||
-          (team?.parentTeamId &&
-            this.appCtx.appConfig.commentsTeamIds.includes(team.parentTeamId))))
+        (team?.parentTeamId &&
+          this.appCtx.appConfig.commentsTeamIds.includes(team.parentTeamId))) &&
+      accessLevelRank(accessLevel) >= accessLevelRank("commenter")
     );
   }
 
