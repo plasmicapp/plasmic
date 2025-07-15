@@ -1,7 +1,6 @@
-import dotenv from "dotenv";
-import { getEnvVar } from "../utils/get-env-var";
+import { getEnvVar } from "../utils/env";
 
-type Environment = {
+export type Environment = {
   baseUrl: string;
   testUser: {
     email: string;
@@ -9,8 +8,7 @@ type Environment = {
   };
 };
 
-function loadEnv(): Environment {
-  dotenv.config({ path: ".env.local" });
+export function loadEnv(): Environment {
   return {
     baseUrl: getEnvVar("BASE_URL", "http://localhost:3003"),
     testUser: {
@@ -20,4 +18,4 @@ function loadEnv(): Environment {
   };
 }
 
-export { Environment, loadEnv };
+export const ENVIRONMENT = loadEnv();

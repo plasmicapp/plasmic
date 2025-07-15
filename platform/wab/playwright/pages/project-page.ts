@@ -3,7 +3,7 @@ import { FrameLocator, Locator, Page } from "playwright/test";
 import { BasePage } from "./base-page";
 import { Interaction } from "../types/interaction";
 
-class ProjectPage extends BasePage {
+export class ProjectPage extends BasePage {
   readonly frame = this.page
     .frameLocator("iframe.studio-frame")
     .frameLocator("iframe");
@@ -64,7 +64,7 @@ class ProjectPage extends BasePage {
   }
 
   async selectElementWithDataKey(key: string): Promise<Locator> {
-    const element = await this.frame.locator(`[data-key="${key}"]`);
+    const element = this.frame.locator(`[data-key="${key}"]`);
     return element;
   }
 
@@ -74,7 +74,7 @@ class ProjectPage extends BasePage {
   }
 
   async getStateVariable(stateVar: string): Promise<Locator> {
-    const stateVariable = await this.frame
+    const stateVariable = this.frame
       .locator(`[data-test-id="0-${stateVar}"]`)
       .first();
     return stateVariable;
@@ -126,5 +126,3 @@ class ProjectPage extends BasePage {
     await this.exitLiveModeButton.click({ force: true });
   }
 }
-
-export { ProjectPage };

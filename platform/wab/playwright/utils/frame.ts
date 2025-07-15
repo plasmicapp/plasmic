@@ -1,6 +1,9 @@
-import { Page } from "playwright/test";
+import { Frame, Page } from "playwright/test";
 
-export async function findFrameByText(page: Page, text: string) {
+export async function findFrameByText(
+  page: Page,
+  text: string
+): Promise<Frame> {
   for (const frame of page.frames()) {
     if ((await frame.locator(`:has-text("${text}")`).count()) > 0) {
       return frame;

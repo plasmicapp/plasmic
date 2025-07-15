@@ -1,13 +1,15 @@
 import { test as base } from "@playwright/test";
 
 import { ProjectPage } from "../pages/project-page";
-import { Environment, loadEnv } from "../types/environment";
+import { ENVIRONMENT, Environment } from "../types/environment";
+import { ApiClient } from "../utils/api-client";
 
 export interface TestFixtures {
   pages: {
     projectPage: ProjectPage;
   };
   env: Environment;
+  apiClient: ApiClient;
 }
 
 export const test = base.extend<TestFixtures>({
@@ -19,7 +21,11 @@ export const test = base.extend<TestFixtures>({
   },
   // eslint-disable-next-line no-empty-pattern
   env: async ({}, use) => {
-    const environment = loadEnv();
+    const environment = ENVIRONMENT;
     await use(environment);
+  },
+  apiClient: async ({ request, env }, use) => {
+    const client = new ApiClient(request, env.baseUrl);
+    await use(client);
   },
 });
