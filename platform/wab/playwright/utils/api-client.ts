@@ -19,10 +19,19 @@ export class ApiClient {
   }
 
   async importProjectFromTemplate(bundle: any) {
+    const csrfRes = await this.request.get(`${this.baseUrl}/api/v1/auth/csrf`);
+    const csrf = (await csrfRes.json()).csrf;
     const res = await this.request.post(
-      `${this.baseUrl}/api/v1/projects/import-from-template`,
-      { data: { template: bundle } }
+      `${this.baseUrl}/api/v1/projects/import`,
+      {
+        data: {
+          data: JSON.stringify(bundle),
+          keepProjectIdsAndNames: false,
+          migrationsStrict: true,
+        },
+        headers: { "X-CSRF-Token": csrf },
+      }
     );
-    return (await res.json()).id;
+    return (await res.json()).projectId;
   }
 }
