@@ -25,12 +25,13 @@ type ReplyData = {
     id: string;
     body: string;
     name: string;
+    avatarUrl?: string | null;
   };
   link: string;
   replies: {
     name: string;
-    avatarUrl?: string | null;
     comment: string;
+    avatarUrl?: string | null;
   }[];
 };
 
@@ -51,15 +52,16 @@ type ResolutionData = {
   rootComment: {
     name: string;
     body: string;
+    avatarUrl?: string | null;
   };
 };
 
 type CommentData = {
   name: string;
   link: string;
-  avatarUrl?: string | null;
   commentId: string;
   comment: string;
+  avatarUrl?: string | null;
 };
 
 export interface TemplateCommentsProps extends DefaultTemplateCommentsProps {

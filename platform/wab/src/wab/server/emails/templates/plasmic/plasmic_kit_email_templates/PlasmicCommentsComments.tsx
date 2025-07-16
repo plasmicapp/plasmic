@@ -186,7 +186,7 @@ function PlasmicCommentsComments__RenderFunc(props: {
                       e instanceof TypeError ||
                       e?.plasmicType === "PlasmicUndefinedDataError"
                     ) {
-                      return undefined;
+                      return "https://img.plasmic.app/img-optimizer/v1/img/f86d5d7ae700c37dd8db36806074f231.png";
                     }
                     throw e;
                   }

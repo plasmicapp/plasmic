@@ -15,7 +15,6 @@ import * as React from "react";
 
 import {
   Flex as Flex__,
-  PlasmicImg as PlasmicImg__,
   SingleBooleanChoiceArg,
   StrictProps,
   classNames,
@@ -49,21 +48,21 @@ export const PlasmicCommentsComment__VariantProps = new Array<VariantPropType>(
 );
 
 export type PlasmicCommentsComment__ArgsType = {
-  avatarUrl?: React.ComponentProps<typeof PlasmicImg__>["src"];
   name?: string;
   content?: string;
   emoji?: string;
   aboutCommentText?: string;
   link?: string;
+  avatarUrl?: string;
 };
 type ArgPropType = keyof PlasmicCommentsComment__ArgsType;
 export const PlasmicCommentsComment__ArgProps = new Array<ArgPropType>(
-  "avatarUrl",
   "name",
   "content",
   "emoji",
   "aboutCommentText",
-  "link"
+  "link",
+  "avatarUrl"
 );
 
 export type PlasmicCommentsComment__OverridesType = {
@@ -75,12 +74,12 @@ export type PlasmicCommentsComment__OverridesType = {
 };
 
 export interface DefaultCommentsCommentProps {
-  avatarUrl?: React.ComponentProps<typeof PlasmicImg__>["src"];
   name?: string;
   content?: string;
   emoji?: string;
   aboutCommentText?: string;
   link?: string;
+  avatarUrl?: string;
   withLink?: SingleBooleanChoiceArg<"withLink">;
   className?: string;
 }
@@ -99,12 +98,9 @@ function PlasmicCommentsComment__RenderFunc(props: {
     () =>
       Object.assign(
         {
-          avatarUrl: {
-            src: "https://img.plasmic.app/img-optimizer/v1/img/f86d5d7ae700c37dd8db36806074f231.png",
-            fullWidth: 600,
-            fullHeight: 600,
-          },
           content: ``,
+          avatarUrl:
+            "https://img.plasmic.app/img-optimizer/v1/img/f86d5d7ae700c37dd8db36806074f231.png",
         },
         Object.fromEntries(
           Object.entries(props.args).filter(([_, v]) => v !== undefined)
@@ -241,7 +237,7 @@ function PlasmicCommentsComment__RenderFunc(props: {
               src={(() => {
                 try {
                   return (
-                    $props.avatarUrl.src ??
+                    $props.avatarUrl ??
                     "https://img.plasmic.app/img-optimizer/v1/img/f86d5d7ae700c37dd8db36806074f231.png"
                   );
                 } catch (e) {

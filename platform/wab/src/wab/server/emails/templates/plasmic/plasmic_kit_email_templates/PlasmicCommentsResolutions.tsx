@@ -159,6 +159,19 @@ function PlasmicCommentsResolutions__RenderFunc(props: {
                     throw e;
                   }
                 })()}
+                avatarUrl={(() => {
+                  try {
+                    return currentItem.rootComment.avatarUrl;
+                  } catch (e) {
+                    if (
+                      e instanceof TypeError ||
+                      e?.plasmicType === "PlasmicUndefinedDataError"
+                    ) {
+                      return "https://img.plasmic.app/img-optimizer/v1/img/f86d5d7ae700c37dd8db36806074f231.png";
+                    }
+                    throw e;
+                  }
+                })()}
                 className={classNames(
                   "__wab_instance",
                   "CommentsResolutions__commentsComment__kXkH"

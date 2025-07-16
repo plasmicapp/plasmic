@@ -186,6 +186,19 @@ function PlasmicCommentsReplies__RenderFunc(props: {
               )}
             >
               <CommentsComment
+                avatarUrl={(() => {
+                  try {
+                    return currentItem.rootComment.avatarUrl;
+                  } catch (e) {
+                    if (
+                      e instanceof TypeError ||
+                      e?.plasmicType === "PlasmicUndefinedDataError"
+                    ) {
+                      return "https://img.plasmic.app/img-optimizer/v1/img/f86d5d7ae700c37dd8db36806074f231.png";
+                    }
+                    throw e;
+                  }
+                })()}
                 className={classNames(
                   "__wab_instance",
                   "CommentsReplies__commentsComment__rvEjs"
@@ -287,11 +300,7 @@ function PlasmicCommentsReplies__RenderFunc(props: {
                             e instanceof TypeError ||
                             e?.plasmicType === "PlasmicUndefinedDataError"
                           ) {
-                            return {
-                              src: "https://img.plasmic.app/img-optimizer/v1/img/f86d5d7ae700c37dd8db36806074f231.png",
-                              fullWidth: 600,
-                              fullHeight: 600,
-                            };
+                            return "https://img.plasmic.app/img-optimizer/v1/img/f86d5d7ae700c37dd8db36806074f231.png";
                           }
                           throw e;
                         }

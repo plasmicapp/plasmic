@@ -182,6 +182,7 @@ export async function sendUserNotificationEmail(
                   name: getUserFullName(rootComment.createdBy),
                   body: rootComment.body ?? "",
                   id: rootComment.id,
+                  avatarUrl: rootComment.createdBy?.avatarUrl,
                 },
                 link: getThreadUrl(
                   host,
@@ -234,6 +235,7 @@ export async function sendUserNotificationEmail(
             rootComment: {
               body: rootComment.body ?? "",
               name: getUserFullName(rootComment.createdBy),
+              avatarUrl: rootComment.createdBy?.avatarUrl,
             },
           });
         }
