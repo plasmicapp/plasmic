@@ -404,6 +404,7 @@
     "react-stately": "3.38.0",
     "react-use": "^15.3.2",
     "react-use-hoverintent": "^1.2.3",
+    "react-use-intercom": "^5.4.3",
     "react-virtualized-auto-sizer": "^1.0.2",
     "react-window": "^1.8.6",
     "rebound": "^0.1.0",

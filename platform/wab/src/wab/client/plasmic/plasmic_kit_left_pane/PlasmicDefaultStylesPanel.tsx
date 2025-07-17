@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -142,7 +142,6 @@ function PlasmicDefaultStylesPanel__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => undefined,
       },
     ],
-
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -258,11 +257,21 @@ function PlasmicDefaultStylesPanel__RenderFunc(props: {
                 />
               }
               name={""}
-              onChange={(...eventArgs) => {
-                generateStateOnChangeProp($state, [
-                  "globalVariantSelect",
-                  "value",
-                ])(eventArgs[0]);
+              onChange={async (...eventArgs: any) => {
+                ((...eventArgs) => {
+                  generateStateOnChangeProp($state, [
+                    "globalVariantSelect",
+                    "value",
+                  ])(eventArgs[0]);
+                }).apply(null, eventArgs);
+
+                if (
+                  eventArgs.length > 1 &&
+                  eventArgs[1] &&
+                  eventArgs[1]._plasmic_state_init_
+                ) {
+                  return;
+                }
               }}
               placeholder={
                 <div
@@ -316,10 +325,20 @@ function PlasmicDefaultStylesPanel__RenderFunc(props: {
               role={"img"}
             />
           }
-          onChange={(...eventArgs) => {
-            generateStateOnChangeProp($state, ["tagSelect", "value"])(
-              eventArgs[0]
-            );
+          onChange={async (...eventArgs: any) => {
+            ((...eventArgs) => {
+              generateStateOnChangeProp($state, ["tagSelect", "value"])(
+                eventArgs[0]
+              );
+            }).apply(null, eventArgs);
+
+            if (
+              eventArgs.length > 1 &&
+              eventArgs[1] &&
+              eventArgs[1]._plasmic_state_init_
+            ) {
+              return;
+            }
           }}
           options={[
             { value: "option1", label: "Option 1" },
@@ -355,10 +374,21 @@ function PlasmicDefaultStylesPanel__RenderFunc(props: {
                 role={"img"}
               />
             }
-            onChange={(...eventArgs) => {
-              generateStateOnChangeProp($state, ["pseudoClassSelect", "value"])(
-                eventArgs[0]
-              );
+            onChange={async (...eventArgs: any) => {
+              ((...eventArgs) => {
+                generateStateOnChangeProp($state, [
+                  "pseudoClassSelect",
+                  "value",
+                ])(eventArgs[0]);
+              }).apply(null, eventArgs);
+
+              if (
+                eventArgs.length > 1 &&
+                eventArgs[1] &&
+                eventArgs[1]._plasmic_state_init_
+              ) {
+                return;
+              }
             }}
             options={[
               { value: "option1", label: "Option 1" },
@@ -400,7 +430,6 @@ const PlasmicDescendants = {
     "pseudoClassSelect",
     "content",
   ],
-
   selector: [
     "selector",
     "freeBox",
@@ -410,20 +439,17 @@ const PlasmicDescendants = {
     "tagSelect",
     "pseudoClassSelect",
   ],
-
   freeBox: [
     "freeBox",
     "globalVariantSelectorContainer",
     "globalVariantSelect",
     "option",
   ],
-
   globalVariantSelectorContainer: [
     "globalVariantSelectorContainer",
     "globalVariantSelect",
     "option",
   ],
-
   globalVariantSelect: ["globalVariantSelect", "option"],
   option: ["option"],
   tagSelect: ["tagSelect"],
@@ -450,7 +476,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicDefaultStylesPanel__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
@@ -458,15 +483,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicDefaultStylesPanel__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicDefaultStylesPanel__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicDefaultStylesPanel__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+    // Specify args directly as props
+    Omit<PlasmicDefaultStylesPanel__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

@@ -56,6 +56,15 @@
   width: 24px;
   height: 24px;
 }
+.helpGroup:global(.__wab_instance) {
+  position: relative;
+}
+.svg__zDP {
+  position: relative;
+  object-fit: cover;
+  width: 24px;
+  height: 24px;
+}
 .paneContainer {
   display: flex;
   position: relative;

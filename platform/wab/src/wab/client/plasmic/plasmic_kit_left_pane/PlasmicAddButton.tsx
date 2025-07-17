@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -49,9 +49,7 @@ export const PlasmicAddButton__VariantProps = new Array<VariantPropType>(
   "isActive"
 );
 
-export type PlasmicAddButton__ArgsType = {
-  onClick?: () => void;
-};
+export type PlasmicAddButton__ArgsType = { onClick?: () => void };
 type ArgPropType = keyof PlasmicAddButton__ArgsType;
 export const PlasmicAddButton__ArgProps = new Array<ArgPropType>("onClick");
 
@@ -106,7 +104,6 @@ function PlasmicAddButton__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.isActive,
       },
     ],
-
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -193,7 +190,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicAddButton__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
@@ -201,15 +197,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicAddButton__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicAddButton__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicAddButton__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+    // Specify args directly as props
+    Omit<PlasmicAddButton__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

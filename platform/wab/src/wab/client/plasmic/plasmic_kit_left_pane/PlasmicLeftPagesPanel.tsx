@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -164,7 +164,6 @@ const PlasmicDescendants = {
     "newPageButton",
     "content",
   ],
-
   leftSearchPanel: ["leftSearchPanel"],
   leftPaneHeader: ["leftPaneHeader", "newPageButton"],
   newPageButton: ["newPageButton"],
@@ -186,7 +185,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicLeftPagesPanel__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
@@ -194,15 +192,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicLeftPagesPanel__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicLeftPagesPanel__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicLeftPagesPanel__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+    // Specify args directly as props
+    Omit<PlasmicLeftPagesPanel__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

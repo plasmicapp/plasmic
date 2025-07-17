@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -101,7 +101,6 @@ function PlasmicThemeInitialStylesPanel__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => undefined,
       },
     ],
-
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -168,10 +167,20 @@ function PlasmicThemeInitialStylesPanel__RenderFunc(props: {
               role={"img"}
             />
           }
-          onChange={(...eventArgs) => {
-            generateStateOnChangeProp($state, ["elementSelect", "value"])(
-              eventArgs[0]
-            );
+          onChange={async (...eventArgs: any) => {
+            ((...eventArgs) => {
+              generateStateOnChangeProp($state, ["elementSelect", "value"])(
+                eventArgs[0]
+              );
+            }).apply(null, eventArgs);
+
+            if (
+              eventArgs.length > 1 &&
+              eventArgs[1] &&
+              eventArgs[1]._plasmic_state_init_
+            ) {
+              return;
+            }
           }}
           options={[
             { value: "option1", label: "Option 1" },
@@ -211,7 +220,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicThemeInitialStylesPanel__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
@@ -219,15 +227,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicThemeInitialStylesPanel__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicThemeInitialStylesPanel__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicThemeInitialStylesPanel__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+    // Specify args directly as props
+    Omit<PlasmicThemeInitialStylesPanel__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

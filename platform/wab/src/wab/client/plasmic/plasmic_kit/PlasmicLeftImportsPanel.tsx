@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -126,7 +126,6 @@ function PlasmicLeftImportsPanel__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.withUpdateAll,
       },
     ],
-
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -330,7 +329,6 @@ const PlasmicDescendants = {
     "updateButton",
     "content",
   ],
-
   leftSearchPanel: ["leftSearchPanel"],
   importsHeader: [
     "importsHeader",
@@ -339,7 +337,6 @@ const PlasmicDescendants = {
     "refreshButton",
     "updateButton",
   ],
-
   freeBox: ["freeBox", "importButton", "refreshButton", "updateButton"],
   importButton: ["importButton"],
   refreshButton: ["refreshButton"],
@@ -365,7 +362,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicLeftImportsPanel__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
@@ -373,15 +369,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicLeftImportsPanel__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicLeftImportsPanel__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicLeftImportsPanel__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+    // Specify args directly as props
+    Omit<PlasmicLeftImportsPanel__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

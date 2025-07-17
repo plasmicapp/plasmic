@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -113,7 +113,6 @@ function PlasmicLeftSearchPanel__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.rightOptions,
       },
     ],
-
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -286,7 +285,6 @@ const PlasmicDescendants = {
     "collapseButton",
     "filterButton",
   ],
-
   searchbox: ["searchbox"],
   freeBox: ["freeBox", "expandButton", "collapseButton", "filterButton"],
   expandButton: ["expandButton"],
@@ -310,7 +308,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicLeftSearchPanel__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
@@ -318,15 +315,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicLeftSearchPanel__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicLeftSearchPanel__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicLeftSearchPanel__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+    // Specify args directly as props
+    Omit<PlasmicLeftSearchPanel__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;
