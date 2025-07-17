@@ -251,7 +251,7 @@ async function run(): Promise<void> {
   console.log();
   const projectInput = await maybePrompt<string>({
     name: "projectId",
-    message: `If you don't have a project yet, create one by going to https://studio.plasmic.app/starters/blank.
+    message: `If you don't have a project yet, create one by going to https://studio.plasmic.app/starters/blank
 What is the URL of your project?`,
     validate: cpa.checkProjectInput,
   });
