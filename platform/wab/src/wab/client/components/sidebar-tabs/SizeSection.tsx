@@ -2,13 +2,10 @@ import { WithContextMenu } from "@/wab/client/components/ContextMenu";
 import S from "@/wab/client/components/sidebar-tabs/SizeSection.module.scss";
 import {
   FullRow,
-  getValueSetState,
-  isSetOrInherited,
   LabeledItemRow,
   LabeledStyleDimItem,
   LabeledStyleDimItemRow,
   LabeledStyleSwitchItem,
-  SectionSeparator,
   shouldBeDisabled,
 } from "@/wab/client/components/sidebar/sidebar-helpers";
 import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
@@ -23,16 +20,9 @@ import {
   useStyleComponent,
 } from "@/wab/client/components/style-controls/StyleComponent";
 import { Icon as IconComponent } from "@/wab/client/components/widgets/Icon";
-import IconButton from "@/wab/client/components/widgets/IconButton";
 import { DimManip } from "@/wab/client/DimManip";
-import {
-  default as PlasmicIcon__Stretch,
-  default as StretchIcon,
-} from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Stretch";
-import {
-  default as PlasmicIcon__Wrap,
-  default as WrapIcon,
-} from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Wrap";
+import { default as StretchIcon } from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Stretch";
+import { default as WrapIcon } from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Wrap";
 import WidthFullBleedIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__WidthFullBleed";
 import WidthStandardStretchIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__WidthStandardStretch";
 import WidthWideIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__WidthWide";
@@ -63,23 +53,12 @@ import { capitalizeFirst } from "@/wab/shared/strs";
 import { $$$ } from "@/wab/shared/TplQuery";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import { Alert, Menu } from "antd";
-import cn from "classnames";
 import { observer } from "mobx-react";
 import React from "react";
 
-interface SizePanelSectionState {
-  showMore: boolean;
-}
-
-class SizeSection_ extends StyleComponent<
-  StyleComponentProps,
-  SizePanelSectionState
-> {
+class SizeSection_ extends StyleComponent<StyleComponentProps> {
   constructor(props: StyleComponentProps) {
     super(props);
-    this.state = {
-      showMore: false,
-    };
   }
 
   render() {
@@ -87,26 +66,6 @@ class SizeSection_ extends StyleComponent<
     const vsh =
       this.props.vsh ??
       makeVariantedStylesHelperFromCurrentCtx(this.studioCtx());
-
-    const isMinMaxWidthSet = isSetOrInherited(
-      getValueSetState(...this.definedIndicators("min-width", "max-width"))
-    );
-
-    const isMinMaxHeightSet = isSetOrInherited(
-      getValueSetState(...this.definedIndicators("min-width", "max-width"))
-    );
-
-    const tpl =
-      this.props.expsProvider instanceof TplExpsProvider
-        ? this.props.expsProvider.tpl
-        : undefined;
-    const deepLayoutParent = tpl
-      ? $$$(tpl).layoutParent({ throughSlot: true }).maybeOneTpl()
-      : undefined;
-    const isDeepContentLayoutChild =
-      !!deepLayoutParent && isContentLayoutTpl(deepLayoutParent);
-    const isDeepContentLayout =
-      !!tpl && isContentLayoutTpl(tpl, { deep: true });
 
     return (
       <StylePanelSection
@@ -123,185 +82,110 @@ class SizeSection_ extends StyleComponent<
           "flex-basis",
         ]}
         title={"Size"}
-        hasMore
         data-test-id="size-section"
       >
-        {(renderMaybeCollapsibleRows) => (
-          <div>
-            {isSvg(this.props.expsProvider) && (
-              <Alert
-                className="mb-sm"
-                type="warning"
-                showIcon={true}
-                message={
-                  <div>
-                    SVGs have no default size, so setting width to hug or auto
-                    will cause it to stretch to fill the parent container.
-                  </div>
-                }
-              />
-            )}
-            {renderMaybeCollapsibleRows([
-              {
-                collapsible: false,
-                content: (
-                  <FullRow>
-                    <SizeControl
-                      prop="width"
-                      expsProvider={this.props.expsProvider}
-                      vsh={vsh}
-                      // TODO: experimenting with nested content
-                      // layout sections that can be resized
-                      // isDisabled={
-                      //   isDeepContentLayout && isDeepContentLayoutChild
-                      // }
-                      // disabledTooltip={
-                      //   isDeepContentLayout && isDeepContentLayoutChild
-                      //     ? "Nested page sections are always full-bleed"
-                      //     : undefined
-                      // }
-                    />
-                  </FullRow>
-                ),
-              },
-              {
-                collapsible: !isSetOrInherited(
-                  getValueSetState(...this.definedIndicators("min-width"))
-                ),
-                content: (
-                  <FullRow>
-                    <LabeledStyleDimItem
-                      label="Min Width"
-                      styleName={`min-width`}
-                      dimOpts={{
-                        ...tokenTypeDimOpts(TokenType.Spacing),
-                        min: 0,
-                        extraOptions: ["auto"],
-                      }}
-                      tokenType={TokenType.Spacing}
-                      vsh={vsh}
-                    />
-                  </FullRow>
-                ),
-              },
-              {
-                collapsible: !isSetOrInherited(
-                  getValueSetState(...this.definedIndicators("max-width"))
-                ),
-                content: (
-                  <FullRow>
-                    <LabeledStyleDimItem
-                      label="Max Width"
-                      styleName={`max-width`}
-                      dimOpts={{
-                        ...tokenTypeDimOpts(TokenType.Spacing),
-                        min: 0,
-                        extraOptions: ["none"],
-                      }}
-                      tokenType={TokenType.Spacing}
-                      vsh={vsh}
-                    />
-                  </FullRow>
-                ),
-              },
-              {
-                collapsible: false,
-                content: (
-                  <>
-                    <SectionSeparator className="mv-m" />
-                    <FullRow>
-                      <SizeControl
-                        prop="height"
-                        expsProvider={this.props.expsProvider}
-                        vsh={vsh}
-                      />
-                    </FullRow>
-                  </>
-                ),
-              },
-              {
-                collapsible: !isSetOrInherited(
-                  getValueSetState(...this.definedIndicators("min-height"))
-                ),
-                content: (
-                  <FullRow>
-                    <LabeledStyleDimItem
-                      label="Min Height"
-                      styleName={`min-height`}
-                      dimOpts={{
-                        ...tokenTypeDimOpts(TokenType.Spacing),
-                        min: 0,
-                        extraOptions: ["auto"],
-                      }}
-                      tokenType={TokenType.Spacing}
-                      vsh={vsh}
-                    />
-                  </FullRow>
-                ),
-              },
-              {
-                collapsible: !isSetOrInherited(
-                  getValueSetState(...this.definedIndicators("max-height"))
-                ),
-                content: (
-                  <FullRow>
-                    <LabeledStyleDimItem
-                      label="Max Height"
-                      styleName={`max-height`}
-                      dimOpts={{
-                        ...tokenTypeDimOpts(TokenType.Spacing),
-                        min: 0,
-                        extraOptions: ["none"],
-                      }}
-                      tokenType={TokenType.Spacing}
-                      vsh={vsh}
-                    />
-                  </FullRow>
-                ),
-              },
-              {
-                collapsible:
-                  !isSetOrInherited(
-                    getValueSetState(
-                      ...this.definedIndicators("flex-grow", "flex-shrink")
-                    )
-                  ) &&
-                  !isSetOrInherited(
-                    getValueSetState(...this.definedIndicators("flex-basis"))
-                  ),
-                content: <SectionSeparator className="mv-m" />,
-              },
-              {
-                collapsible: !isSetOrInherited(
-                  getValueSetState(
-                    ...this.definedIndicators("flex-grow", "flex-shrink")
-                  )
-                ),
-                content: (
-                  <FlexGrowControls expsProvider={this.props.expsProvider} />
-                ),
-              },
-              {
-                collapsible: !isSetOrInherited(
-                  getValueSetState(...this.definedIndicators("flex-basis"))
-                ),
-                content: (
-                  <LabeledStyleDimItemRow
-                    label="Flex basis"
-                    styleName="flex-basis"
-                    dimOpts={{
-                      ...dimOpts,
-                      extraOptions: ["auto"],
-                    }}
-                    tokenType={TokenType.Spacing}
-                    vsh={vsh}
-                    definedIndicator={this.definedIndicators("flex-basis")}
-                  />
-                ),
-              },
-            ])}
-          </div>
+        {isSvg(this.props.expsProvider) && (
+          <Alert
+            className="mb-sm"
+            type="warning"
+            showIcon={true}
+            message={
+              <div>
+                SVGs have no default size, so setting width to hug or auto will
+                cause it to stretch to fill the parent container.
+              </div>
+            }
+          />
         )}
+        <FullRow twinCols>
+          <SizeControl
+            // this is Width"
+            prop="width"
+            expsProvider={this.props.expsProvider}
+            vsh={vsh}
+            // TODO: experimenting with nested content
+            // layout sections that can be resized
+            // isDisabled={
+            //   isDeepContentLayout && isDeepContentLayoutChild
+            // }
+            // disabledTooltip={
+            //   isDeepContentLayout && isDeepContentLayoutChild
+            //     ? "Nested page sections are always full-bleed"
+            //     : undefined
+            // }
+          />
+          <SizeControl
+            prop="height"
+            expsProvider={this.props.expsProvider}
+            vsh={vsh}
+          />
+        </FullRow>
+
+        <FullRow twinCols>
+          <LabeledStyleDimItem
+            label="Min W"
+            styleName={`min-width`}
+            dimOpts={{
+              ...tokenTypeDimOpts(TokenType.Spacing),
+              min: 0,
+              extraOptions: ["auto"],
+            }}
+            tokenType={TokenType.Spacing}
+            vsh={vsh}
+            labelSize="small"
+          />
+          <LabeledStyleDimItem
+            label="Min H"
+            styleName={`min-height`}
+            dimOpts={{
+              ...tokenTypeDimOpts(TokenType.Spacing),
+              min: 0,
+              extraOptions: ["auto"],
+            }}
+            tokenType={TokenType.Spacing}
+            vsh={vsh}
+            labelSize="small"
+          />
+        </FullRow>
+        <FullRow twinCols>
+          <LabeledStyleDimItem
+            label="Max W"
+            styleName={`max-width`}
+            dimOpts={{
+              ...tokenTypeDimOpts(TokenType.Spacing),
+              min: 0,
+              extraOptions: ["none"],
+            }}
+            tokenType={TokenType.Spacing}
+            vsh={vsh}
+            labelSize="small"
+          />
+          <LabeledStyleDimItem
+            label="Max H"
+            styleName={`max-height`}
+            dimOpts={{
+              ...tokenTypeDimOpts(TokenType.Spacing),
+              min: 0,
+              extraOptions: ["none"],
+            }}
+            tokenType={TokenType.Spacing}
+            vsh={vsh}
+            labelSize="small"
+          />
+        </FullRow>
+
+        <FlexGrowControls expsProvider={this.props.expsProvider} />
+        <LabeledStyleDimItemRow
+          label="Flex basis"
+          styleName="flex-basis"
+          dimOpts={{
+            ...dimOpts,
+            extraOptions: ["auto"],
+          }}
+          tokenType={TokenType.Spacing}
+          vsh={vsh}
+          definedIndicator={this.definedIndicators("flex-basis")}
+        />
       </StylePanelSection>
     );
   }
@@ -473,6 +357,7 @@ const SizeControl = observer(function SizeRow(props: {
       label={capitalizeFirst(prop)}
       className={S.dimField}
       styleName={prop}
+      labelSize="small"
       initialMenuItems={() =>
         new DimManip(
           expsProvider.studioCtx,
@@ -482,74 +367,6 @@ const SizeControl = observer(function SizeRow(props: {
         ).renderConvertMenuItems()
       }
       disabledTooltip={disabledTooltip}
-      rightExtras={
-        !isDisabled && (
-          <div className={S.toggleIcons}>
-            {value !== "stretch" && (
-              <IconButton
-                size="small"
-                type="clear"
-                tooltip={
-                  isDeepContentLayoutChild && prop === "width"
-                    ? "Stretch standard"
-                    : "Stretch"
-                }
-                onClick={() => setProp("stretch")}
-                className={cn(S.toggleSizingIcon, {
-                  [S.toggleSizingIcon__height]: prop === "height",
-                })}
-              >
-                <IconComponent
-                  icon={
-                    isDeepContentLayoutChild && prop === "width"
-                      ? WidthStandardStretchIcon
-                      : PlasmicIcon__Stretch
-                  }
-                />
-              </IconButton>
-            )}
-            {value !== "wrap" && value !== "auto" && (
-              <IconButton
-                size="small"
-                type="clear"
-                tooltip={"Hug content"}
-                onClick={() => setProp("wrap")}
-                className={cn(S.toggleSizingIcon, {
-                  [S.toggleSizingIcon__height]: prop === "height",
-                })}
-              >
-                <IconComponent icon={PlasmicIcon__Wrap} />
-              </IconButton>
-            )}
-            {prop === "width" && isDeepContentLayoutChild && !isRoot && (
-              <>
-                {value !== CONTENT_LAYOUT_WIDE && (
-                  <IconButton
-                    size="small"
-                    type="clear"
-                    tooltip={"Stretch wide"}
-                    onClick={() => setProp(CONTENT_LAYOUT_WIDE)}
-                    className={S.toggleSizingIcon}
-                  >
-                    <IconComponent icon={WidthWideIcon} />
-                  </IconButton>
-                )}
-                {value !== CONTENT_LAYOUT_FULL_BLEED && (
-                  <IconButton
-                    size="small"
-                    type="clear"
-                    tooltip={"Stretch full bleed"}
-                    onClick={() => setProp(CONTENT_LAYOUT_FULL_BLEED)}
-                    className={S.toggleSizingIcon}
-                  >
-                    <IconComponent icon={WidthFullBleedIcon} />
-                  </IconButton>
-                )}
-              </>
-            )}
-          </div>
-        )
-      }
       dimOpts={{
         disabled: isDisabled || !isResizable,
         extraOptions,
@@ -560,7 +377,6 @@ const SizeControl = observer(function SizeRow(props: {
         allowedUnits: isRoot
           ? getLengthUnits("px").filter((x) => x !== "%")
           : getLengthUnits("px"),
-        hideArrow: true,
       }}
       tokenType={TokenType.Spacing}
       vsh={vsh}
@@ -642,10 +458,8 @@ const FlexGrowControls = observer(function FlexGrowControls(props: {
 
   return (
     <>
-      <FullRow>
+      <FullRow twinCols>
         {renderSizing("flex-grow", "Grow", "Grow to fill available space")}
-      </FullRow>
-      <FullRow>
         {renderSizing("flex-shrink", "Shrink", "Shrink if not enough space")}
       </FullRow>
     </>
@@ -654,7 +468,7 @@ const FlexGrowControls = observer(function FlexGrowControls(props: {
 
 function toDisplay(val: string, stretchLabel: string, isRoot: boolean) {
   if (val === "wrap") {
-    val = "Hug content";
+    val = "Hug";
   } else if (val === CONTENT_LAYOUT_FULL_BLEED) {
     val = "Full bleed";
     if (isRoot) {
@@ -672,7 +486,7 @@ function toDisplay(val: string, stretchLabel: string, isRoot: boolean) {
 }
 
 function fromDisplay(val: string, stretchLabel: string) {
-  if (val === "Hug content") {
+  if (val === "Hug") {
     val = "wrap";
   } else if (val === "Full bleed") {
     val = CONTENT_LAYOUT_FULL_BLEED;
