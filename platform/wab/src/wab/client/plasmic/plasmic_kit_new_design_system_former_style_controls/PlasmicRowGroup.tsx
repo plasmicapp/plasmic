@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -142,7 +142,6 @@ function PlasmicRowGroup__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.showActions,
       },
     ],
-
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -184,6 +183,29 @@ function PlasmicRowGroup__RenderFunc(props: {
           ),
         }
       )}
+      onClick={async (event) => {
+        const $steps = {};
+
+        $steps["runCode"] = true
+          ? (() => {
+              const actionArgs = {
+                customFunction: async () => {
+                  return undefined;
+                },
+              };
+              return (({ customFunction }) => {
+                return customFunction();
+              })?.apply(null, [actionArgs]);
+            })()
+          : undefined;
+        if (
+          $steps["runCode"] != null &&
+          typeof $steps["runCode"] === "object" &&
+          typeof $steps["runCode"].then === "function"
+        ) {
+          $steps["runCode"] = await $steps["runCode"];
+        }
+      }}
       data-plasmic-trigger-props={[triggerRootHoverProps]}
     >
       <div
@@ -294,7 +316,6 @@ const PlasmicDescendants = {
     "actionsContainer",
     "menuButton",
   ],
-
   iconContainer: ["iconContainer", "svg"],
   svg: ["svg"],
   labelContainer: ["labelContainer", "sizeContainer"],
@@ -320,7 +341,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicRowGroup__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
@@ -328,15 +348,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicRowGroup__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicRowGroup__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicRowGroup__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+    // Specify args directly as props
+    Omit<PlasmicRowGroup__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

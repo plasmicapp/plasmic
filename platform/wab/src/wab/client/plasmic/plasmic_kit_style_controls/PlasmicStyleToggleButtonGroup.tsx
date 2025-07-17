@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -118,7 +118,6 @@ function PlasmicStyleToggleButtonGroup__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.autoWidth,
       },
     ],
-
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -201,7 +200,6 @@ function PlasmicStyleToggleButtonGroup__RenderFunc(props: {
               </StyleToggleButton>
             </React.Fragment>
           ),
-
           value: args.children,
         })}
       </Stack__>
@@ -226,7 +224,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicStyleToggleButtonGroup__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
@@ -234,15 +231,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicStyleToggleButtonGroup__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicStyleToggleButtonGroup__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicStyleToggleButtonGroup__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+    // Specify args directly as props
+    Omit<PlasmicStyleToggleButtonGroup__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

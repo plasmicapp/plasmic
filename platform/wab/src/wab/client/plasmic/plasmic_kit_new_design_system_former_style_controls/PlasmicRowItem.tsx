@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -166,7 +166,6 @@ function PlasmicRowItem__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.showActions,
       },
     ],
-
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -285,7 +284,6 @@ function PlasmicRowItem__RenderFunc(props: {
               {"Big  Addendum"}
             </div>
           ),
-
           value: args.addendum,
           className: classNames(sty.slotTargetAddendum, {
             [sty.slotTargetAddendumshowAddendum]: hasVariant(
@@ -356,7 +354,6 @@ const PlasmicDescendants = {
     "actionsContainer",
     "menuButton",
   ],
-
   iconContainer: ["iconContainer"],
   labelContainer: ["labelContainer"],
   addendumContainer: ["addendumContainer"],
@@ -382,7 +379,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicRowItem__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
@@ -390,15 +386,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicRowItem__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicRowItem__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicRowItem__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+    // Specify args directly as props
+    Omit<PlasmicRowItem__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -195,7 +195,6 @@ function PlasmicStyleSelect__RenderFunc(props: {
         onChangeProp: "onChange",
       },
     ],
-
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -369,6 +368,11 @@ function PlasmicStyleSelect__RenderFunc(props: {
             }
             className={classNames(projectcss.all, sty.dropdownIcon, {
               [sty.dropdownIconisOpen]: hasVariant($state, "isOpen", "isOpen"),
+              [sty.dropdownIconshowPlaceholder]: hasVariant(
+                $state,
+                "showPlaceholder",
+                "showPlaceholder"
+              ),
             })}
             role={"img"}
           />
@@ -451,7 +455,6 @@ const PlasmicDescendants = {
     "overlay",
     "optionsContainer",
   ],
-
   trigger: ["trigger", "contentContainer", "dropdownIcon"],
   contentContainer: ["contentContainer"],
   dropdownIcon: ["dropdownIcon"],
@@ -475,7 +478,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicStyleSelect__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
@@ -483,15 +485,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicStyleSelect__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicStyleSelect__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicStyleSelect__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+    // Specify args directly as props
+    Omit<PlasmicStyleSelect__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

@@ -518,7 +518,8 @@
       "indirect": false,
       "globalContextsFilePath": "wab/client/plasmic/plasmic_kit_left_pane/PlasmicGlobalContextsProvider.tsx",
       "splitsProviderFilePath": "",
-      "customFunctions": []
+      "customFunctions": [],
+      "jsBundleThemes": []
     },
     {
       "projectId": "ooL7EhXDmFQWnW9sxtchhE",
@@ -3806,8 +3807,7 @@
       "indirect": false,
       "globalContextsFilePath": "wab/client/plasmic/plasmic_kit_new_design_system_former_style_controls/PlasmicGlobalContextsProvider.tsx",
       "splitsProviderFilePath": "",
-      "customFunctions": [],
-      "jsBundleThemes": []
+      "customFunctions": []
     },
     {
       "projectId": "dyzP6dbCdycwJpqiR2zkwe",
@@ -11058,7 +11058,8 @@
         }
       ],
       "splitsProviderFilePath": "",
-      "customFunctions": []
+      "customFunctions": [],
+      "jsBundleThemes": []
     },
     {
       "projectId": "ehckhYnyDHgCBbV47m9bkf",

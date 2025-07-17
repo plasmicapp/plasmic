@@ -217,6 +217,7 @@
   width: 16px;
   height: 16px;
   color: var(--token-UunsGa2Y3t3);
+  pointer-events: none;
   flex-shrink: 0;
 }
 .overlay:global(.__wab_instance) {

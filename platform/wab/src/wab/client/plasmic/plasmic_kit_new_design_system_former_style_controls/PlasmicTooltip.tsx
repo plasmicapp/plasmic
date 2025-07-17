@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -49,9 +49,7 @@ export const PlasmicTooltip__VariantProps = new Array<VariantPropType>(
   "placement"
 );
 
-export type PlasmicTooltip__ArgsType = {
-  children?: React.ReactNode;
-};
+export type PlasmicTooltip__ArgsType = { children?: React.ReactNode };
 type ArgPropType = keyof PlasmicTooltip__ArgsType;
 export const PlasmicTooltip__ArgProps = new Array<ArgPropType>("children");
 
@@ -114,7 +112,6 @@ function PlasmicTooltip__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.placement,
       },
     ],
-
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -259,7 +256,6 @@ function PlasmicTooltip__RenderFunc(props: {
                     </div>
                   </React.Fragment>
                 ),
-
                 value: args.children,
                 className: classNames(sty.slotTargetChildren, {
                   [sty.slotTargetChildrenplacement_topLeft]: hasVariant(
@@ -344,7 +340,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicTooltip__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
@@ -352,15 +347,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicTooltip__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicTooltip__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicTooltip__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+    // Specify args directly as props
+    Omit<PlasmicTooltip__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

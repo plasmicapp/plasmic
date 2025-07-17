@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -329,7 +329,6 @@ function PlasmicLabeledListItem__RenderFunc(props: {
           $props.contentAlignment,
       },
     ],
-
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -673,7 +672,6 @@ function PlasmicLabeledListItem__RenderFunc(props: {
                     {"Enter some text"}
                   </div>
                 ),
-
                 value: args.subtitle,
                 className: classNames(sty.slotTargetSubtitle, {
                   [sty.slotTargetSubtitlewithSubtitle]: hasVariant(
@@ -760,7 +758,6 @@ function PlasmicLabeledListItem__RenderFunc(props: {
               {"One line"}
             </div>
           ),
-
           value: args.children,
         })}
       </div>
@@ -913,7 +910,6 @@ const PlasmicDescendants = {
     "indicatorContainer",
     "indicator",
   ],
-
   dragHandle: ["dragHandle", "grip"],
   grip: ["grip"],
   labelContainer: [
@@ -924,7 +920,6 @@ const PlasmicDescendants = {
     "labelTextContainer",
     "spacer2",
   ],
-
   spacer: ["spacer"],
   freeBox: ["freeBox", "iconContainer", "labelTextContainer"],
   iconContainer: ["iconContainer"],
@@ -963,7 +958,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicLabeledListItem__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
@@ -971,15 +965,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicLabeledListItem__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicLabeledListItem__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicLabeledListItem__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+    // Specify args directly as props
+    Omit<PlasmicLabeledListItem__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;
