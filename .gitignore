@@ -38,3 +38,4 @@ storybook-static/
 .nx/
 # ignore decrypted yaml files by sops
 *.dec.*
+dist/
