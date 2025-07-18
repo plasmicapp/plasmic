@@ -121,6 +121,11 @@ export { GlobalActionsContext }
 export { GlobalActionsProvider }
 
 // @public (undocumented)
+export type GlobalContextMeta<P> = Omit<GlobalContextMeta_2<P>, "importPath"> & {
+    importPath?: string;
+};
+
+// @public (undocumented)
 export interface GlobalVariantSpec {
     // (undocumented)
     name: string;

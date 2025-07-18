@@ -20,6 +20,7 @@ import { ExtractPlasmicQueryData } from '@plasmicapp/nextjs-app-router';
 import { FetchComponentDataOpts as FetchComponentDataOpts_2 } from '@plasmicapp/loader-react';
 import { GlobalActionsContext } from '@plasmicapp/loader-react';
 import { GlobalActionsProvider } from '@plasmicapp/loader-react';
+import { GlobalContextMeta } from '@plasmicapp/loader-react';
 import { IncomingMessage } from 'http';
 import { InitOptions } from '@plasmicapp/loader-react/react-server-conditional';
 import { InternalPlasmicComponentLoader } from '@plasmicapp/loader-react/react-server';

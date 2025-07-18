@@ -31,6 +31,7 @@ export {
 export type {
   CodeComponentMeta,
   CustomFunctionMeta,
+  GlobalContextMeta,
   PlasmicTranslator,
   PropType,
   TokenRegistration,

@@ -3,6 +3,7 @@ import {
   CodeComponentMeta,
   CustomFunctionMeta,
   FetchComponentDataOpts,
+  GlobalContextMeta,
   InitOptions,
   PlasmicComponentLoader,
 } from "./loader-shared";
@@ -42,7 +43,12 @@ export * from "./shared-exports";
 export { usePlasmicComponent } from "./usePlasmicComponent";
 export type { ComponentLookupSpec } from "./utils";
 export { InternalPlasmicComponentLoader, PlasmicComponentLoader };
-export type { CodeComponentMeta, CustomFunctionMeta, FetchComponentDataOpts };
+export type {
+  CodeComponentMeta,
+  CustomFunctionMeta,
+  FetchComponentDataOpts,
+  GlobalContextMeta,
+};
 
 export function initPlasmicLoader(opts: InitOptions): PlasmicComponentLoader {
   const internal = new InternalPlasmicComponentLoader(opts);
