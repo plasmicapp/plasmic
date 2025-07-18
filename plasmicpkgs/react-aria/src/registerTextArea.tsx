@@ -33,6 +33,7 @@ export interface BaseTextAreaProps
     WithVariants<typeof TEXTAREA_VARIANTS> {
   className?: string;
   resize?: string;
+  autoResize?: boolean;
 }
 
 export const inputHelpers = {
@@ -55,6 +56,7 @@ function BaseTextArea_(
     setControlContextData,
     value,
     resize,
+    autoResize,
     ...restProps
   } = props;
 
@@ -79,7 +81,11 @@ function BaseTextArea_(
       value: isDefined(textFieldContext) ? undefined : value,
       style: {
         ...COMMON_STYLES,
-        ...(resize ? { resize } : {}),
+        ...(autoResize
+          ? { resize: "none" } // Auto-resize disables manual resizing
+          : resize
+          ? { resize }
+          : {}),
       },
       className,
     }
@@ -92,6 +98,16 @@ function BaseTextArea_(
   setControlContextData?.({
     parent: textFieldContext,
   });
+
+  React.useEffect(() => {
+    const el = textAreaRef.current;
+    if (autoResize && el) {
+      // Reset height to allow shrinking when text is deleted
+      el.style.height = "auto";
+      // Then set to scrollHeight so it expands to fit new content
+      el.style.height = `${el.scrollHeight}px`;
+    }
+  }, [mergedProps.value]);
 
   useEffect(() => {
     if (plasmicUpdateVariant) {
@@ -160,6 +176,13 @@ export function registerTextArea(
           "onBeforeInput",
           "onInput",
         ]),
+        autoResize: {
+          type: "boolean",
+          displayName: "Auto resize",
+          defaultValueHint: false,
+          description:
+            "Grows or shrinks the element automatically based on text content. Disables manual resizing.",
+        },
         resize: {
           type: "choice",
           description: "Controls if and how the element can be resized.",
@@ -172,6 +195,8 @@ export function registerTextArea(
             "none",
           ],
           defaultValueHint: "both",
+          hidden: (props) => Boolean(props.autoResize),
+          advanced: true,
         },
       },
       states: {
