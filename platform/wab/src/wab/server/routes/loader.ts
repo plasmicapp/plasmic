@@ -23,7 +23,7 @@ import {
   parseProjectIdSpec,
   resolveLatestProjectRevisions,
 } from "@/wab/server/loader/resolve-projects";
-import { superDbMgr, userAnalytics, userDbMgr } from "@/wab/server/routes/util";
+import { superDbMgr, userDbMgr } from "@/wab/server/routes/util";
 import { prefillCloudfront } from "@/wab/server/workers/prefill-cloudfront";
 import { BadRequestError, NotFoundError } from "@/wab/shared/ApiErrors/errors";
 import { ProjectId } from "@/wab/shared/ApiSchema";
@@ -891,17 +891,14 @@ function trackLoaderCodegenEvent(
   }
 ) {
   const { versionType, platform } = opts;
-  userAnalytics(req).track({
-    event: "Codegen",
-    properties: {
-      newCompScheme: "blackbox",
-      projectId: projects.map((p) => p.id).join(","),
-      projectName: projects.map((p) => p.name).join(","),
-      source: "loader2",
-      scheme: "loader2",
-      platform,
-      versionType,
-    },
+  req.analytics.track("Codegen", {
+    newCompScheme: "blackbox",
+    projectId: projects.map((p) => p.id).join(","),
+    projectName: projects.map((p) => p.name).join(","),
+    source: "loader2",
+    scheme: "loader2",
+    platform,
+    versionType,
   });
 }
 

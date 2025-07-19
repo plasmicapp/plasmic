@@ -15,7 +15,6 @@ import {
 } from "@/wab/shared/ApiErrors/errors";
 import { CmsIdAndToken, ProjectIdAndToken } from "@/wab/shared/ApiSchema";
 import { asyncWrapper, omitNils } from "@/wab/shared/common";
-import type { Properties } from "@/wab/shared/observability/Analytics";
 import { NextFunction, Request, Response } from "express-serve-static-core";
 import L from "lodash";
 
@@ -124,18 +123,7 @@ export function superDbMgr(req: Request) {
   return dbMgr;
 }
 
-/** @deprecated use `request.analytics` directly */
-export class UserAnalytics {
-  constructor(private req: Request) {}
-  track({ event, properties }: { event: string; properties?: Properties }) {
-    return this.req.analytics.track(event, properties);
-  }
-}
 
-/** @deprecated use `request.app.analytics` directly */
-export function userAnalytics(req: Request) {
-  return new UserAnalytics(req);
-}
 
 export function makeUserTraits(user: User) {
   return omitNils({

@@ -2,7 +2,7 @@ import { toOpaque } from "@/wab/commons/types";
 import { DbMgr } from "@/wab/server/db/DbMgr";
 import { CmsRow } from "@/wab/server/entities/Entities";
 import { makeApiDatabase } from "@/wab/server/routes/cmse";
-import { userAnalytics, userDbMgr } from "@/wab/server/routes/util";
+import { userDbMgr } from "@/wab/server/routes/util";
 import {
   denormalizeCmsData,
   makeFieldMetaMap,
@@ -153,14 +153,11 @@ export async function publicPublishRow(req: Request, res: Response) {
   const row = await mgr.publishCmsRow(req.params.rowId as CmsRowId);
   const table = await mgr.getCmsTableById(row.tableId);
   const db = await mgr.getCmsDatabaseById(table.databaseId);
-  userAnalytics(req).track({
-    event: "Publish cms row",
-    properties: {
-      rowId: row.id as CmsRowId,
-      tableId: row.tableId,
-      tableName: table.name,
-      databaseId: table.databaseId,
-    },
+  req.analytics.track("Publish cms row", {
+    rowId: row.id as CmsRowId,
+    tableId: row.tableId,
+    tableName: table.name,
+    databaseId: table.databaseId,
   });
   res.json(toWriteApiCmsRow(row, table.schema, db.extraData.locales));
 }
@@ -168,14 +165,11 @@ export async function publicPublishRow(req: Request, res: Response) {
 export async function publicDeleteRow(req: Request, res: Response) {
   const mgr = userDbMgr(req);
   const row = await mgr.getCmsRowById(req.params.rowId as CmsRowId);
-  userAnalytics(req).track({
-    event: "Delete cms row",
-    properties: {
-      rowId: row.id as CmsRowId,
-      tableId: row.tableId,
-      tableName: row.table?.name,
-      databaseId: row.table?.databaseId,
-    },
+  req.analytics.track("Delete cms row", {
+    rowId: row.id as CmsRowId,
+    tableId: row.tableId,
+    tableName: row.table?.name,
+    databaseId: row.table?.databaseId,
   });
   await mgr.deleteCmsRow(req.params.rowId as CmsRowId);
   res.json({});
@@ -200,14 +194,11 @@ export async function publicUpdateRow(req: Request, res: Response) {
     removing non-published draft data */
     updatedRow = await mgr.publishCmsRow(row.id);
   }
-  userAnalytics(req).track({
-    event: "Update cms row",
-    properties: {
-      rowId: row.id as CmsRowId,
-      tableId: row.tableId,
-      tableName: table.name,
-      databaseId: table.databaseId,
-    },
+  req.analytics.track("Update cms row", {
+    rowId: row.id as CmsRowId,
+    tableId: row.tableId,
+    tableName: table.name,
+    databaseId: table.databaseId,
   });
   res.json(toWriteApiCmsRow(updatedRow, table.schema, db.extraData.locales));
 }
@@ -231,14 +222,11 @@ export async function publicCreateRows(req: Request, res: Response) {
     })
   );
   rows.forEach((row) => {
-    userAnalytics(req).track({
-      event: "Create cms row",
-      properties: {
-        rowId: row.id as CmsRowId,
-        tableId: row.tableId,
-        tableName: table.name,
-        databaseId: table.databaseId,
-      },
+    req.analytics.track("Create cms row", {
+      rowId: row.id as CmsRowId,
+      tableId: row.tableId,
+      tableName: table.name,
+      databaseId: table.databaseId,
     });
   });
   res.json({

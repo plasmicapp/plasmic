@@ -495,16 +495,22 @@ function addMiddlewares(
   const analyticsFactory = initAnalyticsFactory({
     production: config.production,
   });
+
+  // Attach a fresh analytics instance to every request via `req.analytics`.
+  // NOTE: We intentionally create a new instance for each request to avoid
+  // accidental cross-request state leakage (for example via `setUser`).
   app.use(
-    safeCast<RequestHandler>(async (req, res, next) => {
+    safeCast<RequestHandler>(async (req, _res, next) => {
       req.analytics = analyticsFactory();
       req.analytics.appendBaseEventProperties({
         host: config.host,
         production: config.production,
       });
+
       if (req.user) {
         req.analytics.setUser(req.user.id);
       }
+
       next();
     })
   );

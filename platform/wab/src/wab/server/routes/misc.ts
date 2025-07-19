@@ -1,5 +1,4 @@
 import "@/wab/server/extensions";
-import { userAnalytics } from "@/wab/server/routes/util";
 import { GetClipResponse } from "@/wab/shared/ApiSchema";
 import { ensureInstance, ensureType } from "@/wab/shared/common";
 import S3 from "aws-sdk/clients/s3";
@@ -18,9 +17,8 @@ export async function putClip(req: Request, res: Response) {
   await s3
     .upload({ Bucket: CLIP_BUCKET, Key: clipId, Body: req.body.content })
     .promise();
-  userAnalytics(req).track({
-    event: "Figma put clip",
-    properties: { size: req.body.content.length },
+  req.analytics.track("Figma put clip", {
+    size: req.body.content.length,
   });
   res.json({});
 }
@@ -35,9 +33,8 @@ export async function getClip(req: Request, res: Response) {
     })
     .promise();
   const content = ensureInstance(result.Body, Buffer).toString("utf8");
-  userAnalytics(req).track({
-    event: "Figma get clip",
-    properties: { size: content.length },
+  req.analytics.track("Figma get clip", {
+    size: content.length,
   });
   res.json(ensureType<GetClipResponse>({ content }));
 }

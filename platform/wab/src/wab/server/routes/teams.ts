@@ -15,7 +15,6 @@ import {
 import {
   getUser,
   superDbMgr,
-  userAnalytics,
   userDbMgr,
 } from "@/wab/server/routes/util";
 import { mkApiWorkspace } from "@/wab/server/routes/workspaces";
@@ -156,11 +155,8 @@ export async function createTeam(req: Request, res: Response) {
     teamId: team.id,
   });
 
-  userAnalytics(req).track({
-    event: "Create team",
-    properties: {
-      teamName: teamName,
-    },
+  req.analytics.track("Create team", {
+    teamName: teamName,
   });
   if (promotionCode) {
     res.clearCookie("promo_code");
@@ -189,11 +185,8 @@ export async function deleteTeam(req: Request, res: Response) {
   // Cancel any active subscriptions first
   await resetStripeCustomer(userMgr, superMgr, team);
 
-  userAnalytics(req).track({
-    event: "Delete team",
-    properties: {
-      teamName: team.name,
-    },
+  req.analytics.track("Delete team", {
+    teamName: team.name,
   });
   await userMgr.deleteTeam(teamId);
   res.json({ deletedId: teamId });
@@ -265,15 +258,12 @@ export async function changeResourcePermissions(req: Request, res: Response) {
           accessLevel,
           requireSignUp
         );
-        userAnalytics(req).track({
-          event: "Share resource",
-          properties: {
-            type,
-            id,
-            name: resource.name,
-            email,
-            accessLevel,
-          },
+        req.analytics.track("Share resource", {
+          type,
+          id,
+          name: resource.name,
+          email,
+          accessLevel,
         });
 
         // Note: we intentionally do not check whether this is a new permission or
