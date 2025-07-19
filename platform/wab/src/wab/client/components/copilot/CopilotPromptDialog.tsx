@@ -155,8 +155,6 @@ function CopilotPromptDialog<Response>({
         },
         showImageUpload,
         textAreaInput: {
-          value: copilotPrompt.prompt,
-          inputRef: promptInputRef,
           maxLength,
           rows: 1,
           autoFocus: true,

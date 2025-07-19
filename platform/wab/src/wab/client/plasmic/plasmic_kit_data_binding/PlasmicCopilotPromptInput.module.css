@@ -66,6 +66,9 @@
   flex-shrink: 0;
   display: flex;
 }
+.imageUploadIconisLoading:global(.__wab_instance) {
+  flex-shrink: 0;
+}
 .svg__iSr6 {
   display: flex;
   position: relative;
@@ -73,7 +76,7 @@
   width: 32px;
   height: 32px;
 }
-.svg__zanAj {
+.svg__nEvvu {
   display: flex;
   position: relative;
   object-fit: cover;
@@ -81,6 +84,9 @@
 }
 .runPromptBtn:global(.__wab_instance) {
   max-width: 100%;
+  flex-shrink: 0;
+}
+.runPromptBtnisLoading:global(.__wab_instance) {
   flex-shrink: 0;
 }
 .svg__qv73J {
@@ -95,7 +101,7 @@
 .root:focus-within .svg__qv73J {
   outline: none;
 }
-.svg__biujt {
+.svg__d3Wga {
   display: flex;
   position: relative;
   object-fit: cover;

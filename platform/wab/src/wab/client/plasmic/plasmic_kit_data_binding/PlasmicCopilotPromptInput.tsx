@@ -43,13 +43,15 @@ createPlasmicElementProxy;
 
 export type PlasmicCopilotPromptInput__VariantMembers = {
   showImageUpload: "showImageUpload";
+  isLoading: "isLoading";
 };
 export type PlasmicCopilotPromptInput__VariantsArgs = {
   showImageUpload?: SingleBooleanChoiceArg<"showImageUpload">;
+  isLoading?: SingleBooleanChoiceArg<"isLoading">;
 };
 type VariantPropType = keyof PlasmicCopilotPromptInput__VariantsArgs;
 export const PlasmicCopilotPromptInput__VariantProps =
-  new Array<VariantPropType>("showImageUpload");
+  new Array<VariantPropType>("showImageUpload", "isLoading");
 
 export type PlasmicCopilotPromptInput__ArgsType = { placeholder?: string };
 type ArgPropType = keyof PlasmicCopilotPromptInput__ArgsType;
@@ -70,6 +72,7 @@ export type PlasmicCopilotPromptInput__OverridesType = {
 export interface DefaultCopilotPromptInputProps {
   placeholder?: string;
   showImageUpload?: SingleBooleanChoiceArg<"showImageUpload">;
+  isLoading?: SingleBooleanChoiceArg<"isLoading">;
   className?: string;
 }
 
@@ -120,6 +123,12 @@ function PlasmicCopilotPromptInput__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) =>
           $props.showImageUpload,
       },
+      {
+        path: "isLoading",
+        type: "private",
+        variableType: "variant",
+        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isLoading,
+      },
     ],
     [$props, $ctx, $refs]
   );
@@ -158,6 +167,11 @@ function PlasmicCopilotPromptInput__RenderFunc(props: {
         data-plasmic-name={"inputArea"}
         data-plasmic-override={overrides.inputArea}
         className={classNames(projectcss.all, sty.inputArea, {
+          [sty.inputAreaisLoading]: hasVariant(
+            $state,
+            "isLoading",
+            "isLoading"
+          ),
           [sty.inputAreashowImageUpload]: hasVariant(
             $state,
             "showImageUpload",
@@ -169,7 +183,21 @@ function PlasmicCopilotPromptInput__RenderFunc(props: {
           data-plasmic-name={"textAreaInput"}
           data-plasmic-override={overrides.textAreaInput}
           autoFocus={true}
-          className={classNames("__wab_instance", sty.textAreaInput)}
+          className={classNames("__wab_instance", sty.textAreaInput, {
+            [sty.textAreaInputisLoading]: hasVariant(
+              $state,
+              "isLoading",
+              "isLoading"
+            ),
+            [sty.textAreaInputshowImageUpload]: hasVariant(
+              $state,
+              "showImageUpload",
+              "showImageUpload"
+            ),
+          })}
+          disabled={
+            hasVariant($state, "isLoading", "isLoading") ? true : undefined
+          }
           flat={[]}
           onChange={async (...eventArgs: any) => {
             generateStateOnChangeProp($state, ["textAreaInput", "value"]).apply(
@@ -193,6 +221,11 @@ function PlasmicCopilotPromptInput__RenderFunc(props: {
           data-plasmic-name={"freeBox"}
           data-plasmic-override={overrides.freeBox}
           className={classNames(projectcss.all, sty.freeBox, {
+            [sty.freeBoxisLoading]: hasVariant(
+              $state,
+              "isLoading",
+              "isLoading"
+            ),
             [sty.freeBoxshowImageUpload]: hasVariant(
               $state,
               "showImageUpload",
@@ -204,12 +237,20 @@ function PlasmicCopilotPromptInput__RenderFunc(props: {
             data-plasmic-name={"imageUploadIcon"}
             data-plasmic-override={overrides.imageUploadIcon}
             className={classNames("__wab_instance", sty.imageUploadIcon, {
+              [sty.imageUploadIconisLoading]: hasVariant(
+                $state,
+                "isLoading",
+                "isLoading"
+              ),
               [sty.imageUploadIconshowImageUpload]: hasVariant(
                 $state,
                 "showImageUpload",
                 "showImageUpload"
               ),
             })}
+            disabled={
+              hasVariant($state, "isLoading", "isLoading") ? true : undefined
+            }
             size={"small"}
           >
             <ImageUploadsIcon
@@ -220,11 +261,26 @@ function PlasmicCopilotPromptInput__RenderFunc(props: {
           <IconButton
             data-plasmic-name={"runPromptBtn"}
             data-plasmic-override={overrides.runPromptBtn}
-            className={classNames("__wab_instance", sty.runPromptBtn)}
+            className={classNames("__wab_instance", sty.runPromptBtn, {
+              [sty.runPromptBtnisLoading]: hasVariant(
+                $state,
+                "isLoading",
+                "isLoading"
+              ),
+            })}
+            disabled={
+              hasVariant($state, "isLoading", "isLoading") ? true : undefined
+            }
             size={"small"}
           >
             <SendSvgIcon
-              className={classNames(projectcss.all, sty.svg__qv73J)}
+              className={classNames(projectcss.all, sty.svg__qv73J, {
+                [sty.svgisLoading__qv73Jakj9T]: hasVariant(
+                  $state,
+                  "isLoading",
+                  "isLoading"
+                ),
+              })}
               role={"img"}
             />
           </IconButton>

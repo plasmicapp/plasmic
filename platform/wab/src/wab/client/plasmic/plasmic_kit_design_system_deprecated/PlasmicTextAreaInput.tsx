@@ -212,6 +212,7 @@ function PlasmicTextAreaInput__RenderFunc(props: {
     const child$Props = {
       "aria-label": args.ariaLabel,
       autoFocus: args.autoFocus,
+      autoResize: hasVariant($state, "type", "minimal") ? true : undefined,
       className: classNames(
         "__wab_instance",
         projectcss.root_reset,
@@ -246,7 +247,6 @@ function PlasmicTextAreaInput__RenderFunc(props: {
       placeholder: args.placeholder,
       plasmicUpdateVariant: updateVariant,
       readOnly: args.readOnly,
-      resize: hasVariant($state, "type", "minimal") ? "none" : undefined,
       value: generateStateValueProp($state, ["ariaTextArea", "value"]),
     };
     initializeCodeComponentStates(

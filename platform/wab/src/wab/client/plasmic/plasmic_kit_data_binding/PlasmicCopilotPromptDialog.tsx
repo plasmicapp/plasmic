@@ -636,6 +636,9 @@ function PlasmicCopilotPromptDialog__RenderFunc(props: {
                   [sty.promptInputtype_sql]: hasVariant($state, "type", "sql"),
                   [sty.promptInputtype_ui]: hasVariant($state, "type", "ui"),
                 })}
+                isLoading={
+                  hasVariant($state, "state", "loading") ? true : undefined
+                }
                 placeholder={
                   hasVariant($state, "type", "ui")
                     ? 'e.g. "Generate a hero section"'
