@@ -1295,7 +1295,7 @@ export const serializeActionFunction = (interaction: Interaction) => {
  * The initial value for writable states works similarly to virtual slots.
  * If some value is set for the tpl component arg, we use it. Otherwise,
  * we reference the value set in the original component.
- * Special case: If the state is implicit implicit, it can have different intial values
+ * Special case: If the state is implicit implicit, it can have different initial values
  * for different variants. In this case, we reference the base variant initial value.
  **/
 export const getVirtualWritableStateInitialValue = (

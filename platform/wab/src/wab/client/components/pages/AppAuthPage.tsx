@@ -645,7 +645,7 @@ export function AppResetPasswordForm({
               } else {
                 setFeedback({
                   type: "error",
-                  content: "Unexpected error occured.",
+                  content: "Unexpected error occurred.",
                 });
               }
             }

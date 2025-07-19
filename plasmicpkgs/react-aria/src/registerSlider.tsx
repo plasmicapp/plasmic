@@ -124,7 +124,7 @@ export function registerSlider(
           editOnly: true,
           displayName: "Initial value",
           uncontrolledProp: "defaultValue",
-          description: "The intial value of the slider",
+          description: "The initial value of the slider",
           defaultValue: [20, 50],
           validator: (value) => {
             if (!Array.isArray(value)) {
