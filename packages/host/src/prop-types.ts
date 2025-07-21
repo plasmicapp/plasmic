@@ -372,14 +372,16 @@ export interface EventHandlerType<P> extends PropTypeBase<P> {
   argTypes: { name: string; type: ArgType<any> }[];
 }
 
+export type ChoiceValue = string | number | boolean;
+
+export type ChoiceObject = { label: string; value: ChoiceValue };
+
+export type ChoiceOptions = ChoiceValue[] | ChoiceObject[];
+
 export interface ChoiceTypeBase<P, T> extends PropTypeBaseDefault<P, T> {
   type: "choice";
   options:
-    | (string | number | boolean)[]
-    | {
-        label: string;
-        value: string | number | boolean;
-      }[]
+    | ChoiceOptions
     | ContextDependentConfig<
         P,
         | string[]

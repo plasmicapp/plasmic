@@ -52,6 +52,13 @@ export interface InvisibleElementLintIssue extends BaseLintIssue {
   tpl: TplNode;
 }
 
+export interface ChoicePropValuesLintIssue extends BaseLintIssue {
+  type: "choice-prop-values";
+  component: Component;
+  tpl: TplNode;
+  propName: string;
+}
+
 export interface UnprotectedDataQueryLintIssue extends BaseLintIssue {
   type: "unprotected-data-query";
   component: Component;
@@ -67,6 +74,7 @@ export type LintIssue =
   | InvalidTplNestingLintIssue
   | InvalidDomNestingLintIssue
   | InvisibleElementLintIssue
+  | ChoicePropValuesLintIssue
   | UnprotectedDataQueryLintIssue;
 
 export type LintIssueType = LintIssue["type"];

@@ -104,7 +104,7 @@ import {
   ensureType,
   flexFlatten,
   InvalidCodePathError,
-  isArrayOfStrings,
+  isArrayOfLiterals,
   isNonNil,
   maybe,
   mkShortId,
@@ -1574,7 +1574,7 @@ export function cloneType<T extends Type>(type_: T): T {
     .when([AnyType, QueryData, TargetType], () => typeFactory[type.name]())
     .when(Choice, (t) =>
       typeFactory.choice(
-        isArrayOfStrings(t.options)
+        isArrayOfLiterals(t.options)
           ? t.options
           : t.options.map((op) => ({
               label: op.label as string,

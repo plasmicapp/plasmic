@@ -1022,6 +1022,7 @@ const PropValueEditor_ = (
         propType.unstable__minimalValue
       );
       let deseredValue = deserCompositeExprMaybe(value);
+
       let evaluated = isKnownExpr(value)
         ? tryEvalExpr(getRawCode(value, exprCtx), env ?? {}).val
         : value;
@@ -1048,7 +1049,7 @@ const PropValueEditor_ = (
           ccContextData={ccContextData}
           componentPropValues={componentPropValues}
           controlExtras={controlExtras}
-          tpl={tpl}
+          modalKey={`main.${tpl.uid}`}
           data-plasmic-prop={attr}
           propType={propType}
           disabled={disabled}
@@ -1098,7 +1099,7 @@ const PropValueEditor_ = (
           }
           evaluatedValue={value === undefined ? defaultValueHint : evaluated}
           fields={propType.fields}
-          tpl={tpl}
+          modalKey={`main.${tpl.uid}`}
           objectNameFunc={propType.nameFunc}
           componentPropValues={componentPropValues}
           ccContextData={ccContextData}

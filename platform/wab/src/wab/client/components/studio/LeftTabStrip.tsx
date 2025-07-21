@@ -275,7 +275,7 @@ Help
           more: {
             ...mainGroups.more,
             items: Object.fromEntries(
-              Object.entries(mainGroups).flatMap(([groupKey, group]) =>
+              Object.entries(mainGroups).flatMap(([_groupKey, group]) =>
                 Object.entries(group.items)
               )
             ),

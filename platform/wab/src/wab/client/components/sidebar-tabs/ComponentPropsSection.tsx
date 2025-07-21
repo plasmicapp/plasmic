@@ -52,17 +52,16 @@ import { TplMgr } from "@/wab/shared/TplMgr";
 import { flattenComponent } from "@/wab/shared/cached-selectors";
 import {
   HighlightInteractionRequest,
-  StudioPropType,
   isAdvancedProp,
 } from "@/wab/shared/code-components/code-components";
 import { getExportedComponentName } from "@/wab/shared/codegen/react-p/serialize-utils";
 import { paramToVarName } from "@/wab/shared/codegen/util";
 import { assert, ensure, hackyCast, spawn } from "@/wab/shared/common";
+import { getComponentPropTypes } from "@/wab/shared/component-props";
 import {
   getComponentDisplayName,
   getRealParams,
   isCodeComponent,
-  isHostLessCodeComponent,
   isPlumeComponent,
 } from "@/wab/shared/core/components";
 import {
@@ -1122,38 +1121,6 @@ const ApplyMenu = observer(function ApplyMenu_(props: {
     </Dropdown>
   );
 });
-
-export function getComponentPropTypes(
-  viewCtx: ViewCtx,
-  component: Component
-): Record<string, StudioPropType<any>> {
-  if (isCodeComponent(component)) {
-    return viewCtx.getCodeComponentMeta(component)?.props ?? {};
-  } else if (isPlumeComponent(component)) {
-    return (
-      getPlumeEditorPlugin(component)?.codeComponentMeta?.(component)?.props ??
-      {}
-    );
-  } else {
-    return {};
-  }
-}
-
-export function getContextComponentPropTypes(
-  studioCtx: StudioCtx,
-  component: Component
-): Record<string, StudioPropType<any>> {
-  if (isCodeComponent(component)) {
-    return (
-      (isHostLessCodeComponent(component)
-        ? studioCtx.getHostLessContextsMap()
-        : studioCtx.getRegisteredContextsMap()
-      ).get(component.name)?.meta.props ?? {}
-    );
-  } else {
-    return {};
-  }
-}
 
 function getComponentActions(viewCtx: ViewCtx, component: Component) {
   if (isCodeComponent(component)) {

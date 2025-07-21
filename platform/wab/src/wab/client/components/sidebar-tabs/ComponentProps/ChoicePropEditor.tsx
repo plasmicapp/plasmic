@@ -1,18 +1,18 @@
 import {
   EnumPropEditor,
   EnumWithSearchPropEditor,
-  OptionValue,
 } from "@/wab/client/components/sidebar-tabs/ComponentProps/EnumPropEditor";
 import { MultiSelectEnumPropEditor } from "@/wab/client/components/sidebar-tabs/ComponentProps/MultiSelectEnumPropEditor";
 import { ValueSetState } from "@/wab/client/components/sidebar/sidebar-helpers";
+import { ChoiceObject, ChoiceOptions, ChoiceValue } from "@plasmicapp/host";
 import L from "lodash";
 import React from "react";
 
-type ChoicePropEditorProps<T extends OptionValue> = {
+type ChoicePropEditorProps<T extends ChoiceValue> = {
   attr: string;
   readOnly?: boolean;
   valueSetState?: ValueSetState;
-  options: (string | number | boolean | { label: string; value: T })[];
+  options: ChoiceOptions;
   allowSearch?: boolean;
   onSearch?: (value: string) => void;
   filterOption?: boolean;
@@ -31,7 +31,13 @@ type ChoicePropEditorProps<T extends OptionValue> = {
     }
 );
 
-export function ChoicePropEditor<T extends OptionValue>(
+const makeOption = (item: ChoiceValue | ChoiceObject): ChoiceObject => {
+  return L.isObject(item)
+    ? { value: item.value, label: `${item.label}` }
+    : { value: item, label: `${item}` };
+};
+
+export function ChoicePropEditor<T extends ChoiceValue>(
   props: ChoicePropEditorProps<T>
 ) {
   const {
@@ -53,11 +59,7 @@ export function ChoicePropEditor<T extends OptionValue>(
       <MultiSelectEnumPropEditor
         className="flex-fill SidebarSection__Container--NoBorder"
         onChange={onChange}
-        options={options.map((v) =>
-          !L.isObject(v)
-            ? { value: v as T, label: `${v}` }
-            : { value: v.value, label: `${v.label}` }
-        )}
+        options={options.map(makeOption)}
         value={value}
         defaultValueHint={defaultValueHint}
         showDropdownArrow
@@ -68,11 +70,7 @@ export function ChoicePropEditor<T extends OptionValue>(
     <EnumPropEditor
       value={value}
       onChange={onChange}
-      options={options.map((v) =>
-        !L.isObject(v)
-          ? { value: v, label: `${v}` }
-          : { value: v.value, label: `${v.label}` }
-      )}
+      options={options.map(makeOption)}
       className={"form-control"}
       valueSetState={valueSetState}
       defaultValueHint={defaultValueHint as string}

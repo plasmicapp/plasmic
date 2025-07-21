@@ -1,7 +1,7 @@
 import ListItem from "@/wab/client/components/ListItem";
 import { DataSourceOpExprSummary } from "@/wab/client/components/sidebar-tabs/DataSource/DataSourceOpPicker";
 import { Icon } from "@/wab/client/components/widgets/Icon";
-import { NOT_RENDERED_ICON } from "@/wab/client/icons";
+import { ERROR_ICON, NOT_RENDERED_ICON } from "@/wab/client/icons";
 import TreeIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Tree";
 import UnlockIcon from "@/wab/client/plasmic/plasmic_kit_design_system/PlasmicIcon__Unlock";
 import ResponsivenessIcon from "@/wab/client/plasmic/plasmic_kit_design_system/icons/PlasmicIcon__Responsiveness";
@@ -11,6 +11,7 @@ import { spawn } from "@/wab/shared/common";
 import { isPageComponent } from "@/wab/shared/core/components";
 import { isTplNamable, isTplSlot, summarizeTpl } from "@/wab/shared/core/tpls";
 import {
+  ChoicePropValuesLintIssue,
   InvalidDomNestingLintIssue,
   InvalidTplNestingLintIssue,
   InvisibleElementLintIssue,
@@ -35,6 +36,8 @@ export function renderLintIssue(issue: LintIssue) {
     return <InvalidDomNestingLintIssueRow issue={issue} />;
   } else if (issue.type === "invisible-element") {
     return <InvisibleElementLintIssueRow issue={issue} />;
+  } else if (issue.type === "choice-prop-values") {
+    return <ChoicePropValuesLintIssueRow issue={issue} />;
   } else if (issue.type === "unprotected-data-query") {
     return <UnprotectedDataQuerytLintIssueRow issue={issue} />;
   } else {
@@ -49,6 +52,8 @@ export function getLintIssueIcon(type: LintIssueType) {
     return <Icon icon={TreeIcon} />;
   } else if (type === "invisible-element") {
     return NOT_RENDERED_ICON;
+  } else if (type === "choice-prop-values") {
+    return ERROR_ICON;
   } else if (type === "unprotected-data-query") {
     return <Icon icon={UnlockIcon} />;
   } else {
@@ -149,6 +154,13 @@ const INVISIBLE_ELEMENT_INSTRUCTIONS = (
       sent down to the browser.
     </p>
   </>
+);
+
+const PROP_ALLOWED_VALUES_INSTRUCTIONS = (
+  <p>
+    A choice prop changed its allowed values, and the current prop value is not
+    valid.
+  </p>
 );
 
 const UnprotectedDataQueryInstructions = ({
@@ -265,6 +277,27 @@ const InvisibleElementLintIssueRow = observer(
       <>
         <p>{content}</p>
         {INVISIBLE_ELEMENT_INSTRUCTIONS}
+      </>
+    );
+  }
+);
+
+const ChoicePropValuesLintIssueRow = observer(
+  function ChoicePropValuesLintIssueRow(props: {
+    issue: ChoicePropValuesLintIssue;
+  }) {
+    const { issue } = props;
+    const content = (
+      <>
+        <TplLink component={issue.component} tpl={issue.tpl} /> prop value is
+        not allowed
+      </>
+    );
+    return renderIssueListItem(
+      content,
+      <>
+        <p>{content}</p>
+        {PROP_ALLOWED_VALUES_INSTRUCTIONS}
       </>
     );
   }

@@ -7,8 +7,8 @@ import { isAlwaysInvisibleTpl } from "@/wab/shared/visibility-utils";
 
 const TYPE = "invisible-element";
 
-export const lintSite = maybeComputedFn(
-  function lintSite(site: Site) {
+export const lintInvisibleElements = maybeComputedFn(
+  function lintInvisibleElements(site: Site) {
     const issues: InvisibleElementLintIssue[] = [];
     for (const comp of site.components) {
       issues.push(...lintComponent(comp));

@@ -35,7 +35,7 @@ import {
   UNINITIALIZED_STRING,
 } from "@/wab/shared/model/model-util";
 import { getPlumeEditorPlugin } from "@/wab/shared/plume/plume-registry";
-import { DataMeta, mkMetaName } from "@plasmicapp/host";
+import { ChoiceValue, DataMeta, mkMetaName } from "@plasmicapp/host";
 import { isArray, isPlainObject, partition } from "lodash";
 
 export type supportedTypes =
@@ -366,7 +366,10 @@ export function getContextDependentValuesForImplicitState(
   return { advanced, hidden };
 }
 
-export function extractExpectedValues(propType: StudioPropType<any>) {
+export function extractExpectedValues(
+  propType: StudioPropType<any>,
+  enumValues: ChoiceValue[] | undefined
+) {
   if (typeof propType === "object") {
     if ("exprHint" in propType) {
       return propType.exprHint;
@@ -374,5 +377,5 @@ export function extractExpectedValues(propType: StudioPropType<any>) {
       return `Should return "_blank" for new tab or undefined for the default behavior`;
     }
   }
-  return undefined;
+  return enumValues?.toString();
 }

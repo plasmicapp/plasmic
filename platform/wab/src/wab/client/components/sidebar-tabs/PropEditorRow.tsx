@@ -5,8 +5,6 @@ import { HrefQueryPopover } from "@/wab/client/components/sidebar-tabs/Component
 import {
   AUTOCOMPLETE_OPTIONS,
   FallbackEditor,
-  getComponentPropTypes,
-  getContextComponentPropTypes,
   IndentedRow,
 } from "@/wab/client/components/sidebar-tabs/ComponentPropsSection";
 import { ValuePreview } from "@/wab/client/components/sidebar-tabs/data-tab";
@@ -33,12 +31,11 @@ import { Icon } from "@/wab/client/components/widgets/Icon";
 import InfoIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Info";
 import LinkIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Link";
 import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
-import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { StandardMarkdown } from "@/wab/client/utils/StandardMarkdown";
 import { HighlightBlinker } from "@/wab/commons/components/HighlightBlinker";
 import { DeepReadonly } from "@/wab/commons/types";
-import { getLinkedCodeProps } from "@/wab/shared/cached-selectors";
 import {
   ensurePropTypeToWabType,
   getPropTypeLayout,
@@ -65,16 +62,14 @@ import {
   switchType,
   tuple,
 } from "@/wab/shared/common";
+import { inferPropTypeFromParam } from "@/wab/shared/component-props";
 import { getContextDependentValue } from "@/wab/shared/context-dependent-value";
 import {
   getComponentDisplayName,
   getParamDisplayName,
   getRealParams,
-  isCodeComponent,
-  isContextCodeComponent,
   isPageComponent,
   isPlainComponent,
-  isPlumeComponent,
 } from "@/wab/shared/core/components";
 import {
   asCode,
@@ -111,6 +106,10 @@ import {
 import { tryEvalExpr } from "@/wab/shared/eval";
 import { getInputTypeOptions } from "@/wab/shared/html-utils";
 import { RESET_CAP } from "@/wab/shared/Labels";
+import {
+  getChoicePropOptions,
+  valueInOptions,
+} from "@/wab/shared/linting/lint-choice-prop-values";
 import {
   CollectionExpr,
   CompositeExpr,
@@ -165,6 +164,7 @@ import {
 } from "@/wab/shared/utils/url-utils";
 import { isBaseVariant } from "@/wab/shared/Variants";
 import { ensureBaseVariantSetting } from "@/wab/shared/VariantTplMgr";
+import { ChoiceValue } from "@plasmicapp/host";
 import { Menu, Tooltip } from "antd";
 import { capitalize, isString, keyBy } from "lodash";
 import { observer } from "mobx-react";
@@ -390,40 +390,6 @@ export const inferPropTypeFromAttr = (
   return undefined;
 };
 
-const inferPropTypeFromParam = (
-  studioCtx: StudioCtx,
-  viewCtx: ViewCtx | undefined,
-  tpl: TplComponent,
-  param: Param
-): StudioPropType<any> => {
-  let propType = wabTypeToPropType(param.type);
-  // code components can have more advanced prop types.
-  if (viewCtx) {
-    if (isCodeComponent(tpl.component) || isPlumeComponent(tpl.component)) {
-      const propTypes = getComponentPropTypes(viewCtx, tpl.component);
-      return param.variable.name in propTypes
-        ? propTypes[param.variable.name]
-        : propType;
-    } else {
-      const maybeLinkedProp = getLinkedCodeProps(tpl.component).get(
-        param.variable.name
-      );
-      if (maybeLinkedProp) {
-        const [innerTpl, linkedProp] = maybeLinkedProp;
-        const propTypes = getComponentPropTypes(viewCtx, innerTpl.component);
-        return linkedProp.variable.name in propTypes
-          ? propTypes[linkedProp.variable.name]
-          : propType;
-      }
-    }
-  } else if (isContextCodeComponent(tpl.component)) {
-    propType = getContextComponentPropTypes(studioCtx, tpl.component)[
-      param.variable.name
-    ];
-  }
-  return propType;
-};
-
 export const PropEditorRowWrapper = observer(PropEditorRowWrapper_);
 
 function PropEditorRowWrapper_(props: {
@@ -480,6 +446,7 @@ function PropEditorRowWrapper_(props: {
     <PropEditorRow
       key={param.variable.name}
       attr={param.variable.name}
+      enumValues={param.enumValues}
       expr={origExpr}
       label={getParamDisplayName(tpl.component, param)}
       definedIndicator={defined}
@@ -569,6 +536,7 @@ interface PropEditorRowProps {
   propType: StudioPropType<any>;
   layout?: "horizontal" | "vertical";
   attr: string;
+  enumValues?: ChoiceValue[];
   disableLinkToProp?: boolean;
   disableDynamicValue?: true;
   disableFallback?: boolean;
@@ -603,6 +571,32 @@ function canLinkPropToParam(type: Type, existingParam: Param) {
   return true;
 }
 
+function isPropOptionInvalid(
+  propType: StudioPropType<any>,
+  propVal: any,
+  componentPropValues: Record<string, any>,
+  ccContextData: any
+): boolean {
+  if (propVal == null) {
+    return false;
+  }
+  const choicePropOptions = getChoicePropOptions(
+    { componentPropValues, ccContextData },
+    propType
+  );
+  return !valueInOptions(choicePropOptions, propVal);
+}
+
+function WarnInvalid(props: { message: string }) {
+  return (
+    <div className="invalid-arg-icon">
+      <Tooltip title={props.message}>
+        <WarningIcon />
+      </Tooltip>
+    </div>
+  );
+}
+
 export interface PropEditorRef {
   focus: () => void;
   isFocused: () => boolean;
@@ -617,6 +611,7 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
     label,
     subtitle,
     attr,
+    enumValues,
     definedIndicator = { source: "none" },
     propType,
     expr: origExpr,
@@ -900,20 +895,29 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
         setVisible={setIsDataPickerVisible}
         data={canvasEnv}
         flatten={true}
-        expectedValues={extractExpectedValues(propType)}
+        expectedValues={extractExpectedValues(propType, enumValues)}
         schema={schema}
       />
     );
   };
 
+  const [exprLit, exprEditable] = extractLitFromMaybeRenderable(expr, viewCtx);
+
+  const exprValue = evaluated?.val ?? exprLit;
+  const invalidVal = isPropOptionInvalid(
+    propType,
+    exprValue,
+    componentPropValues,
+    ccContextData
+  );
+
   const renderDefaultEditor = () => {
-    const [exprLit, editable] = extractLitFromMaybeRenderable(expr, viewCtx);
     return (
       <PropValueEditor
         attr={attr}
         value={exprLit}
         label={label}
-        disabled={disabled || !editable}
+        disabled={disabled || !exprEditable}
         valueSetState={
           forceSetState ?? valueSetState ?? getValueSetState(definedIndicator)
         }
@@ -961,13 +965,11 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
             exprCtx,
           }}
         >
-          {invalidArg && (
-            <div className="invalid-arg-icon">
-              <Tooltip title={getInvalidArgErrorMessage(invalidArg)}>
-                <WarningIcon />
-              </Tooltip>
-            </div>
-          )}
+          {invalidArg ? (
+            <WarnInvalid message={getInvalidArgErrorMessage(invalidArg)} />
+          ) : invalidVal ? (
+            <WarnInvalid message="Prop value not allowed" />
+          ) : null}
           <LabeledItemRow
             data-test-id={`prop-editor-row-${attr ?? label}`}
             label={

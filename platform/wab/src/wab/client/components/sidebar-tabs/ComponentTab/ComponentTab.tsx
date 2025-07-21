@@ -59,6 +59,7 @@ export const ComponentTab = observer(function ComponentTab(props: {
       defaultContentEditorVisible: false,
     });
   };
+
   return (
     <>
       {showSettings && (

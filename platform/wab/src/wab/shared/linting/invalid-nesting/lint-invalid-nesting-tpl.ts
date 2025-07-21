@@ -11,6 +11,7 @@ import {
 
 import { switchType } from "@/wab/shared/common";
 import { isCodeComponent } from "@/wab/shared/core/components";
+import { isTplTag, walkTpls } from "@/wab/shared/core/tpls";
 import {
   ANCESTOR_INFO_KEYS,
   AncestorInfo,
@@ -22,7 +23,6 @@ import { InvalidTplNestingLintIssue } from "@/wab/shared/linting/lint-types";
 import { lintIssuesEquals } from "@/wab/shared/linting/lint-utils";
 import { maybeComputedFn } from "@/wab/shared/mobx-util";
 import { getSlotArgs } from "@/wab/shared/SlotUtils";
-import { isTplTag, walkTpls } from "@/wab/shared/core/tpls";
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { comparer } from "mobx";
 
@@ -38,8 +38,8 @@ type AncestorTplInfo = AncestorInfo<TplInfo>;
 
 const emptyAncestorInfo: AncestorTplInfo = {};
 
-export const lintSite = maybeComputedFn(
-  function lintSite(site: Site) {
+export const lintInvalidNesting = maybeComputedFn(
+  function lintInvalidNesting(site: Site) {
     const issues: InvalidTplNestingLintIssue[] = [];
     for (const comp of site.components) {
       issues.push(...lintComponent(comp));

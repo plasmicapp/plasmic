@@ -4093,7 +4093,7 @@ export function propTypeToWabType(
               return success(
                 typeFactory.choice(
                   Array.isArray(type.options)
-                    ? isArrayOfStrings(type.options)
+                    ? isArrayOfLiterals(type.options)
                       ? type.options
                       : type.options.map((op) => ({
                           label: op.label,

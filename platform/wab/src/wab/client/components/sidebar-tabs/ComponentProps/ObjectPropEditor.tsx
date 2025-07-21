@@ -10,8 +10,6 @@ import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
 import Button from "@/wab/client/components/widgets/Button";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { TutorialEventsType } from "@/wab/client/tours/tutorials/tutorials-events";
-import { assert, uncheckedCast, withoutNils } from "@/wab/shared/common";
-import { codeLit, summarizeExpr } from "@/wab/shared/core/exprs";
 import {
   getPropTypeDefaultValue,
   getPropTypeType,
@@ -19,14 +17,12 @@ import {
   maybePropTypeToDisplayName,
   StudioPropType,
 } from "@/wab/shared/code-components/code-components";
-import { DefinedIndicatorType } from "@/wab/shared/defined-indicator";
-import {
-  isKnownExpr,
-  TemplatedString,
-  TplComponent,
-} from "@/wab/shared/model/classes";
-import { smartHumanize } from "@/wab/shared/strs";
+import { assert, uncheckedCast, withoutNils } from "@/wab/shared/common";
+import { codeLit, summarizeExpr } from "@/wab/shared/core/exprs";
 import { summarizeVal } from "@/wab/shared/core/vals";
+import { DefinedIndicatorType } from "@/wab/shared/defined-indicator";
+import { isKnownExpr, TemplatedString } from "@/wab/shared/model/classes";
+import { smartHumanize } from "@/wab/shared/strs";
 import { PropType } from "@plasmicapp/host";
 import { isString } from "lodash";
 import { observer } from "mobx-react";
@@ -46,15 +42,15 @@ export const ObjectPropEditor = observer(function ObjectPropEditor<
   evaluatedValue: Value | undefined;
   fields: Record<string, PropType<unknown>>;
   objectNameFunc?: ItemFunc<Value, string | undefined>;
-  tpl: TplComponent;
+  modalKey: string;
   ccContextData: any;
   onChange: (val: Value) => void;
   buttonType?: React.ComponentProps<typeof Button>["type"];
   defaultShowModal?: boolean;
   onClose?: () => void;
   componentPropValues: any;
-  controlExtras: ControlExtras;
   "data-plasmic-prop"?: string;
+  controlExtras: ControlExtras;
   propType: StudioPropType<any>;
   disabled?: boolean;
 }) {
@@ -68,10 +64,9 @@ export const ObjectPropEditor = observer(function ObjectPropEditor<
     buttonType,
     defaultShowModal,
     onClose,
-    tpl,
+    modalKey,
     componentPropValues,
     controlExtras,
-    "data-plasmic-prop": dataPlasmicProp,
     propType,
     disabled,
   } = props;
@@ -130,11 +125,7 @@ export const ObjectPropEditor = observer(function ObjectPropEditor<
         }}
       >
         <div className="pt-xxlg pb-xsm">
-          <SidebarSection
-            id="object-prop-editor-modal"
-            key={`main.${tpl.uid}`}
-            noBorder
-          >
+          <SidebarSection id="object-prop-editor-modal" key={modalKey} noBorder>
             {(renderMaybeCollapsibleRows) =>
               renderMaybeCollapsibleRows(
                 Object.entries(fields).map(([fieldName, fieldPropType]) => {
@@ -228,7 +219,7 @@ export const ObjectPropEditor = observer(function ObjectPropEditor<
   );
 });
 
-function summarizeObject(obj: object) {
+function _summarizeObject(obj: object) {
   const keys = Object.keys(obj);
   if (keys.length === 0) {
     return "(empty)";

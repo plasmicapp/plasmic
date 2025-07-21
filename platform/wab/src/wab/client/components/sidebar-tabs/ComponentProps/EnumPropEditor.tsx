@@ -1,28 +1,31 @@
 import { ValueSetState } from "@/wab/client/components/sidebar/sidebar-helpers";
 import StyleSelect from "@/wab/client/components/style-controls/StyleSelect";
 import { ensureArray, filterMapTruthy } from "@/wab/shared/common";
+import { ChoiceOptions, ChoiceValue } from "@plasmicapp/host";
 import { Select } from "antd";
-import L, { isObject, isString } from "lodash";
+import { isArray, isNumber, isObject, isString } from "lodash";
 import React from "react";
 
-export type OptionValue = string | number | boolean;
 const stringify = (value: any): string => {
   // react-aria breaks if the key has double quotes
   return JSON.stringify(value)?.replaceAll('"', "'");
 };
 const parse = function <T>(value: T): T {
-  return L.isString(value) ? JSON.parse(value.replaceAll("'", '"')) : value;
+  const parsed = isString(value)
+    ? JSON.parse(value.replaceAll("'", '"'))
+    : value;
+  return parsed;
 };
 
 const UNSET_SELECT = {
-  value: "plasmic.unset" as OptionValue,
+  value: "plasmic.unset",
   label: "(Unset)",
 } as LabeledValue;
 
-type EnumWithSearchPropEditor<T extends OptionValue> = {
+type EnumWithSearchPropEditor<T extends ChoiceValue> = {
   onDelete?: () => void;
   onSearch?: (value: string) => void;
-  options: (string | number | boolean | { label: string; value: T })[];
+  options: ChoiceOptions;
   className?: string;
   readOnly?: boolean;
   filterOption?: boolean;
@@ -41,7 +44,7 @@ type EnumWithSearchPropEditor<T extends OptionValue> = {
     }
 );
 
-export function EnumWithSearchPropEditor<T extends OptionValue>(
+export function EnumWithSearchPropEditor<T extends ChoiceValue>(
   props: EnumWithSearchPropEditor<T>
 ) {
   const {
@@ -55,7 +58,10 @@ export function EnumWithSearchPropEditor<T extends OptionValue>(
     ...rest
   } = props;
 
-  const options = onDelete ? [...propOptions, UNSET_SELECT] : propOptions;
+  const options = React.useMemo(
+    () => (onDelete ? [...propOptions, UNSET_SELECT] : propOptions),
+    [propOptions, onDelete]
+  );
   return (
     <Select
       style={{ width: "100%" }}
@@ -65,7 +71,7 @@ export function EnumWithSearchPropEditor<T extends OptionValue>(
         if (parsedVal === UNSET_SELECT.value) {
           onDelete?.();
         } else if (multiSelect) {
-          onChange(L.isArray(val) ? val.map((v) => parse(v)) : [val]);
+          onChange(isArray(val) ? val.map((v) => parse(v)) : [val]);
         } else {
           onChange(parsedVal as T);
         }
@@ -116,10 +122,10 @@ const isGroupLabeledValue = (
   option: LabeledValue | GroupLabeledValue
 ): option is GroupLabeledValue => "values" in option;
 
-export function EnumPropEditor<T extends OptionValue>(props: {
+export function EnumPropEditor<T extends ChoiceValue>(props: {
   onChange: (value: T) => void;
   onDelete?: () => void;
-  options: (string | LabeledValue | GroupLabeledValue | boolean)[];
+  options: (ChoiceValue | LabeledValue | GroupLabeledValue)[];
   value: T | undefined;
   className?: string;
   valueSetState?: ValueSetState;
@@ -139,13 +145,15 @@ export function EnumPropEditor<T extends OptionValue>(props: {
     ...rest
   } = props;
 
+  const valueStr = React.useMemo(() => stringify(value), [value]);
+
   const options = React.useMemo(
     () => [
       ...filterMapTruthy(propOptions, (option) =>
-        isString(option)
+        isString(option) || isNumber(option)
           ? {
-              value: option,
-              label: option,
+              value: option.toString(),
+              label: option.toString(),
               isDisabled: false,
             }
           : isObject(option) && "value" in option
@@ -178,21 +186,23 @@ export function EnumPropEditor<T extends OptionValue>(props: {
         )
         .find((option) => option.value === props.defaultValueHint)?.label ??
       props.defaultValueHint ??
+      value?.toString() ??
       "unset"
     );
-  }, [options, props.defaultValueHint]);
+  }, [options, props.defaultValueHint, value]);
+
   return (
     <StyleSelect
-      value={value == null ? null : stringify(value)}
-      onChange={(val) => {
-        if (val === null) {
+      value={valueStr}
+      onChange={(valStr) => {
+        if (valStr === null) {
           return;
         }
-        const parsedVal = parse(val as T);
+        const parsedVal = parse(valStr);
         if (parsedVal === UNSET_SELECT.value) {
           onDelete?.();
         } else {
-          onChange(parsedVal);
+          onChange(parsedVal as T);
         }
       }}
       placeholder={placeholder}
@@ -201,8 +211,8 @@ export function EnumPropEditor<T extends OptionValue>(props: {
       data-plasmic-prop={props["data-plasmic-prop"]}
       {...rest}
     >
-      {options.map((option) =>
-        isGroupLabeledValue(option) ? (
+      {options.map((option) => {
+        return isGroupLabeledValue(option) ? (
           <StyleSelect.OptionGroup key={option.label} title={option.label}>
             {option.values.map((v) => (
               <StyleSelect.Option
@@ -224,8 +234,8 @@ export function EnumPropEditor<T extends OptionValue>(props: {
           >
             {option.label}
           </StyleSelect.Option>
-        )
-      )}
+        );
+      })}
     </StyleSelect>
   );
 }

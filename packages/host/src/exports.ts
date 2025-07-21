@@ -10,6 +10,9 @@ export { registerFetcher as unstable_registerFetcher } from "./fetcher";
 export * from "./global-actions";
 export * from "./link";
 export {
+  ChoiceObject,
+  ChoiceOptions,
+  ChoiceValue,
   ContextDependentConfig,
   CustomControlProps,
   ProjectData,

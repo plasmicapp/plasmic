@@ -12,8 +12,8 @@ import {
 
 const TYPE = "unprotected-data-query";
 
-export const lintSite = maybeComputedFn(
-  function lintSite(site: Site, roles: ApiAppRole[]) {
+export const lintUnprotectedDataQueries = maybeComputedFn(
+  function lintUnprotectedDataQueries(site: Site, roles: ApiAppRole[]) {
     const defaultPageRoleId = site.defaultPageRoleId;
     const defaultPageRoleOrder =
       roles.find((r) => r.id === defaultPageRoleId)?.order ?? 0;

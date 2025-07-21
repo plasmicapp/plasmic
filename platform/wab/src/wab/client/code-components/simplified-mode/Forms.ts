@@ -1,4 +1,3 @@
-import { getComponentPropTypes } from "@/wab/client/components/sidebar-tabs/ComponentPropsSection";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { unwrap } from "@/wab/commons/failable-utils";
 import { getSingleTplComponentFromArg } from "@/wab/shared/SlotUtils";
@@ -18,6 +17,7 @@ import {
   inputTypeToElementSchema,
 } from "@/wab/shared/code-components/simplified-mode/Forms";
 import { assert, ensure, spawn } from "@/wab/shared/common";
+import { getComponentPropTypes } from "@/wab/shared/component-props";
 import {
   ExprCtx,
   clone as cloneExpr,
