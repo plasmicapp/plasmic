@@ -9,9 +9,8 @@ export type JsIdentifier = Tagged<string, "JsIdentifier">;
 // Prettier, which does not accept these characters.
 const rawJsIdentifierChars = String.raw`$\p{ID_Continue}`;
 /** Matches a valid identifier character. May not be valid at the start. */
-export const pJsIdentifierChar = pattern`[${rawJsIdentifierChars}]`;
-/** Matches an invalid identifier character. */
-export const pNotJsIdentifierChar = pattern`[^${rawJsIdentifierChars}]`;
+export const pJsIdentifierChar = pattern`(?!.*[\u200C\u200D])[${rawJsIdentifierChars}]`;
+export const pNotJsIdentifierChar = pattern`[^${rawJsIdentifierChars}]|[\u200C\u200D]`;
 
 /**
  * Matches an entire valid identifier.

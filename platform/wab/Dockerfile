@@ -1,5 +1,5 @@
 # See https://hub.docker.com/_/node/
-FROM node:18-alpine
+FROM node:24.4-alpine
 
 # System setup
 RUN apk add --no-cache bash~=5 make~=4 bubblewrap~=0.11
