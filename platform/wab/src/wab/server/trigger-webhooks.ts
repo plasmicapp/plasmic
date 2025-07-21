@@ -55,6 +55,8 @@ export async function triggerWebhookOnly(
         data: payload,
         // Disable redirects to avoid SSRF attacks.
         maxRedirects: 0,
+        // Set a timeout (ms) to avoid hanging requests.
+        timeout: 1000 * 10,
         // Reuse the IP we already validated up before to avoid DNS attacks.
         lookup: (_hostname, _options, cb) => {
           cb(null, ip.address, ip.family as AddressFamily);
