@@ -135,7 +135,8 @@
   "resolutions": {
     "@plasmicpkgs/antd/antd": "4.19.3",
     "@plasmicpkgs/react-slick/antd": "4.19.3",
-    "rc-util": "^5.44.4"
+    "rc-util": "^5.44.4",
+    "lottie-web": ">=5.13.0"
   },
   "size-limit": [
     {

@@ -39,6 +39,9 @@
   "dependencies": {
     "lottie-react": "^2.4.0"
   },
+  "resolutions": {
+    "lottie-web": ">=5.13.0"
+  },
   "peerDependencies": {
     "@plasmicapp/host": ">=1.0.0",
     "react": ">=16.8.0",
