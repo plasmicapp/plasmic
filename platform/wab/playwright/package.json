@@ -4,7 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "devDependencies": {
-    "@dotenvx/dotenvx": "^1.47.6",
+    "@dotenvx/dotenvx": "^1.48.0",
     "@playwright/test": "^1.54.0",
     "@types/node": "^24.0.13"
   },

@@ -1,4 +1,13 @@
-import { getEnvVar } from "../utils/env";
+import dotenvx from "@dotenvx/dotenvx";
+import path from "path";
+
+function getEnvVar(name: string, defaultValue?: string): string {
+  const value = process.env[name] ?? defaultValue;
+  if (value === undefined) {
+    throw new Error(`Environment variable "${name}" is not defined.`);
+  }
+  return value;
+}
 
 export type Environment = {
   baseUrl: string;
@@ -8,12 +17,15 @@ export type Environment = {
   };
 };
 
-export function loadEnv(): Environment {
+function loadEnv(): Environment {
+  dotenvx.config({
+    path: path.resolve(__dirname, "..", `.env.${process.env.ENV ?? "test"}`),
+  });
   return {
-    baseUrl: getEnvVar("BASE_URL", "http://localhost:3003"),
+    baseUrl: getEnvVar("BASE_URL"),
     testUser: {
-      email: getEnvVar("TEST_USER_EMAIL", "user2@example.com"),
-      password: getEnvVar("TEST_USER_PASSWORD", "!53kr3tz!"),
+      email: getEnvVar("TEST_USER_EMAIL"),
+      password: getEnvVar("TEST_USER_PASSWORD"),
     },
   };
 }

@@ -2,8 +2,6 @@ import { expect } from "@playwright/test";
 import { test } from "../fixtures/test";
 
 import bundles from "../../cypress/bundles";
-import { Operations } from "../types/interaction";
-import { findFrameByText } from "../utils/frame";
 
 const BUNDLE_NAME = "state-management";
 
@@ -29,63 +27,42 @@ test.describe("state-management-text-interactions", () => {
     }
   });
 
-  test("can create all types of text interactions", async ({ pages, page }) => {
+  test("can create all types of text interactions", async ({
+    models,
+    arenas,
+  }) => {
     //GIVEN
-    const TEST_DATA = {
-      arenaName: "text interactions",
-      setToText: "Set to",
-      updateVariableAction: "updateVariable",
-      textVarName: "textVar",
-      goodbyeValue: '"goodbye"',
-      goodbyeText: "goodbye",
-      clearVariableSelector: "Clear variable",
-      helloText: "hello",
-      setToGoodbyeButtonName: 'Set to "goodbye"',
-      clearButtonName: "Clear",
-      undefinedText: "undefined",
-    };
-    await pages.projectPage.switchArena(TEST_DATA.arenaName);
-
+    await models.studio.switchArena("text interactions");
     //WHEN
-    const contentFrame = await findFrameByText(page, TEST_DATA.setToText);
-    await contentFrame
-      .locator("span", { hasText: TEST_DATA.setToText })
-      .first()
-      .click({ force: true });
-    await pages.projectPage.addInteraction("onClick", {
-      actionName: TEST_DATA.updateVariableAction,
+    await arenas.textInteractionsArena.setToButton.click({ force: true });
+    await models.studio.sidebar.addInteraction("onClick", {
+      actionName: "updateVariable",
       args: {
-        variable: [TEST_DATA.textVarName],
-        operation: Operations.NEW_VALUE,
-        value: TEST_DATA.goodbyeValue,
+        variable: ["textVar"],
+        operation: "newValue",
+        value: '"goodbye"',
       },
     });
 
-    await contentFrame
-      .locator(`text=${TEST_DATA.clearVariableSelector}`)
-      .click({ force: true });
-    await pages.projectPage.addInteraction("onClick", {
-      actionName: TEST_DATA.updateVariableAction,
+    await arenas.textInteractionsArena.clearButton.click({ force: true });
+    await models.studio.sidebar.addInteraction("onClick", {
+      actionName: "updateVariable",
       args: {
-        variable: [TEST_DATA.textVarName],
-        operation: Operations.CLEAR_VALUE,
+        variable: ["textVar"],
+        operation: "clearValue",
       },
     });
 
     //THEN
-    await pages.projectPage.withinLiveMode(async (liveFrame) => {
+    await models.studio.withinLiveMode(async (liveFrame) => {
       await expect(liveFrame.locator("body")).toBeVisible();
-      await expect(liveFrame.getByText(TEST_DATA.helloText)).toBeVisible();
-      await liveFrame
-        .getByRole("button", { name: TEST_DATA.setToGoodbyeButtonName })
-        .click();
+      await expect(liveFrame.getByText("hello")).toBeVisible();
+      await liveFrame.getByRole("button", { name: 'Set to "goodbye"' }).click();
       await expect(
-        liveFrame.getByText(TEST_DATA.goodbyeText, { exact: true })
+        liveFrame.getByText("goodbye", { exact: true })
       ).toBeVisible();
-      await liveFrame
-        .getByRole("button", { name: TEST_DATA.clearButtonName })
-        .click();
-      await expect(liveFrame.getByText(TEST_DATA.undefinedText)).toBeVisible();
+      await liveFrame.getByRole("button", { name: "Clear" }).click();
+      await expect(liveFrame.getByText("undefined")).toBeVisible();
     });
   });
 });
