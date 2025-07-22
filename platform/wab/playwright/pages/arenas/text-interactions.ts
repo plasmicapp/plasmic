@@ -1,13 +1,16 @@
 import { Frame, Locator, Page } from "playwright/test";
 import { findFrameByText } from "../../utils/frame";
+import { BasePage } from "../base-page";
 
-export class TextInteractionsArena {
+export class TextInteractionsArena extends BasePage {
   constructor(
-    private readonly page: Page,
+    page: Page,
     readonly contentFrame: Frame,
     readonly setToButton: Locator,
     readonly clearButton: Locator
-  ) {}
+  ) {
+    super(page);
+  }
 
   static async init(page: Page): Promise<TextInteractionsArena> {
     const contentFrame = await findFrameByText(page, "Set to");

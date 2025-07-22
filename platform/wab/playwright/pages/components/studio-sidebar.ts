@@ -1,43 +1,40 @@
 import { FrameLocator, Locator, Page } from "playwright/test";
+import { BasePage } from "../base-page";
 
-export class StudioSidebar {
-  readonly frame: FrameLocator;
-  readonly addInteractionButton: Locator;
-  readonly interactionsSearchInput: Locator;
-  readonly actionsDropdownButton: Locator;
-  readonly stateButton: Locator;
-  readonly windowSaveButton: Locator;
-  readonly operationDropdownButton: Locator;
-  readonly valueButton: Locator;
-  readonly valueCodeInput: Locator;
-  readonly closeSidebarButton: Locator;
+export class StudioSidebar extends BasePage {
+  readonly frame: FrameLocator = this.page
+    .frameLocator("iframe.studio-frame")
+    .frameLocator("iframe");
+  readonly addInteractionButton: Locator = this.frame.locator(
+    '[data-test-id="add-interaction"]'
+  );
+  readonly interactionsSearchInput: Locator = this.frame.locator(
+    "#interactions-select"
+  );
+  readonly actionsDropdownButton: Locator = this.frame.locator(
+    '[data-plasmic-prop="action-name"]'
+  );
+  readonly stateButton: Locator = this.frame.locator(
+    '[data-plasmic-prop="variable"]'
+  );
+  readonly windowSaveButton: Locator = this.frame
+    .locator('[data-test-id="data-picker"]')
+    .locator("text=Save");
+  readonly operationDropdownButton: Locator = this.frame.locator(
+    '[data-plasmic-prop="operation"]'
+  );
+  readonly valueButton: Locator = this.frame.locator(
+    '[data-plasmic-prop="value"]'
+  );
+  readonly valueCodeInput: Locator = this.frame.locator(
+    "div.react-monaco-editor-container"
+  );
+  readonly closeSidebarButton: Locator = this.frame.locator(
+    '[data-test-id="close-sidebar-modal"]'
+  );
 
-  constructor(private readonly page: Page) {
-    this.frame = this.page
-      .frameLocator("iframe.studio-frame")
-      .frameLocator("iframe");
-    this.addInteractionButton = this.frame.locator(
-      '[data-test-id="add-interaction"]'
-    );
-    this.interactionsSearchInput = this.frame.locator("#interactions-select");
-    this.actionsDropdownButton = this.frame.locator(
-      '[data-plasmic-prop="action-name"]'
-    );
-    this.stateButton = this.frame.locator('[data-plasmic-prop="variable"]');
-    this.windowSaveButton = this.frame
-      .locator('[data-test-id="data-picker"]')
-      .locator("text=Save");
-
-    this.operationDropdownButton = this.frame.locator(
-      '[data-plasmic-prop="operation"]'
-    );
-    this.valueButton = this.frame.locator('[data-plasmic-prop="value"]');
-    this.valueCodeInput = this.frame.locator(
-      "div.react-monaco-editor-container"
-    );
-    this.closeSidebarButton = this.frame.locator(
-      '[data-test-id="close-sidebar-modal"]'
-    );
+  constructor(page: Page) {
+    super(page);
   }
 
   async getElementWithDataKey(key: string): Promise<Locator> {

@@ -2,13 +2,13 @@ import { expect } from "@playwright/test";
 import { test } from "../fixtures/test";
 
 import bundles from "../../cypress/bundles";
+import { TextInteractionsArena } from "../pages/arenas/text-interactions";
 
 const BUNDLE_NAME = "state-management";
 
 test.describe("state-management-text-interactions", () => {
   let projectId: string;
-  test.beforeEach(async ({ request, apiClient, page, context, env }) => {
-    await apiClient.login(env.testUser.email, env.testUser.password);
+  test.beforeEach(async ({ request, apiClient, page, context }) => {
     projectId = await apiClient.importProjectFromTemplate(bundles[BUNDLE_NAME]);
 
     const cookies = await request.storageState();
@@ -29,12 +29,13 @@ test.describe("state-management-text-interactions", () => {
 
   test("can create all types of text interactions", async ({
     models,
-    arenas,
+    page,
   }) => {
     //GIVEN
     await models.studio.switchArena("text interactions");
+    const arena = await TextInteractionsArena.init(page);
     //WHEN
-    await arenas.textInteractionsArena.setToButton.click({ force: true });
+    await arena.setToButton.click({ force: true });
     await models.studio.sidebar.addInteraction("onClick", {
       actionName: "updateVariable",
       args: {
@@ -44,7 +45,7 @@ test.describe("state-management-text-interactions", () => {
       },
     });
 
-    await arenas.textInteractionsArena.clearButton.click({ force: true });
+    await arena.clearButton.click({ force: true });
     await models.studio.sidebar.addInteraction("onClick", {
       actionName: "updateVariable",
       args: {
