@@ -9,6 +9,8 @@ const SLICE_1_ID = "6z5_V8jUij";
 
 test.describe(`Plasmic CRA`, async () => {
   let ctx: CraContext;
+  const mainHeaderText = "Split testing page";
+
   test.beforeEach(async () => {
     ctx = await setupCra({
       bundleFile: "plasmic-split-components.json",
@@ -33,7 +35,7 @@ test.describe(`Plasmic CRA`, async () => {
     ]);
 
     await page.goto(ctx.host);
-    await expect(page.getByText("Split testing page")).toBeVisible({
+    await expect(page.getByText(mainHeaderText)).toBeVisible({
       timeout: 10000,
     });
 
@@ -52,7 +54,7 @@ test.describe(`Plasmic CRA`, async () => {
     ]);
 
     await page.goto(`${ctx.host}/segment`);
-    await expect(page.getByText("Split testing page")).toBeVisible({
+    await expect(page.getByText(mainHeaderText)).toBeVisible({
       timeout: 10000,
     });
 
@@ -71,7 +73,7 @@ test.describe(`Plasmic CRA`, async () => {
     ]);
 
     await page.goto(`${ctx.host}/schedule`);
-    await expect(page.getByText("Split testing page")).toBeVisible({
+    await expect(page.getByText(mainHeaderText)).toBeVisible({
       timeout: 10000,
     });
 
@@ -92,7 +94,7 @@ test.describe(`Plasmic CRA`, async () => {
     ]);
 
     await page.goto(ctx.host);
-    await expect(page.getByText("Split testing page")).toBeVisible({
+    await expect(page.getByText(mainHeaderText)).toBeVisible({
       timeout: 10000,
     });
 
