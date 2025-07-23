@@ -24,9 +24,12 @@ export const test = base.extend<TestFixtures>({
     const environment = ENVIRONMENT;
     await use(environment);
   },
-  apiClient: async ({ request, env }, use) => {
+  apiClient: async ({ request, env, context }, use) => {
     const client = new ApiClient(request, env.baseUrl);
     await client.login(env.testUser.email, env.testUser.password);
+    const cookies = await request.storageState();
+
+    await context.addCookies(cookies.cookies);
     await use(client);
   },
 });

@@ -8,12 +8,9 @@ const BUNDLE_NAME = "state-management";
 
 test.describe("state-management-text-interactions", () => {
   let projectId: string;
-  test.beforeEach(async ({ request, apiClient, page, context }) => {
+  test.beforeEach(async ({ apiClient, page }) => {
     projectId = await apiClient.importProjectFromTemplate(bundles[BUNDLE_NAME]);
 
-    const cookies = await request.storageState();
-
-    await context.addCookies(cookies.cookies);
     await page.goto(`/projects/${projectId}`);
   });
 
