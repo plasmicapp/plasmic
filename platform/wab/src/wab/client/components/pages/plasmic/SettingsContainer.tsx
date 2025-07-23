@@ -1,15 +1,19 @@
-import * as React from "react";
 import PP__SettingsContainer from "@/wab/client/components/pages/plasmic/PlasmicSettingsContainer";
+import { BareModal } from "@/wab/client/components/studio/BareModal";
+import TrustedHost from "@/wab/client/components/TrustedHost";
+import { AsyncState } from "@/wab/client/hooks/useAsyncStrict";
 import { ApiTrustedHost, PersonalApiToken } from "@/wab/shared/ApiSchema";
 import { ensure } from "@/wab/shared/common";
 import { Flex } from "@plasmicapp/react-web";
-import TrustedHost from "@/wab/client/components/TrustedHost";
 import { isArray } from "lodash";
-import { BareModal } from "@/wab/client/components/studio/BareModal";
-import { AsyncState } from "@/wab/client/hooks/useAsyncStrict";
+import * as React from "react";
 const LazyChangePasswordModal = React.lazy(
   () => import("@/wab/client/components/ChangePasswordModal")
 );
+
+import { useNonAuthCtx } from "@/wab/client/app-ctx";
+import { reactConfirm } from "@/wab/client/components/quick-modals";
+import { Menu, notification } from "antd";
 
 interface SettingsContainerProps {
   avatarImgUrl?: string;
@@ -78,6 +82,7 @@ function SettingsContainer(props: SettingsContainerProps) {
   };
 
   const [changingPassword, setChangingPassword] = React.useState(false);
+  const nonAuthCtx = useNonAuthCtx();
 
   return (
     <>
@@ -92,6 +97,34 @@ function SettingsContainer(props: SettingsContainerProps) {
         hideChangePassword={props.hideChangePassword}
         changePasswordButton={{
           onClick: () => setChangingPassword(true),
+        }}
+        menuButton={{
+          menu: () => (
+            <Menu>
+              <Menu.Item
+                key="delete"
+                onClick={async () => {
+                  const confirm = await reactConfirm({
+                    title: `Delete user account`,
+                    message: <>Are you sure you want to delete your account?</>,
+                  });
+                  if (!confirm) {
+                    return;
+                  }
+                  try {
+                    await nonAuthCtx.api.deactivateUser(props.email);
+                    notification.success({
+                      message: "User deactivated",
+                    });
+                  } catch (e) {
+                    notification.error({ message: `${e}` });
+                  }
+                }}
+              >
+                <strong>Delete</strong> user
+              </Menu.Item>
+            </Menu>
+          ),
         }}
       />
       {changingPassword && (
