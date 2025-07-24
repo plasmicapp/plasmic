@@ -1,12 +1,12 @@
-import * as React from "react";
 import PP__SettingsContainer from "@/wab/client/components/pages/plasmic/PlasmicSettingsContainer";
+import { BareModal } from "@/wab/client/components/studio/BareModal";
+import TrustedHost from "@/wab/client/components/TrustedHost";
+import { AsyncState } from "@/wab/client/hooks/useAsyncStrict";
 import { ApiTrustedHost, PersonalApiToken } from "@/wab/shared/ApiSchema";
 import { ensure } from "@/wab/shared/common";
 import { Flex } from "@plasmicapp/react-web";
-import TrustedHost from "@/wab/client/components/TrustedHost";
 import { isArray } from "lodash";
-import { BareModal } from "@/wab/client/components/studio/BareModal";
-import { AsyncState } from "@/wab/client/hooks/useAsyncStrict";
+import * as React from "react";
 const LazyChangePasswordModal = React.lazy(
   () => import("@/wab/client/components/ChangePasswordModal")
 );
@@ -113,6 +113,7 @@ function SettingsContainer(props: SettingsContainerProps) {
                   }
                   try {
                     await nonAuthCtx.api.deactivateUser(props.email);
+                    window.location.replace("/login");
                     notification.success({
                       message: "User deactivated",
                     });
