@@ -338,6 +338,16 @@ export async function updateSelfPassword(req: Request, res: Response) {
   );
 }
 
+export async function deactivateSelfUser(req: Request, res: Response) {
+  const mgr = superDbMgr(req);
+  const email = req.body.email;
+  const user = await mgr.tryGetUserByEmail(email);
+  if (user) {
+    await mgr.deleteUser(user, false);
+  }
+  res.json({});
+}
+
 export async function forgotPassword(req: Request, res: Response) {
   const { email, appName, nextPath } = req.body;
 
