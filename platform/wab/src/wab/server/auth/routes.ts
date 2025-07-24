@@ -345,6 +345,12 @@ export async function deactivateSelfUser(req: Request, res: Response) {
   if (user) {
     await mgr.deleteUser(user, false);
   }
+  res.clearCookie("plasmic-observer");
+  // Must reset the session to prevent session fixation attacks, reset the CSRF
+  // token, etc.
+  if (req.session) {
+    await util.promisify(req.session.destroy.bind(req.session))();
+  }
   res.json({});
 }
 
