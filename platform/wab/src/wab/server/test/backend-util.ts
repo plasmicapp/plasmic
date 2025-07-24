@@ -142,6 +142,7 @@ export async function createBackend(
         mailFrom: "",
         mailUserOps: "",
         mailBcc: "",
+        terminationGracePeriodMs: 5000,
       });
 
       return {
