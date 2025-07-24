@@ -609,6 +609,10 @@ export abstract class SharedApi {
     return this.post("/auth/self/password", { oldPassword, newPassword });
   }
 
+  async deactivateUser(email: string): Promise<{}> {
+    return this.post("/auth/self/deactivate-user", { email });
+  }
+
   async resetPassword(
     data: ResetPasswordRequest
   ): Promise<ResetPasswordResponse> {
