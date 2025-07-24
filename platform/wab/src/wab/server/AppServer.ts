@@ -1318,6 +1318,10 @@ export function addMainAppServerRoutes(
     sensitiveRateLimiter,
     withNext(authRoutes.updateSelfPassword)
   );
+  app.post(
+    "/api/v1/auth/self/deactivate-user",
+    withNext(authRoutes.deactivateSelfUser)
+  );
   app.post("/api/v1/auth/logout", withNext(authRoutes.logout));
   app.post(
     "/api/v1/auth/forgotPassword",
