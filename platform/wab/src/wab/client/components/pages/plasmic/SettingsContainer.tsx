@@ -114,9 +114,6 @@ function SettingsContainer(props: SettingsContainerProps) {
                   try {
                     await nonAuthCtx.api.deactivateUser(props.email);
                     window.location.replace("/login");
-                    notification.success({
-                      message: "User deactivated",
-                    });
                   } catch (e) {
                     notification.error({ message: `${e}` });
                   }
