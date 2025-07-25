@@ -109,7 +109,8 @@ function SettingsContainer(props: SettingsContainerProps) {
                     message: (
                       <>
                         Are you sure you want to delete your account with email{" "}
-                        <strong>${props.email}</strong>?
+                        <strong>{props.email}</strong>?
+                        <br />
                         <br />
                         You will immediately lose access to all data you own,
                         including your projects, CMS databases, workspaces, and
