@@ -609,10 +609,6 @@ export abstract class SharedApi {
     return this.post("/auth/self/password", { oldPassword, newPassword });
   }
 
-  async deactivateUser(email: string): Promise<{}> {
-    return this.post("/auth/self/deactivate-user", { email });
-  }
-
   async resetPassword(
     data: ResetPasswordRequest
   ): Promise<ResetPasswordResponse> {
@@ -631,6 +627,10 @@ export abstract class SharedApi {
     data: SendEmailVerificationRequest
   ): Promise<SendEmailVerificationResponse> {
     return this.post("/auth/sendEmailVerification", data);
+  }
+
+  async deactivateUser(email: string): Promise<{}> {
+    return this.delete("/auth/self", { email });
   }
 
   fmtCode({ code, parser }: /*TWZ*/ { code: string; parser: string }) {
