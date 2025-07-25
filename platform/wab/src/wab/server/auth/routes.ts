@@ -59,7 +59,6 @@ import fs from "fs";
 import passport from "passport";
 import { AuthenticateOptionsGoogle } from "passport-google-oauth20";
 import { IVerifyOptions } from "passport-local";
-import util from "util";
 
 export function csrf(req: Request, res: Response, _next: NextFunction) {
   res.json({ csrf: res.locals._csrf });
@@ -273,11 +272,6 @@ export async function logout(req: Request, res: Response) {
   );
   await doLogout(req);
   res.clearCookie("plasmic-observer");
-  // Must reset the session to prevent session fixation attacks, reset the CSRF
-  // token, etc.
-  if (req.session) {
-    await util.promisify(req.session.destroy.bind(req.session))();
-  }
   res.json({});
 }
 
@@ -346,6 +340,7 @@ export async function deleteSelf(req: Request, res: Response) {
     await mgr.deleteUser(user, false);
   }
   await doLogout(req);
+  res.clearCookie("plasmic-observer");
   res.json({});
 }
 

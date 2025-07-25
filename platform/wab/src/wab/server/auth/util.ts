@@ -6,6 +6,7 @@ import { TeamWhiteLabelInfo } from "@/wab/shared/ApiSchema";
 import { spawn } from "@/wab/shared/common";
 import OktaJwtVerifier from "@okta/jwt-verifier";
 import { Request } from "express-serve-static-core";
+import { promisify } from "util";
 
 export function doLogin(
   request: Request,
@@ -22,7 +23,9 @@ export function doLogin(
 
 export async function doLogout(request: Request) {
   await disconnectUserSockets(request);
-  return new Promise((resolve) => {
+  // Must reset the session to prevent session fixation attacks, reset the CSRF
+  // token, etc.
+  const res = new Promise((resolve) => {
     // Requests forwarded to socket server do not set up passport
     if (typeof request.logout === "function") {
       request.logout(resolve);
@@ -30,6 +33,10 @@ export async function doLogout(request: Request) {
       resolve(true);
     }
   });
+  if (request.session) {
+    await promisify(request.session.destroy.bind(request.session))();
+  }
+  return res;
 }
 
 export async function verifyClientCredentials(
