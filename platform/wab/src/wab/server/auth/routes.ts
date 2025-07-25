@@ -270,8 +270,7 @@ export async function logout(req: Request, res: Response) {
     "logging out as",
     getUser(req, { allowUnverifiedEmail: true }).email
   );
-  await doLogout(req);
-  res.clearCookie("plasmic-observer");
+  await doLogout(req, res);
   res.json({});
 }
 
@@ -339,8 +338,7 @@ export async function deleteSelf(req: Request, res: Response) {
   if (user) {
     await mgr.deleteUser(user, false);
   }
-  await doLogout(req);
-  res.clearCookie("plasmic-observer");
+  await doLogout(req, res);
   res.json({});
 }
 
