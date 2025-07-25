@@ -1313,6 +1313,7 @@ export function addMainAppServerRoutes(
   );
   app.get("/api/v1/auth/self", withNext(authRoutes.self));
   app.post("/api/v1/auth/self", withNext(authRoutes.updateSelf));
+  app.delete("/api/v1/auth/self", withNext(authRoutes.deleteSelf));
   app.post(
     "/api/v1/auth/self/password",
     sensitiveRateLimiter,
