@@ -1313,14 +1313,11 @@ export function addMainAppServerRoutes(
   );
   app.get("/api/v1/auth/self", withNext(authRoutes.self));
   app.post("/api/v1/auth/self", withNext(authRoutes.updateSelf));
+  app.delete("/api/v1/auth/self", withNext(authRoutes.deleteSelf));
   app.post(
     "/api/v1/auth/self/password",
     sensitiveRateLimiter,
     withNext(authRoutes.updateSelfPassword)
-  );
-  app.post(
-    "/api/v1/auth/self/deactivate-user",
-    withNext(authRoutes.deactivateSelfUser)
   );
   app.post("/api/v1/auth/logout", withNext(authRoutes.logout));
   app.post(
