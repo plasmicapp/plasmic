@@ -25,7 +25,10 @@ export async function doLogout(request: Request) {
   await disconnectUserSockets(request);
   // Must reset the session to prevent session fixation attacks, reset the CSRF
   // token, etc.
-  const res = new Promise((resolve) => {
+  if (request.session) {
+    await promisify(request.session.destroy.bind(request.session))();
+  }
+  return new Promise((resolve) => {
     // Requests forwarded to socket server do not set up passport
     if (typeof request.logout === "function") {
       request.logout(resolve);
@@ -33,10 +36,6 @@ export async function doLogout(request: Request) {
       resolve(true);
     }
   });
-  if (request.session) {
-    await promisify(request.session.destroy.bind(request.session))();
-  }
-  return res;
 }
 
 export async function verifyClientCredentials(
