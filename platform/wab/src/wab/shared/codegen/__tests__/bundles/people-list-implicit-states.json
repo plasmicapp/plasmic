@@ -37,7 +37,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "1499902": {
           "name": "submitsForm",
@@ -197,7 +198,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "5592004": { "name": "title", "uuid": "nP1xCP63wq", "__type": "Var" },
         "5592005": { "name": "text", "__type": "Text" },
@@ -219,7 +221,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "5592007": {
           "name": "description",
@@ -245,7 +248,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "5592010": { "name": "image", "uuid": "YIPrYYaZIU", "__type": "Var" },
         "5592011": { "name": "img", "__type": "Img" },
@@ -267,7 +271,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "5592013": {
           "name": "canonical",
@@ -391,7 +396,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "5592024": { "name": "dataOp", "uuid": "n-1Od3dN2v", "__type": "Var" },
         "5592025": { "name": "any", "__type": "AnyType" },
@@ -413,7 +419,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "5592027": { "name": "name", "uuid": "Fpci0Xh0OQ", "__type": "Var" },
         "5592028": { "name": "text", "__type": "Text" },
@@ -476,7 +483,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "5592035": {
           "name": "pageSize",
@@ -502,7 +510,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "5592038": {
           "name": "pageIndex",
@@ -942,7 +951,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "5592097": {
           "name": "onDelete",
@@ -1192,7 +1202,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "5592117": {
           "name": "placeholder",
@@ -1413,7 +1424,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "5592142": { "name": "name", "uuid": "CM65i8L5Oy-", "__type": "Var" },
         "5592143": { "name": "text", "__type": "Text" },
@@ -1435,7 +1447,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "5592145": {
           "name": "required",
@@ -1461,7 +1474,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "5592148": {
           "name": "aria-label",
@@ -1487,7 +1501,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "5592151": {
           "name": "aria-labelledby",
@@ -1513,7 +1528,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "5592154": {
           "name": "onChange",
@@ -3620,7 +3636,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "5592563": { "name": "link", "uuid": "XmA9ZYZH-Pe", "__type": "Var" },
         "5592564": { "name": "href", "__type": "HrefType" },
@@ -11429,7 +11446,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "22485010": { "variable": { "__ref": "22485011" }, "__type": "VarRef" },
         "22485011": {
@@ -11456,7 +11474,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "22485014": {
           "param": { "__ref": "22485009" },
@@ -11503,7 +11522,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "22485028": { "variable": { "__ref": "22485029" }, "__type": "VarRef" },
         "22485029": {
@@ -12422,7 +12442,7 @@
         }
       },
       "deps": [],
-      "version": "247-add-page-href-query-fragment"
+      "version": "248-add-prop-param-advanced"
     }
   ]
 ]

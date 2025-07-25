@@ -140,7 +140,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "JLOL69etz-wl": {
           "name": "description",
@@ -166,7 +167,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "imfEvaxgwHgH": {
           "name": "image",
@@ -192,7 +194,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "b0A-grUfEqMG": {
           "name": "canonical",
@@ -218,7 +221,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "Ve5Re7fC5-8r": {
           "uuid": "vrgZsUDk_pbO",
@@ -341,7 +345,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "sm-4jV7gKcV0": {
           "name": "name",
@@ -367,7 +372,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "VFaJTFCrt0wj": {
           "name": "children",
@@ -434,7 +440,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "CKjUTvzsmsuo": {
           "name": "pageIndex",
@@ -460,7 +467,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "daWZLXyXN7XL": {
           "uuid": "0ylKxk_tYKoo",
@@ -2710,7 +2718,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "YWDscbENkuzN": {
           "variable": { "__ref": "DbQLiiMl0Ns4" },
@@ -2754,7 +2763,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "Hn4u4sl_kyaG": {
           "name": "func",
@@ -2784,7 +2794,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "WtI_MocHvCQU": { "name": "text", "__type": "Text" },
         "zs9nyKIHHjfP": {
@@ -2820,7 +2831,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "jnIwvuzW0JU8": { "name": "bool", "__type": "BoolType" },
         "vM_JZy1Gi_C9": {
@@ -2851,7 +2863,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "j1NLBpV6th6a": { "name": "dateString", "__type": "DateString" },
         "8SSObO99HTx9": {
@@ -2887,7 +2900,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "qGbKy5pZdoyI": {
           "name": "dateRangeStrings",
@@ -2921,7 +2935,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "uQ_oIrrmIu8w": { "name": "text", "__type": "Text" },
         "8wVVzLrAlJ6q": {
@@ -2947,7 +2962,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "Zla-p9zUn-Dn": { "name": "any", "__type": "AnyType" },
         "JYcGhJlZqvw_": {
@@ -4080,7 +4096,7 @@
         }
       },
       "deps": [],
-      "version": "247-add-page-href-query-fragment"
+      "version": "248-add-prop-param-advanced"
     }
   ],
   [
@@ -4668,7 +4684,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "p8nF__XHCE0d": {
           "type": { "__ref": "LD6wMJnF-ltw" },
@@ -4688,7 +4705,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "G-TLSBFr27Ek": {
           "type": { "__ref": "-Jhr7FmEsuh4" },
@@ -4708,7 +4726,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "su9ISTOENXn9": {
           "type": { "__ref": "N3bAhlBUdh_J" },
@@ -4728,7 +4747,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "aCPus9NdqNRJ": {
           "tag": "div",
@@ -4798,7 +4818,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "tDrvnISsQKbQ": {
           "type": { "__ref": "Fg8bodIwD5Qc" },
@@ -4818,7 +4839,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "mCI2vo-5E9lq": {
           "type": { "__ref": "oN_Zm06a7-h4" },
@@ -4859,7 +4881,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "-V7I77P9SdGa": {
           "type": { "__ref": "pMEVIj0sEtlE" },
@@ -4879,7 +4902,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "RjCHJZrECpZF": {
           "tag": "div",
@@ -5255,7 +5279,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "l3jbXByePOUq": {
           "name": "title",
@@ -5544,7 +5569,7 @@
         }
       },
       "deps": [],
-      "version": "247-add-page-href-query-fragment"
+      "version": "248-add-prop-param-advanced"
     }
   ]
 ]

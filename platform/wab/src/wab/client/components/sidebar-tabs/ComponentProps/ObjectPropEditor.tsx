@@ -165,7 +165,8 @@ export const ObjectPropEditor = observer(function ObjectPropEditor<
                     : { source: "none" };
 
                   return {
-                    collapsible: !!isAdvancedProp(fieldPropType) && !fieldValue,
+                    collapsible:
+                      !!isAdvancedProp(fieldPropType, undefined) && !fieldValue,
                     content: (
                       <PropValueEditorContext.Provider
                         value={{

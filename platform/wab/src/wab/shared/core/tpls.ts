@@ -2927,7 +2927,7 @@ export function getAlwaysVisibleEventHandlerKeysForTpl(
 
           if (isTplCodeComponent(tpl)) {
             const propType = tpl.component._meta?.props[param.variable.name];
-            return !isAdvancedProp(propType);
+            return !isAdvancedProp(propType, param);
           }
 
           if (

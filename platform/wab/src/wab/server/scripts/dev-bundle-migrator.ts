@@ -79,6 +79,7 @@ const paths = [
   "src/wab/shared/site-diffs/_tests_/bundles/default-slot-change.json",
   "src/wab/shared/insertable-templates/__tests__/bundles/copy-and-paste.json",
   "src/wab/server/__tests__/bundle-migrations/fixtures/style-variants.migrated.json",
+  "src/wab/server/__tests__/bundle-migrations/fixtures/code-component-meta-add-refActions.migrated.json",
   "src/wab/server/__tests__/bundle-migrations/fixtures/code-component-variants.migrated.json",
   "src/wab/server/__tests__/bundle-migrations/fixtures/plume-default-components.migrated.json",
   "src/wab/server/__tests__/bundle-migrations/fixtures/duplicate-variants.migrated.json",

@@ -220,8 +220,10 @@ export const ComponentPropsSection = observer(
                       const isSet = !!expsProvider
                         .effectiveVs()
                         .args.find((_arg) => _arg.param === param);
+
                       return {
-                        collapsible: !!isAdvancedProp(propType) && !isSet,
+                        collapsible:
+                          !!isAdvancedProp(propType, param) && !isSet,
                         content: (
                           <PropEditorRowWrapper
                             key={param.uid}

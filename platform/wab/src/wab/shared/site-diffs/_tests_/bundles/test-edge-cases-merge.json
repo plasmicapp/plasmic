@@ -119,7 +119,8 @@
             "required": false,
             "mergeWithParent": false,
             "isLocalizable": false,
-            "__type": "PropParam"
+            "__type": "PropParam",
+            "advanced": false
           },
           "53897004": {
             "name": "title",
@@ -145,7 +146,8 @@
             "required": false,
             "mergeWithParent": false,
             "isLocalizable": false,
-            "__type": "PropParam"
+            "__type": "PropParam",
+            "advanced": false
           },
           "53897007": {
             "name": "description",
@@ -171,7 +173,8 @@
             "required": false,
             "mergeWithParent": false,
             "isLocalizable": false,
-            "__type": "PropParam"
+            "__type": "PropParam",
+            "advanced": false
           },
           "53897010": {
             "name": "image",
@@ -197,7 +200,8 @@
             "required": false,
             "mergeWithParent": false,
             "isLocalizable": false,
-            "__type": "PropParam"
+            "__type": "PropParam",
+            "advanced": false
           },
           "53897013": {
             "name": "canonical",
@@ -321,7 +325,8 @@
             "required": false,
             "mergeWithParent": false,
             "isLocalizable": false,
-            "__type": "PropParam"
+            "__type": "PropParam",
+            "advanced": false
           },
           "53897024": {
             "name": "dataOp",
@@ -347,7 +352,8 @@
             "required": false,
             "mergeWithParent": false,
             "isLocalizable": false,
-            "__type": "PropParam"
+            "__type": "PropParam",
+            "advanced": false
           },
           "53897027": { "name": "name", "uuid": "IZI61mVEbh", "__type": "Var" },
           "53897028": { "name": "text", "__type": "Text" },
@@ -410,7 +416,8 @@
             "required": false,
             "mergeWithParent": false,
             "isLocalizable": false,
-            "__type": "PropParam"
+            "__type": "PropParam",
+            "advanced": false
           },
           "53897035": {
             "name": "pageSize",
@@ -436,7 +443,8 @@
             "required": false,
             "mergeWithParent": false,
             "isLocalizable": false,
-            "__type": "PropParam"
+            "__type": "PropParam",
+            "advanced": false
           },
           "53897038": {
             "name": "pageIndex",
@@ -1290,7 +1298,8 @@
             "required": false,
             "mergeWithParent": false,
             "isLocalizable": false,
-            "__type": "PropParam"
+            "__type": "PropParam",
+            "advanced": false
           },
           "53897158": {
             "name": "param1",
@@ -1316,7 +1325,8 @@
             "required": false,
             "mergeWithParent": false,
             "isLocalizable": false,
-            "__type": "PropParam"
+            "__type": "PropParam",
+            "advanced": false
           },
           "53897161": {
             "name": "choiceParam",
@@ -3443,7 +3453,8 @@
             "required": false,
             "mergeWithParent": false,
             "isLocalizable": false,
-            "__type": "PropParam"
+            "__type": "PropParam",
+            "advanced": false
           },
           "53897511": {
             "name": "booleanProp",
@@ -6179,7 +6190,7 @@
           "53898074": { "values": {}, "mixins": [], "__type": "RuleSet" }
         },
         "deps": [],
-        "version": "247-add-page-href-query-fragment"
+        "version": "248-add-prop-param-advanced"
       },
       "projectId": "5txi3zd6hPLtbkzbV8p6jB",
       "version": "0.0.1",
@@ -6374,7 +6385,8 @@
             "required": false,
             "mergeWithParent": false,
             "isLocalizable": false,
-            "__type": "PropParam"
+            "__type": "PropParam",
+            "advanced": false
           },
           "42088002": {
             "name": "param1",
@@ -6487,7 +6499,8 @@
             "required": false,
             "mergeWithParent": false,
             "isLocalizable": false,
-            "__type": "PropParam"
+            "__type": "PropParam",
+            "advanced": false
           },
           "53897004": {
             "name": "title",
@@ -6513,7 +6526,8 @@
             "required": false,
             "mergeWithParent": false,
             "isLocalizable": false,
-            "__type": "PropParam"
+            "__type": "PropParam",
+            "advanced": false
           },
           "53897007": {
             "name": "description",
@@ -6539,7 +6553,8 @@
             "required": false,
             "mergeWithParent": false,
             "isLocalizable": false,
-            "__type": "PropParam"
+            "__type": "PropParam",
+            "advanced": false
           },
           "53897010": {
             "name": "image",
@@ -6565,7 +6580,8 @@
             "required": false,
             "mergeWithParent": false,
             "isLocalizable": false,
-            "__type": "PropParam"
+            "__type": "PropParam",
+            "advanced": false
           },
           "53897013": {
             "name": "canonical",
@@ -6689,7 +6705,8 @@
             "required": false,
             "mergeWithParent": false,
             "isLocalizable": false,
-            "__type": "PropParam"
+            "__type": "PropParam",
+            "advanced": false
           },
           "53897024": {
             "name": "dataOp",
@@ -6715,7 +6732,8 @@
             "required": false,
             "mergeWithParent": false,
             "isLocalizable": false,
-            "__type": "PropParam"
+            "__type": "PropParam",
+            "advanced": false
           },
           "53897027": { "name": "name", "uuid": "IZI61mVEbh", "__type": "Var" },
           "53897028": { "name": "text", "__type": "Text" },
@@ -6778,7 +6796,8 @@
             "required": false,
             "mergeWithParent": false,
             "isLocalizable": false,
-            "__type": "PropParam"
+            "__type": "PropParam",
+            "advanced": false
           },
           "53897035": {
             "name": "pageSize",
@@ -6804,7 +6823,8 @@
             "required": false,
             "mergeWithParent": false,
             "isLocalizable": false,
-            "__type": "PropParam"
+            "__type": "PropParam",
+            "advanced": false
           },
           "53897038": {
             "name": "pageIndex",
@@ -7658,7 +7678,8 @@
             "required": false,
             "mergeWithParent": false,
             "isLocalizable": false,
-            "__type": "PropParam"
+            "__type": "PropParam",
+            "advanced": false
           },
           "53897161": {
             "name": "choiceParam",
@@ -9678,7 +9699,8 @@
             "required": false,
             "mergeWithParent": false,
             "isLocalizable": false,
-            "__type": "PropParam"
+            "__type": "PropParam",
+            "advanced": false
           },
           "53897511": {
             "name": "booleanProp",
@@ -12425,7 +12447,7 @@
           "63532015": { "values": {}, "mixins": [], "__type": "RuleSet" }
         },
         "deps": [],
-        "version": "247-add-page-href-query-fragment"
+        "version": "248-add-prop-param-advanced"
       }
     },
     {
@@ -12537,7 +12559,8 @@
             "required": false,
             "mergeWithParent": false,
             "isLocalizable": false,
-            "__type": "PropParam"
+            "__type": "PropParam",
+            "advanced": false
           },
           "53897004": {
             "name": "title",
@@ -12563,7 +12586,8 @@
             "required": false,
             "mergeWithParent": false,
             "isLocalizable": false,
-            "__type": "PropParam"
+            "__type": "PropParam",
+            "advanced": false
           },
           "53897007": {
             "name": "description",
@@ -12589,7 +12613,8 @@
             "required": false,
             "mergeWithParent": false,
             "isLocalizable": false,
-            "__type": "PropParam"
+            "__type": "PropParam",
+            "advanced": false
           },
           "53897010": {
             "name": "image",
@@ -12615,7 +12640,8 @@
             "required": false,
             "mergeWithParent": false,
             "isLocalizable": false,
-            "__type": "PropParam"
+            "__type": "PropParam",
+            "advanced": false
           },
           "53897013": {
             "name": "canonical",
@@ -12739,7 +12765,8 @@
             "required": false,
             "mergeWithParent": false,
             "isLocalizable": false,
-            "__type": "PropParam"
+            "__type": "PropParam",
+            "advanced": false
           },
           "53897024": {
             "name": "dataOp",
@@ -12765,7 +12792,8 @@
             "required": false,
             "mergeWithParent": false,
             "isLocalizable": false,
-            "__type": "PropParam"
+            "__type": "PropParam",
+            "advanced": false
           },
           "53897027": { "name": "name", "uuid": "IZI61mVEbh", "__type": "Var" },
           "53897028": { "name": "text", "__type": "Text" },
@@ -12828,7 +12856,8 @@
             "required": false,
             "mergeWithParent": false,
             "isLocalizable": false,
-            "__type": "PropParam"
+            "__type": "PropParam",
+            "advanced": false
           },
           "53897035": {
             "name": "pageSize",
@@ -12854,7 +12883,8 @@
             "required": false,
             "mergeWithParent": false,
             "isLocalizable": false,
-            "__type": "PropParam"
+            "__type": "PropParam",
+            "advanced": false
           },
           "53897038": {
             "name": "pageIndex",
@@ -13708,7 +13738,8 @@
             "required": false,
             "mergeWithParent": false,
             "isLocalizable": false,
-            "__type": "PropParam"
+            "__type": "PropParam",
+            "advanced": false
           },
           "53897161": {
             "name": "choiceParam",
@@ -15818,7 +15849,8 @@
             "required": false,
             "mergeWithParent": false,
             "isLocalizable": false,
-            "__type": "PropParam"
+            "__type": "PropParam",
+            "advanced": false
           },
           "53897511": {
             "name": "booleanProp",
@@ -18556,7 +18588,8 @@
             "required": false,
             "mergeWithParent": false,
             "isLocalizable": false,
-            "__type": "PropParam"
+            "__type": "PropParam",
+            "advanced": false
           },
           "59479002": {
             "name": "param1",
@@ -18753,7 +18786,7 @@
           }
         },
         "deps": [],
-        "version": "247-add-page-href-query-fragment"
+        "version": "248-add-prop-param-advanced"
       }
     }
   ]

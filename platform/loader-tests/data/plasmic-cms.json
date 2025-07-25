@@ -54,7 +54,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "8246005": {
           "type": { "__ref": "8246017" },
@@ -74,7 +75,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "8246006": {
           "type": { "__ref": "8246019" },
@@ -94,7 +96,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "8246007": {
           "type": { "__ref": "8246021" },
@@ -114,7 +117,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "8246008": {
           "type": { "__ref": "8246023" },
@@ -268,7 +272,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "16009002": {
           "type": { "__ref": "16009007" },
@@ -288,7 +293,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "16009004": { "name": "prefix", "uuid": "OCs-Lyh0Qd", "__type": "Var" },
         "16009005": { "name": "text", "__type": "Text" },
@@ -379,7 +385,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "21177032": {
           "type": { "__ref": "YGMkksxf4luZ" },
@@ -399,7 +406,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "21177033": {
           "tag": "div",
@@ -490,7 +498,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "21177038": {
           "type": { "__ref": "21177103" },
@@ -510,7 +519,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "21177039": {
           "type": { "__ref": "21177105" },
@@ -530,7 +540,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "21177040": {
           "tag": "div",
@@ -735,7 +746,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "28075003": {
           "type": { "__ref": "21970005" },
@@ -776,7 +788,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "28075005": {
           "param": { "__ref": "28075001" },
@@ -943,7 +956,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "45549002": {
           "type": { "__ref": "45549008" },
@@ -963,7 +977,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "45549003": {
           "type": { "__ref": "PdicuwoP6KKh" },
@@ -983,7 +998,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "45549005": {
           "name": "filterField",
@@ -1068,7 +1084,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "58829004": {
           "type": { "__ref": "21970003" },
@@ -1109,7 +1126,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "58829006": {
           "type": { "__ref": "58829021" },
@@ -1129,7 +1147,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "58829007": {
           "type": { "__ref": "58829024" },
@@ -1149,7 +1168,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "58829008": {
           "type": { "__ref": "58829026" },
@@ -1169,7 +1189,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "58829009": {
           "type": { "__ref": "58829028" },
@@ -1189,7 +1210,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "58829010": {
           "type": { "__ref": "58829031" },
@@ -1209,7 +1231,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "58829011": {
           "tag": "div",
@@ -1492,7 +1515,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "60389008": {
           "type": { "__ref": "60389026" },
@@ -1512,7 +1536,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "60389009": {
           "type": { "__ref": "60389028" },
@@ -1532,7 +1557,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "60389010": {
           "tag": "div",
@@ -1628,7 +1654,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "60389015": {
           "type": { "__ref": "60389038" },
@@ -1648,7 +1675,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "60389016": {
           "type": { "__ref": "60389040" },
@@ -1668,7 +1696,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "60389017": {
           "tag": "div",
@@ -2002,7 +2031,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "RiLj3ZeAGQQ1": {
           "values": { "object-fit": "cover" },
@@ -2072,7 +2102,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "tZao7gdZDYNC": { "name": "num", "__type": "Num" },
         "RwvUrID_pqyi": {
@@ -2098,7 +2129,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "YXppuv3vlFXK": { "name": "bool", "__type": "BoolType" },
         "lm3O7jdCD1NV": {
@@ -2129,7 +2161,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "YGMkksxf4luZ": {
           "name": "choice",
@@ -2138,7 +2171,7 @@
         }
       },
       "deps": [],
-      "version": "247-add-page-href-query-fragment"
+      "version": "248-add-prop-param-advanced"
     }
   ],
   [
@@ -4586,7 +4619,7 @@
         }
       },
       "deps": ["7349d209-ded6-417a-aa97-05311f8b93c4"],
-      "version": "247-add-page-href-query-fragment"
+      "version": "248-add-prop-param-advanced"
     }
   ]
 ]

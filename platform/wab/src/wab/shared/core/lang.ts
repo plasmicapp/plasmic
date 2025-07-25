@@ -165,14 +165,19 @@ type mkParamProps<T extends Param, ParamType extends ParamTypes> = Omit<
   Partial<T>,
   "uuid" | "variable"
 > &
-  Pick<T, "type"> & { name: string; paramType: `${ParamType}` };
+  Pick<T, "type"> & {
+    name: string;
+    paramType: `${ParamType}`;
+  };
+
+type PropParamOpts = mkParamProps<PropParam, ParamTypes.Prop> & {
+  advanced?: boolean;
+};
 
 export function mkParam(
   opts: mkParamProps<SlotParam, ParamTypes.Slot>
 ): SlotParam;
-export function mkParam(
-  opts: mkParamProps<PropParam, ParamTypes.Prop>
-): PropParam;
+export function mkParam(opts: PropParamOpts): PropParam;
 export function mkParam(
   opts: mkParamProps<GlobalVariantGroupParam, ParamTypes.GlobalVariantGroup>
 ): GlobalVariantGroupParam;
@@ -182,6 +187,7 @@ export function mkParam(
 export function mkParam(
   opts: mkParamProps<StateChangeHandlerParam, ParamTypes.StateChangeHandler>
 ): StateChangeHandlerParam;
+
 export function mkParam(opts: mkParamProps<Param, ParamTypes>) {
   const commonProps = {
     uuid: mkShortId(),
@@ -211,9 +217,10 @@ export function mkParam(opts: mkParamProps<Param, ParamTypes>) {
       });
     }
     case "prop": {
-      const props = opts as mkParamProps<PropParam, ParamTypes.Prop>;
+      const props = opts as PropParamOpts;
       return new PropParam({
         type: props.type,
+        advanced: props.advanced ?? false,
         ...commonProps,
       });
     }
@@ -291,6 +298,7 @@ export function cloneParamAndVar<T extends Param>(param_: T): T {
         new PropParam({
           ...commonProps,
           type: cloneType(p.type),
+          advanced: p.advanced,
         })
     )
     .when(

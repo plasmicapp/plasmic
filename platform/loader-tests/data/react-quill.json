@@ -144,7 +144,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "uONFW7p8nvr-": {
           "type": { "__ref": "3JbNd7lV9nab" },
@@ -164,7 +165,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "AvedZsqm8LG0": {
           "type": { "__ref": "s8jDv3E0xyZ8" },
@@ -184,7 +186,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "QCQIyowdac-t": {
           "type": { "__ref": "cGYCrKn04GPu" },
@@ -204,7 +207,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "HmjQ9jDliqsH": {
           "type": { "__ref": "cW52dJImuW98" },
@@ -224,7 +228,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "U6VtfBslZQn6": {
           "type": { "__ref": "lbz2Z2esn27s" },
@@ -244,7 +249,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "rIWEioRq2Xot": {
           "type": { "__ref": "JUD5xVMx0WhJ" },
@@ -264,7 +270,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "E8Q9jUiCkg77": {
           "type": { "__ref": "iCI3H5vx4sMM" },
@@ -284,7 +291,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "e_MtuomF_L9s": {
           "type": { "__ref": "NM1hyz-oPfPV" },
@@ -304,7 +312,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "Wy5sEvknPtw8": {
           "type": { "__ref": "4urL-nYBpduU" },
@@ -324,7 +333,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "-iJFqWQHjMcP": {
           "type": { "__ref": "Y9T_l89wOXdF" },
@@ -344,7 +354,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "6D-Nq7hNNxpi": {
           "type": { "__ref": "SYSkS-EntCtE" },
@@ -364,7 +375,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "i7nio1EgDgQD": {
           "variableType": "text",
@@ -742,7 +754,7 @@
         }
       },
       "deps": [],
-      "version": "247-add-page-href-query-fragment"
+      "version": "248-add-prop-param-advanced"
     }
   ],
   [
@@ -1332,7 +1344,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "JjqCmTe6AChM": {
           "type": { "__ref": "eEPb_fHUN5_H" },
@@ -1352,7 +1365,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "SAwll7XAsUCJ": {
           "type": { "__ref": "7MrLOPUVbbbx" },
@@ -1372,7 +1386,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "ye1yZXQhd27B": {
           "type": { "__ref": "qeqK4yDdTWkG" },
@@ -1392,7 +1407,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "J6uAEQy2D0xP": {
           "tag": "div",
@@ -1462,7 +1478,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "J4L10OMf5P4f": {
           "type": { "__ref": "jbWRjgQGZmHz" },
@@ -1482,7 +1499,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "5jhJ0sVmiLXY": {
           "type": { "__ref": "h1AvTIUWlumD" },
@@ -1523,7 +1541,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "mJhLI9ojIgFJ": {
           "type": { "__ref": "l2eyA4ix98Jj" },
@@ -1543,7 +1562,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "AAV48UJHMJ-2": {
           "tag": "div",
@@ -2129,7 +2149,7 @@
         "tkbX31iChEAr": { "text": ["quill-state"], "__type": "TemplatedString" }
       },
       "deps": ["b911462e-59ce-455d-b8d3-0d84f50a35dd"],
-      "version": "247-add-page-href-query-fragment"
+      "version": "248-add-prop-param-advanced"
     }
   ]
 ]

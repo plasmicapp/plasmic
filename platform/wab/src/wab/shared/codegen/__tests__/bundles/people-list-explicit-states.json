@@ -22,7 +22,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "2001402": {
           "name": "submitsForm",
@@ -684,7 +685,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "3378098": {
           "type": { "__ref": "3378138" },
@@ -7371,7 +7373,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "6345008": { "variable": { "__ref": "6345009" }, "__type": "VarRef" },
         "6345009": {
@@ -7398,7 +7401,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "6345012": {
           "param": { "__ref": "6345007" },
@@ -7481,7 +7485,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "6345032": {
           "name": "onNicknamesChange",
@@ -7664,7 +7669,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "6345098": {
           "name": "defaultNicknames",
@@ -7910,7 +7916,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "33186002": {
           "name": "onDelete",
@@ -8561,7 +8568,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "36693004": {
           "type": { "__ref": "36693021" },
@@ -8581,7 +8589,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "36693005": {
           "type": { "__ref": "36693023" },
@@ -8601,7 +8610,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "36693006": {
           "type": { "__ref": "36693025" },
@@ -8621,7 +8631,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "36693007": {
           "tag": "div",
@@ -8691,7 +8702,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "36693011": {
           "type": { "__ref": "36693030" },
@@ -8711,7 +8723,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "36693012": {
           "type": { "__ref": "36693032" },
@@ -8752,7 +8765,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "36693014": {
           "type": { "__ref": "36693036" },
@@ -8772,7 +8786,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "36693015": {
           "tag": "div",
@@ -9529,7 +9544,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "36693140": {
           "type": { "__ref": "36693178" },
@@ -9696,7 +9712,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "36693148": {
           "type": { "__ref": "36693194" },
@@ -9716,7 +9733,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "36693149": {
           "type": { "__ref": "36693196" },
@@ -9736,7 +9754,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "36693150": {
           "type": { "__ref": "36693198" },
@@ -9756,7 +9775,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "36693151": {
           "type": { "__ref": "6345003" },
@@ -9776,7 +9796,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "36693152": {
           "variantGroup": { "__ref": "36693164" },
@@ -11345,7 +11366,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "46885002": {
           "name": "onPersonChange",
@@ -11383,7 +11405,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "46885007": {
           "name": "initialPerson",
@@ -11657,7 +11680,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "60137003": { "variable": { "__ref": "60137004" }, "__type": "VarRef" },
         "60137004": {
@@ -12600,7 +12624,7 @@
         }
       },
       "deps": [],
-      "version": "247-add-page-href-query-fragment"
+      "version": "248-add-prop-param-advanced"
     }
   ]
 ]

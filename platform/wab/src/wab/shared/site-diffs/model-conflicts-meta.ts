@@ -1027,6 +1027,7 @@ export const modelConflictsMeta: ModelConflictsMeta = {
     origin: "generic",
     propEffect: "generic",
     required: "generic",
+    advanced: "generic",
     type: "contents",
     uuid: "generic",
     variable: "generic",

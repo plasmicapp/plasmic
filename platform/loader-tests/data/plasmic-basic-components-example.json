@@ -147,7 +147,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "4418508": {
           "type": { "__ref": "4418520" },
@@ -167,7 +168,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "4418509": {
           "type": { "__ref": "4418523" },
@@ -346,7 +348,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "7682004": {
           "type": { "__ref": "7682012" },
@@ -366,7 +369,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "7682005": {
           "tag": "div",
@@ -525,7 +529,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "34442060": {
           "type": { "__ref": "34442164" },
@@ -545,7 +550,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "34442061": {
           "tag": "div",
@@ -615,7 +621,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "34442071": {
           "type": { "__ref": "4418503" },
@@ -635,7 +642,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "34442072": {
           "type": { "__ref": "4418505" },
@@ -655,7 +663,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "34442073": {
           "type": { "__ref": "34442186" },
@@ -675,7 +684,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "34442074": {
           "type": { "__ref": "34442188" },
@@ -695,7 +705,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "34442075": {
           "type": { "__ref": "34442190" },
@@ -715,7 +726,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "34442076": {
           "type": { "__ref": "34442192" },
@@ -735,7 +747,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "34442077": {
           "type": { "__ref": "34442194" },
@@ -755,7 +768,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "34442078": {
           "tag": "div",
@@ -1159,7 +1173,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "yqp3xhrr3Pwx": {
           "name": "func",
@@ -1189,7 +1204,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "Tkape2fknFoo": { "name": "any", "__type": "AnyType" },
         "R1KCUIy2IhU5": {
@@ -1215,7 +1231,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "VSzZIqGjZE1f": {
           "param": { "__ref": "mrJ5XhyHqQ90" },
@@ -1266,7 +1283,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "efq8UzgvmJy2": {
           "name": "func",
@@ -1296,7 +1314,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "PM16NvwfZh0t": { "name": "any", "__type": "AnyType" },
         "mSsyTDxj9Sbp": {
@@ -1322,7 +1341,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "juy47_-4d1rF": {
           "importPath": "@plasmicpkgs/plasmic-basic-components",
@@ -1448,7 +1468,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "OiU4SeA72JlS": { "name": "bool", "__type": "BoolType" },
         "TWOx1Lfosfvd": {
@@ -1474,7 +1495,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "qaDAOUnifl7w": { "name": "num", "__type": "Num" },
         "pKfeacrBd7cg": {
@@ -1500,11 +1522,12 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         }
       },
       "deps": [],
-      "version": "247-add-page-href-query-fragment"
+      "version": "248-add-prop-param-advanced"
     }
   ],
   [
@@ -1593,7 +1616,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "476904": {
           "type": { "__ref": "476921" },
@@ -1613,7 +1637,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "476905": {
           "type": { "__ref": "476923" },
@@ -1633,7 +1658,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "476906": {
           "type": { "__ref": "476925" },
@@ -1653,7 +1679,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "476907": {
           "tag": "div",
@@ -1723,7 +1750,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "476911": {
           "type": { "__ref": "476930" },
@@ -1743,7 +1771,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "476912": {
           "type": { "__ref": "476932" },
@@ -1784,7 +1813,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "476914": {
           "type": { "__ref": "476936" },
@@ -1804,7 +1834,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "476915": {
           "tag": "div",
@@ -2957,7 +2988,7 @@
         }
       },
       "deps": ["46daef11-1a70-4f74-b471-12e71963588c"],
-      "version": "247-add-page-href-query-fragment"
+      "version": "248-add-prop-param-advanced"
     }
   ]
 ]

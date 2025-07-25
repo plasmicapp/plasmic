@@ -264,7 +264,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "LLnEQm0izHfh": {
           "name": "description",
@@ -290,7 +291,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "M5610JcbTO1V": {
           "name": "image",
@@ -316,7 +318,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "5IOcyaosx-5F": {
           "name": "canonical",
@@ -342,7 +345,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "GA8qcdfRpK62": {
           "uuid": "CAOYHqmIMKC6",
@@ -465,7 +469,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "nYtL6Rg1zDPM": {
           "name": "name",
@@ -491,7 +496,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "BmETEwAmxcW9": {
           "name": "children",
@@ -558,7 +564,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "N4OUMvitXQU2": {
           "name": "pageIndex",
@@ -584,7 +591,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "ITQ8Ea5p-Nop": {
           "uuid": "JGWKJwj95Oe3",
@@ -1462,7 +1470,7 @@
         }
       },
       "deps": [],
-      "version": "247-add-page-href-query-fragment"
+      "version": "248-add-prop-param-advanced"
     }
   ]
 ]

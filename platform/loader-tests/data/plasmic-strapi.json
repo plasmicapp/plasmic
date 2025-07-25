@@ -143,7 +143,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "26311008": {
           "type": { "__ref": "26311028" },
@@ -163,7 +164,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "26311009": {
           "tag": "div",
@@ -238,7 +240,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "26311013": {
           "tag": "div",
@@ -308,7 +311,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "26311017": {
           "type": { "__ref": "26311042" },
@@ -328,7 +332,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "26311018": {
           "type": { "__ref": "26311044" },
@@ -668,7 +673,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "KcpZQjO7B3xK": {
           "name": "choice",
@@ -698,7 +704,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "wGmfUUkgCppa": { "name": "text", "__type": "Text" },
         "xGz56F9JKCme": {
@@ -724,7 +731,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "KRnsWkF_Iz__": { "name": "num", "__type": "Num" },
         "QZjHr75o62dp": {
@@ -750,7 +758,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "fbQBpp6IptxW": { "name": "bool", "__type": "BoolType" },
         "VXuLVyD1tfhM": {
@@ -781,7 +790,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "cvecJliDifJb": { "name": "text", "__type": "Text" },
         "X89C2CBOm55Z": {
@@ -791,7 +801,7 @@
         }
       },
       "deps": [],
-      "version": "247-add-page-href-query-fragment"
+      "version": "248-add-prop-param-advanced"
     }
   ],
   [
@@ -1890,7 +1900,7 @@
         }
       },
       "deps": ["c30818bb-2f70-4079-bc4d-65eaecf566f6"],
-      "version": "247-add-page-href-query-fragment"
+      "version": "248-add-prop-param-advanced"
     }
   ]
 ]

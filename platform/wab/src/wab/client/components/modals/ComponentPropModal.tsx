@@ -2,7 +2,9 @@ import { ArrayPrimitiveEditor } from "@/wab/client/components/sidebar-tabs/Compo
 import { EnumPropEditor } from "@/wab/client/components/sidebar-tabs/ComponentProps/EnumPropEditor";
 import { PropValueEditor } from "@/wab/client/components/sidebar-tabs/PropValueEditor";
 import ParamSection from "@/wab/client/components/sidebar-tabs/StateManagement/ParamSection";
+import { LabeledItemRow } from "@/wab/client/components/sidebar/sidebar-helpers";
 import { SidebarModal } from "@/wab/client/components/sidebar/SidebarModal";
+import StyleSwitch from "@/wab/client/components/style-controls/StyleSwitch";
 import {
   IconLinkButton,
   IFrameAwareDropdownMenu,
@@ -10,6 +12,7 @@ import {
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import { IconButton } from "@/wab/client/components/widgets/IconButton";
 import LabeledListItem from "@/wab/client/components/widgets/LabeledListItem";
+import { LabelWithDetailedTooltip } from "@/wab/client/components/widgets/LabelWithDetailedTooltip";
 import { Modal } from "@/wab/client/components/widgets/Modal";
 import Select from "@/wab/client/components/widgets/Select";
 import Textbox from "@/wab/client/components/widgets/Textbox";
@@ -47,6 +50,7 @@ import {
   isKnownFunctionType,
   isKnownImageAssetRef,
   isKnownPageHref,
+  isKnownPropParam,
   isKnownRenderableType,
   isKnownRenderFuncType,
   isKnownStyleTokenRef,
@@ -232,6 +236,10 @@ export function ComponentPropModal(props: {
       : []
   );
 
+  const [advanced, setAdvanced] = React.useState(
+    isKnownPropParam(existingParam) ? existingParam.advanced : false
+  );
+
   const exprStrVal = (expr: Expr | undefined): string | undefined => {
     return exprDisplayVal(expr, paramTypeData)?.toString();
   };
@@ -350,7 +358,9 @@ export function ComponentPropModal(props: {
         if (newParamType.name === "choice") {
           newParamType.options = choices;
         }
-        existingParam.type = newParamType;
+        if (isKnownPropParam(existingParam)) {
+          existingParam.advanced = advanced;
+        }
         existingParam.defaultExpr = defaultExpr && clone(defaultExpr);
         existingParam.previewExpr = previewExpr && clone(previewExpr);
         existingParam.isLocalizable = isLocalizableVal;
@@ -370,6 +380,7 @@ export function ComponentPropModal(props: {
           defaultExpr,
           previewExpr,
           isLocalizable: isLocalizableVal,
+          advanced,
         });
         component.params.push(param);
         onFinish(param);
@@ -472,7 +483,7 @@ export function ComponentPropModal(props: {
             : undefined
         }
         hideEventArgs={!!type && paramType === "eventHandler"}
-        showAdvancedSection={paramType === "choice"}
+        showAdvancedSection={true}
         overrides={{
           paramName: {
             props: {
@@ -540,17 +551,19 @@ export function ComponentPropModal(props: {
           },
           advancedSection: {
             render: () => {
-              if (paramType === "choice") {
-                return (
-                  <ArrayPrimitiveEditor
-                    label={"Allowed Values"}
-                    values={choices.map(getValue)}
-                    onChange={onChangeChoices}
-                    data-test-id={"component-prop-choices"}
-                  />
-                );
-              }
-              return null;
+              return (
+                <>
+                  <AdvancedToggle advanced={advanced} onChange={setAdvanced} />
+                  {paramType === "choice" && (
+                    <ArrayPrimitiveEditor
+                      label={"Allowed Values"}
+                      values={choices.map(getValue)}
+                      onChange={onChangeChoices}
+                      data-test-id={"component-prop-choices"}
+                    />
+                  )}
+                </>
+              );
             },
           },
           localizableSwitch: {
@@ -619,6 +632,29 @@ const exprDisplayVal = (
     : propTypeData?.jsonType
     ? tryExtractJson(expr)
     : undefined;
+};
+
+const AdvancedToggle: React.FC<{
+  advanced: boolean;
+  onChange: (isChecked: boolean) => void;
+}> = ({ advanced, onChange }) => {
+  return (
+    <LabeledItemRow
+      label={
+        <LabelWithDetailedTooltip
+          tooltip={<div>If set, the prop is hidden in the UI by default.</div>}
+        >
+          Advanced
+        </LabelWithDetailedTooltip>
+      }
+    >
+      <div className="flex justify-start flex-fill">
+        <StyleSwitch isChecked={advanced ?? false} onChange={onChange}>
+          {null}
+        </StyleSwitch>
+      </div>
+    </LabeledItemRow>
+  );
 };
 
 /** Wraps a PropValueEditor and menu for unsetting the value. */

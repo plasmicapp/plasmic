@@ -653,8 +653,7 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
   const expr = maybeUnwrapExpr(origExpr);
 
   const studioCtx = useStudioCtx();
-  const [newParamModalVisibile, setNewParamModalVisible] =
-    React.useState(false);
+  const [newParamModalVisible, setNewParamModalVisible] = React.useState(false);
   const [isDataPickerVisible, setIsDataPickerVisible] = React.useState(false);
   const disabledDynamicValue =
     props.disableDynamicValue ??
@@ -1041,12 +1040,12 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
               )}
             </div>
           </LabeledItemRow>
-          {newParamModalVisibile && ownerComponent && viewCtx && (
+          {newParamModalVisible && ownerComponent && viewCtx && (
             <ComponentPropModal
               studioCtx={studioCtx}
               suggestedName={label}
               component={ownerComponent}
-              visible={newParamModalVisibile}
+              visible={newParamModalVisible}
               type={wabType}
               onFinish={(newParam) => {
                 setNewParamModalVisible(false);
