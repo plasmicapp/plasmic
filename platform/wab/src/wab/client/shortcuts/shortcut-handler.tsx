@@ -37,6 +37,10 @@ const INPUT_DISALLOWED_TYPES: ReadonlySet<string> = new Set([
   "week",
 ]);
 
+const DISALLOWED_ELEMENT_CLASSES: ReadonlySet<string> = new Set([
+  "PostHogSurvey",
+]);
+
 /**
  * If not handled, return `false`. Any other value will be considered as handled.
  *
@@ -86,6 +90,16 @@ export function bindShortcutHandlers<Action extends string>(
     if (element instanceof win.HTMLElement) {
       if (ALWAYS_ALLOWED_COMBOS.has(combo)) {
         return false;
+      }
+
+      // Stop callback for certain combos if element has a disallowed class
+      // In some cases classes are dynamic, so we can use only a part of the class name as well.
+      if (
+        [...DISALLOWED_ELEMENT_CLASSES].some((disallowedClass) =>
+          element.className.includes(disallowedClass)
+        )
+      ) {
+        return true;
       }
 
       // Stop callback for certain combos if element is focusable
