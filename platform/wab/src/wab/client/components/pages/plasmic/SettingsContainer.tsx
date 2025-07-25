@@ -105,8 +105,18 @@ function SettingsContainer(props: SettingsContainerProps) {
                 key="delete"
                 onClick={async () => {
                   const confirm = await reactConfirm({
-                    title: `Delete user account`,
-                    message: <>Are you sure you want to delete your account?</>,
+                    title: `Delete your account`,
+                    message: (
+                      <>
+                        Are you sure you want to delete your account with email{" "}
+                        <strong>${props.email}</strong>?
+                        <br />
+                        You will immediately lose access to all data you own,
+                        including your projects, CMS databases, workspaces, and
+                        organizations. Your account and data will be permanently
+                        deleted within 30 days.
+                      </>
+                    ),
                   });
                   if (!confirm) {
                     return;
@@ -119,7 +129,7 @@ function SettingsContainer(props: SettingsContainerProps) {
                   }
                 }}
               >
-                <strong>Delete</strong> user
+                <strong>Delete</strong> account
               </Menu.Item>
             </Menu>
           ),
