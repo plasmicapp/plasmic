@@ -336,8 +336,8 @@ export async function deleteSelf(req: Request, res: Response) {
 
   const id = getUser(req, { allowUnverifiedEmail: true }).id;
   const userId = mgr.checkUserIdIsSelf(id);
-
   const user = await mgr.getUserById(userId);
+
   if (user) {
     await mgr.deleteUser(user, false);
   }
