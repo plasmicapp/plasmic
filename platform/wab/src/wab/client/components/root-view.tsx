@@ -41,6 +41,10 @@ import { InitTokenPage } from "@/wab/client/components/pages/InitTokenPage";
 import { SurveyForm } from "@/wab/client/components/pages/SurveyForm";
 import { TeamCreation } from "@/wab/client/components/pages/TeamCreation";
 import PromoBanner from "@/wab/client/components/PromoBanner";
+import {
+  routerRedirect,
+  routerRoute,
+} from "@/wab/client/components/router-utils";
 import { TeamSupportRedirect } from "@/wab/client/components/TeamSupportRedirect";
 import { AppView } from "@/wab/client/components/top-view";
 import * as widgets from "@/wab/client/components/widgets";
@@ -99,18 +103,18 @@ function LoggedInContainer(props: LoggedInContainerProps) {
   const selfInfo =
     appCtx.selfInfo && !appCtx.selfInfo.isFake ? appCtx.selfInfo : null;
   function projectRoute() {
-    return (
-      <Route
-        path={APP_ROUTES.project.pattern}
-        render={({ match }) => (
+    return routerRoute({
+      path: APP_ROUTES.project,
+      render: ({ match }) => {
+        return (
           <LazyViewInitializer
             appCtx={appCtx}
             onRefreshUi={onRefreshUi}
             projectId={match.params.projectId}
           />
-        )}
-      />
-    );
+        );
+      },
+    });
   }
 
   const currentLocation = useLocation();
@@ -139,10 +143,10 @@ function LoggedInContainer(props: LoggedInContainerProps) {
       ) : (
         // Normal logged in users
         <Switch>
-          <Route
-            exact
-            path={APP_ROUTES.starter.pattern}
-            render={({ match, location }) => {
+          {routerRoute({
+            exact: true,
+            path: APP_ROUTES.starter,
+            render: ({ match, location }) => {
               const starter = getStarter(
                 appCtx.appConfig.starterSections,
                 match.params.starterTag
@@ -154,12 +158,12 @@ function LoggedInContainer(props: LoggedInContainerProps) {
                   path={location.pathname}
                 />
               );
-            }}
-          />
-          <Route
-            exact
-            path={APP_ROUTES.fork.pattern}
-            render={({ match, location }) => {
+            },
+          })}
+          {routerRoute({
+            exact: true,
+            path: APP_ROUTES.fork,
+            render: ({ match, location }) => {
               // NOTE: Temporarily re-using the FromStarterTemplate component to fork a public project
               // TODO (later): Fork a private project using listingId
               const baseProjectId = match.params.projectId;
@@ -174,30 +178,27 @@ function LoggedInContainer(props: LoggedInContainerProps) {
                   version={version}
                 />
               );
-            }}
-          />
-          <Route
-            exact
-            path={APP_ROUTES.teamCreation.pattern}
-            render={({ match, location }) => (
-              <Redirect
-                to={fillRoute(
-                  APP_ROUTES.orgCreation,
-                  match.params,
-                  Object.fromEntries(new URLSearchParams(location.search))
-                )}
-              />
-            )}
-          />
-          <Route
-            exact
-            path={APP_ROUTES.orgCreation.pattern}
-            render={() => (
+            },
+          })}
+          {routerRedirect({
+            exact: true,
+            path: APP_ROUTES.teamCreation,
+            to: ({ match, location }) =>
+              fillRoute(
+                APP_ROUTES.orgCreation,
+                match.params,
+                Object.fromEntries(new URLSearchParams(location.search))
+              ),
+          })}
+          {routerRoute({
+            exact: true,
+            path: APP_ROUTES.orgCreation,
+            render: () => (
               <NormalNonAuthLayout nonAuthCtx={nonAuthCtx}>
                 <TeamCreation />
               </NormalNonAuthLayout>
-            )}
-          />
+            ),
+          })}
           <Route
             render={() =>
               selfInfo.needsSurvey ? (
@@ -233,60 +234,53 @@ function LoggedInContainer(props: LoggedInContainerProps) {
               ) : (
                 <Switch>
                   {projectRoute()}
-                  <Route
-                    exact
-                    path={APP_ROUTES.dashboard.pattern}
-                    render={() => (
-                      <Redirect to={fillRoute(APP_ROUTES.allProjects, {})} />
-                    )}
-                  />
-                  <Route
-                    exact
-                    path={APP_ROUTES.allProjects.pattern}
-                    render={() => <AllProjectsPage />}
-                  />
-                  <Route
-                    exact
-                    path={APP_ROUTES.playground.pattern}
-                    render={() => <MyPlayground />}
-                  />
-                  <Route
-                    path={APP_ROUTES.workspace.pattern}
-                    render={({ match }) => (
+                  {routerRedirect({
+                    exact: true,
+                    path: APP_ROUTES.dashboard,
+                    to: () => fillRoute(APP_ROUTES.allProjects, {}),
+                  })}
+                  {routerRoute({
+                    exact: true,
+                    path: APP_ROUTES.allProjects,
+                    render: () => <AllProjectsPage />,
+                  })}
+                  {routerRoute({
+                    exact: true,
+                    path: APP_ROUTES.playground,
+                    render: () => <MyPlayground />,
+                  })}
+                  {routerRoute({
+                    path: APP_ROUTES.workspace,
+                    render: ({ match }) => (
                       <WorkspacePage
                         key={match.params.workspaceId}
                         workspaceId={match.params.workspaceId}
                       />
-                    )}
-                  />
-                  <Route
-                    exact
-                    path={APP_ROUTES.team.pattern}
-                    render={({ match, location }) => (
-                      <Redirect
-                        to={fillRoute(
-                          APP_ROUTES.org,
-                          match.params,
-                          Object.fromEntries(
-                            new URLSearchParams(location.search)
-                          )
-                        )}
-                      />
-                    )}
-                  />
-                  <Route
-                    exact
-                    path={APP_ROUTES.org.pattern}
-                    render={({ match }) => (
+                    ),
+                  })}
+                  {routerRedirect({
+                    exact: true,
+                    path: APP_ROUTES.team,
+                    to: ({ match, location }) =>
+                      fillRoute(
+                        APP_ROUTES.org,
+                        match.params,
+                        Object.fromEntries(new URLSearchParams(location.search))
+                      ),
+                  })}
+                  {routerRoute({
+                    exact: true,
+                    path: APP_ROUTES.org,
+                    render: ({ match }) => (
                       <TeamPage
                         key={match.params.teamId}
                         teamId={match.params.teamId}
                       />
-                    )}
-                  />
-                  <Route
-                    path={APP_ROUTES.cmsRoot.pattern}
-                    render={({ match }) => (
+                    ),
+                  })}
+                  {routerRoute({
+                    path: APP_ROUTES.cmsRoot,
+                    render: ({ match }) => (
                       <widgets.ObserverLoadable
                         loader={() => import("./cms/CmsRoot")}
                         contents={(CmsRoot) => (
@@ -297,25 +291,20 @@ function LoggedInContainer(props: LoggedInContainerProps) {
                           />
                         )}
                       />
-                    )}
-                  />
-                  <Route
-                    path={APP_ROUTES.teamSettings.pattern}
-                    render={({ match, location }) => (
-                      <Redirect
-                        to={fillRoute(
-                          APP_ROUTES.orgSettings,
-                          match.params,
-                          Object.fromEntries(
-                            new URLSearchParams(location.search)
-                          )
-                        )}
-                      />
-                    )}
-                  />
-                  <Route
-                    path={APP_ROUTES.orgSettings.pattern}
-                    render={({ match, location }) => {
+                    ),
+                  })}
+                  {routerRedirect({
+                    path: APP_ROUTES.teamSettings,
+                    to: ({ match, location }) =>
+                      fillRoute(
+                        APP_ROUTES.orgSettings,
+                        match.params,
+                        Object.fromEntries(new URLSearchParams(location.search))
+                      ),
+                  })}
+                  {routerRoute({
+                    path: APP_ROUTES.orgSettings,
+                    render: ({ match, location }) => {
                       const teamId = match.params.teamId;
                       // Block viewers from seeing the settings page.
                       const team = teamId
@@ -346,19 +335,19 @@ function LoggedInContainer(props: LoggedInContainerProps) {
                         );
                       }
                       return <TeamSettingsPage teamId={teamId} />;
-                    }}
-                  />
-                  <Route
-                    path={APP_ROUTES.orgSupport.pattern}
-                    render={({ match }) => (
+                    },
+                  })}
+                  {routerRoute({
+                    path: APP_ROUTES.orgSupport,
+                    render: ({ match }) => (
                       <TeamSupportRedirect teamId={match.params.teamId} />
-                    )}
-                  />
-                  <Route
-                    exact
-                    path={APP_ROUTES.settings.pattern}
-                    render={() => <SettingsPage appCtx={appCtx} />}
-                  />
+                    ),
+                  })}
+                  {routerRoute({
+                    exact: true,
+                    path: APP_ROUTES.settings,
+                    render: () => <SettingsPage appCtx={appCtx} />,
+                  })}
                   <Route
                     exact
                     path={[
@@ -375,56 +364,50 @@ function LoggedInContainer(props: LoggedInContainerProps) {
                       )
                     }
                   />
-                  <Route
-                    exact
-                    path={APP_ROUTES.importProjectsFromProd.pattern}
-                    render={() =>
+                  {routerRoute({
+                    exact: true,
+                    path: APP_ROUTES.importProjectsFromProd,
+                    render: () =>
                       isAdminTeamEmail(selfInfo.email, appCtx.appConfig) ? (
                         <NormalLayout appCtx={appCtx}>
                           <ImportProjectsFromProd nonAuthCtx={nonAuthCtx} />
                         </NormalLayout>
                       ) : (
                         <Redirect to={"/"} />
-                      )
-                    }
-                  />
-                  <Route
-                    exact
-                    path={APP_ROUTES.discourseConnectClient.pattern}
-                    render={() => <DiscourseConnectClient />}
-                  />
-                  <Route
-                    exact
-                    path={APP_ROUTES.plasmicInit.pattern}
-                    render={({ match }) => (
+                      ),
+                  })}
+                  {routerRoute({
+                    exact: true,
+                    path: APP_ROUTES.discourseConnectClient,
+                    render: () => <DiscourseConnectClient />,
+                  })}
+                  {routerRoute({
+                    exact: true,
+                    path: APP_ROUTES.plasmicInit,
+                    render: ({ match }) => (
                       <InitTokenPage
                         appCtx={appCtx}
                         initToken={match.params.initToken}
                       />
-                    )}
-                  />
-                  <Route
-                    exact
-                    path={APP_ROUTES.teamAnalytics.pattern}
-                    render={({ match, location }) => (
-                      <Redirect
-                        to={fillRoute(
-                          APP_ROUTES.orgAnalytics,
-                          match.params,
-                          Object.fromEntries(
-                            new URLSearchParams(location.search)
-                          )
-                        )}
-                      />
-                    )}
-                  />
-                  <Route
-                    exact
-                    path={APP_ROUTES.orgAnalytics.pattern}
-                    render={({ match }) => (
+                    ),
+                  })}
+                  {routerRedirect({
+                    exact: true,
+                    path: APP_ROUTES.teamAnalytics,
+                    to: ({ match, location }) =>
+                      fillRoute(
+                        APP_ROUTES.orgAnalytics,
+                        match.params,
+                        Object.fromEntries(new URLSearchParams(location.search))
+                      ),
+                  })}
+                  {routerRoute({
+                    exact: true,
+                    path: APP_ROUTES.orgAnalytics,
+                    render: ({ match }) => (
                       <LazyTeamAnalytics teamId={match.params.teamId} />
-                    )}
-                  />
+                    ),
+                  })}
                 </Switch>
               )
             }
@@ -537,10 +520,10 @@ export function Root() {
                 <NonAuthCtxContext.Provider value={nonAuthCtx}>
                   <div className={"root"} onPointerDown={() => {}}>
                     <Switch>
-                      <Route
-                        exact
-                        path={APP_ROUTES.login.pattern}
-                        render={() => (
+                      {routerRoute({
+                        exact: true,
+                        path: APP_ROUTES.login,
+                        render: () => (
                           <>
                             <PromoBanner />
                             <NormalNonAuthLayout nonAuthCtx={nonAuthCtx}>
@@ -551,34 +534,33 @@ export function Root() {
                               />
                             </NormalNonAuthLayout>
                           </>
-                        )}
-                      />
-                      <Route
-                        exact
-                        path={APP_ROUTES.survey.pattern}
-                        render={() => (
+                        ),
+                      })}
+                      {routerRoute({
+                        exact: true,
+                        path: APP_ROUTES.survey,
+                        render: () => (
                           <NormalNonAuthLayout nonAuthCtx={nonAuthCtx}>
                             <SurveyForm />
                           </NormalNonAuthLayout>
-                        )}
-                      />
-                      <Route
-                        exact
-                        path={APP_ROUTES.emailVerification.pattern}
-                        render={() =>
+                        ),
+                      })}
+                      {routerRoute({
+                        exact: true,
+                        path: APP_ROUTES.emailVerification,
+                        render: () =>
                           !appCtx.selfInfo ? (
                             <Redirect to={getLoginRouteWithContinuation()} />
                           ) : (
                             <NormalNonAuthLayout nonAuthCtx={nonAuthCtx}>
                               <EmailVerification selfInfo={appCtx.selfInfo} />
                             </NormalNonAuthLayout>
-                          )
-                        }
-                      />
-                      <Route
-                        exact
-                        path={APP_ROUTES.signup.pattern}
-                        render={() => (
+                          ),
+                      })}
+                      {routerRoute({
+                        exact: true,
+                        path: APP_ROUTES.signup,
+                        render: () => (
                           <>
                             <PromoBanner />
                             <NormalNonAuthLayout nonAuthCtx={nonAuthCtx}>
@@ -589,68 +571,68 @@ export function Root() {
                               />
                             </NormalNonAuthLayout>
                           </>
-                        )}
-                      />
-                      <Route
-                        exact
-                        path={APP_ROUTES.sso.pattern}
-                        render={() => (
+                        ),
+                      })}
+                      {routerRoute({
+                        exact: true,
+                        path: APP_ROUTES.sso,
+                        render: () => (
                           <NormalNonAuthLayout nonAuthCtx={nonAuthCtx}>
                             {documentTitle("Log in with SSO")}
                             <SsoLoginForm onLoggedIn={reloadData} />
                           </NormalNonAuthLayout>
-                        )}
-                      />
-                      <Route
-                        exact
-                        path={APP_ROUTES.logout.pattern}
-                        render={() => {
+                        ),
+                      })}
+                      {routerRoute({
+                        exact: true,
+                        path: APP_ROUTES.logout,
+                        render: () => {
                           spawn(appCtx.logout());
                           return null;
-                        }}
-                      />
-                      <Route
-                        exact
-                        path={APP_ROUTES.authorize.pattern}
-                        render={() => (
+                        },
+                      })}
+                      {routerRoute({
+                        exact: true,
+                        path: APP_ROUTES.authorize,
+                        render: () => (
                           <NormalNonAuthLayout nonAuthCtx={nonAuthCtx}>
                             <AppAuthPage />
                           </NormalNonAuthLayout>
-                        )}
-                      />
-                      <Route
-                        exact
-                        path={APP_ROUTES.forgotPassword.pattern}
-                        render={() => (
+                        ),
+                      })}
+                      {routerRoute({
+                        exact: true,
+                        path: APP_ROUTES.forgotPassword,
+                        render: () => (
                           <NormalNonAuthLayout nonAuthCtx={nonAuthCtx}>
                             {documentTitle("Forgot password")}
                             <ForgotPasswordForm />
                           </NormalNonAuthLayout>
-                        )}
-                      />
-                      <Route
-                        exact
-                        path={APP_ROUTES.resetPassword.pattern}
-                        render={() => (
+                        ),
+                      })}
+                      {routerRoute({
+                        exact: true,
+                        path: APP_ROUTES.resetPassword,
+                        render: () => (
                           <NormalNonAuthLayout nonAuthCtx={nonAuthCtx}>
                             {documentTitle("Reset password")}
                             <ResetPasswordForm />
                           </NormalNonAuthLayout>
-                        )}
-                      />
-                      <Route
-                        exact
-                        path={APP_ROUTES.githubCallback.pattern}
-                        render={() => (
+                        ),
+                      })}
+                      {routerRoute({
+                        exact: true,
+                        path: APP_ROUTES.githubCallback,
+                        render: () => (
                           <GithubCallback nonAuthCtx={nonAuthCtx} />
-                        )}
-                      />
-                      <Route
-                        path={"/"}
-                        render={() => (
+                        ),
+                      })}
+                      {routerRoute({
+                        path: APP_ROUTES.dashboard,
+                        render: () => (
                           <LoggedInContainer onRefreshUi={forceUpdate} />
-                        )}
-                      />
+                        ),
+                      })}
                     </Switch>
                   </div>
                 </NonAuthCtxContext.Provider>

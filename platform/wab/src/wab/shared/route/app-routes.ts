@@ -7,6 +7,9 @@ import {
   CmsRowRevisionId,
   CmsTableId,
   MainBranchId,
+  ProjectId,
+  TeamId,
+  WorkspaceId,
 } from "@/wab/shared/ApiSchema";
 import { fillRoute, route } from "@/wab/shared/route/route";
 
@@ -14,19 +17,19 @@ export const APP_ROUTES = {
   dashboard: route("/"),
   allProjects: route("/projects"),
   playground: route("/playground"),
-  workspace: route<{ workspaceId: string }>("/workspaces/:workspaceId"),
+  workspace: route<{ workspaceId: WorkspaceId }>("/workspaces/:workspaceId"),
 
   //
   // Analytics
   //
-  teamAnalytics: route<{ teamId: string }>("/teams/:teamId/analytics"),
-  orgAnalytics: route<{ teamId: string }>("/orgs/:teamId/analytics"),
+  teamAnalytics: route<{ teamId: TeamId }>("/teams/:teamId/analytics"),
+  orgAnalytics: route<{ teamId: TeamId }>("/orgs/:teamId/analytics"),
 
   //
   // Content
   //
 
-  contentRoot: route<{ databaseId: string }>("/content/:databaseId"),
+  contentRoot: route<{ databaseId: CmsDatabaseId }>("/content/:databaseId"),
   content: route<{ databaseId: CmsDatabaseId; tableId: CmsTableId }>(
     "/content/:databaseId/:tableId"
   ),
@@ -94,58 +97,58 @@ export const APP_ROUTES = {
     "/cms/:databaseId/settings"
   ),
 
-  team: route<{ teamId: string }>("/teams/:teamId"),
-  org: route<{ teamId: string }>("/orgs/:teamId"),
-  teamSettings: route<{ teamId: string }>("/teams/:teamId/settings"),
-  orgSettings: route<{ teamId: string }>("/orgs/:teamId/settings"),
-  orgSupport: route<{ teamId: string }>("/orgs/:teamId/support"),
+  team: route<{ teamId: TeamId }>("/teams/:teamId"),
+  org: route<{ teamId: TeamId }>("/orgs/:teamId"),
+  teamSettings: route<{ teamId: TeamId }>("/teams/:teamId/settings"),
+  orgSettings: route<{ teamId: TeamId }>("/orgs/:teamId/settings"),
+  orgSupport: route<{ teamId: TeamId }>("/orgs/:teamId/support"),
   settings: route("/settings"),
-  project: route<{ projectId: string }>("/projects/:projectId"),
-  projectSlug: route<{ projectId: string; slug: string }>(
+  project: route<{ projectId: ProjectId }>("/projects/:projectId"),
+  projectSlug: route<{ projectId: ProjectId; slug: string }>(
     "/projects/:projectId/-/:slug"
   ),
-  projectPreview: route<{ projectId: string; previewPath: string }>(
+  projectPreview: route<{ projectId: ProjectId; previewPath: string }>(
     "/projects/:projectId/preview/:previewPath*"
   ),
-  projectFullPreview: route<{ previewPath: string; projectId: string }>(
+  projectFullPreview: route<{ previewPath: string; projectId: ProjectId }>(
     "/projects/:projectId/preview-full/:previewPath*"
   ),
-  projectDocs: route<{ projectId: string }>("/projects/:projectId/docs"),
+  projectDocs: route<{ projectId: ProjectId }>("/projects/:projectId/docs"),
   projectDocsComponents: route<{
-    projectId: string;
+    projectId: ProjectId;
     codegenType: "loader" | "codegen";
   }>("/projects/:projectId/docs/:codegenType/components"),
   projectDocsComponent: route<{
-    projectId: string;
+    projectId: ProjectId;
     componentIdOrClassName: string;
     codegenType: "loader" | "codegen";
   }>(
     "/projects/:projectId/docs/:codegenType/component/:componentIdOrClassName"
   ),
   projectDocsIcons: route<{
-    projectId: string;
+    projectId: ProjectId;
     codegenType: "loader" | "codegen";
   }>("/projects/:projectId/docs/:codegenType/icons"),
   projectDocsIcon: route<{
-    projectId: string;
+    projectId: ProjectId;
     iconIdOrClassName: string;
     codegenType: "loader" | "codegen";
   }>("/projects/:projectId/docs/:codegenType/icon/:iconIdOrClassName"),
   projectDocsCodegenType: route<{
-    projectId: string;
+    projectId: ProjectId;
     codegenType: "loader" | "codegen";
   }>("/projects/:projectId/docs/:codegenType"),
   starter: route<{
     starterTag: string;
   }>("/starters/:starterTag"),
   fork: route<{
-    projectId: string;
+    projectId: ProjectId;
   }>("/fork/:projectId"),
   admin: route<{
     tab: string | undefined;
   }>("/admin/:tab?"),
   adminTeams: route<{
-    teamId: string | undefined;
+    teamId: TeamId | undefined;
   }>("/admin/teams/:teamId?"),
   login: route("/login"),
   logout: route("/logout"),
@@ -158,7 +161,9 @@ export const APP_ROUTES = {
   airtableAuth: route(`/api/v1/auth/airtable`),
   googleSheetsAuth: route(`/api/v1/auth/google-sheets`),
   register: route("/register"),
-  plasmicInit: route("/auth/plasmic-init/:initToken"),
+  plasmicInit: route<{
+    initToken: string;
+  }>("/auth/plasmic-init/:initToken"),
   currentUser: route("/api/v1/auth/self"),
   survey: route("/survey"),
   emailVerification: route("/email-verification"),
