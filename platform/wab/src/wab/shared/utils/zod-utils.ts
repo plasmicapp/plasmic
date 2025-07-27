@@ -7,7 +7,7 @@ export function zOpaqueString<T extends Opaque<string, unknown>>() {
 
 /** JSON.parse a z.string() and safeParse it to another schema. */
 export function zParseJson<Output>(
-  schema: z.Schema
+  schema: z.Schema<Output>
 ): (json: string, ctx: RefinementCtx) => Output | Promise<Output> {
   return (json, ctx) => {
     let parsed: unknown;

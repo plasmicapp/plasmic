@@ -9,7 +9,7 @@ import {
   normalizeCmsData,
   projectCmsData,
 } from "@/wab/server/util/cms-util";
-import { ApiCmsQuery, publicCmsReadsContract } from "@/wab/shared/api/cms";
+import { publicCmsReadsContract } from "@/wab/shared/api/cms";
 import {
   ApiCmsTable,
   CmsDatabaseId,
@@ -58,7 +58,7 @@ export const publicCmsReadsServer = s.router(publicCmsReadsContract, {
       params.tableIdentifier
     );
 
-    const cmsQuery: ApiCmsQuery = query.q || {};
+    const cmsQuery = query.q || {};
     const locale = fixLocale(query.locale ?? "");
     const useDraft = query.draft === "1";
     const rows = await dbMgr.queryCmsRows(table.id, cmsQuery, { useDraft });
@@ -78,7 +78,7 @@ export const publicCmsReadsServer = s.router(publicCmsReadsContract, {
       params.tableIdentifier
     );
 
-    const cmsQuery: Pick<ApiCmsQuery, "where"> = query.q || {};
+    const cmsQuery = query.q || {};
     const useDraft = query.draft === "1";
     const count = await dbMgr.countCmsRows(table.id, cmsQuery, { useDraft });
     await req.resolveTransaction(); // normally handled by `withNext`
