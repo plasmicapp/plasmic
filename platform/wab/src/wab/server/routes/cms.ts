@@ -52,7 +52,7 @@ async function getTableByIdentifier(mgr: DbMgr, req: Request) {
 const s = initServer();
 export const publicCmsReadsServer = s.router(publicCmsReadsContract, {
   queryTable: async ({ params, query, req }) => {
-    const dbMgr = userDbMgr(req as any); // TODO
+    const dbMgr = userDbMgr(req);
     const table = await dbMgr.getCmsTableByIdentifier(
       params.dbId,
       params.tableIdentifier
@@ -63,7 +63,7 @@ export const publicCmsReadsServer = s.router(publicCmsReadsContract, {
     const useDraft = query.draft === "1";
     const rows = await dbMgr.queryCmsRows(table.id, cmsQuery, { useDraft });
     const metaMap = makeFieldMetaMap(table.schema, cmsQuery.fields);
-    await (req as any).resolveTransaction(); // TODO
+    await req.resolveTransaction(); // normally handled by `withNext`
     return {
       status: 200,
       body: {
@@ -72,7 +72,7 @@ export const publicCmsReadsServer = s.router(publicCmsReadsContract, {
     };
   },
   countTable: async ({ params, query, req }) => {
-    const dbMgr = userDbMgr(req as any); // TODO
+    const dbMgr = userDbMgr(req);
     const table = await dbMgr.getCmsTableByIdentifier(
       params.dbId,
       params.tableIdentifier
@@ -81,7 +81,7 @@ export const publicCmsReadsServer = s.router(publicCmsReadsContract, {
     const cmsQuery: Pick<ApiCmsQuery, "where"> = query.q || {};
     const useDraft = query.draft === "1";
     const count = await dbMgr.countCmsRows(table.id, cmsQuery, { useDraft });
-    await (req as any).resolveTransaction(); // TODO
+    await req.resolveTransaction(); // normally handled by `withNext`
     return {
       status: 200,
       body: {
@@ -90,10 +90,10 @@ export const publicCmsReadsServer = s.router(publicCmsReadsContract, {
     };
   },
   getDatabase: async ({ params, req }) => {
-    const mgr = userDbMgr(req as any); // TODO
+    const mgr = userDbMgr(req);
     const database = await mgr.getCmsDatabaseById(params.dbId);
     const apiDatabase = await makeApiDatabase(mgr, database);
-    await (req as any).resolveTransaction(); // TODO
+    await req.resolveTransaction(); // normally handled by `withNext`
     return {
       status: 200,
       body: apiDatabase,
