@@ -15,7 +15,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@plasmicapp/loader-gatsby": "^1.0.385",
+    "@plasmicapp/loader-gatsby": "^1.0.397",
     "gatsby": "^5.14.1",
     "gatsby-plugin-react-helmet": "^6.14.0",
     "react": "^18.2.0",
