@@ -120,10 +120,14 @@ export async function resolveLatestProjectRevisions(
   return Object.fromEntries(revisions) as Record<string, number>;
 }
 
-export function parseProjectIdSpec(id: string) {
+export function parseProjectIdSpec(id: string): {
+  projectId: ProjectId;
+  version: string | undefined;
+  tag: string | undefined;
+} {
   if (!id.includes("@")) {
     return {
-      projectId: id,
+      projectId: id as ProjectId,
       version: undefined,
       tag: undefined,
     };
@@ -135,18 +139,22 @@ export function parseProjectIdSpec(id: string) {
     ) {
       return {
         // versionRangeOrTag might be a valid tag
-        projectId,
+        projectId: projectId as ProjectId,
         version: undefined,
         tag: versionRangeOrTag,
       };
     }
     return {
       // We know versionRangeOrTag is an exact version string
-      projectId,
+      projectId: projectId as ProjectId,
       version: versionRangeOrTag,
       tag: undefined,
     };
   }
+}
+
+export function extractProjectId(id: string): ProjectId {
+  return parseProjectIdSpec(id).projectId;
 }
 
 async function resolveDeps(

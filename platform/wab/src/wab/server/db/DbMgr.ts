@@ -1529,17 +1529,22 @@ export class DbMgr implements MigrationDbMgr {
     ];
   }
 
-  async getTeamByProjectId(projectId: ProjectId) {
+  async getTeamByProjectId(
+    projectId: ProjectId,
+    includeDeleted = false
+  ): Promise<Team | undefined> {
     await this.checkProjectPerms(projectId, "viewer", "get", undefined, false);
-    return await this.teams()
+    const qb = this.teams()
       .createQueryBuilder("t")
       .innerJoin(Workspace, "w", "w.teamId = t.id")
       .innerJoin(Project, "p", "p.workspaceId = w.id")
-      .where(
-        "p.id = :projectId AND p.deletedAt IS NULL AND w.deletedAt IS NULL AND t.deletedAt IS NULL",
-        { projectId }
-      )
-      .getOne();
+      .where("p.id = :projectId", { projectId });
+    if (!includeDeleted) {
+      qb.andWhere(
+        "p.deletedAt IS NULL AND w.deletedAt IS NULL AND t.deletedAt IS NULL"
+      );
+    }
+    return await qb.getOne();
   }
 
   async getTeamByWorkspaceId(workspaceId: WorkspaceId) {

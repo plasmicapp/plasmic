@@ -1,5 +1,6 @@
 import { DbMgr } from "@/wab/server/db/DbMgr";
 import {
+  extractProjectId,
   mkVersionToSync,
   resolveProjectDeps,
   VersionToSync,
@@ -359,9 +360,18 @@ function makeBundleBucketPath(opts: {
   return key;
 }
 
+export function extractBundleKeyProjectIds(bundleKey: string): ProjectId[] {
+  const ps = bundleKey.split("/ps=")[1].split("/")[0];
+  return ps.split(",").map(extractProjectId);
+}
+
 function makeExportOptsKey(opts: ExportOpts) {
   // We use a hash of the json string to avoid blowing the S3 object
   // key length limit of 1024 chars
   const str = JSON.stringify(opts);
   return createHash("sha256").update(str).digest("hex");
 }
+
+export const _testonly = {
+  makeBundleBucketPath,
+};
