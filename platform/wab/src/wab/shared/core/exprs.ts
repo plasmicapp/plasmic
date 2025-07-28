@@ -1109,7 +1109,7 @@ export function hasUnsafeCurrentUserBinding(
 ) {
   const exprSnippets = getSnippetsWithoutSafeCurrentUserUsage(expr, exprCtx);
   return exprSnippets.some(([_key, snippets]) =>
-    snippets.some((snippet) => snippet.includes("currentUser"))
+    snippets.some((snippet) => /\bcurrentUser\b/.test(snippet))
   );
 }
 
