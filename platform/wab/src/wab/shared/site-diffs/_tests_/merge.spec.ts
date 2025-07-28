@@ -2,6 +2,7 @@ import { removeFromArray } from "@/wab/commons/collections";
 import { mkTokenRef, TokenType } from "@/wab/commons/StyleToken";
 import { ProjectFullDataResponse } from "@/wab/shared/ApiSchema";
 import { mkArenaFrame } from "@/wab/shared/Arenas";
+import { checkRefsInBundle, FastBundler } from "@/wab/shared/bundler";
 import {
   createStyleTokenFromRegistration,
   mkCodeComponent,
@@ -88,6 +89,7 @@ import codeComponentsWithSameNameBundle from "@/wab/shared/site-diffs/_tests_/bu
 import globalContextBundle from "@/wab/shared/site-diffs/_tests_/bundles/global-context-merge.json";
 import richTextConflict from "@/wab/shared/site-diffs/_tests_/bundles/rich-text-conflict.json";
 import styleTokenBundle from "@/wab/shared/site-diffs/_tests_/bundles/style-tokens-conflict.json";
+import danglingRefDeletionBundle from "@/wab/shared/site-diffs/_tests_/bundles/test-dangling-ref-deletion.json";
 import edgeCasesBundle2 from "@/wab/shared/site-diffs/_tests_/bundles/test-edge-cases-merge-2.json";
 import edgeCasesBundle from "@/wab/shared/site-diffs/_tests_/bundles/test-edge-cases-merge.json";
 import mergeDepsBundle from "@/wab/shared/site-diffs/_tests_/bundles/test-merging-deps.json";
@@ -4974,6 +4976,21 @@ describe("merging", () => {
     const result = testMergeFromJsonBundle(
       hackyCast<ProjectFullDataResponse>(mergeTplParentBundle)
     );
+
+    expect(result).toMatchObject({
+      status: "merged",
+      autoReconciliations: [],
+    });
+  });
+
+  it("should remove dangling refs with incremental observable", () => {
+    const result = testMergeFromJsonBundle(
+      hackyCast<ProjectFullDataResponse>(danglingRefDeletionBundle)
+    );
+
+    const bundler = new FastBundler();
+    const bundle = bundler.bundle(result.mergedSite, "", "");
+    checkRefsInBundle(bundle);
 
     expect(result).toMatchObject({
       status: "merged",

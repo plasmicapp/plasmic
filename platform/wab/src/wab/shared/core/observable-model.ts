@@ -170,8 +170,18 @@ export type ModelChange = AnyChange & {
 
 export type ModelChangeListener = (event: ModelChange) => void;
 
+/**
+ * Flags to be passed when traversing the model tree.
+ * `incrementalObserve` is true when the traverse is triggered incrementally,
+ * e.g: when opening the component page for the first time.
+ * `modelUpdate` is true when the traverse is triggered by a model update.
+ *
+ * We need these flags to assert that the model is in a valid state depending on
+ * the context of the traversal.
+ */
 type VisitFlags = {
-  incrementalObserve?: boolean;
+  incrementalObserve: boolean;
+  modelUpdate: boolean;
 };
 
 type ObservableState = {
@@ -292,7 +302,7 @@ export function observeModel(
 
   // Returns true if there should be no strong references to a given instance.
   // This is the case for the root and for most external references.
-  const shouldNotHaveParents = (inst: ObjInst) => {
+  const shouldNotHaveParents = (inst: ObjInst, flags: VisitFlags) => {
     if (inst === rootInst) {
       // The root has no parents
       return true;
@@ -301,14 +311,17 @@ export function observeModel(
       // External references shouldn't have strong references pointing to it.
       return true;
     }
-    if (opts.incremental && !mobxHack.isObserved(inst)) {
+    if (!flags.modelUpdate && opts.incremental && !mobxHack.isObserved(inst)) {
       return true;
     }
     return false;
   };
 
   // Returns false or a string explaining why the instance is in invalid state
-  const isInInvalidState = (inst: ObjInst): (() => string) | false => {
+  const isInInvalidState = (
+    inst: ObjInst,
+    flags: VisitFlags
+  ): (() => string) | false => {
     const getRefs = (
       parents: Map<ObjInst, Map<ObjInst, Map<string, number>>>
     ) => {
@@ -325,11 +338,15 @@ export function observeModel(
         )
         .join(", ");
     };
-    if (opts.incremental && !mobxHack.isObservable(inst)) {
+    if (
+      !flags.modelUpdate &&
+      opts.incremental &&
+      !mobxHack.isObservable(inst)
+    ) {
       return false;
     }
 
-    if (shouldNotHaveParents(inst)) {
+    if (shouldNotHaveParents(inst, flags)) {
       // The only assertion for nodes that shouldn't have strong parents is
       // that it's not referenced by any strong reference.
       if (instParents.has(inst)) {
@@ -366,7 +383,7 @@ export function observeModel(
   const possiblyNewlyAddedInsts = new Set<ObjInst>();
 
   // Insts that got into an invalid state at some point
-  const instsToCheck = new Set<ObjInst>();
+  const instsToCheck = new Set<{ inst: ObjInst; flags: VisitFlags }>();
   let isPruning = false;
 
   // We check that disposed instances are not referenced by weak refs,
@@ -380,17 +397,6 @@ export function observeModel(
     return _instUtil.meta
       .allFields(clazz)
       .filter((field) => !excludeFields.has(field));
-  });
-
-  const makeDecoratorObj = memoize((clazz: Class) => {
-    const allFields = getClassFields(clazz);
-    return localObject.assign(
-      new localObject(),
-      Object.fromEntries(
-        allFields.map((f) => [f.name, mobx.observable])
-        // eslint-disable-next-line @typescript-eslint/ban-types
-      ) as Object
-    );
   });
 
   /**
@@ -454,6 +460,7 @@ export function observeModel(
           visitFieldValue(inst, field, event.newValue, {
             ...flags,
             incrementalObserve: false,
+            modelUpdate: true,
           })
         );
       }
@@ -502,7 +509,7 @@ export function observeModel(
       // reference another instance (e.g., by its uuid), so we should also
       // keep track of such references.
       if (typeof value === "string") {
-        return maybeObserveImplicitWeakRefField(inst, field.name, value);
+        return maybeObserveImplicitWeakRefField(inst, field.name, value, flags);
       }
       return undefined;
     } else {
@@ -535,10 +542,17 @@ export function observeModel(
       const instDispose = observeInst(value, flags);
       if (instDispose) {
         // Add this value as a child of the owning inst
-        updateInstParent(inst, field.name, value, true);
+        updateInstParent(inst, field.name, value, {
+          add: true,
+          weakRef: false,
+          flags,
+        });
         return namedDispose(makeInstFieldKey(inst, field.name), () => {
           // On dispose, remove this value as a child of the owning inst
-          updateInstParent(inst, field.name, value, false);
+          updateInstParent(inst, field.name, value, {
+            add: false,
+            flags,
+          });
           instDispose();
         });
       } else {
@@ -555,13 +569,17 @@ export function observeModel(
         weaklyReferencedNodes.add(value);
       }
 
-      // This field is referenced by a WeakRef, so we should return
-      // without observing to avoid cycles. It must be reachable through
-      // a path that only includes StrongRefs.
-      // We should just update the weak references.
-      updateInstParent(inst, field.name, value, true, true);
+      updateInstParent(inst, field.name, value, {
+        add: true,
+        weakRef: true,
+        flags,
+      });
       return namedDispose(makeInstFieldKey(inst, field.name), () => {
-        updateInstParent(inst, field.name, value, false, true);
+        updateInstParent(inst, field.name, value, {
+          add: false,
+          weakRef: true,
+          flags,
+        });
       });
     }
   };
@@ -586,6 +604,7 @@ export function observeModel(
         const newFlags = { ...flags };
         if (onUpdate) {
           newFlags.incrementalObserve = false;
+          newFlags.modelUpdate = true;
         }
         addCollectionChildDispose(
           childDisposes,
@@ -706,7 +725,11 @@ export function observeModel(
     // are added, removed, or changed.
     // eslint-disable-next-line @typescript-eslint/ban-types
     const objDispose = mobx.observe(obj as Object, (event) => {
-      const newFlags: VisitFlags = { ...flags, incrementalObserve: false };
+      const newFlags: VisitFlags = {
+        ...flags,
+        incrementalObserve: false,
+        modelUpdate: true,
+      };
       if (event.type === "add") {
         fireFieldChange(inst, field.name, {
           type: "obj-add",
@@ -821,9 +844,13 @@ export function observeModel(
     parent: ObjInst,
     field: string,
     child: ObjInst,
-    add: boolean,
-    weakRef = false
+    updateOpts: {
+      add: boolean;
+      flags: VisitFlags;
+      weakRef?: boolean;
+    }
   ) => {
+    const { add, weakRef = false, flags } = updateOpts;
     const mapOfParents = weakRef ? inst2Weakrefs : instParents;
     let parent2Fields = mapOfParents.get(child);
     if (!parent2Fields) {
@@ -859,8 +886,11 @@ export function observeModel(
         fields.set(field, count);
       }
     }
-    if (isInInvalidState(child) !== false) {
-      instsToCheck.add(child);
+    if (isInInvalidState(child, flags) !== false) {
+      instsToCheck.add({
+        inst: child,
+        flags: flags,
+      });
     }
   };
 
@@ -998,7 +1028,8 @@ export function observeModel(
   const maybeObserveImplicitWeakRefField = (
     inst: ObjInst,
     fieldName: string,
-    value: string
+    value: string,
+    flags: VisitFlags
   ) => {
     // Unfortunately we need to handle those case-by-case :/
     const classesToTest = [ArenaFrame, StyleToken, RuleSet, VariantedValue];
@@ -1051,17 +1082,27 @@ export function observeModel(
 
     // The same rule value string can reference several tokens
     const childArray = ensureArray(child);
-    childArray.forEach((c) => updateInstParent(inst, fieldName, c, true, true));
+    childArray.forEach((c) =>
+      updateInstParent(inst, fieldName, c, { add: true, weakRef: true, flags })
+    );
     return namedDispose(makeInstFieldKey(inst, fieldName), () => {
       childArray.forEach((c) =>
-        updateInstParent(inst, fieldName, c, false, true)
+        updateInstParent(inst, fieldName, c, {
+          add: false,
+          weakRef: true,
+          flags,
+        })
       );
     });
   };
 
+  const rootFlags: VisitFlags = {
+    incrementalObserve: false,
+    modelUpdate: false,
+  };
   // Finally, we begin by observing the root instance!
   const rootDispose = ensure(
-    observeInst(rootInst, {}),
+    observeInst(rootInst, rootFlags),
     "Expected root dispose"
   );
 
@@ -1074,7 +1115,7 @@ export function observeModel(
   [...weaklyReferencedNodes.keys()].forEach((inst) => {
     // Assert that every referenced node has a parent
     assert(
-      instParents.has(inst) || shouldNotHaveParents(inst),
+      instParents.has(inst) || shouldNotHaveParents(inst, rootFlags),
       `Child ${inst.uid} (${_instUtil.getInstClassName(
         inst
       )}) has no parent node`
@@ -1098,8 +1139,8 @@ export function observeModel(
     manuallyDisposedInsts.clear();
     possiblyNewlyAddedInsts.clear();
     const modelErrors: string[] = withoutNils(
-      [...instsToCheck].map((inst) => {
-        const valid = isInInvalidState(inst);
+      [...instsToCheck].map(({ inst, flags }) => {
+        const valid = isInInvalidState(inst, flags);
         if (valid) {
           return valid();
         }
@@ -1137,8 +1178,8 @@ export function observeModel(
     prune,
     getDeletedInstsWithDanglingRefs: () => {
       const deletedInsts = new Set<ObjInst>();
-      [...instsToCheck.keys()].forEach((inst) => {
-        if (!shouldNotHaveParents(inst)) {
+      [...instsToCheck.keys()].forEach(({ inst, flags }) => {
+        if (!shouldNotHaveParents(inst, flags)) {
           const state = instStates.get(inst);
           const parents = instParents.get(inst);
           const weakParents = inst2Weakrefs.get(inst);
@@ -1211,6 +1252,7 @@ export function observeModel(
         fieldToUpdate.name,
         visitFieldValue(inst, fieldToUpdate, inst[fieldToUpdate.name], {
           incrementalObserve: !isNewInst,
+          modelUpdate: false,
         })
       );
     },
