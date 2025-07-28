@@ -334,8 +334,7 @@ export async function updateSelfPassword(req: Request, res: Response) {
 export async function deleteSelf(req: Request, res: Response) {
   const mgr = userDbMgr(req);
 
-  const id = getUser(req, { allowUnverifiedEmail: true }).id;
-  const userId = mgr.checkUserIdIsSelf(id);
+  const userId = mgr.checkUserIdIsSelf();
   const user = await mgr.getUserById(userId);
 
   if (user) {
