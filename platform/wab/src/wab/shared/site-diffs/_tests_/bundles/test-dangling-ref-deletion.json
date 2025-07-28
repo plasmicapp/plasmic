@@ -576,7 +576,8 @@
             "required": false,
             "mergeWithParent": false,
             "isLocalizable": false,
-            "__type": "PropParam"
+            "__type": "PropParam",
+            "advanced": false
           },
           "qm6eZXPnwhR7": {
             "type": { "__ref": "eD5APcqwInJB" },
@@ -596,7 +597,8 @@
             "required": false,
             "mergeWithParent": false,
             "isLocalizable": false,
-            "__type": "PropParam"
+            "__type": "PropParam",
+            "advanced": false
           },
           "5v6vWHHevXgJ": {
             "type": { "__ref": "0yQ_oDyu4V7C" },
@@ -616,7 +618,8 @@
             "required": false,
             "mergeWithParent": false,
             "isLocalizable": false,
-            "__type": "PropParam"
+            "__type": "PropParam",
+            "advanced": false
           },
           "3Lsw-0GC1BOo": {
             "type": { "__ref": "w79CUcVea8HK" },
@@ -636,7 +639,8 @@
             "required": false,
             "mergeWithParent": false,
             "isLocalizable": false,
-            "__type": "PropParam"
+            "__type": "PropParam",
+            "advanced": false
           },
           "O6QIqp1uTKyg": {
             "tag": "div",
@@ -706,7 +710,8 @@
             "required": false,
             "mergeWithParent": false,
             "isLocalizable": false,
-            "__type": "PropParam"
+            "__type": "PropParam",
+            "advanced": false
           },
           "Z_vCY7ZhwJwc": {
             "type": { "__ref": "i1URoSAqzjGE" },
@@ -726,7 +731,8 @@
             "required": false,
             "mergeWithParent": false,
             "isLocalizable": false,
-            "__type": "PropParam"
+            "__type": "PropParam",
+            "advanced": false
           },
           "lMq8C8e__hML": {
             "type": { "__ref": "UA7UjWtv9h1U" },
@@ -767,7 +773,8 @@
             "required": false,
             "mergeWithParent": false,
             "isLocalizable": false,
-            "__type": "PropParam"
+            "__type": "PropParam",
+            "advanced": false
           },
           "5WxkqTyNrU3x": {
             "type": { "__ref": "BprZ4DfZ9XGO" },
@@ -787,7 +794,8 @@
             "required": false,
             "mergeWithParent": false,
             "isLocalizable": false,
-            "__type": "PropParam"
+            "__type": "PropParam",
+            "advanced": false
           },
           "f65PauEcL-Q7": {
             "tag": "div",
@@ -1142,7 +1150,7 @@
           }
         },
         "deps": [],
-        "version": "247-add-page-href-query-fragment"
+        "version": "248-add-prop-param-advanced"
       },
       "projectId": "aEdkqeH2BR6MwHyjD3tm6K",
       "version": "0.0.1",
@@ -1736,7 +1744,8 @@
             "required": false,
             "mergeWithParent": false,
             "isLocalizable": false,
-            "__type": "PropParam"
+            "__type": "PropParam",
+            "advanced": false
           },
           "qm6eZXPnwhR7": {
             "type": { "__ref": "eD5APcqwInJB" },
@@ -1756,7 +1765,8 @@
             "required": false,
             "mergeWithParent": false,
             "isLocalizable": false,
-            "__type": "PropParam"
+            "__type": "PropParam",
+            "advanced": false
           },
           "5v6vWHHevXgJ": {
             "type": { "__ref": "0yQ_oDyu4V7C" },
@@ -1776,7 +1786,8 @@
             "required": false,
             "mergeWithParent": false,
             "isLocalizable": false,
-            "__type": "PropParam"
+            "__type": "PropParam",
+            "advanced": false
           },
           "3Lsw-0GC1BOo": {
             "type": { "__ref": "w79CUcVea8HK" },
@@ -1796,7 +1807,8 @@
             "required": false,
             "mergeWithParent": false,
             "isLocalizable": false,
-            "__type": "PropParam"
+            "__type": "PropParam",
+            "advanced": false
           },
           "O6QIqp1uTKyg": {
             "tag": "div",
@@ -1866,7 +1878,8 @@
             "required": false,
             "mergeWithParent": false,
             "isLocalizable": false,
-            "__type": "PropParam"
+            "__type": "PropParam",
+            "advanced": false
           },
           "Z_vCY7ZhwJwc": {
             "type": { "__ref": "i1URoSAqzjGE" },
@@ -1886,7 +1899,8 @@
             "required": false,
             "mergeWithParent": false,
             "isLocalizable": false,
-            "__type": "PropParam"
+            "__type": "PropParam",
+            "advanced": false
           },
           "lMq8C8e__hML": {
             "type": { "__ref": "UA7UjWtv9h1U" },
@@ -1927,7 +1941,8 @@
             "required": false,
             "mergeWithParent": false,
             "isLocalizable": false,
-            "__type": "PropParam"
+            "__type": "PropParam",
+            "advanced": false
           },
           "5WxkqTyNrU3x": {
             "type": { "__ref": "BprZ4DfZ9XGO" },
@@ -1947,7 +1962,8 @@
             "required": false,
             "mergeWithParent": false,
             "isLocalizable": false,
-            "__type": "PropParam"
+            "__type": "PropParam",
+            "advanced": false
           },
           "f65PauEcL-Q7": {
             "tag": "div",
@@ -2293,7 +2309,7 @@
           }
         },
         "deps": [],
-        "version": "247-add-page-href-query-fragment"
+        "version": "248-add-prop-param-advanced"
       }
     },
     {
@@ -2871,7 +2887,8 @@
             "isMainContentSlot": false,
             "required": false,
             "mergeWithParent": false,
-            "isLocalizable": false
+            "isLocalizable": false,
+            "advanced": false
           },
           "qm6eZXPnwhR7": {
             "__type": "PropParam",
@@ -2891,7 +2908,8 @@
             "isMainContentSlot": false,
             "required": false,
             "mergeWithParent": false,
-            "isLocalizable": false
+            "isLocalizable": false,
+            "advanced": false
           },
           "5v6vWHHevXgJ": {
             "__type": "PropParam",
@@ -2911,7 +2929,8 @@
             "isMainContentSlot": false,
             "required": false,
             "mergeWithParent": false,
-            "isLocalizable": false
+            "isLocalizable": false,
+            "advanced": false
           },
           "3Lsw-0GC1BOo": {
             "__type": "PropParam",
@@ -2931,7 +2950,8 @@
             "isMainContentSlot": false,
             "required": false,
             "mergeWithParent": false,
-            "isLocalizable": false
+            "isLocalizable": false,
+            "advanced": false
           },
           "O6QIqp1uTKyg": {
             "__type": "TplTag",
@@ -3001,7 +3021,8 @@
             "isMainContentSlot": false,
             "required": false,
             "mergeWithParent": false,
-            "isLocalizable": false
+            "isLocalizable": false,
+            "advanced": false
           },
           "Z_vCY7ZhwJwc": {
             "__type": "PropParam",
@@ -3021,7 +3042,8 @@
             "isMainContentSlot": false,
             "required": false,
             "mergeWithParent": false,
-            "isLocalizable": false
+            "isLocalizable": false,
+            "advanced": false
           },
           "lMq8C8e__hML": {
             "__type": "SlotParam",
@@ -3062,7 +3084,8 @@
             "isMainContentSlot": false,
             "required": false,
             "mergeWithParent": false,
-            "isLocalizable": false
+            "isLocalizable": false,
+            "advanced": false
           },
           "5WxkqTyNrU3x": {
             "__type": "PropParam",
@@ -3082,7 +3105,8 @@
             "isMainContentSlot": false,
             "required": false,
             "mergeWithParent": false,
-            "isLocalizable": false
+            "isLocalizable": false,
+            "advanced": false
           },
           "f65PauEcL-Q7": {
             "__type": "TplTag",
@@ -3428,7 +3452,7 @@
           }
         },
         "deps": [],
-        "version": "247-add-page-href-query-fragment"
+        "version": "248-add-prop-param-advanced"
       }
     }
   ]
