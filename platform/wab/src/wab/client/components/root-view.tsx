@@ -20,7 +20,6 @@ import SettingsPage from "@/wab/client/components/dashboard/SettingsPage";
 import TeamPage from "@/wab/client/components/dashboard/TeamPage";
 import TeamSettingsPage from "@/wab/client/components/dashboard/TeamSettingsPage";
 import WorkspacePage from "@/wab/client/components/dashboard/WorkspacePage";
-import { DiscourseConnectClient } from "@/wab/client/components/DiscourseConnectClient";
 import { IntroSplash } from "@/wab/client/components/modals/IntroSplash";
 import {
   NormalLayout,
@@ -43,9 +42,9 @@ import { TeamCreation } from "@/wab/client/components/pages/TeamCreation";
 import PromoBanner from "@/wab/client/components/PromoBanner";
 import {
   routerRedirect,
+  routerRedirectAsync,
   routerRoute,
 } from "@/wab/client/components/router-utils";
-import { TeamSupportRedirect } from "@/wab/client/components/TeamSupportRedirect";
 import { AppView } from "@/wab/client/components/top-view";
 import * as widgets from "@/wab/client/components/widgets";
 import { providesAppCtx, useAppCtx } from "@/wab/client/contexts/AppContexts";
@@ -61,6 +60,7 @@ import { FastBundler } from "@/wab/shared/bundler";
 import { ensure, hackyCast, spawn } from "@/wab/shared/common";
 import { isAdminTeamEmail } from "@/wab/shared/devflag-utils";
 import { StarterSectionConfig } from "@/wab/shared/devflags";
+import { BASE_URL } from "@/wab/shared/discourse/config";
 import { accessLevelRank } from "@/wab/shared/EntUtil";
 import { getAccessLevelToResource } from "@/wab/shared/perms";
 import { getMaximumTierFromTeams } from "@/wab/shared/pricing/pricing-utils";
@@ -337,11 +337,19 @@ function LoggedInContainer(props: LoggedInContainerProps) {
                       return <TeamSettingsPage teamId={teamId} />;
                     },
                   })}
-                  {routerRoute({
+                  {routerRedirectAsync({
                     path: APP_ROUTES.orgSupport,
-                    render: ({ match }) => (
-                      <TeamSupportRedirect teamId={match.params.teamId} />
-                    ),
+                    to: async ({ match }) => {
+                      const { publicSupportUrl, privateSupportUrl } =
+                        await appCtx.api.prepareTeamSupportUrls(
+                          match.params.teamId
+                        );
+                      if (privateSupportUrl) {
+                        return privateSupportUrl;
+                      } else {
+                        return publicSupportUrl;
+                      }
+                    },
                   })}
                   {routerRoute({
                     exact: true,
@@ -376,10 +384,17 @@ function LoggedInContainer(props: LoggedInContainerProps) {
                         <Redirect to={"/"} />
                       ),
                   })}
-                  {routerRoute({
+                  {routerRedirectAsync({
                     exact: true,
-                    path: APP_ROUTES.discourseConnectClient,
-                    render: () => <DiscourseConnectClient />,
+                    path: APP_ROUTES.discourseConnect,
+                    to: async () => {
+                      const params = await appCtx.api.discourseConnect(
+                        location.search
+                      );
+                      const url = new URL(`${BASE_URL}/session/sso_login`);
+                      url.search = new URLSearchParams(params).toString();
+                      return url.toString();
+                    },
                   })}
                   {routerRoute({
                     exact: true,

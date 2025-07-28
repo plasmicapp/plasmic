@@ -1,3 +1,4 @@
+import { useAsyncStrict } from "@/wab/client/hooks/useAsyncStrict";
 import { Route as RouteData } from "@/wab/shared/route/route";
 import * as React from "react";
 import {
@@ -36,12 +37,15 @@ export function routerRoute<PathParams extends {}>({
   return <Route path={path.pattern} {...props} />;
 }
 
-export type RouterRedirectProps<PathParams extends {}> = Omit<
+type RouterRedirectPropsBase<PathParams extends {}> = Omit<
   RouterRouteProps<PathParams>,
   "children" | "component" | "render"
-> & {
-  to: (props: RouteComponentProps<PathParams>) => string;
-};
+>;
+
+export type RouterRedirectProps<PathParams extends {}> =
+  RouterRedirectPropsBase<PathParams> & {
+    to: (props: RouteComponentProps<PathParams>) => string;
+  };
 
 /**
  * Type-safe replacement for react-router Redirect that works with our Route type.
@@ -61,4 +65,30 @@ export function routerRedirect<PathParams extends {}>({
     },
     ...props,
   });
+}
+
+export type RouterRedirectAsyncProps<PathParams extends {}> =
+  RouterRedirectPropsBase<PathParams> & {
+    to: (props: RouteComponentProps<PathParams>) => Promise<string>;
+  };
+
+/** Redirect to a URL that is asynchronously computed. */
+export function routerRedirectAsync<PathParams extends {}>({
+  path,
+  to,
+  ...props
+}: RouterRedirectAsyncProps<PathParams>) {
+  return routerRoute({
+    path,
+    render: (routeProps: RouteComponentProps<PathParams>) => {
+      return <RedirectAsync to={() => to(routeProps)} />;
+    },
+    ...props,
+  });
+}
+
+/** Like react-router Redirect, but the URL is asynchronously computed. */
+function RedirectAsync(props: { to: () => Promise<string> }) {
+  const { value: url } = useAsyncStrict(props.to, []);
+  return url ? <Redirect to={url} /> : null;
 }

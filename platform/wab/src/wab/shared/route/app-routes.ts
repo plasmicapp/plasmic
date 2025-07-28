@@ -170,7 +170,7 @@ export const APP_ROUTES = {
   teamCreation: route("/team-creation"),
   orgCreation: route("/org-creation"),
   githubCallback: route("/github/callback"),
-  discourseConnectClient: route("/auth/discourse-connect"),
+  discourseConnect: route("/auth/discourse-connect"),
   webImporterSandbox: route("/sandbox/web-importer"),
   importProjectsFromProd: route("/import-projects-from-prod"),
 };
