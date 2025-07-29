@@ -90,5 +90,13 @@ export function routerRedirectAsync<PathParams extends {}>({
 /** Like react-router Redirect, but the URL is asynchronously computed. */
 function RedirectAsync(props: { to: () => Promise<string> }) {
   const { value: url } = useAsyncStrict(props.to, []);
-  return url ? <Redirect to={url} /> : null;
+  if (!url) {
+    return null;
+  } else if (url?.startsWith("https://")) {
+    // External URLs aren't handled by react-router Redirect.
+    window.location.href = url;
+    return null;
+  } else {
+    return <Redirect to={url} />;
+  }
 }
