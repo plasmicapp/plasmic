@@ -43,8 +43,9 @@ export interface WIText extends WIBase {
 export interface WISVG extends WIBase {
   type: "svg";
   outerHtml: string;
-  width: number;
-  height: number;
+  width: string;
+  height: string;
+  fillColor?: string;
 }
 
 export interface WIComponent extends WIBase {

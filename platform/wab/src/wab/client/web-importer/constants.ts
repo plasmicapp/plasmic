@@ -45,7 +45,7 @@ export const paragraphTags = new Set([
   "span",
 ]);
 
-export const textStylesKeys: string[] = [
+export const textStylesKeys = new Set<string>([
   "color",
   "fontFamily",
   "fontSize",
@@ -54,9 +54,9 @@ export const textStylesKeys: string[] = [
   "lineHeight",
   "textAlign",
   "textDecorationLine",
-];
+]);
 
-export const containerStylesKeys: string[] = [
+export const containerStylesKeys = new Set<string>([
   "alignItems",
   "alignSelf",
   "background",
@@ -105,7 +105,7 @@ export const containerStylesKeys: string[] = [
   "userSelect",
   "visibility",
   "zIndex",
-];
+]);
 
 export const recognizedStylesKeys = new Set<string>([
   "display",
@@ -121,8 +121,8 @@ export const recognizedStylesKeys = new Set<string>([
   "left",
   "bottom",
   "right",
-  ...textStylesKeys,
-  ...containerStylesKeys,
+  ...textStylesKeys.values(),
+  ...containerStylesKeys.values(),
 ]);
 
 export const translationTable = {

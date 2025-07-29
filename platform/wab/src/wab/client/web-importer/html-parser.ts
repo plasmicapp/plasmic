@@ -21,9 +21,17 @@ import {
   WIStyles,
 } from "@/wab/client/web-importer/types";
 import { findTokenByNameOrUuid } from "@/wab/commons/StyleToken";
-import { ensure, ensureType, withoutNils } from "@/wab/shared/common";
+import {
+  assert,
+  ensure,
+  ensureType,
+  withoutNils,
+  xDifference,
+} from "@/wab/shared/common";
+import { ColorFill } from "@/wab/shared/core/bg-styles";
 import {
   parseCss,
+  parseCssNumericNew,
   parseShorthandProperties,
   shorthandProperties,
   ShorthandProperty,
@@ -259,13 +267,24 @@ function fixCSSValue(key: string, value: string) {
   };
 }
 
-function splitStylesBySafety(styles: Record<string, string>) {
+function splitStylesBySafety(
+  styles: Record<string, string>,
+  type?: WIElement["type"]
+) {
   const entries = Object.entries(styles);
+  // Currently, we do not support adding textStyle properties on container elements in Studio Design such as 'color' on div
+  // which can be used to child elements to inherit styles from using 'currentcolor' value. To support such use cases,
+  // we will consider textStyles to be unsafe for container elements so they can be applied by as style attribute in Studio by WebImporter
+  const safeStyleKeys =
+    type === "container"
+      ? xDifference(recognizedStylesKeys, textStylesKeys)
+      : recognizedStylesKeys;
+
   const safe = Object.fromEntries(
-    entries.filter(([k, v]) => recognizedStylesKeys.has(k))
+    entries.filter(([k, v]) => safeStyleKeys.has(k))
   );
   const unsafe = Object.fromEntries(
-    entries.filter(([k, v]) => !recognizedStylesKeys.has(k))
+    entries.filter(([k, v]) => !safeStyleKeys.has(k))
   );
   return {
     safe,
@@ -383,7 +402,10 @@ function getStylesForNode(
   return styles;
 }
 
-function sanitizeStyles(styles: WIStyles): SanitizedWIStyles {
+function sanitizeStyles(
+  styles: WIStyles,
+  type?: WIElement["type"]
+): SanitizedWIStyles {
   return Object.fromEntries(
     Object.entries(styles).map(([context, contextStyles]) => {
       const newStyles = Object.entries(contextStyles).reduce(
@@ -395,7 +417,7 @@ function sanitizeStyles(styles: WIStyles): SanitizedWIStyles {
         },
         {}
       );
-      const { safe, unsafe } = splitStylesBySafety(newStyles);
+      const { safe, unsafe } = splitStylesBySafety(newStyles, type);
       return [
         context,
         {
@@ -414,7 +436,7 @@ function extractTextStyles(styles: WIStyles) {
         context,
         Object.fromEntries(
           Object.entries(contextStyles).filter(([key, value]) => {
-            return !textStylesKeys.includes(camelCase(key));
+            return !textStylesKeys.has(camelCase(key));
           })
         ),
       ];
@@ -427,7 +449,7 @@ function extractTextStyles(styles: WIStyles) {
         context,
         Object.fromEntries(
           Object.entries(contextStyles).filter(([key, value]) => {
-            return textStylesKeys.includes(camelCase(key));
+            return textStylesKeys.has(camelCase(key));
           })
         ),
       ];
@@ -544,18 +566,30 @@ function getElementsWITree(
     }
 
     if (tag === "svg") {
-      const [minX, minY, width, height] = (
-        elt.getAttribute("viewBox") || "0 0 300 150"
-      )
-        .split(/\s+/)
-        .map(Number);
+      const [_minX, _minY, viewBoxWidth, viewBoxHeight] = (
+        elt.getAttribute("viewBox") || "0 0 16 16"
+      ).split(/\s+/);
+
+      const width = parseCssNumericNew(
+        elt.getAttribute("width") ?? viewBoxWidth
+      );
+      const height = parseCssNumericNew(
+        elt.getAttribute("height") ?? viewBoxHeight
+      );
+      assert(width, "'width' expected on SVG element but found undefined");
+      assert(height, "'height' expected on SVG element but found undefined");
+
+      const fillColor = ColorFill.fromCss(
+        elt.getAttribute("fill") ?? ""
+      )?.color;
 
       return {
         type: "svg",
         tag,
         outerHtml: elt.outerHTML,
-        width,
-        height,
+        width: `${width.num}${width.units || "px"}`,
+        height: `${height.num}${height.units || "px"}`,
+        fillColor: fillColor,
         unsanitizedStyles: styles,
         styles: sanitizeStyles(styles),
       };
@@ -597,8 +631,8 @@ function getElementsWITree(
     const containerNode: WIContainer = {
       type: "container",
       tag: [...ALL_CONTAINER_TAGS, "img", "svg"].includes(tag) ? tag : "div",
-      unsanitizedStyles: styles,
-      styles: sanitizeStyles(styles),
+      unsanitizedStyles: allStyles,
+      styles: sanitizeStyles(allStyles, "container"),
       children: withoutNils(
         [...elt.childNodes].map((e) => rec(e, newAncestorTextInheritanceStyles))
       ),

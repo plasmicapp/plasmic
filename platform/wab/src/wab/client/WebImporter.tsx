@@ -1,23 +1,32 @@
 import {
+  ensureViewCtxOrThrowUserError,
   PasteArgs,
   PasteResult,
-  ensureViewCtxOrThrowUserError,
 } from "@/wab/client/clipboard/common";
-import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import {
-  WIComponent,
-  WIContainer,
-  WIElement,
-  WIText,
-} from "@/wab/client/web-importer/types";
+  ImageAssetOpts,
+  maybeUploadImage,
+  readAndSanitizeSvgXmlAsImage,
+  ResizableImage,
+} from "@/wab/client/dom-utils";
+import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
+import { WIElement } from "@/wab/client/web-importer/types";
 import { unwrap } from "@/wab/commons/failable-utils";
 import { assertNever, withoutNils } from "@/wab/shared/common";
 import { code } from "@/wab/shared/core/exprs";
 import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
+import { getTagAttrForImageAsset } from "@/wab/shared/core/image-assets";
 import { TplTagType } from "@/wab/shared/core/tpls";
-import { RawText, TplNode } from "@/wab/shared/model/classes";
+import {
+  ImageAssetRef,
+  RawText,
+  TplNode,
+  TplTag,
+} from "@/wab/shared/model/classes";
 import { RSH } from "@/wab/shared/RuleSetHelpers";
+import { ensureVariantSetting } from "@/wab/shared/Variants";
 import { VariantTplMgr } from "@/wab/shared/VariantTplMgr";
+import L from "lodash";
 
 const WI_IMPORTER_HEADER = "__wab_plasmic_wi_importer;";
 
@@ -43,14 +52,32 @@ export async function processWebImporterTree(
   { studioCtx, cursorClientPt, insertRelLoc }: PasteArgs
 ): Promise<PasteResult> {
   const viewCtx = ensureViewCtxOrThrowUserError(studioCtx);
+  const result = await wiTreeToTpl(wiTree, viewCtx, viewCtx.variantTplMgr());
+  if (!result) {
+    return { handled: false };
+  }
+
+  const { tpl, tplImageAssetMap } = result;
 
   return {
     handled: true,
     success: unwrap(
       await studioCtx.change(({ success }) => {
-        const tpl = wiTreeToTpl(wiTree, viewCtx, viewCtx.variantTplMgr());
-        if (!tpl) {
-          return success(false);
+        // if we have any image/svg tpls we need to create their respective assets and update their attrs accordingly
+        for (const [assetTpl, assetData] of tplImageAssetMap) {
+          const { asset } = studioCtx
+            .siteOps()
+            .createImageAsset(assetData.image, assetData.options);
+
+          const vs = ensureVariantSetting(assetTpl, []);
+          const assetAttrs = L.assign(
+            {
+              [getTagAttrForImageAsset(asset.type as ImageAssetType)]:
+                new ImageAssetRef({ asset }),
+            },
+            asset.type === ImageAssetType.Picture ? { loading: "lazy" } : {}
+          );
+          L.merge(vs.attrs, assetAttrs);
         }
 
         return success(
@@ -66,15 +93,16 @@ export async function processWebImporterTree(
   };
 }
 
-function wiTreeToTpl(wiTree: WIElement, vc: ViewCtx, vtm: VariantTplMgr) {
+async function wiTreeToTpl(wiTree: WIElement, vc: ViewCtx, vtm: VariantTplMgr) {
   const site = vc.studioCtx.site;
   const activeScreenVariantGroup = site.activeScreenVariantGroup;
   const screenVariant = activeScreenVariantGroup?.variants?.[0];
+  const tplImageAssetMap = new Map<
+    TplTag,
+    { image: ResizableImage; options: ImageAssetOpts }
+  >();
 
-  function applyWIStylesToTpl(
-    node: WIText | WIContainer | WIComponent,
-    tpl: TplNode
-  ) {
+  function applyWIStylesToTpl(node: WIElement, tpl: TplNode) {
     const vs = vtm.ensureBaseVariantSetting(tpl);
 
     const defaultStyles: Record<string, string> =
@@ -84,6 +112,14 @@ function wiTreeToTpl(wiTree: WIElement, vc: ViewCtx, vtm: VariantTplMgr) {
             display: "flex",
             flexDirection: "column",
           };
+
+    if (node.type === "svg") {
+      defaultStyles["width"] = node.width;
+      defaultStyles["height"] = node.height;
+      if (node.fillColor) {
+        defaultStyles["color"] = node.fillColor;
+      }
+    }
 
     const baseStyles = {
       ...defaultStyles,
@@ -128,7 +164,7 @@ function wiTreeToTpl(wiTree: WIElement, vc: ViewCtx, vtm: VariantTplMgr) {
     }
   }
 
-  function rec(node: WIElement) {
+  async function rec(node: WIElement) {
     if (node.type === "text") {
       const tpl = vtm.mkTplTagX(node.tag, {
         type: TplTagType.Text,
@@ -143,6 +179,36 @@ function wiTreeToTpl(wiTree: WIElement, vc: ViewCtx, vtm: VariantTplMgr) {
     }
 
     if (node.type === "svg") {
+      const svgImage = await readAndSanitizeSvgXmlAsImage(
+        vc.appCtx,
+        node.outerHtml
+      );
+
+      if (svgImage) {
+        const { imageResult, opts } = await maybeUploadImage(
+          vc.appCtx,
+          svgImage,
+          undefined,
+          undefined
+        );
+        if (!imageResult || !opts) {
+          return null;
+        }
+
+        const tpl = vc.variantTplMgr().mkTplImage({
+          type: opts.type,
+          iconColor: opts.iconColor,
+        });
+        applyWIStylesToTpl(node, tpl);
+
+        // We will store each image to it's corresponding tpl so we can process it
+        // later to upload image and attach asset to this tpl in 'processWebImporterTree',
+        // We cannot do that here because this function is expected to be called outside 'studioCtx.change' and
+        // creating an asset here would cause a model change to occur.
+        tplImageAssetMap.set(tpl, { image: imageResult, options: opts });
+
+        return tpl;
+      }
       return null;
     }
 
@@ -185,7 +251,11 @@ function wiTreeToTpl(wiTree: WIElement, vc: ViewCtx, vtm: VariantTplMgr) {
           name: node.attrs["__name"],
           type: TplTagType.Other,
         },
-        withoutNils(node.children.map((child) => rec(child)))
+        withoutNils(
+          await Promise.all(
+            node.children.map(async (child) => await rec(child))
+          )
+        )
       );
 
       applyWIStylesToTpl(node, tpl);
@@ -196,7 +266,11 @@ function wiTreeToTpl(wiTree: WIElement, vc: ViewCtx, vtm: VariantTplMgr) {
     assertNever(node);
   }
 
-  const tpl = rec(wiTree);
+  const tpl = await rec(wiTree);
 
-  return tpl;
+  if (!tpl) {
+    return null;
+  }
+
+  return { tpl, tplImageAssetMap };
 }

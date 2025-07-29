@@ -21,6 +21,7 @@ const CSS_NAMED_COLORS = [
   { name: "cornsilk", value: "#fff8dc" },
   { name: "crimson", value: "#dc143c" },
   { name: "currentcolor", value: "currentcolor" },
+  { name: "currentColor", value: "currentcolor" },
   { name: "cyan", value: "#00ffff" },
   { name: "darkblue", value: "#00008b" },
   { name: "darkcyan", value: "#008b8b" },
