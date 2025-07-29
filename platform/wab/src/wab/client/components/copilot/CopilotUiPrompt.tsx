@@ -42,27 +42,21 @@ function CopilotUiPrompt() {
 
         const messageParts: string[] = [];
 
-        if (response) {
-          const actions = response.actions;
-          const hasHtmlDesign =
-            actions.filter((action) => action.name === "insert-html")?.length >
-            0;
-          if (hasHtmlDesign) {
-            messageParts.push(
-              "• A new HTML design snippet is ready to be used"
-            );
-          }
+        const actions = response.actions;
+        const hasHtmlDesign =
+          actions.filter((action) => action.name === "insert-html")?.length > 0;
+        if (hasHtmlDesign) {
+          messageParts.push("• A new HTML design snippet is ready to be used");
+        }
 
-          const newTokensCount =
-            actions.filter((action) => action.name === "add-token")?.length ??
-            0;
-          if (newTokensCount > 0) {
-            messageParts.push(
-              `• ${newTokensCount} new token${
-                newTokensCount > 1 ? "s" : ""
-              } is ready to be used`
-            );
-          }
+        const newTokensCount =
+          actions.filter((action) => action.name === "add-token")?.length ?? 0;
+        if (newTokensCount > 0) {
+          messageParts.push(
+            `• ${newTokensCount} new token${
+              newTokensCount > 1 ? "s" : ""
+            } is ready to be used`
+          );
         }
 
         return {

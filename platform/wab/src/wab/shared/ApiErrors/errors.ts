@@ -81,6 +81,14 @@ export class CopilotRateLimitExceededError extends ApiError {
   statusCode = 429;
 }
 
+export class PublicCopilotServiceUnavailable extends ApiError {
+  name = "PublicCopilotServiceUnavailable";
+  statusCode = 503;
+  constructor(options?: ErrorOptions) {
+    super("Service unavailable", options);
+  }
+}
+
 export class GrantUserNotFoundError extends ApiError {
   name = "GrantUserNotFoundError";
   statusCode = 404;

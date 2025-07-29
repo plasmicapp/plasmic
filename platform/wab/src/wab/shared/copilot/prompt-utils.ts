@@ -94,6 +94,7 @@ export interface CopilotUiChainProps {
   goal: string;
   images?: Array<CopilotImage>;
   tokens?: CopilotToken[];
+  isPublicMode?: boolean;
 }
 
 // Structured Response schemas

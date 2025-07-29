@@ -568,6 +568,8 @@ const DEFAULT_DEVFLAGS = {
   rscRelease: false,
   // Overrides rscRelease to allow using integrations in a project.
   enableDataQueries: false,
+  // Disable the public copilot interaction
+  disablePublicCopilot: false,
 };
 
 Object.assign(DEFAULT_DEVFLAGS, DEFAULT_DEVFLAG_OVERRIDES);

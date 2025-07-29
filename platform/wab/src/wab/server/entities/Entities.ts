@@ -1097,6 +1097,21 @@ export class CopilotInteraction extends Base<"CopilotInteractionId"> {
 }
 
 @Entity()
+export class PublicCopilotInteraction extends Base<"PublicCopilotInteractionId"> {
+  @Column("text")
+  userPrompt: string;
+
+  @Column("text")
+  response: string;
+
+  @Column("text")
+  fullPromptSnapshot: string;
+
+  @Column("text")
+  model: string;
+}
+
+@Entity()
 export class CmsDatabase extends Base<"CmsDatabaseId"> {
   @Column("text")
   name: string;

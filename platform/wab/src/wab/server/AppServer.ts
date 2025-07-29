@@ -7,7 +7,6 @@ import errorHandler from "errorhandler";
 import express, { ErrorRequestHandler, RequestHandler } from "express";
 import "express-async-errors";
 import promMetrics from "express-prom-bundle";
-import { rateLimit } from "express-rate-limit";
 import { NextFunction, Request, Response } from "express-serve-static-core";
 import session from "express-session";
 import * as lusca from "lusca";
@@ -31,6 +30,7 @@ import { ExpressSession } from "@/wab/server/entities/Entities";
 import "@/wab/server/extensions";
 import { initAnalyticsFactory } from "@/wab/server/observability";
 import { WabPromStats, trackPostgresPool } from "@/wab/server/promstats";
+import { createRateLimiter } from "@/wab/server/rate-limit";
 import * as adminRoutes from "@/wab/server/routes/admin";
 import {
   getAnalyticsBillingInfoForTeam,
@@ -339,6 +339,7 @@ const isCsrfFreeRoute = (pathname: string, config: Config) => {
     pathname.includes("/api/v1/app-auth/user") ||
     pathname.includes("/api/v1/app-auth/userinfo") ||
     pathname.includes("/api/v1/app-auth/token") ||
+    pathname.includes("/api/v1/copilot/ui/public") ||
     (!config.production &&
       (pathname === "/api/v1/projects/import" ||
         pathname.includes("/api/v1/cmse/")))
@@ -1259,26 +1260,13 @@ export function addMainAppServerRoutes(
   // Rate limit for forgetPassword and signUp routes.
   // Currently using in-memory storage, can be improved to use
   // redis/postgres.
-  const sensitiveRateLimiter = rateLimit({
+  const sensitiveRateLimiter = createRateLimiter({
     windowMs: 15 * 60 * 1000, // 15 minutes
     limit: 15,
-    message: "Too many requests, please try again later.",
-    handler: (req, res, next, options) => {
-      req
-        .resolveTransaction()
-        .catch(() => {})
-        .finally(() => res.status(options.statusCode).send(options.message));
-    },
     skip: (req) => {
       const shouldRateLimit =
         config.production || req.get("x-plasmic-test-rate-limit") === "true";
       return !shouldRateLimit;
-    },
-    standardHeaders: true,
-    legacyHeaders: false,
-    validate: {
-      xForwardedForHeader: false,
-      trustProxy: false,
     },
   });
 

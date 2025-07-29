@@ -55,6 +55,10 @@ export type SsoConfigId = Opaque<string, "SsoConfigId">;
 export type TutorialDbId = Opaque<string, "TutorialDbId">;
 export type DataSourceId = Opaque<string, "DataSourceId">;
 export type CopilotInteractionId = Opaque<string, "CopilotInteractionId">;
+export type PublicCopilotInteractionId = Opaque<
+  string,
+  "PublicCopilotInteractionId"
+>;
 export type CommentThreadId = Opaque<string, "CommentThreadId">;
 
 export type MainBranchId = Opaque<string, "MainBranchId">;
@@ -2021,6 +2025,10 @@ export interface QueryCopilotUiRequest extends QueryCopilotResquestBase {
   tokens?: CopilotToken[];
 }
 
+export interface PublicQueryCopilotUiRequest {
+  goal: string;
+}
+
 export type QueryCopilotRequest =
   | QueryCopilotChatRequest
   | QueryCopilotCodeRequest
@@ -2035,8 +2043,13 @@ export interface QueryCopilotResponse {
 }
 
 export type QueryCopilotUiResponse = {
-  data: CopilotUiActions | null;
+  data: CopilotUiActions;
   copilotInteractionId: CopilotInteractionId;
+};
+
+export type PublicQueryCopilotUiResponse = {
+  data: CopilotUiActions;
+  id: PublicCopilotInteractionId;
 };
 
 export type CopilotResponseData = {
