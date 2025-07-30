@@ -437,10 +437,6 @@ export class MismatchPasswordError extends DbMgrError {
   name = "MismatchPasswordError";
 }
 
-export class UserHasTeamOwnershipError extends DbMgrError {
-  name = "UserHasTeamOwnershipError";
-}
-
 export function checkPermissions(
   predicate: boolean,
   msg: string

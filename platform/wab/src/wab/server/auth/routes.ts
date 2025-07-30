@@ -25,6 +25,7 @@ import {
   userDbMgr,
 } from "@/wab/server/routes/util";
 import {
+  ForbiddenError,
   NotFoundError,
   UnauthorizedError,
 } from "@/wab/shared/ApiErrors/errors";
@@ -355,7 +356,7 @@ export async function deleteSelf(req: Request, res: Response) {
   if (user) {
     const selfOwnedTeams = await getSelfOwnedTeams(req, user);
     if (selfOwnedTeams.length > 0) {
-      throw new UnauthorizedError(selfOwnedTeams.map((t) => t.name).toString());
+      throw new ForbiddenError(selfOwnedTeams.map((t) => t.name).toString());
     }
     await mgr.deleteUser(user, false);
   }
