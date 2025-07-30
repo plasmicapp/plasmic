@@ -8,7 +8,6 @@ import {
   DbMgr,
   MismatchPasswordError,
   PwnedPasswordError,
-  UserHasTeamOwnershipError,
   WeakPasswordError,
   generateSecretToken,
 } from "@/wab/server/db/DbMgr";
@@ -356,9 +355,7 @@ export async function deleteSelf(req: Request, res: Response) {
   if (user) {
     const selfOwnedTeams = await getSelfOwnedTeams(req, user);
     if (selfOwnedTeams.length > 0) {
-      throw new UserHasTeamOwnershipError(
-        selfOwnedTeams.map((t) => t.name).toString()
-      );
+      throw new UnauthorizedError(selfOwnedTeams.map((t) => t.name).toString());
     }
     await mgr.deleteUser(user, false);
   }
