@@ -335,13 +335,12 @@ export async function updateSelfPassword(req: Request, res: Response) {
 
 async function getSelfOwnedTeams(req: Request, user: User): Promise<Team[]> {
   const mgr = userDbMgr(req);
-  const affiliatedTeams = await mgr.getAffiliatedTeams();
-  const selfOwnedTeams: Team[] = [];
 
+  const selfOwnedTeams: Team[] = [];
+  const affiliatedTeams = await mgr.getAffiliatedTeams();
   for (const team of affiliatedTeams) {
     const teamOwners = await mgr.getTeamOwners(team.id);
-    const isSelfTeamOwner = teamOwners.some((owner) => owner.id === user.id);
-    if (isSelfTeamOwner) {
+    if (teamOwners.some((owner) => owner.id === user.id)) {
       selfOwnedTeams.push(team);
     }
   }
@@ -357,8 +356,9 @@ export async function deleteSelf(req: Request, res: Response) {
   if (user) {
     const selfOwnedTeams = await getSelfOwnedTeams(req, user);
     if (selfOwnedTeams.length > 0) {
-      const selfOwnedApiTeams = selfOwnedTeams.map((team) => mkApiTeam(team));
-      throw new UserHasTeamOwnershipError(selfOwnedApiTeams);
+      throw new UserHasTeamOwnershipError(
+        selfOwnedTeams.map((team) => mkApiTeam(team))
+      );
     }
     await mgr.deleteUser(user, false);
   }
