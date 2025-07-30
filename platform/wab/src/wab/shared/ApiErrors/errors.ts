@@ -1,6 +1,8 @@
 import {
   UniqueViolationError,
+  UserHasTeamOwnershipError,
   isUniqueViolationError,
+  isUserHasTeamOwnershipError,
 } from "@/wab/shared/ApiErrors/cms-errors";
 
 export abstract class ApiError extends Error {
@@ -146,6 +148,9 @@ export function transformErrors(err: Error): Error {
   }
   if (isUniqueViolationError(err)) {
     err = new UniqueViolationError(err.violations);
+  }
+  if (isUserHasTeamOwnershipError(err)) {
+    err = new UserHasTeamOwnershipError(err.selfOwnedTeams);
   }
   return err;
 }

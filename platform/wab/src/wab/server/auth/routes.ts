@@ -25,6 +25,7 @@ import {
   superDbMgr,
   userDbMgr,
 } from "@/wab/server/routes/util";
+import { UserHasTeamOwnershipError } from "@/wab/shared/ApiErrors/cms-errors";
 import {
   NotFoundError,
   UnauthorizedError,

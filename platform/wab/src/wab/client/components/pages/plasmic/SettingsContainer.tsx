@@ -13,6 +13,7 @@ const LazyChangePasswordModal = React.lazy(
 
 import { useNonAuthCtx } from "@/wab/client/app-ctx";
 import { reactConfirm } from "@/wab/client/components/quick-modals";
+import { isUserHasTeamOwnershipError } from "@/wab/shared/ApiErrors/cms-errors";
 import { Menu, notification } from "antd";
 
 interface SettingsContainerProps {
@@ -125,11 +126,23 @@ function SettingsContainer(props: SettingsContainerProps) {
                   try {
                     await nonAuthCtx.api.deactivateUser(props.email);
                     window.location.replace("/login");
-                  } catch (e) {
-                    console.log("e??", e);
-                    if (isUserHasTeamOwnershipError(e)) {
-                      console.log("e: ", e);
-                      notification.error({ message: `${e}` });
+                  } catch (err) {
+                    if (isUserHasTeamOwnershipError(err)) {
+                      const selfOwnedTeamNames = err.selfOwnedTeams.map(
+                        (team) => team.name
+                      );
+                      notification.error({
+                        message: "Account deletion failed",
+                        description: (
+                          <>
+                            To delete your account, you must first transfer
+                            ownership of the following teams.
+                            <br />
+                            <br />
+                            <strong>{selfOwnedTeamNames.join(", ")}</strong>
+                          </>
+                        ),
+                      });
                     }
                   }
                 }}
