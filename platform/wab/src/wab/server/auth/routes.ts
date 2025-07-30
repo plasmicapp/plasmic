@@ -9,7 +9,6 @@ import {
   generateSecretToken,
   MismatchPasswordError,
   PwnedPasswordError,
-  UserHasTeamOwnershipError,
   WeakPasswordError,
 } from "@/wab/server/db/DbMgr";
 import { sendResetPasswordEmail } from "@/wab/server/emails/reset-password-email";
