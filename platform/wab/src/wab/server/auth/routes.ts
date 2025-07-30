@@ -8,13 +8,14 @@ import {
   DbMgr,
   MismatchPasswordError,
   PwnedPasswordError,
+  UserHasTeamOwnershipError,
   WeakPasswordError,
   generateSecretToken,
 } from "@/wab/server/db/DbMgr";
 import { sendResetPasswordEmail } from "@/wab/server/emails/reset-password-email";
 import { sendEmailVerificationToUser } from "@/wab/server/emails/verification-email";
 import { sendWelcomeEmail } from "@/wab/server/emails/welcome-email";
-import { SsoConfig, User } from "@/wab/server/entities/Entities";
+import { SsoConfig, Team, User } from "@/wab/server/entities/Entities";
 import "@/wab/server/extensions";
 import { isCustomPublicApiRequest } from "@/wab/server/routes/custom-routes";
 import { getPromotionCodeCookie } from "@/wab/server/routes/promo-code";
@@ -331,6 +332,21 @@ export async function updateSelfPassword(req: Request, res: Response) {
   );
 }
 
+async function getSelfOwnedTeams(req: Request, user: User) {
+  const mgr = userDbMgr(req);
+  const affiliatedTeams = await mgr.getAffiliatedTeams();
+  const selfOwnedTeams: Team[] = [];
+
+  for (const team of affiliatedTeams) {
+    const teamOwners = await mgr.getTeamOwners(team.id);
+    const isSelfTeamOwner = teamOwners.some((owner) => owner.id === user.id);
+    if (isSelfTeamOwner) {
+      selfOwnedTeams.push(team);
+    }
+  }
+  return selfOwnedTeams;
+}
+
 export async function deleteSelf(req: Request, res: Response) {
   const mgr = userDbMgr(req);
 
@@ -338,6 +354,12 @@ export async function deleteSelf(req: Request, res: Response) {
   const user = await mgr.getUserById(userId);
 
   if (user) {
+    const selfOwnedTeams = await getSelfOwnedTeams(req, user);
+    if (selfOwnedTeams.length > 0) {
+      throw new UserHasTeamOwnershipError(
+        selfOwnedTeams.map((t) => t.name).toString()
+      );
+    }
     await mgr.deleteUser(user, false);
   }
   await doLogout(req, res);
