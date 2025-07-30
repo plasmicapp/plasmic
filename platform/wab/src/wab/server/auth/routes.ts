@@ -6,10 +6,11 @@ import { extractSsoConfig } from "@/wab/server/auth/passport-cfg";
 import { doLogin, doLogout } from "@/wab/server/auth/util";
 import {
   DbMgr,
+  generateSecretToken,
   MismatchPasswordError,
   PwnedPasswordError,
+  UserHasTeamOwnershipError,
   WeakPasswordError,
-  generateSecretToken,
 } from "@/wab/server/db/DbMgr";
 import { sendResetPasswordEmail } from "@/wab/server/emails/reset-password-email";
 import { sendEmailVerificationToUser } from "@/wab/server/emails/verification-email";
@@ -18,6 +19,7 @@ import { SsoConfig, Team, User } from "@/wab/server/entities/Entities";
 import "@/wab/server/extensions";
 import { isCustomPublicApiRequest } from "@/wab/server/routes/custom-routes";
 import { getPromotionCodeCookie } from "@/wab/server/routes/promo-code";
+import { mkApiTeam } from "@/wab/server/routes/teams";
 import {
   getUser,
   makeUserTraits,
@@ -25,7 +27,6 @@ import {
   userDbMgr,
 } from "@/wab/server/routes/util";
 import {
-  ForbiddenError,
   NotFoundError,
   UnauthorizedError,
 } from "@/wab/shared/ApiErrors/errors";
@@ -332,7 +333,7 @@ export async function updateSelfPassword(req: Request, res: Response) {
   );
 }
 
-async function getSelfOwnedTeams(req: Request, user: User) {
+async function getSelfOwnedTeams(req: Request, user: User): Promise<Team[]> {
   const mgr = userDbMgr(req);
   const affiliatedTeams = await mgr.getAffiliatedTeams();
   const selfOwnedTeams: Team[] = [];
@@ -356,7 +357,8 @@ export async function deleteSelf(req: Request, res: Response) {
   if (user) {
     const selfOwnedTeams = await getSelfOwnedTeams(req, user);
     if (selfOwnedTeams.length > 0) {
-      throw new ForbiddenError(selfOwnedTeams.map((t) => t.name).toString());
+      const selfOwnedApiTeams = selfOwnedTeams.map((team) => mkApiTeam(team));
+      throw new UserHasTeamOwnershipError(selfOwnedApiTeams);
     }
     await mgr.deleteUser(user, false);
   }
