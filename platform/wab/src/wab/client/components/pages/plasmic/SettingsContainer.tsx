@@ -126,7 +126,8 @@ function SettingsContainer(props: SettingsContainerProps) {
                     await nonAuthCtx.api.deactivateUser(props.email);
                     window.location.replace("/login");
                   } catch (e) {
-                    if (e.name === "ForbiddenError") {
+                    console.log("e??", e);
+                    if (isUserHasTeamOwnershipError(e)) {
                       console.log("e: ", e);
                       notification.error({ message: `${e}` });
                     }
