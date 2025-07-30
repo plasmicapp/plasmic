@@ -126,7 +126,10 @@ function SettingsContainer(props: SettingsContainerProps) {
                     await nonAuthCtx.api.deactivateUser(props.email);
                     window.location.replace("/login");
                   } catch (e) {
-                    notification.error({ message: `${e}` });
+                    if (e.name === "ForbiddenError") {
+                      console.log("e: ", e);
+                      notification.error({ message: `${e}` });
+                    }
                   }
                 }}
               >
