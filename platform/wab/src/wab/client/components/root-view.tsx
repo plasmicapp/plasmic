@@ -293,6 +293,22 @@ function LoggedInContainer(props: LoggedInContainerProps) {
                       />
                     ),
                   })}
+                  {routerRedirectAsync({
+                    exact: true,
+                    path: APP_ROUTES.orgBilling,
+                    to: async ({ match }) => {
+                      const teamId = match.params.teamId;
+                      try {
+                        const { url } =
+                          await appCtx.api.createTeamCustomerPortalSession(
+                            teamId
+                          );
+                        return url;
+                      } catch (e) {
+                        return fillRoute(APP_ROUTES.orgSettings, { teamId });
+                      }
+                    },
+                  })}
                   {routerRedirect({
                     path: APP_ROUTES.teamSettings,
                     to: ({ match, location }) =>

@@ -254,6 +254,7 @@ import { getUsersById } from "@/wab/server/routes/users";
 import {
   adminOnly,
   adminOrDevelopmentEnvOnly,
+  createTsRestEndpoints,
   superDbMgr,
   withNext,
 } from "@/wab/server/routes/util";
@@ -282,7 +283,6 @@ import { createWorkerPool } from "@/wab/server/workers/pool";
 import { ensureDevFlags } from "@/wab/server/workers/worker-utils";
 import {
   AuthError,
-  BadRequestError,
   NotFoundError,
   isApiError,
   transformErrors,
@@ -293,9 +293,7 @@ import { mkShortId, safeCast, spawn } from "@/wab/shared/common";
 import { isAdminTeamEmail } from "@/wab/shared/devflag-utils";
 import { DEVFLAGS } from "@/wab/shared/devflags";
 import { isStampedIgnoreError } from "@/wab/shared/error-handling";
-import { createExpressEndpoints } from "@ts-rest/express";
 import fileUpload from "express-fileupload";
-import { ZodIssue } from "zod";
 
 const csrfFreeStaticRoutes = [
   "/api/v1/admin/user",
@@ -768,32 +766,7 @@ export function addCmsPublicRoutes(app: express.Application) {
   // "Public" CMS API, access via API auth
 
   app.options("/api/v1/cms/*", corsPreflight());
-
-  createExpressEndpoints(publicCmsReadsContract, publicCmsReadsServer, app, {
-    // Convert to BadRequestError, let our error middleware handle this
-    requestValidationErrorHandler: (err, req, res, next) => {
-      function issueMap(issue: ZodIssue) {
-        return `${issue.path.join(".")}: ${issue.message}`;
-      }
-
-      const issues = {};
-      if (err.headers) {
-        issues["headers"] = err.headers.issues.map(issueMap);
-      }
-      if (err.pathParams) {
-        issues["pathParams"] = err.pathParams.issues.map(issueMap);
-      }
-      if (err.query) {
-        issues["query"] = err.query.issues.map(issueMap);
-      }
-      if (err.body) {
-        issues["body"] = err.body.issues.map(issueMap);
-      }
-
-      throw new BadRequestError("Request validation failed. See issues.", {
-        issues,
-      });
-    },
+  createTsRestEndpoints(publicCmsReadsContract, publicCmsReadsServer, app, {
     globalMiddleware: [cors(), apiAuth, cachePublicCmsRead],
   });
 

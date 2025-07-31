@@ -1,4 +1,8 @@
 import {
+  cStandard400Response,
+  cStandard4xxResponse,
+} from "@/wab/shared/api/util";
+import {
   ApiCmsDatabase,
   CmsDatabaseId,
   CmsLocaleSpecificData,
@@ -96,11 +100,9 @@ export const publicCmsReadsContract = c.router({
     }),
     responses: {
       200: c.type<{ rows: PublicApiCmsRow[] }>(),
-      400: c.type<{
-        error: { statusCode: number; message: string; issues?: unknown };
-      }>(),
-      401: c.type<{ error: { statusCode: number; message: string } }>(),
-      403: c.type<{ error: { statusCode: number; message: string } }>(),
+      400: cStandard400Response(),
+      401: cStandard4xxResponse(),
+      403: cStandard4xxResponse(),
     },
   },
   countTable: {
@@ -123,11 +125,9 @@ export const publicCmsReadsContract = c.router({
     }),
     responses: {
       200: c.type<{ count: number }>(),
-      400: c.type<{
-        error: { statusCode: number; message: string; issues?: unknown };
-      }>(),
-      401: c.type<{ error: { statusCode: number; message: string } }>(),
-      403: c.type<{ error: { statusCode: number; message: string } }>(),
+      400: cStandard400Response(),
+      401: cStandard4xxResponse(),
+      403: cStandard4xxResponse(),
     },
   },
   getDatabase: {

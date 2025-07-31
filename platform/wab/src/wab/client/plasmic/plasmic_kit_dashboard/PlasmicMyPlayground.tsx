@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -19,12 +19,16 @@ import {
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  ensureGlobalVariants,
+  hasVariant,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
 import DefaultLayout from "../../components/dashboard/DefaultLayout"; // plasmic-import: nSkQWLjK-B/component
 import NavTeamSection from "../../components/dashboard/NavTeamSection"; // plasmic-import: VqaN_WL-stA/component
 import WorkspaceSection from "../../components/dashboard/WorkspaceSection"; // plasmic-import: 5cdjGaqBQ4/component
+
+import { useEnvironment } from "../plasmic_kit_pricing/PlasmicGlobalVariant__Environment"; // plasmic-import: hIjF9NLAUKG-/globalVariant
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
@@ -66,7 +70,16 @@ function PlasmicMyPlayground__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
@@ -76,6 +89,10 @@ function PlasmicMyPlayground__RenderFunc(props: {
   const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
+
+  const globalVariants = ensureGlobalVariants({
+    environment: useEnvironment(),
+  });
 
   return (
     <React.Fragment>
@@ -94,7 +111,27 @@ function PlasmicMyPlayground__RenderFunc(props: {
             plasmic_plasmic_kit_design_system_deprecated_css.plasmic_tokens,
             plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
             plasmic_plasmic_kit_pricing_css.plasmic_tokens,
-            sty.root
+            sty.root,
+            {
+              [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+                hasVariant(globalVariants, "environment", "website"),
+              [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+                hasVariant(globalVariants, "environment", "website"),
+              [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+                hasVariant(globalVariants, "environment", "website"),
+              [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+                hasVariant(globalVariants, "environment", "website"),
+              [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+                hasVariant(globalVariants, "environment", "website"),
+              [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+                hasVariant(globalVariants, "environment", "website"),
+              [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+                hasVariant(globalVariants, "environment", "website"),
+              [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+                hasVariant(globalVariants, "environment", "website"),
+              [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+                hasVariant(globalVariants, "environment", "website"),
+            }
           )}
         >
           <DefaultLayout
@@ -145,7 +182,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicMyPlayground__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
@@ -153,15 +189,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicMyPlayground__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicMyPlayground__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicMyPlayground__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+    // Specify args directly as props
+    Omit<PlasmicMyPlayground__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

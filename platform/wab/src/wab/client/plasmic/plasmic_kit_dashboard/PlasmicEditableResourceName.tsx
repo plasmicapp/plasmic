@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -22,12 +22,15 @@ import {
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  ensureGlobalVariants,
   hasVariant,
   renderPlasmicSlot,
   useDollarState,
   useTrigger,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+
+import { useEnvironment } from "../plasmic_kit_pricing/PlasmicGlobalVariant__Environment"; // plasmic-import: hIjF9NLAUKG-/globalVariant
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
@@ -37,7 +40,7 @@ import projectcss from "../PP__plasmickit_dashboard.module.css"; // plasmic-impo
 import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import sty from "./PlasmicEditableResourceName.module.css"; // plasmic-import: UttGK3xVrb/css
 
-import EditsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__EditSvg"; // plasmic-import: _Qa2gdunG/icon
+import EditSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__EditSvg"; // plasmic-import: _Qa2gdunG/icon
 
 createPlasmicElementProxy;
 
@@ -55,9 +58,7 @@ type VariantPropType = keyof PlasmicEditableResourceName__VariantsArgs;
 export const PlasmicEditableResourceName__VariantProps =
   new Array<VariantPropType>("state", "cantEdit", "size");
 
-export type PlasmicEditableResourceName__ArgsType = {
-  name?: React.ReactNode;
-};
+export type PlasmicEditableResourceName__ArgsType = { name?: React.ReactNode };
 type ArgPropType = keyof PlasmicEditableResourceName__ArgsType;
 export const PlasmicEditableResourceName__ArgProps = new Array<ArgPropType>(
   "name"
@@ -87,7 +88,16 @@ function PlasmicEditableResourceName__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
@@ -119,7 +129,6 @@ function PlasmicEditableResourceName__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.size,
       },
     ],
-
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -133,6 +142,10 @@ function PlasmicEditableResourceName__RenderFunc(props: {
   const triggers = {
     hover_root: isRootHover,
   };
+
+  const globalVariants = ensureGlobalVariants({
+    environment: useEnvironment(),
+  });
 
   return (
     <Stack__
@@ -153,6 +166,24 @@ function PlasmicEditableResourceName__RenderFunc(props: {
         plasmic_plasmic_kit_pricing_css.plasmic_tokens,
         sty.root,
         {
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
           [sty.rootcantEdit]: hasVariant($state, "cantEdit", "cantEdit"),
           [sty.rootsize_small]: hasVariant($state, "size", "small"),
           [sty.rootstate_hover]: hasVariant($state, "state", "hover"),
@@ -206,7 +237,7 @@ function PlasmicEditableResourceName__RenderFunc(props: {
           }}
           title={"Rename"}
         >
-          <EditsvgIcon
+          <EditSvgIcon
             data-plasmic-name={"svg"}
             data-plasmic-override={overrides.svg}
             className={classNames(projectcss.all, sty.svg, {
@@ -239,7 +270,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicEditableResourceName__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
@@ -247,15 +277,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicEditableResourceName__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicEditableResourceName__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicEditableResourceName__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+    // Specify args directly as props
+    Omit<PlasmicEditableResourceName__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

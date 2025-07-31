@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -21,6 +21,8 @@ import {
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  ensureGlobalVariants,
+  hasVariant,
   renderPlasmicSlot,
   useTrigger,
 } from "@plasmicapp/react-web";
@@ -30,6 +32,8 @@ import EditableResourceName from "../../components/EditableResourceName"; // pla
 import Shared from "../../components/dashboard/Shared"; // plasmic-import: r2L4x5kulJ/component
 import MenuButton from "../../components/widgets/MenuButton"; // plasmic-import: h69wHrrKtL/component
 
+import { useEnvironment } from "../plasmic_kit_pricing/PlasmicGlobalVariant__Environment"; // plasmic-import: hIjF9NLAUKG-/globalVariant
+
 import "@plasmicapp/react-web/lib/plasmic.css";
 
 import projectcss from "../PP__plasmickit_dashboard.module.css"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/projectcss
@@ -38,7 +42,7 @@ import plasmic_plasmic_kit_pricing_css from "../plasmic_kit_pricing/plasmic_plas
 import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
 import sty from "./PlasmicDatabaseListItem.module.css"; // plasmic-import: G_RLd7TB5Ns/css
 
-import DatabasesvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__DatabaseSvg"; // plasmic-import: I6B50v8zj/icon
+import DatabaseSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__DatabaseSvg"; // plasmic-import: I6B50v8zj/icon
 
 createPlasmicElementProxy;
 
@@ -48,9 +52,7 @@ type VariantPropType = keyof PlasmicDatabaseListItem__VariantsArgs;
 export const PlasmicDatabaseListItem__VariantProps =
   new Array<VariantPropType>();
 
-export type PlasmicDatabaseListItem__ArgsType = {
-  timestamp?: React.ReactNode;
-};
+export type PlasmicDatabaseListItem__ArgsType = { timestamp?: React.ReactNode };
 type ArgPropType = keyof PlasmicDatabaseListItem__ArgsType;
 export const PlasmicDatabaseListItem__ArgProps = new Array<ArgPropType>(
   "timestamp"
@@ -82,7 +84,16 @@ function PlasmicDatabaseListItem__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
@@ -105,6 +116,10 @@ function PlasmicDatabaseListItem__RenderFunc(props: {
     hover_root: isRootHover,
   };
 
+  const globalVariants = ensureGlobalVariants({
+    environment: useEnvironment(),
+  });
+
   return (
     <Stack__
       as={PlasmicLink__}
@@ -124,7 +139,27 @@ function PlasmicDatabaseListItem__RenderFunc(props: {
         plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
         plasmic_plasmic_kit_pricing_css.plasmic_tokens,
         sty.root,
-        { [sty.root___focusVisible]: triggers.focusVisible_root }
+        {
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [sty.root___focusVisible]: triggers.focusVisible_root,
+        }
       )}
       href={"#"}
       platform={"react"}
@@ -142,7 +177,7 @@ function PlasmicDatabaseListItem__RenderFunc(props: {
           [sty.left___focusVisible]: triggers.focusVisible_root,
         })}
       >
-        <DatabasesvgIcon
+        <DatabaseSvgIcon
           data-plasmic-name={"svg"}
           data-plasmic-override={overrides.svg}
           className={classNames(projectcss.all, sty.svg)}
@@ -214,7 +249,6 @@ const PlasmicDescendants = {
     "menuButton",
     "updatedJustNow",
   ],
-
   left: ["left", "svg", "editableName"],
   svg: ["svg"],
   editableName: ["editableName"],
@@ -242,7 +276,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicDatabaseListItem__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
@@ -250,15 +283,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicDatabaseListItem__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicDatabaseListItem__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicDatabaseListItem__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+    // Specify args directly as props
+    Omit<PlasmicDatabaseListItem__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

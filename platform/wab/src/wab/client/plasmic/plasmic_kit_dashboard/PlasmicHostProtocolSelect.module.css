@@ -5,7 +5,7 @@
   width: auto;
   height: auto;
 }
-.root___focusedWithin__focusVisibleWithin:focus-within {
+.root___focusWithin__focusVisibleWithin:focus-within {
   outline: none;
 }
 .root:hover:not(:focus-within) {
@@ -46,7 +46,7 @@
   background: var(--token-bV4cCeIniS6);
   outline: none;
 }
-.root:focus-within .trigger___focusedWithin__focusVisibleWithin {
+.root:focus-within .trigger___focusWithin__focusVisibleWithin {
   box-shadow: 0px 0px 0px 2px #0091ff80;
   outline: none;
 }
@@ -200,7 +200,7 @@
   color: var(--token-UunsGa2Y3t3);
   outline: none;
 }
-.root:focus-within .dropdownIcon___focusedWithin__focusVisibleWithin {
+.root:focus-within .dropdownIcon___focusWithin__focusVisibleWithin {
   color: var(--token-UunsGa2Y3t3);
   outline: none;
 }

@@ -15,9 +15,21 @@ import {
 } from "@/wab/shared/ApiErrors/errors";
 import { CmsIdAndToken, ProjectIdAndToken } from "@/wab/shared/ApiSchema";
 import { asyncWrapper, omitNils } from "@/wab/shared/common";
-import { NextFunction, Request, Response } from "express-serve-static-core";
+import { AppRouter } from "@ts-rest/core";
+import { createExpressEndpoints } from "@ts-rest/express";
+import {
+  RouterImplementation,
+  TsRestExpressOptions,
+} from "@ts-rest/express/src/lib/types";
+import {
+  type IRouter,
+  NextFunction,
+  Request,
+  Response,
+} from "express-serve-static-core";
 import L from "lodash";
 import type { Readable } from "stream";
+import { ZodIssue } from "zod";
 
 /**
  * Request that is compatible with normal `Request`s and ts-rest `Request`s.
@@ -244,4 +256,39 @@ export function withNext(
       (err) => next(err)
     );
   };
+}
+
+export function createTsRestEndpoints<TRouter extends AppRouter>(
+  contract: TRouter,
+  server: RouterImplementation<TRouter>,
+  app: IRouter,
+  options?: Omit<TsRestExpressOptions<TRouter>, "requestValidationErrorHandler">
+): void {
+  createExpressEndpoints(contract, server, app, {
+    // Convert to BadRequestError, let our error middleware handle this
+    requestValidationErrorHandler: (err, req, res, next) => {
+      function issueMap(issue: ZodIssue) {
+        return `${issue.path.join(".")}: ${issue.message}`;
+      }
+
+      const issues = {};
+      if (err.headers) {
+        issues["headers"] = err.headers.issues.map(issueMap);
+      }
+      if (err.pathParams) {
+        issues["pathParams"] = err.pathParams.issues.map(issueMap);
+      }
+      if (err.query) {
+        issues["query"] = err.query.issues.map(issueMap);
+      }
+      if (err.body) {
+        issues["body"] = err.body.issues.map(issueMap);
+      }
+
+      throw new BadRequestError("Request validation failed. See issues.", {
+        issues,
+      });
+    },
+    ...options,
+  });
 }

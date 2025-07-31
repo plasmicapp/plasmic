@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -20,6 +20,7 @@ import {
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  ensureGlobalVariants,
   renderPlasmicSlot,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
@@ -29,16 +30,18 @@ import StarterGroup from "../../components/StarterGroup"; // plasmic-import: u6d
 import StarterProject from "../../components/StarterProject"; // plasmic-import: CCsDeqqYeoM/component
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
 
+import { useEnvironment } from "../plasmic_kit_pricing/PlasmicGlobalVariant__Environment"; // plasmic-import: hIjF9NLAUKG-/globalVariant
+
 import "@plasmicapp/react-web/lib/plasmic.css";
 
 import projectcss from "../PP__plasmickit_dashboard.module.css"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/projectcss
 import sty from "./PlasmicNewProjectModal.module.css"; // plasmic-import: s87vSHZpzQ/css
 
 import CheckIcon from "../plasmic_kit/PlasmicIcon__Check"; // plasmic-import: pawp1H5YxB_3B/icon
-import eyesvgZxKyHRa6Q6Pa from "../plasmic_kit_design_system/images/eyeSvg.svg"; // plasmic-import: Zx-kyHRa6Q6PA/picture
+import eyeSvgZxKyHRa6Q6Pa from "../plasmic_kit_design_system/images/eyeSvg.svg"; // plasmic-import: Zx-kyHRa6Q6PA/picture
 import image3YherfIxkolNxf from "../plasmic_kit_design_system/images/image3.svg"; // plasmic-import: yherfIxkolNXF/picture
-import ArrowRightsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ArrowRightSvg"; // plasmic-import: 9Jv8jb253/icon
-import ChevronDownsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
+import ArrowRightSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ArrowRightSvg"; // plasmic-import: 9Jv8jb253/icon
+import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
 
 createPlasmicElementProxy;
 
@@ -48,9 +51,7 @@ type VariantPropType = keyof PlasmicNewProjectModal__VariantsArgs;
 export const PlasmicNewProjectModal__VariantProps =
   new Array<VariantPropType>();
 
-export type PlasmicNewProjectModal__ArgsType = {
-  children?: React.ReactNode;
-};
+export type PlasmicNewProjectModal__ArgsType = { children?: React.ReactNode };
 type ArgPropType = keyof PlasmicNewProjectModal__ArgsType;
 export const PlasmicNewProjectModal__ArgProps = new Array<ArgPropType>(
   "children"
@@ -78,7 +79,16 @@ function PlasmicNewProjectModal__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
@@ -88,6 +98,10 @@ function PlasmicNewProjectModal__RenderFunc(props: {
   const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
+
+  const globalVariants = ensureGlobalVariants({
+    environment: useEnvironment(),
+  });
 
   return (
     <Modal
@@ -102,14 +116,14 @@ function PlasmicNewProjectModal__RenderFunc(props: {
           data-plasmic-override={overrides.cancelButton}
           className={classNames("__wab_instance", sty.cancelButton)}
           endIcon={
-            <ChevronDownsvgIcon
+            <ChevronDownSvgIcon
               className={classNames(projectcss.all, sty.svg__uqGta)}
               role={"img"}
             />
           }
           size={"wide"}
           startIcon={
-            <ArrowRightsvgIcon
+            <ArrowRightSvgIcon
               className={classNames(projectcss.all, sty.svg__trEgf)}
               role={"img"}
             />
@@ -177,7 +191,7 @@ function PlasmicNewProjectModal__RenderFunc(props: {
                             sty.img__fwvOk
                           )}
                           loading={"lazy"}
-                          src={eyesvgZxKyHRa6Q6Pa}
+                          src={eyeSvgZxKyHRa6Q6Pa}
                         />
                       }
                       withDescrip={true}
@@ -215,7 +229,7 @@ function PlasmicNewProjectModal__RenderFunc(props: {
                             sty.img__dtEk7
                           )}
                           loading={"lazy"}
-                          src={eyesvgZxKyHRa6Q6Pa}
+                          src={eyeSvgZxKyHRa6Q6Pa}
                         />
                       }
                     >
@@ -252,7 +266,7 @@ function PlasmicNewProjectModal__RenderFunc(props: {
                             sty.img__cx8F
                           )}
                           loading={"lazy"}
-                          src={eyesvgZxKyHRa6Q6Pa}
+                          src={eyeSvgZxKyHRa6Q6Pa}
                         />
                       }
                     >
@@ -289,7 +303,7 @@ function PlasmicNewProjectModal__RenderFunc(props: {
                             sty.img__euz0C
                           )}
                           loading={"lazy"}
-                          src={eyesvgZxKyHRa6Q6Pa}
+                          src={eyeSvgZxKyHRa6Q6Pa}
                         />
                       }
                     >
@@ -338,7 +352,7 @@ function PlasmicNewProjectModal__RenderFunc(props: {
                             sty.img__sDgWf
                           )}
                           loading={"lazy"}
-                          src={eyesvgZxKyHRa6Q6Pa}
+                          src={eyeSvgZxKyHRa6Q6Pa}
                         />
                       }
                     >
@@ -375,7 +389,7 @@ function PlasmicNewProjectModal__RenderFunc(props: {
                             sty.img__lfZxl
                           )}
                           loading={"lazy"}
-                          src={eyesvgZxKyHRa6Q6Pa}
+                          src={eyeSvgZxKyHRa6Q6Pa}
                         />
                       }
                     >
@@ -412,7 +426,7 @@ function PlasmicNewProjectModal__RenderFunc(props: {
                             sty.img__tcYhV
                           )}
                           loading={"lazy"}
-                          src={eyesvgZxKyHRa6Q6Pa}
+                          src={eyeSvgZxKyHRa6Q6Pa}
                         />
                       }
                     >
@@ -449,7 +463,7 @@ function PlasmicNewProjectModal__RenderFunc(props: {
                             sty.img__eYdKv
                           )}
                           loading={"lazy"}
-                          src={eyesvgZxKyHRa6Q6Pa}
+                          src={eyeSvgZxKyHRa6Q6Pa}
                         />
                       }
                     >
@@ -498,7 +512,7 @@ function PlasmicNewProjectModal__RenderFunc(props: {
                             sty.img__jk8H
                           )}
                           loading={"lazy"}
-                          src={eyesvgZxKyHRa6Q6Pa}
+                          src={eyeSvgZxKyHRa6Q6Pa}
                         />
                       }
                     >
@@ -535,7 +549,7 @@ function PlasmicNewProjectModal__RenderFunc(props: {
                             sty.img__rVwBb
                           )}
                           loading={"lazy"}
-                          src={eyesvgZxKyHRa6Q6Pa}
+                          src={eyeSvgZxKyHRa6Q6Pa}
                         />
                       }
                     >
@@ -572,7 +586,7 @@ function PlasmicNewProjectModal__RenderFunc(props: {
                             sty.img__h16Z
                           )}
                           loading={"lazy"}
-                          src={eyesvgZxKyHRa6Q6Pa}
+                          src={eyeSvgZxKyHRa6Q6Pa}
                         />
                       }
                     >
@@ -609,7 +623,7 @@ function PlasmicNewProjectModal__RenderFunc(props: {
                             sty.img__uu28E
                           )}
                           loading={"lazy"}
-                          src={eyesvgZxKyHRa6Q6Pa}
+                          src={eyeSvgZxKyHRa6Q6Pa}
                         />
                       }
                     >
@@ -624,7 +638,6 @@ function PlasmicNewProjectModal__RenderFunc(props: {
               />
             </React.Fragment>
           ),
-
           value: args.children,
         })}
       </Stack__>
@@ -653,7 +666,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicNewProjectModal__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
@@ -661,15 +673,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicNewProjectModal__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicNewProjectModal__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicNewProjectModal__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+    // Specify args directly as props
+    Omit<PlasmicNewProjectModal__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

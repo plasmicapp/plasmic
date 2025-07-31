@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -23,6 +23,7 @@ import {
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  ensureGlobalVariants,
   hasVariant,
   renderPlasmicSlot,
   useDollarState,
@@ -36,6 +37,8 @@ import PanelDivider from "../../components/PanelDivider"; // plasmic-import: 0Na
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
 import MenuButton from "../../components/widgets/MenuButton"; // plasmic-import: h69wHrrKtL/component
 
+import { useEnvironment } from "../plasmic_kit_pricing/PlasmicGlobalVariant__Environment"; // plasmic-import: hIjF9NLAUKG-/globalVariant
+
 import "@plasmicapp/react-web/lib/plasmic.css";
 
 import plasmic_plasmic_kit_pricing_css from "../plasmic_kit_pricing/plasmic_plasmic_kit_pricing.module.css"; // plasmic-import: ehckhYnyDHgCBbV47m9bkf/projectcss
@@ -44,8 +47,8 @@ import projectcss from "../PP__plasmickit_dashboard.module.css"; // plasmic-impo
 import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import sty from "./PlasmicCmsListItem.module.css"; // plasmic-import: DEllwXrn27Q/css
 
-import ArrowRightsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ArrowRightSvg"; // plasmic-import: 9Jv8jb253/icon
-import ChevronDownsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
+import ArrowRightSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ArrowRightSvg"; // plasmic-import: 9Jv8jb253/icon
+import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
 
 createPlasmicElementProxy;
 
@@ -66,9 +69,7 @@ export const PlasmicCmsListItem__VariantProps = new Array<VariantPropType>(
   "isFirstItem"
 );
 
-export type PlasmicCmsListItem__ArgsType = {
-  timestamp?: React.ReactNode;
-};
+export type PlasmicCmsListItem__ArgsType = { timestamp?: React.ReactNode };
 type ArgPropType = keyof PlasmicCmsListItem__ArgsType;
 export const PlasmicCmsListItem__ArgProps = new Array<ArgPropType>("timestamp");
 
@@ -103,7 +104,16 @@ function PlasmicCmsListItem__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
@@ -135,7 +145,6 @@ function PlasmicCmsListItem__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.isFirstItem,
       },
     ],
-
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -162,6 +171,10 @@ function PlasmicCmsListItem__RenderFunc(props: {
     hover_root: isRootHover,
   };
 
+  const globalVariants = ensureGlobalVariants({
+    environment: useEnvironment(),
+  });
+
   return (
     <Stack__
       as={PlasmicLink__}
@@ -182,6 +195,24 @@ function PlasmicCmsListItem__RenderFunc(props: {
         plasmic_plasmic_kit_pricing_css.plasmic_tokens,
         sty.root,
         {
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
           [sty.root___focusVisibleWithin]: triggers.focusVisibleWithin_root,
           [sty.root___focusVisible]: triggers.focusVisible_root,
           [sty.rootexplorations_idOnHover]: hasVariant(
@@ -321,13 +352,13 @@ function PlasmicCmsListItem__RenderFunc(props: {
                   ),
                 })}
                 endIcon={
-                  <ChevronDownsvgIcon
+                  <ChevronDownSvgIcon
                     className={classNames(projectcss.all, sty.svg__oN43J)}
                     role={"img"}
                   />
                 }
                 startIcon={
-                  <ArrowRightsvgIcon
+                  <ArrowRightSvgIcon
                     className={classNames(projectcss.all, sty.svg__qLwj0)}
                     role={"img"}
                   />
@@ -429,7 +460,6 @@ const PlasmicDescendants = {
     "menuButton",
     "updatedJustNow",
   ],
-
   left: [
     "left",
     "editableName",
@@ -438,7 +468,6 @@ const PlasmicDescendants = {
     "text",
     "projectIdCopyButton",
   ],
-
   editableName: ["editableName"],
   panelDivider: ["panelDivider"],
   workspace: ["workspace", "text"],
@@ -469,7 +498,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicCmsListItem__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
@@ -477,15 +505,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicCmsListItem__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicCmsListItem__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicCmsListItem__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+    // Specify args directly as props
+    Omit<PlasmicCmsListItem__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

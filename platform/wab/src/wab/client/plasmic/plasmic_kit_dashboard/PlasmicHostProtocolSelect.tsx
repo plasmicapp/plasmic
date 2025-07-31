@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -22,6 +22,7 @@ import {
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  ensureGlobalVariants,
   hasVariant,
   renderPlasmicSlot,
   useDollarState,
@@ -34,6 +35,8 @@ import HostProtocolSelect__Option from "../../components/HostProtocolSelect__Opt
 import HostProtocolSelect__OptionGroup from "../../components/HostProtocolSelect__OptionGroup"; // plasmic-import: FB-WsFik1_I/component
 import HostProtocolSelect__Overlay from "../../components/HostProtocolSelect__Overlay"; // plasmic-import: WAelYWWWRyr/component
 
+import { useEnvironment } from "../plasmic_kit_pricing/PlasmicGlobalVariant__Environment"; // plasmic-import: hIjF9NLAUKG-/globalVariant
+
 import "@plasmicapp/react-web/lib/plasmic.css";
 
 import plasmic_plasmic_kit_pricing_css from "../plasmic_kit_pricing/plasmic_plasmic_kit_pricing.module.css"; // plasmic-import: ehckhYnyDHgCBbV47m9bkf/projectcss
@@ -42,8 +45,8 @@ import projectcss from "../PP__plasmickit_dashboard.module.css"; // plasmic-impo
 import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import sty from "./PlasmicHostProtocolSelect.module.css"; // plasmic-import: 6_CfQ5GVLku/css
 
-import ChevronDownsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
-import ChevronUpsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronUpSvg"; // plasmic-import: i9D87DzsX/icon
+import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
+import ChevronUpSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronUpSvg"; // plasmic-import: i9D87DzsX/icon
 
 createPlasmicElementProxy;
 
@@ -118,7 +121,16 @@ function PlasmicHostProtocolSelect__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
@@ -159,7 +171,6 @@ function PlasmicHostProtocolSelect__RenderFunc(props: {
         onChangeProp: "onChange",
       },
     ],
-
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -182,6 +193,10 @@ function PlasmicHostProtocolSelect__RenderFunc(props: {
       isRootFocusWithin && isRootFocusVisibleWithin,
   };
 
+  const globalVariants = ensureGlobalVariants({
+    environment: useEnvironment(),
+  });
+
   return (
     <PlasmicHostProtocolSelectContext.Provider value={{ variants, args }}>
       <div
@@ -200,7 +215,25 @@ function PlasmicHostProtocolSelect__RenderFunc(props: {
           plasmic_plasmic_kit_pricing_css.plasmic_tokens,
           sty.root,
           {
-            [sty.root___focusedWithin__focusVisibleWithin]:
+            [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+              hasVariant(globalVariants, "environment", "website"),
+            [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+              hasVariant(globalVariants, "environment", "website"),
+            [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+              hasVariant(globalVariants, "environment", "website"),
+            [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+              hasVariant(globalVariants, "environment", "website"),
+            [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+              hasVariant(globalVariants, "environment", "website"),
+            [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+              hasVariant(globalVariants, "environment", "website"),
+            [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+              hasVariant(globalVariants, "environment", "website"),
+            [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+              hasVariant(globalVariants, "environment", "website"),
+            [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+              hasVariant(globalVariants, "environment", "website"),
+            [sty.root___focusWithin__focusVisibleWithin]:
               triggers.focusWithinFocusVisibleWithin_root,
             [sty.rootisOpen]: hasVariant($state, "isOpen", "isOpen"),
           }
@@ -220,7 +253,7 @@ function PlasmicHostProtocolSelect__RenderFunc(props: {
             projectcss.button,
             sty.trigger,
             {
-              [sty.trigger___focusedWithin__focusVisibleWithin]:
+              [sty.trigger___focusWithin__focusVisibleWithin]:
                 triggers.focusWithinFocusVisibleWithin_root,
               [sty.triggerisDisabled]: hasVariant(
                 $state,
@@ -309,11 +342,11 @@ function PlasmicHostProtocolSelect__RenderFunc(props: {
               data-plasmic-override={overrides.dropdownIcon}
               PlasmicIconType={
                 hasVariant($state, "isOpen", "isOpen")
-                  ? ChevronUpsvgIcon
-                  : ChevronDownsvgIcon
+                  ? ChevronUpSvgIcon
+                  : ChevronDownSvgIcon
               }
               className={classNames(projectcss.all, sty.dropdownIcon, {
-                [sty.dropdownIcon___focusedWithin__focusVisibleWithin]:
+                [sty.dropdownIcon___focusWithin__focusVisibleWithin]:
                   triggers.focusWithinFocusVisibleWithin_root,
                 [sty.dropdownIconisDisabled]: hasVariant(
                   $state,
@@ -378,7 +411,6 @@ function PlasmicHostProtocolSelect__RenderFunc(props: {
                     </HostProtocolSelect__Option>
                   </React.Fragment>
                 ),
-
                 value: args.children,
               })}
             </div>
@@ -451,7 +483,6 @@ const PlasmicDescendants = {
     "overlay",
     "optionsContainer",
   ],
-
   trigger: ["trigger", "contentContainer", "dropdownIcon"],
   contentContainer: ["contentContainer"],
   dropdownIcon: ["dropdownIcon"],
@@ -475,7 +506,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicHostProtocolSelect__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
@@ -483,15 +513,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicHostProtocolSelect__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicHostProtocolSelect__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicHostProtocolSelect__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+    // Specify args directly as props
+    Omit<PlasmicHostProtocolSelect__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

@@ -99,6 +99,7 @@ export const APP_ROUTES = {
 
   team: route<{ teamId: TeamId }>("/teams/:teamId"),
   org: route<{ teamId: TeamId }>("/orgs/:teamId"),
+  orgBilling: route<{ teamId: TeamId }>("/orgs/:teamId/billing"),
   teamSettings: route<{ teamId: TeamId }>("/teams/:teamId/settings"),
   orgSettings: route<{ teamId: TeamId }>("/orgs/:teamId/settings"),
   orgSupport: route<{ teamId: TeamId }>("/orgs/:teamId/support"),

@@ -905,6 +905,12 @@ export abstract class SharedApi {
     return this.delete(`/teams/${teamId}`);
   }
 
+  async createTeamCustomerPortalSession(
+    teamId: TeamId
+  ): Promise<{ url: string }> {
+    return this.post(`/teams/${teamId}/billing/customer-portal-session`);
+  }
+
   async purgeUsersFromTeam(data: PurgeUserFromTeamRequest) {
     return this.post(`/teams/purgeUsers`, data);
   }

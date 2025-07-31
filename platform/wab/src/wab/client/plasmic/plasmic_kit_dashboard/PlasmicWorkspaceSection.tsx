@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -38,6 +38,7 @@ import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRm
 import MenuButton from "../../components/widgets/MenuButton"; // plasmic-import: h69wHrrKtL/component
 
 import { useScreenVariants as useScreenVariants_2DzYbdw5Xtx } from "../PlasmicGlobalVariant__Screen"; // plasmic-import: 2dzYbdw5Xtx/globalVariant
+import { useEnvironment } from "../plasmic_kit_pricing/PlasmicGlobalVariant__Environment"; // plasmic-import: hIjF9NLAUKG-/globalVariant
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
@@ -48,7 +49,7 @@ import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_token
 import sty from "./PlasmicWorkspaceSection.module.css"; // plasmic-import: 5cdjGaqBQ4/css
 
 import PlusIcon from "../plasmic_kit/PlasmicIcon__Plus"; // plasmic-import: -k064DlQ8k8-L/icon
-import ChevronDownsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
+import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
 
 createPlasmicElementProxy;
 
@@ -68,7 +69,6 @@ export type PlasmicWorkspaceSection__VariantsArgs = {
   canUseCmsAndDataSources?: SingleChoiceArg<
     "projects" | "dataSources" | "empty"
   >;
-
   personalWorkspace?: SingleBooleanChoiceArg<"personalWorkspace">;
 };
 type VariantPropType = keyof PlasmicWorkspaceSection__VariantsArgs;
@@ -127,7 +127,6 @@ export interface DefaultWorkspaceSectionProps {
   canUseCmsAndDataSources?: SingleChoiceArg<
     "projects" | "dataSources" | "empty"
   >;
-
   personalWorkspace?: SingleBooleanChoiceArg<"personalWorkspace">;
   className?: string;
 }
@@ -142,7 +141,16 @@ function PlasmicWorkspaceSection__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
@@ -194,7 +202,6 @@ function PlasmicWorkspaceSection__RenderFunc(props: {
           $props.personalWorkspace,
       },
     ],
-
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -206,6 +213,7 @@ function PlasmicWorkspaceSection__RenderFunc(props: {
 
   const globalVariants = ensureGlobalVariants({
     screen: useScreenVariants_2DzYbdw5Xtx(),
+    environment: useEnvironment(),
   });
 
   return (
@@ -225,6 +233,24 @@ function PlasmicWorkspaceSection__RenderFunc(props: {
         plasmic_plasmic_kit_pricing_css.plasmic_tokens,
         sty.root,
         {
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
           [sty.rootcanUseCmsAndDataSources_dataSources]: hasVariant(
             $state,
             "canUseCmsAndDataSources",
@@ -488,7 +514,7 @@ function PlasmicWorkspaceSection__RenderFunc(props: {
                 ),
               })}
               endIcon={
-                <ChevronDownsvgIcon
+                <ChevronDownSvgIcon
                   className={classNames(projectcss.all, sty.svg___4TYeu)}
                   role={"img"}
                 />
@@ -696,7 +722,6 @@ function PlasmicWorkspaceSection__RenderFunc(props: {
                   {"This workspace has no projects."}
                 </div>
               ),
-
               value: args.noProjectsText,
               className: classNames(sty.slotTargetNoProjectsText, {
                 [sty.slotTargetNoProjectsTextnoProjects]: hasVariant(
@@ -742,7 +767,7 @@ function PlasmicWorkspaceSection__RenderFunc(props: {
                 data-plasmic-override={overrides.newCmsButton2}
                 className={classNames("__wab_instance", sty.newCmsButton2)}
                 endIcon={
-                  <ChevronDownsvgIcon
+                  <ChevronDownSvgIcon
                     className={classNames(projectcss.all, sty.svg__remgn)}
                     role={"img"}
                   />
@@ -789,7 +814,6 @@ function PlasmicWorkspaceSection__RenderFunc(props: {
                     />
                   </React.Fragment>
                 ),
-
                 value: args.children,
               })
             : null}
@@ -908,7 +932,7 @@ function PlasmicWorkspaceSection__RenderFunc(props: {
                       ),
                   })}
                   endIcon={
-                    <ChevronDownsvgIcon
+                    <ChevronDownSvgIcon
                       className={classNames(projectcss.all, sty.svg__woNvm)}
                       role={"img"}
                     />
@@ -965,7 +989,6 @@ const PlasmicDescendants = {
     "cmsSection",
     "newCmsButton",
   ],
-
   header: [
     "header",
     "editableName",
@@ -975,7 +998,6 @@ const PlasmicDescendants = {
     "projectsFilter",
     "moreButton",
   ],
-
   editableName: ["editableName"],
   actions: [
     "actions",
@@ -984,7 +1006,6 @@ const PlasmicDescendants = {
     "projectsFilter",
     "moreButton",
   ],
-
   newProjectButton: ["newProjectButton"],
   shareButton: ["shareButton"],
   projectsFilter: ["projectsFilter"],
@@ -998,7 +1019,6 @@ const PlasmicDescendants = {
     "databases",
     "dataSources",
   ],
-
   projectsTab: ["projectsTab"],
   dataSourcesTab: ["dataSourcesTab"],
   h3: ["h3"],
@@ -1036,7 +1056,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicWorkspaceSection__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
@@ -1044,15 +1063,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicWorkspaceSection__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicWorkspaceSection__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicWorkspaceSection__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+    // Specify args directly as props
+    Omit<PlasmicWorkspaceSection__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

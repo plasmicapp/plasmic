@@ -1252,7 +1252,7 @@
         {
           "id": "h1Ar4hymw",
           "name": "Kimmy_Schmidt_icon.jpg",
-          "filePath": "wab/client/plasmic/plasmic_kit_dashboard/images/kimmySchmidtIconjpg.jpeg"
+          "filePath": "wab/client/plasmic/plasmic_kit_dashboard/images/kimmySchmidtIconJpg.jpeg"
         },
         {
           "id": "dQeKTjQST",
@@ -1284,8 +1284,7 @@
       "indirect": false,
       "globalContextsFilePath": "wab/client/plasmic/plasmic_kit_dashboard/PlasmicGlobalContextsProvider.tsx",
       "splitsProviderFilePath": "",
-      "customFunctions": [],
-      "jsBundleThemes": []
+      "customFunctions": []
     },
     {
       "projectId": "kA1Hysr5ZeimtATHTDJz5B",
@@ -3370,7 +3369,8 @@
       "indirect": false,
       "globalContextsFilePath": "",
       "customFunctions": [],
-      "splitsProviderFilePath": ""
+      "splitsProviderFilePath": "",
+      "jsBundleThemes": []
     },
     {
       "projectId": "wT5BWZPEc2fYxyqbTLXMt2",

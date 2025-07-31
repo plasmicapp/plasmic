@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -21,12 +21,15 @@ import {
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  ensureGlobalVariants,
   hasVariant,
   renderPlasmicSlot,
   useDollarState,
   useTrigger,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+
+import { useEnvironment } from "../plasmic_kit_pricing/PlasmicGlobalVariant__Environment"; // plasmic-import: hIjF9NLAUKG-/globalVariant
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
@@ -36,7 +39,7 @@ import projectcss from "../PP__plasmickit_dashboard.module.css"; // plasmic-impo
 import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import sty from "./PlasmicCopyButton.module.css"; // plasmic-import: u7TII072Seb/css
 
-import CopysvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__CopySvg"; // plasmic-import: aGIZL6Ec9/icon
+import CopySvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__CopySvg"; // plasmic-import: aGIZL6Ec9/icon
 
 createPlasmicElementProxy;
 
@@ -51,9 +54,7 @@ export const PlasmicCopyButton__VariantProps = new Array<VariantPropType>(
   "mode"
 );
 
-export type PlasmicCopyButton__ArgsType = {
-  version?: React.ReactNode;
-};
+export type PlasmicCopyButton__ArgsType = { version?: React.ReactNode };
 type ArgPropType = keyof PlasmicCopyButton__ArgsType;
 export const PlasmicCopyButton__ArgProps = new Array<ArgPropType>("version");
 
@@ -78,7 +79,16 @@ function PlasmicCopyButton__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
@@ -98,7 +108,6 @@ function PlasmicCopyButton__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.mode,
       },
     ],
-
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -112,6 +121,10 @@ function PlasmicCopyButton__RenderFunc(props: {
   const triggers = {
     hover_root: isRootHover,
   };
+
+  const globalVariants = ensureGlobalVariants({
+    environment: useEnvironment(),
+  });
 
   return (
     <Stack__
@@ -131,7 +144,27 @@ function PlasmicCopyButton__RenderFunc(props: {
         plasmic_plasmic_kit_design_system_deprecated_css.plasmic_tokens,
         plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
         plasmic_plasmic_kit_pricing_css.plasmic_tokens,
-        sty.root
+        sty.root,
+        {
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+        }
       )}
       title={triggers.hover_root ? "Copy project ID" : undefined}
       data-plasmic-trigger-props={[triggerRootHoverProps]}
@@ -143,7 +176,7 @@ function PlasmicCopyButton__RenderFunc(props: {
           [sty.slotTargetVersionmode_demo]: hasVariant($state, "mode", "demo"),
         }),
       })}
-      <CopysvgIcon
+      <CopySvgIcon
         data-plasmic-name={"svg"}
         data-plasmic-override={overrides.svg}
         className={classNames(projectcss.all, sty.svg)}
@@ -170,7 +203,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicCopyButton__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
@@ -178,15 +210,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicCopyButton__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicCopyButton__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicCopyButton__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+    // Specify args directly as props
+    Omit<PlasmicCopyButton__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

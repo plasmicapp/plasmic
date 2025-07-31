@@ -37,7 +37,7 @@ import Stripe from "stripe";
 
 interface TeamBillingProps extends DefaultTeamBillingProps {
   appCtx: AppCtx;
-  team?: ApiTeam;
+  team: ApiTeam;
   members: TeamMember[];
   availFeatureTiers: ApiFeatureTier[];
   subscription?: Stripe.Subscription;
@@ -56,9 +56,9 @@ function TeamBilling_(props: TeamBillingProps, ref: HTMLElementRefOf<"div">) {
     disabled,
     ...rest
   } = props;
-  const [billingEmail, setBillingEmail] = React.useState(team?.billingEmail);
+  const [billingEmail, setBillingEmail] = React.useState(team.billingEmail);
   const [billingFreq, setBillingFreq] = React.useState<BillingFrequency>(
-    team?.billingFrequency ?? "year"
+    team.billingFrequency ?? "year"
   );
 
   // Figure out the current plan we're on
@@ -70,7 +70,7 @@ function TeamBilling_(props: TeamBillingProps, ref: HTMLElementRefOf<"div">) {
     subStatus?.type === "invalid" ? subStatus.errorMsg : undefined;
 
   const currentBill = React.useMemo(() => {
-    if (!team?.featureTier || !team?.seats || !team?.billingFrequency) {
+    if (!team.featureTier || !team.seats || !team.billingFrequency) {
       return null;
     }
 
@@ -82,7 +82,7 @@ function TeamBilling_(props: TeamBillingProps, ref: HTMLElementRefOf<"div">) {
     return team.billingFrequency === "year"
       ? `$${bill.total}/year`
       : `$${bill.total}/month`;
-  }, [team?.featureTier, team?.seats, team?.billingFrequency]);
+  }, [team.featureTier, team.seats, team.billingFrequency]);
 
   const seatsUsed = members.filter(
     (m) => !isAdminTeamEmail(m.email, DEVFLAGS)
@@ -164,7 +164,7 @@ function TeamBilling_(props: TeamBillingProps, ref: HTMLElementRefOf<"div">) {
     if (!team) {
       return;
     }
-    await appCtx.api.startFreeTrial(team?.id);
+    await appCtx.api.startFreeTrial(team.id);
     await onChange();
   };
 
@@ -193,17 +193,17 @@ function TeamBilling_(props: TeamBillingProps, ref: HTMLElementRefOf<"div">) {
         availableTiers: availFeatureTiers,
         currentFeatureTier:
           subStatus?.type === "valid" ? subStatus.tier : subStatus?.freeTier,
-        canStartFreeTrial: !team?.trialStartDate,
+        canStartFreeTrial: !team.trialStartDate,
         onSelectFeatureTier: upsell,
         onStartFreeTrial: startFreeTrial,
-        isFreeTrialTeam: team?.onTrial,
+        isFreeTrialTeam: team.onTrial,
       }}
       freeTrial={{
         team,
       }}
       // If we are on free or enterprise tiers, hide certain sections.
       tier={
-        subStatus?.type === "valid" && (subStatus.free || team?.onTrial)
+        subStatus?.type === "valid" && (subStatus.free || team.onTrial)
           ? "free"
           : subStatus?.type === "valid" &&
             subStatus.tier.name.includes("Enterprise")
@@ -212,12 +212,12 @@ function TeamBilling_(props: TeamBillingProps, ref: HTMLElementRefOf<"div">) {
       }
       currentBill={currentBill}
       seatsUsed={`${seatsUsed}`}
-      seatsPurchased={`${team?.seats ?? appCtx.appConfig.freeTier.maxUsers}`}
+      seatsPurchased={`${team.seats ?? appCtx.appConfig.freeTier.maxUsers}`}
       changeSeatsButton={{
         onClick: async () => {
           // Skip straight to the Checkout where you change the number of seats
           const tier = ensure(
-            team?.featureTier,
+            team.featureTier,
             "Feature tier should exist to change seats"
           );
           await upsell(tier, "Change seat count");
@@ -301,6 +301,18 @@ function TeamBilling_(props: TeamBillingProps, ref: HTMLElementRefOf<"div">) {
         },
         disabled: disabled,
       }}
+      manageBilling={
+        team.stripeCustomerId
+          ? {
+              props: {
+                href: fillRoute(APP_ROUTES.orgBilling, { teamId: team.id }),
+                target: "_blank",
+              },
+            }
+          : {
+              wrap: () => null,
+            }
+      }
     />
   );
 }

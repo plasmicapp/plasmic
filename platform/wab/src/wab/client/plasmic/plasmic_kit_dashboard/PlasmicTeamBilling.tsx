@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -23,6 +23,7 @@ import {
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  ensureGlobalVariants,
   generateStateOnChangeProp,
   generateStateValueProp,
   hasVariant,
@@ -36,6 +37,8 @@ import PriceTierPicker from "../../components/pricing/PriceTierPicker"; // plasm
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
 import Switch from "../../components/widgets/Switch"; // plasmic-import: b35JDgXpbiF/component
 
+import { useEnvironment } from "../plasmic_kit_pricing/PlasmicGlobalVariant__Environment"; // plasmic-import: hIjF9NLAUKG-/globalVariant
+
 import "@plasmicapp/react-web/lib/plasmic.css";
 
 import plasmic_plasmic_kit_pricing_css from "../plasmic_kit_pricing/plasmic_plasmic_kit_pricing.module.css"; // plasmic-import: ehckhYnyDHgCBbV47m9bkf/projectcss
@@ -44,9 +47,9 @@ import projectcss from "../PP__plasmickit_dashboard.module.css"; // plasmic-impo
 import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import sty from "./PlasmicTeamBilling.module.css"; // plasmic-import: MtL6MGlBxoy/css
 
-import CloseIcon from "../plasmic_kit/PlasmicIcon__Close"; // plasmic-import: hy7vKrgdAZwW4/icon
-import ArrowRightsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ArrowRightSvg"; // plasmic-import: 9Jv8jb253/icon
-import ChevronDownsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
+import ArrowRightSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ArrowRightSvg"; // plasmic-import: 9Jv8jb253/icon
+import ArrowUpRightSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ArrowUpRightSvg"; // plasmic-import: N_BtK6grX/icon
+import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
 
 createPlasmicElementProxy;
 
@@ -90,6 +93,7 @@ export type PlasmicTeamBilling__OverridesType = {
   updateBillingEmailButton?: Flex__<typeof Button>;
   changeSeatsButton?: Flex__<typeof Button>;
   changeCreditCardButton?: Flex__<typeof Button>;
+  manageBilling?: Flex__<typeof Button>;
   cancelSubscriptionButton?: Flex__<typeof Button>;
 };
 
@@ -113,7 +117,16 @@ function PlasmicTeamBilling__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
@@ -146,7 +159,6 @@ function PlasmicTeamBilling__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => "isChecked",
       },
     ],
-
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -154,6 +166,10 @@ function PlasmicTeamBilling__RenderFunc(props: {
     $ctx,
     $queries: {},
     $refs,
+  });
+
+  const globalVariants = ensureGlobalVariants({
+    environment: useEnvironment(),
   });
 
   return (
@@ -175,6 +191,24 @@ function PlasmicTeamBilling__RenderFunc(props: {
         plasmic_plasmic_kit_pricing_css.plasmic_tokens,
         sty.root,
         {
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
           [sty.rootshowBillingError]: hasVariant(
             $state,
             "showBillingError",
@@ -363,11 +397,21 @@ function PlasmicTeamBilling__RenderFunc(props: {
               "isChecked",
             ]) ?? false
           }
-          onChange={(...eventArgs) => {
-            generateStateOnChangeProp($state, [
-              "billingFrequencyToggle",
-              "isChecked",
-            ])(eventArgs[0]);
+          onChange={async (...eventArgs: any) => {
+            ((...eventArgs) => {
+              generateStateOnChangeProp($state, [
+                "billingFrequencyToggle",
+                "isChecked",
+              ])(eventArgs[0]);
+            }).apply(null, eventArgs);
+
+            if (
+              eventArgs.length > 1 &&
+              eventArgs[1] &&
+              eventArgs[1]._plasmic_state_init_
+            ) {
+              return;
+            }
           }}
         >
           <div
@@ -478,14 +522,14 @@ function PlasmicTeamBilling__RenderFunc(props: {
                     sty.updateBillingEmailButton
                   )}
                   endIcon={
-                    <ChevronDownsvgIcon
+                    <ChevronDownSvgIcon
                       className={classNames(projectcss.all, sty.svg__lL73)}
                       role={"img"}
                     />
                   }
                   size={"wide"}
                   startIcon={
-                    <ArrowRightsvgIcon
+                    <ArrowRightSvgIcon
                       className={classNames(projectcss.all, sty.svg__dEpin)}
                       role={"img"}
                     />
@@ -530,14 +574,14 @@ function PlasmicTeamBilling__RenderFunc(props: {
                 data-plasmic-override={overrides.changeSeatsButton}
                 className={classNames("__wab_instance", sty.changeSeatsButton)}
                 endIcon={
-                  <ChevronDownsvgIcon
+                  <ChevronDownSvgIcon
                     className={classNames(projectcss.all, sty.svg__a4XtS)}
                     role={"img"}
                   />
                 }
                 size={"wide"}
                 startIcon={
-                  <ArrowRightsvgIcon
+                  <ArrowRightSvgIcon
                     className={classNames(projectcss.all, sty.svg__zyBz8)}
                     role={"img"}
                   />
@@ -562,14 +606,14 @@ function PlasmicTeamBilling__RenderFunc(props: {
                   sty.changeCreditCardButton
                 )}
                 endIcon={
-                  <ChevronDownsvgIcon
+                  <ChevronDownSvgIcon
                     className={classNames(projectcss.all, sty.svg__bwN41)}
                     role={"img"}
                   />
                 }
                 size={"wide"}
                 startIcon={
-                  <ArrowRightsvgIcon
+                  <ArrowRightSvgIcon
                     className={classNames(projectcss.all, sty.svg__g7GmU)}
                     role={"img"}
                   />
@@ -587,39 +631,55 @@ function PlasmicTeamBilling__RenderFunc(props: {
                 </div>
               </Button>
               <Button
-                data-plasmic-name={"cancelSubscriptionButton"}
-                data-plasmic-override={overrides.cancelSubscriptionButton}
-                className={classNames(
-                  "__wab_instance",
-                  sty.cancelSubscriptionButton
-                )}
+                data-plasmic-name={"manageBilling"}
+                data-plasmic-override={overrides.manageBilling}
+                className={classNames("__wab_instance", sty.manageBilling)}
                 endIcon={
-                  <ChevronDownsvgIcon
-                    className={classNames(projectcss.all, sty.svg__yK6Zg)}
+                  <ArrowUpRightSvgIcon
+                    className={classNames(projectcss.all, sty.svg___7TuH)}
                     role={"img"}
                   />
                 }
                 size={"wide"}
                 startIcon={
-                  <CloseIcon
-                    className={classNames(projectcss.all, sty.svg__htmVy)}
+                  <ArrowRightSvgIcon
+                    className={classNames(projectcss.all, sty.svg__bOkpg)}
                     role={"img"}
                   />
                 }
-                type={["backlitError"]}
-                withIcons={["startIcon"]}
+                type={["secondary"]}
+                withIcons={["endIcon"]}
               >
                 <div
                   className={classNames(
                     projectcss.all,
                     projectcss.__wab_text,
-                    sty.text__iI7N
+                    sty.text__k3Dt
                   )}
                 >
-                  {"Cancel plan"}
+                  {"Manage billing"}
                 </div>
               </Button>
             </Stack__>
+          </div>
+          <div className={classNames(projectcss.all, sty.freeBox__ncYhG)}>
+            <Button
+              data-plasmic-name={"cancelSubscriptionButton"}
+              data-plasmic-override={overrides.cancelSubscriptionButton}
+              size={"wide"}
+              type={["backlitError"]}
+              withIcons={[]}
+            >
+              <div
+                className={classNames(
+                  projectcss.all,
+                  projectcss.__wab_text,
+                  sty.text__iI7N
+                )}
+              >
+                {"Cancel plan"}
+              </div>
+            </Button>
           </div>
         </Stack__>
       </Stack__>
@@ -640,9 +700,9 @@ const PlasmicDescendants = {
     "updateBillingEmailButton",
     "changeSeatsButton",
     "changeCreditCardButton",
+    "manageBilling",
     "cancelSubscriptionButton",
   ],
-
   learnMore: ["learnMore"],
   freeTrial: ["freeTrial"],
   billingFrequencyToggle: ["billingFrequencyToggle"],
@@ -654,14 +714,15 @@ const PlasmicDescendants = {
     "updateBillingEmailButton",
     "changeSeatsButton",
     "changeCreditCardButton",
+    "manageBilling",
     "cancelSubscriptionButton",
   ],
-
   h4: ["h4"],
   billingEmail: ["billingEmail"],
   updateBillingEmailButton: ["updateBillingEmailButton"],
   changeSeatsButton: ["changeSeatsButton"],
   changeCreditCardButton: ["changeCreditCardButton"],
+  manageBilling: ["manageBilling"],
   cancelSubscriptionButton: ["cancelSubscriptionButton"],
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
@@ -679,6 +740,7 @@ type NodeDefaultElementType = {
   updateBillingEmailButton: typeof Button;
   changeSeatsButton: typeof Button;
   changeCreditCardButton: typeof Button;
+  manageBilling: typeof Button;
   cancelSubscriptionButton: typeof Button;
 };
 
@@ -687,7 +749,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicTeamBilling__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
@@ -695,15 +756,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicTeamBilling__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicTeamBilling__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicTeamBilling__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+    // Specify args directly as props
+    Omit<PlasmicTeamBilling__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;
@@ -753,6 +814,7 @@ export const PlasmicTeamBilling = Object.assign(
     updateBillingEmailButton: makeNodeComponent("updateBillingEmailButton"),
     changeSeatsButton: makeNodeComponent("changeSeatsButton"),
     changeCreditCardButton: makeNodeComponent("changeCreditCardButton"),
+    manageBilling: makeNodeComponent("manageBilling"),
     cancelSubscriptionButton: makeNodeComponent("cancelSubscriptionButton"),
 
     // Metadata about props expected for PlasmicTeamBilling

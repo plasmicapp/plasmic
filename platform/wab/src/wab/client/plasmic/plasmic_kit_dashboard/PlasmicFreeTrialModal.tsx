@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -20,10 +20,14 @@ import {
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  ensureGlobalVariants,
+  hasVariant,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
+
+import { useEnvironment } from "../plasmic_kit_pricing/PlasmicGlobalVariant__Environment"; // plasmic-import: hIjF9NLAUKG-/globalVariant
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
@@ -34,8 +38,8 @@ import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_
 import sty from "./PlasmicFreeTrialModal.module.css"; // plasmic-import: AqMe9uK-Yh/css
 
 import MarkFullColorIcon from "../plasmic_kit_design_system/PlasmicIcon__MarkFullColor"; // plasmic-import: l_n_OBLJg/icon
-import ArrowRightsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ArrowRightSvg"; // plasmic-import: 9Jv8jb253/icon
-import ChevronDownsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
+import ArrowRightSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ArrowRightSvg"; // plasmic-import: 9Jv8jb253/icon
+import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
 
 createPlasmicElementProxy;
 
@@ -44,9 +48,7 @@ export type PlasmicFreeTrialModal__VariantsArgs = {};
 type VariantPropType = keyof PlasmicFreeTrialModal__VariantsArgs;
 export const PlasmicFreeTrialModal__VariantProps = new Array<VariantPropType>();
 
-export type PlasmicFreeTrialModal__ArgsType = {
-  trialDays?: number;
-};
+export type PlasmicFreeTrialModal__ArgsType = { trialDays?: number };
 type ArgPropType = keyof PlasmicFreeTrialModal__ArgsType;
 export const PlasmicFreeTrialModal__ArgProps = new Array<ArgPropType>(
   "trialDays"
@@ -81,7 +83,9 @@ function PlasmicFreeTrialModal__RenderFunc(props: {
         {
           trialDays: 15,
         },
-        props.args
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
       ),
     [props.args]
   );
@@ -94,6 +98,10 @@ function PlasmicFreeTrialModal__RenderFunc(props: {
   const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
+
+  const globalVariants = ensureGlobalVariants({
+    environment: useEnvironment(),
+  });
 
   return (
     <Stack__
@@ -112,7 +120,27 @@ function PlasmicFreeTrialModal__RenderFunc(props: {
         plasmic_plasmic_kit_design_system_deprecated_css.plasmic_tokens,
         plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
         plasmic_plasmic_kit_pricing_css.plasmic_tokens,
-        sty.root
+        sty.root,
+        {
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+        }
       )}
     >
       <MarkFullColorIcon
@@ -130,18 +158,14 @@ function PlasmicFreeTrialModal__RenderFunc(props: {
           sty.h3
         )}
       >
-        <React.Fragment>
-          {`Discover all of Plasmic with a ${$props.trialDays}-day trial of Scale`}
-        </React.Fragment>
+        <React.Fragment>{`Discover all of Plasmic with a ${$props.trialDays}-day trial of Scale`}</React.Fragment>
       </h3>
       <div
         data-plasmic-name={"text"}
         data-plasmic-override={overrides.text}
         className={classNames(projectcss.all, projectcss.__wab_text, sty.text)}
       >
-        <React.Fragment>
-          {`We\u2019ve upgraded you to a free ${$props.trialDays}-day trial of the Scale plan. Experience Plasmic's full range of features to choose the best plan for you.\n\nWhen your trial ends, we'll automatically move your account to the Free plan unless you choose to upgrade.`}
-        </React.Fragment>
+        <React.Fragment>{`We\u2019ve upgraded you to a free ${$props.trialDays}-day trial of the Scale plan. Experience Plasmic's full range of features to choose the best plan for you.\n\nWhen your trial ends, we'll automatically move your account to the Free plan unless you choose to upgrade.`}</React.Fragment>
       </div>
       <div
         data-plasmic-name={"freeBox"}
@@ -153,13 +177,13 @@ function PlasmicFreeTrialModal__RenderFunc(props: {
           data-plasmic-override={overrides.confirmButton}
           className={classNames("__wab_instance", sty.confirmButton)}
           endIcon={
-            <ChevronDownsvgIcon
+            <ChevronDownSvgIcon
               className={classNames(projectcss.all, sty.svg__akfXw)}
               role={"img"}
             />
           }
           startIcon={
-            <ArrowRightsvgIcon
+            <ArrowRightSvgIcon
               className={classNames(projectcss.all, sty.svg__u5Zd2)}
               role={"img"}
             />
@@ -196,7 +220,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicFreeTrialModal__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
@@ -204,15 +227,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicFreeTrialModal__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicFreeTrialModal__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicFreeTrialModal__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+    // Specify args directly as props
+    Omit<PlasmicFreeTrialModal__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -20,12 +20,15 @@ import {
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  ensureGlobalVariants,
   hasVariant,
   renderPlasmicSlot,
   useDollarState,
   useTrigger,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+
+import { useEnvironment } from "../plasmic_kit_pricing/PlasmicGlobalVariant__Environment"; // plasmic-import: hIjF9NLAUKG-/globalVariant
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
@@ -35,7 +38,7 @@ import projectcss from "../PP__plasmickit_dashboard.module.css"; // plasmic-impo
 import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import sty from "./PlasmicDataSource.module.css"; // plasmic-import: B2dxgzfI6E/css
 
-import PencilsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__PencilSvg"; // plasmic-import: 540duoJvb/icon
+import PencilSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__PencilSvg"; // plasmic-import: 540duoJvb/icon
 
 createPlasmicElementProxy;
 
@@ -50,9 +53,7 @@ export const PlasmicDataSource__VariantProps = new Array<VariantPropType>(
   "readOnly"
 );
 
-export type PlasmicDataSource__ArgsType = {
-  children?: React.ReactNode;
-};
+export type PlasmicDataSource__ArgsType = { children?: React.ReactNode };
 type ArgPropType = keyof PlasmicDataSource__ArgsType;
 export const PlasmicDataSource__ArgProps = new Array<ArgPropType>("children");
 
@@ -78,7 +79,16 @@ function PlasmicDataSource__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
@@ -98,7 +108,6 @@ function PlasmicDataSource__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.readOnly,
       },
     ],
-
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -112,6 +121,10 @@ function PlasmicDataSource__RenderFunc(props: {
   const triggers = {
     hover_root: isRootHover,
   };
+
+  const globalVariants = ensureGlobalVariants({
+    environment: useEnvironment(),
+  });
 
   return (
     <div
@@ -129,7 +142,27 @@ function PlasmicDataSource__RenderFunc(props: {
         plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
         plasmic_plasmic_kit_pricing_css.plasmic_tokens,
         sty.root,
-        { [sty.rootreadOnly]: hasVariant($state, "readOnly", "readOnly") }
+        {
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [sty.rootreadOnly]: hasVariant($state, "readOnly", "readOnly"),
+        }
       )}
       data-plasmic-trigger-props={[triggerRootHoverProps]}
     >
@@ -152,7 +185,7 @@ function PlasmicDataSource__RenderFunc(props: {
           ? true
           : false
       ) ? (
-        <PencilsvgIcon
+        <PencilSvgIcon
           data-plasmic-name={"svg"}
           data-plasmic-override={overrides.svg}
           className={classNames(projectcss.all, sty.svg, {
@@ -184,7 +217,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicDataSource__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
@@ -192,15 +224,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicDataSource__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicDataSource__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicDataSource__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+    // Specify args directly as props
+    Omit<PlasmicDataSource__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;
