@@ -551,7 +551,10 @@ export function observeModel(
           // On dispose, remove this value as a child of the owning inst
           updateInstParent(inst, field.name, value, {
             add: false,
-            flags,
+            flags: {
+              incrementalObserve: false,
+              modelUpdate: false,
+            },
           });
           instDispose();
         });
@@ -578,7 +581,10 @@ export function observeModel(
         updateInstParent(inst, field.name, value, {
           add: false,
           weakRef: true,
-          flags,
+          flags: {
+            incrementalObserve: false,
+            modelUpdate: false,
+          },
         });
       });
     }
@@ -800,7 +806,6 @@ export function observeModel(
         instStates.has(inst),
         `Tried to dispose inst ${inst.uid} without instState`
       );
-
       if (!instParents.get(inst)) {
         const doDispose = () => {
           const state = ensure(
@@ -887,9 +892,10 @@ export function observeModel(
       }
     }
     if (isInInvalidState(child, flags) !== false) {
+      isInInvalidState(child, flags);
       instsToCheck.add({
         inst: child,
-        flags: flags,
+        flags,
       });
     }
   };
@@ -1090,7 +1096,10 @@ export function observeModel(
         updateInstParent(inst, fieldName, c, {
           add: false,
           weakRef: true,
-          flags,
+          flags: {
+            incrementalObserve: false,
+            modelUpdate: false,
+          },
         })
       );
     });
