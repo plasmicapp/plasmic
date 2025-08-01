@@ -1,4 +1,5 @@
 import {
+  FinalStyleToken,
   TokenType,
   extractAllReferencedTokenIds,
   getExternalMixinPropVarName,
@@ -14,6 +15,7 @@ import {
   mkTokenRef,
   replaceAllTokenRefs,
   resolveAllTokenRefs,
+  toFinalStyleToken,
   tokenTypeDefaults,
   tryParseMixinPropRef,
   tryParseTokenRef,
@@ -44,7 +46,7 @@ import {
 import { AddItemKey } from "@/wab/shared/add-item-keys";
 import {
   makeTokenRefResolver,
-  siteToAllTokensDict,
+  siteToAllTokensAndOverridesDict,
 } from "@/wab/shared/cached-selectors";
 import { getTplCodeComponentVariantMeta } from "@/wab/shared/code-components/variants";
 import { ComponentGenHelper } from "@/wab/shared/codegen/codegen-helpers";
@@ -92,6 +94,7 @@ import {
 import { walkDependencyTree } from "@/wab/shared/core/project-deps";
 import {
   GeneralUsageSummary,
+  allStyleTokensAndOverrides,
   isHostLessPackage,
 } from "@/wab/shared/core/sites";
 import {
@@ -197,11 +200,11 @@ import { unquote } from "underscore.string";
 export const selstr = (rs: /*TWZ*/ RuleSet) => `.${classNameForRuleSet(rs)}`;
 
 export class CssVarResolver {
-  private tokens: Map<string, StyleToken>;
+  private tokens: Map<string, FinalStyleToken>;
   private assets: Map<string, ImageAsset>;
   private mixins: Map<string, Mixin>;
   constructor(
-    tokens: StyleToken[],
+    tokens: FinalStyleToken[],
     mixins: Mixin[],
     assets: ImageAsset[],
     private readonly activeTheme: Theme | undefined | null,
@@ -2422,21 +2425,22 @@ export const makeMixinVarsRules = (
 };
 
 const genTokenVarRuleWithVariants = (
-  token: StyleToken,
+  token: FinalStyleToken,
   vsh: VariantedStylesHelper = new VariantedStylesHelper()
 ) => ({
-  varRule: `${getTokenVarName(token)}: ${vsh.getActiveTokenValue(token)}`,
+  varRule: `${getTokenVarName(token.base)}: ${vsh.getActiveTokenValue(token)}`,
   plasmicExternalVarRule: `${getPlasmicExternalTokenVarName(
-    token
-  )}: ${mkTokenRef(token)}`,
+    token.base
+  )}: ${mkTokenRef(token.base)}`,
   userExternalVarRule:
-    isTokenNameValidCssVariable(token) && `${token.name}: ${mkTokenRef(token)}`,
+    isTokenNameValidCssVariable(token.base) &&
+    `${token.name}: ${mkTokenRef(token.base)}`,
   vsh,
 });
 
 export const makeCssTokenVarsRules = (
   site: Site,
-  tokens: StyleToken[],
+  tokens: FinalStyleToken[],
   rootCssSelector: string,
   opts: {
     targetEnv: TargetEnv;
@@ -2514,7 +2518,7 @@ export const makeCssTokenVarsRules = (
 
 export const mkCssVarsRuleForCanvas = (
   site: Site,
-  tokens: StyleToken[],
+  tokens: FinalStyleToken[],
   mixins: Mixin[],
   themes: Theme[],
   assets: ImageAsset[],
@@ -2943,9 +2947,14 @@ interface TokenUsageByRule extends TokenUsageBase {
   type: "rule";
 }
 
-interface TokenUsageByToken extends TokenUsageBase {
-  token: StyleToken;
-  type: "token";
+interface TokenUsageByStyleToken extends TokenUsageBase {
+  styleToken: StyleToken;
+  type: "styleToken";
+}
+
+interface TokenUsageByStyleTokenOverride extends TokenUsageBase {
+  styleTokenOverride: StyleTokenOverride;
+  type: "styleTokenOverride";
 }
 
 interface TokenUsageByVariantedValue extends TokenUsageBase {
@@ -2969,7 +2978,8 @@ interface TokenUsageByComponentPropFallback extends TokenUsageBase {
 
 type TokenUsage =
   | TokenUsageByRule
-  | TokenUsageByToken
+  | TokenUsageByStyleToken
+  | TokenUsageByStyleTokenOverride
   | TokenUsageByVariantedValue
   | TokenUsageByComponentProp
   | TokenUsageByComponentPropFallback;
@@ -2995,15 +3005,18 @@ export function changeTokenUsage(
       usage.value,
       (tokenId: string) => (tokenId === token.uuid ? replaced : undefined)
     );
-  } else if (usage.type === "token") {
-    usage.token.value = replaced;
+  } else if (usage.type === "styleToken") {
+    usage.styleToken.value = replaced;
+  } else if (usage.type === "styleTokenOverride") {
+    usage.styleTokenOverride.value = replaced;
   } else if (usage.type === "variantedValue") {
     usage.variantedValue.value =
       action === "inline"
         ? new VariantedStylesHelper(
             site,
             usage.variantedValue.variants
-          ).getActiveTokenValue(token)
+            // TODO: Maybe its better to use FinalStyleToken type in the `changeTokenUsage` function itself
+          ).getActiveTokenValue(toFinalStyleToken(token, site))
         : replaced;
   } else if (usage.type === "prop") {
     usage.arg.expr = codeLit(replaced);
@@ -3018,7 +3031,8 @@ export interface TokenUsageSummary {
   components: Component[];
   frames: ArenaFrame[];
   mixins: Mixin[];
-  tokens: StyleToken[];
+  styleTokens: StyleToken[];
+  styleTokenOverrides: StyleTokenOverride[];
   themes: DefaultStyle[];
   addItemPrefs: AddItemKey[];
 }
@@ -3032,7 +3046,8 @@ export function extractTokenUsages(
   const usingMixins = new Set<Mixin>();
   const usingThemes = new Set<DefaultStyle>();
   const usingAddItemPrefs = new Set<AddItemKey>();
-  const usingTokens = new Set<StyleToken>();
+  const usingStyleTokens = new Set<StyleToken>();
+  const usingStyleTokenOverrides = new Set<StyleTokenOverride>();
   const traverseTpl = (tplRoot: TplNode, component: Component) => {
     const trackComponent = () => {
       usingComponents.add(component);
@@ -3115,10 +3130,20 @@ export function extractTokenUsages(
       }
     }
   }
-  for (const t of site.styleTokens) {
-    if (extractAllReferencedTokenIds(t.value).includes(token.uuid)) {
-      usages.add({ token: t, type: "token" });
-      usingTokens.add(t);
+  for (const t of allStyleTokensAndOverrides(site, {
+    includeDeps: "direct",
+  })) {
+    if (t.value && extractAllReferencedTokenIds(t.value).includes(token.uuid)) {
+      if (t.override) {
+        usingStyleTokenOverrides.add(t.override);
+        usages.add({
+          styleTokenOverride: t.override,
+          type: "styleTokenOverride",
+        });
+      } else {
+        usingStyleTokens.add(t.base);
+        usages.add({ styleToken: t.base, type: "styleToken" });
+      }
     }
 
     for (const variantedValue of t.variantedValues) {
@@ -3126,14 +3151,14 @@ export function extractTokenUsages(
         extractAllReferencedTokenIds(variantedValue.value).includes(token.uuid)
       ) {
         usages.add({ variantedValue, type: "variantedValue" });
-        usingTokens.add(t);
       }
     }
   }
   return tuple(usages, {
     components: [...usingComponents].filter((c) => !isFrameComponent(c)),
     mixins: [...usingMixins],
-    tokens: [...usingTokens],
+    styleTokens: [...usingStyleTokens],
+    styleTokenOverrides: [...usingStyleTokenOverrides],
     themes: [...usingThemes],
     frames: usingFrames,
     addItemPrefs: [...usingAddItemPrefs],
@@ -3174,38 +3199,6 @@ export function extractMixinUsages(
     frames: [...usingFrames],
   });
 }
-
-export const maybeTokenRefCycle = (
-  token: StyleToken,
-  tokens: StyleToken[],
-  newValue: string,
-  vsh?: VariantedStylesHelper
-) => {
-  const visited = new Set<StyleToken>([token]);
-  let curValue = newValue;
-  vsh = vsh ?? new VariantedStylesHelper();
-  // eslint-disable-next-line no-constant-condition
-  while (true) {
-    const referredToken = tryParseTokenRef(curValue, tokens);
-    if (!referredToken) {
-      return undefined;
-    }
-    if (visited.has(referredToken)) {
-      // It must be the case the the cycle end up referring token itself;
-      // otherwise, we would have detected the cycle beforehand.
-      assert(
-        referredToken === token,
-        () =>
-          `token ${token.name} (${token.uuid}) is cyclically referencing ${referredToken.name} (${referredToken.uuid})`
-      );
-      const cycle = [...visited].map((t) => t.name);
-      cycle.push(referredToken.name);
-      return cycle;
-    }
-    visited.add(referredToken);
-    curValue = vsh.getActiveTokenValue(referredToken);
-  }
-};
 
 export function extendFontFamilyWithFallbacks(fonts: string[]) {
   const unquotedFonts = fonts.map((f) => unquote(f));
@@ -3305,15 +3298,15 @@ export function makeDefaultStyleValuesDict(
 
 export function getRelevantVariantCombosForToken(
   site: Site,
-  token: StyleToken
+  token: FinalStyleToken
 ) {
   const addCombo = (combo: VariantCombo) =>
     map.set(variantComboKey(combo), combo);
   const map = new Map<string, VariantCombo>();
 
-  const allTokens = siteToAllTokensDict(site);
+  const allTokens = siteToAllTokensAndOverridesDict(site);
 
-  const traverseToken = (t: StyleToken) => {
+  const traverseToken = (t: FinalStyleToken) => {
     for (const vv of t.variantedValues) {
       addCombo(vv.variants);
       const maybeToken = tryParseTokenRef(vv.value, allTokens);
@@ -3335,7 +3328,7 @@ export function getRelevantVariantCombosForTheme(site: Site) {
     map.set(variantComboKey(combo), combo);
   const map = new Map<string, VariantCombo>();
 
-  const allTokens = siteToAllTokensDict(site);
+  const allTokens = siteToAllTokensAndOverridesDict(site);
   const checkValue = (value: string) => {
     const maybeToken = tryParseTokenRef(value, allTokens);
     if (maybeToken) {

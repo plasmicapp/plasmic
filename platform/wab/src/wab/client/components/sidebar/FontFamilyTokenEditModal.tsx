@@ -5,17 +5,15 @@ import { Icon } from "@/wab/client/components/widgets/Icon";
 import { SimpleTextbox } from "@/wab/client/components/widgets/SimpleTextbox";
 import TokenIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Token";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { assert } from "@/wab/shared/common";
-import { TokenType } from "@/wab/commons/StyleToken";
+import { FinalStyleToken, MutableStyleToken } from "@/wab/commons/StyleToken";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
-import { StyleToken } from "@/wab/shared/model/classes";
-import { allTokensOfType } from "@/wab/shared/core/sites";
+import { assert, spawn } from "@/wab/shared/common";
 import { observer } from "mobx-react";
 import * as React from "react";
 
 export const FontFamilyTokenEditModal = observer(
   function FontFamilyTokenEditModal(props: {
-    token: StyleToken;
+    token: FinalStyleToken;
     studioCtx: StudioCtx;
     defaultEditingName?: boolean;
     onClose: () => void;
@@ -27,18 +25,18 @@ export const FontFamilyTokenEditModal = observer(
       defaultEditingName,
       vsh = new VariantedStylesHelper(),
     } = props;
-    const tokenType = token.type as TokenType;
-    const onChange = async (val: string) => {
+
+    const onChange = (val: string) => {
       assert(val !== undefined);
-      const allTokensOfSameType = allTokensOfType(studioCtx.site, tokenType, {
-        includeDeps: "direct",
-      });
-      return studioCtx.changeUnsafe(() => {
-        if (newTokenValueAllowed(token, allTokensOfSameType, val, vsh)) {
-          studioCtx.fontManager.useFont(studioCtx, val);
-          vsh.updateToken(token, val);
-        }
-      });
+      spawn(
+        studioCtx.change(({ success }) => {
+          if (newTokenValueAllowed(token, studioCtx.site, val, vsh)) {
+            studioCtx.fontManager.useFont(studioCtx, val);
+            vsh.updateToken(token, val);
+          }
+          return success();
+        })
+      );
     };
 
     return (
@@ -54,9 +52,10 @@ export const FontFamilyTokenEditModal = observer(
               defaultValue={token.name}
               onValueChange={(name) =>
                 studioCtx.changeUnsafe(() => {
-                  studioCtx.tplMgr().renameToken(token, name);
+                  studioCtx.tplMgr().renameToken(token.base, name);
                 })
               }
+              readOnly={!(token instanceof MutableStyleToken)}
               placeholder={"(unnamed token)"}
               autoFocus={defaultEditingName}
               selectAllOnFocus={true}
@@ -71,8 +70,7 @@ export const FontFamilyTokenEditModal = observer(
           <FontFamilySelector
             studioCtx={studioCtx}
             selectOpts={{
-              // eslint-disable-next-line @typescript-eslint/no-misused-promises
-              onChange: onChange,
+              onChange,
               value: vsh.getActiveTokenValue(token),
               vsh,
             }}

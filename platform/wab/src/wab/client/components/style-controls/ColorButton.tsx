@@ -4,12 +4,15 @@ import { ColorPicker } from "@/wab/client/components/widgets/ColorPicker";
 import { useClientTokenResolver } from "@/wab/client/components/widgets/ColorPicker/client-token-resolver";
 import PlasmicColorButton from "@/wab/client/plasmic/plasmic_kit_style_controls/PlasmicColorButton";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { isTokenRef, tryParseTokenRef } from "@/wab/commons/StyleToken";
+import {
+  FinalStyleToken,
+  isTokenRef,
+  tryParseTokenRef,
+} from "@/wab/commons/StyleToken";
 import { TOKEN_CAP } from "@/wab/shared/Labels";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import { zeroWidthSpace } from "@/wab/shared/common";
 import { allColorTokens } from "@/wab/shared/core/sites";
-import { StyleToken } from "@/wab/shared/model/classes";
 import Chroma from "@/wab/shared/utils/color-utils";
 import { Tooltip } from "antd";
 import { observer } from "mobx-react";
@@ -135,7 +138,7 @@ export const ColorSidebarPopup = observer(function ColorSidebarPopup(props: {
   derefToken?: boolean;
   hideTokenPicker?: boolean;
   autoFocus?: boolean;
-  colorTokens?: StyleToken[];
+  colorTokens?: FinalStyleToken[];
   vsh?: VariantedStylesHelper;
 }) {
   const {

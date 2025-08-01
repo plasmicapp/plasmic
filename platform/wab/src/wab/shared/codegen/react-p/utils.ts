@@ -1,4 +1,5 @@
 import { arrayReversed } from "@/wab/commons/collections";
+import { FinalStyleToken } from "@/wab/commons/StyleToken";
 import { makeTokenValueResolver } from "@/wab/shared/cached-selectors";
 import {
   CodeComponentWithHelpers,
@@ -42,7 +43,6 @@ import {
   Component,
   Expr,
   Site,
-  StyleToken,
   TplNode,
   Variant,
   VariantSetting,
@@ -470,7 +470,7 @@ export function buildConditionalDefaultStylesPropArg(
 
 export function buildConditionalDerefTokenValueArg(
   site: Site,
-  token: StyleToken
+  token: FinalStyleToken
 ): [Expr, VariantCombo][] {
   const combos = getRelevantVariantCombosForToken(site, token);
   const resolver = makeTokenValueResolver(site);

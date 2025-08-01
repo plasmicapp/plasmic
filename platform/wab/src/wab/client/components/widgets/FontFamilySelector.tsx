@@ -3,9 +3,9 @@ import { Icon } from "@/wab/client/components/widgets/Icon";
 import TriangleBottomIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__TriangleBottom";
 import { useUndo } from "@/wab/client/shortcuts/studio/useUndo";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { cx, withoutNils } from "@/wab/shared/common";
 import { derefToken, mkTokenRef, TokenType } from "@/wab/commons/StyleToken";
 import { siteToAllDirectTokensOfType } from "@/wab/shared/cached-selectors";
+import { cx, withoutNils } from "@/wab/shared/common";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import { Select } from "antd";
 import { observer } from "mobx-react";
@@ -99,7 +99,7 @@ export const FontFamilySelector = observer(function FontFamilySelector(props: {
           : {
               label: "Style Tokens",
               options: tokens.map((token) => ({
-                value: mkTokenRef(token),
+                value: mkTokenRef(token.base),
                 label: (
                   <Chip
                     key={token.uuid}

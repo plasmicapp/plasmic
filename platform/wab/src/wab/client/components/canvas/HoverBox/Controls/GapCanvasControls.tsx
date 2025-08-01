@@ -3,18 +3,22 @@ import { prefixSum } from "@/wab/client/components/sidebar-tabs/ResponsiveColumn
 import { getContentOnlyRect, getMarginRect } from "@/wab/client/dom";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { useForceUpdate } from "@/wab/client/useForceUpdate";
-import { ensure, parsePx } from "@/wab/shared/common";
 import { XDraggable } from "@/wab/commons/components/XDraggable";
 import { useSignalListener } from "@/wab/commons/components/use-signal-listener";
+import { ensure, parsePx } from "@/wab/shared/common";
+import {
+  allImageAssets,
+  allMixins,
+  allStyleTokensAndOverrides,
+} from "@/wab/shared/core/sites";
+import { CssVarResolver, hasGapStyle } from "@/wab/shared/core/styles";
+import { isTplColumns, isTplTag } from "@/wab/shared/core/tpls";
 import { parseCssNumericNew } from "@/wab/shared/css";
 import {
   ContainerLayoutType,
   getRshContainerType,
 } from "@/wab/shared/layoututils";
 import { TplTag } from "@/wab/shared/model/classes";
-import { allImageAssets, allMixins, allStyleTokens } from "@/wab/shared/core/sites";
-import { CssVarResolver, hasGapStyle } from "@/wab/shared/core/styles";
-import { isTplColumns, isTplTag } from "@/wab/shared/core/tpls";
 import cn from "classnames";
 import $ from "jquery";
 import { observer } from "mobx-react";
@@ -257,7 +261,7 @@ export const GapControls = observer(function GapControls(props: {
 
   const site = viewCtx.site;
   const resolver = new CssVarResolver(
-    allStyleTokens(site, { includeDeps: "all" }),
+    allStyleTokensAndOverrides(site, { includeDeps: "all" }),
     allMixins(site, { includeDeps: "all" }),
     allImageAssets(site, { includeDeps: "all" }),
     site.activeTheme

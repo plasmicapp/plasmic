@@ -218,7 +218,8 @@ export function extractUsedGlobalVariantsForComponents(
         // variant, then this component also needs to know when that global
         // variant changes, to apply the right styles on the root element.
         derefTokens: true,
-      })
+      }),
+      site
     )
   );
   return usedGlobalVariants;

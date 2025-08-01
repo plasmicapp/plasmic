@@ -24,6 +24,8 @@ import { CloseIcon } from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Close";
 import { useUndo } from "@/wab/client/shortcuts/studio/useUndo";
 import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import {
+  FinalStyleToken,
+  MutableStyleToken,
   TokenType,
   derefTokenRefs,
   mkTokenRef,
@@ -35,8 +37,8 @@ import { TokenValueResolver } from "@/wab/shared/cached-selectors";
 import { ensure } from "@/wab/shared/common";
 import {
   allColorTokens,
-  allStyleTokens,
-  isStyleTokenEditable,
+  allStyleTokensAndOverrides,
+  isStyleTokenEditableOrOverridable,
 } from "@/wab/shared/core/sites";
 import { StyleToken } from "@/wab/shared/model/classes";
 import { canCreateAlias } from "@/wab/shared/ui-config-utils";
@@ -63,7 +65,7 @@ export function tryGetRealColor(
   sc: StudioCtx,
   resolver: TokenValueResolver,
   vsh: VariantedStylesHelper = new VariantedStylesHelper(),
-  maybeColorTokens?: StyleToken[]
+  maybeColorTokens?: FinalStyleToken[]
 ) {
   const colorTokens = maybeColorTokens
     ? maybeColorTokens
@@ -84,7 +86,7 @@ interface ColorPickerProps {
   autoFocus?: boolean;
   hideTokenPicker?: boolean;
   derefToken?: boolean;
-  colorTokens?: StyleToken[];
+  colorTokens?: FinalStyleToken[];
   vsh?: VariantedStylesHelper;
 }
 
@@ -114,7 +116,7 @@ function ColorPicker_({
     appliedToken,
   } = tryGetRealColor(color, sc, resolver, vsh, maybeColorTokens);
 
-  const [editToken, setEditToken] = React.useState<StyleToken | undefined>(
+  const [editToken, setEditToken] = React.useState<FinalStyleToken | undefined>(
     undefined
   );
 
@@ -427,7 +429,7 @@ function ColorPicker_({
   };
 
   const isEditable =
-    appliedToken && isStyleTokenEditable(sc.site, appliedToken, vsh);
+    appliedToken && isStyleTokenEditableOrOverridable(appliedToken, vsh);
 
   return (
     <div>
@@ -463,6 +465,7 @@ function ColorPicker_({
               onClick={(e) =>
                 mode !== ColorMode.hex && selectColorComponent(e.currentTarget)
               }
+              data-test-id={`${TokenType.Color}-input`}
               value={colorInputValue}
               onChange={(e) => setColorInputValue(e.target.value)}
               onKeyDown={handleColorKeyDown}
@@ -542,27 +545,20 @@ function ColorPicker_({
               if (derefToken) {
                 onChange(
                   derefTokenRefs(
-                    allStyleTokens(sc.site, { includeDeps: "all" }),
+                    allStyleTokensAndOverrides(sc.site, { includeDeps: "all" }),
                     vsh.getActiveTokenValue(token),
                     vsh
                   )
                 );
               } else if (appliedToken && editToken) {
-                const value = mkTokenRef(token);
-                if (
-                  newTokenValueAllowed(
-                    appliedToken,
-                    allStyleTokens(sc.site, { includeDeps: "direct" }),
-                    value,
-                    vsh
-                  )
-                ) {
+                const value = mkTokenRef(token.base);
+                if (newTokenValueAllowed(appliedToken, sc.site, value, vsh)) {
                   await sc.changeUnsafe(() =>
-                    vsh.updateToken(appliedToken, mkTokenRef(token))
+                    vsh.updateToken(appliedToken, mkTokenRef(token.base))
                   );
                 }
               } else {
-                onChange(mkTokenRef(token));
+                onChange(mkTokenRef(token.base));
               }
             }}
             selectedToken={appliedToken}
@@ -575,7 +571,7 @@ function ColorPicker_({
                 });
                 justAddedRef.current = newToken;
                 onChange(mkTokenRef(newToken));
-                setEditToken(newToken);
+                setEditToken(new MutableStyleToken(newToken));
               });
             }}
             resolver={resolver}
@@ -594,7 +590,7 @@ function ColorPicker_({
             setEditToken(undefined);
             justAddedRef.current = undefined;
           }}
-          autoFocusName={justAddedValue === editToken}
+          autoFocusName={justAddedValue === editToken.base}
           vsh={vsh}
         />
       )}

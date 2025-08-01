@@ -3,7 +3,9 @@ import {
   derefToken,
   hasTokenRefs,
   mkTokenRef,
+  MutableStyleToken,
   replaceAllTokenRefs,
+  toFinalStyleToken,
   TokenType,
 } from "@/wab/commons/StyleToken";
 import {
@@ -54,8 +56,8 @@ import {
 } from "@/wab/shared/core/image-assets";
 import {
   allGlobalVariants,
-  allImageAssets,
-  allStyleTokens,
+  allStyleTokenOverridesForDep,
+  allStyleTokensAndOverrides,
   getAllAttachedTpls,
   getSiteArenas,
   isHostLessPackage,
@@ -112,6 +114,7 @@ import {
   Site,
   State,
   StyleToken,
+  StyleTokenOverride,
   Theme,
   TplNode,
   TplSlot,
@@ -142,7 +145,7 @@ import {
   isScreenVariantGroup,
   VariantGroupType,
 } from "@/wab/shared/Variants";
-import { isArray, keyBy, keys, uniqBy } from "lodash";
+import { isArray, keys, uniqBy } from "lodash";
 
 export type DependencyWalkScope = "all" | "direct";
 
@@ -185,25 +188,10 @@ export function extractTransitiveDepsFromComponents(
   components: Component[],
   _depMap?: ObjDepMap
 ) {
-  // Reverse to have the direct dependencies have more priority
-  const allTokensDict = keyBy(
-    allStyleTokens(site, { includeDeps: "all" }).reverse(),
-    (t) => t.uuid
-  );
-  const allAssetsDict = keyBy(
-    allImageAssets(site, { includeDeps: "all" }).reverse(),
-    (t) => t.uuid
-  );
   const refs = new Set<ImportableObject>();
   for (const component of components) {
     for (const tpl of flattenTpls(component.tplTree)) {
-      collectUsedImportableObjectsForTpl(
-        refs,
-        component,
-        tpl,
-        allTokensDict,
-        allAssetsDict
-      );
+      collectUsedImportableObjectsForTpl(refs, component, tpl, site);
     }
   }
 
@@ -214,23 +202,27 @@ function collectUsedImportableObjectsForTpl(
   refs: Set<ImportableObject>,
   component: Component,
   tpl: TplNode,
-  allTokensDict: Record<string, StyleToken>,
-  allAssetsDict: Record<string, ImageAsset>
+  site: Site
 ) {
   if (isTplComponent(tpl)) {
     refs.add(tpl.component);
   }
 
-  collectUsedTokensForTpl(refs as Set<StyleToken>, tpl, allTokensDict, {
+  collectUsedTokensForTpl(refs as Set<StyleToken>, tpl, site, {
     derefTokens: false,
     expandMixins: false,
   });
   collectUsedIconAssetsForTpl(refs as Set<ImageAsset>, component, tpl);
-  collectUsedPictureAssetsForTpl(refs as Set<ImageAsset>, component, tpl, {
-    includeRuleSets: true,
-    expandMixins: false,
-    allAssetsDict: allAssetsDict,
-  });
+  collectUsedPictureAssetsForTpl(
+    refs as Set<ImageAsset>,
+    component,
+    tpl,
+    site,
+    {
+      includeRuleSets: true,
+      expandMixins: false,
+    }
+  );
   collectUsedMixinsForTpl(refs as Set<Mixin>, tpl);
 }
 
@@ -253,27 +245,12 @@ export function extractTransitiveDepsFromComponentDefaultSlots(
   components: Component[],
   _depMap?: ObjDepMap
 ) {
-  // Reverse to have the direct dependencies have more priority
-  const allTokensDict = keyBy(
-    allStyleTokens(site, { includeDeps: "all" }).reverse(),
-    (t) => t.uuid
-  );
-  const allAssetsDict = keyBy(
-    allImageAssets(site, { includeDeps: "all" }).reverse(),
-    (t) => t.uuid
-  );
   const refs = new Set<ImportableObject>();
   for (const component of components) {
     for (const slot of getTplSlots(component)) {
       for (const defaultContent of slot.defaultContents) {
         for (const tpl of flattenTpls(defaultContent)) {
-          collectUsedImportableObjectsForTpl(
-            refs,
-            component,
-            tpl,
-            allTokensDict,
-            allAssetsDict
-          );
+          collectUsedImportableObjectsForTpl(refs, component, tpl, site);
         }
       }
     }
@@ -287,12 +264,7 @@ export function extractTransitiveDepsFromTokens(
   tokens: StyleToken[],
   _depMap?: ObjDepMap
 ) {
-  // Reverse to have the direct dependencies have more priority
-  const allTokensDict = keyBy(
-    allStyleTokens(site, { includeDeps: "all" }).reverse(),
-    "uuid"
-  );
-  const refTokens = extractUsedTokensForTokens(tokens, allTokensDict, {
+  const refTokens = extractUsedTokensForTokens(tokens, site, {
     derefTokens: false,
   });
   return getTransitiveDepsFromObjs(site, [...refTokens], _depMap);
@@ -316,12 +288,7 @@ export function extractTransitiveDepsFromMixins(
   mixins: Mixin[],
   _depMap?: ObjDepMap
 ) {
-  // Reverse to have the direct dependencies have more priority
-  const allTokensDict = keyBy(
-    allStyleTokens(site, { includeDeps: "all" }).reverse(),
-    "uuid"
-  );
-  const refTokens = extractUsedTokensForMixins(mixins, allTokensDict, {
+  const refTokens = extractUsedTokensForMixins(mixins, site, {
     derefTokens: false,
   });
   return getTransitiveDepsFromObjs(site, [...refTokens], _depMap);
@@ -681,6 +648,89 @@ function upgradeProjectDep(
     oldToNewPage.set(oldPage, newPage);
   }
 
+  // Mapping old to new token
+  const oldToNewToken = new Map(
+    oldDep.site.styleTokens.map((oldToken) => {
+      const newToken = newDep
+        ? newDep.site.styleTokens.find(
+            (m) =>
+              m.uuid === oldToken.uuid ||
+              (m.regKey && m.regKey === oldToken.regKey)
+          )
+        : undefined;
+      return tuple(oldToken, newToken);
+    })
+  );
+  const getOrCloneNewToken = (
+    oldToken: StyleToken,
+    opts: { trySimilar?: boolean } = { trySimilar: true }
+  ) => {
+    assert(
+      oldToNewToken.has(oldToken),
+      `Failed to find old token ${oldToken.name}`
+    );
+    const newToken = oldToNewToken.get(oldToken);
+    if (newToken) {
+      return newToken;
+    }
+
+    const oldFinalToken = toFinalStyleToken(oldToken, oldDep.site);
+    const oldTokens = allStyleTokensAndOverrides(oldDep.site, {
+      includeDeps: "all",
+    });
+    const siteTokens = allStyleTokensAndOverrides(site, {
+      includeDeps: "all",
+    });
+
+    if (opts.trySimilar) {
+      // We search into the current site looking for (name, type, value, |variantedValues|) match
+      // this can introduce some false positives as we don't check for the variants, but we assume
+      // it's too rare to be a problem
+      const similarToken = allStyleTokensAndOverrides(site).find(
+        (m) =>
+          m.name === oldToken.name &&
+          m.type === oldToken.type &&
+          derefToken(siteTokens, m) === derefToken(oldTokens, oldFinalToken) &&
+          m.variantedValues.length === oldToken.variantedValues.length
+      );
+      if (similarToken) {
+        oldToNewToken.set(oldToken, newToken);
+        return similarToken.base;
+      }
+    }
+
+    const tokenName = tplMgr.getUniqueTokenName(oldToken.name);
+    const clonedToken = new MutableStyleToken(
+      tplMgr.addToken({
+        name: tokenName,
+        tokenType: oldToken.type as TokenType,
+        value: derefToken(oldTokens, oldFinalToken),
+      })
+    );
+    oldToken.variantedValues.forEach((v) => {
+      const newVariants = withoutNils(
+        v.variants.map((gv) =>
+          oldToNewGlobalVariant.has(gv) ? getOrCloneOldGlobalVariant(gv) : gv
+        )
+      );
+      if (newVariants.length === 0) {
+        return;
+      }
+
+      clonedToken.setVariantedValue(
+        newVariants,
+        derefToken(
+          oldTokens,
+          oldFinalToken,
+          new VariantedStylesHelper(oldDep.site, v.variants)
+        )
+      );
+    });
+
+    oldToNewToken.set(oldToken, clonedToken.base);
+    return clonedToken.base;
+  };
+
   const getOrCloneNewComponent = (oldComp: Component) => {
     if (isCodeComponent(oldComp)) {
       if (isHostLessCodeComponent(oldComp)) {
@@ -756,81 +806,6 @@ function upgradeProjectDep(
       }
     }
     return newMixin;
-  };
-
-  // Mapping old to new token
-  const oldToNewToken = new Map(
-    oldDep.site.styleTokens.map((oldToken) => {
-      const newToken = newDep
-        ? newDep.site.styleTokens.find(
-            (m) =>
-              m.uuid === oldToken.uuid ||
-              (m.regKey && m.regKey === oldToken.regKey)
-          )
-        : undefined;
-      return tuple(oldToken, newToken);
-    })
-  );
-  const getOrCloneNewToken = (oldToken: StyleToken) => {
-    assert(
-      oldToNewToken.has(oldToken),
-      `Failed to find old token ${oldToken.name}`
-    );
-    let newToken = oldToNewToken.get(oldToken);
-    const oldTokens = allStyleTokens(oldDep.site, { includeDeps: "all" });
-    const siteTokens = allStyleTokens(site, { includeDeps: "all" });
-    if (!newToken) {
-      // We search into the current site looking for (name, type, value, |variantedValues|) match
-      // this can introduce some false positives as we don't check for the variants, but we assume
-      // it's too rare to be a problem
-      const similarToken = site.styleTokens.find(
-        (m) =>
-          m.name === oldToken.name &&
-          m.type === oldToken.type &&
-          derefToken(siteTokens, m) === derefToken(oldTokens, oldToken) &&
-          m.variantedValues.length === oldToken.variantedValues.length
-      );
-
-      if (similarToken) {
-        newToken = similarToken;
-        oldToNewToken.set(oldToken, newToken);
-      } else {
-        const tokenName = tplMgr.getUniqueTokenName(oldToken.name);
-        newToken = tplMgr.addToken({
-          name: tokenName,
-          tokenType: oldToken.type as TokenType,
-          value: derefToken(oldTokens, oldToken),
-        });
-        oldToken.variantedValues.forEach((v) => {
-          const newVariants = withoutNils(
-            v.variants.map((gv) =>
-              oldToNewGlobalVariant.has(gv)
-                ? getOrCloneOldGlobalVariant(gv)
-                : gv
-            )
-          );
-          if (newVariants.length === 0) {
-            return;
-          }
-          ensure(
-            newToken,
-            "Unexpected undefined newToken. newToken should be created before"
-          ).variantedValues.push(
-            new VariantedValue({
-              value: derefToken(
-                oldTokens,
-                oldToken,
-                new VariantedStylesHelper(oldDep.site, v.variants)
-              ),
-              variants: newVariants,
-            })
-          );
-        });
-
-        oldToNewToken.set(oldToken, newToken);
-      }
-    }
-    return newToken;
   };
 
   // Mapping old to new image asset
@@ -948,6 +923,37 @@ function upgradeProjectDep(
     return newVariant;
   };
 
+  // If a token is deleted, we will clone it into this project and apply overrides.
+  // This MUST be done first before anything else calls `getOrCloneNewToken` so that
+  // we know whether the token was deleted or not.
+  allStyleTokenOverridesForDep(site, oldDep.site).forEach(
+    (override: StyleTokenOverride) => {
+      const newToken = oldToNewToken.get(override.token);
+      if (!newToken) {
+        // Token removed case.
+        // Clone the removed token, and override it. Don't try to find a similar token since we will be overriding it.
+        const clonedToken = new MutableStyleToken(
+          getOrCloneNewToken(override.token, { trySimilar: false })
+        );
+        if (override.value) {
+          clonedToken.setValue(override.value);
+        }
+        for (const variantedValue of override.variantedValues) {
+          clonedToken.setVariantedValue(
+            variantedValue.variants,
+            variantedValue.value
+          );
+        }
+
+        // Delete the override.
+        removeFromArray(site.styleTokenOverrides, override);
+      }
+      // We cannot handle the "token NOT removed" case on the first pass here,
+      // since it could call `getOrCloneNewToken`, messing up the cloning and
+      // overridding process.
+    }
+  );
+
   const oldTokens = [...oldToNewToken.keys()];
   /**
    * Given a style value, replaces any reference to old token with
@@ -1060,6 +1066,19 @@ function upgradeProjectDep(
     token.value = getNewMaybeTokenRefValue(token.value);
     token.variantedValues.forEach((v) => fixRefsForVariantedStyle(v));
     token.variantedValues = token.variantedValues.filter(
+      (v) => v.variants.length > 0
+    );
+  };
+
+  const fixRefsForTokenOverride = (override: StyleTokenOverride) => {
+    const newToken = getOrCloneNewToken(override.token);
+    assert(!site.styleTokens.includes(newToken), "token should not be local");
+    override.token = newToken;
+    if (override.value) {
+      override.value = getNewMaybeTokenRefValue(override.value);
+    }
+    override.variantedValues.forEach((v) => fixRefsForVariantedStyle(v));
+    override.variantedValues = override.variantedValues.filter(
       (v) => v.variants.length > 0
     );
   };
@@ -1408,6 +1427,7 @@ function upgradeProjectDep(
   for (const component of site.components) {
     fixComponent(component);
   }
+
   site.globalContexts = site.globalContexts.filter(
     (tpl) => !oldToNewComp.has(tpl.component) || oldToNewComp.get(tpl.component)
   );
@@ -1541,6 +1561,10 @@ function upgradeProjectDep(
 
   // fix token ref from tokens
   site.styleTokens.forEach((token) => fixRefsForToken(token));
+  // fix token ref from token overrides
+  allStyleTokenOverridesForDep(site, oldDep.site).forEach((override) =>
+    fixRefsForTokenOverride(override)
+  );
   // fix token ref from mixin
   site.mixins.forEach((mixin) => fixRefsForMixin(mixin));
   // fix token ref from theme

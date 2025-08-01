@@ -50,7 +50,7 @@ import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { mkTokenRef, tryParseTokenRef } from "@/wab/commons/StyleToken";
 import { unwrap } from "@/wab/commons/failable-utils";
 import { isStandaloneVariantGroup } from "@/wab/shared/Variants";
-import { siteToAllTokensDict } from "@/wab/shared/cached-selectors";
+import { siteToAllTokensAndOverridesDict } from "@/wab/shared/cached-selectors";
 import {
   StudioPropType,
   getPropTypeType,
@@ -978,10 +978,10 @@ const PropValueEditor_ = (
         onChange={(colorOrToken) => {
           const maybeToken = tryParseTokenRef(
             colorOrToken,
-            siteToAllTokensDict(studioCtx.site)
+            siteToAllTokensAndOverridesDict(studioCtx.site)
           );
           if (maybeToken) {
-            onChange(new StyleTokenRef({ token: maybeToken }));
+            onChange(new StyleTokenRef({ token: maybeToken.base }));
           } else {
             onChange(colorOrToken);
           }

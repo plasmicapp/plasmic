@@ -1,11 +1,11 @@
 import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { TokenValue } from "@/wab/commons/StyleToken";
+import { FinalStyleToken, TokenValue } from "@/wab/commons/StyleToken";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import {
+  makeTokenResolver,
   TokenResolver,
   TokenValueResolver,
-  makeTokenResolver,
 } from "@/wab/shared/cached-selectors";
 import { StyleToken } from "@/wab/shared/model/classes";
 
@@ -64,14 +64,14 @@ function makeClientTokenResolver(
     }
     return doc.documentElement;
   };
-  return (token: StyleToken, vsh?: VariantedStylesHelper): TokenValue => {
+  return (token: FinalStyleToken, vsh?: VariantedStylesHelper): TokenValue => {
     const { value, token: resolvedToken } = resolver(token, vsh);
     const refVarName = extractReferencedVariable(value);
     if (!refVarName) {
       return value;
     }
 
-    const elt = getTokenElement(resolvedToken);
+    const elt = getTokenElement(resolvedToken.base);
     const variableValue = getCssVariableValue(elt, refVarName);
     if (variableValue) {
       return variableValue;

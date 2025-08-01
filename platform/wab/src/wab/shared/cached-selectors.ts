@@ -1,4 +1,5 @@
 import {
+  FinalStyleToken,
   ResolvedToken,
   TokenType,
   TokenValue,
@@ -73,6 +74,7 @@ import {
   allGlobalVariants,
   allImageAssets,
   allStyleTokens,
+  allStyleTokensAndOverrides,
   isHostLessPackage,
 } from "@/wab/shared/core/sites";
 import { isOnChangeParam } from "@/wab/shared/core/states";
@@ -660,12 +662,12 @@ export const componentToTplComponents = maybeComputedFn(
 
 /** Token resolver that returns the value and token. */
 export type TokenResolver = (
-  token: StyleToken,
+  token: FinalStyleToken,
   vsh?: VariantedStylesHelper
 ) => ResolvedToken;
 export const makeTokenResolver = maybeComputedFn(
   function makeTokenValueResolver(site: Site): TokenResolver {
-    const allTokens = siteToAllTokens(site);
+    const allTokens = siteToAllTokensAndOverrides(site);
     const map: Map<StyleToken, Map<string, ResolvedToken>> = new Map();
 
     allTokens.forEach((token) => {
@@ -678,16 +680,16 @@ export const makeTokenResolver = maybeComputedFn(
         const vsh = new VariantedStylesHelper(site, v.variants);
         tokenMap.set(vsh.key(), resolveToken(allTokens, token, vsh));
       });
-      map.set(token, tokenMap);
+      map.set(token.base, tokenMap);
     });
 
     return (
-      token: StyleToken,
+      token: FinalStyleToken,
       maybeVsh?: VariantedStylesHelper
     ): ResolvedToken => {
-      const vsh = maybeVsh ?? new VariantedStylesHelper();
+      const vsh = maybeVsh ?? new VariantedStylesHelper(site);
       const tokenMap = ensure(
-        map.get(token),
+        map.get(token.base),
         () => `Missing token ${token.name} (${token.uuid})`
       );
       if (!tokenMap.has(vsh.key())) {
@@ -700,12 +702,15 @@ export const makeTokenResolver = maybeComputedFn(
 
 /** Token resolver that returns the value only. */
 export type TokenValueResolver = (
-  token: StyleToken,
+  token: FinalStyleToken,
   vsh?: VariantedStylesHelper
 ) => TokenValue;
 export const makeTokenValueResolver = (site: Site): TokenValueResolver => {
   const tokenResolver = makeTokenResolver(site);
-  return (token: StyleToken, maybeVsh?: VariantedStylesHelper): TokenValue => {
+  return (
+    token: FinalStyleToken,
+    maybeVsh?: VariantedStylesHelper
+  ): TokenValue => {
     return tokenResolver(token, maybeVsh).value;
   };
 };
@@ -726,7 +731,7 @@ export const getTplComponentFetchers = maybeComputedFn(
 export const makeTokenRefResolver = maybeComputedFn(
   function makeTokenRefResolver(site: Site) {
     const tokenResolver = makeTokenValueResolver(site);
-    const allTokens = siteToAllTokensDict(site);
+    const allTokens = siteToAllTokensAndOverridesDict(site);
     return (maybeRef: string, vsh?: VariantedStylesHelper) => {
       const maybeToken = tryParseTokenRef(maybeRef, allTokens);
       if (maybeToken) {
@@ -745,13 +750,21 @@ export const siteToAllTokens = maybeComputedFn((site: Site) =>
   allStyleTokens(site, { includeDeps: "all" })
 );
 
-export const siteToAllDirectTokens = maybeComputedFn((site: Site) =>
-  allStyleTokens(site, { includeDeps: "direct" })
+export const siteToAllDirectTokensAndOverrides = maybeComputedFn((site: Site) =>
+  allStyleTokensAndOverrides(site, { includeDeps: "direct" })
+);
+
+export const siteToAllTokensAndOverrides = maybeComputedFn((site: Site) =>
+  allStyleTokensAndOverrides(site, { includeDeps: "all" })
+);
+
+export const siteToAllTokensAndOverridesDict = maybeComputedFn((site: Site) =>
+  keyBy(siteToAllTokensAndOverrides(site), (t) => t.uuid)
 );
 
 export const siteToAllDirectTokensOfType = maybeComputedFn(
   (site: Site, type: TokenType) =>
-    siteToAllDirectTokens(site).filter((t) => t.type === type)
+    siteToAllDirectTokensAndOverrides(site).filter((t) => t.type === type)
 );
 
 export const siteToAllImageAssetsDict = maybeComputedFn((site: Site) =>
@@ -790,16 +803,19 @@ const usedTokensForExp = maybeComputedFn(function usedTokensForExp(
   tpl: TplNode
 ) {
   const exp = readonlyRSH(rs, tpl);
-  const allTokensDict = siteToAllTokensDict(site);
+  const allTokensDict = siteToAllTokensAndOverridesDict(site);
   const collector = new Set<StyleToken>();
   for (const prop of exp.props()) {
     const val = exp.getRaw(prop);
     if (val) {
       const refTokenIds = extractAllReferencedTokenIds(val);
       const refTokens = withoutNils(refTokenIds.map((x) => allTokensDict[x]));
-      xAddAll(collector, refTokens);
+      xAddAll(
+        collector,
+        refTokens.map((t) => t.base)
+      );
       for (const token of refTokens) {
-        xAddAll(collector, usedTokensForToken(site, token));
+        xAddAll(collector, usedTokensForToken(site, allTokensDict[token.uuid]));
       }
     }
   }
@@ -808,14 +824,18 @@ const usedTokensForExp = maybeComputedFn(function usedTokensForExp(
 
 const usedTokensForToken = maybeComputedFn(function collectUsedTokensForToken(
   site: Site,
-  token: StyleToken
+  token: FinalStyleToken
 ) {
-  const allTokensDict = siteToAllTokensDict(site);
+  const allTokensDict = siteToAllTokensAndOverridesDict(site);
   const collector = new Set<StyleToken>();
   let sub = tryParseTokenRef(token.value, allTokensDict);
   while (sub) {
-    collector.add(sub);
-    sub = tryParseTokenRef(sub.value, allTokensDict);
+    collector.add(sub.base);
+    if (sub.value) {
+      sub = tryParseTokenRef(sub.value, allTokensDict);
+    } else {
+      break;
+    }
   }
   return [...collector.keys()];
 });

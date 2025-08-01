@@ -7,10 +7,13 @@ import { Matcher } from "@/wab/client/components/view-common";
 import Checkbox from "@/wab/client/components/widgets/Checkbox";
 import { PlasmicColorTokenControl } from "@/wab/client/plasmic/plasmic_kit_left_pane/PlasmicColorTokenControl";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { TokenValue } from "@/wab/commons/StyleToken";
+import {
+  FinalStyleToken,
+  MutableStyleToken,
+  TokenValue,
+} from "@/wab/commons/StyleToken";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import { getFolderDisplayName } from "@/wab/shared/folders/folders-util";
-import { StyleToken } from "@/wab/shared/model/classes";
 import Chroma from "@/wab/shared/utils/color-utils";
 import { Tooltip } from "antd";
 import classNames from "classnames";
@@ -18,7 +21,7 @@ import * as React from "react";
 
 interface ColorTokenControlProps {
   style?: React.CSSProperties;
-  token: StyleToken;
+  token: FinalStyleToken;
   tokenValue: TokenValue;
   matcher: Matcher;
   menu: () => React.ReactElement;
@@ -42,10 +45,11 @@ function ColorTokenControl(props: ColorTokenControlProps) {
       <PlasmicColorTokenControl
         icon={
           <>
-            {multiAssetsActions.isSelecting && (
+            {/* Only local tokens can be multi-selected */}
+            {multiAssetsActions.isSelecting &&
+            token instanceof MutableStyleToken ? (
               <Checkbox isChecked={isSelected}> </Checkbox>
-            )}
-            {vsh && (
+            ) : (
               <TokenDefinedIndicator
                 token={token}
                 vsh={vsh}

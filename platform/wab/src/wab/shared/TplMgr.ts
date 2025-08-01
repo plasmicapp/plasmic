@@ -600,6 +600,9 @@ export class TplMgr {
     this.site().styleTokens.forEach((styleToken) => {
       removeFromVariantedValue(styleToken.variantedValues);
     });
+    this.site().styleTokenOverrides.forEach((styleTokenOverride) => {
+      removeFromVariantedValue(styleTokenOverride.variantedValues);
+    });
   }
 
   findReferencingTplsWithNonEmptySetting(tpl: TplNode, variants: Variant[]) {

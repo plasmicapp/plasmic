@@ -1,4 +1,8 @@
-import { isTokenRef, tryParseTokenRef } from "@/wab/commons/StyleToken";
+import {
+  FinalStyleToken,
+  isTokenRef,
+  tryParseTokenRef,
+} from "@/wab/commons/StyleToken";
 import { AnyArena, getArenaFrames, isMixedArena } from "@/wab/shared/Arenas";
 import { MIXIN_LOWER } from "@/wab/shared/Labels";
 import { getTplSlot, isSlot } from "@/wab/shared/SlotUtils";
@@ -19,6 +23,7 @@ import {
   componentToUsedMixins,
   componentToUsedTokens,
   flattenComponent,
+  siteToAllTokens,
 } from "@/wab/shared/cached-selectors";
 import {
   describeValueOrType,
@@ -45,7 +50,7 @@ import {
   allGlobalVariants,
   allImageAssets,
   allMixins,
-  allStyleTokens,
+  allStyleTokensAndOverrides,
   getSiteArenas,
 } from "@/wab/shared/core/sites";
 import { isPrivateState } from "@/wab/shared/core/states";
@@ -65,7 +70,6 @@ import {
   ArenaFrame,
   Component,
   Site,
-  StyleToken,
   TplNode,
   Variant,
   isKnownArenaFrame,
@@ -139,8 +143,8 @@ export function* genSiteErrors(site: Site, componentUuidsToSkip?: Set<string>) {
     }
   }
 
-  const allTokens = allStyleTokens(site, { includeDeps: "all" });
-  for (const token of site.styleTokens) {
+  const allTokens = allStyleTokensAndOverrides(site, { includeDeps: "all" });
+  for (const token of allStyleTokensAndOverrides(site)) {
     yield* genStyleTokenErrors(site, token, allTokens);
   }
 
@@ -191,14 +195,14 @@ function* genGenericModelErrors(site: Site) {
 }
 
 const genStyleTokenErrors = maybeComputedFn(
-  (site: Site, token: StyleToken, allTokens: StyleToken[]) =>
+  (site: Site, token: FinalStyleToken, allTokens: FinalStyleToken[]) =>
     Array.from(_genStyleTokenErrors(site, token, allTokens))
 );
 
 function* _genStyleTokenErrors(
   site: Site,
-  token: StyleToken,
-  allTokens: StyleToken[]
+  token: FinalStyleToken,
+  allTokens: FinalStyleToken[]
 ) {
   const tokenRefs = [
     token.value,
@@ -1104,7 +1108,7 @@ function getValidRefs(site: Site) {
       site,
       new Set([
         ...allComponents(site, { includeDeps: "direct" }),
-        ...allStyleTokens(site, { includeDeps: "all" }),
+        ...siteToAllTokens(site),
         ...allMixins(site, { includeDeps: "all" }),
         ...allImageAssets(site, { includeDeps: "all" }),
       ])

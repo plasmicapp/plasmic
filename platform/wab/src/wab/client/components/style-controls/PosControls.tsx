@@ -26,12 +26,15 @@ import ArrowTopIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__ArrowTop
 import PositionCornerIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__PositionCorner";
 import PositionCoverIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__PositionCover";
 import PositionSideIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__PositionSide";
-import { cx, ensure, maybe, spawn } from "@/wab/shared/common";
 import { useForwardedRef } from "@/wab/commons/components/ReactUtil";
 import { XDraggable } from "@/wab/commons/components/XDraggable";
 import { TokenType, tryParseTokenRef } from "@/wab/commons/StyleToken";
 import { sidesAndCorners } from "@/wab/commons/ViewUtil";
+import { cx, ensure, maybe, spawn } from "@/wab/shared/common";
+import { allStyleTokensAndOverrides } from "@/wab/shared/core/sites";
 import { parseCssNumericNew } from "@/wab/shared/css";
+import { ensureUnit } from "@/wab/shared/css-size";
+import { isIndicatorExplicitlySet } from "@/wab/shared/defined-indicator";
 import {
   Corner,
   cornerToSides,
@@ -44,10 +47,7 @@ import {
   standardCorners,
   standardSides,
 } from "@/wab/shared/geom";
-import { ensureUnit } from "@/wab/shared/css-size";
-import { isIndicatorExplicitlySet } from "@/wab/shared/defined-indicator";
 import { IRuleSetHelpers, IRuleSetHelpersX } from "@/wab/shared/RuleSetHelpers";
-import { allStyleTokens } from "@/wab/shared/core/sites";
 import { Tooltip } from "antd";
 import { MenuProps } from "antd/lib/menu";
 import $ from "jquery";
@@ -144,7 +144,7 @@ function MeasureControl_(props: MeasureControlProps) {
 
   const rawValue = exp().get(prop);
   const maybeToken = tryParseTokenRef(rawValue, () =>
-    allStyleTokens(studioCtx.site, { includeDeps: "all" })
+    allStyleTokensAndOverrides(studioCtx.site, { includeDeps: "all" })
   );
 
   return (

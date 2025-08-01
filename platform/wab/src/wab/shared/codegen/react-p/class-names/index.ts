@@ -55,7 +55,7 @@ import {
   makeGlobalVariantComboSorter,
   sortedVariantCombos,
 } from "@/wab/shared/variant-sort";
-import L, { sortBy } from "lodash";
+import { sortBy, uniqBy } from "lodash";
 import { shouldUsePlasmicImg } from "src/wab/shared/codegen/react-p/image";
 
 export function makeCssClassNameForVariantCombo(
@@ -192,26 +192,14 @@ function shouldReferenceByClassName(vs: VariantSetting) {
 }
 
 const makeCssClassExprsForVariantedTokens = (ctx: SerializerBaseContext) => {
-  const { component, variantComboChecker } = ctx;
+  const { variantComboChecker } = ctx;
   const useCssModules = ctx.exportOpts.stylesOpts.scheme === "css-modules";
   const unconditionalClassExprs: string[] = [];
   const conditionalClassExprs: [string, string][] = [];
 
-  const cssProjectDependencies = L.uniqBy(
+  const cssProjectDependencies = uniqBy(
     ctx.siteCtx.cssProjectDependencies,
     "projectName"
-  );
-
-  unconditionalClassExprs.push(
-    useCssModules
-      ? `projectcss.${makePlasmicDefaultStylesClassName(ctx.exportOpts)}`
-      : jsLiteral(makePlasmicDefaultStylesClassName(ctx.exportOpts))
-  );
-
-  unconditionalClassExprs.push(
-    useCssModules
-      ? `projectcss.${makePlasmicMixinsClassName(ctx.exportOpts)}`
-      : jsLiteral(makePlasmicMixinsClassName(ctx.exportOpts))
   );
 
   unconditionalClassExprs.push(
@@ -219,6 +207,7 @@ const makeCssClassExprsForVariantedTokens = (ctx: SerializerBaseContext) => {
       ? `projectcss.${makePlasmicTokensClassName(ctx.exportOpts)}`
       : jsLiteral(makePlasmicTokensClassName(ctx.exportOpts))
   );
+
   unconditionalClassExprs.push(
     ...withoutNils(
       cssProjectDependencies.map((dep) =>
@@ -414,6 +403,18 @@ export function serializeComponentRootResetClasses(
         : jsLiteral(`${resetName}_tags`)
     );
   }
+
+  unconditionalClassExprs.push(
+    useCssModules
+      ? `projectcss.${makePlasmicDefaultStylesClassName(ctx.exportOpts)}`
+      : jsLiteral(makePlasmicDefaultStylesClassName(ctx.exportOpts))
+  );
+
+  unconditionalClassExprs.push(
+    useCssModules
+      ? `projectcss.${makePlasmicMixinsClassName(ctx.exportOpts)}`
+      : jsLiteral(makePlasmicMixinsClassName(ctx.exportOpts))
+  );
 
   const tokenClassExprs = makeCssClassExprsForVariantedTokens(ctx);
   unconditionalClassExprs.push(...tokenClassExprs.unconditionalClassExprs);

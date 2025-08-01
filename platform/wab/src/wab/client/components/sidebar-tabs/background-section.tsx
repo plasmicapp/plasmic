@@ -74,7 +74,7 @@ import {
 import {
   allColorTokens,
   allMixins,
-  allStyleTokens,
+  allStyleTokensAndOverrides,
 } from "@/wab/shared/core/sites";
 import { CssVarResolver } from "@/wab/shared/core/styles";
 import * as css from "@/wab/shared/css";
@@ -111,7 +111,7 @@ export const resolvedBackgroundImageCss = (
   });
 
   const resolver = new CssVarResolver(
-    allStyleTokens(site, { includeDeps: "all" }),
+    allStyleTokensAndOverrides(site, { includeDeps: "all" }),
     allMixins(site, { includeDeps: "all" }),
     site.imageAssets,
     site.activeTheme,

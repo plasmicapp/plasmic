@@ -56,7 +56,7 @@ export function exportSiteComponents(
   const siteCtx = computeSerializerSiteContext(site);
 
   const cssVarResolver = new CssVarResolver(
-    siteGenHelper.allStyleTokens(),
+    siteGenHelper.allStyleTokensAndOverrides(),
     siteGenHelper.allMixins(),
     siteGenHelper.allImageAssets(),
     site.activeTheme,

@@ -181,7 +181,10 @@ const VersionsList = observer(function VersionsList(props: {
 
   const renderPublishingSkeleton = () => {
     return (
-      <div className="SidebarSectionListItem hover-outline group pointer">
+      <div
+        id="publishing-version-spinner-item"
+        className="SidebarSectionListItem hover-outline group pointer"
+      >
         <Spin size="small" className="ml-sm" />
         <div className="flex-fill ml-sm text-ellipsis text-unselectable">
           A new version is being published

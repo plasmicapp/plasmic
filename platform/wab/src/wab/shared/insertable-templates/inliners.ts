@@ -1,4 +1,4 @@
-import { resolveAllTokenRefs } from "@/wab/commons/StyleToken";
+import { FinalStyleToken, resolveAllTokenRefs } from "@/wab/commons/StyleToken";
 import {
   arrayEqIgnoreOrder,
   assert,
@@ -16,7 +16,10 @@ import {
 } from "@/wab/shared/core/components";
 import { clone as cloneExpr } from "@/wab/shared/core/exprs";
 import { syncGlobalContexts } from "@/wab/shared/core/project-deps";
-import { allStyleTokens, isHostLessPackage } from "@/wab/shared/core/sites";
+import {
+  allStyleTokensAndOverrides,
+  isHostLessPackage,
+} from "@/wab/shared/core/sites";
 import { createExpandedRuleSetMerger } from "@/wab/shared/core/styles";
 import {
   clone as cloneTpl,
@@ -51,7 +54,6 @@ import {
   isKnownVariantsRef,
   RenderExpr,
   Site,
-  StyleToken,
   TplComponent,
   TplNode,
   TplSlot,
@@ -148,7 +150,7 @@ export function inlineMixins(tplTree: TplNode) {
  */
 export function inlineTokens(
   tplTree: TplNode,
-  tokens: StyleToken[],
+  tokens: FinalStyleToken[],
   onFontSeen?: (font: string) => void
 ) {
   // Walk TplTree
@@ -263,7 +265,7 @@ export const getSiteMatchingPlumeComponent = (
     // More handling is made `adjustInsertableTemplateComponentArgs`
 
     inlineMixins(component.tplTree);
-    const allTokens = allStyleTokens(site, { includeDeps: "all" });
+    const allTokens = allStyleTokensAndOverrides(site, { includeDeps: "all" });
     // We ignore fonts here, because as we are inlining the tree we will pass again
     // through this elements
     inlineTokens(component.tplTree, allTokens);
@@ -603,7 +605,7 @@ const adjustInsertableTemplateComponentArgs = (
             inlineMixins(tplTag);
             inlineTokens(
               tplTag,
-              allStyleTokens(ctx.sourceSite, { includeDeps: "all" })
+              allStyleTokensAndOverrides(ctx.sourceSite, { includeDeps: "all" })
             );
             tplTag.parent = sourceTpl;
             return tplTag;

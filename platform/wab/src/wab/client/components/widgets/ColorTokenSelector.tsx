@@ -6,9 +6,9 @@ import { IconButton } from "@/wab/client/components/widgets/IconButton";
 import { useToggleDisplayed } from "@/wab/client/dom-utils";
 import { PlusIcon } from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
 import SearchIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Search";
+import { FinalStyleToken } from "@/wab/commons/StyleToken";
 import { TokenValueResolver } from "@/wab/shared/cached-selectors";
 import { cx } from "@/wab/shared/common";
-import { StyleToken } from "@/wab/shared/model/classes";
 import Chroma from "@/wab/shared/utils/color-utils";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import { Tooltip } from "antd";
@@ -21,9 +21,9 @@ const GRID_SIZE = 32;
 const ROW_SIZE = 32;
 
 export const ColorTokenSelector = observer(function ColorTokenSelector(props: {
-  tokens: StyleToken[];
-  onSelect: (token: StyleToken) => void;
-  selectedToken?: StyleToken;
+  tokens: FinalStyleToken[];
+  onSelect: (token: FinalStyleToken) => void;
+  selectedToken?: FinalStyleToken;
   onAddToken: () => void;
   resolver: TokenValueResolver;
   className?: string;
@@ -81,7 +81,7 @@ export const ColorTokenSelector = observer(function ColorTokenSelector(props: {
   }, [selectedToken]);
 
   return (
-    <Downshift<StyleToken>
+    <Downshift<FinalStyleToken>
       selectedItem={null}
       defaultHighlightedIndex={0}
       itemToString={(t) => ""}

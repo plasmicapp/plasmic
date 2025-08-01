@@ -8,16 +8,20 @@ import { useClientTokenResolver } from "@/wab/client/components/widgets/ColorPic
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import TokenIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Token";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { isKnownVariantedValue, StyleToken } from "@/wab/shared/model/classes";
+import {
+  FinalStyleToken,
+  OverrideableStyleToken,
+} from "@/wab/commons/StyleToken";
+import { isKnownVariantedValue } from "@/wab/shared/model/classes";
+import { capitalizeFirst } from "@/wab/shared/strs";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import { BASE_VARIANT_NAME } from "@/wab/shared/Variants";
-import { capitalizeFirst } from "@/wab/shared/strs";
 import { Popover } from "antd";
 import classNames from "classnames";
 import React from "react";
 
 export function TokenDefinedIndicator(props: {
-  token: StyleToken;
+  token: FinalStyleToken;
   vsh?: VariantedStylesHelper;
   studioCtx: StudioCtx;
   className?: string;
@@ -30,7 +34,21 @@ export function TokenDefinedIndicator(props: {
   } = props;
   const clientTokenResolver = useClientTokenResolver();
 
-  const indicatorType = vsh.isStyleInherited(token) ? "otherVariants" : "set";
+  const indicatorType = (() => {
+    if (vsh.isStyleInherited(token)) {
+      return "otherVariants";
+    }
+    if (!vsh.isTargetBaseVariant()) {
+      return "overriding";
+    }
+    if (token instanceof OverrideableStyleToken) {
+      if (token.override?.value) {
+        return "set";
+      }
+      return "otherVariants";
+    }
+    return undefined;
+  })();
   const isEditingNonBaseVariant = !vsh.isTargetBaseVariant();
 
   return (
@@ -38,7 +56,10 @@ export function TokenDefinedIndicator(props: {
       <Popover
         title={token.name}
         content={[
-          { isBaseVariant: "true", value: token.value },
+          {
+            isBaseVariant: "true",
+            value: token.value,
+          },
           ...vsh.sortedActiveVariantedValue(token),
         ].map((v, i, arr) => (
           <div className="defined-indicator__prop" key={i}>
@@ -73,11 +94,10 @@ export function TokenDefinedIndicator(props: {
         <div className={styles.DefinedIndicatorContainerCentered}>
           <div
             className={classNames({
-              [styles.DefinedIndicator]: true,
-              [styles["DefinedIndicator--set"]]:
-                indicatorType === "set" && !isEditingNonBaseVariant,
+              [styles.DefinedIndicator]: !!indicatorType,
+              [styles["DefinedIndicator--set"]]: indicatorType === "set",
               [styles["DefinedIndicator--overriding"]]:
-                indicatorType === "set" && isEditingNonBaseVariant,
+                indicatorType === "overriding" && isEditingNonBaseVariant,
               [styles["DefinedIndicator--inherited"]]:
                 indicatorType === "otherVariants",
             })}

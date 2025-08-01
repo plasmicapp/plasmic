@@ -60,6 +60,7 @@ export const SimpleTextbox = React.forwardRef(function SimpleTextbox(
       textbox={{
         type: "text",
         ref: onRef,
+        readOnly: props.readOnly,
         onChange: (e) => {
           setEditing(true);
           setCurValue(e.target.value);

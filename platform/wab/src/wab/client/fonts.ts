@@ -3,7 +3,7 @@ import { derefTokenRefs } from "@/wab/commons/StyleToken";
 import { extractUsedFontsFromComponents } from "@/wab/shared/codegen/fonts";
 import { assertNever, spawn } from "@/wab/shared/common";
 import { walkDependencyTree } from "@/wab/shared/core/project-deps";
-import { allStyleTokens } from "@/wab/shared/core/sites";
+import { allStyleTokensAndOverrides } from "@/wab/shared/core/sites";
 import {
   FontInstallSpec,
   getFontSpec,
@@ -253,7 +253,7 @@ export class FontManager {
 
   useFont = (studioCtx: StudioCtx, fontFamily: string) => {
     fontFamily = derefTokenRefs(
-      allStyleTokens(studioCtx.site, { includeDeps: "all" }),
+      allStyleTokensAndOverrides(studioCtx.site, { includeDeps: "all" }),
       fontFamily
     );
     if (this.usedFonts.find((fs) => fs.fontFamily === fontFamily)) {

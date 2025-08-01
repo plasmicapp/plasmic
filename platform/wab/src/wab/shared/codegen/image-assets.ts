@@ -3,6 +3,7 @@ import {
   RuleSetHelpers,
   readonlyRSH,
 } from "@/wab/shared/RuleSetHelpers";
+import { siteToAllImageAssetsDict } from "@/wab/shared/cached-selectors";
 import possibleStandardNames from "@/wab/shared/codegen/react-attrs";
 import { makeAssetIdFileName } from "@/wab/shared/codegen/react-p/serialize-utils";
 import { ImportAliasesMap } from "@/wab/shared/codegen/react-p/types";
@@ -141,7 +142,7 @@ export function extractUsedPictureAssetsForComponents(
       }
     }
     for (const tpl of flattenTpls(component.tplTree)) {
-      collectUsedPictureAssetsForTpl(assets, component, tpl, opts_);
+      collectUsedPictureAssetsForTpl(assets, component, tpl, site, opts_);
     }
     if (
       isPageComponent(component) &&
@@ -157,12 +158,12 @@ export function collectUsedPictureAssetsForTpl(
   assets: Set<ImageAsset>,
   component: Component,
   tpl: TplNode,
+  site: Site,
   opts:
     | { includeRuleSets: false }
     | {
         includeRuleSets: true;
         expandMixins: boolean;
-        allAssetsDict: Record<string, ImageAsset>;
       }
 ) {
   if (isTplPicture(tpl)) {
@@ -178,14 +179,15 @@ export function collectUsedPictureAssetsForTpl(
   }
 
   if (opts.includeRuleSets) {
+    const allAssetsDict = siteToAllImageAssetsDict(site);
     for (const vs of tpl.vsettings) {
       const rulesets = opts.expandMixins ? expandRuleSets([vs.rs]) : [vs.rs];
       for (const rs of rulesets) {
         for (const refId of extractPictureAssetRefsFromExp(
           readonlyRSH(rs, tpl)
         )) {
-          if (L.has(opts.allAssetsDict, refId)) {
-            assets.add(opts.allAssetsDict[refId]);
+          if (L.has(allAssetsDict, refId)) {
+            assets.add(allAssetsDict[refId]);
           }
         }
       }

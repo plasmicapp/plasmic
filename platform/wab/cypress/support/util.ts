@@ -492,6 +492,182 @@ export function setComponentPropPreviewValue(
   cy.wait(500);
 }
 
+export function getTokensPanel() {
+  return cy.get(`[data-test-id="tokens-panel-content"]`);
+}
+
+// NOTE: Importing TokenType from wab/commons causes the cypress runner to crash
+type TokenType = "Color" | "FontSize";
+
+export function createToken(tokenType: TokenType, name: string, value: string) {
+  cy.switchToStyleTokensTab();
+  cy.get(`[data-test-id="add-token-button-${tokenType}"]`).click({
+    force: true,
+  });
+  // Wait for the sidebar modal to be visible
+  cy.get("#sidebar-modal").should("exist");
+  cy.justType(name);
+  cy.get(
+    `#sidebar-modal .panel-popup-content [data-test-id="${tokenType}-input"]`
+  ).type(`${value}{enter}`);
+  cy.closeSidebarModal();
+}
+
+export function changeTokensTarget(targetName: string) {
+  cy.get(`[data-test-id="global-variant-select"]`).click();
+  cy.get(`[data-plasmic-role="overlay"]`).contains(targetName).click();
+}
+
+export function updateToken(
+  tokenType: TokenType,
+  tokenName: string,
+  value: string,
+  opts: {
+    globalVariant?: string;
+    override?: boolean;
+  } = {}
+) {
+  cy.switchToStyleTokensTab();
+  cy.expandAllTokensPanel();
+  const tokenRow = cy.getTokensPanel().contains(tokenName).eq(0);
+  cy.changeTokensTarget(opts.globalVariant ?? "Base");
+  if (opts.override) {
+    tokenRow.rightclick();
+    cy.get(`[role="menuitem"]`).contains("Override").click();
+  } else {
+    tokenRow.click();
+  }
+  cy.get("#sidebar-modal").should("exist");
+  if (opts.override) {
+    // Assert that the token name cannot be changed
+    cy.get(".panel-popup-title input[readonly]").should("exist");
+  }
+  cy.get(
+    `#sidebar-modal .panel-popup-content [data-test-id="${tokenType}-input"]`
+  ).type(`${value}{enter}`);
+
+  cy.closeSidebarModal();
+}
+
+export function getStudioModal() {
+  return cy.get(".ant-modal-content");
+}
+
+export function deleteToken(tokenName: string) {
+  cy.switchToStyleTokensTab();
+  cy.expandAllTokensPanel();
+  cy.getTokensPanel().contains(tokenName).eq(0).rightclick();
+  cy.get(`[role="menuitem"]`).contains("Delete").click();
+  cy.wait(200);
+  cy.getStudioModal().find("button[type=submit]").click();
+}
+
+export function removeTokenOverride(
+  tokenName: string,
+  opts: { globalVariant?: string } = {}
+) {
+  cy.switchToStyleTokensTab();
+  cy.expandAllTokensPanel();
+  cy.changeTokensTarget(opts.globalVariant ?? "Base");
+  cy.getTokensPanel().contains(tokenName).eq(0).rightclick();
+  cy.get(`[role="menuitem"]`).contains("Remove").click();
+}
+
+export function assertTokenIndicator(
+  tokenName: string,
+  indicator:
+    | "local"
+    | "local-varianted"
+    | "override-base"
+    | "override-varianted"
+    | "override-both"
+    | "override-none",
+  baseVariantName: "Base",
+  globalVariantName?: string
+) {
+  function getElement() {
+    return cy
+      .getTokensPanel()
+      .contains(tokenName)
+      .eq(0)
+      .parents("li")
+      .find("[class*=DefinedIndicator]");
+  }
+
+  cy.switchToStyleTokensTab();
+  cy.expandAllTokensPanel();
+  switch (indicator) {
+    case "local":
+      changeTokensTarget(baseVariantName);
+      getElement().should("not.exist");
+      if (globalVariantName) {
+        changeTokensTarget(globalVariantName);
+        getElement()
+          .invoke("attr", "class")
+          .should("include", "DefinedIndicator--inherited");
+      }
+      break;
+    case "local-varianted":
+      changeTokensTarget(baseVariantName);
+      getElement().should("not.exist");
+      if (globalVariantName) {
+        changeTokensTarget(globalVariantName);
+        getElement()
+          .invoke("attr", "class")
+          .should("include", `DefinedIndicator--overriding`);
+      }
+      break;
+    case "override-none":
+      changeTokensTarget(baseVariantName);
+      getElement()
+        .invoke("attr", "class")
+        .should("include", `DefinedIndicator--inherited`);
+      if (globalVariantName) {
+        changeTokensTarget(globalVariantName);
+        getElement()
+          .invoke("attr", "class")
+          .should("include", `DefinedIndicator--inherited`);
+      }
+      break;
+    case "override-base":
+      changeTokensTarget(baseVariantName);
+      getElement()
+        .invoke("attr", "class")
+        .should("include", `DefinedIndicator--set`);
+      if (globalVariantName) {
+        changeTokensTarget(globalVariantName);
+        getElement()
+          .invoke("attr", "class")
+          .should("include", `DefinedIndicator--inherited`);
+      }
+      break;
+    case "override-varianted":
+      changeTokensTarget(baseVariantName);
+      getElement()
+        .invoke("attr", "class")
+        .should("include", `DefinedIndicator--inherited`);
+      if (globalVariantName) {
+        changeTokensTarget(globalVariantName);
+        getElement()
+          .invoke("attr", "class")
+          .should("include", `DefinedIndicator--overriding`);
+      }
+      break;
+    case "override-both":
+      changeTokensTarget(baseVariantName);
+      getElement()
+        .invoke("attr", "class")
+        .should("include", `DefinedIndicator--set`);
+      if (globalVariantName) {
+        changeTokensTarget(globalVariantName);
+        getElement()
+          .invoke("attr", "class")
+          .should("include", `DefinedIndicator--overriding`);
+      }
+      break;
+  }
+}
+
 export function createNewEventHandler(
   eventName: string,
   args: { name: string; type: string }[]
@@ -907,6 +1083,22 @@ export function chooseFontSize(fontSize: string) {
   justType(fontSize + "{enter}");
 }
 
+export function chooseColor(opts: { color?: string; tokenName?: string }) {
+  cy.switchToDesignTab();
+  cy.get(`.canvas-editor__right-pane [data-test-id='color-selector'] button`)
+    .eq(0)
+    .click()
+    .focus();
+  if (opts?.color) {
+    justType(opts.color + "{enter}");
+  } else if (opts?.tokenName) {
+    cy.get(`input[placeholder="Search for token"]`).type(
+      `${opts.tokenName}{enter}`
+    );
+  }
+  cy.closeSidebarModal();
+}
+
 export function convertToSlot(slotName?: string) {
   getSelectedElt().rightclick({ force: true });
   cy.contains("Convert to a slot").click({ force: true });
@@ -1168,6 +1360,10 @@ export function expandAllProjectPanel() {
   cy.get(`[data-test-id="nav-dropdown-expand-all"]`).click();
 }
 
+export function expandAllTokensPanel() {
+  cy.get(`[data-test-id="tokens-panel-expand-all"]`).click();
+}
+
 export function getProjectPanelContents() {
   return cy.get(testIds.projectPanel.selector);
 }
@@ -1260,9 +1456,13 @@ export function addRegisteredVariantFromVariantsTab(variantName: string) {
   cy.get(`[data-test-id="variant-selector-button"]`).click();
 }
 
-export function selectVariant(groupName: string, variantName: string) {
+export function selectVariant(
+  groupName: string,
+  variantName: string,
+  isGlobal = false
+) {
   cy.switchToComponentDataTab();
-  getVariantRow(groupName, variantName)
+  getVariantRow(groupName, variantName, isGlobal)
     .trigger("pointerover")
     .within(($row) => {
       $row.trigger("pointerenter");
@@ -1273,15 +1473,33 @@ export function selectVariant(groupName: string, variantName: string) {
 export function ensureGlobalVariantsPanelIsOpen() {
   return cy
     .get(testIds.globalVariantsHeader.selector)
-    .then(($globalVariantsHeader) =>
-      $globalVariantsHeader.attr("data-test-state") === "collapsed"
-        ? $globalVariantsHeader.click()
-        : void []
-    );
+    .find("[data-test-id='show-extra-content']")
+    .then(($showExtraContent) => {
+      const attrValue = $showExtraContent.attr("data-show-extra-content");
+      if (attrValue === "false") {
+        cy.get(testIds.globalVariantsHeader.selector).click();
+      }
+    });
 }
 
-export function deselectVariant(groupName: string, variantName: string) {
-  getVariantRow(groupName, variantName)
+export function createGlobalVariantGroup(
+  groupName: string,
+  variantName: string
+) {
+  componentPanel()
+    .get(`[data-test-id="add-global-variant-group-button"]`)
+    .click();
+  justType(`${groupName}{enter}`);
+  cy.wait(200);
+  justType(`${variantName}{enter}`);
+}
+
+export function deselectVariant(
+  groupName: string,
+  variantName: string,
+  isGlobal = false
+) {
+  getVariantRow(groupName, variantName, isGlobal)
     .trigger("pointerover")
     .within(() => {
       cy.get(`[data-test-class="variant-record-button-stop"]`).click();
@@ -1322,7 +1540,9 @@ export function resetVariants() {
 
 export function componentPanel() {
   cy.switchToComponentDataTab();
-  return cy.get(`[data-test-id="component-panel"]`);
+  return cy.get(
+    `[data-test-id="component-panel"], [data-test-id="page-panel"]`
+  );
 }
 
 export function expandComponentPanel() {
@@ -1482,6 +1702,15 @@ export function addDrawerItem(itemName: string, displayName?: string) {
     .eq(0);
 }
 
+function getGlobalVariantGroupWidget(groupName: string) {
+  cy.switchToComponentDataTab();
+  cy.ensureGlobalVariantsPanelIsOpen();
+  return cy
+    .get(testIds.globalVariantsHeader.selector)
+    .contains(groupName)
+    .parents(`[data-test-class="variants-section"]`);
+}
+
 function getVariantGroupWidget(groupName: string) {
   cy.switchToComponentDataTab();
   return cy
@@ -1490,10 +1719,16 @@ function getVariantGroupWidget(groupName: string) {
     .parents(`[data-test-class="variants-section"]`);
 }
 
-function getVariantRow(groupName: string, variantName: string) {
-  return getVariantGroupWidget(groupName)
-    .contains(variantName)
-    .parents(`[data-test-class="variant-row"]`);
+function getVariantRow(
+  groupName: string,
+  variantName: string,
+  isGlobal = false
+) {
+  return isGlobal
+    ? getGlobalVariantGroupWidget(groupName)
+    : getVariantGroupWidget(groupName)
+        .contains(variantName)
+        .parents(`[data-test-class="variant-row"]`);
 }
 
 // function enterLiveMode() {
@@ -1812,17 +2047,60 @@ export function deleteDataSourceOfCurrentTest() {
   }
 }
 
+export function countItems(selector: string) {
+  return curDocument().then((doc) => {
+    return doc.querySelectorAll(selector).length;
+  });
+}
+
 export function importProject(projectId: string) {
   cy.switchToImportsTab();
-  cy.get(`[data-test-id="import-btn"]`).click();
-  cy.justType(projectId + "{enter}");
+  const selector = ".SidebarSectionListItem";
+  cy.countItems(selector).then((countBefore: number) => {
+    cy.get(`[data-test-id="import-btn"]`).click();
+    cy.justType(projectId + "{enter}");
+    // Wait for the project to be imported
+    cy.get(selector).should("have.length", countBefore + 1);
+  });
+}
+
+export function removeAllDependencies() {
+  cy.switchToImportsTab();
+  cy.get(`.SidebarSectionListItem`).each(($el) => {
+    cy.wrap($el).rightclick();
+    cy.contains("Remove imported project").click();
+    cy.get(".ant-modal-content").find("button[type=submit]").click();
+  });
+
+  cy.get(`.SidebarSectionListItem`).should("not.exist");
+}
+
+export function updateAllImports() {
+  cy.switchToImportsTab();
+  cy.get(`[data-test-id="check-for-updates-btn"]`).click();
+  cy.wait(1000);
+  // Iterate over all elements and click each one
+  cy.get(`.SidebarSectionListItem button svg`).each(($el) => {
+    cy.wrap($el).click();
+    cy.get(".ant-modal-content").find("button[type=submit]").click();
+  });
+  // Wait for the projects to be updated
+  cy.get(`.SidebarSectionListItem button svg`).should("not.exist");
 }
 
 export function publishVersion(description: string) {
   cy.switchToVersionsTab();
-  cy.contains("Publish project").click();
-  cy.contains("Confirm").justType(description);
-  cy.contains("Confirm").click();
+  const selector =
+    ".SidebarSectionListItem:not(#publishing-version-spinner-item)";
+  cy.countItems(selector).then((countBefore: number) => {
+    cy.contains("Publish project").click();
+    cy.getStudioModal().find(`input`).eq(0).type(description);
+    cy.getStudioModal().contains("Confirm").click();
+    // Wait for the version to be published
+    cy.wait(500);
+    cy.get(selector).should("exist");
+    cy.get(selector).should("have.length", countBefore + 1);
+  });
   cy.switchToTreeTab();
 }
 

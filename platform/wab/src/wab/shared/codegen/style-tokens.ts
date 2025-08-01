@@ -1,9 +1,17 @@
-import { ensure, withoutNils, xAddAll } from "@/wab/shared/common";
 import {
   extractAllReferencedTokenIds,
+  FinalStyleToken,
+  toFinalStyleToken,
   tryParseTokenRef,
 } from "@/wab/commons/StyleToken";
-import { makeTokenValueResolver } from "@/wab/shared/cached-selectors";
+import {
+  makeTokenValueResolver,
+  siteToAllTokensAndOverridesDict,
+} from "@/wab/shared/cached-selectors";
+import { ensure, withoutNils, xAddAll } from "@/wab/shared/common";
+import { allStyleTokensAndOverrides } from "@/wab/shared/core/sites";
+import { expandRuleSets } from "@/wab/shared/core/styles";
+import { flattenTpls } from "@/wab/shared/core/tpls";
 import {
   Component,
   isKnownStyleExpr,
@@ -11,6 +19,7 @@ import {
   Mixin,
   Site,
   StyleToken,
+  StyleTokenOverride,
   TplNode,
   Variant,
 } from "@/wab/shared/model/classes";
@@ -21,9 +30,6 @@ import {
 } from "@/wab/shared/RuleSetHelpers";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import { VariantCombo } from "@/wab/shared/Variants";
-import { allStyleTokens, localStyleTokens } from "@/wab/shared/core/sites";
-import { expandRuleSets } from "@/wab/shared/core/styles";
-import { flattenTpls } from "@/wab/shared/core/tpls";
 import L from "lodash";
 
 export interface TheoToken {
@@ -53,7 +59,7 @@ export function exportStyleTokens(
   projectId: string,
   site: Site
 ): TheoTokensOutput {
-  const tokens = localStyleTokens(site);
+  const tokens = allStyleTokensAndOverrides(site);
   const resolver = makeTokenValueResolver(site);
   return {
     props: tokens.map((token) =>
@@ -68,9 +74,9 @@ export function exportStyleTokens(
 }
 
 function serializeStyleToken(
-  token: StyleToken,
+  token: FinalStyleToken,
   meta: { projectId?: string; pkgId?: string },
-  resolver: (token: StyleToken) => string
+  resolver: (token: FinalStyleToken) => string
 ): TheoToken {
   return {
     name: token.name,
@@ -101,61 +107,23 @@ export function extractUsedGlobalVariantCombosForTokens(
   return usedGlobalVariantCombos;
 }
 
-export function extractUsedTokensForTheme(
-  site: Site,
-  allTokensDict: Record<string, StyleToken>,
-  opts: { derefTokens: boolean }
+export function extractUsedGlobalVariantsForTokens(
+  tokens: Set<StyleToken>,
+  site: Site
 ) {
-  const tokens = new Set<StyleToken>();
-  if (site.activeTheme) {
-    const theme = site.activeTheme;
-    collectUsedTokensForExp(
-      tokens,
-      new RuleSetHelpers(theme.defaultStyle.rs, "div"),
-      allTokensDict,
-      opts
-    );
-    for (const sty of theme.styles) {
-      collectUsedTokensForExp(
-        tokens,
-        new RuleSetHelpers(sty.style.rs, "div"),
-        allTokensDict,
-        opts
-      );
-      for (const variantedRs of sty.style.variantedRs) {
-        collectUsedTokensForExp(
-          tokens,
-          new RuleSetHelpers(variantedRs.rs, "div"),
-          allTokensDict,
-          opts
-        );
-      }
-    }
-  }
-  return tokens;
-}
-
-export function extractUsedGlobalVariantsForTheme(site: Site) {
-  const variants = new Set<Variant>();
-  if (site.activeTheme) {
-    for (const sty of site.activeTheme.styles) {
-      for (const vRs of sty.style.variantedRs) {
-        for (const v of vRs.variants) {
-          variants.add(v);
-        }
-      }
-    }
-  }
-  return variants;
-}
-
-export function extractUsedGlobalVariantsForTokens(tokens: Set<StyleToken>) {
   const usedGlobalVariants: Set<Variant> = new Set();
   for (const token of tokens) {
+    const finalToken = toFinalStyleToken(token, site);
     xAddAll(
       usedGlobalVariants,
-      token.variantedValues.flatMap((v) => v.variants)
+      finalToken.base.variantedValues.flatMap((v) => v.variants)
     );
+    if (finalToken.override) {
+      xAddAll(
+        usedGlobalVariants,
+        finalToken.override.variantedValues.flatMap((v) => v.variants)
+      );
+    }
   }
   return usedGlobalVariants;
 }
@@ -168,14 +136,10 @@ export function extractUsedTokensForComponents(
     derefTokens: boolean;
   }
 ) {
-  const allTokensDict = L.keyBy(
-    allStyleTokens(site, { includeDeps: "all" }),
-    (t) => t.uuid
-  );
   const usedTokens = new Set<StyleToken>();
   for (const component of components) {
     for (const tpl of flattenTpls(component.tplTree)) {
-      collectUsedTokensForTpl(usedTokens, tpl, allTokensDict, opts);
+      collectUsedTokensForTpl(usedTokens, tpl, site, opts);
     }
   }
   return usedTokens;
@@ -184,7 +148,7 @@ export function extractUsedTokensForComponents(
 export function collectUsedTokensForTpl(
   collector: Set<StyleToken>,
   tpl: TplNode,
-  allTokensDict: Record<string, StyleToken>,
+  site: Site,
   opts: {
     expandMixins: boolean;
     derefTokens: boolean;
@@ -193,12 +157,7 @@ export function collectUsedTokensForTpl(
   for (const vs of tpl.vsettings) {
     const rulesets = opts.expandMixins ? expandRuleSets([vs.rs]) : [vs.rs];
     for (const rs of rulesets) {
-      collectUsedTokensForExp(
-        collector,
-        readonlyRSH(rs, tpl),
-        allTokensDict,
-        opts
-      );
+      collectUsedTokensForExp(collector, readonlyRSH(rs, tpl), site, opts);
     }
     for (const arg of vs.args) {
       if (isKnownStyleTokenRef(arg.expr)) {
@@ -208,7 +167,7 @@ export function collectUsedTokensForTpl(
           collectUsedTokensForExp(
             collector,
             new RuleSetHelpers(sty.rs, "div"),
-            allTokensDict,
+            site,
             opts
           );
         }
@@ -220,18 +179,22 @@ export function collectUsedTokensForTpl(
 function collectUsedTokensForExp(
   collector: Set<StyleToken>,
   exp: ReadonlyIRuleSetHelpersX,
-  allTokensDict: Record<string, StyleToken>,
+  site: Site,
   opts: { derefTokens: boolean }
 ) {
+  const allTokensDict = siteToAllTokensAndOverridesDict(site);
   for (const prop of exp.props()) {
     const val = exp.getRaw(prop);
     if (val) {
       const refTokenIds = extractAllReferencedTokenIds(val);
       const refTokens = withoutNils(refTokenIds.map((x) => allTokensDict[x]));
-      xAddAll(collector, refTokens);
+      xAddAll(
+        collector,
+        refTokens.map((refToken) => refToken.base)
+      );
       if (opts.derefTokens) {
         for (const token of refTokens) {
-          collectUsedTokensForToken(collector, token, allTokensDict, {
+          collectUsedTokensForTokenValue(collector, token.value, site, {
             derefTokens: true,
           });
         }
@@ -240,15 +203,16 @@ function collectUsedTokensForExp(
   }
 }
 
-function collectUsedTokensForToken(
+function collectUsedTokensForTokenValue(
   collector: Set<StyleToken>,
-  token: StyleToken,
-  allTokensDict: Record<string, StyleToken>,
+  tokenValue: string,
+  site: Site,
   opts: { derefTokens: boolean }
 ) {
-  let sub = tryParseTokenRef(token.value, allTokensDict);
+  const allTokensDict = siteToAllTokensAndOverridesDict(site);
+  let sub = tryParseTokenRef(tokenValue, allTokensDict);
   while (sub) {
-    collector.add(sub);
+    collector.add(sub.base);
     if (opts.derefTokens) {
       sub = tryParseTokenRef(sub.value, allTokensDict);
     } else {
@@ -259,25 +223,45 @@ function collectUsedTokensForToken(
 
 export function extractUsedTokensForTokens(
   tokens: StyleToken[],
-  allTokensDict: Record<string, StyleToken>,
+  site: Site,
   opts: { derefTokens: boolean }
 ) {
   const used = new Set<StyleToken>();
   for (const token of tokens) {
-    collectUsedTokensForToken(used, token, allTokensDict, opts);
+    collectUsedTokensForTokenValue(used, token.value, site, opts);
+    for (const variantedValue of token.variantedValues) {
+      collectUsedTokensForTokenValue(used, variantedValue.value, site, opts);
+    }
+  }
+  return used;
+}
+
+export function extractUsedTokensForTokenOverrides(
+  overrides: StyleTokenOverride[],
+  site: Site,
+  opts: { derefTokens: boolean }
+) {
+  const used = new Set<StyleToken>();
+  for (const override of overrides) {
+    if (override.value) {
+      collectUsedTokensForTokenValue(used, override.value, site, opts);
+    }
+    for (const variantedValue of override.variantedValues) {
+      collectUsedTokensForTokenValue(used, variantedValue.value, site, opts);
+    }
   }
   return used;
 }
 
 export function extractUsedTokensForMixins(
   mixins: Mixin[],
-  allTokensDict: Record<string, StyleToken>,
+  site: Site,
   opts: { derefTokens: boolean }
 ) {
   const usedTokens = new Set<StyleToken>();
   for (const mixin of mixins) {
     const exp = new RuleSetHelpers(mixin.rs, "div");
-    collectUsedTokensForExp(usedTokens, exp, allTokensDict, opts);
+    collectUsedTokensForExp(usedTokens, exp, site, opts);
   }
   return usedTokens;
 }

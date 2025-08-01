@@ -1,4 +1,8 @@
-import { TokenValue } from "@/wab/commons/StyleToken";
+import {
+  FinalStyleToken,
+  ImmutableStyleToken,
+  TokenValue,
+} from "@/wab/commons/StyleToken";
 import { DeepReadonly } from "@/wab/commons/types";
 import {
   arrayEqIgnoreOrder,
@@ -6,15 +10,13 @@ import {
   ensure,
   ensureArray,
   last,
-  remove,
 } from "@/wab/shared/common";
 import { cloneRuleSet } from "@/wab/shared/core/styles";
 import {
-  isKnownStyleToken,
+  isKnownMixin,
   Mixin,
   RuleSet,
   Site,
-  StyleToken,
   Variant,
   VariantedRuleSet,
   VariantedValue,
@@ -44,13 +46,13 @@ export class VariantedStylesHelper {
 
   globalVariants = () => this.activeGlobalVariants;
 
-  private activeVariantedStyles(style: StyleToken | Mixin) {
+  private activeVariantedStyles(style: FinalStyleToken | Mixin) {
     if (this.isActiveBaseVariant() || !this.site) {
       return [];
     }
 
     const variantedStyle = (
-      isKnownStyleToken(style) ? style.variantedValues : style.variantedRs
+      isKnownMixin(style) ? style.variantedRs : style.variantedValues
     ) as (VariantedValue | VariantedRuleSet)[];
 
     return variantedStyle.filter((variantedValue) =>
@@ -64,15 +66,7 @@ export class VariantedStylesHelper {
     );
   }
 
-  activeVariantedValue(token: StyleToken) {
-    return this.activeVariantedStyles(token) as VariantedValue[];
-  }
-
-  activeVariantedRuleSet(mixin: Mixin) {
-    return this.activeVariantedStyles(mixin) as VariantedRuleSet[];
-  }
-
-  private sortedActiveVariantedStyles(style: StyleToken | Mixin) {
+  private sortedActiveVariantedStyles(style: FinalStyleToken | Mixin) {
     const activeVariantedValues = this.activeVariantedStyles(style);
     if (activeVariantedValues.length === 0) {
       return activeVariantedValues;
@@ -86,7 +80,7 @@ export class VariantedStylesHelper {
     );
   }
 
-  sortedActiveVariantedValue(token: StyleToken) {
+  sortedActiveVariantedValue(token: FinalStyleToken) {
     return this.sortedActiveVariantedStyles(token) as VariantedValue[];
   }
 
@@ -94,14 +88,14 @@ export class VariantedStylesHelper {
     return this.sortedActiveVariantedStyles(mixin) as VariantedRuleSet[];
   }
 
-  private getVariantedStyleWithHighestPriority(style: StyleToken | Mixin) {
+  private getVariantedStyleWithHighestPriority(style: FinalStyleToken | Mixin) {
     const sortedActiveVariantedValues = this.sortedActiveVariantedStyles(style);
     return sortedActiveVariantedValues.length > 0
       ? last(sortedActiveVariantedValues)
       : undefined;
   }
 
-  getVariantedValueWithHighestPriority(token: StyleToken) {
+  getVariantedValueWithHighestPriority(token: FinalStyleToken) {
     return this.getVariantedStyleWithHighestPriority(token) as
       | VariantedValue
       | undefined;
@@ -113,14 +107,17 @@ export class VariantedStylesHelper {
       | undefined;
   }
 
-  isStyleInherited(style: StyleToken | Mixin) {
+  /**
+   * @returns true if the token has no varianted value against the currently active global variant
+   */
+  isStyleInherited(token: FinalStyleToken | Mixin) {
     return !arrayEqIgnoreOrder(
-      this.getVariantedStyleWithHighestPriority(style)?.variants ?? [],
+      this.getVariantedStyleWithHighestPriority(token)?.variants ?? [],
       this.activeGlobalVariants ?? []
     );
   }
 
-  getActiveTokenValue(token: StyleToken): TokenValue {
+  getActiveTokenValue(token: FinalStyleToken): TokenValue {
     return (this.getVariantedValueWithHighestPriority(token)?.value ??
       token.value) as TokenValue;
   }
@@ -133,41 +130,32 @@ export class VariantedStylesHelper {
     );
   }
 
-  updateToken(token: StyleToken, value: string) {
-    if (this.isTargetBaseVariant()) {
-      token.value = value;
-      return;
-    }
-
+  updateToken(token: FinalStyleToken, value: string): void {
     assert(
-      this.canUpdateToken(),
-      `cannot update token "${token.name}" with target global variants "${
-        this.targetGlobalVariants?.map((v) => v.name).join(",") ?? "base"
-      }"`
+      !(token instanceof ImmutableStyleToken),
+      `cannot update token "${token.name}" from transitive dep`
     );
 
-    const variantedValue = token.variantedValues.find((v) =>
-      arrayEqIgnoreOrder(v.variants, ensureArray(this.targetGlobalVariants))
-    );
-    if (variantedValue) {
-      variantedValue.value = value;
+    if (this.isTargetBaseVariant()) {
+      token.setValue(value);
     } else {
-      token.variantedValues.push(
-        new VariantedValue({
-          variants: ensureArray(this.targetGlobalVariants),
-          value,
-        })
+      assert(
+        this.canUpdateToken(),
+        `cannot update token "${token.name}" with target global variants "${
+          this.targetGlobalVariants?.map((v) => v.name).join(",") ?? "base"
+        }"`
       );
+
+      token.setVariantedValue(ensureArray(this.targetGlobalVariants), value);
     }
   }
 
-  removeVariantedValue(token: StyleToken) {
-    const variantedValue = token.variantedValues.find((v) =>
-      arrayEqIgnoreOrder(v.variants, ensureArray(this.targetGlobalVariants))
+  removeVariantedValue(token: FinalStyleToken): void {
+    assert(
+      !(token instanceof ImmutableStyleToken),
+      `cannot update token "${token.name}" from transitive dep`
     );
-    if (variantedValue) {
-      remove(token.variantedValues, variantedValue);
-    }
+    token.removeVariantedValue(ensureArray(this.targetGlobalVariants));
   }
 
   updateMixinRule(

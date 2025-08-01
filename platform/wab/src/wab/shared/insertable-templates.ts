@@ -4,7 +4,10 @@ import { VariantCombo } from "@/wab/shared/Variants";
 import { siteToAllImageAssetsDict } from "@/wab/shared/cached-selectors";
 import { withoutNils } from "@/wab/shared/common";
 import { allComponentVariants } from "@/wab/shared/core/components";
-import { allGlobalVariants, allStyleTokens } from "@/wab/shared/core/sites";
+import {
+  allGlobalVariants,
+  allStyleTokensAndOverrides,
+} from "@/wab/shared/core/sites";
 import {
   clone as cloneTpl,
   flattenTpls,
@@ -102,8 +105,8 @@ export function cloneInsertableTemplateComponent(
 ) {
   const seenFonts = new Set<string>();
 
-  const targetTokens = allStyleTokens(site, { includeDeps: "all" });
-  const sourceTokens = allStyleTokens(info.site, {
+  const targetTokens = allStyleTokensAndOverrides(site, { includeDeps: "all" });
+  const sourceTokens = allStyleTokensAndOverrides(info.site, {
     includeDeps: "all",
   });
 
@@ -140,8 +143,10 @@ function getUnownedTreeCloneUtils(
     siteToAllImageAssetsDict(info.site)
   );
 
-  const oldTokens = allStyleTokens(info.site, { includeDeps: "all" });
-  const newTokens = allStyleTokens(site, { includeDeps: "all" });
+  const oldTokens = allStyleTokensAndOverrides(info.site, {
+    includeDeps: "all",
+  });
+  const newTokens = allStyleTokensAndOverrides(site, { includeDeps: "all" });
 
   const textTplStyleFixer = mkTextTplStyleFixer(info.component, info.site);
 

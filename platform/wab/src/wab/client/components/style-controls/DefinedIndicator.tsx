@@ -33,7 +33,7 @@ import { cx, ensure, ensureArray, swallow } from "@/wab/shared/common";
 import { BackgroundLayer } from "@/wab/shared/core/bg-styles";
 import { getComponentDisplayName } from "@/wab/shared/core/components";
 import { ExprCtx, summarizeExpr, tryExtractLit } from "@/wab/shared/core/exprs";
-import { allStyleTokens } from "@/wab/shared/core/sites";
+import { allStyleTokensAndOverrides } from "@/wab/shared/core/sites";
 import { sourceMatchThemeStyle } from "@/wab/shared/core/styles";
 import { isTplComponent, isTplTag } from "@/wab/shared/core/tpls";
 import { parseCss } from "@/wab/shared/css";
@@ -123,7 +123,7 @@ export function getStylePropValue(
 ) {
   vsh = vsh ?? new VariantedStylesHelper();
 
-  const allTokens = allStyleTokens(site, { includeDeps: "all" });
+  const allTokens = allStyleTokensAndOverrides(site, { includeDeps: "all" });
   const values = splitCssValue(prop, value);
 
   const renderValue = (val: string) => {

@@ -35,7 +35,7 @@ import { buildViewCtxPinMaps } from "@/wab/client/cseval";
 import { globalHookCtx } from "@/wab/client/react-global-hook/globalHook";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { EditingTextContext, ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { mkTokenRef } from "@/wab/commons/StyleToken";
+import { mkTokenRef, toFinalStyleToken } from "@/wab/commons/StyleToken";
 import { DeepReadonly } from "@/wab/commons/types";
 import {
   getSlotParams,
@@ -2001,7 +2001,7 @@ function computeTplComponentArgs(
           ...ctx.activeVariants,
         ]);
         const resolver = makeTokenValueResolver(ctx.site);
-        return resolver(_expr.token, vsh);
+        return resolver(toFinalStyleToken(_expr.token, ctx.site), vsh);
       })
       .when(PageHref, (_expr) =>
         evalCodeWithEnv(

@@ -1,10 +1,11 @@
-import { Dim, LinearGradient, Stop } from "@/wab/shared/core/bg-styles";
 import { getHTMLElt } from "@/wab/client/components/view-common";
 import { ColorPicker } from "@/wab/client/components/widgets/ColorPicker";
 import { useClientTokenResolver } from "@/wab/client/components/widgets/ColorPicker/client-token-resolver";
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import ColorStopIcon from "@/wab/client/plasmic/plasmic_kit_design_system/icons/PlasmicIcon__ColorStop";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { XDraggable } from "@/wab/commons/components/XDraggable";
+import { tryParseTokenRef } from "@/wab/commons/StyleToken";
 import {
   check,
   ensure,
@@ -16,11 +17,10 @@ import {
   tuple,
   withoutNils,
 } from "@/wab/shared/common";
-import { XDraggable } from "@/wab/commons/components/XDraggable";
-import { tryParseTokenRef } from "@/wab/commons/StyleToken";
+import { Dim, LinearGradient, Stop } from "@/wab/shared/core/bg-styles";
+import { allStyleTokensAndOverrides } from "@/wab/shared/core/sites";
 import { Chroma } from "@/wab/shared/utils/color-utils";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
-import { allStyleTokens } from "@/wab/shared/core/sites";
 import classNames from "classnames";
 import $ from "jquery";
 import L from "lodash";
@@ -85,7 +85,7 @@ const ColorStops_ = (props: ColorStopsProps) => {
   const realStopColor = (stop: Stop) => {
     const maybeToken = tryParseTokenRef(
       stop.color,
-      allStyleTokens(props.studioCtx.site, { includeDeps: "all" })
+      allStyleTokensAndOverrides(props.studioCtx.site, { includeDeps: "all" })
     );
     if (maybeToken) {
       return resolver(maybeToken, props.vsh);

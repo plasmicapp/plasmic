@@ -350,6 +350,7 @@ function _ProjectDependenciesPanel() {
                 spawn(sc.projectDependencyManager.refreshDeps());
                 setState(undefined);
               },
+              "data-test-id": "check-for-updates-btn",
             }
       }
       updateButton={

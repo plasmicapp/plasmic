@@ -25,7 +25,7 @@ import { BoxShadow, BoxShadows, Dim } from "@/wab/shared/core/bg-styles";
 import {
   allColorTokens,
   allMixins,
-  allStyleTokens,
+  allStyleTokensAndOverrides,
 } from "@/wab/shared/core/sites";
 import { CssVarResolver } from "@/wab/shared/core/styles";
 import { parseCss } from "@/wab/shared/css";
@@ -47,7 +47,7 @@ const resolvedShadowCss = (
 ) => {
   const site = sc.site;
   const resolver = new CssVarResolver(
-    allStyleTokens(site, { includeDeps: "all" }),
+    allStyleTokensAndOverrides(site, { includeDeps: "all" }),
     allMixins(site, { includeDeps: "all" }),
     site.imageAssets,
     site.activeTheme,
@@ -183,7 +183,7 @@ class _ShadowsPanelSection extends StyleComponent<
                 {boxShadows.shadows.map((shadow: BoxShadow, i: number) => {
                   const sc = this.props.expsProvider.studioCtx;
                   const color = derefTokenRefs(
-                    allStyleTokens(sc.site, { includeDeps: "all" }),
+                    allStyleTokensAndOverrides(sc.site, { includeDeps: "all" }),
                     shadow.color,
                     vsh
                   );

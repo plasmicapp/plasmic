@@ -1,12 +1,17 @@
-import { unreachable } from "@/wab/shared/common";
 import { removeFromArray } from "@/wab/commons/collections";
-import { mkTokenRef, replaceAllTokenRefs } from "@/wab/commons/StyleToken";
+import {
+  mkTokenRef,
+  MutableStyleToken,
+  OverrideableStyleToken,
+  replaceAllTokenRefs,
+} from "@/wab/commons/StyleToken";
+import { unreachable } from "@/wab/shared/common";
+import { extractTokenUsages } from "@/wab/shared/core/styles";
 import {
   ensureKnownStyleTokenRef,
   Site,
   StyleToken,
 } from "@/wab/shared/model/classes";
-import { extractTokenUsages } from "@/wab/shared/core/styles";
 
 export function fixDuplicatedRegisteredTokens(mergedSite: Site) {
   const tokensByRegKey: Record<string, StyleToken[]> = {};
@@ -35,12 +40,24 @@ function replaceToken(site: Site, fromToken: StyleToken, toToken: StyleToken) {
         (tokenId: string) =>
           tokenId === fromToken.uuid ? mkTokenRef(toToken) : undefined
       );
-    } else if (usage.type === "token") {
-      usage.token.value = replaceAllTokenRefs(
-        usage.token.value,
-        (tokenId: string) =>
-          tokenId === fromToken.uuid ? mkTokenRef(toToken) : undefined
-      );
+    } else if (
+      usage.type === "styleToken" ||
+      usage.type === "styleTokenOverride"
+    ) {
+      const token =
+        usage.type === "styleToken"
+          ? usage.styleToken
+          : usage.styleTokenOverride;
+      if (
+        token instanceof MutableStyleToken ||
+        token instanceof OverrideableStyleToken
+      ) {
+        token.setValue(
+          replaceAllTokenRefs(token.value, (tokenId: string) =>
+            tokenId === fromToken.uuid ? mkTokenRef(toToken) : undefined
+          )
+        );
+      }
     } else if (usage.type === "variantedValue") {
       usage.variantedValue.value = replaceAllTokenRefs(
         usage.variantedValue.value,

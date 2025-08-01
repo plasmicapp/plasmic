@@ -50,6 +50,7 @@ import {
   isKnownRuleSet,
   isKnownSite,
   isKnownStyleToken,
+  isKnownStyleTokenOverride,
   isKnownTheme,
   isKnownThemeStyle,
   isKnownTplNode,
@@ -797,6 +798,10 @@ function getCssVarsChangeType(
     // insert or delete a token
     return [CssVarsChangeType.CssVarsOnly, undefined];
   }
+  if (isKnownSite(last.inst) && last.field === "styleTokenOverrides") {
+    // insert or delete a token override
+    return [CssVarsChangeType.CssVarsOnly, undefined];
+  }
   if (isKnownSite(last.inst) && last.field === "mixins") {
     // insert or delete a mixin
     return [CssVarsChangeType.CssVarsOnly, undefined];
@@ -808,13 +813,13 @@ function getCssVarsChangeType(
   if (isKnownSite(last.inst) && last.field === "activeTheme") {
     return [CssVarsChangeType.ActiveThemeChanged, undefined];
   }
-  if (isKnownStyleToken(last.inst)) {
+  if (isKnownStyleToken(last.inst) || isKnownStyleTokenOverride(last.inst)) {
     if (
       last.field === "value" ||
       last.field === "variantedValues" ||
       last.field === "name"
     ) {
-      // value or name of style token changed (changing the name requires
+      // value or name of style token or token override changed (changing the name requires
       // updating the external CSS var)
       return [CssVarsChangeType.CssVarsOnly, undefined];
     }

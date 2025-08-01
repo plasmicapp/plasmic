@@ -18,6 +18,8 @@ import PlasmicDimTokenSelector, {
 import { useUndo } from "@/wab/client/shortcuts/studio/useUndo";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import {
+  FinalStyleToken,
+  MutableStyleToken,
   TokenType,
   derefToken,
   mkTokenRef,
@@ -39,7 +41,10 @@ import {
   spawn,
   unexpected,
 } from "@/wab/shared/common";
-import { isStyleTokenEditable } from "@/wab/shared/core/sites";
+import {
+  allStyleTokensAndOverrides,
+  isStyleTokenEditableOrOverridable,
+} from "@/wab/shared/core/sites";
 import * as css from "@/wab/shared/css";
 import {
   lengthCssUnits,
@@ -51,7 +56,7 @@ import {
   isValidUnit,
   showSizeCss,
 } from "@/wab/shared/css-size";
-import { StyleToken, isKnownStyleToken } from "@/wab/shared/model/classes";
+import { StyleToken } from "@/wab/shared/model/classes";
 import { naturalSort } from "@/wab/shared/sort";
 import { canCreateAlias } from "@/wab/shared/ui-config-utils";
 import { Tooltip, notification } from "antd";
@@ -189,11 +194,14 @@ export const DimTokenSpinner = observer(
     const parsedValues = tokens
       ? shorthandVals.map((v) => tryParseTokenRef(v, tokens) || v)
       : shorthandVals;
-    const parsedTokens = parsedValues.filter((v): v is StyleToken =>
-      isKnownStyleToken(v)
+    const parsedTokens = parsedValues.filter(
+      (v): v is FinalStyleToken => typeof v !== "string"
     );
     const editableTokens = parsedTokens.filter(
-      (v) => studioCtx?.site.styleTokens.includes(v) && !v.isRegistered
+      (v) =>
+        studioCtx?.site &&
+        allStyleTokensAndOverrides(studioCtx.site).includes(v) &&
+        !v.isRegistered
     );
 
     const hasParsedToken = parsedTokens.length > 0;
@@ -215,13 +223,13 @@ export const DimTokenSpinner = observer(
     const inputValue =
       typedInputValue ?? (hasParsedToken ? "" : focused ? value : displayValue);
 
-    const [editToken, setEditToken] = React.useState<StyleToken | undefined>(
-      undefined
-    );
+    const [editToken, setEditToken] = React.useState<
+      FinalStyleToken | undefined
+    >(undefined);
 
-    const [newToken, setNewToken] = React.useState<StyleToken | undefined>(
-      undefined
-    );
+    const [newToken, setNewToken] = React.useState<
+      MutableStyleToken | undefined
+    >(undefined);
 
     const isNumberMode = !isNaN(parseFloat(inputValue));
     const matcher = new Matcher(typedInputValue ?? "");
@@ -299,13 +307,16 @@ export const DimTokenSpinner = observer(
         inputValue.length === 0 && // the user hasn't typed anything yet
           selectedToken && // a token is currently selected
           studioCtx && // studioCtx if defined
-          isStyleTokenEditable(studioCtx.site, selectedToken, vsh) && // the token is editable
+          isStyleTokenEditableOrOverridable(selectedToken, vsh) && // the token is editable
           ({ type: "edit-token", token: selectedToken } as const),
 
         // show tokens that match name or value
         ...naturalSort(
           tokens
-            .filter((t) => matcher.matches(t.value) || matcher.matches(t.name))
+            .filter(
+              (t) =>
+                (t.value && matcher.matches(t.value)) || matcher.matches(t.name)
+            )
             .map((token) => ({ type: "token", token } as const)),
           (item) => item.token.name
         ),
@@ -453,7 +464,7 @@ export const DimTokenSpinner = observer(
             } else if (selectedItem.type === "clear") {
               tryOnChange(undefined, "selected");
             } else if (selectedItem.type === "token") {
-              onChange(mkTokenRef(selectedItem.token), "selected");
+              onChange(mkTokenRef(selectedItem.token.base), "selected");
             } else if (selectedItem.type === "add-token") {
               spawn(
                 ensure(
@@ -482,7 +493,7 @@ export const DimTokenSpinner = observer(
                     });
 
                   onChange(mkTokenRef(_newToken), "selected");
-                  setNewToken(_newToken);
+                  setNewToken(new MutableStyleToken(_newToken));
                 })
               );
             } else if (selectedItem.type === "edit-token") {
@@ -643,18 +654,22 @@ export const DimTokenSpinner = observer(
               }),
 
               style: showCurrentToken ? { width: 0, padding: 0 } : undefined,
-              "data-test-id": props["data-test-id"] as any,
+              "data-test-id": props["data-test-id"] ?? `${tokenType}-input`,
               "data-plasmic-prop": props["data-plasmic-prop"],
             }}
             existingTokensContainer={{
               props: {
                 key: `${parsedValues
-                  .map((val) => (isKnownStyleToken(val) ? val.uuid : val))
+                  .map((val) => (typeof val === "string" ? val : val.uuid))
                   .join("-")}`,
               },
             }}
             existingTokens={parsedValues.map((val) =>
-              isKnownStyleToken(val) ? (
+              typeof val === "string" ? (
+                <div key={val} className="text-ellipsis">
+                  {val}
+                </div>
+              ) : (
                 <Chip
                   key={val.uuid}
                   tooltip={`${val.name} (${derefToken(
@@ -665,10 +680,6 @@ export const DimTokenSpinner = observer(
                 >
                   {val.name}
                 </Chip>
-              ) : (
-                <div key={val} className="text-ellipsis">
-                  {val}
-                </div>
               )
             )}
             root={{
@@ -791,7 +802,7 @@ export const DimTokenSpinner = observer(
 
 interface SelectTokenItem {
   type: "token";
-  token: StyleToken;
+  token: FinalStyleToken;
 }
 
 interface AddTokenItem {
@@ -800,7 +811,7 @@ interface AddTokenItem {
 
 interface EditTokenItem {
   type: "edit-token";
-  token: StyleToken;
+  token: FinalStyleToken;
 }
 
 interface SetValueItem {

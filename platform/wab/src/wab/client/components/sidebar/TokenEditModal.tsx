@@ -2,20 +2,20 @@ import { FontFamilyTokenEditModal } from "@/wab/client/components/sidebar/FontFa
 import { GeneralTokenEditModal } from "@/wab/client/components/sidebar/GeneralTokenEditModal";
 import { ColorTokenPopup } from "@/wab/client/components/sidebar/token-controls";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { TokenType } from "@/wab/commons/StyleToken";
+import { FinalStyleToken, TokenType } from "@/wab/commons/StyleToken";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
-import { StyleToken } from "@/wab/shared/model/classes";
 import { observer } from "mobx-react";
 import * as React from "react";
 
 export const TokenEditModal = observer(function TokenEditModal(props: {
   studioCtx: StudioCtx;
-  token: StyleToken;
+  token: FinalStyleToken;
   onClose: () => void;
   autoFocusName?: boolean;
   vsh?: VariantedStylesHelper;
 }) {
   const { studioCtx, token, onClose, autoFocusName, vsh } = props;
+
   return (
     <>
       {token.type === TokenType.Color && (

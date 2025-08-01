@@ -13,13 +13,25 @@ import { Icon } from "@/wab/client/components/widgets/Icon";
 import { SimpleTextbox } from "@/wab/client/components/widgets/SimpleTextbox";
 import TokenIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Token";
 import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { TokenType, TokenValue } from "@/wab/commons/StyleToken";
+import {
+  FinalStyleToken,
+  isTokenEditable,
+  isTokenOverridable,
+  MutableStyleToken,
+  OverrideableStyleToken,
+  TokenType,
+  TokenValue,
+  tryParseTokenRef,
+} from "@/wab/commons/StyleToken";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import { TokenValueResolver } from "@/wab/shared/cached-selectors";
-import { ensure, spawn } from "@/wab/shared/common";
-import { allColorTokens } from "@/wab/shared/core/sites";
-import { maybeTokenRefCycle } from "@/wab/shared/core/styles";
-import { StyleToken } from "@/wab/shared/model/classes";
+import { assert, ensure, spawn } from "@/wab/shared/common";
+import {
+  allColorTokens,
+  allTokensOfType,
+  directDepStyleTokens,
+} from "@/wab/shared/core/sites";
+import { Site, StyleToken } from "@/wab/shared/model/classes";
 import { canCreateAlias } from "@/wab/shared/ui-config-utils";
 import { Menu, notification } from "antd";
 import cn from "classnames";
@@ -70,7 +82,7 @@ export interface TokenFolder {
 export interface TokenData {
   type: "token";
   key: string;
-  token: StyleToken;
+  token: FinalStyleToken;
   value: TokenValue;
   importedFrom?: string;
 }
@@ -81,7 +93,8 @@ export const TokenControlsContext = React.createContext<{
   vsh: VariantedStylesHelper | undefined;
   resolver: TokenValueResolver;
   onDuplicate: (token: StyleToken) => Promise<void>;
-  onSelect: (token: StyleToken) => void;
+  onSelect: (token: FinalStyleToken) => void;
+  onDeleteOverride: (token: OverrideableStyleToken) => void;
   onAdd: (tokenType: TokenType, folderName?: string) => Promise<void>;
   expandedHeaders: Set<TokenType>;
   setExpandedHeaders: React.Dispatch<React.SetStateAction<Set<TokenType>>>;
@@ -94,7 +107,7 @@ export function useTokenControls() {
   );
 }
 
-export const isTokenReadOnly = (studioCtx: StudioCtx) => {
+export const isTokenPanelReadOnly = (studioCtx: StudioCtx) => {
   const uiConfig = studioCtx.getCurrentUiConfig();
   const canCreateToken = canCreateAlias(uiConfig, "token");
 
@@ -104,12 +117,21 @@ export const isTokenReadOnly = (studioCtx: StudioCtx) => {
 };
 
 export const newTokenValueAllowed = (
-  token: StyleToken,
-  tokens: StyleToken[],
+  token: FinalStyleToken,
+  site: Site,
   newValue: string,
   vsh?: VariantedStylesHelper
 ) => {
-  const maybeCycle = maybeTokenRefCycle(token, tokens, newValue, vsh);
+  const allTokensOfSameType = allTokensOfType(site, token.type, {
+    includeDeps: "direct",
+  });
+
+  const maybeCycle = maybeTokenRefCycle(
+    token,
+    allTokensOfSameType,
+    newValue,
+    vsh
+  );
   if (!maybeCycle) {
     return true;
   }
@@ -133,35 +155,62 @@ export const newTokenValueAllowed = (
   return false;
 };
 
+function maybeTokenRefCycle(
+  token: FinalStyleToken,
+  tokens: FinalStyleToken[],
+  newValue: string,
+  vsh?: VariantedStylesHelper
+): string[] | undefined {
+  const visited = new Set<StyleToken>([token.base]);
+  let curValue = newValue;
+  vsh = vsh ?? new VariantedStylesHelper();
+  // eslint-disable-next-line no-constant-condition
+  while (true) {
+    const referredToken = tryParseTokenRef(curValue, tokens);
+    if (!referredToken) {
+      return undefined;
+    }
+    if (visited.has(referredToken.base)) {
+      // It must be the case the the cycle end up referring token itself;
+      // otherwise, we would have detected the cycle beforehand.
+      assert(
+        referredToken.base === token.base,
+        () =>
+          `token ${token.name} (${token.uuid}) is cyclically referencing ${referredToken.name} (${referredToken.uuid})`
+      );
+      const cycle = [...visited].map((t) => t.name);
+      cycle.push(referredToken.name);
+      return cycle;
+    }
+    visited.add(referredToken.base);
+    curValue = vsh.getActiveTokenValue(referredToken);
+  }
+}
+
 const getLeftPadding = (indentMultiplier: number) => {
   return indentMultiplier * 16 + 6;
 };
 
 export const TokenRow = observer(function TokenRow(props: {
-  token: StyleToken;
+  token: FinalStyleToken;
   tokenValue: TokenValue;
   matcher: Matcher;
-  isImported: boolean;
   indentMultiplier: number;
 }) {
-  const { token, tokenValue, matcher, isImported, indentMultiplier } = props;
+  const { token, tokenValue, matcher, indentMultiplier } = props;
   const studioCtx = useStudioCtx();
   const multiAssetsActions = useMultiAssetsActions();
-  const { vsh, resolver, onDuplicate, onSelect } = useTokenControls();
+  const { vsh, resolver, onDuplicate, onSelect, onDeleteOverride } =
+    useTokenControls();
 
-  const uiConfig = studioCtx.getCurrentUiConfig();
-  const canCreateToken = canCreateAlias(uiConfig, "token");
-
-  const readOnly =
-    isImported ||
-    token.isRegistered ||
-    !canCreateToken ||
-    studioCtx.getLeftTabPermission("tokens") === "readable";
+  const readOnly = !isTokenEditable(token) || isTokenPanelReadOnly(studioCtx);
+  const overridable =
+    isTokenOverridable(token) && !isTokenPanelReadOnly(studioCtx);
 
   const onFindReferences = () => {
     spawn(
       studioCtx.change(({ success }) => {
-        studioCtx.findReferencesToken = token;
+        studioCtx.findReferencesToken = token.base;
         return success();
       })
     );
@@ -169,15 +218,56 @@ export const TokenRow = observer(function TokenRow(props: {
 
   const overlay = () => {
     const builder = new MenuBuilder();
+
     builder.genSection(undefined, (push) => {
       push(
         <Menu.Item key="references" onClick={() => onFindReferences()}>
           Find all references
         </Menu.Item>
       );
+      if (overridable) {
+        if (vsh?.isTargetBaseVariant() === false) {
+          push(
+            <Menu.Item key="varianted-override" onClick={() => onSelect(token)}>
+              Override global variant value
+            </Menu.Item>
+          );
+          if (token.override && !vsh?.isStyleInherited(token)) {
+            push(
+              <Menu.Item
+                key="remove-global-variant-value"
+                onClick={async () => {
+                  return studioCtx.change(({ success }) => {
+                    vsh.removeVariantedValue(token);
+                    return success();
+                  });
+                }}
+              >
+                Remove global variant override
+              </Menu.Item>
+            );
+          }
+        } else {
+          push(
+            <Menu.Item key="override" onClick={() => onSelect(token)}>
+              Override value
+            </Menu.Item>
+          );
+          if (token instanceof OverrideableStyleToken && token.override) {
+            push(
+              <Menu.Item
+                key="remove-override"
+                onClick={() => onDeleteOverride(token)}
+              >
+                Remove override
+              </Menu.Item>
+            );
+          }
+        }
+      }
       if (!readOnly) {
         push(
-          <Menu.Item key="clone" onClick={() => onDuplicate(token)}>
+          <Menu.Item key="clone" onClick={() => onDuplicate(token.base)}>
             Duplicate
           </Menu.Item>
         );
@@ -192,8 +282,9 @@ export const TokenRow = observer(function TokenRow(props: {
           <Menu.Item
             key="remove-global-variant-value"
             onClick={async () => {
-              return studioCtx.changeUnsafe(() => {
+              return studioCtx.change(({ success }) => {
                 vsh.removeVariantedValue(token);
+                return success();
               });
             }}
           >
@@ -204,16 +295,16 @@ export const TokenRow = observer(function TokenRow(props: {
 
       builder.genSection(undefined, () => {
         const pushTokens = (
-          tokens: StyleToken[],
+          tokens: FinalStyleToken[],
           push_: (x: React.ReactElement) => void
         ) => {
           for (const tok of sortBy(tokens, (t) => t.name)) {
-            if (tok !== token) {
+            if (tok.uuid !== token.uuid) {
               push_(
                 <Menu.Item
                   key={tok.uuid}
                   onClick={() => {
-                    spawn(studioCtx.siteOps().swapTokens(token, tok));
+                    spawn(studioCtx.siteOps().swapTokens(token.base, tok.base));
                   }}
                 >
                   <div className="flex-row flex-vcenter gap-sm">
@@ -233,14 +324,13 @@ export const TokenRow = observer(function TokenRow(props: {
           }
         };
         builder.genSub("Replace all usages of this token with...", (push2) => {
-          pushTokens(
-            studioCtx.site.styleTokens.filter((t) => t.type === token.type),
-            push2
-          );
+          pushTokens(allTokensOfType(studioCtx.site, token.type), push2);
           for (const dep of studioCtx.site.projectDependencies) {
             builder.genSection(`Imported from "${dep.name}"`, (push3) => {
               pushTokens(
-                dep.site.styleTokens.filter((t) => t.type === token.type),
+                directDepStyleTokens(studioCtx.site, dep.site).filter(
+                  (t) => t.type === token.type
+                ),
                 push3
               );
             });
@@ -264,7 +354,7 @@ export const TokenRow = observer(function TokenRow(props: {
             <Menu.Item
               key="delete"
               onClick={async () => {
-                await studioCtx.siteOps().tryDeleteTokens([token]);
+                await studioCtx.siteOps().tryDeleteTokens([token.base]);
               }}
             >
               Delete
@@ -344,7 +434,7 @@ export const TokenFolderRow = observer(function TokenFolderRow(
   const { folder, matcher, indentMultiplier, isOpen, toggleExpand } = props;
   const { onAddToken, onDeleteFolder, onFolderRenamed } = folder.actions;
   const studioCtx = useStudioCtx();
-  const readOnly = isTokenReadOnly(studioCtx);
+  const readOnly = isTokenPanelReadOnly(studioCtx);
   const [renaming, setRenaming] = React.useState(false);
 
   return (
@@ -397,12 +487,11 @@ export const TokenFolderRow = observer(function TokenFolderRow(
 });
 
 export const ColorTokenPopup = observer(function ColorTokenPopup(props: {
-  token: StyleToken;
+  token: FinalStyleToken;
   studioCtx: StudioCtx;
   show: boolean;
   onClose: () => void;
   autoFocusName?: boolean;
-  readOnly?: boolean;
   vsh?: VariantedStylesHelper;
 }) {
   const {
@@ -411,16 +500,13 @@ export const ColorTokenPopup = observer(function ColorTokenPopup(props: {
     show,
     onClose,
     autoFocusName,
-    readOnly,
-    vsh = new VariantedStylesHelper(),
+    vsh = new VariantedStylesHelper(props.studioCtx.site),
   } = props;
   return (
     <ColorSidebarPopup
       color={vsh.getActiveTokenValue(token)}
       onChange={async (newColor) => {
-        if (
-          newTokenValueAllowed(token, studioCtx.site.styleTokens, newColor, vsh)
-        ) {
+        if (newTokenValueAllowed(token, studioCtx.site, newColor, vsh)) {
           await studioCtx.changeUnsafe(() => vsh.updateToken(token, newColor));
         }
       }}
@@ -429,7 +515,7 @@ export const ColorTokenPopup = observer(function ColorTokenPopup(props: {
       autoFocus={!autoFocusName}
       colorTokens={allColorTokens(studioCtx.site, {
         includeDeps: "direct",
-      }).filter((t) => t !== token)}
+      }).filter((t) => t.uuid !== token.uuid)}
       popupTitle={
         <>
           <Icon
@@ -440,10 +526,12 @@ export const ColorTokenPopup = observer(function ColorTokenPopup(props: {
           <SimpleTextbox
             defaultValue={token.name}
             onValueChange={(name) =>
-              studioCtx.changeUnsafe(() =>
-                studioCtx.tplMgr().renameToken(token, name)
-              )
+              studioCtx.change(({ success }) => {
+                studioCtx.tplMgr().renameToken(token.base, name);
+                return success();
+              })
             }
+            readOnly={!(token instanceof MutableStyleToken)}
             placeholder={"(unnamed token)"}
             autoFocus={autoFocusName}
             selectAllOnFocus={true}

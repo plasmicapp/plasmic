@@ -12,15 +12,15 @@ import StyleToggleButton from "@/wab/client/components/style-controls/StyleToggl
 import StyleToggleButtonGroup from "@/wab/client/components/style-controls/StyleToggleButtonGroup";
 import DimTokenSpinner from "@/wab/client/components/widgets/DimTokenSelector";
 import { TokenType } from "@/wab/commons/StyleToken";
-import { siteToAllTokens } from "@/wab/shared/cached-selectors";
+import { siteToAllTokensAndOverrides } from "@/wab/shared/cached-selectors";
+import { allImageAssets, allMixins } from "@/wab/shared/core/sites";
+import { CssVarResolver } from "@/wab/shared/core/styles";
 import {
   GRID_DEFAULT_TEMPLATE,
   isFlexibleSize,
   isTrackTemplate,
   parseGridCssPropsToSpec,
 } from "@/wab/shared/grid-utils";
-import { allImageAssets, allMixins } from "@/wab/shared/core/sites";
-import { CssVarResolver } from "@/wab/shared/core/styles";
 import { observer } from "mobx-react";
 import React from "react";
 
@@ -32,7 +32,7 @@ export const GridControls = observer(function GridControls(props: {
   const studioCtx = sc.studioCtx();
   const { site } = studioCtx;
   const resolver = new CssVarResolver(
-    siteToAllTokens(site),
+    siteToAllTokensAndOverrides(site),
     allMixins(site, { includeDeps: "all" }),
     allImageAssets(site, { includeDeps: "all" }),
     site.activeTheme

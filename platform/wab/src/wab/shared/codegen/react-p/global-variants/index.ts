@@ -4,7 +4,7 @@ import {
   makeGlobalVariantGroupUseName,
   makeUniqueUseScreenVariantsName,
 } from "@/wab/shared/codegen/variants";
-import { allStyleTokens } from "@/wab/shared/core/sites";
+import { allStyleTokensAndOverrides } from "@/wab/shared/core/sites";
 import { DevFlagsType } from "@/wab/shared/devflags";
 import {
   Component,
@@ -19,6 +19,7 @@ import {
   VariantCombo,
   VariantGroupType,
 } from "@/wab/shared/Variants";
+import { uniqBy } from "lodash";
 
 export function makeGlobalVariantComboChecker(_site: Site) {
   const checked = new Set<Variant>();
@@ -96,8 +97,11 @@ export function getUsedGlobalVariantGroups(
  * All codegen'd React components in the given site must read from these global variants' context to apply token CSS changes (even though they may not use the tokens directly).
  */
 export function getContextGlobalVariantsWithVariantedTokens(site: Site) {
-  return allStyleTokens(site, { includeDeps: "all" })
-    .map((t) => t.variantedValues.flatMap((v) => v.variants))
-    .flat()
-    .filter((v) => v.parent && !isMediaQueryVariantGroup(v.parent));
+  return uniqBy(
+    allStyleTokensAndOverrides(site, { includeDeps: "all" })
+      .map((t) => t.variantedValues.flatMap((v) => v.variants))
+      .flat()
+      .filter((v) => v.parent && !isMediaQueryVariantGroup(v.parent)),
+    (v) => v.uuid
+  );
 }

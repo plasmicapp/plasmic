@@ -1,7 +1,11 @@
 import {
+  FinalStyleToken,
+  MutableStyleToken,
   TokenType,
+  isTokenOverridable,
   mkTokenRef,
   replaceAllTokenRefs,
+  toFinalStyleToken,
 } from "@/wab/commons/StyleToken";
 import { ArenaType } from "@/wab/shared/ApiSchema";
 import {
@@ -20,6 +24,7 @@ import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import {
   isGlobalVariant,
   isGlobalVariantGroup,
+  isMediaQueryVariantGroup,
   mkBaseVariant,
 } from "@/wab/shared/Variants";
 import {
@@ -1788,11 +1793,12 @@ export function createDefaultTheme() {
 
 export function allGlobalVariants(
   site: Site,
-  opts: { includeDeps?: DependencyWalkScope } = {}
+  opts: {
+    includeDeps?: DependencyWalkScope;
+    excludeMediaQuery?: boolean;
+  } = {}
 ): Variant[] {
-  return allGlobalVariantGroups(site, {
-    includeDeps: opts.includeDeps,
-  }).flatMap((vg) => vg.variants);
+  return allGlobalVariantGroups(site, opts).flatMap((vg) => vg.variants);
 }
 
 export function allGlobalVariantGroups(
@@ -1801,6 +1807,7 @@ export function allGlobalVariantGroups(
     includeDeps?: DependencyWalkScope;
     excludeEmpty?: boolean;
     excludeHostLessPackages?: boolean;
+    excludeMediaQuery?: boolean;
   } = {}
 ): GlobalVariantGroup[] {
   let res = [...site.globalVariantGroups];
@@ -1815,6 +1822,9 @@ export function allGlobalVariantGroups(
   }
   if (opts.excludeEmpty) {
     res = res.filter((x) => x.variants.length > 0);
+  }
+  if (opts.excludeMediaQuery) {
+    res = res.filter((vg) => !isMediaQueryVariantGroup(vg));
   }
   return res;
 }
@@ -1910,28 +1920,55 @@ export function allComponents(
   return components;
 }
 
+export function directDepStyleTokens(
+  site: Site,
+  depSite: Site
+): FinalStyleToken[] {
+  return localStyleTokens(depSite).map((t) => toFinalStyleToken(t, site));
+}
+
+export function localStyleTokenOverrides(site: Site) {
+  return [...site.styleTokenOverrides];
+}
+
 export function localStyleTokens(site: Site) {
   return [...site.styleTokens];
+}
+
+export function allStyleTokenOverridesForDep(site: Site, depSite: Site) {
+  const depTokens = allStyleTokensDict(depSite);
+  return site.styleTokenOverrides.filter((o) => depTokens[o.token.uuid]);
+}
+
+export function allStyleTokensAndOverrides(
+  site: Site,
+  opts: { includeDeps?: DependencyWalkScope } = {}
+): FinalStyleToken[] {
+  return allStyleTokens(site, opts).map((token) =>
+    toFinalStyleToken(token, site)
+  );
 }
 
 export function allStyleTokens(
   site: Site,
   opts: { includeDeps?: DependencyWalkScope } = {}
 ) {
-  const tokens = localStyleTokens(site);
+  const allTokens = localStyleTokens(site);
+
   if (opts.includeDeps) {
-    tokens.push(
+    allTokens.push(
       ...walkDependencyTree(site, opts.includeDeps).flatMap(
         (d) => d.site.styleTokens
       )
     );
   }
-  return tokens;
+
+  return allTokens;
 }
 
 export function allStyleTokensDict(
   site: Site,
-  opts: { includeDeps?: DependencyWalkScope }
+  opts: { includeDeps?: DependencyWalkScope } = {}
 ) {
   return keyBy(allStyleTokens(site, opts), (t) => t.uuid);
 }
@@ -1939,7 +1976,7 @@ export function allStyleTokensDict(
 export function allColorTokens(
   site: Site,
   opts: { includeDeps?: DependencyWalkScope } = {}
-): StyleToken[] {
+): FinalStyleToken[] {
   return allTokensOfType(site, TokenType.Color, opts);
 }
 
@@ -1947,9 +1984,10 @@ export function allTokensOfType(
   site: Site,
   tokenType: TokenType,
   opts: { includeDeps?: DependencyWalkScope } = {}
-): StyleToken[] {
-  const styleTokens = allStyleTokens(site, opts);
-  return styleTokens.filter((t) => t.type === tokenType);
+): FinalStyleToken[] {
+  return allStyleTokensAndOverrides(site, opts).filter(
+    (t) => t.type === tokenType
+  );
 }
 
 export function localMixins(site: Site) {
@@ -2030,14 +2068,13 @@ export function isEditable(
   );
 }
 
-export function isStyleTokenEditable(
-  site: Site,
-  styleToken: StyleToken,
+export function isStyleTokenEditableOrOverridable(
+  token: FinalStyleToken,
   vsh: VariantedStylesHelper | undefined
 ): boolean {
   return (
-    !styleToken.isRegistered &&
-    localStyleTokens(site).includes(styleToken) &&
+    !token.isRegistered &&
+    (token instanceof MutableStyleToken || isTokenOverridable(token)) &&
     (vsh === undefined || vsh.canUpdateToken())
   );
 }

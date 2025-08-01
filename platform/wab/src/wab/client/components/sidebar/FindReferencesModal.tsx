@@ -9,9 +9,11 @@ import ComponentIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Compone
 import MixinIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Mixin";
 import TokenIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Token";
 import PlasmicFindReferencesModal from "@/wab/client/plasmic/plasmic_kit_find_references_modal/PlasmicFindReferencesModal";
+import { DefaultReferenceItemProps } from "@/wab/client/plasmic/plasmic_kit_find_references_modal/PlasmicReferenceItem";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { FinalStyleToken, toFinalStyleToken } from "@/wab/commons/StyleToken";
 import { FRAME_LOWER } from "@/wab/shared/Labels";
-import { ensure, spawn } from "@/wab/shared/common";
+import { ensure, spawn, unexpected } from "@/wab/shared/common";
 import {
   getComponentDisplayName,
   isPageComponent,
@@ -28,8 +30,11 @@ import {
 import {
   ArenaFrame,
   Component,
+  isKnownStyleToken,
+  isKnownStyleTokenOverride,
   Mixin,
   StyleToken,
+  StyleTokenOverride,
 } from "@/wab/shared/model/classes";
 import { Menu } from "antd";
 import L, { sortBy } from "lodash";
@@ -37,24 +42,24 @@ import { observer } from "mobx-react";
 import * as React from "react";
 import { VariableSizeList } from "react-window";
 
-const enum ItemType {
-  page = "page",
-  component = "component",
-  token = "token",
-  mixin = "mixin",
-  theme = "theme",
-  frame = "frame",
-}
+type ItemType = DefaultReferenceItemProps["type"];
 
 export interface UsageSummary {
   components: Component[];
   frames: ArenaFrame[];
   mixins?: Mixin[];
-  tokens?: StyleToken[];
+  styleTokens?: StyleToken[];
+  styleTokenOverrides?: StyleTokenOverride[];
   themes?: DefaultStyle[];
 }
 
-type Reference = Component | StyleToken | Mixin | DefaultStyle | ArenaFrame;
+type Reference =
+  | Component
+  | StyleToken
+  | StyleTokenOverride
+  | Mixin
+  | DefaultStyle
+  | ArenaFrame;
 
 type Item = {
   displayName: string;
@@ -65,21 +70,21 @@ type Item = {
 };
 
 function typeToIcon(type: ItemType) {
-  if (type === ItemType.component) {
+  if (type === "component") {
     return (
       <Icon
         icon={ComponentIcon}
         className="component-fg custom-svg-icon--lg monochrome-exempt"
       />
     );
-  } else if (type === ItemType.mixin) {
+  } else if (type === "mixin") {
     return (
       <Icon
         icon={MixinIcon}
         className="mixin-fg custom-svg-icon--lg monochrome-exempt"
       />
     );
-  } else if (type === ItemType.token) {
+  } else if (type === "token") {
     return (
       <Icon
         icon={TokenIcon}
@@ -102,9 +107,9 @@ export const FindReferencesModal = observer(
     const { usageSummary, studioCtx, icon, displayName } = props;
     const currentArena = studioCtx.currentArena;
 
-    const [editToken, setEditToken] = React.useState<StyleToken | undefined>(
-      undefined
-    );
+    const [editToken, setEditToken] = React.useState<
+      FinalStyleToken | undefined
+    >(undefined);
     const [editMixin, setEditMixin] = React.useState<Mixin | undefined>(
       undefined
     );
@@ -115,7 +120,7 @@ export const FindReferencesModal = observer(
     >(undefined);
 
     const toItem = (type: ItemType, item: Reference): Item => {
-      if (type === ItemType.component || type === ItemType.page) {
+      if (type === "component" || type === "page") {
         const component = item as Component;
         const arena = studioCtx.getDedicatedArena(component);
         return {
@@ -130,11 +135,11 @@ export const FindReferencesModal = observer(
             ),
           isSelected: arena === currentArena,
           getUsageSummary:
-            type === ItemType.component
+            type === "component"
               ? () => extractComponentUsages(studioCtx.site, component)
               : undefined,
         };
-      } else if (type === ItemType.frame) {
+      } else if (type === "frame") {
         const frame = item as ArenaFrame;
         const arena = getArenaFromFrame(studioCtx.site, frame);
         return {
@@ -149,15 +154,20 @@ export const FindReferencesModal = observer(
             ),
           isSelected: arena === currentArena,
         };
-      } else if (type === ItemType.token) {
-        const token = item as StyleToken;
+      } else if (type === "token") {
+        const token = isKnownStyleToken(item)
+          ? toFinalStyleToken(item, studioCtx.site)
+          : isKnownStyleTokenOverride(item)
+          ? toFinalStyleToken(item.token, studioCtx.site)
+          : unexpected();
         return {
           displayName: token.name,
           type: type,
           onClick: () => setEditToken(token),
-          getUsageSummary: () => extractTokenUsages(studioCtx.site, token)[1],
+          getUsageSummary: () =>
+            extractTokenUsages(studioCtx.site, token.base)[1],
         };
-      } else if (type === ItemType.mixin) {
+      } else if (type === "mixin") {
         const mixin = item as Mixin;
         return {
           displayName: mixin.name,
@@ -165,7 +175,7 @@ export const FindReferencesModal = observer(
           onClick: () => setEditMixin(mixin),
           getUsageSummary: () => extractMixinUsages(studioCtx.site, mixin)[1],
         };
-      } else if (type === ItemType.theme) {
+      } else if (type === "theme") {
         const theme = item as DefaultStyle;
         return {
           displayName: theme.selector
@@ -188,18 +198,16 @@ export const FindReferencesModal = observer(
       return [...(_items.length ? ["separator"] : []), ..._items];
     };
     const items = [
+      ...getSection("page", usageSummary.components.filter(isPageComponent)),
       ...getSection(
-        ItemType.page,
-        usageSummary.components.filter(isPageComponent)
-      ),
-      ...getSection(
-        ItemType.component,
+        "component",
         usageSummary.components.filter((c) => !isPageComponent(c))
       ),
-      ...getSection(ItemType.frame, usageSummary.frames),
-      ...getSection(ItemType.token, usageSummary.tokens ?? []),
-      ...getSection(ItemType.mixin, usageSummary.mixins ?? []),
-      ...getSection(ItemType.theme, usageSummary.themes ?? []),
+      ...getSection("frame", usageSummary.frames),
+      ...getSection("token", usageSummary.styleTokens ?? []),
+      ...getSection("token", usageSummary.styleTokenOverrides ?? []),
+      ...getSection("mixin", usageSummary.mixins ?? []),
+      ...getSection("theme", usageSummary.themes ?? []),
     ];
 
     const itemSizer = (index: number) => {

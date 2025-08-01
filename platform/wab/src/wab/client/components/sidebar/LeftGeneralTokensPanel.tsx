@@ -25,6 +25,9 @@ import Select from "@/wab/client/components/widgets/Select";
 import { PlasmicLeftGeneralTokensPanel } from "@/wab/client/plasmic/plasmic_kit_left_pane/PlasmicLeftGeneralTokensPanel";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import {
+  FinalStyleToken,
+  MutableStyleToken,
+  OverrideableStyleToken,
   TokenType,
   TokenValue,
   tokenTypeDefaults,
@@ -32,9 +35,13 @@ import {
   tokenTypes,
 } from "@/wab/commons/StyleToken";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
-import { isScreenVariant } from "@/wab/shared/Variants";
-import { ensure, unexpected, unreachable } from "@/wab/shared/common";
-import { isHostLessPackage } from "@/wab/shared/core/sites";
+import { ensure, spawn, unexpected, unreachable } from "@/wab/shared/common";
+import {
+  allGlobalVariants,
+  allStyleTokensAndOverrides,
+  directDepStyleTokens,
+  isHostLessPackage,
+} from "@/wab/shared/core/sites";
 import {
   Folder as InternalFolder,
   createFolderTreeStructure,
@@ -51,9 +58,9 @@ import { observer } from "mobx-react";
 import * as React from "react";
 
 interface TokenToPanelRowProps {
-  item: StyleToken | InternalFolder<StyleToken>;
+  item: FinalStyleToken | InternalFolder<FinalStyleToken>;
   tokenType: TokenType;
-  getTokenValue: (token: StyleToken) => TokenValue;
+  getTokenValue: (token: FinalStyleToken) => TokenValue;
   actions: TokenFolderActions;
   dep?: ProjectDependency;
 }
@@ -107,7 +114,7 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
     undefined
   );
 
-  const [editToken, setEditToken] = React.useState<StyleToken | undefined>(
+  const [editToken, setEditToken] = React.useState<FinalStyleToken | undefined>(
     undefined
   );
 
@@ -119,7 +126,7 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
   const resolver = useClientTokenResolver();
 
   const getTokenValue = React.useCallback(
-    (token: StyleToken) => {
+    (token: FinalStyleToken) => {
       let value = resolver(token, vsh);
       if (token.type === TokenType.Color) {
         value = Chroma.stringify(value) as TokenValue;
@@ -170,7 +177,7 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
           value: initialValue,
         });
         setJustAdded(token);
-        setEditToken(token);
+        setEditToken(new MutableStyleToken(token));
         return success();
       });
     },
@@ -194,7 +201,7 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
           break;
         }
         case "token":
-          tokens.push(item.token);
+          tokens.push(item.token.base);
           break;
         case "header":
           break;
@@ -251,7 +258,7 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
       await studioCtx.change(({ success }) => {
         const newToken = studioCtx.tplMgr().duplicateToken(token);
         setJustAdded(newToken);
-        setEditToken(newToken);
+        setEditToken(new MutableStyleToken(newToken));
         return success();
       });
     },
@@ -259,15 +266,31 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
   );
 
   const onSelect = React.useCallback(
-    (token: StyleToken) => {
+    (token: FinalStyleToken) => {
       setEditToken(token);
     },
     [setEditToken]
   );
 
-  const nonScreenGlobalVariants = studioCtx.site.globalVariantGroups.flatMap(
-    (variantGroup) => variantGroup.variants.filter((v) => !isScreenVariant(v))
+  const onDeleteOverride = React.useCallback(
+    (token: OverrideableStyleToken) => {
+      spawn(
+        studioCtx.change(({ success }) => {
+          if (!vsh || vsh.isTargetBaseVariant()) {
+            token.removeValue();
+          } else {
+            vsh.removeVariantedValue(token);
+          }
+          return success();
+        })
+      );
+    },
+    [vsh]
   );
+
+  const contextGlobalVariants = allGlobalVariants(studioCtx.site, {
+    excludeMediaQuery: true,
+  });
 
   const handleGlobalVariantChange = (variantId) => {
     if (variantId === "base") {
@@ -275,9 +298,9 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
       setIsTargeting(false);
     } else {
       const globalVariants = [
-        nonScreenGlobalVariants.some((v) => v.uuid === variantId)
+        contextGlobalVariants.some((v) => v.uuid === variantId)
           ? ensure(
-              nonScreenGlobalVariants.find((v) => v.uuid === variantId),
+              contextGlobalVariants.find((v) => v.uuid === variantId),
               () => `Picked unknown screen variant`
             )
           : ensure(
@@ -298,10 +321,16 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
     }
   };
 
-  const tokensByType = groupBy(studioCtx.site.styleTokens, (t) => t.type);
+  const tokensByType = groupBy(
+    allStyleTokensAndOverrides(studioCtx.site),
+    (t) => t.type
+  );
 
   const tokenSectionItems = (tokenType: TokenType) => {
-    const makeTokensItems = (tokens: StyleToken[], dep?: ProjectDependency) => {
+    const makeTokensItems = (
+      tokens: FinalStyleToken[],
+      dep?: ProjectDependency
+    ) => {
       tokens = naturalSort(tokens, (token) => getFolderTrimmed(token.name));
       const tokenTree = createFolderTreeStructure(tokens, {
         pathPrefix: tokenType,
@@ -334,8 +363,10 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
             // already show up in the RegisteredTokens section.
             ...makeTokensItems(
               (isHostLessPackage(dep.site)
-                ? dep.site.styleTokens
-                : dep.site.styleTokens.filter((t) => !t.isRegistered)
+                ? directDepStyleTokens(studioCtx.site, dep.site)
+                : directDepStyleTokens(studioCtx.site, dep.site).filter(
+                    (t) => !t.isRegistered
+                  )
               ).filter((t) => t.type === tokenType),
               dep
             ),
@@ -385,7 +416,7 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
   };
 
   const tokensContent = () => {
-    const selectableTokens = studioCtx.site.styleTokens
+    const selectableTokens = allStyleTokensAndOverrides(studioCtx.site)
       .filter((t) => {
         let resolved = resolver(t, vsh);
         if (t.type === TokenType.Color) {
@@ -394,7 +425,7 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
         return (
           (matcher.matches(t.name) ||
             matcher.matches(resolved) ||
-            justAdded === t) &&
+            justAdded === t.base) &&
           !t.isRegistered
         );
       })
@@ -425,6 +456,7 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
             vsh,
             resolver,
             onDuplicate,
+            onDeleteOverride,
             onSelect,
             onAdd: onAddToken,
             expandedHeaders,
@@ -493,6 +525,7 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
           },
           expandProps: {
             onClick: expandAll,
+            "data-test-id": "tokens-panel-expand-all",
           },
           collapseProps: {
             onClick: collapseAll,
@@ -501,6 +534,7 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
         isTargeting={isTargeting}
         globalVariantSelect={{
           onChange: (e) => handleGlobalVariantChange(e),
+          "data-test-id": "global-variant-select",
           children: (
             <>
               <Select.Option value="base">Base</Select.Option>
@@ -516,9 +550,9 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
                     )}
                   </Select.OptionGroup>
                 )}
-              {nonScreenGlobalVariants.length > 0 && (
+              {contextGlobalVariants.length > 0 && (
                 <Select.OptionGroup title="Global Variants">
-                  {nonScreenGlobalVariants.map((variant) => (
+                  {contextGlobalVariants.map((variant) => (
                     <Select.Option value={variant.uuid} key={variant.uuid}>
                       {variant.name}
                     </Select.Option>
@@ -528,7 +562,10 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
             </>
           ),
         }}
-        content={<>{tokensContent()}</>}
+        content={{
+          children: <>{tokensContent()}</>,
+          "data-test-id": "tokens-panel-content",
+        }}
       />
 
       {editToken && (
@@ -539,7 +576,7 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
             setEditToken(undefined);
             setJustAdded(undefined);
           }}
-          autoFocusName={justAdded === editToken}
+          autoFocusName={justAdded === editToken.base}
           vsh={vsh}
         />
       )}
@@ -576,7 +613,6 @@ const TokenTreeRow = (props: RenderElementProps<TokenPanelRow>) => {
           token={value.token}
           tokenValue={value.value}
           matcher={treeState.matcher}
-          isImported={!!value.importedFrom}
           indentMultiplier={treeState.level - 1}
         />
       );

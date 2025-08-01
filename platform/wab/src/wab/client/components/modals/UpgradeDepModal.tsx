@@ -19,6 +19,7 @@ import { extractUsedMixinsForComponents } from "@/wab/shared/codegen/mixins";
 import {
   extractUsedTokensForComponents,
   extractUsedTokensForMixins,
+  extractUsedTokensForTokenOverrides,
   extractUsedTokensForTokens,
 } from "@/wab/shared/codegen/style-tokens";
 import {
@@ -37,11 +38,7 @@ import {
   extractTransitiveDepsFromTokens,
   getTransitiveDepsFromObjs,
 } from "@/wab/shared/core/project-deps";
-import {
-  allStyleTokens,
-  createSite,
-  isHostLessPackage,
-} from "@/wab/shared/core/sites";
+import { createSite, isHostLessPackage } from "@/wab/shared/core/sites";
 import {
   isKnownComponent,
   isKnownImageAsset,
@@ -56,7 +53,6 @@ import {
 } from "@/wab/shared/site-diffs";
 import { filterUsefulDiffs } from "@/wab/shared/site-diffs/filter-useful-diffs";
 import { Alert, Form, Select } from "antd";
-import L from "lodash";
 import { observer } from "mobx-react";
 import React from "react";
 
@@ -349,21 +345,20 @@ const WarnChangeDep = observer(function WarnChangeDep_(props: {
         : undefined
     )
   );
-  const allTokensDict = L.keyBy(
-    allStyleTokens(site, { includeDeps: "all" }),
-    "uuid"
-  );
 
-  // Build a set of tokens that are directly used by local components, tokens,
-  // and mixins
+  // Build a set of tokens that are directly used by local tokens, overrides,
+  // mixins, and components
   const referencedTokens = new Set(
     // token references can come from this site's tokens, mixins, or
     // components
     [
-      ...extractUsedTokensForTokens(site.styleTokens, allTokensDict, {
+      ...extractUsedTokensForTokens(site.styleTokens, site, {
         derefTokens: false,
       }),
-      ...extractUsedTokensForMixins(site.mixins, allTokensDict, {
+      ...extractUsedTokensForTokenOverrides(site.styleTokenOverrides, site, {
+        derefTokens: false,
+      }),
+      ...extractUsedTokensForMixins(site.mixins, site, {
         derefTokens: false,
       }),
       ...extractUsedTokensForMixins(
@@ -371,7 +366,7 @@ const WarnChangeDep = observer(function WarnChangeDep_(props: {
           t.defaultStyle,
           ...t.styles.map((s) => s.style),
         ]),
-        allTokensDict,
+        site,
         {
           derefTokens: false,
         }

@@ -1,5 +1,15 @@
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import {
+  componentToDeepReferenced,
+  extractComponentVariantSettings,
+  flattenComponent,
+  siteToAllTokensAndOverrides,
+} from "@/wab/shared/cached-selectors";
+import {
+  ComponentGenHelper,
+  SiteGenHelper,
+} from "@/wab/shared/codegen/codegen-helpers";
+import {
   assert,
   ensure,
   maybe,
@@ -12,44 +22,11 @@ import {
   isCodeComponent,
   isContextCodeComponent,
 } from "@/wab/shared/core/components";
-import { $$$ } from "@/wab/shared/TplQuery";
-import {
-  VariantCombo,
-  isActiveVariantSetting,
-  isBaseVariant,
-  tryGetBaseVariantSetting,
-} from "@/wab/shared/Variants";
-import {
-  componentToDeepReferenced,
-  extractComponentVariantSettings,
-  flattenComponent,
-} from "@/wab/shared/cached-selectors";
-import {
-  ComponentGenHelper,
-  SiteGenHelper,
-} from "@/wab/shared/codegen/codegen-helpers";
-import {
-  Component,
-  Mixin,
-  ProjectDependency,
-  TplNode,
-  VariantSetting,
-  isKnownTplTag,
-} from "@/wab/shared/model/classes";
-import {
-  ChangeSummary,
-  CssVarsChangeType,
-} from "@/wab/shared/model/model-change-util";
-import {
-  getDependentVariantSettings,
-  makeVariantComboSorter,
-  sortedVariantSettings,
-} from "@/wab/shared/variant-sort";
 import {
   allComponents,
   allImageAssets,
   allMixins,
-  allStyleTokens,
+  allStyleTokensAndOverrides,
   isFrameRootTplComponent,
   isTplAttachedToSite,
 } from "@/wab/shared/core/sites";
@@ -69,6 +46,30 @@ import {
   isTplVariantable,
   tplChildren,
 } from "@/wab/shared/core/tpls";
+import {
+  Component,
+  Mixin,
+  ProjectDependency,
+  TplNode,
+  VariantSetting,
+  isKnownTplTag,
+} from "@/wab/shared/model/classes";
+import {
+  ChangeSummary,
+  CssVarsChangeType,
+} from "@/wab/shared/model/model-change-util";
+import { $$$ } from "@/wab/shared/TplQuery";
+import {
+  getDependentVariantSettings,
+  makeVariantComboSorter,
+  sortedVariantSettings,
+} from "@/wab/shared/variant-sort";
+import {
+  VariantCombo,
+  isActiveVariantSetting,
+  isBaseVariant,
+  tryGetBaseVariantSetting,
+} from "@/wab/shared/Variants";
 import { sortBy } from "lodash";
 
 // @ts-ignore
@@ -328,18 +329,15 @@ export class StyleMgr {
       if (!style) {
         style = doc.createElement("style");
         style.id = id;
-        style.textContent = styleText;
-        if (version !== undefined) {
-          style["data-version"] = version;
-        }
-        if (!frag) {
-          frag = doc.createDocumentFragment();
-        }
-        frag.appendChild(style);
-      } else if (version !== undefined && version !== style["data-version"]) {
-        style.textContent = styleText;
+      }
+      style.textContent = styleText;
+      if (version !== undefined) {
         style["data-version"] = version;
       }
+      if (!frag) {
+        frag = doc.createDocumentFragment();
+      }
+      frag.appendChild(style);
     };
 
     upsertStyleSheet("plasmic-react-web", reactWebCss);
@@ -441,7 +439,7 @@ export class StyleMgr {
     const site = this.studioCtx.site;
     const styleText = mkCssVarsRuleForCanvas(
       site,
-      allStyleTokens(this.studioCtx.site, { includeDeps: "all" }),
+      siteToAllTokensAndOverrides(this.studioCtx.site),
       allMixins(this.studioCtx.site, { includeDeps: "all" }),
       // We include local themes as well as active themes from our deps,
       // because the user can choose to activate one of those themes instead.
@@ -467,7 +465,7 @@ export class StyleMgr {
 
     const allRules: string[] = [];
 
-    const allDepTokens = allStyleTokens(site, { includeDeps: "all" });
+    const allDepTokens = allStyleTokensAndOverrides(site);
     const allDepMixins = allMixins(site, { includeDeps: "all" });
     const allDepImageAssets = allImageAssets(site, { includeDeps: "all" });
     allRules.push(

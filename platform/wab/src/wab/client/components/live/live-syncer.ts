@@ -865,7 +865,7 @@ export const createComponentOutput = computedFn(
     console.log("Generating code for", component.name);
     const siteGenHelper = new SiteGenHelper(studioCtx.site, false);
     const cssVarResolver = new CssVarResolver(
-      siteGenHelper.allStyleTokens(),
+      siteGenHelper.allStyleTokensAndOverrides(),
       siteGenHelper.allMixins(),
       siteGenHelper.allImageAssets(),
       studioCtx.site.activeTheme,

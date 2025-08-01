@@ -182,7 +182,7 @@ import {
 } from "@/wab/client/utils/tpl-client-utils";
 import {
   allGlobalVariants,
-  allStyleTokens,
+  allStyleTokensAndOverrides,
   DEFAULT_THEME_TYPOGRAPHY,
   isTplAttachedToSite,
   writeable,
@@ -2006,7 +2006,7 @@ export class ViewOps {
         let fontSize = exp.get("font-size");
         if (isTokenRef(fontSize)) {
           fontSize = derefTokenRefs(
-            allStyleTokens(this.site(), { includeDeps: "all" }),
+            allStyleTokensAndOverrides(this.site(), { includeDeps: "all" }),
             fontSize
           );
         }

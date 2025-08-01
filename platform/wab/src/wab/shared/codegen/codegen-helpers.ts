@@ -1,14 +1,17 @@
 import { DeepMap, deepMapMemoized } from "@/wab/commons/deep-map";
-import { buildObjToDepMap } from "@/wab/shared/core/project-deps";
-import { readonlyRSH } from "@/wab/shared/RuleSetHelpers";
-import {
-  isTextArgNodeOfSlot,
-  shouldWrapSlotContentInDataCtxReader,
-} from "@/wab/shared/SlotUtils";
-import { $$$ } from "@/wab/shared/TplQuery";
-import { VariantCombo, isBaseVariant } from "@/wab/shared/Variants";
 import { makeTokenRefResolver } from "@/wab/shared/cached-selectors";
-import { extractUsedTokensForTheme } from "@/wab/shared/codegen/style-tokens";
+import { buildObjToDepMap } from "@/wab/shared/core/project-deps";
+import {
+  allImageAssets,
+  allMixins,
+  allStyleTokensAndOverrides,
+} from "@/wab/shared/core/sites";
+import {
+  CssVarResolver,
+  createExpandedRuleSetMerger,
+  hasGapStyle,
+} from "@/wab/shared/core/styles";
+import { flattenTpls } from "@/wab/shared/core/tpls";
 import { getEffectiveVariantSetting } from "@/wab/shared/effective-variant-setting";
 import { makeLayoutAwareRuleSet } from "@/wab/shared/layoututils";
 import {
@@ -17,18 +20,17 @@ import {
   TplNode,
   VariantSetting,
 } from "@/wab/shared/model/classes";
+import { readonlyRSH } from "@/wab/shared/RuleSetHelpers";
+import {
+  isTextArgNodeOfSlot,
+  shouldWrapSlotContentInDataCtxReader,
+} from "@/wab/shared/SlotUtils";
+import { $$$ } from "@/wab/shared/TplQuery";
 import {
   makeVariantComboSorter,
   sortedVariantSettings,
 } from "@/wab/shared/variant-sort";
-import { allImageAssets, allMixins, allStyleTokens } from "@/wab/shared/core/sites";
-import {
-  CssVarResolver,
-  createExpandedRuleSetMerger,
-  hasGapStyle,
-} from "@/wab/shared/core/styles";
-import { flattenTpls } from "@/wab/shared/core/tpls";
-import { keyBy } from "lodash";
+import { VariantCombo, isBaseVariant } from "@/wab/shared/Variants";
 
 export class SiteGenHelper {
   private cache: Map<string, DeepMap<any>> = new Map();
@@ -41,10 +43,10 @@ export class SiteGenHelper {
       funcKey: "makeTokenRefResolver",
     }
   );
-  allStyleTokens = deepMapMemoized(
+  allStyleTokensAndOverrides = deepMapMemoized(
     this.cache,
-    () => allStyleTokens(this.site, { includeDeps: "all" }),
-    { funcKey: "allStyleTokens" }
+    () => allStyleTokensAndOverrides(this.site, { includeDeps: "all" }),
+    { funcKey: "allStyleTokensAndOverrides" }
   );
   allMixins = deepMapMemoized(
     this.cache,
@@ -66,17 +68,6 @@ export class SiteGenHelper {
   objToDepMap = deepMapMemoized(this.cache, () => buildObjToDepMap(this.site), {
     funcKey: "objToDepmap",
   });
-  usedTokensForTheme = deepMapMemoized(
-    this.cache,
-    () => {
-      return extractUsedTokensForTheme(
-        this.site,
-        keyBy(this.allStyleTokens(), (t) => t.uuid),
-        { derefTokens: true }
-      );
-    },
-    { funcKey: "usedTokensForTheme" }
-  );
 }
 
 export class ComponentGenHelper {

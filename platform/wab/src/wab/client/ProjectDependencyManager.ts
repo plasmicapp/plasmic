@@ -23,7 +23,7 @@ import {
   walkDependencyTree,
 } from "@/wab/shared/core/project-deps";
 import {
-  allStyleTokens,
+  allStyleTokensAndOverrides,
   getNonTransitiveDepDefaultComponents,
 } from "@/wab/shared/core/sites";
 import { unbundleProjectDependency } from "@/wab/shared/core/tagged-unbundle";
@@ -138,7 +138,7 @@ export class ProjectDependencyManager {
    * @returns
    */
   inlineAssets(site: Site) {
-    const allTokens = allStyleTokens(site, {
+    const allTokens = allStyleTokensAndOverrides(site, {
       includeDeps: "all",
     });
     site.components.forEach((c) => {

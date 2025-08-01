@@ -1,3 +1,4 @@
+import { toFinalStyleToken } from "@/wab/commons/StyleToken";
 import { AppAuthProvider, ProjectId } from "@/wab/shared/ApiSchema";
 import { RSH } from "@/wab/shared/RuleSetHelpers";
 import {
@@ -236,7 +237,7 @@ import {
   allImageAssets,
   allImportedStyleTokensWithProjectInfo,
   allMixins,
-  allStyleTokens,
+  allStyleTokensAndOverrides,
 } from "@/wab/shared/core/sites";
 import {
   getComponentStateOnChangePropNames,
@@ -383,7 +384,7 @@ export function exportProjectConfig(
     exportOpts?.targetEnv === "loader" ? projectId.slice(0, 5) : undefined;
 
   const resolver = new CssVarResolver(
-    allStyleTokens(site, { includeDeps: "all" }),
+    allStyleTokensAndOverrides(site, { includeDeps: "all" }),
     allMixins(site, { includeDeps: "all" }),
     allImageAssets(site, { includeDeps: "all" }),
     site.activeTheme,
@@ -438,13 +439,13 @@ export function exportProjectConfig(
     .join("\n");
   const cssTokenVarsRules = makeCssTokenVarsRules(
     site,
-    allStyleTokens(
-      site,
-      exportOpts?.includeImportedTokens ? { includeDeps: "all" } : {}
-    ),
+    allStyleTokensAndOverrides(site, {
+      includeDeps: exportOpts?.includeImportedTokens ? "all" : undefined,
+    }),
     `.${makePlasmicTokensClassName(exportOpts)}`,
     { generateExternalToken: true, targetEnv: exportOpts.targetEnv }
   );
+
   const layoutVarsRules = makeLayoutVarsRules(
     site,
     `.${makePlasmicTokensClassName(exportOpts)}`
@@ -511,7 +512,7 @@ export function computeSerializerSiteContext(
       "projectId"
     ),
     cssVarResolver: new CssVarResolver(
-      allStyleTokens(site, { includeDeps: "all" }),
+      allStyleTokensAndOverrides(site, { includeDeps: "all" }),
       allMixins(site, { includeDeps: "all" }),
       allImageAssets(site, { includeDeps: "all" }),
       site.activeTheme
@@ -2947,7 +2948,7 @@ function conditionalComponentArgs(
           const token = arg.expr.token;
           const conditionals = buildConditionalDerefTokenValueArg(
             ctx.site,
-            token
+            toFinalStyleToken(token, ctx.site)
           );
           entry.push([
             toCode(

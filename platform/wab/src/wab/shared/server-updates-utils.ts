@@ -1,3 +1,9 @@
+import { removeFromArray } from "@/wab/commons/collections";
+import {
+  resolveAllTokenRefs,
+  toFinalStyleToken,
+} from "@/wab/commons/StyleToken";
+import { getArenaFrames } from "@/wab/shared/Arenas";
 import {
   arrayEqIgnoreOrder,
   assert,
@@ -9,15 +15,21 @@ import {
   switchType,
   tryRemove,
 } from "@/wab/shared/common";
-import { removeFromArray } from "@/wab/commons/collections";
-import { resolveAllTokenRefs } from "@/wab/commons/StyleToken";
 import { hasImageAssetRef } from "@/wab/shared/core/image-assets";
 import {
   IChangeRecorder,
   ModelChange,
   RecordedChanges,
 } from "@/wab/shared/core/observable-model";
-import { getArenaFrames } from "@/wab/shared/Arenas";
+import {
+  removeMarkersToTpl,
+  replaceTplTreeByEmptyBox,
+  tplChildren,
+  trackComponentRoot,
+  trackComponentSite,
+  tryGetTplOwnerComponent,
+} from "@/wab/shared/core/tpls";
+import { undoChanges } from "@/wab/shared/core/undo-util";
 import {
   ArenaFrame,
   ArenaFrameCell,
@@ -105,15 +117,6 @@ import {
   isScreenVariantGroup,
   tryGetBaseVariantSetting,
 } from "@/wab/shared/Variants";
-import {
-  removeMarkersToTpl,
-  replaceTplTreeByEmptyBox,
-  tplChildren,
-  trackComponentRoot,
-  trackComponentSite,
-  tryGetTplOwnerComponent,
-} from "@/wab/shared/core/tpls";
-import { undoChanges } from "@/wab/shared/core/undo-util";
 import { uniq } from "lodash";
 
 export interface DeletedAssetsSummary {
@@ -643,6 +646,10 @@ export function fixDanglingReferenceConflicts(
           .elseUnsafe(() => unexpectedRef(param, ref));
       });
     });
+
+    const deletedFinalTokens = summary.deletedTokens
+      .filter(isInstDeleted)
+      .map((token) => toFinalStyleToken(token, site));
     summary.deletedTokens.filter(isInstDeleted).forEach((token) => {
       const refs = recorder
         .getRefsToInst(token)
@@ -653,17 +660,11 @@ export function fixDanglingReferenceConflicts(
             for (const key of Object.keys(rs.values)) {
               const val = rs.values[key];
               // replace the token refs with token value
-              rs.values[key] = resolveAllTokenRefs(
-                val,
-                summary.deletedTokens.filter(isInstDeleted)
-              );
+              rs.values[key] = resolveAllTokenRefs(val, deletedFinalTokens);
             }
           })
           .when([StyleToken, VariantedValue], (t) => {
-            t.value = resolveAllTokenRefs(
-              t.value,
-              summary.deletedTokens.filter(isInstDeleted)
-            );
+            t.value = resolveAllTokenRefs(t.value, deletedFinalTokens);
           })
           .when(StyleTokenRef, (t) => deleteExpr(t))
           .elseUnsafe(() => unexpectedRef(token, ref))

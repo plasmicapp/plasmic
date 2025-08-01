@@ -67,7 +67,7 @@ import {
 import {
   allImageAssets,
   allMixins,
-  allStyleTokens,
+  allStyleTokensAndOverrides,
 } from "@/wab/shared/core/sites";
 import { CssVarResolver } from "@/wab/shared/core/styles";
 import {
@@ -182,7 +182,7 @@ export function exportReactPlain(
     projectFlags,
     forceAllCsr: false,
     cssVarResolver: new CssVarResolver(
-      allStyleTokens(site, { includeDeps: "all" }),
+      allStyleTokensAndOverrides(site, { includeDeps: "all" }),
       allMixins(site, { includeDeps: "all" }),
       allImageAssets(site, { includeDeps: "all" }),
       site.activeTheme

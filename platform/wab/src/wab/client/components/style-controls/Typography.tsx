@@ -42,7 +42,7 @@ import {
   tokenTypeDimOpts,
 } from "@/wab/commons/StyleToken";
 import { ensure, filterMapTruthy, maybe } from "@/wab/shared/common";
-import { allStyleTokens } from "@/wab/shared/core/sites";
+import { allStyleTokensAndOverrides } from "@/wab/shared/core/sites";
 import { fontWeightNumber, parseCssNumericNew } from "@/wab/shared/css";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import { notification } from "antd";
@@ -108,7 +108,12 @@ function _Typography({
 
   return (
     <>
-      <LabeledStyleColorItemRow label="Color" styleName="color" vsh={vsh} />
+      <LabeledStyleColorItemRow
+        label="Color"
+        styleName="color"
+        vsh={vsh}
+        data-test-id="color-selector"
+      />
       <FullRow>
         <LabeledFontFamilySelector
           label="Font"
@@ -156,7 +161,9 @@ function _Typography({
               if (props.warnOnRelativeUnits) {
                 if (val) {
                   const derefedVal = derefTokenRefs(
-                    allStyleTokens(sc.studioCtx().site, { includeDeps: "all" }),
+                    allStyleTokensAndOverrides(sc.studioCtx().site, {
+                      includeDeps: "all",
+                    }),
                     val
                   );
                   const parsed = parseCssNumericNew(derefedVal);

@@ -1,22 +1,23 @@
 import Button from "@/wab/client/components/widgets/Button";
+import { Modal } from "@/wab/client/components/widgets/Modal";
 import Textbox from "@/wab/client/components/widgets/Textbox";
 import { zIndex } from "@/wab/client/z-index";
 import { joinReactNodes } from "@/wab/commons/components/ReactUtil";
-import { getComponentDisplayName } from "@/wab/shared/core/components";
-import { FRAMES_CAP, FRAME_LOWER, MIXINS_CAP } from "@/wab/shared/Labels";
 import type { AddItemKey } from "@/wab/shared/add-item-keys";
+import { getComponentDisplayName } from "@/wab/shared/core/components";
+import type { DefaultStyle } from "@/wab/shared/core/styles";
+import { FRAMES_CAP, FRAME_LOWER, MIXINS_CAP } from "@/wab/shared/Labels";
 import type {
   ArenaFrame,
   Component,
   Mixin,
   StyleToken,
+  StyleTokenOverride,
 } from "@/wab/shared/model/classes";
-import type { DefaultStyle } from "@/wab/shared/core/styles";
 import { Form } from "antd";
 import { Rule } from "antd/lib/form";
 import React from "react";
 import ReactDOM from "react-dom";
-import { Modal } from "@/wab/client/components/widgets/Modal";
 
 /**
  * Shows a React element appended to the end of document.  As such, it is outside of
@@ -313,7 +314,8 @@ interface UsageSummary {
   components?: Component[];
   frames?: ArenaFrame[];
   mixins?: Mixin[];
-  tokens?: StyleToken[];
+  styleTokens?: StyleToken[];
+  styleTokenOverrides?: StyleTokenOverride[];
   themes?: DefaultStyle[];
   addItemPrefs?: AddItemKey[];
 }
@@ -350,7 +352,11 @@ export async function deleteStudioElementConfirm(
               )}
               {makeUsageControl(
                 "Tokens",
-                summary.tokens?.map((t) => t.name)
+                summary.styleTokens?.map((t) => t.name)
+              )}
+              {makeUsageControl(
+                "Token Overrides",
+                summary.styleTokenOverrides?.map((t) => t.token.name)
               )}
               {makeUsageControl(
                 "Default Typography Styles",

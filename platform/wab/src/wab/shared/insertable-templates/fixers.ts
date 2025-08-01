@@ -1,4 +1,6 @@
 import {
+  FinalStyleToken,
+  MutableStyleToken,
   TokenType,
   derefToken,
   derefTokenRefs,
@@ -64,7 +66,6 @@ import {
   VarRef,
   Variant,
   VariantSetting,
-  VariantedValue,
   VariantsRef,
   VirtualRenderExpr,
   isKnownCustomCode,
@@ -246,17 +247,20 @@ export function makeImageAssetFixer(
 export function mkInsertableTokenImporter(
   sourceSite: Site,
   targetSite: Site,
-  sourceTokens: StyleToken[],
-  targetTokens: StyleToken[],
+  sourceTokens: FinalStyleToken[],
+  targetTokens: FinalStyleToken[],
   tokenResolution: InsertableTemplateTokenResolution | undefined,
   screenVariant: Variant | undefined,
   onFontSeen: (font: string) => void
 ) {
-  const oldToNewToken = new Map<StyleToken, StyleToken>();
+  const oldToNewToken = new Map<StyleToken, FinalStyleToken>();
 
-  function getOrAddToken(oldTokens: StyleToken[], oldToken: StyleToken) {
-    if (oldToNewToken.has(oldToken)) {
-      return oldToNewToken.get(oldToken)!;
+  function getOrAddToken(
+    oldTokens: FinalStyleToken[],
+    oldToken: FinalStyleToken
+  ) {
+    if (oldToNewToken.has(oldToken.base)) {
+      return oldToNewToken.get(oldToken.base)!;
     }
 
     // `targetTokens` won't consider tokens that have been added by `getOrAddToken`
@@ -276,6 +280,7 @@ export function mkInsertableTokenImporter(
       }
 
       const isSameValue =
+        // TODO: Test how this would work with token overrides.
         derefToken(targetTokens, targetToken) ===
         derefToken(oldTokens, oldToken);
 
@@ -291,16 +296,18 @@ export function mkInsertableTokenImporter(
     });
 
     if (similarToken) {
-      oldToNewToken.set(oldToken, similarToken);
+      oldToNewToken.set(oldToken.base, similarToken);
       return similarToken;
     }
 
     const tplMgr = new TplMgr({ site: targetSite });
-    const newToken = tplMgr.addToken({
-      name: tplMgr.getUniqueTokenName(oldToken.name),
-      tokenType: oldToken.type as TokenType,
-      value: maybeDerefToken(targetTokens, oldTokens, oldToken),
-    });
+    const newToken = new MutableStyleToken(
+      tplMgr.addToken({
+        name: tplMgr.getUniqueTokenName(oldToken.name),
+        tokenType: oldToken.type as TokenType,
+        value: maybeDerefToken(targetTokens, oldTokens, oldToken),
+      })
+    );
 
     if (screenVariant) {
       // We get a single varianted value that we can keep for the screenVariant
@@ -308,20 +315,18 @@ export function mkInsertableTokenImporter(
         return v.variants.length === 1 && isScreenVariant(v.variants[0]);
       });
       if (variantedValues) {
-        newToken.variantedValues.push(
-          new VariantedValue({
-            value: derefToken(
-              oldTokens,
-              oldToken,
-              new VariantedStylesHelper(sourceSite, variantedValues.variants)
-            ),
-            variants: [screenVariant],
-          })
+        newToken.setVariantedValue(
+          [screenVariant],
+          derefToken(
+            oldTokens,
+            oldToken,
+            new VariantedStylesHelper(sourceSite, variantedValues.variants)
+          )
         );
       }
     }
 
-    oldToNewToken.set(oldToken, newToken);
+    oldToNewToken.set(oldToken.base, newToken);
     return newToken;
   }
 
@@ -341,7 +346,7 @@ export function mkInsertableTokenImporter(
         if (!oldToken) {
           return undefined;
         }
-        return mkTokenRef(getOrAddToken(sourceTokens, oldToken));
+        return mkTokenRef(getOrAddToken(sourceTokens, oldToken).base);
       });
     }
 

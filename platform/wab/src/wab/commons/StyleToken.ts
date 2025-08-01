@@ -5,11 +5,31 @@ import { RuleSetHelpers } from "@/wab/shared/RuleSetHelpers";
 import { TplMgr } from "@/wab/shared/TplMgr";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import { toVarName } from "@/wab/shared/codegen/util";
-import { ensure, tuple, unexpected, withoutNils } from "@/wab/shared/common";
+import {
+  arrayEqIgnoreOrder,
+  ensure,
+  remove,
+  removeWhere,
+  tuple,
+  unexpected,
+  withoutNils,
+} from "@/wab/shared/common";
 import { DependencyWalkScope } from "@/wab/shared/core/project-deps";
-import { allTokensOfType } from "@/wab/shared/core/sites";
+import {
+  allTokensOfType,
+  localStyleTokenOverrides,
+} from "@/wab/shared/core/sites";
 import { getLengthUnits, parseCss } from "@/wab/shared/css";
-import { Mixin, Site, StyleToken } from "@/wab/shared/model/classes";
+import { DEVFLAGS } from "@/wab/shared/devflags";
+import { maybeComputedFn } from "@/wab/shared/mobx-util";
+import {
+  Mixin,
+  Site,
+  StyleToken,
+  StyleTokenOverride,
+  Variant,
+  VariantedValue,
+} from "@/wab/shared/model/classes";
 import CSSEscape from "css.escape";
 import L from "lodash";
 import type { Opaque, SetOptional } from "type-fest";
@@ -25,8 +45,192 @@ export type TokenValue = Opaque<string, "TokenValue">;
  */
 export type ResolvedToken = {
   value: TokenValue;
-  token: StyleToken;
+  token: FinalStyleToken;
 };
+
+export type FinalStyleToken =
+  | MutableStyleToken
+  | OverrideableStyleToken
+  | ImmutableStyleToken;
+
+abstract class BaseStyleToken {
+  constructor(readonly base: StyleToken) {}
+
+  get override(): StyleTokenOverride | null {
+    return null;
+  }
+
+  get uuid(): string {
+    return this.base.uuid;
+  }
+  get name(): string {
+    return this.base.name;
+  }
+  get type(): TokenType {
+    return this.base.type as TokenType;
+  }
+  get isRegistered(): boolean {
+    return this.base.isRegistered;
+  }
+  // TODO: use TokenValue
+  get value(): string {
+    return this.base.value;
+  }
+  // TODO: use TokenValue
+  get variantedValues(): readonly VariantedValue[] {
+    return this.base.variantedValues;
+  }
+
+  protected static setValue(
+    tokenOrOverride: StyleToken | StyleTokenOverride,
+    value: string
+  ): void {
+    tokenOrOverride.value = value;
+  }
+
+  protected static setVariantedValue(
+    tokenOrOverride: StyleToken | StyleTokenOverride,
+    variants: Variant[],
+    value: string
+  ): void {
+    const variantedValue = tokenOrOverride.variantedValues.find((v) =>
+      arrayEqIgnoreOrder(v.variants, variants)
+    );
+    if (variantedValue) {
+      variantedValue.value = value;
+    } else {
+      tokenOrOverride.variantedValues.push(
+        new VariantedValue({
+          variants,
+          value,
+        })
+      );
+    }
+  }
+
+  protected static removeVariantedValue(
+    tokenOrOverride: StyleToken | StyleTokenOverride,
+    variants: Variant[]
+  ): void {
+    removeWhere(tokenOrOverride.variantedValues, (v) =>
+      arrayEqIgnoreOrder(v.variants, variants)
+    );
+  }
+}
+
+/** Style tokens in the local project are mutable. */
+export class MutableStyleToken extends BaseStyleToken {
+  setValue(value: string): void {
+    BaseStyleToken.setValue(this.base, value);
+  }
+
+  setVariantedValue(variants: Variant[], value: string): void {
+    BaseStyleToken.setVariantedValue(this.base, variants, value);
+  }
+
+  removeVariantedValue(variants: Variant[]): void {
+    BaseStyleToken.removeVariantedValue(this.base, variants);
+  }
+}
+
+/** Style tokens from direct dependencies are immutable but can be overridden. */
+export class OverrideableStyleToken extends BaseStyleToken {
+  constructor(base: StyleToken, private readonly site: Site) {
+    super(base);
+  }
+
+  get override(): StyleTokenOverride | null {
+    return (
+      this.site.styleTokenOverrides.find(
+        (t) => t.token.uuid === this.base.uuid
+      ) ?? null
+    );
+  }
+
+  get value(): string {
+    return this.override?.value ?? this.base.value;
+  }
+  get variantedValues(): readonly VariantedValue[] {
+    const override = this.override;
+    if (!override) {
+      return this.base.variantedValues;
+    }
+
+    return [
+      // filter out overridden variants
+      ...this.base.variantedValues.filter(
+        (v) =>
+          !override.variantedValues.find((ov) =>
+            arrayEqIgnoreOrder(v.variants, ov.variants)
+          )
+      ),
+      // add overridden variants
+      ...override.variantedValues,
+    ];
+  }
+
+  setValue(value: string): void {
+    const override = this.upsertStyleTokenOverride();
+    BaseStyleToken.setValue(override, value);
+  }
+
+  setVariantedValue(variants: Variant[], value: string): void {
+    const override = this.upsertStyleTokenOverride();
+    BaseStyleToken.setVariantedValue(override, variants, value);
+  }
+
+  /** Returns true if override no longer exists. */
+  removeValue(): boolean {
+    const override = this.override;
+    if (!override) {
+      return true;
+    }
+
+    override.value = null;
+    return this.removeOverrideIfEmpty(override);
+  }
+
+  /** Returns true if override no longer exists. */
+  removeVariantedValue(variants: Variant[]): boolean {
+    const override = this.override;
+    if (!override) {
+      return true;
+    }
+
+    BaseStyleToken.removeVariantedValue(override, variants);
+    return this.removeOverrideIfEmpty(override);
+  }
+
+  private upsertStyleTokenOverride(): StyleTokenOverride {
+    const existingOverride = this.site.styleTokenOverrides.find(
+      (o) => o.token.uuid === this.base.uuid
+    );
+    if (existingOverride) {
+      return existingOverride;
+    }
+
+    const newOverride = new StyleTokenOverride({
+      token: this.base,
+      value: null,
+      variantedValues: [],
+    });
+    this.site.styleTokenOverrides.push(newOverride);
+    return newOverride;
+  }
+
+  /** Returns true if removed. */
+  private removeOverrideIfEmpty(override: StyleTokenOverride): boolean {
+    if (!override.value && override.variantedValues.length === 0) {
+      remove(this.site.styleTokenOverrides, override);
+      return true;
+    } else {
+      return false;
+    }
+  }
+}
+
+/** Style tokens from transitive dependencies are immutable and cannot be overridden. */
+export class ImmutableStyleToken extends BaseStyleToken {}
 
 export const enum TokenType {
   Color = "Color",
@@ -45,6 +249,32 @@ export const tokenTypes = [
   TokenType.Opacity,
   TokenType.Spacing,
 ] as const;
+
+export function toFinalStyleToken(token: StyleToken, site: Site) {
+  if (token.isRegistered) {
+    return new ImmutableStyleToken(token);
+  } else if (site.styleTokens.includes(token)) {
+    return new MutableStyleToken(token);
+  } else if (
+    site.projectDependencies
+      .flatMap((dep) => dep.site.styleTokens)
+      .includes(token)
+  ) {
+    return new OverrideableStyleToken(token, site);
+  } else {
+    return new ImmutableStyleToken(token);
+  }
+}
+
+export const isTokenEditable = (token: FinalStyleToken) => {
+  return token instanceof MutableStyleToken;
+};
+
+export const isTokenOverridable = (token: FinalStyleToken) => {
+  return (
+    token instanceof OverrideableStyleToken && DEVFLAGS.importedTokenOverrides
+  );
+};
 
 export function tokenTypeLabel(type: TokenType) {
   switch (type) {
@@ -115,6 +345,15 @@ export function tokenTypeDefaults(type: TokenType) {
   }
 }
 
+export const getOverrideForToken = maybeComputedFn(function getOverrideForToken(
+  site: Site,
+  token: StyleToken
+) {
+  return localStyleTokenOverrides(site).find(
+    (t) => t.token.uuid === token.uuid
+  );
+});
+
 export const isTokenNameValidCssVariable = (token: StyleToken) =>
   token.name.startsWith("--") && CSSEscape(token.name) === token.name;
 
@@ -131,14 +370,20 @@ export const isTokenRef = (ref: string) => ref.startsWith("var(--token-");
 const RE_TOKENREF = /var\(--token-([^)]+)\)/;
 const RE_TOKENREF_ALL = new RegExp(RE_TOKENREF, "g");
 
+/**
+ * Returns the referenced token (shallow parse).
+ * If no token is referenced, returns undefined.
+ * @param ref the token ref to parse
+ * @param tokensProvider all final tokens (tokens + overrides) in scope
+ */
 export const tryParseTokenRef = (
   ref: string,
   tokensProvider:
-    | StyleToken[]
-    | (() => StyleToken[])
-    | Record<string, StyleToken>
-    | Map<string, StyleToken>
-) => {
+    | FinalStyleToken[]
+    | (() => FinalStyleToken[])
+    | Record<string, FinalStyleToken>
+    | Map<string, FinalStyleToken>
+): FinalStyleToken | undefined => {
   const m = ref.match(RE_TOKENREF);
   if (!m) {
     return undefined;
@@ -156,13 +401,19 @@ export const tryParseTokenRef = (
   }
 };
 
+/**
+ * Returns the referenced token (shallow parse). Throws if no token is referenced.
+ * @param ref the token ref to parse
+ * @param tokensProvider all final tokens (tokens + overrides) in scope
+ * @returns the parsed token
+ */
 export const parseTokenRef = (
   ref: string,
   tokensProvider:
-    | StyleToken[]
-    | (() => StyleToken[])
-    | Record<string, StyleToken>
-    | Map<string, StyleToken>
+    | FinalStyleToken[]
+    | (() => FinalStyleToken[])
+    | Record<string, FinalStyleToken>
+    | Map<string, FinalStyleToken>
 ) => {
   return ensure(
     tryParseTokenRef(ref, tokensProvider),
@@ -180,7 +431,7 @@ export function hasTokenRef(str: string, token: StyleToken) {
 
 export const resolveAllTokenRefs = (
   str: string,
-  tokens: StyleToken[] | Map<string, StyleToken>,
+  tokens: FinalStyleToken[] | Map<string, FinalStyleToken>,
   valMissingToken?: string,
   vsh?: VariantedStylesHelper
 ) => {
@@ -274,9 +525,17 @@ export const tryParseMixinPropRef = (
   return tuple(mixin, m[2]);
 };
 
+/**
+ * Resolves a token ref to a primitive value.
+ * It recursively iterates on the token value till it reaches a primitive value.
+ * @param tokens all final tokens (tokens + overrides) in scope
+ * @param token the token to resolve
+ * @param vsh helps resolve the token value in a varianted context
+ * @returns a resolved final style token
+ */
 export function resolveToken(
-  tokens: StyleToken[] | Map<string, StyleToken>,
-  token: StyleToken,
+  tokens: FinalStyleToken[] | Map<string, FinalStyleToken>,
+  token: FinalStyleToken,
   vsh?: VariantedStylesHelper
 ): ResolvedToken {
   const seenTokens = new Set<StyleToken>();
@@ -289,17 +548,17 @@ export function resolveToken(
     curValue = vsh.getActiveTokenValue(curToken);
 
     // Return original token if we hit a cycle.
-    if (seenTokens.has(curToken)) {
+    if (seenTokens.has(curToken.base)) {
       return { token, value: vsh.getActiveTokenValue(token) };
     }
-    seenTokens.add(curToken);
+    seenTokens.add(curToken.base);
   }
 
   return { token: curToken, value: curValue };
 }
 
 export function resolveTokenRef(
-  tokens: StyleToken[] | Map<string, StyleToken>,
+  tokens: FinalStyleToken[] | Map<string, FinalStyleToken>,
   value: TokenValue,
   vsh?: VariantedStylesHelper
 ): SetOptional<ResolvedToken, "token"> {
@@ -311,7 +570,7 @@ export function resolveTokenRef(
 }
 
 export function derefTokenRefs(
-  tokens: StyleToken[] | Map<string, StyleToken>,
+  tokens: FinalStyleToken[] | Map<string, FinalStyleToken>,
   value: string,
   vsh?: VariantedStylesHelper
 ): TokenValue {
@@ -319,8 +578,8 @@ export function derefTokenRefs(
 }
 
 export function derefToken(
-  tokens: StyleToken[] | Map<string, StyleToken>,
-  token: StyleToken,
+  tokens: FinalStyleToken[] | Map<string, FinalStyleToken>,
+  token: FinalStyleToken,
   vsh?: VariantedStylesHelper
 ): TokenValue {
   return resolveToken(tokens, token, vsh).value;
@@ -340,9 +599,9 @@ export function derefToken(
  * @returns the token's primitive/de-reffed value only if the ref is not known by the destination
  */
 export function maybeDerefToken(
-  currentTokens: StyleToken[] | Map<string, StyleToken>,
-  oldTokens: StyleToken[] | Map<string, StyleToken>,
-  token: StyleToken,
+  currentTokens: FinalStyleToken[] | Map<string, FinalStyleToken>,
+  oldTokens: FinalStyleToken[] | Map<string, FinalStyleToken>,
+  token: FinalStyleToken,
   vsh?: VariantedStylesHelper
 ): TokenValue {
   // If its a token ref and the ref is present in the current project, then don't de-ref it, because the ref in value is known
