@@ -50,7 +50,8 @@
             "pageWrapper": null,
             "customFunctions": [],
             "codeLibraries": [],
-            "__type": "Site"
+            "__type": "Site",
+            "styleTokenOverrides": []
           },
           "8615002": {
             "name": "Custom arena 1",
@@ -4998,7 +4999,7 @@
           }
         },
         "deps": [],
-        "version": "248-add-prop-param-advanced"
+        "version": "249-add-style-token-overrides"
       },
       "projectId": "dNoM99U17XFRGCXZ5SUbc1",
       "version": "0.0.1",
@@ -5067,7 +5068,8 @@
             "pageWrapper": null,
             "customFunctions": [],
             "codeLibraries": [],
-            "__type": "Site"
+            "__type": "Site",
+            "styleTokenOverrides": []
           },
           "8615002": {
             "name": "Custom arena 1",
@@ -10266,7 +10268,7 @@
           "65055094": { "values": {}, "mixins": [], "__type": "RuleSet" }
         },
         "deps": [],
-        "version": "248-add-prop-param-advanced"
+        "version": "249-add-style-token-overrides"
       }
     },
     {
@@ -10318,7 +10320,8 @@
             "pageWrapper": null,
             "customFunctions": [],
             "codeLibraries": [],
-            "__type": "Site"
+            "__type": "Site",
+            "styleTokenOverrides": []
           },
           "8615002": {
             "name": "Custom arena 1",
@@ -15367,7 +15370,7 @@
           "52044046": { "values": {}, "mixins": [], "__type": "RuleSet" }
         },
         "deps": [],
-        "version": "248-add-prop-param-advanced"
+        "version": "249-add-style-token-overrides"
       }
     }
   ]

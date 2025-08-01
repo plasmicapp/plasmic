@@ -381,6 +381,7 @@ export async function maybeConvertToHostLessProject(studioCtx: StudioCtx) {
             globalVariantGroups: [],
             userManagedFonts: [],
             styleTokens: [],
+            styleTokenOverrides: [],
             mixins: [],
             activeTheme: null,
             imageAssets: [],

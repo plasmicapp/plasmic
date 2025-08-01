@@ -25,6 +25,7 @@ const site = new Site({
   arenas: [],
   globalVariant: mkBaseVariant(),
   styleTokens: [],
+  styleTokenOverrides: [],
   mixins: [],
   themes: [defaultTheme],
   activeTheme: defaultTheme,

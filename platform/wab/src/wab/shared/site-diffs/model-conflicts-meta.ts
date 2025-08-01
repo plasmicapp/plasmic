@@ -312,6 +312,19 @@ export const modelConflictsMeta: ModelConflictsMeta = {
       mergeKeyIsIdentity: true,
     },
   },
+  StyleTokenOverride: {
+    token: "unexpected",
+    value: "generic",
+    variantedValues: {
+      arrayType: "unordered",
+      conflictType: "merge",
+      mergeKey: `variants`,
+      handleUpdatedValues: (vals, parent, bundler) =>
+        shallowCloneArrayValuesAndAddToBundle(vals, parent, bundler, [
+          classes.VariantedValue,
+        ]),
+    },
+  },
   StyleToken: {
     name: "generic",
     type: "unexpected",
@@ -420,6 +433,15 @@ export const modelConflictsMeta: ModelConflictsMeta = {
       arrayType: "unordered",
       conflictType: "rename",
       nameKey: `name`,
+    },
+    styleTokenOverrides: {
+      arrayType: "unordered",
+      conflictType: "merge",
+      mergeKey: `token`,
+      handleUpdatedValues: (overrides, parent, bundler) =>
+        shallowCloneArrayValuesAndAddToBundle(overrides, parent, bundler, [
+          classes.StyleTokenOverride,
+        ]),
     },
     styleTokens: {
       arrayType: "unordered",

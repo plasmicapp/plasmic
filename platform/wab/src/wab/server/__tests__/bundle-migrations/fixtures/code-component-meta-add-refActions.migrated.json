@@ -519,7 +519,8 @@
       "pageWrapper": null,
       "customFunctions": [],
       "codeLibraries": [],
-      "__type": "Site"
+      "__type": "Site",
+      "styleTokenOverrides": []
     },
     "gI_OZ4OAsbcR": {
       "name": "Custom arena 1",
@@ -14885,5 +14886,5 @@
     "iV2sWwaSguNr": { "__type": "RawText", "markers": [], "text": "Button" }
   },
   "deps": [],
-  "version": "248-add-prop-param-advanced"
+  "version": "249-add-style-token-overrides"
 }

@@ -79,6 +79,7 @@ import { typographyCssProps } from "@/wab/shared/core/style-props";
 import {
   cloneMixin,
   cloneStyleToken,
+  cloneStyleTokenOverride,
   cloneTheme,
   cssPropsToRuleSet,
   mkRuleSet,
@@ -217,6 +218,7 @@ export function createSite({
     arenas: [],
     globalVariant: mkBaseVariant(),
     styleTokens: [],
+    styleTokenOverrides: [],
     mixins: [],
     themes: [defaultTheme],
     activeTheme: defaultTheme,
@@ -557,6 +559,9 @@ export function cloneSite(fromSite: Site) {
     components: newComponents,
     globalVariant: cloneVariant(fromSite.globalVariant),
     styleTokens: fromSite.styleTokens.map(cloneStyleToken),
+    styleTokenOverrides: fromSite.styleTokenOverrides.map(
+      cloneStyleTokenOverride
+    ),
     mixins: fromSite.mixins.map((mixin) => cloneMixin(mixin)),
     themes: fromSite.themes.map((th) =>
       ensure(newThemes.get(th), "should exist in newThemes")

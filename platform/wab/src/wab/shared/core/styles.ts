@@ -158,6 +158,7 @@ import {
   Site,
   StyleExpr,
   StyleToken,
+  StyleTokenOverride,
   Theme,
   ThemeLayoutSettings,
   ThemeStyle,
@@ -2883,6 +2884,14 @@ export function cloneStyleToken(token: StyleToken) {
     uuid: mkShortId(),
     variantedValues: token.variantedValues.map(cloneVariantedValue),
     isRegistered: token.isRegistered,
+  });
+}
+
+export function cloneStyleTokenOverride(override: StyleTokenOverride) {
+  return new StyleTokenOverride({
+    token: override.token,
+    value: override.value,
+    variantedValues: override.variantedValues.map(cloneVariantedValue),
   });
 }
 

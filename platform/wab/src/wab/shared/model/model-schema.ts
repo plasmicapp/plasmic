@@ -80,6 +80,10 @@ Type
 VariantedValue
   @WeakRef variants: [Variant]
   value: String
+StyleTokenOverride
+  @WeakRef token: StyleToken
+  value: String?
+  variantedValues: [VariantedValue]
 StyleToken
   # This is really more like a displayName, not treated as the stable ID (although it also needs to be unique).
   name: String
@@ -118,6 +122,7 @@ Site
   # stored by this globalVariant.
   @Const globalVariant: Variant
   styleTokens: [StyleToken]
+  styleTokenOverrides: [StyleTokenOverride]
   mixins: [Mixin]
   @Const themes: [Theme]
   @WeakRef activeTheme: Theme?

@@ -88,7 +88,8 @@
           "pageWrapper": null,
           "customFunctions": [],
           "codeLibraries": [],
-          "__type": "Site"
+          "__type": "Site",
+          "styleTokenOverrides": []
         },
         "CS3vIoApGR62": {
           "uuid": "QswWn7k1U7ET",
@@ -13513,7 +13514,7 @@
         }
       },
       "deps": [],
-      "version": "248-add-prop-param-advanced"
+      "version": "249-add-style-token-overrides"
     }
   ],
   [
@@ -14101,7 +14102,8 @@
           "pageWrapper": null,
           "customFunctions": [],
           "codeLibraries": [],
-          "__type": "Site"
+          "__type": "Site",
+          "styleTokenOverrides": []
         },
         "dFYnL3d-d1Rs": {
           "uuid": "GeNw1UWSCjK7",
@@ -28824,7 +28826,7 @@
         "uLDvGZjO5VZJ": { "__type": "RuleSet", "values": {}, "mixins": [] }
       },
       "deps": ["6880ec08-42f2-424d-9b65-e5a74a1b6baf"],
-      "version": "248-add-prop-param-advanced"
+      "version": "249-add-style-token-overrides"
     }
   ]
 ]

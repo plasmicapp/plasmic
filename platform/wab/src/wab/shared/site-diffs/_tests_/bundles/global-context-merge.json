@@ -492,7 +492,8 @@
             "pageWrapper": null,
             "customFunctions": [],
             "codeLibraries": [],
-            "__type": "Site"
+            "__type": "Site",
+            "styleTokenOverrides": []
           },
           "iDVQEnXDQ7o7": {
             "uuid": "_JIRQ2EcmtLp",
@@ -978,7 +979,7 @@
           }
         },
         "deps": [],
-        "version": "248-add-prop-param-advanced"
+        "version": "249-add-style-token-overrides"
       },
       "projectId": "jktPeioPm3Q1RvAsGWDSCe",
       "version": "0.0.1",
@@ -1489,7 +1490,8 @@
             "pageWrapper": null,
             "customFunctions": [],
             "codeLibraries": [],
-            "__type": "Site"
+            "__type": "Site",
+            "styleTokenOverrides": []
           },
           "iDVQEnXDQ7o7": {
             "uuid": "_JIRQ2EcmtLp",
@@ -2200,7 +2202,7 @@
           }
         },
         "deps": [],
-        "version": "248-add-prop-param-advanced"
+        "version": "249-add-style-token-overrides"
       }
     },
     {
@@ -2695,7 +2697,8 @@
             "pageWrapper": null,
             "customFunctions": [],
             "codeLibraries": [],
-            "__type": "Site"
+            "__type": "Site",
+            "styleTokenOverrides": []
           },
           "iDVQEnXDQ7o7": {
             "uuid": "_JIRQ2EcmtLp",
@@ -3406,7 +3409,7 @@
           }
         },
         "deps": [],
-        "version": "248-add-prop-param-advanced"
+        "version": "249-add-style-token-overrides"
       }
     }
   ]

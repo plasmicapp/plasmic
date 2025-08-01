@@ -246,3 +246,4 @@ platform/wab/src/wab/server/bundle-migrations/245-code-component-meta-add-refAct
 platform/wab/src/wab/server/bundle-migrations/246-add-component-updated-at.ts
 platform/wab/src/wab/server/bundle-migrations/247-add-page-href-query-fragment.ts
 platform/wab/src/wab/server/bundle-migrations/248-add-prop-param-advanced.ts
+platform/wab/src/wab/server/bundle-migrations/249-add-style-token-overrides.ts

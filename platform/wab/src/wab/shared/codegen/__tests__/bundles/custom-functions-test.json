@@ -1344,7 +1344,8 @@
             { "__ref": "1wavIcOhMzR6" }
           ],
           "codeLibraries": [],
-          "__type": "Site"
+          "__type": "Site",
+          "styleTokenOverrides": []
         },
         "yzbvhnx54CVG": {
           "importPath": "./functions",
@@ -1470,7 +1471,7 @@
         }
       },
       "deps": [],
-      "version": "248-add-prop-param-advanced"
+      "version": "249-add-style-token-overrides"
     }
   ]
 ]

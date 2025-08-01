@@ -54,7 +54,8 @@
       "pageWrapper": null,
       "customFunctions": [],
       "codeLibraries": [],
-      "__type": "Site"
+      "__type": "Site",
+      "styleTokenOverrides": []
     },
     "2": {
       "uuid": "BunrB8jR5E5",
@@ -4924,5 +4925,5 @@
     }
   },
   "deps": [],
-  "version": "248-add-prop-param-advanced"
+  "version": "249-add-style-token-overrides"
 }

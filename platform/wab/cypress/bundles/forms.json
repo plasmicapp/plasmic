@@ -223,7 +223,8 @@
           "pageWrapper": null,
           "customFunctions": [],
           "codeLibraries": [],
-          "__type": "Site"
+          "__type": "Site",
+          "styleTokenOverrides": []
         },
         "oCKFQmQdHVd7": {
           "uuid": "4ERcpYU2da3F",
@@ -28792,7 +28793,7 @@
         }
       },
       "deps": [],
-      "version": "248-add-prop-param-advanced"
+      "version": "249-add-style-token-overrides"
     }
   ],
   [
@@ -28968,7 +28969,8 @@
           "pageWrapper": null,
           "customFunctions": [],
           "codeLibraries": [],
-          "__type": "Site"
+          "__type": "Site",
+          "styleTokenOverrides": []
         },
         "I0l0TxK_QI4O": {
           "uuid": "1pdMkV9Bri1n",
@@ -32991,7 +32993,7 @@
         }
       },
       "deps": [],
-      "version": "248-add-prop-param-advanced"
+      "version": "249-add-style-token-overrides"
     }
   ],
   [
@@ -33218,7 +33220,8 @@
           "pageWrapper": null,
           "customFunctions": [],
           "codeLibraries": [],
-          "__type": "Site"
+          "__type": "Site",
+          "styleTokenOverrides": []
         },
         "oCKFQmQdHVd7": {
           "uuid": "4ERcpYU2da3F",
@@ -61787,7 +61790,7 @@
         }
       },
       "deps": [],
-      "version": "248-add-prop-param-advanced"
+      "version": "249-add-style-token-overrides"
     }
   ],
   [
@@ -62352,7 +62355,8 @@
           "pageWrapper": null,
           "customFunctions": [],
           "codeLibraries": [],
-          "__type": "Site"
+          "__type": "Site",
+          "styleTokenOverrides": []
         },
         "TYBklS-1CIp_": {
           "uuid": "fdd6Kkin0gIe",
@@ -99646,7 +99650,7 @@
         "ff598514-e845-4b90-9402-61b6e85b5633",
         "a0c6a0b1-20be-4fe8-a98b-9618eb575490"
       ],
-      "version": "248-add-prop-param-advanced"
+      "version": "249-add-style-token-overrides"
     }
   ]
 ]

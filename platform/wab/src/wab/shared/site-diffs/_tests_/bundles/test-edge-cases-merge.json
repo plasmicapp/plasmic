@@ -68,7 +68,8 @@
             "pageWrapper": null,
             "customFunctions": [],
             "codeLibraries": [],
-            "__type": "Site"
+            "__type": "Site",
+            "styleTokenOverrides": []
           },
           "53897002": {
             "uuid": "lgQs9c5Nbl",
@@ -6190,7 +6191,7 @@
           "53898074": { "values": {}, "mixins": [], "__type": "RuleSet" }
         },
         "deps": [],
-        "version": "248-add-prop-param-advanced"
+        "version": "249-add-style-token-overrides"
       },
       "projectId": "5txi3zd6hPLtbkzbV8p6jB",
       "version": "0.0.1",
@@ -6448,7 +6449,8 @@
             "pageWrapper": null,
             "customFunctions": [],
             "codeLibraries": [],
-            "__type": "Site"
+            "__type": "Site",
+            "styleTokenOverrides": []
           },
           "53897002": {
             "uuid": "lgQs9c5Nbl",
@@ -12447,7 +12449,7 @@
           "63532015": { "values": {}, "mixins": [], "__type": "RuleSet" }
         },
         "deps": [],
-        "version": "248-add-prop-param-advanced"
+        "version": "249-add-style-token-overrides"
       }
     },
     {
@@ -12508,7 +12510,8 @@
             "pageWrapper": null,
             "customFunctions": [],
             "codeLibraries": [],
-            "__type": "Site"
+            "__type": "Site",
+            "styleTokenOverrides": []
           },
           "53897002": {
             "uuid": "lgQs9c5Nbl",
@@ -18786,7 +18789,7 @@
           }
         },
         "deps": [],
-        "version": "248-add-prop-param-advanced"
+        "version": "249-add-style-token-overrides"
       }
     }
   ]

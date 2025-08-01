@@ -1035,6 +1035,7 @@
         { "__ref": "1KMBQ1LsqN7U" },
         { "__ref": "KkCax4xxEyA8" }
       ],
+      "styleTokenOverrides": [],
       "mixins": [
         { "__ref": "d2wqVvCWaOXS" },
         { "__ref": "S85L2_4O1kMd" },
@@ -2547,5 +2548,5 @@
     "uhQFT6I68Y8J": { "values": {}, "mixins": [], "__type": "RuleSet" }
   },
   "deps": [],
-  "version": "248-add-prop-param-advanced"
+  "version": "249-add-style-token-overrides"
 }

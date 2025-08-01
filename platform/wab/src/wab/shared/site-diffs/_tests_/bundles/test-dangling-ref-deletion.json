@@ -493,7 +493,8 @@
             "pageWrapper": null,
             "customFunctions": [],
             "codeLibraries": [],
-            "__type": "Site"
+            "__type": "Site",
+            "styleTokenOverrides": []
           },
           "wPllSQ6EXa78": {
             "uuid": "vIWn1Mj68bQ_",
@@ -1150,7 +1151,7 @@
           }
         },
         "deps": [],
-        "version": "248-add-prop-param-advanced"
+        "version": "249-add-style-token-overrides"
       },
       "projectId": "aEdkqeH2BR6MwHyjD3tm6K",
       "version": "0.0.1",
@@ -1661,7 +1662,8 @@
             "pageWrapper": null,
             "customFunctions": [],
             "codeLibraries": [],
-            "__type": "Site"
+            "__type": "Site",
+            "styleTokenOverrides": []
           },
           "wPllSQ6EXa78": {
             "uuid": "vIWn1Mj68bQ_",
@@ -2309,7 +2311,7 @@
           }
         },
         "deps": [],
-        "version": "248-add-prop-param-advanced"
+        "version": "249-add-style-token-overrides"
       }
     },
     {
@@ -2804,7 +2806,8 @@
             "pageWrapper": null,
             "customFunctions": [],
             "codeLibraries": [],
-            "__type": "Site"
+            "__type": "Site",
+            "styleTokenOverrides": []
           },
           "wPllSQ6EXa78": {
             "__type": "Component",
@@ -3452,7 +3455,7 @@
           }
         },
         "deps": [],
-        "version": "248-add-prop-param-advanced"
+        "version": "249-add-style-token-overrides"
       }
     }
   ]

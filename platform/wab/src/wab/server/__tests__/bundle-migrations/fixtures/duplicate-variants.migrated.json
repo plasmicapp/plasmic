@@ -1325,6 +1325,7 @@
       "userManagedFonts": [],
       "globalVariant": { "__ref": "49c-F6xTqs57" },
       "styleTokens": [],
+      "styleTokenOverrides": [],
       "mixins": [],
       "themes": [{ "__ref": "v_sOpdokL0rf" }],
       "activeTheme": { "__ref": "v_sOpdokL0rf" },
@@ -1980,5 +1981,5 @@
     }
   },
   "deps": [],
-  "version": "248-add-prop-param-advanced"
+  "version": "249-add-style-token-overrides"
 }

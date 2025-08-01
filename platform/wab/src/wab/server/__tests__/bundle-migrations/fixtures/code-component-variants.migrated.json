@@ -73,6 +73,7 @@
           "userManagedFonts": [],
           "globalVariant": { "__ref": "ZeHAA6-Fd41L" },
           "styleTokens": [],
+          "styleTokenOverrides": [],
           "mixins": [],
           "themes": [{ "__ref": "FXdkC8c8eW23" }],
           "activeTheme": null,
@@ -13513,7 +13514,7 @@
         }
       },
       "deps": [],
-      "version": "248-add-prop-param-advanced"
+      "version": "249-add-style-token-overrides"
     }
   ],
   [
@@ -14917,6 +14918,7 @@
             { "__ref": "exbFag5e3reW" },
             { "__ref": "vUboNGGX2JW0" }
           ],
+          "styleTokenOverrides": [],
           "mixins": [],
           "themes": [{ "__ref": "ksabOc36iY_0" }],
           "activeTheme": { "__ref": "ksabOc36iY_0" },
@@ -22424,7 +22426,7 @@
         }
       },
       "deps": ["680b1b11-6954-4dd8-b4e6-6a2d087c1c28"],
-      "version": "248-add-prop-param-advanced"
+      "version": "249-add-style-token-overrides"
     }
   ]
 ]

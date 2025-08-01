@@ -6425,6 +6425,7 @@ exports[`model-util works 1`] = `
   "pageWrapper": null,
   "projectDependencies": [],
   "splits": [],
+  "styleTokenOverrides": [],
   "styleTokens": [
     {
       "__iid": "897",

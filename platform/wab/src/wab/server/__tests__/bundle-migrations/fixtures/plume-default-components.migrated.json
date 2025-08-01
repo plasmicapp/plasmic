@@ -494,6 +494,7 @@
       "userManagedFonts": [],
       "globalVariant": { "__ref": "yT8k8ZCFHrlm" },
       "styleTokens": [],
+      "styleTokenOverrides": [],
       "mixins": [],
       "themes": [{ "__ref": "1nuhF_JpoXzT" }],
       "activeTheme": { "__ref": "1nuhF_JpoXzT" },
@@ -22153,5 +22154,5 @@
     "W3Kfe31GKhIW": { "values": {}, "mixins": [], "__type": "RuleSet" }
   },
   "deps": [],
-  "version": "248-add-prop-param-advanced"
+  "version": "249-add-style-token-overrides"
 }
