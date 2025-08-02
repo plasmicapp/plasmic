@@ -1,35 +1,47 @@
 import * as React from "react";
 import { createElementWithChildren } from "../react-utils";
+import { wrapFlexContainerChildren } from "./elements";
 
 function renderStack<T extends keyof JSX.IntrinsicElements>(
   as: T,
   props: React.ComponentProps<T>,
+  hasGap: boolean | undefined,
   ref: React.Ref<any>
 ) {
   const { children, ...rest } = props;
-  return createElementWithChildren(as, { ref, ...rest }, children);
+  const wrappedChildren = wrapFlexContainerChildren(children, hasGap ?? false);
+  return createElementWithChildren(as, { ref, ...rest }, wrappedChildren);
 }
 
 function FlexStack_<T extends keyof JSX.IntrinsicElements = "div">(
-  props: { as?: T } & React.ComponentProps<T>,
+  props: { as?: T; hasGap?: boolean } & React.ComponentProps<T>,
   outerRef: React.Ref<any>
 ) {
-  const { as, ...rest } = props;
-  return renderStack(as ?? "div", rest as React.ComponentProps<T>, outerRef);
+  const { as, hasGap, ...rest } = props;
+  return renderStack(
+    as ?? "div",
+    rest as React.ComponentProps<T>,
+    hasGap,
+    outerRef
+  );
 }
 
 const FlexStack = React.forwardRef(FlexStack_) as <
   T extends keyof JSX.IntrinsicElements = "div"
 >(
-  props: { as?: T } & React.ComponentProps<T>
+  props: { as?: T; hasGap?: boolean } & React.ComponentProps<T>
 ) => React.ReactElement;
 
 const makeStackImpl = <T extends keyof JSX.IntrinsicElements>(as: T) => {
   return React.forwardRef(
-    (props: React.ComponentProps<T>, ref: React.Ref<any>) => {
-      return renderStack(as, props, ref);
+    (
+      props: React.ComponentProps<T> & { hasGap?: boolean },
+      ref: React.Ref<any>
+    ) => {
+      const { hasGap, ...rest } = props;
+      return renderStack(as, rest as React.ComponentProps<T>, hasGap, ref);
     }
-  ) as React.FC<React.ComponentProps<T>>;
+  ) as React.FC<React.ComponentProps<T> & { hasGap?: boolean }>;
 };
 
 export const Stack = Object.assign(FlexStack, {
