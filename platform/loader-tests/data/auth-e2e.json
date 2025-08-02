@@ -4133,7 +4133,7 @@
         }
       },
       "deps": [],
-      "version": "249-add-style-token-overrides"
+      "version": "250-migrate-flex-gap"
     }
   ],
   [
@@ -31936,7 +31936,7 @@
         }
       },
       "deps": [],
-      "version": "249-add-style-token-overrides"
+      "version": "250-migrate-flex-gap"
     }
   ],
   [
@@ -37353,7 +37353,6 @@
             "padding-right": "20px",
             "padding-bottom": "12px",
             "padding-left": "20px",
-            "flex-column-gap": "8px",
             "background": "linear-gradient(#232320, #232320)",
             "border-top-width": "0px",
             "border-right-width": "0px",
@@ -37365,7 +37364,8 @@
             "border-top-left-radius": "6px",
             "border-top-right-radius": "6px",
             "border-bottom-right-radius": "6px",
-            "border-bottom-left-radius": "6px"
+            "border-bottom-left-radius": "6px",
+            "column-gap": "8px"
           },
           "mixins": [],
           "__type": "RuleSet"
@@ -43442,7 +43442,7 @@
         "ebc612fc-97cd-4854-ab9c-3c111801d18a",
         "2e422f80-985e-4a6f-9525-cee3e5501fa9"
       ],
-      "version": "249-add-style-token-overrides"
+      "version": "250-migrate-flex-gap"
     }
   ]
 ]

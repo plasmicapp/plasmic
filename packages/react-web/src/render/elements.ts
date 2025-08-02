@@ -110,29 +110,10 @@ export function hasVariant<V extends Variants>(
   }
 }
 
-export function wrapFlexContainerChildren(
-  children: React.ReactNode,
-  hasGap: boolean
-) {
-  // We need to always wrap the children, even if there are no gaps, because
-  // otherwise if we toggle between with and without gap, React reconciliation
-  // will blow away the children tree and all state if we switch from having
-  // a wrapper and not.
-  const className = hasGap ? "__wab_flex-container ρfc" : "__wab_passthrough";
-  if (!children) {
-    return null;
-  } else if (Array.isArray(children)) {
-    return React.createElement("div", { className }, ...children);
-  } else {
-    return React.createElement("div", { className }, children);
-  }
-}
-
 function createPlasmicElement<DefaultElementType extends React.ElementType>(
   override: Flex<DefaultElementType>,
   defaultRoot: DefaultElementType,
-  defaultProps: Partial<React.ComponentProps<DefaultElementType>>,
-  wrapChildrenInFlex?: boolean
+  defaultProps: Partial<React.ComponentProps<DefaultElementType>>
 ): React.ReactNode | null {
   if (
     !override ||
@@ -170,11 +151,6 @@ function createPlasmicElement<DefaultElementType extends React.ElementType>(
 
   if (override2.wrapChildren) {
     children = override2.wrapChildren(ensureNotArray(children));
-  }
-
-  if (wrapChildrenInFlex) {
-    // For legacy, we still support data-plasmic-wrap-flex-children
-    children = wrapFlexContainerChildren(children, true);
   }
 
   let result = createElementWithChildren(root, props, children);
@@ -252,11 +228,9 @@ function createPlasmicElementFromJsx<
   ...children: React.ReactNode[]
 ) {
   const override = props["data-plasmic-override"];
-  const wrapFlexChild = props["data-plasmic-wrap-flex-child"];
   const triggerProps = (props["data-plasmic-trigger-props"] ??
     []) as React.HTMLAttributes<HTMLElement>[];
   delete props["data-plasmic-override"];
-  delete props["data-plasmic-wrap-flex-child"];
   delete props["data-plasmic-trigger-props"];
   return createPlasmicElement(
     override,
@@ -267,8 +241,7 @@ function createPlasmicElementFromJsx<
         ? {}
         : { children: children.length === 1 ? children[0] : children },
       ...triggerProps
-    ) as any,
-    wrapFlexChild
+    ) as any
   );
 }
 

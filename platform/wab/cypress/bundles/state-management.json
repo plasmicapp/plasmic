@@ -618,7 +618,7 @@
             "position": "relative",
             "width": "wrap",
             "height": "wrap",
-            "flex-row-gap": "8px"
+            "row-gap": "8px"
           },
           "mixins": [],
           "__type": "RuleSet"
@@ -1369,9 +1369,9 @@
             "display": "flex",
             "flex-direction": "column",
             "position": "relative",
-            "flex-row-gap": "8px",
             "width": "stretch",
-            "height": "stretch"
+            "height": "stretch",
+            "row-gap": "8px"
           },
           "mixins": [],
           "__type": "RuleSet"
@@ -4355,7 +4355,7 @@
             "position": "relative",
             "width": "wrap",
             "height": "wrap",
-            "flex-row-gap": "8px"
+            "row-gap": "8px"
           },
           "mixins": [],
           "__type": "RuleSet"
@@ -4512,7 +4512,7 @@
             "align-items": "center",
             "justify-content": "flex-start",
             "plasmic-display-none": "false",
-            "flex-column-gap": "8px"
+            "column-gap": "8px"
           },
           "mixins": [],
           "__type": "RuleSet"
@@ -5177,7 +5177,7 @@
             "align-items": "center",
             "justify-content": "flex-start",
             "plasmic-display-none": "false",
-            "flex-column-gap": "8px"
+            "column-gap": "8px"
           },
           "mixins": [],
           "__type": "RuleSet"
@@ -5728,7 +5728,7 @@
             "align-items": "center",
             "justify-content": "flex-start",
             "plasmic-display-none": "false",
-            "flex-column-gap": "8px"
+            "column-gap": "8px"
           },
           "mixins": [],
           "__type": "RuleSet"
@@ -6279,7 +6279,7 @@
             "align-items": "center",
             "justify-content": "flex-start",
             "plasmic-display-none": "false",
-            "flex-column-gap": "8px"
+            "column-gap": "8px"
           },
           "mixins": [],
           "__type": "RuleSet"
@@ -12128,7 +12128,6 @@
             "padding-right": "20px",
             "padding-bottom": "12px",
             "padding-left": "20px",
-            "flex-column-gap": "8px",
             "background": "linear-gradient(#232320, #232320)",
             "border-top-width": "0px",
             "border-right-width": "0px",
@@ -12140,7 +12139,8 @@
             "border-top-left-radius": "6px",
             "border-top-right-radius": "6px",
             "border-bottom-right-radius": "6px",
-            "border-bottom-left-radius": "6px"
+            "border-bottom-left-radius": "6px",
+            "column-gap": "8px"
           },
           "mixins": [],
           "__type": "RuleSet"
@@ -20340,7 +20340,7 @@
         }
       },
       "deps": [],
-      "version": "249-add-style-token-overrides"
+      "version": "250-migrate-flex-gap"
     }
   ]
 ]

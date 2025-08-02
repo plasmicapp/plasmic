@@ -247,3 +247,4 @@ platform/wab/src/wab/server/bundle-migrations/246-add-component-updated-at.ts
 platform/wab/src/wab/server/bundle-migrations/247-add-page-href-query-fragment.ts
 platform/wab/src/wab/server/bundle-migrations/248-add-prop-param-advanced.ts
 platform/wab/src/wab/server/bundle-migrations/249-add-style-token-overrides.ts
+platform/wab/src/wab/server/bundle-migrations/250-migrate-flex-gap.ts

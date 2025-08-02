@@ -3491,7 +3491,6 @@
         "padding-right": "20px",
         "padding-bottom": "12px",
         "padding-left": "20px",
-        "flex-column-gap": "8px",
         "background": "linear-gradient(#232320, #232320)",
         "border-top-width": "0px",
         "border-right-width": "0px",
@@ -3503,7 +3502,8 @@
         "border-top-left-radius": "6px",
         "border-top-right-radius": "6px",
         "border-bottom-right-radius": "6px",
-        "border-bottom-left-radius": "6px"
+        "border-bottom-left-radius": "6px",
+        "column-gap": "8px"
       },
       "mixins": [],
       "__type": "RuleSet"
@@ -8579,7 +8579,7 @@
         "width": "wrap",
         "height": "wrap",
         "align-items": "center",
-        "flex-column-gap": "4px"
+        "column-gap": "4px"
       },
       "mixins": [],
       "__type": "RuleSet"
@@ -22154,5 +22154,5 @@
     "W3Kfe31GKhIW": { "values": {}, "mixins": [], "__type": "RuleSet" }
   },
   "deps": [],
-  "version": "249-add-style-token-overrides"
+  "version": "250-migrate-flex-gap"
 }

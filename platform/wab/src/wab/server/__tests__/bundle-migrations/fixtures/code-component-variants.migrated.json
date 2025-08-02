@@ -13514,7 +13514,7 @@
         }
       },
       "deps": [],
-      "version": "249-add-style-token-overrides"
+      "version": "250-migrate-flex-gap"
     }
   ],
   [
@@ -17697,7 +17697,7 @@
             "border-bottom-left-radius": "var(--token-jwIQUbo72pT2)",
             "font-size": "var(--token-knahGFf7oL6n)",
             "line-height": "var(--token-duqBfpV3eboi)",
-            "flex-column-gap": "var(--token-jwIQUbo72pT2)"
+            "column-gap": "var(--token-jwIQUbo72pT2)"
           },
           "mixins": [],
           "__type": "RuleSet"
@@ -17718,7 +17718,7 @@
             "border-bottom-left-radius": "var(--token-jwIQUbo72pT2)",
             "line-height": "var(--token-duqBfpV3eboi)",
             "font-size": "var(--token-knahGFf7oL6n)",
-            "flex-column-gap": "var(--token-c7spO-t9DfTm)"
+            "column-gap": "var(--token-c7spO-t9DfTm)"
           },
           "mixins": [],
           "__type": "RuleSet"
@@ -21270,13 +21270,13 @@
             "display": "flex",
             "justify-content": "center",
             "align-items": "center",
-            "flex-column-gap": "var(--token-dZFz8_5O68Tq)",
             "padding-top": "var(--token-dZFz8_5O68Tq)",
             "padding-right": "var(--token-CDUkB2TRunHA)",
             "padding-bottom": "var(--token-dZFz8_5O68Tq)",
             "padding-left": "var(--token-CDUkB2TRunHA)",
             "width": "stretch",
-            "height": "stretch"
+            "height": "stretch",
+            "column-gap": "var(--token-dZFz8_5O68Tq)"
           },
           "mixins": [],
           "__type": "RuleSet"
@@ -22426,7 +22426,7 @@
         }
       },
       "deps": ["680b1b11-6954-4dd8-b4e6-6a2d087c1c28"],
-      "version": "249-add-style-token-overrides"
+      "version": "250-migrate-flex-gap"
     }
   ]
 ]

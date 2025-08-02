@@ -84,9 +84,9 @@ export const TPL_COMPONENT_PROPS = [
 // should take over these style props from the child node
 export const WRAP_AS_PARENT_PROPS = POSITIONING_PROPS;
 
-export const GAP_PROPS = ["flex-column-gap", "flex-row-gap"];
+export const GAP_PROPS = ["column-gap", "row-gap"];
 
-export const FAKE_FLEX_CONTAINER_PROPS = [
+export const FLEX_CONTAINER_PROPS = [
   "flex-direction",
   "flex-wrap",
   "justify-content",
@@ -158,9 +158,9 @@ export const defaultCopyableStyleNames = [
   "box-shadow",
   "opacity",
   "cursor",
-  "flex-column-gap",
-  "flex-row-gap",
-  ...FAKE_FLEX_CONTAINER_PROPS,
+  "column-gap",
+  "row-gap",
+  ...FLEX_CONTAINER_PROPS,
 ];
 const nonExtractableStyleNames = new Set([
   "left",
@@ -253,8 +253,8 @@ export const spacingProps = [
   "padding-right",
   "padding-top",
   "padding-bottom",
-  "flex-column-gap",
-  "flex-row-gap",
+  "column-gap",
+  "row-gap",
 ];
 
 export const opacityProps = ["opacity"];
@@ -277,11 +277,7 @@ export function getAllDefinedStyles(rs: DeepReadonly<RuleSet>) {
 
 // Mixin props that are always directly resolved instead of referenced
 // as css props
-export const ALWAYS_RESOLVE_MIXIN_PROPS = [
-  "flex-column-gap",
-  "flex-row-gap",
-  "background",
-];
+export const ALWAYS_RESOLVE_MIXIN_PROPS = ["background"];
 
 /**
  * Checks that the style prop is something Plasmic can handle (reflect correctly
@@ -300,10 +296,6 @@ export function isValidStyleProp(prop: string) {
     ) ||
     tryGetCssInitial(prop, undefined) !== undefined
   );
-}
-
-export function crossGapProp(prop: "flex-column-gap" | "flex-row-gap") {
-  return prop === "flex-column-gap" ? "flex-row-gap" : "flex-column-gap";
 }
 
 /*

@@ -3293,8 +3293,8 @@ export function parseStyles(
     if (styles[prop]) {
       if (layout && ["box", "vbox", "hbox"].includes(layout)) {
         if (prop == "gap") {
-          sanitized[`flex-row-gap`] = styles[prop];
-          sanitized[`flex-column-gap`] = styles[prop];
+          sanitized[`row-gap`] = styles[prop];
+          sanitized[`column-gap`] = styles[prop];
         } else {
           sanitized[`flex-${prop}`] = styles[prop];
         }

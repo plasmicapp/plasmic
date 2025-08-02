@@ -5490,8 +5490,8 @@ exports[`model-util works 1`] = `
                   "mixins": [],
                   "values": {
                     "align-items": "stretch",
+                    "column-gap": "20px",
                     "display": "flex",
-                    "flex-column-gap": "20px",
                     "flex-direction": "row",
                     "justify-content": "center",
                     "position": "relative",

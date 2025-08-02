@@ -28793,7 +28793,7 @@
         }
       },
       "deps": [],
-      "version": "249-add-style-token-overrides"
+      "version": "250-migrate-flex-gap"
     }
   ],
   [
@@ -32993,7 +32993,7 @@
         }
       },
       "deps": [],
-      "version": "249-add-style-token-overrides"
+      "version": "250-migrate-flex-gap"
     }
   ],
   [
@@ -61790,7 +61790,7 @@
         }
       },
       "deps": [],
-      "version": "249-add-style-token-overrides"
+      "version": "250-migrate-flex-gap"
     }
   ],
   [
@@ -70189,7 +70189,7 @@
             "flex-direction": "row",
             "align-items": "stretch",
             "justify-content": "flex-start",
-            "flex-column-gap": "10px"
+            "column-gap": "10px"
           },
           "mixins": [],
           "__type": "RuleSet"
@@ -89253,7 +89253,7 @@
             "width": "wrap",
             "height": "wrap",
             "align-items": "center",
-            "flex-column-gap": "4px"
+            "column-gap": "4px"
           },
           "mixins": [],
           "__type": "RuleSet"
@@ -99650,7 +99650,7 @@
         "ff598514-e845-4b90-9402-61b6e85b5633",
         "a0c6a0b1-20be-4fe8-a98b-9618eb575490"
       ],
-      "version": "249-add-style-token-overrides"
+      "version": "250-migrate-flex-gap"
     }
   ]
 ]

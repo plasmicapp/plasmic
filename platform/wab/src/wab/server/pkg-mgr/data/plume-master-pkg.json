@@ -2204,7 +2204,7 @@
             "width": "wrap",
             "height": "wrap",
             "align-items": "center",
-            "flex-column-gap": "4px"
+            "column-gap": "4px"
           },
           "mixins": [],
           "__type": "RuleSet"
@@ -3975,11 +3975,11 @@
             "flex-direction": "column",
             "justify-content": "center",
             "align-items": "flex-start",
-            "flex-row-gap": "16px",
             "padding-top": "32px",
             "padding-right": "32px",
             "padding-bottom": "198px",
-            "padding-left": "32px"
+            "padding-left": "32px",
+            "row-gap": "16px"
           },
           "mixins": [],
           "__type": "RuleSet"
@@ -5825,7 +5825,6 @@
             "display": "flex",
             "flex-direction": "row",
             "align-items": "center",
-            "flex-column-gap": "0px",
             "justify-content": "center",
             "border-top-style": "solid",
             "border-top-width": "1px",
@@ -5840,7 +5839,8 @@
             "border-top-color": "var(--token-RMowJwlqNII)",
             "border-right-color": "var(--token-RMowJwlqNII)",
             "border-bottom-color": "var(--token-RMowJwlqNII)",
-            "border-left-color": "var(--token-RMowJwlqNII)"
+            "border-left-color": "var(--token-RMowJwlqNII)",
+            "column-gap": "0px"
           },
           "mixins": [{ "__ref": "52699001" }],
           "__type": "RuleSet"
@@ -12247,11 +12247,11 @@
             "flex-direction": "column",
             "justify-content": "center",
             "align-items": "flex-start",
-            "flex-row-gap": "16px",
             "padding-top": "32px",
             "padding-right": "32px",
             "padding-bottom": "198px",
-            "padding-left": "32px"
+            "padding-left": "32px",
+            "row-gap": "16px"
           },
           "mixins": [],
           "__type": "RuleSet"
@@ -12301,9 +12301,9 @@
             "justify-content": "flex-start",
             "top": "auto",
             "left": "auto",
-            "flex-row-gap": "10px",
             "max-width": "415px",
-            "width": "stretch"
+            "width": "stretch",
+            "row-gap": "10px"
           },
           "mixins": [],
           "__type": "RuleSet"
@@ -15797,7 +15797,6 @@
             "padding-right": "20px",
             "padding-bottom": "12px",
             "padding-left": "20px",
-            "flex-column-gap": "8px",
             "background": "linear-gradient(var(--token-mR0CVAj-6Fr), var(--token-mR0CVAj-6Fr))",
             "border-top-width": "0px",
             "border-right-width": "0px",
@@ -15805,7 +15804,8 @@
             "border-left-width": "0px",
             "cursor": "pointer",
             "transition-property": "background",
-            "transition-duration": "0.1s"
+            "transition-duration": "0.1s",
+            "column-gap": "8px"
           },
           "mixins": [{ "__ref": "52699001" }],
           "__type": "RuleSet"
@@ -19079,7 +19079,7 @@
             "align-items": "center",
             "justify-content": "space-evenly",
             "background": "none",
-            "flex-column-gap": "16px"
+            "column-gap": "16px"
           },
           "mixins": [],
           "__type": "RuleSet"
@@ -19253,10 +19253,10 @@
             "align-items": "stretch",
             "justify-content": "flex-start",
             "background": "none",
-            "flex-column-gap": "16px",
             "width": "stretch",
             "flex-wrap": "wrap",
-            "align-content": "flex-start"
+            "align-content": "flex-start",
+            "column-gap": "16px"
           },
           "mixins": [],
           "__type": "RuleSet"
@@ -20039,7 +20039,7 @@
             "align-items": "center",
             "justify-content": "space-evenly",
             "background": "none",
-            "flex-column-gap": "16px"
+            "column-gap": "16px"
           },
           "mixins": [],
           "__type": "RuleSet"
@@ -20405,7 +20405,7 @@
             "align-items": "center",
             "justify-content": "space-evenly",
             "background": "none",
-            "flex-column-gap": "16px"
+            "column-gap": "16px"
           },
           "mixins": [],
           "__type": "RuleSet"
@@ -21957,7 +21957,7 @@
             "justify-content": "flex-start",
             "top": "auto",
             "left": "auto",
-            "flex-column-gap": "10px"
+            "column-gap": "10px"
           },
           "mixins": [],
           "__type": "RuleSet"
@@ -22184,7 +22184,7 @@
             "align-items": "center",
             "justify-content": "space-evenly",
             "background": "none",
-            "flex-column-gap": "16px"
+            "column-gap": "16px"
           },
           "mixins": [],
           "__type": "RuleSet"
@@ -23030,7 +23030,7 @@
             "justify-content": "flex-start",
             "top": "auto",
             "left": "auto",
-            "flex-column-gap": "11px"
+            "column-gap": "11px"
           },
           "mixins": [],
           "__type": "RuleSet"
@@ -35217,7 +35217,6 @@
             "padding-right": "20px",
             "padding-bottom": "12px",
             "padding-left": "20px",
-            "flex-column-gap": "4px",
             "background": "linear-gradient(var(--token-mR0CVAj-6Fr), var(--token-mR0CVAj-6Fr))",
             "border-top-width": "0px",
             "border-right-width": "0px",
@@ -35225,7 +35224,8 @@
             "border-left-width": "0px",
             "cursor": "pointer",
             "transition-property": "background",
-            "transition-duration": "0.1s"
+            "transition-duration": "0.1s",
+            "column-gap": "4px"
           },
           "mixins": [{ "__ref": "52699001" }],
           "__type": "RuleSet"
@@ -41084,7 +41084,7 @@
             "align-items": "center",
             "justify-content": "space-evenly",
             "background": "none",
-            "flex-column-gap": "16px"
+            "column-gap": "16px"
           },
           "mixins": [],
           "__type": "RuleSet"
@@ -43165,7 +43165,7 @@
         }
       },
       "deps": [],
-      "version": "249-add-style-token-overrides"
+      "version": "250-migrate-flex-gap"
     }
   ]
 ]

@@ -255,14 +255,11 @@ export const ColumnsGapControls = observer(function ColumnsGapControls(props: {
   const exp = expsProvider.mergedExp();
 
   return (
-    <LabeledStyleItemRow
-      label={"Gaps"}
-      styleName={["flex-column-gap", "flex-row-gap"]}
-    >
+    <LabeledStyleItemRow label={"Gaps"} styleName={["column-gap", "row-gap"]}>
       <FullRow twinCols>
         <VerticalLabeledStyleDimItem
           label="Column"
-          styleName="flex-column-gap"
+          styleName="column-gap"
           expsProvider={expsProvider}
           dimOpts={{
             min: 0,
@@ -273,7 +270,7 @@ export const ColumnsGapControls = observer(function ColumnsGapControls(props: {
         />
         <VerticalLabeledStyleDimItem
           label="Row"
-          styleName="flex-row-gap"
+          styleName="row-gap"
           expsProvider={expsProvider}
           dimOpts={{
             min: 0,
@@ -303,8 +300,8 @@ export const ColumnSection = observer(function ColumnSection(props: {
         "align-items",
         "align-content",
         "flex-wrap",
-        "flex-row-gap",
-        "flex-column-gap",
+        "row-gap",
+        "column-gap",
       ]}
     >
       {(renderMaybeCollapsibleRows) => (

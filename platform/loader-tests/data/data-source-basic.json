@@ -27792,7 +27792,7 @@
         }
       },
       "deps": [],
-      "version": "249-add-style-token-overrides"
+      "version": "250-migrate-flex-gap"
     }
   ],
   [
@@ -31929,7 +31929,7 @@
         }
       },
       "deps": [],
-      "version": "249-add-style-token-overrides"
+      "version": "250-migrate-flex-gap"
     }
   ],
   [
@@ -32245,7 +32245,7 @@
         }
       },
       "deps": [],
-      "version": "249-add-style-token-overrides"
+      "version": "250-migrate-flex-gap"
     }
   ],
   [
@@ -32927,7 +32927,7 @@
             "padding-bottom": "0px",
             "padding-top": "0px",
             "plasmic-display-none": "false",
-            "flex-column-gap": "4px"
+            "column-gap": "4px"
           },
           "mixins": [],
           "__type": "RuleSet"
@@ -36900,7 +36900,7 @@
         "88b7de88-9046-4021-b08b-d5d7d1db6a8c",
         "0b5c4773-e201-48c2-86a4-c29335ea539b"
       ],
-      "version": "249-add-style-token-overrides"
+      "version": "250-migrate-flex-gap"
     }
   ]
 ]

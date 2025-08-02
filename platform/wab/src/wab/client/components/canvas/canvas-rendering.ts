@@ -109,7 +109,6 @@ import {
   NodeNamer,
   getExportedComponentName,
   makeRootResetClassName,
-  makeWabFlexContainerClassName,
   makeWabHtmlTextClassName,
   makeWabInstanceClassName,
   makeWabSlotClassName,
@@ -182,7 +181,6 @@ import {
   classNameForRuleSet,
   defaultStyleClassNames,
   getTriggerableSelectors,
-  hasGapStyle,
   makeCanvasRuleNamers,
   makeDefaultStyleValuesDict,
   makeStyleExprClassName,
@@ -2876,41 +2874,16 @@ function deriveTplTagChildren(
   } else if (evaledAttrs.children) {
     return evaledAttrs.children;
   } else if (node.children.length > 0) {
-    if (hasGapStyle(node)) {
-      // This is a flex container with column/row gaps specified! We need to
-      // create a few wrappers to polyfill column/row gaps, so that it looks
-      // like  div.this-node div.__wab_flex-container
-      // div.__wab_flex-item.child1 div.child1 div.__wab_flex-item.child2
-      // div.child2  We put the child1/child2 classes on the __wab_flex-item
-      // elements so that the item wrapper contains the positioning styles from
-      // the child (width/height/flex-grow/etc.)  Other styles that we don't
-      // want to put on the item wrapper (background, border, etc) are blanked
-      // out in the definition for __wab_flex-item.  Similarly, the definition
-      // for __wab_flex-item blanks out the styles that it is taking over from
-      // the actual child element. See
-      // https://paper.dropbox.com/doc/Fake-Flex-Gap-Design-Doc--At09n0msC1b~sPjVPx~72YohAg-8s3S2rQWctLAHLUs8KE1Z for more details.
-      return r(
-        "div",
-        { className: makeWabFlexContainerClassName({ targetEnv: "canvas" }) },
-        ...node.children.flatMap((child) =>
-          renderTplNode(child, {
-            ...ctx,
-            valKey: ctx.valKey + "." + child.uuid,
-          })
-        )
-      );
-    } else {
-      const children = node.children.flatMap((child) =>
-        renderTplNode(child, {
-          ...ctx,
-          valKey: ctx.valKey + "." + child.uuid,
-        })
-      );
-      if (children.length === 1) {
-        return children[0];
-      }
-      return children;
+    const children = node.children.flatMap((child) =>
+      renderTplNode(child, {
+        ...ctx,
+        valKey: ctx.valKey + "." + child.uuid,
+      })
+    );
+    if (children.length === 1) {
+      return children[0];
     }
+    return children;
   } else if (canAddChildren(node)) {
     const suppressPlaceholder = supressContainerPlaceholder(
       node,

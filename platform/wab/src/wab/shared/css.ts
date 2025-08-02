@@ -59,8 +59,8 @@ export const camelProp = memoize((prop: string) => camelCase(prop));
 const browserCssInitialsOverrides = {
   "justify-self": "auto", // was just missing
   "justify-items": "stretch", // was just missing
-  "flex-row-gap": "0px",
-  "flex-column-gap": "0px",
+  "row-gap": "0px", // was just missing
+  "column-gap": "0px", // was just missing
   "user-select": "text",
   "backdrop-filter": "initial",
   "transition-property": "all",
@@ -95,8 +95,8 @@ export const cssInitialsOverrides = {
   background: "none",
   "background-size": "100% 100%",
   "background-repeat": "no-repeat",
-  "flex-row-gap": "0px",
-  "flex-column-gap": "0px",
+  "row-gap": "0px",
+  "column-gap": "0px",
   [PLASMIC_DISPLAY_NONE]: "false",
 
   // Overrides for browser elements that come with pre-built css.  Based on /static/css/normalize.css

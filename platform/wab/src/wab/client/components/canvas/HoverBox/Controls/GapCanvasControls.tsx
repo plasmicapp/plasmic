@@ -267,10 +267,10 @@ export const GapControls = observer(function GapControls(props: {
     site.activeTheme
   );
   const colGap = resolver.tryResolveTokenOrMixinRef(
-    effectiveVs.rsh().get("flex-column-gap") || "0px"
+    effectiveVs.rsh().get("column-gap") || "0px"
   );
   const rowGap = resolver.tryResolveTokenOrMixinRef(
-    effectiveVs.rsh().get("flex-row-gap") || "0px"
+    effectiveVs.rsh().get("row-gap") || "0px"
   );
 
   const dims = getChildDimensions(elt, meta, {
@@ -472,7 +472,7 @@ export const GapControl = observer(function GapControl(props: {
             const vtm = viewCtx.variantTplMgr();
             const rsh = vtm.targetRshForNode(tpl);
             rsh.set(
-              orient === "vert" ? "flex-column-gap" : "flex-row-gap",
+              orient === "vert" ? "column-gap" : "row-gap",
               `${newValue}px`
             );
             return success();

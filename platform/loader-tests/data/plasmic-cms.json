@@ -2172,7 +2172,7 @@
         }
       },
       "deps": [],
-      "version": "249-add-style-token-overrides"
+      "version": "250-migrate-flex-gap"
     }
   ],
   [
@@ -2842,11 +2842,11 @@
             "height": "stretch",
             "justify-content": "flex-start",
             "align-items": "center",
-            "flex-row-gap": "16px",
             "padding-top": "96px",
             "padding-right": "24px",
             "padding-bottom": "96px",
-            "padding-left": "24px"
+            "padding-left": "24px",
+            "row-gap": "16px"
           },
           "mixins": [],
           "__type": "RuleSet"
@@ -4621,7 +4621,7 @@
         }
       },
       "deps": ["7349d209-ded6-417a-aa97-05311f8b93c4"],
-      "version": "249-add-style-token-overrides"
+      "version": "250-migrate-flex-gap"
     }
   ]
 ]

@@ -269,9 +269,7 @@ export function getUsedGlobalVariantsForNonCss(
           !!vs.text ||
           !!vs.dataCond ||
           !L.isEmpty(vs.attrs) ||
-          !L.isEmpty(vs.args) ||
-          exp.has("flex-column-gap") ||
-          exp.has("flex-row-gap")
+          !L.isEmpty(vs.args)
         ) {
           return true;
         }

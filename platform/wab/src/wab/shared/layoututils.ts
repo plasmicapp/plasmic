@@ -1,10 +1,9 @@
 import type { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { isMixinPropRef, isTokenRef } from "@/wab/commons/StyleToken";
 import { DeepReadonly } from "@/wab/commons/types";
 import { unexpected } from "@/wab/shared/common";
 import {
   CONTENT_LAYOUT,
-  FAKE_FLEX_CONTAINER_PROPS,
+  FLEX_CONTAINER_PROPS,
   GAP_PROPS,
   contentLayoutProps,
   gridCssProps,
@@ -14,7 +13,6 @@ import {
   isTplComponent,
   isTplVariantable,
 } from "@/wab/shared/core/tpls";
-import { parseCssNumericNew } from "@/wab/shared/css";
 import { CONTENT_LAYOUT_INITIALS } from "@/wab/shared/default-styles";
 import { createGridSpec, showGridCss } from "@/wab/shared/Grids";
 import { HORIZ_CONTAINER_CAP, VERT_CONTAINER_CAP } from "@/wab/shared/Labels";
@@ -67,7 +65,7 @@ export function convertSelfContainerType(
   } else if (prevType === ContainerLayoutType.contentLayout) {
     rsh.clearAll(contentLayoutProps);
   } else if (prevType.includes("flex") && !type.includes("flex")) {
-    rsh.clearAll([...FAKE_FLEX_CONTAINER_PROPS, ...GAP_PROPS]);
+    rsh.clearAll([...FLEX_CONTAINER_PROPS, ...GAP_PROPS]);
   }
 
   if (type === "grid") {
@@ -78,16 +76,15 @@ export function convertSelfContainerType(
     rsh.set("flex-direction", type === "flex-row" ? "row" : "column");
     if (!rsh.has("flex-wrap") || rsh.get("flex-wrap") === "nowrap") {
       // If there's no wrapping, then transfer row-gap to column-gap and vice versa
-      const flexRowGap =
-        rsh.getRaw("flex-row-gap") || baseRsh?.getRaw("flex-row-gap");
+      const flexRowGap = rsh.getRaw("row-gap") || baseRsh?.getRaw("row-gap");
       const flexColumnGap =
-        rsh.getRaw("flex-column-gap") || baseRsh?.getRaw("flex-column-gap");
+        rsh.getRaw("column-gap") || baseRsh?.getRaw("column-gap");
       if (type === "flex-row" && flexRowGap) {
-        rsh.set("flex-column-gap", flexRowGap);
-        rsh.clear("flex-row-gap");
+        rsh.set("column-gap", flexRowGap);
+        rsh.clear("row-gap");
       } else if (type === "flex-column" && flexColumnGap) {
-        rsh.set("flex-row-gap", flexColumnGap);
-        rsh.clear("flex-column-gap");
+        rsh.set("row-gap", flexColumnGap);
+        rsh.clear("column-gap");
       }
     }
   } else if (type === "free") {
@@ -226,41 +223,6 @@ export function convertToAbsolutePosition(exp: IRuleSetHelpers) {
   }
 }
 
-export function isFlexContainerWithGap(expr: ReadonlyIRuleSetHelpersX) {
-  const container = getRshContainerType(expr);
-  if (
-    container === ContainerLayoutType.flexColumn ||
-    container === ContainerLayoutType.flexRow
-  ) {
-    for (const prop of ["flex-column-gap", "flex-row-gap"] as const) {
-      if (!!getNumericGap(expr, prop)) {
-        return true;
-      }
-    }
-  }
-  return false;
-}
-
-export function getNumericGap(
-  expr: ReadonlyIRuleSetHelpersX,
-  prop: "flex-column-gap" | "flex-row-gap"
-) {
-  if (expr.has(prop)) {
-    const val = expr.get(prop);
-    if (isMixinPropRef(val)) {
-      return val;
-    }
-    if (isTokenRef(val)) {
-      return val;
-    }
-    const parsed = parseCssNumericNew(val);
-    if (parsed) {
-      return val;
-    }
-  }
-  return undefined;
-}
-
 export function makeLayoutAwareRuleSet(
   rs: RuleSet,
   forBase: boolean
@@ -291,8 +253,8 @@ export function makeLayoutAwareRuleSet(
       const values = rs.values;
       const flexDir = values["flex-direction"];
       const flexWrap = values["flex-wrap"];
-      const rowGap = values["flex-row-gap"];
-      const colGap = values["flex-column-gap"];
+      const rowGap = values["row-gap"];
+      const colGap = values["column-gap"];
 
       const isFlex = !!flexDir || !!rowGap || !!colGap;
       const isWrap = !!flexWrap && ["wrap", "wrap-reverse"].includes(flexWrap);
@@ -302,9 +264,9 @@ export function makeLayoutAwareRuleSet(
         const dir = flexDir && flexDirToArrangement(flexDir);
         const crossRule =
           dir === "column" || rowGap
-            ? "flex-column-gap"
+            ? "column-gap"
             : dir === "row" || colGap
-            ? "flex-row-gap"
+            ? "row-gap"
             : undefined;
         if (crossRule) {
           if (!extraValues) {

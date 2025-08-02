@@ -28078,7 +28078,7 @@
         }
       },
       "deps": [],
-      "version": "249-add-style-token-overrides"
+      "version": "250-migrate-flex-gap"
     }
   ],
   [
@@ -29715,7 +29715,7 @@
             "padding-right": "8px",
             "padding-bottom": "8px",
             "padding-top": "8px",
-            "flex-column-gap": "5px"
+            "column-gap": "5px"
           },
           "mixins": [],
           "__type": "RuleSet"
@@ -29756,7 +29756,7 @@
             "padding-right": "8px",
             "padding-bottom": "8px",
             "padding-top": "8px",
-            "flex-column-gap": "5px"
+            "column-gap": "5px"
           },
           "mixins": [],
           "__type": "RuleSet"
@@ -30095,7 +30095,7 @@
             "padding-right": "8px",
             "padding-bottom": "8px",
             "padding-top": "8px",
-            "flex-column-gap": "5px"
+            "column-gap": "5px"
           },
           "mixins": [],
           "__type": "RuleSet"
@@ -30136,7 +30136,7 @@
             "padding-right": "8px",
             "padding-bottom": "8px",
             "padding-top": "8px",
-            "flex-column-gap": "5px"
+            "column-gap": "5px"
           },
           "mixins": [],
           "__type": "RuleSet"
@@ -30241,7 +30241,7 @@
         }
       },
       "deps": ["530345ed-8f2a-4344-bc76-1cd18621bd88"],
-      "version": "249-add-style-token-overrides"
+      "version": "250-migrate-flex-gap"
     }
   ]
 ]

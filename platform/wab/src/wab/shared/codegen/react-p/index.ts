@@ -174,7 +174,6 @@ import {
   getOrderedExplicitVSettings,
   getPlumePackageName,
   getReactWebPackageName,
-  isReactComponent,
   joinVariantVals,
   makeChildrenStr,
   serializedKeyValue,
@@ -1396,16 +1395,6 @@ export function serializeTplTagBase(
   const orderedVsettings = getOrderedExplicitVSettings(ctx, node);
 
   const attrs = conditionalTagAttrs(ctx, node, orderedVsettings);
-  let wrapFlexChild = "false";
-  if (!isTplTextBlock(node)) {
-    // See whether any VariantSettings flex-gap wrapping
-    if (
-      ctx.componentGenHelper.hasGapStyle(node) &&
-      !ctx.exportOpts.stylesOpts.useCssFlexGap
-    ) {
-      wrapFlexChild = "true";
-    }
-  }
 
   attrs["className"] = serializeClassNames(ctx, node, orderedVsettings, [
     attrs["className"],
@@ -1519,7 +1508,6 @@ export function serializeTplTagBase(
   );
   return {
     orderedCondStr,
-    wrapFlexChild,
     attrs,
     tag,
     triggeredHooks,
@@ -1583,8 +1571,10 @@ function serializeTplTag(ctx: SerializerBaseContext, node: TplTag) {
     serializedChildren = serializeTplNodesAsArray(ctx, node.children);
   }
 
-  let { wrapFlexChild, attrs, orderedCondStr, tag, triggeredHooks } =
-    serializeTplTagBase(ctx, node);
+  let { attrs, orderedCondStr, tag, triggeredHooks } = serializeTplTagBase(
+    ctx,
+    node
+  );
 
   if (attrs.children) {
     // If attrs.children has value (can only be the case in unit tests)
@@ -1617,7 +1607,6 @@ function serializeTplTag(ctx: SerializerBaseContext, node: TplTag) {
     nodeName,
     attrs,
     serializedChildren,
-    wrapFlexChild,
     triggeredHooks,
     node === ctx.component.tplTree,
     !node.name
@@ -1668,30 +1657,22 @@ function getDataPlasmicOverride(
 function makeCreatePlasmicElement(
   ctx: SerializerBaseContext,
   node: TplNode,
-  elementType: string,
+  tagType: string,
   nodeName: string | undefined,
   attrs: L.Dictionary<string>,
   serializedChildren: string[],
-  wrapChildrenInFlex?: string,
   triggeredHooks?: ReactHookSpec[],
   isRoot?: boolean,
   isPlasmicDefaultNodeName?: boolean
 ) {
   const keys = L.keys(attrs).sort();
   const hasChildren = serializedChildren.length > 0;
-  const hasGap = wrapChildrenInFlex && wrapChildrenInFlex !== "false";
-  const tagType = hasGap ? "Stack__" : elementType;
-  // Detect if elementType is a React component to decide between
-  // <Stack as={Component}> and <Stack as={"tag"}>.
-  const asType = isReactComponent(elementType)
-    ? elementType
-    : jsLiteral(elementType);
+
   const skinny = ctx.exportOpts.skinny;
   const isFakeTpl = ctx.fakeTpls.includes(node);
 
   const serializeComponentCall = (is$PropsCreated: boolean) => {
     return `<${tagType}
-      ${hasGap ? `as={${asType}}` : ""}
       ${
         !skinny && nodeName && !isFakeTpl
           ? `data-plasmic-name={${jsLiteral(nodeName)}}`
@@ -1707,7 +1688,6 @@ function makeCreatePlasmicElement(
       }
       ${!skinny && isRoot ? `data-plasmic-root={true}` : ""}
       ${!skinny && isRoot ? `data-plasmic-for-node={forNode}` : ""}
-      ${hasGap ? `hasGap={${wrapChildrenInFlex}}` : ""}
       ${
         is$PropsCreated
           ? `{...child$Props}`
@@ -2049,7 +2029,6 @@ function serializeTplComponent(ctx: SerializerBaseContext, node: TplComponent) {
     nodeName,
     attrs,
     serializedChildren,
-    undefined,
     triggeredHooks,
     isRoot
   );
@@ -2813,7 +2792,6 @@ export function serializeCssRules(ctx: SerializerBaseContext) {
               targetEnv: ctx.exportOpts.targetEnv,
               useCssModules: ctx.exportOpts.stylesOpts.scheme === "css-modules",
               whitespaceNormal: !!ctx.exportOpts.whitespaceNormal,
-              useCssFlexGap: ctx.exportOpts.stylesOpts.useCssFlexGap,
             }
           );
           buffer.push(...tryAugmentRulesWithScreenVariant(rules, vs));

@@ -123,7 +123,6 @@ export interface ExportOpts {
   stylesOpts: {
     scheme: "css" | "css-modules";
     skipGlobalCssImport?: boolean;
-    useCssFlexGap?: boolean;
   };
 
   codeOpts: {

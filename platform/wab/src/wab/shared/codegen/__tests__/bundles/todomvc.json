@@ -3084,7 +3084,7 @@
         "position": "relative",
         "align-items": "stretch",
         "justify-content": "center",
-        "flex-column-gap": "20px"
+        "column-gap": "20px"
       },
       "mixins": [],
       "__type": "RuleSet"
@@ -4925,5 +4925,5 @@
     }
   },
   "deps": [],
-  "version": "249-add-style-token-overrides"
+  "version": "250-migrate-flex-gap"
 }

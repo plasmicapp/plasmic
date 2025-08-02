@@ -367,7 +367,7 @@ function FlexContainerControls_(props: FlexContainerControlsProps) {
           <FullRow key="col">
             <LabeledStyleDimItem
               label={"Cols gap"}
-              {...getGapFieldProps("flex-column-gap")}
+              {...getGapFieldProps("column-gap")}
             />
           </FullRow>
         ),
@@ -375,7 +375,7 @@ function FlexContainerControls_(props: FlexContainerControlsProps) {
           <FullRow key="row">
             <LabeledStyleDimItem
               label={"Rows gap"}
-              {...getGapFieldProps("flex-row-gap")}
+              {...getGapFieldProps("row-gap")}
             />
           </FullRow>
         ),

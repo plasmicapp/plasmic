@@ -25,7 +25,6 @@ import {
   plasmicImgAttrStyles,
   SIZE_PROPS,
 } from "@/wab/shared/core/style-props";
-import { createRuleSetMerger } from "@/wab/shared/core/styles";
 import {
   findVariantSettingsUnderTpl,
   flattenTpls,
@@ -36,10 +35,6 @@ import {
   isTplTag,
   isTplVariantable,
 } from "@/wab/shared/core/tpls";
-import { PLASMIC_DISPLAY_NONE } from "@/wab/shared/css";
-import { getEffectiveVariantSetting } from "@/wab/shared/effective-variant-setting";
-import { makeExpFromValues } from "@/wab/shared/exprs";
-import { isFlexContainerWithGap } from "@/wab/shared/layoututils";
 import {
   Component,
   isKnownColumnsConfig,
@@ -70,13 +65,8 @@ import {
   VariantGroup,
   VariantSetting,
 } from "@/wab/shared/model/classes";
-import {
-  ReadonlyIRuleSetHelpersX,
-  RuleSetHelpers,
-} from "@/wab/shared/RuleSetHelpers";
 import { hasSpecialSizeVal } from "@/wab/shared/sizingutils";
 import { $$$ } from "@/wab/shared/TplQuery";
-import { isAncestorCombo } from "@/wab/shared/variant-sort";
 import {
   getStyleOrCodeComponentVariantIdentifierName,
   isGlobalVariant,
@@ -337,48 +327,6 @@ export function summarizeChanges(
     maybeAdd(updatedNodes, getChangedTplNode(change));
     maybeAdd(updatedComponents, getChangedComponent(change));
 
-    const flexToggled = getChangedRuleSetsByFlexGapToggle(change);
-    if (flexToggled && flexToggled.type === "tpl") {
-      flexToggled.updates.forEach(([vs, node]) =>
-        maybeMergeMap(updatedRuleSets, vs, { tpl: node })
-      );
-    }
-
-    const flexUpdate = getChangedRuleSetsByFlexGapUpdate(change);
-    if (flexUpdate) {
-      // If we've updated flex gap, we need to update the styles for all
-      // children nodes
-      if (flexUpdate.type === "tpl") {
-        maybeMergeMap(updatedRuleSets, flexUpdate?.vs, {
-          tpl: flexUpdate?.tpl,
-          updateChildren: true,
-          // If we are updating the gaps in a responsive columns
-          // we have to update the dependent vs, because they have
-          // their widths calculated based in this gap
-          updateDependentVSs: isTplColumns(flexUpdate.tpl),
-        });
-      } else {
-        maybeMergeMap(regenMixins, flexUpdate.mixin, {
-          updateTplChildren: true,
-        });
-      }
-    }
-
-    const marginUpdate = getChangedRuleSetsByMarginAndVisibilityUpdate(change);
-    if (marginUpdate) {
-      // If we've updated margin-left or margin-right ()
-      if (marginUpdate.type === "tpl") {
-        maybeMergeMap(updatedRuleSets, marginUpdate?.vs, {
-          tpl: marginUpdate?.tpl,
-          updateDependentVSs: true,
-        });
-      } else {
-        maybeMergeMap(regenMixins, marginUpdate.mixin, {
-          updateDependentVSs: true,
-        });
-      }
-    }
-
     const responsiveColumnsUpdate = getChangedResponsiveColumnsUpdate(change);
     if (responsiveColumnsUpdate) {
       maybeMergeMap(updatedRuleSets, responsiveColumnsUpdate.vs, {
@@ -391,7 +339,6 @@ export function summarizeChanges(
 
     styleForcesEval =
       styleForcesEval ||
-      !!flexToggled ||
       changeTogglesTplSlotStyles(change) ||
       changeChangesImgSize(change);
 
@@ -933,128 +880,6 @@ function getDeeplyChangedComponent(
   return deepChanged;
 }
 
-/**
- * Returns rulesets that should be regenerated because flex gap has been
- * toggled.
- */
-function getChangedRuleSetsByFlexGapToggle(change: ModelChange) {
-  const vsTpl = extractAlongPath(change.path, [VariantSetting, TplNode]);
-  if (vsTpl) {
-    const [vs, tpl] = vsTpl;
-    if (isTplVariantable(tpl)) {
-      const exp = getEffectiveVariantSetting(tpl as TplNode, vs.variants).rsh();
-      if (changeTogglesFlexGap(change, exp)) {
-        // We re-generate the css for all VariantSettings for this tpl.  That's
-        // because toggling flex gap may make a different for other variants as well;
-        // if you toggle the flex gap for the base variant, then other variants that
-        // inherit that gap will also need to generate the right css for the flex
-        // container, especially if those other variants also have flex-related
-        // settings like justify-content.  We just re-generate css for all VSs
-        // for now instead of figuring out exactly which VS may be impacted.
-        return {
-          type: "tpl",
-          updates: tpl.vsettings.map((vs2) => tuple(vs2, tpl)),
-        } as const;
-      }
-    }
-  }
-
-  const rsMixin = extractAlongPath(change.path, [RuleSet, Mixin]);
-  if (rsMixin) {
-    const exp = new RuleSetHelpers(rsMixin[0], "div");
-    if (changeTogglesFlexGap(change, exp)) {
-      return {
-        type: "mixin",
-        mixin: rsMixin[1],
-      } as const;
-    }
-  }
-
-  return undefined;
-}
-
-/**
- * Returns rulesets that should be regenerated because flex gap has been
- * updated.
- */
-function getChangedRuleSetsByFlexGapUpdate(change: ModelChange) {
-  const vsTpl = extractAlongPath(change.path, [VariantSetting, TplNode]);
-  if (vsTpl) {
-    const [vs, tpl] = vsTpl;
-    if (isTplVariantable(tpl) && changeUpdatesFlexGap(change)) {
-      return {
-        type: "tpl",
-        tpl,
-        vs,
-      } as const;
-    }
-  }
-
-  const rsMixin = extractAlongPath(change.path, [RuleSet, Mixin]);
-  if (rsMixin && changeUpdatesFlexGap(change)) {
-    return {
-      type: "mixin",
-      mixin: rsMixin[1],
-    } as const;
-  }
-
-  return undefined;
-}
-
-/**
- * Returns rulesets that should be regenerated because the margin has changed
- * and it depends on the gap from the parent, or visibility has changed.
- */
-function getChangedRuleSetsByMarginAndVisibilityUpdate(change: ModelChange) {
-  const vsTpl = extractAlongPath(change.path, [VariantSetting, TplNode]);
-  if (vsTpl) {
-    const [vs, tpl] = vsTpl;
-    if (isTplVariantable(tpl)) {
-      if (
-        isTplVariantable(tpl.parent) &&
-        changeUpdatesDependentMargin(
-          change,
-          // Only need to include ancestor combos as only those might be
-          // in the EffectiveVariantSettings
-          createRuleSetMerger(
-            tpl.parent.vsettings
-              .filter((it) => isAncestorCombo(vs.variants, it.variants))
-              .map((it) => it.rs),
-            tpl.parent
-          )
-        )
-      ) {
-        return {
-          type: "tpl",
-          tpl,
-          vs,
-        } as const;
-      }
-
-      if (changeTogglesVisibility(change)) {
-        return {
-          type: "tpl",
-          tpl,
-          vs,
-        } as const;
-      }
-    }
-  }
-
-  const rsMixin = extractAlongPath(change.path, [RuleSet, Mixin]);
-  if (
-    rsMixin &&
-    (changeUpdatesDependentMargin(change) || changeTogglesVisibility(change))
-  ) {
-    return {
-      type: "mixin",
-      mixin: rsMixin[1],
-    } as const;
-  }
-
-  return undefined;
-}
-
 function isResponsiveColumnsChange(change: ModelChange) {
   return isKnownColumnsConfig(change.changeNode.inst);
 }
@@ -1091,84 +916,6 @@ function getMixinWithChangedAlwaysResolveProps(change: ModelChange) {
     }
   }
   return undefined;
-}
-
-/**
- * Returns true if this `change` toggles flex column/row gap from none to some.
- *
- * We care about this because flex-column-gap and flex-row-gap are "fake" css
- * styles that we implement ourselves by rendering extra elements in the
- * val-renderer.
- */
-function changeTogglesFlexGap(
-  change: ModelChange,
-  exp: ReadonlyIRuleSetHelpersX
-) {
-  return changeTogglesStyle(
-    change,
-    ["display", "flex-column-gap", "flex-row-gap"],
-    (values) => {
-      const checkExp = makeExpFromValues(values);
-      const hasGap = isFlexContainerWithGap(checkExp);
-      return hasGap ? "gap" : "none";
-    }
-  );
-}
-
-/**
- * Return true if this `change` toggles visibility
- */
-function changeTogglesVisibility(change: ModelChange) {
-  return changeTogglesStyle(
-    change,
-    [PLASMIC_DISPLAY_NONE, "display"],
-    (values) => {
-      return styleTypeFromProps(values, [PLASMIC_DISPLAY_NONE, "display"]);
-    }
-  );
-}
-
-/**
- * Returns true if this `change` changes flex gap in any way.
- *
- * We care about it because the flex gap is used by all children nodes
- */
-function changeUpdatesFlexGap(change: ModelChange) {
-  return changeTogglesStyle(
-    change,
-    ["flex-column-gap", "flex-row-gap"],
-    (values) => {
-      return styleTypeFromProps(values, ["flex-column-gap", "flex-row-gap"]);
-    }
-  );
-}
-
-/**
- * Returns true if this `change` changes a margin that might affect other nodes
- * (due to flex gaps).
- *
- * If we change margin-top, for example, and if we have a row gap on the parent,
- * all variants that inherit the margin will gerenate a new margin taking the
- * gap into consideration.
- */
-function changeUpdatesDependentMargin(
-  change: ModelChange,
-  parentExp?: ReadonlyIRuleSetHelpersX
-) {
-  return changeTogglesStyle(change, ["margin-left", "margin-top"], (values) => {
-    let types: string[] | undefined = undefined;
-    if (!parentExp || parentExp.has("flex-column-gap")) {
-      if ("margin-left" in values) {
-        types = ensurePush(types, `margin-left-${values["margin-left"]}`);
-      }
-    }
-    if (!parentExp || parentExp.has("flex-row-gap")) {
-      if ("margin-top" in values) {
-        types = ensurePush(types, `margin-top-${values["margin-top"]}`);
-      }
-    }
-    return types?.join("");
-  });
 }
 
 function styleTypeFromProps(values: Record<string, string>, props: string[]) {

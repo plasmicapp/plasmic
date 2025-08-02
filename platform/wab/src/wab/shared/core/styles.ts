@@ -53,7 +53,6 @@ import { ComponentGenHelper } from "@/wab/shared/codegen/codegen-helpers";
 import { makeCssClassNameForVariantCombo } from "@/wab/shared/codegen/react-p/class-names";
 import {
   makeRootResetClassName,
-  makeWabFlexContainerClassName,
   makeWabHtmlTextClassName,
   makeWabInstanceClassName,
   makeWabSlotClassName,
@@ -67,7 +66,6 @@ import {
   capCamelCase,
   ensure,
   ensureInstance,
-  maybe,
   mkShortId,
   notNil,
   tuple,
@@ -103,7 +101,6 @@ import {
   CONTENT_LAYOUT_STANDARD_WIDTH_PROP,
   CONTENT_LAYOUT_VIEWPORT_GAP_PROP,
   CONTENT_LAYOUT_WIDE_WIDTH_PROP,
-  FAKE_FLEX_CONTAINER_PROPS,
   GAP_PROPS,
   TPL_COMPONENT_PROPS,
   componentRootResetProps,
@@ -120,14 +117,12 @@ import {
   findVariantSettingsUnderTpl,
   isComponentRoot,
   isTplCodeComponent,
-  isTplColumns,
   isTplComponent,
   isTplIcon,
   isTplPicture,
   isTplSlot,
   isTplTag,
   isTplTextBlock,
-  isTplVariantable,
   tryGetOwnerSite,
 } from "@/wab/shared/core/tpls";
 import { has3dComponent } from "@/wab/shared/core/transform-utils";
@@ -146,7 +141,6 @@ import { getProjectFlags } from "@/wab/shared/devflags";
 import { standardCorners, standardSides } from "@/wab/shared/geom";
 import { getGoogFontMeta } from "@/wab/shared/googfonts";
 import {
-  getNumericGap,
   isContentLayoutTpl,
   makeLayoutAwareRuleSet,
 } from "@/wab/shared/layoututils";
@@ -185,7 +179,6 @@ import {
   deriveSizeStyleValue,
   deriveSizeStylesForTpl,
   getViewportAwareHeight,
-  isExplicitSize,
   isSizeProp,
 } from "@/wab/shared/sizingutils";
 import {
@@ -666,68 +659,6 @@ function deriveCssRuleSetStyles(
     m.set("transform-style", "preserve-3d");
   }
 
-  // If the parent is a flex container with gap, then we put !important on
-  // its margin left/top styles, to make sure it overrides the default gap
-  // (which is implemented as a margin on this child using
-  // `__wab_flex-container > *`)
-  // We merge the child margin with the parent's flex gap, to simulate what
-  // real flex gap does.
-  const parent = ctx.layoutParent(tpl, true);
-  if (parent && isTplVariantable(parent)) {
-    const parentExp = ctx.getEffectiveExprWithTheme(parent, vs.variants);
-    if (hasGapStyle(parent)) {
-      // Use `effectiveExp` to get the effective margin styles
-      const effectiveExp = ctx.getEffectiveExprWithTheme(tpl, vs.variants);
-      const getParentGap = (prop: "flex-column-gap" | "flex-row-gap") => {
-        const numericGap = getNumericGap(parentExp, prop);
-        const resolvedGap =
-          numericGap && resolver
-            ? resolver.tryResolveTokenRefs(numericGap)
-            : numericGap;
-        // If we're rendering in the studio, we always render a flex container
-        // as if it has a flex gap of 0, even if it doesn't, so that we can
-        // support drag-to-resize-gap.  Which means we always need to override
-        // that parent gap in the studio if we have a margin!
-        // TODO: Drag-to-resize not currently in use, so we just return undefined to avoid
-        // positioning bugs
-        const parentGap = resolvedGap ?? undefined;
-        return parentGap;
-      };
-
-      const parentColGap = getParentGap("flex-column-gap");
-      const parentRowGap = getParentGap("flex-row-gap");
-
-      // TODO: marginLeft may be a mixin prop ref.  Resolve it to a real number here.
-      const marginLeft = maybe(effectiveExp.getRaw("margin-left"), (val) =>
-        resolver ? resolver.tryResolveTokenOrMixinRef(val) : val
-      );
-      if (marginLeft && parentColGap) {
-        if (isExplicitSize(marginLeft)) {
-          m.set(
-            "margin-left",
-            `calc(${marginLeft} + ${parentColGap}) !important`
-          );
-        } else {
-          m.set("margin-left", `${marginLeft} !important`);
-        }
-      }
-
-      const marginTop = maybe(effectiveExp.getRaw("margin-top"), (val) =>
-        resolver ? resolver.tryResolveTokenOrMixinRef(val) : val
-      );
-      if (marginTop && parentRowGap) {
-        if (isExplicitSize(marginTop)) {
-          m.set(
-            "margin-top",
-            `calc(${marginTop} + ${parentRowGap}) !important`
-          );
-        } else {
-          m.set("margin-top", `${marginTop} !important`);
-        }
-      }
-    }
-  }
-
   appendSizeStyles(ctx, m, tpl, vs);
   appendContentLayoutStyles(ctx, m, tpl, vs);
   appendVisibilityStylesForTpl(ctx, tpl, vs, m);
@@ -1083,56 +1014,6 @@ export function hasGapStyle(tpl: TplNode) {
   );
 }
 
-export function isValidGapContainer(_tpl: TplNode, _vs: VariantSetting) {
-  // Should only return true if needsFakeFlexContainer (eval.ts) is properly updated
-  return false;
-  // const effectiveVs = getEffectiveVariantSetting(tpl, vs.variants);
-  // return isTplTag(tpl) && isFlexContainerRsh(effectiveVs.rsh());
-}
-
-/**
- * Append flex styles, taking the flex and gap settings from theme
- * into account as well. We do this specifically for flex as we need
- * to carefully target some of these styles for the fake flex container,
- * some for flex children, etc., so we need the materialized settings
- * in our `m`.
- */
-function appendEffectiveFlexStyles(
-  ctx: ComponentGenHelper,
-  m: Map<string, string>,
-  tpl: TplNode,
-  vs: VariantSetting
-) {
-  if (!isTplTag(tpl)) {
-    return;
-  }
-
-  if (!isBaseVariant(vs.variants)) {
-    // Only need to do this for the base variant
-    return;
-  }
-
-  // This is basically the base + theme styles
-  const effectiveExpr = ctx.getEffectiveExprWithTheme(tpl, vs.variants);
-  for (const props of [FAKE_FLEX_CONTAINER_PROPS, GAP_PROPS]) {
-    for (const prop of props) {
-      const value = effectiveExpr.getRaw(prop);
-      if (value && !m.has(prop)) {
-        m.set(prop, value);
-      }
-    }
-  }
-}
-
-function ensureGapStyles(m: Map<string, string>) {
-  const res = new Map(m);
-  // We have to ensure only that flex-column-gap/flex-row-gap are present so that the width and height
-  // of the fake flex container is adjusted.
-  res.set("flex-column-gap", "0px");
-  res.set("flex-row-gap", "0px");
-  return res;
-}
-
 function hasOutlineStyle(m: Map<string, string>) {
   return (
     m.has("outline-style") ||
@@ -1159,11 +1040,6 @@ function showSelectorRuleSet(
         // Not sure what to use?
         m.set("display", "flex");
       }
-    } else if (rule === "flex-column-gap") {
-      // Relying on real css flex gap, as no way to polyfill here
-      m.set("column-gap", val);
-    } else if (rule === "flex-row-gap") {
-      m.set("row-gap", val);
     } else if (isSizeProp(rule)) {
       m.set(rule, deriveSizeStyleValue(rule, val, isStudio));
     } else {
@@ -1315,7 +1191,6 @@ export const showSimpleCssRuleSet = (
     targetEnv: TargetEnv;
     useCssModules?: boolean;
     whitespaceNormal?: boolean;
-    useCssFlexGap?: boolean;
   }
 ): string[] => {
   const site = ctx.site;
@@ -1336,84 +1211,9 @@ export const showSimpleCssRuleSet = (
   const getGlobalClassSelector = (className: string) =>
     opts.useCssModules ? `:global(.${className})` : `.${className}`;
 
-  const rawStyles = deriveCssRuleSetStyles(ctx, tpl, vs, opts);
-
-  const hasGap = ctx.hasGapStyle(tpl);
-
-  // If we are dealing with a TplTag that is a FlexContainer and we are in the studio,
-  // we are going to enforce the gap properties, this makes the html tree to be the
-  // same even after adding/removing gap styles, which allows smooth control from
-  // canvas controls. (i.e GapCanvasControls).
-  const shouldHaveGapStyles =
-    hasGap || (isStudio && isValidGapContainer(tpl, vs));
-
-  const shouldWrapFlexChildren = shouldHaveGapStyles && !opts.useCssFlexGap;
-
-  // If we are dealing with columns in base variant ensure that we have a gap variable to be used in the container
-  const ensureColGapVariable = isTplColumns(tpl) && isBaseVariant(vs.variants);
-
-  const styles =
-    shouldHaveGapStyles && !hasGap ? ensureGapStyles(rawStyles) : rawStyles;
+  const styles = deriveCssRuleSetStyles(ctx, tpl, vs, opts);
 
   const rules: (string | undefined)[] = [];
-
-  if (ensureColGapVariable) {
-    // It's fine to set it to 0px, since it will be overridden by the
-    // parent fake flex container if it's not 0px
-    styles.set("--plsmc-rc-col-gap", "0px");
-  }
-
-  // If any variant has gap styles, we should generate styles to provide
-  // styles to both wrapper and the container, since different variants might
-  // expect to inherit styles to both containers.
-  if (shouldHaveGapStyles) {
-    if (isTplCodeComponent(tpl) || !shouldWrapFlexChildren) {
-      // For code components, we set real column/row gap styles
-      if (styles.has("flex-column-gap")) {
-        styles.set("column-gap", styles.get("flex-column-gap")!);
-      }
-      if (styles.has("flex-row-gap")) {
-        styles.set("row-gap", styles.get("flex-row-gap")!);
-      }
-    } else {
-      appendEffectiveFlexStyles(ctx, styles, tpl, vs);
-      const flexContainerName = getGlobalClassSelector(
-        makeWabFlexContainerClassName(opts)
-      );
-      const slotName = getGlobalClassSelector(makeWabSlotClassName(opts));
-      rules.push(
-        // container styles
-        maybeRule(
-          ruleName,
-          showStyles(deriveFlexContainerStyles(new Map<string, string>(styles)))
-        ),
-        // flex wrapper styles
-        maybeRule(
-          `${ruleName} > ${flexContainerName}`,
-          showStyles(
-            deriveFakeFlexContainerStyles(
-              new Map<string, string>(styles),
-              isTplColumns(tpl)
-            )
-          )
-        ),
-        // Apply spacing to the container child elements.  Also apply across
-        // .__wab_slot, since __wab_slot has display:contents and so it itself
-        // is not part of the layout
-        maybeRule(
-          `${ruleName} > ${flexContainerName} > *, ${ruleName} > ${flexContainerName} > ${slotName} > *, ${ruleName} > ${flexContainerName} > picture > img, ${ruleName} > ${flexContainerName} > ${slotName} > picture > img`,
-          showStyles(
-            deriveFakeFlexContainerChildrenStyles(
-              new Map<string, string>(styles)
-            )
-          )
-        )
-      );
-    }
-  }
-
-  styles.delete("flex-column-gap");
-  styles.delete("flex-row-gap");
 
   if (isTplComponent(tpl)) {
     // For TplComponents, its positioning class name is going onto the root
@@ -1647,30 +1447,13 @@ export const showSimpleCssRuleSet = (
           )
         : undefined
     );
-  } else if (!shouldHaveGapStyles || !shouldWrapFlexChildren) {
-    // For "normal" elements, add the styles.  For containers with flex gap
-    // that wrap children, then the styles are already applied earlier in the
-    // function.
+  } else {
+    // For "normal" elements, add the styles.
     rules.push(maybeRule(ruleName, showStyles(styles)));
   }
 
   if (isContentLayoutTpl(tpl)) {
     rules.push(maybeRule(`${ruleName} > *`, `grid-column: 4`));
-  }
-
-  if (isTplColumns(tpl)) {
-    rules.push(
-      ...deriveResponsiveColumnsSizesRules(
-        ctx,
-        tpl,
-        vs,
-        shouldWrapFlexChildren
-          ? `${ruleName} > ${getGlobalClassSelector(
-              makeWabFlexContainerClassName(opts)
-            )}`
-          : ruleName
-      )
-    );
   }
 
   if (styles.has("transform-style")) {
@@ -1913,173 +1696,6 @@ function showPseudoClassSelector(
   );
 
   return parts.join(" ");
-}
-
-/**
- * Derives styles to use for a TplTag with flex gap
- */
-function deriveFlexContainerStyles(styles: Map<string, string>) {
-  // Here, we retain all its styles, except for the flex layout related props,
-  // which will be absorbed by its only child, the __wab_flex-container.
-  for (const prop of FAKE_FLEX_CONTAINER_PROPS) {
-    if (prop !== "flex-direction") {
-      // Keep flex-direction intact, as that's how DND determins the flow direction.
-      // Doesn't matter as there will only be one child.
-      styles.delete(prop);
-    }
-  }
-  styles.delete("flex-column-gap");
-  styles.delete("flex-row-gap");
-
-  return styles;
-}
-
-/**
- * Derives styles to use for the __wab_flex-container container that
- * actually implements the flex layout for a TplTag with flex gap
- */
-function deriveFakeFlexContainerStyles(
-  styles: Map<string, string>,
-  withRcColGapVar: boolean
-) {
-  // For "fake-container" (__wab_flex-container), we use all the flex layout props
-  // from the Tpl node, and nothing else.
-  const colGap = styles.get("flex-column-gap");
-  const rowGap = styles.get("flex-row-gap");
-  for (const prop of Array.from(styles.keys())) {
-    if (
-      (prop === "min-width" || prop === "min-height") &&
-      styles.get(prop) === "0"
-    ) {
-      // We want to keep min-width:0 or min-height:0 on the __wab_flex-container,
-      // if it was applied to the TplTag to get around flex min size, so that the
-      // actual flex container will also have its size constrained.
-      // See https://app.shortcut.com/plasmic/story/19624/layout-puzzler-or-bug
-      continue;
-    }
-    if (!FAKE_FLEX_CONTAINER_PROPS.includes(prop)) {
-      styles.delete(prop);
-    }
-  }
-
-  // Then, we offset the margin left/top by the gap amount, to make space for
-  // the padding of the children against the left/top edge.
-  // We do `calc(0px - ...)` here because colGap may be a mixin prop ref, and so
-  // we can't just do `-${colGap}` but have to compute that value instead.
-  if (colGap && (isExplicitSize(colGap) || isTokenRef(colGap))) {
-    styles.set("margin-left", `calc(0px - ${colGap})`);
-
-    // Note we need to make sure that the width is 100% + colGap, because of
-    // the margin-left.  That is, we want __wab_flex-container to be as
-    // wide as its parent, PLUS the colGap.  That's because if you have
-    // align-items: center, the children will be centered by this container,
-    // but the container has been shifted left by `colGap`, so the children
-    // will look off-center.
-    styles.set("width", `calc(100% + ${colGap})`);
-
-    if (withRcColGapVar) {
-      // We add a variable so that we can use it in responsive columns styles
-      styles.set("--plsmc-rc-col-gap", colGap);
-    }
-  }
-  if (rowGap && (isExplicitSize(rowGap) || isTokenRef(rowGap))) {
-    // Note that against the recommendation of https://gist.github.com/OliverJAsh/7f29d0fa1d35216ec681d2949c3fe8b7
-    // we are using margin-top instead of margin-bottom.
-    // That's because using a negative margin-bottom will increase the height
-    // of this element, and if the parent of this element has `overflow: auto`, then
-    // we are stuck with an unsightly scrollbar!  However, we do not suffer the
-    // overlapping consequences warned by the above link.  That's because
-    // this element that we are pushing up with negative top margin is transparent /
-    // invisible, and has pointer-events: none; any background / border styling that
-    // might obscure content is actually set on this element's parent (the "orig"),
-    // which is laid out the way it should be without any funky negative margins.
-    styles.set("margin-top", `calc(0px - ${rowGap})`);
-    styles.set("height", `calc(100% + ${rowGap})`);
-  }
-  return styles;
-}
-
-/**
- * Derive styles to use for `__wab_flex-container > *`
- */
-function deriveFakeFlexContainerChildrenStyles(styles: Map<string, string>) {
-  // For each flex child, we apply a margin corresponding to the gap.  This is applied
-  // to the children as `.__wab_flex-container > *`.  Note that this is against
-  // the recommendation of https://gist.github.com/OliverJAsh/7f29d0fa1d35216ec681d2949c3fe8b7
-  // We can't just use padding, because the child element may have border /
-  // background, and adding padding arbitrarily will distort how the child element
-  // looks.  It's possible to do this in a transparent wrapper instead, but that would
-  // require that we wrap every DOM child of the flex container, which we cannot
-  // reliably do, especially if the user can swap in arbitrary React elements for
-  // the children.  Using a wrapper is also challenging, in that the wrapper needs to
-  // reflect the "sizing" of the child (so if child has width or flex-grow set, the
-  // wrapper needs to as well), which again is challenging if the child can be
-  // swapped with arbitrary React elements.
-  //
-  // Using margin has all the faults pointed out by the above link, including:
-  // 1. Conflicts with children margin
-  // 2. If children have sizes specified as %, those sizes would not include the gaps
-  const colGap = styles.get("flex-column-gap");
-  const rowGap = styles.get("flex-row-gap");
-  const m = new Map<string, string>();
-
-  if (colGap && (isExplicitSize(colGap) || isTokenRef(colGap))) {
-    m.set("margin-left", colGap);
-  }
-
-  if (rowGap && (isExplicitSize(rowGap) || isTokenRef(rowGap))) {
-    m.set("margin-top", rowGap);
-  }
-  return m;
-}
-
-function deriveResponsiveColumnsSizesRules(
-  ctx: ComponentGenHelper,
-  tpl: TplNode,
-  vs: VariantSetting,
-  ruleName: string
-) {
-  if (!vs.columnsConfig) {
-    return [];
-  }
-
-  const config = vs.columnsConfig;
-
-  const colsSizes = config?.colsSizes || [12];
-  const numCols = colsSizes.length;
-
-  /**
-  Responsive columns depend on the flex-column-gap setting because of the way sizing is going
-  to be calculated. The size of each column is going to be calculated as a percentage of the
-  parent container, and the parent container is going to have a margin-left set to the
-  flex-column-gap setting. This means that the size of each column is going to be reduced by
-  the amount of the gap. So to make sure that the size of the columns works as expected, the
-  space each column can take up is reduced by the gap amount that is set on the parent container.
-
-  Simple CSS demo of the problem:
-  .rc-container (equivalent to a fake flex container)
-    display: flex;
-    flex-wrap: wrap;
-    width: calc(100% + 20px);
-    height: 120px;
-    margin-left: calc(0px - 20px);
-  .rc-child
-    width: 50%;
-    margin-left: 20px;
-
-  A rc-container with 2 rc-child elements won't have both children in the same row.
-   */
-  const parentWidth = `(100% - ${numCols} * var(--plsmc-rc-col-gap, 0px))`;
-  return L.range(numCols).map((_, idx) => {
-    const m = new Map<string, string>();
-    const size = colsSizes[idx % numCols];
-    const widthProp = `calc(${parentWidth} * ${size} / ${12})`;
-    m.set("width", widthProp);
-    return maybeRule(
-      `${ruleName} > :nth-child(${numCols}n + ${idx + 1})`,
-      showStyles(m)
-    );
-  });
 }
 
 export const classNameForRuleSet = (rs: RuleSet) => `uid-${rs.uid}`;

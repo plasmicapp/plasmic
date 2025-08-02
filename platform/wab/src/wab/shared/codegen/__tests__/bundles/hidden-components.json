@@ -557,7 +557,7 @@
             "height": "wrap",
             "justify-content": "flex-start",
             "align-items": "stretch",
-            "flex-row-gap": "8px"
+            "row-gap": "8px"
           },
           "mixins": [],
           "__type": "RuleSet"
@@ -813,7 +813,7 @@
             "padding-right": "24px",
             "padding-bottom": "96px",
             "padding-top": "96px",
-            "flex-row-gap": "16px"
+            "row-gap": "16px"
           },
           "mixins": [],
           "__type": "RuleSet"
@@ -842,7 +842,7 @@
             "padding-right": "24px",
             "padding-bottom": "24px",
             "padding-left": "24px",
-            "flex-row-gap": "24px"
+            "row-gap": "24px"
           },
           "mixins": [],
           "__type": "RuleSet"
@@ -1624,7 +1624,7 @@
             "padding-right": "24px",
             "padding-bottom": "24px",
             "padding-left": "24px",
-            "flex-row-gap": "24px"
+            "row-gap": "24px"
           },
           "mixins": [],
           "__type": "RuleSet"
@@ -1664,7 +1664,7 @@
             "padding-right": "24px",
             "padding-bottom": "96px",
             "padding-top": "96px",
-            "flex-row-gap": "16px"
+            "row-gap": "16px"
           },
           "mixins": [],
           "__type": "RuleSet"
@@ -1968,7 +1968,7 @@
         }
       },
       "deps": [],
-      "version": "249-add-style-token-overrides"
+      "version": "250-migrate-flex-gap"
     }
   ]
 ]

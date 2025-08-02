@@ -6,12 +6,11 @@ import {
   allMixins,
   allStyleTokensAndOverrides,
 } from "@/wab/shared/core/sites";
+import { flattenTpls } from "@/wab/shared/core/tpls";
 import {
   CssVarResolver,
   createExpandedRuleSetMerger,
-  hasGapStyle,
 } from "@/wab/shared/core/styles";
-import { flattenTpls } from "@/wab/shared/core/tpls";
 import { getEffectiveVariantSetting } from "@/wab/shared/effective-variant-setting";
 import { makeLayoutAwareRuleSet } from "@/wab/shared/layoututils";
 import {
@@ -161,9 +160,6 @@ export class ComponentGenHelper {
   );
   isTextArgNodeOfSlot = deepMapMemoized(this.cache, isTextArgNodeOfSlot, {
     funcKey: "isTextArgNodeOfSlot",
-  });
-  hasGapStyle = deepMapMemoized(this.cache, hasGapStyle, {
-    funcKey: "hasGapStyle",
   });
   getSortedVSettings = deepMapMemoized(
     this.cache,

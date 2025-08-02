@@ -24,7 +24,6 @@ import type {
   EditingTextContext,
   ViewCtx,
 } from "@/wab/client/studio-ctx/view-ctx";
-import { makeWabFlexContainerClassName } from "@/wab/shared/codegen/react-p/serialize-utils";
 import { cx, ensure, ensureInstance, spawn } from "@/wab/shared/common";
 import {
   ExprCtx,
@@ -37,7 +36,6 @@ import {
   normalizeMarkers,
   textInlineTags,
 } from "@/wab/shared/core/rich-text-util";
-import { hasGapStyle } from "@/wab/shared/core/styles";
 import { isExprText, walkTpls } from "@/wab/shared/core/tpls";
 import { getCssRulesFromRs } from "@/wab/shared/css";
 import { EffectiveVariantSetting } from "@/wab/shared/effective-variant-setting";
@@ -1325,11 +1323,7 @@ export const mkSlateChildren = computedFn(
 
 function mkClassName(node: TplTag, inline: boolean): string {
   return cx(
-    node.type === "text"
-      ? "__wab_rich_text"
-      : hasGapStyle(node)
-      ? makeWabFlexContainerClassName({ targetEnv: "canvas" })
-      : undefined,
+    node.type === "text" ? "__wab_rich_text" : undefined,
     inline ? "__wab_inline" : undefined
   );
 }

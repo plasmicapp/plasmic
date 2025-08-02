@@ -1,15 +1,4 @@
 import {
-  BackgroundLayer,
-  ColorFill,
-  Dim,
-  ImageBackground,
-  LinearGradient,
-  mkBackgroundLayer as mkBackgroundLayerWithDefaults,
-  NoneBackground,
-  RadialGradient,
-  Stop,
-} from "@/wab/shared/core/bg-styles";
-import {
   boxShadowNodeTypes,
   delimiters,
   invalidCodeComponentStyles,
@@ -32,8 +21,19 @@ import {
   transformToMatrix,
   truncateNumber,
 } from "@/wab/client/figma-importer/utils";
-import { assert, ensure, rad2deg } from "@/wab/shared/common";
 import { Matrix as AltMatrix } from "@/wab/commons/transformation-matrix";
+import { assert, ensure, rad2deg } from "@/wab/shared/common";
+import {
+  BackgroundLayer,
+  ColorFill,
+  Dim,
+  ImageBackground,
+  LinearGradient,
+  mkBackgroundLayer as mkBackgroundLayerWithDefaults,
+  NoneBackground,
+  RadialGradient,
+  Stop,
+} from "@/wab/shared/core/bg-styles";
 import { mkImageAssetRef } from "@/wab/shared/core/image-assets";
 import { ImageAsset } from "@/wab/shared/model/classes";
 import { omit } from "lodash";
@@ -876,11 +876,11 @@ export const styleForDefaultFrameMixin = (
         style.height = "wrap";
       }
       if (node.itemSpacing > 0) {
-        style["flex-column-gap"] = `${node.itemSpacing}px`;
+        style["column-gap"] = `${node.itemSpacing}px`;
       }
       if (node.layoutWrap === "WRAP") {
         style["flex-wrap"] = "wrap";
-        style["flex-row-gap"] = `${
+        style["row-gap"] = `${
           node.counterAxisSpacing ?? node.itemSpacing ?? 0
         }px`;
       }
@@ -892,7 +892,7 @@ export const styleForDefaultFrameMixin = (
         style.width = "wrap";
       }
       if (node.itemSpacing > 0) {
-        style["flex-row-gap"] = `${node.itemSpacing}px`;
+        style["row-gap"] = `${node.itemSpacing}px`;
       }
     }
 

@@ -34,7 +34,6 @@ import {
   makeStylesImports,
   makeVariantPropsName,
   makeVariantsArgTypeName,
-  makeWabFlexContainerClassName,
   maybeCondExpr,
 } from "@/wab/shared/codegen/react-p/serialize-utils";
 import { isServerQueryWithOperation } from "@/wab/shared/codegen/react-p/server-queries/utils";
@@ -167,15 +166,7 @@ export function exportReactPlain(
     usedGlobalVariantGroups,
     variantComboChecker,
     variantComboSorter: makeVariantComboSorter(site, component),
-    exportOpts: {
-      ...opts,
-      stylesOpts: {
-        ...opts.stylesOpts,
-        // For plain export, always use css flex-gap so that each stack
-        // doesn't become two separate divs
-        useCssFlexGap: true,
-      },
-    },
+    exportOpts: opts,
     aliases: new Map(),
     ...extraOpts,
     s3ImageLinks: {},
@@ -458,13 +449,14 @@ function serializeTplTag(ctx: SerializerBaseContext, node: TplTag) {
     children = serializeTplNodesAsArray(ctx, node.children);
   }
 
-  const { wrapFlexChild, attrs, orderedCondStr, tag, triggeredHooks } =
-    serializeTplTagBase(ctx, node, {
+  const { attrs, orderedCondStr, tag, triggeredHooks } = serializeTplTagBase(
+    ctx,
+    node,
+    {
       additionalClassExprs:
         node === ctx.component.tplTree ? [`props.className`] : undefined,
-    });
-
-  const hasGap = wrapFlexChild && wrapFlexChild !== "false";
+    }
+  );
 
   const tagType = tag;
 
@@ -481,22 +473,7 @@ function serializeTplTag(ctx: SerializerBaseContext, node: TplTag) {
   const triggerPropNames = L.uniq(
     triggeredHooks.flatMap((spec) => spec.getTriggerPropNames())
   );
-  if (hasGap) {
-    // Instead of using p.Stack, we directly generate the div
-    // wrapper to lessen dependency on @plasmicapp/react-web
-    children = [
-      makeElement(
-        "div",
-        {
-          className: jsLiteral(makeWabFlexContainerClassName(ctx.exportOpts)),
-        },
-        children,
-        {
-          isTag: true,
-        }
-      ),
-    ];
-  }
+
   const jsx = makeElement(tagType, attrs, children, {
     isTag: !tagType.includes(".") && tagType[0].toUpperCase() !== tagType[0],
     useProxy: hasPlumeOverride,

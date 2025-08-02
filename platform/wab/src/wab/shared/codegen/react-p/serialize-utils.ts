@@ -51,11 +51,7 @@ export function makeWabInstanceClassName(opts: ClassNameOpts) {
     ? `${shortPlasmicPrefix}i`
     : "__wab_instance";
 }
-export function makeWabFlexContainerClassName(opts: ClassNameOpts) {
-  return opts.targetEnv === "loader"
-    ? `${shortPlasmicPrefix}fc`
-    : "__wab_flex-container";
-}
+
 export function makeWabSlotClassName(opts: ClassNameOpts) {
   return opts.targetEnv === "loader" ? `${shortPlasmicPrefix}s` : "__wab_slot";
 }

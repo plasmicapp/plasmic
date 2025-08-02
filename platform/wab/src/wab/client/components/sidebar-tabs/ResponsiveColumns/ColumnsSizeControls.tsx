@@ -115,10 +115,8 @@ export const ColumnSizeControlDraggables = observer(
     } = props;
 
     const colGapRaw = isCanvas
-      ? viewCtx
-          .effectiveCurrentVariantSetting(tpl)
-          .rsh()
-          .get("flex-column-gap") || "0px"
+      ? viewCtx.effectiveCurrentVariantSetting(tpl).rsh().get("column-gap") ||
+        "0px"
       : "0px";
 
     const site = viewCtx.site;

@@ -13514,7 +13514,7 @@
         }
       },
       "deps": [],
-      "version": "249-add-style-token-overrides"
+      "version": "250-migrate-flex-gap"
     }
   ],
   [
@@ -18166,7 +18166,7 @@
             "border-bottom-left-radius": "var(--token-oQn8gHl2FNKG)",
             "font-size": "var(--token-Ao4NZQI8FNby)",
             "line-height": "var(--token-PITewDT1atQM)",
-            "flex-column-gap": "var(--token-oQn8gHl2FNKG)"
+            "column-gap": "var(--token-oQn8gHl2FNKG)"
           },
           "mixins": [],
           "__type": "RuleSet"
@@ -18187,7 +18187,7 @@
             "border-bottom-left-radius": "var(--token-oQn8gHl2FNKG)",
             "line-height": "var(--token-PITewDT1atQM)",
             "font-size": "var(--token-Ao4NZQI8FNby)",
-            "flex-column-gap": "var(--token-f1EInfSh9bJ1)"
+            "column-gap": "var(--token-f1EInfSh9bJ1)"
           },
           "mixins": [],
           "__type": "RuleSet"
@@ -22111,13 +22111,13 @@
             "display": "flex",
             "justify-content": "center",
             "align-items": "center",
-            "flex-column-gap": "var(--token-2SGQcnOQi1BY)",
             "padding-top": "var(--token-2SGQcnOQi1BY)",
             "padding-right": "var(--token-wlM-_lPQTiUn)",
             "padding-bottom": "var(--token-2SGQcnOQi1BY)",
             "padding-left": "var(--token-wlM-_lPQTiUn)",
             "width": "stretch",
-            "height": "stretch"
+            "height": "stretch",
+            "column-gap": "var(--token-2SGQcnOQi1BY)"
           },
           "mixins": [],
           "__type": "RuleSet"
@@ -23176,7 +23176,6 @@
             "flex-direction": "column",
             "position": "relative",
             "justify-content": "flex-start",
-            "flex-row-gap": "var(--token-q8b6qKDtK1cO)",
             "padding-top": "var(--token-NpZyVjRiZdqg)",
             "padding-right": "var(--token-NpZyVjRiZdqg)",
             "padding-bottom": "var(--token-NpZyVjRiZdqg)",
@@ -23187,7 +23186,8 @@
             "border-bottom-left-radius": "var(--token-hI_1KF0x1IC1)",
             "background": "linear-gradient(var(--token-i3U49r6ROHvf), var(--token-i3U49r6ROHvf))",
             "align-items": "flex-start",
-            "width": "320px"
+            "width": "320px",
+            "row-gap": "var(--token-q8b6qKDtK1cO)"
           },
           "mixins": [],
           "__type": "RuleSet"
@@ -23759,7 +23759,6 @@
             "flex-direction": "column",
             "position": "relative",
             "justify-content": "flex-start",
-            "flex-row-gap": "var(--token-q8b6qKDtK1cO)",
             "padding-top": "var(--token-NpZyVjRiZdqg)",
             "padding-right": "var(--token-NpZyVjRiZdqg)",
             "padding-bottom": "var(--token-NpZyVjRiZdqg)",
@@ -23770,7 +23769,8 @@
             "border-bottom-left-radius": "var(--token-hI_1KF0x1IC1)",
             "background": "linear-gradient(var(--token-i3U49r6ROHvf), var(--token-i3U49r6ROHvf))",
             "align-items": "flex-start",
-            "width": "320px"
+            "width": "320px",
+            "row-gap": "var(--token-q8b6qKDtK1cO)"
           },
           "mixins": [],
           "__type": "RuleSet"
@@ -24974,12 +24974,12 @@
             "flex-direction": "column",
             "justify-content": "flex-start",
             "align-items": "flex-start",
-            "flex-row-gap": "var(--token-oQn8gHl2FNKG)",
             "padding-bottom": "var(--token-IZkbCcBWqxrg)",
             "padding-top": "var(--token-IZkbCcBWqxrg)",
             "padding-right": "var(--token-IZkbCcBWqxrg)",
             "padding-left": "var(--token-IZkbCcBWqxrg)",
-            "width": "wrap"
+            "width": "wrap",
+            "row-gap": "var(--token-oQn8gHl2FNKG)"
           },
           "mixins": [],
           "__type": "RuleSet"
@@ -25971,7 +25971,6 @@
             "background": "linear-gradient(var(--token-i3U49r6ROHvf), var(--token-i3U49r6ROHvf))",
             "display": "flex",
             "flex-direction": "column",
-            "flex-row-gap": "var(--token-NpZyVjRiZdqg)",
             "color": "var(--token-f1PNVAbV3p2v)",
             "font-family": "var(--token-o6yJby_7a7Ou)",
             "font-size": "var(--token-vDsSvK1cXIbX)",
@@ -25986,7 +25985,8 @@
             "border-top-left-radius": "var(--token-NpZyVjRiZdqg)",
             "border-top-right-radius": "var(--token-NpZyVjRiZdqg)",
             "border-bottom-right-radius": "var(--token-NpZyVjRiZdqg)",
-            "border-bottom-left-radius": "var(--token-NpZyVjRiZdqg)"
+            "border-bottom-left-radius": "var(--token-NpZyVjRiZdqg)",
+            "row-gap": "var(--token-NpZyVjRiZdqg)"
           },
           "mixins": [],
           "__type": "RuleSet"
@@ -26516,7 +26516,7 @@
             "align-items": "flex-start",
             "justify-content": "flex-start",
             "plasmic-display-none": "false",
-            "flex-row-gap": "var(--token-hI_1KF0x1IC1)"
+            "row-gap": "var(--token-hI_1KF0x1IC1)"
           },
           "mixins": [],
           "__type": "RuleSet"
@@ -27708,7 +27708,6 @@
             "flex-direction": "column",
             "position": "relative",
             "justify-content": "flex-start",
-            "flex-row-gap": "var(--token-q8b6qKDtK1cO)",
             "padding-top": "var(--token-NpZyVjRiZdqg)",
             "padding-right": "var(--token-NpZyVjRiZdqg)",
             "padding-bottom": "var(--token-NpZyVjRiZdqg)",
@@ -27719,7 +27718,8 @@
             "border-bottom-left-radius": "var(--token-hI_1KF0x1IC1)",
             "background": "linear-gradient(var(--token-i3U49r6ROHvf), var(--token-i3U49r6ROHvf))",
             "align-items": "flex-start",
-            "width": "320px"
+            "width": "320px",
+            "row-gap": "var(--token-q8b6qKDtK1cO)"
           },
           "mixins": [],
           "__type": "RuleSet"
@@ -27798,7 +27798,7 @@
             "align-items": "flex-start",
             "justify-content": "flex-start",
             "plasmic-display-none": "false",
-            "flex-row-gap": "var(--token-hI_1KF0x1IC1)"
+            "row-gap": "var(--token-hI_1KF0x1IC1)"
           },
           "mixins": [],
           "__type": "RuleSet"
@@ -28826,7 +28826,7 @@
         "uLDvGZjO5VZJ": { "__type": "RuleSet", "values": {}, "mixins": [] }
       },
       "deps": ["6880ec08-42f2-424d-9b65-e5a74a1b6baf"],
-      "version": "249-add-style-token-overrides"
+      "version": "250-migrate-flex-gap"
     }
   ]
 ]
