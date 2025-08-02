@@ -468,9 +468,15 @@ const _asCode = maybeComputedFn(
           .filter(([_key, snippets]) => snippets.length > 0)
           .map(
             ([key, snippets]) =>
-              `${key}: [${snippets
-                .map((snippet) => `(${snippet})`)
-                .join(", ")}]`
+              `${key}: [
+                ${snippets
+                  .map(
+                    (snippet) => `(
+                      ${snippet}
+                    )`
+                  )
+                  .join(", ")}
+              ]`
           )
           .join(", ")}
       },
