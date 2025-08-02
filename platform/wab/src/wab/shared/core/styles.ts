@@ -117,6 +117,7 @@ import {
   findVariantSettingsUnderTpl,
   isComponentRoot,
   isTplCodeComponent,
+  isTplColumns,
   isTplComponent,
   isTplIcon,
   isTplPicture,
@@ -1456,6 +1457,10 @@ export const showSimpleCssRuleSet = (
     rules.push(maybeRule(`${ruleName} > *`, `grid-column: 4`));
   }
 
+  if (isTplColumns(tpl)) {
+    rules.push(...deriveResponsiveColumnsSizesRules(vs, ruleName));
+  }
+
   if (styles.has("transform-style")) {
     rules.push(
       maybeRule(
@@ -1696,6 +1701,32 @@ function showPseudoClassSelector(
   );
 
   return parts.join(" ");
+}
+
+function deriveResponsiveColumnsSizesRules(
+  vs: VariantSetting,
+  ruleName: string
+) {
+  if (!vs.columnsConfig) {
+    return [];
+  }
+
+  const config = vs.columnsConfig;
+
+  const colsSizes = config?.colsSizes || [12];
+  const numCols = colsSizes.length;
+
+  // The size of each column is going to be calculated as a percentage of the parent container
+  return L.range(numCols).map((_, idx) => {
+    const m = new Map<string, string>();
+    const size = colsSizes[idx % numCols];
+    const widthProp = `calc(100% * ${size} / ${12})`;
+    m.set("width", widthProp);
+    return maybeRule(
+      `${ruleName} > :nth-child(${numCols}n + ${idx + 1})`,
+      showStyles(m)
+    );
+  });
 }
 
 export const classNameForRuleSet = (rs: RuleSet) => `uid-${rs.uid}`;
