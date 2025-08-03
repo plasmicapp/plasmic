@@ -361,6 +361,7 @@ export function ComponentPropModal(props: {
         if (isKnownPropParam(existingParam)) {
           existingParam.advanced = advanced;
         }
+        existingParam.type = newParamType;
         existingParam.defaultExpr = defaultExpr && clone(defaultExpr);
         existingParam.previewExpr = previewExpr && clone(previewExpr);
         existingParam.isLocalizable = isLocalizableVal;
