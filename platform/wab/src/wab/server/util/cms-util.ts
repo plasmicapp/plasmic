@@ -328,10 +328,7 @@ export function makeSqlCondition(
 
     return andSql(ands);
   };
-  console.log({
-    condition: buildFilterClause(condition),
-    params: valParams,
-  });
+
   return {
     condition: buildFilterClause(condition),
     params: valParams,
