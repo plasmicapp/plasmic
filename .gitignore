@@ -1,4 +1,5 @@
 **/*.swp
+**/.claude/settings.local.json
 **/.idea/libraries/Generated_files.xml
 **/.idea/sqldialects.xml
 **/.idea/workspace.xml

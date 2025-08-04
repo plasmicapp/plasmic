@@ -5,6 +5,7 @@
     "bootstrap": "bash scripts/bootstrap.sh",
     "bootstrap:platform": "yarn db:setup ; yarn setup-all ; yarn db:reset ; yarn setup-all",
     "bump": "echo 'Use the jenkins job release_public_packages instead: https://jenkins.aws.plasmic.app/job/release_public_packages/'",
+    "claude": "echo 'Running tests before starting...' && if [ -f /.dockerenv ] && ! curl -s --max-time 5 https://example.com >/dev/null 2>&1; then claude --dangerously-skip-permissions --mcp-config=.claude/.mcp.json; else echo 'Claude may only be run in a Docker container with general network firewall, see .devcontainer/README.md'; exit 1; fi",
     "db:reset": "cd platform/wab && yarn db:reset",
     "db:setup": "cd platform/wab && yarn db:setup",
     "deps": "lerna list --include-dependencies --scope",
