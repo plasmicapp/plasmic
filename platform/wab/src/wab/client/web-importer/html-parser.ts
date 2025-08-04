@@ -30,6 +30,7 @@ import {
 } from "@/wab/shared/common";
 import { ColorFill } from "@/wab/shared/core/bg-styles";
 import {
+  expandGapProperty,
   parseCss,
   parseCssNumericNew,
   parseShorthandProperties,
@@ -417,6 +418,21 @@ function sanitizeStyles(
         },
         {}
       );
+
+      // Handle gap property expansion based on display type
+      if (newStyles["gap"]) {
+        const gapValue = newStyles["gap"];
+
+        const isGridLayout =
+          newStyles["display"] === "grid" ||
+          newStyles["display"] === "inline-grid";
+
+        const expandedGapProperties = expandGapProperty(gapValue, isGridLayout);
+
+        delete newStyles["gap"];
+        Object.assign(newStyles, expandedGapProperties);
+      }
+
       const { safe, unsafe } = splitStylesBySafety(newStyles, type);
       return [
         context,

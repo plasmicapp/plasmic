@@ -219,6 +219,184 @@ describe("parseHtmlToWebImporterTree", () => {
       styles: {},
     });
   });
+
+  it("expands gap property for flex layouts", async () => {
+    const html = '<div style="display: flex; gap: 10px">Content</div>';
+    const { wiTree: rootEl } = await parseHtmlToWebImporterTree(html, site);
+
+    assert(rootEl, "rootEl should not be null");
+
+    expect(rootEl).toMatchObject<Partial<WIElement>>({
+      type: "container",
+      tag: "div",
+      children: [
+        {
+          type: "container",
+          tag: "div",
+          attrs: { style: "display: flex; gap: 10px" },
+          children: [
+            {
+              type: "text",
+              tag: "span",
+              text: "Content",
+              unsanitizedStyles: {},
+              styles: {},
+            },
+          ],
+          unsanitizedStyles: {
+            base: {
+              display: "flex",
+              gap: "10px",
+            },
+          },
+          styles: {
+            base: {
+              safe: {
+                display: "flex",
+                flexDirection: "row",
+                rowGap: "10px",
+                columnGap: "10px",
+              },
+              unsafe: {},
+            },
+          },
+        },
+      ],
+    });
+  });
+
+  it("expands gap property for grid layouts", async () => {
+    const html = '<div style="display: grid; gap: 20px">Content</div>';
+    const { wiTree: rootEl } = await parseHtmlToWebImporterTree(html, site);
+
+    assert(rootEl, "rootEl should not be null");
+
+    expect(rootEl).toMatchObject<Partial<WIElement>>({
+      type: "container",
+      tag: "div",
+      children: [
+        {
+          type: "container",
+          tag: "div",
+          attrs: { style: "display: grid; gap: 20px" },
+          children: [
+            {
+              type: "text",
+              tag: "span",
+              text: "Content",
+              unsanitizedStyles: {},
+              styles: {},
+            },
+          ],
+          unsanitizedStyles: {
+            base: {
+              display: "grid",
+              gap: "20px",
+            },
+          },
+          styles: {
+            base: {
+              safe: {
+                display: "grid",
+                gridRowGap: "20px",
+                gridColumnGap: "20px",
+              },
+              unsafe: {},
+            },
+          },
+        },
+      ],
+    });
+  });
+
+  it("expands gap property with two values for flex layouts", async () => {
+    const html = '<div style="display: flex; gap: 10px 20px">Content</div>';
+    const { wiTree: rootEl } = await parseHtmlToWebImporterTree(html, site);
+
+    assert(rootEl, "rootEl should not be null");
+
+    expect(rootEl).toMatchObject<Partial<WIElement>>({
+      type: "container",
+      tag: "div",
+      children: [
+        {
+          type: "container",
+          tag: "div",
+          attrs: { style: "display: flex; gap: 10px 20px" },
+          children: [
+            {
+              type: "text",
+              tag: "span",
+              text: "Content",
+              unsanitizedStyles: {},
+              styles: {},
+            },
+          ],
+          unsanitizedStyles: {
+            base: {
+              display: "flex",
+              gap: "10px 20px",
+            },
+          },
+          styles: {
+            base: {
+              safe: {
+                display: "flex",
+                flexDirection: "row",
+                rowGap: "10px",
+                columnGap: "20px",
+              },
+              unsafe: {},
+            },
+          },
+        },
+      ],
+    });
+  });
+
+  it("expands gap property with two values for grid layouts", async () => {
+    const html = '<div style="display: grid; gap: 15px 25px">Content</div>';
+    const { wiTree: rootEl } = await parseHtmlToWebImporterTree(html, site);
+
+    assert(rootEl, "rootEl should not be null");
+
+    expect(rootEl).toMatchObject<Partial<WIElement>>({
+      type: "container",
+      tag: "div",
+      children: [
+        {
+          type: "container",
+          tag: "div",
+          attrs: { style: "display: grid; gap: 15px 25px" },
+          children: [
+            {
+              type: "text",
+              tag: "span",
+              text: "Content",
+              unsanitizedStyles: {},
+              styles: {},
+            },
+          ],
+          unsanitizedStyles: {
+            base: {
+              display: "grid",
+              gap: "15px 25px",
+            },
+          },
+          styles: {
+            base: {
+              safe: {
+                display: "grid",
+                gridRowGap: "15px",
+                gridColumnGap: "25px",
+              },
+              unsafe: {},
+            },
+          },
+        },
+      ],
+    });
+  });
 });
 
 describe("renameTokenVarNameToUuid", () => {
@@ -504,6 +682,12 @@ describe("fixCSSValue", () => {
 
   it("ensure camelCase key translation for any key", () => {
     expect(fixCSSValue("z-index", "100")).toEqual({ zIndex: "100" });
+  });
+
+  it("does not expand gap in fixCSSValue (handled in sanitizeStyles)", () => {
+    expect(fixCSSValue("gap", "10px")).toEqual({
+      gap: "10px",
+    });
   });
 });
 

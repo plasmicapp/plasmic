@@ -523,6 +523,40 @@ export const shorthandProperties = [
 ] as const;
 export type ShorthandProperty = (typeof shorthandProperties)[number];
 
+/**
+ * Expands the CSS gap shorthand property into individual row and column gap properties.
+ *
+ * The gap property follows CSS specification:
+ * - Single value: gap: 10px → applies to both row and column gaps
+ * - Two values: gap: 10px 20px → first value for row gap, second for column gap
+ *
+ * The expansion differs based on layout context:
+ * - Flexbox: uses standard row-gap and column-gap properties
+ * - Grid: uses grid-specific grid-row-gap and grid-column-gap properties
+ *
+ * @param gapValue - The gap property value (e.g., "10px" or "10px 20px")
+ * @param isGrid - Whether this is for a grid layout context (vs flexbox)
+ * @returns Object with expanded gap properties
+ */
+export function expandGapProperty(gapValue: string, isGrid: boolean = false) {
+  const values = parseCssShorthand(gapValue);
+
+  const rowGapValue = values[0];
+  const columnGapValue = values[1] || values[0]; // Fall back to first value if second not provided
+
+  if (isGrid) {
+    return {
+      gridRowGap: rowGapValue,
+      gridColumnGap: columnGapValue,
+    };
+  }
+
+  return {
+    rowGap: rowGapValue,
+    columnGap: columnGapValue,
+  };
+}
+
 export function parseShorthandProperties(
   property: ShorthandProperty,
   valueNode: Value

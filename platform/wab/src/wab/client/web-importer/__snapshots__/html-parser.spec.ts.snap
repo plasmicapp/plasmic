@@ -558,6 +558,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                   },
                   "base": {
                     "safe": {
+                      "columnGap": "2rem",
                       "display": "flex",
                       "flexDirection": "row",
                       "marginBottom": "0",
@@ -568,10 +569,9 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                       "paddingLeft": "0",
                       "paddingRight": "0",
                       "paddingTop": "0",
+                      "rowGap": "2rem",
                     },
-                    "unsafe": {
-                      "gap": "2rem",
-                    },
+                    "unsafe": {},
                   },
                 },
                 "tag": "div",
@@ -672,6 +672,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                   "base": {
                     "safe": {
                       "alignItems": "center",
+                      "columnGap": "1rem",
                       "display": "flex",
                       "flexDirection": "row",
                       "marginBottom": "0",
@@ -682,10 +683,9 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                       "paddingLeft": "0",
                       "paddingRight": "0",
                       "paddingTop": "0",
+                      "rowGap": "1rem",
                     },
-                    "unsafe": {
-                      "gap": "1rem",
-                    },
+                    "unsafe": {},
                   },
                 },
                 "tag": "div",
@@ -1544,6 +1544,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                 "styles": {
                   "base": {
                     "safe": {
+                      "columnGap": "2rem",
                       "display": "flex",
                       "flexDirection": "row",
                       "flexWrap": "wrap",
@@ -1556,10 +1557,9 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                       "paddingLeft": "0",
                       "paddingRight": "0",
                       "paddingTop": "0",
+                      "rowGap": "2rem",
                     },
-                    "unsafe": {
-                      "gap": "2rem",
-                    },
+                    "unsafe": {},
                   },
                 },
                 "tag": "div",
@@ -1865,6 +1865,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                   },
                   "base": {
                     "safe": {
+                      "columnGap": "1rem",
                       "display": "flex",
                       "flexDirection": "row",
                       "justifyContent": "center",
@@ -1877,10 +1878,9 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                       "paddingLeft": "0",
                       "paddingRight": "0",
                       "paddingTop": "0",
+                      "rowGap": "1rem",
                     },
-                    "unsafe": {
-                      "gap": "1rem",
-                    },
+                    "unsafe": {},
                   },
                 },
                 "tag": "form",
@@ -3376,6 +3376,8 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                   "base": {
                     "safe": {
                       "display": "grid",
+                      "gridColumnGap": "2rem",
+                      "gridRowGap": "2rem",
                       "justifyContent": "space-between",
                       "marginBottom": "2rem",
                       "marginLeft": "0",
@@ -3387,7 +3389,6 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                       "paddingTop": "0",
                     },
                     "unsafe": {
-                      "gap": "2rem",
                       "gridTemplateColumns": "repeat(auto-fit,minmax(250px,1fr))",
                     },
                   },

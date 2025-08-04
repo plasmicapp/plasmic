@@ -87,6 +87,8 @@ export const containerStylesKeys = new Set<string>([
   "flexWrap",
   "rowGap",
   "columnGap",
+  "gridRowGap",
+  "gridColumnGap",
   "justifyContent",
   "marginBottom",
   "marginLeft",
