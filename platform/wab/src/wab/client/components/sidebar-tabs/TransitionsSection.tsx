@@ -16,8 +16,7 @@ import {
 } from "@/wab/client/components/widgets";
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
-import { removeFromArray } from "@/wab/commons/collections";
-import { arrayMoveIndex } from "@/wab/shared/collections";
+import { arrayMoveIndex, arrayRemove } from "@/wab/shared/collections";
 import { assert, ensure, maybe, tuple, uniqueKey } from "@/wab/shared/common";
 import { transitionProps } from "@/wab/shared/core/style-props";
 import { getCssInitial } from "@/wab/shared/css";
@@ -224,7 +223,7 @@ class _TransitionsPanelSection extends StyleComponent<
                       key={uniqueKey(transition)}
                       index={i}
                       onRemove={() => {
-                        removeFromArray(transitions, transition);
+                        arrayRemove(transitions, transition);
                         return this.updateTransitions(transitions);
                       }}
                       onClick={() => this.inspectTransition(i)}

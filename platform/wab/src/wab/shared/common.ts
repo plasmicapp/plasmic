@@ -41,7 +41,6 @@ import {
 import { nanoid } from "nanoid";
 import { Key } from "react";
 import ShortUuid, { constants } from "short-uuid";
-import { inspect as utilInspect } from "util";
 import {
   v4 as Uuidv4,
   validate as UuidValidate,
@@ -80,65 +79,6 @@ export const mapify = <T>(object: { [k: string]: T }) =>
 
 export const demapify = <V>(map: Map<PropertyKey, V>) =>
   Object.fromEntries([...map.entries()]);
-
-export function isBrowser() {
-  return !process.argv?.length;
-}
-
-export function prettyJson<T>(x: T, deep = false) {
-  return utilInspect(x, { depth: deep ? null : 3, colors: true });
-}
-
-export function inspect<T>(x: T, deep?: boolean): T {
-  if (deep == null) {
-    deep = false;
-  }
-  if (isBrowser()) {
-    console.log(x);
-  } else {
-    console.log(maybes(x)((y) => (y as any).constructor)((z) => z.name)());
-    console.log(prettyJson(x, deep));
-  }
-  return x;
-}
-
-export function trace(...args) {
-  const adjustedLength = Math.max(args.length, 1),
-    output = args.slice(0, adjustedLength - 1),
-    f = args[adjustedLength - 1];
-  console.log("enter", ...[...output]);
-  const _res = f();
-  return console.log("exit", ...[...output]);
-}
-
-export function generator(xs) {
-  let i = -1;
-  return function () {
-    i += 1;
-    if (i >= xs.length) {
-      throw new Error(`index ${i} exceeds length of sequence (${xs.length})`);
-    }
-    return xs[i];
-  };
-}
-
-export function selectiveJson(x, opts) {
-  const type = x != null ? x.constructor.name : undefined;
-  if (Array.isArray(x)) {
-    return [...x].map((a) => selectiveJson(a, opts));
-  } else if (isNumber(x) || isString(x) || x == null) {
-    return x;
-  } else if (x.constructor === Object) {
-    return x;
-  } else {
-    const fields = opts[type];
-    return Object.fromEntries(
-      [...(fields != null ? fields : [])].map((f: string) =>
-        tuple(f, selectiveJson(x[f], opts))
-      )
-    );
-  }
-}
 
 export interface TypeStamped<T> extends Function {
   getType(): T;
@@ -464,10 +404,6 @@ export function todo(msg?: string): never {
   debugger;
   throw new NotImplementedError(msg);
 }
-// just symbolic of TODO, but this can at least be turned into something that warns or raises an error in a dynamic code path
-export const softTodo = (_msg?: string) => null;
-
-export const doWith = <T, V>(ctx: T, fn: () => V): V => fn.call(ctx);
 
 export type StringGen = string | (() => string);
 
@@ -523,21 +459,6 @@ export function unreachable(thing: any) {
   throw new InvalidCodePathError(`Did not expect ${thing}`);
 }
 
-export const mkMap = () => Object.create(null);
-
-export function revNthWhere<T>(
-  xs: T[],
-  n: number,
-  f: (x: T) => boolean
-): [null | T, number] {
-  for (let i = xs.length - 1; i >= 0; i--) {
-    if (f(xs[i]) && (n -= 1) < 0) {
-      return tuple(xs[i], i);
-    }
-  }
-  return tuple(null, -1);
-}
-
 export const removeAt = <T>(xs: T[], i: number) => xs.splice(i, 1)[0];
 
 export function tryRemove<T>(xs: T[], x: T) {
@@ -584,23 +505,6 @@ export function isOneOf<T, U extends T>(elem: T, arr: readonly U[]): elem is U {
 
 export function reverseIf(condition: boolean, arr: any[]) {
   return condition ? reverse(arr) : arr;
-}
-
-export const lastWhere = <T>(xs: T[], f: (x: T) => boolean) =>
-  revNthWhere(xs, 0, f);
-
-export function nthWhere<T>(
-  xs: T[],
-  n: number,
-  f: (x: T, i: number) => boolean
-): [T | null, number] {
-  for (let i = 0; i < xs.length; i++) {
-    const x = xs[i];
-    if (f(x, i) && (n -= 1) < 0) {
-      return tuple(x, i);
-    }
-  }
-  return tuple(null, -1);
 }
 
 export function maybe<T, U>(
@@ -668,8 +572,31 @@ export function assertAtMostOne<T>(
   }
 }
 
-export const firstWhere = <T>(xs: T[], f: (x: T, i: number) => boolean) =>
-  nthWhere(xs, 0, f);
+export function firstWhere<T>(
+  xs: T[],
+  f: (x: T, i: number) => boolean
+): [T | null, number] {
+  for (let i = 0; i < xs.length; i++) {
+    const x = xs[i];
+    if (f(x, i)) {
+      return tuple(x, i);
+    }
+  }
+  return tuple(null, -1);
+}
+
+export function lastWhere<T>(
+  xs: T[],
+  f: (x: T, i: number) => boolean
+): [null | T, number] {
+  for (let i = xs.length - 1; i >= 0; i--) {
+    const x = xs[i];
+    if (f(xs[i], i)) {
+      return tuple(xs[i], i);
+    }
+  }
+  return tuple(null, -1);
+}
 
 export const withoutNils = <T>(xs: Array<T | undefined | null>): T[] =>
   xs.filter((x): x is T => x != null);
@@ -1243,18 +1170,6 @@ export const iterator = (xs) => xs[Symbol.iterator]();
 
 export const jsonClone = <T>(x: T): T => JSON.parse(JSON.stringify(x));
 
-// Based on <https://stackoverflow.com/questions/9064935/extending-multiple-classes-in-coffee-script>
-export const proxy = (x, cls, field) => {
-  for (const methodName of [...Object.getOwnPropertyNames(cls.prototype)]) {
-    if (methodName !== "constructor") {
-      ((method) =>
-        (x.prototype[method] = function (...args) {
-          return this[field][method](...[...(args || [])]);
-        }))(methodName);
-    }
-  }
-};
-
 type Result<T, U> =
   | { type: "Success"; value: T }
   | { type: "Failure"; value: U };
@@ -1471,21 +1386,10 @@ export function toggleSet<T>(set: Immutable.Set<T>, x: T) {
   }
 }
 
-// Backport
-export function decapitalize(x: string) {
-  if (x.length > 0) {
-    return `${x[0].toLowerCase()}${x.slice(1)}`;
-  } else {
-    return "";
-  }
-}
-
-export const checkDistinct = checkUnique;
-
 export const generateWith = <T, V>(
   ctx: T,
   fn: (this: T) => IterableIterator<V>
-) => [...doWith(ctx, fn)];
+) => [...fn.call(ctx)];
 
 export function generate<T>(gen: () => IterableIterator<T>) {
   return [...gen()];
@@ -1515,34 +1419,6 @@ export function tryParseNumLit(text: string): number | undefined {
   }
 }
 
-export function indent2braces(x: string): string {
-  const stack = [0];
-  const output: string[] = [];
-  const emit = (y: string) => output.push(y);
-  for (const line of x.split("\n")) {
-    if (line.trim() === "") {
-      continue;
-    }
-    const indent = ensure(
-      line.match(/\s*/),
-      "Expected regex pattern to match string " + line
-    )[0].length;
-    while (indent < ensure(last(stack), "stack is empty")) {
-      stack.pop();
-      emit("}");
-    }
-    if (indent > ensure(last(stack), "stack is empty")) {
-      emit("{");
-      stack.push(indent);
-    }
-    emit(line.trim());
-  }
-  while (stack.pop() !== 0) {
-    emit("}");
-  }
-  return output.join("\n");
-}
-
 export const deg2rad = (deg: number) => (deg / 180) * Math.PI;
 
 export const rad2deg = (rad: number) => rad * (180 / Math.PI);
@@ -1556,17 +1432,6 @@ export function randUint16() {
     const max = 2 ** 16;
     return Math.floor(Math.random() * max);
   }
-}
-
-export function spreadLog(obj: { [k: string]: any }) {
-  const xs = generate(function* () {
-    for (const k in obj) {
-      const v = obj[k];
-      yield k;
-      yield v;
-    }
-  });
-  return console.log(...xs);
 }
 
 export function range(left: number, right: number, inclusive: boolean) {
@@ -2401,10 +2266,6 @@ export function shallowJson(x: {}) {
   );
 }
 
-export function yearFromNow() {
-  return new Date(new Date().setFullYear(new Date().getFullYear() + 1));
-}
-
 export function truncateText(limit: number, text: string) {
   return text.length <= limit ? text : text.slice(0, limit - 3) + "...";
 }
@@ -2794,23 +2655,8 @@ export function partitionMap<K, V>(
   return partitioned.map((chunk) => new Map(chunk));
 }
 
-/**
- * A no-op function that simply documents that we are observing this value (and
- * thus swallows lint warnings about unused expressions).
- */
-export function noopWatch(_x: unknown) {}
-
 export function pathGet(x: any, path: string[]) {
   return path.length === 0 ? x : lodashGet(x, path);
-}
-
-export function findAllIndexesInString(haystack: string, query: string) {
-  let indexes: number[] = [],
-    i = -1;
-  while ((i = haystack.indexOf(query, i + 1)) != -1) {
-    indexes.push(i);
-  }
-  return indexes;
 }
 
 export function asyncTimeout(ms: number) {

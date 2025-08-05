@@ -15,8 +15,7 @@ import {
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import GearIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Gear";
 import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
-import { removeFromArray } from "@/wab/commons/collections";
-import { arrayMoveIndex } from "@/wab/shared/collections";
+import { arrayMoveIndex, arrayRemove } from "@/wab/shared/collections";
 import { maybe, spawn, uniqueKey } from "@/wab/shared/common";
 import {
   defaultTransforms,
@@ -238,7 +237,7 @@ export const TransformPanelSection = observer(
                   index={i}
                   onRemove={() => {
                     if (!isDisabled) {
-                      removeFromArray(transforms, transformation);
+                      arrayRemove(transforms, transformation);
                       updateTransforms(transforms);
                     }
                   }}

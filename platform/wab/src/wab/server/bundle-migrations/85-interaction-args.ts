@@ -1,17 +1,17 @@
-import { ensureArray, withoutNils } from "@/wab/shared/common";
-import { removeFromArray } from "@/wab/commons/collections";
 import {
   BundleMigrationType,
   unbundleSite,
 } from "@/wab/server/db/bundle-migration-utils";
 import { UnbundledMigrationFn } from "@/wab/server/db/BundleMigrator";
 import { Bundler } from "@/wab/shared/bundler";
+import { arrayRemove } from "@/wab/shared/collections";
+import { ensureArray, withoutNils } from "@/wab/shared/common";
+import { findVariantSettingsUnderTpl } from "@/wab/shared/core/tpls";
 import {
   isKnownCustomCode,
   VariantsRef,
   VarRef,
 } from "@/wab/shared/model/classes";
-import { findVariantSettingsUnderTpl } from "@/wab/shared/core/tpls";
 
 export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
   const bundler = new Bundler();
@@ -43,7 +43,7 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
                 if (variable) {
                   varArg.expr = new VarRef({ variable });
                 } else {
-                  removeFromArray(interaction.args, varArg);
+                  arrayRemove(interaction.args, varArg);
                 }
               }
             }
@@ -61,9 +61,9 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
                   varArg.name = "vgroup";
                   varArg.expr = new VarRef({ variable });
                 } else {
-                  removeFromArray(interaction.args, varArg);
+                  arrayRemove(interaction.args, varArg);
                   if (valueArg) {
-                    removeFromArray(interaction.args, valueArg);
+                    arrayRemove(interaction.args, valueArg);
                   }
                   continue;
                 }

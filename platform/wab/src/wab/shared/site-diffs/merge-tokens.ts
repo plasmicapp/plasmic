@@ -1,10 +1,10 @@
-import { removeFromArray } from "@/wab/commons/collections";
 import {
   mkTokenRef,
   MutableStyleToken,
   OverrideableStyleToken,
   replaceAllTokenRefs,
 } from "@/wab/commons/StyleToken";
+import { arrayRemove } from "@/wab/shared/collections";
 import { unreachable } from "@/wab/shared/common";
 import { extractTokenUsages } from "@/wab/shared/core/styles";
 import {
@@ -26,7 +26,7 @@ export function fixDuplicatedRegisteredTokens(mergedSite: Site) {
     const toToken = tokens[0];
     tokens.slice(1).forEach((duplicatedToken) => {
       replaceToken(mergedSite, duplicatedToken, toToken);
-      removeFromArray(mergedSite.styleTokens, duplicatedToken);
+      arrayRemove(mergedSite.styleTokens, duplicatedToken);
     });
   });
 }

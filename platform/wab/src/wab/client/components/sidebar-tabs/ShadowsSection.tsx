@@ -17,10 +17,9 @@ import { Icon } from "@/wab/client/components/widgets/Icon";
 import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { makeVariantedStylesHelperFromCurrentCtx } from "@/wab/client/utils/style-utils";
-import { removeFromArray } from "@/wab/commons/collections";
 import { MaybeWrap } from "@/wab/commons/components/ReactUtil";
 import { derefTokenRefs, tryParseTokenRef } from "@/wab/commons/StyleToken";
-import { arrayMoveIndex } from "@/wab/shared/collections";
+import { arrayMoveIndex, arrayRemove } from "@/wab/shared/collections";
 import { BoxShadow, BoxShadows, Dim } from "@/wab/shared/core/bg-styles";
 import {
   allColorTokens,
@@ -197,7 +196,7 @@ class _ShadowsPanelSection extends StyleComponent<
                       index={i}
                       onRemove={() => {
                         if (!isDisabled) {
-                          removeFromArray(boxShadows.shadows, shadow);
+                          arrayRemove(boxShadows.shadows, shadow);
                           return this.updateBoxShadows(boxShadows);
                         }
                       }}

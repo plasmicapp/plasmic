@@ -22,13 +22,13 @@ import TokenIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Token";
 import VariantGroupIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__VariantGroup";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { removeFromArray } from "@/wab/commons/collections";
 import { joinReactNodes } from "@/wab/commons/components/ReactUtil";
 import { derefTokenRefs, tryParseTokenRef } from "@/wab/commons/StyleToken";
 import {
   computedProjectFlags,
   TokenValueResolver,
 } from "@/wab/shared/cached-selectors";
+import { arrayRemove } from "@/wab/shared/collections";
 import { cx, ensure, ensureArray, swallow } from "@/wab/shared/common";
 import { BackgroundLayer } from "@/wab/shared/core/bg-styles";
 import { getComponentDisplayName } from "@/wab/shared/core/components";
@@ -921,9 +921,7 @@ export const VariantSettingPopoverContent = observer(
               key={arg.uid}
               title={arg.param.variable.name}
               type="target"
-              onClear={() =>
-                viewCtx.change(() => removeFromArray(vs.args, arg))
-              }
+              onClear={() => viewCtx.change(() => arrayRemove(vs.args, arg))}
             >
               <SourceValue
                 site={site}

@@ -1,4 +1,3 @@
-import { arrayReversed } from "@/wab/commons/collections";
 import { FinalStyleToken } from "@/wab/commons/StyleToken";
 import { makeTokenValueResolver } from "@/wab/shared/cached-selectors";
 import {
@@ -24,6 +23,7 @@ import {
 } from "@/wab/shared/codegen/react-p/types";
 import { ExportOpts, ExportPlatformOptions } from "@/wab/shared/codegen/types";
 import { jsLiteral } from "@/wab/shared/codegen/util";
+import { arrayReversed } from "@/wab/shared/collections";
 import { assert, ensure, tuple } from "@/wab/shared/common";
 import {
   getCodeComponentHelperImportName,

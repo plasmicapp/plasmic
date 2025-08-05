@@ -1,5 +1,5 @@
-import { check, ensure, tuple } from "@/wab/shared/common";
-import { insertArray, withoutArrayIndex } from "@/wab/commons/collections";
+import { assert, check, ensure, tuple } from "@/wab/shared/common";
+import * as _ from "lodash";
 import { range as lodashRange, takeWhile } from "lodash";
 
 export interface Dict<T> {
@@ -64,13 +64,33 @@ export function matchOrder<T, K>(
   return result;
 }
 
+// Array manipulation functions
+
+export function arrayInsertAt<T>(
+  array: ReadonlyArray<T>,
+  item: T,
+  index?: number
+) {
+  if (index === undefined) {
+    return array.concat([item]);
+  } else {
+    return _.slice(array, 0, index)
+      .concat([item])
+      .concat(_.slice(array, index));
+  }
+}
+
+export function arrayRemoveAt<T>(array: ReadonlyArray<T>, index: number) {
+  return array.slice(0, index).concat(array.slice(index + 1));
+}
+
 export function arrayMoveIndex<T>(
   array: ReadonlyArray<T>,
   from: number,
   to: number
 ) {
   const item = array[from];
-  return insertArray(withoutArrayIndex(array, from), item, to);
+  return arrayInsertAt(arrayRemoveAt(array, from), item, to);
 }
 
 export function unzip<A, B>(xs: [A, B][]): [A[], B[]] {
@@ -126,8 +146,48 @@ export function arrayReplaceAt<T>(value: T[], index: number, x: T): T[] {
   return value.map((item, i) => (i === index ? x : item));
 }
 
-export function arrayRemoveAt<T>(value: T[], index: number): T[] {
-  return value.filter((item, i) => i !== index);
+export function arrayEqual<T>(a1: ReadonlyArray<T>, a2: ReadonlyArray<T>) {
+  if (a1 === a2) {
+    return true;
+  }
+  if (a1.length !== a2.length) {
+    return false;
+  }
+  for (let i = 0; i < a1.length; i++) {
+    if (a1[i] !== a2[i]) {
+      return false;
+    }
+  }
+  return true;
+}
+
+export function arrayInsert<T>(xs: T[], x: T, index?: number) {
+  if (index === undefined) {
+    xs.push(x);
+  } else {
+    xs.splice(index, 0, x);
+  }
+}
+
+export function arrayRemoveAll<T>(xs: T[], x: T) {
+  for (let i = xs.length; i--; ) {
+    if (xs[i] === x) {
+      xs.splice(i, 1);
+    }
+  }
+}
+
+export function arrayRemove<T>(xs: T[], x: T) {
+  const i = xs.indexOf(x);
+  if (i !== -1) {
+    xs.splice(i, 1);
+  } else {
+    assert(false, "Could not find element in array to remove");
+  }
+}
+
+export function arrayReversed<T>(xs: ReadonlyArray<T>) {
+  return xs.slice().reverse();
 }
 
 export function filterObject<T extends Dict<any>>(

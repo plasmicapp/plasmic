@@ -23,7 +23,6 @@ import {
   asyncToCallback,
   ensure,
   maybes,
-  spreadLog,
   StandardCallback,
 } from "@/wab/shared/common";
 import { isGoogleAuthRequiredEmailDomain } from "@/wab/shared/devflag-utils";
@@ -106,7 +105,6 @@ export async function setupPassport(
       },
       (req, accessToken, refreshToken, profile, done) =>
         asyncToCallback(done, async () => {
-          spreadLog({ provider: "google", accessToken, refreshToken, profile });
           const user = await upsertOauthUser(
             req,
             "google",

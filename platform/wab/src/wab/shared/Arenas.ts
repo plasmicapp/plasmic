@@ -1,5 +1,5 @@
-import { arrayReversed, removeFromArray } from "@/wab/commons/collections";
 import { ArenaType } from "@/wab/shared/ApiSchema";
+import { arrayRemove, arrayReversed } from "@/wab/shared/collections";
 import {
   assert,
   ensure,
@@ -224,7 +224,7 @@ export type PositionedArenaFrame = ArenaFrame & {
   left: number;
 };
 
-export function getPositionedArenaFrames(arena: Arena): PositionedArenaFrame[] {
+function getPositionedArenaFrames(arena: Arena): PositionedArenaFrame[] {
   return arena.children as PositionedArenaFrame[];
 }
 
@@ -434,7 +434,7 @@ export function removeVariantsFromArenas(
         delete pinnedVariants[variant.uuid];
       }
       if (targetVariants.includes(variant)) {
-        removeFromArray(targetVariants, variant);
+        arrayRemove(targetVariants, variant);
       }
     }
   }

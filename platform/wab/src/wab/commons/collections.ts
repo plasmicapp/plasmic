@@ -63,24 +63,6 @@ export function deepMerged<T>(obj1: T, obj2: DeepMergeable<T>): T {
   }
 }
 
-/**
- * Shallow comparison of two arrays
- */
-export function arrayEqual<T>(a1: ReadonlyArray<T>, a2: ReadonlyArray<T>) {
-  if (a1 === a2) {
-    return true;
-  }
-  if (a1.length !== a2.length) {
-    return false;
-  }
-  for (let i = 0; i < a1.length; i++) {
-    if (a1[i] !== a2[i]) {
-      return false;
-    }
-  }
-  return true;
-}
-
 export function insertAt<T>(xs: T[], x: T, index?: number) {
   if (index === undefined) {
     xs.push(x);
@@ -98,36 +80,14 @@ export function removeAllFromArray<T>(xs: T[], x: T) {
 }
 
 export function removeFromArray<T>(xs: T[], x: T) {
-  const i = tryRemoveFromArray(xs, x);
-  assert(i !== -1);
-}
-
-export function tryRemoveFromArray<T>(xs: T[], x: T) {
   const i = xs.indexOf(x);
   if (i !== -1) {
     xs.splice(i, 1);
+  } else {
+    assert(false, "Could not find element in array to remove");
   }
-  return i;
 }
 
 export function arrayReversed<T>(xs: ReadonlyArray<T>) {
   return xs.slice().reverse();
-}
-
-/**
- * Given an array of elemnts and `undefined`, filters out all `undefined`
- */
-export function onlyDefined<T>(arr: (T | undefined)[]): T[] {
-  return arr.filter((x) => x !== undefined) as T[];
-}
-
-/**
- * Given an array of elemnts and `undefined`, filters out all `undefined`
- */
-export function onlyDefinedValues<T>(
-  obj: Record<string, T | undefined>
-): Record<string, T> {
-  return Object.fromEntries(
-    Object.entries(obj).filter(([key, val]: [string, any]) => val !== undefined)
-  ) as Record<string, T>;
 }

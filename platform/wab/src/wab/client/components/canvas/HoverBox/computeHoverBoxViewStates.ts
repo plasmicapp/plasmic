@@ -12,7 +12,6 @@ import { computeNodeOutlineTagLayoutClass } from "@/wab/client/node-outline";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { summarizeFocusObj } from "@/wab/client/utils/tpl-client-utils";
-import { removeAllFromArray } from "@/wab/commons/collections";
 import { isTokenRef } from "@/wab/commons/StyleToken";
 import {
   FrameViewMode,
@@ -20,6 +19,7 @@ import {
   isHeightAutoDerived,
 } from "@/wab/shared/Arenas";
 import { makeTokenRefResolver } from "@/wab/shared/cached-selectors";
+import { arrayRemoveAll } from "@/wab/shared/collections";
 import { asOne, assert, withoutNils } from "@/wab/shared/common";
 import {
   isFrameComponent,
@@ -542,7 +542,7 @@ function computeAllowedEdgeControls(
     for (const side in sides) {
       ["margin", "padding"].forEach((spacing) => {
         if (getTargetBlockingCombo([definedIndicator(`${spacing}-${side}`)])) {
-          removeAllFromArray(sides[side as Side], spacing);
+          arrayRemoveAll(sides[side as Side], spacing);
         }
       });
     }
@@ -572,20 +572,20 @@ function computeAllowedEdgeControls(
   }
 
   if (isTplComponent(tpl)) {
-    removeAllFromArray(top, "padding");
-    removeAllFromArray(right, "padding");
-    removeAllFromArray(bottom, "padding");
-    removeAllFromArray(left, "padding");
+    arrayRemoveAll(top, "padding");
+    arrayRemoveAll(right, "padding");
+    arrayRemoveAll(bottom, "padding");
+    arrayRemoveAll(left, "padding");
     top.push("size");
     right.push("size");
     bottom.push("size");
     left.push("size");
   }
   if (isTplImage(tpl)) {
-    removeAllFromArray(top, "padding");
-    removeAllFromArray(right, "padding");
-    removeAllFromArray(bottom, "padding");
-    removeAllFromArray(left, "padding");
+    arrayRemoveAll(top, "padding");
+    arrayRemoveAll(right, "padding");
+    arrayRemoveAll(bottom, "padding");
+    arrayRemoveAll(left, "padding");
     top.push("size");
     right.push("size");
     bottom.push("size");

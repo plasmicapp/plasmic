@@ -1,5 +1,5 @@
+import { arrayReversed } from "@/wab/shared/collections";
 import { arrayEq, ensure, removeWhere } from "@/wab/shared/common";
-import { arrayReversed } from "@/wab/commons/collections";
 import { ModelChange } from "@/wab/shared/core/observable-model";
 import { range } from "lodash";
 

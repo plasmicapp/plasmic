@@ -20,12 +20,12 @@ import PencilIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Pencil";
 import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
 import TrashsvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__TrashSvg";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { removeFromArray } from "@/wab/commons/collections";
 import { isBuiltinCodeComponent } from "@/wab/shared/code-components/builtin-code-components";
 import {
   CodeComponentMetaDiffWithComponent,
   UnknownComponentError,
 } from "@/wab/shared/code-components/code-components";
+import { arrayRemove } from "@/wab/shared/collections";
 import { ensure, filterFalsy, spawn, withoutNils } from "@/wab/shared/common";
 import {
   CodeComponent,
@@ -210,7 +210,7 @@ export async function fixMissingCodeComponents(
       spawn(
         studioCtx.change(
           ({ success: changeSuccess }) => {
-            removeFromArray(
+            arrayRemove(
               studioCtx.site.globalContexts,
               studioCtx.site.globalContexts.find((tpl) => tpl.component === c)
             );

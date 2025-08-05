@@ -7,12 +7,12 @@ import {
   firstWhere,
   fullRgb,
   groupConsecBy,
-  indent2braces,
   interleave,
   intersectSets,
   isShortUuidV4,
   isUuidV4,
   isValidIsoDate,
+  lastWhere,
   longestCommonPrefix,
   mapify,
   maybe,
@@ -21,8 +21,6 @@ import {
   mkShortUuid,
   mkUuid,
   multimap,
-  nthWhere,
-  proxy,
   removeWhere,
   replace,
   replaceMultiple,
@@ -133,47 +131,35 @@ describe("switchType", function () {
   });
 });
 
-describe("generator", function () {
-  let gen, res, orig;
-  beforeEach(function () {
-    orig = ["a", "b", "c"];
-    gen = common.generator(orig);
-    res = Array.from(orig).map((i) => gen());
+describe("firstWhere/lastWhere", function () {
+  it("returns null given []", () => {
+    expect(firstWhere([], (x) => true)).toEqual(tuple(null, -1));
+    expect(lastWhere([], (x) => true)).toEqual(tuple(null, -1));
   });
-  it("should produce same as orig sequence", () => expect(res).toEqual(orig));
-  return it("should throw when past end of sequence", () =>
-    expect(gen).toThrow());
-});
-
-describe("firstWhere", function () {
-  let xs: number[];
-  beforeEach(() => {
-    xs = [1, 2, 3, 4];
+  it("returns null when nothing matches", () => {
+    const xs = [1, 2, 3, 4];
+    expect(firstWhere(xs, (x) => x > 5)).toEqual(tuple(null, -1));
+    expect(lastWhere(xs, (x) => x > 5)).toEqual(tuple(null, -1));
   });
-  it("returns null given []", () =>
-    expect(firstWhere([], (x) => true)).toEqual(tuple(null, -1)));
-  it("returns first element when f -> true", () =>
-    expect(firstWhere(xs, (x) => true)).toEqual(tuple(1, 0)));
-  it("returns first even number when f isEven", () =>
-    expect(firstWhere(xs, isEven)).toEqual(tuple(2, 1)));
-  return it("returns null when nothing matches", () =>
-    expect(firstWhere(xs, (x) => x > 5)).toEqual(tuple(null, -1)));
-});
-
-describe("nthWhere", function () {
-  let xs: number[];
-  beforeEach(() => {
-    xs = [1, 2, 3, 4];
+  it("returns same value when only one match exists", () => {
+    const arr = [1, 2, 3, 4];
+    expect(firstWhere(arr, (x) => x === 2)).toEqual(tuple(2, 1));
+    expect(lastWhere(arr, (x) => x === 2)).toEqual(tuple(2, 1));
   });
-  it("returns null given []", () =>
-    expect(nthWhere([], 0, (x) => true)).toEqual(tuple(null, -1)));
-  it("satisfies basic cases", function () {
-    expect(nthWhere(xs, 0, isEven)).toEqual(tuple(2, 1));
-    expect(nthWhere(xs, 1, isEven)).toEqual(tuple(4, 3));
+  it("returns same value but different index with duplicates", () => {
+    const arr = [1, 2, 2, 3, 4];
+    expect(firstWhere(arr, (x) => x === 2)).toEqual(tuple(2, 1));
+    expect(lastWhere(arr, (x) => x === 2)).toEqual(tuple(2, 2));
   });
-  return it("returns null when nothing matches", function () {
-    expect(nthWhere(xs, 0, (x) => x > 5)).toEqual(tuple(null, -1));
-    expect(nthWhere(xs, 1, (x) => x > 5)).toEqual(tuple(null, -1));
+  it("returns first/last element when f -> true", () => {
+    const xs = [1, 2, 3, 4];
+    expect(firstWhere(xs, (x) => true)).toEqual(tuple(1, 0));
+    expect(lastWhere(xs, (x) => true)).toEqual(tuple(4, 3));
+  });
+  it("returns first/last even number when f isEven", () => {
+    const xs = [1, 2, 3, 4];
+    expect(firstWhere(xs, isEven)).toEqual(tuple(2, 1));
+    expect(lastWhere(xs, isEven)).toEqual(tuple(4, 3));
   });
 });
 
@@ -350,34 +336,6 @@ describe("longestCommonPrefix", () =>
     return expect(longestCommonPrefix([0, 1, 2], [0, 2, 1])).toEqual([0]);
   }));
 
-describe("proxy", () =>
-  it("should work", function () {
-    class A {
-      z;
-      constructor(z) {
-        this.z = z;
-      }
-      f(x, y) {
-        return x + y + this.z;
-      }
-      g(a, b) {
-        return a * b * this.z;
-      }
-    }
-    class B {
-      static initClass() {
-        proxy(this, A, "_a");
-      }
-      _a;
-      constructor(a) {
-        this._a = a;
-      }
-    }
-    B.initClass();
-    expect((new B(new A(1)) as any).f(3, 3)).toBe(7);
-    return expect((new B(new A(1)) as any).g(3, 3)).toBe(9);
-  }));
-
 describe("tryCatchElse", function () {
   it("should return the catch result if ending there", function () {
     const ret = tryCatchElse({
@@ -476,33 +434,6 @@ describe("groupConsecBy", () =>
       tuple(2, [2]),
       tuple(0, [0]),
     ])));
-
-describe("indent2braces", () =>
-  it("should work", function () {
-    const actual = indent2braces(`\
-log 1
-for x in xs
-  break
-log 1
-for x in xs
-  break
-log 1\
-`);
-    const expected = `\
-log 1
-for x in xs
-{
-break
-}
-log 1
-for x in xs
-{
-break
-}
-log 1\
-`;
-    return expect(actual).toBe(expected);
-  }));
 
 describe("rotateStartingFrom", () => {
   it("works", () => {

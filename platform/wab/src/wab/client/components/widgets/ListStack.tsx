@@ -10,13 +10,13 @@
  */
 
 import { useDisplayed } from "@/wab/client/dom-utils";
-import { ensure } from "@/wab/shared/common";
-import { removeFromArray } from "@/wab/commons/collections";
 import {
   combineProps,
   useBatchedDelayed,
   useConstant,
 } from "@/wab/commons/components/ReactUtil";
+import { arrayRemove } from "@/wab/shared/collections";
+import { ensure } from "@/wab/shared/common";
 import L from "lodash";
 import { observable, runInAction } from "mobx";
 import { observer } from "mobx-react";
@@ -211,7 +211,7 @@ export function ListStack(props: {
             if (request <= fairSpace) {
               setAllocation(key, request);
               stillAvailable -= request;
-              removeFromArray(toAllocate, key);
+              arrayRemove(toAllocate, key);
             }
           }
 
@@ -274,7 +274,7 @@ export function ListStack(props: {
   );
   const unregisterContainer = React.useCallback(
     (id: string, container: HTMLElement) => {
-      removeFromArray(stateRef.current.containers, container);
+      arrayRemove(stateRef.current.containers, container);
       delete stateRef.current.requests[id];
       delete stateRef.current.allocations[id];
       delete stateRef.current.minRequests[id];

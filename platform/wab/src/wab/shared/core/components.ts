@@ -1,5 +1,4 @@
 import type { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { removeFromArray } from "@/wab/commons/collections";
 import { DeepReadonly } from "@/wab/commons/types";
 import { removeVariantGroupFromArenas } from "@/wab/shared/Arenas";
 import { RSH } from "@/wab/shared/RuleSetHelpers";
@@ -47,11 +46,12 @@ import {
   toClassName,
   toVarName,
 } from "@/wab/shared/codegen/util";
+import { arrayRemove } from "@/wab/shared/collections";
 import {
   arrayEqIgnoreOrder,
   assert,
   assertNever,
-  checkDistinct,
+  checkUnique,
   ensure,
   ensureInstance,
   filterFalsy,
@@ -332,7 +332,7 @@ export function mkComponent(obj: {
   const component = mkRawComponent({
     name: name ?? "UnnamedComponent",
     params: (() => {
-      checkDistinct(params.map((p: /*TWZ*/ Param) => p.variable.name));
+      checkUnique(params.map((p: /*TWZ*/ Param) => p.variable.name));
       return params.slice();
     })(),
     tplTree,
@@ -1064,7 +1064,7 @@ export function extractComponent({
   for (const _tpl of flattenedVariantables) {
     for (const vs of [..._tpl.vsettings]) {
       if (!isBaseVariant(vs.variants) && isVariantSettingEmpty(vs)) {
-        removeFromArray(_tpl.vsettings, vs);
+        arrayRemove(_tpl.vsettings, vs);
       }
     }
   }
@@ -1879,12 +1879,12 @@ export function removeComponentParam(
       )) {
         if (vs.variants.some((v) => group.variants.includes(v))) {
           ensureComponentsObserved([comp]);
-          removeFromArray(tpl.vsettings, vs);
+          arrayRemove(tpl.vsettings, vs);
         }
       }
     }
     // remove the VariantGroup
-    removeFromArray(component.variantGroups, group);
+    arrayRemove(component.variantGroups, group);
 
     // Remove references to this group and its variants from arenas
     removeVariantGroupFromArenas(site, group, component);
@@ -1921,14 +1921,14 @@ export function removeComponentParam(
               $$$(subtpl).remove({ deep: true })
             );
           }
-          removeFromArray(vs.args, arg);
+          arrayRemove(vs.args, arg);
         }
       }
     }
   }
 
   // Finally, really remove the Param
-  removeFromArray(component.params, param);
+  arrayRemove(component.params, param);
 }
 
 /**
@@ -1944,7 +1944,7 @@ function removeComponentParamRefs(tpl: TplNode, param: Param) {
           delete refInfo.vs.attrs[refInfo.attr];
           break;
         case "component":
-          removeFromArray(refInfo.vs.args, refInfo.arg);
+          arrayRemove(refInfo.vs.args, refInfo.arg);
           break;
         default:
           assertNever(refInfo);

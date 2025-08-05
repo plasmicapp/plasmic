@@ -105,7 +105,6 @@ import {
   maybeToggleTrailingSlash,
 } from "@/wab/client/utils/app-hosting-utils";
 import { drainQueue } from "@/wab/commons/asyncutil";
-import { arrayReversed, removeFromArray } from "@/wab/commons/collections";
 import {
   withConsumer,
   withProvider,
@@ -190,6 +189,7 @@ import {
   registeredFunctionId,
   syncPlumeComponent,
 } from "@/wab/shared/code-components/code-components";
+import { arrayRemove, arrayReversed } from "@/wab/shared/collections";
 import {
   AsyncCallable,
   arrayEqIgnoreOrder,
@@ -1644,7 +1644,7 @@ export class StudioCtx extends WithDbCtx {
     const existing = this.tryGetViewCtxForFrame(frame);
 
     if (existing) {
-      removeFromArray(this.viewCtxs, existing);
+      arrayRemove(this.viewCtxs, existing);
       existing.dispose();
     }
 
@@ -6863,7 +6863,7 @@ export class StudioCtx extends WithDbCtx {
         if (!nextRequest) {
           return;
         }
-        removeFromArray(this.canvasLoadRequests, nextRequest);
+        arrayRemove(this.canvasLoadRequests, nextRequest);
 
         // We load the canvas frame.  However, it is possible that in the middle
         // of loading, we switch to a different arena, thus making this iframe

@@ -1,5 +1,5 @@
-import { removeFromArray } from "@/wab/commons/collections";
 import { customFunctionId } from "@/wab/shared/code-components/code-components";
+import { arrayRemove } from "@/wab/shared/collections";
 import { swallow, withoutNils } from "@/wab/shared/common";
 import {
   clone,
@@ -167,7 +167,7 @@ export function fixCustomFunctionsInTpl(
             if (fixedExpr) {
               arg.expr = fixedExpr;
             } else {
-              removeFromArray(interaction.args, arg);
+              arrayRemove(interaction.args, arg);
             }
           }
         }

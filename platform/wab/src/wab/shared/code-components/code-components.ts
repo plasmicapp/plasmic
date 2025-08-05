@@ -1,5 +1,4 @@
 import { TokenType } from "@/wab/commons/StyleToken";
-import { removeFromArray } from "@/wab/commons/collections";
 import { RSH } from "@/wab/shared/RuleSetHelpers";
 import { getSlotParams, isSlot } from "@/wab/shared/SlotUtils";
 import { TplMgr } from "@/wab/shared/TplMgr";
@@ -24,6 +23,7 @@ import {
   getInvalidCodeComponentVariantsInComponent,
 } from "@/wab/shared/code-components/variants";
 import { paramToVarName, toVarName } from "@/wab/shared/codegen/util";
+import { arrayRemove } from "@/wab/shared/collections";
 import {
   CustomError,
   arrayEqIgnoreOrder,
@@ -4607,7 +4607,7 @@ async function upsertRegisteredTokens(
                 for (const usage of usages) {
                   changeTokenUsage(site, token, usage, "reset");
                 }
-                removeFromArray(site.styleTokens, token);
+                arrayRemove(site.styleTokens, token);
               };
 
               for (const tokenReg of updatedTokenRegs) {

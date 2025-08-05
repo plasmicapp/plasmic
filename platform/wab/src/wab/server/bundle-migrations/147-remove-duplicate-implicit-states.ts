@@ -1,11 +1,11 @@
-import { ensure } from "@/wab/shared/common";
-import { removeFromArray } from "@/wab/commons/collections";
 import {
   BundleMigrationType,
   unbundleSite,
 } from "@/wab/server/db/bundle-migration-utils";
 import { UnbundledMigrationFn } from "@/wab/server/db/BundleMigrator";
 import { Bundler } from "@/wab/shared/bundler";
+import { arrayRemove } from "@/wab/shared/collections";
+import { ensure } from "@/wab/shared/common";
 import {
   isKnownNamedState,
   isKnownTplTag,
@@ -33,7 +33,7 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
       const seen = new Set<string>();
       for (const state of states) {
         if (seen.has(state.name)) {
-          removeFromArray(component.states, state);
+          arrayRemove(component.states, state);
         } else {
           seen.add(state.name);
         }

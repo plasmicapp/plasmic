@@ -1,8 +1,8 @@
-import { ensure, spreadLog } from "@/wab/shared/common";
 import {
   XDraggable,
   XDraggableEvent,
 } from "@/wab/commons/components/XDraggable";
+import { ensure } from "@/wab/shared/common";
 import L from "lodash";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
@@ -31,7 +31,6 @@ export class EllipseControl extends React.Component<EllipseControlProps> {
     const dx = (e.data.deltaX / area.width) * 100;
     const dy = (e.data.deltaY / area.height) * 100;
 
-    spreadLog({ ...e.data, ...area, dx, dy });
     return { orig, dx, dy };
   }
 

@@ -1,10 +1,10 @@
-import { arrayReversed, removeFromArray } from "@/wab/commons/collections";
 import { ReplaceKey } from "@/wab/commons/types";
 import {
   computedProjectFlags,
   findNonEmptyCombos,
 } from "@/wab/shared/cached-selectors";
 import { toVarName } from "@/wab/shared/codegen/util";
+import { arrayRemove, arrayReversed } from "@/wab/shared/collections";
 import {
   arrayEqIgnoreOrder,
   assert,
@@ -993,7 +993,7 @@ export class VariantTplMgr {
 
   removeMixin(tpl: TplNode, mixin: Mixin, variantCombo?: VariantCombo) {
     const vs = this.ensureVariantSetting(tpl, variantCombo);
-    removeFromArray(vs.rs.mixins, mixin);
+    arrayRemove(vs.rs.mixins, mixin);
   }
 
   /**

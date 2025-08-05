@@ -1,5 +1,4 @@
 import { sequentially } from "@/wab/commons/asyncutil";
-import { removeFromArray } from "@/wab/commons/collections";
 import * as semver from "@/wab/commons/semver";
 import { toOpaque } from "@/wab/commons/types";
 import { createSiteForHostlessProject } from "@/wab/server/code-components/code-components";
@@ -182,7 +181,7 @@ import { Bundler } from "@/wab/shared/bundler";
 import { getBundle } from "@/wab/shared/bundles";
 import { getUniqueFieldsData } from "@/wab/shared/cms";
 import { toVarName } from "@/wab/shared/codegen/util";
-import { Dict, mkIdMap, safeHas } from "@/wab/shared/collections";
+import { Dict, arrayRemove, mkIdMap, safeHas } from "@/wab/shared/collections";
 import {
   assert,
   assertNever,
@@ -4552,7 +4551,7 @@ export class DbMgr implements MigrationDbMgr {
       .columns.map((c) => `pkgVersion.${c.databaseName}`);
 
     if (!opts.includeData) {
-      removeFromArray(columns, "pkgVersion.model");
+      arrayRemove(columns, "pkgVersion.model");
     }
 
     const qb = this.pkgVersions()

@@ -8,8 +8,8 @@ import PlasmicLeftFontsPanel from "@/wab/client/plasmic/plasmic_kit/PlasmicLeftF
 import AlertIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__WarningTriangleSvg";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { StandardMarkdown } from "@/wab/client/utils/StandardMarkdown";
-import { removeFromArray } from "@/wab/commons/collections";
 import { swallowClick } from "@/wab/commons/components/ReactUtil";
+import { arrayRemove } from "@/wab/shared/collections";
 import { Menu, notification, Tooltip } from "antd";
 import * as _ from "lodash";
 import { observer } from "mobx-react";
@@ -43,7 +43,7 @@ function _UserManagedFontsPanel(props: {}) {
               key="delete"
               onClick={async () =>
                 sc.changeUnsafe(() => {
-                  removeFromArray(sc.site.userManagedFonts, font);
+                  arrayRemove(sc.site.userManagedFonts, font);
                 })
               }
             >

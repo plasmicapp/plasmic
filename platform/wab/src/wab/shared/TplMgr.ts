@@ -1,10 +1,5 @@
 import { TokenType } from "@/wab/commons/StyleToken";
 import {
-  arrayReversed,
-  removeFromArray,
-  tryRemoveFromArray,
-} from "@/wab/commons/collections";
-import {
   FrameViewMode,
   cloneArenaFrame,
   ensureActivatedScreenVariantsForArena,
@@ -68,6 +63,7 @@ import {
   flattenComponent,
 } from "@/wab/shared/cached-selectors";
 import { toClassName, toVarName } from "@/wab/shared/codegen/util";
+import { arrayRemove, arrayReversed } from "@/wab/shared/collections";
 import {
   assert,
   check,
@@ -928,7 +924,7 @@ export class TplMgr {
             )
           ) {
             if (!activeGroup) {
-              removeFromArray(tpl.vsettings, vs);
+              arrayRemove(tpl.vsettings, vs);
             } else {
               const mapped = vs.variants.map((v) => {
                 if (isScreenVariant(v) && v.parent !== activeGroup) {
@@ -945,7 +941,7 @@ export class TplMgr {
               if (mapped.some((v) => !v)) {
                 // Some foreign screen variants failed to be mapped;
                 // can't do anything about that, so just remove them.
-                removeFromArray(tpl.vsettings, vs);
+                arrayRemove(tpl.vsettings, vs);
               } else {
                 vs.variants = mapped as Variant[];
               }
@@ -1095,7 +1091,7 @@ export class TplMgr {
     opts: { pruneUnnamedComponent: boolean } = { pruneUnnamedComponent: true }
   ) {
     if (isMixedArena(arena)) {
-      removeFromArray(arena.children, frame);
+      arrayRemove(arena.children, frame);
       normalizeMixedArenaFrames(arena);
       const component = frame.container.component;
       if (opts.pruneUnnamedComponent && isFrameComponent(component)) {
@@ -1194,7 +1190,7 @@ export class TplMgr {
       for (const arena of this.site().arenas) {
         for (const frame of [...getArenaFrames(arena)]) {
           if (frame.container.component === comp) {
-            removeFromArray(arena.children, frame);
+            arrayRemove(arena.children, frame);
           }
         }
       }
@@ -1237,7 +1233,7 @@ export class TplMgr {
   }
 
   removeComponentQuery(component: Component, query: ComponentDataQuery) {
-    removeFromArray(component.dataQueries, query);
+    arrayRemove(component.dataQueries, query);
     this.clearReferencesToRemovedQueries(query.uuid);
   }
 
@@ -1245,7 +1241,7 @@ export class TplMgr {
     component: Component,
     query: ComponentServerQuery
   ) {
-    removeFromArray(component.serverQueries, query);
+    arrayRemove(component.serverQueries, query);
     this.clearReferencesToRemovedQueries(query.uuid);
   }
 
@@ -1566,7 +1562,7 @@ export class TplMgr {
 
     const existingComponentArena = getComponentArena(this.site(), component);
     if (existingComponentArena) {
-      removeFromArray(this.site().componentArenas, existingComponentArena);
+      arrayRemove(this.site().componentArenas, existingComponentArena);
     }
 
     /// Turn all public states into private states
@@ -1586,7 +1582,7 @@ export class TplMgr {
 
     const existingPageArena = getPageArena(this.site(), component);
     if (existingPageArena) {
-      removeFromArray(this.site().pageArenas, existingPageArena);
+      arrayRemove(this.site().pageArenas, existingPageArena);
     }
 
     this.ensureDedicatedArena(component);
@@ -1765,10 +1761,10 @@ export class TplMgr {
   removeMixin(mixin: Mixin) {
     this.site().components.forEach((c) =>
       [...findVariantSettingsUnderTpl(c.tplTree)].forEach(([vs]) =>
-        tryRemoveFromArray(vs.rs.mixins, mixin)
+        tryRemove(vs.rs.mixins, mixin)
       )
     );
-    removeFromArray(this.site().mixins, mixin);
+    arrayRemove(this.site().mixins, mixin);
   }
 
   renameMixin(mixin: Mixin, name: string) {
@@ -1871,7 +1867,7 @@ export class TplMgr {
     for (const usage of usages) {
       removeImageAssetUsage(asset, usage);
     }
-    removeFromArray(this.site().imageAssets, asset);
+    arrayRemove(this.site().imageAssets, asset);
   }
 
   renameVariant(variant: Variant, name?: string) {
@@ -2055,7 +2051,7 @@ export class TplMgr {
 
     if (nodeToExclude && isComponentRoot(nodeToExclude)) {
       // Allow "root" only for root element
-      removeFromArray(existingNames, "root");
+      arrayRemove(existingNames, "root");
     }
     return uniqueName(existingNames, name, { normalize: toVarName });
   }
@@ -2199,7 +2195,7 @@ export class TplMgr {
 
     if (oldParent) {
       // This is a normal non-style variant
-      removeFromArray(oldParent.variants, variant);
+      arrayRemove(oldParent.variants, variant);
 
       // Fix all existing references to this variant through TplComponent.args
       // to the new VariantGroup

@@ -1,4 +1,3 @@
-import { insertAt, removeFromArray } from "@/wab/commons/collections";
 import {
   ensureActivatedScreenVariantsForArena,
   ensureActivatedScreenVariantsForFrameByWidth,
@@ -8,6 +7,7 @@ import {
   updateAutoDerivedFrameHeight,
 } from "@/wab/shared/Arenas";
 import { usedGlobalVariantGroups } from "@/wab/shared/cached-selectors";
+import { arrayInsert, arrayRemove } from "@/wab/shared/collections";
 import {
   ensure,
   ensureArrayOfInstances,
@@ -140,7 +140,7 @@ export function removeManagedFramesFromPageArenaForVariants(
   // the removed variant, as we do for all artboards
   for (const row of [...arena.matrix.rows]) {
     if (row.rowKey && variants.includes(row.rowKey as any)) {
-      removeFromArray(arena.matrix.rows, row);
+      arrayRemove(arena.matrix.rows, row);
     }
   }
   for (const row of arena.customMatrix.rows) {
@@ -150,7 +150,7 @@ export function removeManagedFramesFromPageArenaForVariants(
           variants.includes(v)
         )
       ) {
-        removeFromArray(row.cols, cell);
+        arrayRemove(row.cols, cell);
       }
     }
   }
@@ -166,7 +166,7 @@ export function removeManagedFramesFromPageArenaForVariantGroup(
       isKnownVariant(row.rowKey) &&
       group.variants.includes(row.rowKey)
     ) {
-      removeFromArray(arena.matrix.rows, row);
+      arrayRemove(arena.matrix.rows, row);
     }
   }
 }
@@ -285,7 +285,7 @@ export function addScreenSizeToPageArenas({
         height
       );
 
-      insertAt(
+      arrayInsert(
         arenaRow.cols,
         new ArenaFrameCell({
           frame: newArenaFrame,

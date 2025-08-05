@@ -2,10 +2,31 @@ import L from "lodash";
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { computed, isObservable, makeObservable } from "mobx";
 
-import { arrayEq, assert, ensure, withoutNils } from "@/wab/shared/common";
-import { arrayReversed } from "@/wab/commons/collections";
 import { DeepReadonly, DeepReadonlyArray } from "@/wab/commons/types";
+import { arrayReversed } from "@/wab/shared/collections";
+import { arrayEq, assert, ensure, withoutNils } from "@/wab/shared/common";
 import { clone } from "@/wab/shared/core/exprs";
+import { SlotSelection } from "@/wab/shared/core/slots";
+import {
+  cloneRuleSet,
+  createExpandedRuleSetMerger,
+  createRuleSetMerger,
+  expandRuleSets,
+  tplMatchThemeStyle,
+} from "@/wab/shared/core/styles";
+import {
+  cloneArgs,
+  cloneAttrs,
+  cloneColumnsConfig,
+  cloneDataRep,
+  cloneRichText,
+  fixTextChildren,
+  getOwnerSite,
+  getRichTextContent,
+  isTplTag,
+  isTplTextBlock,
+  reconnectChildren,
+} from "@/wab/shared/core/tpls";
 import {
   ArgSource,
   AttrSource,
@@ -65,27 +86,6 @@ import {
   getVariantSettingVisibility,
   hasVisibilitySetting,
 } from "@/wab/shared/visibility-utils";
-import { SlotSelection } from "@/wab/shared/core/slots";
-import {
-  cloneRuleSet,
-  createExpandedRuleSetMerger,
-  createRuleSetMerger,
-  expandRuleSets,
-  tplMatchThemeStyle,
-} from "@/wab/shared/core/styles";
-import {
-  cloneArgs,
-  cloneAttrs,
-  cloneColumnsConfig,
-  cloneDataRep,
-  cloneRichText,
-  fixTextChildren,
-  getOwnerSite,
-  getRichTextContent,
-  isTplTag,
-  isTplTextBlock,
-  reconnectChildren,
-} from "@/wab/shared/core/tpls";
 
 /**
  * A class that helps with reading VariantSettings from a stack of

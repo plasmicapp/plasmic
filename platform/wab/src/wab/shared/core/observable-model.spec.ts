@@ -1,4 +1,4 @@
-import { removeFromArray } from "@/wab/commons/collections";
+import { arrayRemove } from "@/wab/shared/collections";
 import { ensure, hackyCast } from "@/wab/shared/common";
 import {
   ChangeRecorder,
@@ -285,7 +285,7 @@ describe("observeModel", () => {
         // primitive array
         node.nicknames.push("my-node");
         node.nicknames.push("favorite", "favorites2");
-        removeFromArray(node.nicknames, "my-node");
+        arrayRemove(node.nicknames, "my-node");
         node.nicknames[1] = "whatevs";
 
         // rich array
@@ -310,7 +310,7 @@ describe("observeModel", () => {
         // setting array element prop of new element
         (node.children[1] as TextNode).text = "replaced! 2";
         // remove item
-        removeFromArray(node.children, ohhaiChild);
+        arrayRemove(node.children, ohhaiChild);
         prune();
         (ohhaiChild as TextNode).text = "OHHAI 2";
       },
@@ -688,7 +688,7 @@ describe("observeModel", () => {
         expect(events.length).toBe(2);
 
         // Detach the child from the tree
-        removeFromArray(node.children, child);
+        arrayRemove(node.children, child);
         events.length = 0;
         prune();
 
@@ -724,7 +724,7 @@ describe("observeModel", () => {
         expect(events[0].path !== undefined).toBe(true);
 
         // detach child
-        removeFromArray(node.children, child);
+        arrayRemove(node.children, child);
         events.length = 0;
         prune();
         value.name = "value 3";
@@ -739,7 +739,7 @@ describe("observeModel", () => {
         expect(events[0].path !== undefined).toBe(true);
 
         // detach again
-        removeFromArray(node.children, child);
+        arrayRemove(node.children, child);
         events.length = 0;
         prune();
         value.name = "value 5";

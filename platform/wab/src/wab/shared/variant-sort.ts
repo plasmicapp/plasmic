@@ -326,30 +326,3 @@ function getSelectorRank(selector: string) {
   return index >= 0 ? index : -1;
 }
 
-/**
- * Returns the screen variants sorted by the less restrictive order.
- * If it's a desktop-first responsive breakpoints setup, we will order the variants
- * by increasingly mediaQuery. And the opposite if it's a mobile-first setup.
- *
- * So for example, in a desktop-first responsive breakpoints setup, tablet (max_width: Z)
- * and mobile (max_width: Y, Y < Z). If we evaluate the styles for a screen with width X, X < Y < Z,
- *  we will want to apply the styles of the mobile variant. This way, we just need to find the first
- * screen variant in the sorted array that fits the screen width evaluated.
- */
-export function sortedScreenVariants(screenVariants: Variant[]) {
-  const [maxWidthScreenVariants, minWidthScreenVariants] = L.partition(
-    screenVariants,
-    (v) =>
-      parseScreenSpec(ensure(v.mediaQuery, "Must be screen variant"))
-        .maxWidth !== undefined
-  );
-
-  maxWidthScreenVariants.sort((a, b) =>
-    isAncestorScreenVariant(a, b) ? -1 : 1
-  );
-  minWidthScreenVariants.sort((a, b) =>
-    isAncestorScreenVariant(a, b) ? -1 : 1
-  );
-
-  return [...maxWidthScreenVariants, ...minWidthScreenVariants];
-}

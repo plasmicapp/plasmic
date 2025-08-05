@@ -1,4 +1,3 @@
-import { removeFromArray } from "@/wab/commons/collections";
 import { unwrap } from "@/wab/commons/failable-utils";
 import { parseMasterPkg } from "@/wab/server/pkg-mgr";
 import { FastBundler } from "@/wab/shared/bundler";
@@ -7,6 +6,7 @@ import {
   getNewProps,
   makePlumeComponentMeta,
 } from "@/wab/shared/code-components/code-components";
+import { arrayRemove } from "@/wab/shared/collections";
 import { PlumeComponent } from "@/wab/shared/core/components";
 import { createSite } from "@/wab/shared/core/sites";
 import { unbundleSite } from "@/wab/shared/core/tagged-unbundle";
@@ -117,8 +117,8 @@ describe("code-components", () => {
       ]);
     });
     it("returns missing params", () => {
-      removeFromArray(plumeComponent.params, plumeValueParam);
-      removeFromArray(plumeComponent.params, plumeAriaLabelParam);
+      arrayRemove(plumeComponent.params, plumeValueParam);
+      arrayRemove(plumeComponent.params, plumeAriaLabelParam);
       const paramNames = unwrap(
         getNewProps(site, plumeComponent, plumePluginComponentMeta)
       ).newProps.map((p) => p.variable.name);
@@ -128,8 +128,8 @@ describe("code-components", () => {
 
   describe("findDuplicateAriaParams", () => {
     it("returns empty array for 0 params", () => {
-      removeFromArray(plumeComponent.params, plumeAriaLabelParam);
-      removeFromArray(plumeComponent.params, plumeAriaLabelledByParam);
+      arrayRemove(plumeComponent.params, plumeAriaLabelParam);
+      arrayRemove(plumeComponent.params, plumeAriaLabelledByParam);
       expect(findDuplicateAriaParams(plumeComponent)).toBeEmpty();
     });
     it("returns empty array for 1 params", () => {

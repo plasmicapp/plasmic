@@ -10,8 +10,8 @@ import { LabelWithDetailedTooltip } from "@/wab/client/components/widgets/LabelW
 import { XMultiSelect } from "@/wab/client/components/XMultiSelect";
 import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { insertAt } from "@/wab/commons/collections";
 import { MaybeWrap } from "@/wab/commons/components/ReactUtil";
+import { arrayInsert } from "@/wab/shared/collections";
 import { ensure, removeAt } from "@/wab/shared/common";
 import { allMixins, isEditable } from "@/wab/shared/core/sites";
 import { MIXIN_CAP, MIXINS_CAP } from "@/wab/shared/Labels";
@@ -182,7 +182,7 @@ export const MixinsSection = observer(function (props: {
           onReorder={(fromIndex, toIndex) => {
             viewCtx.change(() => {
               const moved = removeAt(targetVs.rs.mixins, fromIndex);
-              insertAt(
+              arrayInsert(
                 targetVs.rs.mixins,
                 moved,
                 toIndex < fromIndex ? toIndex : toIndex

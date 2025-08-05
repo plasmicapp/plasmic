@@ -1,4 +1,3 @@
-import { removeFromArray } from "@/wab/commons/collections";
 import { mkTokenRef, TokenType } from "@/wab/commons/StyleToken";
 import { ProjectFullDataResponse } from "@/wab/shared/ApiSchema";
 import { mkArenaFrame } from "@/wab/shared/Arenas";
@@ -7,6 +6,7 @@ import {
   createStyleTokenFromRegistration,
   mkCodeComponent,
 } from "@/wab/shared/code-components/code-components";
+import { arrayRemove } from "@/wab/shared/collections";
 import {
   assert,
   ensure,
@@ -147,7 +147,7 @@ describe("merging", () => {
     const rez = testMerge({
       ancestorSite: basicSite(),
       a: (site) => {
-        removeFromArray(site.styleTokens, (leftSubject = site.styleTokens[0]));
+        arrayRemove(site.styleTokens, (leftSubject = site.styleTokens[0]));
       },
       b: (site) => {
         (site.components[0].tplTree as TplTag).vsettings[0].rs.values[

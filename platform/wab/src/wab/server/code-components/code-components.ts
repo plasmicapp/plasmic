@@ -1,6 +1,3 @@
-import { removeFromArray } from "@/wab/commons/collections";
-import { isSlot } from "@/wab/shared/SlotUtils";
-import { TplMgr } from "@/wab/shared/TplMgr";
 import {
   getBuiltinComponentRegistrations,
   isBuiltinCodeComponent,
@@ -18,6 +15,7 @@ import {
   mkCodeComponent,
   syncCodeComponents,
 } from "@/wab/shared/code-components/code-components";
+import { arrayRemove } from "@/wab/shared/collections";
 import { assert, ensure } from "@/wab/shared/common";
 import {
   CodeComponent,
@@ -33,6 +31,8 @@ import {
   Site,
   ensureKnownPropParam,
 } from "@/wab/shared/model/classes";
+import { isSlot } from "@/wab/shared/SlotUtils";
+import { TplMgr } from "@/wab/shared/TplMgr";
 import {
   ComponentMeta,
   ComponentRegistration,
@@ -326,7 +326,7 @@ export async function updateHostlessPackage(
     tplMgr.removeComponentGroup(toDeleteComponents);
     toDeleteComponents.forEach((c) => {
       if (site.globalContexts.some((tpl) => tpl.component === c)) {
-        removeFromArray(
+        arrayRemove(
           site.globalContexts,
           site.globalContexts.find((tpl) => tpl.component === c)
         );

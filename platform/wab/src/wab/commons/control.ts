@@ -68,44 +68,6 @@ export function asReadablePromise<T, Err = Error>(
   return rp;
 }
 
-export function nonReentrant<T extends Array<any>, U>(
-  fn: (...args: T) => U,
-  keyfn: (...args: T) => any = () => null
-): (...args: T) => U {
-  const entered = new Map<string, boolean>();
-  return (...args: T): U => {
-    const key = JSON.stringify(keyfn(...args));
-    if (entered.get(key)) {
-      throw new Error(`Re-entered non-reentrant function ${fn.name}`);
-    }
-    entered.set(key, true);
-    try {
-      return fn(...args);
-    } finally {
-      entered.set(key, false);
-    }
-  };
-}
-
-export function nonReentrantAsync<T extends Array<any>, U>(
-  fn: (...args: T) => Promise<U>,
-  keyfn: (...args: T) => any = () => null
-): (...args: T) => Promise<U> {
-  const entered = new Map<string, boolean>();
-  return async (...args: T): Promise<U> => {
-    const key = JSON.stringify(keyfn(...args));
-    if (entered.get(key)) {
-      throw new Error(`Re-entered non-reentrant function ${fn.name}`);
-    }
-    entered.set(key, true);
-    try {
-      return await fn(...args);
-    } finally {
-      entered.set(key, false);
-    }
-  };
-}
-
 /**
  * Wrap a Promise based async function as a node style callback function.
  *
@@ -138,11 +100,4 @@ export function safeCallbackify<Args extends any[], Result>(
       (reason) => cb(reason)
     );
   };
-}
-
-export function warnFalsy<T>(x: T, label: string): T {
-  if (!x) {
-    console.warn("Unexpected falsy value: " + label);
-  }
-  return x;
 }

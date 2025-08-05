@@ -1,4 +1,3 @@
-import { removeFromArray } from "@/wab/commons/collections";
 import {
   FrameViewMode,
   ensurePositionManagedFrame,
@@ -30,6 +29,7 @@ import {
   usedGlobalVariantGroups,
 } from "@/wab/shared/cached-selectors";
 import { isTplRootWithCodeComponentVariants } from "@/wab/shared/code-components/variants";
+import { arrayRemove } from "@/wab/shared/collections";
 import {
   assert,
   ensure,
@@ -257,7 +257,7 @@ export function removeFramesFromComponentArenaForVariants(
   for (const row of [...arena.matrix.rows]) {
     for (const cell of [...row.cols]) {
       if (cell.cellKey && variants.includes(ensureKnownVariant(cell.cellKey))) {
-        removeFromArray(row.cols, cell);
+        arrayRemove(row.cols, cell);
       }
     }
   }
@@ -269,7 +269,7 @@ export function removeFramesFromComponentArenaForVariants(
           variants.includes(v)
         )
       ) {
-        removeFromArray(row.cols, cell);
+        arrayRemove(row.cols, cell);
       }
     }
   }
@@ -281,7 +281,7 @@ export function removeManagedFramesFromComponentArenaForVariantGroup(
 ) {
   for (const row of [...arena.matrix.rows]) {
     if (row.rowKey === group) {
-      removeFromArray(arena.matrix.rows, row);
+      arrayRemove(arena.matrix.rows, row);
     }
   }
 }
@@ -293,7 +293,7 @@ export function removeCustomComponentFrame(
   for (const row of arena.customMatrix.rows) {
     const cell = row.cols.find((c) => c.frame === frame);
     if (cell) {
-      removeFromArray(row.cols, cell);
+      arrayRemove(row.cols, cell);
     }
   }
 }
@@ -317,11 +317,11 @@ export function removeSuperOrGlobalVariantComponentFrame(
   const cell = row?.cols.find((c) => c.frame === frame);
 
   if (cell) {
-    removeFromArray(row!.cols, cell);
+    arrayRemove(row!.cols, cell);
   }
 
   if (row?.cols.length === 0) {
-    removeFromArray(arena.matrix.rows, row);
+    arrayRemove(arena.matrix.rows, row);
   }
 }
 

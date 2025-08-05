@@ -1,9 +1,8 @@
-import { removeFromArray } from "@/wab/commons/collections";
 import { Lookup, pathSelector } from "@/wab/commons/path-selector";
 import { TplMgr } from "@/wab/shared/TplMgr";
 import { Bundler, addrKey } from "@/wab/shared/bundler";
 import { toVarName } from "@/wab/shared/codegen/util";
-import { spanWhile } from "@/wab/shared/collections";
+import { arrayRemove, spanWhile } from "@/wab/shared/collections";
 import {
   arrayEq,
   assert,
@@ -1729,7 +1728,7 @@ function preFixTplNames(
       }
 
       const oldName = tpl.name;
-      removeFromArray(selfTree.names, oldName);
+      arrayRemove(selfTree.names, oldName);
       aTplMgr.renameTpl(
         selfComponent,
         tpl,

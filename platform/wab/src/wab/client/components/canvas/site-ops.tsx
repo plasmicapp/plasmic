@@ -18,7 +18,6 @@ import {
 import { promptComponentTemplate, promptPageName } from "@/wab/client/prompts";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { trackEvent } from "@/wab/client/tracking";
-import { removeFromArray } from "@/wab/commons/collections";
 import { joinReactNodes } from "@/wab/commons/components/ReactUtil";
 import {
   deriveInitFrameSettings,
@@ -68,6 +67,7 @@ import {
   getComponentsUsingImageAsset,
 } from "@/wab/shared/cached-selectors";
 import { toVarName } from "@/wab/shared/codegen/util";
+import { arrayRemove } from "@/wab/shared/collections";
 import {
   assert,
   ensure,
@@ -1813,7 +1813,7 @@ export class SiteOps {
           usages.forEach((usage) => {
             changeTokenUsage(this.site, token, usage, "inline");
           });
-          removeFromArray(this.site.styleTokens, token);
+          arrayRemove(this.site.styleTokens, token);
         });
         return success();
       }
@@ -1854,8 +1854,8 @@ export class SiteOps {
       ({ success }) => {
         mixins.forEach((mixin) => {
           const [usages, _] = extractMixinUsages(this.site, mixin);
-          usages.forEach((usage) => removeFromArray(usage.mixins, mixin));
-          removeFromArray(this.site.mixins, mixin);
+          usages.forEach((usage) => arrayRemove(usage.mixins, mixin));
+          arrayRemove(this.site.mixins, mixin);
         });
         return success();
       }

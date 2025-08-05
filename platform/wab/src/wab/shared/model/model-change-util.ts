@@ -1,11 +1,11 @@
 import type { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { arrayReversed } from "@/wab/commons/collections";
 import {
   componentToTplComponents,
   deepComponentToReferencers,
   extractComponentVariantSettings,
   extractImageAssetRefsByAttrs,
 } from "@/wab/shared/cached-selectors";
+import { arrayReversed } from "@/wab/shared/collections";
 import {
   ensure,
   ensureArrayOfInstances,

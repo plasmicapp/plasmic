@@ -1,4 +1,3 @@
-import { removeFromArray } from "@/wab/commons/collections";
 import {
   derefToken,
   hasTokenRefs,
@@ -25,6 +24,7 @@ import {
   extractUsedTokensForMixins,
   extractUsedTokensForTokens,
 } from "@/wab/shared/codegen/style-tokens";
+import { arrayRemove } from "@/wab/shared/collections";
 import {
   assert,
   assignReadonly,
@@ -946,7 +946,7 @@ function upgradeProjectDep(
         }
 
         // Delete the override.
-        removeFromArray(site.styleTokenOverrides, override);
+        arrayRemove(site.styleTokenOverrides, override);
       }
       // We cannot handle the "token NOT removed" case on the first pass here,
       // since it could call `getOrCloneNewToken`, messing up the cloning and
@@ -1007,7 +1007,7 @@ function upgradeProjectDep(
             // remove the arg.  We remove it from interaction.args,
             // and return `false` from this function, as we've "fixed it"
             // and don't need to remove the root arg or attr.
-            removeFromArray(interaction.args, arg);
+            arrayRemove(interaction.args, arg);
           }
         }
       }
@@ -1155,7 +1155,7 @@ function upgradeProjectDep(
       }
       for (const arg of [...vs.args]) {
         if (shouldDeletePageHRef(arg.expr)) {
-          removeFromArray(vs.args, arg);
+          arrayRemove(vs.args, arg);
         }
       }
 
@@ -1266,7 +1266,7 @@ function upgradeProjectDep(
                 }
               });
             }
-            removeFromArray(vs.args, arg);
+            arrayRemove(vs.args, arg);
             continue;
           }
           arg.param = newParam;
@@ -1470,7 +1470,7 @@ function upgradeProjectDep(
               cell.cellKey = newVariant;
             } else {
               // The referenced variant no longer exists; delete it
-              removeFromArray(row.cols, cell);
+              arrayRemove(row.cols, cell);
               return;
             }
           }
@@ -1483,7 +1483,7 @@ function upgradeProjectDep(
             );
             if (newCellKey.length !== cellKey.length) {
               // Some referenced global variant no longer exists; delete it
-              removeFromArray(row.cols, cell);
+              arrayRemove(row.cols, cell);
             } else {
               cell.cellKey = newCellKey;
             }
@@ -1501,7 +1501,7 @@ function upgradeProjectDep(
             row.rowKey = newGroup;
           } else {
             // The referenced group no longer exists; delete it
-            removeFromArray(grid.rows, row);
+            arrayRemove(grid.rows, row);
             return;
           }
         }
@@ -1512,7 +1512,7 @@ function upgradeProjectDep(
             row.rowKey = newVariant;
           } else {
             // The referenced variant no longer exists; delete it
-            removeFromArray(grid.rows, row);
+            arrayRemove(grid.rows, row);
             return;
           }
         }
@@ -1628,6 +1628,6 @@ function upgradeProjectDep(
     const index = site.projectDependencies.indexOf(oldDep);
     site.projectDependencies[index] = newDep;
   } else {
-    removeFromArray(site.projectDependencies, oldDep);
+    arrayRemove(site.projectDependencies, oldDep);
   }
 }

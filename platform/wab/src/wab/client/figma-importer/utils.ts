@@ -10,14 +10,13 @@ import {
   Transform,
 } from "@/wab/client/figma-importer/plugin-types";
 import { FigmaData } from "@/wab/client/figma-importer/types";
-import { arrayReversed } from "@/wab/commons/collections";
-import { RSH } from "@/wab/shared/RuleSetHelpers";
-import { VariantTplMgr } from "@/wab/shared/VariantTplMgr";
-import { unzip } from "@/wab/shared/collections";
+import { arrayReversed, unzip } from "@/wab/shared/collections";
 import { arrayEqIgnoreOrder, ensure } from "@/wab/shared/common";
 import { getComponentDisplayName } from "@/wab/shared/core/components";
 import { MkTplTagOpts, isTplVariantable } from "@/wab/shared/core/tpls";
 import { Component, TplNode } from "@/wab/shared/model/classes";
+import { RSH } from "@/wab/shared/RuleSetHelpers";
+import { VariantTplMgr } from "@/wab/shared/VariantTplMgr";
 import { getBoundingRect } from "@figma-plugin/helpers";
 import { isString } from "lodash";
 import { Matrix } from "transformation-matrix";

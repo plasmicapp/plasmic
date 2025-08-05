@@ -16,8 +16,8 @@ import { LabelWithDetailedTooltip } from "@/wab/client/components/widgets/LabelW
 import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
 import TriangleBottomIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__TriangleBottom";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { removeFromArray } from "@/wab/commons/collections";
 import { isAllowedDefaultExprForPropType } from "@/wab/shared/code-components/code-components";
+import { arrayRemove } from "@/wab/shared/collections";
 import { ensure, spawn, withoutNils } from "@/wab/shared/common";
 import {
   clone,
@@ -59,7 +59,7 @@ import {
 } from "@/wab/shared/model/classes";
 import { unsetTplVariantableAttr } from "@/wab/shared/TplMgr";
 import { tryGetBaseVariantSetting } from "@/wab/shared/Variants";
-import { Menu, notification, Popover, Select } from "antd";
+import { notification, Popover, Select } from "antd";
 import { RefSelectProps } from "antd/lib/select";
 import L, { keyBy, orderBy, uniq, without } from "lodash";
 import { observer } from "mobx-react";
@@ -117,7 +117,7 @@ export function getEditableTagAttrs(viewCtx: ViewCtx, tpl: TplTag) {
     const canSwitchType = !!getInputTypeOptions(type);
     const inputAttrs = [...COMMON_INPUT_ATTRS];
     if (!canSwitchType) {
-      removeFromArray(inputAttrs, "type");
+      arrayRemove(inputAttrs, "type");
     }
     if (["checkbox", "radio"].includes(type)) {
       inputAttrs.push("checked");

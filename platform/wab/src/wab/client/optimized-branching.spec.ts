@@ -1,7 +1,7 @@
 import { fakeStudioCtx } from "@/wab/client/test/fake-init-ctx";
-import { removeFromArray } from "@/wab/commons/collections";
 import { mkTokenRef } from "@/wab/commons/StyleToken";
 import { Bundler } from "@/wab/shared/bundler";
+import { arrayRemove } from "@/wab/shared/collections";
 import { ensure, jsonClone, mkUuid } from "@/wab/shared/common";
 import { ComponentType, mkComponent } from "@/wab/shared/core/components";
 import { createSite, writeable } from "@/wab/shared/core/sites";
@@ -167,7 +167,7 @@ describe("Optimized merging with updatedAt", () => {
         // Removing referenced token in the ancestor branch, normally this would trigger changes in the reference
         // but since it's not observed, it won't be considered updated
         a: (site) => {
-          removeFromArray(site.styleTokens, site.styleTokens[0]);
+          arrayRemove(site.styleTokens, site.styleTokens[0]);
 
           // Manually fixing the token reference, because token operations are in site ops, which are client side only
           // (e.g it triggers some modals for the user to confirm)
@@ -278,7 +278,7 @@ describe("Optimized merging with updatedAt", () => {
         // Removing referenced token in the ancestor branch, normally this would trigger changes in the reference
         // but since it's not observed, it won't be considered updated
         a: (site) => {
-          removeFromArray(site.styleTokens, site.styleTokens[0]);
+          arrayRemove(site.styleTokens, site.styleTokens[0]);
           (site.components[0].tplTree as TplTag).vsettings[0].rs.values[
             "line-height"
           ] = "1";

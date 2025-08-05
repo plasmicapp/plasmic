@@ -15,7 +15,6 @@ import {
   filterFalsy,
   isLiteralObject,
   maybe,
-  mkMap,
   mkShortId,
   tuple,
   withoutNils,
@@ -437,6 +436,10 @@ export function checkBundleFields(bundle: Bundle, iidsToCheck?: string[]) {
   }
 }
 
+function mkMap() {
+  return Object.create(null);
+}
+
 // TODO fix mem leak, should track entire bundles so that they can be wiped
 export class Bundler {
   protected _rt: MetaRuntime;
@@ -699,12 +702,13 @@ export class Bundler {
     uuid: string,
     incremental: boolean
   ): { [iid: string]: classesModule.ObjInst } {
-    const localAddr2inst: Record<string, classesModule.ObjInst> = mkMap();
+    const localAddr2inst: Record<string, classesModule.ObjInst> =
+      Object.create(null);
     const addr2inst = (addr: string) =>
       localAddr2inst[addr] != null
         ? localAddr2inst[addr]
         : this._addr2inst[addr];
-    const localUid2addr = mkMap();
+    const localUid2addr = Object.create(null);
     const missingXrefError = (xref) => {
       if (this.looseMode) {
         return xref;

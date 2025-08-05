@@ -24,7 +24,7 @@ import StyleToggleButtonGroup from "@/wab/client/components/style-controls/Style
 import { DimTokenSpinner } from "@/wab/client/components/widgets/DimTokenSelector";
 import { LabelWithDetailedTooltip } from "@/wab/client/components/widgets/LabelWithDetailedTooltip";
 import { isStylePropSet } from "@/wab/client/utils/style-utils";
-import { inspect, maybe, mapify } from "@/wab/shared/common";
+import { maybe, mapify } from "@/wab/shared/common";
 import { isCodeComponent } from "@/wab/shared/core/components";
 import { standardSides } from "@/wab/shared/geom";
 import {
@@ -439,14 +439,12 @@ const GridChildSettings = observer(function GridChildSettings(props: {
             onChange={async (val) =>
               sc.changeUnsafe(() =>
                 exp().merge(
-                  inspect(
-                    showGridChildCss({
-                      id: "",
-                      area: produce(area, (draft) => {
-                        draft[axis][startEnd] = val ? +val : 0;
-                      }),
-                    })
-                  )
+                  showGridChildCss({
+                    id: "",
+                    area: produce(area, (draft) => {
+                      draft[axis][startEnd] = val ? +val : 0;
+                    }),
+                  })
                 )
               )
             }

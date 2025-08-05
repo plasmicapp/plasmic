@@ -1,9 +1,9 @@
-import { removeFromArray } from "@/wab/commons/collections";
 import {
   resolveAllTokenRefs,
   toFinalStyleToken,
 } from "@/wab/commons/StyleToken";
 import { getArenaFrames } from "@/wab/shared/Arenas";
+import { arrayRemove } from "@/wab/shared/collections";
 import {
   arrayEqIgnoreOrder,
   assert,
@@ -573,7 +573,7 @@ export function fixDanglingReferenceConflicts(
         for (const arena of site.arenas) {
           for (const frame of [...getArenaFrames(arena)]) {
             if (frame.container.component === c) {
-              removeFromArray(arena.children, frame);
+              arrayRemove(arena.children, frame);
             }
           }
         }

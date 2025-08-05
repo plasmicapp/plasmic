@@ -10,9 +10,8 @@ import {
 } from "@/wab/client/components/widgets";
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
-import { removeFromArray } from "@/wab/commons/collections";
 import { derefTokenRefs, tryParseTokenRef } from "@/wab/commons/StyleToken";
-import { arrayMoveIndex } from "@/wab/shared/collections";
+import { arrayMoveIndex, arrayRemove } from "@/wab/shared/collections";
 import { cx, maybe, spawn, uniqueKey } from "@/wab/shared/common";
 import {
   defaultFilterEffects,
@@ -133,7 +132,7 @@ const _GenericFilterEffectSection = (
                   key={uniqueKey(filter)}
                   index={i}
                   onRemove={() => {
-                    removeFromArray(filters, filter);
+                    arrayRemove(filters, filter);
                     updateFilters(filters);
                   }}
                   onClick={() => setInspect(i)}

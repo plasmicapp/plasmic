@@ -1,9 +1,9 @@
+import { arrayRemove } from "@/wab/shared/collections";
 import { ensure } from "@/wab/shared/common";
-import { removeFromArray } from "@/wab/commons/collections";
 import { isPageComponent } from "@/wab/shared/core/components";
 import { convertHrefExprToCodeExpr } from "@/wab/shared/core/exprs";
-import { isKnownPageHref, PageHref, Site } from "@/wab/shared/model/classes";
 import { flattenTpls } from "@/wab/shared/core/tpls";
+import { isKnownPageHref, PageHref, Site } from "@/wab/shared/model/classes";
 
 /**
  * Fixes any PageHref in Site to point to local pages. At this point,
@@ -42,7 +42,7 @@ export function fixPageHrefsToLocal(site: Site) {
             if (swapped) {
               arg.expr = swapped;
             } else {
-              removeFromArray(vsettings.args, arg);
+              arrayRemove(vsettings.args, arg);
             }
           }
         }

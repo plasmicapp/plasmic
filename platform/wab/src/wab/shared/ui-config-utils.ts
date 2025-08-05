@@ -1,4 +1,3 @@
-import { arrayReversed } from "@/wab/commons/collections";
 import {
   ApiPermission,
   ApiResource,
@@ -8,6 +7,7 @@ import {
   StyleSectionVisibilities,
   TemplateSpec,
 } from "@/wab/shared/ApiSchema";
+import { arrayReversed } from "@/wab/shared/collections";
 import { withoutNils } from "@/wab/shared/common";
 import { accessLevelRank } from "@/wab/shared/EntUtil";
 import {

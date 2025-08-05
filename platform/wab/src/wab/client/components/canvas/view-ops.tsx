@@ -1,5 +1,4 @@
 import { getBoundingClientRect, getOffsetPoint } from "@/wab/client/dom";
-import { removeFromArray } from "@/wab/commons/collections";
 import { joinReactNodes } from "@/wab/commons/components/ReactUtil";
 import { derefTokenRefs, isTokenRef } from "@/wab/commons/StyleToken";
 import { AddItemKey, WrapItemKey } from "@/wab/shared/add-item-keys";
@@ -9,6 +8,7 @@ import {
   isMixedArena,
 } from "@/wab/shared/Arenas";
 import { toVarName } from "@/wab/shared/codegen/util";
+import { arrayRemove } from "@/wab/shared/collections";
 import {
   hasMaxWidthVariant,
   hasNonResponsiveColumnsStyle,
@@ -4627,7 +4627,7 @@ export class ViewOps {
       for (const mixin of vs.rs.mixins) {
         if (hasTypography(RSH(mixin.rs, container))) {
           childVs.rs.mixins.push(mixin);
-          removeFromArray(vs.rs.mixins, mixin);
+          arrayRemove(vs.rs.mixins, mixin);
         }
       }
     }

@@ -8,11 +8,11 @@ import Chip from "@/wab/client/components/widgets/Chip";
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { removeFromArray } from "@/wab/commons/collections";
 import {
   maybePropTypeToDisplayName,
   StudioPropType,
 } from "@/wab/shared/code-components/code-components";
+import { arrayRemove } from "@/wab/shared/collections";
 import { assert } from "@/wab/shared/common";
 import {
   clone as cloneExpr,
@@ -236,7 +236,7 @@ export function FormValidationRulesEditor(
                         if (!clonedExpr) {
                           return;
                         }
-                        removeFromArray(clonedExpr.exprs, rule);
+                        arrayRemove(clonedExpr.exprs, rule);
                         props.onChange(clonedExpr);
                       }}
                       rule={rule.mapExpr}
