@@ -237,7 +237,7 @@ describe("makeSqlCondition", () => {
         { useDraft: false }
       )
     ).toEqual({
-      condition: `r.'createdAt' = :val0`,
+      condition: `r.createdAt = :val0`,
       params: {
         val0: "2025-01-01T00:00:00Z",
       },
@@ -254,7 +254,7 @@ describe("makeSqlCondition", () => {
         { useDraft: false }
       )
     ).toEqual({
-      condition: `r.'updatedAt' = :val0`,
+      condition: `r.updatedAt = :val0`,
       params: {
         val0: "2025-01-01T00:00:00Z",
       },
