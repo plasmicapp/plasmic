@@ -12,11 +12,7 @@ import {
   resetStripeCustomer,
   syncDataWithStripe,
 } from "@/wab/server/routes/team-plans";
-import {
-  getUser,
-  superDbMgr,
-  userDbMgr,
-} from "@/wab/server/routes/util";
+import { getUser, superDbMgr, userDbMgr } from "@/wab/server/routes/util";
 import { mkApiWorkspace } from "@/wab/server/routes/workspaces";
 import {
   ApiPermission,
@@ -142,9 +138,7 @@ export async function createTeam(req: Request, res: Response) {
   if (req.devflags.freeTrial) {
     await userMgr.startFreeTrial({
       teamId: team.id,
-      featureTierName: req.devflags.useNewFeatureTiers
-        ? req.devflags.newFreeTrialTierName
-        : req.devflags.freeTrialTierName,
+      featureTierName: req.devflags.freeTrialTierName,
     });
   }
 

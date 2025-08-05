@@ -3,12 +3,8 @@ import {
   DefaultUpsellCheckoutProps,
   PlasmicUpsellCheckout,
 } from "@/wab/client/plasmic/plasmic_kit_dashboard/PlasmicUpsellCheckout";
-import { DEVFLAGS } from "@/wab/shared/devflags";
 import { ApiFeatureTier, BillingFrequency } from "@/wab/shared/ApiSchema";
-import {
-  featureTiers,
-  newFeatureTiers,
-} from "@/wab/shared/pricing/pricing-utils";
+import { newFeatureTiers } from "@/wab/shared/pricing/pricing-utils";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import {
   CardCvcElement,
@@ -55,9 +51,7 @@ function UpsellCheckout_(
     ...rest
   } = props;
 
-  const tiers: string[] = [
-    ...(DEVFLAGS.useNewFeatureTiers ? newFeatureTiers : featureTiers),
-  ];
+  const tiers: string[] = [...newFeatureTiers];
   const currentTierLevel = currentTier ? tiers.indexOf(currentTier.name) : -1;
   const newTierLevel = tiers.indexOf(tier.name);
 

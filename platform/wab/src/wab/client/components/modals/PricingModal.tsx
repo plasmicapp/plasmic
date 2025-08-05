@@ -22,7 +22,11 @@ import { assert, assertNever, ensure } from "@/wab/shared/common";
 import { DEVFLAGS } from "@/wab/shared/devflags";
 import { accessLevelRank } from "@/wab/shared/EntUtil";
 import { ORGANIZATION_LOWER } from "@/wab/shared/Labels";
-import { isUpgradableTier } from "@/wab/shared/pricing/pricing-utils";
+import {
+  getExternalPriceTier,
+  getNewPriceTierType,
+  isUpgradableTier,
+} from "@/wab/shared/pricing/pricing-utils";
 import { APP_ROUTES } from "@/wab/shared/route/app-routes";
 import { fillRoute } from "@/wab/shared/route/route";
 import {
@@ -299,13 +303,7 @@ function UpsellForm(
       type: "success",
       team: team,
       tier: ensure(
-        availableTiers.find(
-          (t) =>
-            t.name ===
-            (DEVFLAGS.useNewFeatureTiers
-              ? DEVFLAGS.newFreeTrialTierName
-              : DEVFLAGS.freeTrialTierName)
-        ),
+        availableTiers.find((t) => t.name === DEVFLAGS.freeTrialTierName),
         "Free trial tier should be one of the available"
       ),
     });
@@ -519,15 +517,14 @@ export class PaywallError extends Error {
 }
 
 function getPaywallProperDescription(description: string) {
+  const freeTrialName = getExternalPriceTier(
+    getNewPriceTierType(DEVFLAGS.freeTrialTierName)
+  );
   switch (description) {
     case "splitContentAccess":
-      return `This project is using A/B testing or custom targeting. Please upgrade to a ${
-        DEVFLAGS.useNewFeatureTiers ? "Team" : "Growth"
-      } or Enterprise plan to publish this project.`;
+      return `This project is using A/B testing or custom targeting. Please upgrade to a ${freeTrialName} or Enterprise plan to publish this project.`;
     case "monthlyViewLimit":
-      return `This project/${ORGANIZATION_LOWER} has reached the monthly view limit. Please upgrade to a ${
-        DEVFLAGS.useNewFeatureTiers ? "Team" : "Growth"
-      } or Enterprise plan to publish this project.`;
+      return `This project/${ORGANIZATION_LOWER} has reached the monthly view limit. Please upgrade to a ${freeTrialName} or Enterprise plan to publish this project.`;
     default:
       return undefined;
   }

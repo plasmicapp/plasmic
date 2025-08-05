@@ -9,11 +9,7 @@ import {
 } from "@/wab/client/plasmic/plasmic_kit_pricing/PlasmicPriceTierPicker";
 import { ApiFeatureTier, BillingFrequency } from "@/wab/shared/ApiSchema";
 import { DEVFLAGS } from "@/wab/shared/devflags";
-import {
-  isEnterprise,
-  newTiers,
-  tiers,
-} from "@/wab/shared/pricing/pricing-utils";
+import { isEnterprise, newTiers } from "@/wab/shared/pricing/pricing-utils";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import * as React from "react";
 
@@ -81,7 +77,7 @@ function PriceTierPicker_(
     ...rest
   } = props;
   const tierData: Record<string, ApiFeatureTier> = {};
-  (DEVFLAGS.useNewFeatureTiers ? newTiers : tiers).forEach((tier) => {
+  newTiers.forEach((tier) => {
     const currentTier = availableTiers.find((t) =>
       t.name.toLowerCase().includes(tier)
     );

@@ -1748,7 +1748,7 @@ export class DbMgr implements MigrationDbMgr {
    * Anyone can fetch our latest pricing
    */
   async listCurrentFeatureTiers(
-    featureTierNames: string[]
+    featureTierNames: readonly string[]
   ): Promise<FeatureTier[]> {
     const result: FeatureTier[] = [];
     for (const name of featureTierNames) {

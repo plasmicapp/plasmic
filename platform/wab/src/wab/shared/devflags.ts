@@ -295,7 +295,6 @@ const DEFAULT_DEVFLAGS = {
   eTagsVersionPrefix: "0",
   // The tiers to get dynamically retrieve from the server
   featureTierNames: featureTiers,
-  useNewFeatureTiers: true,
   newFeatureTierNames: newFeatureTiers,
   freeTier: ensureType<ApiFeatureTier>({
     createdAt: "2021-08-05T23:39:21.570Z",
@@ -331,8 +330,7 @@ const DEFAULT_DEVFLAGS = {
     monthlyViews: 50000,
   }),
   freeTrial: false,
-  freeTrialTierName: "Growth",
-  newFreeTrialTierName: "Team",
+  freeTrialTierName: "Team",
   freeTrialDays: 15,
   freeTrialPromoDays: 60,
   createTeamPrompt: true,
