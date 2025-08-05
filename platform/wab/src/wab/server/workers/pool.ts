@@ -1,3 +1,4 @@
+import { Config } from "@/wab/server/config";
 import type { workerBuildAssets } from "@/wab/server/workers/build-loader-assets";
 import type { workerGenCode } from "@/wab/server/workers/codegen";
 import type { workerLocalizationStrings } from "@/wab/server/workers/localization-worker";
@@ -37,14 +38,14 @@ class WorkerPoolWrapper {
   }
 }
 
-export function createWorkerPool() {
+export function createWorkerPool(config: Config) {
   const loaderPool = createPool(path.join(__dirname, "worker.js"), {
     workerType: "thread",
-    maxWorkers: 1,
+    maxWorkers: config.loaderWorkerPoolSize,
   });
   const genericPool = createPool(path.join(__dirname, "worker.js"), {
     workerType: "thread",
-    maxWorkers: 1,
+    maxWorkers: config.genericWorkerPoolSize,
   });
 
   const wrapper = new WorkerPoolWrapper(loaderPool, genericPool);

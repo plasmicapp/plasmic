@@ -748,7 +748,7 @@ function addMiddlewares(
     })
   );
 
-  const workerpool = createWorkerPool();
+  const workerpool = createWorkerPool(config);
   app.use(
     safeCast<RequestHandler>(async (req, res, next) => {
       req.workerpool = workerpool;

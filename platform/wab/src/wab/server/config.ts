@@ -14,6 +14,8 @@ export interface Config {
   mailBcc?: string;
   port?: number;
   terminationGracePeriodMs: number;
+  genericWorkerPoolSize: number;
+  loaderWorkerPoolSize: number;
 }
 
 export const DEFAULT_DATABASE_URI =
@@ -29,6 +31,8 @@ const DEFAULT_CONFIG: Config = {
   adminEmails:
     process.env.NODE_ENV !== "production" ? ["admin@admin.example.com"] : [],
   terminationGracePeriodMs: 5500,
+  genericWorkerPoolSize: 1,
+  loaderWorkerPoolSize: 1,
 };
 
 export const loadConfig = memoizeOne((): Config => {
@@ -55,6 +59,7 @@ function parseConfigFromEnv(): Config {
     rawTerminationGracePeriodMs != null
       ? parseInt(rawTerminationGracePeriodMs, 10)
       : undefined;
+
   const envConfig = {
     host: process.env["HOST"],
     databaseUri: process.env["DATABASE_URI"],
@@ -69,6 +74,12 @@ function parseConfigFromEnv(): Config {
         )
       : undefined,
     terminationGracePeriodMs: terminationGracePeriodMs,
+    genericWorkerPoolSize: process.env["GENERIC_WORKER_POOL_SIZE"]
+      ? parseInt(process.env["GENERIC_WORKER_POOL_SIZE"], 10)
+      : undefined,
+    loaderWorkerPoolSize: process.env["LOADER_WORKER_POOL_SIZE"]
+      ? parseInt(process.env["LOADER_WORKER_POOL_SIZE"], 10)
+      : undefined,
   };
 
   Object.entries(envConfig).forEach(([key, value]) => {
