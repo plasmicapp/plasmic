@@ -48,6 +48,33 @@ import * as React from "react";
 import { useInterval } from "react-use";
 import useSWR from "swr";
 
+/**
+* When `useInterval()` is passed `null`, the polling loop is paused.
+*/
+export const DELAY_PAUSED = null;
+
+/**
+* Delay used while waiting for GitHub to create the first workflow run.
+* This is still throttled so that we never hammer the server.
+*/
+export const DELAY_FAST_POLL = 50;
+
+/**
+* Delay used when a workflow job is in the `in_progress` state.
+*/
+export const DELAY_MEDIUM_POLL = 1000;
+
+/**
+* Delay used for other non-critical polling states (e.g. queued).
+*/
+export const DELAY_SLOW_POLL = 3000;
+
+export type Delay =
+  | typeof DELAY_PAUSED
+  | typeof DELAY_FAST_POLL
+  | typeof DELAY_MEDIUM_POLL
+  | typeof DELAY_SLOW_POLL;
+
 export type PublishState = undefined | "publishing" | "success" | "failure";
 
 function mkPublishState(
@@ -214,7 +241,7 @@ export const PublishFlowDialogWrapper = observer(
     const [statusPushDeploy, setStatusPushDeploy] = React.useState<
       StatusPushDeploy | undefined
     >(undefined);
-    const [delay, setDelay] = React.useState<number | null>(null);
+    const [delay, setDelay] = React.useState<Delay>(DELAY_PAUSED);
     const [jobState, jobRun] = useAsyncFnStrict(async () => {
       if (!statusPushDeploy?.projectRepositoryId) {
         return;
@@ -227,7 +254,8 @@ export const PublishFlowDialogWrapper = observer(
         );
         if (run.state === "running") {
           statusPushDeploy.setWorkflowRunId(run.workflowRunId);
-          setDelay(0);
+          // Switch to fast-polling mode, but still throttle to at least 50 ms
+          setDelay(DELAY_FAST_POLL);
           if (run.workflowJobUrl) {
             statusPushDeploy.setWorkflowJobUrl(run.workflowJobUrl);
           }
@@ -244,11 +272,11 @@ export const PublishFlowDialogWrapper = observer(
         statusPushDeploy.setWorkflowJobUrl(job.html_url ?? undefined);
         statusPushDeploy.setSteps(job.steps ?? []);
         if (job.status === "completed") {
-          setDelay(null);
+          setDelay(DELAY_PAUSED);
         } else if (job.status === "in_progress") {
-          setDelay(1000);
+          setDelay(DELAY_MEDIUM_POLL);
         } else {
-          setDelay(3000);
+          setDelay(DELAY_SLOW_POLL);
         }
       }
     }, [statusPushDeploy]);
@@ -401,9 +429,10 @@ export const PublishFlowDialogWrapper = observer(
           };
 
           if (_statusPushDeploy.enabled) {
-            setDelay(0);
+            // Start in fast-polling mode (minimum 50 ms) while waiting for the first workflow run
+            setDelay(DELAY_FAST_POLL);
           } else {
-            setDelay(null);
+            setDelay(DELAY_PAUSED);
           }
 
           setStatusSaveVersion({ ..._statusSaveVersion });
