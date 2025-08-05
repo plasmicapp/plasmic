@@ -16,6 +16,7 @@ import { assertNever, withoutNils } from "@/wab/shared/common";
 import { code } from "@/wab/shared/core/exprs";
 import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
 import { getTagAttrForImageAsset } from "@/wab/shared/core/image-assets";
+import { getResponsiveStrategy } from "@/wab/shared/core/sites";
 import { TplTagType } from "@/wab/shared/core/tpls";
 import {
   ImageAssetRef,
@@ -23,8 +24,13 @@ import {
   TplNode,
   TplTag,
 } from "@/wab/shared/model/classes";
+import { ResponsiveStrategy } from "@/wab/shared/responsiveness";
 import { RSH } from "@/wab/shared/RuleSetHelpers";
-import { ensureVariantSetting } from "@/wab/shared/Variants";
+import {
+  ensureVariantSetting,
+  getOrderedScreenVariantSpecs,
+  VariantGroupType,
+} from "@/wab/shared/Variants";
 import { VariantTplMgr } from "@/wab/shared/VariantTplMgr";
 import L from "lodash";
 
@@ -95,8 +101,10 @@ export async function processWebImporterTree(
 
 async function wiTreeToTpl(wiTree: WIElement, vc: ViewCtx, vtm: VariantTplMgr) {
   const site = vc.studioCtx.site;
-  const activeScreenVariantGroup = site.activeScreenVariantGroup;
-  const screenVariant = activeScreenVariantGroup?.variants?.[0];
+  const activeScreenGroup = site.activeScreenVariantGroup;
+  const orderedScreenVariants = activeScreenGroup
+    ? getOrderedScreenVariantSpecs(site, activeScreenGroup)
+    : [];
   const tplImageAssetMap = new Map<
     TplTag,
     { image: ResizableImage; options: ImageAssetOpts }
@@ -135,29 +143,41 @@ async function wiTreeToTpl(wiTree: WIElement, vc: ViewCtx, vtm: VariantTplMgr) {
       vs.attrs["style"] = code(JSON.stringify(unsafeBaseStyles));
     }
 
-    const nonBase = Object.keys(node.styles).filter((k) => k !== "base");
-    if (nonBase.length > 0 && screenVariant) {
-      const safeNonBaseStyles = nonBase.reduce((acc, k) => {
-        return {
-          ...acc,
-          ...node.styles[k]?.safe,
-        };
-      }, {});
+    // Process styles for the screen variants
+    for (const orderScreenVariant of orderedScreenVariants) {
+      const { variant: screenVariant, screenSpec } = orderScreenVariant;
+      if (!screenVariant.mediaQuery) {
+        continue;
+      }
 
-      const unsafeNonBaseStyles = nonBase.reduce((acc, k) => {
-        return {
-          ...acc,
-          ...node.styles[k]?.unsafe,
-        };
-      }, {});
+      const strategy = getResponsiveStrategy(site);
+      const screenWidthToMatch =
+        strategy === ResponsiveStrategy.mobileFirst
+          ? screenSpec.minWidth
+          : screenSpec.maxWidth;
+
+      if (!screenWidthToMatch) {
+        continue;
+      }
+
+      const screenStyles =
+        node.styles[`${VariantGroupType.GlobalScreen}:${screenWidthToMatch}`];
+
+      if (!screenStyles) {
+        continue;
+      }
+
+      const safeScreenStyles = screenStyles.safe;
+      const unsafeScreenStyles = screenStyles.unsafe;
+
       const screenVs = vtm.ensureVariantSetting(tpl, [screenVariant]);
 
-      RSH(screenVs.rs, tpl).merge(safeNonBaseStyles);
-      if (Object.keys(unsafeNonBaseStyles).length > 0) {
+      RSH(screenVs.rs, tpl).merge(safeScreenStyles);
+      if (Object.keys(unsafeScreenStyles).length > 0) {
         screenVs.attrs["style"] = code(
           JSON.stringify({
             ...unsafeBaseStyles,
-            ...unsafeNonBaseStyles,
+            ...unsafeScreenStyles,
           })
         );
       }

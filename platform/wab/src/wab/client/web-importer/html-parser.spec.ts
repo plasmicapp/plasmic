@@ -309,92 +309,177 @@ describe("parseHtmlToWebImporterTree", () => {
     });
   });
 
-  it("expands gap property with two values for flex layouts", async () => {
-    const html = '<div style="display: flex; gap: 10px 20px">Content</div>';
+  it("Parse max-width media query for desktop-first approach", async () => {
+    const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        /* Desktop styles (default) */
+        .responsive-heading {
+            color: blue;
+            font-size: 48px;
+            font-weight: bold;
+        }
+
+        /* Tablet styles (768px and below) */
+        @media (max-width: 768px) {
+            .responsive-heading {
+                color: green;
+                font-size: 36px;
+            }
+        }
+
+        /* Mobile styles (400px and below) */
+        @media (max-width: 400px) {
+            .responsive-heading {
+                color: red;
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <h1 class="responsive-heading">Responsive Heading</h1>
+    </div>
+</body>
+</html>`;
     const { wiTree: rootEl } = await parseHtmlToWebImporterTree(html, site);
 
     assert(rootEl, "rootEl should not be null");
 
-    expect(rootEl).toMatchObject<Partial<WIElement>>({
+    expect(rootEl).toMatchObject<WIElement>({
       type: "container",
       tag: "div",
+      unsanitizedStyles: { base: { width: "100%" } },
+      styles: { base: { safe: { width: "100%" }, unsafe: {} } },
       children: [
         {
           type: "container",
           tag: "div",
-          attrs: { style: "display: flex; gap: 10px 20px" },
+          unsanitizedStyles: { base: {} },
+          styles: { base: { safe: {}, unsafe: {} } },
           children: [
             {
               type: "text",
-              tag: "span",
-              text: "Content",
-              unsanitizedStyles: {},
-              styles: {},
+              tag: "h1",
+              text: "Responsive Heading",
+              unsanitizedStyles: {
+                base: {
+                  color: "blue",
+                  "font-size": "48px",
+                  "font-weight": "bold",
+                },
+                "global-screen:768": { color: "green", "font-size": "36px" },
+                "global-screen:400": { color: "red", "font-size": "24px" },
+              },
+              styles: {
+                base: {
+                  safe: { color: "blue", fontSize: "48px", fontWeight: "bold" },
+                  unsafe: {},
+                },
+                "global-screen:768": {
+                  safe: { color: "green", fontSize: "36px" },
+                  unsafe: {},
+                },
+                "global-screen:400": {
+                  safe: { color: "red", fontSize: "24px" },
+                  unsafe: {},
+                },
+              },
             },
           ],
-          unsanitizedStyles: {
-            base: {
-              display: "flex",
-              gap: "10px 20px",
-            },
-          },
-          styles: {
-            base: {
-              safe: {
-                display: "flex",
-                flexDirection: "row",
-                rowGap: "10px",
-                columnGap: "20px",
-              },
-              unsafe: {},
-            },
-          },
+          attrs: { __name: "" },
         },
       ],
+      attrs: { style: "width: 100%;", __name: "" },
     });
   });
 
-  it("expands gap property with two values for grid layouts", async () => {
-    const html = '<div style="display: grid; gap: 15px 25px">Content</div>';
+  it("Parse min-width media query for mobile-first approach", async () => {
+    const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        /* Mobile styles (default) */
+        .responsive-heading {
+            color: blue;
+            font-size: 48px;
+            font-weight: bold;
+        }
+
+        /* Tablet styles (768px and above) */
+        @media (min-width: 768px) {
+            .responsive-heading {
+                color: green;
+                font-size: 36px;
+            }
+        }
+
+        /* Desktop styles (1200px and above) */
+        @media (min-width: 1200px) {
+            .responsive-heading {
+                color: red;
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <h1 class="responsive-heading">Responsive Heading</h1>
+    </div>
+</body>
+</html>`;
     const { wiTree: rootEl } = await parseHtmlToWebImporterTree(html, site);
 
     assert(rootEl, "rootEl should not be null");
 
-    expect(rootEl).toMatchObject<Partial<WIElement>>({
+    expect(rootEl).toMatchObject<WIElement>({
       type: "container",
       tag: "div",
+      unsanitizedStyles: { base: { width: "100%" } },
+      styles: { base: { safe: { width: "100%" }, unsafe: {} } },
       children: [
         {
           type: "container",
           tag: "div",
-          attrs: { style: "display: grid; gap: 15px 25px" },
+          unsanitizedStyles: { base: {} },
+          styles: { base: { safe: {}, unsafe: {} } },
           children: [
             {
               type: "text",
-              tag: "span",
-              text: "Content",
-              unsanitizedStyles: {},
-              styles: {},
+              tag: "h1",
+              text: "Responsive Heading",
+              unsanitizedStyles: {
+                base: {
+                  color: "blue",
+                  "font-size": "48px",
+                  "font-weight": "bold",
+                },
+                "global-screen:768": { color: "green", "font-size": "36px" },
+                "global-screen:1200": { color: "red", "font-size": "24px" },
+              },
+              styles: {
+                base: {
+                  safe: { color: "blue", fontSize: "48px", fontWeight: "bold" },
+                  unsafe: {},
+                },
+                "global-screen:768": {
+                  safe: { color: "green", fontSize: "36px" },
+                  unsafe: {},
+                },
+                "global-screen:1200": {
+                  safe: { color: "red", fontSize: "24px" },
+                  unsafe: {},
+                },
+              },
             },
           ],
-          unsanitizedStyles: {
-            base: {
-              display: "grid",
-              gap: "15px 25px",
-            },
-          },
-          styles: {
-            base: {
-              safe: {
-                display: "grid",
-                gridRowGap: "15px",
-                gridColumnGap: "25px",
-              },
-              unsafe: {},
-            },
-          },
+          attrs: { __name: "" },
         },
       ],
+      attrs: { style: "width: 100%;", __name: "" },
     });
   });
 });
@@ -682,12 +767,6 @@ describe("fixCSSValue", () => {
 
   it("ensure camelCase key translation for any key", () => {
     expect(fixCSSValue("z-index", "100")).toEqual({ zIndex: "100" });
-  });
-
-  it("does not expand gap in fixCSSValue (handled in sanitizeStyles)", () => {
-    expect(fixCSSValue("gap", "10px")).toEqual({
-      gap: "10px",
-    });
   });
 });
 

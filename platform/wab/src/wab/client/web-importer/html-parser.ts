@@ -37,8 +37,10 @@ import {
   shorthandProperties,
   ShorthandProperty,
 } from "@/wab/shared/css";
+import { parseScreenSpec } from "@/wab/shared/css-size";
 import { findAllAndMap } from "@/wab/shared/css/css-tree-utils";
 import { Site } from "@/wab/shared/model/classes";
+import { VariantGroupType } from "@/wab/shared/Variants";
 import {
   Atrule,
   CssNode,
@@ -770,11 +772,22 @@ export async function parseHtmlToWebImporterTree(
       return;
     }
 
-    // TODO: Handle breakpoints
     const mediaCondition = atrule.prelude ? generate(atrule.prelude) : ""; // gives (max-width: 600px) etc
+    const spec = parseScreenSpec(mediaCondition);
+
+    //  Mobile-first uses min-width queries to progressively enhance styles as screen size increases,
+    //  while desktop-first uses max-width queries to progressively reduce styles as screen size decreases.
+    const screenWidth = spec.maxWidth || spec.minWidth;
+    if (!screenWidth) {
+      return;
+    }
+
     walk(atrule.block, function (mediaNode) {
       if (mediaNode.type === "Rule") {
-        processRule(mediaNode, mediaCondition);
+        processRule(
+          mediaNode,
+          `${VariantGroupType.GlobalScreen}:${screenWidth}`
+        );
       }
     });
   }

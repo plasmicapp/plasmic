@@ -169,10 +169,6 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                         "children": [
                           {
                             "styles": {
-                              "(max-width:768px)": {
-                                "safe": {},
-                                "unsafe": {},
-                              },
                               "base": {
                                 "safe": {
                                   "color": "#e74c3c",
@@ -182,18 +178,22 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                                 },
                                 "unsafe": {},
                               },
+                              "global-screen:768": {
+                                "safe": {},
+                                "unsafe": {},
+                              },
                             },
                             "tag": "span",
                             "text": "Home",
                             "type": "text",
                             "unsanitizedStyles": {
-                              "(max-width:768px)": {},
                               "base": {
                                 "color": "#e74c3c",
                                 "font-family": ""Roboto",sans-serif",
                                 "font-weight": "500",
                                 "line-height": "1.6",
                               },
+                              "global-screen:768": {},
                             },
                           },
                         ],
@@ -267,10 +267,6 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                         "children": [
                           {
                             "styles": {
-                              "(max-width:768px)": {
-                                "safe": {},
-                                "unsafe": {},
-                              },
                               "base": {
                                 "safe": {
                                   "color": "#e74c3c",
@@ -280,18 +276,22 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                                 },
                                 "unsafe": {},
                               },
+                              "global-screen:768": {
+                                "safe": {},
+                                "unsafe": {},
+                              },
                             },
                             "tag": "span",
                             "text": "Features",
                             "type": "text",
                             "unsanitizedStyles": {
-                              "(max-width:768px)": {},
                               "base": {
                                 "color": "#e74c3c",
                                 "font-family": ""Roboto",sans-serif",
                                 "font-weight": "500",
                                 "line-height": "1.6",
                               },
+                              "global-screen:768": {},
                             },
                           },
                         ],
@@ -365,10 +365,6 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                         "children": [
                           {
                             "styles": {
-                              "(max-width:768px)": {
-                                "safe": {},
-                                "unsafe": {},
-                              },
                               "base": {
                                 "safe": {
                                   "color": "#e74c3c",
@@ -378,18 +374,22 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                                 },
                                 "unsafe": {},
                               },
+                              "global-screen:768": {
+                                "safe": {},
+                                "unsafe": {},
+                              },
                             },
                             "tag": "span",
                             "text": "About",
                             "type": "text",
                             "unsanitizedStyles": {
-                              "(max-width:768px)": {},
                               "base": {
                                 "color": "#e74c3c",
                                 "font-family": ""Roboto",sans-serif",
                                 "font-weight": "500",
                                 "line-height": "1.6",
                               },
+                              "global-screen:768": {},
                             },
                           },
                         ],
@@ -463,10 +463,6 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                         "children": [
                           {
                             "styles": {
-                              "(max-width:768px)": {
-                                "safe": {},
-                                "unsafe": {},
-                              },
                               "base": {
                                 "safe": {
                                   "color": "#e74c3c",
@@ -476,18 +472,22 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                                 },
                                 "unsafe": {},
                               },
+                              "global-screen:768": {
+                                "safe": {},
+                                "unsafe": {},
+                              },
                             },
                             "tag": "span",
                             "text": "Contact",
                             "type": "text",
                             "unsanitizedStyles": {
-                              "(max-width:768px)": {},
                               "base": {
                                 "color": "#e74c3c",
                                 "font-family": ""Roboto",sans-serif",
                                 "font-weight": "500",
                                 "line-height": "1.6",
                               },
+                              "global-screen:768": {},
                             },
                           },
                         ],
@@ -550,12 +550,6 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                   },
                 ],
                 "styles": {
-                  "(max-width:768px)": {
-                    "safe": {
-                      "display": "none",
-                    },
-                    "unsafe": {},
-                  },
                   "base": {
                     "safe": {
                       "columnGap": "2rem",
@@ -573,13 +567,16 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                     },
                     "unsafe": {},
                   },
+                  "global-screen:768": {
+                    "safe": {
+                      "display": "none",
+                    },
+                    "unsafe": {},
+                  },
                 },
                 "tag": "div",
                 "type": "container",
                 "unsanitizedStyles": {
-                  "(max-width:768px)": {
-                    "display": "none",
-                  },
                   "base": {
                     "box-sizing": "border-box",
                     "display": "flex",
@@ -588,6 +585,9 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                     "list-style": "none",
                     "margin": "0",
                     "padding": "0",
+                  },
+                  "global-screen:768": {
+                    "display": "none",
                   },
                 },
               },
@@ -793,12 +793,6 @@ exports[`snapshot tests parse landing page html properly 1`] = `
             "children": [
               {
                 "styles": {
-                  "(max-width:768px)": {
-                    "safe": {
-                      "fontSize": "2rem",
-                    },
-                    "unsafe": {},
-                  },
                   "base": {
                     "safe": {
                       "color": "white",
@@ -817,14 +811,17 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                     },
                     "unsafe": {},
                   },
+                  "global-screen:768": {
+                    "safe": {
+                      "fontSize": "2rem",
+                    },
+                    "unsafe": {},
+                  },
                 },
                 "tag": "h1",
                 "text": "Discover Your Style",
                 "type": "text",
                 "unsanitizedStyles": {
-                  "(max-width:768px)": {
-                    "font-size": "2rem",
-                  },
                   "base": {
                     "box-sizing": "border-box",
                     "color": "white",
@@ -835,6 +832,9 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                     "margin-bottom": "1rem",
                     "padding": "0",
                     "text-align": "center",
+                  },
+                  "global-screen:768": {
+                    "font-size": "2rem",
                   },
                 },
               },
@@ -1780,10 +1780,6 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                     "children": [
                       {
                         "styles": {
-                          "(max-width:768px)": {
-                            "safe": {},
-                            "unsafe": {},
-                          },
                           "base": {
                             "safe": {
                               "color": "white",
@@ -1794,12 +1790,15 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                             },
                             "unsafe": {},
                           },
+                          "global-screen:768": {
+                            "safe": {},
+                            "unsafe": {},
+                          },
                         },
                         "tag": "span",
                         "text": "Subscribe",
                         "type": "text",
                         "unsanitizedStyles": {
-                          "(max-width:768px)": {},
                           "base": {
                             "color": "white",
                             "font-family": ""Roboto",sans-serif",
@@ -1807,6 +1806,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                             "line-height": "1.6",
                             "text-align": "center",
                           },
+                          "global-screen:768": {},
                         },
                       },
                     ],
@@ -1853,16 +1853,6 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                   },
                 ],
                 "styles": {
-                  "(max-width:768px)": {
-                    "safe": {
-                      "flexDirection": "column",
-                      "marginBottom": "0",
-                      "marginLeft": "0",
-                      "marginRight": "0",
-                      "marginTop": "0",
-                    },
-                    "unsafe": {},
-                  },
                   "base": {
                     "safe": {
                       "columnGap": "1rem",
@@ -1882,14 +1872,20 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                     },
                     "unsafe": {},
                   },
+                  "global-screen:768": {
+                    "safe": {
+                      "flexDirection": "column",
+                      "marginBottom": "0",
+                      "marginLeft": "0",
+                      "marginRight": "0",
+                      "marginTop": "0",
+                    },
+                    "unsafe": {},
+                  },
                 },
                 "tag": "form",
                 "type": "container",
                 "unsanitizedStyles": {
-                  "(max-width:768px)": {
-                    "flex-direction": "column",
-                    "margin": "0",
-                  },
                   "base": {
                     "box-sizing": "border-box",
                     "display": "flex",
@@ -1899,6 +1895,10 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                     "margin": "0 auto",
                     "max-width": "400px",
                     "padding": "0",
+                  },
+                  "global-screen:768": {
+                    "flex-direction": "column",
+                    "margin": "0",
                   },
                 },
               },
