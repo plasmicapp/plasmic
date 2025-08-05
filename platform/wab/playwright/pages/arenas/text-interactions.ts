@@ -1,11 +1,10 @@
-import { Frame, Locator, Page } from "playwright/test";
-import { findFrameByText } from "../../utils/frame";
-import { BasePage } from "../base-page";
+import { FrameLocator, Locator, Page } from "playwright/test";
+import { BaseElement } from "../abstracts/base-element";
 
-export class TextInteractionsArena extends BasePage {
+export class TextInteractionsArena extends BaseElement {
   constructor(
     page: Page,
-    readonly contentFrame: Frame,
+    readonly contentFrame: FrameLocator,
     readonly setToButton: Locator,
     readonly clearButton: Locator
   ) {
@@ -13,7 +12,15 @@ export class TextInteractionsArena extends BasePage {
   }
 
   static async init(page: Page): Promise<TextInteractionsArena> {
-    const contentFrame = await findFrameByText(page, "Set to");
+    const contentFrame = page
+      .locator("iframe")
+      .first()
+      .contentFrame()
+      .locator("iframe")
+      .contentFrame()
+      .locator("iframe")
+      .first()
+      .contentFrame();
     const setToButton = contentFrame
       .locator("span", { hasText: "Set to" })
       .first();

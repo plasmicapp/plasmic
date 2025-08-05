@@ -1,8 +1,8 @@
 import { expect, FrameLocator, Locator, Page } from "playwright/test";
-import { StudioSidebar } from "./components/studio-sidebar";
-import { BasePage } from "./base-page";
+import { RightPanel } from "./components/right-panel";
+import { BaseElement } from "./abstracts/base-element";
 
-export class StudioModel extends BasePage {
+export class StudioModel extends BaseElement {
   readonly frame: FrameLocator = this.page
     .frameLocator("iframe.studio-frame")
     .frameLocator("iframe");
@@ -29,7 +29,7 @@ export class StudioModel extends BasePage {
   readonly exitLiveModeButton: Locator = this.frame.locator(
     '[data-test-id="exit-live-mode-btn"]'
   );
-  readonly sidebar: StudioSidebar = new StudioSidebar(this.page);
+  readonly rightPanel: RightPanel = new RightPanel(this.page);
 
   constructor(page: Page) {
     super(page);

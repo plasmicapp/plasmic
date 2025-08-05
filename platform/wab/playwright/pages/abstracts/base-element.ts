@@ -1,5 +1,5 @@
 import { Page } from "playwright/test";
 
-export class BasePage {
+export abstract class BaseElement {
   constructor(protected readonly page: Page) {}
 }

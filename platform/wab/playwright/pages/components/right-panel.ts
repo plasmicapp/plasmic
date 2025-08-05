@@ -1,7 +1,7 @@
 import { FrameLocator, Locator, Page } from "playwright/test";
-import { BasePage } from "../base-page";
+import { BaseElement } from "../abstracts/base-element";
 
-export class StudioSidebar extends BasePage {
+export class RightPanel extends BaseElement {
   readonly frame: FrameLocator = this.page
     .frameLocator("iframe.studio-frame")
     .frameLocator("iframe");
@@ -69,11 +69,18 @@ export class StudioSidebar extends BasePage {
   ) {
     await this.addInteractionButton.click();
     await this.interactionsSearchInput.fill(eventHandler);
+    // These timeouts are necessary.
+    // Sometimes, clicking the dropdown button will briefly open the dropdown, but after a small amount of time it gets closed
+    // Checking without this timeout will cause the check to fail, but by the time it tries to do any other operation, the dropdown will have closed
+    await this.page.waitForTimeout(300);
+    while (!(await this.interactionsSearchInput.isVisible())) {
+      await this.addInteractionButton.click();
+      await this.interactionsSearchInput.fill(eventHandler);
+      await this.page.waitForTimeout(300);
+    }
     const interactionsEventDropdownElement =
       await this.selectInteractionEventById(eventHandler);
-    await interactionsEventDropdownElement.scrollIntoViewIfNeeded();
     await interactionsEventDropdownElement.click();
-
     await this.actionsDropdownButton.first().click();
     await (await this.getElementWithDataKey(interaction.actionName)).click();
     if (interaction.args.variable) {
@@ -99,6 +106,14 @@ export class StudioSidebar extends BasePage {
     if (interaction.args.value) {
       await this.valueButton.click();
       await this.valueCodeInput.pressSequentially(interaction.args.value);
+      const modifierKey = process.platform === "darwin" ? "Meta" : "Control";
+      while (
+        (await this.valueCodeInput.innerText()) != interaction.args.value
+      ) {
+        await this.valueCodeInput.press(`${modifierKey}+A`);
+        await this.valueCodeInput.press("Delete");
+        await this.valueCodeInput.pressSequentially(interaction.args.value);
+      }
       await this.windowSaveButton.click();
     }
 

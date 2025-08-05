@@ -33,7 +33,7 @@ test.describe("state-management-text-interactions", () => {
     const arena = await TextInteractionsArena.init(page);
     //WHEN
     await arena.setToButton.click({ force: true });
-    await models.studio.sidebar.addInteraction("onClick", {
+    await models.studio.rightPanel.addInteraction("onClick", {
       actionName: "updateVariable",
       args: {
         variable: ["textVar"],
@@ -43,7 +43,7 @@ test.describe("state-management-text-interactions", () => {
     });
 
     await arena.clearButton.click({ force: true });
-    await models.studio.sidebar.addInteraction("onClick", {
+    await models.studio.rightPanel.addInteraction("onClick", {
       actionName: "updateVariable",
       args: {
         variable: ["textVar"],

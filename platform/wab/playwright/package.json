@@ -9,6 +9,6 @@
     "@types/node": "^24.0.13"
   },
   "scripts": {
-    "e2e": "npx dotenvx run -f .env.test -- npx playwright test"
+    "e2e": "npx playwright test"
   }
 }
