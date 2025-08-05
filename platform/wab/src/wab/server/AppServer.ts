@@ -762,10 +762,26 @@ function addStaticRoutes(app: express.Application) {
   app.use(cors(), express.static("public"));
 }
 
+function addOptionsRoutes(app: express.Application) {
+  // Add CORS preflight routes before all the middlewares to avoid
+  // connecting to the DB unnecessarily.
+  app.options("/api/v1/cms/*", corsPreflight());
+  app.options(
+    "/api/v1/server-data/sources/:dataSourceId/execute",
+    corsPreflight()
+  );
+  app.options("/api/v1/data-source/sources/:dataSourceId", corsPreflight());
+  app.options("/api/v1/app-auth/token", corsPreflight());
+  app.options("/api/v1/app-auth/userinfo", corsPreflight());
+  app.options("/api/v1/loader/*", corsPreflight());
+  // For mailing list subscriptions
+  // allow subscription requests from anywhere (e.g. localhost or www.plasmic.app)
+  app.options("/api/v1/mail/subscribe", cors());
+}
+
 export function addCmsPublicRoutes(app: express.Application) {
   // "Public" CMS API, access via API auth
 
-  app.options("/api/v1/cms/*", corsPreflight());
   createTsRestEndpoints(publicCmsReadsContract, publicCmsReadsServer, app, {
     globalMiddleware: [cors(), apiAuth, cachePublicCmsRead],
   });
@@ -852,10 +868,6 @@ export function addWhiteLabelRoutes(app: express.Application) {
 }
 
 export function addIntegrationsRoutes(app: express.Application) {
-  app.options(
-    "/api/v1/server-data/sources/:dataSourceId/execute",
-    corsPreflight()
-  );
   app.post(
     "/api/v1/server-data/sources/:dataSourceId/execute",
     cors(),
@@ -882,7 +894,6 @@ export function addDataSourceRoutes(app: express.Application) {
     "/api/v1/data-source/sources/:dataSourceId",
     withNext(deleteDataSource)
   );
-  app.options("/api/v1/data-source/sources/:dataSourceId", corsPreflight());
   app.post(
     "/api/v1/data-source/sources/:dataSourceId",
     cors(),
@@ -928,10 +939,8 @@ export function addAppAuthRoutes(app: express.Application) {
   // App-auth Oauth
   app.get("/api/v1/app-auth/code", withNext(issueOauthCode));
 
-  app.options("/api/v1/app-auth/token", corsPreflight());
   app.get("/api/v1/app-auth/token", cors(), withNext(grantOauthToken));
 
-  app.options("/api/v1/app-auth/userinfo", corsPreflight());
   app.get("/api/v1/app-auth/userinfo", cors(), withNext(getEndUserByToken));
 
   app.post("/api/v1/app-auth/user", cors(), withNext(upsertEndUser));
@@ -1137,7 +1146,6 @@ export function addCodegenRoutes(app: express.Application) {
   app.get("/api/v1/localization/gen-texts", withNext(genTranslatableStrings));
 
   // All endpoints under /loader are cors-enabled
-  app.options("/api/v1/loader/*", corsPreflight());
   app.get(
     "/api/v1/loader/code/published",
     cors(),
@@ -1820,9 +1828,6 @@ export function addMainAppServerRoutes(
     withNext(apiTokenRoutes.emitToken)
   );
 
-  // For mailing list subscriptions
-  // allow subscription requests from anywhere (e.g. localhost or www.plasmic.app)
-  app.options("/api/v1/mail/subscribe", cors() as any);
   app.post(
     "/api/v1/mail/subscribe",
     cors(),
@@ -2049,6 +2054,8 @@ export async function createApp(
     app.enable("trust proxy");
   }
 
+  addOptionsRoutes(app);
+
   const expressSessionMiddleware = makeExpressSessionMiddleware(config);
 
   addCleanRoutes?.(app);
@@ -2122,8 +2129,6 @@ function corsPreflight() {
 
   const handler: express.RequestHandler = safeCast<RequestHandler>(
     async (req, res, next) => {
-      // cors response should be very cacheable by Cloudfront
-      await req.resolveTransaction();
       res.set(
         "Cache-Control",
         `max-age=${30 * 24 * 60 * 60}, s-maxage=${30 * 24 * 60 * 60}`
