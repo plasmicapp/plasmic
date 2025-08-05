@@ -615,7 +615,3 @@ describe("makeSqlCondition", () => {
     );
   });
 });
-
-describe("Filtering by _createdAt and _updatedAt", () => {
-  it("should filter rows that match the given _createdAt or _updatedAt timestamp", () => {});
-});
