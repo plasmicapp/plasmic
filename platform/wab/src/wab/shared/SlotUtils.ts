@@ -1,16 +1,41 @@
-import { assert, ensureArray, maybe } from "@/wab/shared/common";
 import { allSuccess } from "@/wab/commons/failable-utils";
 import { DeepReadonly } from "@/wab/commons/types";
+import { flattenComponent } from "@/wab/shared/cached-selectors";
+import { elementSchemaToTpl } from "@/wab/shared/code-components/code-components";
+import { toVarName } from "@/wab/shared/codegen/util";
+import { assert, ensureArray, maybe } from "@/wab/shared/common";
 import {
   getComponentDisplayName,
   isCodeComponent,
   isCodeComponentTpl,
   isPlasmicComponent,
 } from "@/wab/shared/core/components";
-import { flattenComponent } from "@/wab/shared/cached-selectors";
-import { elementSchemaToTpl } from "@/wab/shared/code-components/code-components";
-import { toVarName } from "@/wab/shared/codegen/util";
+import { SlotSelection } from "@/wab/shared/core/slots";
 import { typographyCssProps } from "@/wab/shared/core/style-props";
+import {
+  createExpandedRuleSetMerger,
+  THEMABLE_TAGS,
+} from "@/wab/shared/core/styles";
+import {
+  ancestorsUpWithSlotSelections,
+  flattenTpls,
+  getTplOwnerComponent,
+  hasNoEventHandlers,
+  hasNoExistingStyles,
+  hasNoRichTextStyles,
+  isCodeComponentRoot,
+  isTplComponent,
+  isTplIcon,
+  isTplInput,
+  isTplSlot,
+  isTplTag,
+  isTplTextBlock,
+  isTplVariantable,
+  TplCodeComponent,
+  TplTagCodeGenType,
+  TplTextTag,
+  tryGetOwnerSite,
+} from "@/wab/shared/core/tpls";
 import { maybeComputedFn } from "@/wab/shared/mobx-util";
 import {
   Arg,
@@ -37,28 +62,6 @@ import {
 import { TplMgr } from "@/wab/shared/TplMgr";
 import { $$$ } from "@/wab/shared/TplQuery";
 import { tryGetBaseVariantSetting, VariantCombo } from "@/wab/shared/Variants";
-import { SlotSelection } from "@/wab/shared/core/slots";
-import { createExpandedRuleSetMerger, THEMABLE_TAGS } from "@/wab/shared/core/styles";
-import {
-  ancestorsUpWithSlotSelections,
-  flattenTpls,
-  getTplOwnerComponent,
-  hasNoEventHandlers,
-  hasNoExistingStyles,
-  hasNoRichTextStyles,
-  isCodeComponentRoot,
-  isTplComponent,
-  isTplIcon,
-  isTplInput,
-  isTplSlot,
-  isTplTag,
-  isTplTextBlock,
-  isTplVariantable,
-  TplCodeComponent,
-  TplTagCodeGenType,
-  TplTextTag,
-  tryGetOwnerSite,
-} from "@/wab/shared/core/tpls";
 import L from "lodash";
 
 export function getSlotParams(component: Component) {

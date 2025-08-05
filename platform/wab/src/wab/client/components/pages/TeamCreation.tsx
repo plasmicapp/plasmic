@@ -1,4 +1,4 @@
-import { isPlasmicPath, U } from "@/wab/client/cli-routes";
+import { isPlasmicPath } from "@/wab/client/cli-routes";
 import { maybeShowPaywall } from "@/wab/client/components/modals/PricingModal";
 import "@/wab/client/components/pages/AuthForm.sass";
 import { PageFooter } from "@/wab/client/components/pages/PageFooter";
@@ -6,8 +6,10 @@ import { Icon } from "@/wab/client/components/widgets/Icon";
 import { getTeamInviteLink } from "@/wab/client/components/widgets/plasmic/ShareDialogContent";
 import { useAppCtx } from "@/wab/client/contexts/AppContexts";
 import MarkFullColorIcon from "@/wab/client/plasmic/plasmic_kit_design_system/PlasmicIcon__MarkFullColor";
-import { ensure, isValidEmail, spawn } from "@/wab/shared/common";
 import { ApiTeam, Grant } from "@/wab/shared/ApiSchema";
+import { ensure, isValidEmail, spawn } from "@/wab/shared/common";
+import { APP_ROUTES } from "@/wab/shared/route/app-routes";
+import { fillRoute } from "@/wab/shared/route/route";
 import { Button, Form, Input, notification, Select, Tooltip } from "antd";
 import copy from "copy-to-clipboard";
 import * as React from "react";
@@ -26,8 +28,8 @@ export function TeamCreation() {
     continueToPath && isPlasmicPath(continueToPath)
       ? continueToPath
       : team
-      ? U.org({ teamId: team.id })
-      : U.dashboard({});
+      ? fillRoute(APP_ROUTES.org, { teamId: team.id })
+      : fillRoute(APP_ROUTES.dashboard, {});
   const [form] = Form.useForm();
 
   async function onSubmit({ teamName }) {

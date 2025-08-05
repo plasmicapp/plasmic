@@ -12,7 +12,6 @@ all: \
 	src/wab/styles/_tokens.ts \
 	src/wab/styles/css-variables.ts \
 	src/wab/styles/css-variables.scss \
-	src/wab/client/plasmic-deployed.json \
 	src/wab/gen/static/styles/react-web-css.txt \
 	src/wab/gen/static/styles/tinymce-content-css.txt \
 	src/wab/gen/static/styles/prismjs-css.txt \
@@ -31,8 +30,6 @@ src/wab/styles/css-variables.ts: src/wab/styles/css-variables.json
 	node src/wab/styles/css-variables.gen.js
 src/wab/styles/css-variables.scss: src/wab/styles/css-variables.json
 	node src/wab/styles/css-variables.gen.js
-src/wab/client/plasmic-deployed.json: tools/gen-plasmic-deployed.js plasmic.json plasmic.lock
-	node tools/gen-plasmic-deployed.js > src/wab/client/plasmic-deployed.json
 
 src/wab/gen/GridStyleParser.js: PEGJS_FLAGS = --allowed-start-rules axisTemplate,size,atomicSize,numSize,flexibleSize
 src/wab/gen/cssPegParser.js: PEGJS_FLAGS = --allowed-start-rules backgroundLayer,backgroundImage,boxShadows,boxShadow,commaSepValues,spaceSepValues

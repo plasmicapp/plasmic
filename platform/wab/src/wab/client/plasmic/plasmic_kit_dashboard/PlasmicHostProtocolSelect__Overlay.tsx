@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -20,6 +20,7 @@ import {
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  ensureGlobalVariants,
   hasVariant,
   renderPlasmicSlot,
   useDollarState,
@@ -27,6 +28,8 @@ import {
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
 import * as pp from "@plasmicapp/react-web";
+
+import { useEnvironment } from "../plasmic_kit_pricing/PlasmicGlobalVariant__Environment"; // plasmic-import: hIjF9NLAUKG-/globalVariant
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
@@ -82,7 +85,16 @@ function PlasmicHostProtocolSelect__Overlay__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
@@ -103,7 +115,6 @@ function PlasmicHostProtocolSelect__Overlay__RenderFunc(props: {
           $props.relativePlacement,
       },
     ],
-
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -118,6 +129,10 @@ function PlasmicHostProtocolSelect__Overlay__RenderFunc(props: {
       SUPER__PlasmicHostProtocolSelect.Context
     ),
   };
+
+  const globalVariants = ensureGlobalVariants({
+    environment: useEnvironment(),
+  });
 
   return (
     <div
@@ -136,6 +151,24 @@ function PlasmicHostProtocolSelect__Overlay__RenderFunc(props: {
         plasmic_plasmic_kit_pricing_css.plasmic_tokens,
         sty.root,
         {
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
           [sty.rootrelativePlacement_bottom]: hasVariant(
             $state,
             "relativePlacement",
@@ -298,7 +331,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicHostProtocolSelect__Overlay__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
@@ -310,15 +342,15 @@ type NodeComponentProps<T extends NodeNameType> =
     PlasmicHostProtocolSelect__Overlay__VariantsArgs,
     ReservedPropsType
   > &
-    /* Specify args directly as props*/ Omit<
-      PlasmicHostProtocolSelect__Overlay__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+    // Specify args directly as props
+    Omit<PlasmicHostProtocolSelect__Overlay__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

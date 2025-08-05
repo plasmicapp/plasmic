@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -38,10 +38,10 @@ import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_syst
 import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
 import sty from "./PlasmicDomainCard.module.css"; // plasmic-import: eqF_n5a1-6b/css
 
-import CheckCirclesvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__CheckCircleSvg"; // plasmic-import: h7sB2KeL-/icon
-import ChevronDownsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
-import RefreshsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__RefreshSvg"; // plasmic-import: PEaq_S7gQ/icon
-import SharesvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ShareSvg"; // plasmic-import: vRB2dtcKk/icon
+import CheckCircleSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__CheckCircleSvg"; // plasmic-import: h7sB2KeL-/icon
+import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
+import RefreshSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__RefreshSvg"; // plasmic-import: PEaq_S7gQ/icon
+import ShareSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ShareSvg"; // plasmic-import: vRB2dtcKk/icon
 import Trash2SvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__Trash2Svg"; // plasmic-import: nS4_I75qv/icon
 
 createPlasmicElementProxy;
@@ -101,7 +101,16 @@ function PlasmicDomainCard__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
@@ -133,7 +142,6 @@ function PlasmicDomainCard__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.secondary,
       },
     ],
-
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -234,7 +242,7 @@ function PlasmicDomainCard__RenderFunc(props: {
             })}
             withBackgroundHover={true}
           >
-            <SharesvgIcon
+            <ShareSvgIcon
               className={classNames(projectcss.all, sty.svg__eIAp)}
               role={"img"}
             />
@@ -358,7 +366,7 @@ function PlasmicDomainCard__RenderFunc(props: {
             ),
           })}
         >
-          <CheckCirclesvgIcon
+          <CheckCircleSvgIcon
             className={classNames(projectcss.all, sty.svg__t0WGq)}
             role={"img"}
           />
@@ -404,14 +412,14 @@ function PlasmicDomainCard__RenderFunc(props: {
               hasVariant($state, "refreshing", "refreshing") ? true : undefined
             }
             endIcon={
-              <ChevronDownsvgIcon
+              <ChevronDownSvgIcon
                 className={classNames(projectcss.all, sty.svg__dbKe3)}
                 role={"img"}
               />
             }
             size={"wide"}
             startIcon={
-              <RefreshsvgIcon
+              <RefreshSvgIcon
                 className={classNames(projectcss.all, sty.svg__fkj25, {
                   [sty.svgerror_error__fkj25ByfXx]: hasVariant(
                     $state,
@@ -440,7 +448,7 @@ function PlasmicDomainCard__RenderFunc(props: {
             caption={"Caption"}
             color={"red"}
             endIcon={
-              <ChevronDownsvgIcon
+              <ChevronDownSvgIcon
                 className={classNames(projectcss.all, sty.svg__vkHmm)}
                 role={"img"}
               />
@@ -820,7 +828,6 @@ const PlasmicDescendants = {
     "value",
     "cnameRow",
   ],
-
   label: ["label"],
   customDomainLabel: ["customDomainLabel"],
   openButton: ["openButton"],
@@ -860,7 +867,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicDomainCard__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
@@ -868,15 +874,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicDomainCard__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicDomainCard__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicDomainCard__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+    // Specify args directly as props
+    Omit<PlasmicDomainCard__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

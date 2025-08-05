@@ -259,6 +259,12 @@ export function customFunctionImportAlias<F extends (...args: any[]) => any>(
     : `${customFunctionPrefix}${meta.name}`;
 }
 
+export function internalSetRegisteredFunction<
+  F extends (...args: any[]) => any
+>(fn: F, meta: CustomFunctionMeta<F>) {
+  REGISTERED_CUSTOM_FUNCTIONS[customFunctionImportAlias(meta)] = fn;
+}
+
 interface BuiltinRegisteredModules {
   react: typeof import("react");
   "react-dom": typeof import("react-dom");
@@ -688,6 +694,10 @@ ${this.bundle.bundleKey}`
   public trackRender(opts?: TrackRenderOptions) {
     this.tracker.trackRender(opts);
   }
+
+  public loadServerQueriesModule(fileName: string) {
+    return this.registry.load(fileName);
+  }
 }
 
 /**
@@ -902,5 +912,31 @@ export class PlasmicComponentLoader {
 
   clearCache() {
     return this.__internal.clearCache();
+  }
+
+  async unstable__getServerQueriesData(
+    renderData: ComponentRenderData,
+    $ctx: Record<string, any>
+  ) {
+    if (renderData.entryCompMetas.length === 0) {
+      return {};
+    }
+
+    const fileName = renderData.entryCompMetas[0].serverQueriesExecFuncFileName;
+
+    if (!fileName) {
+      return {};
+    }
+
+    const module = this.__internal.loadServerQueriesModule(fileName);
+    const { executeServerQueries } = module;
+
+    try {
+      const $serverQueries = await executeServerQueries($ctx);
+      return $serverQueries;
+    } catch (err) {
+      console.error("Error executing server queries function", err);
+      return {};
+    }
   }
 }

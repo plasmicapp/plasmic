@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -13,17 +13,18 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
+  Flex as Flex__,
   SingleChoiceArg,
   StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
   hasVariant,
+  useDollarState,
 } from "@plasmicapp/react-web";
+import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
 
 import "@plasmicapp/react-web/lib/plasmic.css";
@@ -31,17 +32,17 @@ import "@plasmicapp/react-web/lib/plasmic.css";
 import projectcss from "./plasmic_plasmic_kit_top_bar.module.css"; // plasmic-import: 6CrqkTcB6gSAHoA8c8zpNz/projectcss
 import sty from "./PlasmicViewButton.module.css"; // plasmic-import: -r2DBYss6/css
 
-import ArrowRightsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ArrowRightSvg"; // plasmic-import: 9Jv8jb253/icon
-import ChevronDownsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
+import ArrowRightSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ArrowRightSvg"; // plasmic-import: 9Jv8jb253/icon
+import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
+
+createPlasmicElementProxy;
 
 export type PlasmicViewButton__VariantMembers = {
   mode: "live";
 };
-
 export type PlasmicViewButton__VariantsArgs = {
   mode?: SingleChoiceArg<"live">;
 };
-
 type VariantPropType = keyof PlasmicViewButton__VariantsArgs;
 export const PlasmicViewButton__VariantProps = new Array<VariantPropType>(
   "mode"
@@ -52,7 +53,7 @@ type ArgPropType = keyof PlasmicViewButton__ArgsType;
 export const PlasmicViewButton__ArgProps = new Array<ArgPropType>();
 
 export type PlasmicViewButton__OverridesType = {
-  root?: p.Flex<typeof Button>;
+  root?: Flex__<typeof Button>;
 };
 
 export interface DefaultViewButtonProps {
@@ -60,13 +61,7 @@ export interface DefaultViewButtonProps {
   className?: string;
 }
 
-const __wrapUserFunction =
-  globalThis.__PlasmicWrapUserFunction ?? ((loc, fn) => fn());
-const __wrapUserPromise =
-  globalThis.__PlasmicWrapUserPromise ??
-  (async (loc, promise) => {
-    return await promise;
-  });
+const $$ = {};
 
 function PlasmicViewButton__RenderFunc(props: {
   variants: PlasmicViewButton__VariantsArgs;
@@ -76,13 +71,13 @@ function PlasmicViewButton__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const $ctx = ph.useDataEnv?.() || {};
   const args = React.useMemo(
     () =>
       Object.assign(
         {},
-
-        props.args
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
       ),
     [props.args]
   );
@@ -92,14 +87,11 @@ function PlasmicViewButton__RenderFunc(props: {
     ...variants,
   };
 
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
-
-  const [$queries, setDollarQueries] = React.useState({});
-
-  const stateSpecs = React.useMemo(
+  const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
         path: "mode",
@@ -108,10 +100,14 @@ function PlasmicViewButton__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.mode,
       },
     ],
-
-    [$props, $ctx]
+    [$props, $ctx, $refs]
   );
-  const $state = p.useDollarState(stateSpecs, { $props, $ctx, $queries });
+  const $state = useDollarState(stateSpecs, {
+    $props,
+    $ctx,
+    $queries: {},
+    $refs,
+  });
 
   return (
     (hasVariant($state, "mode", "live") ? false : true) ? (
@@ -124,15 +120,15 @@ function PlasmicViewButton__RenderFunc(props: {
           [sty.rootmode_live]: hasVariant($state, "mode", "live"),
         })}
         endIcon={
-          <ChevronDownsvgIcon
+          <ChevronDownSvgIcon
             className={classNames(projectcss.all, sty.svg__l31Mh)}
             role={"img"}
           />
         }
-        font={"dim" as const}
-        size={"small" as const}
+        font={"dim"}
+        size={"small"}
         startIcon={
-          <ArrowRightsvgIcon
+          <ArrowRightSvgIcon
             className={classNames(projectcss.all, sty.svg__bDFt4)}
             role={"img"}
           />
@@ -161,25 +157,25 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicViewButton__OverridesType,
   DescendantsType<T>
 >;
-
-type NodeComponentProps<T extends NodeNameType> = {
+type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
-  variants?: PlasmicViewButton__VariantsArgs;
-  args?: PlasmicViewButton__ArgsType;
-  overrides?: NodeOverridesType<T>;
-} & Omit<PlasmicViewButton__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-  // Specify args directly as props
-  Omit<PlasmicViewButton__ArgsType, ReservedPropsType> &
-  // Specify overrides for each element directly as props
-  Omit<
-    NodeOverridesType<T>,
-    ReservedPropsType | VariantPropType | ArgPropType
-  > &
-  // Specify props for the root element
-  Omit<
-    Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
-    ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
-  >;
+  {
+    variants?: PlasmicViewButton__VariantsArgs;
+    args?: PlasmicViewButton__ArgsType;
+    overrides?: NodeOverridesType<T>;
+  } & Omit<PlasmicViewButton__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+    // Specify args directly as props
+    Omit<PlasmicViewButton__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
+      NodeOverridesType<T>,
+      ReservedPropsType | VariantPropType | ArgPropType
+    > &
+    // Specify props for the root element
+    Omit<
+      Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
+      ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
+    >;
 
 function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
   type PropsType = NodeComponentProps<NodeName> & { key?: React.Key };
@@ -190,7 +186,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicViewButton__ArgProps,
           internalVariantPropNames: PlasmicViewButton__VariantProps,
         }),

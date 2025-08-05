@@ -11,11 +11,13 @@ import { CodeComponentMeta } from '@plasmicapp/loader-react';
 import { ComponentLookupSpec } from '@plasmicapp/loader-react';
 import { ComponentMeta } from '@plasmicapp/loader-react/react-server-conditional';
 import { ComponentRenderData } from '@plasmicapp/loader-react/react-server-conditional';
+import { CustomFunctionMeta } from '@plasmicapp/loader-react';
 import { DataCtxReader } from '@plasmicapp/loader-react';
 import { DataProvider } from '@plasmicapp/loader-react';
 import { FetchComponentDataOpts as FetchComponentDataOpts_2 } from '@plasmicapp/loader-react';
 import { GlobalActionsContext } from '@plasmicapp/loader-react';
 import { GlobalActionsProvider } from '@plasmicapp/loader-react';
+import { GlobalContextMeta } from '@plasmicapp/loader-react';
 import { IncomingMessage } from 'http';
 import { InitOptions } from '@plasmicapp/loader-react/react-server-conditional';
 import { InternalPlasmicComponentLoader } from '@plasmicapp/loader-react';
@@ -36,6 +38,7 @@ import { repeatedElement } from '@plasmicapp/loader-react';
 import { ServerResponse } from 'http';
 import { TokenRegistration } from '@plasmicapp/loader-react';
 import { useDataEnv } from '@plasmicapp/loader-react';
+import { usePlasmicCanvasComponentInfo } from '@plasmicapp/loader-react';
 import { usePlasmicCanvasContext } from '@plasmicapp/loader-react';
 import { usePlasmicComponent } from '@plasmicapp/loader-react';
 import { usePlasmicQueryData } from '@plasmicapp/loader-react';
@@ -49,6 +52,8 @@ export { CodeComponentMeta }
 export { ComponentMeta }
 
 export { ComponentRenderData }
+
+export { CustomFunctionMeta }
 
 export { DataCtxReader }
 
@@ -65,6 +70,8 @@ export interface FetchComponentDataOpts extends FetchComponentDataOpts_2 {
 export { GlobalActionsContext }
 
 export { GlobalActionsProvider }
+
+export { GlobalContextMeta }
 
 export { InitOptions }
 
@@ -133,6 +140,8 @@ export { repeatedElement }
 export { TokenRegistration }
 
 export { useDataEnv }
+
+export { usePlasmicCanvasComponentInfo }
 
 export { usePlasmicCanvasContext }
 

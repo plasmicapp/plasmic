@@ -1,5 +1,5 @@
 import { AppCtx } from "@/wab/client/app-ctx";
-import { isPlasmicPath, U, UU } from "@/wab/client/cli-routes";
+import { isPlasmicPath, parseRoute } from "@/wab/client/cli-routes";
 import { AppAuthSettingsModal } from "@/wab/client/components/app-auth/AppAuthSettings";
 import { HostConfig } from "@/wab/client/components/HostConfig";
 import { MergeModalWrapper } from "@/wab/client/components/merge/MergeFlow";
@@ -47,6 +47,8 @@ import { isAdminTeamEmail } from "@/wab/shared/devflag-utils";
 import { DEVFLAGS } from "@/wab/shared/devflags";
 import { LocalizationConfig } from "@/wab/shared/localization";
 import { getAccessLevelToResource } from "@/wab/shared/perms";
+import { APP_ROUTES } from "@/wab/shared/route/app-routes";
+import { fillRoute } from "@/wab/shared/route/route";
 import { canEditUiConfig } from "@/wab/shared/ui-config-utils";
 import { message, notification } from "antd";
 import { Action, Location } from "history";
@@ -128,7 +130,11 @@ export function TopFrameChrome({
   ...rest
 }: TopFrameChromeProps) {
   const location = useLocation();
-  const fullPreview = !!UU.projectFullPreview.parse(location.pathname, false);
+  const fullPreview = !!parseRoute(
+    APP_ROUTES.projectFullPreview,
+    location.pathname,
+    false
+  );
 
   React.useEffect(() => {
     document.title = `${project.name} - Plasmic`;
@@ -189,7 +195,9 @@ export function TopFrameChrome({
                 <p style={{ textAlign: "left" }}>
                   Click{" "}
                   <a
-                    href={U.project({ projectId: project.id })}
+                    href={fillRoute(APP_ROUTES.project, {
+                      projectId: project.id,
+                    })}
                     target="_blank"
                   >
                     here
@@ -216,7 +224,7 @@ export function TopFrameChrome({
   return (
     <>
       {!fullPreview &&
-        (UU.projectDocs.parse(pathname, false) ? null : (
+        (parseRoute(APP_ROUTES.projectDocs, pathname, false) ? null : (
           <>
             <ProjectNameModal
               project={project}
@@ -624,14 +632,16 @@ function validateNewLocation(
   assert(isPlasmicPath(path), `${path} is not Plasmic`);
 
   // https://app.shortcut.com/plasmic/story/20746/improve-isolation-to-support-arbitrary-code
-  if (UU.projectFullPreview.parse(previousLocation.pathname, false)) {
+  if (
+    parseRoute(APP_ROUTES.projectFullPreview, previousLocation.pathname, false)
+  ) {
     assert(
-      UU.projectFullPreview.parse(path, false),
+      parseRoute(APP_ROUTES.projectFullPreview, path, false),
       `Cannot navigate from full preview mode to outside of it, from ${previousLocation.pathname} to ${path}`
     );
   } else {
     assert(
-      !UU.projectFullPreview.parse(path, false),
+      !parseRoute(APP_ROUTES.projectFullPreview, path, false),
       `Cannot navigate from studio to full preview mode, from ${previousLocation.pathname} to ${path}`
     );
   }

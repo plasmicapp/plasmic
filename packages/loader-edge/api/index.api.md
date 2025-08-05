@@ -20,6 +20,7 @@ export const getActiveVariation: (opts: {
     splits: Split[];
     traits: Record<string, string | number | boolean>;
     path: string;
+    enableUnseededExperiments?: boolean;
 }) => Record<string, string>;
 
 // @public (undocumented)

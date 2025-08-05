@@ -9,11 +9,7 @@ export interface SideEffectProps {
   deps?: unknown[];
 }
 
-export default function SideEffect({
-  deps,
-  onMount,
-  onUnmount,
-}: SideEffectProps) {
+export function SideEffect({ deps, onMount, onUnmount }: SideEffectProps) {
   React.useEffect(() => {
     onMount?.();
     return () => {

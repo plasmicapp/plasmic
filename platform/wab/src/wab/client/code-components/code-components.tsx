@@ -11,7 +11,6 @@ import {
   unknownCodeComponentErrorDescription,
 } from "@/wab/client/components/modals/codeComponentModals";
 import { reactConfirm } from "@/wab/client/components/quick-modals";
-import { getComponentPropTypes } from "@/wab/client/components/sidebar-tabs/ComponentPropsSection";
 import {
   getHostLessPkg,
   getSortedHostLessPkgs,
@@ -54,6 +53,7 @@ import {
   unexpected,
   xDifference,
 } from "@/wab/shared/common";
+import { getComponentPropTypes } from "@/wab/shared/component-props";
 import {
   CodeComponent,
   ComponentType,
@@ -381,6 +381,7 @@ export async function maybeConvertToHostLessProject(studioCtx: StudioCtx) {
             globalVariantGroups: [],
             userManagedFonts: [],
             styleTokens: [],
+            styleTokenOverrides: [],
             mixins: [],
             activeTheme: null,
             imageAssets: [],

@@ -1,6 +1,5 @@
 /** @format */
 
-import { U } from "@/wab/client/cli-routes";
 import { promptNewWorkspace } from "@/wab/client/components/dashboard/dashboard-actions";
 import { ProjectsFilterProps } from "@/wab/client/components/dashboard/ProjectsFilter";
 import EditableResourceName from "@/wab/client/components/EditableResourceName";
@@ -20,6 +19,8 @@ import { ApiPermission, ApiTeam } from "@/wab/shared/ApiSchema";
 import { accessLevelRank } from "@/wab/shared/EntUtil";
 import { ORGANIZATION_CAP } from "@/wab/shared/Labels";
 import { getAccessLevelToResource } from "@/wab/shared/perms";
+import { APP_ROUTES } from "@/wab/shared/route/app-routes";
+import { fillRoute } from "@/wab/shared/route/route";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import * as React from "react";
 import { useHistory } from "react-router-dom";
@@ -120,7 +121,7 @@ function TeamPageHeader_(
       numMembers={`${numMembers}`}
       settingsButton={{
         props: {
-          href: U.orgSettings({ teamId: team.id }),
+          href: fillRoute(APP_ROUTES.orgSettings, { teamId: team.id }),
           tooltip: `${ORGANIZATION_CAP} settings`,
         },
         wrap: (node) => {
@@ -129,7 +130,7 @@ function TeamPageHeader_(
               <>
                 {node}
                 <IconButton
-                  href={U.orgAnalytics({ teamId: team.id })}
+                  href={fillRoute(APP_ROUTES.orgAnalytics, { teamId: team.id })}
                   tooltip={`${ORGANIZATION_CAP} analytics`}
                 >
                   <Icon icon={ChartsvgIcon} />

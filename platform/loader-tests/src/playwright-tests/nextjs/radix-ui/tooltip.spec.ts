@@ -17,7 +17,7 @@ test.describe(`Plasmic Radix UI Tooltip`, async () => {
         ctx = await setupNextJs({
           bundleFile: "radix-ui/tooltip.json",
           projectName: "Radix UI Tooltip",
-          npmRegistry: getEnvVar("NPM_REGISTRY"),
+          npmRegistry: getEnvVar("NPM_CONFIG_REGISTRY"),
           codegenHost: getEnvVar("WAB_HOST"),
           removeComponentsPage: true,
           loaderVersion,

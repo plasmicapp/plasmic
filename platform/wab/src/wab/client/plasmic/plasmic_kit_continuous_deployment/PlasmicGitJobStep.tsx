@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -35,10 +35,9 @@ import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_syst
 import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
 import sty from "./PlasmicGitJobStep.module.css"; // plasmic-import: JzpEJAQTjPX/css
 
-import DotBulletIcon from "../plasmic_kit/PlasmicIcon__DotBullet"; // plasmic-import: sABZLvi9xLkb_/icon
-import ChecksvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__CheckSvg"; // plasmic-import: f0RrtBrXp/icon
-import WarningTrianglesvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__WarningTriangleSvg"; // plasmic-import: S0L-xosWD/icon
-import ChevronRightIcon from "./icons/PlasmicIcon__ChevronRight"; // plasmic-import: 7rXqDBDnr6J/icon
+import CheckSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__CheckSvg"; // plasmic-import: f0RrtBrXp/icon
+import ChevronRightSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronRightSvg"; // plasmic-import: HBGx-zeiX/icon
+import WarningTriangleSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__WarningTriangleSvg"; // plasmic-import: S0L-xosWD/icon
 
 createPlasmicElementProxy;
 
@@ -53,9 +52,7 @@ export const PlasmicGitJobStep__VariantProps = new Array<VariantPropType>(
   "status"
 );
 
-export type PlasmicGitJobStep__ArgsType = {
-  children?: React.ReactNode;
-};
+export type PlasmicGitJobStep__ArgsType = { children?: React.ReactNode };
 type ArgPropType = keyof PlasmicGitJobStep__ArgsType;
 export const PlasmicGitJobStep__ArgProps = new Array<ArgPropType>("children");
 
@@ -81,7 +78,16 @@ function PlasmicGitJobStep__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
@@ -101,7 +107,6 @@ function PlasmicGitJobStep__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.status,
       },
     ],
-
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -140,12 +145,10 @@ function PlasmicGitJobStep__RenderFunc(props: {
         data-plasmic-override={overrides.svg}
         PlasmicIconType={
           hasVariant($state, "status", "finished")
-            ? ChecksvgIcon
+            ? CheckSvgIcon
             : hasVariant($state, "status", "failed")
-            ? WarningTrianglesvgIcon
-            : hasVariant($state, "status", "started")
-            ? ChevronRightIcon
-            : DotBulletIcon
+            ? WarningTriangleSvgIcon
+            : ChevronRightSvgIcon
         }
         className={classNames(projectcss.all, sty.svg, {
           [sty.svgstatus_failed]: hasVariant($state, "status", "failed"),
@@ -211,7 +214,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicGitJobStep__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
@@ -219,15 +221,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicGitJobStep__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicGitJobStep__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicGitJobStep__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+    // Specify args directly as props
+    Omit<PlasmicGitJobStep__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

@@ -45,7 +45,6 @@ import {
   parseMetadata,
   parseQueryParams,
   superDbMgr,
-  userAnalytics,
   userDbMgr,
 } from "@/wab/server/routes/util";
 import { broadcastProjectsMessage } from "@/wab/server/socket-util";
@@ -246,11 +245,8 @@ export async function createProject(req: Request, res: Response) {
     workspaceId,
     ownerEmail: req.user?.email,
   });
-  userAnalytics(req).track({
-    event: "Create project",
-    properties: {
-      projectId: project.id,
-    },
+  req.analytics.track("Create project", {
+    projectId: project.id,
   });
   req.promLabels.projectId = project.id;
   res.json({ project: mkApiProject(project), rev: omit(rev, "data") });
@@ -307,19 +303,17 @@ export async function clonePublishedTemplate(req: Request, res: Response) {
   if (!pkg) {
     throw new NotFoundError(`Unknown template project id ${projectId}`);
   }
-  const { name, workspaceId, hostUrl }: CloneProjectRequest = req.body;
+  const { name, workspaceId, hostUrl, version }: CloneProjectRequest = req.body;
   const project = await mgr.clonePublishedTemplate(projectId, req.bundler, {
     name,
     workspaceId,
     hostUrl,
     ownerEmail: req.user?.email,
+    version,
   });
-  userAnalytics(req).track({
-    event: "Clone template",
-    properties: {
-      projectId: project.id,
-      projectName: project.name,
-    },
+  req.analytics.track("Clone template", {
+    projectId: project.id,
+    projectName: project.name,
   });
   req.promLabels.projectId = projectId;
   res.json({ projectId: project.id, token: project.projectApiToken });
@@ -1139,8 +1133,14 @@ async function ensureSchemaIsUpToDate(req: Request) {
 export async function tryMergeBranch(req: Request, res: Response) {
   const mgr = userDbMgr(req);
   const { projectId } = req.params;
-  const { subject, pretend, resolution, autoCommitOnToBranch } =
-    req.body as TryMergeRequest;
+  const {
+    subject,
+    pretend,
+    resolution,
+    autoCommitOnToBranch,
+    description,
+    tags,
+  } = req.body as TryMergeRequest;
   const mergeResult = pretend
     ? await mgr.previewMergeBranch({
         ...subject,
@@ -1152,6 +1152,8 @@ export async function tryMergeBranch(req: Request, res: Response) {
         ...subject,
         resolution,
         autoCommitOnToBranch,
+        description,
+        tags,
         excludeMergeStepFromResult: true,
       });
   // Prevent attempting to serialize MergeStep (not serializable)
@@ -1261,14 +1263,11 @@ export async function saveProjectRev(req: Request, res: Response) {
   const data = JSON.stringify(mergedBundle);
 
   req.promLabels.projectId = projectId;
-  userAnalytics(req).track({
-    event: "Save project",
-    properties: {
-      projectId: project.id,
-      projectName: project.name,
-      revision: +req.params.revision,
-      branchId,
-    },
+  req.analytics.track("Save project", {
+    projectId: project.id,
+    projectName: project.name,
+    revision: +req.params.revision,
+    branchId,
   });
 
   const rev = await mgr.saveProjectRev({
@@ -1451,15 +1450,12 @@ export async function getProjectRev(req: Request, res: Response) {
         .map((ds) => mkApiDataSource(ds))
     : [];
 
-  userAnalytics(req).track({
-    event: "Open project",
-    properties: {
-      projectId: project.id,
-      projectName: project.name,
-      revision: rev.revision,
-      branchId,
-      branchName: branch?.name,
-    },
+  req.analytics.track("Open project", {
+    projectId: project.id,
+    projectName: project.name,
+    revision: rev.revision,
+    branchId,
+    branchName: branch?.name,
   });
   res.json({
     rev,
@@ -1923,13 +1919,10 @@ export async function publishProject(req: Request, res: Response) {
   );
   req.promLabels.projectId = projectId;
   const project = await mgr.getProjectById(projectId);
-  userAnalytics(req).track({
-    event: "Publish project",
-    properties: {
-      projectId: projectId,
-      projectName: project.name,
-      pkgId: req.params.pkgId,
-    },
+  req.analytics.track("Publish project", {
+    projectId: projectId,
+    projectName: project.name,
+    pkgId: req.params.pkgId,
   });
   const affectedResourceIds = [
     createTaggedResourceId("project", projectId),
@@ -2122,14 +2115,11 @@ export async function revertToVersion(req: Request, res: Response) {
 
   const project = await mgr.getProjectById(projectId);
   req.promLabels.projectId = projectId;
-  userAnalytics(req).track({
-    event: "Revert project to version",
-    properties: {
-      projectId: project.id,
-      projectName: project.name,
-      branchId,
-      version,
-    },
+  req.analytics.track("Revert project to version", {
+    projectId: project.id,
+    projectName: project.name,
+    branchId,
+    version,
   });
 
   const rev = await mgr.saveProjectRev({
@@ -2344,20 +2334,19 @@ export async function genCode(req: Request, res: Response) {
 
   if (req.body.cliVersion) {
     // This is an obsolete check, so ask client to upgrade
-    userAnalytics(req).track({
-      event: "Stale codegen",
-      properties: {
-        cliVersion: req.body.cliVersion,
-        requiredCliVersion: requiredPackageVersions["@plasmicapp/cli"],
-        projectId: req.params.projectId,
-      },
+    req.analytics.track("Stale codegen", {
+      cliVersion: req.body.cliVersion,
+      requiredCliVersion: requiredPackageVersions["@plasmicapp/cli"],
+      projectId: req.params.projectId,
     });
     throw new StaleCliError(
       `Your version of @plasmicapp/cli is out of date.  Please upgrade to the latest version.`
     );
   }
   const platform =
-    req.body.platform === "nextjs" || req.body.platform === "gatsby"
+    req.body.platform === "nextjs" ||
+    req.body.platform === "gatsby" ||
+    req.body.platform === "tanstack"
       ? req.body.platform
       : "react";
   const platformOptions = req.body.platformOptions || {};
@@ -2420,15 +2409,12 @@ export async function genCode(req: Request, res: Response) {
 
   const metadata = parseMetadata(req.body.metadata);
 
-  userAnalytics(req).track({
-    event: "Codegen",
-    properties: {
-      projectId: project.id,
-      projectName: project.name,
-      numComponents: output.components.length,
-      ...exportOpts,
-      ...metadata,
-    },
+  req.analytics.track("Codegen", {
+    projectId: project.id,
+    projectName: project.name,
+    numComponents: output.components.length,
+    ...exportOpts,
+    ...metadata,
   });
   res.json({
     ...output,
@@ -2513,7 +2499,7 @@ async function getLatestRevisionSynced(
 export async function getProjectMeta(req: Request, res: Response) {
   const projectId = req.params.projectId;
   const mgr = userDbMgr(req);
-  await mgr.checkProjectPerms(projectId, "viewer", "View project meta", false);
+  await mgr.checkProjectPerms(projectId, "viewer", "View project meta");
   res.json(await makeProjectMeta(mgr, projectId));
 }
 
@@ -2770,13 +2756,10 @@ export async function updateProjectData(req: Request, res: Response) {
     branchId: branchId,
   });
 
-  userAnalytics(req).track({
-    event: "Update project",
-    properties: {
-      projectId: projectId,
-      projectName: project.name,
-      revision: rev.revision,
-    },
+  req.analytics.track("Update project", {
+    projectId: projectId,
+    projectName: project.name,
+    revision: rev.revision,
   });
 
   await dbMgr.clearPartialRevisionsCacheForProject(projectId);

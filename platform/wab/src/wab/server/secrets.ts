@@ -65,6 +65,10 @@ interface Secrets {
     password: string;
     database?: string;
   };
+  dynamodb?: {
+    accessKeyId: string;
+    secretAccessKey: string;
+  };
 }
 
 export function getEncryptionKey() {
@@ -138,6 +142,10 @@ export function getClickhouseSecrets() {
   return loadSecrets().clickhouse;
 }
 
+export function getDynamoDbSecrets() {
+  return loadSecrets().dynamodb;
+}
+
 export function loadSecrets(): Secrets {
   const path = getSecretsFile();
   if (!fs.existsSync(path)) {
@@ -152,10 +160,4 @@ function getSecretsFile() {
   return (
     process.env.PLASMIC_SECRETS_FILE || `${os.homedir()}/.plasmic/secrets.json`
   );
-}
-
-export function updateSecrets(updates: Partial<Secrets>) {
-  const existing = loadSecrets();
-  const updated = { ...existing, ...updates };
-  fs.writeFileSync(getSecretsFile(), JSON.stringify(updated));
 }

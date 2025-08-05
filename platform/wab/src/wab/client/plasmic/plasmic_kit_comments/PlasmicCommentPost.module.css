@@ -8,7 +8,22 @@
   max-width: 100%;
   position: relative;
   min-width: 0;
-  padding: 8px 16px;
+  padding: 8px 2px;
+}
+.rootthread {
+  padding: var(--token-8b4HJYZr1yuK);
+}
+.roothoverBox {
+  box-shadow: 0px 12px 60px 0px #00000026, 0px 12px 32px -16px #0009321f;
+  background: var(--token-rqQDmopteQdV);
+  max-width: 300px;
+  width: auto;
+  justify-self: flex-start;
+  min-width: 200px;
+  display: inline-flex;
+  border-radius: var(--token-XnnXV8YSKg9w);
+  padding: var(--token-XnnXV8YSKg9w);
+  border: 1px solid var(--token-JpKJ41ZaDWOC);
 }
 .root:hover {
   background: var(--token-9jh0BkCENS);
@@ -56,6 +71,9 @@
   flex-shrink: 0;
   padding: 0px;
 }
+.avatarContainerhoverBox {
+  display: none;
+}
 .img {
   object-fit: cover;
   max-width: 100%;
@@ -65,11 +83,13 @@
 .img > picture > img {
   object-fit: cover;
 }
-.text {
+.freeBox___079IS {
+  display: flex;
+  flex-direction: column;
   position: relative;
+  align-items: flex-start;
+  justify-content: center;
   width: 100%;
-  height: auto;
-  max-width: 800px;
   min-width: 0;
 }
 .userFullName {
@@ -77,7 +97,6 @@
 }
 .timestamp {
   color: var(--token-PTyaboLP9ZK);
-  padding: 0px 0px 0px 4px;
 }
 .actions {
   display: flex;
@@ -90,12 +109,25 @@
   max-width: 100%;
   padding: 0px;
 }
+.actionsisDeleted {
+  display: none;
+}
+.actionshoverBox {
+  display: none;
+}
 .btnMore:global(.__wab_instance):global(.__wab_instance) {
   position: relative;
   opacity: 0;
   flex-shrink: 0;
 }
 .btnMorethread:global(.__wab_instance):global(.__wab_instance) {
+  flex-shrink: 0;
+  display: none;
+}
+.btnMoreisDeleted:global(.__wab_instance):global(.__wab_instance) {
+  flex-shrink: 0;
+}
+.btnMorehoverBox:global(.__wab_instance):global(.__wab_instance) {
   flex-shrink: 0;
 }
 .root:hover .btnMore:global(.__wab_instance):global(.__wab_instance) {
@@ -106,17 +138,36 @@
   .btnMorethread:global(.__wab_instance):global(.__wab_instance) {
   flex-shrink: 0;
 }
+.threadHistoryStatus:global(.__wab_instance) {
+  max-width: 100%;
+  flex-shrink: 0;
+  display: none;
+}
+.threadHistoryStatusthread:global(.__wab_instance) {
+  flex-shrink: 0;
+  display: none;
+}
+.threadHistoryStatuscanUpdateHistory:global(.__wab_instance) {
+  flex-shrink: 0;
+  display: flex;
+}
 .freeBox___5UHnq {
   display: flex;
   position: relative;
   flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
+  align-items: flex-start;
+  justify-content: center;
   width: 100%;
   height: auto;
   max-width: 100%;
   min-width: 0;
   padding: 0px 0px 0px 40px;
+}
+.freeBoxisEditing___5UHnquz8Vl {
+  padding-left: 0px;
+}
+.freeBoxhoverBox___5UHnqbLDov {
+  padding-left: 0px;
 }
 .subjectLabel {
   width: 100%;
@@ -145,59 +196,17 @@
 .freeBoxisEditing__dc1JVuz8Vl {
   display: none;
 }
+.freeBoxhoverBox__dc1JVbLDov {
+  max-height: 200px;
+  overflow: auto;
+}
 .body {
   width: 100%;
   height: auto;
-  max-width: 800px;
   min-width: 0;
 }
-.btnAddReaction:global(.__wab_instance) {
-  max-width: 100%;
-  position: relative;
-  opacity: 0;
-  flex-shrink: 0;
-}
-.btnAddReactionisEditing:global(.__wab_instance) {
-  flex-shrink: 0;
-}
-.root:hover .btnAddReaction:global(.__wab_instance) {
-  opacity: 1;
-  flex-shrink: 0;
-}
-.svg___61Fdh {
-  display: flex;
-  position: relative;
-  object-fit: cover;
-  height: 1em;
-}
-.freeBox__xBuRf {
-  display: flex;
-  position: absolute;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  width: 6px;
-  height: 6px;
-  background: #ffffff;
-  left: auto;
-  top: auto;
-  bottom: 4px;
-  right: 4px;
-  border-radius: 1000px;
-}
-.svg__lgliq {
-  display: flex;
-  object-fit: cover;
-  width: 100%;
-  height: 100%;
-  min-width: 0;
-  min-height: 0;
-}
-.svg__zi2Rk {
-  display: flex;
-  position: relative;
-  object-fit: cover;
-  height: 1em;
+.bodyisDeleted {
+  color: var(--token-RTPypKCJE4bm);
 }
 .reactionsContainer {
   display: flex;
@@ -207,13 +216,14 @@
   height: auto;
   max-width: 100%;
   min-width: 0;
-  padding: 0px;
+  padding: var(--token-YwPV7bN0RvD8) 0px 0px;
 }
 .reactionsContainer > :global(.__wab_flex-container) {
   flex-direction: row;
   align-items: stretch;
   justify-content: flex-start;
   flex-wrap: wrap;
+  align-content: center;
   min-width: 0;
   margin-left: calc(0px - 4px);
   width: calc(100% + 4px);
@@ -234,6 +244,12 @@
 .reactionsContainerisEditing {
   display: none;
 }
+.reactionsContainerisDeleted {
+  display: none;
+}
+.reactionsContainerhoverBox {
+  display: none;
+}
 .reactionButton__cMbVc:global(.__wab_instance) {
   position: relative;
 }
@@ -252,55 +268,30 @@
 .reactionButton__nAY7:global(.__wab_instance) {
   position: relative;
 }
-.btnAddReaction2:global(.__wab_instance) {
+.btnAddReaction:global(.__wab_instance) {
   max-width: 100%;
   position: relative;
   opacity: 0;
   flex-shrink: 0;
 }
-.root:hover .btnAddReaction2:global(.__wab_instance) {
+.root:hover .btnAddReaction:global(.__wab_instance) {
   opacity: 1;
   flex-shrink: 0;
 }
-.svg__bs35C {
+.svg {
   display: flex;
   position: relative;
   object-fit: cover;
   height: 1em;
 }
-.freeBox___0N5Wz {
-  display: flex;
-  position: absolute;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  width: 6px;
-  height: 6px;
-  background: #ffffff;
-  left: auto;
-  top: auto;
-  bottom: 4px;
-  right: 4px;
-  border-radius: 1000px;
-}
-.svg__qvPY {
-  display: flex;
-  object-fit: cover;
-  width: 100%;
-  height: 100%;
-  min-width: 0;
-  min-height: 0;
-}
-.svg__fMWe3 {
+.svg__qD4K {
   display: flex;
   position: relative;
   object-fit: cover;
   height: 1em;
 }
 .commentPostForm:global(.__wab_instance) {
-  max-width: 100%;
-  width: 100%;
-  min-width: 0;
+  margin-top: 12px;
 }
 .commentPostFormisEditing:global(.__wab_instance) {
   display: flex;
@@ -315,13 +306,20 @@
 .repliesLinkthread:global(.__wab_instance) {
   display: flex;
 }
-.svg__jfhS {
+.repliesLinkhoverBox:global(.__wab_instance) {
+  align-self: flex-start;
+  display: flex;
+}
+.svg__qz8Gb {
   display: flex;
   position: relative;
   object-fit: cover;
   height: 1em;
 }
-.svg__hxNzb {
+.texthoverBox {
+  color: var(--token-RTPypKCJE4bm);
+}
+.svg___82GjE {
   display: flex;
   position: relative;
   object-fit: cover;

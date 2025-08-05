@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -46,9 +46,7 @@ export const PlasmicConsoleOutput__VariantProps = new Array<VariantPropType>(
   "hidden"
 );
 
-export type PlasmicConsoleOutput__ArgsType = {
-  output?: React.ReactNode;
-};
+export type PlasmicConsoleOutput__ArgsType = { output?: React.ReactNode };
 type ArgPropType = keyof PlasmicConsoleOutput__ArgsType;
 export const PlasmicConsoleOutput__ArgProps = new Array<ArgPropType>("output");
 
@@ -73,7 +71,16 @@ function PlasmicConsoleOutput__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
@@ -93,7 +100,6 @@ function PlasmicConsoleOutput__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.hidden,
       },
     ],
-
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -141,7 +147,6 @@ function PlasmicConsoleOutput__RenderFunc(props: {
                 }
               </div>
             ),
-
             value: args.output,
             className: classNames(sty.slotTargetOutput),
           })}
@@ -168,7 +173,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicConsoleOutput__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
@@ -176,15 +180,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicConsoleOutput__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicConsoleOutput__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicConsoleOutput__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+    // Specify args directly as props
+    Omit<PlasmicConsoleOutput__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

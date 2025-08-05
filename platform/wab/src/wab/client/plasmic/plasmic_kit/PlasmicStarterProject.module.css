@@ -17,20 +17,20 @@
   box-shadow: 0px 8px 24px -16px #00000038, 0px 8px 15px -16px #00000024;
   border-radius: 8px;
 }
-.rootimage_withImage:hover {
-  box-shadow: 0px 8px 32px -8px #00000038, 0px 8px 20px -16px #00000024;
-}
-.rootwithDropShadow:hover {
-  box-shadow: 0px 8px 32px -8px #00000038, 0px 8px 20px -16px #00000024;
-}
 .root:focus {
   outline: none;
 }
 .rootimage_withImage:focus {
   outline: none;
 }
+.rootimage_withImage:hover {
+  box-shadow: 0px 8px 32px -8px #00000038, 0px 8px 20px -16px #00000024;
+}
 .rootwithDropShadow:focus {
   outline: none;
+}
+.rootwithDropShadow:hover {
+  box-shadow: 0px 8px 32px -8px #00000038, 0px 8px 20px -16px #00000024;
 }
 .button {
   opacity: 1;
@@ -125,32 +125,32 @@
 .freeBoxwithDropShadow__yWsHwQdgSu {
   border-radius: 0px 0px 8px 8px;
 }
+.root:focus .freeBox__yWsHw {
+  outline: none;
+}
 .roottype_first:hover .freeBoxtype_first__yWsHwnPTsW {
   background: var(--token-dv0BWWyaHl7H);
+}
+.roottype_first:active .freeBoxtype_first__yWsHwnPTsW {
+  background: var(--token-3AptjBfMqvPS);
 }
 .roottype_second:hover .freeBoxtype_second__yWsHwIg5DJ {
   background: var(--token-JkjCicJF7tK);
 }
+.roottype_second:active .freeBoxtype_second__yWsHwIg5DJ {
+  background: var(--token-8BJRlW0CGyAS);
+}
 .roottype_third:hover .freeBoxtype_third__yWsHw2NMma {
   background: var(--token-_x2R5Ogaeo5);
 }
-.root:focus .freeBox__yWsHw {
-  outline: none;
+.roottype_third:active .freeBoxtype_third__yWsHw2NMma {
+  background: var(--token-wn5N3ILTddm);
 }
 .rootimage_withImage:focus .freeBoximage_withImage__yWsHwPe6Kv {
   outline: none;
 }
 .rootwithDropShadow:focus .freeBoxwithDropShadow__yWsHwQdgSu {
   outline: none;
-}
-.roottype_first:active .freeBoxtype_first__yWsHwnPTsW {
-  background: var(--token-3AptjBfMqvPS);
-}
-.roottype_second:active .freeBoxtype_second__yWsHwIg5DJ {
-  background: var(--token-8BJRlW0CGyAS);
-}
-.roottype_third:active .freeBoxtype_third__yWsHw2NMma {
-  background: var(--token-wn5N3ILTddm);
 }
 .divider {
   position: relative;
@@ -180,23 +180,23 @@
 .dividerwithDropShadow {
   background: var(--token-hoA5qaM-91G);
 }
+.root:focus .divider {
+  outline: none;
+}
 .roottype_first:hover .dividertype_first {
+  background: rgb(42, 187, 167);
+}
+.roottype_first:active .dividertype_first {
   background: rgb(42, 187, 167);
 }
 .roottype_second:hover .dividertype_second {
   background: rgb(69, 189, 98);
 }
-.roottype_third:hover .dividertype_third {
-  background: rgb(247, 185, 40);
-}
-.root:focus .divider {
-  outline: none;
-}
-.roottype_first:active .dividertype_first {
-  background: rgb(42, 187, 167);
-}
 .roottype_second:active .dividertype_second {
   background: rgb(69, 189, 98);
+}
+.roottype_third:hover .dividertype_third {
+  background: rgb(247, 185, 40);
 }
 .roottype_third:active .dividertype_third {
   background: rgb(247, 185, 40);
@@ -449,7 +449,7 @@
   height: 1.5rem;
   flex-shrink: 0;
 }
-.bordersoutlinesstrokesPlaceholder {
+.bordersOutlinesStrokesPlaceholder {
   position: absolute;
   width: 100%;
   height: 100%;
@@ -463,58 +463,58 @@
   -webkit-transition-duration: 0.1s;
   border-radius: 8px;
 }
-.bordersoutlinesstrokesPlaceholdertype_first {
+.bordersOutlinesStrokesPlaceholdertype_first {
   border: 1px solid var(--token-n4S9_H7k9rsR);
 }
-.bordersoutlinesstrokesPlaceholdertype_second {
+.bordersOutlinesStrokesPlaceholdertype_second {
   border: 1px solid var(--token-EXdSicMU4Kn4);
 }
-.bordersoutlinesstrokesPlaceholdertype_third {
+.bordersOutlinesStrokesPlaceholdertype_third {
   border: 1px solid var(--token-_KfwvRipM3e);
 }
-.bordersoutlinesstrokesPlaceholderimage_withImage {
+.bordersOutlinesStrokesPlaceholderimage_withImage {
   border: 1px solid var(--token-eBt2ZgqRUCz);
 }
-.bordersoutlinesstrokesPlaceholderwithDropShadow {
+.bordersOutlinesStrokesPlaceholderwithDropShadow {
   border: 1px solid var(--token-eBt2ZgqRUCz);
 }
-.root:hover .bordersoutlinesstrokesPlaceholder {
-  border-color: var(--token-PTyaboLP9ZK);
-}
-.roottype_first:hover .bordersoutlinesstrokesPlaceholdertype_first {
-  box-shadow: none;
-  border-color: var(--token-7z1QOgRqHDWD);
-}
-.roottype_second:hover .bordersoutlinesstrokesPlaceholdertype_second {
-  box-shadow: none;
-  border-color: var(--token-BBlfXifFkRyp);
-}
-.roottype_third:hover .bordersoutlinesstrokesPlaceholdertype_third {
-  box-shadow: none;
-  border-color: var(--token-aMA_Go-ENBl);
-}
-.root:focus .bordersoutlinesstrokesPlaceholder {
+.root:focus .bordersOutlinesStrokesPlaceholder {
   box-shadow: 0px 0px 0px 2px #0091ff80;
   outline: none;
 }
-.rootimage_withImage:focus .bordersoutlinesstrokesPlaceholderimage_withImage {
-  outline: none;
-}
-.rootwithDropShadow:focus .bordersoutlinesstrokesPlaceholderwithDropShadow {
-  outline: none;
-}
-.root:active .bordersoutlinesstrokesPlaceholder {
+.root:hover .bordersOutlinesStrokesPlaceholder {
   border-color: var(--token-PTyaboLP9ZK);
 }
-.roottype_first:active .bordersoutlinesstrokesPlaceholdertype_first {
+.root:active .bordersOutlinesStrokesPlaceholder {
+  border-color: var(--token-PTyaboLP9ZK);
+}
+.roottype_first:hover .bordersOutlinesStrokesPlaceholdertype_first {
+  box-shadow: none;
+  border-color: var(--token-7z1QOgRqHDWD);
+}
+.roottype_first:active .bordersOutlinesStrokesPlaceholdertype_first {
   box-shadow: none;
   border-color: var(--token-n4S9_H7k9rsR);
 }
-.roottype_second:active .bordersoutlinesstrokesPlaceholdertype_second {
+.roottype_second:hover .bordersOutlinesStrokesPlaceholdertype_second {
+  box-shadow: none;
+  border-color: var(--token-BBlfXifFkRyp);
+}
+.roottype_second:active .bordersOutlinesStrokesPlaceholdertype_second {
   box-shadow: none;
   border-color: var(--token-EXdSicMU4Kn4);
 }
-.roottype_third:active .bordersoutlinesstrokesPlaceholdertype_third {
+.roottype_third:hover .bordersOutlinesStrokesPlaceholdertype_third {
+  box-shadow: none;
+  border-color: var(--token-aMA_Go-ENBl);
+}
+.roottype_third:active .bordersOutlinesStrokesPlaceholdertype_third {
   box-shadow: none;
   border-color: var(--token-_KfwvRipM3e);
+}
+.rootimage_withImage:focus .bordersOutlinesStrokesPlaceholderimage_withImage {
+  outline: none;
+}
+.rootwithDropShadow:focus .bordersOutlinesStrokesPlaceholderwithDropShadow {
+  outline: none;
 }

@@ -23,7 +23,7 @@ import {
   parseProjectIdSpec,
   resolveLatestProjectRevisions,
 } from "@/wab/server/loader/resolve-projects";
-import { superDbMgr, userAnalytics, userDbMgr } from "@/wab/server/routes/util";
+import { superDbMgr, userDbMgr } from "@/wab/server/routes/util";
 import { prefillCloudfront } from "@/wab/server/workers/prefill-cloudfront";
 import { BadRequestError, NotFoundError } from "@/wab/shared/ApiErrors/errors";
 import { ProjectId } from "@/wab/shared/ApiSchema";
@@ -293,7 +293,6 @@ export function makeGenPublishedLoaderCodeBundleOpts(opts: {
     i18nTagPrefix: i18n.tagPrefix,
     loaderVersion,
     browserOnly,
-    preferEsbuild: true,
     skipHead,
   };
 }
@@ -385,8 +384,6 @@ export async function buildLatestLoaderAssets(req: Request, res: Response) {
     browserOnly,
     i18nKeyScheme,
     i18nTagPrefix,
-    // always use esbuild for preview builds
-    preferEsbuild: true,
     skipHead,
   });
 
@@ -414,7 +411,7 @@ export async function getLoaderChunk(req: Request, res: Response) {
 
   console.log(`Loading S3 bundle from ${LOADER_ASSETS_BUCKET} ${bundleKey}`);
 
-  const s3 = new S3();
+  const s3 = new S3({ endpoint: process.env.S3_ENDPOINT });
 
   const obj = await s3
     .getObject({
@@ -894,17 +891,14 @@ function trackLoaderCodegenEvent(
   }
 ) {
   const { versionType, platform } = opts;
-  userAnalytics(req).track({
-    event: "Codegen",
-    properties: {
-      newCompScheme: "blackbox",
-      projectId: projects.map((p) => p.id).join(","),
-      projectName: projects.map((p) => p.name).join(","),
-      source: "loader2",
-      scheme: "loader2",
-      platform,
-      versionType,
-    },
+  req.analytics.track("Codegen", {
+    newCompScheme: "blackbox",
+    projectId: projects.map((p) => p.id).join(","),
+    projectName: projects.map((p) => p.name).join(","),
+    source: "loader2",
+    scheme: "loader2",
+    platform,
+    versionType,
   });
 }
 

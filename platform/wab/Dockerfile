@@ -1,8 +1,8 @@
-# Need newer alpine for bubblewrap to work
-FROM node:18.19-alpine3.18
+# See https://hub.docker.com/_/node/
+FROM node:24.4-alpine
 
 # System setup
-RUN apk add --no-cache bash=5.2.15-r5 make=4.4.1-r1 bubblewrap=0.8.0-r1
+RUN apk add --no-cache bash~=5 make~=4 bubblewrap~=0.11
 SHELL ["/bin/bash","-o", "pipefail","-l","-c"]
 
 RUN echo | adduser normaluser --disabled-password
@@ -21,15 +21,8 @@ RUN yarn install --frozen-lockfile && yarn cypress cache clear
 
 COPY --chown=normaluser . .
 
-# We copy plasmic-deployed.json, which has been stuffed into .tmp,
-# to its rightful place. We do this because we don't want `make` to
-# generate it, as generating it requires using `git`, and `.git` is
-# being .dockerignore-ed
-COPY --chown=normaluser .tmp/plasmic-deployed.json /home/normaluser/src/wab/client/
-
-# Run make, but touch src/wab/client/plasmic-deployed.json so it
-# doesn't get made (see above)
-RUN mkdir -p src/wab/gen/ && [[ -f src/wab/client/plasmic-deployed.json ]] && touch src/wab/client/plasmic-deployed.json && make
+# Run make
+RUN mkdir -p src/wab/gen/ && make
 
 RUN rm -rf ./node_modules
 RUN yarn install --production --frozen-lockfile && yarn cache clean

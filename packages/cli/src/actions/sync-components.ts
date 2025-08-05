@@ -5,10 +5,10 @@ import { logger } from "../deps";
 import { ComponentUpdateSummary, formatAsLocal } from "../utils/code-utils";
 import {
   CONFIG_FILE_NAME,
-  isPageAwarePlatform,
   PlasmicContext,
   ProjectConfig,
   ProjectLock,
+  isPageAwarePlatform,
 } from "../utils/config-utils";
 import {
   defaultPagePath,
@@ -21,6 +21,7 @@ import {
   writeFileContent,
 } from "../utils/file-utils";
 import { assert, ensure } from "../utils/lang-utils";
+import { syncRscFiles } from "../utils/rsc-config";
 import { confirmWithUser } from "../utils/user-utils";
 
 export async function syncProjectComponents(
@@ -231,6 +232,26 @@ export async function syncProjectComponents(
         }
         renameFile(context, compConfig.importSpec.modulePath, skeletonPath);
         compConfig.importSpec.modulePath = skeletonPath;
+        if (
+          compConfig.rsc?.clientModulePath &&
+          fileExists(context, compConfig.rsc.clientModulePath)
+        ) {
+          const clientModulePath = skeletonPath.replace(
+            /\.tsx$/,
+            "-client.tsx"
+          );
+          if (context.cliArgs.quiet !== true) {
+            logger.info(
+              `Renaming page file: ${compConfig.rsc.clientModulePath} -> ${clientModulePath}\t['${project.projectName}' ${project.projectId}/${id} ${project.version}]`
+            );
+          }
+          renameFile(
+            context,
+            compConfig.rsc.clientModulePath,
+            clientModulePath
+          );
+          compConfig.rsc.clientModulePath = clientModulePath;
+        }
       }
 
       compConfig.plumeType = plumeType;
@@ -304,5 +325,9 @@ export async function syncProjectComponents(
       );
     }
     summary.set(id, { skeletonModuleModified });
+
+    await syncRscFiles(context, project, bundle, compConfig, {
+      shouldRegenerate,
+    });
   }
 }

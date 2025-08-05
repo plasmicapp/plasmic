@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -23,6 +23,7 @@ import {
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  ensureGlobalVariants,
   hasVariant,
   renderPlasmicSlot,
   useDollarState,
@@ -34,6 +35,8 @@ import EditableResourceName from "../../components/EditableResourceName"; // pla
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
 import MenuButton from "../../components/widgets/MenuButton"; // plasmic-import: h69wHrrKtL/component
 
+import { useEnvironment } from "../plasmic_kit_pricing/PlasmicGlobalVariant__Environment"; // plasmic-import: hIjF9NLAUKG-/globalVariant
+
 import "@plasmicapp/react-web/lib/plasmic.css";
 
 import plasmic_plasmic_kit_pricing_css from "../plasmic_kit_pricing/plasmic_plasmic_kit_pricing.module.css"; // plasmic-import: ehckhYnyDHgCBbV47m9bkf/projectcss
@@ -43,7 +46,7 @@ import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_
 import sty from "./PlasmicCmsSection.module.css"; // plasmic-import: 54ykx6A8G6T/css
 
 import PlusIcon from "../plasmic_kit/PlasmicIcon__Plus"; // plasmic-import: -k064DlQ8k8-L/icon
-import ChevronDownsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
+import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
 
 createPlasmicElementProxy;
 
@@ -128,7 +131,16 @@ function PlasmicCmsSection__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
@@ -184,7 +196,6 @@ function PlasmicCmsSection__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.subHeader,
       },
     ],
-
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -192,6 +203,10 @@ function PlasmicCmsSection__RenderFunc(props: {
     $ctx,
     $queries: {},
     $refs,
+  });
+
+  const globalVariants = ensureGlobalVariants({
+    environment: useEnvironment(),
   });
 
   return (
@@ -211,6 +226,24 @@ function PlasmicCmsSection__RenderFunc(props: {
         plasmic_plasmic_kit_pricing_css.plasmic_tokens,
         sty.root,
         {
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
           [sty.rootaccessLevel_cantEdit]: hasVariant(
             $state,
             "accessLevel",
@@ -437,7 +470,7 @@ function PlasmicCmsSection__RenderFunc(props: {
               ),
             })}
             endIcon={
-              <ChevronDownsvgIcon
+              <ChevronDownSvgIcon
                 className={classNames(projectcss.all, sty.svg__fAdgg)}
                 role={"img"}
               />
@@ -483,7 +516,6 @@ function PlasmicCmsSection__RenderFunc(props: {
                 {"This workspace has no projects."}
               </div>
             ),
-
             value: args.noProjectsText,
             className: classNames(sty.slotTargetNoProjectsText, {
               [sty.slotTargetNoProjectsTextnoProjects]: hasVariant(
@@ -545,7 +577,6 @@ function PlasmicCmsSection__RenderFunc(props: {
                   />
                 </React.Fragment>
               ),
-
               value: args.children,
             })}
           </div>
@@ -568,7 +599,6 @@ const PlasmicDescendants = {
     "newProjectButton",
     "moreButton",
   ],
-
   header: [
     "header",
     "backNav",
@@ -580,7 +610,6 @@ const PlasmicDescendants = {
     "newProjectButton",
     "moreButton",
   ],
-
   backNav: ["backNav"],
   editableName: ["editableName"],
   readonlyName: ["readonlyName"],
@@ -611,7 +640,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicCmsSection__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
@@ -619,15 +647,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicCmsSection__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicCmsSection__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicCmsSection__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+    // Specify args directly as props
+    Omit<PlasmicCmsSection__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

@@ -70,7 +70,7 @@ export const IconButton = React.forwardRef(function (
       args={{ hoverText }}
       root={{
         props: {
-          type: props.htmlType ?? (href ? undefined : "button"),
+          type: htmlType ?? (href ? undefined : "button"),
           ref,
           onClick: onClick,
           ...(href ? { href, target, rel } : {}),

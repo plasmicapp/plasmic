@@ -61,7 +61,7 @@ export interface ScrollRevealerProps {
  *
  * TODO: Merge this inta a general Reveal component, perhaps forking react-awesome-reveal, so that we don't have two different reveal components for users.
  */
-export default function ScrollRevealer({
+export function ScrollRevealer({
   children,
   className,
   scrollDownThreshold = 0.5,

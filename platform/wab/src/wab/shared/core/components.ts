@@ -118,6 +118,7 @@ import {
   Component,
   ComponentDataQuery,
   ComponentParams,
+  ComponentServerQuery,
   ComponentTemplateInfo,
   ComponentVariantGroup,
   DataSourceOpExpr,
@@ -353,6 +354,7 @@ export function mkComponent(obj: {
     figmaMappings: obj.figmaMappings ?? [],
     alwaysAutoName: obj.alwaysAutoName ?? false,
     trapsFocus: obj.trapsFocus ?? false,
+    updatedAt: Date.now(),
   });
   return component;
 }
@@ -496,6 +498,7 @@ export function cloneCodeComponentMeta(
         helpers: cloneCodeComponentHelpers(codeMeta.helpers),
         defaultSlotContents: cloneDeep(codeMeta.defaultSlotContents),
         variants: cloneCodeComponentVariantMeta(codeMeta.variants),
+        refActions: codeMeta.refActions,
       })
     : null;
 }
@@ -526,6 +529,15 @@ export function cloneComponentDataQuery(query: ComponentDataQuery) {
   if (cloned.op) {
     cloned.op.parent = new QueryRef({ ref: cloned });
   }
+  return cloned;
+}
+
+function cloneComponentServerQuery(query: ComponentServerQuery) {
+  const cloned = new ComponentServerQuery({
+    uuid: mkShortId(),
+    name: query.name,
+    op: query.op ? cloneExpr(query.op) : query.op,
+  });
   return cloned;
 }
 
@@ -737,12 +749,14 @@ export function cloneComponent(
       oldToNewComponentQuery.set(componentDataQuery, cloned);
       return cloned;
     }),
-    serverQueries: fromComponent.serverQueries,
+    serverQueries: fromComponent.serverQueries.map(cloneComponentServerQuery),
     figmaMappings: fromComponent.figmaMappings.map(
       (c) => new FigmaComponentMapping({ ...c })
     ),
     alwaysAutoName: fromComponent.alwaysAutoName,
     trapsFocus: fromComponent.trapsFocus,
+    // We could use fromComponent.updatedAt, but we will keep the value semantically correct
+    updatedAt: Date.now(),
   });
 
   const fixQueryRef = (ref: QueryRef | string) => {
@@ -1663,7 +1677,6 @@ export function isCodeComponent(
 export function isCodeComponentTpl(tpl: TplNode): tpl is TplComponent {
   return isTplComponent(tpl) && isCodeComponent(tpl.component);
 }
-
 export interface ContextCodeComponent extends CodeComponent {
   isContext: true;
 }
@@ -1794,6 +1807,12 @@ export function allCodeComponentVariants(component: Component) {
 
 export function allStyleOrCodeComponentVariants(component: Component) {
   return component.variants.filter(isStyleOrCodeComponentVariant);
+}
+
+export function allComponentStyleOrCodeComponentVariants(component: Component) {
+  return component.variants.filter(
+    (v) => isComponentStyleVariant(v) || isCodeComponentVariant(v)
+  );
 }
 
 export function allPrivateStyleVariants(component: Component, tpl: TplNode) {

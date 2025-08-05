@@ -1,7 +1,13 @@
-import { Dict } from "@/wab/shared/collections";
-import { assertNever, mkShortId, switchType, unexpected } from "@/wab/shared/common";
+import {
+  assertNever,
+  mkShortId,
+  switchType,
+  unexpected,
+} from "@/wab/shared/common";
 import * as exprs from "@/wab/shared/core/exprs";
-import { codeLit } from "@/wab/shared/core/exprs";
+import { UNINITIALIZED_VALUE } from "@/wab/shared/core/sites";
+import { StateAccessType, StateVariableType } from "@/wab/shared/core/states";
+import { cloneType } from "@/wab/shared/core/tpls";
 import {
   Expr,
   GlobalVariantGroupParam,
@@ -18,11 +24,34 @@ import {
   convertVariableTypeToWabType,
   typeFactory,
 } from "@/wab/shared/model/model-util";
-import { UNINITIALIZED_VALUE } from "@/wab/shared/core/sites";
-import { StateAccessType, StateVariableType } from "@/wab/shared/core/states";
-import { cloneType } from "@/wab/shared/core/tpls";
 
-export type JsonScalar = number | string | boolean;
+// These JSON types are copied from type-fest.
+// The reason we don't use the type-fest versions are because the JsonArray
+// is annoyingly `JsonValue[] | readonly JsonValue[]`.
+// The readonly bit makes it difficult to use in many contexts.
+
+export type JsonObject = { [Key in string]: JsonValue } & {
+  [Key in string]?: JsonValue | undefined;
+};
+export type JsonArray = JsonValue[];
+export type JsonPrimitive = string | number | boolean | null;
+export type JsonValue = JsonPrimitive | JsonObject | JsonArray;
+
+export function jsonParse<T extends JsonValue>(json: string): T {
+  return JSON.parse(json);
+}
+
+export function tryJsonParse<T extends JsonValue>(json: string): T | undefined {
+  try {
+    return jsonParse<T>(json);
+  } catch {
+    return undefined;
+  }
+}
+
+export function jsonStringify(json: JsonValue): string {
+  return JSON.stringify(json);
+}
 
 export const enum ParamExportType {
   // Internal + External Params make up the interface
@@ -45,19 +74,6 @@ export enum ComponentPropOrigin {
 
 export function mkNameArg({ name, expr }: { name: string; expr: Expr }) {
   return new NameArg({ name, expr });
-}
-
-export function pairsToNameArgs(entries: [string, JsonScalar][]) {
-  return entries.map(([k, v]) =>
-    mkNameArg({
-      name: k,
-      expr: codeLit(v),
-    })
-  );
-}
-
-export function objectToNameArgs(object: Dict<JsonScalar>) {
-  return pairsToNameArgs(Object.entries(object));
 }
 
 export function mkOnChangeParamForState(
@@ -149,14 +165,19 @@ type mkParamProps<T extends Param, ParamType extends ParamTypes> = Omit<
   Partial<T>,
   "uuid" | "variable"
 > &
-  Pick<T, "type"> & { name: string; paramType: `${ParamType}` };
+  Pick<T, "type"> & {
+    name: string;
+    paramType: `${ParamType}`;
+  };
+
+type PropParamOpts = mkParamProps<PropParam, ParamTypes.Prop> & {
+  advanced?: boolean;
+};
 
 export function mkParam(
   opts: mkParamProps<SlotParam, ParamTypes.Slot>
 ): SlotParam;
-export function mkParam(
-  opts: mkParamProps<PropParam, ParamTypes.Prop>
-): PropParam;
+export function mkParam(opts: PropParamOpts): PropParam;
 export function mkParam(
   opts: mkParamProps<GlobalVariantGroupParam, ParamTypes.GlobalVariantGroup>
 ): GlobalVariantGroupParam;
@@ -166,6 +187,7 @@ export function mkParam(
 export function mkParam(
   opts: mkParamProps<StateChangeHandlerParam, ParamTypes.StateChangeHandler>
 ): StateChangeHandlerParam;
+
 export function mkParam(opts: mkParamProps<Param, ParamTypes>) {
   const commonProps = {
     uuid: mkShortId(),
@@ -195,9 +217,10 @@ export function mkParam(opts: mkParamProps<Param, ParamTypes>) {
       });
     }
     case "prop": {
-      const props = opts as mkParamProps<PropParam, ParamTypes.Prop>;
+      const props = opts as PropParamOpts;
       return new PropParam({
         type: props.type,
+        advanced: props.advanced ?? false,
         ...commonProps,
       });
     }
@@ -275,6 +298,7 @@ export function cloneParamAndVar<T extends Param>(param_: T): T {
         new PropParam({
           ...commonProps,
           type: cloneType(p.type),
+          advanced: p.advanced,
         })
     )
     .when(

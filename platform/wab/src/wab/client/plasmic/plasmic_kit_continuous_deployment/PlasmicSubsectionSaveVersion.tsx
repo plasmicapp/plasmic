@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -24,6 +24,8 @@ import {
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  generateStateOnChangeProp,
+  generateStateValueProp,
   hasVariant,
   renderPlasmicSlot,
   useDollarState,
@@ -41,9 +43,9 @@ import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_syst
 import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
 import sty from "./PlasmicSubsectionSaveVersion.module.css"; // plasmic-import: 74wUdEnJhwr/css
 
-import ArrowRightsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ArrowRightSvg"; // plasmic-import: 9Jv8jb253/icon
-import ChevronDownsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
-import PlussvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__PlusSvg"; // plasmic-import: sQKgd2GNr/icon
+import ArrowRightSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ArrowRightSvg"; // plasmic-import: 9Jv8jb253/icon
+import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
+import PlusSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__PlusSvg"; // plasmic-import: sQKgd2GNr/icon
 import imageXpXXn3D3XS from "./images/image.svg"; // plasmic-import: XpXXn3d3xS/picture
 
 createPlasmicElementProxy;
@@ -59,7 +61,6 @@ export type PlasmicSubsectionSaveVersion__VariantsArgs = {
   changesState?: SingleChoiceArg<
     "loading" | "none" | "patch" | "minor" | "major" | "first"
   >;
-
   view?: SingleChoiceArg<"setup" | "status">;
   failed?: SingleBooleanChoiceArg<"failed">;
 };
@@ -99,7 +100,6 @@ export interface DefaultSubsectionSaveVersionProps {
   changesState?: SingleChoiceArg<
     "loading" | "none" | "patch" | "minor" | "major" | "first"
   >;
-
   view?: SingleChoiceArg<"setup" | "status">;
   failed?: SingleBooleanChoiceArg<"failed">;
   className?: string;
@@ -115,7 +115,16 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
@@ -152,8 +161,19 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
         variableType: "variant",
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.failed,
       },
+      {
+        path: "checkbox.isChecked",
+        type: "private",
+        variableType: "boolean",
+        initFunc: ({ $props, $state, $queries, $ctx }) => undefined,
+      },
+      {
+        path: "tagsSelector.value",
+        type: "private",
+        variableType: "text",
+        initFunc: ({ $props, $state, $queries, $ctx }) => undefined,
+      },
     ],
-
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -229,6 +249,26 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
                     "status"
                   ),
                 })}
+                isChecked={
+                  generateStateValueProp($state, ["checkbox", "isChecked"]) ??
+                  false
+                }
+                onChange={async (...eventArgs: any) => {
+                  ((...eventArgs) => {
+                    generateStateOnChangeProp($state, [
+                      "checkbox",
+                      "isChecked",
+                    ])(eventArgs[0]);
+                  }).apply(null, eventArgs);
+
+                  if (
+                    eventArgs.length > 1 &&
+                    eventArgs[1] &&
+                    eventArgs[1]._plasmic_state_init_
+                  ) {
+                    return;
+                  }
+                }}
               />
             ) : null}
             {(hasVariant($state, "view", "status") ? true : false) ? (
@@ -547,14 +587,14 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
                       }
                     )}
                     endIcon={
-                      <ChevronDownsvgIcon
+                      <ChevronDownSvgIcon
                         className={classNames(projectcss.all, sty.svg__cgWjM)}
                         role={"img"}
                       />
                     }
                     size={"small"}
                     startIcon={
-                      <ArrowRightsvgIcon
+                      <ArrowRightSvgIcon
                         className={classNames(projectcss.all, sty.svg__td7KB)}
                         role={"img"}
                       />
@@ -602,6 +642,11 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
                     projectcss.__wab_text,
                     sty.text__ppYw,
                     {
+                      [sty.textchangesState_patch__ppYwoslbo]: hasVariant(
+                        $state,
+                        "changesState",
+                        "patch"
+                      ),
                       [sty.textview_setup__ppYw7XwDp]: hasVariant(
                         $state,
                         "view",
@@ -612,7 +657,15 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
                 >
                   {"Version"}
                 </div>
-                <div className={classNames(projectcss.all, sty.freeBox__kospk)}>
+                <div
+                  className={classNames(projectcss.all, sty.freeBox__kospk, {
+                    [sty.freeBoxchangesState_patch__kospkoslbo]: hasVariant(
+                      $state,
+                      "changesState",
+                      "patch"
+                    ),
+                  })}
+                >
                   <div
                     className={classNames(projectcss.all, sty.freeBox___0E7Ii)}
                   >
@@ -633,14 +686,14 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
                       sty.viewHistoryButton
                     )}
                     endIcon={
-                      <ChevronDownsvgIcon
+                      <ChevronDownSvgIcon
                         className={classNames(projectcss.all, sty.svg__dZ2D)}
                         role={"img"}
                       />
                     }
                     size={"wide"}
                     startIcon={
-                      <ArrowRightsvgIcon
+                      <ArrowRightSvgIcon
                         className={classNames(projectcss.all, sty.svg__w1Hb)}
                         role={"img"}
                       />
@@ -694,7 +747,14 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
                   className={classNames(
                     projectcss.all,
                     projectcss.__wab_text,
-                    sty.text__g1WL
+                    sty.text__g1WL,
+                    {
+                      [sty.textchangesState_patch__g1WLoslbo]: hasVariant(
+                        $state,
+                        "changesState",
+                        "patch"
+                      ),
+                    }
                   )}
                 >
                   {"Description"}
@@ -705,7 +765,19 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
                   className={classNames(
                     projectcss.all,
                     projectcss.textarea,
-                    sty.description
+                    sty.description,
+                    {
+                      [sty.descriptionchangesState_major]: hasVariant(
+                        $state,
+                        "changesState",
+                        "major"
+                      ),
+                      [sty.descriptionchangesState_patch]: hasVariant(
+                        $state,
+                        "changesState",
+                        "patch"
+                      ),
+                    }
                   )}
                   placeholder={"Enter description here (optional)…"}
                   ref={(ref) => {
@@ -752,7 +824,14 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
                   className={classNames(
                     projectcss.all,
                     projectcss.__wab_text,
-                    sty.text__l4FT0
+                    sty.text__l4FT0,
+                    {
+                      [sty.textchangesState_patch__l4FT0Oslbo]: hasVariant(
+                        $state,
+                        "changesState",
+                        "patch"
+                      ),
+                    }
                   )}
                 >
                   {"Tags"}
@@ -760,14 +839,45 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
                 <Select
                   data-plasmic-name={"tagsSelector"}
                   data-plasmic-override={overrides.tagsSelector}
-                  className={classNames("__wab_instance", sty.tagsSelector)}
+                  className={classNames("__wab_instance", sty.tagsSelector, {
+                    [sty.tagsSelectorchangesState_major]: hasVariant(
+                      $state,
+                      "changesState",
+                      "major"
+                    ),
+                    [sty.tagsSelectorchangesState_patch]: hasVariant(
+                      $state,
+                      "changesState",
+                      "patch"
+                    ),
+                  })}
                   icon={
-                    <PlussvgIcon
+                    <PlusSvgIcon
                       className={classNames(projectcss.all, sty.svg__db8GA)}
                       role={"img"}
                     />
                   }
+                  onChange={async (...eventArgs: any) => {
+                    ((...eventArgs) => {
+                      generateStateOnChangeProp($state, [
+                        "tagsSelector",
+                        "value",
+                      ])(eventArgs[0]);
+                    }).apply(null, eventArgs);
+
+                    if (
+                      eventArgs.length > 1 &&
+                      eventArgs[1] &&
+                      eventArgs[1]._plasmic_state_init_
+                    ) {
+                      return;
+                    }
+                  }}
                   type={"bordered"}
+                  value={generateStateValueProp($state, [
+                    "tagsSelector",
+                    "value",
+                  ])}
                 />
               </Stack__>
             ) : null}
@@ -823,7 +933,6 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
                 </React.Fragment>
               </div>
             ),
-
             value: args.feedback,
             className: classNames(sty.slotTargetFeedback, {
               [sty.slotTargetFeedbackfailed]: hasVariant(
@@ -856,7 +965,6 @@ const PlasmicDescendants = {
     "tagsStack",
     "tagsSelector",
   ],
-
   checkbox: ["checkbox"],
   img: ["img"],
   learnMoreLink: ["learnMoreLink"],
@@ -886,7 +994,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicSubsectionSaveVersion__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
@@ -894,15 +1001,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicSubsectionSaveVersion__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicSubsectionSaveVersion__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicSubsectionSaveVersion__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+    // Specify args directly as props
+    Omit<PlasmicSubsectionSaveVersion__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

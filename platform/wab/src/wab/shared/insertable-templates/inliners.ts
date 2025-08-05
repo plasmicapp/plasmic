@@ -1,3 +1,4 @@
+import { resolveAllTokenRefs } from "@/wab/commons/StyleToken";
 import {
   arrayEqIgnoreOrder,
   assert,
@@ -6,15 +7,29 @@ import {
   strictFind,
   withoutNils,
 } from "@/wab/shared/common";
-import { resolveAllTokenRefs } from "@/wab/commons/StyleToken";
 import {
   isCodeComponent,
+  isDefaultComponent,
   isHostLessCodeComponent,
   isPlumeComponent,
   PlumeComponent,
 } from "@/wab/shared/core/components";
 import { clone as cloneExpr } from "@/wab/shared/core/exprs";
 import { syncGlobalContexts } from "@/wab/shared/core/project-deps";
+import { allStyleTokens, isHostLessPackage } from "@/wab/shared/core/sites";
+import { createExpandedRuleSetMerger } from "@/wab/shared/core/styles";
+import {
+  clone as cloneTpl,
+  findVariantSettingsUnderTpl,
+  fixParentPointers,
+  flattenTplsBottomUp,
+  isTplCodeComponent,
+  isTplComponent,
+  isTplSlot,
+  isTplTag,
+  isTplVariantable,
+  walkTpls,
+} from "@/wab/shared/core/tpls";
 import {
   adaptEffectiveVariantSetting,
   EffectiveVariantSetting,
@@ -53,20 +68,6 @@ import {
   mkVariantSetting,
   tryGetBaseVariantSetting,
 } from "@/wab/shared/Variants";
-import { allStyleTokens, isHostLessPackage } from "@/wab/shared/core/sites";
-import { createExpandedRuleSetMerger } from "@/wab/shared/core/styles";
-import {
-  clone as cloneTpl,
-  findVariantSettingsUnderTpl,
-  fixParentPointers,
-  flattenTplsBottomUp,
-  isTplCodeComponent,
-  isTplComponent,
-  isTplSlot,
-  isTplTag,
-  isTplVariantable,
-  walkTpls,
-} from "@/wab/shared/core/tpls";
 import { flatten } from "lodash";
 
 /**
@@ -315,21 +316,28 @@ export const getSiteMatchingPlumeComponent = (
  *  but I was getting a weird mutability bug and wanted to make sure this
  * worked first
  * @param tplTree
+ * @return components used
  */
 export function inlineComponents(
   tplTree: TplNode,
   ctx: InlineComponentContext
-) {
+): Set<string> {
   let isModified: boolean;
   /**
-   * We store the uuid of components that we have already adjusted (plume/hostless), this way
-   * when we are in the do..while loop we don't traverse the tree multiple times trying to adjust
-   * plume/hostless components more times that the needed
+   * We store the uuid of TplComponents that we have already adjusted
+   * (default/plume/hostless), this way when we are in the do..while loop we
+   * don't traverse the tree multiple times trying to adjust these TplComponents
+   * more times that the needed
    */
-  const adjustedComponents: Set<string> = new Set<string>();
+  const adjustedTplComponentUuids: Set<string> = new Set<string>();
   do {
-    isModified = _inlineComponentsHelper(tplTree, ctx, adjustedComponents);
+    isModified = _inlineComponentsHelper(
+      tplTree,
+      ctx,
+      adjustedTplComponentUuids
+    );
   } while (isModified);
+  return adjustedTplComponentUuids;
 }
 
 function _inlineComponentsHelper(
@@ -787,10 +795,16 @@ const adjustHostLessCodeComponent = (
   return true;
 };
 
+/** Returns true if component is handled and should not be inlined. */
 const adjustInsertableTemplateComponent = (
   tpl: TplComponent,
   ctx: InlineComponentContext
 ): boolean => {
+  // Don't inline default components (usually Plexus components).
+  if (isDefaultComponent(ctx.sourceSite, tpl.component)) {
+    adjustInsertableTemplateComponentArgs(tpl, tpl.component, ctx);
+    return true;
+  }
   if (isPlumeComponent(tpl.component)) {
     return adjustPlumeComponent(tpl, ctx);
   }

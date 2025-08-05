@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -246,11 +246,21 @@ function PlasmicLeftGeneralTokensPanel__RenderFunc(props: {
                 />
               }
               name={""}
-              onChange={(...eventArgs) => {
-                generateStateOnChangeProp($state, [
-                  "globalVariantSelect",
-                  "value",
-                ])(eventArgs[0]);
+              onChange={async (...eventArgs: any) => {
+                ((...eventArgs) => {
+                  generateStateOnChangeProp($state, [
+                    "globalVariantSelect",
+                    "value",
+                  ])(eventArgs[0]);
+                }).apply(null, eventArgs);
+
+                if (
+                  eventArgs.length > 1 &&
+                  eventArgs[1] &&
+                  eventArgs[1]._plasmic_state_init_
+                ) {
+                  return;
+                }
               }}
               placeholder={
                 <div
@@ -354,15 +364,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicLeftGeneralTokensPanel__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicLeftGeneralTokensPanel__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicLeftGeneralTokensPanel__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+    // Specify args directly as props
+    Omit<PlasmicLeftGeneralTokensPanel__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

@@ -11,7 +11,7 @@ describe.each(LOADER_NEXTJS_VERSIONS_EXHAUSTIVE)(
       ctx = await setupNextJs({
         bundleFile: "plasmic-kit-website-components_16033.json",
         projectName: "PlasmicWebsite",
-        npmRegistry: getEnvVar("NPM_REGISTRY"),
+        npmRegistry: getEnvVar("NPM_CONFIG_REGISTRY"),
         codegenHost: getEnvVar("WAB_HOST"),
         loaderVersion,
         nextVersion,

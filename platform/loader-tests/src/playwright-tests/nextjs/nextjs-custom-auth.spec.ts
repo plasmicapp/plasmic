@@ -14,7 +14,7 @@ test.skip(`PlasmicRootProvider Auth`, async () => {
       bundleFile,
       template: "custom-auth",
       projectName: "Custom Auth",
-      npmRegistry: getEnvVar("NPM_REGISTRY"),
+      npmRegistry: getEnvVar("NPM_CONFIG_REGISTRY"),
       codegenHost: getEnvVar("WAB_HOST"),
       wabHost: getEnvVar("WAB_HOST"),
       appAuthOpts: {

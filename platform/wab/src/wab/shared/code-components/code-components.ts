@@ -1,6 +1,5 @@
 import { TokenType } from "@/wab/commons/StyleToken";
 import { removeFromArray } from "@/wab/commons/collections";
-import * as cssPegParser from "@/wab/gen/cssPegParser";
 import { RSH } from "@/wab/shared/RuleSetHelpers";
 import { getSlotParams, isSlot } from "@/wab/shared/SlotUtils";
 import { TplMgr } from "@/wab/shared/TplMgr";
@@ -10,10 +9,10 @@ import { ensureVariantSetting, mkBaseVariant } from "@/wab/shared/Variants";
 import { AddItemKey } from "@/wab/shared/add-item-keys";
 import {
   allCustomFunctions,
+  cachedExprsInSite,
   componentToReferencers,
   componentToTplComponents,
   computedProjectFlags,
-  findCustomFunctionUsages,
   flattenComponent,
 } from "@/wab/shared/cached-selectors";
 import {
@@ -27,10 +26,12 @@ import {
 import { paramToVarName, toVarName } from "@/wab/shared/codegen/util";
 import {
   CustomError,
+  arrayEqIgnoreOrder,
   assert,
   ensure,
   ensureArray,
   hackyCast,
+  isArrayOfLiterals,
   isArrayOfStrings,
   isNumeric,
   maybe,
@@ -67,7 +68,7 @@ import {
   mkComponent,
   removeComponentParam,
 } from "@/wab/shared/core/components";
-import { ExprCtx, asCode } from "@/wab/shared/core/exprs";
+import { ExprCtx, asCode, tryExtractString } from "@/wab/shared/core/exprs";
 import {
   ParamExportType,
   mkParam,
@@ -103,11 +104,14 @@ import {
   TplTagType,
   cloneType,
   findAllInstancesOfComponent,
+  findExprsInInteraction,
   flattenTpls,
+  getAllEventHandlersForTpl,
   getTplComponentsInSite,
   isEventHandlerKeyForAttr,
   isEventHandlerKeyForFuncType,
   isEventHandlerKeyForParam,
+  isTplCodeComponent,
   isTplComponent,
   isTplSlot,
   mkSlot,
@@ -115,7 +119,12 @@ import {
   mkTplInlinedText,
   mkTplTagX,
 } from "@/wab/shared/core/tpls";
-import { getCssInitial, normProp, parseCssShorthand } from "@/wab/shared/css";
+import {
+  getCssInitial,
+  normProp,
+  parseCss,
+  parseCssShorthand,
+} from "@/wab/shared/css";
 import { AddItemPrefs, getDefaultStyles } from "@/wab/shared/default-styles";
 import { standardCorners, standardSides } from "@/wab/shared/geom";
 import { convertSelfContainerType } from "@/wab/shared/layoututils";
@@ -171,9 +180,15 @@ import {
   ensureKnownPropParam,
   ensureKnownTplTag,
   isKnownClassNamePropType,
+  isKnownCustomCode,
+  isKnownCustomFunctionExpr,
+  isKnownEventHandler,
   isKnownPropParam,
+  isKnownRenderFuncType,
+  isKnownRenderableType,
   isKnownStateParam,
   isKnownStyleExpr,
+  isKnownTplRef,
   isKnownVirtualRenderExpr,
 } from "@/wab/shared/model/classes";
 import {
@@ -209,11 +224,7 @@ import type {
   PropTypeBaseDefault,
 } from "@plasmicapp/host/dist/prop-types";
 import { RefActionRegistration } from "@plasmicapp/host/registerComponent";
-import {
-  BaseParam,
-  ParamType,
-  VoidType,
-} from "@plasmicapp/host/registerFunction";
+import { ParamType } from "@plasmicapp/host/registerFunction";
 import {
   assign,
   clone,
@@ -291,6 +302,12 @@ export type DataSourceOpPropType<P> = PropTypeBaseDefault<P, Expr> & {
   currentInteraction: ContextDependentConfig<P, Interaction>;
   eventHandlerKey: ContextDependentConfig<P, EventHandlerKeyType>;
   allowWriteOps?: boolean;
+  allowedOps?: ContextDependentConfig<P, string[]>;
+};
+export type CustomFunctionOpPropType<P> = PropTypeBaseDefault<P, Expr> & {
+  type: "customFunctionOp";
+  currentInteraction: ContextDependentConfig<P, Interaction>;
+  eventHandlerKey: ContextDependentConfig<P, EventHandlerKeyType>;
   allowedOps?: ContextDependentConfig<P, string[]>;
 };
 export type FunctionPropType<P> = PropTypeBaseDefault<P, Expr> & {
@@ -404,8 +421,13 @@ export type FormDataConnectionPropType<P> = PropTypeBase<P> & {
   type: "formDataConnection";
 };
 
+export type AnyPropType<P> = PropTypeBaseDefault<P, any> & {
+  type: "any";
+};
+
 export type StudioPropType<P> =
   | PropType<P>
+  | AnyPropType<P>
   | VariablePropType<P>
   | VariantGroupPropType<P>
   | VariantPropType<P>
@@ -418,6 +440,7 @@ export type StudioPropType<P> =
   | EventHandlerPropType<P>
   | ThemeStylesPropType<P>
   | DataSourceOpPropType<P>
+  | CustomFunctionOpPropType<P>
   | InteractionPropType<P>
   | HrefPropType<P>
   | TplRefPropType<P>
@@ -430,7 +453,26 @@ export type StudioPropType<P> =
   | FormDataConnectionPropType<P>
   | DynamicPropType<P>;
 
+type ExtractType<T> = T extends { type: string }
+  ? T["type"] extends string
+    ? T["type"]
+    : never
+  : never;
+
+export type PropTypeType = ExtractType<PropType<any>>;
+export type StudioPropTypeType = ExtractType<StudioPropType<any>>;
+
 type BuiltinComponentsType = Record<string, ComponentRegistration>;
+
+type RemovedInteraction = {
+  codeComponent: CodeComponent;
+  interaction: Interaction;
+};
+
+type ComponentInteractionToClear = {
+  component: Component;
+  interactions: RemovedInteraction[];
+};
 
 export class CodeComponentsRegistry {
   constructor(
@@ -688,6 +730,7 @@ export async function syncCodeComponents(
     // At this point, we've added all the new components and removed
     // all the removed components.
 
+    run(await checkCodeComponentRefActions(ctx));
     run(await refreshCodeComponentMetas(ctx, fns));
     run(await checkComponentPropsAndStates(ctx, newComponents, fns, opts));
     run(await checkParentComponents(ctx));
@@ -839,42 +882,81 @@ function typeCheckRegistrations(ctx: SiteCtx) {
                 )
               );
             }
-            if (propType.type === "slot") {
+            if (propType.hidden && typeof propType.hidden !== "function") {
+              return failure(
+                new CodeComponentRegistrationTypeError(
+                  errorPrefix +
+                    `Prop ${propName} has invalid "hidden" value - expects a function but got: ${propType.hidden}`
+                )
+              );
+            }
+
+            if ("editOnly" in propType && propType.editOnly) {
               if (
-                !isNil(propType.allowedComponents) &&
-                !isArrayOfStrings(propType.allowedComponents)
+                !isNil(propType.uncontrolledProp) &&
+                !isString(propType.uncontrolledProp)
               ) {
                 return failure(
                   new CodeComponentRegistrationTypeError(
                     errorPrefix +
-                      `Prop ${propName} has invalid "slot" type. \`PropType.allowedComponents\` expects an array of strings, but received: ${propType.allowedComponents}`
+                      `Prop ${propName} has invalid "uncontrolled prop". \`PropType.uncontrolledProp\` expects a string, but received: ${propType.uncontrolledProp}`
                   )
                 );
               }
-            } else {
-              if (propType.hidden && typeof propType.hidden !== "function") {
-                return failure(
-                  new CodeComponentRegistrationTypeError(
-                    errorPrefix +
-                      `Prop ${propName} has invalid "hidden" value - expects a function but got: ${propType.hidden}`
-                  )
-                );
-              }
-              if (
-                propType.type === "dataSelector" &&
-                !isObject(propType.data) &&
-                typeof propType.data !== "function"
-              ) {
-                return failure(
-                  new CodeComponentRegistrationTypeError(
-                    errorPrefix +
-                      `Prop ${propName} has invalid "data" type. \`PropType.data\` expects an object or a function, but received: ${propType.data}`
-                  )
-                );
-              }
-              if (propType.type === "choice") {
+            }
+            if (
+              !isNil(propType.displayName) &&
+              !isString(propType.displayName)
+            ) {
+              return failure(
+                new CodeComponentRegistrationTypeError(
+                  errorPrefix +
+                    `Prop ${propName} has invalid "display name". \`PropType.displayName\` expects a string, but received: ${propType.displayName}`
+                )
+              );
+            }
+            if (
+              !isNil(propType.description) &&
+              !isString(propType.description)
+            ) {
+              return failure(
+                new CodeComponentRegistrationTypeError(
+                  errorPrefix +
+                    `Prop ${propName} has invalid "description". \`PropType.description\` expects a string, but received: ${propType.description}`
+                )
+              );
+            }
+
+            switch (propType.type) {
+              case "slot":
                 if (
-                  !isArrayOfStrings(propType.options) &&
+                  !isNil(propType.allowedComponents) &&
+                  !isArrayOfStrings(propType.allowedComponents)
+                ) {
+                  return failure(
+                    new CodeComponentRegistrationTypeError(
+                      errorPrefix +
+                        `Prop ${propName} has invalid "slot" type. \`PropType.allowedComponents\` expects an array of strings, but received: ${propType.allowedComponents}`
+                    )
+                  );
+                }
+                break;
+              case "dataSelector":
+                if (
+                  !isObject(propType.data) &&
+                  typeof propType.data !== "function"
+                ) {
+                  return failure(
+                    new CodeComponentRegistrationTypeError(
+                      errorPrefix +
+                        `Prop ${propName} has invalid "data" type. \`PropType.data\` expects an object or a function, but received: ${propType.data}`
+                    )
+                  );
+                }
+                break;
+              case "choice":
+                if (
+                  !isArrayOfLiterals(propType.options) &&
                   !(
                     Array.isArray(propType.options) &&
                     propType.options.every(
@@ -894,62 +976,28 @@ function typeCheckRegistrations(ctx: SiteCtx) {
                     )
                   );
                 }
-              }
-              if (propType.type === "code" && !isString(propType.lang)) {
-                return failure(
-                  new CodeComponentRegistrationTypeError(
-                    errorPrefix +
-                      `Prop ${propName} has invalid "code" type. \`PropType.lang\` expects a string, but received: ${propType.lang}`
-                  )
-                );
-              }
-              if (
-                propType.type === "dataSource" &&
-                !isString(propType.dataSource)
-              ) {
-                return failure(
-                  new CodeComponentRegistrationTypeError(
-                    errorPrefix +
-                      `Prop ${propName} has invalid "dataSource" type. \`PropType.dataSource\` expects a string, but received: ${propType.dataSource}`
-                  )
-                );
-              }
-              if ("editOnly" in propType && propType.editOnly) {
-                if (
-                  !isNil(propType.uncontrolledProp) &&
-                  !isString(propType.uncontrolledProp)
-                ) {
+                break;
+              case "code":
+                if (!isString(propType.lang)) {
                   return failure(
                     new CodeComponentRegistrationTypeError(
                       errorPrefix +
-                        `Prop ${propName} has invalid "uncontrolled prop". \`PropType.uncontrolledProp\` expects a string, but received: ${propType.uncontrolledProp}`
+                        `Prop ${propName} has invalid "code" type. \`PropType.lang\` expects a string, but received: ${propType.lang}`
                     )
                   );
                 }
-              }
-              if (
-                !isNil(propType.displayName) &&
-                !isString(propType.displayName)
-              ) {
-                return failure(
-                  new CodeComponentRegistrationTypeError(
-                    errorPrefix +
-                      `Prop ${propName} has invalid "display name". \`PropType.displayName\` expects a string, but received: ${propType.displayName}`
-                  )
-                );
-              }
-              if (
-                !isNil(propType.description) &&
-                !isString(propType.description)
-              ) {
-                return failure(
-                  new CodeComponentRegistrationTypeError(
-                    errorPrefix +
-                      `Prop ${propName} has invalid "description". \`PropType.description\` expects a string, but received: ${propType.description}`
-                  )
-                );
-              }
-              if (propType.type === "number" || propType.type === "string") {
+                break;
+              case "dataSource":
+                if (!isString(propType.dataSource)) {
+                  return failure(
+                    new CodeComponentRegistrationTypeError(
+                      errorPrefix +
+                        `Prop ${propName} has invalid "dataSource" type. \`PropType.dataSource\` expects a string, but received: ${propType.dataSource}`
+                    )
+                  );
+                }
+                break;
+              case "number": {
                 if (!isNil(propType.control) && !isString(propType.control)) {
                   return failure(
                     new CodeComponentRegistrationTypeError(
@@ -958,8 +1006,6 @@ function typeCheckRegistrations(ctx: SiteCtx) {
                     )
                   );
                 }
-              }
-              if (propType.type === "number") {
                 const checkNumberOrFunction = (attr: string) => {
                   const val = propType[attr];
                   if (
@@ -992,8 +1038,19 @@ function typeCheckRegistrations(ctx: SiteCtx) {
                 if (res) {
                   return res;
                 }
+                break;
               }
-              if (propType.type === "custom") {
+              case "string":
+                if (!isNil(propType.control) && !isString(propType.control)) {
+                  return failure(
+                    new CodeComponentRegistrationTypeError(
+                      errorPrefix +
+                        `Numeric prop ${propName} has invalid "control" attr. \`PropType.control\` expects a string, but received: ${propType.control}`
+                    )
+                  );
+                }
+                break;
+              case "custom":
                 if (!checkReactComponent(propType.control)) {
                   return failure(
                     new CodeComponentRegistrationTypeError(
@@ -1002,7 +1059,52 @@ function typeCheckRegistrations(ctx: SiteCtx) {
                     )
                   );
                 }
-              }
+                break;
+              case "eventHandler":
+                if (isNil(propType.argTypes)) {
+                  return failure(
+                    new CodeComponentRegistrationTypeError(
+                      errorPrefix +
+                        `Event handler prop ${propName} has invalid "argTypes" attr. \`PropType.argTypes\` expects an array of objects, but received: ${propType.argTypes}`
+                    )
+                  );
+                }
+                break;
+              case "cardPicker":
+                if (
+                  !(
+                    Array.isArray(propType.options) &&
+                    propType.options.every(
+                      (option) =>
+                        typeof option.value === "string" &&
+                        typeof option.imgUrl === "string"
+                    )
+                  ) &&
+                  !(typeof propType.options === "function")
+                ) {
+                  return failure(
+                    new CodeComponentRegistrationTypeError(
+                      errorPrefix +
+                        `Prop ${propName} has invalid "cardPicker" type. \`PropType.options\` expects an array of value-imgUrl pair or a function, but received: ${propType.options}`
+                    )
+                  );
+                }
+                break;
+              // Exaustive list with no checks for now
+              case "href":
+              case "dateString":
+              case "dateRangeStrings":
+              case "boolean":
+              case "object":
+              case "imageUrl":
+              case "exprEditor":
+              case "richText":
+              case "color":
+              case "class":
+              case "themeResetClass":
+              case "array":
+              case "formValidationRules":
+                break;
             }
           }
         }
@@ -1205,7 +1307,14 @@ async function fixCodeComponentsVariants(
     const componentsToObserve: Component[] = [];
 
     ctx.site.components.forEach((c) => {
-      if (!isCodeComponent(c)) {
+      // We ignore the hostless code components roots here, to let this be handled by the server upgrade
+      if (
+        !isCodeComponent(c) &&
+        !(
+          isTplCodeComponent(c.tplTree) &&
+          isHostLessCodeComponent(c.tplTree.component)
+        )
+      ) {
         const { unregisterdKeys } =
           getInvalidCodeComponentVariantsInComponent(c);
 
@@ -1240,6 +1349,100 @@ async function fixCodeComponentsVariants(
   });
 }
 
+async function checkCodeComponentRefActions(ctx: SiteCtx) {
+  const removedRefActions = new Map<CodeComponent, string[]>();
+  ctx.site.components.forEach((component) => {
+    // Identify refActions that existed previously but are missing in the latest metadata
+    if (isCodeComponent(component)) {
+      const meta = ctx.codeComponentsRegistry
+        .getRegisteredComponentsAndContextsMap()
+        .get(component.name)?.meta;
+
+      const currentActions = Array.from(component.codeComponentMeta.refActions);
+      const metaRefActions = (meta as any)?.refActions ?? {};
+      const newActions = new Set(Object.keys(metaRefActions));
+
+      const removedActions = currentActions.filter(
+        (action) => !newActions.has(action)
+      );
+      if (removedActions.length > 0) {
+        removedRefActions.set(component, removedActions);
+      }
+    }
+  });
+  const componentsToClear: ComponentInteractionToClear[] = [];
+  // Clean up interactions that reference removed ref actions
+  for (const component of ctx.site.components) {
+    for (const tpl of flattenTpls(component.tplTree)) {
+      for (const { expr } of getAllEventHandlersForTpl(component, tpl)) {
+        if (!isKnownEventHandler(expr)) {
+          continue;
+        }
+        const componentToClear: ComponentInteractionToClear = {
+          component,
+          interactions: [],
+        };
+        for (const interaction of expr.interactions) {
+          if (
+            interaction.actionName !== "invokeRefAction" ||
+            interaction.args.length < 2
+          ) {
+            continue;
+          }
+          const [firstArg, secondArg] = interaction.args;
+          if (
+            !isKnownTplRef(firstArg.expr) ||
+            !isTplComponent(firstArg.expr.tpl) ||
+            !isKnownCustomCode(secondArg.expr) ||
+            !isCodeComponent(firstArg.expr.tpl.component)
+          ) {
+            continue;
+          }
+          const componentRemovedRefActions = removedRefActions.get(
+            firstArg.expr.tpl.component
+          );
+          const actionName = tryExtractString(secondArg.expr);
+          if (
+            componentRemovedRefActions &&
+            actionName &&
+            componentRemovedRefActions.includes(actionName)
+          ) {
+            componentToClear.interactions.push({
+              interaction,
+              codeComponent: firstArg.expr.tpl.component,
+            });
+          }
+        }
+        if (componentToClear.interactions.length > 0) {
+          componentsToClear.push(componentToClear);
+        }
+      }
+    }
+  }
+  ctx.observeComponents(componentsToClear.map(({ component }) => component));
+  return ctx.change<never>(
+    ({ success }) => {
+      for (const componentToClear of componentsToClear) {
+        for (const removedInteraction of componentToClear.interactions) {
+          const meta = ctx.codeComponentsRegistry
+            .getRegisteredComponentsAndContextsMap()
+            .get(removedInteraction.codeComponent.name)?.meta;
+          const interaction = removedInteraction.interaction;
+
+          // Keep the action element if other refActions exist in the new meta; otherwise, remove both action and element
+          if (meta?.refActions) {
+            interaction.args = [interaction.args[0]];
+          } else {
+            interaction.args = [];
+          }
+        }
+      }
+      return success();
+    },
+    { noUndoRecord: true }
+  );
+}
+
 async function refreshCodeComponentMetas(
   ctx: SiteCtx,
   fns: CodeComponentSyncCallbackFns
@@ -1262,7 +1465,6 @@ async function refreshCodeComponentMetas(
     })
   );
   const componentsToRename: Component[] = [];
-
   return ctx.change<never>(
     ({ success, run }) => {
       componentsToUpdate.forEach(({ component, meta }) => {
@@ -1280,6 +1482,7 @@ async function refreshCodeComponentMetas(
           allInstances: findAllInstancesOfComponent(ctx.site, component),
         };
       });
+
       ctx.observeComponents(
         allComponentInstances.flatMap(({ allInstances }) =>
           allInstances
@@ -1334,6 +1537,12 @@ function refreshCodeComponentMeta(
         mustBeNamed = true;
       }
       c.codeComponentMeta.hasRef = !!(meta as any).refActions;
+
+      const newRefActions = meta.refActions ? Object.keys(meta.refActions) : [];
+      const existingRefActions = c.codeComponentMeta.refActions ?? [];
+      if (!arrayEqIgnoreOrder(existingRefActions, newRefActions)) {
+        c.codeComponentMeta.refActions = newRefActions;
+      }
 
       // Explicitly not handling defaultSlotContents, which is handled by
       // refreshDefaultSlotContents()
@@ -2075,6 +2284,14 @@ export function compareComponentPropsWithMeta(
           if (!!(registered as any).isLocalizable !== p.isLocalizable) {
             return true;
           }
+          if (
+            (isKnownRenderableType(registered.type) ||
+              isKnownRenderFuncType(registered.type)) &&
+            (isKnownRenderableType(p.type) || isKnownRenderFuncType(p.type)) &&
+            !!registered.type.allowRootWrapper !== !!p.type.allowRootWrapper
+          ) {
+            return true;
+          }
         }
         return false;
       })
@@ -2148,11 +2365,12 @@ function updateChangedClassNameProp(
   after: Param
 ) {
   assert(
-    isKnownClassNamePropType(before.type) &&
-      isKnownClassNamePropType(after.type),
+    isKnownClassNamePropType(before.type),
     "Params must be of ClassNamePropType"
   );
-  const newSelectors = after.type.selectors;
+  const newSelectors = isKnownClassNamePropType(after.type)
+    ? after.type.selectors
+    : [];
   const shouldRemove = (sty: SelectorRuleSet) => {
     if (!sty.selector) {
       // This used to be the Base style...
@@ -2168,9 +2386,13 @@ function updateChangedClassNameProp(
   };
   for (const tpl of componentToTplComponents(ctx.site, component)) {
     for (const vs of tpl.vsettings) {
-      for (const arg of vs.args) {
-        if (arg.param === before && isKnownStyleExpr(arg.expr)) {
-          removeWhere(arg.expr.styles, (s) => shouldRemove(s));
+      if (!isKnownClassNamePropType(after.type)) {
+        removeWhere(vs.args, (arg) => arg.param === before);
+      } else {
+        for (const arg of vs.args) {
+          if (arg.param === before && isKnownStyleExpr(arg.expr)) {
+            removeWhere(arg.expr.styles, (s) => shouldRemove(s));
+          }
         }
       }
     }
@@ -2223,10 +2445,7 @@ function doUpdateComponentProps(
       ...hardUpdatedProps.map(({ after }) => after)
     );
     xDifference(updatedProps, hardUpdatedProps).forEach(({ before, after }) => {
-      if (
-        isKnownClassNamePropType(before.type) &&
-        isKnownClassNamePropType(after.type)
-      ) {
+      if (isKnownClassNamePropType(before.type)) {
         updateChangedClassNameProp(ctx, component, before, after);
       }
 
@@ -2389,7 +2608,33 @@ export function registeredFunctionId(r: CustomFunctionRegistration) {
   }` as CustomFunctionId;
 }
 
-export function createCustomFunctionFromRegistration(
+function mapParamTypeToArgType(
+  paramReg: string | ParamType<any, any>
+): ArgType["type"] {
+  if (isString(paramReg)) {
+    return typeFactory.text();
+  }
+  if (isArray(paramReg.type)) {
+    return typeFactory.any();
+  }
+  if (paramReg.type === "choice") {
+    return typeFactory.choice(
+      Array.isArray(paramReg.options)
+        ? isArrayOfLiterals(paramReg.options)
+          ? paramReg.options
+          : paramReg.options.map((op) => ({
+              label: op.label,
+              value: op.value,
+            }))
+        : ["Dynamic options"]
+    );
+  } else if ((paramReg.type as any) === "code") {
+    return convertTsToWabType("string") as ArgType["type"];
+  }
+  return convertTsToWabType(paramReg.type ?? "string") as ArgType["type"];
+}
+
+function createCustomFunctionFromRegistration(
   functionReg: CustomFunctionRegistration,
   existingFunction?: CustomFunction
 ) {
@@ -2399,14 +2644,12 @@ export function createCustomFunctionFromRegistration(
     importName: functionReg.meta.name,
     importPath: functionReg.meta.importPath,
     namespace: functionReg.meta.namespace ?? null,
+    displayName: functionReg.meta.displayName ?? null,
     params:
-      functionReg.meta.params?.map((paramReg: string | BaseParam<any>) => {
+      functionReg.meta.params?.map((paramReg: string | ParamType<any, any>) => {
         const name = isString(paramReg) ? paramReg : paramReg.name;
-        const argType = isString(paramReg)
-          ? typeFactory.text()
-          : isArray(paramReg.type)
-          ? typeFactory.any()
-          : (convertTsToWabType(paramReg.type ?? "string") as ArgType["type"]);
+
+        const argType = mapParamTypeToArgType(paramReg);
         const existingParam = existingParams.find((p) => p.argName === name);
         if (existingParam && existingParam.type.name === argType.name) {
           return existingParam;
@@ -2913,7 +3156,7 @@ export function parseStyles(
   // box-shadow
   if ("box-shadow" in styles) {
     try {
-      cssPegParser.parse(styles["box-shadow"], { startRule: "boxShadows" });
+      parseCss(styles["box-shadow"], { startRule: "boxShadows" });
       sanitized["box-shadow"] = styles["box-shadow"];
     } catch {
       const err = new Error(
@@ -2955,7 +3198,7 @@ export function parseStyles(
           let layerStr = bgStyles["background"]?.[i];
           if (layerStr) {
             try {
-              layer = cssPegParser.parse(layerStr, {
+              layer = parseCss(layerStr, {
                 startRule: "backgroundLayer",
               });
             } catch {
@@ -2968,7 +3211,7 @@ export function parseStyles(
                     color,
                     new ColorFill({ color }).showCss()
                   );
-                  layer = cssPegParser.parse(layerStr, {
+                  layer = parseCss(layerStr, {
                     startRule: "backgroundLayer",
                   });
                 }
@@ -2982,7 +3225,7 @@ export function parseStyles(
             }
             if (bgStyles["background-image"]?.[i]) {
               try {
-                return cssPegParser.parse(bgStyles["background-image"]?.[i], {
+                return parseCss(bgStyles["background-image"]?.[i], {
                   startRule: "backgroundImage",
                 });
               } catch {}
@@ -3025,9 +3268,7 @@ export function parseStyles(
       background.filterNoneLayers();
       const bgStyle = background.showCss();
       // Parse the final result to make sure it's correct
-      parseCssValue("background", bgStyle).forEach((val: string) =>
-        cssPegParser.parse(val, { startRule: "backgroundLayer" })
-      );
+      parseCss(bgStyle, { startRule: "background" });
       sanitized["background"] = bgStyle || "none";
     } catch (err) {
       console.log(
@@ -3365,6 +3606,9 @@ export function mkCodeComponent(
       providesData: !!meta.providesData,
       isRepeatable: isGlobalContextMeta(meta) || (meta.isRepeatable ?? true),
       hasRef: !!(meta as any).refActions,
+      refActions: (meta as any).refActions
+        ? Object.keys((meta as any).refActions)
+        : [],
       styleSections: isGlobalContextMeta(meta) || !!meta.styleSections,
       helpers: mkCodeComponentHelperFromMeta(meta) ?? null,
       // explicitly not handling defaultSlotContents, which is done by
@@ -3463,11 +3707,13 @@ export function isPlainObjectPropType(
   );
 }
 
-export function getPropTypeType(propType: StudioPropType<any> | undefined) {
+export function getPropTypeType(
+  propType: StudioPropType<any> | undefined
+): StudioPropTypeType | undefined {
   if (!propType) {
     return undefined;
   } else if (typeof propType === "string") {
-    return propType;
+    return propType as StudioPropTypeType;
   } else if (isReactImplControl(propType)) {
     return undefined;
   } else {
@@ -3497,11 +3743,15 @@ export function isCustomControlType(
   );
 }
 
-export function isAdvancedProp(propType: StudioPropType<any> | undefined) {
+export function isAdvancedProp(
+  propType: StudioPropType<any> | undefined,
+  param: Param | undefined
+) {
   return (
-    isPlainObjectPropType(propType) &&
-    propType.type !== "slot" &&
-    propType.advanced
+    (isKnownPropParam(param) && param.advanced) ||
+    (isPlainObjectPropType(propType) &&
+      propType.type !== "slot" &&
+      propType.advanced)
   );
 }
 
@@ -3847,7 +4097,7 @@ export function propTypeToWabType(
               return success(
                 typeFactory.choice(
                   Array.isArray(type.options)
-                    ? isArrayOfStrings(type.options)
+                    ? isArrayOfLiterals(type.options)
                       ? type.options
                       : type.options.map((op) => ({
                           label: op.label,
@@ -3931,6 +4181,7 @@ export function propTypeToWabType(
             case "variantGroup":
             case "dataSelector":
             case "dataSourceOp":
+            case "customFunctionOp":
             case "functionArgs":
             case "varRef":
             case "variable":
@@ -3943,6 +4194,7 @@ export function propTypeToWabType(
             case "controlMode":
             case "formDataConnection":
             case "dynamic":
+            case "any":
               // This does include an `any` fall-through.
               return success(
                 convertTsToWabType(
@@ -3990,7 +4242,7 @@ export function wabTypeToPropType(type: Type): StudioPropType<any> {
     .when(Num, () => "number" as const)
     .when(Choice, (choiceType) => ({
       type: "choice" as const,
-      options: isArrayOfStrings(choiceType.options)
+      options: isArrayOfLiterals(choiceType.options)
         ? choiceType.options
         : choiceType.options.map((op) => ({
             label: op.label as string,
@@ -4412,18 +4664,20 @@ async function upsertRegisteredFunctions(
       const updatedFunctionRegs: CustomFunctionRegistration[] = [];
       const removedFunctions = new Set<CustomFunction>();
 
-      const isValidType = (type: ParamType<any> | VoidType): boolean => {
+      const isValidType = (type: any): boolean => {
         if (Array.isArray(type)) {
           return type.every((t) => isValidType(t));
         }
         if (
           [
             "undefined",
+            "choice",
             "object",
             "any",
             "string",
             "number",
             "boolean",
+            "code",
             "true",
             "false",
             "null",
@@ -4474,6 +4728,7 @@ async function upsertRegisteredFunctions(
           "namespace",
           "description",
           "typescriptDeclaration",
+          "displayName",
         ] as const) {
           if (
             !isString(functionReg.meta[prop]) &&
@@ -4503,7 +4758,7 @@ async function upsertRegisteredFunctions(
           }
           for (const param of functionReg.meta.params as (
             | string
-            | BaseParam<any>
+            | ParamType<any, any>
           )[]) {
             if (isString(param)) {
               if (!isValidJsIdentifier(param)) {
@@ -4575,7 +4830,7 @@ async function upsertRegisteredFunctions(
             "importName" | "namespace" | "typeTag" | "uid"
           > = pick(
             createCustomFunctionFromRegistration(functionReg, existing),
-            ["defaultExport", "importPath", "params", "isQuery"]
+            ["defaultExport", "importPath", "params", "isQuery", "displayName"]
           );
           if (
             Object.entries(updateableFields).some(
@@ -4648,21 +4903,24 @@ async function upsertRegisteredFunctions(
           functionNamespaces.add(functionReg.meta.namespace);
         }
       }
-      const customFunctionUsages = findCustomFunctionUsages(site);
+      const exprRefs = cachedExprsInSite(site).map((ref) => {
+        return {
+          ownerComponent: ref.ownerComponent,
+          exprRefs: ref.exprRefs.filter(
+            (exprRef) =>
+              (isKnownEventHandler(exprRef.expr) &&
+                exprRef.expr.interactions.some(
+                  (interaction) =>
+                    findExprsInInteraction(interaction).filter((expr) =>
+                      isKnownCustomFunctionExpr(expr)
+                    ).length > 0
+                )) ||
+              isKnownCustomFunctionExpr(exprRef.expr)
+          ),
+        };
+      });
 
-      ctx.observeComponents(
-        customFunctionUsages
-          .filter((usage) => {
-            return usage.customFunctions.some(
-              (fn) =>
-                removedFunctions.has(fn) ||
-                updatedFunctionRegs.some(
-                  (reg) => registeredFunctionId(reg) === customFunctionId(fn)
-                )
-            );
-          })
-          .map((usage) => usage.ownerComponent)
-      );
+      ctx.observeComponents(exprRefs.map((ref) => ref.ownerComponent));
 
       if (
         newFunctionRegs.length > 0 ||
@@ -4691,29 +4949,14 @@ async function upsertRegisteredFunctions(
                   "importName" | "namespace" | "typeTag" | "uid"
                 > = pick(
                   createCustomFunctionFromRegistration(functionReg, existing),
-                  ["defaultExport", "importPath", "params", "isQuery"]
+                  [
+                    "defaultExport",
+                    "importPath",
+                    "params",
+                    "isQuery",
+                    "displayName",
+                  ]
                 );
-                customFunctionUsages.forEach((usage) => {
-                  usage.ownerComponent.serverQueries
-                    .filter((serverQuery) => {
-                      return serverQuery.op?.func === existing;
-                    })
-                    .map((serverQuery) => {
-                      removeWhere(
-                        serverQuery.op!.args,
-                        (arg) =>
-                          !updateableFields.params.find(
-                            (param) => param === arg.argType
-                          )
-                      );
-                    });
-                  removeWhere(
-                    usage.ownerComponent.serverQueries,
-                    (serverQuery) =>
-                      !!serverQuery.op?.func &&
-                      removedFunctions.has(serverQuery.op.func)
-                  );
-                });
 
                 Object.assign(existing, updateableFields);
                 updatedFunctions.push(existing);
@@ -4726,13 +4969,45 @@ async function upsertRegisteredFunctions(
               removeWhere(site.customFunctions, (customFunction) =>
                 removedFunctions.has(customFunction)
               );
-              customFunctionUsages.forEach((usage) => {
+
+              exprRefs.forEach((usage) => {
+                // Remove from server queries
                 removeWhere(
                   usage.ownerComponent.serverQueries,
                   (serverQuery) =>
                     !!serverQuery.op?.func &&
                     removedFunctions.has(serverQuery.op.func)
                 );
+
+                usage.exprRefs.forEach((ref) => {
+                  const expr = ref.expr;
+                  // Update params
+                  if (isKnownCustomFunctionExpr(expr)) {
+                    const updatedRegistration = updatedFunctions.find(
+                      (fn) => fn === expr.func
+                    );
+                    if (!updatedRegistration) {
+                      return;
+                    }
+                    removeWhere(
+                      expr.args,
+                      (arg) =>
+                        !updatedRegistration.params.find(
+                          (param) => param === arg.argType
+                        )
+                    );
+                  } else if (isKnownEventHandler(expr)) {
+                    // Remove from event handlers
+                    expr.interactions.forEach((interaction) => {
+                      removeWhere(
+                        interaction.args,
+                        (arg) =>
+                          isKnownCustomFunctionExpr(arg.expr) &&
+                          removedFunctions.has(arg.expr.func)
+                      );
+                    });
+                  }
+                });
               });
 
               fns.onUpdatedCustomFunctions?.({

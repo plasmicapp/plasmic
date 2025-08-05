@@ -1,4 +1,3 @@
-import { methodForwarder } from "@/wab/commons/methodForwarder";
 import * as Sentry from "@sentry/node";
 import * as Tracing from "@sentry/tracing";
 import * as bodyParser from "body-parser";
@@ -8,7 +7,6 @@ import errorHandler from "errorhandler";
 import express, { ErrorRequestHandler, RequestHandler } from "express";
 import "express-async-errors";
 import promMetrics from "express-prom-bundle";
-import { rateLimit } from "express-rate-limit";
 import { NextFunction, Request, Response } from "express-serve-static-core";
 import session from "express-session";
 import * as lusca from "lusca";
@@ -20,7 +18,6 @@ import * as path from "path";
 import { getConnection } from "typeorm";
 import v8 from "v8";
 // API keys and Passport configuration
-import { initAmplitudeNode } from "@/wab/server/analytics/amplitude-node";
 import { setupPassport } from "@/wab/server/auth/passport-cfg";
 import * as authRoutes from "@/wab/server/auth/routes";
 import { apiAuth } from "@/wab/server/auth/routes";
@@ -31,7 +28,9 @@ import { getDevFlagsMergedWithOverrides } from "@/wab/server/db/appconfig";
 import { createMailer } from "@/wab/server/emails/Mailer";
 import { ExpressSession } from "@/wab/server/entities/Entities";
 import "@/wab/server/extensions";
+import { initAnalyticsFactory } from "@/wab/server/observability";
 import { WabPromStats, trackPostgresPool } from "@/wab/server/promstats";
+import { createRateLimiter } from "@/wab/server/rate-limit";
 import * as adminRoutes from "@/wab/server/routes/admin";
 import {
   getAnalyticsBillingInfoForTeam,
@@ -49,16 +48,15 @@ import {
 import { getAppCtx } from "@/wab/server/routes/appctx";
 import {
   cachePublicCmsRead,
-  countTable,
-  getDatabase,
+  publicCmsReadsServer,
   publicCreateRows,
   publicDeleteRow,
   publicPublishRow,
   publicUpdateRow,
-  queryTable,
   upsertDatabaseTables,
 } from "@/wab/server/routes/cms";
 import {
+  checkUniqueFields,
   cloneDatabase,
   cloneRow,
   cmsFileUpload,
@@ -256,6 +254,7 @@ import { getUsersById } from "@/wab/server/routes/users";
 import {
   adminOnly,
   adminOrDevelopmentEnvOnly,
+  createTsRestEndpoints,
   superDbMgr,
   withNext,
 } from "@/wab/server/routes/util";
@@ -288,7 +287,7 @@ import {
   isApiError,
   transformErrors,
 } from "@/wab/shared/ApiErrors/errors";
-import { ConsoleLogAnalytics } from "@/wab/shared/analytics/ConsoleLogAnalytics";
+import { publicCmsReadsContract } from "@/wab/shared/api/cms";
 import { Bundler } from "@/wab/shared/bundler";
 import { mkShortId, safeCast, spawn } from "@/wab/shared/common";
 import { isAdminTeamEmail } from "@/wab/shared/devflag-utils";
@@ -338,6 +337,7 @@ const isCsrfFreeRoute = (pathname: string, config: Config) => {
     pathname.includes("/api/v1/app-auth/user") ||
     pathname.includes("/api/v1/app-auth/userinfo") ||
     pathname.includes("/api/v1/app-auth/token") ||
+    pathname.includes("/api/v1/copilot/ui/public") ||
     (!config.production &&
       (pathname === "/api/v1/projects/import" ||
         pathname.includes("/api/v1/cmse/")))
@@ -491,20 +491,25 @@ function addMiddlewares(
     console.log("Skipping session store setup...");
   }
 
-  const newRequestScopedAnalytics = initAmplitudeNode();
+  const analyticsFactory = initAnalyticsFactory({
+    production: config.production,
+  });
+
+  // Attach a fresh analytics instance to every request via `req.analytics`.
+  // NOTE: We intentionally create a new instance for each request to avoid
+  // accidental cross-request state leakage (for example via `setUser`).
   app.use(
-    safeCast<RequestHandler>(async (req, res, next) => {
-      const analytics = newRequestScopedAnalytics();
-      req.analytics = config.production
-        ? analytics
-        : methodForwarder(new ConsoleLogAnalytics(), analytics);
+    safeCast<RequestHandler>(async (req, _res, next) => {
+      req.analytics = analyticsFactory();
       req.analytics.appendBaseEventProperties({
         host: config.host,
         production: config.production,
       });
+
       if (req.user) {
         req.analytics.setUser(req.user.id);
       }
+
       next();
     })
   );
@@ -761,28 +766,9 @@ export function addCmsPublicRoutes(app: express.Application) {
   // "Public" CMS API, access via API auth
 
   app.options("/api/v1/cms/*", corsPreflight());
-  app.get(
-    "/api/v1/cms/databases/:dbId",
-    cors(),
-    apiAuth,
-    cachePublicCmsRead,
-    withNext(getDatabase)
-  );
-  app.get(
-    "/api/v1/cms/databases/:dbId/tables/:tableIdentifier/query",
-    cors(),
-    apiAuth,
-    cachePublicCmsRead,
-    withNext(queryTable)
-  );
-
-  app.get(
-    "/api/v1/cms/databases/:dbId/tables/:tableIdentifier/count",
-    cors(),
-    apiAuth,
-    cachePublicCmsRead,
-    withNext(countTable)
-  );
+  createTsRestEndpoints(publicCmsReadsContract, publicCmsReadsServer, app, {
+    globalMiddleware: [cors(), apiAuth, cachePublicCmsRead],
+  });
 
   app.put(
     "/api/v1/cms/databases/:dbId/tables",
@@ -828,6 +814,10 @@ export function addCmsEditorRoutes(app: express.Application) {
   app.put("/api/v1/cmse/rows/:rowId", withNext(updateRow));
   app.delete("/api/v1/cmse/rows/:rowId", withNext(deleteRow));
   app.post("/api/v1/cmse/rows/:rowId/clone", withNext(cloneRow));
+  app.post(
+    "/api/v1/cmse/tables/:tableId/check-unique-fields",
+    withNext(checkUniqueFields)
+  );
   app.get("/api/v1/cmse/row-revisions/:revId", withNext(getRowRevision));
 
   app.post(
@@ -1243,26 +1233,13 @@ export function addMainAppServerRoutes(
   // Rate limit for forgetPassword and signUp routes.
   // Currently using in-memory storage, can be improved to use
   // redis/postgres.
-  const sensitiveRateLimiter = rateLimit({
+  const sensitiveRateLimiter = createRateLimiter({
     windowMs: 15 * 60 * 1000, // 15 minutes
     limit: 15,
-    message: "Too many requests, please try again later.",
-    handler: (req, res, next, options) => {
-      req
-        .resolveTransaction()
-        .catch(() => {})
-        .finally(() => res.status(options.statusCode).send(options.message));
-    },
     skip: (req) => {
       const shouldRateLimit =
         config.production || req.get("x-plasmic-test-rate-limit") === "true";
       return !shouldRateLimit;
-    },
-    standardHeaders: true,
-    legacyHeaders: false,
-    validate: {
-      xForwardedForHeader: false,
-      trustProxy: false,
     },
   });
 
@@ -2026,7 +2003,7 @@ function addEndErrorHandlers(app: express.Application) {
           logError(origErr, "Tried to edit closed response");
           return;
         }
-        const err = transformErrors(origErr);
+        const err = isApiError(origErr) ? origErr : transformErrors(origErr);
         if (isApiError(err)) {
           res
             .status(err.statusCode)
@@ -2143,14 +2120,17 @@ function corsPreflight() {
     allowedHeaders: "*",
   });
 
-  const handler: express.RequestHandler = (req, res, next) => {
-    // cors response should be very cacheable by Cloudfront
-    res.set(
-      "Cache-Control",
-      `max-age=${30 * 24 * 60 * 60}, s-maxage=${30 * 24 * 60 * 60}`
-    );
-    corsHandler(req, res, next);
-  };
+  const handler: express.RequestHandler = safeCast<RequestHandler>(
+    async (req, res, next) => {
+      // cors response should be very cacheable by Cloudfront
+      await req.resolveTransaction();
+      res.set(
+        "Cache-Control",
+        `max-age=${30 * 24 * 60 * 60}, s-maxage=${30 * 24 * 60 * 60}`
+      );
+      corsHandler(req, res, next);
+    }
+  );
   return handler;
 }
 

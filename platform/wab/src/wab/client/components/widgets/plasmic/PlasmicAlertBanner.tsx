@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -13,17 +13,19 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
+  Flex as Flex__,
   SingleChoiceArg,
+  Stack as Stack__,
   StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
   hasVariant,
+  useDollarState,
 } from "@plasmicapp/react-web";
+import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+
 import Button from "../Button"; // plasmic-import: SEF-sRmSoqV5c/component
 
 import "@plasmicapp/react-web/lib/plasmic.css";
@@ -34,8 +36,8 @@ import plasmic_plasmic_kit_design_system_css from "../../../plasmic/PP__plasmick
 import sty from "./PlasmicAlertBanner.module.css"; // plasmic-import: DCWq1LLaJ6e/css
 
 import CloseIcon from "../../../plasmic/plasmic_kit/PlasmicIcon__Close"; // plasmic-import: hy7vKrgdAZwW4/icon
-import ChevronDownsvgIcon from "../../../plasmic/plasmic_kit_alert_banner/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: Ou2BoyYzU/icon
-import WarningTrianglesvgIcon from "../../../plasmic/plasmic_kit_icons/icons/PlasmicIcon__WarningTriangleSvg"; // plasmic-import: S0L-xosWD/icon
+import ChevronDownSvgIcon from "../../../plasmic/plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
+import WarningTriangleSvgIcon from "../../../plasmic/plasmic_kit_icons/icons/PlasmicIcon__WarningTriangleSvg"; // plasmic-import: S0L-xosWD/icon
 
 createPlasmicElementProxy;
 
@@ -80,12 +82,12 @@ type ArgPropType = keyof PlasmicAlertBanner__ArgsType;
 export const PlasmicAlertBanner__ArgProps = new Array<ArgPropType>();
 
 export type PlasmicAlertBanner__OverridesType = {
-  root?: p.Flex<"div">;
-  watchBtn?: p.Flex<typeof Button>;
-  visit2?: p.Flex<"div">;
-  actionBtn?: p.Flex<typeof Button>;
-  visit?: p.Flex<"div">;
-  dismissBtn?: p.Flex<"div">;
+  root?: Flex__<"div">;
+  watchBtn?: Flex__<typeof Button>;
+  visit2?: Flex__<"div">;
+  actionBtn?: Flex__<typeof Button>;
+  visit?: Flex__<"div">;
+  dismissBtn?: Flex__<"div">;
 };
 
 export interface DefaultAlertBannerProps {
@@ -103,7 +105,6 @@ export interface DefaultAlertBannerProps {
     | "invariantError"
     | "protectedMainBranch"
   >;
-
   className?: string;
 }
 
@@ -117,20 +118,27 @@ function PlasmicAlertBanner__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
-
-  const stateSpecs: Parameters<typeof p.useDollarState>[0] = React.useMemo(
+  const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
         path: "state",
@@ -139,10 +147,9 @@ function PlasmicAlertBanner__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.state,
       },
     ],
-
     [$props, $ctx, $refs]
   );
-  const $state = p.useDollarState(stateSpecs, {
+  const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
@@ -150,7 +157,7 @@ function PlasmicAlertBanner__RenderFunc(props: {
   });
 
   return (
-    <p.Stack
+    <Stack__
       as={"div"}
       data-plasmic-name={"root"}
       data-plasmic-override={overrides.root}
@@ -194,7 +201,7 @@ function PlasmicAlertBanner__RenderFunc(props: {
         }
       )}
     >
-      <p.Stack
+      <Stack__
         as={"div"}
         hasGap={true}
         className={classNames(projectcss.all, sty.freeBox__ncsVm, {
@@ -244,8 +251,18 @@ function PlasmicAlertBanner__RenderFunc(props: {
             ),
           })}
         >
-          <WarningTrianglesvgIcon
+          <WarningTriangleSvgIcon
             className={classNames(projectcss.all, sty.svg___0Dd3A, {
+              [sty.svgstate_invariantError___0Dd3Aw3Sap]: hasVariant(
+                $state,
+                "state",
+                "invariantError"
+              ),
+              [sty.svgstate_protectedMainBranch___0Dd3Atcl19]: hasVariant(
+                $state,
+                "state",
+                "protectedMainBranch"
+              ),
               [sty.svgstate_readOnly___0Dd3AkX362]: hasVariant(
                 $state,
                 "state",
@@ -255,7 +272,7 @@ function PlasmicAlertBanner__RenderFunc(props: {
             role={"img"}
           />
         </div>
-        <p.Stack
+        <Stack__
           as={"div"}
           hasGap={true}
           className={classNames(projectcss.all, sty.freeBox__bzau, {
@@ -263,6 +280,11 @@ function PlasmicAlertBanner__RenderFunc(props: {
               $state,
               "state",
               "concurrentEdit"
+            ),
+            [sty.freeBoxstate_invariantError__bzauW3Sap]: hasVariant(
+              $state,
+              "state",
+              "invariantError"
             ),
             [sty.freeBoxstate_notChrome__bzauYjAIr]: hasVariant(
               $state,
@@ -283,6 +305,11 @@ function PlasmicAlertBanner__RenderFunc(props: {
               $state,
               "state",
               "unlogged"
+            ),
+            [sty.freeBoxstate_watch__bzauCfKC]: hasVariant(
+              $state,
+              "state",
+              "watch"
             ),
           })}
         >
@@ -476,8 +503,8 @@ function PlasmicAlertBanner__RenderFunc(props: {
               ? "You can make a copy of this project for yourself. Any changes to this project won't be saved."
               : "This is normal text"}
           </div>
-        </p.Stack>
-      </p.Stack>
+        </Stack__>
+      </Stack__>
       {(
         hasVariant($state, "state", "notChrome")
           ? false
@@ -535,7 +562,7 @@ function PlasmicAlertBanner__RenderFunc(props: {
             [sty.watchBtnstate_watch]: hasVariant($state, "state", "watch"),
           })}
           endIcon={
-            <ChevronDownsvgIcon
+            <ChevronDownSvgIcon
               className={classNames(projectcss.all, sty.svg__jmeQg)}
               role={"img"}
             />
@@ -548,7 +575,7 @@ function PlasmicAlertBanner__RenderFunc(props: {
               />
             ) : null
           }
-          type={"backlitError"}
+          type={["backlitError"]}
         >
           <div
             data-plasmic-name={"visit2"}
@@ -606,7 +633,7 @@ function PlasmicAlertBanner__RenderFunc(props: {
           </div>
         </Button>
       ) : null}
-      <p.Stack
+      <Stack__
         as={"div"}
         hasGap={true}
         className={classNames(projectcss.all, sty.freeBox___8R5S, {
@@ -668,7 +695,7 @@ function PlasmicAlertBanner__RenderFunc(props: {
               ),
             })}
             endIcon={
-              <ChevronDownsvgIcon
+              <ChevronDownSvgIcon
                 className={classNames(projectcss.all, sty.svg__jR75H)}
                 role={"img"}
               />
@@ -684,12 +711,12 @@ function PlasmicAlertBanner__RenderFunc(props: {
             }
             type={
               hasVariant($state, "state", "watch")
-                ? "backlitInfo"
+                ? ["backlitInfo"]
                 : hasVariant($state, "state", "unlogged")
-                ? "backlitInfo"
+                ? ["backlitInfo"]
                 : hasVariant($state, "state", "readOnly")
-                ? "backlitInfo"
-                : "backlitError"
+                ? ["backlitInfo"]
+                : ["backlitError"]
             }
           >
             <div
@@ -859,8 +886,8 @@ function PlasmicAlertBanner__RenderFunc(props: {
             role={"img"}
           />
         </div>
-      </p.Stack>
-    </p.Stack>
+      </Stack__>
+    </Stack__>
   ) as React.ReactElement | null;
 }
 
@@ -889,7 +916,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicAlertBanner__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
@@ -897,15 +923,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicAlertBanner__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicAlertBanner__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicAlertBanner__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+    // Specify args directly as props
+    Omit<PlasmicAlertBanner__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

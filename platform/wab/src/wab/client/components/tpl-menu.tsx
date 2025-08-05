@@ -1,4 +1,4 @@
-import { mkProjectLocation, openNewTab } from "@/wab/client/cli-routes";
+import { openNewTab } from "@/wab/client/cli-routes";
 import { isStyleClip } from "@/wab/client/clipboard/local";
 import { makeFrameMenu } from "@/wab/client/components/frame-menu";
 import {
@@ -63,6 +63,7 @@ import {
   RawText,
   TplNode,
 } from "@/wab/shared/model/classes";
+import { mkProjectLocation } from "@/wab/shared/route/app-routes";
 import {
   isTplAutoSizable,
   isTplDefaultSized,
@@ -120,7 +121,9 @@ export function makeTreeNodeMenu(
   if (node instanceof SlotSelection) {
     return makeSlotSelectionMenu(viewCtx, node, onMenuClick);
   } else {
-    return makeTplMenu(viewCtx, node, onMenuClick, { fromTplTreePanel: true });
+    return makeTplMenu(viewCtx, node, onMenuClick, {
+      fromTplTreePanel: true,
+    });
   }
 }
 
@@ -182,7 +185,9 @@ function pushSlotSelectionMenu(
     push(
       <Menu.Item
         key="clear-slot"
-        onClick={async () => viewCtx.getViewOps().tryDelete({ tpl: node })}
+        onClick={async () =>
+          await viewCtx.getViewOps().tryDelete({ tpl: node })
+        }
       >
         Clear slot content
       </Menu.Item>
@@ -237,6 +242,7 @@ export function makeTplMenu(
   );
 
   const builder = new MenuBuilder();
+  const commentsCtx = viewCtx.studioCtx.commentsCtx;
   const component = viewCtx.currentComponent();
   const hasSiblings =
     tpl.parent && $$$(tpl.parent).children().toArray().length > 1;
@@ -909,8 +915,8 @@ export function makeTplMenu(
       push(
         <Menu.Item
           key="delete"
-          onClick={() =>
-            viewCtx.getViewOps().tryDelete({
+          onClick={async () =>
+            await viewCtx.getViewOps().tryDelete({
               tpl: tpls,
               forceDelete: true,
             })
@@ -937,12 +943,12 @@ export function makeTplMenu(
     );
   });
 
-  if (studioCtx.appCtx.appConfig.comments && isTplNamable(tpl)) {
+  if (studioCtx.showComments() && isTplNamable(tpl)) {
     builder.genSection(undefined, (push) => {
       push(
         <Menu.Item
           key="add-comment"
-          onClick={() => viewCtx.setSelectedNewThreadTpl(tpl)}
+          onClick={() => commentsCtx.openNewCommentDialog(viewCtx, tpl)}
         >
           <MenuItemContent>Add comment</MenuItemContent>
         </Menu.Item>

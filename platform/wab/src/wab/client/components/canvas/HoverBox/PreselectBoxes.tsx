@@ -1,6 +1,7 @@
 import { EditableNodeLabel } from "@/wab/client/components/canvas/EditableNodeLabel";
 import styles from "@/wab/client/components/canvas/HoverBox/HoverBox.module.scss";
 import { recomputeBounds } from "@/wab/client/components/canvas/HoverBox/recomputeBounds";
+import { useTagLeftOffset } from "@/wab/client/components/canvas/HoverBox/useTagLeftOffset";
 import { createNodeIcon } from "@/wab/client/components/sidebar-tabs/tpl-tree";
 import {
   BASE_VARIANT_COLOR,
@@ -16,9 +17,13 @@ import {
 } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { summarizeFocusObj } from "@/wab/client/utils/tpl-client-utils";
-import { ensure, maybe } from "@/wab/shared/common";
-import { makeSelectableFullKey, Selectable, SQ } from "@/wab/shared/core/selection";
 import { getArenaFrames } from "@/wab/shared/Arenas";
+import { maybe } from "@/wab/shared/common";
+import {
+  makeSelectableFullKey,
+  Selectable,
+  SQ,
+} from "@/wab/shared/core/selection";
 import { isTplTagOrComponent, isTplVariantable } from "@/wab/shared/core/tpls";
 import cn from "classnames";
 import $ from "jquery";
@@ -92,8 +97,6 @@ function PreselectBox_(props: {
   const $focused =
     viewCtx === studioCtx.focusedViewCtx() && viewCtx?.focusedDomElt();
 
-  const tpl = selectable.tpl;
-
   const shouldShow =
     viewCtx &&
     !studioCtx.shouldHidePreselectBox() &&
@@ -106,39 +109,64 @@ function PreselectBox_(props: {
     return null;
   }
 
-  const shouldShowHoverTag =
-    isHoveredElt &&
-    shouldShow &&
-    $element &&
-    (!$focused || !$element.is($focused));
+  return (
+    <PreselectBoxInner
+      selectable={selectable}
+      studioCtx={studioCtx}
+      viewCtx={viewCtx}
+      isHoveredElt={isHoveredElt}
+      $element={$element}
+      $focused={$focused}
+    />
+  );
+}
 
-  const frameRect = shouldShow ? recomputeBounds($element!).rect() : undefined;
-  const scalerRect =
-    frameRect &&
-    frameToScalerRect(
-      frameRect,
-      ensure(viewCtx, "viewCtx must not be nullish.")
-    );
+function PreselectBoxInner(props: {
+  selectable: Selectable;
+  studioCtx: StudioCtx;
+  viewCtx: ViewCtx;
+  isHoveredElt: boolean;
+  $element: JQuery | undefined;
+  $focused: false | JQuery<HTMLElement> | null | undefined;
+}) {
+  const { selectable, studioCtx, viewCtx, isHoveredElt, $element, $focused } =
+    props;
+
+  const hoverTagRef = React.useRef<HTMLDivElement>(null);
+
+  const tpl = selectable.tpl;
+
+  const shouldShowHoverTag =
+    isHoveredElt && $element && (!$focused || !$element.is($focused));
+
+  const frameRect = recomputeBounds($element!).rect();
+  const scalerRect = frameToScalerRect(frameRect, viewCtx);
   const cssProps = cssPropsForInvertTransform(studioCtx.zoom, scalerRect);
+
+  const leftOffset = useTagLeftOffset(
+    hoverTagRef,
+    scalerRect.width,
+    studioCtx.zoom
+  );
 
   const isTargetingSomeNonBaseVariant =
     isTplVariantable(tpl) &&
-    viewCtx?.variantTplMgr().isTargetingNonBaseVariant(tpl);
+    viewCtx.variantTplMgr().isTargetingNonBaseVariant(tpl);
 
   const effectiveVariantSetting =
     shouldShowHoverTag && isTplTagOrComponent(tpl)
-      ? viewCtx!.effectiveCurrentVariantSetting(tpl)
+      ? viewCtx.effectiveCurrentVariantSetting(tpl)
       : undefined;
   const boxInFrame = shouldShowHoverTag
     ? recomputeBounds($element!)
     : undefined;
   const tagName = shouldShowHoverTag
-    ? summarizeFocusObj(selectable!, viewCtx, effectiveVariantSetting)
+    ? summarizeFocusObj(selectable, viewCtx, effectiveVariantSetting)
     : undefined;
   const tagPosClasses =
     shouldShowHoverTag && boxInFrame
       ? computeNodeOutlineTagLayoutClass(
-          viewCtx!.canvasCtx.$doc(),
+          viewCtx.canvasCtx.$doc(),
           boxInFrame.posRect()
         )
       : [];
@@ -150,11 +178,11 @@ function PreselectBox_(props: {
       className={cn("PreselectBox", {
         [styles.hoveringParentStack]: studioCtx.showStackOfParents,
       })}
-      data-original-width={scalerRect ? scalerRect.width : undefined}
-      data-original-height={scalerRect ? scalerRect.height : undefined}
+      data-original-width={scalerRect.width}
+      data-original-height={scalerRect.height}
       style={{
-        display: shouldShow ? "block" : "none",
-        ...(scalerRect ? scalerRect : {}),
+        display: "block",
+        ...scalerRect,
         ...cssProps,
       }}
     >
@@ -171,8 +199,14 @@ function PreselectBox_(props: {
         }}
       />
       {shouldShowHoverTag && (
-        <div className={styles.hoverBoxTagContainer}>
-          <div className={cn("node-outline-tag", tagPosClasses)}>
+        <div
+          className={styles.hoverBoxTagContainer}
+          style={{ left: `${leftOffset}px` }}
+        >
+          <div
+            ref={hoverTagRef}
+            className={cn("node-outline-tag", tagPosClasses)}
+          >
             {tagName && (
               <EditableNodeLabel
                 studioCtx={studioCtx}

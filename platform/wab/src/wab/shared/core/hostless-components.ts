@@ -60,4 +60,5 @@ export const fstPartyHostLessComponents = [
   "jquery",
   "dayjs",
   "react-aria",
+  "rive",
 ];

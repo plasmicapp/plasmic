@@ -1,10 +1,10 @@
+import { asReadablePromise } from "@/wab/commons/control";
 import { Dict } from "@/wab/shared/collections";
 import { uncheckedCast, unexpected } from "@/wab/shared/common";
-import { asReadablePromise } from "@/wab/commons/control";
-import { JsonScalar } from "@/wab/shared/core/lang";
 import { LowerHttpMethod } from "@/wab/shared/HttpClientUtil";
 import SwaggerParser, { ResolverOptions } from "@apidevtools/swagger-parser";
 import memoizeOne from "memoize-one";
+import type { JsonPrimitive } from "type-fest";
 
 export interface GraphqlExample {
   sourceName: string;
@@ -13,7 +13,7 @@ export interface GraphqlExample {
   url: string;
   query: string;
   headers?: Dict<string>;
-  variables?: Dict<JsonScalar>;
+  variables?: Dict<JsonPrimitive>;
 }
 
 export const graphqlExamples: GraphqlExample[] = [
@@ -241,7 +241,7 @@ export const wordpressSpec = memoizeOne(() =>
       const stringResolver: ResolverOptions = {
         order: 1,
         canRead: /.*/,
-        async read(file, $refs) {
+        async read(_file, _callback) {
           return WordpressOpenapiRaw.trim();
         },
       };

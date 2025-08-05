@@ -1,6 +1,5 @@
-import MenuItem from "@/wab/client/components/MenuItem";
 import { useUsersMap } from "@/wab/client/api-hooks";
-import { useRRouteMatch, UU } from "@/wab/client/cli-routes";
+import { useRRouteMatch } from "@/wab/client/cli-routes";
 import {
   useCmsDatabase,
   useCmsRow,
@@ -10,12 +9,15 @@ import {
   useMutateRow,
 } from "@/wab/client/components/cms/cms-contexts";
 import { renderContentEntryFormFields } from "@/wab/client/components/cms/CmsEntryDetails";
+import MenuItem from "@/wab/client/components/MenuItem";
 import { reactConfirm } from "@/wab/client/components/quick-modals";
 import { Spinner } from "@/wab/client/components/widgets";
 import Button from "@/wab/client/components/widgets/Button";
 import { useApi } from "@/wab/client/contexts/AppContexts";
-import { spawn } from "@/wab/shared/common";
 import { CmsDatabaseId, CmsRowId, CmsTableId } from "@/wab/shared/ApiSchema";
+import { spawn } from "@/wab/shared/common";
+import { APP_ROUTES } from "@/wab/shared/route/app-routes";
+import { fillRoute } from "@/wab/shared/route/route";
 import { Form, message } from "antd";
 import React from "react";
 import { Redirect, Route, Switch, useHistory } from "react-router";
@@ -46,13 +48,13 @@ export function CmsEntryHistory(props: {
       <div style={{ overflow: "auto", maxHeight: "100%" }}>
         <Switch>
           <Route
-            path={UU.cmsEntryRevision.pattern}
+            path={APP_ROUTES.cmsEntryRevision.pattern}
             render={({ match }) => (
               <>
                 {revisions.map((revision) => (
                   <MenuItem
                     selected={match.params.revisionId === revision.id}
-                    href={UU.cmsEntryRevision.fill({
+                    href={fillRoute(APP_ROUTES.cmsEntryRevision, {
                       revisionId: revision.id,
                       tableId,
                       rowId,
@@ -86,14 +88,14 @@ export function CmsEntryHistory(props: {
             )}
           />
           <Route
-            path={UU.cmsEntryRevisions.pattern}
+            path={APP_ROUTES.cmsEntryRevisions.pattern}
             render={() => {
               if (revisions.length === 0) {
                 return "No revision history";
               } else {
                 return (
                   <Redirect
-                    to={UU.cmsEntryRevision.fill({
+                    to={fillRoute(APP_ROUTES.cmsEntryRevision, {
                       ...props,
                       revisionId: revisions[0].id,
                     })}
@@ -106,7 +108,7 @@ export function CmsEntryHistory(props: {
       </div>
       <Route
         exact
-        path={UU.cmsEntryRevision.pattern}
+        path={APP_ROUTES.cmsEntryRevision.pattern}
         render={({ match }) => (
           <EntryRevisionView {...props} key={match.params.revisionId} />
         )}
@@ -117,7 +119,7 @@ export function CmsEntryHistory(props: {
 
 function EntryRevisionView() {
   const { databaseId, tableId, rowId, revisionId } = useRRouteMatch(
-    UU.cmsEntryRevision
+    APP_ROUTES.cmsEntryRevision
   )!.params;
 
   const database = useCmsDatabase(databaseId);
@@ -176,7 +178,9 @@ function EntryRevisionView() {
                 })
               );
 
-              history.push(UU.cmsEntry.fill({ databaseId, tableId, rowId }));
+              history.push(
+                fillRoute(APP_ROUTES.cmsEntry, { databaseId, tableId, rowId })
+              );
             }}
           >
             Restore

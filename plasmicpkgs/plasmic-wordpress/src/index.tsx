@@ -36,4 +36,5 @@ export function registerAll(loader?: {
   _registerComponent(WordpressField, WordpressFieldMeta);
 }
 
+export * from "./custom-functions";
 export * from "./wordpress";

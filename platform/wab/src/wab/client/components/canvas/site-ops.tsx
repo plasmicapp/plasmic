@@ -1,6 +1,6 @@
 import { AppCtx } from "@/wab/client/app-ctx";
-import { U } from "@/wab/client/cli-routes";
 import { FrameClip } from "@/wab/client/clipboard/local";
+import { RenameArenaProps } from "@/wab/client/commands/arena/renameArena";
 import { toast } from "@/wab/client/components/Messages";
 import { promptRemapCodeComponent } from "@/wab/client/components/modals/codeComponentModals";
 import {
@@ -126,6 +126,7 @@ import {
   extractTokenUsages,
 } from "@/wab/shared/core/styles";
 import {
+  ExprReference,
   findExprsInComponent,
   findExprsInNode,
   flattenTpls,
@@ -178,6 +179,8 @@ import {
   ResponsiveStrategy,
   frameSizeGroups,
 } from "@/wab/shared/responsiveness";
+import { APP_ROUTES } from "@/wab/shared/route/app-routes";
+import { fillRoute } from "@/wab/shared/route/route";
 import { removeSvgIds } from "@/wab/shared/svg-utils";
 import {
   TplVisibility,
@@ -421,6 +424,48 @@ export class SiteOps {
     }
   }
 
+  private findVariantGroupReferences(
+    component: Component,
+    group: VariantGroup
+  ): ExprReference[] {
+    const state = ensure(
+      findStateForParam(component, group.param),
+      "Variant group param must correspond to state"
+    );
+    return findExprsInComponent(component).filter(({ expr }) =>
+      isStateUsedInExpr(state, expr)
+    );
+  }
+
+  private notifyVariantGroupReferenced(
+    component: Component,
+    refs: ExprReference[],
+    message = "Cannot delete variant group"
+  ) {
+    const viewCtx = this.studioCtx.focusedViewCtx();
+    const maybeNode = refs.find((r) => r.node)?.node;
+    const key = mkUuid();
+    notification.error({
+      key,
+      message,
+      description: (
+        <>
+          It is referenced in the current component.{" "}
+          {viewCtx?.component === component && maybeNode ? (
+            <a
+              onClick={() => {
+                viewCtx.setStudioFocusByTpl(maybeNode);
+                notification.close(key);
+              }}
+            >
+              [Go to reference]
+            </a>
+          ) : null}
+        </>
+      ),
+    });
+  }
+
   async removeComponentArenaFrame(arena: ComponentArena, frame: ArenaFrame) {
     const wasFocused = this.studioCtx.focusedContentFrame() === frame;
 
@@ -457,50 +502,16 @@ export class SiteOps {
       "Only one variant should be active in a frame to be removed"
     );
     const variant = variants[0];
-    const reallyDelete = await this.confirmDeleteVariant(
-      variant,
-      arena.component,
-      { confirm: "always" }
-    );
-    if (!reallyDelete) {
-      return;
-    }
+    const parent = variant.parent;
 
-    if (variant.parent?.variants.length === 1) {
-      const state = ensure(
-        findStateForParam(arena.component, variant.parent.param),
-        "Variant group param must correspond to state"
-      );
-      const refs = findExprsInComponent(arena.component).filter(({ expr }) =>
-        isStateUsedInExpr(state, expr)
-      );
+    if (parent?.variants.length) {
+      const refs = this.findVariantGroupReferences(arena.component, parent);
       if (refs.length > 0) {
-        const viewCtx = this.studioCtx.focusedViewCtx();
-        const maybeNode = refs.find((r) => r.node)?.node;
-        const key = mkUuid();
-        notification.error({
-          key,
-          message: "Cannot delete variant group",
-          description: (
-            <>
-              It is referenced in the current component.{" "}
-              {viewCtx?.component === arena.component && maybeNode ? (
-                <a
-                  onClick={() => {
-                    viewCtx.setStudioFocusByTpl(maybeNode);
-                    notification.close(key);
-                  }}
-                >
-                  [Go to reference]
-                </a>
-              ) : null}
-            </>
-          ),
-        });
+        this.notifyVariantGroupReferenced(arena.component, refs);
         return;
       }
-      const implicitUsages = isKnownComponentVariantGroup(variant.parent)
-        ? findImplicitUsages(this.site, variant.parent.linkedState)
+      const implicitUsages = isKnownComponentVariantGroup(parent)
+        ? findImplicitUsages(this.site, parent.linkedState)
         : [];
       if (implicitUsages.length > 0) {
         const components = L.uniq(
@@ -514,6 +525,14 @@ export class SiteOps {
         });
         return;
       }
+    }
+    const reallyDelete = await this.confirmDeleteVariant(
+      variant,
+      arena.component,
+      { confirm: "always" }
+    );
+    if (!reallyDelete) {
+      return;
     }
 
     await this.studioCtx.changeObserved(
@@ -756,8 +775,11 @@ export class SiteOps {
     return { asset, iconColor: opts.iconColor };
   }
 
-  async createFrameForNewComponent() {
-    const componentInfo = await promptComponentTemplate(this.studioCtx);
+  async createFrameForNewComponent(folderPath?: string) {
+    const componentInfo = await promptComponentTemplate(
+      this.studioCtx,
+      folderPath
+    );
     if (!componentInfo) {
       return;
     }
@@ -854,7 +876,10 @@ export class SiteOps {
             return (
               <li key={dep.uid}>
                 {projectId ? (
-                  <a href={U.project({ projectId })} target="_blank">
+                  <a
+                    href={fillRoute(APP_ROUTES.project, { projectId })}
+                    target="_blank"
+                  >
                     {dep.name}
                   </a>
                 ) : (
@@ -928,23 +953,27 @@ export class SiteOps {
     }
   }
 
-  tryRenameArena(arena: Arena | PageArena | ComponentArena, newName: string) {
-    if (getArenaName(arena) === newName) {
+  tryRenameArenas(entries: RenameArenaProps[]) {
+    if (entries.length === 0) {
       return;
     }
+    for (const { arena, newName } of entries) {
+      const oldName = getArenaName(arena);
+      if (oldName === newName) {
+        continue;
+      }
 
-    return this.studioCtx.changeUnsafe(() => {
       switchType(arena)
-        .when(Arena, (it) => this.tplMgr.renameArena(it, newName))
+        .when(Arena, (it) => this.studioCtx.tplMgr().renameArena(it, newName))
         .when([PageArena, ComponentArena], (it) =>
-          this.tryRenameComponent(it.component, newName)
+          this.studioCtx.siteOps().tryRenameComponent(it.component, newName)
         );
 
-      // Replace the URL if this is the current arena
+      // Switch to currentArena to force the URL to update with the new name
       if (arena === this.studioCtx.currentArena) {
         this.studioCtx.switchToArena(arena, { replace: true });
       }
-    });
+    }
   }
 
   tryRenameComponent(component: Component, newName: string) {
@@ -1312,43 +1341,9 @@ export class SiteOps {
   }
 
   async removeVariantGroup(component: Component, group: ComponentVariantGroup) {
-    const really = await this.confirmDeleteVariantGroup(group, component, {
-      confirm: "if-referenced",
-    });
-    if (!really) {
-      return;
-    }
-
-    const state = ensure(
-      findStateForParam(component, group.param),
-      "Variant group param must correspond to state"
-    );
-    const refs = findExprsInComponent(component).filter(({ expr }) =>
-      isStateUsedInExpr(state, expr)
-    );
+    const refs = this.findVariantGroupReferences(component, group);
     if (refs.length > 0) {
-      const viewCtx = this.studioCtx.focusedViewCtx();
-      const maybeNode = refs.find((r) => r.node)?.node;
-      const key = mkUuid();
-      notification.error({
-        key,
-        message: "Cannot delete variant group",
-        description: (
-          <>
-            It is referenced in the current component.{" "}
-            {viewCtx?.component === component && maybeNode ? (
-              <a
-                onClick={() => {
-                  viewCtx.setStudioFocusByTpl(maybeNode);
-                  notification.close(key);
-                }}
-              >
-                [Go to reference]
-              </a>
-            ) : null}
-          </>
-        ),
-      });
+      this.notifyVariantGroupReferenced(component, refs);
       return;
     }
     if (isPlumeComponent(component)) {
@@ -1378,6 +1373,12 @@ export class SiteOps {
           .map((c) => getComponentDisplayName(c))
           .join(", ")}.`,
       });
+      return;
+    }
+    const really = await this.confirmDeleteVariantGroup(group, component, {
+      confirm: "if-referenced",
+    });
+    if (!really) {
       return;
     }
 
@@ -1422,11 +1423,19 @@ export class SiteOps {
 
   async removeVariant(component: Component, variant: Variant) {
     assert(!isBaseVariant(variant), "Base variant can not be removed");
-    const really = await this.confirmDeleteVariant(variant, component, {
-      confirm: "if-referenced",
-    });
-    if (!really) {
-      return;
+
+    if (variant.parent) {
+      // Checks if the parent group is referenced in the component. This can be improved by
+      // verifying the reference is specific to the target variant.
+      const refs = this.findVariantGroupReferences(component, variant.parent);
+      if (refs.length > 0) {
+        this.notifyVariantGroupReferenced(
+          component,
+          refs,
+          "Cannot delete variant"
+        );
+        return;
+      }
     }
     if (isPlumeComponent(component)) {
       const variantDef = getPlumeVariantDef(component, variant);
@@ -1439,6 +1448,12 @@ export class SiteOps {
         });
         return;
       }
+    }
+    const really = await this.confirmDeleteVariant(variant, component, {
+      confirm: "if-referenced",
+    });
+    if (!really) {
+      return;
     }
     await this.studioCtx.changeObserved(
       () => {

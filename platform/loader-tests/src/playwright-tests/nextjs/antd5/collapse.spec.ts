@@ -17,7 +17,7 @@ test.describe(`Plasmic Antd5 Collapse/Accordion`, async () => {
         ctx = await setupNextJs({
           bundleFile: "antd5/collapse.json",
           projectName: "Antd5 Collapse",
-          npmRegistry: getEnvVar("NPM_REGISTRY"),
+          npmRegistry: getEnvVar("NPM_CONFIG_REGISTRY"),
           codegenHost: getEnvVar("WAB_HOST"),
           removeComponentsPage: true,
           loaderVersion,

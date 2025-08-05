@@ -12,7 +12,7 @@ import OpenIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Open";
 import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { assert, ensure, ensureArray } from "@/wab/shared/common";
+import { assert, ensureArray } from "@/wab/shared/common";
 import {
   getComponentDisplayName,
   isCodeComponent,
@@ -28,7 +28,6 @@ import {
   ProjectDependency,
   TplComponent,
   TplNode,
-  isKnownTplNode,
 } from "@/wab/shared/model/classes";
 import { getSlotParams } from "@/wab/shared/SlotUtils";
 import { $$$ } from "@/wab/shared/TplQuery";
@@ -249,16 +248,5 @@ export function attachComp(
 }
 
 export function detachComp(viewCtx: ViewCtx, attachTpl: TplComponent) {
-  const parent = ensure(attachTpl.parent, "Parent");
-  const parentChildren = $$$(parent).children().toArray();
-  const insertPos = findIndex(parentChildren, (child) => child === attachTpl);
-  const newChildren = $$$(attachTpl).children().toArray().reverse();
-  viewCtx.change(() => {
-    $$$(attachTpl).tryRemove({ deep: true });
-    newChildren.forEach((child) => {
-      if (isKnownTplNode(child)) {
-        $$$(parent).insertAt(child, insertPos);
-      }
-    });
-  });
+  viewCtx.getViewOps().ungroup(attachTpl);
 }

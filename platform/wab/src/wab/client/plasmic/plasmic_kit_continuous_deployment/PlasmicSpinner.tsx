@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -32,7 +32,7 @@ import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_syst
 import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
 import sty from "./PlasmicSpinner.module.css"; // plasmic-import: oo-lLDZ5qnA/css
 
-import Spinner1S200PxsvgIcon from "./icons/PlasmicIcon__Spinner1S200Pxsvg"; // plasmic-import: mwpa_Gia6i/icon
+import Spinner1S200PxSvgIcon from "./icons/PlasmicIcon__Spinner1S200PxSvg"; // plasmic-import: mwpa_Gia6i/icon
 
 createPlasmicElementProxy;
 
@@ -61,7 +61,6 @@ export interface DefaultSpinnerProps {
   customDomain?: SingleChoiceArg<
     "preliminaryError" | "added" | "invalid" | "loading"
   >;
-
   className?: string;
 }
 
@@ -75,7 +74,16 @@ function PlasmicSpinner__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
@@ -95,7 +103,6 @@ function PlasmicSpinner__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.customDomain,
       },
     ],
-
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -106,7 +113,7 @@ function PlasmicSpinner__RenderFunc(props: {
   });
 
   return (
-    <Spinner1S200PxsvgIcon
+    <Spinner1S200PxSvgIcon
       data-plasmic-name={"root"}
       data-plasmic-override={overrides.root}
       data-plasmic-root={true}
@@ -148,7 +155,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicSpinner__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
@@ -156,15 +162,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicSpinner__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicSpinner__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicSpinner__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+    // Specify args directly as props
+    Omit<PlasmicSpinner__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

@@ -1,5 +1,5 @@
 import type { Meta } from "@storybook/react";
-import { fn } from "@storybook/test";
+import { expect, fn, userEvent, waitFor, within } from "@storybook/test";
 import React from "react";
 import { BaseLabel } from "./registerLabel";
 import { BaseTextArea } from "./registerTextArea";
@@ -54,3 +54,47 @@ export const Invalid: Story = InvalidStory;
 export const Controlled: Story = createControlledTextFieldStory(
   <BaseTextArea />
 );
+
+export const AutoResize: Story = {
+  args: {
+    children: (
+      <>
+        <BaseLabel>Label</BaseLabel>
+        <BaseTextArea autoResize />
+      </>
+    ),
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const textbox = await canvas.findByRole("textbox");
+
+    const initialHeight = textbox.clientHeight;
+    const resizeStyle = getComputedStyle(textbox).resize;
+    expect(resizeStyle).toBe("none");
+    await userEvent.type(
+      textbox,
+      "This is a long\ntext that\nshould expand\nthe textarea."
+    );
+    await waitFor(() => {
+      expect(textbox.clientHeight).toBeGreaterThan(initialHeight);
+    });
+  },
+};
+
+export const Resizable: Story = {
+  args: {
+    children: (
+      <>
+        <BaseLabel>Label</BaseLabel>
+        <BaseTextArea resize="horizontal" />
+      </>
+    ),
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const textbox = await canvas.findByRole("textbox");
+
+    const resizeStyle = getComputedStyle(textbox).resize;
+    expect(resizeStyle).toBe("horizontal");
+  },
+};

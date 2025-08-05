@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -45,9 +45,9 @@ import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_token
 import sty from "./PlasmicPublishFlowDialog.module.css"; // plasmic-import: aXXfRDkhD-/css
 
 import PlusIcon from "../plasmic_kit/PlasmicIcon__Plus"; // plasmic-import: -k064DlQ8k8-L/icon
-import ArrowRightsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ArrowRightSvg"; // plasmic-import: 9Jv8jb253/icon
-import ChevronDownsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
-import ClosesvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__CloseSvg"; // plasmic-import: DhvEHyCHT/icon
+import ArrowRightSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ArrowRightSvg"; // plasmic-import: 9Jv8jb253/icon
+import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
+import CloseSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__CloseSvg"; // plasmic-import: DhvEHyCHT/icon
 
 createPlasmicElementProxy;
 
@@ -119,7 +119,16 @@ function PlasmicPublishFlowDialog__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
@@ -145,7 +154,6 @@ function PlasmicPublishFlowDialog__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.view,
       },
     ],
-
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -236,7 +244,7 @@ function PlasmicPublishFlowDialog__RenderFunc(props: {
             data-plasmic-name={"dismissButton"}
             data-plasmic-override={overrides.dismissButton}
             children2={
-              <ChevronDownsvgIcon
+              <ChevronDownSvgIcon
                 className={classNames(projectcss.all, sty.svg__chnKm)}
                 role={"img"}
               />
@@ -251,7 +259,7 @@ function PlasmicPublishFlowDialog__RenderFunc(props: {
             size={"small"}
             withBackgroundHover={true}
           >
-            <ClosesvgIcon
+            <CloseSvgIcon
               className={classNames(projectcss.all, sty.svg__r0DpM, {
                 [sty.svgpublishState_publishing__r0DpMPGdW]: hasVariant(
                   $state,
@@ -304,7 +312,6 @@ function PlasmicPublishFlowDialog__RenderFunc(props: {
                     {"0.0.1"}
                   </div>
                 ),
-
                 value: args.currentVersionNumber,
                 className: classNames(sty.slotTargetCurrentVersionNumber),
               })}
@@ -391,14 +398,14 @@ function PlasmicPublishFlowDialog__RenderFunc(props: {
             data-plasmic-name={"backButton"}
             data-plasmic-override={overrides.backButton}
             endIcon={
-              <ChevronDownsvgIcon
+              <ChevronDownSvgIcon
                 className={classNames(projectcss.all, sty.svg__iBnCa)}
                 role={"img"}
               />
             }
             font={"bold"}
             startIcon={
-              <ArrowRightsvgIcon
+              <ArrowRightSvgIcon
                 className={classNames(projectcss.all, sty.svg__ofSxb)}
                 role={"img"}
               />
@@ -596,7 +603,7 @@ function PlasmicPublishFlowDialog__RenderFunc(props: {
                   data-plasmic-override={overrides.addWebsiteButton}
                   className={classNames("__wab_instance", sty.addWebsiteButton)}
                   endIcon={
-                    <ChevronDownsvgIcon
+                    <ChevronDownSvgIcon
                       className={classNames(projectcss.all, sty.svg__inCrR)}
                       role={"img"}
                     />
@@ -636,7 +643,7 @@ function PlasmicPublishFlowDialog__RenderFunc(props: {
                   data-plasmic-override={overrides.addGithubButton}
                   className={classNames("__wab_instance", sty.addGithubButton)}
                   endIcon={
-                    <ChevronDownsvgIcon
+                    <ChevronDownSvgIcon
                       className={classNames(projectcss.all, sty.svg__mUYi7)}
                       role={"img"}
                     />
@@ -677,7 +684,7 @@ function PlasmicPublishFlowDialog__RenderFunc(props: {
                     sty.addWebhooksButton
                   )}
                   endIcon={
-                    <ChevronDownsvgIcon
+                    <ChevronDownSvgIcon
                       className={classNames(projectcss.all, sty.svg__q5RO)}
                       role={"img"}
                     />
@@ -914,14 +921,14 @@ function PlasmicPublishFlowDialog__RenderFunc(props: {
                     ),
                   })}
                   endIcon={
-                    <ChevronDownsvgIcon
+                    <ChevronDownSvgIcon
                       className={classNames(projectcss.all, sty.svg___5EtrM)}
                       role={"img"}
                     />
                   }
                   size={"wide"}
                   startIcon={
-                    <ArrowRightsvgIcon
+                    <ArrowRightSvgIcon
                       className={classNames(projectcss.all, sty.svg__mf5Q)}
                       role={"img"}
                     />
@@ -936,14 +943,14 @@ function PlasmicPublishFlowDialog__RenderFunc(props: {
                   data-plasmic-name={"startOverButton"}
                   data-plasmic-override={overrides.startOverButton}
                   endIcon={
-                    <ChevronDownsvgIcon
+                    <ChevronDownSvgIcon
                       className={classNames(projectcss.all, sty.svg__aj6Wj)}
                       role={"img"}
                     />
                   }
                   size={"wide"}
                   startIcon={
-                    <ArrowRightsvgIcon
+                    <ArrowRightSvgIcon
                       className={classNames(projectcss.all, sty.svg__aRgPt)}
                       role={"img"}
                     />
@@ -992,14 +999,14 @@ function PlasmicPublishFlowDialog__RenderFunc(props: {
                 ),
               })}
               endIcon={
-                <ChevronDownsvgIcon
+                <ChevronDownSvgIcon
                   className={classNames(projectcss.all, sty.svg__qtdR)}
                   role={"img"}
                 />
               }
               size={"wide"}
               startIcon={
-                <ArrowRightsvgIcon
+                <ArrowRightSvgIcon
                   className={classNames(projectcss.all, sty.svg__m6WwF)}
                   role={"img"}
                 />
@@ -1132,14 +1139,14 @@ function PlasmicPublishFlowDialog__RenderFunc(props: {
                 ),
               })}
               endIcon={
-                <ChevronDownsvgIcon
+                <ChevronDownSvgIcon
                   className={classNames(projectcss.all, sty.svg__bJqjq)}
                   role={"img"}
                 />
               }
               font={"bold"}
               startIcon={
-                <ArrowRightsvgIcon
+                <ArrowRightSvgIcon
                   className={classNames(projectcss.all, sty.svg___9UcPo)}
                   role={"img"}
                 />
@@ -1198,7 +1205,6 @@ const PlasmicDescendants = {
     "cancelButton",
     "statusButton",
   ],
-
   dismissButton: ["dismissButton"],
   statusBar: ["statusBar", "destinationSection", "destination"],
   destinationSection: ["destinationSection", "destination"],
@@ -1219,7 +1225,6 @@ const PlasmicDescendants = {
     "addWebhooksButton",
     "webhooksDescription",
   ],
-
   addWebsitePanel: ["addWebsitePanel", "addWebsiteButton"],
   addWebsiteButton: ["addWebsiteButton"],
   addGithubPanel: ["addGithubPanel", "addGithubButton"],
@@ -1229,7 +1234,6 @@ const PlasmicDescendants = {
     "addWebhooksButton",
     "webhooksDescription",
   ],
-
   addWebhooksButton: ["addWebhooksButton"],
   webhooksDescription: ["webhooksDescription"],
   container: ["container"],
@@ -1275,7 +1279,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicPublishFlowDialog__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
@@ -1283,15 +1286,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicPublishFlowDialog__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicPublishFlowDialog__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicPublishFlowDialog__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+    // Specify args directly as props
+    Omit<PlasmicPublishFlowDialog__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

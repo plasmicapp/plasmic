@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -13,15 +13,15 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
+  Flex as Flex__,
   StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  renderPlasmicSlot,
 } from "@plasmicapp/react-web";
+import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
@@ -32,25 +32,23 @@ import sty from "./PlasmicVariantsMenu.module.css"; // plasmic-import: cwS3NAy41
 
 import SearchIcon from "../plasmic_kit/PlasmicIcon__Search"; // plasmic-import: sjONHoK61vpSz/icon
 
-export type PlasmicVariantsMenu__VariantMembers = {};
+createPlasmicElementProxy;
 
+export type PlasmicVariantsMenu__VariantMembers = {};
 export type PlasmicVariantsMenu__VariantsArgs = {};
 type VariantPropType = keyof PlasmicVariantsMenu__VariantsArgs;
 export const PlasmicVariantsMenu__VariantProps = new Array<VariantPropType>();
 
-export type PlasmicVariantsMenu__ArgsType = {
-  children?: React.ReactNode;
-};
-
+export type PlasmicVariantsMenu__ArgsType = { children?: React.ReactNode };
 type ArgPropType = keyof PlasmicVariantsMenu__ArgsType;
 export const PlasmicVariantsMenu__ArgProps = new Array<ArgPropType>("children");
 
 export type PlasmicVariantsMenu__OverridesType = {
-  root?: p.Flex<"div">;
-  freeBox?: p.Flex<"div">;
-  svg?: p.Flex<"svg">;
-  searchInput?: p.Flex<"input">;
-  variantsList?: p.Flex<"div">;
+  root?: Flex__<"div">;
+  freeBox?: Flex__<"div">;
+  svg?: Flex__<"svg">;
+  searchInput?: Flex__<"input">;
+  variantsList?: Flex__<"div">;
 };
 
 export interface DefaultVariantsMenuProps {
@@ -58,13 +56,7 @@ export interface DefaultVariantsMenuProps {
   className?: string;
 }
 
-const __wrapUserFunction =
-  globalThis.__PlasmicWrapUserFunction ?? ((loc, fn) => fn());
-const __wrapUserPromise =
-  globalThis.__PlasmicWrapUserPromise ??
-  (async (loc, promise) => {
-    return await promise;
-  });
+const $$ = {};
 
 function PlasmicVariantsMenu__RenderFunc(props: {
   variants: PlasmicVariantsMenu__VariantsArgs;
@@ -74,13 +66,13 @@ function PlasmicVariantsMenu__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const $ctx = ph.useDataEnv?.() || {};
   const args = React.useMemo(
     () =>
       Object.assign(
         {},
-
-        props.args
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
       ),
     [props.args]
   );
@@ -90,12 +82,9 @@ function PlasmicVariantsMenu__RenderFunc(props: {
     ...variants,
   };
 
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
-
-  const currentUser = p.useCurrentUser?.() || {};
-
-  const [$queries, setDollarQueries] = React.useState({});
 
   return (
     <div
@@ -134,13 +123,13 @@ function PlasmicVariantsMenu__RenderFunc(props: {
             projectcss.input,
             sty.searchInput
           )}
-          placeholder={"Search variants…" as const}
+          placeholder={"Search variants…"}
           ref={(ref) => {
             $refs["searchInput"] = ref;
           }}
-          size={1 as const}
-          type={"text" as const}
-          value={"" as const}
+          size={1}
+          type={"text"}
+          value={""}
         />
       </div>
       <div
@@ -148,7 +137,7 @@ function PlasmicVariantsMenu__RenderFunc(props: {
         data-plasmic-override={overrides.variantsList}
         className={classNames(projectcss.all, sty.variantsList)}
       >
-        {p.renderPlasmicSlot({
+        {renderPlasmicSlot({
           defaultContents: null,
           value: args.children,
         })}
@@ -180,25 +169,25 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicVariantsMenu__OverridesType,
   DescendantsType<T>
 >;
-
-type NodeComponentProps<T extends NodeNameType> = {
+type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
-  variants?: PlasmicVariantsMenu__VariantsArgs;
-  args?: PlasmicVariantsMenu__ArgsType;
-  overrides?: NodeOverridesType<T>;
-} & Omit<PlasmicVariantsMenu__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-  // Specify args directly as props
-  Omit<PlasmicVariantsMenu__ArgsType, ReservedPropsType> &
-  // Specify overrides for each element directly as props
-  Omit<
-    NodeOverridesType<T>,
-    ReservedPropsType | VariantPropType | ArgPropType
-  > &
-  // Specify props for the root element
-  Omit<
-    Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
-    ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
-  >;
+  {
+    variants?: PlasmicVariantsMenu__VariantsArgs;
+    args?: PlasmicVariantsMenu__ArgsType;
+    overrides?: NodeOverridesType<T>;
+  } & Omit<PlasmicVariantsMenu__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+    // Specify args directly as props
+    Omit<PlasmicVariantsMenu__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
+      NodeOverridesType<T>,
+      ReservedPropsType | VariantPropType | ArgPropType
+    > &
+    // Specify props for the root element
+    Omit<
+      Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
+      ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
+    >;
 
 function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
   type PropsType = NodeComponentProps<NodeName> & { key?: React.Key };
@@ -209,7 +198,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicVariantsMenu__ArgProps,
           internalVariantPropNames: PlasmicVariantsMenu__VariantProps,
         }),

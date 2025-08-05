@@ -79,6 +79,7 @@ import { typographyCssProps } from "@/wab/shared/core/style-props";
 import {
   cloneMixin,
   cloneStyleToken,
+  cloneStyleTokenOverride,
   cloneTheme,
   cssPropsToRuleSet,
   mkRuleSet,
@@ -217,6 +218,7 @@ export function createSite({
     arenas: [],
     globalVariant: mkBaseVariant(),
     styleTokens: [],
+    styleTokenOverrides: [],
     mixins: [],
     themes: [defaultTheme],
     activeTheme: defaultTheme,
@@ -453,6 +455,7 @@ export function cloneCustomFunction(
     defaultExport: customFunction.defaultExport,
     importName: customFunction.importName,
     importPath: customFunction.importPath,
+    displayName: customFunction.displayName,
     namespace: customFunction.namespace,
     params: [],
     isQuery: customFunction.isQuery,
@@ -556,6 +559,9 @@ export function cloneSite(fromSite: Site) {
     components: newComponents,
     globalVariant: cloneVariant(fromSite.globalVariant),
     styleTokens: fromSite.styleTokens.map(cloneStyleToken),
+    styleTokenOverrides: fromSite.styleTokenOverrides.map(
+      cloneStyleTokenOverride
+    ),
     mixins: fromSite.mixins.map((mixin) => cloneMixin(mixin)),
     themes: fromSite.themes.map((th) =>
       ensure(newThemes.get(th), "should exist in newThemes")
@@ -1360,7 +1366,7 @@ export function getReferencingComponents(site: Site, component: Component) {
 export const getAllSiteFrames = maybeComputedFn(function getAllSiteFrames(
   site: Site
 ) {
-  return getSiteArenas(site).flatMap((arena) => getArenaFrames(arena));
+  return getSiteArenas(site).flatMap((arena) => getArenaFrames(arena, true));
 });
 
 export function getAllSitePageFrames(site: Site) {

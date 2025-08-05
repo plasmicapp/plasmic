@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -44,12 +44,12 @@ import sty from "./PlasmicTextAreaInput.module.css"; // plasmic-import: 0wwbx9l7
 createPlasmicElementProxy;
 
 export type PlasmicTextAreaInput__VariantMembers = {
-  type: "soft" | "plain";
+  type: "soft" | "plain" | "minimal";
   flat: "top" | "right" | "bottom" | "left";
   padded: "left" | "right";
 };
 export type PlasmicTextAreaInput__VariantsArgs = {
-  type?: SingleChoiceArg<"soft" | "plain">;
+  type?: SingleChoiceArg<"soft" | "plain" | "minimal">;
   flat?: MultiChoiceArg<"top" | "right" | "bottom" | "left">;
   padded?: MultiChoiceArg<"left" | "right">;
 };
@@ -111,7 +111,7 @@ export interface DefaultTextAreaInputProps {
     | "search";
   ariaLabel?: string;
   onChange?: (val: string) => void;
-  type?: SingleChoiceArg<"soft" | "plain">;
+  type?: SingleChoiceArg<"soft" | "plain" | "minimal">;
   flat?: MultiChoiceArg<"top" | "right" | "bottom" | "left">;
   padded?: MultiChoiceArg<"left" | "right">;
   className?: string;
@@ -212,6 +212,7 @@ function PlasmicTextAreaInput__RenderFunc(props: {
     const child$Props = {
       "aria-label": args.ariaLabel,
       autoFocus: args.autoFocus,
+      autoResize: hasVariant($state, "type", "minimal") ? true : undefined,
       className: classNames(
         "__wab_instance",
         projectcss.root_reset,
@@ -227,6 +228,7 @@ function PlasmicTextAreaInput__RenderFunc(props: {
           [sty.ariaTextAreaflat_top]: hasVariant($state, "flat", "top"),
           [sty.ariaTextAreapadded_left]: hasVariant($state, "padded", "left"),
           [sty.ariaTextAreapadded_right]: hasVariant($state, "padded", "right"),
+          [sty.ariaTextAreatype_minimal]: hasVariant($state, "type", "minimal"),
           [sty.ariaTextAreatype_plain]: hasVariant($state, "type", "plain"),
           [sty.ariaTextAreatype_soft]: hasVariant($state, "type", "soft"),
         }

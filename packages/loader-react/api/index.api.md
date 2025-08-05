@@ -54,6 +54,7 @@ import { TrackRenderOptions } from '@plasmicapp/loader-core';
 import { TraitMeta } from '@plasmicapp/host';
 import { useDataEnv } from '@plasmicapp/host';
 import type { useMutablePlasmicQueryData } from '@plasmicapp/query';
+import { usePlasmicCanvasComponentInfo } from '@plasmicapp/host';
 import { usePlasmicCanvasContext } from '@plasmicapp/host';
 import { usePlasmicQueryData } from '@plasmicapp/query';
 import { useSelector } from '@plasmicapp/host';
@@ -90,6 +91,11 @@ export interface ComponentRenderData {
 // @public (undocumented)
 export const convertBundlesToComponentRenderData: (bundles: LoaderBundleOutput_2[], compMetas: ComponentMeta[]) => ComponentRenderData | null;
 
+// @public (undocumented)
+export type CustomFunctionMeta<F extends (...args: any[]) => any> = Omit<CustomFunctionMeta_2<F>, "importPath"> & {
+    importPath?: string;
+};
+
 export { DataCtxReader }
 
 export { DataProvider }
@@ -113,6 +119,11 @@ export interface FetchComponentDataOpts {
 export { GlobalActionsContext }
 
 export { GlobalActionsProvider }
+
+// @public (undocumented)
+export type GlobalContextMeta<P> = Omit<GlobalContextMeta_2<P>, "importPath"> & {
+    importPath?: string;
+};
 
 // @public (undocumented)
 export interface GlobalVariantSpec {
@@ -258,6 +269,8 @@ export class PlasmicComponentLoader {
     substituteComponent<P>(component: React.ComponentType<P>, name: ComponentLookupSpec): void;
     // (undocumented)
     trackConversion(value?: number): void;
+    // (undocumented)
+    unstable__getServerQueriesData(renderData: ComponentRenderData, $ctx: Record<string, any>): Promise<any>;
 }
 
 // @public @deprecated (undocumented)
@@ -320,6 +333,8 @@ export { repeatedElement }
 export { TokenRegistration }
 
 export { useDataEnv }
+
+export { usePlasmicCanvasComponentInfo }
 
 export { usePlasmicCanvasContext }
 

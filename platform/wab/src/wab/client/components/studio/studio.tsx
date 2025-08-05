@@ -1,7 +1,5 @@
-import { analytics } from "@/wab/client/analytics";
 import { maybeConvertToHostLessProject } from "@/wab/client/code-components/code-components";
 import { BottomModalsProvider } from "@/wab/client/components/BottomModal";
-import { CommentsProvider } from "@/wab/client/components/comments/CommentsProvider";
 import { showPlasmicImgModal } from "@/wab/client/components/modals/PlasmicImgModal";
 import { ShortcutsModal } from "@/wab/client/components/studio/Shortcuts";
 import {
@@ -10,6 +8,8 @@ import {
   getReactWebBundle,
 } from "@/wab/client/components/studio/studio-bundles";
 import { fixStudioIframePositionAndOverflow } from "@/wab/client/dom-utils";
+import { IntercomProviderWrapper } from "@/wab/client/intercom";
+import { analytics } from "@/wab/client/observability";
 import RocketsvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__RocketSvg";
 import { bindStudioShortcutHandlers } from "@/wab/client/shortcuts/studio/studio-shortcut-handlers";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
@@ -87,17 +87,17 @@ export class Studio extends React.Component<StudioProps, {}> {
   render() {
     return (
       <ShortcutsModal>
-        <CommentsProvider>
-          <BottomModalsProvider>
+        <BottomModalsProvider>
+          <IntercomProviderWrapper>
             <div className={"studio"}>
               <div className={"studio__main-area"}>{this.props.children}</div>
             </div>
-            <React.Suspense fallback={null}>
-              <TopProjectNavTour />
-              <StudioTutorialTours />
-            </React.Suspense>
-          </BottomModalsProvider>
-        </CommentsProvider>
+          </IntercomProviderWrapper>
+          <React.Suspense fallback={null}>
+            <TopProjectNavTour />
+            <StudioTutorialTours />
+          </React.Suspense>
+        </BottomModalsProvider>
       </ShortcutsModal>
     );
   }

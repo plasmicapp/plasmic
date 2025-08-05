@@ -3,6 +3,7 @@ import { PlasmicDataPickerColumnItem__VariantMembers } from "@/wab/client/plasmi
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { getAncestorTplSlot } from "@/wab/shared/SlotUtils";
 import { isStandaloneVariantGroup } from "@/wab/shared/Variants";
+import { StudioPropType } from "@/wab/shared/code-components/code-components";
 import { toVarName } from "@/wab/shared/codegen/util";
 import { assert, ensure, isNonNil, isPrefixArray } from "@/wab/shared/common";
 import { getContextDependentValue } from "@/wab/shared/context-dependent-value";
@@ -34,7 +35,7 @@ import {
   UNINITIALIZED_STRING,
 } from "@/wab/shared/model/model-util";
 import { getPlumeEditorPlugin } from "@/wab/shared/plume/plume-registry";
-import { DataMeta, mkMetaName } from "@plasmicapp/host";
+import { ChoiceValue, DataMeta, mkMetaName } from "@plasmicapp/host";
 import { isArray, isPlainObject, partition } from "lodash";
 
 export type supportedTypes =
@@ -363,4 +364,18 @@ export function getContextDependentValuesForImplicitState(
     controlExtras
   );
   return { advanced, hidden };
+}
+
+export function extractExpectedValues(
+  propType: StudioPropType<any>,
+  enumValues: ChoiceValue[] | undefined
+) {
+  if (typeof propType === "object") {
+    if ("exprHint" in propType) {
+      return propType.exprHint;
+    } else if (propType.type === "target") {
+      return `Should return "_blank" for new tab or undefined for the default behavior`;
+    }
+  }
+  return enumValues?.toString();
 }

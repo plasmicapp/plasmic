@@ -1,4 +1,3 @@
-import { U } from "@/wab/client/cli-routes";
 import TextWithInfo from "@/wab/client/components/TextWithInfo";
 import PermissionsTab from "@/wab/client/components/app-auth/PermissionsTab";
 import { useAppAuthConfig } from "@/wab/client/components/app-auth/app-auth-contexts";
@@ -25,6 +24,7 @@ import PermissionItem, {
 import PP__ShareDialogContent from "@/wab/client/components/widgets/plasmic/PlasmicShareDialogContent";
 import { useAppCtx } from "@/wab/client/contexts/AppContexts";
 import { useTopFrameCtxMaybe } from "@/wab/client/frame-ctx/top-frame-ctx";
+import { analytics } from "@/wab/client/observability";
 import {
   ApiPermission,
   ApiResource,
@@ -51,8 +51,10 @@ import {
   getAccessLevelToResource,
   resourceTypeIdField,
 } from "@/wab/shared/perms";
+import { APP_ROUTES } from "@/wab/shared/route/app-routes";
+import { fillRoute } from "@/wab/shared/route/route";
 import { getPublicUrl } from "@/wab/shared/urls";
-import { notification } from "antd";
+import { Menu, notification } from "antd";
 import copy from "copy-to-clipboard";
 import L from "lodash";
 import React, { useEffect, useState } from "react";
@@ -63,14 +65,7 @@ export const personalProjectPaywallMessage = (
     workspace, so it is limited to {DEVFLAGS.freeTier.maxUsers} editors and no
     A/B testing or custom targeting. Please move the project into a{" "}
     {ORGANIZATION_LOWER} whose plan supports a larger number of seats, or{" "}
-    <a
-      href={
-        DEVFLAGS.useNewFeatureTiers
-          ? "https://plasmic.app/team-plan"
-          : "https://plasmic.app/growth-team"
-      }
-      target="_blank"
-    >
+    <a href="https://www.plasmic.app/pricing" target="_blank">
       create such a {ORGANIZATION_LOWER}
     </a>
     .
@@ -79,7 +74,7 @@ export const personalProjectPaywallMessage = (
 
 export function getTeamInviteLink(team: ApiTeam) {
   const url = new URL(
-    U.org({
+    fillRoute(APP_ROUTES.org, {
       teamId: team.id,
     }),
     getPublicUrl()
@@ -127,12 +122,22 @@ function ShareDialogContent(props: ShareDialogContentProps) {
     appCtx.selfInfo,
     perms
   );
+  const teamId =
+    resource.type === "project"
+      ? resource.resource.teamId
+      : resource.type === "workspace"
+      ? resource.resource.team.id
+      : resource.resource.id;
+
   const ownAccessLevelRank = accessLevelRank(ownAccessLevel);
-  // Anyone can invite to a resource if they have at least viewer access
+  // Anyone can invite to a resource if they have at least content access
   // but it will require editor access to update invite by link
-  const canInvite = ownAccessLevelRank >= accessLevelRank("viewer");
+  const canInvite = ownAccessLevelRank >= accessLevelRank("content");
   const canEdit = ownAccessLevelRank >= accessLevelRank("editor");
-  const [requireSignUp, setRequireSignUp] = React.useState(false);
+  const canHaveCommenterRole =
+    canEdit &&
+    (appCtx.appConfig.comments ||
+      (teamId && appCtx.appConfig.commentsTeamIds.includes(teamId)));
   const [inviteAccessLevel, setInviteAccessLevel] =
     React.useState<GrantableAccessLevel>(canEdit ? "editor" : "viewer");
   const [email, setEmail] = React.useState("");
@@ -193,7 +198,6 @@ function ShareDialogContent(props: ShareDialogContentProps) {
       const { enqueued } = await doGrantRevoke({
         grants: [{ email: cleaned, accessLevel: inviteAccessLevel }],
         revokes: [],
-        requireSignUp,
       });
 
       if (enqueued) {
@@ -211,28 +215,24 @@ function ShareDialogContent(props: ShareDialogContentProps) {
   }
 
   const shareByLinkAllowed =
-    resource.type === "project"
-      ? !resource.resource.inviteOnly
-      : resource.type === "team"
-      ? !!resource.resource.defaultAccessLevel
-      : false;
+    resource.type === "team" ? !!resource.resource.defaultAccessLevel : false;
   const noShareByLink =
     resource.type === "team" && !!resource.resource.defaultAccessLevel
       ? ownAccessLevelRank <
         accessLevelRank(resource.resource.defaultAccessLevel)
       : false;
 
-  const updateProject = async (
-    inviteOnly: boolean,
-    defaultAccessLevel: GrantableAccessLevel
-  ) => {
+  const parsedQueryParams = new URLSearchParams(appCtx.history.location.search);
+  const arenaId = parsedQueryParams.get("arena");
+  const arenaType = parsedQueryParams.get("arena_type");
+
+  const updateProject = async (inviteOnly: boolean) => {
     assert(resource.type === "project", 'Resource type must be "project"');
     const data = await maybeShowPaywall(
       appCtx,
       async () =>
         await appCtx.api.setSiteInfo(resource.resource.id, {
           inviteOnly,
-          defaultAccessLevel,
         })
     );
     await updateResourceCallback?.(data);
@@ -281,6 +281,7 @@ function ShareDialogContent(props: ShareDialogContentProps) {
                 revokes: [],
               });
             }}
+            canHaveCommenterRole={!!canHaveCommenterRole}
             onRevoke={async () => {
               await doGrantRevoke({
                 revokes: [{ email: permEmail }],
@@ -308,7 +309,7 @@ function ShareDialogContent(props: ShareDialogContentProps) {
         onChange: (key) => setInviteAccessLevel(key as GrantableAccessLevel),
         children: [
           <Select.Option value="viewer">{viewerTooltip}</Select.Option>,
-          ...(appCtx.appConfig.comments
+          ...(canHaveCommenterRole
             ? [
                 <Select.Option value="commenter">
                   {commenterTooltip}
@@ -322,7 +323,7 @@ function ShareDialogContent(props: ShareDialogContentProps) {
             }}
             isDisabled={
               !tier.contentRole ||
-              ownAccessLevelRank < accessLevelRank("viewer")
+              ownAccessLevelRank < accessLevelRank("content")
             }
           >
             {tier.contentRole ? (
@@ -361,17 +362,14 @@ function ShareDialogContent(props: ShareDialogContentProps) {
         isDisabled: submitting || !canInvite,
       }}
       shareByLinkPermDropdown={
-        resource.type !== "workspace" && resource.resource.defaultAccessLevel
+        resource.type === "team" && resource.resource.defaultAccessLevel
           ? {
               "aria-label": "Default permission for link sharing",
               value: resource.resource.defaultAccessLevel,
-              onChange: (value) =>
-                resource.type === "project"
-                  ? updateProject(false, value as GrantableAccessLevel)
-                  : updateTeam(value as GrantableAccessLevel),
+              onChange: (value) => updateTeam(value as GrantableAccessLevel),
               children: [
                 <Select.Option value="viewer">{viewerTooltip}</Select.Option>,
-                ...(appCtx.appConfig.comments
+                ...(canHaveCommenterRole
                   ? [
                       <Select.Option value="commenter">
                         {commenterTooltip}
@@ -417,6 +415,26 @@ function ShareDialogContent(props: ShareDialogContentProps) {
             }
           : undefined
       }
+      everyoneElseDropdown={{
+        value:
+          resource.type === "project" && resource.resource.inviteOnly
+            ? "none"
+            : "viewer",
+        "aria-label": `Everyone else permission`,
+        onChange: (key) => {
+          const inviteOnly = key === "none" ? true : false;
+          spawn(updateProject(inviteOnly));
+        },
+        isDisabled: !canEdit,
+        children: [
+          <Select.Option key="none" value="none">
+            None
+          </Select.Option>,
+          <Select.Option key="viewer" value="viewer">
+            {viewerTooltip}
+          </Select.Option>,
+        ],
+      }}
       newUserEmail={{
         onChange: (e) => {
           setEmail(e.target.value);
@@ -431,46 +449,22 @@ function ShareDialogContent(props: ShareDialogContentProps) {
         onClick: invite,
       }}
       copyLink={
-        resource.type === "project"
-          ? {
-              onClick: () =>
-                copy(
-                  new URL(
-                    U.project({
-                      projectId: resource.resource.id,
-                    }),
-                    getPublicUrl()
-                  ).toString()
-                ),
-            }
-          : resource.type === "team"
+        resource.type === "team"
           ? {
               onClick: () => copy(getTeamInviteLink(resource.resource)),
             }
           : undefined
       }
-      requireSignUpSwitch={{
-        isChecked: requireSignUp,
-        onChange: setRequireSignUp,
-      }}
       noShareByLink={noShareByLink}
       shareByLinkSwitch={
-        resource.type !== "workspace"
+        resource.type === "team"
           ? {
               isDisabled: !canEdit,
               onChange: (checked: boolean) => {
                 if (checked) {
-                  spawn(
-                    resource.type === "project"
-                      ? updateProject(false, "viewer")
-                      : updateTeam("viewer")
-                  );
+                  spawn(updateTeam("viewer"));
                 } else {
-                  spawn(
-                    resource.type === "project"
-                      ? updateProject(true, "viewer")
-                      : updateTeam(null)
-                  );
+                  spawn(updateTeam(null));
                 }
               },
             }
@@ -489,14 +483,24 @@ function ShareDialogContent(props: ShareDialogContentProps) {
           resource.type === "workspace"
         ),
       }}
-      cascadeWorkspace={
+      workspaceName={
         resource.type === "project" &&
         resource.resource.workspaceId &&
         resource.resource.workspaceName
           ? {
               props: {
                 children: resource.resource.workspaceName,
-                href: U.workspace({
+              },
+            }
+          : undefined
+      }
+      workspaceLink={
+        resource.type === "project" &&
+        resource.resource.workspaceId &&
+        resource.resource.workspaceName
+          ? {
+              props: {
+                href: fillRoute(APP_ROUTES.workspace, {
                   workspaceId: resource.resource.workspaceId,
                 }),
                 target: "_blank",
@@ -505,7 +509,19 @@ function ShareDialogContent(props: ShareDialogContentProps) {
             }
           : undefined
       }
-      cascadeTeam={{
+      teamLink={{
+        props: {
+          href:
+            resource.type === "project" && resource.resource.teamId
+              ? fillRoute(APP_ROUTES.org, { teamId: resource.resource.teamId })
+              : resource.type === "workspace"
+              ? fillRoute(APP_ROUTES.org, { teamId: resource.resource.team.id })
+              : undefined,
+          target: "_blank",
+        },
+        wrap: (node) => <ClickStopper>{node}</ClickStopper>,
+      }}
+      teamName={{
         props: {
           children:
             resource.type === "project" && resource.resource.teamName
@@ -513,15 +529,73 @@ function ShareDialogContent(props: ShareDialogContentProps) {
               : resource.type === "workspace"
               ? resource.resource.team.name
               : undefined,
-          href:
-            resource.type === "project" && resource.resource.teamId
-              ? U.org({ teamId: resource.resource.teamId })
-              : resource.type === "workspace"
-              ? U.org({ teamId: resource.resource.team.id })
-              : undefined,
-          target: "_blank",
         },
-        wrap: (node) => <ClickStopper>{node}</ClickStopper>,
+      }}
+      projectActionMenu={{
+        onClick: () => {
+          analytics().track("project-copy-menu", {
+            item: "button-copy-project-link",
+          });
+          copy(
+            new URL(
+              fillRoute(APP_ROUTES.project, {
+                projectId: resource.resource.id,
+              }),
+              getPublicUrl()
+            ).toString()
+          );
+        },
+        menu: () => (
+          <Menu>
+            <Menu.Item
+              onClick={() => {
+                analytics().track("project-copy-menu", {
+                  item: "copy-project-link",
+                });
+                copy(
+                  new URL(
+                    fillRoute(APP_ROUTES.project, {
+                      projectId: resource.resource.id,
+                    }),
+                    getPublicUrl()
+                  ).toString()
+                );
+              }}
+            >
+              Copy project link
+            </Menu.Item>
+            <Menu.Item
+              onClick={() => {
+                analytics().track("project-copy-menu", {
+                  item: "copy-current-arena-link",
+                });
+                copy(window.location.href);
+              }}
+            >
+              Copy link to current arena
+            </Menu.Item>
+            {arenaId && arenaType !== "custom" && (
+              <Menu.Item
+                onClick={() => {
+                  analytics().track("project-copy-menu", {
+                    item: "copy-current-arena-preview-link",
+                  });
+                  copy(
+                    new URL(
+                      fillRoute(APP_ROUTES.projectPreview, {
+                        projectId: resource.resource.id,
+                        previewPath: arenaId,
+                      }),
+                      getPublicUrl()
+                    ).toString()
+                  );
+                }}
+              >
+                Copy current arena preview link
+              </Menu.Item>
+            )}
+          </Menu>
+        ),
       }}
     />
   );

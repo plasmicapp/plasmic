@@ -1,6 +1,5 @@
 import { CustomCssProps } from "@/wab/client/components/canvas/CanvasText";
-import { TplTagElement } from "@/wab/client/components/canvas/slate";
-import { tags } from "@/wab/client/components/canvas/subdeps";
+import { tags, TplTagElement } from "@/wab/client/components/canvas/slate";
 import { SidebarModalProvider } from "@/wab/client/components/sidebar/SidebarModal";
 import Button from "@/wab/client/components/widgets/Button";
 import {

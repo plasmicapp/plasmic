@@ -1,4 +1,3 @@
-import { U } from "@/wab/client/cli-routes";
 import { PublicLink } from "@/wab/client/components/PublicLink";
 import { DocsPortalCtx } from "@/wab/client/components/docs/DocsPortalCtx";
 import { ImagePreview } from "@/wab/client/components/style-controls/ImageSelector";
@@ -6,9 +5,11 @@ import {
   DefaultImageListItemProps,
   PlasmicImageListItem,
 } from "@/wab/client/plasmic/plasmic_kit_docs_portal/PlasmicImageListItem";
-import { asOne, ensure } from "@/wab/shared/common";
 import { toClassName } from "@/wab/shared/codegen/util";
+import { asOne, ensure } from "@/wab/shared/common";
 import { ImageAsset } from "@/wab/shared/model/classes";
+import { APP_ROUTES } from "@/wab/shared/route/app-routes";
+import { fillRoute } from "@/wab/shared/route/route";
 import { observer } from "mobx-react";
 import * as React from "react";
 
@@ -30,7 +31,7 @@ const ImageListItem = observer(function ImageListItem(
             <PublicLink
               {...(rest2 as any)}
               children={asOne(children)}
-              href={U.projectDocsIcon({
+              href={fillRoute(APP_ROUTES.projectDocsIcon, {
                 projectId: docsCtx.studioCtx.siteInfo.id,
                 iconIdOrClassName: toClassName(icon.name) || icon.uuid,
                 codegenType: docsCtx.getCodegenType(),

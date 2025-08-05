@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -49,9 +49,7 @@ export const PlasmicSelect__Overlay__VariantProps = new Array<VariantPropType>(
   "relativePlacement"
 );
 
-export type PlasmicSelect__Overlay__ArgsType = {
-  children?: React.ReactNode;
-};
+export type PlasmicSelect__Overlay__ArgsType = { children?: React.ReactNode };
 type ArgPropType = keyof PlasmicSelect__Overlay__ArgsType;
 export const PlasmicSelect__Overlay__ArgProps = new Array<ArgPropType>(
   "children"

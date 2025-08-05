@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -22,6 +22,7 @@ import {
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  ensureGlobalVariants,
   hasVariant,
   renderPlasmicSlot,
   useDollarState,
@@ -31,6 +32,8 @@ import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 import StarterGroup from "../../components/StarterGroup"; // plasmic-import: u6dq5eydCj/component
 import StarterProject from "../../components/StarterProject"; // plasmic-import: CCsDeqqYeoM/component
 
+import { useEnvironment } from "../plasmic_kit_pricing/PlasmicGlobalVariant__Environment"; // plasmic-import: hIjF9NLAUKG-/globalVariant
+
 import "@plasmicapp/react-web/lib/plasmic.css";
 
 import plasmic_plasmic_kit_pricing_css from "../plasmic_kit_pricing/plasmic_plasmic_kit_pricing.module.css"; // plasmic-import: ehckhYnyDHgCBbV47m9bkf/projectcss
@@ -39,10 +42,10 @@ import projectcss from "../PP__plasmickit_dashboard.module.css"; // plasmic-impo
 import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import sty from "./PlasmicProjectListSection.module.css"; // plasmic-import: diKNfA_-roE/css
 
-import eyesvgZxKyHRa6Q6Pa from "../plasmic_kit_design_system/images/eyeSvg.svg"; // plasmic-import: Zx-kyHRa6Q6PA/picture
+import eyeSvgZxKyHRa6Q6Pa from "../plasmic_kit_design_system/images/eyeSvg.svg"; // plasmic-import: Zx-kyHRa6Q6PA/picture
 import image3YherfIxkolNxf from "../plasmic_kit_design_system/images/image3.svg"; // plasmic-import: yherfIxkolNXF/picture
-import ChevronDownsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
-import ChevronLeftsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronLeftSvg"; // plasmic-import: 0-_N6JM-u/icon
+import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
+import ChevronLeftSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronLeftSvg"; // plasmic-import: 0-_N6JM-u/icon
 import CheckIcon from "./PlasmicIcon__Check"; // plasmic-import: pawp1H5YxB_3B/icon
 import LightBulbIcon from "./PlasmicIcon__LightBulb"; // plasmic-import: L1GrIYxdm_MJL/icon
 
@@ -97,7 +100,16 @@ function PlasmicProjectListSection__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
@@ -123,7 +135,6 @@ function PlasmicProjectListSection__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.type,
       },
     ],
-
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -131,6 +142,10 @@ function PlasmicProjectListSection__RenderFunc(props: {
     $ctx,
     $queries: {},
     $refs,
+  });
+
+  const globalVariants = ensureGlobalVariants({
+    environment: useEnvironment(),
   });
 
   return (
@@ -152,6 +167,24 @@ function PlasmicProjectListSection__RenderFunc(props: {
         plasmic_plasmic_kit_pricing_css.plasmic_tokens,
         sty.root,
         {
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
           [sty.rootstates_collapsed]: hasVariant($state, "states", "collapsed"),
           [sty.roottype_starters]: hasVariant($state, "type", "starters"),
         }
@@ -209,8 +242,8 @@ function PlasmicProjectListSection__RenderFunc(props: {
             data-plasmic-override={overrides.svg}
             PlasmicIconType={
               hasVariant($state, "states", "collapsed")
-                ? ChevronLeftsvgIcon
-                : ChevronDownsvgIcon
+                ? ChevronLeftSvgIcon
+                : ChevronDownSvgIcon
             }
             className={classNames(projectcss.all, sty.svg, {
               [sty.svgstates_collapsed]: hasVariant(
@@ -269,7 +302,7 @@ function PlasmicProjectListSection__RenderFunc(props: {
                               sty.img__fSbyP
                             )}
                             loading={"lazy"}
-                            src={eyesvgZxKyHRa6Q6Pa}
+                            src={eyeSvgZxKyHRa6Q6Pa}
                           />
                         }
                       >
@@ -306,7 +339,7 @@ function PlasmicProjectListSection__RenderFunc(props: {
                               sty.img__oYopF
                             )}
                             loading={"lazy"}
-                            src={eyesvgZxKyHRa6Q6Pa}
+                            src={eyeSvgZxKyHRa6Q6Pa}
                           />
                         }
                       >
@@ -351,7 +384,7 @@ function PlasmicProjectListSection__RenderFunc(props: {
                               sty.img__gsx6F
                             )}
                             loading={"lazy"}
-                            src={eyesvgZxKyHRa6Q6Pa}
+                            src={eyeSvgZxKyHRa6Q6Pa}
                           />
                         }
                       >
@@ -388,7 +421,7 @@ function PlasmicProjectListSection__RenderFunc(props: {
                               sty.img__cpV4
                             )}
                             loading={"lazy"}
-                            src={eyesvgZxKyHRa6Q6Pa}
+                            src={eyeSvgZxKyHRa6Q6Pa}
                           />
                         }
                       >
@@ -403,7 +436,6 @@ function PlasmicProjectListSection__RenderFunc(props: {
                 />
               </React.Fragment>
             ),
-
             value: args.container,
           })}
         </Stack__>
@@ -431,7 +463,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicProjectListSection__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
@@ -439,15 +470,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicProjectListSection__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicProjectListSection__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicProjectListSection__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+    // Specify args directly as props
+    Omit<PlasmicProjectListSection__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

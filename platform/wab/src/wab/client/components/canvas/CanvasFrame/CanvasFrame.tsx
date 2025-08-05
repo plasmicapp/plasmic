@@ -20,12 +20,7 @@ import {
   XDraggableEvent,
 } from "@/wab/commons/components/XDraggable";
 import { AsyncGeneratorReturnType } from "@/wab/commons/types";
-import {
-  AnyArena,
-  getArenaName,
-  getFrameHeight,
-  isPositionManagedFrame,
-} from "@/wab/shared/Arenas";
+import { AnyArena, getArenaName, getFrameHeight } from "@/wab/shared/Arenas";
 import { siteToAllGlobalVariants } from "@/wab/shared/cached-selectors";
 import {
   toClassName,
@@ -413,7 +408,7 @@ export const CanvasFrame = observer(function CanvasFrame({
 
   const startMove = (e: XDraggableEvent) => {
     const clientPt = new Pt(e.mouseEvent.pageX, e.mouseEvent.pageY);
-    if (isPositionManagedFrame(studioCtx, arenaFrame)) {
+    if (studioCtx.isPositionManagedFrame(arenaFrame)) {
       return;
     }
     dragMoveManager.current = new DragMoveFrameManager(
@@ -684,7 +679,8 @@ export const CanvasFrame = observer(function CanvasFrame({
             />
           </span>
         </XDraggable>
-        {studioCtx.appCtx.appConfig.comments &&
+        {!studioCtx.isInteractiveMode &&
+          studioCtx.showComments() &&
           studioCtx.showCommentsOverlay && (
             <CanvasCommentMarkers arena={arena} arenaFrame={arenaFrame} />
           )}

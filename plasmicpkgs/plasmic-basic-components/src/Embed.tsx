@@ -23,11 +23,7 @@ export interface EmbedProps {
  * One last complication is that Next.js can run the effect multiple times in development mode. There's nothing actually
  * that we can/should do about that, but just something to be aware of if you are here debugging issues.
  */
-export default function Embed({
-  className,
-  code,
-  hideInEditor = false,
-}: EmbedProps) {
+export function Embed({ className, code, hideInEditor = false }: EmbedProps) {
   const rootElt = useRef<HTMLDivElement>(null);
   const inEditor = usePlasmicCanvasContext();
   const htmlId = useId?.();
@@ -47,7 +43,9 @@ export default function Embed({
     ) {
       return;
     }
+
     // Load scripts sequentially one at a time, since later scripts can depend on earlier ones.
+    let cleanup = false;
     (async () => {
       for (const oldScript of Array.from(
         ensure(rootElt.current).querySelectorAll("script")
@@ -66,10 +64,16 @@ export default function Embed({
           await new Promise((resolve) =>
             newScript.addEventListener("load", resolve)
           );
+          if (cleanup) {
+            return;
+          }
         }
       }
+      return () => {
+        cleanup = true;
+      };
     })();
-  }, [htmlId, firstRender, code, hideInEditor, inEditor]);
+  }, [htmlId, code, hideInEditor, inEditor]);
   const effectiveCode =
     hideInEditor && inEditor
       ? ""

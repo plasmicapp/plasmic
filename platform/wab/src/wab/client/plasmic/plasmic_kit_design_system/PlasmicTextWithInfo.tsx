@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -48,9 +48,7 @@ export const PlasmicTextWithInfo__VariantProps = new Array<VariantPropType>(
   "medium"
 );
 
-export type PlasmicTextWithInfo__ArgsType = {
-  children?: React.ReactNode;
-};
+export type PlasmicTextWithInfo__ArgsType = { children?: React.ReactNode };
 type ArgPropType = keyof PlasmicTextWithInfo__ArgsType;
 export const PlasmicTextWithInfo__ArgProps = new Array<ArgPropType>("children");
 

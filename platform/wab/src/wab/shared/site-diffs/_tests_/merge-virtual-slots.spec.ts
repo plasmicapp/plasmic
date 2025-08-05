@@ -114,6 +114,8 @@ describe("Merging virtual slots", () => {
       status: "merged",
     });
 
+    assert("ancestorSite" in result, "Expected ancestorSite to be returned");
+
     const ancestor = result.ancestorSite;
     const merged = result.mergedSite;
 

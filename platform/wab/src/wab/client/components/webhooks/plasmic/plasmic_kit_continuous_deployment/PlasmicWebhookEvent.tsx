@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -38,8 +38,8 @@ import plasmic_plasmic_kit_color_tokens_css from "../../../../plasmic/plasmic_ki
 import projectcss from "../../../modals/plasmic/plasmic_kit_project_settings/plasmic_plasmic_kit_project_settings.module.css"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/projectcss
 import sty from "./PlasmicWebhookEvent.module.css"; // plasmic-import: MtBpr4iNob/css
 
-import ChevronDownsvgIcon from "../../../../plasmic/plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
-import ChevronLeftsvgIcon from "../../../../plasmic/plasmic_kit_icons/icons/PlasmicIcon__ChevronLeftSvg"; // plasmic-import: 0-_N6JM-u/icon
+import ChevronDownSvgIcon from "../../../../plasmic/plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
+import ChevronLeftSvgIcon from "../../../../plasmic/plasmic_kit_icons/icons/PlasmicIcon__ChevronLeftSvg"; // plasmic-import: 0-_N6JM-u/icon
 
 createPlasmicElementProxy;
 
@@ -100,7 +100,16 @@ function PlasmicWebhookEvent__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
@@ -126,7 +135,6 @@ function PlasmicWebhookEvent__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.expanded,
       },
     ],
-
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -261,7 +269,7 @@ function PlasmicWebhookEvent__RenderFunc(props: {
           data-plasmic-name={"viewButton"}
           data-plasmic-override={overrides.viewButton}
           children2={
-            <ChevronDownsvgIcon
+            <ChevronDownSvgIcon
               className={classNames(projectcss.all, sty.svg__k4Czc)}
               role={"img"}
             />
@@ -285,8 +293,8 @@ function PlasmicWebhookEvent__RenderFunc(props: {
           <PlasmicIcon__
             PlasmicIconType={
               hasVariant($state, "expanded", "expanded")
-                ? ChevronDownsvgIcon
-                : ChevronLeftsvgIcon
+                ? ChevronDownSvgIcon
+                : ChevronLeftSvgIcon
             }
             className={classNames(projectcss.all, sty.svg__edv0Q, {
               [sty.svgexpanded__edv0Q8Ak7G]: hasVariant(
@@ -368,7 +376,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicWebhookEvent__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
@@ -376,15 +383,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicWebhookEvent__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicWebhookEvent__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicWebhookEvent__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+    // Specify args directly as props
+    Omit<PlasmicWebhookEvent__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

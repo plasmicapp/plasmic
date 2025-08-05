@@ -28,11 +28,16 @@ import {
   removeWhere,
   switchType,
   tuple,
+  withoutFalsy,
   withoutNils,
   xIntersect,
   xSetDefault,
 } from "@/wab/shared/common";
-import { CodeComponent, isCodeComponent } from "@/wab/shared/core/components";
+import {
+  CodeComponent,
+  allComponentVariants,
+  isCodeComponent,
+} from "@/wab/shared/core/components";
 import { ChangeRecorder } from "@/wab/shared/core/observable-model";
 import { visitComponentRefs } from "@/wab/shared/core/sites";
 import {
@@ -63,6 +68,7 @@ import {
   isKnownRenderExpr,
   isKnownTplComponent,
   isKnownTplTag,
+  isKnownVariantsRef,
   isKnownVirtualRenderExpr,
 } from "@/wab/shared/model/classes";
 import { meta } from "@/wab/shared/model/classes-metas";
@@ -88,6 +94,7 @@ import {
   findLastIndex,
   groupBy,
   isEqual,
+  isNil,
   keyBy,
   range,
   sortBy,
@@ -351,7 +358,8 @@ export const tryMergeComponents: MergeSpecialFieldHandler<Site> = (
   siteBCtx,
   mergedSiteCtx,
   bundler,
-  picks
+  picks,
+  recorder
 ): DirectConflict[] => {
   const [siteAncestor, siteA, siteB, mergedSite] = [
     siteAncestorCtx,
@@ -387,15 +395,21 @@ export const tryMergeComponents: MergeSpecialFieldHandler<Site> = (
     return shouldDelete;
   });
 
-  deltaA.added.forEach((c) => mergedSite.components.push(cloneInst(c, siteA)));
+  const newComponents = [
+    ...deltaA.added.map((c) => cloneInst(c, siteA)),
+    ...deltaB.added.map((c) => cloneInst(c, siteB)),
+  ];
 
-  deltaB.added.forEach((c) => mergedSite.components.push(cloneInst(c, siteB)));
+  newComponents.forEach((c) => mergedSite.components.push(c));
 
   // Make sure to track new components
   mergedSite.components.forEach((component) => {
     trackComponentRoot(component);
     trackComponentSite(component, mergedSite);
   });
+
+  // Make sure to observe the added components
+  recorder.ensureObservedComponents(newComponents);
 
   // Code components might have been unintentionally unregistered at some point
   // and re-registered again afterwards. But, because it gets a new uuid
@@ -416,9 +430,19 @@ export const tryMergeComponents: MergeSpecialFieldHandler<Site> = (
     }
   });
 
+  const updatedComponentsUuids = inferUpdatedComponents(
+    siteAncestor,
+    siteA,
+    siteB
+  );
+
   // Checking direct conflicts between updated tpls
   const directConflicts: DirectConflict[] = [];
   siteAncestor.components.forEach((ancestorComp) => {
+    if (!updatedComponentsUuids.has(ancestorComp.uuid)) {
+      return;
+    }
+
     const equivalentOnA = siteA.components.find(
       (comp) => ancestorComp.uuid === comp.uuid
     );
@@ -434,30 +458,31 @@ export const tryMergeComponents: MergeSpecialFieldHandler<Site> = (
       const compA = equivalentOnA;
       const compB = equivalentOnB;
       directConflicts.push(
-        ...getDirectConflicts(
-          {
+        ...getDirectConflicts({
+          ancestorCtx: {
             node: ancestorComp,
             site: siteAncestorCtx.site,
             path: getCompPath(ancestorComp, bundler),
           },
-          {
+          leftCtx: {
             node: compA,
             site: siteACtx.site,
             path: getCompPath(compA, bundler),
           },
-          {
+          rightCtx: {
             node: compB,
             site: siteBCtx.site,
             path: getCompPath(compB, bundler),
           },
-          {
+          mergedCtx: {
             node: mergedComp,
             site: mergedSiteCtx.site,
             path: getCompPath(mergedComp, bundler),
           },
           bundler,
-          picks
-        )
+          picks,
+          recorder,
+        })
       );
       if (
         ancestorComp.tplTree.uuid !== compA.tplTree.uuid &&
@@ -700,23 +725,23 @@ export const tryMergeComponents: MergeSpecialFieldHandler<Site> = (
               "Path to tplNode must exist."
             );
             directConflicts.push(
-              ...getDirectConflicts(
-                {
+              ...getDirectConflicts({
+                ancestorCtx: {
                   node: tplAnc,
                   site: siteAncestorCtx.site,
                   path: [...getCompPath(ancestorComp, bundler), ...nodePathAnc],
                 },
-                {
+                leftCtx: {
                   node: tplA,
                   site: siteACtx.site,
                   path: [...getCompPath(compA, bundler), ...nodePathA],
                 },
-                {
+                rightCtx: {
                   node: tplB,
                   site: siteBCtx.site,
                   path: [...getCompPath(compB, bundler), ...nodePathB],
                 },
-                {
+                mergedCtx: {
                   node: tplMerged,
                   site: mergedSiteCtx.site,
                   path: [
@@ -725,8 +750,9 @@ export const tryMergeComponents: MergeSpecialFieldHandler<Site> = (
                   ],
                 },
                 bundler,
-                picks
-              )
+                picks,
+                recorder,
+              })
             );
           }
         }
@@ -1299,7 +1325,8 @@ export const mergeVSettings: MergeSpecialFieldHandler<TplNode> = (
   rightCtx,
   mergedCtx,
   bundler,
-  picks
+  picks,
+  recorder
 ) => {
   const [ancestor, left, right, merged] = [
     ancestorCtx,
@@ -1316,7 +1343,8 @@ export const mergeVSettings: MergeSpecialFieldHandler<TplNode> = (
         rightCtx,
         mergedCtx,
         bundler,
-        picks
+        picks,
+        recorder
       )
     );
   }
@@ -1339,13 +1367,13 @@ export const mergeVSettings: MergeSpecialFieldHandler<TplNode> = (
       removeWhere(merged.vsettings, (vs2) => vs2 === mergedEquiv);
     } else {
       conflicts.push(
-        ...getDirectConflicts(
-          {
+        ...getDirectConflicts({
+          ancestorCtx: {
             node: vs,
             path: [...ancestorCtx.path, "vsettings", `${i}`],
             site: ancestorCtx.site,
           },
-          {
+          leftCtx: {
             node: leftEquiv,
             path: [
               ...leftCtx.path,
@@ -1354,7 +1382,7 @@ export const mergeVSettings: MergeSpecialFieldHandler<TplNode> = (
             ],
             site: leftCtx.site,
           },
-          {
+          rightCtx: {
             node: rightEquiv,
             path: [
               ...rightCtx.path,
@@ -1363,7 +1391,7 @@ export const mergeVSettings: MergeSpecialFieldHandler<TplNode> = (
             ],
             site: rightCtx.site,
           },
-          {
+          mergedCtx: {
             node: mergedEquiv,
             path: [
               ...mergedCtx.path,
@@ -1373,8 +1401,9 @@ export const mergeVSettings: MergeSpecialFieldHandler<TplNode> = (
             site: mergedCtx.site,
           },
           bundler,
-          picks
-        )
+          picks,
+          recorder,
+        })
       );
     }
   });
@@ -1402,8 +1431,8 @@ export const mergeVSettings: MergeSpecialFieldHandler<TplNode> = (
         merged.vsettings.push(mergedVS);
 
         conflicts.push(
-          ...getDirectConflicts(
-            {
+          ...getDirectConflicts({
+            ancestorCtx: {
               node: ancestorVS,
               path: [
                 ...ancestorCtx.path,
@@ -1412,7 +1441,7 @@ export const mergeVSettings: MergeSpecialFieldHandler<TplNode> = (
               ],
               site: ancestorCtx.site,
             },
-            {
+            leftCtx: {
               node: vs,
               path: [
                 ...leftCtx.path,
@@ -1421,7 +1450,7 @@ export const mergeVSettings: MergeSpecialFieldHandler<TplNode> = (
               ],
               site: leftCtx.site,
             },
-            {
+            rightCtx: {
               node: rightVs,
               path: [
                 ...rightCtx.path,
@@ -1430,7 +1459,7 @@ export const mergeVSettings: MergeSpecialFieldHandler<TplNode> = (
               ],
               site: rightCtx.site,
             },
-            {
+            mergedCtx: {
               node: mergedVS,
               path: [
                 ...mergedCtx.path,
@@ -1440,8 +1469,9 @@ export const mergeVSettings: MergeSpecialFieldHandler<TplNode> = (
               site: mergedCtx.site,
             },
             bundler,
-            picks
-          )
+            picks,
+            recorder,
+          })
         );
       } else {
         merged.vsettings.push(
@@ -1600,6 +1630,18 @@ export function fixSwappedTplComponents(
   const rightCompByUuid = new Map(
     right.components.map((c) => [c.uuid, c] as const)
   );
+
+  /* We want to replace VSettings.args wrong variant with valid VariantGroup variant,
+   * hence we need to create a key with name instead of uuid in case parent exists,
+   * because uuid is different for the wrong variant that we want to replace
+   * and we won't be able to match it to any existing VariantGroup variant with uuid.
+   */
+  const toArgVariantKeyWithName = (variant: Variant) => {
+    return variant.parent
+      ? `${variant.parent.param.variable.name}:${variant.name}`
+      : toVariantKey(variant);
+  };
+
   merged.components.forEach((component) => {
     const ancestorComp = ancestorCompByUuid.get(component.uuid);
     const compA = leftCompByUuid.get(component.uuid);
@@ -1634,6 +1676,28 @@ export function fixSwappedTplComponents(
           tplMerged.vsettings.forEach((vs) => {
             removeWhere(vs.args, (arg) => !toComponentParams.has(arg.param));
           });
+
+          const componentVariantsMap = new Map(
+            allComponentVariants(tplMerged.component, {
+              includeSuperVariants: true,
+            }).map((v) => tuple(toArgVariantKeyWithName(v), v))
+          );
+
+          /* Fix a wrong Arg variant in VSettings by replacing it with a valid
+           * variant from a list of associated param VariantGroup's variants.
+           */
+          for (const vs of tplMerged.vsettings) {
+            for (const arg of vs.args) {
+              if (isKnownVariantsRef(arg.expr)) {
+                arg.expr.variants = withoutFalsy(
+                  arg.expr.variants.map((v) =>
+                    componentVariantsMap.get(toArgVariantKeyWithName(v))
+                  )
+                );
+              }
+            }
+          }
+
           removeWhere(
             component.states,
             (state) =>
@@ -1802,7 +1866,8 @@ export const tryMergeGlobalContexts: MergeSpecialFieldHandler<Site> = (
   rightCtx,
   mergedCtx,
   bundler,
-  picks
+  picks,
+  recorder
 ): DirectConflict[] => {
   const directConflicts: DirectConflict[] = [];
   const globalContextsNames: Set<string> = new Set();
@@ -1891,8 +1956,8 @@ export const tryMergeGlobalContexts: MergeSpecialFieldHandler<Site> = (
       );
 
       directConflicts.push(
-        ...getDirectConflicts(
-          {
+        ...getDirectConflicts({
+          ancestorCtx: {
             node: ancestorTpl,
             path: [
               ...ancestorCtx.path,
@@ -1902,12 +1967,12 @@ export const tryMergeGlobalContexts: MergeSpecialFieldHandler<Site> = (
             ],
             site: ancestorCtx.site,
           },
-          {
+          leftCtx: {
             node: leftTpl,
             path: [...leftCtx.path, ...getGlobalContextPath(leftTpl, bundler)],
             site: leftCtx.site,
           },
-          {
+          rightCtx: {
             node: rightTpl,
             path: [
               ...rightCtx.path,
@@ -1915,7 +1980,7 @@ export const tryMergeGlobalContexts: MergeSpecialFieldHandler<Site> = (
             ],
             site: rightCtx.site,
           },
-          {
+          mergedCtx: {
             node: mergedTpl,
             path: [
               ...mergedCtx.path,
@@ -1925,9 +1990,10 @@ export const tryMergeGlobalContexts: MergeSpecialFieldHandler<Site> = (
           },
           bundler,
           picks,
+          recorder,
 
           // Component conflicts will be fixed later in `fixDuplicatedCodeComponents`
-          (conflict) => {
+          filterConflict: (conflict) => {
             const pathStr = JSON.parse(
               conflict.conflictType === "generic"
                 ? conflict.conflictDetails.length > 0
@@ -1943,10 +2009,91 @@ export const tryMergeGlobalContexts: MergeSpecialFieldHandler<Site> = (
               return false;
             }
             return true;
-          }
-        )
+          },
+        })
       );
     }
   });
   return directConflicts;
 };
+
+export const mergeComponentUpdatedAt: MergeSpecialFieldHandler<Component> = (
+  ancestorCtx,
+  leftCtx,
+  rightCtx,
+  mergedCtx
+) => {
+  // Components special handlers should only be called when all the nodes exist
+  const [ancestor, left, right, merged] = [
+    ancestorCtx,
+    leftCtx,
+    rightCtx,
+    mergedCtx,
+  ].map((ctx) =>
+    ensure(ctx.node, () => `mergeComponentUpdatedAt expects all nodes to exist`)
+  );
+
+  // If the ancestor is nil, we will use the merge as a point to mark the component as updated
+  // since this component will be included in the merge algorithm.
+  if (isNil(ancestor.updatedAt)) {
+    merged.updatedAt = Date.now();
+    return [];
+  }
+
+  const isLeftUnchanged = left.updatedAt === ancestor.updatedAt;
+  const isRightUnchanged = right.updatedAt === ancestor.updatedAt;
+
+  if (isLeftUnchanged && isRightUnchanged) {
+    assert(
+      merged.updatedAt === ancestor.updatedAt,
+      () => `Merged component should have the same updatedAt as the ancestor`
+    );
+  } else if (isLeftUnchanged) {
+    merged.updatedAt = right.updatedAt;
+  } else if (isRightUnchanged) {
+    merged.updatedAt = left.updatedAt;
+  } else {
+    // If the component was changed in both left and right, we need to set a new updatedAt
+    // it means that there was some parallel work, so even if it's conflict-less, we will
+    // set a new updatedAt to make sure it will be a meaningful value for future merges.
+    merged.updatedAt = Date.now();
+  }
+
+  // No conflicts, it won't be controlled by the user
+  return [];
+};
+
+/**
+ * Infers the components that were updated by operations in the left and right branches.
+ *
+ * @param ancestor
+ * @param left
+ * @param right
+ * @returns A set of component uuids of the components that were updated and should be considered in the merge.
+ */
+export function inferUpdatedComponents(
+  ancestor: Site,
+  left: Site,
+  right: Site
+) {
+  const leftComponentsUpdatedAt = Object.fromEntries(
+    left.components.map((component) => [component.uuid, component.updatedAt])
+  );
+  const rightComponentsUpdatedAt = Object.fromEntries(
+    right.components.map((component) => [component.uuid, component.updatedAt])
+  );
+  const updatedComponents = ancestor.components.filter((component) => {
+    if (isNil(component.updatedAt)) {
+      // If the component doesn't have an updatedAt, it means it was created before the tracking, so we can't
+      // know if it was updated or not. We will assume it was updated so that it's considered in the merge.
+      return true;
+    }
+    const hasLeftChanged =
+      leftComponentsUpdatedAt[component.uuid] !== component.updatedAt;
+    const hasRightChanged =
+      rightComponentsUpdatedAt[component.uuid] !== component.updatedAt;
+    return hasLeftChanged || hasRightChanged;
+  });
+
+  return new Set(updatedComponents.map((component) => component.uuid));
+}

@@ -53,7 +53,7 @@ export const TopFrameObserver = observer(function _TopFrameObserver({
           : undefined;
       },
       getLatestPublishedVersionId: async () => studioCtx.releases[0]?.id,
-      getProjectReleases: async () => studioCtx.getProjectReleases(),
+      getProjectReleases: async (opts) => studioCtx.getProjectReleases(opts),
       publishVersion: async (versionTags, versionDesc, branchId) =>
         studioCtx.publish(versionTags, versionDesc, branchId),
       focusOnWindow: async () => {

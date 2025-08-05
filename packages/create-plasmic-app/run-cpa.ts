@@ -30,11 +30,21 @@ async function run() {
         scheme,
         typescript,
       });
-      allArgSets.push({
-        platform: "react",
-        scheme,
-        typescript,
-      });
+      if (scheme === "codegen") {
+        if (typescript) {
+          allArgSets.push({
+            platform: "tanstack",
+            scheme,
+            typescript,
+          });
+        }
+
+        allArgSets.push({
+          platform: "react",
+          scheme,
+          typescript,
+        });
+      }
     });
 
     allArgSets.push({
@@ -69,7 +79,7 @@ Valid arg sets:\n\tall\n\t${allArgSetNames.join("\n\t")}`,
             message: "Select arg sets:",
             choices: allArgSetNames,
             pageSize: allArgSetNames.length,
-            validate: (input) => {
+            validate: (input: string[]) => {
               if (input.length === 0) {
                 return "Please select at least 1 arg set.";
               }

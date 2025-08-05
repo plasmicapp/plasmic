@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -38,14 +38,14 @@ import Select__Option from "../Select__Option"; // plasmic-import: rr-LWdMni2G/c
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_design_system_deprecated_css from "../../../plasmic/PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import projectcss from "../../../plasmic/PP__plasmickit_share_dialog.module.css"; // plasmic-import: kA1Hysr5ZeimtATHTDJz5B/projectcss
 import plasmic_plasmic_kit_color_tokens_css from "../../../plasmic/plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
+import plasmic_plasmic_kit_design_system_css from "../../../plasmic/PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
+import projectcss from "../../../plasmic/PP__plasmickit_share_dialog.module.css"; // plasmic-import: kA1Hysr5ZeimtATHTDJz5B/projectcss
 import sty from "./PlasmicPermissionItem.module.css"; // plasmic-import: GFrmKeyhlA/css
 
 import ResetIcon from "../../../plasmic/plasmic_kit/PlasmicIcon__Reset"; // plasmic-import: Dj3u-HuPv94sN/icon
-import ChevronDownsvgIcon from "../../../plasmic/plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
-import PlussvgIcon from "../../../plasmic/plasmic_kit_icons/icons/PlasmicIcon__PlusSvg"; // plasmic-import: sQKgd2GNr/icon
+import ChevronDownSvgIcon from "../../../plasmic/plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
+import PlusSvgIcon from "../../../plasmic/plasmic_kit_icons/icons/PlasmicIcon__PlusSvg"; // plasmic-import: sQKgd2GNr/icon
 import Trash2SvgIcon from "../../../plasmic/plasmic_kit_icons/icons/PlasmicIcon__Trash2Svg"; // plasmic-import: nS4_I75qv/icon
 
 createPlasmicElementProxy;
@@ -100,7 +100,16 @@ function PlasmicPermissionItem__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
@@ -132,7 +141,6 @@ function PlasmicPermissionItem__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => "viewer",
       },
     ],
-
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -161,7 +169,7 @@ function PlasmicPermissionItem__RenderFunc(props: {
         projectcss.plasmic_default_styles,
         projectcss.plasmic_mixins,
         projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_deprecated_css.plasmic_tokens,
+        plasmic_plasmic_kit_design_system_css.plasmic_tokens,
         plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
         sty.root,
         {
@@ -182,6 +190,7 @@ function PlasmicPermissionItem__RenderFunc(props: {
         hasGap={true}
         className={classNames(projectcss.all, sty.freeBox, {
           [sty.freeBoxloading]: hasVariant($state, "loading", "loading"),
+          [sty.freeBoxrole_owner]: hasVariant($state, "role", "owner"),
         })}
       >
         {(hasVariant($state, "role", "owner") ? true : false) ? (
@@ -195,14 +204,26 @@ function PlasmicPermissionItem__RenderFunc(props: {
               { [sty.ownerrole_owner]: hasVariant($state, "role", "owner") }
             )}
           >
-            {hasVariant($state, "role", "owner") ? "owner" : "Enter some text"}
+            {hasVariant($state, "role", "owner") ? "Owner" : "Enter some text"}
           </div>
         ) : null}
+        {(hasVariant($state, "loading", "loading") ? true : false)
+          ? renderPlasmicSlot({
+              defaultContents: (
+                <ResetIcon
+                  className={classNames(projectcss.all, sty.svg__vmeQb)}
+                  role={"img"}
+                />
+              ),
+
+              value: args.spinner,
+            })
+          : null}
         <IconButton
           data-plasmic-name={"deleteBtn"}
           data-plasmic-override={overrides.deleteBtn}
           children2={
-            <ChevronDownsvgIcon
+            <ChevronDownSvgIcon
               className={classNames(projectcss.all, sty.svg___2OKoH)}
               role={"img"}
             />
@@ -213,7 +234,7 @@ function PlasmicPermissionItem__RenderFunc(props: {
           withRedBackgroundHover={true}
         >
           <PlasmicIcon__
-            PlasmicIconType={triggers.hover_root ? Trash2SvgIcon : PlussvgIcon}
+            PlasmicIconType={triggers.hover_root ? Trash2SvgIcon : PlusSvgIcon}
             className={classNames(projectcss.all, sty.svg__oRYw)}
             role={"img"}
           />
@@ -231,7 +252,7 @@ function PlasmicPermissionItem__RenderFunc(props: {
               [sty.roleDropdownrole_owner]: hasVariant($state, "role", "owner"),
             })}
             icon={
-              <PlussvgIcon
+              <PlusSvgIcon
                 className={classNames(projectcss.all, sty.svg__ijqCo)}
                 role={"img"}
               />
@@ -239,12 +260,23 @@ function PlasmicPermissionItem__RenderFunc(props: {
             isDisabled={
               hasVariant($state, "loading", "loading") ? true : undefined
             }
-            onChange={(...eventArgs) => {
-              generateStateOnChangeProp($state, ["roleDropdown", "value"])(
-                eventArgs[0]
-              );
+            onChange={async (...eventArgs: any) => {
+              ((...eventArgs) => {
+                generateStateOnChangeProp($state, ["roleDropdown", "value"])(
+                  eventArgs[0]
+                );
+              }).apply(null, eventArgs);
+
+              if (
+                eventArgs.length > 1 &&
+                eventArgs[1] &&
+                eventArgs[1]._plasmic_state_init_
+              ) {
+                return;
+              }
             }}
-            type={"bordered"}
+            textAlign={"right"}
+            type={"seamless"}
             value={generateStateValueProp($state, ["roleDropdown", "value"])}
           >
             <Select__Option
@@ -273,18 +305,6 @@ function PlasmicPermissionItem__RenderFunc(props: {
             </Select__Option>
           </Select>
         ) : null}
-        {(hasVariant($state, "loading", "loading") ? true : false)
-          ? renderPlasmicSlot({
-              defaultContents: (
-                <ResetIcon
-                  className={classNames(projectcss.all, sty.svg__vmeQb)}
-                  role={"img"}
-                />
-              ),
-
-              value: args.spinner,
-            })
-          : null}
       </Stack__>
     </Stack__>
   ) as React.ReactElement | null;
@@ -313,7 +333,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicPermissionItem__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
@@ -321,15 +340,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicPermissionItem__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicPermissionItem__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicPermissionItem__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+    // Specify args directly as props
+    Omit<PlasmicPermissionItem__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

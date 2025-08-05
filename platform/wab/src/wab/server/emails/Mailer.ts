@@ -1,3 +1,4 @@
+import { verifyEmailHtml } from "@/wab/server/emails/email-html";
 import { getSmtpAuth } from "@/wab/server/secrets";
 import { createTransport, SentMessageInfo, Transporter } from "nodemailer";
 import Mail from "nodemailer/lib/mailer";
@@ -16,6 +17,12 @@ class NodeMailer implements Mailer {
 class ConsoleMailer implements Mailer {
   async sendMail(mailOptions: Mail.Options): Promise<SentMessageInfo> {
     console.log(`SENDING MAIL TO CONSOLE`, mailOptions);
+
+    // Run verification during development
+    if (typeof mailOptions.html === "string") {
+      verifyEmailHtml(mailOptions.html);
+    }
+
     // Delay to simulate sending
     await new Promise((resolve) => setTimeout(resolve, 5000));
     console.log(`MAIL SENT`);

@@ -1,11 +1,9 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter%3Aital%2Cwght%400%2C400%3B0%2C500%3B0%2C600%3B0%2C700&family=IBM+Plex+Mono%3Aital%2Cwght%400%2C400%3B0%2C500%3B0%2C600%3B0%2C700&display=swap");
 
 .plasmic_tokens {
-  --token-iv-M1hAwV: rgb(255, 255, 255);
-  --plasmic-token-white: var(--token-iv-M1hAwV);
   --token-0vHxN11ixM: rgb(228, 230, 235);
   --plasmic-token-spectrum-gray-90: var(--token-0vHxN11ixM);
-  --token-t68i-MG5Bw: rgb(122, 125, 130);
+  --token-t68i-MG5Bw: #7a7d82;
   --plasmic-token-spectrum-gray-50: var(--token-t68i-MG5Bw);
   --token-pCMcQv3xBc: #323436;
   --plasmic-token-spectrum-gray-20: var(--token-pCMcQv3xBc);
@@ -124,7 +122,6 @@
   background-repeat: no-repeat;
   box-shadow: none;
   box-sizing: border-box;
-  text-decoration-line: none;
   margin: 0;
   border-width: 0px;
 }

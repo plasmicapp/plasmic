@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -46,9 +46,7 @@ type VariantPropType = keyof PlasmicSectionCollapseButton__VariantsArgs;
 export const PlasmicSectionCollapseButton__VariantProps =
   new Array<VariantPropType>("isExpanded");
 
-export type PlasmicSectionCollapseButton__ArgsType = {
-  onClick?: () => void;
-};
+export type PlasmicSectionCollapseButton__ArgsType = { onClick?: () => void };
 type ArgPropType = keyof PlasmicSectionCollapseButton__ArgsType;
 export const PlasmicSectionCollapseButton__ArgProps = new Array<ArgPropType>(
   "onClick"
@@ -104,7 +102,6 @@ function PlasmicSectionCollapseButton__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.isExpanded,
       },
     ],
-
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -162,7 +159,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicSectionCollapseButton__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
@@ -170,15 +166,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicSectionCollapseButton__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicSectionCollapseButton__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicSectionCollapseButton__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+    // Specify args directly as props
+    Omit<PlasmicSectionCollapseButton__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

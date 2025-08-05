@@ -1,5 +1,4 @@
 import { isTokenRef, tryParseTokenRef } from "@/wab/commons/StyleToken";
-import * as cssPegParser from "@/wab/gen/cssPegParser";
 import { AnyArena, getArenaFrames, isMixedArena } from "@/wab/shared/Arenas";
 import { MIXIN_LOWER } from "@/wab/shared/Labels";
 import { getTplSlot, isSlot } from "@/wab/shared/SlotUtils";
@@ -51,7 +50,6 @@ import {
 } from "@/wab/shared/core/sites";
 import { isPrivateState } from "@/wab/shared/core/states";
 import { isValidStyleProp } from "@/wab/shared/core/style-props";
-import { parseCssValue } from "@/wab/shared/core/styles";
 import {
   ancestorsUp,
   isTplComponent,
@@ -60,6 +58,7 @@ import {
   isTplVariantable,
   tplChildren,
 } from "@/wab/shared/core/tpls";
+import { parseCss } from "@/wab/shared/css";
 import { maybeComputedFn } from "@/wab/shared/mobx-util";
 import { instUtil } from "@/wab/shared/model/InstUtil";
 import {
@@ -93,20 +92,29 @@ export class InvariantError extends Error {
   }
 }
 
-export function assertSiteInvariants(site: Site) {
-  const errors: InvariantError[] = Array.from(genSiteErrors(site));
+export function assertSiteInvariants(
+  site: Site,
+  componentUuidsToSkip?: Set<string>
+) {
+  const errors: InvariantError[] = Array.from(
+    genSiteErrors(site, componentUuidsToSkip)
+  );
   if (errors.length > 0) {
     console.error("Site invariant errors", errors);
     throw errors[0];
   }
 }
 
-export function* genSiteErrors(site: Site) {
+export function* genSiteErrors(site: Site, componentUuidsToSkip?: Set<string>) {
   const componentNames = new Set<string>();
   componentToVariants = new WeakMap();
   siteToGlobalVariants = new WeakMap();
   siteToValidRefs = new WeakMap();
   for (const component of site.components) {
+    if (componentUuidsToSkip?.has(component.uuid)) {
+      continue;
+    }
+
     yield* genComponentErrors(site, component);
     // Only count Plasmic components that are not sub components
     if (!isPlasmicComponent(component) || component.superComp) {
@@ -334,6 +342,19 @@ function* _genComponentErrors(site: Site, component: Component) {
       )} does not have the base variant as its first variant`,
       { site, component }
     );
+  }
+
+  const seenVariantKeys: string[] = [];
+  for (const variant of component.variants) {
+    if (seenVariantKeys.includes(toVariantKey(variant))) {
+      yield new InvariantError(
+        `Component ${getComponentDisplayName(
+          component
+        )} contains duplicate variant ${toVariantKey(variant)}`
+      );
+    }
+
+    seenVariantKeys.push(toVariantKey(variant));
   }
 
   const seenTplUuids = new Set<string>();
@@ -612,10 +633,8 @@ function* _genTplErrors(site: Site, component: Component, tpl: TplNode) {
       const combinationKey = variantKeys.sort().join("|");
 
       if (seenVariantsCombo.has(combinationKey)) {
-        Sentry.captureException(
-          new InvariantError(
-            `${tplName} contains duplicate variant combo ${combinationKey}`
-          )
+        yield new InvariantError(
+          `${tplName} contains duplicate variant combo ${combinationKey}`
         );
       } else {
         seenVariantsCombo.add(combinationKey);
@@ -717,9 +736,7 @@ function* _genTplErrors(site: Site, component: Component, tpl: TplNode) {
         }
         if (sty === "background") {
           try {
-            parseCssValue("background", val).forEach((v) =>
-              cssPegParser.parse(v, { startRule: "backgroundLayer" })
-            );
+            parseCss(val, { startRule: "background" });
           } catch (err) {
             yield new InvariantError(
               "Failed to parse background: " + err.message

@@ -19,8 +19,8 @@ import { Typography } from "@/wab/client/components/style-controls/Typography";
 import { LabelWithDetailedTooltip } from "@/wab/client/components/widgets/LabelWithDetailedTooltip";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { assert, cx, ensureInstance } from "@/wab/shared/common";
 import { MaybeWrap } from "@/wab/commons/components/ReactUtil";
+import { assert, cx, ensureInstance } from "@/wab/shared/common";
 import {
   asCode,
   clone,
@@ -30,11 +30,13 @@ import {
   extractValueSavedFromDataPicker,
   isFallbackSet,
   tryExtractJson,
+  tryExtractString,
 } from "@/wab/shared/core/exprs";
 import {
   inheritableTypographyCssProps,
   typographyCssProps,
 } from "@/wab/shared/core/style-props";
+import { getRichTextContent, isTplTextBlock } from "@/wab/shared/core/tpls";
 import { computeDefinedIndicator } from "@/wab/shared/defined-indicator";
 import {
   CustomCode,
@@ -55,7 +57,6 @@ import {
 } from "@/wab/shared/SlotUtils";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import { isBaseVariant } from "@/wab/shared/Variants";
-import { getRichTextContent, isTplTextBlock } from "@/wab/shared/core/tpls";
 import { Alert, Menu, Tooltip } from "antd";
 import { observer } from "mobx-react";
 import React from "react";
@@ -376,9 +377,10 @@ const TextContentRow = observer(function TextContentRow(props: {
                 }}
                 onUnlink={() => {
                   const fallbackText =
-                    codeExpr && isKnownCustomCode(codeExpr.fallback)
-                      ? tryExtractJson(codeExpr.fallback)
-                      : "";
+                    (codeExpr &&
+                      isKnownCustomCode(codeExpr.fallback) &&
+                      tryExtractString(codeExpr.fallback)) ||
+                    "";
                   onChange(
                     new RawText({
                       text: fallbackText,

@@ -176,17 +176,20 @@ export const createControlledTextFieldStory = (
     render: (args) => {
       const [value, setValue] = useState(args.defaultValue ?? "");
       return (
-        <BaseTextField
-          {...args}
-          value={value}
-          onChange={(e) => {
-            setValue(e);
-            args.onChange?.(e);
-          }}
-        >
-          <BaseLabel>Label</BaseLabel>
-          {inputComponent}
-        </BaseTextField>
+        <>
+          <BaseTextField
+            {...args}
+            value={value}
+            onChange={(e) => {
+              setValue(e);
+              args.onChange?.(e);
+            }}
+          >
+            <BaseLabel>Label</BaseLabel>
+            <ControlledInputWrapper>{inputComponent}</ControlledInputWrapper>
+          </BaseTextField>
+          <button onClick={() => setValue("testchange")}> Change state </button>
+        </>
       );
     },
     play: async ({ canvasElement, args }) => {
@@ -197,5 +200,19 @@ export const createControlledTextFieldStory = (
       await userEvent.type(textbox, "testuser");
       expect(textbox).toHaveValue("testuser");
       expect(args.onChange).toHaveBeenCalledWith("testuser");
+      await userEvent.click(canvas.getByText("Change state"));
+      expect(textbox).toHaveValue("testchange");
     },
   } as Story);
+
+const ControlledInputWrapper = (props: { children: React.ReactNode }) => {
+  const { children } = props;
+  const [value, setValue] = useState("");
+
+  return React.cloneElement(children as React.ReactElement, {
+    value,
+    onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
+      setValue(e.target.value);
+    },
+  });
+};

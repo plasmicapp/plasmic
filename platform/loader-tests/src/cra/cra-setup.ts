@@ -70,7 +70,7 @@ export async function setupCraServer(
   const templateDir = path.resolve(path.join(__dirname, template));
   copySync(templateDir, tmpdir, { recursive: true });
 
-  const npmRegistry = getEnvVar("NPM_REGISTRY");
+  const npmRegistry = getEnvVar("NPM_CONFIG_REGISTRY");
 
   await runCommand(`npm install  --registry ${npmRegistry}`, {
     dir: tmpdir,

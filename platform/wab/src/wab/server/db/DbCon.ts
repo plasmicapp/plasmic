@@ -1,3 +1,5 @@
+import "@/wab/server/db/pg-type-parsers";
+
 import { stringToPair } from "@/wab/server/util/hash";
 import * as Sentry from "@sentry/node";
 import { parse as parseDbUri } from "pg-connection-string";
@@ -53,6 +55,7 @@ export async function ensureDbConnection(
           // Set postgres pool size up from default of 10
           // https://node-postgres.com/api/pool
           max: maxConnections,
+          simple_query_mode: process.env.PG_SIMPLE_QUERY_MODE === "true",
         },
       },
       opts?.useEnvPassword && envPassword

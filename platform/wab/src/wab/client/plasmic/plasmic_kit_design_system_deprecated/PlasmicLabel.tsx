@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -51,9 +51,7 @@ export const PlasmicLabel__VariantProps = new Array<VariantPropType>(
   "requirementIndicator"
 );
 
-export type PlasmicLabel__ArgsType = {
-  children?: React.ReactNode;
-};
+export type PlasmicLabel__ArgsType = { children?: React.ReactNode };
 type ArgPropType = keyof PlasmicLabel__ArgsType;
 export const PlasmicLabel__ArgProps = new Array<ArgPropType>("children");
 

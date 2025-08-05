@@ -17,7 +17,7 @@ test.describe(`Plasmic Antd5 Pagination`, async () => {
         ctx = await setupNextJs({
           bundleFile: "antd5/pagination.json",
           projectName: "Antd5 Pagination",
-          npmRegistry: getEnvVar("NPM_REGISTRY"),
+          npmRegistry: getEnvVar("NPM_CONFIG_REGISTRY"),
           codegenHost: getEnvVar("WAB_HOST"),
           removeComponentsPage: true,
           loaderVersion,

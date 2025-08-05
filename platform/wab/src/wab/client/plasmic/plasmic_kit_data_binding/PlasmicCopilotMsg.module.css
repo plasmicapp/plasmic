@@ -126,14 +126,14 @@
 .feedbackTextboxfeedback_submitting:global(.__wab_instance) {
   display: flex;
 }
-.svg___1RsIj {
+.svg__vdFsp {
   display: flex;
   position: relative;
   object-fit: cover;
   width: 1.25rem;
   height: 1.25rem;
 }
-.svg__w8A8Q {
+.svg__sneN {
   display: flex;
   position: relative;
   object-fit: cover;
@@ -150,21 +150,19 @@
 .submitFeedbackBtnfeedback_submitting:global(.__wab_instance) {
   display: flex;
 }
-.svg__hu2C {
+.svg__qf2Dv {
   display: flex;
   position: relative;
   object-fit: cover;
-  width: 1em;
   height: 1em;
 }
 .textfeedback_submitting__saa5NYy9Lu {
   width: auto;
 }
-.svg__doHug {
+.svg__tWwGv {
   display: flex;
   position: relative;
   object-fit: cover;
-  width: 1em;
   height: 1em;
 }
 .feedbackSubmittedContainer {

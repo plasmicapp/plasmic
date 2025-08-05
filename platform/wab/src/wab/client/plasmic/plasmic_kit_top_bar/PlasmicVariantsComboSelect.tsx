@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -13,18 +13,20 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
+  Flex as Flex__,
   SingleBooleanChoiceArg,
   StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
   hasVariant,
+  renderPlasmicSlot,
+  useDollarState,
   useTrigger,
 } from "@plasmicapp/react-web";
+import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
 
 import "@plasmicapp/react-web/lib/plasmic.css";
@@ -34,14 +36,14 @@ import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_
 import projectcss from "./plasmic_plasmic_kit_top_bar.module.css"; // plasmic-import: 6CrqkTcB6gSAHoA8c8zpNz/projectcss
 import sty from "./PlasmicVariantsComboSelect.module.css"; // plasmic-import: I6gjdy639O/css
 
+createPlasmicElementProxy;
+
 export type PlasmicVariantsComboSelect__VariantMembers = {
   isOpen: "isOpen";
 };
-
 export type PlasmicVariantsComboSelect__VariantsArgs = {
   isOpen?: SingleBooleanChoiceArg<"isOpen">;
 };
-
 type VariantPropType = keyof PlasmicVariantsComboSelect__VariantsArgs;
 export const PlasmicVariantsComboSelect__VariantProps =
   new Array<VariantPropType>("isOpen");
@@ -49,15 +51,14 @@ export const PlasmicVariantsComboSelect__VariantProps =
 export type PlasmicVariantsComboSelect__ArgsType = {
   children?: React.ReactNode;
 };
-
 type ArgPropType = keyof PlasmicVariantsComboSelect__ArgsType;
 export const PlasmicVariantsComboSelect__ArgProps = new Array<ArgPropType>(
   "children"
 );
 
 export type PlasmicVariantsComboSelect__OverridesType = {
-  root?: p.Flex<"div">;
-  button?: p.Flex<typeof Button>;
+  root?: Flex__<"div">;
+  button?: Flex__<typeof Button>;
 };
 
 export interface DefaultVariantsComboSelectProps {
@@ -66,13 +67,7 @@ export interface DefaultVariantsComboSelectProps {
   className?: string;
 }
 
-const __wrapUserFunction =
-  globalThis.__PlasmicWrapUserFunction ?? ((loc, fn) => fn());
-const __wrapUserPromise =
-  globalThis.__PlasmicWrapUserPromise ??
-  (async (loc, promise) => {
-    return await promise;
-  });
+const $$ = {};
 
 function PlasmicVariantsComboSelect__RenderFunc(props: {
   variants: PlasmicVariantsComboSelect__VariantsArgs;
@@ -82,13 +77,13 @@ function PlasmicVariantsComboSelect__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const $ctx = ph.useDataEnv?.() || {};
   const args = React.useMemo(
     () =>
       Object.assign(
         {},
-
-        props.args
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
       ),
     [props.args]
   );
@@ -98,14 +93,11 @@ function PlasmicVariantsComboSelect__RenderFunc(props: {
     ...variants,
   };
 
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
-
-  const [$queries, setDollarQueries] = React.useState({});
-
-  const stateSpecs = React.useMemo(
+  const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
         path: "isOpen",
@@ -114,16 +106,19 @@ function PlasmicVariantsComboSelect__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.isOpen,
       },
     ],
-
-    [$props, $ctx]
+    [$props, $ctx, $refs]
   );
-  const $state = p.useDollarState(stateSpecs, { $props, $ctx, $queries });
+  const $state = useDollarState(stateSpecs, {
+    $props,
+    $ctx,
+    $queries: {},
+    $refs,
+  });
 
   const [isRootFocusVisibleWithin, triggerRootFocusVisibleWithinProps] =
     useTrigger("useFocusVisibleWithin", {
       isTextInput: false,
     });
-
   const triggers = {
     focusVisibleWithin_root: isRootFocusVisibleWithin,
   };
@@ -157,7 +152,7 @@ function PlasmicVariantsComboSelect__RenderFunc(props: {
         type={["clear", "leftAligned"]}
         withIcons={["endIcon"]}
       >
-        {p.renderPlasmicSlot({
+        {renderPlasmicSlot({
           defaultContents: "Button",
           value: args.children,
         })}
@@ -183,25 +178,25 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicVariantsComboSelect__OverridesType,
   DescendantsType<T>
 >;
-
-type NodeComponentProps<T extends NodeNameType> = {
+type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
-  variants?: PlasmicVariantsComboSelect__VariantsArgs;
-  args?: PlasmicVariantsComboSelect__ArgsType;
-  overrides?: NodeOverridesType<T>;
-} & Omit<PlasmicVariantsComboSelect__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-  // Specify args directly as props
-  Omit<PlasmicVariantsComboSelect__ArgsType, ReservedPropsType> &
-  // Specify overrides for each element directly as props
-  Omit<
-    NodeOverridesType<T>,
-    ReservedPropsType | VariantPropType | ArgPropType
-  > &
-  // Specify props for the root element
-  Omit<
-    Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
-    ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
-  >;
+  {
+    variants?: PlasmicVariantsComboSelect__VariantsArgs;
+    args?: PlasmicVariantsComboSelect__ArgsType;
+    overrides?: NodeOverridesType<T>;
+  } & Omit<PlasmicVariantsComboSelect__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+    // Specify args directly as props
+    Omit<PlasmicVariantsComboSelect__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
+      NodeOverridesType<T>,
+      ReservedPropsType | VariantPropType | ArgPropType
+    > &
+    // Specify props for the root element
+    Omit<
+      Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
+      ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
+    >;
 
 function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
   type PropsType = NodeComponentProps<NodeName> & { key?: React.Key };
@@ -212,7 +207,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicVariantsComboSelect__ArgProps,
           internalVariantPropNames: PlasmicVariantsComboSelect__VariantProps,
         }),

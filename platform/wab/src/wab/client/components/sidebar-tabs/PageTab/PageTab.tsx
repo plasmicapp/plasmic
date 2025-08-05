@@ -4,7 +4,7 @@ import PageSettings from "@/wab/client/components/PageSettings";
 import S from "@/wab/client/components/sidebar-tabs/ComponentTab/ComponentTab.module.scss";
 import PageMetaPanel from "@/wab/client/components/sidebar-tabs/PageMetaPanel";
 import { PageMinRoleSection } from "@/wab/client/components/sidebar-tabs/PageMinRoleSection";
-import PageURLParametersSection from "@/wab/client/components/sidebar-tabs/PageURLParametersSection";
+import { PageURLParametersSection } from "@/wab/client/components/sidebar-tabs/PageURLParametersSection";
 import VariablesSection from "@/wab/client/components/sidebar-tabs/StateManagement/VariablesSection";
 import { ComponentDataQueriesSection } from "@/wab/client/components/sidebar-tabs/component-data-queries-section";
 import { ServerQueriesSection } from "@/wab/client/components/sidebar-tabs/server-queries-section";

@@ -8,6 +8,10 @@
   justify-content: flex-start;
   align-items: center;
   background: #ffffff;
+  transition-property: all, all;
+  transition-duration: 1s, 1s;
+  -webkit-transition-property: all, all;
+  -webkit-transition-duration: 1s, 1s;
   border-radius: 12px;
   padding: 8px;
 }
@@ -70,7 +74,7 @@
   min-width: 0;
   border-bottom: 1px solid #00002f26;
 }
-.button:global(.__wab_instance) {
+.shareProject:global(.__wab_instance) {
   max-width: 100%;
 }
 .svg {

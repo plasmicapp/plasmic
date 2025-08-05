@@ -2,11 +2,18 @@ import type { SubDeps } from "@/wab/client/components/canvas/subdeps";
 import { getCanvasPkgs } from "@/wab/client/components/studio/studio-bundles";
 import { scriptExec } from "@/wab/client/dom-utils";
 import { lt } from "@/wab/commons/semver";
-import { withTimeout } from "@/wab/shared/common";
+import { assert, withTimeout } from "@/wab/shared/common";
 import { requiredPackageVersions } from "@/wab/shared/required-versions";
 import { notification } from "antd";
-import assert from "assert";
 import React from "react";
+
+export interface PlasmicWindowInternals {
+  EXECUTE_SERVER_QUERY?: (
+    id: string,
+    fn: (...args) => Promise<any>,
+    ...args: any[]
+  ) => Promise<any>;
+}
 
 /**
  * window.parent is the root window of the host app (either user's host app or our own),

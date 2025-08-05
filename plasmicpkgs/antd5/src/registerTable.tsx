@@ -111,10 +111,11 @@ export const AntdTable = React.forwardRef(function AntdTable(
 export const AntdColumnGroup = Table.ColumnGroup;
 export const AntdColumn = Table.Column;
 
+/** @deprecated Use the Table component from plasmic-rich-components instead */
 export function registerTable(loader?: Registerable) {
   registerComponentHelper(loader, AntdTable, {
     name: "plasmic-antd5-table",
-    displayName: "Table",
+    displayName: "Table (deprecated)",
     props: {
       data: {
         type: "dataSourceOpData" as any,

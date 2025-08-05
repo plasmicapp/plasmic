@@ -6,6 +6,7 @@ import { WritableClipboard } from "@/wab/client/clipboard/WritableClipboard";
 import { PLASMIC_CLIPBOARD_FORMAT } from "@/wab/client/clipboard/common";
 import { LocalClipboardAction } from "@/wab/client/clipboard/local";
 import { paste } from "@/wab/client/clipboard/paste";
+import AutoOpenBanner from "@/wab/client/components/AutoOpenBanner";
 import { BottomModals } from "@/wab/client/components/BottomModal";
 import { maybeShowContextMenu } from "@/wab/client/components/ContextMenu";
 import PageSettings from "@/wab/client/components/PageSettings";
@@ -26,7 +27,9 @@ import { CanvasArenaShell } from "@/wab/client/components/canvas/canvas-arena";
 import { CanvasCtx } from "@/wab/client/components/canvas/canvas-ctx";
 import { closestTaggedNonTextDomElt } from "@/wab/client/components/canvas/studio-canvas-util";
 import { getMergedTextArg } from "@/wab/client/components/canvas/view-ops";
+import { CommentsDialogs } from "@/wab/client/components/comments/CommentsDialogs";
 import CommentsTab from "@/wab/client/components/comments/CommentsTab";
+import { CopilotUiPrompt } from "@/wab/client/components/copilot/CopilotUiPrompt";
 import { DevContainer } from "@/wab/client/components/dev";
 import InsertPanelWrapper from "@/wab/client/components/insert-panel/InsertPanelWrapper";
 import { PreviewCtx } from "@/wab/client/components/live/PreviewCtx";
@@ -77,7 +80,6 @@ import {
   isDedicatedArena,
   isMixedArena,
   isPageArena,
-  isPositionManagedFrame,
 } from "@/wab/shared/Arenas";
 import { ARENAS_DESCRIPTION, ARENA_LOWER } from "@/wab/shared/Labels";
 import {
@@ -501,7 +503,10 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
           })
         ),
       DELETE: (e: KeyboardEvent) => this.handleDelete(e, { forceDelete: true }),
-      HIDE: (e: KeyboardEvent) => this.handleDelete(e, { forceDelete: false }),
+      HIDE: (e: KeyboardEvent) =>
+        this.handleDelete(e, {
+          forceDelete: false,
+        }),
       ENTER_EDIT: (e: KeyboardEvent) =>
         this.handleHotkey(e, async () =>
           this.props.studioCtx.changeUnsafe(() => {
@@ -1157,6 +1162,7 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
       });
       // We allow potentially dragging the frame by using this empty space
       this.dragState = makeSpeculativeDragState();
+      this.props.studioCtx.commentsCtx.maybeCloseCommentDialogs();
       return;
     }
 
@@ -1183,6 +1189,8 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
       });
       return;
     }
+
+    this.props.studioCtx.commentsCtx.maybeCloseCommentDialogs();
 
     const focusedSelectables = targetVc.focusedSelectables();
     const focusable = targetVc.getViewOps().getFinalFocusable(closest).val;
@@ -1350,7 +1358,7 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
             vc.getViewOps().isRootNodeOfFrame(focusObjs[0].tpl))
         ) {
           const frame = vc.arenaFrame();
-          if (isPositionManagedFrame(vc.studioCtx, frame)) {
+          if (vc.studioCtx.isPositionManagedFrame(frame)) {
             return;
           }
 
@@ -1869,6 +1877,14 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
 
     return (
       <div className="canvas-editor">
+        {this.viewCtx()?.autoOpenedUuid && (
+          <AutoOpenBanner
+            onHide={() => {
+              this.viewCtx()!.forceCloseAutoOpen();
+            }}
+            className="banner-bottom"
+          />
+        )}
         {studioCtx.currentArena && (
           <>
             <InsertPanelWrapper />
@@ -1942,6 +1958,8 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
                   hexColor={watchedPlayer.color}
                 />
               )}
+              <CommentsDialogs studioCtx={studioCtx} />
+              {studioCtx.showUiCopilot ? <CopilotUiPrompt /> : null}
               {studioCtx.showDevControls && (
                 <div className="canvas-editor__top-pane">
                   <div className="canvas-editor__top-pane__floating-elements-container">
@@ -1994,7 +2012,7 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
                         {!studioCtx.isInteractiveMode && (
                           <HoverBoxes studioCtx={studioCtx} />
                         )}
-                        <MeasureTool ref="measuretool" />
+                        <MeasureTool />
                         <FreestyleBox />
                         <input
                           className="hidden-image-selector"
@@ -2077,6 +2095,7 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
     );
   }
 }
+
 export const ViewEditor = observer(ViewEditor_);
 
 const RightPane = observer(function RightPane(props: {
@@ -2160,8 +2179,10 @@ const RightPane = observer(function RightPane(props: {
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
     >
-      {disabled && <div className="canvas-editor__disable-right-pane" />}
-      {DEVFLAGS.demo || appConfig.comments || appConfig.rightTabs ? (
+      {disabled && !studioCtx.showCommentsPanel && (
+        <div className="canvas-editor__disable-right-pane" />
+      )}
+      {DEVFLAGS.demo || studioCtx.showComments() || appConfig.rightTabs ? (
         studioCtx.showCommentsPanel ? (
           <CommentsTab />
         ) : (

@@ -17,10 +17,18 @@ import { isKnownRawText, isKnownRenderExpr } from "@/wab/shared/model/classes";
  * - Data bindings/dynamic values
  */
 
-import { ensureType, switchType, tuple, withoutNils } from "@/wab/shared/common";
+import {
+  ensureType,
+  switchType,
+  tuple,
+  withoutNils,
+} from "@/wab/shared/common";
 import { tryExtractJson } from "@/wab/shared/core/exprs";
-import { RuleSetHelpers } from "@/wab/shared/RuleSetHelpers";
-import { tryGetBaseVariantSetting } from "@/wab/shared/Variants";
+import {
+  isTplComponent,
+  isTplContainer,
+  isTplTextBlock,
+} from "@/wab/shared/core/tpls";
 import {
   NodeMarkerElement,
   PlasmicElement,
@@ -32,7 +40,8 @@ import {
   StyleMarker,
   TplNode,
 } from "@/wab/shared/model/classes";
-import { isTplComponent, isTplContainer, isTplTextBlock } from "@/wab/shared/core/tpls";
+import { RuleSetHelpers } from "@/wab/shared/RuleSetHelpers";
+import { tryGetBaseVariantSetting } from "@/wab/shared/Variants";
 
 const rulesetToStyles = (rs: RuleSet) => {
   const rsh = new RuleSetHelpers(rs, "div");
@@ -57,8 +66,10 @@ export function tplToPlasmicElements(tpl: TplNode): PlasmicElement | undefined {
           tuple(
             arg.param.variable.name,
             isKnownRenderExpr(arg.expr)
-              ? arg.expr.tpl.map((child) => tplToPlasmicElements(child))
-              : tryExtractJson(arg.expr)
+              ? withoutNils(
+                  arg.expr.tpl.map((child) => tplToPlasmicElements(child))
+                )
+              : (tryExtractJson(arg.expr) as PlasmicElement | PlasmicElement[])
           )
         )
       ),

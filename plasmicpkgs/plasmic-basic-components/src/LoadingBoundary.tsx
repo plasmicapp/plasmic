@@ -40,7 +40,7 @@ function warnDisabledLoadingBoundary() {
   }
 }
 
-export default function LoadingBoundary({
+export function LoadingBoundary({
   children,
   forceLoading,
   loadingState,
@@ -48,11 +48,7 @@ export default function LoadingBoundary({
   const isClient = useIsClient();
   const enableLoadingBoundary = !!useDataEnv()?.[enableLoadingBoundaryKey];
 
-  if (!isClient && !plasmicQuery.isPlasmicPrepass?.()) {
-    return null;
-  }
-
-  if (forceLoading) {
+  if ((!isClient && !plasmicQuery.isPlasmicPrepass?.()) || forceLoading) {
     return <>{loadingState ?? null}</>;
   }
 

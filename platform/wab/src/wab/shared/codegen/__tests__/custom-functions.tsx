@@ -48,7 +48,7 @@ export const greeting = (fromName) => \`Hello from \${fromName}!\`;
       `
     );
 
-    const importFromProject = await codegen(dir.name, site);
+    const { importFromProject } = await codegen(dir.name, site);
 
     const Homepage = (await importFromProject("Homepage.js")).default;
 

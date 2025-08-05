@@ -88,12 +88,16 @@ export function HrefEditor(props: {
   const onSelect = (v: { item: Component | string }) => {
     if (isKnownComponent(v.item)) {
       const defaultParams = Object.fromEntries(
-        Object.entries(v.item.pageMeta?.params ?? {}).map(([k, str]) => [
-          k,
-          codeLit(""),
-        ])
+        Object.keys(v.item.pageMeta?.params ?? {}).map((k) => [k, codeLit("")])
       );
-      submitVal(new PageHref({ page: v.item, params: defaultParams }));
+      submitVal(
+        new PageHref({
+          page: v.item,
+          params: defaultParams,
+          query: {},
+          fragment: null,
+        })
+      );
     } else {
       submitVal(v.item);
     }

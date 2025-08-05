@@ -106,6 +106,7 @@ import {
   fixPagePaths,
   fixSwappedTplComponents,
   fixVirtualSlotArgs,
+  inferUpdatedComponents,
 } from "@/wab/shared/site-diffs/merge-components";
 import { fixProjectDependencies } from "@/wab/shared/site-diffs/merge-deps";
 import { fixDuplicatedRegisteredTokens } from "@/wab/shared/site-diffs/merge-tokens";
@@ -887,14 +888,23 @@ export interface DirectConflictPickMap {
   [pathStr: string]: BranchSide;
 }
 
-function visitSpecialHandlers(
-  ancestorCtx: NodeCtx,
-  leftCtx: NodeCtx,
-  rightCtx: NodeCtx,
-  mergedCtx: NodeCtx,
-  bundler: Bundler,
-  picks: DirectConflictPickMap | undefined
-): DirectConflict[] {
+function visitSpecialHandlers({
+  ancestorCtx,
+  leftCtx,
+  rightCtx,
+  mergedCtx,
+  bundler,
+  picks,
+  recorder,
+}: {
+  ancestorCtx: NodeCtx;
+  leftCtx: NodeCtx;
+  rightCtx: NodeCtx;
+  mergedCtx: NodeCtx;
+  bundler: Bundler;
+  picks: DirectConflictPickMap | undefined;
+  recorder: ChangeRecorder;
+}): DirectConflict[] {
   const [ancestor, left, right, merged] = [
     ancestorCtx,
     leftCtx,
@@ -973,14 +983,15 @@ function visitSpecialHandlers(
       areSameInstType(ancFieldCtx, leftFieldCtx, rightFieldCtx, mergedFieldCtx)
     ) {
       conflicts.push(
-        ...visitSpecialHandlers(
-          ancFieldCtx,
-          leftFieldCtx,
-          rightFieldCtx,
-          mergedFieldCtx,
+        ...visitSpecialHandlers({
+          ancestorCtx: ancFieldCtx,
+          leftCtx: leftFieldCtx,
+          rightCtx: rightFieldCtx,
+          mergedCtx: mergedFieldCtx,
           bundler,
-          picks
-        )
+          picks,
+          recorder,
+        })
       );
     }
   };
@@ -999,7 +1010,8 @@ function visitSpecialHandlers(
           rightCtx,
           mergedCtx,
           bundler,
-          picks
+          picks,
+          recorder
         )
       );
     } else if (!isWeakRefField(field)) {
@@ -1036,15 +1048,25 @@ export function* matchAllGroupings(path: string[]) {
   }
 }
 
-export function getDirectConflicts(
-  ancestorCtx: NodeCtx,
-  leftCtx: NodeCtx,
-  rightCtx: NodeCtx,
-  mergedCtx: NodeCtx,
-  bundler: Bundler,
-  picks: DirectConflictPickMap | undefined,
-  filterConflict?: (conflict: DirectConflict) => boolean
-): DirectConflict[] {
+export function getDirectConflicts({
+  ancestorCtx,
+  leftCtx,
+  rightCtx,
+  mergedCtx,
+  bundler,
+  recorder,
+  picks,
+  filterConflict,
+}: {
+  ancestorCtx: NodeCtx;
+  leftCtx: NodeCtx;
+  rightCtx: NodeCtx;
+  mergedCtx: NodeCtx;
+  bundler: Bundler;
+  recorder: ChangeRecorder;
+  picks: DirectConflictPickMap | undefined;
+  filterConflict?: (conflict: DirectConflict) => boolean;
+}): DirectConflict[] {
   const cloneFieldValue = (field: Field, v: any, branch: Site) =>
     cloneFieldValueToMergedSite(field, v, branch, mergedCtx.site, bundler);
   const getMergedInst = (inst: ObjInst) =>
@@ -1513,14 +1535,15 @@ export function getDirectConflicts(
   }
 
   conflicts.push(
-    ...visitSpecialHandlers(
+    ...visitSpecialHandlers({
       ancestorCtx,
       leftCtx,
       rightCtx,
       mergedCtx,
       bundler,
-      picks
-    )
+      picks,
+      recorder,
+    })
   );
 
   return conflicts.filter((c) => filterConflictWrapper(c));
@@ -2004,22 +2027,31 @@ export function tryMerge(
     isEqual(withoutUids(ancestor), withoutUids(mergedSite)),
     "Initial merged site must be identical to ancestor site"
   );
+
+  const updatedComponentsUuids = inferUpdatedComponents(ancestor, a, b);
+  const unchangedComponentsUuids = new Set(
+    ancestor.components
+      .filter((c) => !updatedComponentsUuids.has(c.uuid))
+      .map((c) => c.uuid)
+  );
+
   const mergedSiteUuid = bundler.addrOf(mergedSite).uuid;
   let directConflicts: DirectConflict[] = [];
 
+  // Track all components to be used in tree operations, it's possible that we could avoid tracking some, but since it's cheap, we don't bother.
   mergedSite.components.forEach((component) => {
     trackComponentRoot(component);
     trackComponentSite(component, mergedSite);
   });
 
-  const recorder = new ChangeRecorder(
-    mergedSite,
-    instUtil,
-    [meta.getFieldByName("ProjectDependency", "site")],
-    [],
-    (obj) =>
+  const recorder = new ChangeRecorder({
+    inst: mergedSite,
+    _instUtil: instUtil,
+    excludeFields: [meta.getFieldByName("ProjectDependency", "site")],
+    excludeClasses: [],
+    isExternalRef: (obj) =>
       !!maybe(bundler.addrOf(obj), (addr) => addr.uuid !== mergedSiteUuid),
-    (obj) => {
+    visitNodeListener: (obj) => {
       assert(
         [ancestor, a, b].every(
           (branch) =>
@@ -2030,7 +2062,18 @@ export function tryMerge(
         ),
         `Re-used the same inst from a different branch`
       );
-    }
+    },
+    // We skip observing the tplTree field of components, since we will only want to observe the ones that were updated.
+    // This is the same setup used in the studio.
+    skipInitialObserveFields: [meta.getFieldByName("Component", "tplTree")],
+    incremental: true,
+  });
+
+  // Observe the components that were updated, since we need to track them for tree operations.
+  recorder.ensureObservedComponents(
+    mergedSite.components.filter((component) =>
+      updatedComponentsUuids.has(component.uuid)
+    )
   );
 
   const { autoReconciliations } = runMergeFnAndApplyFixes(
@@ -2039,14 +2082,15 @@ export function tryMerge(
     b,
     mergedSite,
     () => {
-      directConflicts = getDirectConflicts(
-        createNodeCtx(ancestor),
-        createNodeCtx(a),
-        createNodeCtx(b),
-        createNodeCtx(mergedSite),
+      directConflicts = getDirectConflicts({
+        ancestorCtx: createNodeCtx(ancestor),
+        leftCtx: createNodeCtx(a),
+        rightCtx: createNodeCtx(b),
+        mergedCtx: createNodeCtx(mergedSite),
         bundler,
-        picks
-      );
+        recorder,
+        picks,
+      });
     },
     bundler,
     recorder
@@ -2054,7 +2098,9 @@ export function tryMerge(
 
   recorder.dispose();
 
-  assertSiteInvariants(mergedSite);
+  // We don't need to assert invariants for components that were not updated, as they should have
+  // valid content from the last time they were verified.
+  assertSiteInvariants(mergedSite, unchangedComponentsUuids);
 
   if (directConflicts.length > 0) {
     // Consolidate the multiple redundant leftRootPath into a single one

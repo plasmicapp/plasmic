@@ -8,15 +8,15 @@ import {
   CodeComponentMetaOverrides,
   HasControlContextData,
   makeComponentName,
+  PlasmicCanvasProps,
   Registerable,
   registerComponentHelper,
   useIsOpen,
-  WithPlasmicCanvasComponentInfo,
 } from "./utils";
 
 export interface BaseModalProps
   extends ModalOverlayProps,
-    WithPlasmicCanvasComponentInfo,
+    PlasmicCanvasProps,
     HasControlContextData {
   modalOverlayClass?: string;
   resetClassName?: string;
@@ -40,7 +40,6 @@ export const BaseModal = forwardRef<BaseModalActions, BaseModalProps>(
       setControlContextData,
       isDismissable,
       defaultOpen,
-      __plasmic_selection_prop__,
       ...rest
     } = props;
 
@@ -49,7 +48,7 @@ export const BaseModal = forwardRef<BaseModalActions, BaseModalProps>(
 
     const contextProps = React.useContext(PlasmicDialogTriggerContext);
     const isStandalone = !contextProps;
-    const isOpen2 = useIsOpen({ isOpen, __plasmic_selection_prop__ });
+    const isOpen2 = useIsOpen({ isOpen, props });
 
     const mergedProps = mergeProps(rest, {
       // Since open/defaultOpen props are hidden when the modal is inside dialogTrigger, we also unset them here.

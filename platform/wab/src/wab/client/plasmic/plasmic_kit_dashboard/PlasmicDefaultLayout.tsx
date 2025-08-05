@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -30,33 +30,34 @@ import {
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
+import FreeTrial from "../../components/FreeTrial"; // plasmic-import: p3GgKAlaQe/component
 import NavButton from "../../components/dashboard/NavButton"; // plasmic-import: 82ZzbE4hazN/component
 import NavSeparator from "../../components/dashboard/NavSeparator"; // plasmic-import: cOUHQYmbvX/component
 import NavTeamSection from "../../components/dashboard/NavTeamSection"; // plasmic-import: VqaN_WL-stA/component
-import FreeTrial from "../../components/FreeTrial"; // plasmic-import: p3GgKAlaQe/component
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
 
 import { useScreenVariants as useScreenVariants_2DzYbdw5Xtx } from "../PlasmicGlobalVariant__Screen"; // plasmic-import: 2dzYbdw5Xtx/globalVariant
+import { useEnvironment } from "../plasmic_kit_pricing/PlasmicGlobalVariant__Environment"; // plasmic-import: hIjF9NLAUKG-/globalVariant
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_pricing_css from "../plasmic_kit_pricing/plasmic_plasmic_kit_pricing.module.css"; // plasmic-import: ehckhYnyDHgCBbV47m9bkf/projectcss
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
 import projectcss from "../PP__plasmickit_dashboard.module.css"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/projectcss
 import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
+import plasmic_plasmic_kit_pricing_css from "../plasmic_kit_pricing/plasmic_plasmic_kit_pricing.module.css"; // plasmic-import: ehckhYnyDHgCBbV47m9bkf/projectcss
+import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
 import sty from "./PlasmicDefaultLayout.module.css"; // plasmic-import: nSkQWLjK-B/css
 
 import HelpIcon from "../plasmic_kit/PlasmicIcon__Help"; // plasmic-import: -9-68IGPdLG-5/icon
 import PlusIcon from "../plasmic_kit/PlasmicIcon__Plus"; // plasmic-import: -k064DlQ8k8-L/icon
 import TriangleBottomIcon from "../plasmic_kit/PlasmicIcon__TriangleBottom"; // plasmic-import: A8NQUZ7Lg1OHO/icon
 import MarkFullColorIcon from "../plasmic_kit_design_system/PlasmicIcon__MarkFullColor"; // plasmic-import: l_n_OBLJg/icon
-import BooksvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__BookSvg"; // plasmic-import: hxRmy8Nhq/icon
-import ChevronDownsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
-import GolfsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__GolfSvg"; // plasmic-import: U5dSOeF1P/icon
-import RocketsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__RocketSvg"; // plasmic-import: uRQfbBjV9/icon
-import SparklessvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__SparklesSvg"; // plasmic-import: 9Z0Cu-c5J/icon
-import UnorderedListsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__UnorderedListSvg"; // plasmic-import: suHkgkKOX/icon
-import UsersPlussvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__UsersPlusSvg"; // plasmic-import: OqMJdWElK/icon
+import BookSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__BookSvg"; // plasmic-import: hxRmy8Nhq/icon
+import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
+import GolfSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__GolfSvg"; // plasmic-import: U5dSOeF1P/icon
+import RocketSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__RocketSvg"; // plasmic-import: uRQfbBjV9/icon
+import SparklesSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__SparklesSvg"; // plasmic-import: 9Z0Cu-c5J/icon
+import UnorderedListSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__UnorderedListSvg"; // plasmic-import: suHkgkKOX/icon
+import UsersPlusSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__UsersPlusSvg"; // plasmic-import: OqMJdWElK/icon
 
 createPlasmicElementProxy;
 
@@ -142,7 +143,16 @@ function PlasmicDefaultLayout__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
@@ -188,7 +198,6 @@ function PlasmicDefaultLayout__RenderFunc(props: {
           $props.newProjectButtonAsDropdown,
       },
     ],
-
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -200,6 +209,7 @@ function PlasmicDefaultLayout__RenderFunc(props: {
 
   const globalVariants = ensureGlobalVariants({
     screen: useScreenVariants_2DzYbdw5Xtx(),
+    environment: useEnvironment(),
   });
 
   return (
@@ -218,7 +228,27 @@ function PlasmicDefaultLayout__RenderFunc(props: {
         plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
         plasmic_plasmic_kit_pricing_css.plasmic_tokens,
         sty.root,
-        { [sty.roothideTeams]: hasVariant($state, "hideTeams", "hideTeams") }
+        {
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [sty.roothideTeams]: hasVariant($state, "hideTeams", "hideTeams"),
+        }
       )}
     >
       <header
@@ -282,7 +312,7 @@ function PlasmicDefaultLayout__RenderFunc(props: {
                   ),
                 })}
                 endIcon={
-                  <ChevronDownsvgIcon
+                  <ChevronDownSvgIcon
                     className={classNames(projectcss.all, sty.svg__iw3P2, {
                       [sty.svgnewProjectButtonAsDropdown__iw3P2LewDp]:
                         hasVariant(
@@ -345,7 +375,7 @@ function PlasmicDefaultLayout__RenderFunc(props: {
               }
               smallIcon={true}
               startIcon={
-                <RocketsvgIcon
+                <RocketSvgIcon
                   className={classNames(projectcss.all, sty.svg__vF1)}
                   role={"img"}
                 />
@@ -433,7 +463,7 @@ function PlasmicDefaultLayout__RenderFunc(props: {
                     : undefined
                 }
                 startIcon={
-                  <UnorderedListsvgIcon
+                  <UnorderedListSvgIcon
                     className={classNames(projectcss.all, sty.svg__suQ4M)}
                     role={"img"}
                   />
@@ -469,7 +499,7 @@ function PlasmicDefaultLayout__RenderFunc(props: {
                     : undefined
                 }
                 startIcon={
-                  <GolfsvgIcon
+                  <GolfSvgIcon
                     className={classNames(projectcss.all, sty.svg__gluGf)}
                     role={"img"}
                   />
@@ -582,7 +612,7 @@ function PlasmicDefaultLayout__RenderFunc(props: {
                     : undefined
                 }
                 startIcon={
-                  <SparklessvgIcon
+                  <SparklesSvgIcon
                     className={classNames(projectcss.all, sty.svg__cyyvY)}
                     role={"img"}
                   />
@@ -611,7 +641,7 @@ function PlasmicDefaultLayout__RenderFunc(props: {
                   />
                 }
                 startIcon={
-                  <UsersPlussvgIcon
+                  <UsersPlusSvgIcon
                     className={classNames(projectcss.all, sty.svg___9DbPc)}
                     role={"img"}
                   />
@@ -634,7 +664,7 @@ function PlasmicDefaultLayout__RenderFunc(props: {
                 }
                 href={"https://docs.plasmic.app/"}
                 startIcon={
-                  <BooksvgIcon
+                  <BookSvgIcon
                     className={classNames(projectcss.all, sty.svg___2Eo9K)}
                     role={"img"}
                   />
@@ -669,7 +699,7 @@ function PlasmicDefaultLayout__RenderFunc(props: {
                 data-plasmic-override={overrides.userButton}
                 className={classNames("__wab_instance", sty.userButton)}
                 endIcon={
-                  <ChevronDownsvgIcon
+                  <ChevronDownSvgIcon
                     className={classNames(projectcss.all, sty.svg__dvFlL)}
                     role={"img"}
                   />
@@ -748,7 +778,6 @@ const PlasmicDescendants = {
     "userButton",
     "main",
   ],
-
   header: [
     "header",
     "headerWrapper",
@@ -760,7 +789,6 @@ const PlasmicDescendants = {
     "upgradeButton",
     "freeTrial",
   ],
-
   headerWrapper: [
     "headerWrapper",
     "headerLogoLink",
@@ -771,7 +799,6 @@ const PlasmicDescendants = {
     "upgradeButton",
     "freeTrial",
   ],
-
   headerLogoLink: ["headerLogoLink", "headerLogo"],
   headerLogo: ["headerLogo"],
   headerActions: [
@@ -781,7 +808,6 @@ const PlasmicDescendants = {
     "upgradeButton",
     "freeTrial",
   ],
-
   newProjectButton: ["newProjectButton", "text"],
   text: ["text"],
   upgradeButton: ["upgradeButton"],
@@ -800,7 +826,6 @@ const PlasmicDescendants = {
     "userButton",
     "main",
   ],
-
   sidebar: [
     "sidebar",
     "nav",
@@ -813,7 +838,6 @@ const PlasmicDescendants = {
     "helpButton",
     "userButton",
   ],
-
   nav: ["nav", "allProjectsButton", "myProjectsButton", "startersButton"],
   allProjectsButton: ["allProjectsButton"],
   myProjectsButton: ["myProjectsButton"],
@@ -825,7 +849,6 @@ const PlasmicDescendants = {
     "helpButton",
     "userButton",
   ],
-
   newTeamButton: ["newTeamButton"],
   documentationButton: ["documentationButton"],
   helpButton: ["helpButton"],
@@ -865,7 +888,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicDefaultLayout__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
@@ -873,15 +895,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicDefaultLayout__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicDefaultLayout__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicDefaultLayout__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+    // Specify args directly as props
+    Omit<PlasmicDefaultLayout__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

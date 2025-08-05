@@ -23,7 +23,7 @@ async function setupEndUsers(mgr: DbMgr) {
     teamId: team.id,
   });
   const { project } = await mgr.createProject({
-    name: "My project",
+    name: "My Project",
     workspaceId: workspace.id,
   });
 

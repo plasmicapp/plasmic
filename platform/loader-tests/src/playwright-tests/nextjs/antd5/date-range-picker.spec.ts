@@ -17,7 +17,7 @@ test.describe(`Plasmic Antd5 Date Range Picker`, async () => {
         ctx = await setupNextJs({
           bundleFile: "antd5/date-range-picker.json",
           projectName: "Antd5 Date Range Picker",
-          npmRegistry: getEnvVar("NPM_REGISTRY"),
+          npmRegistry: getEnvVar("NPM_CONFIG_REGISTRY"),
           codegenHost: getEnvVar("WAB_HOST"),
           removeComponentsPage: true,
           loaderVersion,

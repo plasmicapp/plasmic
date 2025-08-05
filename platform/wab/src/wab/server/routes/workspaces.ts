@@ -6,7 +6,7 @@ import {
   passPaywall,
 } from "@/wab/server/routes/team-plans";
 import { mkApiTeam } from "@/wab/server/routes/teams";
-import { userAnalytics, userDbMgr } from "@/wab/server/routes/util";
+import { userDbMgr } from "@/wab/server/routes/util";
 import {
   ApiTeam,
   ApiWorkspace,
@@ -100,14 +100,11 @@ export async function createWorkspace(req: Request, res: Response) {
     teamId,
   });
   const apiWorkspace = mkApiWorkspace(workspace);
-  userAnalytics(req).track({
-    event: "Create workspace",
-    properties: {
-      workspaceName: name,
-      workspaceDescription: description,
-      teamId,
-      featureTierId: team.featureTierId,
-    },
+  req.analytics.track("Create workspace", {
+    workspaceName: name,
+    workspaceDescription: description,
+    teamId,
+    featureTierId: team.featureTierId,
   });
   res.json(
     await maybeTriggerPaywall<CreateWorkspaceResponse>(

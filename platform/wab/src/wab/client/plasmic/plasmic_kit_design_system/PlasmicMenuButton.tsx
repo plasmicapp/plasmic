@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -58,9 +58,7 @@ export const PlasmicMenuButton__VariantProps = new Array<VariantPropType>(
   "size"
 );
 
-export type PlasmicMenuButton__ArgsType = {
-  hoverText?: string;
-};
+export type PlasmicMenuButton__ArgsType = { hoverText?: string };
 type ArgPropType = keyof PlasmicMenuButton__ArgsType;
 export const PlasmicMenuButton__ArgProps = new Array<ArgPropType>("hoverText");
 

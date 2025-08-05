@@ -439,10 +439,32 @@ export abstract class PinManager {
     );
   }
 
+  /** Toggles the targeting state of specified variants,
+   * Updates the pin state accordingly.
+   */
   toggleTargeting(variants: Variant[], on?: boolean) {
     this.setPinState(
       this.pinMachine.toggleTargeting(this.curState, variants, on)
     );
+  }
+
+  /** Toggles the targeting state of specified variants for a custom arena,
+   * sets all active non-base variants as pinned to ensure newly selected
+   * variants are marked as pinned in a custom artboard if on is true.
+   */
+  toggleTargetingForCustomArena(variants: Variant[], on?: boolean) {
+    const updatedState = this.pinMachine.toggleTargeting(
+      this.curState,
+      variants,
+      on
+    );
+    const activeVariants = this.pinMachine.activeNonBaseVariants(updatedState);
+    if (on) {
+      updatedState.pinnedVariants = new Map<Variant, boolean>(
+        activeVariants.map((variant) => [variant, true])
+      );
+    }
+    this.setPinState(updatedState);
   }
 
   clearAll() {

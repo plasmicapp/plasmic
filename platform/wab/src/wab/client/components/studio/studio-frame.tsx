@@ -1,9 +1,6 @@
-/** @format */
-
 import {
   getLoginRouteWithContinuation,
   parseProjectLocation,
-  UU,
 } from "@/wab/client/cli-routes";
 import HostUrlInput from "@/wab/client/components/HostUrlInput";
 import { PublicLink } from "@/wab/client/components/PublicLink";
@@ -35,6 +32,8 @@ import { maybeOne, spawn, swallow } from "@/wab/shared/common";
 import { DEVFLAGS } from "@/wab/shared/devflags";
 import { accessLevelRank } from "@/wab/shared/EntUtil";
 import { getAccessLevelToResource } from "@/wab/shared/perms";
+import { APP_ROUTES } from "@/wab/shared/route/app-routes";
+import { fillRoute } from "@/wab/shared/route/route";
 import { notification } from "antd";
 import Modal from "antd/lib/modal/Modal";
 import { Location } from "history";
@@ -260,7 +259,10 @@ export function StudioFrame({
         <br />
         <br />
         Enter the domain <code>{hostOrigin}</code> to add it to your{" "}
-        <PublicLink href={UU.settings.fill({})}>trusted list</PublicLink>.
+        <PublicLink href={fillRoute(APP_ROUTES.settings, {})}>
+          trusted list
+        </PublicLink>
+        .
         <HostUrlInput
           className="mv-xlg"
           hostProtocolSelect={{

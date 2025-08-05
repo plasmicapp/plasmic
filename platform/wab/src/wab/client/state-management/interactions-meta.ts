@@ -1,7 +1,14 @@
 import { getTplRefActions } from "@/wab/client/state-management/ref-actions";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
+import { ApiDataSource } from "@/wab/shared/ApiSchema";
+import {
+  isPlainObjectPropType,
+  propTypeToWabType,
+  StudioPropType,
+} from "@/wab/shared/code-components/code-components";
+import { toVarName } from "@/wab/shared/codegen/util";
 import { assert, ensure, ensureInstance } from "@/wab/shared/common";
-import { DEVFLAGS } from "@/wab/shared/devflags";
+import { getContextDependentValue } from "@/wab/shared/context-dependent-value";
 import {
   codeLit,
   customCode,
@@ -10,25 +17,34 @@ import {
   tryExtractString,
 } from "@/wab/shared/core/exprs";
 import { ParamExportType } from "@/wab/shared/core/lang";
-import { ApiDataSource } from "@/wab/shared/ApiSchema";
 import {
-  isPlainObjectPropType,
-  propTypeToWabType,
-  StudioPropType,
-} from "@/wab/shared/code-components/code-components";
-import { toVarName } from "@/wab/shared/codegen/util";
-import { getContextDependentValue } from "@/wab/shared/context-dependent-value";
+  getStateVarName,
+  mkInteraction,
+  UpdateVariableOperations,
+  updateVariableOperations,
+  UpdateVariantOperations,
+  updateVariantOperations,
+} from "@/wab/shared/core/states";
+import {
+  EventHandlerKeyType,
+  isEventHandlerKeyForAttr,
+  isEventHandlerKeyForFuncType,
+  isEventHandlerKeyForParam,
+} from "@/wab/shared/core/tpls";
 import { ALL_QUERIES } from "@/wab/shared/data-sources-meta/data-sources";
+import { DEVFLAGS } from "@/wab/shared/devflags";
 import { CanvasEnv } from "@/wab/shared/eval";
 import {
   DATA_SOURCE_LOWER,
   DATA_SOURCE_OPERATION_LOWER,
+  SERVER_QUERY_LOWER,
   VARIABLE_LOWER,
 } from "@/wab/shared/Labels";
 import {
   CollectionExpr,
   Component,
   CustomCode,
+  ensureKnownCustomFunctionExpr,
   ensureKnownDataSourceOpExpr,
   ensureKnownFunctionType,
   ensureKnownObjectPath,
@@ -56,21 +72,8 @@ import {
   typeFactory,
 } from "@/wab/shared/model/model-util";
 import { SiteInfo } from "@/wab/shared/SharedApi";
+import { smartHumanize } from "@/wab/shared/strs";
 import { isStandaloneVariantGroup } from "@/wab/shared/Variants";
-import {
-  getStateVarName,
-  mkInteraction,
-  UpdateVariableOperations,
-  updateVariableOperations,
-  UpdateVariantOperations,
-  updateVariantOperations,
-} from "@/wab/shared/core/states";
-import {
-  EventHandlerKeyType,
-  isEventHandlerKeyForAttr,
-  isEventHandlerKeyForFuncType,
-  isEventHandlerKeyForParam,
-} from "@/wab/shared/core/tpls";
 import { mkMetaName } from "@plasmicapp/host";
 import { GlobalActionRegistration } from "@plasmicapp/host/registerGlobalContext";
 import { get, startCase } from "lodash";
@@ -93,7 +96,7 @@ export interface ActionType<P> {
   parameters: {
     [parameter: string]: StudioPropType<P>;
   };
-  hidden?: (ctx: { siteInfo: SiteInfo }) => boolean;
+  hidden?: (ctx: { siteInfo: SiteInfo; flags: typeof DEVFLAGS }) => boolean;
   getDefaultName: (
     component: Component,
     args: { [arg in DistributedKeyOf<P>]: Expr | undefined },
@@ -131,6 +134,7 @@ const ACTIONS = [
   "logout",
   "navigation",
   "dataSourceOp",
+  "customFunctionOp",
 ] as const;
 
 export const ACTIONS_META: Record<(typeof ACTIONS)[number], ActionType<any>> = {
@@ -186,7 +190,7 @@ export const ACTIONS_META: Record<(typeof ACTIONS)[number], ActionType<any>> = {
             UpdateVariableOperations.Increment,
             UpdateVariableOperations.Splice,
             UpdateVariableOperations.Toggle,
-          ].includes(tryExtractJson(operation)),
+          ].includes(tryExtractJson(operation) as UpdateVariableOperations),
       },
       startIndex: {
         type: "number",
@@ -251,11 +255,11 @@ export const ACTIONS_META: Record<(typeof ACTIONS)[number], ActionType<any>> = {
       if (
         options.length > 0 &&
         !options
-          .map((opt) => (typeof opt === "string" ? opt : opt.value))
+          .map((opt) => (typeof opt !== "object" ? opt : opt.value))
           .includes(currValue)
       ) {
         args.operation = codeLit(
-          typeof options[0] === "string" ? options[0] : options[0].value
+          typeof options[0] !== "object" ? options[0] : options[0].value
         );
       }
     },
@@ -364,11 +368,11 @@ export const ACTIONS_META: Record<(typeof ACTIONS)[number], ActionType<any>> = {
       if (
         options.length > 0 &&
         !options
-          .map((opt) => (typeof opt === "string" ? opt : opt.value))
+          .map((opt) => (typeof opt !== "object" ? opt : opt.value))
           .includes(currValue)
       ) {
         args.operation = codeLit(
-          typeof options[0] === "string" ? options[0] : options[0].value
+          typeof options[0] !== "object" ? options[0] : options[0].value
         );
       }
       delete args.value;
@@ -393,6 +397,7 @@ export const ACTIONS_META: Record<(typeof ACTIONS)[number], ActionType<any>> = {
         disableDynamicValue: true,
       },
     },
+    hidden: (ctx) => !ctx.flags.enableDataQueries,
     getDefaultName: (_, { dataOp }, ctx) => {
       if (!dataOp) {
         return `Use ${DATA_SOURCE_LOWER}`;
@@ -401,6 +406,38 @@ export const ACTIONS_META: Record<(typeof ACTIONS)[number], ActionType<any>> = {
       return startCase(`${ctx?.sourceMeta?.source} ${dataOpExpr.opName}`);
     },
     getDefaultArgs: () => ({}),
+  },
+  customFunctionOp: {
+    displayName: `Use ${SERVER_QUERY_LOWER}`,
+    parameters: {
+      customFunctionOp: {
+        type: "customFunctionOp",
+        displayName: `Configure ${DATA_SOURCE_OPERATION_LOWER}`,
+        currentInteraction: (_props, ctx: InteractionContextData) =>
+          ctx.currentInteraction,
+        eventHandlerKey: (_props, ctx: InteractionContextData) =>
+          ctx.eventHandlerKey,
+        disableDynamicValue: true,
+      },
+      continueOnError: {
+        type: "boolean",
+        displayName: "Continue on error",
+        disableDynamicValue: true,
+      },
+    },
+    getDefaultName: (_, { customFunctionOp }) => {
+      if (!customFunctionOp) {
+        return `Use ${SERVER_QUERY_LOWER}`;
+      }
+      const expr = ensureKnownCustomFunctionExpr(customFunctionOp);
+      return startCase(
+        `${expr.func.namespace} ${
+          expr.func.displayName ?? expr.func.importName
+        }`
+      );
+    },
+    getDefaultArgs: () => ({}),
+    hidden: ({ flags }) => !flags.serverQueries,
   },
   navigation: {
     displayName: "Go to page",
@@ -472,7 +509,7 @@ export const ACTIONS_META: Record<(typeof ACTIONS)[number], ActionType<any>> = {
           return Object.entries(actions).map(
             ([aname, ameta]: [string, any]) => ({
               value: aname,
-              label: ameta.displayName ?? aname,
+              label: ameta.displayName ?? smartHumanize(aname),
             })
           );
         },
@@ -631,6 +668,11 @@ export const ACTIONS_META: Record<(typeof ACTIONS)[number], ActionType<any>> = {
       return `Run ${ensureKnownVarRef(eventRef).variable.name}`;
     },
     getDefaultArgs: () => ({}),
+    resetDependentArgs(args, _ctx, updatedArg) {
+      if (updatedArg === "eventRef") {
+        delete args.args;
+      }
+    },
   },
   invalidateDataQuery: {
     displayName: "Refresh data",
@@ -823,7 +865,7 @@ export function generateActionMetaForGlobalAction(
             })
           ),
         isFunctionTypeAttachedToModel: false,
-        parametersMeta: (_args, ctx: InteractionContextData) =>
+        parametersMeta: (_args, _ctx: InteractionContextData) =>
           globalAction.parameters,
         currentInteraction: (_props, ctx: InteractionContextData) =>
           ctx.currentInteraction,

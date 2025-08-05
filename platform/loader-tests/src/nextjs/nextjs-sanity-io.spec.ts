@@ -9,7 +9,7 @@ describe("Plasmic Sanity", () => {
     ctx = await setupNextJs({
       bundleFile: "plasmic-sanity-io.json",
       projectName: "Sanity Project",
-      npmRegistry: getEnvVar("NPM_REGISTRY"),
+      npmRegistry: getEnvVar("NPM_CONFIG_REGISTRY"),
       codegenHost: getEnvVar("WAB_HOST"),
       removeComponentsPage: true,
     });

@@ -8,8 +8,9 @@
   max-width: 100%;
   position: relative;
   cursor: pointer;
-  border-radius: 4px;
-  padding: 2px 8px;
+  background: var(--token-O4S7RMTqZ3);
+  border-radius: var(--token-CVkj_k5wv-Vl);
+  padding: var(--token-vhXSTyxt_gU9) 8px;
   border: 0.5px solid var(--token-Ik3bdE1e1Uy);
 }
 .rootincludesSelf {

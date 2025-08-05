@@ -1,13 +1,10 @@
-import {
-  allCustomFunctions,
-  customFunctionsAndLibsUsedByComponent,
-} from "@/wab/shared/cached-selectors";
+import { customFunctionsAndLibsUsedByComponent } from "@/wab/shared/cached-selectors";
 import { customFunctionId } from "@/wab/shared/code-components/code-components";
 import { SerializerBaseContext } from "@/wab/shared/codegen/react-p/types";
 import { CustomFunctionConfig } from "@/wab/shared/codegen/types";
 import { ensure } from "@/wab/shared/common";
 import { isHostLessPackage } from "@/wab/shared/core/sites";
-import { CodeLibrary, CustomFunction, Site } from "@/wab/shared/model/classes";
+import { CodeLibrary, CustomFunction } from "@/wab/shared/model/classes";
 import { groupBy } from "lodash";
 
 export function customFunctionImportAlias(customFunction: CustomFunction) {
@@ -38,11 +35,6 @@ export function serializeCustomFunctionsAndLibs(ctx: SerializerBaseContext) {
     };
   }
 
-  const customFunctionToOwnerSite = new Map<CustomFunction, Site>();
-  allCustomFunctions(ctx.site).forEach(({ customFunction, site }) =>
-    customFunctionToOwnerSite.set(customFunction, site)
-  );
-
   let importLoaderRegistry = false;
 
   // The custom functions can be imported differntly depending on the
@@ -63,7 +55,7 @@ export function serializeCustomFunctionsAndLibs(ctx: SerializerBaseContext) {
   let customFunctionsAndLibsImport = [
     ...customFunctions.map((fn) => {
       const ownerSite = ensure(
-        customFunctionToOwnerSite.get(fn),
+        ctx.siteCtx.customFunctionToOwnerSite.get(fn),
         () => `No ownerSite for CustomFunction ${customFunctionId(fn)}`
       );
 

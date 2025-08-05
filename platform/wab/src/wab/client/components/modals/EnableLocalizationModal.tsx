@@ -1,5 +1,4 @@
 import { AppCtx } from "@/wab/client/app-ctx";
-import { U } from "@/wab/client/cli-routes";
 import {
   promptBilling,
   showUpsellConfirm,
@@ -13,6 +12,8 @@ import { useTopFrameCtx } from "@/wab/client/frame-ctx/top-frame-ctx";
 import { ApiProject } from "@/wab/shared/ApiSchema";
 import { ORGANIZATION_LOWER } from "@/wab/shared/Labels";
 import { LocalizationConfig } from "@/wab/shared/localization";
+import { APP_ROUTES } from "@/wab/shared/route/app-routes";
+import { fillRoute } from "@/wab/shared/route/route";
 import { Form, notification } from "antd";
 import { observer } from "mobx-react";
 import React from "react";
@@ -147,6 +148,8 @@ async function canEnableLocalization(appCtx: AppCtx, project: ApiProject) {
     return false;
   }
 
-  await showUpsellConfirm(U.orgSettings({ teamId: projectTeam.id }));
+  await showUpsellConfirm(
+    fillRoute(APP_ROUTES.orgSettings, { teamId: projectTeam.id })
+  );
   return true;
 }

@@ -23,6 +23,7 @@ import domAlign from "dom-align";
 import $ from "jquery";
 import { observer } from "mobx-react";
 import React from "react";
+import { Root } from "react-dom/client";
 import { useUnmount } from "react-use";
 
 export const ComponentActionsSection = observer(
@@ -47,10 +48,11 @@ export const ComponentActionsSection = observer(
       <>
         {
           <div className="flex-col gap-xsm mb-xsm">
-            {actions.map((action) => {
+            {actions.map((action, idx) => {
               if (action.type == "button-action") {
                 return (
                   <ButtonAction
+                    key={`${idx}${action.label}`}
                     label={action.label}
                     onClick={action.onClick}
                     componentPropValues={componentPropValues}
@@ -63,6 +65,7 @@ export const ComponentActionsSection = observer(
               } else if (action.type == "custom-action") {
                 return (
                   <CustomAction
+                    key={idx}
                     control={action.control}
                     componentPropValues={componentPropValues}
                     ccContextData={ccContextData}
@@ -72,7 +75,13 @@ export const ComponentActionsSection = observer(
                   />
                 );
               } else if (hackyCast(action).type === "form-schema") {
-                return <ConnectToDBTableModal viewCtx={viewCtx} tpl={tpl} />;
+                return (
+                  <ConnectToDBTableModal
+                    key={idx}
+                    viewCtx={viewCtx}
+                    tpl={tpl}
+                  />
+                );
               } else {
                 return null;
               }
@@ -92,6 +101,7 @@ export function useStudioOps(
 ): ActionProps<any>["studioOps"] {
   const canvasCtx = viewCtx.canvasCtx;
   const sub = canvasCtx.Sub;
+  const root = React.useRef<Root | null>(null);
   const [modalProps, setModalProps] = React.useState<null | {
     onClose?: () => void;
   }>(null);
@@ -114,28 +124,40 @@ export function useStudioOps(
   );
 
   React.useEffect(() => {
-    if (node) {
-      sub.ReactDOM.render(
-        sub.React.createElement(
-          sub.GenericErrorBoundary,
-          {
-            className: "error-boundary",
-          },
-          sub.React.createElement(FullScreenModal, {
-            ...modalProps,
-            show: !!modalProps,
-            onClose: () => {
-              modalProps?.onClose?.();
-              setModalProps(null);
-            },
-          })
-        ),
-        node
-      );
+    if (!node) {
+      return;
+    }
+    if (sub.ReactDOMClient && !root.current) {
+      root.current = sub.ReactDOMClient.createRoot(node);
+    }
+    const renderElement = sub.React.createElement(
+      sub.GenericErrorBoundary,
+      {
+        className: "error-boundary",
+      },
+      sub.React.createElement(FullScreenModal, {
+        ...modalProps,
+        show: !!modalProps,
+        onClose: () => {
+          modalProps?.onClose?.();
+          setModalProps(null);
+        },
+      })
+    );
+    if (root.current) {
+      root.current.render(renderElement);
+    } else if (sub.ReactDOM.render) {
+      sub.ReactDOM.render(renderElement, node);
     }
   }, [modalProps, sub, node, FullScreenModal]);
 
-  useUnmount(() => node && sub.ReactDOM.unmountComponentAtNode(node));
+  useUnmount(() => {
+    if (root.current) {
+      root.current.unmount();
+    } else if (node && sub.ReactDOM.unmountComponentAtNode) {
+      sub.ReactDOM.unmountComponentAtNode(node);
+    }
+  });
 
   const refreshQueryData = React.useCallback(
     () => canvasCtx.refreshFetchedDataFromPlasmicQuery(),
@@ -356,6 +378,7 @@ function CustomAction<P>({
 }) {
   const sub = viewCtx.canvasCtx.Sub;
   const actionContainerRef = React.useRef<HTMLDivElement>(null);
+  const actionRoot = React.useRef<Root | null>(null);
   const modalContainerRef = React.useRef<HTMLDivElement>(null);
   const studioOps = useStudioOps(
     viewCtx,
@@ -367,23 +390,29 @@ function CustomAction<P>({
 
   React.useEffect(() => {
     const node = actionContainerRef.current;
-    if (node) {
-      sub.ReactDOM.render(
-        sub.React.createElement(
-          sub.GenericErrorBoundary,
-          {
-            className: "error-boundary",
-          },
-          sub.React.createElement(control, {
-            componentProps: componentPropValues,
-            contextData: ccContextData,
-            studioOps: studioOps,
-            projectData: projectData,
-            studioDocument: window.document,
-          })
-        ),
-        node
-      );
+    if (!node) {
+      return;
+    }
+    if (sub.ReactDOMClient && !actionRoot.current) {
+      actionRoot.current = sub.ReactDOMClient.createRoot(node);
+    }
+    const renderElement = sub.React.createElement(
+      sub.GenericErrorBoundary,
+      {
+        className: "error-boundary",
+      },
+      sub.React.createElement(control, {
+        componentProps: componentPropValues,
+        contextData: ccContextData,
+        studioOps: studioOps,
+        projectData: projectData,
+        studioDocument: window.document,
+      })
+    );
+    if (actionRoot.current) {
+      actionRoot.current.render(renderElement);
+    } else if (sub.ReactDOM.render) {
+      sub.ReactDOM.render(renderElement, node);
     }
   }, [
     actionContainerRef.current,

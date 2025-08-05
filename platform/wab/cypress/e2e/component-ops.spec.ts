@@ -47,6 +47,7 @@ describe("component-ops - tricky operations", function () {
           );
           cy.get(`[data-plasmic-prop="withDefaultValue"]`).first().rightclick();
           cy.contains("Allow external access").trigger("mouseover");
+          cy.wait(200);
           cy.contains("Create new prop").click();
           cy.linkNewProp("linkProp1");
           cy.get(`[data-test-id="prop-editor-row-default-withDefaultValue"]`)
@@ -65,6 +66,7 @@ describe("component-ops - tricky operations", function () {
             .type("5{enter}")
             .rightclick();
           cy.contains("Allow external access").trigger("mouseover");
+          cy.wait(200);
           cy.contains("Create new prop").click();
           cy.linkNewProp("linkProp2");
           cy.get(`[data-test-id="prop-editor-row-default-tabIndex"]`)

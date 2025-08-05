@@ -17,7 +17,7 @@ test.describe(`Plasmic Antd5 Progress`, async () => {
         ctx = await setupNextJs({
           bundleFile: "antd5/progress.json",
           projectName: "Antd5 Progress",
-          npmRegistry: getEnvVar("NPM_REGISTRY"),
+          npmRegistry: getEnvVar("NPM_CONFIG_REGISTRY"),
           codegenHost: getEnvVar("WAB_HOST"),
           removeComponentsPage: true,
           loaderVersion,

@@ -73,7 +73,7 @@ export function emptyChecksumBundle(): ChecksumBundle {
   };
 }
 
-export type ExportPlatform = "react" | "nextjs" | "gatsby";
+export type ExportPlatform = "react" | "nextjs" | "gatsby" | "tanstack";
 
 export type ExportPlatformOptions = {
   nextjs?: {
@@ -269,6 +269,21 @@ export interface ComponentExportOutput {
   pageMetadata?: PageMetadata;
 
   metadata: { [key: string]: string };
+
+  rscMetadata?: {
+    pageWrappers: Record<
+      "client" | "server",
+      {
+        module: string;
+        fileName: string;
+      }
+    >;
+
+    serverQueriesExecFunc?: {
+      module: string;
+      fileName: string;
+    };
+  };
 }
 
 export interface CustomFunctionConfig {

@@ -2,11 +2,16 @@ import { reactConfirm } from "@/wab/client/components/quick-modals";
 import { ObserverLoadable } from "@/wab/client/components/widgets";
 import Chip from "@/wab/client/components/widgets/Chip";
 import { Modal } from "@/wab/client/components/widgets/Modal";
+import {
+  JsonObject,
+  jsonStringify,
+  tryJsonParse,
+} from "@/wab/shared/core/lang";
 import React from "react";
 
 export interface GraphQLValue {
   query: string;
-  variables?: Record<string, any>;
+  variables?: JsonObject;
 }
 
 export const GraphQLEditor = (props: {
@@ -28,14 +33,6 @@ export const GraphQLEditor = (props: {
     });
     if (confirm) {
       setShow(false);
-    }
-  };
-
-  const tryJsonParse = (str: string) => {
-    try {
-      return JSON.parse(str);
-    } catch {
-      return {};
     }
   };
 
@@ -75,11 +72,16 @@ export const GraphQLEditor = (props: {
                   url={endpoint}
                   headers={headers}
                   defaultQuery={value?.query ?? ""}
-                  defaultVariables={JSON.stringify(value?.variables ?? {})}
+                  defaultVariables={jsonStringify(
+                    value?.variables ?? ({} as any)
+                  )}
                   method={method}
                   onCancel={onCancel}
                   onSave={(query, variables) => {
-                    onChange?.({ query, variables: tryJsonParse(variables) });
+                    onChange?.({
+                      query,
+                      variables: tryJsonParse<JsonObject>(variables),
+                    });
                     setShow(false);
                   }}
                 />

@@ -1,3 +1,4 @@
+import { tuple } from "@/wab/shared/common";
 import {
   BackgroundLayer,
   bgClipTextTag,
@@ -8,12 +9,11 @@ import {
   NoneBackground,
   Stop,
 } from "@/wab/shared/core/bg-styles";
-import { tuple } from "@/wab/shared/common";
-import * as cssPegParser from "@/wab/gen/cssPegParser";
+import { parseCss } from "@/wab/shared/css";
 
 describe("cssPegParser", function () {
   const parseback = (x, { rule }) => parse(x, { rule }).showCss();
-  const parse = (x, { rule }) => cssPegParser.parse(x, { startRule: rule });
+  const parse = (x, { rule }) => parseCss(x, { startRule: rule });
   const bgParse = (x) => parse(x, { rule: "backgroundImage" });
   it("should parse image backgrounds", () =>
     expect(bgParse('url("http://aoeu")')).toEqual(
@@ -66,7 +66,7 @@ describe("cssPegParser", function () {
       new LinearGradient({
         repeating: true,
         angle: 90,
-        stops: [new Stop("rgba(255, 255, 255, .1)", new Dim(50, "%"))],
+        stops: [new Stop("rgba(255,255,255,.1)", new Dim(50, "%"))],
       })
     );
   });
@@ -79,6 +79,14 @@ describe("cssPegParser", function () {
       "radial-gradient(ellipse 60% 40% at 20% 20%, #e66465 0%, #9198e5 100%)",
       "repeating-radial-gradient(ellipse 60% 40% at 20% 20%, #e66465 0%, #9198e5 100%)",
     ].map((x) => expect(parseback(x, { rule: "backgroundImage" })).toBe(x));
+
+    // test out same values for linearGradient rule.
+    [
+      "linear-gradient(90deg, black 50%, #fff 70%)",
+      "linear-gradient(10deg, #fff 50%)",
+      "repeating-linear-gradient(90deg, black 50%, #fff 70%)",
+      "repeating-linear-gradient(0deg, #fff 50%)",
+    ].map((x) => expect(parseback(x, { rule: "linearGradient" })).toBe(x));
   });
   const removeNils = (layer: BackgroundLayer) => {
     Object.keys(layer).forEach((key) => {
@@ -222,14 +230,14 @@ describe("cssPegParser", function () {
   });
 
   it("parses comma-separated values", () => {
-    expect(cssPegParser.parse("", { startRule: "commaSepValues" })).toEqual([]);
+    expect(parseCss("", { startRule: "commaSepValues" })).toEqual([]);
     expect(
-      cssPegParser.parse(`hello, yes, "no, maybe", 'I dunno, can you', what`, {
+      parseCss(`hello, yes, "no, maybe", 'I dunno, can you', what`, {
         startRule: "commaSepValues",
       })
     ).toEqual(["hello", "yes", `"no, maybe"`, `'I dunno, can you'`, "what"]);
     expect(
-      cssPegParser.parse(
+      parseCss(
         "radial-gradient(ellipse 50% 50% at 50% 50%, rgba(39, 46, 48, 1) 0%, rgba(14, 14, 14, 1) 100%), radial-gradient(ellipse 50% 50% at 50% 50%, rgba(39, 46, 48, 1) 0%, rgba(14, 14, 14, 1) 100%)",
         { startRule: "commaSepValues" }
       )
@@ -238,16 +246,14 @@ describe("cssPegParser", function () {
       "radial-gradient(ellipse 50% 50% at 50% 50%, rgba(39, 46, 48, 1) 0%, rgba(14, 14, 14, 1) 100%)",
     ]);
     expect(
-      cssPegParser.parse(
-        `url("what is, linear(gradient, okay), whatevs"), yup`,
-        { startRule: "commaSepValues" }
-      )
+      parseCss(`url("what is, linear(gradient, okay), whatevs"), yup`, {
+        startRule: "commaSepValues",
+      })
     ).toEqual([`url("what is, linear(gradient, okay), whatevs")`, "yup"]);
     expect(
-      cssPegParser.parse(
-        `yes, (where do we (go, and), nobody (knows, and) so), on`,
-        { startRule: "commaSepValues" }
-      )
+      parseCss(`yes, (where do we (go, and), nobody (knows, and) so), on`, {
+        startRule: "commaSepValues",
+      })
     ).toEqual(["yes", "(where do we (go, and), nobody (knows, and) so)", "on"]);
   });
 });

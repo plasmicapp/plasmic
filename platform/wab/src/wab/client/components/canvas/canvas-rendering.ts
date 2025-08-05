@@ -89,6 +89,7 @@ import {
   isBuiltinCodeComponent,
 } from "@/wab/shared/code-components/builtin-code-components";
 import {
+  customFunctionId,
   isCodeComponentWithHelpers,
   isPlainObjectPropType,
   tryGetStateHelpers,
@@ -114,6 +115,7 @@ import {
   makeWabSlotClassName,
   makeWabTextClassName,
 } from "@/wab/shared/codegen/react-p/serialize-utils";
+import { isServerQueryWithOperation } from "@/wab/shared/codegen/react-p/server-queries/utils";
 import { deriveReactHookSpecs } from "@/wab/shared/codegen/react-p/utils";
 import {
   paramToVarName,
@@ -145,6 +147,7 @@ import {
   isCodeComponent,
   isHostLessCodeComponent,
 } from "@/wab/shared/core/components";
+import { getCustomFunctionParams } from "@/wab/shared/core/custom-functions";
 import {
   ExprCtx,
   InteractionArgLoc,
@@ -190,6 +193,7 @@ import {
   RawTextLike,
   TplTextTag,
   ancestorsUp,
+  computeAncestorsValKey,
   getNumberOfRepeatingAncestors,
   getOwnerSite,
   isExprText,
@@ -264,7 +268,6 @@ import {
   isKnownStateParam,
   isKnownStyleExpr,
   isKnownStyleScopeClassNamePropType,
-  isKnownTplNode,
   isKnownTplTag,
 } from "@/wab/shared/model/classes";
 import { isRenderFuncType, typeFactory } from "@/wab/shared/model/model-util";
@@ -285,6 +288,7 @@ import {
 import {
   TplVisibility,
   getEffectiveVsVisibility,
+  normalizeDisplayValue,
 } from "@/wab/shared/visibility-utils";
 import type { usePlasmicInvalidate } from "@plasmicapp/data-sources";
 import { DataDict, mkMetaName } from "@plasmicapp/host";
@@ -295,7 +299,6 @@ import {
   last,
   omit,
   pick,
-  reverse,
   uniqBy,
   without,
   zipObject,
@@ -671,7 +674,7 @@ function mkInitFuncHash(
 ) {
   const initFuncExpr = mkInitFuncExpr(state, variantCombo, viewCtx, exprCtx);
   return initFuncExpr
-    ? `${state.variableType}${hashExpr(initFuncExpr, exprCtx)}`
+    ? `${state.variableType}${hashExpr(viewCtx.site, initFuncExpr, exprCtx)}`
     : "";
 }
 
@@ -1272,7 +1275,7 @@ function getAutoOpenSelectionInfo(ctx: RenderingCtx, node: TplNode) {
       // Ensuring that the depencies are tracked
       const isInteractive = ctx.viewCtx.studioCtx.isInteractiveMode;
       const isAutoOpenMode = ctx.viewCtx.studioCtx.isAutoOpenMode;
-
+      const disabledAutoOpenUuid = ctx.viewCtx.disabledAutoOpenUuid;
       // The reason why we are using the focusedTplDeepAncestorPath is because
       // we can't rely on ValNodes or the dom to determine if a node is selected
       // or not. Since code components are able to conditonally render content
@@ -1285,9 +1288,15 @@ function getAutoOpenSelectionInfo(ctx: RenderingCtx, node: TplNode) {
       // have the slot being proxied by a plasmic component, so we need to make sure
       // that the selection is also handled through it.
       const path = ctx.viewCtx.focusedTplAncestorsThroughComponents();
-      const nodeIdx = path?.findIndex((s) => s === node) ?? -1;
+      const nodeIdx = path?.findIndex((s) => s.node === node) ?? -1;
 
-      if (isInteractive || !isAutoOpenMode || !path || nodeIdx === -1) {
+      if (
+        isInteractive ||
+        !isAutoOpenMode ||
+        disabledAutoOpenUuid ||
+        !path ||
+        nodeIdx === -1
+      ) {
         return {
           id: node.uuid,
           isSelected: false,
@@ -1295,27 +1304,15 @@ function getAutoOpenSelectionInfo(ctx: RenderingCtx, node: TplNode) {
         };
       }
 
-      // We now need to know whether this node is really selected or not since
-      // when dealing with proxied components the same node will be reused for
-      // rendering, we will then look into all tpl node ancestors and if they
-      // are present in the valKey
       const nodeAncestors = path.slice(nodeIdx);
+      const ancestorsKeyPath = computeAncestorsValKey(nodeAncestors);
 
-      // We will compute the valKey path without the first element, since it's
-      // a reference to the instance of the current component that is being rendered
-      const valKeyPath = ctx.valKey.split(".").slice(1).join(".");
+      // If it's truly selected, we should have the ancestors key as a suffix, since there is
+      // a prefix containing the current component instance and global contexts and that is not
+      // explicitly part of the model, but only how the rendering is done.
+      const isSelected = ctx.valKey.endsWith(ancestorsKeyPath);
 
-      // Since ancestors are in the reverse order, we need to reverse them to get
-      // a key in the same order as the valKey
-      const ancestorsKeyPath = reverse(nodeAncestors)
-        .filter(isKnownTplNode)
-        .map((n) => n.uuid)
-        .join(".");
-
-      // If it's truly selected, we should have the same key path
-      const isSelected = valKeyPath === ancestorsKeyPath;
-
-      const descendant = nodeIdx > 0 ? path[nodeIdx - 1] : null;
+      const descendant = nodeIdx > 0 ? path[nodeIdx - 1].node : null;
 
       return {
         id: node.uuid,
@@ -1469,7 +1466,7 @@ function renderTplComponent(
     ctx.site
   );
 
-  const { rendered } = getVisibilityWithAutoOpen(ctx, node, effectiveVs);
+  const { rendered } = determineAutoOpenState(ctx, node, effectiveVs);
 
   if (!rendered) {
     return null;
@@ -1768,6 +1765,12 @@ function renderTplComponent(
   if (isCodeComponent(node.component)) {
     const codeComponentSelectionInfo = getAutoOpenSelectionInfo(ctx, node);
     props[INTERNAL_CC_CANVAS_SELECTION_PROP] = codeComponentSelectionInfo;
+    props["plasmicNotifyAutoOpenedContent"] = () => {
+      ctx.viewCtx.autoOpenedUuid =
+        node.component.params.find(
+          (p) => p.variable.name === codeComponentSelectionInfo.selectedSlotName
+        )?.uuid ?? node.uuid;
+    };
   }
 
   let elt = createPlasmicElementProxy(node, ctx, ComponentImpl, props);
@@ -2318,7 +2321,7 @@ function renderTplTag(
       effectiveVsWithoutDisabled
     );
 
-  const { rendered, style } = getVisibilityWithAutoOpen(ctx, node, effectiveVs);
+  const { rendered, style } = determineAutoOpenState(ctx, node, effectiveVs);
 
   if (!rendered) {
     return null;
@@ -2755,63 +2758,82 @@ function evalDataCondExpr(
   return !!dataCondResult;
 }
 
-function getVisibilityWithAutoOpen(
+function determineAutoOpenState(
   ctx: RenderingCtx,
   node: TplNode,
   effectiveVs: EffectiveVariantSetting
 ) {
-  const visibility = getEffectiveVsVisibility(effectiveVs);
+  function getVisibilityWithAutoOpen() {
+    const visibility = getEffectiveVsVisibility(effectiveVs);
 
-  switch (visibility) {
-    case TplVisibility.Visible: {
-      return {
-        rendered: true,
-      };
-    }
-
-    case TplVisibility.NotRendered:
-    case TplVisibility.CustomExpr: {
-      const dataCondResult = evalDataCondExpr(ctx, effectiveVs);
-      if (dataCondResult) {
+    switch (visibility) {
+      case TplVisibility.Visible: {
         return {
           rendered: true,
+          autoOpened: false,
         };
       }
 
-      if (!ctx.projectFlags.autoOpen2) {
+      case TplVisibility.NotRendered:
+      case TplVisibility.CustomExpr: {
+        const autoOpenInfo = getAutoOpenSelectionInfo(ctx, node);
+        const dataCondResult = evalDataCondExpr(ctx, effectiveVs);
+        if (dataCondResult) {
+          return {
+            rendered: true,
+            autoOpened: false,
+          };
+        }
+
+        if (!ctx.projectFlags.autoOpen2) {
+          return {
+            rendered: false,
+            autoOpened: false,
+          };
+        }
+
         return {
-          rendered: false,
+          rendered: autoOpenInfo.isSelected,
+          autoOpened: autoOpenInfo.isSelected,
         };
       }
 
-      const autoOpenInfo = getAutoOpenSelectionInfo(ctx, node);
-      return {
-        rendered: autoOpenInfo.isSelected,
-      };
-    }
+      case TplVisibility.DisplayNone: {
+        const autoOpenInfo = getAutoOpenSelectionInfo(ctx, node);
+        // Auto Open is not yet supported for TplComponents / images with Visibility.DisplayNone
+        if (!ctx.projectFlags.autoOpen2 || isTplComponent(node)) {
+          return {
+            rendered: true,
+            autoOpened: false,
+          };
+        }
 
-    case TplVisibility.DisplayNone: {
-      if (!ctx.projectFlags.autoOpen2) {
         return {
           rendered: true,
+          style: autoOpenInfo.isSelected
+            ? {
+                display: normalizeDisplayValue(
+                  effectiveVs.rsh().get("display")
+                ),
+              }
+            : undefined,
+          autoOpened: autoOpenInfo.isSelected,
         };
       }
 
-      const autoOpenInfo = getAutoOpenSelectionInfo(ctx, node);
-      return {
-        rendered: true,
-        style: autoOpenInfo.isSelected
-          ? {
-              display: effectiveVs.rsh().get("display"),
-            }
-          : undefined,
-      };
-    }
-
-    default: {
-      unreachable(visibility);
+      default: {
+        unreachable(visibility);
+      }
     }
   }
+
+  const state = getVisibilityWithAutoOpen();
+
+  if (state.autoOpened) {
+    ctx.viewCtx.autoOpenedUuid = node.uuid;
+  }
+
+  return state;
 }
 
 function deriveTplTagChildren(
@@ -3208,7 +3230,7 @@ function renderTplSlot(
   ctx: RenderingCtx,
   activeVSettings: VariantSetting[]
 ): React.ReactElement | null {
-  const { rendered } = getVisibilityWithAutoOpen(
+  const { rendered } = determineAutoOpenState(
     ctx,
     node,
     new EffectiveVariantSetting(node, activeVSettings, ctx.site)
@@ -3657,8 +3679,8 @@ const mkComponentLevelQueryFetcher = computedFn(
                 );
               }
             : undefined;
-        const new$Queries = Object.fromEntries(
-          component.dataQueries
+        const new$Queries = Object.fromEntries([
+          ...component.dataQueries
             .filter((query) => !!query.op)
             .map(
               (query) =>
@@ -3666,8 +3688,37 @@ const mkComponentLevelQueryFetcher = computedFn(
                   toVarName(query.name),
                   sub.dataSources?.usePlasmicDataOp(getDataOp(query)),
                 ] as const
-            )
-        );
+            ),
+          ...component.serverQueries
+            .filter(isServerQueryWithOperation)
+            .map((query) => {
+              const funcId = customFunctionId(query.op.func);
+              const funcReg = ctx.viewCtx.canvasCtx
+                .getRegisteredFunctionsMap()
+                .get(funcId);
+              if (!funcReg) {
+                return [toVarName(query.name), undefined] as const;
+              }
+              return [
+                toVarName(query.name),
+                sub.dataSources?.usePlasmicServerQuery({
+                  id: funcId,
+                  fn: funcReg.function,
+                  execParams: () =>
+                    getCustomFunctionParams(
+                      query.op,
+                      ctx.env,
+                      {
+                        component,
+                        projectFlags: ctx.projectFlags,
+                        inStudio: true,
+                      },
+                      ctx.viewCtx.canvasCtx.win()
+                    ),
+                }),
+              ] as const;
+            }),
+        ]);
         defer(() => {
           Object.keys(new$Queries).forEach((k) => {
             try {
@@ -3725,7 +3776,8 @@ function wrapInComponentDataQueries(ctx: RenderingCtx, component: Component) {
     mkComponentLevelQueryFetcher(
       ctx.sub,
       ctx.viewCtx,
-      component.dataQueries.filter((query) => !!query.op).length
+      component.dataQueries.filter((query) => !!query.op).length +
+        component.serverQueries.filter(isServerQueryWithOperation).length
     ),
     {
       ctx,

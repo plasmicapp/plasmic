@@ -4,17 +4,14 @@ import {
 } from "@/wab/client/components/dashboard/dashboard-actions";
 import { Spinner } from "@/wab/client/components/widgets";
 import { useAppCtx } from "@/wab/client/contexts/AppContexts";
-import {
-  useAsyncFnStrict,
-  useAsyncStrict,
-} from "@/wab/client/hooks/useAsyncStrict";
+import { useAsyncStrict } from "@/wab/client/hooks/useAsyncStrict";
 import {
   DefaultTeamSettingsProps,
   PlasmicTeamSettings,
 } from "@/wab/client/plasmic/plasmic_kit_dashboard/PlasmicTeamSettings";
+import { TeamId } from "@/wab/shared/ApiSchema";
 import { ensure } from "@/wab/shared/common";
 import { DEVFLAGS } from "@/wab/shared/devflags";
-import { TeamId } from "@/wab/shared/ApiSchema";
 import { accessLevelRank, GrantableAccessLevel } from "@/wab/shared/EntUtil";
 import { getAccessLevelToResource } from "@/wab/shared/perms";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
@@ -29,8 +26,7 @@ function TeamSettings_(props: TeamSettingsProps, ref: HTMLElementRefOf<"div">) {
   const appCtx = useAppCtx();
   const selfInfo = ensure(appCtx.selfInfo, "Unexpected nullish selfInfo");
 
-  // Async data
-  const [asyncData, fetchAsyncData] = useAsyncFnStrict(async () => {
+  const { value: data, retry: refetchData } = useAsyncStrict(async () => {
     // needs to fetch subscription before team, because getSubscription will check the subscription status
     const subscriptionResp = await appCtx.api.getSubscription(teamId);
     const team = await appCtx.api.getTeam(teamId);
@@ -49,13 +45,17 @@ function TeamSettings_(props: TeamSettingsProps, ref: HTMLElementRefOf<"div">) {
       isWhiteLabeled,
     };
   }, [appCtx, teamId, selfInfo]);
-  useAsyncStrict(fetchAsyncData, [teamId]);
-  const team = asyncData?.value?.team;
-  const perms = asyncData?.value?.perms ?? [];
-  const members = asyncData?.value?.members ?? [];
-  const availFeatureTiers = asyncData?.value?.tiers ?? [];
-  const subscription = asyncData?.value?.subscription;
-  const tier = team?.featureTier ?? DEVFLAGS.freeTier;
+
+  if (!data) {
+    return <Spinner />;
+  }
+
+  const team = data.team;
+  const perms = data.perms ?? [];
+  const members = data.members ?? [];
+  const availFeatureTiers = data.tiers ?? [];
+  const subscription = data?.subscription;
+  const tier = team.featureTier ?? DEVFLAGS.freeTier;
 
   const userAccessLevel = team
     ? getAccessLevelToResource(
@@ -68,98 +68,93 @@ function TeamSettings_(props: TeamSettingsProps, ref: HTMLElementRefOf<"div">) {
 
   const teamMenuItems = team ? getTeamMenuItems(appCtx, team) : [];
 
-  return !asyncData.value ? (
-    <Spinner />
-  ) : (
-    <>
-      <PlasmicTeamSettings
-        root={{ ref }}
-        {...rest}
-        teamName={team?.name}
-        teamMenuButton={
-          team && teamMenuItems.length > 0
-            ? {
-                props: {
-                  menu: () => (
-                    <TeamMenu
-                      appCtx={appCtx}
-                      team={team}
-                      items={teamMenuItems}
-                      onUpdate={async () => {
-                        await fetchAsyncData();
-                      }}
-                      redirectOnDelete={true}
-                    />
-                  ),
-                },
-              }
-            : undefined
-        }
-        memberList={{
-          team,
-          members,
-          perms,
-          tier,
-          onChangeRole: async (email: string, role?: GrantableAccessLevel) => {
-            if (!team) {
-              return;
+  return (
+    <PlasmicTeamSettings
+      root={{ ref }}
+      {...rest}
+      teamName={team?.name}
+      teamMenuButton={
+        team && teamMenuItems.length > 0
+          ? {
+              props: {
+                menu: () => (
+                  <TeamMenu
+                    appCtx={appCtx}
+                    team={team}
+                    items={teamMenuItems}
+                    onUpdate={async () => {
+                      refetchData();
+                    }}
+                    redirectOnDelete={true}
+                  />
+                ),
+              },
             }
-            await appCtx.api.grantRevoke({
-              grants: role
-                ? [
-                    {
-                      email,
-                      accessLevel: role,
-                      teamId: team.id,
-                    },
-                  ]
-                : [],
-              revokes: !role
-                ? [
-                    {
-                      email,
-                      teamId: team.id,
-                    },
-                  ]
-                : [],
-            });
-            await fetchAsyncData();
-          },
-          onRemoveUser: async (email: string) => {
-            if (!team) {
-              return;
+          : undefined
+      }
+      memberList={{
+        team,
+        members,
+        perms,
+        tier,
+        onChangeRole: async (email: string, role?: GrantableAccessLevel) => {
+          if (!team) {
+            return;
+          }
+          await appCtx.api.grantRevoke({
+            grants: role
+              ? [
+                  {
+                    email,
+                    accessLevel: role,
+                    teamId: team.id,
+                  },
+                ]
+              : [],
+            revokes: !role
+              ? [
+                  {
+                    email,
+                    teamId: team.id,
+                  },
+                ]
+              : [],
+          });
+          refetchData();
+        },
+        onRemoveUser: async (email: string) => {
+          if (!team) {
+            return;
+          }
+          await appCtx.api.purgeUsersFromTeam({
+            teamId: team.id,
+            emails: [email],
+          });
+          refetchData();
+        },
+        disabled: readOnly,
+        onReload: async () => {
+          refetchData();
+        },
+      }}
+      teamBilling={
+        data.isWhiteLabeled
+          ? {
+              render: () => null,
             }
-            await appCtx.api.purgeUsersFromTeam({
-              teamId: team.id,
-              emails: [email],
-            });
-            await fetchAsyncData();
-          },
-          disabled: readOnly,
-          onReload: async () => {
-            await fetchAsyncData();
-          },
-        }}
-        teamBilling={
-          asyncData.value.isWhiteLabeled
-            ? {
-                render: () => null,
-              }
-            : {
-                appCtx,
-                team,
-                members,
-                availFeatureTiers,
-                subscription,
-                onChange: async () => {
-                  await fetchAsyncData();
-                  await appCtx.reloadAppCtx();
-                },
-                disabled: readOnly,
-              }
-        }
-      />
-    </>
+          : {
+              appCtx,
+              team,
+              members,
+              availFeatureTiers,
+              subscription,
+              onChange: () => {
+                refetchData();
+              },
+              disabled: readOnly,
+            }
+      }
+    />
   );
 }
 

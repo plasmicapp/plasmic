@@ -1,5 +1,6 @@
 import { DbMgr } from "@/wab/server/db/DbMgr";
 import {
+  extractProjectId,
   mkVersionToSync,
   resolveProjectDeps,
   VersionToSync,
@@ -57,7 +58,6 @@ export async function genPublishedLoaderCodeBundle(
     projectVersions: Record<string, VersionToSync>;
     loaderVersion: number;
     browserOnly: boolean;
-    preferEsbuild: boolean;
     i18nKeyScheme: LocalizationKeyScheme | undefined;
     i18nTagPrefix: string | undefined;
     skipHead?: boolean;
@@ -86,7 +86,6 @@ export async function genPublishedLoaderCodeBundle(
       loaderVersion: opts.loaderVersion,
       browserOnly: opts.browserOnly,
       mode: "production",
-      preferEsbuild: opts.preferEsbuild,
       i18nKeyScheme: opts.i18nKeyScheme,
       i18nTagPrefix: opts.i18nTagPrefix,
       skipHead: opts.skipHead,
@@ -103,7 +102,6 @@ export async function genLatestLoaderCodeBundle(
     projectIdsBranches: { id: string; branchName: string | undefined }[];
     loaderVersion: number;
     browserOnly: boolean;
-    preferEsbuild: boolean;
     i18nKeyScheme: LocalizationKeyScheme | undefined;
     i18nTagPrefix: string | undefined;
     skipHead?: boolean;
@@ -138,7 +136,6 @@ export async function genLatestLoaderCodeBundle(
       browserOnly: opts.browserOnly,
       // Use development build for fastest response
       mode: "development",
-      preferEsbuild: opts.preferEsbuild,
       i18nKeyScheme: opts.i18nKeyScheme,
       i18nTagPrefix: opts.i18nTagPrefix,
       skipHead: opts.skipHead,
@@ -156,7 +153,6 @@ async function genLoaderCodeBundleForProjectVersions(
     mode: "production" | "development";
     loaderVersion: number;
     browserOnly: boolean;
-    preferEsbuild: boolean;
     i18nKeyScheme?: LocalizationKeyScheme;
     i18nTagPrefix: string | undefined;
     skipHead?: boolean;
@@ -256,7 +252,6 @@ async function genLoaderCodeBundleForProjectVersions(
         mode: opts.mode,
         loaderVersion: opts.loaderVersion,
         browserOnly: opts.browserOnly,
-        preferEsbuild: opts.preferEsbuild,
       },
     ]);
   };
@@ -365,9 +360,18 @@ function makeBundleBucketPath(opts: {
   return key;
 }
 
+export function extractBundleKeyProjectIds(bundleKey: string): ProjectId[] {
+  const ps = bundleKey.split("/ps=")[1].split("/")[0];
+  return ps.split(",").map(extractProjectId);
+}
+
 function makeExportOptsKey(opts: ExportOpts) {
   // We use a hash of the json string to avoid blowing the S3 object
   // key length limit of 1024 chars
   const str = JSON.stringify(opts);
   return createHash("sha256").update(str).digest("hex");
 }
+
+export const _testonly = {
+  makeBundleBucketPath,
+};

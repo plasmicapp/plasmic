@@ -25,7 +25,6 @@ import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { removeFromArray } from "@/wab/commons/collections";
 import { joinReactNodes } from "@/wab/commons/components/ReactUtil";
 import { derefTokenRefs, tryParseTokenRef } from "@/wab/commons/StyleToken";
-import * as cssPegParser from "@/wab/gen/cssPegParser";
 import {
   computedProjectFlags,
   TokenValueResolver,
@@ -37,6 +36,8 @@ import { ExprCtx, summarizeExpr, tryExtractLit } from "@/wab/shared/core/exprs";
 import { allStyleTokens } from "@/wab/shared/core/sites";
 import { sourceMatchThemeStyle } from "@/wab/shared/core/styles";
 import { isTplComponent, isTplTag } from "@/wab/shared/core/tpls";
+import { parseCss } from "@/wab/shared/css";
+import { splitCssValue } from "@/wab/shared/css/parse";
 import {
   DefinedIndicatorType,
   isTargetOverwritten,
@@ -63,7 +64,7 @@ import {
   Variant,
   VariantSetting,
 } from "@/wab/shared/model/classes";
-import { RSH, splitCssValue } from "@/wab/shared/RuleSetHelpers";
+import { RSH } from "@/wab/shared/RuleSetHelpers";
 import { Chroma } from "@/wab/shared/utils/color-utils";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import {
@@ -132,7 +133,7 @@ export function getStylePropValue(
     }
 
     const parsedBgImg: BackgroundLayer = swallow(() =>
-      cssPegParser.parse(val, { startRule: "backgroundLayer" })
+      parseCss(val, { startRule: "backgroundLayer" })
     );
 
     // We also check isNaN because sometimes numbers get interpreted

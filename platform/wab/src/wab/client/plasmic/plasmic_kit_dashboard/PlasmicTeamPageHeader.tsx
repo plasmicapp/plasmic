@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -28,23 +28,24 @@ import {
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
-import ProjectsFilter from "../../components/dashboard/ProjectsFilter"; // plasmic-import: mdX7wFJOmP/component
 import EditableResourceName from "../../components/EditableResourceName"; // plasmic-import: UttGK3xVrb/component
+import ProjectsFilter from "../../components/dashboard/ProjectsFilter"; // plasmic-import: mdX7wFJOmP/component
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
 
 import { useScreenVariants as useScreenVariants_2DzYbdw5Xtx } from "../PlasmicGlobalVariant__Screen"; // plasmic-import: 2dzYbdw5Xtx/globalVariant
+import { useEnvironment } from "../plasmic_kit_pricing/PlasmicGlobalVariant__Environment"; // plasmic-import: hIjF9NLAUKG-/globalVariant
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_pricing_css from "../plasmic_kit_pricing/plasmic_plasmic_kit_pricing.module.css"; // plasmic-import: ehckhYnyDHgCBbV47m9bkf/projectcss
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
 import projectcss from "../PP__plasmickit_dashboard.module.css"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/projectcss
 import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
+import plasmic_plasmic_kit_pricing_css from "../plasmic_kit_pricing/plasmic_plasmic_kit_pricing.module.css"; // plasmic-import: ehckhYnyDHgCBbV47m9bkf/projectcss
+import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
 import sty from "./PlasmicTeamPageHeader.module.css"; // plasmic-import: pcPdf_yULU3/css
 
 import GearIcon from "../plasmic_kit/PlasmicIcon__Gear"; // plasmic-import: ZmVZmXEc9f_SR/icon
-import AppssvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__AppsSvg"; // plasmic-import: FzrInIPnx/icon
-import ChevronDownsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
+import AppsSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__AppsSvg"; // plasmic-import: FzrInIPnx/icon
+import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
 
 createPlasmicElementProxy;
 
@@ -94,7 +95,16 @@ function PlasmicTeamPageHeader__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
@@ -114,7 +124,6 @@ function PlasmicTeamPageHeader__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.accessLevel,
       },
     ],
-
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -126,6 +135,7 @@ function PlasmicTeamPageHeader__RenderFunc(props: {
 
   const globalVariants = ensureGlobalVariants({
     screen: useScreenVariants_2DzYbdw5Xtx(),
+    environment: useEnvironment(),
   });
 
   return (
@@ -145,6 +155,24 @@ function PlasmicTeamPageHeader__RenderFunc(props: {
         plasmic_plasmic_kit_pricing_css.plasmic_tokens,
         sty.root,
         {
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
           [sty.rootaccessLevel_none]: hasVariant($state, "accessLevel", "none"),
         }
       )}
@@ -312,14 +340,14 @@ function PlasmicTeamPageHeader__RenderFunc(props: {
             ),
           })}
           endIcon={
-            <ChevronDownsvgIcon
+            <ChevronDownSvgIcon
               className={classNames(projectcss.all, sty.svg__lPle9)}
               role={"img"}
             />
           }
           font={"bold"}
           startIcon={
-            <AppssvgIcon
+            <AppsSvgIcon
               className={classNames(projectcss.all, sty.svg___0Naz)}
               role={"img"}
             />
@@ -345,7 +373,7 @@ function PlasmicTeamPageHeader__RenderFunc(props: {
             ),
           })}
           endIcon={
-            <ChevronDownsvgIcon
+            <ChevronDownSvgIcon
               className={classNames(projectcss.all, sty.svg__pt2Ru)}
               role={"img"}
             />
@@ -406,7 +434,6 @@ const PlasmicDescendants = {
     "settingsButton",
     "filter",
   ],
-
   editableName: ["editableName"],
   newWorkspaceButton: ["newWorkspaceButton"],
   settingsButton: ["settingsButton"],
@@ -428,7 +455,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicTeamPageHeader__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
@@ -436,15 +462,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicTeamPageHeader__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicTeamPageHeader__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicTeamPageHeader__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+    // Specify args directly as props
+    Omit<PlasmicTeamPageHeader__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

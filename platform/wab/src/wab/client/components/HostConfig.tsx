@@ -220,13 +220,13 @@ export function HostConfig({
               }
               clearButton={{
                 onClick: spawnWrapper(async () => {
-                  if (!project.hostUrl) {
+                  if (!currentUrl) {
                     return;
                   }
                   await doUpdateUrl(branches, null);
                   setDraft(null);
                 }),
-                disabled: !project.hostUrl || isLoading,
+                disabled: !currentUrl || isLoading,
               }}
             />
             Remember to only use trusted hosts for your projects.

@@ -1,6 +1,6 @@
 import ListItem from "@/wab/client/components/ListItem";
 import { MenuBuilder } from "@/wab/client/components/menu-builder";
-import promptDeleteComponent from "@/wab/client/components/modals/componentDeletionModal";
+import { promptDeleteComponent } from "@/wab/client/components/modals/componentDeletionModal";
 import { reactPrompt } from "@/wab/client/components/quick-modals";
 import { Matcher } from "@/wab/client/components/view-common";
 import { Icon } from "@/wab/client/components/widgets/Icon";
@@ -201,7 +201,13 @@ const PageRow = observer(function PageRow(props: {
         <Menu.Item
           key="delete"
           onClick={async () => {
-            const confirmation = await promptDeleteComponent("page", page.name);
+            const confirmation = await promptDeleteComponent(
+              "page",
+              page.name,
+              studioCtx.commentsCtx
+                .computedData()
+                .commentStatsByComponent.get(page.uuid)?.commentCount
+            );
             if (!confirmation) {
               return;
             }

@@ -3,15 +3,19 @@ import registerComponent from "@plasmicapp/host/registerComponent";
 import React, { useContext } from "react";
 
 export interface IframeProps {
-  src: string;
+  useHtml?: boolean;
+  srcDoc?: string;
+  src?: string;
   preview?: boolean;
   className?: string;
   onLoad?: React.ComponentProps<"iframe">["onLoad"];
 }
 
-export default function Iframe({
+export function Iframe({
   preview,
   src,
+  srcDoc,
+  useHtml,
   className,
   onLoad,
 }: IframeProps) {
@@ -42,7 +46,8 @@ export default function Iframe({
       </div>
     );
   }
-  return <iframe src={src} className={className} onLoad={onLoad} />;
+  const srcProps = useHtml ? { srcDoc } : { src };
+  return <iframe {...srcProps} className={className} onLoad={onLoad} />;
 }
 
 export const iframeMeta: ComponentMeta<IframeProps> = {
@@ -51,9 +56,26 @@ export const iframeMeta: ComponentMeta<IframeProps> = {
   importName: "Iframe",
   importPath: "@plasmicpkgs/plasmic-basic-components",
   props: {
+    useHtml: {
+      type: "boolean",
+      displayName: "Use HTML source",
+      description:
+        "Insert custom HTML directly into the iframe instead of using a URL.",
+      defaultValue: false,
+      advanced: true,
+    },
+    srcDoc: {
+      type: "code",
+      lang: "html",
+      displayName: "HTML source",
+      description: "Raw HTML content that will be rendered inside an iframe.",
+      defaultValue: `<div><h3>Heading</h3><p>Example text...</p></div>`,
+      hidden: (props) => !props.useHtml,
+    },
     src: {
       type: "string",
       defaultValue: "https://www.example.com",
+      hidden: (props) => !!props.useHtml,
     },
     preview: {
       type: "boolean",

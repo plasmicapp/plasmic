@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -13,17 +13,18 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
+  Flex as Flex__,
   SingleBooleanChoiceArg,
   StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
   hasVariant,
+  useDollarState,
 } from "@plasmicapp/react-web";
+import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+
 import ActionMenuButton from "../../components/widgets/ActionMenuButton"; // plasmic-import: VNi6NC2QOI/component
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
 
@@ -34,18 +35,18 @@ import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_
 import projectcss from "./plasmic_plasmic_kit_top_bar.module.css"; // plasmic-import: 6CrqkTcB6gSAHoA8c8zpNz/projectcss
 import sty from "./PlasmicPublishButton.module.css"; // plasmic-import: yXRcEjTceQ/css
 
-import ArrowRightsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ArrowRightSvg"; // plasmic-import: 9Jv8jb253/icon
-import ChevronDownsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
-import PlussvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__PlusSvg"; // plasmic-import: sQKgd2GNr/icon
+import ArrowRightSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ArrowRightSvg"; // plasmic-import: 9Jv8jb253/icon
+import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
+import PlusSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__PlusSvg"; // plasmic-import: sQKgd2GNr/icon
+
+createPlasmicElementProxy;
 
 export type PlasmicPublishButton__VariantMembers = {
   withMenuButton: "withMenuButton";
 };
-
 export type PlasmicPublishButton__VariantsArgs = {
   withMenuButton?: SingleBooleanChoiceArg<"withMenuButton">;
 };
-
 type VariantPropType = keyof PlasmicPublishButton__VariantsArgs;
 export const PlasmicPublishButton__VariantProps = new Array<VariantPropType>(
   "withMenuButton"
@@ -56,9 +57,9 @@ type ArgPropType = keyof PlasmicPublishButton__ArgsType;
 export const PlasmicPublishButton__ArgProps = new Array<ArgPropType>();
 
 export type PlasmicPublishButton__OverridesType = {
-  root?: p.Flex<"div">;
-  button?: p.Flex<typeof Button>;
-  menuButton?: p.Flex<typeof ActionMenuButton>;
+  root?: Flex__<"div">;
+  button?: Flex__<typeof Button>;
+  menuButton?: Flex__<typeof ActionMenuButton>;
 };
 
 export interface DefaultPublishButtonProps {
@@ -66,13 +67,7 @@ export interface DefaultPublishButtonProps {
   className?: string;
 }
 
-const __wrapUserFunction =
-  globalThis.__PlasmicWrapUserFunction ?? ((loc, fn) => fn());
-const __wrapUserPromise =
-  globalThis.__PlasmicWrapUserPromise ??
-  (async (loc, promise) => {
-    return await promise;
-  });
+const $$ = {};
 
 function PlasmicPublishButton__RenderFunc(props: {
   variants: PlasmicPublishButton__VariantsArgs;
@@ -82,13 +77,13 @@ function PlasmicPublishButton__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const $ctx = ph.useDataEnv?.() || {};
   const args = React.useMemo(
     () =>
       Object.assign(
         {},
-
-        props.args
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
       ),
     [props.args]
   );
@@ -98,14 +93,11 @@ function PlasmicPublishButton__RenderFunc(props: {
     ...variants,
   };
 
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
-
-  const [$queries, setDollarQueries] = React.useState({});
-
-  const stateSpecs = React.useMemo(
+  const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
         path: "withMenuButton",
@@ -114,10 +106,14 @@ function PlasmicPublishButton__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.withMenuButton,
       },
     ],
-
-    [$props, $ctx]
+    [$props, $ctx, $refs]
   );
-  const $state = p.useDollarState(stateSpecs, { $props, $ctx, $queries });
+  const $state = useDollarState(stateSpecs, {
+    $props,
+    $ctx,
+    $queries: {},
+    $refs,
+  });
 
   return (
     <div
@@ -147,14 +143,14 @@ function PlasmicPublishButton__RenderFunc(props: {
         data-plasmic-name={"button"}
         data-plasmic-override={overrides.button}
         endIcon={
-          <ChevronDownsvgIcon
+          <ChevronDownSvgIcon
             className={classNames(projectcss.all, sty.svg__omiHo)}
             role={"img"}
           />
         }
-        size={"small" as const}
+        size={"small"}
         startIcon={
-          <ArrowRightsvgIcon
+          <ArrowRightSvgIcon
             className={classNames(projectcss.all, sty.svg__pOu3R)}
             role={"img"}
           />
@@ -163,29 +159,27 @@ function PlasmicPublishButton__RenderFunc(props: {
       >
         {"Publish"}
       </Button>
-      {true ? (
-        <ActionMenuButton
-          data-plasmic-name={"menuButton"}
-          data-plasmic-override={overrides.menuButton}
-          className={classNames("__wab_instance", sty.menuButton, {
-            [sty.menuButtonwithMenuButton]: hasVariant(
-              $state,
-              "withMenuButton",
-              "withMenuButton"
-            ),
-          })}
-          icon={
-            <PlussvgIcon
-              className={classNames(projectcss.all, sty.svg__ayoeb)}
-              role={"img"}
-            />
-          }
-          size={"small" as const}
-          type={["primary"]}
-        >
-          {"Publish"}
-        </ActionMenuButton>
-      ) : null}
+      <ActionMenuButton
+        data-plasmic-name={"menuButton"}
+        data-plasmic-override={overrides.menuButton}
+        className={classNames("__wab_instance", sty.menuButton, {
+          [sty.menuButtonwithMenuButton]: hasVariant(
+            $state,
+            "withMenuButton",
+            "withMenuButton"
+          ),
+        })}
+        icon={
+          <PlusSvgIcon
+            className={classNames(projectcss.all, sty.svg__ayoeb)}
+            role={"img"}
+          />
+        }
+        size={"small"}
+        type={["primary"]}
+      >
+        {"Publish"}
+      </ActionMenuButton>
     </div>
   ) as React.ReactElement | null;
 }
@@ -209,25 +203,25 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicPublishButton__OverridesType,
   DescendantsType<T>
 >;
-
-type NodeComponentProps<T extends NodeNameType> = {
+type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
-  variants?: PlasmicPublishButton__VariantsArgs;
-  args?: PlasmicPublishButton__ArgsType;
-  overrides?: NodeOverridesType<T>;
-} & Omit<PlasmicPublishButton__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-  // Specify args directly as props
-  Omit<PlasmicPublishButton__ArgsType, ReservedPropsType> &
-  // Specify overrides for each element directly as props
-  Omit<
-    NodeOverridesType<T>,
-    ReservedPropsType | VariantPropType | ArgPropType
-  > &
-  // Specify props for the root element
-  Omit<
-    Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
-    ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
-  >;
+  {
+    variants?: PlasmicPublishButton__VariantsArgs;
+    args?: PlasmicPublishButton__ArgsType;
+    overrides?: NodeOverridesType<T>;
+  } & Omit<PlasmicPublishButton__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+    // Specify args directly as props
+    Omit<PlasmicPublishButton__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
+      NodeOverridesType<T>,
+      ReservedPropsType | VariantPropType | ArgPropType
+    > &
+    // Specify props for the root element
+    Omit<
+      Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
+      ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
+    >;
 
 function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
   type PropsType = NodeComponentProps<NodeName> & { key?: React.Key };
@@ -238,7 +232,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicPublishButton__ArgProps,
           internalVariantPropNames: PlasmicPublishButton__VariantProps,
         }),

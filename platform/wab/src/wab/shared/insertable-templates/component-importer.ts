@@ -135,31 +135,10 @@ export function mkInsertableComponentImporter(
       return existing;
     }
 
-    if (isPlumeComponent(comp)) {
-      const existing = site.components.find(
-        (c) => c.plumeInfo?.type === comp.plumeInfo?.type
-      );
-      if (existing) {
-        oldToNewComponent.set(comp, existing);
-        return existing;
-      }
-
-      const plumeComp = new TplMgr({ site }).clonePlumeComponent(
-        info.site,
-        comp.uuid,
-        comp.name,
-        true
-      );
-
-      oldToNewComponent.set(comp, plumeComp);
-      // Perform fixes in the plume component as this may be a customized version
-      // created by the user
-      fixupComp(plumeComp);
-      return plumeComp;
-    }
-
     const existing = opts?.skipDuplicateCheck
       ? undefined
+      : isPlumeComponent(comp)
+      ? site.components.find((c) => c.plumeInfo?.type === comp.plumeInfo?.type)
       : site.components.find(
           (c) =>
             // We can match by name if the there is one in templateInfo, or by (projectId, componentId)
@@ -210,6 +189,21 @@ export function mkInsertableComponentImporter(
       throw new Error(
         `Cannot clone imported component ${comp.name} from "${missingDependency.name}".\n Please import the project ["${missingDependency.name}"](https://studio.plasmic.app/projects/${missingDependency.projectId}) first.`
       );
+    }
+
+    if (isPlumeComponent(comp)) {
+      const plumeComp = new TplMgr({ site }).clonePlumeComponent(
+        info.site,
+        comp.uuid,
+        comp.name,
+        true
+      );
+
+      oldToNewComponent.set(comp, plumeComp);
+      // Perform fixes in the plume component as this may be a customized version
+      // created by the user
+      fixupComp(plumeComp);
+      return plumeComp;
     }
 
     const newComp = cloneComp(comp, opts);

@@ -1,8 +1,9 @@
 import { PlasmicElement } from "@plasmicapp/host";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { ListBox, ListBoxItem } from "react-aria-components";
 import { COMMON_STYLES } from "./common";
 import { PlasmicListBoxContext } from "./contexts";
+import { useOptionsItemId } from "./OptionsItemIdManager";
 import { DESCRIPTION_COMPONENT_NAME } from "./registerDescription";
 import { TEXT_COMPONENT_NAME } from "./registerText";
 import {
@@ -52,38 +53,13 @@ export function BaseListBoxItem(props: BaseListBoxItemProps) {
    * The registerId, therefore, is the unique id of the listboxitem.
    * It is the id registered with the listbox context, so that it can auto-generate a unique id if it identifies a duplicate.
    */
-  const [registeredId, setRegisteredId] = useState<string | undefined>();
-
-  useEffect(() => {
-    if (!listboxContext) {
-      return;
-    }
-
-    const localId = listboxContext.idManager.register(id);
-    setRegisteredId(localId);
-
-    return () => {
-      listboxContext.idManager.unregister(localId);
-      setRegisteredId(undefined);
-    };
-  }, [id]);
+  const { registeredId, idError } = useOptionsItemId(
+    id,
+    listboxContext?.idManager
+  );
 
   setControlContextData?.({
-    idError: (() => {
-      if (id === undefined) {
-        return "ID must be defined";
-      }
-      if (typeof id !== "string") {
-        return "ID must be a string";
-      }
-      if (!id.trim()) {
-        return "ID must be defined";
-      }
-      if (!isStandalone && id != registeredId) {
-        return "ID must be unique";
-      }
-      return undefined;
-    })(),
+    idError,
   });
 
   const listboxItem = (

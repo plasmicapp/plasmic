@@ -1,12 +1,12 @@
 import { walkDependencyTree } from "@/wab/shared/core/project-deps";
-import { mkScreenVariantGroup } from "@/wab/shared/SpecialVariants";
-import { mkBaseVariant } from "@/wab/shared/Variants";
+import { createDefaultTheme } from "@/wab/shared/core/sites";
 import {
   ProjectDependency,
   Site,
   SiteParams,
 } from "@/wab/shared/model/classes";
-import { createDefaultTheme } from "@/wab/shared/core/sites";
+import { mkScreenVariantGroup } from "@/wab/shared/SpecialVariants";
+import { mkBaseVariant } from "@/wab/shared/Variants";
 
 describe("walkDependencyTree", () => {
   function createSite(params: Partial<SiteParams> = {}) {
@@ -22,6 +22,7 @@ describe("walkDependencyTree", () => {
       arenas: [],
       globalVariant: mkBaseVariant(),
       styleTokens: [],
+      styleTokenOverrides: [],
       mixins: [],
       themes: [defaultTheme],
       activeTheme: defaultTheme,

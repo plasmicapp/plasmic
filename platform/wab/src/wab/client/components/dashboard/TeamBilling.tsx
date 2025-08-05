@@ -1,5 +1,4 @@
 import { AppCtx } from "@/wab/client/app-ctx";
-import { U } from "@/wab/client/cli-routes";
 import {
   promptBilling,
   showUpsellConfirm,
@@ -29,6 +28,8 @@ import { isAdminTeamEmail } from "@/wab/shared/devflag-utils";
 import { DEVFLAGS } from "@/wab/shared/devflags";
 import { ORGANIZATION_CAP } from "@/wab/shared/Labels";
 import { isUpgradableTier } from "@/wab/shared/pricing/pricing-utils";
+import { APP_ROUTES } from "@/wab/shared/route/app-routes";
+import { fillRoute } from "@/wab/shared/route/route";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { notification } from "antd";
 import * as React from "react";
@@ -36,7 +37,7 @@ import Stripe from "stripe";
 
 interface TeamBillingProps extends DefaultTeamBillingProps {
   appCtx: AppCtx;
-  team?: ApiTeam;
+  team: ApiTeam;
   members: TeamMember[];
   availFeatureTiers: ApiFeatureTier[];
   subscription?: Stripe.Subscription;
@@ -55,9 +56,9 @@ function TeamBilling_(props: TeamBillingProps, ref: HTMLElementRefOf<"div">) {
     disabled,
     ...rest
   } = props;
-  const [billingEmail, setBillingEmail] = React.useState(team?.billingEmail);
+  const [billingEmail, setBillingEmail] = React.useState(team.billingEmail);
   const [billingFreq, setBillingFreq] = React.useState<BillingFrequency>(
-    team?.billingFrequency ?? "year"
+    team.billingFrequency ?? "year"
   );
 
   // Figure out the current plan we're on
@@ -69,7 +70,7 @@ function TeamBilling_(props: TeamBillingProps, ref: HTMLElementRefOf<"div">) {
     subStatus?.type === "invalid" ? subStatus.errorMsg : undefined;
 
   const currentBill = React.useMemo(() => {
-    if (!team?.featureTier || !team?.seats || !team?.billingFrequency) {
+    if (!team.featureTier || !team.seats || !team.billingFrequency) {
       return null;
     }
 
@@ -81,7 +82,7 @@ function TeamBilling_(props: TeamBillingProps, ref: HTMLElementRefOf<"div">) {
     return team.billingFrequency === "year"
       ? `$${bill.total}/year`
       : `$${bill.total}/month`;
-  }, [team?.featureTier, team?.seats, team?.billingFrequency]);
+  }, [team.featureTier, team.seats, team.billingFrequency]);
 
   const seatsUsed = members.filter(
     (m) => !isAdminTeamEmail(m.email, DEVFLAGS)
@@ -118,7 +119,9 @@ function TeamBilling_(props: TeamBillingProps, ref: HTMLElementRefOf<"div">) {
         description: promptResult.errorMsg,
       });
     } else if (promptResult.type === "success") {
-      await showUpsellConfirm(U.orgSettings({ teamId: team.id }));
+      await showUpsellConfirm(
+        fillRoute(APP_ROUTES.orgSettings, { teamId: team.id })
+      );
     }
 
     // Refresh the latest team data
@@ -148,7 +151,9 @@ function TeamBilling_(props: TeamBillingProps, ref: HTMLElementRefOf<"div">) {
       });
     } else if (promptResult.type === "success") {
       // TODO: custom confirm, currently using same as for upsell
-      await showUpsellConfirm(U.orgSettings({ teamId: team.id }));
+      await showUpsellConfirm(
+        fillRoute(APP_ROUTES.orgSettings, { teamId: team.id })
+      );
     }
 
     // Refresh the latest team data
@@ -159,7 +164,7 @@ function TeamBilling_(props: TeamBillingProps, ref: HTMLElementRefOf<"div">) {
     if (!team) {
       return;
     }
-    await appCtx.api.startFreeTrial(team?.id);
+    await appCtx.api.startFreeTrial(team.id);
     await onChange();
   };
 
@@ -188,17 +193,17 @@ function TeamBilling_(props: TeamBillingProps, ref: HTMLElementRefOf<"div">) {
         availableTiers: availFeatureTiers,
         currentFeatureTier:
           subStatus?.type === "valid" ? subStatus.tier : subStatus?.freeTier,
-        canStartFreeTrial: !team?.trialStartDate,
+        canStartFreeTrial: !team.trialStartDate,
         onSelectFeatureTier: upsell,
         onStartFreeTrial: startFreeTrial,
-        isFreeTrialTeam: team?.onTrial,
+        isFreeTrialTeam: team.onTrial,
       }}
       freeTrial={{
         team,
       }}
       // If we are on free or enterprise tiers, hide certain sections.
       tier={
-        subStatus?.type === "valid" && (subStatus.free || team?.onTrial)
+        subStatus?.type === "valid" && (subStatus.free || team.onTrial)
           ? "free"
           : subStatus?.type === "valid" &&
             subStatus.tier.name.includes("Enterprise")
@@ -207,12 +212,12 @@ function TeamBilling_(props: TeamBillingProps, ref: HTMLElementRefOf<"div">) {
       }
       currentBill={currentBill}
       seatsUsed={`${seatsUsed}`}
-      seatsPurchased={`${team?.seats ?? appCtx.appConfig.freeTier.maxUsers}`}
+      seatsPurchased={`${team.seats ?? appCtx.appConfig.freeTier.maxUsers}`}
       changeSeatsButton={{
         onClick: async () => {
           // Skip straight to the Checkout where you change the number of seats
           const tier = ensure(
-            team?.featureTier,
+            team.featureTier,
             "Feature tier should exist to change seats"
           );
           await upsell(tier, "Change seat count");
@@ -235,7 +240,7 @@ function TeamBilling_(props: TeamBillingProps, ref: HTMLElementRefOf<"div">) {
                 "We'd love to speak to you about your experience with Plasmic and walk you through the cancellation. Click 'Confirm' to schedule an appointment with our team.",
             });
             if (confirmed) {
-              window.open("https://cal.com/yangatplasmic/csm", "_blank");
+              window.open("https://zcal.co/jason-plasmic/cancel", "_blank");
             }
             return;
           }
@@ -296,6 +301,18 @@ function TeamBilling_(props: TeamBillingProps, ref: HTMLElementRefOf<"div">) {
         },
         disabled: disabled,
       }}
+      manageBilling={
+        team.stripeCustomerId
+          ? {
+              props: {
+                href: fillRoute(APP_ROUTES.orgBilling, { teamId: team.id }),
+                target: "_blank",
+              },
+            }
+          : {
+              wrap: () => null,
+            }
+      }
     />
   );
 }

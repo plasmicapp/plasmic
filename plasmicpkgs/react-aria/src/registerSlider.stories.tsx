@@ -154,7 +154,7 @@ export const RangeSlider: RangeStory = {
 
 export const TooFewThumbs: RangeStory = {
   args: {
-    defaultValue: [20, 47, 80],
+    defaultValue: [20, 50, 80],
     step: 10,
     children: (
       <>

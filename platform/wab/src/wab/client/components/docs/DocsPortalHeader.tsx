@@ -1,4 +1,3 @@
-import { U } from "@/wab/client/cli-routes";
 import { useDocsPortalCtx } from "@/wab/client/components/docs/DocsPortalCtx";
 import { PublicLink } from "@/wab/client/components/PublicLink";
 import { showTemporaryInfo } from "@/wab/client/components/quick-modals";
@@ -8,11 +7,13 @@ import {
   PlasmicDocsPortalHeader,
 } from "@/wab/client/plasmic/plasmic_kit_docs_portal/PlasmicDocsPortalHeader";
 import { asOne } from "@/wab/shared/common";
+import { APP_ROUTES } from "@/wab/shared/route/app-routes";
+import { fillRoute } from "@/wab/shared/route/route";
 import { Observer } from "mobx-react";
 import * as React from "react";
 import { useHistory } from "react-router-dom";
 
-type DocsPortalHeaderProps = DefaultDocsPortalHeaderProps
+type DocsPortalHeaderProps = DefaultDocsPortalHeaderProps;
 
 const CodegenTypes = [
   <Select.Option value="loader" key="loader">
@@ -36,7 +37,7 @@ function DocsPortalHeader(props: DocsPortalHeaderProps) {
             return (
               <PublicLink
                 {...rest}
-                href={U.project({
+                href={fillRoute(APP_ROUTES.project, {
                   projectId: docsCtx.studioCtx.siteInfo.id,
                 })}
                 children={asOne(children)}
@@ -83,11 +84,11 @@ function DocsPortalHeader(props: DocsPortalHeaderProps) {
             const projectId = docsCtx.studioCtx.siteInfo.id;
             const oldCodegenType = docsCtx.getCodegenType();
             const newPathname = location.pathname.replace(
-              U.projectDocsCodegenType({
+              fillRoute(APP_ROUTES.projectDocsCodegenType, {
                 projectId,
                 codegenType: oldCodegenType,
               }),
-              U.projectDocsCodegenType({
+              fillRoute(APP_ROUTES.projectDocsCodegenType, {
                 projectId,
                 codegenType: newCodegenType,
               })

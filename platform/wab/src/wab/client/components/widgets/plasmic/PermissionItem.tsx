@@ -15,6 +15,7 @@ interface PermissionItemProps {
   onGrant: (value: GrantableAccessLevel) => Promise<void>;
   onRevoke: () => Promise<void>;
   accessLevel: AccessLevel;
+  canHaveCommenterRole: boolean;
 }
 
 export const designerRoleHelp = `Only organizations with at least the Scale plan can invite collaborators as designers.`;
@@ -25,7 +26,7 @@ export const contentCreatorTooltip = (
     zIndex={200000}
     title="Can edit pages using existing components, and can update CMS content."
   >
-    content creator
+    Content creator
   </Tooltip>
 );
 export const designerTooltip = (
@@ -33,27 +34,34 @@ export const designerTooltip = (
     zIndex={200000}
     title="Can update Plasmic designs including all styling and layout. Can create design components."
   >
-    designer
+    Designer
   </Tooltip>
 );
 export const developerTooltip = (
   <Tooltip zIndex={200000} title="Can update anything including model schemas.">
-    developer
+    Developer
   </Tooltip>
 );
 export const commenterTooltip = (
   <Tooltip zIndex={200000} title="Can view and comment on content.">
-    commenter
+    Commenter
   </Tooltip>
 );
 export const viewerTooltip = (
   <Tooltip zIndex={200000} title="Can view content.">
-    viewer
+    Viewer
   </Tooltip>
 );
 
 function PermissionItem(props: PermissionItemProps) {
-  const { accessLevel, onGrant, onRevoke, canEdit, tier } = props;
+  const {
+    accessLevel,
+    onGrant,
+    onRevoke,
+    canEdit,
+    tier,
+    canHaveCommenterRole,
+  } = props;
   const [loading, setLoading] = React.useState(false);
   const [temporary, setTemporary] = React.useState("");
   const appCtx = useAppCtx();
@@ -79,7 +87,7 @@ function PermissionItem(props: PermissionItemProps) {
         },
         children: [
           <Select.Option value="viewer">{viewerTooltip}</Select.Option>,
-          ...(appCtx.appConfig.comments
+          ...(canHaveCommenterRole
             ? [
                 <Select.Option value="commenter">
                   {commenterTooltip}

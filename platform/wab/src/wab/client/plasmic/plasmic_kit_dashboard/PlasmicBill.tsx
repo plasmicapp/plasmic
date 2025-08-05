@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -22,11 +22,14 @@ import {
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  ensureGlobalVariants,
   hasVariant,
   renderPlasmicSlot,
   useDollarState,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+
+import { useEnvironment } from "../plasmic_kit_pricing/PlasmicGlobalVariant__Environment"; // plasmic-import: hIjF9NLAUKG-/globalVariant
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
@@ -37,7 +40,7 @@ import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_
 import sty from "./PlasmicBill.module.css"; // plasmic-import: sK-iPs7I1Z/css
 
 import MinusIcon from "../plasmic_kit/PlasmicIcon__Minus"; // plasmic-import: dHjXz96374PLA/icon
-import PlussvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__PlusSvg"; // plasmic-import: sQKgd2GNr/icon
+import PlusSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__PlusSvg"; // plasmic-import: sQKgd2GNr/icon
 
 createPlasmicElementProxy;
 
@@ -114,7 +117,16 @@ function PlasmicBill__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
@@ -146,7 +158,6 @@ function PlasmicBill__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.hideSeatPrice,
       },
     ],
-
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -154,6 +165,10 @@ function PlasmicBill__RenderFunc(props: {
     $ctx,
     $queries: {},
     $refs,
+  });
+
+  const globalVariants = ensureGlobalVariants({
+    environment: useEnvironment(),
   });
 
   return (
@@ -175,6 +190,24 @@ function PlasmicBill__RenderFunc(props: {
         plasmic_plasmic_kit_pricing_css.plasmic_tokens,
         sty.root,
         {
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
           [sty.roothideSeatPrice]: hasVariant(
             $state,
             "hideSeatPrice",
@@ -235,7 +268,7 @@ function PlasmicBill__RenderFunc(props: {
             $refs["moreSeats"] = ref;
           }}
         >
-          <PlussvgIcon
+          <PlusSvgIcon
             className={classNames(projectcss.all, sty.svg__qGr4R)}
             role={"img"}
           />
@@ -468,7 +501,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicBill__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
@@ -476,15 +508,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicBill__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicBill__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicBill__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+    // Specify args directly as props
+    Omit<PlasmicBill__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

@@ -4,6 +4,8 @@ import { HttpDataSource } from "@/wab/shared/data-sources-meta/http-meta";
 import { isEmpty, isNil, isString } from "lodash";
 import fetch, { Response } from "node-fetch";
 
+const DEFAULT_TIMEOUT = 175000;
+
 export function makeHttpFetcher(source: HttpDataSource) {
   return new HttpFetcher(source);
 }
@@ -23,6 +25,7 @@ export class HttpFetcher {
     const res = await fetch(this.makePath(opts.path, opts.params), {
       method: "GET",
       headers: this.makeHeaders(opts.headers),
+      timeout: DEFAULT_TIMEOUT,
     });
     return processResult(res);
   }
@@ -37,6 +40,7 @@ export class HttpFetcher {
       method: "POST",
       headers: this.makeHeaders(opts.headers),
       body: bodyToFetchBody(opts.body),
+      timeout: DEFAULT_TIMEOUT,
     });
     return processResult(res);
   }
@@ -51,6 +55,7 @@ export class HttpFetcher {
       method: "PUT",
       headers: this.makeHeaders(opts.headers),
       body: bodyToFetchBody(opts.body),
+      timeout: DEFAULT_TIMEOUT,
     });
     return processResult(res);
   }
@@ -63,6 +68,7 @@ export class HttpFetcher {
     const res = await fetch(this.makePath(opts.path, opts.params), {
       method: "DELETE",
       headers: this.makeHeaders(opts.headers),
+      timeout: DEFAULT_TIMEOUT,
     });
     return processResult(res);
   }
@@ -77,6 +83,7 @@ export class HttpFetcher {
       method: "PATCH",
       headers: this.makeHeaders(opts.headers),
       body: bodyToFetchBody(opts.body),
+      timeout: DEFAULT_TIMEOUT,
     });
     return processResult(res);
   }

@@ -1,8 +1,8 @@
 import React from "react";
 
-interface GenericErrorBoundaryProps {
+type GenericErrorBoundaryProps = React.PropsWithChildren<{
   className?: string;
-}
+}>;
 
 interface GenericErrorBoundaryState {
   error?: any;
@@ -15,7 +15,7 @@ export class GenericErrorBoundary extends React.Component<
 > {
   rootRef = React.createRef<HTMLElement>();
 
-  constructor(props) {
+  constructor(props: GenericErrorBoundaryProps) {
     super(props);
     // We use justErrored to make sure that after the setState to display an
     // error, the next update we clear the error state and retry rendering.

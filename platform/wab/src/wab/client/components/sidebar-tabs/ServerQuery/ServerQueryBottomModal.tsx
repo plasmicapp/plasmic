@@ -19,10 +19,8 @@ interface ServerQueryOpExprBottomModalContentProps {
   onSave: (expr: CustomFunctionExpr, opExprName?: string) => unknown;
   onCancel: () => unknown;
   readOnly?: boolean;
-  readOpsOnly?: boolean;
   env?: Record<string, any>;
   allowedOps?: string[];
-  livePreview?: boolean;
   exprCtx: ExprCtx;
   interaction?: Interaction;
   viewCtx?: ViewCtx;
@@ -80,11 +78,9 @@ const ServerQueryOpExprBottomModalContent = observer(
     onSave,
     onCancel,
     readOnly,
-    readOpsOnly,
     schema,
     parent,
     allowedOps,
-    livePreview,
     interaction,
     exprCtx,
     viewCtx,
@@ -114,7 +110,6 @@ const ServerQueryOpExprBottomModalContent = observer(
         schema={schema}
         parent={parent}
         readOnly={readOnly}
-        readOpsOnly={readOpsOnly}
         allowedOps={allowedOps}
         exprCtx={exprCtx}
         interaction={interaction}

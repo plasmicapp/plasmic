@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -104,19 +104,21 @@ export const PlasmicButton__VariantProps = new Array<VariantPropType>(
 );
 
 export type PlasmicButton__ArgsType = {
-  children?: React.ReactNode;
-  startIcon?: React.ReactNode;
-  endIcon?: React.ReactNode;
-  caption?: React.ReactNode;
   isSubmit?: boolean;
+  onClick?: (event: any) => void;
+  startIcon?: React.ReactNode;
+  children?: React.ReactNode;
+  caption?: React.ReactNode;
+  endIcon?: React.ReactNode;
 };
 type ArgPropType = keyof PlasmicButton__ArgsType;
 export const PlasmicButton__ArgProps = new Array<ArgPropType>(
-  "children",
+  "isSubmit",
+  "onClick",
   "startIcon",
-  "endIcon",
+  "children",
   "caption",
-  "isSubmit"
+  "endIcon"
 );
 
 export type PlasmicButton__OverridesType = {
@@ -127,11 +129,12 @@ export type PlasmicButton__OverridesType = {
 };
 
 export interface DefaultButtonProps {
-  children?: React.ReactNode;
-  startIcon?: React.ReactNode;
-  endIcon?: React.ReactNode;
-  caption?: React.ReactNode;
   isSubmit?: boolean;
+  onClick?: (event: any) => void;
+  startIcon?: React.ReactNode;
+  children?: React.ReactNode;
+  caption?: React.ReactNode;
+  endIcon?: React.ReactNode;
   type?: MultiChoiceArg<
     | "primary"
     | "link"
@@ -401,6 +404,7 @@ function PlasmicButton__RenderFunc(props: {
         }
       )}
       disabled={hasVariant($state, "disabled", "disabled") ? true : undefined}
+      onClick={args.onClick}
       data-plasmic-trigger-props={[triggerRootHoverProps]}
     >
       {(hasVariant($state, "withIcons", "startIcon") ? true : false) ? (

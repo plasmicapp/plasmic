@@ -8580,7 +8580,7 @@ span.ant-radio + * {
 .ant-picker-input > input:-ms-input-placeholder {
   text-overflow: ellipsis;
 }
-.ant-picker-input > input:placeholder-shown {
+.ant-picker-input > input::placeholder-shown {
   text-overflow: ellipsis;
 }
 .ant-picker-input > input:hover {
@@ -18688,7 +18688,7 @@ _:-ms-fullscreen
 .ant-input-number-affix-wrapper:-ms-input-placeholder {
   text-overflow: ellipsis;
 }
-.ant-input-number-affix-wrapper:placeholder-shown {
+.ant-input-number-affix-wrapper::placeholder-shown {
   text-overflow: ellipsis;
 }
 .ant-input-number-affix-wrapper:hover {
@@ -18990,7 +18990,7 @@ textarea.ant-input-number-affix-wrapper {
 .ant-input-number:-ms-input-placeholder {
   text-overflow: ellipsis;
 }
-.ant-input-number:placeholder-shown {
+.ant-input-number::placeholder-shown {
   text-overflow: ellipsis;
 }
 .ant-input-number:hover {
@@ -19534,7 +19534,7 @@ textarea.ant-input-number {
 .ant-input-number-input:-ms-input-placeholder {
   text-overflow: ellipsis;
 }
-.ant-input-number-input:placeholder-shown {
+.ant-input-number-input::placeholder-shown {
   text-overflow: ellipsis;
 }
 .ant-input-number-input[type="number"]::-webkit-inner-spin-button,
@@ -19704,7 +19704,7 @@ textarea.ant-input-number {
 .ant-input-affix-wrapper:-ms-input-placeholder {
   text-overflow: ellipsis;
 }
-.ant-input-affix-wrapper:placeholder-shown {
+.ant-input-affix-wrapper::placeholder-shown {
   text-overflow: ellipsis;
 }
 .ant-input-affix-wrapper:hover {
@@ -20059,7 +20059,7 @@ textarea.ant-input-affix-wrapper {
 .ant-input:-ms-input-placeholder {
   text-overflow: ellipsis;
 }
-.ant-input:placeholder-shown {
+.ant-input::placeholder-shown {
   text-overflow: ellipsis;
 }
 .ant-input:hover {
@@ -21682,7 +21682,7 @@ textarea.ant-input {
 .ant-pagination-options-quick-jumper input:-ms-input-placeholder {
   text-overflow: ellipsis;
 }
-.ant-pagination-options-quick-jumper input:placeholder-shown {
+.ant-pagination-options-quick-jumper input::placeholder-shown {
   text-overflow: ellipsis;
 }
 .ant-pagination-options-quick-jumper input:hover {
@@ -22064,7 +22064,7 @@ textarea.ant-pagination-options-quick-jumper input {
 .ant-mentions:-ms-input-placeholder {
   text-overflow: ellipsis;
 }
-.ant-mentions:placeholder-shown {
+.ant-mentions::placeholder-shown {
   text-overflow: ellipsis;
 }
 .ant-mentions:hover {
@@ -22202,7 +22202,7 @@ textarea.ant-mentions {
 .ant-mentions > textarea:-ms-input-placeholder {
   text-overflow: ellipsis;
 }
-.ant-mentions > textarea:placeholder-shown {
+.ant-mentions > textarea::placeholder-shown {
   text-overflow: ellipsis;
 }
 .ant-mentions-measure {

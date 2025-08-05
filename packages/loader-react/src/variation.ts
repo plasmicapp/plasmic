@@ -19,13 +19,6 @@ export function updatePlasmicCookieValue(key: string, value: string) {
   document.cookie = `plasmic:${key}=${value}`;
 }
 
-export function ensureVariationCookies(variation: Record<string, string> = {}) {
-  Object.keys(variation).map((variationKey) => {
-    const sliceId = variation[variationKey];
-    updatePlasmicCookieValue(variationKey, sliceId);
-  });
-}
-
 export const getGlobalVariantsFromSplits = (
   splits: Split[],
   variation: Record<string, string>

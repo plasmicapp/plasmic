@@ -2,37 +2,39 @@ import { UserMentionsPopoverContent } from "@/wab/client/components/user-mention
 import DropdownOverlay from "@/wab/client/components/widgets/DropdownOverlay";
 import { useQuerySelector } from "@/wab/client/hooks/useQuerySelector";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { ApiUser } from "@/wab/shared/ApiSchema";
 import { getUniqueUsersFromApiPermissions } from "@/wab/shared/perms";
 import * as React from "react";
 import { useCallback, useState } from "react";
-import { useOverlayPosition } from "react-aria";
+import { useInteractOutside, useOverlayPosition } from "react-aria";
+import { regex } from "regex";
 
 export function useUserMentions({
   popoverOffset = 0,
   value,
-  onValueChange,
   inputSelector,
 }: {
   popoverOffset?: number;
   value: string;
-  onValueChange: (newValue: string) => void;
   inputSelector: string;
 }) {
   const [highlightIndex, setHighlightIndex] = useState(0);
-  const [mentionText, setMentionText] = useState("");
-  const mentionActive = mentionText !== "";
+  const [mentionText, setMentionText] = useState<string | undefined>(undefined);
+  const mentionActive = mentionText !== undefined;
 
   const studioCtx = useStudioCtx();
-  const users = getUniqueUsersFromApiPermissions(studioCtx.siteInfo.perms);
+  const users = React.useMemo(
+    () => getUniqueUsersFromApiPermissions(studioCtx.siteInfo.perms),
+    [studioCtx.siteInfo.perms]
+  );
 
-  const filterText = mentionText.slice(1); // first character is @
   const filteredUsers = users.filter(
     (user) =>
-      !filterText ||
+      mentionText === undefined ||
       `${user.firstName} ${user.lastName}`
         .toLowerCase()
-        .includes(filterText.toLowerCase()) ||
-      user.email.toLowerCase().includes(filterText.toLowerCase())
+        .includes(mentionText.toLowerCase()) ||
+      user.email.toLowerCase().includes(mentionText.toLowerCase())
   );
 
   const inputElement =
@@ -48,6 +50,62 @@ export function useUserMentions({
     isOpen: mentionActive,
   });
 
+  // When we click on user in popover, it makes input lose focus,
+  // so we detect click inside popover and keep the input focus, otherwise we close the popover.
+  useInteractOutside({
+    ref: { current: inputElement },
+    onInteractOutside: (event) => {
+      if (
+        overlayRef.current &&
+        overlayRef.current.contains(event.target as Node)
+      ) {
+        inputElement?.focus();
+        return;
+      }
+
+      setMentionText(undefined);
+    },
+  });
+
+  const insertText = useCallback(
+    (text: string, opts?: { start?: number; end?: number }) => {
+      if (inputElement) {
+        inputElement.focus();
+
+        if (opts?.start || opts?.end) {
+          inputElement.setSelectionRange(
+            opts?.start ?? null,
+            opts?.end ?? null
+          );
+        }
+
+        document.execCommand("insertText", false, text);
+
+        setMentionText(undefined);
+      }
+    },
+    [inputElement]
+  );
+
+  const handleSelectUser = useCallback(
+    (selectedUser: ApiUser) => {
+      if (!inputElement) {
+        return;
+      }
+
+      const caret = inputElement.selectionStart || 0;
+      const tokenStart = getTokenStartIndex(value, caret);
+      /* tokenStart points to the @ character, we want to select after @ till
+       * current cursor position and replace it with the insert text.
+       */
+      insertText(`<${selectedUser.email}> `, {
+        start: tokenStart + 1,
+        end: caret,
+      });
+    },
+    [inputElement, value]
+  );
+
   const onKeyHandler = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {
       if (mentionActive) {
@@ -62,40 +120,16 @@ export function useUserMentions({
         } else if (e.key === "Enter") {
           e.preventDefault();
           const selectedUser = filteredUsers[highlightIndex];
-          if (selectedUser) {
-            if (!inputElement) {
-              return;
-            }
-
-            const caretIndex = inputElement.selectionStart || 0;
-            const { newValue, newCaretPosition } = completeMention(
-              value,
-              caretIndex,
-              selectedUser.email
-            );
-
-            onValueChange(newValue);
-            setMentionText("");
-            // Use setTimeout to ensure this happens after the state update
-            setTimeout(() => {
-              if (inputElement) {
-                inputElement.focus();
-                inputElement.setSelectionRange(
-                  newCaretPosition,
-                  newCaretPosition
-                );
-              }
-            }, 0);
-          }
+          handleSelectUser(selectedUser);
         }
       }
     },
-    [filteredUsers, onValueChange, value, mentionActive, inputElement]
+    [filteredUsers, handleSelectUser, highlightIndex, mentionActive]
   );
 
-  const onSelectHandler = useCallback(() => {
+  const onInputSelectHandler = useCallback(() => {
     if (!inputElement) {
-      setMentionText("");
+      setMentionText(undefined);
       return;
     }
 
@@ -103,6 +137,18 @@ export function useUserMentions({
     const foundMentionText = findMentionText(value, caretIndex);
     setMentionText(foundMentionText);
   }, [inputElement, value]);
+
+  const handleMentionClick = useCallback(() => {
+    if (!inputElement) {
+      return;
+    }
+
+    const caretIndex = inputElement.selectionStart || 0;
+    const prevCharacter = value[caretIndex - 1];
+
+    insertText(caretIndex === 0 || /\s/.test(prevCharacter) ? "@" : " @");
+    setMentionText((prev) => `${prev ?? ""}@`);
+  }, [inputElement, value, insertText]);
 
   const userMentionsPopover = mentionActive ? (
     <DropdownOverlay
@@ -117,6 +163,7 @@ export function useUserMentions({
       <UserMentionsPopoverContent
         users={filteredUsers}
         highlightIndex={highlightIndex}
+        onSelectUser={handleSelectUser}
       />
     </DropdownOverlay>
   ) : null;
@@ -124,7 +171,8 @@ export function useUserMentions({
   return {
     userMentionsPopover,
     onKeyHandler,
-    onSelectHandler,
+    onSelectHandler: onInputSelectHandler,
+    handleMentionClick,
   };
 }
 
@@ -142,35 +190,47 @@ function getTokenStartIndex(value: string, caretIndex: number) {
 
 function findMentionText(value: string, caretIndex: number) {
   if (caretIndex === 0) {
-    return "";
+    return undefined;
   }
 
   const tokenStart = getTokenStartIndex(value, caretIndex);
   const token = value.slice(tokenStart, caretIndex);
 
-  return token.startsWith("@") ? token : "";
+  const mentionTextRegex = regex("g")`
+    ^
+    (@<|@)
+    (?<mentionText>[^\s>]*)
+    $
+  `;
+  const match = mentionTextRegex.exec(token);
+  if (!match?.groups) {
+    return undefined;
+  }
+
+  return match.groups.mentionText;
 }
 
-function completeMention(
+function typeTextAtCaretPosition(
   value: string,
-  caretIndex: number,
-  selectedUserEmail: string
+  text: string,
+  startIndex: number,
+  endIndex?: number
 ) {
-  const tokenStart = getTokenStartIndex(value, caretIndex);
-  // Replace the token (e.g. "@Joh") with the chosen user email.
-  const beforeToken = value.slice(0, tokenStart);
-  const afterToken = value.slice(caretIndex);
-  const mentionInsert = `@${selectedUserEmail} `;
-  const newValue = beforeToken + mentionInsert + afterToken;
+  if (!endIndex) {
+    endIndex = startIndex;
+  }
 
-  // Calculate the new caret position after the email plus space
-  const newCaretPosition = tokenStart + mentionInsert.length;
+  const beforeCaret = value.slice(0, startIndex);
+  const afterCaret = value.slice(endIndex);
+
+  const newValue = beforeCaret + text + afterCaret;
+  const newCaretPosition = startIndex + text.length;
 
   return { newValue, newCaretPosition };
 }
 
 export const _testOnlyUserMentionsUtils = {
   getTokenStartIndex,
-  completeMention,
   findMentionText,
+  typeTextAtCaretPosition,
 };

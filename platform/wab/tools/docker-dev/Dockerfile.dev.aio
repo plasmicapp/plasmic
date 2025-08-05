@@ -1,0 +1,63 @@
+# --- Build stage ---
+FROM node:18-alpine AS builder
+
+WORKDIR /plasmic
+
+# Install system deps
+RUN apk add --no-cache \
+    bash \
+    git \
+    curl \
+    wget \
+    python3 \
+    py3-pip \
+    postgresql-client \
+    build-base
+
+# Copy only dependency files first for caching
+COPY package.json yarn.lock ./
+
+# Install deps early for cache
+RUN yarn install --frozen-lockfile --prefer-offline
+
+# Then copy rest of the app
+COPY . .
+
+# Secrets setup and build tools
+RUN mkdir -p /tmp/.plasmic && \
+    cp platform/wab/tools/docker-dev/secrets.json /tmp/.plasmic/secrets.json && \
+    yarn setup && \
+    yarn setup:canvas-packages && \
+    yarn cache clean
+
+# --- Final stage ---
+FROM node:18-alpine
+
+# Create non-root user and prepare env
+RUN addgroup -S plasmic && \
+    adduser -S plasmic -G plasmic && \
+    apk add --no-cache git jq bash && \
+    echo "fs.inotify.max_user_watches=524288" >> /etc/sysctl.conf && \
+    sysctl -p && \
+    mkdir -p $HOME && \
+    chown -R plasmic:plasmic $HOME
+
+USER plasmic
+
+WORKDIR /plasmic/platform/wab
+
+# Copy built app and secrets with correct ownership
+COPY --chown=plasmic:plasmic --from=builder /plasmic /plasmic
+COPY --chown=plasmic:plasmic --from=builder /tmp/.plasmic /home/plasmic/.plasmic
+
+EXPOSE 3003 3004 3005
+
+ENTRYPOINT ["sh", "-c"]
+CMD [" jq '(.host = \"plasmic-db\") | (.password //= \"SEKRET\")' ormconfig.json > tmp.json && mv tmp.json ormconfig.json && \
+    yarn typeorm migration:run && \
+    yarn migrate-dev-bundles && \
+    yarn seed && \
+    yarn plume:dev update && \
+    cd /plasmic && \
+    yarn dev \
+"]

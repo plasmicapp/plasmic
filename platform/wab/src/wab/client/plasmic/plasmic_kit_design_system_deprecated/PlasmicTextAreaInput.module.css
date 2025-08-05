@@ -3,21 +3,21 @@
   object-fit: cover;
   position: relative;
   box-shadow: inset 0px 0px 0px 1px var(--token-CE-OiWjNhspe);
-  font-size: var(--token-XviUmtZ5j0iF);
-  line-height: var(--token-ND9WWUwuMDcO);
+  font-size: var(--token-y-e1zIVKHJyd);
+  line-height: var(--token-wCNdq3-87nVE);
   width: 100%;
   color: var(--token-dED0FYPw-qtp);
   font-family: var(--token-NQPeu56hWEVO);
+  max-height: 300px;
   min-width: 0;
   border-radius: var(--token-CyMxORMQ0iY7);
   padding: var(--token-CyMxORMQ0iY7) var(--token-5RiZyijnOOJx);
   border-style: none;
 }
 .ariaTextArea[data-focused]:global(.__wab_instance) {
-  outline-width: 2px;
+  outline-width: thin;
   outline-style: solid;
   outline-color: var(--token-qP8a3gYPq7fd);
-  outline-offset: 1px;
 }
 .ariaTextArea[data-disabled]:global(.__wab_instance) {
   cursor: not-allowed;
@@ -34,6 +34,13 @@
 }
 .ariaTextAreatype_plain[data-hovered]:global(.__wab_instance) {
   background: var(--token-iCBCh1BQyu-W);
+}
+.ariaTextAreatype_minimal:global(.__wab_instance) {
+  box-shadow: none;
+  background: none;
+}
+.ariaTextAreatype_minimal[data-focused]:global(.__wab_instance) {
+  outline-style: none;
 }
 .ariaTextAreaflat_top:global(.__wab_instance) {
   border-top-left-radius: 0rem;

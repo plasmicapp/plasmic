@@ -81,7 +81,10 @@ const EXT_REGEXP = /\.(jsx|tsx)$/;
 
 export function defaultPagePath(
   context: {
-    config: Pick<PlasmicConfig, "platform" | "gatsbyConfig" | "nextjsConfig">;
+    config: Pick<
+      PlasmicConfig,
+      "platform" | "gatsbyConfig" | "nextjsConfig" | "tanstackConfig"
+    >;
   },
   fileName: string
 ) {
@@ -106,6 +109,20 @@ export function defaultPagePath(
     }
   } else if (context.config.platform === "gatsby") {
     return path.join(context.config.gatsbyConfig?.pagesDir || "", fileName);
+  } else if (context.config.platform === "tanstack") {
+    // use $ for dynamic paths, convert "/posts/[postId]" to "/posts/$postId"
+    let renamedFileName = fileName.replace(/\[(\w+)\]/g, "$$$1");
+
+    const matchesIndex = fileName.match(INDEX_EXT_REGEXP);
+    if (!matchesIndex) {
+      // convert "/foo/bar.tsx" to "/foo/bar/index.tsx"
+      renamedFileName = renamedFileName.replace(EXT_REGEXP, "/index.$1");
+    }
+
+    return path.join(
+      context.config.tanstackConfig?.pagesDir || "",
+      renamedFileName
+    );
   } else {
     return fileName;
   }
@@ -351,6 +368,9 @@ function getAllPaths(context: PlasmicContext): BundleKeyPair[] {
   if (config.nextjsConfig) {
     pushPath(config.nextjsConfig, "pagesDir");
   }
+  if (config.tanstackConfig) {
+    pushPath(config.tanstackConfig, "pagesDir");
+  }
 
   return pairs;
 }
@@ -463,10 +483,17 @@ export function readFileText(path: string): string {
         case "create":
           return ensureString(action.content);
         case "rename":
-          return readFileText(action.newPath);
+          // eslint-disable-next-line no-restricted-properties
+          return fs.readFileSync(path, "utf8");
         case "delete":
           throw new HandledError("File does not exists");
       }
+    }
+    // If we are buffering files and the file has been renamed, only the old file path
+    // exists in disk, so we need to read the content from the old file path.
+    const renamedFilePath = renamedFiles.get(path);
+    if (renamedFilePath) {
+      return readFileText(renamedFilePath);
     }
   }
 
@@ -503,7 +530,6 @@ export function renameFileBuffered(oldPath: string, newPath: string) {
     if (renamedFile !== undefined) {
       oldPath = renamedFile;
     }
-
     buffer.set(oldPath, { type: "rename", newPath });
     renamedFiles.set(newPath, oldPath);
   } else {

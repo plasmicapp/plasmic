@@ -21,7 +21,6 @@ import {
   createPlasmicElementProxy,
   deriveRenderOpts,
   renderPlasmicSlot,
-  useCurrentUser,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
@@ -34,7 +33,7 @@ import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_syst
 import projectcss from "./plasmic_plasmic_kit_merge_flow.module.css"; // plasmic-import: p8FkKgCnyuat1kHSEYAKfW/projectcss
 import sty from "./PlasmicDiffs.module.css"; // plasmic-import: o4Oidp6CzFL/css
 
-import ArrowLeftsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ArrowLeftSvg"; // plasmic-import: -d8Kjj4sp/icon
+import ArrowLeftSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ArrowLeftSvg"; // plasmic-import: -d8Kjj4sp/icon
 import ChevronDownIcon from "./icons/PlasmicIcon__ChevronDown"; // plasmic-import: eV4_yyuiy3/icon
 
 createPlasmicElementProxy;
@@ -44,9 +43,7 @@ export type PlasmicDiffs__VariantsArgs = {};
 type VariantPropType = keyof PlasmicDiffs__VariantsArgs;
 export const PlasmicDiffs__VariantProps = new Array<VariantPropType>();
 
-export type PlasmicDiffs__ArgsType = {
-  children?: React.ReactNode;
-};
+export type PlasmicDiffs__ArgsType = { children?: React.ReactNode };
 type ArgPropType = keyof PlasmicDiffs__ArgsType;
 export const PlasmicDiffs__ArgProps = new Array<ArgPropType>("children");
 
@@ -76,7 +73,16 @@ function PlasmicDiffs__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
@@ -86,8 +92,6 @@ function PlasmicDiffs__RenderFunc(props: {
   const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
-
-  const currentUser = useCurrentUser?.() || {};
 
   return (
     <div
@@ -122,7 +126,7 @@ function PlasmicDiffs__RenderFunc(props: {
               data-plasmic-override={overrides.backButton}
               className={classNames("__wab_instance", sty.backButton)}
               startIcon={
-                <ArrowLeftsvgIcon
+                <ArrowLeftSvgIcon
                   className={classNames(projectcss.all, sty.svg__n4509)}
                   role={"img"}
                 />
@@ -170,7 +174,6 @@ function PlasmicDiffs__RenderFunc(props: {
                             {"the main branch"}
                           </span>
                         }
-
                         <React.Fragment>{""}</React.Fragment>
                       </React.Fragment>
                     </div>
@@ -236,7 +239,6 @@ const PlasmicDescendants = {
     "labelIconsContainer",
     "diffContent",
   ],
-
   backButton: ["backButton"],
   labelText: ["labelText", "label", "branchLabel", "text"],
   label: ["label", "branchLabel"],
@@ -264,7 +266,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicDiffs__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
@@ -272,15 +273,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicDiffs__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicDiffs__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicDiffs__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+    // Specify args directly as props
+    Omit<PlasmicDiffs__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

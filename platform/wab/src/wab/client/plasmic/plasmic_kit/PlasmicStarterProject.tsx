@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -22,11 +22,14 @@ import {
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  ensureGlobalVariants,
   hasVariant,
   renderPlasmicSlot,
   useDollarState,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+
+import { useEnvironment } from "../plasmic_kit_pricing/PlasmicGlobalVariant__Environment"; // plasmic-import: hIjF9NLAUKG-/globalVariant
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
@@ -37,7 +40,7 @@ import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_
 import sty from "./PlasmicStarterProject.module.css"; // plasmic-import: CCsDeqqYeoM/css
 
 import imageDQeKTjQst from "../plasmic_kit_dashboard/images/image.png"; // plasmic-import: dQeKTjQST/picture
-import EyesvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__EyeSvg"; // plasmic-import: oFYcZi8LU/icon
+import EyeSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__EyeSvg"; // plasmic-import: oFYcZi8LU/icon
 import CheckIcon from "./PlasmicIcon__Check"; // plasmic-import: pawp1H5YxB_3B/icon
 
 createPlasmicElementProxy;
@@ -90,7 +93,7 @@ export type PlasmicStarterProject__OverridesType = {
   divider?: Flex__<"div">;
   frame317?: Flex__<"div">;
   frame308?: Flex__<"div">;
-  bordersoutlinesstrokesPlaceholder?: Flex__<"div">;
+  bordersOutlinesStrokesPlaceholder?: Flex__<"div">;
 };
 
 export interface DefaultStarterProjectProps {
@@ -118,7 +121,16 @@ function PlasmicStarterProject__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
@@ -168,7 +180,6 @@ function PlasmicStarterProject__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.withDropShadow,
       },
     ],
-
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -176,6 +187,10 @@ function PlasmicStarterProject__RenderFunc(props: {
     $ctx,
     $queries: {},
     $refs,
+  });
+
+  const globalVariants = ensureGlobalVariants({
+    environment: useEnvironment(),
   });
 
   return (
@@ -195,6 +210,24 @@ function PlasmicStarterProject__RenderFunc(props: {
         plasmic_plasmic_kit_pricing_css.plasmic_tokens,
         sty.root,
         {
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
           [sty.rooticon_withIcon]: hasVariant($state, "icon", "withIcon"),
           [sty.rooticon_withIcon_type_first]:
             hasVariant($state, "type", "first") &&
@@ -592,7 +625,6 @@ function PlasmicStarterProject__RenderFunc(props: {
                       {"3-Minute Codegen Quickstart"}
                     </div>
                   ),
-
                   value: args.name,
                   className: classNames(sty.slotTargetName, {
                     [sty.slotTargetNameicon_withIcon]: hasVariant(
@@ -742,7 +774,7 @@ function PlasmicStarterProject__RenderFunc(props: {
             {(hasVariant($state, "showPreview", "showPreview") ? true : false)
               ? renderPlasmicSlot({
                   defaultContents: (
-                    <EyesvgIcon
+                    <EyeSvgIcon
                       className={classNames(projectcss.all, sty.svg__llXDw)}
                       role={"img"}
                     />
@@ -761,65 +793,65 @@ function PlasmicStarterProject__RenderFunc(props: {
           </Stack__>
         </div>
         <div
-          data-plasmic-name={"bordersoutlinesstrokesPlaceholder"}
-          data-plasmic-override={overrides.bordersoutlinesstrokesPlaceholder}
+          data-plasmic-name={"bordersOutlinesStrokesPlaceholder"}
+          data-plasmic-override={overrides.bordersOutlinesStrokesPlaceholder}
           className={classNames(
             projectcss.all,
-            sty.bordersoutlinesstrokesPlaceholder,
+            sty.bordersOutlinesStrokesPlaceholder,
             {
-              [sty.bordersoutlinesstrokesPlaceholdericon_withIcon]: hasVariant(
+              [sty.bordersOutlinesStrokesPlaceholdericon_withIcon]: hasVariant(
                 $state,
                 "icon",
                 "withIcon"
               ),
-              [sty.bordersoutlinesstrokesPlaceholdericon_withIcon_type_first]:
+              [sty.bordersOutlinesStrokesPlaceholdericon_withIcon_type_first]:
                 hasVariant($state, "icon", "withIcon") &&
                 hasVariant($state, "type", "first"),
-              [sty.bordersoutlinesstrokesPlaceholderimage_withImage]:
+              [sty.bordersOutlinesStrokesPlaceholderimage_withImage]:
                 hasVariant($state, "image", "withImage"),
-              [sty.bordersoutlinesstrokesPlaceholdershowPreview]: hasVariant(
+              [sty.bordersOutlinesStrokesPlaceholdershowPreview]: hasVariant(
                 $state,
                 "showPreview",
                 "showPreview"
               ),
-              [sty.bordersoutlinesstrokesPlaceholdertype_first]: hasVariant(
+              [sty.bordersOutlinesStrokesPlaceholdertype_first]: hasVariant(
                 $state,
                 "type",
                 "first"
               ),
-              [sty.bordersoutlinesstrokesPlaceholdertype_noBorder]: hasVariant(
+              [sty.bordersOutlinesStrokesPlaceholdertype_noBorder]: hasVariant(
                 $state,
                 "type",
                 "noBorder"
               ),
-              [sty.bordersoutlinesstrokesPlaceholdertype_second]: hasVariant(
+              [sty.bordersOutlinesStrokesPlaceholdertype_second]: hasVariant(
                 $state,
                 "type",
                 "second"
               ),
-              [sty.bordersoutlinesstrokesPlaceholdertype_second_withDescrip]:
+              [sty.bordersOutlinesStrokesPlaceholdertype_second_withDescrip]:
                 hasVariant($state, "withDescrip", "withDescrip") &&
                 hasVariant($state, "type", "second"),
-              [sty.bordersoutlinesstrokesPlaceholdertype_third]: hasVariant(
+              [sty.bordersOutlinesStrokesPlaceholdertype_third]: hasVariant(
                 $state,
                 "type",
                 "third"
               ),
-              [sty.bordersoutlinesstrokesPlaceholdertype_third_icon_withIcon]:
+              [sty.bordersOutlinesStrokesPlaceholdertype_third_icon_withIcon]:
                 hasVariant($state, "icon", "withIcon") &&
                 hasVariant($state, "type", "third"),
-              [sty.bordersoutlinesstrokesPlaceholdertype_third_withDescrip]:
+              [sty.bordersOutlinesStrokesPlaceholdertype_third_withDescrip]:
                 hasVariant($state, "type", "third") &&
                 hasVariant($state, "withDescrip", "withDescrip"),
-              [sty.bordersoutlinesstrokesPlaceholderwithDescrip]: hasVariant(
+              [sty.bordersOutlinesStrokesPlaceholderwithDescrip]: hasVariant(
                 $state,
                 "withDescrip",
                 "withDescrip"
               ),
-              [sty.bordersoutlinesstrokesPlaceholderwithDescrip_type_first]:
+              [sty.bordersOutlinesStrokesPlaceholderwithDescrip_type_first]:
                 hasVariant($state, "withDescrip", "withDescrip") &&
                 hasVariant($state, "type", "first"),
-              [sty.bordersoutlinesstrokesPlaceholderwithDropShadow]: hasVariant(
+              [sty.bordersOutlinesStrokesPlaceholderwithDropShadow]: hasVariant(
                 $state,
                 "withDropShadow",
                 "withDropShadow"
@@ -839,21 +871,19 @@ const PlasmicDescendants = {
     "divider",
     "frame317",
     "frame308",
-    "bordersoutlinesstrokesPlaceholder",
+    "bordersOutlinesStrokesPlaceholder",
   ],
-
   button: [
     "button",
     "divider",
     "frame317",
     "frame308",
-    "bordersoutlinesstrokesPlaceholder",
+    "bordersOutlinesStrokesPlaceholder",
   ],
-
   divider: ["divider"],
   frame317: ["frame317"],
   frame308: ["frame308"],
-  bordersoutlinesstrokesPlaceholder: ["bordersoutlinesstrokesPlaceholder"],
+  bordersOutlinesStrokesPlaceholder: ["bordersOutlinesStrokesPlaceholder"],
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -864,7 +894,7 @@ type NodeDefaultElementType = {
   divider: "div";
   frame317: "div";
   frame308: "div";
-  bordersoutlinesstrokesPlaceholder: "div";
+  bordersOutlinesStrokesPlaceholder: "div";
 };
 
 type ReservedPropsType = "variants" | "args" | "overrides";
@@ -872,7 +902,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicStarterProject__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
@@ -880,15 +909,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicStarterProject__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicStarterProject__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicStarterProject__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+    // Specify args directly as props
+    Omit<PlasmicStarterProject__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;
@@ -932,8 +961,8 @@ export const PlasmicStarterProject = Object.assign(
     divider: makeNodeComponent("divider"),
     frame317: makeNodeComponent("frame317"),
     frame308: makeNodeComponent("frame308"),
-    bordersoutlinesstrokesPlaceholder: makeNodeComponent(
-      "bordersoutlinesstrokesPlaceholder"
+    bordersOutlinesStrokesPlaceholder: makeNodeComponent(
+      "bordersOutlinesStrokesPlaceholder"
     ),
 
     // Metadata about props expected for PlasmicStarterProject

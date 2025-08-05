@@ -31,6 +31,7 @@ import { getAncestorSlotArg } from "@/wab/shared/SlotUtils";
 import { $$$ } from "@/wab/shared/TplQuery";
 import { VariantTplMgr } from "@/wab/shared/VariantTplMgr";
 import { isBaseVariant } from "@/wab/shared/Variants";
+import { FastBundler } from "@/wab/shared/bundler";
 import {
   allCustomFunctions,
   getLinkedCodeProps,
@@ -117,7 +118,7 @@ import {
 } from "@plasmicapp/react-web";
 import asynclib from "async";
 import $ from "jquery";
-import L, { defer, groupBy, head, isEqual } from "lodash";
+import L, { defer, groupBy, head, isEqual, sortBy } from "lodash";
 import * as mobx from "mobx";
 import { comparer, computed, observable } from "mobx";
 import { computedFn } from "mobx-utils";
@@ -187,19 +188,8 @@ export class ViewCtx extends WithDbCtx {
   private _editingTextResizeObserver: ResizeObserver | undefined;
 
   private _nextFocusedTpl: TplNode | undefined;
-  private _selectedNewThreadTpl = observable.box<TplNode | null>(null, {
-    name: "ViewCtx.selectedNewThreadTpl",
-  });
   nextFocusedTpl() {
     return this._nextFocusedTpl;
-  }
-
-  getSelectedNewThreadTpl() {
-    return this._selectedNewThreadTpl.get();
-  }
-
-  setSelectedNewThreadTpl(tpl: TplNode | null) {
-    this._selectedNewThreadTpl.set(tpl);
   }
 
   private _highlightParam = observable.box<
@@ -444,6 +434,108 @@ export class ViewCtx extends WithDbCtx {
     }
   );
 
+  private _autoOpenedUuid = observable.box<string | undefined>();
+
+  get autoOpenedUuid() {
+    return this._autoOpenedUuid.get();
+  }
+
+  set autoOpenedUuid(val: string | undefined) {
+    if (val === this.autoOpenedUuid) {
+      return;
+    }
+    this._autoOpenedUuid.set(val);
+  }
+
+  resetAutoOpenState() {
+    this.autoOpenedUuid = undefined;
+    this.disabledAutoOpenUuid = undefined;
+  }
+
+  forceCloseAutoOpen() {
+    this.disabledAutoOpenUuid = this.autoOpenedUuid;
+    this.autoOpenedUuid = undefined;
+  }
+
+  /**
+   * Disables auto-open behaviour for a specific uuid.
+   * This can be used to temporarily disable auto-open behaviour, even when the auto open mode is enabled.
+   */
+  private _disabledAutoOpenUuid = observable.box<string | undefined>(undefined);
+
+  get disabledAutoOpenUuid() {
+    return this._disabledAutoOpenUuid.get();
+  }
+
+  set disabledAutoOpenUuid(val: string | undefined) {
+    this._disabledAutoOpenUuid.set(val);
+  }
+
+  maybeClearAutoOpenedContentOnSelectionChange(
+    previousSelection: Selectable | null,
+    newSelection: Selectable | null
+  ) {
+    // The if block below handles Auto-opening of hidden element on next selection only after its visibility style has changed.
+    if (!this.autoOpenedUuid) {
+      // We don't always want to clear disabledAutoOpenUuid. There are certain cases where we should keep it regardless of selection change.
+      // These cases are handled by the if/else-if blocks below
+      if (
+        !isSlotSelection(newSelection) &&
+        newSelection?.tpl.uuid === this.disabledAutoOpenUuid
+      ) {
+        // NOTE: The user is on node-A in the outline tab, and they click on the visibility toggle of node-B
+        // The visibility takes effect, setting disabledAutoOpenUuid,
+        // The selection happens later. i.e. node selection happened after visibility toggle has taken effect.
+        // since this is still the first selection of node-B while its visibility has changed, we want to keep the disabledAutoOpenUuid, so it stays hidden till its next selection.
+        // So, do not clear auto-open state here
+      } else if (!newSelection && this.disabledAutoOpenUuid) {
+        // NOTE: This is the case with dynamic visibility,
+        // when the data picker is opened and the expression evaluates to false, the disabledAutoOpenUuid is set.
+        // when the data picker is closed, the newSelection is unnecessarily set to null for a bit (this technically does not make sense, but is the current behaviour)
+        // we don't want to clear the disabledAutoOpenUuids in this case either, because the node-A
+        // So, do not clear auto-open state here
+      } else {
+        this.resetAutoOpenState();
+      }
+      return;
+    }
+
+    // nothing previously auto-opened, no need to clear
+    if (!previousSelection) {
+      return;
+    }
+
+    // nothing selected, clear
+    if (!newSelection) {
+      this.resetAutoOpenState();
+      return;
+    }
+
+    // If the first selection hasn't changed in multi-selection mode, no need to clear auto-opened content
+    if (previousSelection === newSelection) {
+      return;
+    }
+
+    const ancestor = this.focusedTplAncestorsThroughComponents()
+      .map((item) => item.node)
+      .find((tplOrSlotSel) =>
+        isSlotSelection(tplOrSlotSel)
+          ? tplOrSlotSel.slotParam.uuid === this.autoOpenedUuid
+          : tplOrSlotSel.uuid === this.autoOpenedUuid
+      );
+
+    // When we find an ancestor that matches the autoOpenedUuid:
+    // 1. If this ancestor is NOT a TplComponent, keep the autoOpenedUuid - it represents the
+    //    slot/tpltag containing the currently selected element
+    // 2. If this ancestor IS a TplComponent, clear the autoOpenedUuid - the new selection might be
+    //    in a trigger slot and we don't want to keep the component expanded
+    if (ancestor && !isKnownTplComponent(ancestor)) {
+      return;
+    }
+
+    this.resetAutoOpenState();
+  }
+
   private _xFocusedSelectables = observable.box<(Selectable | null)[]>([], {
     name: "ViewCtx.focusedSelectables",
   });
@@ -452,11 +544,25 @@ export class ViewCtx extends WithDbCtx {
   }
   set _focusedSelectables(objs: (Selectable | null)[]) {
     const current = this._xFocusedSelectables.get();
-    if (!arrayEq(objs, current)) {
+    // We need the comparator, because current is a proxy array, whereas objs is not.
+    if (
+      !arrayEq(objs, current, (a, b) => {
+        if (a instanceof SlotSelection && b instanceof SlotSelection) {
+          return (
+            a.slotParam.uuid === b.slotParam.uuid && a.val?.key === b.val?.key
+          );
+        }
+        return a === b;
+      })
+    ) {
       this._xFocusedSelectables.set(objs);
       this.tryBlurEditingText();
+
+      // When using multi-selection, we only apply auto-open behavior to the first selected item, hence the use of 0 index.
+      this.maybeClearAutoOpenedContentOnSelectionChange(current[0], objs[0]);
     }
   }
+
   private _xHighlightedAdoptees = observable.box<Adoptee[]>([], {
     name: "ViewCtx.highlightedAdoptees",
   });
@@ -1026,6 +1132,9 @@ export class ViewCtx extends WithDbCtx {
             // Removing of multi selection
             const idx = this._focusedSelectables.indexOf(finalVal);
             this._focusedSelectables.splice(idx, 1);
+            if (idx === 0) {
+              this.resetAutoOpenState();
+            }
             this._focusedTpls.splice(idx, 1);
             this._focusedDomElts.splice(idx, 1);
             this._focusedCloneKeys.splice(idx, 1);
@@ -2312,7 +2421,11 @@ export class ViewCtx extends WithDbCtx {
    * Similar to `instanceof Element` but also checks for Sub.Element
    */
   isElement(v: any): v is Element {
-    return v instanceof Element || v instanceof this.canvasCtx.Sub.localElement;
+    return (
+      v instanceof Element ||
+      (!!this.canvasCtx.Sub.localElement &&
+        v instanceof this.canvasCtx.Sub.localElement)
+    );
   }
 
   private fiberNodeToPlasmicData(
@@ -2536,4 +2649,17 @@ export function ensureVariantRs(
     RSH(vs.rs, tpl).merge(props);
   }
   return vs.rs;
+}
+
+export function getSetOfPinnedVariantsForViewCtx(
+  viewCtx: ViewCtx,
+  bundler: FastBundler
+) {
+  return sortBy(
+    [
+      ...viewCtx.currentComponentStackFrame().getPinnedVariants().keys(),
+      ...viewCtx.globalFrame.getPinnedVariants().keys(),
+    ],
+    (v) => bundler.addrOf(v)?.iid
+  );
 }

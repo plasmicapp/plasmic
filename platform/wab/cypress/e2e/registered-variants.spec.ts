@@ -1,11 +1,15 @@
-import {
-  removeCurrentProject,
-  setupProjectFromTemplate,
-} from "../support/util";
+import { removeCurrentProject } from "../support/util";
 
 describe("registered variants", function () {
   beforeEach(() => {
-    setupProjectFromTemplate("react-aria-components");
+    cy.setupProjectWithHostlessPackages({
+      hostLessPackagesInfo: [
+        {
+          name: "react-aria",
+          npmPkg: ["@plasmicpkgs/react-aria"],
+        },
+      ],
+    });
   });
 
   afterEach(() => {
@@ -14,7 +18,7 @@ describe("registered variants", function () {
 
   it("can CRUD registered variants from canvas", function () {
     cy.withinStudioIframe(() => {
-      cy.switchArena("Button").then(() => {
+      createAndSwitchToButtonArena().then(() => {
         cy.selectRootNode();
         cy.chooseFontSize("15px"); // Set font-size on base, so we can later assert that it can be overrridden by variants
         cy.waitForNewFrame(() => {
@@ -76,9 +80,9 @@ describe("registered variants", function () {
 
   it("can CRUD registered variants from variants tab", function () {
     cy.withinStudioIframe(() => {
-      cy.switchArena("Button").then(() => {
+      createAndSwitchToButtonArena().then(() => {
         cy.selectRootNode();
-        cy.chooseFontSize("15px"); // Set font-size on base, so we can later assert that it can be overrridden by variants
+        cy.chooseFontSize("15px"); // Set font-size on base, so we can later assert that it can be overridden by variants
         cy.waitForNewFrame(() => {
           cy.justLog("Create registered variant artboard");
           cy.variantsTab().contains("Hovered").should("not.exist");
@@ -142,7 +146,7 @@ describe("registered variants", function () {
 
   it("can CRUD registered variants in focus mode", function () {
     cy.withinStudioIframe(() => {
-      cy.switchArena("Button").then(() => {
+      createAndSwitchToButtonArena().then(() => {
         cy.selectRootNode();
         cy.chooseFontSize("15px"); // Set font-size on base, so we can later assert that it can be overrridden by variants
         cy.turnOffDesignMode();
@@ -247,4 +251,12 @@ describe("registered variants", function () {
       });
     });
   });
+  function createAndSwitchToButtonArena() {
+    return cy.createNewPageInOwnArena("Homepage").then(() => {
+      cy.insertFromAddDrawer("plasmic-react-aria-button");
+      cy.extractComponentNamed("Button");
+      cy.contains("[Open component]").click();
+      return cy.getFramed();
+    });
+  }
 });

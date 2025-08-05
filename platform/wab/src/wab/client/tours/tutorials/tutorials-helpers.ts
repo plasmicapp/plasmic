@@ -10,21 +10,28 @@ import {
 import { addGetManyQuery, StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { StudioTutorialStep } from "@/wab/client/tours/tutorials/tutorials-types";
+import { AddItemKey } from "@/wab/shared/add-item-keys";
 import { ensure, ensureArray, waitUntil } from "@/wab/shared/common";
 import { ComponentType, isPageComponent } from "@/wab/shared/core/components";
-import { DEVFLAGS } from "@/wab/shared/devflags";
 import {
   code,
   deserCompositeExprMaybe,
   serCompositeExprMaybe,
   tryExtractJson,
 } from "@/wab/shared/core/exprs";
-import { AddItemKey } from "@/wab/shared/add-item-keys";
+import { mkInteraction } from "@/wab/shared/core/states";
+import {
+  filterTpls,
+  flattenTpls,
+  isTplComponent,
+  tryGetTplOwnerComponent,
+} from "@/wab/shared/core/tpls";
 import {
   ALL_QUERIES,
   dataSourceTemplateToString,
   mkDataSourceTemplate,
 } from "@/wab/shared/data-sources-meta/data-sources";
+import { DEVFLAGS } from "@/wab/shared/devflags";
 import { DATA_SOURCE_LOWER } from "@/wab/shared/Labels";
 import {
   DataSourceOpExpr,
@@ -43,13 +50,6 @@ import {
 } from "@/wab/shared/model/classes";
 import { getTplComponentArg } from "@/wab/shared/TplMgr";
 import { $$$ } from "@/wab/shared/TplQuery";
-import { mkInteraction } from "@/wab/shared/core/states";
-import {
-  filterTpls,
-  flattenTpls,
-  isTplComponent,
-  tryGetTplOwnerComponent,
-} from "@/wab/shared/core/tpls";
 import { capitalize, isEqual, mapValues } from "lodash";
 
 export const ONBOARDING_TUTORIALS_META = {
@@ -967,9 +967,9 @@ export function stepsToCypress(steps: StudioTutorialStep[]) {
       cypressStep += `cy.get("#tour-popup-${step.name}").should("be.visible");\n`;
 
       if (step.name === "form-add") {
-        cypressStep += `cy.insertFromAddDrawer("Form");\n`;
+        cypressStep += `cy.insertFromAddDrawer("plasmic-antd5-form");\n`;
       } else if (step.name === "rich-table-add") {
-        cypressStep += `cy.insertFromAddDrawer("Table");\n`;
+        cypressStep += `cy.insertFromAddDrawer("hostless-rich-table");\n`;
       } else if (step.name === "configure-table") {
         cypressStep += `
 cy.get('${cyTarget}').click();
@@ -1007,6 +1007,8 @@ cy.get("#data-picker-save-btn").click();
 cy.get('${cyTarget}').click();
 cy.get('[data-key="dataSourceOp"]').click();
 `;
+      } else if (step.name === "open-publish-modal") {
+        cypressStep += "pressPublishButton();";
       } else if (step.nextButtonText) {
         // if there is a next button, click it
         cypressStep += `cy.get('#tour-primary-btn').click();\n`;

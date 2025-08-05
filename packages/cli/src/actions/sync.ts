@@ -22,11 +22,11 @@ import {
 } from "../utils/code-utils";
 import {
   CONFIG_FILE_NAME,
-  createProjectConfig,
   CustomFunctionConfig,
+  PlasmicContext,
+  createProjectConfig,
   getOrAddProjectConfig,
   getOrAddProjectLock,
-  PlasmicContext,
   updateConfig,
 } from "../utils/config-utils";
 import { HandledError } from "../utils/error";
@@ -38,7 +38,7 @@ import {
   withBufferedFs,
   writeFileContent,
 } from "../utils/file-utils";
-import { generateMetadata, getContext, Metadata } from "../utils/get-context";
+import { Metadata, generateMetadata, getContext } from "../utils/get-context";
 import { printFirstSyncInfo } from "../utils/help";
 import { ensure, tuple } from "../utils/lang-utils";
 import {

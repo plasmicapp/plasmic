@@ -11,18 +11,17 @@ import { ListBox, ListBoxItem } from "@/wab/client/components/widgets";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { TutorialEventsType } from "@/wab/client/tours/tutorials/tutorials-events";
 import {
+  StudioPropType,
+  getPropTypeDefaultValue,
+  isPlainObjectPropType,
+} from "@/wab/shared/code-components/code-components";
+import {
   Dict,
   arrayMoveIndex,
   arrayRemoveAt,
   arrayReplaceAt,
 } from "@/wab/shared/collections";
 import { ensure, uncheckedCast } from "@/wab/shared/common";
-import {
-  StudioPropType,
-  getPropTypeDefaultValue,
-  isPlainObjectPropType,
-} from "@/wab/shared/code-components/code-components";
-import { TplComponent } from "@/wab/shared/model/classes";
 import { PropType } from "@plasmicapp/host";
 import { observer } from "mobx-react";
 import React, { useState } from "react";
@@ -31,7 +30,7 @@ interface ArrayPropEditorProps<Value extends object> {
   subfields: Dict<PropType<unknown>>;
   itemNameFunc?: ItemFunc<Value, string | undefined>;
   canDeleteFunc?: ItemFunc<Value, boolean>;
-  tpl: TplComponent;
+  modalKey: string;
   ccContextData: any;
   componentPropValues: any;
   controlExtras: ControlExtras;
@@ -52,7 +51,7 @@ export const ArrayPropEditor = observer(function ArrayPropEditor<
   subfields,
   canDeleteFunc,
   itemNameFunc,
-  tpl,
+  modalKey,
   ccContextData,
   componentPropValues,
   controlExtras,
@@ -140,7 +139,7 @@ export const ArrayPropEditor = observer(function ArrayPropEditor<
                     evaluatedValue={evaluatedItem}
                     fields={subfields}
                     objectNameFunc={itemNameFunc ?? (() => `Item ${index}`)}
-                    tpl={tpl}
+                    modalKey={modalKey}
                     ccContextData={ccContextData}
                     onChange={(newData) => {
                       if (compositeValue) {

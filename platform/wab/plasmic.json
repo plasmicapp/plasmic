@@ -1252,7 +1252,7 @@
         {
           "id": "h1Ar4hymw",
           "name": "Kimmy_Schmidt_icon.jpg",
-          "filePath": "wab/client/plasmic/plasmic_kit_dashboard/images/kimmySchmidtIconjpg.jpeg"
+          "filePath": "wab/client/plasmic/plasmic_kit_dashboard/images/kimmySchmidtIconJpg.jpeg"
         },
         {
           "id": "dQeKTjQST",
@@ -1284,8 +1284,7 @@
       "indirect": false,
       "globalContextsFilePath": "wab/client/plasmic/plasmic_kit_dashboard/PlasmicGlobalContextsProvider.tsx",
       "splitsProviderFilePath": "",
-      "customFunctions": [],
-      "jsBundleThemes": []
+      "customFunctions": []
     },
     {
       "projectId": "kA1Hysr5ZeimtATHTDJz5B",
@@ -1438,7 +1437,8 @@
     {
       "projectId": "29njzcsBEPR4koRddw4knF",
       "projectName": "[PlasmicKit] Alert Banner",
-      "version": ">=0.0.0",
+      "projectBranchName": "feat/hide-auto-open",
+      "version": "latest",
       "cssFilePath": "wab/client/plasmic/PP__plasmickit_alert_banner.module.css",
       "components": [
         {
@@ -1466,15 +1466,35 @@
           "cssFilePath": "wab/client/plasmic/plasmic_kit_alert_banner/PlasmicPromoBanner.module.css",
           "scheme": "blackbox",
           "componentType": "component"
-        }
-      ],
-      "icons": [
+        },
         {
-          "id": "Ou2BoyYzU",
-          "name": "ChevronDownsvgIcon",
-          "moduleFilePath": "wab/client/plasmic/plasmic_kit_alert_banner/icons/PlasmicIcon__ChevronDownsvg.tsx"
+          "id": "LlDTs6h34ISG",
+          "name": "Banner",
+          "type": "managed",
+          "projectId": "29njzcsBEPR4koRddw4knF",
+          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_alert_banner/PlasmicBanner.tsx",
+          "importSpec": {
+            "modulePath": "wab/client/components/Banner.tsx"
+          },
+          "cssFilePath": "wab/client/plasmic/plasmic_kit_alert_banner/PlasmicBanner.module.css",
+          "scheme": "blackbox",
+          "componentType": "component"
+        },
+        {
+          "id": "ETj0D1AzSHQn",
+          "name": "AutoOpenBanner",
+          "type": "managed",
+          "projectId": "29njzcsBEPR4koRddw4knF",
+          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_alert_banner/PlasmicAutoOpenBanner.tsx",
+          "importSpec": {
+            "modulePath": "wab/client/components/AutoOpenBanner.tsx"
+          },
+          "cssFilePath": "wab/client/plasmic/plasmic_kit_alert_banner/PlasmicAutoOpenBanner.module.css",
+          "scheme": "blackbox",
+          "componentType": "component"
         }
       ],
+      "icons": [],
       "images": [],
       "projectApiToken": "tCKZNKmXrJdgAXgl2hMXTCgo95HgoZiCqOzWuPNTbRGZUQ376Cc2rj78tcaaVY6Bu2M14PCiQSxj3xRzndjw",
       "codeComponents": [
@@ -1499,7 +1519,7 @@
     },
     {
       "projectId": "tXkSR39sgCDWSitZxC5xFV",
-      "projectName": "[PlasmicKit] Design System (deprecated)",
+      "projectName": "[PlasmicKit] Design System",
       "version": ">=42.0.0",
       "cssFilePath": "wab/client/plasmic/PP__plasmickit_design_system.module.css",
       "components": [
@@ -1909,6 +1929,75 @@
             "modulePath": "wab/client/components/plexus/TextField.tsx"
           },
           "cssFilePath": "wab/client/plasmic/plasmic_kit_design_system_deprecated/PlasmicTextField.module.css",
+          "scheme": "blackbox",
+          "componentType": "component"
+        },
+        {
+          "id": "en2IIw2C3_aI",
+          "name": "Dialog",
+          "type": "managed",
+          "projectId": "tXkSR39sgCDWSitZxC5xFV",
+          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_design_system_deprecated/PlasmicDialog.tsx",
+          "importSpec": {
+            "modulePath": "wab/client/components/widgets/Dialog.tsx",
+            "exportName": "Dialog"
+          },
+          "cssFilePath": "wab/client/plasmic/plasmic_kit_design_system_deprecated/PlasmicDialog.module.css",
+          "scheme": "blackbox",
+          "componentType": "component"
+        },
+        {
+          "id": "sbyrU_8SkoWY",
+          "name": "PlexusButton",
+          "type": "managed",
+          "projectId": "tXkSR39sgCDWSitZxC5xFV",
+          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_design_system_deprecated/PlasmicPlexusButton.tsx",
+          "importSpec": {
+            "modulePath": "wab/client/components/plexus/PlexusButton.tsx",
+            "exportName": "PlexusButton"
+          },
+          "cssFilePath": "wab/client/plasmic/plasmic_kit_design_system_deprecated/PlasmicPlexusButton.module.css",
+          "scheme": "blackbox",
+          "componentType": "component"
+        },
+        {
+          "id": "FRA2fXjcDHo2",
+          "name": "OverlayArrow",
+          "type": "managed",
+          "projectId": "tXkSR39sgCDWSitZxC5xFV",
+          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_design_system_deprecated/PlasmicOverlayArrow.tsx",
+          "importSpec": {
+            "modulePath": "wab/client/components/plexus/OverlayArrow.tsx"
+          },
+          "cssFilePath": "wab/client/plasmic/plasmic_kit_design_system_deprecated/PlasmicOverlayArrow.module.css",
+          "scheme": "blackbox",
+          "componentType": "component"
+        },
+        {
+          "id": "FYmdApEkhOiH",
+          "name": "Popover",
+          "type": "managed",
+          "projectId": "tXkSR39sgCDWSitZxC5xFV",
+          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_design_system_deprecated/PlasmicPopover.tsx",
+          "importSpec": {
+            "modulePath": "wab/client/components/plexus/Popover.tsx",
+            "exportName": "Popover"
+          },
+          "cssFilePath": "wab/client/plasmic/plasmic_kit_design_system_deprecated/PlasmicPopover.module.css",
+          "scheme": "blackbox",
+          "componentType": "component"
+        },
+        {
+          "id": "EBbuUzYSewBk",
+          "name": "Tooltip",
+          "type": "managed",
+          "projectId": "tXkSR39sgCDWSitZxC5xFV",
+          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_design_system/PlasmicTooltip.tsx",
+          "importSpec": {
+            "modulePath": "wab/client/components/plexus/Tooltip.tsx",
+            "exportName": "Tooltip"
+          },
+          "cssFilePath": "wab/client/plasmic/plasmic_kit_design_system/PlasmicTooltip.module.css",
           "scheme": "blackbox",
           "componentType": "component"
         }
@@ -3213,6 +3302,16 @@
           "id": "y6Ei15gXp_-T",
           "name": "Circle2Icon",
           "moduleFilePath": "wab/client/plasmic/plasmic_kit_design_system_deprecated/icons/PlasmicIcon__Circle2.tsx"
+        },
+        {
+          "id": "C21gcG8B3Wlx",
+          "name": "ChevronDownIcon",
+          "moduleFilePath": "wab/client/plasmic/plasmic_kit_design_system_deprecated/icons/PlasmicIcon__ChevronDown.tsx"
+        },
+        {
+          "id": "292IBDA68F8r",
+          "name": "TriangleFilledIcon",
+          "moduleFilePath": "wab/client/plasmic/plasmic_kit_design_system_deprecated/icons/PlasmicIcon__TriangleFilled.tsx"
         }
       ],
       "images": [
@@ -3357,7 +3456,7 @@
     },
     {
       "projectId": "gYEVvAzCcLMHDVPvuYxkFh",
-      "projectName": "[PlasmicKit] New Design System (former \"Style Controls\")",
+      "projectName": "[PlasmicKit] Style Controls",
       "version": ">=0.0.0",
       "cssFilePath": "wab/client/plasmic/plasmic_kit_style_controls/plasmic_plasmic_kit_styles_pane.module.css",
       "components": [
@@ -4391,49 +4490,14 @@
           "moduleFilePath": "wab/client/plasmic/plasmic_kit_continuous_deployment/icons/PlasmicIcon__Icon.tsx"
         },
         {
-          "id": "anZFqaYK2M",
-          "name": "Icon2Icon",
-          "moduleFilePath": "wab/client/plasmic/plasmic_kit_continuous_deployment/icons/PlasmicIcon__Icon2.tsx"
-        },
-        {
-          "id": "zMVsaewMxW",
-          "name": "Icon3Icon",
-          "moduleFilePath": "wab/client/plasmic/plasmic_kit_continuous_deployment/icons/PlasmicIcon__Icon3.tsx"
-        },
-        {
           "id": "ICm0kU5OI3",
           "name": "Icon4Icon",
           "moduleFilePath": "wab/client/plasmic/plasmic_kit_continuous_deployment/icons/PlasmicIcon__Icon4.tsx"
         },
         {
-          "id": "yiQHJGuy_d",
-          "name": "Icon5Icon",
-          "moduleFilePath": "wab/client/plasmic/plasmic_kit_continuous_deployment/icons/PlasmicIcon__Icon5.tsx"
-        },
-        {
-          "id": "VVMOwNy6jE2",
-          "name": "ChevronNewIcon",
-          "moduleFilePath": "wab/client/plasmic/plasmic_kit_continuous_deployment/icons/PlasmicIcon__ChevronNew.tsx"
-        },
-        {
-          "id": "7rXqDBDnr6J",
-          "name": "ChevronRightIcon",
-          "moduleFilePath": "wab/client/plasmic/plasmic_kit_continuous_deployment/icons/PlasmicIcon__ChevronRight.tsx"
-        },
-        {
-          "id": "eN66f1laxk2",
-          "name": "ChevronDownsvgIcon",
-          "moduleFilePath": "wab/client/plasmic/plasmic_kit_continuous_deployment/icons/PlasmicIcon__ChevronDownsvg.tsx"
-        },
-        {
-          "id": "8bD27nDcBRQ",
-          "name": "ChevronUpsvgIcon",
-          "moduleFilePath": "wab/client/plasmic/plasmic_kit_continuous_deployment/icons/PlasmicIcon__ChevronUpsvg.tsx"
-        },
-        {
           "id": "mwpa_Gia6i",
-          "name": "Spinner1S200PxsvgIcon",
-          "moduleFilePath": "wab/client/plasmic/plasmic_kit_continuous_deployment/icons/PlasmicIcon__Spinner1S200Pxsvg.tsx"
+          "name": "Spinner1S200PxSvgIcon",
+          "moduleFilePath": "wab/client/plasmic/plasmic_kit_continuous_deployment/icons/PlasmicIcon__Spinner1S200PxSvg.tsx"
         }
       ],
       "images": [
@@ -4674,6 +4738,19 @@
           "cssFilePath": "wab/client/plasmic/plasmic_kit_top_bar/PlasmicCommentButton.module.css",
           "scheme": "blackbox",
           "componentType": "component"
+        },
+        {
+          "id": "BqSsxlQdj2F0",
+          "name": "AiButton",
+          "type": "managed",
+          "projectId": "6CrqkTcB6gSAHoA8c8zpNz",
+          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_top_bar/PlasmicAiButton.tsx",
+          "importSpec": {
+            "modulePath": "wab/client/components/AiButton.tsx"
+          },
+          "cssFilePath": "wab/client/plasmic/plasmic_kit_top_bar/PlasmicAiButton.module.css",
+          "scheme": "blackbox",
+          "componentType": "component"
         }
       ],
       "icons": [
@@ -4712,8 +4789,9 @@
       ],
       "indirect": false,
       "globalContextsFilePath": "",
-      "jsBundleThemes": [],
-      "splitsProviderFilePath": ""
+      "splitsProviderFilePath": "",
+      "customFunctions": [],
+      "jsBundleThemes": []
     },
     {
       "projectId": "m8VxGcigeLAEXFe8c12w5Q",
@@ -5455,18 +5533,18 @@
       "icons": [
         {
           "id": "XYB65iJ0Dd",
-          "name": "Icon2Icon",
-          "moduleFilePath": "wab/client/plasmic/plasmic_kit_code_display_and_onboarding/icons/PlasmicIcon__Icon2.tsx"
+          "name": "NextjsIcon",
+          "moduleFilePath": "wab/client/plasmic/plasmic_kit_code_display_and_onboarding/icons/PlasmicIcon__Nextjs.tsx"
         },
         {
           "id": "tVE40jlrgY",
-          "name": "Icon3Icon",
-          "moduleFilePath": "wab/client/plasmic/plasmic_kit_code_display_and_onboarding/icons/PlasmicIcon__Icon3.tsx"
+          "name": "GraphqlIcon",
+          "moduleFilePath": "wab/client/plasmic/plasmic_kit_code_display_and_onboarding/icons/PlasmicIcon__Graphql.tsx"
         },
         {
           "id": "0QyD0vO4WB",
-          "name": "Icon4Icon",
-          "moduleFilePath": "wab/client/plasmic/plasmic_kit_code_display_and_onboarding/icons/PlasmicIcon__Icon4.tsx"
+          "name": "RestIcon",
+          "moduleFilePath": "wab/client/plasmic/plasmic_kit_code_display_and_onboarding/icons/PlasmicIcon__Rest.tsx"
         },
         {
           "id": "iHJMrwqTt",
@@ -5476,68 +5554,56 @@
       ],
       "images": [
         {
-          "id": "4aenVcuh9S",
-          "name": "image",
-          "filePath": "wab/client/plasmic/plasmic_kit_code_display_and_onboarding/images/image.svg"
-        },
-        {
-          "id": "5p4uXQWPj5",
-          "name": "image 2",
-          "filePath": "wab/client/plasmic/plasmic_kit_code_display_and_onboarding/images/image2.svg"
-        },
-        {
           "id": "HFAyqV1qc2",
-          "name": "image 3",
-          "filePath": "wab/client/plasmic/plasmic_kit_code_display_and_onboarding/images/image3.svg"
-        },
-        {
-          "id": "NQxLvC-N5t",
-          "name": "image 4",
-          "filePath": "wab/client/plasmic/plasmic_kit_code_display_and_onboarding/images/image4.svg"
+          "name": "gatsby",
+          "filePath": "wab/client/plasmic/plasmic_kit_code_display_and_onboarding/images/gatsby.svg"
         },
         {
           "id": "Sk5qCRrjj2",
-          "name": "image 5",
-          "filePath": "wab/client/plasmic/plasmic_kit_code_display_and_onboarding/images/image5.svg"
+          "name": "php",
+          "filePath": "wab/client/plasmic/plasmic_kit_code_display_and_onboarding/images/php.svg"
         },
         {
           "id": "GLPcV-_90n",
-          "name": "image 6",
-          "filePath": "wab/client/plasmic/plasmic_kit_code_display_and_onboarding/images/image6.svg"
-        },
-        {
-          "id": "X3GRCRbae1",
-          "name": "image 7",
-          "filePath": "wab/client/plasmic/plasmic_kit_code_display_and_onboarding/images/image7.svg"
+          "name": "javascript",
+          "filePath": "wab/client/plasmic/plasmic_kit_code_display_and_onboarding/images/javascript.svg"
         },
         {
           "id": "gyW-GjPYh",
-          "name": "image 8",
-          "filePath": "wab/client/plasmic/plasmic_kit_code_display_and_onboarding/images/image8.png"
+          "name": "hydrogen",
+          "filePath": "wab/client/plasmic/plasmic_kit_code_display_and_onboarding/images/hydrogen.png"
         },
         {
           "id": "pu_IajWxD",
-          "name": "image 9",
-          "filePath": "wab/client/plasmic/plasmic_kit_code_display_and_onboarding/images/image9.png"
+          "name": "remix",
+          "filePath": "wab/client/plasmic/plasmic_kit_code_display_and_onboarding/images/remix.png"
+        },
+        {
+          "id": "sERoZ_FuGIf4",
+          "name": "tanstack",
+          "filePath": "wab/client/plasmic/plasmic_kit_code_display_and_onboarding/images/tanstack.png"
         }
       ],
       "codeComponents": [
         {
           "id": "oO7ExdUoV3",
           "name": "PlasmicHead",
+          "displayName": "hostless-plasmic-head",
           "componentImportPath": "@plasmicapp/react-web"
         },
         {
           "id": "wJ_Zj0doAI",
           "name": "Fetcher",
-          "componentImportPath": "@plasmicapp/data-sources"
+          "displayName": "plasmic-data-source-fetcher",
+          "componentImportPath": "@plasmicapp/react-web/lib/data-sources"
         }
       ],
       "projectApiToken": "3fXpGeJRKUtki3BjZYejcOf4aelbtrgQusidUlvDAYx430OSNcXCjoowZYTxxlghNlfx4TelnEJxHKzJNg",
       "indirect": false,
       "globalContextsFilePath": "",
-      "jsBundleThemes": [],
-      "splitsProviderFilePath": ""
+      "splitsProviderFilePath": "",
+      "customFunctions": [],
+      "jsBundleThemes": []
     },
     {
       "projectId": "sDniSX4oPUZFyk2sXXb3nh",
@@ -8414,6 +8480,21 @@
           "id": "tzSml-ZqphbQ",
           "name": "SortSvgIcon",
           "moduleFilePath": "wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__SortSvg.tsx"
+        },
+        {
+          "id": "WYUJK2ligiuj",
+          "name": "Share3SvgIcon",
+          "moduleFilePath": "wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__Share3Svg.tsx"
+        },
+        {
+          "id": "FOJsdThB5rU-",
+          "name": "CheckedCheckboxSvgIcon",
+          "moduleFilePath": "wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__CheckedCheckboxSvg.tsx"
+        },
+        {
+          "id": "0dLCQ-imlG_u",
+          "name": "EyeExclamationSvgIcon",
+          "moduleFilePath": "wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__EyeExclamationSvg.tsx"
         }
       ],
       "images": [],
@@ -9238,7 +9319,8 @@
           "projectId": "w2GXN278dkQ2gQTVQnPehW",
           "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_data_binding/PlasmicCopilotCodePrompt.tsx",
           "importSpec": {
-            "modulePath": "wab/client/components/CopilotCodePrompt.tsx"
+            "modulePath": "wab/client/components/copilot/CopilotCodePrompt.tsx",
+            "exportName": "CopilotCodePrompt"
           },
           "cssFilePath": "wab/client/plasmic/plasmic_kit_data_binding/PlasmicCopilotCodePrompt.module.css",
           "scheme": "blackbox",
@@ -9269,13 +9351,55 @@
           "cssFilePath": "wab/client/plasmic/plasmic_kit_data_binding/PlasmicCopilotLikeDislike.module.css",
           "scheme": "blackbox",
           "componentType": "component"
+        },
+        {
+          "id": "-zGA-erYhCmv",
+          "name": "CopilotPromptDialog",
+          "type": "managed",
+          "projectId": "w2GXN278dkQ2gQTVQnPehW",
+          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_data_binding/PlasmicCopilotPromptDialog.tsx",
+          "importSpec": {
+            "modulePath": "wab/client/components/copilot/CopilotPromptDialog.tsx",
+            "exportName": "CopilotPromptDialog"
+          },
+          "cssFilePath": "wab/client/plasmic/plasmic_kit_data_binding/PlasmicCopilotPromptDialog.module.css",
+          "scheme": "blackbox",
+          "componentType": "component"
+        },
+        {
+          "id": "MmbJYtYh-0Eh",
+          "name": "CopilotPromptImage",
+          "type": "managed",
+          "projectId": "w2GXN278dkQ2gQTVQnPehW",
+          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_data_binding/PlasmicCopilotPromptImage.tsx",
+          "importSpec": {
+            "modulePath": "wab/client/components/copilot/CopilotPromptImage.tsx",
+            "exportName": "CopilotPromptImage"
+          },
+          "cssFilePath": "wab/client/plasmic/plasmic_kit_data_binding/PlasmicCopilotPromptImage.module.css",
+          "scheme": "blackbox",
+          "componentType": "component"
+        },
+        {
+          "id": "pnV7KLVDUyoz",
+          "name": "CopilotPromptInput",
+          "type": "managed",
+          "projectId": "w2GXN278dkQ2gQTVQnPehW",
+          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_data_binding/PlasmicCopilotPromptInput.tsx",
+          "importSpec": {
+            "modulePath": "wab/client/components/copilot/CopilotPromptInput.tsx",
+            "exportName": "CopilotPromptInput"
+          },
+          "cssFilePath": "wab/client/plasmic/plasmic_kit_data_binding/PlasmicCopilotPromptInput.module.css",
+          "scheme": "blackbox",
+          "componentType": "component"
         }
       ],
       "icons": [
         {
           "id": "aeyQLybWj1P",
-          "name": "ChecksvgIcon",
-          "moduleFilePath": "wab/client/plasmic/plasmic_kit_data_binding/icons/PlasmicIcon__Checksvg.tsx"
+          "name": "CheckSvgIcon",
+          "moduleFilePath": "wab/client/plasmic/plasmic_kit_data_binding/icons/PlasmicIcon__CheckSvg.tsx"
         },
         {
           "id": "T7O74SQvscm",
@@ -10097,19 +10221,6 @@
           "componentType": "component"
         },
         {
-          "id": "LAxjR8HGkN",
-          "name": "Homepage",
-          "type": "managed",
-          "projectId": "4B48dRthR8uGgyaBYpWthR",
-          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_insert_panel/PlasmicHomepage.tsx",
-          "importSpec": {
-            "modulePath": "wab/client/components/insert-panel/Homepage.tsx"
-          },
-          "cssFilePath": "wab/client/plasmic/plasmic_kit_insert_panel/PlasmicHomepage.module.css",
-          "scheme": "blackbox",
-          "componentType": "page"
-        },
-        {
           "id": "bulTqUMaa2",
           "name": "InsertPanelTabGroup",
           "type": "managed",
@@ -10232,6 +10343,160 @@
           "cssFilePath": "wab/client/plasmic/plasmic_kit_comments/PlasmicReactionButton.module.css",
           "scheme": "blackbox",
           "componentType": "component"
+        },
+        {
+          "id": "pTr2lSrGWq8O",
+          "name": "MarkdownHintsPopoverContent",
+          "type": "managed",
+          "projectId": "BP7V3EkXPURJVwwMyWoHn",
+          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_comments/PlasmicMarkdownHintsPopoverContent.tsx",
+          "importSpec": {
+            "modulePath": "wab/client/components/comments/MarkdownHintsPopoverContent.tsx",
+            "exportName": "MarkdownHintsPopoverContent"
+          },
+          "cssFilePath": "wab/client/plasmic/plasmic_kit_comments/PlasmicMarkdownHintsPopoverContent.module.css",
+          "scheme": "blackbox",
+          "componentType": "component"
+        },
+        {
+          "id": "T7mVQBFEWA-V",
+          "name": "MarkdownHintRow",
+          "type": "managed",
+          "projectId": "BP7V3EkXPURJVwwMyWoHn",
+          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_comments/PlasmicMarkdownHintRow.tsx",
+          "importSpec": {
+            "modulePath": "wab/client/components/comments/MarkdownHintRow.tsx",
+            "exportName": "MarkdownHintRow"
+          },
+          "cssFilePath": "wab/client/plasmic/plasmic_kit_comments/PlasmicMarkdownHintRow.module.css",
+          "scheme": "blackbox",
+          "componentType": "component"
+        },
+        {
+          "id": "b0TlBn4m87ta",
+          "name": "AddCommentMarker",
+          "type": "managed",
+          "projectId": "BP7V3EkXPURJVwwMyWoHn",
+          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_comments/PlasmicAddCommentMarker.tsx",
+          "importSpec": {
+            "modulePath": "wab/client/components/comments/AddCommentMarker.tsx",
+            "exportName": "AddCommentMarker"
+          },
+          "cssFilePath": "wab/client/plasmic/plasmic_kit_comments/PlasmicAddCommentMarker.module.css",
+          "scheme": "blackbox",
+          "componentType": "component"
+        },
+        {
+          "id": "hxUVoCIPsT_h",
+          "name": "CommentMarker",
+          "type": "managed",
+          "projectId": "BP7V3EkXPURJVwwMyWoHn",
+          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_comments/PlasmicCommentMarker.tsx",
+          "importSpec": {
+            "modulePath": "wab/client/components/comments/CommentMarker.tsx",
+            "exportName": "CommentMarker"
+          },
+          "cssFilePath": "wab/client/plasmic/plasmic_kit_comments/PlasmicCommentMarker.module.css",
+          "scheme": "blackbox",
+          "componentType": "component"
+        },
+        {
+          "id": "tccr1SFVw_AY",
+          "name": "CommentsDialogHead",
+          "type": "managed",
+          "projectId": "BP7V3EkXPURJVwwMyWoHn",
+          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_comments/PlasmicCommentsDialogHead.tsx",
+          "importSpec": {
+            "modulePath": "wab/client/components/comments/CommentsDialogHead.tsx",
+            "exportName": "CommentsDialogHead"
+          },
+          "cssFilePath": "wab/client/plasmic/plasmic_kit_comments/PlasmicCommentsDialogHead.module.css",
+          "scheme": "blackbox",
+          "componentType": "component"
+        },
+        {
+          "id": "UhTNVxujj1gR",
+          "name": "ThreadCommentsDialog",
+          "type": "managed",
+          "projectId": "BP7V3EkXPURJVwwMyWoHn",
+          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_comments/PlasmicThreadCommentsDialog.tsx",
+          "importSpec": {
+            "modulePath": "wab/client/components/comments/ThreadCommentsDialog.tsx",
+            "exportName": "ThreadCommentsDialog"
+          },
+          "cssFilePath": "wab/client/plasmic/plasmic_kit_comments/PlasmicThreadCommentsDialog.module.css",
+          "scheme": "blackbox",
+          "componentType": "component"
+        },
+        {
+          "id": "bGnXEIS7pS-Y",
+          "name": "CommentPostFormDialog",
+          "type": "managed",
+          "projectId": "BP7V3EkXPURJVwwMyWoHn",
+          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_comments/PlasmicCommentPostFormDialog.tsx",
+          "importSpec": {
+            "modulePath": "wab/client/components/comments/CommentPostFormDialog.tsx",
+            "exportName": "CommentPostFormDialog"
+          },
+          "cssFilePath": "wab/client/plasmic/plasmic_kit_comments/PlasmicCommentPostFormDialog.module.css",
+          "scheme": "blackbox",
+          "componentType": "component"
+        },
+        {
+          "id": "qiIt-rIFSO0f",
+          "name": "ThreadHistory",
+          "type": "managed",
+          "projectId": "BP7V3EkXPURJVwwMyWoHn",
+          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_comments/PlasmicThreadHistory.tsx",
+          "importSpec": {
+            "modulePath": "wab/client/components/comments/ThreadHistory.tsx",
+            "exportName": "ThreadHistory"
+          },
+          "cssFilePath": "wab/client/plasmic/plasmic_kit_comments/PlasmicThreadHistory.module.css",
+          "scheme": "blackbox",
+          "componentType": "component"
+        },
+        {
+          "id": "E0P_lFzVr70L",
+          "name": "ThreadHistoryStatus",
+          "type": "managed",
+          "projectId": "BP7V3EkXPURJVwwMyWoHn",
+          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_comments/PlasmicThreadHistoryStatus.tsx",
+          "importSpec": {
+            "modulePath": "wab/client/components/comments/ThreadHistoryStatus.tsx",
+            "exportName": "ThreadHistoryStatus"
+          },
+          "cssFilePath": "wab/client/plasmic/plasmic_kit_comments/PlasmicThreadHistoryStatus.module.css",
+          "scheme": "blackbox",
+          "componentType": "component"
+        },
+        {
+          "id": "PTsdlYdahZ76",
+          "name": "CommentsHeader",
+          "type": "managed",
+          "projectId": "BP7V3EkXPURJVwwMyWoHn",
+          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_comments/PlasmicCommentsHeader.tsx",
+          "importSpec": {
+            "modulePath": "wab/client/components/comments/CommentsHeader.tsx",
+            "exportName": "CommentsHeader"
+          },
+          "cssFilePath": "wab/client/plasmic/plasmic_kit_comments/PlasmicCommentsHeader.module.css",
+          "scheme": "blackbox",
+          "componentType": "component"
+        },
+        {
+          "id": "nObxvgrqmfvo",
+          "name": "ThreadList",
+          "type": "managed",
+          "projectId": "BP7V3EkXPURJVwwMyWoHn",
+          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_comments/PlasmicThreadList.tsx",
+          "importSpec": {
+            "modulePath": "wab/client/components/comments/ThreadList.tsx",
+            "exportName": "ThreadList"
+          },
+          "cssFilePath": "wab/client/plasmic/plasmic_kit_comments/PlasmicThreadList.module.css",
+          "scheme": "blackbox",
+          "componentType": "component"
         }
       ],
       "icons": [
@@ -10249,6 +10514,11 @@
           "id": "4ZDQfZwOzIuI",
           "name": "Icon3Icon",
           "moduleFilePath": "wab/client/plasmic/plasmic_kit_comments/icons/PlasmicIcon__Icon3.tsx"
+        },
+        {
+          "id": "JcPEriMfIfa3",
+          "name": "ChevronDownSvgIcon",
+          "moduleFilePath": "wab/client/plasmic/plasmic_kit_comments/icons/PlasmicIcon__ChevronDownSvg.tsx"
         }
       ],
       "images": [
@@ -11302,7 +11572,8 @@
           "componentImportPath": "@plasmicapp/react-web/lib/data-sources"
         }
       ],
-      "customFunctions": []
+      "customFunctions": [],
+      "jsBundleThemes": []
     }
   ],
   "globalVariants": {
@@ -11348,12 +11619,6 @@
         "name": "Screen",
         "projectId": "4nEqjj19Sbp3EVnBkgQMP1",
         "contextFilePath": "wab/client/plasmic/plasmic_kit_data_expressions/PlasmicGlobalVariant__Screen.tsx"
-      },
-      {
-        "id": "Ta6D_8i6B7dH",
-        "name": "Screen",
-        "projectId": "pTmuho7nuNtDcvZAf2kJgx",
-        "contextFilePath": "wab/client/plasmic/plasmic_kit_code_display_and_onboarding/PlasmicGlobalVariant__Screen.tsx"
       },
       {
         "id": "BW9kEyJ7_p",
@@ -11439,6 +11704,6 @@
   "postSyncCommands": [
     "git ls-files -m | xargs pre-commit run prettier --files"
   ],
-  "cliVersion": "0.1.335",
-  "$schema": "https://unpkg.com/@plasmicapp/cli@0.1.335/dist/plasmic.schema.json"
+  "cliVersion": "0.1.340",
+  "$schema": "https://unpkg.com/@plasmicapp/cli@0.1.340/dist/plasmic.schema.json"
 }

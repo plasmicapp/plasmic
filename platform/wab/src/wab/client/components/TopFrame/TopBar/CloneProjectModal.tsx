@@ -1,10 +1,10 @@
-/** @format */
-
-import { parseProjectLocation, U } from "@/wab/client/cli-routes";
+import { parseProjectLocation } from "@/wab/client/cli-routes";
 import { promptMoveToWorkspace } from "@/wab/client/components/dashboard/dashboard-actions";
 import { useAppCtx } from "@/wab/client/contexts/AppContexts";
-import { assert, spawn } from "@/wab/shared/common";
 import { ApiProject, MainBranchId } from "@/wab/shared/ApiSchema";
+import { assert, spawn } from "@/wab/shared/common";
+import { APP_ROUTES } from "@/wab/shared/route/app-routes";
+import { fillRoute } from "@/wab/shared/route/route";
 import { observer } from "mobx-react";
 import { useEffect } from "react";
 
@@ -49,7 +49,10 @@ export const CloneProjectModal = observer(function ProjectNameModal({
                 : {}),
             })
           );
-          window.open(U.project({ projectId: newProjectId }), "_blank");
+          window.open(
+            fillRoute(APP_ROUTES.project, { projectId: newProjectId }),
+            "_blank"
+          );
         }
       })()
     );

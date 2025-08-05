@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -32,6 +32,8 @@ import {
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
+import ListSectionSeparator from "../../ListSectionSeparator"; // plasmic-import: uG5_fPM0sK/component
+import ActionMenuButton from "../ActionMenuButton"; // plasmic-import: VNi6NC2QOI/component
 import Button from "../Button"; // plasmic-import: SEF-sRmSoqV5c/component
 import Checkbox from "../Checkbox"; // plasmic-import: W-rO7NZqPjZ/component
 import Select from "../Select"; // plasmic-import: j_4IQyOWK2b/component
@@ -41,18 +43,20 @@ import PermissionItem from "./PermissionItem"; // plasmic-import: GFrmKeyhlA/com
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_design_system_deprecated_css from "../../../plasmic/PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import projectcss from "../../../plasmic/PP__plasmickit_share_dialog.module.css"; // plasmic-import: kA1Hysr5ZeimtATHTDJz5B/projectcss
 import plasmic_plasmic_kit_color_tokens_css from "../../../plasmic/plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
+import plasmic_plasmic_kit_design_system_css from "../../../plasmic/PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
+import projectcss from "../../../plasmic/PP__plasmickit_share_dialog.module.css"; // plasmic-import: kA1Hysr5ZeimtATHTDJz5B/projectcss
 import sty from "./PlasmicShareDialogContent.module.css"; // plasmic-import: cWsnP3_PIix/css
 
 import LinkIcon from "../../../plasmic/plasmic_kit/PlasmicIcon__Link"; // plasmic-import: BQBWbw0fg66Lw/icon
 import ResetIcon from "../../../plasmic/plasmic_kit/PlasmicIcon__Reset"; // plasmic-import: Dj3u-HuPv94sN/icon
-import ArrowRightsvgIcon from "../../../plasmic/plasmic_kit_icons/icons/PlasmicIcon__ArrowRightSvg"; // plasmic-import: 9Jv8jb253/icon
-import ChevronDownsvgIcon from "../../../plasmic/plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
-import ClosesvgIcon from "../../../plasmic/plasmic_kit_icons/icons/PlasmicIcon__CloseSvg"; // plasmic-import: DhvEHyCHT/icon
-import PlussvgIcon from "../../../plasmic/plasmic_kit_icons/icons/PlasmicIcon__PlusSvg"; // plasmic-import: sQKgd2GNr/icon
-import SearchsvgIcon from "../../../plasmic/plasmic_kit_icons/icons/PlasmicIcon__SearchSvg"; // plasmic-import: R5DLz11OA/icon
+import LockIcon from "../../../plasmic/plasmic_kit_design_system/PlasmicIcon__Lock"; // plasmic-import: xWjo2JPAc6/icon
+import ArrowRightSvgIcon from "../../../plasmic/plasmic_kit_icons/icons/PlasmicIcon__ArrowRightSvg"; // plasmic-import: 9Jv8jb253/icon
+import ArrowUpRightSvgIcon from "../../../plasmic/plasmic_kit_icons/icons/PlasmicIcon__ArrowUpRightSvg"; // plasmic-import: N_BtK6grX/icon
+import ChevronDownSvgIcon from "../../../plasmic/plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
+import CloseSvgIcon from "../../../plasmic/plasmic_kit_icons/icons/PlasmicIcon__CloseSvg"; // plasmic-import: DhvEHyCHT/icon
+import PlusSvgIcon from "../../../plasmic/plasmic_kit_icons/icons/PlasmicIcon__PlusSvg"; // plasmic-import: sQKgd2GNr/icon
+import SearchSvgIcon from "../../../plasmic/plasmic_kit_icons/icons/PlasmicIcon__SearchSvg"; // plasmic-import: R5DLz11OA/icon
 
 createPlasmicElementProxy;
 
@@ -67,7 +71,6 @@ export type PlasmicShareDialogContent__VariantsArgs = {
   state?: SingleChoiceArg<
     "submitting" | "invalidEmail" | "unlogged" | "noPermToShare"
   >;
-
   shareByLinkAllowed?: SingleChoiceArg<"yes" | "no">;
   resourceType?: SingleChoiceArg<"project" | "workspace" | "team">;
   permsCascade?: MultiChoiceArg<"showWorkspace" | "showTeam">;
@@ -93,18 +96,21 @@ export const PlasmicShareDialogContent__ArgProps = new Array<ArgPropType>(
 
 export type PlasmicShareDialogContent__OverridesType = {
   root?: Flex__<"div">;
+  projectActionMenu?: Flex__<typeof ActionMenuButton>;
   shareByLinkSwitch?: Flex__<typeof Checkbox>;
   copyLink?: Flex__<typeof Button>;
   shareByLinkPermDropdown?: Flex__<typeof Select>;
-  cascadeWorkspace?: Flex__<"a">;
-  cascadeTeam?: Flex__<"a">;
   byInviteTab?: Flex__<"div">;
   newUserEmail?: Flex__<typeof Textbox>;
   newUserRoleDropdown?: Flex__<typeof Select>;
   sendInviteButton?: Flex__<typeof Button>;
-  requireSignUpSwitch?: Flex__<typeof Checkbox>;
   loginLink?: Flex__<"a">;
   permsContainer?: Flex__<"div">;
+  teamName?: Flex__<"span">;
+  teamLink?: Flex__<typeof Button>;
+  workspaceName?: Flex__<"span">;
+  workspaceLink?: Flex__<typeof Button>;
+  everyoneElseDropdown?: Flex__<typeof Select>;
 };
 
 export interface DefaultShareDialogContentProps {
@@ -112,7 +118,6 @@ export interface DefaultShareDialogContentProps {
   state?: SingleChoiceArg<
     "submitting" | "invalidEmail" | "unlogged" | "noPermToShare"
   >;
-
   shareByLinkAllowed?: SingleChoiceArg<"yes" | "no">;
   resourceType?: SingleChoiceArg<"project" | "workspace" | "team">;
   permsCascade?: MultiChoiceArg<"showWorkspace" | "showTeam">;
@@ -130,7 +135,16 @@ function PlasmicShareDialogContent__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
@@ -202,20 +216,18 @@ function PlasmicShareDialogContent__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => "value1",
       },
       {
-        path: "requireSignUpSwitch.isChecked",
-        type: "private",
-        variableType: "boolean",
-        initFunc: ({ $props, $state, $queries, $ctx }) =>
-          hasVariant($state, "shareByLinkAllowed", "no") ? [] : "isChecked",
-      },
-      {
         path: "noShareByLink",
         type: "private",
         variableType: "variant",
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.noShareByLink,
       },
+      {
+        path: "everyoneElseDropdown.value",
+        type: "private",
+        variableType: "text",
+        initFunc: ({ $props, $state, $queries, $ctx }) => "value1",
+      },
     ],
-
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -237,7 +249,7 @@ function PlasmicShareDialogContent__RenderFunc(props: {
         projectcss.plasmic_default_styles,
         projectcss.plasmic_mixins,
         projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_deprecated_css.plasmic_tokens,
+        plasmic_plasmic_kit_design_system_css.plasmic_tokens,
         plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
         sty.root,
         {
@@ -280,6 +292,16 @@ function PlasmicShareDialogContent__RenderFunc(props: {
         as={"div"}
         hasGap={true}
         className={classNames(projectcss.all, sty.freeBox__nnT7R, {
+          [sty.freeBoxpermsCascade_showWorkspace__nnT7RGxhbk]: hasVariant(
+            $state,
+            "permsCascade",
+            "showWorkspace"
+          ),
+          [sty.freeBoxresourceType_project__nnT7Rwbkdw]: hasVariant(
+            $state,
+            "resourceType",
+            "project"
+          ),
           [sty.freeBoxresourceType_team__nnT7Rhn7Mj]: hasVariant(
             $state,
             "resourceType",
@@ -303,31 +325,103 @@ function PlasmicShareDialogContent__RenderFunc(props: {
         })}
       >
         <div
-          className={classNames(
-            projectcss.all,
-            projectcss.__wab_text,
-            sty.text___1R,
-            {
-              [sty.textresourceType_team___1Rhn7Mj]: hasVariant(
+          className={classNames(projectcss.all, sty.freeBox__tXrf3, {
+            [sty.freeBoxresourceType_project__tXrf3Wbkdw]: hasVariant(
+              $state,
+              "resourceType",
+              "project"
+            ),
+            [sty.freeBoxresourceType_workspace__tXrf3N5Uns]: hasVariant(
+              $state,
+              "resourceType",
+              "workspace"
+            ),
+          })}
+        >
+          <div
+            className={classNames(
+              projectcss.all,
+              projectcss.__wab_text,
+              sty.text___1R,
+              {
+                [sty.textnoShareByLink___1RdsUq5]: hasVariant(
+                  $state,
+                  "noShareByLink",
+                  "noShareByLink"
+                ),
+                [sty.textresourceType_project___1Rwbkdw]: hasVariant(
+                  $state,
+                  "resourceType",
+                  "project"
+                ),
+                [sty.textresourceType_team___1Rhn7Mj]: hasVariant(
+                  $state,
+                  "resourceType",
+                  "team"
+                ),
+                [sty.textresourceType_workspace___1Rn5Uns]: hasVariant(
+                  $state,
+                  "resourceType",
+                  "workspace"
+                ),
+                [sty.textshareByLinkAllowed_yes___1Rn4Zx6]: hasVariant(
+                  $state,
+                  "shareByLinkAllowed",
+                  "yes"
+                ),
+              }
+            )}
+          >
+            {hasVariant($state, "resourceType", "team")
+              ? "Organization members"
+              : hasVariant($state, "resourceType", "workspace")
+              ? "Workspace members"
+              : hasVariant($state, "resourceType", "project")
+              ? "Share this project"
+              : "Who can open this Plasmic project?"}
+          </div>
+          <ActionMenuButton
+            data-plasmic-name={"projectActionMenu"}
+            data-plasmic-override={overrides.projectActionMenu}
+            className={classNames("__wab_instance", sty.projectActionMenu, {
+              [sty.projectActionMenuresourceType_project]: hasVariant(
                 $state,
                 "resourceType",
-                "team"
+                "project"
               ),
-              [sty.textshareByLinkAllowed_yes___1Rn4Zx6]: hasVariant(
-                $state,
-                "shareByLinkAllowed",
-                "yes"
-              ),
+            })}
+            hasIcon={true}
+            icon={
+              <LinkIcon
+                className={classNames(projectcss.all, sty.svg__bJcBd)}
+                role={"img"}
+              />
+            }
+            type={["primary"]}
+          >
+            {"Copy link"}
+          </ActionMenuButton>
+        </div>
+        <ListSectionSeparator
+          className={classNames(
+            "__wab_instance",
+            sty.listSectionSeparator__umB8E,
+            {
+              [sty.listSectionSeparatorresourceType_project__umB8Ewbkdw]:
+                hasVariant($state, "resourceType", "project"),
+              [sty.listSectionSeparatorresourceType_workspace__umB8EN5Uns]:
+                hasVariant($state, "resourceType", "workspace"),
             }
           )}
-        >
-          {hasVariant($state, "resourceType", "team")
-            ? "Anyone with the link join the team as"
-            : "Who can open this Plasmic project?"}
-        </div>
+        />
+
         {(
           hasVariant($state, "noShareByLink", "noShareByLink")
             ? false
+            : hasVariant($state, "resourceType", "workspace")
+            ? true
+            : hasVariant($state, "resourceType", "project")
+            ? true
             : hasVariant($state, "shareByLinkAllowed", "yes")
             ? true
             : true
@@ -373,152 +467,201 @@ function PlasmicShareDialogContent__RenderFunc(props: {
               ),
             })}
           >
-            {(
-              hasVariant($state, "resourceType", "workspace") ? false : true
-            ) ? (
-              <Stack__
-                as={"div"}
-                hasGap={true}
-                className={classNames(projectcss.all, sty.freeBox__hbZwy, {
-                  [sty.freeBoxpermsCascade_showTeam__hbZwy57XP]: hasVariant(
+            <Stack__
+              as={"div"}
+              hasGap={true}
+              className={classNames(projectcss.all, sty.freeBox__hbZwy, {
+                [sty.freeBoxpermsCascade_showTeam__hbZwy57XP]: hasVariant(
+                  $state,
+                  "permsCascade",
+                  "showTeam"
+                ),
+                [sty.freeBoxpermsCascade_showWorkspace__hbZwyGxhbk]: hasVariant(
+                  $state,
+                  "permsCascade",
+                  "showWorkspace"
+                ),
+                [sty.freeBoxresourceType_project__hbZwywbkdw]: hasVariant(
+                  $state,
+                  "resourceType",
+                  "project"
+                ),
+                [sty.freeBoxresourceType_team__hbZwyHn7Mj]: hasVariant(
+                  $state,
+                  "resourceType",
+                  "team"
+                ),
+                [sty.freeBoxresourceType_workspace__hbZwyN5Uns]: hasVariant(
+                  $state,
+                  "resourceType",
+                  "workspace"
+                ),
+                [sty.freeBoxshareByLinkAllowed_no__hbZwyTjDou]: hasVariant(
+                  $state,
+                  "shareByLinkAllowed",
+                  "no"
+                ),
+                [sty.freeBoxshareByLinkAllowed_yes__hbZwyn4Zx6]: hasVariant(
+                  $state,
+                  "shareByLinkAllowed",
+                  "yes"
+                ),
+              })}
+            >
+              <Checkbox
+                data-plasmic-name={"shareByLinkSwitch"}
+                data-plasmic-override={overrides.shareByLinkSwitch}
+                className={classNames("__wab_instance", sty.shareByLinkSwitch, {
+                  [sty.shareByLinkSwitchpermsCascade_showTeam]: hasVariant(
                     $state,
                     "permsCascade",
                     "showTeam"
                   ),
-                  [sty.freeBoxpermsCascade_showWorkspace__hbZwyGxhbk]:
-                    hasVariant($state, "permsCascade", "showWorkspace"),
-                  [sty.freeBoxresourceType_project__hbZwywbkdw]: hasVariant(
+                  [sty.shareByLinkSwitchpermsCascade_showWorkspace]: hasVariant(
                     $state,
-                    "resourceType",
-                    "project"
+                    "permsCascade",
+                    "showWorkspace"
                   ),
-                  [sty.freeBoxresourceType_team__hbZwyHn7Mj]: hasVariant(
+                  [sty.shareByLinkSwitchresourceType_team]: hasVariant(
                     $state,
                     "resourceType",
                     "team"
                   ),
-                  [sty.freeBoxresourceType_workspace__hbZwyN5Uns]: hasVariant(
-                    $state,
-                    "resourceType",
-                    "workspace"
-                  ),
-                  [sty.freeBoxshareByLinkAllowed_no__hbZwyTjDou]: hasVariant(
+                  [sty.shareByLinkSwitchshareByLinkAllowed_no]: hasVariant(
                     $state,
                     "shareByLinkAllowed",
                     "no"
                   ),
-                  [sty.freeBoxshareByLinkAllowed_yes__hbZwyn4Zx6]: hasVariant(
+                  [sty.shareByLinkSwitchshareByLinkAllowed_yes]: hasVariant(
                     $state,
                     "shareByLinkAllowed",
                     "yes"
                   ),
+                  [sty.shareByLinkSwitchstate_noPermToShare]: hasVariant(
+                    $state,
+                    "state",
+                    "noPermToShare"
+                  ),
+                  [sty.shareByLinkSwitchstate_submitting]: hasVariant(
+                    $state,
+                    "state",
+                    "submitting"
+                  ),
+                  [sty.shareByLinkSwitchstate_unlogged]: hasVariant(
+                    $state,
+                    "state",
+                    "unlogged"
+                  ),
                 })}
-              >
-                <Checkbox
-                  data-plasmic-name={"shareByLinkSwitch"}
-                  data-plasmic-override={overrides.shareByLinkSwitch}
-                  className={classNames(
-                    "__wab_instance",
-                    sty.shareByLinkSwitch,
-                    {
-                      [sty.shareByLinkSwitchpermsCascade_showTeam]: hasVariant(
-                        $state,
-                        "permsCascade",
-                        "showTeam"
-                      ),
-                      [sty.shareByLinkSwitchpermsCascade_showWorkspace]:
-                        hasVariant($state, "permsCascade", "showWorkspace"),
-                      [sty.shareByLinkSwitchresourceType_team]: hasVariant(
-                        $state,
-                        "resourceType",
-                        "team"
-                      ),
-                      [sty.shareByLinkSwitchshareByLinkAllowed_no]: hasVariant(
-                        $state,
-                        "shareByLinkAllowed",
-                        "no"
-                      ),
-                      [sty.shareByLinkSwitchshareByLinkAllowed_yes]: hasVariant(
-                        $state,
-                        "shareByLinkAllowed",
-                        "yes"
-                      ),
-                      [sty.shareByLinkSwitchstate_noPermToShare]: hasVariant(
-                        $state,
-                        "state",
-                        "noPermToShare"
-                      ),
-                      [sty.shareByLinkSwitchstate_submitting]: hasVariant(
-                        $state,
-                        "state",
-                        "submitting"
-                      ),
-                      [sty.shareByLinkSwitchstate_unlogged]: hasVariant(
-                        $state,
-                        "state",
-                        "unlogged"
-                      ),
-                    }
-                  )}
-                  isChecked={
-                    generateStateValueProp($state, [
-                      "shareByLinkSwitch",
-                      "isChecked",
-                    ]) ?? false
-                  }
-                  isDisabled={
-                    hasVariant($state, "state", "noPermToShare")
-                      ? true
-                      : hasVariant($state, "state", "unlogged")
-                      ? true
-                      : hasVariant($state, "state", "submitting")
-                      ? true
-                      : undefined
-                  }
-                  onChange={(...eventArgs) => {
+                isChecked={
+                  generateStateValueProp($state, [
+                    "shareByLinkSwitch",
+                    "isChecked",
+                  ]) ?? false
+                }
+                isDisabled={
+                  hasVariant($state, "state", "noPermToShare")
+                    ? true
+                    : hasVariant($state, "state", "unlogged")
+                    ? true
+                    : hasVariant($state, "state", "submitting")
+                    ? true
+                    : undefined
+                }
+                onChange={async (...eventArgs: any) => {
+                  ((...eventArgs) => {
                     generateStateOnChangeProp($state, [
                       "shareByLinkSwitch",
                       "isChecked",
                     ])(eventArgs[0]);
-                  }}
+                  }).apply(null, eventArgs);
+
+                  if (
+                    eventArgs.length > 1 &&
+                    eventArgs[1] &&
+                    eventArgs[1]._plasmic_state_init_
+                  ) {
+                    return;
+                  }
+                }}
+              >
+                {hasVariant($state, "resourceType", "team")
+                  ? "Invite by link is enabled"
+                  : "Share by link is enabled"}
+              </Checkbox>
+              {(
+                hasVariant($state, "shareByLinkAllowed", "no")
+                  ? false
+                  : hasVariant($state, "shareByLinkAllowed", "yes")
+                  ? true
+                  : true
+              ) ? (
+                <Button
+                  data-plasmic-name={"copyLink"}
+                  data-plasmic-override={overrides.copyLink}
+                  className={classNames("__wab_instance", sty.copyLink, {
+                    [sty.copyLinkpermsCascade_showWorkspace]: hasVariant(
+                      $state,
+                      "permsCascade",
+                      "showWorkspace"
+                    ),
+                    [sty.copyLinkresourceType_project]: hasVariant(
+                      $state,
+                      "resourceType",
+                      "project"
+                    ),
+                    [sty.copyLinkshareByLinkAllowed_no]: hasVariant(
+                      $state,
+                      "shareByLinkAllowed",
+                      "no"
+                    ),
+                    [sty.copyLinkshareByLinkAllowed_yes]: hasVariant(
+                      $state,
+                      "shareByLinkAllowed",
+                      "yes"
+                    ),
+                  })}
+                  endIcon={
+                    <ChevronDownSvgIcon
+                      className={classNames(projectcss.all, sty.svg__unetT)}
+                      role={"img"}
+                    />
+                  }
+                  startIcon={
+                    <LinkIcon
+                      className={classNames(projectcss.all, sty.svg___1D2A)}
+                      role={"img"}
+                    />
+                  }
+                  type={["link"]}
+                  withIcons={["startIcon"]}
                 >
-                  {hasVariant($state, "resourceType", "team")
-                    ? "Invite by link is enabled"
-                    : "Share by link is enabled"}
-                </Checkbox>
-                {(
-                  hasVariant($state, "shareByLinkAllowed", "no") ? false : true
-                ) ? (
-                  <Button
-                    data-plasmic-name={"copyLink"}
-                    data-plasmic-override={overrides.copyLink}
-                    className={classNames("__wab_instance", sty.copyLink, {
-                      [sty.copyLinkshareByLinkAllowed_no]: hasVariant(
-                        $state,
-                        "shareByLinkAllowed",
-                        "no"
-                      ),
-                    })}
-                    endIcon={
-                      <ChevronDownsvgIcon
-                        className={classNames(projectcss.all, sty.svg___9J48P)}
-                        role={"img"}
-                      />
-                    }
-                    startIcon={
-                      <LinkIcon
-                        className={classNames(projectcss.all, sty.svg__keRtx)}
-                        role={"img"}
-                      />
-                    }
-                    type={["link"]}
-                    withIcons={["startIcon"]}
+                  <div
+                    className={classNames(
+                      projectcss.all,
+                      projectcss.__wab_text,
+                      sty.text__jdZdj,
+                      {
+                        [sty.textpermsCascade_showTeam__jdZdj57XP]: hasVariant(
+                          $state,
+                          "permsCascade",
+                          "showTeam"
+                        ),
+                        [sty.textpermsCascade_showWorkspace__jdZdjGxhbk]:
+                          hasVariant($state, "permsCascade", "showWorkspace"),
+                        [sty.textresourceType_team__jdZdjHn7Mj]: hasVariant(
+                          $state,
+                          "resourceType",
+                          "team"
+                        ),
+                      }
+                    )}
                   >
                     {"Copy Link"}
-                  </Button>
-                ) : null}
-              </Stack__>
-            ) : null}
+                  </div>
+                </Button>
+              ) : null}
+            </Stack__>
             {(
               hasVariant($state, "resourceType", "workspace")
                 ? false
@@ -530,6 +673,13 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                 as={"div"}
                 hasGap={true}
                 className={classNames(projectcss.all, sty.freeBox__fdzf5, {
+                  [sty.freeBoxpermsCascade_showWorkspace__fdzf5Gxhbk]:
+                    hasVariant($state, "permsCascade", "showWorkspace"),
+                  [sty.freeBoxresourceType_project__fdzf5Wbkdw]: hasVariant(
+                    $state,
+                    "resourceType",
+                    "project"
+                  ),
                   [sty.freeBoxresourceType_team__fdzf5Hn7Mj]: hasVariant(
                     $state,
                     "resourceType",
@@ -558,6 +708,13 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                     projectcss.__wab_text,
                     sty.text__mwPkd,
                     {
+                      [sty.textpermsCascade_showWorkspace__mwPkdGxhbk]:
+                        hasVariant($state, "permsCascade", "showWorkspace"),
+                      [sty.textresourceType_project__mwPkdwbkdw]: hasVariant(
+                        $state,
+                        "resourceType",
+                        "project"
+                      ),
                       [sty.textresourceType_team__mwPkdHn7Mj]: hasVariant(
                         $state,
                         "resourceType",
@@ -572,7 +729,7 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                   )}
                 >
                   {hasVariant($state, "resourceType", "team")
-                    ? "Anyone with the link join the team as"
+                    ? "Anyone with the link join the organization as"
                     : "Any Plasmic user with the link is a"}
                 </div>
                 <Select
@@ -580,19 +737,33 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                   data-plasmic-override={overrides.shareByLinkPermDropdown}
                   className={classNames(
                     "__wab_instance",
-                    sty.shareByLinkPermDropdown
+                    sty.shareByLinkPermDropdown,
+                    {
+                      [sty.shareByLinkPermDropdownresourceType_project]:
+                        hasVariant($state, "resourceType", "project"),
+                    }
                   )}
                   icon={
-                    <PlussvgIcon
+                    <PlusSvgIcon
                       className={classNames(projectcss.all, sty.svg__lJfWp)}
                       role={"img"}
                     />
                   }
-                  onChange={(...eventArgs) => {
-                    generateStateOnChangeProp($state, [
-                      "shareByLinkPermDropdown",
-                      "value",
-                    ])(eventArgs[0]);
+                  onChange={async (...eventArgs: any) => {
+                    ((...eventArgs) => {
+                      generateStateOnChangeProp($state, [
+                        "shareByLinkPermDropdown",
+                        "value",
+                      ])(eventArgs[0]);
+                    }).apply(null, eventArgs);
+
+                    if (
+                      eventArgs.length > 1 &&
+                      eventArgs[1] &&
+                      eventArgs[1]._plasmic_state_init_
+                    ) {
+                      return;
+                    }
                   }}
                   type={"bordered"}
                   value={generateStateValueProp($state, [
@@ -609,139 +780,6 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                 </Select>
               </Stack__>
             ) : null}
-            {(
-              hasVariant($state, "permsCascade", "showWorkspace") ? true : false
-            ) ? (
-              <div
-                className={classNames(projectcss.all, sty.freeBox__zalqW, {
-                  [sty.freeBoxpermsCascade_showTeam__zalqW57XP]: hasVariant(
-                    $state,
-                    "permsCascade",
-                    "showTeam"
-                  ),
-                  [sty.freeBoxpermsCascade_showWorkspace__zalqWGxhbk]:
-                    hasVariant($state, "permsCascade", "showWorkspace"),
-                })}
-              >
-                <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__blhvW
-                  )}
-                >
-                  {"Everyone in "}
-                </div>
-                <PlasmicLink__
-                  data-plasmic-name={"cascadeWorkspace"}
-                  data-plasmic-override={overrides.cascadeWorkspace}
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.a,
-                    projectcss.__wab_text,
-                    sty.cascadeWorkspace,
-                    {
-                      [sty.cascadeWorkspacepermsCascade_showWorkspace]:
-                        hasVariant($state, "permsCascade", "showWorkspace"),
-                    }
-                  )}
-                  platform={"react"}
-                >
-                  {"Workspace Name"}
-                </PlasmicLink__>
-                <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__zVagp
-                  )}
-                >
-                  {" workspace can access."}
-                </div>
-              </div>
-            ) : null}
-            {(hasVariant($state, "permsCascade", "showTeam") ? true : false) ? (
-              <div
-                className={classNames(projectcss.all, sty.freeBox__i074N, {
-                  [sty.freeBoxpermsCascade_showTeam__i074N57XP]: hasVariant(
-                    $state,
-                    "permsCascade",
-                    "showTeam"
-                  ),
-                  [sty.freeBoxstate_noPermToShare__i074NgPB]: hasVariant(
-                    $state,
-                    "state",
-                    "noPermToShare"
-                  ),
-                })}
-              >
-                <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__cWsLd
-                  )}
-                >
-                  {"Everyone in "}
-                </div>
-                <PlasmicLink__
-                  data-plasmic-name={"cascadeTeam"}
-                  data-plasmic-override={overrides.cascadeTeam}
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.a,
-                    projectcss.__wab_text,
-                    sty.cascadeTeam,
-                    {
-                      [sty.cascadeTeampermsCascade_showWorkspace]: hasVariant(
-                        $state,
-                        "permsCascade",
-                        "showWorkspace"
-                      ),
-                      [sty.cascadeTeamresourceType_project]: hasVariant(
-                        $state,
-                        "resourceType",
-                        "project"
-                      ),
-                      [sty.cascadeTeamresourceType_team]: hasVariant(
-                        $state,
-                        "resourceType",
-                        "team"
-                      ),
-                      [sty.cascadeTeamresourceType_workspace]: hasVariant(
-                        $state,
-                        "resourceType",
-                        "workspace"
-                      ),
-                      [sty.cascadeTeamshareByLinkAllowed_yes]: hasVariant(
-                        $state,
-                        "shareByLinkAllowed",
-                        "yes"
-                      ),
-                    }
-                  )}
-                  platform={"react"}
-                >
-                  {"Team Name"}
-                </PlasmicLink__>
-                <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__oz7VX,
-                    {
-                      [sty.textstate_noPermToShare__oz7VXgPB]: hasVariant(
-                        $state,
-                        "state",
-                        "noPermToShare"
-                      ),
-                    }
-                  )}
-                >
-                  {" organization can access."}
-                </div>
-              </div>
-            ) : null}
           </Stack__>
         ) : null}
         <Stack__
@@ -750,6 +788,11 @@ function PlasmicShareDialogContent__RenderFunc(props: {
           data-plasmic-override={overrides.byInviteTab}
           hasGap={true}
           className={classNames(projectcss.all, sty.byInviteTab, {
+            [sty.byInviteTabpermsCascade_showWorkspace]: hasVariant(
+              $state,
+              "permsCascade",
+              "showWorkspace"
+            ),
             [sty.byInviteTabresourceType_project]: hasVariant(
               $state,
               "resourceType",
@@ -792,12 +835,24 @@ function PlasmicShareDialogContent__RenderFunc(props: {
             ),
           })}
         >
-          <div
+          <Stack__
+            as={"div"}
+            hasGap={true}
             className={classNames(projectcss.all, sty.freeBox___1IUsx, {
               [sty.freeBoxpermsCascade_showTeam___1IUsx57XP]: hasVariant(
                 $state,
                 "permsCascade",
                 "showTeam"
+              ),
+              [sty.freeBoxresourceType_project___1IUsxwbkdw]: hasVariant(
+                $state,
+                "resourceType",
+                "project"
+              ),
+              [sty.freeBoxresourceType_workspace___1IUsxN5Uns]: hasVariant(
+                $state,
+                "resourceType",
+                "workspace"
               ),
               [sty.freeBoxstate_noPermToShare___1IUsxgPB]: hasVariant(
                 $state,
@@ -825,6 +880,21 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                   "permsCascade",
                   "showWorkspace"
                 ),
+                [sty.freeBoxresourceType_project__vTyEwbkdw]: hasVariant(
+                  $state,
+                  "resourceType",
+                  "project"
+                ),
+                [sty.freeBoxresourceType_team__vTyehn7Mj]: hasVariant(
+                  $state,
+                  "resourceType",
+                  "team"
+                ),
+                [sty.freeBoxresourceType_workspace__vTyen5Uns]: hasVariant(
+                  $state,
+                  "resourceType",
+                  "workspace"
+                ),
                 [sty.freeBoxstate_noPermToShare__vTyEgPB]: hasVariant(
                   $state,
                   "state",
@@ -849,14 +919,14 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                 }
                 placeholder={"Invite someone by email…"}
                 prefixIcon={
-                  <SearchsvgIcon
+                  <SearchSvgIcon
                     className={classNames(projectcss.all, sty.svg__yai2I)}
                     role={"img"}
                   />
                 }
                 styleType={["bordered"]}
                 suffixIcon={
-                  <ClosesvgIcon
+                  <CloseSvgIcon
                     className={classNames(projectcss.all, sty.svg___9G5Fh)}
                     role={"img"}
                   />
@@ -932,16 +1002,26 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                     }
                   )}
                   icon={
-                    <PlussvgIcon
+                    <PlusSvgIcon
                       className={classNames(projectcss.all, sty.svg__frLSs)}
                       role={"img"}
                     />
                   }
-                  onChange={(...eventArgs) => {
-                    generateStateOnChangeProp($state, [
-                      "newUserRoleDropdown",
-                      "value",
-                    ])(eventArgs[0]);
+                  onChange={async (...eventArgs: any) => {
+                    ((...eventArgs) => {
+                      generateStateOnChangeProp($state, [
+                        "newUserRoleDropdown",
+                        "value",
+                      ])(eventArgs[0]);
+                    }).apply(null, eventArgs);
+
+                    if (
+                      eventArgs.length > 1 &&
+                      eventArgs[1] &&
+                      eventArgs[1]._plasmic_state_init_
+                    ) {
+                      return;
+                    }
                   }}
                   type={"bordered"}
                   value={generateStateValueProp($state, [
@@ -957,41 +1037,24 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                   </Select__Option>
                 </Select>
               </Stack__>
+            </Stack__>
+            <div
+              className={classNames(projectcss.all, sty.freeBox___0VjOi, {
+                [sty.freeBoxresourceType_project___0VjOIwbkdw]: hasVariant(
+                  $state,
+                  "resourceType",
+                  "project"
+                ),
+                [sty.freeBoxresourceType_team___0VjOihn7Mj]: hasVariant(
+                  $state,
+                  "resourceType",
+                  "team"
+                ),
+              })}
+            >
               <Button
                 data-plasmic-name={"sendInviteButton"}
                 data-plasmic-override={overrides.sendInviteButton}
-                className={classNames("__wab_instance", sty.sendInviteButton, {
-                  [sty.sendInviteButtonpermsCascade_showWorkspace]: hasVariant(
-                    $state,
-                    "permsCascade",
-                    "showWorkspace"
-                  ),
-                  [sty.sendInviteButtonresourceType_workspace]: hasVariant(
-                    $state,
-                    "resourceType",
-                    "workspace"
-                  ),
-                  [sty.sendInviteButtonstate_invalidEmail]: hasVariant(
-                    $state,
-                    "state",
-                    "invalidEmail"
-                  ),
-                  [sty.sendInviteButtonstate_noPermToShare]: hasVariant(
-                    $state,
-                    "state",
-                    "noPermToShare"
-                  ),
-                  [sty.sendInviteButtonstate_submitting]: hasVariant(
-                    $state,
-                    "state",
-                    "submitting"
-                  ),
-                  [sty.sendInviteButtonstate_unlogged]: hasVariant(
-                    $state,
-                    "state",
-                    "unlogged"
-                  ),
-                })}
                 disabled={
                   hasVariant($state, "state", "noPermToShare")
                     ? true
@@ -1004,14 +1067,14 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                     : undefined
                 }
                 endIcon={
-                  <ChevronDownsvgIcon
+                  <ChevronDownSvgIcon
                     className={classNames(projectcss.all, sty.svg__kjUa7)}
                     role={"img"}
                   />
                 }
                 size={"wide"}
                 startIcon={
-                  <ArrowRightsvgIcon
+                  <ArrowRightSvgIcon
                     className={classNames(projectcss.all, sty.svg__n9OjC)}
                     role={"img"}
                   />
@@ -1026,110 +1089,8 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                   ? "Inviting..."
                   : "Invite"}
               </Button>
-            </Stack__>
-            {(
-              hasVariant($state, "resourceType", "workspace") ? false : true
-            ) ? (
-              <Stack__
-                as={"div"}
-                hasGap={true}
-                className={classNames(projectcss.all, sty.freeBox__sSlzt, {
-                  [sty.freeBoxpermsCascade_showTeam__sSlzt57XP]: hasVariant(
-                    $state,
-                    "permsCascade",
-                    "showTeam"
-                  ),
-                  [sty.freeBoxpermsCascade_showWorkspace__sSlztGxhbk]:
-                    hasVariant($state, "permsCascade", "showWorkspace"),
-                  [sty.freeBoxresourceType_project__sSlztwbkdw]: hasVariant(
-                    $state,
-                    "resourceType",
-                    "project"
-                  ),
-                  [sty.freeBoxresourceType_team__sSlztHn7Mj]: hasVariant(
-                    $state,
-                    "resourceType",
-                    "team"
-                  ),
-                  [sty.freeBoxresourceType_workspace__sSlztN5Uns]: hasVariant(
-                    $state,
-                    "resourceType",
-                    "workspace"
-                  ),
-                  [sty.freeBoxshareByLinkAllowed_no__sSlztTjDou]: hasVariant(
-                    $state,
-                    "shareByLinkAllowed",
-                    "no"
-                  ),
-                  [sty.freeBoxshareByLinkAllowed_yes__sSlztn4Zx6]: hasVariant(
-                    $state,
-                    "shareByLinkAllowed",
-                    "yes"
-                  ),
-                })}
-              >
-                <Checkbox
-                  data-plasmic-name={"requireSignUpSwitch"}
-                  data-plasmic-override={overrides.requireSignUpSwitch}
-                  className={classNames(
-                    "__wab_instance",
-                    sty.requireSignUpSwitch,
-                    {
-                      [sty.requireSignUpSwitchpermsCascade_showTeam]:
-                        hasVariant($state, "permsCascade", "showTeam"),
-                      [sty.requireSignUpSwitchpermsCascade_showWorkspace]:
-                        hasVariant($state, "permsCascade", "showWorkspace"),
-                      [sty.requireSignUpSwitchresourceType_team]: hasVariant(
-                        $state,
-                        "resourceType",
-                        "team"
-                      ),
-                      [sty.requireSignUpSwitchshareByLinkAllowed_no]:
-                        hasVariant($state, "shareByLinkAllowed", "no"),
-                      [sty.requireSignUpSwitchstate_noPermToShare]: hasVariant(
-                        $state,
-                        "state",
-                        "noPermToShare"
-                      ),
-                      [sty.requireSignUpSwitchstate_submitting]: hasVariant(
-                        $state,
-                        "state",
-                        "submitting"
-                      ),
-                      [sty.requireSignUpSwitchstate_unlogged]: hasVariant(
-                        $state,
-                        "state",
-                        "unlogged"
-                      ),
-                    }
-                  )}
-                  isChecked={
-                    generateStateValueProp($state, [
-                      "requireSignUpSwitch",
-                      "isChecked",
-                    ]) ?? false
-                  }
-                  isDisabled={
-                    hasVariant($state, "state", "noPermToShare")
-                      ? true
-                      : hasVariant($state, "state", "unlogged")
-                      ? true
-                      : hasVariant($state, "state", "submitting")
-                      ? true
-                      : undefined
-                  }
-                  onChange={(...eventArgs) => {
-                    generateStateOnChangeProp($state, [
-                      "requireSignUpSwitch",
-                      "isChecked",
-                    ])(eventArgs[0]);
-                  }}
-                >
-                  {"Invite existing Plasmic users only"}
-                </Checkbox>
-              </Stack__>
-            ) : null}
-          </div>
+            </div>
+          </Stack__>
           {(
             hasVariant($state, "state", "noPermToShare")
               ? true
@@ -1148,6 +1109,11 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                   $state,
                   "permsCascade",
                   "showWorkspace"
+                ),
+                [sty.freeBoxresourceType_project__dYv8Hwbkdw]: hasVariant(
+                  $state,
+                  "resourceType",
+                  "project"
                 ),
                 [sty.freeBoxshareByLinkAllowed_no__dYv8HtjDou]: hasVariant(
                   $state,
@@ -1173,6 +1139,11 @@ function PlasmicShareDialogContent__RenderFunc(props: {
             >
               <div
                 className={classNames(projectcss.all, sty.freeBox__ekPne, {
+                  [sty.freeBoxresourceType_project__ekPnEwbkdw]: hasVariant(
+                    $state,
+                    "resourceType",
+                    "project"
+                  ),
                   [sty.freeBoxshareByLinkAllowed_no__ekPnetjDou]: hasVariant(
                     $state,
                     "shareByLinkAllowed",
@@ -1297,6 +1268,13 @@ function PlasmicShareDialogContent__RenderFunc(props: {
               </div>
             </div>
           ) : null}
+          <ListSectionSeparator
+            className={classNames(
+              "__wab_instance",
+              sty.listSectionSeparator__lj0Yv
+            )}
+          />
+
           <Stack__
             as={"div"}
             data-plasmic-name={"permsContainer"}
@@ -1310,6 +1288,217 @@ function PlasmicShareDialogContent__RenderFunc(props: {
               ),
             })}
           >
+            <div
+              className={classNames(projectcss.all, sty.freeBox__d1JVs, {
+                [sty.freeBoxpermsCascade_showWorkspace__d1JVsGxhbk]: hasVariant(
+                  $state,
+                  "permsCascade",
+                  "showWorkspace"
+                ),
+                [sty.freeBoxresourceType_project__d1JVswbkdw]: hasVariant(
+                  $state,
+                  "resourceType",
+                  "project"
+                ),
+              })}
+            >
+              <div
+                className={classNames(
+                  projectcss.all,
+                  projectcss.__wab_text,
+                  sty.text___0F4Up,
+                  {
+                    [sty.textpermsCascade_showTeam___0F4Up57XP]: hasVariant(
+                      $state,
+                      "permsCascade",
+                      "showTeam"
+                    ),
+                    [sty.textresourceType_workspace___0F4Upn5Uns]: hasVariant(
+                      $state,
+                      "resourceType",
+                      "workspace"
+                    ),
+                  }
+                )}
+              >
+                {"Who has access"}
+              </div>
+            </div>
+            <div
+              className={classNames(projectcss.all, sty.freeBox__tC9Z5, {
+                [sty.freeBoxpermsCascade_showTeam__tC9Z557XP]: hasVariant(
+                  $state,
+                  "permsCascade",
+                  "showTeam"
+                ),
+                [sty.freeBoxresourceType_project__tC9Z5Wbkdw]: hasVariant(
+                  $state,
+                  "resourceType",
+                  "project"
+                ),
+                [sty.freeBoxresourceType_team__tC9Z5Hn7Mj]: hasVariant(
+                  $state,
+                  "resourceType",
+                  "team"
+                ),
+                [sty.freeBoxresourceType_workspace__tC9Z5N5Uns]: hasVariant(
+                  $state,
+                  "resourceType",
+                  "workspace"
+                ),
+                [sty.freeBoxstate_noPermToShare__tC9Z5GPB]: hasVariant(
+                  $state,
+                  "state",
+                  "noPermToShare"
+                ),
+              })}
+            >
+              <div
+                className={classNames(
+                  projectcss.all,
+                  projectcss.__wab_text,
+                  sty.text___5SoD
+                )}
+              >
+                <React.Fragment>
+                  <React.Fragment>{""}</React.Fragment>
+                  {
+                    <span
+                      data-plasmic-name={"teamName"}
+                      data-plasmic-override={overrides.teamName}
+                      className={classNames(
+                        projectcss.all,
+                        projectcss.span,
+                        projectcss.__wab_text,
+                        projectcss.plasmic_default__inline,
+                        sty.teamName
+                      )}
+                    >
+                      {"Name"}
+                    </span>
+                  }
+                  <React.Fragment>{""}</React.Fragment>
+                  {
+                    <span
+                      className={classNames(
+                        projectcss.all,
+                        projectcss.span,
+                        projectcss.__wab_text,
+                        projectcss.plasmic_default__inline,
+                        sty.span__stjKq
+                      )}
+                    >
+                      {" organization"}
+                    </span>
+                  }
+                  <React.Fragment>{""}</React.Fragment>
+                </React.Fragment>
+              </div>
+              <div
+                className={classNames(projectcss.all, sty.freeBox___13Zpo, {
+                  [sty.freeBoxpermsCascade_showTeam___13Zpo57XP]: hasVariant(
+                    $state,
+                    "permsCascade",
+                    "showTeam"
+                  ),
+                })}
+              >
+                <Button
+                  data-plasmic-name={"teamLink"}
+                  data-plasmic-override={overrides.teamLink}
+                  className={classNames("__wab_instance", sty.teamLink)}
+                  endIcon={
+                    <ArrowUpRightSvgIcon
+                      className={classNames(projectcss.all, sty.svg__y814Q)}
+                      role={"img"}
+                    />
+                  }
+                  type={["link"]}
+                  withIcons={["endIcon"]}
+                >
+                  {"Manage"}
+                </Button>
+              </div>
+            </div>
+            {(
+              hasVariant($state, "permsCascade", "showWorkspace") ? true : false
+            ) ? (
+              <div
+                className={classNames(projectcss.all, sty.freeBox__gIdc, {
+                  [sty.freeBoxpermsCascade_showTeam__gIdc57XP]: hasVariant(
+                    $state,
+                    "permsCascade",
+                    "showTeam"
+                  ),
+                  [sty.freeBoxpermsCascade_showWorkspace__gIdcGxhbk]:
+                    hasVariant($state, "permsCascade", "showWorkspace"),
+                  [sty.freeBoxresourceType_project__gIdcWbkdw]: hasVariant(
+                    $state,
+                    "resourceType",
+                    "project"
+                  ),
+                })}
+              >
+                <div
+                  className={classNames(
+                    projectcss.all,
+                    projectcss.__wab_text,
+                    sty.text__cwmeK
+                  )}
+                >
+                  <React.Fragment>
+                    <React.Fragment>{""}</React.Fragment>
+                    {
+                      <span
+                        data-plasmic-name={"workspaceName"}
+                        data-plasmic-override={overrides.workspaceName}
+                        className={classNames(
+                          projectcss.all,
+                          projectcss.span,
+                          projectcss.__wab_text,
+                          projectcss.plasmic_default__inline,
+                          sty.workspaceName
+                        )}
+                      >
+                        {"Name"}
+                      </span>
+                    }
+                    <React.Fragment>{""}</React.Fragment>
+                    {
+                      <span
+                        className={classNames(
+                          projectcss.all,
+                          projectcss.span,
+                          projectcss.__wab_text,
+                          projectcss.plasmic_default__inline,
+                          sty.span__okntb
+                        )}
+                      >
+                        {" workspace"}
+                      </span>
+                    }
+                    <React.Fragment>{""}</React.Fragment>
+                  </React.Fragment>
+                </div>
+                <div className={classNames(projectcss.all, sty.freeBox__frYBl)}>
+                  <Button
+                    data-plasmic-name={"workspaceLink"}
+                    data-plasmic-override={overrides.workspaceLink}
+                    className={classNames("__wab_instance", sty.workspaceLink)}
+                    endIcon={
+                      <ArrowUpRightSvgIcon
+                        className={classNames(projectcss.all, sty.svg__ghHOe)}
+                        role={"img"}
+                      />
+                    }
+                    type={["link"]}
+                    withIcons={["endIcon"]}
+                  >
+                    {"Manage"}
+                  </Button>
+                </div>
+              </div>
+            ) : null}
             {renderPlasmicSlot({
               defaultContents: (
                 <React.Fragment>
@@ -1413,11 +1602,182 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                   />
                 </React.Fragment>
               ),
-
               value: args.existingPermItems,
             })}
           </Stack__>
         </Stack__>
+        <div
+          className={classNames(projectcss.all, sty.freeBox__auHu, {
+            [sty.freeBoxresourceType_project__auHuwbkdw]: hasVariant(
+              $state,
+              "resourceType",
+              "project"
+            ),
+          })}
+        >
+          {(hasVariant($state, "resourceType", "project") ? true : false) ? (
+            <ListSectionSeparator
+              className={classNames(
+                "__wab_instance",
+                sty.listSectionSeparator__d7H,
+                {
+                  [sty.listSectionSeparatorresourceType_project__d7Hwbkdw]:
+                    hasVariant($state, "resourceType", "project"),
+                }
+              )}
+            />
+          ) : null}
+        </div>
+        {(
+          hasVariant($state, "permsCascade", "showWorkspace")
+            ? true
+            : hasVariant($state, "resourceType", "workspace")
+            ? false
+            : hasVariant($state, "resourceType", "project")
+            ? true
+            : hasVariant($state, "shareByLinkAllowed", "no")
+            ? false
+            : false
+        ) ? (
+          <div
+            className={classNames(projectcss.all, sty.freeBox__s80E, {
+              [sty.freeBoxpermsCascade_showWorkspace__s80EGxhbk]: hasVariant(
+                $state,
+                "permsCascade",
+                "showWorkspace"
+              ),
+              [sty.freeBoxresourceType_project__s80Ewbkdw]: hasVariant(
+                $state,
+                "resourceType",
+                "project"
+              ),
+              [sty.freeBoxresourceType_team__s80Ehn7Mj]: hasVariant(
+                $state,
+                "resourceType",
+                "team"
+              ),
+              [sty.freeBoxresourceType_workspace__s80En5Uns]: hasVariant(
+                $state,
+                "resourceType",
+                "workspace"
+              ),
+              [sty.freeBoxshareByLinkAllowed_no__s80EtjDou]: hasVariant(
+                $state,
+                "shareByLinkAllowed",
+                "no"
+              ),
+              [sty.freeBoxshareByLinkAllowed_yes__s80En4Zx6]: hasVariant(
+                $state,
+                "shareByLinkAllowed",
+                "yes"
+              ),
+            })}
+          >
+            <Stack__
+              as={"div"}
+              hasGap={true}
+              className={classNames(projectcss.all, sty.freeBox__vlUi4, {
+                [sty.freeBoxpermsCascade_showWorkspace__vlUi4Gxhbk]: hasVariant(
+                  $state,
+                  "permsCascade",
+                  "showWorkspace"
+                ),
+              })}
+            >
+              <LockIcon
+                className={classNames(projectcss.all, sty.svg__tc58B, {
+                  [sty.svgpermsCascade_showWorkspace__tc58BGxhbk]: hasVariant(
+                    $state,
+                    "permsCascade",
+                    "showWorkspace"
+                  ),
+                })}
+                role={"img"}
+              />
+
+              <div
+                className={classNames(
+                  projectcss.all,
+                  projectcss.__wab_text,
+                  sty.text__u6F4K,
+                  {
+                    [sty.textpermsCascade_showWorkspace__u6F4KGxhbk]:
+                      hasVariant($state, "permsCascade", "showWorkspace"),
+                    [sty.textresourceType_project__u6F4Kwbkdw]: hasVariant(
+                      $state,
+                      "resourceType",
+                      "project"
+                    ),
+                    [sty.textresourceType_team__u6F4KHn7Mj]: hasVariant(
+                      $state,
+                      "resourceType",
+                      "team"
+                    ),
+                    [sty.textshareByLinkAllowed_yes__u6F4Kn4Zx6]: hasVariant(
+                      $state,
+                      "shareByLinkAllowed",
+                      "yes"
+                    ),
+                  }
+                )}
+              >
+                {hasVariant($state, "resourceType", "team")
+                  ? "Anyone with the link join the team as"
+                  : "Everyone else"}
+              </div>
+            </Stack__>
+            <Select
+              data-plasmic-name={"everyoneElseDropdown"}
+              data-plasmic-override={overrides.everyoneElseDropdown}
+              className={classNames(
+                "__wab_instance",
+                sty.everyoneElseDropdown,
+                {
+                  [sty.everyoneElseDropdownresourceType_project]: hasVariant(
+                    $state,
+                    "resourceType",
+                    "project"
+                  ),
+                }
+              )}
+              icon={
+                <PlusSvgIcon
+                  className={classNames(projectcss.all, sty.svg__iwv5S)}
+                  role={"img"}
+                />
+              }
+              onChange={async (...eventArgs: any) => {
+                ((...eventArgs) => {
+                  generateStateOnChangeProp($state, [
+                    "everyoneElseDropdown",
+                    "value",
+                  ])(eventArgs[0]);
+                }).apply(null, eventArgs);
+
+                if (
+                  eventArgs.length > 1 &&
+                  eventArgs[1] &&
+                  eventArgs[1]._plasmic_state_init_
+                ) {
+                  return;
+                }
+              }}
+              textAlign={"right"}
+              type={"seamless"}
+              value={generateStateValueProp($state, [
+                "everyoneElseDropdown",
+                "value",
+              ])}
+            >
+              <Select__Option
+                className={classNames("__wab_instance", sty.option__v6EPs)}
+                value={"value1"}
+              >
+                {"viewer"}
+              </Select__Option>
+            </Select>
+          </div>
+        ) : null}
       </Stack__>
     </div>
   ) as React.ReactElement | null;
@@ -1426,59 +1786,75 @@ function PlasmicShareDialogContent__RenderFunc(props: {
 const PlasmicDescendants = {
   root: [
     "root",
+    "projectActionMenu",
     "shareByLinkSwitch",
     "copyLink",
     "shareByLinkPermDropdown",
-    "cascadeWorkspace",
-    "cascadeTeam",
     "byInviteTab",
     "newUserEmail",
     "newUserRoleDropdown",
     "sendInviteButton",
-    "requireSignUpSwitch",
     "loginLink",
     "permsContainer",
+    "teamName",
+    "teamLink",
+    "workspaceName",
+    "workspaceLink",
+    "everyoneElseDropdown",
   ],
-
+  projectActionMenu: ["projectActionMenu"],
   shareByLinkSwitch: ["shareByLinkSwitch"],
   copyLink: ["copyLink"],
   shareByLinkPermDropdown: ["shareByLinkPermDropdown"],
-  cascadeWorkspace: ["cascadeWorkspace"],
-  cascadeTeam: ["cascadeTeam"],
   byInviteTab: [
     "byInviteTab",
     "newUserEmail",
     "newUserRoleDropdown",
     "sendInviteButton",
-    "requireSignUpSwitch",
     "loginLink",
     "permsContainer",
+    "teamName",
+    "teamLink",
+    "workspaceName",
+    "workspaceLink",
   ],
-
   newUserEmail: ["newUserEmail"],
   newUserRoleDropdown: ["newUserRoleDropdown"],
   sendInviteButton: ["sendInviteButton"],
-  requireSignUpSwitch: ["requireSignUpSwitch"],
   loginLink: ["loginLink"],
-  permsContainer: ["permsContainer"],
+  permsContainer: [
+    "permsContainer",
+    "teamName",
+    "teamLink",
+    "workspaceName",
+    "workspaceLink",
+  ],
+  teamName: ["teamName"],
+  teamLink: ["teamLink"],
+  workspaceName: ["workspaceName"],
+  workspaceLink: ["workspaceLink"],
+  everyoneElseDropdown: ["everyoneElseDropdown"],
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
   (typeof PlasmicDescendants)[T][number];
 type NodeDefaultElementType = {
   root: "div";
+  projectActionMenu: typeof ActionMenuButton;
   shareByLinkSwitch: typeof Checkbox;
   copyLink: typeof Button;
   shareByLinkPermDropdown: typeof Select;
-  cascadeWorkspace: "a";
-  cascadeTeam: "a";
   byInviteTab: "div";
   newUserEmail: typeof Textbox;
   newUserRoleDropdown: typeof Select;
   sendInviteButton: typeof Button;
-  requireSignUpSwitch: typeof Checkbox;
   loginLink: "a";
   permsContainer: "div";
+  teamName: "span";
+  teamLink: typeof Button;
+  workspaceName: "span";
+  workspaceLink: typeof Button;
+  everyoneElseDropdown: typeof Select;
 };
 
 type ReservedPropsType = "variants" | "args" | "overrides";
@@ -1486,7 +1862,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicShareDialogContent__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
@@ -1494,15 +1869,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicShareDialogContent__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicShareDialogContent__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicShareDialogContent__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+    // Specify args directly as props
+    Omit<PlasmicShareDialogContent__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;
@@ -1542,18 +1917,21 @@ export const PlasmicShareDialogContent = Object.assign(
   makeNodeComponent("root"),
   {
     // Helper components rendering sub-elements
+    projectActionMenu: makeNodeComponent("projectActionMenu"),
     shareByLinkSwitch: makeNodeComponent("shareByLinkSwitch"),
     copyLink: makeNodeComponent("copyLink"),
     shareByLinkPermDropdown: makeNodeComponent("shareByLinkPermDropdown"),
-    cascadeWorkspace: makeNodeComponent("cascadeWorkspace"),
-    cascadeTeam: makeNodeComponent("cascadeTeam"),
     byInviteTab: makeNodeComponent("byInviteTab"),
     newUserEmail: makeNodeComponent("newUserEmail"),
     newUserRoleDropdown: makeNodeComponent("newUserRoleDropdown"),
     sendInviteButton: makeNodeComponent("sendInviteButton"),
-    requireSignUpSwitch: makeNodeComponent("requireSignUpSwitch"),
     loginLink: makeNodeComponent("loginLink"),
     permsContainer: makeNodeComponent("permsContainer"),
+    teamName: makeNodeComponent("teamName"),
+    teamLink: makeNodeComponent("teamLink"),
+    workspaceName: makeNodeComponent("workspaceName"),
+    workspaceLink: makeNodeComponent("workspaceLink"),
+    everyoneElseDropdown: makeNodeComponent("everyoneElseDropdown"),
 
     // Metadata about props expected for PlasmicShareDialogContent
     internalVariantProps: PlasmicShareDialogContent__VariantProps,

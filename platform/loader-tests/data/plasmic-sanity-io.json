@@ -33,11 +33,12 @@
           "templateInfo": null,
           "metadata": {},
           "dataQueries": [],
+          "serverQueries": [],
           "figmaMappings": [],
           "alwaysAutoName": false,
           "trapsFocus": false,
           "__type": "Component",
-          "serverQueries": []
+          "updatedAt": null
         },
         "10603002": {
           "uuid": "nluGS76d7AO",
@@ -58,11 +59,12 @@
           "templateInfo": null,
           "metadata": {},
           "dataQueries": [],
+          "serverQueries": [],
           "figmaMappings": [],
           "alwaysAutoName": false,
           "trapsFocus": false,
           "__type": "Component",
-          "serverQueries": []
+          "updatedAt": null
         },
         "10603003": {
           "uuid": "YdgzVjgMuPo",
@@ -90,11 +92,12 @@
           "templateInfo": null,
           "metadata": {},
           "dataQueries": [],
+          "serverQueries": [],
           "figmaMappings": [],
           "alwaysAutoName": false,
           "trapsFocus": false,
           "__type": "Component",
-          "serverQueries": []
+          "updatedAt": null
         },
         "10603004": {
           "name": null,
@@ -144,7 +147,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "10603008": {
           "type": { "__ref": "10603031" },
@@ -164,7 +168,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "10603009": {
           "tag": "div",
@@ -183,13 +188,13 @@
           "uuid": "x14cj-YFvQK",
           "name": "base",
           "selectors": null,
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null,
           "parent": null,
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant",
-          "codeComponentName": null,
-          "codeComponentVariantKeys": null
+          "__type": "Variant"
         },
         "10603011": {
           "importPath": "@plasmicpkgs/plasmic-sanity-io",
@@ -219,7 +224,8 @@
             }
           },
           "variants": {},
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "refActions": []
         },
         "10603012": {
           "type": { "__ref": "10603037" },
@@ -239,7 +245,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "10603013": {
           "tag": "div",
@@ -258,13 +265,13 @@
           "uuid": "NlIs1GzGunp",
           "name": "base",
           "selectors": null,
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null,
           "parent": null,
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant",
-          "codeComponentName": null,
-          "codeComponentVariantKeys": null
+          "__type": "Variant"
         },
         "10603015": {
           "importPath": "@plasmicpkgs/plasmic-sanity-io",
@@ -288,7 +295,8 @@
           "helpers": null,
           "defaultSlotContents": {},
           "variants": {},
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "refActions": []
         },
         "10603016": {
           "type": { "__ref": "16376005" },
@@ -308,7 +316,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "10603017": {
           "type": { "__ref": "16376007" },
@@ -328,7 +337,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "10603018": {
           "type": { "__ref": "10603045" },
@@ -348,7 +358,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "10603019": {
           "type": { "__ref": "10603047" },
@@ -368,7 +379,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "10603020": {
           "type": { "__ref": "10603049" },
@@ -388,7 +400,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "10603021": {
           "type": { "__ref": "10603051" },
@@ -428,13 +441,13 @@
           "uuid": "hq5RpQ_b3Gs",
           "name": "base",
           "selectors": null,
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null,
           "parent": null,
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant",
-          "codeComponentName": null,
-          "codeComponentVariantKeys": null
+          "__type": "Variant"
         },
         "10603024": {
           "importPath": "@plasmicpkgs/plasmic-sanity-io",
@@ -458,7 +471,8 @@
           "helpers": null,
           "defaultSlotContents": {},
           "variants": {},
-          "__type": "CodeComponentMeta"
+          "__type": "CodeComponentMeta",
+          "refActions": []
         },
         "10603025": {
           "variants": [{ "__ref": "10867007" }],
@@ -645,19 +659,20 @@
           "pageWrapper": null,
           "customFunctions": [],
           "codeLibraries": [],
-          "__type": "Site"
+          "__type": "Site",
+          "styleTokenOverrides": []
         },
         "10867007": {
           "uuid": "OtA9yZVAf74",
           "name": "base",
           "selectors": null,
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null,
           "parent": null,
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant",
-          "codeComponentName": null,
-          "codeComponentVariantKeys": null
+          "__type": "Variant"
         },
         "10867009": {
           "defaultStyle": { "__ref": "10867010" },
@@ -710,7 +725,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "16376003": {
           "type": { "__ref": "16376021" },
@@ -730,7 +746,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "16376004": {
           "code": "\"b2gfz67v\"",
@@ -812,7 +829,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "iO7gLI2VWFWf": {
           "name": "choice",
@@ -842,7 +860,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "ZXvEsm5aHfeS": { "name": "text", "__type": "Text" },
         "PUyNFhTEjZjq": {
@@ -868,7 +887,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "BEfc8FgHtPea": { "name": "text", "__type": "Text" },
         "Jw1bj0RhmmB3": {
@@ -894,7 +914,8 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         },
         "qY7slyUNoRyT": { "name": "bool", "__type": "BoolType" },
         "r9oeO4LtJIUe": {
@@ -925,11 +946,12 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam"
+          "__type": "PropParam",
+          "advanced": false
         }
       },
       "deps": [],
-      "version": "241-add-custom-function-flag"
+      "version": "249-add-style-token-overrides"
     }
   ],
   [
@@ -973,7 +995,8 @@
           "pageWrapper": null,
           "customFunctions": [],
           "codeLibraries": [],
-          "__type": "Site"
+          "__type": "Site",
+          "styleTokenOverrides": []
         },
         "18175003": {
           "type": "global-screen",
@@ -1009,13 +1032,13 @@
           "uuid": "Vnc9AT6tnwT",
           "name": "base",
           "selectors": null,
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null,
           "parent": null,
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant",
-          "codeComponentName": null,
-          "codeComponentVariantKeys": null
+          "__type": "Variant"
         },
         "18175009": {
           "defaultStyle": { "__ref": "18175010" },
@@ -1533,11 +1556,12 @@
           "templateInfo": null,
           "metadata": {},
           "dataQueries": [],
+          "serverQueries": [],
           "figmaMappings": [],
           "alwaysAutoName": false,
           "trapsFocus": false,
           "__type": "Component",
-          "serverQueries": []
+          "updatedAt": null
         },
         "24633005": {
           "component": { "__ref": "24633004" },
@@ -1562,13 +1586,13 @@
           "uuid": "KU-BQQyl3O",
           "name": "base",
           "selectors": null,
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null,
           "parent": null,
           "mediaQuery": null,
           "description": null,
           "forTpl": null,
-          "__type": "Variant",
-          "codeComponentName": null,
-          "codeComponentVariantKeys": null
+          "__type": "Variant"
         },
         "24633008": {
           "path": "/",
@@ -2064,7 +2088,7 @@
         }
       },
       "deps": ["4536e610-f7b7-43b7-b45e-172856a7e132"],
-      "version": "241-add-custom-function-flag"
+      "version": "249-add-style-token-overrides"
     }
   ]
 ]

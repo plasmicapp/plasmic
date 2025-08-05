@@ -1,8 +1,10 @@
 import { useNonAuthCtx } from "@/wab/client/app-ctx";
-import { UU } from "@/wab/client/cli-routes";
+import { parseRoute } from "@/wab/client/cli-routes";
 import { AsyncState, useAsyncStrict } from "@/wab/client/hooks/useAsyncStrict";
-import { ensure, unexpected } from "@/wab/shared/common";
 import { ApiFeatureTier, ApiUser, TeamId } from "@/wab/shared/ApiSchema";
+import { ensure, unexpected } from "@/wab/shared/common";
+import { APP_ROUTES } from "@/wab/shared/route/app-routes";
+import { fillRoute } from "@/wab/shared/route/route";
 import React, { useCallback, useContext, useMemo } from "react";
 import { useHistory } from "react-router";
 
@@ -38,7 +40,7 @@ export function AdminCtxProvider({ children }: React.PropsWithChildren) {
   const history = useHistory();
   const pathname = history.location.pathname;
   const pathState = useMemo(() => {
-    const matchesTeams = UU.adminTeams.parse(pathname);
+    const matchesTeams = parseRoute(APP_ROUTES.adminTeams, pathname);
     if (matchesTeams) {
       return {
         tab: "teams",
@@ -46,7 +48,7 @@ export function AdminCtxProvider({ children }: React.PropsWithChildren) {
       };
     }
 
-    const matchesAdmin = UU.admin.parse(pathname);
+    const matchesAdmin = parseRoute(APP_ROUTES.admin, pathname);
     if (matchesAdmin) {
       return {
         tab: matchesAdmin.params.tab,
@@ -60,9 +62,9 @@ export function AdminCtxProvider({ children }: React.PropsWithChildren) {
   const navigate = useCallback<AdminActions["navigate"]>(
     ({ tab, id }) => {
       if (tab === "teams") {
-        history.push(UU.adminTeams.fill({ teamId: id }));
+        history.push(fillRoute(APP_ROUTES.adminTeams, { teamId: id }));
       } else {
-        history.push(UU.admin.fill({ tab }));
+        history.push(fillRoute(APP_ROUTES.admin, { tab }));
       }
     },
     [history, pathState]

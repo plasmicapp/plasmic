@@ -336,6 +336,15 @@ export function isGlobalVariantGroup(
   return group.type !== VariantGroupType.Component;
 }
 
+/**
+ * Variant groups that are triggered by media queries (and therefore, their CSS changes are rendered via media queries)
+ * E.g. Screen variants.
+ * @returns true if the variant group is a media query variant group
+ */
+export function isMediaQueryVariantGroup(group: VariantGroup) {
+  return isScreenVariantGroup(group);
+}
+
 export function isScreenVariantGroup(group: VariantGroup) {
   return group.type === VariantGroupType.GlobalScreen;
 }
@@ -1069,6 +1078,13 @@ export function toVariantKey(v: Variant) {
     JSON.stringify([...v.selectors].sort()),
     v.forTpl?.uuid ?? null,
   ]);
+}
+
+export function toVariantComboKey(variantCombo: VariantCombo) {
+  return variantCombo
+    .map((v) => toVariantKey(v))
+    .sort()
+    .join(",");
 }
 
 export function findDuplicateComponentVariant(

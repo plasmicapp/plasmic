@@ -1,33 +1,150 @@
+import { Nullish } from "./type-utils";
+
 const root = globalThis as any;
 
-export type StringType<T extends string = string> = "string" | `'${T}'`;
+/**
+ * Context that we pass back to control functions.
+ */
+export type ControlContext<P> = [
+  /**
+   * props
+   */
+  Partial<P>,
+  /**
+   * context data
+   */
+  any
+];
 
-export type NumberType<T extends number = number> =
-  | "number"
-  | `${number extends T ? number : T}`;
+/**
+ * Config option that takes the context (e.g., props) of the function call
+ * to dynamically set its value.
+ */
+export type ContextDependentConfig<P, R> = (...args: ControlContext<P>) => R;
 
-export type BooleanType<T extends boolean = boolean> =
-  | "boolean"
-  | `${boolean extends T ? boolean : T}`;
+export interface BaseParam {
+  name: string;
+  description?: string;
+  isOptional?: boolean;
+  isRestParameter?: boolean;
+}
 
-export type NullType = "null";
+export interface ChoiceTypeBase<P, T> extends BaseParam {
+  type: "choice";
+  options:
+    | T[]
+    | {
+        label: string;
+        value: T;
+      }[]
+    | ContextDependentConfig<
+        P,
+        | T[]
+        | {
+            label: string;
+            value: T;
+          }[]
+      >;
+  allowSearch?: boolean;
+  filterOption?: boolean;
+  onSearch?: ContextDependentConfig<P, ((value: string) => void) | undefined>;
+}
 
-export type UndefinedType = "undefined";
+export interface SingleChoiceType<P, T> extends ChoiceTypeBase<P, T> {
+  multiSelect?: false;
+}
 
-export type ArrayType = "array";
+export interface MultiChoiceType<P, T> extends ChoiceTypeBase<P, T[]> {
+  multiSelect: true;
+}
 
-export type ObjectType = "object";
+export interface CustomChoiceType<P, T> extends ChoiceTypeBase<P, T | T[]> {
+  multiSelect: ContextDependentConfig<P, boolean>;
+}
 
-export type AnyType = "any";
+export type ChoiceType<P, T> =
+  | SingleChoiceType<P, T>
+  | MultiChoiceType<P, T>
+  | CustomChoiceType<P, T>;
 
-export type VoidType = "void";
+export interface PlainStringType<T extends Nullish<string> = string>
+  extends BaseParam {
+  type: "string" | `'${T}'`;
+}
 
-export type RestrictedType<T> = T extends string
-  ? StringType<T>
-  : T extends number
-  ? NumberType<T>
-  : T extends boolean
-  ? BooleanType<T>
+export type StringType<P, T extends Nullish<string> = string> =
+  | "string"
+  | PlainStringType<T>
+  | ChoiceType<P, T>
+  | AnyType;
+
+export interface PlainNumberType<T extends Nullish<number> = number>
+  extends BaseParam {
+  type: "number" | `${number extends T ? number : T}`;
+}
+
+export type NumberType<P, T extends Nullish<number> = number> =
+  | PlainNumberType<T>
+  | ChoiceType<P, T>
+  | AnyType;
+
+export interface PlainBooleanType<T extends Nullish<boolean> = boolean>
+  extends BaseParam {
+  type: "boolean" | `${boolean extends T ? boolean : T}`;
+}
+
+export type BooleanType<P, T extends Nullish<boolean> = boolean> =
+  | PlainBooleanType<T>
+  | ChoiceType<P, T>
+  | AnyType;
+
+export type GraphQLValue = {
+  query: string;
+  variables?: Record<string, any>;
+};
+
+export interface GraphQLType<P> extends BaseParam {
+  type: "code";
+  lang: "graphql";
+  endpoint: string | ContextDependentConfig<P, string>;
+  method?: string | ContextDependentConfig<P, string>;
+  headers?: object | ContextDependentConfig<P, object>;
+}
+
+export interface PlainNullType extends BaseParam {
+  type: "null";
+}
+export type NullType = PlainNullType | AnyType;
+
+export interface PlainUndefinedType extends BaseParam {
+  type: "undefined";
+}
+export type UndefinedType = PlainUndefinedType | AnyType;
+
+export interface PlainArrayType extends BaseParam {
+  type: "array";
+}
+export type ArrayType = PlainArrayType | AnyType;
+
+export interface PlainObjectType extends BaseParam {
+  type: "object";
+}
+export type ObjectType = PlainObjectType | AnyType;
+
+export interface PlainAnyType extends BaseParam {
+  type: "any";
+}
+export type AnyType = PlainAnyType;
+
+export interface PlainVoidType extends BaseParam {
+  type: "void";
+}
+export type VoidType = PlainVoidType | AnyType;
+
+type IsAny<T> = 0 extends 1 & T ? true : false;
+
+type CommonType<P, T> = T extends GraphQLValue
+  ? GraphQLType<P>
   : T extends null
   ? NullType
   : T extends undefined
@@ -38,32 +155,39 @@ export type RestrictedType<T> = T extends string
   ? ObjectType
   : AnyType;
 
-export type OrType<T> = RestrictedType<T>[];
+type AnyTyping<P, T> = T extends string
+  ? StringType<P, T>
+  : T extends number
+  ? NumberType<P, T>
+  : T extends boolean
+  ? BooleanType<P, T>
+  : CommonType<P, T>;
 
-export type ParamType<T> = AnyType | RestrictedType<T> | OrType<T>;
+export type RestrictedType<P, T> = IsAny<T> extends true
+  ? AnyTyping<P, T>
+  : [T] extends [Nullish<string>]
+  ? StringType<P, T>
+  : [T] extends [Nullish<number>]
+  ? NumberType<P, T>
+  : [T] extends [Nullish<boolean>]
+  ? BooleanType<P, T>
+  : CommonType<P, T>;
 
-export interface BaseParam<T> {
-  name: string;
-  type?: ParamType<T>;
-  description?: string;
-  isOptional?: boolean;
-  isRestParam?: boolean;
-}
+export type ParamType<P, T> = RestrictedType<P, T>;
 
-// Param name and optionally param type
-export interface RequiredParam<T> extends BaseParam<T> {
+export type RequiredParam<P, T> = ParamType<P, T> & {
   isOptional?: false;
   isRestParameter?: false;
-}
+};
 
-export interface OptionalParam<T> extends BaseParam<T | undefined> {
+export type OptionalParam<P, T> = ParamType<P, T> & {
   isRestParameter?: false;
-}
+};
 
-export interface RestParam<T> extends BaseParam<T> {
+export type RestParam<P, T> = ParamType<P, T> & {
   isOptional?: false;
   isRestParameter: true;
-}
+};
 
 // https://stackoverflow.com/questions/70684030/remove-all-optional-items-from-a-tuple-type
 type RequiredParams<
@@ -82,24 +206,29 @@ type OptionalParams<T extends any[]> = T extends [
   ? [...R]
   : [];
 
-type HandleRequiredParams<P extends any[]> = P extends [infer H, ...infer T]
-  ? [string | RequiredParam<H>, ...HandleRequiredParams<T>]
+type HandleRequiredParams<P, R extends any[]> = R extends [infer H, ...infer T]
+  ? [string | RequiredParam<P, H>, ...HandleRequiredParams<P, T>]
   : [];
 
-type HandleOptionalParams<P extends any[]> = P extends [infer H, ...infer T]
-  ? [] | [string | OptionalParam<H | undefined>, ...HandleOptionalParams<T>]
-  : P extends []
+type HandleOptionalParams<P, R extends any[]> = R extends [infer H, ...infer T]
+  ?
+      | []
+      | [
+          string | OptionalParam<P, H | undefined>,
+          ...HandleOptionalParams<P, T>
+        ]
+  : R extends []
   ? []
-  : P extends Array<infer T>
-  ? [] | [RestParam<T[]>]
+  : R extends Array<infer T>
+  ? [] | [RestParam<P, T[]>]
   : [];
 
 export type HandleParams<P extends any[]> = [
-  ...HandleRequiredParams<RequiredParams<P>>,
-  ...HandleOptionalParams<Required<OptionalParams<P>>>
+  ...HandleRequiredParams<P, RequiredParams<P>>,
+  ...HandleOptionalParams<P, Required<OptionalParams<P>>>
 ];
 
-export type HandleReturnType<T> = VoidType | ParamType<T>;
+export type HandleReturnType<P, T> = VoidType | ParamType<P, T>;
 
 export interface CustomFunctionMeta<F extends (...args: any[]) => any> {
   /**
@@ -114,6 +243,10 @@ export interface CustomFunctionMeta<F extends (...args: any[]) => any> {
    * whenever accessing the function.
    */
   namespace?: string;
+  /**
+   * A display name for the function. It will be shown only in studio.
+   */
+  displayName?: string;
   /**
    * Documentation for the registered function.
    */
@@ -130,7 +263,7 @@ export interface CustomFunctionMeta<F extends (...args: any[]) => any> {
     /**
      * The function return type.
      */
-    type?: HandleReturnType<ReturnType<F>>;
+    type?: HandleReturnType<Parameters<F>, ReturnType<F>>;
     /**
      * The function return value description.
      */
@@ -157,6 +290,19 @@ export interface CustomFunctionMeta<F extends (...args: any[]) => any> {
    * not specified, it's considered `false`.
    */
   isDefaultExport?: boolean;
+
+  /**
+   * A function that takes the function arguments and returns a data key
+   * and a fetcher function.
+   * The data key is used to cache the result of the fetcher, and should only
+   * include the arguments that are used to fetch the data.
+   * The result of the fetcher will be used as the context of the function
+   * in studio and should return a promise.
+   */
+  fnContext?: (...args: Partial<Parameters<F>>) => {
+    dataKey: string;
+    fetcher: () => Promise<any>;
+  };
 }
 
 export interface CustomFunctionRegistration {

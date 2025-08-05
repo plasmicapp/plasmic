@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 /** @jsxRuntime classic */
 /** @jsx createPlasmicElementProxy */
@@ -42,11 +42,12 @@ export const PlasmicButton__VariantProps = new Array(
 );
 
 export const PlasmicButton__ArgProps = new Array(
-  "children",
-  "startIcon",
-  "endIcon",
   "link",
-  "submitsForm"
+  "submitsForm",
+  "target",
+  "startIcon",
+  "children",
+  "endIcon"
 );
 
 const $$ = {};

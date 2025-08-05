@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -30,20 +30,20 @@ import {
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
-import TextWithInfo from "../../components/TextWithInfo"; // plasmic-import: -EsDm7v023/component
 import DefaultStylesPanel from "../../components/sidebar/DefaultStylesPanel"; // plasmic-import: nmt_YiclQJk/component
 import ThemeInitialStylesPanel from "../../components/sidebar/ThemeInitialStylesPanel"; // plasmic-import: T_OF2Q8rJc1U/component
 import ThemeLayoutPanel from "../../components/sidebar/ThemeLayoutPanel"; // plasmic-import: hudLjkQJbU/component
 import LeftPaneHeader from "../../components/studio/LeftPaneHeader"; // plasmic-import: XLa52PvduIy/component
 import StyleSelect from "../../components/style-controls/StyleSelect"; // plasmic-import: E0bKgamUEin/component
+import TextWithInfo from "../../components/TextWithInfo"; // plasmic-import: -EsDm7v023/component
 import HiliteTabs from "../../components/widgets/HiliteTabs"; // plasmic-import: a0-WHzk-U8/component
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import projectcss from "../PP__plasmickit_left_pane.module.css"; // plasmic-import: aukbrhkegRkQ6KizvhdUPT/projectcss
 import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
 import plasmic_plasmic_kit_new_design_system_former_style_controls_css from "../plasmic_kit_style_controls/plasmic_plasmic_kit_styles_pane.module.css"; // plasmic-import: gYEVvAzCcLMHDVPvuYxkFh/projectcss
+import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
+import projectcss from "../PP__plasmickit_left_pane.module.css"; // plasmic-import: aukbrhkegRkQ6KizvhdUPT/projectcss
 import sty from "./PlasmicLeftThemesPanel.module.css"; // plasmic-import: 9I47RGPv62/css
 
 createPlasmicElementProxy;
@@ -163,7 +163,6 @@ function PlasmicLeftThemesPanel__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.noLayout,
       },
     ],
-
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -236,10 +235,20 @@ function PlasmicLeftThemesPanel__RenderFunc(props: {
                   "styles"
                 ),
               })}
-              onChange={(...eventArgs) => {
-                generateStateOnChangeProp($state, ["themeSelector", "value"])(
-                  eventArgs[0]
-                );
+              onChange={async (...eventArgs: any) => {
+                ((...eventArgs) => {
+                  generateStateOnChangeProp($state, ["themeSelector", "value"])(
+                    eventArgs[0]
+                  );
+                }).apply(null, eventArgs);
+
+                if (
+                  eventArgs.length > 1 &&
+                  eventArgs[1] &&
+                  eventArgs[1]._plasmic_state_init_
+                ) {
+                  return;
+                }
               }}
               options={[
                 { value: "option1", label: "Option 1" },
@@ -317,6 +326,15 @@ function PlasmicLeftThemesPanel__RenderFunc(props: {
               "hiliteTabs",
               "selectedTabKey",
             ]).apply(null, eventArgs);
+
+            if (
+              eventArgs.length > 1 &&
+              eventArgs[1] &&
+              eventArgs[1]._plasmic_state_init_
+            ) {
+              return;
+            }
+
             (async (val) => {
               const $steps = {};
 
@@ -461,7 +479,6 @@ const PlasmicDescendants = {
     "themeLayoutPanel",
     "themeInitialStylesPanel",
   ],
-
   themeHeader: ["themeHeader", "textWithInfo", "freeBox", "themeSelector"],
   textWithInfo: ["textWithInfo"],
   freeBox: ["freeBox", "themeSelector"],
@@ -491,7 +508,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicLeftThemesPanel__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
@@ -499,15 +515,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicLeftThemesPanel__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicLeftThemesPanel__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicLeftThemesPanel__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+    // Specify args directly as props
+    Omit<PlasmicLeftThemesPanel__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

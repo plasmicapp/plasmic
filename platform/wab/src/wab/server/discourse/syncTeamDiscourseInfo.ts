@@ -131,7 +131,7 @@ async function upsertDiscourseCategory(ctx: Ctx) {
       "What have you tried so far? (please link relevant docs and other forum posts)\n" +
       "\n" +
       "Relevant links:\n" +
-      "- My project: https://studio.plasmic.app/projects/my_project_link\n",
+      "- My Project: https://studio.plasmic.app/projects/my_project_link\n",
     custom_fields: {
       enable_accepted_answers: "true" as const,
     },

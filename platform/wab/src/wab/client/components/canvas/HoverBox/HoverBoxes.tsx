@@ -19,6 +19,7 @@ import { InlineAddButton } from "@/wab/client/components/canvas/HoverBox/InlineA
 import { ResponsiveColumnsCanvasControls } from "@/wab/client/components/canvas/HoverBox/ResponsiveColumnsCanvasControls";
 import { SpacingVisualizer } from "@/wab/client/components/canvas/HoverBox/SpacingVisualizer";
 import { StackOfParents } from "@/wab/client/components/canvas/HoverBox/StackOfParents";
+import { useTagLeftOffset } from "@/wab/client/components/canvas/HoverBox/useTagLeftOffset";
 import { VirtualScrollBar } from "@/wab/client/components/canvas/HoverBox/virtual-scrollbar";
 import { maybeShowContextMenu } from "@/wab/client/components/ContextMenu";
 import { toast } from "@/wab/client/components/Messages";
@@ -48,6 +49,12 @@ import {
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { useForceUpdate } from "@/wab/client/useForceUpdate";
 import {
+  XDraggable,
+  XDraggableEvent,
+} from "@/wab/commons/components/XDraggable";
+import { sidesAndCorners, styleCase } from "@/wab/commons/ViewUtil";
+import { isHeightAutoDerived } from "@/wab/shared/Arenas";
+import {
   ensure,
   ensureArray,
   ensureInstance,
@@ -55,33 +62,10 @@ import {
   spawnWrapper,
 } from "@/wab/shared/common";
 import {
-  XDraggable,
-  XDraggableEvent,
-} from "@/wab/commons/components/XDraggable";
-import { sidesAndCorners, styleCase } from "@/wab/commons/ViewUtil";
-import { DEVFLAGS } from "@/wab/shared/devflags";
-import {
-  Corner,
-  isAxisSide,
-  Pt,
-  Side,
-  sideOrCornerToSides,
-  sideToOrient,
-  sideToSize,
-} from "@/wab/shared/geom";
-import { isSelectableLocked, Selectable, SQ } from "@/wab/shared/core/selection";
-import {
-  isHeightAutoDerived,
-  isPositionManagedFrame,
-} from "@/wab/shared/Arenas";
-import { createNumericSize, showSizeCss, Unit } from "@/wab/shared/css-size";
-import {
-  ArenaFrame,
-  isKnownArena,
-  isKnownArenaFrame,
-  TplNode,
-} from "@/wab/shared/model/classes";
-import { isTplAutoSizable, resetTplSize } from "@/wab/shared/sizingutils";
+  isSelectableLocked,
+  Selectable,
+  SQ,
+} from "@/wab/shared/core/selection";
 import { SlotSelection } from "@/wab/shared/core/slots";
 import {
   isTplColumns,
@@ -96,6 +80,24 @@ import {
   ValSlot,
   ValTag,
 } from "@/wab/shared/core/val-nodes";
+import { createNumericSize, showSizeCss, Unit } from "@/wab/shared/css-size";
+import { DEVFLAGS } from "@/wab/shared/devflags";
+import {
+  Corner,
+  isAxisSide,
+  Pt,
+  Side,
+  sideOrCornerToSides,
+  sideToOrient,
+  sideToSize,
+} from "@/wab/shared/geom";
+import {
+  ArenaFrame,
+  isKnownArena,
+  isKnownArenaFrame,
+  TplNode,
+} from "@/wab/shared/model/classes";
+import { isTplAutoSizable, resetTplSize } from "@/wab/shared/sizingutils";
 import { notification } from "antd";
 import { ArgsProps } from "antd/lib/notification";
 import cn from "classnames";
@@ -157,6 +159,7 @@ function HoverBoxInner_({ viewProps }: { viewProps: HoverBoxViewProps }) {
   >(undefined);
   const plasmicCtx = usePlasmicCtx();
   const studioCtx = plasmicCtx.studioCtx;
+  const commentCtx = studioCtx.commentsCtx;
   const viewCtx =
     plasmicCtx.viewCtx && !plasmicCtx.viewCtx.isDisposed
       ? plasmicCtx.viewCtx
@@ -288,7 +291,7 @@ function HoverBoxInner_({ viewProps }: { viewProps: HoverBoxViewProps }) {
     const clientPt = new Pt(e.mouseEvent.pageX, e.mouseEvent.pageY);
     const focusedObjects = studioCtx.hoverBoxControlledObjs;
     if (focusedObjects.length === 1 && isKnownArenaFrame(focusedObjects[0])) {
-      if (isPositionManagedFrame(studioCtx, focusedObjects[0])) {
+      if (studioCtx.isPositionManagedFrame(focusedObjects[0])) {
         return;
       }
       dragMoveManager.current = new DragMoveFrameManager(
@@ -425,6 +428,12 @@ function HoverBoxInner_({ viewProps }: { viewProps: HoverBoxViewProps }) {
     interval: 100,
   });
 
+  const leftOffset = useTagLeftOffset(
+    hoverTagRef,
+    state?.width || 0,
+    studioCtx.zoom
+  );
+
   useEffect(() => {
     if (isHoveringTag) {
       tryShowingStackOfParents();
@@ -471,7 +480,7 @@ function HoverBoxInner_({ viewProps }: { viewProps: HoverBoxViewProps }) {
           <div
             className="hoverbox"
             onContextMenu={(e) => {
-              if (viewCtx) {
+              if (viewCtx && commentCtx) {
                 viewCtx.tryBlurEditingText();
                 const menu = getContextMenuForFocusedTpl(viewCtx);
                 maybeShowContextMenu(e.nativeEvent, menu);
@@ -509,7 +518,10 @@ function HoverBoxInner_({ viewProps }: { viewProps: HoverBoxViewProps }) {
                   })()}
 
                 {shouldShowHoverTag && (
-                  <div className={styles.hoverBoxTagContainer}>
+                  <div
+                    className={styles.hoverBoxTagContainer}
+                    style={{ left: `${leftOffset}px` }}
+                  >
                     <StackOfParents hoverTagRef={hoverTagRef} />
                     <XDraggable
                       onStart={(e) => startMove(e)}
@@ -1043,14 +1055,7 @@ function HoverBoxes_(props: { studioCtx: StudioCtx }) {
 
   const viewCtx = studioCtx.focusedViewCtx();
 
-  const shouldHideHoverBox =
-    studioCtx.freestyleState() ||
-    studioCtx.dragInsertState() ||
-    studioCtx.isResizingFocusedArenaFrame ||
-    !studioCtx.showDevControls ||
-    studioCtx.screenshotting ||
-    studioCtx.isTransforming() ||
-    !viewCtx;
+  const shouldHideHoverBox = studioCtx.shouldHideUIOverlay(false) || !viewCtx;
 
   const forceUpdate = useForceUpdate();
 

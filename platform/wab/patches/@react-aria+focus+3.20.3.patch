@@ -1,0 +1,18 @@
+diff --git a/node_modules/@react-aria/focus/dist/FocusScope.mjs b/node_modules/@react-aria/focus/dist/FocusScope.mjs
+index 6c1cdd5..9439f3b 100644
+--- a/node_modules/@react-aria/focus/dist/FocusScope.mjs
++++ b/node_modules/@react-aria/focus/dist/FocusScope.mjs
+@@ -524,7 +524,12 @@ function $9bf71ea28793e738$var$useRestoreFocus(scopeRef, restoreFocus, contain)
+                         while(treeNode){
+                             if (treeNode.scopeRef && treeNode.scopeRef.current && $9bf71ea28793e738$export$d06fae2ee68b101e.getTreeNode(treeNode.scopeRef)) {
+                                 let node = $9bf71ea28793e738$var$getFirstInScope(treeNode.scopeRef.current, true);
+-                                $9bf71ea28793e738$var$restoreFocusToElement(node);
++                                // Fixes null error on unmounting DataPicker component.
++                                // Test with arbitrary-css-selectors.spec.ts.
++                                // https://github.com/adobe/react-spectrum/issues/7874
++                                if (node) {
++                                    $9bf71ea28793e738$var$restoreFocusToElement(node);
++                                }
+                                 return;
+                             }
+                             treeNode = treeNode.parent;

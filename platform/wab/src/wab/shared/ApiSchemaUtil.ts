@@ -11,15 +11,38 @@ import {
 } from "@/wab/shared/ApiSchema";
 
 export function fullName(user: ApiUser) {
-  return user.firstName || user.lastName
-    ? `${user.firstName} ${user.lastName}`
-    : getUserEmail(user);
+  return firstLast(user.firstName, user.lastName) || getUserEmail(user);
 }
 
 export function fullNameAndEmail(user: ApiUser) {
   return user.firstName || user.lastName
-    ? `${user.firstName} ${user.lastName} (${getUserEmail(user)})`
+    ? `${fullName(user)} (${getUserEmail(user)})`
     : getUserEmail(user);
+}
+
+export function fullNameLastAbbreviated(user: ApiUser) {
+  if (!user.lastName) {
+    return fullName(user);
+  } else if (user.lastName.length === 1) {
+    return firstLast(user.firstName, user.lastName[0]);
+  } else {
+    return firstLast(user.firstName, user.lastName[0] + ".");
+  }
+}
+
+function firstLast(
+  first: string | null | undefined,
+  last: string | null | undefined
+) {
+  if (first && last) {
+    return `${first} ${last}`;
+  } else if (first) {
+    return first;
+  } else if (last) {
+    return last;
+  } else {
+    return "";
+  }
 }
 
 export function getUserEmail(user: ApiUser) {

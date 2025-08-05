@@ -130,12 +130,10 @@ export function cloneInsertableTemplateComponent(
   };
 }
 
-export function getUnownedTreeCloneUtils(
+function getUnownedTreeCloneUtils(
   site: Site,
   info: InsertableTemplateComponentExtraInfo,
-  targetBaseVariant: Variant,
-  plumeSite: Site | undefined,
-  ownerComponent: Component
+  plumeSite: Site | undefined
 ) {
   const { getNewImageAsset, tplAssetFixer } = makeImageAssetFixer(
     site,
@@ -202,18 +200,7 @@ export function cloneInsertableTemplate(
     textTplStyleFixer,
     tokenImporter,
     seenFonts,
-  } = getUnownedTreeCloneUtils(
-    site,
-    info,
-    targetBaseVariant,
-    plumeSite,
-    ownerComponent
-  );
-
-  const isImportMode =
-    resolution.component === "reuse" ||
-    resolution.component === "duplicate" ||
-    resolution.component === "import";
+  } = getUnownedTreeCloneUtils(site, info, plumeSite);
 
   const newTplTree = cloneTpl(sourceComp.tplTree);
 
@@ -225,6 +212,7 @@ export function cloneInsertableTemplate(
    */
   // Slots first - want to avoid nested slots
   inlineSlots(newTplTree);
+
   // Clone component instances recursively
   const ctx: InlineComponentContext = {
     sourceComp,
@@ -235,8 +223,17 @@ export function cloneInsertableTemplate(
     plumeSite,
   };
 
+  let allowedComponentUuids: Set<string> | null = null;
+  const isImportMode =
+    resolution.component === "reuse" ||
+    resolution.component === "duplicate" ||
+    resolution.component === "import";
   if (!isImportMode) {
-    inlineComponents(newTplTree, ctx);
+    // Inline most components, except certain components such as
+    // 1. code components
+    // 2. default components (usually Plexus components)
+    // 3. Plexus components
+    allowedComponentUuids = inlineComponents(newTplTree, ctx);
   }
 
   ensureValidUnownedTree(
@@ -254,16 +251,15 @@ export function cloneInsertableTemplate(
     getInvalidComponentNames(sourceComp, false)
   );
 
-  if (isImportMode) {
-    importComponentsInTree(
-      ctx.targetSite,
-      newTplTree,
-      ownerComponent,
-      componentImporter
-    );
-  }
+  // Import the remaining components that were not inlined.
+  importComponentsInTree(
+    ctx.targetSite,
+    newTplTree,
+    ownerComponent,
+    componentImporter
+  );
 
-  assertValidInsertable(newTplTree, isImportMode);
+  assertValidInsertable(newTplTree, allowedComponentUuids);
 
   return { tpl: newTplTree, seenFonts };
 }
@@ -287,13 +283,7 @@ export function cloneCopyState(
     textTplStyleFixer,
     tokenImporter,
     seenFonts,
-  } = getUnownedTreeCloneUtils(
-    site,
-    info,
-    targetBaseVariant,
-    plumeSite,
-    ownerComponent
-  );
+  } = getUnownedTreeCloneUtils(site, info, plumeSite);
 
   const componentTpls = flattenTpls(info.component.tplTree);
 

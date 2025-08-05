@@ -1,14 +1,17 @@
 import { Bundle, Bundler } from "@/wab/shared/bundler";
+import _bundle from "@/wab/shared/codegen/__tests__/bundles/aria-code-components.json";
 import { codegen } from "@/wab/shared/codegen/codegen-tests-util";
 import { Site } from "@/wab/shared/model/classes";
-import "@testing-library/jest-dom/extend-expect";
 import "core-js";
 import fs from "fs";
 import path from "path";
 import tmp from "tmp";
-// Exported from https://studio.plasmic.app/projects/a76RKRQpJHMAbDDNBWmUVs
-import _bundle from "@/wab/shared/codegen/__tests__/bundles/aria-code-components.json";
 
+// This test is used to test codegen for Plasmic projects using code components with different metadata settings.
+// currently the metadata settings we test are:
+// - styleSections: false in root (via DataFetcher Parent component)
+// - styleSections: false in nested root (via DataFetcher Grand Parent component)
+// - styleSections: true in root (via wrapper Plasmic components for react-aria hostless package)
 describe("aria code components example: codegen", () => {
   const bundler = new Bundler();
   let site: Site;

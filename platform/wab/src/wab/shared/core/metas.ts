@@ -7,8 +7,8 @@ import {
   compressedReactMetaString,
 } from "@/wab/component-metas/react-meta-gen-compressed";
 import { ParamExportType } from "@/wab/shared/core/lang";
-import { convertTsToWabType, typeFactory } from "@/wab/shared/model/model-util";
 import { cloneType } from "@/wab/shared/core/tpls";
+import { convertTsToWabType, typeFactory } from "@/wab/shared/model/model-util";
 
 export interface ComponentMeta {
   component: string;
@@ -17,7 +17,6 @@ export interface ComponentMeta {
 
 export interface PropMeta {
   name: string;
-  enumValues?: Array<string | boolean | number>;
   type?: Param["type"];
   // react-metas uses null, others leave undefined.
   origin?: string | null | number;

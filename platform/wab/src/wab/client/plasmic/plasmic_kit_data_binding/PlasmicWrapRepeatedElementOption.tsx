@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -13,20 +13,21 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
+  Flex as Flex__,
+  Stack as Stack__,
   StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  renderPlasmicSlot,
 } from "@plasmicapp/react-web";
+import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
 import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
+import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import projectcss from "./plasmic_plasmic_kit_data_binding.module.css"; // plasmic-import: w2GXN278dkQ2gQTVQnPehW/projectcss
 import sty from "./PlasmicWrapRepeatedElementOption.module.css"; // plasmic-import: QcDtYmEqee/css
 
@@ -48,11 +49,11 @@ export const PlasmicWrapRepeatedElementOption__ArgProps =
   new Array<ArgPropType>("wrapRepeatedContainer", "children", "slot");
 
 export type PlasmicWrapRepeatedElementOption__OverridesType = {
-  root?: p.Flex<"div">;
-  wrapRepeatedContainer?: p.Flex<"div">;
-  frame31?: p.Flex<"div">;
-  wrapAllItems?: p.Flex<"div">;
-  wrapAllTheRepeatedElementsInASingleWrapper?: p.Flex<"div">;
+  root?: Flex__<"div">;
+  wrapRepeatedContainer?: Flex__<"div">;
+  frame31?: Flex__<"div">;
+  wrapAllItems?: Flex__<"div">;
+  wrapAllTheRepeatedElementsInASingleWrapper?: Flex__<"div">;
 };
 
 export interface DefaultWrapRepeatedElementOptionProps {
@@ -72,21 +73,28 @@ function PlasmicWrapRepeatedElementOption__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
-
   return (
-    <p.Stack
+    <Stack__
       as={"div"}
       data-plasmic-name={"root"}
       data-plasmic-override={overrides.root}
@@ -99,7 +107,7 @@ function PlasmicWrapRepeatedElementOption__RenderFunc(props: {
         projectcss.plasmic_default_styles,
         projectcss.plasmic_mixins,
         projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_deprecated_css.plasmic_tokens,
+        plasmic_plasmic_kit_design_system_css.plasmic_tokens,
         plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
         sty.root
       )}
@@ -109,14 +117,14 @@ function PlasmicWrapRepeatedElementOption__RenderFunc(props: {
         data-plasmic-override={overrides.wrapRepeatedContainer}
         className={classNames(projectcss.all, sty.wrapRepeatedContainer)}
       >
-        {p.renderPlasmicSlot({
+        {renderPlasmicSlot({
           defaultContents: (
-            <p.Stack
+            <Stack__
               as={"div"}
               hasGap={true}
               className={classNames(projectcss.all, sty.freeBox__qa3Bj)}
             >
-              <p.Stack
+              <Stack__
                 as={"div"}
                 hasGap={true}
                 className={classNames(projectcss.all, sty.freeBox___2BBgb)}
@@ -124,8 +132,8 @@ function PlasmicWrapRepeatedElementOption__RenderFunc(props: {
                 <div
                   className={classNames(projectcss.all, sty.freeBox__zhBrH)}
                 />
-              </p.Stack>
-              <p.Stack
+              </Stack__>
+              <Stack__
                 as={"div"}
                 hasGap={true}
                 className={classNames(projectcss.all, sty.freeBox__lOdVl)}
@@ -133,8 +141,8 @@ function PlasmicWrapRepeatedElementOption__RenderFunc(props: {
                 <div
                   className={classNames(projectcss.all, sty.freeBox__osDk3)}
                 />
-              </p.Stack>
-              <p.Stack
+              </Stack__>
+              <Stack__
                 as={"div"}
                 hasGap={true}
                 className={classNames(projectcss.all, sty.freeBox__jaWBc)}
@@ -142,14 +150,13 @@ function PlasmicWrapRepeatedElementOption__RenderFunc(props: {
                 <div
                   className={classNames(projectcss.all, sty.freeBox__byr9R)}
                 />
-              </p.Stack>
-            </p.Stack>
+              </Stack__>
+            </Stack__>
           ),
-
           value: args.wrapRepeatedContainer,
         })}
       </div>
-      <p.Stack
+      <Stack__
         as={"div"}
         data-plasmic-name={"frame31"}
         data-plasmic-override={overrides.frame31}
@@ -162,7 +169,7 @@ function PlasmicWrapRepeatedElementOption__RenderFunc(props: {
           className={classNames(projectcss.all, sty.wrapAllItems)}
         >
           <div className={classNames(projectcss.all, sty.freeBox__eorQg)}>
-            {p.renderPlasmicSlot({
+            {renderPlasmicSlot({
               defaultContents: "Wrap and Repeat",
               value: args.children,
               className: classNames(sty.slotTargetChildren),
@@ -180,15 +187,15 @@ function PlasmicWrapRepeatedElementOption__RenderFunc(props: {
           )}
         >
           <div className={classNames(projectcss.all, sty.freeBox___0DSaK)}>
-            {p.renderPlasmicSlot({
+            {renderPlasmicSlot({
               defaultContents: "Wrap each element individually and repeat them",
               value: args.slot,
               className: classNames(sty.slotTargetSlot),
             })}
           </div>
         </div>
-      </p.Stack>
-    </p.Stack>
+      </Stack__>
+    </Stack__>
   ) as React.ReactElement | null;
 }
 
@@ -200,14 +207,12 @@ const PlasmicDescendants = {
     "wrapAllItems",
     "wrapAllTheRepeatedElementsInASingleWrapper",
   ],
-
   wrapRepeatedContainer: ["wrapRepeatedContainer"],
   frame31: [
     "frame31",
     "wrapAllItems",
     "wrapAllTheRepeatedElementsInASingleWrapper",
   ],
-
   wrapAllItems: ["wrapAllItems"],
   wrapAllTheRepeatedElementsInASingleWrapper: [
     "wrapAllTheRepeatedElementsInASingleWrapper",
@@ -229,7 +234,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicWrapRepeatedElementOption__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
@@ -237,15 +241,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicWrapRepeatedElementOption__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicWrapRepeatedElementOption__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicWrapRepeatedElementOption__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+    // Specify args directly as props
+    Omit<PlasmicWrapRepeatedElementOption__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;
@@ -259,7 +263,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicWrapRepeatedElementOption__ArgProps,
           internalVariantPropNames:
             PlasmicWrapRepeatedElementOption__VariantProps,

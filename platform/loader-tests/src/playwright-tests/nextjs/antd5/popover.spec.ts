@@ -17,7 +17,7 @@ test.describe(`Plasmic Antd5 Popover`, async () => {
         ctx = await setupNextJs({
           bundleFile: "antd5/popover.json",
           projectName: "Antd5 Popover",
-          npmRegistry: getEnvVar("NPM_REGISTRY"),
+          npmRegistry: getEnvVar("NPM_CONFIG_REGISTRY"),
           codegenHost: getEnvVar("WAB_HOST"),
           removeComponentsPage: true,
           loaderVersion,

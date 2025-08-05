@@ -12,7 +12,7 @@ test.describe(`Data Source basic`, async () => {
     ctx = await setupNextJs({
       bundleFile: "data-source-basic.json",
       projectName: "Data Source basic",
-      npmRegistry: getEnvVar("NPM_REGISTRY"),
+      npmRegistry: getEnvVar("NPM_CONFIG_REGISTRY"),
       codegenHost: getEnvVar("WAB_HOST"),
       removeComponentsPage: true,
       dataSourceReplacement: {

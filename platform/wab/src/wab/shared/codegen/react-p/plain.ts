@@ -37,6 +37,7 @@ import {
   makeWabFlexContainerClassName,
   maybeCondExpr,
 } from "@/wab/shared/codegen/react-p/serialize-utils";
+import { isServerQueryWithOperation } from "@/wab/shared/codegen/react-p/server-queries/utils";
 import { serializePlasmicSuperContext } from "@/wab/shared/codegen/react-p/super-context";
 import { serializeTplTextBlockContent } from "@/wab/shared/codegen/react-p/text";
 import {
@@ -142,8 +143,7 @@ export function exportReactPlain(
   const nodeNamer = makeNodeNamer(component);
   const reactHookSpecs = deriveReactHookSpecs(component, nodeNamer);
   const projectFlags = getProjectFlags(site);
-  // The array of global variants used for non css purpose, including visibility
-  // change and text change.
+
   const usedGlobalVariantGroups = getUsedGlobalVariantGroups(
     site,
     component,
@@ -199,6 +199,9 @@ export function exportReactPlain(
     },
     fakeTpls,
     replacedHostlessComponentImportPath,
+    useRSC: false,
+    hasServerQueries:
+      component.serverQueries.filter(isServerQueryWithOperation).length > 0,
   };
   const componentName = getExportedComponentName(component);
   const root = component.tplTree;
@@ -259,7 +262,10 @@ import {
   ${getHostNamedImportsForSkeleton()}
 } from "@plasmicapp/react-web/lib/host";
 ${
-  ctx.usesDataSourceInteraction || ctx.usesComponentLevelQueries
+  ctx.usesDataSourceInteraction ||
+  ctx.usesComponentLevelQueries ||
+  ctx.useRSC ||
+  ctx.hasServerQueries
     ? `import { usePlasmicDataConfig, executePlasmicDataOp, usePlasmicDataOp } from "@plasmicapp/react-web/lib/data-sources";`
     : ""
 }

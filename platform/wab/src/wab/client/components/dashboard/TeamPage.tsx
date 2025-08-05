@@ -1,4 +1,3 @@
-import { U, UU } from "@/wab/client/cli-routes";
 import FreeTrialModal from "@/wab/client/components/dashboard/FreeTrialModal";
 import { documentTitle } from "@/wab/client/components/dashboard/page-utils";
 import WorkspaceSection from "@/wab/client/components/dashboard/WorkspaceSection";
@@ -17,6 +16,8 @@ import { TeamId } from "@/wab/shared/ApiSchema";
 import { isNonNil } from "@/wab/shared/common";
 import { isAdminTeamEmail } from "@/wab/shared/devflag-utils";
 import { ORGANIZATION_LOWER } from "@/wab/shared/Labels";
+import { APP_ROUTES } from "@/wab/shared/route/app-routes";
+import { fillRoute } from "@/wab/shared/route/route";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { notification } from "antd";
 import * as React from "react";
@@ -40,9 +41,9 @@ function TeamPage_(props: TeamPageProps, ref: HTMLElementRefOf<"div">) {
           description: response.reason,
           duration: 0,
         });
-        appCtx.router.routeTo(U.dashboard({}));
+        appCtx.router.routeTo(fillRoute(APP_ROUTES.dashboard, {}));
       } else {
-        appCtx.router.routeTo(U.org({ teamId: teamId }));
+        appCtx.router.routeTo(fillRoute(APP_ROUTES.org, { teamId: teamId }));
       }
     }
     const res = await appCtx.api.listTeamProjects(teamId);
@@ -107,7 +108,7 @@ function TeamPage_(props: TeamPageProps, ref: HTMLElementRefOf<"div">) {
             !asyncData?.value ? <Spinner /> : children,
           helpButton: {
             props: {
-              href: UU.orgSupport.fill({ teamId }),
+              href: fillRoute(APP_ROUTES.orgSupport, { teamId }),
             },
           },
         }}

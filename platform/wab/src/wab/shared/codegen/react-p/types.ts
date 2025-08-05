@@ -11,6 +11,7 @@ import { CssVarResolver } from "@/wab/shared/core/styles";
 import { DevFlagsType } from "@/wab/shared/devflags";
 import {
   Component,
+  CustomFunction,
   ImageAsset,
   Site,
   TplNode,
@@ -27,6 +28,7 @@ export interface SerializerSiteContext {
   projectFlags: DevFlagsType;
   cssProjectDependencies: CssProjectDependencies;
   cssVarResolver: CssVarResolver;
+  customFunctionToOwnerSite: Map<CustomFunction, Site>;
 }
 
 export interface SerializerBaseContext {
@@ -76,6 +78,30 @@ export interface SerializerBaseContext {
    * importing a simpler form component instead of the full form component for schema forms.
    */
   replacedHostlessComponentImportPath: Map<Component, string>;
+  // Whether the component has server queries that are properly configured
+  hasServerQueries: boolean;
+  // Whether the component sould be generated using rsc modules
+  useRSC: boolean;
 }
 
 export type ImportAliasesMap = Map<Component | ImageAsset, string>;
+
+// This type should be kept in sync with the PlasmicImportType from the cli `packages/cli/src/utils/code-utils.ts`,
+// we add tags to the imports to easily identify how they should be fixed after the codegen.
+export type PlasmicImportType =
+  | "render"
+  | "css"
+  | "component"
+  | "globalVariant"
+  | "projectcss"
+  | "defaultcss"
+  | "icon"
+  | "picture"
+  | "jsBundle"
+  | "codeComponent"
+  | "codeComponentHelper"
+  | "globalContext"
+  | "customFunction"
+  | "splitsProvider"
+  | "rscClient"
+  | "rscServer";

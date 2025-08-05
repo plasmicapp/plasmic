@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -124,9 +124,13 @@ export const PlasmicLeftTabStrip__VariantProps = new Array<VariantPropType>(
 
 export type PlasmicLeftTabStrip__ArgsType = {
   buttons?: React.ReactNode;
+  bottomButtons?: React.ReactNode;
 };
 type ArgPropType = keyof PlasmicLeftTabStrip__ArgsType;
-export const PlasmicLeftTabStrip__ArgProps = new Array<ArgPropType>("buttons");
+export const PlasmicLeftTabStrip__ArgProps = new Array<ArgPropType>(
+  "buttons",
+  "bottomButtons"
+);
 
 export type PlasmicLeftTabStrip__OverridesType = {
   root?: Flex__<"div">;
@@ -146,7 +150,6 @@ export type PlasmicLeftTabStrip__OverridesType = {
   versions?: Flex__<typeof LeftTabButton>;
   settings?: Flex__<typeof LeftTabButton>;
   endpoints?: Flex__<typeof LeftTabButton>;
-  helpGroup?: Flex__<typeof IconButton>;
   figma?: Flex__<typeof IconButton>;
   keyboard?: Flex__<typeof IconButton>;
   slack?: Flex__<typeof IconButton>;
@@ -157,6 +160,7 @@ export type PlasmicLeftTabStrip__OverridesType = {
 
 export interface DefaultLeftTabStripProps {
   buttons?: React.ReactNode;
+  bottomButtons?: React.ReactNode;
   activeTab?: SingleChoiceArg<
     | "outline"
     | "tokens"
@@ -317,77 +321,99 @@ function PlasmicLeftTabStrip__RenderFunc(props: {
           ),
         })}
       >
-        {renderPlasmicSlot({
-          defaultContents: (
-            <React.Fragment>
-              <LeftTabButton
-                className={classNames(
-                  "__wab_instance",
-                  sty.leftTabButton__xnfKt
-                )}
-                icon={
-                  <WarningTriangleSvgIcon
-                    className={classNames(projectcss.all, sty.svg__fJuLy)}
-                    role={"img"}
-                  />
-                }
-              />
+        <div className={classNames(projectcss.all, sty.freeBox___5Ah7Y)}>
+          {renderPlasmicSlot({
+            defaultContents: (
+              <React.Fragment>
+                <LeftTabButton
+                  className={classNames(
+                    "__wab_instance",
+                    sty.leftTabButton__xnfKt
+                  )}
+                  icon={
+                    <WarningTriangleSvgIcon
+                      className={classNames(projectcss.all, sty.svg__fJuLy)}
+                      role={"img"}
+                    />
+                  }
+                />
 
-              <LeftTabButton
-                className={classNames(
-                  "__wab_instance",
-                  sty.leftTabButton__ro6Iy
-                )}
-                icon={
-                  <TreeIcon
-                    className={classNames(projectcss.all, sty.svg__rJYem)}
-                    role={"img"}
-                  />
-                }
-              />
+                <LeftTabButton
+                  className={classNames(
+                    "__wab_instance",
+                    sty.leftTabButton__ro6Iy
+                  )}
+                  icon={
+                    <TreeIcon
+                      className={classNames(projectcss.all, sty.svg__rJYem)}
+                      role={"img"}
+                    />
+                  }
+                />
 
-              <LeftTabButton
-                className={classNames(
-                  "__wab_instance",
-                  sty.leftTabButton__uOnAi
-                )}
-                icon={
-                  <ComponentsSvgIcon
-                    className={classNames(projectcss.all, sty.svg__p2MgB)}
-                    role={"img"}
-                  />
-                }
-              />
+                <LeftTabButton
+                  className={classNames(
+                    "__wab_instance",
+                    sty.leftTabButton__uOnAi
+                  )}
+                  icon={
+                    <ComponentsSvgIcon
+                      className={classNames(projectcss.all, sty.svg__p2MgB)}
+                      role={"img"}
+                    />
+                  }
+                />
 
-              <LeftTabButton
-                className={classNames(
-                  "__wab_instance",
-                  sty.leftTabButton___8X6Fn
-                )}
-                icon={
-                  <GearIcon
-                    className={classNames(projectcss.all, sty.svg__qPkMk)}
-                    role={"img"}
-                  />
-                }
-              />
+                <LeftTabButton
+                  className={classNames(
+                    "__wab_instance",
+                    sty.leftTabButton___8X6Fn
+                  )}
+                  icon={
+                    <GearIcon
+                      className={classNames(projectcss.all, sty.svg__qPkMk)}
+                      role={"img"}
+                    />
+                  }
+                />
 
+                <LeftTabButton
+                  className={classNames(
+                    "__wab_instance",
+                    sty.leftTabButton___5AwUj
+                  )}
+                  icon={
+                    <DotsHorizontalCircleSvgIcon
+                      className={classNames(projectcss.all, sty.svg___7Cd9B)}
+                      role={"img"}
+                    />
+                  }
+                />
+              </React.Fragment>
+            ),
+            value: args.buttons,
+          })}
+        </div>
+        <div className={classNames(projectcss.all, sty.freeBox__qcGiE)}>
+          {renderPlasmicSlot({
+            defaultContents: (
               <LeftTabButton
                 className={classNames(
                   "__wab_instance",
-                  sty.leftTabButton___5AwUj
+                  sty.leftTabButton__qvJoE
                 )}
                 icon={
-                  <DotsHorizontalCircleSvgIcon
-                    className={classNames(projectcss.all, sty.svg___7Cd9B)}
+                  <HelpCircleSvgIcon
+                    className={classNames(projectcss.all, sty.svg__bhbR5)}
                     role={"img"}
                   />
                 }
               />
-            </React.Fragment>
-          ),
-          value: args.buttons,
-        })}
+            ),
+
+            value: args.bottomButtons,
+          })}
+        </div>
       </div>
       <div
         data-plasmic-name={"divider"}
@@ -836,35 +862,6 @@ function PlasmicLeftTabStrip__RenderFunc(props: {
         }
       />
 
-      <IconButton
-        data-plasmic-name={"helpGroup"}
-        data-plasmic-override={overrides.helpGroup}
-        children2={
-          <ChevronDownSvgIcon
-            className={classNames(projectcss.all, sty.svg__b3F)}
-            role={"img"}
-          />
-        }
-        className={classNames("__wab_instance", sty.helpGroup, {
-          [sty.helpGroupshowAvatar]: hasVariant(
-            $state,
-            "showAvatar",
-            "showAvatar"
-          ),
-        })}
-        size={"large"}
-      >
-        <HelpCircleSvgIcon
-          className={classNames(projectcss.all, sty.svg__tupD, {
-            [sty.svgshowAvatar__tupD9NVfe]: hasVariant(
-              $state,
-              "showAvatar",
-              "showAvatar"
-            ),
-          })}
-          role={"img"}
-        />
-      </IconButton>
       <Stack__
         as={"div"}
         hasGap={true}
@@ -1167,7 +1164,6 @@ const PlasmicDescendants = {
     "versions",
     "settings",
     "endpoints",
-    "helpGroup",
     "figma",
     "keyboard",
     "slack",
@@ -1191,7 +1187,6 @@ const PlasmicDescendants = {
   versions: ["versions"],
   settings: ["settings"],
   endpoints: ["endpoints"],
-  helpGroup: ["helpGroup"],
   figma: ["figma"],
   keyboard: ["keyboard"],
   slack: ["slack"],
@@ -1220,7 +1215,6 @@ type NodeDefaultElementType = {
   versions: typeof LeftTabButton;
   settings: typeof LeftTabButton;
   endpoints: typeof LeftTabButton;
-  helpGroup: typeof IconButton;
   figma: typeof IconButton;
   keyboard: typeof IconButton;
   slack: typeof IconButton;
@@ -1241,15 +1235,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicLeftTabStrip__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicLeftTabStrip__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicLeftTabStrip__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+    // Specify args directly as props
+    Omit<PlasmicLeftTabStrip__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;
@@ -1305,7 +1299,6 @@ export const PlasmicLeftTabStrip = Object.assign(
     versions: makeNodeComponent("versions"),
     settings: makeNodeComponent("settings"),
     endpoints: makeNodeComponent("endpoints"),
-    helpGroup: makeNodeComponent("helpGroup"),
     figma: makeNodeComponent("figma"),
     keyboard: makeNodeComponent("keyboard"),
     slack: makeNodeComponent("slack"),

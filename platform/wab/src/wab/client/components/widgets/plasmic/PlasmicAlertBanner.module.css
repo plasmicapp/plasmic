@@ -97,6 +97,9 @@
   > img {
   margin-left: 4px;
 }
+.freeBoxstate_concurrentEdit__bzauSWvup {
+  padding-top: 0px;
+}
 .text__su8VU {
   font-weight: 500;
   width: auto;
@@ -240,29 +243,29 @@
 .root .dismissBtn:hover {
   background: var(--token-lWbTO8z91an);
 }
-.rootstate_readOnly .dismissBtnstate_readOnly:hover {
-  background: var(--token-wdIt8GuZ_bO);
-}
-.rootstate_viewOld .dismissBtnstate_viewOld:hover {
-  background: var(--token-wdIt8GuZ_bO);
-}
-.rootstate_unlogged .dismissBtnstate_unlogged:hover {
-  background: var(--token-wdIt8GuZ_bO);
-}
-.rootstate_watch .dismissBtnstate_watch:hover {
-  background: var(--token-wdIt8GuZ_bO);
-}
 .root .dismissBtn:active {
   background: var(--token-ylE-Ax1KX19);
+}
+.rootstate_readOnly .dismissBtnstate_readOnly:hover {
+  background: var(--token-wdIt8GuZ_bO);
 }
 .rootstate_readOnly .dismissBtnstate_readOnly:active {
   background: var(--token-kbNf37dAf35);
 }
+.rootstate_viewOld .dismissBtnstate_viewOld:hover {
+  background: var(--token-wdIt8GuZ_bO);
+}
 .rootstate_viewOld .dismissBtnstate_viewOld:active {
   background: var(--token-kbNf37dAf35);
 }
+.rootstate_unlogged .dismissBtnstate_unlogged:hover {
+  background: var(--token-wdIt8GuZ_bO);
+}
 .rootstate_unlogged .dismissBtnstate_unlogged:active {
   background: var(--token-kbNf37dAf35);
+}
+.rootstate_watch .dismissBtnstate_watch:hover {
+  background: var(--token-wdIt8GuZ_bO);
 }
 .rootstate_watch .dismissBtnstate_watch:active {
   background: var(--token-kbNf37dAf35);

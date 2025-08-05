@@ -1,4 +1,3 @@
-import { UU } from "@/wab/client/cli-routes";
 import { useCmsDatabase } from "@/wab/client/components/cms/cms-contexts";
 import { useAppCtx } from "@/wab/client/contexts/AppContexts";
 import {
@@ -7,6 +6,8 @@ import {
 } from "@/wab/client/plasmic/plasmic_kit_cms/PlasmicCmsLeftTabs";
 import { ensure } from "@/wab/shared/common";
 import { accessLevelRank } from "@/wab/shared/EntUtil";
+import { APP_ROUTES } from "@/wab/shared/route/app-routes";
+import { fillRoute } from "@/wab/shared/route/route";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import * as React from "react";
 import { useRouteMatch } from "react-router";
@@ -44,24 +45,27 @@ function CmsLeftTabs_(props: CmsLeftTabsProps, ref: HTMLElementRefOf<"div">) {
       {...props}
       contentButton={{
         href: match.params.tableId
-          ? UU.cmsModelContent.fill({
+          ? fillRoute(APP_ROUTES.cmsModelContent, {
               ...params,
               tableId: match.params.tableId,
             })
-          : UU.cmsContentRoot.fill(params),
+          : fillRoute(APP_ROUTES.cmsContentRoot, params),
         tooltip: "Edit content",
         "data-test-id": "cmsContent",
       }}
       schemaButton={{
         href: match.params.tableId
-          ? UU.cmsModelSchema.fill({ ...params, tableId: match.params.tableId })
-          : UU.cmsSchemaRoot.fill(params),
+          ? fillRoute(APP_ROUTES.cmsModelSchema, {
+              ...params,
+              tableId: match.params.tableId,
+            })
+          : fillRoute(APP_ROUTES.cmsSchemaRoot, params),
         tooltip: "Edit models",
         "data-test-id": "cmsModels",
       }}
       settingsButton={{
         style: shouldHideSettingsButton ? { display: "none" } : {},
-        href: UU.cmsSettings.fill(params),
+        href: fillRoute(APP_ROUTES.cmsSettings, params),
         tooltip: "CMS Settings",
         "data-test-id": "cmsSettings",
       }}

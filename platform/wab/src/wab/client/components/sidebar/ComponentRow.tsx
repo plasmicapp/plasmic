@@ -1,15 +1,10 @@
-import {
-  getEventDataForTplComponent,
-  trackInsertItem,
-} from "@/wab/client/analytics/events/insert-item";
-import { mkProjectLocation, openNewTab } from "@/wab/client/cli-routes";
+import { openNewTab } from "@/wab/client/cli-routes";
 import RowItem from "@/wab/client/components/RowItem";
 import CommentIndicatorIcon from "@/wab/client/components/comments/CommentIndicatorIcon";
-import { useCommentsCtx } from "@/wab/client/components/comments/CommentsProvider";
 import { MenuBuilder } from "@/wab/client/components/menu-builder";
 import { DefaultComponentKindModal } from "@/wab/client/components/modals/DefaultComponentKindModal";
 import { showModalToRefreshCodeComponentProps } from "@/wab/client/components/modals/codeComponentModals";
-import promptDeleteComponent from "@/wab/client/components/modals/componentDeletionModal";
+import { promptDeleteComponent } from "@/wab/client/components/modals/componentDeletionModal";
 import {
   reactPrompt,
   showTemporaryPrompt,
@@ -18,6 +13,10 @@ import { DraggableInsertable } from "@/wab/client/components/studio/add-drawer/D
 import { Matcher } from "@/wab/client/components/view-common";
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import { AddItemType } from "@/wab/client/definitions/insertables";
+import {
+  getEventDataForTplComponent,
+  trackInsertItem,
+} from "@/wab/client/observability/events/insert-item";
 import ComponentIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Component";
 import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
@@ -46,6 +45,7 @@ import {
 } from "@/wab/shared/core/components";
 import { isTplComponent } from "@/wab/shared/core/tpls";
 import { Component } from "@/wab/shared/model/classes";
+import { mkProjectLocation } from "@/wab/shared/route/app-routes";
 import { Menu, Popover, notification } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
@@ -58,7 +58,7 @@ export const ComponentRow = observer(function ComponentRow(props: {
 }) {
   const { component, matcher, importedFrom, indentMultiplier } = props;
   const studioCtx = useStudioCtx();
-  const commentsCtx = useCommentsCtx();
+  const commentsCtx = studioCtx.commentsCtx;
   const isPlainComponent =
     isReusableComponent(component) &&
     !isCodeComponent(component) &&
@@ -93,9 +93,9 @@ export const ComponentRow = observer(function ComponentRow(props: {
     component
   );
   const icon = (() => {
-    const commentsStats = commentsCtx.commentStatsByComponent.get(
-      component.tplTree.uuid
-    );
+    const commentsStats = commentsCtx
+      .computedData()
+      .commentStatsByComponent.get(component.uuid);
     if (commentsStats && studioCtx.showCommentsPanel) {
       return (
         <CommentIndicatorIcon
@@ -306,7 +306,10 @@ function buildPlasmicComponentMenuItems(
           onClick={async () => {
             const confirmation = await promptDeleteComponent(
               "component",
-              component.name
+              component.name,
+              studioCtx.commentsCtx
+                .computedData()
+                .commentStatsByComponent.get(component.uuid)?.commentCount
             );
             if (!confirmation) {
               return;

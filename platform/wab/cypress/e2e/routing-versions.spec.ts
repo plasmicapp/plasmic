@@ -31,6 +31,8 @@ describe("routing", () => {
             .should("contain.text", "Main v1")
             .dblclick({ force: true });
           framed.enterIntoTplTextBlock("Main v2");
+          // Wait for Studio to recognize changes before trying to publish.
+          cy.contains("Newest changes haven't been published.");
           cy.publishVersion("Main v2");
 
           cy.justLog("Editing main without publishing");
@@ -39,6 +41,7 @@ describe("routing", () => {
             .should("contain.text", "Main v2")
             .dblclick({ force: true });
           framed.enterIntoTplTextBlock("Main latest");
+          cy.contains("Newest changes haven't been published.");
         });
 
         function switchBranchVersion(branchVersion: string) {

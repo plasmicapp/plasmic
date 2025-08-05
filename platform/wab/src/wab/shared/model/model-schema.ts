@@ -25,7 +25,7 @@ Type
       @Const name: 'any'
     Choice
       @Const name: 'choice'
-      options: [String] | [Map[String, String | Number | Bool]]
+      options: [String | Number | Bool] | [Map[String, String | Number | Bool]]
   Img
     @Const name: 'img'
   ComponentInstance
@@ -80,6 +80,10 @@ Type
 VariantedValue
   @WeakRef variants: [Variant]
   value: String
+StyleTokenOverride
+  @WeakRef token: StyleToken
+  value: String?
+  variantedValues: [VariantedValue]
 StyleToken
   # This is really more like a displayName, not treated as the stable ID (although it also needs to be unique).
   name: String
@@ -118,6 +122,7 @@ Site
   # stored by this globalVariant.
   @Const globalVariant: Variant
   styleTokens: [StyleToken]
+  styleTokenOverrides: [StyleTokenOverride]
   mixins: [Mixin]
   @Const themes: [Theme]
   @WeakRef activeTheme: Theme?
@@ -224,6 +229,7 @@ CustomFunction
   importName: String
   defaultExport: Bool
   namespace: String?
+  displayName: String?
   params: [ArgType]
   isQuery: Bool
 
@@ -382,6 +388,7 @@ CodeComponentMeta
   # where Any is PlasmicElement|PlasmicElement[]
   defaultSlotContents: Map[String, Any]
   variants: Map[String, CodeComponentVariantMeta]
+  refActions: [String]
 Component
   @Const uuid: String
   name: String
@@ -408,6 +415,8 @@ Component
   figmaMappings: [FigmaComponentMapping]
   alwaysAutoName: Bool
   trapsFocus: Bool
+  # A timestamp of when the component was last updated
+  updatedAt: Number?
 NameArg
   name: String
   expr: Expr
@@ -547,6 +556,7 @@ BindingStruct
       @Const @WeakRef state: State
     PropParam
       type: PrimitiveType | Img | HrefType | TargetType | DateString | DateRangeStrings | QueryData | FunctionType | StylePropType | ColorPropType
+      advanced: Bool
   Arg
     @WeakRef param: Param
     expr: Expr
@@ -584,6 +594,8 @@ Expr
   PageHref
     @WeakRef page: Component
     params: Map[String, TemplatedString | CustomCode | ObjectPath | VarRef]
+    query: Map[String, TemplatedString | CustomCode | ObjectPath | VarRef]
+    fragment: TemplatedString? | CustomCode? | ObjectPath? | VarRef?
   VariantsRef
     @WeakRef variants: [Variant]
   ObjectPath

@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -19,18 +19,21 @@ import {
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  ensureGlobalVariants,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
+
+import { useEnvironment } from "../plasmic_kit_pricing/PlasmicGlobalVariant__Environment"; // plasmic-import: hIjF9NLAUKG-/globalVariant
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
 import projectcss from "../PP__plasmickit_dashboard.module.css"; // plasmic-import: ooL7EhXDmFQWnW9sxtchhE/projectcss
 import sty from "./PlasmicShareButton.module.css"; // plasmic-import: BOKmukuncx/css
 
-import ArrowRightsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ArrowRightSvg"; // plasmic-import: 9Jv8jb253/icon
-import ChevronDownsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
+import ArrowRightSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ArrowRightSvg"; // plasmic-import: 9Jv8jb253/icon
+import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
 
 createPlasmicElementProxy;
 
@@ -61,7 +64,16 @@ function PlasmicShareButton__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
@@ -72,6 +84,10 @@ function PlasmicShareButton__RenderFunc(props: {
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
+  const globalVariants = ensureGlobalVariants({
+    environment: useEnvironment(),
+  });
+
   return (
     <Button
       data-plasmic-name={"root"}
@@ -80,13 +96,13 @@ function PlasmicShareButton__RenderFunc(props: {
       data-plasmic-for-node={forNode}
       className={classNames("__wab_instance", sty.root)}
       endIcon={
-        <ChevronDownsvgIcon
+        <ChevronDownSvgIcon
           className={classNames(projectcss.all, sty.svg__rUr3X)}
           role={"img"}
         />
       }
       startIcon={
-        <ArrowRightsvgIcon
+        <ArrowRightSvgIcon
           className={classNames(projectcss.all, sty.svg__lh32G)}
           role={"img"}
         />
@@ -113,7 +129,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicShareButton__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
@@ -121,15 +136,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicShareButton__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicShareButton__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicShareButton__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+    // Specify args directly as props
+    Omit<PlasmicShareButton__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

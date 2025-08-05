@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -22,6 +22,7 @@ import {
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  ensureGlobalVariants,
   hasVariant,
   renderPlasmicSlot,
   useDollarState,
@@ -35,6 +36,8 @@ import StarterGroup from "../../components/StarterGroup"; // plasmic-import: u6d
 import StarterProject from "../../components/StarterProject"; // plasmic-import: CCsDeqqYeoM/component
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
 
+import { useEnvironment } from "../plasmic_kit_pricing/PlasmicGlobalVariant__Environment"; // plasmic-import: hIjF9NLAUKG-/globalVariant
+
 import "@plasmicapp/react-web/lib/plasmic.css";
 
 import plasmic_plasmic_kit_pricing_css from "../plasmic_kit_pricing/plasmic_plasmic_kit_pricing.module.css"; // plasmic-import: ehckhYnyDHgCBbV47m9bkf/projectcss
@@ -46,9 +49,9 @@ import sty from "./PlasmicProjectList.module.css"; // plasmic-import: -k-p1OXXph
 import ClockIcon from "../plasmic_kit_dashboard/icons/PlasmicIcon__Clock"; // plasmic-import: Y08w-xNMit/icon
 import HatchIcon from "../plasmic_kit_dashboard/icons/PlasmicIcon__Hatch"; // plasmic-import: Hyn5Q6kuD9/icon
 import JoystickIcon from "../plasmic_kit_dashboard/icons/PlasmicIcon__Joystick"; // plasmic-import: ApYMo5LVK0/icon
-import eyesvgZxKyHRa6Q6Pa from "../plasmic_kit_design_system/images/eyeSvg.svg"; // plasmic-import: Zx-kyHRa6Q6PA/picture
+import eyeSvgZxKyHRa6Q6Pa from "../plasmic_kit_design_system/images/eyeSvg.svg"; // plasmic-import: Zx-kyHRa6Q6PA/picture
 import image3YherfIxkolNxf from "../plasmic_kit_design_system/images/image3.svg"; // plasmic-import: yherfIxkolNXF/picture
-import ChevronDownsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
+import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
 import BoltPlusIcon from "./PlasmicIcon__BoltPlus"; // plasmic-import: -RXQcn1QrTqlQ/icon
 import CheckIcon from "./PlasmicIcon__Check"; // plasmic-import: pawp1H5YxB_3B/icon
 import LightBulbIcon from "./PlasmicIcon__LightBulb"; // plasmic-import: L1GrIYxdm_MJL/icon
@@ -77,9 +80,7 @@ export const PlasmicProjectList__VariantProps = new Array<VariantPropType>(
   "hideStarters"
 );
 
-export type PlasmicProjectList__ArgsType = {
-  noProjectsText?: React.ReactNode;
-};
+export type PlasmicProjectList__ArgsType = { noProjectsText?: React.ReactNode };
 type ArgPropType = keyof PlasmicProjectList__ArgsType;
 export const PlasmicProjectList__ArgProps = new Array<ArgPropType>(
   "noProjectsText"
@@ -127,7 +128,16 @@ function PlasmicProjectList__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
@@ -166,7 +176,6 @@ function PlasmicProjectList__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.hideStarters,
       },
     ],
-
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -174,6 +183,10 @@ function PlasmicProjectList__RenderFunc(props: {
     $ctx,
     $queries: {},
     $refs,
+  });
+
+  const globalVariants = ensureGlobalVariants({
+    environment: useEnvironment(),
   });
 
   return (
@@ -194,7 +207,27 @@ function PlasmicProjectList__RenderFunc(props: {
         plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
         plasmic_plasmic_kit_pricing_css.plasmic_tokens,
         sty.root,
-        { [sty.rootmode_demo]: hasVariant($state, "mode", "demo") }
+        {
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [sty.rootmode_demo]: hasVariant($state, "mode", "demo"),
+        }
       )}
     >
       <Stack__
@@ -254,7 +287,7 @@ function PlasmicProjectList__RenderFunc(props: {
                 ),
               })}
               endIcon={
-                <ChevronDownsvgIcon
+                <ChevronDownSvgIcon
                   className={classNames(projectcss.all, sty.svg__opS5Z)}
                   role={"img"}
                 />
@@ -324,7 +357,7 @@ function PlasmicProjectList__RenderFunc(props: {
                               sty.img__gHpLe
                             )}
                             loading={"lazy"}
-                            src={eyesvgZxKyHRa6Q6Pa}
+                            src={eyeSvgZxKyHRa6Q6Pa}
                           />
                         }
                       >
@@ -361,7 +394,7 @@ function PlasmicProjectList__RenderFunc(props: {
                               sty.img__nWagV
                             )}
                             loading={"lazy"}
-                            src={eyesvgZxKyHRa6Q6Pa}
+                            src={eyeSvgZxKyHRa6Q6Pa}
                           />
                         }
                       >
@@ -398,7 +431,7 @@ function PlasmicProjectList__RenderFunc(props: {
                               sty.img__owx0H
                             )}
                             loading={"lazy"}
-                            src={eyesvgZxKyHRa6Q6Pa}
+                            src={eyeSvgZxKyHRa6Q6Pa}
                           />
                         }
                       >
@@ -471,7 +504,7 @@ function PlasmicProjectList__RenderFunc(props: {
                             sty.img__qMBcL
                           )}
                           loading={"lazy"}
-                          src={eyesvgZxKyHRa6Q6Pa}
+                          src={eyeSvgZxKyHRa6Q6Pa}
                         />
                       }
                       type={"first"}
@@ -511,7 +544,7 @@ function PlasmicProjectList__RenderFunc(props: {
                             sty.img__v8GHj
                           )}
                           loading={"lazy"}
-                          src={eyesvgZxKyHRa6Q6Pa}
+                          src={eyeSvgZxKyHRa6Q6Pa}
                         />
                       }
                       type={"second"}
@@ -551,7 +584,7 @@ function PlasmicProjectList__RenderFunc(props: {
                             sty.img___4Azhf
                           )}
                           loading={"lazy"}
-                          src={eyesvgZxKyHRa6Q6Pa}
+                          src={eyeSvgZxKyHRa6Q6Pa}
                         />
                       }
                       type={"third"}
@@ -604,7 +637,7 @@ function PlasmicProjectList__RenderFunc(props: {
                             sty.img__j6ORt
                           )}
                           loading={"lazy"}
-                          src={eyesvgZxKyHRa6Q6Pa}
+                          src={eyeSvgZxKyHRa6Q6Pa}
                         />
                       }
                     >
@@ -643,7 +676,7 @@ function PlasmicProjectList__RenderFunc(props: {
                             sty.img__mog7Q
                           )}
                           loading={"lazy"}
-                          src={eyesvgZxKyHRa6Q6Pa}
+                          src={eyeSvgZxKyHRa6Q6Pa}
                         />
                       }
                     >
@@ -682,7 +715,7 @@ function PlasmicProjectList__RenderFunc(props: {
                             sty.img__rchQz
                           )}
                           loading={"lazy"}
-                          src={eyesvgZxKyHRa6Q6Pa}
+                          src={eyeSvgZxKyHRa6Q6Pa}
                         />
                       }
                     >
@@ -730,7 +763,7 @@ function PlasmicProjectList__RenderFunc(props: {
               [sty.uploadButtonmode_demo]: hasVariant($state, "mode", "demo"),
             })}
             endIcon={
-              <ChevronDownsvgIcon
+              <ChevronDownSvgIcon
                 className={classNames(projectcss.all, sty.svg__jK9HY)}
                 role={"img"}
               />
@@ -821,7 +854,6 @@ function PlasmicProjectList__RenderFunc(props: {
                   }
                 </div>
               ),
-
               value: args.noProjectsText,
             })
           : null}
@@ -864,7 +896,7 @@ function PlasmicProjectList__RenderFunc(props: {
                             sty.img__pP5S5
                           )}
                           loading={"lazy"}
-                          src={eyesvgZxKyHRa6Q6Pa}
+                          src={eyeSvgZxKyHRa6Q6Pa}
                         />
                       }
                     >
@@ -903,7 +935,7 @@ function PlasmicProjectList__RenderFunc(props: {
                             sty.img___8UU2Y
                           )}
                           loading={"lazy"}
-                          src={eyesvgZxKyHRa6Q6Pa}
+                          src={eyeSvgZxKyHRa6Q6Pa}
                         />
                       }
                     >
@@ -947,7 +979,7 @@ function PlasmicProjectList__RenderFunc(props: {
                             sty.img__olWvG
                           )}
                           loading={"lazy"}
-                          src={eyesvgZxKyHRa6Q6Pa}
+                          src={eyeSvgZxKyHRa6Q6Pa}
                         />
                       }
                     >
@@ -984,7 +1016,7 @@ function PlasmicProjectList__RenderFunc(props: {
                             sty.img___60YkE
                           )}
                           loading={"lazy"}
-                          src={eyesvgZxKyHRa6Q6Pa}
+                          src={eyeSvgZxKyHRa6Q6Pa}
                         />
                       }
                     >
@@ -1035,7 +1067,6 @@ const PlasmicDescendants = {
     "preview2",
     "preview3",
   ],
-
   frame321: [
     "frame321",
     "h1",
@@ -1057,7 +1088,6 @@ const PlasmicDescendants = {
     "preview2",
     "preview3",
   ],
-
   h1: ["h1"],
   newProjectButton: ["newProjectButton"],
   tutorials: [
@@ -1072,7 +1102,6 @@ const PlasmicDescendants = {
     "preview3524",
     "preview3525",
   ],
-
   preview22: ["preview22"],
   preview223: ["preview223"],
   preview222: ["preview222"],
@@ -1120,7 +1149,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicProjectList__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
@@ -1128,15 +1156,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicProjectList__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicProjectList__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicProjectList__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+    // Specify args directly as props
+    Omit<PlasmicProjectList__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

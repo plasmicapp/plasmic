@@ -4,13 +4,14 @@ import ListItem from "@/wab/client/components/ListItem";
 import { showTemporaryPrompt } from "@/wab/client/components/quick-modals";
 import Button from "@/wab/client/components/widgets/Button";
 import { Icon } from "@/wab/client/components/widgets/Icon";
+import { Modal } from "@/wab/client/components/widgets/Modal";
 import ComponentIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Component";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { getComponentDisplayName } from "@/wab/shared/core/components";
 import { isBuiltinCodeComponent } from "@/wab/shared/code-components/builtin-code-components";
+import { getComponentDisplayName } from "@/wab/shared/core/components";
 import { Component } from "@/wab/shared/model/classes";
+import { naturalSort } from "@/wab/shared/sort";
 import * as React from "react";
-import { Modal } from "@/wab/client/components/widgets/Modal";
 
 type WrapInComponentResponse = Component | undefined;
 
@@ -32,21 +33,24 @@ export async function promptWrapInComponent(props: {
         <small>Only components with a children slot can be used</small>
       </p>
       <div className="flex flex-col">
-        {studioCtx.site.components
-          .filter(
-            (c) =>
-              c !== component &&
-              !isBuiltinCodeComponent(c) &&
-              c.params.some((param) => param.variable.name === "children")
-          )
-          .map((c) => (
-            <ListItem
-              icon={<Icon icon={ComponentIcon} />}
-              onClick={() => onSubmit(c)}
-            >
-              {getComponentDisplayName(c)}
-            </ListItem>
-          ))}
+        {naturalSort(
+          studioCtx.site.components
+            .filter(
+              (c) =>
+                c !== component &&
+                !isBuiltinCodeComponent(c) &&
+                c.params.some((param) => param.variable.name === "children")
+            )
+            .map((c) => [c, getComponentDisplayName(c)] as const),
+          ([_, displayName]) => displayName
+        ).map(([c, displayName]) => (
+          <ListItem
+            icon={<Icon icon={ComponentIcon} />}
+            onClick={() => onSubmit(c)}
+          >
+            {displayName}
+          </ListItem>
+        ))}
       </div>
       <div className="flex flex-hcenter pt-m">
         <Button onClick={onCancel}>Cancel</Button>

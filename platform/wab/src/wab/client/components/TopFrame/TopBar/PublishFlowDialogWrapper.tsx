@@ -33,7 +33,6 @@ import {
 import { PlasmicPublishFlowDialog__VariantMembers } from "@/wab/client/plasmic/plasmic_kit_continuous_deployment/PlasmicPublishFlowDialog";
 import { TutorialEventsType } from "@/wab/client/tours/tutorials/tutorials-events";
 import { trackEvent } from "@/wab/client/tracking";
-import { spawn, waitUntil } from "@/wab/shared/common";
 import {
   ApiBranch,
   ApiProject,
@@ -41,6 +40,7 @@ import {
   GitActionParams,
   GitWorkflowJobStep,
 } from "@/wab/shared/ApiSchema";
+import { spawn, waitUntil } from "@/wab/shared/common";
 import { notification } from "antd";
 import L from "lodash";
 import { observer } from "mobx-react";
@@ -296,8 +296,14 @@ export const PublishFlowDialogWrapper = observer(
     const subsectionMeta: SubsectionMeta = {
       saveVersion: {
         ...vebSaveVersion,
-        setVisibleEnableBlock: (v: boolean, e: boolean, b: boolean) =>
-          setVEBSaveVersion({ visible: v, enable: e, block: b }),
+        setVisibleEnableBlock: (v: boolean, e: boolean, b: boolean) => {
+          setVEBSaveVersion({ visible: v, enable: e, block: b });
+          // We also enable the plasmic hosting subsection, because the user can't choose to not publish due to ISR
+          setVEBPlasmicHosting((prev) => ({
+            ...prev,
+            enable: domains.length > 0 ? e : false,
+          }));
+        },
         setup: {
           tags: versionTags,
           setTags: setVersionTags,
@@ -309,7 +315,12 @@ export const PublishFlowDialogWrapper = observer(
       plasmicHosting: {
         ...vebPlasmicHosting,
         setVisibleEnableBlock: (v: boolean, e: boolean, b: boolean) =>
-          setVEBPlasmicHosting({ visible: v, enable: e, block: b }),
+          setVEBPlasmicHosting({
+            visible: v,
+            // We only enable the plasmic hosting subsection if the user is also saving a version. Plasmic hosting is unpredictable otherwise.
+            enable: e && vebSaveVersion.enable,
+            block: b,
+          }),
         setup: {
           domains,
         },
@@ -361,7 +372,7 @@ export const PublishFlowDialogWrapper = observer(
             enabled: vebSaveVersion.enable,
           };
           const _statusPlasmicHosting: StatusPlasmicHosting = {
-            enabled: vebSaveVersion.enable,
+            enabled: vebPlasmicHosting.enable,
             revalidateResult: undefined,
             revalidateResponse: undefined,
           };
@@ -385,7 +396,7 @@ export const PublishFlowDialogWrapper = observer(
           const _statusWebhooks: StatusWebhooks = {
             enabled: vebWebhooks.enable,
             enabledWebhooks: webhooks
-              .filter((w) => w.enable)
+              .filter((w) => w.enable && !!w.url)
               .map((w) => L.omit(w, "enable")),
           };
 

@@ -1,13 +1,13 @@
 // This test depends on the host-test package running.
 
-import { Framed } from "../support/util";
+import { configureProjectAppHost, Framed } from "../support/util";
 
 describe("host-app", function () {
   it("Should work", function () {
     cy.setupNewProject({ name: "host-app" })
       .then((projectId) => {
         cy.withinStudioIframe(() => {
-          configureProject("plasmic-host");
+          configureProjectAppHost("plasmic-host");
         });
         cy.withinStudioIframe(() => {
           cy.createNewFrame().then((framed) => {
@@ -82,7 +82,7 @@ describe("host-app", function () {
           cy.checkNoErrors();
         });
         cy.withinStudioIframe(() => {
-          configureProject("plasmic-host-updated");
+          configureProjectAppHost("plasmic-host-updated");
         });
         cy.withinStudioIframe(
           () => {
@@ -144,7 +144,7 @@ describe("host-app", function () {
           );
         });
         cy.withinStudioIframe(() => {
-          configureProject("plasmic-host-updated-old-host");
+          configureProjectAppHost("plasmic-host-updated-old-host");
         });
         cy.withinStudioIframe(() => {
           cy.justLog("Test updating props");
@@ -169,15 +169,15 @@ describe("host-app", function () {
   it("Should accept host URLs with query params", function () {
     cy.setupNewProject({ name: "host-app" }).then(() => {
       cy.withinStudioIframe(() => {
-        configureProject("plasmic-host?");
+        configureProjectAppHost("plasmic-host?");
       });
       cy.withinStudioIframe(() => {
         cy.justLog("plasmic-host? loaded successfully");
-        configureProject("plasmic-host?foo=bar");
+        configureProjectAppHost("plasmic-host?foo=bar");
       });
       cy.withinStudioIframe(() => {
         cy.justLog("plasmic-host?foo=bar loaded successfully");
-        configureProject("plasmic-host?foo=bar&baz=");
+        configureProjectAppHost("plasmic-host?foo=bar&baz=");
       });
       cy.withinStudioIframe(() => {
         // run an extra cy.withinStudioIframe to ensure Studio loaded successfully
@@ -186,26 +186,3 @@ describe("host-app", function () {
     });
   });
 });
-
-function configureProject(page: string) {
-  cy.wait(500);
-  cy.get(`[data-test-id="project-menu-btn"]`).click({ force: true });
-  cy.wait(500);
-  cy.get(`[data-test-id="configure-project"]`).click({ force: true });
-  cy.withinTopFrame(() => {
-    const plasmicHost = `http://localhost:${
-      Cypress.env("CUSTOM_HOST_PORT") || 3000
-    }/${page}`;
-    cy.get(`[data-test-id="host-url-input"]`).clear().type(plasmicHost);
-    cy.contains("Confirm").click();
-    cy.log(`Please make sure host-test package is running at ${plasmicHost}`);
-    cy.wait(3000);
-    cy.get(
-      `iframe[src^="http://localhost:${
-        Cypress.env("CUSTOM_HOST_PORT") || 3000
-      }/${page}"]`,
-      { timeout: 60000 }
-    );
-    cy.reload({ timeout: 120000 });
-  });
-}

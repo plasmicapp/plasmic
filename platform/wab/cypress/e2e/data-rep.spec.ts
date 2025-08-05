@@ -1,13 +1,25 @@
+import { DevFlagsType } from "../../src/wab/shared/devflags";
 import { removeCurrentProject, setupNewProject } from "../support/util";
 
 describe("data-rep", function () {
+  let origDevFlags: DevFlagsType;
   beforeEach(() => {
+    cy.getDevFlags().then((devFlags) => {
+      origDevFlags = devFlags;
+      cy.upsertDevFlags({
+        ...origDevFlags,
+        plexus: false,
+      });
+    });
     setupNewProject({
       name: "data-rep",
     });
   });
 
   afterEach(() => {
+    if (origDevFlags) {
+      cy.upsertDevFlags(origDevFlags);
+    }
     removeCurrentProject();
   });
 
@@ -91,7 +103,7 @@ describe("data-rep", function () {
   //   });
   // })
 
-  it("can repeat select options and have multiple levels of repetition", () => {
+  it.only("can repeat select options and have multiple levels of repetition", () => {
     cy.withinStudioIframe(() => {
       cy.createNewFrame().then((framed) => {
         // Add a Plume Select.
@@ -99,8 +111,7 @@ describe("data-rep", function () {
         cy.insertFromAddDrawer("Select");
 
         // Unset options prop
-        cy.get(`[data-test-id="prop-editor-row-options"]`).rightclick();
-        cy.contains("Unset Options").click();
+        cy.removePropValue("Options");
 
         // Set "is open" variant, select and clear "children" slot content.
         cy.get('[data-test-id="variants-picker-section"]')

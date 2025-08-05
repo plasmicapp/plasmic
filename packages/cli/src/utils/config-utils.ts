@@ -27,7 +27,7 @@ export const ENV_AUTH_TOKEN = "PLASMIC_AUTH_TOKEN";
 
 export interface PlasmicConfig {
   /** Target platform to generate code for */
-  platform: "react" | "nextjs" | "gatsby";
+  platform: "react" | "nextjs" | "gatsby" | "tanstack";
 
   /**
    * The folder containing the component source files; this is the default place where
@@ -52,6 +52,12 @@ export interface PlasmicConfig {
 
   /** Gatsby-specific config */
   gatsbyConfig?: {
+    /** The folder containing page components source files. */
+    pagesDir?: string;
+  };
+
+  /** Tanstack-specific config */
+  tanstackConfig?: {
     /** The folder containing page components source files. */
     pagesDir?: string;
   };
@@ -288,6 +294,18 @@ export interface ComponentConfig {
 
   /** Plume type if component is a Plume component */
   plumeType?: string;
+
+  /**
+   * RSC metadata for this component. The structure of the config changes when this is set:
+   * renderModuleFilePath points to the client blackbox render module.
+   * importSpec points to the server skeleton file.
+   */
+  rsc?: {
+    /** The server blackbox render module  */
+    serverModulePath: string;
+    /** The client skeleton file */
+    clientModulePath: string;
+  };
 }
 
 export interface IconConfig {
@@ -624,5 +642,7 @@ export function getOrAddProjectLock(
 }
 
 export function isPageAwarePlatform(platform: string): boolean {
-  return platform === "nextjs" || platform === "gatsby";
+  return (
+    platform === "nextjs" || platform === "gatsby" || platform === "tanstack"
+  );
 }

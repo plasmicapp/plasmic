@@ -1,8 +1,15 @@
-// eslint-disable-next-line @typescript-eslint/no-restricted-imports
-import { OpenAIWrapper } from "@/wab/server/copilot/llms";
+import { tokenTypes } from "@/wab/commons/StyleToken";
+import { CopilotImage, CopilotToken } from "@/wab/shared/ApiSchema";
 import { DataSourceSchema } from "@plasmicapp/data-sources";
 import GPT3Tokenizer from "gpt3-tokenizer";
-import { CreateChatCompletionRequest } from "openai";
+import OpenAI from "openai";
+import {
+  ChatCompletion,
+  ChatCompletionCreateParamsNonStreaming,
+  ChatCompletionRole,
+} from "openai/resources/chat/completions";
+import { ResponseCreateParamsBase } from "openai/resources/responses/responses";
+import { z } from "zod";
 
 export interface Issue {
   message: string;
@@ -20,6 +27,13 @@ export const humanJson = (x: any) => mdCode(JSON.stringify(x, null, 2), "");
 export const json = (x: any) => mdCode(JSON.stringify(x), "");
 export const nakedJson = (x: any) => JSON.stringify(x, null, 2);
 export const typescript = (x: string) => mdCode(x, "ts");
+
+export type CreateChatCompletionRequest =
+  ChatCompletionCreateParamsNonStreaming;
+
+export type CreateChatCompletionRequestOptions = OpenAI.RequestOptions;
+
+export type ChatCompletionRequestMessageRoleEnum = ChatCompletionRole;
 
 export function showCompletionRequest(
   createChatCompletionRequest: CreateChatCompletionRequest
@@ -39,10 +53,7 @@ ${chat}
 `.trim();
 }
 
-export type WholeChatCompletionResponse = Pick<
-  Awaited<ReturnType<OpenAIWrapper["createChatCompletion"]>>,
-  "data"
->;
+export type WholeChatCompletionResponse = ChatCompletion;
 
 export interface ModelInteraction {
   request: Promise<CreateChatCompletionRequest>;
@@ -76,3 +87,43 @@ export interface CopilotSqlCodeChainProps {
   ) => Promise<WholeChatCompletionResponse>;
   goal: string;
 }
+
+export type LLMParseResponsesRequest = ResponseCreateParamsBase;
+
+export interface CopilotUiChainProps {
+  goal: string;
+  images?: Array<CopilotImage>;
+  tokens?: CopilotToken[];
+  isPublicMode?: boolean;
+}
+
+// Structured Response schemas
+const CopilotUiGenerateHtmlActionSchema = z.object({
+  name: z.literal("insert-html"),
+  data: z.object({
+    html: z.string(),
+  }),
+});
+
+const CopilotUiTokenActionSchema = z.object({
+  name: z.literal("add-token"),
+  data: z.object({
+    tokenType: z.enum(tokenTypes),
+    name: z
+      .string()
+      .describe(
+        "A unique token name. Make sure it's in the format of existing tokens if available"
+      ),
+    value: z
+      .string()
+      .describe("Token value including unit such as 10px, 1.5rem, #fff123 etc"),
+  }),
+});
+
+export const CopilotUiActionsSchema = z.object({
+  actions: z.array(
+    z.union([CopilotUiGenerateHtmlActionSchema, CopilotUiTokenActionSchema])
+  ),
+});
+
+export type CopilotUiActions = z.infer<typeof CopilotUiActionsSchema>;

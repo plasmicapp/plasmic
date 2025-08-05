@@ -27,12 +27,11 @@ import {
 } from "@/wab/shared/core/components";
 import { DEVFLAGS } from "@/wab/shared/devflags";
 import { LintIssue, LintIssueType } from "@/wab/shared/linting/lint-types";
-import { lintSite as lintUnprotectedDataQueries } from "@/wab/shared/linting/lint-unprotected-data-queries";
+import { lintUnprotectedDataQueries } from "@/wab/shared/linting/lint-unprotected-data-queries";
 import { lintSite } from "@/wab/shared/linting/lint-utils";
 import { Component, isKnownComponent } from "@/wab/shared/model/classes";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { Empty, Popover, Space, notification } from "antd";
-import { groupBy } from "lodash";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { useState } from "react";
@@ -59,23 +58,24 @@ const issueTypeToLabel: { [key in LintIssueType]: string } = {
   "non-css-screen-variant-override": "Non-CSS overrides in responsive variants",
   "invalid-dom-nesting": "Invalid nesting",
   "invalid-tpl-nesting": "Invalid nesting",
+  "choice-prop-values": "Component prop allowed values",
   "invisible-element": "Always-invisible elements",
   "unprotected-data-query": "Unprotected data queries",
 };
 
 const hiddenIssueTypes: LintIssueType[] = ["suboptimal-varianted-visibility"];
 
-const issueLabelToTypes: { [key: string]: LintIssueType[] } =
-  Object.fromEntries(
-    Object.entries(
-      groupBy(
-        (Object.entries(issueTypeToLabel) as [LintIssueType, string][]).filter(
-          ([type, label]) => !hiddenIssueTypes.includes(type)
-        ),
-        ([type, label]) => label
-      )
-    ).map(([label, issues]) => [label, issues.map(([type, _label]) => type)])
-  );
+const issueLabelToTypes: { [key: string]: LintIssueType[] } = {};
+
+for (const [type, label] of Object.entries(issueTypeToLabel)) {
+  if (hiddenIssueTypes.includes(type as LintIssueType)) {
+    continue;
+  }
+  if (!issueLabelToTypes[label]) {
+    issueLabelToTypes[label] = [];
+  }
+  issueLabelToTypes[label].push(type as LintIssueType);
+}
 
 const LeftLintIssuesPanel = React.forwardRef(LeftLintIssuesPanel_);
 export default LeftLintIssuesPanel;
@@ -89,7 +89,7 @@ const SiteIssuesList = observer(function SiteIssuesList() {
     studioCtx.siteInfo.id
   );
 
-  const siteIssues = lintSite(site);
+  const siteIssues = lintSite(site, studioCtx);
   const [domIssues, setDomIssues] = React.useState<LintIssue[]>([]);
   const unprotectedDataQueriesIssues = lintUnprotectedDataQueries(
     site,
@@ -120,19 +120,18 @@ const SiteIssuesList = observer(function SiteIssuesList() {
     (issue) => issue.component
   );
 
-  const items: ItemOrGroup<Component | LintIssueType, LintIssue>[] = Array.from(
-    issuesByComponent.entries()
-  ).map(([component, issues]) => ({
+  const items: ItemOrGroup<Component | LintIssueType, LintIssue>[] = [
+    ...issuesByComponent,
+  ].map(([component, issues]) => ({
     type: "group" as const,
     group: component,
     key: component.uuid,
-    items: Array.from(xGroupBy(issues, (i) => i.type).entries()).flatMap(
-      ([type, typeIssues]) =>
-        typeIssues.map((issue) => ({
-          type: "item" as const,
-          item: issue,
-          key: issue.key,
-        }))
+    items: [...xGroupBy(issues, (i) => i.type)].flatMap(([_type, typeIssues]) =>
+      typeIssues.map((issue) => ({
+        type: "item" as const,
+        item: issue,
+        key: issue.key,
+      }))
     ),
   }));
 

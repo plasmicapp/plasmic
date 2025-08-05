@@ -1,4 +1,3 @@
-import { getComponentPropTypes } from "@/wab/client/components/sidebar-tabs/ComponentPropsSection";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { unwrap } from "@/wab/commons/failable-utils";
 import { getSingleTplComponentFromArg } from "@/wab/shared/SlotUtils";
@@ -17,7 +16,8 @@ import {
   createLabelRenderExprFromFormItem,
   inputTypeToElementSchema,
 } from "@/wab/shared/code-components/simplified-mode/Forms";
-import { assert, ensure } from "@/wab/shared/common";
+import { assert, ensure, spawn } from "@/wab/shared/common";
+import { getComponentPropTypes } from "@/wab/shared/component-props";
 import {
   ExprCtx,
   clone as cloneExpr,
@@ -453,10 +453,13 @@ export function updateFormComponentMode(
     const { formItems: newFormItems, firstButton } =
       extractFormItemsFromAdvancedMode(tpl);
     // remove old submit slot
-    viewCtx.viewOps.tryDelete({
-      tpl: submitSlot,
-      forceDelete: true,
-    });
+    spawn(
+      viewCtx.viewOps.tryDelete({
+        tpl: submitSlot,
+        forceDelete: true,
+        skipCommentsConfirmation: true,
+      })
+    );
 
     if (firstButton) {
       viewCtx.viewOps.insertAsChild(cloneTpl(firstButton), submitSlot);
@@ -481,22 +484,30 @@ export function updateFormComponentMode(
       );
 
     //delete chilren
-    viewCtx.viewOps.tryDelete({
-      tpl: childrenSlot,
-      forceDelete: true,
-    });
+    spawn(
+      viewCtx.viewOps.tryDelete({
+        tpl: childrenSlot,
+        forceDelete: true,
+        skipCommentsConfirmation: true,
+      })
+    );
     viewCtx.setStudioFocusByTpl(tpl);
   } else if (newMode === "advanced") {
     //delete chilren
-    viewCtx.viewOps.tryDelete({
-      tpl: childrenSlot,
-      forceDelete: true,
-    });
+    spawn(
+      viewCtx.viewOps.tryDelete({
+        tpl: childrenSlot,
+        forceDelete: true,
+        skipCommentsConfirmation: true,
+      })
+    );
     if (formItems && Array.isArray(formItems)) {
       for (const formItem of formItems) {
-        const inputType: InputType = isKnownExpr(formItem.inputType)
-          ? tryExtractJson(formItem.inputType)
-          : formItem.inputType;
+        const inputType = (
+          isKnownExpr(formItem.inputType)
+            ? tryExtractJson(formItem.inputType)
+            : formItem.inputType
+        ) as InputType | undefined;
         const labelRenderExpr = createLabelRenderExprFromFormItem(
           formItem,
           baseVariant
@@ -515,6 +526,7 @@ export function updateFormComponentMode(
         ).tpl as TplComponent;
 
         if (
+          inputType &&
           [InputType.Select, InputType.RadioGroup].includes(inputType) &&
           formItem.options
         ) {
@@ -584,10 +596,13 @@ export function updateFormComponentMode(
               `"${inputTpl.component.name}" should have a "children" slot`
             ),
           });
-          viewCtx.viewOps.tryDelete({
-            tpl: checkboxChildrenSlot,
-            forceDelete: true,
-          });
+          spawn(
+            viewCtx.viewOps.tryDelete({
+              tpl: checkboxChildrenSlot,
+              forceDelete: true,
+              skipCommentsConfirmation: true,
+            })
+          );
           viewCtx.viewOps.insertAsChild(labelRenderExpr.tpl[0], inputTpl);
         }
       }
@@ -610,10 +625,13 @@ export function updateFormComponentMode(
         submitSlot
       );
     }
-    viewCtx.viewOps.tryDelete({
-      tpl: submitSlot,
-      forceDelete: true,
-    });
+    spawn(
+      viewCtx.viewOps.tryDelete({
+        tpl: submitSlot,
+        forceDelete: true,
+        skipCommentsConfirmation: true,
+      })
+    );
     unsetTplComponentArg(tpl, getParamVariable(tpl, "formItems"));
     unsetTplComponentArg(tpl, getParamVariable(tpl, "dataFormItems"));
     unsetTplComponentArg(tpl, getParamVariable(tpl, "data"));

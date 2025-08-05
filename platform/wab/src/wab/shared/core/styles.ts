@@ -21,12 +21,7 @@ import {
 import { DeepReadonly, DeepReadonlyArray } from "@/wab/commons/types";
 import * as cssPegParser from "@/wab/gen/cssPegParser";
 import { getArenaFrames } from "@/wab/shared/Arenas";
-import {
-  RSH,
-  RuleSetHelpers,
-  readonlyRSH,
-  splitCssValue,
-} from "@/wab/shared/RuleSetHelpers";
+import { RSH, RuleSetHelpers, readonlyRSH } from "@/wab/shared/RuleSetHelpers";
 import { isStyledTplSlot } from "@/wab/shared/SlotUtils";
 import { $$$ } from "@/wab/shared/TplQuery";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
@@ -138,8 +133,10 @@ import {
   getCssOverrides,
   getTagsWithCssOverrides,
   normProp,
+  parseCss,
   showCssShorthand,
 } from "@/wab/shared/css";
+import { splitCssValue } from "@/wab/shared/css/parse";
 import { imageDataUriToBlob } from "@/wab/shared/data-urls";
 import { ThemeTagSource } from "@/wab/shared/defined-indicator";
 import { getProjectFlags } from "@/wab/shared/devflags";
@@ -161,6 +158,7 @@ import {
   Site,
   StyleExpr,
   StyleToken,
+  StyleTokenOverride,
   Theme,
   ThemeLayoutSettings,
   ThemeStyle,
@@ -2093,7 +2091,6 @@ export interface TriggerCondition {
   hookName: string;
   isOpposite?: boolean;
   alwaysByHook?: boolean;
-  eventPropNames?: string[];
 }
 
 export function getTriggerableSelectors(sv: Variant) {
@@ -2182,7 +2179,6 @@ export const pseudoSelectors = (() => {
               hookName: trigger.hookName,
               isOpposite: true,
               alwaysByHook: trigger.alwaysByHook,
-              eventPropNames: trigger.eventPropNames,
             }
           : undefined
       );
@@ -2201,11 +2197,9 @@ export const pseudoSelectors = (() => {
   // them to code-merger's CodeVersion.rename list!
   addSelector("Hover", ":hover", undefined, false, {
     hookName: "useHover",
-    eventPropNames: ["onMouseEnter", "onMouseLeave"],
   });
   addSelector("Pressed", ":active", undefined, false, {
     hookName: "usePressed",
-    eventPropNames: ["onMouseDown", "onMouseUp"],
   });
   addSelector(
     "Focused",
@@ -2214,7 +2208,6 @@ export const pseudoSelectors = (() => {
     false,
     {
       hookName: "useFocused",
-      eventPropNames: ["onFocus", "onBlur"],
     }
   );
   addSelector(
@@ -2226,12 +2219,10 @@ export const pseudoSelectors = (() => {
       hookName: "useFocusVisible",
       // No wide cross browser support yet
       alwaysByHook: true,
-      eventPropNames: ["onFocus", "onBlur"],
     }
   );
   addSelector("Focused Within", ":focus-within", undefined, true, {
     hookName: "useFocusedWithin",
-    eventPropNames: ["onFocus", "onBlur"],
   });
   addSelector(
     "Focus Visible Within",
@@ -2242,7 +2233,6 @@ export const pseudoSelectors = (() => {
       hookName: "useFocusVisibleWithin",
       // Not a real selector; https://github.com/WICG/focus-visible/issues/151
       alwaysByHook: true,
-      eventPropNames: ["onFocus", "onBlur"],
     }
   );
   addSelector("Disabled", ":disabled", ["input", "textarea", "button"], false);
@@ -2897,6 +2887,14 @@ export function cloneStyleToken(token: StyleToken) {
   });
 }
 
+export function cloneStyleTokenOverride(override: StyleTokenOverride) {
+  return new StyleTokenOverride({
+    token: override.token,
+    value: override.value,
+    variantedValues: override.variantedValues.map(cloneVariantedValue),
+  });
+}
+
 export function cloneMixin(mixin: Mixin) {
   return new Mixin({
     name: mixin.name,
@@ -3237,7 +3235,7 @@ export function deriveBackgroundStyles(
   backgroundCssValue: string
 ) {
   const vals: string[] = splitCssValue("background", backgroundCssValue);
-  const lastLayer: BackgroundLayer = cssPegParser.parse(vals[vals.length - 1], {
+  const lastLayer: BackgroundLayer = parseCss(vals[vals.length - 1], {
     startRule: "backgroundLayer",
   });
   ensureInstance(lastLayer, BackgroundLayer);
@@ -3253,7 +3251,7 @@ export function deriveBackgroundStyles(
         // might have been modified due to preferBackgroundColorOverColorFill
         // and not be recognized by our parser
         .slice(0, vals.length - 1)
-        .map((v) => cssPegParser.parse(v, { startRule: "backgroundLayer" })),
+        .map((v) => parseCss(v, { startRule: "backgroundLayer" })),
       lastLayer,
     ];
     // "background-clip: text" must be set globally, separated and after

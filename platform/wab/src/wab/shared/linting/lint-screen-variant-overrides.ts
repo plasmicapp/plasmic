@@ -12,8 +12,8 @@ import {
 
 const TYPE = "non-css-screen-variant-override";
 
-export const lintSite = maybeComputedFn(
-  function lintSite(site: Site) {
+export const lintScreenVariantOverrides = maybeComputedFn(
+  function lintScreenVariantOverrides(site: Site) {
     const issues: NonCssScreenVariantOverrideLintIssue[] = [];
     for (const comp of site.components) {
       issues.push(...lintComponent(comp));
@@ -61,7 +61,6 @@ const lintTpl = maybeComputedFn(
 
 const lintVs = maybeComputedFn(
   function lintVs(component: Component, tpl: TplNode, vs: VariantSetting) {
-    console.log("LINTING", component.name, tpl.uuid);
     const issues: NonCssScreenVariantOverrideLintIssue[] = [];
     for (const attr of Object.keys(vs.attrs)) {
       issues.push({

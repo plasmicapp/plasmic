@@ -1,24 +1,44 @@
 import { Mailer } from "@/wab/server/emails/Mailer";
+import { TemplateCommentsProps } from "@/wab/server/emails/templates/TemplateComments";
+import { generateEmailHtml } from "@/wab/server/emails/tools/generate";
 import {
   Comment,
   CommentReaction,
+  CommentThread,
   CommentThreadHistory,
   Project,
   User,
 } from "@/wab/server/entities/Entities";
-import { CommentThreadId, ProjectId } from "@/wab/shared/ApiSchema";
-import { fullName } from "@/wab/shared/ApiSchemaUtil";
+import { NotificationsByProject } from "@/wab/server/scripts/send-comments-notifications";
+import { MainBranchId } from "@/wab/shared/ApiSchema";
+import {
+  fullName,
+  fullNameLastAbbreviated,
+  getUserEmail,
+} from "@/wab/shared/ApiSchemaUtil";
+import { extractMentionedEmails, REACTIONS } from "@/wab/shared/comments-utils";
+import { assert } from "@/wab/shared/common";
+import { mkProjectLocation } from "@/wab/shared/route/app-routes";
 import { createProjectUrl } from "@/wab/shared/urls";
 
 export interface Notification {
   user: User;
   project: Project;
   rootComment: Comment;
+  commentThread: CommentThread;
   entry: Entry;
   timestamp: Date;
 }
 
 export type Entry = CommentEntry | ReactionEntry | HistoryEntry;
+
+function isCommentEntry(entry: Entry): entry is CommentEntry {
+  return entry.type === "COMMENT";
+}
+
+function isReactionEntry(entry: Entry): entry is ReactionEntry {
+  return entry.type === "REACTION";
+}
 
 export interface CommentEntry {
   type: "COMMENT";
@@ -35,34 +55,48 @@ export interface HistoryEntry {
   history: CommentThreadHistory;
 }
 
+export const getThreadUrl = (
+  host: string,
+  projectId: string,
+  threadId: string,
+  branchName?: string
+) => {
+  const projectLocation = mkProjectLocation({
+    projectId: projectId,
+    branchName: branchName || MainBranchId,
+    threadId,
+    slug: undefined,
+    branchVersion: "latest",
+    arenaType: undefined,
+    arenaUuidOrNameOrPath: undefined,
+  });
+  return `${host}${projectLocation.pathname}${projectLocation.search || ""}`;
+};
+
 const getUserFullName = (user: User | null) =>
   user ? fullName(user) : "Unknown User";
 
-function getNotification(notification: Notification) {
-  const { entry } = notification;
-  if (entry.type === "COMMENT") {
-    const { comment } = entry;
-    const userFullName = getUserFullName(comment.createdBy);
-    return `<p>${comment.body} by <strong>${userFullName}</strong></p>`;
+class ParticipantManager {
+  private participants = new Map<string, User>();
+
+  addParticipant(user: User | null | undefined) {
+    assert(user, "participant user missing");
+    this.participants.set(user.id, user);
   }
 
-  if (entry.type === "THREAD_HISTORY") {
-    const { history } = entry;
-    const userFullName = getUserFullName(history.createdBy);
-    return `<p>Thread was resolved by <strong>${userFullName}</strong></p>`;
+  getFormattedString(): string {
+    const participants = Array.from(this.participants.values());
+    if (participants.length === 0) {
+      return "";
+    }
+
+    const p1 = fullNameLastAbbreviated(participants[0]);
+    if (this.participants.size === 1) {
+      return p1;
+    } else {
+      return `${p1} and others`;
+    }
   }
-
-  const { reaction } = entry;
-  const userFullName = getUserFullName(reaction.createdBy);
-  return `<p><strong>${userFullName}</strong> reacted to your comment</p>`;
-}
-
-function getRootNotification(comment: Comment) {
-  return `<p>${comment.body} ${
-    comment.createdBy
-      ? `by <strong>${comment.createdBy.firstName} ${comment.createdBy.lastName}</strong>`
-      : ""
-  }</p>`;
 }
 
 /**
@@ -70,76 +104,158 @@ function getRootNotification(comment: Comment) {
  */
 export async function sendUserNotificationEmail(
   mailer: Mailer,
-  projectWiseUserNotification: Map<
-    ProjectId,
-    Map<CommentThreadId, Notification[]>
-  >,
+  projectWiseUserNotification: NotificationsByProject,
   host: string,
   mailFrom: string,
   mailBcc?: string
 ) {
-  let emailBodyContent = ``;
-  let userEmail = "";
-
   // Process each project in the Map
-  for (const [projectId, threadNotifications] of projectWiseUserNotification) {
-    const projectUrl = createProjectUrl(host, projectId);
+  for (const [projectId, branchNotifications] of projectWiseUserNotification) {
+    for (const [_branchId, threadNotifications] of branchNotifications) {
+      const notifications = Array.from(threadNotifications.values()).flat();
 
-    // Access the project name from the first notification in the thread
-    const projectName = threadNotifications.values().next().value[0]
-      .project.name;
-
-    emailBodyContent += `<div><h2>New updates in project: <a href="${projectUrl}">${projectName}</a></h2>`;
-
-    // Process each thread in the project
-
-    for (const [threadId, notifications] of threadNotifications) {
       if (notifications.length === 0) {
         continue;
       }
 
-      userEmail = notifications[0].user.email;
+      const { user, project, commentThread } = notifications[0];
+      const projectName = project.name;
+      const branchName = commentThread.branch?.name;
+      const projectUrl = createProjectUrl(host, projectId, branchName);
 
-      emailBodyContent += `<hr>${getRootNotification(
-        notifications[0].rootComment
-      )}`;
+      const userEmail = getUserEmail(user);
+      const userName = getUserFullName(user);
 
-      // Skip the first notification if it's a COMMENT and its comment is the same as rootComment
-      const filteredNotifications =
-        notifications[0].entry.type === "COMMENT" &&
-        notifications[0].entry.comment.id === notifications[0].rootComment.id
-          ? notifications.slice(1)
-          : notifications;
+      const participantManager = new ParticipantManager();
 
-      if (filteredNotifications.length === 0) {
-        continue; // Skip if nothing remains after filtering
+      if (!userEmail) {
+        return; // No emails to send if no valid notifications exist
       }
 
-      emailBodyContent += `<ul>`;
-      filteredNotifications.forEach((notification) => {
-        emailBodyContent += `<li>${getNotification(notification)}</li>`;
+      const templateProps: TemplateCommentsProps = {
+        projectName,
+        projectUrl,
+        userName,
+        mentions: [],
+        replies: [],
+        comments: [],
+        reactions: [],
+        resolutions: [],
+      };
+
+      notifications.forEach((notification) => {
+        const {
+          entry,
+          rootComment,
+          commentThread: notificationCommentThread,
+        } = notification;
+
+        if (isCommentEntry(entry)) {
+          const { comment } = entry;
+          participantManager.addParticipant(comment.createdBy);
+          const commentData = {
+            name: getUserFullName(comment.createdBy),
+            avatarUrl: comment.createdBy?.avatarUrl,
+            commentId: comment.id,
+            comment: comment.body,
+            link: getThreadUrl(
+              host,
+              project.id,
+              notificationCommentThread.id,
+              branchName
+            ),
+          };
+          const mentionedEmails = extractMentionedEmails(comment.body);
+          if (mentionedEmails.includes(userEmail)) {
+            templateProps.mentions.push(commentData);
+          } else if (rootComment.id === comment.id) {
+            templateProps.comments.push(commentData);
+          } else {
+            const existingRootComment = templateProps.replies.find(
+              (replyData) => replyData.rootComment.id === rootComment.id
+            );
+            if (existingRootComment) {
+              existingRootComment.replies.push(commentData);
+            } else {
+              templateProps.replies.push({
+                rootComment: {
+                  name: getUserFullName(rootComment.createdBy),
+                  body: rootComment.body ?? "",
+                  id: rootComment.id,
+                  avatarUrl: rootComment.createdBy?.avatarUrl,
+                },
+                link: getThreadUrl(
+                  host,
+                  project.id,
+                  notificationCommentThread.id,
+                  branchName
+                ),
+                replies: [commentData],
+              });
+            }
+          }
+        } else if (isReactionEntry(entry)) {
+          const { reaction } = entry;
+          participantManager.addParticipant(reaction.createdBy);
+          const name = getUserFullName(reaction.createdBy);
+          const existingReactionData = templateProps.reactions.find(
+            (r) => r.commentId === reaction.commentId
+          );
+          if (existingReactionData) {
+            existingReactionData.reactions.push({
+              name,
+              emoji: REACTIONS[reaction.data.emojiName],
+            });
+          } else {
+            templateProps.reactions.push({
+              commentId: reaction.commentId,
+              comment: reaction.comment?.body ?? "",
+              link: getThreadUrl(
+                host,
+                project.id,
+                notificationCommentThread.id,
+                branchName
+              ),
+              reactions: [{ name, emoji: REACTIONS[reaction.data.emojiName] }],
+            });
+          }
+        } else {
+          const { history } = entry;
+          participantManager.addParticipant(history.createdBy);
+          const name = getUserFullName(history.createdBy);
+          templateProps.resolutions.push({
+            name,
+            resolved: history.resolved,
+            link: getThreadUrl(
+              host,
+              project.id,
+              notificationCommentThread.id,
+              branchName
+            ),
+            rootComment: {
+              body: rootComment.body ?? "",
+              name: getUserFullName(rootComment.createdBy),
+              avatarUrl: rootComment.createdBy?.avatarUrl,
+            },
+          });
+        }
       });
-      emailBodyContent += `</ul>`;
+
+      const html = await generateEmailHtml("Comments", templateProps);
+
+      let projectBranch = projectName;
+      if (branchName) {
+        projectBranch += ` (${branchName})`;
+      }
+
+      // Send the email
+      await mailer.sendMail({
+        from: mailFrom,
+        to: userEmail,
+        bcc: mailBcc,
+        subject: `New activity in ${projectBranch} from ${participantManager.getFormattedString()}`,
+        html,
+      });
     }
-
-    emailBodyContent += `</div>`;
   }
-
-  if (!userEmail) {
-    return; // No emails to send if no valid notifications exist
-  }
-
-  const emailBody = `<p>
-    You have new activity in your projects:</p>
-      ${emailBodyContent}
-    <p>If you wish to modify your notification settings, please visit the appropriate section in Plasmic Studio.</p>`;
-
-  // Send the email
-  await mailer.sendMail({
-    from: mailFrom,
-    to: userEmail,
-    bcc: mailBcc,
-    subject: "New Activity in Your Projects",
-    html: emailBody,
-  });
 }

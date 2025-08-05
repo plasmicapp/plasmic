@@ -5,6 +5,7 @@ import {
   TeamId,
   WorkspaceId,
 } from "@/wab/shared/ApiSchema";
+import { fullName } from "@/wab/shared/ApiSchemaUtil";
 import { withoutNils } from "@/wab/shared/common";
 import { AccessLevel, accessLevelRank } from "@/wab/shared/EntUtil";
 import { ORGANIZATION_LOWER } from "@/wab/shared/Labels";
@@ -184,6 +185,14 @@ export function filterDirectResourcePerms(
 }
 
 export function getUniqueUsersFromApiPermissions(permissions: ApiPermission[]) {
-  const users = withoutNils(permissions.map((permission) => permission.user));
+  const users = withoutNils(
+    permissions.map((permission) => permission.user)
+  ).sort((a, b) => {
+    const userAFullName = fullName(a);
+    const userBFullName = fullName(b);
+    return userAFullName
+      .toLowerCase()
+      .localeCompare(userBFullName.toLowerCase());
+  });
   return uniqBy(users, (user) => user.id);
 }

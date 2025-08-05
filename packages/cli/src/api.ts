@@ -1,5 +1,5 @@
 import axios, { AxiosError } from "axios";
-import socketio, { Socket } from "socket.io-client";
+import socketio from "socket.io-client";
 import {
   AuthConfig,
   CodeConfig,
@@ -33,6 +33,19 @@ export interface ComponentBundle {
   isPage: boolean;
   path?: string;
   plumeType?: string;
+  rscMetadata?: {
+    // When we generate code for RSC, we generate two additional files per page, those files are used to increment the user experience,
+    // it's added one managed server file which is responsible for performing the server actions and one skeleton file which allows the
+    // user to add client side logic to the page (the `renderModule` will contain a server component for entry point allowing the user to
+    // perform additional server operations).
+    pageWrappers: Record<
+      "client" | "server",
+      {
+        module: string;
+        fileName: string;
+      }
+    >;
+  };
 }
 
 export interface GlobalVariantBundle {
@@ -440,7 +453,7 @@ export class PlasmicApi {
     return result.data as ProjectIconsResponse;
   }
 
-  connectSocket(): Socket {
+  connectSocket(): ReturnType<typeof socketio> {
     const socket = socketio(this.studioHost, {
       path: `/api/v1/socket`,
       transportOptions: {

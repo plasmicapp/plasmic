@@ -25,7 +25,7 @@ import {
   SUBSTITUTED_GLOBAL_VARIANT_HOOKS,
   ServerProvidedContext,
   ServerProvidedData,
-  customFunctionImportAlias,
+  internalSetRegisteredFunction,
 } from "./loader-shared";
 import { swrSerialize } from "./swr-util";
 import {
@@ -481,7 +481,7 @@ export class InternalPrepassPlasmicLoader extends BaseInternalPlasmicComponentLo
     fn: F,
     meta: CustomFunctionMeta<F>
   ) {
-    REGISTERED_CUSTOM_FUNCTIONS[customFunctionImportAlias(meta)] = fn;
+    internalSetRegisteredFunction(fn, meta);
   }
 
   registerGlobalContext<T extends React.ComponentType<any>>(

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo } from "react";
+import React, { useCallback } from "react";
 import {
   ComboBox,
   ComboBoxProps,
@@ -11,27 +11,24 @@ import {
   PlasmicListBoxContext,
   PlasmicPopoverTriggerContext,
 } from "./contexts";
-import { OptionsItemIdManager } from "./OptionsItemIdManager";
+import { useIdManager } from "./OptionsItemIdManager";
 import { BUTTON_COMPONENT_NAME } from "./registerButton";
 import { INPUT_COMPONENT_NAME } from "./registerInput";
 import { LABEL_COMPONENT_NAME } from "./registerLabel";
 import { LIST_BOX_COMPONENT_NAME } from "./registerListBox";
 import { POPOVER_COMPONENT_NAME } from "./registerPopover";
 import {
+  BaseControlContextDataForLists,
   HasControlContextData,
   makeComponentName,
+  PlasmicCanvasProps,
   Registerable,
   registerComponentHelper,
   useAutoOpen,
-  WithPlasmicCanvasComponentInfo,
 } from "./utils";
 import { pickAriaComponentVariants, WithVariants } from "./variant-utils";
 
 const COMBOBOX_NAME = makeComponentName("combobox");
-
-export interface BaseComboboxControlContextData {
-  itemIds: string[];
-}
 
 const COMBOBOX_VARIANTS = ["disabled" as const];
 
@@ -40,9 +37,9 @@ const { variants: COMBOBOX_VARIANTS_DATA } =
 
 export interface BaseComboboxProps
   extends ComboBoxProps<{}>,
-    WithPlasmicCanvasComponentInfo,
+    PlasmicCanvasProps,
     WithVariants<typeof COMBOBOX_VARIANTS>,
-    HasControlContextData<BaseComboboxControlContextData> {
+    HasControlContextData<BaseControlContextDataForLists> {
   children?: React.ReactNode;
   isOpen?: boolean;
   className?: string;
@@ -59,7 +56,7 @@ export interface BaseComboboxProps
   Note: It cannot be used as a hook like useAutoOpen() within the BaseSelect component
   because it needs access to SelectStateContext, which is only created in the BaseSelect component's render function.
   */
-function ComboboxAutoOpen(props: any) {
+function ComboboxAutoOpen(props: PlasmicCanvasProps) {
   const { open, close } = React.useContext(ComboBoxStateContext) ?? {};
 
   useAutoOpen({ props, open, close });
@@ -72,6 +69,8 @@ export function BaseComboBox(props: BaseComboboxProps) {
     children,
     setControlContextData,
     plasmicUpdateVariant,
+    __plasmic_selection_prop__,
+    plasmicNotifyAutoOpenedContent,
     className,
     isOpen: _isOpen, // uncontrolled if not selected in canvas/edit mode
     ...rest
@@ -87,15 +86,16 @@ export function BaseComboBox(props: BaseComboboxProps) {
     [className, plasmicUpdateVariant]
   );
 
-  const idManager = useMemo(() => new OptionsItemIdManager(), []);
-
-  useEffect(() => {
-    idManager.subscribe((ids: string[]) => {
+  const updateIds = useCallback(
+    (ids: string[]) => {
       setControlContextData?.({
         itemIds: ids,
       });
-    });
-  }, []);
+    },
+    [setControlContextData]
+  );
+
+  const idManager = useIdManager(updateIds);
 
   return (
     <ComboBox className={classNameProp} {...rest} style={COMMON_STYLES}>
@@ -113,7 +113,10 @@ export function BaseComboBox(props: BaseComboboxProps) {
         >
           {/* PlasmicInputContext is used by BaseInput */}
           <PlasmicInputContext.Provider value={{ isUncontrolled: true }}>
-            <ComboboxAutoOpen {...props} />
+            <ComboboxAutoOpen
+              __plasmic_selection_prop__={__plasmic_selection_prop__}
+              plasmicNotifyAutoOpenedContent={plasmicNotifyAutoOpenedContent}
+            />
             {children}
           </PlasmicInputContext.Provider>
         </PlasmicListBoxContext.Provider>

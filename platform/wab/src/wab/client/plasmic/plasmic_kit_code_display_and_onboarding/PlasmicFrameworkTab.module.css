@@ -1,6 +1,6 @@
 .root {
-  flex-direction: column;
   display: flex;
+  flex-direction: column;
   width: 64px;
   height: 64px;
   position: relative;
@@ -16,8 +16,8 @@
 }
 .root > :global(.__wab_flex-container) {
   flex-direction: column;
-  justify-content: space-evenly;
   align-items: center;
+  justify-content: space-evenly;
   align-content: unset;
   margin-top: calc(0px - 8px);
   height: calc(100% + 8px);

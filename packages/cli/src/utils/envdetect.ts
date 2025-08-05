@@ -46,3 +46,12 @@ export function detectCreateReactApp() {
     return false;
   }
 }
+
+export function detectTanStackApp() {
+  try {
+    const packageJsonContent = getParsedPackageJson();
+    return "@tanstack/react-router" in packageJsonContent.dependencies;
+  } catch {
+    return false;
+  }
+}

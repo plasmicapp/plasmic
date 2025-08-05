@@ -28,6 +28,7 @@
 }
 .root:focus-within {
   box-shadow: inset 0px 0px 0px 1px #0091ff80;
+  outline: none;
 }
 .rootstyleType_white:hover {
   background: var(--token-p-rw5DRJTx);
@@ -108,6 +109,9 @@
 }
 .root .textbox::placeholder {
   color: var(--token-vtL-9XzNub);
+}
+.root .textbox:focus {
+  outline: none;
 }
 .suffixContainer {
   display: flex;

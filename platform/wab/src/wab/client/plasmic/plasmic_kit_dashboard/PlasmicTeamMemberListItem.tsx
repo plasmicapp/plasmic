@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -20,8 +20,10 @@ import {
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  ensureGlobalVariants,
   generateStateOnChangeProp,
   generateStateValueProp,
+  hasVariant,
   renderPlasmicSlot,
   useDollarState,
 } from "@plasmicapp/react-web";
@@ -31,6 +33,8 @@ import MenuButton from "../../components/widgets/MenuButton"; // plasmic-import:
 import Select from "../../components/widgets/Select"; // plasmic-import: j_4IQyOWK2b/component
 import Select__Option from "../../components/widgets/Select__Option"; // plasmic-import: rr-LWdMni2G/component
 
+import { useEnvironment } from "../plasmic_kit_pricing/PlasmicGlobalVariant__Environment"; // plasmic-import: hIjF9NLAUKG-/globalVariant
+
 import "@plasmicapp/react-web/lib/plasmic.css";
 
 import plasmic_plasmic_kit_pricing_css from "../plasmic_kit_pricing/plasmic_plasmic_kit_pricing.module.css"; // plasmic-import: ehckhYnyDHgCBbV47m9bkf/projectcss
@@ -39,8 +43,8 @@ import projectcss from "../PP__plasmickit_dashboard.module.css"; // plasmic-impo
 import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import sty from "./PlasmicTeamMemberListItem.module.css"; // plasmic-import: gdLJj97tYt/css
 
-import InformationsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__InformationSvg"; // plasmic-import: hqBNVBJWB/icon
-import PlussvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__PlusSvg"; // plasmic-import: sQKgd2GNr/icon
+import InformationSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__InformationSvg"; // plasmic-import: hqBNVBJWB/icon
+import PlusSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__PlusSvg"; // plasmic-import: sQKgd2GNr/icon
 
 createPlasmicElementProxy;
 
@@ -91,7 +95,16 @@ function PlasmicTeamMemberListItem__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
@@ -111,7 +124,6 @@ function PlasmicTeamMemberListItem__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => undefined,
       },
     ],
-
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -119,6 +131,10 @@ function PlasmicTeamMemberListItem__RenderFunc(props: {
     $ctx,
     $queries: {},
     $refs,
+  });
+
+  const globalVariants = ensureGlobalVariants({
+    environment: useEnvironment(),
   });
 
   return (
@@ -138,7 +154,27 @@ function PlasmicTeamMemberListItem__RenderFunc(props: {
         plasmic_plasmic_kit_design_system_deprecated_css.plasmic_tokens,
         plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
         plasmic_plasmic_kit_pricing_css.plasmic_tokens,
-        sty.root
+        sty.root,
+        {
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+        }
       )}
     >
       <div className={classNames(projectcss.all, sty.freeBox__lV3Y)}>
@@ -173,7 +209,6 @@ function PlasmicTeamMemberListItem__RenderFunc(props: {
               {"10"}
             </div>
           ),
-
           value: args.numProjects,
           className: classNames(sty.slotTargetNumProjects),
         })}
@@ -189,17 +224,27 @@ function PlasmicTeamMemberListItem__RenderFunc(props: {
             data-plasmic-override={overrides.role}
             className={classNames("__wab_instance", sty.role)}
             icon={
-              <PlussvgIcon
+              <PlusSvgIcon
                 data-plasmic-name={"svg"}
                 data-plasmic-override={overrides.svg}
                 className={classNames(projectcss.all, sty.svg)}
                 role={"img"}
               />
             }
-            onChange={(...eventArgs) => {
-              generateStateOnChangeProp($state, ["role", "value"])(
-                eventArgs[0]
-              );
+            onChange={async (...eventArgs: any) => {
+              ((...eventArgs) => {
+                generateStateOnChangeProp($state, ["role", "value"])(
+                  eventArgs[0]
+                );
+              }).apply(null, eventArgs);
+
+              if (
+                eventArgs.length > 1 &&
+                eventArgs[1] &&
+                eventArgs[1]._plasmic_state_init_
+              ) {
+                return;
+              }
             }}
             placeholder={
               <div
@@ -256,7 +301,7 @@ function PlasmicTeamMemberListItem__RenderFunc(props: {
               {"None"}
             </Select__Option>
           </Select>
-          <InformationsvgIcon
+          <InformationSvgIcon
             data-plasmic-name={"roleHelp"}
             data-plasmic-override={overrides.roleHelp}
             className={classNames(projectcss.all, sty.roleHelp)}
@@ -299,7 +344,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicTeamMemberListItem__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
@@ -307,15 +351,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicTeamMemberListItem__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicTeamMemberListItem__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicTeamMemberListItem__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+    // Specify args directly as props
+    Omit<PlasmicTeamMemberListItem__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

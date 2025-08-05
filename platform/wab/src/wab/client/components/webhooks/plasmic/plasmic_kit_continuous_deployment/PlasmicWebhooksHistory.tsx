@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -49,9 +49,7 @@ export const PlasmicWebhooksHistory__VariantProps = new Array<VariantPropType>(
   "loading"
 );
 
-export type PlasmicWebhooksHistory__ArgsType = {
-  events?: React.ReactNode;
-};
+export type PlasmicWebhooksHistory__ArgsType = { events?: React.ReactNode };
 type ArgPropType = keyof PlasmicWebhooksHistory__ArgsType;
 export const PlasmicWebhooksHistory__ArgProps = new Array<ArgPropType>(
   "events"
@@ -79,7 +77,16 @@ function PlasmicWebhooksHistory__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
@@ -99,7 +106,6 @@ function PlasmicWebhooksHistory__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.loading,
       },
     ],
-
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -191,7 +197,6 @@ function PlasmicWebhooksHistory__RenderFunc(props: {
                 />
               </React.Fragment>
             ),
-
             value: args.events,
           })}
         </Stack__>
@@ -235,7 +240,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicWebhooksHistory__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
@@ -243,15 +247,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicWebhooksHistory__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicWebhooksHistory__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicWebhooksHistory__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+    // Specify args directly as props
+    Omit<PlasmicWebhooksHistory__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

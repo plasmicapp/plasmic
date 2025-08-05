@@ -21,6 +21,7 @@ interface RawAvatarProps {
   tooltipPlacement?: Side;
   size?: AvatarSize;
   onClick?: () => void;
+  showToolTip?: boolean;
 }
 
 function getInitials(firstName: string, lastName: string, email: string) {
@@ -40,32 +41,38 @@ export function RawAvatar({
   highlight = false,
   size,
   onClick,
+  showToolTip = true,
 }: RawAvatarProps) {
   const showInitials = !children && !imgUrl;
-  return (
+  const AvatarContent = (
+    <div
+      className={classNames(
+        {
+          Avatar: true,
+          Avatar__Small: size === "small",
+          Avatar__Highlight: highlight,
+        },
+        className
+      )}
+      style={{
+        background: showInitials
+          ? Chroma.hsl(simpleHash(name || "???") % 360, 0.8, 0.35).hex()
+          : undefined,
+        ...style,
+      }}
+      onClick={onClick}
+    >
+      {children}
+      {imgUrl && <img src={imgUrl} className={"Avatar__Img"} />}
+      {showInitials && initials}
+    </div>
+  );
+  return showToolTip ? (
     <Tooltip title={name} placement={tooltipPlacement}>
-      <div
-        className={classNames(
-          {
-            Avatar: true,
-            Avatar__Small: size === "small",
-            Avatar__Highlight: highlight,
-          },
-          className
-        )}
-        style={{
-          background: showInitials
-            ? Chroma.hsl(simpleHash(name || "???") % 360, 0.8, 0.35).hex()
-            : undefined,
-          ...style,
-        }}
-        onClick={onClick}
-      >
-        {children}
-        {imgUrl && <img src={imgUrl} className={"Avatar__Img"} />}
-        {showInitials && initials}
-      </div>
+      {AvatarContent}
     </Tooltip>
+  ) : (
+    AvatarContent
   );
 }
 
@@ -76,6 +83,7 @@ interface AvatarProps {
   tooltipPlacement?: Side;
   size?: AvatarSize;
   onClick?: () => void;
+  showToolTip?: boolean;
 }
 
 export function Avatar({
@@ -85,6 +93,7 @@ export function Avatar({
   tooltipPlacement,
   size,
   onClick,
+  showToolTip = true,
 }: AvatarProps) {
   return (
     <RawAvatar
@@ -100,6 +109,7 @@ export function Avatar({
       style={style}
       tooltipPlacement={tooltipPlacement}
       onClick={onClick}
+      showToolTip={showToolTip}
     />
   );
 }

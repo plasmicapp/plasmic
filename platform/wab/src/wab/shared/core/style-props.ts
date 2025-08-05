@@ -162,14 +162,14 @@ export const defaultCopyableStyleNames = [
   "flex-row-gap",
   ...FAKE_FLEX_CONTAINER_PROPS,
 ];
-export const nonExtractableStyleNames = new Set([
+const nonExtractableStyleNames = new Set([
   "left",
   "right",
   "top",
   "bottom",
   "position",
 ]);
-export const nonResettableStyleNames = new Set([
+const nonResettableStyleNames = new Set([
   "left",
   "right",
   "top",

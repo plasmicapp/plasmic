@@ -15,7 +15,7 @@ test.describe(`Plasmic Auth`, async () => {
         bundleFile,
         template: "plasmic-auth",
         projectName: "Plasmic Auth",
-        npmRegistry: getEnvVar("NPM_REGISTRY"),
+        npmRegistry: getEnvVar("NPM_CONFIG_REGISTRY"),
         codegenHost: getEnvVar("WAB_HOST"),
         wabHost: getEnvVar("WAB_HOST"),
         appAuthOpts: {
@@ -61,7 +61,7 @@ test.describe(`Plasmic Auth`, async () => {
         bundleFile,
         template: "plasmic-auth",
         projectName: "Plasmic Auth",
-        npmRegistry: getEnvVar("NPM_REGISTRY"),
+        npmRegistry: getEnvVar("NPM_CONFIG_REGISTRY"),
         codegenHost: getEnvVar("WAB_HOST"),
         wabHost: getEnvVar("WAB_HOST"),
         keepRedirectUri: true,

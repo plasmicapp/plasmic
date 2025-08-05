@@ -9,7 +9,7 @@ describe("Plasmic Split", () => {
     ctx = await setupGatsby({
       bundleFile: "plasmic-split-components.json",
       projectName: "Split",
-      npmRegistry: getEnvVar("NPM_REGISTRY"),
+      npmRegistry: getEnvVar("NPM_CONFIG_REGISTRY"),
       codegenHost: getEnvVar("WAB_HOST"),
       template: "split",
     });

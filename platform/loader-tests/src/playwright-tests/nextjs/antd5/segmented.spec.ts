@@ -17,7 +17,7 @@ test.describe(`Plasmic Antd5 Segmented`, async () => {
         ctx = await setupNextJs({
           bundleFile: "antd5/segmented.json",
           projectName: "Antd5 Segmented",
-          npmRegistry: getEnvVar("NPM_REGISTRY"),
+          npmRegistry: getEnvVar("NPM_CONFIG_REGISTRY"),
           codegenHost: getEnvVar("WAB_HOST"),
           removeComponentsPage: true,
           loaderVersion,

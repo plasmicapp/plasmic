@@ -1,9 +1,9 @@
 import {
-  addItemDataPlasmicProp,
   chooseDataPlasmicProp,
   clickDataPlasmicProp,
   closeSidebarModal,
   justType,
+  propAddItem,
   setDataPlasmicProp,
   showMoreInSidebarModal,
   turnOffDesignMode,
@@ -101,7 +101,7 @@ describe("hostless-rich-components", () => {
         // Check that the current route should be styled differently.
         // Add route for /about (the location.path of About).
         // And add a link to /about.
-        addItemDataPlasmicProp("navMenuItems");
+        propAddItem("Nav menu items");
         setDataPlasmicProp("path", "/about");
         setDataPlasmicProp("name", "About");
         closeSidebarModal();
@@ -147,20 +147,20 @@ describe("hostless-rich-components", () => {
 
         // Check nested nav.
         // Matching subroute should be expanded.
-        addItemDataPlasmicProp("navMenuItems");
+        propAddItem("Nav menu items");
         setDataPlasmicProp("path", "/");
         setDataPlasmicProp("name", "Should be closed");
         showMoreInSidebarModal();
-        addItemDataPlasmicProp("routes");
+        propAddItem("Nested items");
         setDataPlasmicProp("path", "/mismatch");
         setDataPlasmicProp("name", "Mismatch");
         closeSidebarModal();
 
-        addItemDataPlasmicProp("navMenuItems");
+        propAddItem("Nav menu items");
         setDataPlasmicProp("path", "/");
         setDataPlasmicProp("name", "Should be expanded");
         showMoreInSidebarModal();
-        addItemDataPlasmicProp("routes");
+        propAddItem("Nested items");
         setDataPlasmicProp("path", "/about");
         setDataPlasmicProp("name", "Nested");
         closeSidebarModal();

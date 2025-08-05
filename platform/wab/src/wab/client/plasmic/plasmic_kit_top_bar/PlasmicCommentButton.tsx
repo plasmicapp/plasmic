@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -13,35 +13,35 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
+  Flex as Flex__,
   SingleBooleanChoiceArg,
   StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
   hasVariant,
+  useDollarState,
 } from "@plasmicapp/react-web";
+import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+
+import IconButton from "../../components/widgets/IconButton"; // plasmic-import: LPry-TF4j22a/component
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import projectcss from "./plasmic_plasmic_kit_top_bar.module.css"; // plasmic-import: 6CrqkTcB6gSAHoA8c8zpNz/projectcss
 import sty from "./PlasmicCommentButton.module.css"; // plasmic-import: JnxWw8hitac/css
 
-import SpeechBubblesvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__SpeechBubbleSvg"; // plasmic-import: nkJ1joJAv/icon
+import SpeechBubbleSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__SpeechBubbleSvg"; // plasmic-import: nkJ1joJAv/icon
+
+createPlasmicElementProxy;
 
 export type PlasmicCommentButton__VariantMembers = {
   active: "active";
 };
-
 export type PlasmicCommentButton__VariantsArgs = {
   active?: SingleBooleanChoiceArg<"active">;
 };
-
 type VariantPropType = keyof PlasmicCommentButton__VariantsArgs;
 export const PlasmicCommentButton__VariantProps = new Array<VariantPropType>(
   "active"
@@ -52,8 +52,8 @@ type ArgPropType = keyof PlasmicCommentButton__ArgsType;
 export const PlasmicCommentButton__ArgProps = new Array<ArgPropType>();
 
 export type PlasmicCommentButton__OverridesType = {
-  root?: p.Flex<"div">;
-  svg?: p.Flex<"svg">;
+  root?: Flex__<typeof IconButton>;
+  svg?: Flex__<"svg">;
 };
 
 export interface DefaultCommentButtonProps {
@@ -61,13 +61,7 @@ export interface DefaultCommentButtonProps {
   className?: string;
 }
 
-const __wrapUserFunction =
-  globalThis.__PlasmicWrapUserFunction ?? ((loc, fn) => fn());
-const __wrapUserPromise =
-  globalThis.__PlasmicWrapUserPromise ??
-  (async (loc, promise) => {
-    return await promise;
-  });
+const $$ = {};
 
 function PlasmicCommentButton__RenderFunc(props: {
   variants: PlasmicCommentButton__VariantsArgs;
@@ -77,13 +71,13 @@ function PlasmicCommentButton__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const $ctx = ph.useDataEnv?.() || {};
   const args = React.useMemo(
     () =>
       Object.assign(
         {},
-
-        props.args
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
       ),
     [props.args]
   );
@@ -93,14 +87,11 @@ function PlasmicCommentButton__RenderFunc(props: {
     ...variants,
   };
 
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
-
-  const [$queries, setDollarQueries] = React.useState({});
-
-  const stateSpecs = React.useMemo(
+  const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
         path: "active",
@@ -109,40 +100,35 @@ function PlasmicCommentButton__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.active,
       },
     ],
-
-    [$props, $ctx]
+    [$props, $ctx, $refs]
   );
-  const $state = p.useDollarState(stateSpecs, { $props, $ctx, $queries });
+  const $state = useDollarState(stateSpecs, {
+    $props,
+    $ctx,
+    $queries: {},
+    $refs,
+  });
 
   return (
-    (hasVariant($state, "active", "active") ? true : true) ? (
-      <div
-        data-plasmic-name={"root"}
-        data-plasmic-override={overrides.root}
-        data-plasmic-root={true}
-        data-plasmic-for-node={forNode}
-        className={classNames(
-          projectcss.all,
-          projectcss.root_reset,
-          projectcss.plasmic_default_styles,
-          projectcss.plasmic_mixins,
-          projectcss.plasmic_tokens,
-          plasmic_plasmic_kit_design_system_deprecated_css.plasmic_tokens,
-          plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
-          sty.root,
-          { [sty.rootactive]: hasVariant($state, "active", "active") }
-        )}
-      >
-        <SpeechBubblesvgIcon
-          data-plasmic-name={"svg"}
-          data-plasmic-override={overrides.svg}
-          className={classNames(projectcss.all, sty.svg, {
-            [sty.svgactive]: hasVariant($state, "active", "active"),
-          })}
-          role={"img"}
-        />
-      </div>
-    ) : null
+    <IconButton
+      data-plasmic-name={"root"}
+      data-plasmic-override={overrides.root}
+      data-plasmic-root={true}
+      data-plasmic-for-node={forNode}
+      className={classNames("__wab_instance", sty.root, {
+        [sty.rootactive]: hasVariant($state, "active", "active"),
+      })}
+      size={"medium"}
+      type={hasVariant($state, "active", "active") ? ["primary"] : undefined}
+      withBackgroundHover={true}
+    >
+      <SpeechBubbleSvgIcon
+        data-plasmic-name={"svg"}
+        data-plasmic-override={overrides.svg}
+        className={classNames(projectcss.all, sty.svg)}
+        role={"img"}
+      />
+    </IconButton>
   ) as React.ReactElement | null;
 }
 
@@ -154,7 +140,7 @@ type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
   (typeof PlasmicDescendants)[T][number];
 type NodeDefaultElementType = {
-  root: "div";
+  root: typeof IconButton;
   svg: "svg";
 };
 
@@ -163,25 +149,25 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicCommentButton__OverridesType,
   DescendantsType<T>
 >;
-
-type NodeComponentProps<T extends NodeNameType> = {
+type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
-  variants?: PlasmicCommentButton__VariantsArgs;
-  args?: PlasmicCommentButton__ArgsType;
-  overrides?: NodeOverridesType<T>;
-} & Omit<PlasmicCommentButton__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-  // Specify args directly as props
-  Omit<PlasmicCommentButton__ArgsType, ReservedPropsType> &
-  // Specify overrides for each element directly as props
-  Omit<
-    NodeOverridesType<T>,
-    ReservedPropsType | VariantPropType | ArgPropType
-  > &
-  // Specify props for the root element
-  Omit<
-    Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
-    ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
-  >;
+  {
+    variants?: PlasmicCommentButton__VariantsArgs;
+    args?: PlasmicCommentButton__ArgsType;
+    overrides?: NodeOverridesType<T>;
+  } & Omit<PlasmicCommentButton__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+    // Specify args directly as props
+    Omit<PlasmicCommentButton__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
+      NodeOverridesType<T>,
+      ReservedPropsType | VariantPropType | ArgPropType
+    > &
+    // Specify props for the root element
+    Omit<
+      Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
+      ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
+    >;
 
 function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
   type PropsType = NodeComponentProps<NodeName> & { key?: React.Key };
@@ -192,7 +178,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicCommentButton__ArgProps,
           internalVariantPropNames: PlasmicCommentButton__VariantProps,
         }),

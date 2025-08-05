@@ -34,7 +34,7 @@ export function useInterval(callback: () => void, delay: number | null) {
   }, [delay]);
 }
 
-export default function Timer({
+export function Timer({
   intervalSeconds = 1,
   isRunning = false,
   onTick = () => {},

@@ -3,15 +3,20 @@
 import {
   RenderElementProps,
   VirtualTree,
-  VirtualTreeRef,
+  getFolderKeyChanges,
+  useTreeData,
 } from "@/wab/client/components/grouping/VirtualTree";
+import { promptDeleteFolder } from "@/wab/client/components/modals/folderDeletionModal";
 import MultiAssetsActions from "@/wab/client/components/sidebar/MultiAssetsActions";
 import { TokenEditModal } from "@/wab/client/components/sidebar/TokenEditModal";
 import TokenTypeHeader from "@/wab/client/components/sidebar/TokenTypeHeader";
 import {
   TOKEN_ROW_HEIGHT,
   TokenControlsContext,
+  TokenFolder,
+  TokenFolderActions,
   TokenFolderRow,
+  TokenPanelRow,
   TokenRow,
 } from "@/wab/client/components/sidebar/token-controls";
 import { Matcher } from "@/wab/client/components/view-common";
@@ -34,7 +39,9 @@ import {
   Folder as InternalFolder,
   createFolderTreeStructure,
   getFolderTrimmed,
+  getFolderWithSlash,
   isFolder,
+  replaceFolderName,
 } from "@/wab/shared/folders/folders-util";
 import { ProjectDependency, StyleToken } from "@/wab/shared/model/classes";
 import { naturalSort } from "@/wab/shared/sort";
@@ -43,37 +50,21 @@ import { debounce, groupBy, partition } from "lodash";
 import { observer } from "mobx-react";
 import * as React from "react";
 
-interface Header {
-  type: "header";
+interface TokenToPanelRowProps {
+  item: StyleToken | InternalFolder<StyleToken>;
   tokenType: TokenType;
-  key: string;
-  items: TokenPanelRow[];
-  count: number;
+  getTokenValue: (token: StyleToken) => TokenValue;
+  actions: TokenFolderActions;
+  dep?: ProjectDependency;
 }
 
-interface Folder {
-  type: "folder" | "folder-token";
-  name: string;
-  key: string;
-  items: TokenPanelRow[];
-  count: number;
-}
-
-interface TokenData {
-  type: "token";
-  key: string;
-  token: StyleToken;
-  value: TokenValue;
-  importedFrom?: string;
-}
-
-type TokenPanelRow = Header | Folder | TokenData;
-
-function mapToTokenPanelRow(
-  item: StyleToken | InternalFolder<StyleToken>,
-  getTokenValue: (token: StyleToken) => TokenValue,
-  dep?: ProjectDependency
-): TokenPanelRow {
+function mapToTokenPanelRow({
+  item,
+  tokenType,
+  getTokenValue,
+  actions,
+  dep,
+}: TokenToPanelRowProps): TokenPanelRow {
   if (!isFolder(item)) {
     return {
       type: "token" as const,
@@ -86,10 +77,15 @@ function mapToTokenPanelRow(
 
   return {
     type: "folder-token" as const,
+    tokenType,
     key: item.path,
     name: item.name,
-    items: item.items.map((i) => mapToTokenPanelRow(i, getTokenValue, dep)),
+    path: item.path,
+    items: item.items.map((i) =>
+      mapToTokenPanelRow({ item: i, tokenType, getTokenValue, dep, actions })
+    ),
     count: item.count,
+    actions,
   };
 }
 
@@ -106,14 +102,6 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
     new Set()
   );
   const matcher = new Matcher(debouncedQuery);
-
-  const treeRef = React.useRef<VirtualTreeRef>(null);
-  const expandAll = React.useCallback(() => {
-    treeRef.current?.expandAll();
-  }, [treeRef.current]);
-  const collapseAll = React.useCallback(() => {
-    treeRef.current?.collapseAll();
-  }, [treeRef.current]);
 
   const [justAdded, setJustAdded] = React.useState<StyleToken | undefined>(
     undefined
@@ -170,11 +158,14 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
     return TOKEN_ROW_HEIGHT;
   }, []);
 
-  const onAdd = React.useCallback(
-    async (type: TokenType) => {
+  const onAddToken = React.useCallback(
+    async (type: TokenType, folderName?: string) => {
+      const folderPath = getFolderWithSlash(folderName);
+
       await studioCtx.change(({ success }) => {
         const initialValue = tokenTypeDefaults(type);
         const token = studioCtx.tplMgr().addToken({
+          prefix: folderPath,
           tokenType: type,
           value: initialValue,
         });
@@ -184,6 +175,75 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
       });
     },
     [studioCtx, setJustAdded, setEditToken]
+  );
+
+  const getFolderTokens = (
+    items: TokenPanelRow[]
+  ): { tokens: StyleToken[]; folders: TokenFolder[] } => {
+    const tokens: StyleToken[] = [];
+    const folders: TokenFolder[] = [];
+
+    for (const item of items) {
+      switch (item.type) {
+        case "folder":
+        case "folder-token": {
+          folders.push(item);
+          const children = getFolderTokens(item.items);
+          tokens.push(...children.tokens);
+          folders.push(...children.folders);
+          break;
+        }
+        case "token":
+          tokens.push(item.token);
+          break;
+        case "header":
+          break;
+      }
+    }
+    return { tokens, folders };
+  };
+
+  const onDeleteFolder = React.useCallback(
+    async (folder: TokenFolder) => {
+      const confirmation = await promptDeleteFolder(
+        "token",
+        getFolderWithSlash(folder.name),
+        folder.count
+      );
+      if (confirmation) {
+        const { tokens } = getFolderTokens([folder]);
+        await studioCtx.siteOps().tryDeleteTokens(tokens);
+      }
+    },
+    [studioCtx]
+  );
+
+  const onFolderRenamed = React.useCallback(
+    async (folder: TokenFolder, newName: string) => {
+      const pathData = replaceFolderName(folder.key, newName);
+      const { tokens, folders } = getFolderTokens([folder]);
+
+      await studioCtx.changeUnsafe(() => {
+        const { oldPath, newPath } = pathData;
+        for (const token of tokens) {
+          const oldTokenName = token.name;
+          const newTokenName = oldTokenName.replace(oldPath, newPath);
+          studioCtx.tplMgr().renameToken(token, newTokenName);
+        }
+      });
+      const keyChanges = getFolderKeyChanges(folders, pathData);
+      renameGroup(keyChanges);
+    },
+    [studioCtx]
+  );
+
+  const actions: TokenFolderActions = React.useMemo(
+    () => ({
+      onAddToken,
+      onDeleteFolder,
+      onFolderRenamed,
+    }),
+    [onAddToken, onDeleteFolder, onFolderRenamed]
   );
 
   const onDuplicate = React.useCallback(
@@ -240,83 +300,91 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
 
   const tokensByType = groupBy(studioCtx.site.styleTokens, (t) => t.type);
 
-  const tokensContent = () => {
-    const tokenSectionItems = (tokenType: TokenType) => {
-      const makeTokensItems = (
-        tokens: StyleToken[],
-        dep?: ProjectDependency
-      ) => {
-        tokens = naturalSort(tokens, (token) => getFolderTrimmed(token.name));
-        const tokenTree = createFolderTreeStructure(tokens, {
-          pathPrefix: `${tokenType}-`,
-          getName: (item) => item.name,
-          mapper: (item) => mapToTokenPanelRow(item, getTokenValue, dep),
-        });
-        return { items: tokenTree, count: tokens.length };
-      };
-
-      const makeDepsItems = (deps: ProjectDependency[]): TokenPanelRow[] => {
-        deps = naturalSort(deps, (dep) =>
-          studioCtx.projectDependencyManager.getNiceDepName(dep)
-        );
-        return deps
-          .map((dep) => {
-            return {
-              type: "folder" as const,
-              name: studioCtx.projectDependencyManager.getNiceDepName(dep),
-              key: `${tokenType}-${dep.uuid}`,
-              // We only include registered tokens if they're from a hostless
-              // package; otherwise, registered tokens from custom host will
-              // already show up in the RegisteredTokens section.
-              ...makeTokensItems(
-                (isHostLessPackage(dep.site)
-                  ? dep.site.styleTokens
-                  : dep.site.styleTokens.filter((t) => !t.isRegistered)
-                ).filter((t) => t.type === tokenType),
-                dep
-              ),
-            };
-          })
-          .filter((dep) => dep.count > 0);
-      };
-
-      const tokens = tokensByType[tokenType] ?? [];
-
-      const [normalTokens, registeredTokens] = partition(
-        tokens,
-        (t) => !t.isRegistered
-      );
-
-      const items: TokenPanelRow[] = [
-        ...makeTokensItems(normalTokens).items,
-        ...(registeredTokens.length > 0
-          ? [
-              {
-                type: "folder" as const,
-                name: "Registered tokens",
-                key: `$${tokenType}-registered-folder`,
-                ...makeTokensItems(registeredTokens),
-              },
-            ]
-          : []),
-        ...makeDepsItems(
-          studioCtx.site.projectDependencies.filter(
-            (d) => !isHostLessPackage(d.site)
-          )
-        ),
-        ...makeDepsItems(
-          studioCtx.site.projectDependencies.filter((d) =>
-            isHostLessPackage(d.site)
-          )
-        ),
-      ];
-      const totalCount = items.reduce(
-        (acc, item) => (item.type !== "token" ? acc + item.count : acc + 1),
-        0
-      );
-      return { items, count: totalCount };
+  const tokenSectionItems = (tokenType: TokenType) => {
+    const makeTokensItems = (tokens: StyleToken[], dep?: ProjectDependency) => {
+      tokens = naturalSort(tokens, (token) => getFolderTrimmed(token.name));
+      const tokenTree = createFolderTreeStructure(tokens, {
+        pathPrefix: tokenType,
+        getName: (item) => item.name,
+        mapper: (item) =>
+          mapToTokenPanelRow({
+            item,
+            tokenType,
+            getTokenValue,
+            dep,
+            actions,
+          }),
+      });
+      return { items: tokenTree, count: tokens.length };
     };
 
+    const makeDepsItems = (deps: ProjectDependency[]): TokenPanelRow[] => {
+      deps = naturalSort(deps, (dep) =>
+        studioCtx.projectDependencyManager.getNiceDepName(dep)
+      );
+      return deps
+        .map((dep) => {
+          return {
+            type: "folder" as const,
+            tokenType,
+            name: studioCtx.projectDependencyManager.getNiceDepName(dep),
+            key: `${tokenType}-${dep.uuid}`,
+            // We only include registered tokens if they're from a hostless
+            // package; otherwise, registered tokens from custom host will
+            // already show up in the RegisteredTokens section.
+            ...makeTokensItems(
+              (isHostLessPackage(dep.site)
+                ? dep.site.styleTokens
+                : dep.site.styleTokens.filter((t) => !t.isRegistered)
+              ).filter((t) => t.type === tokenType),
+              dep
+            ),
+            actions,
+          };
+        })
+        .filter((dep) => dep.count > 0);
+    };
+
+    const tokens = tokensByType[tokenType] ?? [];
+
+    const [normalTokens, registeredTokens] = partition(
+      tokens,
+      (t) => !t.isRegistered
+    );
+
+    const items: TokenPanelRow[] = [
+      ...makeTokensItems(normalTokens).items,
+      ...(registeredTokens.length > 0
+        ? [
+            {
+              type: "folder" as const,
+              tokenType,
+              name: "Registered tokens",
+              key: `$${tokenType}-registered-folder`,
+              actions,
+              ...makeTokensItems(registeredTokens),
+            },
+          ]
+        : []),
+      ...makeDepsItems(
+        studioCtx.site.projectDependencies.filter(
+          (d) => !isHostLessPackage(d.site)
+        )
+      ),
+      ...makeDepsItems(
+        studioCtx.site.projectDependencies.filter((d) =>
+          isHostLessPackage(d.site)
+        )
+      ),
+    ];
+    const totalCount = items.reduce(
+      (acc, item) => (item.type !== "token" ? acc + item.count : acc + 1),
+      0
+    );
+    return { items, count: totalCount };
+  };
+
+  const tokensContent = () => {
     const selectableTokens = studioCtx.site.styleTokens
       .filter((t) => {
         let resolved = resolver(t, vsh);
@@ -358,25 +426,57 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
             resolver,
             onDuplicate,
             onSelect,
-            onAdd,
+            onAdd: onAddToken,
             expandedHeaders,
             setExpandedHeaders,
           }}
         >
           <VirtualTree
-            ref={treeRef}
             rootNodes={items}
-            getNodeKey={getRowKey}
-            getNodeChildren={getRowChildren}
-            getNodeSearchText={getRowSearchText}
-            getNodeHeight={getRowHeight}
-            query={debouncedQuery}
             renderElement={TokenTreeRow}
+            nodeData={nodeData}
+            nodeKey={nodeKey}
+            nodeHeights={nodeHeights}
+            expandAll={expandAll}
+            collapseAll={collapseAll}
           />
         </TokenControlsContext.Provider>
       </MultiAssetsActions>
     );
   };
+
+  const treeItems = React.useMemo(
+    (): TokenPanelRow[] =>
+      tokenTypes.map((tt) => {
+        const { items: section, count } = tokenSectionItems(tt);
+        return {
+          type: "header",
+          tokenType: tt,
+          key: `$${tt}-hdr`,
+          items: section,
+          count,
+        };
+      }),
+    [tokenSectionItems]
+  );
+
+  const {
+    nodeData,
+    nodeKey,
+    nodeHeights,
+    renameGroup,
+    expandAll,
+    collapseAll,
+  } = useTreeData<TokenPanelRow>({
+    nodes: treeItems,
+    query: debouncedQuery,
+    renderElement: TokenTreeRow,
+    getNodeKey: getRowKey,
+    getNodeChildren: getRowChildren,
+    getNodeSearchText: getRowSearchText,
+    getNodeHeight: getRowHeight,
+    defaultOpenKeys: "all",
+  });
 
   return (
     <>
@@ -463,11 +563,11 @@ const TokenTreeRow = (props: RenderElementProps<TokenPanelRow>) => {
     case "folder-token":
       return (
         <TokenFolderRow
-          name={value.name}
+          folder={value}
           matcher={treeState.matcher}
           isOpen={treeState.isOpen}
-          groupSize={value.count}
           indentMultiplier={treeState.level - 1}
+          toggleExpand={treeState.toggleExpand}
         />
       );
     case "token":

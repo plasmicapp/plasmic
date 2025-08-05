@@ -1,4 +1,4 @@
-import { analytics } from "@/wab/client/analytics";
+import { analytics } from "@/wab/client/observability";
 import { Shortcuts } from "@/wab/client/shortcuts/shortcut";
 import Mousetrap, { ExtendedKeyboardEvent } from "mousetrap";
 import { useEffect, useState } from "react";
@@ -35,6 +35,10 @@ const INPUT_DISALLOWED_TYPES: ReadonlySet<string> = new Set([
   "time",
   "url",
   "week",
+]);
+
+const DISALLOWED_ELEMENT_CLASSES: ReadonlySet<string> = new Set([
+  "PostHogSurvey",
 ]);
 
 /**
@@ -88,6 +92,16 @@ export function bindShortcutHandlers<Action extends string>(
         return false;
       }
 
+      // Stop callback for certain combos if element has a disallowed class
+      // In some cases classes are dynamic, so we can use only a part of the class name as well.
+      if (
+        [...DISALLOWED_ELEMENT_CLASSES].some((disallowedClass) =>
+          element.className.includes(disallowedClass)
+        )
+      ) {
+        return true;
+      }
+
       // Stop callback for certain combos if element is focusable
       if (element.tabIndex >= 0 && FOCUSABLE_DISALLOWED_COMBOS.has(combo)) {
         return true;
@@ -133,7 +147,9 @@ export function bindShortcutHandlers<Action extends string>(
         action: shortcut.action,
         combo,
       };
-      analytics().track(eventName, eventProps);
+      analytics().track(eventName, eventProps, {
+        sampleThreshold: 0.1,
+      });
 
       // Mousetrap calls `preventDefault` and `stopPropagation` if `false` is returned.
       // This is a bit confusing, because we return `true` on success.

@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/react-aria",
-  "version": "0.0.118",
+  "version": "0.0.149",
   "description": "Plasmic registration calls for react-aria based components",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -46,15 +46,15 @@
     "upgrade-aria": "yarn upgrade --latest --scope @react-stately && yarn upgrade --latest --scope @react-aria && yarn upgrade --latest --scope react-aria-components"
   },
   "dependencies": {
-    "@react-aria/i18n": "^3.11.0",
-    "@react-aria/utils": "^3.24.0",
-    "react-aria": "^3.33.0",
-    "react-aria-components": "^1.2.0",
+    "@react-aria/i18n": "^3.12.9",
+    "@react-aria/utils": "^3.29.0",
+    "react-aria": "^3.40.0",
+    "react-aria-components": "^1.9.0",
     "react-keyed-flatten-children": "^3.0.0",
-    "react-stately": "^3.31.0"
+    "react-stately": "^3.38.0"
   },
   "devDependencies": {
-    "@plasmicapp/host": "1.0.211",
+    "@plasmicapp/host": "1.0.223",
     "@rollup/plugin-commonjs": "^11.0.0",
     "@rollup/plugin-json": "^4.0.0",
     "@rollup/plugin-node-resolve": "^9.0.0",

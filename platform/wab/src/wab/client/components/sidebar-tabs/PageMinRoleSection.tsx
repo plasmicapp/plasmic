@@ -6,7 +6,6 @@ import Button from "@/wab/client/components/widgets/Button";
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import TriangleBottomIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__TriangleBottom";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { ifDevFlag } from "@/wab/client/utils/ifDevFlag";
 import { zIndex } from "@/wab/client/z-index";
 import { ensure } from "@/wab/shared/common";
 import { ApiAppRole } from "@/wab/shared/ApiSchema";
@@ -266,7 +265,4 @@ function PageMinRoleSection_({ page }: { page: Component }) {
   );
 }
 
-export const PageMinRoleSection = ifDevFlag(
-  "appAuth",
-  observer(PageMinRoleSection_)
-);
+export const PageMinRoleSection = observer(PageMinRoleSection_);

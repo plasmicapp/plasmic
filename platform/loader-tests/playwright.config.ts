@@ -22,8 +22,7 @@ export default defineConfig({
   /* Retry on CI only */
   retries: 2,
   // retries: process.env.CI ? 2 : 0,
-  /* Opt out of parallel tests on CI.  Well, actually, let's use the default! */
-  // workers: process.env.CI ? 1 : undefined,
+  /* The `undefined` (default) number of workers is chosen based on the number of CPUs. */
   workers: undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: process.env.CI ? "github" : "html",

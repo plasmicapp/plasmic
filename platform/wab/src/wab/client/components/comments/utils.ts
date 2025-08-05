@@ -1,124 +1,154 @@
-import {
-  CommentsContextData,
-  CommentsData,
-} from "@/wab/client/components/comments/CommentsProvider";
+import { CommentsCtx } from "@/wab/client/studio-ctx/comments-ctx";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { ApiCommentThread } from "@/wab/shared/ApiSchema";
-import { Bundler, FastBundler } from "@/wab/shared/bundler";
-import { getOrSetMap, xSymmetricDifference } from "@/wab/shared/common";
 import {
-  TplNamable,
-  getTplOwnerComponent,
+  getSetOfPinnedVariantsForViewCtx,
+  ViewCtx,
+} from "@/wab/client/studio-ctx/view-ctx";
+import { ApiCommentThread } from "@/wab/shared/ApiSchema";
+import { Bundler } from "@/wab/shared/bundler";
+import { getOrSetMap, xSymmetricDifference } from "@/wab/shared/common";
+import { allComponentVariants } from "@/wab/shared/core/components";
+import { allGlobalVariants } from "@/wab/shared/core/sites";
+import {
   isTplNamable,
   summarizeTplNamable,
+  TplNamable,
   tryGetTplOwnerComponent,
 } from "@/wab/shared/core/tpls";
-import { Component, ObjInst, TplNode } from "@/wab/shared/model/classes";
-import assert from "assert";
-import { groupBy, partition, sortBy } from "lodash";
+import {
+  ArenaFrame,
+  Component,
+  isKnownVariant,
+  ObjInst,
+  TplNode,
+  Variant,
+} from "@/wab/shared/model/classes";
+import { toVariantComboKey } from "@/wab/shared/Variants";
+import { groupBy, keyBy, partition } from "lodash";
+import { toJS } from "mobx";
 
-type LocalizedCommentThread = ApiCommentThread & {
-  location: NonNullable<ApiCommentThread["location"]>;
-};
-
-export interface TplCommentThread extends LocalizedCommentThread {
+/**
+ * Subject info for a comment thread
+ *
+ * variants will be Undefined if the variant associated with
+ * the comment thread has been deleted
+ */
+export interface SubjectInfo {
   subject: TplNamable;
-  label: string;
+  variants: Variant[] | undefined;
   ownerComponent: Component;
 }
 
+/**
+ * Comment thread with subject info
+ *
+ * subjectInfo will be undefined if the
+ * subject of the comment thread was deleted
+ */
+export interface TplCommentThread extends ApiCommentThread {
+  label: string;
+  subjectInfo?: SubjectInfo;
+}
+
 export type TplCommentThreads = TplCommentThread[];
+export type CommentFilter = "all" | "mentions-and-replies" | "resolved";
 
-export function isValidCommentThread(
-  bundler: Bundler,
-  thread: ApiCommentThread
-): thread is LocalizedCommentThread {
-  if (!thread.location) {
-    return false;
-  }
+export const FilterValueToLabel: Record<CommentFilter, string> = {
+  all: "Opened",
+  "mentions-and-replies": "Mentions and replies",
+  resolved: "Resolved",
+};
 
-  const subject = bundler.objByAddr(thread.location.subject);
-  // The subject has been deleted since the comment was created
-  if (!subject) {
-    return false;
-  }
-
-  const variants = thread.location.variants.map((addr) =>
-    bundler.objByAddr(addr)
-  );
-
-  const hasInvalidVariant = variants.some((variant) => !variant);
-  // It's possible that the variant was deleted, so we will filter out those
-  // comments too
-  if (hasInvalidVariant) {
-    return false;
-  }
-
-  // The object is not a TplNamable
-  if (!isTplNamable(subject)) {
-    return false;
-  }
-
-  // The object can be removed from the bundle during the session
-  // so we check if it has an owner component
-  const ownerComponent = tryGetTplOwnerComponent(subject);
-  return !!ownerComponent;
+export function hasNonDeletedComments(thread: ApiCommentThread): boolean {
+  // hide thread if it has no non-deleted comments
+  return thread.comments.some((comment) => !comment.deletedAt);
 }
 
 export function getCommentThreadWithModelMetadata(
+  studioCtx: StudioCtx,
   bundler: Bundler,
-  thread: LocalizedCommentThread
+  thread: ApiCommentThread
 ): TplCommentThread {
-  const inst = bundler.objByAddr(thread.location.subject);
-  assert(isTplNamable(inst), "Comment thread subject must be a TplNamable");
+  const subject = bundler.objByAddr(thread.location.subject);
+  const isSubjectNamable = isTplNamable(subject);
+  const ownerComponent = isSubjectNamable
+    ? tryGetTplOwnerComponent(subject)
+    : undefined;
+  const commentThread = toJS(thread); // to ensure MobX observers detect all changes in thread
 
-  const subject = inst;
-  const ownerComponent = getTplOwnerComponent(subject);
+  if (!ownerComponent || !isSubjectNamable) {
+    return {
+      ...commentThread,
+      subjectInfo: undefined,
+      label: "Deleted element",
+    };
+  }
+  const allComponentVariantsMap = keyBy(
+    allComponentVariants(ownerComponent),
+    (v) => v.uuid
+  );
+  const allGlobalVariantsMap = keyBy(
+    allGlobalVariants(studioCtx.site, { includeDeps: "direct" }),
+    (v) => v.uuid
+  );
+  const variants = thread.location.variants.reduce(function (
+    filtered: Variant[],
+    variantAddr
+  ) {
+    const variantInst = bundler.objByAddr(variantAddr);
+    if (
+      isKnownVariant(variantInst) &&
+      (allComponentVariantsMap[variantInst.uuid] ||
+        allGlobalVariantsMap[variantInst.uuid])
+    ) {
+      filtered.push(variantInst);
+    }
+    return filtered;
+  },
+  []);
+  const hasDeletedVariants =
+    thread.location.variants.length !== variants.length;
+
   return {
-    ...thread,
-    subject,
-    label: summarizeTplNamable(subject),
-    ownerComponent,
+    ...commentThread,
+    subjectInfo: {
+      subject,
+      ownerComponent,
+      variants: hasDeletedVariants ? undefined : variants,
+    },
+    label: hasDeletedVariants
+      ? "Deleted variant"
+      : summarizeTplNamable(subject),
   };
 }
 
 export function getCommentThreadsWithModelMetadata(
+  studioCtx: StudioCtx,
   bundler: Bundler,
   threads: ApiCommentThread[]
 ): TplCommentThreads {
   return threads
-    .filter((thread): thread is LocalizedCommentThread =>
-      isValidCommentThread(bundler, thread)
-    )
-    .map((thread) => getCommentThreadWithModelMetadata(bundler, thread));
+    .filter((thread) => hasNonDeletedComments(thread))
+    .map((thread) =>
+      getCommentThreadWithModelMetadata(studioCtx, bundler, thread)
+    );
 }
 
-function sortThreadsByLastComment(threads: TplCommentThreads) {
-  return sortBy(
-    [...threads],
-    (thread) => -new Date(thread.comments[thread.comments.length - 1].createdAt)
-  );
-}
-
-export function getThreadsFromFocusedComponent(
+export function partitionThreadsForFrames(
   threads: TplCommentThreads,
-  focusedComponent: Component,
-  focusedTpl: TplNode | null | undefined
+  arenaFrames: ArenaFrame[],
+  studioCtx: StudioCtx
 ) {
-  const [_focusedComponentThreads, otherComponentsThreads] = partition(
-    [...threads],
-    (thread) => thread.ownerComponent === focusedComponent
-  );
-  const [focusedSubjectThreads, focusedComponentThreads] = partition(
-    _focusedComponentThreads,
-    (thread) => thread.subject === focusedTpl
+  const [current, other] = partition([...threads], (thread) =>
+    arenaFrames.find((arenaFrame) => {
+      const vc = studioCtx.tryGetViewCtxForFrame(arenaFrame);
+      return vc && isCommentForFrame(vc, thread);
+    })
   );
 
   return {
-    focusedSubjectThreads: sortThreadsByLastComment(focusedSubjectThreads),
-    focusedComponentThreads: sortThreadsByLastComment(focusedComponentThreads),
-    otherComponentsThreads: sortThreadsByLastComment(otherComponentsThreads),
+    current,
+    other,
   };
 }
 
@@ -132,102 +162,158 @@ export interface CommentsStats {
 
 export type CommentStatsMap = Map<string, CommentsStats>;
 
+export function getSubjectVariantsKey(subject: TplNode, variants: Variant[]) {
+  return `${subject.uuid},${toVariantComboKey(variants)}`;
+}
+
 export function computeCommentStats(threads: TplCommentThreads): {
   commentStatsBySubject: CommentStatsMap;
   commentStatsByComponent: CommentStatsMap;
+  commentStatsByVariant: CommentStatsMap;
 } {
+  // filtered out threads with undefined(deleted) subject or variants
+  const filteredThreads = threads.filter(
+    (
+      thread
+    ): thread is TplCommentThread & {
+      subjectInfo: SubjectInfo & { variants: Variant[] };
+    } => !!thread.subjectInfo && !!thread.subjectInfo.variants
+  );
   const threadsGroupedBySubject = groupBy(
-    threads,
-    (commentThread) => commentThread.subject.uuid
+    filteredThreads,
+    (commentThread) => commentThread.subjectInfo.subject.uuid
   );
 
   const commentStatsBySubject: CommentStatsMap = new Map();
   const commentStatsByComponent: CommentStatsMap = new Map();
+  const commentStatsByVariant: CommentStatsMap = new Map();
 
   Object.entries(threadsGroupedBySubject).forEach(
     ([subjectUuid, commentThreads]) => {
-      // Compute stats for the subject
-      const subjectStats = getOrSetMap<string, CommentsStats>(
-        commentStatsBySubject,
-        subjectUuid,
-        {
-          commentCount: 0,
-          replyCount: 0,
-        }
-      );
-      subjectStats.commentCount = commentThreads.length;
-      subjectStats.replyCount = commentThreads.reduce(
-        (sum, thread) => sum + (thread.comments.length - 1), // comments count excluding the root comment
-        0
-      );
-
-      const [commentThread] = commentThreads;
-      const ownerComponent = tryGetTplOwnerComponent(commentThread.subject);
-      if (ownerComponent) {
-        const ownerUuid = ownerComponent.tplTree.uuid;
-        const componentStats = getOrSetMap<string, CommentsStats>(
-          commentStatsByComponent,
-          ownerUuid,
+      if (commentThreads.length > 0) {
+        // Compute stats for the subject
+        const subjectStats = getOrSetMap<string, CommentsStats>(
+          commentStatsBySubject,
+          subjectUuid,
           {
             commentCount: 0,
             replyCount: 0,
           }
         );
+        subjectStats.commentCount = commentThreads.length;
+        subjectStats.replyCount = commentThreads.reduce(
+          (sum, thread) => sum + (thread.comments.length - 1), // comments count excluding the root comment
+          0
+        );
 
-        componentStats.commentCount += subjectStats.commentCount;
-        componentStats.replyCount += subjectStats.replyCount;
+        const [commentThread] = commentThreads;
+        const ownerComponent =
+          commentThread.subjectInfo.subject &&
+          tryGetTplOwnerComponent(commentThread.subjectInfo.subject);
+        if (ownerComponent) {
+          const ownerUuid = ownerComponent.uuid;
+          const componentStats = getOrSetMap<string, CommentsStats>(
+            commentStatsByComponent,
+            ownerUuid,
+            {
+              commentCount: 0,
+              replyCount: 0,
+            }
+          );
+
+          componentStats.commentCount += subjectStats.commentCount;
+          componentStats.replyCount += subjectStats.replyCount;
+        }
       }
     }
   );
 
-  return { commentStatsBySubject, commentStatsByComponent };
+  const threadsGroupedByVariants = groupBy(filteredThreads, (commentThread) =>
+    getSubjectVariantsKey(
+      commentThread.subjectInfo.subject,
+      commentThread.subjectInfo.variants
+    )
+  );
+
+  Object.entries(threadsGroupedByVariants).forEach(
+    ([subjectVariantsKey, commentThreads]) => {
+      if (commentThreads.length > 0) {
+        // Compute stats for the variant
+        const variant = getOrSetMap<string, CommentsStats>(
+          commentStatsByVariant,
+          subjectVariantsKey,
+          {
+            commentCount: 0,
+            replyCount: 0,
+          }
+        );
+        variant.commentCount = commentThreads.length;
+        variant.replyCount = commentThreads.reduce(
+          (sum, thread) => sum + (thread.comments.length - 1), // comments count excluding the root comment
+          0
+        );
+      }
+    }
+  );
+
+  return {
+    commentStatsBySubject,
+    commentStatsByComponent,
+    commentStatsByVariant,
+  };
 }
 
 export function isElementWithComments(
-  commentsCtx: CommentsContextData | CommentsData,
+  commentsCtx: CommentsCtx,
   element: ObjInst
 ) {
   if (!isTplNamable(element)) {
     return false;
   }
-  const bundler = commentsCtx.bundler;
-  return commentsCtx.allThreads.some(
-    (commentThread) =>
-      bundler.objByAddr(commentThread.location.subject) === element
-  );
-}
-
-export function getSetOfVariantsForViewCtx(
-  viewCtx: ViewCtx,
-  bundler: FastBundler
-) {
-  return sortBy(
-    [
-      ...viewCtx.currentComponentStackFrame().getPinnedVariants().keys(),
-      ...viewCtx.globalFrame.getPinnedVariants().keys(),
-      ...viewCtx.currentComponentStackFrame().getTargetVariants(),
-      ...viewCtx.globalFrame.getTargetVariants(),
-    ],
-    (v) => bundler.addrOf(v).iid
-  );
+  return commentsCtx
+    .computedData()
+    .unresolvedThreads.some(
+      (commentThread) =>
+        commentsCtx.bundler().objByAddr(commentThread.location.subject) ===
+        element
+    );
 }
 
 export function isCommentForFrame(
-  studioCtx: StudioCtx,
   viewCtx: ViewCtx,
   commentThread: TplCommentThread
 ) {
-  const bundler = studioCtx.bundler();
-  const subject = bundler.objByAddr(commentThread.location.subject);
-  const variants = commentThread.location.variants.map((v) =>
-    bundler.objByAddr(v)
-  );
-  const ownerComponent = studioCtx
-    .tplMgr()
-    .findComponentContainingTpl(subject as TplNode);
+  const bundler = viewCtx.bundler();
+  if (!commentThread.subjectInfo) {
+    return false;
+  }
+  const { variants, ownerComponent } = commentThread.subjectInfo;
+
   const isForFrame =
     viewCtx.component === ownerComponent &&
-    xSymmetricDifference(variants, getSetOfVariantsForViewCtx(viewCtx, bundler))
-      .length === 0;
+    variants &&
+    xSymmetricDifference(
+      variants,
+      getSetOfPinnedVariantsForViewCtx(viewCtx, bundler)
+    ).length === 0;
   return isForFrame;
+}
+
+export function makeCommonFields(userId: string): {
+  createdAt: string;
+  updatedAt: string;
+  createdById: string;
+  updatedById: string;
+  deletedAt: null;
+  deletedById: null;
+} {
+  const now = new Date().toISOString();
+  return {
+    createdAt: now,
+    updatedAt: now,
+    createdById: userId,
+    updatedById: userId,
+    deletedAt: null,
+    deletedById: null,
+  };
 }

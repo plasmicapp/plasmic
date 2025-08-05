@@ -16,7 +16,7 @@ test.describe(`Plasmic Quill (Rich Text Editor)`, async () => {
         ctx = await setupNextJs({
           bundleFile: "react-quill.json",
           projectName: "React Quill",
-          npmRegistry: getEnvVar("NPM_REGISTRY"),
+          npmRegistry: getEnvVar("NPM_CONFIG_REGISTRY"),
           codegenHost: getEnvVar("WAB_HOST"),
           removeComponentsPage: true,
           loaderVersion,

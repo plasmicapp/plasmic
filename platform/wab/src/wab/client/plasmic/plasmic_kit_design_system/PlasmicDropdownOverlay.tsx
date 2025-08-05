@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -37,9 +37,7 @@ type VariantPropType = keyof PlasmicDropdownOverlay__VariantsArgs;
 export const PlasmicDropdownOverlay__VariantProps =
   new Array<VariantPropType>();
 
-export type PlasmicDropdownOverlay__ArgsType = {
-  children?: React.ReactNode;
-};
+export type PlasmicDropdownOverlay__ArgsType = { children?: React.ReactNode };
 type ArgPropType = keyof PlasmicDropdownOverlay__ArgsType;
 export const PlasmicDropdownOverlay__ArgProps = new Array<ArgPropType>(
   "children"

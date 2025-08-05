@@ -58,5 +58,7 @@
   "papaparse",
   "jquery",
   "dayjs",
-  "react-aria"
+  "react-aria",
+  "rive",
+  "fetch"
 ]

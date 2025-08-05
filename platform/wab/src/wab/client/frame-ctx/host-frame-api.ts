@@ -20,7 +20,9 @@ export type HostFrameApi = {
     branchId: BranchId | undefined
   ): Promise<PublishResult>;
   getLatestPublishedVersionId(): Promise<string | undefined>;
-  getProjectReleases(): Promise<PkgVersionInfoMeta[]>;
+  getProjectReleases(opts?: {
+    mainBranchOnly: boolean;
+  }): Promise<PkgVersionInfoMeta[]>;
   calculateNextPublishVersion(): Promise<
     | {
         version: string;

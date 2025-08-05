@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -38,9 +38,7 @@ export type PlasmicDescription__VariantsArgs = {};
 type VariantPropType = keyof PlasmicDescription__VariantsArgs;
 export const PlasmicDescription__VariantProps = new Array<VariantPropType>();
 
-export type PlasmicDescription__ArgsType = {
-  children?: React.ReactNode;
-};
+export type PlasmicDescription__ArgsType = { children?: React.ReactNode };
 type ArgPropType = keyof PlasmicDescription__ArgsType;
 export const PlasmicDescription__ArgProps = new Array<ArgPropType>("children");
 

@@ -3,53 +3,11 @@ import { ensureDbConnection } from "@/wab/server/db/DbCon";
 import { seedTestUserAndProjects } from "@/wab/server/db/DbInit";
 import { DbMgr, normalActor } from "@/wab/server/db/DbMgr";
 import { Project, User } from "@/wab/server/entities/Entities";
-import { ApiTester } from "@/wab/server/test/api-tester";
+import { PublicApiTester } from "@/wab/server/test/api-tester";
 import { createBackend, createDatabase } from "@/wab/server/test/backend-util";
-import { APIRequestContext, APIResponse, request } from "playwright";
-
-class LoaderApiTester extends ApiTester {
-  constructor(
-    api: APIRequestContext,
-    baseURL: string,
-    extraHeaders: { [name: string]: string } = {}
-  ) {
-    super(api, baseURL, extraHeaders);
-  }
-
-  async getPublishedLoaderAssets(
-    projects: Project[],
-    queryParams: {
-      platform?: string;
-      nextjsAppDir?: string;
-      browserOnly?: string;
-      loaderVersion?: string;
-      i18nKeyScheme?: string;
-      i18nTagPrefix?: string;
-      skipHead?: string;
-    }
-  ): Promise<APIResponse> {
-    const queryString = new URLSearchParams(queryParams);
-    projects.forEach((p) => queryString.append("projectId", p.id));
-    const projectTokens = projects
-      .map((p) => `${p.id}:${p.projectApiToken}`)
-      .join(",");
-    return this.rawReq(
-      "get",
-      `/loader/code/published?${queryString.toString()}`,
-      undefined,
-      {
-        headers: {
-          "x-plasmic-api-project-tokens": projectTokens,
-        },
-        maxRedirects: 0, // do not follow
-      }
-    );
-  }
-}
 
 describe("loader", () => {
-  let apiRequestContext: APIRequestContext;
-  let api: LoaderApiTester;
+  let publicApi: PublicApiTester;
   let baseURL: string;
   let cleanup: () => Promise<void>;
 
@@ -97,7 +55,7 @@ describe("loader", () => {
     });
 
     const { host, cleanup: cleanupBackend } = await createBackend(dburi);
-    baseURL = `${host}/api/v1`;
+    baseURL = host;
 
     cleanup = async () => {
       await cleanupBackend();
@@ -106,22 +64,14 @@ describe("loader", () => {
   });
 
   beforeEach(async () => {
-    apiRequestContext = await request.newContext({
-      baseURL,
-    });
-    api = new LoaderApiTester(apiRequestContext, baseURL, {
+    publicApi = new PublicApiTester(baseURL, {
       "x-plasmic-api-user": user.email,
       "x-plasmic-api-token": userToken,
-    });
-    await api.refreshCsrfToken();
-    await api.login({
-      email: "user@example.com",
-      password: "!53kr3tz!",
     });
   });
 
   afterEach(async () => {
-    await apiRequestContext.dispose();
+    await publicApi.dispose();
   });
 
   afterAll(async () => {
@@ -129,7 +79,7 @@ describe("loader", () => {
   });
 
   it("resolves 1 project", async () => {
-    const res = await api.getPublishedLoaderAssets([projects[0]], {});
+    const res = await publicApi.getPublishedLoaderAssets([projects[0]], {});
     expect(res.status()).toEqual(302);
     expect(res.headers()["location"]).toEqual(
       `/api/v1/loader/code/versioned?cb=19&platform=react&loaderVersion=0&projectId=${projects[0].id}%400.0.2`
@@ -149,7 +99,7 @@ describe("loader", () => {
     }
 
     // request in reverse order
-    const res = await api.getPublishedLoaderAssets([b, a], {});
+    const res = await publicApi.getPublishedLoaderAssets([b, a], {});
     expect(res.status()).toEqual(302);
     // expect in sorted order
     expect(res.headers()["location"]).toEqual(
@@ -159,7 +109,7 @@ describe("loader", () => {
   });
 
   it("fails if any project has no prefilled versions", async () => {
-    const res = await api.getPublishedLoaderAssets(
+    const res = await publicApi.getPublishedLoaderAssets(
       [projects[0], projects[2]],
       {}
     );
@@ -170,7 +120,7 @@ describe("loader", () => {
   });
 
   it("fails if any project is unpublished", async () => {
-    const res = await api.getPublishedLoaderAssets(
+    const res = await publicApi.getPublishedLoaderAssets(
       [projects[0], projects[3]],
       {}
     );

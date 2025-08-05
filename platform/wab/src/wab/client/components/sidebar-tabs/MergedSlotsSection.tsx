@@ -1,7 +1,4 @@
-import {
-  ComponentPropsSection,
-  getComponentPropTypes,
-} from "@/wab/client/components/sidebar-tabs/ComponentPropsSection";
+import { ComponentPropsSection } from "@/wab/client/components/sidebar-tabs/ComponentPropsSection";
 import {
   TextOnlySection,
   TypographySection,
@@ -21,6 +18,7 @@ import {
 import { $$$ } from "@/wab/shared/TplQuery";
 import { isPlainObjectPropType } from "@/wab/shared/code-components/code-components";
 import { hackyCast } from "@/wab/shared/common";
+import { getComponentPropTypes } from "@/wab/shared/component-props";
 import { getContextDependentValue } from "@/wab/shared/context-dependent-value";
 import { getComponentDisplayName } from "@/wab/shared/core/components";
 import { TplComponent } from "@/wab/shared/model/classes";

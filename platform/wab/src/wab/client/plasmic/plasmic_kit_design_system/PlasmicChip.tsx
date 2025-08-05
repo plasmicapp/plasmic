@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -52,9 +52,7 @@ export const PlasmicChip__VariantProps = new Array<VariantPropType>(
   "size"
 );
 
-export type PlasmicChip__ArgsType = {
-  children?: React.ReactNode;
-};
+export type PlasmicChip__ArgsType = { children?: React.ReactNode };
 type ArgPropType = keyof PlasmicChip__ArgsType;
 export const PlasmicChip__ArgProps = new Array<ArgPropType>("children");
 

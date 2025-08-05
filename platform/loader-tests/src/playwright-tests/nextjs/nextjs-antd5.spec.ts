@@ -17,7 +17,7 @@ test.describe(`Plasmic Antd5`, async () => {
         ctx = await setupNextJs({
           bundleFile: "plasmic-antd5.json",
           projectName: "Antd project",
-          npmRegistry: getEnvVar("NPM_REGISTRY"),
+          npmRegistry: getEnvVar("NPM_CONFIG_REGISTRY"),
           codegenHost: getEnvVar("WAB_HOST"),
           removeComponentsPage: true,
           loaderVersion,

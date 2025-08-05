@@ -1,10 +1,17 @@
 {
   "name": "@plasmicpkgs/plasmic-wordpress",
-  "version": "0.0.132",
+  "version": "0.0.145",
   "description": "Plasmic Wordpress components.",
-  "main": "dist/index.js",
-  "typings": "dist/index.d.ts",
-  "module": "dist/plasmic-wordpress.esm.js",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "module": "./dist/index.esm.js",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.esm.js",
+      "require": "./dist/index.js"
+    }
+  },
   "publishConfig": {
     "access": "public"
   },
@@ -12,11 +19,12 @@
     "dist"
   ],
   "scripts": {
-    "start": "tsdx watch",
-    "build": "tsdx build",
+    "build": "yarn build:types && yarn build:index",
+    "build:types": "yarn tsc",
+    "build:index": "node ../../build.mjs ./src/index.tsx",
     "test": "TEST_CWD=`pwd` yarn --cwd=../.. test --passWithNoTests",
-    "lint": "tsdx lint",
     "prepublishOnly": "npm run build",
+    "postpublish": "bash ../../scripts/publish-api-doc-model.sh",
     "size": "size-limit",
     "analyze": "size-limit --why"
   },
@@ -27,16 +35,16 @@
   },
   "size-limit": [
     {
-      "path": "dist/plasmic-wordpress.cjs.production.min.js",
+      "path": "dist/index.js",
       "limit": "10 KB"
     },
     {
-      "path": "dist/plasmic-wordpress.esm.js",
+      "path": "dist/index.esm.js",
       "limit": "10 KB"
     }
   ],
   "devDependencies": {
-    "@plasmicapp/host": "1.0.211",
+    "@plasmicapp/host": "1.0.223",
     "@plasmicapp/query": "0.1.79",
     "@size-limit/preset-small-lib": "^7.0.8",
     "@types/react": "^18.0.27",
@@ -44,9 +52,7 @@
     "husky": "^7.0.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "size-limit": "^7.0.8",
-    "tsdx": "^0.14.1",
-    "tslib": "^2.3.1"
+    "size-limit": "^7.0.8"
   },
   "dependencies": {
     "@types/dlv": "^1.1.2",

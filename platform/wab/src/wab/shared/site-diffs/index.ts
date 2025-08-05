@@ -1,9 +1,19 @@
-import { computedProjectFlags } from "@/wab/shared/cached-selectors";
+import { extractAllReferencedTokenIds } from "@/wab/commons/StyleToken";
+import {
+  computedProjectFlags,
+  siteToAllTokensDict,
+} from "@/wab/shared/cached-selectors";
 import { makeNodeNamer } from "@/wab/shared/codegen/react-p";
-import { ensure, switchType, withoutNils } from "@/wab/shared/common";
+import {
+  ensure,
+  stableJsonStringify,
+  switchType,
+  withoutNils,
+} from "@/wab/shared/common";
 import {
   getParamDisplayName,
-  isReusableComponent,
+  isFrameComponent,
+  isPageComponent,
 } from "@/wab/shared/core/components";
 import { asCode, ExprCtx } from "@/wab/shared/core/exprs";
 import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
@@ -12,6 +22,7 @@ import { SplitStatus } from "@/wab/shared/core/splits";
 import { isPrivateState } from "@/wab/shared/core/states";
 import {
   flattenTpls,
+  isTplComponent,
   isTplNamable,
   isTplSlot,
   isTplVariantable,
@@ -44,6 +55,7 @@ import {
   ObjInst,
   PageHref,
   Param,
+  ProjectDependency,
   QueryInvalidationExpr,
   RenderExpr,
   RichText,
@@ -84,48 +96,57 @@ export type AllowedSemVerSiteElement =
   | StyleToken
   | ImageAsset
   | Split
+  | ProjectDependency
   | SemVerAllowedTplTypes;
+interface SemVerSiteComponent {
+  type: "Component";
+  componentType: "plain" | "page" | "code" | "frame";
+  uuid: string;
+  name: string;
+  path: string | null;
+}
+interface SemVerSiteVariant {
+  type: "Variant";
+  name: string;
+  isStandalone: boolean;
+}
+interface SemVerSiteSplit {
+  type: "Split Status";
+  name: string | null;
+  value: string;
+  splitType: string;
+}
+interface SemVerSiteImportedProject {
+  type: "Imported Project";
+  name: string;
+  pkgId: string;
+  version: string;
+}
+interface SemVerSiteDefaultElement {
+  type:
+    | "Param"
+    | "Variant group"
+    | "Global variant group"
+    | "Mixin"
+    | "Style token"
+    | "Image"
+    | "Icon"
+    | "Element"
+    | "Split";
+  name: string | null;
+}
 export type SemVerSiteElement =
-  | {
-      type: "Component";
-      componentType: "plain" | "page" | "code" | "frame";
-      uuid: string;
-      name: string | null;
-    }
-  | {
-      type: "Variant";
-      name: string;
-      isStandalone: boolean;
-    }
-  | {
-      type:
-        | "Param"
-        | "Variant group"
-        | "Global variant group"
-        | "Mixin"
-        | "Style token"
-        | "Image"
-        | "Icon"
-        | "Element"
-        | "Split";
-      name: string | null;
-    }
-  | {
-      type: "Split Status";
-      name: string | null;
-      value: string;
-      splitType: string;
-    };
+  | SemVerSiteComponent
+  | SemVerSiteVariant
+  | SemVerSiteSplit
+  | SemVerSiteImportedProject
+  | SemVerSiteDefaultElement;
+
+type ParentComponent = Omit<SemVerSiteComponent, "type">;
 
 export interface ChangeLogEntry {
   releaseType: SemVerReleaseType;
-  parentComponent:
-    | "global"
-    | {
-        name: string;
-        uuid: string;
-        componentType: "plain" | "page" | "code" | "frame";
-      };
+  parentComponent: "global" | ParentComponent;
   oldValue: SemVerSiteElement | null;
   newValue: SemVerSiteElement | null;
   description:
@@ -137,17 +158,13 @@ export interface ChangeLogEntry {
     | "split-status-update";
 }
 
+export interface ExternalChangeData {
+  importedProjectsChanged: string[];
+  pagesChanged: string[];
+}
+
 export function mkSemVerSiteElement(
-  node:
-    | Component
-    | Param
-    | VariantGroup
-    | Variant
-    | Mixin
-    | StyleToken
-    | ImageAsset
-    | Split
-    | SemVerAllowedTplTypes
+  node: AllowedSemVerSiteElement
 ): SemVerSiteElement {
   return ensure(
     maybeMkSemVerSiteElement(node),
@@ -164,6 +181,7 @@ export function maybeMkSemVerSiteElement(
       componentType: node.type as any,
       name: node.name,
       uuid: node.uuid,
+      path: isPageComponent(node) ? node.pageMeta?.path : null,
     };
   } else if (isKnownVariant(node)) {
     return {
@@ -199,6 +217,12 @@ export function maybeMkSemVerSiteElement(
         name: isKnownTplSlot(tpl) ? tpl.param.variable.name : tpl.name ?? null,
       };
     })
+    .when(ProjectDependency, (d) => ({
+      type: "Imported Project" as const,
+      name: d.name,
+      pkgId: d.pkgId,
+      version: d.version,
+    }))
     .elseUnsafe(() => undefined);
 }
 
@@ -221,15 +245,12 @@ export function calculateSemVer(
   }
 }
 
-function formatParentComponent(c: Component): {
-  name: string;
-  uuid: string;
-  componentType: "plain" | "page" | "code" | "frame";
-} {
+function formatParentComponent(c: Component): ParentComponent {
   return {
     name: c.name,
     uuid: c.uuid,
     componentType: c.type as any,
+    path: isPageComponent(c) ? c.pageMeta?.path : null,
   };
 }
 
@@ -315,13 +336,20 @@ export function compareSites(prev: Site, curr: Site): ChangeLogEntry[] {
   // site.components
   results.push(
     ...genericCheck(
-      prev.components.filter((c) => isReusableComponent(c)),
-      curr.components.filter((c) => isReusableComponent(c)),
+      prev,
+      curr,
+      prev.components.filter((c) => !isFrameComponent(c)),
+      curr.components.filter((c) => !isFrameComponent(c)),
       (c) => c.uuid,
       [
         {
           selector: (c) => c.name,
           ...nameValueDiffSpecs,
+        },
+        {
+          selector: (c) =>
+            c.pageMeta ? stableJsonStringify(c.pageMeta, new Set(["uid"])) : "",
+          ...patchUpdateDiffSpecs,
         },
       ],
       "global",
@@ -349,6 +377,8 @@ export function compareSites(prev: Site, curr: Site): ChangeLogEntry[] {
         prevComponent,
         currComponent,
         genericCheck(
+          prev,
+          curr,
           prevComponent.params.filter(
             (p) =>
               !prevVariantGroupParams.has(p) &&
@@ -366,10 +396,10 @@ export function compareSites(prev: Site, curr: Site): ChangeLogEntry[] {
               ...nameValueDiffSpecs,
             },
             {
-              selector: (p) =>
+              selector: (p, site) =>
                 `${
                   p.defaultExpr
-                    ? hashExpr(p.defaultExpr, {
+                    ? hashExpr(site, p.defaultExpr, {
                         projectFlags,
                         component: currComponent,
                         inStudio: true,
@@ -377,7 +407,7 @@ export function compareSites(prev: Site, curr: Site): ChangeLogEntry[] {
                     : ""
                 }:${
                   p.previewExpr
-                    ? hashExpr(p.previewExpr, {
+                    ? hashExpr(site, p.previewExpr, {
                         projectFlags,
                         component: currComponent,
                         inStudio: true,
@@ -397,6 +427,8 @@ export function compareSites(prev: Site, curr: Site): ChangeLogEntry[] {
     // (interaction variants)
     results.push(
       ...genericCheck(
+        prev,
+        curr,
         prevComponent.variants,
         currComponent.variants,
         (v) => v.uuid,
@@ -415,6 +447,8 @@ export function compareSites(prev: Site, curr: Site): ChangeLogEntry[] {
     // site.components[i].variantGroups[j].variants
     results.push(
       ...checkVariantGroups(
+        prev,
+        curr,
         prevComponent.variantGroups,
         currComponent.variantGroups,
         formatParentComponent(currComponent)
@@ -423,7 +457,7 @@ export function compareSites(prev: Site, curr: Site): ChangeLogEntry[] {
 
     // site.components[i].tplTree
     results.push(
-      ...checkTplNodes(prevComponent, currComponent, {
+      ...checkTplNodes(prev, curr, prevComponent, currComponent, {
         projectFlags,
         component: currComponent,
         inStudio: true,
@@ -436,6 +470,8 @@ export function compareSites(prev: Site, curr: Site): ChangeLogEntry[] {
   if (!isHostLessPackage(prev) && !isHostLessPackage(curr)) {
     results.push(
       ...checkVariantGroups(
+        prev,
+        curr,
         prev.globalVariantGroups,
         curr.globalVariantGroups,
         "global"
@@ -446,6 +482,8 @@ export function compareSites(prev: Site, curr: Site): ChangeLogEntry[] {
   // site.mixins
   results.push(
     ...genericCheck(
+      prev,
+      curr,
       prev.mixins,
       curr.mixins,
       (m) => m.uuid,
@@ -455,7 +493,7 @@ export function compareSites(prev: Site, curr: Site): ChangeLogEntry[] {
           ...nameValueDiffSpecs,
         },
         {
-          selector: (m) => hashRuleSet(m.rs),
+          selector: (m, site) => hashRuleSet(site, m.rs),
           ...patchUpdateDiffSpecs,
         },
       ],
@@ -467,6 +505,8 @@ export function compareSites(prev: Site, curr: Site): ChangeLogEntry[] {
   // site.styleTokens
   results.push(
     ...genericCheck(
+      prev,
+      curr,
       prev.styleTokens,
       curr.styleTokens,
       (t) => t.uuid,
@@ -488,6 +528,8 @@ export function compareSites(prev: Site, curr: Site): ChangeLogEntry[] {
   // site.imageAssets
   results.push(
     ...genericCheck(
+      prev,
+      curr,
       prev.imageAssets,
       curr.imageAssets,
       (t) => t.uuid,
@@ -509,6 +551,8 @@ export function compareSites(prev: Site, curr: Site): ChangeLogEntry[] {
   // site.splits
   results.push(
     ...genericCheck(
+      prev,
+      curr,
       prev.splits,
       curr.splits,
       (t) => t.uuid,
@@ -532,9 +576,42 @@ export function compareSites(prev: Site, curr: Site): ChangeLogEntry[] {
       return prevSplit.status as SplitStatus;
     })
   );
+
+  results.push(
+    ...genericCheck(
+      prev,
+      curr,
+      prev.projectDependencies,
+      curr.projectDependencies,
+      (d) => d.projectId,
+      [
+        {
+          selector: (d) => d.version,
+          ...patchUpdateDiffSpecs,
+        },
+      ],
+      "global",
+      namedEntityDiffSpecs
+    )
+  );
   // site.arenas - ignore
   // site.themes - ignore
   // site.userManagedFonts - ignore
+
+  // Indirect changes
+  const modifiedComponentUuids = new Set(
+    withoutNils(
+      results.map((v) =>
+        v.parentComponent !== "global" ? v.parentComponent.uuid : undefined
+      )
+    )
+  );
+
+  curr.components.forEach((currComponent) => {
+    results.push(
+      ...checkIndirectTplUsage(currComponent, modifiedComponentUuids)
+    );
+  });
 
   return results;
 }
@@ -552,21 +629,17 @@ interface DiffSpec {
  * Otherwise, "patch" version bump
  **/
 function genericCheck<T extends AllowedSemVerSiteElement>(
+  prev: Site,
+  curr: Site,
   a: Array<T>,
   b: Array<T>,
   keySelector: (o: T) => string,
   valueSelectors: {
-    selector: (o: T) => string;
+    selector: (o: T, site: Site) => string;
     valueAdded: DiffSpec;
     valueChanged: DiffSpec;
   }[],
-  parentComponent:
-    | "global"
-    | {
-        name: string;
-        uuid: string;
-        componentType: "plain" | "page" | "code" | "frame";
-      },
+  parentComponent: "global" | ParentComponent,
   opts: {
     removed: DiffSpec;
     added: DiffSpec;
@@ -589,8 +662,8 @@ function genericCheck<T extends AllowedSemVerSiteElement>(
       });
     } else {
       for (const { selector, valueAdded, valueChanged } of valueSelectors) {
-        const aVal = selector(aMap[key]);
-        const bVal = selector(bMap[key]);
+        const aVal = selector(aMap[key], prev);
+        const bVal = selector(bMap[key], curr);
         if (!aVal && bVal) {
           partialResults.push({
             releaseType: valueAdded.releaseType,
@@ -633,6 +706,8 @@ function genericCheck<T extends AllowedSemVerSiteElement>(
  * aComp is old, bComp is new
  */
 function checkTplNodes(
+  prev: Site,
+  curr: Site,
   aComp: Component,
   bComp: Component,
   exprCtx: ExprCtx
@@ -670,12 +745,6 @@ function checkTplNodes(
     } else {
       const bName = bNodeNamer(bNode);
       if (aName !== bName) {
-        console.log("Found names don't match", aNode.uuid, {
-          aName,
-          bName,
-          aNames,
-          bNames,
-        });
         // the node has just been renamed.
         const releaseType =
           // The old name is no longer exposed in the new set of names, so we've
@@ -701,8 +770,8 @@ function checkTplNodes(
       if (
         isTplVariantable(aNode) &&
         isTplVariantable(bNode) &&
-        hashVariantSettings(aNode, exprCtx) !==
-          hashVariantSettings(bNode, exprCtx)
+        hashVariantSettings(prev, aNode, exprCtx) !==
+          hashVariantSettings(curr, bNode, exprCtx)
       ) {
         // Style has been updated
         results.push({
@@ -733,21 +802,43 @@ function checkTplNodes(
 
   return results;
 }
+/**
+ * Check if any of the components in the tpl tree
+ * have been modified.
+ */
+function checkIndirectTplUsage(
+  comp: Component,
+  modifiedComponentUuids: Set<string>
+): ChangeLogEntry[] {
+  const results: ChangeLogEntry[] = [];
+
+  for (const tpl of flattenTpls(comp.tplTree)) {
+    if (!isTplComponent(tpl)) {
+      continue;
+    }
+    if (modifiedComponentUuids.has(tpl.component.uuid)) {
+      results.push({
+        releaseType: "patch",
+        parentComponent: formatParentComponent(comp),
+        oldValue: mkSemVerSiteElement(tpl),
+        newValue: mkSemVerSiteElement(tpl),
+        description: "updated",
+      });
+    }
+  }
+  return results;
+}
 
 /**
  * Given 2 arrays of variant groups, check both the variantGroup
  * and included variants for version changes.
  **/
 function checkVariantGroups(
+  prev: Site,
+  curr: Site,
   aVgs: Array<VariantGroup>,
   bVgs: Array<VariantGroup>,
-  parentComponent:
-    | "global"
-    | {
-        name: string;
-        uuid: string;
-        componentType: "plain" | "page" | "code" | "frame";
-      }
+  parentComponent: "global" | ParentComponent
 ): ChangeLogEntry[] {
   const partialResults: ChangeLogEntry[] = [];
   const _aVgMap = L.keyBy(aVgs, (o) => o.uuid);
@@ -756,6 +847,8 @@ function checkVariantGroups(
   // variantGroups
   partialResults.push(
     ...genericCheck(
+      prev,
+      curr,
       aVgs,
       bVgs,
       (vg) => vg.uuid,
@@ -778,6 +871,8 @@ function checkVariantGroups(
     const bVg = bVgMap[aVg.uuid];
     partialResults.push(
       ...genericCheck(
+        prev,
+        curr,
         aVg.variants,
         bVg.variants,
         (v) => v.uuid,
@@ -819,61 +914,80 @@ const patchUpdateDiffSpecs = {
   valueChanged: { releaseType: "patch", description: "updated" },
 } as const;
 
-function hashVariantSettings(tpl: TplNode, exprCtx: ExprCtx) {
-  return tpl.vsettings.map((vs) => hashVariantSetting(vs, exprCtx)).join("");
+function hashVariantSettings(site: Site, tpl: TplNode, exprCtx: ExprCtx) {
+  return tpl.vsettings
+    .map((vs) => hashVariantSetting(site, vs, exprCtx))
+    .join("");
 }
 
-function hashVariantSetting(vs: VariantSetting, exprCtx: ExprCtx) {
+function hashVariantSetting(site: Site, vs: VariantSetting, exprCtx: ExprCtx) {
   return `
   ${vs.variants.map((v) => v.uuid).join("")}
   ${vs.args
-    .map((arg) => `${arg.param.variable.uuid}=${hashExpr(arg.expr, exprCtx)}`)
+    .map(
+      (arg) => `${arg.param.variable.uuid}=${hashExpr(site, arg.expr, exprCtx)}`
+    )
     .join("")}
   ${Object.entries(vs.attrs)
-    .map(([key, val]) => `${key}=${hashExpr(val, exprCtx)}`)
+    .map(([key, val]) => `${key}=${hashExpr(site, val, exprCtx)}`)
     .join("")}
-  ${vs.dataCond ? hashExpr(vs.dataCond, exprCtx) : ""}
-  ${vs.text ? hashText(vs.text, exprCtx) : ""}
-  ${hashRuleSet(vs.rs)}
+  ${vs.dataCond ? hashExpr(site, vs.dataCond, exprCtx) : ""}
+  ${vs.text ? hashText(site, vs.text, exprCtx) : ""}
+  ${hashRuleSet(site, vs.rs)}
   `;
 }
 
-function hashRuleSet(rs: RuleSet) {
+function hashRuleSet(site: Site, rs: RuleSet) {
+  const allTokensDict = siteToAllTokensDict(site);
+  const rsValues = Object.entries(rs.values)
+    .sort((a, b) => a[0].localeCompare(b[0]))
+    .map(([key, val]) => {
+      const refTokenIds = extractAllReferencedTokenIds(val);
+      if (refTokenIds.length === 0) {
+        return [key, val];
+      }
+      const refTokens = withoutNils(refTokenIds.map((x) => allTokensDict[x]));
+      return [key, refTokens.map((t) => t.value).join("")];
+    });
   return `
-    ${JSON.stringify(rs.values)}
-    ${rs.mixins.map((m) => m.uuid).join("")}
+    ${JSON.stringify(rsValues)}
+    ${[...rs.mixins]
+      .sort((a, b) => a.uuid.localeCompare(b.uuid))
+      .map((m) => hashRuleSet(site, m.rs))
+      .join("")}
   `;
 }
 
-export function hashExpr(_expr: Expr, exprCtx: ExprCtx) {
+export function hashExpr(site: Site, _expr: Expr, exprCtx: ExprCtx) {
   return switchType(_expr)
     .when(
       CustomCode,
       (expr) =>
-        expr.code + (expr.fallback ? hashExpr(expr.fallback, exprCtx) : "")
+        expr.code +
+        (expr.fallback ? hashExpr(site, expr.fallback, exprCtx) : "")
     )
     .when(RenderExpr, (expr) => expr.tpl.map((x) => x.uuid).join(""))
     .when(VarRef, (expr) => expr.variable.uuid)
-    .when(StyleTokenRef, (expr) => expr.token.uuid)
-    .when(ImageAssetRef, (expr) => expr.asset.uuid)
+    .when(StyleTokenRef, (expr) => expr.token.value)
+    .when(ImageAssetRef, (expr) => expr.asset.dataUri)
     .when(PageHref, (expr) => expr.page.uuid)
     .when(VariantsRef, (expr) => expr.variants.map((v) => v.uuid).join(""))
     .when(
       ObjectPath,
       (expr) =>
         expr.path.join(".") +
-        (expr.fallback ? hashExpr(expr.fallback, exprCtx) : "")
+        (expr.fallback ? hashExpr(site, expr.fallback, exprCtx) : "")
     )
     .when(DataSourceOpExpr, (expr) => asCode(expr, exprCtx).code)
     .when(EventHandler, (expr) => expr.interactions.map((i) => i.uuid).join(""))
     .when(CollectionExpr, (collectionExpr) =>
       collectionExpr.exprs
-        .map((expr) => (expr ? hashExpr(expr, exprCtx) : "undefined"))
+        .map((expr) => (expr ? hashExpr(site, expr, exprCtx) : "undefined"))
         .join("#")
     )
-    .when(MapExpr, (expr) =>
-      Object.entries(expr.mapExpr).map(
-        ([name, iexpr]) => `{${name}}:{${hashExpr(iexpr, exprCtx)}}#`
+    .when(MapExpr, (mapExpr) =>
+      Object.entries(mapExpr.mapExpr).map(
+        ([name, expr]) => `{${name}}:{${hashExpr(site, expr, exprCtx)}}#`
       )
     )
     .when(FunctionArg, (functionArg) => functionArg.uuid)
@@ -882,12 +996,12 @@ export function hashExpr(_expr: Expr, exprCtx: ExprCtx) {
       StyleExpr,
       (expr) =>
         `${expr.uuid}-${expr.styles.map(
-          (s) => `${s.selector}-${hashRuleSet(s.rs)}`
+          (s) => `${s.selector}-${hashRuleSet(site, s.rs)}`
         )}`
     )
     .when(TemplatedString, (templatedString) =>
       templatedString.text
-        .map((t) => (isString(t) ? t : `{{ ${hashExpr(t, exprCtx)} }} `))
+        .map((t) => (isString(t) ? t : `{{ ${hashExpr(site, t, exprCtx)} }} `))
         .join("")
     )
     .when(TplRef, (ref) => `ref=${ref.tpl.uuid}`)
@@ -899,7 +1013,7 @@ export function hashExpr(_expr: Expr, exprCtx: ExprCtx) {
       JSON.stringify({
         hostLiteral: expr.hostLiteral,
         substitutions: mapValues(expr.substitutions, (subexpr) =>
-          hashExpr(subexpr, exprCtx)
+          hashExpr(site, subexpr, exprCtx)
         ),
       })
     )
@@ -907,10 +1021,13 @@ export function hashExpr(_expr: Expr, exprCtx: ExprCtx) {
     .result();
 }
 
-function hashText(text: RichText, exprCtx: ExprCtx) {
+function hashText(site: Site, text: RichText, exprCtx: ExprCtx) {
   function hashMarker(marker: Marker) {
     if (isKnownStyleMarker(marker)) {
-      return `${marker.position}${marker.length}${hashRuleSet(marker.rs)}`;
+      return `${marker.position}${marker.length}${hashRuleSet(
+        site,
+        marker.rs
+      )}`;
     } else if (isKnownNodeMarker(marker)) {
       return `${marker.tpl.uuid}${marker.position}${marker.length}`;
     } else {
@@ -921,7 +1038,7 @@ function hashText(text: RichText, exprCtx: ExprCtx) {
   if (isKnownRawText(text)) {
     return `${text.text}${text.markers.map(hashMarker).join("")}`;
   } else if (isKnownExprText(text)) {
-    return hashExpr(text.expr, exprCtx);
+    return hashExpr(site, text.expr, exprCtx);
   } else {
     throw new Error(`Unexpected text ${text}`);
   }
@@ -930,4 +1047,55 @@ function hashText(text: RichText, exprCtx: ExprCtx) {
 // https://stackoverflow.com/a/65687141/1339783
 export function compareVersionNumbers(a: string, b: string) {
   return a.localeCompare(b, undefined, { numeric: true, sensitivity: "base" });
+}
+
+export function getExternalChangeData(
+  changeLog: ChangeLogEntry[]
+): ExternalChangeData {
+  const isPageComponentChange = (
+    value: SemVerSiteElement | null
+  ): value is SemVerSiteComponent => {
+    return value?.type === "Component" && value?.componentType === "page";
+  };
+
+  return {
+    importedProjectsChanged: [
+      ...new Set(
+        withoutNils(
+          changeLog.flatMap((entry) => {
+            const result: string[] = [];
+            if (entry.newValue?.type === "Imported Project") {
+              result.push(entry.newValue.name);
+            }
+            if (entry.oldValue?.type === "Imported Project") {
+              result.push(entry.oldValue.name);
+            }
+            return result;
+          })
+        )
+      ),
+    ],
+    pagesChanged: [
+      ...new Set(
+        withoutNils(
+          changeLog.flatMap((entry) => {
+            const result: string[] = [];
+            if (isPageComponentChange(entry.newValue)) {
+              result.push(entry.newValue.path!);
+            }
+            if (isPageComponentChange(entry.oldValue)) {
+              result.push(entry.oldValue.path!);
+            }
+            if (
+              entry.parentComponent !== "global" &&
+              entry.parentComponent.path
+            ) {
+              result.push(entry.parentComponent.path);
+            }
+            return result;
+          })
+        )
+      ),
+    ],
+  };
 }

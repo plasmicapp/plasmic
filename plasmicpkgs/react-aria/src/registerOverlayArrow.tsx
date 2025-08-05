@@ -81,7 +81,7 @@ export function registerOverlayArrow(
       displayName: "Aria Overlay Arrow",
       importPath: "@plasmicpkgs/react-aria/skinny/registerOverlayArrow",
       importName: "BaseOverlayArrow",
-      styleSections: false,
+      styleSections: ["visibility"],
       variants,
       props: {
         children: {

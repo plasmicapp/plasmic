@@ -1,3 +1,4 @@
+import { COMMANDS } from "@/wab/client/commands/command";
 import { WithContextMenu } from "@/wab/client/components/ContextMenu";
 import { TextAndShortcut } from "@/wab/client/components/menu-builder";
 import { reactPrompt } from "@/wab/client/components/quick-modals";
@@ -15,7 +16,6 @@ import {
 import ActionChip from "@/wab/client/components/sidebar-tabs/StateManagement/ActionChip";
 import HandlerSection from "@/wab/client/components/sidebar-tabs/StateManagement/HandlerSection";
 import VariableEditingForm from "@/wab/client/components/sidebar-tabs/StateManagement/VariableEditingForm";
-import { mkInitialState } from "@/wab/client/components/sidebar-tabs/StateManagement/VariablesSection";
 import { createNodeIcon } from "@/wab/client/components/sidebar-tabs/tpl-tree";
 import { SidebarModal } from "@/wab/client/components/sidebar/SidebarModal";
 import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
@@ -46,22 +46,22 @@ import {
 } from "@/wab/client/state-management/preview-steps";
 import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
+import { unwrap } from "@/wab/commons/failable-utils";
 import { VARIABLE_LOWER } from "@/wab/shared/Labels";
 import { TplMgr } from "@/wab/shared/TplMgr";
 import { flattenComponent } from "@/wab/shared/cached-selectors";
 import {
   HighlightInteractionRequest,
-  StudioPropType,
   isAdvancedProp,
 } from "@/wab/shared/code-components/code-components";
 import { getExportedComponentName } from "@/wab/shared/codegen/react-p/serialize-utils";
 import { paramToVarName } from "@/wab/shared/codegen/util";
 import { assert, ensure, hackyCast, spawn } from "@/wab/shared/common";
+import { getComponentPropTypes } from "@/wab/shared/component-props";
 import {
   getComponentDisplayName,
   getRealParams,
   isCodeComponent,
-  isHostLessCodeComponent,
   isPlumeComponent,
 } from "@/wab/shared/core/components";
 import {
@@ -70,11 +70,7 @@ import {
   extractValueSavedFromDataPicker,
 } from "@/wab/shared/core/exprs";
 import { ComponentPropOrigin } from "@/wab/shared/core/lang";
-import {
-  StateVariableType,
-  addComponentState,
-  getStateVarName,
-} from "@/wab/shared/core/states";
+import { StateVariableType, getStateVarName } from "@/wab/shared/core/states";
 import {
   EventHandlerKeyType,
   getDisplayNameOfEventHandlerKey,
@@ -224,8 +220,10 @@ export const ComponentPropsSection = observer(
                       const isSet = !!expsProvider
                         .effectiveVs()
                         .args.find((_arg) => _arg.param === param);
+
                       return {
-                        collapsible: !!isAdvancedProp(propType) && !isSet,
+                        collapsible:
+                          !!isAdvancedProp(propType, param) && !isSet,
                         content: (
                           <PropEditorRowWrapper
                             key={param.uid}
@@ -429,19 +427,22 @@ export function VariableEditor(props: {
         }}
         visible={isDataPickerVisible}
         setVisible={(val) => setIsDataPickerVisible(val)}
-        onAddVariableBtnClick={() => {
-          const state = mkInitialState(studioCtx, component);
-          setJustAddedState(state);
-          setIsDataPickerVisible(false);
-          spawn(
-            studioCtx.change(({ success }) => {
-              addComponentState(studioCtx.site, component, state);
-              return success();
-            })
+        onAddVariableBtnClick={async () => {
+          const newState = unwrap(
+            await COMMANDS.component.addNewStateVariable.execute(
+              studioCtx,
+              {},
+              {
+                component,
+              }
+            )
           );
+
+          setJustAddedState(newState);
+          setIsDataPickerVisible(false);
           onChange(
             new ObjectPath({
-              path: ["$state", getStateVarName(state)],
+              path: ["$state", getStateVarName(newState)],
               fallback: null,
             })
           );
@@ -1032,7 +1033,13 @@ function TplComponentNameSection_(props: {
         icon={<Icon icon={ComponentIcon} className="component-fg" />}
         value={tpl.name || ""}
         onChange={(name) =>
-          viewCtx.change(() => viewCtx.getViewOps().renameTpl(name, tpl))
+          COMMANDS.element.rename.execute(
+            studioCtx,
+            {
+              name,
+            },
+            { tpl, viewCtx }
+          )
         }
         placeholder={summarizeUnnamedTpl(
           tpl,
@@ -1065,7 +1072,13 @@ function TplTagNameSection_(props: {
         }
         value={tpl.name || ""}
         onChange={(name) =>
-          viewCtx.change(() => viewCtx.getViewOps().renameTpl(name, tpl))
+          COMMANDS.element.rename.execute(
+            viewCtx.studioCtx,
+            {
+              name,
+            },
+            { tpl, viewCtx }
+          )
         }
         placeholder={summarizeUnnamedTpl(tpl, effectiveVs.rsh())}
         suffix={menuOptions.length > 0 && <ApplyMenu items={menuOptions} />}
@@ -1110,38 +1123,6 @@ const ApplyMenu = observer(function ApplyMenu_(props: {
     </Dropdown>
   );
 });
-
-export function getComponentPropTypes(
-  viewCtx: ViewCtx,
-  component: Component
-): Record<string, StudioPropType<any>> {
-  if (isCodeComponent(component)) {
-    return viewCtx.getCodeComponentMeta(component)?.props ?? {};
-  } else if (isPlumeComponent(component)) {
-    return (
-      getPlumeEditorPlugin(component)?.codeComponentMeta?.(component)?.props ??
-      {}
-    );
-  } else {
-    return {};
-  }
-}
-
-export function getContextComponentPropTypes(
-  studioCtx: StudioCtx,
-  component: Component
-): Record<string, StudioPropType<any>> {
-  if (isCodeComponent(component)) {
-    return (
-      (isHostLessCodeComponent(component)
-        ? studioCtx.getHostLessContextsMap()
-        : studioCtx.getRegisteredContextsMap()
-      ).get(component.name)?.meta.props ?? {}
-    );
-  } else {
-    return {};
-  }
-}
 
 function getComponentActions(viewCtx: ViewCtx, component: Component) {
   if (isCodeComponent(component)) {

@@ -17,7 +17,7 @@ test.describe(`Plasmic Timer`, async () => {
         ctx = await setupNextJs({
           bundleFile: "plasmic-basic-components/timer.json",
           projectName: "Timer",
-          npmRegistry: getEnvVar("NPM_REGISTRY"),
+          npmRegistry: getEnvVar("NPM_CONFIG_REGISTRY"),
           codegenHost: getEnvVar("WAB_HOST"),
           removeComponentsPage: true,
           loaderVersion,

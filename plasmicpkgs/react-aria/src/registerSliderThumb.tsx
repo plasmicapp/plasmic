@@ -1,7 +1,11 @@
 import React from "react";
-import { Slider, SliderThumb, SliderTrack } from "react-aria-components";
+import {
+  Slider,
+  SliderThumb,
+  SliderTrack,
+  SliderTrackContext,
+} from "react-aria-components";
 import { COMMON_STYLES, getCommonProps } from "./common";
-import ErrorBoundary from "./ErrorBoundary";
 import {
   CodeComponentMetaOverrides,
   Registerable,
@@ -33,6 +37,7 @@ export function BaseSliderThumb({
   plasmicUpdateVariant,
   ...rest
 }: BaseSliderThumbProps) {
+  const isStandalone = !React.useContext(SliderTrackContext);
   const thumb = (
     <SliderThumb {...rest} style={COMMON_STYLES}>
       {({ isDragging, isHovered, isFocused, isFocusVisible, isDisabled }) =>
@@ -51,19 +56,15 @@ export function BaseSliderThumb({
     </SliderThumb>
   );
 
-  return (
-    <ErrorBoundary
-      // If the Slider Thumb is the root of a Studio component, then we need to wrap the thumb in a track
-      // to ensure that the thumb gets the required Slider context
-      fallback={
-        <Slider style={{ height: "100%", width: "100%" }}>
-          <SliderTrack>{thumb}</SliderTrack>
-        </Slider>
-      }
-    >
-      {thumb}
-    </ErrorBoundary>
-  );
+  if (isStandalone) {
+    return (
+      <Slider style={{ height: "100%", width: "100%" }}>
+        <SliderTrack>{thumb}</SliderTrack>
+      </Slider>
+    );
+  }
+
+  return thumb;
 }
 
 export const SLIDER_THUMB_COMPONENT_NAME = makeComponentName("sliderThumb");

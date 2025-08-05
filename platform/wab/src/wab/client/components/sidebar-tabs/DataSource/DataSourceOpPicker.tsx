@@ -26,7 +26,6 @@ import React, {
 } from "react";
 // eslint-disable-next-line no-restricted-imports
 import { AppCtx } from "@/wab/client/app-ctx";
-import { UU } from "@/wab/client/cli-routes";
 import { useAppRoles } from "@/wab/client/components/app-auth/app-auth-contexts";
 import {
   BottomModalButtons,
@@ -185,6 +184,8 @@ import {
   TemplatedString,
   TplNode,
 } from "@/wab/shared/model/classes";
+import { APP_ROUTES } from "@/wab/shared/route/app-routes";
+import { fillRoute } from "@/wab/shared/route/route";
 import { smartHumanize } from "@/wab/shared/strs";
 import { explorerPlugin } from "@graphiql/plugin-explorer";
 import {
@@ -1433,7 +1434,7 @@ export function DataSourceOpDraftForm(props: {
                   <a
                     target={"_blank"}
                     href={
-                      UU.workspace.fill({
+                      fillRoute(APP_ROUTES.workspace, {
                         workspaceId: studioCtx.siteInfo.workspaceId,
                       }) + "#tab=dataSources"
                     }

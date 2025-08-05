@@ -1,11 +1,7 @@
-import { assert, ensure, spawn } from "@/wab/shared/common";
-import { DEVFLAGS } from "@/wab/shared/devflags";
 import { updateHostlessPackage } from "@/wab/server/code-components/code-components";
 import { DEFAULT_DATABASE_URI } from "@/wab/server/config";
 import { unbundleSite } from "@/wab/server/db/bundle-migration-utils";
 import {
-  BUNDLE_MIGRATION_PATH,
-  getAllMigrations,
   getLastBundleVersion,
   getMigratedBundle,
 } from "@/wab/server/db/BundleMigrator";
@@ -17,10 +13,10 @@ import { DbMgr, SUPER_USER } from "@/wab/server/db/DbMgr";
 import { ensureDevFlags } from "@/wab/server/workers/worker-utils";
 import { ProjectId } from "@/wab/shared/ApiSchema";
 import { Bundler } from "@/wab/shared/bundler";
+import { assert, ensure, spawn } from "@/wab/shared/common";
+import { DEVFLAGS } from "@/wab/shared/devflags";
 import { ensureKnownProjectDependency, Site } from "@/wab/shared/model/classes";
 import { assertSiteInvariants } from "@/wab/shared/site-invariants";
-import fs from "fs";
-import path from "path";
 import semver from "semver";
 import { EntityManager } from "typeorm";
 
@@ -64,55 +60,6 @@ async function publishHostlessProjects(em: EntityManager) {
     } else {
       console.log("\tNo changes detected");
     }
-  }
-
-  if (updatedProjects.length > 0) {
-    if (DEVFLAGS.autoUpgradeHostless) {
-      console.log(
-        "No migration needed since we're auto-upgrading the hostless projects."
-      );
-    } else {
-      const migrations = await getAllMigrations();
-      assert(
-        migrations[migrations.length - 1].name.startsWith(
-          `${migrations.length}-`
-        ),
-        () =>
-          `${migrations.length}-th migration has unexpected format: ${
-            migrations[migrations.length - 1].name
-          }`
-      );
-      const newMigrationIndex = migrations.length + 1;
-      assert(
-        !migrations.some(({ name }) =>
-          name.startsWith(`${newMigrationIndex}-`)
-        ),
-        () =>
-          `Found unexpected migration: ${
-            migrations.find(({ name }) =>
-              name.startsWith(`${newMigrationIndex}-`)
-            )?.name
-          }`
-      );
-      const migrationFileName = `${newMigrationIndex}-migrate-hostless.ts`;
-      const migrationContents = `import { upgradeHostlessProject, BundleMigrationType } from "../db/bundle-migration-utils";
-import { UnbundledMigrationFn } from "../db/BundleMigrator";
-
-// ${`migrates ${updatedProjects.join(", ")}`.trim()}
-export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
-  await upgradeHostlessProject(bundle, entity, db);
-};
-
-export const MIGRATION_TYPE: BundleMigrationType = "unbundled";
-`;
-      console.log(`Creating migration script ${migrationFileName}`);
-      fs.writeFileSync(
-        path.join(BUNDLE_MIGRATION_PATH, migrationFileName),
-        migrationContents
-      );
-    }
-  } else {
-    console.log("No migration needed");
   }
 }
 

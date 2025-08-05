@@ -53,7 +53,9 @@ export async function runCypressTest(opts: {
 
     if (result.status === "failed" && diffFiles.length > 0) {
       console.log("Diff files", diffFiles);
-      const s3 = new S3();
+      const s3 = new S3({
+        endpoint: process.env.S3_ENDPOINT,
+      });
       for (const diffFile of diffFiles) {
         const { Location } = await s3
           .upload({
@@ -63,7 +65,7 @@ export async function runCypressTest(opts: {
             }/loader-tests/${diffFile}`,
             Body: fs.readFileSync(diffFile),
             ContentType: "image/png",
-            ACL: "public-read",
+            ACL: !process.env.S3_ENDPOINT ? "public-read" : undefined, // TODO: Remove this when we migrate to GCS,
           })
           .promise();
         console.log(`Diff: ${Location}`);

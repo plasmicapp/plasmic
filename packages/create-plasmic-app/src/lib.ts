@@ -20,6 +20,8 @@ async function getCPAStrategy(platform: PlatformType): Promise<CPAStrategy> {
       return (await import("./gatsby/gatsby")).gatsbyStrategy;
     case "react":
       return (await import("./react/react")).reactStrategy;
+    case "tanstack":
+      return (await import("./tanstack/tanstack")).tanstackStrategy;
   }
 }
 
@@ -72,7 +74,7 @@ export async function create(args: CreatePlasmicAppArgs): Promise<void> {
 
   // Calling `npx create-XXX` means we don't have to keep these dependencies up to date
   banner("CREATING THE PROJECT");
-  if (!["nextjs", "gatsby", "react"].includes(platform)) {
+  if (!["nextjs", "gatsby", "react", "tanstack"].includes(platform)) {
     throw new Error(`Unrecognized platform: ${platform}`);
   }
 

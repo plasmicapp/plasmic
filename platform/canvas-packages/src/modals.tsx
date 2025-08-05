@@ -6,7 +6,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 
 interface ModalShellProps {
-  children: React.ReactNode;
+  children?: React.ReactNode;
   onClose: () => void;
   title: string;
   containerSelector: string;
@@ -109,7 +109,7 @@ function ModalShell({
         if (exceptions.some((x) => x.contains(target))) {
           return;
         }
-        const $target = $(e.target);
+        const $target = $(target);
         if (
           $target.parents().is(".panel-popup") ||
           $target.is(".panel-popup") ||

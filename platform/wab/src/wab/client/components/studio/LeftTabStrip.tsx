@@ -1,5 +1,4 @@
 // eslint-disable-next-line no-restricted-imports
-import { UU } from "@/wab/client/cli-routes";
 import { showTemporaryInfo } from "@/wab/client/components/quick-modals";
 import { AnonymousAvatar, Avatar } from "@/wab/client/components/studio/Avatar";
 import { FigmaModalContent } from "@/wab/client/components/studio/FigmaModalContent";
@@ -11,6 +10,7 @@ import TreeIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Tree";
 import WandIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Wand";
 import KeyboardIcon from "@/wab/client/plasmic/plasmic_kit_design_system/PlasmicIcon__Keyboard";
 import BooksvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__BookSvg";
+import ChatDocssvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__ChatDocsSvg";
 import ClocksvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__ClockSvg";
 import ComponentssvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__ComponentsSvg";
 import ComponentsvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__ComponentSvg";
@@ -39,6 +39,8 @@ import { spawn, unexpected } from "@/wab/shared/common";
 import { DEVFLAGS } from "@/wab/shared/devflags";
 import { BASE_URL } from "@/wab/shared/discourse/config";
 import { MIXINS_CAP } from "@/wab/shared/Labels";
+import { APP_ROUTES } from "@/wab/shared/route/app-routes";
+import { fillRoute } from "@/wab/shared/route/route";
 import {
   getLeftTabPermission,
   LeftTabKey,
@@ -49,7 +51,8 @@ import classNames from "classnames";
 import { omit } from "lodash";
 import { observer } from "mobx-react";
 import * as React from "react";
-import { CSSProperties, ReactNode } from "react";
+import { ReactNode } from "react";
+import { useIntercom } from "react-use-intercom";
 
 interface LeftTabStripProps extends DefaultLeftTabStripProps {
   useVersionsCTA: boolean;
@@ -71,12 +74,14 @@ export interface NavMenuGroup {
   type: "group";
   icon: ReactNode;
   title: string;
-  style?: CSSProperties;
   items: Record<string, NavMenuItem>;
 }
 
 const LeftTabStrip = observer(function LeftTabStrip(props: LeftTabStripProps) {
   const studioCtx = useStudioCtx();
+  const { show: showIntercom } = useIntercom();
+  const isFreeTier =
+    studioCtx.siteInfo?.featureTier?.id === DEVFLAGS.freeTier.id;
   const isLoggedIn = studioCtx.appCtx.selfInfo != null;
   const contentEditorMode = studioCtx.contentEditorMode;
   const hasGlobalContexts = studioCtx.site.globalContexts.length > 0;
@@ -244,7 +249,7 @@ Help
       },
     },
   };
-  const menu: Record<string, NavMenuItem | NavMenuGroup> = {
+  const topMenu: Record<string, NavMenuItem | NavMenuGroup> = {
     outline: {
       type: "item",
       tabKey: "outline",
@@ -270,18 +275,26 @@ Help
           more: {
             ...mainGroups.more,
             items: Object.fromEntries(
-              Object.entries(mainGroups).flatMap(([groupKey, group]) =>
+              Object.entries(mainGroups).flatMap(([_groupKey, group]) =>
                 Object.entries(group.items)
               )
             ),
           },
         }
       : mainGroups),
+  };
+  const bottomMenu: Record<string, NavMenuItem | NavMenuGroup> = {
+    intercom: {
+      type: "item",
+      icon: <ChatDocssvgIcon />,
+      label: "Chat Docs",
+      cond: !isFreeTier,
+      onClick: showIntercom,
+    },
     helpGroup: {
       type: "group",
       icon: <HelpCirclesvgIcon />,
       title: "Help",
-      style: { marginTop: "auto" },
       items: {
         keyboard: {
           type: "item",
@@ -315,7 +328,9 @@ Help
           type: "item",
           icon: <HelpsvgIcon />,
           label: "Help",
-          href: UU.orgSupport.fill({ teamId: studioCtx.siteInfo.teamId! }),
+          href: fillRoute(APP_ROUTES.orgSupport, {
+            teamId: studioCtx.siteInfo.teamId!,
+          }),
           cond: !isWhiteLabelUser,
         },
       },
@@ -361,6 +376,62 @@ Help
     );
   }
 
+  const renderButtonGroup = (buttons: typeof topMenu) => {
+    return Object.entries(buttons).map(([key, item]) =>
+      item.type === "item"
+        ? renderButton(key, item, false, undefined)
+        : item.type === "group"
+        ? Object.values(item.items).some((i) => i.cond ?? true) && (
+            <Stated defaultValue={false} key={key}>
+              {(open, setOpen) => (
+                <Popover
+                  placement={"right"}
+                  overlayClassName={"sidebar-popover"}
+                  open={open}
+                  onOpenChange={(o) => setOpen(o)}
+                  content={
+                    <>
+                      <div
+                        style={{
+                          margin: 6,
+                          marginLeft: 10,
+                          color: "#999",
+                          fontWeight: 600,
+                          textTransform: "uppercase",
+                          letterSpacing: "1px",
+                          fontSize: 11,
+                        }}
+                      >
+                        {item.title}
+                      </div>
+                      {Object.entries(item.items).map(([subkey, subitem]) =>
+                        renderButton(subkey, subitem, true, () =>
+                          setOpen(false)
+                        )
+                      )}
+                    </>
+                  }
+                >
+                  <LeftTabButton
+                    icon={item.icon}
+                    data-test-tabkey={key}
+                    onClick={() =>
+                      studioCtx.changeUnsafe(() => {
+                        studioCtx.switchLeftTab(undefined);
+                      })
+                    }
+                    isSelected={Object.keys(item.items).some(
+                      (i) => i === studioCtx.leftTabKey
+                    )}
+                  />
+                </Popover>
+              )}
+            </Stated>
+          )
+        : unexpected()
+    );
+  };
+
   return (
     <PlasmicLeftTabStrip
       showAvatar
@@ -378,60 +449,8 @@ Help
         },
       }}
       root={{ className: props.className, id: "left-tab-strip" }}
-      buttons={Object.entries(menu).map(([key, item]) =>
-        item.type === "item"
-          ? renderButton(key, item, false, undefined)
-          : item.type === "group"
-          ? Object.values(item.items).some((i) => i.cond ?? true) && (
-              <Stated defaultValue={false}>
-                {(open, setOpen) => (
-                  <Popover
-                    placement={"right"}
-                    overlayClassName={"sidebar-popover"}
-                    open={open}
-                    onOpenChange={(o) => setOpen(o)}
-                    content={
-                      <>
-                        <div
-                          style={{
-                            margin: 6,
-                            marginLeft: 10,
-                            color: "#999",
-                            fontWeight: 600,
-                            textTransform: "uppercase",
-                            letterSpacing: "1px",
-                            fontSize: 11,
-                          }}
-                        >
-                          {item.title}
-                        </div>
-                        {Object.entries(item.items).map(([subkey, subitem]) =>
-                          renderButton(subkey, subitem, true, () =>
-                            setOpen(false)
-                          )
-                        )}
-                      </>
-                    }
-                  >
-                    <LeftTabButton
-                      style={item.style}
-                      icon={item.icon}
-                      data-test-tabkey={key}
-                      onClick={() =>
-                        studioCtx.changeUnsafe(() => {
-                          studioCtx.switchLeftTab(undefined);
-                        })
-                      }
-                      isSelected={Object.keys(item.items).some(
-                        (i) => i === studioCtx.leftTabKey
-                      )}
-                    />
-                  </Popover>
-                )}
-              </Stated>
-            )
-          : unexpected()
-      )}
+      buttons={renderButtonGroup(topMenu)}
+      bottomButtons={renderButtonGroup(bottomMenu)}
       players={{
         render: (_props) => {
           // Exclude 'children' from props to avoid React warnings about missing keys,

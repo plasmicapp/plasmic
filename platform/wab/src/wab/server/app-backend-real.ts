@@ -22,6 +22,7 @@ import * as path from "path";
 import { addSocketRoutes } from "@/wab/server/app-socket-backend-real";
 import { Config } from "@/wab/server/config";
 import { sendCommentsNotificationEmails } from "@/wab/server/scripts/send-comments-notifications";
+import { withSpan } from "@/wab/server/util/apm-util";
 import httpProxy from "http-proxy";
 
 export async function runAppServer(config: Config) {
@@ -77,7 +78,9 @@ export async function runAppServer(config: Config) {
 
   // runs every 10 minutes
   cron.schedule("*/10 * * * *", async () => {
-    await sendCommentsNotificationEmails(config);
+    await withSpan("[Comments] notifications emails", async () => {
+      await sendCommentsNotificationEmails(config);
+    });
   });
 
   return runExpressApp(app, (server) => {

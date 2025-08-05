@@ -1,5 +1,5 @@
-import React, { useCallback, useId, useRef, useState } from "react";
-import { mergeProps, useFocusWithin, useHover } from "react-aria";
+import React, { useCallback, useContext, useRef, useState } from "react";
+import { mergeProps, useFocusWithin, useHover, useId } from "react-aria";
 import {
   Provider,
   Tooltip,
@@ -10,32 +10,16 @@ import { TooltipTriggerProps, useTooltipTriggerState } from "react-stately";
 import { COMMON_STYLES, getCommonOverlayProps } from "./common";
 import {
   CodeComponentMetaOverrides,
+  PlasmicCanvasProps,
   Registerable,
   registerComponentHelper,
   useIsOpen,
-  WithPlasmicCanvasComponentInfo,
 } from "./utils";
-import { pickAriaComponentVariants, WithVariants } from "./variant-utils";
-
-// NOTE: Placement should be managed as variants, not just props.
-// When `shouldFlip` is true, the placement prop may not represent the final position
-// (e.g., if placement is set to "bottom" but lacks space, the tooltip may flip to "top").
-// However, data-selectors will consistently indicate the actual placement of the tooltip.
-const TOOLTIP_VARIANTS = [
-  "placementTop" as const,
-  "placementBottom" as const,
-  "placementLeft" as const,
-  "placementRight" as const,
-];
-
-const { variants, withObservedValues } =
-  pickAriaComponentVariants(TOOLTIP_VARIANTS);
 
 export interface BaseTooltipProps
   extends Omit<TooltipTriggerProps, "trigger">,
     TooltipProps,
-    WithPlasmicCanvasComponentInfo,
-    WithVariants<typeof TOOLTIP_VARIANTS> {
+    PlasmicCanvasProps {
   children: React.ReactElement<HTMLElement>;
   tooltipContent?: React.ReactElement;
   resetClassName?: string;
@@ -87,14 +71,12 @@ function ControlledBaseTooltip(props: BaseTooltipProps) {
     shouldFlip,
     className,
     onOpenChange = () => {},
-    plasmicUpdateVariant,
-    __plasmic_selection_prop__,
   } = props;
 
   const isCanvasAwareOpen = useIsOpen({
     triggerSlotName: "children",
     isOpen,
-    __plasmic_selection_prop__,
+    props,
   });
 
   // The following is a custom implementation of the <TooltipTrigger /> component.
@@ -123,7 +105,6 @@ function ControlledBaseTooltip(props: BaseTooltipProps) {
         className={className}
         tooltipId={state.isOpen ? tooltipId : undefined}
         isDisabled={isDisabled}
-        onOpenChange={onOpenChange}
         triggerOnFocusOnly={trigger === "focus"}
       >
         {children}
@@ -141,18 +122,7 @@ function ControlledBaseTooltip(props: BaseTooltipProps) {
         onOpenChange={onOpenChange}
         placement={placement}
       >
-        {({ placement: _placement }) =>
-          withObservedValues(
-            <>{tooltipContent}</>,
-            {
-              placementTop: _placement === "top",
-              placementBottom: _placement === "bottom",
-              placementLeft: _placement === "left",
-              placementRight: _placement === "right",
-            },
-            plasmicUpdateVariant
-          )
-        }
+        {tooltipContent}
       </Tooltip>
     </Provider>
   );
@@ -160,7 +130,6 @@ function ControlledBaseTooltip(props: BaseTooltipProps) {
 
 interface TriggerWrapperProps {
   children: React.ReactElement;
-  onOpenChange: (isOpen: boolean) => void;
   isDisabled: boolean;
   triggerOnFocusOnly: boolean;
   tooltipId?: string;
@@ -176,31 +145,22 @@ interface TriggerWrapperProps {
 // https://github.com/adobe/react-spectrum/discussions/5119#discussioncomment-7084661
 const TriggerWrapper = React.forwardRef<HTMLDivElement, TriggerWrapperProps>(
   function TriggerWrapper_(
-    {
-      children,
-      onOpenChange,
-      isDisabled,
-      triggerOnFocusOnly,
-      tooltipId,
-      className,
-    },
+    { children, isDisabled, triggerOnFocusOnly, tooltipId, className },
     ref: React.Ref<HTMLDivElement>
   ) {
+    const state = useContext(TooltipTriggerStateContext)!;
+
     const { hoverProps } = useHover({
       isDisabled,
-      onHoverStart: () => !triggerOnFocusOnly && onOpenChange(true),
-      onHoverEnd: () => !triggerOnFocusOnly && onOpenChange(false),
+      onHoverStart: () => !triggerOnFocusOnly && state.open(),
+      onHoverEnd: () => !triggerOnFocusOnly && state.close(),
     });
 
     // useFocusWithin captures focus events for all nested focusable elements
     const { focusWithinProps } = useFocusWithin({
       isDisabled,
-      onFocusWithin: () => {
-        onOpenChange(true);
-      },
-      onBlurWithin: () => {
-        onOpenChange(false);
-      },
+      onFocusWithin: () => state.open(),
+      onBlurWithin: () => state.close(),
     });
 
     const mergedProps = mergeProps(hoverProps, focusWithinProps, {
@@ -228,7 +188,6 @@ export function registerTooltip(
       importPath: "@plasmicpkgs/react-aria/skinny/registerTooltip",
       importName: "BaseTooltip",
       isAttachment: true,
-      variants,
       props: {
         children: {
           type: "slot",

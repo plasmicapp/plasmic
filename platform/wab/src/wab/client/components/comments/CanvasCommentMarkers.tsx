@@ -1,36 +1,41 @@
 import { CanvasTransformedBox } from "@/wab/client/components/canvas/CanvasTransformedBox";
 import { useRerenderOnUserBodyChange } from "@/wab/client/components/canvas/UserBodyObserver";
+import { AddCommentMarker } from "@/wab/client/components/comments/AddCommentMarker";
+import { CommentMarker } from "@/wab/client/components/comments/CommentMarker";
 import CommentPost from "@/wab/client/components/comments/CommentPost";
-import CommentPostForm from "@/wab/client/components/comments/CommentPostForm";
-import { useCommentsCtx } from "@/wab/client/components/comments/CommentsProvider";
-import ThreadComments from "@/wab/client/components/comments/ThreadComments";
 import {
+  getSubjectVariantsKey,
   TplCommentThread,
-  isCommentForFrame,
 } from "@/wab/client/components/comments/utils";
 import { Avatar } from "@/wab/client/components/studio/Avatar";
-import {
-  BASE_VARIANT_COLOR,
-  NON_BASE_VARIANT_COLOR,
-} from "@/wab/client/components/studio/GlobalCssVariables";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { OnClickAway } from "@/wab/commons/components/OnClickAway";
+import {
+  getSetOfPinnedVariantsForViewCtx,
+  ViewCtx,
+} from "@/wab/client/studio-ctx/view-ctx";
 import { AnyArena } from "@/wab/shared/Arenas";
-import { ensure, ensureString, xGroupBy } from "@/wab/shared/common";
-import { isTplVariantable } from "@/wab/shared/core/tpls";
+import { ensure, ensureString, withoutNils } from "@/wab/shared/common";
+import {
+  isTplNamable,
+  isTplVariantable,
+  tryGetTplOwnerComponent,
+} from "@/wab/shared/core/tpls";
 import { ArenaFrame, ObjInst, TplNode } from "@/wab/shared/model/classes";
 import { mkSemVerSiteElement } from "@/wab/shared/site-diffs";
-import Chroma from "@/wab/shared/utils/color-utils";
-import classNames from "classnames";
+import { Popover, Tooltip } from "antd";
 import $ from "jquery";
 import { observer } from "mobx-react";
 import React, { ReactNode } from "react";
 import { createPortal } from "react-dom";
 
+const HORIZONTAL_MARKER_OFFSET = 12;
+const ADD_COMMENT_MARKER_MARGIN = 10;
+const ADD_COMMENT_INDIVIDUAL_MARKER_MARGIN = 20;
+const COMMENT_MARKER_INITIAL_Z_INDEX = 12;
+const THREAD_MARKER_MARGIN = 30;
+
 function ObjInstLabel(props: { subject: ObjInst }) {
   const { subject } = props;
-
   const item = mkSemVerSiteElement(subject as any);
   const typeName = item.type;
   const objName = item.name;
@@ -47,113 +52,184 @@ function ObjInstLabel(props: { subject: ObjInst }) {
   );
 }
 
-function ThreadWithHeader(props: { commentThread: TplCommentThread }) {
-  const { commentThread } = props;
-
-  const { bundler } = useCommentsCtx();
-
-  const subject = bundler.objByAddr(commentThread.location.subject);
-
-  return (
-    <div>
-      <h4 style={{ padding: "8px 16px" }}>
-        <ObjInstLabel subject={subject} />
-      </h4>
-      <ThreadComments commentThread={commentThread} />
-    </div>
-  );
-}
-
-function CanvasCommentMarker(props: {
+const CanvasCommentMarker = observer(function CanvasCommentMarker(props: {
   commentThread: TplCommentThread;
-  arenaFrame: ArenaFrame;
   viewCtx: ViewCtx;
-  offsetLeft: number;
+  offsetRight: number;
+  zIndex: number;
+  onHoverChange: (hovering: boolean) => void;
 }) {
-  const { commentThread, arenaFrame, viewCtx, offsetLeft } = props;
-
-  const {
-    bundler,
-    usersMap,
-    shownThreadId,
-    setShownThreadId,
-    shownArenaFrame,
-    setShownArenaFrame,
-  } = useCommentsCtx();
+  const { commentThread, viewCtx, offsetRight, zIndex, onHoverChange } = props;
+  const commentsCtx = viewCtx.studioCtx.commentsCtx;
 
   const threadComments = commentThread.comments;
   const [comment] = threadComments;
-  const subject = bundler.objByAddr(commentThread.location.subject) as TplNode;
+  const openedThread = commentsCtx.openedThread();
+  const subject = commentsCtx
+    .bundler()
+    .objByAddr(commentThread.location.subject) as TplNode;
   const author = ensure(
-    usersMap.get(ensureString(comment.createdById)),
+    commentsCtx.computedData().usersMap.get(ensureString(comment.createdById)),
     "Comment author should exist"
   );
-  const isSelected =
-    shownThreadId === commentThread.id && arenaFrame === shownArenaFrame;
-  const onClickAway = () => {
-    setShownThreadId(undefined);
-    setShownArenaFrame(undefined);
-  };
+  const isSelected = openedThread?.threadId === commentThread.id;
+
   return (
     <CanvasCommentOverlay
-      offsetLeft={offsetLeft}
+      offsetRight={offsetRight}
       tpl={subject}
       viewCtx={viewCtx}
       className={"CommentMarker"}
       onClick={(e) => {
         if (!isSelected) {
-          setShownThreadId(commentThread.id);
-          setShownArenaFrame(arenaFrame);
+          e.stopPropagation();
+          commentsCtx.openCommentThreadDialog(commentThread.id, true);
         }
       }}
-      isSelected={isSelected}
+      zIndex={zIndex}
     >
-      <div className={"CommentMarkerInitial"}>
-        <Avatar user={author} />
-      </div>
-      <div className={"CommentMarkerHover"}>
-        <CommentPost
-          comment={comment}
-          commentThread={commentThread}
-          subjectLabel={<ObjInstLabel subject={subject} />}
-          isThread
-          isRootComment
-          repliesLinkLabel={
-            threadComments.length > 1
-              ? `${threadComments.length - 1} replies`
-              : "Reply"
+      <Popover
+        key={isSelected ? "selected" : `${comment.id}-not-selected`}
+        overlayClassName={"NoPaddingPopover NoBackgroundStyles"}
+        placement={"top"}
+        trigger={["hover"]}
+        destroyTooltipOnHide
+        showArrow={false}
+        content={
+          !isSelected ? (
+            <CommentPost
+              comment={comment}
+              commentThread={commentThread}
+              subjectLabel={<ObjInstLabel subject={subject} />}
+              hoverBox
+              repliesLinkLabel={
+                threadComments.length > 1
+                  ? `${threadComments.length - 1} replies`
+                  : null
+              }
+            />
+          ) : null
+        }
+      >
+        <div
+          onMouseEnter={() => onHoverChange(true)}
+          onMouseLeave={() => onHoverChange(false)}
+        >
+          <CommentMarker
+            className={"CommentMarkerInitial"}
+            data-test-id={`comment-marker-${commentThread.id}`}
+          >
+            <Avatar user={author} size="small" showToolTip={false} />
+          </CommentMarker>
+        </div>
+      </Popover>
+    </CanvasCommentOverlay>
+  );
+});
+
+export const CanvasAddCommentMarker = observer(
+  function CanvasAddCommentMarker(props: { viewCtx: ViewCtx; tpl: TplNode }) {
+    const { viewCtx, tpl } = props;
+    const commentsCtx = viewCtx.studioCtx.commentsCtx;
+    const commentStats = commentsCtx.computedData().commentStatsByVariant;
+    const spotlightComponent = viewCtx?.currentComponentCtx()?.component();
+    const ownerComponent = tryGetTplOwnerComponent(tpl);
+    const isRecording = viewCtx.isEditingNonBaseVariant;
+
+    // Don't show the add comment marker if the component is in spotlight mode
+    // and is a child of the spotlighted component.
+    const isSpotlightChild = ownerComponent === spotlightComponent;
+
+    if (!ownerComponent || !isTplNamable(tpl) || isSpotlightChild) {
+      return null;
+    }
+
+    const variants = getSetOfPinnedVariantsForViewCtx(
+      viewCtx,
+      viewCtx.bundler()
+    );
+
+    const offsetRight =
+      (commentStats.get(getSubjectVariantsKey(tpl, variants))?.commentCount ||
+        0) * HORIZONTAL_MARKER_OFFSET;
+    return (
+      <CanvasCommentOverlay
+        tpl={tpl}
+        viewCtx={viewCtx}
+        className={"AddCommentMarker"}
+        offsetRight={
+          // push the add comment marker to right if comment marker any exist
+          offsetRight
+            ? THREAD_MARKER_MARGIN + offsetRight + ADD_COMMENT_MARKER_MARGIN
+            : ADD_COMMENT_INDIVIDUAL_MARKER_MARGIN
+        }
+      >
+        <Tooltip title="New comment">
+          <AddCommentMarker
+            isRecording={isRecording}
+            icon={{
+              onClick: (e) => {
+                e.stopPropagation();
+                commentsCtx.openNewCommentDialog(viewCtx, tpl);
+              },
+            }}
+          />
+        </Tooltip>
+      </CanvasCommentOverlay>
+    );
+  }
+);
+
+const CanvasSubjectCommentMarkers = observer(
+  function CanvasSubjectCommentMarkers({
+    subjectCommentThreads,
+    viewCtx,
+  }: {
+    subjectCommentThreads: TplCommentThread[];
+    viewCtx: ViewCtx;
+  }) {
+    const [hoveredThreadId, setHoveredThreadId] = React.useState<string | null>(
+      null
+    );
+    const commentsCtx = viewCtx.studioCtx.commentsCtx;
+    const openedThreadId = commentsCtx.openedThread()?.threadId;
+
+    const focusedIndex = subjectCommentThreads.findIndex(
+      (t) => t.id === (hoveredThreadId ?? openedThreadId)
+    );
+
+    return (
+      <>
+        {subjectCommentThreads.map((commentThread, index, arr) => {
+          let zIndex;
+          if (focusedIndex === -1) {
+            // No hover or selection — use base decreasing z-index
+            zIndex = COMMENT_MARKER_INITIAL_Z_INDEX + arr.length - index;
+          } else {
+            // Calculate relative to the focused (hovered/selected) index
+            const distance = Math.abs(index - focusedIndex);
+            zIndex = arr.length + COMMENT_MARKER_INITIAL_Z_INDEX - distance;
           }
-        />
-      </div>
-      {isSelected && (
-        <OnClickAway onDone={onClickAway}>
-          <div className={"CommentMarkerSelected"}>
-            <ThreadWithHeader commentThread={commentThread} />
-          </div>
-        </OnClickAway>
-      )}
-    </CanvasCommentOverlay>
-  );
-}
 
-function CanvasCommentPost(props: { viewCtx: ViewCtx; tpl: TplNode }) {
-  const { viewCtx, tpl } = props;
-
-  return (
-    <CanvasCommentOverlay
-      offsetLeft={0}
-      tpl={tpl}
-      viewCtx={viewCtx}
-      className={"CommentPostMarker"}
-    >
-      <div className={"CommentPostFormMarker"}>
-        <OnClickAway onDone={() => viewCtx.setSelectedNewThreadTpl(null)}>
-          <CommentPostForm />
-        </OnClickAway>
-      </div>
-    </CanvasCommentOverlay>
-  );
-}
+          return (
+            <CanvasCommentMarker
+              key={commentThread.id}
+              offsetRight={
+                THREAD_MARKER_MARGIN + index * HORIZONTAL_MARKER_OFFSET
+              }
+              zIndex={zIndex}
+              commentThread={commentThread}
+              viewCtx={viewCtx}
+              onHoverChange={(hovering) =>
+                setHoveredThreadId(hovering ? commentThread.id : null)
+              }
+            />
+          );
+        })}
+      </>
+    );
+  }
+);
 
 export const CanvasCommentMarkers = observer(function CanvasCommentMarkers({
   arenaFrame,
@@ -162,49 +238,35 @@ export const CanvasCommentMarkers = observer(function CanvasCommentMarkers({
   arenaFrame: ArenaFrame;
 }) {
   const studioCtx = useStudioCtx();
-
-  const { allThreads } = useCommentsCtx();
-
   const viewCtx = studioCtx.tryGetViewCtxForFrame(arenaFrame);
+  const commentsCtx = studioCtx.commentsCtx;
+  const focusedTpls = withoutNils(viewCtx?.focusedTpls() ?? []);
 
   useRerenderOnUserBodyChange(studioCtx, viewCtx);
 
-  const threadsGroupedBySubject = React.useMemo(
-    () =>
-      !viewCtx
-        ? new Map()
-        : xGroupBy(
-            allThreads.filter(
-              (commentThread) =>
-                isCommentForFrame(studioCtx, viewCtx, commentThread) &&
-                !commentThread.resolved // Only unresolved comments
-            ),
-            (commentThread) => commentThread.subject.uuid
-          ),
-    [allThreads, studioCtx, viewCtx]
-  );
+  const shouldHideCommentMarker =
+    studioCtx.shouldHideUIOverlay() || !viewCtx || !viewCtx.isVisible();
 
-  if (!viewCtx) {
+  if (shouldHideCommentMarker) {
     return null;
   }
 
-  const selectedNewThreadTpl = viewCtx.getSelectedNewThreadTpl();
+  const threadsGroupedBySubject =
+    commentsCtx.getThreadsGroupedBySubjectForViewCtx(viewCtx);
 
   return (
     <>
-      {selectedNewThreadTpl && (
-        <CanvasCommentPost viewCtx={viewCtx} tpl={selectedNewThreadTpl} />
-      )}
-      {[...threadsGroupedBySubject.values()].map((subjectCommentThreads) =>
-        subjectCommentThreads.map((commentThread, index) => (
-          <CanvasCommentMarker
-            offsetLeft={index * 20}
-            key={commentThread.id}
-            commentThread={commentThread}
-            arenaFrame={arenaFrame}
+      {focusedTpls.map((tpl) => (
+        <CanvasAddCommentMarker key={tpl.uuid} viewCtx={viewCtx} tpl={tpl} />
+      ))}
+      {[...threadsGroupedBySubject.entries()].map(
+        ([subjectKey, subjectCommentThreads]) => (
+          <CanvasSubjectCommentMarkers
+            key={subjectKey}
+            subjectCommentThreads={subjectCommentThreads}
             viewCtx={viewCtx}
           />
-        ))
+        )
       )}
     </>
   );
@@ -216,16 +278,16 @@ export const CanvasCommentOverlay = observer(function CanvasCommentOverlay({
   viewCtx,
   onClick,
   className,
-  isSelected,
-  offsetLeft,
+  offsetRight,
+  zIndex = COMMENT_MARKER_INITIAL_Z_INDEX,
 }: {
   tpl: TplNode;
   children?: ReactNode;
   viewCtx: ViewCtx;
   onClick?: (e: any) => void;
   className?: string;
-  isSelected?: boolean;
-  offsetLeft: number;
+  offsetRight: number;
+  zIndex?: number;
 }) {
   // We directly use the render count here to make this component depend on it and re-render every time the render count changes
   // This is necessary for elements that are visible in the canvas conditionally (e.g. auto opened elements)
@@ -248,34 +310,19 @@ export const CanvasCommentOverlay = observer(function CanvasCommentOverlay({
     isTplVariantable(tpl) &&
     viewCtx.variantTplMgr().isTargetingNonBaseVariant(tpl);
 
-  const color = isTargetingSomeNonBaseVariant
-    ? NON_BASE_VARIANT_COLOR
-    : BASE_VARIANT_COLOR;
-
   return createPortal(
     <CanvasTransformedBox
       relativeTo={"arena"}
       $elt={$elt}
       viewCtx={viewCtx}
-      className={classNames({
-        "ElementHighlightBoxContainer CommentMarkerContainer": true,
-        CommentMarkerContainerSelected: isSelected,
-      })}
+      style={{ zIndex }}
+      className="ElementHighlightBoxContainer"
     >
-      <div
-        className={classNames({
-          "ElementHighlightBoxRendered CommentMarkerOverlay": true,
-        })}
-        style={{
-          borderColor: Chroma(color).alpha(0.1).css(),
-          backgroundColor: Chroma(color).alpha(0.2).css(),
-        }}
-      />
       <div
         className={className}
         onClick={onClick}
         style={{
-          left: `calc(100% - ${offsetLeft}px)`,
+          right: `calc(0% - ${offsetRight}px)`,
         }}
       >
         {children}

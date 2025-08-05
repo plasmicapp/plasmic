@@ -357,9 +357,9 @@
 }
 .freeBox___2CSw {
   display: flex;
-  position: relative;
   flex-direction: row;
   height: 2rem;
+  position: relative;
 }
 .freeBox___2CSw > :global(.__wab_flex-container) {
   flex-direction: row;
@@ -422,24 +422,44 @@
   width: 16px;
   height: 1em;
 }
-.cancelSubscriptionButton:global(.__wab_instance) {
+.manageBilling:global(.__wab_instance) {
   position: relative;
 }
-.svg__htmVy {
-  display: flex;
-  position: relative;
-  object-fit: cover;
-  width: 1.25rem;
-  height: 1.25rem;
-  color: var(--token-Y2CWh0ci95a);
-}
-.text__iI7N {
-  font-size: 14px;
-}
-.svg__yK6Zg {
+.svg__bOkpg {
   display: flex;
   position: relative;
   object-fit: cover;
   width: 16px;
+  height: 16px;
+}
+.text__k3Dt {
+  font-size: 14px;
+}
+.svg___7TuH {
+  object-fit: cover;
+  max-width: 100%;
+  color: var(--token-0IloF6TmFvF);
+  height: 1em;
+}
+.freeBox__ncYhG {
+  display: flex;
+  flex-direction: row;
+  position: relative;
+  align-items: flex-start;
+  justify-content: flex-end;
+}
+.svg__kbSi9 {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  height: 1em;
+}
+.text__iI7N {
+  font-size: 14px;
+}
+.svg___3BRpB {
+  display: flex;
+  position: relative;
+  object-fit: cover;
   height: 1em;
 }

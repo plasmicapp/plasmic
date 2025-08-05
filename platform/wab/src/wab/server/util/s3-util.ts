@@ -10,7 +10,7 @@ export async function upsertS3CacheEntry<T>(opts: {
   deserialize: (str: string) => T;
 }) {
   const { bucket, key, compute: f, serialize, deserialize } = opts;
-  const s3 = new S3();
+  const s3 = new S3({ endpoint: process.env.S3_ENDPOINT });
 
   try {
     const obj = await s3
@@ -24,16 +24,26 @@ export async function upsertS3CacheEntry<T>(opts: {
     const data = deserialize(serialized);
     return data;
   } catch (err) {
+    if (err.code === "TimeoutError") {
+      throw err;
+    }
     console.log(`S3 cache miss for ${bucket} ${key}; computing`);
     const content = await f();
     const serialized = serialize(content);
-    await s3
-      .putObject({
-        Bucket: bucket,
-        Key: key,
-        Body: serialized,
-      })
-      .promise();
+    try {
+      await s3
+        .putObject({
+          Bucket: bucket,
+          Key: key,
+          Body: serialized,
+        })
+        .promise();
+    } catch (e) {
+      if (process.env.NODE_ENV === "production") {
+        throw e;
+      }
+      console.error("Unable to add content to S3", e);
+    }
     return content;
   }
 }
@@ -44,7 +54,7 @@ export async function uploadFilesToS3(opts: {
   files: Record<string, string>;
 }) {
   const { bucket, key, files } = opts;
-  const s3 = new S3();
+  const s3 = new S3({ endpoint: process.env.S3_ENDPOINT });
   await Promise.all(
     Object.entries(files).map(async ([file, content]) => {
       await s3

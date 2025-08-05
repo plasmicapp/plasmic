@@ -16,15 +16,15 @@ import {
   isStandaloneVariantGroup,
   isStyleVariant,
 } from "@/wab/shared/Variants";
-import { componentToReferenced } from "@/wab/shared/cached-selectors";
+import {
+  allCustomFunctions,
+  componentToReferenced,
+} from "@/wab/shared/cached-selectors";
 import {
   getBuiltinComponentRegistrations,
   isBuiltinCodeComponent,
 } from "@/wab/shared/code-components/builtin-code-components";
-import {
-  customFunctionId,
-  isCodeComponentWithHelpers,
-} from "@/wab/shared/code-components/code-components";
+import { isCodeComponentWithHelpers } from "@/wab/shared/code-components/code-components";
 import { isTplRootWithCodeComponentVariants } from "@/wab/shared/code-components/variants";
 import { ComponentGenHelper } from "@/wab/shared/codegen/codegen-helpers";
 import {
@@ -77,6 +77,7 @@ import {
   makePageMetadataOutput,
   renderPageHead,
   serializePageMetadata,
+  serializeTanStackHead,
 } from "@/wab/shared/codegen/react-p/page-metadata";
 import {
   getExternalParams,
@@ -126,16 +127,27 @@ import {
   makeRenderFuncName,
   makeRootResetClassName,
   makeStylesImports,
+  makeTaggedPlasmicImport,
   makeUseClient,
   makeVariantPropsName,
   makeVariantsArgTypeName,
   makeWabHtmlTextClassName,
   maybeCondExpr,
-  serializeServerQueries,
   wrapGlobalContexts,
   wrapGlobalProvider,
   wrapInDataCtxReader,
 } from "@/wab/shared/codegen/react-p/serialize-utils";
+import {
+  getRscMetadata,
+  serializeUseDollarServerQueries,
+} from "@/wab/shared/codegen/react-p/server-queries";
+import {
+  makePlasmicQueryImports,
+  makePlasmicServerRscComponentName,
+  makeServerQueryClientDollarQueryInit,
+  serializeServerQueryEntryType,
+} from "@/wab/shared/codegen/react-p/server-queries/serializer";
+import { isServerQueryWithOperation } from "@/wab/shared/codegen/react-p/server-queries/utils";
 import { makeSplitsProviderBundle } from "@/wab/shared/codegen/react-p/splits";
 import {
   serializeInitFunc,
@@ -269,6 +281,7 @@ import {
   isTplTag,
   isTplTagOrComponent,
   isTplTextBlock,
+  resolveTplRoot,
   summarizeTpl,
   tplHasRef,
 } from "@/wab/shared/core/tpls";
@@ -503,6 +516,12 @@ export function computeSerializerSiteContext(
       allImageAssets(site, { includeDeps: "all" }),
       site.activeTheme
     ),
+    customFunctionToOwnerSite: new Map(
+      allCustomFunctions(site).map(({ customFunction, site: refSite }) => [
+        customFunction,
+        refSite,
+      ])
+    ),
   };
 }
 
@@ -567,8 +586,6 @@ export function exportReactPresentational(
     opts.whitespaceNormal = true;
   }
 
-  // The array of global variants used for non css purpose, including visibility
-  // change and text change.
   const usedGlobalVariantGroups = getUsedGlobalVariantGroups(
     site,
     component,
@@ -612,6 +629,9 @@ export function exportReactPresentational(
     referencedComponents.push(unauthorizedComp);
   }
 
+  const hasServerQueries =
+    component.serverQueries.filter(isServerQueryWithOperation).length > 0;
+
   const ctx: SerializerBaseContext = {
     componentGenHelper,
     component,
@@ -646,6 +666,8 @@ export function exportReactPresentational(
     },
     fakeTpls,
     replacedHostlessComponentImportPath,
+    useRSC: !!opts.platformOptions?.nextjs?.appDir,
+    hasServerQueries,
   };
   const variantsType = serializeVariantsArgsType(ctx);
   const argsType = serializeArgsType(ctx);
@@ -720,9 +742,9 @@ const __wrapUserPromise = globalThis.__PlasmicWrapUserPromise ?? (async (loc, pr
   // components that we may be importing into this file. We don't need
   // to worry about non-components, as we don't expect name collisions there.
   const renderModule = `
-    // @ts-nocheck
     /* eslint-disable */
     /* tslint:disable */
+    // @ts-nocheck
     /* prettier-ignore-start */
     ${
       opts.codeOpts.reactRuntime === "automatic"
@@ -756,6 +778,7 @@ const __wrapUserPromise = globalThis.__PlasmicWrapUserPromise ?? (async (loc, pr
         ? `import * as plasmicAuth from "${getPlasmicAuthPackageName(opts)}";`
         : ""
     }
+    ${makePlasmicQueryImports(ctx)}
     ${
       ctx.usesDataSourceInteraction ||
       ctx.usesLoginInteraction ||
@@ -764,8 +787,12 @@ const __wrapUserPromise = globalThis.__PlasmicWrapUserPromise ?? (async (loc, pr
         : ""
     }
     ${
-      ctx.usesDataSourceInteraction || ctx.usesComponentLevelQueries
-        ? `import { executePlasmicDataOp, usePlasmicDataOp, usePlasmicInvalidate } from "${getDataSourcesPackageName()}";`
+      ctx.usesDataSourceInteraction ||
+      ctx.usesComponentLevelQueries ||
+      ctx.hasServerQueries
+        ? `import { executePlasmicDataOp, usePlasmicDataOp, usePlasmicInvalidate${
+            ctx.hasServerQueries ? `, usePlasmicServerQuery` : ""
+          } } from "${getDataSourcesPackageName()}";`
         : ""
     }
     ${
@@ -785,6 +812,7 @@ const __wrapUserPromise = globalThis.__PlasmicWrapUserPromise ?? (async (loc, pr
     ${makePictureImports(site, component, ctx.exportOpts, "managed")}
     ${makeSuperCompImports(component, ctx.exportOpts)}
     ${customFunctionsAndLibsImport}
+    ${serializeUseDollarServerQueries(ctx)}
 
     ${
       // We make a reference to createPlasmicElementProxy, as in some setups,
@@ -840,6 +868,17 @@ const __wrapUserPromise = globalThis.__PlasmicWrapUserPromise ?? (async (loc, pr
         : ""
     }
 
+    ${
+      ctx.exportOpts.platform === "tanstack"
+        ? `function useTanStackRouter() {
+          try {
+            return useRouter();
+          } catch {}
+          return undefined;
+        }`
+        : ""
+    }
+
     ${renderFunc}
 
     ${plumePlugin ? plumePlugin.genHook(ctx) : ""}
@@ -847,6 +886,8 @@ const __wrapUserPromise = globalThis.__PlasmicWrapUserPromise ?? (async (loc, pr
     ${descendantsLookup}
 
     ${nodeComponents}
+
+    ${opts.platform === "tanstack" ? serializeTanStackHead(ctx, component) : ""}
 
     export default ${componentName};
     /* prettier-ignore-end */
@@ -859,6 +900,7 @@ const __wrapUserPromise = globalThis.__PlasmicWrapUserPromise ?? (async (loc, pr
     displayName: component.name,
     renderModule,
     skeletonModule,
+    rscMetadata: getRscMetadata(ctx),
     cssRules: serializeCssRules(ctx),
     renderModuleFileName: `${
       opts.idFileNames
@@ -1038,7 +1080,8 @@ export function nodeJsName(component: Component, node: TplNode) {
 function renderFullViewportStyle(ctx: SerializerBaseContext): string {
   if (
     ctx.exportOpts.platform === "gatsby" ||
-    ctx.exportOpts.platform === "nextjs"
+    ctx.exportOpts.platform === "nextjs" ||
+    ctx.exportOpts.platform === "tanstack"
   ) {
     return `
       <style>{\`
@@ -1190,6 +1233,8 @@ export function serializeComponentLocalVars(ctx: SerializerBaseContext) {
   );
   const superComps = getSuperComponents(component);
   const dataQueries = component.dataQueries.filter((q) => !!q.op);
+  const shouldUseDollarQueries =
+    ctx.usesComponentLevelQueries || ctx.useRSC || ctx.hasServerQueries;
   return `
     const $props = {
       ...args,
@@ -1199,6 +1244,11 @@ export function serializeComponentLocalVars(ctx: SerializerBaseContext) {
     ${
       ctx.exportOpts.platform === "nextjs"
         ? `const __nextRouter = useNextRouter();`
+        : ""
+    }
+    ${
+      ctx.exportOpts.platform === "tanstack"
+        ? `const __tanstackRouter = useTanStackRouter();`
         : ""
     }
     const $ctx = useDataEnv?.() || {};
@@ -1216,7 +1266,7 @@ export function serializeComponentLocalVars(ctx: SerializerBaseContext) {
     }
 
     ${
-      ctx.usesComponentLevelQueries
+      shouldUseDollarQueries
         ? `let [$queries, setDollarQueries] = React.useState<Record<string, ReturnType<typeof usePlasmicDataOp>>>({});`
         : ""
     }
@@ -1226,7 +1276,7 @@ export function serializeComponentLocalVars(ctx: SerializerBaseContext) {
           (${serializeStateSpecs(component, ctx)})
         , [$props, $ctx, $refs]);
         const $state = useDollarState(stateSpecs, {$props, $ctx, $queries: ${
-          ctx.usesComponentLevelQueries ? "$queries" : "{}"
+          shouldUseDollarQueries ? "$queries" : "{}"
         }, $refs});`
         : ""
     }
@@ -1243,15 +1293,16 @@ export function serializeComponentLocalVars(ctx: SerializerBaseContext) {
 
     ${
       // We put this here so the expressions have access to $state
-      ctx.usesComponentLevelQueries
+      shouldUseDollarQueries
         ? `
       const new$Queries: Record<string, ReturnType<typeof usePlasmicDataOp>> = {
-        ${dataQueries
-          .map(
+        ${withoutNils([
+          ...dataQueries.map(
             (q) =>
               `${toVarName(q.name)}: (${serializeComponentLevelQuery(q, ctx)})`
-          )
-          .join(",\n")}
+          ),
+          makeServerQueryClientDollarQueryInit(ctx),
+        ]).join(",\n")}
       };
       if (Object.keys(new$Queries).some(k => new$Queries[k] !== $queries[k])) {
         setDollarQueries(new$Queries);
@@ -1578,7 +1629,7 @@ function serializeTplTag(ctx: SerializerBaseContext, node: TplTag) {
 
 export function makeComponentAliases(
   referencedComps: Component[],
-  platform: "react" | "nextjs" | "gatsby"
+  platform: "react" | "nextjs" | "gatsby" | "tanstack"
 ) {
   const aliases = new Map<Component, string>();
   const usedNames = new Set<string>(getPlatformImportComponents(platform));
@@ -2359,13 +2410,17 @@ export function serializeDefaultExternalProps(
     return plugin.genDefaultExternalProps(ctx, opts);
   }
 
-  if (isPageComponent(ctx.component) && ctx.exportOpts.platform === "nextjs") {
+  if (
+    isPageComponent(ctx.component) &&
+    ["nextjs", "tanstack"].includes(ctx.exportOpts.platform)
+  ) {
     return `
       export interface ${makeDefaultExternalPropsName(component)} {
+        ${ctx.useRSC ? serializeServerQueryEntryType(component) ?? "" : ""}
       }
     `;
   }
-  const root = component.tplTree;
+  const root = resolveTplRoot(component.tplTree);
   const params = getExternalParams(ctx);
   return `
     export interface ${
@@ -2415,21 +2470,28 @@ function serializePageAwareSkeletonWrapperTs(
     return g.variants.length > 0;
   });
 
-  const plasmicModuleImports = [nodeComponentName];
-  let content = `<${nodeComponentName} />`,
+  const rscNodeComponentName = makePlasmicServerRscComponentName(component);
+
+  const nodeComponentNameImport = ctx.useRSC
+    ? rscNodeComponentName
+    : nodeComponentName;
+
+  const plasmicModuleImports = [nodeComponentNameImport];
+
+  let content = ctx.useRSC
+      ? `<${rscNodeComponentName} params={params} searchParams={searchParams} />`
+      : `<${nodeComponentName} />`,
     getStaticProps = "",
     componentPropsDecl = "",
-    componentPropsSig = "";
+    componentPropsSig = "",
+    tanstackRouteInfo = "";
   if (opts.platform === "nextjs") {
     if (isNextjsAppDir) {
       componentPropsSig = `{ params, searchParams }: {
-params?: Record<string, string | string[] | undefined>;
-searchParams?: Record<string, string | string[] | undefined>;
+params?: Promise<Record<string, string | string[] | undefined>>;
+searchParams?: Promise<Record<string, string | string[] | undefined>>;
 }`;
-      content = `<PageParamsProvider__
-        params={params}
-        query={searchParams}
-      >
+      content = `<PageParamsProvider__ params={await params}>
         ${content}
       </PageParamsProvider__>`;
     } else {
@@ -2451,6 +2513,28 @@ searchParams?: Record<string, string | string[] | undefined>;
     >
       ${content}
     </PageParamsProvider__>`;
+  } else if (opts.platform === "tanstack") {
+    const headOptionsImport = `${nodeComponentNameImport}__HeadOptions`;
+    plasmicModuleImports.push(headOptionsImport);
+
+    const componentPathStr = component.pageMeta?.path || "/";
+    tanstackRouteInfo = `export const Route = createFileRoute("${componentPathStr}")({
+      head: () => ({
+        meta: [...${headOptionsImport}.meta],
+        links: [
+          ...${headOptionsImport}.links,
+        ]
+      }),
+      component: ${componentName},
+    });`;
+
+    content = `<PageParamsProvider__
+        route={Route.fullPath}
+        params={Route.useParams()}
+        query={Route.useSearch()}
+      >
+        <${nodeComponentName} />
+      </PageParamsProvider__>`;
   }
 
   let globalContextsImport = "";
@@ -2475,9 +2559,23 @@ searchParams?: Record<string, string | string[] | undefined>;
         : opts.platform === "gatsby"
         ? `// Gatsby "wrapRootElement" function
            // (https://www.gatsbyjs.com/docs/reference/config-files/gatsby-ssr#wrapRootElement).`
+        : opts.platform === "tanstack"
+        ? `// TanStack Router __root Route
+           // (https://tanstack.com/router/latest/docs/framework/react/guide/tanstack-start#the-root-of-your-application).`
         : `// a component that wraps all page components of your application.`
     }`;
   }
+
+  const nodeImport = makeTaggedPlasmicImport(
+    plasmicModuleImports,
+    `${opts.relPathFromImplToManagedDir}/${
+      ctx.useRSC
+        ? makePlasmicServerRscComponentName(component)
+        : plasmicComponentName
+    }`,
+    component.uuid,
+    ctx.useRSC ? "rscServer" : "render"
+  );
 
   return `
     // This is a skeleton starter React page generated by Plasmic.
@@ -2489,9 +2587,7 @@ searchParams?: Record<string, string | string[] | undefined>;
   )}";
     ${globalContextsImport}
     ${makeGlobalGroupImports(globalGroups, opts)}
-    import {${plasmicModuleImports.join(", ")}} from "${
-    opts.relPathFromImplToManagedDir
-  }/${plasmicComponentName}";  // plasmic-import: ${component.uuid}/render
+    ${nodeImport}
     ${
       isPageComponent(component) &&
       opts.platform === "nextjs" &&
@@ -2500,24 +2596,18 @@ searchParams?: Record<string, string | string[] | undefined>;
         : isPageComponent(component) && opts.platform === "gatsby"
         ? `import type { PageProps } from "gatsby";
         export { Head };`
+        : isPageComponent(component) && opts.platform === "tanstack"
+        ? `import { createFileRoute } from "@tanstack/react-router";`
         : ""
     }
-
-    ${component.serverQueries
-      .map((q) => {
-        return `import { ${
-          q.op!.func.importName
-        } } from "./importPath__${customFunctionId(
-          q.op!.func
-        )}"; // plasmic-import: ${customFunctionId(q.op!.func)}/customFunction`;
-      })
-      .join("\n")}
 
     ${componentSubstitutionApi}
 
     ${getStaticProps}
 
     ${componentPropsDecl}
+
+    ${tanstackRouteInfo}
 
     ${
       isNextjsAppDir && isPageComponent(component) ? "async " : ""
@@ -2534,8 +2624,6 @@ searchParams?: Record<string, string | string[] | undefined>;
       // 3. Overrides for any named node in the component to attach behavior and data,
       // 4. Props to set on the root node.
       ${globalGroupsComment}
-
-      ${serializeServerQueries(component)}
 
       return (${content});
     }

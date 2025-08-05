@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -21,6 +21,8 @@ import {
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  ensureGlobalVariants,
+  hasVariant,
   renderPlasmicSlot,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
@@ -32,6 +34,8 @@ import NavTeamSection from "../../components/dashboard/NavTeamSection"; // plasm
 import MenuItem from "../../components/MenuItem"; // plasmic-import: Ts79yZbRFG/component
 import MenuButton from "../../components/widgets/MenuButton"; // plasmic-import: h69wHrrKtL/component
 
+import { useEnvironment } from "../plasmic_kit_pricing/PlasmicGlobalVariant__Environment"; // plasmic-import: hIjF9NLAUKG-/globalVariant
+
 import "@plasmicapp/react-web/lib/plasmic.css";
 
 import plasmic_plasmic_kit_pricing_css from "../plasmic_kit_pricing/plasmic_plasmic_kit_pricing.module.css"; // plasmic-import: ehckhYnyDHgCBbV47m9bkf/projectcss
@@ -40,7 +44,7 @@ import projectcss from "../PP__plasmickit_dashboard.module.css"; // plasmic-impo
 import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import sty from "./PlasmicContentPage.module.css"; // plasmic-import: A4UIAN_FGs/css
 
-import SettingsSliderssvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__SettingsSlidersSvg"; // plasmic-import: Y1oJwH9hP/icon
+import SettingsSlidersSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__SettingsSlidersSvg"; // plasmic-import: Y1oJwH9hP/icon
 
 createPlasmicElementProxy;
 
@@ -49,9 +53,7 @@ export type PlasmicContentPage__VariantsArgs = {};
 type VariantPropType = keyof PlasmicContentPage__VariantsArgs;
 export const PlasmicContentPage__VariantProps = new Array<VariantPropType>();
 
-export type PlasmicContentPage__ArgsType = {
-  modelList?: React.ReactNode;
-};
+export type PlasmicContentPage__ArgsType = { modelList?: React.ReactNode };
 type ArgPropType = keyof PlasmicContentPage__ArgsType;
 export const PlasmicContentPage__ArgProps = new Array<ArgPropType>("modelList");
 
@@ -81,7 +83,16 @@ function PlasmicContentPage__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
@@ -91,6 +102,10 @@ function PlasmicContentPage__RenderFunc(props: {
   const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
+
+  const globalVariants = ensureGlobalVariants({
+    environment: useEnvironment(),
+  });
 
   return (
     <React.Fragment>
@@ -109,7 +124,27 @@ function PlasmicContentPage__RenderFunc(props: {
             plasmic_plasmic_kit_design_system_deprecated_css.plasmic_tokens,
             plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
             plasmic_plasmic_kit_pricing_css.plasmic_tokens,
-            sty.root
+            sty.root,
+            {
+              [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+                hasVariant(globalVariants, "environment", "website"),
+              [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+                hasVariant(globalVariants, "environment", "website"),
+              [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+                hasVariant(globalVariants, "environment", "website"),
+              [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+                hasVariant(globalVariants, "environment", "website"),
+              [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+                hasVariant(globalVariants, "environment", "website"),
+              [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+                hasVariant(globalVariants, "environment", "website"),
+              [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+                hasVariant(globalVariants, "environment", "website"),
+              [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+                hasVariant(globalVariants, "environment", "website"),
+              [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+                hasVariant(globalVariants, "environment", "website"),
+            }
           )}
         >
           <DefaultLayout
@@ -176,7 +211,7 @@ function PlasmicContentPage__RenderFunc(props: {
                       platform={"react"}
                       title={"Manage Content Types"}
                     >
-                      <SettingsSliderssvgIcon
+                      <SettingsSlidersSvgIcon
                         data-plasmic-name={"svg"}
                         data-plasmic-override={overrides.svg}
                         className={classNames(projectcss.all, sty.svg)}
@@ -199,7 +234,6 @@ function PlasmicContentPage__RenderFunc(props: {
                           <MenuItem href={"#"}>{"Gamma"}</MenuItem>
                         </React.Fragment>
                       ),
-
                       value: args.modelList,
                     })}
                   </Stack__>
@@ -288,7 +322,6 @@ const PlasmicDescendants = {
     "cmsSection",
     "navTeamSection",
   ],
-
   defaultLayout: [
     "defaultLayout",
     "moreButton",
@@ -298,7 +331,6 @@ const PlasmicDescendants = {
     "cmsSection",
     "navTeamSection",
   ],
-
   moreButton: ["moreButton"],
   modelNav: ["modelNav", "editModelsButton", "svg"],
   editModelsButton: ["editModelsButton", "svg"],
@@ -325,7 +357,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicContentPage__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
@@ -333,15 +364,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicContentPage__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicContentPage__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicContentPage__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+    // Specify args directly as props
+    Omit<PlasmicContentPage__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

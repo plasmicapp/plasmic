@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/lottie-react",
-  "version": "0.0.202",
+  "version": "0.0.215",
   "description": "Plasmic registration call for the HTML5 video element",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -28,7 +28,7 @@
     "analyze": "size-limit --why"
   },
   "devDependencies": {
-    "@plasmicapp/host": "1.0.211",
+    "@plasmicapp/host": "1.0.223",
     "@size-limit/preset-small-lib": "^4.11.0",
     "@types/node": "^14.0.26",
     "@types/react": "^18.2.33",
@@ -38,6 +38,9 @@
   },
   "dependencies": {
     "lottie-react": "^2.4.0"
+  },
+  "resolutions": {
+    "lottie-web": ">=5.13.0"
   },
   "peerDependencies": {
     "@plasmicapp/host": ">=1.0.0",

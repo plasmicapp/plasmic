@@ -1,6 +1,5 @@
 import query from "../fixtures/northwind-orders-query.json";
 import {
-  addItemDataPlasmicProp,
   chooseDataPlasmicProp,
   chooseDataPlasmicPropByLabel,
   clickDataPlasmicProp,
@@ -9,6 +8,7 @@ import {
   expandSection,
   getDataPlasmicProp,
   getSelectedElt,
+  propAddItem,
   setDataPlasmicProp,
   switchToDataTab,
   switchToSettingsTab,
@@ -180,7 +180,7 @@ describe("hostless-rich-components", () => {
         closeSidebarModal();
 
         // Add custom field
-        addItemDataPlasmicProp("fields");
+        propAddItem("Fields");
         setDataPlasmicProp("title", "Orig customer ID");
         clickDataPlasmicProp("expr");
         enterCustomCodeInDataPicker("currentItem.customer_id");

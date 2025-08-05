@@ -9,7 +9,7 @@ describe("Plasmic Website", () => {
     ctx = await setupCra({
       bundleFile: "plasmic-kit-website-components_16033.json",
       projectName: "PlasmicWebsite",
-      npmRegistry: getEnvVar("NPM_REGISTRY"),
+      npmRegistry: getEnvVar("NPM_CONFIG_REGISTRY"),
       codegenHost: getEnvVar("WAB_HOST"),
     });
   });

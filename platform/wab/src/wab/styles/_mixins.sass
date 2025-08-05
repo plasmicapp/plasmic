@@ -1,3 +1,5 @@
+@use "sass:color"
+
 @import "./_vars.sass"
 
 $selected-bg: $blue3
@@ -7,7 +9,7 @@ $btn-color: #fff
 
 $panel-block-base-color: #2D3439
 $panel-block-bg: $sand3
-$panel-block-border: darken($panel-block-base-color, 15%)
+$panel-block-border: color.adjust($panel-block-base-color, $lightness: -15%)
 
 @mixin cover
   height: 100%
@@ -74,7 +76,7 @@ $panel-block-border: darken($panel-block-base-color, 15%)
   //border: 1px solid rgba(255,255,255,.1)
   //border: 1px solid rgba(0,0,0,0)
   //border-top-color: rgba(255,255,255,.1)
-  box-shadow: 0 0 0 1px darken($bg, 0%)
+  box-shadow: 0 0 0 1px color.adjust($bg, $lightness: -0%)
 
 @mixin outset-button-no-hover
   cursor: pointer
@@ -88,7 +90,7 @@ $panel-block-border: darken($panel-block-base-color, 15%)
     //background-color: #555555
     //border-color: rgba(255,255,255,.13)
     //border-top-color: rgba(255,255,255,.25)
-    //background-color: lighten($btn-color, 5%)
+    //background-color: color.adjust($btn-color, $lightness: 5%)
     //border: 1px solid rgba(0,0,0,0)
     //border-top-color: rgba(255,255,255,.2)
     //border-bottom-color: $active-color

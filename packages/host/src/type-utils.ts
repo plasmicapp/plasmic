@@ -11,3 +11,5 @@ export type TupleUnion<U extends string, R extends string[] = []> = {
     : TupleUnion<Exclude<U, S>, [...R, S]>;
 }[U] &
   string[];
+
+export type Nullish<T> = T | null | undefined;

@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -21,11 +21,15 @@ import {
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  ensureGlobalVariants,
+  hasVariant,
   renderPlasmicSlot,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
+
+import { useEnvironment } from "../plasmic_kit_pricing/PlasmicGlobalVariant__Environment"; // plasmic-import: hIjF9NLAUKG-/globalVariant
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
@@ -36,8 +40,8 @@ import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_
 import sty from "./PlasmicUpsellConfirm.module.css"; // plasmic-import: C9PGGs5iUd/css
 
 import MarkFullColorIcon from "../plasmic_kit_design_system/PlasmicIcon__MarkFullColor"; // plasmic-import: l_n_OBLJg/icon
-import ArrowRightsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ArrowRightSvg"; // plasmic-import: 9Jv8jb253/icon
-import ChevronDownsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
+import ArrowRightSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ArrowRightSvg"; // plasmic-import: 9Jv8jb253/icon
+import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
 
 createPlasmicElementProxy;
 
@@ -46,9 +50,7 @@ export type PlasmicUpsellConfirm__VariantsArgs = {};
 type VariantPropType = keyof PlasmicUpsellConfirm__VariantsArgs;
 export const PlasmicUpsellConfirm__VariantProps = new Array<VariantPropType>();
 
-export type PlasmicUpsellConfirm__ArgsType = {
-  amountPaid?: React.ReactNode;
-};
+export type PlasmicUpsellConfirm__ArgsType = { amountPaid?: React.ReactNode };
 type ArgPropType = keyof PlasmicUpsellConfirm__ArgsType;
 export const PlasmicUpsellConfirm__ArgProps = new Array<ArgPropType>(
   "amountPaid"
@@ -75,7 +77,16 @@ function PlasmicUpsellConfirm__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
@@ -85,6 +96,10 @@ function PlasmicUpsellConfirm__RenderFunc(props: {
   const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
+
+  const globalVariants = ensureGlobalVariants({
+    environment: useEnvironment(),
+  });
 
   return (
     <Stack__
@@ -103,7 +118,27 @@ function PlasmicUpsellConfirm__RenderFunc(props: {
         plasmic_plasmic_kit_design_system_deprecated_css.plasmic_tokens,
         plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
         plasmic_plasmic_kit_pricing_css.plasmic_tokens,
-        sty.root
+        sty.root,
+        {
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+        }
       )}
     >
       <Stack__
@@ -185,13 +220,13 @@ function PlasmicUpsellConfirm__RenderFunc(props: {
           data-plasmic-override={overrides.dismissButton}
           className={classNames("__wab_instance", sty.dismissButton)}
           endIcon={
-            <ChevronDownsvgIcon
+            <ChevronDownSvgIcon
               className={classNames(projectcss.all, sty.svg___2M4J)}
               role={"img"}
             />
           }
           startIcon={
-            <ArrowRightsvgIcon
+            <ArrowRightSvgIcon
               className={classNames(projectcss.all, sty.svg__ueqAv)}
               role={"img"}
             />
@@ -224,7 +259,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicUpsellConfirm__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
@@ -232,15 +266,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicUpsellConfirm__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicUpsellConfirm__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicUpsellConfirm__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+    // Specify args directly as props
+    Omit<PlasmicUpsellConfirm__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

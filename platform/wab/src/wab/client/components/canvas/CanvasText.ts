@@ -10,14 +10,12 @@ import {
 import { mkSlateString } from "@/wab/client/components/canvas/RichText/SlateString";
 import "@/wab/client/components/canvas/slate";
 import {
+  tags as htmlTags,
   mkTplTagElement,
   ParagraphElement,
   TplTagElement,
 } from "@/wab/client/components/canvas/slate";
-import {
-  tags as htmlTags,
-  SubDeps,
-} from "@/wab/client/components/canvas/subdeps";
+import { SubDeps } from "@/wab/client/components/canvas/subdeps";
 import {
   reactPrompt,
   ReactPromptOpts,

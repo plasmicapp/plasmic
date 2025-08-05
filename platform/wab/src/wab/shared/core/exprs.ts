@@ -46,7 +46,6 @@ import {
   TplComponent,
   TplRef,
   TplTag,
-  Type,
   VariantsRef,
   VarRef,
   VirtualRenderExpr,
@@ -77,6 +76,7 @@ import {
   withoutNils,
 } from "@/wab/shared/common";
 import { cloneNameArg, cloneQueryRef } from "@/wab/shared/core/components";
+import { jsonParse, JsonValue } from "@/wab/shared/core/lang";
 import {
   extractEventArgsNameFromEventHandler,
   isGlobalAction,
@@ -101,8 +101,8 @@ import {
 import { tryEvalExpr } from "@/wab/shared/eval";
 import { pathToString } from "@/wab/shared/eval/expression-parser";
 import { maybeComputedFn } from "@/wab/shared/mobx-util";
-import { typeDisplayName } from "@/wab/shared/model/model-util";
 import { maybeConvertToIife } from "@/wab/shared/parser-utils";
+import { pageHrefPathToCode } from "@/wab/shared/utils/url-utils";
 import L, { escapeRegExp, groupBy, isString, mapValues, set } from "lodash";
 
 export interface ExprCtx {
@@ -200,6 +200,10 @@ export function clone(_expr: Expr): Expr {
           params: Object.fromEntries(
             Object.entries(expr.params).map(([k, v]) => [k, clone(v)])
           ),
+          query: Object.fromEntries(
+            Object.entries(expr.query).map(([k, v]) => [k, clone(v)])
+          ),
+          fragment: expr.fragment && clone(expr.fragment),
         })
     )
     .when(
@@ -385,46 +389,36 @@ function cloneDataSourceTemplate(template: DataSourceTemplate) {
   });
 }
 
-export const descExprType = (type: Type) => `some ${typeDisplayName(type)}`;
-
 export const jsonLit = (val: any) =>
   new CustomCode({
     code: val === undefined ? "null" : jsLiteral(val),
     fallback: undefined,
   });
-export const codeLit = (
-  val: boolean | number | string | null | undefined | object | any[]
-) => code(codeContentForLit(val, "literal value"));
-export const codeLitAsDynamicExpr = (
-  val: boolean | number | string | null | undefined | object | any[]
-) => code(codeContentForLit(val, "custom code expression"));
 
-function codeContentForLit(
-  val: boolean | number | string | object | any[] | null | undefined,
-  type: "literal value" | "custom code expression"
-) {
-  const content = val === undefined ? "undefined" : jsLiteral(val);
-  return type === "literal value" ? content : `(${content})`;
+export function codeLit(val: JsonValue | undefined) {
+  return code(val === undefined ? "undefined" : jsLiteral(val));
 }
 
 export const isCodeLitVal = (
   expr: Expr,
   val: boolean | number | string | null | undefined
 ) => {
-  return (
-    isKnownCustomCode(expr) &&
-    expr.code === (val === undefined ? "undefined" : jsLiteral(val))
-  );
+  return isKnownCustomCode(expr) && expr.code === codeLit(val).code;
 };
 
 /**
  * Returns true if expr is a CustomCode with a real code (not JSON blob)
  * that should be evaluated on canvas or if it's an ObjectPath.
- *
  */
 export const isRealCodeExpr = (expr: any) =>
   (isKnownCustomCode(expr) && expr.code.startsWith("(")) ||
   isKnownObjectPath(expr);
+
+/**
+ * Same as `isRealCodeExpr` but also acts as a type guard.
+ * These functions can't be combined because `isRealCodeExpr`
+ * may return false for some `KnownCustomCode` instances.
+ */
 export const isRealCodeExprEnsuringType = (
   expr: any
 ): expr is CustomCode | ObjectPath => isRealCodeExpr(expr);
@@ -447,18 +441,7 @@ const _asCode = maybeComputedFn(
         code(JSON.stringify(expr.asset.dataUri || ""))
       )
       .when(PageHref, (expr) => {
-        assert(expr.page.pageMeta, "PageHref is expected to contain a page");
-        let path = expr.page.pageMeta.path;
-        for (const [key, value] of Object.entries(expr.params)) {
-          const valueExpr =
-            "${" +
-            getCodeExpressionWithFallback(asCode(value, exprCtx), exprCtx) +
-            "}";
-          path = path
-            .replace(`[[${key}]]`, valueExpr)
-            .replace(`[${key}]`, valueExpr);
-        }
-        return code("(`" + path + "`)");
+        return code(pageHrefPathToCode({ expr, exprCtx }));
       })
       .when(ObjectPath, (expr) =>
         code(`(${pathToString(expr.path)})`, expr.fallback)
@@ -780,20 +763,21 @@ export const isFallbackSet = (expr: Expr): expr is CustomCode | ObjectPath =>
  */
 export const tryExtractLit = (expr: Expr) => tryExtractJson(expr);
 
-export const tryExtractJson = (_expr: Expr) =>
-  switchType(_expr)
-    .when(CustomCode, (expr) =>
+export function tryExtractJson(_expr: Expr): JsonValue | undefined {
+  return switchType(_expr)
+    .when(CustomCode, (expr): JsonValue | undefined =>
       tryCatchElse({
-        try: () => JSON.parse(expr.code),
+        try: () => jsonParse(expr.code),
         catch: () => undefined,
       })
     )
-    .when(TemplatedString, (expr) =>
+    .when(TemplatedString, (expr): string | undefined =>
       expr.text.length === 1 && isString(expr.text[0])
         ? expr.text[0]
         : undefined
     )
     .elseUnsafe(() => undefined);
+}
 
 export function isDynamicExpr(expr: Expr) {
   return switchType(expr)
@@ -812,14 +796,19 @@ export function hasDynamicParts(text: TemplatedString) {
 /**
  * Returns numbers and strings as strings, undefined for everything else.
  */
-export function tryExtractString(expr: Expr) {
+export function tryExtractString(expr: Expr): string | undefined {
   return maybe(tryExtractJson(expr), (v) =>
     L.isString(v) ? v : L.isNumber(v) ? "" + v : undefined
   );
 }
 
-export function tryCoerceString(expr: Expr | string) {
+export function tryCoerceString(expr: Expr | string): string | undefined {
   return isString(expr) ? expr : tryExtractString(expr);
+}
+
+/** Returns booleans, undefined for everything else. */
+export function tryExtractBoolean(expr: Expr): boolean | undefined {
+  return maybe(tryExtractJson(expr), (v) => (L.isBoolean(v) ? v : undefined));
 }
 
 export function stripParens(text: string) {
@@ -1120,7 +1109,7 @@ export function hasUnsafeCurrentUserBinding(
 ) {
   const exprSnippets = getSnippetsWithoutSafeCurrentUserUsage(expr, exprCtx);
   return exprSnippets.some(([_key, snippets]) =>
-    snippets.some((snippet) => snippet.includes("currentUser"))
+    snippets.some((snippet) => /\bcurrentUser\b/.test(snippet))
   );
 }
 

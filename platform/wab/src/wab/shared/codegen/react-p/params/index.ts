@@ -8,6 +8,10 @@ import {
   makeVariantPropsName,
   makeVariantsArgTypeName,
 } from "@/wab/shared/codegen/react-p/serialize-utils";
+import {
+  serializeServerQueryArgPropType,
+  serializeServerQueryEntryType,
+} from "@/wab/shared/codegen/react-p/server-queries/serializer";
 import { SerializerBaseContext } from "@/wab/shared/codegen/react-p/types";
 import {
   jsLiteral,
@@ -20,7 +24,7 @@ import {
   serializeVariantGroupMembersType,
   serializeVariantsArgsTypeContent,
 } from "@/wab/shared/codegen/variants";
-import { assert } from "@/wab/shared/common";
+import { assert, withoutNils } from "@/wab/shared/common";
 import {
   findVariantGroupForParam,
   getNonVariantParams,
@@ -121,39 +125,51 @@ export function serializeVariantsArgsType(ctx: SerializerBaseContext) {
   `;
 }
 
-function getArgsTypeContent(ctx: SerializerBaseContext) {
+export function serializeParamsTypeContent(ctx: SerializerBaseContext) {
   const params = getArgParams(ctx);
-  return params.length === 0
-    ? "{}"
-    : `{
-    ${params
-      .map(
-        (p) =>
-          `"${paramToVarName(ctx.component, p)}"?: ${serializeParamType(
-            ctx.component,
-            p,
-            ctx.projectFlags
-          )}`
-      )
-      .join(";\n")}
-  }`;
+  if (params.length === 0) {
+    return null;
+  }
+
+  return params
+    .map(
+      (p) =>
+        `"${paramToVarName(ctx.component, p)}"?: ${serializeParamType(
+          ctx.component,
+          p,
+          ctx.projectFlags
+        )};`
+    )
+    .join("\n");
+}
+
+export function getArgsTypeContent(ctx: SerializerBaseContext) {
+  const argsTypeContent = withoutNils([
+    serializeParamsTypeContent(ctx),
+    serializeServerQueryEntryType(ctx.component),
+  ]).join("\n");
+
+  return `{${argsTypeContent}}`;
 }
 
 export function serializeArgsType(ctx: SerializerBaseContext) {
   const name = makeArgsTypeName(ctx.component);
+
+  const argPropTypes = withoutNils([
+    ctx.exportOpts.shouldTransformWritableStates
+      ? `"${makePlasmicIsPreviewRootComponent()}"`
+      : null,
+    ...getParamNames(ctx.component, getArgParams(ctx)).map(jsLiteral),
+    serializeServerQueryArgPropType(ctx.component),
+  ]).join(", ");
+
   return `
-    export type ${name} = ${getArgsTypeContent(ctx)};
-    type ArgPropType = keyof ${name};
-    export const ${makeArgPropsName(ctx.component)} = new Array<ArgPropType>(
-      ${
-        ctx.exportOpts.shouldTransformWritableStates
-          ? `"${makePlasmicIsPreviewRootComponent()}", `
-          : ""
-      }
-      ${[
-        ...getParamNames(ctx.component, getArgParams(ctx)).map(jsLiteral),
-      ].join()});
-  `;
+export type ${name} = ${getArgsTypeContent(ctx)};
+type ArgPropType = keyof ${name};
+export const ${makeArgPropsName(
+    ctx.component
+  )} = new Array<ArgPropType>(${argPropTypes});
+`;
 }
 
 /**

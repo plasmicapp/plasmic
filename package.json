@@ -12,6 +12,7 @@
     "dev:reset": "yarn setup && yarn db:reset && yarn dev",
     "e2e": "cd platform/wab && yarn cypress open",
     "e2e:headless": "cd platform/wab && yarn cypress run",
+    "knip:deps": "NODE_OPTIONS=\"--max-old-space-size=10000\" knip --include dependencies",
     "local-canary": "yarn local-unpublish && lerna publish --canary --yes --include-merged-tags --no-git-tag-version --no-push --registry=http://localhost:4873 --force-publish",
     "local-publish": "./scripts/local-publish.sh",
     "local-unpublish": "lerna exec -- npm unpublish -f --registry=\"http://localhost:4873/\" \"\\${LERNA_PACKAGE_NAME}\"",
@@ -28,7 +29,8 @@
     "setup:wab": "cd platform/wab && yarn",
     "test": "jest $TEST_CWD",
     "typecheck": "cd platform/wab && yarn ts-watch",
-    "upgrade-internal": "bash scripts/upgrade-internal.bash"
+    "upgrade-internal": "bash scripts/upgrade-internal.bash",
+    "msw:update": "msw init ./msw --save=false"
   },
   "resolutions": {
     "eslint": "^8.55.0",
@@ -54,7 +56,10 @@
     "if-env": "^1.0.4",
     "jest": "29.7.0",
     "jest-environment-jsdom": "29.7.0",
+    "knip": "5.45.0",
     "lerna": "^7.4.2",
+    "msw": "2.7.3",
+    "msw-storybook-addon": "2.0.4",
     "nx": "^16",
     "prettier": "2.8.8",
     "ts-node": "^10.9.2",
@@ -88,8 +93,6 @@
     "packages/loader-nextjs",
     "packages/loader-react",
     "packages/loader-splits",
-    "packages/loader-svelte",
-    "packages/loader-vue",
     "packages/nextjs-app-router",
     "packages/prepass",
     "packages/query",
@@ -102,7 +105,9 @@
     "plasmicpkgs/antd5",
     "plasmicpkgs/chakra-ui",
     "plasmicpkgs/commerce-providers/*",
+    "plasmicpkgs/fetch",
     "plasmicpkgs/framer-motion",
+    "plasmicpkgs/graphql",
     "plasmicpkgs/keen-slider",
     "plasmicpkgs/lottie-react",
     "plasmicpkgs/plasmic-basic-components",
@@ -117,6 +122,7 @@
     "plasmicpkgs/plasmic-hubspot",
     "plasmicpkgs/plasmic-nav",
     "plasmicpkgs/plasmic-pigeon-maps",
+    "plasmicpkgs/rive",
     "plasmicpkgs/plasmic-query",
     "plasmicpkgs/plasmic-rich-components",
     "plasmicpkgs/plasmic-sanity-io",
@@ -129,6 +135,7 @@
     "plasmicpkgs/plasmic-yotpo",
     "plasmicpkgs/radix-ui",
     "plasmicpkgs/react-aria",
+    "plasmicpkgs/rive",
     "plasmicpkgs/react-audio-player",
     "plasmicpkgs/react-awesome-reveal",
     "plasmicpkgs/react-chartjs-2",
@@ -138,6 +145,7 @@
     "plasmicpkgs/react-scroll-parallax",
     "plasmicpkgs/react-slick",
     "plasmicpkgs/react-twitter-widgets",
-    "plasmicpkgs/react-youtube"
+    "plasmicpkgs/react-youtube",
+    "plasmicpkgs-dev"
   ]
 }

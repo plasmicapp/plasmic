@@ -8,6 +8,7 @@ import {
   getReactWebBundle,
 } from "@/wab/client/components/studio/studio-bundles";
 import { scriptExec } from "@/wab/client/dom-utils";
+import { PlasmicWindowInternals } from "@/wab/client/frame-ctx/windows";
 import { requestIdleCallback } from "@/wab/client/requestidlecallback";
 import { StudioAppUser, StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { safeCallbackify } from "@/wab/commons/control";
@@ -682,7 +683,7 @@ export function updateModules(doc: Document, modules: CodeModule[]) {
       if (err.message.startsWith("[host-app-error]")) {
         setErrorMessage(err.message);
       } else {
-        setErrorMessage(\`Failed to load the preview - please refresh the browser to try again. \n\nIf the problem persits, please report a bug to Plasmic team. Thank you!\n\n\${err}\`);
+        setErrorMessage(\`Failed to load the preview - please refresh the browser to try again. \n\nIf the problem persists, please report a bug to Plasmic team. Thank you!\n\n\${err}\`);
       }
 
       window.postMessage({
@@ -723,6 +724,9 @@ export async function onLoadInjectSystemJS(
         .__PlasmicDataSourcesContextBundle,
     })
   );
+  (frameWindow as any).__PLASMIC__ = {
+    EXECUTE_SERVER_QUERY: studioCtx.executeServerQuery,
+  } as PlasmicWindowInternals;
   (frameWindow as any).__PLASMIC_EXECUTE_DATA_OP =
     studioCtx.executePlasmicDataOp;
   (frameWindow as any).__PLASMIC_MUTATE_DATA_OP =

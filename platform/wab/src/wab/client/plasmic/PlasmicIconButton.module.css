@@ -146,6 +146,9 @@
 .roottype_secondary {
   background: var(--token-O4S7RMTqZ3);
 }
+.roottype_black {
+  background: var(--token-wRTnrRwLX);
+}
 .rootisActive {
   background: var(--token-Ik3bdE1e1Uy);
 }
@@ -407,6 +410,9 @@
 .slotTargetChildrentype_purple {
   color: var(--token-UCbZU41E8Mj);
 }
+.slotTargetChildrentype_black {
+  color: var(--token-iR8SeEwQZ);
+}
 .slotTargetChildrenisActive {
   color: var(--token-0IloF6TmFvF);
 }
@@ -436,6 +442,9 @@
 }
 .roottype_purple:hover .slotTargetChildrentype_purple {
   color: var(--token-ZaJGjVCo3Ue);
+}
+.roottype_black:hover .slotTargetChildrentype_black {
+  color: var(--token-UunsGa2Y3t3);
 }
 .rootwithRedBackgroundHover:hover .slotTargetChildrenwithRedBackgroundHover {
   color: var(--token-Y2CWh0ci95a);
@@ -635,4 +644,7 @@
   right: 0;
   color: var(--token-fVn5vRhXJxQ);
   height: 1em;
+}
+.svgisLoading {
+  display: block;
 }

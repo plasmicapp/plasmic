@@ -1,13 +1,13 @@
-import { jsonClone } from "@/wab/shared/common";
-import { DEVFLAGS } from "@/wab/shared/devflags";
 import {
   exportProjectConfig,
   exportStyleConfig,
 } from "@/wab/shared/codegen/react-p";
 import { exportSiteComponents } from "@/wab/shared/codegen/react-p/gen-site-bundle";
-import { Site } from "@/wab/shared/model/classes";
+import { jsonClone } from "@/wab/shared/common";
 import { initBuiltinActions } from "@/wab/shared/core/states";
 import { deepTrackComponents } from "@/wab/shared/core/tpls";
+import { DEVFLAGS } from "@/wab/shared/devflags";
+import { Site } from "@/wab/shared/model/classes";
 import { exec } from "child_process";
 import fs from "fs";
 import path from "path";
@@ -26,6 +26,8 @@ export async function codegen(dir: string, site: Site) {
 
   const importFromProject = (filePath: string) =>
     import(path.join(dir, filePath));
+  const readFromProject = (filePath: string) =>
+    fs.readFileSync(path.join(dir, filePath), "utf8");
 
   // First, export all the things we need
   const projectConfig = exportProjectConfig(
@@ -142,5 +144,5 @@ export async function codegen(dir: string, site: Site) {
     throw new Error(`Typescript compilation failed: ${err.stdout}`);
   }
 
-  return importFromProject;
+  return { importFromProject, readFromProject };
 }

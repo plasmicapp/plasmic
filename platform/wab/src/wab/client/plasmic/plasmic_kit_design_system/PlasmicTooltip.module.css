@@ -1,0 +1,49 @@
+.ariaTooltip:global(.__wab_instance) {
+  box-sizing: border-box;
+  position: relative;
+  color: #ffffff;
+}
+.slotTargetTrigger {
+  color: var(--token-dED0FYPw-qtp);
+  font-family: var(--token-NQPeu56hWEVO);
+  font-size: var(--token-y-e1zIVKHJyd);
+  line-height: var(--token-wCNdq3-87nVE);
+}
+.text___3QQbq {
+  position: relative;
+}
+.overlayArrow:global(.__wab_instance):global(.__wab_instance) {
+  max-width: 100%;
+}
+.freeBox {
+  display: flex;
+  position: relative;
+  background: var(--token-7ojREB1C2lcs);
+  flex-direction: column;
+  width: auto;
+  border-radius: var(--token-O2OprmOFWLju);
+  padding: var(--token-XnnXV8YSKg9w);
+}
+.freeBox > :global(.__wab_flex-container) {
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  margin-top: calc(0px - var(--token-YwPV7bN0RvD8));
+  height: calc(100% + var(--token-YwPV7bN0RvD8));
+}
+.freeBox > :global(.__wab_flex-container) > *,
+.freeBox > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
+.freeBox > :global(.__wab_flex-container) > picture > img,
+.freeBox
+  > :global(.__wab_flex-container)
+  > :global(.__wab_slot)
+  > picture
+  > img {
+  margin-top: var(--token-YwPV7bN0RvD8);
+}
+.slotTargetContent {
+  color: var(--token-9DPE9saBArps);
+  font-family: var(--token-NQPeu56hWEVO);
+  font-size: var(--token-y-e1zIVKHJyd);
+  line-height: var(--token-wCNdq3-87nVE);
+}

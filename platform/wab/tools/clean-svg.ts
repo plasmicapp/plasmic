@@ -1,9 +1,8 @@
 import fs from "fs";
 import glob from "glob";
+import { last } from "lodash";
 import path from "path";
-import _ from "underscore";
-const UStr = (_.str = require("underscore.string"));
-_.mixin(UStr.exports());
+import { camelize, capitalize } from "underscore.string";
 
 export {};
 
@@ -13,9 +12,7 @@ for (const filepath of [
   ...glob.sync("./export/icons/*.svg"),
 ]) {
   let contents = fs.readFileSync(filepath, { encoding: "utf8" });
-  const rootId = /<g id="([-\w]+)"/.exec(
-    _.last(contents.split("</defs>"))!
-  )![1];
+  const rootId = /<g id="([-\w]+)"/.exec(last(contents.split("</defs>"))!)![1];
   const dirpath = filepath.indexOf("/icons/") >= 0 ? "icons/" : "";
   const viewBox = /viewBox="([^"]+)"/.exec(contents)![1];
   contents = contents.replace(
@@ -29,7 +26,7 @@ for (const filepath of [
   const [match, width, height] = Array.from(
     /<svg width="(\d+)px" height="(\d+)px"/.exec(contents)!
   );
-  const componentName = _.str.capitalize(_.str.camelize(filename.slice(0, -4)));
+  const componentName = capitalize(camelize(filename.slice(0, -4)));
   lines.push(`\
 export class ${componentName} extends React.Component<SvgIconProps> {
   render() {

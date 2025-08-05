@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -30,10 +30,10 @@ import * as pp from "@plasmicapp/react-web";
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import sty from "./PlasmicStyleSelect__Overlay.module.css"; // plasmic-import: 4xhJ1XtuOem/css
+import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import projectcss from "./plasmic_plasmic_kit_styles_pane.module.css"; // plasmic-import: gYEVvAzCcLMHDVPvuYxkFh/projectcss
+import sty from "./PlasmicStyleSelect__Overlay.module.css"; // plasmic-import: 4xhJ1XtuOem/css
 
 import SUPER__PlasmicStyleSelect from "./PlasmicStyleSelect"; // plasmic-import: E0bKgamUEin/render
 
@@ -112,7 +112,6 @@ function PlasmicStyleSelect__Overlay__RenderFunc(props: {
           $props.relativePlacement,
       },
     ],
-
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -285,7 +284,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicStyleSelect__Overlay__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
@@ -293,15 +291,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicStyleSelect__Overlay__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicStyleSelect__Overlay__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicStyleSelect__Overlay__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+    // Specify args directly as props
+    Omit<PlasmicStyleSelect__Overlay__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

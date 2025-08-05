@@ -1,4 +1,8 @@
 import { WithContextMenu } from "@/wab/client/components/ContextMenu";
+import {
+  CustomFunctionExprPreview,
+  CustomFunctionExprSummary,
+} from "@/wab/client/components/sidebar-tabs/ServerQuery/CustomFunctionExprPreview";
 import { useServerQueryBottomModal } from "@/wab/client/components/sidebar-tabs/ServerQuery/ServerQueryBottomModal";
 import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
 import { IconLinkButton } from "@/wab/client/components/widgets";
@@ -52,7 +56,7 @@ const ServerQueryRow = observer(
     const openServerQueryModal = () => {
       serverQueryModal.open({
         value: query.op ?? undefined,
-        onSave: handleDataSourceOpChange,
+        onSave: handleCustomFunctionExprChange,
         onCancel: serverQueryModal.close,
         env,
         schema,
@@ -61,7 +65,7 @@ const ServerQueryRow = observer(
       });
     };
 
-    const handleDataSourceOpChange = async (
+    const handleCustomFunctionExprChange = async (
       newOp: CustomFunctionExpr,
       opExprName?: string
     ) => {
@@ -102,14 +106,13 @@ const ServerQueryRow = observer(
         >
           {query.op ? (
             <div className="flex flex-col fill-width">
-              {query.name}
-              {/* <DataSourceOpExprSummary expr={query.op} /> */}
-              {/* <DataSourceOpValuePreview
+              <CustomFunctionExprSummary expr={query.op} />
+              <CustomFunctionExprPreview
                 expr={query.op}
                 env={env}
                 title={`Query data results for "${query.name}"`}
                 exprCtx={exprCtx}
-              /> */}
+              />
             </div>
           ) : (
             <div className="dimfg">Click to configure...</div>
@@ -136,7 +139,10 @@ function ServerQueriesSection_(props: {
           uuid: mkShortId(),
           name: toVarName(
             uniqueName(
-              component.serverQueries.map((q) => q.name),
+              [
+                ...component.serverQueries.map((q) => q.name),
+                ...component.dataQueries.map((q) => q.name),
+              ],
               "query",
               {
                 normalize: toVarName,
@@ -173,7 +179,12 @@ function ServerQueriesSection_(props: {
       }
     >
       {component.serverQueries.map((query) => (
-        <ServerQueryRow component={component} viewCtx={viewCtx} query={query} />
+        <ServerQueryRow
+          key={query.name}
+          component={component}
+          viewCtx={viewCtx}
+          query={query}
+        />
       ))}
     </SidebarSection>
   );

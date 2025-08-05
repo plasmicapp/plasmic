@@ -196,7 +196,7 @@ export async function setupNextjsServer(
     templateDir,
     tmpdir: dir,
     removeComponentsPage: env.removeComponentsPage,
-    npmRegistry: getEnvVar("NPM_REGISTRY"),
+    npmRegistry: getEnvVar("NPM_CONFIG_REGISTRY"),
     codegenHost: getEnvVar("WAB_HOST"),
     nextVersion: env.nextVersion,
     loaderVersion: env.loaderVersion,

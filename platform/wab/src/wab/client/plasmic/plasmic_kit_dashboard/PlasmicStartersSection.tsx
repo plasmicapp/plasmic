@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -20,12 +20,16 @@ import {
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  ensureGlobalVariants,
+  hasVariant,
   renderPlasmicSlot,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
 import StarterGroup from "../../components/StarterGroup"; // plasmic-import: u6dq5eydCj/component
 import StarterProject from "../../components/StarterProject"; // plasmic-import: CCsDeqqYeoM/component
+
+import { useEnvironment } from "../plasmic_kit_pricing/PlasmicGlobalVariant__Environment"; // plasmic-import: hIjF9NLAUKG-/globalVariant
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
@@ -36,7 +40,7 @@ import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_
 import sty from "./PlasmicStartersSection.module.css"; // plasmic-import: DWsPKkiyzx1/css
 
 import CheckIcon from "../plasmic_kit/PlasmicIcon__Check"; // plasmic-import: pawp1H5YxB_3B/icon
-import eyesvgZxKyHRa6Q6Pa from "../plasmic_kit_design_system/images/eyeSvg.svg"; // plasmic-import: Zx-kyHRa6Q6PA/picture
+import eyeSvgZxKyHRa6Q6Pa from "../plasmic_kit_design_system/images/eyeSvg.svg"; // plasmic-import: Zx-kyHRa6Q6PA/picture
 import image3YherfIxkolNxf from "../plasmic_kit_design_system/images/image3.svg"; // plasmic-import: yherfIxkolNXF/picture
 
 createPlasmicElementProxy;
@@ -47,9 +51,7 @@ type VariantPropType = keyof PlasmicStartersSection__VariantsArgs;
 export const PlasmicStartersSection__VariantProps =
   new Array<VariantPropType>();
 
-export type PlasmicStartersSection__ArgsType = {
-  children?: React.ReactNode;
-};
+export type PlasmicStartersSection__ArgsType = { children?: React.ReactNode };
 type ArgPropType = keyof PlasmicStartersSection__ArgsType;
 export const PlasmicStartersSection__ArgProps = new Array<ArgPropType>(
   "children"
@@ -74,7 +76,16 @@ function PlasmicStartersSection__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
@@ -84,6 +95,10 @@ function PlasmicStartersSection__RenderFunc(props: {
   const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
+
+  const globalVariants = ensureGlobalVariants({
+    environment: useEnvironment(),
+  });
 
   return (
     <Stack__
@@ -102,7 +117,27 @@ function PlasmicStartersSection__RenderFunc(props: {
         plasmic_plasmic_kit_design_system_deprecated_css.plasmic_tokens,
         plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
         plasmic_plasmic_kit_pricing_css.plasmic_tokens,
-        sty.root
+        sty.root,
+        {
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+        }
       )}
     >
       {renderPlasmicSlot({
@@ -140,7 +175,7 @@ function PlasmicStartersSection__RenderFunc(props: {
                           sty.img___6U014
                         )}
                         loading={"lazy"}
-                        src={eyesvgZxKyHRa6Q6Pa}
+                        src={eyeSvgZxKyHRa6Q6Pa}
                       />
                     }
                     withDescrip={true}
@@ -178,7 +213,7 @@ function PlasmicStartersSection__RenderFunc(props: {
                           sty.img__eGzqG
                         )}
                         loading={"lazy"}
-                        src={eyesvgZxKyHRa6Q6Pa}
+                        src={eyeSvgZxKyHRa6Q6Pa}
                       />
                     }
                   >
@@ -215,7 +250,7 @@ function PlasmicStartersSection__RenderFunc(props: {
                           sty.img__w8Krl
                         )}
                         loading={"lazy"}
-                        src={eyesvgZxKyHRa6Q6Pa}
+                        src={eyeSvgZxKyHRa6Q6Pa}
                       />
                     }
                   >
@@ -252,7 +287,7 @@ function PlasmicStartersSection__RenderFunc(props: {
                           sty.img___2Cdv5
                         )}
                         loading={"lazy"}
-                        src={eyesvgZxKyHRa6Q6Pa}
+                        src={eyeSvgZxKyHRa6Q6Pa}
                       />
                     }
                   >
@@ -298,7 +333,7 @@ function PlasmicStartersSection__RenderFunc(props: {
                           sty.img__thVVe
                         )}
                         loading={"lazy"}
-                        src={eyesvgZxKyHRa6Q6Pa}
+                        src={eyeSvgZxKyHRa6Q6Pa}
                       />
                     }
                   >
@@ -335,7 +370,7 @@ function PlasmicStartersSection__RenderFunc(props: {
                           sty.img___1IG3
                         )}
                         loading={"lazy"}
-                        src={eyesvgZxKyHRa6Q6Pa}
+                        src={eyeSvgZxKyHRa6Q6Pa}
                       />
                     }
                   >
@@ -372,7 +407,7 @@ function PlasmicStartersSection__RenderFunc(props: {
                           sty.img__f2WkY
                         )}
                         loading={"lazy"}
-                        src={eyesvgZxKyHRa6Q6Pa}
+                        src={eyeSvgZxKyHRa6Q6Pa}
                       />
                     }
                   >
@@ -409,7 +444,7 @@ function PlasmicStartersSection__RenderFunc(props: {
                           sty.img___9GgMs
                         )}
                         loading={"lazy"}
-                        src={eyesvgZxKyHRa6Q6Pa}
+                        src={eyeSvgZxKyHRa6Q6Pa}
                       />
                     }
                   >
@@ -455,7 +490,7 @@ function PlasmicStartersSection__RenderFunc(props: {
                           sty.img__gk2R
                         )}
                         loading={"lazy"}
-                        src={eyesvgZxKyHRa6Q6Pa}
+                        src={eyeSvgZxKyHRa6Q6Pa}
                       />
                     }
                   >
@@ -492,7 +527,7 @@ function PlasmicStartersSection__RenderFunc(props: {
                           sty.img__kjFld
                         )}
                         loading={"lazy"}
-                        src={eyesvgZxKyHRa6Q6Pa}
+                        src={eyeSvgZxKyHRa6Q6Pa}
                       />
                     }
                   >
@@ -529,7 +564,7 @@ function PlasmicStartersSection__RenderFunc(props: {
                           sty.img__fxH0D
                         )}
                         loading={"lazy"}
-                        src={eyesvgZxKyHRa6Q6Pa}
+                        src={eyeSvgZxKyHRa6Q6Pa}
                       />
                     }
                   >
@@ -566,7 +601,7 @@ function PlasmicStartersSection__RenderFunc(props: {
                           sty.img__ugUu
                         )}
                         loading={"lazy"}
-                        src={eyesvgZxKyHRa6Q6Pa}
+                        src={eyeSvgZxKyHRa6Q6Pa}
                       />
                     }
                   >
@@ -581,7 +616,6 @@ function PlasmicStartersSection__RenderFunc(props: {
             />
           </React.Fragment>
         ),
-
         value: args.children,
       })}
     </Stack__>
@@ -603,7 +637,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicStartersSection__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
@@ -611,15 +644,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicStartersSection__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicStartersSection__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicStartersSection__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+    // Specify args directly as props
+    Omit<PlasmicStartersSection__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

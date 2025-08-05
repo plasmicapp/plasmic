@@ -15,10 +15,9 @@ import {
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import GearIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Gear";
 import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
+import { removeFromArray } from "@/wab/commons/collections";
 import { arrayMoveIndex } from "@/wab/shared/collections";
 import { maybe, spawn, uniqueKey } from "@/wab/shared/common";
-import { removeFromArray } from "@/wab/commons/collections";
-import { joinCssValues, splitCssValue } from "@/wab/shared/RuleSetHelpers";
 import {
   defaultTransforms,
   fromTransformObjToString,
@@ -27,6 +26,7 @@ import {
   parseSelfPerspective,
   Transform,
 } from "@/wab/shared/core/transform-utils";
+import { joinCssValues, splitCssValue } from "@/wab/shared/css/parse";
 import { capitalize } from "lodash";
 import { observer } from "mobx-react";
 import React, { useState } from "react";

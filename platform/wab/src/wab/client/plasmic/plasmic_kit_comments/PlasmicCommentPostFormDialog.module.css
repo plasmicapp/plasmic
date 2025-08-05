@@ -1,0 +1,22 @@
+.root:global(.__wab_instance):global(.__wab_instance) {
+  max-width: 100%;
+}
+.commentsDialogHead:global(.__wab_instance) {
+  max-width: 100%;
+}
+.freeBox {
+  display: flex;
+  flex-direction: row;
+  position: relative;
+  align-items: stretch;
+  justify-content: flex-start;
+  padding: var(--token-8b4HJYZr1yuK);
+}
+.commentPostForm:global(.__wab_instance) {
+  max-width: 100%;
+  top: 0px;
+  z-index: 1;
+  position: sticky;
+  left: 0px;
+  flex-shrink: 0;
+}

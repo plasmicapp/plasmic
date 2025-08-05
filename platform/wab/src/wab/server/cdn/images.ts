@@ -69,13 +69,15 @@ export async function uploadFileToS3(
       const storagePath = `${fileHash}.${ext}`;
 
       try {
-        const { Location } = await new S3()
+        const { Location } = await new S3({
+          endpoint: process.env.S3_ENDPOINT,
+        })
           .upload({
             Bucket: siteAssetsBucket,
             Key: storagePath,
             Body: optimizedBuffer,
             ContentType: mime,
-            ACL: "public-read",
+            ACL: !process.env.S3_ENDPOINT ? "public-read" : undefined, // TODO: Remove this when we migrate to GCS,
             CacheControl: `max-age=3600, s-maxage=31536000`,
           })
           .promise();

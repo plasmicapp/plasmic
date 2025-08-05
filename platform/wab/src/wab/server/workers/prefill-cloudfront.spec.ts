@@ -155,9 +155,7 @@ describe("Prefill cloudfront", () => {
         expect(getResolvedProjectVersions).toHaveBeenNthCalledWith(3, sudo, [
           "p1",
         ]);
-        expect(getRecentLoaderPublishmentsMock).toBeCalledWith(PROJECT_ID, {
-          minLoaderVersion: 7,
-        });
+        expect(getRecentLoaderPublishmentsMock).toBeCalledWith(PROJECT_ID);
         expect(genPublishedLoaderCodeBundle).toHaveBeenNthCalledWith(
           1,
           sudo,
@@ -176,7 +174,6 @@ describe("Prefill cloudfront", () => {
               p3: { version: "0.0.3", indirect: false },
             },
             browserOnly: false,
-            preferEsbuild: true,
           }
         );
         expect(genPublishedLoaderCodeBundle).toHaveBeenNthCalledWith(
@@ -197,7 +194,6 @@ describe("Prefill cloudfront", () => {
               p3: { version: "0.0.3", indirect: false },
             },
             browserOnly: false,
-            preferEsbuild: true,
             i18nKeyScheme: "hash",
             i18nTagPrefix: "n",
           }
@@ -218,7 +214,6 @@ describe("Prefill cloudfront", () => {
               p1: { version: "0.0.1", indirect: false },
             },
             browserOnly: true,
-            preferEsbuild: true,
           }
         );
 

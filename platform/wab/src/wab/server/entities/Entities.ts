@@ -11,6 +11,7 @@ import type {
   BranchStatus,
   CmsDatabaseExtraData,
   CmsDatabaseId,
+  CmsRowData,
   CmsRowId,
   CmsTableId,
   CmsTableSchema,
@@ -453,6 +454,9 @@ export class ProjectWebhook extends Base<"ProjectWebhookId"> {
 
   @Column("text")
   payload: string;
+
+  @Column("boolean", { nullable: true })
+  includeChangeData: boolean | null;
 }
 
 @Entity()
@@ -1093,6 +1097,21 @@ export class CopilotInteraction extends Base<"CopilotInteractionId"> {
 }
 
 @Entity()
+export class PublicCopilotInteraction extends Base<"PublicCopilotInteractionId"> {
+  @Column("text")
+  userPrompt: string;
+
+  @Column("text")
+  response: string;
+
+  @Column("text")
+  fullPromptSnapshot: string;
+
+  @Column("text")
+  model: string;
+}
+
+@Entity()
 export class CmsDatabase extends Base<"CmsDatabaseId"> {
   @Column("text")
   name: string;
@@ -1164,10 +1183,10 @@ export class CmsRow extends Base<"CmsRowId"> {
   rank: string;
 
   @Column("jsonb", { nullable: true })
-  data: Dict<Dict<unknown>> | null;
+  data: CmsRowData | null;
 
   @Column("jsonb", { nullable: true })
-  draftData: Dict<Dict<unknown>> | null;
+  draftData: CmsRowData | null;
 
   @Column("integer", { nullable: true })
   revision: number | null;

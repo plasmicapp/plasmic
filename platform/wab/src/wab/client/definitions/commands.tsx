@@ -1,4 +1,3 @@
-import { U } from "@/wab/client/cli-routes";
 import { importProjectWithPrompt } from "@/wab/client/components/sidebar/ProjectDependencies";
 import {
   ARROW_LEFT_ICON,
@@ -11,6 +10,8 @@ import {
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { assert } from "@/wab/shared/common";
 import { ComponentType } from "@/wab/shared/core/components";
+import { APP_ROUTES } from "@/wab/shared/route/app-routes";
+import { fillRoute } from "@/wab/shared/route/route";
 import L from "lodash";
 import * as React from "react";
 
@@ -91,7 +92,7 @@ export const COMMANDS: readonly CommandItem[] = [
     icon: ARROW_LEFT_ICON,
     action: async (studioCtx: StudioCtx) => {
       assert(window.top, "Unexpected null reference");
-      window.top.location.href = U.dashboard({});
+      window.top.location.href = fillRoute(APP_ROUTES.dashboard, {});
     },
   },
   {
@@ -110,7 +111,7 @@ export const COMMANDS: readonly CommandItem[] = [
       const { projectId: newProjectId } =
         await studioCtx.appCtx.api.cloneProject(studioCtx.siteInfo.id);
       assert(window.top, "Unexpected null reference");
-      window.top.location.href = U.project({
+      window.top.location.href = fillRoute(APP_ROUTES.project, {
         projectId: newProjectId,
       });
     },

@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -62,6 +62,7 @@ export const PlasmicTextField__VariantProps = new Array<VariantPropType>(
 );
 
 export type PlasmicTextField__ArgsType = {
+  value?: string;
   placeholder?: string;
   showLabel?: boolean;
   showDescription?: boolean;
@@ -148,6 +149,7 @@ export type PlasmicTextField__ArgsType = {
 };
 type ArgPropType = keyof PlasmicTextField__ArgsType;
 export const PlasmicTextField__ArgProps = new Array<ArgPropType>(
+  "value",
   "placeholder",
   "showLabel",
   "showDescription",
@@ -175,6 +177,7 @@ export type PlasmicTextField__OverridesType = {
 };
 
 export interface DefaultTextFieldProps {
+  value?: string;
   placeholder?: string;
   showLabel?: boolean;
   showDescription?: boolean;
@@ -303,11 +306,10 @@ function PlasmicTextField__RenderFunc(props: {
     () => [
       {
         path: "ariaTextField.value",
-        type: "readonly",
+        type: "writable",
         variableType: "text",
-        initFunc: ({ $props, $state, $queries, $ctx }) =>
-          $props["defaultValue"],
 
+        valueProp: "value",
         onChangeProp: "onChange",
       },
       {

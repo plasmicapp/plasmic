@@ -91,6 +91,8 @@ export interface ComponentMeta {
     // (undocumented)
     projectId: string;
     // (undocumented)
+    serverQueriesExecFuncFileName?: string;
+    // (undocumented)
     usedComponents: string[];
 }
 

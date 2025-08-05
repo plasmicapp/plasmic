@@ -43,7 +43,6 @@ import {
   replaceAllTokenRefs,
   tryParseTokenRef,
 } from "@/wab/commons/StyleToken";
-import * as cssPegParser from "@/wab/gen/cssPegParser";
 import { TokenValueResolver } from "@/wab/shared/cached-selectors";
 import { arrayMoveIndex } from "@/wab/shared/collections";
 import {
@@ -57,7 +56,6 @@ import {
   uniqueKey,
 } from "@/wab/shared/common";
 import {
-  Background,
   BackgroundLayer,
   bgClipTextTag,
   ColorFill,
@@ -80,9 +78,9 @@ import {
 } from "@/wab/shared/core/sites";
 import { CssVarResolver } from "@/wab/shared/core/styles";
 import * as css from "@/wab/shared/css";
+import { parseCss } from "@/wab/shared/css";
 import { isStandardSide, oppSides } from "@/wab/shared/geom";
 import { isKnownImageAsset, Site } from "@/wab/shared/model/classes";
-import { joinCssValues, splitCssValue } from "@/wab/shared/RuleSetHelpers";
 import { userImgUrl } from "@/wab/shared/urls";
 import Chroma from "@/wab/shared/utils/color-utils";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
@@ -138,14 +136,8 @@ export const BackgroundSection = observer(function BackgroundSection(
   const { expsProvider } = props;
   const { studioCtx } = expsProvider;
   const exp = expsProvider.mergedExp();
-  const bg = new Background({
-    layers:
-      maybe(exp.getRaw("background"), (val) => {
-        const vals = splitCssValue("background", val);
-        return vals.map((v) =>
-          cssPegParser.parse(v, { startRule: "backgroundLayer" })
-        );
-      }) ?? [],
+  const bg = parseCss(exp.getRaw("background") ?? "", {
+    startRule: "background",
   });
   bg.filterNoneLayers(); // Case of `background: none`
 
@@ -163,13 +155,7 @@ export const BackgroundSection = observer(function BackgroundSection(
     spawn(
       studioCtx.changeUnsafe(() => {
         if (bg.layers.length > 0) {
-          exp.set(
-            "background",
-            joinCssValues(
-              "background",
-              bg.layers.map((l) => l.showCss())
-            )
-          );
+          exp.set("background", bg.showCss());
         } else {
           // Create an empty layer as we might inherit from other variant
           // or mixin.
@@ -193,7 +179,7 @@ export const BackgroundSection = observer(function BackgroundSection(
 
   const addBackgroundLayer = (type: "image" | "linear" | "radial" | "fill") => {
     const layer = mkBackgroundLayer(
-      cssPegParser.parse(defaultValuesByBgType[type], {
+      parseCss(defaultValuesByBgType[type], {
         startRule: "backgroundImage",
       }),
       type === "image"
@@ -862,12 +848,17 @@ const BackgroundLayerPanel = observer(function BackgroundLayerPanel({
           value={modelType}
           onChange={(bgType) => {
             updateImg(
-              cssPegParser.parse(
-                cachedValuesByBgType[ensure(bgType, "Must not be undefined")] ??
-                  defaultValuesByBgType[
+              ensure(
+                parseCss(
+                  cachedValuesByBgType[
                     ensure(bgType, "Must not be undefined")
-                  ],
-                { startRule: "backgroundImage" }
+                  ] ??
+                    defaultValuesByBgType[
+                      ensure(bgType, "Must not be undefined")
+                    ],
+                  { startRule: "backgroundImage" }
+                ),
+                "backgroundImage shouldn't be null"
               ),
               () => {}
             );

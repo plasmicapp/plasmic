@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -63,9 +63,7 @@ export const PlasmicSearchbox__VariantProps = new Array<VariantPropType>(
   "medium"
 );
 
-export type PlasmicSearchbox__ArgsType = {
-  placeholder?: string;
-};
+export type PlasmicSearchbox__ArgsType = { placeholder?: string };
 type ArgPropType = keyof PlasmicSearchbox__ArgsType;
 export const PlasmicSearchbox__ArgProps = new Array<ArgPropType>("placeholder");
 

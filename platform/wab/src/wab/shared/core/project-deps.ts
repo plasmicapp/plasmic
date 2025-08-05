@@ -12,6 +12,7 @@ import {
   isPageArena,
 } from "@/wab/shared/Arenas";
 import { flattenComponent } from "@/wab/shared/cached-selectors";
+import { ensureOnlyValidCodeComponentVariantsInComponent } from "@/wab/shared/code-components/variants";
 import {
   collectUsedIconAssetsForTpl,
   collectUsedPictureAssetsForTpl,
@@ -39,6 +40,11 @@ import {
   PageComponent,
   removeComponentParam,
 } from "@/wab/shared/core/components";
+import {
+  fixCustomFunctionExpr,
+  fixCustomFunctionsInTpl,
+  getOldToNewCustomFunctions,
+} from "@/wab/shared/core/custom-functions";
 import { isFallbackableExpr, isFallbackSet } from "@/wab/shared/core/exprs";
 import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
 import {
@@ -582,6 +588,7 @@ function upgradeProjectDep(
   const oldToNewParam = new Map<Param, Param | undefined>();
   const oldToNewState = new Map<State, State | undefined>();
   const oldToNewPage = new Map<PageComponent, PageComponent | undefined>();
+  const oldToNewCustomFunctions = getOldToNewCustomFunctions(oldDep, newDep);
 
   const mapParams = (oldComp: Component, newComp: Component) => {
     for (const oldParam of oldComp.params) {
@@ -963,6 +970,17 @@ function upgradeProjectDep(
 
   const oldAssets = [...oldToNewAsset.keys()];
 
+  /**
+   * Fix reference to new StyleTokenRef, if expr is an ImageAssetRef
+   */
+  function fixStyleTokenRefForExpr(expr: Expr) {
+    if (isKnownStyleTokenRef(expr) && oldToNewToken.has(expr.token)) {
+      expr.token = getOrCloneNewToken(expr.token);
+    } else if (isFallbackSet(expr)) {
+      fixStyleTokenRefForExpr(expr.fallback!);
+    }
+  }
+
   // For HRefs: tries to fix the referenced page, and returns true if the
   // expr should be deleted because it references a no longer existing page
   const shouldDeletePageHRef = (expr: Expr) => {
@@ -987,6 +1005,8 @@ function upgradeProjectDep(
           }
         }
       }
+    } else if (isFallbackableExpr(expr) && expr.fallback) {
+      return shouldDeletePageHRef(expr.fallback);
     }
     return false;
   };
@@ -1142,9 +1162,10 @@ function upgradeProjectDep(
     if (isTplImage(tpl)) {
       // For images, replace ImageAsset references to new ones
       for (const vs of tpl.vsettings) {
-        Object.entries(vs.attrs).forEach(([_key, value]) =>
-          fixAssetRefForExpr(tplMgr, value, oldToNewAsset)
-        );
+        Object.entries(vs.attrs).forEach(([_key, value]) => {
+          fixAssetRefForExpr(tplMgr, value, oldToNewAsset);
+          fixStyleTokenRefForExpr(value);
+        });
       }
     }
 
@@ -1197,6 +1218,8 @@ function upgradeProjectDep(
       if (isKnownComponent(owner)) {
         ensureCorrectImplicitStates(site, owner, tpl);
       }
+
+      fixCustomFunctionsInTpl(oldToNewCustomFunctions, tpl);
 
       for (const vs of tpl.vsettings) {
         for (const arg of [...vs.args]) {
@@ -1329,9 +1352,14 @@ function upgradeProjectDep(
         }
       }
     }
+
     for (const tpl of flattenTpls(component.tplTree)) {
       fixTpl(tpl, component);
     }
+
+    // We need to ensure the code component variants only after we've fixed all the tpls
+    // so that we ensure with the upgraded version of the component
+    ensureOnlyValidCodeComponentVariantsInComponent(site, component);
 
     // Check if the remainin tree has references to removed states
     for (const state of removedStates) {
@@ -1353,8 +1381,26 @@ function upgradeProjectDep(
           param.defaultExpr = null;
         } else {
           fixAssetRefForExpr(tplMgr, param.defaultExpr, oldToNewAsset);
+          fixStyleTokenRefForExpr(param.defaultExpr);
         }
       }
+
+      if (param.previewExpr) {
+        if (shouldDeletePageHRef(param.previewExpr)) {
+          param.previewExpr = null;
+        } else {
+          fixAssetRefForExpr(tplMgr, param.previewExpr, oldToNewAsset);
+          fixStyleTokenRefForExpr(param.previewExpr);
+        }
+      }
+    });
+
+    component.serverQueries.forEach((serverQuery) => {
+      const op = serverQuery.op;
+      if (!op) {
+        return;
+      }
+      serverQuery.op = fixCustomFunctionExpr(oldToNewCustomFunctions, op);
     });
   };
 

@@ -1,4 +1,4 @@
-import { analytics } from "@/wab/client/analytics";
+import { analytics } from "@/wab/client/observability";
 import {
   AssertionError,
   FalsyValueError,

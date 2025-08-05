@@ -1,15 +1,15 @@
-import { ensure } from "@/wab/shared/common";
-import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
 import { BundleMigrationType } from "@/wab/server/db/bundle-migration-utils";
 import { BundledMigrationFn } from "@/wab/server/db/BundleMigrator";
 import { svgoProcess } from "@/wab/server/svgo";
+import { ensure } from "@/wab/shared/common";
+import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
+import { ASPECT_RATIO_SCALE_FACTOR } from "@/wab/shared/core/tpls";
 import {
   asDataUrl,
   getParsedDataUrlData,
   parseDataUrl,
   SVG_MEDIA_TYPE,
 } from "@/wab/shared/data-urls";
-import { ASPECT_RATIO_SCALE_FACTOR } from "@/wab/shared/core/tpls";
 import S3 from "aws-sdk/clients/s3";
 
 const siteAssetsBucket = process.env.SITE_ASSETS_BUCKET as string;
@@ -26,7 +26,9 @@ export const migrate: BundledMigrationFn = async (bundle) => {
         url.endsWith(".svg")
       ) {
         const storagePath = new URL(url).pathname.replace(/^\//, "");
-        const res = await new S3()
+        const res = await new S3({
+          endpoint: process.env.S3_ENDPOINT,
+        })
           .getObject({
             Bucket: siteAssetsBucket,
             Key: storagePath,

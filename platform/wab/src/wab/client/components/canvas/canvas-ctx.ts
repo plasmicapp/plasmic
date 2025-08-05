@@ -16,6 +16,7 @@ import {
 import * as domMod from "@/wab/client/dom";
 import { NodeAndOffset } from "@/wab/client/dom";
 import { scriptExec, upsertJQSelector } from "@/wab/client/dom-utils";
+import { PlasmicWindowInternals } from "@/wab/client/frame-ctx/windows";
 import { reduceImageSize } from "@/wab/client/image/transform";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
@@ -327,9 +328,11 @@ export class CanvasCtx {
       )
     );
 
+    (this._win as any).__PLASMIC__ = {
+      EXECUTE_SERVER_QUERY: sc.executeServerQuery,
+    } as PlasmicWindowInternals;
     // Overwrite the default executePlasmicDataOp with a custom one for in-studio use
     (this._win as any).__PLASMIC_EXECUTE_DATA_OP = sc.executePlasmicDataOp;
-
     // Cache interaction information in studio
     (this._win as any).__PLASMIC_CACHE_$STEP_VALUE = sc.save$stepValue;
     (this._win as any).__PLASMIC_CACHE_EVENT_ARGS = sc.saveInteractionArgs;

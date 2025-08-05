@@ -5,10 +5,10 @@ import { Team, User as UserEnt } from "@/wab/server/entities/Entities";
 import { WabPromStats } from "@/wab/server/promstats";
 import { TimingStore } from "@/wab/server/timing-util";
 import { PlasmicWorkerPool } from "@/wab/server/workers/pool";
-import { Analytics } from "@/wab/shared/analytics/Analytics";
 import { ProjectIdAndToken } from "@/wab/shared/ApiSchema";
 import { Bundler } from "@/wab/shared/bundler";
 import { DEVFLAGS } from "@/wab/shared/devflags";
+import { Analytics } from "@/wab/shared/observability/Analytics";
 import socketio from "socket.io";
 import { Connection, EntityManager } from "typeorm";
 

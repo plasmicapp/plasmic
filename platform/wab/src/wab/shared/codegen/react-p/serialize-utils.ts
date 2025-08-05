@@ -1,5 +1,6 @@
 import { VariantGroupType } from "@/wab/shared/Variants";
 import { CodeComponentWithHelpers } from "@/wab/shared/code-components/code-components";
+import { PlasmicImportType } from "@/wab/shared/codegen/react-p/types";
 import { makeChildrenStr } from "@/wab/shared/codegen/react-p/utils";
 import {
   CodegenScheme,
@@ -16,10 +17,10 @@ import {
   toVarName,
 } from "@/wab/shared/codegen/util";
 import {
-  makeGlobalVariantGroupContextName,
+  makeGlobalVariantGroupContextProviderName,
   makeGlobalVariantGroupFileName,
 } from "@/wab/shared/codegen/variants";
-import { ensure } from "@/wab/shared/common";
+import { ensure, ensureArray } from "@/wab/shared/common";
 import {
   getCodeComponentImportName,
   getSuperComponents,
@@ -29,7 +30,6 @@ import {
 import { CssProjectDependencies } from "@/wab/shared/core/sites";
 import {
   Component,
-  ComponentServerQuery,
   ImageAsset,
   TplNode,
   Variant,
@@ -37,6 +37,7 @@ import {
 } from "@/wab/shared/model/classes";
 import L, { lowerFirst } from "lodash";
 
+export const globalStyleCssImportName = "globalcss";
 export const projectStyleCssImportName = "projectcss";
 export const defaultStyleCssImportName = "defaultcss";
 export const defaultStyleCssFileName = "plasmic__default_style.css";
@@ -125,14 +126,6 @@ export function makePlasmicMixinsClassName(opts: ClassNameOpts) {
 
 export const shortPlasmicPrefix = "ρ";
 
-export type VariantChecker = (variant: Variant) => string;
-
-export const safeShortUuid = (shortUuid: string) => {
-  // The shortId we use in https://github.com/dylang/shortid may contain "-",
-  // which is not safe for JS identifier.
-  return shortUuid.replace(/-/g, "$");
-};
-
 export type NodeNamer = (node: TplNode) => string | undefined;
 
 export function makeStylesImports(
@@ -148,12 +141,23 @@ export function makeStylesImports(
     // "import * as name from ...") while CRA >= 5 / Next.js does not support that
     // (requiring "import name from ...").
     const importName = !useCssModules
-      ? ""
+      ? opts.platform === "tanstack"
+        ? `${name} from`
+        : ""
       : opts.platform === "gatsby"
       ? `* as ${name} from`
       : `${name} from`;
+
+    /* Tanstack doesn't support CSS modules in SSR at the moment so the only option
+     * that we have is to import css as a URL.
+     * https://github.com/TanStack/router/issues/3023
+     */
     const importPath = `${stripExtension(path, true)}${
-      useCssModules ? ".module.css" : ".css"
+      useCssModules
+        ? ".module.css"
+        : opts.platform === "tanstack"
+        ? ".css?url"
+        : ".css"
     }`;
     return `import ${importName} "./${importPath}"`;
   };
@@ -162,6 +166,8 @@ export function makeStylesImports(
     ${
       opts.stylesOpts.skipGlobalCssImport
         ? ""
+        : opts.platform === "tanstack"
+        ? `import ${globalStyleCssImportName} from "@plasmicapp/react-web/lib/plasmic.css?url";`
         : `import "@plasmicapp/react-web/lib/plasmic.css";`
     }
     ${
@@ -245,6 +251,11 @@ export function makePlatformImports(opts: ExportOpts): string {
       import { useRouter } from "next/router";
     `;
     }
+  } else if (opts.platform === "tanstack") {
+    return `
+      import { useRouter, Link } from "@tanstack/react-router";
+      import type { LinkProps } from "@tanstack/react-router";
+    `;
   } else {
     return "";
   }
@@ -256,6 +267,9 @@ export function getPlatformImportComponents(platform: ExportPlatform) {
     names.push("Link", "LinkProps", "Head");
   }
   if (platform === "gatsby") {
+    names.push("Link", "LinkProps");
+  }
+  if (platform === "tanstack") {
     names.push("Link", "LinkProps");
   }
   return names;
@@ -291,7 +305,9 @@ export function getNormalizedComponentName(component: Component) {
 }
 
 export function isPageAwarePlatform(platform: string) {
-  return platform === "nextjs" || platform === "gatsby";
+  return (
+    platform === "nextjs" || platform === "gatsby" || platform === "tanstack"
+  );
 }
 
 export function getSkeletonModuleFileName(
@@ -356,7 +372,7 @@ export function makeGlobalGroupImports(
           ? makeGlobalVariantIdFileName(vg)
           : makeGlobalVariantGroupFileName(vg);
 
-        return `import {${makeGlobalVariantGroupContextName(
+        return `import {${makeGlobalVariantGroupContextProviderName(
           vg
         )}} from "./${stripExtension(groupFileName)}"; // plasmic-import: ${
           vg.uuid
@@ -376,7 +392,7 @@ export function wrapGlobalProvider(
     // We don't need to wrap ScreenVariantProvider anymore
     return content;
   } else {
-    const contextName = makeGlobalVariantGroupContextName(vg);
+    const contextProviderName = makeGlobalVariantGroupContextProviderName(vg);
     const value =
       activeVariants.length === 0
         ? "undefined"
@@ -384,11 +400,11 @@ export function wrapGlobalProvider(
         ? jsLiteral(activeVariants.map((v) => toVarName(v.name)))
         : jsLiteral(toVarName(activeVariants[0].name));
     return `
-      <${contextName}.Provider value={${value}}>
+      <${contextProviderName} value={${value}}>
         ${curlyBrackets ? "{" : ""}
         ${content}
         ${curlyBrackets ? "}" : ""}
-      </${contextName}.Provider>
+      </${contextProviderName}>
     `;
   }
 }
@@ -403,13 +419,13 @@ export function wrapGlobalProviderWithCustomValue(
     // We don't need to wrap ScreenVariantProvider anymore
     return content;
   } else {
-    const contextName = makeGlobalVariantGroupContextName(vg);
+    const contextProviderName = makeGlobalVariantGroupContextProviderName(vg);
     return `
-      <${contextName}.Provider value={${value}}>
+      <${contextProviderName} value={${value}}>
         ${curlyBrackets ? "{" : ""}
         ${content}
         ${curlyBrackets ? "}" : ""}
-      </${contextName}.Provider>
+      </${contextProviderName}>
     `;
   }
 }
@@ -487,6 +503,10 @@ export function getImportedCodeComponentHelperName(
   c: CodeComponentWithHelpers
 ) {
   return `${getImportedComponentName(aliases, c)}_Helpers`;
+}
+
+export function makeTanStackHeadOptionsExportName(component: Component) {
+  return `Plasmic${getExportedComponentName(component)}__HeadOptions`;
 }
 
 export function makeRenderFuncName(component: Component) {
@@ -624,12 +644,12 @@ export const maybeCondExpr = (maybeCond: string, expr: string) => {
   return `(${maybeCond}) ? (${expr}) : null`;
 };
 
-export function serializeServerQuery(serverQuery: ComponentServerQuery) {
-  return `const ${serverQuery.name} = await ${
-    serverQuery.op!.func.importName
-  }();`;
-}
-
-export function serializeServerQueries(component: Component) {
-  return component.serverQueries.map((q) => serializeServerQuery(q)).join("\n");
+export function makeTaggedPlasmicImport(
+  imports: string | string[],
+  source: string,
+  id: string,
+  type: PlasmicImportType
+) {
+  const importStr = ensureArray(imports).join(", ");
+  return `import { ${importStr} } from "${source}"; // plasmic-import: ${id}/${type}`;
 }

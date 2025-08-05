@@ -41,6 +41,15 @@ body.qb-dragging {
   // font-variant-ligatures: contextual !important;
   user-select: none;
 
+  // PLASMIC - Custom Styles
+  --qb-select-input-background-color: #ffffff;
+  --qb-select-input-background-color-hover: #eeeee7;
+  --qb-select-input-background-color-accent-hover: #edf6ff;
+  --qb-select-input-text-color: #1b1b18;
+  --qb-select-input-arrow-color: #90908c;
+  --qb-select-input-border-color: #eeeeec;
+  --qb-select-input-font-weight: normal;
+
   .rule--value {
     flex: 1;
   }
@@ -647,15 +656,6 @@ body.qb-dragging {
       }
     }
   }
-
-  // PLASMIC - Custom Styles
-  --qb-select-input-background-color: #ffffff;
-  --qb-select-input-background-color-hover: #eeeee7;
-  --qb-select-input-background-color-accent-hover: #edf6ff;
-  --qb-select-input-text-color: #1b1b18;
-  --qb-select-input-arrow-color: #90908c;
-  --qb-select-input-border-color: #eeeeec;
-  --qb-select-input-font-weight: normal;
 
   .group {
     --group-content-padding-horizontal: 24px;

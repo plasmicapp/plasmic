@@ -1,6 +1,4 @@
-/** @format */
-
-import { U, UU } from "@/wab/client/cli-routes";
+import { parseRoute } from "@/wab/client/cli-routes";
 import { promptNewTeam } from "@/wab/client/components/dashboard/dashboard-actions";
 import NavSeparator from "@/wab/client/components/dashboard/NavSeparator";
 import NavTeamSection from "@/wab/client/components/dashboard/NavTeamSection";
@@ -20,8 +18,10 @@ import {
   PlasmicDefaultLayout__OverridesType,
 } from "@/wab/client/plasmic/plasmic_kit_dashboard/PlasmicDefaultLayout";
 import { useBrowserNotification } from "@/wab/client/utils/useBrowserNotification";
-import { ensure } from "@/wab/shared/common";
 import { TeamId, WorkspaceId } from "@/wab/shared/ApiSchema";
+import { ensure } from "@/wab/shared/common";
+import { APP_ROUTES } from "@/wab/shared/route/app-routes";
+import { fillRoute } from "@/wab/shared/route/route";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { Dropdown, Menu } from "antd";
 import * as _ from "lodash";
@@ -53,9 +53,9 @@ function DefaultLayout_(
   >(undefined);
 
   const updateLocation = (path: string) => {
-    const matchTeam = UU.org.parse(path);
-    const matchTeamSettings = UU.orgSettings.parse(path);
-    const matchWorkspace = UU.workspace.parse(path);
+    const matchTeam = parseRoute(APP_ROUTES.org, path);
+    const matchTeamSettings = parseRoute(APP_ROUTES.orgSettings, path);
+    const matchWorkspace = parseRoute(APP_ROUTES.workspace, path);
 
     setActiveTeam(
       (matchTeam?.params.teamId ||
@@ -98,7 +98,9 @@ function DefaultLayout_(
   const userMenu = (
     <Menu>
       <Menu.Item>
-        <PublicLink href={UU.settings.fill({})}>Settings</PublicLink>
+        <PublicLink href={fillRoute(APP_ROUTES.settings, {})}>
+          Settings
+        </PublicLink>
       </Menu.Item>
       <Menu.Item
         onClick={async () => {
@@ -183,7 +185,7 @@ function DefaultLayout_(
             <NavSeparator />
             <NavTeamSection
               name={t.name}
-              href={U.org({ teamId: t.id })}
+              href={fillRoute(APP_ROUTES.org, { teamId: t.id })}
               selected={activeTeam === t.id}
               freeTrial={t.onTrial}
             >
@@ -193,7 +195,9 @@ function DefaultLayout_(
                   <NavWorkspaceButton
                     key={w.id}
                     name={w.name}
-                    href={U.workspace({ workspaceId: w.id })}
+                    href={fillRoute(APP_ROUTES.workspace, {
+                      workspaceId: w.id,
+                    })}
                     selected={activeWorkspace === w.id}
                   />
                 ))}

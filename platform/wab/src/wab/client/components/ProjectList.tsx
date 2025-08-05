@@ -1,4 +1,3 @@
-import { hideStarters } from "@/wab/client/app-ctx";
 import ProjectListItem from "@/wab/client/components/ProjectListItem";
 import StarterGroup from "@/wab/client/components/StarterGroup";
 import { Spinner } from "@/wab/client/components/widgets";
@@ -11,9 +10,9 @@ import {
   DefaultProjectListProps,
   PlasmicProjectList,
 } from "@/wab/client/plasmic/plasmic_kit/PlasmicProjectList";
+import { getExtraData, updateExtraDataJson } from "@/wab/shared/ApiSchemaUtil";
 import { ensure } from "@/wab/shared/common";
 import { DEVFLAGS } from "@/wab/shared/devflags";
-import { getExtraData, updateExtraDataJson } from "@/wab/shared/ApiSchemaUtil";
 import React, { useState } from "react";
 import { Helmet } from "react-helmet";
 
@@ -75,9 +74,6 @@ function ProjectList(props: ProjectListProps) {
         tutorials={{
           wrap: (node) => {
             if (appCtx.starters.tutorialSections.length === 0) {
-              return null;
-            }
-            if (hideStarters(appCtx)) {
               return null;
             }
             return node;

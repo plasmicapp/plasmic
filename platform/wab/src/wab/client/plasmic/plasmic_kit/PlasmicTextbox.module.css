@@ -19,6 +19,7 @@
 }
 .rootstyleType_bordered {
   box-shadow: inset 0px 0px 0px 1px var(--token-eBt2ZgqRUCz);
+  padding: 1px;
 }
 .rootstyleType_white {
   background: var(--token-iR8SeEwQZ);
@@ -234,6 +235,9 @@
 .textboxdisabled {
   color: rgb(188, 192, 196);
   background: rgb(245, 247, 250);
+  height: 100%;
+  min-height: 0;
+  border-radius: 5px;
 }
 .textboxstyleType_right {
   text-align: right;

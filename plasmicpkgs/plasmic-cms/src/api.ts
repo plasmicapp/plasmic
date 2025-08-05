@@ -4,8 +4,8 @@ export interface DatabaseConfig {
   host: string;
   databaseId: string;
   databaseToken: string;
-  locale: string;
-  useDraft: boolean | string[];
+  locale?: string;
+  useDraft?: boolean | string[];
 }
 
 export interface QueryParams {
@@ -95,7 +95,7 @@ export class API {
     if (Array.isArray(this.config.useDraft)) {
       return this.config.useDraft.includes(table);
     } else {
-      return this.config.useDraft;
+      return this.config.useDraft ?? false;
     }
   }
 

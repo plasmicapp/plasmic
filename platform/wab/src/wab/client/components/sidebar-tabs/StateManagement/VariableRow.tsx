@@ -7,11 +7,11 @@ import { LabeledListItem } from "@/wab/client/components/widgets/LabeledListItem
 import { DefaultVariableRowProps } from "@/wab/client/plasmic/plasmic_kit_state_management/PlasmicVariableRow";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
+import { getStateVarName } from "@/wab/shared/core/states";
 import { Component, State } from "@/wab/shared/model/classes";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { observer } from "mobx-react";
 import * as React from "react";
-import { getStateVarName } from "@/wab/shared/core/states";
 
 export interface VariableRowProps extends DefaultVariableRowProps {
   component: Component;
@@ -32,14 +32,6 @@ const VariableRow = observer(
       modals,
       props: variableRowProps,
     } = useVariableRow({ sc, component, state, viewCtx });
-
-    const onEditLabel = (val) =>
-      void sc.change(({ success }) => {
-        if (val) {
-          sc.tplMgr().renameParam(component, state.param, val);
-        }
-        return success();
-      });
 
     return (
       <WithContextMenu overlay={menu}>

@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -20,6 +20,7 @@ import {
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  ensureGlobalVariants,
   hasVariant,
   renderPlasmicSlot,
   useDollarState,
@@ -31,6 +32,8 @@ import TeamBilling from "../../components/dashboard/TeamBilling"; // plasmic-imp
 import TeamMemberList from "../../components/dashboard/TeamMemberList"; // plasmic-import: 3jXSiWKc1-/component
 import TeamMemberListItem from "../../components/dashboard/TeamMemberListItem"; // plasmic-import: gdLJj97tYt/component
 import MenuButton from "../../components/widgets/MenuButton"; // plasmic-import: h69wHrrKtL/component
+
+import { useEnvironment } from "../plasmic_kit_pricing/PlasmicGlobalVariant__Environment"; // plasmic-import: hIjF9NLAUKG-/globalVariant
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
@@ -90,7 +93,16 @@ function PlasmicTeamSettings__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
@@ -110,7 +122,6 @@ function PlasmicTeamSettings__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.hideNewButton,
       },
     ],
-
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -118,6 +129,10 @@ function PlasmicTeamSettings__RenderFunc(props: {
     $ctx,
     $queries: {},
     $refs,
+  });
+
+  const globalVariants = ensureGlobalVariants({
+    environment: useEnvironment(),
   });
 
   return (
@@ -135,7 +150,27 @@ function PlasmicTeamSettings__RenderFunc(props: {
         plasmic_plasmic_kit_design_system_deprecated_css.plasmic_tokens,
         plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
         plasmic_plasmic_kit_pricing_css.plasmic_tokens,
-        sty.root
+        sty.root,
+        {
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+        }
       )}
     >
       <header
@@ -277,7 +312,6 @@ const PlasmicDescendants = {
     "navSeparator",
     "teamBilling",
   ],
-
   header: ["header", "freeBox", "teamMenuButton"],
   freeBox: ["freeBox"],
   teamMenuButton: ["teamMenuButton"],
@@ -303,7 +337,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicTeamSettings__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
@@ -311,15 +344,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicTeamSettings__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicTeamSettings__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicTeamSettings__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+    // Specify args directly as props
+    Omit<PlasmicTeamSettings__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

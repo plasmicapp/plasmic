@@ -1,6 +1,11 @@
 import { coalesce, ensure, ensureInstance } from "@/wab/shared/common";
+import {
+  ValComponent,
+  ValNode,
+  ValSlot,
+  ValTag,
+} from "@/wab/shared/core/val-nodes";
 import { Param } from "@/wab/shared/model/classes";
-import { ValComponent, ValNode, ValSlot, ValTag } from "@/wab/shared/core/val-nodes";
 
 export class SlotInfo {
   constructor(

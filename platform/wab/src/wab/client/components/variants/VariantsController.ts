@@ -157,7 +157,7 @@ export class CustomVariantsController implements VariantsController {
   }
 
   onTargetVariant(variant: Variant, add: boolean) {
-    this.pinManager.toggleTargeting([variant], add);
+    this.pinManager.toggleTargetingForCustomArena([variant], add);
     if (add) {
       this.maybeResizeFrame(variant);
     }

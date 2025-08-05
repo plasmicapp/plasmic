@@ -1,0 +1,6 @@
+.customFunctionExprValue {
+  // !important to override `.flex > *`
+  min-width: 100% !important;
+  max-width: 4vw;
+  text-overflow: ellipsis;
+}

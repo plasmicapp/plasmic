@@ -174,6 +174,8 @@ export class PlasmicComponentLoader {
     substituteComponent<P>(component: React.ComponentType<P>, name: ComponentLookupSpec): void;
     // (undocumented)
     trackConversion(value?: number): void;
+    // (undocumented)
+    unstable__getServerQueriesData(renderData: ComponentRenderData, $ctx: Record<string, any>): Promise<any>;
 }
 
 // (No @packageDocumentation comment for this package)

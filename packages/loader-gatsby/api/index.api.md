@@ -25,6 +25,7 @@ import { PropType } from '@plasmicapp/loader-react';
 import { repeatedElement } from '@plasmicapp/loader-react';
 import { TokenRegistration } from '@plasmicapp/loader-react';
 import { useDataEnv } from '@plasmicapp/loader-react';
+import { usePlasmicCanvasComponentInfo } from '@plasmicapp/loader-react';
 import { usePlasmicCanvasContext } from '@plasmicapp/loader-react';
 import { usePlasmicComponent } from '@plasmicapp/loader-react';
 import { useSelector } from '@plasmicapp/loader-react';
@@ -80,6 +81,8 @@ export const sourceNodes: GatsbyNode["sourceNodes"];
 export { TokenRegistration }
 
 export { useDataEnv }
+
+export { usePlasmicCanvasComponentInfo }
 
 export { usePlasmicCanvasContext }
 

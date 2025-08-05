@@ -617,10 +617,8 @@ export function* findRecursiveImplicitStates(site: Site, state: State) {
 }
 
 export function removeImplicitStates(site: Site, state: State) {
-  for (const {
-    component: refComponent,
-    state: refState,
-  } of findRecursiveImplicitStates(site, state)) {
+  const usages = [...findRecursiveImplicitStates(site, state)];
+  for (const { component: refComponent, state: refState } of usages) {
     removeComponentState(site, refComponent, refState);
   }
 }
@@ -759,7 +757,7 @@ type DistributedKeyOf<T> = T extends any ? keyof T : never;
 
 interface SiteCtx {
   projectId: string;
-  platform: "nextjs" | "gatsby" | "react";
+  platform: "nextjs" | "gatsby" | "react" | "tanstack";
   projectFlags: DevFlagsType;
   inStudio: boolean;
 }
@@ -1116,6 +1114,20 @@ export const initBuiltinActions = (siteCtx: SiteCtx) =>
         }
       }`,
     },
+    customFunctionOp: {
+      parameters: {},
+      function: `async ({ customFunctionOp, continueOnError }) => {
+        try {
+          const response = await customFunctionOp;
+          return response;
+        } catch(e) {
+          if(!continueOnError) {
+            throw(e);
+          }
+          return e;
+        }
+      }`,
+    },
     invalidateDataQuery: {
       parameters: {},
       function: `async ({ queryInvalidation }) => {
@@ -1283,7 +1295,7 @@ export const serializeActionFunction = (interaction: Interaction) => {
  * The initial value for writable states works similarly to virtual slots.
  * If some value is set for the tpl component arg, we use it. Otherwise,
  * we reference the value set in the original component.
- * Special case: If the state is implicit implicit, it can have different intial values
+ * Special case: If the state is implicit implicit, it can have different initial values
  * for different variants. In this case, we reference the base variant initial value.
  **/
 export const getVirtualWritableStateInitialValue = (
@@ -1351,7 +1363,7 @@ export const extractLit = (
     return expr;
   }
   if (isKnownImageAssetRef(expr)) {
-    return expr.asset;
+    return expr;
   }
   return tryExtractLit(expr);
 };

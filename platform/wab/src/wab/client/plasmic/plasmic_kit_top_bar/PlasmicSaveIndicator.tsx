@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -13,17 +13,17 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
+  Flex as Flex__,
   SingleChoiceArg,
   StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
   hasVariant,
+  useDollarState,
 } from "@plasmicapp/react-web";
+import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
@@ -32,14 +32,14 @@ import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_
 import projectcss from "./plasmic_plasmic_kit_top_bar.module.css"; // plasmic-import: 6CrqkTcB6gSAHoA8c8zpNz/projectcss
 import sty from "./PlasmicSaveIndicator.module.css"; // plasmic-import: HYPZr2nWSgs/css
 
+createPlasmicElementProxy;
+
 export type PlasmicSaveIndicator__VariantMembers = {
   saveState: "dirty" | "unlogged";
 };
-
 export type PlasmicSaveIndicator__VariantsArgs = {
   saveState?: SingleChoiceArg<"dirty" | "unlogged">;
 };
-
 type VariantPropType = keyof PlasmicSaveIndicator__VariantsArgs;
 export const PlasmicSaveIndicator__VariantProps = new Array<VariantPropType>(
   "saveState"
@@ -50,8 +50,8 @@ type ArgPropType = keyof PlasmicSaveIndicator__ArgsType;
 export const PlasmicSaveIndicator__ArgProps = new Array<ArgPropType>();
 
 export type PlasmicSaveIndicator__OverridesType = {
-  root?: p.Flex<"div">;
-  freeBox?: p.Flex<"div">;
+  root?: Flex__<"div">;
+  freeBox?: Flex__<"div">;
 };
 
 export interface DefaultSaveIndicatorProps {
@@ -59,13 +59,7 @@ export interface DefaultSaveIndicatorProps {
   className?: string;
 }
 
-const __wrapUserFunction =
-  globalThis.__PlasmicWrapUserFunction ?? ((loc, fn) => fn());
-const __wrapUserPromise =
-  globalThis.__PlasmicWrapUserPromise ??
-  (async (loc, promise) => {
-    return await promise;
-  });
+const $$ = {};
 
 function PlasmicSaveIndicator__RenderFunc(props: {
   variants: PlasmicSaveIndicator__VariantsArgs;
@@ -75,13 +69,13 @@ function PlasmicSaveIndicator__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const $ctx = ph.useDataEnv?.() || {};
   const args = React.useMemo(
     () =>
       Object.assign(
         {},
-
-        props.args
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
       ),
     [props.args]
   );
@@ -91,14 +85,11 @@ function PlasmicSaveIndicator__RenderFunc(props: {
     ...variants,
   };
 
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
-
-  const [$queries, setDollarQueries] = React.useState({});
-
-  const stateSpecs = React.useMemo(
+  const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
         path: "saveState",
@@ -107,55 +98,57 @@ function PlasmicSaveIndicator__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.saveState,
       },
     ],
-
-    [$props, $ctx]
+    [$props, $ctx, $refs]
   );
-  const $state = p.useDollarState(stateSpecs, { $props, $ctx, $queries });
+  const $state = useDollarState(stateSpecs, {
+    $props,
+    $ctx,
+    $queries: {},
+    $refs,
+  });
 
   return (
-    true ? (
+    <div
+      data-plasmic-name={"root"}
+      data-plasmic-override={overrides.root}
+      data-plasmic-root={true}
+      data-plasmic-for-node={forNode}
+      className={classNames(
+        projectcss.all,
+        projectcss.root_reset,
+        projectcss.plasmic_default_styles,
+        projectcss.plasmic_mixins,
+        projectcss.plasmic_tokens,
+        plasmic_plasmic_kit_design_system_deprecated_css.plasmic_tokens,
+        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
+        sty.root,
+        {
+          [sty.rootsaveState_dirty]: hasVariant($state, "saveState", "dirty"),
+          [sty.rootsaveState_unlogged]: hasVariant(
+            $state,
+            "saveState",
+            "unlogged"
+          ),
+        }
+      )}
+    >
       <div
-        data-plasmic-name={"root"}
-        data-plasmic-override={overrides.root}
-        data-plasmic-root={true}
-        data-plasmic-for-node={forNode}
-        className={classNames(
-          projectcss.all,
-          projectcss.root_reset,
-          projectcss.plasmic_default_styles,
-          projectcss.plasmic_mixins,
-          projectcss.plasmic_tokens,
-          plasmic_plasmic_kit_design_system_deprecated_css.plasmic_tokens,
-          plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
-          sty.root,
-          {
-            [sty.rootsaveState_dirty]: hasVariant($state, "saveState", "dirty"),
-            [sty.rootsaveState_unlogged]: hasVariant(
-              $state,
-              "saveState",
-              "unlogged"
-            ),
-          }
-        )}
-      >
-        <div
-          data-plasmic-name={"freeBox"}
-          data-plasmic-override={overrides.freeBox}
-          className={classNames(projectcss.all, sty.freeBox, {
-            [sty.freeBoxsaveState_dirty]: hasVariant(
-              $state,
-              "saveState",
-              "dirty"
-            ),
-            [sty.freeBoxsaveState_unlogged]: hasVariant(
-              $state,
-              "saveState",
-              "unlogged"
-            ),
-          })}
-        />
-      </div>
-    ) : null
+        data-plasmic-name={"freeBox"}
+        data-plasmic-override={overrides.freeBox}
+        className={classNames(projectcss.all, sty.freeBox, {
+          [sty.freeBoxsaveState_dirty]: hasVariant(
+            $state,
+            "saveState",
+            "dirty"
+          ),
+          [sty.freeBoxsaveState_unlogged]: hasVariant(
+            $state,
+            "saveState",
+            "unlogged"
+          ),
+        })}
+      />
+    </div>
   ) as React.ReactElement | null;
 }
 
@@ -176,25 +169,25 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicSaveIndicator__OverridesType,
   DescendantsType<T>
 >;
-
-type NodeComponentProps<T extends NodeNameType> = {
+type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
-  variants?: PlasmicSaveIndicator__VariantsArgs;
-  args?: PlasmicSaveIndicator__ArgsType;
-  overrides?: NodeOverridesType<T>;
-} & Omit<PlasmicSaveIndicator__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-  // Specify args directly as props
-  Omit<PlasmicSaveIndicator__ArgsType, ReservedPropsType> &
-  // Specify overrides for each element directly as props
-  Omit<
-    NodeOverridesType<T>,
-    ReservedPropsType | VariantPropType | ArgPropType
-  > &
-  // Specify props for the root element
-  Omit<
-    Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
-    ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
-  >;
+  {
+    variants?: PlasmicSaveIndicator__VariantsArgs;
+    args?: PlasmicSaveIndicator__ArgsType;
+    overrides?: NodeOverridesType<T>;
+  } & Omit<PlasmicSaveIndicator__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+    // Specify args directly as props
+    Omit<PlasmicSaveIndicator__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
+      NodeOverridesType<T>,
+      ReservedPropsType | VariantPropType | ArgPropType
+    > &
+    // Specify props for the root element
+    Omit<
+      Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
+      ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
+    >;
 
 function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
   type PropsType = NodeComponentProps<NodeName> & { key?: React.Key };
@@ -205,7 +198,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicSaveIndicator__ArgProps,
           internalVariantPropNames: PlasmicSaveIndicator__VariantProps,
         }),

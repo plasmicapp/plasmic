@@ -104,7 +104,7 @@ import {
   ensureType,
   flexFlatten,
   InvalidCodePathError,
-  isArrayOfStrings,
+  isArrayOfLiterals,
   isNonNil,
   maybe,
   mkShortId,
@@ -196,7 +196,7 @@ import {
   tryGetBaseVariantSetting,
   VariantCombo,
 } from "@/wab/shared/Variants";
-import L, { uniq, uniqBy } from "lodash";
+import L, { reverse, uniq, uniqBy } from "lodash";
 import * as US from "underscore.string";
 
 /**
@@ -481,7 +481,8 @@ export function mkTplComponentX(obj: MkTplComponentParams) {
                     .when(Array, (_expr: ChildNode[]) =>
                       processRenderables(_expr)
                     )
-                    .elseUnsafe(() => Exprs.codeLit(expr)),
+                    .when(String, (_expr) => Exprs.codeLit(_expr))
+                    .result(),
             })
           );
         }
@@ -1325,15 +1326,18 @@ export function ancestors(tpl: TplNode): TplNode[] {
  * that are present in the `tplTree` of the component owning the slot, this makes
  * the list of nodes returned by the function not necessarily respect the parent-child
  * relationship of the nodes in the tree. But this is useful when we want to know about
- * elements involved in the dom composition to render a given tpl.
+ * elements involved in the dom composition to render a given tpl. The function will
+ * also return the 'layer' of the node, which is how many broken parent-child relationships
+ * the node is away from the original tpl node.
  */
+export type NodeWithLayer = { node: TplNode | SlotSelection; layer: number };
 export function ancestorsThroughComponentsWithSlotSelections(
   tpl: TplNode | SlotSelection,
   opts: {
     includeTplComponentRoot?: boolean;
   } = {}
-): (TplNode | SlotSelection)[] {
-  const allAncestors: (TplNode | SlotSelection)[] = [];
+): NodeWithLayer[] {
+  const allAncestors: NodeWithLayer[] = [];
   let curNode: TplNode | SlotSelection | undefined | null = tpl;
 
   if (
@@ -1343,12 +1347,19 @@ export function ancestorsThroughComponentsWithSlotSelections(
   ) {
     // We will consider the tpl component root as part of the ancestors chain even if it is not
     // technically an ancestor of the tpl node, we may want to extend it later to go down in the
-    // chain of nodes until finding a code component or tpl tag
-    allAncestors.push(tpl.component.tplTree);
+    // chain of nodes until finding a code component or tpl tag, since we are entering the tpl.component
+    // tree, it's a deeper layer than the tpl node itself
+    allAncestors.push({
+      node: tpl.component.tplTree,
+      layer: 1,
+    });
   }
 
   while (curNode) {
-    allAncestors.push(curNode);
+    allAncestors.push({
+      node: curNode,
+      layer: 0,
+    });
     if (isSlotSelection(curNode)) {
       // If the current node is a slot selection, we need to check if we can break through the
       // slot boundary to get to the tpl node that is present in the tplTree of the component owning the slot.
@@ -1365,7 +1376,12 @@ export function ancestorsThroughComponentsWithSlotSelections(
         // Before updating the current node, we include all the ancestors of the tpl slot going
         // through the tpl tree of the component owning the slot
         allAncestors.push(
-          ...ancestorsThroughComponentsWithSlotSelections(tplSlot)
+          ...ancestorsThroughComponentsWithSlotSelections(tplSlot).map(
+            (el) => ({
+              node: el.node,
+              layer: el.layer + 1,
+            })
+          )
         );
         curNode = tplComponent;
       }
@@ -1374,6 +1390,68 @@ export function ancestorsThroughComponentsWithSlotSelections(
     }
   }
   return allAncestors;
+}
+
+export function computeAncestorsValKey(ancestorsWithLayers: NodeWithLayer[]) {
+  // To compute the ancestors key we need to consider the layer of each node,
+  // consider the following example:
+  //
+  // Component "Main"
+  // tplTree:
+  //  - TplComponent "A"
+  //    - Slot "children"
+  //      - TplComponent "B"
+  //        - Slot "children"
+  //          - TplText
+  //
+  // Component "A"
+  // tplTree:
+  //    - TplTag root-A
+  //      - Slot target "children"
+  //
+  // Component "B"
+  // tplTree:
+  //    - TplTag root-B
+  //      - Slot target "children"
+  //
+  // Let's use "Main" component for demonstration
+  // the valKey of the instance of "B" in the "Main" component will be:
+  // "(some prefix).(uuid of A).(uuid of B)"
+  //
+  // while the tplTag root of "A" will have the valKey:
+  // "(some prefix).(uuid of A).(uuid of root-A)"
+  //
+  // This happens because the RenderingCtx of "A" is going to be passed to internal use
+  // of both their internal tags as well as it's children.
+  //
+  // So now that we need to compute the ancestors key, we need to consider the layer of
+  // the elements, so that we ignore the elements that are 'ValNode' ancestors but that are
+  // not part of the valKey. We can do that by just considering the tpl nodes and their layers
+  // by only accepting the tpl nodes that have a layer equal or less than the current node.
+  //
+  // In the example above, if we would compute the ancestors key of the root of "B" in the "Main"
+  // component, we know that the root of component "B" is in the layer 1, so once we reach the
+  // the instance of "B" in the "Main" component, we can ignore the root of "A" since it's in the
+  // layer 1 too and it's not part of the valKey.
+  //
+  // Reference:
+  // `computeRenderedArg`, `deriveTplTagChildren`, `renderTplSlot`, `useCtxFromInternalComponentProps`
+  // from cans
+  let layer = ancestorsWithLayers[0].layer;
+  const valKeyAncestors: TplNode[] = [];
+
+  for (const anc of ancestorsWithLayers) {
+    if (anc.layer <= layer) {
+      if (isKnownTplNode(anc.node)) {
+        valKeyAncestors.push(anc.node);
+      }
+      layer = anc.layer;
+    }
+  }
+
+  return reverse(valKeyAncestors)
+    .map((anc) => anc.uuid)
+    .join(".");
 }
 
 export const summarizeTpl = (
@@ -1496,7 +1574,7 @@ export function cloneType<T extends Type>(type_: T): T {
     .when([AnyType, QueryData, TargetType], () => typeFactory[type.name]())
     .when(Choice, (t) =>
       typeFactory.choice(
-        isArrayOfStrings(t.options)
+        isArrayOfLiterals(t.options)
           ? t.options
           : t.options.map((op) => ({
               label: op.label as string,
@@ -1746,17 +1824,14 @@ export function isTplVariantable(tplNode: any): tplNode is TplNode {
 }
 
 export function canToggleVisibility(
-  tplNode: any,
+  tplNode: TplNode,
   viewCtx: ViewCtx
 ): tplNode is TplNode {
   // Verify if the component's root element is a code component and styleSections is enabled
-  if (
-    isTplComponent(tplNode) &&
-    isTplCodeComponent(tplNode.component.tplTree)
-  ) {
-    const styleSections = viewCtx.getTplCodeComponentMeta(
-      tplNode.component.tplTree
-    )?.styleSections;
+  const tplRoot = resolveTplRoot(tplNode);
+  if (isTplCodeComponent(tplRoot)) {
+    const styleSections =
+      viewCtx.getTplCodeComponentMeta(tplRoot)?.styleSections;
     if (styleSections === false) {
       return false;
     } else if (Array.isArray(styleSections)) {
@@ -1968,6 +2043,7 @@ export function buildParamToComponent(components: Component[]) {
 // 1. Upon unbundling, we record the root of each Component in the unbundled site
 // 2. Upon creating a new Component
 // 3. Upon TplQuery operations
+// 4. Upon adding a new site dependency
 const TPLROOT_TO_COMPONENT = new WeakMap<TplNode, Component>();
 export function getTplOwnerComponent(tpl: TplNode) {
   return ensure(
@@ -2345,9 +2421,13 @@ export function pushExprs(exprs: Expr[], expr: Expr | null | undefined) {
       exprs.push(...findExprsInInteraction(interaction));
     }
   } else if (isKnownPageHref(expr)) {
-    for (const arg of Object.values(expr.params)) {
-      pushExprs(exprs, arg);
+    for (const param of Object.values(expr.params)) {
+      pushExprs(exprs, param);
     }
+    for (const query of Object.values(expr.query)) {
+      pushExprs(exprs, query);
+    }
+    pushExprs(exprs, expr.fragment);
   } else if (isKnownCollectionExpr(expr)) {
     for (const _expr of expr.exprs) {
       pushExprs(exprs, _expr);
@@ -2847,7 +2927,7 @@ export function getAlwaysVisibleEventHandlerKeysForTpl(
 
           if (isTplCodeComponent(tpl)) {
             const propType = tpl.component._meta?.props[param.variable.name];
-            return !isAdvancedProp(propType);
+            return !isAdvancedProp(propType, param);
           }
 
           if (
@@ -2978,17 +3058,50 @@ export function getAllEventHandlersForTpl(
 // TODO: If we want to attach event handlers to all tpl components we should
 // traverse the code-component react tree to find the root tag.
 export function getTplTagRoot(tplRoot: TplComponent): TplTag | undefined {
-  const findRoot = (root: TplNode): TplTag | undefined => {
+  const root = resolveTplRoot(tplRoot);
+  if (isTplCodeComponent(root)) {
+    return undefined;
+  }
+  if (isTplSlot(root)) {
+    return unexpected("TplSlot cannot be a root");
+  }
+  return root;
+}
+
+/**
+ * Checks recursively if a component's root element is a code component.
+ *
+ * @param tpl
+ * @returns boolean - true if the component's root element is a code component, or if any of its nested root elements are code components
+ */
+export function resolvesToCodeComponent(tpl: TplNode): tpl is TplCodeComponent {
+  const root = resolveTplRoot(tpl);
+  if (isTplCodeComponent(root)) {
+    return true;
+  }
+  return false;
+}
+
+/**
+ * Find recursively the root element for a component.
+ *
+ * @param tpl
+ * @returns TplTag | TplCodeComponent the innermost root element of the component
+ */
+export function resolveTplRoot(
+  tplRoot: TplNode
+): TplTag | TplSlot | TplCodeComponent {
+  const findRoot = (root: TplNode): TplTag | TplSlot | TplCodeComponent => {
     return switchType(root)
       .when(TplTag, (tpl) => tpl)
+      .when(TplSlot, (tpl) => tpl)
       .when(TplComponent, (tpl) => {
-        if (isCodeComponent(tpl.component)) {
-          return undefined;
+        if (isTplCodeComponent(tpl)) {
+          return tpl;
         } else {
           return findRoot(tpl.component.tplTree);
         }
       })
-      .when(TplSlot, (_tpl) => unexpected("TplSlot cannot be a root"))
       .result();
   };
   return findRoot(tplRoot);

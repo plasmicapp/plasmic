@@ -1,8 +1,8 @@
+import { PressResult, usePress } from "@react-aria/interactions";
+import { useMenuTrigger as useAriaMenuTrigger } from "@react-aria/menu";
+import { MenuTriggerState } from "@react-stately/menu";
 import { Placement } from "@react-types/overlays";
 import * as React from "react";
-import { useMenuTrigger as useAriaMenuTrigger } from "@react-aria/menu";
-import { usePress } from "@react-aria/interactions";
-import { MenuTriggerState } from "@react-stately/menu";
 import { mergeProps } from "../../react-utils";
 import { BaseMenuProps } from "../menu/menu";
 import { getPlumeType, PLUME_STRICT_MODE } from "../plume-utils";
@@ -24,7 +24,11 @@ export function useMenuTrigger(
       | (() => React.ReactElement<BaseMenuProps>);
   },
   state: MenuTriggerState
-) {
+): {
+  triggerProps: PressResult["pressProps"];
+  makeMenu: () => React.ReactElement;
+  triggerContext: TriggeredOverlayContextValue;
+} {
   const {
     triggerRef,
     isDisabled,

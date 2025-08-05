@@ -38,6 +38,7 @@ import {
   PropEditorRow,
   usePropValueEditorContext,
 } from "@/wab/client/components/sidebar-tabs/PropEditorRow";
+import { CustomFunctionEditor } from "@/wab/client/components/sidebar-tabs/ServerQuery/CustomFunctionEditor";
 import {
   StyleExprButton,
   StyleExprSpec,
@@ -83,6 +84,7 @@ import {
   tryExtractJson,
 } from "@/wab/shared/core/exprs";
 import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
+import { JsonValue } from "@/wab/shared/core/lang";
 import {
   getDisplayNameOfEventHandlerKey,
   isTplComponent,
@@ -106,6 +108,7 @@ import {
   ensureKnownFunctionType,
   ensureKnownVarRef,
   ensureKnownVariantsRef,
+  isKnownCustomFunctionExpr,
   isKnownDataSourceOpExpr,
   isKnownEventHandler,
   isKnownExpr,
@@ -134,12 +137,10 @@ const PropValueEditor_ = (
     attr: string;
     // Require this since it is typically needed to be computed outside anyway, so delegate the source of truth.
     label: string;
-    value: boolean | number | string | null | undefined | {} | any[] | Expr;
+    value: JsonValue | Expr | undefined;
     disabled?: boolean;
     valueSetState?: ValueSetState;
-    onChange: (
-      value: boolean | number | string | null | undefined | {} | any[] | Expr
-    ) => void;
+    onChange: (value: JsonValue | Expr | undefined) => void;
     onDelete?: () => void;
     controlExtras?: ControlExtras;
     hideDefaultValueHint?: boolean;
@@ -259,7 +260,7 @@ const PropValueEditor_ = (
   } else if ((getPropTypeType(propType) as any) === "dateString") {
     return (
       <DateStringEditor
-        value={litValue}
+        value={litValue as string}
         onChange={onChange}
         defaultValueHint={defaultValueHint}
         disabled={disabled || readOnly}
@@ -270,6 +271,11 @@ const PropValueEditor_ = (
     return (
       <DateRangeStringsEditor
         value={value as [string | undefined, string | undefined]}
+        // onChange takes `JsonValue | Expr | undefined`
+        // but DateRangeStringsEditor expects `[string | undefined, string | undefined]`
+        // The issue is that `undefined` is not valid JSON.
+        // Should DateRangeStringsEditor use `null` instead?
+        // @ts-expect-error - see above
         onChange={onChange}
         defaultValueHint={defaultValueHint}
         disabled={disabled || readOnly}
@@ -297,6 +303,7 @@ const PropValueEditor_ = (
         onChange={onChange}
         defaultValueHint={defaultValueHint}
         valueSetState={valueSetState}
+        // @ts-expect-error - cannot make TS happy due to props being union type
         value={litValue}
         allowSearch={allowSearch}
         onSearch={onSearch}
@@ -546,6 +553,7 @@ const PropValueEditor_ = (
           return (
             <PropEditorRow
               {...props}
+              env={env}
               // don't expose model data to code components
               componentPropValues={innerComponentPropValues}
               ccContextData={innerCcContextData}
@@ -756,6 +764,31 @@ const PropValueEditor_ = (
         readOpsOnly={!(propType as any).allowWriteOps}
         schema={schema}
         parent={!propType.allowWriteOps ? tpl : undefined}
+        allowedOps={allowedOps}
+        component={component}
+        interaction={_getContextDependentValue(propType.currentInteraction)}
+        viewCtx={viewCtx}
+        tpl={tpl}
+        eventHandlerKey={_getContextDependentValue(propType.eventHandlerKey)}
+      />
+    );
+  } else if (
+    isPlainObjectPropType(propType) &&
+    propType.type === "customFunctionOp"
+  ) {
+    assert(
+      isKnownCustomFunctionExpr(value) || value === undefined,
+      "Value is expected to be either a CustomFunctionExpr or undefined"
+    );
+    const allowedOps = _getContextDependentValue(propType.allowedOps);
+    return (
+      <CustomFunctionEditor
+        queryKey={`${tpl?.uuid ?? ""}-${
+          ccContextData?.currentInteraction?.uuid ?? ""
+        }-${attr}`}
+        key={value?.uid}
+        value={value}
+        onChange={onChange}
         allowedOps={allowedOps}
         component={component}
         interaction={_getContextDependentValue(propType.currentInteraction)}
@@ -989,6 +1022,7 @@ const PropValueEditor_ = (
         propType.unstable__minimalValue
       );
       let deseredValue = deserCompositeExprMaybe(value);
+
       let evaluated = isKnownExpr(value)
         ? tryEvalExpr(getRawCode(value, exprCtx), env ?? {}).val
         : value;
@@ -1015,7 +1049,7 @@ const PropValueEditor_ = (
           ccContextData={ccContextData}
           componentPropValues={componentPropValues}
           controlExtras={controlExtras}
-          tpl={tpl}
+          modalKey={`main.${tpl.uid}`}
           data-plasmic-prop={attr}
           propType={propType}
           disabled={disabled}
@@ -1065,7 +1099,7 @@ const PropValueEditor_ = (
           }
           evaluatedValue={value === undefined ? defaultValueHint : evaluated}
           fields={propType.fields}
-          tpl={tpl}
+          modalKey={`main.${tpl.uid}`}
           objectNameFunc={propType.nameFunc}
           componentPropValues={componentPropValues}
           ccContextData={ccContextData}
@@ -1117,7 +1151,7 @@ const PropValueEditor_ = (
         endpoint={endpoint ?? ""}
         headers={headers as Record<string, string>}
         method={method}
-        onChange={onChange}
+        onChange={onChange as (value: GraphQLValue | null | undefined) => void}
         value={value as GraphQLValue | null}
       />
     );

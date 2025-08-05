@@ -5,7 +5,6 @@ import customParseFormat from "dayjs/plugin/customParseFormat";
 import * as Immutable from "immutable";
 import type { MemoizedFunction } from "lodash";
 import {
-  Truthy,
   assignIn,
   assignWith,
   camelCase,
@@ -32,6 +31,7 @@ import {
   reverse,
   split,
   takeWhile,
+  Truthy,
   uniqBy,
   uniqueId,
   upperFirst,
@@ -40,9 +40,13 @@ import {
 } from "lodash";
 import { nanoid } from "nanoid";
 import { Key } from "react";
-import ShortUuid from "short-uuid";
+import ShortUuid, { constants } from "short-uuid";
 import { inspect as utilInspect } from "util";
-import { v4 as Uuidv4 } from "uuid";
+import {
+  v4 as Uuidv4,
+  validate as UuidValidate,
+  version as UuidVersion,
+} from "uuid";
 
 const reAll = require("regexp.execall");
 
@@ -1350,13 +1354,42 @@ export function reSplitAll(pattern: RegExp, target: string) {
   });
 }
 
-export const mkUuid = () => Uuidv4();
+/**
+ * Generates a string with 72 bits of randomness.
+ *
+ * Uses a 64-symbol alphabet, encoding 6 bits into each character.
+ * 12 characters * 6 bits/character = 72 bits.
+ *
+ * Alphabet: 0123456789abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ-_
+ */
+export function mkShortId<T extends string = string>(): T {
+  return nanoid(12) as T;
+}
 
-export const mkShortId = () => nanoid(12);
+/** Generates a UUID with 122 bits of randomness. */
+export function mkUuid<T extends string = string>(): T {
+  return Uuidv4() as T;
+}
 
-export const mkShortUuid = () => {
-  return ShortUuid().fromUUID(mkUuid());
-};
+/** Alphabet: 123456789abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ */
+const shortUuid58 = ShortUuid(constants.flickrBase58);
+
+/** Generates a UUID with 122 bits of randomness, encoded into a 58-symbol alphabet. */
+export function mkShortUuid<T extends string = string>(): T {
+  return shortUuid58.fromUUID(mkUuid()) as string as T;
+}
+
+export function isUuidV4(id: string): boolean {
+  return UuidValidate(id) && UuidVersion(id) === 4;
+}
+
+export function isShortUuidV4(shortId: string): boolean {
+  if (!shortUuid58.validate(shortId, true)) {
+    return false;
+  }
+  const id = shortUuid58.toUUID(shortId);
+  return isUuidV4(id);
+}
 
 export function groupConsecBy<T, K>(
   xs: T[],
@@ -1621,6 +1654,22 @@ export function describeValueOrType(x: any): string {
     : x.constructor.modelTypeName ?? x.constructor.name;
 }
 
+export function stableJsonStringify(x: any, exclude: Set<string>): string {
+  return JSON.stringify(x, (_, value) =>
+    value instanceof Object && !(value instanceof Array)
+      ? Object.keys(value)
+          .sort()
+          .reduce((sortedObject, key) => {
+            if (exclude.has(key)) {
+              return sortedObject;
+            }
+            sortedObject[key] = value[key];
+            return sortedObject;
+          }, {})
+      : value
+  );
+}
+
 export function ensureInstanceAbstract<T>(x: any, type: Function): T {
   check(x instanceof type, () => mkUnexpectedTypeMsg([type], x));
   return x as T;
@@ -1882,8 +1931,15 @@ export function rotateStartingFrom<T>(
 /**
  * Shallow comparison of arrays.
  */
-export function arrayEq(xs: ReadonlyArray<any>, ys: ReadonlyArray<any>) {
-  return xs.length === ys.length && xs.every((x, i) => x === ys[i]);
+export function arrayEq(
+  xs: ReadonlyArray<any>,
+  ys: ReadonlyArray<any>,
+  comparator?: (a: any, b: any) => boolean
+) {
+  return (
+    xs.length === ys.length &&
+    xs.every((x, i) => (comparator ? comparator(x, ys[i]) : x === ys[i]))
+  );
 }
 
 export function isPrefixArray(xs: ReadonlyArray<any>, ys: ReadonlyArray<any>) {
@@ -2290,6 +2346,10 @@ export function asyncMaxAtATime(max: number, f: AsyncCallable): AsyncCallable {
 
 export function isArrayOfStrings(v: any): v is string[] {
   return isArray(v) && v.every(isString);
+}
+
+export function isArrayOfLiterals(v: any): v is (string | number | boolean)[] {
+  return isArray(v) && v.every((x) => !isObject(x));
 }
 
 /**

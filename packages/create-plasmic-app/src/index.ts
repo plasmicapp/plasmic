@@ -8,7 +8,12 @@ import yargs from "yargs";
 import * as cpa from "./lib";
 import { ensure } from "./utils/lang-utils";
 import { checkEngineStrict, updateNotify } from "./utils/npm-utils";
-import { PlatformOptions, PlatformType, SchemeType } from "./utils/types";
+import {
+  JsOrTs,
+  PlatformOptions,
+  PlatformType,
+  SchemeType,
+} from "./utils/types";
 
 if (process.env.CPA_DEBUG_CHDIR) {
   process.chdir(process.env.CPA_DEBUG_CHDIR);
@@ -33,7 +38,7 @@ const argv = yargs
   )
   .option("platform", {
     describe: "Target platform",
-    choices: ["", "nextjs", "gatsby", "react"],
+    choices: ["", "nextjs", "gatsby", "react", "tanstack"],
   })
   .option("scheme", {
     describe: "Plasmic integration scheme",
@@ -138,26 +143,6 @@ async function run(): Promise<void> {
   // Absolute path to the new project
   resolvedProjectPath = path.resolve(projectName);
 
-  // Prompt for Typescript
-  const jsOrTs = (await maybePrompt({
-    name: "typescript",
-    message: "What language do you want to use?",
-    type: "list",
-    choices: () => [
-      {
-        name: "TypeScript",
-        value: true,
-      },
-      {
-        name: "JavaScript",
-        value: false,
-      },
-    ],
-    default: true,
-  }))
-    ? "ts"
-    : "js";
-
   // Prompt for the platform
   const platform = await maybePrompt<PlatformType>({
     name: "platform",
@@ -174,6 +159,11 @@ async function run(): Promise<void> {
         value: "gatsby",
       },
       {
+        name: "TanStack Start",
+        short: "TanStack Start",
+        value: "tanstack",
+      },
+      {
         name: "React (Vite)",
         short: "React (Vite)",
         value: "react",
@@ -181,6 +171,29 @@ async function run(): Promise<void> {
     ],
     default: "nextjs",
   });
+
+  // Prompt for Typescript
+  const jsOrTs: JsOrTs =
+    platform === "tanstack"
+      ? "ts"
+      : (await maybePrompt({
+          name: "typescript",
+          message: "What language do you want to use?",
+          type: "list",
+          choices: () => [
+            {
+              name: "TypeScript",
+              value: true,
+            },
+            {
+              name: "JavaScript",
+              value: false,
+            },
+          ],
+          default: true,
+        }))
+      ? "ts"
+      : "js";
 
   // Scheme to use for Plasmic integration
   // - loader only available for gatsby/next.js
@@ -238,7 +251,7 @@ async function run(): Promise<void> {
   console.log();
   const projectInput = await maybePrompt<string>({
     name: "projectId",
-    message: `If you don't have a project yet, create one by going to https://studio.plasmic.app/starters/blank.
+    message: `If you don't have a project yet, create one by going to https://studio.plasmic.app/starters/blank
 What is the URL of your project?`,
     validate: cpa.checkProjectInput,
   });

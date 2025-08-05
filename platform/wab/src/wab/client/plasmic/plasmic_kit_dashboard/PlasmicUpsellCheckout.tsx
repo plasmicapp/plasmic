@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -22,6 +22,7 @@ import {
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  ensureGlobalVariants,
   generateStateOnChangeProp,
   generateStateValueProp,
   hasVariant,
@@ -35,6 +36,8 @@ import PriceTierPicker from "../../components/pricing/PriceTierPicker"; // plasm
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
 import Switch from "../../components/widgets/Switch"; // plasmic-import: b35JDgXpbiF/component
 
+import { useEnvironment } from "../plasmic_kit_pricing/PlasmicGlobalVariant__Environment"; // plasmic-import: hIjF9NLAUKG-/globalVariant
+
 import "@plasmicapp/react-web/lib/plasmic.css";
 
 import plasmic_plasmic_kit_pricing_css from "../plasmic_kit_pricing/plasmic_plasmic_kit_pricing.module.css"; // plasmic-import: ehckhYnyDHgCBbV47m9bkf/projectcss
@@ -43,8 +46,8 @@ import projectcss from "../PP__plasmickit_dashboard.module.css"; // plasmic-impo
 import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import sty from "./PlasmicUpsellCheckout.module.css"; // plasmic-import: 5PfErhGRfT/css
 
-import ArrowRightsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ArrowRightSvg"; // plasmic-import: 9Jv8jb253/icon
-import ChevronDownsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
+import ArrowRightSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ArrowRightSvg"; // plasmic-import: 9Jv8jb253/icon
+import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
 
 createPlasmicElementProxy;
 
@@ -65,9 +68,7 @@ export const PlasmicUpsellCheckout__VariantProps = new Array<VariantPropType>(
   "tempPickOneModal"
 );
 
-export type PlasmicUpsellCheckout__ArgsType = {
-  teamName?: React.ReactNode;
-};
+export type PlasmicUpsellCheckout__ArgsType = { teamName?: React.ReactNode };
 type ArgPropType = keyof PlasmicUpsellCheckout__ArgsType;
 export const PlasmicUpsellCheckout__ArgProps = new Array<ArgPropType>(
   "teamName"
@@ -109,7 +110,16 @@ function PlasmicUpsellCheckout__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
@@ -148,7 +158,6 @@ function PlasmicUpsellCheckout__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => "isChecked",
       },
     ],
-
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -156,6 +165,10 @@ function PlasmicUpsellCheckout__RenderFunc(props: {
     $ctx,
     $queries: {},
     $refs,
+  });
+
+  const globalVariants = ensureGlobalVariants({
+    environment: useEnvironment(),
   });
 
   return (
@@ -177,6 +190,24 @@ function PlasmicUpsellCheckout__RenderFunc(props: {
         plasmic_plasmic_kit_pricing_css.plasmic_tokens,
         sty.root,
         {
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
           [sty.rootonFreeTrial]: hasVariant(
             $state,
             "onFreeTrial",
@@ -357,7 +388,6 @@ function PlasmicUpsellCheckout__RenderFunc(props: {
                       : "Learn more."}
                   </PlasmicLink__>
                 }
-
                 <React.Fragment>{""}</React.Fragment>
               </React.Fragment>
             ) : hasVariant($state, "onFreeTrial", "onFreeTrial") ? (
@@ -399,7 +429,6 @@ function PlasmicUpsellCheckout__RenderFunc(props: {
                       : "Learn more."}
                   </PlasmicLink__>
                 }
-
                 <React.Fragment>{""}</React.Fragment>
               </React.Fragment>
             ) : (
@@ -462,7 +491,6 @@ function PlasmicUpsellCheckout__RenderFunc(props: {
                       : "Learn more."}
                   </PlasmicLink__>
                 }
-
                 <React.Fragment>{""}</React.Fragment>
               </React.Fragment>
             ) : hasVariant($state, "onFreeTrial", "onFreeTrial") ? (
@@ -504,7 +532,6 @@ function PlasmicUpsellCheckout__RenderFunc(props: {
                       : "Learn more."}
                   </PlasmicLink__>
                 }
-
                 <React.Fragment>{""}</React.Fragment>
               </React.Fragment>
             ) : (
@@ -542,7 +569,6 @@ function PlasmicUpsellCheckout__RenderFunc(props: {
                       : "Learn more."}
                   </PlasmicLink__>
                 }
-
                 <React.Fragment>{""}</React.Fragment>
               </React.Fragment>
             )}
@@ -560,11 +586,21 @@ function PlasmicUpsellCheckout__RenderFunc(props: {
               "isChecked",
             ]) ?? false
           }
-          onChange={(...eventArgs) => {
-            generateStateOnChangeProp($state, [
-              "billingFrequencyToggle",
-              "isChecked",
-            ])(eventArgs[0]);
+          onChange={async (...eventArgs: any) => {
+            ((...eventArgs) => {
+              generateStateOnChangeProp($state, [
+                "billingFrequencyToggle",
+                "isChecked",
+              ])(eventArgs[0]);
+            }).apply(null, eventArgs);
+
+            if (
+              eventArgs.length > 1 &&
+              eventArgs[1] &&
+              eventArgs[1]._plasmic_state_init_
+            ) {
+              return;
+            }
           }}
         >
           <div
@@ -659,14 +695,14 @@ function PlasmicUpsellCheckout__RenderFunc(props: {
               data-plasmic-override={overrides.cancelButton}
               className={classNames("__wab_instance", sty.cancelButton)}
               endIcon={
-                <ChevronDownsvgIcon
+                <ChevronDownSvgIcon
                   className={classNames(projectcss.all, sty.svg__cbbt)}
                   role={"img"}
                 />
               }
               size={"wide"}
               startIcon={
-                <ArrowRightsvgIcon
+                <ArrowRightSvgIcon
                   className={classNames(projectcss.all, sty.svg__hfzby)}
                   role={"img"}
                 />
@@ -679,14 +715,14 @@ function PlasmicUpsellCheckout__RenderFunc(props: {
               data-plasmic-override={overrides.confirmButton}
               className={classNames("__wab_instance", sty.confirmButton)}
               endIcon={
-                <ChevronDownsvgIcon
+                <ChevronDownSvgIcon
                   className={classNames(projectcss.all, sty.svg__p2T2J)}
                   role={"img"}
                 />
               }
               size={"wide"}
               startIcon={
-                <ArrowRightsvgIcon
+                <ArrowRightSvgIcon
                   className={classNames(projectcss.all, sty.svg__r5EBh)}
                   role={"img"}
                 />
@@ -830,14 +866,14 @@ function PlasmicUpsellCheckout__RenderFunc(props: {
               data-plasmic-override={overrides.cancelButton2}
               className={classNames("__wab_instance", sty.cancelButton2)}
               endIcon={
-                <ChevronDownsvgIcon
+                <ChevronDownSvgIcon
                   className={classNames(projectcss.all, sty.svg__muOl)}
                   role={"img"}
                 />
               }
               size={"wide"}
               startIcon={
-                <ArrowRightsvgIcon
+                <ArrowRightSvgIcon
                   className={classNames(projectcss.all, sty.svg___6COrm)}
                   role={"img"}
                 />
@@ -850,14 +886,14 @@ function PlasmicUpsellCheckout__RenderFunc(props: {
               data-plasmic-override={overrides.confirmButton2}
               className={classNames("__wab_instance", sty.confirmButton2)}
               endIcon={
-                <ChevronDownsvgIcon
+                <ChevronDownSvgIcon
                   className={classNames(projectcss.all, sty.svg__m1Mj)}
                   role={"img"}
                 />
               }
               size={"wide"}
               startIcon={
-                <ArrowRightsvgIcon
+                <ArrowRightSvgIcon
                   className={classNames(projectcss.all, sty.svg___8Fw5J)}
                   role={"img"}
                 />
@@ -891,7 +927,6 @@ const PlasmicDescendants = {
     "cancelButton2",
     "confirmButton2",
   ],
-
   operationTitle: ["operationTitle"],
   operationDescription: ["operationDescription"],
   billingFrequencyToggle: ["billingFrequencyToggle"],
@@ -933,7 +968,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicUpsellCheckout__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
@@ -941,15 +975,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicUpsellCheckout__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicUpsellCheckout__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicUpsellCheckout__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+    // Specify args directly as props
+    Omit<PlasmicUpsellCheckout__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

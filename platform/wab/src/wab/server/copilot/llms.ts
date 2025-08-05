@@ -2,43 +2,44 @@
  * Wrappers around LLM APIs. Currently just for caching and simple logging.
  */
 
-import { last, mkShortId } from "@/wab/shared/common";
 import { DbMgr } from "@/wab/server/db/DbMgr";
-import { getAnthropicApiKey, getOpenaiApiKey } from "@/wab/server/secrets";
+import {
+  getAnthropicApiKey,
+  getDynamoDbSecrets,
+  getOpenaiApiKey,
+} from "@/wab/server/secrets";
 import { DynamoDbCache, SimpleCache } from "@/wab/server/simple-cache";
-import { showCompletionRequest } from "@/wab/shared/copilot/prompt-utils";
+import { last, mkShortId } from "@/wab/shared/common";
+import {
+  ChatCompletionRequestMessageRoleEnum,
+  CreateChatCompletionRequest,
+  CreateChatCompletionRequestOptions,
+  showCompletionRequest,
+} from "@/wab/shared/copilot/prompt-utils";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import axios from "axios";
 import { createHash } from "crypto";
-import { pick } from "lodash";
-import {
-  ChatCompletionRequestMessageRoleEnum,
-  Configuration,
-  OpenAIApi,
-} from "openai";
+import OpenAI from "openai";
 import { stringify } from "safe-stable-stringify";
 
 export const chatGptDefaultPrompt = `You are ChatGPT, a large language model trained by OpenAI. Follow the user's instructions carefully. Respond using markdown.`;
 
 const openaiApiKey = getOpenaiApiKey();
-const openaiRaw = new OpenAIApi(
-  new Configuration({
-    apiKey: openaiApiKey,
-  })
-);
 
 const anthropicApiKey = getAnthropicApiKey();
+
+const dynamoDbCredentials = getDynamoDbSecrets();
 
 const verbose = false;
 
 const hash = (x: string) => createHash("sha256").update(x).digest("hex");
 
 export class OpenAIWrapper {
-  constructor(private openai: OpenAIApi, private cache: SimpleCache) {}
+  constructor(private openai: OpenAI, private cache: SimpleCache) {}
 
-  createChatCompletion: OpenAIApi["createChatCompletion"] = async (
-    createChatCompletionRequest,
-    options
+  createChatCompletion = async (
+    createChatCompletionRequest: CreateChatCompletionRequest,
+    options?: CreateChatCompletionRequestOptions
   ) => {
     if (verbose) {
       console.log(showCompletionRequest(createChatCompletionRequest));
@@ -54,13 +55,11 @@ export class OpenAIWrapper {
     if (value) {
       return JSON.parse(value);
     }
-    const result = pick(
-      await this.openai.createChatCompletion(
-        createChatCompletionRequest,
-        options
-      ),
-      "data"
+    const result = await this.openai.chat.completions.create(
+      createChatCompletionRequest,
+      options
     );
+
     const value1 = stringify(result);
     await this.cache.put(key, value1);
     return JSON.parse(value1);
@@ -91,9 +90,9 @@ function anthropicToOpenAIStopReason(reason: "stop_sequence" | "max_tokens") {
 export class AnthropicWrapper {
   constructor(private cache: SimpleCache) {}
 
-  createChatCompletion: OpenAIApi["createChatCompletion"] = async (
-    createChatCompletionRequest,
-    options
+  createChatCompletion = async (
+    createChatCompletionRequest: CreateChatCompletionRequest,
+    options?: CreateChatCompletionRequestOptions
   ) => {
     if (verbose) {
       console.log(showCompletionRequest(createChatCompletionRequest));
@@ -137,7 +136,7 @@ export class AnthropicWrapper {
           },
         }
       );
-      const adaptedResponse = {
+      const result = {
         id: `chatcmpl-${mkShortId()}`,
         object: "chat.completion.chunk",
         created: -1,
@@ -164,9 +163,6 @@ export class AnthropicWrapper {
           },
         ],
       };
-      const result = {
-        data: adaptedResponse,
-      };
       const value1 = stringify(result);
       await this.cache.put(key, value1);
       return JSON.parse(value1);
@@ -177,20 +173,38 @@ export class AnthropicWrapper {
   };
 }
 
-export const createOpenAIClient = (dbMgr?: DbMgr) =>
+export function getOpenAI() {
+  return new OpenAI({ apiKey: openaiApiKey });
+}
+
+export const createOpenAIClient = (_?: DbMgr) =>
   new OpenAIWrapper(
-    openaiRaw,
+    getOpenAI(),
     new DynamoDbCache(
       new DynamoDBClient({
+        ...(dynamoDbCredentials
+          ? {
+              credentials: {
+                ...dynamoDbCredentials,
+              },
+            }
+          : {}),
         region: "us-west-2",
       })
     )
   );
 
-export const createAnthropicClient = (dbMgr?: DbMgr) =>
+export const createAnthropicClient = (_?: DbMgr) =>
   new AnthropicWrapper(
     new DynamoDbCache(
       new DynamoDBClient({
+        ...(dynamoDbCredentials
+          ? {
+              credentials: {
+                ...dynamoDbCredentials,
+              },
+            }
+          : {}),
         region: "us-west-2",
       })
     )

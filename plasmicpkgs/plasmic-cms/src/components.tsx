@@ -7,27 +7,28 @@ import { GlobalContextMeta } from "@plasmicapp/host/registerGlobalContext";
 import { usePlasmicQueryData } from "@plasmicapp/query";
 import dayjs from "dayjs";
 import React from "react";
-import { DatabaseConfig, HttpError, mkApi, QueryParams } from "./api";
+import { DatabaseConfig, HttpError, QueryParams, mkApi } from "./api";
+import { DEFAULT_HOST } from "./constants";
 import {
   CountProvider,
   DatabaseProvider,
-  makeDatabaseCacheKey,
   QueryResultProvider,
   RowProvider,
+  TableSchemaProvider,
   TablesProvider,
+  makeDatabaseCacheKey,
   useCount,
   useDatabase,
   useRow,
   useTables,
   useTablesWithDataLoaded,
-  TableSchemaProvider,
 } from "./context";
 import {
   ApiCmsRow,
   ApiCmsTable,
   CmsFieldMeta,
-  CmsType,
   CmsMetaType,
+  CmsType,
 } from "./schema";
 import { mkFieldOptions, mkTableOptions } from "./util";
 
@@ -71,8 +72,6 @@ interface CmsCredentialsProviderProps extends DatabaseConfig {
   children?: React.ReactNode;
 }
 
-const defaultHost = "https://data.plasmic.app";
-
 export const cmsCredentialsProviderMeta: GlobalContextMeta<CmsCredentialsProviderProps> =
   {
     name: `${componentPrefix}-credentials-provider`,
@@ -88,9 +87,9 @@ Find (or create) your CMS in the [dashboard](https://studio.plasmic.app), and go
       host: {
         type: "string",
         displayName: "Studio URL",
-        description: `The default host for use in production is ${defaultHost}.`,
-        defaultValue: defaultHost,
-        defaultValueHint: defaultHost,
+        description: `The default host for use in production is ${DEFAULT_HOST}.`,
+        defaultValue: DEFAULT_HOST,
+        defaultValueHint: DEFAULT_HOST,
         advanced: true,
       },
       databaseId: {
@@ -126,7 +125,7 @@ export function CmsCredentialsProvider({
     databaseId,
     databaseToken,
     locale,
-    host: host || defaultHost,
+    host: host || DEFAULT_HOST,
     useDraft: useDraft ?? false,
   };
   return (
@@ -297,6 +296,7 @@ export const cmsQueryRepeaterMeta: ComponentMeta<CmsQueryRepeaterProps> = {
       displayName: "Limit",
       description: "Maximum number of entries to fetch (0 for unlimited).",
       defaultValue: 0,
+      min: 0,
       hidden: (ps) => ps.mode === "count",
     },
     offset: {
@@ -304,6 +304,7 @@ export const cmsQueryRepeaterMeta: ComponentMeta<CmsQueryRepeaterProps> = {
       displayName: "Offset",
       description:
         "Skips this number of rows in the result set; used in combination with limit to build pagination",
+      min: 0,
       hidden: (ps) => ps.mode === "count",
     },
     fields: {

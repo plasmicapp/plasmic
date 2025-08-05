@@ -18,7 +18,7 @@ interface RepeaterProps<T> {
   indexName?: string;
 }
 
-function Repeater<T>(props: RepeaterProps<T>) {
+export function Repeater<T>(props: RepeaterProps<T>) {
   const { children, items, itemName, indexName } = props;
 
   if (!Array.isArray(items)) {
@@ -86,5 +86,3 @@ export function registerRepeater(
     registerComponent(Repeater, customRepeaterMeta ?? repeaterMeta);
   }
 }
-
-export default Repeater;

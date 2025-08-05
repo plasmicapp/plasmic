@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -24,6 +24,8 @@ import {
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  generateStateOnChangeProp,
+  generateStateValueProp,
   hasVariant,
   useDollarState,
 } from "@plasmicapp/react-web";
@@ -43,10 +45,10 @@ import sty from "./PlasmicGithubIntegration.module.css"; // plasmic-import: FuvS
 
 import InfoIcon from "../../../../plasmic/plasmic_kit/PlasmicIcon__Info"; // plasmic-import: BjAly3N4fWuWe/icon
 import OpenIcon from "../../../../plasmic/plasmic_kit/PlasmicIcon__Open"; // plasmic-import: 7D0GDLdF72udM/icon
-import ArrowRightsvgIcon from "../../../../plasmic/plasmic_kit_icons/icons/PlasmicIcon__ArrowRightSvg"; // plasmic-import: 9Jv8jb253/icon
-import ArrowUpRightsvgIcon from "../../../../plasmic/plasmic_kit_icons/icons/PlasmicIcon__ArrowUpRightSvg"; // plasmic-import: N_BtK6grX/icon
-import ChevronDownsvgIcon from "../../../../plasmic/plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
-import PlussvgIcon from "../../../../plasmic/plasmic_kit_icons/icons/PlasmicIcon__PlusSvg"; // plasmic-import: sQKgd2GNr/icon
+import ArrowRightSvgIcon from "../../../../plasmic/plasmic_kit_icons/icons/PlasmicIcon__ArrowRightSvg"; // plasmic-import: 9Jv8jb253/icon
+import ArrowUpRightSvgIcon from "../../../../plasmic/plasmic_kit_icons/icons/PlasmicIcon__ArrowUpRightSvg"; // plasmic-import: N_BtK6grX/icon
+import ChevronDownSvgIcon from "../../../../plasmic/plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
+import PlusSvgIcon from "../../../../plasmic/plasmic_kit_icons/icons/PlasmicIcon__PlusSvg"; // plasmic-import: sQKgd2GNr/icon
 
 createPlasmicElementProxy;
 
@@ -76,11 +78,9 @@ export type PlasmicGithubIntegration__VariantsArgs = {
     | "invalidDomainError"
     | "publishSiteWarning"
   >;
-
   loading?: MultiChoiceArg<
     "githubData" | "branches" | "detectedOptions" | "saving"
   >;
-
   hide?: MultiChoiceArg<"action">;
   isPublishingSite?: SingleBooleanChoiceArg<"isPublishingSite">;
   hideGithubPages?: SingleBooleanChoiceArg<"hideGithubPages">;
@@ -156,11 +156,9 @@ export interface DefaultGithubIntegrationProps {
     | "invalidDomainError"
     | "publishSiteWarning"
   >;
-
   loading?: MultiChoiceArg<
     "githubData" | "branches" | "detectedOptions" | "saving"
   >;
-
   hide?: MultiChoiceArg<"action">;
   isPublishingSite?: SingleBooleanChoiceArg<"isPublishingSite">;
   hideGithubPages?: SingleBooleanChoiceArg<"hideGithubPages">;
@@ -177,7 +175,16 @@ function PlasmicGithubIntegration__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
@@ -228,8 +235,64 @@ function PlasmicGithubIntegration__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) =>
           $props.hideGithubPages,
       },
+      {
+        path: "org.value",
+        type: "private",
+        variableType: "text",
+        initFunc: ({ $props, $state, $queries, $ctx }) => undefined,
+      },
+      {
+        path: "privateRepo.isChecked",
+        type: "private",
+        variableType: "boolean",
+        initFunc: ({ $props, $state, $queries, $ctx }) => undefined,
+      },
+      {
+        path: "repository.value",
+        type: "private",
+        variableType: "text",
+        initFunc: ({ $props, $state, $queries, $ctx }) => undefined,
+      },
+      {
+        path: "branch.value",
+        type: "private",
+        variableType: "text",
+        initFunc: ({ $props, $state, $queries, $ctx }) => undefined,
+      },
+      {
+        path: "framework.value",
+        type: "private",
+        variableType: "text",
+        initFunc: ({ $props, $state, $queries, $ctx }) => undefined,
+      },
+      {
+        path: "language.value",
+        type: "private",
+        variableType: "text",
+        initFunc: ({ $props, $state, $queries, $ctx }) => undefined,
+      },
+      {
+        path: "mode.value",
+        type: "private",
+        variableType: "text",
+        initFunc: ({ $props, $state, $queries, $ctx }) => undefined,
+      },
+      {
+        path: "action.value",
+        type: "private",
+        variableType: "text",
+        initFunc: ({ $props, $state, $queries, $ctx }) => undefined,
+      },
+      {
+        path: "publishSite.isChecked",
+        type: "private",
+        variableType: "boolean",
+        initFunc: ({ $props, $state, $queries, $ctx }) =>
+          hasVariant($state, "isPublishingSite", "isPublishingSite")
+            ? "isChecked"
+            : undefined,
+      },
     ],
-
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -335,7 +398,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
               ),
             })}
             endIcon={
-              <ChevronDownsvgIcon
+              <ChevronDownSvgIcon
                 className={classNames(projectcss.all, sty.svg__o2NZu)}
                 role={"img"}
               />
@@ -344,7 +407,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
               hasVariant($state, "view", "existingRepo") ? undefined : "bold"
             }
             startIcon={
-              <ArrowRightsvgIcon
+              <ArrowRightSvgIcon
                 className={classNames(projectcss.all, sty.svg__cQkfv)}
                 role={"img"}
               />
@@ -371,7 +434,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
               ),
             })}
             endIcon={
-              <ChevronDownsvgIcon
+              <ChevronDownSvgIcon
                 className={classNames(projectcss.all, sty.svg__mtq1H)}
                 role={"img"}
               />
@@ -380,7 +443,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
               hasVariant($state, "view", "existingRepo") ? "bold" : undefined
             }
             startIcon={
-              <ArrowRightsvgIcon
+              <ArrowRightSvgIcon
                 className={classNames(projectcss.all, sty.svg__vRUjJ)}
                 role={"img"}
               />
@@ -470,13 +533,29 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                 data-plasmic-override={overrides.org}
                 className={classNames("__wab_instance", sty.org)}
                 icon={
-                  <PlussvgIcon
+                  <PlusSvgIcon
                     className={classNames(projectcss.all, sty.svg__f2Dnc)}
                     role={"img"}
                   />
                 }
+                onChange={async (...eventArgs: any) => {
+                  ((...eventArgs) => {
+                    generateStateOnChangeProp($state, ["org", "value"])(
+                      eventArgs[0]
+                    );
+                  }).apply(null, eventArgs);
+
+                  if (
+                    eventArgs.length > 1 &&
+                    eventArgs[1] &&
+                    eventArgs[1]._plasmic_state_init_
+                  ) {
+                    return;
+                  }
+                }}
                 placeholder={"Select a GitHub organization..."}
                 type={"bordered"}
+                value={generateStateValueProp($state, ["org", "value"])}
               />
             </Stack__>
             <Stack__
@@ -548,13 +627,13 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                     ),
                   })}
                   endIcon={
-                    <ArrowUpRightsvgIcon
+                    <ArrowUpRightSvgIcon
                       className={classNames(projectcss.all, sty.svg__qlN9J)}
                       role={"img"}
                     />
                   }
                   startIcon={
-                    <ArrowRightsvgIcon
+                    <ArrowRightSvgIcon
                       className={classNames(projectcss.all, sty.svg__nB3Rq)}
                       role={"img"}
                     />
@@ -751,6 +830,28 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                   data-plasmic-override={overrides.privateRepo}
                   children={null}
                   className={classNames("__wab_instance", sty.privateRepo)}
+                  isChecked={
+                    generateStateValueProp($state, [
+                      "privateRepo",
+                      "isChecked",
+                    ]) ?? false
+                  }
+                  onChange={async (...eventArgs: any) => {
+                    ((...eventArgs) => {
+                      generateStateOnChangeProp($state, [
+                        "privateRepo",
+                        "isChecked",
+                      ])(eventArgs[0]);
+                    }).apply(null, eventArgs);
+
+                    if (
+                      eventArgs.length > 1 &&
+                      eventArgs[1] &&
+                      eventArgs[1]._plasmic_state_init_
+                    ) {
+                      return;
+                    }
+                  }}
                 />
               </div>
             </Stack__>
@@ -815,11 +916,27 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                 data-plasmic-override={overrides.repository}
                 className={classNames("__wab_instance", sty.repository)}
                 icon={
-                  <PlussvgIcon
+                  <PlusSvgIcon
                     className={classNames(projectcss.all, sty.svg__gJtww)}
                     role={"img"}
                   />
                 }
+                onChange={async (...eventArgs: any) => {
+                  ((...eventArgs) => {
+                    generateStateOnChangeProp($state, ["repository", "value"])(
+                      eventArgs[0]
+                    );
+                  }).apply(null, eventArgs);
+
+                  if (
+                    eventArgs.length > 1 &&
+                    eventArgs[1] &&
+                    eventArgs[1]._plasmic_state_init_
+                  ) {
+                    return;
+                  }
+                }}
+                value={generateStateValueProp($state, ["repository", "value"])}
               />
             </Stack__>
             <Stack__
@@ -882,7 +999,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                     />
                   }
                   startIcon={
-                    <ArrowRightsvgIcon
+                    <ArrowRightSvgIcon
                       className={classNames(projectcss.all, sty.svg__muAjE)}
                       role={"img"}
                     />
@@ -943,11 +1060,27 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                 data-plasmic-override={overrides.branch}
                 className={classNames("__wab_instance", sty.branch)}
                 icon={
-                  <PlussvgIcon
+                  <PlusSvgIcon
                     className={classNames(projectcss.all, sty.svg__z1BTl)}
                     role={"img"}
                   />
                 }
+                onChange={async (...eventArgs: any) => {
+                  ((...eventArgs) => {
+                    generateStateOnChangeProp($state, ["branch", "value"])(
+                      eventArgs[0]
+                    );
+                  }).apply(null, eventArgs);
+
+                  if (
+                    eventArgs.length > 1 &&
+                    eventArgs[1] &&
+                    eventArgs[1]._plasmic_state_init_
+                  ) {
+                    return;
+                  }
+                }}
+                value={generateStateValueProp($state, ["branch", "value"])}
               />
             </Stack__>
             <Stack__
@@ -1130,12 +1263,28 @@ function PlasmicGithubIntegration__RenderFunc(props: {
               data-plasmic-override={overrides.framework}
               className={classNames("__wab_instance", sty.framework)}
               icon={
-                <PlussvgIcon
+                <PlusSvgIcon
                   className={classNames(projectcss.all, sty.svg__hDmgh)}
                   role={"img"}
                 />
               }
+              onChange={async (...eventArgs: any) => {
+                ((...eventArgs) => {
+                  generateStateOnChangeProp($state, ["framework", "value"])(
+                    eventArgs[0]
+                  );
+                }).apply(null, eventArgs);
+
+                if (
+                  eventArgs.length > 1 &&
+                  eventArgs[1] &&
+                  eventArgs[1]._plasmic_state_init_
+                ) {
+                  return;
+                }
+              }}
               type={"bordered"}
+              value={generateStateValueProp($state, ["framework", "value"])}
             />
           </Stack__>
           <Stack__
@@ -1172,12 +1321,28 @@ function PlasmicGithubIntegration__RenderFunc(props: {
               data-plasmic-override={overrides.language}
               className={classNames("__wab_instance", sty.language)}
               icon={
-                <PlussvgIcon
+                <PlusSvgIcon
                   className={classNames(projectcss.all, sty.svg__xjZUh)}
                   role={"img"}
                 />
               }
+              onChange={async (...eventArgs: any) => {
+                ((...eventArgs) => {
+                  generateStateOnChangeProp($state, ["language", "value"])(
+                    eventArgs[0]
+                  );
+                }).apply(null, eventArgs);
+
+                if (
+                  eventArgs.length > 1 &&
+                  eventArgs[1] &&
+                  eventArgs[1]._plasmic_state_init_
+                ) {
+                  return;
+                }
+              }}
               type={"bordered"}
+              value={generateStateValueProp($state, ["language", "value"])}
             />
           </Stack__>
           <Stack__
@@ -1242,12 +1407,28 @@ function PlasmicGithubIntegration__RenderFunc(props: {
               data-plasmic-override={overrides.mode}
               className={classNames("__wab_instance", sty.mode)}
               icon={
-                <PlussvgIcon
+                <PlusSvgIcon
                   className={classNames(projectcss.all, sty.svg__tSnk0)}
                   role={"img"}
                 />
               }
+              onChange={async (...eventArgs: any) => {
+                ((...eventArgs) => {
+                  generateStateOnChangeProp($state, ["mode", "value"])(
+                    eventArgs[0]
+                  );
+                }).apply(null, eventArgs);
+
+                if (
+                  eventArgs.length > 1 &&
+                  eventArgs[1] &&
+                  eventArgs[1]._plasmic_state_init_
+                ) {
+                  return;
+                }
+              }}
               type={"bordered"}
+              value={generateStateValueProp($state, ["mode", "value"])}
             />
           </Stack__>
           {(hasVariant($state, "hide", "action") ? false : true) ? (
@@ -1313,12 +1494,28 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                 data-plasmic-override={overrides.action}
                 className={classNames("__wab_instance", sty.action)}
                 icon={
-                  <PlussvgIcon
+                  <PlusSvgIcon
                     className={classNames(projectcss.all, sty.svg___9AFcX)}
                     role={"img"}
                   />
                 }
+                onChange={async (...eventArgs: any) => {
+                  ((...eventArgs) => {
+                    generateStateOnChangeProp($state, ["action", "value"])(
+                      eventArgs[0]
+                    );
+                  }).apply(null, eventArgs);
+
+                  if (
+                    eventArgs.length > 1 &&
+                    eventArgs[1] &&
+                    eventArgs[1]._plasmic_state_init_
+                  ) {
+                    return;
+                  }
+                }}
                 type={"bordered"}
+                value={generateStateValueProp($state, ["action", "value"])}
               />
             </Stack__>
           ) : null}
@@ -1552,10 +1749,27 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                       ),
                     })}
                     isChecked={
-                      hasVariant($state, "isPublishingSite", "isPublishingSite")
-                        ? true
-                        : undefined
+                      generateStateValueProp($state, [
+                        "publishSite",
+                        "isChecked",
+                      ]) ?? false
                     }
+                    onChange={async (...eventArgs: any) => {
+                      ((...eventArgs) => {
+                        generateStateOnChangeProp($state, [
+                          "publishSite",
+                          "isChecked",
+                        ])(eventArgs[0]);
+                      }).apply(null, eventArgs);
+
+                      if (
+                        eventArgs.length > 1 &&
+                        eventArgs[1] &&
+                        eventArgs[1]._plasmic_state_init_
+                      ) {
+                        return;
+                      }
+                    }}
                   />
 
                   {(
@@ -2048,14 +2262,14 @@ function PlasmicGithubIntegration__RenderFunc(props: {
           })}
           disabled={hasVariant($state, "loading", "saving") ? true : undefined}
           endIcon={
-            <ChevronDownsvgIcon
+            <ChevronDownSvgIcon
               className={classNames(projectcss.all, sty.svg__r05Gv)}
               role={"img"}
             />
           }
           size={"wide"}
           startIcon={
-            <ArrowRightsvgIcon
+            <ArrowRightSvgIcon
               className={classNames(projectcss.all, sty.svg__tmeWd)}
               role={"img"}
             />
@@ -2131,7 +2345,6 @@ const PlasmicDescendants = {
     "moreProvidersLink",
     "pushButton",
   ],
-
   newRepoButton: ["newRepoButton"],
   existingRepoButton: ["existingRepoButton"],
   newBox: [
@@ -2145,7 +2358,6 @@ const PlasmicDescendants = {
     "privateBox",
     "privateRepo",
   ],
-
   orgBox: ["orgBox", "org"],
   org: ["org"],
   missingOrg: ["missingOrg"],
@@ -2165,7 +2377,6 @@ const PlasmicDescendants = {
     "directory",
     "directoryError",
   ],
-
   repositoryBox: ["repositoryBox", "repository"],
   repository: ["repository"],
   missingRepo: ["missingRepo"],
@@ -2187,7 +2398,6 @@ const PlasmicDescendants = {
     "actionInfo",
     "action",
   ],
-
   frameworkBox: ["frameworkBox", "framework"],
   framework: ["framework"],
   languageBox: ["languageBox", "language"],
@@ -2209,7 +2419,6 @@ const PlasmicDescendants = {
     "domainError",
     "moreProvidersLink",
   ],
-
   publishSiteLabel: ["publishSiteLabel"],
   publishSite: ["publishSite"],
   publishSiteError: ["publishSiteError"],
@@ -2273,7 +2482,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicGithubIntegration__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
@@ -2281,15 +2489,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicGithubIntegration__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicGithubIntegration__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicGithubIntegration__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+    // Specify args directly as props
+    Omit<PlasmicGithubIntegration__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

@@ -96,6 +96,8 @@ import {
   isTplTag,
   isTplTextBlock,
   isTplVariantable,
+  resolveTplRoot,
+  resolvesToCodeComponent,
 } from "@/wab/shared/core/tpls";
 import { ValComponent } from "@/wab/shared/core/val-nodes";
 import { DEVFLAGS, DevFlagsType } from "@/wab/shared/devflags";
@@ -359,6 +361,7 @@ export function getRenderBySection(
     isTplVariantable(tpl) && tpl.parent && isGridTag(tpl.parent);
   // We show container settings for TplComponent of code component.
   const codeComponentTpl = isCodeComponentTpl(tpl);
+  const resolvesToCodeComponentTpl = resolvesToCodeComponent(tpl);
   const isContainer = isTplContainer(tpl) || codeComponentTpl;
   const isComponent = isTplComponent(tpl);
   const styleAncestorSlot = getAncestorTplSlot(tpl, false);
@@ -378,7 +381,7 @@ export function getRenderBySection(
     options = getAllEventHandlerOptions(tpl);
   }
 
-  const missingPositionClass = codeComponentTpl
+  const missingPositionClass = resolvesToCodeComponentTpl
     ? shouldAlertMissingPositionClass(viewCtx)
     : false;
   const showStyleSections = shouldShowStyleSections(
@@ -395,11 +398,20 @@ export function getRenderBySection(
   const contentEditorMode = viewCtx.studioCtx.contentEditorMode;
   const contentCreatorConfig = viewCtx.studioCtx.getCurrentUiConfig();
 
-  const enabledStyleSections = (
-    isTplCodeComponent(tpl)
-      ? viewCtx.getTplCodeComponentMeta(tpl)?.styleSections
-      : undefined
-  ) as PublicStyleSection[] | boolean | undefined;
+  const getEnabledStyleSections = (tplInner: TplNode) => {
+    if (isTplCodeComponent(tplInner)) {
+      return viewCtx.getTplCodeComponentMeta(tplInner)?.styleSections;
+    }
+    if (isTplComponent(tplInner)) {
+      return getEnabledStyleSections(tplInner.component.tplTree);
+    }
+    return undefined;
+  };
+
+  const enabledStyleSections = getEnabledStyleSections(tpl) as
+    | PublicStyleSection[]
+    | boolean
+    | undefined;
 
   const showSection = (section: Section) => {
     const setting = getSectionSetting(section);
@@ -496,7 +508,7 @@ export function getRenderBySection(
         showSection(Section.MissingPositionClass) && (
           <MissingPositionClassSection
             key={`${tpl.uuid}-missing-class`}
-            componentName={getComponentDisplayName(tpl.component)}
+            tpl={tpl}
           />
         ),
     ],
@@ -1164,6 +1176,13 @@ function shouldShowStyleSections(
       return false;
     }
   }
+  if (isTplComponent(tpl)) {
+    return shouldShowStyleSections(
+      tpl.component.tplTree,
+      viewCtx,
+      missingPositionClass
+    );
+  }
   return true;
 }
 
@@ -1172,7 +1191,7 @@ export function isCodeComponentMissingPositionClass(
   val: ValComponent
 ) {
   const $doms = $(asOne(vc.renderState.sel2dom(val, vc.canvasCtx)) ?? []);
-  if ($doms?.length && isCodeComponent(val.tpl.component)) {
+  if ($doms?.length && resolvesToCodeComponent(val.tpl)) {
     const positionClassesSelector = val.className
       ?.split(" ")
       .map((className) => `.${className}`)
@@ -1185,7 +1204,16 @@ export function isCodeComponentMissingPositionClass(
 }
 
 const MissingPositionClassSection = observer(
-  function MissingPositionClassSection(props: { componentName: string }) {
+  function MissingPositionClassSection(props: { tpl: TplComponent }) {
+    const tplCodeComponent = resolveTplRoot(props.tpl);
+    if (!isCodeComponentTpl(tplCodeComponent)) {
+      return null;
+    }
+    const isNestedStructure = tplCodeComponent.uuid !== props.tpl.uuid;
+    const currentComponentName = getComponentDisplayName(props.tpl.component);
+    const codeComponentName = isNestedStructure
+      ? getComponentDisplayName(tplCodeComponent.component)
+      : currentComponentName;
     return (
       <SidebarSection>
         <div className="panel-row mt-lg">
@@ -1195,12 +1223,12 @@ const MissingPositionClassSection = observer(
             description={
               <p>
                 <strong>
-                  Component {props.componentName} does not support styling
+                  Component {currentComponentName} does not support styling
                 </strong>
                 <br />
-                It looks like the code component {props.componentName} does not
-                make use of a "className" prop, so you cannot set styles on the
-                component.
+                It looks like the{isNestedStructure ? " root " : " "}code
+                component {codeComponentName} does not make use of a "className"
+                prop, so you cannot set styles on the component.
               </p>
             }
           />

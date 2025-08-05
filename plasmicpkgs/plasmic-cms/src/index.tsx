@@ -61,3 +61,4 @@ export function registerAll(loader?: {
 
 export * from "./api";
 export * from "./components";
+export * from "./custom-functions";

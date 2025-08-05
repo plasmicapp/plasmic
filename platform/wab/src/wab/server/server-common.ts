@@ -10,6 +10,7 @@ export function runExpressApp(
   setupServer?: (server: http.Server) => void
 ) {
   const server = http.createServer(app);
+  const config = loadConfig();
 
   server.keepAliveTimeout = 185 * 1000;
   server.headersTimeout = 190 * 1000;
@@ -44,7 +45,9 @@ export function runExpressApp(
       console.log(`Received signal to shut down...`);
       // This has to be greater than the number of seconds defined
       // in the readiness probe "periodSeconds"
-      return new Promise((resolve) => setTimeout(resolve, 5500));
+      return new Promise((resolve) =>
+        setTimeout(resolve, config.terminationGracePeriodMs)
+      );
     },
     onSignal: async () => {
       await closeDbConnections();

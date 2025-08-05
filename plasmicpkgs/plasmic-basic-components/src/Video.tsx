@@ -15,13 +15,11 @@ export type VideoProps = Pick<
   | "src"
 >;
 
-const Video = React.forwardRef<HTMLVideoElement, VideoProps>(
+export const Video = React.forwardRef<HTMLVideoElement, VideoProps>(
   (props: VideoProps, ref) => {
     return <video ref={ref} {...props} />;
   }
 );
-
-export default Video;
 
 export const videoMeta: ComponentMeta<VideoProps> = {
   name: "hostless-html-video",

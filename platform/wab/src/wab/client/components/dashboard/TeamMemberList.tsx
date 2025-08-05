@@ -122,7 +122,7 @@ function TeamMemberList_(
                   </Select.Option>,
                 ]
               : []),
-            ...(appCtx.appConfig.comments
+            ...(perms.some((perm) => perm.accessLevel === "commenter")
               ? [<Select.Option value="commenter">Commenters</Select.Option>]
               : []),
             <Select.Option value="viewer">Viewers</Select.Option>,
@@ -142,6 +142,7 @@ function TeamMemberList_(
             changeRole={onChangeRole}
             removeUser={onRemoveUser}
             disabled={disabled}
+            teamId={team?.id}
           />
         ))}
       </PlasmicTeamMemberList>
@@ -151,7 +152,6 @@ function TeamMemberList_(
           onCancel={() => setSharedModal(false)}
           modalRender={() => (
             <ShareDialogContent
-              className="ant-modal-content"
               resource={{ type: "team", resource: team }}
               perms={perms}
               closeDialog={() => setSharedModal(false)}

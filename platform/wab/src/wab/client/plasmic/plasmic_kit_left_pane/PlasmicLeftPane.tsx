@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -26,6 +26,7 @@ import {
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
 import { VersionsTab as LeftVersionsPanel } from "../../components/sidebar-tabs/versions-tab"; // plasmic-import: YldGgVsq6N/component
+import { ImageAssetsPanel as LeftImagesPanel } from "../../components/sidebar/image-asset-controls"; // plasmic-import: ECu8FUyP0f3/component
 import LeftComponentsPanel from "../../components/sidebar/LeftComponentsPanel"; // plasmic-import: 7Wsvgu6cRd/component
 import LeftGeneralTokensPanel from "../../components/sidebar/LeftGeneralTokensPanel"; // plasmic-import: bDbzY5jXLz/component
 import LeftLintIssuesPanel from "../../components/sidebar/LeftLintIssuesPanel"; // plasmic-import: xymZo1AIeU/component
@@ -36,22 +37,22 @@ import { MixinsPanel as LeftMixinsPanel } from "../../components/sidebar/MixinCo
 import { ProjectDependenciesPanel as LeftImportsPanel } from "../../components/sidebar/ProjectDependencies"; // plasmic-import: MeRxD_0BtJ/component
 import LeftThemesPanel from "../../components/sidebar/ThemesControls"; // plasmic-import: 9I47RGPv62/component
 import { UserManagedFontsPanel as LeftFontsPanel } from "../../components/sidebar/UserManagedFonts"; // plasmic-import: 5oz1qmvGBe/component
-import { ImageAssetsPanel as LeftImagesPanel } from "../../components/sidebar/image-asset-controls"; // plasmic-import: ECu8FUyP0f3/component
 import LeftTabButton from "../../components/studio/LeftTabButton"; // plasmic-import: 1q_JapBg7U/component
 import LeftTabStrip from "../../components/studio/LeftTabStrip"; // plasmic-import: l7y_rhJyMt2/component
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import projectcss from "../PP__plasmickit_left_pane.module.css"; // plasmic-import: aukbrhkegRkQ6KizvhdUPT/projectcss
 import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
 import plasmic_plasmic_kit_new_design_system_former_style_controls_css from "../plasmic_kit_style_controls/plasmic_plasmic_kit_styles_pane.module.css"; // plasmic-import: gYEVvAzCcLMHDVPvuYxkFh/projectcss
+import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
+import projectcss from "../PP__plasmickit_left_pane.module.css"; // plasmic-import: aukbrhkegRkQ6KizvhdUPT/projectcss
 import sty from "./PlasmicLeftPane.module.css"; // plasmic-import: avrERxAp81S/css
 
 import GearIcon from "../plasmic_kit/PlasmicIcon__Gear"; // plasmic-import: ZmVZmXEc9f_SR/icon
 import TreeIcon from "../plasmic_kit/PlasmicIcon__Tree"; // plasmic-import: 4KZjuPY_m0VTb/icon
 import ComponentsSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ComponentsSvg"; // plasmic-import: coPzxnFyi/icon
 import DotsHorizontalCircleSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__DotsHorizontalCircleSvg"; // plasmic-import: xdn8wiJBv/icon
+import HelpCircleSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__HelpCircleSvg"; // plasmic-import: zY-2PPrFT/icon
 import WarningTriangleSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__WarningTriangleSvg"; // plasmic-import: S0L-xosWD/icon
 
 createPlasmicElementProxy;
@@ -110,6 +111,7 @@ export type PlasmicLeftPane__OverridesType = {
   assets?: Flex__<typeof LeftTabButton>;
   settingsGroup?: Flex__<typeof LeftTabButton>;
   more?: Flex__<typeof LeftTabButton>;
+  helpGroup?: Flex__<typeof LeftTabButton>;
   paneContainer?: Flex__<"div">;
   paneContent?: Flex__<"div">;
   leftGeneralTokensPanel?: Flex__<typeof LeftGeneralTokensPanel>;
@@ -145,7 +147,6 @@ export interface DefaultLeftPaneProps {
     | "copilot"
     | "lint"
   >;
-
   className?: string;
 }
 
@@ -188,7 +189,6 @@ function PlasmicLeftPane__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.type,
       },
     ],
-
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -252,6 +252,19 @@ function PlasmicLeftPane__RenderFunc(props: {
             : hasVariant($state, "type", "tokens")
             ? "tokens"
             : undefined
+        }
+        bottomButtons={
+          <LeftTabButton
+            data-plasmic-name={"helpGroup"}
+            data-plasmic-override={overrides.helpGroup}
+            className={classNames("__wab_instance", sty.helpGroup)}
+            icon={
+              <HelpCircleSvgIcon
+                className={classNames(projectcss.all, sty.svg__zDP)}
+                role={"img"}
+              />
+            }
+          />
         }
         buttons={
           <React.Fragment>
@@ -663,6 +676,7 @@ const PlasmicDescendants = {
     "assets",
     "settingsGroup",
     "more",
+    "helpGroup",
     "paneContainer",
     "paneContent",
     "leftGeneralTokensPanel",
@@ -678,7 +692,6 @@ const PlasmicDescendants = {
     "leftSplitsPanel",
     "leftLintIssuesPanel",
   ],
-
   leftTabStrip: [
     "leftTabStrip",
     "lint",
@@ -686,13 +699,14 @@ const PlasmicDescendants = {
     "assets",
     "settingsGroup",
     "more",
+    "helpGroup",
   ],
-
   lint: ["lint"],
   outline: ["outline"],
   assets: ["assets"],
   settingsGroup: ["settingsGroup"],
   more: ["more"],
+  helpGroup: ["helpGroup"],
   paneContainer: [
     "paneContainer",
     "paneContent",
@@ -709,7 +723,6 @@ const PlasmicDescendants = {
     "leftSplitsPanel",
     "leftLintIssuesPanel",
   ],
-
   paneContent: [
     "paneContent",
     "leftGeneralTokensPanel",
@@ -725,7 +738,6 @@ const PlasmicDescendants = {
     "leftSplitsPanel",
     "leftLintIssuesPanel",
   ],
-
   leftGeneralTokensPanel: ["leftGeneralTokensPanel"],
   leftMixinsPanel: ["leftMixinsPanel"],
   leftImagesPanel: ["leftImagesPanel"],
@@ -750,6 +762,7 @@ type NodeDefaultElementType = {
   assets: typeof LeftTabButton;
   settingsGroup: typeof LeftTabButton;
   more: typeof LeftTabButton;
+  helpGroup: typeof LeftTabButton;
   paneContainer: "div";
   paneContent: "div";
   leftGeneralTokensPanel: typeof LeftGeneralTokensPanel;
@@ -771,7 +784,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicLeftPane__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
@@ -779,15 +791,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicLeftPane__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicLeftPane__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicLeftPane__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+    // Specify args directly as props
+    Omit<PlasmicLeftPane__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;
@@ -833,6 +845,7 @@ export const PlasmicLeftPane = Object.assign(
     assets: makeNodeComponent("assets"),
     settingsGroup: makeNodeComponent("settingsGroup"),
     more: makeNodeComponent("more"),
+    helpGroup: makeNodeComponent("helpGroup"),
     paneContainer: makeNodeComponent("paneContainer"),
     paneContent: makeNodeComponent("paneContent"),
     leftGeneralTokensPanel: makeNodeComponent("leftGeneralTokensPanel"),

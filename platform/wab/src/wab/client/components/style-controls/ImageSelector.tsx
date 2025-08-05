@@ -119,7 +119,9 @@ export const ImageAssetPreviewAndPicker = observer(
               studioCtx={studioCtx}
               value={value}
               onPicked={(picked) => {
-                onPicked(picked);
+                if (picked) {
+                  onPicked(picked);
+                }
                 setPickingImage(false);
               }}
               onCancel={() => setPickingImage(false)}
@@ -253,7 +255,7 @@ export const ImageAssetOrUrlPicker = observer(
   function ImageAssetOrUrlPicker(props: {
     studioCtx: StudioCtx;
     value?: ImageAsset | string;
-    onPicked: (picked: ImageAsset | string) => void;
+    onPicked: (picked: ImageAsset | string | undefined) => void;
     onCancel?: () => void;
     type: ImageAssetType;
     keepOpen?: boolean;
@@ -264,7 +266,6 @@ export const ImageAssetOrUrlPicker = observer(
     const [urlInputError, setUrlInputError] = React.useState<
       string | undefined
     >(undefined);
-    const formRef = React.useRef<HTMLFormElement>(null);
     const urlInputRef = React.useRef<TextboxRef>(null);
 
     const isDataUrl = L.isString(value) && value.startsWith("data:");
@@ -289,6 +290,12 @@ export const ImageAssetOrUrlPicker = observer(
 
     const handleUrlInput = (e: React.FormEvent) => {
       e.preventDefault();
+
+      // Somehow this form submit was triggering the form in ComponentPropModal,
+      // even the forms are on separate DOM trees. Perhaps it's because they are
+      // on the same React tree? Weird... either way, stopPropagation() fixes it.
+      e.stopPropagation();
+
       const urlInputHandle = ensure(
         urlInputRef.current,
         "Unexpected undefined urlInputRef"
@@ -303,7 +310,7 @@ export const ImageAssetOrUrlPicker = observer(
     };
 
     const urlForm = (
-      <form onSubmit={handleUrlInput} ref={formRef}>
+      <form onSubmit={handleUrlInput}>
         <Textbox
           selectAllOnFocus={true}
           autoFocus={false}

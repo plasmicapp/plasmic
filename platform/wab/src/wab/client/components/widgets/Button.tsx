@@ -12,7 +12,7 @@ interface ButtonProps
   extends DefaultButtonProps,
     Omit<
       React.ComponentProps<"button">,
-      "type" | "disabled" | "color" | "key"
+      "type" | "disabled" | "color" | "key" | "onClick"
     > {
   tooltip?: React.ReactNode;
   href?: string;
@@ -63,7 +63,7 @@ const Button = React.forwardRef(function Button(
         props: {
           href,
           className: className ? `${className} btn-link` : "btn-link",
-          type: props.htmlType ?? "button",
+          type: htmlType ?? "button",
           ref,
           "data-test-id": dataTestId,
           target,

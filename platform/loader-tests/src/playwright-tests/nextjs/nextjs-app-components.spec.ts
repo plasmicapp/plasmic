@@ -20,7 +20,7 @@ test.describe(`Plasmic App Components`, async () => {
         ctx = await setupNextJs({
           bundleFile: "plasmic-app-components.json",
           projectName: "App test project",
-          npmRegistry: getEnvVar("NPM_REGISTRY"),
+          npmRegistry: getEnvVar("NPM_CONFIG_REGISTRY"),
           codegenHost: getEnvVar("WAB_HOST"),
           removeComponentsPage: true,
           loaderVersion,

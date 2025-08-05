@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -22,12 +22,15 @@ import {
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  ensureGlobalVariants,
   hasVariant,
   renderPlasmicSlot,
   useDollarState,
   useTrigger,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
+
+import { useEnvironment } from "../plasmic_kit_pricing/PlasmicGlobalVariant__Environment"; // plasmic-import: hIjF9NLAUKG-/globalVariant
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
@@ -37,8 +40,8 @@ import projectcss from "../PP__plasmickit_dashboard.module.css"; // plasmic-impo
 import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import sty from "./PlasmicNavButton.module.css"; // plasmic-import: 82ZzbE4hazN/css
 
-import ArrowRightsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ArrowRightSvg"; // plasmic-import: 9Jv8jb253/icon
-import ChevronDownsvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
+import ArrowRightSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ArrowRightSvg"; // plasmic-import: 9Jv8jb253/icon
+import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
 
 createPlasmicElementProxy;
 
@@ -126,7 +129,9 @@ function PlasmicNavButton__RenderFunc(props: {
         {
           target: "",
         },
-        props.args
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
       ),
     [props.args]
   );
@@ -185,7 +190,6 @@ function PlasmicNavButton__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.smallIcon,
       },
     ],
-
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -210,6 +214,10 @@ function PlasmicNavButton__RenderFunc(props: {
     focusVisible_root: isRootFocusVisible,
   };
 
+  const globalVariants = ensureGlobalVariants({
+    environment: useEnvironment(),
+  });
+
   return (
     <Stack__
       as={PlasmicLink__}
@@ -230,6 +238,24 @@ function PlasmicNavButton__RenderFunc(props: {
         plasmic_plasmic_kit_pricing_css.plasmic_tokens,
         sty.root,
         {
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
+          [plasmic_plasmic_kit_pricing_css.global_environment_website]:
+            hasVariant(globalVariants, "environment", "website"),
           [sty.root___focusVisibleWithin]: triggers.focusVisibleWithin_root,
           [sty.root___focusVisible]: triggers.focusVisible_root,
           [sty.rootblue]: hasVariant($state, "blue", "blue"),
@@ -289,7 +315,7 @@ function PlasmicNavButton__RenderFunc(props: {
       >
         {renderPlasmicSlot({
           defaultContents: (
-            <ArrowRightsvgIcon
+            <ArrowRightSvgIcon
               className={classNames(projectcss.all, sty.svg__qik2M)}
               role={"img"}
             />
@@ -391,7 +417,7 @@ function PlasmicNavButton__RenderFunc(props: {
           >
             {renderPlasmicSlot({
               defaultContents: (
-                <ChevronDownsvgIcon
+                <ChevronDownSvgIcon
                   className={classNames(projectcss.all, sty.svg__siHw5)}
                   role={"img"}
                 />
@@ -440,7 +466,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicNavButton__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
@@ -448,15 +473,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicNavButton__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicNavButton__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicNavButton__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+    // Specify args directly as props
+    Omit<PlasmicNavButton__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

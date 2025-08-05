@@ -1,5 +1,4 @@
 import { AppCtx } from "@/wab/client/app-ctx";
-import { U } from "@/wab/client/cli-routes";
 import { MenuBuilder } from "@/wab/client/components/menu-builder";
 import { ContentEditorConfigModal } from "@/wab/client/components/modals/ContentEditorConfigModal";
 import { maybeShowPaywall } from "@/wab/client/components/modals/PricingModal";
@@ -12,7 +11,6 @@ import Button from "@/wab/client/components/widgets/Button";
 import { Modal } from "@/wab/client/components/widgets/Modal";
 import Select from "@/wab/client/components/widgets/Select";
 import Textbox from "@/wab/client/components/widgets/Textbox";
-import { ensure } from "@/wab/shared/common";
 import {
   ApiPermission,
   ApiTeam,
@@ -21,6 +19,7 @@ import {
   TeamId,
   WorkspaceId,
 } from "@/wab/shared/ApiSchema";
+import { ensure } from "@/wab/shared/common";
 import { accessLevelRank } from "@/wab/shared/EntUtil";
 import {
   ORGANIZATION_CAP,
@@ -29,6 +28,8 @@ import {
   PERSONAL_WORKSPACE,
 } from "@/wab/shared/Labels";
 import { getAccessLevelToResource } from "@/wab/shared/perms";
+import { APP_ROUTES } from "@/wab/shared/route/app-routes";
+import { fillRoute } from "@/wab/shared/route/route";
 import {
   canEditUiConfig,
   mergeUiConfigs,
@@ -153,7 +154,7 @@ export function TeamMenu(props: TeamMenuProps) {
             await appCtx.api.deleteTeam(team.id);
             await appCtx.reloadAppCtx();
             if (redirectOnDelete) {
-              history.push(U.allProjects({}));
+              history.push(fillRoute(APP_ROUTES.allProjects, {}));
             } else {
               await onUpdate();
             }
@@ -283,7 +284,9 @@ export function WorkspaceMenu(props: WorkspaceMenuProps) {
             await appCtx.api.deleteWorkspace(workspace.id);
             await appCtx.reloadAppCtx();
             if (redirectOnDelete) {
-              history.push(U.org({ teamId: workspace.team.id }));
+              history.push(
+                fillRoute(APP_ROUTES.org, { teamId: workspace.team.id })
+              );
             } else {
               await onUpdate();
             }
@@ -550,7 +553,7 @@ export async function promptNewTeam(appCtx: AppCtx, history: History) {
   await appCtx.reloadAppCtx();
   // Redirect to the team page immediately
   history.push(
-    U.org({
+    fillRoute(APP_ROUTES.org, {
       teamId: team.id,
     })
   );
@@ -583,7 +586,7 @@ export async function promptNewWorkspace(
   );
   await appCtx.reloadAppCtx();
   history.push(
-    U.workspace({
+    fillRoute(APP_ROUTES.workspace, {
       workspaceId: workspace.id,
     })
   );
@@ -604,7 +607,7 @@ export async function promptNewDatabase(
   }
   const database = await appCtx.api.createDatabase(workspaceId, { name });
   history.push(
-    U.cmsRoot({
+    fillRoute(APP_ROUTES.cmsRoot, {
       databaseId: database.id,
     })
   );
@@ -628,7 +631,7 @@ export async function promptNewTable(
     identifier: name,
   });
   history.push(
-    U.model({
+    fillRoute(APP_ROUTES.model, {
       databaseId,
       tableId: table.id,
     })

@@ -1,13 +1,15 @@
 import { defineConfig } from "@rsbuild/core";
+import { pluginLess } from "@rsbuild/plugin-less";
 import { pluginReact } from "@rsbuild/plugin-react";
+import { pluginSass } from "@rsbuild/plugin-sass";
 import {
+  Assets,
   Compiler,
   CopyRspackPlugin,
   DefinePlugin,
   ProvidePlugin,
   RspackPluginInstance,
 } from "@rspack/core";
-import { Source } from "@rspack/core/dist/Template";
 import { execSync } from "child_process";
 import HtmlWebpackPlugin from "html-webpack-plugin";
 import MonacoWebpackPlugin from "monaco-editor-webpack-plugin";
@@ -44,7 +46,7 @@ class AppendSourceMapWithHash implements RspackPluginInstance {
   ) {}
 
   apply(compiler: Compiler) {
-    const processFile = (filePath: string, assets: Record<string, Source>) => {
+    const processFile = (filePath: string, assets: Assets) => {
       if (this.shouldProcessFile(filePath)) {
         const sourceMapFilePath = this.makeSourceMapFilePath(filePath);
         if (assets[sourceMapFilePath]) {
@@ -60,6 +62,7 @@ class AppendSourceMapWithHash implements RspackPluginInstance {
           } else {
             content = content.toString() + `\n${newMapping}\n`;
           }
+          // @ts-expect-error: don't have access to Source classes
           assets[filePath] = {
             source: () => content,
             size: () => content.length,
@@ -115,48 +118,6 @@ class AppendSourceMapWithHash implements RspackPluginInstance {
   }
 }
 
-/**
- * rspack when concatenating css files doesn't properly move @import
- * statements to the top of the file. This is a workaround for that.
- *
- * See https://github.com/web-infra-dev/rsbuild/issues/1912
- */
-class FixCssImports implements RspackPluginInstance {
-  apply(compiler: Compiler) {
-    const fixCssImports = (css: string) => {
-      const re = /@import\s*(url\()?"[^"]*"\)?;/g;
-      const matches = Array.from(css.matchAll(re)).map((m) => m[0]);
-      if (matches.length > 0) {
-        css = css.replaceAll(re, "");
-        css = `${matches.join("")}${css}`;
-      }
-      return css;
-    };
-
-    compiler.hooks.compilation.tap("FixCssImports", (compilation) => {
-      compilation.hooks.processAssets.tapAsync(
-        {
-          name: "FixCssImports",
-          stage: compiler.webpack.Compilation.PROCESS_ASSETS_STAGE_OPTIMIZE,
-        },
-        (assets, callback) => {
-          Object.keys(assets).forEach((filePath) => {
-            if (filePath.endsWith(".css")) {
-              const css = assets[filePath].source().toString();
-              const fixedCss = fixCssImports(css);
-              assets[filePath] = {
-                source: () => fixedCss,
-                size: () => fixedCss.length,
-              };
-            }
-          });
-          callback();
-        }
-      );
-    });
-  }
-}
-
 export default defineConfig({
   dev: {
     // We write intermediate files to disk (build/) for debugging,
@@ -171,8 +132,8 @@ export default defineConfig({
   },
   source: {
     entry: {
-      index: "src/wab/client/main.tsx"
-    }
+      index: "src/wab/client/main.tsx",
+    },
   },
   output: {
     distPath: {
@@ -184,7 +145,7 @@ export default defineConfig({
       css: true,
     },
   },
-  plugins: [pluginReact()],
+  plugins: [pluginReact(), pluginLess(), pluginSass()],
   tools: {
     // We use html-webpack-plugin directly instead of relying in @rsbuild/core
     // html plugin so it works with StudioHtmlPlugin.
@@ -233,7 +194,6 @@ export default defineConfig({
             "static/canvas-packages/build/",
           ],
         }),
-        new FixCssImports(),
         new HtmlWebpackPlugin({
           template: "../sub/public/static/host.html",
           filename: `static/host.html`,

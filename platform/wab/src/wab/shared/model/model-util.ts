@@ -13,6 +13,7 @@ import {
   isTplComponent,
   isTplFromComponent,
   isTplTextBlock,
+  resolveTplRoot,
 } from "@/wab/shared/core/tpls";
 import {
   AnyType,
@@ -99,7 +100,9 @@ export const typeFactory = {
   href: () => new HrefType({ name: "href" }),
   target: () => new TargetType({ name: "target" }),
   choice: (
-    options: string[] | { label: string; value: string | number | boolean }[]
+    options:
+      | (string | number | boolean)[]
+      | { label: string; value: string | number | boolean }[]
   ) => new Choice({ name: "choice", options }),
   instance: (component: Component) =>
     new ComponentInstance({ name: "instance", component }),
@@ -322,10 +325,10 @@ export function convertVariableTypeToPropType(
 export function typeDisplayName(type: Type, shortDescription?: boolean) {
   return switchType(type)
     .when(Text, () => "text")
-    .when(BoolType, () => "yes/no")
+    .when(BoolType, () => "toggle")
     .when(Num, () => "number")
     .when(Img, () => "image")
-    .when(AnyType, () => "data")
+    .when(AnyType, () => "object")
     .when(Choice, (t) =>
       !shortDescription
         ? `choice of ${t.options.map((v) => jsLiteral(v)).join(", ")}`
@@ -347,9 +350,13 @@ export function typeDisplayName(type: Type, shortDescription?: boolean) {
           .join(", ")}`;
       }
     })
-    .when(HrefType, () => `link url`)
+    .when(HrefType, () => `link URL`)
     .when(TargetType, () => "target")
     .when(FunctionType, () => `function`)
+    .when(DateRangeStrings, () => "date range")
+    .when(DateString, () => "date")
+    .when(QueryData, () => "query data")
+    .when(ColorPropType, () => "color")
     .elseUnsafe(() => `${type.name} object`);
 }
 
@@ -445,7 +452,7 @@ export function nodeConformsToType(
       isTplFromComponent(node, type.component) ||
       (opts?.allowRootWrapper &&
         isTplComponent(node) &&
-        isTplFromComponent(node.component.tplTree, type.component))
+        isTplFromComponent(resolveTplRoot(node), type.component))
     );
   } else if (isKnownPlumeInstance(type)) {
     return (

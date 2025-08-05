@@ -47,6 +47,7 @@ import {
   CustomCode,
   ensureKnownTplTag,
   Expr,
+  ImageAsset,
   ImageAssetRef,
   isKnownCustomCode,
   isKnownImageAsset,
@@ -358,7 +359,11 @@ export const ImageSection = observer(function ImageSection(props: {
             <ImageAssetPreviewAndPicker
               className="flex-fill flex-col"
               studioCtx={studioCtx}
-              value={asset || (expr && tryExtractLit(expr))}
+              value={
+                asset ||
+                (expr &&
+                  (tryExtractLit(expr) as ImageAsset | string | undefined))
+              }
               onPicked={(picked) =>
                 studioCtx.changeUnsafe(() => {
                   if (isKnownImageAsset(picked)) {
@@ -451,8 +456,9 @@ const DefaultVariableImagePicker = observer(
     const referencedParam = extractReferencedParam(ownerComponent, expr);
     const defaultParamLit = isKnownImageAssetRef(referencedParam?.defaultExpr)
       ? referencedParam?.defaultExpr.asset
-      : referencedParam?.defaultExpr &&
-        tryExtractLit(referencedParam.defaultExpr);
+      : referencedParam?.defaultExpr
+      ? (tryExtractLit(referencedParam.defaultExpr) as ImageAsset | string)
+      : undefined;
     return (
       <ImageAssetPreviewAndPicker
         className="flex-fill flex-col"

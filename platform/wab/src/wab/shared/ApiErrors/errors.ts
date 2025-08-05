@@ -1,3 +1,8 @@
+import {
+  UniqueViolationError,
+  isUniqueViolationError,
+} from "@/wab/shared/ApiErrors/cms-errors";
+
 export abstract class ApiError extends Error {
   name = "ApiError";
   statusCode = 400;
@@ -36,6 +41,19 @@ export class StaleCliError extends ApiError {
 export class BadRequestError extends ApiError {
   name = "BadRequestError";
   statusCode = 400;
+  issues?: unknown;
+  constructor(
+    message?: string,
+    {
+      issues,
+      ...errorOptions
+    }: ErrorOptions & {
+      issues?: unknown;
+    } = {}
+  ) {
+    super(message, errorOptions);
+    this.issues = issues;
+  }
 }
 
 export class AuthError extends ApiError {
@@ -63,6 +81,14 @@ export class CopilotRateLimitExceededError extends ApiError {
   statusCode = 429;
 }
 
+export class PublicCopilotServiceUnavailable extends ApiError {
+  name = "PublicCopilotServiceUnavailable";
+  statusCode = 503;
+  constructor(options?: ErrorOptions) {
+    super("Service unavailable", options);
+  }
+}
+
 export class GrantUserNotFoundError extends ApiError {
   name = "GrantUserNotFoundError";
   statusCode = 404;
@@ -77,8 +103,7 @@ export class LoaderBundlingError extends ApiError {
 export class LoaderDeprecatedVersionError extends ApiError {
   name = "LoaderDeprecatedVersionError";
   statusCode = 412;
-  message =
-    "An internal error occurred. Please upgrade your @plasmicapp/* packages.";
+  message = "Please upgrade your @plasmicapp/* packages.";
 }
 
 // This is not an ApiError by design, so that we consider it an unhandled error
@@ -126,6 +151,9 @@ export function transformErrors(err: Error): Error {
   const transformedErrType = errorNameRegistry[err.name];
   if (transformedErrType) {
     err = new transformedErrType(err.message);
+  }
+  if (isUniqueViolationError(err)) {
+    err = new UniqueViolationError(err.violations);
   }
   return err;
 }

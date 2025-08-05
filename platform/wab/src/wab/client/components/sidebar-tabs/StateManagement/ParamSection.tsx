@@ -3,6 +3,7 @@
 import {
   DefaultParamSectionProps,
   PlasmicParamSection,
+  PlasmicParamSection__OverridesType,
 } from "@/wab/client/plasmic/plasmic_kit_state_management/PlasmicParamSection";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import * as React from "react";
@@ -20,7 +21,9 @@ import * as React from "react";
 //
 // You can also stop extending from DefaultParamSectionProps altogether and have
 // total control over the props for your component.
-export type ParamSectionProps = DefaultParamSectionProps;
+export type ParamSectionProps = DefaultParamSectionProps & {
+  overrides: PlasmicParamSection__OverridesType;
+};
 
 function ParamSection_(props: ParamSectionProps, ref: HTMLElementRefOf<"div">) {
   // Use PlasmicParamSection to render this component as it was

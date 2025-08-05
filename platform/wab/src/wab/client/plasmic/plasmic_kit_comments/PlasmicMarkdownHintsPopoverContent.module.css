@@ -1,0 +1,92 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  width: 300px;
+  height: auto;
+  max-width: 100%;
+  justify-content: flex-start;
+  align-items: center;
+  background: #ffffff;
+  border: 1px solid #d9d9e0;
+}
+.freeBox {
+  display: flex;
+  flex-direction: row;
+  position: relative;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  min-width: 0;
+  padding: 12px;
+}
+.text__o9Ye {
+  line-height: var(--token-wCNdq3-87nVE);
+}
+.link {
+  display: flex;
+  flex-direction: row;
+  position: relative;
+}
+.link > :global(.__wab_flex-container) {
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  margin-left: calc(0px - var(--token-vhXSTyxt_gU9));
+  width: calc(100% + var(--token-vhXSTyxt_gU9));
+}
+.link > :global(.__wab_flex-container) > *,
+.link > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
+.link > :global(.__wab_flex-container) > picture > img,
+.link > :global(.__wab_flex-container) > :global(.__wab_slot) > picture > img {
+  margin-left: var(--token-vhXSTyxt_gU9);
+}
+.text__mEhd3 {
+  position: relative;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  font-size: 11px;
+  color: var(--token-qP8a3gYPq7fd);
+  min-width: 0;
+}
+.svg {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  color: var(--token-qP8a3gYPq7fd);
+  height: 100%;
+  width: var(--token-8b4HJYZr1yuK);
+  flex-shrink: 0;
+  min-height: 0;
+}
+.content {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  width: 100%;
+  min-width: 0;
+  padding: 8px 12px 12px;
+}
+.content > :global(.__wab_flex-container) {
+  flex-direction: column;
+  min-width: 0;
+  margin-top: calc(0px - 8px);
+  height: calc(100% + 8px);
+}
+.content > :global(.__wab_flex-container) > *,
+.content > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
+.content > :global(.__wab_flex-container) > picture > img,
+.content
+  > :global(.__wab_flex-container)
+  > :global(.__wab_slot)
+  > picture
+  > img {
+  margin-top: 8px;
+}
+.markdownHintRow__ofIdB:global(.__wab_instance) {
+  position: relative;
+}
+.markdownHintRow__yl5A6:global(.__wab_instance) {
+  position: relative;
+}

@@ -60,12 +60,7 @@ describe("getActiveVariation", () => {
       "seg.split-0": "slice-2",
     });
 
-    expect(getKnownValue).toBeCalledTimes(3);
-    expect(getKnownValue.mock.calls).toEqual([
-      ["seg.split-0"],
-      ["seg.split-0"],
-      ["seg.split-0"],
-    ]);
+    expect(getKnownValue).toBeCalledTimes(0);
 
     // segments shouldn't be called with update known value
     expect(updateKnownValue).not.toBeCalled();
@@ -174,9 +169,8 @@ describe("getActiveVariation", () => {
       "ext.EXTSPLIT": "EXTSLICE1",
     });
 
-    expect(getKnownValue).toBeCalledTimes(3);
+    expect(getKnownValue).toBeCalledTimes(2);
     expect(getKnownValue.mock.calls).toEqual([
-      ["seg.split-0"],
       ["exp.split-1"],
       ["exp.split-2"],
     ]);

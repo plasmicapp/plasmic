@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo } from "react";
+import React, { useCallback } from "react";
 import {
   Select,
   SelectProps,
@@ -11,15 +11,16 @@ import {
   PlasmicListBoxContext,
   PlasmicPopoverTriggerContext,
 } from "./contexts";
-import { OptionsItemIdManager } from "./OptionsItemIdManager";
+import { useIdManager } from "./OptionsItemIdManager";
 import { BUTTON_COMPONENT_NAME } from "./registerButton";
 import { LABEL_COMPONENT_NAME } from "./registerLabel";
 import { LIST_BOX_COMPONENT_NAME } from "./registerListBox";
 import { POPOVER_COMPONENT_NAME } from "./registerPopover";
 import {
+  BaseControlContextDataForLists,
   HasControlContextData,
+  PlasmicCanvasProps,
   Registerable,
-  WithPlasmicCanvasComponentInfo,
   extractPlasmicDataProps,
   makeComponentName,
   registerComponentHelper,
@@ -31,32 +32,7 @@ import { WithVariants, pickAriaComponentVariants } from "./variant-utils";
 // because it needs access to SelectStateContext, which is only created in the BaseSelect component's render function.
 function SelectAutoOpen(props: any) {
   const { open, close } = React.useContext(SelectStateContext) ?? {};
-  useAutoOpen({
-    props,
-    open: () => {
-      open?.();
-      // using settimeout because the focus is not immediately available
-      setTimeout(() => {
-        /*
-          When the select's popover is opened in the canvas, the listbox gains focus, trapping the keyboard focus within it. Pressing the up or down arrow keys navigates through the listbox items.
-          However, there are three issues with this behavior:
-
-            1. Focus should not be triggered in canvas (non-interactive mode)
-            2. Canvas (non-interactive mode) should remain non-interactive: Navigation between listbox items or selection using the space key should not be possible.
-            3. Keyboard hotkeys (e.g., backspace, undo) stop working: Key presses are absorbed by the listbox, breaking the expected behavior for shortcuts like backspace or undo (reference).
-
-          To resolve this, we need to call document.activeElement.blur() to remove focus from the listbox.
-
-          However, since the select component is a code component embedded within the artboard iframe, the keyboard hotkeys (e.g., backspace, undo) will not work,
-          because they only function in the parent iframe (__wab_studio-frame).
-          To ensure hotkeys work properly, we need to shift focus from the active element in the child iframe (artboard iframe) to the parent iframe (__wab_studio-frame) by using window.parent.
-        */
-        (window.parent.document.activeElement as HTMLElement)?.blur?.();
-      }, 1);
-    },
-    close,
-  });
-
+  useAutoOpen({ props, open, close });
   return null;
 }
 
@@ -78,10 +54,6 @@ export const BaseSelectValue = (props: BaseSelectValueProps) => {
 
 const SELECT_NAME = makeComponentName("select");
 
-export interface BaseSelectControlContextData {
-  itemIds: string[];
-}
-
 const SELECT_VARIANTS = [
   "focused" as const,
   "focusVisible" as const,
@@ -94,8 +66,8 @@ const { variants: SELECT_VARIANTS_DATA } =
 export interface BaseSelectProps
   extends SelectProps<{}>, // NOTE: We don't need generic type here since we don't use items prop (that needs it). We just need to make the type checker happy
     WithVariants<typeof SELECT_VARIANTS>,
-    WithPlasmicCanvasComponentInfo,
-    HasControlContextData<BaseSelectControlContextData> {
+    PlasmicCanvasProps,
+    HasControlContextData<BaseControlContextDataForLists> {
   children?: React.ReactNode;
   className?: string;
 }
@@ -112,19 +84,22 @@ export function BaseSelect(props: BaseSelectProps) {
     name,
     setControlContextData,
     plasmicUpdateVariant,
+    plasmicNotifyAutoOpenedContent,
+    __plasmic_selection_prop__,
     defaultSelectedKey,
     "aria-label": ariaLabel,
   } = props;
 
-  const idManager = useMemo(() => new OptionsItemIdManager(), []);
-
-  useEffect(() => {
-    idManager.subscribe((ids: string[]) => {
+  const updateIds = useCallback(
+    (ids: string[]) => {
       setControlContextData?.({
         itemIds: ids,
       });
-    });
-  }, []);
+    },
+    [setControlContextData]
+  );
+
+  const idManager = useIdManager(updateIds);
 
   const classNameProp = useCallback(
     ({
@@ -156,7 +131,10 @@ export function BaseSelect(props: BaseSelectProps) {
       aria-label={ariaLabel}
       {...extractPlasmicDataProps(props)}
     >
-      <SelectAutoOpen {...props} />
+      <SelectAutoOpen
+        __plasmic_selection_prop__={__plasmic_selection_prop__}
+        plasmicNotifyAutoOpenedContent={plasmicNotifyAutoOpenedContent}
+      />
       {/* PlasmicPopoverTriggerContext is used by BasePopover */}
       <PlasmicPopoverTriggerContext.Provider value={true}>
         {/* PlasmicListBoxContext is used by

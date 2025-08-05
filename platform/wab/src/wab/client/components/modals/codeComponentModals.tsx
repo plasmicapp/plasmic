@@ -498,7 +498,10 @@ export function notifyInvalidImportName(components: string[]) {
       <p>
         The following code components have invalid names; please use a valid
         javascript variable name in{" "}
-        <a href="https://docs.plasmic.app/learn/code-components/#register-code-components-from-the-host-application">
+        <a
+          target="_blank"
+          href="https://docs.plasmic.app/learn/code-components/#register-code-components-from-the-host-application"
+        >
           <code>meta.name</code> or <code>meta.importName</code>
         </a>{" "}
         for the following components:{" "}

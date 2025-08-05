@@ -64,6 +64,7 @@ export type PlasmicVariantRow__VariantsArgs = {
   pinState?: SingleChoiceArg<
     "pinnedTrue" | "selected" | "pinnedFalse" | "evaluatedTrue"
   >;
+
   isIndicated?: SingleBooleanChoiceArg<"isIndicated">;
   showAdditionalRow?: SingleBooleanChoiceArg<"showAdditionalRow">;
   hasCodeExpression?: SingleBooleanChoiceArg<"hasCodeExpression">;
@@ -108,6 +109,7 @@ export interface DefaultVariantRowProps {
   pinState?: SingleChoiceArg<
     "pinnedTrue" | "selected" | "pinnedFalse" | "evaluatedTrue"
   >;
+
   isIndicated?: SingleBooleanChoiceArg<"isIndicated">;
   showAdditionalRow?: SingleBooleanChoiceArg<"showAdditionalRow">;
   hasCodeExpression?: SingleBooleanChoiceArg<"hasCodeExpression">;
@@ -186,6 +188,7 @@ function PlasmicVariantRow__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.isReadOnly,
       },
     ],
+
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -614,6 +617,7 @@ const PlasmicDescendants = {
     "exprButton",
     "indicator",
   ],
+
   listItem: ["listItem", "recordButton", "variantPinButton", "exprButton"],
   recordButton: ["recordButton"],
   variantPinButton: ["variantPinButton"],
@@ -637,6 +641,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicVariantRow__OverridesType,
   DescendantsType<T>
 >;
+
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

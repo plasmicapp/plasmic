@@ -1,3 +1,4 @@
+import { mkTokenRef } from "@/wab/commons/StyleToken";
 import { $$$ } from "@/wab/shared/TplQuery";
 import { ensureBaseVariantSetting } from "@/wab/shared/VariantTplMgr";
 import { VariantGroupType, mkBaseVariant } from "@/wab/shared/Variants";
@@ -5,12 +6,13 @@ import { mkShortId } from "@/wab/shared/common";
 import { ComponentType, mkComponent } from "@/wab/shared/core/components";
 import { ParamExportType, mkParam } from "@/wab/shared/core/lang";
 import { UNINITIALIZED_VALUE, createSite } from "@/wab/shared/core/sites";
-import { mkTplTagX } from "@/wab/shared/core/tpls";
+import { mkTplComponent, mkTplTagX } from "@/wab/shared/core/tpls";
 import {
   ComponentVariantGroup,
   CustomCode,
   GlobalVariantGroup,
   Mixin,
+  ProjectDependency,
   RawText,
   RuleSet,
   Site,
@@ -24,6 +26,7 @@ import {
   ChangeLogEntry,
   calculateSemVer,
   compareSites,
+  getExternalChangeData,
 } from "@/wab/shared/site-diffs";
 import L from "lodash";
 
@@ -65,17 +68,17 @@ const compareCheck = (
 
 describe("compareSites / calculateSemVer", () => {
   // site.components
+  const newTpl = (_name?: string) => {
+    return mkTplTagX("tag");
+  };
+  const newComponent = (name: string) => {
+    return mkComponent({
+      name,
+      tplTree: newTpl(),
+      type: ComponentType.Plain,
+    });
+  };
   it("semver-components", () => {
-    const newTpl = (_name?: string) => {
-      return mkTplTagX("tag");
-    };
-    const newComponent = (name: string) => {
-      return mkComponent({
-        name,
-        tplTree: newTpl(),
-        type: ComponentType.Plain,
-      });
-    };
     // - add new components
     let site = nextSite();
     site.components.unshift(newComponent("component1"));
@@ -246,6 +249,15 @@ describe("compareSites / calculateSemVer", () => {
 
     // Make sure we are escalating "major" version bumps over "minor" and "patch"
     compareCheck("major", undefined, 12);
+
+    // - indirect component changes
+    const oldSite = nextSite();
+    $$$(oldSite.components[0].tplTree).append(
+      mkTplComponent(oldSite.components[1], oldSite.components[0].variants[0])
+    );
+
+    $$$(nextSite().components[1].tplTree).append(newTpl());
+    compareCheck("minor", 2);
     return;
   });
 
@@ -338,6 +350,22 @@ describe("compareSites / calculateSemVer", () => {
       variantedRs: [],
     });
     compareCheck("major", 2);
+    // - use mixin on component and change mixin value for indirect changes
+    const oldSite = nextSite();
+    oldSite.components.unshift(newComponent("component1"));
+    oldSite.components[0].variants.unshift(mkBaseVariant());
+    $$$(oldSite.components[0].tplTree).append(newTpl());
+    const children = (oldSite.components[0].tplTree as TplTag)
+      .children[0] as TplTag;
+    ensureBaseVariantSetting(oldSite.components[0], children);
+    children.vsettings[0].rs.mixins = [oldSite.mixins[0]];
+    nextSite().mixins[0].rs = new RuleSet({
+      values: {
+        "background-color": "rgb(0, 0, 0)",
+      },
+      mixins: [],
+    });
+    compareCheck("patch", 2);
     return;
   });
 
@@ -373,6 +401,219 @@ describe("compareSites / calculateSemVer", () => {
       regKey: undefined,
     });
     compareCheck("major", 2);
+    // - use token on component and change token value for indirect changes
+    const oldSite = nextSite();
+    oldSite.components.unshift(newComponent("component1"));
+    oldSite.components[0].variants.unshift(mkBaseVariant());
+    $$$(oldSite.components[0].tplTree).append(newTpl());
+    const children = (oldSite.components[0].tplTree as TplTag)
+      .children[0] as TplTag;
+    ensureBaseVariantSetting(oldSite.components[0], children);
+    children.vsettings[0].rs.values["background-color"] = mkTokenRef(
+      oldSite.styleTokens[0]
+    );
+    nextSite().styleTokens[0].value = "rgb(0, 0, 0)";
+    compareCheck("patch", 2);
+
     return;
+  });
+
+  it("semver-importedProjects", () => {
+    const importedProject = new ProjectDependency({
+      name: "Core",
+      pkgId: "core-pkg-id",
+      projectId: "core-project-id",
+      version: "0.0.1",
+      uuid: "core-uuid",
+      site: createSite(),
+    });
+
+    // - added dep
+    nextSite().projectDependencies.unshift(importedProject);
+    compareCheck("minor", 1);
+
+    // - removed dep
+    nextSite().projectDependencies = [];
+    compareCheck("major", 1);
+  });
+});
+
+describe("getExternalChangeData", () => {
+  it("should return empty arrays when there are no changes", () => {
+    const changeLog: ChangeLogEntry[] = [];
+    const result = getExternalChangeData(changeLog);
+
+    expect(result.importedProjectsChanged).toEqual([]);
+    expect(result.pagesChanged).toEqual([]);
+  });
+
+  it("should detect changes to imported projects", () => {
+    const changeLog: ChangeLogEntry[] = [
+      {
+        releaseType: "minor",
+        parentComponent: "global",
+        oldValue: null,
+        newValue: {
+          type: "Imported Project",
+          name: "Project A",
+          pkgId: "pkg-a",
+          version: "1.0.0",
+        },
+        description: "added",
+      },
+      {
+        releaseType: "minor",
+        parentComponent: "global",
+        oldValue: null,
+        newValue: {
+          type: "Imported Project",
+          name: "Project A",
+          pkgId: "pkg-a",
+          version: "1.0.0",
+        },
+        description: "added",
+      },
+      {
+        releaseType: "major",
+        parentComponent: "global",
+        oldValue: {
+          type: "Imported Project",
+          name: "Project B",
+          pkgId: "pkg-b",
+          version: "1.0.0",
+        },
+        newValue: null,
+        description: "removed",
+      },
+    ];
+
+    const result = getExternalChangeData(changeLog);
+
+    expect(result.importedProjectsChanged).toEqual(["Project A", "Project B"]);
+    expect(result.pagesChanged).toEqual([]);
+  });
+
+  it("should detect changes to page components", () => {
+    const changeLog: ChangeLogEntry[] = [
+      {
+        releaseType: "minor",
+        parentComponent: "global",
+        oldValue: null,
+        newValue: {
+          type: "Component",
+          componentType: "page",
+          uuid: "uuid-1",
+          name: "Page A",
+          path: "/page-a",
+        },
+        description: "added",
+      },
+      {
+        releaseType: "minor",
+        parentComponent: "global",
+        oldValue: null,
+        newValue: {
+          type: "Component",
+          componentType: "page",
+          uuid: "uuid-1",
+          name: "Page A",
+          path: "/page-a",
+        },
+        description: "added",
+      },
+      {
+        releaseType: "major",
+        parentComponent: "global",
+        oldValue: {
+          type: "Component",
+          componentType: "page",
+          uuid: "uuid-2",
+          name: "Page B",
+          path: "/page-b",
+        },
+        newValue: null,
+        description: "removed",
+      },
+    ];
+
+    const result = getExternalChangeData(changeLog);
+
+    expect(result.importedProjectsChanged).toEqual([]);
+    expect(result.pagesChanged).toEqual(["/page-a", "/page-b"]);
+  });
+
+  it("should detect changes to parent components with paths", () => {
+    const changeLog: ChangeLogEntry[] = [
+      {
+        releaseType: "patch",
+        parentComponent: {
+          name: "Parent Page",
+          uuid: "uuid-parent",
+          componentType: "page",
+          path: "/parent-page",
+        },
+        oldValue: null,
+        newValue: {
+          type: "Param",
+          name: "param1",
+        },
+        description: "added",
+      },
+    ];
+
+    const result = getExternalChangeData(changeLog);
+
+    expect(result.importedProjectsChanged).toEqual([]);
+    expect(result.pagesChanged).toEqual(["/parent-page"]);
+  });
+
+  it("should handle mixed changes", () => {
+    const changeLog: ChangeLogEntry[] = [
+      {
+        releaseType: "minor",
+        parentComponent: "global",
+        oldValue: null,
+        newValue: {
+          type: "Imported Project",
+          name: "Project A",
+          pkgId: "pkg-a",
+          version: "1.0.0",
+        },
+        description: "added",
+      },
+      {
+        releaseType: "major",
+        parentComponent: "global",
+        oldValue: {
+          type: "Component",
+          componentType: "page",
+          uuid: "uuid-1",
+          name: "Page A",
+          path: "/page-a",
+        },
+        newValue: null,
+        description: "removed",
+      },
+      {
+        releaseType: "patch",
+        parentComponent: {
+          name: "Parent Page",
+          uuid: "uuid-parent",
+          componentType: "page",
+          path: "/parent-page",
+        },
+        oldValue: null,
+        newValue: {
+          type: "Param",
+          name: "param1",
+        },
+        description: "added",
+      },
+    ];
+
+    const result = getExternalChangeData(changeLog);
+
+    expect(result.importedProjectsChanged).toEqual(["Project A"]);
+    expect(result.pagesChanged).toEqual(["/page-a", "/parent-page"]);
   });
 });

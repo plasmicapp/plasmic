@@ -4,7 +4,6 @@ import {
   NonAuthCtxContext,
   useNonAuthCtx,
 } from "@/wab/client/app-ctx";
-import { U, UU } from "@/wab/client/cli-routes";
 import type FullCodeEditor from "@/wab/client/components/coding/FullCodeEditor";
 import { smartRender } from "@/wab/client/components/pages/admin/admin-util";
 import { AdminBranchingInspector } from "@/wab/client/components/pages/admin/AdminBranchingInspector";
@@ -30,6 +29,8 @@ import { STUDIO_ONBOARDING_TUTORIALS } from "@/wab/client/tours/tutorials/tutori
 import { ApiFeatureTier, ApiProjectRevision } from "@/wab/shared/ApiSchema";
 import { assert, tryRemove } from "@/wab/shared/common";
 import { DEVFLAGS } from "@/wab/shared/devflags";
+import { APP_ROUTES } from "@/wab/shared/route/app-routes";
+import { fillRoute } from "@/wab/shared/route/route";
 import { PkgVersionInfo } from "@/wab/shared/SharedApi";
 import {
   Button,
@@ -206,7 +207,9 @@ function CloneProjectView() {
               message: "Project cloned",
               description: (
                 <a
-                  href={UU.project.fill({ projectId: res.projectId })}
+                  href={fillRoute(APP_ROUTES.project, {
+                    projectId: res.projectId,
+                  })}
                   target="_blank"
                 >
                   Go to project
@@ -240,7 +243,7 @@ function UploadProject() {
         onClick={() =>
           getUploadedFile(async (data: string) => {
             await nonAuthCtx.api.importProject(data).then(({ projectId }) => {
-              document.location.href = U.project({
+              document.location.href = fillRoute(APP_ROUTES.project, {
                 projectId: projectId,
               });
             });
