@@ -1196,6 +1196,7 @@ export const showSimpleCssRuleSet = (
 ): string[] => {
   const site = ctx.site;
   const resolver = ctx.resolver;
+  const effectiveExpr = ctx.getEffectiveExpr(tpl, vs.variants);
   const isStudio = ctx.isStudio;
   const useCssModules = opts.useCssModules;
 
@@ -1213,6 +1214,14 @@ export const showSimpleCssRuleSet = (
     opts.useCssModules ? `:global(.${className})` : `.${className}`;
 
   const styles = deriveCssRuleSetStyles(ctx, tpl, vs, opts);
+
+  if (isTplColumns(tpl)) {
+    const colGap = effectiveExpr.get("column-gap");
+    if (colGap) {
+      // We add a variable so that we can use it in responsive columns styles
+      styles.set("--plsmc-rc-col-gap", colGap);
+    }
+  }
 
   const rules: (string | undefined)[] = [];
 
@@ -1717,10 +1726,11 @@ function deriveResponsiveColumnsSizesRules(
   const numCols = colsSizes.length;
 
   // The size of each column is going to be calculated as a percentage of the parent container
+  const parentWidth = `(100% - ${numCols - 1} * var(--plsmc-rc-col-gap, 0px))`;
   return L.range(numCols).map((_, idx) => {
     const m = new Map<string, string>();
     const size = colsSizes[idx % numCols];
-    const widthProp = `calc(100% * ${size} / ${12})`;
+    const widthProp = `calc(${parentWidth} * ${size} / ${12})`;
     m.set("width", widthProp);
     return maybeRule(
       `${ruleName} > :nth-child(${numCols}n + ${idx + 1})`,

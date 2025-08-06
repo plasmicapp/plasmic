@@ -1,11 +1,11 @@
 import type { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { arrayReversed } from "@/wab/commons/collections";
 import {
   componentToTplComponents,
   deepComponentToReferencers,
   extractComponentVariantSettings,
   extractImageAssetRefsByAttrs,
 } from "@/wab/shared/cached-selectors";
-import { arrayReversed } from "@/wab/shared/collections";
 import {
   ensure,
   ensureArrayOfInstances,
@@ -888,7 +888,10 @@ function getChangedResponsiveColumnsUpdate(change: ModelChange) {
   const vsTpl = extractAlongPath(change.path, [VariantSetting, TplNode]);
   if (vsTpl) {
     const [vs, tpl] = vsTpl;
-    if (isTplColumns(tpl) && isResponsiveColumnsChange(change)) {
+    if (
+      isTplColumns(tpl) &&
+      (isResponsiveColumnsChange(change) || changeUpdatesFlexColumnGap(change))
+    ) {
       return {
         type: "tpl",
         tpl,
@@ -916,6 +919,18 @@ function getMixinWithChangedAlwaysResolveProps(change: ModelChange) {
     }
   }
   return undefined;
+}
+
+/**
+ * Returns true if this `change` changes column-gap in any way.
+ *
+ * We care about it because the responsive column width depend on the column-gap,
+ * if it changes we want to update the dependent variant settings.
+ */
+function changeUpdatesFlexColumnGap(change: ModelChange) {
+  return changeTogglesStyle(change, ["column-gap"], (values) => {
+    return styleTypeFromProps(values, ["column-gap"]);
+  });
 }
 
 function styleTypeFromProps(values: Record<string, string>, props: string[]) {
