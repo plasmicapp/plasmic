@@ -1,7 +1,7 @@
-import { ensure, removeWhere } from "@/wab/shared/common";
 import { lt, sortAsc } from "@/wab/commons/semver";
-import { upgradeProjectDeps } from "@/wab/shared/core/project-deps";
 import { Bundler } from "@/wab/shared/bundler";
+import { ensure, removeWhere } from "@/wab/shared/common";
+import { upgradeProjectDeps } from "@/wab/shared/core/project-deps";
 import { ProjectDependency, Site } from "@/wab/shared/model/classes";
 
 export function fixProjectDependencies(
@@ -133,5 +133,5 @@ export function fixProjectDependencies(
 
   // `upgradeProjectDeps` might create several new instances; bundle the site to
   // make sure they all have `iid`s
-  bundler.bundle(merged, bundler.addrOf(merged).uuid, "");
+  bundler.bundle(merged, bundler.addrOfUnsafe(merged).uuid, "");
 }

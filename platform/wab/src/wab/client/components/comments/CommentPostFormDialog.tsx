@@ -72,11 +72,11 @@ export const CommentPostFormDialog = observer(function CommentPostFormDialog({
                   const location = {
                     subject: commentsCtx
                       .bundler()
-                      .addrOf(ensure(openedNewThread.tpl, "")),
+                      .addrOfUnsafe(ensure(openedNewThread.tpl, "")),
                     variants: getSetOfPinnedVariantsForViewCtx(
                       ensure(openedNewThread.viewCtx, ""),
                       commentsCtx.bundler()
-                    ).map((pv) => commentsCtx.bundler().addrOf(pv)),
+                    ).map((pv) => commentsCtx.bundler().addrOfUnsafe(pv)),
                   };
                   commentsCtx.postRootComment({
                     body: value,

@@ -1,3 +1,4 @@
+import { Bundler } from "@/wab/shared/bundler";
 import {
   assert,
   isLiteralObject,
@@ -5,7 +6,6 @@ import {
   tuple,
   unexpected,
 } from "@/wab/shared/common";
-import { Bundler } from "@/wab/shared/bundler";
 import { instUtil } from "@/wab/shared/model/InstUtil";
 import { ObjInst, Site } from "@/wab/shared/model/classes";
 import { meta } from "@/wab/shared/model/classes-metas";
@@ -158,8 +158,9 @@ export function nextCtx(
 
 export function toJson(inst: ObjInst, bundler: Bundler) {
   const cls = instUtil.getInstClass(inst);
+  const addr = bundler.addrOfUnsafe(inst);
   return {
-    __iid: bundler.addrOf(inst).iid,
+    __iid: addr.iid,
     __type: cls.name,
     ...Object.fromEntries(
       meta
@@ -179,13 +180,12 @@ export function toJson(inst: ObjInst, bundler: Bundler) {
                 keys.map((k) => tuple(k, rec(nextCtx(_ctx, k))))
               );
             } else if (instUtil.isObjInst(origVal)) {
+              const origAddr = bundler.addrOfUnsafe(origVal);
               return isWeakRefField(field)
                 ? {
-                    __iidRef: bundler.addrOf(origVal).iid,
+                    __iidRef: origAddr.iid,
                     __uuid:
-                      bundler.addrOf(origVal).uuid === bundler.addrOf(inst).uuid
-                        ? undefined
-                        : bundler.addrOf(origVal).uuid,
+                      origAddr.uuid === addr.uuid ? undefined : origAddr.uuid,
                   }
                 : toJson(origVal, bundler);
             } else {

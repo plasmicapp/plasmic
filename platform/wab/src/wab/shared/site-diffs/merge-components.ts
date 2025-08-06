@@ -891,26 +891,26 @@ export const mergeTplNodeChildren: MergeSpecialFieldHandler<TplNode> = (
         (previous, children) =>
           xIntersect(
             previous,
-            new Set(children.map((node) => bundler.addrOf(node).iid))
+            new Set(children.map((node) => bundler.addrOfUnsafe(node).iid))
           ),
-        new Set(ancChildren.map((node) => bundler.addrOf(node).iid))
+        new Set(ancChildren.map((node) => bundler.addrOfUnsafe(node).iid))
       );
 
       const mergedNodeByIid = keyBy(
         mergedChildren,
-        (child) => bundler.addrOf(child).iid
+        (child) => bundler.addrOfUnsafe(child).iid
       );
       const previousOrder = ancChildren
-        .map((child) => bundler.addrOf(child).iid)
+        .map((child) => bundler.addrOfUnsafe(child).iid)
         .filter((iid) => commonIids.has(iid));
       let finalOrder: string[] | "conflict" = mergedChildren
-        .map((child) => bundler.addrOf(child).iid)
+        .map((child) => bundler.addrOfUnsafe(child).iid)
         .filter((iid) => commonIids.has(iid));
       const leftOrder = leftChildren
-        .map((child) => bundler.addrOf(child).iid)
+        .map((child) => bundler.addrOfUnsafe(child).iid)
         .filter((iid) => commonIids.has(iid));
       const rightOrder = rightChildren
-        .map((child) => bundler.addrOf(child).iid)
+        .map((child) => bundler.addrOfUnsafe(child).iid)
         .filter((iid) => commonIids.has(iid));
       if (
         !arrayEq(previousOrder, leftOrder) &&
@@ -936,7 +936,7 @@ export const mergeTplNodeChildren: MergeSpecialFieldHandler<TplNode> = (
             finalOrder = side === "left" ? leftOrder : rightOrder;
             let nextIidIndex = 0;
             range(mergedChildren.length).forEach((i) => {
-              const iid = bundler.addrOf(mergedChildren[i]).iid;
+              const iid = bundler.addrOfUnsafe(mergedChildren[i]).iid;
               if (commonIids.has(iid)) {
                 if (finalOrder[nextIidIndex] !== iid) {
                   mergedChildren[i] = ensure(
@@ -964,7 +964,7 @@ export const mergeTplNodeChildren: MergeSpecialFieldHandler<TplNode> = (
       } else {
         let nextIidIndex = 0;
         range(mergedChildren.length).forEach((i) => {
-          const iid = bundler.addrOf(mergedChildren[i]).iid;
+          const iid = bundler.addrOfUnsafe(mergedChildren[i]).iid;
           if (commonIids.has(iid)) {
             if (finalOrder[nextIidIndex] !== iid) {
               mergedChildren[i] = ensure(
@@ -979,8 +979,8 @@ export const mergeTplNodeChildren: MergeSpecialFieldHandler<TplNode> = (
 
       const equivOnBranch = (node: TplNode, branch: Site) =>
         bundler.objByAddr({
-          uuid: bundler.addrOf(branch).uuid,
-          iid: bundler.addrOf(node).iid,
+          uuid: bundler.addrOfUnsafe(branch).uuid,
+          iid: bundler.addrOfUnsafe(node).iid,
         });
 
       // Deleted children
@@ -1051,7 +1051,7 @@ export const mergeTplNodeChildren: MergeSpecialFieldHandler<TplNode> = (
 
       const mergedNodeByIid = keyBy(
         mergedChildren,
-        (child) => bundler.addrOf(child).iid
+        (child) => bundler.addrOfUnsafe(child).iid
       );
 
       // First get the nodes that haven't changed but might have moved
@@ -1059,9 +1059,9 @@ export const mergeTplNodeChildren: MergeSpecialFieldHandler<TplNode> = (
         (previous, children) =>
           xIntersect(
             previous,
-            new Set(children.map((node) => bundler.addrOf(node).iid))
+            new Set(children.map((node) => bundler.addrOfUnsafe(node).iid))
           ),
-        new Set(ancChildren.map((node) => bundler.addrOf(node).iid))
+        new Set(ancChildren.map((node) => bundler.addrOfUnsafe(node).iid))
       );
 
       // Then compute their relative order along with their respective arg.param
@@ -1075,7 +1075,7 @@ export const mergeTplNodeChildren: MergeSpecialFieldHandler<TplNode> = (
                   isKnownVirtualRenderExpr(arg.expr)
                     ? ("VirtualRenderExpr" as const)
                     : ensureKnownRenderExpr(arg.expr)
-                        .tpl.map((tpl) => bundler.addrOf(tpl).iid)
+                        .tpl.map((tpl) => bundler.addrOfUnsafe(tpl).iid)
                         .filter((iid) => commonIids.has(iid)),
                 ] as const
             )
@@ -1174,7 +1174,7 @@ export const mergeTplNodeChildren: MergeSpecialFieldHandler<TplNode> = (
                 (mergedArg) => [...ensureKnownRenderExpr(mergedArg.expr).tpl]
               ) ?? []
             ).map((tpl) => {
-              const iid = bundler.addrOf(tpl).iid;
+              const iid = bundler.addrOfUnsafe(tpl).iid;
               if (!commonIids.has(iid)) {
                 // Only consider the common elements to re-order
                 return tpl;
@@ -1246,8 +1246,8 @@ export const mergeTplNodeChildren: MergeSpecialFieldHandler<TplNode> = (
 
       const equivOnBranch = (node: TplNode, branch: Site) =>
         bundler.objByAddr({
-          uuid: bundler.addrOf(branch).uuid,
-          iid: bundler.addrOf(node).iid,
+          uuid: bundler.addrOfUnsafe(branch).uuid,
+          iid: bundler.addrOfUnsafe(node).iid,
         });
 
       // Handle deleted children
@@ -1415,7 +1415,11 @@ export const mergeVSettings: MergeSpecialFieldHandler<TplNode> = (
         // Create an empty VariantSetting in the ancestor bundle
         const ancestorVS = mkVariantSetting({ variants: [] });
         // Add it to the bundler so it has an IID
-        bundler.bundle(ancestorVS, bundler.addrOf(ancestorCtx.site).uuid, "");
+        bundler.bundle(
+          ancestorVS,
+          bundler.addrOfUnsafe(ancestorCtx.site).uuid,
+          ""
+        );
         const mergedVS = cloneObjInstToMergedSite(
           ancestorVS,
           ancestorCtx.site,
@@ -1926,14 +1930,18 @@ export const tryMergeGlobalContexts: MergeSpecialFieldHandler<Site> = (
         );
         bundler.bundle(
           ancestorComponent,
-          bundler.addrOf(ancestorCtx.site).uuid,
+          bundler.addrOfUnsafe(ancestorCtx.site).uuid,
           ""
         );
         ancestorTpl = mkTplComponentX({
           component: ancestorComponent,
           baseVariant: mkBaseVariant(),
         });
-        bundler.bundle(ancestorTpl, bundler.addrOf(ancestorCtx.site).uuid, "");
+        bundler.bundle(
+          ancestorTpl,
+          bundler.addrOfUnsafe(ancestorCtx.site).uuid,
+          ""
+        );
         const mergedTpl = cloneObjInstToMergedSite(
           ancestorTpl,
           ancestorCtx.site,

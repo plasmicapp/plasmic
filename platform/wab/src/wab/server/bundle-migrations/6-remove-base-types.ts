@@ -1,11 +1,11 @@
-import { assert, ensure } from "@/wab/shared/common";
 import { UnbundledMigrationFn } from "@/wab/server/db/BundleMigrator";
 import { loadDepPackages } from "@/wab/server/db/DbBundleLoader";
 import { BundleMigrationType } from "@/wab/server/db/bundle-migration-utils";
 import { PkgVersion } from "@/wab/server/entities/Entities";
 import { Bundler } from "@/wab/shared/bundler";
-import { Param } from "@/wab/shared/model/classes";
+import { assert, ensure } from "@/wab/shared/common";
 import { cloneType } from "@/wab/shared/core/tpls";
+import { Param } from "@/wab/shared/model/classes";
 
 export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
   // Unbundle Site / ProjectDependency:
@@ -17,7 +17,7 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
   const bundler = new Bundler();
   bundler.unbundle(JSON.parse(base.model), base.id);
   deps.forEach((dep) => bundler.unbundle(JSON.parse(dep.model), dep.id));
-  const unbundled = bundler.unbundle(bundle, entity.id);
+  const unbundled = bundler.unbundle(bundle, entity.id)!;
 
   // Now we we find all instances that reference types and clone those types,
   // so they will reference new internal instances.

@@ -221,7 +221,7 @@ function shallowCloneArrayValuesAndAddToBundle<
     const cloned: T & classes.ObjInst = typeCond.result();
     // Besides cloning the array values, we need to make sure the instance
     // has an IID
-    generateIidForInst(cloned, bundler, bundler.addrOf(parent).uuid);
+    generateIidForInst(cloned, bundler, bundler.addrOfUnsafe(parent).uuid);
     return cloned;
   });
 

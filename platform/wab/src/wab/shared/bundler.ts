@@ -436,20 +436,16 @@ export function checkBundleFields(bundle: Bundle, iidsToCheck?: string[]) {
   }
 }
 
-function mkMap() {
-  return Object.create(null);
-}
-
 // TODO fix mem leak, should track entire bundles so that they can be wiped
 export class Bundler {
   protected _rt: MetaRuntime;
   protected _instUtil: InstUtil;
   protected _realClasses;
   // Public for tests
-  _addr2inst: { [k: string]: classesModule.ObjInst };
+  _addr2inst: Map<string, classesModule.ObjInst>;
   // Public for tests
-  _uid2addr: { [k: string]: Addr };
-  private _uuid2root: Record<string, classesModule.ObjInst>;
+  _uid2addr: Map<number, Addr>;
+  private _uuid2root: Map<string, classesModule.ObjInst>;
 
   /**
    * looseMode means skip checking of fields and ignore missing xrefs (leaving the references in place)
@@ -460,11 +456,11 @@ export class Bundler {
     this._realClasses = classes;
     // maps from Addr to latest deserialized instance graph; unbundle() uses
     // this
-    this._addr2inst = mkMap();
+    this._addr2inst = new Map();
     // maps from UID to Addr; bundle() uses this
-    this._uid2addr = mkMap();
+    this._uid2addr = new Map();
     // maps from UUID to root
-    this._uuid2root = mkMap();
+    this._uuid2root = new Map();
   }
 
   getNewIid = () => mkShortId();
@@ -541,24 +537,30 @@ export class Bundler {
       });
   }
 
-  addrOf(obj: classesModule.ObjInst) {
-    return this._uid2addr[obj.uid];
+  addrOf(obj: classesModule.ObjInst): Addr | undefined {
+    return this._uid2addr.get(obj.uid);
   }
-  addrSlugOf(obj: classesModule.ObjInst) {
-    return addrSlug(this.addrOf(obj));
+
+  /** @deprecated - use {@link addrOf} and handle missing case */
+  addrOfUnsafe(obj: classesModule.ObjInst): Addr {
+    return ensure(
+      this._uid2addr.get(obj.uid),
+      () => `_uid2addr missing ${obj.uid}`
+    );
   }
-  objByAddr(addr: Addr) {
-    return this._addr2inst[addrKey(addr)];
+
+  objByAddr(addr: Addr): classesModule.ObjInst | undefined {
+    return this._addr2inst.get(addrKey(addr));
   }
 
   allIidsByUuid(uuid: string) {
-    return [...Object.values(this._uid2addr)]
+    return [...this._uid2addr.values()]
       .filter((addr) => addr.uuid === uuid)
       .map((addr) => addr.iid);
   }
 
   allUuids() {
-    return Object.keys(this._uuid2root).sort();
+    return [...this._uuid2root.keys()].sort();
   }
 
   // Extract the required bundle UUIDs.
@@ -597,7 +599,7 @@ export class Bundler {
       if (inst.uid in map) {
         return;
       }
-      let addr = this._uid2addr[inst.uid];
+      let addr = this._uid2addr.get(inst.uid);
       if (addr && addr.uuid !== uuid) {
         // This instance belongs to another uuid
         return;
@@ -605,8 +607,9 @@ export class Bundler {
 
       if (!addr) {
         // No address for this instance yet; create one!
-        addr = this._uid2addr[inst.uid] = { uuid, iid: this.getNewIid() };
-        this._addr2inst[addrKey(addr)] = inst;
+        addr = { uuid, iid: this.getNewIid() };
+        this._uid2addr.set(inst.uid, addr);
+        this._addr2inst.set(addrKey(addr), inst);
       }
       map[inst.uid] = inst;
       this._fieldVals(inst, visitInst);
@@ -621,7 +624,7 @@ export class Bundler {
   //
   // Need uid2addr.
   bundle(root: classesModule.ObjInst, uuid: string, version: string): Bundle {
-    this._uuid2root[uuid] = root;
+    this._uuid2root.set(uuid, root);
 
     // Build a map from uid to all instances under `root`.  This map will only
     // include instances that belong to this `uuid`.
@@ -637,7 +640,7 @@ export class Bundler {
      * Creates a reference to the argument `inst` by its id
      */
     const mkRef = (inst: classesModule.ObjInst) => {
-      const addr = check(this._uid2addr[inst.uid]);
+      const addr = check(this._uid2addr.get(inst.uid));
       if (addr.uuid === uuid) {
         // If this is an internal instance, we reference it by the internal id
         return { __ref: addr.iid };
@@ -650,7 +653,7 @@ export class Bundler {
     };
 
     const getIid = (inst: classesModule.ObjInst) =>
-      check(this._uid2addr[inst.uid]).iid;
+      check(this._uid2addr.get(inst.uid)).iid;
     const iid2json = Object.fromEntries(
       Object.keys(uid2inst || {}).map((uid) => {
         const inst = uid2inst[uid];
@@ -701,14 +704,11 @@ export class Bundler {
     bundle: UnsafeBundle,
     uuid: string,
     incremental: boolean
-  ): { [iid: string]: classesModule.ObjInst } {
-    const localAddr2inst: Record<string, classesModule.ObjInst> =
-      Object.create(null);
+  ): Map<string, classesModule.ObjInst> {
+    const localAddr2inst = new Map<string, classesModule.ObjInst>();
     const addr2inst = (addr: string) =>
-      localAddr2inst[addr] != null
-        ? localAddr2inst[addr]
-        : this._addr2inst[addr];
-    const localUid2addr = Object.create(null);
+      localAddr2inst.get(addr) ?? this._addr2inst.get(addr);
+    const localUid2addr = new Map<number, Addr>();
     const missingXrefError = (xref) => {
       if (this.looseMode) {
         return xref;
@@ -728,7 +728,7 @@ export class Bundler {
     const delayedIids = new Set(
       incremental
         ? Object.keys(bundle.map || {}).filter(
-            (iid) => !!this._addr2inst[addrKey({ uuid, iid: iid })]
+            (iid) => !!this._addr2inst.get(addrKey({ uuid, iid: iid }))
           )
         : []
     );
@@ -736,36 +736,38 @@ export class Bundler {
     // First we build a map from iid to instances from the bundle.  All instances here
     // should be internal instances; we instantiate the classes, but are not doing anything
     // to fix up instance references in field values yet.
-    const iid2internalInst: Record<string, classesModule.ObjInst> =
-      Object.fromEntries(
-        Object.keys(bundle.map || {}).map((iid) => {
-          const json = bundle.map[iid];
-          const realClass = this._realClasses[json.__type];
-          if (!realClass) {
-            throw new Error(`Unknown type ${json.__type}`);
-          }
-          const addr = { uuid, iid };
-          let inst = addr2inst(addrKey(addr));
-          if (inst == null) {
-            inst = localAddr2inst[addrKey(addr)] = this.looseMode
+    const iid2internalInst: Map<string, classesModule.ObjInst> = new Map(
+      Object.keys(bundle.map || {}).map((iid) => {
+        const json = bundle.map[iid];
+        const realClass = this._realClasses[json.__type];
+        if (!realClass) {
+          throw new Error(`Unknown type ${json.__type}`);
+        }
+        const addr = { uuid, iid };
+        let inst = addr2inst(addrKey(addr));
+        if (!inst) {
+          inst = (
+            this.looseMode
               ? Object.assign(
                   Object.create(realClass.prototype),
                   { uid: Math.random() },
                   json
                 )
-              : new realClass(json);
-          } else {
-            assert(
-              inst instanceof realClass,
-              `Cached instance has unexpected type ${this._instUtil.getInstClassName(
-                inst
-              )}, expected ${json.__type}`
-            );
-          }
-          localUid2addr[inst.uid] = addr;
-          return tuple(iid, inst);
-        })
-      );
+              : new realClass(json)
+          ) as classesModule.ObjInst;
+          localAddr2inst.set(addrKey(addr), inst);
+        } else {
+          assert(
+            inst instanceof realClass,
+            `Cached instance has unexpected type ${this._instUtil.getInstClassName(
+              inst
+            )}, expected ${json.__type}`
+          );
+        }
+        localUid2addr.set(inst.uid, addr);
+        return tuple(iid, inst);
+      })
+    );
 
     // Now we deal with fixing up the field values, basically replacing
     // {__ref} and {__xref} with actual instances.  At this point, all internal references
@@ -797,9 +799,9 @@ export class Bundler {
         // `addr2inst` to get them; otherwise, all instances should exist in
         // `iid2internalInst`.
         const inst = incremental
-          ? iid2internalInst[x.__ref] ??
+          ? iid2internalInst.get(x.__ref) ??
             addr2inst(addrKey({ uuid, iid: x.__ref }))
-          : iid2internalInst[x.__ref];
+          : iid2internalInst.get(x.__ref);
         return ensure(inst, `Missing reference (IID ${x.__ref})`);
       } else if ("__xref" in x) {
         return coalesce(addr2inst(addrKey(x.__xref)), () =>
@@ -814,7 +816,10 @@ export class Bundler {
       ...Array.from(delayedIids.keys()),
     ]) {
       const json: any = bundle.map[iid];
-      const inst = iid2internalInst[iid];
+      const inst = ensure(
+        iid2internalInst.get(iid),
+        `iid2internalInst missing ${iid}`
+      );
       const cls = this._rt.clsByName[json.__type];
       for (const field of this._rt.allFields(cls)) {
         if (field.annotations.includes("Transient")) {
@@ -863,16 +868,28 @@ export class Bundler {
         }
       }
     }
-    Object.assign(this._addr2inst, localAddr2inst);
-    Object.assign(this._uid2addr, localUid2addr);
-    this._uuid2root[uuid] = iid2internalInst[bundle.root];
+    // Merge local maps into the main maps
+    localAddr2inst.forEach((value, key) => {
+      this._addr2inst.set(key, value);
+    });
+    localUid2addr.forEach((value, key) => {
+      this._uid2addr.set(key, value);
+    });
+    this._uuid2root.set(
+      uuid,
+      ensure(iid2internalInst.get(bundle.root), "iid2internal missing root")
+    );
     return iid2internalInst;
   }
 
   // Deserialize a bundle into an object graph and return the root object.
-  unbundle(bundle: UnsafeBundle, uuid: string, incremental = false) {
+  unbundle(
+    bundle: UnsafeBundle,
+    uuid: string,
+    incremental = false
+  ): classesModule.ObjInst | undefined {
     const iid2internalInst = this.unbundleToMap(bundle, uuid, incremental);
-    return iid2internalInst[bundle.root];
+    return iid2internalInst.get(bundle.root);
   }
 }
 
@@ -924,7 +941,7 @@ export class FastBundler extends Bundler {
     const bundle = this._bundle;
 
     const getIid = (inst: classesModule.ObjInst): string | undefined =>
-      this._uid2addr[inst.uid]?.iid;
+      this._uid2addr.get(inst.uid)?.iid;
 
     // We only want to process the changed fields of the reachable iids;
     // each element in the queue is the inst to be included in the bundle
@@ -950,11 +967,12 @@ export class FastBundler extends Bundler {
       parentIid: string,
       field: Field
     ) => {
-      let addr = this._uid2addr[child.uid];
+      let addr = this._uid2addr.get(child.uid);
       if (!addr) {
         // No address for this instance yet; create one!
-        addr = this._uid2addr[child.uid] = { uuid, iid: this.getNewIid() };
-        this._addr2inst[addrKey(addr)] = child;
+        addr = { uuid, iid: this.getNewIid() };
+        this._uid2addr.set(child.uid, addr);
+        this._addr2inst.set(addrKey(addr), child);
       }
       const ref = (() => {
         if (addr.uuid === uuid) {
@@ -1057,7 +1075,8 @@ export class FastBundler extends Bundler {
       );
 
     bundle.deps = uniq(
-      [...this._xref2Parents.entries(), ...this._xref2WeakRefs.entries()]
+      Array.from(this._xref2Parents.entries())
+        .concat(Array.from(this._xref2WeakRefs.entries()))
         .filter(([_, refs]) => refs.size > 0)
         .map(([key, _]) => key2Addr(key).uuid)
     );
@@ -1210,10 +1229,13 @@ export class FastBundler extends Bundler {
     const bundle = ensure(this._bundle, () => `_bundle is not set`);
 
     const iid2ClassName = (iid: string) => {
-      const inst = this.objByAddr({
-        uuid: ensure(this._uuid, () => `uuid is not set`),
-        iid,
-      });
+      const inst = ensure(
+        this.objByAddr({
+          uuid: ensure(this._uuid, () => `uuid is not set`),
+          iid,
+        }),
+        `objByAddr missing iid ${iid}`
+      );
       const cls = this._instUtil.tryGetInstClass(inst);
       return cls?.name;
     };
@@ -1318,8 +1340,10 @@ export class FastBundler extends Bundler {
         // a component or applying a mixin). For this reason, those xrefs have
         // only weakRefs pointing to them.
         if (this._xref2Parents.has(key)) {
-          const inst = this._addr2inst[key];
-          const cls = maybe(inst, () => this._instUtil.tryGetInstClass(inst));
+          const inst = this._addr2inst.get(key);
+          const cls = maybe(inst, (nonNilInst) =>
+            this._instUtil.tryGetInstClass(nonNilInst)
+          );
           errors.push(
             `xref ${key} of type ${cls?.name} has` +
               `unexpected parents:\n` +

@@ -295,7 +295,7 @@ function valueChanged(
     if (instUtil.getInstClass(v1) !== instUtil.getInstClass(v2)) {
       return true;
     }
-    if (bundler.addrOf(v1).iid === bundler.addrOf(v2).iid) {
+    if (bundler.addrOfUnsafe(v1).iid === bundler.addrOfUnsafe(v2).iid) {
       return false;
     }
     if (isContentsConflictType(fieldMeta)) {
@@ -343,7 +343,7 @@ export function getArrayKey(bundler: Bundler, v: any, ctx: FieldInfo) {
       .map((val) => `(${getArrayKey(bundler, val, ctx)})`)
       .join(",")}]`;
   }
-  return instUtil.isObjInst(v) ? `iid=${bundler.addrOf(v).iid}` : v;
+  return instUtil.isObjInst(v) ? `iid=${bundler.addrOfUnsafe(v).iid}` : v;
 }
 
 function getScalarKey(k: any, bundler: Bundler, ctx: FieldInfo) {
@@ -445,7 +445,7 @@ function handleUpdatedValue<T>(
     return cloneContents(
       updatedValue,
       bundler,
-      bundler.addrOf(parentInst).uuid
+      bundler.addrOfUnsafe(parentInst).uuid
     );
   }
   if (
@@ -666,15 +666,15 @@ export function cloneObjInstToMergedSite<T extends ObjInst>(
   mergedSite: Site,
   bundler: Bundler
 ): T {
-  const branchBundleId = bundler.addrOf(branch).uuid;
-  const mergedBundleId = bundler.addrOf(mergedSite).uuid;
+  const branchBundleId = bundler.addrOfUnsafe(branch).uuid;
+  const mergedBundleId = bundler.addrOfUnsafe(mergedSite).uuid;
 
-  if (bundler.addrOf(inst).uuid !== branchBundleId) {
+  if (bundler.addrOfUnsafe(inst).uuid !== branchBundleId) {
     // External instance
     return inst;
   }
 
-  const iid = bundler.addrOf(inst).iid;
+  const iid = bundler.addrOfUnsafe(inst).iid;
   const clsName = instUtil.getInstClassName(inst);
   const maybeExistingObj = bundler.objByAddr({ uuid: mergedBundleId, iid });
   if (maybeExistingObj) {
@@ -700,8 +700,8 @@ export function cloneObjInstToMergedSite<T extends ObjInst>(
     )
   );
   const cloneAddr = { uuid: mergedBundleId, iid };
-  bundler._uid2addr[clone.uid] = cloneAddr;
-  bundler._addr2inst[addrKey(cloneAddr)] = clone;
+  bundler._uid2addr.set(clone.uid, cloneAddr);
+  bundler._addr2inst.set(addrKey(cloneAddr), clone);
 
   instUtil.allInstFields(inst).forEach((field) => {
     clone[field.name] = cloneFieldValueToMergedSite(
@@ -727,8 +727,8 @@ export function generateIidForInst(
     uuid,
     iid: bundler.getNewIid(),
   };
-  bundler._uid2addr[inst.uid] = newAddr;
-  bundler._addr2inst[addrKey(newAddr)] = inst;
+  bundler._uid2addr.set(inst.uid, newAddr);
+  bundler._addr2inst.set(addrKey(newAddr), inst);
 }
 
 export type Grouping<
@@ -1070,8 +1070,8 @@ export function getDirectConflicts({
     cloneFieldValueToMergedSite(field, v, branch, mergedCtx.site, bundler);
   const getMergedInst = (inst: ObjInst) =>
     bundler.objByAddr({
-      uuid: bundler.addrOf(mergedCtx.site).uuid,
-      iid: bundler.addrOf(inst).iid,
+      uuid: bundler.addrOfUnsafe(mergedCtx.site).uuid,
+      iid: bundler.addrOfUnsafe(inst).iid,
     });
 
   const allLeftUpdates = getInstUpdates(ancestorCtx, leftCtx, bundler);
@@ -1601,12 +1601,12 @@ function walkAndFixNames(
         const allNames = countBy(value.map((obj) => pathGet(obj, nameKey)));
         const seen = getOrSetSeen(
           seenMap,
-          bundler.addrOf(inst).iid,
+          bundler.addrOfUnsafe(inst).iid,
           field.name
         );
         for (const child of value) {
           const name = pathGet(child, nameKey);
-          const iid = bundler.addrOf(child).iid;
+          const iid = bundler.addrOfUnsafe(child).iid;
           if (seen.has(name) && seen.get(name) !== iid) {
             const newName = uniqueName(Object.keys(allNames), name);
             if (fieldMeta.customRenameFn) {
@@ -1691,7 +1691,7 @@ function preFixTplNames(
         }
 
         // This means it's a new node
-        const iid = bundler.addrOf(node).iid;
+        const iid = bundler.addrOfUnsafe(node).iid;
         if (!(iid in ancestorNodes)) {
           return true;
         }
@@ -1702,7 +1702,7 @@ function preFixTplNames(
     const params = component.params.filter((param) => !isDeletedInst(param));
     return {
       nodes: Object.fromEntries(
-        nodes.map((node) => [bundler.addrOf(node).iid, node])
+        nodes.map((node) => [bundler.addrOfUnsafe(node).iid, node])
       ),
       names: withoutNils([
         ...nodes.filter(isTplNamable).map((node) => node.name),
@@ -1756,14 +1756,14 @@ function preFixTplNames(
   const bTplMgr = new TplMgr({ site: b });
   const ancestorComponents: Record<number, classes.Component> = {};
   for (const component of ancestor.components) {
-    ancestorComponents[bundler.addrOf(component).iid] = component;
+    ancestorComponents[bundler.addrOfUnsafe(component).iid] = component;
   }
   const aComponents: Record<number, classes.Component> = {};
   for (const component of a.components) {
-    aComponents[bundler.addrOf(component).iid] = component;
+    aComponents[bundler.addrOfUnsafe(component).iid] = component;
   }
   for (const bComponent of b.components) {
-    const componentIid = bundler.addrOf(bComponent).iid;
+    const componentIid = bundler.addrOfUnsafe(bComponent).iid;
     if (!(componentIid in aComponents)) {
       continue;
     }
@@ -1850,7 +1850,7 @@ function runMergeFnAndApplyFixes(
     bundler
   );
   const isDeletedInst = (inst: ObjInst) =>
-    iidsToBeDeleted.has(bundler.addrOf(inst).iid);
+    iidsToBeDeleted.has(bundler.addrOfUnsafe(inst).iid);
 
   // Some operations can be harder to execute once we merge the elements in a single site, which
   // we will process before the merge, by directly changing a and b sites. This
@@ -1909,11 +1909,11 @@ function runMergeFnAndApplyFixes(
   const fixAutoReconciliationsInsts = (
     arr: AutoReconciliation[]
   ): AutoReconciliation[] => {
-    const mergedSiteUuid = bundler.addrOf(mergedSite).uuid;
+    const mergedSiteUuid = bundler.addrOfUnsafe(mergedSite).uuid;
     const getMergedInst = (inst: ObjInst) => {
       return bundler.objByAddr({
         uuid: mergedSiteUuid,
-        iid: bundler.addrOf(inst).iid,
+        iid: bundler.addrOfUnsafe(inst).iid,
       });
     };
     return arr.map((r) => {
@@ -1944,7 +1944,7 @@ function fixDuplicatedContentFields(
   recorder: ChangeRecorder,
   bundler: Bundler
 ) {
-  const siteUuid = bundler.addrOf(mergedSite).uuid;
+  const siteUuid = bundler.addrOfUnsafe(mergedSite).uuid;
   const dfs = (node: ObjInst) => {
     const cls = instUtil.getInstClass(node);
     for (const field of meta.allFields(cls)) {
@@ -2034,7 +2034,7 @@ export function tryMerge(
       .map((c) => c.uuid)
   );
 
-  const mergedSiteUuid = bundler.addrOf(mergedSite).uuid;
+  const mergedSiteUuid = bundler.addrOfUnsafe(mergedSite).uuid;
   let directConflicts: DirectConflict[] = [];
 
   // Track all components to be used in tree operations, it's possible that we could avoid tracking some, but since it's cheap, we don't bother.
@@ -2056,7 +2056,7 @@ export function tryMerge(
           (branch) =>
             maybe(
               bundler.addrOf(obj),
-              (addr) => addr.uuid !== bundler.addrOf(branch).uuid
+              (addr) => addr.uuid !== bundler.addrOfUnsafe(branch).uuid
             ) ?? true
         ),
         `Re-used the same inst from a different branch`
@@ -2149,13 +2149,17 @@ function computeIidsToBeDeletedInMerge(
   bundler: Bundler
 ) {
   const ancestorIids = walkModelTree(createNodeCtx(ancestor)).map(
-    (inst) => bundler.addrOf(inst).iid
+    (inst) => bundler.addrOfUnsafe(inst).iid
   );
   const leftIids = new Set(
-    walkModelTree(createNodeCtx(left)).map((inst) => bundler.addrOf(inst).iid)
+    walkModelTree(createNodeCtx(left)).map(
+      (inst) => bundler.addrOfUnsafe(inst).iid
+    )
   );
   const rightIids = new Set(
-    walkModelTree(createNodeCtx(right)).map((inst) => bundler.addrOf(inst).iid)
+    walkModelTree(createNodeCtx(right)).map(
+      (inst) => bundler.addrOfUnsafe(inst).iid
+    )
   );
   return new Set(
     ancestorIids.filter((iid) => {
