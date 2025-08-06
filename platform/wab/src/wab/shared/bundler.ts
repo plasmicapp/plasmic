@@ -543,10 +543,7 @@ export class Bundler {
 
   /** @deprecated - use {@link addrOf} and handle missing case */
   addrOfUnsafe(obj: classesModule.ObjInst): Addr {
-    return ensure(
-      this._uid2addr.get(obj.uid),
-      () => `_uid2addr missing ${obj.uid}`
-    );
+    return this._uid2addr.get(obj.uid) as Addr;
   }
 
   objByAddr(addr: Addr): classesModule.ObjInst | undefined {
