@@ -1,7 +1,6 @@
 import {
   FinalStyleToken,
   MutableStyleToken,
-  TokenType,
   derefToken,
   derefTokenRefs,
   hasTokenRefs,
@@ -304,7 +303,7 @@ export function mkInsertableTokenImporter(
     const newToken = new MutableStyleToken(
       tplMgr.addToken({
         name: tplMgr.getUniqueTokenName(oldToken.name),
-        tokenType: oldToken.type as TokenType,
+        tokenType: oldToken.type,
         value: maybeDerefToken(targetTokens, oldTokens, oldToken),
       })
     );

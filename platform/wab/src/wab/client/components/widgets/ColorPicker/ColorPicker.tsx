@@ -26,8 +26,10 @@ import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import {
   FinalStyleToken,
   MutableStyleToken,
+  OverrideableStyleToken,
   TokenType,
   derefTokenRefs,
+  isStyleTokenEditable,
   mkTokenRef,
   tryParseTokenRef,
 } from "@/wab/commons/StyleToken";
@@ -38,7 +40,6 @@ import { ensure } from "@/wab/shared/common";
 import {
   allColorTokens,
   allStyleTokensAndOverrides,
-  isStyleTokenEditableOrOverridable,
 } from "@/wab/shared/core/sites";
 import { StyleToken } from "@/wab/shared/model/classes";
 import { canCreateAlias } from "@/wab/shared/ui-config-utils";
@@ -116,9 +117,9 @@ function ColorPicker_({
     appliedToken,
   } = tryGetRealColor(color, sc, resolver, vsh, maybeColorTokens);
 
-  const [editToken, setEditToken] = React.useState<FinalStyleToken | undefined>(
-    undefined
-  );
+  const [editToken, setEditToken] = React.useState<
+    MutableStyleToken | OverrideableStyleToken | undefined
+  >(undefined);
 
   if (maybeRealColor === undefined) {
     console.log(`Invalid token - hopefully caused by undo`, color);
@@ -428,8 +429,7 @@ function ColorPicker_({
     }
   };
 
-  const isEditable =
-    appliedToken && isStyleTokenEditableOrOverridable(appliedToken, vsh);
+  const isEditable = appliedToken && isStyleTokenEditable(appliedToken, vsh);
 
   return (
     <div>

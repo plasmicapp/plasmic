@@ -1,11 +1,9 @@
 import {
   FinalStyleToken,
-  MutableStyleToken,
-  TokenType,
-  isTokenOverridable,
   mkTokenRef,
   replaceAllTokenRefs,
   toFinalStyleToken,
+  TokenType,
 } from "@/wab/commons/StyleToken";
 import { ArenaType } from "@/wab/shared/ApiSchema";
 import {
@@ -20,7 +18,6 @@ import {
 import { ARENA_CAP } from "@/wab/shared/Labels";
 import { getSlotArgs } from "@/wab/shared/SlotUtils";
 import { mkScreenVariantGroup } from "@/wab/shared/SpecialVariants";
-import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import {
   isGlobalVariant,
   isGlobalVariantGroup,
@@ -28,8 +25,8 @@ import {
   mkBaseVariant,
 } from "@/wab/shared/Variants";
 import {
-  componentToReferencers,
   componentsReferecerToPageHref,
+  componentToReferencers,
   findAllDataSourceOpExprForComponent,
   flattenComponent,
 } from "@/wab/shared/cached-selectors";
@@ -50,13 +47,12 @@ import {
 import { ensureComponentArenaColsOrder } from "@/wab/shared/component-arenas";
 import { ColorFill } from "@/wab/shared/core/bg-styles";
 import {
-  CodeComponent,
-  ComponentCloneResult,
-  PageComponent,
   allComponentVariants,
   cloneComponent,
   cloneVariant,
   cloneVariantGroup,
+  CodeComponent,
+  ComponentCloneResult,
   fixArgForCloneComponent,
   getComponentDisplayName,
   getEffectiveVariantSettingOfDeepRootElement,
@@ -65,6 +61,7 @@ import {
   isCodeComponent,
   isFrameComponent,
   isPageComponent,
+  PageComponent,
 } from "@/wab/shared/core/components";
 import {
   convertHrefExprToCodeExpr,
@@ -121,6 +118,10 @@ import {
   CustomFunction,
   CustomFunctionExpr,
   DataSourceOpExpr,
+  ensureKnownArenaFrame,
+  ensureKnownVariant,
+  ensureMaybeKnownGlobalVariantGroup,
+  ensureMaybeKnownVariantGroup,
   EventHandler,
   Expr,
   FunctionArg,
@@ -129,42 +130,6 @@ import {
   HostLessPackageInfo,
   ImageAsset,
   ImageAssetRef,
-  MapExpr,
-  Mixin,
-  ObjInst,
-  ObjectPath,
-  PageArena,
-  PageHref,
-  Param,
-  QueryInvalidationExpr,
-  QueryRef,
-  RenderExpr,
-  RuleSet,
-  Site,
-  StrongFunctionArg,
-  StyleExpr,
-  StyleToken,
-  StyleTokenRef,
-  TemplatedString,
-  Theme,
-  ThemeLayoutSettings,
-  ThemeStyle,
-  TplComponent,
-  TplNode,
-  TplRef,
-  Type,
-  VarRef,
-  Variant,
-  VariantGroup,
-  VariantSetting,
-  VariantedRuleSet,
-  VariantedValue,
-  VariantsRef,
-  VirtualRenderExpr,
-  ensureKnownArenaFrame,
-  ensureKnownVariant,
-  ensureMaybeKnownGlobalVariantGroup,
-  ensureMaybeKnownVariantGroup,
   isKnownComponent,
   isKnownComponentInstance,
   isKnownCustomCode,
@@ -185,14 +150,46 @@ import {
   isKnownVariant,
   isKnownVariantedRuleSet,
   isKnownVariantedValue,
+  MapExpr,
+  Mixin,
+  ObjectPath,
+  ObjInst,
+  PageArena,
+  PageHref,
+  Param,
+  QueryInvalidationExpr,
+  QueryRef,
+  RenderExpr,
+  RuleSet,
+  Site,
+  StrongFunctionArg,
+  StyleExpr,
+  StyleToken,
+  StyleTokenRef,
+  TemplatedString,
+  Theme,
+  ThemeLayoutSettings,
+  ThemeStyle,
+  TplComponent,
+  TplNode,
+  TplRef,
+  Type,
+  Variant,
+  VariantedRuleSet,
+  VariantedValue,
+  VariantGroup,
+  VariantSetting,
+  VariantsRef,
+  VarRef,
+  VirtualRenderExpr,
 } from "@/wab/shared/model/classes";
 import {
-  isRenderFuncType,
   isRenderableType,
+  isRenderFuncType,
 } from "@/wab/shared/model/model-util";
 import {
-  ResponsiveStrategy,
   defaultResponsiveSettings,
+  ResponsiveStrategy,
 } from "@/wab/shared/responsiveness";
 import { naturalSort } from "@/wab/shared/sort";
 import { getMatchingPagePathParams } from "@/wab/shared/utils/url-utils";
@@ -2065,17 +2062,6 @@ export function isEditable(
       localComponents(site).includes(asset)) ||
     (isKnownMixin(asset) && localMixins(site).includes(asset)) ||
     (isKnownImageAsset(asset) && localImageAssets(site).includes(asset))
-  );
-}
-
-export function isStyleTokenEditableOrOverridable(
-  token: FinalStyleToken,
-  vsh: VariantedStylesHelper | undefined
-): boolean {
-  return (
-    !token.isRegistered &&
-    (token instanceof MutableStyleToken || isTokenOverridable(token)) &&
-    (vsh === undefined || vsh.canUpdateToken())
   );
 }
 

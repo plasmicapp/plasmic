@@ -45,7 +45,7 @@ function ColorTokenControl(props: ColorTokenControlProps) {
       <PlasmicColorTokenControl
         icon={
           <>
-            {/* Only local tokens can be multi-selected */}
+            {/* Only mutable tokens can be multi-selected */}
             {multiAssetsActions.isSelecting &&
             token instanceof MutableStyleToken ? (
               <Checkbox isChecked={isSelected}> </Checkbox>

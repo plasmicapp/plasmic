@@ -5,7 +5,10 @@ import { Icon } from "@/wab/client/components/widgets/Icon";
 import { SimpleTextbox } from "@/wab/client/components/widgets/SimpleTextbox";
 import TokenIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Token";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { FinalStyleToken, MutableStyleToken } from "@/wab/commons/StyleToken";
+import {
+  MutableStyleToken,
+  OverrideableStyleToken,
+} from "@/wab/commons/StyleToken";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import { assert, spawn } from "@/wab/shared/common";
 import { observer } from "mobx-react";
@@ -13,7 +16,7 @@ import * as React from "react";
 
 export const FontFamilyTokenEditModal = observer(
   function FontFamilyTokenEditModal(props: {
-    token: FinalStyleToken;
+    token: MutableStyleToken | OverrideableStyleToken;
     studioCtx: StudioCtx;
     defaultEditingName?: boolean;
     onClose: () => void;

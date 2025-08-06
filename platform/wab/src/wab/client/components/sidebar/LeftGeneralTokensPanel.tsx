@@ -114,9 +114,9 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
     undefined
   );
 
-  const [editToken, setEditToken] = React.useState<FinalStyleToken | undefined>(
-    undefined
-  );
+  const [editToken, setEditToken] = React.useState<
+    MutableStyleToken | OverrideableStyleToken | undefined
+  >(undefined);
 
   const [vsh, setVsh] = React.useState<VariantedStylesHelper | undefined>(
     undefined
@@ -266,7 +266,7 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
   );
 
   const onSelect = React.useCallback(
-    (token: FinalStyleToken) => {
+    (token: MutableStyleToken | OverrideableStyleToken) => {
       setEditToken(token);
     },
     [setEditToken]

@@ -15,8 +15,7 @@ import TokenIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Token";
 import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import {
   FinalStyleToken,
-  isTokenEditable,
-  isTokenOverridable,
+  isStyleTokenEditable,
   MutableStyleToken,
   OverrideableStyleToken,
   TokenType,
@@ -31,6 +30,7 @@ import {
   allTokensOfType,
   directDepStyleTokens,
 } from "@/wab/shared/core/sites";
+import { DEVFLAGS } from "@/wab/shared/devflags";
 import { Site, StyleToken } from "@/wab/shared/model/classes";
 import { canCreateAlias } from "@/wab/shared/ui-config-utils";
 import { Menu, notification } from "antd";
@@ -93,7 +93,7 @@ export const TokenControlsContext = React.createContext<{
   vsh: VariantedStylesHelper | undefined;
   resolver: TokenValueResolver;
   onDuplicate: (token: StyleToken) => Promise<void>;
-  onSelect: (token: FinalStyleToken) => void;
+  onSelect: (token: MutableStyleToken | OverrideableStyleToken) => void;
   onDeleteOverride: (token: OverrideableStyleToken) => void;
   onAdd: (tokenType: TokenType, folderName?: string) => Promise<void>;
   expandedHeaders: Set<TokenType>;
@@ -203,9 +203,7 @@ export const TokenRow = observer(function TokenRow(props: {
   const { vsh, resolver, onDuplicate, onSelect, onDeleteOverride } =
     useTokenControls();
 
-  const readOnly = !isTokenEditable(token) || isTokenPanelReadOnly(studioCtx);
-  const overridable =
-    isTokenOverridable(token) && !isTokenPanelReadOnly(studioCtx);
+  const tokenPanelReadOnly = isTokenPanelReadOnly(studioCtx);
 
   const onFindReferences = () => {
     spawn(
@@ -225,14 +223,18 @@ export const TokenRow = observer(function TokenRow(props: {
           Find all references
         </Menu.Item>
       );
-      if (overridable) {
-        if (vsh?.isTargetBaseVariant() === false) {
+      if (
+        DEVFLAGS.importedTokenOverrides &&
+        !tokenPanelReadOnly &&
+        token instanceof OverrideableStyleToken
+      ) {
+        if (vsh && !vsh.isTargetBaseVariant()) {
           push(
             <Menu.Item key="varianted-override" onClick={() => onSelect(token)}>
               Override global variant value
             </Menu.Item>
           );
-          if (token.override && !vsh?.isStyleInherited(token)) {
+          if (token.override && !vsh.isStyleInherited(token)) {
             push(
               <Menu.Item
                 key="remove-global-variant-value"
@@ -253,7 +255,7 @@ export const TokenRow = observer(function TokenRow(props: {
               Override value
             </Menu.Item>
           );
-          if (token instanceof OverrideableStyleToken && token.override) {
+          if (token.override?.value) {
             push(
               <Menu.Item
                 key="remove-override"
@@ -265,7 +267,8 @@ export const TokenRow = observer(function TokenRow(props: {
           }
         }
       }
-      if (!readOnly) {
+
+      if (!tokenPanelReadOnly && token.isLocal) {
         push(
           <Menu.Item key="clone" onClick={() => onDuplicate(token.base)}>
             Duplicate
@@ -274,9 +277,11 @@ export const TokenRow = observer(function TokenRow(props: {
       }
 
       if (
-        !readOnly &&
-        vsh?.isTargetBaseVariant() === false &&
-        !vsh?.isStyleInherited(token)
+        !tokenPanelReadOnly &&
+        token instanceof MutableStyleToken &&
+        vsh &&
+        !vsh.isTargetBaseVariant() &&
+        !vsh.isStyleInherited(token)
       ) {
         push(
           <Menu.Item
@@ -338,7 +343,11 @@ export const TokenRow = observer(function TokenRow(props: {
         });
       });
 
-      if (!readOnly && !multiAssetsActions.isSelecting) {
+      if (
+        !tokenPanelReadOnly &&
+        token instanceof MutableStyleToken &&
+        !multiAssetsActions.isSelecting
+      ) {
         builder.genSection(undefined, (push2) => {
           push2(
             <Menu.Item
@@ -381,7 +390,7 @@ export const TokenRow = observer(function TokenRow(props: {
 
   const onClickHandler = multiAssetsActions.isSelecting
     ? onToggle
-    : !readOnly
+    : !tokenPanelReadOnly && isStyleTokenEditable(token, vsh)
     ? () => onSelect(token)
     : undefined;
 
@@ -487,7 +496,7 @@ export const TokenFolderRow = observer(function TokenFolderRow(
 });
 
 export const ColorTokenPopup = observer(function ColorTokenPopup(props: {
-  token: FinalStyleToken;
+  token: MutableStyleToken | OverrideableStyleToken;
   studioCtx: StudioCtx;
   show: boolean;
   onClose: () => void;

@@ -20,8 +20,10 @@ import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import {
   FinalStyleToken,
   MutableStyleToken,
+  OverrideableStyleToken,
   TokenType,
   derefToken,
+  isStyleTokenEditable,
   mkTokenRef,
   tokenTypeDefaults,
   tokenTypeLabel,
@@ -41,10 +43,7 @@ import {
   spawn,
   unexpected,
 } from "@/wab/shared/common";
-import {
-  allStyleTokensAndOverrides,
-  isStyleTokenEditableOrOverridable,
-} from "@/wab/shared/core/sites";
+import { allStyleTokensAndOverrides } from "@/wab/shared/core/sites";
 import * as css from "@/wab/shared/css";
 import {
   lengthCssUnits,
@@ -224,7 +223,7 @@ export const DimTokenSpinner = observer(
       typedInputValue ?? (hasParsedToken ? "" : focused ? value : displayValue);
 
     const [editToken, setEditToken] = React.useState<
-      FinalStyleToken | undefined
+      MutableStyleToken | OverrideableStyleToken | undefined
     >(undefined);
 
     const [newToken, setNewToken] = React.useState<
@@ -307,7 +306,7 @@ export const DimTokenSpinner = observer(
         inputValue.length === 0 && // the user hasn't typed anything yet
           selectedToken && // a token is currently selected
           studioCtx && // studioCtx if defined
-          isStyleTokenEditableOrOverridable(selectedToken, vsh) && // the token is editable
+          isStyleTokenEditable(selectedToken, vsh) && // the token is editable
           ({ type: "edit-token", token: selectedToken } as const),
 
         // show tokens that match name or value
@@ -811,7 +810,7 @@ interface AddTokenItem {
 
 interface EditTokenItem {
   type: "edit-token";
-  token: FinalStyleToken;
+  token: MutableStyleToken | OverrideableStyleToken;
 }
 
 interface SetValueItem {

@@ -15,13 +15,9 @@ import {
   withoutNils,
 } from "@/wab/shared/common";
 import { DependencyWalkScope } from "@/wab/shared/core/project-deps";
-import {
-  allTokensOfType,
-  localStyleTokenOverrides,
-} from "@/wab/shared/core/sites";
+import { allTokensOfType } from "@/wab/shared/core/sites";
 import { getLengthUnits, parseCss } from "@/wab/shared/css";
 import { DEVFLAGS } from "@/wab/shared/devflags";
-import { maybeComputedFn } from "@/wab/shared/mobx-util";
 import {
   Mixin,
   Site,
@@ -54,7 +50,7 @@ export type FinalStyleToken =
   | ImmutableStyleToken;
 
 abstract class BaseStyleToken {
-  constructor(readonly base: StyleToken) {}
+  constructor(readonly base: StyleToken, readonly isLocal: boolean) {}
 
   get override(): StyleTokenOverride | null {
     return null;
@@ -120,6 +116,10 @@ abstract class BaseStyleToken {
 
 /** Style tokens in the local project are mutable. */
 export class MutableStyleToken extends BaseStyleToken {
+  constructor(base: StyleToken) {
+    super(base, true);
+  }
+
   setValue(value: string): void {
     BaseStyleToken.setValue(this.base, value);
   }
@@ -136,7 +136,7 @@ export class MutableStyleToken extends BaseStyleToken {
 /** Style tokens from direct dependencies are immutable but can be overridden. */
 export class OverrideableStyleToken extends BaseStyleToken {
   constructor(base: StyleToken, private readonly site: Site) {
-    super(base);
+    super(base, false);
   }
 
   get override(): StyleTokenOverride | null {
@@ -251,9 +251,11 @@ export const tokenTypes = [
 ] as const;
 
 export function toFinalStyleToken(token: StyleToken, site: Site) {
+  const isLocal = site.styleTokens.includes(token);
+
   if (token.isRegistered) {
-    return new ImmutableStyleToken(token);
-  } else if (site.styleTokens.includes(token)) {
+    return new ImmutableStyleToken(token, isLocal);
+  } else if (isLocal) {
     return new MutableStyleToken(token);
   } else if (
     site.projectDependencies
@@ -262,19 +264,25 @@ export function toFinalStyleToken(token: StyleToken, site: Site) {
   ) {
     return new OverrideableStyleToken(token, site);
   } else {
-    return new ImmutableStyleToken(token);
+    return new ImmutableStyleToken(token, isLocal);
   }
 }
 
-export const isTokenEditable = (token: FinalStyleToken) => {
-  return token instanceof MutableStyleToken;
-};
-
-export const isTokenOverridable = (token: FinalStyleToken) => {
+/**
+ * Checks if a style token is editable. Can also check if the target global
+ * variants are valid.
+ */
+export function isStyleTokenEditable(
+  token: FinalStyleToken,
+  vsh: VariantedStylesHelper | undefined
+): token is MutableStyleToken | OverrideableStyleToken {
   return (
-    token instanceof OverrideableStyleToken && DEVFLAGS.importedTokenOverrides
+    (token instanceof MutableStyleToken ||
+      (token instanceof OverrideableStyleToken &&
+        DEVFLAGS.importedTokenOverrides)) &&
+    (vsh === undefined || vsh.canUpdateToken())
   );
-};
+}
 
 export function tokenTypeLabel(type: TokenType) {
   switch (type) {
@@ -344,15 +352,6 @@ export function tokenTypeDefaults(type: TokenType) {
       throw unexpected();
   }
 }
-
-export const getOverrideForToken = maybeComputedFn(function getOverrideForToken(
-  site: Site,
-  token: StyleToken
-) {
-  return localStyleTokenOverrides(site).find(
-    (t) => t.token.uuid === token.uuid
-  );
-});
 
 export const isTokenNameValidCssVariable = (token: StyleToken) =>
   token.name.startsWith("--") && CSSEscape(token.name) === token.name;

@@ -11,9 +11,13 @@ import TokenIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Token";
 import PlasmicFindReferencesModal from "@/wab/client/plasmic/plasmic_kit_find_references_modal/PlasmicFindReferencesModal";
 import { DefaultReferenceItemProps } from "@/wab/client/plasmic/plasmic_kit_find_references_modal/PlasmicReferenceItem";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { FinalStyleToken, toFinalStyleToken } from "@/wab/commons/StyleToken";
+import {
+  MutableStyleToken,
+  OverrideableStyleToken,
+  toFinalStyleToken,
+} from "@/wab/commons/StyleToken";
 import { FRAME_LOWER } from "@/wab/shared/Labels";
-import { ensure, spawn, unexpected } from "@/wab/shared/common";
+import { assert, ensure, spawn, unexpected } from "@/wab/shared/common";
 import {
   getComponentDisplayName,
   isPageComponent,
@@ -108,7 +112,7 @@ export const FindReferencesModal = observer(
     const currentArena = studioCtx.currentArena;
 
     const [editToken, setEditToken] = React.useState<
-      FinalStyleToken | undefined
+      MutableStyleToken | OverrideableStyleToken | undefined
     >(undefined);
     const [editMixin, setEditMixin] = React.useState<Mixin | undefined>(
       undefined
@@ -160,6 +164,11 @@ export const FindReferencesModal = observer(
           : isKnownStyleTokenOverride(item)
           ? toFinalStyleToken(item.token, studioCtx.site)
           : unexpected();
+        assert(
+          token instanceof MutableStyleToken ||
+            token instanceof OverrideableStyleToken,
+          "token must be editable"
+        );
         return {
           displayName: token.name,
           type: type,

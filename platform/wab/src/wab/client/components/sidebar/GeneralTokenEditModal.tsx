@@ -6,9 +6,8 @@ import { SimpleTextbox } from "@/wab/client/components/widgets/SimpleTextbox";
 import TokenIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Token";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import {
-  FinalStyleToken,
   MutableStyleToken,
-  TokenType,
+  OverrideableStyleToken,
   tokenTypeDimOpts,
 } from "@/wab/commons/StyleToken";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
@@ -18,7 +17,7 @@ import * as React from "react";
 
 export const GeneralTokenEditModal = observer(
   function GeneralTokenModal(props: {
-    token: FinalStyleToken;
+    token: MutableStyleToken | OverrideableStyleToken;
     studioCtx: StudioCtx;
     defaultEditingName?: boolean;
     onClose: () => void;
@@ -30,7 +29,6 @@ export const GeneralTokenEditModal = observer(
       defaultEditingName,
       vsh = new VariantedStylesHelper(props.studioCtx.site),
     } = props;
-    const tokenType = token.type as TokenType;
     const onChange = async (val: string | undefined) => {
       assert(val !== undefined);
       return studioCtx.changeUnsafe(() => {
@@ -73,9 +71,9 @@ export const GeneralTokenEditModal = observer(
             onChange={(val) => onChange(ensure(val, "new value is undefined"))}
             noClear
             studioCtx={studioCtx}
-            tokenType={tokenType}
+            tokenType={token.type}
             autoFocus={!defaultEditingName}
-            {...tokenTypeDimOpts(tokenType)}
+            {...tokenTypeDimOpts(token.type)}
             vsh={vsh}
           />
         </div>
