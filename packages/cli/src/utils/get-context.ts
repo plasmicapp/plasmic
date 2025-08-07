@@ -245,10 +245,6 @@ async function resolveMissingFilesInConfig(
 
     project.images = await filterFiles(project.images, "filePath");
     project.icons = await filterFiles(project.icons, "moduleFilePath");
-    project.jsBundleThemes = await filterFiles(
-      project.jsBundleThemes || [],
-      "themeFilePath"
-    );
 
     // For components, if they decide to recreate in any of the path (css, wrapper, or blackbox component)
     // we'll delete existing files.

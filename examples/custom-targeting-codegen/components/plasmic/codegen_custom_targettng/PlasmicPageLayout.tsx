@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -13,31 +13,24 @@
 
 import * as React from "react";
 
-import Head from "next/head";
-import Link, { LinkProps } from "next/link";
 import { useRouter } from "next/router";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
-  hasVariant,
-  classNames,
-  wrapWithClassName,
-  createPlasmicElementProxy,
-  makeFragment,
-  MultiChoiceArg,
-  SingleBooleanChoiceArg,
-  SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
+  Flex as Flex__,
   StrictProps,
+  classNames,
+  createPlasmicElementProxy,
   deriveRenderOpts,
-  ensureGlobalVariants,
+  renderPlasmicSlot,
+  useCurrentUser,
 } from "@plasmicapp/react-web";
-import { RichLayout } from "@plasmicpkgs/plasmic-rich-components/skinny/rich-layout";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+} from "@plasmicapp/react-web/lib/host";
+
 import { LoadingBoundary } from "@plasmicpkgs/plasmic-basic-components";
+import { RichLayout } from "@plasmicpkgs/plasmic-rich-components/skinny/rich-layout";
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
@@ -56,15 +49,13 @@ export type PlasmicPageLayout__VariantsArgs = {};
 type VariantPropType = keyof PlasmicPageLayout__VariantsArgs;
 export const PlasmicPageLayout__VariantProps = new Array<VariantPropType>();
 
-export type PlasmicPageLayout__ArgsType = {
-  children?: React.ReactNode;
-};
+export type PlasmicPageLayout__ArgsType = { children?: React.ReactNode };
 type ArgPropType = keyof PlasmicPageLayout__ArgsType;
 export const PlasmicPageLayout__ArgProps = new Array<ArgPropType>("children");
 
 export type PlasmicPageLayout__OverridesType = {
-  root?: p.Flex<typeof RichLayout>;
-  loadingBoundary?: p.Flex<typeof LoadingBoundary>;
+  root?: Flex__<typeof RichLayout>;
+  loadingBoundary?: Flex__<typeof LoadingBoundary>;
 };
 
 export interface DefaultPageLayoutProps {
@@ -89,7 +80,16 @@ function PlasmicPageLayout__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
@@ -97,11 +97,12 @@ function PlasmicPageLayout__RenderFunc(props: {
   };
 
   const __nextRouter = useNextRouter();
-  const $ctx = ph.useDataEnv?.() || {};
+
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
+  const currentUser = useCurrentUser?.() || {};
 
   return (
     <RichLayout
@@ -149,9 +150,8 @@ function PlasmicPageLayout__RenderFunc(props: {
       <LoadingBoundary
         data-plasmic-name={"loadingBoundary"}
         data-plasmic-override={overrides.loadingBoundary}
-        className={classNames("__wab_instance", sty.loadingBoundary)}
         loadingState={
-          <ph.DataCtxReader>
+          <DataCtxReader__>
             {($ctx) => (
               <div className={classNames(projectcss.all, sty.freeBox__eVwXs)}>
                 <IconIcon
@@ -160,13 +160,13 @@ function PlasmicPageLayout__RenderFunc(props: {
                 />
               </div>
             )}
-          </ph.DataCtxReader>
+          </DataCtxReader__>
         }
       >
-        <ph.DataCtxReader>
+        <DataCtxReader__>
           {($ctx) => (
             <div className={classNames(projectcss.all, sty.freeBox__rx4En)}>
-              {p.renderPlasmicSlot({
+              {renderPlasmicSlot({
                 defaultContents: (
                   <section
                     className={classNames(projectcss.all, sty.section__apW5A)}
@@ -198,7 +198,7 @@ function PlasmicPageLayout__RenderFunc(props: {
               })}
             </div>
           )}
-        </ph.DataCtxReader>
+        </DataCtxReader__>
       </LoadingBoundary>
     </RichLayout>
   ) as React.ReactElement | null;
@@ -228,15 +228,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicPageLayout__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicPageLayout__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicPageLayout__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+    // Specify args directly as props
+    Omit<PlasmicPageLayout__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

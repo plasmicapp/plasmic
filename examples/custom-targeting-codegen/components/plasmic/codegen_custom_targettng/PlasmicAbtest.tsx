@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -14,37 +14,31 @@
 import * as React from "react";
 
 import Head from "next/head";
-import Link, { LinkProps } from "next/link";
 import { useRouter } from "next/router";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-import * as plasmicAuth from "@plasmicapp/react-web/lib/auth";
-import { usePlasmicDataSourceContext } from "@plasmicapp/data-sources-context";
-
 import {
-  hasVariant,
-  classNames,
-  wrapWithClassName,
-  createPlasmicElementProxy,
-  makeFragment,
-  MultiChoiceArg,
-  SingleBooleanChoiceArg,
-  SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
+  Flex as Flex__,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
   StrictProps,
+  classNames,
+  createPlasmicElementProxy,
   deriveRenderOpts,
   ensureGlobalVariants,
+  hasVariant,
+  useCurrentUser,
 } from "@plasmicapp/react-web";
-import PageLayout from "../../PageLayout"; // plasmic-import: _BlCShYS9xHe/component
-import { AntdButton } from "@plasmicpkgs/antd5/skinny/registerButton";
-
+import * as plasmicAuth from "@plasmicapp/react-web/lib/auth";
 import {
-  ButtonTypeValue,
-  useButtonType,
-} from "./PlasmicGlobalVariant__ButtonType"; // plasmic-import: C8lCX5Vidzec/globalVariant
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+} from "@plasmicapp/react-web/lib/host";
+
+import { usePlasmicDataSourceContext } from "@plasmicapp/data-sources-context";
+
+import { AntdButton } from "@plasmicpkgs/antd5/skinny/registerButton";
+import PageLayout from "../../PageLayout"; // plasmic-import: _BlCShYS9xHe/component
+
+import { useButtonType } from "./PlasmicGlobalVariant__ButtonType"; // plasmic-import: C8lCX5Vidzec/globalVariant
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
@@ -60,21 +54,19 @@ export type PlasmicAbtest__VariantsArgs = {};
 type VariantPropType = keyof PlasmicAbtest__VariantsArgs;
 export const PlasmicAbtest__VariantProps = new Array<VariantPropType>();
 
-export type PlasmicAbtest__ArgsType = {
-  plasmicSeed?: string;
-};
+export type PlasmicAbtest__ArgsType = { plasmicSeed?: string };
 type ArgPropType = keyof PlasmicAbtest__ArgsType;
 export const PlasmicAbtest__ArgProps = new Array<ArgPropType>("plasmicSeed");
 
 export type PlasmicAbtest__OverridesType = {
-  root?: p.Flex<"div">;
-  pageLayout?: p.Flex<typeof PageLayout>;
-  section?: p.Flex<"section">;
-  h1?: p.Flex<"h1">;
-  button?: p.Flex<typeof AntdButton>;
-  text?: p.Flex<"div">;
-  freeBox?: p.Flex<"div">;
-  h3?: p.Flex<"h3">;
+  root?: Flex__<"div">;
+  pageLayout?: Flex__<typeof PageLayout>;
+  section?: Flex__<"section">;
+  h1?: Flex__<"h1">;
+  button?: Flex__<typeof AntdButton>;
+  text?: Flex__<"div">;
+  freeBox?: Flex__<"div">;
+  h3?: Flex__<"h3">;
 };
 
 export interface DefaultAbtestProps {}
@@ -102,7 +94,9 @@ function PlasmicAbtest__RenderFunc(props: {
         {
           plasmicSeed: "0",
         },
-        props.args
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
       ),
     [props.args]
   );
@@ -113,11 +107,12 @@ function PlasmicAbtest__RenderFunc(props: {
   };
 
   const __nextRouter = useNextRouter();
-  const $ctx = ph.useDataEnv?.() || {};
+
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
+  const currentUser = useCurrentUser?.() || {};
 
   const globalVariants = ensureGlobalVariants({
     buttonType: useButtonType(),
@@ -161,7 +156,7 @@ function PlasmicAbtest__RenderFunc(props: {
             data-plasmic-name={"pageLayout"}
             data-plasmic-override={overrides.pageLayout}
           >
-            <ph.DataCtxReader>
+            <DataCtxReader__>
               {($ctx) => (
                 <section
                   data-plasmic-name={"section"}
@@ -270,7 +265,7 @@ function PlasmicAbtest__RenderFunc(props: {
                   </div>
                 </section>
               )}
-            </ph.DataCtxReader>
+            </DataCtxReader__>
           </PageLayout>
         </div>
       </div>
@@ -331,15 +326,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicAbtest__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicAbtest__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicAbtest__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+    // Specify args directly as props
+    Omit<PlasmicAbtest__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;
@@ -374,23 +369,6 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
   return func;
 }
 
-function withPlasmicPageGuard<P extends object>(
-  WrappedComponent: React.ComponentType<P>
-) {
-  const PageGuard: React.FC<P> = (props) => (
-    <p.PlasmicPageGuard
-      minRole={null}
-      appId={"pKnDSUf6hHdKMbSuzompSH"}
-      authorizeEndpoint={"https://studio.plasmic.app/authorize"}
-      canTriggerLogin={true}
-    >
-      <WrappedComponent {...props} />
-    </p.PlasmicPageGuard>
-  );
-
-  return PageGuard;
-}
-
 function withUsePlasmicAuth<P extends object>(
   WrappedComponent: React.ComponentType<P>
 ) {
@@ -401,7 +379,7 @@ function withUsePlasmicAuth<P extends object>(
     });
 
     return (
-      <p.PlasmicDataSourceContextProvider
+      <PlasmicDataSourceContextProvider__
         value={{
           ...dataSourceCtx,
           isUserLoading,
@@ -410,7 +388,7 @@ function withUsePlasmicAuth<P extends object>(
         }}
       >
         <WrappedComponent {...props} />
-      </p.PlasmicDataSourceContextProvider>
+      </PlasmicDataSourceContextProvider__>
     );
   };
   return WithUsePlasmicAuthComponent;
@@ -418,7 +396,7 @@ function withUsePlasmicAuth<P extends object>(
 
 export const PlasmicAbtest = Object.assign(
   // Top-level PlasmicAbtest renders the root element
-  withUsePlasmicAuth(withPlasmicPageGuard(makeNodeComponent("root"))),
+  withUsePlasmicAuth(makeNodeComponent("root")),
   {
     // Helper components rendering sub-elements
     pageLayout: makeNodeComponent("pageLayout"),

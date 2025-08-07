@@ -608,7 +608,6 @@ export function getOrAddProjectConfig(
           components: [],
           icons: [],
           images: [],
-          jsBundleThemes: [],
           indirect: false,
           globalContextsFilePath: "",
           splitsProviderFilePath: "",

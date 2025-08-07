@@ -76,7 +76,6 @@ export interface ProjectMetaBundle {
   projectName: string;
   cssFileName: string;
   cssRules: string;
-  jsBundleThemes?: JsBundleTheme[];
   globalContextBundle?: GlobalContextBundle;
   splitsProviderBundle?: SplitsProviderBundle;
   // A list of files that are exported from the project and *can* be used by the user

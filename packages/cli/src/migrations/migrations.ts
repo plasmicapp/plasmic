@@ -40,7 +40,6 @@ import { migrateInit } from "./0.1.27-migrateInit";
 import { tsToTsx } from "./0.1.28-tsToTsx";
 import { ensureProjectIcons } from "./0.1.31-ensureProjectIcons";
 import { ensureVersion } from "./0.1.42-ensureVersion";
-import { ensureJsBundleThemes } from "./0.1.57-ensureJsBundleThemes";
 import { ensureImageFiles } from "./0.1.64-imageFiles";
 import { ensureComponentType } from "./0.1.95-componentType";
 export interface MigrateContext {
@@ -61,7 +60,6 @@ export const MIGRATIONS: Record<string, MigrateConfigFunc> = {
   "0.1.28": tsToTsx,
   "0.1.31": ensureProjectIcons,
   "0.1.42": ensureVersion,
-  "0.1.57": ensureJsBundleThemes,
   "0.1.64": ensureImageFiles,
   "0.1.95": ensureComponentType,
   "0.1.146": ensureReactRuntime,

@@ -41,8 +41,7 @@
           "componentImportPath": "@plasmicpkgs/plasmic-basic-components"
         }
       ],
-      "customFunctions": [],
-      "jsBundleThemes": []
+      "customFunctions": []
     },
     {
       "projectId": "jkU633o1Cz7HrJdwdxhVHk",
@@ -61,43 +60,42 @@
           "id": "FNIk-CnxQYXU",
           "name": "RichLayout",
           "displayName": "hostless-rich-layout",
-          "componentImportPath": "@plasmicpkgs/plasmic-rich-components"
+          "componentImportPath": "@plasmicpkgs/plasmic-rich-components/skinny/rich-layout"
         },
         {
           "id": "k4RvFQUTZKCU",
           "name": "RichTable",
           "displayName": "hostless-rich-table",
-          "componentImportPath": "@plasmicpkgs/plasmic-rich-components",
+          "componentImportPath": "@plasmicpkgs/plasmic-rich-components/skinny/rich-table",
           "helper": {
             "name": "tableHelpers",
-            "importPath": "@plasmicpkgs/plasmic-rich-components"
+            "importPath": "@plasmicpkgs/plasmic-rich-components/skinny/rich-table"
           }
         },
         {
           "id": "zV8WqibK3ZnC",
           "name": "RichDetails",
           "displayName": "hostless-rich-details",
-          "componentImportPath": "@plasmicpkgs/plasmic-rich-components"
+          "componentImportPath": "@plasmicpkgs/plasmic-rich-components/skinny/rich-details"
         },
         {
           "id": "Hh2OL1EveIF",
           "name": "RichList",
           "displayName": "hostless-rich-list",
-          "componentImportPath": "@plasmicpkgs/plasmic-rich-components"
+          "componentImportPath": "@plasmicpkgs/plasmic-rich-components/skinny/rich-list"
         },
         {
           "id": "UzObi2yVH_DH",
           "name": "RichCalendar",
           "displayName": "hostless-rich-calendar",
-          "componentImportPath": "@plasmicpkgs/plasmic-rich-components",
+          "componentImportPath": "@plasmicpkgs/plasmic-rich-components/skinny/rich-calendar",
           "helper": {
             "name": "calendarHelpers",
-            "importPath": "@plasmicpkgs/plasmic-rich-components"
+            "importPath": "@plasmicpkgs/plasmic-rich-components/skinny/rich-calendar"
           }
         }
       ],
-      "customFunctions": [],
-      "jsBundleThemes": []
+      "customFunctions": []
     },
     {
       "projectId": "ohDidvG9XsCeFumugENU3J",
@@ -236,29 +234,29 @@
           "id": "TgJFzUZpvQ",
           "name": "FormWrapper",
           "displayName": "plasmic-antd5-form",
-          "componentImportPath": "@plasmicpkgs/antd5/skinny/registerForm",
+          "componentImportPath": "@plasmicpkgs/antd5/skinny/SchemaForm",
           "helper": {
             "name": "formHelpers",
-            "importPath": "@plasmicpkgs/antd5/skinny/registerForm"
+            "importPath": "@plasmicpkgs/antd5/skinny/Form"
           }
         },
         {
           "id": "EYHwZh9ILg",
           "name": "FormItemWrapper",
           "displayName": "plasmic-antd5-form-item",
-          "componentImportPath": "@plasmicpkgs/antd5/skinny/registerForm"
+          "componentImportPath": "@plasmicpkgs/antd5/skinny/FormItem"
         },
         {
           "id": "zEXrWX9naj",
           "name": "FormGroup",
           "displayName": "plasmic-antd5-form-group",
-          "componentImportPath": "@plasmicpkgs/antd5/skinny/registerForm"
+          "componentImportPath": "@plasmicpkgs/antd5/skinny/FormGroup"
         },
         {
           "id": "M2mN_XzxO4",
           "name": "FormListWrapper",
           "displayName": "plasmic-antd5-form-list",
-          "componentImportPath": "@plasmicpkgs/antd5/skinny/registerForm"
+          "componentImportPath": "@plasmicpkgs/antd5/skinny/FormList"
         },
         {
           "id": "Vf5hntD2SZ5",
@@ -483,10 +481,21 @@
             "name": "paginationHelpers",
             "importPath": "@plasmicpkgs/antd5/skinny/registerPagination"
           }
+        },
+        {
+          "id": "Zjjf7sP4JdQI",
+          "name": "AntdBreadcrumb",
+          "displayName": "plasmic-antd5-breadcrumb",
+          "componentImportPath": "@plasmicpkgs/antd5/skinny/registerBreadcrumb"
+        },
+        {
+          "id": "2ZOevuBPH-SX",
+          "name": "AntdBreadcrumbItem",
+          "displayName": "plasmic-antd5-breadcrumb-item",
+          "componentImportPath": "@plasmicpkgs/antd5/skinny/registerBreadcrumb"
         }
       ],
-      "customFunctions": [],
-      "jsBundleThemes": []
+      "customFunctions": []
     },
     {
       "projectId": "pKnDSUf6hHdKMbSuzompSH",
@@ -616,6 +625,6 @@
   "nextjsConfig": {
     "pagesDir": "../pages"
   },
-  "cliVersion": "0.1.325",
-  "$schema": "https://unpkg.com/@plasmicapp/cli@0.1.325/dist/plasmic.schema.json"
+  "cliVersion": "0.1.340",
+  "$schema": "https://unpkg.com/@plasmicapp/cli@0.1.340/dist/plasmic.schema.json"
 }

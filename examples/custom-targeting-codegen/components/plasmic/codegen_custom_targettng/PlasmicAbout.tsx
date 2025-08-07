@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -14,30 +14,25 @@
 import * as React from "react";
 
 import Head from "next/head";
-import Link, { LinkProps } from "next/link";
 import { useRouter } from "next/router";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
+import {
+  Flex as Flex__,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  StrictProps,
+  classNames,
+  createPlasmicElementProxy,
+  deriveRenderOpts,
+  useCurrentUser,
+} from "@plasmicapp/react-web";
 import * as plasmicAuth from "@plasmicapp/react-web/lib/auth";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+} from "@plasmicapp/react-web/lib/host";
+
 import { usePlasmicDataSourceContext } from "@plasmicapp/data-sources-context";
 
-import {
-  hasVariant,
-  classNames,
-  wrapWithClassName,
-  createPlasmicElementProxy,
-  makeFragment,
-  MultiChoiceArg,
-  SingleBooleanChoiceArg,
-  SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
-  StrictProps,
-  deriveRenderOpts,
-  ensureGlobalVariants,
-} from "@plasmicapp/react-web";
 import PageLayout from "../../PageLayout"; // plasmic-import: _BlCShYS9xHe/component
 
 import "@plasmicapp/react-web/lib/plasmic.css";
@@ -59,10 +54,10 @@ type ArgPropType = keyof PlasmicAbout__ArgsType;
 export const PlasmicAbout__ArgProps = new Array<ArgPropType>();
 
 export type PlasmicAbout__OverridesType = {
-  root?: p.Flex<"div">;
-  pageLayout?: p.Flex<typeof PageLayout>;
-  section?: p.Flex<"section">;
-  h1?: p.Flex<"h1">;
+  root?: Flex__<"div">;
+  pageLayout?: Flex__<typeof PageLayout>;
+  section?: Flex__<"section">;
+  h1?: Flex__<"h1">;
 };
 
 export interface DefaultAboutProps {}
@@ -84,7 +79,16 @@ function PlasmicAbout__RenderFunc(props: {
 }) {
   const { variants, overrides, forNode } = props;
 
-  const args = React.useMemo(() => Object.assign({}, props.args), [props.args]);
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+        Object.fromEntries(
+          Object.entries(props.args).filter(([_, v]) => v !== undefined)
+        )
+      ),
+    [props.args]
+  );
 
   const $props = {
     ...args,
@@ -92,11 +96,12 @@ function PlasmicAbout__RenderFunc(props: {
   };
 
   const __nextRouter = useNextRouter();
-  const $ctx = ph.useDataEnv?.() || {};
+
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
+  const currentUser = useCurrentUser?.() || {};
 
   return (
     <React.Fragment>
@@ -129,7 +134,7 @@ function PlasmicAbout__RenderFunc(props: {
             data-plasmic-name={"pageLayout"}
             data-plasmic-override={overrides.pageLayout}
           >
-            <ph.DataCtxReader>
+            <DataCtxReader__>
               {($ctx) => (
                 <section
                   data-plasmic-name={"section"}
@@ -150,7 +155,7 @@ function PlasmicAbout__RenderFunc(props: {
                   </h1>
                 </section>
               )}
-            </ph.DataCtxReader>
+            </DataCtxReader__>
           </PageLayout>
         </div>
       </div>
@@ -186,15 +191,15 @@ type NodeComponentProps<T extends NodeNameType> =
     args?: PlasmicAbout__ArgsType;
     overrides?: NodeOverridesType<T>;
   } & Omit<PlasmicAbout__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicAbout__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+    // Specify args directly as props
+    Omit<PlasmicAbout__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;
@@ -229,23 +234,6 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
   return func;
 }
 
-function withPlasmicPageGuard<P extends object>(
-  WrappedComponent: React.ComponentType<P>
-) {
-  const PageGuard: React.FC<P> = (props) => (
-    <p.PlasmicPageGuard
-      minRole={null}
-      appId={"pKnDSUf6hHdKMbSuzompSH"}
-      authorizeEndpoint={"https://studio.plasmic.app/authorize"}
-      canTriggerLogin={true}
-    >
-      <WrappedComponent {...props} />
-    </p.PlasmicPageGuard>
-  );
-
-  return PageGuard;
-}
-
 function withUsePlasmicAuth<P extends object>(
   WrappedComponent: React.ComponentType<P>
 ) {
@@ -256,7 +244,7 @@ function withUsePlasmicAuth<P extends object>(
     });
 
     return (
-      <p.PlasmicDataSourceContextProvider
+      <PlasmicDataSourceContextProvider__
         value={{
           ...dataSourceCtx,
           isUserLoading,
@@ -265,7 +253,7 @@ function withUsePlasmicAuth<P extends object>(
         }}
       >
         <WrappedComponent {...props} />
-      </p.PlasmicDataSourceContextProvider>
+      </PlasmicDataSourceContextProvider__>
     );
   };
   return WithUsePlasmicAuthComponent;
@@ -273,7 +261,7 @@ function withUsePlasmicAuth<P extends object>(
 
 export const PlasmicAbout = Object.assign(
   // Top-level PlasmicAbout renders the root element
-  withUsePlasmicAuth(withPlasmicPageGuard(makeNodeComponent("root"))),
+  withUsePlasmicAuth(makeNodeComponent("root")),
   {
     // Helper components rendering sub-elements
     pageLayout: makeNodeComponent("pageLayout"),

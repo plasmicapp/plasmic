@@ -605,13 +605,6 @@ async function syncProject(
         opts.baseDir
       );
     });
-    (projectBundle.projectConfig.jsBundleThemes || []).forEach((theme) => {
-      [theme.themeFileName, theme.themeModule] = maybeConvertTsxToJsx(
-        theme.themeFileName,
-        theme.themeModule,
-        opts.baseDir
-      );
-    });
   }
   await syncGlobalVariants(
     context,
@@ -766,37 +759,7 @@ async function syncProjectConfig(
     checksum: checksums.projectCssChecksum,
   });
 
-  /*
-  for (const theme of projectBundle.jsBundleThemes) {
-    if (!projectConfig.jsBundleThemes) {
-      projectConfig.jsBundleThemes = [];
-    }
-    let themeConfig = projectConfig.jsBundleThemes.find(
-      (c) => c.bundleName === theme.bundleName
-    );
-    if (!themeConfig) {
-      const themeFilePath = defaultResourcePath(
-        context,
-        projectConfig,
-        theme.themeFileName
-      );
-      themeConfig = { themeFilePath, bundleName: theme.bundleName };
-      projectConfig.jsBundleThemes.push(themeConfig);
-    }
-    const formatted = formatAsLocal(
-      theme.themeModule,
-      themeConfig.themeFilePath
-    );
-    await writeFileContent(context, themeConfig.themeFilePath, formatted, {
-      force: true,
-    });
-  }
-  */
-
-  if (
-    projectConfig.jsBundleThemes &&
-    projectConfig.jsBundleThemes.length === 0
-  ) {
+  if (projectConfig.jsBundleThemes?.length === 0) {
     delete projectConfig.jsBundleThemes;
   }
 

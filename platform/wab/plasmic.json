@@ -518,8 +518,7 @@
       "indirect": false,
       "globalContextsFilePath": "wab/client/plasmic/plasmic_kit_left_pane/PlasmicGlobalContextsProvider.tsx",
       "splitsProviderFilePath": "",
-      "customFunctions": [],
-      "jsBundleThemes": []
+      "customFunctions": []
     },
     {
       "projectId": "ooL7EhXDmFQWnW9sxtchhE",
@@ -1339,8 +1338,7 @@
       "indirect": false,
       "globalContextsFilePath": "",
       "splitsProviderFilePath": "",
-      "customFunctions": [],
-      "jsBundleThemes": []
+      "customFunctions": []
     },
     {
       "projectId": "aaggSgVS8yYsAwQffVQB4p",
@@ -1431,7 +1429,6 @@
       ],
       "indirect": false,
       "globalContextsFilePath": "",
-      "jsBundleThemes": [],
       "splitsProviderFilePath": ""
     },
     {
@@ -1514,8 +1511,7 @@
       "indirect": false,
       "globalContextsFilePath": "",
       "splitsProviderFilePath": "",
-      "customFunctions": [],
-      "jsBundleThemes": []
+      "customFunctions": []
     },
     {
       "projectId": "tXkSR39sgCDWSitZxC5xFV",
@@ -3369,8 +3365,7 @@
       "indirect": false,
       "globalContextsFilePath": "",
       "customFunctions": [],
-      "splitsProviderFilePath": "",
-      "jsBundleThemes": []
+      "splitsProviderFilePath": ""
     },
     {
       "projectId": "wT5BWZPEc2fYxyqbTLXMt2",
@@ -3451,8 +3446,7 @@
       "indirect": false,
       "globalContextsFilePath": "",
       "splitsProviderFilePath": "",
-      "customFunctions": [],
-      "jsBundleThemes": []
+      "customFunctions": []
     },
     {
       "projectId": "gYEVvAzCcLMHDVPvuYxkFh",
@@ -3806,8 +3800,7 @@
       "indirect": false,
       "globalContextsFilePath": "wab/client/plasmic/plasmic_kit_new_design_system_former_style_controls/PlasmicGlobalContextsProvider.tsx",
       "splitsProviderFilePath": "",
-      "customFunctions": [],
-      "jsBundleThemes": []
+      "customFunctions": []
     },
     {
       "projectId": "dyzP6dbCdycwJpqiR2zkwe",
@@ -4223,7 +4216,6 @@
       "codeComponents": [],
       "indirect": false,
       "globalContextsFilePath": "",
-      "jsBundleThemes": [],
       "splitsProviderFilePath": ""
     },
     {
@@ -4250,7 +4242,6 @@
       "images": [],
       "codeComponents": [],
       "projectApiToken": "4FaVpmyWwxktNlVFKz8Yuo9113f7yefdZywq9p4aYqPECZ2Yuvmiw7Qxm3jWzw5jgB36rJ1NeivkZvL0slQ",
-      "jsBundleThemes": [],
       "indirect": false,
       "globalContextsFilePath": "",
       "splitsProviderFilePath": ""
@@ -4535,8 +4526,7 @@
       "indirect": false,
       "globalContextsFilePath": "",
       "splitsProviderFilePath": "",
-      "customFunctions": [],
-      "jsBundleThemes": []
+      "customFunctions": []
     },
     {
       "projectId": "6CrqkTcB6gSAHoA8c8zpNz",
@@ -4790,8 +4780,7 @@
       "indirect": false,
       "globalContextsFilePath": "",
       "splitsProviderFilePath": "",
-      "customFunctions": [],
-      "jsBundleThemes": []
+      "customFunctions": []
     },
     {
       "projectId": "m8VxGcigeLAEXFe8c12w5Q",
@@ -4873,8 +4862,7 @@
       "indirect": false,
       "globalContextsFilePath": "",
       "splitsProviderFilePath": "",
-      "customFunctions": [],
-      "jsBundleThemes": []
+      "customFunctions": []
     },
     {
       "projectId": "fQPf2UiMEMhB52C8QQXwWe",
@@ -4968,8 +4956,7 @@
       "indirect": false,
       "globalContextsFilePath": "",
       "splitsProviderFilePath": "",
-      "customFunctions": [],
-      "jsBundleThemes": []
+      "customFunctions": []
     },
     {
       "projectId": "kdj5vahTyUKxznuR6rrtt6",
@@ -5086,7 +5073,6 @@
       ],
       "indirect": false,
       "globalContextsFilePath": "",
-      "jsBundleThemes": [],
       "splitsProviderFilePath": ""
     },
     {
@@ -5140,7 +5126,6 @@
       ],
       "indirect": false,
       "globalContextsFilePath": "",
-      "jsBundleThemes": [],
       "splitsProviderFilePath": ""
     },
     {
@@ -5206,7 +5191,6 @@
       "codeComponents": [],
       "indirect": false,
       "globalContextsFilePath": "",
-      "jsBundleThemes": [],
       "splitsProviderFilePath": ""
     },
     {
@@ -5413,7 +5397,6 @@
       "codeComponents": [],
       "indirect": false,
       "globalContextsFilePath": "",
-      "jsBundleThemes": [],
       "splitsProviderFilePath": ""
     },
     {
@@ -5479,7 +5462,6 @@
       "images": [],
       "projectApiToken": "gCQeXJm9PSxbK3mjIxGTRyQPApTB7LsC5Kw2IlbONhZyuwOsIrp6KMeHuoeIAwohLJahhEFSCe7hl379B0m10A",
       "codeComponents": [],
-      "jsBundleThemes": [],
       "indirect": false,
       "globalContextsFilePath": "",
       "splitsProviderFilePath": ""
@@ -5602,8 +5584,7 @@
       "indirect": false,
       "globalContextsFilePath": "",
       "splitsProviderFilePath": "",
-      "customFunctions": [],
-      "jsBundleThemes": []
+      "customFunctions": []
     },
     {
       "projectId": "sDniSX4oPUZFyk2sXXb3nh",
@@ -5631,8 +5612,7 @@
       "indirect": false,
       "globalContextsFilePath": "",
       "splitsProviderFilePath": "",
-      "customFunctions": [],
-      "jsBundleThemes": []
+      "customFunctions": []
     },
     {
       "projectId": "oT38tGyqov9SPWHpf3Y2Rf",
@@ -8516,8 +8496,7 @@
       "indirect": false,
       "globalContextsFilePath": "",
       "splitsProviderFilePath": "",
-      "customFunctions": [],
-      "jsBundleThemes": []
+      "customFunctions": []
     },
     {
       "projectId": "95xp9cYcv7HrNWpFWWhbcv",
@@ -8551,8 +8530,7 @@
       "indirect": false,
       "globalContextsFilePath": "",
       "splitsProviderFilePath": "",
-      "customFunctions": [],
-      "jsBundleThemes": []
+      "customFunctions": []
     },
     {
       "projectId": "sZNLVjiaeNGLXmdsrbRQAX",
@@ -8564,7 +8542,6 @@
       "images": [],
       "codeComponents": [],
       "projectApiToken": "HjRO5MWIelVWzYCrcP0jlzH9cNOf5UnF0MjHve2DtyCLcOToqxetdUjsP88WJLSva31eqvrqCnvkZ2VFnA",
-      "jsBundleThemes": [],
       "indirect": true,
       "globalContextsFilePath": "",
       "splitsProviderFilePath": ""
@@ -8618,7 +8595,6 @@
       "images": [],
       "indirect": false,
       "codeComponents": [],
-      "jsBundleThemes": [],
       "globalContextsFilePath": "",
       "splitsProviderFilePath": ""
     },
@@ -8675,8 +8651,7 @@
       ],
       "globalContextsFilePath": "",
       "splitsProviderFilePath": "",
-      "customFunctions": [],
-      "jsBundleThemes": []
+      "customFunctions": []
     },
     {
       "projectId": "ieacQ3Z46z4gwo1FnaB5vY",
@@ -8896,8 +8871,7 @@
         }
       ],
       "splitsProviderFilePath": "",
-      "customFunctions": [],
-      "jsBundleThemes": []
+      "customFunctions": []
     },
     {
       "projectId": "gtUDvxG6cmBbSzqLikNzoP",
@@ -9159,7 +9133,6 @@
       "indirect": false,
       "globalContextsFilePath": "",
       "codeComponents": [],
-      "jsBundleThemes": [],
       "splitsProviderFilePath": ""
     },
     {
@@ -9451,8 +9424,7 @@
         }
       ],
       "customFunctions": [],
-      "splitsProviderFilePath": "",
-      "jsBundleThemes": []
+      "splitsProviderFilePath": ""
     },
     {
       "projectId": "28Ba3BDvRe7EiWdfFNnLB6",
@@ -9592,7 +9564,6 @@
           "componentImportPath": "@plasmicpkgs/antd"
         }
       ],
-      "jsBundleThemes": [],
       "splitsProviderFilePath": ""
     },
     {
@@ -9634,7 +9605,6 @@
       "indirect": false,
       "globalContextsFilePath": "",
       "codeComponents": [],
-      "jsBundleThemes": [],
       "splitsProviderFilePath": ""
     },
     {
@@ -9786,7 +9756,6 @@
           "componentImportPath": "@plasmicapp/react-web"
         }
       ],
-      "jsBundleThemes": [],
       "splitsProviderFilePath": ""
     },
     {
@@ -9962,8 +9931,7 @@
         }
       ],
       "splitsProviderFilePath": "",
-      "customFunctions": [],
-      "jsBundleThemes": []
+      "customFunctions": []
     },
     {
       "projectId": "caTPwKxj5ZrD9LQ7DMdK4Z",
@@ -10021,8 +9989,7 @@
         }
       ],
       "splitsProviderFilePath": "",
-      "customFunctions": [],
-      "jsBundleThemes": []
+      "customFunctions": []
     },
     {
       "projectId": "eyjDfHaWPk4awNJAqhg4Cb",
@@ -10093,7 +10060,6 @@
           "componentImportPath": "@plasmicapp/data-sources"
         }
       ],
-      "jsBundleThemes": [],
       "splitsProviderFilePath": ""
     },
     {
@@ -10269,8 +10235,7 @@
         }
       ],
       "splitsProviderFilePath": "",
-      "customFunctions": [],
-      "jsBundleThemes": []
+      "customFunctions": []
     },
     {
       "projectId": "BP7V3EkXPURJVwwMyWoHn",
@@ -10545,8 +10510,7 @@
         }
       ],
       "splitsProviderFilePath": "",
-      "customFunctions": [],
-      "jsBundleThemes": []
+      "customFunctions": []
     },
     {
       "projectId": "frhoorZk3bxNXU73uUyvHm",
@@ -10731,8 +10695,7 @@
         }
       ],
       "splitsProviderFilePath": "",
-      "customFunctions": [],
-      "jsBundleThemes": []
+      "customFunctions": []
     },
     {
       "projectId": "fuzE93KTc4ZKNBYf3LAfy",
@@ -10824,7 +10787,6 @@
         }
       ],
       "customFunctions": [],
-      "jsBundleThemes": [],
       "splitsProviderFilePath": ""
     },
     {
@@ -11035,7 +10997,6 @@
           "componentImportPath": "@plasmicapp/react-web/lib/data-sources"
         }
       ],
-      "jsBundleThemes": [],
       "splitsProviderFilePath": ""
     },
     {
@@ -11058,8 +11019,7 @@
         }
       ],
       "splitsProviderFilePath": "",
-      "customFunctions": [],
-      "jsBundleThemes": []
+      "customFunctions": []
     },
     {
       "projectId": "ehckhYnyDHgCBbV47m9bkf",
@@ -11224,8 +11184,7 @@
         }
       ],
       "splitsProviderFilePath": "",
-      "customFunctions": [],
-      "jsBundleThemes": []
+      "customFunctions": []
     },
     {
       "projectId": "28e27syQUKgfkErJT9mxWA",
@@ -11252,7 +11211,6 @@
           "componentImportPath": "@plasmicapp/react-web/lib/data-sources"
         }
       ],
-      "jsBundleThemes": [],
       "splitsProviderFilePath": ""
     },
     {
@@ -11461,8 +11419,7 @@
           "componentImportPath": "@plasmicpkgs/react-aria/skinny/registerDialog"
         }
       ],
-      "customFunctions": [],
-      "jsBundleThemes": []
+      "customFunctions": []
     },
     {
       "projectId": "kTSMroKPFv65RRTb44SCtk",
@@ -11572,8 +11529,7 @@
           "componentImportPath": "@plasmicapp/react-web/lib/data-sources"
         }
       ],
-      "customFunctions": [],
-      "jsBundleThemes": []
+      "customFunctions": []
     }
   ],
   "globalVariants": {

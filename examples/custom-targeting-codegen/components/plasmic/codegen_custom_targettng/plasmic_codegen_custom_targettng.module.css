@@ -145,6 +145,8 @@
   background: none;
   background-size: 100% 100%;
   background-repeat: no-repeat;
+  row-gap: 0px;
+  column-gap: 0px;
   box-shadow: none;
   box-sizing: border-box;
   text-decoration-line: none;
@@ -158,9 +160,10 @@
   background: none;
   background-size: 100% 100%;
   background-repeat: no-repeat;
+  row-gap: 0px;
+  column-gap: 0px;
   box-shadow: none;
   box-sizing: border-box;
-  text-decoration-line: none;
   margin: 0;
   border-width: 0px;
 }
@@ -593,7 +596,7 @@ ul:where(.root_reset_tags) {
   padding-left: var(--mixin-VnT1s3ycREMO_padding-left);
   position: var(--mixin-VnT1s3ycREMO_position);
   list-style-type: var(--mixin-VnT1s3ycREMO_list-style-type);
-  flex-column-gap: var(--mixin-VnT1s3ycREMO_flex-column-gap);
+  column-gap: var(--mixin-VnT1s3ycREMO_column-gap);
 }
 
 :where(.root_reset) ol:where(.ol),
@@ -609,7 +612,7 @@ ol:where(.root_reset_tags) {
   padding-left: var(--mixin-7Vi49R6urOQD_padding-left);
   position: var(--mixin-7Vi49R6urOQD_position);
   list-style-type: var(--mixin-7Vi49R6urOQD_list-style-type);
-  flex-column-gap: var(--mixin-7Vi49R6urOQD_flex-column-gap);
+  column-gap: var(--mixin-7Vi49R6urOQD_column-gap);
 }
 
 :where(.root_reset) h5:where(.h5),

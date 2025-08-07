@@ -1,9 +1,9 @@
 /// <reference types="@types/jest" />
 import L from "lodash";
+import { MockProject } from "../__mocks__/api";
 import { SyncArgs } from "../actions/sync";
 import { PlasmicConfig, ProjectConfig } from "../utils/config-utils";
 import { TempRepo } from "../utils/test-utils";
-import { MockProject } from "../__mocks__/api";
 
 jest.mock("../api");
 
@@ -148,7 +148,6 @@ export const project1Config: ProjectConfig = {
   ],
   icons: [],
   images: [],
-  jsBundleThemes: [],
   indirect: false,
   globalContextsFilePath: "",
   splitsProviderFilePath: "",

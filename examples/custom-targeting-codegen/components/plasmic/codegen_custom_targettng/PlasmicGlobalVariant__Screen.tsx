@@ -1,29 +1,26 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
+import { createUseScreenVariants } from "@plasmicapp/react-web";
 import * as React from "react";
-import * as p from "@plasmicapp/react-web";
 
 export type ScreenValue = "mobileOnly";
 export const ScreenContext = React.createContext<ScreenValue[] | undefined>(
   "PLEASE_RENDER_INSIDE_PROVIDER" as any
 );
-
-/**
- *  @deprecated Plasmic now uses a custom hook for Screen variants, which is
- *  automatically included in your components. Please remove this provider
- *  from your code.
- */
-export function ScreenVariantProvider(props: React.PropsWithChildren) {
-  console.warn(
-    "DEPRECATED: Plasmic now uses a custom hook for Screen variants, which is automatically included in your components. Please remove this provider from your code."
+export function ScreenContextProvider(
+  props: React.PropsWithChildren<{ value: ScreenValue[] | undefined }>
+) {
+  return (
+    <ScreenContext.Provider value={props.value}>
+      {props.children}
+    </ScreenContext.Provider>
   );
-  return props.children;
 }
 
-export const useScreenVariants = p.createUseScreenVariants(true, {
+export const useScreenVariants = createUseScreenVariants(true, {
   mobileOnly: "(min-width:0px) and (max-width:768px)",
 });
 

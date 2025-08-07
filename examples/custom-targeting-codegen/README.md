@@ -2,7 +2,7 @@
 
 This is an example of how to use Plasmic with custom targeting. Following the code in [Docs](https://docs.plasmic.app/learn/rendering-variations/).
 
-- In [plasmic-host](./pages/plasmic-host.tsx) it's defined the custom targetting traits `utm_source` and `browser`;
+- In [plasmic-host](./pages/plasmic-host.tsx) it defines the custom targeting traits `utm_source` and `browser`;
 - In [middleware](./middleware.ts) both the values of `utm_source` and `browser` are passed to `getMiddlewareResponse` as well
   as some special handling to only `getMiddlewareResponse` if the page is a splits enabled page;
 - In [Catch All](./pages/abtest/[[...catchall]].tsx) the `rewriteWithoutTraits` function is called to extract the traits from the url, in `getStaticPaths` the function `generateAllPaths` is called so that all seeded pages are generated in build time. The page uses `PlasmicSplitsProvider` to provide the traits to power A/B testing, segmentation and scheduling.
@@ -15,7 +15,7 @@ A live demo is available at:
 
 https://custom-targeting-codegen.vercel.app/
 
-The targetting shows different variations based on the following rules:
+The targeting shows different variations based on the following rules:
 
 - `browser` = `chrome`
 - `utm_source` = `google`
