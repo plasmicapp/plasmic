@@ -99,7 +99,7 @@ export function getAccessLevelToResource(
   return (
     _.maxBy(
       [
-        ...filterDirectResourcePerms(
+        ...filterUserDirectResourcePerms(
           perms,
           convertToTaggedResourceId(resource),
           user?.id
@@ -124,18 +124,18 @@ export function getAccessLevelToParent(
   ) {
     filteredPerms = [
       ...filteredPerms,
-      ...filterDirectResourcePerms(
+      ...filterUserDirectResourcePerms(
         perms,
         createTaggedResourceId("workspace", resource.resource.workspaceId),
         user?.id
       ),
-      ...filterDirectResourcePerms(
+      ...filterUserDirectResourcePerms(
         perms,
         createTaggedResourceId("team", resource.resource.teamId),
         user?.id
       ),
       ...(resource.resource.parentTeamId
-        ? filterDirectResourcePerms(
+        ? filterUserDirectResourcePerms(
             perms,
             createTaggedResourceId("team", resource.resource.parentTeamId),
             user?.id
@@ -145,13 +145,13 @@ export function getAccessLevelToParent(
   } else if (resource.type === "workspace") {
     filteredPerms = [
       ...filteredPerms,
-      ...filterDirectResourcePerms(
+      ...filterUserDirectResourcePerms(
         perms,
         createTaggedResourceId("team", resource.resource.team.id),
         user?.id
       ),
       ...(resource.resource.team.parentTeamId
-        ? filterDirectResourcePerms(
+        ? filterUserDirectResourcePerms(
             perms,
             createTaggedResourceId("team", resource.resource.team.parentTeamId),
             user?.id
@@ -161,7 +161,7 @@ export function getAccessLevelToParent(
   } else if (resource.type === "team" && resource.resource.parentTeamId) {
     filteredPerms = [
       ...filteredPerms,
-      ...filterDirectResourcePerms(
+      ...filterUserDirectResourcePerms(
         perms,
         createTaggedResourceId("team", resource.resource.parentTeamId),
         user?.id
@@ -174,14 +174,19 @@ export function getAccessLevelToParent(
 
 export function filterDirectResourcePerms(
   perms: ApiPermission[],
+  res: TaggedResourceId
+) {
+  const field = resourceTypeIdField(res.type);
+  return perms.filter((p) => p[field] === res.id);
+}
+
+export function filterUserDirectResourcePerms(
+  perms: ApiPermission[],
   res: TaggedResourceId,
   userId?: string
 ) {
-  const field = resourceTypeIdField(res.type);
-  const filteredPerms = perms.filter((p) => p[field] === res.id);
-  return userId
-    ? filteredPerms.filter((p) => p.userId === userId)
-    : filteredPerms;
+  const filteredPerms = filterDirectResourcePerms(perms, res);
+  return userId ? filteredPerms.filter((p) => p.userId === userId) : [];
 }
 
 export function getUniqueUsersFromApiPermissions(permissions: ApiPermission[]) {
