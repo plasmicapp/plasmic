@@ -86,26 +86,6 @@ bash ./wab/tools/docker-dev/docker-start.bash
 
 It will print out further instructions on activating your nodeenv, setting up the database, and running servers.
 
-## Git Setup
-
-- Make sure you have installed the git hooks by running the following in the project root dir.
-
-  ```
-  bash ./first_time_setup.sh
-  ```
-
-- Make sure you pull in submodules, for the react-scripts infrastructure:
-
-  ```
-  git submodule update --init --recursive
-  ```
-
-- Set this flag to ensure normal operations like `git pull` also update your submodules, so you don't need to always run `git submodule update`:
-
-  ```
-  git config submodule.recurse true
-  ```
-
 ## Application setup
 
 In the project root directory, run:
