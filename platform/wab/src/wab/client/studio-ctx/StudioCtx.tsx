@@ -6158,7 +6158,7 @@ export class StudioCtx extends WithDbCtx {
         depPkgs.forEach((dep) =>
           taggedUnbundle(this.bundler(), dep.model, dep.id)
         );
-        this.bundler().unbundle(JSON.parse(data), this.siteInfo.id, true);
+        this.bundler().unbundlePartial(JSON.parse(data), this.siteInfo.id);
         this.site.components.forEach((c) => {
           trackComponentRoot(c);
           trackComponentSite(c, this.site);
@@ -6276,7 +6276,7 @@ export class StudioCtx extends WithDbCtx {
               taggedUnbundle(this.bundler(), dep.model, dep.id)
             );
             const partialBundle: UnsafeBundle = JSON.parse(data);
-            this.bundler().unbundle(partialBundle, projectId, true);
+            this.bundler().unbundlePartial(partialBundle, projectId);
 
             if (
               xDifference(previousProjectDeps, this.site.projectDependencies)

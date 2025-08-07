@@ -319,14 +319,13 @@ export function applyTestMerge({
     cleanedUpBundler.unbundle(
       jsonClone(ancestorBundle),
       ancestorUuid,
-      lastBundleVersion
     )
   );
   const aSite = ensureKnownSite(
-    cleanedUpBundler.unbundle(jsonClone(aBundle), aUuid, lastBundleVersion)
+    cleanedUpBundler.unbundle(jsonClone(aBundle), aUuid)
   );
   const bSite = ensureKnownSite(
-    cleanedUpBundler.unbundle(jsonClone(bBundle), bUuid, lastBundleVersion)
+    cleanedUpBundler.unbundle(jsonClone(bBundle), bUuid)
   );
 
   // Make sure the initial sites are valid
@@ -345,7 +344,6 @@ export function applyTestMerge({
     cleanedUpBundler.unbundle(
       jsonClone(ancestorBundle),
       mergedUuid,
-      lastBundleVersion
     )
   );
 

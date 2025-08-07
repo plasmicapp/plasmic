@@ -136,8 +136,7 @@ export function basicSite(tokens: Record<string, number> = {}) {
 export function extractTokensPkgVersion(ver: PkgVersion, projectId: ProjectId) {
   const dep = bundler.unbundle(
     JSON.parse(ver.model),
-    ver.id,
-    false
+    ver.id
   ) as ProjectDependency;
   return Object.fromEntries(
     dep.site.styleTokens.map((token) =>
@@ -147,7 +146,7 @@ export function extractTokensPkgVersion(ver: PkgVersion, projectId: ProjectId) {
 }
 
 export function readRev(rev: ProjectRevision): Site {
-  return bundler.unbundle(JSON.parse(rev.data), rev.projectId, false) as Site;
+  return bundler.unbundle(JSON.parse(rev.data), rev.projectId) as Site;
 }
 
 export function extractTokensRev(rev: ProjectRevision) {

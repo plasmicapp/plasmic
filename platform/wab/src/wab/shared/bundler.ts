@@ -697,11 +697,11 @@ export class Bundler {
   // Addr/Jsons referencing Addrs -> merge into UID/Insts referencing Insts
   //
   // Need addr2inst.
-  unbundleToMap(
+  private unbundleInternal(
     bundle: UnsafeBundle,
     uuid: string,
-    incremental: boolean
-  ): Map<string, classesModule.ObjInst> {
+    partial: boolean
+  ): classesModule.ObjInst | undefined {
     const localAddr2inst = new Map<string, classesModule.ObjInst>();
     const addr2inst = (addr: string) =>
       localAddr2inst.get(addr) ?? this._addr2inst.get(addr);
@@ -723,7 +723,7 @@ export class Bundler {
     // as model changes).
     // See https://app.clubhouse.io/plasmic/story/17655/crash-when-syncing-changes-from-other-users
     const delayedIids = new Set(
-      incremental
+      partial
         ? Object.keys(bundle.map || {}).filter(
             (iid) => !!this._addr2inst.get(addrKey({ uuid, iid: iid }))
           )
@@ -795,7 +795,7 @@ export class Bundler {
         // missing instances already in the bundler cache, so we can call
         // `addr2inst` to get them; otherwise, all instances should exist in
         // `iid2internalInst`.
-        const inst = incremental
+        const inst = partial
           ? iid2internalInst.get(x.__ref) ??
             addr2inst(addrKey({ uuid, iid: x.__ref }))
           : iid2internalInst.get(x.__ref);
@@ -822,7 +822,7 @@ export class Bundler {
         if (field.annotations.includes("Transient")) {
           continue;
         }
-        if (incremental && !(field.name in json)) {
+        if (partial && !(field.name in json)) {
           continue;
         }
         const valueOrRef = json[field.name];
@@ -848,11 +848,11 @@ export class Bundler {
                 )
               : readValueOrRef(valueOrRef);
         }
-        // If we are loading incremental changes, we might avoid unnecessary
+        // If we are loading partial changes, we might avoid unnecessary
         // assignments as they could be seen as model changes
-        if (!incremental || this._rt.readField(inst, field.name) !== value) {
+        if (!partial || this._rt.readField(inst, field.name) !== value) {
           if (
-            incremental &&
+            partial &&
             Array.isArray(value) &&
             Array.isArray(inst[field.name])
           ) {
@@ -872,21 +872,22 @@ export class Bundler {
     localUid2addr.forEach((value, key) => {
       this._uid2addr.set(key, value);
     });
-    this._uuid2root.set(
-      uuid,
-      ensure(iid2internalInst.get(bundle.root), "iid2internal missing root")
-    );
-    return iid2internalInst;
+
+    const rootInst = iid2internalInst.get(bundle.root);
+    if (rootInst) {
+      this._uuid2root.set(uuid, rootInst);
+    }
+    return rootInst;
   }
 
-  // Deserialize a bundle into an object graph and return the root object.
-  unbundle(
-    bundle: UnsafeBundle,
-    uuid: string,
-    incremental = false
-  ): classesModule.ObjInst | undefined {
-    const iid2internalInst = this.unbundleToMap(bundle, uuid, incremental);
-    return iid2internalInst.get(bundle.root);
+  /** Deserialize a bundle into an object graph and return the root object. */
+  unbundle(bundle: UnsafeBundle, uuid: string): classesModule.ObjInst {
+    return ensure(this.unbundleInternal(bundle, uuid, false), "missing root");
+  }
+
+  /** Deserialize a partial bundle into an object graph. */
+  unbundlePartial(bundle: UnsafeBundle, uuid: string): void {
+    this.unbundleInternal(bundle, uuid, true);
   }
 }
 
