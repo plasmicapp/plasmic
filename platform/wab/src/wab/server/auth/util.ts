@@ -5,7 +5,8 @@ import { ForbiddenError } from "@/wab/shared/ApiErrors/errors";
 import { TeamWhiteLabelInfo } from "@/wab/shared/ApiSchema";
 import { spawn } from "@/wab/shared/common";
 import OktaJwtVerifier from "@okta/jwt-verifier";
-import { Request } from "express-serve-static-core";
+import { Request, Response } from "express-serve-static-core";
+import { promisify } from "util";
 
 export function doLogin(
   request: Request,
@@ -20,8 +21,14 @@ export function doLogin(
   );
 }
 
-export async function doLogout(request: Request) {
+export async function doLogout(request: Request, response: Response) {
   await disconnectUserSockets(request);
+  response.clearCookie("plasmic-observer");
+  // Must reset the session to prevent session fixation attacks, reset the CSRF
+  // token, etc.
+  if (request.session) {
+    await promisify(request.session.destroy.bind(request.session))();
+  }
   return new Promise((resolve) => {
     // Requests forwarded to socket server do not set up passport
     if (typeof request.logout === "function") {
