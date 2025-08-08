@@ -31,3 +31,6 @@ coverage/
 cc-test-reporter
 
 to-import-into-substack.csv
+
+# TypeScript incremental build cache
+*.tsbuildinfo

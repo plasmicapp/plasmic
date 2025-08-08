@@ -17,7 +17,7 @@
     "dev:backend": "yarn backend",
     "start": "bash tools/dev-server.bash dev",
     "ts-watch": "NODE_OPTIONS='--max-old-space-size=16384' tsc --noEmit --watch",
-    "typecheck": "NODE_OPTIONS='--max-old-space-size=16384' tsc --noEmit",
+    "typecheck": "NODE_OPTIONS='--max-old-space-size=16384' tsc --incremental",
     "host-server": "bash tools/host-server.bash",
     "socket-server": "npm run run-ts -- src/wab/server/app-socket-backend-real.ts",
     "build": "rsbuild build",
