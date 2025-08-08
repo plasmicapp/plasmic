@@ -1,5 +1,5 @@
 {
-  "version": "1.0.434",
+  "version": "1.0.435",
   "license": "MIT",
   "types": "./dist/index.d.ts",
   "main": "./dist/index.js",
@@ -82,8 +82,8 @@
   "dependencies": {
     "@plasmicapp/loader-core": "1.0.137",
     "@plasmicapp/loader-edge": "1.0.70",
-    "@plasmicapp/loader-react": "1.0.394",
-    "@plasmicapp/nextjs-app-router": "1.0.16",
+    "@plasmicapp/loader-react": "1.0.395",
+    "@plasmicapp/nextjs-app-router": "1.0.17",
     "@plasmicapp/watcher": "1.0.84",
     "server-only": "0.0.1"
   },
