@@ -47,8 +47,6 @@ To get started, please see the [the getting started guide](docs/contributing/pla
 ### Getting started
 
 ```
-pip install pre-commit
-pre-commit install --install-hooks
 yarn setup-all
 ```
 
