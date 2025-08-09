@@ -14,15 +14,14 @@
 import * as React from "react";
 
 import {
-  Flex as Flex__,
-  Stack as Stack__,
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  Flex as Flex__,
   generateStateOnChangeProp,
   generateStateValueProp,
   renderPlasmicSlot,
+  StrictProps,
   useDollarState,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
@@ -184,11 +183,7 @@ function PlasmicPopover__RenderFunc(props: {
           >
             {renderPlasmicSlot({
               defaultContents: (
-                <Stack__
-                  as={"div"}
-                  hasGap={true}
-                  className={classNames(projectcss.all, sty.freeBox__tiAmN)}
-                >
+                <div className={classNames(projectcss.all, sty.freeBox__tiAmN)}>
                   <div
                     className={classNames(
                       projectcss.all,
@@ -218,7 +213,7 @@ function PlasmicPopover__RenderFunc(props: {
                       "Use it in a `Aria Dialog Trigger` component to trigger it on a button click."
                     }
                   </div>
-                </Stack__>
+                </div>
               ),
               value: args.content,
             })}

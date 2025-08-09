@@ -3,39 +3,21 @@
   width: auto;
   height: auto;
   flex-direction: row;
+  align-items: center;
   overflow: hidden;
   position: relative;
   cursor: default;
+  justify-content: space-between;
   background: var(--token-O4S7RMTqZ3);
   min-height: 1.5rem;
   border-radius: 4px;
   padding: 4px 8px;
   border-style: none;
 }
-.root > :global(.__wab_flex-container) {
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-}
 .rootdeletable {
   padding-right: 4px;
-}
-.rootdeletable > :global(.__wab_flex-container) {
-  margin-left: calc(0px - 0px);
-  width: calc(100% + 0px);
-  margin-top: calc(0px - 0px);
-  height: calc(100% + 0px);
-}
-.rootdeletable > :global(.__wab_flex-container) > *,
-.rootdeletable > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.rootdeletable > :global(.__wab_flex-container) > picture > img,
-.rootdeletable
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  margin-left: 0px;
-  margin-top: 0px;
+  column-gap: 0px;
+  row-gap: 0px;
 }
 .rootsize_normalControl {
   padding-top: 8px;

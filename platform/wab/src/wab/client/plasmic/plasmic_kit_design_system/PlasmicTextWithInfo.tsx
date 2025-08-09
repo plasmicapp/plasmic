@@ -14,15 +14,14 @@
 import * as React from "react";
 
 import {
-  Flex as Flex__,
-  SingleBooleanChoiceArg,
-  Stack as Stack__,
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  Flex as Flex__,
   hasVariant,
   renderPlasmicSlot,
+  SingleBooleanChoiceArg,
+  StrictProps,
   useDollarState,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
@@ -112,13 +111,11 @@ function PlasmicTextWithInfo__RenderFunc(props: {
   });
 
   return (
-    <Stack__
-      as={"div"}
+    <div
       data-plasmic-name={"root"}
       data-plasmic-override={overrides.root}
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
-      hasGap={true}
       className={classNames(
         projectcss.all,
         projectcss.root_reset,
@@ -142,7 +139,7 @@ function PlasmicTextWithInfo__RenderFunc(props: {
         })}
         role={"img"}
       />
-    </Stack__>
+    </div>
   ) as React.ReactElement | null;
 }
 

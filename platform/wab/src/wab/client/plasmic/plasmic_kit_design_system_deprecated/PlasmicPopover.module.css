@@ -28,27 +28,13 @@
   display: flex;
   flex-direction: column;
   position: relative;
+  justify-content: flex-start;
   background: var(--token-rqQDmopteQdV);
+  align-items: flex-start;
   width: 320px;
+  row-gap: var(--token-O2OprmOFWLju);
   border-radius: var(--token-XnnXV8YSKg9w);
   padding: var(--token-8b4HJYZr1yuK);
-}
-.freeBox__tiAmN > :global(.__wab_flex-container) {
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: flex-start;
-  margin-top: calc(0px - var(--token-O2OprmOFWLju));
-  height: calc(100% + var(--token-O2OprmOFWLju));
-}
-.freeBox__tiAmN > :global(.__wab_flex-container) > *,
-.freeBox__tiAmN > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.freeBox__tiAmN > :global(.__wab_flex-container) > picture > img,
-.freeBox__tiAmN
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  margin-top: var(--token-O2OprmOFWLju);
 }
 .text__o47CZ {
   position: relative;

@@ -14,16 +14,15 @@
 import * as React from "react";
 
 import {
-  Flex as Flex__,
-  SingleBooleanChoiceArg,
-  SingleChoiceArg,
-  Stack as Stack__,
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  Flex as Flex__,
   hasVariant,
   renderPlasmicSlot,
+  SingleBooleanChoiceArg,
+  SingleChoiceArg,
+  StrictProps,
   useDollarState,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
@@ -123,13 +122,11 @@ function PlasmicChip__RenderFunc(props: {
   });
 
   return (
-    <Stack__
-      as={"button"}
+    <button
       data-plasmic-name={"root"}
       data-plasmic-override={overrides.root}
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
-      hasGap={true}
       className={classNames(
         projectcss.all,
         projectcss.button,
@@ -189,7 +186,7 @@ function PlasmicChip__RenderFunc(props: {
           role={"img"}
         />
       ) : null}
-    </Stack__>
+    </button>
   ) as React.ReactElement | null;
 }
 

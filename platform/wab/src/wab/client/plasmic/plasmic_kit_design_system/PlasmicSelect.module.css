@@ -83,40 +83,18 @@
   display: flex;
   position: relative;
   flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
   width: 100%;
   min-width: 0;
 }
-.contentContainer > :global(.__wab_flex-container) {
-  flex-direction: row;
-  align-items: center;
-  justify-content: flex-start;
-  min-width: 0;
-}
-.contentContainerhasIcon > :global(.__wab_flex-container) {
-  margin-left: calc(0px - 4px);
-  width: calc(100% + 4px);
-  margin-top: calc(0px - 0px);
-  height: calc(100% + 0px);
-}
-.contentContainerhasIcon > :global(.__wab_flex-container) > *,
-.contentContainerhasIcon
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > *,
-.contentContainerhasIcon > :global(.__wab_flex-container) > picture > img,
-.contentContainerhasIcon
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  margin-left: 4px;
-  margin-top: 0px;
+.contentContainerhasIcon {
+  column-gap: 4px;
+  row-gap: 0px;
 }
 .contentContainertextAlign_right {
-  margin-right: var(--token-uzWT6AFCY);
-}
-.contentContainertextAlign_right > :global(.__wab_flex-container) {
   justify-content: flex-end;
+  margin-right: var(--token-uzWT6AFCY);
 }
 .slotTargetIcon {
   color: var(--token-UunsGa2Y3t3);
@@ -341,6 +319,7 @@
   width: 1rem;
   height: 1rem;
   color: var(--token-fVn5vRhXJxQ);
+  pointer-events: none;
   flex-shrink: 0;
 }
 .dropdownIconisOpen {

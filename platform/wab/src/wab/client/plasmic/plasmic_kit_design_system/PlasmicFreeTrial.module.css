@@ -6,26 +6,12 @@
   display: flex;
   flex-direction: row;
   height: 2rem;
-  background: var(--token-yqAf_E0HIjU);
-  border-radius: 6px;
-  padding: 8px 12px 8px 8px;
-}
-.freeBox__bx9A > :global(.__wab_flex-container) {
-  flex-direction: row;
   justify-content: flex-start;
   align-items: center;
-  margin-left: calc(0px - 4px);
-  width: calc(100% + 4px);
-}
-.freeBox__bx9A > :global(.__wab_flex-container) > *,
-.freeBox__bx9A > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.freeBox__bx9A > :global(.__wab_flex-container) > picture > img,
-.freeBox__bx9A
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  margin-left: 4px;
+  background: var(--token-yqAf_E0HIjU);
+  column-gap: 4px;
+  border-radius: 6px;
+  padding: 8px 12px 8px 8px;
 }
 .freeBoxaccountSection__bx9A8XxRr {
   height: auto;
@@ -58,53 +44,18 @@
   display: flex;
   position: relative;
   flex-direction: row;
+  align-items: center;
   width: 100%;
   height: auto;
   max-width: 100%;
+  column-gap: 8px;
   min-width: 0;
-}
-.freeBox__wjeac > :global(.__wab_flex-container) {
-  flex-direction: row;
-  align-items: center;
-  min-width: 0;
-  margin-left: calc(0px - 8px);
-  width: calc(100% + 8px);
-}
-.freeBox__wjeac > :global(.__wab_flex-container) > *,
-.freeBox__wjeac > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.freeBox__wjeac > :global(.__wab_flex-container) > picture > img,
-.freeBox__wjeac
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  margin-left: 8px;
 }
 .freeBoxaccountSection__wjeac8XxRr {
   flex-direction: column;
-}
-.freeBoxaccountSection__wjeac8XxRr > :global(.__wab_flex-container) {
-  flex-direction: column;
   justify-content: flex-start;
   align-items: flex-start;
-  margin-left: calc(0px - 0px);
-  width: calc(100% + 0px);
-}
-.freeBoxaccountSection__wjeac8XxRr > :global(.__wab_flex-container) > *,
-.freeBoxaccountSection__wjeac8XxRr
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > *,
-.freeBoxaccountSection__wjeac8XxRr
-  > :global(.__wab_flex-container)
-  > picture
-  > img,
-.freeBoxaccountSection__wjeac8XxRr
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  margin-left: 0px;
+  column-gap: 0px;
 }
 .text {
   font-weight: 500;

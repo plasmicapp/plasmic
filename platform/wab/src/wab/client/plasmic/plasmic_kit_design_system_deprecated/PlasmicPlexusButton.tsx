@@ -14,17 +14,16 @@
 import * as React from "react";
 
 import {
-  Flex as Flex__,
-  MultiChoiceArg,
-  SingleBooleanChoiceArg,
-  SingleChoiceArg,
-  Stack as Stack__,
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  Flex as Flex__,
   hasVariant,
+  MultiChoiceArg,
   renderPlasmicSlot,
+  SingleBooleanChoiceArg,
+  SingleChoiceArg,
+  StrictProps,
   useDollarState,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
@@ -502,9 +501,7 @@ function PlasmicPlexusButton__RenderFunc(props: {
         }
       />
 
-      <Stack__
-        as={"div"}
-        hasGap={true}
+      <div
         className={classNames(projectcss.all, sty.freeBox__sFawT, {
           [sty.freeBoxcolor_neutral__sFawTqVhYc]: hasVariant(
             $state,
@@ -982,7 +979,7 @@ function PlasmicPlexusButton__RenderFunc(props: {
             }),
           })}
         </div>
-      </Stack__>
+      </div>
     </BaseButton>
   ) as React.ReactElement | null;
 }

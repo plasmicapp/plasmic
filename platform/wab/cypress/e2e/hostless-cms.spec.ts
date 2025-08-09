@@ -46,8 +46,8 @@ describe("hostless-cms", function () {
     cy.justType("1 - first");
     cy.get(`[id="number__secondField"]`).click();
     cy.justType("1 - second");
-    cy.wait(500);
-    cy.contains("Publish").wait(2000).click();
+    cy.wait(2000);
+    cy.contains("Publish").click();
     cy.contains("Your changes have been published.");
     cy.get(`[data-test-id="addEntryButton"]`).click();
     cy.contains("Untitled entry");
@@ -56,7 +56,8 @@ describe("hostless-cms", function () {
     cy.justType("2 - first");
     cy.get(`[id="number__secondField"]`).click();
     cy.justType("2 - second");
-    cy.contains("Publish").wait(2000).click();
+    cy.wait(2000);
+    cy.contains("Publish").click();
     cy.contains("Your changes have been published.");
 
     cy.get(`[data-test-id="cmsSettings"]`).click();
@@ -79,9 +80,9 @@ describe("hostless-cms", function () {
             cy.contains("CMS Credentials Provider").click();
             cy.get(`#sidebar-modal button[data-test-id="collapse"]`).click();
             cy.wait(200);
-            cy.get(`[data-plasmic-prop="host"]`)
-              .type("{selectall}")
+            cy.get('[data-plasmic-prop="host"]')
               .wait(100)
+              .type("{selectall}")
               .type("{backspace}")
               .type(`${Cypress.config("baseUrl")}`);
             cy.setSelectedDimStyle("databaseId", cmsId);
@@ -105,9 +106,8 @@ describe("hostless-cms", function () {
               cy.get(".canvas-editor__right-pane")
                 .contains("button", "firstField")
                 .click();
-              cy.contains(`div[role="option"]`, "secondField").click({
-                force: true,
-              });
+              cy.wait(300);
+              cy.contains(`div[role="option"]`, "secondField").click();
               cy.selectTreeNode(["CMS Data Fetcher"])
                 .getSelectedElt()
                 .should("contain.text", "1 - second")

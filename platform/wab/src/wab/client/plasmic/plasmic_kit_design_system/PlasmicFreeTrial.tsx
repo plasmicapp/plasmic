@@ -14,16 +14,15 @@
 import * as React from "react";
 
 import {
-  Flex as Flex__,
-  PlasmicLink as PlasmicLink__,
-  SingleBooleanChoiceArg,
-  Stack as Stack__,
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  Flex as Flex__,
   hasVariant,
+  PlasmicLink as PlasmicLink__,
   renderPlasmicSlot,
+  SingleBooleanChoiceArg,
+  StrictProps,
   useDollarState,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
@@ -164,9 +163,7 @@ function PlasmicFreeTrial__RenderFunc(props: {
       )}
       platform={"react"}
     >
-      <Stack__
-        as={"div"}
-        hasGap={true}
+      <div
         className={classNames(projectcss.all, sty.freeBox__bx9A, {
           [sty.freeBoxaccountSection__bx9A8XxRr]: hasVariant(
             $state,
@@ -200,9 +197,7 @@ function PlasmicFreeTrial__RenderFunc(props: {
           role={"img"}
         />
 
-        <Stack__
-          as={"div"}
-          hasGap={true}
+        <div
           className={classNames(projectcss.all, sty.freeBox__wjeac, {
             [sty.freeBoxaccountSection__wjeac8XxRr]: hasVariant(
               $state,
@@ -268,8 +263,8 @@ function PlasmicFreeTrial__RenderFunc(props: {
               ),
             }),
           })}
-        </Stack__>
-      </Stack__>
+        </div>
+      </div>
     </PlasmicLink__>
   ) as React.ReactElement | null;
 }

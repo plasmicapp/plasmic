@@ -14,15 +14,15 @@
 import * as React from "react";
 
 import {
+  classNames,
+  createPlasmicElementProxy,
+  deriveRenderOpts,
   Flex as Flex__,
+  hasVariant,
   PlasmicIcon as PlasmicIcon__,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
   StrictProps,
-  classNames,
-  createPlasmicElementProxy,
-  deriveRenderOpts,
-  hasVariant,
   useDollarState,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";

@@ -14,18 +14,18 @@
 import * as React from "react";
 
 import {
-  Flex as Flex__,
-  MultiChoiceArg,
-  SingleChoiceArg,
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  Flex as Flex__,
   generateOnMutateForSpec,
   generateStateOnChangePropForCodeComponents,
   generateStateValueProp,
   hasVariant,
   initializeCodeComponentStates,
+  MultiChoiceArg,
+  SingleChoiceArg,
+  StrictProps,
   useDollarState,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";

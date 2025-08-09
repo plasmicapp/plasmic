@@ -14,12 +14,12 @@
 import * as React from "react";
 
 import {
-  Flex as Flex__,
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  Flex as Flex__,
   renderPlasmicSlot,
+  StrictProps,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 

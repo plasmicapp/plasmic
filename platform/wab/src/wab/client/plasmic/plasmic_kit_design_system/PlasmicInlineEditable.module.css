@@ -1,24 +1,14 @@
 .root {
   display: inline-flex;
   flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
   width: auto;
   height: auto;
   position: relative;
   cursor: pointer;
   min-height: 1rem;
-}
-.root > :global(.__wab_flex-container) {
-  flex-direction: row;
-  align-items: center;
-  justify-content: flex-start;
-  margin-left: calc(0px - 4px);
-  width: calc(100% + 4px);
-}
-.root > :global(.__wab_flex-container) > *,
-.root > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.root > :global(.__wab_flex-container) > picture > img,
-.root > :global(.__wab_flex-container) > :global(.__wab_slot) > picture > img {
-  margin-left: 4px;
+  column-gap: 4px;
 }
 .rootediting {
   min-width: 128px;

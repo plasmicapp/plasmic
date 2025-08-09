@@ -14,18 +14,17 @@
 import * as React from "react";
 
 import {
-  Flex as Flex__,
-  MultiChoiceArg,
-  PlasmicIcon as PlasmicIcon__,
-  SingleBooleanChoiceArg,
-  SingleChoiceArg,
-  Stack as Stack__,
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  Flex as Flex__,
   hasVariant,
+  MultiChoiceArg,
+  PlasmicIcon as PlasmicIcon__,
   renderPlasmicSlot,
+  SingleBooleanChoiceArg,
+  SingleChoiceArg,
+  StrictProps,
   useDollarState,
   useTrigger,
 } from "@plasmicapp/react-web";
@@ -336,11 +335,9 @@ function PlasmicSelect__RenderFunc(props: {
             $refs["trigger"] = ref;
           }}
         >
-          <Stack__
-            as={"div"}
+          <div
             data-plasmic-name={"contentContainer"}
             data-plasmic-override={overrides.contentContainer}
-            hasGap={true}
             className={classNames(projectcss.all, sty.contentContainer, {
               [sty.contentContainerhasIcon]: hasVariant(
                 $state,
@@ -455,7 +452,7 @@ function PlasmicSelect__RenderFunc(props: {
                   }),
                 })
               : null}
-          </Stack__>
+          </div>
           <PlasmicIcon__
             data-plasmic-name={"dropdownIcon"}
             data-plasmic-override={overrides.dropdownIcon}

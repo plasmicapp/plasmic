@@ -18,7 +18,6 @@ import {
   MultiChoiceArg,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
-  Stack as Stack__,
   StrictProps,
   classNames,
   createPlasmicElementProxy,
@@ -32,9 +31,9 @@ import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_color_tokens_css from "./plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import sty from "./PlasmicIconButton.module.css"; // plasmic-import: LPry-TF4j22a/css
 import projectcss from "./PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
+import sty from "./PlasmicIconButton.module.css"; // plasmic-import: LPry-TF4j22a/css
+import plasmic_plasmic_kit_color_tokens_css from "./plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
 
 import DotsHorizontalIcon from "./plasmic_kit_design_system/PlasmicIcon__DotsHorizontal"; // plasmic-import: GkkhQuMH0/icon
 import ChevronDownSvgIcon from "./plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
@@ -281,13 +280,11 @@ function PlasmicIconButton__RenderFunc(props: {
   };
 
   return (
-    <Stack__
-      as={"button"}
+    <button
       data-plasmic-name={"root"}
       data-plasmic-override={overrides.root}
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
-      hasGap={true}
       className={classNames(
         projectcss.all,
         projectcss.button,
@@ -666,7 +663,7 @@ function PlasmicIconButton__RenderFunc(props: {
           role={"img"}
         />
       ) : null}
-    </Stack__>
+    </button>
   ) as React.ReactElement | null;
 }
 

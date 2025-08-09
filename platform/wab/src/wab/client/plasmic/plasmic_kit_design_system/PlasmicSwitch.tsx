@@ -14,14 +14,14 @@
 import * as React from "react";
 
 import {
-  Flex as Flex__,
-  SingleBooleanChoiceArg,
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  Flex as Flex__,
   hasVariant,
   renderPlasmicSlot,
+  SingleBooleanChoiceArg,
+  StrictProps,
   useDollarState,
   useTrigger,
 } from "@plasmicapp/react-web";

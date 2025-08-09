@@ -14,18 +14,17 @@
 import * as React from "react";
 
 import {
-  Flex as Flex__,
-  MultiChoiceArg,
-  PlasmicIcon as PlasmicIcon__,
-  SingleBooleanChoiceArg,
-  SingleChoiceArg,
-  Stack as Stack__,
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  Flex as Flex__,
   hasVariant,
+  MultiChoiceArg,
+  PlasmicIcon as PlasmicIcon__,
   renderPlasmicSlot,
+  SingleBooleanChoiceArg,
+  SingleChoiceArg,
+  StrictProps,
   useDollarState,
   useTrigger,
 } from "@plasmicapp/react-web";
@@ -203,11 +202,9 @@ function PlasmicActionMenuButton__RenderFunc(props: {
         }
       )}
     >
-      <Stack__
-        as={"button"}
+      <button
         data-plasmic-name={"actionButton"}
         data-plasmic-override={overrides.actionButton}
-        hasGap={true}
         className={classNames(
           projectcss.all,
           projectcss.button,
@@ -264,11 +261,9 @@ function PlasmicActionMenuButton__RenderFunc(props: {
         }}
         data-plasmic-trigger-props={[triggerActionButtonFocusVisibleProps]}
       >
-        <Stack__
-          as={"div"}
+        <div
           data-plasmic-name={"freeBox"}
           data-plasmic-override={overrides.freeBox}
-          hasGap={true}
           className={classNames(projectcss.all, sty.freeBox, {
             [sty.freeBoxhasIcon]: hasVariant($state, "hasIcon", "hasIcon"),
             [sty.freeBoxtype_primary_hasIcon]:
@@ -359,8 +354,8 @@ function PlasmicActionMenuButton__RenderFunc(props: {
             className={classNames(projectcss.all, sty.svg___09Mtk)}
             role={"img"}
           />
-        </Stack__>
-      </Stack__>
+        </div>
+      </button>
       <IconButton
         data-plasmic-name={"menuTrigger"}
         data-plasmic-override={overrides.menuTrigger}

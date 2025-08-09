@@ -2,24 +2,14 @@
   display: flex;
   position: relative;
   flex-direction: row;
+  justify-content: center;
+  align-items: center;
   background: var(--token-brSQU2ryS);
   cursor: pointer;
+  column-gap: 4px;
   border-radius: 6px;
   padding: 8px;
   border-style: none;
-}
-.root > :global(.__wab_flex-container) {
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  margin-left: calc(0px - 4px);
-  width: calc(100% + 4px);
-}
-.root > :global(.__wab_flex-container) > *,
-.root > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.root > :global(.__wab_flex-container) > picture > img,
-.root > :global(.__wab_flex-container) > :global(.__wab_slot) > picture > img {
-  margin-left: 4px;
 }
 .rootdisabled {
   opacity: 0.5;
@@ -93,27 +83,12 @@
   width: auto;
   min-height: 1.75rem;
   background: var(--token-iR8SeEwQZ);
+  column-gap: 4px;
+  row-gap: 0px;
   display: inline-flex;
   border-radius: 4px;
   padding: 6px 8px;
   border-width: 0px;
-}
-.roottype_switchOn > :global(.__wab_flex-container) {
-  margin-left: calc(0px - 4px);
-  width: calc(100% + 4px);
-  margin-top: calc(0px - 0px);
-  height: calc(100% + 0px);
-}
-.roottype_switchOn > :global(.__wab_flex-container) > *,
-.roottype_switchOn > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.roottype_switchOn > :global(.__wab_flex-container) > picture > img,
-.roottype_switchOn
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  margin-left: 4px;
-  margin-top: 0px;
 }
 .roottype_red {
   background: linear-gradient(
@@ -152,22 +127,9 @@
 .rootisActive {
   background: var(--token-Ik3bdE1e1Uy);
 }
-.rootwithDropdown > :global(.__wab_flex-container) {
-  margin-left: calc(0px - 0px);
-  width: calc(100% + 0px);
-  margin-top: calc(0px - 0px);
-  height: calc(100% + 0px);
-}
-.rootwithDropdown > :global(.__wab_flex-container) > *,
-.rootwithDropdown > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.rootwithDropdown > :global(.__wab_flex-container) > picture > img,
-.rootwithDropdown
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  margin-left: 0px;
-  margin-top: 0px;
+.rootwithDropdown {
+  column-gap: 0px;
+  row-gap: 0px;
 }
 .roottype_primary_type_dividedRight {
   border-left-color: var(--token-JfSQu2FXX0v);

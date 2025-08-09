@@ -47,25 +47,14 @@
   display: flex;
   position: relative;
   flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
   width: 100%;
   height: 32px;
+  column-gap: 4px;
   min-width: 0;
   flex-shrink: 0;
   padding: 4px 16px;
-}
-.main > :global(.__wab_flex-container) {
-  flex-direction: row;
-  align-items: center;
-  justify-content: flex-start;
-  min-width: 0;
-  margin-left: calc(0px - 4px);
-  width: calc(100% + 4px);
-}
-.main > :global(.__wab_flex-container) > *,
-.main > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.main > :global(.__wab_flex-container) > picture > img,
-.main > :global(.__wab_flex-container) > :global(.__wab_slot) > picture > img {
-  margin-left: 4px;
 }
 .dragHandle {
   display: flex;
@@ -119,28 +108,13 @@
   display: flex;
   position: relative;
   flex-direction: row;
-  flex-grow: 1;
-  width: 100%;
-  min-width: 0;
-}
-.labelContainer > :global(.__wab_flex-container) {
-  flex-direction: row;
   align-items: stretch;
   justify-content: space-between;
+  flex-grow: 1;
   flex-wrap: nowrap;
+  width: 100%;
+  column-gap: 4px;
   min-width: 0;
-  margin-left: calc(0px - 4px);
-  width: calc(100% + 4px);
-}
-.labelContainer > :global(.__wab_flex-container) > *,
-.labelContainer > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.labelContainer > :global(.__wab_flex-container) > picture > img,
-.labelContainer
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  margin-left: 4px;
 }
 .leftContent {
   display: flex;

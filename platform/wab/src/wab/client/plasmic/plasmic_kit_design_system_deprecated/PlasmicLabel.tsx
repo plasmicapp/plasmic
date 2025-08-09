@@ -14,15 +14,14 @@
 import * as React from "react";
 
 import {
-  Flex as Flex__,
-  SingleChoiceArg,
-  Stack as Stack__,
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  Flex as Flex__,
   hasVariant,
   renderPlasmicSlot,
+  SingleChoiceArg,
+  StrictProps,
   useDollarState,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
@@ -153,11 +152,9 @@ function PlasmicLabel__RenderFunc(props: {
         }
       )}
     >
-      <Stack__
-        as={"div"}
+      <div
         data-plasmic-name={"freeBox"}
         data-plasmic-override={overrides.freeBox}
-        hasGap={true}
         className={classNames(projectcss.all, sty.freeBox, {
           [sty.freeBoxrequirementIndicator_optional]: hasVariant(
             $state,
@@ -211,7 +208,7 @@ function PlasmicLabel__RenderFunc(props: {
             ? "*"
             : "(optional)"}
         </div>
-      </Stack__>
+      </div>
     </BaseLabel>
   ) as React.ReactElement | null;
 }
