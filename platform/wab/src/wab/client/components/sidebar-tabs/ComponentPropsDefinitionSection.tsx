@@ -27,7 +27,7 @@ import {
 } from "@/wab/shared/Labels";
 import { getSlotParams } from "@/wab/shared/SlotUtils";
 import { toVarName } from "@/wab/shared/codegen/util";
-import { Component, Param } from "@/wab/shared/model/classes";
+import { Component, Param, isKnownPropParam } from "@/wab/shared/model/classes";
 import { Menu } from "antd";
 import { observer } from "mobx-react";
 import React from "react";
@@ -162,20 +162,27 @@ const PropRow = observer(function ParamRow(props: {
           dragHandleProps={props.dragHandleProps}
           onClick={() => setShowModal(true)}
           label={
-            <EditableLabel
-              value={param.variable.name}
-              onEdit={(val) =>
-                spawn(
-                  studioCtx.change(({ success }) => {
-                    if (val) {
-                      studioCtx.tplMgr().renameParam(component, param, val);
-                    }
-                    return success();
-                  })
-                )
-              }
-              disabled={!canRename}
-            />
+            <div>
+              <EditableLabel
+                value={param.variable.name}
+                onEdit={(val) =>
+                  spawn(
+                    studioCtx.change(({ success }) => {
+                      if (val) {
+                        studioCtx.tplMgr().renameParam(component, param, val);
+                      }
+                      return success();
+                    })
+                  )
+                }
+                disabled={!canRename}
+              />
+              {isKnownPropParam(param) && param.advanced && (
+                <div className="text-xsm dimfg">
+                  (advanced)
+                </div>
+              )}
+            </div>
           }
           menu={overlay}
         >
