@@ -8,7 +8,6 @@ import { ensureVariantSetting, mkBaseVariant } from "@/wab/shared/Variants";
 import { AddItemKey } from "@/wab/shared/add-item-keys";
 import {
   allCustomFunctions,
-  cachedExprsInSite,
   componentToReferencers,
   componentToTplComponents,
   computedProjectFlags,
@@ -104,7 +103,6 @@ import {
   TplTagType,
   cloneType,
   findAllInstancesOfComponent,
-  findExprsInInteraction,
   flattenTpls,
   getAllEventHandlersForTpl,
   getTplComponentsInSite,
@@ -181,7 +179,6 @@ import {
   ensureKnownTplTag,
   isKnownClassNamePropType,
   isKnownCustomCode,
-  isKnownCustomFunctionExpr,
   isKnownEventHandler,
   isKnownPropParam,
   isKnownRenderFuncType,
@@ -647,10 +644,11 @@ export interface CodeComponentSyncCallbackFns {
     removedTokens: StyleToken[];
   }) => void;
   onUpdatedCustomFunctions?: (opts: {
+    ctx: SiteCtx;
     newFunctions: CustomFunction[];
     updatedFunctions: CustomFunction[];
-    removedFunctions: CustomFunction[];
-  }) => void;
+    removedFunctions: Set<CustomFunction>;
+  }) => Promise<void>;
   onUpdatedCodeLibraries?: (opts: {
     newLibraries: CodeLibrary[];
     updatedLibraries: CodeLibrary[];
@@ -4903,123 +4901,42 @@ async function upsertRegisteredFunctions(
           functionNamespaces.add(functionReg.meta.namespace);
         }
       }
-      const exprRefs = cachedExprsInSite(site).map((ref) => {
-        return {
-          ownerComponent: ref.ownerComponent,
-          exprRefs: ref.exprRefs.filter(
-            (exprRef) =>
-              (isKnownEventHandler(exprRef.expr) &&
-                exprRef.expr.interactions.some(
-                  (interaction) =>
-                    findExprsInInteraction(interaction).filter((expr) =>
-                      isKnownCustomFunctionExpr(expr)
-                    ).length > 0
-                )) ||
-              isKnownCustomFunctionExpr(exprRef.expr)
-          ),
-        };
-      });
-
-      ctx.observeComponents(exprRefs.map((ref) => ref.ownerComponent));
 
       if (
         newFunctionRegs.length > 0 ||
         updatedFunctionRegs.length > 0 ||
         removedFunctions.size > 0
       ) {
-        run(
-          await ctx.change(
-            ({ success: changeSuccess }) => {
-              const newFunctions: CustomFunction[] = [];
-              const updatedFunctions: CustomFunction[] = [];
-              for (const functionReg of newFunctionRegs) {
-                const customFunction =
-                  createCustomFunctionFromRegistration(functionReg);
-                site.customFunctions.push(customFunction);
-                newFunctions.push(customFunction);
-              }
+        const newFunctions: CustomFunction[] = [];
+        const updatedFunctions: CustomFunction[] = [];
+        for (const functionReg of newFunctionRegs) {
+          const customFunction =
+            createCustomFunctionFromRegistration(functionReg);
+          newFunctions.push(customFunction);
+        }
+        for (const functionReg of updatedFunctionRegs) {
+          const existing = ensure(
+            existingFunctions.get(registeredFunctionId(functionReg)),
+            "Previously checked"
+          );
+          const updateableFields: Omit<
+            CustomFunction,
+            "importName" | "namespace" | "typeTag" | "uid"
+          > = pick(
+            createCustomFunctionFromRegistration(functionReg, existing),
+            ["defaultExport", "importPath", "params", "isQuery", "displayName"]
+          );
 
-              for (const functionReg of updatedFunctionRegs) {
-                const existing = ensure(
-                  existingFunctions.get(registeredFunctionId(functionReg)),
-                  "Previously checked"
-                );
-                const updateableFields: Omit<
-                  CustomFunction,
-                  "importName" | "namespace" | "typeTag" | "uid"
-                > = pick(
-                  createCustomFunctionFromRegistration(functionReg, existing),
-                  [
-                    "defaultExport",
-                    "importPath",
-                    "params",
-                    "isQuery",
-                    "displayName",
-                  ]
-                );
+          Object.assign(existing, updateableFields);
+          updatedFunctions.push(existing);
+        }
 
-                Object.assign(existing, updateableFields);
-                updatedFunctions.push(existing);
-              }
-
-              for (const customFunction of removedFunctions) {
-                // TODO: Ask if user wants to map to another function, and if so,
-                // refactor code expressions.
-              }
-              removeWhere(site.customFunctions, (customFunction) =>
-                removedFunctions.has(customFunction)
-              );
-
-              exprRefs.forEach((usage) => {
-                // Remove from server queries
-                removeWhere(
-                  usage.ownerComponent.serverQueries,
-                  (serverQuery) =>
-                    !!serverQuery.op?.func &&
-                    removedFunctions.has(serverQuery.op.func)
-                );
-
-                usage.exprRefs.forEach((ref) => {
-                  const expr = ref.expr;
-                  // Update params
-                  if (isKnownCustomFunctionExpr(expr)) {
-                    const updatedRegistration = updatedFunctions.find(
-                      (fn) => fn === expr.func
-                    );
-                    if (!updatedRegistration) {
-                      return;
-                    }
-                    removeWhere(
-                      expr.args,
-                      (arg) =>
-                        !updatedRegistration.params.find(
-                          (param) => param === arg.argType
-                        )
-                    );
-                  } else if (isKnownEventHandler(expr)) {
-                    // Remove from event handlers
-                    expr.interactions.forEach((interaction) => {
-                      removeWhere(
-                        interaction.args,
-                        (arg) =>
-                          isKnownCustomFunctionExpr(arg.expr) &&
-                          removedFunctions.has(arg.expr.func)
-                      );
-                    });
-                  }
-                });
-              });
-
-              fns.onUpdatedCustomFunctions?.({
-                newFunctions,
-                updatedFunctions,
-                removedFunctions: Array.from(removedFunctions.keys()),
-              });
-              return changeSuccess();
-            },
-            { noUndoRecord: true }
-          )
-        );
+        await fns.onUpdatedCustomFunctions?.({
+          ctx,
+          newFunctions,
+          updatedFunctions,
+          removedFunctions,
+        });
       }
 
       return success();

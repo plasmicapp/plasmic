@@ -120,10 +120,10 @@ export function getOldToNewCustomFunctions(
 
 export function fixCustomFunctionExpr(
   oldToNewFunctions: Map<CustomFunction, CustomFunction | undefined>,
-  expr: CustomFunctionExpr
+  expr: CustomFunctionExpr | undefined | null
 ) {
   // Empty function, we can't do anything
-  if (!expr.func) {
+  if (!expr?.func) {
     return expr;
   }
 

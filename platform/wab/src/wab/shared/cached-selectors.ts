@@ -275,7 +275,7 @@ export const componentToElementNames = maybeComputedFn(
   }
 );
 
-export const componenToNonVariantParamNames = maybeComputedFn(
+export const componentToNonVariantParamNames = maybeComputedFn(
   (component: Component) => [
     ...getParamNames(
       component,

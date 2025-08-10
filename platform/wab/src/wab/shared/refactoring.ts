@@ -1,3 +1,4 @@
+import { customFunctionId } from "@/wab/shared/code-components/code-components";
 import { toVarName } from "@/wab/shared/codegen/util";
 import { assert, isPrefixArray, uniqueName } from "@/wab/shared/common";
 import * as Exprs from "@/wab/shared/core/exprs";
@@ -16,6 +17,7 @@ import {
   Component,
   ComponentDataQuery,
   ComponentServerQuery,
+  CustomFunction,
   Expr,
   Interaction,
   isKnownCustomCode,
@@ -351,5 +353,16 @@ export function renameServerQueryAndFixExprs(
   const refs = Tpls.findExprsInComponent(component);
   for (const { expr } of refs) {
     renameObjectInExpr(expr, "$queries", "$queries", oldVarName, newVarName);
+  }
+}
+
+export function renameDollarFunctions(
+  expr: Expr,
+  remappedFunctions: Map<CustomFunction, CustomFunction>
+) {
+  for (const [oldFunction, newFunction] of remappedFunctions.entries()) {
+    const oldName = customFunctionId(oldFunction);
+    const newName = customFunctionId(newFunction);
+    renameObjectInExpr(expr, "$$", "$$", oldName, newName);
   }
 }

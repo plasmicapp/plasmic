@@ -4,13 +4,13 @@ import { DEVFLAGS } from "@/wab/shared/devflags";
 import { ENABLED_GLOBALS } from "@/wab/shared/eval";
 import {
   Expr,
+  ObjectPath,
+  TemplatedString,
   isKnownCustomCode,
   isKnownExpr,
   isKnownFunctionExpr,
   isKnownObjectPath,
   isKnownTemplatedString,
-  ObjectPath,
-  TemplatedString,
 } from "@/wab/shared/model/classes";
 import {
   isBlockScope,
@@ -20,10 +20,17 @@ import {
   writeJs,
 } from "@/wab/shared/parser-utils";
 import { isValidJsIdentifier } from "@/wab/shared/utils/regex-js-identifier";
-import { ancestor as traverse } from "acorn-walk";
+import { Visitors, ancestor as traverse } from "acorn-walk";
 import type * as ast from "estree";
 
-const DOLLAR_VARS = ["$ctx", "$props", "$queries", "$state", "$steps"] as const;
+const DOLLAR_VARS = [
+  "$ctx",
+  "$props",
+  "$queries",
+  "$state",
+  "$steps",
+  "$$",
+] as const;
 
 export type DollarVar = (typeof DOLLAR_VARS)[number];
 
@@ -418,11 +425,10 @@ export function renameObjectKey(
   if (!isValidJavaScriptCode(code) && isValidJavaScriptCode(`(${code})`)) {
     code = `(${code})`;
   }
-  const ast = parseCode(code);
   const oldParts = [oldObject, ...oldKey.split(".")];
   const newParts = [newObject, ...newKey.split(".")];
 
-  traverse(ast, {
+  const ast = traverseCode(code, {
     MemberExpression: (node) => {
       const parts = parseMemberExpression(node);
       if (arrayEq(oldParts, parts)) {
@@ -449,9 +455,8 @@ export function replaceVarWithProp(
   if (!isValidJavaScriptCode(code) && isValidJavaScriptCode(`(${code})`)) {
     code = `(${code})`;
   }
-  const ast = parseCode(code);
 
-  traverse(ast, {
+  const ast = traverseCode(code, {
     Identifier: (node) => {
       if (node.name === varName) {
         node.name = `$props.${propName}`;
@@ -541,6 +546,12 @@ function parseCode(code: string) {
   }
 }
 
+function traverseCode(code: string, visitors: Visitors) {
+  const ast = parseCode(code);
+  traverse(ast, visitors);
+  return ast;
+}
+
 export function exprUsesCtxOrFreeVars(expr: Expr) {
   const info = parseExpr(expr);
   return info.usesDollarVars.$ctx || info.usedFreeVars.size > 0;
@@ -549,4 +560,9 @@ export function exprUsesCtxOrFreeVars(expr: Expr) {
 export function exprUsesDollarVars(expr: Expr) {
   const info = parseExpr(expr);
   return Object.entries(info.usesDollarVars).some(([_, used]) => used);
+}
+
+export function codeUsesFunction(code: string, fnName: string) {
+  const info = parseCodeExpression(code);
+  return info.usedDollarVarKeys["$$"]?.has(fnName);
 }

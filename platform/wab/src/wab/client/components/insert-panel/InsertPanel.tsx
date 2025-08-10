@@ -12,8 +12,8 @@ import InsertPanelTabItem from "@/wab/client/components/insert-panel/InsertPanel
 import ListSectionHeader from "@/wab/client/components/ListSectionHeader";
 import ListSectionSeparator from "@/wab/client/components/ListSectionSeparator";
 import {
-  notifiyInstallableFailure,
-  notifiyInstallableSuccess,
+  notifyInstallableFailure,
+  notifyInstallableSuccess,
 } from "@/wab/client/components/modals/codeComponentModals";
 import { shouldShowHostLessPackage } from "@/wab/client/components/omnibar/Omnibar";
 import OmnibarAddItem from "@/wab/client/components/omnibar/OmnibarAddItem";
@@ -463,10 +463,10 @@ const AddDrawerContent = observer(function AddDrawerContent(props: {
               studioCtx.switchToComponentArena(installed);
             }
           });
-          notifiyInstallableSuccess(item.label);
+          notifyInstallableSuccess(item.label);
           onInserted(item, null);
         } catch (error) {
-          notifiyInstallableFailure(item.label, (error as any).message);
+          notifyInstallableFailure(item.label, (error as any).message);
         }
         break;
       }

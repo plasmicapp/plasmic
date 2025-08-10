@@ -58,8 +58,8 @@ import {
   variantHasPrivatePseudoElementSelector,
 } from "@/wab/shared/Variants";
 import {
-  componenToNonVariantParamNames,
   componentToElementNames,
+  componentToNonVariantParamNames,
   componentToVariantParamNames,
   computedNodeNamer,
   computedProjectFlags,
@@ -384,7 +384,7 @@ export const createCanvasComponent = computedFn(
     const canvasCtx = viewCtx.canvasCtx;
     const sub = canvasCtx.Sub;
     const getArgsAndVariants = () => ({
-      internalArgProps: componenToNonVariantParamNames(component),
+      internalArgProps: componentToNonVariantParamNames(component),
       internalVariantProps: componentToVariantParamNames(component),
     });
     const CanvasComponent: React.ComponentType<CanvasComponentProps> = (

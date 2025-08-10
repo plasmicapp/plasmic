@@ -763,13 +763,13 @@ export function checkAndNotifyUnsupportedHostVersion(requiredVersion?: number) {
   return false;
 }
 
-export function notifiyInstallableSuccess(name: string) {
+export function notifyInstallableSuccess(name: string) {
   notification.success({
     message: <>{name} has successfully been installed!</>,
   });
 }
 
-export function notifiyInstallableFailure(name: string, errorMessage: string) {
+export function notifyInstallableFailure(name: string, errorMessage: string) {
   notification.error({
     message: <>{name} was not installed!</>,
     description: errorMessage,

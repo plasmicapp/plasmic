@@ -10,6 +10,7 @@ import {
   showModalToRefreshCodeComponentProps,
   unknownCodeComponentErrorDescription,
 } from "@/wab/client/components/modals/codeComponentModals";
+import { updateSiteCustomFunctions } from "@/wab/client/components/modals/customFunctionModals";
 import { reactConfirm } from "@/wab/client/components/quick-modals";
 import {
   getHostLessPkg,
@@ -180,8 +181,14 @@ export const ccClientCallbackFns: CodeComponentSyncCallbackFns = {
       ),
     });
   },
-  onUpdatedCustomFunctions(opts) {
-    const { newFunctions, removedFunctions, updatedFunctions } = opts;
+  async onUpdatedCustomFunctions(opts) {
+    const { ctx, newFunctions, updatedFunctions } = opts;
+    const removedFunctions = await updateSiteCustomFunctions({
+      ctx: ensureInstance(ctx, StudioCtx),
+      newFunctions,
+      updatedFunctions,
+      removedFunctions: opts.removedFunctions,
+    });
     notification.info({
       message: "Registered functions updated",
       description: (
