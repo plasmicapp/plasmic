@@ -14,7 +14,7 @@ describe("data-binding", function () {
     removeCurrentProject();
   });
 
-  it("can access $props in data picker, bind text content to them, evaluate default value and given value, rename prop", () => {
+  it("can access $props in data picker, bind text content to them, evaluate given value, rename prop", () => {
     cy.withinStudioIframe(() => {
       cy.createNewFrame().then((framed) => {
         // Add a child.
@@ -36,12 +36,6 @@ describe("data-binding", function () {
         cy.contains("Allow external access").trigger("mouseover");
         cy.contains("Create new prop").click();
         cy.linkNewProp("linkProp");
-
-        // Set default value for linkProp.
-        const defaultPropValue = "https://default.value.for.link.prop";
-        cy.get(`[data-test-id="prop-editor-row-default-href"] textarea`).type(
-          `{selectall}{backspace}${defaultPropValue}`
-        );
 
         // Connect text content to data.
         cy.get(`[data-test-id="text-content"] label`).rightclick();
@@ -65,7 +59,7 @@ describe("data-binding", function () {
               .should("contain.text", expected);
           });
         };
-        checkValue(defaultPropValue);
+        checkValue("https://www.plasmic.app/");
 
         // Select TplComponent and set prop.
         const instancePropValue = "https://instance.prop.value";
@@ -116,12 +110,6 @@ describe("data-binding", function () {
         cy.contains("Create new prop").click();
         cy.linkNewProp("linkProp");
 
-        // Set default value for linkProp.
-        const defaultPropValue = "https://default.value.for.link.prop";
-        cy.get(`[data-test-id="prop-editor-row-default-href"] textarea`).type(
-          `{selectall}{backspace}${defaultPropValue}`
-        );
-
         // Expand HTML Attributes.
         cy.get(
           '[data-test-id="html-attributes-section"] [data-test-id="collapse"]'
@@ -167,12 +155,12 @@ describe("data-binding", function () {
             .should(
               "have.attr",
               "href",
-              "https://google.com/search?q=" + defaultPropValue
+              "https://google.com/search?q=https://www.plasmic.app/"
             )
             .should(
               "have.attr",
               "title",
-              "https://google.com/search?q=" + defaultPropValue
+              "https://google.com/search?q=https://www.plasmic.app/"
             );
         });
       });
@@ -203,15 +191,20 @@ describe("data-binding", function () {
           .wait(1000)
           .dblclick({ force: true })
           .find('[contenteditable="true"]')
-          .type("{selectall}{backspace}", { delay: 100 })
+          .wait(500)
+          .type("{selectall}")
+          .wait(500)
+          .type("{backspace}")
+          .wait(500)
           .type("Hello World!", { delay: 100 })
           .setSelection("World")
           .type("{mod+k}")
+          .wait(300)
           .justType("/{enter}")
           .wait(300)
           .justType("{esc}");
 
-        // Link a.href of link to new prop "linkProp", set default value.
+        // Link a.href of link to new prop "linkProp"
         cy.focusFrameRoot(framed);
         framed.rootElt().children().dblclick({ force: true });
         cy.selectTreeNode([
@@ -225,10 +218,6 @@ describe("data-binding", function () {
         cy.contains("Allow external access").trigger("mouseover");
         cy.contains("Create new prop").click();
         cy.linkNewProp("linkProp");
-        const defaultPropValue = "https://default.value.for.link.prop";
-        cy.get(`[data-test-id="prop-editor-row-default-href"] textarea`).type(
-          `{selectall}{backspace}${defaultPropValue}`
-        );
 
         // Connect link text content to data.
         cy.get(`[data-test-id="text-content"] label`).rightclick();
@@ -241,14 +230,11 @@ describe("data-binding", function () {
         // Check expected content (canvas and live mode).
         cy.focusFrameRoot(framed);
         cy.waitAllEval();
-        framed
-          .rootElt()
-          .contains(`Hello ${defaultPropValue}!`)
-          .should("be.visible");
+        framed.rootElt().contains("Hello /!").should("be.visible");
         cy.withinLiveMode(() => {
           cy.get("#plasmic-app a")
-            .should("have.attr", "href", defaultPropValue)
-            .should("contain.text", defaultPropValue);
+            .should("have.attr", "href", "/")
+            .should("contain.text", "/");
         });
       });
     });

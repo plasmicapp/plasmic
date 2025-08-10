@@ -42,25 +42,17 @@ describe("component-ops - tricky operations", function () {
           cy.insertFromAddDrawer("CompA");
           cy.justType("{enter}");
           cy.switchToSettingsTab();
-          cy.log(
-            "Make sure linking to a new prop will preserve the default value"
-          );
+          cy.log("Link to a new prop");
           cy.get(`[data-plasmic-prop="withDefaultValue"]`).first().rightclick();
           cy.contains("Allow external access").trigger("mouseover");
           cy.wait(200);
           cy.contains("Create new prop").click();
           cy.linkNewProp("linkProp1");
-          cy.get(`[data-test-id="prop-editor-row-default-withDefaultValue"]`)
-            .first()
-            .contains("defaultValue1")
-            .should("exist");
           cy.insertFromAddDrawer(VERT_CONTAINER_CAP);
           cy.get(
             '[data-test-id="html-attributes-section"] [data-test-id="show-extra-content"]'
           ).click();
-          cy.log(
-            "Make sure linking attr to a new prop will preserve the default value"
-          );
+          cy.log("Link attr to a new prop");
           cy.get('[data-plasmic-prop="tabIndex"]')
             .first()
             .type("5{enter}")
@@ -69,9 +61,6 @@ describe("component-ops - tricky operations", function () {
           cy.wait(200);
           cy.contains("Create new prop").click();
           cy.linkNewProp("linkProp2");
-          cy.get(`[data-test-id="prop-editor-row-default-tabIndex"]`)
-            .find('[value="5"]')
-            .should("exist");
           cy.log("Create multiple VarRefs to the same prop");
           cy.get('[data-plasmic-prop="title"]')
             .first()
@@ -79,9 +68,6 @@ describe("component-ops - tricky operations", function () {
             .rightclick();
           cy.contains("Allow external access").trigger("mouseover");
           cy.get('[role="menuitem"]').contains("linkProp2").click();
-          cy.get(`[data-test-id="prop-editor-row-default-title"]`)
-            .contains("5")
-            .should("exist");
           cy.justType("{shift+enter}");
           cy.log(
             "Try extract component, with multiple var refs and implicit state"

@@ -1146,60 +1146,6 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
                 </FallbackEditor>
               );
             })()}
-          {referencedParam &&
-            !disabledDynamicValue &&
-            !disableLinkToProp &&
-            isAllowedDefaultExprForPropType(propType) &&
-            (() => {
-              assert(
-                referencedParam,
-                "trying to render a referencedParam editor without a referenced param"
-              );
-              assert(
-                ownerComponent,
-                "referenced params should have an owner component"
-              );
-              assert(viewCtx, "referenced params should have a ViewCtx");
-              // displaying the default value of a linked prop.
-              const defaultExpr = referencedParam.defaultExpr;
-              const [defaultExprLit, _editable] = extractLitFromMaybeRenderable(
-                defaultExpr,
-                viewCtx
-              );
-              return (
-                <IndentedRow
-                  label="Default"
-                  data-test-id={`prop-editor-row-default-${attr ?? label}`}
-                >
-                  <PropValueEditor
-                    attr={attr}
-                    value={defaultExprLit}
-                    label={label}
-                    disabled={false}
-                    valueSetState={
-                      valueSetState ?? getValueSetState(definedIndicator)
-                    }
-                    propType={propType}
-                    component={ownerComponent}
-                    onChange={(val) => {
-                      if (!defaultExprLit && !val) {
-                        return;
-                      }
-                      return viewCtx.change(() => {
-                        const newExpr = updateOrCreateExpr(
-                          expr,
-                          wabType,
-                          val,
-                          tpl,
-                          viewCtx
-                        );
-                        referencedParam.defaultExpr = newExpr;
-                      });
-                    }}
-                  />
-                </IndentedRow>
-              );
-            })()}
         </PropValueEditorContext.Provider>
         {shouldHighlight && (
           <HighlightBlinker
