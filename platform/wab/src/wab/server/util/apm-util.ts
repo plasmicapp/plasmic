@@ -10,10 +10,8 @@ export async function withSpan<T>(
   try {
     return await f();
   } finally {
-    console.log(
-      `${name} took ${new Date().getTime() - start}ms`,
-      msg ? `: ${msg}` : undefined
-    );
+    const suffix = msg ? `: ${msg}` : "";
+    console.log(`${name} took ${new Date().getTime() - start}ms${suffix}`);
     promTimer.end();
   }
 }

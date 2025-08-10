@@ -474,36 +474,48 @@ export async function sendCommentsNotificationEmails(
   console.log("[Comments] Starting email notification process");
   const mailer = createMailer();
   const connection = await getDefaultConnection();
+
   await connection.transaction(async (entityManager) => {
-    const dbManager = new DbMgr(entityManager, SUPER_USER);
+    try {
+      const dbManager = new DbMgr(entityManager, SUPER_USER);
 
-    await dbManager.waitLockTransactionResource(COMMENTS_NOTIFICATION_LOCK);
+      await dbManager.waitLockTransactionResource(COMMENTS_NOTIFICATION_LOCK);
 
-    const { notificationsByUser, recentCommentThreads, notifiedDate } =
-      await processUnnotifiedCommentsNotifications(dbManager);
+      const { notificationsByUser, recentCommentThreads, notifiedDate } =
+        await processUnnotifiedCommentsNotifications(dbManager);
 
-    await Promise.all(
-      Array.from(notificationsByUser).map(
-        async ([_userId, projectWiseUserNotification]) => {
-          await sendUserNotificationEmail(
-            mailer,
-            projectWiseUserNotification,
-            config.host,
-            config.mailFrom,
-            config.mailBcc
-          );
-        }
-      )
-    );
+      await Promise.all(
+        Array.from(notificationsByUser).map(
+          async ([_userId, projectWiseUserNotification]) => {
+            await sendUserNotificationEmail(
+              mailer,
+              projectWiseUserNotification,
+              config.host,
+              config.mailFrom,
+              config.mailBcc
+            );
+          }
+        )
+      );
 
-    await dbManager.markCommentThreadsAsNotified(
-      recentCommentThreads,
-      notifiedDate
-    );
-    console.log(
-      `[Comments] Marked ${recentCommentThreads.length} threads as notified`
-    );
-    console.log("[Comments] Email notification process completed successfully");
+      await dbManager.markCommentThreadsAsNotified(
+        recentCommentThreads,
+        notifiedDate
+      );
+      console.log(
+        `[Comments] Marked ${recentCommentThreads.length} threads as notified`
+      );
+      console.log(
+        "[Comments] Email notification process completed successfully"
+      );
+    } catch (err) {
+      const msg = err instanceof Error ? err.stack || err.message : String(err);
+      console.error(
+        `[Comments] Error during email notification process -> ${msg}`
+      );
+      // Rethrow so the transaction and job fail immediately.
+      throw err;
+    }
   });
 }
 
