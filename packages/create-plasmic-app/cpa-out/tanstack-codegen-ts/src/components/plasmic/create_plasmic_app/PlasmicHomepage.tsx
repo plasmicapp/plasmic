@@ -156,11 +156,9 @@ function PlasmicHomepage__RenderFunc(props: {
             "Homepage__root__qtZIr"
           )}
         >
-          <Stack__
-            as={"section"}
+          <section
             data-plasmic-name={"section"}
             data-plasmic-override={overrides.section}
-            hasGap={true}
             className={classNames(
               "plasmic_default__all",
               "plasmic_default__section",
@@ -232,7 +230,7 @@ function PlasmicHomepage__RenderFunc(props: {
                 "Homepage__randomDynamicPageButton__y0MM"
               )}
             />
-          </Stack__>
+          </section>
         </div>
       </div>
     </React.Fragment>

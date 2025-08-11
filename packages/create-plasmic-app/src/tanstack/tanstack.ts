@@ -3,8 +3,8 @@ import path from "path";
 import { spawnOrFail } from "../utils/cmd-utils";
 import { installCodegenDeps, runCodegenSync } from "../utils/codegen";
 import { deleteGlob } from "../utils/file-utils";
+import { installUpgrade } from "../utils/npm-utils";
 import { CPAStrategy, GenerateFilesArgs } from "../utils/strategy";
-import { makeCustomViteConfig_file_router_codegen } from "./templates/file-router/config";
 import { makePlasmicHostPage_fileRouter_codegen } from "./templates/file-router/plasmic-host";
 import { makeCustomRoot_file_router_codegen } from "./templates/file-router/root";
 
@@ -32,6 +32,11 @@ export const tanstackStrategy: CPAStrategy = {
     const createCommand = `npx create-tsrouter-app@latest ${projectName} --template file-router --add-ons start`;
 
     await spawnOrFail(createCommand);
+
+    // Install peer-dep of @tanstack/react-router-with-query
+    await installUpgrade("@tanstack/react-query", {
+      workingDir: projectPath,
+    });
   },
   installDeps: async ({ scheme, projectPath }) => {
     if (scheme === "loader") {
@@ -45,12 +50,24 @@ export const tanstackStrategy: CPAStrategy = {
   overwriteConfig: async (args) => {
     const { projectPath } = args;
 
-    /* We need to provide @plasmicapp/* packages in noExternal ssr packages for
-     * them to work properly during ssr phase.
-     */
+    // Add @plasmicapp/* packages in noExternal to work during SSR
+    const viteConfigPath = path.join(projectPath, "vite.config.ts");
+    const viteConfigContent = await fs.readFile(viteConfigPath, "utf8");
     await fs.writeFile(
-      path.join(projectPath, "vite.config.ts"),
-      makeCustomViteConfig_file_router_codegen()
+      viteConfigPath,
+      viteConfigContent.replace(
+        `defineConfig({`,
+        `defineConfig({
+  ssr: {
+    noExternal: [
+      "@plasmicapp/data-sources",
+      "@plasmicapp/data-sources-context",
+      "@plasmicapp/prepass",
+      "@plasmicapp/query",
+      "@plasmicapp/react-web",
+    ],
+  },`
+      )
     );
 
     // Disable verbatimModuleSyntax in tsconfig.json

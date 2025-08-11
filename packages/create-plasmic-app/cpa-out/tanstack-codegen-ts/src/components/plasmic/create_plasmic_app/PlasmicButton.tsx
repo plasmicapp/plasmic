@@ -266,13 +266,11 @@ function PlasmicButton__RenderFunc(props: {
   };
 
   return (
-    <Stack__
-      as={"button"}
+    <button
       data-plasmic-name={"root"}
       data-plasmic-override={overrides.root}
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
-      hasGap={true}
       className={classNames(
         "plasmic_default__all",
         "plasmic_default__button",
@@ -734,7 +732,7 @@ function PlasmicButton__RenderFunc(props: {
           })}
         </div>
       ) : null}
-    </Stack__>
+    </button>
   ) as React.ReactElement | null;
 }
 
