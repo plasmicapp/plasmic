@@ -175,7 +175,11 @@ async function processThreadsForProject(
   commentThreads: CommentThread[]
 ): Promise<Notification[]> {
   const dbManager = ctx.dbManager;
-  const project = await dbManager.getProjectById(projectId);
+  const project = await dbManager.tryGetProjectById(projectId, false);
+  // If the project no longer exists (deleted or missing), skip processing.
+  if (!project) {
+    return [];
+  }
   const permissions = await dbManager.getPermissionsForProject(projectId);
   const projectUsers = getUniqueUsersWithCommentAccess(permissions);
 

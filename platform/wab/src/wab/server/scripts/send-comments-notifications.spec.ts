@@ -1,4 +1,4 @@
-import { DbMgr } from "@/wab/server/db/DbMgr";
+import { DbMgr, SkipSafeDelete } from "@/wab/server/db/DbMgr";
 import {
   NotificationsByUser,
   processUnnotifiedCommentsNotifications,
@@ -70,6 +70,26 @@ async function removeReactionOnComment(
 }
 
 describe("sendCommentsNotificationEmails", () => {
+  it("should return early and not produce notifications when project is missing", async () => {
+    await withEndUserNotificationSetup(
+      async ({ sudo, users, project, userDbs }) => {
+        // Create a fresh thread with activity so it appears in the
+        // unnotified set for this project.
+        const root = await addComment(userDbs[0](), project.id);
+
+        // Soft-delete the project so DbMgr.tryGetProjectById(projectId, false)
+        // returns null. Threads remain queryable (deletedAt on project only).
+        await sudo.deleteProject(project.id, SkipSafeDelete);
+
+        // Should not throw (no NotFoundError) and should return no notifications
+        // for the missing project.
+        const { notificationsByUser } =
+          await processUnnotifiedCommentsNotifications(sudo);
+
+        expect(notificationsByUser).toEqual(new Map());
+      }
+    );
+  });
   it("should send notifications based on user settings", async () => {
     await withEndUserNotificationSetup(
       async ({ sudo, users, project, userDbs }) => {
