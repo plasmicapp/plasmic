@@ -23,6 +23,7 @@ describe("walkDependencyTree", () => {
       globalVariant: mkBaseVariant(),
       styleTokens: [],
       styleTokenOverrides: [],
+      dataTokens: [],
       mixins: [],
       themes: [defaultTheme],
       activeTheme: defaultTheme,

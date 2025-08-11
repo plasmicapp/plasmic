@@ -2536,18 +2536,6 @@ export function cloneVariantedRs(variantedRs: VariantedRuleSet) {
   });
 }
 
-export function cloneStyleToken(token: StyleToken) {
-  return new StyleToken({
-    name: token.name,
-    regKey: token.regKey,
-    value: token.value,
-    type: token.type,
-    uuid: mkShortId(),
-    variantedValues: token.variantedValues.map(cloneVariantedValue),
-    isRegistered: token.isRegistered,
-  });
-}
-
 export function cloneStyleTokenOverride(override: StyleTokenOverride) {
   return new StyleTokenOverride({
     token: override.token,

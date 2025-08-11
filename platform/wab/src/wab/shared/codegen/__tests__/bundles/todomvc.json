@@ -55,7 +55,8 @@
       "customFunctions": [],
       "codeLibraries": [],
       "__type": "Site",
-      "styleTokenOverrides": []
+      "styleTokenOverrides": [],
+      "dataTokens": []
     },
     "2": {
       "uuid": "BunrB8jR5E5",
@@ -4925,5 +4926,5 @@
     }
   },
   "deps": [],
-  "version": "250-migrate-flex-gap"
+  "version": "251-add-data-tokens"
 }

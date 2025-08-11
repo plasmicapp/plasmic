@@ -84,11 +84,9 @@ StyleTokenOverride
   @WeakRef token: StyleToken
   value: String?
   variantedValues: [VariantedValue]
-StyleToken
+Token
   # This is really more like a displayName, not treated as the stable ID (although it also needs to be unique).
   name: String
-  # Such as color, size, and etc.
-  @Const type: String
   @Const uuid: String
   value: String
   variantedValues: [VariantedValue]
@@ -96,6 +94,11 @@ StyleToken
   # Unique key used to identify this token by the registration calls. Allows you to treat the name as a display name
   # that can change without breaking backcompat with projects.
   regKey: String?
+  StyleToken
+    # Such as color, size, and etc.
+    @Const type: 'Color' | 'Spacing' | 'Opacity' | 'LineHeight' | 'FontFamily' | 'FontSize'
+  DataToken
+    @Const type: 'Data'
 HostLessPackageInfo
   name: String
   npmPkg: [String]
@@ -123,6 +126,7 @@ Site
   @Const globalVariant: Variant
   styleTokens: [StyleToken]
   styleTokenOverrides: [StyleTokenOverride]
+  dataTokens: [DataToken]
   mixins: [Mixin]
   @Const themes: [Theme]
   @WeakRef activeTheme: Theme?

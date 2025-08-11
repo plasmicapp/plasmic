@@ -162,10 +162,10 @@ import { SIZE_PROPS } from "@/wab/shared/core/style-props";
 import {
   changeTokenUsage,
   cloneMixin,
-  cloneStyleToken,
   extractTokenUsages,
   mkRuleSet,
 } from "@/wab/shared/core/styles";
+import { cloneToken } from "@/wab/shared/core/tokens";
 import {
   TplNamable,
   cloneVariantSetting,
@@ -2057,7 +2057,7 @@ export class TplMgr {
   }
 
   duplicateToken(token: StyleToken) {
-    const newToken = cloneStyleToken(token);
+    const newToken = cloneToken(token);
     newToken.name = this.getUniqueTokenName(token.name);
     newToken.isRegistered = false;
     this.site().styleTokens.push(newToken);

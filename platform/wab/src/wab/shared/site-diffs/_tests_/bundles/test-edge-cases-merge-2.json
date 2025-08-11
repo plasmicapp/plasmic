@@ -44,7 +44,8 @@
             "customFunctions": [],
             "codeLibraries": [],
             "__type": "Site",
-            "styleTokenOverrides": []
+            "styleTokenOverrides": [],
+            "dataTokens": []
           },
           "36067002": {
             "name": "Custom arena 1",
@@ -2532,7 +2533,7 @@
           }
         },
         "deps": [],
-        "version": "250-migrate-flex-gap"
+        "version": "251-add-data-tokens"
       },
       "projectId": "2YAtuqUruz4SscKrr5g25x",
       "version": "0.0.1",
@@ -2595,7 +2596,8 @@
             "customFunctions": [],
             "codeLibraries": [],
             "__type": "Site",
-            "styleTokenOverrides": []
+            "styleTokenOverrides": [],
+            "dataTokens": []
           },
           "36067002": {
             "name": "Custom arena 1",
@@ -4753,7 +4755,7 @@
           "53903362": { "values": {}, "mixins": [], "__type": "RuleSet" }
         },
         "deps": [],
-        "version": "250-migrate-flex-gap"
+        "version": "251-add-data-tokens"
       }
     },
     {
@@ -4799,7 +4801,8 @@
             "customFunctions": [],
             "codeLibraries": [],
             "__type": "Site",
-            "styleTokenOverrides": []
+            "styleTokenOverrides": [],
+            "dataTokens": []
           },
           "36067002": {
             "name": "Custom arena 1",
@@ -7453,7 +7456,7 @@
           }
         },
         "deps": [],
-        "version": "250-migrate-flex-gap"
+        "version": "251-add-data-tokens"
       }
     }
   ]

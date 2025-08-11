@@ -342,6 +342,23 @@ export const modelConflictsMeta: ModelConflictsMeta = {
         ]),
     },
   },
+  DataToken: {
+    name: "generic",
+    type: "unexpected",
+    uuid: "unexpected",
+    value: "generic",
+    isRegistered: "generic",
+    regKey: "generic",
+    variantedValues: {
+      arrayType: "unordered",
+      conflictType: "merge",
+      mergeKey: `variants`,
+      handleUpdatedValues: (vals, parent, bundler) =>
+        shallowCloneArrayValuesAndAddToBundle(vals, parent, bundler, [
+          classes.VariantedValue,
+        ]),
+    },
+  },
   HostLessPackageInfo: immutableClass<HostLessPackageInfo>(), // Not really immutable but we shouldn't have two concurrent instances
   Site: {
     activeScreenVariantGroup: "generic",
@@ -444,6 +461,12 @@ export const modelConflictsMeta: ModelConflictsMeta = {
         ]),
     },
     styleTokens: {
+      arrayType: "unordered",
+      conflictType: "rename",
+      nameKey: `name`,
+      excludeFromRename: (t) => t.isRegistered && !!t.regKey,
+    },
+    dataTokens: {
       arrayType: "unordered",
       conflictType: "rename",
       nameKey: `name`,

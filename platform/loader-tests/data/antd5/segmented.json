@@ -222,7 +222,8 @@
           "customFunctions": [],
           "codeLibraries": [],
           "__type": "Site",
-          "styleTokenOverrides": []
+          "styleTokenOverrides": [],
+          "dataTokens": []
         },
         "Hy0RAEMaFXBS": {
           "uuid": "ohjtWCeZDF9m",
@@ -28078,7 +28079,7 @@
         }
       },
       "deps": [],
-      "version": "250-migrate-flex-gap"
+      "version": "251-add-data-tokens"
     }
   ],
   [
@@ -28581,7 +28582,8 @@
           "customFunctions": [],
           "codeLibraries": [],
           "__type": "Site",
-          "styleTokenOverrides": []
+          "styleTokenOverrides": [],
+          "dataTokens": []
         },
         "wJOawxkPOHdn": {
           "name": "Custom arena 1",
@@ -30241,7 +30243,7 @@
         }
       },
       "deps": ["530345ed-8f2a-4344-bc76-1cd18621bd88"],
-      "version": "250-migrate-flex-gap"
+      "version": "251-add-data-tokens"
     }
   ]
 ]

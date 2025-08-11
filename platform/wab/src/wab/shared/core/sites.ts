@@ -80,12 +80,12 @@ import {
 import { typographyCssProps } from "@/wab/shared/core/style-props";
 import {
   cloneMixin,
-  cloneStyleToken,
   cloneStyleTokenOverride,
   cloneTheme,
   cssPropsToRuleSet,
   mkRuleSet,
 } from "@/wab/shared/core/styles";
+import { cloneToken } from "@/wab/shared/core/tokens";
 import {
   clone,
   findExprsInComponent,
@@ -221,6 +221,7 @@ export function createSite({
     globalVariant: mkBaseVariant(),
     styleTokens: [],
     styleTokenOverrides: [],
+    dataTokens: [],
     mixins: [],
     themes: [defaultTheme],
     activeTheme: defaultTheme,
@@ -560,10 +561,11 @@ export function cloneSite(fromSite: Site) {
     componentArenas: newComponentArenas,
     components: newComponents,
     globalVariant: cloneVariant(fromSite.globalVariant),
-    styleTokens: fromSite.styleTokens.map(cloneStyleToken),
+    styleTokens: fromSite.styleTokens.map((t) => cloneToken(t)),
     styleTokenOverrides: fromSite.styleTokenOverrides.map(
       cloneStyleTokenOverride
     ),
+    dataTokens: fromSite.dataTokens.map((t) => cloneToken(t)),
     mixins: fromSite.mixins.map((mixin) => cloneMixin(mixin)),
     themes: fromSite.themes.map((th) =>
       ensure(newThemes.get(th), "should exist in newThemes")

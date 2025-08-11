@@ -494,7 +494,8 @@
             "customFunctions": [],
             "codeLibraries": [],
             "__type": "Site",
-            "styleTokenOverrides": []
+            "styleTokenOverrides": [],
+            "dataTokens": []
           },
           "wPllSQ6EXa78": {
             "uuid": "vIWn1Mj68bQ_",
@@ -1151,7 +1152,7 @@
           }
         },
         "deps": [],
-        "version": "250-migrate-flex-gap"
+        "version": "251-add-data-tokens"
       },
       "projectId": "aEdkqeH2BR6MwHyjD3tm6K",
       "version": "0.0.1",
@@ -1663,7 +1664,8 @@
             "customFunctions": [],
             "codeLibraries": [],
             "__type": "Site",
-            "styleTokenOverrides": []
+            "styleTokenOverrides": [],
+            "dataTokens": []
           },
           "wPllSQ6EXa78": {
             "uuid": "vIWn1Mj68bQ_",
@@ -2311,7 +2313,7 @@
           }
         },
         "deps": [],
-        "version": "250-migrate-flex-gap"
+        "version": "251-add-data-tokens"
       }
     },
     {
@@ -2807,7 +2809,8 @@
             "customFunctions": [],
             "codeLibraries": [],
             "__type": "Site",
-            "styleTokenOverrides": []
+            "styleTokenOverrides": [],
+            "dataTokens": []
           },
           "wPllSQ6EXa78": {
             "__type": "Component",
@@ -3455,7 +3458,7 @@
           }
         },
         "deps": [],
-        "version": "250-migrate-flex-gap"
+        "version": "251-add-data-tokens"
       }
     }
   ]

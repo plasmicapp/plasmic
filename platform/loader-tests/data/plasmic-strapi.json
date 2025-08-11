@@ -605,7 +605,8 @@
           "customFunctions": [],
           "codeLibraries": [],
           "__type": "Site",
-          "styleTokenOverrides": []
+          "styleTokenOverrides": [],
+          "dataTokens": []
         },
         "60773007": {
           "uuid": "Mq9nYQJp8PE",
@@ -802,7 +803,7 @@
         }
       },
       "deps": [],
-      "version": "250-migrate-flex-gap"
+      "version": "251-add-data-tokens"
     }
   ],
   [
@@ -1401,7 +1402,8 @@
           "customFunctions": [],
           "codeLibraries": [],
           "__type": "Site",
-          "styleTokenOverrides": []
+          "styleTokenOverrides": [],
+          "dataTokens": []
         },
         "31846003": {
           "type": "global-screen",
@@ -1902,7 +1904,7 @@
         }
       },
       "deps": ["c30818bb-2f70-4079-bc4d-65eaecf566f6"],
-      "version": "250-migrate-flex-gap"
+      "version": "251-add-data-tokens"
     }
   ]
 ]

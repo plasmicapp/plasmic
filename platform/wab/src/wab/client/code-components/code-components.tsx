@@ -372,9 +372,13 @@ export async function maybeConvertToHostLessProject(studioCtx: StudioCtx) {
         ),
       ];
       const existingGlobalContexts = [...studioCtx.site.globalContexts];
-      const existingTokens = studioCtx.site.styleTokens.filter(
+      const existingStyleTokens = studioCtx.site.styleTokens.filter(
         (s) => s.isRegistered
       );
+      const existingDataTokens = studioCtx.site.dataTokens.filter(
+        (s) => s.isRegistered
+      );
+
       const existingFunctions = [...studioCtx.site.customFunctions];
       const existingLibs = [...studioCtx.site.codeLibraries];
 
@@ -389,6 +393,7 @@ export async function maybeConvertToHostLessProject(studioCtx: StudioCtx) {
             userManagedFonts: [],
             styleTokens: [],
             styleTokenOverrides: [],
+            dataTokens: [],
             mixins: [],
             activeTheme: null,
             imageAssets: [],
@@ -433,8 +438,11 @@ export async function maybeConvertToHostLessProject(studioCtx: StudioCtx) {
         )
       );
 
-      const depTokens = new Set(
+      const depStyleTokens = new Set(
         studioCtx.site.styleTokens.filter((s) => s.isRegistered)
+      );
+      const depDataTokens = new Set(
+        studioCtx.site.dataTokens.filter((s) => s.isRegistered)
       );
 
       const depFunctions = new Set(studioCtx.site.customFunctions);
@@ -468,9 +476,14 @@ export async function maybeConvertToHostLessProject(studioCtx: StudioCtx) {
           .map((c) => c.name)
       );
 
-      const nonDepTokenNames = new Set(
+      const nonDepStyleTokenNames = new Set(
         studioCtx.site.styleTokens
-          .filter((s) => s.isRegistered && !depTokens.has(s))
+          .filter((s) => s.isRegistered && !depStyleTokens.has(s))
+          .map((c) => c.name)
+      );
+      const nonDepDataTokenNames = new Set(
+        studioCtx.site.dataTokens
+          .filter((s) => s.isRegistered && !depDataTokens.has(s))
           .map((c) => c.name)
       );
 
@@ -494,7 +507,8 @@ export async function maybeConvertToHostLessProject(studioCtx: StudioCtx) {
       await studioCtx.change(({ success }) => {
         studioCtx.site.components = [...existingComps];
         studioCtx.site.globalContexts = [...existingGlobalContexts];
-        studioCtx.site.styleTokens = [...existingTokens];
+        studioCtx.site.styleTokens = [...existingStyleTokens];
+        studioCtx.site.dataTokens = [...existingDataTokens];
         studioCtx.site.customFunctions = [...existingFunctions];
         studioCtx.site.codeLibraries = [...existingLibs];
         return success();
@@ -511,7 +525,10 @@ export async function maybeConvertToHostLessProject(studioCtx: StudioCtx) {
               nonDepCompNames.has(c.name)
           );
           studioCtx.site.styleTokens = studioCtx.site.styleTokens.filter(
-            (s) => s.isRegistered && nonDepTokenNames.has(s.name)
+            (s) => s.isRegistered && nonDepStyleTokenNames.has(s.name)
+          );
+          studioCtx.site.dataTokens = studioCtx.site.dataTokens.filter(
+            (s) => s.isRegistered && nonDepDataTokenNames.has(s.name)
           );
           studioCtx.site.customFunctions =
             studioCtx.site.customFunctions.filter((f) =>

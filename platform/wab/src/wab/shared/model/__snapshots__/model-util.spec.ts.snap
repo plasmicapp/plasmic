@@ -6235,6 +6235,7 @@ exports[`model-util works 1`] = `
     },
   ],
   "customFunctions": [],
+  "dataTokens": [],
   "defaultComponents": {},
   "defaultPageRoleId": null,
   "flags": {
