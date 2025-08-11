@@ -1,5 +1,6 @@
-global.PUBLICPATH = "/";
-global.DEPLOYENV = "test";
+process.env.NODE_ENV = "test";
+process.env.COMMITHASH = "test";
+process.env.PUBLICPATH = "/";
 
 // Set global variables BEFORE importing modules.
 // Importing modules may have side-effects that depend on these variables.

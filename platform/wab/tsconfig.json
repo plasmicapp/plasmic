@@ -53,7 +53,7 @@
     "strictFunctionTypes": true,
     "strictNullChecks": true
   },
-  "include": ["src"],
+  "include": ["src", "rsbuild.config.ts"],
   "exclude": [
     "node_modules",
     "build",

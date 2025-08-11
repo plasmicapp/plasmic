@@ -16,6 +16,7 @@ import {
 import * as domMod from "@/wab/client/dom";
 import { NodeAndOffset } from "@/wab/client/dom";
 import { scriptExec, upsertJQSelector } from "@/wab/client/dom-utils";
+import { ENV } from "@/wab/client/env";
 import { PlasmicWindowInternals } from "@/wab/client/frame-ctx/windows";
 import { reduceImageSize } from "@/wab/client/image/transform";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
@@ -54,8 +55,6 @@ import L from "lodash";
 import debounce from "lodash/debounce";
 import { Lambda, autorun, observable, runInAction } from "mobx";
 import React from "react";
-
-declare const COMMITHASH: string;
 
 let gCanvasCtxIndex = 0;
 
@@ -270,13 +269,17 @@ export class CanvasCtx {
       this._$head
     )[0] as HTMLStyleElement;
     upsertJQSelector(
-      `link[href='${getPublicUrl()}/static/styles/canvas/canvas.${COMMITHASH}.css']`,
+      `link[href='${getPublicUrl()}/static/styles/canvas/canvas.${
+        ENV.COMMITHASH
+      }.css']`,
       () =>
         this._$head.append(
           $("<link />").attr({
             rel: "stylesheet",
             type: "text/css",
-            href: `${getPublicUrl()}/static/styles/canvas/canvas.${COMMITHASH}.css`,
+            href: `${getPublicUrl()}/static/styles/canvas/canvas.${
+              ENV.COMMITHASH
+            }.css`,
             crossOrigin: "anonymous",
           })
         ),
@@ -295,13 +298,17 @@ export class CanvasCtx {
     this._$head = this._$html.find("head");
     this._$body = this._$html.find("body").first();
     upsertJQSelector(
-      `link[href='${getPublicUrl()}/static/styles/canvas/canvas.${COMMITHASH}.css']`,
+      `link[href='${getPublicUrl()}/static/styles/canvas/canvas.${
+        ENV.COMMITHASH
+      }.css']`,
       () =>
         this._$head.append(
           $("<link />").attr({
             rel: "stylesheet",
             type: "text/css",
-            href: `${getPublicUrl()}/static/styles/canvas/canvas.${COMMITHASH}.css`,
+            href: `${getPublicUrl()}/static/styles/canvas/canvas.${
+              ENV.COMMITHASH
+            }.css`,
             crossOrigin: "anonymous",
           })
         ),

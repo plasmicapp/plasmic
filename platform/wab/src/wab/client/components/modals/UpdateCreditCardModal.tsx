@@ -1,10 +1,11 @@
 import { AppCtx } from "@/wab/client/app-ctx";
 import UpsellCreditCard from "@/wab/client/components/modals/UpsellCreditCard";
 import { showTemporaryPrompt } from "@/wab/client/components/quick-modals";
-import { getStripePromise } from "@/wab/client/deps-client";
-import { ensure } from "@/wab/shared/common";
+import { Modal } from "@/wab/client/components/widgets/Modal";
+import { getStripePromise } from "@/wab/client/stripe";
 import { ApiTeam } from "@/wab/shared/ApiSchema";
 import { accessLevelRank } from "@/wab/shared/EntUtil";
+import { ensure } from "@/wab/shared/common";
 import { isUpgradableTier } from "@/wab/shared/pricing/pricing-utils";
 import {
   CardElement,
@@ -13,7 +14,6 @@ import {
   useStripe,
 } from "@stripe/react-stripe-js";
 import * as React from "react";
-import { Modal } from "@/wab/client/components/widgets/Modal";
 import { MakeADT } from "ts-adt/MakeADT";
 
 export const canIEditTeam = (appCtx: AppCtx, t: ApiTeam) =>

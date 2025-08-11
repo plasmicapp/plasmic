@@ -16,7 +16,7 @@
     "lint": "yarn eslint --fix",
     "e2e": "cd platform/wab && yarn cypress open",
     "e2e:headless": "cd platform/wab && yarn cypress run",
-    "knip:deps": "NODE_OPTIONS=\"--max-old-space-size=10000\" knip --include dependencies",
+    "knip:deps": "NODE_ENV=test NODE_OPTIONS=\"--max-old-space-size=10000\" knip --include dependencies",
     "local-canary": "yarn local-unpublish && lerna publish --canary --yes --include-merged-tags --no-git-tag-version --no-push --registry=http://localhost:4873 --force-publish",
     "local-publish": "./scripts/local-publish.sh",
     "local-unpublish": "lerna exec -- npm unpublish -f --registry=\"http://localhost:4873/\" \"\\${LERNA_PACKAGE_NAME}\"",

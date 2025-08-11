@@ -1,6 +1,5 @@
 import { loadConfig } from "@/wab/server/config";
 import { closeDbConnections } from "@/wab/server/db/DbCon";
-import { initializeGlobals } from "@/wab/server/svr-init";
 import { createTerminus, HealthCheckError } from "@godaddy/terminus";
 import { Application } from "express";
 import http from "http";
@@ -92,6 +91,5 @@ export function setupServerCli(argv: string[] = process.argv) {
     .opts();
   const config = loadConfig();
 
-  initializeGlobals();
   return { opts, config };
 }

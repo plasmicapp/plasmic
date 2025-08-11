@@ -1,18 +1,21 @@
-import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { ENV } from "@/wab/client/env";
+import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { fullName } from "@/wab/shared/ApiSchemaUtil";
 import { DEVFLAGS } from "@/wab/shared/devflags";
 import React from "react";
 import { IntercomProvider } from "react-use-intercom";
 
-// TO DO: move to the .env variables with the rest of the analytics variables
-const INTERCOM_APP_ID = "wy0ngfce";
+export function isIntercomEnabled(studioCtx: StudioCtx): boolean {
+  const user = studioCtx.appCtx.selfInfo;
+  const isFreeTier =
+    studioCtx.siteInfo?.featureTier?.id === DEVFLAGS.freeTier.id;
+  return !!ENV.INTERCOM_APP_ID && !!user && !isFreeTier;
+}
 
 export function IntercomProviderWrapper({ children }: React.PropsWithChildren) {
   const studioCtx = useStudioCtx();
 
   const user = studioCtx.appCtx.selfInfo;
-  const isFreeTier =
-    studioCtx.siteInfo?.featureTier?.id === DEVFLAGS.freeTier.id;
 
   const autoBootProps = {
     userId: user?.id,
@@ -25,8 +28,8 @@ export function IntercomProviderWrapper({ children }: React.PropsWithChildren) {
 
   return (
     <IntercomProvider
-      appId={INTERCOM_APP_ID}
-      autoBoot={!!user && !isFreeTier}
+      appId={ENV.INTERCOM_APP_ID ?? ""}
+      autoBoot={isIntercomEnabled(studioCtx)}
       autoBootProps={autoBootProps}
     >
       {children}

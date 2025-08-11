@@ -3,7 +3,7 @@ import type {
   Properties,
 } from "@/wab/shared/observability/Analytics";
 import { BaseAnalytics } from "@/wab/shared/observability/BaseAnalytics";
-import { posthog, PostHog, PostHogConfig } from "posthog-js";
+import { PostHog, PostHogConfig, posthog } from "posthog-js";
 
 /**
  * Initializes Posthog for a browser.
@@ -12,11 +12,13 @@ import { posthog, PostHog, PostHogConfig } from "posthog-js";
  */
 export function initPosthogBrowser(opts: {
   apiKey: string;
-  apiHost: string;
-  config: Partial<PostHogConfig>;
+  host: string;
+  reverseProxyHost?: string;
+  config?: Partial<PostHogConfig>;
 }): PostHogAnalytics {
   const ph = posthog.init(opts.apiKey, {
-    api_host: opts.apiHost,
+    api_host: opts.reverseProxyHost || opts.host,
+    ui_host: opts.host,
     autocapture: false, // disable because it causes too many events
     disable_session_recording: true, // enable with `recordSession`
     ...opts.config,

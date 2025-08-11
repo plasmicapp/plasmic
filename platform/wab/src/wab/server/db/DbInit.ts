@@ -13,7 +13,6 @@ import {
 import { seedTestFeatureTiers } from "@/wab/server/db/seed/feature-tier";
 import { FeatureTier, Team, User } from "@/wab/server/entities/Entities";
 import { getBundleInfo, PkgMgr } from "@/wab/server/pkg-mgr";
-import { initializeGlobals } from "@/wab/server/svr-init";
 import { Bundler } from "@/wab/shared/bundler";
 import { ensureType, spawn } from "@/wab/shared/common";
 import { defaultComponentKinds } from "@/wab/shared/core/components";
@@ -26,8 +25,6 @@ import {
 } from "@/wab/shared/insertables";
 import { kebabCase, startCase } from "lodash";
 import { EntityManager } from "typeorm";
-
-initializeGlobals();
 
 if (require.main === module) {
   spawn(main());

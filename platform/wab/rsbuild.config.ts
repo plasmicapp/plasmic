@@ -14,7 +14,12 @@ import { execSync } from "child_process";
 import HtmlWebpackPlugin from "html-webpack-plugin";
 import MonacoWebpackPlugin from "monaco-editor-webpack-plugin";
 import { homepage } from "./package.json";
-import { StudioHtmlPlugin } from "./tools/studio-html-plugin";
+import { StudioHtmlPlugin } from "./tools/webpack/StudioHtmlPlugin";
+import {
+  OPTIONAL_VAR,
+  REQUIRED_VAR,
+  mkDefinePluginOptsForEnv,
+} from "./tools/webpack/mkDefinePluginOptsForEnv";
 
 const commitHash = execSync("git rev-parse HEAD").toString().slice(0, 6);
 const buildEnv = process.env.NODE_ENV ?? "production";
@@ -211,14 +216,22 @@ export default defineConfig({
           process: [require.resolve("process/browser")],
           Buffer: ["buffer", "Buffer"],
         }),
-        new DefinePlugin({
-          PUBLICPATH: JSON.stringify(publicUrl),
-          COMMITHASH: JSON.stringify(commitHash),
-          DEPLOYENV: JSON.stringify(buildEnv),
-          "process.env": JSON.stringify({
-            NODE_ENV: "production",
-          }),
-        }),
+        new DefinePlugin(
+          mkDefinePluginOptsForEnv({
+            NODE_ENV: REQUIRED_VAR,
+            COMMITHASH: commitHash,
+            PUBLICPATH: publicUrl,
+            AMPLITUDE_API_KEY: OPTIONAL_VAR,
+            INTERCOM_APP_ID: OPTIONAL_VAR,
+            POSTHOG_API_KEY: OPTIONAL_VAR,
+            POSTHOG_HOST: OPTIONAL_VAR,
+            POSTHOG_REVERSE_PROXY_HOST: OPTIONAL_VAR,
+            SENTRY_DSN: OPTIONAL_VAR,
+            SENTRY_ORG_ID: OPTIONAL_VAR,
+            SENTRY_PROJECT_ID: OPTIONAL_VAR,
+            STRIPE_PUBLISHABLE_KEY: OPTIONAL_VAR,
+          })
+        ),
         new MonacoWebpackPlugin(),
         new HtmlWebpackPlugin(
           Object.assign(

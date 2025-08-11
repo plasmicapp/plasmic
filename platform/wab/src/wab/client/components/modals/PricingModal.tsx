@@ -9,8 +9,8 @@ import {
   showTemporaryPrompt,
 } from "@/wab/client/components/quick-modals";
 import { Modal } from "@/wab/client/components/widgets/Modal";
-import { getStripePromise } from "@/wab/client/deps-client";
 import { useAsyncStrict } from "@/wab/client/hooks/useAsyncStrict";
+import { getStripePromise } from "@/wab/client/stripe";
 import {
   ApiFeatureTier,
   ApiTeam,
@@ -18,10 +18,10 @@ import {
   BillingFrequency,
   MayTriggerPaywall,
 } from "@/wab/shared/ApiSchema";
-import { assert, assertNever, ensure } from "@/wab/shared/common";
-import { DEVFLAGS } from "@/wab/shared/devflags";
 import { accessLevelRank } from "@/wab/shared/EntUtil";
 import { ORGANIZATION_LOWER } from "@/wab/shared/Labels";
+import { assert, assertNever, ensure } from "@/wab/shared/common";
+import { DEVFLAGS } from "@/wab/shared/devflags";
 import {
   getExternalPriceTier,
   getNewPriceTierType,

@@ -1,4 +1,5 @@
-import { Compiler, RspackPluginInstance } from "@rspack/core";
+import { Asset, Compiler, RspackPluginInstance } from "@rspack/core";
+import { Buffer } from "buffer";
 import fs from "fs";
 import HtmlWebpackPlugin from "html-webpack-plugin";
 import { parse } from "node-html-parser";
@@ -30,7 +31,7 @@ export class StudioHtmlPlugin implements RspackPluginInstance {
           }
 
           const html = compilation.assets[data.outputName].source();
-          const root = parse(html);
+          const root = parse(typeof html === "string" ? html : html.toString());
 
           root.querySelector("head").insertAdjacentHTML(
             "afterbegin",
@@ -98,7 +99,7 @@ export class StudioHtmlPlugin implements RspackPluginInstance {
             html: root.toString(),
           };
           const template = fs.readFileSync(
-            require.resolve("../public/studio.js.template"),
+            require.resolve("../../public/studio.js.template"),
             "utf8"
           );
           const js = `
@@ -106,17 +107,19 @@ const __plasmicData = ${JSON.stringify(injectedData)};
 ${template}
 `.trim();
 
-          compilation.assets["static/js/studio.js"] = compilation.assets[
-            `static/js/studio.${this.commitHash}.js`
-          ] = {
+          const source: Asset["source"] = {
             source: () => js,
+            buffer: () => Buffer.from(js),
             size: () => js.length,
             map: () => null,
             sourceAndMap: () => ({
               source: js,
               map: null,
             }),
+            updateHash: () => {},
           };
+          compilation.assets["static/js/studio.js"] = source;
+          compilation.assets[`static/js/studio.${this.commitHash}.js`] = source;
 
           // Tell webpack to move on.
           cb(null, data);

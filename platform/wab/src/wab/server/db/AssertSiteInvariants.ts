@@ -1,6 +1,3 @@
-import { assert, maybe, spawn } from "@/wab/shared/common";
-import { observeModel } from "@/wab/shared/core/observable-model";
-import { walkDependencyTree } from "@/wab/shared/core/project-deps";
 import { DEFAULT_DATABASE_URI } from "@/wab/server/config";
 import { getMigratedBundle } from "@/wab/server/db/BundleMigrator";
 import { getOrderedDepBundleIds } from "@/wab/server/db/DbBundleLoader";
@@ -10,28 +7,30 @@ import {
 } from "@/wab/server/db/DbCon";
 import { DbMgr, NotFoundError, SUPER_USER } from "@/wab/server/db/DbMgr";
 import { PkgVersion, ProjectRevision } from "@/wab/server/entities/Entities";
-import { initializeGlobals } from "@/wab/server/svr-init";
 import {
   Bundle,
   Bundler,
+  FastBundler,
   checkBundleFields,
   checkExistingReferences,
   checkRefsInBundle,
-  FastBundler,
 } from "@/wab/shared/bundler";
 import { isEmptyBundle } from "@/wab/shared/bundles";
-import {
-  ensureKnownProjectDependency,
-  ensureKnownSite,
-  Site,
-} from "@/wab/shared/model/classes";
-import { meta } from "@/wab/shared/model/classes-metas";
+import { assert, maybe, spawn } from "@/wab/shared/common";
+import { observeModel } from "@/wab/shared/core/observable-model";
+import { walkDependencyTree } from "@/wab/shared/core/project-deps";
+import { taggedUnbundle } from "@/wab/shared/core/tagged-unbundle";
 import { instUtil } from "@/wab/shared/model/InstUtil";
 import {
-  assertSiteInvariants,
+  Site,
+  ensureKnownProjectDependency,
+  ensureKnownSite,
+} from "@/wab/shared/model/classes";
+import { meta } from "@/wab/shared/model/classes-metas";
+import {
   InvariantError,
+  assertSiteInvariants,
 } from "@/wab/shared/site-invariants";
-import { taggedUnbundle } from "@/wab/shared/core/tagged-unbundle";
 import L from "lodash";
 const { Command } = require("commander");
 
@@ -117,7 +116,6 @@ export async function main() {
   const em = con.manager;
   const db = new DbMgr(em, SUPER_USER);
 
-  initializeGlobals();
   const pkgs = await db.listAllPkgs();
   const pkgIdToPkg = L.keyBy(pkgs, (pkg) => pkg.id);
 

@@ -1,31 +1,34 @@
+import { ENV } from "@/wab/client/env";
 import { sortAs } from "@/wab/shared/common";
 import { fstPartyHostLessComponents } from "@/wab/shared/core/hostless-components";
 import { getPublicUrl } from "@/wab/shared/urls";
 import { memoize } from "lodash";
 import memoizeOne from "memoize-one";
 
-declare const COMMITHASH: string;
-
 const fetchCanvasPkgs = memoizeOne(() =>
   fetch(
-    `${getPublicUrl()}/static/canvas-packages/build/client.${COMMITHASH}.js`
+    `${getPublicUrl()}/static/canvas-packages/build/client.${ENV.COMMITHASH}.js`
   ).then((res) => res.text())
 );
 const fetchReactWebBundle = memoizeOne(() =>
   fetch(
-    `${getPublicUrl()}/static/react-web-bundle/build/client.${COMMITHASH}.js`
+    `${getPublicUrl()}/static/react-web-bundle/build/client.${
+      ENV.COMMITHASH
+    }.js`
   ).then((res) => res.text())
 );
 const fetchLiveFrameClient = memoizeOne(() =>
   fetch(
-    `${getPublicUrl()}/static/live-frame/build/client.${COMMITHASH}.js`
+    `${getPublicUrl()}/static/live-frame/build/client.${ENV.COMMITHASH}.js`
   ).then((res) => res.text())
 );
 
 const fetchHostLessPkg = memoize(
   async (pkg: string, version: string) => {
     return fetch(
-      `${getPublicUrl()}/static/canvas-packages/build/${pkg}${version}.${COMMITHASH}.js`
+      `${getPublicUrl()}/static/canvas-packages/build/${pkg}${version}.${
+        ENV.COMMITHASH
+      }.js`
     ).then((res) => res.text());
   },
   (pkg, version) => `${pkg}${version}`

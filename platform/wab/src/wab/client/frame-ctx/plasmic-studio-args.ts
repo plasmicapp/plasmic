@@ -1,6 +1,7 @@
 import { ensureIsTopFrame } from "@/wab/client/cli-routes";
-import { ensure } from "@/wab/shared/common";
+import { ENV } from "@/wab/client/env";
 import { encodeUriParams } from "@/wab/commons/urls";
+import { ensure } from "@/wab/shared/common";
 import { DevFlagsType } from "@/wab/shared/devflags";
 
 /**
@@ -25,8 +26,6 @@ const keyIsProd = "isProd";
 const keyAppConfigOverrides = "appConfigOverrides";
 const keyStudioHash = "studioHash";
 
-declare const COMMITHASH: string;
-
 /**
  * Build args hash to be passed from top frame to host frame.
  *
@@ -50,7 +49,7 @@ export function buildPlasmicStudioArgsHash(
       )
     ),
   ]);
-  params.push([keyStudioHash, COMMITHASH]);
+  params.push([keyStudioHash, ENV.COMMITHASH]);
 
   return `#${encodeUriParams(params)}`;
 }

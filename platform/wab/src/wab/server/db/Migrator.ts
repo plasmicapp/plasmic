@@ -1,4 +1,3 @@
-import { tuple } from "@/wab/shared/common";
 import {
   getLastBundleVersion,
   getMigratedBundle,
@@ -6,7 +5,6 @@ import {
 import { getOrderedDepBundleIds } from "@/wab/server/db/DbBundleLoader";
 import { DbMgr, NotFoundError, SUPER_USER } from "@/wab/server/db/DbMgr";
 import { PkgVersion, ProjectRevision } from "@/wab/server/entities/Entities";
-import { initializeGlobals } from "@/wab/server/svr-init";
 import {
   Bundle,
   Bundler,
@@ -14,10 +12,11 @@ import {
   checkExistingReferences,
   checkRefsInBundle,
 } from "@/wab/shared/bundler";
+import { tuple } from "@/wab/shared/common";
 import {
+  Site,
   ensureKnownProjectDependency,
   ensureKnownSite,
-  Site,
 } from "@/wab/shared/model/classes";
 import { meta } from "@/wab/shared/model/classes-metas";
 import L from "lodash";
@@ -181,7 +180,6 @@ export async function migrateDbModelsUnbundled(
   projectIdsAndPkgVersionIds?: Set<string>
 ) {
   console.log(`Running migration ${migrationName}`);
-  initializeGlobals();
   const db = new DbMgr(em, SUPER_USER);
   const pkgs = await db.listAllPkgs();
   const pkgIdToPkg = L.keyBy(pkgs, (pkg) => pkg.id);

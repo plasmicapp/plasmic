@@ -2,6 +2,7 @@ import { handleError, normalizeError } from "@/wab/client/ErrorNotifications";
 import { isProjectPath, isTopFrame } from "@/wab/client/cli-routes";
 import { initClientFlags } from "@/wab/client/client-dev-flags";
 import { Root } from "@/wab/client/components/root-view";
+import { ENV } from "@/wab/client/env";
 import { FrameMessage } from "@/wab/client/frame-ctx/frame-message-types";
 import {
   HostFrameCtxProvider,
@@ -16,8 +17,6 @@ import * as React from "react";
 import { OverlayProvider } from "react-aria";
 import * as ReactDOM from "react-dom";
 import { Router } from "react-router-dom";
-
-declare const COMMITHASH: string;
 
 const localStoragePrefixesThatAreSafeToRemove = ["__mpq_"];
 
@@ -88,7 +87,7 @@ export function main() {
 
   initObservability();
 
-  (window as any).commithash = COMMITHASH;
+  (window as any).commithash = ENV.COMMITHASH;
 
   const appContainerElement = document.querySelector(".app-container");
 
