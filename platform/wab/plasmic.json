@@ -484,6 +484,19 @@
           "cssFilePath": "wab/client/plasmic/plasmic_kit_left_pane/PlasmicMultiAssetsActions.module.css",
           "scheme": "blackbox",
           "componentType": "component"
+        },
+        {
+          "id": "WwK9TyWdjIfT",
+          "name": "LeftGeneralDataTokensPanel",
+          "type": "managed",
+          "projectId": "aukbrhkegRkQ6KizvhdUPT",
+          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_left_pane/PlasmicLeftGeneralDataTokensPanel.tsx",
+          "importSpec": {
+            "modulePath": "wab/client/components/sidebar/LeftGeneralDataTokensPanel.tsx"
+          },
+          "cssFilePath": "wab/client/plasmic/plasmic_kit_left_pane/PlasmicLeftGeneralDataTokensPanel.module.css",
+          "scheme": "blackbox",
+          "componentType": "component"
         }
       ],
       "icons": [

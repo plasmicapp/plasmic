@@ -17,7 +17,6 @@ import {
   Flex as Flex__,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
-  Stack as Stack__,
   StrictProps,
   classNames,
   createPlasmicElementProxy,
@@ -34,10 +33,10 @@ import ExpandButton from "../../components/widgets/ExpandButton"; // plasmic-imp
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import plasmic_plasmic_kit_new_design_system_former_style_controls_css from "../plasmic_kit_style_controls/plasmic_plasmic_kit_styles_pane.module.css"; // plasmic-import: gYEVvAzCcLMHDVPvuYxkFh/projectcss
 import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import projectcss from "../PP__plasmickit_left_pane.module.css"; // plasmic-import: aukbrhkegRkQ6KizvhdUPT/projectcss
+import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
+import plasmic_plasmic_kit_new_design_system_former_style_controls_css from "../plasmic_kit_style_controls/plasmic_plasmic_kit_styles_pane.module.css"; // plasmic-import: gYEVvAzCcLMHDVPvuYxkFh/projectcss
 import sty from "./PlasmicLeftPaneHeader.module.css"; // plasmic-import: XLa52PvduIy/css
 
 import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
@@ -196,13 +195,11 @@ function PlasmicLeftPaneHeader__RenderFunc(props: {
   });
 
   return (
-    <Stack__
-      as={"div"}
+    <div
       data-plasmic-name={"header"}
       data-plasmic-override={overrides.header}
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
-      hasGap={true}
       className={classNames(
         projectcss.all,
         projectcss.root_reset,
@@ -229,9 +226,7 @@ function PlasmicLeftPaneHeader__RenderFunc(props: {
       )}
     >
       {(hasVariant($state, "compact", "compact") ? false : true) ? (
-        <Stack__
-          as={"div"}
-          hasGap={true}
+        <div
           className={classNames(projectcss.all, sty.freeBox__rhIgq, {
             [sty.freeBoxcompact__rhIgqZQlq]: hasVariant(
               $state,
@@ -245,9 +240,7 @@ function PlasmicLeftPaneHeader__RenderFunc(props: {
             ),
           })}
         >
-          <Stack__
-            as={"div"}
-            hasGap={true}
+          <div
             className={classNames(projectcss.all, sty.freeBox__f9FwI, {
               [sty.freeBoxcompact__f9FwIzQlq]: hasVariant(
                 $state,
@@ -409,7 +402,7 @@ function PlasmicLeftPaneHeader__RenderFunc(props: {
                 })}
               </div>
             ) : null}
-          </Stack__>
+          </div>
           {(
             hasVariant($state, "compact", "compact")
               ? true
@@ -446,7 +439,7 @@ function PlasmicLeftPaneHeader__RenderFunc(props: {
               })}
             </div>
           ) : null}
-        </Stack__>
+        </div>
       ) : null}
       {(
         hasVariant($state, "compact", "compact") &&
@@ -458,11 +451,9 @@ function PlasmicLeftPaneHeader__RenderFunc(props: {
           ? false
           : true
       ) ? (
-        <Stack__
-          as={"div"}
+        <div
           data-plasmic-name={"actionsContainer"}
           data-plasmic-override={overrides.actionsContainer}
-          hasGap={true}
           className={classNames(projectcss.all, sty.actionsContainer, {
             [sty.actionsContainercompact]: hasVariant(
               $state,
@@ -517,11 +508,7 @@ function PlasmicLeftPaneHeader__RenderFunc(props: {
                 value: args.compactTitle,
               })
             : null}
-          <Stack__
-            as={"div"}
-            hasGap={true}
-            className={classNames(projectcss.all, sty.freeBox___1SjU4)}
-          >
+          <div className={classNames(projectcss.all, sty.freeBox___1SjU4)}>
             {renderPlasmicSlot({
               defaultContents: (
                 <Button
@@ -570,10 +557,10 @@ function PlasmicLeftPaneHeader__RenderFunc(props: {
               }
               size={"small"}
             />
-          </Stack__>
-        </Stack__>
+          </div>
+        </div>
       ) : null}
-    </Stack__>
+    </div>
   ) as React.ReactElement | null;
 }
 

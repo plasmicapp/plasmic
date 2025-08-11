@@ -2,36 +2,23 @@
   display: flex;
   position: relative;
   flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
   width: 40px;
   height: 40px;
   padding-left: 8px;
   padding-right: 8px;
   cursor: pointer;
+  column-gap: 4px;
   border-radius: 6px;
   border-width: 0px;
   border-style: dotted;
-}
-.root > :global(.__wab_flex-container) {
-  flex-direction: row;
-  align-items: center;
-  justify-content: flex-start;
-  margin-left: calc(0px - 4px);
-  width: calc(100% + 4px);
-}
-.root > :global(.__wab_flex-container) > *,
-.root > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.root > :global(.__wab_flex-container) > picture > img,
-.root > :global(.__wab_flex-container) > :global(.__wab_slot) > picture > img {
-  margin-left: 4px;
 }
 .rootisSelected {
   background: var(--token-O4S7RMTqZ3);
 }
 .roothasLabel {
   width: 100%;
-  min-width: 0;
-}
-.roothasLabel > :global(.__wab_flex-container) {
   min-width: 0;
 }
 .root:hover {

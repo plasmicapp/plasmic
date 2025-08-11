@@ -7,21 +7,10 @@
   background: var(--token-iR8SeEwQZ);
   overflow: auto;
   pointer-events: auto;
+  row-gap: 4px;
   min-height: 0;
   padding: 8px;
   border-right: 1px solid var(--token-hoA5qaM-91G);
-}
-.root > :global(.__wab_flex-container) {
-  flex-direction: column;
-  min-height: 0;
-  margin-top: calc(0px - 4px);
-  height: calc(100% + 4px);
-}
-.root > :global(.__wab_flex-container) > *,
-.root > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.root > :global(.__wab_flex-container) > picture > img,
-.root > :global(.__wab_flex-container) > :global(.__wab_slot) > picture > img {
-  margin-top: 4px;
 }
 .insert:global(.__wab_instance) {
   max-width: 100%;
@@ -120,21 +109,9 @@
   display: block;
   position: relative;
   background: var(--token-hoA5qaM-91G);
-  margin-left: 8px;
-  margin-right: 8px;
   height: 1px;
-  margin-top: calc(8px + 4px) !important;
-  margin-bottom: 8px;
   flex-shrink: 0;
-}
-.divideractiveTab_mixins {
-  margin-top: calc(8px + 4px) !important;
-}
-.divideractiveTab_copilot {
-  margin-top: calc(8px + 4px) !important;
-}
-.dividerwithInsertButton {
-  margin-top: calc(8px + 4px) !important;
+  margin: 8px;
 }
 .copilot:global(.__wab_instance) {
   position: relative;
@@ -397,29 +374,12 @@
 .freeBox___3AubH {
   position: relative;
   flex-direction: column;
-  margin-top: auto !important;
-  margin-bottom: 8px;
-  display: none;
-}
-.freeBox___3AubH > :global(.__wab_flex-container) {
-  flex-direction: column;
   align-items: center;
   justify-content: space-evenly;
-  margin-top: calc(0px - 4px);
-  height: calc(100% + 4px);
-}
-.freeBox___3AubH > :global(.__wab_flex-container) > *,
-.freeBox___3AubH > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.freeBox___3AubH > :global(.__wab_flex-container) > picture > img,
-.freeBox___3AubH
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  margin-top: 4px;
-}
-.freeBoxshowAvatar___3AubH9NVfe {
-  margin-top: auto !important;
+  margin-top: auto;
+  margin-bottom: 8px;
+  row-gap: 4px;
+  display: none;
 }
 .figma:global(.__wab_instance) {
   position: relative;
@@ -527,7 +487,7 @@
   padding: 0px;
 }
 .freeBoxshowAvatar__igmvF9NVfe {
-  margin-top: calc(2px + 4px) !important;
+  margin-top: 2px;
   margin-bottom: 2px;
 }
 .players {

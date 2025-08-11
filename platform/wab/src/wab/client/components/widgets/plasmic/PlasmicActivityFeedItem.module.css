@@ -1,25 +1,14 @@
 .root {
   display: flex;
   flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
   position: relative;
   width: 100%;
   height: 48px;
+  column-gap: 10px;
   min-width: 0;
   border-top: 1px solid var(--token-O4S7RMTqZ3);
-}
-.root > :global(.__wab_flex-container) {
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  min-width: 0;
-  margin-left: calc(0px - 10px);
-  width: calc(100% + 10px);
-}
-.root > :global(.__wab_flex-container) > *,
-.root > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.root > :global(.__wab_flex-container) > picture > img,
-.root > :global(.__wab_flex-container) > :global(.__wab_slot) > picture > img {
-  margin-left: 10px;
 }
 .rootselected {
   background: var(--token-bV4cCeIniS6);

@@ -17,7 +17,6 @@ import {
   Flex as Flex__,
   PlasmicImg as PlasmicImg__,
   SingleChoiceArg,
-  Stack as Stack__,
   StrictProps,
   classNames,
   createPlasmicElementProxy,
@@ -32,10 +31,10 @@ import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRm
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import plasmic_plasmic_kit_new_design_system_former_style_controls_css from "../plasmic_kit_style_controls/plasmic_plasmic_kit_styles_pane.module.css"; // plasmic-import: gYEVvAzCcLMHDVPvuYxkFh/projectcss
 import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import projectcss from "../PP__plasmickit_left_pane.module.css"; // plasmic-import: aukbrhkegRkQ6KizvhdUPT/projectcss
+import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
+import plasmic_plasmic_kit_new_design_system_former_style_controls_css from "../plasmic_kit_style_controls/plasmic_plasmic_kit_styles_pane.module.css"; // plasmic-import: gYEVvAzCcLMHDVPvuYxkFh/projectcss
 import sty from "./PlasmicPublishDialogContent.module.css"; // plasmic-import: V25hk8i--ck/css
 
 import TrashIcon from "../plasmic_kit/PlasmicIcon__Trash"; // plasmic-import: 7bxap5bzcUODa/icon
@@ -179,9 +178,7 @@ function PlasmicPublishDialogContent__RenderFunc(props: {
           >
             {"Publish new version"}
           </div>
-          <Stack__
-            as={"div"}
-            hasGap={true}
+          <div
             className={classNames(projectcss.all, sty.freeBox__ad0B7, {
               [sty.freeBoxstate_disabled__ad0B7C5URt]: hasVariant(
                 $state,
@@ -211,12 +208,10 @@ function PlasmicPublishDialogContent__RenderFunc(props: {
                 "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGZpbGw9Im5vbmUiIHZpZXdCb3g9IjAgMCAxNiAxNiIgaGVpZ2h0PSIxNiIgd2lkdGg9IjE2Ij4KPHBhdGggZmlsbD0iI0JDQzBDNCIgZD0iTTQuOTM1OSAzLjk5MzA2TDMuOTkzMDkgNC45MzU4N0w3LjA1NzIxIDhMMy45OTMwOCAxMS4wNjQxTDQuOTM1ODkgMTIuMDA2OUw4LjAwMDAyIDguOTQyODFMMTEuMDY0MiAxMi4wMDY5TDEyLjAwNyAxMS4wNjQxTDguOTQyODMgOEwxMi4wMDcgNC45MzU4N0wxMS4wNjQyIDMuOTkzMDZMOC4wMDAwMiA3LjA1NzE5TDQuOTM1OSAzLjk5MzA2WiIgY2xpcC1ydWxlPSJldmVub2RkIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiLz4KPC9zdmc+Cg=="
               }
             />
-          </Stack__>
+          </div>
         </div>
       ) : null}
-      <Stack__
-        as={"div"}
-        hasGap={true}
+      <div
         className={classNames(projectcss.all, sty.freeBox__hspE3, {
           [sty.freeBoxstate_disabled__hspE3C5URt]: hasVariant(
             $state,
@@ -446,7 +441,7 @@ function PlasmicPublishDialogContent__RenderFunc(props: {
             {"Publish"}
           </Button>
         ) : null}
-      </Stack__>
+      </div>
     </div>
   ) as React.ReactElement | null;
 }

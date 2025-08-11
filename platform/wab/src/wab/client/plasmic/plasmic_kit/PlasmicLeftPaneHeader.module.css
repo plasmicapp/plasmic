@@ -2,72 +2,27 @@
   display: flex;
   position: relative;
   flex-direction: column;
+  row-gap: 16px;
   padding: 16px;
   border-bottom: 1px solid var(--token-hoA5qaM-91G);
 }
-.header > :global(.__wab_flex-container) {
-  flex-direction: column;
-  margin-top: calc(0px - 16px);
-  height: calc(100% + 16px);
-}
-.header > :global(.__wab_flex-container) > *,
-.header > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.header > :global(.__wab_flex-container) > picture > img,
-.header
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  margin-top: 16px;
-}
 .headercompact {
   width: 100%;
-  min-width: 0;
-}
-.headercompact > :global(.__wab_flex-container) {
   min-width: 0;
 }
 .freeBox__rhIgq {
   display: flex;
   position: relative;
   flex-direction: column;
-}
-.freeBox__rhIgq > :global(.__wab_flex-container) {
-  flex-direction: column;
-  margin-top: calc(0px - 8px);
-  height: calc(100% + 8px);
-}
-.freeBox__rhIgq > :global(.__wab_flex-container) > *,
-.freeBox__rhIgq > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.freeBox__rhIgq > :global(.__wab_flex-container) > picture > img,
-.freeBox__rhIgq
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  margin-top: 8px;
+  row-gap: 8px;
 }
 .freeBox__f9FwI {
   display: flex;
   position: relative;
   flex-direction: column;
-}
-.freeBox__f9FwI > :global(.__wab_flex-container) {
-  flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  margin-top: calc(0px - 4px);
-  height: calc(100% + 4px);
-}
-.freeBox__f9FwI > :global(.__wab_flex-container) > *,
-.freeBox__f9FwI > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.freeBox__f9FwI > :global(.__wab_flex-container) > picture > img,
-.freeBox__f9FwI
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  margin-top: 4px;
+  row-gap: 4px;
 }
 .titleContainer {
   overflow: visible;
@@ -188,31 +143,14 @@
   display: flex;
   position: relative;
   flex-direction: row;
-}
-.actionsContainer > :global(.__wab_flex-container) {
-  flex-direction: row;
   align-items: stretch;
   justify-content: flex-start;
-  margin-left: calc(0px - 8px);
-  width: calc(100% + 8px);
-}
-.actionsContainer > :global(.__wab_flex-container) > *,
-.actionsContainer > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.actionsContainer > :global(.__wab_flex-container) > picture > img,
-.actionsContainer
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  margin-left: 8px;
+  column-gap: 8px;
 }
 .actionsContainercompact {
-  width: 100%;
-  min-width: 0;
-}
-.actionsContainercompact > :global(.__wab_flex-container) {
   align-items: center;
   justify-content: space-between;
+  width: 100%;
   min-width: 0;
 }
 .actionsContainerexpandState_collapsed {
@@ -232,28 +170,13 @@
   display: flex;
   position: relative;
   flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
   width: 100%;
   height: auto;
   max-width: 100%;
+  column-gap: 4px;
   min-width: 0;
-}
-.freeBox___1SjU4 > :global(.__wab_flex-container) {
-  flex-direction: row;
-  align-items: center;
-  justify-content: flex-start;
-  min-width: 0;
-  margin-left: calc(0px - 4px);
-  width: calc(100% + 4px);
-}
-.freeBox___1SjU4 > :global(.__wab_flex-container) > *,
-.freeBox___1SjU4 > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.freeBox___1SjU4 > :global(.__wab_flex-container) > picture > img,
-.freeBox___1SjU4
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  margin-left: 4px;
 }
 .svg__xTd68 {
   display: flex;
@@ -273,25 +196,22 @@
 }
 .expandButton2:global(.__wab_instance):global(.__wab_instance) {
   max-width: 100%;
-  margin-left: auto !important;
+  margin-left: auto;
   flex-shrink: 0;
   display: none;
 }
 .expandButton2compact:global(.__wab_instance):global(.__wab_instance) {
-  margin-left: auto !important;
   flex-shrink: 0;
 }
 .expandButton2compact_expandState_expanded:global(.__wab_instance):global(
     .__wab_instance
   ) {
-  margin-left: auto !important;
   flex-shrink: 0;
   display: block;
 }
 .expandButton2compact_expandState_collapsed:global(.__wab_instance):global(
     .__wab_instance
   ) {
-  margin-left: auto !important;
   flex-shrink: 0;
   display: block;
 }

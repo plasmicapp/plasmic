@@ -18,7 +18,6 @@ import {
   PlasmicImg as PlasmicImg__,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
-  Stack as Stack__,
   StrictProps,
   classNames,
   createPlasmicElementProxy,
@@ -35,10 +34,10 @@ import IconButton from "../../components/widgets/IconButton"; // plasmic-import:
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import plasmic_plasmic_kit_new_design_system_former_style_controls_css from "../plasmic_kit_style_controls/plasmic_plasmic_kit_styles_pane.module.css"; // plasmic-import: gYEVvAzCcLMHDVPvuYxkFh/projectcss
 import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import projectcss from "../PP__plasmickit_left_pane.module.css"; // plasmic-import: aukbrhkegRkQ6KizvhdUPT/projectcss
+import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
+import plasmic_plasmic_kit_new_design_system_former_style_controls_css from "../plasmic_kit_style_controls/plasmic_plasmic_kit_styles_pane.module.css"; // plasmic-import: gYEVvAzCcLMHDVPvuYxkFh/projectcss
 import sty from "./PlasmicLeftTabStrip.module.css"; // plasmic-import: l7y_rhJyMt2/css
 
 import GearIcon from "../plasmic_kit/PlasmicIcon__Gear"; // plasmic-import: ZmVZmXEc9f_SR/icon
@@ -48,8 +47,8 @@ import WandIcon from "../plasmic_kit/PlasmicIcon__Wand"; // plasmic-import: vTVU
 import KeyboardIcon from "../plasmic_kit_design_system/PlasmicIcon__Keyboard"; // plasmic-import: tSLSUCy1RH/icon
 import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
 import ClockSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ClockSvg"; // plasmic-import: 9MhqTIkUT/icon
-import ComponentsSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ComponentsSvg"; // plasmic-import: coPzxnFyi/icon
 import ComponentSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ComponentSvg"; // plasmic-import: vJVrKlrDD/icon
+import ComponentsSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ComponentsSvg"; // plasmic-import: coPzxnFyi/icon
 import DevicesSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__DevicesSvg"; // plasmic-import: bbAxEiIwy/icon
 import DiamondsSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__DiamondsSvg"; // plasmic-import: uzBbTcdyE/icon
 import DotsHorizontalCircleSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__DotsHorizontalCircleSvg"; // plasmic-import: xdn8wiJBv/icon
@@ -247,13 +246,11 @@ function PlasmicLeftTabStrip__RenderFunc(props: {
   });
 
   return (
-    <Stack__
-      as={"div"}
+    <div
       data-plasmic-name={"root"}
       data-plasmic-override={overrides.root}
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
-      hasGap={true}
       className={classNames(
         projectcss.all,
         projectcss.root_reset,
@@ -862,9 +859,7 @@ function PlasmicLeftTabStrip__RenderFunc(props: {
         }
       />
 
-      <Stack__
-        as={"div"}
-        hasGap={true}
+      <div
         className={classNames(projectcss.all, sty.freeBox___3AubH, {
           [sty.freeBoxshowAvatar___3AubH9NVfe]: hasVariant(
             $state,
@@ -984,7 +979,7 @@ function PlasmicLeftTabStrip__RenderFunc(props: {
             role={"img"}
           />
         </IconButton>
-      </Stack__>
+      </div>
       <div
         className={classNames(projectcss.all, sty.freeBox__igmvF, {
           [sty.freeBoxactiveTab_copilot__igmvFnzL96]: hasVariant(
@@ -1141,7 +1136,7 @@ function PlasmicLeftTabStrip__RenderFunc(props: {
           src={image9D5NIfkhj}
         />
       </div>
-    </Stack__>
+    </div>
   ) as React.ReactElement | null;
 }
 

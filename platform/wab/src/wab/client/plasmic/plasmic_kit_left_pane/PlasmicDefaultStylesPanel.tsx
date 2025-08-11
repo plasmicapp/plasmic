@@ -16,7 +16,6 @@ import * as React from "react";
 import {
   Flex as Flex__,
   SingleBooleanChoiceArg,
-  Stack as Stack__,
   StrictProps,
   classNames,
   createPlasmicElementProxy,
@@ -33,10 +32,10 @@ import Select__Option from "../../components/widgets/Select__Option"; // plasmic
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import plasmic_plasmic_kit_new_design_system_former_style_controls_css from "../plasmic_kit_style_controls/plasmic_plasmic_kit_styles_pane.module.css"; // plasmic-import: gYEVvAzCcLMHDVPvuYxkFh/projectcss
 import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import projectcss from "../PP__plasmickit_left_pane.module.css"; // plasmic-import: aukbrhkegRkQ6KizvhdUPT/projectcss
+import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
+import plasmic_plasmic_kit_new_design_system_former_style_controls_css from "../plasmic_kit_style_controls/plasmic_plasmic_kit_styles_pane.module.css"; // plasmic-import: gYEVvAzCcLMHDVPvuYxkFh/projectcss
 import sty from "./PlasmicDefaultStylesPanel.module.css"; // plasmic-import: nmt_YiclQJk/css
 
 import GlobeSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__GlobeSvg"; // plasmic-import: gcxY0Mwvj/icon
@@ -187,11 +186,9 @@ function PlasmicDefaultStylesPanel__RenderFunc(props: {
           "Define default typography styles; you can define different styles for different tags and responsive breakpoints."
         }
       </div>
-      <Stack__
-        as={"div"}
+      <div
         data-plasmic-name={"selector"}
         data-plasmic-override={overrides.selector}
-        hasGap={true}
         className={classNames(projectcss.all, sty.selector, {
           [sty.selectorisTargeting]: hasVariant(
             $state,
@@ -220,11 +217,9 @@ function PlasmicDefaultStylesPanel__RenderFunc(props: {
           >
             {"Tag"}
           </div>
-          <Stack__
-            as={"div"}
+          <div
             data-plasmic-name={"globalVariantSelectorContainer"}
             data-plasmic-override={overrides.globalVariantSelectorContainer}
-            hasGap={true}
             className={classNames(
               projectcss.all,
               sty.globalVariantSelectorContainer
@@ -307,7 +302,7 @@ function PlasmicDefaultStylesPanel__RenderFunc(props: {
                 </div>
               </Select__Option>
             </Select>
-          </Stack__>
+          </div>
         </div>
         <Select
           data-plasmic-name={"tagSelect"}
@@ -402,7 +397,7 @@ function PlasmicDefaultStylesPanel__RenderFunc(props: {
             ])}
           />
         ) : null}
-      </Stack__>
+      </div>
       <div
         data-plasmic-name={"content"}
         data-plasmic-override={overrides.content}

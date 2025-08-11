@@ -1,27 +1,13 @@
 .feedContainer {
   display: flex;
   flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
   width: 276px;
   height: 730px;
   position: relative;
+  row-gap: 10px;
   padding: 10px;
-}
-.feedContainer > :global(.__wab_flex-container) {
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  margin-top: calc(0px - 10px);
-  height: calc(100% + 10px);
-}
-.feedContainer > :global(.__wab_flex-container) > *,
-.feedContainer > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.feedContainer > :global(.__wab_flex-container) > picture > img,
-.feedContainer
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  margin-top: 10px;
 }
 .activityFeedItem__btc0P:global(.__wab_instance) {
   position: relative;
