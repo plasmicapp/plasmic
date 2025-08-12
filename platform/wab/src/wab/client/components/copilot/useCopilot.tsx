@@ -1,4 +1,4 @@
-import { useAsyncStrict } from "@/wab/client/hooks/useAsyncStrict";
+import { useAsyncFnStrict } from "@/wab/client/hooks/useAsyncStrict";
 import {
   CopilotInteraction,
   CopilotPrompt,
@@ -20,9 +20,7 @@ export interface CopilotData<R> {
 
 interface UseCopilotProps<Response> {
   showHistory: boolean;
-  promptSubmitted: boolean;
   type: CopilotType;
-  copilotPrompt: CopilotPrompt;
   onCopilotSubmit: (args: CopilotPrompt) => Promise<CopilotData<Response>>;
 }
 
@@ -36,58 +34,50 @@ type CopilotState =
 
 export function useCopilot<Response>({
   showHistory,
-  promptSubmitted,
   type,
-  copilotPrompt,
   onCopilotSubmit,
 }: UseCopilotProps<Response>) {
   const studioCtx = useStudioCtx();
 
-  const copilotResponse = useAsyncStrict(async () => {
-    if (!promptSubmitted) {
-      // Prompt not ready yet
-      return undefined;
-    }
+  const [copilotResponse, submitPrompt] = useAsyncFnStrict(
+    async (copilotPrompt: CopilotPrompt) => {
+      try {
+        const result = await onCopilotSubmit(copilotPrompt);
+        const {
+          response,
+          displayMessage,
+          copilotInteractionId,
+          data,
+          context,
+          currentValue,
+        } = result;
 
-    try {
-      const result = await onCopilotSubmit(copilotPrompt);
-      const {
-        response,
-        displayMessage,
-        copilotInteractionId,
-        data,
-        context,
-        currentValue,
-      } = result;
+        if (response && copilotInteractionId) {
+          studioCtx.addToCopilotHistory(type, {
+            prompt: copilotPrompt.prompt,
+            response: response,
+            displayMessage: displayMessage,
+            id: copilotInteractionId,
+          });
+        }
 
-      if (response && copilotInteractionId) {
-        studioCtx.addToCopilotHistory(type, {
+        trackCopilotQuery({
+          data,
+          context,
+          currentValue,
           prompt: copilotPrompt.prompt,
-          response: response,
-          displayMessage: displayMessage,
-          id: copilotInteractionId,
+          result: JSON.stringify(response),
         });
-      }
 
-      trackCopilotQuery({
-        data,
-        context,
-        currentValue,
-        prompt: copilotPrompt.prompt,
-        result: JSON.stringify(response),
-      });
-
-      return result;
-    } catch (err) {
-      if (err.name === "CopilotRateLimitExceededError") {
-        return "CopilotRateLimitExceededError";
+        return result;
+      } catch (err) {
+        if (err.name === "CopilotRateLimitExceededError") {
+          return "CopilotRateLimitExceededError";
+        }
+        throw err;
       }
-      throw err;
     }
-    // Intentionally not depending on anything bug the promptSubmitted to trigger the
-    // request, so for example we don't keep issuing requests whenever the
-    // `data` changes due to state updates in the canvas
-  }, [promptSubmitted]);
+  );
 
   const suggestionHistory = studioCtx.getCopilotHistory(
     type
@@ -114,6 +104,7 @@ export function useCopilot<Response>({
   return {
     state,
     suggestionHistory,
+    submitPrompt,
     copilotInteractionId: copilotData?.copilotInteractionId,
     displayMessage: copilotData?.displayMessage,
     response: copilotData?.response,

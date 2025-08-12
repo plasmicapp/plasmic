@@ -43,7 +43,6 @@ function CopilotPromptDialog<Response>({
   onCopilotSubmit,
 }: CopilotPromptDialogProps<Response>) {
   const [showHistory, setShowHistory] = React.useState(false);
-  const [promptSubmitted, setPromptSubmitted] = React.useState(false);
   const [copilotPrompt, setCopilotPrompt] = React.useState<CopilotPrompt>({
     prompt: "",
     images: [],
@@ -66,11 +65,10 @@ function CopilotPromptDialog<Response>({
     suggestionHistory,
     copilotInteractionId,
     state,
+    submitPrompt,
   } = useCopilot<Response>({
     type,
     showHistory,
-    promptSubmitted,
-    copilotPrompt,
     onCopilotSubmit,
   });
 
@@ -144,7 +142,7 @@ function CopilotPromptDialog<Response>({
         },
         runPromptBtn: {
           props: {
-            onClick: () => setPromptSubmitted(true),
+            onClick: () => submitPrompt(copilotPrompt),
             disabled: !isValidPrompt,
           },
           wrap: (elt) => (
@@ -164,10 +162,10 @@ function CopilotPromptDialog<Response>({
               // onChange value is typed as string, but it's initially value triggered as undefined.
               prompt: value ?? "",
             }),
-          onKeyDown: (e) => {
+          onKeyDown: async (e) => {
             if (isValidPrompt && isSubmitKeyCombo(e)) {
               e.preventDefault();
-              setPromptSubmitted(true);
+              await submitPrompt(copilotPrompt);
               promptInputRef.current?.blur();
               applyBtnRef.current?.focus();
             }
