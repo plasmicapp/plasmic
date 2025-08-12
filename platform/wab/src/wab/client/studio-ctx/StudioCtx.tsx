@@ -118,6 +118,7 @@ import {
   ApiBranch,
   ApiPermission,
   ApiProject,
+  ApiTeam,
   ApiUser,
   ArenaType,
   BranchId,
@@ -3033,6 +3034,21 @@ export class StudioCtx extends WithDbCtx {
         )) ||
       (team?.parentTeamId &&
         this.appCtx.appConfig.branchingTeamIds.includes(team.parentTeamId))
+    );
+  }
+
+  //
+  // Copilot
+  //
+  uiCopilotEnabled() {
+    const team = this.appCtx
+      .getAllTeams()
+      .find((t) => t.id === this.siteInfo.teamId);
+
+    return (
+      // enableUiCopilot flag is false by default and overriden for plasmic users only,
+      // we will enable it when we decide to release this feature to all user
+      this.appCtx.appConfig.enableUiCopilot || checkIsOrgOnPaidTierOrTrial(team)
     );
   }
 
@@ -7320,6 +7336,19 @@ export function isUserProjectEditor(
   perms: ApiPermission[]
 ) {
   return checkAccessLevelRank(user, project, perms, "editor");
+}
+
+export function checkIsOrgOnFreeTierOrTrial(team?: ApiTeam) {
+  return (
+    !team ||
+    !team.featureTierId ||
+    team.featureTierId === DEVFLAGS.freeTier.id ||
+    team.onTrial
+  );
+}
+
+export function checkIsOrgOnPaidTierOrTrial(team?: ApiTeam) {
+  return (team?.featureTierId && team?.stripeCustomerId) || team?.onTrial;
 }
 
 export function cssPropsForInvertTransform(

@@ -3,21 +3,21 @@ import {
   useGetDomainsForProject,
   usePlasmicHostingSettings,
 } from "@/wab/client/api-hooks";
+import DomainCard from "@/wab/client/components/TopFrame/TopBar/DomainCard";
 import {
   canUpgradeTeam,
   promptBilling,
 } from "@/wab/client/components/modals/PricingModal";
 import { ImageUploader } from "@/wab/client/components/style-controls/ImageSelector";
-import DomainCard from "@/wab/client/components/TopFrame/TopBar/DomainCard";
 import { useAppCtx } from "@/wab/client/contexts/AppContexts";
 import {
   DefaultPlasmicHostingSettingsProps,
   PlasmicPlasmicHostingSettings,
 } from "@/wab/client/plasmic/plasmic_kit_continuous_deployment/PlasmicPlasmicHostingSettings";
+import { checkIsOrgOnFreeTierOrTrial } from "@/wab/client/studio-ctx/StudioCtx";
 import { ApiProject } from "@/wab/shared/ApiSchema";
 import { spawn, spawnWrapper, strictIdentity } from "@/wab/shared/common";
 import { imageDataUriToBlob } from "@/wab/shared/data-urls";
-import { DEVFLAGS } from "@/wab/shared/devflags";
 import { DomainValidator } from "@/wab/shared/hosting";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import * as React from "react";
@@ -59,11 +59,7 @@ function PlasmicHostingSettings_(
   const api = appCtx.api;
   const projectId = project.id;
   const projectTeam = appCtx.teams.find((team) => team.id === project.teamId);
-  const isOrgOnFreeTierOrTrial =
-    !projectTeam ||
-    !projectTeam.featureTierId ||
-    projectTeam.featureTierId === DEVFLAGS.freeTier.id ||
-    projectTeam.onTrial;
+  const isOrgOnFreeTierOrTrial = checkIsOrgOnFreeTierOrTrial(projectTeam);
 
   const { data: domainsResult } = useGetDomainsForProject(projectId);
   const { data: hostingSettings, mutate: mutateHostingSettings } =
