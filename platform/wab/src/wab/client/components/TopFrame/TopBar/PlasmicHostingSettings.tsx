@@ -93,6 +93,14 @@ function PlasmicHostingSettings_(
     }
   }, [JSON.stringify(settings)]);
 
+  const [showDomainCardFor, setShowDomainCardFor] = useState<string | null>(
+    null
+  );
+
+  useEffect(() => {
+    setShowDomainCardFor(settings.customDomain || null);
+  }, [settings.customDomain]);
+
   const [debouncedSubdomain] = useDebounce(data.subdomain, 1500);
   const [subdomainError, setSubdomainError] = useState<string | null>(null);
 
@@ -143,6 +151,8 @@ function PlasmicHostingSettings_(
           domain: errDomain,
           message: errMsg,
         });
+        setShowDomainCardFor(errDomain);
+        spawn(mutate(apiKey("checkDomain", errDomain)));
         return;
       }
       setError(null);
@@ -150,6 +160,8 @@ function PlasmicHostingSettings_(
       await mutate(apiKey("getDomainsForProject", projectId));
     } catch (err) {
       setError(err);
+      setShowDomainCardFor(fullCustomDomain);
+      spawn(mutate(apiKey("checkDomain", fullCustomDomain)));
     } finally {
       setAdding(false);
     }
@@ -204,7 +216,7 @@ function PlasmicHostingSettings_(
         ),
       }}
       customDomain={
-        settings.customDomain
+        settings.customDomain || showDomainCardFor
           ? "added"
           : adding
           ? "loading"
@@ -229,34 +241,47 @@ function PlasmicHostingSettings_(
         },
       }}
       customDomainPreliminaryErrorFeedback={{
-        children: (
-          <>
-            {error && (
-              <p>
-                <strong>{error.domain}</strong>:{" "}
-                {error.message || "Unable to set domain"}
-              </p>
-            )}
-          </>
-        ),
+        children:
+          !showDomainCardFor && error ? (
+            <p>
+              <strong>{String(error.domain || "")}</strong>:{" "}
+              {String(error.message || "Unable to set domain")}
+            </p>
+          ) : null,
       }}
       addCustomDomainButton={{
         htmlType: "submit",
         disabled: !error && settings.customDomain === data.customDomain,
       }}
       domainCard={{
-        wrap: (node) => (
-          <>
-            <DomainCard project={project} domain={settings.customDomain} />
-            {!tldts.parse(settings.customDomain).subdomain && (
+        wrap: (_node) => {
+          const displayDomain =
+            showDomainCardFor ||
+            settings.customDomain ||
+            (error && data.customDomain);
+          const onRemoved = () => {
+            setShowDomainCardFor(null);
+            setError(null);
+            setData((d) => ({ ...d, customDomain: "" }));
+          };
+          return displayDomain ? (
+            <>
               <DomainCard
                 project={project}
-                domain={"www." + settings.customDomain}
-                isSecondary
+                domain={displayDomain}
+                onRemoved={onRemoved}
               />
-            )}
-          </>
-        ),
+              {!tldts.parse(displayDomain).subdomain && (
+                <DomainCard
+                  project={project}
+                  domain={"www." + displayDomain}
+                  isSecondary
+                  onRemoved={onRemoved}
+                />
+              )}
+            </>
+          ) : null;
+        },
       }}
       showBadge={{
         isChecked: !project.extraData?.hideHostingBadge,
@@ -303,7 +328,7 @@ function PlasmicHostingSettings_(
             />
           )}
           <ImageUploader
-            onUploaded={async (image, file) => {
+            onUploaded={async (image, _file) => {
               await appCtx.app.withSpinner(
                 (async () => {
                   const blob = imageDataUriToBlob(image.url);

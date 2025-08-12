@@ -4,8 +4,8 @@ import {
   DefaultDomainCardProps,
   PlasmicDomainCard,
 } from "@/wab/client/plasmic/plasmic_kit_continuous_deployment/PlasmicDomainCard";
-import { spawn, spawnWrapper } from "@/wab/shared/common";
 import { ApiProject, CheckDomainResponse } from "@/wab/shared/ApiSchema";
+import { spawn, spawnWrapper } from "@/wab/shared/common";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import * as React from "react";
 import { useState } from "react";
@@ -17,10 +17,11 @@ export interface DomainCardProps extends DefaultDomainCardProps {
   project: ApiProject;
   /** This is a redirect domain */
   isSecondary?: boolean;
+  onRemoved?: () => void;
 }
 
 function DomainCard_(
-  { domain, project, isSecondary = false, ...rest }: DomainCardProps,
+  { domain, project, isSecondary = false, onRemoved, ...rest }: DomainCardProps,
   ref: HTMLElementRefOf<"div">
 ) {
   const appCtx = useAppCtx();
@@ -34,7 +35,14 @@ function DomainCard_(
         recordType === "cname" && !subdomain ? "www." + domain : domain;
       return api.checkDomain(effDom);
     },
-    { revalidateOnMount: true, refreshInterval: 5000 }
+    {
+      revalidateOnMount: true,
+      refreshInterval: (latest) =>
+        latest?.status?.isValid && latest?.status?.isCorrectlyConfigured
+          ? 0
+          : 5000,
+      dedupingInterval: 1500,
+    }
   );
   const isCorrect =
     domainStatus?.status.isValid && domainStatus?.status.isCorrectlyConfigured;
@@ -50,11 +58,11 @@ function DomainCard_(
   return (
     <PlasmicDomainCard
       root={{
-        props: { ref, "data-test-id": "domain-card" },
+        props: { ref, "data-test-id": "domain-card", key: domain },
       }}
       {...rest}
       refreshing={isValidating}
-      error={!isCorrect ? recordType : isCorrect ? "success" : undefined}
+      error={isCorrect ? "success" : recordType}
       name={
         recordType === "apex"
           ? "@"
@@ -91,14 +99,15 @@ function DomainCard_(
       removeButton={{
         disabled: removing,
         onClick: spawnWrapper(async () => {
-          setRemoving(false);
+          setRemoving(true);
           try {
             await api.setCustomDomainForProject(undefined, projectId);
             await mutate(apiKey("getDomainsForProject", projectId));
-          } catch (err) {
+            onRemoved?.();
+          } catch (_err) {
             alert("Error removing domain");
           } finally {
-            setRemoving(true);
+            setRemoving(false);
           }
         }),
       }}
