@@ -2,6 +2,7 @@ import {
   getTeamMenuItems,
   TeamMenu,
 } from "@/wab/client/components/dashboard/dashboard-actions";
+import { reactConfirm } from "@/wab/client/components/quick-modals";
 import { Spinner } from "@/wab/client/components/widgets";
 import { useAppCtx } from "@/wab/client/contexts/AppContexts";
 import { useAsyncStrict } from "@/wab/client/hooks/useAsyncStrict";
@@ -100,6 +101,19 @@ function TeamSettings_(props: TeamSettingsProps, ref: HTMLElementRefOf<"div">) {
         onChangeRole: async (email: string, role?: GrantableAccessLevel) => {
           if (!team) {
             return;
+          }
+          // role이 오너이면, 오너십 이전할지 확인하는 툴팁 보여주기
+          if (role && role === "owner") {
+            const confirm = await reactConfirm({
+              title: `Transfer ownership`,
+              message: <>Do you want to transfer ownership to this memeber?</>,
+            });
+            if (!confirm) {
+              return;
+            } else {
+              const res = await appCtx.api.changeTeamOwner(team.id, email);
+              console.log("change ownership, res", res);
+            }
           }
           await appCtx.api.grantRevoke({
             grants: role

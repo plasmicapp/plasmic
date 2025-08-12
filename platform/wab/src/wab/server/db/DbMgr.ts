@@ -2793,6 +2793,48 @@ export class DbMgr implements MigrationDbMgr {
       .getMany();
   }
 
+  async changeTeamOwnerByEmail(teamId: TeamId, newOwnerEmail: string) {
+    const newOwnerUser = await this.getUserByEmail(newOwnerEmail);
+    if (!newOwnerUser) {
+      return;
+    }
+    const newOwner = newOwnerUser.id;
+    const teamOwner = await this.getTeamOwners(teamId);
+    if (teamOwner.length === 0 || teamOwner[0].id === newOwner) {
+      return;
+    }
+
+    const teamPerms = await this.getPermissionsForTeams([teamId]);
+    const newOwnerPermission = teamPerms.find(
+      (perm) => perm.userId === newOwner
+    );
+    const currentOwnerPermission = teamPerms.find(
+      (perm) => perm.userId === teamOwner[0].id
+    );
+    if (!newOwnerPermission || !currentOwnerPermission) {
+      return;
+    }
+
+    await this.teams()
+      .createQueryBuilder()
+      .update()
+      .set({ createdById: newOwner })
+      .where(`id = '${teamId}'`)
+      .execute();
+    await this.permissions()
+      .createQueryBuilder()
+      .update()
+      .set({ accessLevel: "editor" })
+      .where(`id = '${currentOwnerPermission.id}'`)
+      .execute();
+    await this.permissions()
+      .createQueryBuilder()
+      .update()
+      .set({ accessLevel: "owner" })
+      .where(`id = '${newOwnerPermission.id}'`)
+      .execute();
+  }
+
   async changeTeamOwner(teamId: TeamId, newOwner: string) {
     const teamOwner = await this.getTeamOwners(teamId);
     if (teamOwner.length === 0 || teamOwner[0].id === newOwner) {

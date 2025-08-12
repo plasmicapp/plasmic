@@ -8,6 +8,7 @@ import {
   designerRoleHelp,
   designerTooltip,
   developerTooltip,
+  ownerTooltip,
   viewerTooltip,
 } from "@/wab/client/components/widgets/plasmic/PermissionItem";
 import Select from "@/wab/client/components/widgets/Select";
@@ -95,23 +96,21 @@ function TeamMemberListItem_(
             if (e === "none") {
               await changeRole(user.email);
             } else if (
-              ["editor", "designer", "content", "commenter", "viewer"].includes(
-                e
-              )
+              [
+                "editor",
+                "designer",
+                "content",
+                "commenter",
+                "viewer",
+                "owner",
+              ].includes(e)
             ) {
               await changeRole(user.email, e as GrantableAccessLevel);
             }
           }
         },
         children: [
-          <Select.Option
-            style={{
-              display: "none",
-            }}
-            value="owner"
-          >
-            Owner
-          </Select.Option>,
+          <Select.Option value="owner">{ownerTooltip}</Select.Option>,
           <Select.Option value="editor">{developerTooltip}</Select.Option>,
           <Select.Option
             value="content"
