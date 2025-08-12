@@ -4914,22 +4914,35 @@ async function upsertRegisteredFunctions(
             createCustomFunctionFromRegistration(functionReg);
           newFunctions.push(customFunction);
         }
-        for (const functionReg of updatedFunctionRegs) {
-          const existing = ensure(
-            existingFunctions.get(registeredFunctionId(functionReg)),
-            "Previously checked"
-          );
-          const updateableFields: Omit<
-            CustomFunction,
-            "importName" | "namespace" | "typeTag" | "uid"
-          > = pick(
-            createCustomFunctionFromRegistration(functionReg, existing),
-            ["defaultExport", "importPath", "params", "isQuery", "displayName"]
-          );
 
-          Object.assign(existing, updateableFields);
-          updatedFunctions.push(existing);
-        }
+        ctx.change(
+          ({ success }) => {
+            for (const functionReg of updatedFunctionRegs) {
+              const existing = ensure(
+                existingFunctions.get(registeredFunctionId(functionReg)),
+                "Previously checked"
+              );
+              const updateableFields: Omit<
+                CustomFunction,
+                "importName" | "namespace" | "typeTag" | "uid"
+              > = pick(
+                createCustomFunctionFromRegistration(functionReg, existing),
+                [
+                  "defaultExport",
+                  "importPath",
+                  "params",
+                  "isQuery",
+                  "displayName",
+                ]
+              );
+
+              Object.assign(existing, updateableFields);
+              updatedFunctions.push(existing);
+            }
+            return success();
+          },
+          { noUndoRecord: true }
+        );
 
         await fns.onUpdatedCustomFunctions?.({
           ctx,
