@@ -12,7 +12,6 @@ import * as React from "react";
 import { Link } from "gatsby";
 import {
   PlasmicLink as PlasmicLink__,
-  Stack as Stack__,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
@@ -126,13 +125,11 @@ function PlasmicButton__RenderFunc(props) {
     focusVisibleWithin_root: isRootFocusVisibleWithin
   };
   return (
-    <Stack__
-      as={"button"}
+    <button
       data-plasmic-name={"root"}
       data-plasmic-override={overrides.root}
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
-      hasGap={true}
       className={classNames(
         projectcss.all,
         projectcss.button,
@@ -501,7 +498,7 @@ function PlasmicButton__RenderFunc(props) {
           })}
         </div>
       ) : null}
-    </Stack__>
+    </button>
   );
 }
 

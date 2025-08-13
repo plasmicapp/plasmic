@@ -124,6 +124,7 @@ function PlasmicHomepage__RenderFunc(props: {
   };
 
   const __nextRouter = useNextRouter();
+
   const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
@@ -157,11 +158,9 @@ function PlasmicHomepage__RenderFunc(props: {
             sty.root
           )}
         >
-          <Stack__
-            as={"section"}
+          <section
             data-plasmic-name={"section"}
             data-plasmic-override={overrides.section}
-            hasGap={true}
             className={classNames(projectcss.all, sty.section)}
           >
             <h1
@@ -228,7 +227,7 @@ function PlasmicHomepage__RenderFunc(props: {
                 sty.randomDynamicPageButton
               )}
             />
-          </Stack__>
+          </section>
         </div>
       </div>
     </React.Fragment>

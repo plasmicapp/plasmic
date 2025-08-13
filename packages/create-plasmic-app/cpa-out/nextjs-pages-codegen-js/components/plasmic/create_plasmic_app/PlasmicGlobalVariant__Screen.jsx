@@ -9,6 +9,14 @@ export const ScreenContext = React.createContext(
   "PLEASE_RENDER_INSIDE_PROVIDER"
 );
 
+export function ScreenContextProvider(props) {
+  return (
+    <ScreenContext.Provider value={props.value}>
+      {props.children}
+    </ScreenContext.Provider>
+  );
+}
+
 export const useScreenVariants = createUseScreenVariants(true, {
   desktopOnly: "(min-width:768px)",
 });

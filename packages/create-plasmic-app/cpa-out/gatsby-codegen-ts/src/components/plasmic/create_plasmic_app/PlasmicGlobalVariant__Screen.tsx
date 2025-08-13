@@ -10,6 +10,15 @@ export type ScreenValue = "desktopOnly";
 export const ScreenContext = React.createContext<ScreenValue[] | undefined>(
   "PLEASE_RENDER_INSIDE_PROVIDER" as any
 );
+export function ScreenContextProvider(
+  props: React.PropsWithChildren<{ value: ScreenValue[] | undefined }>
+) {
+  return (
+    <ScreenContext.Provider value={props.value}>
+      {props.children}
+    </ScreenContext.Provider>
+  );
+}
 
 export const useScreenVariants = createUseScreenVariants(true, {
   desktopOnly: "(min-width:768px)",

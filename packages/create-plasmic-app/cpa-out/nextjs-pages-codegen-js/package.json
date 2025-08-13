@@ -9,14 +9,14 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@plasmicapp/cli": "^0.1.337",
-    "@plasmicapp/react-web": "^0.2.381",
-    "next": "14.2.20",
+    "@plasmicapp/cli": "^0.1.341",
+    "@plasmicapp/react-web": "^0.2.397",
+    "next": "14.2.17",
     "react": "^18",
     "react-dom": "^18"
   },
   "devDependencies": {
     "eslint": "^8",
-    "eslint-config-next": "14.2.20"
+    "eslint-config-next": "14.2.17"
   }
 }
