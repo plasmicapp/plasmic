@@ -1,5 +1,6 @@
 import { loadConfig } from "@/wab/server/config";
 import { closeDbConnections } from "@/wab/server/db/DbCon";
+import { logger } from "@/wab/server/observability";
 import { createTerminus, HealthCheckError } from "@godaddy/terminus";
 import { Application } from "express";
 import http from "http";
@@ -41,7 +42,7 @@ export function runExpressApp(
     signals: ["SIGTERM", "SIGINT"], // send this signal to begin graceful shutdown
     timeout: 125000, // wait this many ms before force closing active conns
     beforeShutdown: () => {
-      console.log(`Received signal to shut down...`);
+      logger().info(`Received signal to shut down...`);
       // This has to be greater than the number of seconds defined
       // in the readiness probe "periodSeconds"
       return new Promise((resolve) =>
@@ -52,10 +53,10 @@ export function runExpressApp(
       await closeDbConnections();
     },
     onShutdown: async () => {
-      console.log(`Shutdown complete, exiting...`);
+      logger().info(`Shutdown complete, exiting...`);
     },
     logger: (msg, err) => {
-      console.log(`Shutdown error:`, msg, err);
+      logger().error(`Shutdown error: ${msg}`, err);
     },
     useExit0: true,
   });
@@ -64,7 +65,7 @@ export function runExpressApp(
    * Start Express server.
    */
   return server.listen(app.get("port"), () => {
-    console.log(`
+    logger().info(`
 App ${app.get("name")} is running at http://localhost:${app.get(
       "port"
     )} in ${app.get("env")} mode

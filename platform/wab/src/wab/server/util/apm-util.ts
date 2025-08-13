@@ -1,4 +1,6 @@
+import { logger } from "@/wab/server/observability";
 import { WabPromTimer } from "@/wab/server/promstats";
+import { trace } from "@opentelemetry/api";
 
 export async function withSpan<T>(
   name: string,
@@ -7,13 +9,17 @@ export async function withSpan<T>(
 ) {
   const start = new Date().getTime();
   const promTimer = new WabPromTimer(name);
-  try {
-    return await f();
-  } finally {
-    const suffix = msg ? `: ${msg}` : "";
-    console.log(`${name} took ${new Date().getTime() - start}ms${suffix}`);
-    promTimer.end();
-  }
+  const tracer = trace.getTracer("app");
+  return tracer.startActiveSpan(name, async (span) => {
+    try {
+      return await f();
+    } finally {
+      const suffix = msg ? `: ${msg}` : "";
+      logger().info(`${name} took ${new Date().getTime() - start}ms${suffix}`);
+      promTimer.end();
+      span.end();
+    }
+  });
 }
 
 export async function withTimeSpent<T>(f: () => Promise<T>): Promise<{

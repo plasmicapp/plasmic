@@ -1,7 +1,5 @@
-import type {
-  Analytics,
-  Properties,
-} from "@/wab/shared/observability/Analytics";
+import type { Analytics } from "@/wab/shared/observability/Analytics";
+import { Properties } from "@/wab/shared/observability/Properties";
 import type {
   Identify as BrowserIdentify,
   Types as BrowserTypes,

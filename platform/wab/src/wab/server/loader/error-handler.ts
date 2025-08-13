@@ -1,3 +1,4 @@
+import { logger } from "@/wab/server/observability";
 import { uploadFilesToS3 } from "@/wab/server/util/s3-util";
 import { ComponentReference } from "@/wab/server/workers/codegen";
 import { LoaderEsbuildFatalError } from "@/wab/shared/ApiErrors/errors";
@@ -121,7 +122,7 @@ export async function uploadErrorFiles(err: Error, dir: string) {
     try {
       return (await fs.readFile(filePath)).toString();
     } catch (err2) {
-      console.log(`Error reading ${filePath}`, err2);
+      logger().error(`Error reading ${filePath}`, err2);
       return undefined;
     }
   };
@@ -142,7 +143,7 @@ export async function uploadErrorFiles(err: Error, dir: string) {
     files: filesDict,
   });
 
-  console.log(
+  logger().error(
     `Error files: ${Object.keys(filesDict)
       .map(
         (f) =>

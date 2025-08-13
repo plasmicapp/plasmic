@@ -10,7 +10,6 @@ import promMetrics from "express-prom-bundle";
 import { NextFunction, Request, Response } from "express-serve-static-core";
 import session from "express-session";
 import * as lusca from "lusca";
-import morgan from "morgan";
 import { nanoid } from "nanoid";
 import cron from "node-cron";
 import passport from "passport";
@@ -28,7 +27,7 @@ import { getDevFlagsMergedWithOverrides } from "@/wab/server/db/appconfig";
 import { createMailer } from "@/wab/server/emails/Mailer";
 import { ExpressSession } from "@/wab/server/entities/Entities";
 import "@/wab/server/extensions";
-import { initAnalyticsFactory } from "@/wab/server/observability";
+import { initAnalyticsFactory, logger } from "@/wab/server/observability";
 import { WabPromStats, trackPostgresPool } from "@/wab/server/promstats";
 import { createRateLimiter } from "@/wab/server/rate-limit";
 import * as adminRoutes from "@/wab/server/routes/admin";
@@ -361,7 +360,7 @@ function addSentry(app: express.Application, config: Config) {
   if (!config.sentryDSN) {
     return;
   }
-  console.log("Initializing Sentry with DSN:", config.sentryDSN);
+  logger().debug(`Initializing Sentry with DSN: ${config.sentryDSN}`);
   Sentry.init({
     dsn: config.sentryDSN,
     integrations: [
@@ -454,19 +453,27 @@ export function addLoggingMiddleware(app: express.Application) {
       next();
     })
   );
-  morgan.token("request-id", (req: Request) => req.id);
-  morgan.token("user-email", (req: Request) => req.user?.email);
-  // Remove metrics url to avoid spam
-  app.use(
-    morgan(
-      `[:request-id] :remote-addr - :user-email [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent" (:total-time[0]ms)`,
-      {
-        skip: (req, _) => {
-          return req.originalUrl === "/metrics" || req.url === "/metrics";
-        },
-      }
-    )
-  );
+  app.use((req: Request, res: any, next) => {
+    const start = Date.now();
+    res.on("finish", () => {
+      const duration = Date.now() - start;
+      logger().info(
+        `${req.method} ${req.originalUrl} ${res.statusCode} (${duration}ms)`,
+        {
+          requestMethod: req.method,
+          requestOriginalUrl: req.originalUrl,
+          requestStatusCode: res.statusCode,
+          requestId: req.id,
+          remoteAddr: req.ip,
+          userEmail: req.user?.email,
+          referrer: req.get("referrer"),
+          userAgent: req.get("user-agent"),
+          contentLength: res.get("content-length"),
+        }
+      );
+    });
+    next();
+  });
 }
 
 function addMiddlewares(
@@ -488,7 +495,7 @@ function addMiddlewares(
     app.use(passport.initialize());
     app.use(passport.session());
   } else {
-    console.log("Skipping session store setup...");
+    logger().debug("Skipping session store setup...");
   }
 
   const analyticsFactory = initAnalyticsFactory({
@@ -723,7 +730,7 @@ function addMiddlewares(
       }
     });
   } else {
-    console.log("Skipping CSRF setup...");
+    logger().debug("Skipping CSRF setup...");
   }
 
   // Parse body further down to prevent unauthorized users from incurring large parses.
@@ -1252,7 +1259,7 @@ export function addMainAppServerRoutes(
   });
 
   app.use((req, res, next) => {
-    console.log(req.ip);
+    logger().debug(req.ip);
     next();
   });
 
@@ -1992,7 +1999,7 @@ function addEndErrorHandlers(app: express.Application) {
       ) => {
         // Too noisy in CI to print AuthError all the time
         if (!(origErr instanceof AuthError)) {
-          console.log(
+          logger().error(
             `ERROR! ${
               res.isClosedBeforeFulfilled ? `(before fulfillment)` : ""
             }; rollback`,
@@ -2101,14 +2108,13 @@ export async function createApp(
 
   // Prune old cache every 2 hours
   cron.schedule("0 */2 * * *", () => {
-    console.log("Pruning cache");
+    logger().info("Pruning cache");
     pruneCache();
   });
 
   // Don't leak infra info
   app.disable("x-powered-by");
-
-  console.log(
+  logger().info(
     `Starting server with heap memory ${
       v8.getHeapStatistics().total_available_size / 1024 / 1024
     }MB`

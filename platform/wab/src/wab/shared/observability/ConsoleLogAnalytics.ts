@@ -1,9 +1,9 @@
 import type {
   Analytics,
-  Properties,
   TrackOptions,
 } from "@/wab/shared/observability/Analytics";
 import { BaseAnalytics } from "@/wab/shared/observability/BaseAnalytics";
+import { Properties } from "@/wab/shared/observability/Properties";
 
 export class ConsoleLogAnalytics extends BaseAnalytics implements Analytics {
   appendBaseEventProperties(newProperties: Properties): void {

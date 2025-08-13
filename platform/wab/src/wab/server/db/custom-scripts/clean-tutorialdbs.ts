@@ -1,4 +1,5 @@
 import { DataSource, TutorialDb } from "@/wab/server/entities/Entities";
+import { logger } from "@/wab/server/observability";
 import { getSuperTutorialDbConnection } from "@/wab/server/tutorialdb/tutorialdb-utils";
 import { Connection, EntityManager, In, IsNull, Not } from "typeorm";
 
@@ -62,7 +63,7 @@ async function dropTutorialDbFromDataSources(
     },
   });
 
-  console.log(`Deleting ${badTutorialDbs.length} tutorial dbs`);
+  logger().info(`Deleting ${badTutorialDbs.length} tutorial dbs`);
 
   const qr = await tutorialDbCon.createQueryRunner();
   await Promise.all(

@@ -1,6 +1,7 @@
 import { unexpected } from "@/wab/shared/common";
-import { Analytics, Properties } from "@/wab/shared/observability/Analytics";
+import { Analytics } from "@/wab/shared/observability/Analytics";
 import { BaseAnalytics } from "@/wab/shared/observability/BaseAnalytics";
+import { Properties } from "@/wab/shared/observability/Properties";
 import { PostHog } from "posthog-node";
 
 /**

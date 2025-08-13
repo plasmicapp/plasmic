@@ -1,3 +1,4 @@
+import { logger } from "@/wab/server/observability";
 import { CodegenOutputBundle } from "@/wab/server/workers/codegen";
 import { stripExtension, toVarName } from "@/wab/shared/codegen/util";
 import { promises as fs } from "fs";
@@ -15,7 +16,7 @@ export async function writeCodeBundlesToDisk(
   const nodeModulesPath = path.resolve(
     path.join(process.cwd(), "..", "loader-bundle-env", "node_modules")
   );
-  console.log("Using node_modules at", nodeModulesPath);
+  logger().info(`Using node_modules at ${nodeModulesPath}`);
   await fs.symlink(nodeModulesPath, path.join(dir, "node_modules"));
 
   // Write the generated output

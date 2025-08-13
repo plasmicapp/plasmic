@@ -1,7 +1,5 @@
-import type {
-  Properties,
-  TrackOptions,
-} from "@/wab/shared/observability/Analytics";
+import type { TrackOptions } from "@/wab/shared/observability/Analytics";
+import { Properties } from "@/wab/shared/observability/Properties";
 
 /**
  * For implementing a stateful Analytics implementation that keeps track of the

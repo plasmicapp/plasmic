@@ -1,13 +1,14 @@
 import { DbMgr, SUPER_USER } from "@/wab/server/db/DbMgr";
+import { logger } from "@/wab/server/observability";
 import { makeUserTraits } from "@/wab/server/routes/util";
-import { createInstance, Identify } from "@amplitude/analytics-node";
+import { Identify, createInstance } from "@amplitude/analytics-node";
 import { EntityManager } from "typeorm";
 
 export async function reIdentifyUsers(em: EntityManager) {
   const dbMgr = new DbMgr(em, SUPER_USER);
   const users = await dbMgr.listAllUsers();
 
-  console.log(`Identifying ${users.length} users...`);
+  logger().info(`Identifying ${users.length} users...`);
   const amplitude = createInstance();
   amplitude.init(process.env.AMPLITUDE_API_KEY!);
   for (const user of users) {

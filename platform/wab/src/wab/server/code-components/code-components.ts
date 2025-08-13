@@ -1,3 +1,6 @@
+import { logger } from "@/wab/server/observability";
+import { isSlot } from "@/wab/shared/SlotUtils";
+import { TplMgr } from "@/wab/shared/TplMgr";
 import {
   getBuiltinComponentRegistrations,
   isBuiltinCodeComponent,
@@ -31,8 +34,6 @@ import {
   Site,
   ensureKnownPropParam,
 } from "@/wab/shared/model/classes";
-import { isSlot } from "@/wab/shared/SlotUtils";
-import { TplMgr } from "@/wab/shared/TplMgr";
 import {
   ComponentMeta,
   ComponentRegistration,
@@ -271,10 +272,10 @@ export async function updateHostlessPackage(
       site.hostLessPackageInfo,
       () => "Expected hostless package"
     );
-    console.log(`UPDATING ${pkgInfo.name}`);
+    logger().info(`UPDATING ${pkgInfo.name}`);
 
     for (const dep of pkgInfo.deps) {
-      console.log(`\tLoading dependency ${dep}`);
+      logger().info(`Loading dependency ${dep}`);
       loadServerPackage(dep);
     }
 
@@ -285,14 +286,13 @@ export async function updateHostlessPackage(
       ].map(({ meta }: ComponentRegistration) => meta.name)
     );
 
-    console.log(`\tLoading main package ${pkgInfo.name}`);
+    logger().info(`Loading main package ${pkgInfo.name}`);
     loadServerPackage(pkgInfo.name);
 
-    console.log(
-      "\tRegistry has:",
-      globalThis.__PlasmicComponentRegistry
+    logger().info(
+      `Registry has: ${globalThis.__PlasmicComponentRegistry
         .map(({ meta }) => meta.name)
-        .join(",")
+        .join(",")}`
     );
 
     const tplMgr = new TplMgr({ site });
@@ -337,10 +337,7 @@ export async function updateHostlessPackage(
       .filter(isCodeComponent)
       .forEach((c) => (c.codeComponentMeta.isHostLess = true));
 
-    console.log(
-      "\tRegistered:",
-      site.components.map((c) => c.name)
-    );
+    logger().info(`Registered: ${site.components.map((c) => c.name)}`);
 
     // Clear site default styles
     site.themes.forEach((theme) => {
@@ -452,7 +449,7 @@ function loadServerPackage(pkg: string) {
       `../../../../../canvas-packages/build-server/${pkg}.js`
     )
   );
-  console.log(`\tLoading ${pkg} from ${pkgPath}`);
+  logger().info(`Loading ${pkg} from ${pkgPath}`);
 
   // eslint-disable-next-line @typescript-eslint/no-var-requires
   const pkgModule = require(pkgPath);

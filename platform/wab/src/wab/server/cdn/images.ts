@@ -1,3 +1,4 @@
+import { logger } from "@/wab/server/observability";
 import { md5 } from "@/wab/server/util/hash";
 import { parseDataUrl } from "@/wab/shared/data-urls";
 import { isSVG } from "@/wab/shared/svg-utils";
@@ -92,7 +93,7 @@ export async function uploadFileToS3(
           mimeType: mime,
         });
       } catch (err) {
-        console.log("Could not upload asset to S3:", err);
+        logger().error(`Could not upload asset to S3.`, err);
         Sentry.captureMessage(`Could not upload asset to S3 (${err.message}).`);
         return failure(err);
       }

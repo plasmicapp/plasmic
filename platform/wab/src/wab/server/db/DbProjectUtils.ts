@@ -6,6 +6,7 @@ import {
 import { DbMgr, SUPER_USER, normalActor } from "@/wab/server/db/DbMgr";
 import { createDbConnection } from "@/wab/server/db/dbcli-utils";
 import { upgradeReferencedHostlessDeps } from "@/wab/server/db/upgrade-hostless-utils";
+import { logger } from "@/wab/server/observability";
 import { doImportProject } from "@/wab/server/routes/projects";
 import { ProjectId } from "@/wab/shared/ApiSchema";
 import {
@@ -112,7 +113,7 @@ async function uploadProject(
     prefilled?: boolean;
   }
 ) {
-  console.log("Uploading project", opts);
+  logger().debug("Uploading project", opts);
   const con = await createDbConnection(opts.dburi);
   await con.transaction(async (em) => {
     const filePath = path.resolve(opts.file);
@@ -130,8 +131,8 @@ async function uploadProject(
       await mgr.updateProject({ id: project.id, name: opts.name });
     }
 
-    console.log("Project ID: ", project.id);
-    console.log("Project Token: ", project.projectApiToken);
+    logger().debug(`Project ID: ${project.id}`);
+    logger().debug(`Project Token: ${project.projectApiToken}`);
 
     if (opts.publish) {
       const { pkgVersion } = await mgr.publishProject(
@@ -140,7 +141,7 @@ async function uploadProject(
         [],
         ""
       );
-      console.log("Published project");
+      logger().debug("Published project");
       if (opts.prefilled) {
         await mgr.updatePkgVersion(
           pkgVersion.pkgId,
@@ -197,7 +198,7 @@ async function pruneProjectBundle(
     const mgr = new DbMgr(em, SUPER_USER);
     for (const project of opts.project) {
       const rev = await mgr.getLatestProjectRev(project);
-      console.log(`Pruning ${project} [${rev.revision}]`);
+      logger().info(`Pruning ${project} [${rev.revision}]`);
       const bundle = JSON.parse(rev.data) as Bundle;
       removeUnreachableNodesFromBundle(bundle);
       await mgr.updateProjectRev({
@@ -222,7 +223,7 @@ async function upgradeHostlessDeps(
     await upgradeReferencedHostlessDeps(mgr, opts.project as ProjectId);
   });
 
-  console.log("All done!");
+  logger().info("All done!");
 }
 
 if (require.main === module) {

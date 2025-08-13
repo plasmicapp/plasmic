@@ -1,8 +1,6 @@
-import type {
-  Analytics,
-  Properties,
-} from "@/wab/shared/observability/Analytics";
+import type { Analytics } from "@/wab/shared/observability/Analytics";
 import { BaseAnalytics } from "@/wab/shared/observability/BaseAnalytics";
+import { Properties } from "@/wab/shared/observability/Properties";
 import { PostHog, PostHogConfig, posthog } from "posthog-js";
 
 /**
