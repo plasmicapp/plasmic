@@ -1,4 +1,4 @@
-import { arrayEq, unexpected, xUnion } from "@/wab/shared/common";
+import { arrayEq, unexpected, xDifference, xUnion } from "@/wab/shared/common";
 import { asCode, isRealCodeExpr } from "@/wab/shared/core/exprs";
 import { DEVFLAGS } from "@/wab/shared/devflags";
 import { ENABLED_GLOBALS } from "@/wab/shared/eval";
@@ -15,8 +15,8 @@ import {
 import {
   isBlockScope,
   isScope,
-  isValidJavaScriptCode,
   parseJsCode,
+  wrapJavaScriptCodeInParens,
   writeJs,
 } from "@/wab/shared/parser-utils";
 import { isValidJsIdentifier } from "@/wab/shared/utils/regex-js-identifier";
@@ -137,13 +137,25 @@ function parseMemberExpression(
  *
  * It returns a ParsedExprInfo. See its docstring for more information.
  */
-export function parseCodeExpression(code: string): ParsedExprInfo {
-  if (!isValidJavaScriptCode(code) && isValidJavaScriptCode(`(${code})`)) {
-    code = `(${code})`;
-  }
+
+interface ParseCodeExpressionOptions {
+  // Ignore values in ENABLED_GLOBALS
+  disableGlobals?: string[];
+}
+
+export function parseCodeExpression(
+  code: string,
+  options?: ParseCodeExpressionOptions
+): ParsedExprInfo {
+  code = wrapJavaScriptCodeInParens(code);
+
   type WithLocals<T extends ast.Node> = T & {
     locals?: Record<string, boolean>;
   };
+
+  const enabledGlobals = options?.disableGlobals
+    ? xDifference(ENABLED_GLOBALS, options.disableGlobals)
+    : ENABLED_GLOBALS;
 
   // Based on https://github.com/ForbesLindesay/acorn-globals/blob/master/index.js
   const ast: WithLocals<ast.Program> = parseCode(code);
@@ -287,7 +299,7 @@ export function parseCodeExpression(code: string): ParsedExprInfo {
     }
     if (isDollarVar(name)) {
       info.usesDollarVars[name] = true;
-    } else if (!ENABLED_GLOBALS.has(name)) {
+    } else if (!enabledGlobals.has(name)) {
       info.usedFreeVars.add(name);
     }
   };
@@ -422,9 +434,7 @@ export function renameObjectKey(
   oldKey: string,
   newKey: string
 ): string {
-  if (!isValidJavaScriptCode(code) && isValidJavaScriptCode(`(${code})`)) {
-    code = `(${code})`;
-  }
+  code = wrapJavaScriptCodeInParens(code);
   const oldParts = [oldObject, ...oldKey.split(".")];
   const newParts = [newObject, ...newKey.split(".")];
 
@@ -452,9 +462,7 @@ export function replaceVarWithProp(
   varName: string,
   propName: string
 ): string {
-  if (!isValidJavaScriptCode(code) && isValidJavaScriptCode(`(${code})`)) {
-    code = `(${code})`;
-  }
+  code = wrapJavaScriptCodeInParens(code);
 
   const ast = traverseCode(code, {
     Identifier: (node) => {
@@ -565,4 +573,22 @@ export function exprUsesDollarVars(expr: Expr) {
 export function codeUsesFunction(code: string, fnName: string) {
   const info = parseCodeExpression(code);
   return info.usedDollarVarKeys["$$"]?.has(fnName);
+}
+
+/**
+ * Checks if code expression uses global objects like 'window' or 'globalThis'
+ * that can cause issues during pre-rendering.
+ */
+export function codeUsesGlobalObjects(code: string): boolean {
+  try {
+    const info = parseCodeExpression(code, {
+      disableGlobals: ["window", "globalThis"],
+    });
+    return (
+      info.usedFreeVars.has("window") || info.usedFreeVars.has("globalThis")
+    );
+  } catch (error) {
+    // Fall back to regex on parse fail
+    return /\b(window|globalThis)\b/.test(code);
+  }
 }

@@ -10,9 +10,10 @@ import { readUploadedFileAsText } from "@/wab/client/dom-utils";
 import { MaybeWrap } from "@/wab/commons/components/ReactUtil";
 import { ensure, swallow } from "@/wab/shared/common";
 import { tryEvalExpr } from "@/wab/shared/eval";
+import { codeUsesGlobalObjects } from "@/wab/shared/eval/expression-parser";
 import { isValidJavaScriptCode } from "@/wab/shared/parser-utils";
 import { hasUnexpected$$Usage } from "@/wab/shared/utils/regex-dollardollar";
-import { notification, Tooltip } from "antd";
+import { Tooltip, notification } from "antd";
 import { default as classNames } from "classnames";
 import jsonrepair from "jsonrepair";
 import { observer } from "mobx-react";
@@ -79,6 +80,22 @@ export function checkDisallowedUseOfLibs(val: string) {
       duration: 20,
     });
     return false;
+  }
+  return true;
+}
+
+export function checkWindowGlobalUsage(val: string) {
+  if (codeUsesGlobalObjects(val)) {
+    notification.warn({
+      message: "Global object usage detected",
+      description: (
+        <>
+          Using <code>window</code> or <code>globalThis</code> in code
+          expressions can cause issues during pre-rendering.
+        </>
+      ),
+      duration: 10,
+    });
   }
   return true;
 }
@@ -177,6 +194,9 @@ export const CodeEditor = observer(function CodeEditor(props: {
         return false;
       }
     } else {
+      if (lang === "javascript" || lang === "typescript") {
+        checkWindowGlobalUsage(val);
+      }
       onChange(val);
       setDraft(undefined);
       return true;

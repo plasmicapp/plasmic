@@ -105,6 +105,13 @@ export function isValidJavaScriptCode(
   }
 }
 
+export function wrapJavaScriptCodeInParens(code: string): string {
+  if (!isValidJavaScriptCode(code) && isValidJavaScriptCode(`(${code})`)) {
+    return `(${code})`;
+  }
+  return code;
+}
+
 export type ScopeNode =
   | ast.Program
   | ast.FunctionDeclaration

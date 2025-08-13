@@ -1,4 +1,5 @@
 import {
+  codeUsesGlobalObjects,
   emptyParsedExprInfo,
   parseCodeExpression,
   pathToString,
@@ -255,5 +256,49 @@ describe("pathToString", function () {
   it("should generate code", () => {
     const code = pathToString(["$ctx", 0, "bad-name", "goodName"]);
     expect(code).toEqual(`$ctx[0]["bad-name"].goodName`);
+  });
+});
+
+describe("codeUsesGlobalObjects", function () {
+  it("should detect window usage", () => {
+    expect(codeUsesGlobalObjects("window.location.href")).toBe(true);
+    expect(codeUsesGlobalObjects("window")).toBe(true);
+    expect(codeUsesGlobalObjects("const url = (window as any).test")).toBe(
+      true
+    );
+  });
+
+  it("should detect globalThis usage", () => {
+    expect(codeUsesGlobalObjects("globalThis.fetch")).toBe(true);
+    expect(codeUsesGlobalObjects("globalThis")).toBe(true);
+    expect(codeUsesGlobalObjects("const g = (globalThis as MyGlobal)")).toBe(
+      true
+    );
+  });
+
+  it("should not detect locally declared window/globalThis", () => {
+    expect(codeUsesGlobalObjects("const window = {}; window.test")).toBe(false);
+    expect(
+      codeUsesGlobalObjects("function test(window) { return window.prop }")
+    ).toBe(false);
+    expect(codeUsesGlobalObjects("let globalThis = {}; globalThis.value")).toBe(
+      false
+    );
+  });
+
+  it("should not detect window/globalThis in strings", () => {
+    expect(codeUsesGlobalObjects('"window is global"')).toBe(false);
+    expect(codeUsesGlobalObjects("'globalThis reference'")).toBe(false);
+    expect(codeUsesGlobalObjects("`${variable} window test`")).toBe(false);
+  });
+
+  it("should handle complex expressions", () => {
+    expect(codeUsesGlobalObjects("$props.data + window.innerWidth")).toBe(true);
+    expect(codeUsesGlobalObjects("(() => globalThis.process)()")).toBe(true);
+    expect(codeUsesGlobalObjects("$state.items.filter(x => x.id)")).toBe(false);
+  });
+
+  it("should handle invalid code gracefully", () => {
+    expect(codeUsesGlobalObjects("invalid {{ syntax")).toBe(false);
   });
 });

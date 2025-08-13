@@ -3,6 +3,7 @@ import {
   checkDisallowedUseOfLibs,
   checkStrSizeLimit,
   checkSyntaxError,
+  checkWindowGlobalUsage,
 } from "@/wab/client/components/sidebar-tabs/ComponentProps/CodeEditor";
 import DataPickerColumn from "@/wab/client/components/sidebar-tabs/DataBinding/DataPickerColumn";
 import DataPickerGlobalSearchResultsItem from "@/wab/client/components/sidebar-tabs/DataBinding/DataPickerGlobalSearchResultsItem";
@@ -361,6 +362,8 @@ function DataPicker_(props: DataPickerProps, ref: HTMLElementRefOf<"div">) {
       if (!checkDisallowedUseOfLibs(val)) {
         return false;
       }
+
+      checkWindowGlobalUsage(val);
 
       setDraft(val);
       return true;
