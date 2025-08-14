@@ -13,7 +13,9 @@ import {
   fixComponentCssReferences,
   fixComponentImagesReferences,
 } from "../actions/sync-images";
+import { getProjectModuleResourcePath } from "../actions/sync-project-module";
 import { getSplitsProviderResourcePath } from "../actions/sync-splits-provider";
+import { getStyleTokensProviderResourcePath } from "../actions/sync-style-tokens-provider";
 import { logger } from "../deps";
 import { GLOBAL_SETTINGS } from "../globals";
 import { HandledError } from "../utils/error";
@@ -173,6 +175,8 @@ type PlasmicImportType =
   | "globalContext"
   | "customFunction"
   | "splitsProvider"
+  | "styleTokensProvider"
+  | "projectModule"
   | "rscClient"
   | "rscServer"
   | undefined;
@@ -203,7 +207,7 @@ function tryParsePlasmicImportSpec(node: ImportDeclaration) {
         "plasmic-import:\\s+([",
         ...validJsIdentifierChars,
         "\\.",
-        "]+)(?:\\/(component|css|render|globalVariant|projectcss|defaultcss|icon|picture|jsBundle|codeComponent|globalContext|customFunction|splitsProvider|rscClient|rscServer))?",
+        "]+)(?:\\/(component|css|render|globalVariant|projectcss|defaultcss|icon|picture|jsBundle|codeComponent|globalContext|customFunction|splitsProvider|styleTokensProvider|projectModule|rscClient|rscServer))?",
       ].join("")
     )
   );
@@ -441,6 +445,30 @@ export function replaceImports(
         true
       );
       stmt.source.value = realPath;
+    } else if (type === "styleTokensProvider") {
+      const projectConfig = fixImportContext.projects[uuid];
+      if (!projectConfig) {
+        throwMissingReference(context, "project", uuid, fromPath);
+      }
+      const realPath = makeImportPath(
+        context,
+        fromPath,
+        projectConfig.styleTokensProviderFilePath,
+        true
+      );
+      stmt.source.value = realPath;
+    } else if (type === "projectModule") {
+      const projectConfig = fixImportContext.projects[uuid];
+      if (!projectConfig) {
+        throwMissingReference(context, "project", uuid, fromPath);
+      }
+      const realPath = makeImportPath(
+        context,
+        fromPath,
+        projectConfig.projectModuleFilePath,
+        true
+      );
+      stmt.source.value = realPath;
     } else if (type === "rscClient") {
       const compConfig = fixImportContext.components[uuid];
       if (!compConfig) {
@@ -668,10 +696,46 @@ export async function fixAllImportStatements(
   }
 
   try {
-    fixSplitsProviderImportStatements(context, fixImportContext, baseDir);
+    fixImportStatements(
+      context,
+      fixImportContext,
+      baseDir,
+      "splitsProviderFilePath",
+      getSplitsProviderResourcePath
+    );
   } catch (err) {
     logger.error(
       `Error encountered while fixing imports for splits provider: ${err}`
+    );
+    lastError = err;
+  }
+
+  try {
+    fixImportStatements(
+      context,
+      fixImportContext,
+      baseDir,
+      "projectModuleFilePath",
+      getProjectModuleResourcePath
+    );
+  } catch (err) {
+    logger.error(
+      `Error encountered while fixing imports for project module bundle: ${err}`
+    );
+    lastError = err;
+  }
+
+  try {
+    fixImportStatements(
+      context,
+      fixImportContext,
+      baseDir,
+      "styleTokensProviderFilePath",
+      getStyleTokensProviderResourcePath
+    );
+  } catch (err) {
+    logger.error(
+      `Error encountered while fixing imports for style tokens provider: ${err}`
     );
     lastError = err;
   }
@@ -901,14 +965,17 @@ async function fixGlobalContextImportStatements(
   }
 }
 
-async function fixSplitsProviderImportStatements(
+async function fixImportStatements(
   context: PlasmicContext,
   fixImportContext: FixImportContext,
-  baseDir: string
+  baseDir: string,
+  configKey: keyof ProjectConfig,
+  getResourcePath: (context: PlasmicContext, project: ProjectConfig) => string
 ) {
   for (const project of context.config.projects) {
-    if (!project.splitsProviderFilePath) continue;
-    const resourcePath = getSplitsProviderResourcePath(context, project);
+    if (!project[configKey]) continue;
+
+    const resourcePath = getResourcePath(context, project);
 
     let prevContent: string;
     try {

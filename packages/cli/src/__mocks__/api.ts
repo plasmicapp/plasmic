@@ -355,6 +355,8 @@ class PlasmicApi {
         projectCssChecksum: "",
         globalContextsChecksum: "",
         splitsProviderChecksum: "",
+        styleTokensProviderChecksum: "",
+        projectModuleChecksum: "",
       } as ChecksumBundle,
       usedNpmPackages: [],
       externalCssImports: [],

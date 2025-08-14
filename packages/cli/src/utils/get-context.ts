@@ -101,6 +101,10 @@ function removeMissingFilesFromLock(
             return knownProjects[project.projectId].globalContextsFilePath;
           case "splitsProvider":
             return knownProjects[project.projectId].splitsProviderFilePath;
+          case "projectModule":
+            return knownProjects[project.projectId].projectModuleFilePath;
+          case "styleTokensProvider":
+            return knownProjects[project.projectId].styleTokensProviderFilePath;
         }
       });
 
@@ -242,6 +246,30 @@ async function resolveMissingFilesInConfig(
         project.splitsProviderFilePath,
         baseNameToFiles
       )) || project.splitsProviderFilePath;
+
+    if (!project.styleTokensProviderFilePath) {
+      project.styleTokensProviderFilePath = "";
+    }
+
+    // Try to find the file, otherwise recreate at either the specified path or default path (if both are falsey)
+    project.styleTokensProviderFilePath =
+      (await attemptToRestoreFilePath(
+        context,
+        project.styleTokensProviderFilePath,
+        baseNameToFiles
+      )) || project.styleTokensProviderFilePath;
+
+    if (!project.projectModuleFilePath) {
+      project.projectModuleFilePath = "";
+    }
+
+    // Try to find the file, otherwise recreate at either the specified path or default path (if both are falsey)
+    project.projectModuleFilePath =
+      (await attemptToRestoreFilePath(
+        context,
+        project.projectModuleFilePath,
+        baseNameToFiles
+      )) || project.projectModuleFilePath;
 
     project.images = await filterFiles(project.images, "filePath");
     project.icons = await filterFiles(project.icons, "moduleFilePath");

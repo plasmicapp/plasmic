@@ -151,6 +151,8 @@ export const project1Config: ProjectConfig = {
   indirect: false,
   globalContextsFilePath: "",
   splitsProviderFilePath: "",
+  styleTokensProviderFilePath: "",
+  projectModuleFilePath: "",
 };
 
 export function expectProject1PlasmicJson(optional?: {

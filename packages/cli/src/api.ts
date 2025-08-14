@@ -65,6 +65,16 @@ export interface SplitsProviderBundle {
   module: string;
 }
 
+export interface StyleTokensProviderBundle {
+  id: string;
+  module: string;
+}
+
+export interface ProjectModuleBundle {
+  id: string;
+  module: string;
+}
+
 export interface JsBundleTheme {
   themeFileName: string;
   themeModule: string;
@@ -78,6 +88,8 @@ export interface ProjectMetaBundle {
   cssRules: string;
   globalContextBundle?: GlobalContextBundle;
   splitsProviderBundle?: SplitsProviderBundle;
+  styleTokensProviderBundle?: StyleTokensProviderBundle;
+  projectModuleBundle?: ProjectModuleBundle;
   // A list of files that are exported from the project and *can* be used by the user
   reactWebExportedFiles?: Array<{
     fileName: string;
@@ -189,6 +201,10 @@ export interface ChecksumBundle {
   globalContextsChecksum: string;
   // Checksum of project splits provider
   splitsProviderChecksum: string;
+  // Checksum of project style tokens provider
+  styleTokensProviderChecksum: string;
+  // Checksum of project plasmic.ts
+  projectModuleChecksum: string;
 }
 
 export interface CodeComponentMeta {

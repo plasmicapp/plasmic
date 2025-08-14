@@ -191,6 +191,10 @@ export interface ProjectConfig {
   globalContextsFilePath: string;
   /** File location for the project-wide splits provider. Relative to srcDir */
   splitsProviderFilePath: string;
+  /** File location for the project-wide style tokens provider. Relative to srcDir */
+  styleTokensProviderFilePath: string;
+  /** File location for the project-wide plasmic.ts file. Relative to srcDir */
+  projectModuleFilePath: string;
 
   // Code-component-related fields can be treated as optional not to be shown
   // to the users nor appear to be missing in the documentation.
@@ -234,6 +238,8 @@ export function createProjectConfig(base: {
     indirect: base.indirect,
     globalContextsFilePath: "",
     splitsProviderFilePath: "",
+    styleTokensProviderFilePath: "",
+    projectModuleFilePath: "",
   };
 }
 
@@ -361,7 +367,9 @@ export interface FileLock {
     | "projectCss"
     | "globalVariant"
     | "globalContexts"
-    | "splitsProvider";
+    | "splitsProvider"
+    | "styleTokensProvider"
+    | "projectModule";
   // The checksum value for the file
   checksum: string;
   // The component id, or the image asset id
@@ -611,6 +619,8 @@ export function getOrAddProjectConfig(
           indirect: false,
           globalContextsFilePath: "",
           splitsProviderFilePath: "",
+          styleTokensProviderFilePath: "",
+          projectModuleFilePath: "",
         };
     context.config.projects.push(project);
   }

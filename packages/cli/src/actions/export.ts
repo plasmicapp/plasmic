@@ -10,17 +10,19 @@ import {
 } from "../utils/code-utils";
 import {
   CodeConfig,
-  findConfigFile,
   I18NConfig,
   ImagesConfig,
   PlasmicConfig,
   StyleConfig,
+  findConfigFile,
 } from "../utils/config-utils";
 import { getContext, getCurrentOrDefaultAuth } from "../utils/get-context";
 import { tuple } from "../utils/lang-utils";
 import { DEFAULT_GLOBAL_CONTEXTS_NAME } from "./sync-global-contexts";
 import { ensureImageAssetContents } from "./sync-images";
+import { DEFAULT_PROJECT_MODULE_NAME } from "./sync-project-module";
 import { DEFAULT_SPLITS_PROVIDER_NAME } from "./sync-splits-provider";
+import { DEFAULT_STYLE_TOKENS_PROVIDER_NAME } from "./sync-style-tokens-provider";
 
 export interface ExportArgs extends CommonArgs {
   projects: readonly string[];
@@ -138,6 +140,20 @@ export async function exportProjectsCli(opts: ExportArgs): Promise<void> {
       );
     }
 
+    if (bundle.projectConfig.styleTokensProviderBundle) {
+      writeFile(
+        `${DEFAULT_STYLE_TOKENS_PROVIDER_NAME}.${extx}`,
+        bundle.projectConfig.styleTokensProviderBundle.module
+      );
+    }
+
+    if (bundle.projectConfig.projectModuleBundle) {
+      writeFile(
+        `${DEFAULT_PROJECT_MODULE_NAME}.${extx}`,
+        bundle.projectConfig.projectModuleBundle.module
+      );
+    }
+
     if (bundle.projectConfig.reactWebExportedFiles) {
       for (const file of bundle.projectConfig.reactWebExportedFiles) {
         writeFile(file.fileName, file.content);
@@ -195,6 +211,13 @@ export async function exportProjectsCli(opts: ExportArgs): Promise<void> {
               : "",
             splitsProviderFilePath: bundle.projectConfig.splitsProviderBundle
               ? `${projectName}/${DEFAULT_SPLITS_PROVIDER_NAME}.${extx}`
+              : "",
+            styleTokensProviderFilePath: bundle.projectConfig
+              .styleTokensProviderBundle
+              ? `${projectName}/${DEFAULT_STYLE_TOKENS_PROVIDER_NAME}.${extx}`
+              : "",
+            projectModuleFilePath: bundle.projectConfig.projectModuleBundle
+              ? `${projectName}/${DEFAULT_PROJECT_MODULE_NAME}.${extx}`
               : "",
             components: bundle.components.map((comp) => ({
               id: comp.id,
@@ -350,6 +373,22 @@ async function exportProjects(api: PlasmicApi, opts: ExportOpts) {
           "."
         );
         proj.projectConfig.splitsProviderBundle.module = res[1];
+      }
+      if (proj.projectConfig.styleTokensProviderBundle) {
+        const res = maybeConvertTsxToJsx(
+          `${DEFAULT_STYLE_TOKENS_PROVIDER_NAME}.tsx`,
+          proj.projectConfig.styleTokensProviderBundle.module,
+          "."
+        );
+        proj.projectConfig.styleTokensProviderBundle.module = res[1];
+      }
+      if (proj.projectConfig.projectModuleBundle) {
+        const res = maybeConvertTsxToJsx(
+          `${DEFAULT_PROJECT_MODULE_NAME}.tsx`,
+          proj.projectConfig.projectModuleBundle.module,
+          "."
+        );
+        proj.projectConfig.projectModuleBundle.module = res[1];
       }
     }
   }

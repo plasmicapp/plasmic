@@ -33,6 +33,12 @@ function getFilesByFileLockAssetId(
     splitsProvider: {
       [projectConfig.projectId]: projectConfig.splitsProviderFilePath,
     },
+    styleTokensProvider: {
+      [projectConfig.projectId]: projectConfig.styleTokensProviderFilePath,
+    },
+    projectModule: {
+      [projectConfig.projectId]: projectConfig.projectModuleFilePath,
+    },
   } as const;
 }
 
@@ -60,6 +66,8 @@ export function getChecksums(
       projectCssChecksum: "",
       globalContextsChecksum: "",
       splitsProviderChecksum: "",
+      styleTokensProviderChecksum: "",
+      projectModuleChecksum: "",
     };
   }
 
@@ -161,6 +169,33 @@ export function getChecksums(
       ? globalContextsChecksums[0].checksum
       : "";
 
+  const styleTokensProviderChecksums = fileLocks
+    .filter(
+      (fileLock) =>
+        fileLock.type === "styleTokensProvider" &&
+        fileLock.assetId === projectId
+    )
+    .filter((fileLock) =>
+      checkFile(fileLocations.styleTokensProvider[fileLock.assetId])
+    );
+  assert(styleTokensProviderChecksums.length < 2);
+  const styleTokensProviderChecksum =
+    styleTokensProviderChecksums.length > 0
+      ? styleTokensProviderChecksums[0].checksum
+      : "";
+
+  const projectModuleChecksums = fileLocks
+    .filter(
+      (fileLock) =>
+        fileLock.type === "projectModule" && fileLock.assetId === projectId
+    )
+    .filter((fileLock) =>
+      checkFile(fileLocations.projectModule[fileLock.assetId])
+    );
+  assert(projectModuleChecksums.length < 2);
+  const projectModuleChecksum =
+    projectModuleChecksums.length > 0 ? projectModuleChecksums[0].checksum : "";
+
   const splitsProviderChecksums = fileLocks
     .filter(
       (fileLock) =>
@@ -184,5 +219,7 @@ export function getChecksums(
     projectCssChecksum,
     globalContextsChecksum,
     splitsProviderChecksum,
+    styleTokensProviderChecksum,
+    projectModuleChecksum,
   };
 }

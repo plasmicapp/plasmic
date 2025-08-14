@@ -56,7 +56,9 @@ import { syncGlobalContexts } from "./sync-global-contexts";
 import { syncGlobalVariants } from "./sync-global-variants";
 import { syncProjectIconAssets } from "./sync-icons";
 import { syncProjectImageAssets } from "./sync-images";
+import { syncProjectModule } from "./sync-project-module";
 import { syncSplitsProvider } from "./sync-splits-provider";
+import { syncStyleTokensProvider } from "./sync-style-tokens-provider";
 import { upsertStyleTokens } from "./sync-styles";
 
 export interface SyncArgs extends CommonArgs {
@@ -773,6 +775,24 @@ async function syncProjectConfig(
   );
 
   await syncSplitsProvider(
+    context,
+    projectBundle,
+    projectConfig,
+    projectLock,
+    checksums,
+    baseDir
+  );
+
+  await syncProjectModule(
+    context,
+    projectBundle,
+    projectConfig,
+    projectLock,
+    checksums,
+    baseDir
+  );
+
+  await syncStyleTokensProvider(
     context,
     projectBundle,
     projectConfig,
