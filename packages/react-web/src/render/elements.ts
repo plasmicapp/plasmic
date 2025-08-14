@@ -88,7 +88,7 @@ export function hasVariant<V extends Variants>(
   variants: V | undefined,
   groupName: keyof V,
   variant: string
-) {
+): boolean {
   if (variants == null) {
     return false;
   }

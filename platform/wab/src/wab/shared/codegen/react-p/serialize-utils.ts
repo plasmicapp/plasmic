@@ -89,6 +89,17 @@ export function makeDefaultInlineClassName(opts: ClassNameOpts) {
   }`;
 }
 
+/**
+ * Elements with this class will reset styling to the project's default styles,
+ * as defined by `plasmic_default_styles`. This class is intended to be applied
+ * to all Plasmic-generated elements.
+ *
+ * This class name may also be suffixed with `_tags`. Unlike `root_reset`,
+ * which only applies to the selected element, `root_reset_tags` applies to the
+ * selected element AND its descendants. This class is never set on elements
+ * by Plasmic-generated code. Instead, this class is passed to the user's code
+ * component via the `themeResetClass` prop when `targetAllTags: true`.
+ */
 export function makeRootResetClassName(
   projectId: string,
   opts: ClassNameOpts & { useCssModules: boolean }
@@ -102,18 +113,66 @@ export function makeRootResetClassName(
   }
 }
 
+/**
+ * Elements with this class will receive the project's default styles as
+ * CSS variables.
+ *
+ * The CSS variables are intended to be consumed by the `root_reset` and
+ * `root_reset_tags` classes. Users should not depend on these CSS variables.
+ *
+ * Example output:
+ * ```
+ * .plasmic_default_styles {
+ *   --mixin-proj123_font-family: "Inter", "sans-serify";
+ *   --mixin-proj123_color: var(--token-token123);
+ * }
+ * ```
+ */
 export function makePlasmicDefaultStylesClassName(opts: ClassNameOpts) {
   return opts.targetEnv === "loader"
     ? `${shortPlasmicPrefix}dss`
     : "plasmic_default_styles";
 }
 
+/**
+ * Elements with this class will receive the project's tokens as CSS variables.
+ *
+ * The CSS variables are intended to be consumed both by Plasmic generated code
+ * and user code.
+ *
+ * Example output:
+ * ```
+ * .plasmic_tokens {
+ *   --token-token123: #ffffff;
+ *   --plasmic-token-background: var(--token-token123);
+ *   --token-token456: #000000;
+ *   --plasmic-token-foreground: var(--token-token456);
+ * }
+ * ```
+ */
 export function makePlasmicTokensClassName(opts: ClassNameOpts) {
   return opts.targetEnv === "loader"
     ? `${shortPlasmicPrefix}tns`
     : "plasmic_tokens";
 }
-
+/**
+ * Elements with this class will receive the project's mixins as CSS variables.
+ *
+ * The CSS variables are intended to be consumed both by Plasmic generated code
+ * and user code.
+ *
+ * Example output:
+ * ```
+ * .plasmic_mixins {
+ *   --mixin-mixin123_color: red;
+ *   --plasmic-mixin-alert_color: var(--mixin-mixin123_color);
+ *   --mixin-mixin123_font-size: 16px;
+ *   --plasmic-mixin-alert_font-size: var(--mixin-mixin123_font-size);
+ *   --mixin-mixin456_white-space: pre-wrap;
+ *   --plasmic-mixin-code-space: var(--mixin-mixin456_white-space);
+ * }
+ * ```
+ */
 export function makePlasmicMixinsClassName(opts: ClassNameOpts) {
   return opts.targetEnv === "loader"
     ? `${shortPlasmicPrefix}mns`

@@ -7,6 +7,12 @@ export {
 } from "./auth/PlasmicPageGuard";
 export { omit, pick } from "./common";
 export { HTMLElementRefOf, StrictProps } from "./react-utils";
+export { PlasmicHead, plasmicHeadMeta } from "./render/PlasmicHead";
+export { PlasmicIcon } from "./render/PlasmicIcon";
+export { PlasmicImg } from "./render/PlasmicImg";
+export { PlasmicLink } from "./render/PlasmicLink";
+export { PlasmicSlot, renderPlasmicSlot } from "./render/PlasmicSlot";
+export { Stack } from "./render/Stack";
 export {
   Flex,
   MultiChoiceArg,
@@ -19,12 +25,10 @@ export {
   mergeVariantsWithStates,
   wrapWithClassName,
 } from "./render/elements";
-export { ensureGlobalVariants } from "./render/global-variants";
-export { PlasmicHead, plasmicHeadMeta } from "./render/PlasmicHead";
-export { PlasmicIcon } from "./render/PlasmicIcon";
-export { PlasmicImg } from "./render/PlasmicImg";
-export { PlasmicLink } from "./render/PlasmicLink";
-export { PlasmicSlot, renderPlasmicSlot } from "./render/PlasmicSlot";
+export {
+  createUseGlobalVariants,
+  ensureGlobalVariants,
+} from "./render/global-variants";
 export { createUseScreenVariants } from "./render/screen-variants";
 export {
   PlasmicDataSourceContextProvider,
@@ -32,7 +36,10 @@ export {
   useCurrentUser,
   useIsSSR,
 } from "./render/ssr";
-export { Stack } from "./render/Stack";
+export {
+  createStyleTokensProvider,
+  createUseStyleTokens,
+} from "./render/style-tokens";
 export {
   Trans,
   genTranslatableString,
