@@ -7,7 +7,7 @@ export const TAG_TO_HTML_INTERFACE = {
   aside: "HTMLElement",
   audio: "HTMLAudioElement",
   b: "HTMLElement",
-  base: "HTMLBaseElement",
+  base: "HTMLBaseModel",
   bdi: "HTMLElement",
   bdo: "HTMLElement",
   blockquote: "HTMLQuoteElement",

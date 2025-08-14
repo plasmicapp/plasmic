@@ -1,7 +1,7 @@
 import { expect } from "@playwright/test";
+import { CraContext, setupCra, teardownCra } from "../../cra/cra-setup";
 import { getEnvVar } from "../../env";
 import { test } from "../../fixtures";
-import { CraContext, setupCra, teardownCra } from "../../cra/cra-setup";
 
 const SPLIT_ID = "j7cCxfS-Vu";
 const SLICE_0_ID = "I4hoVVeME_";

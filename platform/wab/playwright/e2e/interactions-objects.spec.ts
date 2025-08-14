@@ -2,11 +2,11 @@ import { expect } from "@playwright/test";
 import { test } from "../fixtures/test";
 
 import bundles from "../../cypress/bundles";
-import { TextInteractionsArena } from "../models/arenas/text-interactions";
+import { ObjectInteractionsArena } from "../models/arenas/object-interactions";
 
 const BUNDLE_NAME = "state-management";
 
-test.describe("state-management-text-interactions", () => {
+test.describe("state-management-object-interactions", () => {
   let projectId: string;
   test.beforeEach(async ({ apiClient, page }) => {
     projectId = await apiClient.importProjectFromTemplate(bundles[BUNDLE_NAME]);
@@ -22,13 +22,13 @@ test.describe("state-management-text-interactions", () => {
     );
   });
 
-  test("can create all types of text interactions", async ({
+  test("can create all types of object interactions", async ({
     models,
     page,
   }) => {
     //GIVEN
-    await models.studio.switchArena("text interactions");
-    const arena = await TextInteractionsArena.init(page);
+    await models.studio.switchArena("object interactions");
+    const arena = await ObjectInteractionsArena.init(page);
     //WHEN
     await arena.setToButton.click({ force: true });
     await models.studio.rightPanel.switchToSettingsTab();
@@ -37,9 +37,9 @@ test.describe("state-management-text-interactions", () => {
       {
         actionName: "updateVariable",
         args: {
-          variable: ["textVar"],
+          variable: ["objectVar"],
           operation: "newValue",
-          value: '"goodbye"',
+          value: "({a: 3, b: 4})",
         },
       },
     ]);
@@ -51,7 +51,7 @@ test.describe("state-management-text-interactions", () => {
       {
         actionName: "updateVariable",
         args: {
-          variable: ["textVar"],
+          variable: ["objectVar"],
           operation: "clearValue",
         },
       },
@@ -60,10 +60,12 @@ test.describe("state-management-text-interactions", () => {
     //THEN
     await models.studio.withinLiveMode(async (liveFrame) => {
       await expect(liveFrame.locator("body")).toBeVisible();
-      await expect(liveFrame.getByText("hello")).toBeVisible();
-      await liveFrame.getByRole("button", { name: 'Set to "goodbye"' }).click();
       await expect(
-        liveFrame.getByText("goodbye", { exact: true })
+        liveFrame.getByText(JSON.stringify({ a: 1, b: 2 }))
+      ).toBeVisible();
+      await liveFrame.getByRole("button", { name: "Set to" }).click();
+      await expect(
+        liveFrame.getByText(JSON.stringify({ a: 3, b: 4 }))
       ).toBeVisible();
       await liveFrame.getByRole("button", { name: "Clear" }).click();
       await expect(liveFrame.getByText("undefined")).toBeVisible();

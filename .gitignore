@@ -40,3 +40,5 @@ storybook-static/
 # ignore decrypted yaml files by sops
 *.dec.*
 dist/
+# Playwright test results
+test-results/
