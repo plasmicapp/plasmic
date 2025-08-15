@@ -150,9 +150,9 @@ async function bundleModulesEsbuild(
             .map((c) => componentEntrypoint(c))
         ),
         // Each style tokens provider file
-        ...codegenOutputs.map(
-          (o) => o.projectConfig.styleTokensProviderBundle.fileName
-        ),
+        ...codegenOutputs
+          .filter((o) => o.projectConfig.styleTokensProviderBundle)
+          .map((o) => o.projectConfig.styleTokensProviderBundle!.fileName),
         // Each global variant context file
         ...codegenOutputs.flatMap((o) =>
           o.globalVariants.map((g) => g.contextFileName)
@@ -691,12 +691,14 @@ function makeLoaderBundleOutput(
         version: o.projectConfig.version,
         indirect: o.projectConfig.indirect,
         remoteFonts: makeFontMetas(o.projectConfig.fontUsages),
-        hasStyleTokenOverrides: o.projectConfig.hasStyleTokenOverrides,
+        hasStyleTokenOverrides:
+          o.projectConfig.hasStyleTokenOverrides &&
+          !!o.projectConfig.styleTokensProviderBundle,
         styleTokensProviderFileName:
-          o.projectConfig.styleTokensProviderBundle.fileName.replace(
+          o.projectConfig.styleTokensProviderBundle?.fileName.replace(
             ".tsx",
             ".js"
-          ),
+          ) ?? "",
         globalContextsProviderFileName: o.projectConfig.globalContextBundle
           ? makeGlobalContextsProviderFileName(
               o.projectConfig.projectId

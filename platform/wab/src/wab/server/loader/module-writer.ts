@@ -161,14 +161,18 @@ async function writeCodeBundleToDisk(dir: string, output: CodegenOutputBundle) {
     path.join(dir, output.defaultStyles.defaultStyleCssFileName),
     output.defaultStyles.defaultStyleCssRules
   );
-  await fs.writeFile(
-    path.join(dir, output.projectConfig.projectModuleBundle.fileName),
-    output.projectConfig.projectModuleBundle.module
-  );
-  await fs.writeFile(
-    path.join(dir, output.projectConfig.styleTokensProviderBundle.fileName),
-    output.projectConfig.styleTokensProviderBundle.module
-  );
+  if (output.projectConfig.projectModuleBundle) {
+    await fs.writeFile(
+      path.join(dir, output.projectConfig.projectModuleBundle.fileName),
+      output.projectConfig.projectModuleBundle.module
+    );
+  }
+  if (output.projectConfig.styleTokensProviderBundle) {
+    await fs.writeFile(
+      path.join(dir, output.projectConfig.styleTokensProviderBundle.fileName),
+      output.projectConfig.styleTokensProviderBundle.module
+    );
+  }
   if (output.projectConfig.globalContextBundle) {
     await fs.writeFile(
       path.join(
