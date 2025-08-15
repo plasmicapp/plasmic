@@ -6,25 +6,27 @@ import { extractSsoConfig } from "@/wab/server/auth/passport-cfg";
 import { doLogin, doLogout } from "@/wab/server/auth/util";
 import {
   DbMgr,
+  generateSecretToken,
   MismatchPasswordError,
   PwnedPasswordError,
   WeakPasswordError,
-  generateSecretToken,
 } from "@/wab/server/db/DbMgr";
 import { sendResetPasswordEmail } from "@/wab/server/emails/reset-password-email";
 import { sendEmailVerificationToUser } from "@/wab/server/emails/verification-email";
 import { sendWelcomeEmail } from "@/wab/server/emails/welcome-email";
-import { SsoConfig, User } from "@/wab/server/entities/Entities";
+import { SsoConfig, Team, User } from "@/wab/server/entities/Entities";
 import "@/wab/server/extensions";
 import { logger } from "@/wab/server/observability";
 import { isCustomPublicApiRequest } from "@/wab/server/routes/custom-routes";
 import { getPromotionCodeCookie } from "@/wab/server/routes/promo-code";
+import { mkApiTeam } from "@/wab/server/routes/teams";
 import {
   getUser,
   makeUserTraits,
   superDbMgr,
   userDbMgr,
 } from "@/wab/server/routes/util";
+import { UserHasTeamOwnershipError } from "@/wab/shared/ApiErrors/cms-errors";
 import {
   NotFoundError,
   UnauthorizedError,
@@ -60,7 +62,6 @@ import fs from "fs";
 import passport from "passport";
 import { AuthenticateOptionsGoogle } from "passport-google-oauth20";
 import { IVerifyOptions } from "passport-local";
-import util from "util";
 
 export function csrf(req: Request, res: Response, _next: NextFunction) {
   res.json({ csrf: res.locals._csrf });
@@ -272,13 +273,7 @@ export async function logout(req: Request, res: Response) {
   logger().info(
     `logging out as ${getUser(req, { allowUnverifiedEmail: true }).email}`
   );
-  await doLogout(req);
-  res.clearCookie("plasmic-observer");
-  // Must reset the session to prevent session fixation attacks, reset the CSRF
-  // token, etc.
-  if (req.session) {
-    await util.promisify(req.session.destroy.bind(req.session))();
-  }
+  await doLogout(req, res);
   res.json({});
 }
 
@@ -337,6 +332,39 @@ export async function updateSelfPassword(req: Request, res: Response) {
       status: true,
     })
   );
+}
+
+async function getSelfOwnedTeams(req: Request, user: User): Promise<Team[]> {
+  const mgr = userDbMgr(req);
+
+  const selfOwnedTeams: Team[] = [];
+  const affiliatedTeams = await mgr.getAffiliatedTeams();
+  for (const team of affiliatedTeams) {
+    const teamOwners = await mgr.getTeamOwners(team.id);
+    if (teamOwners.some((owner) => owner.id === user.id)) {
+      selfOwnedTeams.push(team);
+    }
+  }
+  return selfOwnedTeams;
+}
+
+export async function deleteSelf(req: Request, res: Response) {
+  const mgr = userDbMgr(req);
+
+  const userId = mgr.checkUserIdIsSelf();
+  const user = await mgr.getUserById(userId);
+
+  if (user) {
+    const selfOwnedTeams = await getSelfOwnedTeams(req, user);
+    if (selfOwnedTeams.length > 0) {
+      throw new UserHasTeamOwnershipError(
+        selfOwnedTeams.map((team) => mkApiTeam(team))
+      );
+    }
+    await mgr.deleteUser(user, false);
+  }
+  await doLogout(req, res);
+  res.json({});
 }
 
 export async function forgotPassword(req: Request, res: Response) {

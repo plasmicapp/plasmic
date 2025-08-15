@@ -629,6 +629,10 @@ export abstract class SharedApi {
     return this.post("/auth/sendEmailVerification", data);
   }
 
+  async deactivateUser(email: string): Promise<{}> {
+    return this.delete("/auth/self", { email });
+  }
+
   fmtCode({ code, parser }: /*TWZ*/ { code: string; parser: string }) {
     return this.post("/fmt-code", { code, parser }) as Promise<{
       formatted: string;
