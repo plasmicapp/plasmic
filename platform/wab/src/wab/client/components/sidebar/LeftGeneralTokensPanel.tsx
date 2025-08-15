@@ -37,11 +37,10 @@ import {
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import { ensure, spawn, unexpected, unreachable } from "@/wab/shared/common";
 import {
-  allGlobalVariants,
-  allStyleTokensAndOverrides,
-  directDepStyleTokens,
-  isHostLessPackage,
-} from "@/wab/shared/core/sites";
+  finalStyleTokensForDep,
+  siteFinalStyleTokens,
+} from "@/wab/shared/core/site-style-tokens";
+import { allGlobalVariants, isHostLessPackage } from "@/wab/shared/core/sites";
 import {
   Folder as InternalFolder,
   createFolderTreeStructure,
@@ -322,7 +321,7 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
   };
 
   const tokensByType = groupBy(
-    allStyleTokensAndOverrides(studioCtx.site),
+    siteFinalStyleTokens(studioCtx.site),
     (t) => t.type
   );
 
@@ -363,8 +362,8 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
             // already show up in the RegisteredTokens section.
             ...makeTokensItems(
               (isHostLessPackage(dep.site)
-                ? directDepStyleTokens(studioCtx.site, dep.site)
-                : directDepStyleTokens(studioCtx.site, dep.site).filter(
+                ? finalStyleTokensForDep(studioCtx.site, dep.site)
+                : finalStyleTokensForDep(studioCtx.site, dep.site).filter(
                     (t) => !t.isRegistered
                   )
               ).filter((t) => t.type === tokenType),
@@ -416,7 +415,7 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
   };
 
   const tokensContent = () => {
-    const selectableTokens = allStyleTokensAndOverrides(studioCtx.site)
+    const selectableTokens = siteFinalStyleTokens(studioCtx.site)
       .filter((t) => {
         let resolved = resolver(t, vsh);
         if (t.type === TokenType.Color) {

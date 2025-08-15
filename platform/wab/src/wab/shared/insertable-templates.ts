@@ -4,10 +4,8 @@ import { VariantCombo } from "@/wab/shared/Variants";
 import { siteToAllImageAssetsDict } from "@/wab/shared/cached-selectors";
 import { withoutNils } from "@/wab/shared/common";
 import { allComponentVariants } from "@/wab/shared/core/components";
-import {
-  allGlobalVariants,
-  allStyleTokensAndOverrides,
-} from "@/wab/shared/core/sites";
+import { siteFinalStyleTokensAllDeps } from "@/wab/shared/core/site-style-tokens";
+import { allGlobalVariants } from "@/wab/shared/core/sites";
 import {
   clone as cloneTpl,
   flattenTpls,
@@ -105,10 +103,8 @@ export function cloneInsertableTemplateComponent(
 ) {
   const seenFonts = new Set<string>();
 
-  const targetTokens = allStyleTokensAndOverrides(site, { includeDeps: "all" });
-  const sourceTokens = allStyleTokensAndOverrides(info.site, {
-    includeDeps: "all",
-  });
+  const sourceTokens = siteFinalStyleTokensAllDeps(info.site);
+  const targetTokens = siteFinalStyleTokensAllDeps(site);
 
   const tokenImporter = mkInsertableTokenImporter(
     info.site,
@@ -143,10 +139,8 @@ function getUnownedTreeCloneUtils(
     siteToAllImageAssetsDict(info.site)
   );
 
-  const oldTokens = allStyleTokensAndOverrides(info.site, {
-    includeDeps: "all",
-  });
-  const newTokens = allStyleTokensAndOverrides(site, { includeDeps: "all" });
+  const sourceTokens = siteFinalStyleTokensAllDeps(info.site);
+  const targetTokens = siteFinalStyleTokensAllDeps(site);
 
   const textTplStyleFixer = mkTextTplStyleFixer(info.component, info.site);
 
@@ -154,8 +148,8 @@ function getUnownedTreeCloneUtils(
   const tokenImporter = mkInsertableTokenImporter(
     info.site,
     site,
-    oldTokens,
-    newTokens,
+    sourceTokens,
+    targetTokens,
     info.resolution.token,
     info.screenVariant,
     (font) => seenFonts.add(font)
@@ -175,8 +169,6 @@ function getUnownedTreeCloneUtils(
     getNewImageAsset,
     tokenImporter,
     seenFonts,
-    oldTokens,
-    newTokens,
   };
 }
 

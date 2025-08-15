@@ -4,8 +4,8 @@ import TriangleBottomIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Tr
 import { useUndo } from "@/wab/client/shortcuts/studio/useUndo";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { derefToken, mkTokenRef, TokenType } from "@/wab/commons/StyleToken";
-import { siteToAllDirectTokensOfType } from "@/wab/shared/cached-selectors";
 import { cx, withoutNils } from "@/wab/shared/common";
+import { siteFinalStyleTokensOfType } from "@/wab/shared/core/site-style-tokens";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import { Select } from "antd";
 import { observer } from "mobx-react";
@@ -26,9 +26,12 @@ export const FontFamilySelector = observer(function FontFamilySelector(props: {
 }) {
   const { selectOpts, studioCtx } = props;
 
-  const tokens = siteToAllDirectTokensOfType(
+  const tokens = siteFinalStyleTokensOfType(
     studioCtx.site,
-    TokenType.FontFamily
+    TokenType.FontFamily,
+    {
+      includeDeps: "direct",
+    }
   );
 
   const disabled = selectOpts.disabled ?? false;

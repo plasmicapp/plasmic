@@ -6,10 +6,10 @@ import {
 } from "@/wab/commons/StyleToken";
 import {
   makeTokenValueResolver,
-  siteToAllTokensAndOverridesDict,
-} from "@/wab/shared/cached-selectors";
+  siteFinalStyleTokens,
+  siteFinalStyleTokensAllDepsDict,
+} from "@/wab/shared/core/site-style-tokens";
 import { ensure, withoutNils, xAddAll } from "@/wab/shared/common";
-import { allStyleTokensAndOverrides } from "@/wab/shared/core/sites";
 import { expandRuleSets } from "@/wab/shared/core/styles";
 import { flattenTpls } from "@/wab/shared/core/tpls";
 import {
@@ -59,7 +59,7 @@ export function exportStyleTokens(
   projectId: string,
   site: Site
 ): TheoTokensOutput {
-  const tokens = allStyleTokensAndOverrides(site);
+  const tokens = siteFinalStyleTokens(site);
   const resolver = makeTokenValueResolver(site);
   return {
     props: tokens.map((token) =>
@@ -182,7 +182,7 @@ function collectUsedTokensForExp(
   site: Site,
   opts: { derefTokens: boolean }
 ) {
-  const allTokensDict = siteToAllTokensAndOverridesDict(site);
+  const allTokensDict = siteFinalStyleTokensAllDepsDict(site);
   for (const prop of exp.props()) {
     const val = exp.getRaw(prop);
     if (val) {
@@ -209,7 +209,7 @@ function collectUsedTokensForTokenValue(
   site: Site,
   opts: { derefTokens: boolean }
 ) {
-  const allTokensDict = siteToAllTokensAndOverridesDict(site);
+  const allTokensDict = siteFinalStyleTokensAllDepsDict(site);
   let sub = tryParseTokenRef(tokenValue, allTokensDict);
   while (sub) {
     collector.add(sub.base);

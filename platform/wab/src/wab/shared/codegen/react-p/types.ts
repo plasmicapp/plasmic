@@ -103,5 +103,7 @@ export type PlasmicImportType =
   | "globalContext"
   | "customFunction"
   | "splitsProvider"
+  | "styleTokensProvider"
+  | "projectModule"
   | "rscClient"
   | "rscServer";

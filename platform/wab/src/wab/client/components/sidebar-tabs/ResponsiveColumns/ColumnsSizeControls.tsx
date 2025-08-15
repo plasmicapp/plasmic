@@ -15,11 +15,8 @@ import {
   updateCurrentTplColumns,
 } from "@/wab/shared/columns-utils";
 import { spawn } from "@/wab/shared/common";
-import {
-  allImageAssets,
-  allMixins,
-  allStyleTokensAndOverrides,
-} from "@/wab/shared/core/sites";
+import { siteFinalStyleTokensAllDeps } from "@/wab/shared/core/site-style-tokens";
+import { allImageAssets, allMixins } from "@/wab/shared/core/sites";
 import { CssVarResolver } from "@/wab/shared/core/styles";
 import { TplColumnsTag } from "@/wab/shared/core/tpls";
 import { ColumnsConfig } from "@/wab/shared/model/classes";
@@ -121,7 +118,7 @@ export const ColumnSizeControlDraggables = observer(
 
     const site = viewCtx.site;
     const resolver = new CssVarResolver(
-      allStyleTokensAndOverrides(site, { includeDeps: "all" }),
+      siteFinalStyleTokensAllDeps(site),
       allMixins(site, { includeDeps: "all" }),
       allImageAssets(site, { includeDeps: "all" }),
       site.activeTheme

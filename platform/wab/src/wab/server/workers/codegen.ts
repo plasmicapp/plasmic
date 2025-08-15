@@ -12,10 +12,10 @@ import { ensureDevFlags } from "@/wab/server/workers/worker-utils";
 import { Bundler } from "@/wab/shared/bundler";
 import { componentToReferenced } from "@/wab/shared/cached-selectors";
 import {
-  exportPictureAsset,
-  extractUsedPictureAssetsForComponents,
   IconAssetExport,
   PictureAssetExport,
+  exportPictureAsset,
+  extractUsedPictureAssetsForComponents,
 } from "@/wab/shared/codegen/image-assets";
 import {
   exportProjectConfig,
@@ -31,13 +31,13 @@ import {
   ChecksumBundle,
   ComponentExportOutput,
   CustomFunctionConfig,
-  emptyChecksumBundle,
   ExportOpts,
   ProjectConfig,
   StyleConfig,
+  emptyChecksumBundle,
 } from "@/wab/shared/codegen/types";
 import { GlobalVariantConfig } from "@/wab/shared/codegen/variants";
-import { ensure, UnexpectedTypeError, withoutNils } from "@/wab/shared/common";
+import { UnexpectedTypeError, ensure, withoutNils } from "@/wab/shared/common";
 import {
   CodeComponentConfig,
   isPageComponent,
@@ -440,6 +440,27 @@ function filterAndUpdateChecksums(
   ) {
     output.projectConfig.cssRules = "";
   }
+
+  const projectModuleChecksum = md5(
+    output.projectConfig.projectModuleBundle.module
+  );
+  if (previousChecksums.projectModuleChecksum === projectModuleChecksum) {
+    // TODO: handle checksum equal on CLI
+    //output.projectConfig.projectModuleBundle.module = "";
+  }
+  currentChecksums.projectModuleChecksum = projectModuleChecksum;
+
+  const styleTokensProviderChecksum = md5(
+    output.projectConfig.styleTokensProviderBundle.module
+  );
+  if (
+    previousChecksums.styleTokensProviderChecksum ===
+    styleTokensProviderChecksum
+  ) {
+    // TODO: handle checksum equal on CLI
+    //output.projectConfig.styleTokensProviderBundle.module = "";
+  }
+  currentChecksums.styleTokensProviderChecksum = styleTokensProviderChecksum;
 
   if (output.projectConfig.globalContextBundle) {
     const globalContextsChecksum = md5(

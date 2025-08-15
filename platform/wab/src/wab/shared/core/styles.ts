@@ -44,10 +44,6 @@ import {
   variantComboKey,
 } from "@/wab/shared/Variants";
 import { AddItemKey } from "@/wab/shared/add-item-keys";
-import {
-  makeTokenRefResolver,
-  siteToAllTokensAndOverridesDict,
-} from "@/wab/shared/cached-selectors";
 import { getTplCodeComponentVariantMeta } from "@/wab/shared/code-components/variants";
 import { ComponentGenHelper } from "@/wab/shared/codegen/codegen-helpers";
 import { makeCssClassNameForVariantCombo } from "@/wab/shared/codegen/react-p/class-names";
@@ -91,8 +87,12 @@ import {
 } from "@/wab/shared/core/image-assets";
 import { walkDependencyTree } from "@/wab/shared/core/project-deps";
 import {
+  makeTokenRefResolver,
+  siteFinalStyleTokensAllDepsDict,
+  siteFinalStyleTokensDirectDeps,
+} from "@/wab/shared/core/site-style-tokens";
+import {
   GeneralUsageSummary,
-  allStyleTokensAndOverrides,
   isHostLessPackage,
 } from "@/wab/shared/core/sites";
 import {
@@ -191,14 +191,12 @@ import L, { camelCase, pick } from "lodash";
 import { CSSProperties } from "react";
 import { unquote } from "underscore.string";
 
-export const selstr = (rs: /*TWZ*/ RuleSet) => `.${classNameForRuleSet(rs)}`;
-
 export class CssVarResolver {
   private tokens: Map<string, FinalStyleToken>;
   private assets: Map<string, ImageAsset>;
   private mixins: Map<string, Mixin>;
   constructor(
-    tokens: FinalStyleToken[],
+    tokens: ReadonlyArray<FinalStyleToken>,
     mixins: Mixin[],
     assets: ImageAsset[],
     private readonly activeTheme: Theme | undefined | null,
@@ -2097,7 +2095,7 @@ const genTokenVarRuleWithVariants = (
 
 export const makeCssTokenVarsRules = (
   site: Site,
-  tokens: FinalStyleToken[],
+  tokens: ReadonlyArray<FinalStyleToken>,
   rootCssSelector: string,
   opts: {
     targetEnv: TargetEnv;
@@ -2175,7 +2173,7 @@ export const makeCssTokenVarsRules = (
 
 export const mkCssVarsRuleForCanvas = (
   site: Site,
-  tokens: FinalStyleToken[],
+  tokens: ReadonlyArray<FinalStyleToken>,
   mixins: Mixin[],
   themes: Theme[],
   assets: ImageAsset[],
@@ -2288,7 +2286,9 @@ export const mkCssVarsRuleForCanvas = (
   ].flatMap((s) => {
     const resetName = makeRootResetClassName(`${s.uid}`, {
       targetEnv: "canvas",
-      useCssModules: false,
+      stylesOpts: {
+        scheme: "css",
+      },
     });
     return [
       mkComponentRootResetRule(s, resetName),
@@ -2775,9 +2775,7 @@ export function extractTokenUsages(
       }
     }
   }
-  for (const t of allStyleTokensAndOverrides(site, {
-    includeDeps: "direct",
-  })) {
+  for (const t of siteFinalStyleTokensDirectDeps(site)) {
     if (t.value && extractAllReferencedTokenIds(t.value).includes(token.uuid)) {
       if (t.override) {
         usingStyleTokenOverrides.add(t.override);
@@ -2949,7 +2947,7 @@ export function getRelevantVariantCombosForToken(
     map.set(variantComboKey(combo), combo);
   const map = new Map<string, VariantCombo>();
 
-  const allTokens = siteToAllTokensAndOverridesDict(site);
+  const allTokens = siteFinalStyleTokensAllDepsDict(site);
 
   const traverseToken = (t: FinalStyleToken) => {
     for (const vv of t.variantedValues) {
@@ -2973,7 +2971,7 @@ export function getRelevantVariantCombosForTheme(site: Site) {
     map.set(variantComboKey(combo), combo);
   const map = new Map<string, VariantCombo>();
 
-  const allTokens = siteToAllTokensAndOverridesDict(site);
+  const allTokens = siteFinalStyleTokensAllDepsDict(site);
   const checkValue = (value: string) => {
     const maybeToken = tryParseTokenRef(value, allTokens);
     if (maybeToken) {

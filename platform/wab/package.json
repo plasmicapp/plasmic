@@ -16,7 +16,7 @@
     "dev:frontend:proxy": "cd build && npx -p local-web-server ws --spa index.html --port 3003 --cors.origin '*' --rewrite '/api/(.*) -> http://localhost:3004/api/$1'",
     "dev:backend": "yarn backend",
     "start": "bash tools/dev-server.bash dev",
-    "ts-watch": "NODE_OPTIONS='--max-old-space-size=16384' tsc --noEmit --watch",
+    "ts-watch": "yarn typecheck --watch",
     "typecheck": "NODE_OPTIONS='--max-old-space-size=16384' tsc --incremental",
     "host-server": "bash tools/host-server.bash",
     "socket-server": "npm run run-ts -- src/wab/server/app-socket-backend-real.ts",

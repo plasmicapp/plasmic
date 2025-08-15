@@ -66,6 +66,10 @@ export function matchOrder<T, K>(
 
 // Array manipulation functions
 
+export function isReadonlyArray<T>(v: any): v is ReadonlyArray<T> {
+  return Array.isArray(v);
+}
+
 export function arrayInsertAt<T>(
   array: ReadonlyArray<T>,
   item: T,
@@ -213,6 +217,10 @@ export function emptyToUndefined<T extends any[] | object>(
   } else {
     return Object.keys(x).length === 0 ? undefined : x;
   }
+}
+
+export function isReadonlyMap<K, V>(v: any): v is ReadonlyMap<K, V> {
+  return v instanceof Map;
 }
 
 export function createMapFromObject<T extends object>(

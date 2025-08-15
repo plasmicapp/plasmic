@@ -63,36 +63,44 @@ describe("tests codegen for global variants", () => {
       parseValue: false,
     });
     expect(
-      findRuleDecl(plasmicCss, ".plasmic_tokens", `--token-${bgTokenId}`)
+      findRuleDecl(
+        plasmicCss,
+        ".plasmic_tokens_1234567890",
+        `--token-${bgTokenId}`
+      )
     ).toEqual("#EEEEEE");
     expect(
-      findRuleDecl(plasmicCss, ".plasmic_tokens", `--token-${fgTokenId}`)
+      findRuleDecl(
+        plasmicCss,
+        ".plasmic_tokens_1234567890",
+        `--token-${fgTokenId}`
+      )
     ).toEqual("#000000");
     expect(
       findRuleDecl(
         plasmicCss,
-        ".plasmic_tokens",
+        ".plasmic_tokens_1234567890",
         `--plasmic-token-${bgTokenName}`
       )
     ).toEqual(`var(--token-${bgTokenId})`);
     expect(
       findRuleDecl(
         plasmicCss,
-        ".plasmic_tokens",
+        ".plasmic_tokens_1234567890",
         `--plasmic-token-${fgTokenName}`
       )
     ).toEqual(`var(--token-${fgTokenId})`);
     expect(
       findRuleDecl(
         plasmicCss,
-        `.plasmic_tokens:where(.${darkClass})`,
+        `.plasmic_tokens_1234567890:where(.${darkClass})`,
         `--token-${bgTokenId}`
       )
     ).toEqual("#111111");
     expect(
       findRuleDecl(
         plasmicCss,
-        `.plasmic_tokens:where(.${darkClass})`,
+        `.plasmic_tokens_1234567890:where(.${darkClass})`,
         `--token-${fgTokenId}`
       )
     ).toEqual("#FFFFFF");
@@ -100,14 +108,14 @@ describe("tests codegen for global variants", () => {
     expect(
       findRuleDecl(
         plasmicCss,
-        `.plasmic_tokens:where(.${darkClass})`,
+        `.plasmic_tokens_1234567890:where(.${darkClass})`,
         `--plasmic-token-${bgTokenName}`
       )
     ).toEqual(`var(--token-${bgTokenId})`);
     expect(
       findRuleDecl(
         plasmicCss,
-        `.plasmic_tokens:where(.${darkClass})`,
+        `.plasmic_tokens_1234567890:where(.${darkClass})`,
         `--plasmic-token-${fgTokenName}`
       )
     ).toEqual(`var(--token-${fgTokenId})`);
@@ -133,14 +141,14 @@ describe("tests codegen for global variants", () => {
     {
       const { unmount } = render(<Homepage />);
       const rootEl = document.querySelector(rootSelector) as HTMLElement;
-      expect(rootEl).toHaveClass(rootClass, "plasmic_tokens");
+      expect(rootEl).toHaveClass(rootClass, "plasmic_tokens_1234567890");
       expect(rootEl).not.toHaveClass(darkClass);
       const h1El = getByText(rootEl, h1TextDesktop);
       expect(h1El).toHaveClass(h1Class);
       expect(h1El).not.toHaveClass(darkClass);
       const compEl = document.querySelector(compRootSelector) as HTMLElement;
       // Each component instance gets the plasmic_tokens class
-      expect(compEl).toHaveClass(compRootClass, "plasmic_tokens");
+      expect(compEl).toHaveClass(compRootClass, "plasmic_tokens_1234567890");
       expect(compEl).not.toHaveClass(darkClass);
       unmount();
     }
@@ -153,13 +161,13 @@ describe("tests codegen for global variants", () => {
         </ThemeContextProvider>
       );
       const rootEl = document.querySelector(rootSelector) as HTMLElement;
-      expect(rootEl).toHaveClass(rootClass, "plasmic_tokens");
+      expect(rootEl).toHaveClass(rootClass, "plasmic_tokens_1234567890");
       expect(rootEl).not.toHaveClass(darkClass);
       const h1El = getByText(rootEl, h1TextDesktop);
       expect(h1El).toHaveClass(h1Class);
       expect(h1El).not.toHaveClass(darkClass);
       const compEl = document.querySelector(compRootSelector) as HTMLElement;
-      expect(compEl).toHaveClass(compRootClass, "plasmic_tokens");
+      expect(compEl).toHaveClass(compRootClass, "plasmic_tokens_1234567890");
       expect(compEl).not.toHaveClass(darkClass);
       unmount();
     }
@@ -172,13 +180,21 @@ describe("tests codegen for global variants", () => {
         </ThemeContextProvider>
       );
       const rootEl = document.querySelector(rootSelector) as HTMLElement;
-      expect(rootEl).toHaveClass(rootClass, "plasmic_tokens", darkClass);
+      expect(rootEl).toHaveClass(
+        rootClass,
+        "plasmic_tokens_1234567890",
+        darkClass
+      );
       const h1El = getByText(rootEl, h1TextDesktop);
       expect(h1El).toHaveClass(h1Class);
       expect(h1El).not.toHaveClass(darkClass);
       const compEl = document.querySelector(compRootSelector) as HTMLElement;
       // We ensure that each component instance also gets the dark class alongside plasmic_tokens
-      expect(compEl).toHaveClass(compRootClass, "plasmic_tokens", darkClass);
+      expect(compEl).toHaveClass(
+        compRootClass,
+        "plasmic_tokens_1234567890",
+        darkClass
+      );
       unmount();
     }
   });
@@ -191,12 +207,12 @@ describe("tests codegen for global variants", () => {
     const { unmount } = render(<Homepage />);
 
     const rootEl = document.querySelector(rootSelector) as HTMLElement;
-    expect(rootEl).toHaveClass(rootClass, "plasmic_tokens");
+    expect(rootEl).toHaveClass(rootClass, "plasmic_tokens_1234567890");
     // We ensure that the text is the mobile version
     const h1El = getByText(rootEl, h1TextMobile);
     expect(h1El).toHaveClass(h1Class);
     const compEl = document.querySelector(compRootSelector) as HTMLElement;
-    expect(compEl).toHaveClass(compRootClass, "plasmic_tokens");
+    expect(compEl).toHaveClass(compRootClass, "plasmic_tokens_1234567890");
     unmount();
   });
 });

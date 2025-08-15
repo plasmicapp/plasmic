@@ -22,52 +22,20 @@ import TokenIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Token";
 import VariantGroupIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__VariantGroup";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { joinReactNodes } from "@/wab/commons/components/ReactUtil";
 import { derefTokenRefs, tryParseTokenRef } from "@/wab/commons/StyleToken";
+import { joinReactNodes } from "@/wab/commons/components/ReactUtil";
 import {
-  computedProjectFlags,
-  TokenValueResolver,
-} from "@/wab/shared/cached-selectors";
-import { arrayRemove } from "@/wab/shared/collections";
-import { cx, ensure, ensureArray, swallow } from "@/wab/shared/common";
-import { BackgroundLayer } from "@/wab/shared/core/bg-styles";
-import { getComponentDisplayName } from "@/wab/shared/core/components";
-import { ExprCtx, summarizeExpr, tryExtractLit } from "@/wab/shared/core/exprs";
-import { allStyleTokensAndOverrides } from "@/wab/shared/core/sites";
-import { sourceMatchThemeStyle } from "@/wab/shared/core/styles";
-import { isTplComponent, isTplTag } from "@/wab/shared/core/tpls";
-import { parseCss } from "@/wab/shared/css";
-import { splitCssValue } from "@/wab/shared/css/parse";
-import {
-  DefinedIndicatorType,
-  isTargetOverwritten,
-  VariantSettingSource,
-  VariantSettingSourceStack,
-} from "@/wab/shared/defined-indicator";
-import {
+  MIXINS_CAP,
   MIXIN_CAP,
   MIXIN_LOWER,
-  MIXINS_CAP,
   SLOT_CAP,
-  VARIANT_LOWER,
   VARIANTS_LOWER,
+  VARIANT_LOWER,
 } from "@/wab/shared/Labels";
-import {
-  Expr,
-  isKnownCustomCode,
-  isKnownExprText,
-  isKnownImageAssetRef,
-  isKnownRawText,
-  RawText,
-  Site,
-  TplNode,
-  Variant,
-  VariantSetting,
-} from "@/wab/shared/model/classes";
 import { RSH } from "@/wab/shared/RuleSetHelpers";
-import { Chroma } from "@/wab/shared/utils/color-utils";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import {
+  VariantCombo,
   clearVariantSetting,
   isBaseVariant,
   isCodeComponentVariant,
@@ -76,8 +44,40 @@ import {
   isPrivateStyleVariant,
   isStyleVariant,
   unclearableBaseStyleProps,
-  VariantCombo,
 } from "@/wab/shared/Variants";
+import { computedProjectFlags } from "@/wab/shared/cached-selectors";
+import { arrayRemove } from "@/wab/shared/collections";
+import { cx, ensure, ensureArray, swallow } from "@/wab/shared/common";
+import { BackgroundLayer } from "@/wab/shared/core/bg-styles";
+import { getComponentDisplayName } from "@/wab/shared/core/components";
+import { ExprCtx, summarizeExpr, tryExtractLit } from "@/wab/shared/core/exprs";
+import {
+  TokenValueResolver,
+  siteFinalStyleTokensAllDeps,
+} from "@/wab/shared/core/site-style-tokens";
+import { sourceMatchThemeStyle } from "@/wab/shared/core/styles";
+import { isTplComponent, isTplTag } from "@/wab/shared/core/tpls";
+import { parseCss } from "@/wab/shared/css";
+import { splitCssValue } from "@/wab/shared/css/parse";
+import {
+  DefinedIndicatorType,
+  VariantSettingSource,
+  VariantSettingSourceStack,
+  isTargetOverwritten,
+} from "@/wab/shared/defined-indicator";
+import {
+  Expr,
+  RawText,
+  Site,
+  TplNode,
+  Variant,
+  VariantSetting,
+  isKnownCustomCode,
+  isKnownExprText,
+  isKnownImageAssetRef,
+  isKnownRawText,
+} from "@/wab/shared/model/classes";
+import { Chroma } from "@/wab/shared/utils/color-utils";
 import {
   clearTplVisibility,
   getVariantSettingVisibility,
@@ -123,7 +123,7 @@ export function getStylePropValue(
 ) {
   vsh = vsh ?? new VariantedStylesHelper();
 
-  const allTokens = allStyleTokensAndOverrides(site, { includeDeps: "all" });
+  const allTokens = siteFinalStyleTokensAllDeps(site);
   const values = splitCssValue(prop, value);
 
   const renderValue = (val: string) => {

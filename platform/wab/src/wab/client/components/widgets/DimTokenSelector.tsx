@@ -32,10 +32,6 @@ import {
 import { MaybeWrap } from "@/wab/commons/components/ReactUtil";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import {
-  TokenValueResolver,
-  siteToAllDirectTokensOfType,
-} from "@/wab/shared/cached-selectors";
-import {
   assert,
   ensure,
   filterFalsy,
@@ -43,7 +39,11 @@ import {
   spawn,
   unexpected,
 } from "@/wab/shared/common";
-import { allStyleTokensAndOverrides } from "@/wab/shared/core/sites";
+import {
+  TokenValueResolver,
+  siteFinalStyleTokens,
+  siteFinalStyleTokensOfType,
+} from "@/wab/shared/core/site-style-tokens";
 import * as css from "@/wab/shared/css";
 import {
   lengthCssUnits,
@@ -182,10 +182,13 @@ export const DimTokenSpinner = observer(
     }
     const tokens =
       tokenType &&
-      siteToAllDirectTokensOfType(
+      siteFinalStyleTokensOfType(
         ensure(studioCtx, "DimTokenSelector expects studioCtx if using tokens")
           .site,
-        tokenType
+        tokenType,
+        {
+          includeDeps: "direct",
+        }
       );
 
     const { displayValue, tryOnChange, spin, values } = useDimValue(props);
@@ -199,7 +202,7 @@ export const DimTokenSpinner = observer(
     const editableTokens = parsedTokens.filter(
       (v) =>
         studioCtx?.site &&
-        allStyleTokensAndOverrides(studioCtx.site).includes(v) &&
+        siteFinalStyleTokens(studioCtx.site).includes(v) &&
         !v.isRegistered
     );
 

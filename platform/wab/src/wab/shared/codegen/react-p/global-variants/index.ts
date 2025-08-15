@@ -1,24 +1,28 @@
+import {
+  VariantCombo,
+  VariantGroupType,
+  getReferencedVariantGroups,
+  isMediaQueryVariantGroup,
+} from "@/wab/shared/Variants";
+import {
+  makeCreateUseGlobalVariantsName,
+  makeUseGlobalVariantsName,
+} from "@/wab/shared/codegen/react-p/serialize-utils";
 import { jsString, toVarName } from "@/wab/shared/codegen/util";
 import {
   extractUsedGlobalVariantsForComponents,
   makeGlobalVariantGroupUseName,
   makeUniqueUseScreenVariantsName,
 } from "@/wab/shared/codegen/variants";
-import { allStyleTokensAndOverrides } from "@/wab/shared/core/sites";
+import { siteFinalStyleTokensAllDeps } from "@/wab/shared/core/site-style-tokens";
 import { DevFlagsType } from "@/wab/shared/devflags";
 import {
   Component,
-  ensureKnownVariantGroup,
   Site,
   Variant,
   VariantGroup,
+  ensureKnownVariantGroup,
 } from "@/wab/shared/model/classes";
-import {
-  getReferencedVariantGroups,
-  isMediaQueryVariantGroup,
-  VariantCombo,
-  VariantGroupType,
-} from "@/wab/shared/Variants";
 import { uniqBy } from "lodash";
 
 export function makeGlobalVariantComboChecker(_site: Site) {
@@ -51,18 +55,22 @@ export function serializeGlobalVariantValues(groups: Set<VariantGroup>) {
   if (groups.size === 0) {
     return "";
   }
+  return `const globalVariants = ${makeUseGlobalVariantsName()}();`;
+}
+
+export function serializeUseGlobalVariants(groups: Set<VariantGroup>) {
   const template = [...groups]
     .map((group) => {
       const name = toVarName(group.param.variable.name);
       if (group.type === VariantGroupType.GlobalScreen) {
-        return `${name}: ${makeUniqueUseScreenVariantsName(group)}()`;
+        return `${name}: ${makeUniqueUseScreenVariantsName(group)}`;
       }
-      return `${name}: ${makeGlobalVariantGroupUseName(group)}()`;
+      return `${name}: ${makeGlobalVariantGroupUseName(group)}`;
     })
     .join(",\n");
 
   return `
-  const globalVariants = ensureGlobalVariants({
+  export const ${makeUseGlobalVariantsName()} = ${makeCreateUseGlobalVariantsName()}({
     ${template}
   });
 `;
@@ -98,7 +106,7 @@ export function getUsedGlobalVariantGroups(
  */
 export function getContextGlobalVariantsWithVariantedTokens(site: Site) {
   return uniqBy(
-    allStyleTokensAndOverrides(site, { includeDeps: "all" })
+    siteFinalStyleTokensAllDeps(site)
       .map((t) => t.variantedValues.flatMap((v) => v.variants))
       .flat()
       .filter((v) => v.parent && !isMediaQueryVariantGroup(v.parent)),

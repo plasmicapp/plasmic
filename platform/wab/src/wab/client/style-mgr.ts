@@ -1,9 +1,15 @@
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { $$$ } from "@/wab/shared/TplQuery";
+import {
+  VariantCombo,
+  isActiveVariantSetting,
+  isBaseVariant,
+  tryGetBaseVariantSetting,
+} from "@/wab/shared/Variants";
 import {
   componentToDeepReferenced,
   extractComponentVariantSettings,
   flattenComponent,
-  siteToAllTokensAndOverrides,
 } from "@/wab/shared/cached-selectors";
 import {
   ComponentGenHelper,
@@ -23,10 +29,13 @@ import {
   isContextCodeComponent,
 } from "@/wab/shared/core/components";
 import {
+  finalStyleTokensForDep,
+  siteFinalStyleTokensAllDeps,
+} from "@/wab/shared/core/site-style-tokens";
+import {
   allComponents,
   allImageAssets,
   allMixins,
-  allStyleTokensAndOverrides,
   isFrameRootTplComponent,
   isTplAttachedToSite,
 } from "@/wab/shared/core/sites";
@@ -58,18 +67,11 @@ import {
   ChangeSummary,
   CssVarsChangeType,
 } from "@/wab/shared/model/model-change-util";
-import { $$$ } from "@/wab/shared/TplQuery";
 import {
   getDependentVariantSettings,
   makeVariantComboSorter,
   sortedVariantSettings,
 } from "@/wab/shared/variant-sort";
-import {
-  VariantCombo,
-  isActiveVariantSetting,
-  isBaseVariant,
-  tryGetBaseVariantSetting,
-} from "@/wab/shared/Variants";
 import { sortBy } from "lodash";
 
 // @ts-ignore
@@ -439,7 +441,7 @@ export class StyleMgr {
     const site = this.studioCtx.site;
     const styleText = mkCssVarsRuleForCanvas(
       site,
-      siteToAllTokensAndOverrides(this.studioCtx.site),
+      siteFinalStyleTokensAllDeps(this.studioCtx.site),
       allMixins(this.studioCtx.site, { includeDeps: "all" }),
       // We include local themes as well as active themes from our deps,
       // because the user can choose to activate one of those themes instead.
@@ -465,7 +467,7 @@ export class StyleMgr {
 
     const allRules: string[] = [];
 
-    const allDepTokens = allStyleTokensAndOverrides(site);
+    const allDepTokens = finalStyleTokensForDep(this.studioCtx.site, site);
     const allDepMixins = allMixins(site, { includeDeps: "all" });
     const allDepImageAssets = allImageAssets(site, { includeDeps: "all" });
     allRules.push(

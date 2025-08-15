@@ -35,12 +35,12 @@ import {
 } from "@/wab/commons/StyleToken";
 import { MaybeWrap } from "@/wab/commons/components/ReactUtil";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
-import { TokenValueResolver } from "@/wab/shared/cached-selectors";
 import { ensure } from "@/wab/shared/common";
 import {
-  allColorTokens,
-  allStyleTokensAndOverrides,
-} from "@/wab/shared/core/sites";
+  TokenValueResolver,
+  siteFinalColorTokens,
+  siteFinalStyleTokensAllDeps,
+} from "@/wab/shared/core/site-style-tokens";
 import { StyleToken } from "@/wab/shared/model/classes";
 import { canCreateAlias } from "@/wab/shared/ui-config-utils";
 import { Chroma } from "@/wab/shared/utils/color-utils";
@@ -70,7 +70,10 @@ export function tryGetRealColor(
 ) {
   const colorTokens = maybeColorTokens
     ? maybeColorTokens
-    : sortBy(allColorTokens(sc.site, { includeDeps: "direct" }), (t) => t.name);
+    : sortBy(
+        siteFinalColorTokens(sc.site, { includeDeps: "direct" }),
+        (t) => t.name
+      );
 
   // Currently-applied token, if `color` is a token reference
   const appliedToken = color ? tryParseTokenRef(color, colorTokens) : undefined;
@@ -545,7 +548,7 @@ function ColorPicker_({
               if (derefToken) {
                 onChange(
                   derefTokenRefs(
-                    allStyleTokensAndOverrides(sc.site, { includeDeps: "all" }),
+                    siteFinalStyleTokensAllDeps(sc.site),
                     vsh.getActiveTokenValue(token),
                     vsh
                   )

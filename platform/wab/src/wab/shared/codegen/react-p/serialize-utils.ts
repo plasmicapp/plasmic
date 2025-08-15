@@ -7,7 +7,6 @@ import {
   ExportOpts,
   ExportPlatform,
   ProjectConfig,
-  TargetEnv,
 } from "@/wab/shared/codegen/types";
 import {
   jsLiteral,
@@ -20,7 +19,7 @@ import {
   makeGlobalVariantGroupContextProviderName,
   makeGlobalVariantGroupFileName,
 } from "@/wab/shared/codegen/variants";
-import { ensure, ensureArray } from "@/wab/shared/common";
+import { ensure } from "@/wab/shared/common";
 import {
   getCodeComponentImportName,
   getSuperComponents,
@@ -36,57 +35,69 @@ import {
   VariantGroup,
 } from "@/wab/shared/model/classes";
 import L, { lowerFirst } from "lodash";
+import type { SetRequired } from "type-fest";
 
 export const globalStyleCssImportName = "globalcss";
 export const projectStyleCssImportName = "projectcss";
 export const defaultStyleCssImportName = "defaultcss";
 export const defaultStyleCssFileName = "plasmic__default_style.css";
 
-interface ClassNameOpts {
-  targetEnv: TargetEnv;
-}
+export const plasmicTokensClassNameKey = "plasmic_tokens";
 
-export function makeWabInstanceClassName(opts: ClassNameOpts) {
+export function makeWabInstanceClassName(opts: Pick<ExportOpts, "targetEnv">) {
   return opts.targetEnv === "loader"
     ? `${shortPlasmicPrefix}i`
     : "__wab_instance";
 }
 
-export function makeWabSlotClassName(opts: ClassNameOpts) {
+export function makeWabSlotClassName(opts: Pick<ExportOpts, "targetEnv">) {
   return opts.targetEnv === "loader" ? `${shortPlasmicPrefix}s` : "__wab_slot";
 }
-export function makeWabSlotStringWrapperClassName(opts: ClassNameOpts) {
+
+export function makeWabSlotStringWrapperClassName(
+  opts: Pick<ExportOpts, "targetEnv">
+) {
   return opts.targetEnv === "loader"
     ? `${shortPlasmicPrefix}sw`
     : "__wab_slot-string-wrapper";
 }
 
-export function makeWabTextClassName(opts: ClassNameOpts) {
+export function makeWabTextClassName(opts: Pick<ExportOpts, "targetEnv">) {
   return opts.targetEnv === "loader" ? `${shortPlasmicPrefix}t` : "__wab_text";
 }
 
-export function makeWabHtmlTextClassName(opts: ClassNameOpts) {
+export function makeWabHtmlTextClassName(opts: Pick<ExportOpts, "targetEnv">) {
   return opts.targetEnv === "loader"
     ? `${shortPlasmicPrefix}th`
     : "__wab_expr_html_text";
 }
 
-export function makeDefaultStyleClassNameBase(opts: ClassNameOpts) {
+export function makeDefaultStyleClassNameBase(
+  opts: Pick<ExportOpts, "targetEnv">
+) {
   return opts.targetEnv === "loader"
     ? `${shortPlasmicPrefix}d`
     : "plasmic_default";
 }
 
-export function makeDefaultStyleCompWrapperClassName(opts: ClassNameOpts) {
+export function makeDefaultStyleCompWrapperClassName(
+  opts: Pick<ExportOpts, "targetEnv">
+) {
   return `${makeDefaultStyleClassNameBase(opts)}${
     opts.targetEnv === "loader" ? "c" : "__component_wrapper"
   }`;
 }
 
-export function makeDefaultInlineClassName(opts: ClassNameOpts) {
+export function makeDefaultInlineClassName(
+  opts: Pick<ExportOpts, "targetEnv">
+) {
   return `${makeDefaultStyleClassNameBase(opts)}${
     opts.targetEnv === "loader" ? "n" : "__inline"
   }`;
+}
+
+export function makeCssProjectImportName(projectName: string) {
+  return `plasmic_${L.snakeCase(projectName)}_css`;
 }
 
 /**
@@ -102,14 +113,17 @@ export function makeDefaultInlineClassName(opts: ClassNameOpts) {
  */
 export function makeRootResetClassName(
   projectId: string,
-  opts: ClassNameOpts & { useCssModules: boolean }
+  opts: SetRequired<Partial<ExportOpts>, "targetEnv">
 ) {
-  if (opts.targetEnv === "loader") {
-    return `${shortPlasmicPrefix}r-${projectId.slice(0, 5)}`;
-  } else if (opts.useCssModules) {
-    return `root_reset`;
+  const useCssModules = opts.stylesOpts?.scheme === "css-modules";
+  if (useCssModules) {
+    return "root_reset";
   } else {
-    return `root_reset_${projectId}`;
+    if (opts.targetEnv === "loader") {
+      return `${shortPlasmicPrefix}r-${projectId.slice(0, 5)}`;
+    } else {
+      return `root_reset_${projectId}`;
+    }
   }
 }
 
@@ -128,7 +142,9 @@ export function makeRootResetClassName(
  * }
  * ```
  */
-export function makePlasmicDefaultStylesClassName(opts: ClassNameOpts) {
+export function makePlasmicDefaultStylesClassName(
+  opts: Pick<ExportOpts, "targetEnv">
+) {
   return opts.targetEnv === "loader"
     ? `${shortPlasmicPrefix}dss`
     : "plasmic_default_styles";
@@ -150,11 +166,27 @@ export function makePlasmicDefaultStylesClassName(opts: ClassNameOpts) {
  * }
  * ```
  */
-export function makePlasmicTokensClassName(opts: ClassNameOpts) {
-  return opts.targetEnv === "loader"
-    ? `${shortPlasmicPrefix}tns`
-    : "plasmic_tokens";
+export function makePlasmicTokensClassName(
+  projectId: string,
+  opts: SetRequired<Partial<ExportOpts>, "targetEnv">,
+  hasStyleTokenOverrides
+) {
+  const useCssModules = opts?.stylesOpts?.scheme === "css-modules";
+  if (useCssModules) {
+    return plasmicTokensClassNameKey;
+  } else {
+    if (opts.targetEnv === "loader") {
+      if (hasStyleTokenOverrides) {
+        return `${shortPlasmicPrefix}tns-${projectId.slice(0, 5)}`;
+      } else {
+        return `${shortPlasmicPrefix}tns`;
+      }
+    } else {
+      return `${plasmicTokensClassNameKey}_${projectId}`;
+    }
+  }
 }
+
 /**
  * Elements with this class will receive the project's mixins as CSS variables.
  *
@@ -173,7 +205,9 @@ export function makePlasmicTokensClassName(opts: ClassNameOpts) {
  * }
  * ```
  */
-export function makePlasmicMixinsClassName(opts: ClassNameOpts) {
+export function makePlasmicMixinsClassName(
+  opts: Pick<ExportOpts, "targetEnv">
+) {
   return opts.targetEnv === "loader"
     ? `${shortPlasmicPrefix}mns`
     : "plasmic_mixins";
@@ -234,23 +268,6 @@ export function makeStylesImports(
             defaultStyleCssImportName,
             defaultStyleCssFileName
           )}; // plasmic-import: global/${defaultStyleCssImportName}`
-    }
-    ${
-      !opts.includeImportedTokens
-        ? cssProjectDependencies
-            .map(
-              (dep) =>
-                `${cssImport(
-                  `${makeCssProjectImportName(dep.projectName)}`,
-                  opts.idFileNames
-                    ? makeCssProjectIdFileName(dep.projectId)
-                    : makeCssProjectFileName()
-                )} // plasmic-import: ${
-                  dep.projectId
-                }/${projectStyleCssImportName}`
-            )
-            .join("\n")
-        : ""
     }
     ${cssImport(
       projectStyleCssImportName,
@@ -412,6 +429,56 @@ export function wrapGlobalContexts(content: string) {
   return `<GlobalContextsProvider>
   ${content}
   </GlobalContextsProvider>`;
+}
+
+export function wrapStyleTokensProvider(content: string) {
+  return `<${makeStyleTokensProviderName()}>
+    ${content}
+  </${makeStyleTokensProviderName()}>`;
+}
+
+export function makeStyleTokensProviderImports(
+  styleTokensProviderBundle: ProjectConfig["styleTokensProviderBundle"],
+  imports: {
+    styleTokensProvider?: boolean;
+    useStyleTokens?: boolean;
+  },
+  depProjectInfo?: {
+    projectId: string;
+    projectName: string;
+  }
+) {
+  const importNames: string[] = [];
+  if (imports.styleTokensProvider) {
+    importNames.push(makeStyleTokensProviderName());
+  }
+  if (imports.useStyleTokens) {
+    let name = makeUseStyleTokensName();
+    if (depProjectInfo) {
+      name += ` as ${makeUseStyleTokensNameForDep(depProjectInfo.projectName)}`;
+    }
+    importNames.push(name);
+  }
+  if (importNames.length === 0) {
+    return "";
+  }
+  return makeTaggedPlasmicImport(
+    importNames,
+    styleTokensProviderBundle.fileName,
+    depProjectInfo?.projectId ?? styleTokensProviderBundle.id,
+    "styleTokensProvider"
+  );
+}
+
+export function makeProjectModuleImports(
+  projectModuleBundle: ProjectConfig["projectModuleBundle"]
+) {
+  return makeTaggedPlasmicImport(
+    makeUseGlobalVariantsName(),
+    projectModuleBundle.fileName,
+    projectModuleBundle.id,
+    "projectModule"
+  );
 }
 
 export function makeGlobalGroupImports(
@@ -602,8 +669,58 @@ export function makeGlobalVariantIdFileName(group: VariantGroup) {
   return `global__${group.uuid}`;
 }
 
-export function makeCssProjectImportName(projectName: string) {
-  return `plasmic_${L.snakeCase(projectName)}_css`;
+export function makeCreateUseGlobalVariantsName() {
+  return `createUseGlobalVariants`;
+}
+
+export function makeCreateStyleTokensProviderName() {
+  return "createStyleTokensProvider";
+}
+
+export function makeStyleTokensProviderName() {
+  return "StyleTokensProvider";
+}
+
+export function makeCreateUseStyleTokensName() {
+  return "createUseStyleTokens";
+}
+
+export function makeUseGlobalVariantsName() {
+  return "_useGlobalVariants";
+}
+
+export function makeStyleTokensClassNames() {
+  return "styleTokensClassNames";
+}
+
+export function makeStyleTokensClassNamesForDep(projectName: string) {
+  return `${makeStyleTokensClassNames()}_${L.snakeCase(projectName)}`;
+}
+
+export function makeUseStyleTokensName() {
+  return "_useStyleTokens";
+}
+
+export function makeUseStyleTokensNameForDep(projectName: string) {
+  return `useStyleTokens_${L.snakeCase(projectName)}`;
+}
+
+export function makeProjectModuleFileName(
+  projectId: string,
+  opts: Pick<ExportOpts, "targetEnv">
+) {
+  return opts.targetEnv === "loader"
+    ? `project__${projectId.slice(0, 5)}.tsx`
+    : "plasmic.tsx";
+}
+
+export function makeStyleTokensProviderFileName(
+  projectId: string,
+  opts: Pick<ExportOpts, "targetEnv">
+) {
+  return opts.targetEnv === "loader"
+    ? `styleTokensProvider__${projectId.slice(0, 5)}.tsx`
+    : "PlasmicStyleTokensProvider.tsx";
 }
 
 export function makeCssProjectFileName() {
@@ -638,7 +755,6 @@ export function getReactWebNamedImportsForRender() {
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
-  ensureGlobalVariants,
   generateOnMutateForSpec,
   generateStateOnChangeProp,
   generateStateOnChangePropForCodeComponents,
@@ -699,12 +815,48 @@ export const maybeCondExpr = (maybeCond: string, expr: string) => {
   return `(${maybeCond}) ? (${expr}) : null`;
 };
 
+/**
+ * Makes an import with tag that Plasmic CLI can interpret.
+ * @param source - if file name, adds "./" automatically
+ */
 export function makeTaggedPlasmicImport(
   imports: string | string[],
   source: string,
   id: string,
   type: PlasmicImportType
 ) {
-  const importStr = ensureArray(imports).join(", ");
-  return `import { ${importStr} } from "${source}"; // plasmic-import: ${id}/${type}`;
+  if (Array.isArray(imports)) {
+    imports = imports.join(", ");
+  }
+  return makeTaggedPlasmicImportRaw(`{ ${imports} }`, source, id, type);
+}
+
+/**
+ * Makes an import with tag that Plasmic CLI can interpret.
+ * @param source - if file name, adds "./" automatically
+ */
+export function makeTaggedPlasmicStarImport(
+  importName: string,
+  source: string,
+  id: string,
+  type: PlasmicImportType
+) {
+  return makeTaggedPlasmicImportRaw(`* as ${importName}`, source, id, type);
+}
+
+function makeTaggedPlasmicImportRaw(
+  imports: string,
+  source: string,
+  id: string,
+  type: PlasmicImportType
+) {
+  if (
+    !source.startsWith(".") &&
+    (source.endsWith(".css") ||
+      source.endsWith(".ts") ||
+      source.endsWith(".tsx"))
+  ) {
+    source = `./${source}`;
+  }
+  return `import ${imports} from "${source}"; // plasmic-import: ${id}/${type}`;
 }

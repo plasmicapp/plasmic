@@ -40,6 +40,28 @@ export default PlasmicRootProvider;
     `
 export const root_provider = import("./root-provider");
 ${outputs
+  .map((output) =>
+    output.projectConfig.projectModuleBundle
+      ? `export const project__${toVarName(
+          output.projectConfig.projectId
+        )} = import("./${stripExtension(
+          output.projectConfig.projectModuleBundle.fileName
+        )}");`
+      : ""
+  )
+  .join("\n")}
+${outputs
+  .map((output) =>
+    output.projectConfig.styleTokensProviderBundle
+      ? `export const styletokensprovider__${toVarName(
+          output.projectConfig.projectId
+        )} = import("./${stripExtension(
+          output.projectConfig.styleTokensProviderBundle.fileName
+        )}");`
+      : ""
+  )
+  .join("\n")}
+${outputs
   .flatMap((output) =>
     output.components.map(
       (comp) =>
@@ -139,6 +161,14 @@ async function writeCodeBundleToDisk(dir: string, output: CodegenOutputBundle) {
     path.join(dir, output.defaultStyles.defaultStyleCssFileName),
     output.defaultStyles.defaultStyleCssRules
   );
+  await fs.writeFile(
+    path.join(dir, output.projectConfig.projectModuleBundle.fileName),
+    output.projectConfig.projectModuleBundle.module
+  );
+  await fs.writeFile(
+    path.join(dir, output.projectConfig.styleTokensProviderBundle.fileName),
+    output.projectConfig.styleTokensProviderBundle.module
+  );
   if (output.projectConfig.globalContextBundle) {
     await fs.writeFile(
       path.join(
@@ -150,7 +180,7 @@ async function writeCodeBundleToDisk(dir: string, output: CodegenOutputBundle) {
   }
 }
 
-export function makeGlobalContextsProviderImportName(projectId: string) {
+function makeGlobalContextsProviderImportName(projectId: string) {
   return `global__${projectId}`;
 }
 

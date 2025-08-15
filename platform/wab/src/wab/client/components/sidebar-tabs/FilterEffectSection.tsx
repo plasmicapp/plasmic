@@ -1,5 +1,5 @@
-import { LabeledStyleItemRow } from "@/wab/client/components/sidebar/sidebar-helpers";
 import { SidebarModal } from "@/wab/client/components/sidebar/SidebarModal";
+import { LabeledStyleItemRow } from "@/wab/client/components/sidebar/sidebar-helpers";
 import ColorSwatch from "@/wab/client/components/style-controls/ColorSwatch";
 import { FilterEffectPanel } from "@/wab/client/components/style-controls/FilterEffectPanel";
 import { ExpsProvider } from "@/wab/client/components/style-controls/StyleComponent";
@@ -14,12 +14,12 @@ import { derefTokenRefs, tryParseTokenRef } from "@/wab/commons/StyleToken";
 import { arrayMoveIndex, arrayRemove } from "@/wab/shared/collections";
 import { cx, maybe, spawn, uniqueKey } from "@/wab/shared/common";
 import {
-  defaultFilterEffects,
   FilterEffect,
+  defaultFilterEffects,
   fromFilterObjToString,
   fromFilterStringToObj,
 } from "@/wab/shared/core/filter-effect-utils";
-import { allColorTokens } from "@/wab/shared/core/sites";
+import { siteFinalColorTokens } from "@/wab/shared/core/site-style-tokens";
 import { joinCssValues, splitCssValue } from "@/wab/shared/css/parse";
 import { capitalize } from "lodash";
 import { observer } from "mobx-react";
@@ -116,7 +116,7 @@ const _GenericFilterEffectSection = (
               const isDropShadow = filter.type === "drop-shadow";
 
               const filterValue = filter.args.slice(-1)?.[0];
-              const colorTokens = allColorTokens(studioCtx.site, {
+              const colorTokens = siteFinalColorTokens(studioCtx.site, {
                 includeDeps: "all",
               });
 

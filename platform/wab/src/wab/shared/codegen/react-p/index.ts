@@ -48,6 +48,7 @@ import {
 import {
   makeCssClassName,
   makeSerializedClassNameRef,
+  serializeClassExpr,
   serializeClassNames,
   serializeClassNamesCall,
   serializeComponentRootResetClasses,
@@ -88,6 +89,7 @@ import {
   serializeParamType,
   serializeVariantsArgsType,
 } from "@/wab/shared/codegen/react-p/params";
+import { makeProjectModuleBundle } from "@/wab/shared/codegen/react-p/project-module";
 import { ReactHookSpec } from "@/wab/shared/codegen/react-p/react-hook-spec";
 import {
   NodeNamer,
@@ -125,11 +127,17 @@ import {
   makePlasmicSuperContextName,
   makePlasmicTokensClassName,
   makePlatformImports,
+  makeProjectModuleImports,
   makeRenderFuncName,
   makeRootResetClassName,
+  makeStyleTokensClassNames,
+  makeStyleTokensClassNamesForDep,
+  makeStyleTokensProviderImports,
   makeStylesImports,
   makeTaggedPlasmicImport,
   makeUseClient,
+  makeUseStyleTokensName,
+  makeUseStyleTokensNameForDep,
   makeVariantPropsName,
   makeVariantsArgTypeName,
   makeWabHtmlTextClassName,
@@ -137,6 +145,7 @@ import {
   wrapGlobalContexts,
   wrapGlobalProvider,
   wrapInDataCtxReader,
+  wrapStyleTokensProvider,
 } from "@/wab/shared/codegen/react-p/serialize-utils";
 import {
   getRscMetadata,
@@ -154,6 +163,7 @@ import {
   serializeInitFunc,
   serializeStateSpecs,
 } from "@/wab/shared/codegen/react-p/states";
+import { makeStyleTokensProviderBundle } from "@/wab/shared/codegen/react-p/style-tokens-provider";
 import {
   makeSuperCompImports,
   serializePlasmicSuperContext,
@@ -195,7 +205,6 @@ import {
   toJsIdentifier,
   toVarName,
 } from "@/wab/shared/codegen/util";
-import { makeGlobalVariantGroupImportTemplate } from "@/wab/shared/codegen/variants";
 import {
   UnexpectedTypeError,
   assert,
@@ -233,10 +242,13 @@ import {
 } from "@/wab/shared/core/exprs";
 import { ParamExportType } from "@/wab/shared/core/lang";
 import {
+  siteFinalStyleTokens,
+  siteFinalStyleTokensAllDeps,
+} from "@/wab/shared/core/site-style-tokens";
+import {
   allImageAssets,
   allImportedStyleTokensWithProjectInfo,
   allMixins,
-  allStyleTokensAndOverrides,
 } from "@/wab/shared/core/sites";
 import {
   getComponentStateOnChangePropNames,
@@ -341,8 +353,7 @@ import type { SetRequired } from "type-fest";
 export function exportStyleConfig(
   opts: SetRequired<Partial<ExportOpts>, "targetEnv">
 ): StyleConfig {
-  const { stylesOpts, targetEnv } = opts;
-  const useCssModules = stylesOpts?.scheme === "css-modules";
+  const useCssModules = opts.stylesOpts?.scheme === "css-modules";
   const defaultStylesRules = [
     ...makeDefaultStylesRules(
       useCssModules ? "" : `${makeDefaultStyleClassNameBase(opts)}__`,
@@ -383,7 +394,7 @@ export function exportProjectConfig(
     exportOpts?.targetEnv === "loader" ? projectId.slice(0, 5) : undefined;
 
   const resolver = new CssVarResolver(
-    allStyleTokensAndOverrides(site, { includeDeps: "all" }),
+    siteFinalStyleTokensAllDeps(site),
     allMixins(site, { includeDeps: "all" }),
     allImageAssets(site, { includeDeps: "all" }),
     site.activeTheme,
@@ -392,10 +403,7 @@ export function exportProjectConfig(
       cssVariableInfix: loaderCssInfix,
     }
   );
-  const rootResetClass = makeRootResetClassName(projectId, {
-    targetEnv: exportOpts.targetEnv,
-    useCssModules: exportOpts?.stylesOpts?.scheme === "css-modules",
-  });
+  const rootResetClass = makeRootResetClassName(projectId, exportOpts);
   const resetRule = mkComponentRootResetRule(site, rootResetClass, resolver);
 
   const defaultTagStylesVarsRules = makeMixinVarsRules(
@@ -436,18 +444,28 @@ export function exportProjectConfig(
       })
     )
     .join("\n");
+
+  const hasStyleTokenOverrides = site.styleTokenOverrides.length > 0;
   const cssTokenVarsRules = makeCssTokenVarsRules(
     site,
-    allStyleTokensAndOverrides(site, {
-      includeDeps: exportOpts?.includeImportedTokens ? "all" : undefined,
-    }),
-    `.${makePlasmicTokensClassName(exportOpts)}`,
+    exportOpts?.includeImportedTokens || hasStyleTokenOverrides
+      ? siteFinalStyleTokensAllDeps(site)
+      : siteFinalStyleTokens(site),
+    `.${makePlasmicTokensClassName(
+      projectId,
+      exportOpts,
+      hasStyleTokenOverrides
+    )}`,
     { generateExternalToken: true, targetEnv: exportOpts.targetEnv }
   );
 
   const layoutVarsRules = makeLayoutVarsRules(
     site,
-    `.${makePlasmicTokensClassName(exportOpts)}`
+    `.${makePlasmicTokensClassName(
+      projectId,
+      exportOpts,
+      hasStyleTokenOverrides
+    )}`
   );
 
   const cssFileName = makeCssFileName(
@@ -457,15 +475,35 @@ export function exportProjectConfig(
     exportOpts
   );
 
-  const globalContextBundle = makeGlobalContextBundle(
+  const splitsProviderBundle = makeSplitsProviderBundle(
     site,
     projectId,
     exportOpts
   );
 
-  const splitsProviderBundle = makeSplitsProviderBundle(
+  const projectModuleBundle = makeProjectModuleBundle(
     site,
     projectId,
+    exportOpts
+  );
+
+  const styleTokensProviderBundle = makeStyleTokensProviderBundle(
+    site,
+    projectId,
+    {
+      cssFileName,
+      projectModuleBundle,
+    },
+    exportOpts,
+    hasStyleTokenOverrides
+  );
+
+  const globalContextBundle = makeGlobalContextBundle(
+    site,
+    projectId,
+    {
+      projectModuleBundle,
+    },
     exportOpts
   );
 
@@ -493,6 +531,9 @@ export function exportProjectConfig(
     projectRevId,
     version,
     fontUsages,
+    hasStyleTokenOverrides,
+    projectModuleBundle,
+    styleTokensProviderBundle,
     globalContextBundle,
     splitsProviderBundle,
     indirect,
@@ -511,7 +552,7 @@ export function computeSerializerSiteContext(
       "projectId"
     ),
     cssVarResolver: new CssVarResolver(
-      allStyleTokensAndOverrides(site, { includeDeps: "all" }),
+      siteFinalStyleTokensAllDeps(site),
       allMixins(site, { includeDeps: "all" }),
       allImageAssets(site, { includeDeps: "all" }),
       site.activeTheme
@@ -696,15 +737,6 @@ export function exportReactPresentational(
     ctx.replacedHostlessComponentImportPath
   );
 
-  const importGlobalVariantContexts =
-    usedGlobalVariantGroups.size === 0
-      ? ""
-      : `
-    ${[...usedGlobalVariantGroups]
-      .map((vg) => makeGlobalVariantGroupImportTemplate(vg, ".", opts))
-      .join("\n")}
-  `;
-
   const componentName = makePlasmicComponentName(component);
   const styleImportName = makeCssFileName(
     opts.idFileNames ? makeComponentCssIdFileName(component) : componentName,
@@ -801,7 +833,25 @@ const __wrapUserPromise = globalThis.__PlasmicWrapUserPromise ?? (async (loc, pr
         : ""
     }
     ${referencedImports.join("\n")}
-    ${importGlobalVariantContexts}
+    ${makeProjectModuleImports(projectConfig.projectModuleBundle)}
+    ${makeStyleTokensProviderImports(projectConfig.styleTokensProviderBundle, {
+      useStyleTokens: true,
+    })}
+    ${
+      ctx.projectConfig.hasStyleTokenOverrides
+        ? ""
+        : ctx.siteCtx.cssProjectDependencies
+            .map((dep) =>
+              makeStyleTokensProviderImports(
+                projectConfig.styleTokensProviderBundle,
+                {
+                  useStyleTokens: true,
+                },
+                dep
+              )
+            )
+            .join("\n")
+    }
     ${makeStylesImports(
       siteCtx.cssProjectDependencies,
       component,
@@ -1105,13 +1155,11 @@ export function renderPage(
     // For stretching pages, we need to wrap it in a horizontal flex container
     // with `min-height: 100vh` and stretching children.  See
     // https://coda.io/d/Plasmic-Wiki_dHQygjmQczq/Scaffolding-to-render-full-viewport-components_su2po#_luKso
-    const useCssModules = ctx.exportOpts.stylesOpts?.scheme === "css-modules";
     renderBody = `
-      <div className={${
-        useCssModules
-          ? `projectcss.plasmic_page_wrapper`
-          : jsLiteral("plasmic_page_wrapper")
-      }}>
+      <div className={${serializeClassExpr(
+        ctx.exportOpts,
+        "plasmic_page_wrapper"
+      )}}>
         ${makeChildrenStr([renderBody])}
       </div>
     `;
@@ -1228,9 +1276,6 @@ export function serializeComponentLocalVars(ctx: SerializerBaseContext) {
   const ccVariantTriggers = serializeCodeComponentVariantsTriggers(
     component.tplTree
   );
-  const globalTriggers = serializeGlobalVariantValues(
-    ctx.usedGlobalVariantGroups
-  );
   const superComps = getSuperComponents(component);
   const dataQueries = component.dataQueries.filter((q) => !!q.op);
   const shouldUseDollarQueries =
@@ -1344,9 +1389,29 @@ export function serializeComponentLocalVars(ctx: SerializerBaseContext) {
     }
 
     ${treeTriggers}
-    ${globalTriggers}
+    ${serializeGlobalVariantValues(ctx.usedGlobalVariantGroups)}
+     ${serializeStyleTokensClassNames(
+       ctx.projectConfig,
+       ctx.siteCtx.cssProjectDependencies
+     )}
     ${ccVariantTriggers}
   `;
+}
+
+function serializeStyleTokensClassNames(
+  projectConfig: SetRequired<ProjectConfig, "hasStyleTokenOverrides">,
+  deps: SerializerSiteContext["cssProjectDependencies"]
+) {
+  let base = `const ${makeStyleTokensClassNames()} = ${makeUseStyleTokensName()}();`;
+  if (projectConfig.hasStyleTokenOverrides) {
+    return base;
+  }
+  deps.forEach((dep) => {
+    base += `\nconst ${makeStyleTokensClassNamesForDep(
+      dep.projectName
+    )} = ${makeUseStyleTokensNameForDep(dep.projectName)}();`;
+  });
+  return base;
 }
 
 export function serializeLocalStyleTriggers(ctx: SerializerBaseContext) {
@@ -2465,6 +2530,10 @@ function serializePageAwareSkeletonWrapperTs(
     componentPropsDecl = "",
     componentPropsSig = "",
     tanstackRouteInfo = "";
+
+  if (ctx.projectConfig.hasStyleTokenOverrides) {
+    content = wrapStyleTokensProvider(content);
+  }
   if (opts.platform === "nextjs") {
     if (isNextjsAppDir) {
       componentPropsSig = `{ params, searchParams }: {
@@ -2480,7 +2549,7 @@ searchParams?: Promise<Record<string, string | string[] | undefined>>;
         params={useRouter()?.query}
         query={useRouter()?.query}
       >
-        ${content}
+          ${content}
       </PageParamsProvider__>`;
     }
   } else if (opts.platform === "gatsby") {
@@ -2513,7 +2582,7 @@ searchParams?: Promise<Record<string, string | string[] | undefined>>;
         params={Route.useParams()}
         query={Route.useSearch()}
       >
-        <${nodeComponentName} />
+       ${content}
       </PageParamsProvider__>`;
   }
 
@@ -2566,6 +2635,16 @@ searchParams?: Promise<Record<string, string | string[] | undefined>>;
     opts
   )}";
     ${globalContextsImport}
+    ${
+      ctx.projectConfig.hasStyleTokenOverrides
+        ? makeStyleTokensProviderImports(
+            ctx.projectConfig.styleTokensProviderBundle,
+            {
+              styleTokensProvider: true,
+            }
+          )
+        : ""
+    }
     ${makeGlobalGroupImports(globalGroups, opts)}
     ${nodeImport}
     ${
@@ -2616,6 +2695,9 @@ function serializeSkeletonWrapperTs(
   ctx: SerializerBaseContext,
   opts: ExportOpts
 ) {
+  // TODO: change loader/ entrypoint to always be skeleton file
+  // if (pages && loader) { special case the skeleton file to generate StyleTokensProvider }
+
   const { component, nodeNamer } = ctx;
 
   const plugin = getPlumeCodegenPlugin(component);

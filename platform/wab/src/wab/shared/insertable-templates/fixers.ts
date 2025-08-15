@@ -246,8 +246,8 @@ export function makeImageAssetFixer(
 export function mkInsertableTokenImporter(
   sourceSite: Site,
   targetSite: Site,
-  sourceTokens: FinalStyleToken[],
-  targetTokens: FinalStyleToken[],
+  sourceTokens: ReadonlyArray<FinalStyleToken>,
+  targetTokens: ReadonlyArray<FinalStyleToken>,
   tokenResolution: InsertableTemplateTokenResolution | undefined,
   screenVariant: Variant | undefined,
   onFontSeen: (font: string) => void
@@ -255,7 +255,7 @@ export function mkInsertableTokenImporter(
   const oldToNewToken = new Map<StyleToken, FinalStyleToken>();
 
   function getOrAddToken(
-    oldTokens: FinalStyleToken[],
+    oldTokens: ReadonlyArray<FinalStyleToken>,
     oldToken: FinalStyleToken
   ) {
     if (oldToNewToken.has(oldToken.base)) {

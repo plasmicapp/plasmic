@@ -3,10 +3,10 @@ import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { FinalStyleToken, TokenValue } from "@/wab/commons/StyleToken";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import {
-  makeTokenResolver,
   TokenResolver,
   TokenValueResolver,
-} from "@/wab/shared/cached-selectors";
+  makeTokenResolver,
+} from "@/wab/shared/core/site-style-tokens";
 import { StyleToken } from "@/wab/shared/model/classes";
 
 const RE_VARIABLE_REF = /var\((--[^)]+)\)/;

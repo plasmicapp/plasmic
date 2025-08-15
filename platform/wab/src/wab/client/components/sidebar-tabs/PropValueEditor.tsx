@@ -50,7 +50,6 @@ import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { mkTokenRef, tryParseTokenRef } from "@/wab/commons/StyleToken";
 import { unwrap } from "@/wab/commons/failable-utils";
 import { isStandaloneVariantGroup } from "@/wab/shared/Variants";
-import { siteToAllTokensAndOverridesDict } from "@/wab/shared/cached-selectors";
 import {
   StudioPropType,
   getPropTypeType,
@@ -85,6 +84,7 @@ import {
 } from "@/wab/shared/core/exprs";
 import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
 import { JsonValue } from "@/wab/shared/core/lang";
+import { siteFinalStyleTokensAllDepsDict } from "@/wab/shared/core/site-style-tokens";
 import {
   getDisplayNameOfEventHandlerKey,
   isTplComponent,
@@ -978,7 +978,7 @@ const PropValueEditor_ = (
         onChange={(colorOrToken) => {
           const maybeToken = tryParseTokenRef(
             colorOrToken,
-            siteToAllTokensAndOverridesDict(studioCtx.site)
+            siteFinalStyleTokensAllDepsDict(studioCtx.site)
           );
           if (maybeToken) {
             onChange(new StyleTokenRef({ token: maybeToken.base }));

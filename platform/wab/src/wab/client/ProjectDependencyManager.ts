@@ -1,5 +1,6 @@
 import { checkDepPkgHosts } from "@/wab/client/init-ctx";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { PkgInfo, PkgVersionInfoMeta } from "@/wab/shared/SharedApi";
 import { FastBundler } from "@/wab/shared/bundler";
 import { getUsedDataSourcesFromDep } from "@/wab/shared/cached-selectors";
 import { Dict } from "@/wab/shared/collections";
@@ -15,17 +16,15 @@ import {
 } from "@/wab/shared/core/components";
 import { isIcon } from "@/wab/shared/core/image-assets";
 import {
+  ImportableObject,
   extractTransitiveDepsFromComponentDefaultSlots,
   extractTransitiveHostLessPackages,
   genImportableObjs,
-  ImportableObject,
   syncGlobalContexts,
   walkDependencyTree,
 } from "@/wab/shared/core/project-deps";
-import {
-  allStyleTokensAndOverrides,
-  getNonTransitiveDepDefaultComponents,
-} from "@/wab/shared/core/sites";
+import { siteFinalStyleTokensAllDeps } from "@/wab/shared/core/site-style-tokens";
+import { getNonTransitiveDepDefaultComponents } from "@/wab/shared/core/sites";
 import { unbundleProjectDependency } from "@/wab/shared/core/tagged-unbundle";
 import {
   deepTrackComponents,
@@ -40,13 +39,12 @@ import {
 import {
   Component,
   ImageAsset,
-  isKnownProjectDependency,
-  isKnownSite,
   ProjectDependency,
   Site,
   Variant,
+  isKnownProjectDependency,
+  isKnownSite,
 } from "@/wab/shared/model/classes";
-import { PkgInfo, PkgVersionInfoMeta } from "@/wab/shared/SharedApi";
 import L, { last } from "lodash";
 import { computed, observable } from "mobx";
 
@@ -138,9 +136,7 @@ export class ProjectDependencyManager {
    * @returns
    */
   inlineAssets(site: Site) {
-    const allTokens = allStyleTokensAndOverrides(site, {
-      includeDeps: "all",
-    });
+    const allTokens = siteFinalStyleTokensAllDeps(site);
     site.components.forEach((c) => {
       inlineMixins(c.tplTree);
       inlineTokens(c.tplTree, allTokens);

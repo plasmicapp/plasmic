@@ -7,6 +7,7 @@ import {
 import {
   getExportedComponentName,
   makeGlobalContextPropName,
+  makeProjectModuleImports,
   makeUseClient,
 } from "@/wab/shared/codegen/react-p/serialize-utils";
 import {
@@ -18,9 +19,8 @@ import {
   joinVariantVals,
   serializedKeyValue,
 } from "@/wab/shared/codegen/react-p/utils";
-import { ExportOpts } from "@/wab/shared/codegen/types";
+import { ExportOpts, ProjectConfig } from "@/wab/shared/codegen/types";
 import { paramToVarName } from "@/wab/shared/codegen/util";
-import { makeGlobalVariantGroupImportTemplate } from "@/wab/shared/codegen/variants";
 import { assert } from "@/wab/shared/common";
 import { getRealParams } from "@/wab/shared/core/components";
 import { ExprCtx, getRawCode } from "@/wab/shared/core/exprs";
@@ -37,6 +37,9 @@ import L from "lodash";
 export function makeGlobalContextBundle(
   site: Site,
   projectId: string,
+  imports: {
+    projectModuleBundle: ProjectConfig["projectModuleBundle"];
+  },
   opts: Partial<ExportOpts>
 ) {
   if (site.globalContexts.length === 0) {
@@ -153,9 +156,12 @@ export function makeGlobalContextBundle(
   const usedGlobalVariantGroups = new Set(
     [...variantChecker.checked].map((v) => v.parent!)
   );
-  const importGlobalVariantGroups = [...usedGlobalVariantGroups]
-    .map((vg) => makeGlobalVariantGroupImportTemplate(vg, ".", opts))
-    .join("\n");
+
+  const reactWebImports =
+    usedGlobalVariantGroups.size > 0
+      ? `
+    import { hasVariant } from "${getReactWebPackageName(opts)}";`
+      : "";
 
   const contextModule = `
     /* eslint-disable */
@@ -167,11 +173,9 @@ export function makeGlobalContextBundle(
     ${makeUseClient(opts)}
 
     import * as React from "react"
-    import {hasVariant, ensureGlobalVariants} from "${getReactWebPackageName(
-      opts
-    )}";
+    ${reactWebImports}
+    ${makeProjectModuleImports(imports.projectModuleBundle)}
     ${referencedImports.join("\n")}
-    ${importGlobalVariantGroups}
 
     export interface GlobalContextsProviderProps {
       children?: React.ReactElement;

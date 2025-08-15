@@ -41,7 +41,7 @@ import {
   unexpected,
 } from "@/wab/shared/common";
 import { isCodeComponent } from "@/wab/shared/core/components";
-import { allStyleTokensAndOverrides } from "@/wab/shared/core/sites";
+import { siteFinalStyleTokensAllDeps } from "@/wab/shared/core/site-style-tokens";
 import {
   colorProps,
   filterExtractableStyles,
@@ -661,9 +661,7 @@ function buildExtractToTokens(
                   <>
                     <ColorSwatch
                       color={derefTokenRefs(
-                        allStyleTokensAndOverrides(sc.site, {
-                          includeDeps: "all",
-                        }),
+                        siteFinalStyleTokensAllDeps(sc.site),
                         token.value
                       )}
                     />

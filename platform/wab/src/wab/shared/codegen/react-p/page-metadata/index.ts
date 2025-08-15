@@ -1,6 +1,9 @@
 import {
+  defaultStyleCssImportName,
+  globalStyleCssImportName,
   makePlasmicComponentName,
   makeTanStackHeadOptionsExportName,
+  projectStyleCssImportName,
 } from "@/wab/shared/codegen/react-p/serialize-utils";
 import { SerializerBaseContext } from "@/wab/shared/codegen/react-p/types";
 import { PageMetadata } from "@/wab/shared/codegen/types";
@@ -146,13 +149,15 @@ export function serializeTanStackHead(
   const exportName = makeTanStackHeadOptionsExportName(page);
 
   const linkEntries: string[] = [
-    `{ rel: "stylesheet", href: defaultcss }`,
-    `{ rel: "stylesheet", href: projectcss }`,
+    `{ rel: "stylesheet", href: ${defaultStyleCssImportName} }`,
+    `{ rel: "stylesheet", href: ${projectStyleCssImportName} }`,
     `{ rel: "stylesheet", href: sty }`,
   ];
 
   if (!ctx.exportOpts.stylesOpts.skipGlobalCssImport) {
-    linkEntries.unshift(`{ rel: "stylesheet", href: globalcss }`);
+    linkEntries.unshift(
+      `{ rel: "stylesheet", href: ${globalStyleCssImportName} }`
+    );
   }
 
   const metaEntries: string[] = [];

@@ -978,6 +978,16 @@ export const createProjectMods = computedFn(
         lang: "css",
         source: sc.defaultStyleCssRules,
       },
+      {
+        name: `./plasmic.tsx`,
+        lang: "tsx",
+        source: projectOutput.projectModuleBundle.module,
+      },
+      {
+        name: `./PlasmicStyleTokensProvider.tsx`,
+        lang: "tsx",
+        source: projectOutput.styleTokensProviderBundle.module,
+      },
     ];
   },
   { name: "createProjectMods", keepAlive: true, equals: comparer.structural }

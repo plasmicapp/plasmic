@@ -15,6 +15,18 @@ export interface SplitsProviderBundle {
   module: string;
 }
 
+export interface StyleTokensProviderBundle {
+  id: string;
+  module: string;
+  fileName: string;
+}
+
+export interface ProjectModuleBundle {
+  id: string;
+  module: string;
+  fileName: string;
+}
+
 export interface ProjectConfig {
   // Project-wide css
   cssFileName: string;
@@ -30,6 +42,11 @@ export interface ProjectConfig {
   version: string;
   projectRevId: string;
 
+  /** If true, wrap root components with <StyleTokensProvider>. */
+  hasStyleTokenOverrides: boolean;
+
+  projectModuleBundle: ProjectModuleBundle;
+  styleTokensProviderBundle: StyleTokensProviderBundle;
   globalContextBundle?: GlobalContextBundle;
   splitsProviderBundle?: SplitsProviderBundle;
   reactWebExportedFiles?: Array<{
@@ -57,6 +74,10 @@ export interface ChecksumBundle {
   globalContextsChecksum: string;
   // Checksum of splits provider file
   splitsProviderChecksum: string;
+  // Checksum of style tokens provider file
+  styleTokensProviderChecksum: string;
+  // Checksum of project.ts file
+  projectModuleChecksum: string;
 }
 
 export function emptyChecksumBundle(): ChecksumBundle {
@@ -70,6 +91,8 @@ export function emptyChecksumBundle(): ChecksumBundle {
     themeChecksums: [],
     globalContextsChecksum: "",
     splitsProviderChecksum: "",
+    styleTokensProviderChecksum: "",
+    projectModuleChecksum: "",
   };
 }
 

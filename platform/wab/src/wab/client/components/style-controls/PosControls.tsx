@@ -31,7 +31,7 @@ import { XDraggable } from "@/wab/commons/components/XDraggable";
 import { TokenType, tryParseTokenRef } from "@/wab/commons/StyleToken";
 import { sidesAndCorners } from "@/wab/commons/ViewUtil";
 import { cx, ensure, maybe, spawn } from "@/wab/shared/common";
-import { allStyleTokensAndOverrides } from "@/wab/shared/core/sites";
+import { siteFinalStyleTokensAllDeps } from "@/wab/shared/core/site-style-tokens";
 import { parseCssNumericNew } from "@/wab/shared/css";
 import { ensureUnit } from "@/wab/shared/css-size";
 import { isIndicatorExplicitlySet } from "@/wab/shared/defined-indicator";
@@ -144,7 +144,7 @@ function MeasureControl_(props: MeasureControlProps) {
 
   const rawValue = exp().get(prop);
   const maybeToken = tryParseTokenRef(rawValue, () =>
-    allStyleTokensAndOverrides(studioCtx.site, { includeDeps: "all" })
+    siteFinalStyleTokensAllDeps(studioCtx.site)
   );
 
   return (

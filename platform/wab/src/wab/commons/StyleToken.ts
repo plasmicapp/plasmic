@@ -5,6 +5,7 @@ import { RuleSetHelpers } from "@/wab/shared/RuleSetHelpers";
 import { TplMgr } from "@/wab/shared/TplMgr";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import { toVarName } from "@/wab/shared/codegen/util";
+import { isReadonlyArray, isReadonlyMap } from "@/wab/shared/collections";
 import {
   arrayEqIgnoreOrder,
   ensure,
@@ -15,7 +16,7 @@ import {
   withoutNils,
 } from "@/wab/shared/common";
 import { DependencyWalkScope } from "@/wab/shared/core/project-deps";
-import { allTokensOfType } from "@/wab/shared/core/sites";
+import { siteFinalStyleTokensOfType } from "@/wab/shared/core/site-style-tokens";
 import { getLengthUnits, parseCss } from "@/wab/shared/css";
 import { DEVFLAGS } from "@/wab/shared/devflags";
 import {
@@ -378,22 +379,22 @@ const RE_TOKENREF_ALL = new RegExp(RE_TOKENREF, "g");
 export const tryParseTokenRef = (
   ref: string,
   tokensProvider:
-    | FinalStyleToken[]
-    | (() => FinalStyleToken[])
-    | Record<string, FinalStyleToken>
-    | Map<string, FinalStyleToken>
+    | ReadonlyArray<FinalStyleToken>
+    | (() => ReadonlyArray<FinalStyleToken>)
+    | Readonly<Record<string, FinalStyleToken>>
+    | ReadonlyMap<string, FinalStyleToken>
 ): FinalStyleToken | undefined => {
   const m = ref.match(RE_TOKENREF);
   if (!m) {
     return undefined;
   }
   const tokenId = m[1];
-  if (L.isArray(tokensProvider) || L.isFunction(tokensProvider)) {
-    const tokens = L.isArray(tokensProvider)
+  if (isReadonlyArray(tokensProvider) || L.isFunction(tokensProvider)) {
+    const tokens = isReadonlyArray(tokensProvider)
       ? tokensProvider
       : tokensProvider();
     return tokens.find((t) => t.uuid === tokenId);
-  } else if (tokensProvider instanceof Map) {
+  } else if (isReadonlyMap(tokensProvider)) {
     return tokensProvider.get(tokenId);
   } else {
     return tokensProvider[tokenId];
@@ -409,10 +410,10 @@ export const tryParseTokenRef = (
 export const parseTokenRef = (
   ref: string,
   tokensProvider:
-    | FinalStyleToken[]
-    | (() => FinalStyleToken[])
-    | Record<string, FinalStyleToken>
-    | Map<string, FinalStyleToken>
+    | ReadonlyArray<FinalStyleToken>
+    | (() => ReadonlyArray<FinalStyleToken>)
+    | Readonly<Record<string, FinalStyleToken>>
+    | ReadonlyMap<string, FinalStyleToken>
 ) => {
   return ensure(
     tryParseTokenRef(ref, tokensProvider),
@@ -430,11 +431,11 @@ export function hasTokenRef(str: string, token: StyleToken) {
 
 export const resolveAllTokenRefs = (
   str: string,
-  tokens: FinalStyleToken[] | Map<string, FinalStyleToken>,
+  tokens: ReadonlyArray<FinalStyleToken> | ReadonlyMap<string, FinalStyleToken>,
   valMissingToken?: string,
   vsh?: VariantedStylesHelper
 ) => {
-  const finder = Array.isArray(tokens)
+  const finder = isReadonlyArray(tokens)
     ? (tokenId: string) => tokens.find((t) => t.uuid === tokenId)
     : (tokenId: string) => tokens.get(tokenId);
   return replaceAllTokenRefs(str, (tokenId) => {
@@ -533,7 +534,7 @@ export const tryParseMixinPropRef = (
  * @returns a resolved final style token
  */
 export function resolveToken(
-  tokens: FinalStyleToken[] | Map<string, FinalStyleToken>,
+  tokens: ReadonlyArray<FinalStyleToken> | ReadonlyMap<string, FinalStyleToken>,
   token: FinalStyleToken,
   vsh?: VariantedStylesHelper
 ): ResolvedToken {
@@ -557,7 +558,7 @@ export function resolveToken(
 }
 
 export function resolveTokenRef(
-  tokens: FinalStyleToken[] | Map<string, FinalStyleToken>,
+  tokens: ReadonlyArray<FinalStyleToken> | ReadonlyMap<string, FinalStyleToken>,
   value: TokenValue,
   vsh?: VariantedStylesHelper
 ): SetOptional<ResolvedToken, "token"> {
@@ -569,7 +570,7 @@ export function resolveTokenRef(
 }
 
 export function derefTokenRefs(
-  tokens: FinalStyleToken[] | Map<string, FinalStyleToken>,
+  tokens: ReadonlyArray<FinalStyleToken> | ReadonlyMap<string, FinalStyleToken>,
   value: string,
   vsh?: VariantedStylesHelper
 ): TokenValue {
@@ -577,7 +578,7 @@ export function derefTokenRefs(
 }
 
 export function derefToken(
-  tokens: FinalStyleToken[] | Map<string, FinalStyleToken>,
+  tokens: ReadonlyArray<FinalStyleToken> | ReadonlyMap<string, FinalStyleToken>,
   token: FinalStyleToken,
   vsh?: VariantedStylesHelper
 ): TokenValue {
@@ -598,8 +599,12 @@ export function derefToken(
  * @returns the token's primitive/de-reffed value only if the ref is not known by the destination
  */
 export function maybeDerefToken(
-  currentTokens: FinalStyleToken[] | Map<string, FinalStyleToken>,
-  oldTokens: FinalStyleToken[] | Map<string, FinalStyleToken>,
+  currentTokens:
+    | ReadonlyArray<FinalStyleToken>
+    | ReadonlyMap<string, FinalStyleToken>,
+  oldTokens:
+    | ReadonlyArray<FinalStyleToken>
+    | ReadonlyMap<string, FinalStyleToken>,
   token: FinalStyleToken,
   vsh?: VariantedStylesHelper
 ): TokenValue {
@@ -622,7 +627,7 @@ export function lazyDerefTokenRefs(
   if (!isTokenRef(value)) {
     return value as TokenValue;
   }
-  const tokens = allTokensOfType(site, tokenType, opts);
+  const tokens = siteFinalStyleTokensOfType(site, tokenType, opts);
   return derefTokenRefs(tokens, value, vsh);
 }
 

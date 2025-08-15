@@ -4,8 +4,9 @@ import { useClientTokenResolver } from "@/wab/client/components/widgets/ColorPic
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import ColorStopIcon from "@/wab/client/plasmic/plasmic_kit_design_system/icons/PlasmicIcon__ColorStop";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { XDraggable } from "@/wab/commons/components/XDraggable";
 import { tryParseTokenRef } from "@/wab/commons/StyleToken";
+import { XDraggable } from "@/wab/commons/components/XDraggable";
+import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import {
   check,
   ensure,
@@ -18,9 +19,8 @@ import {
   withoutNils,
 } from "@/wab/shared/common";
 import { Dim, LinearGradient, Stop } from "@/wab/shared/core/bg-styles";
-import { allStyleTokensAndOverrides } from "@/wab/shared/core/sites";
+import { siteFinalStyleTokensAllDeps } from "@/wab/shared/core/site-style-tokens";
 import { Chroma } from "@/wab/shared/utils/color-utils";
-import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import classNames from "classnames";
 import $ from "jquery";
 import L from "lodash";
@@ -85,7 +85,7 @@ const ColorStops_ = (props: ColorStopsProps) => {
   const realStopColor = (stop: Stop) => {
     const maybeToken = tryParseTokenRef(
       stop.color,
-      allStyleTokensAndOverrides(props.studioCtx.site, { includeDeps: "all" })
+      siteFinalStyleTokensAllDeps(props.studioCtx.site)
     );
     if (maybeToken) {
       return resolver(maybeToken, props.vsh);

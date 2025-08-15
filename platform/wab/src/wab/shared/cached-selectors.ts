@@ -1,16 +1,6 @@
-import {
-  FinalStyleToken,
-  ResolvedToken,
-  TokenType,
-  TokenValue,
-  extractAllReferencedTokenIds,
-  resolveToken,
-  tryParseTokenRef,
-} from "@/wab/commons/StyleToken";
 import { DeepReadonly } from "@/wab/commons/types";
 import { FramePinManager } from "@/wab/shared/PinManager";
 import { readonlyRSH } from "@/wab/shared/RuleSetHelpers";
-import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import {
   CodeComponentVariant,
   VariantCombo,
@@ -73,8 +63,6 @@ import {
   allGlobalVariantGroups,
   allGlobalVariants,
   allImageAssets,
-  allStyleTokens,
-  allStyleTokensAndOverrides,
   isHostLessPackage,
 } from "@/wab/shared/core/sites";
 import { isOnChangeParam } from "@/wab/shared/core/states";
@@ -109,7 +97,6 @@ import {
   QueryInvalidationExpr,
   RuleSet,
   Site,
-  StyleToken,
   TplComponent,
   TplNode,
   TplSlot,
@@ -660,61 +647,6 @@ export const componentToTplComponents = maybeComputedFn(
   }
 );
 
-/** Token resolver that returns the value and token. */
-export type TokenResolver = (
-  token: FinalStyleToken,
-  vsh?: VariantedStylesHelper
-) => ResolvedToken;
-export const makeTokenResolver = maybeComputedFn(
-  function makeTokenValueResolver(site: Site): TokenResolver {
-    const allTokens = siteToAllTokensAndOverrides(site);
-    const map: Map<StyleToken, Map<string, ResolvedToken>> = new Map();
-
-    allTokens.forEach((token) => {
-      const tokenMap: Map<string, ResolvedToken> = new Map();
-      tokenMap.set(
-        new VariantedStylesHelper().key(),
-        resolveToken(allTokens, token)
-      );
-      token.variantedValues?.forEach((v) => {
-        const vsh = new VariantedStylesHelper(site, v.variants);
-        tokenMap.set(vsh.key(), resolveToken(allTokens, token, vsh));
-      });
-      map.set(token.base, tokenMap);
-    });
-
-    return (
-      token: FinalStyleToken,
-      maybeVsh?: VariantedStylesHelper
-    ): ResolvedToken => {
-      const vsh = maybeVsh ?? new VariantedStylesHelper(site);
-      const tokenMap = ensure(
-        map.get(token.base),
-        () => `Missing token ${token.name} (${token.uuid})`
-      );
-      if (!tokenMap.has(vsh.key())) {
-        tokenMap.set(vsh.key(), resolveToken(allTokens, token, vsh));
-      }
-      return ensure(tokenMap.get(vsh.key()), () => `Missing vsh ${vsh.key()}`);
-    };
-  }
-);
-
-/** Token resolver that returns the value only. */
-export type TokenValueResolver = (
-  token: FinalStyleToken,
-  vsh?: VariantedStylesHelper
-) => TokenValue;
-export const makeTokenValueResolver = (site: Site): TokenValueResolver => {
-  const tokenResolver = makeTokenResolver(site);
-  return (
-    token: FinalStyleToken,
-    maybeVsh?: VariantedStylesHelper
-  ): TokenValue => {
-    return tokenResolver(token, maybeVsh).value;
-  };
-};
-
 export const getTplComponentFetchers = maybeComputedFn(
   function getTplComponentFetchers(component: Component) {
     return flattenComponent(component)
@@ -728,117 +660,9 @@ export const getTplComponentFetchers = maybeComputedFn(
   }
 );
 
-export const makeTokenRefResolver = maybeComputedFn(
-  function makeTokenRefResolver(site: Site) {
-    const tokenResolver = makeTokenValueResolver(site);
-    const allTokens = siteToAllTokensAndOverridesDict(site);
-    return (maybeRef: string, vsh?: VariantedStylesHelper) => {
-      const maybeToken = tryParseTokenRef(maybeRef, allTokens);
-      if (maybeToken) {
-        return tokenResolver(maybeToken, vsh);
-      }
-      return undefined;
-    };
-  }
-);
-
-export const siteToAllTokensDict = maybeComputedFn((site: Site) =>
-  keyBy(siteToAllTokens(site), (t) => t.uuid)
-);
-
-export const siteToAllTokens = maybeComputedFn((site: Site) =>
-  allStyleTokens(site, { includeDeps: "all" })
-);
-
-export const siteToAllDirectTokensAndOverrides = maybeComputedFn((site: Site) =>
-  allStyleTokensAndOverrides(site, { includeDeps: "direct" })
-);
-
-export const siteToAllTokensAndOverrides = maybeComputedFn((site: Site) =>
-  allStyleTokensAndOverrides(site, { includeDeps: "all" })
-);
-
-export const siteToAllTokensAndOverridesDict = maybeComputedFn((site: Site) =>
-  keyBy(siteToAllTokensAndOverrides(site), (t) => t.uuid)
-);
-
-export const siteToAllDirectTokensOfType = maybeComputedFn(
-  (site: Site, type: TokenType) =>
-    siteToAllDirectTokensAndOverrides(site).filter((t) => t.type === type)
-);
-
 export const siteToAllImageAssetsDict = maybeComputedFn((site: Site) =>
   keyBy(allImageAssets(site, { includeDeps: "all" }), (x) => x.uuid)
 );
-
-export const componentToUsedTokens = maybeComputedFn(
-  function componentsToUsedTokens(site: Site, component: Component) {
-    const usedTokens = new Set<StyleToken>();
-    for (const tpl of flattenComponent(component)) {
-      if (isTplVariantable(tpl)) {
-        xAddAll(usedTokens, tplToUsedTokens(site, tpl));
-      }
-    }
-    return [...usedTokens.keys()];
-  }
-);
-
-const tplToUsedTokens = maybeComputedFn(function tplToUsedTokens(
-  site: Site,
-  tpl: TplNode
-) {
-  const collector = new Set<StyleToken>();
-  for (const vs of tpl.vsettings) {
-    const rulesets = expandRuleSets([vs.rs]);
-    for (const rs of rulesets) {
-      xAddAll(collector, usedTokensForExp(site, rs, tpl));
-    }
-  }
-  return [...collector.keys()];
-});
-
-const usedTokensForExp = maybeComputedFn(function usedTokensForExp(
-  site: Site,
-  rs: DeepReadonly<RuleSet>,
-  tpl: TplNode
-) {
-  const exp = readonlyRSH(rs, tpl);
-  const allTokensDict = siteToAllTokensAndOverridesDict(site);
-  const collector = new Set<StyleToken>();
-  for (const prop of exp.props()) {
-    const val = exp.getRaw(prop);
-    if (val) {
-      const refTokenIds = extractAllReferencedTokenIds(val);
-      const refTokens = withoutNils(refTokenIds.map((x) => allTokensDict[x]));
-      xAddAll(
-        collector,
-        refTokens.map((t) => t.base)
-      );
-      for (const token of refTokens) {
-        xAddAll(collector, usedTokensForToken(site, allTokensDict[token.uuid]));
-      }
-    }
-  }
-  return [...collector.keys()];
-});
-
-const usedTokensForToken = maybeComputedFn(function collectUsedTokensForToken(
-  site: Site,
-  token: FinalStyleToken
-) {
-  const allTokensDict = siteToAllTokensAndOverridesDict(site);
-  const collector = new Set<StyleToken>();
-  let sub = tryParseTokenRef(token.value, allTokensDict);
-  while (sub) {
-    collector.add(sub.base);
-    if (sub.value) {
-      sub = tryParseTokenRef(sub.value, allTokensDict);
-    } else {
-      break;
-    }
-  }
-  return [...collector.keys()];
-});
 
 export const componentToUsedMixins = maybeComputedFn(
   function componentToUsedMixins(component: Component) {
@@ -923,17 +747,6 @@ const expToPictureAssetRefs = maybeComputedFn(function expToPictureAssetRefs(
   }
   return refIds;
 });
-
-export const getAllUsedImageAssets = maybeComputedFn(
-  function getAllUsedImageAssets(site: Site) {
-    const usedAssets = new Set<ImageAsset>();
-    for (const comp of site.components) {
-      const usedAssetsByComponent = componentToUsedImageAssets(site, comp);
-      xAddAll(usedAssets, usedAssetsByComponent);
-    }
-    return usedAssets;
-  }
-);
 
 export const getComponentsUsingImageAsset = maybeComputedFn(
   function getComponentsUsingImageAsset(site: Site, asset: ImageAsset) {

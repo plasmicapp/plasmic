@@ -2,6 +2,7 @@
 // `resolveRichTextToDummyElt` in `shared/localization.tsx` as well :/
 import { ProjectId } from "@/wab/shared/ApiSchema";
 import { VariantCombo, isBaseVariant } from "@/wab/shared/Variants";
+import { serializeClassExpr } from "@/wab/shared/codegen/react-p/class-names";
 import {
   makeDefaultStyleClassNameBase,
   makeWabHtmlTextClassName,
@@ -55,10 +56,10 @@ function resolveRichTextToJsx(
       "Expected CustomCode or ObjectPath expr"
     );
     const textCode = getCodeExpressionWithFallback(text.expr, ctx.exprCtx);
-    const className =
-      ctx.exportOpts.stylesOpts.scheme === "css-modules"
-        ? `projectcss.${makeWabHtmlTextClassName(ctx.exportOpts)}`
-        : jsLiteral(makeWabHtmlTextClassName(ctx.exportOpts));
+    const className = serializeClassExpr(
+      ctx.exportOpts,
+      makeWabHtmlTextClassName(ctx.exportOpts)
+    );
     const code = text.html
       ? `<div className={${className}} dangerouslySetInnerHTML={{ __html: ${textCode} }} />`
       : `<React.Fragment>{${textCode}}</React.Fragment>`;

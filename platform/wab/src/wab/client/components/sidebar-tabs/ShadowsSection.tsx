@@ -1,5 +1,5 @@
-import { shouldBeDisabled } from "@/wab/client/components/sidebar/sidebar-helpers";
 import { SidebarModal } from "@/wab/client/components/sidebar/SidebarModal";
+import { shouldBeDisabled } from "@/wab/client/components/sidebar/sidebar-helpers";
 import { BoxShadowPanel } from "@/wab/client/components/style-controls/BoxShadowControls";
 import { ColorSwatch } from "@/wab/client/components/style-controls/ColorSwatch";
 import {
@@ -17,18 +17,18 @@ import { Icon } from "@/wab/client/components/widgets/Icon";
 import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { makeVariantedStylesHelperFromCurrentCtx } from "@/wab/client/utils/style-utils";
-import { MaybeWrap } from "@/wab/commons/components/ReactUtil";
 import { derefTokenRefs, tryParseTokenRef } from "@/wab/commons/StyleToken";
+import { MaybeWrap } from "@/wab/commons/components/ReactUtil";
+import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import { arrayMoveIndex, arrayRemove } from "@/wab/shared/collections";
 import { BoxShadow, BoxShadows, Dim } from "@/wab/shared/core/bg-styles";
 import {
-  allColorTokens,
-  allMixins,
-  allStyleTokensAndOverrides,
-} from "@/wab/shared/core/sites";
+  siteFinalColorTokens,
+  siteFinalStyleTokensAllDeps,
+} from "@/wab/shared/core/site-style-tokens";
+import { allMixins } from "@/wab/shared/core/sites";
 import { CssVarResolver } from "@/wab/shared/core/styles";
 import { parseCss } from "@/wab/shared/css";
-import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import { Tooltip } from "antd";
 import { observer } from "mobx-react";
 import React from "react";
@@ -46,7 +46,7 @@ const resolvedShadowCss = (
 ) => {
   const site = sc.site;
   const resolver = new CssVarResolver(
-    allStyleTokensAndOverrides(site, { includeDeps: "all" }),
+    siteFinalStyleTokensAllDeps(site),
     allMixins(site, { includeDeps: "all" }),
     site.imageAssets,
     site.activeTheme,
@@ -182,13 +182,13 @@ class _ShadowsPanelSection extends StyleComponent<
                 {boxShadows.shadows.map((shadow: BoxShadow, i: number) => {
                   const sc = this.props.expsProvider.studioCtx;
                   const color = derefTokenRefs(
-                    allStyleTokensAndOverrides(sc.site, { includeDeps: "all" }),
+                    siteFinalStyleTokensAllDeps(sc.site),
                     shadow.color,
                     vsh
                   );
                   const token = tryParseTokenRef(
                     shadow.color,
-                    allColorTokens(sc.site, { includeDeps: "all" })
+                    siteFinalColorTokens(sc.site, { includeDeps: "all" })
                   );
                   return (
                     <ListBoxItem

@@ -1,10 +1,4 @@
-import {
-  FinalStyleToken,
-  mkTokenRef,
-  replaceAllTokenRefs,
-  toFinalStyleToken,
-  TokenType,
-} from "@/wab/commons/StyleToken";
+import { mkTokenRef, replaceAllTokenRefs } from "@/wab/commons/StyleToken";
 import { ArenaType } from "@/wab/shared/ApiSchema";
 import {
   AnyArena,
@@ -25,8 +19,8 @@ import {
   mkBaseVariant,
 } from "@/wab/shared/Variants";
 import {
-  componentsReferecerToPageHref,
   componentToReferencers,
+  componentsReferecerToPageHref,
   findAllDataSourceOpExprForComponent,
   flattenComponent,
 } from "@/wab/shared/cached-selectors";
@@ -47,12 +41,13 @@ import {
 import { ensureComponentArenaColsOrder } from "@/wab/shared/component-arenas";
 import { ColorFill } from "@/wab/shared/core/bg-styles";
 import {
+  CodeComponent,
+  ComponentCloneResult,
+  PageComponent,
   allComponentVariants,
   cloneComponent,
   cloneVariant,
   cloneVariantGroup,
-  CodeComponent,
-  ComponentCloneResult,
   fixArgForCloneComponent,
   getComponentDisplayName,
   getEffectiveVariantSettingOfDeepRootElement,
@@ -61,7 +56,6 @@ import {
   isCodeComponent,
   isFrameComponent,
   isPageComponent,
-  PageComponent,
 } from "@/wab/shared/core/components";
 import {
   convertHrefExprToCodeExpr,
@@ -118,10 +112,6 @@ import {
   CustomFunction,
   CustomFunctionExpr,
   DataSourceOpExpr,
-  ensureKnownArenaFrame,
-  ensureKnownVariant,
-  ensureMaybeKnownGlobalVariantGroup,
-  ensureMaybeKnownVariantGroup,
   EventHandler,
   Expr,
   FunctionArg,
@@ -130,30 +120,10 @@ import {
   HostLessPackageInfo,
   ImageAsset,
   ImageAssetRef,
-  isKnownComponent,
-  isKnownComponentInstance,
-  isKnownCustomCode,
-  isKnownEventHandler,
-  isKnownExpr,
-  isKnownExprText,
-  isKnownFunctionType,
-  isKnownImageAsset,
-  isKnownMixin,
-  isKnownPageArena,
-  isKnownPageHref,
-  isKnownRenderExpr,
-  isKnownStrongFunctionArg,
-  isKnownTplComponent,
-  isKnownTplNode,
-  isKnownTplRef,
-  isKnownTplTag,
-  isKnownVariant,
-  isKnownVariantedRuleSet,
-  isKnownVariantedValue,
   MapExpr,
   Mixin,
-  ObjectPath,
   ObjInst,
+  ObjectPath,
   PageArena,
   PageHref,
   Param,
@@ -174,26 +144,49 @@ import {
   TplNode,
   TplRef,
   Type,
+  VarRef,
   Variant,
-  VariantedRuleSet,
-  VariantedValue,
   VariantGroup,
   VariantSetting,
+  VariantedRuleSet,
+  VariantedValue,
   VariantsRef,
-  VarRef,
   VirtualRenderExpr,
+  ensureKnownArenaFrame,
+  ensureKnownVariant,
+  ensureMaybeKnownGlobalVariantGroup,
+  ensureMaybeKnownVariantGroup,
+  isKnownComponent,
+  isKnownComponentInstance,
+  isKnownCustomCode,
+  isKnownEventHandler,
+  isKnownExpr,
+  isKnownExprText,
+  isKnownFunctionType,
+  isKnownImageAsset,
+  isKnownMixin,
+  isKnownPageArena,
+  isKnownPageHref,
+  isKnownRenderExpr,
+  isKnownStrongFunctionArg,
+  isKnownTplComponent,
+  isKnownTplNode,
+  isKnownTplRef,
+  isKnownTplTag,
+  isKnownVariant,
+  isKnownVariantedRuleSet,
+  isKnownVariantedValue,
 } from "@/wab/shared/model/classes";
 import {
-  isRenderableType,
   isRenderFuncType,
+  isRenderableType,
 } from "@/wab/shared/model/model-util";
 import {
-  defaultResponsiveSettings,
   ResponsiveStrategy,
+  defaultResponsiveSettings,
 } from "@/wab/shared/responsiveness";
 import { naturalSort } from "@/wab/shared/sort";
 import { getMatchingPagePathParams } from "@/wab/shared/utils/url-utils";
-import keyBy from "lodash/keyBy";
 import keys from "lodash/keys";
 import orderBy from "lodash/orderBy";
 import pick from "lodash/pick";
@@ -1917,76 +1910,6 @@ export function allComponents(
     );
   }
   return components;
-}
-
-export function directDepStyleTokens(
-  site: Site,
-  depSite: Site
-): FinalStyleToken[] {
-  return localStyleTokens(depSite).map((t) => toFinalStyleToken(t, site));
-}
-
-export function localStyleTokenOverrides(site: Site) {
-  return [...site.styleTokenOverrides];
-}
-
-export function localStyleTokens(site: Site) {
-  return [...site.styleTokens];
-}
-
-export function allStyleTokenOverridesForDep(site: Site, depSite: Site) {
-  const depTokens = allStyleTokensDict(depSite);
-  return site.styleTokenOverrides.filter((o) => depTokens[o.token.uuid]);
-}
-
-export function allStyleTokensAndOverrides(
-  site: Site,
-  opts: { includeDeps?: DependencyWalkScope } = {}
-): FinalStyleToken[] {
-  return allStyleTokens(site, opts).map((token) =>
-    toFinalStyleToken(token, site)
-  );
-}
-
-export function allStyleTokens(
-  site: Site,
-  opts: { includeDeps?: DependencyWalkScope } = {}
-) {
-  const allTokens = localStyleTokens(site);
-
-  if (opts.includeDeps) {
-    allTokens.push(
-      ...walkDependencyTree(site, opts.includeDeps).flatMap(
-        (d) => d.site.styleTokens
-      )
-    );
-  }
-
-  return allTokens;
-}
-
-export function allStyleTokensDict(
-  site: Site,
-  opts: { includeDeps?: DependencyWalkScope } = {}
-) {
-  return keyBy(allStyleTokens(site, opts), (t) => t.uuid);
-}
-
-export function allColorTokens(
-  site: Site,
-  opts: { includeDeps?: DependencyWalkScope } = {}
-): FinalStyleToken[] {
-  return allTokensOfType(site, TokenType.Color, opts);
-}
-
-export function allTokensOfType(
-  site: Site,
-  tokenType: TokenType,
-  opts: { includeDeps?: DependencyWalkScope } = {}
-): FinalStyleToken[] {
-  return allStyleTokensAndOverrides(site, opts).filter(
-    (t) => t.type === tokenType
-  );
 }
 
 export function localMixins(site: Site) {

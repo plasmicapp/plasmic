@@ -1,4 +1,3 @@
-// eslint-disable-next-line no-restricted-imports
 import RowGroup from "@/wab/client/components/RowGroup";
 import { MenuBuilder } from "@/wab/client/components/menu-builder";
 import { FolderContextMenu } from "@/wab/client/components/sidebar-tabs/ProjectPanel/FolderContextMenu";
@@ -15,21 +14,21 @@ import TokenIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Token";
 import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import {
   FinalStyleToken,
-  isStyleTokenEditable,
   MutableStyleToken,
   OverrideableStyleToken,
   TokenType,
   TokenValue,
+  isStyleTokenEditable,
   tryParseTokenRef,
 } from "@/wab/commons/StyleToken";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
-import { TokenValueResolver } from "@/wab/shared/cached-selectors";
 import { assert, ensure, spawn } from "@/wab/shared/common";
 import {
-  allColorTokens,
-  allTokensOfType,
-  directDepStyleTokens,
-} from "@/wab/shared/core/sites";
+  TokenValueResolver,
+  finalStyleTokensForDep,
+  siteFinalColorTokens,
+  siteFinalStyleTokensOfType,
+} from "@/wab/shared/core/site-style-tokens";
 import { DEVFLAGS } from "@/wab/shared/devflags";
 import { Site, StyleToken } from "@/wab/shared/model/classes";
 import { canCreateAlias } from "@/wab/shared/ui-config-utils";
@@ -122,7 +121,7 @@ export const newTokenValueAllowed = (
   newValue: string,
   vsh?: VariantedStylesHelper
 ) => {
-  const allTokensOfSameType = allTokensOfType(site, token.type, {
+  const allTokensOfSameType = siteFinalStyleTokensOfType(site, token.type, {
     includeDeps: "direct",
   });
 
@@ -157,7 +156,7 @@ export const newTokenValueAllowed = (
 
 function maybeTokenRefCycle(
   token: FinalStyleToken,
-  tokens: FinalStyleToken[],
+  tokens: ReadonlyArray<FinalStyleToken>,
   newValue: string,
   vsh?: VariantedStylesHelper
 ): string[] | undefined {
@@ -300,7 +299,7 @@ export const TokenRow = observer(function TokenRow(props: {
 
       builder.genSection(undefined, () => {
         const pushTokens = (
-          tokens: FinalStyleToken[],
+          tokens: ReadonlyArray<FinalStyleToken>,
           push_: (x: React.ReactElement) => void
         ) => {
           for (const tok of sortBy(tokens, (t) => t.name)) {
@@ -329,11 +328,14 @@ export const TokenRow = observer(function TokenRow(props: {
           }
         };
         builder.genSub("Replace all usages of this token with...", (push2) => {
-          pushTokens(allTokensOfType(studioCtx.site, token.type), push2);
+          pushTokens(
+            siteFinalStyleTokensOfType(studioCtx.site, token.type),
+            push2
+          );
           for (const dep of studioCtx.site.projectDependencies) {
             builder.genSection(`Imported from "${dep.name}"`, (push3) => {
               pushTokens(
-                directDepStyleTokens(studioCtx.site, dep.site).filter(
+                finalStyleTokensForDep(studioCtx.site, dep.site).filter(
                   (t) => t.type === token.type
                 ),
                 push3
@@ -522,7 +524,7 @@ export const ColorTokenPopup = observer(function ColorTokenPopup(props: {
       show={show}
       onClose={() => onClose()}
       autoFocus={!autoFocusName}
-      colorTokens={allColorTokens(studioCtx.site, {
+      colorTokens={siteFinalColorTokens(studioCtx.site, {
         includeDeps: "direct",
       }).filter((t) => t.uuid !== token.uuid)}
       popupTitle={

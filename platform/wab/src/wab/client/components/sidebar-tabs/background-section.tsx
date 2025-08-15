@@ -1,12 +1,12 @@
 import { EllipseControl } from "@/wab/client/components/EllipseControl";
+import { SidebarModal } from "@/wab/client/components/sidebar/SidebarModal";
+import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
 import {
   FullRow,
   LabeledItem,
   LabeledItemRow,
   shouldBeDisabled,
 } from "@/wab/client/components/sidebar/sidebar-helpers";
-import { SidebarModal } from "@/wab/client/components/sidebar/SidebarModal";
-import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
 import { AngleDial } from "@/wab/client/components/style-controls/AngleDial";
 import { ColorStops } from "@/wab/client/components/style-controls/ColorStops";
 import { ImageAssetPreviewAndPicker } from "@/wab/client/components/style-controls/ImageSelector";
@@ -43,7 +43,7 @@ import {
   replaceAllTokenRefs,
   tryParseTokenRef,
 } from "@/wab/commons/StyleToken";
-import { TokenValueResolver } from "@/wab/shared/cached-selectors";
+import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import { arrayMoveIndex } from "@/wab/shared/collections";
 import {
   assert,
@@ -57,14 +57,14 @@ import {
 } from "@/wab/shared/common";
 import {
   BackgroundLayer,
-  bgClipTextTag,
   ColorFill,
   ImageBackground,
   LinearGradient,
-  mkBackgroundLayer,
   NoneBackground,
   RadialGradient,
   Stop,
+  bgClipTextTag,
+  mkBackgroundLayer,
 } from "@/wab/shared/core/bg-styles";
 import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
 import {
@@ -72,18 +72,18 @@ import {
   tryParseImageAssetRef,
 } from "@/wab/shared/core/image-assets";
 import {
-  allColorTokens,
-  allMixins,
-  allStyleTokensAndOverrides,
-} from "@/wab/shared/core/sites";
+  TokenValueResolver,
+  siteFinalColorTokens,
+  siteFinalStyleTokensAllDeps,
+} from "@/wab/shared/core/site-style-tokens";
+import { allMixins } from "@/wab/shared/core/sites";
 import { CssVarResolver } from "@/wab/shared/core/styles";
 import * as css from "@/wab/shared/css";
 import { parseCss } from "@/wab/shared/css";
 import { isStandardSide, oppSides } from "@/wab/shared/geom";
-import { isKnownImageAsset, Site } from "@/wab/shared/model/classes";
+import { Site, isKnownImageAsset } from "@/wab/shared/model/classes";
 import { userImgUrl } from "@/wab/shared/urls";
 import Chroma from "@/wab/shared/utils/color-utils";
-import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import { Tooltip } from "antd";
 import { observer } from "mobx-react";
 import { basename } from "path";
@@ -100,7 +100,7 @@ export const resolvedBackgroundImageCss = (
   // First try resolving with client token resolver.
   // Client token resolver is needed for registered style tokens that have a selector.
   cssValue = replaceAllTokenRefs(cssValue, (tokenId) => {
-    const token = allColorTokens(site, {
+    const token = siteFinalColorTokens(site, {
       includeDeps: "all",
     }).find((t) => t.uuid === tokenId);
     if (token) {
@@ -111,7 +111,7 @@ export const resolvedBackgroundImageCss = (
   });
 
   const resolver = new CssVarResolver(
-    allStyleTokensAndOverrides(site, { includeDeps: "all" }),
+    siteFinalStyleTokensAllDeps(site),
     allMixins(site, { includeDeps: "all" }),
     site.imageAssets,
     site.activeTheme,
@@ -295,7 +295,7 @@ export const BackgroundSection = observer(function BackgroundSection(
                         isTokenRef(fill.color)
                           ? tryParseTokenRef(
                               fill.color,
-                              allColorTokens(studioCtx.site, {
+                              siteFinalColorTokens(studioCtx.site, {
                                 includeDeps: "all",
                               })
                             )?.name || "Color token"

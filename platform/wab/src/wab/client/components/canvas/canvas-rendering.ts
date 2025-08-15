@@ -63,7 +63,6 @@ import {
   componentToVariantParamNames,
   computedNodeNamer,
   computedProjectFlags,
-  makeTokenValueResolver,
 } from "@/wab/shared/cached-selectors";
 import {
   INTERNAL_CC_CANVAS_SELECTION_PROP,
@@ -162,6 +161,7 @@ import {
 } from "@/wab/shared/core/exprs";
 import { mkParam } from "@/wab/shared/core/lang";
 import { makeSelectableKey } from "@/wab/shared/core/selection";
+import { makeTokenValueResolver } from "@/wab/shared/core/site-style-tokens";
 import { isSlotSelection } from "@/wab/shared/core/slots";
 import {
   StateVariableType,
@@ -2237,7 +2237,7 @@ function getComponentRootTagResetClassNames(
   );
   const rootResetClass = makeRootResetClassName(
     `${getOwnerSite(component).uid}`,
-    { targetEnv: "canvas", useCssModules: false }
+    { targetEnv: "canvas", stylesOpts: { scheme: "css" } }
   );
   return withoutNils([
     "plasmic-tokens",

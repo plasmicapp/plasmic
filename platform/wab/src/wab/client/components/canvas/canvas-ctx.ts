@@ -26,10 +26,7 @@ import {
   isHeightAutoDerived,
   updateAutoDerivedFrameHeight,
 } from "@/wab/shared/Arenas";
-import {
-  makeTokenRefResolver,
-  usedHostLessPkgs,
-} from "@/wab/shared/cached-selectors";
+import { usedHostLessPkgs } from "@/wab/shared/cached-selectors";
 import { getBuiltinComponentRegistrations } from "@/wab/shared/code-components/builtin-code-components";
 import { CodeComponentsRegistry } from "@/wab/shared/code-components/code-components";
 import {
@@ -39,6 +36,7 @@ import {
   spawnWrapper,
   withTimeout,
 } from "@/wab/shared/common";
+import { makeTokenRefResolver } from "@/wab/shared/core/site-style-tokens";
 import { DEVFLAGS } from "@/wab/shared/devflags";
 import { Box } from "@/wab/shared/geom";
 import { ArenaFrame } from "@/wab/shared/model/classes";

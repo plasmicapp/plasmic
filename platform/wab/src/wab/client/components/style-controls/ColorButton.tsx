@@ -12,7 +12,7 @@ import {
 import { TOKEN_CAP } from "@/wab/shared/Labels";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import { zeroWidthSpace } from "@/wab/shared/common";
-import { allColorTokens } from "@/wab/shared/core/sites";
+import { siteFinalColorTokens } from "@/wab/shared/core/site-style-tokens";
 import Chroma from "@/wab/shared/utils/color-utils";
 import { Tooltip } from "antd";
 import { observer } from "mobx-react";
@@ -53,7 +53,10 @@ function _ColorButton(props: ColorButtonProps) {
 
   const tokenRef = !!color && isTokenRef(color);
   const appliedToken = color
-    ? tryParseTokenRef(color, allColorTokens(sc.site, { includeDeps: "all" }))
+    ? tryParseTokenRef(
+        color,
+        siteFinalColorTokens(sc.site, { includeDeps: "all" })
+      )
     : null;
 
   const resolver = useClientTokenResolver();

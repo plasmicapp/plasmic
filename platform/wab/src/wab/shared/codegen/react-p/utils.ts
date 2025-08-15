@@ -1,5 +1,12 @@
 import { FinalStyleToken } from "@/wab/commons/StyleToken";
-import { makeTokenValueResolver } from "@/wab/shared/cached-selectors";
+import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
+import {
+  VariantCombo,
+  hasStyleOrCodeComponentVariant,
+  isActiveVariantSetting,
+  isBaseVariant,
+  isStyleVariant,
+} from "@/wab/shared/Variants";
 import {
   CodeComponentWithHelpers,
   isCodeComponentWithHelpers,
@@ -8,13 +15,13 @@ import { isTplRootWithCodeComponentVariants } from "@/wab/shared/code-components
 import { makeCodeComponentHelperImportName } from "@/wab/shared/codegen/react-p/code-components";
 import { ReactHookSpec } from "@/wab/shared/codegen/react-p/react-hook-spec";
 import {
+  NodeNamer,
   getExportedComponentName,
   makeCodeComponentHelperSkeletonIdFileName,
   makeComponentRenderIdFileName,
   makeComponentSkeletonIdFileName,
   makePlasmicComponentName,
   makeVariantsArgTypeName,
-  NodeNamer,
 } from "@/wab/shared/codegen/react-p/serialize-utils";
 import {
   ImportAliasesMap,
@@ -32,6 +39,7 @@ import {
 } from "@/wab/shared/core/components";
 import { codeLit } from "@/wab/shared/core/exprs";
 import { ParamExportType } from "@/wab/shared/core/lang";
+import { makeTokenValueResolver } from "@/wab/shared/core/site-style-tokens";
 import {
   getRelevantVariantCombosForTheme,
   getRelevantVariantCombosForToken,
@@ -49,14 +57,6 @@ import {
 } from "@/wab/shared/model/classes";
 import { PlumeType } from "@/wab/shared/plume/plume-registry";
 import { sortedVariantSettings } from "@/wab/shared/variant-sort";
-import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
-import {
-  hasStyleOrCodeComponentVariant,
-  isActiveVariantSetting,
-  isBaseVariant,
-  isStyleVariant,
-  VariantCombo,
-} from "@/wab/shared/Variants";
 import L from "lodash";
 
 export function deriveReactHookSpecs(

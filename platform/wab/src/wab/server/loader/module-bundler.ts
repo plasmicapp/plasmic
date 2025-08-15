@@ -66,6 +66,8 @@ export interface ProjectMeta {
   name: string;
   version: string;
   remoteFonts: FontMeta[];
+  hasStyleTokenOverrides: boolean;
+  styleTokensProviderFileName: string;
   globalContextsProviderFileName: string;
 }
 
@@ -146,6 +148,10 @@ async function bundleModulesEsbuild(
             // will import them directly from the code component, and not from the loader
             .filter((c) => !c.isCode)
             .map((c) => componentEntrypoint(c))
+        ),
+        // Each style tokens provider file
+        ...codegenOutputs.map(
+          (o) => o.projectConfig.styleTokensProviderBundle.fileName
         ),
         // Each global variant context file
         ...codegenOutputs.flatMap((o) =>
@@ -685,6 +691,12 @@ function makeLoaderBundleOutput(
         version: o.projectConfig.version,
         indirect: o.projectConfig.indirect,
         remoteFonts: makeFontMetas(o.projectConfig.fontUsages),
+        hasStyleTokenOverrides: o.projectConfig.hasStyleTokenOverrides,
+        styleTokensProviderFileName:
+          o.projectConfig.styleTokensProviderBundle.fileName.replace(
+            ".tsx",
+            ".js"
+          ),
         globalContextsProviderFileName: o.projectConfig.globalContextBundle
           ? makeGlobalContextsProviderFileName(
               o.projectConfig.projectId

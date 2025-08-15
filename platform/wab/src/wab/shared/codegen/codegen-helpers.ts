@@ -1,16 +1,21 @@
 import { DeepMap, deepMapMemoized } from "@/wab/commons/deep-map";
-import { makeTokenRefResolver } from "@/wab/shared/cached-selectors";
-import { buildObjToDepMap } from "@/wab/shared/core/project-deps";
+import { readonlyRSH } from "@/wab/shared/RuleSetHelpers";
 import {
-  allImageAssets,
-  allMixins,
-  allStyleTokensAndOverrides,
-} from "@/wab/shared/core/sites";
-import { flattenTpls } from "@/wab/shared/core/tpls";
+  isTextArgNodeOfSlot,
+  shouldWrapSlotContentInDataCtxReader,
+} from "@/wab/shared/SlotUtils";
+import { $$$ } from "@/wab/shared/TplQuery";
+import { VariantCombo, isBaseVariant } from "@/wab/shared/Variants";
+import {
+  makeTokenRefResolver,
+  siteFinalStyleTokensAllDeps,
+} from "@/wab/shared/core/site-style-tokens";
+import { allImageAssets, allMixins } from "@/wab/shared/core/sites";
 import {
   CssVarResolver,
   createExpandedRuleSetMerger,
 } from "@/wab/shared/core/styles";
+import { flattenTpls } from "@/wab/shared/core/tpls";
 import { getEffectiveVariantSetting } from "@/wab/shared/effective-variant-setting";
 import { makeLayoutAwareRuleSet } from "@/wab/shared/layoututils";
 import {
@@ -19,17 +24,10 @@ import {
   TplNode,
   VariantSetting,
 } from "@/wab/shared/model/classes";
-import { readonlyRSH } from "@/wab/shared/RuleSetHelpers";
-import {
-  isTextArgNodeOfSlot,
-  shouldWrapSlotContentInDataCtxReader,
-} from "@/wab/shared/SlotUtils";
-import { $$$ } from "@/wab/shared/TplQuery";
 import {
   makeVariantComboSorter,
   sortedVariantSettings,
 } from "@/wab/shared/variant-sort";
-import { VariantCombo, isBaseVariant } from "@/wab/shared/Variants";
 
 export class SiteGenHelper {
   private cache: Map<string, DeepMap<any>> = new Map();
@@ -44,7 +42,7 @@ export class SiteGenHelper {
   );
   allStyleTokensAndOverrides = deepMapMemoized(
     this.cache,
-    () => allStyleTokensAndOverrides(this.site, { includeDeps: "all" }),
+    () => siteFinalStyleTokensAllDeps(this.site),
     { funcKey: "allStyleTokensAndOverrides" }
   );
   allMixins = deepMapMemoized(
@@ -64,9 +62,6 @@ export class SiteGenHelper {
       funcKey: "shouldWrapSlotContentInDataCtxReader",
     }
   );
-  objToDepMap = deepMapMemoized(this.cache, () => buildObjToDepMap(this.site), {
-    funcKey: "objToDepmap",
-  });
 }
 
 export class ComponentGenHelper {

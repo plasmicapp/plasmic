@@ -55,9 +55,12 @@ import {
   replaceAllAssetRefs,
 } from "@/wab/shared/core/image-assets";
 import {
+  siteFinalStyleTokens,
+  siteFinalStyleTokensAllDeps,
+  styleTokenOverridesForDep,
+} from "@/wab/shared/core/site-style-tokens";
+import {
   allGlobalVariants,
-  allStyleTokenOverridesForDep,
-  allStyleTokensAndOverrides,
   getAllAttachedTpls,
   getSiteArenas,
   isHostLessPackage,
@@ -675,18 +678,14 @@ function upgradeProjectDep(
     }
 
     const oldFinalToken = toFinalStyleToken(oldToken, oldDep.site);
-    const oldTokens = allStyleTokensAndOverrides(oldDep.site, {
-      includeDeps: "all",
-    });
-    const siteTokens = allStyleTokensAndOverrides(site, {
-      includeDeps: "all",
-    });
+    const oldTokens = siteFinalStyleTokensAllDeps(oldDep.site);
+    const siteTokens = siteFinalStyleTokensAllDeps(site);
 
     if (opts.trySimilar) {
       // We search into the current site looking for (name, type, value, |variantedValues|) match
       // this can introduce some false positives as we don't check for the variants, but we assume
       // it's too rare to be a problem
-      const similarToken = allStyleTokensAndOverrides(site).find(
+      const similarToken = siteFinalStyleTokens(site).find(
         (m) =>
           m.name === oldToken.name &&
           m.type === oldToken.type &&
@@ -926,7 +925,7 @@ function upgradeProjectDep(
   // If a token is deleted, we will clone it into this project and apply overrides.
   // This MUST be done first before anything else calls `getOrCloneNewToken` so that
   // we know whether the token was deleted or not.
-  allStyleTokenOverridesForDep(site, oldDep.site).forEach(
+  styleTokenOverridesForDep(site, oldDep.site).forEach(
     (override: StyleTokenOverride) => {
       const newToken = oldToNewToken.get(override.token);
       if (!newToken) {
@@ -1562,7 +1561,7 @@ function upgradeProjectDep(
   // fix token ref from tokens
   site.styleTokens.forEach((token) => fixRefsForToken(token));
   // fix token ref from token overrides
-  allStyleTokenOverridesForDep(site, oldDep.site).forEach((override) =>
+  styleTokenOverridesForDep(site, oldDep.site).forEach((override) =>
     fixRefsForTokenOverride(override)
   );
   // fix token ref from mixin

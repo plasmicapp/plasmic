@@ -42,7 +42,7 @@ import {
   tokenTypeDimOpts,
 } from "@/wab/commons/StyleToken";
 import { ensure, filterMapTruthy, maybe } from "@/wab/shared/common";
-import { allStyleTokensAndOverrides } from "@/wab/shared/core/sites";
+import { siteFinalStyleTokensAllDeps } from "@/wab/shared/core/site-style-tokens";
 import { fontWeightNumber, parseCssNumericNew } from "@/wab/shared/css";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import { notification } from "antd";
@@ -161,9 +161,7 @@ function _Typography({
               if (props.warnOnRelativeUnits) {
                 if (val) {
                   const derefedVal = derefTokenRefs(
-                    allStyleTokensAndOverrides(sc.studioCtx().site, {
-                      includeDeps: "all",
-                    }),
+                    siteFinalStyleTokensAllDeps(sc.studioCtx().site),
                     val
                   );
                   const parsed = parseCssNumericNew(derefedVal);

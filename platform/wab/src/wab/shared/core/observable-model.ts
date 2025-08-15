@@ -3,7 +3,6 @@ import {
   componentToAllVariants,
   siteToAllGlobalVariants,
   siteToAllImageAssetsDict,
-  siteToAllTokensDict,
 } from "@/wab/shared/cached-selectors";
 import {
   assert,
@@ -22,28 +21,28 @@ import {
   tryParseImageAssetRef,
 } from "@/wab/shared/core/image-assets";
 import {
-  allGlobalVariants,
-  allImageAssets,
-  allStyleTokens,
-} from "@/wab/shared/core/sites";
+  siteStyleTokensAllDeps,
+  siteStyleTokensAllDepsDict,
+} from "@/wab/shared/core/site-style-tokens";
+import { allGlobalVariants, allImageAssets } from "@/wab/shared/core/sites";
 import { undoChanges } from "@/wab/shared/core/undo-util";
 import { dbg } from "@/wab/shared/dbg";
 import mobx from "@/wab/shared/import-mobx";
 import { mutateGlobalObservable } from "@/wab/shared/mobx-util";
+import { InstUtil, instUtil } from "@/wab/shared/model/InstUtil";
 import {
   ArenaFrame,
   Component,
   ImageAsset,
-  isKnownSite,
   ObjInst,
   RuleSet,
   Site,
   StyleToken,
   Variant,
   VariantedValue,
+  isKnownSite,
 } from "@/wab/shared/model/classes";
 import { meta } from "@/wab/shared/model/classes-metas";
-import { InstUtil, instUtil } from "@/wab/shared/model/InstUtil";
 import {
   Class,
   Field,
@@ -55,7 +54,7 @@ import type { IObservableArray, Lambda } from "mobx";
 import type { IAtom, IDerivation, IObjectDidChange } from "mobx/dist/internal";
 import moment from "moment";
 import defaultReact from "react";
-import { failable, IFailable } from "ts-failable";
+import { IFailable, failable } from "ts-failable";
 
 export interface ChangeNode {
   readonly inst: ObjInst;
@@ -906,7 +905,7 @@ export function observeModel(
   // (The values are never updated and get cleared after observing the model
   // for the first time).
   const firstRunData = {
-    allStyleTokens: undefined as StyleToken[] | undefined,
+    allStyleTokens: undefined as ReadonlyArray<StyleToken> | undefined,
     allImageAssets: undefined as ImageAsset[] | undefined,
     allGlobalVariants: undefined as Variant[] | undefined,
     allComponentVariants: undefined as Map<Component, Variant[]> | undefined,
@@ -918,7 +917,7 @@ export function observeModel(
   const componentVariantsCache = new Map<Component, Map<string, Variant>>();
 
   const updateAndGetAllCachedInsts = <T extends ObjInst & { uuid: string }>(
-    insts: T[] | Dictionary<T>,
+    insts: ReadonlyArray<T> | Dictionary<T>,
     instCache: Map<string, T>
   ): T[] => {
     (Array.isArray(insts) ? insts : Object.values(insts)).forEach((inst) =>
@@ -931,9 +930,7 @@ export function observeModel(
     const getAllStyleTokens = () => {
       if (firstRun) {
         if (!firstRunData.allStyleTokens) {
-          firstRunData.allStyleTokens = allStyleTokens(site, {
-            includeDeps: "all",
-          });
+          firstRunData.allStyleTokens = siteStyleTokensAllDeps(site);
         }
         return updateAndGetAllCachedInsts(
           firstRunData.allStyleTokens,
@@ -941,7 +938,7 @@ export function observeModel(
         );
       } else {
         return updateAndGetAllCachedInsts(
-          siteToAllTokensDict(site),
+          siteStyleTokensAllDepsDict(site),
           tokensCache
         );
       }

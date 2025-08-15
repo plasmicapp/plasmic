@@ -1,4 +1,13 @@
 import { FinalStyleToken, resolveAllTokenRefs } from "@/wab/commons/StyleToken";
+import { RSH, RuleSetHelpers } from "@/wab/shared/RuleSetHelpers";
+import { getSlotArgs } from "@/wab/shared/SlotUtils";
+import { TplMgr } from "@/wab/shared/TplMgr";
+import { $$$ } from "@/wab/shared/TplQuery";
+import {
+  isBaseVariant,
+  mkVariantSetting,
+  tryGetBaseVariantSetting,
+} from "@/wab/shared/Variants";
 import {
   arrayEqIgnoreOrder,
   assert,
@@ -8,18 +17,16 @@ import {
   withoutNils,
 } from "@/wab/shared/common";
 import {
+  PlumeComponent,
   isCodeComponent,
   isDefaultComponent,
   isHostLessCodeComponent,
   isPlumeComponent,
-  PlumeComponent,
 } from "@/wab/shared/core/components";
 import { clone as cloneExpr } from "@/wab/shared/core/exprs";
 import { syncGlobalContexts } from "@/wab/shared/core/project-deps";
-import {
-  allStyleTokensAndOverrides,
-  isHostLessPackage,
-} from "@/wab/shared/core/sites";
+import { siteFinalStyleTokensAllDeps } from "@/wab/shared/core/site-style-tokens";
+import { isHostLessPackage } from "@/wab/shared/core/sites";
 import { createExpandedRuleSetMerger } from "@/wab/shared/core/styles";
 import {
   clone as cloneTpl,
@@ -34,8 +41,8 @@ import {
   walkTpls,
 } from "@/wab/shared/core/tpls";
 import {
-  adaptEffectiveVariantSetting,
   EffectiveVariantSetting,
+  adaptEffectiveVariantSetting,
   getActiveVariantsInArg,
   getEffectiveVariantSettingForInsertable,
 } from "@/wab/shared/effective-variant-setting";
@@ -48,10 +55,6 @@ import {
   Arg,
   Component,
   CustomCode,
-  isKnownCustomCode,
-  isKnownRenderExpr,
-  isKnownTplTag,
-  isKnownVariantsRef,
   RenderExpr,
   Site,
   TplComponent,
@@ -60,16 +63,11 @@ import {
   Variant,
   VariantSetting,
   VariantsRef,
+  isKnownCustomCode,
+  isKnownRenderExpr,
+  isKnownTplTag,
+  isKnownVariantsRef,
 } from "@/wab/shared/model/classes";
-import { RSH, RuleSetHelpers } from "@/wab/shared/RuleSetHelpers";
-import { getSlotArgs } from "@/wab/shared/SlotUtils";
-import { TplMgr } from "@/wab/shared/TplMgr";
-import { $$$ } from "@/wab/shared/TplQuery";
-import {
-  isBaseVariant,
-  mkVariantSetting,
-  tryGetBaseVariantSetting,
-} from "@/wab/shared/Variants";
 import { flatten } from "lodash";
 
 /**
@@ -150,7 +148,7 @@ export function inlineMixins(tplTree: TplNode) {
  */
 export function inlineTokens(
   tplTree: TplNode,
-  tokens: FinalStyleToken[],
+  tokens: ReadonlyArray<FinalStyleToken>,
   onFontSeen?: (font: string) => void
 ) {
   // Walk TplTree
@@ -265,7 +263,7 @@ export const getSiteMatchingPlumeComponent = (
     // More handling is made `adjustInsertableTemplateComponentArgs`
 
     inlineMixins(component.tplTree);
-    const allTokens = allStyleTokensAndOverrides(site, { includeDeps: "all" });
+    const allTokens = siteFinalStyleTokensAllDeps(site);
     // We ignore fonts here, because as we are inlining the tree we will pass again
     // through this elements
     inlineTokens(component.tplTree, allTokens);
@@ -603,10 +601,7 @@ const adjustInsertableTemplateComponentArgs = (
             inlineSlots(tplTag);
             inlineComponents(tplTag, ctx);
             inlineMixins(tplTag);
-            inlineTokens(
-              tplTag,
-              allStyleTokensAndOverrides(ctx.sourceSite, { includeDeps: "all" })
-            );
+            inlineTokens(tplTag, siteFinalStyleTokensAllDeps(ctx.sourceSite));
             tplTag.parent = sourceTpl;
             return tplTag;
           } else {

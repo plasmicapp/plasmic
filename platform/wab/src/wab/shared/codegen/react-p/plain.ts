@@ -31,6 +31,8 @@ import {
   makeCssFileName,
   makePlasmicComponentName,
   makePlasmicSuperContextName,
+  makeProjectModuleImports,
+  makeStyleTokensProviderImports,
   makeStylesImports,
   makeVariantPropsName,
   makeVariantsArgTypeName,
@@ -63,11 +65,8 @@ import {
   isCodeComponent,
   isPageComponent,
 } from "@/wab/shared/core/components";
-import {
-  allImageAssets,
-  allMixins,
-  allStyleTokensAndOverrides,
-} from "@/wab/shared/core/sites";
+import { siteFinalStyleTokensAllDeps } from "@/wab/shared/core/site-style-tokens";
+import { allImageAssets, allMixins } from "@/wab/shared/core/sites";
 import { CssVarResolver } from "@/wab/shared/core/styles";
 import {
   isTplComponent,
@@ -173,7 +172,7 @@ export function exportReactPlain(
     projectFlags,
     forceAllCsr: false,
     cssVarResolver: new CssVarResolver(
-      allStyleTokensAndOverrides(site, { includeDeps: "all" }),
+      siteFinalStyleTokensAllDeps(site),
       allMixins(site, { includeDeps: "all" }),
       allImageAssets(site, { includeDeps: "all" }),
       site.activeTheme
@@ -264,7 +263,25 @@ ${plumeType ? `import * as pp from "@plasmicapp/react-web";` : ""}
 ${plumeImports ? plumeImports.imports : ""}
 
 ${referencedImports.join("\n")}
-${importGlobalVariantContexts}
+${makeProjectModuleImports(projectConfig.projectModuleBundle)}
+${makeStyleTokensProviderImports(projectConfig.styleTokensProviderBundle, {
+  useStyleTokens: true,
+})}
+ ${
+   ctx.projectConfig.hasStyleTokenOverrides
+     ? ""
+     : ctx.siteCtx.cssProjectDependencies
+         .map((dep) =>
+           makeStyleTokensProviderImports(
+             projectConfig.styleTokensProviderBundle,
+             {
+               useStyleTokens: true,
+             },
+             dep
+           )
+         )
+         .join("\n")
+ }
 ${makeStylesImports(
   siteCtx.cssProjectDependencies,
   component,

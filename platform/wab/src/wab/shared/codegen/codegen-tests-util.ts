@@ -16,9 +16,14 @@ import { promisify } from "util";
 
 export async function codegen(dir: string, site: Site) {
   console.log("Codegen output dir", dir);
+
+  const projectId = "1234567890";
+  const platform = "react";
+  const targetEnv = "codegen";
+
   initBuiltinActions({
-    projectId: "project",
-    platform: "react",
+    projectId,
+    platform,
     projectFlags: jsonClone(DEVFLAGS),
     inStudio: false,
   });
@@ -33,18 +38,18 @@ export async function codegen(dir: string, site: Site) {
   const projectConfig = exportProjectConfig(
     site,
     "Project",
-    "project",
+    projectId,
     10,
     "10",
     "latest",
     {
-      platform: "react",
+      platform,
+      targetEnv,
       relPathFromImplToManagedDir: ".",
       relPathFromManagedToImplDir: ".",
-      targetEnv: "codegen",
     }
   );
-  const defaultStylesBundle = exportStyleConfig({ targetEnv: "codegen" });
+  const defaultStylesBundle = exportStyleConfig({ targetEnv });
   const { componentBundles, globalVariantBundles, iconAssets } =
     exportSiteComponents(site, {
       scheme: "blackbox",
@@ -69,7 +74,7 @@ export async function codegen(dir: string, site: Site) {
         useGlobalVariantsSubstitutionApi: false,
         useCodeComponentHelpersRegistry: false,
         useCustomFunctionsStub: false,
-        targetEnv: "codegen",
+        targetEnv,
       },
       s3ImageLinks: {},
       imagesToFilter: new Set(),
@@ -86,6 +91,14 @@ export async function codegen(dir: string, site: Site) {
   fs.writeFileSync(
     path.join(dir, projectConfig.cssFileName),
     projectConfig.cssRules
+  );
+  fs.writeFileSync(
+    path.join(dir, projectConfig.projectModuleBundle.fileName),
+    projectConfig.projectModuleBundle.module
+  );
+  fs.writeFileSync(
+    path.join(dir, projectConfig.styleTokensProviderBundle.fileName),
+    projectConfig.styleTokensProviderBundle.module
   );
 
   for (const bundle of componentBundles) {

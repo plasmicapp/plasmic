@@ -4,25 +4,24 @@ import {
   isBaseVariant,
   isCodeComponentVariant,
   isStandaloneVariantGroup,
-  isValidComboForToken,
 } from "@/wab/shared/Variants";
-import { getContextGlobalVariantsWithVariantedTokens } from "@/wab/shared/codegen/react-p/global-variants";
 import {
   NodeNamer,
   getExportedComponentName,
-  makeCssProjectImportName,
   makeDefaultInlineClassName,
   makeDefaultStyleClassNameBase,
   makePlasmicDefaultStylesClassName,
   makePlasmicMixinsClassName,
-  makePlasmicTokensClassName,
   makeRootResetClassName,
+  makeStyleTokensClassNames,
+  makeStyleTokensClassNamesForDep,
   makeWabInstanceClassName,
   makeWabTextClassName,
+  projectStyleCssImportName,
   shortPlasmicPrefix,
 } from "@/wab/shared/codegen/react-p/serialize-utils";
 import { SerializerBaseContext } from "@/wab/shared/codegen/react-p/types";
-import { TargetEnv } from "@/wab/shared/codegen/types";
+import { ExportOpts, TargetEnv } from "@/wab/shared/codegen/types";
 import {
   ensureJsIdentifier,
   jsLiteral,
@@ -30,7 +29,7 @@ import {
   toClassName,
   toJsIdentifier,
 } from "@/wab/shared/codegen/util";
-import { assert, ensure, tuple, withoutNils } from "@/wab/shared/common";
+import { tuple, withoutNils } from "@/wab/shared/common";
 import { isTagInline } from "@/wab/shared/core/rich-text-util";
 import {
   defaultStyleClassNames,
@@ -51,12 +50,9 @@ import {
   VariantSetting,
 } from "@/wab/shared/model/classes";
 import { JsIdentifier } from "@/wab/shared/utils/regex-js-identifier";
-import {
-  makeGlobalVariantComboSorter,
-  sortedVariantCombos,
-} from "@/wab/shared/variant-sort";
 import { sortBy, uniqBy } from "lodash";
 import { shouldUsePlasmicImg } from "src/wab/shared/codegen/react-p/image";
+import type { SetRequired } from "type-fest";
 
 export function makeCssClassNameForVariantCombo(
   variantCombo: Variant[],
@@ -191,80 +187,18 @@ function shouldReferenceByClassName(vs: VariantSetting) {
   return vs.variants.every((v) => isBaseRuleVariant(v));
 }
 
-const makeCssClassExprsForVariantedTokens = (ctx: SerializerBaseContext) => {
-  const { variantComboChecker } = ctx;
-  const useCssModules = ctx.exportOpts.stylesOpts.scheme === "css-modules";
-  const unconditionalClassExprs: string[] = [];
-  const conditionalClassExprs: [string, string][] = [];
-
-  const cssProjectDependencies = uniqBy(
-    ctx.siteCtx.cssProjectDependencies,
-    "projectName"
-  );
-
-  unconditionalClassExprs.push(
-    useCssModules
-      ? `projectcss.${makePlasmicTokensClassName(ctx.exportOpts)}`
-      : jsLiteral(makePlasmicTokensClassName(ctx.exportOpts))
-  );
-
-  unconditionalClassExprs.push(
-    ...withoutNils(
-      cssProjectDependencies.map((dep) =>
-        useCssModules
-          ? `${makeCssProjectImportName(
-              dep.projectName
-            )}.${makePlasmicTokensClassName(ctx.exportOpts)}`
-          : undefined
-      )
-    )
-  );
-
-  // Context global variants require className to render their CSS changes.
-  // Screen variants are rendered through media query
-  const contextGlobalVariantCombos =
-    getContextGlobalVariantsWithVariantedTokens(ctx.site).map((v) => [v]);
-
-  if (contextGlobalVariantCombos.length > 0) {
-    const sorter = makeGlobalVariantComboSorter(ctx.site);
-    sortedVariantCombos(contextGlobalVariantCombos, sorter).forEach((vc) => {
-      let comboClassNameExpr: string;
-      if (useCssModules) {
-        // If we're using css modules, we need to make sure we reference
-        // the right css import
-        const depMap = ctx.componentGenHelper.siteHelper.objToDepMap();
-        assert(
-          isValidComboForToken(vc),
-          "Can only build varianted combos with one variant"
-        );
-        const variant = vc[0];
-        const variantGroup = ensure(
-          variant.parent,
-          "Global variants always have parent group"
-        );
-        const variantDep = depMap.get(variantGroup);
-        const importName = variantDep
-          ? makeCssProjectImportName(variantDep.name)
-          : "projectcss";
-        comboClassNameExpr = `[${importName}.${makeCssClassNameForVariantCombo(
-          vc,
-          { targetEnv: ctx.exportOpts.targetEnv }
-        )}]`;
-      } else {
-        comboClassNameExpr = jsLiteral(
-          `${makeCssClassNameForVariantCombo(vc, {
-            targetEnv: ctx.exportOpts.targetEnv,
-          })}`
-        );
-      }
-      conditionalClassExprs.push(
-        tuple(comboClassNameExpr, variantComboChecker(vc, true))
-      );
-    });
-  }
-
-  return { unconditionalClassExprs, conditionalClassExprs };
-};
+/**
+ * Returns object properties for CSS modules, string literals for regular CSS
+ */
+export function serializeClassExpr(
+  exportOpts: SetRequired<Partial<ExportOpts>, "targetEnv">,
+  name: string,
+  importName = projectStyleCssImportName
+) {
+  return exportOpts?.stylesOpts?.scheme === "css-modules"
+    ? `${importName}.${name}`
+    : jsLiteral(name);
+}
 
 export function serializeClassNames(
   ctx: SerializerBaseContext,
@@ -297,26 +231,21 @@ export function serializeClassNames(
         );
 
     for (const name of defaultClassnames) {
-      if (useCssModules) {
-        unconditionalClassExprs.push(`projectcss.${name}`);
-      } else {
-        unconditionalClassExprs.push(jsLiteral(name));
-      }
+      unconditionalClassExprs.push(serializeClassExpr(ctx.exportOpts, name));
     }
 
     if (isTplTextBlock(node)) {
       unconditionalClassExprs.push(
-        useCssModules
-          ? `projectcss.${makeWabTextClassName(ctx.exportOpts)}`
-          : jsLiteral(makeWabTextClassName(ctx.exportOpts))
+        serializeClassExpr(ctx.exportOpts, makeWabTextClassName(ctx.exportOpts))
       );
     }
 
     if (isTplTextBlock(node.parent) && isTagInline(node.tag)) {
       unconditionalClassExprs.push(
-        useCssModules
-          ? `projectcss.${makeDefaultInlineClassName(ctx.exportOpts)}`
-          : jsLiteral(makeDefaultInlineClassName(ctx.exportOpts))
+        serializeClassExpr(
+          ctx.exportOpts,
+          makeDefaultInlineClassName(ctx.exportOpts)
+        )
       );
     }
   } else if (isTplComponent(node)) {
@@ -387,38 +316,48 @@ export function serializeComponentRootResetClasses(
 ) {
   const unconditionalClassExprs: string[] = [];
   const conditionalClassExprs: [string, string][] = [];
-  const useCssModules = ctx.exportOpts.stylesOpts.scheme === "css-modules";
-  const resetName = makeRootResetClassName(ctx.projectConfig.projectId, {
-    targetEnv: ctx.exportOpts.targetEnv,
-    useCssModules,
-  });
-  unconditionalClassExprs.push(
-    useCssModules ? `projectcss.${resetName}` : jsLiteral(resetName)
+
+  const resetName = makeRootResetClassName(
+    ctx.projectConfig.projectId,
+    ctx.exportOpts
   );
+
+  unconditionalClassExprs.push(serializeClassExpr(ctx.exportOpts, resetName));
 
   if (includeTagStyles) {
     unconditionalClassExprs.push(
-      useCssModules
-        ? `projectcss.${resetName}_tags`
-        : jsLiteral(`${resetName}_tags`)
+      serializeClassExpr(ctx.exportOpts, `${resetName}_tags`)
     );
   }
 
   unconditionalClassExprs.push(
-    useCssModules
-      ? `projectcss.${makePlasmicDefaultStylesClassName(ctx.exportOpts)}`
-      : jsLiteral(makePlasmicDefaultStylesClassName(ctx.exportOpts))
+    serializeClassExpr(
+      ctx.exportOpts,
+      makePlasmicDefaultStylesClassName(ctx.exportOpts)
+    )
   );
-
   unconditionalClassExprs.push(
-    useCssModules
-      ? `projectcss.${makePlasmicMixinsClassName(ctx.exportOpts)}`
-      : jsLiteral(makePlasmicMixinsClassName(ctx.exportOpts))
+    serializeClassExpr(
+      ctx.exportOpts,
+      makePlasmicMixinsClassName(ctx.exportOpts)
+    )
   );
+  unconditionalClassExprs.push(makeStyleTokensClassNames());
 
-  const tokenClassExprs = makeCssClassExprsForVariantedTokens(ctx);
-  unconditionalClassExprs.push(...tokenClassExprs.unconditionalClassExprs);
-  conditionalClassExprs.push(...tokenClassExprs.conditionalClassExprs);
+  if (!ctx.projectConfig.hasStyleTokenOverrides) {
+    const cssProjectDependencies = uniqBy(
+      ctx.siteCtx.cssProjectDependencies,
+      "projectName"
+    );
+
+    unconditionalClassExprs.push(
+      ...withoutNils(
+        cssProjectDependencies.map((dep) =>
+          makeStyleTokensClassNamesForDep(dep.projectName)
+        )
+      )
+    );
+  }
 
   return {
     conditionalClassExprs,

@@ -180,9 +180,9 @@ import {
   canSetDisplayNone,
   getContainerType,
 } from "@/wab/client/utils/tpl-client-utils";
+import { siteFinalStyleTokensAllDeps } from "@/wab/shared/core/site-style-tokens";
 import {
   allGlobalVariants,
-  allStyleTokensAndOverrides,
   DEFAULT_THEME_TYPOGRAPHY,
   isTplAttachedToSite,
   writeable,
@@ -2006,7 +2006,7 @@ export class ViewOps {
         let fontSize = exp.get("font-size");
         if (isTokenRef(fontSize)) {
           fontSize = derefTokenRefs(
-            allStyleTokensAndOverrides(this.site(), { includeDeps: "all" }),
+            siteFinalStyleTokensAllDeps(this.site()),
             fontSize
           );
         }

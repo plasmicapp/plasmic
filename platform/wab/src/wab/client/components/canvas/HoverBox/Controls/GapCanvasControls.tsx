@@ -6,11 +6,8 @@ import { useForceUpdate } from "@/wab/client/useForceUpdate";
 import { XDraggable } from "@/wab/commons/components/XDraggable";
 import { useSignalListener } from "@/wab/commons/components/use-signal-listener";
 import { ensure, parsePx } from "@/wab/shared/common";
-import {
-  allImageAssets,
-  allMixins,
-  allStyleTokensAndOverrides,
-} from "@/wab/shared/core/sites";
+import { siteFinalStyleTokensAllDeps } from "@/wab/shared/core/site-style-tokens";
+import { allImageAssets, allMixins } from "@/wab/shared/core/sites";
 import { CssVarResolver, hasGapStyle } from "@/wab/shared/core/styles";
 import { isTplColumns, isTplTag } from "@/wab/shared/core/tpls";
 import { parseCssNumericNew } from "@/wab/shared/css";
@@ -261,7 +258,7 @@ export const GapControls = observer(function GapControls(props: {
 
   const site = viewCtx.site;
   const resolver = new CssVarResolver(
-    allStyleTokensAndOverrides(site, { includeDeps: "all" }),
+    siteFinalStyleTokensAllDeps(site),
     allMixins(site, { includeDeps: "all" }),
     allImageAssets(site, { includeDeps: "all" }),
     site.activeTheme

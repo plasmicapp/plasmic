@@ -1,8 +1,9 @@
 import { extractAllReferencedTokenIds } from "@/wab/commons/StyleToken";
 import {
-  computedProjectFlags,
-  siteToAllTokensDict,
-} from "@/wab/shared/cached-selectors";
+  VariantGroupType,
+  isStandaloneVariantGroup,
+} from "@/wab/shared/Variants";
+import { computedProjectFlags } from "@/wab/shared/cached-selectors";
 import { makeNodeNamer } from "@/wab/shared/codegen/react-p";
 import {
   ensure,
@@ -15,8 +16,9 @@ import {
   isFrameComponent,
   isPageComponent,
 } from "@/wab/shared/core/components";
-import { asCode, ExprCtx } from "@/wab/shared/core/exprs";
+import { ExprCtx, asCode } from "@/wab/shared/core/exprs";
 import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
+import { siteStyleTokensAllDepsDict } from "@/wab/shared/core/site-style-tokens";
 import { isHostLessPackage } from "@/wab/shared/core/sites";
 import { SplitStatus } from "@/wab/shared/core/splits";
 import { isPrivateState } from "@/wab/shared/core/states";
@@ -40,19 +42,11 @@ import {
   FunctionExpr,
   ImageAsset,
   ImageAssetRef,
-  isKnownComponent,
-  isKnownExprText,
-  isKnownNodeMarker,
-  isKnownRawText,
-  isKnownStateChangeHandlerParam,
-  isKnownStyleMarker,
-  isKnownTplSlot,
-  isKnownVariant,
   MapExpr,
   Marker,
   Mixin,
-  ObjectPath,
   ObjInst,
+  ObjectPath,
   PageHref,
   Param,
   ProjectDependency,
@@ -71,16 +65,20 @@ import {
   TplRef,
   TplSlot,
   TplTag,
+  VarRef,
   Variant,
   VariantGroup,
   VariantSetting,
   VariantsRef,
-  VarRef,
+  isKnownComponent,
+  isKnownExprText,
+  isKnownNodeMarker,
+  isKnownRawText,
+  isKnownStateChangeHandlerParam,
+  isKnownStyleMarker,
+  isKnownTplSlot,
+  isKnownVariant,
 } from "@/wab/shared/model/classes";
-import {
-  isStandaloneVariantGroup,
-  VariantGroupType,
-} from "@/wab/shared/Variants";
 import L, { isString, mapValues } from "lodash";
 
 export const INITIAL_VERSION_NUMBER = "0.0.1";
@@ -938,7 +936,7 @@ function hashVariantSetting(site: Site, vs: VariantSetting, exprCtx: ExprCtx) {
 }
 
 function hashRuleSet(site: Site, rs: RuleSet) {
-  const allTokensDict = siteToAllTokensDict(site);
+  const allTokensDict = siteStyleTokensAllDepsDict(site);
   const rsValues = Object.entries(rs.values)
     .sort((a, b) => a[0].localeCompare(b[0]))
     .map(([key, val]) => {
