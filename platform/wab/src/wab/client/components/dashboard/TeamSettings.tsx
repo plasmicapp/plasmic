@@ -111,8 +111,7 @@ function TeamSettings_(props: TeamSettingsProps, ref: HTMLElementRefOf<"div">) {
             if (!confirm) {
               return;
             } else {
-              const res = await appCtx.api.changeTeamOwner(team.id, email);
-              console.log("change ownership, res", res);
+              await appCtx.api.changeTeamOwner(team.id, email);
             }
           }
           await appCtx.api.grantRevoke({

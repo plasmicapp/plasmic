@@ -925,6 +925,10 @@ export abstract class SharedApi {
     return this.post(`/teams/${teamId}/prepare-support-urls`);
   }
 
+  async changeTeamOwner(teamId: string, newOwnerEmail: string): Promise<{}> {
+    return this.post(`/admin/change-team-owner`, { teamId, newOwnerEmail });
+  }
+
   async createWorkspace(
     data: CreateWorkspaceRequest
   ): Promise<MayTriggerPaywall<CreateWorkspaceResponse>> {
@@ -1011,10 +1015,6 @@ export abstract class SharedApi {
 
   async createSetupIntent(teamId: TeamId): Promise<Stripe.SetupIntent> {
     return this.post(`/billing/setup-intent/${teamId}`);
-  }
-
-  async changeTeamOwner(teamId: string, newOwner: string): Promise<{}> {
-    return this.post(`/admin/change-team-owner`, { teamId, newOwner });
   }
 
   async upgradePersonalTeam(teamId: string): Promise<{}> {

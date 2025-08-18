@@ -12,11 +12,7 @@ import {
   resetStripeCustomer,
   syncDataWithStripe,
 } from "@/wab/server/routes/team-plans";
-import {
-  getUser,
-  superDbMgr,
-  userDbMgr,
-} from "@/wab/server/routes/util";
+import { getUser, superDbMgr, userDbMgr } from "@/wab/server/routes/util";
 import { mkApiWorkspace } from "@/wab/server/routes/workspaces";
 import {
   ApiPermission,
@@ -572,4 +568,12 @@ export async function prepareTeamSupportUrls(req: Request, res: Response) {
   const mgr = userDbMgr(req);
   const teamId = req.params.teamId as TeamId;
   res.json(await doPrepareTeamSupportUrls(mgr, user, teamId));
+}
+export async function changeTeamOwner(req: Request, res: Response) {
+  const superMgr = superDbMgr(req);
+  const teamId = req.params.teamId as TeamId;
+  const newOwner = await superMgr.getUserByEmail(req.body.newOwnerEmail);
+
+  await (teamId && newOwner && superMgr.changeTeamOwner(teamId, newOwner.id));
+  res.json({});
 }
