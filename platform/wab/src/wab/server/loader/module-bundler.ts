@@ -7,7 +7,7 @@ import { makeGlobalContextsProviderFileName } from "@/wab/server/loader/module-w
 import { logger } from "@/wab/server/observability";
 import { withSpan } from "@/wab/server/util/apm-util";
 import {
-  CodegenOutputBundle,
+  CachedCodegenOutputBundle,
   ComponentReference,
 } from "@/wab/server/workers/codegen";
 import {
@@ -21,7 +21,7 @@ import {
   ComponentExportOutput,
   PageMetadata,
 } from "@/wab/shared/codegen/types";
-import { ensure, withoutNils } from "@/wab/shared/common";
+import { ensure, notNil, withoutNils } from "@/wab/shared/common";
 import esbuild, { Plugin as EsbuildPlugin, Metafile } from "esbuild";
 import { promises as fs } from "fs";
 import { glob } from "glob";
@@ -119,7 +119,7 @@ function componentEntrypoint(c: ComponentExportOutput) {
 
 async function bundleModulesEsbuild(
   dir: string,
-  codegenOutputs: CodegenOutputBundle[],
+  codegenOutputs: CachedCodegenOutputBundle[],
   componentDeps: Record<string, string[]>,
   opts: BundleOpts
 ) {
@@ -151,8 +151,9 @@ async function bundleModulesEsbuild(
         ),
         // Each style tokens provider file
         ...codegenOutputs
-          .filter((o) => o.projectConfig.styleTokensProviderBundle)
-          .map((o) => o.projectConfig.styleTokensProviderBundle!.fileName),
+          .map((o) => o.projectConfig.styleTokensProviderBundle)
+          .filter(notNil)
+          .map((bundle) => bundle.fileName),
         // Each global variant context file
         ...codegenOutputs.flatMap((o) =>
           o.globalVariants.map((g) => g.contextFileName)
@@ -513,7 +514,7 @@ Object.assign(exports,module.exports);
 
 export async function bundleModules(
   dir: string,
-  codegenOutputs: CodegenOutputBundle[],
+  codegenOutputs: CachedCodegenOutputBundle[],
   componentDeps: Record<string, string[]>,
   componentRefs: ComponentReference[],
   opts: BundleOpts
@@ -616,12 +617,12 @@ function makeLoaderBundleOutput(
     browser: (CodeModule | AssetModule)[];
     server: (CodeModule | AssetModule)[];
   },
-  codegenOutputs: CodegenOutputBundle[],
+  codegenOutputs: CachedCodegenOutputBundle[],
   componentDeps: Record<string, string[]>,
   opts: BundleOpts
 ) {
   function makeComponentMeta(
-    codegenOutput: CodegenOutputBundle,
+    codegenOutput: CachedCodegenOutputBundle,
     compOutput: ComponentExportOutput
   ) {
     const skeletonFile = compOutput.skeletonModuleFileName.replace(
@@ -691,9 +692,7 @@ function makeLoaderBundleOutput(
         version: o.projectConfig.version,
         indirect: o.projectConfig.indirect,
         remoteFonts: makeFontMetas(o.projectConfig.fontUsages),
-        hasStyleTokenOverrides:
-          o.projectConfig.hasStyleTokenOverrides &&
-          !!o.projectConfig.styleTokensProviderBundle,
+        hasStyleTokenOverrides: o.projectConfig.hasStyleTokenOverrides ?? false,
         styleTokensProviderFileName:
           o.projectConfig.styleTokensProviderBundle?.fileName.replace(
             ".tsx",

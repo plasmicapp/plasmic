@@ -464,8 +464,8 @@ export function makeStyleTokensProviderImports(
   }
   return makeTaggedPlasmicImport(
     importNames,
-    styleTokensProviderBundle!.fileName,
-    depProjectInfo?.projectId ?? styleTokensProviderBundle!.id,
+    styleTokensProviderBundle.fileName,
+    depProjectInfo?.projectId ?? styleTokensProviderBundle.id,
     "styleTokensProvider"
   );
 }
@@ -475,8 +475,8 @@ export function makeProjectModuleImports(
 ) {
   return makeTaggedPlasmicImport(
     makeUseGlobalVariantsName(),
-    projectModuleBundle!.fileName,
-    projectModuleBundle!.id,
+    projectModuleBundle.fileName,
+    projectModuleBundle.id,
     "projectModule"
   );
 }

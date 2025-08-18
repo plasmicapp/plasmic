@@ -52,8 +52,35 @@ import { DEVFLAGS, getProjectFlags } from "@/wab/shared/devflags";
 import { Site } from "@/wab/shared/model/classes";
 import S3 from "aws-sdk/clients/s3";
 import fs from "fs";
+import type { OverrideProperties, SetOptional } from "type-fest";
 import { ConnectionOptions } from "typeorm";
 
+/**
+ * Cached codegen output. Use this type if you changed the output structure
+ * in a backward-compatible way that does not require cache busting.
+ *
+ * This can be reset if LOADER_CACHE_BUST is incremented.
+ */
+export type CachedCodegenOutputBundle =
+  | CodegenOutputBundle
+  | OverrideProperties<
+      CodegenOutputBundle,
+      {
+        projectConfig: SetOptional<
+          ProjectConfig,
+          | "hasStyleTokenOverrides"
+          | "projectModuleBundle"
+          | "styleTokensProviderBundle"
+        >;
+      }
+    >;
+
+/**
+ * Codegen output for a project.
+ *
+ * This can be cached in external storage, so the data structure may differ
+ * from a freshly generated output unless you increment LOADER_CACHE_BUST.
+ */
 export interface CodegenOutputBundle {
   components: ComponentExportOutput[];
   iconAssets: IconAssetExport[];
@@ -441,31 +468,26 @@ function filterAndUpdateChecksums(
     output.projectConfig.cssRules = "";
   }
 
-  if (output.projectConfig.projectModuleBundle) {
-    const projectModuleChecksum = md5(
-      output.projectConfig.projectModuleBundle.module
-    );
-    if (previousChecksums.projectModuleChecksum === projectModuleChecksum) {
-      // TODO: handle checksum equal on CLI
-      //output.projectConfig.projectModuleBundle.module = "";
-    }
-
-    currentChecksums.projectModuleChecksum = projectModuleChecksum;
+  const projectModuleChecksum = md5(
+    output.projectConfig.projectModuleBundle.module
+  );
+  if (previousChecksums.projectModuleChecksum === projectModuleChecksum) {
+    // TODO: handle checksum equal on CLI
+    //output.projectConfig.projectModuleBundle.module = "";
   }
+  currentChecksums.projectModuleChecksum = projectModuleChecksum;
 
-  if (output.projectConfig.styleTokensProviderBundle) {
-    const styleTokensProviderChecksum = md5(
-      output.projectConfig.styleTokensProviderBundle.module
-    );
-    if (
-      previousChecksums.styleTokensProviderChecksum ===
-      styleTokensProviderChecksum
-    ) {
-      // TODO: handle checksum equal on CLI
-      //output.projectConfig.styleTokensProviderBundle.module = "";
-    }
-    currentChecksums.styleTokensProviderChecksum = styleTokensProviderChecksum;
+  const styleTokensProviderChecksum = md5(
+    output.projectConfig.styleTokensProviderBundle.module
+  );
+  if (
+    previousChecksums.styleTokensProviderChecksum ===
+    styleTokensProviderChecksum
+  ) {
+    // TODO: handle checksum equal on CLI
+    //output.projectConfig.styleTokensProviderBundle.module = "";
   }
+  currentChecksums.styleTokensProviderChecksum = styleTokensProviderChecksum;
 
   if (output.projectConfig.globalContextBundle) {
     const globalContextsChecksum = md5(

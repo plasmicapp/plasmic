@@ -1,5 +1,5 @@
 import { logger } from "@/wab/server/observability";
-import { CodegenOutputBundle } from "@/wab/server/workers/codegen";
+import { CachedCodegenOutputBundle } from "@/wab/server/workers/codegen";
 import { stripExtension, toVarName } from "@/wab/shared/codegen/util";
 import { promises as fs } from "fs";
 import { uniq } from "lodash";
@@ -7,7 +7,7 @@ import path from "path";
 
 export async function writeCodeBundlesToDisk(
   dir: string,
-  outputs: CodegenOutputBundle[]
+  outputs: CachedCodegenOutputBundle[]
 ) {
   // Create a fake package.json
   await fs.writeFile(path.join(dir, "package.json"), `{}`);
@@ -115,7 +115,10 @@ ${outputs
   );
 }
 
-async function writeCodeBundleToDisk(dir: string, output: CodegenOutputBundle) {
+async function writeCodeBundleToDisk(
+  dir: string,
+  output: CachedCodegenOutputBundle
+) {
   for (const comp of output.components) {
     await fs.writeFile(
       path.join(dir, comp.renderModuleFileName),

@@ -7,6 +7,10 @@ import {
 } from "@/wab/server/loader/resolve-projects";
 import { withSpan } from "@/wab/server/util/apm-util";
 import { upsertS3CacheEntry } from "@/wab/server/util/s3-util";
+import {
+  CachedCodegenOutputBundle,
+  ComponentReference,
+} from "@/wab/server/workers/codegen";
 import { PlasmicWorkerPool } from "@/wab/server/workers/pool";
 import { ensureDevFlags } from "@/wab/server/workers/worker-utils";
 import { ProjectId } from "@/wab/shared/ApiSchema";
@@ -214,7 +218,13 @@ async function genLoaderCodeBundleForProjectVersions(
               // If no explicit version, then we cannot cache; just perform the codegen
               return await codegenProject(projectId, v.version, v.indirect);
             } else {
-              return await upsertS3CacheEntry({
+              return await upsertS3CacheEntry<
+                [
+                  CachedCodegenOutputBundle,
+                  Record<string, string[]>,
+                  ComponentReference[]
+                ]
+              >({
                 bucket: LOADER_ASSETS_BUCKET,
                 key: makeCodegenBucketPath({
                   projectId,

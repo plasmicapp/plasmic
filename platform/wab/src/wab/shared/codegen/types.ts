@@ -45,8 +45,8 @@ export interface ProjectConfig {
   /** If true, wrap root components with <StyleTokensProvider>. */
   hasStyleTokenOverrides: boolean;
 
-  projectModuleBundle?: ProjectModuleBundle;
-  styleTokensProviderBundle?: StyleTokensProviderBundle;
+  projectModuleBundle: ProjectModuleBundle;
+  styleTokensProviderBundle: StyleTokensProviderBundle;
   globalContextBundle?: GlobalContextBundle;
   splitsProviderBundle?: SplitsProviderBundle;
   reactWebExportedFiles?: Array<{

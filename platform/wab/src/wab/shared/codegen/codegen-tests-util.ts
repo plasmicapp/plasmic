@@ -93,12 +93,12 @@ export async function codegen(dir: string, site: Site) {
     projectConfig.cssRules
   );
   fs.writeFileSync(
-    path.join(dir, projectConfig.projectModuleBundle!.fileName),
-    projectConfig.projectModuleBundle!.module
+    path.join(dir, projectConfig.projectModuleBundle.fileName),
+    projectConfig.projectModuleBundle.module
   );
   fs.writeFileSync(
-    path.join(dir, projectConfig.styleTokensProviderBundle!.fileName),
-    projectConfig.styleTokensProviderBundle!.module
+    path.join(dir, projectConfig.styleTokensProviderBundle.fileName),
+    projectConfig.styleTokensProviderBundle.module
   );
 
   for (const bundle of componentBundles) {

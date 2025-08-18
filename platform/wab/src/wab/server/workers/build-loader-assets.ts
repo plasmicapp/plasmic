@@ -4,14 +4,14 @@ import {
 } from "@/wab/server/loader/module-bundler";
 import { writeCodeBundlesToDisk } from "@/wab/server/loader/module-writer";
 import {
-  CodegenOutputBundle,
+  CachedCodegenOutputBundle,
   ComponentReference,
 } from "@/wab/server/workers/codegen";
 import { spawnWrapper } from "@/wab/shared/common";
 import tmp from "tmp";
 
 export async function workerBuildAssets(
-  codegenOutputs: CodegenOutputBundle[],
+  codegenOutputs: CachedCodegenOutputBundle[],
   componentDeps: Record<string, string[]>,
   componentRefs: ComponentReference[],
   platform: "react" | "nextjs" | "gatsby" | "tanstack",
