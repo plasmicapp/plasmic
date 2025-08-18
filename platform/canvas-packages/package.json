@@ -42,7 +42,7 @@
     "@plasmicpkgs/plasmic-query": "^0.0.243",
     "@plasmicpkgs/plasmic-rich-components": "^1.0.220",
     "@plasmicpkgs/plasmic-sanity-io": "^1.0.203",
-    "@plasmicpkgs/plasmic-strapi": "^0.1.175",
+    "@plasmicpkgs/plasmic-strapi": "^0.1.176",
     "@plasmicpkgs/plasmic-tabs": "^0.0.65",
     "@plasmicpkgs/plasmic-wordpress": "^0.0.146",
     "@plasmicpkgs/plasmic-wordpress-graphql": "^0.0.140",

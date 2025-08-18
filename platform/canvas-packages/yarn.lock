@@ -2221,10 +2221,10 @@
     change-case "^4.1.2"
     dlv "^1.1.3"
 
-"@plasmicpkgs/plasmic-strapi@^0.1.175":
-  version "0.1.175"
-  resolved "https://registry.yarnpkg.com/@plasmicpkgs/plasmic-strapi/-/plasmic-strapi-0.1.175.tgz#475635f0044b3b2a5307b24d932f0de44ce04c47"
-  integrity sha512-7tYTCpzgKswMoWlonxgdzHjbasl+7+yK1sgkdztgP37HJkT5x74uFSHcX90nCD+fhvqnsyTM5CwHj17NIhvD6g==
+"@plasmicpkgs/plasmic-strapi@^0.1.176":
+  version "0.1.176"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/plasmic-strapi/-/plasmic-strapi-0.1.176.tgz#15e39eddb1c60c3c1588aba1b28f3cae00cf3257"
+  integrity sha512-ycPMBQpno70HJUeKLJ4BaP2koSDDMlNJMPX82aXWoaDgEg0A0RrtattYFFX85lH9JUbSfjfR8AlcqA7qjxirhQ==
   dependencies:
     "@types/dlv" "^1.1.2"
     change-case "^4.1.2"
