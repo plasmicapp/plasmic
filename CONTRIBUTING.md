@@ -29,28 +29,26 @@ In general, we follow the "fork-and-pull" Git workflow.
 1. Fork the repo on GitHub
 2. Clone the project to your own machine
 3. Commit changes to your own branch
-4. Push your work back up to your fork
+4. Push your work back to your fork
 5. Submit a Pull request so that we can review your changes
 
-NOTE: Be sure to merge the latest from "upstream" before making a pull request!
+**NOTE:** Be sure to merge the latest changes from the "upstream" before making a pull request!
 
 ## Contributing to the Plasmic Studio platform
 
-In `platform/` is the code for the Plasmic Studio platform itself.
+`platform/` folder contains the code for the Plasmic Studio platform itself.
 This includes all the frontend and backend code for the design tool/visual editor,
 as well as the backend code for the apps built in Plasmic.
 
-To get started, please see the [the getting started guide](docs/contributing/platform/00-getting-started.md).
+To get studio running locally, please follow the [getting started guide](docs/contributing/platform/00-getting-started.md).
 
 ## Contributing to `plasmicpkgs` or SDKs
 
 ### Getting started
 
-```
-yarn setup-all
-```
+To configure the platform locally follow the instructions in [getting started guide](docs/contributing/platform/00-getting-started.md).
 
-We also make use of [Verdaccio](https://verdaccio.org/) to locally test packages. This just stands up a local npm registry that you can publish your test packages to.
+Internally we use [Verdaccio](https://verdaccio.org/) to locally test packages. This just stands up a local npm registry that you can publish your test packages to.
 
 ```
 yarn global add verdaccio

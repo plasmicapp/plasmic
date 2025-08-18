@@ -1,5 +1,5 @@
 # See https://hub.docker.com/_/node/
-FROM node:24.4-alpine AS builder
+FROM node:24-alpine AS builder
 
 RUN apk add --no-cache make~=4 bubblewrap~=0.11 python3 build-base bash
 # Switch workdir back to wab
@@ -10,7 +10,7 @@ COPY wab/ .
 RUN mkdir -p src/wab/gen && make
 RUN rm -rf node_modules/
 
-FROM node:24.4-alpine AS runner
+FROM node:24-alpine AS runner
 # System setup
 RUN apk add --no-cache make~=4 bubblewrap~=0.11 python3 build-base bash
 

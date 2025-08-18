@@ -22,12 +22,10 @@ services:
       context: .
       dockerfile: ./platform/wab/tools/docker-dev/Dockerfile.dev.aio
     command: # Override the default dockerfile startup command here for debugging purpose
-    - | 
+    - |
       jq '(.host = "plasmic-db") | (.password //= "SEKRET")' ormconfig.json > tmp.json && mv tmp.json ormconfig.json && \
       yarn typeorm migration:run && \
-      yarn migrate-dev-bundles && \
       yarn seed && \
-      yarn plume:dev update && \
       cd /plasmic && \
       yarn dev
     volumes:
@@ -43,7 +41,7 @@ services:
       - plasmic_react_web_bundle_node_modules:/plasmic/platform/react-web-bundle/node_modules
       - plasmic_loader_bundle_env_node_modules:/plasmic/platform/loader-bundle-env/node_modules
       - plasmic_loader_html_hydrate_node_modules:/plasmic/platform/loader-html-hydrate/node_modules
-      
+
       # --- Generated files ---
       - plasmic_public:/plasmic/platform/wab/public
       - plasmic_wab_client:/plasmic/platform/wab/src/wab/client

@@ -3,7 +3,7 @@
   "host": "localhost",
   "username": "wab",
   "database": "wab",
-
+  "password": "SEKRET",
   "synchronize": false,
   "dropSchema": false,
   "logging": false,
