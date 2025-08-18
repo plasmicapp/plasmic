@@ -35,8 +35,8 @@ Learn how to [get your API token](https://docs.strapi.io/user-docs/latest/settin
       host: {
         type: "string",
         displayName: "Host",
-        defaultValueHint: "https://strapi-app.plasmic.app",
-        defaultValue: "https://strapi-app.plasmic.app",
+        defaultValueHint: "https://your_project_id.strapiapp.com/",
+        defaultValue: "https://graceful-belief-d395c347a3.strapiapp.com/",
         description: "Server where you application is hosted.",
       },
       token: {
