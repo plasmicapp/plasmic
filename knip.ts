@@ -3,9 +3,16 @@ import type { KnipConfig } from "knip";
 const config: KnipConfig = {
   ignoreWorkspaces: [".", "packages/**/*", "plasmicpkgs/**/*"],
   workspaces: {
-    "platform/analytics": {
+    "platform/analytics-rproxy": {
       entry: ["src/entry-app.ts", "src/entry-prepare-salt.ts"],
       project: ["**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}"],
+    },
+    "platform/hosting": {
+      entry: ["middleware.ts", "pages/**/*.{ts,tsx}"],
+      project: ["**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}"],
+      ignoreDependencies: [
+        "eslint", // used internally in next
+      ],
     },
     "platform/wab": {
       entry: ["**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}"],
