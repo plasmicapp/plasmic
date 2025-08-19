@@ -1,8 +1,9 @@
-const isDefaultValue = (val: string | undefined) =>
+const isDefaultValue = (val: unknown) =>
   val === "PLEASE_RENDER_INSIDE_PROVIDER";
 const seenDefaultVariants: Record<string, boolean> = {};
 
-export type GlobalVariants = { [gv: string]: string | undefined };
+type ActiveGlobalVariants = string | string[] | undefined;
+export type GlobalVariants = { [gv: string]: ActiveGlobalVariants };
 export type UseGlobalVariants = () => GlobalVariants;
 
 /**
@@ -28,12 +29,12 @@ export type UseGlobalVariants = () => GlobalVariants;
  * ```
  */
 export function createUseGlobalVariants<
-  T extends { [gv: string]: () => string | undefined }
+  T extends { [gv: string]: () => ActiveGlobalVariants }
 >(globalVariantHooks: T): UseGlobalVariants {
   return () => {
     return ensureGlobalVariants(
       Object.fromEntries(
-        Object.entries(globalVariantHooks).map<[string, string | undefined]>(
+        Object.entries(globalVariantHooks).map<[string, ActiveGlobalVariants]>(
           ([globalVariant, useHook]) => [globalVariant, useHook()]
         )
       )
