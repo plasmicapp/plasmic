@@ -28,4 +28,5 @@ Plasmic is an open-source visual web builder. This monorepo contains:
 
 ## Instructions for AI assistant
 
-Do not worry about styling/formatting. All files will be formatted to the same style in git hooks.
+- Do not worry about styling/formatting. All files will be formatted to the same style in git hooks.
+- When searching files, you should almost never look through node_modules/ files and other gitignored files unless you have a explicit reason to.
