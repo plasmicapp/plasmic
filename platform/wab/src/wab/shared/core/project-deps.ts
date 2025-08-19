@@ -152,7 +152,15 @@ import { isArray, keys, uniqBy } from "lodash";
 
 export type DependencyWalkScope = "all" | "direct";
 
-export function walkDependencyTree(site: Site, scope: DependencyWalkScope) {
+/**
+ * Returns project dependencies of site.
+ * @param site site to get dependencies of
+ * @param scope defaults to "direct" dependencies only, use "all" to include transitive dependencies
+ */
+export function walkDependencyTree(
+  site: Site,
+  scope: DependencyWalkScope
+): ProjectDependency[] {
   const queue: ProjectDependency[] = [...site.projectDependencies];
   const result: ProjectDependency[] = [];
   const traverseIds = new Set(queue.map((item) => item.projectId));

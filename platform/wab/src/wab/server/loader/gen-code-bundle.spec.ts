@@ -18,7 +18,7 @@ describe("makeBundleBucketPath/extractBundleKeyProjectIds", () => {
       exportOpts: LOADER_CODEGEN_OPTS_DEFAULTS,
     });
     expect(bundleKey).toEqual(
-      "bundle/cb=19/loaderVersion=1/ps=p1@10.0.0,p2@1.2.3/platform=react/browserOnly=true/opts=22a86211efc9ac67440fb332014652a6010e993f48c3068b936afe2128f03e3c"
+      "bundle/cb=20/loaderVersion=1/ps=p1@10.0.0,p2@1.2.3/platform=react/browserOnly=true/opts=22a86211efc9ac67440fb332014652a6010e993f48c3068b936afe2128f03e3c"
     );
     expect(extractBundleKeyProjectIds(bundleKey)).toEqual(["p1", "p2"]);
   });

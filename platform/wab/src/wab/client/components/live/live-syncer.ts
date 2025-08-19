@@ -12,7 +12,6 @@ import { PlasmicWindowInternals } from "@/wab/client/frame-ctx/windows";
 import { requestIdleCallback } from "@/wab/client/requestidlecallback";
 import { StudioAppUser, StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { safeCallbackify } from "@/wab/commons/control";
-import { SiteInfo } from "@/wab/shared/SharedApi";
 import { getSlotParams } from "@/wab/shared/SlotUtils";
 import { VariantCombo, isScreenVariantGroup } from "@/wab/shared/Variants";
 import {
@@ -67,6 +66,7 @@ import {
   isPageComponent,
 } from "@/wab/shared/core/components";
 import { ExprCtx, getRawCode } from "@/wab/shared/core/exprs";
+import { walkDependencyTree } from "@/wab/shared/core/project-deps";
 import { allGlobalVariantGroups } from "@/wab/shared/core/sites";
 import { CssVarResolver } from "@/wab/shared/core/styles";
 import { DEVFLAGS } from "@/wab/shared/devflags";
@@ -148,12 +148,24 @@ export function pushPreviewModules(
         return;
       }
 
+      const styleOutput = exportStyleConfig({ targetEnv: "preview" });
+      modules.push({
+        name: `./${styleOutput.defaultStyleCssFileName}`,
+        lang: "css",
+        source: styleOutput.defaultStyleCssRules,
+      });
+
       const studioCtx = previewCtx.studioCtx;
 
       const site = studioCtx.site;
       const siteInfo = studioCtx.siteInfo;
-      const projectConfig = createProjectOutput(site, siteInfo);
+      const projectConfig = createProjectOutput(
+        site,
+        siteInfo.id,
+        siteInfo.name
+      );
       modules.push(...createProjectMods(projectConfig));
+      modules.push(...createDepsProjectMods(site));
 
       const rootComponent = site.components.find(
         (c) => c.uuid === previewCtx.component?.uuid
@@ -772,7 +784,11 @@ function swallowAnchorClicks(
 // which is rare.
 
 export const createProjectOutput = computedFn(
-  function createProjectOutput(site: Site, siteInfo: SiteInfo) {
+  function createProjectOutput(
+    site: Site,
+    projectId: string,
+    projectName: string
+  ) {
     const exportOpts: ExportOpts = {
       lang: "ts",
       platform: "react",
@@ -809,8 +825,8 @@ export const createProjectOutput = computedFn(
     };
     return exportProjectConfig(
       site,
-      siteInfo.name,
-      siteInfo.id,
+      projectName,
+      projectId,
       0,
       "fakeProjectRevId",
       "latest",
@@ -964,31 +980,47 @@ export const createCustomFunctionsModule = computedFn(
   }
 );
 
+/**
+ * Creates project-level modules for all dependencies of the given project.
+ */
+export function createDepsProjectMods(site: Site): CodeModule[] {
+  return walkDependencyTree(site, "all").flatMap((dep) => {
+    const depProjectConfig = createProjectOutput(
+      dep.site,
+      dep.projectId,
+      dep.name
+    );
+    return createProjectMods(depProjectConfig);
+  });
+}
+
+/**
+ * Creates project-level modules for the given project.
+ */
 export const createProjectMods = computedFn(
-  function createProjectMods(projectOutput: ProjectConfig) {
-    const sc = exportStyleConfig({ targetEnv: "preview" });
-    return [
+  function createProjectMods(projectOutput: ProjectConfig): CodeModule[] {
+    const mods: CodeModule[] = [
       {
         name: `./${projectOutput.cssFileName}`,
         lang: "css",
         source: projectOutput.cssRules,
       },
-      {
-        name: `./${sc.defaultStyleCssFileName}`,
-        lang: "css",
-        source: sc.defaultStyleCssRules,
-      },
-      {
-        name: `./plasmic.tsx`,
+    ];
+    if (projectOutput.projectModuleBundle) {
+      mods.push({
+        name: `./${projectOutput.projectModuleBundle.fileName}`,
         lang: "tsx",
         source: projectOutput.projectModuleBundle.module,
-      },
-      {
-        name: `./PlasmicStyleTokensProvider.tsx`,
+      });
+    }
+    if (projectOutput.styleTokensProviderBundle) {
+      mods.push({
+        name: `./${projectOutput.styleTokensProviderBundle.fileName}`,
         lang: "tsx",
         source: projectOutput.styleTokensProviderBundle.module,
-      },
-    ];
+      });
+    }
+    return mods;
   },
   { name: "createProjectMods", keepAlive: true, equals: comparer.structural }
 );

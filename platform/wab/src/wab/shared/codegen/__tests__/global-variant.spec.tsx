@@ -1,10 +1,9 @@
-import "@testing-library/jest-dom/extend-expect";
-import { getByText, render } from "@testing-library/react";
-// polyfill some js features like String.matchAll()
 import { Bundle, Bundler } from "@/wab/shared/bundler";
 import { codegen } from "@/wab/shared/codegen/codegen-tests-util";
 import { Site } from "@/wab/shared/model/classes";
-import "core-js";
+import { createUseStyleTokens } from "@plasmicapp/react-web";
+import "@testing-library/jest-dom/extend-expect";
+import { getByText, render, renderHook } from "@testing-library/react";
 import { CssNode, find, parse } from "css-tree";
 import * as React from "react";
 import tmp from "tmp";
@@ -38,6 +37,9 @@ describe("tests codegen for global variants", () => {
   const fgTokenId = "bdgzzwrsGChb";
   const fgTokenName = "foreground";
 
+  // Tokens are set in the base variant.
+  const baseClass = "plasmic_tokens_1234567890";
+
   // There's also a global variant group named "Theme" with a variant "Dark".
   // Both background and foreground are changed in the "Dark" variant.
   const darkClass = "global_theme_dark";
@@ -54,53 +56,42 @@ describe("tests codegen for global variants", () => {
   const compRootSelector = "#comp-root";
   const compRootClass = "Comp__root__v6FN";
 
-  it("codegens correct global variantable tokens and context provider", async () => {
-    // Mock Desktop media query
-    mockMatchMedia(false);
-
+  it("codegens plasmic.css with correct variantable tokens", async () => {
     const plasmicCss = parse(readFromProject("plasmic.css"), {
       parseRulePrelude: false,
       parseValue: false,
     });
     expect(
-      findRuleDecl(
-        plasmicCss,
-        ".plasmic_tokens_1234567890",
-        `--token-${bgTokenId}`
-      )
+      findRuleDecl(plasmicCss, `.${baseClass}`, `--token-${bgTokenId}`)
     ).toEqual("#EEEEEE");
     expect(
-      findRuleDecl(
-        plasmicCss,
-        ".plasmic_tokens_1234567890",
-        `--token-${fgTokenId}`
-      )
+      findRuleDecl(plasmicCss, `.${baseClass}`, `--token-${fgTokenId}`)
     ).toEqual("#000000");
     expect(
       findRuleDecl(
         plasmicCss,
-        ".plasmic_tokens_1234567890",
+        `.${baseClass}`,
         `--plasmic-token-${bgTokenName}`
       )
     ).toEqual(`var(--token-${bgTokenId})`);
     expect(
       findRuleDecl(
         plasmicCss,
-        ".plasmic_tokens_1234567890",
+        `.${baseClass}`,
         `--plasmic-token-${fgTokenName}`
       )
     ).toEqual(`var(--token-${fgTokenId})`);
     expect(
       findRuleDecl(
         plasmicCss,
-        `.plasmic_tokens_1234567890:where(.${darkClass})`,
+        `.${baseClass}:where(.${darkClass})`,
         `--token-${bgTokenId}`
       )
     ).toEqual("#111111");
     expect(
       findRuleDecl(
         plasmicCss,
-        `.plasmic_tokens_1234567890:where(.${darkClass})`,
+        `.${baseClass}:where(.${darkClass})`,
         `--token-${fgTokenId}`
       )
     ).toEqual("#FFFFFF");
@@ -108,18 +99,20 @@ describe("tests codegen for global variants", () => {
     expect(
       findRuleDecl(
         plasmicCss,
-        `.plasmic_tokens_1234567890:where(.${darkClass})`,
+        `.${baseClass}:where(.${darkClass})`,
         `--plasmic-token-${bgTokenName}`
       )
     ).toEqual(`var(--token-${bgTokenId})`);
     expect(
       findRuleDecl(
         plasmicCss,
-        `.plasmic_tokens_1234567890:where(.${darkClass})`,
+        `.${baseClass}:where(.${darkClass})`,
         `--plasmic-token-${fgTokenName}`
       )
     ).toEqual(`var(--token-${fgTokenId})`);
+  });
 
+  it("codegens component CSS with correct variantable tokens", async () => {
     const pageCss = parse(readFromProject("PlasmicHomepage.css"), {
       parseRulePrelude: false,
       parseValue: false,
@@ -130,72 +123,101 @@ describe("tests codegen for global variants", () => {
     expect(findRuleDecl(pageCss, `.${h1Class}`, "color")).toEqual(
       `var(--token-${fgTokenId})`
     );
+  });
 
-    // Now we that we have verified the CSS, let's see that it's used properly.
-    const Homepage = (await importFromProject("Homepage.js")).default;
-    const ThemeContextProvider = (
-      await importFromProject("PlasmicGlobalVariant__Theme.js")
-    ).ThemeContextProvider;
+  it("codegens component, StyleTokensProvider, and useStyleTokens that react to global variants", async () => {
+    const { StyleTokensProvider, _useStyleTokens } = await importFromProject(
+      "PlasmicStyleTokensProvider.tsx"
+    );
+    const { default: Homepage } = await importFromProject("Homepage.js");
 
     // Render with no global variants
     {
-      const { unmount } = render(<Homepage />);
-      const rootEl = document.querySelector(rootSelector) as HTMLElement;
-      expect(rootEl).toHaveClass(rootClass, "plasmic_tokens_1234567890");
-      expect(rootEl).not.toHaveClass(darkClass);
-      const h1El = getByText(rootEl, h1TextDesktop);
-      expect(h1El).toHaveClass(h1Class);
-      expect(h1El).not.toHaveClass(darkClass);
-      const compEl = document.querySelector(compRootSelector) as HTMLElement;
-      // Each component instance gets the plasmic_tokens class
-      expect(compEl).toHaveClass(compRootClass, "plasmic_tokens_1234567890");
-      expect(compEl).not.toHaveClass(darkClass);
-      unmount();
+      const expectedClasses = [baseClass];
+      const unexpectedClasses = [darkClass];
+
+      const component = render(<Homepage />);
+      expectHomepage(expectedClasses, unexpectedClasses);
+      component.unmount();
+
+      const useStyleTokens = renderHook(_useStyleTokens);
+      expect(useStyleTokens.result.current).toEqual(expectedClasses);
+      useStyleTokens.unmount();
+
+      const useStyleTokensFromProvider = renderHook(useStyleTokensTester, {
+        wrapper: StyleTokensProvider,
+      });
+      expect(useStyleTokensFromProvider.result.current).toEqual(
+        expectedClasses
+      );
+      useStyleTokensFromProvider.unmount();
     }
 
     // Render with global variant "Theme: undefined"
+    const { ThemeContextProvider } = await importFromProject(
+      "PlasmicGlobalVariant__Theme.js"
+    );
     {
-      const { unmount } = render(
-        <ThemeContextProvider value={undefined}>
-          <Homepage />
-        </ThemeContextProvider>
+      const expectedClasses = [baseClass];
+      const unexpectedClasses = [darkClass];
+
+      const wrapper = ({ children }: React.PropsWithChildren) => {
+        return (
+          <ThemeContextProvider value={undefined}>
+            {children}
+          </ThemeContextProvider>
+        );
+      };
+
+      const component = render(<Homepage />, { wrapper });
+      expectHomepage(expectedClasses, unexpectedClasses);
+      component.unmount();
+
+      const useStyleTokens = renderHook(_useStyleTokens, { wrapper });
+      expect(useStyleTokens.result.current).toEqual(expectedClasses);
+      useStyleTokens.unmount();
+
+      const useStyleTokensFromProvider = renderHook(useStyleTokensTester, {
+        wrapper: ({ children }) =>
+          wrapper({
+            children: <StyleTokensProvider>{children}</StyleTokensProvider>,
+          }),
+      });
+      expect(useStyleTokensFromProvider.result.current).toEqual(
+        expectedClasses
       );
-      const rootEl = document.querySelector(rootSelector) as HTMLElement;
-      expect(rootEl).toHaveClass(rootClass, "plasmic_tokens_1234567890");
-      expect(rootEl).not.toHaveClass(darkClass);
-      const h1El = getByText(rootEl, h1TextDesktop);
-      expect(h1El).toHaveClass(h1Class);
-      expect(h1El).not.toHaveClass(darkClass);
-      const compEl = document.querySelector(compRootSelector) as HTMLElement;
-      expect(compEl).toHaveClass(compRootClass, "plasmic_tokens_1234567890");
-      expect(compEl).not.toHaveClass(darkClass);
-      unmount();
+      useStyleTokensFromProvider.unmount();
     }
 
     // Render with global variant "Theme: Dark"
     {
-      const { unmount } = render(
-        <ThemeContextProvider value="dark">
-          <Homepage />
-        </ThemeContextProvider>
+      const expectedClasses = [baseClass, darkClass];
+      const unexpectedClasses = [];
+
+      const wrapper = ({ children }: React.PropsWithChildren) => {
+        return (
+          <ThemeContextProvider value={"dark"}>{children}</ThemeContextProvider>
+        );
+      };
+
+      const component = render(<Homepage />, { wrapper });
+      expectHomepage(expectedClasses, unexpectedClasses);
+      component.unmount();
+
+      const useStyleTokens = renderHook(_useStyleTokens, { wrapper });
+      expect(useStyleTokens.result.current).toEqual(expectedClasses);
+      useStyleTokens.unmount();
+
+      const useStyleTokensFromProvider = renderHook(useStyleTokensTester, {
+        wrapper: ({ children }) =>
+          wrapper({
+            children: <StyleTokensProvider>{children}</StyleTokensProvider>,
+          }),
+      });
+      expect(useStyleTokensFromProvider.result.current).toEqual(
+        expectedClasses
       );
-      const rootEl = document.querySelector(rootSelector) as HTMLElement;
-      expect(rootEl).toHaveClass(
-        rootClass,
-        "plasmic_tokens_1234567890",
-        darkClass
-      );
-      const h1El = getByText(rootEl, h1TextDesktop);
-      expect(h1El).toHaveClass(h1Class);
-      expect(h1El).not.toHaveClass(darkClass);
-      const compEl = document.querySelector(compRootSelector) as HTMLElement;
-      // We ensure that each component instance also gets the dark class alongside plasmic_tokens
-      expect(compEl).toHaveClass(
-        compRootClass,
-        "plasmic_tokens_1234567890",
-        darkClass
-      );
-      unmount();
+      useStyleTokensFromProvider.unmount();
     }
   });
 
@@ -203,16 +225,62 @@ describe("tests codegen for global variants", () => {
     // Mock mobile media query
     mockMatchMedia(true);
 
-    const Homepage = (await importFromProject("Homepage.js")).default;
+    const { default: Homepage } = await importFromProject("Homepage.js");
     const { unmount } = render(<Homepage />);
 
     const rootEl = document.querySelector(rootSelector) as HTMLElement;
-    expect(rootEl).toHaveClass(rootClass, "plasmic_tokens_1234567890");
+    expect(rootEl).toHaveClass(rootClass, baseClass);
     // We ensure that the text is the mobile version
     const h1El = getByText(rootEl, h1TextMobile);
     expect(h1El).toHaveClass(h1Class);
     const compEl = document.querySelector(compRootSelector) as HTMLElement;
-    expect(compEl).toHaveClass(compRootClass, "plasmic_tokens_1234567890");
+    expect(compEl).toHaveClass(compRootClass, baseClass);
+    unmount();
+  });
+
+  function expectHomepage(
+    expectedClasses: string[],
+    unexpectedClasses: string[]
+  ) {
+    // Root elements should get token classes
+    const rootEl = document.querySelector(rootSelector) as HTMLElement;
+    expect(rootEl).toHaveClass(rootClass, ...expectedClasses);
+
+    // Component elements should get token classes
+    const compEl = document.querySelector(compRootSelector) as HTMLElement;
+    expect(compEl).toHaveClass(compRootClass, ...expectedClasses);
+
+    if (unexpectedClasses.length > 0) {
+      expect(rootEl).not.toHaveClass(...unexpectedClasses);
+      expect(compEl).not.toHaveClass(...unexpectedClasses);
+    }
+
+    // Tag elements should NOT get token classes
+    const h1El = getByText(rootEl, h1TextDesktop);
+    expect(h1El).toHaveClass(h1Class);
+    expect(h1El).not.toHaveClass(baseClass, darkClass);
+  }
+});
+
+/**
+ * useStyleTokens that returns "no StyleTokensProvider" by default unless
+ * nested in a StyleTokensProvider.
+ *
+ * This is used to simulate what happens when another project's useStyleTokens
+ * is nested under this project's StyleTokensProvider.
+ */
+const useStyleTokensTester = createUseStyleTokens(
+  {
+    base: "no StyleTokensProvider",
+    varianted: [],
+  },
+  () => ({})
+);
+
+describe("useProviderTest", () => {
+  it("returns 'no StyleTokensProvider' by default", () => {
+    const { unmount, result } = renderHook(useStyleTokensTester);
+    expect(result.current).toEqual(["no StyleTokensProvider"]);
     unmount();
   });
 });

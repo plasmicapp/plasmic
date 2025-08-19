@@ -468,26 +468,30 @@ function filterAndUpdateChecksums(
     output.projectConfig.cssRules = "";
   }
 
-  const projectModuleChecksum = md5(
-    output.projectConfig.projectModuleBundle.module
-  );
-  if (previousChecksums.projectModuleChecksum === projectModuleChecksum) {
-    // TODO: handle checksum equal on CLI
-    //output.projectConfig.projectModuleBundle.module = "";
+  if (output.projectConfig.projectModuleBundle) {
+    const projectModuleChecksum = md5(
+      output.projectConfig.projectModuleBundle.module
+    );
+    if (previousChecksums.projectModuleChecksum === projectModuleChecksum) {
+      // TODO: handle checksum equal on CLI
+      //output.projectConfig.projectModuleBundle.module = "";
+    }
+    currentChecksums.projectModuleChecksum = projectModuleChecksum;
   }
-  currentChecksums.projectModuleChecksum = projectModuleChecksum;
 
-  const styleTokensProviderChecksum = md5(
-    output.projectConfig.styleTokensProviderBundle.module
-  );
-  if (
-    previousChecksums.styleTokensProviderChecksum ===
-    styleTokensProviderChecksum
-  ) {
-    // TODO: handle checksum equal on CLI
-    //output.projectConfig.styleTokensProviderBundle.module = "";
+  if (output.projectConfig.styleTokensProviderBundle) {
+    const styleTokensProviderChecksum = md5(
+      output.projectConfig.styleTokensProviderBundle.module
+    );
+    if (
+      previousChecksums.styleTokensProviderChecksum ===
+      styleTokensProviderChecksum
+    ) {
+      // TODO: handle checksum equal on CLI
+      //output.projectConfig.styleTokensProviderBundle.module = "";
+    }
+    currentChecksums.styleTokensProviderChecksum = styleTokensProviderChecksum;
   }
-  currentChecksums.styleTokensProviderChecksum = styleTokensProviderChecksum;
 
   if (output.projectConfig.globalContextBundle) {
     const globalContextsChecksum = md5(

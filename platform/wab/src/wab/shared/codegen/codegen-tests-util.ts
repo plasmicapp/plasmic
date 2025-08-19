@@ -3,6 +3,7 @@ import {
   exportStyleConfig,
 } from "@/wab/shared/codegen/react-p";
 import { exportSiteComponents } from "@/wab/shared/codegen/react-p/gen-site-bundle";
+import { ExportOpts } from "@/wab/shared/codegen/types";
 import { jsonClone } from "@/wab/shared/common";
 import { initBuiltinActions } from "@/wab/shared/core/states";
 import { deepTrackComponents } from "@/wab/shared/core/tpls";
@@ -20,6 +21,29 @@ export async function codegen(dir: string, site: Site) {
   const projectId = "1234567890";
   const platform = "react";
   const targetEnv = "codegen";
+
+  const exportOpts: ExportOpts = {
+    lang: "ts",
+    platform,
+    relPathFromImplToManagedDir: ".",
+    relPathFromManagedToImplDir: ".",
+    forceAllProps: false,
+    forceRootDisabled: false,
+    imageOpts: { scheme: "inlined" },
+    stylesOpts: { scheme: "css" },
+    codeOpts: { reactRuntime: "classic" },
+    fontOpts: { scheme: "import" },
+    codeComponentStubs: false,
+    skinnyReactWeb: false,
+    skinny: false,
+    importHostFromReactWeb: true,
+    hostLessComponentsConfig: "package",
+    useComponentSubstitutionApi: false,
+    useGlobalVariantsSubstitutionApi: false,
+    useCodeComponentHelpersRegistry: false,
+    useCustomFunctionsStub: false,
+    targetEnv,
+  };
 
   initBuiltinActions({
     projectId,
@@ -42,40 +66,14 @@ export async function codegen(dir: string, site: Site) {
     10,
     "10",
     "latest",
-    {
-      platform,
-      targetEnv,
-      relPathFromImplToManagedDir: ".",
-      relPathFromManagedToImplDir: ".",
-    }
+    exportOpts
   );
   const defaultStylesBundle = exportStyleConfig({ targetEnv });
   const { componentBundles, globalVariantBundles, iconAssets } =
     exportSiteComponents(site, {
       scheme: "blackbox",
       projectConfig,
-      componentExportOpts: {
-        lang: "ts",
-        platform: "react",
-        relPathFromImplToManagedDir: ".",
-        relPathFromManagedToImplDir: ".",
-        forceAllProps: false,
-        forceRootDisabled: false,
-        imageOpts: { scheme: "inlined" },
-        stylesOpts: { scheme: "css" },
-        codeOpts: { reactRuntime: "classic" },
-        fontOpts: { scheme: "import" },
-        codeComponentStubs: false,
-        skinnyReactWeb: false,
-        skinny: false,
-        importHostFromReactWeb: true,
-        hostLessComponentsConfig: "package",
-        useComponentSubstitutionApi: false,
-        useGlobalVariantsSubstitutionApi: false,
-        useCodeComponentHelpersRegistry: false,
-        useCustomFunctionsStub: false,
-        targetEnv,
-      },
+      componentExportOpts: exportOpts,
       s3ImageLinks: {},
       imagesToFilter: new Set(),
       includePages: true,
@@ -92,14 +90,18 @@ export async function codegen(dir: string, site: Site) {
     path.join(dir, projectConfig.cssFileName),
     projectConfig.cssRules
   );
-  fs.writeFileSync(
-    path.join(dir, projectConfig.projectModuleBundle.fileName),
-    projectConfig.projectModuleBundle.module
-  );
-  fs.writeFileSync(
-    path.join(dir, projectConfig.styleTokensProviderBundle.fileName),
-    projectConfig.styleTokensProviderBundle.module
-  );
+  if (projectConfig.projectModuleBundle) {
+    fs.writeFileSync(
+      path.join(dir, projectConfig.projectModuleBundle.fileName),
+      projectConfig.projectModuleBundle.module
+    );
+  }
+  if (projectConfig.styleTokensProviderBundle) {
+    fs.writeFileSync(
+      path.join(dir, projectConfig.styleTokensProviderBundle.fileName),
+      projectConfig.styleTokensProviderBundle.module
+    );
+  }
 
   for (const bundle of componentBundles) {
     fs.writeFileSync(

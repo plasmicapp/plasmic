@@ -8,6 +8,7 @@ import {
   makeCreateUseGlobalVariantsName,
   makeUseGlobalVariantsName,
 } from "@/wab/shared/codegen/react-p/serialize-utils";
+import { ProjectModuleBundle } from "@/wab/shared/codegen/types";
 import { jsString, toVarName } from "@/wab/shared/codegen/util";
 import {
   extractUsedGlobalVariantsForComponents,
@@ -51,11 +52,35 @@ export function makeGlobalVariantComboChecker(_site: Site) {
   return checker;
 }
 
-export function serializeGlobalVariantValues(groups: Set<VariantGroup>) {
+export function serializeGlobalVariantValues(
+  groups: Set<VariantGroup>,
+  projectModuleBundle: ProjectModuleBundle | undefined
+) {
   if (groups.size === 0) {
     return "";
   }
-  return `const globalVariants = ${makeUseGlobalVariantsName()}();`;
+
+  if (projectModuleBundle) {
+    // If there's a project module, we can depend on useGlobalVariants
+    return `const globalVariants = ${makeUseGlobalVariantsName()}();`;
+  } else {
+    // Otherwise fallback to old ensureGlobalVariants
+    const template = [...groups]
+      .map((group) => {
+        const name = toVarName(group.param.variable.name);
+        if (group.type === VariantGroupType.GlobalScreen) {
+          return `${name}: ${makeUniqueUseScreenVariantsName(group)}()`;
+        }
+        return `${name}: ${makeGlobalVariantGroupUseName(group)}()`;
+      })
+      .join(",\n");
+
+    return `
+  const globalVariants = ensureGlobalVariants({
+    ${template}
+  });
+`;
+  }
 }
 
 export function serializeUseGlobalVariants(groups: Set<VariantGroup>) {

@@ -36,8 +36,9 @@ import { getConnection } from "typeorm";
  * 17 - bumped for using shortened css class names
  * 18 - started returning list of component refs in codegen response to handle errors
  * 19 - fix css class name generation
+ * 20 - style token overrides
  */
-export const LOADER_CACHE_BUST = "19";
+export const LOADER_CACHE_BUST = "20";
 
 /**
  * This represents the version of the loader API wire format; should reflect the

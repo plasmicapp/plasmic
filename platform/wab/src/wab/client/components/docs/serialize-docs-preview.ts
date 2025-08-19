@@ -9,6 +9,7 @@ import {
   createCodeComponentModule,
   createComponentModules,
   createComponentOutput,
+  createDepsProjectMods,
   createGlobalVariantGroupModule,
   createIconAssetModule,
   createProjectMods,
@@ -27,6 +28,7 @@ import {
   makeIconAssetFileNameWithoutExt,
 } from "@/wab/shared/codegen/image-assets";
 import {
+  exportStyleConfig,
   getNamedDescendantNodes,
   makeNodeNamer,
 } from "@/wab/shared/codegen/react-p";
@@ -153,8 +155,16 @@ export function serializeDependentModules(docsCtx: DocsPortalCtx) {
 
   const modules: CodeModule[] = [];
 
-  const projectOutput = createProjectOutput(site, siteInfo);
+  const styleOutput = exportStyleConfig({ targetEnv: "preview" });
+  modules.push({
+    name: `./${styleOutput.defaultStyleCssFileName}`,
+    lang: "css",
+    source: styleOutput.defaultStyleCssRules,
+  });
+
+  const projectOutput = createProjectOutput(site, siteInfo.id, siteInfo.name);
   modules.push(...createProjectMods(projectOutput));
+  modules.push(...createDepsProjectMods(site));
 
   // Give access to all icons, so that the user can use different icons
   // in the custom code editor

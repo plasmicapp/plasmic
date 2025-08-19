@@ -11,13 +11,17 @@ import {
   makeProjectModuleImports,
   makeStyleTokensProviderFileName,
   makeStyleTokensProviderName,
-  makeTaggedPlasmicStarImport,
+  makeTaggedPlasmicDefaultImport,
   makeUseGlobalVariantsName,
   makeUseStyleTokensName,
   projectStyleCssImportName,
 } from "@/wab/shared/codegen/react-p/serialize-utils";
 import { getReactWebPackageName } from "@/wab/shared/codegen/react-p/utils";
-import { ExportOpts, ProjectConfig } from "@/wab/shared/codegen/types";
+import {
+  ExportOpts,
+  ProjectModuleBundle,
+  StyleTokensProviderBundle,
+} from "@/wab/shared/codegen/types";
 import { jsLiteral, toVarName } from "@/wab/shared/codegen/util";
 import { assert, ensure } from "@/wab/shared/common";
 import { Site } from "@/wab/shared/model/classes";
@@ -32,11 +36,10 @@ export function makeStyleTokensProviderBundle(
   projectId: string,
   imports: {
     cssFileName: string;
-    projectModuleBundle: ProjectConfig["projectModuleBundle"];
+    projectModuleBundle: ProjectModuleBundle;
   },
-  exportOpts: SetRequired<Partial<ExportOpts>, "targetEnv">,
-  hasStyleTokenOverrides: boolean
-): ProjectConfig["styleTokensProviderBundle"] {
+  exportOpts: SetRequired<Partial<ExportOpts>, "targetEnv">
+): StyleTokensProviderBundle {
   const module = `
     /* eslint-disable */
     /* tslint:disable */
@@ -52,19 +55,9 @@ export function makeStyleTokensProviderBundle(
 
     ${makeProjectModuleImports(imports.projectModuleBundle)}
   
-    ${makeTaggedPlasmicStarImport(
-      projectStyleCssImportName,
-      imports.cssFileName,
-      projectId,
-      "projectcss"
-    )}
+    ${makeCssImport(projectId, exportOpts, imports.cssFileName)}
   
-    const data = ${projectStyleTokenData(
-      site,
-      projectId,
-      exportOpts,
-      hasStyleTokenOverrides
-    )};
+    const data = ${projectStyleTokenData(site, projectId, exportOpts)};
   
     export const ${makeUseStyleTokensName()} = ${makeCreateUseStyleTokensName()}(
       data,
@@ -83,15 +76,31 @@ export function makeStyleTokensProviderBundle(
   };
 }
 
+function makeCssImport(
+  projectId: string,
+  exportOpts: SetRequired<Partial<ExportOpts>, "targetEnv">,
+  cssFileName: string
+) {
+  return exportOpts?.stylesOpts?.scheme === "css-modules"
+    ? makeTaggedPlasmicDefaultImport(
+        exportOpts.platform === "gatsby"
+          ? `* as ${projectStyleCssImportName}` // gatsby needs star import
+          : projectStyleCssImportName,
+        cssFileName,
+        projectId,
+        "projectcss"
+      )
+    : "";
+}
+
 function projectStyleTokenData(
   site: Site,
   projectId: string,
-  exportOpts: SetRequired<Partial<ExportOpts>, "targetEnv">,
-  hasStyleTokenOverrides: boolean
+  exportOpts: SetRequired<Partial<ExportOpts>, "targetEnv">
 ) {
   const base = serializeClassExpr(
     exportOpts,
-    makePlasmicTokensClassName(projectId, exportOpts, hasStyleTokenOverrides)
+    makePlasmicTokensClassName(projectId, exportOpts)
   );
 
   const contextGlobalVariantCombos =

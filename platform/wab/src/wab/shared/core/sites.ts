@@ -1954,7 +1954,7 @@ export function allImageAssets(
   return images;
 }
 
-type StyleTokenWithProjectInfo = Omit<
+export type StyleTokenWithProjectInfo = Omit<
   {
     projectName: string;
     projectId: string;

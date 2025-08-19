@@ -4,7 +4,7 @@ import {
   makeProjectModuleFileName,
 } from "@/wab/shared/codegen/react-p/serialize-utils";
 import { getReactWebPackageName } from "@/wab/shared/codegen/react-p/utils";
-import { ExportOpts, ProjectConfig } from "@/wab/shared/codegen/types";
+import { ExportOpts, ProjectModuleBundle } from "@/wab/shared/codegen/types";
 import { makeGlobalVariantGroupImportTemplate } from "@/wab/shared/codegen/variants";
 import { allGlobalVariantGroups } from "@/wab/shared/core/sites";
 import { Site } from "@/wab/shared/model/classes";
@@ -14,7 +14,7 @@ export function makeProjectModuleBundle(
   site: Site,
   projectId: string,
   exportOpts: SetRequired<Partial<ExportOpts>, "targetEnv">
-): ProjectConfig["projectModuleBundle"] {
+): ProjectModuleBundle {
   const globalVariantGroups = new Set(
     allGlobalVariantGroups(site, {
       includeDeps: "all",

@@ -31,8 +31,6 @@ import {
   makeCssFileName,
   makePlasmicComponentName,
   makePlasmicSuperContextName,
-  makeProjectModuleImports,
-  makeStyleTokensProviderImports,
   makeStylesImports,
   makeVariantPropsName,
   makeVariantsArgTypeName,
@@ -263,25 +261,7 @@ ${plumeType ? `import * as pp from "@plasmicapp/react-web";` : ""}
 ${plumeImports ? plumeImports.imports : ""}
 
 ${referencedImports.join("\n")}
-${makeProjectModuleImports(projectConfig.projectModuleBundle)}
-${makeStyleTokensProviderImports(projectConfig.styleTokensProviderBundle, {
-  useStyleTokens: true,
-})}
- ${
-   ctx.projectConfig.hasStyleTokenOverrides
-     ? ""
-     : ctx.siteCtx.cssProjectDependencies
-         .map((dep) =>
-           makeStyleTokensProviderImports(
-             projectConfig.styleTokensProviderBundle,
-             {
-               useStyleTokens: true,
-             },
-             dep
-           )
-         )
-         .join("\n")
- }
+${importGlobalVariantContexts}
 ${makeStylesImports(
   siteCtx.cssProjectDependencies,
   component,

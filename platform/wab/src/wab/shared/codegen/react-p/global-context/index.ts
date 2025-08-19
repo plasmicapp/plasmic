@@ -19,8 +19,9 @@ import {
   joinVariantVals,
   serializedKeyValue,
 } from "@/wab/shared/codegen/react-p/utils";
-import { ExportOpts, ProjectConfig } from "@/wab/shared/codegen/types";
+import { ExportOpts, ProjectModuleBundle } from "@/wab/shared/codegen/types";
 import { paramToVarName } from "@/wab/shared/codegen/util";
+import { makeGlobalVariantGroupImportTemplate } from "@/wab/shared/codegen/variants";
 import { assert } from "@/wab/shared/common";
 import { getRealParams } from "@/wab/shared/core/components";
 import { ExprCtx, getRawCode } from "@/wab/shared/core/exprs";
@@ -38,7 +39,7 @@ export function makeGlobalContextBundle(
   site: Site,
   projectId: string,
   imports: {
-    projectModuleBundle: ProjectConfig["projectModuleBundle"];
+    projectModuleBundle: ProjectModuleBundle | undefined;
   },
   opts: Partial<ExportOpts>
 ) {
@@ -156,12 +157,16 @@ export function makeGlobalContextBundle(
   const usedGlobalVariantGroups = new Set(
     [...variantChecker.checked].map((v) => v.parent!)
   );
-
   const reactWebImports =
     usedGlobalVariantGroups.size > 0
       ? `
-    import { hasVariant } from "${getReactWebPackageName(opts)}";`
+    import { hasVariant, ensureGlobalVariants } from "${getReactWebPackageName(
+      opts
+    )}";`
       : "";
+  const importGlobalVariantGroups = [...usedGlobalVariantGroups]
+    .map((vg) => makeGlobalVariantGroupImportTemplate(vg, ".", opts))
+    .join("\n");
 
   const contextModule = `
     /* eslint-disable */
@@ -174,7 +179,11 @@ export function makeGlobalContextBundle(
 
     import * as React from "react"
     ${reactWebImports}
-    ${makeProjectModuleImports(imports.projectModuleBundle)}
+    ${
+      imports.projectModuleBundle
+        ? makeProjectModuleImports(imports.projectModuleBundle)
+        : importGlobalVariantGroups
+    }
     ${referencedImports.join("\n")}
 
     export interface GlobalContextsProviderProps {
@@ -193,7 +202,10 @@ export function makeGlobalContextBundle(
         ${overridePropNames.join(",\n")}
       } = props;
 
-      ${serializeGlobalVariantValues(usedGlobalVariantGroups)}
+      ${serializeGlobalVariantValues(
+        usedGlobalVariantGroups,
+        imports.projectModuleBundle
+      )}
       return (${content})
     }
   `;

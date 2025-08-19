@@ -4,14 +4,18 @@ import {
   isBaseVariant,
   isCodeComponentVariant,
   isStandaloneVariantGroup,
+  isValidComboForToken,
 } from "@/wab/shared/Variants";
+import { getContextGlobalVariantsWithVariantedTokens } from "@/wab/shared/codegen/react-p/global-variants";
 import {
   NodeNamer,
   getExportedComponentName,
+  makeCssProjectImportName,
   makeDefaultInlineClassName,
   makeDefaultStyleClassNameBase,
   makePlasmicDefaultStylesClassName,
   makePlasmicMixinsClassName,
+  makePlasmicTokensClassName,
   makeRootResetClassName,
   makeStyleTokensClassNames,
   makeStyleTokensClassNamesForDep,
@@ -29,7 +33,7 @@ import {
   toClassName,
   toJsIdentifier,
 } from "@/wab/shared/codegen/util";
-import { tuple, withoutNils } from "@/wab/shared/common";
+import { ensure, tuple, withoutNils } from "@/wab/shared/common";
 import { isTagInline } from "@/wab/shared/core/rich-text-util";
 import {
   defaultStyleClassNames,
@@ -50,6 +54,10 @@ import {
   VariantSetting,
 } from "@/wab/shared/model/classes";
 import { JsIdentifier } from "@/wab/shared/utils/regex-js-identifier";
+import {
+  makeGlobalVariantComboSorter,
+  sortedVariantCombos,
+} from "@/wab/shared/variant-sort";
 import { sortBy, uniqBy } from "lodash";
 import { shouldUsePlasmicImg } from "src/wab/shared/codegen/react-p/image";
 import type { SetRequired } from "type-fest";
@@ -342,21 +350,88 @@ export function serializeComponentRootResetClasses(
       makePlasmicMixinsClassName(ctx.exportOpts)
     )
   );
-  unconditionalClassExprs.push(makeStyleTokensClassNames());
 
-  if (!ctx.projectConfig.hasStyleTokenOverrides) {
-    const cssProjectDependencies = uniqBy(
-      ctx.siteCtx.cssProjectDependencies,
-      "projectName"
+  const cssProjectDependencies = uniqBy(
+    ctx.siteCtx.cssProjectDependencies,
+    "projectName"
+  );
+
+  if (ctx.projectConfig.styleTokensProviderBundle) {
+    // Add main project useStyleTokens()
+    unconditionalClassExprs.push(makeStyleTokensClassNames());
+
+    // TEMP: Add imported projects' useStyleTokens result
+    if (!ctx.projectConfig.hasStyleTokenOverrides) {
+      unconditionalClassExprs.push(
+        ...withoutNils(
+          cssProjectDependencies.map((dep) =>
+            makeStyleTokensClassNamesForDep(dep.projectName)
+          )
+        )
+      );
+    }
+  } else {
+    unconditionalClassExprs.push(
+      serializeClassExpr(
+        ctx.exportOpts,
+        makePlasmicTokensClassName(ctx.projectConfig.projectId, ctx.exportOpts)
+      )
     );
 
     unconditionalClassExprs.push(
       ...withoutNils(
         cssProjectDependencies.map((dep) =>
-          makeStyleTokensClassNamesForDep(dep.projectName)
+          serializeClassExpr(
+            ctx.exportOpts,
+            makePlasmicTokensClassName(dep.projectId, ctx.exportOpts),
+            makeCssProjectImportName(dep.projectName)
+          )
         )
       )
     );
+
+    // Context global variants require className to render their CSS changes.
+    // Screen variants are rendered through media query
+    const contextGlobalVariantCombos =
+      getContextGlobalVariantsWithVariantedTokens(ctx.site).map((v) => [v]);
+
+    if (contextGlobalVariantCombos.length > 0) {
+      const sorter = makeGlobalVariantComboSorter(ctx.site);
+      sortedVariantCombos(contextGlobalVariantCombos, sorter).forEach((vc) => {
+        let comboClassNameExpr: string;
+        if (ctx.exportOpts.stylesOpts.scheme === "css-modules") {
+          // If we're using css modules, we need to make sure we reference
+          // the right css import
+          const depMap = ctx.componentGenHelper.siteHelper.objToDepMap();
+          ensure(
+            isValidComboForToken(vc),
+            "Can only build varianted combos with one variant"
+          );
+          const variant = vc[0];
+          const variantGroup = ensure(
+            variant.parent,
+            "Global variants always have parent group"
+          );
+          const variantDep = depMap.get(variantGroup);
+          const importName = variantDep
+            ? makeCssProjectImportName(variantDep.name)
+            : "projectcss";
+          comboClassNameExpr = `[${importName}.${makeCssClassNameForVariantCombo(
+            vc,
+            { targetEnv: ctx.exportOpts.targetEnv }
+          )}]`;
+        } else {
+          comboClassNameExpr = jsLiteral(
+            `${makeCssClassNameForVariantCombo(vc, {
+              targetEnv: ctx.exportOpts.targetEnv,
+            })}`
+          );
+        }
+        conditionalClassExprs.push(
+          tuple(comboClassNameExpr, ctx.variantComboChecker(vc, true))
+        );
+      });
+    }
   }
 
   return {

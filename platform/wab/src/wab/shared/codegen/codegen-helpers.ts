@@ -6,6 +6,7 @@ import {
 } from "@/wab/shared/SlotUtils";
 import { $$$ } from "@/wab/shared/TplQuery";
 import { VariantCombo, isBaseVariant } from "@/wab/shared/Variants";
+import { buildObjToDepMap } from "@/wab/shared/core/project-deps";
 import {
   makeTokenRefResolver,
   siteFinalStyleTokensAllDeps,
@@ -62,6 +63,9 @@ export class SiteGenHelper {
       funcKey: "shouldWrapSlotContentInDataCtxReader",
     }
   );
+  objToDepMap = deepMapMemoized(this.cache, () => buildObjToDepMap(this.site), {
+    funcKey: "objToDepmap",
+  });
 }
 
 export class ComponentGenHelper {

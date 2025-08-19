@@ -196,7 +196,9 @@ import {
   ComponentExportOutput,
   ExportOpts,
   ProjectConfig,
+  ProjectModuleBundle,
   StyleConfig,
+  StyleTokensProviderBundle,
 } from "@/wab/shared/codegen/types";
 import {
   jsLiteral,
@@ -378,7 +380,10 @@ export function exportProjectConfig(
   revision: number,
   projectRevId: string,
   version: string,
-  exportOpts: SetRequired<Partial<ExportOpts>, "targetEnv">,
+  exportOpts: SetRequired<
+    Partial<ExportOpts>,
+    "targetEnv" | "platform" | "stylesOpts"
+  >,
   indirect = false,
   scheme: CodegenScheme = "blackbox"
 ): ProjectConfig {
@@ -448,24 +453,18 @@ export function exportProjectConfig(
   const hasStyleTokenOverrides = site.styleTokenOverrides.length > 0;
   const cssTokenVarsRules = makeCssTokenVarsRules(
     site,
-    exportOpts?.includeImportedTokens || hasStyleTokenOverrides
+    // TEMP: add imported tokens if hasStyleTokenOverrides for StyleTokensProvider
+    scheme !== "plain" &&
+      (exportOpts?.includeImportedTokens || hasStyleTokenOverrides)
       ? siteFinalStyleTokensAllDeps(site)
       : siteFinalStyleTokens(site),
-    `.${makePlasmicTokensClassName(
-      projectId,
-      exportOpts,
-      hasStyleTokenOverrides
-    )}`,
+    `.${makePlasmicTokensClassName(projectId, exportOpts)}`,
     { generateExternalToken: true, targetEnv: exportOpts.targetEnv }
   );
 
   const layoutVarsRules = makeLayoutVarsRules(
     site,
-    `.${makePlasmicTokensClassName(
-      projectId,
-      exportOpts,
-      hasStyleTokenOverrides
-    )}`
+    `.${makePlasmicTokensClassName(projectId, exportOpts)}`
   );
 
   const cssFileName = makeCssFileName(
@@ -481,23 +480,24 @@ export function exportProjectConfig(
     exportOpts
   );
 
-  const projectModuleBundle = makeProjectModuleBundle(
-    site,
-    projectId,
-    exportOpts
-  );
+  // Project module and style tokens provider not generated for plain export scheme.
+  let projectModuleBundle: ProjectModuleBundle | undefined = undefined;
+  let styleTokensProviderBundle: StyleTokensProviderBundle | undefined =
+    undefined;
+  if (scheme !== "plain") {
+    projectModuleBundle = makeProjectModuleBundle(site, projectId, exportOpts);
+    styleTokensProviderBundle = makeStyleTokensProviderBundle(
+      site,
+      projectId,
+      {
+        cssFileName,
+        projectModuleBundle,
+      },
+      exportOpts
+    );
+  }
 
-  const styleTokensProviderBundle = makeStyleTokensProviderBundle(
-    site,
-    projectId,
-    {
-      cssFileName,
-      projectModuleBundle,
-    },
-    exportOpts,
-    hasStyleTokenOverrides
-  );
-
+  // Global contexts bundle will be slightly different if project module not generated.
   const globalContextBundle = makeGlobalContextBundle(
     site,
     projectId,
@@ -710,6 +710,16 @@ export function exportReactPresentational(
     useRSC: !!opts.platformOptions?.nextjs?.appDir,
     hasServerQueries,
   };
+
+  const projectModuleBundle = ensure(
+    projectConfig.projectModuleBundle,
+    "projectModuleBundle missing"
+  );
+  const styleTokensProviderBundle = ensure(
+    projectConfig.styleTokensProviderBundle,
+    "styleTokensProviderBundle missing"
+  );
+
   const variantsType = serializeVariantsArgsType(ctx);
   const argsType = serializeArgsType(ctx);
   const overridesType = serializeOverridesType(ctx);
@@ -833,21 +843,25 @@ const __wrapUserPromise = globalThis.__PlasmicWrapUserPromise ?? (async (loc, pr
         : ""
     }
     ${referencedImports.join("\n")}
-    ${makeProjectModuleImports(projectConfig.projectModuleBundle)}
-    ${makeStyleTokensProviderImports(projectConfig.styleTokensProviderBundle, {
-      useStyleTokens: true,
-    })}
+    ${makeProjectModuleImports(projectModuleBundle)}
+    ${makeStyleTokensProviderImports(
+      styleTokensProviderBundle,
+      {
+        useStyleTokens: true,
+      },
+      opts
+    )}
     ${
       ctx.projectConfig.hasStyleTokenOverrides
         ? ""
         : ctx.siteCtx.cssProjectDependencies
             .map((dep) =>
               makeStyleTokensProviderImports(
-                projectConfig.styleTokensProviderBundle,
+                dep,
                 {
                   useStyleTokens: true,
                 },
-                dep
+                opts
               )
             )
             .join("\n")
@@ -1270,7 +1284,7 @@ function serializeRenderFunc(
  * Expects `variants` and `args` to already be in scope.
  */
 export function serializeComponentLocalVars(ctx: SerializerBaseContext) {
-  const { component } = ctx;
+  const { component, projectConfig } = ctx;
 
   const treeTriggers = serializeLocalStyleTriggers(ctx);
   const ccVariantTriggers = serializeCodeComponentVariantsTriggers(
@@ -1389,23 +1403,33 @@ export function serializeComponentLocalVars(ctx: SerializerBaseContext) {
     }
 
     ${treeTriggers}
-    ${serializeGlobalVariantValues(ctx.usedGlobalVariantGroups)}
-     ${serializeStyleTokensClassNames(
-       ctx.projectConfig,
-       ctx.siteCtx.cssProjectDependencies
-     )}
+    ${serializeGlobalVariantValues(
+      ctx.usedGlobalVariantGroups,
+      projectConfig.projectModuleBundle
+    )}
+    ${
+      projectConfig.projectModuleBundle
+        ? serializeStyleTokensClassNames(
+            ctx.projectConfig,
+            ctx.siteCtx.cssProjectDependencies,
+            projectConfig.projectModuleBundle
+          )
+        : ""
+    }
     ${ccVariantTriggers}
   `;
 }
 
 function serializeStyleTokensClassNames(
-  projectConfig: SetRequired<ProjectConfig, "hasStyleTokenOverrides">,
-  deps: SerializerSiteContext["cssProjectDependencies"]
+  projectConfig: ProjectConfig,
+  deps: SerializerSiteContext["cssProjectDependencies"],
+  _styleTokensProviderBundle: StyleTokensProviderBundle // useStyleTokens only works if style-tokens.ts exists
 ) {
   let base = `const ${makeStyleTokensClassNames()} = ${makeUseStyleTokensName()}();`;
   if (projectConfig.hasStyleTokenOverrides) {
     return base;
   }
+  // TEMP: Add imported projects' useStyleTokens
   deps.forEach((dep) => {
     base += `\nconst ${makeStyleTokensClassNamesForDep(
       dep.projectName
@@ -2636,12 +2660,14 @@ searchParams?: Promise<Record<string, string | string[] | undefined>>;
   )}";
     ${globalContextsImport}
     ${
-      ctx.projectConfig.hasStyleTokenOverrides
+      ctx.projectConfig.hasStyleTokenOverrides &&
+      ctx.projectConfig.styleTokensProviderBundle
         ? makeStyleTokensProviderImports(
             ctx.projectConfig.styleTokensProviderBundle,
             {
               styleTokensProvider: true,
-            }
+            },
+            opts
           )
         : ""
     }

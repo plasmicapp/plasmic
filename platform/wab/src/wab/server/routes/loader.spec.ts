@@ -82,7 +82,7 @@ describe("loader", () => {
     const res = await publicApi.getPublishedLoaderAssets([projects[0]], {});
     expect(res.status()).toEqual(302);
     expect(res.headers()["location"]).toEqual(
-      `/api/v1/loader/code/versioned?cb=19&platform=react&loaderVersion=0&projectId=${projects[0].id}%400.0.2`
+      `/api/v1/loader/code/versioned?cb=20&platform=react&loaderVersion=0&projectId=${projects[0].id}%400.0.2`
     );
     expect(res.headers()["cache-control"]).toEqual("s-maxage=30");
   });
@@ -103,7 +103,7 @@ describe("loader", () => {
     expect(res.status()).toEqual(302);
     // expect in sorted order
     expect(res.headers()["location"]).toEqual(
-      `/api/v1/loader/code/versioned?cb=19&platform=react&loaderVersion=0&projectId=${a.id}%400.0.2&projectId=${b.id}%400.0.2`
+      `/api/v1/loader/code/versioned?cb=20&platform=react&loaderVersion=0&projectId=${a.id}%400.0.2&projectId=${b.id}%400.0.2`
     );
     expect(res.headers()["cache-control"]).toEqual("s-maxage=30");
   });

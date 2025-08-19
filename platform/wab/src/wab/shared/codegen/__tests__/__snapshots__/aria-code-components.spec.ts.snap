@@ -1275,6 +1275,7 @@ export default PlasmicButton;
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  ensureGlobalVariants,
   generateOnMutateForSpec,
   generateStateOnChangeProp,
   generateStateOnChangePropForCodeComponents,
@@ -1314,6 +1315,7 @@ export default PlasmicButton;
     
     import "@plasmicapp/react-web/lib/plasmic.css";
     import  "./plasmic__default_style.css"; // plasmic-import: global/defaultcss
+    
     import  "./plasmic.css"; // plasmic-import: 1234567890/projectcss
     import  "./PlasmicButton.css" // plasmic-import: D557GwRUy2HJ/css
   
@@ -1522,7 +1524,7 @@ interactionEffect?: Flex__<"div">;
 
     
     
-     const styleTokensClassNames = _useStyleTokens();
+    const styleTokensClassNames = _useStyleTokens();
     
     const [$ccVariants, setDollarCcVariants] = React.useState<Record<string, boolean>>({
       hovered: false,
@@ -2655,6 +2657,7 @@ export default PlasmicDataFetcherGrandParent;
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  ensureGlobalVariants,
   generateOnMutateForSpec,
   generateStateOnChangeProp,
   generateStateOnChangePropForCodeComponents,
@@ -2694,6 +2697,7 @@ export default PlasmicDataFetcherGrandParent;
     
     import "@plasmicapp/react-web/lib/plasmic.css";
     import  "./plasmic__default_style.css"; // plasmic-import: global/defaultcss
+    
     import  "./plasmic.css"; // plasmic-import: 1234567890/projectcss
     import  "./PlasmicDataFetcherGrandParent.css" // plasmic-import: mmv9XMNdJbUm/css
   
@@ -2797,7 +2801,7 @@ export const PlasmicDataFetcherGrandParent__ArgProps = new Array<ArgPropType>();
 
     
     
-     const styleTokensClassNames = _useStyleTokens();
+    const styleTokensClassNames = _useStyleTokens();
     
   
       return (
@@ -3017,6 +3021,7 @@ export default PlasmicDataFetcherParent;
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  ensureGlobalVariants,
   generateOnMutateForSpec,
   generateStateOnChangeProp,
   generateStateOnChangePropForCodeComponents,
@@ -3056,6 +3061,7 @@ export default PlasmicDataFetcherParent;
     
     import "@plasmicapp/react-web/lib/plasmic.css";
     import  "./plasmic__default_style.css"; // plasmic-import: global/defaultcss
+    
     import  "./plasmic.css"; // plasmic-import: 1234567890/projectcss
     import  "./PlasmicDataFetcherParent.css" // plasmic-import: iUkwSJQ7glxH/css
   
@@ -3159,7 +3165,7 @@ export const PlasmicDataFetcherParent__ArgProps = new Array<ArgPropType>();
 
     
     
-     const styleTokensClassNames = _useStyleTokens();
+    const styleTokensClassNames = _useStyleTokens();
     
   
       return (
@@ -3393,6 +3399,7 @@ export default PlasmicHelloWorld;
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  ensureGlobalVariants,
   generateOnMutateForSpec,
   generateStateOnChangeProp,
   generateStateOnChangePropForCodeComponents,
@@ -3432,6 +3439,7 @@ export default PlasmicHelloWorld;
     
     import "@plasmicapp/react-web/lib/plasmic.css";
     import  "./plasmic__default_style.css"; // plasmic-import: global/defaultcss
+    
     import  "./plasmic.css"; // plasmic-import: 1234567890/projectcss
     import  "./PlasmicHelloWorld.css" // plasmic-import: 3khyLeywU1SP/css
   
@@ -3536,7 +3544,7 @@ text?: Flex__<"div">;
 
     
     
-     const styleTokensClassNames = _useStyleTokens();
+    const styleTokensClassNames = _useStyleTokens();
     
   
       return (
@@ -4352,6 +4360,7 @@ export default PlasmicModalDialog;
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  ensureGlobalVariants,
   generateOnMutateForSpec,
   generateStateOnChangeProp,
   generateStateOnChangePropForCodeComponents,
@@ -4394,6 +4403,7 @@ import { BaseHeading } from "@plasmicpkgs/react-aria/skinny/registerHeading";
     
     import "@plasmicapp/react-web/lib/plasmic.css";
     import  "./plasmic__default_style.css"; // plasmic-import: global/defaultcss
+    
     import  "./plasmic.css"; // plasmic-import: 1234567890/projectcss
     import  "./PlasmicModalDialog.css" // plasmic-import: 4D8eN8Bv_isH/css
   
@@ -4554,7 +4564,7 @@ scrollableContent?: Flex__<"div">;
 
     
     
-     const styleTokensClassNames = _useStyleTokens();
+    const styleTokensClassNames = _useStyleTokens();
     
   
       return (
@@ -5008,6 +5018,7 @@ export default PlasmicMyOverlayArrow;
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  ensureGlobalVariants,
   generateOnMutateForSpec,
   generateStateOnChangeProp,
   generateStateOnChangePropForCodeComponents,
@@ -5047,6 +5058,7 @@ export default PlasmicMyOverlayArrow;
     
     import "@plasmicapp/react-web/lib/plasmic.css";
     import  "./plasmic__default_style.css"; // plasmic-import: global/defaultcss
+    
     import  "./plasmic.css"; // plasmic-import: 1234567890/projectcss
     import  "./PlasmicMyOverlayArrow.css" // plasmic-import: N_LiHbyjn30l/css
   
@@ -5151,7 +5163,7 @@ freeBox?: Flex__<"div">;
 
     
     
-     const styleTokensClassNames = _useStyleTokens();
+    const styleTokensClassNames = _useStyleTokens();
     
     const [$ccVariants, setDollarCcVariants] = React.useState<Record<string, boolean>>({
       placementTop: false,
@@ -5647,6 +5659,7 @@ export default PlasmicNewPage;
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  ensureGlobalVariants,
   generateOnMutateForSpec,
   generateStateOnChangeProp,
   generateStateOnChangePropForCodeComponents,
@@ -5692,6 +5705,7 @@ import HelloWorld from "./HelloWorld";  // plasmic-import: 3khyLeywU1SP/componen
     
     import "@plasmicapp/react-web/lib/plasmic.css";
     import  "./plasmic__default_style.css"; // plasmic-import: global/defaultcss
+    
     import  "./plasmic.css"; // plasmic-import: 1234567890/projectcss
     import  "./PlasmicNewPage.css" // plasmic-import: TNdRzGmxrYew/css
   
@@ -5824,7 +5838,7 @@ helloWorld?: Flex__<typeof HelloWorld>;
 
     
     
-     const styleTokensClassNames = _useStyleTokens();
+    const styleTokensClassNames = _useStyleTokens();
     
   
       return (
@@ -6272,6 +6286,7 @@ export default PlasmicPopover;
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  ensureGlobalVariants,
   generateOnMutateForSpec,
   generateStateOnChangeProp,
   generateStateOnChangePropForCodeComponents,
@@ -6311,6 +6326,7 @@ export default PlasmicPopover;
     
     import "@plasmicapp/react-web/lib/plasmic.css";
     import  "./plasmic__default_style.css"; // plasmic-import: global/defaultcss
+    
     import  "./plasmic.css"; // plasmic-import: 1234567890/projectcss
     import  "./PlasmicPopover.css" // plasmic-import: 6YHxfeslQ2vo/css
   
@@ -6425,7 +6441,7 @@ svg?: Flex__<"svg">;
 
     
     
-     const styleTokensClassNames = _useStyleTokens();
+    const styleTokensClassNames = _useStyleTokens();
     
     const [$ccVariants, setDollarCcVariants] = React.useState<Record<string, boolean>>({
       placementTop: false,
@@ -6839,6 +6855,7 @@ export default PlasmicPopoverDialog;
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  ensureGlobalVariants,
   generateOnMutateForSpec,
   generateStateOnChangeProp,
   generateStateOnChangePropForCodeComponents,
@@ -6880,6 +6897,7 @@ import Popover from "./Popover";  // plasmic-import: 6YHxfeslQ2vo/component
     
     import "@plasmicapp/react-web/lib/plasmic.css";
     import  "./plasmic__default_style.css"; // plasmic-import: global/defaultcss
+    
     import  "./plasmic.css"; // plasmic-import: 1234567890/projectcss
     import  "./PlasmicPopoverDialog.css" // plasmic-import: 5gJnBNi_9h0B/css
   
@@ -7011,7 +7029,7 @@ popover?: Flex__<typeof Popover>;
 
     
     
-     const styleTokensClassNames = _useStyleTokens();
+    const styleTokensClassNames = _useStyleTokens();
     
   
       return (
@@ -7203,7 +7221,7 @@ export var StyleTokensProvider = createStyleTokensProvider(data, _useGlobalVaria
 
     import { _useGlobalVariants } from "./plasmic.tsx"; // plasmic-import: 1234567890/projectModule
   
-    import * as projectcss from "./plasmic.css"; // plasmic-import: 1234567890/projectcss
+    
   
     const data = {
     base: "plasmic_tokens_1234567890",
@@ -7516,6 +7534,7 @@ export default PlasmicTooltip;
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  ensureGlobalVariants,
   generateOnMutateForSpec,
   generateStateOnChangeProp,
   generateStateOnChangePropForCodeComponents,
@@ -7555,6 +7574,7 @@ export default PlasmicTooltip;
     
     import "@plasmicapp/react-web/lib/plasmic.css";
     import  "./plasmic__default_style.css"; // plasmic-import: global/defaultcss
+    
     import  "./plasmic.css"; // plasmic-import: 1234567890/projectcss
     import  "./PlasmicTooltip.css" // plasmic-import: pI05-1YiCa_b/css
   
@@ -7686,7 +7706,7 @@ svg?: Flex__<"svg">;
 
     
     
-     const styleTokensClassNames = _useStyleTokens();
+    const styleTokensClassNames = _useStyleTokens();
     
     const [$ccVariants, setDollarCcVariants] = React.useState<Record<string, boolean>>({
       placementTop: false,
