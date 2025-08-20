@@ -97,6 +97,10 @@ export const VIEW_SHORTCUT_GROUP = mkShortcutGroup("View", {
 });
 
 export const CHROME_SHORTCUT_GROUP = mkShortcutGroup("Chrome", {
+  TOGGLE_UI_COPILOT: {
+    combos: "mod+k",
+    description: "Toggle Copilot!",
+  },
   SWITCH_TO_COPILOT_TAB: {
     combos: "alt+c",
     description: "Engage Copilot!",

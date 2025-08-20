@@ -1,12 +1,12 @@
-import { LeftTabKey } from "@/wab/shared/ui-config-utils";
-import L from "lodash";
 import { makeVariantsController } from "@/wab/client/components/variants/VariantsController";
 import { bindShortcutHandlers } from "@/wab/client/shortcuts/shortcut-handler";
 import { STUDIO_SHORTCUTS } from "@/wab/client/shortcuts/studio/studio-shortcuts";
 import { RightTabKey, StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { assert, mod } from "@/wab/shared/common";
 import { getArenaFrames } from "@/wab/shared/Arenas";
+import { assert, mod } from "@/wab/shared/common";
 import { getSiteArenas } from "@/wab/shared/core/sites";
+import { LeftTabKey } from "@/wab/shared/ui-config-utils";
+import L from "lodash";
 
 /**
  * Shortcuts should only get handled if this function returns true.
@@ -194,6 +194,9 @@ export function bindStudioShortcutHandlers(studioCtx: StudioCtx) {
             studioCtx.isInteractiveMode = !studioCtx.isInteractiveMode;
           }
         });
+      },
+      TOGGLE_UI_COPILOT: async () => {
+        studioCtx.openUiCopilotDialog(!studioCtx.showUiCopilot);
       },
       SWITCH_TO_COPILOT_TAB: async () => {
         return (
