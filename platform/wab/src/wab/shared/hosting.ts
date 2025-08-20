@@ -1,4 +1,5 @@
 import { maybeOne } from "@/wab/shared/common";
+import { DEVFLAGS } from "@/wab/shared/devflags";
 import L from "lodash";
 
 export class DomainValidator {
@@ -43,3 +44,10 @@ export class DomainValidator {
     return wwwDomain ?? maybeOne(customDomains);
   }
 }
+
+// Shared instance for validating Plasmic Hosting domains/subdomains.
+// Centralize the configuration so all server and shared utilities use
+// the same suffix (from DEVFLAGS).
+export const PLASMIC_HOSTING_DOMAIN_VALIDATOR = new DomainValidator(
+  DEVFLAGS.plasmicHostingSubdomainSuffix
+);

@@ -143,7 +143,6 @@ import {
   localIcons,
 } from "@/wab/shared/core/sites";
 import { DEVFLAGS } from "@/wab/shared/devflags";
-import { DomainValidator } from "@/wab/shared/hosting";
 import {
   Component,
   ProjectDependency,
@@ -1673,20 +1672,15 @@ const _ProofSafeDelete: ProofSafeDelete = toOpaque({
  */
 export async function doSafelyDeleteProject(
   dbMgr: DbMgr,
-  domainValidator: DomainValidator,
   projectId: ProjectId
 ) {
-  await onProjectDelete(dbMgr, projectId, domainValidator);
+  await onProjectDelete(dbMgr, projectId);
   await dbMgr.deleteProject(projectId, _ProofSafeDelete);
 }
 
 export async function deleteProject(req: Request, res: Response) {
   const mgr = userDbMgr(req);
-  await doSafelyDeleteProject(
-    mgr,
-    new DomainValidator(req.devflags.plasmicHostingSubdomainSuffix),
-    toOpaque(req.params.projectId)
-  );
+  await doSafelyDeleteProject(mgr, toOpaque(req.params.projectId));
   req.promLabels.projectId = req.params.projectId;
   res.json({ deletedId: req.params.projectId });
 }

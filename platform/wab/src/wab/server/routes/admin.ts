@@ -46,7 +46,6 @@ import {
   uncheckedCast,
   withoutNils,
 } from "@/wab/shared/common";
-import { DomainValidator } from "@/wab/shared/hosting";
 import { Request, Response } from "express-serve-static-core";
 import { omit, uniq } from "lodash";
 
@@ -168,11 +167,7 @@ export async function deleteProjectAndRevisions(req: Request, res: Response) {
 
 export async function deleteProject(req: Request, res: Response) {
   const mgr = superDbMgr(req);
-  await doSafelyDeleteProject(
-    mgr,
-    new DomainValidator(req.devflags.plasmicHostingSubdomainSuffix),
-    req.body.id
-  );
+  await doSafelyDeleteProject(mgr, req.body.id);
   res.json({});
 }
 

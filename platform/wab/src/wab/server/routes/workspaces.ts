@@ -1,4 +1,3 @@
-import { ensureType } from "@/wab/shared/common";
 import { Workspace } from "@/wab/server/entities/Entities";
 import { doSafelyDeleteProject } from "@/wab/server/routes/projects";
 import {
@@ -16,7 +15,7 @@ import {
   UpdateWorkspaceRequest,
   WorkspaceId,
 } from "@/wab/shared/ApiSchema";
-import { DomainValidator } from "@/wab/shared/hosting";
+import { ensureType } from "@/wab/shared/common";
 import { createTaggedResourceId } from "@/wab/shared/perms";
 import { Request, Response } from "express-serve-static-core";
 import L from "lodash";
@@ -157,11 +156,7 @@ export async function deleteWorkspace(req: Request, res: Response) {
   }
 
   for (const project of await mgr.getProjectsByWorkspaces([workspaceId])) {
-    await doSafelyDeleteProject(
-      mgr,
-      new DomainValidator(req.devflags.plasmicHostingSubdomainSuffix),
-      project.id
-    );
+    await doSafelyDeleteProject(mgr, project.id);
   }
 
   await mgr.deleteWorkspace(workspaceId);

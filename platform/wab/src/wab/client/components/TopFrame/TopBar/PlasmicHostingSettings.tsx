@@ -15,23 +15,17 @@ import {
   PlasmicPlasmicHostingSettings,
 } from "@/wab/client/plasmic/plasmic_kit_continuous_deployment/PlasmicPlasmicHostingSettings";
 import { checkIsOrgOnFreeTierOrTrial } from "@/wab/client/studio-ctx/StudioCtx";
-import { ApiProject } from "@/wab/shared/ApiSchema";
-import { spawn, spawnWrapper, strictIdentity } from "@/wab/shared/common";
+import useDebounce from "@/wab/commons/components/use-debounce";
+import { ApiProject, CheckDomainResponse } from "@/wab/shared/ApiSchema";
+import { spawn, spawnWrapper } from "@/wab/shared/common";
 import { imageDataUriToBlob } from "@/wab/shared/data-urls";
 import { DomainValidator } from "@/wab/shared/hosting";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { FaUpload } from "react-icons/fa";
-import { mutate } from "swr";
+import useSWR, { mutate } from "swr";
 import * as tldts from "tldts";
-
-strictIdentity(React);
-
-// XXX
-function useDebounce<T>(x: T, _n: number): [T] {
-  return [x];
-}
 
 export interface PlasmicHostingSettingsProps
   extends DefaultPlasmicHostingSettingsProps {
@@ -101,32 +95,35 @@ function PlasmicHostingSettings_(
     setShowDomainCardFor(settings.customDomain || null);
   }, [settings.customDomain]);
 
-  const [debouncedSubdomain] = useDebounce(data.subdomain, 1500);
-  const [subdomainError, setSubdomainError] = useState<string | null>(null);
-
-  useEffect(() => {
-    async function checkSubdomain() {
+  const debouncedSubdomain = useDebounce(data.subdomain, 1500);
+  const { data: domainStatus } = useSWR(
+    debouncedSubdomain ? ([`checkDomain`, debouncedSubdomain] as const) : null,
+    async ([_key, subdomainToCheck]): Promise<
+      CheckDomainResponse & { domain: string; subdomain: string }
+    > => {
+      const domainToCheck = `${debouncedSubdomain}.${appConfig.plasmicHostingSubdomainSuffix}`;
       try {
-        const status = await api.checkDomain(
-          `${debouncedSubdomain}.${appConfig.plasmicHostingSubdomainSuffix}`
-        );
-
-        setSubdomainError(
-          status.status.isValid &&
-            status.status.isPlasmicSubdomain &&
-            status.status.isAvailable
-            ? null
-            : `${debouncedSubdomain}.${appConfig.plasmicHostingSubdomainSuffix}`
-        );
+        const response = await api.checkDomain(domainToCheck);
+        return {
+          domain: domainToCheck,
+          subdomain: subdomainToCheck,
+          ...response,
+        };
       } catch (err) {
         console.error(err);
+        return {
+          domain: domainToCheck,
+          subdomain: subdomainToCheck,
+          status: {
+            isValid: false,
+          },
+        };
       }
+    },
+    {
+      shouldRetryOnError: false,
     }
-
-    if (debouncedSubdomain && debouncedSubdomain !== settings.subdomain) {
-      spawn(checkSubdomain());
-    }
-  }, [debouncedSubdomain, settings.subdomain]);
+  );
 
   async function handleCustomDomain() {
     const fullCustomDomain = data.customDomain;
@@ -171,7 +168,13 @@ function PlasmicHostingSettings_(
     <PlasmicPlasmicHostingSettings
       root={{ ref }}
       {...rest}
-      subdomain={subdomainError ? "error" : saving ? "loading" : undefined}
+      subdomain={
+        domainStatus && !domainStatus.status.isValid
+          ? "error"
+          : saving
+          ? "loading"
+          : undefined
+      }
       subdomainSuffix={"." + appConfig.plasmicHostingSubdomainSuffix}
       subdomainForm={{
         onSubmit: spawnWrapper(async (e) => {
@@ -205,14 +208,21 @@ function PlasmicHostingSettings_(
       }}
       saveSubdomainButton={{
         htmlType: "submit",
-        disabled: !subdomainError && settings.subdomain === data.subdomain,
+        // checked domain must be different from the saved one
+        disabled:
+          !domainStatus || // domain must be checked
+          !domainStatus.status.isValid || // checked domain must be valid
+          domainStatus.subdomain !== data.subdomain || // checked domain must be the same as the one in the input
+          data.subdomain === settings.subdomain,
       }}
       subdomainErrorFeedback={{
-        children: (
+        children: domainStatus ? (
           <>
-            <strong>{subdomainError}</strong> is not available. Please choose
-            another subdomain.
+            <strong>{domainStatus.domain}</strong> is not available. Please
+            choose another subdomain.
           </>
+        ) : (
+          <></>
         ),
       }}
       customDomain={
