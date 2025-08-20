@@ -171,13 +171,19 @@ export class OverrideableStyleToken extends BaseStyleToken {
   }
 
   setValue(value: string): void {
-    const override = this.upsertStyleTokenOverride();
-    BaseStyleToken.setValue(override, value);
+    // Only create an override if the value is different from the base value
+    if (this.value !== value) {
+      const override = this.upsertStyleTokenOverride();
+      BaseStyleToken.setValue(override, value);
+    }
   }
 
   setVariantedValue(variants: Variant[], value: string): void {
-    const override = this.upsertStyleTokenOverride();
-    BaseStyleToken.setVariantedValue(override, variants, value);
+    // Only create an override if the value is different from the base value
+    if (this.override || this.value !== value) {
+      const override = this.upsertStyleTokenOverride();
+      BaseStyleToken.setVariantedValue(override, variants, value);
+    }
   }
 
   /** Returns true if override no longer exists. */
