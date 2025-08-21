@@ -2815,14 +2815,12 @@ export class DbMgr implements MigrationDbMgr {
       .set({ createdById: newOwner })
       .where(`id = '${teamId}'`)
       .execute();
-
     await this.permissions()
       .createQueryBuilder()
       .update()
       .set({ accessLevel: "editor" })
       .where(`id = '${currentOwnerPermission.id}'`)
       .execute();
-
     await this.permissions()
       .createQueryBuilder()
       .update()
@@ -5851,16 +5849,11 @@ export class DbMgr implements MigrationDbMgr {
     resourcesAccessLevel: Record<string, AccessLevel>
   ) {
     const actor = await this.describeActor();
-    // 대상 유저이면서, 현재 유저는 아니면서, 오너인 권한이 <- 없어야 함 (대상 유저가 현재 유저가 아니면서 오너가 아니어야 됨) 현재 유저가 오너면 스스로를 대상으로 설정가능해야 함
     const ownerPerms = user
       ? permissions.filter(
-          (perm) =>
-            perm.userId === user.id &&
-            perm.userId !== this.checkUserIdIsSelf() &&
-            perm.accessLevel === "owner"
+          (perm) => perm.userId === user.id && perm.accessLevel === "owner"
         )
       : [];
-
     checkPermissions(
       ownerPerms.length === 0,
       ownerPerms

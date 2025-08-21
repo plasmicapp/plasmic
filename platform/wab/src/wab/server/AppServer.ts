@@ -1754,11 +1754,6 @@ export function addMainAppServerRoutes(
     withNext(teamRoutes.prepareTeamSupportUrls)
   );
 
-  app.post(
-    "/api/v1/teams/:teamId/change-team-owner",
-    withNext(teamRoutes.changeTeamOwner)
-  );
-
   /**
    * Workspaces routes.
    */

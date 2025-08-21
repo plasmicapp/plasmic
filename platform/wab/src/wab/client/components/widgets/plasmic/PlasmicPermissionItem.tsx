@@ -283,7 +283,7 @@ function PlasmicPermissionItem__RenderFunc(props: {
               className={classNames("__wab_instance", sty.option__clhZ3)}
               value={"viewer"}
             >
-              {"viewedfdfdfr"}
+              {"viewer"}
             </Select__Option>
             <Select__Option
               className={classNames("__wab_instance", sty.option__wZq0D)}

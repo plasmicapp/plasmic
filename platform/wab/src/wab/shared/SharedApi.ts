@@ -925,13 +925,6 @@ export abstract class SharedApi {
     return this.post(`/teams/${teamId}/prepare-support-urls`);
   }
 
-  async changeTeamOwner(teamId: string, newOwnerEmail: string): Promise<{}> {
-    return this.post(`/teams/${teamId}/change-team-owner`, {
-      teamId,
-      newOwnerEmail,
-    });
-  }
-
   async createWorkspace(
     data: CreateWorkspaceRequest
   ): Promise<MayTriggerPaywall<CreateWorkspaceResponse>> {
