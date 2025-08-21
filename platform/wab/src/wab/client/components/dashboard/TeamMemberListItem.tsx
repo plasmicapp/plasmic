@@ -113,7 +113,7 @@ function TeamMemberListItem_(
             style={roleValue === "owner" ? {} : { display: "none" }}
             value="owner"
           >
-            {contentCreatorTooltip}
+            Owner
           </Select.Option>,
           <Select.Option value="editor">{developerTooltip}</Select.Option>,
           <Select.Option
