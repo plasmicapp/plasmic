@@ -109,7 +109,12 @@ function TeamMemberListItem_(
           }
         },
         children: [
-          <Select.Option value="owner">{contentCreatorTooltip}</Select.Option>,
+          <Select.Option
+            style={roleValue === "owner" ? {} : { display: "none" }}
+            value="owner"
+          >
+            {contentCreatorTooltip}
+          </Select.Option>,
           <Select.Option value="editor">{developerTooltip}</Select.Option>,
           <Select.Option
             value="content"
