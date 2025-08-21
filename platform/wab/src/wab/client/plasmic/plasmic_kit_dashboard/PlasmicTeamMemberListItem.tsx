@@ -291,7 +291,7 @@ function PlasmicTeamMemberListItem__RenderFunc(props: {
               className={classNames("__wab_instance", sty.option__r0GbZ)}
               value={"viewer"}
             >
-              {"Viewedfdfdfdr"}
+              {"Viewer"}
             </Select__Option>
             <Select__Option
               className={classNames("__wab_instance", sty.option___0ByQx)}

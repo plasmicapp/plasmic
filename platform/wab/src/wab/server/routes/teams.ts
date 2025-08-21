@@ -575,5 +575,6 @@ export async function changeTeamOwner(req: Request, res: Response) {
   const newOwner = await superMgr.getUserByEmail(req.body.newOwnerEmail);
 
   await (teamId && newOwner && superMgr.changeTeamOwner(teamId, newOwner.id));
+
   res.json({});
 }

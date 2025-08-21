@@ -66,6 +66,8 @@ function TeamSettings_(props: TeamSettingsProps, ref: HTMLElementRefOf<"div">) {
       )
     : "blocked";
   const readOnly = accessLevelRank(userAccessLevel) < accessLevelRank("editor");
+  const hasOwnership =
+    accessLevelRank(userAccessLevel) >= accessLevelRank("owner");
 
   const teamMenuItems = team ? getTeamMenuItems(appCtx, team) : [];
 
@@ -102,19 +104,7 @@ function TeamSettings_(props: TeamSettingsProps, ref: HTMLElementRefOf<"div">) {
           if (!team) {
             return;
           }
-          // role이 오너이면, 오너십 이전할지 확인하는 툴팁 보여주기
-          if (role && role === "owner") {
-            const confirm = await reactConfirm({
-              title: `Transfer ownership`,
-              message: <>Do you want to transfer ownership to this memeber?</>,
-            });
-            if (!confirm) {
-              return;
-            } else {
-              await appCtx.api.changeTeamOwner(team.id, email);
-            }
-          }
-          await appCtx.api.grantRevoke({
+          let grantRevokeReq = {
             grants: role
               ? [
                   {
@@ -132,7 +122,28 @@ function TeamSettings_(props: TeamSettingsProps, ref: HTMLElementRefOf<"div">) {
                   },
                 ]
               : [],
-          });
+          };
+          if (hasOwnership && role === "owner") {
+            const confirm = await reactConfirm({
+              title: `Transfer ownership`,
+              message: <>Do you want to transfer ownership to this member?</>,
+            });
+            if (!confirm) {
+              return;
+            }
+            grantRevokeReq = {
+              ...grantRevokeReq,
+              grants: [
+                ...grantRevokeReq.grants,
+                {
+                  email: selfInfo.email,
+                  accessLevel: "editor",
+                  teamId: team.id,
+                },
+              ],
+            };
+          }
+          await appCtx.api.grantRevoke(grantRevokeReq);
           refetchData();
         },
         onRemoveUser: async (email: string) => {
