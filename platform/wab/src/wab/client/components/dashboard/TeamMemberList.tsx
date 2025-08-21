@@ -48,11 +48,6 @@ function TeamMemberList_(
   } = props;
   const appCtx = useAppCtx();
 
-  const self = appCtx.selfInfo;
-  const currentUserPerm = perms.find(
-    (p) => p.user?.email === self?.email || p.email === self?.email
-  );
-
   // Shared Modal
   const [sharedModal, setSharedModal] = React.useState(false);
   const [query, setQuery] = React.useState("");
@@ -148,7 +143,6 @@ function TeamMemberList_(
             removeUser={onRemoveUser}
             disabled={disabled}
             teamId={team?.id}
-            currentUserPerm={currentUserPerm}
           />
         ))}
       </PlasmicTeamMemberList>

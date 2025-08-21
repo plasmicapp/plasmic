@@ -8,7 +8,6 @@ import {
   designerRoleHelp,
   designerTooltip,
   developerTooltip,
-  ownerTooltip,
   viewerTooltip,
 } from "@/wab/client/components/widgets/plasmic/PermissionItem";
 import Select from "@/wab/client/components/widgets/Select";
@@ -24,7 +23,7 @@ import {
   TeamMember,
 } from "@/wab/shared/ApiSchema";
 import { fullName, getUserEmail } from "@/wab/shared/ApiSchemaUtil";
-import { accessLevelRank, GrantableAccessLevel } from "@/wab/shared/EntUtil";
+import { GrantableAccessLevel } from "@/wab/shared/EntUtil";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { Menu, Tooltip } from "antd";
 import moment from "moment";
@@ -39,7 +38,6 @@ interface TeamMemberListItemProps extends DefaultTeamMemberListItemProps {
   removeUser: (email: string) => Promise<void>;
   disabled?: boolean;
   teamId?: TeamId;
-  currentUserPerm?: ApiPermission;
 }
 
 function TeamMemberListItem_(
@@ -55,7 +53,6 @@ function TeamMemberListItem_(
     removeUser,
     disabled,
     teamId,
-    currentUserPerm,
     ...rest
   } = props;
   const appCtx = useAppCtx();
@@ -92,13 +89,7 @@ function TeamMemberListItem_(
       }`}
       role={{
         value: roleValue,
-        isDisabled:
-          disabled ||
-          perm?.accessLevel === "owner" ||
-          (perm &&
-            currentUserPerm &&
-            accessLevelRank(perm?.accessLevel) >
-              accessLevelRank(currentUserPerm?.accessLevel)),
+        isDisabled: disabled || perm?.accessLevel === "owner",
         onChange: async (e) => {
           if (e !== roleValue && e !== null) {
             if (e === "none") {
@@ -118,7 +109,7 @@ function TeamMemberListItem_(
           }
         },
         children: [
-          <Select.Option value="owner">{ownerTooltip}</Select.Option>,
+          <Select.Option value="owner">{contentCreatorTooltip}</Select.Option>,
           <Select.Option value="editor">{developerTooltip}</Select.Option>,
           <Select.Option
             value="content"

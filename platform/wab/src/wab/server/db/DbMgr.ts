@@ -2798,6 +2798,7 @@ export class DbMgr implements MigrationDbMgr {
     if (teamOwner.length === 0 || teamOwner[0].id === newOwner) {
       return;
     }
+
     const teamPerms = await this.getPermissionsForTeams([teamId]);
     const newOwnerPermission = teamPerms.find(
       (perm) => perm.userId === newOwner

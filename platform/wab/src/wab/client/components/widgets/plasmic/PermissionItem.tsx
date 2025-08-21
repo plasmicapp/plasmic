@@ -21,14 +21,6 @@ interface PermissionItemProps {
 export const designerRoleHelp = `Only organizations with at least the Scale plan can invite collaborators as designers.`;
 export const contentRoleHelp = `Only organizations with at least the Scale plan can invite collaborators as content creators.`;
 
-export const ownerTooltip = (
-  <Tooltip
-    zIndex={200000}
-    title="Can manage organization. Can edit pages using existing components, and can update CMS content."
-  >
-    Owner
-  </Tooltip>
-);
 export const contentCreatorTooltip = (
   <Tooltip
     zIndex={200000}
