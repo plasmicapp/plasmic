@@ -28,8 +28,33 @@ describe("aria code components example: codegen", () => {
     dir.removeCallback();
   });
 
-  it("should codegen correct contents", async () => {
-    await codegen(dir.name, site);
+  it("should codegen correct contents - css", async () => {
+    await codegen(dir.name, site, {
+      platform: "react",
+      codegenScheme: "blackbox",
+      stylesScheme: "css",
+    });
+
+    const files = fs.readdirSync(dir.name);
+    let allFileContents = "";
+    // Append the contents of each file to a string
+    for (const file of files) {
+      const filePath = path.join(dir.name, file);
+      if (fs.statSync(filePath).isFile()) {
+        const fileContents = fs.readFileSync(filePath, "utf8");
+        allFileContents += `\n--- ${file} ---\n${fileContents}`;
+      }
+    }
+    // Expect the full contents to match a snapshot or specific string
+    expect(allFileContents).toMatchSnapshot();
+  }, 300000);
+
+  it("should codegen correct contents - css modules", async () => {
+    await codegen(dir.name, site, {
+      platform: "react",
+      codegenScheme: "blackbox",
+      stylesScheme: "css-modules",
+    });
 
     const files = fs.readdirSync(dir.name);
     let allFileContents = "";

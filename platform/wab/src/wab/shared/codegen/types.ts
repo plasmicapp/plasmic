@@ -144,7 +144,7 @@ export interface ExportOpts {
   imageOpts: ImageExportOpts;
 
   stylesOpts: {
-    scheme: "css" | "css-modules";
+    scheme: StylesScheme;
     skipGlobalCssImport?: boolean;
   };
 
@@ -247,6 +247,8 @@ export interface PageMetadata {
 
 export type CodegenScheme = "blackbox" | "plain";
 
+export type StylesScheme = "css" | "css-modules";
+
 export interface ComponentExportOutput {
   // component uuid
   id: string;
@@ -263,17 +265,22 @@ export interface ComponentExportOutput {
   // Un-normalized name of the component
   displayName: string;
 
-  // Code for the blackbox presentational module to be imported by user components
+  /**
+   * Code for the blackbox presentational module to be imported by user components
+   *
+   * Can be empty for scheme === "plain"
+   */
   renderModule: string;
 
-  // Code for the skeleton module for the actual user component
+  /** Code for the skeleton module for the actual user component */
   skeletonModule: string;
 
   // css classes
   cssRules: string;
 
-  // File names for the code modules
+  /** PlasmicMyComponent.tsx, can be empty for scheme === "plain" */
   renderModuleFileName: string;
+  /** MyComponent.tsx */
   skeletonModuleFileName: string;
   cssFileName: string;
 
