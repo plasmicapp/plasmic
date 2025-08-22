@@ -22,6 +22,9 @@ function OmnibarAddItem({
           "data-test-id": dataTestId,
         } as any,
       }}
+      img={{
+        draggable: false,
+      }}
     />
   );
 }
