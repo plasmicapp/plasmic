@@ -464,7 +464,7 @@ function _TopBar({ preview }: TopBarProps) {
           },
         }}
         aiButton={{
-          wrap: studioCtx.uiCopilotEnabled() ? undefined : () => null,
+          wrap: studioCtx.uiCopilotEnabled(team) ? undefined : () => null,
           props: {
             active: studioCtx.showUiCopilot,
             onClick: () =>

@@ -3040,11 +3040,7 @@ export class StudioCtx extends WithDbCtx {
   //
   // Copilot
   //
-  uiCopilotEnabled() {
-    const team = this.appCtx
-      .getAllTeams()
-      .find((t) => t.id === this.siteInfo.teamId);
-
+  uiCopilotEnabled(team?: ApiTeam) {
     return (
       // enableUiCopilot flag is false by default and overriden for plasmic users only,
       // we will enable it when we decide to release this feature to all user
