@@ -5,7 +5,6 @@ import { HrefQueryPopover } from "@/wab/client/components/sidebar-tabs/Component
 import {
   AUTOCOMPLETE_OPTIONS,
   FallbackEditor,
-  IndentedRow,
 } from "@/wab/client/components/sidebar-tabs/ComponentPropsSection";
 import { ValuePreview } from "@/wab/client/components/sidebar-tabs/data-tab";
 import { DataPickerTypesSchema } from "@/wab/client/components/sidebar-tabs/DataBinding/DataPicker";
@@ -96,6 +95,7 @@ import {
   TplTagCodeGenType,
 } from "@/wab/shared/core/tpls";
 import {
+  ComponentEvalContext,
   getInvalidArgErrorMessage,
   InvalidArgMeta,
 } from "@/wab/shared/core/val-nodes";
@@ -574,16 +574,13 @@ function canLinkPropToParam(type: Type, existingParam: Param) {
 function isPropOptionInvalid(
   propType: StudioPropType<any>,
   propVal: any,
-  componentPropValues: Record<string, any>,
-  ccContextData: any
+  referencedParam: Param | undefined,
+  evalContext: Omit<ComponentEvalContext, "invalidArgs">
 ): boolean {
-  if (propVal == null) {
+  if (referencedParam || propVal == null) {
     return false;
   }
-  const choicePropOptions = getChoicePropOptions(
-    { componentPropValues, ccContextData },
-    propType
-  );
+  const choicePropOptions = getChoicePropOptions(evalContext, propType);
   return !valueInOptions(choicePropOptions, propVal);
 }
 
@@ -903,12 +900,10 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
   const [exprLit, exprEditable] = extractLitFromMaybeRenderable(expr, viewCtx);
 
   const exprValue = evaluated?.val ?? exprLit;
-  const invalidVal = isPropOptionInvalid(
-    propType,
-    exprValue,
+  const invalidVal = isPropOptionInvalid(propType, exprValue, referencedParam, {
     componentPropValues,
-    ccContextData
-  );
+    ccContextData,
+  });
 
   const renderDefaultEditor = () => {
     return (
