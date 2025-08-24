@@ -35,6 +35,7 @@ import plasmic_plasmic_kit_design_system_css from "../../../plasmic/PP__plasmick
 import projectcss from "../../../plasmic/PP__plasmickit_settings.module.css"; // plasmic-import: aaggSgVS8yYsAwQffVQB4p/projectcss
 import sty from "./PlasmicSettingsContainer.module.css"; // plasmic-import: XkSd43CUYOB/css
 
+import MenuButton from "@/wab/client/components/widgets/MenuButton"; // plasmic-import: h69wHrrKtL/component
 import image3YherfIxkolNxf from "../../../plasmic/plasmic_kit_design_system/images/image3.svg"; // plasmic-import: yherfIxkolNXF/picture
 import PlussvgIcon from "../../../plasmic/plasmic_kit_icons/icons/PlasmicIcon__PlusSvg"; // plasmic-import: sQKgd2GNr/icon
 
@@ -83,6 +84,7 @@ export type PlasmicSettingsContainer__OverridesType = {
   personalAccessToken?: p.Flex<typeof PersonalAccessToken>;
   newTrustedHostBtn?: p.Flex<typeof Button>;
   hostsList?: p.Flex<"div">;
+  menuButton?: p.Flex__<typeof MenuButton>;
 };
 
 export interface DefaultSettingsContainerProps {
@@ -298,6 +300,11 @@ function PlasmicSettingsContainer__RenderFunc(props: {
               ),
             })}
           >
+            <MenuButton
+              data-plasmic-name={"menuButton"}
+              data-plasmic-override={overrides.menuButton}
+              className={classNames("__wab_instance", sty.menuButton)}
+            />
             <img
               data-plasmic-name={"img"}
               data-plasmic-override={overrides.img}
@@ -985,6 +992,7 @@ const PlasmicDescendants = {
     "personalAccessToken",
     "newTrustedHostBtn",
     "hostsList",
+    "menuButton",
   ],
 
   img: ["img"],
@@ -995,6 +1003,7 @@ const PlasmicDescendants = {
   personalAccessToken: ["personalAccessToken"],
   newTrustedHostBtn: ["newTrustedHostBtn"],
   hostsList: ["hostsList"],
+  menuButton: ["menuButton"],
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -1009,6 +1018,7 @@ type NodeDefaultElementType = {
   personalAccessToken: typeof PersonalAccessToken;
   newTrustedHostBtn: typeof Button;
   hostsList: "div";
+  menuButton: typeof MenuButton;
 };
 
 type ReservedPropsType = "variants" | "args" | "overrides";
@@ -1082,6 +1092,7 @@ export const PlasmicSettingsContainer = Object.assign(
     personalAccessToken: makeNodeComponent("personalAccessToken"),
     newTrustedHostBtn: makeNodeComponent("newTrustedHostBtn"),
     hostsList: makeNodeComponent("hostsList"),
+    menuButton: makeNodeComponent("menuButton"),
 
     // Metadata about props expected for PlasmicSettingsContainer
     internalVariantProps: PlasmicSettingsContainer__VariantProps,
