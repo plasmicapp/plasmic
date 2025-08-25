@@ -196,7 +196,10 @@ export function bindStudioShortcutHandlers(studioCtx: StudioCtx) {
         });
       },
       TOGGLE_UI_COPILOT: async () => {
-        studioCtx.openUiCopilotDialog(!studioCtx.showUiCopilot);
+        const team = await studioCtx.appCtx.topFrameApi?.getCurrentTeam();
+        if (studioCtx.uiCopilotEnabled(team)) {
+          studioCtx.openUiCopilotDialog(!studioCtx.showUiCopilot);
+        }
       },
       SWITCH_TO_COPILOT_TAB: async () => {
         return (
