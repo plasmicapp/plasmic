@@ -64,6 +64,9 @@ function TeamMemberListItem_(
       ? perm.accessLevel
       : "none";
 
+  const selfRoleValue = appCtx.perms.filter((p) => p.teamId === teamId)[0]
+    .accessLevel;
+
   const canHaveCommenterRole =
     appCtx.appConfig.comments ||
     (teamId && appCtx.appConfig.commentsTeamIds.includes(teamId));
@@ -95,9 +98,14 @@ function TeamMemberListItem_(
             if (e === "none") {
               await changeRole(user.email);
             } else if (
-              ["editor", "designer", "content", "commenter", "viewer"].includes(
-                e
-              )
+              [
+                "editor",
+                "designer",
+                "content",
+                "commenter",
+                "viewer",
+                "owner",
+              ].includes(e)
             ) {
               await changeRole(user.email, e as GrantableAccessLevel);
             }
@@ -105,9 +113,7 @@ function TeamMemberListItem_(
         },
         children: [
           <Select.Option
-            style={{
-              display: "none",
-            }}
+            style={selfRoleValue === "owner" ? {} : { display: "none" }}
             value="owner"
           >
             Owner
