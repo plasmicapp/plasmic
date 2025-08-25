@@ -5838,7 +5838,7 @@ export class DbMgr implements MigrationDbMgr {
 
   /**
    * Do not allow the grant to happen if:
-   * 1. The user to be granted is already the owner of the resource, unless they are also the user granting the permission, which is assumed to be an ownership transfer and should be allowed.
+   * 1. The user to be granted already is the owner of the resource, unless they are also the user granting the permission, which is assumed to be an ownership transfer and should be allowed
    * 2. The user granting has a lower access level than the granted access level
    */
   private async checkGrantAccessPermission(
