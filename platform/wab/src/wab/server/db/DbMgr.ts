@@ -5838,8 +5838,8 @@ export class DbMgr implements MigrationDbMgr {
 
   /**
    * Do not allow the grant to happen if:
-   * 1. The user to be granted already is the owner of the resource
-   * 2. The user granting has a lower access level than the granted access level
+   * 1. The user to be granted is already the owner of the resource, unless they are also the user granting the permission, which is assumed to be an ownership transfer and should be allowed.
+   * 2. The user granting has a lower access level than the granted access level.
    */
   private async checkGrantAccessPermission(
     resourceType: string,
@@ -5855,7 +5855,6 @@ export class DbMgr implements MigrationDbMgr {
           (perm) => perm.userId === user.id && perm.accessLevel === "owner"
         )
       : [];
-    // HYUNA temporary memo - The user to be granted is the owner of the resource and also the actor, then it is assumed that they're trying to transfer their ownership and allow it?
     checkPermissions(
       ownerPerms.length === 0 ||
         ownerPerms[0].userId === this.checkUserIdIsSelf(),
