@@ -64,6 +64,9 @@ function TeamMemberListItem_(
       ? perm.accessLevel
       : "none";
 
+  const selfRoleValue = appCtx.perms.filter((p) => p.teamId === teamId)[0]
+    .accessLevel;
+
   const canHaveCommenterRole =
     appCtx.appConfig.comments ||
     (teamId && appCtx.appConfig.commentsTeamIds.includes(teamId));
@@ -110,7 +113,7 @@ function TeamMemberListItem_(
         },
         children: [
           <Select.Option
-            style={roleValue === "owner" ? {} : { display: "none" }}
+            style={selfRoleValue === "owner" ? {} : { display: "none" }}
             value="owner"
           >
             Owner

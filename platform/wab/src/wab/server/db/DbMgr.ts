@@ -5855,8 +5855,10 @@ export class DbMgr implements MigrationDbMgr {
           (perm) => perm.userId === user.id && perm.accessLevel === "owner"
         )
       : [];
+    // HYUNA temporary memo - The user to be granted is the owner of the resource and also the actor, then it is assumed that they're trying to transfer their ownership and allow it?
     checkPermissions(
-      ownerPerms.length === 0,
+      ownerPerms.length === 0 ||
+        ownerPerms[0].userId === this.checkUserIdIsSelf(),
       ownerPerms
         .map(
           (perm) =>
