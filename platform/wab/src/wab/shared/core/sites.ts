@@ -695,13 +695,16 @@ export function cloneSite(fromSite: Site) {
     ...[...oldToNewComponentCloneResults.values()].map((v) => v.oldToNewVariant)
   );
 
-  // fix token ref from tokens
-  site.styleTokens.forEach((token) => {
-    token.value = getNewMaybeTokenRefValue(token.value);
+  // fix token ref from style tokens / style token overrides
+  [...site.styleTokens, ...site.styleTokenOverrides].forEach((token) => {
+    if (token.value) {
+      token.value = getNewMaybeTokenRefValue(token.value);
+    }
     token.variantedValues.forEach((variantedValue) =>
       fixRefsForVariantedStyle(variantedValue)
     );
   });
+
   // fix token ref from mixin
   site.mixins.forEach((mixin) => fixRefsForMixin(mixin));
   // fix token ref from theme
