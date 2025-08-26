@@ -143,6 +143,7 @@ function TeamMemberList_(
             removeUser={onRemoveUser}
             disabled={disabled}
             teamId={team?.id}
+            perms={perms}
           />
         ))}
       </PlasmicTeamMemberList>
