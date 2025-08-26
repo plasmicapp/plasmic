@@ -12,7 +12,12 @@ export abstract class BaseAnalytics {
   protected baseEventProperties: Properties = {};
 
   setUser(userId: string): void {
-    this.userId = userId;
+    if (userId) {
+      this.userId = userId;
+    } else {
+      // Sometimes we are receiving null/undefined...
+      this.setAnonymousUser();
+    }
   }
 
   setAnonymousUser(): void {

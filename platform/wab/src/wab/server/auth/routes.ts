@@ -487,10 +487,6 @@ export async function sendEmailVerification(req: Request, res: Response) {
 }
 
 export async function getEmailVerificationToken(req: Request, res: Response) {
-  if (!process.env.ENABLED_GET_EMAIL_VERIFICATION_TOKEN) {
-    throw new UnauthorizedError("Unauthorized API request.");
-  }
-
   const { email } = uncheckedCast<GetEmailVerificationTokenRequest>(req.body);
 
   const mgr = userDbMgr(req, { allowUnverifiedEmail: true });

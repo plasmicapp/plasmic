@@ -17,6 +17,9 @@ export function initPosthogNode(opts: {
   const ph = new PostHog(opts.apiKey, {
     host: opts.apiHost,
   });
+  if (process.env.NODE_ENV === "development") {
+    ph.debug(true);
+  }
 
   return () => new PostHogNodeAnalytics(ph);
 }

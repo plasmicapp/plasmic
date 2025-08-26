@@ -1,3 +1,4 @@
+import { ENV } from "@/wab/client/env";
 import type { Analytics } from "@/wab/shared/observability/Analytics";
 import { BaseAnalytics } from "@/wab/shared/observability/BaseAnalytics";
 import { Properties } from "@/wab/shared/observability/Properties";
@@ -21,6 +22,9 @@ export function initPosthogBrowser(opts: {
     disable_session_recording: true, // enable with `recordSession`
     ...opts.config,
   });
+  if (ENV.NODE_ENV === "development") {
+    ph.debug(true);
+  }
   return new PostHogAnalytics(ph);
 }
 

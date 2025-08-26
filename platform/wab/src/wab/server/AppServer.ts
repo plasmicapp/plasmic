@@ -513,7 +513,7 @@ function addMiddlewares(
         production: config.production,
       });
 
-      if (req.user) {
+      if (req.user?.id) {
         req.analytics.setUser(req.user.id);
       }
 
