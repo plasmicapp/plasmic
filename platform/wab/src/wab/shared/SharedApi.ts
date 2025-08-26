@@ -602,6 +602,13 @@ export abstract class SharedApi {
     return res;
   }
 
+  async deleteSelf() {
+    const res = await this.delete("/auth/self");
+    this.clearUser();
+    await this.refreshCsrfToken();
+    return res;
+  }
+
   async changePassword(
     oldPassword: string,
     newPassword: string

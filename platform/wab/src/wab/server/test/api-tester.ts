@@ -1,5 +1,7 @@
+import { UnknownApiError } from "@/wab/client/api";
 import { Project } from "@/wab/server/entities/Entities";
 import { publicCmsReadsContract } from "@/wab/shared/api/cms";
+import { transformErrors } from "@/wab/shared/ApiErrors/errors";
 import { ApiUser } from "@/wab/shared/ApiSchema";
 import { LowerHttpMethod } from "@/wab/shared/HttpClientUtil";
 import { SharedApi } from "@/wab/shared/SharedApi";
@@ -32,16 +34,38 @@ export class ApiTester {
     _hideDataOnError?: boolean | undefined,
     _noErrorTransform?: boolean | undefined
   ): Promise<any> {
+    // This attempts to match src/wab/client/api.ts
+    // TODO: use same implementation
     const res = await this.rawReq(method, url, data, opts);
-    try {
+    if (res.ok()) {
       const json = await res.json();
-      console.info("HTTP response", method, url, res.status(), json);
+      console.info(`HTTP ${res.status()} response`, method, url, json);
       return json;
-    } catch {
-      // TODO: make a common HTTP error shared across the codebase
-      const text = await res.text();
-      console.info("HTTP response", method, url, res.status(), text);
-      throw new Error(`${res.status()}: ${text}`);
+    } else {
+      let json: any;
+      try {
+        json = await res.json();
+        console.info(`HTTP ${res.status()} response`, method, url, json);
+      } catch {
+        // TODO: make a common HTTP error shared across the codebase
+        const text = await res.text();
+        console.info(`HTTP ${res.status()} response`, method, url, text);
+        throw new UnknownApiError(
+          `${method} ${url} failed: ${res.status()}: ${text}`
+        );
+      }
+
+      const transformed: Error | any = transformErrors(json.error);
+      if (transformed instanceof Error) {
+        throw transformed;
+      } else {
+        // The error was JSON-parsible, but not one of the known
+        // ApiErrors. So it is now just a JSON object, not an Error.
+        // We create an UnknownApiError for it instead.
+        throw new UnknownApiError(
+          `${method} ${url} failed: ${transformed.message}`
+        );
+      }
     }
   }
 
@@ -79,14 +103,22 @@ export class ApiTester {
 /** For testing SharedApi, i.e. APIs that our app use. */
 export class SharedApiTester extends SharedApi {
   readonly apiTester: ApiTester;
+  private _user: ApiUser | undefined;
 
   constructor(baseURL: string, baseHeaders: { [name: string]: string } = {}) {
     super();
     this.apiTester = new ApiTester(baseURL, baseHeaders);
   }
 
-  protected setUser(_user: ApiUser): void {}
-  protected clearUser(): void {}
+  user(): ApiUser | undefined {
+    return this._user;
+  }
+  protected setUser(_user: ApiUser): void {
+    this._user = _user;
+  }
+  protected clearUser(): void {
+    this._user = undefined;
+  }
 
   protected async req(
     method: LowerHttpMethod,

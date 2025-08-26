@@ -1,14 +1,22 @@
 /** @jest-environment node */
+import { DbMgr, SUPER_USER } from "@/wab/server/db/DbMgr";
 import { SharedApiTester } from "@/wab/server/test/api-tester";
 import { createBackend, createDatabase } from "@/wab/server/test/backend-util";
+import {
+  PreconditionFailedError,
+  UnauthorizedError,
+} from "@/wab/shared/ApiErrors/errors";
 
 describe("auth", () => {
   let api: SharedApiTester;
+  let sudoDbMgr: DbMgr;
   let baseURL: string;
   let cleanup: () => Promise<void>;
 
   beforeAll(async () => {
-    const { dburi, cleanup: cleanupDatabase } = await createDatabase();
+    const { dburi, con, cleanup: cleanupDatabase } = await createDatabase();
+    sudoDbMgr = new DbMgr(con.createEntityManager(), SUPER_USER);
+
     const { host, cleanup: cleanupBackend } = await createBackend(dburi);
     baseURL = `${host}/api/v1`;
 
@@ -52,9 +60,7 @@ describe("auth", () => {
       user: { email },
     });
     await api.logout();
-    expect(await api.getSelfInfo()).toMatchObject({
-      error: { statusCode: 401 },
-    });
+    await expect(api.getSelfInfo()).rejects.toThrow(UnauthorizedError);
     await api.login({
       email,
       password: "SuperStrongPassword!!",
@@ -117,13 +123,73 @@ describe("auth", () => {
           });
           expect(i).toBeLessThan(15);
         } catch (error: unknown) {
-          if (error instanceof Error && error.message.startsWith("429")) {
+          if (error instanceof Error && error.message.includes("429")) {
             expect(i).toBeGreaterThanOrEqual(15);
           } else {
             throw error;
           }
         }
       }
+    });
+  });
+
+  describe("deleteSelf", () => {
+    it("works", async () => {
+      const email = `${Date.now()}@example.com`;
+      await api.signUp({
+        email,
+        password: "SuperStrongPassword!!",
+        firstName: "GivenName",
+        lastName: "FamilyName",
+      });
+
+      // Mark email as verified before the user is allowed to do anything.
+      expect(api.user()).toBeDefined();
+      const dbUser = await sudoDbMgr.getUserById(api.user()!.id);
+      await sudoDbMgr.markEmailAsVerified(dbUser);
+
+      // Create a non-personal team.
+      const teamResponse = await api.createTeam("Example team");
+      const team = teamResponse.team;
+
+      // User should have 2 teams now, one personal, one non-personal.
+      await expect(api.listTeams()).resolves.toMatchObject({
+        teams: expect.arrayContaining([
+          expect.objectContaining({
+            name: "Personal team",
+          }),
+          expect.objectContaining({
+            name: "Example team",
+          }),
+        ]),
+      });
+
+      // User should not be able to delete themselves,
+      // since there would be a team left without an owner.
+      await expect(api.deleteSelf()).rejects.toThrow(PreconditionFailedError);
+      expect(api.user()).toBeDefined();
+      await expect(api.getSelfInfo()).resolves.toMatchObject({
+        user: { email },
+      });
+
+      // Delete the non-personal team.
+      await api.deleteTeam(team.id);
+
+      // User should be able to delete themselves now.
+      await api.deleteSelf();
+      expect(api.user()).toBeUndefined();
+      await expect(api.getSelfInfo()).rejects.toThrow(UnauthorizedError);
+
+      // User should not be able to login again.
+      await expect(
+        api.login({
+          email,
+          password: "SuperStrongPassword!!",
+        })
+      ).resolves.toMatchObject({
+        status: false,
+        reason: "IncorrectLoginError",
+      });
     });
   });
 });

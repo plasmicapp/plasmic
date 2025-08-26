@@ -147,6 +147,7 @@ export function TeamMenu(props: TeamMenuProps) {
                   )}
                 </>
               ),
+              danger: true,
             });
             if (!confirm) {
               return;
@@ -277,6 +278,7 @@ export function WorkspaceMenu(props: WorkspaceMenuProps) {
                   )}
                 </>
               ),
+              danger: true,
             });
             if (!confirm) {
               return;

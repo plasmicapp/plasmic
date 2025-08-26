@@ -3,10 +3,10 @@ import { Modal } from "@/wab/client/components/widgets/Modal";
 import Textbox from "@/wab/client/components/widgets/Textbox";
 import { zIndex } from "@/wab/client/z-index";
 import { joinReactNodes } from "@/wab/commons/components/ReactUtil";
+import { FRAMES_CAP, FRAME_LOWER, MIXINS_CAP } from "@/wab/shared/Labels";
 import type { AddItemKey } from "@/wab/shared/add-item-keys";
 import { getComponentDisplayName } from "@/wab/shared/core/components";
 import type { DefaultStyle } from "@/wab/shared/core/styles";
-import { FRAMES_CAP, FRAME_LOWER, MIXINS_CAP } from "@/wab/shared/Labels";
 import type {
   ArenaFrame,
   Component,
@@ -109,10 +109,11 @@ export async function showTemporaryInfo(opts: {
 export async function confirm(opts: {
   title?: React.ReactNode;
   message: React.ReactNode;
+  danger?: boolean;
   confirmLabel?: string;
   cancelLabel?: string;
 }) {
-  const { title, message, confirmLabel, cancelLabel } = opts;
+  const { title, message, danger, confirmLabel, cancelLabel } = opts;
   return showTemporaryPrompt<boolean>((onSubmit, onCancel) => (
     <Modal
       title={title}
@@ -128,6 +129,7 @@ export async function confirm(opts: {
           <Button
             className="mr-sm"
             type="primary"
+            color={danger ? "darkRed" : undefined}
             htmlType="submit"
             onClick={() => onSubmit(true)}
             autoFocus

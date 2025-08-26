@@ -1,11 +1,11 @@
 /** @jest-environment node */
-import { ensureDbConnection } from "@/wab/server/db/DbCon";
 import { seedTestUserAndProjects } from "@/wab/server/db/DbInit";
 import { DbMgr, normalActor } from "@/wab/server/db/DbMgr";
 import { CmsRow, CmsTable, User } from "@/wab/server/entities/Entities";
 import { SharedApiTester } from "@/wab/server/test/api-tester";
 import { createBackend, createDatabase } from "@/wab/server/test/backend-util";
-import { isUniqueViolationError } from "@/wab/shared/ApiErrors/cms-errors";
+import { UniqueViolationError } from "@/wab/shared/ApiErrors/cms-errors";
+import { BadRequestError } from "@/wab/shared/ApiErrors/errors";
 import { CmsMetaType, CmsRowId } from "@/wab/shared/ApiSchema";
 
 const ROWS = 10;
@@ -32,20 +32,22 @@ describe("CMS tests", () => {
       uniqueFieldsData: data,
     });
 
-    const publishResult = await api.updateCmsRow(rowId, {
-      data: { "": data },
-    });
-
-    if (uniqueFieldChecks.some((fieldCheck) => !!fieldCheck.conflictRowId)) {
-      expect(isUniqueViolationError((publishResult as any).error)).toBe(true);
-      expect((publishResult as any).error.violations).toEqual(
-        uniqueFieldChecks
-      );
-    } else {
+    try {
+      const publishResult = await api.updateCmsRow(rowId, {
+        data: { "": data },
+      });
       expect(publishResult).toMatchObject({
         id: rowId,
         data: { "": data },
       });
+      // Since updateCmsRow succeeded, there should be no conflicts
+      expect(uniqueFieldChecks.every((c) => !c.conflictRowId)).toBe(true);
+    } catch (err: unknown) {
+      if (err instanceof UniqueViolationError) {
+        expect(err.violations).toEqual(uniqueFieldChecks);
+      } else {
+        throw err;
+      }
     }
 
     return uniqueFieldChecks;
@@ -54,11 +56,9 @@ describe("CMS tests", () => {
   beforeAll(async () => {
     const {
       dburi,
-      dbname,
+      con,
       cleanup: cleanupDatabase,
     } = await createDatabase("unique_test");
-    const con = await ensureDbConnection(dburi, dbname);
-    await con.synchronize();
     await con.transaction(async (em) => {
       const userAndProjects = await seedTestUserAndProjects(
         em,
@@ -155,36 +155,24 @@ describe("CMS tests", () => {
   });
 
   it("responds with 400 if missing unique fields", async () => {
-    expect(
-      await api.checkUniqueFields(table.id, {
+    await expect(
+      api.checkUniqueFields(table.id, {
         rowId: check.id,
         uniqueFieldsData: {},
       })
-    ).toMatchObject({
-      error: {
-        statusCode: 400,
-        name: "BadRequestError",
-        message: "No unique fields to check",
-      },
-    });
+    ).rejects.toThrow(BadRequestError);
   });
 
   it("responds with 400 if unique fields data not set", async () => {
-    expect(
-      await api.checkUniqueFields(table.id, {
+    await expect(
+      api.checkUniqueFields(table.id, {
         rowId: check.id,
         uniqueFieldsData: {
           numField: null,
           textField: undefined,
         },
       })
-    ).toMatchObject({
-      error: {
-        statusCode: 400,
-        name: "BadRequestError",
-        message: "No unique fields to check",
-      },
-    });
+    ).rejects.toThrow(BadRequestError);
   });
 
   it("allows unique data", async () => {

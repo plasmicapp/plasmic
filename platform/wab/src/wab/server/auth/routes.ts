@@ -27,6 +27,7 @@ import {
 } from "@/wab/server/routes/util";
 import {
   NotFoundError,
+  PreconditionFailedError,
   UnauthorizedError,
 } from "@/wab/shared/ApiErrors/errors";
 import {
@@ -60,7 +61,6 @@ import fs from "fs";
 import passport from "passport";
 import { AuthenticateOptionsGoogle } from "passport-google-oauth20";
 import { IVerifyOptions } from "passport-local";
-import util from "util";
 
 export function csrf(req: Request, res: Response, _next: NextFunction) {
   res.json({ csrf: res.locals._csrf });
@@ -272,13 +272,7 @@ export async function logout(req: Request, res: Response) {
   logger().info(
     `logging out as ${getUser(req, { allowUnverifiedEmail: true }).email}`
   );
-  await doLogout(req);
-  res.clearCookie("plasmic-observer");
-  // Must reset the session to prevent session fixation attacks, reset the CSRF
-  // token, etc.
-  if (req.session) {
-    await util.promisify(req.session.destroy.bind(req.session))();
-  }
+  await doLogout(req, res);
   res.json({});
 }
 
@@ -337,6 +331,20 @@ export async function updateSelfPassword(req: Request, res: Response) {
       status: true,
     })
   );
+}
+
+export async function deleteSelf(req: Request, res: Response) {
+  const mgr = userDbMgr(req, { allowUnverifiedEmail: true });
+  const user = getUser(req);
+  const teams = await mgr.getSolelyOwnedTeams();
+  if (teams.length > 0) {
+    throw new PreconditionFailedError(
+      "Please transfer or delete organizations you own before deleting your account."
+    );
+  }
+  await mgr.deleteUser(user, false);
+  await doLogout(req, res);
+  res.json({});
 }
 
 export async function forgotPassword(req: Request, res: Response) {

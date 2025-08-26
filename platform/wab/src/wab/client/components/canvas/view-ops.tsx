@@ -1895,6 +1895,7 @@ export class ViewOps {
               isCommentPlural ? "comments" : "comment"
             } in the comments panel.`,
             confirmLabel: `Delete ${isElementPlural ? "elements" : "element"}`,
+            danger: true,
           });
 
           if (!confirm) {

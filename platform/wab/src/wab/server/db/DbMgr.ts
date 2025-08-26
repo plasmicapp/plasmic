@@ -1404,6 +1404,25 @@ export class DbMgr implements MigrationDbMgr {
       .getMany();
   }
 
+  async getSolelyOwnedTeams(): Promise<Team[]> {
+    const userId = this.checkNormalUser();
+    const teams = await this.getAffiliatedTeams();
+    const solelyOwnedTeams: Team[] = [];
+    for (const team of teams) {
+      // Skip personal team which cannot be deleted
+      if (team.personalTeamOwnerId === userId) {
+        continue;
+      }
+
+      const owners = await this.getTeamOwners(team.id);
+      const ownersWithoutUser = owners.filter((owner) => owner.id !== userId);
+      if (ownersWithoutUser.length === 0) {
+        solelyOwnedTeams.push(team);
+      }
+    }
+    return solelyOwnedTeams;
+  }
+
   async deleteTeam(id: TeamId) {
     return this._deleteResource({ type: "team", id });
   }

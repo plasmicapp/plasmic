@@ -106,6 +106,7 @@ export async function createDatabase(name = "test") {
   return {
     dbname,
     dburi,
+    con,
     cleanup: async () => {
       await con.close();
       if (isCI) {

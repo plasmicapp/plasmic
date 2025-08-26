@@ -62,7 +62,7 @@ export class AuthError extends ApiError {
 }
 
 export class PreconditionFailedError extends ApiError {
-  name = "PreconditionFailed";
+  name = "PreconditionFailedError";
   statusCode = 412;
 }
 
@@ -134,6 +134,7 @@ const errorNameRegistry = {
   BadRequestError,
   CopilotRateLimitExceededError,
   GrantUserNotFoundError,
+  PreconditionFailedError,
 };
 
 /**

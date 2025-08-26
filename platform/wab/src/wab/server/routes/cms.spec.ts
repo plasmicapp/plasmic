@@ -1,5 +1,4 @@
 /** @jest-environment node */
-import { ensureDbConnection } from "@/wab/server/db/DbCon";
 import { seedTestUserAndProjects } from "@/wab/server/db/DbInit";
 import { DbMgr, normalActor } from "@/wab/server/db/DbMgr";
 import {
@@ -9,9 +8,9 @@ import {
   User,
 } from "@/wab/server/entities/Entities";
 import {
-  expectStatus,
   PublicApiTester,
   SharedApiTester,
+  expectStatus,
 } from "@/wab/server/test/api-tester";
 import { createBackend, createDatabase } from "@/wab/server/test/backend-util";
 import { CmsMetaType } from "@/wab/shared/ApiSchema";
@@ -30,11 +29,9 @@ describe("CMS public routes", () => {
   beforeAll(async () => {
     const {
       dburi,
-      dbname,
+      con,
       cleanup: cleanupDatabase,
     } = await createDatabase("unique_test");
-    const con = await ensureDbConnection(dburi, dbname);
-    await con.synchronize();
     await con.transaction(async (em) => {
       const userAndProjects = await seedTestUserAndProjects(
         em,
@@ -172,7 +169,7 @@ describe("CMS public routes", () => {
   });
 
   beforeEach(async () => {
-    api = new SharedApiTester(baseURL);
+    api = new SharedApiTester(`${baseURL}/api/v1`);
     await api.refreshCsrfToken();
     await api.login({
       email: "user@example.com",
