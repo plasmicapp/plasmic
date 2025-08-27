@@ -8,8 +8,8 @@ import {
 import { swallow } from "@/wab/shared/common";
 
 import {
-  PlasmicClipboardData,
   PLASMIC_CLIPBOARD_FORMAT,
+  PlasmicClipboardData,
 } from "@/wab/client/clipboard/common";
 import { LocalClipboardAction } from "@/wab/client/clipboard/local";
 
@@ -134,6 +134,12 @@ export async function serializeClipboardItems(
         map[type] = await blob.text();
       }
     }
+  }
+  // Ensure our internal clipboard marker is always present in the serialized
+  // data so paste logic can detect Plasmic clipboard content when using the Navigator Clipboard API.
+  // Some browsers do not expose custom MIME types (like application/vnd.plasmic.clipboard+json) on read().
+  if (lastAction != null && !map[PLASMIC_CLIPBOARD_FORMAT]) {
+    map[PLASMIC_CLIPBOARD_FORMAT] = JSON.stringify({ action: lastAction });
   }
   return map;
 }
