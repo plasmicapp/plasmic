@@ -1,4 +1,4 @@
-import { mkTokenRef, TokenType } from "@/wab/commons/StyleToken";
+import { mkTokenRef } from "@/wab/commons/StyleToken";
 import { ProjectFullDataResponse } from "@/wab/shared/ApiSchema";
 import { mkArenaFrame } from "@/wab/shared/Arenas";
 import { checkRefsInBundle, FastBundler } from "@/wab/shared/bundler";
@@ -3383,7 +3383,7 @@ describe("merging", () => {
         site.styleTokens = [];
         tplMgr.addToken({
           name: "nonRegistered",
-          tokenType: TokenType.LineHeight,
+          tokenType: "LineHeight",
           value: "3",
         });
         ensureKnownTplTag(site.components[0].tplTree).vsettings[0].rs.values[
@@ -3414,7 +3414,7 @@ describe("merging", () => {
         site.styleTokens = [];
         tplMgr.addToken({
           name: "nonRegistered",
-          tokenType: TokenType.LineHeight,
+          tokenType: "LineHeight",
           value: "4",
         });
         ensureKnownTplTag(site.components[1].tplTree).vsettings[0].rs.values[

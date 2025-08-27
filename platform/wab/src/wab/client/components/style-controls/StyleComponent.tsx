@@ -26,7 +26,7 @@ import {
   isTokenRef,
   lazyDerefTokenRefsWithDeps,
   mkTokenRef,
-  TokenType,
+  StyleTokenType,
   tokenTypeLabel,
 } from "@/wab/commons/StyleToken";
 import { isEmptyReactNode } from "@/wab/commons/ViewUtil";
@@ -196,7 +196,7 @@ export class StyleComponent<
             {lazyDerefTokenRefsWithDeps(
               exp.get(prop),
               this.studioCtx().site,
-              TokenType.Spacing
+              "Spacing"
             )}
           </div>
         </XDraggable>
@@ -606,7 +606,10 @@ function buildExtractToTokens(
     expsProvider.targetExp().set(styleName, mkTokenRef(token));
   };
 
-  const buildExtractForStyle = (styleName: string, tokenType: TokenType) => {
+  const buildExtractForStyle = (
+    styleName: string,
+    tokenType: StyleTokenType
+  ) => {
     const curValue = expsProvider.targetExp().get(styleName);
     if (isTokenRef(curValue)) {
       return;
@@ -657,7 +660,7 @@ function buildExtractToTokens(
                   sc.changeUnsafe(() => extractToToken(token, styleName))
                 }
               >
-                {tokenType === TokenType.Color ? (
+                {tokenType === "Color" ? (
                   <>
                     <ColorSwatch
                       color={derefTokenRefs(
@@ -689,16 +692,16 @@ function buildExtractToTokens(
         continue;
       }
       if (colorProps.includes(styleName)) {
-        buildExtractForStyle(styleName, TokenType.Color);
+        buildExtractForStyle(styleName, "Color");
       } else if (isExplicitSize(curValue)) {
         if (spacingProps.includes(styleName)) {
-          buildExtractForStyle(styleName, TokenType.Spacing);
+          buildExtractForStyle(styleName, "Spacing");
         } else if (fontSizeProps.includes(styleName)) {
-          buildExtractForStyle(styleName, TokenType.FontSize);
+          buildExtractForStyle(styleName, "FontSize");
         } else if (lineHeightProps.includes(styleName)) {
-          buildExtractForStyle(styleName, TokenType.LineHeight);
+          buildExtractForStyle(styleName, "LineHeight");
         } else if (opacityProps.includes(styleName)) {
-          buildExtractForStyle(styleName, TokenType.Opacity);
+          buildExtractForStyle(styleName, "Opacity");
         }
       }
     }

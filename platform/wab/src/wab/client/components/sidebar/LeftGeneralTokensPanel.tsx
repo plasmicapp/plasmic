@@ -25,10 +25,7 @@ import Select from "@/wab/client/components/widgets/Select";
 import { PlasmicLeftGeneralTokensPanel } from "@/wab/client/plasmic/plasmic_kit_left_pane/PlasmicLeftGeneralTokensPanel";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import {
-  FinalStyleToken,
-  MutableStyleToken,
-  OverrideableStyleToken,
-  TokenType,
+  StyleTokenType,
   TokenValue,
   tokenTypeDefaults,
   tokenTypeLabel,
@@ -41,6 +38,11 @@ import {
   siteFinalStyleTokens,
 } from "@/wab/shared/core/site-style-tokens";
 import { allGlobalVariants, isHostLessPackage } from "@/wab/shared/core/sites";
+import {
+  FinalToken,
+  MutableToken,
+  OverrideableToken,
+} from "@/wab/shared/core/tokens";
 import {
   Folder as InternalFolder,
   createFolderTreeStructure,
@@ -57,9 +59,9 @@ import { observer } from "mobx-react";
 import * as React from "react";
 
 interface TokenToPanelRowProps {
-  item: FinalStyleToken | InternalFolder<FinalStyleToken>;
-  tokenType: TokenType;
-  getTokenValue: (token: FinalStyleToken) => TokenValue;
+  item: FinalToken<StyleToken> | InternalFolder<FinalToken<StyleToken>>;
+  tokenType: StyleTokenType;
+  getTokenValue: (token: FinalToken<StyleToken>) => TokenValue;
   actions: TokenFolderActions;
   dep?: ProjectDependency;
 }
@@ -104,9 +106,9 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
     }, 500),
     [setDebouncedQuery]
   );
-  const [expandedHeaders, setExpandedHeaders] = React.useState<Set<TokenType>>(
-    new Set()
-  );
+  const [expandedHeaders, setExpandedHeaders] = React.useState<
+    Set<StyleTokenType>
+  >(new Set());
   const matcher = new Matcher(debouncedQuery);
 
   const [justAdded, setJustAdded] = React.useState<StyleToken | undefined>(
@@ -114,7 +116,7 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
   );
 
   const [editToken, setEditToken] = React.useState<
-    MutableStyleToken | OverrideableStyleToken | undefined
+    MutableToken<StyleToken> | OverrideableToken<StyleToken> | undefined
   >(undefined);
 
   const [vsh, setVsh] = React.useState<VariantedStylesHelper | undefined>(
@@ -125,9 +127,9 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
   const resolver = useClientTokenResolver();
 
   const getTokenValue = React.useCallback(
-    (token: FinalStyleToken) => {
+    (token: FinalToken<StyleToken>) => {
       let value = resolver(token, vsh);
-      if (token.type === TokenType.Color) {
+      if (token.type === "Color") {
         value = Chroma.stringify(value) as TokenValue;
       }
       return value;
@@ -165,7 +167,7 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
   }, []);
 
   const onAddToken = React.useCallback(
-    async (type: TokenType, folderName?: string) => {
+    async (type: StyleTokenType, folderName?: string) => {
       const folderPath = getFolderWithSlash(folderName);
 
       await studioCtx.change(({ success }) => {
@@ -176,7 +178,7 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
           value: initialValue,
         });
         setJustAdded(token);
-        setEditToken(new MutableStyleToken(token));
+        setEditToken(new MutableToken(token));
         return success();
       });
     },
@@ -257,7 +259,7 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
       await studioCtx.change(({ success }) => {
         const newToken = studioCtx.tplMgr().duplicateToken(token);
         setJustAdded(newToken);
-        setEditToken(new MutableStyleToken(newToken));
+        setEditToken(new MutableToken(newToken));
         return success();
       });
     },
@@ -265,14 +267,14 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
   );
 
   const onSelect = React.useCallback(
-    (token: MutableStyleToken | OverrideableStyleToken) => {
+    (token: MutableToken<StyleToken> | OverrideableToken<StyleToken>) => {
       setEditToken(token);
     },
     [setEditToken]
   );
 
   const onDeleteOverride = React.useCallback(
-    (token: OverrideableStyleToken) => {
+    (token: OverrideableToken<StyleToken>) => {
       spawn(
         studioCtx.change(({ success }) => {
           if (!vsh || vsh.isTargetBaseVariant()) {
@@ -325,9 +327,9 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
     (t) => t.type
   );
 
-  const tokenSectionItems = (tokenType: TokenType) => {
+  const tokenSectionItems = (tokenType: StyleTokenType) => {
     const makeTokensItems = (
-      tokens: FinalStyleToken[],
+      tokens: FinalToken<StyleToken>[],
       dep?: ProjectDependency
     ) => {
       tokens = naturalSort(tokens, (token) => getFolderTrimmed(token.name));
@@ -418,7 +420,7 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
     const selectableTokens = siteFinalStyleTokens(studioCtx.site)
       .filter((t) => {
         let resolved = resolver(t, vsh);
-        if (t.type === TokenType.Color) {
+        if (t.type === "Color") {
           resolved = Chroma.stringify(resolved) as TokenValue;
         }
         return (

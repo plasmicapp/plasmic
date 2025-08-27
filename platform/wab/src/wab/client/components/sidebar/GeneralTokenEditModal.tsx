@@ -5,19 +5,17 @@ import { Icon } from "@/wab/client/components/widgets/Icon";
 import { SimpleTextbox } from "@/wab/client/components/widgets/SimpleTextbox";
 import TokenIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Token";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import {
-  MutableStyleToken,
-  OverrideableStyleToken,
-  tokenTypeDimOpts,
-} from "@/wab/commons/StyleToken";
+import { tokenTypeDimOpts } from "@/wab/commons/StyleToken";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import { assert, ensure } from "@/wab/shared/common";
+import { MutableToken, OverrideableToken } from "@/wab/shared/core/tokens";
+import { StyleToken } from "@/wab/shared/model/classes";
 import { observer } from "mobx-react";
 import * as React from "react";
 
 export const GeneralTokenEditModal = observer(
   function GeneralTokenModal(props: {
-    token: MutableStyleToken | OverrideableStyleToken;
+    token: MutableToken<StyleToken> | OverrideableToken<StyleToken>;
     studioCtx: StudioCtx;
     defaultEditingName?: boolean;
     onClose: () => void;
@@ -54,7 +52,7 @@ export const GeneralTokenEditModal = observer(
                   studioCtx.tplMgr().renameToken(token.base, name);
                 })
               }
-              readOnly={!(token instanceof MutableStyleToken)}
+              readOnly={!(token instanceof MutableToken)}
               placeholder={"(unnamed token)"}
               autoFocus={defaultEditingName}
               selectAllOnFocus={true}

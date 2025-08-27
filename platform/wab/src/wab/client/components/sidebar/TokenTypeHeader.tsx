@@ -8,23 +8,23 @@ import PlasmicTokenTypeHeader, {
   DefaultTokenTypeHeaderProps,
 } from "@/wab/client/plasmic/plasmic_kit_left_pane/PlasmicTokenTypeHeader";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { TokenType, tokenTypeLabel } from "@/wab/commons/StyleToken";
+import { StyleTokenType, tokenTypeLabel } from "@/wab/commons/StyleToken";
 import { MultiChoiceArg } from "@plasmicapp/react-web";
 import * as React from "react";
 
 interface TokenTypeHeaderProps extends DefaultTokenTypeHeaderProps {
-  tokenType: TokenType;
+  tokenType: StyleTokenType;
   isExpanded?: boolean;
   toggleExpand: () => void;
 }
 
-const PREVIOUS_TOKEN_TYPES: Record<TokenType, TokenType> = {
-  Color: TokenType.Color,
-  FontFamily: TokenType.Color,
-  FontSize: TokenType.FontFamily,
-  LineHeight: TokenType.FontSize,
-  Opacity: TokenType.LineHeight,
-  Spacing: TokenType.Opacity,
+const PREVIOUS_TOKEN_TYPES: Record<StyleTokenType, StyleTokenType> = {
+  Color: "Color",
+  FontFamily: "Color",
+  FontSize: "FontFamily",
+  LineHeight: "FontSize",
+  Opacity: "LineHeight",
+  Spacing: "Opacity",
 };
 
 function TokenTypeHeader(props: TokenTypeHeaderProps) {
@@ -50,7 +50,7 @@ function TokenTypeHeader(props: TokenTypeHeaderProps) {
 
   const borders: MultiChoiceArg<"bottom" | "top"> = [
     "bottom" as const,
-    ...(tokenType !== TokenType.Color &&
+    ...(tokenType !== "Color" &&
     tokenControls.expandedHeaders.has(PREVIOUS_TOKEN_TYPES[tokenType])
       ? ["top" as const]
       : []),

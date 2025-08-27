@@ -1,4 +1,3 @@
-import { FinalStyleToken } from "@/wab/commons/StyleToken";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import {
   VariantCombo,
@@ -46,11 +45,13 @@ import {
   getTriggerableSelectors,
   makeDefaultStyleValuesDict,
 } from "@/wab/shared/core/styles";
+import { FinalToken } from "@/wab/shared/core/tokens";
 import { findVariantSettingsUnderTpl } from "@/wab/shared/core/tpls";
 import {
   Component,
   Expr,
   Site,
+  StyleToken,
   TplNode,
   Variant,
   VariantSetting,
@@ -470,7 +471,7 @@ export function buildConditionalDefaultStylesPropArg(
 
 export function buildConditionalDerefTokenValueArg(
   site: Site,
-  token: FinalStyleToken
+  token: FinalToken<StyleToken>
 ): [Expr, VariantCombo][] {
   const combos = getRelevantVariantCombosForToken(site, token);
   const resolver = makeTokenValueResolver(site);

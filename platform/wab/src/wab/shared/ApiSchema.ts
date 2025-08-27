@@ -2,7 +2,7 @@
 // place.  We use it to type the API and to ensure the voluntarily ensure server
 // responses conform.
 
-import { TokenType } from "@/wab/commons/StyleToken";
+import { StyleTokenType } from "@/wab/commons/StyleToken";
 import { Bundle } from "@/wab/shared/bundles";
 import { Dict } from "@/wab/shared/collections";
 import {
@@ -942,7 +942,7 @@ export interface NewComponentReq {
 export interface UpsertTokenReq {
   name: string;
   value: string;
-  type: TokenType | "BoxShadow";
+  type: StyleTokenType | "BoxShadow";
 }
 
 export interface UpdateProjectReq {
@@ -2013,7 +2013,7 @@ export type CopilotImage = {
 
 export type CopilotToken = {
   name: string;
-  type: TokenType;
+  type: StyleTokenType;
   uuid: string;
   value: string;
 };

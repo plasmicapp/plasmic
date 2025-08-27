@@ -7,13 +7,11 @@ import { Matcher } from "@/wab/client/components/view-common";
 import Checkbox from "@/wab/client/components/widgets/Checkbox";
 import { PlasmicColorTokenControl } from "@/wab/client/plasmic/plasmic_kit_left_pane/PlasmicColorTokenControl";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import {
-  FinalStyleToken,
-  MutableStyleToken,
-  TokenValue,
-} from "@/wab/commons/StyleToken";
+import { TokenValue } from "@/wab/commons/StyleToken";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
+import { FinalToken, MutableToken } from "@/wab/shared/core/tokens";
 import { getFolderDisplayName } from "@/wab/shared/folders/folders-util";
+import { StyleToken } from "@/wab/shared/model/classes";
 import Chroma from "@/wab/shared/utils/color-utils";
 import { Tooltip } from "antd";
 import classNames from "classnames";
@@ -21,7 +19,7 @@ import * as React from "react";
 
 interface ColorTokenControlProps {
   style?: React.CSSProperties;
-  token: FinalStyleToken;
+  token: FinalToken<StyleToken>;
   tokenValue: TokenValue;
   matcher: Matcher;
   menu: () => React.ReactElement;
@@ -46,8 +44,7 @@ function ColorTokenControl(props: ColorTokenControlProps) {
         icon={
           <>
             {/* Only mutable tokens can be multi-selected */}
-            {multiAssetsActions.isSelecting &&
-            token instanceof MutableStyleToken ? (
+            {multiAssetsActions.isSelecting && token instanceof MutableToken ? (
               <Checkbox isChecked={isSelected}> </Checkbox>
             ) : (
               <TokenDefinedIndicator

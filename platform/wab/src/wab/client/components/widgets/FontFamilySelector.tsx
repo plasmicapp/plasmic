@@ -3,7 +3,7 @@ import { Icon } from "@/wab/client/components/widgets/Icon";
 import TriangleBottomIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__TriangleBottom";
 import { useUndo } from "@/wab/client/shortcuts/studio/useUndo";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { derefToken, mkTokenRef, TokenType } from "@/wab/commons/StyleToken";
+import { derefToken, mkTokenRef } from "@/wab/commons/StyleToken";
 import { cx, withoutNils } from "@/wab/shared/common";
 import { siteFinalStyleTokensOfType } from "@/wab/shared/core/site-style-tokens";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
@@ -26,13 +26,9 @@ export const FontFamilySelector = observer(function FontFamilySelector(props: {
 }) {
   const { selectOpts, studioCtx } = props;
 
-  const tokens = siteFinalStyleTokensOfType(
-    studioCtx.site,
-    TokenType.FontFamily,
-    {
-      includeDeps: "direct",
-    }
-  );
+  const tokens = siteFinalStyleTokensOfType(studioCtx.site, "FontFamily", {
+    includeDeps: "direct",
+  });
 
   const disabled = selectOpts.disabled ?? false;
   const textboxUnset = selectOpts.textboxUnset ?? false;

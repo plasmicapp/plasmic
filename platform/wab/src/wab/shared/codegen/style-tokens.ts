@@ -1,35 +1,34 @@
 import {
   extractAllReferencedTokenIds,
-  FinalStyleToken,
-  toFinalStyleToken,
   tryParseTokenRef,
 } from "@/wab/commons/StyleToken";
+import {
+  ReadonlyIRuleSetHelpersX,
+  RuleSetHelpers,
+  readonlyRSH,
+} from "@/wab/shared/RuleSetHelpers";
+import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
+import { VariantCombo } from "@/wab/shared/Variants";
+import { ensure, withoutNils, xAddAll } from "@/wab/shared/common";
 import {
   makeTokenValueResolver,
   siteFinalStyleTokens,
   siteFinalStyleTokensAllDepsDict,
 } from "@/wab/shared/core/site-style-tokens";
-import { ensure, withoutNils, xAddAll } from "@/wab/shared/common";
 import { expandRuleSets } from "@/wab/shared/core/styles";
+import { FinalToken, toFinalToken } from "@/wab/shared/core/tokens";
 import { flattenTpls } from "@/wab/shared/core/tpls";
 import {
   Component,
-  isKnownStyleExpr,
-  isKnownStyleTokenRef,
   Mixin,
   Site,
   StyleToken,
   StyleTokenOverride,
   TplNode,
   Variant,
+  isKnownStyleExpr,
+  isKnownStyleTokenRef,
 } from "@/wab/shared/model/classes";
-import {
-  ReadonlyIRuleSetHelpersX,
-  readonlyRSH,
-  RuleSetHelpers,
-} from "@/wab/shared/RuleSetHelpers";
-import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
-import { VariantCombo } from "@/wab/shared/Variants";
 import L from "lodash";
 
 export interface TheoToken {
@@ -74,9 +73,9 @@ export function exportStyleTokens(
 }
 
 function serializeStyleToken(
-  token: FinalStyleToken,
+  token: FinalToken<StyleToken>,
   meta: { projectId?: string; pkgId?: string },
-  resolver: (token: FinalStyleToken) => string
+  resolver: (token: FinalToken<StyleToken>) => string
 ): TheoToken {
   return {
     name: token.name,
@@ -113,7 +112,7 @@ export function extractUsedGlobalVariantsForTokens(
 ) {
   const usedGlobalVariants: Set<Variant> = new Set();
   for (const token of tokens) {
-    const finalToken = toFinalStyleToken(token, site);
+    const finalToken = toFinalToken(token, site);
     xAddAll(
       usedGlobalVariants,
       finalToken.base.variantedValues.flatMap((v) => v.variants)

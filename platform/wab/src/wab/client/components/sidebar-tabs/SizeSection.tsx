@@ -37,7 +37,7 @@ import WidthFullBleedIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/Pla
 import WidthStandardStretchIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__WidthStandardStretch";
 import WidthWideIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__WidthWide";
 import { makeVariantedStylesHelperFromCurrentCtx } from "@/wab/client/utils/style-utils";
-import { TokenType, tokenTypeDimOpts } from "@/wab/commons/StyleToken";
+import { tokenTypeDimOpts } from "@/wab/commons/StyleToken";
 import { assert, spawn, withoutNils } from "@/wab/shared/common";
 import { isPageComponent } from "@/wab/shared/core/components";
 import {
@@ -83,7 +83,7 @@ class SizeSection_ extends StyleComponent<
   }
 
   render() {
-    const dimOpts = { ...tokenTypeDimOpts(TokenType.Spacing), min: 0 };
+    const dimOpts = { ...tokenTypeDimOpts("Spacing"), min: 0 };
     const vsh =
       this.props.vsh ??
       makeVariantedStylesHelperFromCurrentCtx(this.studioCtx());
@@ -174,11 +174,11 @@ class SizeSection_ extends StyleComponent<
                       label="Min Width"
                       styleName={`min-width`}
                       dimOpts={{
-                        ...tokenTypeDimOpts(TokenType.Spacing),
+                        ...tokenTypeDimOpts("Spacing"),
                         min: 0,
                         extraOptions: ["auto"],
                       }}
-                      tokenType={TokenType.Spacing}
+                      tokenType={"Spacing"}
                       vsh={vsh}
                     />
                   </FullRow>
@@ -194,11 +194,11 @@ class SizeSection_ extends StyleComponent<
                       label="Max Width"
                       styleName={`max-width`}
                       dimOpts={{
-                        ...tokenTypeDimOpts(TokenType.Spacing),
+                        ...tokenTypeDimOpts("Spacing"),
                         min: 0,
                         extraOptions: ["none"],
                       }}
-                      tokenType={TokenType.Spacing}
+                      tokenType={"Spacing"}
                       vsh={vsh}
                     />
                   </FullRow>
@@ -229,11 +229,11 @@ class SizeSection_ extends StyleComponent<
                       label="Min Height"
                       styleName={`min-height`}
                       dimOpts={{
-                        ...tokenTypeDimOpts(TokenType.Spacing),
+                        ...tokenTypeDimOpts("Spacing"),
                         min: 0,
                         extraOptions: ["auto"],
                       }}
-                      tokenType={TokenType.Spacing}
+                      tokenType={"Spacing"}
                       vsh={vsh}
                     />
                   </FullRow>
@@ -249,11 +249,11 @@ class SizeSection_ extends StyleComponent<
                       label="Max Height"
                       styleName={`max-height`}
                       dimOpts={{
-                        ...tokenTypeDimOpts(TokenType.Spacing),
+                        ...tokenTypeDimOpts("Spacing"),
                         min: 0,
                         extraOptions: ["none"],
                       }}
-                      tokenType={TokenType.Spacing}
+                      tokenType={"Spacing"}
                       vsh={vsh}
                     />
                   </FullRow>
@@ -293,7 +293,7 @@ class SizeSection_ extends StyleComponent<
                       ...dimOpts,
                       extraOptions: ["auto"],
                     }}
-                    tokenType={TokenType.Spacing}
+                    tokenType={"Spacing"}
                     vsh={vsh}
                     definedIndicator={this.definedIndicators("flex-basis")}
                   />
@@ -562,7 +562,7 @@ const SizeControl = observer(function SizeRow(props: {
           : getLengthUnits("px"),
         hideArrow: true,
       }}
-      tokenType={TokenType.Spacing}
+      tokenType={"Spacing"}
       vsh={vsh}
       isDisabled={isDisabled}
       hideIndicator={isDisabled}

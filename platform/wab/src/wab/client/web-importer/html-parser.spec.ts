@@ -4,7 +4,6 @@ import {
   parseHtmlToWebImporterTree,
 } from "@/wab/client/web-importer/html-parser";
 import { WIElement } from "@/wab/client/web-importer/types";
-import { TokenType } from "@/wab/commons/StyleToken";
 import { toVarName } from "@/wab/shared/codegen/util";
 import { assert } from "@/wab/shared/common";
 import { createSite } from "@/wab/shared/core/sites";
@@ -488,12 +487,12 @@ describe("renameTokenVarNameToUuid", () => {
   const site = createSite();
   const tplMgr = new TplMgr({ site });
   const colorPrimaryToken = tplMgr.addToken({
-    tokenType: TokenType.Color,
+    tokenType: "Color",
     name: "Brand/Brand",
     value: "#3594F0",
   });
   const colorPrimaryForegroundToken = tplMgr.addToken({
-    tokenType: TokenType.Color,
+    tokenType: "Color",
     name: "Neutral/Neutral",
     value: "#374151",
   });

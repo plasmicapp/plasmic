@@ -23,7 +23,6 @@ import ChevronUpsvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/Plasm
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { makeVariantedStylesHelperFromCurrentCtx } from "@/wab/client/utils/style-utils";
 import { MaybeWrap } from "@/wab/commons/components/ReactUtil";
-import { TokenType } from "@/wab/commons/StyleToken";
 import { reverseIf } from "@/wab/shared/common";
 import { isCodeComponent } from "@/wab/shared/core/components";
 import { isTplComponent } from "@/wab/shared/core/tpls";
@@ -275,7 +274,7 @@ function FlexContainerControls_(props: FlexContainerControlsProps) {
 
   const getGapFieldProps = (prop: string): any => ({
     styleName: prop,
-    tokenType: TokenType.Spacing,
+    tokenType: "Spacing",
     dimOpts: {
       allowedUnits: ["px"],
       min: 0,

@@ -28,7 +28,7 @@ import PositionCoverIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Pos
 import PositionSideIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__PositionSide";
 import { useForwardedRef } from "@/wab/commons/components/ReactUtil";
 import { XDraggable } from "@/wab/commons/components/XDraggable";
-import { TokenType, tryParseTokenRef } from "@/wab/commons/StyleToken";
+import { tryParseTokenRef } from "@/wab/commons/StyleToken";
 import { sidesAndCorners } from "@/wab/commons/ViewUtil";
 import { cx, ensure, maybe, spawn } from "@/wab/shared/common";
 import { siteFinalStyleTokensAllDeps } from "@/wab/shared/core/site-style-tokens";
@@ -266,7 +266,7 @@ function MeasureControl_(props: MeasureControlProps) {
                       "aria-label": getLabelForStyleName(prop),
                     }}
                     studioCtx={studioCtx}
-                    tokenType={TokenType.Spacing}
+                    tokenType={"Spacing"}
                     autoFocus
                     minDropdownWidth={200}
                     styleType={["white"]}

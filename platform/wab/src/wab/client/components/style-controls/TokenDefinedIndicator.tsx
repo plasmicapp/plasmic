@@ -8,11 +8,8 @@ import { useClientTokenResolver } from "@/wab/client/components/widgets/ColorPic
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import TokenIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Token";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import {
-  FinalStyleToken,
-  OverrideableStyleToken,
-} from "@/wab/commons/StyleToken";
-import { isKnownVariantedValue } from "@/wab/shared/model/classes";
+import { FinalToken, OverrideableToken } from "@/wab/shared/core/tokens";
+import { isKnownVariantedValue, StyleToken } from "@/wab/shared/model/classes";
 import { capitalizeFirst } from "@/wab/shared/strs";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import { BASE_VARIANT_NAME } from "@/wab/shared/Variants";
@@ -21,7 +18,7 @@ import classNames from "classnames";
 import React from "react";
 
 export function TokenDefinedIndicator(props: {
-  token: FinalStyleToken;
+  token: FinalToken<StyleToken>;
   vsh?: VariantedStylesHelper;
   studioCtx: StudioCtx;
   className?: string;
@@ -41,7 +38,7 @@ export function TokenDefinedIndicator(props: {
     if (!vsh.isTargetBaseVariant()) {
       return "overriding";
     }
-    if (token instanceof OverrideableStyleToken) {
+    if (token instanceof OverrideableToken) {
       if (token.override?.value) {
         return "set";
       }

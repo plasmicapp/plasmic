@@ -1,6 +1,4 @@
 import {
-  FinalStyleToken,
-  MutableStyleToken,
   derefToken,
   derefTokenRefs,
   hasTokenRefs,
@@ -28,6 +26,7 @@ import {
 import { code, isFallbackableExpr } from "@/wab/shared/core/exprs";
 import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
 import { mkImageAssetRef } from "@/wab/shared/core/image-assets";
+import { FinalToken, MutableToken } from "@/wab/shared/core/tokens";
 import {
   TplTextTag,
   findVariantSettingsUnderTpl,
@@ -246,17 +245,17 @@ export function makeImageAssetFixer(
 export function mkInsertableTokenImporter(
   sourceSite: Site,
   targetSite: Site,
-  sourceTokens: ReadonlyArray<FinalStyleToken>,
-  targetTokens: ReadonlyArray<FinalStyleToken>,
+  sourceTokens: ReadonlyArray<FinalToken<StyleToken>>,
+  targetTokens: ReadonlyArray<FinalToken<StyleToken>>,
   tokenResolution: InsertableTemplateTokenResolution | undefined,
   screenVariant: Variant | undefined,
   onFontSeen: (font: string) => void
 ) {
-  const oldToNewToken = new Map<StyleToken, FinalStyleToken>();
+  const oldToNewToken = new Map<StyleToken, FinalToken<StyleToken>>();
 
   function getOrAddToken(
-    oldTokens: ReadonlyArray<FinalStyleToken>,
-    oldToken: FinalStyleToken
+    oldTokens: ReadonlyArray<FinalToken<StyleToken>>,
+    oldToken: FinalToken<StyleToken>
   ) {
     if (oldToNewToken.has(oldToken.base)) {
       return oldToNewToken.get(oldToken.base)!;
@@ -300,7 +299,7 @@ export function mkInsertableTokenImporter(
     }
 
     const tplMgr = new TplMgr({ site: targetSite });
-    const newToken = new MutableStyleToken(
+    const newToken = new MutableToken(
       tplMgr.addToken({
         name: tplMgr.getUniqueTokenName(oldToken.name),
         tokenType: oldToken.type,

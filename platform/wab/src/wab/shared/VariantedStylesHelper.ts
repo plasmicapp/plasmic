@@ -1,9 +1,7 @@
-import {
-  FinalStyleToken,
-  ImmutableStyleToken,
-  TokenValue,
-} from "@/wab/commons/StyleToken";
+import { TokenValue } from "@/wab/commons/StyleToken";
 import { DeepReadonly } from "@/wab/commons/types";
+import { RuleSetHelpers } from "@/wab/shared/RuleSetHelpers";
+import { isValidComboForToken } from "@/wab/shared/Variants";
 import {
   arrayEqIgnoreOrder,
   assert,
@@ -12,21 +10,21 @@ import {
   last,
 } from "@/wab/shared/common";
 import { cloneRuleSet } from "@/wab/shared/core/styles";
+import { FinalToken, ImmutableToken } from "@/wab/shared/core/tokens";
 import {
-  isKnownMixin,
   Mixin,
   RuleSet,
   Site,
+  StyleToken,
   Variant,
   VariantedRuleSet,
   VariantedValue,
+  isKnownMixin,
 } from "@/wab/shared/model/classes";
-import { RuleSetHelpers } from "@/wab/shared/RuleSetHelpers";
 import {
   isAncestorCombo,
   makeGlobalVariantComboSorter,
 } from "@/wab/shared/variant-sort";
-import { isValidComboForToken } from "@/wab/shared/Variants";
 
 export class VariantedStylesHelper {
   constructor(
@@ -46,7 +44,7 @@ export class VariantedStylesHelper {
 
   globalVariants = () => this.activeGlobalVariants;
 
-  private activeVariantedStyles(style: FinalStyleToken | Mixin) {
+  private activeVariantedStyles(style: FinalToken<StyleToken> | Mixin) {
     if (this.isActiveBaseVariant() || !this.site) {
       return [];
     }
@@ -66,7 +64,7 @@ export class VariantedStylesHelper {
     );
   }
 
-  private sortedActiveVariantedStyles(style: FinalStyleToken | Mixin) {
+  private sortedActiveVariantedStyles(style: FinalToken<StyleToken> | Mixin) {
     const activeVariantedValues = this.activeVariantedStyles(style);
     if (activeVariantedValues.length === 0) {
       return activeVariantedValues;
@@ -80,7 +78,7 @@ export class VariantedStylesHelper {
     );
   }
 
-  sortedActiveVariantedValue(token: FinalStyleToken) {
+  sortedActiveVariantedValue(token: FinalToken<StyleToken>) {
     return this.sortedActiveVariantedStyles(token) as VariantedValue[];
   }
 
@@ -88,14 +86,16 @@ export class VariantedStylesHelper {
     return this.sortedActiveVariantedStyles(mixin) as VariantedRuleSet[];
   }
 
-  private getVariantedStyleWithHighestPriority(style: FinalStyleToken | Mixin) {
+  private getVariantedStyleWithHighestPriority(
+    style: FinalToken<StyleToken> | Mixin
+  ) {
     const sortedActiveVariantedValues = this.sortedActiveVariantedStyles(style);
     return sortedActiveVariantedValues.length > 0
       ? last(sortedActiveVariantedValues)
       : undefined;
   }
 
-  getVariantedValueWithHighestPriority(token: FinalStyleToken) {
+  getVariantedValueWithHighestPriority(token: FinalToken<StyleToken>) {
     return this.getVariantedStyleWithHighestPriority(token) as
       | VariantedValue
       | undefined;
@@ -110,14 +110,14 @@ export class VariantedStylesHelper {
   /**
    * @returns true if the token has no varianted value against the currently active global variant
    */
-  isStyleInherited(token: FinalStyleToken | Mixin) {
+  isStyleInherited(token: FinalToken<StyleToken> | Mixin) {
     return !arrayEqIgnoreOrder(
       this.getVariantedStyleWithHighestPriority(token)?.variants ?? [],
       this.activeGlobalVariants ?? []
     );
   }
 
-  getActiveTokenValue(token: FinalStyleToken): TokenValue {
+  getActiveTokenValue(token: FinalToken<StyleToken>): TokenValue {
     return (this.getVariantedValueWithHighestPriority(token)?.value ??
       token.value) as TokenValue;
   }
@@ -130,9 +130,9 @@ export class VariantedStylesHelper {
     );
   }
 
-  updateToken(token: FinalStyleToken, value: string): void {
+  updateToken(token: FinalToken<StyleToken>, value: string): void {
     assert(
-      !(token instanceof ImmutableStyleToken),
+      !(token instanceof ImmutableToken),
       `cannot update token "${token.name}" from transitive dep`
     );
 
@@ -150,9 +150,9 @@ export class VariantedStylesHelper {
     }
   }
 
-  removeVariantedValue(token: FinalStyleToken): void {
+  removeVariantedValue(token: FinalToken<StyleToken>): void {
     assert(
-      !(token instanceof ImmutableStyleToken),
+      !(token instanceof ImmutableToken),
       `cannot update token "${token.name}" from transitive dep`
     );
     token.removeVariantedValue(ensureArray(this.targetGlobalVariants));

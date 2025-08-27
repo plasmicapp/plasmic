@@ -4,20 +4,18 @@ import { Matcher } from "@/wab/client/components/view-common";
 import Checkbox from "@/wab/client/components/widgets/Checkbox";
 import PlasmicGeneralTokenControl from "@/wab/client/plasmic/plasmic_kit_left_pane/PlasmicGeneralTokenControl";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import {
-  FinalStyleToken,
-  MutableStyleToken,
-  TokenValue,
-} from "@/wab/commons/StyleToken";
+import { TokenValue } from "@/wab/commons/StyleToken";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
+import { FinalToken, MutableToken } from "@/wab/shared/core/tokens";
 import { getFolderDisplayName } from "@/wab/shared/folders/folders-util";
+import { StyleToken } from "@/wab/shared/model/classes";
 import { Tooltip } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
 
 interface GeneralTokenControlProps {
   style?: React.CSSProperties;
-  token: FinalStyleToken;
+  token: FinalToken<StyleToken>;
   tokenValue: TokenValue;
   matcher: Matcher;
   menu: () => React.ReactElement;
@@ -48,7 +46,7 @@ const GeneralTokenControl = observer(function GeneralTokenControl(
           icon: (
             <>
               {multiAssetsActions.isSelecting &&
-              token instanceof MutableStyleToken ? (
+              token instanceof MutableToken ? (
                 <Checkbox isChecked={isSelected} />
               ) : (
                 <TokenDefinedIndicator

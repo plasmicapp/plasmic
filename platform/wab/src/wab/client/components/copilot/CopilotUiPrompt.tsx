@@ -4,7 +4,6 @@ import { CopilotPromptDialog } from "@/wab/client/components/copilot/CopilotProm
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { parseHtmlToWebImporterTree } from "@/wab/client/web-importer/html-parser";
 import { processWebImporterTree } from "@/wab/client/WebImporter";
-import { TokenType } from "@/wab/commons/StyleToken";
 import { QueryCopilotUiResponse } from "@/wab/shared/ApiSchema";
 import { spawn } from "@/wab/shared/common";
 import * as React from "react";
@@ -33,7 +32,7 @@ function CopilotUiPrompt() {
           tokens: studioCtx.site.styleTokens.map((t) => ({
             name: t.name,
             uuid: t.uuid,
-            type: t.type as TokenType,
+            type: t.type,
             value: t.value,
           })),
         });

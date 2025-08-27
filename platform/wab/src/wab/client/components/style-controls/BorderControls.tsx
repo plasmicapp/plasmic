@@ -23,7 +23,6 @@ import MinusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Minus";
 import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { makeVariantedStylesHelperFromCurrentCtx } from "@/wab/client/utils/style-utils";
-import { TokenType } from "@/wab/commons/StyleToken";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import { ensure, spawn, unanimousVal } from "@/wab/shared/common";
 import { parseCssShorthand, showCssShorthand } from "@/wab/shared/css";
@@ -419,7 +418,7 @@ const BorderLineControls = observer(function BorderLineControls(props: {
           styleName={effectiveSides().map((s) => `border-${s}-width`)}
           labelSize="small"
           displayStyleName="border-width"
-          tokenType={TokenType.Spacing}
+          tokenType={"Spacing"}
           dimOpts={{
             value: getSelectedSidesWidth() || "--",
             onChange: (val) =>
@@ -598,7 +597,7 @@ const BorderRadiusControls = observer(function BorderRadiusControls(props: {
           styleName={effectiveCorners().map((s) => `border-${s}-radius`)}
           labelSize="small"
           displayStyleName="border-radius"
-          tokenType={TokenType.Spacing}
+          tokenType={"Spacing"}
           dimOpts={{
             ref: props.inputRef,
             value: getSelectedCornerRadius() || "--",

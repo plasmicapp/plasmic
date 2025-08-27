@@ -12,7 +12,6 @@ import { Icon } from "@/wab/client/components/widgets/Icon";
 import MinusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Minus";
 import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
 import { StandardMarkdown } from "@/wab/client/utils/StandardMarkdown";
-import { TokenType } from "@/wab/commons/StyleToken";
 import { isStyleOrCodeComponentVariant } from "@/wab/shared/Variants";
 import { Alert } from "antd";
 import { observer } from "mobx-react";
@@ -99,7 +98,7 @@ export const OutlinePanelSection = observer(function OutlinePanelSection() {
           <LabeledStyleDimItemRow
             label="Width"
             styleName={[OutlineProps.width]}
-            tokenType={TokenType.Spacing}
+            tokenType={"Spacing"}
             dimOpts={{
               extraOptions: [
                 { value: "thin", label: "Thin" },
@@ -121,7 +120,7 @@ export const OutlinePanelSection = observer(function OutlinePanelSection() {
           <LabeledStyleDimItemRow
             label="Offset"
             styleName={[OutlineProps.offset]}
-            tokenType={TokenType.Spacing}
+            tokenType={"Spacing"}
           />
         </>
       )}

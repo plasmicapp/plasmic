@@ -11,11 +11,6 @@ import TokenIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Token";
 import PlasmicFindReferencesModal from "@/wab/client/plasmic/plasmic_kit_find_references_modal/PlasmicFindReferencesModal";
 import { DefaultReferenceItemProps } from "@/wab/client/plasmic/plasmic_kit_find_references_modal/PlasmicReferenceItem";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import {
-  MutableStyleToken,
-  OverrideableStyleToken,
-  toFinalStyleToken,
-} from "@/wab/commons/StyleToken";
 import { FRAME_LOWER } from "@/wab/shared/Labels";
 import { assert, ensure, spawn, unexpected } from "@/wab/shared/common";
 import {
@@ -32,13 +27,18 @@ import {
   extractTokenUsages,
 } from "@/wab/shared/core/styles";
 import {
+  MutableToken,
+  OverrideableToken,
+  toFinalToken,
+} from "@/wab/shared/core/tokens";
+import {
   ArenaFrame,
   Component,
-  isKnownStyleToken,
-  isKnownStyleTokenOverride,
   Mixin,
   StyleToken,
   StyleTokenOverride,
+  isKnownStyleToken,
+  isKnownStyleTokenOverride,
 } from "@/wab/shared/model/classes";
 import { Menu } from "antd";
 import L, { sortBy } from "lodash";
@@ -112,7 +112,7 @@ export const FindReferencesModal = observer(
     const currentArena = studioCtx.currentArena;
 
     const [editToken, setEditToken] = React.useState<
-      MutableStyleToken | OverrideableStyleToken | undefined
+      MutableToken<StyleToken> | OverrideableToken<StyleToken> | undefined
     >(undefined);
     const [editMixin, setEditMixin] = React.useState<Mixin | undefined>(
       undefined
@@ -160,13 +160,12 @@ export const FindReferencesModal = observer(
         };
       } else if (type === "token") {
         const token = isKnownStyleToken(item)
-          ? toFinalStyleToken(item, studioCtx.site)
+          ? toFinalToken(item, studioCtx.site)
           : isKnownStyleTokenOverride(item)
-          ? toFinalStyleToken(item.token, studioCtx.site)
+          ? toFinalToken(item.token, studioCtx.site)
           : unexpected();
         assert(
-          token instanceof MutableStyleToken ||
-            token instanceof OverrideableStyleToken,
+          token instanceof MutableToken || token instanceof OverrideableToken,
           "token must be editable"
         );
         return {

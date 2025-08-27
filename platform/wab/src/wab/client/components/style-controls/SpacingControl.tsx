@@ -12,10 +12,7 @@ import {
 } from "@/wab/commons/components/OnClickAway";
 import { Stated } from "@/wab/commons/components/Stated";
 import { XDraggable } from "@/wab/commons/components/XDraggable";
-import {
-  lazyDerefTokenRefsWithDeps,
-  TokenType,
-} from "@/wab/commons/StyleToken";
+import { lazyDerefTokenRefsWithDeps } from "@/wab/commons/StyleToken";
 import {
   ensure,
   hackyCast,
@@ -394,7 +391,7 @@ class SpacingControl_ extends StyleComponent<
                                         lazyDerefTokenRefsWithDeps(
                                           numericSize,
                                           this.studioCtx().site,
-                                          TokenType.Spacing,
+                                          "Spacing",
                                           vsh
                                         )
                                       )
@@ -501,7 +498,7 @@ class SpacingControl_ extends StyleComponent<
               displayStyleName={this.props.spacingStyleProp}
               label={spacingLabel}
               subtitle={subtitle}
-              tokenType={TokenType.Spacing}
+              tokenType={"Spacing"}
               vsh={vsh}
               dimOpts={{
                 ref: this.spinner,

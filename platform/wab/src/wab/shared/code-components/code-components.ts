@@ -1,4 +1,4 @@
-import { TokenType } from "@/wab/commons/StyleToken";
+import { StyleTokenType } from "@/wab/commons/StyleToken";
 import { RSH } from "@/wab/shared/RuleSetHelpers";
 import { getSlotParams, isSlot } from "@/wab/shared/SlotUtils";
 import { TplMgr } from "@/wab/shared/TplMgr";
@@ -4461,20 +4461,20 @@ export function checkForCyclesInSlotsDefaultValue(ctx: SiteCtx) {
   );
 }
 
-function registeredTypeToTokenType(type: string) {
+function registeredTypeToTokenType(type: string): StyleTokenType {
   switch (type) {
     case "color":
-      return TokenType.Color;
+      return "Color";
     case "spacing":
-      return TokenType.Spacing;
+      return "Spacing";
     case "font-family":
-      return TokenType.FontFamily;
+      return "FontFamily";
     case "font-size":
-      return TokenType.FontSize;
+      return "FontSize";
     case "line-height":
-      return TokenType.LineHeight;
+      return "LineHeight";
     case "opacity":
-      return TokenType.Opacity;
+      return "Opacity";
     default:
       throw new Error(`Unexpected token type ${type}`);
   }
@@ -4532,7 +4532,7 @@ async function upsertRegisteredTokens(
         );
 
         for (const tokenReg of registeredTokens.values()) {
-          let regType: TokenType;
+          let regType: StyleTokenType;
           try {
             regType = registeredTypeToTokenType(tokenReg.type);
           } catch (err) {

@@ -1,11 +1,9 @@
 import {
-  FinalStyleToken,
   ResolvedToken,
-  TokenType,
+  StyleTokenType,
   TokenValue,
   extractAllReferencedTokenIds,
   resolveToken,
-  toFinalStyleToken,
   tryParseTokenRef,
 } from "@/wab/commons/StyleToken";
 import { DeepReadonly } from "@/wab/commons/types";
@@ -18,6 +16,7 @@ import {
   walkDependencyTree,
 } from "@/wab/shared/core/project-deps";
 import { expandRuleSets } from "@/wab/shared/core/styles";
+import { FinalToken, toFinalToken } from "@/wab/shared/core/tokens";
 import { isTplVariantable } from "@/wab/shared/core/tpls";
 import { maybeComputedFn } from "@/wab/shared/mobx-util";
 import {
@@ -31,7 +30,7 @@ import keyBy from "lodash/keyBy";
 
 /** Token resolver that returns the value and token. */
 export type TokenResolver = (
-  token: FinalStyleToken,
+  token: FinalToken<StyleToken>,
   vsh?: VariantedStylesHelper
 ) => ResolvedToken;
 export const makeTokenResolver = maybeComputedFn(
@@ -53,7 +52,7 @@ export const makeTokenResolver = maybeComputedFn(
     });
 
     return (
-      token: FinalStyleToken,
+      token: FinalToken<StyleToken>,
       maybeVsh?: VariantedStylesHelper
     ): ResolvedToken => {
       const vsh = maybeVsh ?? new VariantedStylesHelper(site);
@@ -71,13 +70,13 @@ export const makeTokenResolver = maybeComputedFn(
 
 /** Token resolver that returns the value only. */
 export type TokenValueResolver = (
-  token: FinalStyleToken,
+  token: FinalToken<StyleToken>,
   vsh?: VariantedStylesHelper
 ) => TokenValue;
 export const makeTokenValueResolver = (site: Site): TokenValueResolver => {
   const tokenResolver = makeTokenResolver(site);
   return (
-    token: FinalStyleToken,
+    token: FinalToken<StyleToken>,
     maybeVsh?: VariantedStylesHelper
   ): TokenValue => {
     return tokenResolver(token, maybeVsh).value;
@@ -138,24 +137,22 @@ export const siteStyleTokensAllDepsDict = maybeComputedFn(
 );
 
 export const siteFinalStyleTokens = maybeComputedFn(
-  (site: Site): ReadonlyArray<FinalStyleToken> =>
-    siteStyleTokens(site).map((token) => toFinalStyleToken(token, site))
+  (site: Site): ReadonlyArray<FinalToken<StyleToken>> =>
+    siteStyleTokens(site).map((token) => toFinalToken(token, site))
 );
 
 export const siteFinalStyleTokensDirectDeps = maybeComputedFn(
-  (site: Site): ReadonlyArray<FinalStyleToken> =>
-    siteStyleTokensDirectDeps(site).map((token) =>
-      toFinalStyleToken(token, site)
-    )
+  (site: Site): ReadonlyArray<FinalToken<StyleToken>> =>
+    siteStyleTokensDirectDeps(site).map((token) => toFinalToken(token, site))
 );
 
 export const siteFinalStyleTokensAllDeps = maybeComputedFn(
-  (site: Site): ReadonlyArray<FinalStyleToken> =>
-    siteStyleTokensAllDeps(site).map((token) => toFinalStyleToken(token, site))
+  (site: Site): ReadonlyArray<FinalToken<StyleToken>> =>
+    siteStyleTokensAllDeps(site).map((token) => toFinalToken(token, site))
 );
 
 export const siteFinalStyleTokensAllDepsDict = maybeComputedFn(
-  (site: Site): Readonly<{ [uuid: string]: FinalStyleToken }> =>
+  (site: Site): Readonly<{ [uuid: string]: FinalToken<StyleToken> }> =>
     keyBy(siteFinalStyleTokensAllDeps(site), (t) => t.uuid)
 );
 
@@ -174,9 +171,9 @@ function cachedSiteFinalStyleTokens(
 
 export function siteFinalStyleTokensOfType(
   site: Site,
-  tokenType: TokenType,
+  tokenType: StyleTokenType,
   opts: { includeDeps?: DependencyWalkScope } = {}
-): ReadonlyArray<FinalStyleToken> {
+): ReadonlyArray<FinalToken<StyleToken>> {
   return cachedSiteFinalStyleTokens(site, opts).filter(
     (t) => t.type === tokenType
   );
@@ -185,8 +182,8 @@ export function siteFinalStyleTokensOfType(
 export function siteFinalColorTokens(
   site: Site,
   opts: { includeDeps?: DependencyWalkScope } = {}
-): ReadonlyArray<FinalStyleToken> {
-  return siteFinalStyleTokensOfType(site, TokenType.Color, opts);
+): ReadonlyArray<FinalToken<StyleToken>> {
+  return siteFinalStyleTokensOfType(site, "Color", opts);
 }
 
 /**
@@ -195,8 +192,8 @@ export function siteFinalColorTokens(
 export function finalStyleTokensForDep(
   site: Site,
   depSite: Site
-): FinalStyleToken[] {
-  return depSite.styleTokens.map((t) => toFinalStyleToken(t, site));
+): FinalToken<StyleToken>[] {
+  return depSite.styleTokens.map((t) => toFinalToken(t, site));
 }
 
 /**
@@ -263,7 +260,7 @@ const usedTokensForExp = maybeComputedFn(function usedTokensForExp(
 
 const usedTokensForToken = maybeComputedFn(function collectUsedTokensForToken(
   site: Site,
-  token: FinalStyleToken
+  token: FinalToken<StyleToken>
 ): ReadonlyArray<StyleToken> {
   const allTokensDict = siteFinalStyleTokensAllDepsDict(site);
   const collector = new Set<StyleToken>();

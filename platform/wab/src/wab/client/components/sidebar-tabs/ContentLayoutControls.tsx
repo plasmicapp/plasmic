@@ -8,7 +8,6 @@ import {
   SectionSeparator,
 } from "@/wab/client/components/sidebar/sidebar-helpers";
 import { ExpsProvider } from "@/wab/client/components/style-controls/StyleComponent";
-import { TokenType } from "@/wab/commons/StyleToken";
 import { observer } from "mobx-react";
 import React from "react";
 
@@ -32,7 +31,7 @@ export const ContentLayoutContainerControls = observer(
         <LabeledStyleDimItemRow
           label={"Gap"}
           styleName="grid-row-gap"
-          tokenType={TokenType.Spacing}
+          tokenType={"Spacing"}
           dimOpts={{
             allowedUnits: ["px"],
             min: 0,

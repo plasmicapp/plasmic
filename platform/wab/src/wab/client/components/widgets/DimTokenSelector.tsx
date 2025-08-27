@@ -1,7 +1,7 @@
+import { FieldAriaProps } from "@/wab/client/components/aria-utils";
 import ListItem from "@/wab/client/components/ListItem";
 import ListSectionHeader from "@/wab/client/components/ListSectionHeader";
 import ListSectionSeparator from "@/wab/client/components/ListSectionSeparator";
-import { FieldAriaProps } from "@/wab/client/components/aria-utils";
 import { GeneralTokenEditModal } from "@/wab/client/components/sidebar/GeneralTokenEditModal";
 import { ValueSetState } from "@/wab/client/components/sidebar/sidebar-helpers";
 import { Matcher } from "@/wab/client/components/view-common";
@@ -17,20 +17,16 @@ import PlasmicDimTokenSelector, {
 } from "@/wab/client/plasmic/plasmic_kit_style_controls/PlasmicDimTokenSelector";
 import { useUndo } from "@/wab/client/shortcuts/studio/useUndo";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { MaybeWrap } from "@/wab/commons/components/ReactUtil";
 import {
-  FinalStyleToken,
-  MutableStyleToken,
-  OverrideableStyleToken,
-  TokenType,
   derefToken,
   isStyleTokenEditable,
   mkTokenRef,
+  StyleTokenType,
   tokenTypeDefaults,
   tokenTypeLabel,
   tryParseTokenRef,
 } from "@/wab/commons/StyleToken";
-import { MaybeWrap } from "@/wab/commons/components/ReactUtil";
-import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import {
   assert,
   ensure,
@@ -40,10 +36,15 @@ import {
   unexpected,
 } from "@/wab/shared/common";
 import {
-  TokenValueResolver,
   siteFinalStyleTokens,
   siteFinalStyleTokensOfType,
+  TokenValueResolver,
 } from "@/wab/shared/core/site-style-tokens";
+import {
+  FinalToken,
+  MutableToken,
+  OverrideableToken,
+} from "@/wab/shared/core/tokens";
 import * as css from "@/wab/shared/css";
 import {
   lengthCssUnits,
@@ -58,10 +59,11 @@ import {
 import { StyleToken } from "@/wab/shared/model/classes";
 import { naturalSort } from "@/wab/shared/sort";
 import { canCreateAlias } from "@/wab/shared/ui-config-utils";
-import { Tooltip, notification } from "antd";
+import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
+import { notification, Tooltip } from "antd";
 import type { TooltipPlacement } from "antd/es/tooltip";
 import cn from "classnames";
-import { UseComboboxGetItemPropsOptions, useCombobox } from "downshift";
+import { useCombobox, UseComboboxGetItemPropsOptions } from "downshift";
 import L from "lodash";
 import { observer } from "mobx-react";
 import React from "react";
@@ -125,7 +127,7 @@ export const DimTokenSpinner = observer(
     props: {
       className?: string;
       "data-test-id"?: string;
-      tokenType?: TokenType;
+      tokenType?: StyleTokenType;
       fieldAriaProps?: FieldAriaProps;
       studioCtx?: StudioCtx;
       dropdownPlacement?: AriaPositionProps["placement"];
@@ -197,7 +199,7 @@ export const DimTokenSpinner = observer(
       ? shorthandVals.map((v) => tryParseTokenRef(v, tokens) || v)
       : shorthandVals;
     const parsedTokens = parsedValues.filter(
-      (v): v is FinalStyleToken => typeof v !== "string"
+      (v): v is FinalToken<StyleToken> => typeof v !== "string"
     );
     const editableTokens = parsedTokens.filter(
       (v) =>
@@ -226,11 +228,11 @@ export const DimTokenSpinner = observer(
       typedInputValue ?? (hasParsedToken ? "" : focused ? value : displayValue);
 
     const [editToken, setEditToken] = React.useState<
-      MutableStyleToken | OverrideableStyleToken | undefined
+      MutableToken<StyleToken> | OverrideableToken<StyleToken> | undefined
     >(undefined);
 
     const [newToken, setNewToken] = React.useState<
-      MutableStyleToken | undefined
+      MutableToken<StyleToken> | undefined
     >(undefined);
 
     const isNumberMode = !isNaN(parseFloat(inputValue));
@@ -495,7 +497,7 @@ export const DimTokenSpinner = observer(
                     });
 
                   onChange(mkTokenRef(_newToken), "selected");
-                  setNewToken(new MutableStyleToken(_newToken));
+                  setNewToken(new MutableToken(_newToken));
                 })
               );
             } else if (selectedItem.type === "edit-token") {
@@ -804,7 +806,7 @@ export const DimTokenSpinner = observer(
 
 interface SelectTokenItem {
   type: "token";
-  token: FinalStyleToken;
+  token: FinalToken<StyleToken>;
 }
 
 interface AddTokenItem {
@@ -813,7 +815,7 @@ interface AddTokenItem {
 
 interface EditTokenItem {
   type: "edit-token";
-  token: MutableStyleToken | OverrideableStyleToken;
+  token: MutableToken<StyleToken> | OverrideableToken<StyleToken>;
 }
 
 interface SetValueItem {
@@ -859,7 +861,7 @@ interface DimTokenContextValue {
   matcher: Matcher;
   getItemProps: (options: UseComboboxGetItemPropsOptions<any>) => any;
   highlightedItemIndex: number;
-  tokenType?: TokenType;
+  tokenType?: StyleTokenType;
   vsh?: VariantedStylesHelper;
   resolver: TokenValueResolver;
 }

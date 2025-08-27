@@ -2,18 +2,15 @@ import { Dims, offsetPxAsUnits } from "@/wab/client/DimManip";
 import { getOffsetRect } from "@/wab/client/dom";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import {
-  TokenType,
-  lazyDerefTokenRefsWithDeps,
-} from "@/wab/commons/StyleToken";
+import { lazyDerefTokenRefsWithDeps } from "@/wab/commons/StyleToken";
 import {
   ensureActivatedScreenVariantsForFrameByWidth,
   getFrameHeight,
   isComponentArena,
 } from "@/wab/shared/Arenas";
 import {
-  CustomError,
   absmax,
+  CustomError,
   ensure,
   ensureArray,
   ensureInstance,
@@ -27,10 +24,10 @@ import {
 import { Selectable } from "@/wab/shared/core/selection";
 import { ValComponent, ValTag } from "@/wab/shared/core/val-nodes";
 import {
-  Size,
   createNumericSize,
   parseAtomicSize,
   showSizeCss,
+  Size,
 } from "@/wab/shared/css-size";
 import { makeMergedExpProxy } from "@/wab/shared/exprs";
 import {
@@ -38,22 +35,22 @@ import {
   ClientRect,
   Corner,
   DimProp,
-  Pt,
-  Rect,
-  Side,
-  dimPropToSizeAxis,
   dimProps,
+  dimPropToSizeAxis,
   ensureSide,
   isEndSide,
   isStandardSide,
   oppSideOrCorner,
+  Pt,
+  Rect,
+  Side,
   sideOrCornerToSides,
   sideToOrient,
   sizeAxisToSides,
 } from "@/wab/shared/geom";
 import {
-  PositionLayoutType,
   getRshPositionType,
+  PositionLayoutType,
 } from "@/wab/shared/layoututils";
 import { ArenaFrame, Site } from "@/wab/shared/model/classes";
 import { IRuleSetHelpers } from "@/wab/shared/RuleSetHelpers";
@@ -217,7 +214,7 @@ export class FreestyleManipulator {
       return parseAtomicSize(
         isSpecialSizeVal(size) || size === "none"
           ? "auto"
-          : lazyDerefTokenRefsWithDeps(size, this.site, TokenType.Spacing)
+          : lazyDerefTokenRefsWithDeps(size, this.site, "Spacing")
       );
     };
 

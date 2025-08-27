@@ -1,16 +1,12 @@
-import {
-  mkTokenRef,
-  MutableStyleToken,
-  OverrideableStyleToken,
-  replaceAllTokenRefs,
-} from "@/wab/commons/StyleToken";
+import { mkTokenRef, replaceAllTokenRefs } from "@/wab/commons/StyleToken";
 import { arrayRemove } from "@/wab/shared/collections";
 import { unreachable } from "@/wab/shared/common";
 import { extractTokenUsages } from "@/wab/shared/core/styles";
+import { MutableToken, OverrideableToken } from "@/wab/shared/core/tokens";
 import {
-  ensureKnownStyleTokenRef,
   Site,
   StyleToken,
+  ensureKnownStyleTokenRef,
 } from "@/wab/shared/model/classes";
 
 export function fixDuplicatedRegisteredTokens(mergedSite: Site) {
@@ -48,10 +44,7 @@ function replaceToken(site: Site, fromToken: StyleToken, toToken: StyleToken) {
         usage.type === "styleToken"
           ? usage.styleToken
           : usage.styleTokenOverride;
-      if (
-        token instanceof MutableStyleToken ||
-        token instanceof OverrideableStyleToken
-      ) {
+      if (token instanceof MutableToken || token instanceof OverrideableToken) {
         token.setValue(
           replaceAllTokenRefs(token.value, (tokenId: string) =>
             tokenId === fromToken.uuid ? mkTokenRef(toToken) : undefined

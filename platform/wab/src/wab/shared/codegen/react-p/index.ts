@@ -1,4 +1,3 @@
-import { toFinalStyleToken } from "@/wab/commons/StyleToken";
 import { AppAuthProvider, ProjectId } from "@/wab/shared/ApiSchema";
 import { RSH } from "@/wab/shared/RuleSetHelpers";
 import {
@@ -281,6 +280,7 @@ import {
   showSimpleCssRuleSet,
   tryAugmentRulesWithScreenVariant,
 } from "@/wab/shared/core/styles";
+import { toFinalToken } from "@/wab/shared/core/tokens";
 import {
   TplTagType,
   TplTextTag,
@@ -3034,7 +3034,7 @@ function conditionalComponentArgs(
           const token = arg.expr.token;
           const conditionals = buildConditionalDerefTokenValueArg(
             ctx.site,
-            toFinalStyleToken(token, ctx.site)
+            toFinalToken(token, ctx.site)
           );
           entry.push([
             toCode(

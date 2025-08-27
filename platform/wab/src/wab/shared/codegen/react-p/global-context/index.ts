@@ -1,4 +1,3 @@
-import { toFinalStyleToken } from "@/wab/commons/StyleToken";
 import { makeComponentAliases } from "@/wab/shared/codegen/react-p";
 import {
   makeGlobalVariantComboChecker,
@@ -26,6 +25,7 @@ import { assert } from "@/wab/shared/common";
 import { getRealParams } from "@/wab/shared/core/components";
 import { ExprCtx, getRawCode } from "@/wab/shared/core/exprs";
 import { ParamExportType } from "@/wab/shared/core/lang";
+import { toFinalToken } from "@/wab/shared/core/tokens";
 import { getProjectFlags } from "@/wab/shared/devflags";
 import {
   Site,
@@ -118,7 +118,7 @@ export function makeGlobalContextBundle(
           ) {
             const conditionals = buildConditionalDerefTokenValueArg(
               site,
-              toFinalStyleToken(maybeArg.expr.token, site)
+              toFinalToken(maybeArg.expr.token, site)
             );
             serializedExpr = joinVariantVals(
               conditionals.map(([expr, combo]) => [

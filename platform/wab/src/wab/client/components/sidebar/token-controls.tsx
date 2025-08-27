@@ -13,10 +13,7 @@ import { SimpleTextbox } from "@/wab/client/components/widgets/SimpleTextbox";
 import TokenIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Token";
 import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import {
-  FinalStyleToken,
-  MutableStyleToken,
-  OverrideableStyleToken,
-  TokenType,
+  StyleTokenType,
   TokenValue,
   isStyleTokenEditable,
   tryParseTokenRef,
@@ -29,6 +26,11 @@ import {
   siteFinalColorTokens,
   siteFinalStyleTokensOfType,
 } from "@/wab/shared/core/site-style-tokens";
+import {
+  FinalToken,
+  MutableToken,
+  OverrideableToken,
+} from "@/wab/shared/core/tokens";
 import { DEVFLAGS } from "@/wab/shared/devflags";
 import { Site, StyleToken } from "@/wab/shared/model/classes";
 import { canCreateAlias } from "@/wab/shared/ui-config-utils";
@@ -43,14 +45,14 @@ export const TOKEN_ROW_HEIGHT = 32;
 
 export interface TokenHeader {
   type: "header";
-  tokenType: TokenType;
+  tokenType: StyleTokenType;
   key: string;
   items: TokenPanelRow[];
   count: number;
 }
 
 export type OnAddToken = (
-  type: TokenType,
+  type: StyleTokenType,
   folderName?: string
 ) => Promise<void>;
 
@@ -69,7 +71,7 @@ export interface TokenFolderActions {
 
 export interface TokenFolder {
   type: "folder" | "folder-token";
-  tokenType: TokenType;
+  tokenType: StyleTokenType;
   path?: string;
   name: string;
   key: string;
@@ -81,7 +83,7 @@ export interface TokenFolder {
 export interface TokenData {
   type: "token";
   key: string;
-  token: FinalStyleToken;
+  token: FinalToken<StyleToken>;
   value: TokenValue;
   importedFrom?: string;
 }
@@ -92,11 +94,13 @@ export const TokenControlsContext = React.createContext<{
   vsh: VariantedStylesHelper | undefined;
   resolver: TokenValueResolver;
   onDuplicate: (token: StyleToken) => Promise<void>;
-  onSelect: (token: MutableStyleToken | OverrideableStyleToken) => void;
-  onDeleteOverride: (token: OverrideableStyleToken) => void;
-  onAdd: (tokenType: TokenType, folderName?: string) => Promise<void>;
-  expandedHeaders: Set<TokenType>;
-  setExpandedHeaders: React.Dispatch<React.SetStateAction<Set<TokenType>>>;
+  onSelect: (
+    token: MutableToken<StyleToken> | OverrideableToken<StyleToken>
+  ) => void;
+  onDeleteOverride: (token: OverrideableToken<StyleToken>) => void;
+  onAdd: (tokenType: StyleTokenType, folderName?: string) => Promise<void>;
+  expandedHeaders: Set<StyleTokenType>;
+  setExpandedHeaders: React.Dispatch<React.SetStateAction<Set<StyleTokenType>>>;
 } | null>(null);
 
 export function useTokenControls() {
@@ -116,7 +120,7 @@ export const isTokenPanelReadOnly = (studioCtx: StudioCtx) => {
 };
 
 export const newTokenValueAllowed = (
-  token: FinalStyleToken,
+  token: FinalToken<StyleToken>,
   site: Site,
   newValue: string,
   vsh?: VariantedStylesHelper
@@ -155,8 +159,8 @@ export const newTokenValueAllowed = (
 };
 
 function maybeTokenRefCycle(
-  token: FinalStyleToken,
-  tokens: ReadonlyArray<FinalStyleToken>,
+  token: FinalToken<StyleToken>,
+  tokens: ReadonlyArray<FinalToken<StyleToken>>,
   newValue: string,
   vsh?: VariantedStylesHelper
 ): string[] | undefined {
@@ -191,7 +195,7 @@ const getLeftPadding = (indentMultiplier: number) => {
 };
 
 export const TokenRow = observer(function TokenRow(props: {
-  token: FinalStyleToken;
+  token: FinalToken<StyleToken>;
   tokenValue: TokenValue;
   matcher: Matcher;
   indentMultiplier: number;
@@ -225,7 +229,7 @@ export const TokenRow = observer(function TokenRow(props: {
       if (
         DEVFLAGS.importedTokenOverrides &&
         !tokenPanelReadOnly &&
-        token instanceof OverrideableStyleToken
+        token instanceof OverrideableToken
       ) {
         if (vsh && !vsh.isTargetBaseVariant()) {
           push(
@@ -277,7 +281,7 @@ export const TokenRow = observer(function TokenRow(props: {
 
       if (
         !tokenPanelReadOnly &&
-        token instanceof MutableStyleToken &&
+        token instanceof MutableToken &&
         vsh &&
         !vsh.isTargetBaseVariant() &&
         !vsh.isStyleInherited(token)
@@ -299,7 +303,7 @@ export const TokenRow = observer(function TokenRow(props: {
 
       builder.genSection(undefined, () => {
         const pushTokens = (
-          tokens: ReadonlyArray<FinalStyleToken>,
+          tokens: ReadonlyArray<FinalToken<StyleToken>>,
           push_: (x: React.ReactElement) => void
         ) => {
           for (const tok of sortBy(tokens, (t) => t.name)) {
@@ -312,7 +316,7 @@ export const TokenRow = observer(function TokenRow(props: {
                   }}
                 >
                   <div className="flex-row flex-vcenter gap-sm">
-                    {tok.type === TokenType.Color && (
+                    {tok.type === "Color" && (
                       <ColorSwatch color={resolver(tok, vsh)} />
                     )}
                     <div>{tok.name}</div>
@@ -347,7 +351,7 @@ export const TokenRow = observer(function TokenRow(props: {
 
       if (
         !tokenPanelReadOnly &&
-        token instanceof MutableStyleToken &&
+        token instanceof MutableToken &&
         !multiAssetsActions.isSelecting
       ) {
         builder.genSection(undefined, (push2) => {
@@ -398,7 +402,7 @@ export const TokenRow = observer(function TokenRow(props: {
 
   return (
     <>
-      {token.type === TokenType.Color && (
+      {token.type === "Color" && (
         <ColorTokenControl
           style={{
             height: TOKEN_ROW_HEIGHT,
@@ -413,7 +417,7 @@ export const TokenRow = observer(function TokenRow(props: {
         />
       )}
 
-      {token.type !== TokenType.Color && (
+      {token.type !== "Color" && (
         <GeneralTokenControl
           style={{
             height: TOKEN_ROW_HEIGHT,
@@ -498,7 +502,7 @@ export const TokenFolderRow = observer(function TokenFolderRow(
 });
 
 export const ColorTokenPopup = observer(function ColorTokenPopup(props: {
-  token: MutableStyleToken | OverrideableStyleToken;
+  token: MutableToken<StyleToken> | OverrideableToken<StyleToken>;
   studioCtx: StudioCtx;
   show: boolean;
   onClose: () => void;
@@ -542,7 +546,7 @@ export const ColorTokenPopup = observer(function ColorTokenPopup(props: {
                 return success();
               })
             }
-            readOnly={!(token instanceof MutableStyleToken)}
+            readOnly={!(token instanceof MutableToken)}
             placeholder={"(unnamed token)"}
             autoFocus={autoFocusName}
             selectAllOnFocus={true}

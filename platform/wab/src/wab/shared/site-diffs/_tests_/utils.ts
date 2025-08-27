@@ -1,4 +1,3 @@
-import { TokenType } from "@/wab/commons/StyleToken";
 import { ProjectFullDataResponse } from "@/wab/shared/ApiSchema";
 import { Bundle, Bundler, FastBundler } from "@/wab/shared/bundler";
 import {
@@ -48,7 +47,7 @@ export function upsertTokens(site: Site, tokens: Record<string, number>) {
       } else {
         yield tplMgr.addToken({
           name,
-          tokenType: TokenType.LineHeight,
+          tokenType: "LineHeight",
           value: (tokens[name] ?? 0) + "",
         });
       }
@@ -316,10 +315,7 @@ export function applyTestMerge({
   // We want to use a new bundler with no instances in the cache
   const cleanedUpBundler = new Bundler();
   const ancestorSite = ensureKnownSite(
-    cleanedUpBundler.unbundle(
-      jsonClone(ancestorBundle),
-      ancestorUuid,
-    )
+    cleanedUpBundler.unbundle(jsonClone(ancestorBundle), ancestorUuid)
   );
   const aSite = ensureKnownSite(
     cleanedUpBundler.unbundle(jsonClone(aBundle), aUuid)
@@ -341,10 +337,7 @@ export function applyTestMerge({
   assertSiteInvariants(bSite);
 
   const mergedSite = ensureKnownSite(
-    cleanedUpBundler.unbundle(
-      jsonClone(ancestorBundle),
-      mergedUuid,
-    )
+    cleanedUpBundler.unbundle(jsonClone(ancestorBundle), mergedUuid)
   );
 
   const result: MergeStep & { preMergedSite?: Site } = tryMerge(

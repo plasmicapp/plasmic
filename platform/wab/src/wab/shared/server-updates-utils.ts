@@ -1,7 +1,4 @@
-import {
-  resolveAllTokenRefs,
-  toFinalStyleToken,
-} from "@/wab/commons/StyleToken";
+import { resolveAllTokenRefs } from "@/wab/commons/StyleToken";
 import { getArenaFrames } from "@/wab/shared/Arenas";
 import { arrayRemove } from "@/wab/shared/collections";
 import {
@@ -21,6 +18,7 @@ import {
   ModelChange,
   RecordedChanges,
 } from "@/wab/shared/core/observable-model";
+import { toFinalToken } from "@/wab/shared/core/tokens";
 import {
   removeMarkersToTpl,
   replaceTplTreeByEmptyBox,
@@ -649,7 +647,7 @@ export function fixDanglingReferenceConflicts(
 
     const deletedFinalTokens = summary.deletedTokens
       .filter(isInstDeleted)
-      .map((token) => toFinalStyleToken(token, site));
+      .map((token) => toFinalToken(token, site));
     summary.deletedTokens.filter(isInstDeleted).forEach((token) => {
       const refs = recorder
         .getRefsToInst(token)

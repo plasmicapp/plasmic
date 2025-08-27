@@ -4,7 +4,7 @@ import {
   stringPrompt,
 } from "@/wab/client/commands/types";
 import {
-  TokenType,
+  StyleTokenType,
   tokenTypeLabel,
   tokenTypes,
 } from "@/wab/commons/StyleToken";
@@ -13,7 +13,7 @@ import { StyleToken } from "@/wab/shared/model/classes";
 export const addTokenCommand: Command<
   {
     name?: string;
-    tokenType: TokenType;
+    tokenType: StyleTokenType;
     value?: string;
   },
   {},

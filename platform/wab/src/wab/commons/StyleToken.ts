@@ -5,28 +5,18 @@ import { RuleSetHelpers } from "@/wab/shared/RuleSetHelpers";
 import { TplMgr } from "@/wab/shared/TplMgr";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import { toVarName } from "@/wab/shared/codegen/util";
-import { isReadonlyArray, isReadonlyMap } from "@/wab/shared/collections";
-import {
-  arrayEqIgnoreOrder,
-  ensure,
-  remove,
-  removeWhere,
-  tuple,
-  unexpected,
-  withoutNils,
-} from "@/wab/shared/common";
+import { isReadonlyArray } from "@/wab/shared/collections";
+import { ensure, tuple, unexpected, withoutNils } from "@/wab/shared/common";
 import { DependencyWalkScope } from "@/wab/shared/core/project-deps";
 import { siteFinalStyleTokensOfType } from "@/wab/shared/core/site-style-tokens";
+import {
+  FinalToken,
+  MutableToken,
+  OverrideableToken,
+} from "@/wab/shared/core/tokens";
 import { getLengthUnits, parseCss } from "@/wab/shared/css";
 import { DEVFLAGS } from "@/wab/shared/devflags";
-import {
-  Mixin,
-  Site,
-  StyleToken,
-  StyleTokenOverride,
-  Variant,
-  VariantedValue,
-} from "@/wab/shared/model/classes";
+import { Mixin, Site, StyleToken } from "@/wab/shared/model/classes";
 import CSSEscape from "css.escape";
 import L from "lodash";
 import type { Opaque, SetOptional } from "type-fest";
@@ -42,280 +32,61 @@ export type TokenValue = Opaque<string, "TokenValue">;
  */
 export type ResolvedToken = {
   value: TokenValue;
-  token: FinalStyleToken;
+  token: FinalToken<StyleToken>;
 };
 
-export type FinalStyleToken =
-  | MutableStyleToken
-  | OverrideableStyleToken
-  | ImmutableStyleToken;
-
-abstract class BaseStyleToken {
-  constructor(readonly base: StyleToken, readonly isLocal: boolean) {}
-
-  get override(): StyleTokenOverride | null {
-    return null;
-  }
-
-  get uuid(): string {
-    return this.base.uuid;
-  }
-  get name(): string {
-    return this.base.name;
-  }
-  get type(): TokenType {
-    return this.base.type as TokenType;
-  }
-  get isRegistered(): boolean {
-    return this.base.isRegistered;
-  }
-  // TODO: use TokenValue
-  get value(): string {
-    return this.base.value;
-  }
-  // TODO: use TokenValue
-  get variantedValues(): readonly VariantedValue[] {
-    return this.base.variantedValues;
-  }
-
-  protected static setValue(
-    tokenOrOverride: StyleToken | StyleTokenOverride,
-    value: string
-  ): void {
-    tokenOrOverride.value = value;
-  }
-
-  protected static setVariantedValue(
-    tokenOrOverride: StyleToken | StyleTokenOverride,
-    variants: Variant[],
-    value: string
-  ): void {
-    const variantedValue = tokenOrOverride.variantedValues.find((v) =>
-      arrayEqIgnoreOrder(v.variants, variants)
-    );
-    if (variantedValue) {
-      variantedValue.value = value;
-    } else {
-      tokenOrOverride.variantedValues.push(
-        new VariantedValue({
-          variants,
-          value,
-        })
-      );
-    }
-  }
-
-  protected static removeVariantedValue(
-    tokenOrOverride: StyleToken | StyleTokenOverride,
-    variants: Variant[]
-  ): void {
-    removeWhere(tokenOrOverride.variantedValues, (v) =>
-      arrayEqIgnoreOrder(v.variants, variants)
-    );
-  }
-}
-
-/** Style tokens in the local project are mutable. */
-export class MutableStyleToken extends BaseStyleToken {
-  constructor(base: StyleToken) {
-    super(base, true);
-  }
-
-  setValue(value: string): void {
-    BaseStyleToken.setValue(this.base, value);
-  }
-
-  setVariantedValue(variants: Variant[], value: string): void {
-    BaseStyleToken.setVariantedValue(this.base, variants, value);
-  }
-
-  removeVariantedValue(variants: Variant[]): void {
-    BaseStyleToken.removeVariantedValue(this.base, variants);
-  }
-}
-
-/** Style tokens from direct dependencies are immutable but can be overridden. */
-export class OverrideableStyleToken extends BaseStyleToken {
-  constructor(base: StyleToken, private readonly site: Site) {
-    super(base, false);
-  }
-
-  get override(): StyleTokenOverride | null {
-    return (
-      this.site.styleTokenOverrides.find(
-        (t) => t.token.uuid === this.base.uuid
-      ) ?? null
-    );
-  }
-
-  get value(): string {
-    return this.override?.value ?? this.base.value;
-  }
-  get variantedValues(): readonly VariantedValue[] {
-    const override = this.override;
-    if (!override) {
-      return this.base.variantedValues;
-    }
-
-    return [
-      // filter out overridden variants
-      ...this.base.variantedValues.filter(
-        (v) =>
-          !override.variantedValues.find((ov) =>
-            arrayEqIgnoreOrder(v.variants, ov.variants)
-          )
-      ),
-      // add overridden variants
-      ...override.variantedValues,
-    ];
-  }
-
-  setValue(value: string): void {
-    // Only create an override if the value is different from the base value
-    if (this.value !== value) {
-      const override = this.upsertStyleTokenOverride();
-      BaseStyleToken.setValue(override, value);
-    }
-  }
-
-  setVariantedValue(variants: Variant[], value: string): void {
-    // Only create an override if the value is different from the base value
-    if (this.override || this.value !== value) {
-      const override = this.upsertStyleTokenOverride();
-      BaseStyleToken.setVariantedValue(override, variants, value);
-    }
-  }
-
-  /** Returns true if override no longer exists. */
-  removeValue(): boolean {
-    const override = this.override;
-    if (!override) {
-      return true;
-    }
-
-    override.value = null;
-    return this.removeOverrideIfEmpty(override);
-  }
-
-  /** Returns true if override no longer exists. */
-  removeVariantedValue(variants: Variant[]): boolean {
-    const override = this.override;
-    if (!override) {
-      return true;
-    }
-
-    BaseStyleToken.removeVariantedValue(override, variants);
-    return this.removeOverrideIfEmpty(override);
-  }
-
-  private upsertStyleTokenOverride(): StyleTokenOverride {
-    const existingOverride = this.site.styleTokenOverrides.find(
-      (o) => o.token.uuid === this.base.uuid
-    );
-    if (existingOverride) {
-      return existingOverride;
-    }
-
-    const newOverride = new StyleTokenOverride({
-      token: this.base,
-      value: null,
-      variantedValues: [],
-    });
-    this.site.styleTokenOverrides.push(newOverride);
-    return newOverride;
-  }
-
-  /** Returns true if removed. */
-  private removeOverrideIfEmpty(override: StyleTokenOverride): boolean {
-    if (!override.value && override.variantedValues.length === 0) {
-      remove(this.site.styleTokenOverrides, override);
-      return true;
-    } else {
-      return false;
-    }
-  }
-}
-
-/** Style tokens from transitive dependencies are immutable and cannot be overridden. */
-export class ImmutableStyleToken extends BaseStyleToken {}
-
-export const enum TokenType {
-  Color = "Color",
-  Spacing = "Spacing",
-  Opacity = "Opacity",
-  LineHeight = "LineHeight",
-  FontFamily = "FontFamily",
-  FontSize = "FontSize",
-}
+export type StyleTokenType = StyleToken["type"];
 
 export const tokenTypes = [
-  TokenType.Color,
-  TokenType.FontFamily,
-  TokenType.FontSize,
-  TokenType.LineHeight,
-  TokenType.Opacity,
-  TokenType.Spacing,
+  "Color",
+  "FontFamily",
+  "FontSize",
+  "LineHeight",
+  "Opacity",
+  "Spacing",
 ] as const;
-
-export function toFinalStyleToken(token: StyleToken, site: Site) {
-  const isLocal = site.styleTokens.includes(token);
-
-  if (token.isRegistered) {
-    return new ImmutableStyleToken(token, isLocal);
-  } else if (isLocal) {
-    return new MutableStyleToken(token);
-  } else if (
-    site.projectDependencies
-      .flatMap((dep) => dep.site.styleTokens)
-      .includes(token)
-  ) {
-    return new OverrideableStyleToken(token, site);
-  } else {
-    return new ImmutableStyleToken(token, isLocal);
-  }
-}
 
 /**
  * Checks if a style token is editable. Can also check if the target global
  * variants are valid.
  */
 export function isStyleTokenEditable(
-  token: FinalStyleToken,
+  token: FinalToken<StyleToken>,
   vsh: VariantedStylesHelper | undefined
-): token is MutableStyleToken | OverrideableStyleToken {
+): token is MutableToken<StyleToken> | OverrideableToken<StyleToken> {
   return (
-    (token instanceof MutableStyleToken ||
-      (token instanceof OverrideableStyleToken &&
+    (token instanceof MutableToken ||
+      (token instanceof OverrideableToken &&
         DEVFLAGS.importedTokenOverrides)) &&
     (vsh === undefined || vsh.canUpdateToken())
   );
 }
 
-export function tokenTypeLabel(type: TokenType) {
+export function tokenTypeLabel(type: StyleTokenType) {
   switch (type) {
-    case TokenType.Color:
+    case "Color":
       return "Color";
-    case TokenType.Spacing:
+    case "Spacing":
       return "Spacing";
-    case TokenType.LineHeight:
+    case "LineHeight":
       return "Line Height";
-    case TokenType.FontFamily:
+    case "FontFamily":
       return "Font Family";
-    case TokenType.FontSize:
+    case "FontSize":
       return "Font Size";
-    case TokenType.Opacity:
+    case "Opacity":
       return "Opacity";
   }
   throw unexpected();
 }
 
-export function tokenTypeDimOpts(type: TokenType) {
+export function tokenTypeDimOpts(type: StyleTokenType) {
   switch (type) {
-    case TokenType.Spacing:
+    case "Spacing":
       return {
         allowedUnits: getLengthUnits("px"),
       };
-    case TokenType.LineHeight:
+    case "LineHeight":
       return {
         allowedUnits: getLengthUnits(""),
         fractionDigits: 2,
@@ -323,11 +94,11 @@ export function tokenTypeDimOpts(type: TokenType) {
         min: 0,
         delta: 0.1,
       };
-    case TokenType.FontSize:
+    case "FontSize":
       return {
         allowedUnits: getLengthUnits("px"),
       };
-    case TokenType.Opacity:
+    case "Opacity":
       return {
         allowedUnits: [""],
         min: 0,
@@ -341,19 +112,19 @@ export function tokenTypeDimOpts(type: TokenType) {
   }
 }
 
-export function tokenTypeDefaults(type: TokenType) {
+export function tokenTypeDefaults(type: StyleTokenType) {
   switch (type) {
-    case TokenType.Color:
+    case "Color":
       return "#ffffff";
-    case TokenType.Spacing:
+    case "Spacing":
       return "1px";
-    case TokenType.LineHeight:
+    case "LineHeight":
       return "1.5";
-    case TokenType.FontSize:
+    case "FontSize":
       return "16px";
-    case TokenType.Opacity:
+    case "Opacity":
       return "1";
-    case TokenType.FontFamily:
+    case "FontFamily":
       return "Roboto";
     default:
       throw unexpected();
@@ -385,22 +156,22 @@ const RE_TOKENREF_ALL = new RegExp(RE_TOKENREF, "g");
 export const tryParseTokenRef = (
   ref: string,
   tokensProvider:
-    | ReadonlyArray<FinalStyleToken>
-    | (() => ReadonlyArray<FinalStyleToken>)
-    | Readonly<Record<string, FinalStyleToken>>
-    | ReadonlyMap<string, FinalStyleToken>
-): FinalStyleToken | undefined => {
+    | ReadonlyArray<FinalToken<StyleToken>>
+    | (() => ReadonlyArray<FinalToken<StyleToken>>)
+    | Readonly<Record<string, FinalToken<StyleToken>>>
+    | ReadonlyMap<string, FinalToken<StyleToken>>
+): FinalToken<StyleToken> | undefined => {
   const m = ref.match(RE_TOKENREF);
   if (!m) {
     return undefined;
   }
   const tokenId = m[1];
-  if (isReadonlyArray(tokensProvider) || L.isFunction(tokensProvider)) {
-    const tokens = isReadonlyArray(tokensProvider)
+  if (L.isArray(tokensProvider) || L.isFunction(tokensProvider)) {
+    const tokens = L.isArray(tokensProvider)
       ? tokensProvider
       : tokensProvider();
     return tokens.find((t) => t.uuid === tokenId);
-  } else if (isReadonlyMap(tokensProvider)) {
+  } else if (tokensProvider instanceof Map) {
     return tokensProvider.get(tokenId);
   } else {
     return tokensProvider[tokenId];
@@ -416,10 +187,10 @@ export const tryParseTokenRef = (
 export const parseTokenRef = (
   ref: string,
   tokensProvider:
-    | ReadonlyArray<FinalStyleToken>
-    | (() => ReadonlyArray<FinalStyleToken>)
-    | Readonly<Record<string, FinalStyleToken>>
-    | ReadonlyMap<string, FinalStyleToken>
+    | ReadonlyArray<FinalToken<StyleToken>>
+    | (() => ReadonlyArray<FinalToken<StyleToken>>)
+    | Readonly<Record<string, FinalToken<StyleToken>>>
+    | ReadonlyMap<string, FinalToken<StyleToken>>
 ) => {
   return ensure(
     tryParseTokenRef(ref, tokensProvider),
@@ -437,7 +208,9 @@ export function hasTokenRef(str: string, token: StyleToken) {
 
 export const resolveAllTokenRefs = (
   str: string,
-  tokens: ReadonlyArray<FinalStyleToken> | ReadonlyMap<string, FinalStyleToken>,
+  tokens:
+    | ReadonlyArray<FinalToken<StyleToken>>
+    | ReadonlyMap<string, FinalToken<StyleToken>>,
   valMissingToken?: string,
   vsh?: VariantedStylesHelper
 ) => {
@@ -540,8 +313,10 @@ export const tryParseMixinPropRef = (
  * @returns a resolved final style token
  */
 export function resolveToken(
-  tokens: ReadonlyArray<FinalStyleToken> | ReadonlyMap<string, FinalStyleToken>,
-  token: FinalStyleToken,
+  tokens:
+    | ReadonlyArray<FinalToken<StyleToken>>
+    | ReadonlyMap<string, FinalToken<StyleToken>>,
+  token: FinalToken<StyleToken>,
   vsh?: VariantedStylesHelper
 ): ResolvedToken {
   const seenTokens = new Set<StyleToken>();
@@ -564,7 +339,9 @@ export function resolveToken(
 }
 
 export function resolveTokenRef(
-  tokens: ReadonlyArray<FinalStyleToken> | ReadonlyMap<string, FinalStyleToken>,
+  tokens:
+    | ReadonlyArray<FinalToken<StyleToken>>
+    | ReadonlyMap<string, FinalToken<StyleToken>>,
   value: TokenValue,
   vsh?: VariantedStylesHelper
 ): SetOptional<ResolvedToken, "token"> {
@@ -576,7 +353,9 @@ export function resolveTokenRef(
 }
 
 export function derefTokenRefs(
-  tokens: ReadonlyArray<FinalStyleToken> | ReadonlyMap<string, FinalStyleToken>,
+  tokens:
+    | ReadonlyArray<FinalToken<StyleToken>>
+    | ReadonlyMap<string, FinalToken<StyleToken>>,
   value: string,
   vsh?: VariantedStylesHelper
 ): TokenValue {
@@ -584,8 +363,10 @@ export function derefTokenRefs(
 }
 
 export function derefToken(
-  tokens: ReadonlyArray<FinalStyleToken> | ReadonlyMap<string, FinalStyleToken>,
-  token: FinalStyleToken,
+  tokens:
+    | ReadonlyArray<FinalToken<StyleToken>>
+    | ReadonlyMap<string, FinalToken<StyleToken>>,
+  token: FinalToken<StyleToken>,
   vsh?: VariantedStylesHelper
 ): TokenValue {
   return resolveToken(tokens, token, vsh).value;
@@ -606,12 +387,12 @@ export function derefToken(
  */
 export function maybeDerefToken(
   currentTokens:
-    | ReadonlyArray<FinalStyleToken>
-    | ReadonlyMap<string, FinalStyleToken>,
+    | ReadonlyArray<FinalToken<StyleToken>>
+    | ReadonlyMap<string, FinalToken<StyleToken>>,
   oldTokens:
-    | ReadonlyArray<FinalStyleToken>
-    | ReadonlyMap<string, FinalStyleToken>,
-  token: FinalStyleToken,
+    | ReadonlyArray<FinalToken<StyleToken>>
+    | ReadonlyMap<string, FinalToken<StyleToken>>,
+  token: FinalToken<StyleToken>,
   vsh?: VariantedStylesHelper
 ): TokenValue {
   // If its a token ref and the ref is present in the current project, then don't de-ref it, because the ref in value is known
@@ -626,7 +407,7 @@ export function maybeDerefToken(
 export function lazyDerefTokenRefs(
   value: string,
   site: Site,
-  tokenType: TokenType,
+  tokenType: StyleTokenType,
   opts: { includeDeps?: DependencyWalkScope } = {},
   vsh?: VariantedStylesHelper
 ): TokenValue {
@@ -640,7 +421,7 @@ export function lazyDerefTokenRefs(
 export function lazyDerefTokenRefsWithDeps(
   value: string,
   site: Site,
-  tokenType: TokenType,
+  tokenType: StyleTokenType,
   vsh?: VariantedStylesHelper
 ): TokenValue {
   return lazyDerefTokenRefs(

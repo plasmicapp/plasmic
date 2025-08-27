@@ -1,4 +1,3 @@
-import { TokenType } from "@/wab/commons/StyleToken";
 import { getLastBundleVersion } from "@/wab/server/db/BundleMigrator";
 import { DbMgr } from "@/wab/server/db/DbMgr";
 import {
@@ -126,7 +125,7 @@ export function basicSite(tokens: Record<string, number> = {}) {
   for (const name of ["x", "y", "z"]) {
     tplMgr.addToken({
       name,
-      tokenType: TokenType.LineHeight,
+      tokenType: "LineHeight",
       value: (tokens[name] ?? 0) + "",
     });
   }

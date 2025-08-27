@@ -1,12 +1,13 @@
 import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { FinalStyleToken, TokenValue } from "@/wab/commons/StyleToken";
+import { TokenValue } from "@/wab/commons/StyleToken";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import {
   TokenResolver,
   TokenValueResolver,
   makeTokenResolver,
 } from "@/wab/shared/core/site-style-tokens";
+import { FinalToken } from "@/wab/shared/core/tokens";
 import { StyleToken } from "@/wab/shared/model/classes";
 
 const RE_VARIABLE_REF = /var\((--[^)]+)\)/;
@@ -64,7 +65,10 @@ function makeClientTokenResolver(
     }
     return doc.documentElement;
   };
-  return (token: FinalStyleToken, vsh?: VariantedStylesHelper): TokenValue => {
+  return (
+    token: FinalToken<StyleToken>,
+    vsh?: VariantedStylesHelper
+  ): TokenValue => {
     const { value, token: resolvedToken } = resolver(token, vsh);
     const refVarName = extractReferencedVariable(value);
     if (!refVarName) {

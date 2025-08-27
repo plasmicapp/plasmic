@@ -1,4 +1,4 @@
-import { FinalStyleToken, resolveAllTokenRefs } from "@/wab/commons/StyleToken";
+import { resolveAllTokenRefs } from "@/wab/commons/StyleToken";
 import { RSH, RuleSetHelpers } from "@/wab/shared/RuleSetHelpers";
 import { getSlotArgs } from "@/wab/shared/SlotUtils";
 import { TplMgr } from "@/wab/shared/TplMgr";
@@ -28,6 +28,7 @@ import { syncGlobalContexts } from "@/wab/shared/core/project-deps";
 import { siteFinalStyleTokensAllDeps } from "@/wab/shared/core/site-style-tokens";
 import { isHostLessPackage } from "@/wab/shared/core/sites";
 import { createExpandedRuleSetMerger } from "@/wab/shared/core/styles";
+import { FinalToken } from "@/wab/shared/core/tokens";
 import {
   clone as cloneTpl,
   findVariantSettingsUnderTpl,
@@ -57,6 +58,7 @@ import {
   CustomCode,
   RenderExpr,
   Site,
+  StyleToken,
   TplComponent,
   TplNode,
   TplSlot,
@@ -148,7 +150,7 @@ export function inlineMixins(tplTree: TplNode) {
  */
 export function inlineTokens(
   tplTree: TplNode,
-  tokens: ReadonlyArray<FinalStyleToken>,
+  tokens: ReadonlyArray<FinalToken<StyleToken>>,
   onFontSeen?: (font: string) => void
 ) {
   // Walk TplTree

@@ -11,7 +11,6 @@ import {
 import StyleToggleButton from "@/wab/client/components/style-controls/StyleToggleButton";
 import StyleToggleButtonGroup from "@/wab/client/components/style-controls/StyleToggleButtonGroup";
 import DimTokenSpinner from "@/wab/client/components/widgets/DimTokenSelector";
-import { TokenType } from "@/wab/commons/StyleToken";
 import { siteFinalStyleTokensAllDeps } from "@/wab/shared/core/site-style-tokens";
 import { allImageAssets, allMixins } from "@/wab/shared/core/sites";
 import { CssVarResolver } from "@/wab/shared/core/styles";
@@ -143,7 +142,7 @@ export const GridControls = observer(function GridControls(props: {
         <LabeledStyleDimItem
           label="Row Height"
           styleName="grid-auto-rows"
-          tokenType={TokenType.Spacing}
+          tokenType={"Spacing"}
           dimOpts={{ min: 1 }}
         />
       </FullRow>
@@ -151,7 +150,7 @@ export const GridControls = observer(function GridControls(props: {
         <LabeledStyleDimItem
           label="Row Gap"
           styleName="grid-row-gap"
-          tokenType={TokenType.Spacing}
+          tokenType={"Spacing"}
           dimOpts={{ dragScale: "10", min: 0 }}
         />
       </FullRow>
@@ -159,7 +158,7 @@ export const GridControls = observer(function GridControls(props: {
         <LabeledStyleDimItem
           label="Col Gap"
           styleName="grid-column-gap"
-          tokenType={TokenType.Spacing}
+          tokenType={"Spacing"}
           dimOpts={{ dragScale: "10", min: 0 }}
         />
       </FullRow>

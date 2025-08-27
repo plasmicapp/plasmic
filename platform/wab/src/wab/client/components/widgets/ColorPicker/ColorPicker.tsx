@@ -24,10 +24,6 @@ import { CloseIcon } from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Close";
 import { useUndo } from "@/wab/client/shortcuts/studio/useUndo";
 import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import {
-  FinalStyleToken,
-  MutableStyleToken,
-  OverrideableStyleToken,
-  TokenType,
   derefTokenRefs,
   isStyleTokenEditable,
   mkTokenRef,
@@ -41,6 +37,11 @@ import {
   siteFinalColorTokens,
   siteFinalStyleTokensAllDeps,
 } from "@/wab/shared/core/site-style-tokens";
+import {
+  FinalToken,
+  MutableToken,
+  OverrideableToken,
+} from "@/wab/shared/core/tokens";
 import { StyleToken } from "@/wab/shared/model/classes";
 import { canCreateAlias } from "@/wab/shared/ui-config-utils";
 import { Chroma } from "@/wab/shared/utils/color-utils";
@@ -66,7 +67,7 @@ export function tryGetRealColor(
   sc: StudioCtx,
   resolver: TokenValueResolver,
   vsh: VariantedStylesHelper = new VariantedStylesHelper(),
-  maybeColorTokens?: FinalStyleToken[]
+  maybeColorTokens?: FinalToken<StyleToken>[]
 ) {
   const colorTokens = maybeColorTokens
     ? maybeColorTokens
@@ -90,7 +91,7 @@ interface ColorPickerProps {
   autoFocus?: boolean;
   hideTokenPicker?: boolean;
   derefToken?: boolean;
-  colorTokens?: FinalStyleToken[];
+  colorTokens?: FinalToken<StyleToken>[];
   vsh?: VariantedStylesHelper;
 }
 
@@ -121,7 +122,7 @@ function ColorPicker_({
   } = tryGetRealColor(color, sc, resolver, vsh, maybeColorTokens);
 
   const [editToken, setEditToken] = React.useState<
-    MutableStyleToken | OverrideableStyleToken | undefined
+    MutableToken<StyleToken> | OverrideableToken<StyleToken> | undefined
   >(undefined);
 
   if (maybeRealColor === undefined) {
@@ -468,7 +469,7 @@ function ColorPicker_({
               onClick={(e) =>
                 mode !== ColorMode.hex && selectColorComponent(e.currentTarget)
               }
-              data-test-id={`${TokenType.Color}-input`}
+              data-test-id={`${"Color"}-input`}
               value={colorInputValue}
               onChange={(e) => setColorInputValue(e.target.value)}
               onKeyDown={handleColorKeyDown}
@@ -569,12 +570,12 @@ function ColorPicker_({
             onAddToken={async () => {
               return sc.changeUnsafe(() => {
                 const newToken = sc.tplMgr().addToken({
-                  tokenType: TokenType.Color,
+                  tokenType: "Color",
                   value: realColor,
                 });
                 justAddedRef.current = newToken;
                 onChange(mkTokenRef(newToken));
-                setEditToken(new MutableStyleToken(newToken));
+                setEditToken(new MutableToken(newToken));
               });
             }}
             resolver={resolver}

@@ -1,6 +1,4 @@
 import {
-  FinalStyleToken,
-  TokenType,
   extractAllReferencedTokenIds,
   getExternalMixinPropVarName,
   getMixinPropVarName,
@@ -15,7 +13,6 @@ import {
   mkTokenRef,
   replaceAllTokenRefs,
   resolveAllTokenRefs,
-  toFinalStyleToken,
   tokenTypeDefaults,
   tryParseMixinPropRef,
   tryParseTokenRef,
@@ -112,6 +109,7 @@ import {
   transitionProps,
   typographyCssProps,
 } from "@/wab/shared/core/style-props";
+import { FinalToken, toFinalToken } from "@/wab/shared/core/tokens";
 import {
   canTagHaveChildren,
   findVariantSettingsUnderTpl,
@@ -192,11 +190,11 @@ import { CSSProperties } from "react";
 import { unquote } from "underscore.string";
 
 export class CssVarResolver {
-  private tokens: Map<string, FinalStyleToken>;
+  private tokens: Map<string, FinalToken<StyleToken>>;
   private assets: Map<string, ImageAsset>;
   private mixins: Map<string, Mixin>;
   constructor(
-    tokens: ReadonlyArray<FinalStyleToken>,
+    tokens: ReadonlyArray<FinalToken<StyleToken>>,
     mixins: Mixin[],
     assets: ImageAsset[],
     private readonly activeTheme: Theme | undefined | null,
@@ -2080,7 +2078,7 @@ export const makeMixinVarsRules = (
 };
 
 const genTokenVarRuleWithVariants = (
-  token: FinalStyleToken,
+  token: FinalToken<StyleToken>,
   vsh: VariantedStylesHelper = new VariantedStylesHelper()
 ) => ({
   varRule: `${getTokenVarName(token.base)}: ${vsh.getActiveTokenValue(token)}`,
@@ -2095,7 +2093,7 @@ const genTokenVarRuleWithVariants = (
 
 export const makeCssTokenVarsRules = (
   site: Site,
-  tokens: ReadonlyArray<FinalStyleToken>,
+  tokens: ReadonlyArray<FinalToken<StyleToken>>,
   rootCssSelector: string,
   opts: {
     targetEnv: TargetEnv;
@@ -2173,7 +2171,7 @@ export const makeCssTokenVarsRules = (
 
 export const mkCssVarsRuleForCanvas = (
   site: Site,
-  tokens: ReadonlyArray<FinalStyleToken>,
+  tokens: ReadonlyArray<FinalToken<StyleToken>>,
   mixins: Mixin[],
   themes: Theme[],
   assets: ImageAsset[],
@@ -2644,7 +2642,7 @@ export function changeTokenUsage(
     ? mkTokenRef(action)
     : action === "inline"
     ? token.value
-    : tokenTypeDefaults(token.type as TokenType);
+    : tokenTypeDefaults(token.type);
   if (usage.type === "rule") {
     usage.rs.values[usage.prop] = replaceAllTokenRefs(
       usage.value,
@@ -2660,8 +2658,7 @@ export function changeTokenUsage(
         ? new VariantedStylesHelper(
             site,
             usage.variantedValue.variants
-            // TODO: Maybe its better to use FinalStyleToken type in the `changeTokenUsage` function itself
-          ).getActiveTokenValue(toFinalStyleToken(token, site))
+          ).getActiveTokenValue(toFinalToken(token, site))
         : replaced;
   } else if (usage.type === "prop") {
     usage.arg.expr = codeLit(replaced);
@@ -2941,7 +2938,7 @@ export function makeDefaultStyleValuesDict(
 
 export function getRelevantVariantCombosForToken(
   site: Site,
-  token: FinalStyleToken
+  token: FinalToken<StyleToken>
 ) {
   const addCombo = (combo: VariantCombo) =>
     map.set(variantComboKey(combo), combo);
@@ -2949,7 +2946,7 @@ export function getRelevantVariantCombosForToken(
 
   const allTokens = siteFinalStyleTokensAllDepsDict(site);
 
-  const traverseToken = (t: FinalStyleToken) => {
+  const traverseToken = (t: FinalToken<StyleToken>) => {
     for (const vv of t.variantedValues) {
       addCombo(vv.variants);
       const maybeToken = tryParseTokenRef(vv.value, allTokens);

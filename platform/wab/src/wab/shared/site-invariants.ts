@@ -1,8 +1,4 @@
-import {
-  FinalStyleToken,
-  isTokenRef,
-  tryParseTokenRef,
-} from "@/wab/commons/StyleToken";
+import { isTokenRef, tryParseTokenRef } from "@/wab/commons/StyleToken";
 import { AnyArena, getArenaFrames, isMixedArena } from "@/wab/shared/Arenas";
 import { MIXIN_LOWER } from "@/wab/shared/Labels";
 import { getTplSlot, isSlot } from "@/wab/shared/SlotUtils";
@@ -58,6 +54,7 @@ import {
 } from "@/wab/shared/core/sites";
 import { isPrivateState } from "@/wab/shared/core/states";
 import { isValidStyleProp } from "@/wab/shared/core/style-props";
+import { FinalToken } from "@/wab/shared/core/tokens";
 import {
   ancestorsUp,
   isTplComponent,
@@ -73,6 +70,7 @@ import {
   ArenaFrame,
   Component,
   Site,
+  StyleToken,
   TplNode,
   Variant,
   isKnownArenaFrame,
@@ -198,13 +196,15 @@ function* genGenericModelErrors(site: Site) {
 }
 
 const genStyleTokenErrors = maybeComputedFn(
-  (token: FinalStyleToken, allTokens: ReadonlyArray<FinalStyleToken>) =>
-    Array.from(_genStyleTokenErrors(token, allTokens))
+  (
+    token: FinalToken<StyleToken>,
+    allTokens: ReadonlyArray<FinalToken<StyleToken>>
+  ) => Array.from(_genStyleTokenErrors(token, allTokens))
 );
 
 function* _genStyleTokenErrors(
-  token: FinalStyleToken,
-  allTokens: ReadonlyArray<FinalStyleToken>
+  token: FinalToken<StyleToken>,
+  allTokens: ReadonlyArray<FinalToken<StyleToken>>
 ) {
   const tokenRefs = [
     token.value,

@@ -36,11 +36,7 @@ import {
   isValidFontWeight,
 } from "@/wab/client/typography-utils";
 import { makeVariantedStylesHelperFromCurrentCtx } from "@/wab/client/utils/style-utils";
-import {
-  derefTokenRefs,
-  TokenType,
-  tokenTypeDimOpts,
-} from "@/wab/commons/StyleToken";
+import { derefTokenRefs, tokenTypeDimOpts } from "@/wab/commons/StyleToken";
 import { ensure, filterMapTruthy, maybe } from "@/wab/shared/common";
 import { siteFinalStyleTokensAllDeps } from "@/wab/shared/core/site-style-tokens";
 import { fontWeightNumber, parseCssNumericNew } from "@/wab/shared/css";
@@ -145,7 +141,7 @@ function _Typography({
           label="Size"
           styleName="font-size"
           dimOpts={{
-            ...tokenTypeDimOpts(TokenType.FontSize),
+            ...tokenTypeDimOpts("FontSize"),
             "data-test-id": "font-size",
             dragScale: "1",
             min: 0,
@@ -178,7 +174,7 @@ function _Typography({
               }
             },
           }}
-          tokenType={TokenType.FontSize}
+          tokenType={"FontSize"}
           vsh={vsh}
           isDisabled={readOnly}
         />
@@ -254,10 +250,10 @@ function _Typography({
                   styleName={"line-height"}
                   label={"Line height"}
                   dimOpts={{
-                    ...tokenTypeDimOpts(TokenType.LineHeight),
+                    ...tokenTypeDimOpts("LineHeight"),
                     dragScale: "0.1",
                   }}
-                  tokenType={TokenType.LineHeight}
+                  tokenType={"LineHeight"}
                   vsh={vsh}
                   isDisabled={readOnly}
                 />
@@ -267,7 +263,7 @@ function _Typography({
                   label={"Letter spacing"}
                   styleName={"letter-spacing"}
                   dimOpts={{
-                    ...tokenTypeDimOpts(TokenType.Spacing),
+                    ...tokenTypeDimOpts("Spacing"),
                     extraOptions: ["normal"],
                     dragScale: "1",
                   }}

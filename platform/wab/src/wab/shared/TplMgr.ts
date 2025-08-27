@@ -1,4 +1,4 @@
-import { TokenType } from "@/wab/commons/StyleToken";
+import { StyleTokenType } from "@/wab/commons/StyleToken";
 import {
   FrameViewMode,
   cloneArenaFrame,
@@ -1793,7 +1793,7 @@ export class TplMgr {
   addToken(opts: {
     name?: string;
     prefix?: string;
-    tokenType: TokenType;
+    tokenType: StyleTokenType;
     value?: string;
   }) {
     const token = new StyleToken({

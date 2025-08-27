@@ -26,7 +26,7 @@ import TriangleBottomIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Tr
 import { PlasmicStyleToggleButtonGroup__VariantsArgs } from "@/wab/client/plasmic/plasmic_kit_style_controls/PlasmicStyleToggleButtonGroup";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { StandardMarkdown } from "@/wab/client/utils/StandardMarkdown";
-import { TokenType } from "@/wab/commons/StyleToken";
+import { StyleTokenType } from "@/wab/commons/StyleToken";
 import { MaybeWrap } from "@/wab/commons/components/ReactUtil";
 import { XDraggable } from "@/wab/commons/components/XDraggable";
 import { IRuleSetHelpersX } from "@/wab/shared/RuleSetHelpers";
@@ -351,7 +351,7 @@ export const LabeledStyleDimItem = observer(function LabeledStyleDimItem(
       "value" | "onChange"
     > &
       Pick<React.ComponentProps<typeof DraggableDimLabel>, "dragScale">;
-    tokenType?: TokenType;
+    tokenType?: StyleTokenType;
     vsh?: VariantedStylesHelper;
   }
 ) {
@@ -487,7 +487,7 @@ export const VerticalLabeledStyleDimItem = observer(
           }}
           disabled={isDisabled}
           studioCtx={studioCtx}
-          tokenType={TokenType.Spacing}
+          tokenType={"Spacing"}
           minDropdownWidth={200}
           {...props.dimOpts}
         />

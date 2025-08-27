@@ -26,7 +26,7 @@ import {
   makeVariantedStylesHelperFromCurrentCtx,
 } from "@/wab/client/utils/style-utils";
 import { getVisibilityChoicesForTpl } from "@/wab/client/utils/tpl-client-utils";
-import { isTokenRef, TokenType } from "@/wab/commons/StyleToken";
+import { isTokenRef } from "@/wab/commons/StyleToken";
 import { ensureInstance } from "@/wab/shared/common";
 import {
   clone,
@@ -266,7 +266,7 @@ function VisibilitySection_(props: {
                 tooltip: "Opacity",
                 className: cn(S.opacityInput),
               }}
-              tokenType={TokenType.Opacity}
+              tokenType={"Opacity"}
               vsh={vsh}
             />
           )}

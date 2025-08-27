@@ -2,16 +2,30 @@ import {
   derefToken,
   hasTokenRefs,
   mkTokenRef,
-  MutableStyleToken,
   replaceAllTokenRefs,
-  toFinalStyleToken,
-  TokenType,
 } from "@/wab/commons/StyleToken";
 import {
   getArenaFrames,
   isComponentArena,
   isPageArena,
 } from "@/wab/shared/Arenas";
+import {
+  fillVirtualSlotContents,
+  findParentArgs,
+  getTplSlots,
+  isSlot,
+  revertToDefaultSlotContents,
+} from "@/wab/shared/SlotUtils";
+import { TplMgr } from "@/wab/shared/TplMgr";
+import { $$$ } from "@/wab/shared/TplQuery";
+import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
+import {
+  VariantGroupType,
+  areEquivalentScreenVariants,
+  isBaseVariant,
+  isScreenVariant,
+  isScreenVariantGroup,
+} from "@/wab/shared/Variants";
 import { flattenComponent } from "@/wab/shared/cached-selectors";
 import { ensureOnlyValidCodeComponentVariantsInComponent } from "@/wab/shared/code-components/variants";
 import {
@@ -34,12 +48,12 @@ import {
   withoutNils,
 } from "@/wab/shared/common";
 import {
+  PageComponent,
   getComponentDisplayName,
   isCodeComponent,
   isHostLessCodeComponent,
   isPageComponent,
   isReusableComponent,
-  PageComponent,
   removeComponentParam,
 } from "@/wab/shared/core/components";
 import {
@@ -47,7 +61,7 @@ import {
   fixCustomFunctionsInTpl,
   getOldToNewCustomFunctions,
 } from "@/wab/shared/core/custom-functions";
-import { isFallbackableExpr, isFallbackSet } from "@/wab/shared/core/exprs";
+import { isFallbackSet, isFallbackableExpr } from "@/wab/shared/core/exprs";
 import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
 import {
   hasAssetRefs,
@@ -74,6 +88,7 @@ import {
   removeComponentState,
 } from "@/wab/shared/core/states";
 import { cloneMixin } from "@/wab/shared/core/styles";
+import { MutableToken, toFinalToken } from "@/wab/shared/core/tokens";
 import {
   clone,
   findExprsInComponent,
@@ -96,20 +111,6 @@ import {
   Expr,
   GlobalVariantGroup,
   ImageAsset,
-  isKnownArenaFrame,
-  isKnownComponent,
-  isKnownEventHandler,
-  isKnownImageAsset,
-  isKnownImageAssetRef,
-  isKnownPageHref,
-  isKnownRenderExpr,
-  isKnownStyleTokenRef,
-  isKnownTplSlot,
-  isKnownVariant,
-  isKnownVariantedValue,
-  isKnownVariantGroup,
-  isKnownVariantsRef,
-  isKnownVirtualRenderExpr,
   Mixin,
   Param,
   ProjectDependency,
@@ -122,32 +123,29 @@ import {
   TplNode,
   TplSlot,
   Variant,
-  VariantedRuleSet,
-  VariantedValue,
   VariantGroup,
   VariantSetting,
+  VariantedRuleSet,
+  VariantedValue,
+  isKnownArenaFrame,
+  isKnownComponent,
+  isKnownEventHandler,
+  isKnownImageAsset,
+  isKnownImageAssetRef,
+  isKnownPageHref,
+  isKnownRenderExpr,
+  isKnownStyleTokenRef,
+  isKnownTplSlot,
+  isKnownVariant,
+  isKnownVariantGroup,
+  isKnownVariantedValue,
+  isKnownVariantsRef,
+  isKnownVirtualRenderExpr,
 } from "@/wab/shared/model/classes";
 import {
   renameParamAndFixExprs,
   renameTplAndFixExprs,
 } from "@/wab/shared/refactoring";
-import {
-  fillVirtualSlotContents,
-  findParentArgs,
-  getTplSlots,
-  isSlot,
-  revertToDefaultSlotContents,
-} from "@/wab/shared/SlotUtils";
-import { TplMgr } from "@/wab/shared/TplMgr";
-import { $$$ } from "@/wab/shared/TplQuery";
-import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
-import {
-  areEquivalentScreenVariants,
-  isBaseVariant,
-  isScreenVariant,
-  isScreenVariantGroup,
-  VariantGroupType,
-} from "@/wab/shared/Variants";
 import { isArray, keys, uniqBy } from "lodash";
 
 export type DependencyWalkScope = "all" | "direct";
@@ -685,7 +683,7 @@ function upgradeProjectDep(
       return newToken;
     }
 
-    const oldFinalToken = toFinalStyleToken(oldToken, oldDep.site);
+    const oldFinalToken = toFinalToken(oldToken, oldDep.site);
     const oldTokens = siteFinalStyleTokensAllDeps(oldDep.site);
     const siteTokens = siteFinalStyleTokensAllDeps(site);
 
@@ -707,10 +705,10 @@ function upgradeProjectDep(
     }
 
     const tokenName = tplMgr.getUniqueTokenName(oldToken.name);
-    const clonedToken = new MutableStyleToken(
+    const clonedToken = new MutableToken(
       tplMgr.addToken({
         name: tokenName,
-        tokenType: oldToken.type as TokenType,
+        tokenType: oldToken.type,
         value: derefToken(oldTokens, oldFinalToken),
       })
     );
@@ -939,7 +937,7 @@ function upgradeProjectDep(
       if (!newToken) {
         // Token removed case.
         // Clone the removed token, and override it. Don't try to find a similar token since we will be overriding it.
-        const clonedToken = new MutableStyleToken(
+        const clonedToken = new MutableToken(
           getOrCloneNewToken(override.token, { trySimilar: false })
         );
         if (override.value) {
