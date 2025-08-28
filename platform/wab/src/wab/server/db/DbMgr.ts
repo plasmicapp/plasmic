@@ -5856,7 +5856,7 @@ export class DbMgr implements MigrationDbMgr {
 
   /**
    * Do not allow the grant to happen if:
-   * 1. The user to be granted already is the owner of the resource
+   * 1. The user to be granted already is the owner of the resource, unless they are also the user granting the permission, which is assumed to be an ownership transfer and should be allowed
    * 2. The user granting has a lower access level than the granted access level
    */
   private async checkGrantAccessPermission(
@@ -5874,7 +5874,8 @@ export class DbMgr implements MigrationDbMgr {
         )
       : [];
     checkPermissions(
-      ownerPerms.length === 0,
+      ownerPerms.length === 0 ||
+        ownerPerms[0].userId === this.checkUserIdIsSelf(),
       ownerPerms
         .map(
           (perm) =>
