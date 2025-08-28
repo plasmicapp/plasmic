@@ -2009,10 +2009,15 @@ export class DbMgr implements MigrationDbMgr {
   }
 
   async deleteSessionsForUser(currentSessionId: string, userId: string) {
+    // We use a range query to make sure postgres uses the PK index.
+    // We use "." as the end of the range since it is the next character after "-" in the ASCII table.
     return this.sessions()
       .createQueryBuilder()
       .where('"id" != :currentSessionId', { currentSessionId })
-      .andWhere('"id" like :userId', { userId: `${userId}-%` })
+      .andWhere('"id" >= :userId', { userId: `${userId}-` })
+      .andWhere('"id" < :userIdEnd', {
+        userIdEnd: `${userId}.`,
+      })
       .delete()
       .execute();
   }
