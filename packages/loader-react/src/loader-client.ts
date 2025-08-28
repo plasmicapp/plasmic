@@ -12,7 +12,7 @@ import {
   TokenRegistration,
   TraitMeta,
 } from "@plasmicapp/host";
-import { PlasmicModulesFetcher, PlasmicTracker } from "@plasmicapp/loader-core";
+import { PlasmicModulesFetcher } from "@plasmicapp/loader-core";
 import * as PlasmicQuery from "@plasmicapp/query";
 import React from "react";
 import ReactDOM from "react-dom";
@@ -37,13 +37,8 @@ export class InternalPlasmicComponentLoader extends BaseInternalPlasmicComponent
   private readonly roots: PlasmicRootWatcher[] = [];
 
   constructor(opts: InitOptions) {
-    const tracker = new PlasmicTracker({
-      ...opts,
-      projectIds: opts.projects.map((p) => p.id),
-    });
     super({
       opts,
-      tracker,
       fetcher: new PlasmicModulesFetcher(opts),
       onBundleMerged: () => {
         this.refreshRegistry();

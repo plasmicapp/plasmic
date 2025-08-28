@@ -52,15 +52,15 @@ export { PageMetadata }
 
 export { PlasmicModulesFetcher }
 
-// @public (undocumented)
+// @public @deprecated (undocumented)
 export class PlasmicTracker {
-    constructor(opts: TrackerOptions);
-    // (undocumented)
-    trackConversion(value?: number): void;
-    // (undocumented)
+    constructor(_opts: TrackerOptions);
+    // @deprecated (undocumented)
+    trackConversion(_value?: number): void;
+    // @deprecated (undocumented)
     trackFetch(): void;
-    // (undocumented)
-    trackRender(opts?: TrackRenderOptions): void;
+    // @deprecated (undocumented)
+    trackRender(_opts?: TrackRenderOptions): void;
 }
 
 export { ProjectMeta }
@@ -92,7 +92,7 @@ export { SegmentSlice }
 
 export { Split }
 
-// @public (undocumented)
+// @public @deprecated (undocumented)
 export interface TrackRenderOptions {
     // (undocumented)
     renderCtx?: TrackerRenderProperties;

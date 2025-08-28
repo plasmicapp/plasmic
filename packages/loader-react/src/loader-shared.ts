@@ -16,7 +16,6 @@ import {
   LoaderBundleCache,
   PageMeta,
   PlasmicModulesFetcher,
-  PlasmicTracker,
   Registry,
   TrackRenderOptions,
 } from "@plasmicapp/loader-core";
@@ -324,7 +323,6 @@ function parseFetchComponentDataArgs(...args: any[]) {
 export abstract class BaseInternalPlasmicComponentLoader {
   public readonly opts: InitOptions;
   private readonly registry = new Registry();
-  private readonly tracker: PlasmicTracker;
   private readonly fetcher: PlasmicModulesFetcher;
   private readonly onBundleMerged?: () => void;
   private readonly onBundleFetched?: () => void;
@@ -349,7 +347,6 @@ export abstract class BaseInternalPlasmicComponentLoader {
   constructor(args: {
     opts: InitOptions;
     fetcher: PlasmicModulesFetcher;
-    tracker: PlasmicTracker;
     /** Called after `mergeBundle` (including `fetch` calls). */
     onBundleMerged?: () => void;
     /** Called after any `fetch` calls. */
@@ -358,7 +355,6 @@ export abstract class BaseInternalPlasmicComponentLoader {
   }) {
     this.opts = args.opts;
     this.fetcher = args.fetcher;
-    this.tracker = args.tracker;
     this.onBundleMerged = args.onBundleMerged;
     this.onBundleFetched = args.onBundleFetched;
     this.registerModules(args.builtinModules);
@@ -495,7 +491,6 @@ export abstract class BaseInternalPlasmicComponentLoader {
 
   private async fetchAllData() {
     const bundle = await this.fetcher.fetchAllData();
-    this.tracker.trackFetch();
     this.mergeBundle(bundle);
     this.onBundleFetched?.();
     return bundle;
@@ -659,8 +654,8 @@ ${this.bundle.bundleKey}`
     return new ComponentLookup(this.getBundle(), this.registry);
   }
 
-  trackConversion(value = 0) {
-    this.tracker.trackConversion(value);
+  trackConversion(_value = 0) {
+    // no-op: tracking removed from loader packages
   }
 
   public async getActiveVariation(
@@ -691,8 +686,8 @@ ${this.bundle.bundleKey}`
     );
   }
 
-  public trackRender(opts?: TrackRenderOptions) {
-    this.tracker.trackRender(opts);
+  public trackRender(_opts?: TrackRenderOptions) {
+    // no-op: tracking removed from loader packages
   }
 
   public loadServerQueriesModule(fileName: string) {

@@ -27,7 +27,6 @@ import { plasmicappDataSourcesContext } from '@plasmicapp/data-sources-context';
 import { plasmicappHost } from '@plasmicapp/host';
 import { plasmicappQuery } from '@plasmicapp/query';
 import { PlasmicModulesFetcher } from '@plasmicapp/loader-core';
-import { PlasmicTracker } from '@plasmicapp/loader-core';
 import { react } from 'react';
 import * as React_2 from 'react';
 import { default as React_3 } from 'react';

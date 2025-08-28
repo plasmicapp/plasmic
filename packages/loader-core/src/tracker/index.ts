@@ -1,28 +1,23 @@
-import unfetch from "@plasmicapp/isomorphic-unfetch";
-import {
-  getDistinctId,
-  getEnvMeta,
-  getVariationCookieValues,
-  getWindowMeta,
-  rawSplitVariation,
-  throttled,
-} from "./utils";
+// Intentionally no imports – this module is now a strict no-op while
+// preserving the public API surface.
 
+/**
+ * @deprecated Built-in tracking is disabled. This type remains only for
+ * compatibility and will be removed in a future release.
+ */
 export interface TrackerOptions {
   projectIds: string[];
-  host?: string;
   platform?: string;
   preview?: boolean;
   nativeFetch?: boolean;
 }
 
-type EventType = "$render" | "$fetch" | "$conversion";
+// Internal event types removed along with implementation details.
 
-interface Event {
-  event: EventType;
-  properties: Record<string, any>;
-}
-
+/**
+ * @deprecated Built-in tracking is disabled. This type remains only for
+ * compatibility and will be removed in a future release.
+ */
 export interface TrackerRenderProperties {
   rootProjectId?: string;
   rootComponentId?: string;
@@ -31,111 +26,38 @@ export interface TrackerRenderProperties {
   projectIds: string[];
 }
 
+/**
+ * @deprecated Built-in tracking is disabled. This type remains only for
+ * compatibility and will be removed in a future release.
+ */
 export interface TrackRenderOptions {
   renderCtx?: TrackerRenderProperties;
   variation?: Record<string, string>;
 }
 
-const API_ENDPOINT = "https://analytics.plasmic.app/capture";
-const API_PUBLIC_KEY = "phc_BRvYTAoMoam9fDHfrIneF67KdtMJagLVVCM6ELNYd4n";
-const TRACKER_VERSION = 4;
-
+/**
+ * @deprecated Built-in tracking is disabled. This class remains only for
+ * compatibility and will be removed in a future release.
+ *
+ * All methods are strict no-ops.
+ */
 export class PlasmicTracker {
-  private eventQueue: Event[] = [];
-  private fetch: typeof globalThis.fetch;
+  // Preserve constructor signature for compatibility, but do not retain
+  // instance state to avoid unused-property diagnostics.
+  constructor(_opts: TrackerOptions) {}
 
-  constructor(private opts: TrackerOptions) {
-    this.fetch = (
-      opts.nativeFetch && globalThis.fetch ? globalThis.fetch : unfetch
-    ).bind(globalThis);
-  }
+  /**
+   * @deprecated No-op.
+   */
+  public trackRender(_opts?: TrackRenderOptions): void {}
 
-  public trackRender(opts?: TrackRenderOptions) {
-    this.enqueue({
-      event: "$render",
-      properties: {
-        ...this.getProperties(),
-        ...(opts?.renderCtx ?? {}),
-        ...rawSplitVariation(opts?.variation ?? {}),
-      },
-    });
-  }
+  /**
+   * @deprecated No-op.
+   */
+  public trackFetch(): void {}
 
-  public trackFetch() {
-    this.enqueue({
-      event: "$fetch",
-      properties: this.getProperties(),
-    });
-  }
-
-  public trackConversion(value: number = 0) {
-    this.enqueue({
-      event: "$conversion",
-      properties: {
-        ...this.getProperties(),
-        value,
-      },
-    });
-  }
-
-  private getProperties() {
-    return {
-      distinct_id: getDistinctId(),
-      ...getWindowMeta(),
-      ...getEnvMeta(),
-      ...this.getContextMeta(),
-      ...getVariationCookieValues(),
-      timestamp: Date.now() ?? +new Date(),
-      trackerVersion: TRACKER_VERSION,
-    };
-  }
-
-  private enqueue(event: Event) {
-    if ((this.opts as any).__plasmicTrackerDisabled) {
-      return;
-    }
-    this.eventQueue.push(event);
-
-    this.sendEvents("fetch");
-  }
-
-  private getContextMeta() {
-    return {
-      platform: this.opts.platform,
-      preview: this.opts.preview,
-      projectIds: this.opts.projectIds,
-    };
-  }
-
-  private sendEvents = throttled(async (transport: "fetch" | "beacon") => {
-    if (this.eventQueue.length === 0) {
-      return;
-    }
-
-    const events = [...this.eventQueue];
-    this.eventQueue.length = 0;
-
-    const body = {
-      api_key: API_PUBLIC_KEY,
-      batch: events,
-    };
-
-    try {
-      const stringBody = JSON.stringify(body);
-      if (transport === "beacon") {
-        // Triggers warning: https://chromestatus.com/feature/5629709824032768
-        window.navigator.sendBeacon(API_ENDPOINT, stringBody);
-      } else {
-        this.fetch(API_ENDPOINT, {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-          },
-          body: stringBody,
-        })
-          .then(() => {})
-          .catch(() => {});
-      }
-    } catch (err) {}
-  });
+  /**
+   * @deprecated No-op.
+   */
+  public trackConversion(_value: number = 0): void {}
 }

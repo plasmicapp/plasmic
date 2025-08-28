@@ -35,7 +35,6 @@ import { PlasmicCanvasContext } from '@plasmicapp/host';
 import { PlasmicCanvasHost } from '@plasmicapp/host';
 import { PlasmicDataSourceContextValue } from '@plasmicapp/data-sources-context';
 import { PlasmicModulesFetcher } from '@plasmicapp/loader-core';
-import { PlasmicTracker } from '@plasmicapp/loader-core';
 import { PlasmicTranslatorContext } from '@plasmicapp/host';
 import { PropType } from '@plasmicapp/host';
 import { react } from 'react';

@@ -1,5 +1,5 @@
 import type { TokenRegistration, TraitMeta } from "@plasmicapp/host";
-import { PlasmicModulesFetcher, PlasmicTracker } from "@plasmicapp/loader-core";
+import { PlasmicModulesFetcher } from "@plasmicapp/loader-core";
 import type {
   PlasmicPrepassContext,
   useMutablePlasmicQueryData,
@@ -212,12 +212,6 @@ export class InternalPrepassPlasmicLoader extends BaseInternalPlasmicComponentLo
   constructor(opts: InitOptions) {
     super({
       opts,
-      tracker: new PlasmicTracker({
-        projectIds: opts.projects.map((p) => p.id),
-        platform: opts.platform,
-        preview: opts.preview,
-        nativeFetch: opts.nativeFetch,
-      }),
       onBundleMerged: () => {
         this.refreshRegistry();
       },
