@@ -572,7 +572,8 @@ export abstract class SharedApi {
   ): Promise<ForgotPasswordResponse> {
     const res: ForgotPasswordResponse = await this.post(
       "/auth/forgotPassword",
-      data
+      data,
+      true
     );
     return res;
   }
@@ -587,7 +588,7 @@ export abstract class SharedApi {
   }
 
   async signUp(data: SignUpRequest): Promise<SignUpResponse> {
-    const res: LoginResponse = await this.post("/auth/sign-up", data);
+    const res: LoginResponse = await this.post("/auth/sign-up", data, true);
     if (res.status) {
       await this.refreshCsrfToken();
       this.setUser(res.user);
@@ -613,21 +614,21 @@ export abstract class SharedApi {
     oldPassword: string,
     newPassword: string
   ): Promise<UpdatePasswordResponse> {
-    return this.post("/auth/self/password", { oldPassword, newPassword });
+    return this.post("/auth/self/password", { oldPassword, newPassword }, true);
   }
 
   async resetPassword(
     data: ResetPasswordRequest
   ): Promise<ResetPasswordResponse> {
-    return this.post("/auth/resetPassword", data);
+    return this.post("/auth/resetPassword", data, true);
   }
 
   setPassword(data) {
-    return this.post("/admin/setPassword", data);
+    return this.post("/admin/setPassword", data, true);
   }
 
   confirmEmail(data: ConfirmEmailRequest): Promise<ConfirmEmailResponse> {
-    return this.post("/auth/confirmEmail", data);
+    return this.post("/auth/confirmEmail", data, true);
   }
 
   sendEmailVerification(
@@ -1142,7 +1143,7 @@ export abstract class SharedApi {
   }
 
   async upsertSsoConfig(args: any): Promise<any> {
-    return await this.post(`/admin/upsert-sso`, args);
+    return await this.post(`/admin/upsert-sso`, args, true);
   }
 
   async getSsoConfigByTeamId(teamId: TeamId): Promise<any> {
@@ -1164,10 +1165,14 @@ export abstract class SharedApi {
     teamId: TeamId,
     info: TeamWhiteLabelInfo
   ): Promise<ApiTeam> {
-    const res = await this.post(`/admin/update-team-white-label-info`, {
-      id: teamId,
-      whiteLabelInfo: info,
-    });
+    const res = await this.post(
+      `/admin/update-team-white-label-info`,
+      {
+        id: teamId,
+        whiteLabelInfo: info,
+      },
+      true
+    );
     return res.team;
   }
 
