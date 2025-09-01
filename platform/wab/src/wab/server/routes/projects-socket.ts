@@ -19,6 +19,12 @@ import {
   ServerSessionsInfo,
   UpdatePlayerViewRequest,
 } from "@/wab/shared/ApiSchema";
+import type {
+  BroadcastPayload,
+  ClientToServerEvents,
+  ServerToClientEvents,
+  SocketData,
+} from "@/wab/shared/api/socket";
 import {
   ensure,
   maybe,
@@ -33,18 +39,23 @@ import { Request, Response } from "express";
 import { Server } from "http";
 import { get } from "lodash";
 import { Gauge } from "prom-client";
-import { Socket, Server as SocketIoServer } from "socket.io";
+import { Server as SocketIoServer, Socket as UntypedSocket } from "socket.io";
 import { getConnection } from "typeorm";
 
-export interface BroadcastPayload {
-  // Null room means broadcast to all rooms
-  room: string | null;
-  type: string;
-  message: object;
-}
+type Socket = UntypedSocket<
+  ClientToServerEvents,
+  ServerToClientEvents,
+  {},
+  SocketData
+>;
 
 export class ProjectsSocket {
-  private io: SocketIoServer;
+  private io: SocketIoServer<
+    ClientToServerEvents,
+    ServerToClientEvents,
+    {},
+    SocketData
+  >;
   private socketToPlayerViewInfo = new WeakMap<Socket, PlayerViewInfo>();
   private socketToPlayerId = new WeakMap<Socket, number>();
   /**

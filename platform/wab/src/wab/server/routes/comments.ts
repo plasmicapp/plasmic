@@ -1,7 +1,7 @@
 import { toOpaque } from "@/wab/commons/types";
 import { getUser, userDbMgr, withNext } from "@/wab/server/routes/util";
 import { getUniqueUsersWithCommentAccess } from "@/wab/server/scripts/send-comments-notifications";
-import { broadcastToStudioRoom } from "@/wab/server/socket-util";
+import { broadcastProjectsMessage } from "@/wab/server/socket-util";
 import {
   AddCommentReactionRequest,
   ApiNotificationSettings,
@@ -12,7 +12,6 @@ import {
   PostCommentResponse,
   ResolveThreadRequest,
   RootCommentData,
-  StudioRoomMessageTypes,
   ThreadCommentData,
 } from "@/wab/shared/ApiSchema";
 import { parseProjectBranchId } from "@/wab/shared/ApiSchemaUtil";
@@ -118,13 +117,14 @@ async function postRootCommentInProject(req: Request, res: Response) {
     }
   );
 
+  await req.resolveTransaction();
   res.json(ensureType<PostCommentResponse>({}));
 
-  await broadcastToStudioRoom(
-    req,
-    projectId,
-    StudioRoomMessageTypes.commentsUpdate
-  );
+  await broadcastProjectsMessage({
+    room: `projects/${projectId}`,
+    type: "commentsUpdate",
+    message: {},
+  });
 }
 
 async function postCommentInThread(req: Request, res: Response) {
@@ -147,13 +147,14 @@ async function postCommentInThread(req: Request, res: Response) {
     }
   );
 
+  await req.resolveTransaction();
   res.json(ensureType<PostCommentResponse>({}));
 
-  await broadcastToStudioRoom(
-    req,
-    projectId,
-    StudioRoomMessageTypes.commentsUpdate
-  );
+  await broadcastProjectsMessage({
+    room: `projects/${projectId}`,
+    type: "commentsUpdate",
+    message: {},
+  });
 }
 
 async function deleteCommentInProject(req: Request, res: Response) {
@@ -168,13 +169,14 @@ async function deleteCommentInProject(req: Request, res: Response) {
   const commentId = req.params.commentId as CommentId;
   await mgr.deleteCommentInProject({ projectId, branchId }, commentId);
 
+  await req.resolveTransaction();
   res.json({});
 
-  await broadcastToStudioRoom(
-    req,
-    projectId,
-    StudioRoomMessageTypes.commentsUpdate
-  );
+  await broadcastProjectsMessage({
+    room: `projects/${projectId}`,
+    type: "commentsUpdate",
+    message: {},
+  });
 }
 
 async function deleteThreadInProject(req: Request, res: Response) {
@@ -189,13 +191,14 @@ async function deleteThreadInProject(req: Request, res: Response) {
   const threadId = req.params.threadId as CommentThreadId;
   await mgr.deleteThreadInProject({ projectId, branchId }, threadId);
 
+  await req.resolveTransaction();
   res.json({});
 
-  await broadcastToStudioRoom(
-    req,
-    projectId,
-    StudioRoomMessageTypes.commentsUpdate
-  );
+  await broadcastProjectsMessage({
+    room: `projects/${projectId}`,
+    type: "commentsUpdate",
+    message: {},
+  });
 }
 
 async function addReactionToComment(req: Request, res: Response) {
@@ -208,13 +211,15 @@ async function addReactionToComment(req: Request, res: Response) {
   await mgr.getProjectById(projectId);
   const { data, id } = uncheckedCast<AddCommentReactionRequest>(req.body);
   await mgr.addCommentReaction(id, toOpaque(req.params.commentId), data);
+
+  await req.resolveTransaction();
   res.json({});
 
-  await broadcastToStudioRoom(
-    req,
-    projectId,
-    StudioRoomMessageTypes.commentsUpdate
-  );
+  await broadcastProjectsMessage({
+    room: `projects/${projectId}`,
+    type: "commentsUpdate",
+    message: {},
+  });
 }
 
 async function removeReactionFromComment(req: Request, res: Response) {
@@ -228,13 +233,15 @@ async function removeReactionFromComment(req: Request, res: Response) {
   await mgr.getProjectById(projectId);
 
   await mgr.removeCommentReaction(toOpaque(req.params.reactionId));
+
+  await req.resolveTransaction();
   res.json({});
 
-  await broadcastToStudioRoom(
-    req,
-    projectId,
-    StudioRoomMessageTypes.commentsUpdate
-  );
+  await broadcastProjectsMessage({
+    room: `projects/${projectId}`,
+    type: "commentsUpdate",
+    message: {},
+  });
 }
 
 async function editComment(req: Request, res: Response) {
@@ -250,13 +257,14 @@ async function editComment(req: Request, res: Response) {
   const { body } = uncheckedCast<EditCommentRequest>(req.body);
   await mgr.editCommentInProject(commentId, body);
 
+  await req.resolveTransaction();
   res.json({});
 
-  await broadcastToStudioRoom(
-    req,
-    projectId,
-    StudioRoomMessageTypes.commentsUpdate
-  );
+  await broadcastProjectsMessage({
+    room: `projects/${projectId}`,
+    type: "commentsUpdate",
+    message: {},
+  });
 }
 
 async function editThread(req: Request, res: Response) {
@@ -272,13 +280,14 @@ async function editThread(req: Request, res: Response) {
   const { resolved, id } = uncheckedCast<ResolveThreadRequest>(req.body);
   await mgr.resolveThreadInProject(id, commentThreadId, resolved);
 
+  await req.resolveTransaction();
   res.json({});
 
-  await broadcastToStudioRoom(
-    req,
-    projectId,
-    StudioRoomMessageTypes.commentsUpdate
-  );
+  await broadcastProjectsMessage({
+    room: `projects/${projectId}`,
+    type: "commentsUpdate",
+    message: {},
+  });
 }
 
 async function updateNotificationSettings(req: Request, res: Response) {

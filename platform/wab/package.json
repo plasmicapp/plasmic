@@ -141,7 +141,6 @@
     "@types/resize-observer-browser": "^0.1.5",
     "@types/sharp": "^0.31.1",
     "@types/signals": "^1.0.1",
-    "@types/socket.io-client": "^1.4.34",
     "@types/tmp": "^0.2.0",
     "@types/underscore.string": "^0.0.38",
     "@types/url-join": "^4.0.0",

@@ -1,16 +1,26 @@
 import { storageViewAsKey } from "@/wab/client/app-auth/constants";
 import { ensureIsTopFrame, isHostFrame } from "@/wab/client/cli-routes";
-import { LocalClipboardAction } from "@/wab/client/clipboard/local";
 import {
   SerializableClipboardData,
   serializeClipboardItems,
 } from "@/wab/client/clipboard/ReadableClipboard";
+import { LocalClipboardAction } from "@/wab/client/clipboard/local";
 import { analytics } from "@/wab/client/observability";
 import { PushPullQueue } from "@/wab/commons/asyncutil";
 import { PromisifyMethods } from "@/wab/commons/promisify-methods";
 import { transformErrors } from "@/wab/shared/ApiErrors/errors";
 import { ApiUser } from "@/wab/shared/ApiSchema";
 import { fullName } from "@/wab/shared/ApiSchemaUtil";
+import { LowerHttpMethod } from "@/wab/shared/HttpClientUtil";
+import {
+  PkgInfo,
+  SharedApi,
+  WrappedStorageEvent,
+} from "@/wab/shared/SharedApi";
+import type {
+  ClientToServerEvents,
+  ServerToClientEvents,
+} from "@/wab/shared/api/socket";
 import { Bundler } from "@/wab/shared/bundler";
 import {
   assert,
@@ -26,18 +36,12 @@ import {
   flattenInsertableIconGroups,
   flattenInsertableTemplates,
 } from "@/wab/shared/devflags";
-import { LowerHttpMethod } from "@/wab/shared/HttpClientUtil";
 import { PLEXUS_STORAGE_KEY } from "@/wab/shared/insertables";
-import {
-  PkgInfo,
-  SharedApi,
-  WrappedStorageEvent,
-} from "@/wab/shared/SharedApi";
 import * as Sentry from "@sentry/browser";
-import { proxy, ProxyMarked } from "comlink";
+import { ProxyMarked, proxy } from "comlink";
 import $ from "jquery";
 import L, { pick } from "lodash";
-import io, { Socket } from "socket.io-client";
+import { Socket, connect } from "socket.io-client";
 
 const fullApiPath = (url: /*TWZ*/ string) => `/api/v1/${L.trimStart(url, "/")}`;
 
@@ -141,8 +145,6 @@ export const ajax = async (
       });
   });
 
-type EventWithData = { eventName: string; data: {} };
-
 export class Api extends SharedApi {
   constructor() {
     super();
@@ -169,8 +171,8 @@ export class Api extends SharedApi {
     return ajax(method, url, data, opts, hideDataOnError, noErrorTransform);
   }
 
-  private socket?: typeof Socket;
-  private queue = new PushPullQueue<EventWithData>();
+  private socket?: Socket<ServerToClientEvents, ClientToServerEvents>;
+  private queue = new PushPullQueue<{ eventName: string; data: unknown }>();
 
   /**
    * This method proxies the websocket. This is a very simple model where we
@@ -185,9 +187,9 @@ export class Api extends SharedApi {
    * calls closeSocket). So you're expected to call this in a loop.
    */
   async listenSocket(
-    eventNames: string[],
+    eventNames: (keyof ServerToClientEvents)[],
     connected: boolean
-  ): Promise<EventWithData> {
+  ): Promise<{ eventName: string; data: unknown }> {
     if (this.socket && !connected) {
       // Not connected, even though the socket exists; disconnect the existing
       // socket and create a new one. This happens if we navigate from a studio
@@ -199,7 +201,7 @@ export class Api extends SharedApi {
       this.socket = undefined;
     }
     if (!this.socket) {
-      this.socket = io.connect({
+      this.socket = connect({
         path: "/api/v1/socket",
         transports: ["websocket"],
       });
@@ -226,7 +228,11 @@ export class Api extends SharedApi {
     location.reload();
   }
 
-  async emit(eventName: string, data: {}) {
+  async emit<K extends keyof ClientToServerEvents>(
+    eventName: K,
+    data: Parameters<ClientToServerEvents[K]>[0]
+  ) {
+    // @ts-expect-error - ClientToServerEvents always has 1 param, so this is safe
     ensure(this.socket, "Unexpected nullish socket").emit(eventName, data);
   }
 

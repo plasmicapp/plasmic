@@ -2132,10 +2132,6 @@ export interface SendEmailsResponse {
   failed: string[];
 }
 
-export enum StudioRoomMessageTypes {
-  commentsUpdate = "commentsUpdate",
-}
-
 export interface UniqueFieldCheck {
   fieldIdentifier: string;
   value: unknown;

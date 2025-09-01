@@ -14,28 +14,22 @@
  *
  * Runs on port 3020 or SOCKET_PORT.
  */
-import { spawn } from "@/wab/shared/common";
 import { addLoggingMiddleware } from "@/wab/server/AppServer";
 import { Config } from "@/wab/server/config";
 import {
   ensureDbConnections,
   maybeMigrateDatabase,
 } from "@/wab/server/db/DbCon";
-import { trackPostgresPool, WabPromStats } from "@/wab/server/promstats";
+import { WabPromStats, trackPostgresPool } from "@/wab/server/promstats";
 import { InitSocket } from "@/wab/server/routes/init-socket";
 import { ProjectsSocket } from "@/wab/server/routes/projects-socket";
 import { runExpressApp, setupServerCli } from "@/wab/server/server-common";
+import type { BroadcastPayload } from "@/wab/shared/api/socket";
+import { spawn } from "@/wab/shared/common";
 import { json as bodyParserJson } from "body-parser";
 import express, { Request } from "express";
 import promMetrics from "express-prom-bundle";
 import http from "http";
-
-export interface BroadcastPayload {
-  // Null room means broadcast to all rooms
-  room: string | null;
-  type: string;
-  message: object;
-}
 
 async function run() {
   const { config } = setupServerCli();

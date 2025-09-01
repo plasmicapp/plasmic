@@ -124,10 +124,8 @@ import {
   BranchId,
   CopilotImage,
   CopilotInteractionId,
-  InitServerInfo,
   MainBranchId,
   QueryCopilotUiResponse,
-  ServerSessionsInfo,
   TemplateSpec,
   UpdatePlayerViewRequest,
 } from "@/wab/shared/ApiSchema";
@@ -165,6 +163,7 @@ import { isSlot, tryGetMainContentSlotTarget } from "@/wab/shared/SlotUtils";
 import { addEmptyQuery } from "@/wab/shared/TplMgr";
 import { VariantCombo, isVariantSettingEmpty } from "@/wab/shared/Variants";
 import { AddItemKey } from "@/wab/shared/add-item-keys";
+import type { ServerToClientEvents } from "@/wab/shared/api/socket";
 import {
   Bundle,
   BundledInst,
@@ -3962,7 +3961,7 @@ export class StudioCtx extends WithDbCtx {
   async startListeningForSocketEvents() {
     const api = this.appCtx.api;
     let connected = false;
-    const eventListeners = {
+    const eventListeners: ServerToClientEvents = {
       connect: async () => {
         // upon connection, subscribe to changes for argument projects
         connected = true;
@@ -4047,7 +4046,7 @@ export class StudioCtx extends WithDbCtx {
           );
         }
       },
-      initServerInfo: (data: InitServerInfo) => {
+      initServerInfo: (data) => {
         const oudatedSchema = modelSchemaHash !== data.modelSchemaHash;
         const outdatedBundle =
           data.bundleVersion !== this.appCtx.lastBundleVersion;
@@ -4060,7 +4059,7 @@ export class StudioCtx extends WithDbCtx {
       commentsUpdate: async () => {
         await this.commentsCtx.fetchComments();
       },
-      update: async (data: any) => {
+      update: async (data) => {
         // Just run syncProjects() for now when any project has been updated
         console.log(
           `Project ${data.projectId} updated to revision ${data.revisionNum}`
@@ -4094,7 +4093,7 @@ export class StudioCtx extends WithDbCtx {
           this.pendingSavedRevisionNum = undefined;
         }
       },
-      players: (data: ServerSessionsInfo) =>
+      players: (data) =>
         this.isAtTip && this.multiplayerCtx.updateSessions(data.sessions),
       error: (err) => {
         console.log("Error received from socket", err);
@@ -4113,7 +4112,9 @@ export class StudioCtx extends WithDbCtx {
       },
     };
 
-    const eventNames = Object.keys(eventListeners);
+    const eventNames = Object.keys(
+      eventListeners
+    ) as (keyof ServerToClientEvents)[];
     // We intentionally loop forever until someone calls stopListeningForRevisions.
     // eslint-disable-next-line no-constant-condition
     while (true) {
