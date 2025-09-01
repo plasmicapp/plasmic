@@ -14,11 +14,13 @@ import {
   getSpecificity,
 } from "@/wab/client/web-importer/specificity";
 import {
-  SanitizedWIStyles,
+  getWIVariantComboKey,
+  hasStyleVariant,
   WIContainer,
   WIElement,
   WIRule,
-  WIStyles,
+  WIVariant,
+  WIVariantSettings,
 } from "@/wab/client/web-importer/types";
 import { findTokenByNameOrUuid } from "@/wab/commons/StyleToken";
 import {
@@ -52,6 +54,8 @@ import {
   walk,
 } from "css-tree";
 import { camelCase, isElement } from "lodash";
+
+const PSEUDO_SELECTOR_SPLIT_REGEX = /:([\s\S]*)/;
 
 export function generateId() {
   return Math.random().toString(36).substr(2, 9);
@@ -284,10 +288,10 @@ function splitStylesBySafety(
       : recognizedStylesKeys;
 
   const safe = Object.fromEntries(
-    entries.filter(([k, v]) => safeStyleKeys.has(k))
+    entries.filter(([k, _v]) => safeStyleKeys.has(k))
   );
   const unsafe = Object.fromEntries(
-    entries.filter(([k, v]) => !safeStyleKeys.has(k))
+    entries.filter(([k, _v]) => !safeStyleKeys.has(k))
   );
   return {
     safe,
@@ -313,25 +317,133 @@ function renameTokenVarNameToUuid(value: string, site: Site) {
   return unmatchedTokenFound ? null : fixedValue;
 }
 
-function getStylesForNode(
+/**
+ * Parses a context string into an array of variants that form a variant combination.
+ * This enables support for complex variant targeting like screen breakpoints with pseudo-selectors.
+ * Uses double underscore (__) as separator to avoid conflicts with CSS pseudo-selectors (:).
+ *
+ * @param context - The context string to parse
+ * @returns Array of variants that make up the variant combination
+ *
+ * @example
+ * Base variant only
+ * parseContextToVariantCombo("base")
+ * Returns: [{ type: "base" }]
+ *
+ * @example
+ * Screen variant only
+ * parseContextToVariantCombo("global-screen__768")
+ * Returns: [{ type: "global-screen", width: 768 }]
+ *
+ * @example
+ * Pseudo-selector only (base is implicit)
+ * parseContextToVariantCombo("base:hover")
+ * Returns: [{ type: "style", selectors: ["hover"] }]
+ *
+ * @example
+ * Screen variant with pseudo-selector (combination)
+ * parseContextToVariantCombo("global-screen__768:hover")
+ * Returns: [{ type: "global-screen", width: 768 }, { type: "style", selectors: ["hover"] }]
+ */
+function parseContextToVariantCombo(context: string): WIVariant[] {
+  // Early return for base variant only
+  if (context === BASE_VARIANT) {
+    return [{ type: "base" }];
+  }
+
+  const variantCombo: WIVariant[] = [];
+
+  if (context.startsWith(`${VariantGroupType.GlobalScreen}__`)) {
+    // Split by : first to separate screen part from pseudo-selector
+    const [screenPart, pseudoSelector] = context.split(
+      PSEUDO_SELECTOR_SPLIT_REGEX
+    );
+
+    const screenWidth = parseInt(screenPart.split("__")[1], 10);
+    variantCombo.push({
+      type: VariantGroupType.GlobalScreen,
+      width: screenWidth,
+    });
+
+    if (pseudoSelector) {
+      variantCombo.push({
+        type: "style",
+        selectors: [pseudoSelector],
+      });
+    }
+  } else if (context.includes(":")) {
+    // In case of (base:hover) we only care about the pseudo selector since we
+    // do not create combination with base variant, it's styles are considered implicitly in all variants.
+    const pseudoSelector = context.split(PSEUDO_SELECTOR_SPLIT_REGEX)[1];
+    if (pseudoSelector) {
+      variantCombo.push({
+        type: "style",
+        selectors: [pseudoSelector],
+      });
+    }
+  }
+
+  return variantCombo;
+}
+
+function getVariantSettingsForNode(
   node: Node,
   defaultStyles: CSSStyleDeclaration,
   site: Site
-) {
+): WIVariantSettings[] {
   const wiID = ensure(getInternalId(node), "Expected node to have wiID");
 
   const rules = ensureType<Record<string, WIRule[]>>((node as any).__wi_rules);
-
   const baseRules = rules[BASE_VARIANT] ?? [];
-
-  const styles: Record<string, Record<string, string>> = {
-    [BASE_VARIANT]: computeStylesFromWIRules(baseRules),
-  };
+  const baseStyles = computeStylesFromWIRules(baseRules);
 
   const contexts = Object.keys(rules).filter((c) => c !== BASE_VARIANT);
+  const variantSettings: WIVariantSettings[] = [];
 
-  // For media query styles we merge the rules from the base with the media ones
-  // to compute the group of rules
+  // Process base variant styles
+  const processedBaseStyles = { ...baseStyles };
+
+  // Add flex-direction default for flex display
+  if (processedBaseStyles["display"] === "flex") {
+    if (!processedBaseStyles["flex-direction"]) {
+      processedBaseStyles["flex-direction"] = "row";
+    }
+  }
+
+  // Remove styles that match default styles
+  const NON_DELETABLE_STYLES = ["flex-direction"];
+  for (const [key, value] of Object.entries(processedBaseStyles)) {
+    if (
+      !NON_DELETABLE_STYLES.includes(key) &&
+      defaultStyles.getPropertyValue(key) === value
+    ) {
+      delete processedBaseStyles[key];
+    }
+  }
+
+  // Ensure token values exist in the project
+  for (const [key, value] of Object.entries(processedBaseStyles)) {
+    const fixedValue = renameTokenVarNameToUuid(value, site);
+    if (fixedValue === null) {
+      delete processedBaseStyles[key];
+    } else {
+      processedBaseStyles[key] = fixedValue;
+    }
+  }
+
+  // Only create base variant settings if there are meaningful styles
+  if (Object.keys(processedBaseStyles).length > 0) {
+    const baseVariantSettings: WIVariantSettings = {
+      unsanitizedStyles: processedBaseStyles,
+      safeStyles: {},
+      unsafeStyles: {},
+      variantCombo: [{ type: "base" }],
+    };
+
+    variantSettings.push(baseVariantSettings);
+  }
+
+  // Process non-base variant styles
   for (const context of contexts) {
     const contextSpecificRules = rules[context];
     const contextBaseRules = [...baseRules].filter((r) => {
@@ -347,34 +459,7 @@ function getStylesForNode(
       continue;
     }
 
-    styles[context] = contextStyles;
-  }
-
-  // Trying to remove some of the rules that are already in the default styles
-  // We need to be careful, so with context specific rules so we don't remove them
-  {
-    const baseStyles = styles[BASE_VARIANT];
-    for (const key of Object.keys(baseStyles)) {
-      const value = baseStyles[key];
-      if (key === "display" && value === "flex") {
-        if (!baseStyles["flex-direction"]) {
-          baseStyles["flex-direction"] = "row";
-        }
-      }
-
-      const NON_DELETABLE_STYLES = ["flex-direction"];
-      if (
-        !NON_DELETABLE_STYLES.includes(key) &&
-        defaultStyles.getPropertyValue(key) === value
-      ) {
-        delete baseStyles[key];
-        continue;
-      }
-    }
-  }
-
-  // Ensure token value exists in the project.
-  for (const [_contextKey, contextStyles] of Object.entries(styles)) {
+    // Ensure token values exist in the project
     for (const [key, value] of Object.entries(contextStyles)) {
       const fixedValue = renameTokenVarNameToUuid(value, site);
       if (fixedValue === null) {
@@ -383,134 +468,181 @@ function getStylesForNode(
         contextStyles[key] = fixedValue;
       }
     }
-  }
 
-  // After processing we look for styles that are the same as the base variant
-  // and remove them
-  for (const context of Object.keys(styles)) {
-    if (context === BASE_VARIANT) {
-      continue;
-    }
-
-    const baseStyles = styles[BASE_VARIANT];
-    const contextStyles = styles[context];
-    const contextStylesKeys = Object.keys(contextStyles);
-    for (const key of contextStylesKeys) {
-      if (baseStyles[key] === contextStyles[key]) {
+    // Remove styles that are the same as base variant
+    for (const key of Object.keys(contextStyles)) {
+      if (processedBaseStyles[key] === contextStyles[key]) {
         delete contextStyles[key];
       }
     }
+
+    // Skip if no meaningful styles remain
+    if (Object.keys(contextStyles).length === 0) {
+      continue;
+    }
+
+    // Create variant settings with appropriate variant combo
+    const variantCombo = parseContextToVariantCombo(context);
+    if (variantCombo.length > 0) {
+      const contextVariantSettings: WIVariantSettings = {
+        unsanitizedStyles: contextStyles,
+        safeStyles: {},
+        unsafeStyles: {},
+        variantCombo,
+      };
+
+      variantSettings.push(contextVariantSettings);
+    }
   }
 
-  return styles;
+  return variantSettings;
 }
 
-function sanitizeStyles(
-  styles: WIStyles,
+function sanitizeVariantSettings(
+  variantSettings: WIVariantSettings[],
   type?: WIElement["type"]
-): SanitizedWIStyles {
-  return Object.fromEntries(
-    Object.entries(styles).map(([context, contextStyles]) => {
-      const newStyles = Object.entries(contextStyles).reduce(
-        (acc, [key, value]) => {
-          return {
-            ...acc,
-            ...fixCSSValue(key, value),
-          };
-        },
-        {}
-      );
+): void {
+  for (const variantSetting of variantSettings) {
+    const newStyles = Object.entries(variantSetting.unsanitizedStyles).reduce(
+      (acc, [key, value]) => {
+        return {
+          ...acc,
+          ...fixCSSValue(key, value),
+        };
+      },
+      {}
+    );
 
-      // Handle gap property expansion based on display type
-      if (newStyles["gap"]) {
-        const gapValue = newStyles["gap"];
+    // Handle gap property expansion based on display type
+    if (newStyles["gap"]) {
+      const gapValue = newStyles["gap"];
 
-        const isGridLayout =
-          newStyles["display"] === "grid" ||
-          newStyles["display"] === "inline-grid";
+      const isGridLayout =
+        newStyles["display"] === "grid" ||
+        newStyles["display"] === "inline-grid";
 
-        const expandedGapProperties = expandGapProperty(gapValue, isGridLayout);
+      const expandedGapProperties = expandGapProperty(gapValue, isGridLayout);
 
-        delete newStyles["gap"];
-        Object.assign(newStyles, expandedGapProperties);
-      }
+      delete newStyles["gap"];
+      Object.assign(newStyles, expandedGapProperties);
+    }
 
-      const { safe, unsafe } = splitStylesBySafety(newStyles, type);
-      return [
-        context,
-        {
-          safe,
-          unsafe,
-        },
-      ];
-    })
-  );
+    const { safe, unsafe } = splitStylesBySafety(newStyles, type);
+    variantSetting.safeStyles = safe;
+    variantSetting.unsafeStyles = unsafe;
+  }
 }
 
-function extractTextStyles(styles: WIStyles) {
-  const nonTextStyles = Object.fromEntries(
-    Object.entries(styles).map(([context, contextStyles]) => {
-      return [
-        context,
-        Object.fromEntries(
-          Object.entries(contextStyles).filter(([key, value]) => {
-            return !textStylesKeys.has(camelCase(key));
-          })
-        ),
-      ];
-    })
-  );
+function extractTextStylesFromVariantSettings(
+  variantSettings: WIVariantSettings[]
+) {
+  const nonTextVariantSettings: WIVariantSettings[] = [];
+  const textVariantSettings: WIVariantSettings[] = [];
 
-  const textStyles = Object.fromEntries(
-    Object.entries(styles).map(([context, contextStyles]) => {
-      return [
-        context,
-        Object.fromEntries(
-          Object.entries(contextStyles).filter(([key, value]) => {
-            return textStylesKeys.has(camelCase(key));
-          })
-        ),
-      ];
-    })
-  );
+  for (const variantSetting of variantSettings) {
+    const nonTextStyles = Object.fromEntries(
+      Object.entries(variantSetting.unsanitizedStyles).filter(
+        ([key, value]) => {
+          return !textStylesKeys.has(camelCase(key));
+        }
+      )
+    );
+
+    const textStyles = Object.fromEntries(
+      Object.entries(variantSetting.unsanitizedStyles).filter(
+        ([key, _value]) => {
+          return textStylesKeys.has(camelCase(key));
+        }
+      )
+    );
+
+    if (Object.keys(nonTextStyles).length > 0) {
+      const nonTextVariantSetting: WIVariantSettings = {
+        ...variantSetting,
+        unsanitizedStyles: nonTextStyles,
+        safeStyles: {},
+        unsafeStyles: {},
+      };
+      nonTextVariantSettings.push(nonTextVariantSetting);
+    }
+
+    if (Object.keys(textStyles).length > 0) {
+      const textVariantSetting: WIVariantSettings = {
+        ...variantSetting,
+        unsanitizedStyles: textStyles,
+        safeStyles: {},
+        unsafeStyles: {},
+      };
+      textVariantSettings.push(textVariantSetting);
+    }
+  }
 
   return {
-    nonTextStyles,
-    textStyles,
+    nonTextVariantSettings,
+    textVariantSettings,
   };
 }
 
-function mergeWIStyles(oldStyles: WIStyles, newStyles: WIStyles) {
-  const keys = new Set([...Object.keys(oldStyles), ...Object.keys(newStyles)]);
-  return Object.fromEntries(
-    [...keys].map((key) => {
-      const oldStyle = oldStyles[key];
-      const newStyle = newStyles[key];
-      if (!oldStyle) {
-        return [key, newStyle];
-      }
-      if (!newStyle) {
-        return [key, oldStyle];
-      }
-      return [key, { ...oldStyle, ...newStyle }];
-    })
-  );
+function mergeWIVariantSettings(
+  oldVariantSettings: WIVariantSettings[],
+  newVariantSettings: WIVariantSettings[]
+): WIVariantSettings[] {
+  const variantSettingsMap = new Map<string, WIVariantSettings>();
+
+  for (const variantSetting of oldVariantSettings) {
+    const key = getWIVariantComboKey(variantSetting.variantCombo);
+    variantSettingsMap.set(key, variantSetting);
+  }
+
+  // Merge or add new variant settings
+  for (const newVariantSetting of newVariantSettings) {
+    const key = getWIVariantComboKey(newVariantSetting.variantCombo);
+    const existingVariantSetting = variantSettingsMap.get(key);
+
+    if (existingVariantSetting) {
+      // Merge styles
+      const mergedVariantSetting: WIVariantSettings = {
+        ...existingVariantSetting,
+        unsanitizedStyles: {
+          ...existingVariantSetting.unsanitizedStyles,
+          ...newVariantSetting.unsanitizedStyles,
+        },
+        safeStyles: {
+          ...existingVariantSetting.safeStyles,
+          ...newVariantSetting.safeStyles,
+        },
+        unsafeStyles: {
+          ...existingVariantSetting.unsafeStyles,
+          ...newVariantSetting.unsafeStyles,
+        },
+      };
+      variantSettingsMap.set(key, mergedVariantSetting);
+    } else {
+      variantSettingsMap.set(key, newVariantSetting);
+    }
+  }
+
+  return Array.from(variantSettingsMap.values());
 }
 
-function isProbablyEmptyStyles(styles: WIStyles) {
-  const keys = Object.keys(styles);
-  if (keys.length === 0) {
+function isProbablyEmptyVariantSettings(variantSettings: WIVariantSettings[]) {
+  if (variantSettings.length === 0) {
     return true;
   }
 
-  if (keys.length > 1) {
+  if (variantSettings.length > 1) {
     return false;
   }
 
-  // it should be base here
-  const baseStyles = styles.base;
+  // Should be base variant setting here
+  const baseVariantSetting = variantSettings.find((vs) =>
+    vs.variantCombo.some((v) => v.type === "base")
+  );
+  if (!baseVariantSetting) {
+    return true;
+  }
 
-  const baseKeys = Object.keys(baseStyles);
+  const baseKeys = Object.keys(baseVariantSetting.unsanitizedStyles);
   if (baseKeys.length === 0) {
     return true;
   }
@@ -526,7 +658,7 @@ function isProbablyEmptyStyles(styles: WIStyles) {
 function isLikelyEmptyContainer(containerNode: WIContainer) {
   return (
     containerNode.children.length === 0 &&
-    isProbablyEmptyStyles(containerNode.unsanitizedStyles) &&
+    isProbablyEmptyVariantSettings(containerNode.variantSettings) &&
     Object.keys(containerNode.attrs).length === 0
   );
 }
@@ -536,22 +668,92 @@ function getElementsWITree(
   defaultStyles: CSSStyleDeclaration,
   site: Site
 ) {
-  // Adapted from platform/wab/src/wab/client/WebImporter.tsx (convertImportableDomToTpl)
+  /**
+   * Filters text variant settings to ensure interaction variants like "hover" work correctly on parent containers.
+   *
+   * Problem: Text styles on container elements go into the 'style' attribute, but if the same text style
+   * is also applied on the text node, the text node value takes precedence and the 'style' attribute
+   * doesn't apply. This breaks interaction variants like :hover because the text node already has a
+   * fixed value that can't be overridden.
+   *
+   * Example: A button with color: yellow (base) and color: red (hover). Without this filtering:
+   * - Container gets: style="color: yellow" and :hover { color: red }
+   * - Text node gets: color: yellow (fixed)
+   * - Result: Hover doesn't work because text node's color: yellow takes precedence because hover variant has to be on the parent
+   * container and not on the text node itself so it doesn't inherit the color red because it has it's own color value.
+   *
+   * Solution: If there are text styles on style variants (hover, focus, etc.), remove the same
+   * CSS properties from the base variant applied to text nodes. This allows parent interaction
+   * variants to control text appearance through CSS inheritance.
+   *
+   * @param ancestorTextInheritanceVariantSettings Text styles inherited from parent containers
+   * @returns Filtered variant settings with overriden properties removed
+   */
+  function updateTextInheritancePropsForInteractionVariants(
+    parentTextInheritanceVariantSettings: WIVariantSettings[]
+  ): WIVariantSettings[] {
+    const styleVariants =
+      parentTextInheritanceVariantSettings.filter(hasStyleVariant);
+
+    // Collect all text properties used in interaction (style) variants
+    const styleVariantTextProps = new Set<string>();
+    styleVariants.forEach((vs) => {
+      Object.keys(vs.unsanitizedStyles).forEach((key) => {
+        styleVariantTextProps.add(key);
+      });
+    });
+
+    return withoutNils(
+      parentTextInheritanceVariantSettings.map((vs) => {
+        if (hasStyleVariant(vs)) {
+          return null;
+        }
+
+        // If there are interaction variants with text properties, remove those properties from other variants
+        if (styleVariantTextProps.size > 0) {
+          const nonOverridenTextStyles = Object.fromEntries(
+            Object.entries(vs.unsanitizedStyles).filter(([key]) => {
+              return !styleVariantTextProps.has(key);
+            })
+          );
+
+          // Only return variant settings if there are still styles left after filtering out the one exists in style variant
+          if (Object.keys(nonOverridenTextStyles).length === 0) {
+            return null;
+          }
+
+          return {
+            ...vs,
+            unsanitizedStyles: nonOverridenTextStyles,
+          };
+        }
+
+        return vs;
+      })
+    );
+  }
+
   function rec(
     elt: Node,
-    ancestorTextInheritanceStyles: WIStyles
+    parentTextInheritanceVariantSettings: WIVariantSettings[]
   ): WIElement | null {
     if (elt.nodeType === Node.TEXT_NODE) {
       const text = (elt.textContent ?? "").trim();
       if (!text) {
         return null;
       }
+
+      const textVariantSettings =
+        updateTextInheritancePropsForInteractionVariants(
+          parentTextInheritanceVariantSettings
+        );
+      sanitizeVariantSettings(textVariantSettings);
+
       return {
         type: "text",
         text: text,
         tag: "span",
-        unsanitizedStyles: ancestorTextInheritanceStyles,
-        styles: sanitizeStyles(ancestorTextInheritanceStyles),
+        variantSettings: textVariantSettings,
       };
     }
 
@@ -569,17 +771,23 @@ function getElementsWITree(
       return null;
     }
 
-    const allStyles = getStylesForNode(elt, defaultStyles, site);
-    const { nonTextStyles: styles, textStyles: newTextInheritanceStyles } =
-      extractTextStyles(allStyles);
+    const allVariantSettings = getVariantSettingsForNode(
+      elt,
+      defaultStyles,
+      site
+    );
+    const { nonTextVariantSettings: variantSettings, textVariantSettings } =
+      extractTextStylesFromVariantSettings(allVariantSettings);
 
     if ((elt as any).__wi_component) {
+      const componentVariantSettings = [...variantSettings];
+      sanitizeVariantSettings(componentVariantSettings);
+
       return {
         type: "component",
         tag,
         component: (elt as any).__wi_component,
-        unsanitizedStyles: styles,
-        styles: sanitizeStyles(styles),
+        variantSettings: componentVariantSettings,
       };
     }
 
@@ -601,6 +809,9 @@ function getElementsWITree(
         elt.getAttribute("fill") ?? ""
       )?.color;
 
+      const svgVariantSettings = [...variantSettings];
+      sanitizeVariantSettings(svgVariantSettings);
+
       return {
         type: "svg",
         tag,
@@ -608,8 +819,7 @@ function getElementsWITree(
         width: `${width.num}${width.units || "px"}`,
         height: `${height.num}${height.units || "px"}`,
         fillColor: fillColor,
-        unsanitizedStyles: styles,
-        styles: sanitizeStyles(styles),
+        variantSettings: svgVariantSettings,
       };
     }
 
@@ -622,37 +832,40 @@ function getElementsWITree(
         return null;
       }
 
-      const mergedStyles = mergeWIStyles(
-        ancestorTextInheritanceStyles,
-        allStyles
+      const updatedTextVariantSettings =
+        updateTextInheritancePropsForInteractionVariants(
+          parentTextInheritanceVariantSettings
+        );
+
+      const mergedVariantSettings = mergeWIVariantSettings(
+        updatedTextVariantSettings,
+        allVariantSettings
       );
+
+      sanitizeVariantSettings(mergedVariantSettings);
 
       return {
         type: "text",
         tag,
         text,
-        unsanitizedStyles: mergedStyles,
-        styles: sanitizeStyles(mergedStyles),
+        variantSettings: mergedVariantSettings,
       };
     }
-
-    const newAncestorTextInheritanceStyles = mergeWIStyles(
-      ancestorTextInheritanceStyles,
-      newTextInheritanceStyles
-    );
 
     const attrs = [...elt.attributes].reduce((acc, attr) => {
       acc[attr.name] = attr.value;
       return acc;
     }, {} as Record<string, string>);
 
+    const containerVariantSettings = [...allVariantSettings];
+    sanitizeVariantSettings(containerVariantSettings, "container");
+
     const containerNode: WIContainer = {
       type: "container",
       tag: [...ALL_CONTAINER_TAGS, "img", "svg"].includes(tag) ? tag : "div",
-      unsanitizedStyles: allStyles,
-      styles: sanitizeStyles(allStyles, "container"),
+      variantSettings: containerVariantSettings,
       children: withoutNils(
-        [...elt.childNodes].map((e) => rec(e, newAncestorTextInheritanceStyles))
+        [...elt.childNodes].map((e) => rec(e, textVariantSettings))
       ),
       attrs: {
         ...attrs,
@@ -666,7 +879,7 @@ function getElementsWITree(
 
     return containerNode;
   }
-  return rec(node, {});
+  return rec(node, []);
 }
 
 export async function parseHtmlToWebImporterTree(
@@ -700,10 +913,20 @@ export async function parseHtmlToWebImporterTree(
   ) {
     for (const selectorNode of selectors) {
       const selector = generate(selectorNode);
+      // Split selector at first colon to separate base selector from complex pseudo-selectors
+      // Examples: .class:hover -> [".class", "hover"], .product:hover:not(:focus-visible) -> [".product", "hover:not(:focus-visible)"]
+      // Complex pseudo-selectors such as :hover:not(:focus-visible) would be applied as custom css private style variants in Studio.
+      const [baseSelector, pseudoSelector] = selector.split(
+        PSEUDO_SELECTOR_SPLIT_REGEX
+      );
+
+      if (!baseSelector) {
+        continue;
+      }
 
       let nodes: NodeListOf<Element>;
       try {
-        nodes = document.querySelectorAll(selector);
+        nodes = document.querySelectorAll(baseSelector);
       } catch (error) {
         /* Ignore invalid selectors like keyframe percentages, etc.
          * This can happen with @keyframes selectors like "0%", "from", "to"
@@ -730,7 +953,10 @@ export async function parseHtmlToWebImporterTree(
           continue;
         }
 
-        addNodeWIRule(context, selector, declarations, node);
+        const nodeContext = pseudoSelector
+          ? `${context}:${pseudoSelector}`
+          : context;
+        addNodeWIRule(nodeContext, selector, declarations, node);
       }
     }
   }
@@ -786,7 +1012,7 @@ export async function parseHtmlToWebImporterTree(
       if (mediaNode.type === "Rule") {
         processRule(
           mediaNode,
-          `${VariantGroupType.GlobalScreen}:${screenWidth}`
+          `${VariantGroupType.GlobalScreen}__${screenWidth}`
         );
       }
     });

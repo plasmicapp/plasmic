@@ -8,6 +8,7 @@ import { toVarName } from "@/wab/shared/codegen/util";
 import { assert } from "@/wab/shared/common";
 import { createSite } from "@/wab/shared/core/sites";
 import { TplMgr } from "@/wab/shared/TplMgr";
+import { VariantGroupType } from "@/wab/shared/Variants";
 import { readFileSync } from "fs";
 import path from "path";
 
@@ -35,12 +36,21 @@ describe("parseHtmlToWebImporterTree", () => {
           type: "text",
           tag: "span",
           text: "plasmic",
-          unsanitizedStyles: {},
-          styles: {},
+          variantSettings: [],
         },
       ],
-      unsanitizedStyles: {},
-      styles: {},
+      variantSettings: [
+        {
+          unsanitizedStyles: {
+            width: "100%",
+          },
+          safeStyles: {
+            width: "100%",
+          },
+          unsafeStyles: {},
+          variantCombo: [{ type: "base" }],
+        },
+      ],
     });
   });
 
@@ -65,31 +75,28 @@ describe("parseHtmlToWebImporterTree", () => {
               type: "text",
               tag: "h1",
               text: "Blue Heading 1",
-              unsanitizedStyles: {
-                base: {
-                  color: "rgb(0, 0, 255)",
-                },
-              },
-              styles: {
-                base: {
-                  safe: {
+              variantSettings: [
+                {
+                  unsanitizedStyles: {
                     color: "rgb(0, 0, 255)",
                   },
-                  unsafe: {},
+                  safeStyles: {
+                    color: "rgb(0, 0, 255)",
+                  },
+                  unsafeStyles: {},
+                  variantCombo: [{ type: "base" }],
                 },
-              },
+              ],
             },
           ],
-          unsanitizedStyles: {
-            base: {
-              display: "flex",
-              "flex-direction": "row",
-              margin: "10px",
-            },
-          },
-          styles: {
-            base: {
-              safe: {
+          variantSettings: [
+            {
+              unsanitizedStyles: {
+                display: "flex",
+                "flex-direction": "row",
+                margin: "10px",
+              },
+              safeStyles: {
                 display: "flex",
                 flexDirection: "row",
                 marginTop: "10px",
@@ -97,13 +104,24 @@ describe("parseHtmlToWebImporterTree", () => {
                 marginLeft: "10px",
                 marginRight: "10px",
               },
-              unsafe: {},
+              unsafeStyles: {},
+              variantCombo: [{ type: "base" }],
             },
-          },
+          ],
         },
       ],
-      unsanitizedStyles: {},
-      styles: {},
+      variantSettings: [
+        {
+          unsanitizedStyles: {
+            width: "100%",
+          },
+          safeStyles: {
+            width: "100%",
+          },
+          unsafeStyles: {},
+          variantCombo: [{ type: "base" }],
+        },
+      ],
     });
   });
 
@@ -138,31 +156,28 @@ describe("parseHtmlToWebImporterTree", () => {
               type: "text",
               tag: "h1",
               text: "Blue Heading 1",
-              unsanitizedStyles: {
-                base: {
-                  color: "rgb(0,0,255)",
-                },
-              },
-              styles: {
-                base: {
-                  safe: {
+              variantSettings: [
+                {
+                  unsanitizedStyles: {
                     color: "rgb(0,0,255)",
                   },
-                  unsafe: {},
+                  safeStyles: {
+                    color: "rgb(0,0,255)",
+                  },
+                  unsafeStyles: {},
+                  variantCombo: [{ type: "base" }],
                 },
-              },
+              ],
             },
           ],
-          unsanitizedStyles: {
-            base: {
-              display: "flex",
-              "flex-direction": "row",
-              margin: "10px",
-            },
-          },
-          styles: {
-            base: {
-              safe: {
+          variantSettings: [
+            {
+              unsanitizedStyles: {
+                display: "flex",
+                "flex-direction": "row",
+                margin: "10px",
+              },
+              safeStyles: {
                 display: "flex",
                 flexDirection: "row",
                 marginTop: "10px",
@@ -170,13 +185,24 @@ describe("parseHtmlToWebImporterTree", () => {
                 marginLeft: "10px",
                 marginRight: "10px",
               },
-              unsafe: {},
+              unsafeStyles: {},
+              variantCombo: [{ type: "base" }],
             },
-          },
+          ],
         },
       ],
-      unsanitizedStyles: {},
-      styles: {},
+      variantSettings: [
+        {
+          unsanitizedStyles: {
+            width: "100%",
+          },
+          safeStyles: {
+            width: "100%",
+          },
+          unsafeStyles: {},
+          variantCombo: [{ type: "base" }],
+        },
+      ],
     });
   });
 
@@ -202,20 +228,28 @@ describe("parseHtmlToWebImporterTree", () => {
               type: "svg",
               tag: "svg",
               outerHtml: svgElement,
-              unsanitizedStyles: {},
-              styles: {},
+              variantSettings: [],
               width: "32px",
               height: "32px",
               fillColor: "#f3f3f3",
             },
           ],
-          unsanitizedStyles: {},
-          styles: {},
+          variantSettings: [],
           attrs: {},
         },
       ],
-      unsanitizedStyles: {},
-      styles: {},
+      variantSettings: [
+        {
+          unsanitizedStyles: {
+            width: "100%",
+          },
+          safeStyles: {
+            width: "100%",
+          },
+          unsafeStyles: {},
+          variantCombo: [{ type: "base" }],
+        },
+      ],
     });
   });
 
@@ -238,27 +272,25 @@ describe("parseHtmlToWebImporterTree", () => {
               type: "text",
               tag: "span",
               text: "Content",
-              unsanitizedStyles: {},
-              styles: {},
+              variantSettings: [],
             },
           ],
-          unsanitizedStyles: {
-            base: {
-              display: "flex",
-              gap: "10px",
-            },
-          },
-          styles: {
-            base: {
-              safe: {
+          variantSettings: [
+            {
+              unsanitizedStyles: {
+                display: "flex",
+                gap: "10px",
+              },
+              safeStyles: {
                 display: "flex",
                 flexDirection: "row",
                 rowGap: "10px",
                 columnGap: "10px",
               },
-              unsafe: {},
+              unsafeStyles: {},
+              variantCombo: [{ type: "base" }],
             },
-          },
+          ],
         },
       ],
     });
@@ -283,26 +315,24 @@ describe("parseHtmlToWebImporterTree", () => {
               type: "text",
               tag: "span",
               text: "Content",
-              unsanitizedStyles: {},
-              styles: {},
+              variantSettings: [],
             },
           ],
-          unsanitizedStyles: {
-            base: {
-              display: "grid",
-              gap: "20px",
-            },
-          },
-          styles: {
-            base: {
-              safe: {
+          variantSettings: [
+            {
+              unsanitizedStyles: {
+                display: "grid",
+                gap: "20px",
+              },
+              safeStyles: {
                 display: "grid",
                 gridRowGap: "20px",
                 gridColumnGap: "20px",
               },
-              unsafe: {},
+              unsafeStyles: {},
+              variantCombo: [{ type: "base" }],
             },
-          },
+          ],
         },
       ],
     });
@@ -350,42 +380,56 @@ describe("parseHtmlToWebImporterTree", () => {
     expect(rootEl).toMatchObject<WIElement>({
       type: "container",
       tag: "div",
-      unsanitizedStyles: { base: { width: "100%" } },
-      styles: { base: { safe: { width: "100%" }, unsafe: {} } },
+      variantSettings: [
+        {
+          unsanitizedStyles: { width: "100%" },
+          safeStyles: { width: "100%" },
+          unsafeStyles: {},
+          variantCombo: [{ type: "base" }],
+        },
+      ],
       children: [
         {
           type: "container",
           tag: "div",
-          unsanitizedStyles: { base: {} },
-          styles: { base: { safe: {}, unsafe: {} } },
+          variantSettings: [],
           children: [
             {
               type: "text",
               tag: "h1",
               text: "Responsive Heading",
-              unsanitizedStyles: {
-                base: {
-                  color: "blue",
-                  "font-size": "48px",
-                  "font-weight": "bold",
+              variantSettings: [
+                {
+                  unsanitizedStyles: {
+                    color: "blue",
+                    "font-size": "48px",
+                    "font-weight": "bold",
+                  },
+                  safeStyles: {
+                    color: "blue",
+                    fontSize: "48px",
+                    fontWeight: "bold",
+                  },
+                  unsafeStyles: {},
+                  variantCombo: [{ type: "base" }],
                 },
-                "global-screen:768": { color: "green", "font-size": "36px" },
-                "global-screen:400": { color: "red", "font-size": "24px" },
-              },
-              styles: {
-                base: {
-                  safe: { color: "blue", fontSize: "48px", fontWeight: "bold" },
-                  unsafe: {},
+                {
+                  unsanitizedStyles: { color: "green", "font-size": "36px" },
+                  safeStyles: { color: "green", fontSize: "36px" },
+                  unsafeStyles: {},
+                  variantCombo: [
+                    { type: VariantGroupType.GlobalScreen, width: 768 },
+                  ],
                 },
-                "global-screen:768": {
-                  safe: { color: "green", fontSize: "36px" },
-                  unsafe: {},
+                {
+                  unsanitizedStyles: { color: "red", "font-size": "24px" },
+                  safeStyles: { color: "red", fontSize: "24px" },
+                  unsafeStyles: {},
+                  variantCombo: [
+                    { type: VariantGroupType.GlobalScreen, width: 400 },
+                  ],
                 },
-                "global-screen:400": {
-                  safe: { color: "red", fontSize: "24px" },
-                  unsafe: {},
-                },
-              },
+              ],
             },
           ],
           attrs: { __name: "" },
@@ -437,45 +481,408 @@ describe("parseHtmlToWebImporterTree", () => {
     expect(rootEl).toMatchObject<WIElement>({
       type: "container",
       tag: "div",
-      unsanitizedStyles: { base: { width: "100%" } },
-      styles: { base: { safe: { width: "100%" }, unsafe: {} } },
+      variantSettings: [
+        {
+          unsanitizedStyles: { width: "100%" },
+          safeStyles: { width: "100%" },
+          unsafeStyles: {},
+          variantCombo: [{ type: "base" }],
+        },
+      ],
       children: [
         {
           type: "container",
           tag: "div",
-          unsanitizedStyles: { base: {} },
-          styles: { base: { safe: {}, unsafe: {} } },
+          variantSettings: [],
           children: [
             {
               type: "text",
               tag: "h1",
               text: "Responsive Heading",
-              unsanitizedStyles: {
-                base: {
-                  color: "blue",
-                  "font-size": "48px",
-                  "font-weight": "bold",
+              variantSettings: [
+                {
+                  unsanitizedStyles: {
+                    color: "blue",
+                    "font-size": "48px",
+                    "font-weight": "bold",
+                  },
+                  safeStyles: {
+                    color: "blue",
+                    fontSize: "48px",
+                    fontWeight: "bold",
+                  },
+                  unsafeStyles: {},
+                  variantCombo: [{ type: "base" }],
                 },
-                "global-screen:768": { color: "green", "font-size": "36px" },
-                "global-screen:1200": { color: "red", "font-size": "24px" },
-              },
-              styles: {
-                base: {
-                  safe: { color: "blue", fontSize: "48px", fontWeight: "bold" },
-                  unsafe: {},
+                {
+                  unsanitizedStyles: { color: "green", "font-size": "36px" },
+                  safeStyles: { color: "green", fontSize: "36px" },
+                  unsafeStyles: {},
+                  variantCombo: [
+                    { type: VariantGroupType.GlobalScreen, width: 768 },
+                  ],
                 },
-                "global-screen:768": {
-                  safe: { color: "green", fontSize: "36px" },
-                  unsafe: {},
+                {
+                  unsanitizedStyles: { color: "red", "font-size": "24px" },
+                  safeStyles: { color: "red", fontSize: "24px" },
+                  unsafeStyles: {},
+                  variantCombo: [
+                    { type: VariantGroupType.GlobalScreen, width: 1200 },
+                  ],
                 },
-                "global-screen:1200": {
-                  safe: { color: "red", fontSize: "24px" },
-                  unsafe: {},
-                },
-              },
+              ],
             },
           ],
           attrs: { __name: "" },
+        },
+      ],
+      attrs: { style: "width: 100%;", __name: "" },
+    });
+  });
+
+  it("Parse pseudo selectors (hover state)", async () => {
+    const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        .interactive-button {
+            background-color: blue;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+        }
+
+        .interactive-button:hover {
+            background-color: darkblue;
+            color: lightgray;
+        }
+    </style>
+</head>
+<body>
+    <button class="interactive-button">Click me</button>
+</body>
+</html>`;
+    const { wiTree: rootEl } = await parseHtmlToWebImporterTree(html, site);
+
+    assert(rootEl, "rootEl should not be null");
+
+    expect(rootEl).toMatchObject<WIElement>({
+      type: "container",
+      tag: "div",
+      variantSettings: [
+        {
+          unsanitizedStyles: { width: "100%" },
+          safeStyles: { width: "100%" },
+          unsafeStyles: {},
+          variantCombo: [{ type: "base" }],
+        },
+      ],
+      children: [
+        {
+          type: "container",
+          tag: "button",
+          attrs: { class: "interactive-button" },
+          children: [
+            {
+              type: "text",
+              tag: "span",
+              text: "Click me",
+              variantSettings: [],
+            },
+          ],
+          variantSettings: [
+            {
+              unsanitizedStyles: {
+                "background-color": "blue",
+                padding: "10px 20px",
+                border: "none",
+                "border-radius": "4px",
+                color: "white",
+              },
+              safeStyles: {
+                background: "linear-gradient(blue, blue)",
+                paddingTop: "10px",
+                paddingRight: "20px",
+                paddingBottom: "10px",
+                paddingLeft: "20px",
+                borderTopLeftRadius: "4px",
+                borderTopRightRadius: "4px",
+                borderBottomRightRadius: "4px",
+                borderBottomLeftRadius: "4px",
+              },
+              unsafeStyles: {
+                border: "none",
+                color: "white",
+              },
+              variantCombo: [{ type: "base" }],
+            },
+            {
+              unsanitizedStyles: {
+                "background-color": "darkblue",
+                color: "lightgray",
+              },
+              safeStyles: {
+                background: "linear-gradient(darkblue, darkblue)",
+              },
+              unsafeStyles: {
+                color: "lightgray",
+              },
+              variantCombo: [{ type: "style", selectors: ["hover"] }],
+            },
+          ],
+        },
+      ],
+      attrs: { style: "width: 100%;", __name: "" },
+    });
+  });
+
+  it("Parse multiple pseudo selectors (hover and focus)", async () => {
+    const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        .form-input {
+            border: 2px solid gray;
+            padding: 8px;
+            border-radius: 4px;
+        }
+
+        .form-input:hover {
+            border-color: blue;
+        }
+
+        .form-input:focus {
+            border-color: green;
+            outline: none;
+        }
+    </style>
+</head>
+<body>
+    <input type="text" class="form-input" placeholder="Enter text">
+</body>
+</html>`;
+    const { wiTree: rootEl } = await parseHtmlToWebImporterTree(html, site);
+
+    assert(rootEl, "rootEl should not be null");
+
+    expect(rootEl).toMatchObject<WIElement>({
+      type: "container",
+      tag: "div",
+      variantSettings: [
+        {
+          unsanitizedStyles: { width: "100%" },
+          safeStyles: { width: "100%" },
+          unsafeStyles: {},
+          variantCombo: [{ type: "base" }],
+        },
+      ],
+      children: [
+        {
+          type: "container",
+          tag: "input",
+          attrs: {
+            type: "text",
+            class: "form-input",
+            placeholder: "Enter text",
+          },
+          children: [],
+          variantSettings: [
+            {
+              unsanitizedStyles: {
+                border: "2px solid gray",
+                padding: "8px",
+                "border-radius": "4px",
+              },
+              safeStyles: {
+                borderTopLeftRadius: "4px",
+                borderTopRightRadius: "4px",
+                borderBottomRightRadius: "4px",
+                borderBottomLeftRadius: "4px",
+                paddingTop: "8px",
+                paddingRight: "8px",
+                paddingBottom: "8px",
+                paddingLeft: "8px",
+              },
+              unsafeStyles: {
+                border: "2px solid gray",
+              },
+              variantCombo: [{ type: "base" }],
+            },
+            {
+              unsanitizedStyles: {
+                "border-color": "blue",
+              },
+              safeStyles: {
+                borderTopColor: "blue",
+                borderRightColor: "blue",
+                borderBottomColor: "blue",
+                borderLeftColor: "blue",
+              },
+              unsafeStyles: {},
+              variantCombo: [{ type: "style", selectors: ["hover"] }],
+            },
+            {
+              unsanitizedStyles: {
+                "border-color": "green",
+                outline: "none",
+              },
+              safeStyles: {
+                borderTopColor: "green",
+                borderRightColor: "green",
+                borderBottomColor: "green",
+                borderLeftColor: "green",
+              },
+              unsafeStyles: {},
+              variantCombo: [{ type: "style", selectors: ["focus"] }],
+            },
+          ],
+        },
+      ],
+      attrs: { style: "width: 100%;", __name: "" },
+    });
+  });
+
+  it("Parse screen variants with pseudo selectors (combination)", async () => {
+    const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        .responsive-button {
+            background-color: blue;
+            color: white;
+            font-size: 16px;
+            padding: 12px 24px;
+        }
+
+        .responsive-button:hover {
+            background-color: darkblue;
+        }
+
+        @media (max-width: 768px) {
+            .responsive-button {
+                font-size: 14px;
+                padding: 10px 20px;
+            }
+
+            .responsive-button:hover {
+                background-color: purple;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="responsive-button">Responsive Button</button>
+</body>
+</html>`;
+    const { wiTree: rootEl } = await parseHtmlToWebImporterTree(html, site);
+
+    assert(rootEl, "rootEl should not be null");
+
+    expect(rootEl).toMatchObject<WIElement>({
+      type: "container",
+      tag: "div",
+      variantSettings: [
+        {
+          unsanitizedStyles: { width: "100%" },
+          safeStyles: { width: "100%" },
+          unsafeStyles: {},
+          variantCombo: [{ type: "base" }],
+        },
+      ],
+      children: [
+        {
+          type: "container",
+          tag: "button",
+          attrs: { class: "responsive-button" },
+          children: [
+            {
+              type: "text",
+              tag: "span",
+              text: "Responsive Button",
+              variantSettings: [
+                {
+                  unsanitizedStyles: {
+                    color: "white",
+                    "font-size": "16px",
+                  },
+                  safeStyles: {
+                    color: "white",
+                    fontSize: "16px",
+                  },
+                  unsafeStyles: {},
+                  variantCombo: [{ type: "base" }],
+                },
+                {
+                  unsanitizedStyles: {
+                    "font-size": "14px",
+                  },
+                  safeStyles: {
+                    fontSize: "14px",
+                  },
+                  unsafeStyles: {},
+                  variantCombo: [
+                    { type: VariantGroupType.GlobalScreen, width: 768 },
+                  ],
+                },
+              ],
+            },
+          ],
+          variantSettings: [
+            {
+              unsanitizedStyles: {
+                "background-color": "blue",
+                padding: "12px 24px",
+              },
+              safeStyles: {
+                background: "linear-gradient(blue, blue)",
+                paddingTop: "12px",
+                paddingRight: "24px",
+                paddingBottom: "12px",
+                paddingLeft: "24px",
+              },
+              unsafeStyles: {},
+              variantCombo: [{ type: "base" }],
+            },
+            {
+              unsanitizedStyles: {
+                "background-color": "darkblue",
+              },
+              safeStyles: {
+                background: "linear-gradient(darkblue, darkblue)",
+              },
+              unsafeStyles: {},
+              variantCombo: [{ type: "style", selectors: ["hover"] }],
+            },
+            {
+              unsanitizedStyles: {
+                padding: "10px 20px",
+              },
+              safeStyles: {
+                paddingTop: "10px",
+                paddingRight: "20px",
+                paddingBottom: "10px",
+                paddingLeft: "20px",
+              },
+              unsafeStyles: {},
+              variantCombo: [
+                { type: VariantGroupType.GlobalScreen, width: 768 },
+              ],
+            },
+            {
+              unsanitizedStyles: {
+                "background-color": "purple",
+              },
+              safeStyles: {
+                background: "linear-gradient(purple, purple)",
+              },
+              unsafeStyles: {},
+              variantCombo: [
+                { type: VariantGroupType.GlobalScreen, width: 768 },
+                { type: "style", selectors: ["hover"] },
+              ],
+            },
+          ],
         },
       ],
       attrs: { style: "width: 100%;", __name: "" },

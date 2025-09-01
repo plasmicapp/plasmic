@@ -19,14 +19,14 @@ import {
   getNamespacedComponentName,
 } from "@/wab/shared/core/components";
 import {
-  UNINITIALIZED_VALUE,
   allGlobalVariantGroups,
   getResponsiveStrategy,
+  UNINITIALIZED_VALUE,
   writeable,
 } from "@/wab/shared/core/sites";
 import { getPseudoSelector, mkRuleSet } from "@/wab/shared/core/styles";
 import { isTplTag, summarizeTplTag } from "@/wab/shared/core/tpls";
-import { ScreenSizeSpec, parseScreenSpec } from "@/wab/shared/css-size";
+import { parseScreenSpec, ScreenSizeSpec } from "@/wab/shared/css-size";
 import {
   ArenaFrame,
   Arg,
@@ -506,11 +506,18 @@ export function getOrderedScreenVariantSpecs(site: Site, group: VariantGroup) {
 
 export function getPrivateStyleVariantsForTag(
   component: Component,
-  tpl: TplTag
+  tpl: TplTag,
+  selectors?: string[]
 ): PrivateStyleVariant[] {
-  return component.variants
+  const variants = component.variants
     .filter(isPrivateStyleVariant)
     .filter((v) => v.forTpl === tpl);
+
+  if (selectors && selectors.length > 0) {
+    return variants.filter((v) => arrayEqIgnoreOrder(v.selectors, selectors));
+  }
+
+  return variants;
 }
 
 /**

@@ -10,7 +10,13 @@ import {
   ResizableImage,
 } from "@/wab/client/dom-utils";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { WIElement } from "@/wab/client/web-importer/types";
+import {
+  isWIBaseVariantSettings,
+  WIElement,
+  WIScreenVariant,
+  WIStyleVariant,
+  WIVariant,
+} from "@/wab/client/web-importer/types";
 import { unwrap } from "@/wab/commons/failable-utils";
 import { assertNever, withoutNils } from "@/wab/shared/common";
 import { code } from "@/wab/shared/core/exprs";
@@ -20,7 +26,9 @@ import { getResponsiveStrategy } from "@/wab/shared/core/sites";
 import { TplTagType } from "@/wab/shared/core/tpls";
 import {
   ImageAssetRef,
+  isKnownTplTag,
   RawText,
+  Site,
   TplNode,
   TplTag,
 } from "@/wab/shared/model/classes";
@@ -28,7 +36,10 @@ import { ResponsiveStrategy } from "@/wab/shared/responsiveness";
 import { RSH } from "@/wab/shared/RuleSetHelpers";
 import {
   ensureVariantSetting,
+  getBaseVariant,
   getOrderedScreenVariantSpecs,
+  getPrivateStyleVariantsForTag,
+  VariantCombo,
   VariantGroupType,
 } from "@/wab/shared/Variants";
 import { VariantTplMgr } from "@/wab/shared/VariantTplMgr";
@@ -58,17 +69,74 @@ export async function processWebImporterTree(
   { studioCtx, cursorClientPt, insertRelLoc }: PasteArgs
 ): Promise<PasteResult> {
   const viewCtx = ensureViewCtxOrThrowUserError(studioCtx);
-  const result = await wiTreeToTpl(wiTree, viewCtx, viewCtx.variantTplMgr());
+  const tplMgr = viewCtx.tplMgr();
+  const vtm = viewCtx.variantTplMgr();
+  const result = await wiTreeToTpl(wiTree, viewCtx, vtm);
   if (!result) {
     return { handled: false };
   }
 
-  const { tpl, tplImageAssetMap } = result;
+  const { tpl, tplImageAssetMap, tplVariantSettingsData } = result;
 
   return {
     handled: true,
     success: unwrap(
       await studioCtx.change(({ success }) => {
+        const owningComponent = viewCtx.currentTplComponent().component;
+
+        // Process all variant settings data to apply styles
+        for (const [tplNode, vsData] of tplVariantSettingsData.entries()) {
+          for (const vs of vsData) {
+            const { variantCombo, safeStyles, unsafeStyles } = vs;
+
+            // Process style variants by creating private style variants
+            const processedVariantCombo = withoutNils(
+              variantCombo.map((wiVariant) => {
+                switch (wiVariant.type) {
+                  case "base": {
+                    return getBaseVariant(owningComponent);
+                  }
+                  case VariantGroupType.GlobalScreen: {
+                    return findMatchingScreenVariant(viewCtx.site, wiVariant);
+                  }
+                  case "style": {
+                    // Currently, in HTML parser, we support for private style variants that only works on TplTag i.e
+                    // Element states doesn't apply on TplComponent and TplSlot.
+                    if (!isKnownTplTag(tplNode)) {
+                      return null;
+                    }
+
+                    const selectors = wiVariant.selectors.map((s) => `:${s}`);
+                    const existingPrivateStyleVariant =
+                      getPrivateStyleVariantsForTag(
+                        owningComponent,
+                        tplNode,
+                        selectors
+                      )[0];
+
+                    return (
+                      existingPrivateStyleVariant ||
+                      tplMgr.createPrivateStyleVariant(
+                        owningComponent,
+                        tplNode,
+                        selectors
+                      )
+                    );
+                  }
+                }
+              })
+            );
+
+            applyVariantStyles(
+              vtm,
+              tplNode,
+              processedVariantCombo,
+              safeStyles,
+              unsafeStyles
+            );
+          }
+        }
+
         // if we have any image/svg tpls we need to create their respective assets and update their attrs accordingly
         for (const [assetTpl, assetData] of tplImageAssetMap) {
           const { asset } = studioCtx
@@ -99,20 +167,70 @@ export async function processWebImporterTree(
   };
 }
 
-async function wiTreeToTpl(wiTree: WIElement, vc: ViewCtx, vtm: VariantTplMgr) {
-  const site = vc.studioCtx.site;
+type TplVariantSettingsData = {
+  variantCombo: WIVariant[];
+  safeStyles: Record<string, string>;
+  unsafeStyles: Record<string, string>;
+};
+
+function applyVariantStyles(
+  vtm: VariantTplMgr,
+  tpl: TplNode,
+  variantCombo: VariantCombo,
+  safeStyles: Record<string, string>,
+  unsafeStyles: Record<string, string>
+) {
+  const vs = vtm.ensureVariantSetting(tpl, variantCombo);
+  RSH(vs.rs, tpl).merge(safeStyles);
+
+  if (Object.keys(unsafeStyles).length > 0) {
+    vs.attrs["style"] = code(JSON.stringify(unsafeStyles));
+  }
+}
+
+function findMatchingScreenVariant(
+  site: Site,
+  screenVariantInCombo: WIScreenVariant
+) {
   const activeScreenGroup = site.activeScreenVariantGroup;
   const orderedScreenVariants = activeScreenGroup
     ? getOrderedScreenVariantSpecs(site, activeScreenGroup)
     : [];
+
+  for (const orderScreenVariant of orderedScreenVariants) {
+    const { variant: screenVariant, screenSpec } = orderScreenVariant;
+    if (!screenVariant.mediaQuery) {
+      continue;
+    }
+
+    const strategy = getResponsiveStrategy(site);
+    const screenWidthToMatch =
+      strategy === ResponsiveStrategy.mobileFirst
+        ? screenSpec.minWidth
+        : screenSpec.maxWidth;
+
+    if (
+      screenWidthToMatch &&
+      screenWidthToMatch === screenVariantInCombo.width
+    ) {
+      return screenVariant;
+    }
+  }
+  return null;
+}
+
+async function wiTreeToTpl(wiTree: WIElement, vc: ViewCtx, vtm: VariantTplMgr) {
+  const site = vc.studioCtx.site;
   const tplImageAssetMap = new Map<
     TplTag,
-    { image: ResizableImage; options: ImageAssetOpts }
+    {
+      image: ResizableImage;
+      options: ImageAssetOpts;
+    }
   >();
+  const tplVariantSettingsData = new Map<TplNode, TplVariantSettingsData[]>();
 
-  function applyWIStylesToTpl(node: WIElement, tpl: TplNode) {
-    const vs = vtm.ensureBaseVariantSetting(tpl);
-
+  function collectWIVariantData(node: WIElement, tpl: TplNode) {
     const defaultStyles: Record<string, string> =
       node.type === "text"
         ? {}
@@ -129,59 +247,72 @@ async function wiTreeToTpl(wiTree: WIElement, vc: ViewCtx, vtm: VariantTplMgr) {
       }
     }
 
+    // Find base variant settings
+    const baseVariantSetting = node.variantSettings.find(
+      isWIBaseVariantSettings
+    );
+
     const baseStyles = {
       ...defaultStyles,
-      ...node.styles["base"]?.safe,
+      ...(baseVariantSetting?.safeStyles || {}),
     };
 
     const unsafeBaseStyles = {
-      ...node.styles["base"]?.unsafe,
+      ...(baseVariantSetting?.unsafeStyles || {}),
     };
 
-    RSH(vs.rs, tpl).merge(baseStyles);
-    if (Object.keys(unsafeBaseStyles).length > 0) {
-      vs.attrs["style"] = code(JSON.stringify(unsafeBaseStyles));
-    }
+    // Initialize variant settings data for this TPL
+    const tplVariantSettings: TplVariantSettingsData[] = [];
+    // Add base variant
+    tplVariantSettings.push({
+      variantCombo: [{ type: "base" }],
+      safeStyles: baseStyles,
+      unsafeStyles: unsafeBaseStyles,
+    });
 
-    // Process styles for the screen variants
-    for (const orderScreenVariant of orderedScreenVariants) {
-      const { variant: screenVariant, screenSpec } = orderScreenVariant;
-      if (!screenVariant.mediaQuery) {
+    // Process non-base variants
+    for (const variantSetting of node.variantSettings) {
+      // Skip base variant (already processed)
+      if (isWIBaseVariantSettings(variantSetting)) {
         continue;
       }
 
-      const strategy = getResponsiveStrategy(site);
-      const screenWidthToMatch =
-        strategy === ResponsiveStrategy.mobileFirst
-          ? screenSpec.minWidth
-          : screenSpec.maxWidth;
+      const tplVSData: TplVariantSettingsData = {
+        variantCombo: [],
+        safeStyles: variantSetting.safeStyles,
+        unsafeStyles: { ...unsafeBaseStyles, ...variantSetting.unsafeStyles },
+      };
 
-      if (!screenWidthToMatch) {
-        continue;
-      }
+      // Find screen and style variants in combo
+      const screenVariantInCombo = variantSetting.variantCombo.find(
+        (v) => v.type === VariantGroupType.GlobalScreen
+      ) as WIScreenVariant | undefined;
 
-      const screenStyles =
-        node.styles[`${VariantGroupType.GlobalScreen}:${screenWidthToMatch}`];
-
-      if (!screenStyles) {
-        continue;
-      }
-
-      const safeScreenStyles = screenStyles.safe;
-      const unsafeScreenStyles = screenStyles.unsafe;
-
-      const screenVs = vtm.ensureVariantSetting(tpl, [screenVariant]);
-
-      RSH(screenVs.rs, tpl).merge(safeScreenStyles);
-      if (Object.keys(unsafeScreenStyles).length > 0) {
-        screenVs.attrs["style"] = code(
-          JSON.stringify({
-            ...unsafeBaseStyles,
-            ...unsafeScreenStyles,
-          })
+      if (screenVariantInCombo) {
+        const matchingScreenVariant = findMatchingScreenVariant(
+          site,
+          screenVariantInCombo
         );
+        if (matchingScreenVariant) {
+          tplVSData.variantCombo.push(screenVariantInCombo);
+        }
+      }
+
+      const styleVariantInCombo = variantSetting.variantCombo.find(
+        (v) => v.type === "style"
+      ) as WIStyleVariant | undefined;
+
+      if (styleVariantInCombo) {
+        tplVSData.variantCombo.push(styleVariantInCombo);
+      }
+
+      // Make sure we have at-least one valid variant.
+      if (tplVSData.variantCombo.length > 0) {
+        tplVariantSettings.push(tplVSData);
       }
     }
+
+    tplVariantSettingsData.set(tpl, tplVariantSettings);
   }
 
   async function rec(node: WIElement) {
@@ -194,7 +325,7 @@ async function wiTreeToTpl(wiTree: WIElement, vc: ViewCtx, vtm: VariantTplMgr) {
         markers: [],
         text: node.text,
       });
-      applyWIStylesToTpl(node, tpl);
+      collectWIVariantData(node, tpl);
       return tpl;
     }
 
@@ -219,13 +350,16 @@ async function wiTreeToTpl(wiTree: WIElement, vc: ViewCtx, vtm: VariantTplMgr) {
           type: opts.type,
           iconColor: opts.iconColor,
         });
-        applyWIStylesToTpl(node, tpl);
+        collectWIVariantData(node, tpl);
 
         // We will store each image to it's corresponding tpl so we can process it
         // later to upload image and attach asset to this tpl in 'processWebImporterTree',
         // We cannot do that here because this function is expected to be called outside 'studioCtx.change' and
         // creating an asset here would cause a model change to occur.
-        tplImageAssetMap.set(tpl, { image: imageResult, options: opts });
+        tplImageAssetMap.set(tpl, {
+          image: imageResult,
+          options: opts,
+        });
 
         return tpl;
       }
@@ -238,7 +372,7 @@ async function wiTreeToTpl(wiTree: WIElement, vc: ViewCtx, vtm: VariantTplMgr) {
         const tplComponent = vtm.mkTplComponentX({
           component,
         });
-        applyWIStylesToTpl(node, tplComponent);
+        collectWIVariantData(node, tplComponent);
         return tplComponent;
       }
       return null;
@@ -260,7 +394,7 @@ async function wiTreeToTpl(wiTree: WIElement, vc: ViewCtx, vtm: VariantTplMgr) {
         },
         type: ImageAssetType.Picture,
       });
-      applyWIStylesToTpl(node, tpl);
+      collectWIVariantData(node, tpl);
       return tpl;
     }
 
@@ -278,7 +412,7 @@ async function wiTreeToTpl(wiTree: WIElement, vc: ViewCtx, vtm: VariantTplMgr) {
         )
       );
 
-      applyWIStylesToTpl(node, tpl);
+      collectWIVariantData(node, tpl);
 
       return tpl;
     }
@@ -292,5 +426,9 @@ async function wiTreeToTpl(wiTree: WIElement, vc: ViewCtx, vtm: VariantTplMgr) {
     return null;
   }
 
-  return { tpl, tplImageAssetMap };
+  return {
+    tpl,
+    tplImageAssetMap,
+    tplVariantSettingsData,
+  };
 }

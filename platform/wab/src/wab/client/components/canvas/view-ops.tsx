@@ -2684,14 +2684,16 @@ export class ViewOps {
               vs.variants[index] = variant;
               return;
             }
-            const clonedPrivateSV = cloneVariant(privateSV);
-            clonedPrivateSV.forTpl = newNode;
-            component.variants.push(clonedPrivateSV);
-            clonedPrivateStyleVariants.set(
-              toVariantKey(privateSV),
-              clonedPrivateSV
-            );
-            vs.variants[index] = clonedPrivateSV;
+            if (privateSV.forTpl !== newNode) {
+              const clonedPrivateSV = cloneVariant(privateSV);
+              clonedPrivateSV.forTpl = newNode;
+              component.variants.push(clonedPrivateSV);
+              clonedPrivateStyleVariants.set(
+                toVariantKey(privateSV),
+                clonedPrivateSV
+              );
+              vs.variants[index] = clonedPrivateSV;
+            }
           }
         });
       }
