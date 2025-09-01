@@ -132,7 +132,10 @@ export default defineConfig({
   server: {
     port,
     proxy: {
-      "/api": `http://localhost:${backendPort}`,
+      "/api": {
+        target: `http://localhost:${backendPort}`,
+        ws: true,
+      },
     },
   },
   source: {
