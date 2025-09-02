@@ -220,6 +220,7 @@ function BranchPanelTop_(
   }
 
   async function handleCreateBranch(sourceBranchId?: BranchId) {
+    onClose();
     if (studioCtx.appCtx.appConfig.disableBranching) {
       return notification.error({
         message: "Branch creation in maintenance",

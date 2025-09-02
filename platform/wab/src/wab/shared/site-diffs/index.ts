@@ -18,7 +18,7 @@ import {
 } from "@/wab/shared/core/components";
 import { ExprCtx, asCode } from "@/wab/shared/core/exprs";
 import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
-import { siteStyleTokensAllDepsDict } from "@/wab/shared/core/site-style-tokens";
+import { siteFinalStyleTokensAllDepsDict } from "@/wab/shared/core/site-style-tokens";
 import { isHostLessPackage } from "@/wab/shared/core/sites";
 import { SplitStatus } from "@/wab/shared/core/splits";
 import { isPrivateState } from "@/wab/shared/core/states";
@@ -58,6 +58,7 @@ import {
   Split,
   StyleExpr,
   StyleToken,
+  StyleTokenOverride,
   StyleTokenRef,
   TemplatedString,
   TplComponent,
@@ -92,6 +93,7 @@ export type AllowedSemVerSiteElement =
   | Variant
   | Mixin
   | StyleToken
+  | StyleTokenOverride
   | ImageAsset
   | Split
   | ProjectDependency
@@ -127,6 +129,7 @@ interface SemVerSiteDefaultElement {
     | "Global variant group"
     | "Mixin"
     | "Style token"
+    | "Style token override"
     | "Image"
     | "Icon"
     | "Element"
@@ -200,6 +203,10 @@ export function maybeMkSemVerSiteElement(
     }))
     .when(Mixin, (m) => ({ type: "Mixin" as const, name: m.name }))
     .when(StyleToken, (s) => ({ type: "Style token" as const, name: s.name }))
+    .when(StyleTokenOverride, (s) => ({
+      type: "Style token override" as const,
+      name: s.token.name,
+    }))
     .when(ImageAsset, (i) => ({
       type:
         i.type === ImageAssetType.Picture
@@ -282,6 +289,14 @@ export function extractSplitStatusDiff(
       return change;
     })
   );
+}
+
+function stringifyVariantedValues(
+  tokenOrOverride: StyleToken | StyleTokenOverride
+) {
+  return tokenOrOverride.variantedValues
+    .map((vv) => `${vv.variants.map((v) => v.uuid).join("")}${vv.value}`)
+    .join(",");
 }
 
 function fixParamNames(
@@ -515,6 +530,33 @@ export function compareSites(prev: Site, curr: Site): ChangeLogEntry[] {
         },
         {
           selector: (t) => t.value,
+          ...patchUpdateDiffSpecs,
+        },
+        {
+          selector: stringifyVariantedValues,
+          ...patchUpdateDiffSpecs,
+        },
+      ],
+      "global",
+      namedEntityDiffSpecs
+    )
+  );
+
+  // site.styleTokensOverrides
+  results.push(
+    ...genericCheck(
+      prev,
+      curr,
+      prev.styleTokenOverrides,
+      curr.styleTokenOverrides,
+      (t) => t.token.uuid,
+      [
+        {
+          selector: (t) => t.value ?? "",
+          ...patchUpdateDiffSpecs,
+        },
+        {
+          selector: stringifyVariantedValues,
           ...patchUpdateDiffSpecs,
         },
       ],
@@ -936,7 +978,7 @@ function hashVariantSetting(site: Site, vs: VariantSetting, exprCtx: ExprCtx) {
 }
 
 function hashRuleSet(site: Site, rs: RuleSet) {
-  const allTokensDict = siteStyleTokensAllDepsDict(site);
+  const allTokensDict = siteFinalStyleTokensAllDepsDict(site);
   const rsValues = Object.entries(rs.values)
     .sort((a, b) => a[0].localeCompare(b[0]))
     .map(([key, val]) => {

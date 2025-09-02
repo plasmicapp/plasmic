@@ -6,7 +6,7 @@ import { TplMgr } from "@/wab/shared/TplMgr";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import { toVarName } from "@/wab/shared/codegen/util";
 import { isReadonlyArray } from "@/wab/shared/collections";
-import { ensure, tuple, unexpected, withoutNils } from "@/wab/shared/common";
+import { ensure, mkShortId, tuple, unexpected, withoutNils } from "@/wab/shared/common";
 import { DependencyWalkScope } from "@/wab/shared/core/project-deps";
 import { siteFinalStyleTokensOfType } from "@/wab/shared/core/site-style-tokens";
 import {
@@ -16,7 +16,7 @@ import {
 } from "@/wab/shared/core/tokens";
 import { getLengthUnits, parseCss } from "@/wab/shared/css";
 import { DEVFLAGS } from "@/wab/shared/devflags";
-import { Mixin, Site, StyleToken } from "@/wab/shared/model/classes";
+import { Mixin, Site, StyleToken, StyleTokenParams } from "@/wab/shared/model/classes";
 import CSSEscape from "css.escape";
 import L from "lodash";
 import type { Opaque, SetOptional } from "type-fest";
@@ -45,6 +45,26 @@ export const tokenTypes = [
   "Opacity",
   "Spacing",
 ] as const;
+
+export function mkStyleToken({
+  name,
+  type,
+  value,
+}: {
+  name: string;
+  type: StyleTokenParams["type"];
+  value: string;
+}) {
+  return new StyleToken({
+    name,
+    type,
+    value,
+    uuid: mkShortId(),
+    variantedValues: [],
+    isRegistered: false,
+    regKey: undefined,
+  });
+}
 
 /**
  * Checks if a style token is editable. Can also check if the target global

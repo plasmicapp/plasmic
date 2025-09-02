@@ -1,4 +1,4 @@
-import { mkTokenRef } from "@/wab/commons/StyleToken";
+import { mkStyleToken, mkTokenRef } from "@/wab/commons/StyleToken";
 import { $$$ } from "@/wab/shared/TplQuery";
 import { ensureBaseVariantSetting } from "@/wab/shared/VariantTplMgr";
 import { VariantGroupType, mkBaseVariant } from "@/wab/shared/Variants";
@@ -18,8 +18,10 @@ import {
   Site,
   StyleMarker,
   StyleToken,
+  StyleTokenOverride,
   TplTag,
   Variant,
+  VariantedValue,
 } from "@/wab/shared/model/classes";
 import { typeFactory } from "@/wab/shared/model/model-util";
 import {
@@ -33,8 +35,32 @@ import L from "lodash";
 // Using it as a LIFO stack, where i=0 is the latest
 const sites: Site[] = [];
 
+const depStyleToken = mkStyleToken({
+  name: "primary",
+  type: "Color",
+  value: "rgb(0,0,0)",
+});
+const depStyleToken2 = mkStyleToken({
+  name: "secondary",
+  type: "Color",
+  value: "rgb(0,0,0)",
+});
 beforeEach(() => {
-  sites.unshift(createSite());
+  const depSite = createSite();
+  depSite.styleTokens.push(depStyleToken);
+  depSite.styleTokens.push(depStyleToken2);
+  const site = createSite();
+  site.projectDependencies.push(
+    new ProjectDependency({
+      name: "dep",
+      projectId: "123",
+      uuid: "123",
+      pkgId: "123",
+      version: "0.0.1",
+      site: depSite,
+    })
+  );
+  sites.unshift(site);
 });
 
 afterEach(() => {
@@ -390,6 +416,17 @@ describe("compareSites / calculateSemVer", () => {
     // - rename token
     nextSite().styleTokens[0].name = "newTokenName";
     compareCheck("major", 1);
+    // - add varianted value
+    nextSite().styleTokens[0].variantedValues.push(
+      new VariantedValue({
+        variants: [mkBaseVariant()],
+        value: "rgb(255,255,255)",
+      })
+    );
+    compareCheck("patch", 1);
+    // - change varianted value
+    nextSite().styleTokens[0].variantedValues[0].value = "rgb(0,255,0)";
+    compareCheck("patch", 1);
     // - add new token and delete previous token
     nextSite().styleTokens[0] = new StyleToken({
       name: "token2",
@@ -418,6 +455,55 @@ describe("compareSites / calculateSemVer", () => {
     return;
   });
 
+  // site.styleTokenOverrides
+  it("semver-styleTokensOverrides", () => {
+    // - Add new override
+    nextSite().styleTokenOverrides.unshift(
+      new StyleTokenOverride({
+        token: depStyleToken,
+        value: "rgb(255,0,0)",
+        variantedValues: [],
+      })
+    );
+    compareCheck("minor", 1);
+    // - change override value
+    nextSite().styleTokenOverrides[0].value = "rgb(255,255,255)";
+    compareCheck("patch", 0); // Currently not including patch changes
+    // - add override varianted value
+    nextSite().styleTokenOverrides[0].variantedValues.push(
+      new VariantedValue({
+        variants: [mkBaseVariant()],
+        value: "rgb(255,255,255)",
+      })
+    );
+    compareCheck("patch", 1);
+    // - change override varianted value
+    nextSite().styleTokenOverrides[0].variantedValues[0].value = "rgb(0,255,0)";
+    compareCheck("patch", 1);
+    // - add new override on another token and delete previous override
+    nextSite().styleTokenOverrides[0] = new StyleTokenOverride({
+      token: depStyleToken2,
+      value: "rgb(0,255,0)",
+      variantedValues: [],
+    });
+    compareCheck("major", 2);
+    // - use token on component and change token value for indirect changes
+    const oldSite = nextSite();
+    oldSite.components.unshift(newComponent("component1"));
+    oldSite.components[0].variants.unshift(mkBaseVariant());
+    $$$(oldSite.components[0].tplTree).append(newTpl());
+    const children = (oldSite.components[0].tplTree as TplTag)
+      .children[0] as TplTag;
+    ensureBaseVariantSetting(oldSite.components[0], children);
+    children.vsettings[0].rs.values["background-color"] = mkTokenRef(
+      oldSite.styleTokenOverrides[0].token
+    );
+    nextSite().styleTokenOverrides[0].value = "rgb(0, 0, 0)";
+    compareCheck("patch", 2);
+
+    return;
+  });
+
   it("semver-importedProjects", () => {
     const importedProject = new ProjectDependency({
       name: "Core",
@@ -433,7 +519,7 @@ describe("compareSites / calculateSemVer", () => {
     compareCheck("minor", 1);
 
     // - removed dep
-    nextSite().projectDependencies = [];
+    nextSite().projectDependencies.shift();
     compareCheck("major", 1);
   });
 });
