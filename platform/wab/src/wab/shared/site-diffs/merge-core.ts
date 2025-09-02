@@ -55,6 +55,7 @@ import {
   Split,
   State,
   StyleToken,
+  StyleTokenOverride,
   Variant,
   VariantGroup,
 } from "@/wab/shared/model/classes";
@@ -760,6 +761,12 @@ export const conflictGroupings = sortBy(
       pathPattern: pathSelector<Site>().styleTokens._.getPath(),
       label: () => "style token",
       name: (src: StyleToken) => src.name,
+    }),
+    mkGrouping({
+      group: "StyleTokenOverride",
+      pathPattern: pathSelector<Site>().styleTokenOverrides._.getPath(),
+      label: () => "style token override",
+      name: (src: StyleTokenOverride) => src.token.name,
     }),
     mkGrouping({
       group: "GlobalVariantGroup",
