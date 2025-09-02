@@ -224,18 +224,13 @@ function CmsEntryDetailsForm_(
     Dict<UniqueFieldStatus>
   >(() => {
     if (row.draftData) {
-      const uniqueDraftFields = getUniqueFieldsData(
-        table,
-        row.draftData as CmsRowData
-      );
+      const uniqueDraftFields = getUniqueFieldsData(table, row.draftData);
       return dataToUniqueStatus(uniqueDraftFields, "not started");
-    } else {
-      const uniquePublishedFields = getUniqueFieldsData(
-        table,
-        row.data as CmsRowData
-      );
+    } else if (row.data) {
+      const uniquePublishedFields = getUniqueFieldsData(table, row.data);
       return dataToUniqueStatus(uniquePublishedFields, "ok");
     }
+    return {};
   });
   const handleUniqueFieldChecks = React.useCallback(
     (checks: UniqueFieldCheck[]) => {
