@@ -194,7 +194,7 @@ export const VariantsPanel = observer(
     ]);
 
     const onAddedVariant = (variant: Variant) => {
-      vcontroller.onAddedVariant(variant);
+      vcontroller.onAddedVariant(variant, { focusFrame: false });
       setJustAddedVariant(variant);
     };
 
@@ -223,6 +223,7 @@ export const VariantsPanel = observer(
           const variant = isGlobalVariantGroup(group)
             ? studioCtx.tplMgr().createGlobalVariant(group)
             : studioCtx.tplMgr().createVariant(component, group);
+          onAddedVariant(variant);
           setJustAddedVariant(variant);
         }
 

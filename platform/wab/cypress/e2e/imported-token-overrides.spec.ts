@@ -184,6 +184,7 @@ describe("Imported token overrides", function () {
                   cy.wait(500);
                   cy.createNewPage("New Page").then((frame) => {
                     cy.createGlobalVariantGroup("Platform", "Website");
+                    cy.resetVariants();
                     cy.insertFromAddDrawer("Dep Comp Parent");
                     cy.insertFromAddDrawer("Dep Comp");
                     cy.insertFromAddDrawer("Text");

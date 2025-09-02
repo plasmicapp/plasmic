@@ -51,7 +51,12 @@ import { isArray } from "lodash";
 
 export interface VariantsController {
   onClearVariants: () => void;
-  onAddedVariant: (variant: Variant) => void;
+  onAddedVariant: (
+    variant: Variant,
+    opts?: {
+      focusFrame: boolean;
+    }
+  ) => void;
   onClickVariant: (variant: Variant) => void;
   onTargetVariant: (variant: Variant, add: boolean) => void;
   onToggleVariant: (variant: Variant) => void;
@@ -274,11 +279,19 @@ export class ComponentArenaVariantsController implements VariantsController {
     this.switchToFrame(baseFrame);
   }
 
-  onAddedVariant(variant: Variant) {
+  onAddedVariant(
+    variant: Variant,
+    opts = {
+      focusFrame: true,
+    }
+  ) {
     if (isPrivateStyleVariant(variant)) {
       this.pinManager?.addSelectedVariants([variant]);
     } else {
-      this.switchToManagedFrame(variant);
+      const newFrame = this.ensureManagedFrameForVariant(variant);
+      if (opts.focusFrame) {
+        this.switchToFrame(newFrame);
+      }
     }
   }
 
@@ -300,11 +313,11 @@ export class ComponentArenaVariantsController implements VariantsController {
       if (cellKeyIncludesVariant(cellKey, variant)) {
         pinManager.toggleTargeting([variant]);
       } else {
-        this.switchToManagedFrame(variant);
+        this.switchToFrame(this.ensureManagedFrameForVariant(variant));
       }
       this.maybeResizeFrame(curFrame, variant);
     } else {
-      this.switchToManagedFrame(variant);
+      this.switchToFrame(this.ensureManagedFrameForVariant(variant));
     }
   }
 
@@ -428,14 +441,12 @@ export class ComponentArenaVariantsController implements VariantsController {
     }
   }
 
-  private switchToManagedFrame(variant: Variant) {
-    const newFrame = ensureManagedFrameForVariantInComponentArena(
+  private ensureManagedFrameForVariant(variant: Variant) {
+    return ensureManagedFrameForVariantInComponentArena(
       this.studioCtx.site,
       this.currentArena,
       variant
     );
-    this.switchToFrame(newFrame);
-    return newFrame;
   }
 
   private switchToFrame(newFrame: ArenaFrame) {
@@ -489,11 +500,20 @@ export class PageArenaVariantsController implements VariantsController {
     this.switchToVariant(getBaseVariant(this.currentArena.component));
   }
 
-  onAddedVariant(variant: Variant) {
+  onAddedVariant(
+    variant: Variant,
+    opts = {
+      focusFrame: true,
+    }
+  ) {
     if (isPrivateStyleVariant(variant)) {
       this.pinManager?.addSelectedVariants([variant]);
     } else {
-      this.switchToVariant(variant);
+      if (opts.focusFrame) {
+        this.switchToVariant(variant);
+      } else {
+        this.ensureManagedRowForVariant(variant);
+      }
     }
   }
 
@@ -613,12 +633,8 @@ export class PageArenaVariantsController implements VariantsController {
     return newFrame;
   }
 
-  private switchToVariant(variant: Variant) {
-    if (isScreenVariant(variant)) {
-      return;
-    }
-
-    const row = ensure(
+  private ensureManagedRowForVariant(variant: Variant) {
+    return ensure(
       ensureManagedRowForVariantInPageArena(
         this.site,
         this.currentArena,
@@ -626,6 +642,14 @@ export class PageArenaVariantsController implements VariantsController {
       ),
       "Row should exist in page arena"
     );
+  }
+
+  private switchToVariant(variant: Variant) {
+    if (isScreenVariant(variant)) {
+      return;
+    }
+
+    const row = this.ensureManagedRowForVariant(variant);
 
     // When switching to base, if we only one row, the base means a single frame.
     // If we have more variants, it's ok to just jump to the first row (base row)

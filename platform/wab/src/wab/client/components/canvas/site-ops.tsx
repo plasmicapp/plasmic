@@ -1729,7 +1729,7 @@ export class SiteOps {
 
   private onVariantAdded(variant: Variant) {
     const vcontroller = makeVariantsController(this.studioCtx);
-    vcontroller?.onAddedVariant(variant);
+    vcontroller?.onAddedVariant(variant, { focusFrame: true });
 
     this.studioCtx.latestVariantCreated = variant;
   }
