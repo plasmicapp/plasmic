@@ -36,6 +36,7 @@
     "get-port": "^5.1.1",
     "glob": "^7.1.7",
     "node-fetch": "^2",
+    "playwright-ctrf-json-reporter": "^0.0.23",
     "scroll-to-bottomjs": "^1.1.0",
     "tmp": "^0.2.1"
   }

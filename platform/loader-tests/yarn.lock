@@ -2922,6 +2922,11 @@ playwright-core@1.38.1:
   resolved "https://registry.yarnpkg.com/playwright-core/-/playwright-core-1.38.1.tgz#75a3c470aa9576b7d7c4e274de3d79977448ba08"
   integrity sha512-tQqNFUKa3OfMf4b2jQ7aGLB8o9bS3bOY0yMEtldtC2+spf8QXG9zvXLTXUeRsoNuxEYMgLYR+NXfAa1rjKRcrg==
 
+playwright-ctrf-json-reporter@^0.0.23:
+  version "0.0.23"
+  resolved "https://registry.yarnpkg.com/playwright-ctrf-json-reporter/-/playwright-ctrf-json-reporter-0.0.23.tgz#ab2a5bcf31afb3345450f493f9dbfcf8bbf2fe3a"
+  integrity sha512-49e1gSdq7Rytz9ji8kwgrrWZ0w39RNVDH5FlPiBeosdn12VTfWmhYRBcKpC2D29pa1ZdTxGhHdbB4UML2MNITg==
+
 playwright@1.38.1:
   version "1.38.1"
   resolved "https://registry.yarnpkg.com/playwright/-/playwright-1.38.1.tgz#82ecd9bc4f4f64dbeee8a11c31793748e2528130"
