@@ -2138,7 +2138,7 @@ export async function revertToVersion(req: Request, res: Response) {
   await broadcastProjectsMessage({
     room: `projects/${projectId}`,
     type: "update",
-    message: { projectId: projectId, rvisionNum: rev.revision },
+    message: { projectId: projectId, revisionNum: rev.revision },
   });
 }
 
