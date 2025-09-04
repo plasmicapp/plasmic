@@ -9,8 +9,8 @@ import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { asCode } from "@/wab/shared/core/exprs";
 import {
   Component,
-  isKnownTemplatedString,
   TemplatedString,
+  isKnownTemplatedString,
 } from "@/wab/shared/model/classes";
 import { Input, InputRef } from "antd";
 import { default as classNames } from "classnames";
@@ -57,6 +57,7 @@ export const StringPropEditor = React.forwardRef<
   }, [props.value]);
 
   const curValue = draft === undefined ? props.value : draft;
+
   const submitDraft = () => {
     if (
       draft !== undefined &&
@@ -69,6 +70,7 @@ export const StringPropEditor = React.forwardRef<
       reset();
     }
   };
+
   useUnmount(() => {
     // On unmount, if the value in the local state differs from exprLit, then we'll
     // want to submit the change (this can happen if you type in the value textbox,
@@ -165,6 +167,20 @@ export const TemplatedStringPropEditor = React.forwardRef<
       defer(() => submitVal(draft));
     }
   });
+  // Check if the current value has newlines to determine multiLine mode
+  const hasNewLines = React.useMemo(() => {
+    if (!curValue) {
+      return false;
+    }
+    if (isKnownTemplatedString(curValue)) {
+      return curValue.text.some(
+        (t) => typeof t === "string" && t.includes("\n")
+      );
+    }
+    return typeof curValue === "string" && curValue.includes("\n");
+  }, [curValue]);
+
+  const multiLineAllowed = !!props.component;
 
   return !isKnownTemplatedString(props.value) &&
     (!props.data || props.disabled) ? (
@@ -189,18 +205,23 @@ export const TemplatedStringPropEditor = React.forwardRef<
       schema={props.schema}
       component={props.component}
       placeholder={props.defaultValueHint ?? "unset"}
+      multiLine={multiLineAllowed ? "allowed" : undefined}
       onKeyDown={(e) => {
+        // On Shift+Enter let Slate insert a newline if allowed
+        if (multiLineAllowed && e.key === "Enter" && e.shiftKey) {
+          return;
+        }
         if (handleKeyDown(e)) {
           return;
         }
 
-        if (e.key === "Enter" && ref.current?.isFocused()) {
+        if (e.key === "Enter" && ref.current?.isFocused() && !e.shiftKey) {
           submitVal(draft ?? "");
           e.preventDefault();
           e.stopPropagation();
         }
       }}
-      // This may not fire! Doesn't seem to if trigered with .blur() in Cypress.
+      // This may not fire! Doesn't seem to if triggered with .blur() in Cypress.
       // Maybe related? https://github.com/ianstormtaylor/slate/issues/3742
       onBlur={() => {
         if (draft !== undefined) {

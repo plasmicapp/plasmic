@@ -18,12 +18,12 @@ import {
   xSetDefault,
 } from "@/wab/shared/common";
 import {
-  ExprCtx,
   asCode,
   clone,
   codeLit,
   createExprForDataPickerValue,
   customCode,
+  ExprCtx,
   extractValueSavedFromDataPicker,
   isRealCodeExpr,
   summarizeExpr,
@@ -36,10 +36,10 @@ import { tryEvalExpr } from "@/wab/shared/eval";
 import {
   Component,
   CustomCode,
-  ObjectPath,
-  TemplatedString,
   isKnownCustomCode,
   isKnownObjectPath,
+  ObjectPath,
+  TemplatedString,
 } from "@/wab/shared/model/classes";
 import { DataSourceSchema } from "@plasmicapp/data-sources";
 import { Popover, Tooltip } from "antd";
@@ -58,6 +58,7 @@ import ReactDOM from "react-dom";
 import { usePrevious } from "react-use";
 import {
   BasePoint,
+  createEditor,
   Editor,
   Node,
   Range,
@@ -65,7 +66,6 @@ import {
   Element as SlateElement,
   Text,
   Transforms,
-  createEditor,
 } from "slate";
 import { withHistory } from "slate-history";
 import {
@@ -102,6 +102,8 @@ const getSqlParser = memoizeOne(() => import("pgsql-ast-parser"));
 
 type Descendant = SlateDescendant | CodeTagNode;
 
+type MultiLineOption = "always" | "allowed";
+
 export interface TemplatedTextEditorProps {
   className?: string;
   value?: TemplatedString;
@@ -119,7 +121,7 @@ export interface TemplatedTextEditorProps {
   dataSourceSchema?: DataSourceSchema;
   showExpressionAsPreviewValue?: boolean;
   prefix?: string;
-  multiLine?: boolean;
+  multiLine?: MultiLineOption;
   component?: Component;
   "data-plasmic-prop"?: string;
   exprCtx: ExprCtx;
@@ -132,7 +134,7 @@ const editorCache = new WeakMap<
   ) => ReturnType<typeof doResetNodes>
 >();
 
-// We debounce reseting the nodes when a new value is provided to avoid an
+// We debounce resetting the nodes when a new value is provided to avoid an
 // infinite loop of updates when the text editor is controlled by a parent
 // component and multiple changes are made in sequence (which makes an older
 // and newer values to keep being passed to the props as a different new value
@@ -171,13 +173,21 @@ export const TemplatedTextEditor = React.forwardRef<
     },
     outerRef
   ) => {
+    const multiLineAllowed = multiLine === "allowed";
+
     const editor = React.useMemo(
       () =>
-        sql || multiLine
+        sql || multiLine === "always"
           ? withCodeTag(withReact(withHistory(createEditor())))
-          : withCodeTag(withSingleLine(withReact(withHistory(createEditor())))),
+          : withCodeTag(
+              withSingleLine(
+                withReact(withHistory(createEditor())),
+                multiLineAllowed
+              )
+            ),
       []
     );
+
     const [validSqlString, setValidSqlString] = React.useState(true);
     const studioCtx = useStudioCtx();
 
@@ -533,28 +543,31 @@ function renderElement(
   }
 }
 
-function withSingleLine<T extends Editor>(editor: T): T {
+function withSingleLine<T extends Editor>(
+  editor: T,
+  multiLineAllowed: boolean | undefined
+): T {
   const { normalizeNode, insertText } = editor;
 
   editor.normalizeNode = ([node, path]) => {
-    if (path.length === 0) {
-      if (editor.children.length > 1) {
-        Transforms.mergeNodes(editor);
-      }
+    // Only enforce single line if not in multiLine mode
+    if (!multiLineAllowed && path.length === 0 && editor.children.length > 1) {
+      Transforms.mergeNodes(editor);
     }
 
     return normalizeNode([node, path]);
   };
 
-  // Also remove the unicode line break from strings
+  // Also remove the unicode line break from strings when not in multiLine mode
   editor.insertText = (text) => {
-    const cleanedText = text.replace(/\u2028/g, "");
-
-    if (cleanedText !== text) {
-      Transforms.insertText(editor, cleanedText);
-    } else {
-      insertText(cleanedText);
+    if (!multiLineAllowed) {
+      const cleanedText = text.replace(/\u2028/g, "");
+      if (cleanedText !== text) {
+        Transforms.insertText(editor, cleanedText);
+        return;
+      }
     }
+    insertText(text);
   };
 
   return editor;
@@ -659,17 +672,9 @@ function parseTemplatedStringToSlateNodes(
 
                     return nodes;
                   }
-                  return [
-                    {
-                      text: t,
-                    },
-                  ];
+                  return [{ text: t }];
                 })
-              : [
-                  {
-                    text: "",
-                  },
-                ],
+              : [{ text: "" }],
         } as SlateDescendant,
       ]
     : [
@@ -763,13 +768,6 @@ function CodeTag({
       );
     }
   }, [open]);
-
-  // This needs to be a function rather than a boolean because if we had a broader selection and then click to select
-  // just this node, none of the props or useSelected for this node changes, so this won't be re-rendered and hence this
-  // boolean won't be re-evaluated.
-  const isOnlySelectedNode = () =>
-    JSON.stringify(editor.selection?.anchor) ===
-    JSON.stringify(editor.selection?.focus);
 
   React.useEffect(() => {
     if (element.openDataPicker) {
@@ -1023,8 +1021,7 @@ interface CaretUIProps {
   anchor: BasePoint;
 }
 
-function CaretUI({ top, left, anchor }: CaretUIProps) {
-  const editor = useSlateStatic();
+function CaretUI({ top, left }: CaretUIProps) {
   const isFocused = useFocused();
   const [hover, setHover] = useState(false);
 

@@ -3266,7 +3266,7 @@ const HttpBodyEditor = observer(function HttpBodyEditor({
           schema={schema}
           exprCtx={exprCtx}
           onChange={(newVal) => handleChange(newVal, true)}
-          multiLine
+          multiLine={"always"}
           data-plasmic-prop={dataPlasmicProp}
         />
       ) : (
