@@ -1,6 +1,7 @@
 import { PLASMIC } from "@/plasmic-init";
 import { PlasmicClientRootProvider } from "@/plasmic-init-client";
 import { PlasmicComponent } from "@plasmicapp/loader-nextjs";
+import { Metadata, ResolvingMetadata } from "next";
 import { notFound } from "next/navigation";
 
 export const revalidate = 60;
@@ -26,17 +27,27 @@ export async function generateStaticParams(): Promise<Params[]> {
   });
 }
 
-export default async function PlasmicLoaderPage({
-  params,
-}: {
+interface LoaderPageProps {
   params: Promise<Params>;
-}) {
-  const { prefetchedData, prefetchedQueryData } = await fetchData(
+}
+
+export async function generateMetadata(
+  { params }: LoaderPageProps,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  const { pageMeta } = await fetchData((await params).catchall);
+  return {
+    ...((await parent) as Metadata),
+    ...pageMeta.pageMetadata,
+  };
+}
+
+export default async function PlasmicLoaderPage({ params }: LoaderPageProps) {
+  const { pageMeta, prefetchedData, prefetchedQueryData } = await fetchData(
     (
       await params
     ).catchall
   );
-  const pageMeta = prefetchedData.entryCompMetas[0];
   return (
     <PlasmicClientRootProvider
       prefetchedData={prefetchedData}
@@ -51,18 +62,20 @@ export default async function PlasmicLoaderPage({
 async function fetchData(catchall: string[] | undefined) {
   const pagePath = catchall ? `/${catchall.join("/")}` : "/";
   const prefetchedData = await PLASMIC.maybeFetchComponentData(pagePath);
-  if (!prefetchedData) {
+  if (!prefetchedData || prefetchedData.entryCompMetas.length === 0) {
     notFound();
   }
+
+  const pageMeta = prefetchedData.entryCompMetas[0];
 
   const prefetchedQueryData = await PLASMIC.unstable__getServerQueriesData(
     prefetchedData,
     {
       pagePath,
-      params: prefetchedData.entryCompMetas[0].params,
+      params: pageMeta.params,
       query: {},
     }
   );
 
-  return { prefetchedData, prefetchedQueryData };
+  return { pageMeta, prefetchedData, prefetchedQueryData };
 }

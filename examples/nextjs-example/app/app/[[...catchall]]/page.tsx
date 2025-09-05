@@ -1,6 +1,7 @@
 import { PLASMIC } from "@/plasmic-init";
 import { PlasmicClientRootProvider } from "@/plasmic-init-client";
 import { PlasmicComponent } from "@plasmicapp/loader-nextjs";
+import { Metadata, ResolvingMetadata } from "next";
 import { notFound } from "next/navigation";
 
 export const revalidate = 60;
@@ -15,24 +16,38 @@ interface Params {
   catchall: string[] | undefined;
 }
 
+export async function generateStaticParams(): Promise<Params[]> {
+  const pageModules = await PLASMIC.fetchPages();
+  return pageModules.map((mod) => {
+    const catchall =
+      mod.path === "/" ? undefined : mod.path.substring(1).split("/");
+    return {
+      catchall,
+    };
+  });
+}
+
+interface LoaderPageProps {
+  params: Params;
+  searchParams?: Record<string, string | string[]>;
+}
+
+export async function generateMetadata(
+  { params }: LoaderPageProps,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  const { pageMeta } = await fetchData(params.catchall);
+  return {
+    ...((await parent) as Metadata),
+    ...pageMeta.pageMetadata,
+  };
+}
+
 export default async function PlasmicLoaderPage({
   params,
   searchParams,
-}: {
-  params?: Params;
-  searchParams?: Record<string, string | string[]>;
-}) {
-  const staticProps = await fetchData(params?.catchall);
-  if (!staticProps) {
-    notFound();
-  }
-
-  const { prefetchedData } = staticProps;
-  if (prefetchedData.entryCompMetas.length === 0) {
-    notFound();
-  }
-
-  const pageMeta = prefetchedData.entryCompMetas[0];
+}: LoaderPageProps) {
+  const { pageMeta, prefetchedData } = await fetchData(params.catchall);
   return (
     <PlasmicClientRootProvider
       prefetchedData={prefetchedData}
@@ -70,24 +85,14 @@ export default async function PlasmicLoaderPage({
 async function fetchData(catchall: string[] | undefined) {
   const plasmicPath = catchall ? `/${catchall.join("/")}` : "/";
   const prefetchedData = await PLASMIC.maybeFetchComponentData(plasmicPath);
-  if (!prefetchedData) {
+  if (!prefetchedData || prefetchedData.entryCompMetas.length === 0) {
     notFound();
   }
 
-  // Prefetching query data in data-fetching components in app router.
-  // TODO: Use server functions/queries instead.
+  const pageMeta = prefetchedData.entryCompMetas[0];
+
+  // TODO: Use new server functions/queries feature.
   const prefetchedQueryData = undefined;
 
-  return { prefetchedData, prefetchedQueryData };
-}
-
-export async function generateStaticParams(): Promise<Params[]> {
-  const pageModules = await PLASMIC.fetchPages();
-  return pageModules.map((mod) => {
-    const catchall =
-      mod.path === "/" ? undefined : mod.path.substring(1).split("/");
-    return {
-      catchall,
-    };
-  });
+  return { pageMeta, prefetchedData, prefetchedQueryData };
 }
