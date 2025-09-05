@@ -1314,6 +1314,11 @@ export function serializeComponentLocalVars(ctx: SerializerBaseContext) {
     const refsRef = React.useRef({});
     const $refs = refsRef.current;
 
+    ${serializeGlobalVariantValues(
+      ctx.usedGlobalVariantGroups,
+      projectConfig.projectModuleBundle
+    )}
+
     ${
       ctx.usesGlobalActions
         ? `const $globalActions = useGlobalActions?.();`
@@ -1403,10 +1408,6 @@ export function serializeComponentLocalVars(ctx: SerializerBaseContext) {
     }
 
     ${treeTriggers}
-    ${serializeGlobalVariantValues(
-      ctx.usedGlobalVariantGroups,
-      projectConfig.projectModuleBundle
-    )}
     ${
       projectConfig.projectModuleBundle
         ? serializeStyleTokensClassNames(
