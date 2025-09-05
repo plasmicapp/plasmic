@@ -2244,15 +2244,20 @@ function getComponentRootTagResetClassNames(
     "plasmic-tokens",
     rootResetClass,
     includeTagStyles ? `${rootResetClass}_tags` : undefined,
-    `${makeCssClassNameForVariantCombo(
-      Array.from(ctx.activeVariants).filter(
+    ...Array.from(ctx.activeVariants)
+      // Get class names for non-screen variants only, as screen variants are handled via media query
+      .filter(
         (v) => isGlobalVariant(v) && !isScreenVariant(v) && !isBaseVariant(v)
+      )
+      // Include each global variant class name separately (instead of as a combo),
+      // because the Studio UI and codegen only support varianted tokens with 1 variant.
+      .map(
+        (v) =>
+          makeCssClassNameForVariantCombo([v], {
+            targetEnv: "canvas",
+            prefix: "__wab_",
+          }) ?? undefined
       ),
-      {
-        targetEnv: "canvas",
-        prefix: "__wab_",
-      }
-    )}` || undefined,
   ]);
 }
 

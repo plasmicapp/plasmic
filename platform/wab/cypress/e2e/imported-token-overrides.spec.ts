@@ -311,9 +311,6 @@ describe("Imported token overrides", function () {
                       frame
                     );
 
-                    // TODO: Currently, global variant combos don't work! Fix it. IN the meantime, I'll avoid testing with combos.
-                    // NOTE: Remove the line below when the global variant combos are fixed.
-                    cy.resetVariants();
                     cy.selectVariant("Platform", "Website", true);
                     assertTextStylingInBothModes(
                       TEST_COLORS.PRIMARY_OVERRIDE_VARIANT,
