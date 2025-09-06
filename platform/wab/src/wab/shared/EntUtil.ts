@@ -14,7 +14,7 @@ const accessLevelOrderAsc = [
 export type AccessLevel = (typeof accessLevelOrderAsc)[number];
 
 const grantableAccessLevels = accessLevelOrderAsc.filter(
-  (level) => level !== "owner" && level !== "blocked"
+  (level) => level !== "blocked"
 );
 
 export type GrantableAccessLevel = (typeof grantableAccessLevels)[number];
