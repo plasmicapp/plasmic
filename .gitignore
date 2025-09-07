@@ -41,3 +41,6 @@ storybook-static/
 *.dec.*
 dist/
 docs/
+.secrets/*.key
+.secrets/*.tmp
+.env.local.*
