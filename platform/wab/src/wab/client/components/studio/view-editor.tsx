@@ -1901,7 +1901,7 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
           </DevContainer>
 
           <div className="canvas-editor__hsplit">
-            <LeftPane studioCtx={studioCtx} />
+            <LeftPane key={studioCtx.site.uid} studioCtx={studioCtx} />
             <div
               className={cn("canvas-editor__canvas-container", {
                 "canvas-editor__canvas-container__focus_mode":
