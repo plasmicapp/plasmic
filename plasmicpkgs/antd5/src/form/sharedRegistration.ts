@@ -1,5 +1,5 @@
-import { ActionProps, PropType } from "@plasmicapp/host";
-import { ArrayType, ControlExtras } from "@plasmicapp/host/registerComponent";
+import { ActionProps, ControlExtras, PropType } from "@plasmicapp/host";
+import { ArrayType } from "@plasmicapp/host/registerComponent";
 import { Input, InputNumber, Radio } from "antd";
 import React from "react";
 import { AntdCheckbox } from "../registerCheckbox";
@@ -7,7 +7,6 @@ import { AntdDatePicker } from "../registerDatePicker";
 import { AntdRadioGroup } from "../registerRadio";
 import { AntdSelect } from "../registerSelect";
 import { arrayEq } from "../utils";
-import { CommonFormControlContextData } from "./contexts";
 import {
   FormWrapperControlContextData,
   FormWrapperProps,
@@ -15,6 +14,7 @@ import {
   SimplifiedFormItemsProp,
 } from "./Form";
 import { FormItemControlContextData, InternalFormItemProps } from "./FormItem";
+import { CommonFormControlContextData } from "./contexts";
 
 const mapAntdComponentToInputType = new Map<any, InputType>([
   [Input, InputType.Text],

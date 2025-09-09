@@ -1,11 +1,11 @@
 import { PropType } from "@plasmicapp/host/registerComponent";
+import { capitalize } from "./common";
 import {
   BaseColumnConfig,
   FieldfulProps,
   buildFieldsPropType,
   getFieldSubprops,
 } from "./field-mappings";
-import { capitalize } from "./common";
 import { maybe } from "./utils";
 
 export function roleProp<P extends FieldfulProps<any>>({

@@ -61,6 +61,7 @@ import {
 } from "@/wab/shared/model/classes";
 import { instUtil as defaultInstUtil } from "@/wab/shared/model/InstUtil";
 import { Type as ModelType } from "@/wab/shared/model/model-meta";
+import { ChoiceOptions } from "@plasmicapp/host";
 import L, {
   isArray,
   isBoolean,
@@ -99,11 +100,7 @@ export const typeFactory = {
   }) => new RenderFuncType({ name: "renderFunc", ...opts }),
   href: () => new HrefType({ name: "href" }),
   target: () => new TargetType({ name: "target" }),
-  choice: (
-    options:
-      | (string | number | boolean)[]
-      | { label: string; value: string | number | boolean }[]
-  ) => new Choice({ name: "choice", options }),
+  choice: (options: ChoiceOptions) => new Choice({ name: "choice", options }),
   instance: (component: Component) =>
     new ComponentInstance({ name: "instance", component }),
   plumeInstance: (plumeType: string) =>

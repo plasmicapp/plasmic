@@ -125,7 +125,7 @@ import {
 } from "@/wab/shared/model/classes";
 import { typesEqual } from "@/wab/shared/model/model-util";
 import { smartHumanize } from "@/wab/shared/strs";
-import { ContextDependentConfig } from "@plasmicapp/host";
+import { ComponentContextConfig } from "@plasmicapp/host";
 import L, { isNil, isNumber } from "lodash";
 import { observer } from "mobx-react";
 import React from "react";
@@ -174,7 +174,7 @@ const PropValueEditor_ = (
     function <P>(
       contextDependentValue?:
         | P
-        | ContextDependentConfig<typeof componentPropValues, P>
+        | ComponentContextConfig<typeof componentPropValues, P>
     ) {
       return getContextDependentValue(
         contextDependentValue,

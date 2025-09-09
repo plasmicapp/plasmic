@@ -50,7 +50,9 @@ interface Event {
 
 function getEventFullDate(date?: string): string | undefined {
   const parsed = parseDate(date);
-  if (!parsed) return undefined;
+  if (!parsed) {
+    return undefined;
+  }
   const yyyy = parsed.getFullYear();
   const mm = (parsed.getMonth() + 1).toString().padStart(2, "0");
   const dd = parsed.getDate().toString().padStart(2, "0");
@@ -62,7 +64,9 @@ function getEventMonthYear(date?: string): string | undefined {
 }
 
 function EventCell({ events }: { events: Event[] }) {
-  if (!events || !events.length) return null;
+  if (!events || !events.length) {
+    return null;
+  }
   return (
     <ul style={{ all: "unset" }}>
       {events.map((e) => (
@@ -100,10 +104,7 @@ export function RichCalendar(props: RichCalendarProps) {
   } = props;
   const data = useNormalizedData(rawData);
 
-  const { normalized, finalRoles: roleConfigs } = useRoleDefinitions(
-    data,
-    props
-  );
+  const { finalRoles: roleConfigs } = useRoleDefinitions(data, props);
   const {
     eventsByDate,
     eventsByMonth,
@@ -111,7 +112,9 @@ export function RichCalendar(props: RichCalendarProps) {
     eventsByDate: Record<string, Event[]>;
     eventsByMonth: Record<string, Event[]>;
   } = useMemo(() => {
-    if (!data) return { eventsByDate: {}, eventsByMonth: {} };
+    if (!data) {
+      return { eventsByDate: {}, eventsByMonth: {} };
+    }
     return data?.data.reduce(
       (acc: any, item: any) => {
         const date = getFieldAggregateValue(item, roleConfigs.date);
@@ -153,13 +156,17 @@ export function RichCalendar(props: RichCalendarProps) {
   ); // https://day.js.org/docs/en/parse/now
 
   const validRange: [Dayjs, Dayjs] | undefined = useMemo(() => {
-    if (!isoValidRange) return undefined;
+    if (!isoValidRange) {
+      return undefined;
+    }
 
     const range = isoValidRange
       .filter((dateIso: string | undefined) => isValidIsoDate(dateIso))
       .map((d: any) => dayjs(d));
 
-    if (range.length !== 2) return undefined;
+    if (range.length !== 2) {
+      return undefined;
+    }
     return [range[0], range[1]];
   }, [isoValidRange]);
 
@@ -252,7 +259,7 @@ function useRoleDefinitions(
   data: NormalizedData | undefined,
   props: React.ComponentProps<typeof RichCalendar>
 ) {
-  const { fields, setControlContextData } = props;
+  const { setControlContextData } = props;
 
   return React.useMemo(() => {
     const schema = data?.schema;

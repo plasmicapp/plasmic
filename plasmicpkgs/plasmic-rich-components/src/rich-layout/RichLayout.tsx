@@ -9,7 +9,7 @@ import { AnchorLink } from "../widgets";
 
 function omitUndefined(x: object) {
   return Object.fromEntries(
-    Object.entries(x).filter(([k, v]) => v !== undefined)
+    Object.entries(x).filter(([_k, v]) => v !== undefined)
   );
 }
 
@@ -94,8 +94,12 @@ export function RichLayout({
   }, []);
 
   useEffect(() => {
-    if (!ready) return;
-    if (!ref.current) return;
+    if (!ready) {
+      return;
+    }
+    if (!ref.current) {
+      return;
+    }
     // open selected submenu (only opens the last one in the list!)
     const selectedSubmenus: string[] =
       (Array.from(
@@ -265,7 +269,9 @@ export function RichLayout({
           return [actionsChildren];
         }}
         menuFooterRender={(props) => {
-          if (props?.collapsed) return undefined;
+          if (props?.collapsed) {
+            return undefined;
+          }
           return footerChildren;
         }}
         onMenuHeaderClick={(e) => console.log(e)}

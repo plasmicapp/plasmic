@@ -271,7 +271,9 @@ export async function syncCodeComponentsAndHandleErrors(
 
   // Handle errors
   return maybeError.match({
-    success: () => {},
+    success: () => {
+      /**/
+    },
     failure: safeCast<(err: Error) => void>((err) => {
       switchType(err)
         .when(DuplicateCodeComponentError, (duplicatedCompErr) => {
@@ -343,8 +345,9 @@ export async function syncCodeComponentsAndHandleErrors(
           });
         })
         .elseUnsafe(() => unexpected());
-      // Never resolve since Studio can have components in invalid states
-      return new Promise((_resolve) => {});
+      return new Promise((_resolve) => {
+        // Never resolve since Studio can have components in invalid states
+      });
     }),
   });
 }

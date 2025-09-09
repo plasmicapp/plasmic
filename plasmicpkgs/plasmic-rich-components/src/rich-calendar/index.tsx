@@ -5,7 +5,7 @@ import {
   Registerable,
   registerComponentHelper,
 } from "../utils";
-import { RichCalendar } from "./RichCalendar";
+import { RichCalendar, RichCalendarProps } from "./RichCalendar";
 
 export * from "./RichCalendar";
 
@@ -42,15 +42,22 @@ export function registerRichCalendar(loader?: Registerable) {
         uncontrolledProp: "defaultValue",
         type: "dateString",
         description: `The date selected by default as an ISO string`,
-        validator: (value, ps) => {
-          if (!ps.value) return true;
-          if (!ps.validRange) return true;
-          if (!isValidIsoDate(value)) return "Not a valid ISO string.";
+        validator: (value: string, ps: RichCalendarProps) => {
+          if (!ps.value) {
+            return true;
+          }
+          if (!ps.validRange) {
+            return true;
+          }
+          if (!isValidIsoDate(value)) {
+            return "Not a valid ISO string.";
+          }
           if (
             dayjs(value).isBefore(ps.validRange[0]) ||
             dayjs(value).isAfter(ps.validRange[1])
-          )
+          ) {
             return "Not within the valid range";
+          }
           return true;
         },
       },
@@ -64,12 +71,16 @@ export function registerRichCalendar(loader?: Registerable) {
         type: "dateRangeStrings",
         description: "Only allow selection of dates that lie within this range",
         advanced: true,
-        validator: (value, ps) => {
-          if (!value) return true;
-          if (!Array.isArray(value) || value.length !== 2)
+        validator: (value: [string, string], _ps: RichCalendarProps) => {
+          if (!value) {
+            return true;
+          }
+          if (!Array.isArray(value) || value.length !== 2) {
             return "Not an array with 2 items";
-          if (!isValidIsoDate(value[0]) || !isValidIsoDate(value[1]))
+          }
+          if (!isValidIsoDate(value[0]) || !isValidIsoDate(value[1])) {
             return "Min or max range is not in valid ISO date format.";
+          }
           return true;
         },
       },

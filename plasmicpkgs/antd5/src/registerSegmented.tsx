@@ -153,7 +153,7 @@ export function registerSegmented(loader?: Registerable) {
         options: getValueOptions,
         displayName: "Selected option",
         description: `Default selected option`,
-        hidden: (ps) => !ps.options,
+        hidden: (ps: AntdSegmentedProps) => !ps.options,
       },
       disabled: {
         type: "boolean",
@@ -174,8 +174,8 @@ export function registerSegmented(loader?: Registerable) {
       },
       options: {
         type: "array",
-        hidden: (ps) => ps.useSlotOptions,
-        validator: (value, ps) => {
+        hidden: (ps: AntdSegmentedProps) => ps.useSlotOptions,
+        validator: (value: any[], ps: any) => {
           if (ps.useSlotOptions) {
             return true;
           }
@@ -191,7 +191,7 @@ export function registerSegmented(loader?: Registerable) {
         },
         itemType: {
           type: "object",
-          nameFunc: (item) => item.label,
+          nameFunc: (item: any) => item.label,
           fields: {
             label: {
               type: "string",
@@ -222,7 +222,7 @@ export function registerSegmented(loader?: Registerable) {
         type: "slot",
         displayName: "Options",
         allowedComponents: [segmentedOptionComponentName],
-        hidden: (ps) => !ps.useSlotOptions,
+        hidden: (ps: AntdSegmentedProps) => !ps.useSlotOptions,
         defaultValue: [getDefaultSlotOption(1), getDefaultSlotOption(2)],
       },
       onChange: {
@@ -272,7 +272,9 @@ export function registerSegmented(loader?: Registerable) {
           };
 
           const newKey = generateNewKey();
-          if (!newKey) return;
+          if (!newKey) {
+            return;
+          }
           studioOps.appendToSlot(getDefaultSlotOption(newKey), "optionsSlot");
         },
       },

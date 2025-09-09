@@ -74,7 +74,7 @@ import {
 import { SiteInfo } from "@/wab/shared/SharedApi";
 import { smartHumanize } from "@/wab/shared/strs";
 import { isStandaloneVariantGroup } from "@/wab/shared/Variants";
-import { mkMetaName } from "@plasmicapp/host";
+import { ChoiceValue, mkMetaName } from "@plasmicapp/host";
 import { GlobalActionRegistration } from "@plasmicapp/host/registerGlobalContext";
 import { get, startCase } from "lodash";
 
@@ -256,7 +256,7 @@ export const ACTIONS_META: Record<(typeof ACTIONS)[number], ActionType<any>> = {
         options.length > 0 &&
         !options
           .map((opt) => (typeof opt !== "object" ? opt : opt.value))
-          .includes(currValue)
+          .includes(currValue as ChoiceValue)
       ) {
         args.operation = codeLit(
           typeof options[0] !== "object" ? options[0] : options[0].value
@@ -369,7 +369,7 @@ export const ACTIONS_META: Record<(typeof ACTIONS)[number], ActionType<any>> = {
         options.length > 0 &&
         !options
           .map((opt) => (typeof opt !== "object" ? opt : opt.value))
-          .includes(currValue)
+          .includes(currValue as ChoiceValue)
       ) {
         args.operation = codeLit(
           typeof options[0] !== "object" ? options[0] : options[0].value

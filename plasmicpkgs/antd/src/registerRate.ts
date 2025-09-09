@@ -1,12 +1,12 @@
 import registerComponent, {
-  ComponentMeta,
+  CodeComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import { Rate as AntdRate } from "antd";
 import type { RateProps } from "antd/es/rate";
 import { Registerable } from "./registerable";
 export const Rate = AntdRate;
 
-export const rateMeta: ComponentMeta<RateProps> = {
+export const rateMeta: CodeComponentMeta<RateProps> = {
   name: "AntdRate",
   displayName: "Antd Rate",
   props: {
@@ -72,7 +72,7 @@ export const rateMeta: ComponentMeta<RateProps> = {
 
 export function registerRate(
   loader?: Registerable,
-  customRateMeta?: ComponentMeta<RateProps>
+  customRateMeta?: CodeComponentMeta<RateProps>
 ) {
   const doRegisterComponent: typeof registerComponent = (...args) =>
     loader ? loader.registerComponent(...args) : registerComponent(...args);

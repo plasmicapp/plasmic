@@ -1,5 +1,5 @@
 import { QueryResult, TableSchema } from "@plasmicapp/data-sources";
-import { ContextDependentConfig } from "@plasmicapp/host";
+import { ComponentContextConfig } from "@plasmicapp/host";
 import { PropType } from "@plasmicapp/host/registerComponent";
 import deepGet from "lodash/get";
 import { isOneOf, withoutFalsey } from "./utils";
@@ -203,8 +203,8 @@ export function getFieldSubprops<ColumnConfig extends BaseColumnConfig>(
     expr: {
       ...rowDataType("Custom value"),
       hidden: (
-        ps,
-        ctx: ControlContextData<BaseColumnConfig>,
+        _ps,
+        _ctx: ControlContextData<BaseColumnConfig>,
         { item, path: _controlPath }
       ) => {
         return false;
@@ -270,14 +270,14 @@ export function getFieldSubprops<ColumnConfig extends BaseColumnConfig>(
             description: "Must be a valid currency code",
             type: "string",
             defaultValueHint: "USD",
-            hidden: (ps, ctx, { item }) => item.dataType !== "currency",
+            hidden: (_ps, _ctx, { item }) => item.dataType !== "currency",
           },
           locale: {
             displayName: "Locale",
             description: "Must be a valid locale code",
             type: "string",
             defaultValueHint: "en-US",
-            hidden: (ps, ctx, { item }) =>
+            hidden: (_ps, _ctx, { item }) =>
               !isOneOf(item.dataType, NUMBER_TYPES) &&
               !isOneOf(item.dataType, DATETIME_TYPES),
           },
@@ -299,7 +299,7 @@ export function getFieldSubprops<ColumnConfig extends BaseColumnConfig>(
               },
             ],
             defaultValueHint: "standard",
-            hidden: (ps, ctx, { item }) =>
+            hidden: (_ps, _ctx, { item }) =>
               !isOneOf(item.dataType, NUMBER_TYPES),
           },
           signDisplay: {
@@ -316,7 +316,7 @@ export function getFieldSubprops<ColumnConfig extends BaseColumnConfig>(
               },
             ],
             defaultValueHint: "auto",
-            hidden: (ps, ctx, { item }) =>
+            hidden: (_ps, _ctx, { item }) =>
               !isOneOf(item.dataType, NUMBER_TYPES),
           },
           maximumFractionDigits: {
@@ -325,7 +325,7 @@ export function getFieldSubprops<ColumnConfig extends BaseColumnConfig>(
             defaultValueHint: 3,
             min: 0,
             max: 20,
-            hidden: (ps, ctx, { item }) =>
+            hidden: (_ps, _ctx, { item }) =>
               !isOneOf(item.dataType, NUMBER_TYPES),
           },
           minimumFractionDigits: {
@@ -334,7 +334,7 @@ export function getFieldSubprops<ColumnConfig extends BaseColumnConfig>(
             defaultValueHint: 0,
             min: 0,
             max: 20,
-            hidden: (ps, ctx, { item }) =>
+            hidden: (_ps, _ctx, { item }) =>
               !isOneOf(item.dataType, NUMBER_TYPES),
           },
           showAs: {
@@ -355,7 +355,7 @@ export function getFieldSubprops<ColumnConfig extends BaseColumnConfig>(
             ],
             displayName: "Show as",
             defaultValueHint: "checkbox",
-            hidden: (ps, ctx, { item }) => item.dataType !== "boolean",
+            hidden: (_ps, _ctx, { item }) => item.dataType !== "boolean",
           },
           dateStyle: {
             displayName: "Date style",
@@ -383,7 +383,7 @@ export function getFieldSubprops<ColumnConfig extends BaseColumnConfig>(
               },
             ],
             defaultValueHint: DEFAULT_DATETIME_SETTINGS.dateStyle,
-            hidden: (ps, ctx, { item }) => item.dataType !== "datetime",
+            hidden: (_ps, _ctx, { item }) => item.dataType !== "datetime",
           },
           timeStyle: {
             displayName: "Time style",
@@ -411,14 +411,14 @@ export function getFieldSubprops<ColumnConfig extends BaseColumnConfig>(
               },
             ],
             defaultValueHint: DEFAULT_DATETIME_SETTINGS.timeStyle,
-            hidden: (ps, ctx, { item }) => item.dataType !== "datetime",
+            hidden: (_ps, _ctx, { item }) => item.dataType !== "datetime",
           },
           hour12: {
             displayName: "Use AM/PM?",
             description: "Whether to use AM/PM or 24-hour clock",
             type: "boolean",
             defaultValueHint: DEFAULT_DATETIME_SETTINGS.hour12,
-            hidden: (ps, ctx, { item }) => item.dataType !== "datetime",
+            hidden: (_ps, _ctx, { item }) => item.dataType !== "datetime",
           },
           numeric: {
             type: "choice",
@@ -431,7 +431,7 @@ export function getFieldSubprops<ColumnConfig extends BaseColumnConfig>(
               },
             ],
             defaultValueHint: DEFAULT_RELATIVE_DATETIME_SETTINGS.numeric,
-            hidden: (ps, ctx, { item }) =>
+            hidden: (_ps, _ctx, { item }) =>
               item.dataType !== "relative-datetime",
           },
           unit: {
@@ -468,7 +468,7 @@ export function getFieldSubprops<ColumnConfig extends BaseColumnConfig>(
               },
             ],
             defaultValueHint: DEFAULT_RELATIVE_DATETIME_SETTINGS.unit,
-            hidden: (ps, ctx, { item }) =>
+            hidden: (_ps, _ctx, { item }) =>
               item.dataType !== "relative-datetime",
           },
         }
@@ -519,7 +519,7 @@ export function buildFieldsPropType<
 }: {
   advanced?: boolean;
   displayName?: string;
-  minimalValue?: ContextDependentConfig<Props, any>;
+  minimalValue?: ComponentContextConfig<Props, any>;
 } & FieldSubpropsOpts<ColumnConfig>): PropType<Props> {
   return {
     type: "array",
@@ -528,7 +528,7 @@ export function buildFieldsPropType<
     hidden: (ps) => !ps.data,
     unstable__keyFunc: (x) => x.key,
     unstable__minimalValue: minimalValue,
-    unstable__canDelete: (ps, _props, ctx, { item }) => {
+    unstable__canDelete: (_ps, _props, ctx, { item }) => {
       if (opts.canChangeField) {
         return true;
       }

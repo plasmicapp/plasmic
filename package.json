@@ -32,6 +32,7 @@
     "setup:sub": "cd platform/sub && yarn && yarn build",
     "setup:wab": "cd platform/wab && yarn",
     "test": "jest $TEST_CWD",
+    "test:types": "tstyche $TEST_CWD",
     "typecheck": "cd platform/wab && yarn ts-watch",
     "upgrade-internal": "bash scripts/upgrade-internal.bash",
     "msw:update": "msw init ./msw --save=false"
@@ -71,6 +72,7 @@
     "prettier-plugin-organize-imports": "^4.2.0",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
+    "tstyche": "^4.3.0",
     "tsx": "^4.20.3",
     "typescript": "5.2.2",
     "storybook": "8.5.5",

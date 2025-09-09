@@ -13,7 +13,10 @@ export {
   ChoiceObject,
   ChoiceOptions,
   ChoiceValue,
+  ComponentContextConfig,
+  ComponentControlContext,
   ContextDependentConfig,
+  ControlExtras,
   CustomControlProps,
   ProjectData,
   PropType,
@@ -36,6 +39,8 @@ export {
 export {
   CustomFunctionMeta,
   CustomFunctionRegistration,
+  FunctionContextConfig,
+  FunctionControlContext,
   ParamType,
   default as registerFunction,
 } from "./registerFunction";

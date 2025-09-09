@@ -1,4 +1,3 @@
-import { ActionType } from "@ant-design/pro-components";
 import {
   deriveFieldConfigs,
   NormalizedData,
@@ -8,7 +7,7 @@ import { Card, Input, List, Tag } from "antd";
 import type { GetRowKey } from "antd/es/table/interface";
 import classNames from "classnames";
 import groupBy from "lodash/groupBy";
-import React, { ReactNode, useRef } from "react";
+import React, { ReactNode } from "react";
 import { BaseColumnConfig, FieldfulProps, RowFunc } from "../field-mappings";
 import {
   deriveKeyOfRow,
@@ -156,13 +155,12 @@ export function RichList(props: RichListProps) {
     footer,
 
     rowActions = [],
-    title,
     pageSize = 10,
     hideSearch,
     rowKey,
     pagination = true,
     onRowClick,
-    ...rest
+    ..._rest
   } = props;
 
   const normalizedData = useNormalizedData(rawData);
@@ -179,12 +177,10 @@ export function RichList(props: RichListProps) {
     props
   );
 
-  const actionRef = useRef<ActionType>();
-
   // Simply ignore the linkTo if it's not a function.
   const linkTo = typeof props.linkTo === "function" ? props.linkTo : undefined;
 
-  const { finalData, search, setSearch, setSortState } = useSortedFilteredData(
+  const { finalData, search, setSearch } = useSortedFilteredData(
     data,
     normalized
   );
@@ -220,7 +216,7 @@ export function RichList(props: RichListProps) {
               }
             : false
         }
-        renderItem={(record, index) => {
+        renderItem={(record) => {
           // Currently, actions are nested inside the list item / card, so can't have both linkTo and actions or else hydration error.
           // Eventually can fork the Ant components to make the main linkTo area and actions not nest.
           const actions = renderActions(rowActions, record, data, rowKey);
@@ -255,9 +251,13 @@ export function RichList(props: RichListProps) {
           );
 
           function makeLinkWrapper() {
-            if ((actions ?? []).length > 0) return undefined;
+            if ((actions ?? []).length > 0) {
+              return undefined;
+            }
             const href = linkTo?.(record);
-            if (!href && !onRowClick) return undefined;
+            if (!href && !onRowClick) {
+              return undefined;
+            }
             const _linkWrapper = (x: ReactNode) => (
               <a
                 href={href}

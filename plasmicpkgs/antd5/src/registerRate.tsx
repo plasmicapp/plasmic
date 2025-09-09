@@ -1,14 +1,14 @@
+import { Rate } from "antd";
 import React, { ReactElement, useMemo } from "react";
 import { Registerable, registerComponentHelper } from "./utils";
-import { Rate } from "antd";
 
-export function AntdRate(
-  props: Omit<React.ComponentProps<typeof Rate>, "tooltips"> & {
-    tooltips?: { label: string }[];
-    multiCharacter?: boolean;
-    symbols?: React.ReactElement;
-  }
-) {
+type AntdRateProps = Omit<React.ComponentProps<typeof Rate>, "tooltips"> & {
+  tooltips?: { label: string }[];
+  multiCharacter?: boolean;
+  symbols?: React.ReactElement;
+};
+
+export function AntdRate(props: AntdRateProps) {
   const { character, count, tooltips, multiCharacter, symbols, ...rest } =
     props;
 
@@ -23,12 +23,16 @@ export function AntdRate(
     [symbols]
   );
   const countProp = useMemo(() => {
-    if (!multiCharacter) return count;
+    if (!multiCharacter) {
+      return count;
+    }
     return symbolsProp?.length;
   }, [count, multiCharacter, symbolsProp?.length]);
 
   const characterProp = useMemo(() => {
-    if (!multiCharacter) return character || undefined;
+    if (!multiCharacter) {
+      return character || undefined;
+    }
     return symbolsProp?.length
       ? ({ index }: any) => symbolsProp[index]
       : character || undefined;
@@ -73,7 +77,7 @@ export function registerRate(loader?: Registerable) {
         type: "slot",
         displayName: "Symbol",
         hidePlaceholder: true,
-        hidden: (ps) => Boolean(ps.multiCharacter),
+        hidden: (ps: AntdRateProps) => Boolean(ps.multiCharacter),
       },
       multiCharacter: {
         type: "boolean",
@@ -87,14 +91,14 @@ export function registerRate(loader?: Registerable) {
         displayName: "Symbols",
         hidePlaceholder: true,
         defaultValue: ["1", "2", "3", "4", "5"],
-        hidden: (ps) => !ps.multiCharacter,
+        hidden: (ps: AntdRateProps) => !ps.multiCharacter,
       },
       count: {
         type: "number",
         description: "Rating count",
         defaultValueHint: 5,
         advanced: true,
-        hidden: (ps) => Boolean(ps.multiCharacter),
+        hidden: (ps: AntdRateProps) => Boolean(ps.multiCharacter),
       },
       value: {
         type: "number",
@@ -113,21 +117,27 @@ export function registerRate(loader?: Registerable) {
         description: "Rating labels",
         displayName: "Labels",
         advanced: true,
-        hidden: (ps) => !ps.count,
+        hidden: (ps: AntdRateProps) => !ps.count,
         itemType: {
           type: "object",
           fields: {
             label: "string",
           },
-          nameFunc: (value) => value.label,
+          nameFunc: (value: any) => value.label,
         },
-        validator: (value, ps) => {
-          if (!ps.count) return true;
-          if (!Array.isArray(value) || value.length === 0) return true;
-          if (value.length < ps.count)
+        validator: (value: any, ps: any) => {
+          if (!ps.count) {
+            return true;
+          }
+          if (!Array.isArray(value) || value.length === 0) {
+            return true;
+          }
+          if (value.length < ps.count) {
             return `You need ${ps.count - value.length} more labels`;
-          if (value.length > ps.count)
+          }
+          if (value.length > ps.count) {
             return "You have too many labels. Some labels will not be used";
+          }
           return true;
         },
       },

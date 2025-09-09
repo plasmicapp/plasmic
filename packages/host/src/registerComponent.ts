@@ -1,13 +1,13 @@
 import { CodeComponentElement, CSSProperties } from "./element-types";
 import {
-  ContextDependentConfig,
-  InferDataType,
+  ComponentContextConfig,
   ProjectData,
   PropType,
   RestrictPropType,
   StudioOps,
-} from "./prop-types";
-import { TupleUnion } from "./type-utils";
+} from "./types/component-types";
+import { InferDataType } from "./types/shared-controls";
+import { TupleUnion } from "./types/type-utils";
 export type * from "./prop-types";
 
 const root = globalThis as any;
@@ -41,12 +41,12 @@ export type Action<P> =
       type: "button-action";
       label: string;
       onClick: (props: ActionProps<P>) => void;
-      hidden?: ContextDependentConfig<P, boolean>;
+      hidden?: ComponentContextConfig<P, boolean>;
     }
   | {
       type: "custom-action";
       control: React.ComponentType<ActionProps<P>>;
-      hidden?: ContextDependentConfig<P, boolean>;
+      hidden?: ComponentContextConfig<P, boolean>;
     };
 
 type DistributedKeyOf<T> = T extends any ? keyof T : never;
@@ -69,13 +69,13 @@ export type StateSpec<P> = {
   /**
    * If true, will hide the state on studio.
    */
-  hidden?: ContextDependentConfig<P, boolean>;
+  hidden?: ComponentContextConfig<P, boolean>;
 
   /**
    * If true, will hide the state in a collapsed section; good for states that
    * should not usually be used.
    */
-  advanced?: ContextDependentConfig<P, boolean>;
+  advanced?: ComponentContextConfig<P, boolean>;
 } & (
   | {
       type: "readonly";
@@ -318,7 +318,7 @@ export interface CodeComponentMeta<P> {
    * on the left of the Studio.  This makes it easy to identify an element when
    * looking at the tree.
    */
-  treeLabel?: ContextDependentConfig<P, string>;
+  treeLabel?: ComponentContextConfig<P, string>;
 
   /**
    * The value of the CSS display property used by this component.

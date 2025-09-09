@@ -1,4 +1,4 @@
-import { ComponentMeta } from "@plasmicapp/host/registerComponent";
+import { CodeComponentMeta } from "@plasmicapp/host";
 import {
   commonProps,
   dataProp,
@@ -15,29 +15,29 @@ export default RichTable;
 export const tableHelpers = {
   states: {
     selectedRow: {
-      onChangeArgsToValue: (rowKeys: string[], rows: any[]) => {
+      onChangeArgsToValue: (_rowKeys: string[], rows: any[]) => {
         return rows[0];
       },
     },
     selectedRows: {
-      onChangeArgsToValue: (rowKeys: string[], rows: any[]) => {
+      onChangeArgsToValue: (_rowKeys: string[], rows: any[]) => {
         return rows;
       },
     },
     selectedRowKey: {
-      onChangeArgsToValue: (rowKeys: string[], rows: any[]) => {
+      onChangeArgsToValue: (rowKeys: string[], _rows: any[]) => {
         return rowKeys[0];
       },
     },
     selectedRowKeys: {
-      onChangeArgsToValue: (rowKeys: string[], rows: any[]) => {
+      onChangeArgsToValue: (rowKeys: string[], _rows: any[]) => {
         return rowKeys;
       },
     },
   },
 };
 
-const dataTableMeta: ComponentMeta<RichTableProps> = {
+const dataTableMeta: CodeComponentMeta<RichTableProps> = {
   name: "hostless-rich-table",
   displayName: "Table",
   defaultStyles: {

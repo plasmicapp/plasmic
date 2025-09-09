@@ -197,13 +197,17 @@ import { getPlumeEditorPlugin } from "@/wab/shared/plume/plume-registry";
 import { canComponentTakeRef } from "@/wab/shared/react-utils";
 import { CodeLibraryRegistration } from "@/wab/shared/register-library";
 import { isValidJsIdentifier } from "@/wab/shared/utils/regex-js-identifier";
+
 import type {
+  ChoiceObject,
+  ComponentContextConfig,
+  ComponentControlContext,
   ComponentMeta,
   ComponentRegistration,
-  ContextDependentConfig,
   CustomFunctionRegistration,
   GlobalContextMeta,
   GlobalContextRegistration,
+  ParamType,
   PlasmicElement,
   PropType,
   StateSpec,
@@ -221,7 +225,6 @@ import type {
   PropTypeBaseDefault,
 } from "@plasmicapp/host/dist/prop-types";
 import { RefActionRegistration } from "@plasmicapp/host/registerComponent";
-import { ParamType } from "@plasmicapp/host/registerFunction";
 import {
   assign,
   clone,
@@ -259,13 +262,13 @@ export type VariantGroupPropType<P> = PropTypeBaseDefault<P, Var> & {
 };
 export type VariantPropType<P> = PropTypeBaseDefault<P, VariantsRef> & {
   type: "variant";
-  variantGroup?: ContextDependentConfig<P, VarRef>;
+  variantGroup?: ComponentContextConfig<P, VarRef>;
   variantTypes?: Array<"toggle" | "single" | "multi">;
 };
 export type InteractionExprValuePropType<P> = PropTypeBaseDefault<P, Expr> & {
   type: "interactionExprValue";
-  currentInteraction: ContextDependentConfig<P, Interaction>;
-  eventHandlerKey: ContextDependentConfig<P, EventHandlerKeyType>;
+  currentInteraction: ComponentContextConfig<P, Interaction>;
+  eventHandlerKey: ComponentContextConfig<P, EventHandlerKeyType>;
   dataPicker?: boolean;
   isBodyFunction?: boolean;
   hidePreview?: boolean;
@@ -273,39 +276,39 @@ export type InteractionExprValuePropType<P> = PropTypeBaseDefault<P, Expr> & {
 };
 export type VarRefPropType<P> = PropTypeBaseDefault<P, VarRef> & {
   type: "varRef";
-  options: ContextDependentConfig<P, Var[]>;
+  options: ComponentContextConfig<P, Var[]>;
 };
 export type FunctionArgumentsPropType<P> = PropTypeBaseDefault<
   P,
   CollectionExpr
 > & {
   type: "functionArgs";
-  functionType: ContextDependentConfig<P, FunctionType | undefined>;
-  currentInteraction: ContextDependentConfig<P, Interaction>;
-  eventHandlerKey: ContextDependentConfig<P, EventHandlerKeyType>;
+  functionType: ComponentContextConfig<P, FunctionType | undefined>;
+  currentInteraction: ComponentContextConfig<P, Interaction>;
+  eventHandlerKey: ComponentContextConfig<P, EventHandlerKeyType>;
   isFunctionTypeAttachedToModel: boolean;
   hidePropName?: boolean;
-  parametersMeta?: ContextDependentConfig<
+  parametersMeta?: ComponentContextConfig<
     P,
     RefActionRegistration<P>["argTypes"] | undefined
   >;
   // the editors are rendered for code components
   // which means we can't expose internal model data
   forExternal?: boolean;
-  targetTpl?: ContextDependentConfig<P, TplTag | TplComponent>;
+  targetTpl?: ComponentContextConfig<P, TplTag | TplComponent>;
 };
 export type DataSourceOpPropType<P> = PropTypeBaseDefault<P, Expr> & {
   type: "dataSourceOp";
-  currentInteraction: ContextDependentConfig<P, Interaction>;
-  eventHandlerKey: ContextDependentConfig<P, EventHandlerKeyType>;
+  currentInteraction: ComponentContextConfig<P, Interaction>;
+  eventHandlerKey: ComponentContextConfig<P, EventHandlerKeyType>;
   allowWriteOps?: boolean;
-  allowedOps?: ContextDependentConfig<P, string[]>;
+  allowedOps?: ComponentContextConfig<P, string[]>;
 };
 export type CustomFunctionOpPropType<P> = PropTypeBaseDefault<P, Expr> & {
   type: "customFunctionOp";
-  currentInteraction: ContextDependentConfig<P, Interaction>;
-  eventHandlerKey: ContextDependentConfig<P, EventHandlerKeyType>;
-  allowedOps?: ContextDependentConfig<P, string[]>;
+  currentInteraction: ComponentContextConfig<P, Interaction>;
+  eventHandlerKey: ComponentContextConfig<P, EventHandlerKeyType>;
+  allowedOps?: ComponentContextConfig<P, string[]>;
 };
 export type FunctionPropType<P> = PropTypeBaseDefault<P, Expr> & {
   type: "function";
@@ -319,16 +322,16 @@ export type FunctionPropType<P> = PropTypeBaseDefault<P, Expr> & {
       }
     | {
         argNames: string[];
-        argValues: any[] | ContextDependentConfig<P, any>;
+        argValues: any[] | ComponentContextConfig<P, any>;
       }
   );
 
-export type DynamicPropType<P> = PropTypeBase<P> & {
+export type DynamicPropType<P> = PropTypeBase<ComponentControlContext<P>> & {
   type: "dynamic";
-  control: ContextDependentConfig<P, StudioPropType<any>>;
+  control: ComponentContextConfig<P, StudioPropType<any>>;
 };
 
-export type ClassNamePropType<P> = PropTypeBase<P> & {
+export type ClassNamePropType<P> = PropTypeBase<ComponentControlContext<P>> & {
   type: "class";
   selectors?: {
     label?: string;
@@ -338,17 +341,23 @@ export type ClassNamePropType<P> = PropTypeBase<P> & {
   defaultStyles?: CSSProperties;
 };
 
-export type StyleScopeClassNamePropType<P> = PropTypeBase<P> & {
+export type StyleScopeClassNamePropType<P> = PropTypeBase<
+  ComponentControlContext<P>
+> & {
   type: "styleScopeClass";
   scopeName: string;
 };
 
-export type ThemeResetClassNamePropType<P> = PropTypeBase<P> & {
+export type ThemeResetClassNamePropType<P> = PropTypeBase<
+  ComponentControlContext<P>
+> & {
   type: "themeResetClass";
   targetAllTags?: boolean;
 };
 
-export type ThemeStylesPropType<P> = PropTypeBase<P> & {
+export type ThemeStylesPropType<P> = PropTypeBase<
+  ComponentControlContext<P>
+> & {
   type: "themeStyles";
 };
 
@@ -357,9 +366,11 @@ export type EventHandlerPropType<P> = PropType<P> & {
   argTypes: { name: string; type: StudioPropType<any> }[];
 };
 
-export type DataSourceOpDataType<P> = PropTypeBase<P> & {
+export type DataSourceOpDataType<P> = PropTypeBase<
+  ComponentControlContext<P>
+> & {
   type: "dataSourceOpData";
-  allowedOps?: ContextDependentConfig<P, string[]>;
+  allowedOps?: ComponentContextConfig<P, string[]>;
 };
 
 export interface HighlightInteractionRequest {
@@ -370,41 +381,47 @@ export interface HighlightInteractionRequest {
 
 export type InteractionPropType<P> = PropTypeBaseDefault<P, EventHandler> & {
   type: "interaction";
-  highlightOnMount?: ContextDependentConfig<
+  highlightOnMount?: ComponentContextConfig<
     P,
     HighlightInteractionRequest | undefined
   >;
-  forceOpen: ContextDependentConfig<P, boolean>;
+  forceOpen: ComponentContextConfig<P, boolean>;
   eventHandlerKey: EventHandlerKeyType;
 };
 
-export type ControlModePropType<P> = PropTypeBase<P> & {
+export type ControlModePropType<P> = PropTypeBase<
+  ComponentControlContext<P>
+> & {
   type: "controlMode";
 };
 
-export type HrefPropType<P> = PropTypeBase<P> & {
+export type HrefPropType<P> = PropTypeBase<ComponentControlContext<P>> & {
   type: "href";
 };
 
-export type DateStringPropType<P> = PropTypeBase<P> & {
+export type DateStringPropType<P> = PropTypeBase<ComponentControlContext<P>> & {
   type: "dateString";
 };
 
-export type DateRangeStringsPropType<P> = PropTypeBase<P> & {
+export type DateRangeStringsPropType<P> = PropTypeBase<
+  ComponentControlContext<P>
+> & {
   type: "dateRangeStrings";
 };
 
-export type TargetPropType<P> = PropTypeBase<P> & {
+export type TargetPropType<P> = PropTypeBase<ComponentControlContext<P>> & {
   type: "target";
 };
 
-export type QueryInvalidationPropType<P> = PropTypeBase<P> & {
+export type QueryInvalidationPropType<P> = PropTypeBase<
+  ComponentControlContext<P>
+> & {
   type: "queryInvalidation";
-  currentInteraction: ContextDependentConfig<P, Interaction>;
-  eventHandlerKey: ContextDependentConfig<P, EventHandlerKeyType>;
+  currentInteraction: ComponentContextConfig<P, Interaction>;
+  eventHandlerKey: ComponentContextConfig<P, EventHandlerKeyType>;
 };
 
-export type TplRefPropType<P> = PropTypeBase<P> & {
+export type TplRefPropType<P> = PropTypeBase<ComponentControlContext<P>> & {
   type: "tpl";
 };
 
@@ -414,7 +431,9 @@ export type CodeEditorPropType<P> = PropTypeBaseDefault<P, any> & {
   control?: "default" | "sidebar";
 };
 
-export type FormDataConnectionPropType<P> = PropTypeBase<P> & {
+export type FormDataConnectionPropType<P> = PropTypeBase<
+  ComponentControlContext<P>
+> & {
   type: "formDataConnection";
 };
 
@@ -552,7 +571,7 @@ export class CodeComponentsRegistry {
       ])
   );
 
-  getRegisteredTokens = memoizeOne((burstCache?: number) => {
+  getRegisteredTokens = memoizeOne((_burstCache?: number) => {
     const tokens = uncheckedCast<any>(this.win).__PlasmicTokenRegistry ?? [];
     return [...tokens] as TokenRegistration[];
   });
@@ -957,7 +976,7 @@ function typeCheckRegistrations(ctx: SiteCtx) {
                   !isArrayOfLiterals(propType.options) &&
                   !(
                     Array.isArray(propType.options) &&
-                    propType.options.every(
+                    (propType.options as ChoiceObject[]).every(
                       (option) =>
                         typeof option.label === "string" &&
                         ["number", "string", "boolean"].includes(
@@ -2606,9 +2625,9 @@ export function registeredFunctionId(r: CustomFunctionRegistration) {
   }` as CustomFunctionId;
 }
 
-function mapParamTypeToArgType(
-  paramReg: string | ParamType<any, any>
-): ArgType["type"] {
+type CustomFunctionParam = string | ParamType<any[], any>;
+
+function mapParamTypeToArgType(paramReg: CustomFunctionParam): ArgType["type"] {
   if (isString(paramReg)) {
     return typeFactory.text();
   }
@@ -2644,7 +2663,7 @@ function createCustomFunctionFromRegistration(
     namespace: functionReg.meta.namespace ?? null,
     displayName: functionReg.meta.displayName ?? null,
     params:
-      functionReg.meta.params?.map((paramReg: string | ParamType<any, any>) => {
+      functionReg.meta.params?.map((paramReg: CustomFunctionParam) => {
         const name = isString(paramReg) ? paramReg : paramReg.name;
 
         const argType = mapParamTypeToArgType(paramReg);
@@ -4097,7 +4116,7 @@ export function propTypeToWabType(
                   Array.isArray(type.options)
                     ? isArrayOfLiterals(type.options)
                       ? type.options
-                      : type.options.map((op) => ({
+                      : (type.options as ChoiceObject[]).map((op) => ({
                           label: op.label,
                           value: op.value,
                         }))
