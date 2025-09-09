@@ -20,17 +20,21 @@ export default defineConfig({
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
-  retries: 2,
+  retries: 1,
   // retries: process.env.CI ? 2 : 0,
   /* The `undefined` (default) number of workers is chosen based on the number of CPUs. */
   workers: undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: process.env.CI ? [['github'], ['playwright-ctrf-json-reporter', {}]] : "html",
+  reporter: process.env.CI
+    ? [["github"], ["playwright-ctrf-json-reporter", {}]]
+    : "html",
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: "retain-on-failure",
     video: "retain-on-failure",
+    ignoreHTTPSErrors: true,
+    bypassCSP: true,
   },
   timeout: 900000, // 10 minutes, to saturate CI server parallelism - there are a lot of yarn mutexes
   expect: {
@@ -44,11 +48,25 @@ export default defineConfig({
       use: {
         ...devices["Desktop Chrome"],
         headless,
+        launchOptions: {
+          args: ["--disable-web-security"],
+        },
       },
     },
     // {
     //   name: 'firefox',
-    //   use: { ...devices['Desktop Firefox'] },
+    //   use: {
+    //     ...devices['Desktop Firefox'],
+    //     launchOptions: {
+    //       firefoxUserPrefs: {
+    //         'security.tls.insecure_fallback_hosts': 'localhost',
+    //         'dom.disable_beforeunload': true,
+    //         'security.mixed_content.block_active_content': false,
+    //         'security.mixed_content.block_display_content': false,
+    //         'security.fileuri.strict_origin_policy': false
+    //       }
+    //     }
+    //   },
     // },
     // {
     //   name: 'webkit',

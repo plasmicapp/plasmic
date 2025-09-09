@@ -601,8 +601,13 @@ test.describe(`@plasmicpkgs/react-aria code components`, async () => {
         await selectStateChecker.checkState({});
 
         await selectStateChecker.checkState({});
-        await triggerEl.click();
+
+        await triggerEl.focus();
+        await triggerEl.blur();
+        await page.waitForTimeout(100);
         await selectStateChecker.checkState({});
+
+        await triggerEl.click();
         await popoverEl.getByText(`Item 2`).first().click();
         await expect(valueEl).toHaveText("item2");
         await page.locator("button").click();

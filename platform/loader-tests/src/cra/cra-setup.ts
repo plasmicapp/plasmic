@@ -29,7 +29,12 @@ export async function setupCra(opts: {
   codegenHost: string;
   template?: string;
 }): Promise<CraContext> {
-  const { bundleFile, projectName, npmRegistry, codegenHost } = opts;
+  const {
+    bundleFile,
+    projectName,
+    npmRegistry: _npmRegistry,
+    codegenHost: _codegenHost,
+  } = opts;
   const { projectId, projectToken } = await uploadProject(
     bundleFile,
     projectName

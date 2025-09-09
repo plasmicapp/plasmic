@@ -29,13 +29,16 @@ export async function setupGatsby(opts: {
   codegenHost: string;
   template?: string;
 }): Promise<GatsbyContext> {
-  const { bundleFile, projectName, npmRegistry, codegenHost } = opts;
+  const { bundleFile, projectName } = opts;
   const { projectId, projectToken } = await uploadProject(
     bundleFile,
     projectName
   );
   const { name: tmpdir, removeCallback: tmpdirCleanup } = tmp.dirSync({
     unsafeCleanup: true,
+    prefix: `plasmic-gatsby-${process.pid}-${
+      process.env.TEST_WORKER_INDEX || 0
+    }-${Date.now()}-`,
   });
 
   console.log("tmpdir", tmpdir);
@@ -59,7 +62,11 @@ export async function setupGatsby(opts: {
   };
 }
 
-export async function teardownGatsby(ctx: GatsbyContext) {
+export async function teardownGatsby(ctx: GatsbyContext | undefined) {
+  if (!ctx) {
+    return;
+  }
+
   const { tmpdirCleanup } = ctx;
   await teardownGatsbyServer(ctx);
   tmpdirCleanup();
@@ -90,18 +97,37 @@ export async function setupGatsbyServer(
   copySync(templateDir, tmpdir, { recursive: true });
 
   const npmRegistry = getEnvVar("NPM_CONFIG_REGISTRY");
+  const isolatedNpmCache = path.join(tmpdir, ".npm-cache");
 
-  await runCommand(`npm install  --registry ${npmRegistry}`, {
-    dir: tmpdir,
-  });
+  await runCommand(
+    `npm install --registry ${npmRegistry} --cache "${isolatedNpmCache}"`,
+    {
+      dir: tmpdir,
+      env: {
+        npm_config_cache: isolatedNpmCache,
+        npm_config_tmp: path.join(tmpdir, ".npm-tmp"),
+      },
+    }
+  );
 
   // Install the latest loader-gatsby
-  await runCommand(`npm uninstall   @plasmicapp/loader-gatsby`, {
-    dir: tmpdir,
-  });
   await runCommand(
-    `npm install  --registry ${npmRegistry} @plasmicapp/loader-gatsby@latest`,
-    { dir: tmpdir }
+    `npm uninstall @plasmicapp/loader-gatsby --cache "${isolatedNpmCache}"`,
+    {
+      dir: tmpdir,
+      env: {
+        npm_config_cache: isolatedNpmCache,
+      },
+    }
+  );
+  await runCommand(
+    `npm install --registry ${npmRegistry} @plasmicapp/loader-gatsby@latest --cache "${isolatedNpmCache}"`,
+    {
+      dir: tmpdir,
+      env: {
+        npm_config_cache: isolatedNpmCache,
+      },
+    }
   );
 
   const codegenHost = getEnvVar("WAB_HOST");

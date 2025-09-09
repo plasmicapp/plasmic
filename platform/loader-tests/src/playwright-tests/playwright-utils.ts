@@ -8,7 +8,6 @@ export async function responseText(resp: Response | null) {
 }
 
 type PageAssertions = ReturnType<typeof expect<Page>>;
-type X = Parameters<PageAssertions["toHaveScreenshot"]>[0];
 export async function matchScreenshot(
   page: Page,
   name: string | string[],
@@ -65,4 +64,23 @@ export async function waitUntilNoChanges(page: Page, loc: Locator) {
     }
     prev = curr;
   }
+}
+
+export async function waitForPlasmicDynamic(page: Page) {
+  await page.waitForSelector(".ρd__all", { timeout: 30000 });
+
+  await page.waitForFunction(
+    () => {
+      const elements = document.querySelectorAll(".ρd__all");
+      if (elements.length === 0) {
+        return false;
+      }
+
+      return Array.from(elements).some((el) => {
+        const text = el.textContent || "";
+        return !text.includes("Loading...") && text.trim().length > 0;
+      });
+    },
+    { timeout: 60000 }
+  );
 }

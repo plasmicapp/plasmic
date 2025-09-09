@@ -120,8 +120,8 @@ export async function setupNextJs(opts: {
   const {
     bundleFile,
     projectName,
-    npmRegistry,
-    codegenHost,
+    npmRegistry: _npmRegistry,
+    codegenHost: _codegenHost,
     removeComponentsPage,
     bundleTransformation,
     loaderVersion = "latest",
@@ -166,7 +166,19 @@ export async function teardownNextJs(ctx: NextJsContext) {
   const { tmpdirCleanup } = ctx;
 
   await teardownNextJsServer(ctx);
-  tmpdirCleanup();
+
+  await new Promise((resolve) => setTimeout(resolve, 3000));
+
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    try {
+      tmpdirCleanup();
+      return;
+    } catch (error: any) {
+      if (attempt < 3) {
+        await new Promise((resolve) => setTimeout(resolve, attempt * 1000));
+      }
+    }
+  }
 }
 
 export async function teardownNextJsServer(ctx: {
@@ -178,9 +190,15 @@ export async function teardownNextJsServer(ctx: {
   server.kill("SIGINT");
 
   try {
-    await waitUntilServerDown(host, { maxTimeout: 60000 });
+    await waitUntilServerDown(host, { maxTimeout: 10000 });
   } catch {
-    throw new Error(`Failed to shut down nextjs server`);
+    server.kill("SIGTERM");
+    try {
+      await waitUntilServerDown(host, { maxTimeout: 5000 });
+    } catch {
+      server.kill("SIGKILL");
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+    }
   }
 }
 

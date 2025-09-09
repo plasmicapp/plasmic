@@ -31,13 +31,29 @@ export async function setupHtml(opts: {
   );
   const { name: tmpdir, removeCallback: tmpdirCleanup } = tmp.dirSync({
     unsafeCleanup: true,
+    prefix: `plasmic-html-${process.pid}-${
+      process.env.TEST_WORKER_INDEX || 0
+    }-${Date.now()}-`,
   });
 
   console.log("tmpdir", tmpdir);
   const templateDir = path.resolve(path.join(__dirname, "template"));
   copySync(templateDir, tmpdir, { recursive: true });
 
-  await runCommand(`yarn install`, { dir: tmpdir });
+  const isolatedCacheDir = path.join(tmpdir, ".yarn-cache");
+  const isolatedYarnDir = path.join(tmpdir, ".yarn");
+
+  await runCommand(
+    `yarn install --network-timeout 60000 --cache-folder "${isolatedCacheDir}" --global-folder "${isolatedYarnDir}"`,
+    {
+      dir: tmpdir,
+      env: {
+        YARN_CACHE_FOLDER: isolatedCacheDir,
+        YARN_GLOBAL_FOLDER: isolatedYarnDir,
+        YARN_ENABLE_NETWORK: "1",
+      },
+    }
+  );
 
   const port = await getPort();
   const server = runCommand(`node -r esbuild-register main.ts`, {
@@ -68,7 +84,11 @@ export async function setupHtml(opts: {
   };
 }
 
-export async function teardownHtml(ctx: HtmlContext) {
+export async function teardownHtml(ctx: HtmlContext | undefined) {
+  if (!ctx) {
+    return;
+  }
+
   const { server, host, tmpdirCleanup } = ctx;
   console.log(`Tearing down vanilla express at ${host} (pid ${server.pid})...`);
   server.kill("SIGINT");
