@@ -39,7 +39,8 @@
   },
   "resolutions": {
     "eslint": "^8.55.0",
-    "jest": "29.7.0"
+    "jest": "29.7.0",
+    "sha.js": "^2.4.12"
   },
   "packageManager": "yarn@1.22.21",
   "devDependencies": {
