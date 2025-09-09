@@ -247,8 +247,8 @@ export function toFinalToken(token: Token, site: Site) {
     ? site.styleTokens.includes(token)
     : site.dataTokens.includes(token);
 
-  if (token.isRegistered) {
-    return new ImmutableToken(token, isLocal);
+  if (isLocal && token.isRegistered) {
+    return new OverrideableToken(token, site);
   } else if (isLocal) {
     return new MutableToken(token);
   } else if (

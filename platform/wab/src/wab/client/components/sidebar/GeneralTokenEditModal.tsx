@@ -1,11 +1,12 @@
 import { SidebarModal } from "@/wab/client/components/sidebar/SidebarModal";
 import { newTokenValueAllowed } from "@/wab/client/components/sidebar/token-controls";
+import { useClientTokenResolver } from "@/wab/client/components/widgets/ColorPicker/client-token-resolver";
 import { DimTokenSpinner } from "@/wab/client/components/widgets/DimTokenSelector";
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import { SimpleTextbox } from "@/wab/client/components/widgets/SimpleTextbox";
 import TokenIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Token";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { tokenTypeDimOpts } from "@/wab/commons/StyleToken";
+import { isTokenRef, tokenTypeDimOpts } from "@/wab/commons/StyleToken";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import { assert, ensure } from "@/wab/shared/common";
 import { MutableToken, OverrideableToken } from "@/wab/shared/core/tokens";
@@ -27,6 +28,14 @@ export const GeneralTokenEditModal = observer(
       defaultEditingName,
       vsh = new VariantedStylesHelper(props.studioCtx.site),
     } = props;
+
+    const resolver = useClientTokenResolver();
+    const activeTokenValue = vsh.getActiveTokenValue(token);
+    // Resolve CSS variable refs only
+    const tokenRefOrRealColor = isTokenRef(activeTokenValue)
+      ? activeTokenValue
+      : resolver(token, vsh);
+
     const onChange = async (val: string | undefined) => {
       assert(val !== undefined);
       return studioCtx.changeUnsafe(() => {
@@ -65,7 +74,7 @@ export const GeneralTokenEditModal = observer(
       >
         <div className={"flex-col flex-vcenter p-xlg flex-stretch-items"}>
           <DimTokenSpinner
-            value={vsh.getActiveTokenValue(token)}
+            value={tokenRefOrRealColor}
             onChange={(val) => onChange(ensure(val, "new value is undefined"))}
             noClear
             studioCtx={studioCtx}

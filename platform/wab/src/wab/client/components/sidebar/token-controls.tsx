@@ -7,6 +7,7 @@ import { useMultiAssetsActions } from "@/wab/client/components/sidebar/MultiAsse
 import { ColorSidebarPopup } from "@/wab/client/components/style-controls/ColorButton";
 import ColorSwatch from "@/wab/client/components/style-controls/ColorSwatch";
 import { Matcher } from "@/wab/client/components/view-common";
+import { useClientTokenResolver } from "@/wab/client/components/widgets/ColorPicker/client-token-resolver";
 import { EditableLabel } from "@/wab/client/components/widgets/EditableLabel";
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import { SimpleTextbox } from "@/wab/client/components/widgets/SimpleTextbox";
@@ -16,6 +17,7 @@ import {
   StyleTokenType,
   TokenValue,
   isStyleTokenEditable,
+  isTokenRef,
   tryParseTokenRef,
 } from "@/wab/commons/StyleToken";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
@@ -517,9 +519,17 @@ export const ColorTokenPopup = observer(function ColorTokenPopup(props: {
     autoFocusName,
     vsh = new VariantedStylesHelper(props.studioCtx.site),
   } = props;
+
+  const resolver = useClientTokenResolver();
+  const activeTokenValue = vsh.getActiveTokenValue(token);
+  // Resolve CSS variable refs only
+  const tokenRefOrRealColor = isTokenRef(activeTokenValue)
+    ? activeTokenValue
+    : resolver(token, vsh);
+
   return (
     <ColorSidebarPopup
-      color={vsh.getActiveTokenValue(token)}
+      color={tokenRefOrRealColor}
       onChange={async (newColor) => {
         if (newTokenValueAllowed(token, studioCtx.site, newColor, vsh)) {
           await studioCtx.changeUnsafe(() => vsh.updateToken(token, newColor));

@@ -11,6 +11,8 @@ describe("Imported token overrides", function () {
     SECONDARY: "#00ff00",
     SECONDARY_OVERRIDE: "#00aa00",
     SECONDARY_NEW: "#00aaaa",
+    ANTD: "#ff4d4f",
+    ANTD_OVERRIDE: "#0000ff",
   };
 
   const TEST_FONT_SIZES = {
@@ -33,6 +35,7 @@ describe("Imported token overrides", function () {
     PRIMARY: "primary",
     LARGE: "large",
     SECONDARY: "secondary",
+    ANTD: "System: Error",
   };
 
   let origDevFlags: DevFlagsType;
@@ -564,6 +567,64 @@ describe("Imported token overrides", function () {
         cy.removeCurrentProject();
       });
   });
+
+  it("Should override registered imported tokens", function () {
+    cy.setupProjectWithHostlessPackages({
+      hostLessPackagesInfo: [
+        {
+          name: "antd5",
+          npmPkg: ["@plasmicpkgs/antd5"],
+        },
+      ],
+    }).then((projectId) => {
+      cy.withinStudioIframe(() => {
+        cy.publishVersion("New tokens");
+      });
+
+      cy.setupNewProject({ name: "Main Project" })
+        .then(() => {
+          const assertTextStylingInBothModes = (
+            color: string,
+            frame: Framed
+          ) => {
+            assertTextStyling(
+              TEST_TEXTS.FROM_MAIN_PROJECT_TEXT_1,
+              color,
+              undefined,
+              frame
+            );
+            cy.withinLiveMode(() => {
+              assertTextStyling(
+                TEST_TEXTS.FROM_MAIN_PROJECT_TEXT_1,
+                color,
+                undefined,
+                frame
+              );
+            });
+          };
+          cy.withinStudioIframe(() => {
+            cy.importProject(projectId);
+            cy.createNewPage("Main Page").then((frame) => {
+              cy.insertFromAddDrawer("Text");
+              cy.getSelectedElt().dblclick({ force: true });
+              frame.enterIntoTplTextBlock(TEST_TEXTS.FROM_MAIN_PROJECT_TEXT_1);
+              cy.chooseColor({ tokenName: TOKEN_NAMES.ANTD });
+              assertTextStylingInBothModes(TEST_COLORS.ANTD, frame);
+              cy.updateToken(
+                "Color",
+                TOKEN_NAMES.ANTD,
+                TEST_COLORS.ANTD_OVERRIDE,
+                { override: true }
+              );
+              assertTextStylingInBothModes(TEST_COLORS.ANTD_OVERRIDE, frame);
+            });
+          });
+        })
+        .then(() => {
+          cy.removeCurrentProject();
+        });
+    });
+  });
 });
 
 function hexToRgbString(hex: string) {
@@ -591,12 +652,14 @@ function hexToRgbString(hex: string) {
 const assertTextStyling = (
   text: string,
   color: string,
-  fontSize: string,
+  fontSize?: string,
   canvasFrame?: Framed
 ) => {
   // If canvas frame is not provided, we're in live mode
-  (canvasFrame ? canvasFrame.base() : cy)
-    .contains(text)
-    .should("have.css", "color", hexToRgbString(color))
-    .should("have.css", "font-size", fontSize);
+  const element = (canvasFrame ? canvasFrame.base() : cy).contains(text);
+  element.should("have.css", "color", hexToRgbString(color));
+
+  if (fontSize) {
+    element.should("have.css", "font-size", fontSize);
+  }
 };

@@ -2060,7 +2060,7 @@ export function importProject(projectId: string) {
     cy.get(`[data-test-id="import-btn"]`).click();
     cy.justType(projectId + "{enter}");
     // Wait for the project to be imported
-    cy.get(selector).should("have.length", countBefore + 1);
+    cy.get(selector).should("have.length.gte", countBefore + 1);
   });
 }
 
