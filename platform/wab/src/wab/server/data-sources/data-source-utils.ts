@@ -9,6 +9,7 @@ import { makeTutorialDbFetcher } from "@/wab/server/data-sources/tutorialdb-fetc
 import { makeZapierFetcher } from "@/wab/server/data-sources/zapier-fetcher";
 import { getLastBundleVersion } from "@/wab/server/db/BundleMigrator";
 import { DbMgr } from "@/wab/server/db/DbMgr";
+import { logger } from "@/wab/server/observability";
 import { getOpEncryptionKey as getDataSourceOperationEncryptionKey } from "@/wab/server/secrets";
 import { makeStableEncryptor } from "@/wab/server/util/crypt";
 import { ProjectId } from "@/wab/shared/ApiSchema";
@@ -94,7 +95,11 @@ export async function executeDataSourceOperation(
   if (!opMeta) {
     throw new Error(`Unknown operation ${source.source}.${operation.name}`);
   }
-  console.log({ operation: operation.name, userArgs, fetchArgs });
+  logger().debug("Operation", {
+    operation: operation.name,
+    userArgs,
+    fetchArgs,
+  });
   const finalArgs = substituteArgs(
     source,
     opMeta,
@@ -108,7 +113,7 @@ export async function executeDataSourceOperation(
     // Always return valid JSON
     return result ?? null;
   } catch (err) {
-    console.error("Integration Error: ", err);
+    logger().error("Integration Error: ", err);
     throw stampIgnoreError(err);
   }
 }
@@ -461,7 +466,7 @@ async function updateDataSourceExprSourceId(
       } catch (err) {
         // We won't fail here, as this state of project even though it is not properly represeting
         // the expression, it may still be valid as a template
-        console.error(
+        logger().error(
           `Error trying to issue dataSourceOpId user does not have permission to access data source ${sourceId}`
         );
       }
@@ -567,7 +572,7 @@ export function normalizeOperationTemplate(
       normTemplate(op?.args[key], val)
     ),
   };
-  console.log("NORMALIZED", normalized);
+  logger().info("NORMALIZED", normalized);
   return normalized;
 }
 
@@ -635,7 +640,7 @@ function normTemplate(argMeta: ArgMeta | undefined, template: any) {
           visit(parsed.tree);
           return mapped;
         } catch (err) {
-          console.log(
+          logger().error(
             `Error parsing react-query-builder template: ${err}: ${substituted}`
           );
           return undefined;
