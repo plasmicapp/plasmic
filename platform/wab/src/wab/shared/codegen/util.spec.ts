@@ -1,6 +1,6 @@
 import { paramToVarName, toJsIdentifier } from "@/wab/shared/codegen/util";
 import { ComponentType, mkComponent } from "@/wab/shared/core/components";
-import { mkParam, ParamExportType } from "@/wab/shared/core/lang";
+import { ParamExportType, mkParam } from "@/wab/shared/core/lang";
 import { mkTplTagX } from "@/wab/shared/core/tpls";
 import { Component, PlumeInfo } from "@/wab/shared/model/classes";
 import { typeFactory } from "@/wab/shared/model/model-util";
@@ -37,6 +37,8 @@ describe("toJsIdentifier", () => {
     expect(toJsIdentifier("claSS")).toEqual("claSs");
     expect(toJsIdentifier("_hello")).toEqual("hello");
     expect(toJsIdentifier("invalidChars🌏")).toEqual("invalidChars");
+    // Regression: https://linear.app/plasmic/issue/PLA-11146
+    expect(toJsIdentifier("aria-label 2")).toEqual("ariaLabel2");
   });
 
   it("works with camelCase: false", () => {
