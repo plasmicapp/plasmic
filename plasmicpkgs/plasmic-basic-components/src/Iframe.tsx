@@ -6,6 +6,7 @@ export interface IframeProps {
   useHtml?: boolean;
   srcDoc?: string;
   src?: string;
+  sandbox?: string;
   preview?: boolean;
   className?: string;
   onLoad?: React.ComponentProps<"iframe">["onLoad"];
@@ -15,6 +16,7 @@ export function Iframe({
   preview,
   src,
   srcDoc,
+  sandbox,
   useHtml,
   className,
   onLoad,
@@ -47,7 +49,14 @@ export function Iframe({
     );
   }
   const srcProps = useHtml ? { srcDoc } : { src };
-  return <iframe {...srcProps} className={className} onLoad={onLoad} />;
+  return (
+    <iframe
+      {...srcProps}
+      sandbox={sandbox}
+      className={className}
+      onLoad={onLoad}
+    />
+  );
 }
 
 export const iframeMeta: ComponentMeta<IframeProps> = {
@@ -63,6 +72,12 @@ export const iframeMeta: ComponentMeta<IframeProps> = {
         "Insert custom HTML directly into the iframe instead of using a URL.",
       defaultValue: false,
       advanced: true,
+    },
+    sandbox: {
+      type: "string",
+      displayName: "Sandbox",
+      description:
+        "Controls the restrictions applied to the content embedded in the iframe.",
     },
     srcDoc: {
       type: "code",
