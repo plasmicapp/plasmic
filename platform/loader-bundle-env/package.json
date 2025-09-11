@@ -30,7 +30,7 @@
     "@plasmicpkgs/fetch": "^0.0.15",
     "@plasmicpkgs/framer-motion": "^0.0.223",
     "@plasmicpkgs/lottie-react": "^0.0.217",
-    "@plasmicpkgs/plasmic-basic-components": "^0.0.252",
+    "@plasmicpkgs/plasmic-basic-components": "^0.0.253",
     "@plasmicpkgs/plasmic-chakra-ui": "^0.0.55",
     "@plasmicpkgs/plasmic-cms": "^0.0.290",
     "@plasmicpkgs/plasmic-content-stack": "^0.0.179",
