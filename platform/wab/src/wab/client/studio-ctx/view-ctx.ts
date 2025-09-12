@@ -435,6 +435,7 @@ export class ViewCtx extends WithDbCtx {
   );
 
   private _autoOpenedUuid = observable.box<string | undefined>();
+  private _autoOpenTransitioning = false;
 
   get autoOpenedUuid() {
     return this._autoOpenedUuid.get();
@@ -444,10 +445,14 @@ export class ViewCtx extends WithDbCtx {
     if (val === this.autoOpenedUuid) {
       return;
     }
+    if (val && this._autoOpenTransitioning) {
+      this._autoOpenTransitioning = false;
+    }
     this._autoOpenedUuid.set(val);
   }
 
   resetAutoOpenState() {
+    this._autoOpenTransitioning = false;
     this.autoOpenedUuid = undefined;
     this.disabledAutoOpenUuid = undefined;
   }
@@ -533,7 +538,19 @@ export class ViewCtx extends WithDbCtx {
       return;
     }
 
-    this.resetAutoOpenState();
+    // Defer clearing autoOpenedUuid to prevent banner flashing if a new UUID is set during render
+    if (this.studioCtx.isAutoOpenMode && newSelection) {
+      this._autoOpenTransitioning = true;
+
+      // Clear after rendering has had a chance to set a new UUID
+      setTimeout(() => {
+        if (this._autoOpenTransitioning) {
+          this.resetAutoOpenState();
+        }
+      }, 0);
+    } else {
+      this.resetAutoOpenState();
+    }
   }
 
   private _xFocusedSelectables = observable.box<(Selectable | null)[]>([], {
