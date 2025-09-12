@@ -4,6 +4,7 @@ import { Config } from "@/wab/server/config";
 import { DbMgr, SUPER_USER } from "@/wab/server/db/DbMgr";
 import { OauthTokenProvider, User } from "@/wab/server/entities/Entities";
 import "@/wab/server/extensions";
+import { logger } from "@/wab/server/observability";
 import { superDbMgr, userDbMgr } from "@/wab/server/routes/util";
 import {
   getAirtableSsoSecrets,
@@ -18,16 +19,16 @@ import {
 } from "@/wab/server/util/passport-multi-oauth2";
 import { BadRequestError } from "@/wab/shared/ApiErrors/errors";
 import { SsoConfigId, UserId } from "@/wab/shared/ApiSchema";
+import { accessLevelRank } from "@/wab/shared/EntUtil";
 import {
+  StandardCallback,
   assert,
   asyncToCallback,
   ensure,
   maybes,
-  StandardCallback,
 } from "@/wab/shared/common";
 import { isGoogleAuthRequiredEmailDomain } from "@/wab/shared/devflag-utils";
 import { DevFlagsType } from "@/wab/shared/devflags";
-import { accessLevelRank } from "@/wab/shared/EntUtil";
 import { getPublicUrl } from "@/wab/shared/urls";
 import { Request } from "express-serve-static-core";
 import { omit } from "lodash";
@@ -151,7 +152,7 @@ export async function setupPassport(
 
           const row = await extractSsoConfig(req);
           profile.tenantId = row.tenantId;
-          console.log("SSO profile", profile);
+          logger().info("SSO profile", profile);
           let user = await upsertOauthUser(
             req,
             row.provider,

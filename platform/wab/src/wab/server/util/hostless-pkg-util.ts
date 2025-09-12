@@ -1,3 +1,4 @@
+import { logger } from "@/wab/server/observability";
 import fs from "fs";
 import { memoize } from "lodash";
 import path from "path";
@@ -18,8 +19,9 @@ export const getHostlessPackageNpmVersion = memoize(
       );
       return packageJson.version;
     } catch (err) {
-      console.error(
-        `Error encountered while deriving hostless package npm version for ${pkg}: ${err}`
+      logger().error(
+        `Error encountered while deriving hostless package npm version for ${pkg}`,
+        err
       );
       return undefined;
     }

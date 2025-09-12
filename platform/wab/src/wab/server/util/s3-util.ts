@@ -1,3 +1,4 @@
+import { logger } from "@/wab/server/observability";
 import { ensureInstance } from "@/wab/shared/common";
 import S3 from "aws-sdk/clients/s3";
 import path from "path";
@@ -20,14 +21,14 @@ export async function upsertS3CacheEntry<T>(opts: {
       })
       .promise();
     const serialized = ensureInstance(obj.Body, Buffer).toString("utf8");
-    console.log(`S3 cache hit for ${bucket} ${key}`);
+    logger().info(`S3 cache hit for ${bucket} ${key}`);
     const data = deserialize(serialized);
     return data;
   } catch (err) {
     if (err.code === "TimeoutError") {
       throw err;
     }
-    console.log(`S3 cache miss for ${bucket} ${key}; computing`);
+    logger().info(`S3 cache miss for ${bucket} ${key}; computing`);
     const content = await f();
     const serialized = serialize(content);
     try {
@@ -42,7 +43,7 @@ export async function upsertS3CacheEntry<T>(opts: {
       if (process.env.NODE_ENV === "production") {
         throw e;
       }
-      console.error("Unable to add content to S3", e);
+      logger().error("Unable to add content to S3", e as any);
     }
     return content;
   }

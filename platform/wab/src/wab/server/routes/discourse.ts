@@ -1,8 +1,9 @@
+import { logger } from "@/wab/server/observability";
 import { getUser, userDbMgr } from "@/wab/server/routes/util";
 import { getDiscourseConnectSecret } from "@/wab/server/secrets";
+import { accessLevelRank } from "@/wab/shared/EntUtil";
 import { ensure, ensureString, notNil, omitNils } from "@/wab/shared/common";
 import { MIN_ACCESS_LEVEL_FOR_SUPPORT } from "@/wab/shared/discourse/config";
-import { accessLevelRank } from "@/wab/shared/EntUtil";
 import crypto from "crypto";
 import { Request, Response } from "express-serve-static-core";
 import L from "lodash";
@@ -63,7 +64,7 @@ export async function discourseConnect(req: Request, res: Response) {
   const discourseInfo = await dbMgr.getDiscourseInfosByTeamIds(teamIds);
   const groupsCommaDelimited = discourseInfo.map((org) => org.slug).join(",");
 
-  console.log(
+  logger().info(
     `Signing in user ${user.id} with email ${user.email} with groups ${groupsCommaDelimited}`
   );
   const responsePayload = omitNils({

@@ -1,13 +1,14 @@
-import { assert, spawn } from "@/wab/shared/common";
 import { DEFAULT_DATABASE_URI } from "@/wab/server/config";
-import { createDbConnection } from "@/wab/server/db/dbcli-utils";
 import { DbMgr, SUPER_USER } from "@/wab/server/db/DbMgr";
+import { createDbConnection } from "@/wab/server/db/dbcli-utils";
+import { logger } from "@/wab/server/observability";
 import {
-  resetTutorialDb,
   TutorialType,
+  resetTutorialDb,
 } from "@/wab/server/tutorialdb/tutorialdb-utils";
-import { Command } from "commander";
 import { TutorialDbId } from "@/wab/shared/ApiSchema";
+import { assert, spawn } from "@/wab/shared/common";
+import { Command } from "commander";
 
 async function main() {
   const withDb = async (opts: any, func: (db: DbMgr) => Promise<void>) => {
@@ -34,7 +35,7 @@ async function main() {
     .action(async (type: string, opts: any) => {
       await withDb(program.optsWithGlobals(), async (db) => {
         const res = await db.createTutorialDb(type as TutorialType);
-        console.log("DATABASE CREATED", res);
+        logger().info("DATABASE CREATED", res);
       });
     });
 
@@ -61,9 +62,9 @@ async function main() {
         const source = await db.getDataSourceById(sourceId);
         assert(source.source === "tutorialdb", "Can only reset tutorialdb");
         const tutorialDbId = source.credentials.tutorialDbId;
-        console.log(tutorialDbId);
+        logger().info(`Tutorial DB ID: ${tutorialDbId}`);
         const tdb = await db.getTutorialDb(tutorialDbId as TutorialDbId);
-        console.log(tdb);
+        logger().info(`Tutorial DB: ${tdb}`);
       });
     });
 

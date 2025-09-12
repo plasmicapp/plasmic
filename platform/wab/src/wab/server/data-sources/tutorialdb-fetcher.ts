@@ -1,10 +1,11 @@
-import { ensure } from "@/wab/shared/common";
 import { PostgresFetcher } from "@/wab/server/data-sources/postgres-fetcher";
 import { DbMgr, SUPER_USER } from "@/wab/server/db/DbMgr";
+import { logger } from "@/wab/server/observability";
 import {
   getSslOptions,
   getTutorialDbHost,
 } from "@/wab/server/tutorialdb/tutorialdb-utils";
+import { ensure } from "@/wab/shared/common";
 import { TutorialDbDataSource } from "@/wab/shared/data-sources-meta/tutorialdb-meta";
 import { Connection } from "typeorm";
 
@@ -16,7 +17,7 @@ export async function makeTutorialDbFetcher(
     const dbMgr = new DbMgr(em, SUPER_USER);
     return dbMgr.getTutorialDb(source.credentials.tutorialDbId);
   });
-  console.log("INFO", tdb.info);
+  logger().info("INFO", tdb.info);
   return new PostgresFetcher(
     {
       credentials: {

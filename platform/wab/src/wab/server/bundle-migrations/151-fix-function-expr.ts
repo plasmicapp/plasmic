@@ -5,15 +5,17 @@
  * Fortunately, these two were not part of the public API and were only used internally for
  * form validation rules and custom code in interactions.
  */
-import { unexpected } from "@/wab/shared/common";
-import { isCodeComponent } from "@/wab/shared/core/components";
-import { isRealCodeExpr } from "@/wab/shared/core/exprs";
 import { UnbundledMigrationFn } from "@/wab/server/db/BundleMigrator";
 import {
   BundleMigrationType,
   unbundleSite,
 } from "@/wab/server/db/bundle-migration-utils";
+import { logger } from "@/wab/server/observability";
 import { Bundler } from "@/wab/shared/bundler";
+import { unexpected } from "@/wab/shared/common";
+import { isCodeComponent } from "@/wab/shared/core/components";
+import { isRealCodeExpr } from "@/wab/shared/core/exprs";
+import { flattenTpls, isTplComponent } from "@/wab/shared/core/tpls";
 import {
   CustomCode,
   Expr,
@@ -23,7 +25,6 @@ import {
   isKnownFunctionExpr,
   isKnownMapExpr,
 } from "@/wab/shared/model/classes";
-import { flattenTpls, isTplComponent } from "@/wab/shared/core/tpls";
 
 export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
   const bundler = new Bundler();
@@ -43,7 +44,7 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
         fallback: expr.fallback,
       });
     } else {
-      console.log("error fixing expr", expr);
+      logger().info("error fixing expr", expr);
       unexpected();
     }
   };
@@ -75,7 +76,10 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
               expr.mapExpr["custom"].bodyExpr
             );
           } else {
-            console.log("function expr error: form rules", expr.mapExpr.custom);
+            logger().info(
+              "function expr error: form rules",
+              expr.mapExpr.custom
+            );
             unexpected();
           }
         }
@@ -102,7 +106,7 @@ export const migrate: UnbundledMigrationFn = async (bundle, db, entity) => {
             if (isKnownFunctionExpr(arg.expr)) {
               arg.expr.bodyExpr = fixFunctionExpr(arg.expr.bodyExpr);
             } else {
-              console.log("function expr error: interaction", arg.expr);
+              logger().info("function expr error: interaction", arg.expr);
               unexpected();
             }
           }

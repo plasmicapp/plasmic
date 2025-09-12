@@ -1,6 +1,7 @@
-import { mkShortUuid } from "@/wab/shared/common";
-import { withSpan } from "@/wab/server/util/apm-util";
+import { logger } from "@/wab/server/observability";
 import { generateSomeApiToken } from "@/wab/server/util/Tokens";
+import { withSpan } from "@/wab/server/util/apm-util";
+import { mkShortUuid } from "@/wab/shared/common";
 import fs from "fs";
 import { Connection, ConnectionOptions, createConnection } from "typeorm";
 import { SnakeNamingStrategy } from "typeorm-naming-strategies";
@@ -45,7 +46,7 @@ export async function createTutorialDb(
       } as TutorialDbInfo;
     });
 
-    console.log("Created tutorialdb", info);
+    logger().info("Created tutorialdb", info);
 
     await withSuperTutorialDbConnection(
       async (con) => {
@@ -87,19 +88,19 @@ export async function resetTutorialDb(info: TutorialDbInfo) {
       const views = await con.query(
         `SELECT table_name FROM information_schema.tables WHERE table_schema='public' AND table_type='VIEW'`
       );
-      console.log("VIEWS", views);
+      logger().info("VIEWS", views);
       for (const table of views) {
         await con.query(`DROP VIEW ${table.table_name} CASCADE;`);
       }
-      console.log("Deleting existing tables...");
+      logger().info("Deleting existing tables...");
       const tables = await con.query(
         `SELECT table_name FROM information_schema.tables WHERE table_schema='public' AND table_type='BASE TABLE'`
       );
-      console.log("TABLES", tables);
+      logger().info("TABLES", tables);
       for (const table of tables) {
         await con.query(`DROP TABLE ${table.table_name} CASCADE;`);
       }
-      console.log("Loading schema and data...");
+      logger().info("Loading schema and data...");
       await initTutorialDb(con, info);
     },
     {

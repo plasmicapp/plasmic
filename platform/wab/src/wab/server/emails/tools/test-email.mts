@@ -1,4 +1,5 @@
 import { generateEmailHtml } from "@/wab/server/emails/tools/generate";
+import { logger } from "@/wab/server/observability";
 import * as fs from "fs";
 import nodemailer from "nodemailer";
 import * as path from "path";
@@ -201,7 +202,7 @@ const args = await yargs(hideBin(process.argv)).option("email", {
 
 const outputPath = `out/${TEMPLATE_NAME}.html`;
 await writeHtmlToFile(html, outputPath);
-console.log(`HTML saved to ${outputPath}. Open in the browser to preview!`);
+logger().info(`HTML saved to ${outputPath}. Open in the browser to preview!`);
 
 if (args.email) {
   const transporter = nodemailer.createTransport({
@@ -223,10 +224,10 @@ if (args.email) {
     },
     (err, info) => {
       if (err) {
-        console.error(err);
+        logger().error("Error sending email", err);
         return;
       }
-      console.log(`Email sent to ${args.email}. Email ID: ${info.messageId}`);
+      logger().info(`Email sent to ${args.email}. Email ID: ${info.messageId}`);
     }
   );
 }

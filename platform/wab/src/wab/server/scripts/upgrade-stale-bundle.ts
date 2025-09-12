@@ -1,14 +1,15 @@
-import { assert, last, spawn } from "@/wab/shared/common";
-import { DEVFLAGS } from "@/wab/shared/devflags";
-import { unbundleSite } from "@/wab/server/db/bundle-migration-utils";
 import {
   getAllMigrations,
   getLastBundleVersion,
   getMigrationsToExecute,
 } from "@/wab/server/db/BundleMigrator";
+import { unbundleSite } from "@/wab/server/db/bundle-migration-utils";
 import { PkgVersion, ProjectRevision } from "@/wab/server/entities/Entities";
+import { logger } from "@/wab/server/observability";
 import { Bundler } from "@/wab/shared/bundler";
 import { Bundle } from "@/wab/shared/bundles";
+import { assert, last, spawn } from "@/wab/shared/common";
+import { DEVFLAGS } from "@/wab/shared/devflags";
 import execa from "execa";
 import fs from "fs";
 import inquirer from "inquirer";
@@ -47,7 +48,7 @@ async function migrate() {
 
   const bundles = Object.fromEntries(bundleArray);
 
-  console.log(`Migrating to ${targetMigration}...`);
+  logger().info(`Migrating to ${targetMigration}...`);
 
   await execa.command(sh.quote`git checkout ${path}`, {
     shell: "bash",
@@ -145,7 +146,7 @@ async function migrate() {
       trailingComma: "none",
     })
   );
-  console.log("All done!");
+  logger().info("All done!");
   process.exit(0);
 }
 

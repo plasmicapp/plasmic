@@ -11,6 +11,7 @@ import {
   normalActor,
 } from "@/wab/server/db/DbMgr";
 import { SocketUser } from "@/wab/server/extensions";
+import { logger } from "@/wab/server/observability";
 import { parseProjectIdsAndTokensHeader } from "@/wab/server/routes/util";
 import {
   InitServerInfo,
@@ -178,9 +179,9 @@ export class ProjectsSocket {
             socket.request["sessionID"],
             "SessionID should not be undefined"
           );
-          console.log("Starting session", sessionId);
+          logger().info(`Starting session ${sessionId}`);
           this.trackSocket(this.sessionIdToSockets, sessionId, socket);
-          console.log(
+          logger().info(
             `Subscribing user ${getSocketUserName(
               ensure(socket.handshake.user, "User should not be undefined")
             )} to ${args.projectIds}`
@@ -244,11 +245,10 @@ export class ProjectsSocket {
       selfPlayerId: playerId,
     };
     socket.emit("initServerInfo", initServerInfo);
-    console.log(
-      "Socket connected for",
-      getSocketUserName(
+    logger().info(
+      `Socket connected for ${getSocketUserName(
         ensure(socket.handshake["user"], "User should not be undefined")
-      )
+      )}`
     );
   }
 
@@ -301,7 +301,7 @@ async function socketAuthMiddleware(socket: Socket, next: (err?: any) => any) {
   try {
     const user = await extractAuthUser(socket);
     if (!user) {
-      console.log("Rejected unauthenticated socket connection");
+      logger().info("Rejected unauthenticated socket connection");
       return next(new Error("Invalid credentials."));
     }
     socket.handshake["user"] = user;
@@ -319,7 +319,7 @@ async function extractAuthUser(
   return await withDbMgr({ actor: SUPER_USER }, async (mgr) => {
     if (get(socket, "request.session.passport.user")) {
       // This is a user logged in with a passport cookie
-      console.log(
+      logger().info(
         "Socket logged in via passport",
         // @ts-ignore
         request.session?.passport.user

@@ -627,7 +627,7 @@ function addMiddlewares(
             // checked).
             res.on("finish", () => {
               if (!fulfilled) {
-                console.warn(
+                logger().warn(
                   `[${
                     req.id
                   }]: connection finished before response fulfilled! ${
@@ -660,7 +660,7 @@ function addMiddlewares(
             res.on("close", () => {
               if (!fulfilled) {
                 res.isClosedBeforeFulfilled = true;
-                console.warn(
+                logger().warn(
                   `[${req.id}]: connection closed before response fulfilled!  ${
                     req.startTime
                       ? `${

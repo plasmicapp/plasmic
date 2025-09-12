@@ -515,7 +515,7 @@ export async function sendCommentsNotificationEmails(
       );
     } catch (err) {
       const msg = err instanceof Error ? err.stack || err.message : String(err);
-      console.error(
+      logger().error(
         `[Comments] Error during email notification process -> ${msg}`
       );
       // Rethrow so the transaction and job fail immediately.

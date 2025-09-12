@@ -4,7 +4,8 @@ import path from "path";
 import yargs from "yargs";
 // pre-commit cannot understand "@/path" imports
 // eslint-disable-next-line
-import { arrayEq, ensure, spawn, spawnWrapper } from "../../shared/common";
+import { logger } from "@/wab/server/observability";
+import { arrayEq, ensure, spawn, spawnWrapper } from "@/wab/shared/common";
 
 interface CheckArgs {
   files: string[];
@@ -93,7 +94,7 @@ export async function main() {
         }),
       spawnWrapper((args) =>
         checkBundleFiles(args).catch((err) => {
-          console.error(err);
+          logger().error("Error on check list of bundle migrations", err);
           process.exit(1);
         })
       )
@@ -106,7 +107,7 @@ export async function main() {
 if (require.main === module) {
   spawn(
     main().catch((err) => {
-      console.error(err);
+      logger().error("Error on check-bundle-migrations", err);
       process.exit(1);
     })
   );

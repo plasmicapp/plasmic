@@ -92,6 +92,7 @@ import {
   WorkspaceAuthConfig,
   WorkspaceUser,
 } from "@/wab/server/entities/Entities";
+import { logger } from "@/wab/server/observability";
 import { REAL_PLUME_VERSION } from "@/wab/server/pkg-mgr/plume-pkg-mgr";
 import {
   TutorialType,
@@ -4039,7 +4040,7 @@ export class DbMgr implements MigrationDbMgr {
         // This may fail the clone if the user doesn't have access to the sourceIds, which is fine
         // the user will have a cloned version but won't be able to issue new opIds, the ones already
         // in the model will still work, but it will check for permissions in the data source too
-        console.error(
+        logger().error(
           `Failed to allow project ${project.id} to data sources ${sourceId}`,
           err
         );
@@ -4299,7 +4300,7 @@ export class DbMgr implements MigrationDbMgr {
     if (!semver.validRange(range)) {
       throw new BadRequestError(`version range ${range} is not valid`);
     }
-    console.log(
+    logger().info(
       `Looking for pkgVersion for pkgId=${pkgId}, branchId=${branchId}, version=${range}${
         tag ? ", tag=" + tag : ""
       }`
@@ -4342,7 +4343,7 @@ export class DbMgr implements MigrationDbMgr {
       (v) => semver.coerce(v) === strictVersion
     );
     if (!strictVersion || !version) {
-      console.warn(
+      logger().warn(
         `No matching versions for pkgId=${pkgId} branchId=${branchId} version=${range}${
           tag ? ", tag=" + tag : ""
         }`
@@ -7305,7 +7306,9 @@ export class DbMgr implements MigrationDbMgr {
       row.identifier = opts.identifier;
     }
     if (opts.revision != null && opts.revision !== (row.revision ?? 0)) {
-      console.log(`Got revision ${opts.revision} but expected ${row.revision}`);
+      logger().info(
+        `Got revision ${opts.revision} but expected ${row.revision}`
+      );
       throw new BadRequestError(
         `This CMS row has been updated in the meanwhile`
       );
@@ -10331,7 +10334,9 @@ export class DbMgr implements MigrationDbMgr {
     );
 
     if (!project.deletedAt) {
-      console.log(`Forced to delete project "${project.name}" (${project.id})`);
+      logger().info(
+        `Forced to delete project "${project.name}" (${project.id})`
+      );
     }
 
     await this.projectRevs().delete({ projectId: id });
@@ -10381,7 +10386,7 @@ export class DbMgr implements MigrationDbMgr {
     );
 
     if (!source.deletedAt) {
-      console.log(
+      logger().info(
         `Forced to delete data source "${source.name}" (${source.id})`
       );
     }
@@ -10398,7 +10403,7 @@ export class DbMgr implements MigrationDbMgr {
     );
 
     if (!database.deletedAt) {
-      console.log(`Forced to delete CMS "${database.name}" (${database.id})`);
+      logger().info(`Forced to delete CMS "${database.name}" (${database.id})`);
     }
 
     const tables = await this.cmsTables().find({ databaseId: id });
@@ -10424,7 +10429,7 @@ export class DbMgr implements MigrationDbMgr {
     );
 
     if (!workspace.deletedAt) {
-      console.log(
+      logger().info(
         `Forced to delete workspace "${workspace.name}" (${workspace.id})`
       );
     }
@@ -10487,14 +10492,14 @@ export class DbMgr implements MigrationDbMgr {
     );
 
     if (!team.deletedAt) {
-      console.log(`Forced to delete team "${team.name}" (${team.id})`);
+      logger().info(`Forced to delete team "${team.name}" (${team.id})`);
     }
 
     const workspaces = await this.workspaces().find({ teamId: id });
     if (workspaces.length > 0) {
       if (opts?.force) {
         for (const w of workspaces) {
-          console.log(`Forced to delete workspace "${w.name}" (${w.id})`);
+          logger().info(`Forced to delete workspace "${w.name}" (${w.id})`);
           await this.permanentlyDeleteWorkspace(w.id, opts);
         }
       } else {
@@ -10530,7 +10535,7 @@ export class DbMgr implements MigrationDbMgr {
     );
 
     if (!user.deletedAt) {
-      console.log(`Forced to delete "${user.email}" (${user.id})`);
+      logger().info(`Forced to delete "${user.email}" (${user.id})`);
     }
 
     assert(

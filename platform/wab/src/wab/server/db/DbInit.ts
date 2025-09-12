@@ -12,6 +12,7 @@ import {
 } from "@/wab/server/db/DbMgr";
 import { seedTestFeatureTiers } from "@/wab/server/db/seed/feature-tier";
 import { FeatureTier, Team, User } from "@/wab/server/entities/Entities";
+import { logger } from "@/wab/server/observability";
 import { getBundleInfo, PkgMgr } from "@/wab/server/pkg-mgr";
 import { Bundler } from "@/wab/shared/bundler";
 import { ensureType, spawn } from "@/wab/shared/common";
@@ -36,7 +37,7 @@ async function main() {
   await con.transaction(async (em) => {
     await initDb(em);
     await seedTestDb(em);
-    console.log("done");
+    logger().info("done");
   });
 }
 
@@ -248,7 +249,7 @@ export async function seedTestUserAndProjects(
 
   const projects = await db.listProjectsForSelf();
 
-  console.log(
+  logger().info(
     `Inserted user id=${user.id} email=${
       user.email
     } with projects ids=${projects.map((p) => p.id).join(",")}`
@@ -274,7 +275,7 @@ async function seedTeam(
     parentTeamId: parentTeam?.id,
   });
 
-  console.log(
+  logger().info(
     `Inserted team id=${team.id} name=${team.name} owned by user id=${user.id} email=${user.email} with feature tier id=${featureTier.id} name=${featureTier.name}`
   );
 

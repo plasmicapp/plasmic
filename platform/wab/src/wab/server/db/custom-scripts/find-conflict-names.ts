@@ -1,6 +1,7 @@
 import { getMigratedBundle } from "@/wab/server/db/BundleMigrator";
 import { DbMgr, SUPER_USER } from "@/wab/server/db/DbMgr";
 import { unbundleSite } from "@/wab/server/db/bundle-migration-utils";
+import { logger } from "@/wab/server/observability";
 import { isSlot } from "@/wab/shared/SlotUtils";
 import { Bundler } from "@/wab/shared/bundler";
 import { makeNodeNamer } from "@/wab/shared/codegen/react-p";
@@ -31,29 +32,32 @@ export async function findConflictNames(em: EntityManager) {
   const numberOfProjects = await dbMgr.countAllProjects();
 
   const printData = () => {
-    console.log("....................");
-    console.log(
+    logger().info(
       numberOfProjects === processedProjects
         ? "FINISHED"
         : `${((100 * processedProjects) / numberOfProjects).toFixed(2)}%`
     );
-    console.log("# of projects to check", numberOfProjects);
-    console.log("# of processed projects", processedProjects);
-    console.log("# of projects with conflicts", projectsWithConflicts.length);
-    console.log(
-      "Tpl node name and Slots = ",
-      conflictCounter[CONFLICT_TYPE.NODE_AND_SLOT]
+    logger().info(`# of projects to check: ${numberOfProjects}`);
+    logger().info(`# of processed projects: ${processedProjects}`);
+    logger().info(
+      `# of projects with conflicts: ${projectsWithConflicts.length}`
     );
-    console.log(
-      "Tpl node name and Variants = ",
-      conflictCounter[CONFLICT_TYPE.NODE_AND_VARIANT]
+    logger().info(
+      `Tpl node name and Slots = ${
+        conflictCounter[CONFLICT_TYPE.NODE_AND_SLOT]
+      }`
     );
-    console.log(
-      "Tpl node name and Prop = ",
-      conflictCounter[CONFLICT_TYPE.NODE_AND_PROP]
+    logger().info(
+      `Tpl node name and Variants = ${
+        conflictCounter[CONFLICT_TYPE.NODE_AND_VARIANT]
+      }`
     );
-    console.log(projectsWithConflicts);
-    console.log("....................");
+    logger().info(
+      `Tpl node name and Prop = ${conflictCounter[CONFLICT_TYPE.NODE_AND_PROP]}`
+    );
+    logger().info("Projects with conflicts:", {
+      projectsWithConflictsSummary: projectsWithConflicts,
+    });
   };
 
   for (const project of await dbMgr.listAllProjects()) {
@@ -84,15 +88,14 @@ export async function findConflictNames(em: EntityManager) {
 
           const addConflictFound = (conflictType: CONFLICT_TYPE) => {
             conflictCounter[conflictType]++;
-            console.log(
-              conflictType === CONFLICT_TYPE.NODE_AND_PROP
-                ? "prop"
-                : conflictType === CONFLICT_TYPE.NODE_AND_SLOT
-                ? "slot"
-                : "variant",
-              "conflict found",
-              component.name,
-              name
+            logger().info(
+              `${
+                conflictType === CONFLICT_TYPE.NODE_AND_PROP
+                  ? "prop"
+                  : conflictType === CONFLICT_TYPE.NODE_AND_SLOT
+                  ? "slot"
+                  : "variant"
+              } conflict found: ${component.name} ${name}`
             );
             projectHasConflict = true;
           };
@@ -120,7 +123,7 @@ export async function findConflictNames(em: EntityManager) {
         printData();
       }
     } catch (e) {
-      console.log(`Unbundle failed on project ${project.id}`, e);
+      logger().error(`Unbundle failed on project ${project.id}`, e as any);
     }
   }
   printData();

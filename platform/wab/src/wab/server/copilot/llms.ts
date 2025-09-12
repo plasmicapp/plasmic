@@ -3,6 +3,7 @@
  */
 
 import { DbMgr } from "@/wab/server/db/DbMgr";
+import { logger } from "@/wab/server/observability";
 import {
   getAnthropicApiKey,
   getDynamoDbSecrets,
@@ -42,7 +43,7 @@ export class OpenAIWrapper {
     options?: CreateChatCompletionRequestOptions
   ) => {
     if (verbose) {
-      console.log(showCompletionRequest(createChatCompletionRequest));
+      logger().debug(showCompletionRequest(createChatCompletionRequest));
     }
     const key = hash(
       JSON.stringify([
@@ -95,7 +96,7 @@ export class AnthropicWrapper {
     options?: CreateChatCompletionRequestOptions
   ) => {
     if (verbose) {
-      console.log(showCompletionRequest(createChatCompletionRequest));
+      logger().info(showCompletionRequest(createChatCompletionRequest));
     }
     const key = hash(
       JSON.stringify([
@@ -167,7 +168,7 @@ export class AnthropicWrapper {
       await this.cache.put(key, value1);
       return JSON.parse(value1);
     } catch (error) {
-      console.error("Error getting chat completions:", error);
+      logger().error("Error getting chat completions:", error);
       throw error;
     }
   };

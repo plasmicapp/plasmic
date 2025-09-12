@@ -4,8 +4,9 @@
 // 2. The esbuild-register plugin used to bootstrap our server complains when it encounters any .css files
 //
 // This script is run automatically when we run `npm run email:sync`
+import { logger } from "@/wab/server/observability";
 
-console.log("Removing all CSS imports from email templates...");
+logger().info("Removing all CSS imports from email templates...");
 
 import { promises as fs } from "fs";
 import * as path from "path";
@@ -24,7 +25,7 @@ async function processFile(filePath: string): Promise<void> {
 
   if (updatedContent !== content) {
     await fs.writeFile(filePath, updatedContent, "utf-8");
-    console.log(`Updated: ${filePath}`);
+    logger().info(`Updated: ${filePath}`);
   }
 }
 
@@ -43,5 +44,5 @@ async function processFolder(folder: string): Promise<void> {
 }
 
 processFolder(folderPath)
-  .then(() => console.log("Done removing CSS imports from email templates!"))
-  .catch(console.error);
+  .then(() => logger().info("Done removing CSS imports from email templates!"))
+  .catch((e) => logger().error("Error while processing folder", e));

@@ -1,5 +1,6 @@
 import { doLogin } from "@/wab/server/auth/util";
 import { User } from "@/wab/server/entities/Entities";
+import { logger } from "@/wab/server/observability";
 import { superDbMgr, userDbMgr } from "@/wab/server/routes/util";
 import {
   BadRequestError,
@@ -66,12 +67,12 @@ export async function openJwt(req: Request, res: Response, next: NextFunction) {
       algorithms: [redirectConfig.algo],
     });
   } catch (err) {
-    console.log(`Error openJwt ${err}`);
+    logger().info(`Error openJwt ${err}`);
     throw new UnauthorizedError(`Invalid token`);
   }
 
   const payload = asValidJwtPayload(jwtPayload);
-  console.log(`JWT token payload`, payload);
+  logger().info(`JWT token payload`, payload);
   if (payload.team !== team.whiteLabelName) {
     throw new UnauthorizedError(`Invalid token`);
   }
@@ -94,13 +95,13 @@ export async function openJwt(req: Request, res: Response, next: NextFunction) {
 
 function asValidJwtPayload(payload: any) {
   if (!payload || payload == null || typeof payload !== "object") {
-    console.log(`Error validating jwt: not an object`);
+    logger().info(`Error validating jwt: not an object`);
     throw new UnauthorizedError(`Invalid token`);
   }
   if (payload.team && payload.externalUserId) {
     return payload as TeamJwtOpenPayload;
   }
-  console.log(`Error validating jwt: not all necessary fields: ${payload}`);
+  logger().info(`Error validating jwt: not all necessary fields: ${payload}`);
   throw new UnauthorizedError(`Invalid token`);
 }
 
@@ -151,7 +152,7 @@ export async function deleteWhiteLabelUser(req: Request, res: Response) {
     team.id,
     req.params.externalUserId
   );
-  console.log("DELETING USER", user);
+  logger().info("DELETING USER", user);
   await mgr.deleteUser(user, false);
   res.json({ deletedId: req.params.externalUserId });
 }

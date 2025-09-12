@@ -4,6 +4,7 @@ import {
   getOperationCurrentUserUsage,
 } from "@/wab/server/data-sources/data-source-utils";
 import { DbMgr } from "@/wab/server/db/DbMgr";
+import { logger } from "@/wab/server/observability";
 import {
   extractAppUserFromToken,
   trackAppUserActivity,
@@ -198,7 +199,7 @@ export function executeDataSourceOperationWithCurrentUserHandler(
     }
 
     if (!currentUserInfo.isAuthorized) {
-      console.error(
+      logger().error(
         `App: ${currentUserInfo.appId} (User: ${currentUserInfo.appUserEmail}) (ExtId: ${currentUserInfo.appUserExternalId}) (RoleId: ${currentUserInfo.appRoleId}) is not authorized to perform operation requiring (RoleId: ${op.roleId})`
       );
       res.status(401).json({

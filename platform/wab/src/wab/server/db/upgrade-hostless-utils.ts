@@ -1,19 +1,20 @@
-import { upgradeProjectDeps } from "@/wab/shared/core/project-deps";
-import { unbundleSite } from "@/wab/server/db/bundle-migration-utils";
 import {
   getLastBundleVersion,
   getMigratedBundle,
 } from "@/wab/server/db/BundleMigrator";
 import { DbMgr } from "@/wab/server/db/DbMgr";
 import { publishHostlessProject } from "@/wab/server/db/PublishHostless";
+import { unbundleSite } from "@/wab/server/db/bundle-migration-utils";
+import { logger } from "@/wab/server/observability";
 import { ProjectId } from "@/wab/shared/ApiSchema";
 import { Bundler } from "@/wab/shared/bundler";
-import {
-  ensureKnownProjectDependency,
-  ProjectDependency,
-} from "@/wab/shared/model/classes";
+import { upgradeProjectDeps } from "@/wab/shared/core/project-deps";
 import { isHostLessPackage } from "@/wab/shared/core/sites";
 import { trackComponentRoot, trackComponentSite } from "@/wab/shared/core/tpls";
+import {
+  ProjectDependency,
+  ensureKnownProjectDependency,
+} from "@/wab/shared/model/classes";
 
 /**
  * Upgrades the hostless projects imported by `projectId` by running the
@@ -48,7 +49,7 @@ export async function upgradeReferencedHostlessDeps(
       if (await publishHostlessProject(db, dep.projectId as ProjectId)) {
         const oldDep = dep;
         const pkgVersion = await db.getPkgVersion(dep.pkgId);
-        console.log(
+        logger().info(
           `Upgrading ${dep.name} from ${oldDep.version} to ${pkgVersion.version}`
         );
         const newDep = ensureKnownProjectDependency(

@@ -1,8 +1,9 @@
-import { unbundleSite } from "@/wab/server/db/bundle-migration-utils";
 import { getMigratedBundle } from "@/wab/server/db/BundleMigrator";
 import { DbMgr, SUPER_USER } from "@/wab/server/db/DbMgr";
+import { unbundleSite } from "@/wab/server/db/bundle-migration-utils";
+import { logger } from "@/wab/server/observability";
 import { Bundler } from "@/wab/shared/bundler";
-import { isKnownTplComponent, TplComponent } from "@/wab/shared/model/classes";
+import { TplComponent, isKnownTplComponent } from "@/wab/shared/model/classes";
 import { EntityManager } from "typeorm";
 
 export async function findMissingImplicitStates(em: EntityManager) {
@@ -12,20 +13,17 @@ export async function findMissingImplicitStates(em: EntityManager) {
   const numberOfProjects = await dbMgr.countAllProjects();
 
   const printData = () => {
-    console.log("....................");
-    console.log(
+    logger().info(
       numberOfProjects === processedProjects
         ? "FINISHED"
         : `${((100 * processedProjects) / numberOfProjects).toFixed(2)}%`
     );
-    console.log("# of projects to check", numberOfProjects);
-    console.log("# of processed projects", processedProjects);
-    console.log(
-      "# of projects with missing implicit states",
-      badProjects.length
+    logger().info(`# of projects to check ${numberOfProjects}`);
+    logger().info(`# of processed projects ${processedProjects}`);
+    logger().info(
+      `# of projects with missing implicit states: ${badProjects.length}`
     );
-    console.log(badProjects);
-    console.log("....................");
+    logger().info("Bad projects", { badProjectsSummary: badProjects });
   };
 
   for (const project of await dbMgr.listAllProjects()) {
@@ -54,7 +52,7 @@ export async function findMissingImplicitStates(em: EntityManager) {
         printData();
       }
     } catch (e) {
-      console.log(`Unbundle failed on project ${project.id}`, e);
+      logger().error(`Unbundle failed on project ${project.id}`, e as any);
     }
   }
   printData();

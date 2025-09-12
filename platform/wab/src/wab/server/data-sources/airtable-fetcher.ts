@@ -5,6 +5,7 @@ import {
 import { getDefaultConnection } from "@/wab/server/db/DbCon";
 import { DbMgr, SUPER_USER } from "@/wab/server/db/DbMgr";
 import { OauthToken, TokenData } from "@/wab/server/entities/Entities";
+import { logger } from "@/wab/server/observability";
 import {
   BadRequestError,
   UnauthorizedError,
@@ -16,12 +17,12 @@ import {
 } from "@/wab/shared/data-sources-meta/airtable-meta";
 import { DATA_SOURCE_QUERY_BUILDER_CONFIG } from "@/wab/shared/data-sources-meta/data-source-registry";
 import {
-  buildQueryBuilderConfig,
-  fillPagination,
   Filters,
   FiltersLogic,
   LabeledValue,
   RawPagination,
+  buildQueryBuilderConfig,
+  fillPagination,
 } from "@/wab/shared/data-sources-meta/data-sources";
 import { CrudSorting } from "@pankod/refine-core";
 import {
@@ -32,7 +33,7 @@ import {
   TableFieldSchema,
   TableSchema,
 } from "@plasmicapp/data-sources";
-import { compile, Formula } from "@qualifyze/airtable-formulator";
+import { Formula, compile } from "@qualifyze/airtable-formulator";
 import Airtable from "airtable";
 import { AirtableBase } from "airtable/lib/airtable_base";
 import { isNumber, omit } from "lodash";
@@ -636,7 +637,7 @@ async function refreshAndUpdateToken(oauthTokenId: string, token: TokenData) {
         token.refreshToken,
         async (err, accessToken, refreshToken) => {
           if (err) {
-            console.log("ERROR", err);
+            logger().error("ERROR", err);
             resolve(undefined);
             return;
           }

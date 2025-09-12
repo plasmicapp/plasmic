@@ -1,5 +1,6 @@
 import "@/wab/server/db/pg-type-parsers";
 
+import { logger } from "@/wab/server/observability";
 import { stringToPair } from "@/wab/server/util/hash";
 import * as Sentry from "@sentry/node";
 import { parse as parseDbUri } from "pg-connection-string";
@@ -33,16 +34,16 @@ export async function ensureDbConnection(
     try {
       const conn = connMgr.get(name);
       if (conn.isConnected) {
-        console.log(`Reusing typeorm connection pool for ${name}`);
+        logger().info(`Reusing typeorm connection pool for ${name}`);
         return conn;
       }
     } catch (error: unknown) {
-      console.warn(error);
+      logger().warn(error as any);
       Sentry.captureException(error);
     }
   }
 
-  console.log(`Creating typeorm connection pool for ${name}`);
+  logger().info(`Creating typeorm connection pool for ${name}`);
   let connOpts: ConnectionOptions;
   if (typeof dburi === "string") {
     const envPassword = process.env.WAB_DBPASSWORD;
@@ -141,7 +142,7 @@ async function withAdvisoryLock(
     );
 
     if (!wasLocked) {
-      console.warn(
+      logger().warn(
         `Advisory lock was not locked: ${lockName[0]}, ${lockName[1]}`
       );
     }
@@ -153,7 +154,7 @@ export async function maybeMigrateDatabase() {
   await withAdvisoryLock(conn, async () => {
     const migrations = await conn.runMigrations({ transaction: "all" });
     if (migrations.length > 0) {
-      console.log(
+      logger().info(
         `Successfully ran ${migrations.length} migrations`,
         migrations
       );
@@ -162,7 +163,7 @@ export async function maybeMigrateDatabase() {
 }
 
 async function closeConnection(name?: string) {
-  console.log(`Closing typeorm connection pool for ${name}`);
+  logger().info(`Closing typeorm connection pool for ${name}`);
   const conn = getConnection(name);
   await conn.close();
 }

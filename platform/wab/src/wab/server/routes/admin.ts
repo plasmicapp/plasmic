@@ -5,6 +5,7 @@ import {
   PromotionCode,
 } from "@/wab/server/entities/Entities";
 import "@/wab/server/extensions.ts";
+import { logger } from "@/wab/server/observability";
 import { mkApiDataSource } from "@/wab/server/routes/data-source";
 import {
   mkApiAppAuthConfig,
@@ -227,7 +228,7 @@ export async function adminLoginAs(req: Request, res: Response) {
       }
     });
   });
-  console.log("admin logged in as", getUser(req).email);
+  logger().info(`admin logged in as ${getUser(req).email}`);
   res.cookie("plasmic-observer", "true");
   res.json(ensureType<LoginResponse>({ status: true, user }));
 }
@@ -399,7 +400,7 @@ export async function getSsoByTeam(req: Request, res: Response) {
 }
 
 export async function createTutorialDb(req: Request, res: Response) {
-  console.log("Creating tutorialDB of type", req.body.type);
+  logger().info(`Creating tutorialDB of type ${req.body.type}`);
   const mgr = superDbMgr(req);
   const type = req.body.type as TutorialType;
   const result = await mgr.createTutorialDb(type);
@@ -420,7 +421,7 @@ export async function resetTutorialDb(req: Request, res: Response) {
 export async function getTeamByWhiteLabelName(req: Request, res: Response) {
   const mgr = superDbMgr(req);
   const team = await mgr.getTeamByWhiteLabelName(req.query.name as string);
-  console.log("TEAM", req.query.name, team);
+  logger().info(`TEAM: ${req.query.name}`, team);
   res.json({ team: team });
 }
 

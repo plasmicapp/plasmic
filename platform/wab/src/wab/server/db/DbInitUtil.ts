@@ -1,3 +1,4 @@
+import { logger } from "@/wab/server/observability";
 import { EntityManager, MigrationExecutor } from "typeorm";
 import { PostgresConnectionOptions } from "typeorm/driver/postgres/PostgresConnectionOptions";
 
@@ -23,7 +24,7 @@ async function stampMigration(em: EntityManager) {
   );
   const qb = em.createQueryBuilder();
   for (const m of pendingMigrations) {
-    console.log("Stamping migration", m.name);
+    logger().info(`Stamping migration ${m.name}`);
     await qb
       .insert()
       .into(tableName)

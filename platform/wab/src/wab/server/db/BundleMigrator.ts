@@ -1,14 +1,15 @@
+import { getMigrationConnection } from "@/wab/server/db/DbCon";
+import { DbMgr, SUPER_USER } from "@/wab/server/db/DbMgr";
 import {
   bundleHasStaleHostlessDeps,
   upgradeHostlessProject,
 } from "@/wab/server/db/bundle-migration-utils";
-import { getMigrationConnection } from "@/wab/server/db/DbCon";
-import { DbMgr, SUPER_USER } from "@/wab/server/db/DbMgr";
 import {
   DevFlagOverrides,
   PkgVersion,
   ProjectRevision,
 } from "@/wab/server/entities/Entities";
+import { logger } from "@/wab/server/observability";
 import { withSpan } from "@/wab/server/util/apm-util";
 import { DataSourceId, ProjectId } from "@/wab/shared/ApiSchema";
 import {
@@ -18,12 +19,12 @@ import {
 } from "@/wab/shared/bundler";
 import {
   Bundle,
+  UnsafeBundle,
   getSerializedBundleSize,
   isEmptyBundle,
   isExpectedBundleVersion,
   parseBundle,
   setBundle,
-  UnsafeBundle,
 } from "@/wab/shared/bundles";
 import { assert, mkShortId, unexpected } from "@/wab/shared/common";
 import { DEVFLAGS } from "@/wab/shared/devflags";
@@ -159,11 +160,11 @@ export async function getMigratedBundle(
   return await withSpan("getMigratedBundle", async () => {
     const serializedSize = getSerializedBundleSize(entity);
     if (serializedSize > TEN_MB) {
-      console.log(
-        "Get migrated bundle",
-        entity.constructor.name,
-        entity.id,
-        `${(serializedSize / (1024 * 1024)).toFixed(2)} MB`
+      logger().info(
+        `Get migrated bundle ${entity.constructor.name} ${entity.id} ${(
+          serializedSize /
+          (1024 * 1024)
+        ).toFixed(2)} MB`
       );
     }
 
@@ -177,7 +178,7 @@ export async function getMigratedBundle(
     }
 
     if (isEmptyBundle(bundle)) {
-      console.log(
+      logger().info(
         `Detected empty bundle in ${entity.constructor.name} ${entity.id}. Will update to latest version and skip migrations.`
       );
       bundle.version = lastBundleVersion;
@@ -198,7 +199,7 @@ export async function getMigratedBundle(
 
       if (migrationSorter.compare(currentVersion, lastBundleVersion) == 1) {
         // Bundle version is higher than the current version. Rollback the bundle!
-        console.log(
+        logger().info(
           `Bundle in ${entity.constructor.name} ${entity.id} has version ${currentVersion} which is ahead of the last version ${lastBundleVersion}!`
         );
       }
@@ -206,7 +207,7 @@ export async function getMigratedBundle(
       const migrations = await getMigrationsToExecute(currentVersion);
 
       // Sequencially apply migrations
-      console.log(
+      logger().info(
         `Migrating bundle in ${entity.constructor.name} ${entity.id} from version ${currentVersion} to ${lastBundleVersion}.`
       );
 
@@ -227,7 +228,7 @@ export async function getMigratedBundle(
 
       if (DEVFLAGS.autoUpgradeHostless) {
         if (await bundleHasStaleHostlessDeps(bundle, db)) {
-          console.log(
+          logger().info(
             `Upgrading hostless dependencies in ${entity.constructor.name} ${entity.id}`
           );
           await db.saveBundleBackupForEntity(

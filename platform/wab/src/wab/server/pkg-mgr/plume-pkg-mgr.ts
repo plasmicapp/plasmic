@@ -1,6 +1,7 @@
 import { loadConfig } from "@/wab/server/config";
 import { ensureDbConnection } from "@/wab/server/db/DbCon";
 import { DbMgr, SUPER_USER } from "@/wab/server/db/DbMgr";
+import { logger } from "@/wab/server/observability";
 import { spawn } from "@/wab/shared/common";
 import { PLUME_INSERTABLE_ID } from "@/wab/shared/insertables";
 import yargs from "yargs";
@@ -63,7 +64,7 @@ export async function main() {
         try {
           await checkPlumeVersion();
         } catch (err) {
-          console.error(err);
+          logger().error("Error checking plume version", err);
           process.exit(1);
         }
       }

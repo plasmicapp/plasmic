@@ -32,6 +32,7 @@ import {
   ProjectRevision,
 } from "@/wab/server/entities/Entities";
 import "@/wab/server/extensions";
+import { logger } from "@/wab/server/observability";
 import { REAL_PLUME_VERSION } from "@/wab/server/pkg-mgr/plume-pkg-mgr";
 import { mkApiDataSource } from "@/wab/server/routes/data-source";
 import { checkEtagSkippable } from "@/wab/server/routes/loader";
@@ -684,7 +685,7 @@ export async function doImportProject(
       sourceIds as DataSourceId[]
     );
   } catch (err) {
-    console.error(
+    logger().error(
       `Failed to allow project ${project.id} to data sources ${sourceIds.join(
         ","
       )}`,
@@ -1119,11 +1120,8 @@ async function ensureSchemaIsUpToDate(req: Request) {
 
   const latestModelVersion = await getCurrentModelVersion(req.txMgr);
   if (req.body.modelVersion !== latestModelVersion) {
-    console.log(
-      "stale model version",
-      req.body.modelVersion,
-      "!==",
-      latestModelVersion
+    logger().info(
+      `stale model version: ${req.body.modelVersion} !== ${latestModelVersion}`
     );
     throw new SchemaMismatchError();
   }
@@ -1390,7 +1388,7 @@ export async function getProjectRev(req: Request, res: Response) {
     : undefined;
   const revisionNum = req.query.revisionNum;
   if (revisionNum !== undefined) {
-    console.log(`revisionNum is ${revisionNum}. ${isString(revisionNum)}`);
+    logger().info(`revisionNum is ${revisionNum}. ${isString(revisionNum)}`);
   }
   const dontMigrateProject =
     !!req.query.dontMigrateProject &&
@@ -1629,7 +1627,7 @@ export async function updateHostUrl(req: Request, res: Response) {
       `Unexpected hostUrl to be of type ${typeof data.hostUrl}`
     );
   }
-  console.log("Updating project hostUrl", projectId, data.hostUrl);
+  logger().info(`Updating project ${projectId} hostUrl ${data.hostUrl}`);
   if (data.branchId == null) {
     const project = await mgr.updateProject({
       id: projectId,
@@ -1860,7 +1858,7 @@ export async function prefillPkgVersion(
   pkgVersion: Pick<PkgVersion, "id" | "version" | "pkgId" | "branchId">
 ) {
   // Take this opportunity to fire off a pre-fill request to codegen-origin
-  console.log(
+  logger().info(
     `Pre-filling for ${projectId}@${pkgVersion.version} against ${req.devflags.codegenOriginHost}`
   );
   try {
@@ -1875,7 +1873,7 @@ export async function prefillPkgVersion(
     }
   } catch (err) {
     await req.con.transaction(async (entMgr) => {
-      console.error(
+      logger().error(
         `Error pre-filling ${projectId}@${pkgVersion.version}; marking as pre-filled anyway`,
         err
       );
@@ -1901,7 +1899,7 @@ export async function publishProject(req: Request, res: Response) {
   }
   const mgr = userDbMgr(req);
   const projectId = req.params.projectId;
-  console.log(`Publishing project ${projectId}...`);
+  logger().info(`Publishing project ${projectId}...`);
   const { pkgVersion, usedSiteFeatures } = await mgr.publishProject(
     projectId,
     body.version,
@@ -1941,14 +1939,14 @@ export async function publishProject(req: Request, res: Response) {
     )
   );
 
-  console.log(`Publishing project ${projectId}... done`);
+  logger().info(`Publishing project ${projectId}... done`);
 
   await req.resolveTransaction();
 
   await prefillPkgVersion(req, projectId, pkgVersion);
 
   // Broadcast to publish listeners
-  console.log(
+  logger().info(
     `Broadcasting publish event for ${projectId}@${pkgVersion.version}`
   );
   await broadcastProjectsMessage({
@@ -2059,7 +2057,7 @@ export async function updatePkgVersion(req: Request, res: Response) {
   await req.resolveTransaction();
 
   // Broadcast to publish listeners
-  console.log(
+  logger().info(
     `Broadcasting publish event for ${projectId}@${pkgVersion.version} because of tags change`
   );
   await broadcastProjectsMessage({
@@ -2385,7 +2383,7 @@ export async function genCode(req: Request, res: Response) {
         : branchName
       : req.body.version;
 
-  console.log("Performing cli codegen for", project.id);
+  logger().info(`Performing cli codegen for ${project.id}`);
   const { output, checksums } = await withSpan("cli-codegen", async () =>
     req.workerpool.exec("codegen", [
       {
@@ -2687,33 +2685,27 @@ export async function updateProjectData(req: Request, res: Response) {
   };
 
   if (data.newComponents && data.newComponents.length > 0) {
-    console.log(
-      "Update project data: Creating components " +
-        data.newComponents.map((c) => c.name).join(", ")
-    );
+    const components = data.newComponents.map((c) => c.name).join(", ");
+    logger().info(`Update project data: Creating components ${components}`);
     data.newComponents.forEach((c) => {
       upsertComponent(c, false);
     });
   }
 
   if (data.updateComponents && data.updateComponents.length > 0) {
-    console.log(
-      "Update project data: Updating components " +
-        data.updateComponents.map((c) => c.name).join(", ")
-    );
+    const components = data.updateComponents.map((c) => c.name).join(", ");
+    logger().info(`Update project data: Updating components ${components}`);
     data.updateComponents.forEach((c) => {
       upsertComponent(c, true);
     });
   }
 
   if (data.tokens && data.tokens.length > 0) {
-    console.log(
-      "Update project data: Updating tokens " +
-        data.tokens.map((c) => c.name).join(", ")
-    );
+    const tokens = data.tokens.map((c) => c.name).join(", ");
+    logger().info(`Update project data: Updating tokens ${tokens}`);
     addOrUpsertTokens(site, data.tokens);
   } else {
-    console.log(
+    logger().info(
       `Update project data: no tokens to update (body.tokens = ${data.tokens})`
     );
   }
@@ -2759,9 +2751,8 @@ export async function updateProjectData(req: Request, res: Response) {
   await dbMgr.clearPartialRevisionsCacheForProject(projectId);
 
   if (warnings.length > 0) {
-    console.log(
-      "Update project data - Warnings:\n",
-      JSON.stringify(warnings, undefined, 2)
+    logger().warn(
+      `Update project data - Warnings ${JSON.stringify(warnings, undefined, 2)}`
     );
   }
 

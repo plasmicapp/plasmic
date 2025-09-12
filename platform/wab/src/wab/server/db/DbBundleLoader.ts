@@ -1,12 +1,13 @@
-import { ensure, strictZip } from "@/wab/shared/common";
 import {
   MigrationDbMgr,
   getMigratedBundle,
 } from "@/wab/server/db/BundleMigrator";
 import { DbMgr } from "@/wab/server/db/DbMgr";
 import { PkgVersion, ProjectRevision } from "@/wab/server/entities/Entities";
+import { logger } from "@/wab/server/observability";
 import { Bundle, Bundler } from "@/wab/shared/bundler";
 import { UnsafeBundle, parseBundle } from "@/wab/shared/bundles";
+import { ensure, strictZip } from "@/wab/shared/common";
 import * as classes from "@/wab/shared/model/classes";
 import L from "lodash";
 
@@ -146,7 +147,7 @@ export async function unbundleWithDeps(
   id: string,
   bundle: Bundle
 ) {
-  console.log(`Unbundling with deps ${id}`);
+  logger().info(`Unbundling with deps ${id}`);
   const depPkgs = await loadDepPackages(dbMgr, bundle);
   for (const depPkg of depPkgs) {
     const depBundle = await getMigratedBundle(depPkg);

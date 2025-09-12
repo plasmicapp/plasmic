@@ -5,6 +5,7 @@ import {
 import { getOrderedDepBundleIds } from "@/wab/server/db/DbBundleLoader";
 import { DbMgr, NotFoundError, SUPER_USER } from "@/wab/server/db/DbMgr";
 import { PkgVersion, ProjectRevision } from "@/wab/server/entities/Entities";
+import { logger } from "@/wab/server/observability";
 import {
   Bundle,
   Bundler,
@@ -49,12 +50,12 @@ export async function withDbModels(
     }
     try {
       const pkgVersion = await db.getPkgVersionById(pkgVersionId.id);
-      console.log(
+      logger().info(
         `Migrating PkgVersion ${pkgVersion.pkgId}/${pkgVersion.id} (${pkgVersion.version})`
       );
       await action(db, await getMigratedBundle(pkgVersion), pkgVersion);
     } catch (e) {
-      console.log(`Error migration pkg of id ${pkgVersionId.id}`);
+      logger().info(`Error migration pkg of id ${pkgVersionId.id}`);
       throw e;
     }
   }
@@ -76,18 +77,18 @@ export async function withDbModels(
       }
       try {
         const rev = await db.getLatestProjectRev(project.id, { branchId });
-        console.log(
+        logger().info(
           `Migrating ProjectRevision ${project.id}/${rev.id} (${rev.revision}, branchId: ${branchId})`
         );
         const bundle = await getMigratedBundle(rev);
         await action(db, bundle, rev);
       } catch (e) {
         if (e instanceof NotFoundError) {
-          console.log(
+          logger().info(
             `Revisions not found for project ${project.id}, branchId: ${branchId}`
           );
         } else {
-          console.log(
+          logger().info(
             `Error with migrating project ${project.id}, branchId: ${branchId}`
           );
           throw e;
@@ -115,7 +116,7 @@ export async function migrateDbModels(
   ) => Bundle | Promise<Bundle>,
   projectIdsAndPkgVersionIds?: Set<string>
 ) {
-  console.log(`Running migration ${migrationName}`);
+  logger().info(`Running migration ${migrationName}`);
   const migratedIds: [string, string][] = [];
   const dbMgr = new DbMgr(em, SUPER_USER);
   await dbMgr.saveBundleBackups(migrationName, projectIdsAndPkgVersionIds);
@@ -150,9 +151,8 @@ export async function migrateDbModels(
     projectIdsAndPkgVersionIds
   );
 
-  console.log(
-    "Migrated projects:",
-    util.inspect(migratedIds, { maxArrayLength: null })
+  logger().info(
+    `Migrated projects: ${util.inspect(migratedIds, { maxArrayLength: null })})`
   );
 }
 
@@ -179,7 +179,7 @@ export async function migrateDbModelsUnbundled(
   f: (site: Site, dbRow: ProjectRevision | PkgVersion) => void,
   projectIdsAndPkgVersionIds?: Set<string>
 ) {
-  console.log(`Running migration ${migrationName}`);
+  logger().info(`Running migration ${migrationName}`);
   const db = new DbMgr(em, SUPER_USER);
   const pkgs = await db.listAllPkgs();
   const pkgIdToPkg = L.keyBy(pkgs, (pkg) => pkg.id);
@@ -197,7 +197,7 @@ export async function migrateDbModelsUnbundled(
       if (row instanceof PkgVersion) {
         const pkg = pkgIdToPkg[row.pkgId];
         if (!pkg || !pkg.projectId) {
-          console.log(`No need to migrate PkgVersion ${row.pkgId}/${row.id}`);
+          logger().info(`No need to migrate PkgVersion ${row.pkgId}/${row.id}`);
           return bundle;
         }
       }

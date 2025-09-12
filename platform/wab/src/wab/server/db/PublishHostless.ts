@@ -1,6 +1,5 @@
 import { updateHostlessPackage } from "@/wab/server/code-components/code-components";
 import { DEFAULT_DATABASE_URI } from "@/wab/server/config";
-import { unbundleSite } from "@/wab/server/db/bundle-migration-utils";
 import {
   getLastBundleVersion,
   getMigratedBundle,
@@ -10,12 +9,14 @@ import {
   getDefaultConnection,
 } from "@/wab/server/db/DbCon";
 import { DbMgr, SUPER_USER } from "@/wab/server/db/DbMgr";
+import { unbundleSite } from "@/wab/server/db/bundle-migration-utils";
+import { logger } from "@/wab/server/observability";
 import { ensureDevFlags } from "@/wab/server/workers/worker-utils";
 import { ProjectId } from "@/wab/shared/ApiSchema";
 import { Bundler } from "@/wab/shared/bundler";
 import { assert, ensure, spawn } from "@/wab/shared/common";
 import { DEVFLAGS } from "@/wab/shared/devflags";
-import { ensureKnownProjectDependency, Site } from "@/wab/shared/model/classes";
+import { Site, ensureKnownProjectDependency } from "@/wab/shared/model/classes";
 import { assertSiteInvariants } from "@/wab/shared/site-invariants";
 import semver from "semver";
 import { EntityManager } from "typeorm";
@@ -27,7 +28,7 @@ async function publishHostlessProjects(em: EntityManager) {
   await ensureDevFlags(db);
   const hostLessWorkspaceId = DEVFLAGS.hostLessWorkspaceId;
   if (!hostLessWorkspaceId) {
-    console.log("No hostless workspace ID");
+    logger().info("No hostless workspace ID");
     return;
   }
   const hostlessProjects = await db.getProjectsByWorkspaces([
@@ -43,11 +44,10 @@ async function publishHostlessProjects(em: EntityManager) {
 
   for (const project of hostlessProjects) {
     const projectId = project.id;
-    console.log("=====================================");
-    console.log(`Updating project ${project.name} - ${projectId}`);
+    logger().info(`Updating project ${project.name} - ${projectId}`);
 
     if (DEVFLAGS.manuallyUpdatedHostLessProjectIds.includes(projectId)) {
-      console.log(
+      logger().info(
         `Skipping project ${project.name} - ${projectId} (marked for manual updating)`
       );
       updatedProjects.push(project.name);
@@ -55,10 +55,10 @@ async function publishHostlessProjects(em: EntityManager) {
     }
 
     if (await publishHostlessProject(db, projectId, { plumeSite })) {
-      console.log("\tProject updated");
+      logger().info("Project updated");
       updatedProjects.push(project.name);
     } else {
-      console.log("\tNo changes detected");
+      logger().info("No changes detected");
     }
   }
 }
@@ -101,7 +101,7 @@ export async function publishHostlessProject(
 
   // Make sure the new bundle isn't broken
   assertSiteInvariants(site);
-  console.log("Saving new version and publishing...");
+  logger().info("Saving new version and publishing...");
   // Make sure we're able to identify whether the project changed or not
   await updateHostlessPackage(site, project.name, plumeSite);
   const newBundle2 = bundler.bundle(
@@ -154,7 +154,7 @@ async function loadPlumeSite(db: DbMgr) {
 }
 
 async function main() {
-  console.log("Start script...");
+  logger().info("Start script...");
   const opts = new Command("custom-script")
     .option("-db, --dburi <dburi>", "Database uri", DEFAULT_DATABASE_URI)
     .parse(process.argv)
@@ -172,7 +172,7 @@ async function main() {
 if (require.main === module) {
   spawn(
     main().catch((err) => {
-      console.error(err);
+      logger().error(err);
       process.exit(1);
     })
   );

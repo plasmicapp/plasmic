@@ -1,6 +1,5 @@
-import { spawn } from "@/wab/shared/common";
-import { createDbConnection } from "@/wab/server/db/dbcli-utils";
 import { DbMgr, SUPER_USER } from "@/wab/server/db/DbMgr";
+import { createDbConnection } from "@/wab/server/db/dbcli-utils";
 import {
   CmsDatabase,
   DataSource,
@@ -9,6 +8,8 @@ import {
   User,
   Workspace,
 } from "@/wab/server/entities/Entities";
+import { logger } from "@/wab/server/observability";
+import { spawn } from "@/wab/shared/common";
 import { Command } from "commander";
 import inquirer from "inquirer";
 import { groupBy } from "lodash";
@@ -30,12 +31,12 @@ async function main() {
     .opts();
 
   const days = opts.days ?? 28;
-  console.log(
+  logger().info(
     `PERMANENTLY deleting things that have been soft-deleted since ${days} ago... Force: ${opts.force}`
   );
 
   const ids = opts.id as string[] | undefined;
-  console.log("FILTERED TO", ids);
+  logger().info(`FILTERED TO ${ids}`);
 
   const maybeFiltered = <T extends { id: string }>(items: T[]) =>
     !ids || ids.length === 0 ? items : items.filter((x) => ids.includes(x.id));
@@ -182,8 +183,7 @@ async function ensureYes(msg: string) {
 if (require.main === module) {
   spawn(
     main().catch((error) => {
-      console.info("Unable to permanently delete things. Error:");
-      console.error(error);
+      logger().error("Unable to permanently delete things.", error);
       process.exit(1);
     })
   );

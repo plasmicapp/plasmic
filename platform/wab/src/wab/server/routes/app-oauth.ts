@@ -1,4 +1,5 @@
 import { ForbiddenError } from "@/wab/server/db/DbMgr";
+import { logger } from "@/wab/server/observability";
 import {
   getAppUserInfo,
   getUserRoleForApp,
@@ -171,7 +172,7 @@ function decodeUserToken(token: string) {
       appId: string;
       endUserId: string;
     };
-    console.log("Decoded app auth token to ", info);
+    logger().info(`Decoded app auth token to ${info.endUserId}`, info);
     return info;
   } catch (err) {
     throw new Error("Invalid token");
@@ -286,7 +287,7 @@ export function trackAppUserActivity(
 export function extractAppUserFromToken(req: Request, skipError = false) {
   const token = req.headers["x-plasmic-data-user-auth-token"];
   if (!token || !isString(token)) {
-    console.log(
+    logger().info(
       `[${req.id}] - Data source request without app auth token or with invalid token`
     );
     if (skipError) {

@@ -1,6 +1,7 @@
 import { DbMgr, SUPER_USER } from "@/wab/server/db/DbMgr";
 import { LOADER_CODEGEN_OPTS_DEFAULTS } from "@/wab/server/loader/gen-code-bundle";
 import { resolveProjectDeps } from "@/wab/server/loader/resolve-projects";
+import { logger } from "@/wab/server/observability";
 import { withTimeSpent } from "@/wab/server/util/apm-util";
 import { doGenCode } from "@/wab/server/workers/codegen";
 import { ProjectId } from "@/wab/shared/ApiSchema";
@@ -16,11 +17,11 @@ export async function profileCodegen(em: EntityManager, projectId: ProjectId) {
     [projectId]: { version: "latest", indirect: false },
   };
 
-  console.log("Codegen for: ", allProjectVersions);
+  logger().info("Codegen for project versions", allProjectVersions);
 
   const codegenIt = async () => {
     for (const [pid, version] of Object.entries(allProjectVersions)) {
-      console.log("Codegen ", pid);
+      logger().info(`Codegen ${pid}`);
       const { result, spentTime } = await withTimeSpent(async () => {
         await doGenCode(dbMgr, {
           scheme: "blackbox",
@@ -38,15 +39,19 @@ export async function profileCodegen(em: EntityManager, projectId: ProjectId) {
           },
         });
       });
-      console.log("TOOK", spentTime);
+      logger().info(`TOOK ${spentTime}`);
     }
   };
 
-  console.log("====================== FIRST TIME ===========================");
+  logger().info(
+    "====================== FIRST TIME ==========================="
+  );
   await codegenIt();
 
   debugger;
-  console.log("====================== SECOND TIME ===========================");
+  logger().info(
+    "====================== SECOND TIME ==========================="
+  );
   await codegenIt();
   debugger;
 }

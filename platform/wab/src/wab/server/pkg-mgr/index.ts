@@ -2,6 +2,7 @@ import { getLastBundleVersion } from "@/wab/server/db/BundleMigrator";
 import { unbundleWithDeps } from "@/wab/server/db/DbBundleLoader";
 import { DbMgr } from "@/wab/server/db/DbMgr";
 import { Pkg, PkgVersion, User } from "@/wab/server/entities/Entities";
+import { logger } from "@/wab/server/observability";
 import { Bundle, Bundler } from "@/wab/shared/bundler";
 import { assert } from "@/wab/shared/common";
 import { InsertableId } from "@/wab/shared/insertables";
@@ -18,7 +19,7 @@ import path from "path";
  */
 export class PkgMgr {
   constructor(private db: DbMgr, private sysname: InsertableId) {
-    console.log("created with sysname", sysname);
+    logger().info(`created with sysname ${sysname}`);
   }
 
   async unbundleAndSave(
@@ -37,7 +38,7 @@ export class PkgMgr {
       // We want Plume and PLexus (and its dependencies) to have general read access, so that any other non-admin project can install them
       inviteOnly: false,
     });
-    console.log(
+    logger().info(
       `Created ${this.sysname} ${name} project ${project.id} for user ${user.email}`
     );
 
@@ -90,10 +91,10 @@ export class PkgMgr {
    * Updates the existing pkg to be the content of master-pkg.json
    */
   async upgradePkg() {
-    console.log(`Upgrading ${this.sysname}...`);
+    logger().info(`Upgrading ${this.sysname}...`);
     const pkg = await this.tryGetPkg(this.sysname);
     if (!pkg) {
-      console.log(`Creating ${this.sysname} pkg for the first time...`);
+      logger().info(`Creating ${this.sysname} pkg for the first time...`);
       await this.seedPkg();
       return;
     }
@@ -138,9 +139,11 @@ export class PkgMgr {
       .delete({
         pkgId: pkg.id,
       });
-    console.log(`Deleting existing versions (there are ${deleteRes.affected})`);
+    logger().info(
+      `Deleting existing versions (there are ${deleteRes.affected})`
+    );
 
-    console.log(`Updating to ${this.sysname} package version`, dep.version);
+    logger().info(`Updating to ${this.sysname} package version ${dep.version}`);
     const newRev = await this.db.saveProjectRev({
       projectId: rev.projectId,
       data: JSON.stringify(
@@ -148,7 +151,7 @@ export class PkgMgr {
       ),
       revisionNum: rev.revision + 1,
     });
-    console.log("created a new revision", newRev.revision);
+    logger().info(`created a new revision ${newRev.revision}`);
     // create the new pkg version with the same pkgId as in the master-pkg.json, because it will be used in the deps array
     const pkgVersion = await this.db.insertPkgVersion(
       pkg.id,
@@ -160,7 +163,7 @@ export class PkgMgr {
       undefined,
       pkgVersionId
     );
-    console.log(`inserted a pkg version ${pkgVersion.id}`);
+    logger().info(`inserted a pkg version ${pkgVersion.id}`);
   }
 
   private async tryGetPkg(sysname: InsertableId) {

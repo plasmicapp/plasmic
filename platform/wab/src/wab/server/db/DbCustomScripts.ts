@@ -12,6 +12,7 @@ import { fixDuplicatedComponents } from "@/wab/server/db/custom-scripts/fix-dupl
 import { fixInvalidImplicitStates } from "@/wab/server/db/custom-scripts/fix-invalid-implicit-states";
 import { profileCodegen } from "@/wab/server/db/custom-scripts/profile-codegen";
 import { reIdentifyUsers } from "@/wab/server/db/custom-scripts/re-identify-users";
+import { logger } from "@/wab/server/observability";
 import { spawn } from "@/wab/shared/common";
 import { exit } from "process";
 
@@ -33,7 +34,7 @@ import { exit } from "process";
  */
 
 async function main() {
-  console.log("Start script...");
+  logger().info("Start script...");
   const opts = new Command("custom-script")
     .option("-db, --dburi <dburi>", "Database uri", DEFAULT_DATABASE_URI)
     .option("-s, --script <script>", "Script to execute")
@@ -46,7 +47,7 @@ async function main() {
   });
   const conn = await getDefaultConnection();
 
-  console.log(`Running ${opts.script}`);
+  logger().info(`Running ${opts.script}`);
 
   await conn.transaction(async (em) => {
     if (opts.script === "re-identify-users") {

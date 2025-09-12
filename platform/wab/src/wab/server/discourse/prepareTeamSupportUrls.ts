@@ -4,16 +4,17 @@ import {
   createUserDiscourseClient,
 } from "@/wab/server/discourse/clients";
 import { User } from "@/wab/server/entities/Entities";
+import { logger } from "@/wab/server/observability";
 import { ApiTeamSupportUrls, TeamId } from "@/wab/shared/ApiSchema";
+import {
+  Group as DiscourseGroup,
+  DiscourseHttpError,
+  User as DiscourseUser,
+} from "@/wab/shared/discourse/DiscourseClient";
 import {
   BASE_URL,
   PUBLIC_SUPPORT_CATEGORY_ID,
 } from "@/wab/shared/discourse/config";
-import {
-  DiscourseHttpError,
-  Group as DiscourseGroup,
-  User as DiscourseUser,
-} from "@/wab/shared/discourse/DiscourseClient";
 
 /**
  * Prepares URLs for the org's private support category.
@@ -90,14 +91,14 @@ export async function prepareTeamSupportUrls(
     await systemDiscourseClient.groupAddOwners(group.id, {
       usernames: discourseUser.username,
     });
-    console.log(
+    logger().info(
       `Added ${discourseUser.username} as owner of group ${group.name}`
     );
   } else if (!isMember) {
     await systemDiscourseClient.groupAddMembers(group.id, {
       usernames: discourseUser.username,
     });
-    console.log(
+    logger().info(
       `Added ${discourseUser.username} as member of group ${group.name}`
     );
   }

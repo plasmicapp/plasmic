@@ -1,4 +1,3 @@
-import { assert, ensure, jsonClone, maybeOne } from "@/wab/shared/common";
 import {
   getLastBundleVersion,
   getMigratedBundle,
@@ -6,6 +5,7 @@ import {
 } from "@/wab/server/db/BundleMigrator";
 import { DbMgr, SUPER_USER } from "@/wab/server/db/DbMgr";
 import { PkgVersion, ProjectRevision } from "@/wab/server/entities/Entities";
+import { logger } from "@/wab/server/observability";
 import {
   checkBundleFields,
   checkExistingReferences,
@@ -13,6 +13,7 @@ import {
   removeUnreachableNodesFromBundle,
 } from "@/wab/shared/bundler";
 import { Bundle, parseBundle } from "@/wab/shared/bundles";
+import { assert, ensure, jsonClone, maybeOne } from "@/wab/shared/common";
 import { EntityManager } from "typeorm";
 
 function fixBundle(bundle: Bundle) {
@@ -104,14 +105,14 @@ export async function findDanglingWeakRefs(em: EntityManager) {
           err instanceof Error &&
           err.message.includes("Unexpected Bundle dependencies")
         ) {
-          console.log(`Trying to fix project ${project.id}...`);
+          logger().info(`Trying to fix project ${project.id}...`);
           try {
             const fixedBundle = fixBundle(parseBundle(rev) as Bundle);
             const throwAwayBundle = jsonClone(fixedBundle);
 
             // Check if bundle is fixed
             await checkIfBundleIsFixed(throwAwayBundle, dbMgr);
-            console.log(
+            logger().info(
               `Successfully fixed project ${project.id}! Actually saving it...`
             );
 
@@ -123,14 +124,12 @@ export async function findDanglingWeakRefs(em: EntityManager) {
             // await getMigratedBundle(rev);
             // console.log(`Successfully saved project ${project.id}`);
           } catch (err2) {
-            console.log(`Failed to fix project ${project.id}`);
-            console.log(err2);
+            logger().error(`Failed to fix project ${project.id}`, err2 as any);
           }
         }
       }
     } catch (err) {
-      console.log(`Error in project ${project.id}:`);
-      console.log(err);
+      logger().error(`Error in project ${project.id}:`, err as any);
     }
   }
   for (const pkgVersionId of await dbMgr.listAllPkgVersionIds()) {
@@ -143,7 +142,7 @@ export async function findDanglingWeakRefs(em: EntityManager) {
           err instanceof Error &&
           err.message.includes("Unexpected Bundle dependencies")
         ) {
-          console.log(`Trying to fix PkgVersion ${pkgVersionId}...`);
+          logger().info(`Trying to fix PkgVersion ${pkgVersionId}...`);
           try {
             const fixedBundle = fixBundle(parseBundle(pkgVersion) as Bundle);
             const throwAwayBundle = jsonClone(fixedBundle);
@@ -151,7 +150,7 @@ export async function findDanglingWeakRefs(em: EntityManager) {
             // Check if bundle is fixed
             await checkIfBundleIsFixed(throwAwayBundle, dbMgr);
 
-            console.log(
+            logger().info(
               `Successfully fixed PkgVersion ${pkgVersionId}! Actually saving it...`
             );
 
@@ -163,14 +162,15 @@ export async function findDanglingWeakRefs(em: EntityManager) {
             // await getMigratedBundle(pkgVersion);
             // console.log(`Successfully saved PkgVersion ${pkgVersionId}`);
           } catch (err2) {
-            console.log(`Failed to fix PkgVersion ${pkgVersionId}`);
-            console.log(err2);
+            logger().error(
+              `Failed to fix PkgVersion ${pkgVersionId}`,
+              err2 as any
+            );
           }
         }
       }
     } catch (err) {
-      console.log(`Error in PkgVersion ${pkgVersionId}:`);
-      console.log(err);
+      logger().error(`Error in PkgVersion ${pkgVersionId}`, err as any);
     }
   }
 }

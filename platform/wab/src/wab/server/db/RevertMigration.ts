@@ -1,5 +1,4 @@
 const { Command } = require("commander");
-import { assert, ensure, spawn } from "@/wab/shared/common";
 import { DEFAULT_DATABASE_URI } from "@/wab/server/config";
 import {
   ensureDbConnections,
@@ -7,7 +6,9 @@ import {
 } from "@/wab/server/db/DbCon";
 import { DbMgr, SUPER_USER } from "@/wab/server/db/DbMgr";
 import { PkgVersion, ProjectRevision } from "@/wab/server/entities/Entities";
+import { logger } from "@/wab/server/observability";
 import { isEmptyBundle, parseBundle } from "@/wab/shared/bundles";
+import { assert, ensure, spawn } from "@/wab/shared/common";
 
 export async function main() {
   const opts = new Command("Assert site invariants")
@@ -30,7 +31,7 @@ export async function main() {
   const migrationName = opts.migrationName;
   const checkBundles = !!opts.bundleChecks;
 
-  console.log(
+  logger().info(
     `Reverting migration ${migrationName} (checkBundles: ${checkBundles})`
   );
 
@@ -40,7 +41,7 @@ export async function main() {
     const entityIds = await db.getEntityIdsFromBundleBackupsByMigration(
       migrationName
     );
-    console.log(`${entityIds.length} bundles to revert`);
+    logger().info(`${entityIds.length} bundles to revert`);
 
     for (const entityId of entityIds) {
       const entity =
@@ -48,7 +49,7 @@ export async function main() {
           ? await db.getLatestProjectRev(entityId.projectId)
           : await db.getPkgVersionById(entityId.pkgVersionId);
 
-      console.log(
+      logger().info(
         `Reverting ${entity.constructor.name} ${entity.id}${
           entity instanceof ProjectRevision
             ? ` (projectId ${entity.projectId})`
@@ -63,7 +64,7 @@ export async function main() {
       if (checkBundles && currentVersion !== migrationName) {
         // If the bundle has already been reverted, don't overwrite it with the backup
         // again to avoid unnecessary data loss.
-        console.log(
+        logger().info(
           `Skipping ${entity.constructor.name} ${entity.id} because it's current version is ${currentVersion}`
         );
         continue;
@@ -119,7 +120,7 @@ export async function main() {
         });
       }
 
-      console.log(
+      logger().info(
         `Reverted ${entity.constructor.name} ${entity.id} from version ${currentVersion} to ${newVersion}`
       );
     }
@@ -129,8 +130,7 @@ export async function main() {
 if (require.main === module) {
   spawn(
     main().catch((error) => {
-      console.info("Found an error reverting the migration.");
-      console.error(error);
+      logger().error("Found an error reverting the migration.", error);
       process.exit(1);
     })
   );

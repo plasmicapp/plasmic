@@ -4,6 +4,7 @@ import {
   getResolvedProjectVersions,
   mkVersionToSync,
 } from "@/wab/server/loader/resolve-projects";
+import { logger } from "@/wab/server/observability";
 import { makeGenPublishedLoaderCodeBundleOpts } from "@/wab/server/routes/loader";
 import { withSpan } from "@/wab/server/util/apm-util";
 import { PlasmicWorkerPool } from "@/wab/server/workers/pool";
@@ -34,7 +35,7 @@ export async function prefillCloudfront(
     ].join(",")
   );
 
-  console.log(
+  logger().info(
     `Pre-filling ${projectId}@${
       pkgVersion.version
     } for combinations ${JSON.stringify(
@@ -110,5 +111,5 @@ export async function prefillCloudfront(
       isPrefilled: true,
     }
   );
-  console.log("Done prefilling cloudfront for", projectId);
+  logger().info(`Done prefilling cloudfront for ${projectId}`);
 }

@@ -3,6 +3,7 @@ import {
   LoaderBundleOutput,
 } from "@/wab/server/loader/module-bundler";
 import { writeCodeBundlesToDisk } from "@/wab/server/loader/module-writer";
+import { logger } from "@/wab/server/observability";
 import {
   CachedCodegenOutputBundle,
   ComponentReference,
@@ -32,7 +33,7 @@ export async function workerBuildAssets(
           reject(err);
         } else {
           try {
-            console.log("Building worker assets in", dir);
+            logger().info(`Building worker assets in ${dir}`);
             await writeCodeBundlesToDisk(dir, codegenOutputs);
             const result = await bundleModules(
               dir,
@@ -50,7 +51,7 @@ export async function workerBuildAssets(
             cleanup();
           } catch (err2) {
             // Don't clean up on error, to allow investigating
-            console.error(`Error bundling in ${dir}:`, err2);
+            logger().error(`Error bundling in ${dir}:`, err2);
             reject(err2);
           }
         }

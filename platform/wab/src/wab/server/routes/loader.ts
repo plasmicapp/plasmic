@@ -23,6 +23,7 @@ import {
   parseProjectIdSpec,
   resolveLatestProjectRevisions,
 } from "@/wab/server/loader/resolve-projects";
+import { logger } from "@/wab/server/observability";
 import { superDbMgr, userDbMgr } from "@/wab/server/routes/util";
 import { prefillCloudfront } from "@/wab/server/workers/prefill-cloudfront";
 import { BadRequestError, NotFoundError } from "@/wab/shared/ApiErrors/errors";
@@ -409,7 +410,7 @@ export async function getLoaderChunk(req: Request, res: Response) {
 
   const fileNamesSet = new Set(fileNames);
 
-  console.log(`Loading S3 bundle from ${LOADER_ASSETS_BUCKET} ${bundleKey}`);
+  logger().info(`Loading S3 bundle from ${LOADER_ASSETS_BUCKET} ${bundleKey}`);
 
   const s3 = new S3({ endpoint: process.env.S3_ENDPOINT });
 
@@ -600,14 +601,12 @@ export async function genLoaderHtmlBundleSandboxed(
           { reject: false }
         );
   if (stderr.trim().length > 0 && exitCode === 0) {
-    console.error(
-      `Sandboxed loader subprocess succeeded with exit code 0 but got unexpected stderr:\n` +
-        stderr
+    logger().error(
+      `Sandboxed loader subprocess succeeded with exit code 0 but got unexpected stderr ${stderr}`
     );
   } else if (exitCode !== 0) {
-    console.error(
-      `Sandboxed loader subprocess failed with exit code ${exitCode} with stderr:\n` +
-        stderr
+    logger().error(
+      `Sandboxed loader subprocess failed with exit code ${exitCode} with stderr: ${stderr}`
     );
   }
   return { html: stdout };
@@ -848,7 +847,7 @@ function setAsCacheableResource(res: Response, maxAge = 31536000) {
 
 export function checkEtagSkippable(req: Request, res: Response, etag: string) {
   if (req.devflags.disableETagCaching) {
-    console.log("Etag mechanism is disabled");
+    logger().info("Etag mechanism is disabled");
     return false;
   }
   if (req.headers["x-plasmic-uptime-check"]) {
@@ -869,12 +868,14 @@ export function checkEtagSkippable(req: Request, res: Response, etag: string) {
 
   if (req.headers["if-none-match"] === etag) {
     // We got a match!  We can skip codegen.
-    console.log("Preview request matched!", etag);
+    logger().info(`Preview request matched! ${etag}`);
     res.status(304);
     res.send();
     return true;
   }
-  console.log("Preview request no match", etag, req.headers["if-none-match"]);
+  logger().info(
+    `Preview request no match ${etag} ${req.headers["if-none-match"]}`
+  );
   return false;
 }
 

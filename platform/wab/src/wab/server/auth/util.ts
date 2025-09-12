@@ -1,4 +1,5 @@
 import { User } from "@/wab/server/entities/Entities";
+import { logger } from "@/wab/server/observability";
 import { makeUserTraits } from "@/wab/server/routes/util";
 import { disconnectUserSockets } from "@/wab/server/socket-util";
 import { ForbiddenError } from "@/wab/shared/ApiErrors/errors";
@@ -54,7 +55,7 @@ export async function verifyClientCredentials(
   try {
     await verifier.verifyAccessToken(token, info.aud);
   } catch (err) {
-    console.error(
+    logger().error(
       `Failed to verify client credentials for ${whiteLabelName}: ${token}: ${err}`
     );
     throw new ForbiddenError(`Invalid client token: ${err.userMessage}`);
