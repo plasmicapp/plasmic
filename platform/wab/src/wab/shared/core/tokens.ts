@@ -55,6 +55,7 @@ export abstract class BaseToken<T extends Token> {
     value: string
   ): void {
     tokenOrOverride.value = value;
+    BaseToken.removeExtraneousValues(tokenOrOverride);
   }
 
   protected static setVariantedValue<T extends Token>(
@@ -75,6 +76,18 @@ export abstract class BaseToken<T extends Token> {
         })
       );
     }
+
+    BaseToken.removeExtraneousValues(tokenOrOverride);
+  }
+
+  protected static removeExtraneousValues<T extends Token>(
+    tokenOrOverride: T | StyleTokenOverride
+  ): void {
+    tokenOrOverride.variantedValues.forEach((v) => {
+      if (v.value === tokenOrOverride.value) {
+        remove(tokenOrOverride.variantedValues, v);
+      }
+    });
   }
 
   protected static removeVariantedValue<T extends Token>(
@@ -143,14 +156,34 @@ export class OverrideableToken<T extends Token> extends BaseToken<T> {
     ];
   }
 
-  setValue(value: string): void {
+  setValue(value: string) {
     const override = this.upsertStyleTokenOverride();
     BaseToken.setValue(override, value);
+    this.removeExtraneousValues();
   }
 
-  setVariantedValue(variants: Variant[], value: string): void {
+  setVariantedValue(variants: Variant[], value: string) {
     const override = this.upsertStyleTokenOverride();
     BaseToken.setVariantedValue(override, variants, value);
+    this.removeExtraneousValues();
+  }
+
+  /** Returns true if override no longer exists. */
+  private removeExtraneousValues() {
+    const override = this.override;
+    if (override) {
+      if (override.value === this.base.value) {
+        this.removeValue();
+      }
+      override.variantedValues.forEach((variantedValue) => {
+        if (variantedValue.value === this.value) {
+          this.removeVariantedValue(variantedValue.variants);
+        }
+      });
+
+      return this.removeOverrideIfEmpty();
+    }
+    return true;
   }
 
   /** Returns true if override no longer exists. */
@@ -161,7 +194,7 @@ export class OverrideableToken<T extends Token> extends BaseToken<T> {
     }
 
     override.value = null;
-    return this.removeOverrideIfEmpty(override);
+    return this.removeExtraneousValues();
   }
 
   /** Returns true if override no longer exists. */
@@ -172,7 +205,7 @@ export class OverrideableToken<T extends Token> extends BaseToken<T> {
     }
 
     BaseToken.removeVariantedValue(override, variants);
-    return this.removeOverrideIfEmpty(override);
+    return this.removeExtraneousValues();
   }
 
   private upsertStyleTokenOverride(): StyleTokenOverride {
@@ -192,7 +225,12 @@ export class OverrideableToken<T extends Token> extends BaseToken<T> {
   }
 
   /** Returns true if removed. */
-  private removeOverrideIfEmpty(override: StyleTokenOverride): boolean {
+  private removeOverrideIfEmpty(): boolean {
+    const override = this.override;
+    if (!override) {
+      return false;
+    }
+
     if (!override.value && override.variantedValues.length === 0) {
       remove(this.site.styleTokenOverrides, override);
       return true;
