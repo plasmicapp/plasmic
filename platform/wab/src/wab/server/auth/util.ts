@@ -24,7 +24,9 @@ export function doLogin(
 
 export async function doLogout(request: Request, response: Response) {
   await disconnectUserSockets(request);
-  response.clearCookie("plasmic-observer");
+  if (!response.headersSent) {
+    response.clearCookie("plasmic-observer");
+  }
   // Must reset the session to prevent session fixation attacks, reset the CSRF
   // token, etc.
   if (request.session) {
