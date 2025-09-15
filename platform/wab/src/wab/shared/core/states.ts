@@ -15,11 +15,11 @@ import {
   removeComponentParam,
 } from "@/wab/shared/core/components";
 import {
-  ExprCtx,
-  InteractionConditionalMode,
   asCode,
   code,
   codeLit,
+  ExprCtx,
+  InteractionConditionalMode,
   isFallbackSet,
   isRealCodeExpr,
   isRealCodeExprEnsuringType,
@@ -38,9 +38,25 @@ import {
   Component,
   ComponentVariantGroup,
   CustomCode,
+  ensureKnownFunctionType,
+  ensureKnownNamedState,
   EventHandler,
   Expr,
   Interaction,
+  isKnownCollectionExpr,
+  isKnownCustomCode,
+  isKnownFunctionArg,
+  isKnownFunctionExpr,
+  isKnownGenericEventHandler,
+  isKnownImageAssetRef,
+  isKnownNamedState,
+  isKnownObjectPath,
+  isKnownPageHref,
+  isKnownTplComponent,
+  isKnownTplRef,
+  isKnownTplTag,
+  isKnownVariantsRef,
+  isKnownVarRef,
   NameArg,
   NamedState,
   Param,
@@ -54,22 +70,6 @@ import {
   TplTag,
   VariantGroup,
   VariantGroupState,
-  ensureKnownFunctionType,
-  ensureKnownNamedState,
-  isKnownCollectionExpr,
-  isKnownCustomCode,
-  isKnownFunctionArg,
-  isKnownFunctionExpr,
-  isKnownGenericEventHandler,
-  isKnownImageAssetRef,
-  isKnownNamedState,
-  isKnownObjectPath,
-  isKnownPageHref,
-  isKnownTplComponent,
-  isKnownTplRef,
-  isKnownTplTag,
-  isKnownVarRef,
-  isKnownVariantsRef,
 } from "@/wab/shared/model/classes";
 import { smartHumanize } from "@/wab/shared/strs";
 import { TplMgr } from "@/wab/shared/TplMgr";
@@ -1378,7 +1378,7 @@ export function findKeyForEventHandler(
       .find(
         ({ expr: expr2 }) =>
           expr2 === expr ||
-          (expr2 && isFallbackSet(expr2) && expr2.fallback === expr2)
+          (expr2 && isFallbackSet(expr2) && expr2.fallback === expr)
       ) ?? {};
   if (eventHandlerKey) {
     return eventHandlerKey;
