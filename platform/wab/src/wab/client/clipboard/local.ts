@@ -2,6 +2,7 @@ import {
   PasteArgs,
   PasteResult,
   ensureViewCtxOrThrowUserError,
+  writeClipboardPlasmicData,
 } from "@/wab/client/clipboard/common";
 import { unwrap } from "@/wab/commons/failable-utils";
 import { cloneArenaFrame } from "@/wab/shared/Arenas";
@@ -13,6 +14,12 @@ import { ArenaFrame, Component, TplNode } from "@/wab/shared/model/classes";
 export interface StyleClip {
   type: "style";
   cssProps: Record<string, string>;
+}
+
+export interface PasteStyleProps {
+  clip: StyleClip;
+  targetTpl?: TplNode;
+  cssProps?: string[];
 }
 
 export interface TplClip {
@@ -36,8 +43,8 @@ export interface FrameClip {
 
 export type Clippable = TplClip | TplClip[] | FrameClip | StyleClip;
 
-export function isStyleClip(x: Clippable): x is StyleClip {
-  return !Array.isArray(x) && x.type === "style";
+export function isStyleClip(x: any): x is StyleClip {
+  return x && !Array.isArray(x) && x.type === "style";
 }
 
 export function isTplClip(x: Clippable): x is TplClip {
@@ -85,7 +92,12 @@ export class LocalClipboard {
 
   copy(x: Clippable) {
     this._timeStamp = Date.now();
-    this._contents = cloneClip(x);
+    const clip = cloneClip(x);
+    this._contents = clip;
+    if (isStyleClip(clip)) {
+      // Use navigator.clipboard API, since we don't have access to a real ClipboardEvent
+      writeClipboardPlasmicData(JSON.stringify(clip));
+    }
   }
 
   paste() {
@@ -146,7 +158,7 @@ export async function pasteLocal(
     success: unwrap(
       await studioCtx.change(({ success }) => {
         if (isStyleClip(clip)) {
-          return success(viewCtx.viewOps.pasteStyleClip(clip));
+          return success(viewCtx.viewOps.pasteStyleClip({ clip }));
         } else if (isTplClip(clip)) {
           const pastedTpl = viewCtx.viewOps.pasteTplClip({
             clip,

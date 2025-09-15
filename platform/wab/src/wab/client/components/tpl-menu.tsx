@@ -829,11 +829,15 @@ export function makeTplMenu(
             push2(
               <Menu.Item
                 key="paste-image"
-                onClick={() =>
+                onClick={async () => {
+                  const styleProps = await viewCtx
+                    .getViewOps()
+                    .getPasteStylePropsFromClipboard(tpl, ["background"]);
+
                   viewCtx.change(() =>
-                    viewCtx.getViewOps().pasteBgImageStyle(tpl)
-                  )
-                }
+                    viewCtx.getViewOps().pasteStyleClip(styleProps)
+                  );
+                }}
               >
                 Paste background image
               </Menu.Item>
@@ -843,11 +847,14 @@ export function makeTplMenu(
             push2(
               <Menu.Item
                 key="paste-style"
-                onClick={() =>
+                onClick={async () => {
+                  const styleProps = await viewCtx
+                    .getViewOps()
+                    .getPasteStylePropsFromClipboard(tpl);
                   viewCtx.change(() =>
-                    viewCtx.getViewOps().tryPasteStyleFromClipboard(tpl)
-                  )
-                }
+                    viewCtx.getViewOps().pasteStyleClip(styleProps)
+                  );
+                }}
               >
                 <MenuItemContent
                   shortcut={getComboForAction("PASTE_ELEMENT_STYLE")}

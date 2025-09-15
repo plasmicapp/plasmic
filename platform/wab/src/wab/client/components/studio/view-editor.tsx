@@ -768,11 +768,15 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
           this.props.studioCtx.changeUnsafe(() => this.viewOps().copyStyle())
         ),
       PASTE_ELEMENT_STYLE: (e) =>
-        this.handleHotkey(e, async () =>
-          this.props.studioCtx.changeUnsafe(() =>
-            this.viewOps().tryPasteStyleFromClipboard()
-          )
-        ),
+        this.handleHotkey(e, async () => {
+          const styleProps =
+            await this.viewOps().getPasteStylePropsFromClipboard();
+
+          await this.props.studioCtx.change(({ success }) => {
+            this.viewOps().pasteStyleClip(styleProps);
+            return success();
+          });
+        }),
       PASTE_AS_SIBLING: (e: KeyboardEvent) =>
         this.handleHotkey(e, async () => this.pasteAsSibling()),
       BOLD: (e) =>

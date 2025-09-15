@@ -129,10 +129,11 @@ import L, { clamp, isArray, merge } from "lodash";
 import pluralize from "pluralize";
 import React from "react";
 
+import { readClipboardPlasmicData } from "@/wab/client/clipboard/common";
 import {
   FrameClip,
   isStyleClip,
-  StyleClip,
+  PasteStyleProps,
   TplClip,
 } from "@/wab/client/clipboard/local";
 import { closestTaggedNonTextDomElt } from "@/wab/client/components/canvas/studio-canvas-util";
@@ -2247,7 +2248,20 @@ export class ViewOps {
     });
   }
 
-  tryPasteStyleFromClipboard(targetTpl?: TplNode, cssProps?: string[]) {
+  async getPasteStylePropsFromClipboard(
+    targetTpl?: TplNode,
+    cssProps?: string[]
+  ): Promise<PasteStyleProps | undefined> {
+    // First try to paste from system clipboard
+    const data = await readClipboardPlasmicData();
+    if (data) {
+      const styleClip = JSON.parse(data);
+      if (isStyleClip(styleClip)) {
+        return { clip: styleClip, targetTpl, cssProps };
+      }
+    }
+
+    // Fall back to local clipboard
     if (!this.clipboard().isSet()) {
       return;
     }
@@ -2255,15 +2269,16 @@ export class ViewOps {
     if (!isStyleClip(clip)) {
       return;
     }
-    this.pasteStyleClip(clip, targetTpl, cssProps);
+    return { clip, targetTpl, cssProps };
   }
 
-  pasteStyleClip(
-    clip: StyleClip,
-    targetTpl?: TplNode,
-    cssProps?: string[]
-  ): boolean {
-    targetTpl = targetTpl || this.viewCtx().focusedTpl() || undefined;
+  pasteStyleClip(props: PasteStyleProps | undefined): boolean {
+    if (!props) {
+      return false;
+    }
+    const { clip, cssProps } = props;
+    const targetTpl =
+      props.targetTpl || this.viewCtx().focusedTpl() || undefined;
     if (
       !Tpls.isTplTag(targetTpl) &&
       !(Tpls.isTplComponent(targetTpl) && isCodeComponent(targetTpl.component))
@@ -2291,10 +2306,6 @@ export class ViewOps {
 
   copyBgImageStyle(tpl?: TplNode) {
     this.copyStyle(tpl, ["background"]);
-  }
-
-  pasteBgImageStyle(targetTpl?: TplNode) {
-    this.tryPasteStyleFromClipboard(targetTpl, ["background"]);
   }
 
   tryStartSavingPreset(maybeTpl?: TplNode) {

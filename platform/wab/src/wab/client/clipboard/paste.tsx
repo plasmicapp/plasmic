@@ -1,6 +1,6 @@
 import { PasteArgs } from "@/wab/client/clipboard/common";
 import { pasteImage } from "@/wab/client/clipboard/image";
-import { pasteLocal } from "@/wab/client/clipboard/local";
+import { isStyleClip, pasteLocal } from "@/wab/client/clipboard/local";
 import { ReadableClipboard } from "@/wab/client/clipboard/ReadableClipboard";
 import { pasteRemote } from "@/wab/client/clipboard/remote";
 import { pasteText } from "@/wab/client/clipboard/text";
@@ -62,6 +62,12 @@ async function pasteRouter(
   try {
     const plasmicData = clipboard.getPlasmicData();
     if (plasmicData) {
+      if (isStyleClip(plasmicData)) {
+        const localResult = await pasteLocal(plasmicData, args);
+        if (localResult.handled) {
+          return localResult.success;
+        }
+      }
       // We've 2 different behavior when performing a copy/paste:
       //
       // - Copy/paste inside the project (local)

@@ -8,6 +8,7 @@ __plasmicIframe.style.position = "absolute";
 __plasmicIframe.style.top = "0";
 __plasmicIframe.style.left = "0";
 __plasmicIframe.style.zIndex = "999999999";
+__plasmicIframe.allow = "clipboard-read *; clipboard-write *";
 // We must add this event listener first, before appending, since (at least in
 // Cypress) this would otherwise fire before the event listener gets to catch.
 __plasmicIframe.addEventListener("load", (ev) => {

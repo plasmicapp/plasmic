@@ -328,6 +328,7 @@ export function StudioFrame({
       <iframe
         className={"studio-frame"}
         src={src.toString()}
+        allow="clipboard-read *; clipboard-write *"
         onLoad={handleIframeLoad}
       />
     </TopFrameCtxProvider>

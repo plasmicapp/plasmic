@@ -629,6 +629,7 @@ export const CanvasFrame = observer(function CanvasFrame({
               ? undefined
               : arenaFrame.uid
           }
+          allow="clipboard-read *; clipboard-write *"
           ref={iframeRef}
           key={
             iFrameKey +
