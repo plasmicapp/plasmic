@@ -68,15 +68,23 @@ export const CommentPostFormDialog = observer(function CommentPostFormDialog({
               <CommentPostForm
                 id={"new"}
                 defaultValue={commentsCtx.getArenaDraft(currentArena)}
-                onSubmit={(value: string) => {
+                onSubmit={async (value: string) => {
+                  let subjectAddr = commentsCtx.bundler().addrOf(threadSubject);
+                  if (studioCtx.needsSaving() && !subjectAddr) {
+                    await studioCtx.save();
+                  }
+                  subjectAddr = commentsCtx.bundler().addrOf(threadSubject);
                   const location = {
-                    subject: commentsCtx
-                      .bundler()
-                      .addrOfUnsafe(ensure(openedNewThread.tpl, "")),
+                    subject: ensure(subjectAddr, "Subject Addr should exist"),
                     variants: getSetOfPinnedVariantsForViewCtx(
                       ensure(openedNewThread.viewCtx, ""),
                       commentsCtx.bundler()
-                    ).map((pv) => commentsCtx.bundler().addrOfUnsafe(pv)),
+                    ).map((pv) =>
+                      ensure(
+                        commentsCtx.bundler().addrOf(pv),
+                        "Variant Addr should exist"
+                      )
+                    ),
                   };
                   commentsCtx.postRootComment({
                     body: value,
