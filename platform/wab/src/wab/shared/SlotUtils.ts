@@ -428,7 +428,8 @@ export function getTplSlotForParam(component: Component, param: Param) {
 
 /**
  * Finds the stack of parent args {TplComponent, Arg} for the argument `tpl`, if
- * it is a child of an Arg.  Else returns empty list.
+ * it is a child of an Arg. Else returns empty list.
+ * Throws if the parent Tpl is missing the arg
  */
 export function findParentArgs(tpl: TplNode) {
   const args: { tplComponent: TplComponent; arg: Arg }[] = [];

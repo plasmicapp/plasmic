@@ -1250,12 +1250,12 @@ function upgradeProjectDep(
           const oldParam = arg.param;
           const newParam = oldToNewParam.get(oldParam);
           if (!newParam) {
-            // This param has been deleted, so we delete the
-            // corresponding arg.
+            // This param has been deleted, so we delete the corresponding arg.
             if (isKnownRenderExpr(arg.expr)) {
               arg.expr.tpl.forEach((tplNode) => {
                 // Mark tpls from the slots as unnatached, as they are going to be removed from the site
-                attachedTpls.delete(tplNode);
+                flattenTpls(tplNode).forEach((t) => attachedTpls.delete(t));
+
                 // Search for slots and remove them from the parent component
                 if (isKnownComponent(owner)) {
                   const slots = flattenTpls(tplNode).filter((t) =>
@@ -1330,9 +1330,8 @@ function upgradeProjectDep(
       // want to interpret that as forking the slot content of the Header instance.
       // We store it in an array to avoid changing the slot reference to the old
       // dependency if the order of components we process is not optimal.
-      for (const { tplComponent: parentTplComponent, arg } of findParentArgs(
-        tpl
-      )) {
+      const parentArgs = findParentArgs(tpl);
+      for (const { tplComponent: parentTplComponent, arg } of parentArgs) {
         if (isKnownVirtualRenderExpr(arg.expr)) {
           parentDefaultSlots.push({
             parent: parentTplComponent,
