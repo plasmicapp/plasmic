@@ -1699,10 +1699,10 @@
   dependencies:
     unfetch "^4.2.0"
 
-"@plasmicapp/loader-splits@1.0.64":
-  version "1.0.64"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/loader-splits/-/loader-splits-1.0.64.tgz#07a68e66927eb97aa6814a794754c0abe7110641"
-  integrity sha512-PrZNSokH7aedwXtFD0tWn/P7yL+h1oDpEqKDm7zD0d0tjq6spL90I61lBU8MJlc5/dngLBrovLPyzO51EmPLqg==
+"@plasmicapp/loader-splits@1.0.65":
+  version "1.0.65"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/loader-splits/-/loader-splits-1.0.65.tgz#c167efe15b46c2505abdd4d13f45926c99d11e99"
+  integrity sha512-kU+5Ky157i9JUu5cSCp+yIohQKF2lGNr4mQcaV7SHpE7aexQ4WDIr36kyZehwh4EcFTIHHc3H2g+DzAt64AIDA==
   dependencies:
     json-logic-js "^2.0.2"
 
@@ -1739,16 +1739,16 @@
   resolved "https://registry.yarnpkg.com/@plasmicapp/react-ssr-prepass/-/react-ssr-prepass-2.0.9.tgz#1cfdd8d4c0e90fd4fed7d7204f70c44914871d31"
   integrity sha512-HO932uH/Y4otaDmjwzJbCLlokxNAdtU9VhDVUZUuVbzh0DhWaNyn/MINCu1oeZ4a6MIjdXFIm/U2VaxNxHYdsw==
 
-"@plasmicapp/react-web@^0.2.400":
-  version "0.2.400"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/react-web/-/react-web-0.2.400.tgz#c3de0883f065e581b55e01e49b07e2595551b042"
-  integrity sha512-ojVrdDubtKRrZ+ciGB6/3QHFrGDxogWwAgCS6Wm5Wg/gPXpd07FF2CD2tfCEpj9rn7kdbFs86WczdD0zsijDlg==
+"@plasmicapp/react-web@^0.2.401":
+  version "0.2.401"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/react-web/-/react-web-0.2.401.tgz#ec71291d0f5cdd9b7347936899ea38129e21ed3b"
+  integrity sha512-1dCd0oFIMhFGKZOnEjTuV5732aqL0Yno/x6Xmhg0a3o3hawnRIr/A6WRWxxjcThiXJhcYrbMbusyNWWgqlpyWQ==
   dependencies:
     "@plasmicapp/auth-react" "0.0.23"
     "@plasmicapp/data-sources" "0.1.189"
     "@plasmicapp/data-sources-context" "0.1.22"
     "@plasmicapp/host" "1.0.225"
-    "@plasmicapp/loader-splits" "1.0.64"
+    "@plasmicapp/loader-splits" "1.0.65"
     "@plasmicapp/nextjs-app-router" "1.0.17"
     "@plasmicapp/prepass" "1.0.20"
     "@plasmicapp/query" "0.1.80"
@@ -1781,10 +1781,10 @@
   resolved "https://registry.yarnpkg.com/@plasmicpkgs/airtable/-/airtable-0.0.239.tgz#a8c37d50749329a519c9e2b4a2494b3da39ef7ce"
   integrity sha512-HtadhEcNX6FFWONOn8XwcE74GuwHwXkKleOpSrOWwLpGjwJ3zBwWpexEAXpALy2gz2EvaJ4tUMAuEHwOgbS6dg==
 
-"@plasmicpkgs/antd5@^0.0.302":
-  version "0.0.302"
-  resolved "https://registry.yarnpkg.com/@plasmicpkgs/antd5/-/antd5-0.0.302.tgz#3450db171b7e99a150ed8533ad521c4333046460"
-  integrity sha512-yreB2o+uIoYWXBZ7co9TKRO25m2//+Dms58vqjUEagMY1XHFDQfz8yUR3Z+HALDKUSYSqWn3YiHU7rLjMNJPIw==
+"@plasmicpkgs/antd5@^0.0.303":
+  version "0.0.303"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/antd5/-/antd5-0.0.303.tgz#c1ca2fd36be77a7596a3555ceb6c8c2bd660d457"
+  integrity sha512-b3SKE14OjJf9v3my7Xozu3JOd0zDNnB13VpRImHEjIQDnbf49JFBzgu628JGVC+AIyo0AZea0DozzQI7PTCX7Q==
   dependencies:
     antd "^5.12.7"
     classnames "^2.3.2"
