@@ -267,6 +267,7 @@ import {
 } from "@/wab/shared/core/style-props";
 import {
   CssVarResolver,
+  makeAnimationKeyframesRules,
   makeBaseRuleNamer,
   makeCssTokenVarsRules,
   makeDefaultStylesRules,
@@ -466,6 +467,9 @@ export function exportProjectConfig(
     site,
     `.${makePlasmicTokensClassName(projectId, exportOpts)}`
   );
+  const animationKeyframesRules = makeAnimationKeyframesRules(site, {
+    targetEnv: exportOpts.targetEnv,
+  }).join("\n");
 
   const cssFileName = makeCssFileName(
     exportOpts.idFileNames
@@ -515,6 +519,7 @@ export function exportProjectConfig(
       ${fontsCss}
       ${cssTokenVarsRules}
       ${layoutVarsRules}
+      ${animationKeyframesRules}
       ${defaultTagStylesVarsRules}
       ${cssMixinPropVarsRules}
       ${

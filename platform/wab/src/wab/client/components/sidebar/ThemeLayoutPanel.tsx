@@ -12,7 +12,6 @@ import {
   PlasmicThemeLayoutPanel,
 } from "@/wab/client/plasmic/plasmic_kit_left_pane/PlasmicThemeLayoutPanel";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { getLengthUnits } from "@/wab/shared/css";
 import { RuleSetHelpers } from "@/wab/shared/RuleSetHelpers";
 import {
   CONTENT_LAYOUT_DEFAULTS,
@@ -20,6 +19,7 @@ import {
   CONTENT_LAYOUT_VIEWPORT_GAP_PROP,
   CONTENT_LAYOUT_WIDE_WIDTH_PROP,
 } from "@/wab/shared/core/style-props";
+import { getLengthUnits } from "@/wab/shared/css";
 import { makeExpProxy } from "@/wab/shared/exprs";
 import { RuleSet, ThemeLayoutSettings } from "@/wab/shared/model/classes";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
@@ -36,7 +36,9 @@ function ThemeLayoutPanel_(
   const theme = studioCtx.site.activeTheme;
   const layout =
     theme?.layout ??
-    new ThemeLayoutSettings({ rs: new RuleSet({ values: {}, mixins: [] }) });
+    new ThemeLayoutSettings({
+      rs: new RuleSet({ values: {}, mixins: [], animations: [] }),
+    });
   const sc = React.useMemo(() => {
     const baseExpr = new RuleSetHelpers(layout.rs, "div");
     const ensureLayout = () => {

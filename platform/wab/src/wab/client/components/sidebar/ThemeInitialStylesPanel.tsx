@@ -14,8 +14,8 @@ import {
   PlasmicThemeInitialStylesPanel,
 } from "@/wab/client/plasmic/plasmic_kit_left_pane/PlasmicThemeInitialStylesPanel";
 import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { spawn } from "@/wab/shared/common";
 import { AddItemKey } from "@/wab/shared/add-item-keys";
+import { spawn } from "@/wab/shared/common";
 import { getDefaultStyles } from "@/wab/shared/default-styles";
 import { RuleSet } from "@/wab/shared/model/classes";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
@@ -97,6 +97,7 @@ const ThemeInitialStylesPanel = observer(
                       const initialRs = new RuleSet({
                         values: { ...initialStyles },
                         mixins: [],
+                        animations: [],
                       });
                       studioCtx.site.activeTheme!.addItemPrefs[newKey] =
                         initialRs;

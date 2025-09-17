@@ -216,6 +216,7 @@ export function createSite({
     styleTokenOverrides: [],
     dataTokens: [],
     mixins: [],
+    animationSequences: [],
     themes: [defaultTheme],
     activeTheme: defaultTheme,
     globalVariantGroups: [screenGroup],
@@ -560,6 +561,7 @@ export function cloneSite(fromSite: Site) {
     ),
     dataTokens: fromSite.dataTokens.map((t) => cloneToken(t)),
     mixins: fromSite.mixins.map((mixin) => cloneMixin(mixin)),
+    animationSequences: [], // TODO: add cloning support for animation sequences
     themes: fromSite.themes.map((th) =>
       ensure(newThemes.get(th), "should exist in newThemes")
     ),
@@ -1766,6 +1768,7 @@ export function createDefaultTheme() {
       rs: new RuleSet({
         values: {},
         mixins: [],
+        animations: [],
       }),
     }),
     styles: Object.entries(DEFAULT_THEME_STYLES).map(

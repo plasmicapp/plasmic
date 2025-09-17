@@ -68,6 +68,7 @@ import {
   xpickBy,
   xpickExists,
 } from "@/wab/shared/common";
+import { collectUsedAnimationSequences } from "@/wab/shared/core/animation-sequences";
 import { BackgroundLayer, bgClipTextTag } from "@/wab/shared/core/bg-styles";
 import {
   isCodeComponent,
@@ -144,6 +145,8 @@ import {
   makeLayoutAwareRuleSet,
 } from "@/wab/shared/layoututils";
 import {
+  Animation,
+  AnimationSequence,
   ArenaFrame,
   Arg,
   Component,
@@ -625,6 +628,18 @@ function deriveCssRuleSetStyles(
       }
     )
   );
+  // Process animations
+  if (rs.animations && rs.animations.length > 0) {
+    const animationPropVal = generateAnimationPropValue(rs.animations);
+    if (animationPropVal) {
+      m.set(
+        "animation",
+        resolver
+          ? resolver.tryResolveTokenRefs(animationPropVal)
+          : animationPropVal
+      );
+    }
+  }
   Object.entries(makeLayoutAwareRuleSet(rs, forBaseVariant).values).forEach(
     ([name, val]) => {
       if (!isStylePropApplicable(tpl, name)) {
@@ -939,6 +954,95 @@ function showStyles(m: Map<string, string>) {
     .map(([k, v]) => `${k}: ${v};`)
     .join("\n")}\
   `;
+}
+
+/**
+ * Generates a CSS @keyframes rule for an AnimationSequence
+ */
+export function generateKeyframesRule(
+  animationSequence: AnimationSequence,
+  resolver?: CssVarResolver
+): string {
+  const keyframeRules = animationSequence.keyframes
+    .map((keyframe) => {
+      const styles = new Map<string, string>();
+
+      // Process keyframe RuleSet values
+      Object.entries(makeLayoutAwareRuleSet(keyframe.rs, false).values).forEach(
+        ([name, val]) => {
+          styles.set(name, resolver ? resolver.tryResolveTokenRefs(val) : val);
+        }
+      );
+
+      // Process keyframe RuleSet mixins
+      keyframe.rs.mixins.forEach((mixin) => {
+        Object.entries(makeLayoutAwareRuleSet(mixin.rs, false).values).forEach(
+          ([name, val]) => {
+            styles.set(
+              name,
+              resolver ? resolver.resolveMixinProp(mixin, name) : val
+            );
+          }
+        );
+      });
+
+      postProcessStyles(styles, {});
+
+      const styleContent = showStyles(styles);
+      if (!styleContent) {
+        return `  ${keyframe.percentage}% {}`;
+      }
+
+      return `  ${keyframe.percentage}% {\n${styleContent}\n  }`;
+    })
+    .join("\n");
+
+  return `@keyframes ${animationSequence.name} {\n${keyframeRules}\n}`;
+}
+
+/**
+ * Generates CSS animation properties from an Animation array using shorthand syntax
+ */
+export function generateAnimationPropValue(animations: Animation[]) {
+  if (animations.length === 0) {
+    return null;
+  }
+
+  // Generate shorthand animation values for each animation
+  const animationValues = animations.map((anim) => {
+    const parts = [
+      anim.duration, // animation-duration (required)
+      anim.timingFunction, // animation-timing-function
+      anim.delay, // animation-delay
+      anim.iterationCount, // animation-iteration-count
+      anim.direction, // animation-direction
+      anim.fillMode, // animation-fill-mode
+      anim.playState, // animation-play-state
+      anim.sequence.name, // animation-name (required, goes last)
+    ];
+
+    return parts.join(" ");
+  });
+
+  // Return the shorthand animation property with comma-separated values
+  return animationValues.join(", ");
+}
+
+/**
+ * Generates CSS @keyframes rules for all animation sequences used in a site
+ */
+export function makeAnimationKeyframesRules(
+  site: Site,
+  opts: {
+    targetEnv: TargetEnv;
+    resolver?: CssVarResolver;
+  }
+): string[] {
+  const animationSequences = collectUsedAnimationSequences(site);
+
+  return animationSequences.map((sequence) =>
+    generateKeyframesRule(sequence, opts.resolver)
+  );
 }
 
 export function hasClassnameOverride(tag?: string) {
@@ -2408,6 +2512,7 @@ export const cloneRuleSet = (rs: RuleSet) => {
   return new RuleSet({
     values: { ...rs.values },
     mixins: [...rs.mixins],
+    animations: [...rs.animations],
   });
 };
 
@@ -2419,6 +2524,7 @@ export function mkRuleSet(
   return new RuleSet({
     values: obj.values ?? {},
     mixins: [],
+    animations: [],
   });
 }
 

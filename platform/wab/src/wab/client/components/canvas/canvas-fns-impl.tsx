@@ -1,22 +1,22 @@
 import "@/wab/client/components/canvas/slate";
+import { mkBaseVariant } from "@/wab/shared/Variants";
 import { assert } from "@/wab/shared/common";
-import { normProp, parseCssNumericNew } from "@/wab/shared/css";
 import {
   isTagInline,
   isTagListContainer,
 } from "@/wab/shared/core/rich-text-util";
+import * as Tpls from "@/wab/shared/core/tpls";
+import { TplTagType, mkTplTag } from "@/wab/shared/core/tpls";
+import { normProp, parseCssNumericNew } from "@/wab/shared/css";
 import { EffectiveVariantSetting } from "@/wab/shared/effective-variant-setting";
 import {
-  isKnownNodeMarker,
   Marker,
   NodeMarker,
   RawText,
   RuleSet,
   StyleMarker,
+  isKnownNodeMarker,
 } from "@/wab/shared/model/classes";
-import { mkBaseVariant } from "@/wab/shared/Variants";
-import * as Tpls from "@/wab/shared/core/tpls";
-import { mkTplTag, TplTagType } from "@/wab/shared/core/tpls";
 import type { Descendant } from "slate";
 import { Element, Text } from "slate";
 
@@ -144,7 +144,7 @@ export function resolveNodesToMarkers(
         markers.push(
           new StyleMarker({
             position: rawText.join("").length,
-            rs: new RuleSet({ values: cssRules, mixins: [] }),
+            rs: new RuleSet({ values: cssRules, mixins: [], animations: [] }),
             length: node.text.length,
           })
         );

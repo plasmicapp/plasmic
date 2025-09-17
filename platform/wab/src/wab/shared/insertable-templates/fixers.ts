@@ -428,6 +428,7 @@ export const fixTextTplStyles = (
     new RuleSet({
       values: {},
       mixins: [],
+      animations: [],
     }),
     tpl.tag
   );

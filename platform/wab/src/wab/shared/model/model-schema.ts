@@ -128,6 +128,7 @@ Site
   styleTokenOverrides: [StyleTokenOverride]
   dataTokens: [DataToken]
   mixins: [Mixin]
+  animationSequences: [AnimationSequence]
   @Const themes: [Theme]
   @WeakRef activeTheme: Theme?
   imageAssets: [ImageAsset]
@@ -250,6 +251,7 @@ StyleNode
     values: Map[String, String]
     #children: [Rule]
     @WeakRef mixins: [Mixin]
+    animations: [Animation]
   Rule
     @Const name: String
     values: [String]
@@ -269,6 +271,31 @@ Mixin
   # uuid is the effective theme's defaultStyle.uuid.
   @Const forTheme: Bool
   variantedRs: [VariantedRuleSet]
+KeyFrame
+  # A percentage of the time through the animation sequence at which the keyframe occurs
+  percentage: Number
+  rs: RuleSet
+AnimationSequence
+  # A name identifying the keyframe list
+  name: String
+  @Const uuid: String
+  keyframes: [KeyFrame]
+Animation
+  @WeakRef sequence: AnimationSequence
+  # Animation duration (e.g. "2s", "300ms")
+  duration: String
+  # Animation timing function (e.g. "ease", "linear", "ease-in-out")
+  timingFunction: String
+  # Number of iterations ('infinite' | Number as String)
+  iterationCount: String
+  # Animation direction
+  direction: 'normal' | 'reverse' | 'alternate' | 'alternate-reverse'
+  # Animation delay (e.g. "1s", "100ms")
+  delay: String
+  # Animation fill mode
+  fillMode: 'none' | 'forwards' | 'backwards' | 'both'
+  # Animation play state
+  playState: 'paused' | 'running'
 Theme
   defaultStyle: Mixin
   styles: [ThemeStyle]

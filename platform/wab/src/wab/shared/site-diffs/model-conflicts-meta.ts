@@ -432,6 +432,11 @@ export const modelConflictsMeta: ModelConflictsMeta = {
       conflictType: "rename",
       nameKey: `name`,
     },
+    animationSequences: {
+      arrayType: "unordered",
+      conflictType: "rename",
+      nameKey: `name`,
+    },
     pageArenas: {
       arrayType: "unordered",
       conflictType: "merge",
@@ -620,6 +625,34 @@ export const modelConflictsMeta: ModelConflictsMeta = {
       conflictType: "merge",
       mergeKeyIsIdentity: true,
     },
+    animations: {
+      arrayType: "ordered",
+      conflictType: "merge",
+      mergeKeyIsIdentity: true,
+    },
+  },
+  KeyFrame: {
+    percentage: "generic",
+    rs: "contents",
+  },
+  AnimationSequence: {
+    name: "generic",
+    uuid: "unexpected",
+    keyframes: {
+      arrayType: "ordered",
+      conflictType: "merge",
+      mergeKeyIsIdentity: true,
+    },
+  },
+  Animation: {
+    sequence: "generic",
+    duration: "generic",
+    timingFunction: "generic",
+    iterationCount: "generic",
+    direction: "generic",
+    delay: "generic",
+    fillMode: "generic",
+    playState: "generic",
   },
   Rule: {
     name: "unexpected",

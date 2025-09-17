@@ -4,7 +4,12 @@
     {
       "root": "tLUQCVQ8f-RO",
       "map": {
-        "kOI6y2UkeiJX": { "values": {}, "mixins": [], "__type": "RuleSet" },
+        "kOI6y2UkeiJX": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
         "vC7ZNDVPHgBS": {
           "name": "Default Typography",
           "rs": { "__ref": "kOI6y2UkeiJX" },
@@ -14,7 +19,12 @@
           "variantedRs": [],
           "__type": "Mixin"
         },
-        "paQKLfuBhpyd": { "values": {}, "mixins": [], "__type": "RuleSet" },
+        "paQKLfuBhpyd": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
         "COSiiltazPgR": {
           "rs": { "__ref": "paQKLfuBhpyd" },
           "__type": "ThemeLayoutSettings"
@@ -73,7 +83,8 @@
           "codeLibraries": [],
           "__type": "Site",
           "styleTokenOverrides": [],
-          "dataTokens": []
+          "dataTokens": [],
+          "animationSequences": []
         },
         "WVmeexY8nJIT": {
           "uuid": "CORnFSshfBnH",
@@ -1050,7 +1061,8 @@
             "max-width": "100%"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "1KaJxutOa_J5": { "name": "text", "__type": "Text" },
         "yDqOHhcTPkrk": {
@@ -1128,7 +1140,8 @@
         "dvYZupE8h_8H": {
           "values": { "width": "640px", "height": "wrap", "max-width": "100%" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "HCAXUQT2TgYW": { "name": "text", "__type": "Text" },
         "_v_a6xvzfUj-": {
@@ -1156,7 +1169,8 @@
         "PJwtbpUt3gc7": {
           "values": { "max-width": "100%" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "eEHvH4elOi1R": { "name": "text", "__type": "Text" },
         "WVXhpCiCpeB1": {
@@ -1309,17 +1323,20 @@
         "jmzIpamEAlya": {
           "values": { "display": "flex", "flex-direction": "row" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "H6VYLKd6P61a": {
           "values": { "display": "flex", "flex-direction": "row" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "GieRiZn61xQ3": {
           "values": { "display": "flex", "flex-direction": "row" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "pC5PEAJYn_ea": {
           "variants": [{ "__ref": "n6v7U7i357dR" }],
@@ -1335,7 +1352,8 @@
         "PlYTf4_K8j_R": {
           "values": { "display": "flex", "flex-direction": "row" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "Ub7p4R9vh1Pe": {
           "variants": [{ "__ref": "xR3fDPHHtPSX" }],
@@ -1351,15 +1369,27 @@
         "pdPGuS5XJWiN": {
           "values": { "display": "flex", "flex-direction": "row" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "eg3LE_sDoa24": {
           "values": { "display": "flex", "flex-direction": "row" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
-        "QmTUx2yhLFMo": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "t4ou1w9dK3kD": { "values": {}, "mixins": [], "__type": "RuleSet" },
+        "QmTUx2yhLFMo": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "t4ou1w9dK3kD": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
         "SLyd6sgbmCFe": {
           "uuid": "IzYmqWf7r_Lf",
           "name": "hostless-timer",
@@ -1512,7 +1542,8 @@
         "tkuZgtYlUtB6": {
           "values": { "display": "flex", "flex-direction": "row" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "_7PzVYmZcrwV": {
           "type": { "__ref": "BXNbTTOzbyb4" },
@@ -1561,7 +1592,7 @@
         }
       },
       "deps": [],
-      "version": "251-add-data-tokens"
+      "version": "252-add-animations"
     }
   ],
   [
@@ -1586,7 +1617,8 @@
             "text-overflow": "clip"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "JYNFLiEJHagr": {
           "name": "Default Typography",
@@ -1597,7 +1629,12 @@
           "variantedRs": [],
           "__type": "Mixin"
         },
-        "lufHJZX4VQZO": { "values": {}, "mixins": [], "__type": "RuleSet" },
+        "lufHJZX4VQZO": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
         "xQeBO3UhLaTD": {
           "rs": { "__ref": "lufHJZX4VQZO" },
           "__type": "ThemeLayoutSettings"
@@ -1612,7 +1649,8 @@
             "line-height": "1"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "uXaGB5hdEQRd": {
           "name": "Default \"h1\"",
@@ -1638,7 +1676,8 @@
             "line-height": "1.1"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "SzCkoj_t4M5q": {
           "name": "Default \"h2\"",
@@ -1664,7 +1703,8 @@
             "line-height": "1.2"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "9sFe0msHF6ir": {
           "name": "Default \"h3\"",
@@ -1690,7 +1730,8 @@
             "line-height": "1.3"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "zxMMG-CHjK8C": {
           "name": "Default \"h4\"",
@@ -1716,7 +1757,8 @@
             "line-height": "1.5"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "Ba--MeuHbXMo": {
           "name": "Default \"h5\"",
@@ -1741,7 +1783,8 @@
             "line-height": "1.5"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "GkFDMfsKPvZe": {
           "name": "Default \"h6\"",
@@ -1760,7 +1803,8 @@
         "DIThBbGo7Bsx": {
           "values": { "color": "#0070f3" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "jvi7OehfZlM0": {
           "name": "Default \"a\"",
@@ -1779,7 +1823,8 @@
         "QQTQNbzzFQ69": {
           "values": { "color": "#3291ff" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "wnE3fFcRXCaK": {
           "name": "Default \"a:hover\"",
@@ -1804,7 +1849,8 @@
             "padding-left": "10px"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "YndzrkafDwy3": {
           "name": "Default \"blockquote\"",
@@ -1846,7 +1892,8 @@
             "padding-top": "1px"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "rOM0VI_sxYt-": {
           "name": "Default \"code\"",
@@ -1888,7 +1935,8 @@
             "padding-top": "3px"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "-18cRDsRGXJI": {
           "name": "Default \"pre\"",
@@ -1916,7 +1964,8 @@
             "list-style-type": "decimal"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "McmyN-xdROya": {
           "name": "Default \"ol\"",
@@ -1944,7 +1993,8 @@
             "list-style-type": "disc"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "0BRSLGUkdQzK": {
           "name": "Default \"ul\"",
@@ -2077,7 +2127,8 @@
           "codeLibraries": [],
           "__type": "Site",
           "styleTokenOverrides": [],
-          "dataTokens": []
+          "dataTokens": [],
+          "animationSequences": []
         },
         "qXJ2nt0vvAt2": {
           "name": "Custom arena 1",
@@ -2530,7 +2581,8 @@
         "46WxjVD9AmNi": {
           "values": { "display": "flex", "flex-direction": "row" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "Hh3UX8UesF4o": {
           "name": "arg",
@@ -2553,10 +2605,16 @@
         "-SemX9G2iwvT": {
           "values": { "display": "flex", "flex-direction": "row" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "vwvvigt38BFT": { "name": "any", "__type": "AnyType" },
-        "2HCEY9LaVu22": { "values": {}, "mixins": [], "__type": "RuleSet" },
+        "2HCEY9LaVu22": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
         "e13a_ukefuzg": {
           "uuid": "r76LI_BGkTwO",
           "name": "timer-test",
@@ -2721,7 +2779,8 @@
             "justify-items": "center"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "_1lD7CzSbAHI": {
           "frame": { "__ref": "sce3KAbPQZFQ" },
@@ -2733,7 +2792,12 @@
           "cellKey": null,
           "__type": "ArenaFrameCell"
         },
-        "HuLGsQqH7eq4": { "values": {}, "mixins": [], "__type": "RuleSet" },
+        "HuLGsQqH7eq4": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
         "sce3KAbPQZFQ": {
           "uuid": "1uBSY4qmrkeT",
           "width": 1366,
@@ -2808,8 +2872,18 @@
           "columnsConfig": null,
           "__type": "VariantSetting"
         },
-        "SMvnx1VLVYkb": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "CYhV_3r7uI_M": { "values": {}, "mixins": [], "__type": "RuleSet" },
+        "SMvnx1VLVYkb": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "CYhV_3r7uI_M": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
         "OMPaGxj9wtEK": {
           "tag": "div",
           "name": null,
@@ -2837,7 +2911,8 @@
         "HmiscZ2bu9JP": {
           "values": { "position": "relative", "font-size": "10em" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "gd-yb2DGhEn2": {
           "tag": "div",
@@ -2875,7 +2950,8 @@
             "justify-content": "flex-start"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "QRd8r00wuTBP": {
           "uuid": "puspbJrN_udM",
@@ -4989,7 +5065,8 @@
         "hnc0EEvBcGDt": {
           "values": { "max-width": "100%", "position": "relative" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "zfd4KpfWs3CO": {
           "name": "arg",
@@ -5288,192 +5365,230 @@
             "column-gap": "8px"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "BxKh20Cj4HrT": {
           "values": { "box-shadow": "0px 0px 0px 3px #96C7F2" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "vNreHcx61A2E": {
           "values": { "box-shadow": "0px 0px 0px 3px #96C7F2" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "vZx8LE9EtF3O": {
           "values": { "cursor": "not-allowed", "opacity": "0.6" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "9rXE08axqVeC": {
           "values": { "padding-right": "16px" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "dLul3ShlR8Jd": {
           "values": { "padding-left": "16px" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "Sg3JNt57giZm": {
           "values": { "background": "linear-gradient(#282826, #282826)" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "-ZGTYjMNiW3R": {
           "values": { "background": "linear-gradient(#2E2E2B, #2E2E2B)" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "dfz1zspQ7bGY": {
           "values": { "background": "linear-gradient(#EDF6FF, #EDF6FF)" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "eO6dwsfvV7jg": {
           "values": { "background": "linear-gradient(#E1F0FF, #E1F0FF)" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "Npam1Va72FJC": {
           "values": { "background": "linear-gradient(#CEE7FE, #CEE7FE)" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "xzndQK-7ZuvC": {
           "values": { "background": "linear-gradient(#E9F9EE, #E9F9EE)" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "YYC17xHNJIMC": {
           "values": { "background": "linear-gradient(#CCEBD7, #CCEBD7)" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "1msdKLX9oMU8": {
           "values": { "background": "linear-gradient(#DDF3E4, #DDF3E4)" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "HEDJx4gcTbF6": {
           "values": { "background": "linear-gradient(#F5D90A, #F5D90A)" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "PxZbci50L2lh": {
           "values": { "background": "linear-gradient(#FFEF5C, #FFEF5C)" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "W5dJ3tY1hx7W": {
           "values": { "background": "linear-gradient(#F0C000, #F0C000)" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "WqeuBtEK-6-m": {
           "values": { "background": "linear-gradient(#E54D2E, #E54D2E)" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "0WOF-NdBQk3q": {
           "values": { "background": "linear-gradient(#EC5E41, #EC5E41)" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "YzUSH2HQEelT": {
           "values": { "background": "linear-gradient(#F16A50, #F16A50)" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "fZ-hkNV689w8": {
           "values": { "background": "linear-gradient(#FFFBD1, #FFFBD1)" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28EO4TKmU-xN": {
           "values": { "background": "linear-gradient(#FEF2A4, #FEF2A4)" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "d3HjVvl0B_So": {
           "values": { "background": "linear-gradient(#FFF8BB, #FFF8BB)" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "kbUJBOrW3wYs": {
           "values": { "background": "linear-gradient(#FFF0EE, #FFF0EE)" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "JYZbAzhAgI5f": {
           "values": { "background": "linear-gradient(#FDD8D3, #FDD8D3)" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "397Ug6TJK4X6": {
           "values": { "background": "linear-gradient(#FFE6E2, #FFE6E2)" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "QPVpOsF5q678": {
           "values": { "background": "linear-gradient(#EEEEEC, #EEEEEC)" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "gRuxevoEQrxj": {
           "values": { "background": "linear-gradient(#E9E9E6, #E9E9E6)" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "nPwIOKm3sC0E": {
           "values": { "background": "linear-gradient(#E3E3E0, #E3E3E0)" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "xpezIvmqjJOS": {
           "values": { "background": "linear-gradient(#0091FF, #0091FF)" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "4epK5YTJuysT": {
           "values": { "background": "linear-gradient(#369EFF, #369EFF)" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "StTIBRX6S70N": {
           "values": { "background": "linear-gradient(#52A9FF, #52A9FF)" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "kP6Ko_gCNh4F": {
           "values": { "background": "linear-gradient(#30A46C, #30A46C)" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "4db707O2etjy": {
           "values": { "background": "linear-gradient(#3CB179, #3CB179)" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "Q14iaWIh66y7": {
           "values": { "background": "linear-gradient(#4CC38A, #4CC38A)" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "xSTTl3cvNKqS": {
           "values": { "background": "linear-gradient(#717069, #717069)" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "Zc0iuvwxUU4W": {
           "values": { "background": "linear-gradient(#7F7E77, #7F7E77)" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "tBqezUaC_U_i": {
           "values": { "background": "linear-gradient(#A1A09A, #A1A09A)" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "n_KfulLq1BHX": {
           "values": {
@@ -5483,11 +5598,27 @@
             "padding-left": "16px"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
-        "UMMYroodjXfz": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "bMWP9RHnj0-V": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "ZQVrR6tZM6Kg": { "values": {}, "mixins": [], "__type": "RuleSet" },
+        "UMMYroodjXfz": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "bMWP9RHnj0-V": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "ZQVrR6tZM6Kg": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
         "Gl_UeXQQyKqo": {
           "values": {
             "border-top-left-radius": "999px",
@@ -5499,33 +5630,44 @@
             "min-width": "100px"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "iMvB_1CoAdKK": {
           "values": { "padding-left": "16px" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "AHtvuslCJilF": {
           "values": { "padding-right": "16px" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
-        "inxSjISxJ1yQ": { "values": {}, "mixins": [], "__type": "RuleSet" },
+        "inxSjISxJ1yQ": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
         "gJkpptPNCNiL": {
           "values": { "background": "linear-gradient(#FFFFFF00, #FFFFFF00)" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "FXLjr1gHs7Oo": {
           "values": { "background": "linear-gradient(#E9E9E6, #E9E9E6)" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "2ZCtbrP5ttRv": {
           "values": { "background": "linear-gradient(#E3E3E0, #E3E3E0)" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "-XN2UGBJMG3-": {
           "values": {
@@ -5539,7 +5681,8 @@
             "border-bottom-left-radius": "50%"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "6Qpide-ufhgA": {
           "values": {
@@ -5549,24 +5692,33 @@
             "padding-left": "6px"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "1Ck7ii7RcvKM": {
           "values": { "background": "linear-gradient(#FFFFFF00, #FFFFFF00)" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "oUiV8JBb-rI-": {
           "values": { "background": "linear-gradient(#FFFFFF00, #FFFFFF00)" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "4qj6MUsmSeTy": {
           "values": { "background": "linear-gradient(#FFFFFF00, #FFFFFF00)" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
-        "TbRXmrDERT_-": { "values": {}, "mixins": [], "__type": "RuleSet" },
+        "TbRXmrDERT_-": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
         "O6l06pAagvr3": {
           "values": {
             "padding-top": "0px",
@@ -5575,22 +5727,26 @@
             "padding-left": "0px"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "nDDMR2zMqbyp": {
           "values": { "background": "linear-gradient(#FFFFFF, #FFFFFF)" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "2DyDWsk5IUNd": {
           "values": { "background": "linear-gradient(#FFEF5C, #FFEF5C)" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "qBl58MwXqilH": {
           "values": { "background": "linear-gradient(#F0C000, #F0C000)" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "AZrLNj9cKKTQ": {
           "values": {
@@ -5600,7 +5756,8 @@
             "border-bottom-left-radius": "0px"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "YHMvvp4nH9sK": {
           "frame": { "__ref": "R34uJ73FqFfQ" },
@@ -6073,7 +6230,8 @@
             "justify-content": "flex-start"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "Bla7L1sNu7Ri": {
           "code": "false",
@@ -6083,15 +6241,26 @@
         "zBsCM4YA-Y_n": {
           "values": { "plasmic-display-none": "false" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "Nq_rnJTDwVoF": {
           "code": "true",
           "fallback": null,
           "__type": "CustomCode"
         },
-        "ICgJ9N4b3UqY": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "ZuTBUHw_qRVi": { "values": {}, "mixins": [], "__type": "RuleSet" },
+        "ICgJ9N4b3UqY": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "ZuTBUHw_qRVi": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
         "W760yHkZP_2O": {
           "tag": "div",
           "name": null,
@@ -6416,12 +6585,33 @@
             "justify-content": "flex-start"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
-        "TDWEU5-Zd-NA": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "0pWh94wz8vV4": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "K0kj74ECRGcS": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "Hw62U55tbQjf": { "values": {}, "mixins": [], "__type": "RuleSet" },
+        "TDWEU5-Zd-NA": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "0pWh94wz8vV4": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "K0kj74ECRGcS": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "Hw62U55tbQjf": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
         "2RJn04L0Mhrs": {
           "tag": "svg",
           "name": null,
@@ -6593,7 +6783,8 @@
             "justify-content": "flex-start"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "UoDRhsxJ7D-s": {
           "code": "false",
@@ -6603,15 +6794,26 @@
         "8PPC8DLBwray": {
           "values": { "plasmic-display-none": "false" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "NHlD0fONhp43": {
           "code": "true",
           "fallback": null,
           "__type": "CustomCode"
         },
-        "bOwC_Uci9AUM": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "S964-vJRTDLw": { "values": {}, "mixins": [], "__type": "RuleSet" },
+        "bOwC_Uci9AUM": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "S964-vJRTDLw": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
         "R34uJ73FqFfQ": {
           "uuid": "wo__S6XTY_GH",
           "width": 1180,
@@ -7687,64 +7889,86 @@
         "D6C5eyxz2Cld": {
           "values": { "color": "#EDEDEC" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
-        "APPDmeQYeCFR": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "b63X3-hkunEK": { "values": {}, "mixins": [], "__type": "RuleSet" },
+        "APPDmeQYeCFR": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "b63X3-hkunEK": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
         "2xOtldj1J0G0": {
           "values": { "color": "#006ADC" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "FgR79I2qi1K3": {
           "values": { "color": "#18794E" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "5tZ9uXWfKSJt": {
           "values": { "color": "#946800" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "oDV5DRODXxmk": {
           "values": { "color": "#CA3214" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "3ddLWWCtmaSO": {
           "values": { "color": "#706F6C" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "YSjo7RPJ6A6j": {
           "values": { "color": "#35290F" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "pzI6dOwt3kyL": {
           "values": { "color": "#0091FF" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "oIAHe3cJmTbU": {
           "values": { "color": "#0081F1" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "czQzi1rAtRXk": {
           "values": { "color": "#006ADC" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "9rTUyOcYKv2J": {
           "values": { "color": "#1B1B18" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "lLcp2_Br3VQJ": {
           "values": { "color": "#35290F" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "8Veg8ivE3WNm": {
           "variants": [{ "__ref": "klo4wGsplYfu" }],
@@ -7764,92 +7988,158 @@
             "white-space": "nowrap"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
-        "kuYRZLrPt3Z2": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "_RwvcvkODArI": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "dfY1QDywQZJ1": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "gk8WtrgIc3eD": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "OmZazJrlJKpI": { "values": {}, "mixins": [], "__type": "RuleSet" },
+        "kuYRZLrPt3Z2": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "_RwvcvkODArI": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "dfY1QDywQZJ1": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "gk8WtrgIc3eD": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "OmZazJrlJKpI": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
         "EbJmxOnTszIj": {
           "values": { "color": "#006ADC" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "nq1wRG9ziw96": {
           "values": { "color": "#18794E" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "Cnh594_eUbtS": {
           "values": { "color": "#35290F" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "iEcC8cASSzSZ": {
           "values": { "color": "#946800" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "yfHXueV0061Q": {
           "values": { "color": "#CA3214" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "Bcu_7ASDf3rA": {
           "values": { "color": "#1B1B18" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "WC5LF4nNogD4": {
           "values": { "color": "#FFFFFF" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "n1FclRCZGr53": {
           "values": { "color": "#FFFFFF" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "c2HpqBNZheZI": {
           "values": { "color": "#FFFFFF" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "k_tzepIWpO06": {
           "values": { "color": "#FFFFFF" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
-        "uhLcg-jIaByl": { "values": {}, "mixins": [], "__type": "RuleSet" },
+        "uhLcg-jIaByl": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
         "kdEIOUfKDvBc": {
           "values": { "color": "#1B1B18" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "_PgOj33E80bY": {
           "values": { "color": "#0091FF" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "1gdJTGXQ8gm4": {
           "values": { "color": "#0081F1", "text-decoration-line": "underline" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "eST7G1mxo7Qc": {
           "values": { "color": "#006ADC" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
-        "UzcUeaMzqSv4": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "lGe25FMt7G7z": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "0UOU0-aMm8Lh": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "pzkd3GMKzJpl": { "values": {}, "mixins": [], "__type": "RuleSet" },
+        "UzcUeaMzqSv4": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "lGe25FMt7G7z": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "0UOU0-aMm8Lh": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "pzkd3GMKzJpl": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
         "AiyG2XL79O1Z": {
           "values": { "color": "#1B1B18" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "EYjZ3V511jD9": {
           "variants": [{ "__ref": "klo4wGsplYfu" }],
@@ -7865,63 +8155,80 @@
         "bkkmhtOkcIP4": {
           "values": { "color": "#EDEDEC" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
-        "xnIG1AKksifV": { "values": {}, "mixins": [], "__type": "RuleSet" },
+        "xnIG1AKksifV": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
         "tk3FkaJHsqyV": {
           "values": { "color": "#006ADC" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "5Fg3uZpVL8g3": {
           "values": { "color": "#18794E" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "pbJZzuA0KsRv": {
           "values": { "color": "#946800" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "pZ_ETmslqiYG": {
           "values": { "color": "#CA3214" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "IAHClUNgZh9u": {
           "values": { "color": "#706F6C" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "FRq_fy7mTbev": {
           "values": { "color": "#35290F" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "EglxlrLTzNPe": {
           "values": { "color": "#0091FF" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "Jm4QhuXHZOUh": {
           "values": { "color": "#0081F1" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "k2pZb9F2jB27": {
           "values": { "color": "#006ADC" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "-_pKVRjS6Xcs": {
           "values": { "color": "#1B1B18" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "9V2kPMNb84yE": {
           "values": { "color": "#35290F" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "pD2poQKwDiyN": {
           "name": null,
@@ -8463,9 +8770,15 @@
             "height": "wrap"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
-        "wF2kvmVcKD4L": { "values": {}, "mixins": [], "__type": "RuleSet" },
+        "wF2kvmVcKD4L": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
         "4yQ96WTp85wj": {
           "markers": [],
           "text": "Button",
@@ -8483,7 +8796,8 @@
             "height": "wrap"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "xoTVK2WE7BEO": {
           "variants": [{ "__ref": "VIosIrbQRYdm" }],
@@ -9102,9 +9416,15 @@
             "height": "wrap"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
-        "1AN-NuyOaLub": { "values": {}, "mixins": [], "__type": "RuleSet" },
+        "1AN-NuyOaLub": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
         "llCEadWXq_qs": {
           "asset": { "__ref": "gGwu7LpANEdW" },
           "__type": "ImageAssetRef"
@@ -9117,63 +9437,339 @@
             "height": "wrap"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
-        "tHnmsHowBQws": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "X8c5kCxFbv-P": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "RkhOyhgY0wJZ": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "EVRkazzPuQ_x": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "XC5lxNukQ8_6": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "6LIN-b2_GV8F": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "1DXKW5XXyE19": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "99gyTT5Xyztu": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "jaA4gTN29QDp": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "kd4lbWNL3wDU": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "iE_wVPPFQ5vx": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "7UIpN8F41RKu": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "IUb0J5Fl29pY": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "cTtkUfQgUt-b": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "pa_d4q3nVvGZ": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "M12a_-PsGvmu": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "TWnrOhaQjhIM": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "GKqxv9TbhsOr": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "_-ezZNJ3HRM3": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "3cvyPQZBv7dh": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "7QNDXvMwxnQo": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "zELfQCZ1sC4V": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "pidZezwS7Qo9": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "91RNV4mDGyjf": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "hcJzT6Z7clV0": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "aG23mWS6W_1l": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "MhWeNMqMLDtz": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "4MOyC-dh7ARl": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "vFOUYpz3i4rz": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "7Mk7t826Bh0h": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "vgjrP6gnh_lR": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "dDbrhqnbK6F6": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "K2W9YTxTdln2": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "O-WHsMQZ4mZ3": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "ux01MgynpiKN": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "lYfJ_MlyeTVf": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "JzQRnOZor1IA": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "NDH0GG9WybsT": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "is948C8VW9hl": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "CJBOt24HWqvG": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "I_VG3Q6tBhT1": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "dz0g36lfFkuu": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "s6Orm6Crs0jO": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "IQy1lFwq9xph": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "8LdcfqOMvmeL": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "hI9qCRtBSIzg": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "hRGnX6JEZds0": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "-roHNTjCgQ7v": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "31rJmxdWIRQZ": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "piPiEISW6X-g": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "tEoGqG4HIr5r": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "Eaw0yxx_yLqB": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "hB93d7TadwbI": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "Eke01Jd2iBQd": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "38WlcB1fpYEI": { "values": {}, "mixins": [], "__type": "RuleSet" },
+        "tHnmsHowBQws": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "X8c5kCxFbv-P": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "RkhOyhgY0wJZ": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "EVRkazzPuQ_x": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "XC5lxNukQ8_6": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "6LIN-b2_GV8F": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "1DXKW5XXyE19": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "99gyTT5Xyztu": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "jaA4gTN29QDp": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "kd4lbWNL3wDU": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "iE_wVPPFQ5vx": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "7UIpN8F41RKu": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "IUb0J5Fl29pY": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "cTtkUfQgUt-b": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "pa_d4q3nVvGZ": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "M12a_-PsGvmu": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "TWnrOhaQjhIM": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "GKqxv9TbhsOr": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "_-ezZNJ3HRM3": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "3cvyPQZBv7dh": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "7QNDXvMwxnQo": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "zELfQCZ1sC4V": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "pidZezwS7Qo9": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "91RNV4mDGyjf": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "hcJzT6Z7clV0": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "aG23mWS6W_1l": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "MhWeNMqMLDtz": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "4MOyC-dh7ARl": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "vFOUYpz3i4rz": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "7Mk7t826Bh0h": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "vgjrP6gnh_lR": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "dDbrhqnbK6F6": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "K2W9YTxTdln2": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "O-WHsMQZ4mZ3": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "ux01MgynpiKN": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "lYfJ_MlyeTVf": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "JzQRnOZor1IA": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "NDH0GG9WybsT": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "is948C8VW9hl": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "CJBOt24HWqvG": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "I_VG3Q6tBhT1": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "dz0g36lfFkuu": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "s6Orm6Crs0jO": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "IQy1lFwq9xph": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "8LdcfqOMvmeL": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "hI9qCRtBSIzg": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "hRGnX6JEZds0": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "-roHNTjCgQ7v": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "31rJmxdWIRQZ": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "piPiEISW6X-g": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "tEoGqG4HIr5r": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "Eaw0yxx_yLqB": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "hB93d7TadwbI": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "Eke01Jd2iBQd": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "38WlcB1fpYEI": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
         "2jLXJd5sNBOP": {
           "name": null,
           "component": {
@@ -9210,7 +9806,8 @@
             "position": "relative"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "XW2TiUsYm85q": {
           "param": { "__ref": "aERZn6kZAKWt" },
@@ -9500,7 +10097,8 @@
         "k8dB-PkLu2Jq": {
           "values": { "max-width": "100%", "position": "relative" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "R73vDAvBbZVD": {
           "tpl": [{ "__ref": "xGoFiO6nImoW" }],
@@ -9617,9 +10215,15 @@
             "height": "wrap"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
-        "ZBdUKiUlFVSO": { "values": {}, "mixins": [], "__type": "RuleSet" },
+        "ZBdUKiUlFVSO": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
         "aN_pAOyIasb_": {
           "asset": { "__ref": "gGwu7LpANEdW" },
           "__type": "ImageAssetRef"
@@ -9632,7 +10236,8 @@
             "height": "wrap"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "lodEmPX2mA2_": {
           "expr": { "__ref": "CRmPnArr04eT" },
@@ -10915,7 +11520,8 @@
             "width": "200px"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "_Ol1jYZqxIjq": {
           "name": "arg",
@@ -11272,7 +11878,8 @@
             "padding-left": "11px"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "Sr9mzaHK1M8J": {
           "values": {
@@ -11282,7 +11889,8 @@
             "border-left-color": "#C8C7C1"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "WbMySUxlCkg-": {
           "values": {
@@ -11293,7 +11901,8 @@
             "box-shadow": "0px 0px 0px 3px #96C7F2"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "mkNrIlDDiqnF": {
           "values": {
@@ -11304,10 +11913,21 @@
             "box-shadow": "0px 0px 0px 3px #96C7F2"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
-        "M4Scf0UWLnid": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "QnhDV7FVPChV": { "values": {}, "mixins": [], "__type": "RuleSet" },
+        "M4Scf0UWLnid": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "QnhDV7FVPChV": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
         "Pbz4O5D71SxM": {
           "values": {
             "background": "linear-gradient(#232320, #232320)",
@@ -11317,7 +11937,8 @@
             "border-left-color": "#717069"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "IfYOPUP0COEB": {
           "frame": { "__ref": "NIkCD4s3Rrvt" },
@@ -11433,27 +12054,49 @@
             "plasmic-display-none": "true"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "_DHT6bAyzUSn": {
           "code": "true",
           "fallback": null,
           "__type": "CustomCode"
         },
-        "KnQU81tFc4qT": { "values": {}, "mixins": [], "__type": "RuleSet" },
+        "KnQU81tFc4qT": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
         "UExwvFwj8Huv": {
           "values": { "plasmic-display-none": "false" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "tP5FhNkS8U9v": {
           "code": "true",
           "fallback": null,
           "__type": "CustomCode"
         },
-        "W_HHTfYteWoK": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "RhEpTwNIm0kp": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "60et-wWp3Oc1": { "values": {}, "mixins": [], "__type": "RuleSet" },
+        "W_HHTfYteWoK": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "RhEpTwNIm0kp": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "60et-wWp3Oc1": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
         "j8EKFEMXGfCs": {
           "variable": { "__ref": "YvkWXVOaoRIB" },
           "__type": "VarRef"
@@ -11498,9 +12141,15 @@
             "background": "linear-gradient(#FFFFFF00, #FFFFFF00)"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
-        "bKIXx2XThbLG": { "values": {}, "mixins": [], "__type": "RuleSet" },
+        "bKIXx2XThbLG": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
         "ahE2caCx3m4G": {
           "code": "true",
           "fallback": null,
@@ -11509,28 +12158,62 @@
         "EWLy1mYXQHsg": {
           "values": { "cursor": "not-allowed" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "EXHcKyXcuC7p": {
           "values": { "color": "#706F6C" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
-        "1Cg5ykT3HMm9": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "LHwp5-4CQKo7": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "xx-2ctnddsZM": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "9M353BxnAx8c": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "MUNEqc5rQJz0": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "n00W6ONDquBI": { "values": {}, "mixins": [], "__type": "RuleSet" },
+        "1Cg5ykT3HMm9": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "LHwp5-4CQKo7": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "xx-2ctnddsZM": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "9M353BxnAx8c": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "MUNEqc5rQJz0": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "n00W6ONDquBI": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
         "JnJUJ06aouQU": {
           "values": { "color": "#FFFFFF" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "FjeozSoKCMoY": {
           "values": { "color": "#C8C7C1" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "wiLJDtjqgdfn": {
           "tag": "svg",
@@ -11591,7 +12274,8 @@
             "plasmic-display-none": "true"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "F48-T85s88-B": {
           "code": "true",
@@ -11601,14 +12285,20 @@
         "xpuTDnDO4B4C": {
           "values": { "plasmic-display-none": "false" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "-VnVsMZd2DX2": {
           "code": "true",
           "fallback": null,
           "__type": "CustomCode"
         },
-        "rgS1fwXSXI_S": { "values": {}, "mixins": [], "__type": "RuleSet" },
+        "rgS1fwXSXI_S": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
         "NIkCD4s3Rrvt": {
           "uuid": "AUDIGcx4WE22",
           "width": 1180,
@@ -11782,16 +12472,23 @@
           "columnsConfig": null,
           "__type": "VariantSetting"
         },
-        "2ed7OM5wcN9T": { "values": {}, "mixins": [], "__type": "RuleSet" },
+        "2ed7OM5wcN9T": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
         "tgcIw0r0_FGx": {
           "values": { "color": "#90908C" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "v_q9X7nj5ZkC": {
           "values": { "color": "#FFFFFF" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "BZBbbBX9zF2M": {
           "variants": [{ "__ref": "AeF-ZcfsmqiI" }],
@@ -11804,16 +12501,23 @@
           "columnsConfig": null,
           "__type": "VariantSetting"
         },
-        "adKZlWEWRw33": { "values": {}, "mixins": [], "__type": "RuleSet" },
+        "adKZlWEWRw33": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
         "rYEVanKKe9rl": {
           "values": { "color": "#90908C" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "qSB1YUuHe1vH": {
           "values": { "color": "#FFFFFF" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "yE6YKGNxDm11": {
           "name": null,
@@ -11921,7 +12625,8 @@
             "height": "wrap"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "rTedpwS7IvoX": {
           "asset": { "__ref": "QRd8r00wuTBP" },
@@ -11935,7 +12640,8 @@
             "height": "wrap"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "Tr9U-RzSlNrx": {
           "variants": [{ "__ref": "VIosIrbQRYdm" }],
@@ -12037,7 +12743,8 @@
             "height": "wrap"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "v43CtRvxElV5": {
           "asset": { "__ref": "QRd8r00wuTBP" },
@@ -12051,16 +12758,57 @@
             "height": "wrap"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
-        "Fi9yhCLa9CIY": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "1V0VFgks4-QU": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "60IKpeBgqHf2": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "YTyBTj2ISybN": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "tHVPuK4I8DnY": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "u5xA6EKo0x4r": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "OYBKMNz_HTTW": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "722MeDSFvoCf": { "values": {}, "mixins": [], "__type": "RuleSet" },
+        "Fi9yhCLa9CIY": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "1V0VFgks4-QU": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "60IKpeBgqHf2": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "YTyBTj2ISybN": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "tHVPuK4I8DnY": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "u5xA6EKo0x4r": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "OYBKMNz_HTTW": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "722MeDSFvoCf": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
         "cfkVonQRMpD6": {
           "param": { "__ref": "82WAfWlbr6XD" },
           "expr": { "__ref": "zcY9Kki437w3" },
@@ -12272,7 +13020,7 @@
         "ppmsVxHk1e_-": { "text": ["interval"], "__type": "TemplatedString" }
       },
       "deps": ["a3a6a4ab-6ef7-466e-8589-a26854d0253c"],
-      "version": "251-add-data-tokens"
+      "version": "252-add-animations"
     }
   ]
 ]

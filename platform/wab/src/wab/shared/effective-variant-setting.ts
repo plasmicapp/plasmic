@@ -228,6 +228,7 @@ export class EffectiveVariantSetting {
         ...this.variantSettings.map((vs) => vs.rs.values)
       ),
       mixins: L.uniq(L.flatten(reversed.map((rs) => rs.mixins))),
+      animations: L.uniq(L.flatten(reversed.map((rs) => rs.animations || []))),
     });
   }
 

@@ -25,6 +25,7 @@ describe("walkDependencyTree", () => {
       styleTokenOverrides: [],
       dataTokens: [],
       mixins: [],
+      animationSequences: [],
       themes: [defaultTheme],
       activeTheme: defaultTheme,
       globalVariantGroups: [screenGroup],

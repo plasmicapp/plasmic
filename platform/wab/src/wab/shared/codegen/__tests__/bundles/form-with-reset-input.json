@@ -122,7 +122,8 @@
             "row-gap": "20px"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28832086": {
           "uuid": "nrg6X6pqtRC",
@@ -1065,7 +1066,8 @@
         "28832178": {
           "values": { "max-width": "100%", "position": "relative" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28832179": {
           "name": "arg",
@@ -1372,7 +1374,8 @@
             "padding-left": "11px"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28832204": {
           "values": {
@@ -1382,7 +1385,8 @@
             "border-left-color": "#C8C7C1"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28832205": {
           "values": {
@@ -1393,7 +1397,8 @@
             "box-shadow": "0px 0px 0px 3px #96C7F2"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28832206": {
           "values": {
@@ -1404,10 +1409,21 @@
             "box-shadow": "0px 0px 0px 3px #96C7F2"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
-        "28832207": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "28832208": { "values": {}, "mixins": [], "__type": "RuleSet" },
+        "28832207": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "28832208": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
         "28832209": {
           "values": {
             "background": "linear-gradient(#232320, #232320)",
@@ -1417,7 +1433,8 @@
             "border-left-color": "#717069"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28832210": {
           "frame": { "__ref": "28832311" },
@@ -1519,27 +1536,49 @@
             "plasmic-display-none": "true"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28832228": {
           "code": "true",
           "fallback": null,
           "__type": "CustomCode"
         },
-        "28832229": { "values": {}, "mixins": [], "__type": "RuleSet" },
+        "28832229": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
         "28832230": {
           "values": { "plasmic-display-none": "false" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28832231": {
           "code": "true",
           "fallback": null,
           "__type": "CustomCode"
         },
-        "28832232": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "28832233": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "28832234": { "values": {}, "mixins": [], "__type": "RuleSet" },
+        "28832232": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "28832233": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "28832234": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
         "28832235": {
           "code": "\"text\"",
           "fallback": null,
@@ -1567,9 +1606,15 @@
             "background": "linear-gradient(#FFFFFF00, #FFFFFF00)"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
-        "28832243": { "values": {}, "mixins": [], "__type": "RuleSet" },
+        "28832243": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
         "28832244": {
           "code": "true",
           "fallback": null,
@@ -1578,28 +1623,62 @@
         "28832245": {
           "values": { "cursor": "not-allowed" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28832246": {
           "values": { "color": "#706F6C" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
-        "28832247": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "28832248": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "28832249": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "28832250": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "28832251": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "28832252": { "values": {}, "mixins": [], "__type": "RuleSet" },
+        "28832247": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "28832248": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "28832249": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "28832250": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "28832251": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "28832252": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
         "28832253": {
           "values": { "color": "#FFFFFF" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28832254": {
           "values": { "color": "#C8C7C1" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28832255": {
           "tag": "svg",
@@ -1660,7 +1739,8 @@
             "plasmic-display-none": "true"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28832260": {
           "code": "true",
@@ -1670,14 +1750,20 @@
         "28832261": {
           "values": { "plasmic-display-none": "false" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28832262": {
           "code": "true",
           "fallback": null,
           "__type": "CustomCode"
         },
-        "28832263": { "values": {}, "mixins": [], "__type": "RuleSet" },
+        "28832263": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
         "28832311": {
           "uuid": "RsRSJv3tb0l",
           "width": 340,
@@ -1825,16 +1911,23 @@
           "columnsConfig": null,
           "__type": "VariantSetting"
         },
-        "28832322": { "values": {}, "mixins": [], "__type": "RuleSet" },
+        "28832322": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
         "28832323": {
           "values": { "color": "#90908C" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28832324": {
           "values": { "color": "#FFFFFF" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28832351": {
           "variants": [{ "__ref": "28832112" }],
@@ -1847,16 +1940,23 @@
           "columnsConfig": null,
           "__type": "VariantSetting"
         },
-        "28832352": { "values": {}, "mixins": [], "__type": "RuleSet" },
+        "28832352": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
         "28832353": {
           "values": { "color": "#90908C" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28832354": {
           "values": { "color": "#FFFFFF" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28832365": {
           "name": null,
@@ -1942,7 +2042,8 @@
             "height": "wrap"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28832379": {
           "asset": { "__ref": "28832087" },
@@ -1956,7 +2057,8 @@
             "height": "wrap"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28832383": {
           "variants": [{ "__ref": "39598007" }],
@@ -2046,14 +2148,54 @@
           "columnsConfig": null,
           "__type": "VariantSetting"
         },
-        "28832403": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "28832404": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "28832405": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "28832406": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "28832407": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "28832408": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "28832409": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "28832410": { "values": {}, "mixins": [], "__type": "RuleSet" },
+        "28832403": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "28832404": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "28832405": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "28832406": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "28832407": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "28832408": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "28832409": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "28832410": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
         "28832419": {
           "name": "TextInput 2",
           "component": { "__ref": "28832088" },
@@ -2187,7 +2329,8 @@
         "28832433": {
           "values": { "max-width": "100%", "position": "relative" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28832434": {
           "param": { "__ref": "28832095" },
@@ -2202,7 +2345,8 @@
         "28832436": {
           "values": { "max-width": "100%", "position": "relative" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28832477": {
           "uuid": "TnnZu-ZVloT",
@@ -3948,7 +4092,8 @@
         "28832628": {
           "values": { "max-width": "100%" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28832629": {
           "param": { "__ref": "28832484" },
@@ -4202,192 +4347,230 @@
             "column-gap": "8px"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28832646": {
           "values": { "box-shadow": "0px 0px 0px 3px #96C7F2" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28832647": {
           "values": { "box-shadow": "0px 0px 0px 3px #96C7F2" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28832648": {
           "values": { "cursor": "not-allowed", "opacity": "0.6" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28832649": {
           "values": { "padding-right": "16px" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28832650": {
           "values": { "padding-left": "16px" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28832651": {
           "values": { "background": "linear-gradient(#282826, #282826)" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28832652": {
           "values": { "background": "linear-gradient(#2E2E2B, #2E2E2B)" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28832653": {
           "values": { "background": "linear-gradient(#EDF6FF, #EDF6FF)" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28832654": {
           "values": { "background": "linear-gradient(#E1F0FF, #E1F0FF)" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28832655": {
           "values": { "background": "linear-gradient(#CEE7FE, #CEE7FE)" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28832656": {
           "values": { "background": "linear-gradient(#E9F9EE, #E9F9EE)" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28832657": {
           "values": { "background": "linear-gradient(#CCEBD7, #CCEBD7)" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28832658": {
           "values": { "background": "linear-gradient(#DDF3E4, #DDF3E4)" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28832659": {
           "values": { "background": "linear-gradient(#F5D90A, #F5D90A)" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28832660": {
           "values": { "background": "linear-gradient(#FFEF5C, #FFEF5C)" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28832661": {
           "values": { "background": "linear-gradient(#F0C000, #F0C000)" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28832662": {
           "values": { "background": "linear-gradient(#E54D2E, #E54D2E)" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28832663": {
           "values": { "background": "linear-gradient(#EC5E41, #EC5E41)" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28832664": {
           "values": { "background": "linear-gradient(#F16A50, #F16A50)" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28832665": {
           "values": { "background": "linear-gradient(#FFFBD1, #FFFBD1)" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28832666": {
           "values": { "background": "linear-gradient(#FEF2A4, #FEF2A4)" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28832667": {
           "values": { "background": "linear-gradient(#FFF8BB, #FFF8BB)" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28832668": {
           "values": { "background": "linear-gradient(#FFF0EE, #FFF0EE)" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28832669": {
           "values": { "background": "linear-gradient(#FDD8D3, #FDD8D3)" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28832670": {
           "values": { "background": "linear-gradient(#FFE6E2, #FFE6E2)" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28832671": {
           "values": { "background": "linear-gradient(#EEEEEC, #EEEEEC)" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28832672": {
           "values": { "background": "linear-gradient(#E9E9E6, #E9E9E6)" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28832673": {
           "values": { "background": "linear-gradient(#E3E3E0, #E3E3E0)" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28832674": {
           "values": { "background": "linear-gradient(#0091FF, #0091FF)" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28832675": {
           "values": { "background": "linear-gradient(#369EFF, #369EFF)" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28832676": {
           "values": { "background": "linear-gradient(#52A9FF, #52A9FF)" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28832677": {
           "values": { "background": "linear-gradient(#30A46C, #30A46C)" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28832678": {
           "values": { "background": "linear-gradient(#3CB179, #3CB179)" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28832679": {
           "values": { "background": "linear-gradient(#4CC38A, #4CC38A)" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28832680": {
           "values": { "background": "linear-gradient(#717069, #717069)" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28832681": {
           "values": { "background": "linear-gradient(#7F7E77, #7F7E77)" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28832682": {
           "values": { "background": "linear-gradient(#A1A09A, #A1A09A)" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28832683": {
           "values": {
@@ -4397,11 +4580,27 @@
             "padding-left": "16px"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
-        "28832684": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "28832685": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "28832686": { "values": {}, "mixins": [], "__type": "RuleSet" },
+        "28832684": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "28832685": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "28832686": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
         "28832687": {
           "values": {
             "border-top-left-radius": "999px",
@@ -4413,33 +4612,44 @@
             "min-width": "100px"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28832688": {
           "values": { "padding-left": "16px" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28832689": {
           "values": { "padding-right": "16px" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
-        "28832690": { "values": {}, "mixins": [], "__type": "RuleSet" },
+        "28832690": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
         "28832691": {
           "values": { "background": "linear-gradient(#FFFFFF00, #FFFFFF00)" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28832692": {
           "values": { "background": "linear-gradient(#E9E9E6, #E9E9E6)" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28832693": {
           "values": { "background": "linear-gradient(#E3E3E0, #E3E3E0)" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28832694": {
           "values": {
@@ -4453,7 +4663,8 @@
             "border-bottom-left-radius": "50%"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28832695": {
           "values": {
@@ -4463,24 +4674,33 @@
             "padding-left": "6px"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28832696": {
           "values": { "background": "linear-gradient(#FFFFFF00, #FFFFFF00)" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28832697": {
           "values": { "background": "linear-gradient(#FFFFFF00, #FFFFFF00)" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28832698": {
           "values": { "background": "linear-gradient(#FFFFFF00, #FFFFFF00)" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
-        "28832699": { "values": {}, "mixins": [], "__type": "RuleSet" },
+        "28832699": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
         "28832700": {
           "values": {
             "padding-top": "0px",
@@ -4489,22 +4709,26 @@
             "padding-left": "0px"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28832701": {
           "values": { "background": "linear-gradient(#FFFFFF, #FFFFFF)" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28832702": {
           "values": { "background": "linear-gradient(#FFEF5C, #FFEF5C)" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28832703": {
           "values": { "background": "linear-gradient(#F0C000, #F0C000)" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28832704": {
           "values": {
@@ -4514,7 +4738,8 @@
             "border-bottom-left-radius": "0px"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28832705": {
           "frame": { "__ref": "28832940" },
@@ -4967,7 +5192,8 @@
             "justify-content": "flex-start"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28832781": {
           "code": "false",
@@ -4977,15 +5203,26 @@
         "28832782": {
           "values": { "plasmic-display-none": "false" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28832783": {
           "code": "true",
           "fallback": null,
           "__type": "CustomCode"
         },
-        "28832784": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "28832785": { "values": {}, "mixins": [], "__type": "RuleSet" },
+        "28832784": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "28832785": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
         "28832786": {
           "tag": "div",
           "name": null,
@@ -5298,12 +5535,33 @@
             "justify-content": "flex-start"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
-        "28832814": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "28832815": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "28832816": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "28832817": { "values": {}, "mixins": [], "__type": "RuleSet" },
+        "28832814": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "28832815": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "28832816": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "28832817": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
         "28832818": {
           "tag": "svg",
           "name": null,
@@ -5469,7 +5727,8 @@
             "justify-content": "flex-start"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28832833": {
           "code": "false",
@@ -5479,15 +5738,26 @@
         "28832834": {
           "values": { "plasmic-display-none": "false" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28832835": {
           "code": "true",
           "fallback": null,
           "__type": "CustomCode"
         },
-        "28832836": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "28832837": { "values": {}, "mixins": [], "__type": "RuleSet" },
+        "28832836": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "28832837": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
         "28832940": {
           "uuid": "p5cmI43q_1w",
           "width": 340,
@@ -6437,64 +6707,86 @@
         "28832999": {
           "values": { "color": "#EDEDEC" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
-        "28833000": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "28833001": { "values": {}, "mixins": [], "__type": "RuleSet" },
+        "28833000": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "28833001": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
         "28833002": {
           "values": { "color": "#006ADC" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28833003": {
           "values": { "color": "#18794E" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28833004": {
           "values": { "color": "#946800" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28833005": {
           "values": { "color": "#CA3214" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28833006": {
           "values": { "color": "#706F6C" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28833007": {
           "values": { "color": "#35290F" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28833008": {
           "values": { "color": "#0091FF" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28833009": {
           "values": { "color": "#0081F1" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28833010": {
           "values": { "color": "#006ADC" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28833011": {
           "values": { "color": "#1B1B18" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28833012": {
           "values": { "color": "#35290F" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28833019": {
           "variants": [{ "__ref": "28832498" }],
@@ -6514,92 +6806,158 @@
             "white-space": "nowrap"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
-        "28833021": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "28833022": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "28833023": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "28833024": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "28833025": { "values": {}, "mixins": [], "__type": "RuleSet" },
+        "28833021": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "28833022": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "28833023": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "28833024": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "28833025": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
         "28833026": {
           "values": { "color": "#006ADC" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28833027": {
           "values": { "color": "#18794E" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28833028": {
           "values": { "color": "#35290F" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28833029": {
           "values": { "color": "#946800" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28833030": {
           "values": { "color": "#CA3214" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28833031": {
           "values": { "color": "#1B1B18" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28833032": {
           "values": { "color": "#FFFFFF" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28833033": {
           "values": { "color": "#FFFFFF" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28833034": {
           "values": { "color": "#FFFFFF" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28833035": {
           "values": { "color": "#FFFFFF" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
-        "28833036": { "values": {}, "mixins": [], "__type": "RuleSet" },
+        "28833036": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
         "28833037": {
           "values": { "color": "#1B1B18" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28833038": {
           "values": { "color": "#0091FF" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28833039": {
           "values": { "color": "#0081F1", "text-decoration-line": "underline" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28833040": {
           "values": { "color": "#006ADC" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
-        "28833041": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "28833042": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "28833043": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "28833044": { "values": {}, "mixins": [], "__type": "RuleSet" },
+        "28833041": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "28833042": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "28833043": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "28833044": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
         "28833045": {
           "values": { "color": "#1B1B18" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28833051": {
           "variants": [{ "__ref": "28832498" }],
@@ -6615,63 +6973,80 @@
         "28833052": {
           "values": { "color": "#EDEDEC" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
-        "28833053": { "values": {}, "mixins": [], "__type": "RuleSet" },
+        "28833053": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
         "28833054": {
           "values": { "color": "#006ADC" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28833055": {
           "values": { "color": "#18794E" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28833056": {
           "values": { "color": "#946800" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28833057": {
           "values": { "color": "#CA3214" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28833058": {
           "values": { "color": "#706F6C" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28833059": {
           "values": { "color": "#35290F" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28833060": {
           "values": { "color": "#0091FF" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28833061": {
           "values": { "color": "#0081F1" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28833062": {
           "values": { "color": "#006ADC" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28833063": {
           "values": { "color": "#1B1B18" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28833064": {
           "values": { "color": "#35290F" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28833071": {
           "name": null,
@@ -7180,9 +7555,15 @@
             "height": "wrap"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
-        "28833143": { "values": {}, "mixins": [], "__type": "RuleSet" },
+        "28833143": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
         "28833144": { "markers": [], "text": "Button", "__type": "RawText" },
         "28833164": {
           "asset": { "__ref": "28832477" },
@@ -7196,7 +7577,8 @@
             "height": "wrap"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28833178": {
           "variants": [{ "__ref": "39598007" }],
@@ -7803,61 +8185,336 @@
           "columnsConfig": null,
           "__type": "VariantSetting"
         },
-        "28833247": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "28833248": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "28833249": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "28833250": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "28833251": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "28833252": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "28833253": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "28833254": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "28833255": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "28833256": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "28833257": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "28833258": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "28833259": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "28833260": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "28833261": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "28833262": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "28833263": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "28833264": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "28833265": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "28833266": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "28833267": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "28833268": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "28833269": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "28833270": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "28833271": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "28833272": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "28833273": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "28833274": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "28833275": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "28833276": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "28833277": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "28833278": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "28833279": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "28833280": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "28833281": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "28833282": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "28833283": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "28833284": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "28833285": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "28833286": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "28833287": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "28833288": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "28833289": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "28833290": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "28833291": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "28833292": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "28833293": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "28833294": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "28833295": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "28833296": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "28833297": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "28833298": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "28833299": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "28833300": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "28833301": { "values": {}, "mixins": [], "__type": "RuleSet" },
+        "28833247": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "28833248": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "28833249": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "28833250": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "28833251": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "28833252": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "28833253": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "28833254": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "28833255": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "28833256": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "28833257": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "28833258": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "28833259": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "28833260": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "28833261": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "28833262": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "28833263": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "28833264": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "28833265": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "28833266": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "28833267": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "28833268": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "28833269": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "28833270": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "28833271": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "28833272": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "28833273": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "28833274": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "28833275": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "28833276": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "28833277": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "28833278": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "28833279": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "28833280": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "28833281": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "28833282": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "28833283": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "28833284": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "28833285": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "28833286": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "28833287": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "28833288": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "28833289": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "28833290": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "28833291": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "28833292": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "28833293": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "28833294": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "28833295": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "28833296": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "28833297": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "28833298": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "28833299": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "28833300": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "28833301": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
         "28833310": {
           "tag": "div",
           "name": null,
@@ -7994,7 +8651,8 @@
             "plasmic-display-none": "false"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28833332": {
           "variants": [{ "__ref": "63011055" }],
@@ -8074,7 +8732,8 @@
             "height": "wrap"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28833349": {
           "asset": { "__ref": "28832087" },
@@ -8088,7 +8747,8 @@
             "height": "wrap"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28833351": {
           "asset": { "__ref": "28832086" },
@@ -8102,7 +8762,8 @@
             "height": "wrap"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28833353": {
           "asset": { "__ref": "28832087" },
@@ -8116,7 +8777,8 @@
             "height": "wrap"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28833355": {
           "asset": { "__ref": "28832086" },
@@ -8130,7 +8792,8 @@
             "height": "wrap"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28833357": {
           "asset": { "__ref": "28832087" },
@@ -8144,7 +8807,8 @@
             "height": "wrap"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28833400": {
           "tag": "div",
@@ -8227,7 +8891,8 @@
             "plasmic-display-none": "false"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28833409": {
           "code": "true",
@@ -8279,9 +8944,15 @@
             "height": "wrap"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
-        "28833421": { "values": {}, "mixins": [], "__type": "RuleSet" },
+        "28833421": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
         "28833423": {
           "asset": { "__ref": "28832477" },
           "__type": "ImageAssetRef"
@@ -8294,7 +8965,8 @@
             "height": "wrap"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28833433": { "markers": [], "text": "Submit", "__type": "RawText" },
         "28833434": {
@@ -8364,7 +9036,8 @@
             "plasmic-display-none": "false"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "28833490": {
           "code": "true",
@@ -8418,7 +9091,8 @@
         "37357017": {
           "values": { "position": "relative", "text-align": "center" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "37357021": { "markers": [], "text": "Athletes", "__type": "RawText" },
         "39598001": {
@@ -8467,7 +9141,8 @@
           "codeLibraries": [],
           "__type": "Site",
           "styleTokenOverrides": [],
-          "dataTokens": []
+          "dataTokens": [],
+          "animationSequences": []
         },
         "39598002": {
           "name": "Custom arena 1",
@@ -8564,7 +9239,8 @@
             "text-overflow": "clip"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "39598024": {
           "selector": "h1",
@@ -8590,7 +9266,8 @@
             "line-height": "1"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "39598033": {
           "selector": "h2",
@@ -8616,7 +9293,8 @@
             "line-height": "1.1"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "39598042": {
           "selector": "h3",
@@ -8642,7 +9320,8 @@
             "line-height": "1.2"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "39598051": {
           "selector": "h4",
@@ -8668,7 +9347,8 @@
             "line-height": "1.3"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "39598060": {
           "selector": "h5",
@@ -8694,7 +9374,8 @@
             "line-height": "1.5"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "39598069": {
           "selector": "h6",
@@ -8719,7 +9400,8 @@
             "line-height": "1.5"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "39598077": {
           "selector": "a",
@@ -8738,7 +9420,8 @@
         "39598079": {
           "values": { "color": "#0070f3" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "39598081": {
           "selector": "a:hover",
@@ -8757,7 +9440,8 @@
         "39598083": {
           "values": { "color": "#3291ff" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "39598085": {
           "selector": "blockquote",
@@ -8782,7 +9466,8 @@
             "padding-left": "10px"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "39598093": {
           "selector": "code",
@@ -8824,7 +9509,8 @@
             "padding-top": "1px"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "39598118": {
           "selector": "pre",
@@ -8866,7 +9552,8 @@
             "padding-top": "3px"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "39598143": {
           "selector": "ol",
@@ -8894,7 +9581,8 @@
             "list-style-type": "decimal"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "39598154": {
           "selector": "ul",
@@ -8922,7 +9610,8 @@
             "list-style-type": "disc"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "54435001": {
           "tag": "div",
@@ -8959,7 +9648,8 @@
             "width": "stretch"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "54435009": {
           "tag": "div",
@@ -8995,7 +9685,8 @@
             "width": "stretch"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "54435017": {
           "uuid": "2mQiTRDLCZ",
@@ -9101,7 +9792,8 @@
             "border-left-width": "1px"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "54435027": {
           "frame": { "__ref": "54435033" },
@@ -9145,7 +9837,12 @@
           "columnsConfig": null,
           "__type": "VariantSetting"
         },
-        "54435036": { "values": {}, "mixins": [], "__type": "RuleSet" },
+        "54435036": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
         "54435037": {
           "tag": "div",
           "name": null,
@@ -9183,7 +9880,8 @@
             "padding-left": "8px"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "54435046": {
           "type": { "__ref": "54435048" },
@@ -9240,7 +9938,8 @@
         "54435052": {
           "values": { "position": "relative", "font-weight": "700" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "54435055": {
           "type": { "__ref": "54435057" },
@@ -9331,7 +10030,8 @@
             "background": "linear-gradient(#EDEDED, #EDEDED)"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "54435068": {
           "code": "true",
@@ -9387,7 +10087,8 @@
             "width": "50px"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "54435206": {
           "uuid": "LwTov_WTwD",
@@ -9493,7 +10194,8 @@
             "background": "linear-gradient(#FFFFFF, #FFFFFF)"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "54435216": {
           "frame": { "__ref": "54435222" },
@@ -9537,7 +10239,12 @@
           "columnsConfig": null,
           "__type": "VariantSetting"
         },
-        "54435225": { "values": {}, "mixins": [], "__type": "RuleSet" },
+        "54435225": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
         "54435239": {
           "variantGroup": { "__ref": "54435240" },
           "param": { "__ref": "54435241" },
@@ -9643,7 +10350,12 @@
           "columnsConfig": null,
           "__type": "VariantSetting"
         },
-        "54435250": { "values": {}, "mixins": [], "__type": "RuleSet" },
+        "54435250": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
         "54435251": {
           "variants": [{ "__ref": "54435243" }],
           "args": [],
@@ -9675,7 +10387,8 @@
             "background": "linear-gradient(#1677FF, #1677FF)"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "54435254": {
           "variants": [{ "__ref": "54435209" }],
@@ -9716,7 +10429,8 @@
             "background": "linear-gradient(#FFFFFF, #FFFFFF)"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "54435257": {
           "code": "true",
@@ -9726,7 +10440,8 @@
         "54435258": {
           "values": { "plasmic-display-none": "false" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "54435259": {
           "code": "true",
@@ -9876,7 +10591,8 @@
             "width": "stretch"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "54435320": {
           "param": { "__ref": "54435046" },
@@ -10013,7 +10729,8 @@
             "plasmic-display-none": "false"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "54435366": {
           "code": "true",
@@ -10140,7 +10857,8 @@
             "cursor": "pointer"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "54435391": {
           "code": "true",
@@ -10168,7 +10886,8 @@
             "width": "50px"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "54435394": {
           "variants": [{ "__ref": "54435020" }],
@@ -10194,7 +10913,8 @@
             "padding-left": "8px"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "54435396": {
           "element": { "__ref": "54435426" },
@@ -10229,7 +10949,8 @@
         "54435407": {
           "values": { "max-width": "100%", "position": "relative" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "54435414": {
           "code": "(`${currentHeaderItem.rowId}-cell`)",
@@ -10239,7 +10960,8 @@
         "54435415": {
           "values": { "position": "relative" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "54435416": {
           "expr": { "__ref": "54435437" },
@@ -10768,7 +11490,8 @@
         "63011039": {
           "values": { "display": "flex", "flex-direction": "row" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "63011040": {
           "name": "arg",
@@ -10791,10 +11514,16 @@
         "63011042": {
           "values": { "display": "flex", "flex-direction": "row" },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "63011045": { "name": "any", "__type": "AnyType" },
-        "63011046": { "values": {}, "mixins": [], "__type": "RuleSet" },
+        "63011046": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
         "63011052": {
           "uuid": "KDitCfOQr7",
           "name": "Homepage",
@@ -10914,7 +11643,8 @@
             "row-gap": "20px"
           },
           "mixins": [],
-          "__type": "RuleSet"
+          "__type": "RuleSet",
+          "animations": []
         },
         "63011061": {
           "frame": { "__ref": "63011068" },
@@ -11000,8 +11730,18 @@
           "columnsConfig": null,
           "__type": "VariantSetting"
         },
-        "63011074": { "values": {}, "mixins": [], "__type": "RuleSet" },
-        "63011075": { "values": {}, "mixins": [], "__type": "RuleSet" },
+        "63011074": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
+        "63011075": {
+          "values": {},
+          "mixins": [],
+          "__type": "RuleSet",
+          "animations": []
+        },
         "63011076": {
           "type": { "__ref": "63011077" },
           "state": { "__ref": "28832038" },
@@ -11628,7 +12368,7 @@
         }
       },
       "deps": [],
-      "version": "251-add-data-tokens"
+      "version": "252-add-animations"
     }
   ]
 ]

@@ -12,6 +12,7 @@ exports[`model-util works 1`] = `
     "__iidRef": "914",
     "__uuid": undefined,
   },
+  "animationSequences": [],
   "arenas": [
     {
       "__iid": "845",
@@ -44,6 +45,7 @@ exports[`model-util works 1`] = `
                 "rs": {
                   "__iid": "851",
                   "__type": "RuleSet",
+                  "animations": [],
                   "mixins": [],
                   "values": {},
                 },
@@ -102,6 +104,7 @@ exports[`model-util works 1`] = `
                 "rs": {
                   "__iid": "855",
                   "__type": "RuleSet",
+                  "animations": [],
                   "mixins": [],
                   "values": {},
                 },
@@ -162,6 +165,7 @@ exports[`model-util works 1`] = `
                 "rs": {
                   "__iid": "859",
                   "__type": "RuleSet",
+                  "animations": [],
                   "mixins": [],
                   "values": {},
                 },
@@ -223,6 +227,7 @@ exports[`model-util works 1`] = `
                 "rs": {
                   "__iid": "863",
                   "__type": "RuleSet",
+                  "animations": [],
                   "mixins": [],
                   "values": {},
                 },
@@ -281,6 +286,7 @@ exports[`model-util works 1`] = `
                 "rs": {
                   "__iid": "867",
                   "__type": "RuleSet",
+                  "animations": [],
                   "mixins": [],
                   "values": {},
                 },
@@ -341,6 +347,7 @@ exports[`model-util works 1`] = `
                 "rs": {
                   "__iid": "871",
                   "__type": "RuleSet",
+                  "animations": [],
                   "mixins": [],
                   "values": {},
                 },
@@ -406,6 +413,7 @@ exports[`model-util works 1`] = `
                 "rs": {
                   "__iid": "876",
                   "__type": "RuleSet",
+                  "animations": [],
                   "mixins": [],
                   "values": {},
                 },
@@ -469,6 +477,7 @@ exports[`model-util works 1`] = `
                 "rs": {
                   "__iid": "880",
                   "__type": "RuleSet",
+                  "animations": [],
                   "mixins": [],
                   "values": {},
                 },
@@ -532,6 +541,7 @@ exports[`model-util works 1`] = `
                 "rs": {
                   "__iid": "884",
                   "__type": "RuleSet",
+                  "animations": [],
                   "mixins": [],
                   "values": {},
                 },
@@ -595,6 +605,7 @@ exports[`model-util works 1`] = `
                 "rs": {
                   "__iid": "888",
                   "__type": "RuleSet",
+                  "animations": [],
                   "mixins": [],
                   "values": {},
                 },
@@ -658,6 +669,7 @@ exports[`model-util works 1`] = `
                 "rs": {
                   "__iid": "892",
                   "__type": "RuleSet",
+                  "animations": [],
                   "mixins": [],
                   "values": {},
                 },
@@ -855,6 +867,7 @@ exports[`model-util works 1`] = `
                 "rs": {
                   "__iid": "11",
                   "__type": "RuleSet",
+                  "animations": [],
                   "mixins": [],
                   "values": {
                     "align-self": "auto",
@@ -892,6 +905,7 @@ exports[`model-util works 1`] = `
                 "rs": {
                   "__iid": "29",
                   "__type": "RuleSet",
+                  "animations": [],
                   "mixins": [],
                   "values": {
                     "color": "var(--token-a-AKFYtMSR5)",
@@ -941,6 +955,7 @@ exports[`model-util works 1`] = `
                         "rs": {
                           "__iid": "138",
                           "__type": "RuleSet",
+                          "animations": [],
                           "mixins": [],
                           "values": {
                             "align-self": "stretch",
@@ -990,6 +1005,7 @@ exports[`model-util works 1`] = `
                         "rs": {
                           "__iid": "152",
                           "__type": "RuleSet",
+                          "animations": [],
                           "mixins": [],
                           "values": {
                             "align-self": "stretch",
@@ -1015,6 +1031,7 @@ exports[`model-util works 1`] = `
                         "rs": {
                           "__iid": "156",
                           "__type": "RuleSet",
+                          "animations": [],
                           "mixins": [],
                           "values": {},
                         },
@@ -1085,6 +1102,7 @@ exports[`model-util works 1`] = `
                                           "rs": {
                                             "__iid": "419",
                                             "__type": "RuleSet",
+                                            "animations": [],
                                             "mixins": [],
                                             "values": {},
                                           },
@@ -1118,6 +1136,7 @@ exports[`model-util works 1`] = `
                             "rs": {
                               "__iid": "421",
                               "__type": "RuleSet",
+                              "animations": [],
                               "mixins": [],
                               "values": {
                                 "align-self": "stretch",
@@ -1143,6 +1162,7 @@ exports[`model-util works 1`] = `
                             "rs": {
                               "__iid": "425",
                               "__type": "RuleSet",
+                              "animations": [],
                               "mixins": [],
                               "values": {},
                             },
@@ -1165,6 +1185,7 @@ exports[`model-util works 1`] = `
                             "rs": {
                               "__iid": "427",
                               "__type": "RuleSet",
+                              "animations": [],
                               "mixins": [],
                               "values": {},
                             },
@@ -1249,6 +1270,7 @@ exports[`model-util works 1`] = `
                                           "rs": {
                                             "__iid": "436",
                                             "__type": "RuleSet",
+                                            "animations": [],
                                             "mixins": [],
                                             "values": {},
                                           },
@@ -1282,6 +1304,7 @@ exports[`model-util works 1`] = `
                             "rs": {
                               "__iid": "438",
                               "__type": "RuleSet",
+                              "animations": [],
                               "mixins": [],
                               "values": {
                                 "align-self": "stretch",
@@ -1307,6 +1330,7 @@ exports[`model-util works 1`] = `
                             "rs": {
                               "__iid": "442",
                               "__type": "RuleSet",
+                              "animations": [],
                               "mixins": [],
                               "values": {},
                             },
@@ -1391,6 +1415,7 @@ exports[`model-util works 1`] = `
                                           "rs": {
                                             "__iid": "451",
                                             "__type": "RuleSet",
+                                            "animations": [],
                                             "mixins": [],
                                             "values": {},
                                           },
@@ -1424,6 +1449,7 @@ exports[`model-util works 1`] = `
                             "rs": {
                               "__iid": "453",
                               "__type": "RuleSet",
+                              "animations": [],
                               "mixins": [],
                               "values": {
                                 "align-self": "stretch",
@@ -1493,6 +1519,7 @@ exports[`model-util works 1`] = `
                                           "rs": {
                                             "__iid": "462",
                                             "__type": "RuleSet",
+                                            "animations": [],
                                             "mixins": [],
                                             "values": {},
                                           },
@@ -1526,6 +1553,7 @@ exports[`model-util works 1`] = `
                             "rs": {
                               "__iid": "464",
                               "__type": "RuleSet",
+                              "animations": [],
                               "mixins": [],
                               "values": {
                                 "align-self": "stretch",
@@ -1566,6 +1594,7 @@ exports[`model-util works 1`] = `
                         "rs": {
                           "__iid": "468",
                           "__type": "RuleSet",
+                          "animations": [],
                           "mixins": [],
                           "values": {
                             "align-items": "stretch",
@@ -1599,6 +1628,7 @@ exports[`model-util works 1`] = `
                         "rs": {
                           "__iid": "475",
                           "__type": "RuleSet",
+                          "animations": [],
                           "mixins": [],
                           "values": {},
                         },
@@ -1683,6 +1713,7 @@ exports[`model-util works 1`] = `
                                       "rs": {
                                         "__iid": "730",
                                         "__type": "RuleSet",
+                                        "animations": [],
                                         "mixins": [],
                                         "values": {},
                                       },
@@ -1716,6 +1747,7 @@ exports[`model-util works 1`] = `
                         "rs": {
                           "__iid": "732",
                           "__type": "RuleSet",
+                          "animations": [],
                           "mixins": [],
                           "values": {
                             "align-self": "stretch",
@@ -1751,6 +1783,7 @@ exports[`model-util works 1`] = `
                         "rs": {
                           "__iid": "741",
                           "__type": "RuleSet",
+                          "animations": [],
                           "mixins": [],
                           "values": {},
                         },
@@ -1788,6 +1821,7 @@ exports[`model-util works 1`] = `
                     "rs": {
                       "__iid": "744",
                       "__type": "RuleSet",
+                      "animations": [],
                       "mixins": [
                         {
                           "__iidRef": "757",
@@ -1828,6 +1862,7 @@ exports[`model-util works 1`] = `
                     "rs": {
                       "__iid": "761",
                       "__type": "RuleSet",
+                      "animations": [],
                       "mixins": [
                         {
                           "__iidRef": "763",
@@ -1879,6 +1914,7 @@ exports[`model-util works 1`] = `
                         "rs": {
                           "__iid": "769",
                           "__type": "RuleSet",
+                          "animations": [],
                           "mixins": [
                             {
                               "__iidRef": "757",
@@ -1915,6 +1951,7 @@ exports[`model-util works 1`] = `
                         "rs": {
                           "__iid": "779",
                           "__type": "RuleSet",
+                          "animations": [],
                           "mixins": [
                             {
                               "__iidRef": "763",
@@ -1962,6 +1999,7 @@ exports[`model-util works 1`] = `
                         "rs": {
                           "__iid": "783",
                           "__type": "RuleSet",
+                          "animations": [],
                           "mixins": [
                             {
                               "__iidRef": "757",
@@ -1999,6 +2037,7 @@ exports[`model-util works 1`] = `
                         "rs": {
                           "__iid": "794",
                           "__type": "RuleSet",
+                          "animations": [],
                           "mixins": [
                             {
                               "__iidRef": "763",
@@ -2043,6 +2082,7 @@ exports[`model-util works 1`] = `
                     "rs": {
                       "__iid": "797",
                       "__type": "RuleSet",
+                      "animations": [],
                       "mixins": [],
                       "values": {
                         "align-self": "auto",
@@ -2082,6 +2122,7 @@ exports[`model-util works 1`] = `
                     "rs": {
                       "__iid": "810",
                       "__type": "RuleSet",
+                      "animations": [],
                       "mixins": [],
                       "values": {},
                     },
@@ -2119,6 +2160,7 @@ exports[`model-util works 1`] = `
                 "rs": {
                   "__iid": "813",
                   "__type": "RuleSet",
+                  "animations": [],
                   "mixins": [
                     {
                       "__iidRef": "822",
@@ -2155,6 +2197,7 @@ exports[`model-util works 1`] = `
                 "rs": {
                   "__iid": "826",
                   "__type": "RuleSet",
+                  "animations": [],
                   "mixins": [
                     {
                       "__iidRef": "827",
@@ -2194,6 +2237,7 @@ exports[`model-util works 1`] = `
             "rs": {
               "__iid": "831",
               "__type": "RuleSet",
+              "animations": [],
               "mixins": [],
               "values": {
                 "align-items": "center",
@@ -2225,6 +2269,7 @@ exports[`model-util works 1`] = `
             "rs": {
               "__iid": "841",
               "__type": "RuleSet",
+              "animations": [],
               "mixins": [],
               "values": {},
             },
@@ -2247,6 +2292,7 @@ exports[`model-util works 1`] = `
             "rs": {
               "__iid": "843",
               "__type": "RuleSet",
+              "animations": [],
               "mixins": [],
               "values": {
                 "background": "linear-gradient(var(--token-WuIxxo7bvas), var(--token-WuIxxo7bvas))",
@@ -2482,6 +2528,7 @@ exports[`model-util works 1`] = `
                     "rs": {
                       "__iid": "45",
                       "__type": "RuleSet",
+                      "animations": [],
                       "mixins": [],
                       "values": {
                         "align-self": "auto",
@@ -2518,6 +2565,7 @@ exports[`model-util works 1`] = `
                     "rs": {
                       "__iid": "60",
                       "__type": "RuleSet",
+                      "animations": [],
                       "mixins": [],
                       "values": {},
                     },
@@ -2540,6 +2588,7 @@ exports[`model-util works 1`] = `
                     "rs": {
                       "__iid": "63",
                       "__type": "RuleSet",
+                      "animations": [],
                       "mixins": [],
                       "values": {
                         "opacity": "0.5",
@@ -2571,6 +2620,7 @@ exports[`model-util works 1`] = `
                     "rs": {
                       "__iid": "67",
                       "__type": "RuleSet",
+                      "animations": [],
                       "mixins": [],
                       "values": {},
                     },
@@ -2608,6 +2658,7 @@ exports[`model-util works 1`] = `
                 "rs": {
                   "__iid": "69",
                   "__type": "RuleSet",
+                  "animations": [],
                   "mixins": [],
                   "values": {
                     "align-items": "center",
@@ -2640,6 +2691,7 @@ exports[`model-util works 1`] = `
                 "rs": {
                   "__iid": "80",
                   "__type": "RuleSet",
+                  "animations": [],
                   "mixins": [],
                   "values": {},
                 },
@@ -2693,6 +2745,7 @@ exports[`model-util works 1`] = `
                 "rs": {
                   "__iid": "85",
                   "__type": "RuleSet",
+                  "animations": [],
                   "mixins": [],
                   "values": {
                     "background": "linear-gradient(rgba(255,255,255,0), rgba(255,255,255,0))",
@@ -2731,6 +2784,7 @@ exports[`model-util works 1`] = `
                 "rs": {
                   "__iid": "108",
                   "__type": "RuleSet",
+                  "animations": [],
                   "mixins": [],
                   "values": {},
                 },
@@ -2753,6 +2807,7 @@ exports[`model-util works 1`] = `
                 "rs": {
                   "__iid": "110",
                   "__type": "RuleSet",
+                  "animations": [],
                   "mixins": [],
                   "values": {},
                 },
@@ -2782,6 +2837,7 @@ exports[`model-util works 1`] = `
                 "rs": {
                   "__iid": "117",
                   "__type": "RuleSet",
+                  "animations": [],
                   "mixins": [],
                   "values": {
                     "color": "var(--token-ZFzJeGwT7yS)",
@@ -2818,6 +2874,7 @@ exports[`model-util works 1`] = `
             "rs": {
               "__iid": "123",
               "__type": "RuleSet",
+              "animations": [],
               "mixins": [],
               "values": {
                 "align-items": "center",
@@ -2847,6 +2904,7 @@ exports[`model-util works 1`] = `
             "rs": {
               "__iid": "131",
               "__type": "RuleSet",
+              "animations": [],
               "mixins": [],
               "values": {
                 "width": "100%",
@@ -2871,6 +2929,7 @@ exports[`model-util works 1`] = `
             "rs": {
               "__iid": "134",
               "__type": "RuleSet",
+              "animations": [],
               "mixins": [],
               "values": {},
             },
@@ -2893,6 +2952,7 @@ exports[`model-util works 1`] = `
             "rs": {
               "__iid": "136",
               "__type": "RuleSet",
+              "animations": [],
               "mixins": [],
               "values": {},
             },
@@ -3187,6 +3247,7 @@ exports[`model-util works 1`] = `
                         "rs": {
                           "__iid": "174",
                           "__type": "RuleSet",
+                          "animations": [],
                           "mixins": [],
                           "values": {
                             "display": "flex",
@@ -3228,6 +3289,7 @@ exports[`model-util works 1`] = `
                         "rs": {
                           "__iid": "189",
                           "__type": "RuleSet",
+                          "animations": [],
                           "mixins": [],
                           "values": {
                             "height": "23px",
@@ -3255,6 +3317,7 @@ exports[`model-util works 1`] = `
                         "rs": {
                           "__iid": "198",
                           "__type": "RuleSet",
+                          "animations": [],
                           "mixins": [],
                           "values": {},
                         },
@@ -3277,6 +3340,7 @@ exports[`model-util works 1`] = `
                         "rs": {
                           "__iid": "200",
                           "__type": "RuleSet",
+                          "animations": [],
                           "mixins": [],
                           "values": {},
                         },
@@ -3299,6 +3363,7 @@ exports[`model-util works 1`] = `
                         "rs": {
                           "__iid": "202",
                           "__type": "RuleSet",
+                          "animations": [],
                           "mixins": [],
                           "values": {},
                         },
@@ -3340,6 +3405,7 @@ exports[`model-util works 1`] = `
                     "rs": {
                       "__iid": "204",
                       "__type": "RuleSet",
+                      "animations": [],
                       "mixins": [],
                       "values": {
                         "align-self": "auto",
@@ -3387,6 +3453,7 @@ exports[`model-util works 1`] = `
                     "rs": {
                       "__iid": "230",
                       "__type": "RuleSet",
+                      "animations": [],
                       "mixins": [],
                       "values": {},
                     },
@@ -3414,6 +3481,7 @@ exports[`model-util works 1`] = `
                     "rs": {
                       "__iid": "232",
                       "__type": "RuleSet",
+                      "animations": [],
                       "mixins": [],
                       "values": {},
                     },
@@ -3436,6 +3504,7 @@ exports[`model-util works 1`] = `
                     "rs": {
                       "__iid": "235",
                       "__type": "RuleSet",
+                      "animations": [],
                       "mixins": [],
                       "values": {
                         "border-bottom-color": "var(--token-Xqg3BSZm-z7)",
@@ -3482,6 +3551,7 @@ exports[`model-util works 1`] = `
                 "rs": {
                   "__iid": "241",
                   "__type": "RuleSet",
+                  "animations": [],
                   "mixins": [],
                   "values": {
                     "align-items": "center",
@@ -3514,6 +3584,7 @@ exports[`model-util works 1`] = `
                 "rs": {
                   "__iid": "252",
                   "__type": "RuleSet",
+                  "animations": [],
                   "mixins": [],
                   "values": {},
                 },
@@ -3536,6 +3607,7 @@ exports[`model-util works 1`] = `
                 "rs": {
                   "__iid": "254",
                   "__type": "RuleSet",
+                  "animations": [],
                   "mixins": [],
                   "values": {},
                 },
@@ -3592,6 +3664,7 @@ exports[`model-util works 1`] = `
                             "rs": {
                               "__iid": "260",
                               "__type": "RuleSet",
+                              "animations": [],
                               "mixins": [],
                               "values": {},
                             },
@@ -3633,6 +3706,7 @@ exports[`model-util works 1`] = `
                         "rs": {
                           "__iid": "263",
                           "__type": "RuleSet",
+                          "animations": [],
                           "mixins": [],
                           "values": {
                             "color": "var(--token-l6yLXpF-AHV)",
@@ -3658,6 +3732,7 @@ exports[`model-util works 1`] = `
                         "rs": {
                           "__iid": "267",
                           "__type": "RuleSet",
+                          "animations": [],
                           "mixins": [],
                           "values": {
                             "color": "var(--token-UFX-Eo5zTMR)",
@@ -3683,6 +3758,7 @@ exports[`model-util works 1`] = `
                         "rs": {
                           "__iid": "271",
                           "__type": "RuleSet",
+                          "animations": [],
                           "mixins": [],
                           "values": {},
                         },
@@ -3705,6 +3781,7 @@ exports[`model-util works 1`] = `
                         "rs": {
                           "__iid": "273",
                           "__type": "RuleSet",
+                          "animations": [],
                           "mixins": [],
                           "values": {},
                         },
@@ -3727,6 +3804,7 @@ exports[`model-util works 1`] = `
                         "rs": {
                           "__iid": "275",
                           "__type": "RuleSet",
+                          "animations": [],
                           "mixins": [],
                           "values": {
                             "color": "var(--token-Xqg3BSZm-z7)",
@@ -3755,6 +3833,7 @@ exports[`model-util works 1`] = `
                         "rs": {
                           "__iid": "278",
                           "__type": "RuleSet",
+                          "animations": [],
                           "mixins": [],
                           "values": {
                             "color": "var(--token-ZFzJeGwT7yS)",
@@ -3794,6 +3873,7 @@ exports[`model-util works 1`] = `
                     "rs": {
                       "__iid": "281",
                       "__type": "RuleSet",
+                      "animations": [],
                       "mixins": [],
                       "values": {
                         "align-items": "center",
@@ -3831,6 +3911,7 @@ exports[`model-util works 1`] = `
                     "rs": {
                       "__iid": "293",
                       "__type": "RuleSet",
+                      "animations": [],
                       "mixins": [],
                       "values": {},
                     },
@@ -3858,6 +3939,7 @@ exports[`model-util works 1`] = `
                     "rs": {
                       "__iid": "295",
                       "__type": "RuleSet",
+                      "animations": [],
                       "mixins": [],
                       "values": {},
                     },
@@ -3880,6 +3962,7 @@ exports[`model-util works 1`] = `
                     "rs": {
                       "__iid": "298",
                       "__type": "RuleSet",
+                      "animations": [],
                       "mixins": [],
                       "values": {},
                     },
@@ -3938,6 +4021,7 @@ exports[`model-util works 1`] = `
                     "rs": {
                       "__iid": "303",
                       "__type": "RuleSet",
+                      "animations": [],
                       "mixins": [],
                       "values": {
                         "display": "flex",
@@ -3967,6 +4051,7 @@ exports[`model-util works 1`] = `
                     "rs": {
                       "__iid": "307",
                       "__type": "RuleSet",
+                      "animations": [],
                       "mixins": [],
                       "values": {
                         "background": "linear-gradient(rgba(255,255,255,0), rgba(255,255,255,0))",
@@ -4004,6 +4089,7 @@ exports[`model-util works 1`] = `
                     "rs": {
                       "__iid": "324",
                       "__type": "RuleSet",
+                      "animations": [],
                       "mixins": [],
                       "values": {
                         "box-shadow": "inset 0px 0px 4px 2px rgba(235,245,16,0.46)",
@@ -4055,6 +4141,7 @@ exports[`model-util works 1`] = `
                         "rs": {
                           "__iid": "341",
                           "__type": "RuleSet",
+                          "animations": [],
                           "mixins": [],
                           "values": {
                             "font-size": "30px",
@@ -4089,6 +4176,7 @@ exports[`model-util works 1`] = `
                         "rs": {
                           "__iid": "350",
                           "__type": "RuleSet",
+                          "animations": [],
                           "mixins": [],
                           "values": {
                             "border-bottom-width": "0px",
@@ -4118,6 +4206,7 @@ exports[`model-util works 1`] = `
                         "rs": {
                           "__iid": "358",
                           "__type": "RuleSet",
+                          "animations": [],
                           "mixins": [],
                           "values": {},
                         },
@@ -4155,6 +4244,7 @@ exports[`model-util works 1`] = `
                     "rs": {
                       "__iid": "360",
                       "__type": "RuleSet",
+                      "animations": [],
                       "mixins": [],
                       "values": {
                         "align-items": "center",
@@ -4188,6 +4278,7 @@ exports[`model-util works 1`] = `
                     "rs": {
                       "__iid": "367",
                       "__type": "RuleSet",
+                      "animations": [],
                       "mixins": [],
                       "values": {},
                     },
@@ -4225,6 +4316,7 @@ exports[`model-util works 1`] = `
                 "rs": {
                   "__iid": "370",
                   "__type": "RuleSet",
+                  "animations": [],
                   "mixins": [],
                   "values": {
                     "align-items": "center",
@@ -4260,6 +4352,7 @@ exports[`model-util works 1`] = `
                 "rs": {
                   "__iid": "384",
                   "__type": "RuleSet",
+                  "animations": [],
                   "mixins": [],
                   "values": {
                     "padding-bottom": "0px",
@@ -4286,6 +4379,7 @@ exports[`model-util works 1`] = `
                 "rs": {
                   "__iid": "389",
                   "__type": "RuleSet",
+                  "animations": [],
                   "mixins": [],
                   "values": {},
                 },
@@ -4308,6 +4402,7 @@ exports[`model-util works 1`] = `
                 "rs": {
                   "__iid": "391",
                   "__type": "RuleSet",
+                  "animations": [],
                   "mixins": [],
                   "values": {},
                 },
@@ -4346,6 +4441,7 @@ exports[`model-util works 1`] = `
             "rs": {
               "__iid": "393",
               "__type": "RuleSet",
+              "animations": [],
               "mixins": [],
               "values": {
                 "align-items": "center",
@@ -4378,6 +4474,7 @@ exports[`model-util works 1`] = `
             "rs": {
               "__iid": "404",
               "__type": "RuleSet",
+              "animations": [],
               "mixins": [],
               "values": {},
             },
@@ -4400,6 +4497,7 @@ exports[`model-util works 1`] = `
             "rs": {
               "__iid": "406",
               "__type": "RuleSet",
+              "animations": [],
               "mixins": [],
               "values": {},
             },
@@ -4422,6 +4520,7 @@ exports[`model-util works 1`] = `
             "rs": {
               "__iid": "408",
               "__type": "RuleSet",
+              "animations": [],
               "mixins": [],
               "values": {},
             },
@@ -4444,6 +4543,7 @@ exports[`model-util works 1`] = `
             "rs": {
               "__iid": "410",
               "__type": "RuleSet",
+              "animations": [],
               "mixins": [],
               "values": {
                 "border-bottom-color": "var(--token-k9QJ1TOiLxs)",
@@ -4468,6 +4568,7 @@ exports[`model-util works 1`] = `
             "rs": {
               "__iid": "413",
               "__type": "RuleSet",
+              "animations": [],
               "mixins": [],
               "values": {},
             },
@@ -4769,6 +4870,7 @@ exports[`model-util works 1`] = `
                         "rs": {
                           "__iid": "492",
                           "__type": "RuleSet",
+                          "animations": [],
                           "mixins": [],
                           "values": {},
                         },
@@ -4810,6 +4912,7 @@ exports[`model-util works 1`] = `
                     "rs": {
                       "__iid": "495",
                       "__type": "RuleSet",
+                      "animations": [],
                       "mixins": [],
                       "values": {
                         "color": "var(--token-aU3V66K_Sbv)",
@@ -4834,6 +4937,7 @@ exports[`model-util works 1`] = `
                     "rs": {
                       "__iid": "505",
                       "__type": "RuleSet",
+                      "animations": [],
                       "mixins": [],
                       "values": {},
                     },
@@ -4856,6 +4960,7 @@ exports[`model-util works 1`] = `
                     "rs": {
                       "__iid": "507",
                       "__type": "RuleSet",
+                      "animations": [],
                       "mixins": [],
                       "values": {},
                     },
@@ -4896,6 +5001,7 @@ exports[`model-util works 1`] = `
                     "rs": {
                       "__iid": "510",
                       "__type": "RuleSet",
+                      "animations": [],
                       "mixins": [],
                       "values": {
                         "color": "var(--token-aU3V66K_Sbv)",
@@ -4925,6 +5031,7 @@ exports[`model-util works 1`] = `
                     "rs": {
                       "__iid": "514",
                       "__type": "RuleSet",
+                      "animations": [],
                       "mixins": [],
                       "values": {},
                     },
@@ -4952,6 +5059,7 @@ exports[`model-util works 1`] = `
                     "rs": {
                       "__iid": "516",
                       "__type": "RuleSet",
+                      "animations": [],
                       "mixins": [],
                       "values": {},
                     },
@@ -4979,6 +5087,7 @@ exports[`model-util works 1`] = `
                     "rs": {
                       "__iid": "520",
                       "__type": "RuleSet",
+                      "animations": [],
                       "mixins": [],
                       "values": {},
                     },
@@ -5016,6 +5125,7 @@ exports[`model-util works 1`] = `
                 "rs": {
                   "__iid": "522",
                   "__type": "RuleSet",
+                  "animations": [],
                   "mixins": [],
                   "values": {
                     "align-items": "stretch",
@@ -5051,6 +5161,7 @@ exports[`model-util works 1`] = `
                 "rs": {
                   "__iid": "531",
                   "__type": "RuleSet",
+                  "animations": [],
                   "mixins": [],
                   "values": {
                     "left": "15px",
@@ -5080,6 +5191,7 @@ exports[`model-util works 1`] = `
                 "rs": {
                   "__iid": "535",
                   "__type": "RuleSet",
+                  "animations": [],
                   "mixins": [],
                   "values": {},
                 },
@@ -5107,6 +5219,7 @@ exports[`model-util works 1`] = `
                 "rs": {
                   "__iid": "538",
                   "__type": "RuleSet",
+                  "animations": [],
                   "mixins": [],
                   "values": {},
                 },
@@ -5195,6 +5308,7 @@ exports[`model-util works 1`] = `
                                   "rs": {
                                     "__iid": "641",
                                     "__type": "RuleSet",
+                                    "animations": [],
                                     "mixins": [],
                                     "values": {},
                                   },
@@ -5228,6 +5342,7 @@ exports[`model-util works 1`] = `
                     "rs": {
                       "__iid": "643",
                       "__type": "RuleSet",
+                      "animations": [],
                       "mixins": [],
                       "values": {
                         "align-self": "flex-start",
@@ -5302,6 +5417,7 @@ exports[`model-util works 1`] = `
                                   "rs": {
                                     "__iid": "657",
                                     "__type": "RuleSet",
+                                    "animations": [],
                                     "mixins": [],
                                     "values": {},
                                   },
@@ -5335,6 +5451,7 @@ exports[`model-util works 1`] = `
                     "rs": {
                       "__iid": "659",
                       "__type": "RuleSet",
+                      "animations": [],
                       "mixins": [],
                       "values": {
                         "align-self": "flex-start",
@@ -5409,6 +5526,7 @@ exports[`model-util works 1`] = `
                                   "rs": {
                                     "__iid": "673",
                                     "__type": "RuleSet",
+                                    "animations": [],
                                     "mixins": [],
                                     "values": {},
                                   },
@@ -5442,6 +5560,7 @@ exports[`model-util works 1`] = `
                     "rs": {
                       "__iid": "675",
                       "__type": "RuleSet",
+                      "animations": [],
                       "mixins": [],
                       "values": {
                         "align-self": "flex-start",
@@ -5487,6 +5606,7 @@ exports[`model-util works 1`] = `
                 "rs": {
                   "__iid": "684",
                   "__type": "RuleSet",
+                  "animations": [],
                   "mixins": [],
                   "values": {
                     "align-items": "stretch",
@@ -5539,6 +5659,7 @@ exports[`model-util works 1`] = `
                 "rs": {
                   "__iid": "693",
                   "__type": "RuleSet",
+                  "animations": [],
                   "mixins": [],
                   "values": {
                     "color": "var(--token-aU3V66K_Sbv)",
@@ -5577,6 +5698,7 @@ exports[`model-util works 1`] = `
                 "rs": {
                   "__iid": "707",
                   "__type": "RuleSet",
+                  "animations": [],
                   "mixins": [],
                   "values": {
                     "left": "auto",
@@ -5614,6 +5736,7 @@ exports[`model-util works 1`] = `
             "rs": {
               "__iid": "712",
               "__type": "RuleSet",
+              "animations": [],
               "mixins": [],
               "values": {
                 "align-items": "center",
@@ -5919,6 +6042,7 @@ exports[`model-util works 1`] = `
                     "rs": {
                       "__iid": "555",
                       "__type": "RuleSet",
+                      "animations": [],
                       "mixins": [],
                       "values": {},
                     },
@@ -5960,6 +6084,7 @@ exports[`model-util works 1`] = `
                 "rs": {
                   "__iid": "558",
                   "__type": "RuleSet",
+                  "animations": [],
                   "mixins": [],
                   "values": {
                     "color": "var(--token-aU3V66K_Sbv)",
@@ -5984,6 +6109,7 @@ exports[`model-util works 1`] = `
                 "rs": {
                   "__iid": "563",
                   "__type": "RuleSet",
+                  "animations": [],
                   "mixins": [],
                   "values": {},
                 },
@@ -6006,6 +6132,7 @@ exports[`model-util works 1`] = `
                 "rs": {
                   "__iid": "568",
                   "__type": "RuleSet",
+                  "animations": [],
                   "mixins": [],
                   "values": {},
                 },
@@ -6040,6 +6167,7 @@ exports[`model-util works 1`] = `
             "rs": {
               "__iid": "570",
               "__type": "RuleSet",
+              "animations": [],
               "mixins": [],
               "values": {
                 "align-items": "center",
@@ -6093,6 +6221,7 @@ exports[`model-util works 1`] = `
             "rs": {
               "__iid": "598",
               "__type": "RuleSet",
+              "animations": [],
               "mixins": [],
               "values": {
                 "border-bottom-color": "var(--token-Qs14Urh8AOG)",
@@ -6132,6 +6261,7 @@ exports[`model-util works 1`] = `
             "rs": {
               "__iid": "616",
               "__type": "RuleSet",
+              "animations": [],
               "mixins": [],
               "values": {
                 "border-bottom-color": "rgba(175,47,47,0.2)",
@@ -6362,6 +6492,7 @@ exports[`model-util works 1`] = `
       "rs": {
         "__iid": "758",
         "__type": "RuleSet",
+        "animations": [],
         "mixins": [],
         "values": {
           "box-shadow": "0px 2px 4px 0px rgba(0,0,0,0.2)",
@@ -6379,6 +6510,7 @@ exports[`model-util works 1`] = `
       "rs": {
         "__iid": "823",
         "__type": "RuleSet",
+        "animations": [],
         "mixins": [],
         "values": {
           "box-shadow": "0px 25px 50px 0px rgba(0,0,0,0.1)",
@@ -6396,6 +6528,7 @@ exports[`model-util works 1`] = `
       "rs": {
         "__iid": "764",
         "__type": "RuleSet",
+        "animations": [],
         "mixins": [],
         "values": {
           "box-shadow": "0px 0px 2px 0px rgba(255,255,255,0.5)",
@@ -6413,6 +6546,7 @@ exports[`model-util works 1`] = `
       "rs": {
         "__iid": "828",
         "__type": "RuleSet",
+        "animations": [],
         "mixins": [],
         "values": {
           "box-shadow": "0px 25px 50px 0px rgba(255,255,255,0.3)",
@@ -6631,6 +6765,7 @@ exports[`model-util works 1`] = `
         "rs": {
           "__iid": "916",
           "__type": "RuleSet",
+          "animations": [],
           "mixins": [],
           "values": {
             "color": "#535353",
@@ -6663,6 +6798,7 @@ exports[`model-util works 1`] = `
             "rs": {
               "__iid": "18255003",
               "__type": "RuleSet",
+              "animations": [],
               "mixins": [],
               "values": {
                 "color": "#000000",
@@ -6690,6 +6826,7 @@ exports[`model-util works 1`] = `
             "rs": {
               "__iid": "18255012",
               "__type": "RuleSet",
+              "animations": [],
               "mixins": [],
               "values": {
                 "color": "#000000",
@@ -6717,6 +6854,7 @@ exports[`model-util works 1`] = `
             "rs": {
               "__iid": "18255021",
               "__type": "RuleSet",
+              "animations": [],
               "mixins": [],
               "values": {
                 "color": "#000000",
@@ -6744,6 +6882,7 @@ exports[`model-util works 1`] = `
             "rs": {
               "__iid": "18255030",
               "__type": "RuleSet",
+              "animations": [],
               "mixins": [],
               "values": {
                 "color": "#000000",
@@ -6771,6 +6910,7 @@ exports[`model-util works 1`] = `
             "rs": {
               "__iid": "18255039",
               "__type": "RuleSet",
+              "animations": [],
               "mixins": [],
               "values": {
                 "color": "#000000",
@@ -6798,6 +6938,7 @@ exports[`model-util works 1`] = `
             "rs": {
               "__iid": "18255048",
               "__type": "RuleSet",
+              "animations": [],
               "mixins": [],
               "values": {
                 "color": "#000000",
@@ -6824,6 +6965,7 @@ exports[`model-util works 1`] = `
             "rs": {
               "__iid": "18255056",
               "__type": "RuleSet",
+              "animations": [],
               "mixins": [],
               "values": {
                 "color": "#0070f3",
@@ -6846,6 +6988,7 @@ exports[`model-util works 1`] = `
             "rs": {
               "__iid": "18255060",
               "__type": "RuleSet",
+              "animations": [],
               "mixins": [],
               "values": {
                 "color": "#3291ff",
@@ -6868,6 +7011,7 @@ exports[`model-util works 1`] = `
             "rs": {
               "__iid": "18255064",
               "__type": "RuleSet",
+              "animations": [],
               "mixins": [],
               "values": {
                 "border-left-color": "#dddddd",
@@ -6894,6 +7038,7 @@ exports[`model-util works 1`] = `
             "rs": {
               "__iid": "18255072",
               "__type": "RuleSet",
+              "animations": [],
               "mixins": [],
               "values": {
                 "background": "linear-gradient(#f8f8f8, #f8f8f8)",
@@ -6937,6 +7082,7 @@ exports[`model-util works 1`] = `
             "rs": {
               "__iid": "18255097",
               "__type": "RuleSet",
+              "animations": [],
               "mixins": [],
               "values": {
                 "background": "linear-gradient(#f8f8f8, #f8f8f8)",
@@ -6980,6 +7126,7 @@ exports[`model-util works 1`] = `
             "rs": {
               "__iid": "18255122",
               "__type": "RuleSet",
+              "animations": [],
               "mixins": [],
               "values": {
                 "align-items": "stretch",
@@ -7009,6 +7156,7 @@ exports[`model-util works 1`] = `
             "rs": {
               "__iid": "18255133",
               "__type": "RuleSet",
+              "animations": [],
               "mixins": [],
               "values": {
                 "align-items": "stretch",
