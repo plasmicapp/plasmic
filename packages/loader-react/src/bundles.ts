@@ -57,6 +57,9 @@ export function prepComponentData(
       ...compPaths,
       "root-provider.js",
       ...bundle.projects
+        .map((x) => x.styleTokensProviderFileName)
+        .filter((x) => !!x),
+      ...bundle.projects
         .map((x) => x.globalContextsProviderFileName)
         .filter((x) => !!x),
       // We need to explicitly include global context provider components

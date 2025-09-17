@@ -224,13 +224,17 @@ export interface ProjectMeta {
     // (undocumented)
     globalContextsProviderFileName: string;
     // (undocumented)
+    hasStyleTokenOverrides: boolean;
+    // (undocumented)
     id: string;
     // (undocumented)
-    indirect?: boolean;
+    indirect: boolean;
     // (undocumented)
     name: string;
     // (undocumented)
     remoteFonts: FontMeta[];
+    // (undocumented)
+    styleTokensProviderFileName: string;
     // (undocumented)
     teamId?: string;
     // (undocumented)

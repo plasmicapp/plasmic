@@ -42,13 +42,16 @@ export interface GlobalGroupMeta {
   useName: string;
 }
 
+// Keep in sync with platform/wab ProjectMeta
 export interface ProjectMeta {
   id: string;
   teamId?: string;
-  indirect?: boolean;
+  indirect: boolean;
   name: string;
   version: string;
   remoteFonts: FontMeta[];
+  hasStyleTokenOverrides: boolean;
+  styleTokensProviderFileName: string;
   globalContextsProviderFileName: string;
 }
 

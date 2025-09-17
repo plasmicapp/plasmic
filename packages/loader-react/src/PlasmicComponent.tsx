@@ -90,6 +90,10 @@ export function PlasmicComponent(props: {
       // here because there were no children before the data came in.
       const lookup = loader.getLookup();
       const ReactWebRootProvider = lookup.getRootProvider();
+      const StyleTokensProvider = lookup.maybeGetStyleTokensProvider({
+        name: component,
+        projectId,
+      });
       const GlobalContextsProvider = lookup.getGlobalContextsProvider({
         name: component,
         projectId,
@@ -113,9 +117,16 @@ export function PlasmicComponent(props: {
               </GlobalContextsProvider>
             )}
           >
-            <PlasmicComponentContext.Provider value={true}>
-              {elt}
-            </PlasmicComponentContext.Provider>
+            <MaybeWrap
+              cond={!!StyleTokensProvider}
+              wrapper={(children) => (
+                <StyleTokensProvider>{children}</StyleTokensProvider>
+              )}
+            >
+              <PlasmicComponentContext.Provider value={true}>
+                {elt}
+              </PlasmicComponentContext.Provider>
+            </MaybeWrap>
           </MaybeWrap>
         </ReactWebRootProvider>
       );
