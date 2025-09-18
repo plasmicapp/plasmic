@@ -1,5 +1,6 @@
 import axios, { AxiosError } from "axios";
 import socketio from "socket.io-client";
+import { logger } from "./deps";
 import {
   AuthConfig,
   CodeConfig,
@@ -484,6 +485,7 @@ export class PlasmicApi {
   // message
   private async post(url: string, data?: any, rethrowAppError?: boolean) {
     try {
+      logger.debug(`POST ${url}`);
       return await axios.post(
         url,
         { projectIdsAndTokens: this.projectIdsAndTokens, ...data },
@@ -509,6 +511,7 @@ export class PlasmicApi {
 
   private async get(url: string, rethrowAppError?: boolean, extraHeaders?: {}) {
     try {
+      logger.debug(`GET ${url}`);
       return await axios.get(url, {
         headers: { ...this.makeHeaders(), ...(extraHeaders ?? {}) },
       });

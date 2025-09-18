@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import yargs from "yargs";
 import * as auth from "./actions/auth";
+import { ExportArgs, exportProjectsCli } from "./actions/export";
 import { fixImports, FixImportsArgs } from "./actions/fix-imports";
 import { InfoArgs, printProjectInfo } from "./actions/info";
 import { getYargsOption, InitArgs, initPlasmic } from "./actions/init";
@@ -10,11 +11,11 @@ import {
   LocalizationStringsArgs,
 } from "./actions/localization-strings";
 import * as projectToken from "./actions/project-token";
+import { showProjectStatus, StatusArgs } from "./actions/status";
 import { sync, SyncArgs } from "./actions/sync";
 import { UploadBundleArgs, uploadJsBundle } from "./actions/upload-bundle";
 import { WatchArgs, watchProjects } from "./actions/watch";
 import { handleError } from "./utils/error";
-import { ExportArgs, exportProjectsCli } from "./actions/export";
 
 if (process.env.DEBUG_CHDIR) {
   process.chdir(process.env.DEBUG_CHDIR);
@@ -105,6 +106,17 @@ yargs
     (argv) => {
       handleError(auth.auth(argv));
     }
+  )
+  .command<StatusArgs>(
+    "status",
+    "Shows the status of local Plasmic projects.",
+    (yargs) =>
+      yargs.option("json", {
+        describe: "Output status in JSON format",
+        type: "boolean",
+        default: false,
+      }),
+    (argv) => handleError(showProjectStatus(argv))
   )
   .command<SyncArgs>(
     "sync",

@@ -2,8 +2,8 @@ import fs from "fs";
 import * as path from "path";
 import * as tmp from "tmp";
 import {
-  AuthConfig,
   AUTH_FILE_NAME,
+  AuthConfig,
   CONFIG_FILE_NAME,
   PlasmicConfig,
 } from "../utils/config-utils";
