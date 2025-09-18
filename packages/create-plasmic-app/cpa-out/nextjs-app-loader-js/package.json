@@ -9,13 +9,13 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@plasmicapp/loader-nextjs": "^1.0.435",
-    "next": "14.2.17",
+    "@plasmicapp/loader-nextjs": "^1.0.438",
+    "next": "14.2.32",
     "react": "^18",
     "react-dom": "^18"
   },
   "devDependencies": {
     "eslint": "^8",
-    "eslint-config-next": "14.2.17"
+    "eslint-config-next": "14.2.32"
   }
 }

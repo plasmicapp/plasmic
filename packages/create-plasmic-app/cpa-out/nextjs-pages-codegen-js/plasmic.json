@@ -100,6 +100,8 @@
       "indirect": false,
       "globalContextsFilePath": "",
       "splitsProviderFilePath": "",
+      "styleTokensProviderFilePath": "plasmic/create_plasmic_app/PlasmicStyleTokensProvider.jsx",
+      "projectModuleFilePath": "plasmic/create_plasmic_app/plasmic.jsx",
       "codeComponents": [
         {
           "id": "P6aGdYWZ2R",
@@ -131,6 +133,6 @@
   "nextjsConfig": {
     "pagesDir": "../pages"
   },
-  "cliVersion": "0.1.341",
-  "$schema": "https://unpkg.com/@plasmicapp/cli@0.1.341/dist/plasmic.schema.json"
+  "cliVersion": "0.1.343",
+  "$schema": "https://unpkg.com/@plasmicapp/cli@0.1.343/dist/plasmic.schema.json"
 }
