@@ -11,7 +11,7 @@
   "dependencies": {
     "@plasmicapp/host": "^1.0.225",
     "lodash": "^4.17.21",
-    "next": "13.4.5",
+    "next": "13.5.11",
     "plasmicapp__host_old": "npm:@plasmicapp/host@1.0.77",
     "react": "18.2.0",
     "react-dom": "18.2.0"
@@ -20,8 +20,8 @@
     "@types/node": "20.3.1",
     "@types/react": "^18.2.12",
     "@types/react-dom": "^18.2.5",
-    "eslint": "8.42.0",
-    "eslint-config-next": "13.4.5",
+    "eslint": "8.57.1",
+    "eslint-config-next": "13.5.11",
     "typescript": "^5.1.3"
   }
 }
