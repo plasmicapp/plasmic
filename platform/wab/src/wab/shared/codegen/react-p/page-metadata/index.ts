@@ -147,9 +147,12 @@ export function serializeTanStackHead(
   const ogImageSrc = getOgImageLink(ctx, page.pageMeta?.openGraphImage);
   const canonical = page.pageMeta?.canonical;
   const exportName = makeTanStackHeadOptionsExportName(page);
+  const useCssModules = ctx.exportOpts.stylesOpts.scheme === "css-modules";
 
   const linkEntries: string[] = [
-    `{ rel: "stylesheet", href: ${defaultStyleCssImportName} }`,
+    ...(useCssModules
+      ? []
+      : [`{ rel: "stylesheet", href: ${defaultStyleCssImportName} }`]),
     `{ rel: "stylesheet", href: ${projectStyleCssImportName} }`,
     `{ rel: "stylesheet", href: sty }`,
   ];
