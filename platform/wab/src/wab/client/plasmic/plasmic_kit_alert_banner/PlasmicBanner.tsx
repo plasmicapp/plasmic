@@ -18,7 +18,6 @@ import {
   PlasmicIcon as PlasmicIcon__,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
-  Stack as Stack__,
   StrictProps,
   classNames,
   createPlasmicElementProxy,
@@ -32,9 +31,9 @@ import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRm
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
 import projectcss from "../PP__plasmickit_alert_banner.module.css"; // plasmic-import: 29njzcsBEPR4koRddw4knF/projectcss
 import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
+import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
 import sty from "./PlasmicBanner.module.css"; // plasmic-import: LlDTs6h34ISG/css
 
 import CloseIcon from "../plasmic_kit/PlasmicIcon__Close"; // plasmic-import: hy7vKrgdAZwW4/icon
@@ -179,13 +178,11 @@ function PlasmicBanner__RenderFunc(props: {
   });
 
   return (
-    <Stack__
-      as={"div"}
+    <div
       data-plasmic-name={"root"}
       data-plasmic-override={overrides.root}
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
-      hasGap={true}
       className={classNames(
         projectcss.all,
         projectcss.root_reset,
@@ -204,11 +201,7 @@ function PlasmicBanner__RenderFunc(props: {
         }
       )}
     >
-      <Stack__
-        as={"div"}
-        hasGap={true}
-        className={classNames(projectcss.all, sty.freeBox__xDsa)}
-      >
+      <div className={classNames(projectcss.all, sty.freeBox__xDsa)}>
         <div className={classNames(projectcss.all, sty.freeBox__qiaUx)}>
           <PlasmicIcon__
             data-plasmic-name={"icon"}
@@ -231,9 +224,7 @@ function PlasmicBanner__RenderFunc(props: {
             role={"img"}
           />
         </div>
-        <Stack__
-          as={"div"}
-          hasGap={true}
+        <div
           className={classNames(projectcss.all, sty.freeBox__gl9VT, {
             [sty.freeBoxtype_error__gl9VTAyvH7]: hasVariant(
               $state,
@@ -312,11 +303,9 @@ function PlasmicBanner__RenderFunc(props: {
               })()}
             </React.Fragment>
           </div>
-        </Stack__>
-      </Stack__>
-      <Stack__
-        as={"div"}
-        hasGap={true}
+        </div>
+      </div>
+      <div
         className={classNames(projectcss.all, sty.freeBox__fMtNr, {
           [sty.freeBoxtype__default__fMtNrMyqB3]: hasVariant(
             $state,
@@ -472,8 +461,8 @@ function PlasmicBanner__RenderFunc(props: {
             />
           </div>
         ) : null}
-      </Stack__>
-    </Stack__>
+      </div>
+    </div>
   ) as React.ReactElement | null;
 }
 

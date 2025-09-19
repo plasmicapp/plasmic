@@ -16,7 +16,6 @@ import * as React from "react";
 import {
   Flex as Flex__,
   SingleChoiceArg,
-  Stack as Stack__,
   StrictProps,
   classNames,
   createPlasmicElementProxy,
@@ -30,9 +29,9 @@ import Button from "../Button"; // plasmic-import: SEF-sRmSoqV5c/component
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_color_tokens_css from "../../../plasmic/plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
 import projectcss from "../../../plasmic/PP__plasmickit_alert_banner.module.css"; // plasmic-import: 29njzcsBEPR4koRddw4knF/projectcss
 import plasmic_plasmic_kit_design_system_css from "../../../plasmic/PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
+import plasmic_plasmic_kit_color_tokens_css from "../../../plasmic/plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
 import sty from "./PlasmicAlertBanner.module.css"; // plasmic-import: DCWq1LLaJ6e/css
 
 import CloseIcon from "../../../plasmic/plasmic_kit/PlasmicIcon__Close"; // plasmic-import: hy7vKrgdAZwW4/icon
@@ -54,7 +53,8 @@ export type PlasmicAlertBanner__VariantMembers = {
     | "permError"
     | "watch"
     | "invariantError"
-    | "protectedMainBranch";
+    | "protectedMainBranch"
+    | "welcomeGuest";
 };
 export type PlasmicAlertBanner__VariantsArgs = {
   state?: SingleChoiceArg<
@@ -70,6 +70,7 @@ export type PlasmicAlertBanner__VariantsArgs = {
     | "watch"
     | "invariantError"
     | "protectedMainBranch"
+    | "welcomeGuest"
   >;
 };
 type VariantPropType = keyof PlasmicAlertBanner__VariantsArgs;
@@ -104,6 +105,7 @@ export interface DefaultAlertBannerProps {
     | "watch"
     | "invariantError"
     | "protectedMainBranch"
+    | "welcomeGuest"
   >;
   className?: string;
 }
@@ -157,13 +159,11 @@ function PlasmicAlertBanner__RenderFunc(props: {
   });
 
   return (
-    <Stack__
-      as={"div"}
+    <div
       data-plasmic-name={"root"}
       data-plasmic-override={overrides.root}
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
-      hasGap={true}
       className={classNames(
         projectcss.all,
         projectcss.root_reset,
@@ -198,17 +198,25 @@ function PlasmicAlertBanner__RenderFunc(props: {
           [sty.rootstate_unlogged]: hasVariant($state, "state", "unlogged"),
           [sty.rootstate_viewOld]: hasVariant($state, "state", "viewOld"),
           [sty.rootstate_watch]: hasVariant($state, "state", "watch"),
+          [sty.rootstate_welcomeGuest]: hasVariant(
+            $state,
+            "state",
+            "welcomeGuest"
+          ),
         }
       )}
     >
-      <Stack__
-        as={"div"}
-        hasGap={true}
+      <div
         className={classNames(projectcss.all, sty.freeBox__ncsVm, {
           [sty.freeBoxstate_unlogged__ncsVmt672P]: hasVariant(
             $state,
             "state",
             "unlogged"
+          ),
+          [sty.freeBoxstate_welcomeGuest__ncsVmg2Bk]: hasVariant(
+            $state,
+            "state",
+            "welcomeGuest"
           ),
         })}
       >
@@ -249,6 +257,11 @@ function PlasmicAlertBanner__RenderFunc(props: {
               "state",
               "watch"
             ),
+            [sty.freeBoxstate_welcomeGuest__lHeQvg2Bk]: hasVariant(
+              $state,
+              "state",
+              "welcomeGuest"
+            ),
           })}
         >
           <WarningTriangleSvgIcon
@@ -272,9 +285,7 @@ function PlasmicAlertBanner__RenderFunc(props: {
             role={"img"}
           />
         </div>
-        <Stack__
-          as={"div"}
-          hasGap={true}
+        <div
           className={classNames(projectcss.all, sty.freeBox__bzau, {
             [sty.freeBoxstate_concurrentEdit__bzauSWvup]: hasVariant(
               $state,
@@ -310,6 +321,11 @@ function PlasmicAlertBanner__RenderFunc(props: {
               $state,
               "state",
               "watch"
+            ),
+            [sty.freeBoxstate_welcomeGuest__bzauG2Bk]: hasVariant(
+              $state,
+              "state",
+              "welcomeGuest"
             ),
           })}
         >
@@ -379,10 +395,17 @@ function PlasmicAlertBanner__RenderFunc(props: {
                   "state",
                   "watch"
                 ),
+                [sty.textstate_welcomeGuest__su8VUg2Bk]: hasVariant(
+                  $state,
+                  "state",
+                  "welcomeGuest"
+                ),
               }
             )}
           >
-            {hasVariant($state, "state", "protectedMainBranch")
+            {hasVariant($state, "state", "welcomeGuest")
+              ? "Welcome to Plasmic!"
+              : hasVariant($state, "state", "protectedMainBranch")
               ? "The main branch is currently protected."
               : hasVariant($state, "state", "invariantError")
               ? "Could not save your project."
@@ -474,10 +497,17 @@ function PlasmicAlertBanner__RenderFunc(props: {
                   "state",
                   "watch"
                 ),
+                [sty.textstate_welcomeGuest__n3UE1G2Bk]: hasVariant(
+                  $state,
+                  "state",
+                  "welcomeGuest"
+                ),
               }
             )}
           >
-            {hasVariant($state, "state", "protectedMainBranch")
+            {hasVariant($state, "state", "welcomeGuest")
+              ? "Sign up or log in to edit and save this project."
+              : hasVariant($state, "state", "protectedMainBranch")
               ? "Switch to a different branch to edit project content."
               : hasVariant($state, "state", "invariantError")
               ? "The last action you took resulted in an invalid state. We're looking into it!"
@@ -503,8 +533,8 @@ function PlasmicAlertBanner__RenderFunc(props: {
               ? "You can make a copy of this project for yourself. Any changes to this project won't be saved."
               : "This is normal text"}
           </div>
-        </Stack__>
-      </Stack__>
+        </div>
+      </div>
       {(
         hasVariant($state, "state", "notChrome")
           ? false
@@ -517,6 +547,7 @@ function PlasmicAlertBanner__RenderFunc(props: {
         <Button
           data-plasmic-name={"watchBtn"}
           data-plasmic-override={overrides.watchBtn}
+          caption={"Caption"}
           className={classNames("__wab_instance", sty.watchBtn, {
             [sty.watchBtnstate_authError]: hasVariant(
               $state,
@@ -560,6 +591,11 @@ function PlasmicAlertBanner__RenderFunc(props: {
             ),
             [sty.watchBtnstate_viewOld]: hasVariant($state, "state", "viewOld"),
             [sty.watchBtnstate_watch]: hasVariant($state, "state", "watch"),
+            [sty.watchBtnstate_welcomeGuest]: hasVariant(
+              $state,
+              "state",
+              "welcomeGuest"
+            ),
           })}
           endIcon={
             <ChevronDownSvgIcon
@@ -626,6 +662,11 @@ function PlasmicAlertBanner__RenderFunc(props: {
                   "viewOld"
                 ),
                 [sty.visit2state_watch]: hasVariant($state, "state", "watch"),
+                [sty.visit2state_welcomeGuest]: hasVariant(
+                  $state,
+                  "state",
+                  "welcomeGuest"
+                ),
               }
             )}
           >
@@ -633,9 +674,7 @@ function PlasmicAlertBanner__RenderFunc(props: {
           </div>
         </Button>
       ) : null}
-      <Stack__
-        as={"div"}
-        hasGap={true}
+      <div
         className={classNames(projectcss.all, sty.freeBox___8R5S, {
           [sty.freeBoxstate_authError___8R5SaPWsX]: hasVariant(
             $state,
@@ -670,7 +709,9 @@ function PlasmicAlertBanner__RenderFunc(props: {
         })}
       >
         {(
-          hasVariant($state, "state", "protectedMainBranch")
+          hasVariant($state, "state", "welcomeGuest")
+            ? true
+            : hasVariant($state, "state", "protectedMainBranch")
             ? true
             : hasVariant($state, "state", "watch")
             ? true
@@ -687,6 +728,7 @@ function PlasmicAlertBanner__RenderFunc(props: {
           <Button
             data-plasmic-name={"actionBtn"}
             data-plasmic-override={overrides.actionBtn}
+            caption={"Caption"}
             className={classNames("__wab_instance", {
               [sty.actionBtnstate_protectedMainBranch]: hasVariant(
                 $state,
@@ -710,7 +752,9 @@ function PlasmicAlertBanner__RenderFunc(props: {
               ) : null
             }
             type={
-              hasVariant($state, "state", "watch")
+              hasVariant($state, "state", "welcomeGuest")
+                ? ["backlitInfo"]
+                : hasVariant($state, "state", "watch")
                 ? ["backlitInfo"]
                 : hasVariant($state, "state", "unlogged")
                 ? ["backlitInfo"]
@@ -773,10 +817,17 @@ function PlasmicAlertBanner__RenderFunc(props: {
                     "viewOld"
                   ),
                   [sty.visitstate_watch]: hasVariant($state, "state", "watch"),
+                  [sty.visitstate_welcomeGuest]: hasVariant(
+                    $state,
+                    "state",
+                    "welcomeGuest"
+                  ),
                 }
               )}
             >
-              {hasVariant($state, "state", "invariantError")
+              {hasVariant($state, "state", "welcomeGuest")
+                ? "Sign up / Log in"
+                : hasVariant($state, "state", "invariantError")
                 ? "Reload Project"
                 : hasVariant($state, "state", "watch")
                 ? "Leave watch mode"
@@ -843,6 +894,11 @@ function PlasmicAlertBanner__RenderFunc(props: {
               "viewOld"
             ),
             [sty.dismissBtnstate_watch]: hasVariant($state, "state", "watch"),
+            [sty.dismissBtnstate_welcomeGuest]: hasVariant(
+              $state,
+              "state",
+              "welcomeGuest"
+            ),
           })}
         >
           <CloseIcon
@@ -882,12 +938,17 @@ function PlasmicAlertBanner__RenderFunc(props: {
                 "state",
                 "watch"
               ),
+              [sty.svgstate_welcomeGuest__sdZvAg2Bk]: hasVariant(
+                $state,
+                "state",
+                "welcomeGuest"
+              ),
             })}
             role={"img"}
           />
         </div>
-      </Stack__>
-    </Stack__>
+      </div>
+    </div>
   ) as React.ReactElement | null;
 }
 

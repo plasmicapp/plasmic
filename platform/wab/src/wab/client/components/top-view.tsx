@@ -1,9 +1,9 @@
-import { ensure } from "@/wab/shared/common";
 import {
   withConsumer,
   withProvider,
 } from "@/wab/commons/components/ContextUtil";
 import { ScreenDimmer } from "@/wab/commons/components/ScreenDimmer";
+import { ensure } from "@/wab/shared/common";
 import { Spin } from "antd";
 import cx from "classnames";
 import * as React from "react";
@@ -32,6 +32,12 @@ export class App {
     } finally {
       this._view.setState({ showSpinner: wasShowingSpinner });
     }
+  }
+  showSpinner() {
+    this._view.setState({ showSpinner: true });
+  }
+  hideSpinner() {
+    this._view.setState({ showSpinner: false });
   }
 }
 type AppViewProps = {

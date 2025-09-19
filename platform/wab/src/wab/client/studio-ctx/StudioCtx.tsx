@@ -153,7 +153,11 @@ import {
   syncArenaFrameSize,
   updateAutoDerivedFrameHeight,
 } from "@/wab/shared/Arenas";
-import { AccessLevel, accessLevelRank } from "@/wab/shared/EntUtil";
+import {
+  AccessLevel,
+  accessLevelRank,
+  isUnownedProject,
+} from "@/wab/shared/EntUtil";
 import {
   PkgVersionInfo,
   PkgVersionInfoMeta,
@@ -330,7 +334,11 @@ import {
 } from "@/wab/shared/model/model-change-util";
 import { reorderPageArenaCols } from "@/wab/shared/page-arenas";
 import { getAccessLevelToResource } from "@/wab/shared/perms";
-import { APP_ROUTES, mkProjectLocation } from "@/wab/shared/route/app-routes";
+import {
+  APP_ROUTES,
+  SEARCH_PROMPT,
+  mkProjectLocation,
+} from "@/wab/shared/route/app-routes";
 import {
   DeletedAssetsSummary,
   getEmptyDeletedAssetsSummary,
@@ -2004,7 +2012,14 @@ export class StudioCtx extends WithDbCtx {
       this.focusPreference.set(focusPreference === "true");
     }
 
-    await this.handleRouteChange(this.appCtx.history.location);
+    const location = this.appCtx.history.location;
+    const searchParams = new URLSearchParams(location.search);
+    const prompt = searchParams.get(SEARCH_PROMPT);
+    if (prompt) {
+      await this.createCopilotPageWithPrompt(prompt);
+    } else {
+      await this.handleRouteChange(location);
+    }
   }
 
   private async handleRouteChange(location: Location) {
@@ -2717,6 +2732,8 @@ export class StudioCtx extends WithDbCtx {
   get showUiCopilot() {
     return this._showUiCopilot.get();
   }
+
+  copilotStarterPrompt = "";
 
   openUiCopilotDialog(isOpen: boolean) {
     this._showUiCopilot.set(isOpen);
@@ -6762,6 +6779,18 @@ export class StudioCtx extends WithDbCtx {
     return this._copilotFeedbackByInteractionId.get(copilotInteractionId);
   }
 
+  async createCopilotPageWithPrompt(prompt: string) {
+    await this.change(({ success }) => {
+      this.addComponent("Copilot", {
+        type: ComponentType.Page,
+      }) as PageComponent;
+
+      return success();
+    });
+    this.openUiCopilotDialog(true);
+    this.copilotStarterPrompt = prompt;
+  }
+
   /** Gets dedicated arena for component/page, while checking if user has edit access. */
   getDedicatedArena(component: Component) {
     if (!this.canEditComponent(component)) {
@@ -7247,6 +7276,10 @@ export const usePlasmicCtx = () => {
 };
 
 function canUserEditProject(user: ApiUser | null, project: SiteInfo) {
+  if (isUnownedProject(project)) {
+    // project with no owner and public can be edited
+    return true;
+  }
   if (!user) {
     // Anonymous users can never edit.
     return false;

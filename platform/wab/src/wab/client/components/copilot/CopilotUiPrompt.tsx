@@ -24,7 +24,10 @@ function CopilotUiPrompt() {
         studioCtx.openUiCopilotDialog(isOpen);
       }}
       onCopilotSubmit={async ({ prompt, images }) => {
-        const result = await studioCtx.appCtx.api.queryUiCopilot({
+        const copilotQuery = studioCtx.appCtx.selfInfo
+          ? studioCtx.appCtx.api.queryUiCopilot
+          : studioCtx.appCtx.api.queryPublicUiCopilot;
+        const result = await copilotQuery({
           type: "ui",
           goal: prompt,
           projectId: studioCtx.siteInfo.id,

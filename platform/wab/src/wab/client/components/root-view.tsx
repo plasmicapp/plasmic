@@ -64,7 +64,7 @@ import { BASE_URL } from "@/wab/shared/discourse/config";
 import { accessLevelRank } from "@/wab/shared/EntUtil";
 import { getAccessLevelToResource } from "@/wab/shared/perms";
 import { getMaximumTierFromTeams } from "@/wab/shared/pricing/pricing-utils";
-import { APP_ROUTES } from "@/wab/shared/route/app-routes";
+import { APP_ROUTES, SEARCH_PROMPT } from "@/wab/shared/route/app-routes";
 import { fillRoute } from "@/wab/shared/route/route";
 import * as React from "react";
 import { Redirect, Route, Switch, useHistory, useLocation } from "react-router";
@@ -657,6 +657,27 @@ export function Root() {
                         render: () => (
                           <GithubCallback nonAuthCtx={nonAuthCtx} />
                         ),
+                      })}
+                      {routerRedirectAsync({
+                        exact: true,
+                        path: APP_ROUTES.copilot,
+                        to: async () => {
+                          const prompt = new URLSearchParams(
+                            location.search
+                          ).get(SEARCH_PROMPT);
+                          if (prompt) {
+                            const { project } = await appCtx.api.createProject({
+                              name: "Copilot",
+                              isPublic: true,
+                            });
+                            return fillRoute(
+                              APP_ROUTES.project,
+                              { projectId: project.id },
+                              { [SEARCH_PROMPT]: prompt }
+                            );
+                          }
+                          return fillRoute(APP_ROUTES.login, {});
+                        },
                       })}
                       {routerRoute({
                         path: APP_ROUTES.dashboard,

@@ -15,6 +15,7 @@ import { fillRoute, route } from "@/wab/shared/route/route";
 
 export const APP_ROUTES = {
   dashboard: route("/"),
+  copilot: route("/copilot"),
   allProjects: route("/projects"),
   playground: route("/playground"),
   workspace: route<{ workspaceId: WorkspaceId }>("/workspaces/:workspaceId"),
@@ -181,6 +182,7 @@ export const SEARCH_PARAM_VERSION = "version";
 export const SEARCH_PARAM_ARENA_TYPE = "arena_type";
 export const SEARCH_PARAM_ARENA = "arena";
 export const SEARCH_PARAM_COMMENT = "comment";
+export const SEARCH_PROMPT = "prompt";
 
 export interface ProjectLocationParams {
   projectId: string;

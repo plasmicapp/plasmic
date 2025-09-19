@@ -10,6 +10,7 @@ import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { assert } from "@/wab/shared/common";
 import { APP_ROUTES } from "@/wab/shared/route/app-routes";
 import { fillRoute } from "@/wab/shared/route/route";
+import { createPath } from "history";
 import React, { useEffect } from "react";
 
 export interface AlertData {
@@ -68,7 +69,23 @@ export const AlertSpec = {
     stateVariant: "unlogged",
     actionFn: async (studioCtx: StudioCtx) => {
       assert(window.top, "Unexpected null reference");
-      window.top.location.href = fillRoute(APP_ROUTES.signup, {});
+      window.top.location.href = fillRoute(
+        APP_ROUTES.signup,
+        {},
+        { continueTo: createPath(studioCtx.appCtx.history.location) }
+      );
+    },
+  },
+
+  WelcomeGuest: {
+    stateVariant: "welcomeGuest",
+    actionFn: async (studioCtx: StudioCtx) => {
+      assert(window.top, "Unexpected null reference");
+      window.top.location.href = fillRoute(
+        APP_ROUTES.signup,
+        {},
+        { continueTo: createPath(studioCtx.appCtx.history.location) }
+      );
     },
   },
 

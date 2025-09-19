@@ -155,7 +155,7 @@ function StarterProject(props: StarterProjectProps) {
           onClick: async () => {
             if (!hasProject && !props.href) {
               return appCtx.api
-                .createSite(props.workspaceId)
+                .createProject({ workspaceId: props.workspaceId })
                 .then(({ project }) => {
                   history.push(
                     fillRoute(APP_ROUTES.project, {

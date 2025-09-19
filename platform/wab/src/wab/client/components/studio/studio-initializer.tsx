@@ -19,9 +19,10 @@ import "@/wab/client/moment-config";
 import "@/wab/client/react-global-hook/globalHook"; // Run once studio loads to inject our hook
 import { initializePlasmicExtension } from "@/wab/client/screenshot-util";
 import {
-  providesStudioCtx,
   StudioCtx,
+  providesStudioCtx,
 } from "@/wab/client/studio-ctx/StudioCtx";
+import { isUnownedProject } from "@/wab/shared/EntUtil";
 import { spawn } from "@/wab/shared/common";
 import { isHostLessPackage } from "@/wab/shared/core/sites";
 import { initBuiltinActions } from "@/wab/shared/core/states";
@@ -98,7 +99,9 @@ class StudioInitializer_ extends React.Component<
 
     spawn(studioCtx.startListeningForSocketEvents());
 
-    if (!appCtx.selfInfo) {
+    if (!appCtx.selfInfo && isUnownedProject(studioCtx.siteInfo)) {
+      studioCtx.alertBannerState.set(AlertSpec.WelcomeGuest);
+    } else if (!appCtx.selfInfo) {
       studioCtx.alertBannerState.set(AlertSpec.Unlogged);
       studioCtx.blockChanges = true;
     } else if (!studioCtx.canEditProject()) {

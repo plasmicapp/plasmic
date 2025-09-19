@@ -521,9 +521,10 @@ export interface ApiWhiteLabelUser {
   externalId: string;
 }
 
-export interface CreateSiteRequest {
+export interface CreateProjectRequest {
   workspaceId?: WorkspaceId;
   name?: string;
+  isPublic?: boolean;
 }
 
 export interface CloneProjectRequest {
@@ -536,6 +537,11 @@ export interface CloneProjectRequest {
 
 export interface CloneProjectResponse {
   projectId: string;
+}
+
+export interface CreateProjectResponse {
+  project: ApiProject;
+  rev: Omit<ApiProjectRevision, "data">;
 }
 
 export interface Grant {
@@ -2025,10 +2031,6 @@ export interface QueryCopilotUiRequest extends QueryCopilotResquestBase {
   tokens?: CopilotToken[];
 }
 
-export interface PublicQueryCopilotUiRequest {
-  goal: string;
-}
-
 export type QueryCopilotRequest =
   | QueryCopilotChatRequest
   | QueryCopilotCodeRequest
@@ -2045,11 +2047,6 @@ export interface QueryCopilotResponse {
 export type QueryCopilotUiResponse = {
   data: CopilotUiActions;
   copilotInteractionId: CopilotInteractionId;
-};
-
-export type PublicQueryCopilotUiResponse = {
-  data: CopilotUiActions;
-  id: PublicCopilotInteractionId;
 };
 
 export type CopilotResponseData = {

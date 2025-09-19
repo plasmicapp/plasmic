@@ -1458,7 +1458,6 @@
     {
       "projectId": "29njzcsBEPR4koRddw4knF",
       "projectName": "[PlasmicKit] Alert Banner",
-      "projectBranchName": "feat/hide-auto-open",
       "version": "latest",
       "cssFilePath": "wab/client/plasmic/PP__plasmickit_alert_banner.module.css",
       "components": [

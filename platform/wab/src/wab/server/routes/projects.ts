@@ -30,6 +30,7 @@ import {
   PkgVersion,
   Project,
   ProjectRevision,
+  User,
 } from "@/wab/server/entities/Entities";
 import "@/wab/server/extensions";
 import { logger } from "@/wab/server/observability";
@@ -66,7 +67,7 @@ import {
   CloneProjectRequest,
   CreateBranchRequest,
   CreateBranchResponse,
-  CreateSiteRequest,
+  CreateProjectRequest,
   DataSourceId,
   ListBranchesResponse,
   MainBranchId,
@@ -234,7 +235,7 @@ export async function createProject(req: Request, res: Response) {
   const mgr = userDbMgr(req);
   const { bundler } = req;
 
-  const { name, workspaceId }: CreateSiteRequest = req.body;
+  const { name, workspaceId, isPublic }: CreateProjectRequest = req.body;
 
   const site = createSite();
 
@@ -243,7 +244,7 @@ export async function createProject(req: Request, res: Response) {
     bundler,
     name: name ?? "Untitled Project",
     workspaceId,
-    ownerEmail: req.user?.email,
+    isPublic,
   });
   req.analytics.track("Create project", {
     projectId: project.id,
@@ -275,7 +276,6 @@ export async function createProjectWithHostlessPackages(
     site,
     bundler,
     name: "Untitled Project",
-    ownerEmail: req.user?.email,
   });
 
   req.promLabels.projectId = project.id;
@@ -1420,9 +1420,15 @@ export async function getProjectRev(req: Request, res: Response) {
   );
   const modelVersion = await getCurrentModelVersion(req.txMgr);
   const hostlessDataVersion = (await mgr.getHostlessVersion()).versionCount;
-  const owner = await mgr.tryGetUserById(
-    ensure(project.createdById, "Unexpected nullish project.createdById")
-  );
+  let owner: User | undefined;
+  if (!project.createdById) {
+    const actorId = mgr.tryGetNormalActorId();
+    if (actorId) {
+      await mgr.claimPublicProject(project.id, actorId);
+    }
+  } else {
+    owner = await mgr.tryGetUserById(project.createdById);
+  }
   const latestRevisionSynced = await getLatestRevisionSynced(mgr, projectId);
   // Make sure this revision bundle is up to date.
   if (!dontMigrateProject) {
@@ -1584,9 +1590,9 @@ export async function updateProject(req: Request, res: Response) {
         );
       })
     : await mgr.getPermissionsForProject(projectId);
-  const owner = await mgr.tryGetUserById(
-    ensure(project.createdById, "Unexpected nullish project.createdById")
-  );
+  const owner = project.createdById
+    ? await mgr.getUserById(project.createdById)
+    : undefined;
   const latestRevisionSynced = await getLatestRevisionSynced(mgr, projectId);
   const affectedResourceIds = [
     createTaggedResourceId("project", project.id),

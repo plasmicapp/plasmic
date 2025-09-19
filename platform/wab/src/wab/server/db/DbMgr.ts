@@ -170,6 +170,7 @@ import {
   accessLevelRank,
   ensureGrantableAccessLevel,
   humanLevel,
+  isUnownedProject,
 } from "@/wab/shared/EntUtil";
 import {
   ORGANIZATION_CAP,
@@ -2545,7 +2546,8 @@ export class DbMgr implements MigrationDbMgr {
       }`;
 
       const satisfied =
-        accessLevelRank(selfLevel) >= accessLevelRank(requireLevel);
+        accessLevelRank(selfLevel) >= accessLevelRank(requireLevel) ||
+        isUnownedProject(project); // project with no owner and public can be edited
       if (!satisfied && this.projectIdsAndTokens) {
         throw new ForbiddenError(
           "Project ID and/or tokens are incorrect (and/or user has insufficient permissions)"
@@ -2602,6 +2604,7 @@ export class DbMgr implements MigrationDbMgr {
     clonedFromProjectId,
     projectId,
     inviteOnly,
+    isPublic = false,
   }: {
     name: string;
     workspaceId?: WorkspaceId;
@@ -2610,8 +2613,9 @@ export class DbMgr implements MigrationDbMgr {
     clonedFromProjectId?: string;
     projectId?: string;
     inviteOnly?: boolean;
+    isPublic?: boolean;
   }) {
-    this.checkNotAnonUser();
+    !isPublic && this.checkNotAnonUser();
     if (_workspaceId) {
       await this.checkWorkspacePerms(
         _workspaceId,
@@ -2644,7 +2648,7 @@ export class DbMgr implements MigrationDbMgr {
       name,
       defaultAccessLevel: "viewer",
       inviteOnly: inviteOnly ?? true,
-      readableByPublic: false,
+      readableByPublic: isPublic,
       hostUrl: hostUrl ?? null,
       projectApiToken: generateSomeApiToken(),
       clonedFromProjectId,
@@ -2662,6 +2666,35 @@ export class DbMgr implements MigrationDbMgr {
       );
     }
     return { project, rev };
+  }
+
+  async claimPublicProject(projectId: ProjectId, userId: UserId) {
+    const project = await findExactlyOne(this.projects(), {
+      id: projectId,
+    });
+    if (project.createdById !== null || !this.checkUserIdIsSelf(userId)) {
+      throw new ForbiddenError("Cannot update project createdBy");
+    }
+    const personalTeam = await findExactlyOne(this.teams(), {
+      personalTeamOwnerId: userId,
+    });
+
+    const personalWorkspace = await findExactlyOne(this.workspaces(), {
+      teamId: personalTeam.id,
+    });
+    Object.assign(project, this.stampUpdate(), {
+      createdById: userId,
+      workspaceId: personalWorkspace.id,
+    });
+    await this.entMgr.save(project);
+    const user = await this.getUserById(userId);
+    const ownerPermission = this.permissions().create({
+      ...this.stampNew(),
+      ...{ user },
+      projectId,
+      accessLevel: "owner",
+    });
+    await this.entMgr.save(ownerPermission);
   }
 
   async updateProjectOwner(projectId: ProjectId, userId: UserId) {
@@ -7654,19 +7687,21 @@ export class DbMgr implements MigrationDbMgr {
     bundler,
     name,
     workspaceId,
-    ownerEmail,
+    isPublic,
   }: {
     site: Site;
     bundler: Bundler;
     name: string;
     workspaceId?: WorkspaceId;
     ownerEmail?: string;
+    isPublic?: boolean;
   }) {
     const { project, rev } = await this.createProject({
       name: name,
       workspaceId,
+      isPublic,
     });
-    const rev2 = await this.saveProjectRev({
+    const newRevision = await this.saveProjectRev({
       projectId: project.id,
       data: JSON.stringify(
         bundler.bundle(site, project.id, await getLastBundleVersion())
@@ -7675,7 +7710,7 @@ export class DbMgr implements MigrationDbMgr {
     });
     return {
       project,
-      rev: rev2,
+      rev: newRevision,
     };
   }
 

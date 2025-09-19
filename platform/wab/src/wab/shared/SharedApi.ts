@@ -73,7 +73,8 @@ import {
   ConfirmEmailResponse,
   CreateBranchRequest,
   CreateBranchResponse,
-  CreateSiteRequest,
+  CreateProjectRequest,
+  CreateProjectResponse,
   CreateTeamResponse,
   CreateWorkspaceRequest,
   CreateWorkspaceResponse,
@@ -384,13 +385,6 @@ export abstract class SharedApi {
     return this.get("/projects", data);
   }
 
-  createSite(workspaceId?: WorkspaceId) {
-    return this.post(
-      "/projects",
-      ensureType<CreateSiteRequest>({ workspaceId })
-    );
-  }
-
   deleteSite(siteId) {
     return this.delete(`/projects/${siteId}`);
   }
@@ -474,6 +468,10 @@ export abstract class SharedApi {
       `/projects/${projectId}/clone`,
       ensureType<CloneProjectRequest>({ ...(opts ?? {}) })
     );
+  }
+
+  createProject(data: CreateProjectRequest): Promise<CreateProjectResponse> {
+    return this.post("/projects", ensureType<CreateProjectRequest>(data));
   }
 
   clonePublishedTemplate(
@@ -2285,6 +2283,12 @@ export abstract class SharedApi {
     request: QueryCopilotUiRequest
   ): Promise<QueryCopilotUiResponse> {
     return this.post(`/copilot/ui`, request, true);
+  }
+
+  async queryPublicUiCopilot(
+    request: QueryCopilotUiRequest
+  ): Promise<QueryCopilotUiResponse> {
+    return this.post(`/copilot/ui/public`, request, true);
   }
 
   async sendCopilotFeedback(request: SendCopilotFeedbackRequest) {

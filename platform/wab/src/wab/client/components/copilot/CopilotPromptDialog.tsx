@@ -15,8 +15,13 @@ import {
 import { ImageUploader } from "@/wab/client/components/style-controls/ImageSelector";
 import ImageUploadsIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__ImageUploads";
 import { isSubmitKeyCombo } from "@/wab/client/shortcuts/shortcut";
-import { CopilotPrompt, CopilotType } from "@/wab/client/studio-ctx/StudioCtx";
+import {
+  CopilotPrompt,
+  CopilotType,
+  useStudioCtx,
+} from "@/wab/client/studio-ctx/StudioCtx";
 import { CopilotImageType, copilotImageTypes } from "@/wab/shared/ApiSchema";
+import { spawn } from "@/wab/shared/common";
 import { asDataUrl, parseDataUrl } from "@/wab/shared/data-urls";
 import cn from "classnames";
 import defer = setTimeout;
@@ -47,6 +52,7 @@ function CopilotPromptDialog<Response>({
     prompt: "",
     images: [],
   });
+  const studioCtx = useStudioCtx();
 
   const promptInputRef: React.Ref<HTMLTextAreaElement> =
     React.useRef<HTMLTextAreaElement>(null);
@@ -72,15 +78,41 @@ function CopilotPromptDialog<Response>({
     onCopilotSubmit,
   });
 
+  const starterPrompt = studioCtx.copilotStarterPrompt;
+
+  React.useEffect(() => {
+    if (starterPrompt) {
+      const newCopilotPrompt = {
+        prompt: starterPrompt,
+        images: [],
+      };
+      setCopilotPrompt(newCopilotPrompt);
+      spawn(submitPrompt(newCopilotPrompt));
+      studioCtx.app.showSpinner();
+    }
+  }, [starterPrompt]);
+
   React.useEffect(() => {
     defer(() => {
       if (response && applyBtnRef.current) {
-        applyBtnRef.current.focus();
+        if (starterPrompt) {
+          studioCtx.app.hideSpinner();
+          applyResponse(response);
+          studioCtx.copilotStarterPrompt = "";
+        } else {
+          applyBtnRef.current.focus();
+        }
       }
     });
   }, [response]);
 
   const isValidPrompt = copilotPrompt.prompt.trim() && state !== "loading";
+
+  const applyResponse = (historyResponse: Response) => {
+    onCopilotApply(historyResponse);
+    onDialogOpenChange?.(false);
+    setShowHistory(false);
+  };
 
   return (
     <PlasmicCopilotPromptDialog
@@ -153,6 +185,7 @@ function CopilotPromptDialog<Response>({
         },
         showImageUpload,
         textAreaInput: {
+          value: copilotPrompt.prompt,
           maxLength,
           rows: 1,
           autoFocus: true,
@@ -214,16 +247,10 @@ function CopilotPromptDialog<Response>({
                 key={id}
                 copilotInteractionId={id}
                 applyBtn={{
-                  onClick: () => {
-                    onCopilotApply(historyResponse);
-                    onDialogOpenChange?.(false);
-                    setShowHistory(false);
-                  },
+                  onClick: () => applyResponse(historyResponse),
                   onKeyPress: (e) => {
                     if (e.key === "Enter") {
-                      onCopilotApply(historyResponse);
-                      onDialogOpenChange?.(false);
-                      setShowHistory(false);
+                      applyResponse(historyResponse);
                     }
                   },
                 }}
@@ -253,16 +280,10 @@ function CopilotPromptDialog<Response>({
                         props: {
                           key: copilotInteractionId,
                           applyBtn: {
-                            onClick: () => {
-                              onCopilotApply(response);
-                              onDialogOpenChange?.(false);
-                              setShowHistory(false);
-                            },
+                            onClick: () => applyResponse(response),
                             onKeyPress: (e) => {
                               if (e.key === "Enter") {
-                                onCopilotApply(response);
-                                onDialogOpenChange?.(false);
-                                setShowHistory(false);
+                                applyResponse(response);
                               }
                             },
                             ref: applyBtnRef,

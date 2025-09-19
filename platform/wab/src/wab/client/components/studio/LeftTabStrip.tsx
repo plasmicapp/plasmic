@@ -327,10 +327,12 @@ Help
           type: "item",
           icon: <HelpsvgIcon />,
           label: "Help",
-          href: fillRoute(APP_ROUTES.orgSupport, {
-            teamId: studioCtx.siteInfo.teamId!,
-          }),
-          cond: !isWhiteLabelUser,
+          href: studioCtx.siteInfo.teamId
+            ? fillRoute(APP_ROUTES.orgSupport, {
+                teamId: studioCtx.siteInfo.teamId!,
+              })
+            : undefined,
+          cond: Boolean(studioCtx.siteInfo.teamId) && !isWhiteLabelUser,
         },
       },
     },

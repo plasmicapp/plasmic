@@ -15,7 +15,7 @@ import {
 import type {
   ApiDataSource,
   ApiUpdateDataSourceRequest,
-  CreateSiteRequest,
+  CreateProjectRequest,
   SetSiteInfoReq,
 } from "../../src/wab/shared/ApiSchema";
 import {
@@ -1838,7 +1838,7 @@ export function setupNewProject({
     .request({
       url: "/api/v1/projects",
       method: "POST",
-      body: ensureType<CreateSiteRequest>({
+      body: ensureType<CreateProjectRequest>({
         name: name ? `[cypress] ${name}` : undefined,
       }),
     })
