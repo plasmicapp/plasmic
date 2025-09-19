@@ -1312,7 +1312,6 @@ export default PlasmicButton;
     import { _useGlobalVariants } from "./plasmic.tsx"; // plasmic-import: 1234567890/projectModule
     import { _useStyleTokens } from "./PlasmicStyleTokensProvider.tsx"; // plasmic-import: 1234567890/styleTokensProvider
     
-    
     import "@plasmicapp/react-web/lib/plasmic.css";
     import  "./plasmic__default_style.css"; // plasmic-import: global/defaultcss
     
@@ -2695,7 +2694,6 @@ export default PlasmicDataFetcherGrandParent;
     import { _useGlobalVariants } from "./plasmic.tsx"; // plasmic-import: 1234567890/projectModule
     import { _useStyleTokens } from "./PlasmicStyleTokensProvider.tsx"; // plasmic-import: 1234567890/styleTokensProvider
     
-    
     import "@plasmicapp/react-web/lib/plasmic.css";
     import  "./plasmic__default_style.css"; // plasmic-import: global/defaultcss
     
@@ -3059,7 +3057,6 @@ export default PlasmicDataFetcherParent;
     import { Fetcher } from "@plasmicapp/react-web/lib/data-sources";
     import { _useGlobalVariants } from "./plasmic.tsx"; // plasmic-import: 1234567890/projectModule
     import { _useStyleTokens } from "./PlasmicStyleTokensProvider.tsx"; // plasmic-import: 1234567890/styleTokensProvider
-    
     
     import "@plasmicapp/react-web/lib/plasmic.css";
     import  "./plasmic__default_style.css"; // plasmic-import: global/defaultcss
@@ -3438,7 +3435,6 @@ export default PlasmicHelloWorld;
     
     import { _useGlobalVariants } from "./plasmic.tsx"; // plasmic-import: 1234567890/projectModule
     import { _useStyleTokens } from "./PlasmicStyleTokensProvider.tsx"; // plasmic-import: 1234567890/styleTokensProvider
-    
     
     import "@plasmicapp/react-web/lib/plasmic.css";
     import  "./plasmic__default_style.css"; // plasmic-import: global/defaultcss
@@ -4404,7 +4400,6 @@ import { BaseHeading } from "@plasmicpkgs/react-aria/skinny/registerHeading";
     import { _useGlobalVariants } from "./plasmic.tsx"; // plasmic-import: 1234567890/projectModule
     import { _useStyleTokens } from "./PlasmicStyleTokensProvider.tsx"; // plasmic-import: 1234567890/styleTokensProvider
     
-    
     import "@plasmicapp/react-web/lib/plasmic.css";
     import  "./plasmic__default_style.css"; // plasmic-import: global/defaultcss
     
@@ -5060,7 +5055,6 @@ export default PlasmicMyOverlayArrow;
     import { _useGlobalVariants } from "./plasmic.tsx"; // plasmic-import: 1234567890/projectModule
     import { _useStyleTokens } from "./PlasmicStyleTokensProvider.tsx"; // plasmic-import: 1234567890/styleTokensProvider
     
-    
     import "@plasmicapp/react-web/lib/plasmic.css";
     import  "./plasmic__default_style.css"; // plasmic-import: global/defaultcss
     
@@ -5708,7 +5702,6 @@ import HelloWorld from "./HelloWorld";  // plasmic-import: 3khyLeywU1SP/componen
     import { _useGlobalVariants } from "./plasmic.tsx"; // plasmic-import: 1234567890/projectModule
     import { _useStyleTokens } from "./PlasmicStyleTokensProvider.tsx"; // plasmic-import: 1234567890/styleTokensProvider
     
-    
     import "@plasmicapp/react-web/lib/plasmic.css";
     import  "./plasmic__default_style.css"; // plasmic-import: global/defaultcss
     
@@ -6330,7 +6323,6 @@ export default PlasmicPopover;
     import { _useGlobalVariants } from "./plasmic.tsx"; // plasmic-import: 1234567890/projectModule
     import { _useStyleTokens } from "./PlasmicStyleTokensProvider.tsx"; // plasmic-import: 1234567890/styleTokensProvider
     
-    
     import "@plasmicapp/react-web/lib/plasmic.css";
     import  "./plasmic__default_style.css"; // plasmic-import: global/defaultcss
     
@@ -6902,7 +6894,6 @@ import Popover from "./Popover";  // plasmic-import: 6YHxfeslQ2vo/component
     import { _useGlobalVariants } from "./plasmic.tsx"; // plasmic-import: 1234567890/projectModule
     import { _useStyleTokens } from "./PlasmicStyleTokensProvider.tsx"; // plasmic-import: 1234567890/styleTokensProvider
     
-    
     import "@plasmicapp/react-web/lib/plasmic.css";
     import  "./plasmic__default_style.css"; // plasmic-import: global/defaultcss
     
@@ -7210,7 +7201,7 @@ popover: typeof Popover
 import { createStyleTokensProvider, createUseStyleTokens } from "@plasmicapp/react-web";
 import { _useGlobalVariants } from "./plasmic.tsx"; // plasmic-import: 1234567890/projectModule
 var data = {
-    base: "plasmic_tokens_1234567890",
+    base: "".concat("plasmic_tokens_1234567890"),
     varianted: [],
 };
 export var _useStyleTokens = createUseStyleTokens(data, _useGlobalVariants);
@@ -7231,12 +7222,14 @@ export var StyleTokensProvider = createStyleTokensProvider(data, _useGlobalVaria
     import { _useGlobalVariants } from "./plasmic.tsx"; // plasmic-import: 1234567890/projectModule
   
     
+
+    
   
     const data = {
-    base: "plasmic_tokens_1234567890",
+    base: \`\${"plasmic_tokens_1234567890"}\`,
     varianted: [
-      
-    ],
+    
+  ],
   };
   
     export const _useStyleTokens = createUseStyleTokens(
@@ -7579,7 +7572,6 @@ export default PlasmicTooltip;
     import { BaseTooltip } from "@plasmicpkgs/react-aria/skinny/registerTooltip";
     import { _useGlobalVariants } from "./plasmic.tsx"; // plasmic-import: 1234567890/projectModule
     import { _useStyleTokens } from "./PlasmicStyleTokensProvider.tsx"; // plasmic-import: 1234567890/styleTokensProvider
-    
     
     import "@plasmicapp/react-web/lib/plasmic.css";
     import  "./plasmic__default_style.css"; // plasmic-import: global/defaultcss
@@ -8197,6 +8189,7 @@ declare module '*.module.css' {
           --token-q8b6qKDtK1cO: 0.5rem; --plasmic-token-size-8: var(--token-q8b6qKDtK1cO); --token-NpZyVjRiZdqg: 1rem; --plasmic-token-size-16: var(--token-NpZyVjRiZdqg); --token-hI_1KF0x1IC1: 0.75rem; --plasmic-token-3: var(--token-hI_1KF0x1IC1); --token-i3U49r6ROHvf: #FFFFFF; --plasmic-token-basic-container-background: var(--token-i3U49r6ROHvf); --token-t3vITKRpSfAP: #2563EB; --plasmic-token-brand-brand: var(--token-t3vITKRpSfAP); --token-o6yJby_7a7Ou: Inter; --plasmic-token-sans-serif: var(--token-o6yJby_7a7Ou); --token-vDsSvK1cXIbX: 1rem; --plasmic-token-font-md: var(--token-vDsSvK1cXIbX); --token-OcwQZQDDtNIc: 1.25; --plasmic-token-line-height-md: var(--token-OcwQZQDDtNIc); --token-hUExw1ok-7My: 0rem; --plasmic-token-size-0: var(--token-hUExw1ok-7My); --token-2SGQcnOQi1BY: 0.375rem; --plasmic-token-size-6: var(--token-2SGQcnOQi1BY); --token-oUG3E93FPdG8: #374151; --plasmic-token-neutral-neutral: var(--token-oUG3E93FPdG8); --token-9nmyYGHszf0U: #DC2626; --plasmic-token-destructive-destructive: var(--token-9nmyYGHszf0U); --token-RbmHOSbtxZmu: #6B7280; --plasmic-token-muted-muted: var(--token-RbmHOSbtxZmu); --token-oQn8gHl2FNKG: 0.25rem; --plasmic-token-size-4: var(--token-oQn8gHl2FNKG); --token-Ao4NZQI8FNby: 0.75rem; --plasmic-token-font-sm: var(--token-Ao4NZQI8FNby); --token-PITewDT1atQM: 1; --plasmic-token-line-height-sm: var(--token-PITewDT1atQM); --token-lA8wtoWJjrz7: 1.25rem; --plasmic-token-font-lg: var(--token-lA8wtoWJjrz7); --token-6zoJ_0lAlBNf: 1.4; --plasmic-token-line-height-lg: var(--token-6zoJ_0lAlBNf); --token-f1EInfSh9bJ1: 0.125rem; --plasmic-token-size-2: var(--token-f1EInfSh9bJ1); --token-pjPGWdmPsMUz: #16A34A; --plasmic-token-success-success: var(--token-pjPGWdmPsMUz); --token-b43TAFXK9Pxn: #FACC15; --plasmic-token-warning-warning: var(--token-b43TAFXK9Pxn); --token-cuGgthrhEq0n: #DBEAFE; --plasmic-token-brand-brand-soft: var(--token-cuGgthrhEq0n); --token-c-Ge-TPxBoxs: #E5E7EB; --plasmic-token-neutral-neutral-soft: var(--token-c-Ge-TPxBoxs); --token-oaolgBFC7x92: #F3F4F6; --plasmic-token-muted-muted-soft: var(--token-oaolgBFC7x92); --token-OHf2f9VUoB_O: #DCFCE7; --plasmic-token-success-success-soft: var(--token-OHf2f9VUoB_O); --token-gsX_1U5GfPYR: #FEF9C3; --plasmic-token-warning-warning-soft: var(--token-gsX_1U5GfPYR); --token-hHWiWZ2Rpr4b: #FEE2E2; --plasmic-token-destructive-destructive-soft: var(--token-hHWiWZ2Rpr4b); --token-ULH4hQ23d_Sv: #93C5FD; --plasmic-token-brand-brand-border: var(--token-ULH4hQ23d_Sv); --token-ScdXHpuBD4ei: #D1D5DB; --plasmic-token-neutral-neutral-border: var(--token-ScdXHpuBD4ei); --token-FIQKkwksz5FV: #E5E7EB; --plasmic-token-muted-muted-border: var(--token-FIQKkwksz5FV); --token-4pJCxGA_Sa7p: #86EFAC; --plasmic-token-success-success-border: var(--token-4pJCxGA_Sa7p); --token-glWDd2lYSUSa: #FDE047; --plasmic-token-warning-warning-border: var(--token-glWDd2lYSUSa); --token-i87-wilVu3z7: #FCA5A5; --plasmic-token-destructive-destructive-border: var(--token-i87-wilVu3z7); --token-AT94SE3lDMCW: 0rem; --plasmic-token-0: var(--token-AT94SE3lDMCW); --token-RVAopeQq_eqC: #0000001A; --plasmic-token-interaction-hovered: var(--token-RVAopeQq_eqC); --token-eccLB1btakvR: #FFFFFF40; --plasmic-token-interaction-disabled: var(--token-eccLB1btakvR); --token-W3OCHsj5ohvN: #00000033; --plasmic-token-interaction-pressed: var(--token-W3OCHsj5ohvN); --token-wlM-_lPQTiUn: 0.625rem; --plasmic-token-size-10: var(--token-wlM-_lPQTiUn); --token-IZkbCcBWqxrg: 0.75rem; --plasmic-token-size-12: var(--token-IZkbCcBWqxrg); --token-khAiiMlnWfNQ: #EFF6FF; --plasmic-token-brand-brand-foreground: var(--token-khAiiMlnWfNQ); --token-XZj0GlRukXD4: #F9FAFB; --plasmic-token-neutral-neutral-foreground: var(--token-XZj0GlRukXD4); --token-V7R45kYSsL2g: #E5E7EB; --plasmic-token-muted-muted-foreground: var(--token-V7R45kYSsL2g); --token-d71RMbT3EJe6: #1E3A8A; --plasmic-token-brand-brand-soft-foreground: var(--token-d71RMbT3EJe6); --token-9A3Vv0G2WK2I: #422006; --plasmic-token-warning-warning-foreground: var(--token-9A3Vv0G2WK2I); --token-q5_E41GOjKS6: #F0FDF4; --plasmic-token-success-success-foreground: var(--token-q5_E41GOjKS6); --token-DI2Jhin1tpeq: #FEF2F2; --plasmic-token-destructive-destructive-foreground: var(--token-DI2Jhin1tpeq); --token-LDvOzPYSOKeL: #111827; --plasmic-token-neutral-neutral-soft-foreground: var(--token-LDvOzPYSOKeL); --token-XsbmIM-jiG1T: #6B7280; --plasmic-token-muted-muted-soft-foreground: var(--token-XsbmIM-jiG1T); --token-jgnKGJBIrlpY: #14532D; --plasmic-token-success-success-soft-foreground: var(--token-jgnKGJBIrlpY); --token-nm_aC4o1kFsY: #713F12; --plasmic-token-warning-warning-soft-foreground: var(--token-nm_aC4o1kFsY); --token-Mwf0LwBRtoUP: #7F1D1D; --plasmic-token-destructive-destructive-soft-foreground: var(--token-Mwf0LwBRtoUP); --token-f1PNVAbV3p2v: #030712; --plasmic-token-basic-text-primary: var(--token-f1PNVAbV3p2v); --token-qF9YcyLJz1G9: #ffffff; --plasmic-token-unnamed-style-token: var(--token-qF9YcyLJz1G9); --token-SX0Pi19x0IVO: #171717; --plasmic-token-neutral-900: var(--token-SX0Pi19x0IVO); --token-YHjOGM4GdhsU: 0.5rem; --plasmic-token-2: var(--token-YHjOGM4GdhsU); --token-C1pr-KlZHji9: #0A0A0A80; --plasmic-token-basic-overlay-background: var(--token-C1pr-KlZHji9); --token-h43DmGzvrmlx: 1.5rem; --plasmic-token-size-24: var(--token-h43DmGzvrmlx)
         }
         
+      
       
   .plasmic_tokens_1234567890 {
     --plsmc-standard-width: 800px;
@@ -9948,7 +9941,6 @@ flex-shrink: 0;
     import { _useGlobalVariants } from "./plasmic.tsx"; // plasmic-import: 1234567890/projectModule
     import { _useStyleTokens } from "./PlasmicStyleTokensProvider.tsx"; // plasmic-import: 1234567890/styleTokensProvider
     
-    
     import "@plasmicapp/react-web/lib/plasmic.css";
     
     
@@ -11329,7 +11321,6 @@ export default PlasmicDataFetcherGrandParent;
     import { _useGlobalVariants } from "./plasmic.tsx"; // plasmic-import: 1234567890/projectModule
     import { _useStyleTokens } from "./PlasmicStyleTokensProvider.tsx"; // plasmic-import: 1234567890/styleTokensProvider
     
-    
     import "@plasmicapp/react-web/lib/plasmic.css";
     
     
@@ -11690,7 +11681,6 @@ position: relative;
     import { Fetcher } from "@plasmicapp/react-web/lib/data-sources";
     import { _useGlobalVariants } from "./plasmic.tsx"; // plasmic-import: 1234567890/projectModule
     import { _useStyleTokens } from "./PlasmicStyleTokensProvider.tsx"; // plasmic-import: 1234567890/styleTokensProvider
-    
     
     import "@plasmicapp/react-web/lib/plasmic.css";
     
@@ -12068,7 +12058,6 @@ min-width: 0;
     
     import { _useGlobalVariants } from "./plasmic.tsx"; // plasmic-import: 1234567890/projectModule
     import { _useStyleTokens } from "./PlasmicStyleTokensProvider.tsx"; // plasmic-import: 1234567890/styleTokensProvider
-    
     
     import "@plasmicapp/react-web/lib/plasmic.css";
     
@@ -13034,7 +13023,6 @@ import { BaseHeading } from "@plasmicpkgs/react-aria/skinny/registerHeading";
     import { _useGlobalVariants } from "./plasmic.tsx"; // plasmic-import: 1234567890/projectModule
     import { _useStyleTokens } from "./PlasmicStyleTokensProvider.tsx"; // plasmic-import: 1234567890/styleTokensProvider
     
-    
     import "@plasmicapp/react-web/lib/plasmic.css";
     
     
@@ -13689,7 +13677,6 @@ border-left: 5px solid transparent;
     import { _useGlobalVariants } from "./plasmic.tsx"; // plasmic-import: 1234567890/projectModule
     import { _useStyleTokens } from "./PlasmicStyleTokensProvider.tsx"; // plasmic-import: 1234567890/styleTokensProvider
     
-    
     import "@plasmicapp/react-web/lib/plasmic.css";
     
     
@@ -14336,7 +14323,6 @@ import HelloWorld from "./HelloWorld";  // plasmic-import: 3khyLeywU1SP/componen
     import { _useGlobalVariants } from "./plasmic.tsx"; // plasmic-import: 1234567890/projectModule
     import { _useStyleTokens } from "./PlasmicStyleTokensProvider.tsx"; // plasmic-import: 1234567890/styleTokensProvider
     
-    
     import "@plasmicapp/react-web/lib/plasmic.css";
     
     
@@ -14957,7 +14943,6 @@ font-weight: 500;
     import { _useGlobalVariants } from "./plasmic.tsx"; // plasmic-import: 1234567890/projectModule
     import { _useStyleTokens } from "./PlasmicStyleTokensProvider.tsx"; // plasmic-import: 1234567890/styleTokensProvider
     
-    
     import "@plasmicapp/react-web/lib/plasmic.css";
     
     
@@ -15528,7 +15513,6 @@ import Popover from "./Popover";  // plasmic-import: 6YHxfeslQ2vo/component
     import { _useGlobalVariants } from "./plasmic.tsx"; // plasmic-import: 1234567890/projectModule
     import { _useStyleTokens } from "./PlasmicStyleTokensProvider.tsx"; // plasmic-import: 1234567890/styleTokensProvider
     
-    
     import "@plasmicapp/react-web/lib/plasmic.css";
     
     
@@ -15837,7 +15821,7 @@ import { createStyleTokensProvider, createUseStyleTokens } from "@plasmicapp/rea
 import { _useGlobalVariants } from "./plasmic.tsx"; // plasmic-import: 1234567890/projectModule
 import projectcss from "./plasmic.module.css"; // plasmic-import: 1234567890/projectcss
 var data = {
-    base: projectcss.plasmic_tokens,
+    base: "".concat(projectcss.plasmic_tokens),
     varianted: [],
 };
 export var _useStyleTokens = createUseStyleTokens(data, _useGlobalVariants);
@@ -15858,12 +15842,14 @@ export var StyleTokensProvider = createStyleTokensProvider(data, _useGlobalVaria
     import { _useGlobalVariants } from "./plasmic.tsx"; // plasmic-import: 1234567890/projectModule
   
     import projectcss from "./plasmic.module.css"; // plasmic-import: 1234567890/projectcss
+
+    
   
     const data = {
-    base: projectcss.plasmic_tokens,
+    base: \`\${projectcss.plasmic_tokens}\`,
     varianted: [
-      
-    ],
+    
+  ],
   };
   
     export const _useStyleTokens = createUseStyleTokens(
@@ -16205,7 +16191,6 @@ line-height: var(--token-OcwQZQDDtNIc);
     import { BaseTooltip } from "@plasmicpkgs/react-aria/skinny/registerTooltip";
     import { _useGlobalVariants } from "./plasmic.tsx"; // plasmic-import: 1234567890/projectModule
     import { _useStyleTokens } from "./PlasmicStyleTokensProvider.tsx"; // plasmic-import: 1234567890/styleTokensProvider
-    
     
     import "@plasmicapp/react-web/lib/plasmic.css";
     
@@ -16833,6 +16818,7 @@ export var _useGlobalVariants = createUseGlobalVariants({});
           --token-q8b6qKDtK1cO: 0.5rem; --plasmic-token-size-8: var(--token-q8b6qKDtK1cO); --token-NpZyVjRiZdqg: 1rem; --plasmic-token-size-16: var(--token-NpZyVjRiZdqg); --token-hI_1KF0x1IC1: 0.75rem; --plasmic-token-3: var(--token-hI_1KF0x1IC1); --token-i3U49r6ROHvf: #FFFFFF; --plasmic-token-basic-container-background: var(--token-i3U49r6ROHvf); --token-t3vITKRpSfAP: #2563EB; --plasmic-token-brand-brand: var(--token-t3vITKRpSfAP); --token-o6yJby_7a7Ou: Inter; --plasmic-token-sans-serif: var(--token-o6yJby_7a7Ou); --token-vDsSvK1cXIbX: 1rem; --plasmic-token-font-md: var(--token-vDsSvK1cXIbX); --token-OcwQZQDDtNIc: 1.25; --plasmic-token-line-height-md: var(--token-OcwQZQDDtNIc); --token-hUExw1ok-7My: 0rem; --plasmic-token-size-0: var(--token-hUExw1ok-7My); --token-2SGQcnOQi1BY: 0.375rem; --plasmic-token-size-6: var(--token-2SGQcnOQi1BY); --token-oUG3E93FPdG8: #374151; --plasmic-token-neutral-neutral: var(--token-oUG3E93FPdG8); --token-9nmyYGHszf0U: #DC2626; --plasmic-token-destructive-destructive: var(--token-9nmyYGHszf0U); --token-RbmHOSbtxZmu: #6B7280; --plasmic-token-muted-muted: var(--token-RbmHOSbtxZmu); --token-oQn8gHl2FNKG: 0.25rem; --plasmic-token-size-4: var(--token-oQn8gHl2FNKG); --token-Ao4NZQI8FNby: 0.75rem; --plasmic-token-font-sm: var(--token-Ao4NZQI8FNby); --token-PITewDT1atQM: 1; --plasmic-token-line-height-sm: var(--token-PITewDT1atQM); --token-lA8wtoWJjrz7: 1.25rem; --plasmic-token-font-lg: var(--token-lA8wtoWJjrz7); --token-6zoJ_0lAlBNf: 1.4; --plasmic-token-line-height-lg: var(--token-6zoJ_0lAlBNf); --token-f1EInfSh9bJ1: 0.125rem; --plasmic-token-size-2: var(--token-f1EInfSh9bJ1); --token-pjPGWdmPsMUz: #16A34A; --plasmic-token-success-success: var(--token-pjPGWdmPsMUz); --token-b43TAFXK9Pxn: #FACC15; --plasmic-token-warning-warning: var(--token-b43TAFXK9Pxn); --token-cuGgthrhEq0n: #DBEAFE; --plasmic-token-brand-brand-soft: var(--token-cuGgthrhEq0n); --token-c-Ge-TPxBoxs: #E5E7EB; --plasmic-token-neutral-neutral-soft: var(--token-c-Ge-TPxBoxs); --token-oaolgBFC7x92: #F3F4F6; --plasmic-token-muted-muted-soft: var(--token-oaolgBFC7x92); --token-OHf2f9VUoB_O: #DCFCE7; --plasmic-token-success-success-soft: var(--token-OHf2f9VUoB_O); --token-gsX_1U5GfPYR: #FEF9C3; --plasmic-token-warning-warning-soft: var(--token-gsX_1U5GfPYR); --token-hHWiWZ2Rpr4b: #FEE2E2; --plasmic-token-destructive-destructive-soft: var(--token-hHWiWZ2Rpr4b); --token-ULH4hQ23d_Sv: #93C5FD; --plasmic-token-brand-brand-border: var(--token-ULH4hQ23d_Sv); --token-ScdXHpuBD4ei: #D1D5DB; --plasmic-token-neutral-neutral-border: var(--token-ScdXHpuBD4ei); --token-FIQKkwksz5FV: #E5E7EB; --plasmic-token-muted-muted-border: var(--token-FIQKkwksz5FV); --token-4pJCxGA_Sa7p: #86EFAC; --plasmic-token-success-success-border: var(--token-4pJCxGA_Sa7p); --token-glWDd2lYSUSa: #FDE047; --plasmic-token-warning-warning-border: var(--token-glWDd2lYSUSa); --token-i87-wilVu3z7: #FCA5A5; --plasmic-token-destructive-destructive-border: var(--token-i87-wilVu3z7); --token-AT94SE3lDMCW: 0rem; --plasmic-token-0: var(--token-AT94SE3lDMCW); --token-RVAopeQq_eqC: #0000001A; --plasmic-token-interaction-hovered: var(--token-RVAopeQq_eqC); --token-eccLB1btakvR: #FFFFFF40; --plasmic-token-interaction-disabled: var(--token-eccLB1btakvR); --token-W3OCHsj5ohvN: #00000033; --plasmic-token-interaction-pressed: var(--token-W3OCHsj5ohvN); --token-wlM-_lPQTiUn: 0.625rem; --plasmic-token-size-10: var(--token-wlM-_lPQTiUn); --token-IZkbCcBWqxrg: 0.75rem; --plasmic-token-size-12: var(--token-IZkbCcBWqxrg); --token-khAiiMlnWfNQ: #EFF6FF; --plasmic-token-brand-brand-foreground: var(--token-khAiiMlnWfNQ); --token-XZj0GlRukXD4: #F9FAFB; --plasmic-token-neutral-neutral-foreground: var(--token-XZj0GlRukXD4); --token-V7R45kYSsL2g: #E5E7EB; --plasmic-token-muted-muted-foreground: var(--token-V7R45kYSsL2g); --token-d71RMbT3EJe6: #1E3A8A; --plasmic-token-brand-brand-soft-foreground: var(--token-d71RMbT3EJe6); --token-9A3Vv0G2WK2I: #422006; --plasmic-token-warning-warning-foreground: var(--token-9A3Vv0G2WK2I); --token-q5_E41GOjKS6: #F0FDF4; --plasmic-token-success-success-foreground: var(--token-q5_E41GOjKS6); --token-DI2Jhin1tpeq: #FEF2F2; --plasmic-token-destructive-destructive-foreground: var(--token-DI2Jhin1tpeq); --token-LDvOzPYSOKeL: #111827; --plasmic-token-neutral-neutral-soft-foreground: var(--token-LDvOzPYSOKeL); --token-XsbmIM-jiG1T: #6B7280; --plasmic-token-muted-muted-soft-foreground: var(--token-XsbmIM-jiG1T); --token-jgnKGJBIrlpY: #14532D; --plasmic-token-success-success-soft-foreground: var(--token-jgnKGJBIrlpY); --token-nm_aC4o1kFsY: #713F12; --plasmic-token-warning-warning-soft-foreground: var(--token-nm_aC4o1kFsY); --token-Mwf0LwBRtoUP: #7F1D1D; --plasmic-token-destructive-destructive-soft-foreground: var(--token-Mwf0LwBRtoUP); --token-f1PNVAbV3p2v: #030712; --plasmic-token-basic-text-primary: var(--token-f1PNVAbV3p2v); --token-qF9YcyLJz1G9: #ffffff; --plasmic-token-unnamed-style-token: var(--token-qF9YcyLJz1G9); --token-SX0Pi19x0IVO: #171717; --plasmic-token-neutral-900: var(--token-SX0Pi19x0IVO); --token-YHjOGM4GdhsU: 0.5rem; --plasmic-token-2: var(--token-YHjOGM4GdhsU); --token-C1pr-KlZHji9: #0A0A0A80; --plasmic-token-basic-overlay-background: var(--token-C1pr-KlZHji9); --token-h43DmGzvrmlx: 1.5rem; --plasmic-token-size-24: var(--token-h43DmGzvrmlx)
         }
         
+      
       
   .plasmic_tokens {
     --plsmc-standard-width: 800px;

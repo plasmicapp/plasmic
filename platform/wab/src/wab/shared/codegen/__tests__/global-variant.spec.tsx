@@ -7,7 +7,11 @@ import {
   ExportPlatform,
   StylesScheme,
 } from "@/wab/shared/codegen/types";
-import { Site } from "@/wab/shared/model/classes";
+import {
+  Site,
+  isKnownProjectDependency,
+  isKnownSite,
+} from "@/wab/shared/model/classes";
 import { createUseStyleTokens } from "@plasmicapp/react-web";
 import "@testing-library/jest-dom/extend-expect";
 import { getByText, render, renderHook } from "@testing-library/react";
@@ -16,8 +20,9 @@ import * as React from "react";
 import tmp from "tmp";
 
 describe("tests codegen for global variants", () => {
-  const bundle = _bundle[0][1] as Bundle;
-  const site = new Bundler().unbundle(bundle, "") as Site;
+  const bundler = new Bundler();
+  let site: Site;
+
   let platform: ExportPlatform;
   let codegenScheme: CodegenScheme;
   let stylesScheme: StylesScheme;
@@ -28,15 +33,26 @@ describe("tests codegen for global variants", () => {
 
   beforeEach(async () => {
     dir = tmp.dirSync({ unsafeCleanup: true });
-    ({ importFromProject, readFromProject, existsInProject } = await codegen(
-      dir.name,
-      site,
-      {
-        platform,
-        codegenScheme,
-        stylesScheme,
+
+    for (const bundle of _bundle as [string, Bundle][]) {
+      const unbundled = bundler.unbundle(bundle[1], bundle[0]);
+      if (isKnownSite(unbundled)) {
+        site = unbundled;
+      } else if (isKnownProjectDependency(unbundled)) {
+        site = unbundled.site;
       }
-    ));
+      // codegen generates code (files for the current bundle) and writes it to disk
+      // we codegen each bundle, so that dep imports in Main project can be resolved
+      ({ importFromProject, readFromProject, existsInProject } = await codegen(
+        dir.name,
+        site,
+        {
+          platform,
+          codegenScheme,
+          stylesScheme,
+        }
+      ));
+    }
 
     mockMatchMedia(false);
   });
@@ -55,22 +71,34 @@ describe("tests codegen for global variants", () => {
   const fgTokenId = "bdgzzwrsGChb";
   const fgTokenName = "foreground";
 
+  // This project also has an imported token: Primary
+  const primaryTokenId = "LR1mtv2riPWd";
+  const primaryTokenName = "primary";
+
   // Tokens are set in the base variant.
   const baseClass = "plasmic_tokens_1234567890";
+  const baseClassDep = "plasmic_tokens_nK82Sy7U95EbFvy7eCs7Ha";
+  const baseClassOverride = "plasmic_tokens_override_1234567890";
 
   // There's also a global variant group named "Theme" with a variant "Dark".
-  // Both background and foreground are changed in the "Dark" variant.
+  // Background, foreground, and primary are changed in the "Dark" variant.
   const darkClass = "global_theme_dark";
 
-  // There's 1 page with a root element, a h1 element, and a component (Comp) instance.
+  // The dependency has a global variant group named "Palette" with a variant "Neon".
+  // Primary is changed in the "Neon" variant
+  const neonClass = "global_palette_neon";
+
+  // There's 1 page with a root element, a h1 element, a h2 element, and a component (Comp) instance.
   // The root element uses the background token for the background,
   // and the h1 element uses the foreground token for the text color.
+  // and the h2 element uses the imported primary token for the text color.
   // and the Comp component does not use any tokens.
   const rootSelector = "#background";
   const rootClass = "Homepage__root__unGtd";
   const h1TextDesktop = "h1 text";
   const h1TextMobile = "h1 text (mobile)";
   const h1Class = "Homepage__h1__pobpL";
+  const h2Class = "Homepage__h2__eecEa";
   const compRootSelector = "#comp-root";
   const compRootClass = "Comp__root__v6FN";
 
@@ -86,12 +114,21 @@ describe("tests codegen for global variants", () => {
         parseRulePrelude: false,
         parseValue: false,
       });
+      // Token declarations
       expect(
         findRuleDecl(plasmicCss, `.${baseClass}`, `--token-${bgTokenId}`)
       ).toEqual("#EEEEEE");
       expect(
         findRuleDecl(plasmicCss, `.${baseClass}`, `--token-${fgTokenId}`)
       ).toEqual("#000000");
+      expect(
+        findRuleDecl(
+          plasmicCss,
+          `.${baseClassOverride}.${baseClassOverride}`,
+          `--token-${primaryTokenId}`
+        )
+      ).toEqual("#7F00FF");
+      // External token declarations
       expect(
         findRuleDecl(
           plasmicCss,
@@ -106,32 +143,56 @@ describe("tests codegen for global variants", () => {
           `--plasmic-token-${fgTokenName}`
         )
       ).toEqual(`var(--token-${fgTokenId})`);
+      // assert that external token declarations are not repeated for imported tokens
       expect(
         findRuleDecl(
           plasmicCss,
-          `.${baseClass}:where(.${darkClass})`,
+          `.${baseClassOverride}.${baseClassOverride}`,
+          `--plasmic-token-${primaryTokenName}`
+        )
+      ).toEqual(null);
+      // Varianted token declarations
+      expect(
+        findRuleDecl(
+          plasmicCss,
+          `.${baseClass}.${darkClass}.${darkClass}`,
           `--token-${bgTokenId}`
         )
       ).toEqual("#111111");
       expect(
         findRuleDecl(
           plasmicCss,
-          `.${baseClass}:where(.${darkClass})`,
+          `.${baseClass}.${darkClass}.${darkClass}`,
           `--token-${fgTokenId}`
         )
       ).toEqual("#FFFFFF");
+      expect(
+        findRuleDecl(
+          plasmicCss,
+          `.${baseClassOverride}.${baseClassOverride}.${darkClass}.${darkClass}`,
+          `--token-${primaryTokenId}`
+        )
+      ).toEqual("#DCC1F8");
+      // assert that the varianted tokens from imported global variant groups are not included in the main project
+      expect(
+        findRuleDecl(
+          plasmicCss,
+          `.${baseClassOverride}.${baseClassOverride}.${neonClass}.${neonClass}`,
+          `--token-${primaryTokenId}`
+        )
+      ).toEqual(null);
       // TODO: remove redundant declarations (https://linear.app/plasmic/issue/PLA-12247)
       expect(
         findRuleDecl(
           plasmicCss,
-          `.${baseClass}:where(.${darkClass})`,
+          `.${baseClass}.${darkClass}.${darkClass}`,
           `--plasmic-token-${bgTokenName}`
         )
       ).toEqual(`var(--token-${bgTokenId})`);
       expect(
         findRuleDecl(
           plasmicCss,
-          `.${baseClass}:where(.${darkClass})`,
+          `.${baseClass}.${darkClass}.${darkClass}`,
           `--plasmic-token-${fgTokenName}`
         )
       ).toEqual(`var(--token-${fgTokenId})`);
@@ -148,6 +209,9 @@ describe("tests codegen for global variants", () => {
       expect(findRuleDecl(pageCss, `.${h1Class}`, "color")).toEqual(
         `var(--token-${fgTokenId})`
       );
+      expect(findRuleDecl(pageCss, `.${h2Class}`, "color")).toEqual(
+        `var(--token-${primaryTokenId})`
+      );
     });
 
     it("codegens component, StyleTokensProvider, and useStyleTokens that react to global variants", async () => {
@@ -158,14 +222,17 @@ describe("tests codegen for global variants", () => {
 
       // Render with no global variants
       {
-        const expectedClasses = [baseClass];
-        const unexpectedClasses = [darkClass];
+        const expectedClasses = [
+          `${baseClass} ${baseClassOverride} ${baseClassDep}`,
+        ];
+        const unexpectedClasses = [darkClass, neonClass];
 
         const component = render(<Homepage />);
         expectHomepage(expectedClasses, unexpectedClasses);
         component.unmount();
 
         const useStyleTokens = renderHook(_useStyleTokens);
+
         expect(useStyleTokens.result.current).toEqual(expectedClasses);
         useStyleTokens.unmount();
 
@@ -183,8 +250,10 @@ describe("tests codegen for global variants", () => {
         "PlasmicGlobalVariant__Theme.js"
       );
       {
-        const expectedClasses = [baseClass];
-        const unexpectedClasses = [darkClass];
+        const expectedClasses = [
+          `${baseClass} ${baseClassOverride} ${baseClassDep}`,
+        ];
+        const unexpectedClasses = [darkClass, neonClass];
 
         const wrapper = ({ children }: React.PropsWithChildren) => {
           return (
@@ -216,14 +285,55 @@ describe("tests codegen for global variants", () => {
 
       // Render with global variant "Theme: Dark"
       {
-        const expectedClasses = [baseClass, darkClass];
-        const unexpectedClasses = [];
+        const expectedClasses = [
+          `${baseClass} ${baseClassOverride} ${baseClassDep}`,
+          darkClass,
+        ];
+        const unexpectedClasses = [neonClass];
 
         const wrapper = ({ children }: React.PropsWithChildren) => {
           return (
             <ThemeContextProvider value={"dark"}>
               {children}
             </ThemeContextProvider>
+          );
+        };
+
+        const component = render(<Homepage />, { wrapper });
+        expectHomepage(expectedClasses, unexpectedClasses);
+        component.unmount();
+
+        const useStyleTokens = renderHook(_useStyleTokens, { wrapper });
+        expect(useStyleTokens.result.current).toEqual(expectedClasses);
+        useStyleTokens.unmount();
+
+        const useStyleTokensFromProvider = renderHook(useStyleTokensTester, {
+          wrapper: ({ children }) =>
+            wrapper({
+              children: <StyleTokensProvider>{children}</StyleTokensProvider>,
+            }),
+        });
+        expect(useStyleTokensFromProvider.result.current).toEqual(
+          expectedClasses
+        );
+        useStyleTokensFromProvider.unmount();
+      }
+      // Render with global variant "Palette: Neon"
+      {
+        const { PaletteContextProvider } = await importFromProject(
+          "PlasmicGlobalVariant__Palette.js"
+        );
+        const expectedClasses = [
+          `${baseClass} ${baseClassOverride} ${baseClassDep}`,
+          neonClass,
+        ];
+        const unexpectedClasses = [darkClass];
+
+        const wrapper = ({ children }: React.PropsWithChildren) => {
+          return (
+            <PaletteContextProvider value={"neon"}>
+              {children}
+            </PaletteContextProvider>
           );
         };
 
@@ -301,14 +411,14 @@ describe("tests codegen for global variants", () => {
       expect(
         findRuleDecl(
           plasmicCss,
-          `.plasmic_tokens:where(.${darkClass})`,
+          `.plasmic_tokens.${darkClass}.${darkClass}`,
           `--token-${bgTokenId}`
         )
       ).toEqual("#111111");
       expect(
         findRuleDecl(
           plasmicCss,
-          `.plasmic_tokens:where(.${darkClass})`,
+          `.plasmic_tokens.${darkClass}.${darkClass}`,
           `--token-${fgTokenId}`
         )
       ).toEqual("#FFFFFF");
@@ -316,14 +426,14 @@ describe("tests codegen for global variants", () => {
       expect(
         findRuleDecl(
           plasmicCss,
-          `.plasmic_tokens:where(.${darkClass})`,
+          `.plasmic_tokens.${darkClass}.${darkClass}`,
           `--plasmic-token-${bgTokenName}`
         )
       ).toEqual(`var(--token-${bgTokenId})`);
       expect(
         findRuleDecl(
           plasmicCss,
-          `.plasmic_tokens:where(.${darkClass})`,
+          `.plasmic_tokens.${darkClass}.${darkClass}`,
           `--plasmic-token-${fgTokenName}`
         )
       ).toEqual(`var(--token-${fgTokenId})`);

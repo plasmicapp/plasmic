@@ -1,7 +1,11 @@
 import { Bundle, Bundler } from "@/wab/shared/bundler";
 import _bundle from "@/wab/shared/codegen/__tests__/bundles/aria-code-components.json";
 import { codegen } from "@/wab/shared/codegen/codegen-tests-util";
-import { Site } from "@/wab/shared/model/classes";
+import {
+  Site,
+  isKnownProjectDependency,
+  isKnownSite,
+} from "@/wab/shared/model/classes";
 import "core-js";
 import fs from "fs";
 import path from "path";
@@ -18,7 +22,12 @@ describe("aria code components example: codegen", () => {
   let dir: tmp.DirResult;
 
   for (const bundle of _bundle as [string, Bundle][]) {
-    site = bundler.unbundle(bundle[1], bundle[0]) as Site;
+    const unbundled = bundler.unbundle(bundle[1], bundle[0]);
+    if (isKnownSite(unbundled)) {
+      site = unbundled;
+    } else if (isKnownProjectDependency(unbundled)) {
+      site = unbundled.site;
+    }
   }
 
   beforeEach(() => {

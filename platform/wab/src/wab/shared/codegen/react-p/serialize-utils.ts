@@ -28,10 +28,7 @@ import {
   isCodeComponent,
   isPageComponent,
 } from "@/wab/shared/core/components";
-import {
-  CssProjectDependencies,
-  StyleTokenWithProjectInfo,
-} from "@/wab/shared/core/sites";
+import { CssProjectDependencies } from "@/wab/shared/core/sites";
 import {
   Component,
   ImageAsset,
@@ -48,6 +45,7 @@ export const defaultStyleCssImportName = "defaultcss";
 export const defaultStyleCssFileName = "plasmic__default_style.css";
 
 export const plasmicTokensClassNameKey = "plasmic_tokens";
+export const plasmicTokensOverrideClassNameKey = "plasmic_tokens_override";
 
 export function makeWabInstanceClassName(opts: Pick<ExportOpts, "targetEnv">) {
   return opts.targetEnv === "loader"
@@ -188,6 +186,33 @@ export function makePlasmicTokensClassName(
 }
 
 /**
+ * Elements with this class will receive the project's token overrides as CSS variables.
+ *
+ * Example output:
+ * ```
+ * .plasmic_tokens_override {
+ *   --token-token123: #ffffff;
+ *   --token-token456: #000000;
+ * }
+ * ```
+ */
+export function makePlasmicTokensOverrideClassName(
+  projectId: string,
+  opts: SetRequired<Partial<ExportOpts>, "targetEnv">
+) {
+  const useCssModules = opts?.stylesOpts?.scheme === "css-modules";
+  if (useCssModules) {
+    return plasmicTokensOverrideClassNameKey;
+  } else {
+    if (opts.targetEnv === "loader") {
+      return `${shortPlasmicPrefix}otns-${projectId.slice(0, 5)}`;
+    } else {
+      return `${plasmicTokensOverrideClassNameKey}_${projectId}`;
+    }
+  }
+}
+
+/**
  * Elements with this class will receive the project's mixins as CSS variables.
  *
  * The CSS variables are intended to be consumed both by Plasmic generated code
@@ -276,9 +301,7 @@ export function makeStylesImports(
               (dep) =>
                 `${cssImport(
                   `${makeCssProjectImportName(dep.projectName)}`,
-                  opts.idFileNames
-                    ? makeCssProjectIdFileName(dep.projectId)
-                    : makeCssProjectFileName()
+                  makeProjectCssFileName(dep.projectId, opts)
                 )} // plasmic-import: ${
                   dep.projectId
                 }/${projectStyleCssImportName}`
@@ -455,43 +478,29 @@ export function wrapStyleTokensProvider(content: string) {
 }
 
 export function makeStyleTokensProviderImports(
-  source: StyleTokensProviderBundle | StyleTokenWithProjectInfo,
+  source: StyleTokensProviderBundle,
   imports: {
     styleTokensProvider?: boolean;
     useStyleTokens?: boolean;
-  },
-  opts: Pick<ExportOpts, "targetEnv">
+  }
 ) {
   const importNames: string[] = [];
   if (imports.styleTokensProvider) {
     importNames.push(makeStyleTokensProviderName());
   }
   if (imports.useStyleTokens) {
-    let name = makeUseStyleTokensName();
-    if ("projectName" in source) {
-      name += ` as ${makeUseStyleTokensNameForDep(source.projectName)}`;
-    }
-    importNames.push(name);
+    importNames.push(makeUseStyleTokensName());
   }
   if (importNames.length === 0) {
     return "";
   }
 
-  if ("projectName" in source) {
-    return makeTaggedPlasmicImport(
-      importNames,
-      makeStyleTokensProviderFileName(source.projectId, opts),
-      source.projectId,
-      "styleTokensProvider"
-    );
-  } else {
-    return makeTaggedPlasmicImport(
-      importNames,
-      source.fileName,
-      source.id,
-      "styleTokensProvider"
-    );
-  }
+  return makeTaggedPlasmicImport(
+    importNames,
+    source.fileName,
+    source.id,
+    "styleTokensProvider"
+  );
 }
 
 export function makeProjectModuleImports(
@@ -717,16 +726,8 @@ export function makeStyleTokensClassNames() {
   return "styleTokensClassNames";
 }
 
-export function makeStyleTokensClassNamesForDep(projectName: string) {
-  return `${makeStyleTokensClassNames()}_${L.snakeCase(projectName)}`;
-}
-
 export function makeUseStyleTokensName() {
   return "_useStyleTokens";
-}
-
-export function makeUseStyleTokensNameForDep(projectName: string) {
-  return `useStyleTokens_${L.snakeCase(projectName)}`;
 }
 
 export function makeProjectModuleFileName(
@@ -761,6 +762,18 @@ export function makeCssFileName(
 ) {
   const useCssModules = exportOpts?.stylesOpts?.scheme === "css-modules";
   return `${baseName}${useCssModules ? ".module.css" : ".css"}`;
+}
+
+export function makeProjectCssFileName(
+  projectId: string,
+  exportOpts: Partial<ExportOpts>
+) {
+  return makeCssFileName(
+    exportOpts.idFileNames
+      ? makeCssProjectIdFileName(projectId)
+      : makeCssProjectFileName(),
+    exportOpts
+  );
 }
 
 export function getReactWebNamedImportsForRender() {

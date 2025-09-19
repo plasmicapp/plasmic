@@ -7,8 +7,8 @@ import {
 import { Component, Param } from "@/wab/shared/model/classes";
 import { capitalizeFirst, decapitalizeFirst } from "@/wab/shared/strs";
 import {
-  isValidJsIdentifier,
   JsIdentifier,
+  isValidJsIdentifier,
   pNotJsIdentifierChar,
 } from "@/wab/shared/utils/regex-js-identifier";
 import jsStringEscape from "js-string-escape";
@@ -196,4 +196,12 @@ export function plainTextToReact(text: string, removeInitialLineBreak = false) {
     .replace(/ $/gm, "&nbsp;")
     .replace(/ {2}/g, " &nbsp;")
     .replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, "$1<br />$2");
+}
+
+export function wrapInTemplateString(text: string) {
+  return "`" + text + "`";
+}
+
+export function embedInTemplateString(text: string) {
+  return "${" + text + "}";
 }

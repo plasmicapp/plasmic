@@ -188,7 +188,7 @@ import {
   partitionVariants,
 } from "@/wab/shared/variant-sort";
 import { appendVisibilityStylesForTpl } from "@/wab/shared/visibility-utils";
-import L, { camelCase, pick } from "lodash";
+import L, { camelCase, pick, repeat } from "lodash";
 import { CSSProperties } from "react";
 import { unquote } from "underscore.string";
 
@@ -2181,23 +2181,60 @@ export const makeMixinVarsRules = (
   ].join("\n");
 };
 
-const genTokenVarRuleWithVariants = (
-  token: FinalToken<StyleToken>,
-  vsh: VariantedStylesHelper = new VariantedStylesHelper()
-) => ({
-  varRule: `${getTokenVarName(token.base)}: ${vsh.getActiveTokenValue(token)}`,
-  plasmicExternalVarRule: `${getPlasmicExternalTokenVarName(
-    token.base
-  )}: ${mkTokenRef(token.base)}`,
-  userExternalVarRule:
-    isTokenNameValidCssVariable(token.base) &&
-    `${token.name}: ${mkTokenRef(token.base)}`,
-  vsh,
-});
+type TokenVarData = {
+  varRule: string;
+  plasmicExternalVarRule: string;
+  userExternalVarRule?: string;
+  vsh: VariantedStylesHelper;
+};
 
-export const makeCssTokenVarsRules = (
+export const genTokenVarDataWithVariants = (
+  token: FinalToken<StyleToken>,
+  site: Site
+): TokenVarData[] => {
+  const genData = (vsh = new VariantedStylesHelper()) => ({
+    varRule: `${getTokenVarName(token.base)}: ${vsh.getActiveTokenValue(
+      token
+    )}`,
+    plasmicExternalVarRule: `${getPlasmicExternalTokenVarName(
+      token.base
+    )}: ${mkTokenRef(token.base)}`,
+    userExternalVarRule: isTokenNameValidCssVariable(token.base)
+      ? `${token.name}: ${mkTokenRef(token.base)}`
+      : undefined,
+    vsh,
+  });
+  return [
+    genData(),
+    ...token.variantedValues.map((v) =>
+      genData(new VariantedStylesHelper(site, v.variants))
+    ),
+  ];
+};
+
+/**
+ * Generates CSS rule sets for the given token variables.
+ *
+ * Outputs:
+ *
+ * ```
+ * rootSelector {
+ *   --token-uuid: value;
+ *   --plasmic-token-name: var(--token-uuid);
+ *   --user-token-name: var(--token-uuid);
+ * }
+ *
+ * // a rule set for each relevant varianted set of values. E.g.
+ * rootSelector.variant.variant {
+ *   --token-uuid: value;
+ *   --plasmic-token-name: var(--token-uuid);
+ *   --user-token-name: var(--token-uuid);
+ * }
+ * ```
+ */
+export const makeCssTokenVarsRuleSets = (
   site: Site,
-  tokens: ReadonlyArray<FinalToken<StyleToken>>,
+  tokenVars: ReadonlyArray<TokenVarData>,
   rootCssSelector: string,
   opts: {
     targetEnv: TargetEnv;
@@ -2205,16 +2242,6 @@ export const makeCssTokenVarsRules = (
     prefixClassName?: string;
   }
 ) => {
-  const tokenVars = tokens.flatMap((t) => [
-    genTokenVarRuleWithVariants(t),
-    ...t.variantedValues.map((v) =>
-      genTokenVarRuleWithVariants(
-        t,
-        new VariantedStylesHelper(site, v.variants)
-      )
-    ),
-  ]);
-
   const groupedTokenVars = L.groupBy(tokenVars, (el) => el.vsh.key());
 
   const sorter = makeGlobalVariantComboSorter(site);
@@ -2251,19 +2278,19 @@ export const makeCssTokenVarsRules = (
         }
         ${rootCssSelector}${
           nonScreenGlobalVariants.length > 0
-            ? `:where(.${makeCssClassNameForVariantCombo(
-                nonScreenGlobalVariants,
-                {
+            ? repeat(
+                `.${makeCssClassNameForVariantCombo(nonScreenGlobalVariants, {
                   targetEnv: opts.targetEnv,
                   prefix: opts?.prefixClassName,
-                }
-              )})`
+                })}`,
+                2
+              )
             : ""
         } {
           ${groupedTokenVars[key]
             .flatMap((t) => [
               t.varRule,
-              t.plasmicExternalVarRule,
+              ...(opts.generateExternalToken ? [t.plasmicExternalVarRule] : []),
               ...(t.userExternalVarRule ? [t.userExternalVarRule] : []),
             ])
             .join("; ")}
@@ -2282,9 +2309,9 @@ export const mkCssVarsRuleForCanvas = (
   activeTheme: Theme | null | undefined
 ) => {
   const rootSelector = `.plasmic-tokens`;
-  const tokenVarsRules = makeCssTokenVarsRules(
+  const tokenVarsRules = makeCssTokenVarsRuleSets(
     site,
-    tokens,
+    tokens.flatMap((t) => genTokenVarDataWithVariants(t, site)),
     // We use plasmic-tokens instead of rootSelector, same as in codegen,
     // because it is important for all variants of token values to also be
     // defined in .plasmic-tokens, instead of another descendant element. Else,

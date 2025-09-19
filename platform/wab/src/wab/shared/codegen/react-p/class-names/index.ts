@@ -18,7 +18,6 @@ import {
   makePlasmicTokensClassName,
   makeRootResetClassName,
   makeStyleTokensClassNames,
-  makeStyleTokensClassNamesForDep,
   makeWabInstanceClassName,
   makeWabTextClassName,
   projectStyleCssImportName,
@@ -359,17 +358,6 @@ export function serializeComponentRootResetClasses(
   if (ctx.projectConfig.styleTokensProviderBundle) {
     // Add main project useStyleTokens()
     unconditionalClassExprs.push(makeStyleTokensClassNames());
-
-    // TEMP: Add imported projects' useStyleTokens result
-    if (!ctx.projectConfig.hasStyleTokenOverrides) {
-      unconditionalClassExprs.push(
-        ...withoutNils(
-          cssProjectDependencies.map((dep) =>
-            makeStyleTokensClassNamesForDep(dep.projectName)
-          )
-        )
-      );
-    }
   } else {
     unconditionalClassExprs.push(
       serializeClassExpr(

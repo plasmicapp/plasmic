@@ -177,10 +177,12 @@ export async function codegen(
 
   // Link node_modules against the wab node_modules...  so we don't have to yarn install
   // anything for tests :-p
-  await promisify(exec)(
-    `ln -s ${path.join(process.cwd(), "node_modules")} node_modules`,
-    { cwd: dir }
-  );
+  if (!fs.existsSync(path.join(dir, "node_modules"))) {
+    await promisify(exec)(
+      `ln -s ${path.join(process.cwd(), "node_modules")} node_modules`,
+      { cwd: dir }
+    );
+  }
 
   try {
     // Compile ts to js

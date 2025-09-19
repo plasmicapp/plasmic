@@ -26,7 +26,10 @@ import {
 } from "@/wab/shared/code-components/builtin-code-components";
 import { isCodeComponentWithHelpers } from "@/wab/shared/code-components/code-components";
 import { isTplRootWithCodeComponentVariants } from "@/wab/shared/code-components/variants";
-import { ComponentGenHelper } from "@/wab/shared/codegen/codegen-helpers";
+import {
+  ComponentGenHelper,
+  SiteGenHelper,
+} from "@/wab/shared/codegen/codegen-helpers";
 import {
   extractUsedFontsFromComponents,
   makeCssImports,
@@ -109,8 +112,6 @@ import {
   makeComponentCssIdFileName,
   makeComponentRenderIdFileName,
   makeCssFileName,
-  makeCssProjectFileName,
-  makeCssProjectIdFileName,
   makeDefaultExternalPropsName,
   makeDefaultInlineClassName,
   makeDefaultStyleClassNameBase,
@@ -125,18 +126,18 @@ import {
   makePlasmicMixinsClassName,
   makePlasmicSuperContextName,
   makePlasmicTokensClassName,
+  makePlasmicTokensOverrideClassName,
   makePlatformImports,
+  makeProjectCssFileName,
   makeProjectModuleImports,
   makeRenderFuncName,
   makeRootResetClassName,
   makeStyleTokensClassNames,
-  makeStyleTokensClassNamesForDep,
   makeStyleTokensProviderImports,
   makeStylesImports,
   makeTaggedPlasmicImport,
   makeUseClient,
   makeUseStyleTokensName,
-  makeUseStyleTokensNameForDep,
   makeVariantPropsName,
   makeVariantsArgTypeName,
   makeWabHtmlTextClassName,
@@ -247,6 +248,7 @@ import {
   siteFinalStyleTokensAllDeps,
 } from "@/wab/shared/core/site-style-tokens";
 import {
+  CssProjectDependencies,
   allImageAssets,
   allImportedStyleTokensWithProjectInfo,
   allMixins,
@@ -268,8 +270,9 @@ import {
 import {
   CssVarResolver,
   makeAnimationKeyframesRules,
+  genTokenVarDataWithVariants,
   makeBaseRuleNamer,
-  makeCssTokenVarsRules,
+  makeCssTokenVarsRuleSets,
   makeDefaultStylesRules,
   makeLayoutVarsRules,
   makeMixinVarsRules,
@@ -349,7 +352,7 @@ import {
 } from "@/wab/shared/sizingutils";
 import { JsIdentifier } from "@/wab/shared/utils/regex-js-identifier";
 import { makeVariantComboSorter } from "@/wab/shared/variant-sort";
-import L from "lodash";
+import L, { repeat } from "lodash";
 import { shouldUsePlasmicImg } from "src/wab/shared/codegen/react-p/image";
 import type { SetRequired } from "type-fest";
 
@@ -452,16 +455,48 @@ export function exportProjectConfig(
     .join("\n");
 
   const hasStyleTokenOverrides = site.styleTokenOverrides.length > 0;
-  const cssTokenVarsRules = makeCssTokenVarsRules(
+  const siteGenHelper = new SiteGenHelper(site, false);
+
+  const cssTokenVarsRules = makeCssTokenVarsRuleSets(
     site,
-    // TEMP: add imported tokens if hasStyleTokenOverrides for StyleTokensProvider
-    scheme !== "plain" &&
-      (exportOpts?.includeImportedTokens || hasStyleTokenOverrides)
+    (exportOpts?.includeImportedTokens
       ? siteFinalStyleTokensAllDeps(site)
-      : siteFinalStyleTokens(site),
+      : siteFinalStyleTokens(site)
+    ).flatMap((t) => genTokenVarDataWithVariants(t, site)),
     `.${makePlasmicTokensClassName(projectId, exportOpts)}`,
-    { generateExternalToken: true, targetEnv: exportOpts.targetEnv }
+    {
+      generateExternalToken: true,
+      targetEnv: exportOpts.targetEnv,
+    }
   );
+
+  const cssTokenOverrideVarsRules =
+    scheme !== "plain" &&
+    !exportOpts?.includeImportedTokens &&
+    hasStyleTokenOverrides
+      ? makeCssTokenVarsRuleSets(
+          site,
+          site.styleTokenOverrides
+            .map((override) => toFinalToken(override.token, site))
+            .flatMap((t) => genTokenVarDataWithVariants(t, site))
+            .filter(({ vsh }) => {
+              const globalVariantGroup = vsh.globalVariants()?.[0]?.parent;
+              // for overrides, we only need varianted values from local global variant groups (i.e. not from depenecies)
+              return (
+                !globalVariantGroup ||
+                !siteGenHelper.objToDepMap().get(globalVariantGroup)
+              );
+            }),
+          repeat(
+            `.${makePlasmicTokensOverrideClassName(projectId, exportOpts)}`,
+            2
+          ),
+          {
+            generateExternalToken: false,
+            targetEnv: exportOpts.targetEnv,
+          }
+        )
+      : "";
 
   const layoutVarsRules = makeLayoutVarsRules(
     site,
@@ -470,13 +505,6 @@ export function exportProjectConfig(
   const animationKeyframesRules = makeAnimationKeyframesRules(site, {
     targetEnv: exportOpts.targetEnv,
   }).join("\n");
-
-  const cssFileName = makeCssFileName(
-    exportOpts.idFileNames
-      ? makeCssProjectIdFileName(projectId)
-      : makeCssProjectFileName(),
-    exportOpts
-  );
 
   const splitsProviderBundle = makeSplitsProviderBundle(
     site,
@@ -493,10 +521,8 @@ export function exportProjectConfig(
     styleTokensProviderBundle = makeStyleTokensProviderBundle(
       site,
       projectId,
-      {
-        cssFileName,
-        projectModuleBundle,
-      },
+      getCssProjectDependencies(site),
+      projectModuleBundle,
       exportOpts
     );
   }
@@ -514,10 +540,11 @@ export function exportProjectConfig(
   return {
     projectName,
     projectId,
-    cssFileName,
+    cssFileName: makeProjectCssFileName(projectId, exportOpts),
     cssRules: `
       ${fontsCss}
       ${cssTokenVarsRules}
+      ${cssTokenOverrideVarsRules}
       ${layoutVarsRules}
       ${animationKeyframesRules}
       ${defaultTagStylesVarsRules}
@@ -547,15 +574,21 @@ export function exportProjectConfig(
   };
 }
 
+/**
+ * Get all project dependencies that have style tokens
+ * @param site
+ * @returns
+ */
+function getCssProjectDependencies(site: Site): CssProjectDependencies {
+  return L.uniqBy(allImportedStyleTokensWithProjectInfo(site), "projectId");
+}
+
 export function computeSerializerSiteContext(
   site: Site
 ): SerializerSiteContext {
   return {
     projectFlags: getProjectFlags(site),
-    cssProjectDependencies: L.uniqBy(
-      allImportedStyleTokensWithProjectInfo(site),
-      "projectId"
-    ),
+    cssProjectDependencies: getCssProjectDependencies(site),
     cssVarResolver: new CssVarResolver(
       siteFinalStyleTokensAllDeps(site),
       allMixins(site, { includeDeps: "all" }),
@@ -849,28 +882,9 @@ const __wrapUserPromise = globalThis.__PlasmicWrapUserPromise ?? (async (loc, pr
     }
     ${referencedImports.join("\n")}
     ${makeProjectModuleImports(projectModuleBundle)}
-    ${makeStyleTokensProviderImports(
-      styleTokensProviderBundle,
-      {
-        useStyleTokens: true,
-      },
-      opts
-    )}
-    ${
-      ctx.projectConfig.hasStyleTokenOverrides
-        ? ""
-        : ctx.siteCtx.cssProjectDependencies
-            .map((dep) =>
-              makeStyleTokensProviderImports(
-                dep,
-                {
-                  useStyleTokens: true,
-                },
-                opts
-              )
-            )
-            .join("\n")
-    }
+    ${makeStyleTokensProviderImports(styleTokensProviderBundle, {
+      useStyleTokens: true,
+    })}
     ${makeStylesImports(
       siteCtx.cssProjectDependencies,
       component,
@@ -1414,34 +1428,16 @@ export function serializeComponentLocalVars(ctx: SerializerBaseContext) {
 
     ${treeTriggers}
     ${
-      projectConfig.projectModuleBundle
-        ? serializeStyleTokensClassNames(
-            ctx.projectConfig,
-            ctx.siteCtx.cssProjectDependencies,
-            projectConfig.projectModuleBundle
-          )
+      projectConfig.styleTokensProviderBundle
+        ? serializeStyleTokensClassNames()
         : ""
     }
     ${ccVariantTriggers}
   `;
 }
 
-function serializeStyleTokensClassNames(
-  projectConfig: ProjectConfig,
-  deps: SerializerSiteContext["cssProjectDependencies"],
-  _styleTokensProviderBundle: StyleTokensProviderBundle // useStyleTokens only works if style-tokens.ts exists
-) {
-  let base = `const ${makeStyleTokensClassNames()} = ${makeUseStyleTokensName()}();`;
-  if (projectConfig.hasStyleTokenOverrides) {
-    return base;
-  }
-  // TEMP: Add imported projects' useStyleTokens
-  deps.forEach((dep) => {
-    base += `\nconst ${makeStyleTokensClassNamesForDep(
-      dep.projectName
-    )} = ${makeUseStyleTokensNameForDep(dep.projectName)}();`;
-  });
-  return base;
+function serializeStyleTokensClassNames() {
+  return `const ${makeStyleTokensClassNames()} = ${makeUseStyleTokensName()}();`;
 }
 
 export function serializeLocalStyleTriggers(ctx: SerializerBaseContext) {
@@ -2672,8 +2668,7 @@ searchParams?: Promise<Record<string, string | string[] | undefined>>;
             ctx.projectConfig.styleTokensProviderBundle,
             {
               styleTokensProvider: true,
-            },
-            opts
+            }
           )
         : ""
     }
