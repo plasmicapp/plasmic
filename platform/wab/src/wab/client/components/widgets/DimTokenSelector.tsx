@@ -311,7 +311,11 @@ export const DimTokenSpinner = observer(
         inputValue.length === 0 && // the user hasn't typed anything yet
           selectedToken && // a token is currently selected
           studioCtx && // studioCtx if defined
-          isStyleTokenEditable(selectedToken, vsh) && // the token is editable
+          isStyleTokenEditable(
+            selectedToken,
+            vsh,
+            studioCtx.getCurrentUiConfig()
+          ) && // the token is editable
           ({ type: "edit-token", token: selectedToken } as const),
 
         // show tokens that match name or value

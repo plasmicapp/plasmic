@@ -6,7 +6,13 @@ import { TplMgr } from "@/wab/shared/TplMgr";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import { toVarName } from "@/wab/shared/codegen/util";
 import { isReadonlyArray } from "@/wab/shared/collections";
-import { ensure, mkShortId, tuple, unexpected, withoutNils } from "@/wab/shared/common";
+import {
+  ensure,
+  mkShortId,
+  tuple,
+  unexpected,
+  withoutNils,
+} from "@/wab/shared/common";
 import { DependencyWalkScope } from "@/wab/shared/core/project-deps";
 import { siteFinalStyleTokensOfType } from "@/wab/shared/core/site-style-tokens";
 import {
@@ -16,7 +22,17 @@ import {
 } from "@/wab/shared/core/tokens";
 import { getLengthUnits, parseCss } from "@/wab/shared/css";
 import { DEVFLAGS } from "@/wab/shared/devflags";
-import { Mixin, Site, StyleToken, StyleTokenParams } from "@/wab/shared/model/classes";
+import {
+  Mixin,
+  Site,
+  StyleToken,
+  StyleTokenParams,
+} from "@/wab/shared/model/classes";
+import {
+  UiConfig,
+  canOverrideImportedTokens,
+  canOverrideRegisteredTokens,
+} from "@/wab/shared/ui-config-utils";
 import CSSEscape from "css.escape";
 import L from "lodash";
 import type { Opaque, SetOptional } from "type-fest";
@@ -72,12 +88,16 @@ export function mkStyleToken({
  */
 export function isStyleTokenEditable(
   token: FinalToken<StyleToken>,
-  vsh: VariantedStylesHelper | undefined
+  vsh: VariantedStylesHelper | undefined,
+  uiConfig: UiConfig
 ): token is MutableToken<StyleToken> | OverrideableToken<StyleToken> {
+  const canOverride =
+    (token.isRegistered
+      ? canOverrideRegisteredTokens(uiConfig)
+      : canOverrideImportedTokens(uiConfig)) && DEVFLAGS.importedTokenOverrides;
   return (
     (token instanceof MutableToken ||
-      (token instanceof OverrideableToken &&
-        DEVFLAGS.importedTokenOverrides)) &&
+      (token instanceof OverrideableToken && canOverride)) &&
     (vsh === undefined || vsh.canUpdateToken())
   );
 }

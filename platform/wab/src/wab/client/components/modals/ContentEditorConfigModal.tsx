@@ -156,7 +156,7 @@ export function ContentEditorConfigModal(props: {
             />
           </Form.Item>
 
-          <h3 className="mv-xlg">Style panels</h3>
+          <h3 className="mv-xlg">Style controls</h3>
           <Form.Item name={["styleSectionVisibilities"]} noStyle>
             <BooleanPreferencesControl
               label="Can edit these sections in the right panel?"
@@ -164,6 +164,18 @@ export function ContentEditorConfigModal(props: {
                 ([label, value]) => ({ value, label })
               )}
             />
+          </Form.Item>
+          <Form.Item
+            name={["canOverrideImportedTokens"]}
+            label="Can override imported tokens?"
+          >
+            <BooleanControl trueLabel="Allowed" falseLabel="Disallowed" />
+          </Form.Item>
+          <Form.Item
+            name={["canOverrideRegisteredTokens"]}
+            label="Can override registered tokens?"
+          >
+            <BooleanControl trueLabel="Allowed" falseLabel="Disallowed" />
           </Form.Item>
 
           {isOneOf(level, ["team", "workspace"]) && (

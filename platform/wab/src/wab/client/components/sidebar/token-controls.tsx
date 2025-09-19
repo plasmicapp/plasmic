@@ -33,7 +33,6 @@ import {
   MutableToken,
   OverrideableToken,
 } from "@/wab/shared/core/tokens";
-import { DEVFLAGS } from "@/wab/shared/devflags";
 import { Site, StyleToken } from "@/wab/shared/model/classes";
 import { canCreateAlias } from "@/wab/shared/ui-config-utils";
 import { Menu, notification } from "antd";
@@ -229,8 +228,8 @@ export const TokenRow = observer(function TokenRow(props: {
         </Menu.Item>
       );
       if (
-        DEVFLAGS.importedTokenOverrides &&
         !tokenPanelReadOnly &&
+        isStyleTokenEditable(token, vsh, studioCtx.getCurrentUiConfig()) &&
         token instanceof OverrideableToken
       ) {
         if (vsh && !vsh.isTargetBaseVariant()) {
@@ -398,7 +397,8 @@ export const TokenRow = observer(function TokenRow(props: {
 
   const onClickHandler = multiAssetsActions.isSelecting
     ? onToggle
-    : !tokenPanelReadOnly && isStyleTokenEditable(token, vsh)
+    : !tokenPanelReadOnly &&
+      isStyleTokenEditable(token, vsh, studioCtx.getCurrentUiConfig())
     ? () => onSelect(token)
     : undefined;
 

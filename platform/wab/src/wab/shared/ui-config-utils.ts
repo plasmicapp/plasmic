@@ -187,6 +187,8 @@ export interface UiConfig {
     logoTooltip?: string;
   };
   canPublishProject?: boolean;
+  canOverrideImportedTokens?: boolean;
+  canOverrideRegisteredTokens?: boolean;
 }
 
 /**
@@ -265,6 +267,12 @@ export function mergeUiConfigs(
     // Deep merge `brand`
     brand: merge({}, ...configs.map((c) => c.brand)),
     canPublishProject: mergedFirst(configs.map((c) => c.canPublishProject)),
+    canOverrideImportedTokens: mergedFirst(
+      configs.map((c) => c.canOverrideImportedTokens)
+    ),
+    canOverrideRegisteredTokens: mergedFirst(
+      configs.map((c) => c.canOverrideRegisteredTokens)
+    ),
   };
 }
 
@@ -447,6 +455,22 @@ export function canEditUiConfig(
 export function canPublishProject(config: UiConfig) {
   if (typeof config.canPublishProject === "boolean") {
     return config.canPublishProject;
+  }
+
+  return true;
+}
+
+export function canOverrideImportedTokens(config: UiConfig) {
+  if (typeof config.canOverrideImportedTokens === "boolean") {
+    return config.canOverrideImportedTokens;
+  }
+
+  return true;
+}
+
+export function canOverrideRegisteredTokens(config: UiConfig) {
+  if (typeof config.canOverrideRegisteredTokens === "boolean") {
+    return config.canOverrideRegisteredTokens;
   }
 
   return true;

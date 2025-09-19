@@ -433,7 +433,8 @@ function ColorPicker_({
     }
   };
 
-  const isEditable = appliedToken && isStyleTokenEditable(appliedToken, vsh);
+  const isEditable =
+    appliedToken && isStyleTokenEditable(appliedToken, vsh, uiConfig);
 
   return (
     <div>
