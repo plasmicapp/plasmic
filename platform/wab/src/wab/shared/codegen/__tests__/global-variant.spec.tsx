@@ -109,6 +109,11 @@ describe("tests codegen for global variants", () => {
       stylesScheme = "css";
     });
 
+    it("codegens plasmic__default_style.css with the correct extensions", () => {
+      const defaultStyleCss = readFromProject("plasmic__default_style.css");
+      expect(defaultStyleCss).not.toBe(null);
+    });
+
     it("codegens plasmic.css with correct variantable tokens", async () => {
       const plasmicCss = parse(readFromProject("plasmic.css"), {
         parseRulePrelude: false,
@@ -381,6 +386,13 @@ describe("tests codegen for global variants", () => {
       platform = "react";
       codegenScheme = "plain";
       stylesScheme = "css-modules";
+    });
+
+    it("codegens plasmic__default_style.module.css with the correct extensions", () => {
+      const defaultStyleCss = readFromProject(
+        "plasmic__default_style.module.css"
+      );
+      expect(defaultStyleCss).not.toBe(null);
     });
 
     it("codegens plasmic.css with correct variantable tokens", async () => {

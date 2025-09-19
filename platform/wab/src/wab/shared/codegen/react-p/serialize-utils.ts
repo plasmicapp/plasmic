@@ -42,7 +42,6 @@ import type { SetRequired } from "type-fest";
 export const globalStyleCssImportName = "globalcss";
 export const projectStyleCssImportName = "projectcss";
 export const defaultStyleCssImportName = "defaultcss";
-export const defaultStyleCssFileName = "plasmic__default_style.css";
 
 export const plasmicTokensClassNameKey = "plasmic_tokens";
 export const plasmicTokensOverrideClassNameKey = "plasmic_tokens_override";
@@ -291,7 +290,7 @@ export function makeStylesImports(
         ? ""
         : `${cssImport(
             defaultStyleCssImportName,
-            defaultStyleCssFileName
+            makeDefaultStyleCssFileName(opts)
           )}; // plasmic-import: global/${defaultStyleCssImportName}`
     }
     ${
@@ -774,6 +773,10 @@ export function makeProjectCssFileName(
       : makeCssProjectFileName(),
     exportOpts
   );
+}
+
+export function makeDefaultStyleCssFileName(exportOpts: Partial<ExportOpts>) {
+  return makeCssFileName("plasmic__default_style", exportOpts);
 }
 
 export function getReactWebNamedImportsForRender() {

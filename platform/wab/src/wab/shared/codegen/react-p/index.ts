@@ -96,7 +96,6 @@ import { ReactHookSpec } from "@/wab/shared/codegen/react-p/react-hook-spec";
 import {
   NodeNamer,
   asOneNode,
-  defaultStyleCssFileName,
   getExportedComponentName,
   getHostNamedImportsForRender,
   getHostNamedImportsForSkeleton,
@@ -116,6 +115,7 @@ import {
   makeDefaultInlineClassName,
   makeDefaultStyleClassNameBase,
   makeDefaultStyleCompWrapperClassName,
+  makeDefaultStyleCssFileName,
   makeDescendantsName,
   makeGlobalContextsImport,
   makeGlobalGroupImports,
@@ -372,7 +372,7 @@ export function exportStyleConfig(
     `.${makeWabHtmlTextClassName(opts)} { white-space: normal; }`,
   ];
   return {
-    defaultStyleCssFileName,
+    defaultStyleCssFileName: makeDefaultStyleCssFileName(opts),
     defaultStyleCssRules: defaultStylesRules.join("\n"),
   };
 }
