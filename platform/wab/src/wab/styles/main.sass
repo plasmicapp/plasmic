@@ -5816,12 +5816,18 @@ a, button.link-like
   white-space: normal
   word-break: break-word
 
-  *
-    margin: 0
-    padding: 0
+  p
+    margin-bottom: 0.5rem
+  p:last-child
+    margin-bottom: 0
+
+  hr
+    margin: 0.5rem 0
+
   ul,
   ol
     margin-left: 1.5rem
+    margin-bottom: 0.5rem
   ul
     list-style-type: unset
     li
@@ -5829,6 +5835,9 @@ a, button.link-like
   ol
     li
       list-style-type: decimal
+  blockquote
+    border-left: 0.25rem solid #ccc
+    padding: 0.5em
 
 .banner-bottom
   position: absolute !important
