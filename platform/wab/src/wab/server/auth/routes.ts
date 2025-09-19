@@ -26,6 +26,7 @@ import {
   userDbMgr,
 } from "@/wab/server/routes/util";
 import {
+  BadRequestError,
   NotFoundError,
   PreconditionFailedError,
   UnauthorizedError,
@@ -122,6 +123,17 @@ export async function createUserFull({
     authorizationPath: string;
   };
 }): Promise<User> {
+  const domain = extractDomainFromEmail(email).toLowerCase();
+  const blockedDomains = req.devflags.blockedSignupDomains.map((d) =>
+    d.toLowerCase()
+  );
+  const blocked = blockedDomains.some(
+    (blockedDomain) =>
+      domain === blockedDomain || domain.endsWith("." + blockedDomain)
+  );
+  if (blocked) {
+    throw new BadRequestError();
+  }
   const signUpPromotionCode = getPromotionCodeCookie(req);
   const user = await mgr.createUser({
     email,

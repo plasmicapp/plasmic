@@ -3,6 +3,7 @@ import { DbMgr, SUPER_USER } from "@/wab/server/db/DbMgr";
 import { SharedApiTester } from "@/wab/server/test/api-tester";
 import { createBackend, createDatabase } from "@/wab/server/test/backend-util";
 import {
+  BadRequestError,
   PreconditionFailedError,
   UnauthorizedError,
 } from "@/wab/shared/ApiErrors/errors";
@@ -16,6 +17,9 @@ describe("auth", () => {
   beforeAll(async () => {
     const { dburi, con, cleanup: cleanupDatabase } = await createDatabase();
     sudoDbMgr = new DbMgr(con.createEntityManager(), SUPER_USER);
+    await sudoDbMgr.setDevFlagOverrides(
+      JSON.stringify({ blockedSignupDomains: ["bad.com", "bad.good.com"] })
+    );
 
     const { host, cleanup: cleanupBackend } = await createBackend(dburi);
     baseURL = `${host}/api/v1`;
@@ -101,6 +105,41 @@ describe("auth", () => {
         status: false,
         reason: "EmailSent",
       });
+    });
+
+    it("rejects blocked domains", async () => {
+      const badEmails = [
+        `${Date.now()}@bad.com`,
+        `${Date.now()}@very.bad.com`,
+        `${Date.now()}@extra.very.bad.com`,
+        `${Date.now()}@bad.good.com`,
+      ];
+      for (const email of badEmails) {
+        await expect(
+          api.signUp({
+            email,
+            password: "SuperStrongPassword!!",
+            firstName: "GivenName",
+            lastName: "FamilyName",
+          })
+        ).rejects.toThrow(BadRequestError);
+      }
+
+      const goodEmails = [
+        `${Date.now()}@good.com`,
+        `${Date.now()}@notbad.com`,
+        `bad.com.${Date.now()}@good.com`,
+      ];
+      for (const email of goodEmails) {
+        await expect(
+          api.signUp({
+            email,
+            password: "SuperStrongPassword!!",
+            firstName: "GivenName",
+            lastName: "FamilyName",
+          })
+        ).resolves.toMatchObject({ status: true });
+      }
     });
   });
 

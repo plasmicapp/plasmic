@@ -548,6 +548,10 @@ const DEFAULT_DEVFLAGS = {
 
   googleAuthRequiredEmailDomains: ["plasmic.app"],
 
+  // List of email domains that are forbidden from creating new accounts.
+  // Existing users from these domains can still log in; this only blocks signup.
+  blockedSignupDomains: [] as string[],
+
   onboardingTours: false,
 
   newProjectModal: false,
