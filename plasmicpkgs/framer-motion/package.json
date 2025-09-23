@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/framer-motion",
-  "version": "0.0.223",
+  "version": "0.0.224",
   "description": "Plasmic registration call for Framer Motion",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

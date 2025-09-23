@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/plasmic-graphcms",
-  "version": "0.0.196",
+  "version": "0.0.197",
   "description": "Plasmic GraphCMS components.",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",

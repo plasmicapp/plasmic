@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/plasmic-hubspot",
-  "version": "0.0.69",
+  "version": "0.0.70",
   "description": "Plasmic Hubspot components.",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
