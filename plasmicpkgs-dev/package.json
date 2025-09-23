@@ -13,7 +13,7 @@
     "@plasmicpkgs/fetch": "0.0.15",
     "@plasmicpkgs/graphql": "0.0.9",
     "@plasmicpkgs/plasmic-cms": "0.0.290",
-    "next": "^15",
+    "next": "^15.5.3",
     "react": "^19",
     "react-dom": "^19"
   },

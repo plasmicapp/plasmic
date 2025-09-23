@@ -28,11 +28,9 @@
   "devDependencies": {
     "@plasmicapp/host": "1.0.225",
     "@plasmicapp/query": "0.1.80",
-    "@size-limit/preset-small-lib": "^7.0.8",
     "@types/dlv": "^1.1.2",
     "@types/node": "^17.0.14",
     "@types/react": "^18.2.33",
-    "size-limit": "^7.0.8",
     "tslib": "^2.3.1",
     "tsup": "^7.2.0",
     "typescript": "^5.2.2"

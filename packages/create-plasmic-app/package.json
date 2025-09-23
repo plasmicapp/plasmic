@@ -32,7 +32,7 @@
     "@types/yargs": "^16.0.0"
   },
   "dependencies": {
-    "@plasmicapp/cli": "0.1.187",
+    "@plasmicapp/cli": "^0.1.187",
     "@sentry/node": "^6.2.2",
     "chalk": "^4.1.0",
     "execa": "^5.0.0",

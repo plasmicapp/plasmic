@@ -1,12 +1,10 @@
-import React from "react";
 import {
   ComponentMeta,
   default as registerComponent,
 } from "@plasmicapp/host/registerComponent";
-import {
-  default as registerGlobalContext,
-  GlobalContextMeta,
-} from "@plasmicapp/host/registerGlobalContext";
+import { default as registerGlobalContext } from "@plasmicapp/host/registerGlobalContext";
+import { default as registerToken } from "@plasmicapp/host/registerToken";
+import React from "react";
 
 export type Registerable = {
   registerComponent: typeof registerComponent;

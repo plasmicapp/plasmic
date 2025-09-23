@@ -26,7 +26,7 @@ import {
   rectSortingStrategy,
 } from "@dnd-kit/sortable";
 
-import { DataProvider, useSelector } from "@plasmicapp/loader-react";
+import { DataProvider, useSelector } from "@plasmicapp/host";
 
 import type {
   DraggableSyntheticListeners,

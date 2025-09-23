@@ -138,7 +138,6 @@
     "@rollup/plugin-commonjs": "^25.0.2",
     "@rollup/plugin-json": "^6.0.0",
     "@rollup/plugin-node-resolve": "^15.1.0",
-    "@size-limit/preset-small-lib": "^4.10.2",
     "@types/classnames": "^2.3.1",
     "@types/clone": "^2.1.1",
     "@types/dlv": "^1.1.2",
@@ -148,8 +147,7 @@
     "react-dom": "^18.2.0",
     "rollup": "^3.26.1",
     "rollup-plugin-dts": "^5.3.0",
-    "rollup-plugin-typescript2": "^0.35.0",
-    "size-limit": "^4.10.2"
+    "rollup-plugin-typescript2": "^0.35.0"
   },
   "peerDependencies": {
     "react": ">=16.8.0",

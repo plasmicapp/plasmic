@@ -30,10 +30,8 @@
   "devDependencies": {
     "@plasmicapp/host": "1.0.225",
     "@plasmicapp/query": "0.1.80",
-    "@size-limit/preset-small-lib": "^4.11.0",
     "@types/node": "^14.0.26",
     "@types/react": "^18.2.33",
-    "size-limit": "^4.11.0",
     "tsdx": "^0.14.1",
     "tslib": "^2.2.0"
   },
