@@ -29,11 +29,13 @@ import {
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
+import { _useStyleTokens as useStyleTokens_plasmic_kit_color_tokens } from "./plasmic_kit_color_tokens/PlasmicStyleTokensProvider"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/styleTokensProvider
+import { _useStyleTokens } from "./plasmic_kit_design_system/PlasmicStyleTokensProvider"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/styleTokensProvider
+
 import "@plasmicapp/react-web/lib/plasmic.css";
 
 import projectcss from "./PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import sty from "./PlasmicIconButton.module.css"; // plasmic-import: LPry-TF4j22a/css
-import plasmic_plasmic_kit_color_tokens_css from "./plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
 
 import DotsHorizontalIcon from "./plasmic_kit_design_system/PlasmicIcon__DotsHorizontal"; // plasmic-import: GkkhQuMH0/icon
 import ChevronDownSvgIcon from "./plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
@@ -279,6 +281,10 @@ function PlasmicIconButton__RenderFunc(props: {
     focusFocusVisible_root: isRootFocus && isRootFocusVisible,
   };
 
+  const styleTokensClassNames = _useStyleTokens();
+  const styleTokensClassNames_plasmic_kit_color_tokens =
+    useStyleTokens_plasmic_kit_color_tokens();
+
   return (
     <button
       data-plasmic-name={"root"}
@@ -291,8 +297,8 @@ function PlasmicIconButton__RenderFunc(props: {
         projectcss.root_reset,
         projectcss.plasmic_default_styles,
         projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
+        styleTokensClassNames,
+        styleTokensClassNames_plasmic_kit_color_tokens,
         sty.root,
         {
           [sty.root___focus__focusVisible]: triggers.focusFocusVisible_root,

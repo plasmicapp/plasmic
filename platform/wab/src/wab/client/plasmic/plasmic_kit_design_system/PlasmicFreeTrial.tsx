@@ -14,22 +14,24 @@
 import * as React from "react";
 
 import {
+  Flex as Flex__,
+  PlasmicLink as PlasmicLink__,
+  SingleBooleanChoiceArg,
+  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
-  Flex as Flex__,
   hasVariant,
-  PlasmicLink as PlasmicLink__,
   renderPlasmicSlot,
-  SingleBooleanChoiceArg,
-  StrictProps,
   useDollarState,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
+import { _useStyleTokens as useStyleTokens_plasmic_kit_color_tokens } from "../plasmic_kit_color_tokens/PlasmicStyleTokensProvider"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/styleTokensProvider
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/styleTokensProvider
+
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
 import projectcss from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import sty from "./PlasmicFreeTrial.module.css"; // plasmic-import: p3GgKAlaQe/css
 
@@ -136,6 +138,10 @@ function PlasmicFreeTrial__RenderFunc(props: {
     $refs,
   });
 
+  const styleTokensClassNames = _useStyleTokens();
+  const styleTokensClassNames_plasmic_kit_color_tokens =
+    useStyleTokens_plasmic_kit_color_tokens();
+
   return (
     <PlasmicLink__
       data-plasmic-name={"root"}
@@ -148,8 +154,8 @@ function PlasmicFreeTrial__RenderFunc(props: {
         projectcss.root_reset,
         projectcss.plasmic_default_styles,
         projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
+        styleTokensClassNames,
+        styleTokensClassNames_plasmic_kit_color_tokens,
         sty.root,
         {
           [sty.rootaccountSection]: hasVariant(

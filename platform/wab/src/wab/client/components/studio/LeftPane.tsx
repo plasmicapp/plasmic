@@ -13,6 +13,7 @@ import LeftLintIssuesPanel from "@/wab/client/components/sidebar/LeftLintIssuesP
 import LeftProjectSettingsPanel from "@/wab/client/components/sidebar/LeftProjectSettingsPanel";
 import LeftSplitsPanel from "@/wab/client/components/sidebar/LeftSplitsPanel";
 
+import { AnimationSequencesPanel } from "@/wab/client/components/sidebar/AnimationSequenceControls";
 import { MixinsPanel } from "@/wab/client/components/sidebar/MixinControls";
 import { ProjectDependenciesPanel } from "@/wab/client/components/sidebar/ProjectDependencies";
 import { SidebarModalProvider } from "@/wab/client/components/sidebar/SidebarModal";
@@ -39,6 +40,7 @@ import {
 import { getComponentDisplayName } from "@/wab/shared/core/components";
 import { extractComponentUsages } from "@/wab/shared/core/sites";
 import { extractTokenUsages } from "@/wab/shared/core/styles";
+import { DEVFLAGS } from "@/wab/shared/devflags";
 import { Component, StyleToken } from "@/wab/shared/model/classes";
 import { LeftTabKey } from "@/wab/shared/ui-config-utils";
 import L from "lodash";
@@ -195,6 +197,8 @@ const LeftPane = observer(function LeftPane(props: LeftPaneProps) {
                     wrapTab("copilot", <CopilotPanel />)}
                   {wrapTab("tokens", <LeftGeneralTokensPanel />)}
                   {wrapTab("mixins", <MixinsPanel />)}
+                  {DEVFLAGS.showAnimations &&
+                    wrapTab("animationSequences", <AnimationSequencesPanel />)}
                   {wrapTab("components", <LeftComponentsPanel />)}
                   {wrapTab("themes", <DefaultStylesPanel />)}
                   {wrapTab("images", <ImageAssetsPanel />)}

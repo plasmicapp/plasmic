@@ -153,3 +153,9 @@
 .leftGeneralDataTokensPaneltype_dataTokens:global(.__wab_instance) {
   display: flex;
 }
+.leftAnimationSequencesPanel:global(.__wab_instance) {
+  display: none;
+}
+.leftAnimationSequencesPaneltype_animationSequences:global(.__wab_instance) {
+  display: flex;
+}

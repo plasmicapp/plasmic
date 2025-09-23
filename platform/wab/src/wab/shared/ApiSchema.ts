@@ -274,6 +274,7 @@ export enum PublicStyleSection {
   Outline = "outline",
   Shadows = "shadows",
   Effects = "effects",
+  Animations = "animations",
   Interactions = "interactions",
   CustomBehaviors = "customBehaviors",
   Tag = "tag",

@@ -71,6 +71,12 @@ export const FRAMES_LOWER = FRAMES_CAP.toLowerCase();
 export const FRAME_CAP = "Artboard";
 export const FRAME_LOWER = FRAME_CAP.toLowerCase();
 
+export const ANIMATION_SEQUENCES_CAP = "Animation sequences";
+export const ANIMATION_SEQUENCES_LOWER = ANIMATION_SEQUENCES_CAP.toLowerCase();
+
+export const ANIMATIONS_CAP = "Animations";
+export const ANIMATIONS_LOWER = ANIMATIONS_CAP.toLowerCase();
+
 export const MIXINS_CAP = "Style presets";
 
 export const MIXIN_CAP = "Style preset";

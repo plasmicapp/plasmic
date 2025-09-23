@@ -573,6 +573,8 @@ const DEFAULT_DEVFLAGS = {
   enableDataQueries: false,
   // Disable the public copilot interaction
   disablePublicCopilot: false,
+  // Show Animation sequences tab and animation section in Design tab
+  showAnimations: false,
 };
 
 Object.assign(DEFAULT_DEVFLAGS, DEFAULT_DEVFLAG_OVERRIDES);
@@ -657,6 +659,7 @@ export function applyPlasmicUserDevFlagOverrides(target: DevFlagsType) {
     enableUiCopilot: true,
     cmsUniqueFields: true,
     enableDataQueries: true,
+    showAnimations: true,
   } as Partial<DevFlagsType>);
 }
 

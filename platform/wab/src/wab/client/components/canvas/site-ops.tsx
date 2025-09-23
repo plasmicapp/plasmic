@@ -31,6 +31,7 @@ import {
   isPageArena,
 } from "@/wab/shared/Arenas";
 import {
+  ANIMATION_SEQUENCES_LOWER,
   DATA_QUERY_LOWER,
   MIXIN_LOWER,
   TOKEN_LOWER,
@@ -122,6 +123,7 @@ import {
 } from "@/wab/shared/core/states";
 import {
   changeTokenUsage,
+  extractAnimationSequenceUsages,
   extractMixinUsages,
   extractTokenUsages,
 } from "@/wab/shared/core/styles";
@@ -142,6 +144,7 @@ import {
 } from "@/wab/shared/data-urls";
 import { Pt } from "@/wab/shared/geom";
 import {
+  AnimationSequence,
   Arena,
   ArenaFrame,
   Component,
@@ -1836,7 +1839,7 @@ export class SiteOps {
           element: mixin,
           summary: usages[1],
         })),
-        `Are you sure you want to delete it? Deleting the ${MIXIN_LOWER} remove it from the following usages above.`
+        `Are you sure you want to delete it? Deleting the ${MIXIN_LOWER} remove it from the usages above.`
       );
 
       if (!confirmed) {
@@ -1856,6 +1859,57 @@ export class SiteOps {
           const [usages, _] = extractMixinUsages(this.site, mixin);
           usages.forEach((usage) => arrayRemove(usage.mixins, mixin));
           arrayRemove(this.site.mixins, mixin);
+        });
+        return success();
+      }
+    );
+
+    return true;
+  }
+
+  async tryDeleteAnimationSequences(animationSequences: AnimationSequence[]) {
+    const animationSequencesUsages = animationSequences
+      .map((animSeq) => ({
+        usages: extractAnimationSequenceUsages(this.site, animSeq),
+        animationSequence: animSeq,
+      }))
+      .filter(({ usages }) => usages[0].size > 0);
+
+    if (animationSequencesUsages.length > 0) {
+      const confirmed = await deleteStudioElementConfirm(
+        `Deleting ${ANIMATION_SEQUENCES_LOWER}`,
+        animationSequencesUsages.map(({ animationSequence, usages }) => ({
+          element: animationSequence,
+          summary: usages[1],
+        })),
+        `Are you sure you want to delete it? Deleting the ${ANIMATION_SEQUENCES_LOWER} remove it from the usages above.`
+      );
+
+      if (!confirmed) {
+        return false;
+      }
+    }
+
+    await this.studioCtx.changeObserved(
+      () => {
+        return animationSequencesUsages.flatMap((animSeqUsage) => [
+          ...animSeqUsage.usages[1].components,
+          ...animSeqUsage.usages[1].frames.map((f) => f.container.component),
+        ]);
+      },
+      ({ success }) => {
+        animationSequences.forEach((animationSequence) => {
+          const [usages, _] = extractAnimationSequenceUsages(
+            this.site,
+            animationSequence
+          );
+          usages.forEach((usage) =>
+            removeWhere(
+              usage.animations,
+              (a) => a.sequence === animationSequence
+            )
+          );
+          arrayRemove(this.site.animationSequences, animationSequence);
         });
         return success();
       }

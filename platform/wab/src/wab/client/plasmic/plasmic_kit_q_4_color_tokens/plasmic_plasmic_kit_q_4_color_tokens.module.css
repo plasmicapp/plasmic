@@ -1097,6 +1097,8 @@
   background: none;
   background-size: 100% 100%;
   background-repeat: no-repeat;
+  row-gap: 0px;
+  column-gap: 0px;
   box-shadow: none;
   box-sizing: border-box;
   text-decoration-line: none;
@@ -1110,6 +1112,8 @@
   background: none;
   background-size: 100% 100%;
   background-repeat: no-repeat;
+  row-gap: 0px;
+  column-gap: 0px;
   box-shadow: none;
   box-sizing: border-box;
   margin: 0;
@@ -1536,7 +1540,7 @@ ol:where(.root_reset_tags) {
   padding-left: var(--mixin-838aYPQokKG_padding-left);
   position: var(--mixin-838aYPQokKG_position);
   list-style-type: var(--mixin-838aYPQokKG_list-style-type);
-  flex-column-gap: var(--mixin-838aYPQokKG_flex-column-gap);
+  column-gap: var(--mixin-838aYPQokKG_column-gap);
 }
 
 :where(.root_reset) ul:where(.ul),
@@ -1552,7 +1556,7 @@ ul:where(.root_reset_tags) {
   padding-left: var(--mixin-7T_1NeMKuUo_padding-left);
   position: var(--mixin-7T_1NeMKuUo_position);
   list-style-type: var(--mixin-7T_1NeMKuUo_list-style-type);
-  flex-column-gap: var(--mixin-7T_1NeMKuUo_flex-column-gap);
+  column-gap: var(--mixin-7T_1NeMKuUo_column-gap);
 }
 
 :where(.root_reset) li:where(.li),

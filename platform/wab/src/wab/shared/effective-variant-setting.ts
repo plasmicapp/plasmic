@@ -228,7 +228,7 @@ export class EffectiveVariantSetting {
         ...this.variantSettings.map((vs) => vs.rs.values)
       ),
       mixins: L.uniq(L.flatten(reversed.map((rs) => rs.mixins))),
-      animations: L.uniq(L.flatten(reversed.map((rs) => rs.animations || []))),
+      animations: L.uniq(L.flatten(reversed.map((rs) => rs.animations))),
     });
   }
 
@@ -402,6 +402,7 @@ export class EffectiveVariantSetting {
   getPropSource(prop: string): Array<VariantSettingSource> | undefined {
     const site = this.site;
     const tpl = this.tpl;
+    const variantSettings = this.variantSettings;
 
     const potentialSources = this.potentialPropSources;
 
@@ -494,7 +495,22 @@ export class EffectiveVariantSetting {
             };
           }
         } else if (candidate.type === "tpl") {
-          if (candidate.rsh.has(prop)) {
+          if (prop === "animation") {
+            // Special handling for animations - look in the variant setting's animations array
+            const vs = variantSettings.find(
+              (variantSetting) => variantSetting.variants === candidate.combo
+            );
+            if (vs && vs.rs.animations.length > 0) {
+              yield {
+                type: "style" as const,
+                combo: candidate.combo,
+                value: vs.rs.animations
+                  .map((anim: any) => anim.sequence.name)
+                  .join(", "),
+                prop,
+              };
+            }
+          } else if (candidate.rsh.has(prop)) {
             yield {
               type: "style" as const,
               combo: candidate.combo,

@@ -129,6 +129,7 @@ export const LEFT_TAB_PANEL_KEYS = [
   "outline",
   "components",
   "tokens",
+  "animationSequences",
   "mixins",
   "fonts",
   "themes",
@@ -140,6 +141,7 @@ export const LEFT_TAB_PANEL_KEYS = [
   "splits",
   "lint",
   "copilot",
+  "animationSequences",
 ] as const;
 
 export type LeftTabKey = (typeof LEFT_TAB_PANEL_KEYS)[number];
@@ -423,6 +425,7 @@ const LEFT_TAB_CONTENT_CREATOR_DEFAULT: Record<LeftTabUiKey, UiAccess> = {
   lint: "writable",
   copilot: "hidden",
   figma: "hidden",
+  animationSequences: "hidden",
 };
 
 export function canEditProjectConfig(

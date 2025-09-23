@@ -4143,6 +4143,7 @@ export class ViewOps {
     tpl.vsettings.forEach((vs) => {
       vs.rs.values = {};
       vs.rs.mixins = [];
+      vs.rs.animations = [];
     });
   }
 

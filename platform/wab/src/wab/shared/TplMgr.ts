@@ -161,6 +161,7 @@ import {
 import { SIZE_PROPS } from "@/wab/shared/core/style-props";
 import {
   changeTokenUsage,
+  cloneAnimationSequence,
   cloneMixin,
   extractTokenUsages,
   mkRuleSet,
@@ -200,6 +201,8 @@ import { Pt, Rect, findSpaceForRectSweepRight } from "@/wab/shared/geom";
 import { ensureComponentsObserved } from "@/wab/shared/mobx-util";
 import { instUtil } from "@/wab/shared/model/InstUtil";
 import {
+  Animation,
+  AnimationSequence,
   Arena,
   ArenaFrame,
   Arg,
@@ -1790,6 +1793,87 @@ export class TplMgr {
     });
   }
 
+  addAnimationSequence(name?: string, animationSequence?: AnimationSequence) {
+    const newSequence =
+      animationSequence ||
+      new AnimationSequence({
+        name: this.getUniqueAnimationSequenceName(name),
+        uuid: mkShortId(),
+        keyframes: [],
+      });
+
+    this.site().animationSequences.push(newSequence);
+    if (name) {
+      this.renameAnimationSequence(newSequence, name);
+    }
+    return newSequence;
+  }
+
+  removeAnimationSequence(sequence: AnimationSequence) {
+    // Remove sequence from all RuleSets that reference it
+    this.site().components.forEach((c) =>
+      [...findVariantSettingsUnderTpl(c.tplTree)].forEach(([vs]) => {
+        if (vs.rs.animations) {
+          vs.rs.animations = vs.rs.animations.filter(
+            (anim) => anim.sequence !== sequence
+          );
+        }
+      })
+    );
+    arrayRemove(this.site().animationSequences, sequence);
+  }
+
+  renameAnimationSequence(sequence: AnimationSequence, name: string) {
+    if (toVarName(name) !== toVarName(sequence.name)) {
+      sequence.name = this.getUniqueAnimationSequenceName(name);
+    } else {
+      sequence.name = name;
+    }
+  }
+
+  duplicateAnimationSequence(sequence: AnimationSequence) {
+    const newSequence = cloneAnimationSequence(sequence);
+    newSequence.name = this.getUniqueAnimationSequenceName(sequence.name);
+    this.site().animationSequences.push(newSequence);
+    return newSequence;
+  }
+
+  getUniqueAnimationSequenceName(name?: string) {
+    const existingNames = (this.site().animationSequences || []).map(
+      (s) => s.name
+    );
+    return uniqueName(existingNames, name || "Unnamed Animation", {
+      separator: " ",
+      normalize: toVarName,
+    });
+  }
+
+  addAnimation(
+    sequence: AnimationSequence,
+    duration: string = "1s",
+    delay: string = "0s",
+    timingFunction: string = "ease",
+    iterationCount: string = "1",
+    direction:
+      | "normal"
+      | "reverse"
+      | "alternate"
+      | "alternate-reverse" = "normal",
+    fillMode: "none" | "forwards" | "backwards" | "both" = "none",
+    playState: "paused" | "running" = "running"
+  ) {
+    return new Animation({
+      sequence,
+      duration,
+      delay,
+      timingFunction,
+      iterationCount,
+      direction,
+      fillMode,
+      playState,
+    });
+  }
+
   addToken(opts: {
     name?: string;
     prefix?: string;
@@ -2356,6 +2440,10 @@ export class TplMgr {
         existingVs.rs.mixins = uniq([
           ...existingVs.rs.mixins,
           ...newVs.rs.mixins,
+        ]);
+        existingVs.rs.animations = uniq([
+          ...existingVs.rs.animations,
+          ...newVs.rs.animations,
         ]);
         const fromExp = RSH(newVs.rs, tpl);
         const toExp = RSH(existingVs.rs, tpl);

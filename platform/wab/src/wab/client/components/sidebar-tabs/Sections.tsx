@@ -2,6 +2,7 @@ import {
   hasSimplifiedMode,
   isTplCodeComponentStyleable,
 } from "@/wab/client/code-components/code-components";
+import { AnimationsSection } from "@/wab/client/components/sidebar-tabs/AnimationsSection";
 import { ComponentPropsSection } from "@/wab/client/components/sidebar-tabs/ComponentPropsSection";
 import { CustomBehaviorsSection } from "@/wab/client/components/sidebar-tabs/CustomBehaviorsSection";
 import { EffectsPanelSection } from "@/wab/client/components/sidebar-tabs/EffectsSection";
@@ -151,6 +152,7 @@ export enum Section {
   Outline = "outline",
   ShadowsPanel = "shadows-panel",
   EffectsPanel = "effects-panel",
+  AnimationsPanel = "animations-panel",
   TransitionsPanel = "transitions-panel",
   TransformPanel = "transform-panel",
   Interactions = "interactions",
@@ -211,6 +213,7 @@ const SECTION_SETTINGS: AllSectionsPresent<SectionSetting> = {
   [Section.Border]: { publicSection: PublicStyleSection.Border },
   [Section.Outline]: { publicSection: PublicStyleSection.Outline },
   [Section.EffectsPanel]: { publicSection: PublicStyleSection.Effects },
+  [Section.AnimationsPanel]: { publicSection: PublicStyleSection.Animations },
   [Section.MissingPositionClass]: { publicSection: PublicStyleSection.Layout },
   [Section.Interactions]: { publicSection: PublicStyleSection.Interactions },
   [Section.CustomBehaviors]: {
@@ -321,6 +324,7 @@ const styleSections = new Set([
   Section.Outline,
   Section.ShadowsPanel,
   Section.EffectsPanel,
+  Section.AnimationsPanel,
   Section.TransitionsPanel,
   Section.TransformPanel,
   Section.ComponentStyleProps,
@@ -843,6 +847,18 @@ export function getRenderBySection(
         ),
     ],
     [
+      Section.AnimationsPanel,
+      () =>
+        (isTag || codeComponentTpl) &&
+        DEVFLAGS.showAnimations &&
+        showSection(Section.AnimationsPanel) && (
+          <AnimationsSection
+            key={`${tpl.uuid}-animations`}
+            expsProvider={sc.props.expsProvider}
+          />
+        ),
+    ],
+    [
       Section.TransitionsPanel,
       () =>
         (isSlot || isComponent || codeComponentTpl || isTag) &&
@@ -1071,6 +1087,7 @@ function getOrderedSections(tpl: TplNode, viewCtx: ViewCtx): Set<Section> {
   pushIfNew(Section.Outline);
   pushIfNew(Section.ShadowsPanel);
   pushIfNew(Section.EffectsPanel);
+  pushIfNew(Section.AnimationsPanel);
   pushIfNew(Section.TransitionsPanel);
   pushIfNew(Section.TransformPanel);
   pushIfNew(Section.Tag);

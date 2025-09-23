@@ -150,6 +150,8 @@
   background: none;
   background-size: 100% 100%;
   background-repeat: no-repeat;
+  row-gap: 0px;
+  column-gap: 0px;
   box-shadow: none;
   box-sizing: border-box;
   text-decoration-line: none;
@@ -163,6 +165,8 @@
   background: none;
   background-size: 100% 100%;
   background-repeat: no-repeat;
+  row-gap: 0px;
+  column-gap: 0px;
   box-shadow: none;
   box-sizing: border-box;
   margin: 0;
@@ -635,7 +639,7 @@ ol:where(.root_reset_tags) {
   padding-left: var(--mixin-myU_OmqTss_padding-left);
   position: var(--mixin-myU_OmqTss_position);
   list-style-type: var(--mixin-myU_OmqTss_list-style-type);
-  flex-column-gap: var(--mixin-myU_OmqTss_flex-column-gap);
+  column-gap: var(--mixin-myU_OmqTss_column-gap);
 }
 
 :where(.root_reset) ul:where(.ul),
@@ -651,5 +655,5 @@ ul:where(.root_reset_tags) {
   padding-left: var(--mixin-kbGMrucEbG_padding-left);
   position: var(--mixin-kbGMrucEbG_position);
   list-style-type: var(--mixin-kbGMrucEbG_list-style-type);
-  flex-column-gap: var(--mixin-kbGMrucEbG_flex-column-gap);
+  column-gap: var(--mixin-kbGMrucEbG_column-gap);
 }

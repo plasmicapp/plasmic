@@ -14,16 +14,16 @@
 import * as React from "react";
 
 import {
+  Flex as Flex__,
+  SingleBooleanChoiceArg,
+  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
-  Flex as Flex__,
   generateStateOnChangeProp,
   generateStateValueProp,
   hasVariant,
   renderPlasmicSlot,
-  SingleBooleanChoiceArg,
-  StrictProps,
   useDollarState,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
@@ -33,10 +33,11 @@ import Description from "../../components/plexus/Description"; // plasmic-import
 import Label from "../../components/plexus/Label"; // plasmic-import: Hxtf0EKrkmO5/component
 import TextAreaInput from "../../components/plexus/TextAreaInput"; // plasmic-import: 0wwbx9l7LS5I/component
 import TextInput from "../../components/plexus/TextInput"; // plasmic-import: J_e2eE41048e/component
+import { _useStyleTokens as useStyleTokens_plasmic_kit_color_tokens } from "../plasmic_kit_color_tokens/PlasmicStyleTokensProvider"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/styleTokensProvider
+import { _useStyleTokens } from "../plasmic_kit_design_system/PlasmicStyleTokensProvider"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
 import projectcss from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import sty from "./PlasmicTextField.module.css"; // plasmic-import: tKtZ3ZcVITrx/css
 
@@ -352,6 +353,10 @@ function PlasmicTextField__RenderFunc(props: {
     $refs,
   });
 
+  const styleTokensClassNames = _useStyleTokens();
+  const styleTokensClassNames_plasmic_kit_color_tokens =
+    useStyleTokens_plasmic_kit_color_tokens();
+
   const [$ccVariants, setDollarCcVariants] = React.useState<
     Record<string, boolean>
   >({
@@ -384,8 +389,8 @@ function PlasmicTextField__RenderFunc(props: {
         projectcss.root_reset,
         projectcss.plasmic_default_styles,
         projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
+        styleTokensClassNames,
+        styleTokensClassNames_plasmic_kit_color_tokens,
         sty.ariaTextField,
         {
           [sty.ariaTextFieldiconEnd]: hasVariant($state, "iconEnd", "iconEnd"),

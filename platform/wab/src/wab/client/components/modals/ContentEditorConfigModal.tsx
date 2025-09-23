@@ -577,6 +577,8 @@ function leftTabKeyToLabel(key: LeftTabUiKey) {
       return "Style tokens";
     case "mixins":
       return "Style presets";
+    case "animationSequences":
+      return "Animation sequences";
     case "fonts":
       return "Custom fonts";
     case "themes":

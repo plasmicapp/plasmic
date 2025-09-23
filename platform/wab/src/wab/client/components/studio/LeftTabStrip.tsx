@@ -10,6 +10,7 @@ import SlackIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Slack";
 import TreeIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Tree";
 import WandIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Wand";
 import KeyboardIcon from "@/wab/client/plasmic/plasmic_kit_design_system/PlasmicIcon__Keyboard";
+import AnimationEnterSvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__AnimationEnterSvg";
 import BooksvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__BookSvg";
 import ChatDocssvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__ChatDocsSvg";
 import ClocksvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__ClockSvg";
@@ -36,7 +37,7 @@ import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { PlayerData } from "@/wab/client/studio-ctx/multiplayer-ctx";
 import { TutorialEventsType } from "@/wab/client/tours/tutorials/tutorials-events";
 import { Stated } from "@/wab/commons/components/Stated";
-import { MIXINS_CAP } from "@/wab/shared/Labels";
+import { ANIMATION_SEQUENCES_CAP, MIXINS_CAP } from "@/wab/shared/Labels";
 import { spawn, unexpected } from "@/wab/shared/common";
 import { DEVFLAGS } from "@/wab/shared/devflags";
 import { BASE_URL } from "@/wab/shared/discourse/config";
@@ -146,6 +147,13 @@ Help
           icon: <MixinIcon />,
           label: MIXINS_CAP,
           cond: canViewTab("mixins"),
+        },
+        animationSequences: {
+          type: "item",
+          tabKey: "animationSequences",
+          icon: <AnimationEnterSvgIcon />,
+          label: ANIMATION_SEQUENCES_CAP,
+          cond: DEVFLAGS.showAnimations && canViewTab("animationSequences"),
         },
         components: {
           type: "item",

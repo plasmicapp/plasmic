@@ -87,7 +87,7 @@ import {
   isStateUsedInExpr,
   removeComponentState,
 } from "@/wab/shared/core/states";
-import { cloneMixin } from "@/wab/shared/core/styles";
+import { cloneAnimationSequence, cloneMixin } from "@/wab/shared/core/styles";
 import { MutableToken, toFinalToken } from "@/wab/shared/core/tokens";
 import {
   clone,
@@ -103,6 +103,7 @@ import {
 } from "@/wab/shared/core/tpls";
 import { ensureComponentsObserved } from "@/wab/shared/mobx-util";
 import {
+  AnimationSequence,
   ArenaFrame,
   ArenaFrameCell,
   ArenaFrameGrid,
@@ -326,6 +327,7 @@ export function getTransitiveDepsFromObjs(
 export type ImportableObject =
   | Component
   | Mixin
+  | AnimationSequence
   | StyleToken
   | Theme
   | ImageAsset
@@ -340,6 +342,9 @@ export function* genImportableObjs(site: Site) {
   }
   for (const mixin of site.mixins) {
     yield mixin;
+  }
+  for (const animSeq of site.animationSequences) {
+    yield animSeq;
   }
   for (const theme of site.themes) {
     yield theme;
@@ -813,6 +818,34 @@ function upgradeProjectDep(
     return newMixin;
   };
 
+  // Mapping old to new Animation sequence
+  const oldToNewAnimationSequences = new Map(
+    oldDep.site.animationSequences.map((oldAS) => {
+      const newAS = newDep
+        ? newDep.site.animationSequences.find((as) => as.uuid === oldAS.uuid)
+        : undefined;
+      return tuple(oldAS, newAS);
+    })
+  );
+  const getOrCloneNewAnimationSequence = (oldAnimSeq: AnimationSequence) => {
+    assert(
+      oldToNewAnimationSequences.has(oldAnimSeq),
+      `Failed to find old animation sequence ${oldAnimSeq.name}`
+    );
+    let newAnimSeq = oldToNewAnimationSequences.get(oldAnimSeq);
+    if (!newAnimSeq) {
+      const animSeqName = tplMgr.getUniqueAnimationSequenceName(
+        oldAnimSeq.name
+      );
+      newAnimSeq = tplMgr.addAnimationSequence(
+        animSeqName,
+        cloneAnimationSequence(oldAnimSeq)
+      );
+      oldToNewAnimationSequences.set(oldAnimSeq, newAnimSeq);
+    }
+    return newAnimSeq;
+  };
+
   // Mapping old to new image asset
   const oldToNewAsset = new Map(
     oldDep.site.imageAssets.map((oldAsset) => {
@@ -1040,6 +1073,17 @@ function upgradeProjectDep(
       rs.mixins = rs.mixins.map((mixin) =>
         oldToNewMixin.has(mixin) ? getOrCloneNewMixin(mixin) : mixin
       );
+    }
+
+    if (rs.animations.some((a) => oldToNewAnimationSequences.has(a.sequence))) {
+      rs.animations = rs.animations.map((animation) => {
+        if (oldToNewAnimationSequences.has(animation.sequence)) {
+          animation.sequence = getOrCloneNewAnimationSequence(
+            animation.sequence
+          );
+        }
+        return animation;
+      });
     }
   };
 

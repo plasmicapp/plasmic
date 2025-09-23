@@ -14,17 +14,16 @@
 import * as React from "react";
 
 import {
-  Flex as Flex__,
-  PlasmicIcon as PlasmicIcon__,
-  SingleBooleanChoiceArg,
-  SingleChoiceArg,
-  Stack as Stack__,
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  Flex as Flex__,
   hasVariant,
+  PlasmicIcon as PlasmicIcon__,
   renderPlasmicSlot,
+  SingleBooleanChoiceArg,
+  SingleChoiceArg,
+  StrictProps,
   useDollarState,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
@@ -33,11 +32,12 @@ import * as pp from "@plasmicapp/react-web";
 import StyleSelect__Option from "../../components/style-controls/StyleSelect__Option"; // plasmic-import: fVzKJ6hzd6u/component
 import StyleSelect__OptionGroup from "../../components/style-controls/StyleSelect__OptionGroup"; // plasmic-import: pQfj4ZYSnAW/component
 import StyleSelect__Overlay from "../../components/style-controls/StyleSelect__Overlay"; // plasmic-import: 4xhJ1XtuOem/component
+import { _useStyleTokens as useStyleTokens_plasmic_kit_color_tokens } from "../plasmic_kit_color_tokens/PlasmicStyleTokensProvider"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/styleTokensProvider
+import { _useStyleTokens as useStyleTokens_plasmic_kit_design_system } from "../plasmic_kit_design_system/PlasmicStyleTokensProvider"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/styleTokensProvider
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: gYEVvAzCcLMHDVPvuYxkFh/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import projectcss from "./plasmic_plasmic_kit_styles_pane.module.css"; // plasmic-import: gYEVvAzCcLMHDVPvuYxkFh/projectcss
 import sty from "./PlasmicStyleSelect.module.css"; // plasmic-import: E0bKgamUEin/css
 
@@ -204,6 +204,12 @@ function PlasmicStyleSelect__RenderFunc(props: {
     $refs,
   });
 
+  const styleTokensClassNames = _useStyleTokens();
+  const styleTokensClassNames_plasmic_kit_design_system =
+    useStyleTokens_plasmic_kit_design_system();
+  const styleTokensClassNames_plasmic_kit_color_tokens =
+    useStyleTokens_plasmic_kit_color_tokens();
+
   return (
     <PlasmicStyleSelectContext.Provider value={{ variants, args }}>
       <div
@@ -216,9 +222,9 @@ function PlasmicStyleSelect__RenderFunc(props: {
           projectcss.root_reset,
           projectcss.plasmic_default_styles,
           projectcss.plasmic_mixins,
-          projectcss.plasmic_tokens,
-          plasmic_plasmic_kit_design_system_deprecated_css.plasmic_tokens,
-          plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
+          styleTokensClassNames,
+          styleTokensClassNames_plasmic_kit_design_system,
+          styleTokensClassNames_plasmic_kit_color_tokens,
           sty.root,
           {
             [sty.rootisOpen]: hasVariant($state, "isOpen", "isOpen"),
@@ -235,11 +241,9 @@ function PlasmicStyleSelect__RenderFunc(props: {
           }
         )}
       >
-        <Stack__
-          as={"button"}
+        <button
           data-plasmic-name={"trigger"}
           data-plasmic-override={overrides.trigger}
-          hasGap={true}
           className={classNames(
             projectcss.all,
             projectcss.button,
@@ -376,7 +380,7 @@ function PlasmicStyleSelect__RenderFunc(props: {
             })}
             role={"img"}
           />
-        </Stack__>
+        </button>
         {(hasVariant($state, "isOpen", "isOpen") ? true : false) ? (
           <StyleSelect__Overlay
             data-plasmic-name={"overlay"}

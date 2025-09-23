@@ -4,21 +4,11 @@
   position: relative;
   width: auto;
   height: auto;
-  padding: 0px 16px;
-  border-bottom: 1px solid var(--token-bV4cCeIniS6);
-}
-.root > :global(.__wab_flex-container) {
-  flex-direction: row;
   justify-content: flex-start;
   align-items: flex-start;
-  margin-left: calc(0px - 16px);
-  width: calc(100% + 16px);
-}
-.root > :global(.__wab_flex-container) > *,
-.root > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.root > :global(.__wab_flex-container) > picture > img,
-.root > :global(.__wab_flex-container) > :global(.__wab_slot) > picture > img {
-  margin-left: 16px;
+  column-gap: 16px;
+  padding: 0px 16px;
+  border-bottom: 1px solid var(--token-bV4cCeIniS6);
 }
 .hiliteTabButton:global(.__wab_instance) {
   max-width: 100%;

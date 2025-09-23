@@ -19,13 +19,17 @@ import {
   VirtualGroupedList,
 } from "@/wab/client/components/sidebar/VirtualGroupedList";
 import { useDepFilterButton } from "@/wab/client/components/sidebar/left-panel-utils";
+import { FullRow } from "@/wab/client/components/sidebar/sidebar-helpers";
 import {
   BorderPanelSection,
   BorderRadiusSection,
 } from "@/wab/client/components/style-controls/BorderControls";
+import { OpacityControl } from "@/wab/client/components/style-controls/OpacityControl";
 import { OutlinePanelSection } from "@/wab/client/components/style-controls/OutlineControls";
 import {
   MixinExpsProvider,
+  SingleRsExpsProvider,
+  StylePanelSection,
   mkStyleComponent,
   providesStyleComponent,
 } from "@/wab/client/components/style-controls/StyleComponent";
@@ -46,7 +50,14 @@ import { isTagListContainer } from "@/wab/shared/core/rich-text-util";
 import { makeTokenRefResolver } from "@/wab/shared/core/site-style-tokens";
 import { isHostLessPackage } from "@/wab/shared/core/sites";
 import { extractMixinUsages } from "@/wab/shared/core/styles";
-import { Mixin, ProjectDependency, Variant } from "@/wab/shared/model/classes";
+import {
+  KeyFrame,
+  Mixin,
+  ProjectDependency,
+  Variant,
+  isKnownKeyFrame,
+  isKnownMixin,
+} from "@/wab/shared/model/classes";
 import { naturalSort } from "@/wab/shared/sort";
 import { Menu, notification } from "antd";
 import L from "lodash";
@@ -94,6 +105,7 @@ export const MixinPreview = observer(_MixinPreview);
 
 export interface MixinPanelSelection {
   // Each boolean below defines whether to show the corresponding panel or not.
+  visibility?: boolean;
   typography?: boolean;
   container?: boolean;
   spacing?: boolean;
@@ -155,7 +167,7 @@ export const MixinPopup = observer(function MixinPopup(props: MixinPopupProps) {
     >
       <MixinFormContent
         studioCtx={studioCtx}
-        mixin={mixin}
+        mixinOrKeyframe={mixin}
         panelSelection={isDefaultThemeStyle ? { typography: true } : undefined}
         inheritableTypographyPropsOnly={isDefaultThemeStyle}
         isDefaultTheme={mixin.forTheme}
@@ -167,7 +179,7 @@ export const MixinPopup = observer(function MixinPopup(props: MixinPopupProps) {
 
 export const MixinFormContent = observer(function MixinFormContent(props: {
   studioCtx: StudioCtx;
-  mixin: Mixin;
+  mixinOrKeyframe: Mixin | KeyFrame;
   // If not defined, show all panels.
   panelSelection?: MixinPanelSelection;
   inheritableTypographyPropsOnly: boolean;
@@ -178,7 +190,7 @@ export const MixinFormContent = observer(function MixinFormContent(props: {
 }) {
   const {
     studioCtx,
-    mixin,
+    mixinOrKeyframe,
     panelSelection,
     inheritableTypographyPropsOnly,
     isDefaultTheme,
@@ -192,23 +204,43 @@ export const MixinFormContent = observer(function MixinFormContent(props: {
     targetGlobalVariants
   );
 
-  const expsProvider = new MixinExpsProvider(
-    mixin.rs,
-    studioCtx,
-    /*unremovableProps=*/ [],
-    !!isDefaultTheme,
-    mixin,
-    vsh
-  );
+  const isMixin = isKnownMixin(mixinOrKeyframe);
+  const rs = mixinOrKeyframe.rs;
+
+  const expsProvider = isMixin
+    ? new MixinExpsProvider(
+        rs,
+        studioCtx,
+        /*unremovableProps=*/ [],
+        !!isDefaultTheme,
+        mixinOrKeyframe,
+        vsh
+      )
+    : new SingleRsExpsProvider(rs, studioCtx, []);
 
   const styleComponent = mkStyleComponent({ expsProvider });
   const s = panelSelection;
+  const key = isMixin
+    ? mixinOrKeyframe.uid.toString()
+    : `keyframe_${mixinOrKeyframe.rs.uid}`;
 
   return providesStyleComponent(
     styleComponent,
-    `${mixin.uid}`
+    key
   )(
     <>
+      {(!s || s.visibility) && isKnownKeyFrame(mixinOrKeyframe) && (
+        <StylePanelSection
+          expsProvider={expsProvider}
+          styleProps={["opacity"]}
+          title={"Visibility"}
+        >
+          <FullRow>
+            <OpacityControl expsProvider={expsProvider} />
+          </FullRow>
+        </StylePanelSection>
+      )}
+
       {(!s || s.typography) && (
         <TypographySection
           expsProvider={expsProvider}
@@ -266,9 +298,15 @@ export const MixinFormContent = observer(function MixinFormContent(props: {
         <TransformPanelSection expsProvider={expsProvider} />
       )}
 
-      <SidebarSection title="Preview">
-        <MixinPreview sc={studioCtx} mixin={mixin} vsh={vsh} />
-      </SidebarSection>
+      {isMixin && (
+        <SidebarSection title="Preview">
+          <MixinPreview
+            sc={studioCtx}
+            mixin={mixinOrKeyframe as Mixin}
+            vsh={vsh}
+          />
+        </SidebarSection>
+      )}
     </>
   );
 });

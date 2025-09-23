@@ -68,7 +68,10 @@ import {
   xpickBy,
   xpickExists,
 } from "@/wab/shared/common";
-import { collectUsedAnimationSequences } from "@/wab/shared/core/animation-sequences";
+import {
+  collectUsedAnimationSequences,
+  getAnimationSequenceIdentifier,
+} from "@/wab/shared/core/animation-sequences";
 import { BackgroundLayer, bgClipTextTag } from "@/wab/shared/core/bg-styles";
 import {
   isCodeComponent,
@@ -151,6 +154,7 @@ import {
   Arg,
   Component,
   ImageAsset,
+  KeyFrame,
   Mixin,
   RuleSet,
   SelectorRuleSet,
@@ -997,7 +1001,9 @@ export function generateKeyframesRule(
     })
     .join("\n");
 
-  return `@keyframes ${animationSequence.name} {\n${keyframeRules}\n}`;
+  return `@keyframes ${getAnimationSequenceIdentifier(
+    animationSequence
+  )} {\n${keyframeRules}\n}`;
 }
 
 /**
@@ -1018,7 +1024,7 @@ export function generateAnimationPropValue(animations: Animation[]) {
       anim.direction, // animation-direction
       anim.fillMode, // animation-fill-mode
       anim.playState, // animation-play-state
-      anim.sequence.name, // animation-name (required, goes last)
+      getAnimationSequenceIdentifier(anim.sequence), // animation-name (required, goes last)
     ];
 
     return parts.join(" ");
@@ -2535,11 +2541,24 @@ export function genCanvasRules(
   return [...nonInteractiveRuleSet, ...interactiveRuleSet];
 }
 
+export const cloneAnimation = (animation: Animation) => {
+  return new Animation({
+    sequence: animation.sequence,
+    duration: animation.duration,
+    timingFunction: animation.timingFunction,
+    iterationCount: animation.iterationCount,
+    direction: animation.direction,
+    delay: animation.delay,
+    fillMode: animation.fillMode,
+    playState: animation.playState,
+  });
+};
+
 export const cloneRuleSet = (rs: RuleSet) => {
   return new RuleSet({
     values: { ...rs.values },
     mixins: [...rs.mixins],
-    animations: [...rs.animations],
+    animations: rs.animations.map(cloneAnimation),
   });
 };
 
@@ -2683,6 +2702,21 @@ export function cloneMixin(mixin: Mixin) {
     preview: mixin.preview,
     rs: cloneRuleSet(mixin.rs),
     variantedRs: mixin.variantedRs.map(cloneVariantedRs),
+  });
+}
+
+export function cloneKeyFrame(keyframe: KeyFrame) {
+  return new KeyFrame({
+    percentage: keyframe.percentage,
+    rs: cloneRuleSet(keyframe.rs),
+  });
+}
+
+export function cloneAnimationSequence(sequence: AnimationSequence) {
+  return new AnimationSequence({
+    uuid: mkShortId(),
+    name: sequence.name,
+    keyframes: sequence.keyframes.map(cloneKeyFrame),
   });
 }
 
@@ -2948,6 +2982,43 @@ export function extractMixinUsages(
   const traverseTpl = (tplRoot: TplNode, component: Component) => {
     for (const [vs, _tpl] of findVariantSettingsUnderTpl(tplRoot)) {
       if (vs.rs.mixins.find((m) => m === mixin)) {
+        usages.add(vs.rs);
+        usingComponents.add(component);
+      }
+    }
+  };
+
+  for (const component of site.components) {
+    traverseTpl(component.tplTree, component);
+  }
+
+  const arenaFrames = site.arenas.flatMap((arena) => getArenaFrames(arena));
+
+  const usingFrames = [...usingComponents].filter(isFrameComponent).map((c) =>
+    ensure(
+      arenaFrames.find((frame) => frame.container.component === c),
+      () => `Couldn't find arenaFrame for component ${c.name} (${c.uuid})`
+    )
+  );
+
+  return tuple(usages, {
+    components: [...usingComponents].filter((c) => !isFrameComponent(c)),
+    frames: [...usingFrames],
+  });
+}
+
+export function extractAnimationSequenceUsages(
+  site: Site,
+  animationSequence: AnimationSequence
+): [Set<RuleSet>, GeneralUsageSummary] {
+  const usages = new Set<RuleSet>();
+  const usingComponents = new Set<Component>();
+
+  const traverseTpl = (tplRoot: TplNode, component: Component) => {
+    for (const [vs, _tpl] of findVariantSettingsUnderTpl(tplRoot)) {
+      if (
+        vs.rs.animations.find((anim) => anim.sequence === animationSequence)
+      ) {
         usages.add(vs.rs);
         usingComponents.add(component);
       }

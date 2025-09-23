@@ -16,7 +16,6 @@ import * as React from "react";
 import {
   Flex as Flex__,
   SingleBooleanChoiceArg,
-  Stack as Stack__,
   StrictProps,
   classNames,
   createPlasmicElementProxy,
@@ -29,11 +28,12 @@ import {
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
 import MenuButton from "../../components/widgets/MenuButton"; // plasmic-import: h69wHrrKtL/component
+import { _useStyleTokens as useStyleTokens_plasmic_kit_color_tokens } from "../plasmic_kit_color_tokens/PlasmicStyleTokensProvider"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/styleTokensProvider
+import { _useStyleTokens as useStyleTokens_plasmic_kit_design_system } from "../plasmic_kit_design_system/PlasmicStyleTokensProvider"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/styleTokensProvider
+import { _useStyleTokens } from "../plasmic_kit_style_controls/PlasmicStyleTokensProvider"; // plasmic-import: gYEVvAzCcLMHDVPvuYxkFh/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_design_system_deprecated_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
 import projectcss from "../plasmic_kit_style_controls/plasmic_plasmic_kit_styles_pane.module.css"; // plasmic-import: gYEVvAzCcLMHDVPvuYxkFh/projectcss
 import sty from "./PlasmicRowGroup.module.css"; // plasmic-import: fgHLE_9XtAei/css
 
@@ -156,22 +156,26 @@ function PlasmicRowGroup__RenderFunc(props: {
     hover_root: isRootHover,
   };
 
+  const styleTokensClassNames = _useStyleTokens();
+  const styleTokensClassNames_plasmic_kit_design_system =
+    useStyleTokens_plasmic_kit_design_system();
+  const styleTokensClassNames_plasmic_kit_color_tokens =
+    useStyleTokens_plasmic_kit_color_tokens();
+
   return (
-    <Stack__
-      as={"div"}
+    <div
       data-plasmic-name={"root"}
       data-plasmic-override={overrides.root}
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
-      hasGap={true}
       className={classNames(
         projectcss.all,
         projectcss.root_reset,
         projectcss.plasmic_default_styles,
         projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_deprecated_css.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
+        styleTokensClassNames,
+        styleTokensClassNames_plasmic_kit_design_system,
+        styleTokensClassNames_plasmic_kit_color_tokens,
         sty.root,
         {
           [sty.roothasMenu]: hasVariant($state, "hasMenu", "hasMenu"),
@@ -222,11 +226,9 @@ function PlasmicRowGroup__RenderFunc(props: {
           role={"img"}
         />
       </div>
-      <Stack__
-        as={"div"}
+      <div
         data-plasmic-name={"labelContainer"}
         data-plasmic-override={overrides.labelContainer}
-        hasGap={true}
         className={classNames(projectcss.all, sty.labelContainer, {
           [sty.labelContainerhasMenu]: hasVariant($state, "hasMenu", "hasMenu"),
         })}
@@ -253,13 +255,11 @@ function PlasmicRowGroup__RenderFunc(props: {
             className: classNames(sty.slotTargetGroupSize),
           })}
         </div>
-      </Stack__>
+      </div>
       {(hasVariant($state, "showActions", "showActions") ? true : false) ? (
-        <Stack__
-          as={"div"}
+        <div
           data-plasmic-name={"actionsContainer"}
           data-plasmic-override={overrides.actionsContainer}
-          hasGap={true}
           className={classNames(projectcss.all, sty.actionsContainer, {
             [sty.actionsContainerhasMenu]: hasVariant(
               $state,
@@ -284,7 +284,7 @@ function PlasmicRowGroup__RenderFunc(props: {
             value: args.actions,
             className: classNames(sty.slotTargetActions),
           })}
-        </Stack__>
+        </div>
       ) : null}
       {(
         hasVariant($state, "hasMenu", "hasMenu") && triggers.hover_root
@@ -302,7 +302,7 @@ function PlasmicRowGroup__RenderFunc(props: {
           withBackgroundHover={true}
         />
       ) : null}
-    </Stack__>
+    </div>
   ) as React.ReactElement | null;
 }
 

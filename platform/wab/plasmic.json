@@ -497,6 +497,46 @@
           "cssFilePath": "wab/client/plasmic/plasmic_kit_left_pane/PlasmicLeftGeneralDataTokensPanel.module.css",
           "scheme": "blackbox",
           "componentType": "component"
+        },
+        {
+          "id": "ORzNrJx0uEH6",
+          "name": "LeftAnimationSequencesPanel",
+          "type": "managed",
+          "projectId": "aukbrhkegRkQ6KizvhdUPT",
+          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_left_pane/PlasmicLeftAnimationSequencesPanel.tsx",
+          "importSpec": {
+            "modulePath": "wab/client/components/sidebar/AnimationSequenceControls.tsx",
+            "exportName": "AnimationSequencesPanel"
+          },
+          "cssFilePath": "wab/client/plasmic/plasmic_kit_left_pane/PlasmicLeftAnimationSequencesPanel.module.css",
+          "scheme": "blackbox",
+          "componentType": "component"
+        },
+        {
+          "id": "TcSQ7HIQUWt9",
+          "name": "LeftExprsSearchPanel",
+          "type": "managed",
+          "projectId": "aukbrhkegRkQ6KizvhdUPT",
+          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_left_pane/PlasmicLeftExprsSearchPanel.tsx",
+          "importSpec": {
+            "modulePath": "wab/client/LeftExprsSearchPanel.tsx"
+          },
+          "cssFilePath": "wab/client/plasmic/plasmic_kit_left_pane/PlasmicLeftExprsSearchPanel.module.css",
+          "scheme": "blackbox",
+          "componentType": "component"
+        },
+        {
+          "id": "gk9PlJXwjeDP",
+          "name": "LeftRevisionsPanel",
+          "type": "managed",
+          "projectId": "aukbrhkegRkQ6KizvhdUPT",
+          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_left_pane/PlasmicLeftRevisionsPanel.tsx",
+          "importSpec": {
+            "modulePath": "wab/client/LeftRevisionsPanel.tsx"
+          },
+          "cssFilePath": "wab/client/plasmic/plasmic_kit_left_pane/PlasmicLeftRevisionsPanel.module.css",
+          "scheme": "blackbox",
+          "componentType": "component"
         }
       ],
       "icons": [
@@ -532,8 +572,8 @@
       "globalContextsFilePath": "wab/client/plasmic/plasmic_kit_left_pane/PlasmicGlobalContextsProvider.tsx",
       "splitsProviderFilePath": "",
       "customFunctions": [],
-      "styleTokensProviderFilePath": "",
-      "projectModuleFilePath": ""
+      "styleTokensProviderFilePath": "wab/client/plasmic/plasmic_kit_left_pane/PlasmicStyleTokensProvider.tsx",
+      "projectModuleFilePath": "wab/client/plasmic/plasmic_kit_left_pane/plasmic.tsx"
     },
     {
       "projectId": "ooL7EhXDmFQWnW9sxtchhE",
@@ -3391,8 +3431,8 @@
       "globalContextsFilePath": "",
       "customFunctions": [],
       "splitsProviderFilePath": "",
-      "styleTokensProviderFilePath": "",
-      "projectModuleFilePath": ""
+      "styleTokensProviderFilePath": "wab/client/plasmic/plasmic_kit_design_system/PlasmicStyleTokensProvider.tsx",
+      "projectModuleFilePath": "wab/client/plasmic/plasmic_kit_design_system/plasmic.tsx"
     },
     {
       "projectId": "wT5BWZPEc2fYxyqbTLXMt2",
@@ -3830,8 +3870,8 @@
       "globalContextsFilePath": "wab/client/plasmic/plasmic_kit_new_design_system_former_style_controls/PlasmicGlobalContextsProvider.tsx",
       "splitsProviderFilePath": "",
       "customFunctions": [],
-      "styleTokensProviderFilePath": "",
-      "projectModuleFilePath": ""
+      "styleTokensProviderFilePath": "wab/client/plasmic/plasmic_kit_style_controls/PlasmicStyleTokensProvider.tsx",
+      "projectModuleFilePath": "wab/client/plasmic/plasmic_kit_style_controls/plasmic.tsx"
     },
     {
       "projectId": "dyzP6dbCdycwJpqiR2zkwe",
@@ -5668,8 +5708,8 @@
       "globalContextsFilePath": "",
       "splitsProviderFilePath": "",
       "customFunctions": [],
-      "styleTokensProviderFilePath": "",
-      "projectModuleFilePath": ""
+      "styleTokensProviderFilePath": "wab/client/plasmic/plasmic_kit_text_mixins_product/PlasmicStyleTokensProvider.tsx",
+      "projectModuleFilePath": "wab/client/plasmic/plasmic_kit_text_mixins_product/plasmic.tsx"
     },
     {
       "projectId": "oT38tGyqov9SPWHpf3Y2Rf",
@@ -8554,8 +8594,8 @@
       "globalContextsFilePath": "",
       "splitsProviderFilePath": "",
       "customFunctions": [],
-      "styleTokensProviderFilePath": "",
-      "projectModuleFilePath": ""
+      "styleTokensProviderFilePath": "wab/client/plasmic/plasmic_kit_icons/PlasmicStyleTokensProvider.tsx",
+      "projectModuleFilePath": "wab/client/plasmic/plasmic_kit_icons/plasmic.tsx"
     },
     {
       "projectId": "95xp9cYcv7HrNWpFWWhbcv",
@@ -8590,8 +8630,8 @@
       "globalContextsFilePath": "",
       "splitsProviderFilePath": "",
       "customFunctions": [],
-      "styleTokensProviderFilePath": "",
-      "projectModuleFilePath": ""
+      "styleTokensProviderFilePath": "wab/client/plasmic/plasmic_kit_color_tokens/PlasmicStyleTokensProvider.tsx",
+      "projectModuleFilePath": "wab/client/plasmic/plasmic_kit_color_tokens/plasmic.tsx"
     },
     {
       "projectId": "sZNLVjiaeNGLXmdsrbRQAX",
@@ -11115,8 +11155,8 @@
       ],
       "splitsProviderFilePath": "",
       "customFunctions": [],
-      "styleTokensProviderFilePath": "",
-      "projectModuleFilePath": ""
+      "styleTokensProviderFilePath": "wab/client/plasmic/plasmic_embed_css/PlasmicStyleTokensProvider.tsx",
+      "projectModuleFilePath": "wab/client/plasmic/plasmic_embed_css/plasmic.tsx"
     },
     {
       "projectId": "ehckhYnyDHgCBbV47m9bkf",
@@ -11521,8 +11561,8 @@
         }
       ],
       "customFunctions": [],
-      "styleTokensProviderFilePath": "",
-      "projectModuleFilePath": ""
+      "styleTokensProviderFilePath": "wab/client/plasmic/react_aria/PlasmicStyleTokensProvider.tsx",
+      "projectModuleFilePath": "wab/client/plasmic/react_aria/plasmic.tsx"
     },
     {
       "projectId": "kTSMroKPFv65RRTb44SCtk",

@@ -1,22 +1,13 @@
 .root {
   display: flex;
   position: relative;
+  justify-content: center;
+  align-items: center;
   overflow: hidden;
+  column-gap: 4px;
   border-radius: 4px;
   padding: 6px;
   border-style: none;
-}
-.root > :global(.__wab_flex-container) {
-  justify-content: center;
-  align-items: center;
-  margin-left: calc(0px - 4px);
-  width: calc(100% + 4px);
-}
-.root > :global(.__wab_flex-container) > *,
-.root > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.root > :global(.__wab_flex-container) > picture > img,
-.root > :global(.__wab_flex-container) > :global(.__wab_slot) > picture > img {
-  margin-left: 4px;
 }
 .rootvalueSetState_isSet {
   background: var(--token-9jh0BkCENS);
@@ -25,30 +16,12 @@
 .rootvalueSetState_isInherited {
   box-shadow: inset 0px 0px 0px 1px var(--token-KFJx6UwUe);
   background: var(--token-9jh0BkCENS);
-  border-radius: 4px;
-  padding: 6px;
-}
-.rootvalueSetState_isInherited > :global(.__wab_flex-container) {
   justify-content: center;
   align-items: center;
-  margin-left: calc(0px - 4px);
-  width: calc(100% + 4px);
-  margin-top: calc(0px - 0px);
-  height: calc(100% + 0px);
-}
-.rootvalueSetState_isInherited > :global(.__wab_flex-container) > *,
-.rootvalueSetState_isInherited
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > *,
-.rootvalueSetState_isInherited > :global(.__wab_flex-container) > picture > img,
-.rootvalueSetState_isInherited
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  margin-left: 4px;
-  margin-top: 0px;
+  column-gap: 4px;
+  row-gap: 0px;
+  border-radius: 4px;
+  padding: 6px;
 }
 .rootisDisabled {
   cursor: not-allowed;

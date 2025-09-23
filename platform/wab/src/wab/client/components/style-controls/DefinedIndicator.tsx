@@ -25,6 +25,7 @@ import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { derefTokenRefs, tryParseTokenRef } from "@/wab/commons/StyleToken";
 import { joinReactNodes } from "@/wab/commons/components/ReactUtil";
 import {
+  ANIMATIONS_CAP,
   MIXINS_CAP,
   MIXIN_CAP,
   MIXIN_LOWER,
@@ -948,6 +949,30 @@ export const VariantSettingPopoverContent = observer(
                   <div className="dropdown-pill code mixin-bg">
                     <span className="dropdown-pill__contents">
                       {mixin.name}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </Tooltip>
+          </SourceRow>
+        )}
+        {vs.rs.animations.length > 0 && (
+          <SourceRow
+            key={"animations"}
+            title={ANIMATIONS_CAP}
+            type="target"
+            onClear={() => viewCtx.change(() => (vs.rs.animations = []))}
+          >
+            <Tooltip
+              title={vs.rs.animations
+                .map((animation) => animation.sequence.name)
+                .join(", ")}
+            >
+              <div>
+                {vs.rs.animations.map((animation) => (
+                  <div className="dropdown-pill code">
+                    <span className="dropdown-pill__contents">
+                      {animation.sequence.name}
                     </span>
                   </div>
                 ))}

@@ -73,6 +73,7 @@ import {
 } from "@/wab/shared/core/project-deps";
 import { typographyCssProps } from "@/wab/shared/core/style-props";
 import {
+  cloneAnimationSequence,
   cloneMixin,
   cloneStyleTokenOverride,
   cloneTheme,
@@ -561,7 +562,9 @@ export function cloneSite(fromSite: Site) {
     ),
     dataTokens: fromSite.dataTokens.map((t) => cloneToken(t)),
     mixins: fromSite.mixins.map((mixin) => cloneMixin(mixin)),
-    animationSequences: [], // TODO: add cloning support for animation sequences
+    animationSequences: fromSite.animationSequences.map((animSeq) =>
+      cloneAnimationSequence(animSeq)
+    ),
     themes: fromSite.themes.map((th) =>
       ensure(newThemes.get(th), "should exist in newThemes")
     ),
@@ -1935,6 +1938,25 @@ export function allMixins(
     );
   }
   return mixins;
+}
+
+export function localAnimationSequences(site: Site) {
+  return [...site.animationSequences];
+}
+
+export function allAnimationSequences(
+  site: Site,
+  opts: { includeDeps?: DependencyWalkScope } = {}
+) {
+  const animationSequences = localAnimationSequences(site);
+  if (opts.includeDeps) {
+    animationSequences.push(
+      ...walkDependencyTree(site, opts.includeDeps).flatMap(
+        (d) => d.site.animationSequences
+      )
+    );
+  }
+  return animationSequences;
 }
 
 export function localImageAssets(site: Site) {

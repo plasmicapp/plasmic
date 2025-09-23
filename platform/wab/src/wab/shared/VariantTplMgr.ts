@@ -313,6 +313,7 @@ export class VariantTplMgr {
           Object.keys(vs.attrs).length > 0 ||
           Object.keys(vs.args).length > 0 ||
           vs.rs.mixins.length > 0 ||
+          vs.rs.animations.length > 0 ||
           !!vs.text
         ) {
           return false;

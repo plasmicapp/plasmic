@@ -1,0 +1,53 @@
+.root {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  flex-direction: column;
+  overflow: hidden;
+  background: #ffffff;
+  min-width: 0;
+  min-height: 0;
+}
+.leftSearchPanel:global(.__wab_instance) {
+  position: relative;
+  flex-shrink: 0;
+}
+.animationSequencesHeader:global(.__wab_instance) {
+  position: relative;
+}
+.svg__vTvci {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  max-width: 100%;
+  max-height: 100%;
+  width: 16px;
+  height: 16px;
+}
+.svg__uxN86 {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  width: 16px;
+  height: 1em;
+}
+.textWithInfo___4Y0:global(.__wab_instance) {
+  max-width: 100%;
+}
+.text__fxqgI {
+  font-weight: 600;
+  font-size: 14px;
+}
+.content {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  width: 100%;
+  height: auto;
+  flex-grow: 1;
+  overflow: hidden;
+  min-width: 0;
+}

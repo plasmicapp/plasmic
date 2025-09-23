@@ -14,30 +14,15 @@
   position: relative;
   display: flex;
   flex-direction: row;
+  align-items: center;
   width: 100%;
   height: var(--token-aDa535tnF);
+  column-gap: 4px;
   min-width: 0;
   flex-shrink: 0;
   border-radius: 6px;
   padding: 6px 6px 6px 8px;
   border: 0px solid #cacaca;
-}
-.trigger > :global(.__wab_flex-container) {
-  flex-direction: row;
-  align-items: center;
-  min-width: 0;
-  margin-left: calc(0px - 4px);
-  width: calc(100% + 4px);
-}
-.trigger > :global(.__wab_flex-container) > *,
-.trigger > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.trigger > :global(.__wab_flex-container) > picture > img,
-.trigger
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  margin-left: 4px;
 }
 .triggerisDisabled {
   opacity: 0.5;

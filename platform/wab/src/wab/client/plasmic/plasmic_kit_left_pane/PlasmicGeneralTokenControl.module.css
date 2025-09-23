@@ -21,3 +21,18 @@
   width: 16px;
   height: 16px;
 }
+.iconButton__jphC:global(.__wab_instance) {
+  max-width: 100%;
+}
+.svg__sVr6G {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  height: 1em;
+}
+.svg__i8Su {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  height: 1em;
+}

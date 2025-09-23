@@ -27,6 +27,7 @@
 .rootlayout_vertical {
   display: flex;
   flex-direction: column;
+  column-gap: 0px;
 }
 .rootautoWidth {
   width: auto;
