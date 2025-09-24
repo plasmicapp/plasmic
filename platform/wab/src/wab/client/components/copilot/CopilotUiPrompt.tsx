@@ -1,10 +1,10 @@
-import { COMMANDS } from "@/wab/client/commands/command";
+import { processWebImporterTree } from "@/wab/client/WebImporter";
 import { InsertRelLoc } from "@/wab/client/components/canvas/view-ops";
 import { CopilotPromptDialog } from "@/wab/client/components/copilot/CopilotPromptDialog";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { parseHtmlToWebImporterTree } from "@/wab/client/web-importer/html-parser";
-import { processWebImporterTree } from "@/wab/client/WebImporter";
-import { QueryCopilotUiResponse } from "@/wab/shared/ApiSchema";
+import { addOrUpsertTokens } from "@/wab/commons/StyleToken";
+import { QueryCopilotUiResponse, UpsertTokenReq } from "@/wab/shared/ApiSchema";
 import { spawn } from "@/wab/shared/common";
 import * as React from "react";
 
@@ -73,30 +73,46 @@ function CopilotUiPrompt() {
           return;
         }
 
+        // Collect and apply all 'add-token' actions first so the newly added tokens can be replaced correctly in the insert-html afterwards.
+        const upsertTokens: UpsertTokenReq[] = [];
         for (const action of copilotUiData.actions) {
-          switch (action.name) {
-            case "insert-html": {
-              const { wiTree } = await studioCtx.app.withSpinner(
-                parseHtmlToWebImporterTree(action.data.html, studioCtx.site)
-              );
-              if (wiTree) {
-                await processWebImporterTree(wiTree, {
-                  studioCtx,
-                  insertRelLoc,
-                  cursorClientPt: undefined,
-                });
-              }
-              break;
-            }
-
-            case "add-token": {
-              spawn(
-                COMMANDS.token.addToken.execute(studioCtx, action.data, {})
-              );
-              break;
-            }
+          if (action.name === "add-token") {
+            upsertTokens.push({
+              name: action.data.name,
+              value: action.data.value,
+              type: action.data.tokenType,
+            });
           }
         }
+        spawn(
+          studioCtx.change(({ success }) => {
+            spawn(
+              (async function () {
+                addOrUpsertTokens(studioCtx.site, upsertTokens);
+
+                for (const action of copilotUiData.actions) {
+                  if (action.name === "insert-html") {
+                    const { wiTree } = await studioCtx.app.withSpinner(
+                      parseHtmlToWebImporterTree(
+                        action.data.html,
+                        studioCtx.site
+                      )
+                    );
+                    if (wiTree) {
+                      await processWebImporterTree(wiTree, {
+                        studioCtx,
+                        insertRelLoc,
+                        cursorClientPt: undefined,
+                      });
+                    }
+                  }
+                }
+              })()
+            );
+
+            return success();
+          })
+        );
       }}
     />
   );
