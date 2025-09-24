@@ -70,19 +70,34 @@ export class LeftPanel extends BaseModel {
   }
 
   async insertNode(node: string) {
-    await this.addButton.click();
+    try {
+      await this.addButton.click({ timeout: 10000 });
+    } catch (error) {
+      await this.addButton.click({ force: true });
+    }
+
+    await this.page.waitForTimeout(500);
     await this.addSearchInput.fill(node);
-    await this.frame
+    await this.page.waitForTimeout(500);
+
+    const item = this.frame
       .locator(`li[data-plasmic-add-item-name="${node}"]`)
-      .first()
-      .click();
+      .first();
+    await item.waitFor({ state: "visible", timeout: 10000 });
+
+    try {
+      await item.click({ timeout: 10000 });
+    } catch (error) {
+      await item.click({ force: true });
+    }
   }
 
   async setComponentName(name: string) {
+    await this.componentNameInput.waitFor({ state: "visible", timeout: 5000 });
     await this.componentNameInput.fill(name);
-    // Sometimes, submitting the component too quickly will cause an error
-    // Waiting for a bit before so will prevent that
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(1000);
+
+    await this.componentNameSubmit.waitFor({ state: "visible", timeout: 5000 });
     await this.componentNameSubmit.click();
   }
 
@@ -124,17 +139,27 @@ export class LeftPanel extends BaseModel {
     await this.editComponentButton.click();
   }
 
-  async expectDebugTplTree(expected: string[]) {
-    const labelContainers = await this.frame
-      .locator(".tpltree__nodelabelContainer")
-      .all();
+  async expectDebugTplTree(expected: string[] | string) {
+    const tree = await this.frame.locator("body").evaluate(() => {
+      const win = window as any;
+      const vc = win.dbg.studioCtx.focusedViewCtx();
+      return vc.tplMgr().debugDumpTree(vc.tplRoot());
+    });
 
-    for (let i = 0; i++; i < labelContainers.length) {
-      const text = await labelContainers[i].innerText();
-      if (!text) {
-        throw new Error("Text not found");
+    if (typeof expected === "string") {
+      expect(tree.trim()).toBe(expected.trim());
+    } else {
+      const treeLines = tree
+        .split("\n")
+        .filter((line: string) => line.trim().length > 0)
+        .map((line: string) => {
+          return line.trim();
+        });
+
+      expect(treeLines.length).toBe(expected.length);
+      for (let i = 0; i < expected.length; i++) {
+        expect(treeLines[i]).toBe(expected[i]);
       }
-      expect(text).toBe(expected[i]);
     }
   }
 
@@ -149,6 +174,11 @@ export class LeftPanel extends BaseModel {
 
   async switchToVersionsTab() {
     await this.versionsTabButton.click();
+  }
+
+  async switchToImportsTab() {
+    const importsTab = this.frame.locator('button[data-test-tabkey="imports"]');
+    await importsTab.click();
   }
 
   async selectTreeNode(names: string[]): Promise<Locator> {

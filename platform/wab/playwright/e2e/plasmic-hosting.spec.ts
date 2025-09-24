@@ -20,7 +20,7 @@ test.describe("plasmic-hosting-domains", () => {
     await models.studio.leftPanel.switchToTreeTab();
     await models.studio.createNewFrame();
     await models.studio.focusCreatedFrameRoot();
-    await models.studio.insertFromAddDrawer("Text");
+    await models.studio.leftPanel.insertNode("Text");
     await models.studio.pressPublishButton();
 
     await models.studio.addPlasmicHosting();

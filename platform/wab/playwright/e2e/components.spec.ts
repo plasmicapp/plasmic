@@ -184,7 +184,7 @@ ${FREE_CONTAINER_LOWER}
 
       await expect(selectionTag).toContainText("Funky");
 
-      await models.studio.checkNoErrors();
+      await models.studio.rightPanel.checkNoErrors();
     }
 
     await checkEndState();

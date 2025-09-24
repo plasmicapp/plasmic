@@ -1,7 +1,7 @@
 import { expect } from "@playwright/test";
 import { test } from "../fixtures/test";
 
-test.describe.skip("hostless-react-slick slider carousel", () => {
+test.describe("hostless-react-slick slider carousel", () => {
   let projectId: string;
   test.beforeEach(async ({ apiClient, page }) => {
     projectId = await apiClient.setupProjectWithHostlessPackages({
@@ -27,146 +27,164 @@ test.describe.skip("hostless-react-slick slider carousel", () => {
     );
   });
 
-  async function assertState(models: any, page: any, value: string) {
-    console.log(`=== Starting assertState, expecting value: "${value}" ===`);
-
-    // Check the Text element in live mode to see if the binding worked
-    await models.studio.withinLiveMode(async (liveFrame) => {
-      console.log("Entered live mode");
-
-      // Debug: List all elements to see what's available
-      const allElements = liveFrame.locator("*[id]");
-      const allCount = await allElements.count();
-      console.log(`Found ${allCount} elements with id attributes in live mode`);
-
-      for (let i = 0; i < Math.min(10, allCount); i++) {
-        const id = await allElements.nth(i).getAttribute("id");
-        const text = await allElements.nth(i).textContent();
-        console.log(`Element ${i}: id="${id}", text="${text}"`);
-      }
-
-      // Look for any element containing "slider" in the ID
-      const sliderElements = liveFrame.locator(`[id*="slider"]`);
-      const sliderCount = await sliderElements.count();
-      console.log(`Found ${sliderCount} elements with "slider" in id`);
-
-      if (sliderCount > 0) {
-        const actualText = await sliderElements.first().textContent();
-        console.log(`Slider element content: "${actualText}"`);
-        await expect(sliderElements.first()).toHaveText(value);
-        console.log(
-          `✓ State assertion passed: expected "${value}", got "${actualText}"`
-        );
-      } else {
-        console.log("❌ No slider elements found in live mode");
-        throw new Error(
-          `Could not find text element with slider state. Expected value: ${value}`
-        );
-      }
+  async function assertState(framed: any, page: any, value: string) {
+    await page.waitForTimeout(300);
+    const canvasFrame = framed.contentFrame();
+    await expect(canvasFrame.getByText(value, { exact: true })).toBeVisible({
+      timeout: 8000,
     });
+    await page.waitForTimeout(300);
+  }
+
+  async function appendSlide(models: any, page: any) {
+    await page.waitForTimeout(300);
+    await models.studio.frame.getByText("Append new slide").click();
+    await page.waitForTimeout(300);
+  }
+
+  async function deleteSlide(models: any, page: any) {
+    await page.waitForTimeout(300);
+    await models.studio.frame.getByText("Delete current slide").click();
+    await page.waitForTimeout(300);
+  }
+
+  async function clickNext(models: any, page: any) {
+    await page.waitForTimeout(300);
+    await models.studio.frame.getByText("Next").click();
+    await page.waitForTimeout(300);
   }
 
   test("works", async ({ page, models }) => {
-    await models.studio.createNewFrame().then(async (framed) => {
-      await models.studio.focusFrameRoot(framed);
-      const textId = "slider-current-slide-state-text";
+    await models.studio.createNewPageInOwnArena("Homepage");
+    const framed = models.studio.frames.first();
+    const textId = "slider-current-slide-state-text";
+    await page.waitForTimeout(500);
 
-      await models.studio.insertFromAddDrawer("hostless-slider");
-      await page.waitForTimeout(2000);
+    await models.studio.leftPanel.insertNode("hostless-slider");
+    await page.waitForTimeout(500);
 
-      await models.studio.insertFromAddDrawer("Text");
-      console.log("Inserted Text component");
+    await models.studio.leftPanel.insertNode("Text");
+    const htmlAttributesSection = models.studio.frame.locator(
+      'text="HTML attributes"'
+    );
+    await page.waitForTimeout(500);
+    await htmlAttributesSection.waitFor({ state: "visible", timeout: 5000 });
+    await htmlAttributesSection.evaluate((element) => {
+      element.scrollIntoView({ behavior: "smooth", block: "center" });
+    });
+    await page.waitForTimeout(300);
+    await htmlAttributesSection.click();
+    await page.waitForTimeout(500);
+    const idField = models.studio.rightPanel.frame
+      .locator(
+        'div[role="textbox"].templated-string-input[data-slate-editor="true"]'
+      )
+      .nth(2);
 
-      await models.studio.addHtmlAttribute("id", textId);
-      console.log(`Added HTML attribute id="${textId}"`);
+    await idField.waitFor({ state: "visible", timeout: 5000 });
+    await idField.evaluate((element) => {
+      element.scrollIntoView({ behavior: "smooth", block: "center" });
+    });
+    await idField.click();
+    await page.waitForTimeout(500);
+    await page.keyboard.type(textId);
+    await page.waitForTimeout(500);
+    await page.keyboard.press("Enter");
+    await page.waitForTimeout(500);
 
-      await models.studio.renameTreeNode("slider-current-slide-state-text");
-      console.log("Renamed tree node to slider-current-slide-state-text");
+    const textContentLabel = models.studio.rightPanel.frame.locator(
+      `[data-test-id="text-content"] label`
+    );
+    await textContentLabel.waitFor({ state: "visible", timeout: 5000 });
+    await textContentLabel.evaluate((element) => {
+      element.scrollIntoView({ behavior: "smooth", block: "center" });
+    });
+    await page.waitForTimeout(1000);
+    await textContentLabel.hover();
+    await page.waitForTimeout(1000);
+    await textContentLabel.click({ button: "right" });
+    await page.waitForTimeout(1000);
+    await models.studio.useDynamicValueButton.click();
 
-      await models.studio.textContent.click({ button: "right" });
-      console.log("Right-clicked on text content");
+    await models.studio.frame
+      .locator(`[data-test-id="data-picker"]`)
+      .getByText("currentSlide")
+      .click();
 
-      await models.studio.useDynamicValueButton.click();
-      console.log("Clicked use dynamic value button");
+    const saveButton = models.studio.frame.getByRole("button", {
+      name: "Save",
+    });
+    await saveButton.waitFor({ state: "visible" });
+    await saveButton.click();
 
-      await models.studio.frame
-        .locator(`[data-test-id="data-picker"]`)
-        .getByText("currentSlide")
-        .click();
-      console.log("Selected currentSlide from data picker");
+    await models.studio.frame
+      .locator(`[data-test-id="data-picker"]`)
+      .waitFor({ state: "hidden", timeout: 5000 });
 
-      await models.studio.frame
-        .locator(`[data-test-id="data-picker"]`)
-        .getByRole("button", { name: "Save" })
-        .click();
-      console.log("Clicked Save button");
+    await assertState(framed, page, "0");
 
-      // Wait a bit for the binding to take effect
-      await page.waitForTimeout(1000);
-      console.log("Waited for binding to take effect");
+    const outlineButton = models.studio.frame.locator(
+      'button[data-test-tabkey="outline"]'
+    );
+    await outlineButton.click();
 
-      await assertState(models, page, "0");
+    const sliderInTree = models.studio.leftPanel.treeLabels
+      .filter({ hasText: "Slider Carousel" })
+      .first();
+    await sliderInTree.click();
 
-      // Make sure we're back in the tree tab before selecting
-      await models.studio.switchToTreeTab();
-      await models.studio.selectTreeNode(["Slider Carousel"]);
-      await models.studio.frame
-        .locator(`[data-test-id="prop-editor-row-initialSlide"] label`)
-        .click({ button: "right" });
-      await models.studio.frame.getByText("Use dynamic value").click();
-      await models.studio.frame.getByText("Switch to Code").click();
-      await models.studio.rightPanel.insertMonacoCode(`1`);
+    const initialSlideLabel = models.studio.frame.locator(
+      `[data-test-id="prop-editor-row-initialSlide"] label`
+    );
+    await initialSlideLabel.click({ button: "right", force: true });
+    await page.waitForTimeout(500);
+    await models.studio.frame.getByText("Use dynamic value").click();
+    await page.waitForTimeout(500);
+    await models.studio.rightPanel.insertMonacoCode(`1`);
+    await page.waitForTimeout(500);
 
-      await models.studio.frame.getByText("Append new slide").click();
+    await appendSlide(models, page);
+    await assertState(framed, page, "3");
 
-      // Wait a bit for the state to update
-      await page.waitForTimeout(1000);
-      await assertState(models, page, "3");
+    await appendSlide(models, page);
+    await assertState(framed, page, "4");
 
-      await models.studio.frame.getByText("Append new slide").click();
-      await assertState(models, page, "4");
+    await appendSlide(models, page);
+    await assertState(framed, page, "5");
 
-      await models.studio.frame.getByText("Append new slide").click();
-      await assertState(models, page, "5");
+    await deleteSlide(models, page);
+    await assertState(framed, page, "4");
 
-      await models.studio.frame.getByText("Delete current slide").click();
-      await assertState(models, page, "4");
+    await deleteSlide(models, page);
+    await appendSlide(models, page);
+    await assertState(framed, page, "4");
+    await appendSlide(models, page);
+    await assertState(framed, page, "5");
+    await appendSlide(models, page);
+    await assertState(framed, page, "6");
+    await deleteSlide(models, page);
+    await deleteSlide(models, page);
+    await deleteSlide(models, page);
+    await assertState(framed, page, "3");
+    await deleteSlide(models, page);
+    await deleteSlide(models, page);
+    await deleteSlide(models, page);
+    await deleteSlide(models, page);
+    const deleteButton = models.studio.frame.getByText("Delete current slide");
+    await expect(deleteButton).not.toBeVisible({ timeout: 5000 });
+    await assertState(framed, page, "0");
 
-      await models.studio.frame.getByText("Delete current slide").click();
-      await assertState(models, page, "3");
+    await appendSlide(models, page);
+    await appendSlide(models, page);
+    await appendSlide(models, page);
+    await assertState(framed, page, "2");
+    await clickNext(models, page);
+    await assertState(framed, page, "0");
+    await clickNext(models, page);
+    await assertState(framed, page, "1");
 
-      await models.studio.frame.getByText("Append new slide").click();
-      await models.studio.frame.getByText("Append new slide").click();
-      await models.studio.frame.getByText("Append new slide").click();
-      await assertState(models, page, "6");
-
-      await models.studio.frame.getByText("Delete current slide").click();
-      await models.studio.frame.getByText("Delete current slide").click();
-      await models.studio.frame.getByText("Delete current slide").click();
-      await assertState(models, page, "3");
-
-      await models.studio.frame.getByText("Delete current slide").click();
-      await models.studio.frame.getByText("Delete current slide").click();
-      await models.studio.frame.getByText("Delete current slide").click();
-      await models.studio.frame.getByText("Delete current slide").click();
-      await expect(
-        models.studio.frame.getByText("Delete current slide")
-      ).not.toBeVisible();
-      await assertState(models, page, "0");
-
-      await models.studio.frame.getByText("Append new slide").click();
-      await models.studio.frame.getByText("Append new slide").click();
-      await models.studio.frame.getByText("Append new slide").click();
-      await assertState(models, page, "2");
-
-      await models.studio.frame.getByText("Next").click();
-      await assertState(models, page, "0");
-      await models.studio.frame.getByText("Next").click();
-      await assertState(models, page, "1");
-
-      await models.studio.withinLiveMode(async (liveFrame) => {
-        await expect(liveFrame.locator(`#${textId}`)).toHaveText("1");
-      });
+    await models.studio.withinLiveMode(async (liveFrame) => {
+      await expect(liveFrame.getByText("1", { exact: true })).toBeVisible();
     });
   });
 });

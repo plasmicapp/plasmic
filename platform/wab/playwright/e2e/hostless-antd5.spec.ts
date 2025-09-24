@@ -29,16 +29,36 @@ test.describe("hostless-antd5", () => {
       await models.studio.leftPanel.insertNode("Vertical stack");
       await models.studio.leftPanel.insertNode("plasmic-antd5-input");
       await models.studio.leftPanel.insertNode("Text");
+      const disablePane1 = models.studio.frame.locator(
+        ".canvas-editor__disable-right-pane"
+      );
+      const count1 = await disablePane1.count();
+      if (count1 > 0) {
+        await disablePane1
+          .waitFor({ state: "hidden", timeout: 5000 })
+          .catch(() => {});
+      }
       await models.studio.rightPanel.textContentButton.click({
         button: "right",
+        force: true,
       });
       await models.studio.useDynamicValueButton.click();
       await models.studio.rightPanel.selectDataPickerItem("input");
 
       await models.studio.leftPanel.insertNode("plasmic-antd5-checkbox");
       await models.studio.leftPanel.insertNode("Text");
+      const disablePane2 = models.studio.frame.locator(
+        ".canvas-editor__disable-right-pane"
+      );
+      const count2 = await disablePane2.count();
+      if (count2 > 0) {
+        await disablePane2
+          .waitFor({ state: "hidden", timeout: 5000 })
+          .catch(() => {});
+      }
       await models.studio.rightPanel.textContentButton.click({
         button: "right",
+        force: true,
       });
       await models.studio.useDynamicValueButton.click();
       await models.studio.rightPanel.insertMonacoCode(
@@ -46,6 +66,9 @@ test.describe("hostless-antd5", () => {
       );
 
       await models.studio.withinLiveMode(async (liveFrame) => {
+        await liveFrame
+          .locator(".ant-input")
+          .waitFor({ state: "visible", timeout: 10000 });
         await liveFrame.locator(".ant-input").fill("hello input!");
         await expect(liveFrame.locator(".ant-input")).toHaveAttribute(
           "value",

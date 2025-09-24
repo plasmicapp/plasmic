@@ -21,7 +21,7 @@ test.describe("arena", () => {
     models,
   }) => {
     await models.studio.leftPanel.addNewFrame();
-    const artboardFrame = models.studio.getArtboardFrame(0);
+    const artboardFrame = models.studio.componentFrame;
     const artboardBody = artboardFrame.locator("body");
     await artboardBody.click();
     await models.studio.renameSelectionTag("Screen");
@@ -31,17 +31,18 @@ test.describe("arena", () => {
     await models.studio.extractComponentNamed("Text Input");
 
     await models.studio.openComponentInNewFrame("Text Input");
-    const componentFrame = models.studio.getArtboardFrame(1);
+    const componentFrame = models.studio.getComponentFrameByIndex(1);
     const componentBody = componentFrame.locator("body");
     await componentBody.click();
-    await page.waitForTimeout(1_000); // We wait here otherwise we click the element before it is actually interactable
     await models.studio.rightPanel.chooseFontSize("25px");
     await models.studio.rightPanel.switchToComponentDataTab();
     await models.studio.rightPanel.globalVariantsHeader.click();
 
     await models.studio.rightPanel.switchToResponsivenessTab();
     await models.studio.leftPanel.breakpointPresetButton.click();
-    await page.waitForTimeout(1_000);
+    await models.studio.leftPanel.breakpointDesktopCategory.waitFor({
+      state: "visible",
+    });
     await models.studio.leftPanel.breakpointDesktopCategory.hover();
     await models.studio.leftPanel.breakpointDesktopMobile.scrollIntoViewIfNeeded();
     await models.studio.leftPanel.breakpointDesktopMobile.click();
@@ -55,6 +56,7 @@ test.describe("arena", () => {
     await models.studio.rightPanel.artboardSizeWidthInput.clear();
     await models.studio.rightPanel.artboardSizeWidthInput.fill("200px");
     await page.keyboard.press("Enter");
+    await models.studio.waitForSave();
 
     await artboardBody.click();
     await artboardBody
@@ -62,6 +64,10 @@ test.describe("arena", () => {
       .first()
       .dblclick({ delay: 200, force: true });
 
+    await models.studio.rightPanel.fontSizeInput.waitFor({
+      state: "visible",
+      timeout: 5000,
+    });
     expect(
       await models.studio.rightPanel.fontSizeInput.getAttribute("value")
     ).toContain("30");
@@ -70,15 +76,24 @@ test.describe("arena", () => {
     await models.studio.rightPanel.artboardSizeWidthInput.clear();
     await models.studio.rightPanel.artboardSizeWidthInput.fill("211px");
     await page.keyboard.press("Enter");
-
+    await models.studio.waitForSave();
+    await page.waitForTimeout(1000);
     await artboardBody.click();
-    await artboardBody
-      .locator("span")
-      .first()
-      .dblclick({ delay: 200, force: true });
-
-    expect(
-      await models.studio.rightPanel.fontSizeInput.getAttribute("value")
-    ).toContain("25");
+    await page.waitForTimeout(1000);
+    const textSpan = artboardBody.locator("span").first();
+    await textSpan.waitFor({ state: "visible", timeout: 10000 });
+    await textSpan.hover();
+    await textSpan.dblclick({ delay: 500, force: true });
+    await page.keyboard.press("Escape");
+    await textSpan.dblclick({ delay: 300, force: true });
+    await page.waitForTimeout(1500);
+    await models.studio.rightPanel.fontSizeInput.waitFor({
+      state: "visible",
+      timeout: 15000,
+    });
+    const fontSize = await models.studio.rightPanel.fontSizeInput.getAttribute(
+      "value"
+    );
+    expect(fontSize).toContain("25");
   });
 });

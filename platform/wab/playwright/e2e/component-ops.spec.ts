@@ -241,6 +241,6 @@ test.describe("component-ops - tricky operations", () => {
     await expect(selectedNode).toContainText("CompB");
 
     await expect(compCFrame.getByText("--->Hello!")).toBeVisible();
-    await models.studio.checkNoErrors();
+    await models.studio.rightPanel.checkNoErrors();
   });
 });

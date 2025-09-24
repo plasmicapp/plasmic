@@ -1,5 +1,6 @@
 import { FrameLocator, Locator, Page } from "playwright/test";
 import { modifierKey } from "../../utils/modifier-key";
+import { updateFormValuesInLiveMode } from "../../utils/studio-utils";
 import { BaseModel } from "../BaseModel";
 
 export class RightPanel extends BaseModel {
@@ -310,14 +311,46 @@ export class RightPanel extends BaseModel {
 
     await this.valueCodeInput.waitFor({ state: "visible" });
     await this.valueCodeInput.click();
-
+    await this.valueCodeInput.click({ clickCount: 3 });
     await this.page.keyboard.press(`${modifierKey}+A`);
     await this.page.keyboard.press("Delete");
+    await this.page.keyboard.press("Backspace");
 
     for (const char of code) {
       await this.page.keyboard.type(char);
       await this.page.waitForTimeout(5);
     }
+
+    await this.page.waitForTimeout(100);
+    await this.windowSaveButton.click();
+    await this.page.waitForTimeout(100);
+  }
+
+  async insertMonacoCodeFast(code: string) {
+    await this.page.waitForTimeout(1000);
+    if (await this.monacoSwitchToCodeButton.isVisible()) {
+      await this.monacoSwitchToCodeButton.click();
+    }
+    await this.valueCodeInput.waitFor({ state: "visible" });
+    await this.valueCodeInput.click();
+    const currentValue = await this.valueCodeInput.textContent();
+    if (currentValue && currentValue.trim() !== "") {
+      const modifier = process.platform === "darwin" ? "Meta" : "Control";
+      await this.page.keyboard.press(`${modifier}+A`);
+      await this.page.keyboard.press("Delete");
+      await this.page.keyboard.press("Backspace");
+    }
+
+    await this.valueCodeInput.evaluate((element, pastePayload) => {
+      const dataTransfer = new DataTransfer();
+      dataTransfer.setData("text/plain", pastePayload);
+      const pasteEvent = new ClipboardEvent("paste", {
+        bubbles: true,
+        cancelable: true,
+        clipboardData: dataTransfer as any,
+      });
+      element.dispatchEvent(pasteEvent);
+    }, code);
 
     await this.page.waitForTimeout(100);
     await this.windowSaveButton.click();
@@ -379,29 +412,6 @@ export class RightPanel extends BaseModel {
     await this.propSubmitButton.click();
   }
 
-  async addState(state: {
-    name: string;
-    variableType: string;
-    accessType: string;
-    initialValue: string;
-  }) {
-    await this.addStateButton.click();
-    await this.variableNameInput.fill(state.name);
-    await this.selectVariableType(state.variableType);
-
-    if (state.initialValue) {
-      await this.initialValueInput.click();
-      await this.initialValueInput.fill(state.initialValue);
-    }
-
-    if (state.accessType !== "private") {
-      await this.allowExternalAccessCheckbox.click({ force: true });
-      await this.selectAccessType(state.accessType);
-    }
-
-    await this.confirmButton.click();
-  }
-
   async switchToSettingsTab() {
     await this.settingsTabButton.click();
   }
@@ -449,11 +459,10 @@ export class RightPanel extends BaseModel {
     previewValue: string | undefined
   ) {
     await this.openComponentPropModal(propName);
-    await this.page.waitForTimeout(1_000); // Immediately after the modal is opened, some locators are duplicated for some reason. we need to wait a bit
     if (previewValue !== undefined) {
       await this.previewValueInput.fill(previewValue);
     } else {
-      await this.previewValueMenuButton.click();
+      await this.previewValueMenuButton.first().click();
       await this.frame.getByText("Unset").click();
     }
     await this.propSubmitButton.first().click();
@@ -464,12 +473,11 @@ export class RightPanel extends BaseModel {
     defaultValue: string | undefined
   ) {
     await this.openComponentPropModal(propName);
-    await this.page.waitForTimeout(1_000); // Immediately after the modal is opened, some locators are duplicated for some reason. we need to wait a bit
 
     if (defaultValue !== undefined) {
       await this.defaultValueInput.fill(defaultValue);
     } else {
-      await this.defaultValueMenuButton.click();
+      await this.defaultValueMenuButton.first().click();
       await this.frame.getByText("Unset").click();
     }
     await this.propSubmitButton.click();
@@ -500,13 +508,17 @@ export class RightPanel extends BaseModel {
   ) {
     const editor = this.frame.locator(`[data-plasmic-prop="${prop}"]`).last();
     await editor.click();
+    await this.page.waitForTimeout(200);
 
     if (opts?.reset) {
       await this.page.keyboard.press("Control+a");
+      await this.page.waitForTimeout(100);
       await this.page.keyboard.press("Backspace");
+      await this.page.waitForTimeout(100);
     }
 
     await this.page.keyboard.type(value);
+    await this.page.waitForTimeout(200);
     await this.page.keyboard.press("Enter");
   }
 
@@ -551,6 +563,12 @@ export class RightPanel extends BaseModel {
     await this.addRepeatElementButton.click();
     await this.repeatCollectionButton.click();
     await this.insertMonacoCode(code);
+  }
+
+  async repeatOnCustomCodeFast(code: string) {
+    await this.addRepeatElementButton.click();
+    await this.repeatCollectionButton.click();
+    await this.insertMonacoCodeFast(code);
   }
 
   async switchToDesignTab() {
@@ -702,7 +720,7 @@ export class RightPanel extends BaseModel {
 
       if (interaction.args.operation) {
         await this.operationDropdownButton.click();
-        const operations = {
+        const operations: Record<string, number> = {
           newValue: 0,
           clearValue: 1,
           increment: 2,
@@ -889,5 +907,525 @@ export class RightPanel extends BaseModel {
     await this.frame
       .getByRole("button", { name: "product_id" })
       .waitFor({ state: "visible" });
+  }
+
+  async addFormItem(prop: string, value: Record<string, any>) {
+    const addBtn = this.frame.locator(`[data-test-id="${prop}-add-btn"]`);
+    await addBtn.waitFor({ timeout: 5000 });
+    await addBtn.click();
+
+    for (const key in value) {
+      if (key === "inputType") {
+        await this.setSelectByLabel(key, value[key]);
+      } else if (key === "options") {
+        for (const option of value[key]) {
+          await this.addItemToArrayProp(key, { text: option });
+        }
+      } else {
+        await this.setDataPlasmicProp(key, value[key]);
+      }
+    }
+
+    await this.closeSidebarModal();
+  }
+
+  async addItemToArrayProp(prop: string, value: Record<string, any>) {
+    const addBtn = this.frame.locator(`[data-test-id="${prop}-add-btn"]`);
+    await addBtn.click();
+    await this.page.waitForTimeout(200);
+
+    for (const key in value) {
+      await this.setDataPlasmicProp(key, value[key]);
+    }
+  }
+
+  async removeItemFromArrayProp(prop: string, index: number) {
+    const removeBtn = this.frame.locator(
+      `[data-test-id="${prop}-${index}-remove"]`
+    );
+    await removeBtn.click();
+    await this.page.waitForTimeout(500);
+  }
+
+  async setSelectByLabel(label: string, value: string) {
+    const result = await this.page.evaluate(
+      ({ selectName, labelValue }) => {
+        const w = window as any;
+        if (w.dbg?.testControls?.[selectName]?.setByLabel) {
+          return w.dbg.testControls[selectName].setByLabel(labelValue);
+        }
+        return null;
+      },
+      { selectName: label, labelValue: value }
+    );
+
+    if (result !== null) {
+      return;
+    }
+
+    const select = this.frame.locator(`[data-plasmic-prop="${label}"]`);
+    await select.click();
+
+    const optionWithQuotes = this.frame.locator(`[data-key="'${value}'"]`);
+    if ((await optionWithQuotes.count()) > 0) {
+      await optionWithQuotes.click();
+    } else {
+      const optionWithoutQuotes = this.frame.locator(`[data-key="${value}"]`);
+      await optionWithoutQuotes.click();
+    }
+  }
+
+  async setSelectByValue(selectName: string, value: string) {
+    const result = await this.page.evaluate(
+      ({ name, val }) => {
+        const w = window as any;
+        if (w.dbg?.testControls?.[name]?.setByValue) {
+          return w.dbg.testControls[name].setByValue(val);
+        }
+        return null;
+      },
+      { name: selectName, val: value }
+    );
+
+    if (result !== null) {
+      return;
+    }
+
+    await this.setSelectByLabel(selectName, value);
+  }
+
+  async updateFormValuesLiveMode(newValues: any, liveFrame: any) {
+    await updateFormValuesInLiveMode(newValues, liveFrame, this.page);
+  }
+
+  async bindTextContentToCustomCode(code: string) {
+    const textContentLabel = this.frame.locator(
+      '[data-test-id="text-content"] label'
+    );
+    await textContentLabel.click({ button: "right" });
+    await this.frame.getByText("Use dynamic value").click();
+    await this.page.waitForTimeout(500);
+    await this.ensureDataPickerInCustomCodeMode();
+    await this.page.waitForTimeout(500);
+    await this.insertMonacoCode(code);
+  }
+
+  async ensureDataPickerInCustomCodeMode() {
+    const switchToCodeButton = this.frame.getByText("Switch to Code");
+    if (await switchToCodeButton.isVisible()) {
+      await switchToCodeButton.click();
+    }
+  }
+
+  async addState(state: {
+    name: string;
+    variableType: string;
+    accessType?: string;
+    initialValue?: any;
+    isInitValDynamicValue?: boolean;
+  }) {
+    const existingStates = await this.frame
+      .locator('[data-test-id^="state-row-"]')
+      .count();
+
+    const addStateButtons = [
+      this.frame.locator('[data-test-id="add-state-btn"]').first(),
+      this.frame
+        .locator('button:has(svg[data-test-id="add-state-btn"])')
+        .first(),
+      this.frame.locator('button:has([data-test-id="add-state-btn"])').first(),
+      this.frame.locator('[aria-label="Add state variable"]').first(),
+      this.frame.locator('button[aria-label="Add state variable"]').first(),
+      this.frame.locator('button:has-text("Add state")').first(),
+      this.frame
+        .locator("button")
+        .filter({ has: this.frame.locator('[data-test-id="add-state-btn"]') })
+        .first(),
+      this.frame
+        .locator("button")
+        .filter({
+          has: this.frame.locator('svg[data-test-id="add-state-btn"]'),
+        })
+        .first(),
+    ];
+
+    let addStateButton = null;
+    for (const button of addStateButtons) {
+      const count = await button.count();
+      if (count > 0) {
+        addStateButton = button;
+        break;
+      }
+    }
+
+    if (!addStateButton) {
+      throw new Error("Could not find add state button");
+    }
+
+    await addStateButton.waitFor({ state: "visible", timeout: 10000 });
+
+    if (existingStates === 0) {
+      await addStateButton.click();
+    } else {
+      await addStateButton.click();
+      await this.page.waitForTimeout(200);
+      await addStateButton.click();
+    }
+
+    await this.page.waitForTimeout(500);
+
+    const nameInput = this.frame.locator('[data-plasmic-prop="variable-name"]');
+    await nameInput.waitFor({ state: "visible", timeout: 5000 });
+
+    await nameInput.click();
+    await this.page.keyboard.press("Control+a");
+    await this.page.keyboard.press("Delete");
+    await nameInput.fill(state.name);
+
+    await this.setSelectByLabel("variable-type", state.variableType);
+
+    if (state.isInitValDynamicValue || state.initialValue == null) {
+      const propEditorRow = this.frame.locator(
+        '[data-test-id="prop-editor-row-initial-value"]'
+      );
+      await propEditorRow.click({ button: "right" });
+      await this.frame.getByText("Use dynamic value").click();
+      await this.ensureDataPickerInCustomCodeMode();
+      await this.insertMonacoCode(
+        state.initialValue != null ? state.initialValue : "undefined"
+      );
+    } else {
+      if (state.variableType === "number") {
+        const initValInput = this.frame.locator(
+          '.ant-input-number input[data-plasmic-prop="initial-value"]'
+        );
+        const initValCount = await initValInput.count();
+
+        if (initValCount > 0) {
+          await initValInput.click();
+          await this.page.waitForTimeout(200);
+          await initValInput.clear();
+          await this.page.waitForTimeout(200);
+          await initValInput.fill(state.initialValue.toString());
+          await this.page.waitForTimeout(200);
+        } else {
+          await this.setDataPlasmicProp("initial-value", state.initialValue);
+        }
+      } else {
+        await this.setDataPlasmicProp("initial-value", state.initialValue);
+      }
+    }
+
+    if (state.accessType && state.accessType !== "private") {
+      const accessTypeCheckbox = this.frame.locator(
+        '[data-test-id="allow-external-access"]'
+      );
+      await accessTypeCheckbox.click({ timeout: 10000, force: true });
+      await this.page.waitForTimeout(200);
+      await this.setSelectByLabel("access-type", state.accessType);
+    }
+
+    await this.page.waitForTimeout(500);
+
+    const confirmButton = this.frame.locator('[data-test-id="confirm"]');
+    await confirmButton.click();
+    await this.page.waitForTimeout(2000);
+  }
+
+  async pickIntegration(dataSourceId?: string) {
+    const pickIntegrationBtn = this.frame.locator(
+      "#data-source-modal-pick-integration-btn"
+    );
+
+    await pickIntegrationBtn.waitFor({ state: "visible", timeout: 10000 });
+
+    if (await pickIntegrationBtn.isVisible()) {
+      await pickIntegrationBtn.click();
+
+      let result = null;
+
+      if (dataSourceId) {
+        result = await this.page.evaluate((dsId) => {
+          const w = window as any;
+          if (w.dbg?.testControls?.dataSource?.setByValue) {
+            return w.dbg.testControls.dataSource.setByValue(dsId);
+          }
+          return null;
+        }, dataSourceId);
+
+        if (result !== null) {
+          const confirmButton = this.page
+            .getByRole("button", { name: "Confirm" })
+            .or(
+              this.page
+                .locator("button")
+                .filter({ hasText: /confirm|ok|select/i })
+                .first()
+            );
+
+          await confirmButton.waitFor({ timeout: 5000 });
+          await confirmButton.click();
+          await this.page.waitForTimeout(3000);
+          return;
+        }
+      }
+
+      if (result === null) {
+        result = await this.page.evaluate(() => {
+          const w = window as any;
+          if (w.dbg?.testControls?.dataSource?.setByValue) {
+            const dataSourceControl = w.dbg.testControls.dataSource;
+            if (dataSourceControl.options) {
+              for (const option of dataSourceControl.options) {
+                if (
+                  option.value &&
+                  (option.label?.toLowerCase().includes("tutorial") ||
+                    option.label?.toLowerCase().includes("tutorialdb") ||
+                    option.value.includes("tutorial"))
+                ) {
+                  return dataSourceControl.setByValue(option.value);
+                }
+              }
+            }
+            if (
+              dataSourceControl.options &&
+              dataSourceControl.options.length > 0
+            ) {
+              return dataSourceControl.setByValue(
+                dataSourceControl.options[0].value
+              );
+            }
+          }
+          return null;
+        });
+      }
+
+      if (result === null) {
+        const selectIntegrationBtn = this.page
+          .locator("button")
+          .filter({
+            hasText: "Select an integration from your workspace to use",
+          })
+          .or(
+            this.page
+              .locator("button")
+              .filter({ hasText: /select.*integration.*workspace/i })
+          )
+          .or(
+            this.page
+              .locator("button")
+              .filter({ hasText: /select.*integration/i })
+          );
+
+        await selectIntegrationBtn.waitFor({ timeout: 10000 });
+        await selectIntegrationBtn.click();
+
+        let integrationOption = this.page
+          .getByRole("option")
+          .filter({ hasText: /Fake Data Source/i })
+          .first();
+
+        const foundFakeSource = (await integrationOption.count()) > 0;
+
+        if (!foundFakeSource) {
+          integrationOption = this.page
+            .getByRole("option")
+            .filter({ hasText: /TutorialDB/i })
+            .first();
+        }
+
+        await integrationOption.waitFor({ timeout: 5000 });
+        await integrationOption.click();
+      }
+
+      const confirmButton = this.page
+        .getByRole("button", { name: "Confirm" })
+        .or(
+          this.page
+            .locator("button")
+            .filter({ hasText: /confirm|ok|select/i })
+            .first()
+        );
+
+      await confirmButton.waitFor({ timeout: 5000 });
+      await confirmButton.click();
+    } else {
+      await this.setDataPlasmicProp("dataSource", "default");
+    }
+  }
+
+  async addComponentQuery() {
+    const addQueryBtn = this.frame.locator("#data-queries-add-btn");
+    await addQueryBtn.click();
+  }
+
+  async saveDataSourceModal() {
+    const saveBtn = this.frame.locator("#data-source-modal-save-btn");
+    await saveBtn.click();
+  }
+
+  async closeSidebarModal() {
+    const closeBtn = this.frame.locator('[data-test-id="close-sidebar-modal"]');
+    await closeBtn.click();
+  }
+
+  async closeDataPicker() {
+    const closeBtn = this.frame.locator('[data-test-id="data-picker-close"]');
+    await closeBtn.click();
+  }
+
+  async clickDataPlasmicProp(propName: string) {
+    const prop = this.frame.locator(`[data-plasmic-prop="${propName}"]`);
+    await prop.click();
+  }
+
+  async renameTreeNode(name: string, options?: { programatically?: boolean }) {
+    if (options?.programatically) {
+      const nameInput = this.frame.locator(
+        '[data-test-id="tree-node-name-input"]'
+      );
+      await nameInput.fill(name);
+      await nameInput.press("Enter");
+    } else {
+      await this.page.keyboard.type(name);
+      await this.page.keyboard.press("Enter");
+    }
+  }
+
+  async configureSchemaForm(options: {
+    formType: "New Entry" | "Update Entry";
+    tableName: string;
+    lookupField?: string;
+    idValue?: string;
+  }) {
+    const { formType, tableName, lookupField, idValue } = options;
+
+    const formTypeElements = this.frame
+      .locator("*")
+      .filter({ hasText: "Select the form type" });
+    await formTypeElements.first().click();
+    const selectElement = this.frame
+      .locator("select")
+      .filter({ hasText: formType })
+      .first();
+    await selectElement.selectOption({ label: formType });
+
+    const integrationBtn = this.frame.getByText("Pick an integration");
+    await integrationBtn.click();
+
+    const loader = this.page.locator(".loader-container");
+    try {
+      await loader.waitFor({ state: "visible", timeout: 1000 });
+      await loader.waitFor({ state: "detached", timeout: 5000 });
+    } catch {}
+
+    const integrationDropdown = this.page
+      .getByText("Select an integration from your workspace to use")
+      .or(
+        this.page
+          .locator("select")
+          .filter({ hasText: "Select an integration" })
+          .first()
+      );
+    await integrationDropdown.click();
+    await this.page.waitForTimeout(500);
+
+    const fakeDataSourceOption = this.page
+      .locator("option")
+      .filter({ hasText: /Fake.*Data.*Source/i })
+      .first();
+    const selectEl = this.page.locator("select").first();
+    const optionValue = await fakeDataSourceOption.getAttribute("value");
+    if (optionValue) {
+      await selectEl.selectOption({ value: optionValue });
+      await this.page.waitForTimeout(1000);
+    }
+
+    const confirmBtn = this.page.locator('[data-test-id="prompt-submit"]');
+    await confirmBtn.first().click();
+    await this.page.waitForTimeout(2000);
+
+    await this.page.waitForTimeout(2000);
+    const unsetButton = this.frame.getByRole("button", { name: "unset" });
+    await unsetButton.click();
+    await this.page.waitForTimeout(500);
+
+    const tableOption = this.frame.locator(`option[value*="${tableName}"]`);
+    const tableOptionValue = await tableOption.getAttribute("value");
+    const tableSelect = this.frame.locator(
+      `select:has(option[value*="${tableName}"])`
+    );
+    if (tableOptionValue && (await tableSelect.count()) > 0) {
+      await tableSelect.selectOption({ value: tableOptionValue });
+    }
+
+    if (formType === "Update Entry" && lookupField) {
+      const lookupDropdown = this.frame
+        .getByRole("button", { name: "unset" })
+        .nth(1);
+      if ((await lookupDropdown.count()) > 0) {
+        await lookupDropdown.click();
+        await this.page.waitForTimeout(500);
+
+        const fieldOption = this.frame.locator(
+          `option[value="${lookupField}"]`
+        );
+        if ((await fieldOption.count()) > 0) {
+          const fieldSelect = this.frame.locator(
+            `select:has(option[value="${lookupField}"])`
+          );
+          await fieldSelect.selectOption({ value: lookupField });
+        }
+      }
+
+      if (idValue) {
+        const idInputCandidates = [
+          this.frame.locator('input[placeholder*="id"]'),
+          this.frame.locator('input[name*="id"]'),
+          this.frame.locator("input").last(),
+        ];
+
+        for (const candidate of idInputCandidates) {
+          if ((await candidate.count()) > 0) {
+            try {
+              await candidate.first().clear();
+              await candidate.first().fill(idValue);
+              break;
+            } catch (e) {}
+          }
+        }
+      }
+    }
+
+    await this.page.waitForTimeout(2000);
+
+    const saveBtnStudio = this.frame.getByText("Save");
+    if ((await saveBtnStudio.count()) > 0) {
+      await saveBtnStudio.click();
+      await this.page.waitForTimeout(2000);
+    }
+  }
+
+  async setupComponentQuery(resourceName: string) {
+    await this.switchToComponentDataTab();
+    await this.addComponentQuery();
+    await this.setSelectByLabel(
+      "data-source-modal-pick-resource-btn",
+      resourceName
+    );
+    await this.saveDataSourceModal();
+  }
+
+  async verifySchemaFormFields(
+    expectedFields: string[],
+    frame: FrameLocator
+  ): Promise<boolean> {
+    await this.page.waitForTimeout(3000);
+
+    const results = await Promise.all(
+      expectedFields.map((field) => frame.locator(`text=${field}`).count())
+    );
+
+    return results.every((count) => count > 0);
   }
 }

@@ -80,7 +80,17 @@ test.describe("artbitrary-css-selectors", () => {
     await models.studio.rightPanel.addRepeatElementButton.click();
     await models.studio.rightPanel.repeatCollectionButton.click();
     await models.studio.rightPanel.insertMonacoCode(`[${items}]`);
-    await models.studio.textContent.click({ button: "right" });
+    const disablePane = models.studio.frame.locator(
+      ".canvas-editor__disable-right-pane"
+    );
+    const count = await disablePane.count();
+    if (count > 0) {
+      await disablePane
+        .waitFor({ state: "hidden", timeout: 5000 })
+        .catch(() => {});
+    }
+
+    await models.studio.textContent.click({ button: "right", force: true });
     await models.studio.rightPanel.useDynamicValueButton.click();
     await models.studio.rightPanel.insertMonacoCode("`Item ${currentIndex}`");
     await models.studio.rightPanel.designTabButton.click();

@@ -30,10 +30,12 @@ test.describe("dynamic-pages", () => {
       .first()
       .contentFrame();
 
+    await page.waitForTimeout(500);
     await models.studio.rightPanel.switchToComponentDataTab();
     await models.studio.rightPanel.setPagePath("/");
 
     await models.studio.leftPanel.createNewPage("Greeter");
+    await page.waitForTimeout(1000);
     const greeterFrame = page
       .locator("iframe")
       .first()
@@ -44,6 +46,7 @@ test.describe("dynamic-pages", () => {
       .nth(1)
       .contentFrame();
 
+    await page.waitForTimeout(500);
     await models.studio.rightPanel.switchToComponentDataTab();
     await models.studio.rightPanel.setPagePath("/hello/[name]");
     await models.studio.leftPanel.switchToTreeTab();
@@ -101,11 +104,13 @@ test.describe("dynamic-pages", () => {
     await models.studio.bindTextContentToDynamicValue(["currentItem"]);
 
     await models.studio.leftPanel.selectTreeNode(['"Say hello to [child]"']);
-    await models.studio.makeLink();
+    await page.keyboard.press("Control+Alt+L");
+    await models.studio.waitForSave();
     await models.studio.bindPropToCustomCode(
       '[data-test-id="prop-editor-row-href"] label',
       "`/hello/${currentItem}`"
     );
+    await models.studio.waitForSave();
 
     const expected = [
       "Say hello to foo",
@@ -122,6 +127,7 @@ test.describe("dynamic-pages", () => {
       }
 
       await links.first().click();
+      await page.waitForTimeout(1000);
       await expect(
         liveFrame.locator("#plasmic-app .__wab_text").first()
       ).toContainText("Hello foo!");

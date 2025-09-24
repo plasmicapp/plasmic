@@ -40,6 +40,7 @@ export class AuthPage extends BaseModel {
   }
 
   async expectLoggedOut() {
+    await this.signInWithGoogleText.waitFor({ state: "visible" });
     await expect(this.signInWithGoogleText).toBeVisible();
   }
 }

@@ -30,7 +30,7 @@ test.describe("comments", () => {
 
     await models.studio.leftPanel.addComponent(componentName);
     await models.studio.waitForFrameToLoad();
-    await models.studio.insertFromAddDrawer("Text");
+    await models.studio.leftPanel.insertNode("Text");
     await models.studio.addCommentToSelection(commentText);
 
     const commentMarkers = models.studio.frame.locator(
@@ -114,7 +114,7 @@ test.describe("comments", () => {
 
     await models.studio.leftPanel.addComponent(componentName);
     await models.studio.waitForFrameToLoad();
-    await models.studio.insertFromAddDrawer("Text");
+    await models.studio.leftPanel.insertNode("Text");
     await models.studio.addCommentToSelection(commentText);
 
     const firstMarker = models.studio.commentMarkers.first();

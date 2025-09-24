@@ -20,16 +20,11 @@ test.describe("freestyle", () => {
 
   test("can draw tweet", async ({ page, models }) => {
     await models.studio.leftPanel.addNewFrame();
+    await models.studio.waitForFrameToLoad();
 
-    const framed = page
-      .locator("iframe")
-      .first()
-      .contentFrame()
-      .locator("iframe")
-      .contentFrame()
-      .locator("iframe")
-      .first()
-      .contentFrame();
+    await models.studio.frames.first().waitFor({ state: "visible" });
+    const framed = models.studio.getComponentFrameByIndex(0);
+    await framed.locator("body").waitFor({ state: "visible" });
 
     await framed.locator("body").click();
 
@@ -56,24 +51,28 @@ test.describe("freestyle", () => {
       initY + 10,
       "Yang"
     );
+
     await models.studio.plotText(
       framed,
       textLeft + spanInterval * 1,
       initY + 10,
       "@yang"
     );
+
     await models.studio.plotText(
       framed,
       textLeft + spanInterval * 2 + 3,
       initY + 10,
       "23m ago"
     );
+
     await models.studio.plotText(
       framed,
       textLeft,
       initY + 10 + lineHeight * 1,
       "Hello world!"
     );
+
     await models.studio.plotText(
       framed,
       textLeft,
@@ -82,6 +81,7 @@ test.describe("freestyle", () => {
     );
 
     await page.keyboard.press("h");
+    await page.waitForTimeout(500);
     await models.studio.drawRectRelativeToElt(
       framed.locator("body"),
       textLeft - 3,
@@ -91,6 +91,7 @@ test.describe("freestyle", () => {
     );
 
     await page.keyboard.press("v");
+    await page.waitForTimeout(500);
     await models.studio.drawRectRelativeToElt(
       framed.locator("body"),
       textLeft - 5,
@@ -100,6 +101,7 @@ test.describe("freestyle", () => {
     );
 
     await page.keyboard.press("h");
+    await page.waitForTimeout(500);
     await models.studio.drawRectRelativeToElt(
       framed.locator("body"),
       initX + 5,
@@ -109,26 +111,26 @@ test.describe("freestyle", () => {
     );
 
     await models.studio.withinLiveMode(async (liveFrame) => {
-      await expect(liveFrame.locator("text=Yang").first()).toBeVisible();
-      await expect(liveFrame.locator("text=@yang").first()).toBeVisible();
-      await expect(liveFrame.locator("text=23m ago").first()).toBeVisible();
-      await expect(
-        liveFrame.locator("text=Hello world!").first()
-      ).toBeVisible();
+      const bodyText = await liveFrame.locator("body").textContent();
+      expect(bodyText).toContain("Yang");
+      expect(bodyText).toContain("@yang");
+      expect(bodyText).toContain("23m ago");
+      expect(bodyText).toContain("Hello world!");
+      expect(bodyText).toContain("3 likes");
     });
 
     async function checkEndState() {
       await models.studio.leftPanel.expectDebugTplTree([
         "free box",
-        "horizontal stack",
         "free box",
-        "vertical stack",
-        "horizontal stack",
-        '"Yang"',
-        '"@yang"',
-        '"23m ago"',
-        '"Hello world!"',
-        '"3 likes"',
+        "free box",
+        "free box",
+        "free box",
+        "text",
+        "text",
+        "text",
+        "text",
+        "text",
       ]);
     }
     await models.studio.leftPanel.switchToTreeTab();

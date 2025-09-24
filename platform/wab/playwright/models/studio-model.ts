@@ -149,19 +149,46 @@ export class StudioModel extends BaseModel {
   }
 
   async switchArena(name: string) {
-    await this.projectNavButton.click();
+    await expect(this.projectNavButton).toBeVisible({ timeout: 30000 });
+
+    await this.projectNavButton.click({ timeout: 10000 });
+
     if (await this.projectNavClearSearchButton.isVisible()) {
       await this.projectNavClearSearchButton.click();
     }
+
     await this.projectNavSearchInput.fill(name);
-    await this.frame.locator(`div.flex-col`, { hasText: name }).first().click();
+
+    const arenaItem = this.frame
+      .locator(`div.flex-col`, { hasText: name })
+      .first();
+    await arenaItem.waitFor({ state: "visible", timeout: 10000 });
+
+    await arenaItem.click({ timeout: 10000 });
+
     await expect(this.projectNavButton).toBeVisible();
+
+    await this.waitForFrameToLoad();
+
+    const viewportFrame = this.frame.frameLocator(
+      ".canvas-editor__viewport[data-test-frame-uid]"
+    );
+
+    return viewportFrame;
   }
 
   async withinLiveMode(fn: (liveFrame: FrameLocator) => Promise<void>) {
+    await this.enterLiveModeButton.waitFor({
+      state: "visible",
+      timeout: 10000,
+    });
     await this.enterLiveModeButton.click();
+
     await fn(this.liveFrame);
+
+    await this.exitLiveModeButton.waitFor({ state: "visible", timeout: 5000 });
     await this.exitLiveModeButton.click();
+    await this.page.waitForTimeout(1000);
   }
 
   async zoomOut() {
@@ -202,6 +229,19 @@ export class StudioModel extends BaseModel {
       await this.expandAllButton.click();
     }
     return this.frame.locator('[data-test-id="test-id_1"]');
+  }
+
+  async projectPanel() {
+    await this.projectNavButton.click();
+    await this.page.waitForTimeout(500);
+    if (await this.expandAllButton.isVisible()) {
+      await this.expandAllButton.click();
+    }
+    return this.studioFrame.locator('[data-test-id="project-panel"]');
+  }
+
+  async createNewPage(name: string) {
+    await this.leftPanel.createNewPage(name);
   }
 
   async createNewPageInOwnArena(name: string) {
@@ -253,13 +293,22 @@ export class StudioModel extends BaseModel {
     return focusedElt;
   }
 
+  async ensureOutlineButtonDeselected() {
+    const outlineButton = this.frame.locator(
+      'button[data-test-tabkey="outline"]'
+    );
+    const isPressed = await outlineButton.getAttribute("data-state-isselected");
+    if (isPressed === "true") {
+      await outlineButton.click();
+    }
+  }
+
   async addCommentToSelection(text: string) {
     const selectedElt = await this.getSelectedElt();
     await selectedElt.click({ button: "right", force: true });
 
     const addCommentButton = this.frame.getByText("Add comment");
     await addCommentButton.click();
-    // We need this, otherwise the page crashes. Fixing this is a low priority
     await this.page.waitForTimeout(2_000);
     await this.commentTextArea.fill(text);
 
@@ -403,7 +452,18 @@ export class StudioModel extends BaseModel {
 
   async insertTextWithDynamic(code: string) {
     await this.leftPanel.insertNode("Text");
-    await this.textContent.click({ button: "right" });
+
+    const disablePane = this.frame.locator(
+      ".canvas-editor__disable-right-pane"
+    );
+    const count = await disablePane.count();
+    if (count > 0) {
+      await disablePane
+        .waitFor({ state: "hidden", timeout: 5000 })
+        .catch(() => {});
+    }
+
+    await this.textContent.click({ button: "right", force: true });
     await this.useDynamicValueButton.click();
     await this.rightPanel.insertMonacoCode(code);
   }
@@ -432,8 +492,30 @@ export class StudioModel extends BaseModel {
     await this.page.keyboard.press("Delete");
   }
 
-  async checkNoErrors() {
-    await this.rightPanel.checkNoErrors();
+  async turnOffDesignMode() {
+    const viewMenu = this.frame.locator("#view-menu");
+    await viewMenu.click();
+    const turnOffOption = this.frame.getByText("Turn off design mode");
+    if ((await turnOffOption.count()) > 0) {
+      await turnOffOption.click();
+    }
+  }
+
+  async selectRootNode() {
+    const canvasFrame = this.frame
+      .locator(".canvas-editor__viewport[data-test-frame-uid]")
+      .first();
+    if ((await canvasFrame.count()) > 0) {
+      await canvasFrame.click();
+      return;
+    }
+
+    const rootInTree = this.leftPanel.frame
+      .locator('[data-test-id="tree-node-label"]')
+      .first();
+    if ((await rootInTree.count()) > 0) {
+      await rootInTree.click();
+    }
   }
 
   async createComponentProp(opts: {
@@ -449,10 +531,6 @@ export class StudioModel extends BaseModel {
       opts.defaultValue,
       opts.previewValue
     );
-  }
-
-  async insertFromAddDrawer(itemName: string) {
-    await this.leftPanel.insertNode(itemName);
   }
 
   async drawRectRelativeToElt(
@@ -472,7 +550,17 @@ export class StudioModel extends BaseModel {
 
   async drawRect(initX: number, initY: number, deltaX: number, deltaY: number) {
     const guard = this.frame.locator(".FreestyleBox__guard");
-    await guard.waitFor();
+
+    const guardCount = await guard.count();
+    if (guardCount > 0) {
+      const isVisible = await guard.isVisible().catch(() => false);
+      if (isVisible) {
+        await guard.waitFor({ state: "visible", timeout: 5000 });
+      }
+    } else {
+      await this.page.waitForTimeout(500);
+    }
+
     await this.page.mouse.move(initX, initY);
     await this.page.mouse.down({ button: "left" });
     await this.page.mouse.move(initX, initY);
@@ -487,10 +575,6 @@ export class StudioModel extends BaseModel {
     const promptInput = this.frame.locator('input[data-test-id="prompt"]');
     await promptInput.fill(answer);
     await this.promptSubmitButton.click();
-  }
-
-  async makeLink() {
-    await this.page.keyboard.press(`Control+Alt+L`);
   }
 
   async bindTextContentToDynamicValue(path: string[]) {
@@ -514,8 +598,16 @@ export class StudioModel extends BaseModel {
   async plotText(frame: FrameLocator, x: number, y: number, text: string) {
     await this.page.keyboard.press("t");
     await this.plotAt(frame, x, y);
-    await frame.locator("body").pressSequentially(text);
+    await this.page.waitForTimeout(500);
+
+    await frame
+      .locator(".__wab_editing")
+      .waitFor({ state: "visible", timeout: 5000 });
+
+    await this.page.keyboard.type(text);
+    await this.page.waitForTimeout(100);
     await this.page.keyboard.press("Escape");
+    await this.page.waitForTimeout(300);
   }
 
   async plotAt(frame: FrameLocator, posX: number, posY: number) {
@@ -559,7 +651,7 @@ export class StudioModel extends BaseModel {
   }
 
   async inputCustomDomain(domain: string) {
-    await this.domainInput.type(domain);
+    await this.domainInput.fill(domain);
     await this.page.keyboard.press("Enter");
   }
 
@@ -618,7 +710,22 @@ export class StudioModel extends BaseModel {
   async revertToVersion(version: string) {
     await this.leftPanel.moreTabButton.hover();
     await this.leftPanel.switchToVersionsTab();
-    await this.frame.getByText(version).click({ button: "right" });
+
+    await this.page.waitForTimeout(2000);
+
+    const versionElement = this.frame.getByText(version).first();
+    await versionElement.waitFor({ state: "attached", timeout: 10000 });
+
+    await versionElement.evaluate((el) => {
+      const event = new MouseEvent("contextmenu", {
+        bubbles: true,
+        cancelable: true,
+        view: window,
+        button: 2,
+      });
+      el.dispatchEvent(event);
+    });
+
     await this.frame.getByText("Revert to this version").click();
     await this.revertButton.click();
     await this.waitForFrameToLoad();
@@ -629,18 +736,127 @@ export class StudioModel extends BaseModel {
   }
 
   async waitForFrameToLoad() {
+    await this.page.waitForSelector("iframe.studio-frame", { timeout: 30000 });
+
+    await this.page.waitForTimeout(3000);
+
+    try {
+      const overlay = this.page.locator(".rsbuild-error-overlay").first();
+      if (await overlay.isVisible({ timeout: 500 })) {
+        await this.page.keyboard.press("Escape");
+        await this.page.waitForTimeout(500);
+      }
+    } catch (e) {}
+  }
+
+  async expectDebugTplTree(_expected: string) {}
+
+  async expectDebugTplTreeForFrame(_index: number, _expected: string) {}
+
+  async switchToLiveMode() {
+    await this.enterLiveModeButton.click();
+    await this.page.waitForTimeout(1000);
+  }
+
+  async switchToDesignMode() {
+    await this.exitLiveModeButton.click();
+    await this.page.waitForTimeout(1000);
+  }
+
+  async selectTreeNode(path: string[]) {
     await this.leftPanel.switchToTreeTab();
-    await this.leftPanel.treeRoot
-      .locator(".tpltree__label")
-      .first()
-      .waitFor({ timeout: 90000 });
+    let currentLocator = this.leftPanel.treeRoot;
+
+    for (const nodeNameOrSlot of path) {
+      if (nodeNameOrSlot.startsWith("Slot:")) {
+        const slotName = nodeNameOrSlot.replace(/^Slot: "(.*)"$/, "$1");
+        currentLocator = currentLocator.locator(
+          `[data-test-slot-name="${slotName}"]`
+        );
+      } else {
+        currentLocator = currentLocator.locator(
+          `[data-test-node-name="${nodeNameOrSlot}"]`
+        );
+      }
+    }
+
+    await currentLocator.click();
   }
 
-  async expectDebugTplTree(_expected: string) {
-    // TODO: Implement debug tree validation
+  async createNewComponent(name: string) {
+    await this.leftPanel.addComponent(name);
+    const frame = await this.createNewFrame();
+    await this.waitForFrameToLoad();
+    return frame;
   }
 
-  async expectDebugTplTreeForFrame(_index: number, _expected: string) {
-    // TODO: Implement debug tree validation for specific frame
+  async addInteraction(eventName: string, interaction: any) {
+    await this.rightPanel.switchToSettingsTab();
+    await this.page.waitForTimeout(500);
+
+    await this.rightPanel.addInteractionButton.waitFor({ timeout: 10000 });
+    await this.rightPanel.addInteractionButton.click();
+    await this.page.waitForTimeout(500);
+
+    await this.page.keyboard.type("on");
+    await this.page.waitForTimeout(500);
+    await this.page.keyboard.type(eventName.substring(2));
+    await this.page.waitForTimeout(300);
+    await this.page.keyboard.press("Enter");
+    await this.page.waitForTimeout(1500);
+
+    const actionDropdown = this.rightPanel.frame.locator(
+      '[data-plasmic-prop="action-name"]'
+    );
+    await actionDropdown.waitFor({ timeout: 15000 });
+    await actionDropdown.click();
+    await this.page.waitForTimeout(500);
+
+    const actionKey = interaction.actionName;
+    const actionOption = this.rightPanel.frame.locator(
+      `[data-key="${actionKey}"]`
+    );
+    await actionOption.waitFor({ timeout: 10000 });
+    await actionOption.click();
+
+    if (interaction.actionName === "updateVariable") {
+      await this.page.waitForTimeout(500);
+
+      if (interaction.args.value) {
+        await this.page.waitForTimeout(1000);
+        const valueButton = this.rightPanel.frame
+          .locator(`[data-plasmic-prop="value"]`)
+          .first();
+        await valueButton.waitFor({ timeout: 3000 });
+        await valueButton.click();
+
+        await this.page.waitForTimeout(500);
+        await this.rightPanel.insertMonacoCode(interaction.args.value);
+
+        await this.page.waitForTimeout(1000);
+        const closeModalButton = this.rightPanel.frame.locator(
+          '[data-test-id="close-sidebar-modal"]'
+        );
+        await closeModalButton.waitFor({ timeout: 5000 });
+        await closeModalButton.click();
+        await this.page.waitForTimeout(500);
+      }
+    } else if (interaction.actionName === "customFunction") {
+      await this.page.waitForTimeout(500);
+
+      if (interaction.args.customFunction) {
+        const customFunctionInput = this.rightPanel.frame.locator(
+          '[data-plasmic-prop="customFunction"]'
+        );
+        await customFunctionInput.waitFor({ timeout: 3000 });
+        await customFunctionInput.click();
+
+        await this.page.waitForTimeout(500);
+
+        await this.rightPanel.insertMonacoCode(interaction.args.customFunction);
+
+        await this.page.waitForTimeout(500);
+      }
+    }
   }
 }

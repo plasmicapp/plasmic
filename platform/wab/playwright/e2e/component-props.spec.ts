@@ -105,6 +105,10 @@ test.describe("component-props", () => {
       "`numberProp * 10 = ${$props.numberProp * 10}`"
     );
 
+    await componentBody
+      .locator("text=textProp = preview text")
+      .waitFor({ state: "visible", timeout: 5000 });
+
     await expect(
       componentBody.getByText("textProp = preview text")
     ).toBeVisible();
@@ -151,18 +155,21 @@ test.describe("component-props", () => {
       .contentFrame();
     const pageBody = pageFrame.locator("body");
 
-    await models.studio.insertFromAddDrawer("Component with props");
+    await models.studio.leftPanel.insertNode("Component with props");
 
     await expect(pageBody.getByText("textProp = default text")).toBeVisible();
     await expect(pageBody.getByText("numberProp = undefined")).toBeVisible();
     await expect(pageBody.getByText("numberProp * 10 = NaN")).toBeVisible();
 
-    await models.studio.rightPanel.setDataPlasmicProp("textProp", "", {
-      reset: true,
-    });
-    await expect(pageBody.getByText("textProp =")).toBeVisible();
+    await models.studio.rightPanel.setDataPlasmicProp(
+      "textProp",
+      "custom text",
+      {
+        reset: true,
+      }
+    );
+    await expect(pageBody.getByText("textProp = custom text")).toBeVisible();
 
-    //TODO: THIS FAILS SOMETIMES, LOOK INTO IT
     await models.studio.rightPanel.removePropValue("textProp");
     await expect(pageBody.getByText("textProp = default text")).toBeVisible();
 

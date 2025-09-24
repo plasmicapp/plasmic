@@ -9,15 +9,11 @@ export abstract class BaseModel {
       .frameLocator("iframe.__wab_studio-frame");
   }
 
-  getArtboardFrame(index = 0): FrameLocator {
-    return this.page
-      .locator("iframe")
-      .first()
-      .contentFrame()
-      .locator("iframe")
-      .contentFrame()
-      .locator("iframe")
-      .nth(index)
-      .contentFrame();
+  get componentFrame(): FrameLocator {
+    return this.studioFrame.frameLocator("iframe").first();
+  }
+
+  getComponentFrameByIndex(index: number): FrameLocator {
+    return this.studioFrame.frameLocator("iframe").nth(index);
   }
 }

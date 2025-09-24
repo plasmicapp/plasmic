@@ -20,15 +20,7 @@ test.describe("publish", () => {
     models,
   }) => {
     await models.studio.createNewFrame();
-    const artboardFrame = page
-      .locator("iframe")
-      .first()
-      .contentFrame()
-      .locator("iframe")
-      .contentFrame()
-      .locator("iframe")
-      .first()
-      .contentFrame();
+    const artboardFrame = models.studio.componentFrame;
     const artboardBody = artboardFrame.locator("body");
     await artboardBody.click();
     await models.studio.focusFrameRoot(artboardFrame);
@@ -36,29 +28,66 @@ test.describe("publish", () => {
     await models.studio.insertTextNodeWithContent("hello");
     await models.studio.waitStudioLoaded();
     await models.studio.publishVersion("first version");
+
     await models.studio.leftPanel.switchToTreeTab();
+    await page.waitForTimeout(500);
+
     const selectedElt = await models.studio.getSelectedElt();
     await selectedElt.dblclick({ force: true });
     await page.waitForTimeout(500);
-    await page.keyboard.insertText("goodbye");
+
+    await page.keyboard.press("Control+a");
+    await page.keyboard.type("goodbye");
     await page.keyboard.press("Escape");
     await page.waitForTimeout(500);
-    await models.studio.publishVersion("second version");
 
+    await artboardFrame
+      .locator('text="goodbye"')
+      .waitFor({ state: "visible", timeout: 5000 });
+
+    await artboardFrame.locator('body').click();
+    await models.studio.waitForSave();
+
+    await artboardFrame
+      .locator('text="goodbye"')
+      .waitFor({ state: "visible", timeout: 2000 });
+
+    await models.studio.publishVersion("second version");
     await models.studio.leftPanel.switchToTreeTab();
     await models.studio.previewVersion("first version");
-    await models.studio.leftPanel.expectDebugTplTree(["free box", '"hello"']);
+    await artboardFrame
+      .locator('text="hello"')
+      .waitFor({ state: "visible", timeout: 5000 });
+    await artboardFrame
+      .locator('text="goodbye"')
+      .waitFor({ state: "hidden", timeout: 1000 });
 
     await models.studio.backToCurrentVersion();
-    await models.studio.leftPanel.expectDebugTplTree(["free box", '"goodbye"']);
+    await artboardFrame
+      .locator('text="goodbye"')
+      .waitFor({ state: "visible", timeout: 5000 });
+    await artboardFrame
+      .locator('text="hello"')
+      .waitFor({ state: "hidden", timeout: 1000 });
 
     await models.studio.revertToVersion("first version");
-    await models.studio.leftPanel.expectDebugTplTree(["free box", '"hello"']);
+    await artboardFrame
+      .locator('text="hello"')
+      .waitFor({ state: "visible", timeout: 5000 });
+    await artboardFrame
+      .locator('text="goodbye"')
+      .waitFor({ state: "hidden", timeout: 1000 });
 
     await page.reload();
     await models.studio.leftPanel.switchToTreeTab();
     await page.waitForTimeout(200);
     await models.studio.waitForFrameToLoad();
-    await models.studio.leftPanel.expectDebugTplTree(["free box", '"hello"']);
+    const reloadedFrame = models.studio.componentFrame;
+    await reloadedFrame
+      .locator('text="hello"')
+      .waitFor({ state: "visible", timeout: 5000 });
+    await reloadedFrame
+      .locator('text="goodbye"')
+      .waitFor({ state: "hidden", timeout: 1000 });
   });
 });
