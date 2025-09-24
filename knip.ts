@@ -10,6 +10,9 @@ const config: KnipConfig = {
     "platform/hosting": {
       entry: ["middleware.ts", "pages/**/*.{ts,tsx}"],
       project: ["**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}"],
+      ignoreDependencies: [
+        "eslint", // used by next
+      ],
     },
     "platform/mini-cache": {
       entry: ["src/entry-app.ts"],
