@@ -32,13 +32,13 @@ export interface BaseListBoxControlContextData {
   idError?: string;
 }
 
-export interface BaseListBoxItemProps
-  extends React.ComponentProps<typeof ListBoxItem>,
-    HasControlContextData<BaseListBoxControlContextData>,
-    WithVariants<typeof LIST_BOX_ITEM_VARIANTS> {
-  id?: string;
-  children?: React.ReactNode;
-}
+export type BaseListBoxItemProps = Omit<
+  React.ComponentProps<typeof ListBoxItem>,
+  "id"
+> &
+  HasControlContextData<BaseListBoxControlContextData> &
+  WithVariants<typeof LIST_BOX_ITEM_VARIANTS> &
+  { id?: string; children?: React.ReactNode };
 
 export function BaseListBoxItem(props: BaseListBoxItemProps) {
   const { children, setControlContextData, plasmicUpdateVariant, id, ...rest } =
@@ -53,10 +53,7 @@ export function BaseListBoxItem(props: BaseListBoxItemProps) {
    * The registerId, therefore, is the unique id of the listboxitem.
    * It is the id registered with the listbox context, so that it can auto-generate a unique id if it identifies a duplicate.
    */
-  const { registeredId, idError } = useOptionsItemId(
-    id,
-    listboxContext?.idManager
-  );
+  const { registeredId, idError } = useOptionsItemId(id, listboxContext?.idManager);
 
   setControlContextData?.({
     idError,

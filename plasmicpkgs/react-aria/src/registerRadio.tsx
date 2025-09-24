@@ -2,7 +2,13 @@ import { PlasmicElement } from "@plasmicapp/host";
 import React from "react";
 import type { RadioProps } from "react-aria-components";
 import { Radio, RadioGroup } from "react-aria-components";
-import { COMMON_STYLES, getCommonProps } from "./common";
+import {
+  COMMON_STYLES,
+  createAriaLabelProp,
+  createAutoFocusProp,
+  createDisabledProp,
+  createIdProp,
+} from "./common";
 import { PlasmicRadioGroupContext } from "./contexts";
 import { useOptionsItemId } from "./OptionsItemIdManager";
 import { LABEL_COMPONENT_NAME } from "./registerLabel";
@@ -148,11 +154,10 @@ export function registerRadio(
       importName: "BaseRadio",
       variants,
       props: {
-        ...getCommonProps<BaseRadioProps>("radio", [
-          "isDisabled",
-          "autoFocus",
-          "aria-label",
-        ]),
+        id: createIdProp("Radio"),
+        isDisabled: createDisabledProp("Radio"),
+        autoFocus: createAutoFocusProp("Radio"),
+        "aria-label": createAriaLabelProp("Radio"),
         children: {
           type: "slot",
           mergeWithParent: true,

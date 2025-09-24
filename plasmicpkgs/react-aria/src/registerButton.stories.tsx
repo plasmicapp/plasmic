@@ -154,3 +154,24 @@ export const LinkButton: Story = {
     await userEvent.click(link);
   },
 };
+
+// Single test that verifies `id` flows to both render branches (native button and link)
+export const IdPropagation: Story = {
+  render: () => (
+    <div>
+      <BaseButton id="native-id">Native Button</BaseButton>
+      <BaseButton id="link-id" href="https://example.com">
+        Link Button
+      </BaseButton>
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    const native = canvas.getByRole("button", { name: /native button/i });
+    expect(native).toHaveAttribute("id", "native-id");
+
+    const link = canvas.getByRole("link", { name: /link button/i });
+    expect(link).toHaveAttribute("id", "link-id");
+  },
+};

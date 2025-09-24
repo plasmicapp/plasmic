@@ -1,7 +1,7 @@
 import React from "react";
 import type { TextProps } from "react-aria-components";
 import { Text } from "react-aria-components";
-import { COMMON_STYLES } from "./common";
+import { COMMON_STYLES, createIdProp } from "./common";
 import {
   CodeComponentMetaOverrides,
   extractPlasmicDataProps,
@@ -10,10 +10,14 @@ import {
   registerComponentHelper,
 } from "./utils";
 
-export function BaseText({ children, slot, className, ...rest }: TextProps) {
+export interface BaseTextProps extends TextProps {}
+
+export function BaseText({ children, slot, className, ...rest }: BaseTextProps) {
+  const dataProps = extractPlasmicDataProps(rest);
   return (
     <Text
-      {...extractPlasmicDataProps(rest)}
+      {...rest}
+      {...dataProps}
       slot={slot}
       className={className}
       style={COMMON_STYLES}
@@ -38,6 +42,7 @@ export function registerText(
       importPath: "@plasmicpkgs/react-aria/skinny/registerText",
       importName: "BaseText",
       props: {
+        id: createIdProp("Text"),
         children: {
           type: "slot",
           mergeWithParent: true,

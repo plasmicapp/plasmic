@@ -2,7 +2,11 @@ import { usePlasmicCanvasContext } from "@plasmicapp/host";
 import { mergeProps } from "@react-aria/utils";
 import React, { useEffect } from "react";
 import { Popover, PopoverContext } from "react-aria-components";
-import { COMMON_STYLES, getCommonOverlayProps } from "./common";
+import {
+  COMMON_STYLES,
+  createIdProp,
+  getCommonOverlayProps,
+} from "./common";
 import { PlasmicPopoverTriggerContext } from "./contexts";
 import {
   CodeComponentMetaOverrides,
@@ -110,6 +114,7 @@ export function registerPopover(
         backgroundColor: "#FDE3C3",
       },
       props: {
+        id: createIdProp("Popover"),
         children: {
           type: "slot",
           mergeWithParent: true,
@@ -157,7 +162,7 @@ export function registerPopover(
           defaultValue: true,
           hidden: (_props, ctx) => !ctx?.canMatchTriggerWidth,
         },
-        ...getCommonOverlayProps<BasePopoverProps>("popover", {
+        ...getCommonOverlayProps<BasePopoverProps>("Popover", {
           placement: { defaultValueHint: "bottom" },
           offset: { defaultValueHint: 8 },
           containerPadding: { defaultValueHint: 12 },

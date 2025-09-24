@@ -2,7 +2,7 @@ import { PlasmicElement, usePlasmicCanvasContext } from "@plasmicapp/host";
 import React, { forwardRef, useImperativeHandle } from "react";
 import { mergeProps } from "react-aria";
 import { Modal, ModalOverlay, ModalOverlayProps } from "react-aria-components";
-import { hasParent } from "./common";
+import { createIdProp, hasParent } from "./common";
 import { PlasmicDialogTriggerContext } from "./contexts";
 import {
   CodeComponentMetaOverrides,
@@ -22,6 +22,7 @@ export interface BaseModalProps
   resetClassName?: string;
   children?: React.ReactNode;
   className?: string;
+  id?: string;
 }
 
 export interface BaseModalActions {
@@ -40,6 +41,7 @@ export const BaseModal = forwardRef<BaseModalActions, BaseModalProps>(
       setControlContextData,
       isDismissable,
       defaultOpen,
+      id,
       ...rest
     } = props;
 
@@ -82,7 +84,13 @@ export const BaseModal = forwardRef<BaseModalActions, BaseModalProps>(
         {...mergedProps}
         className={`${resetClassName} ${modalOverlayClass}`}
       >
-        <Modal className={className}>{children}</Modal>
+        <Modal
+          className={className}
+          // @ts-expect-error <Modal> may not declare `id` in its props but forwards DOM attributes
+          id={id}
+        >
+          {children}
+        </Modal>
       </ModalOverlay>
     );
   }
@@ -162,6 +170,7 @@ export function registerModal(
         },
       },
       props: {
+        id: createIdProp("Modal"),
         children: {
           type: "slot",
           mergeWithParent: true,

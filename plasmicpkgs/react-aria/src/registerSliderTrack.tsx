@@ -2,7 +2,7 @@ import { CodeComponentMeta } from "@plasmicapp/host";
 import React, { useMemo } from "react";
 import { Slider, SliderThumbProps, SliderTrack } from "react-aria-components";
 import flattenChildren from "react-keyed-flatten-children";
-import { COMMON_STYLES } from "./common";
+import { COMMON_STYLES, createIdProp } from "./common";
 import { PlasmicSliderContext } from "./contexts";
 import { BaseSliderThumbProps } from "./registerSliderThumb";
 import {
@@ -162,6 +162,7 @@ export function registerSliderTrack(
         padding: 0,
       },
       props: {
+        id: createIdProp("Slider Track"),
         children: {
           type: "slot",
           /**

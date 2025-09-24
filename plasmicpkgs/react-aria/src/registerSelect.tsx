@@ -6,7 +6,15 @@ import {
   SelectStateContext,
   SelectValue,
 } from "react-aria-components";
-import { COMMON_STYLES, arrowDown, getCommonProps } from "./common";
+import {
+  COMMON_STYLES,
+  arrowDown,
+  createAriaLabelProp,
+  createAutoFocusProp,
+  createDisabledProp,
+  createIdProp,
+  createNameProp,
+} from "./common";
 import {
   PlasmicListBoxContext,
   PlasmicPopoverTriggerContext,
@@ -129,6 +137,7 @@ export function BaseSelect(props: BaseSelectProps) {
       name={name}
       disabledKeys={disabledKeys}
       aria-label={ariaLabel}
+      id={props.id}
       {...extractPlasmicDataProps(props)}
     >
       <SelectAutoOpen
@@ -192,12 +201,11 @@ export function registerSelect(loader?: Registerable) {
     importName: "BaseSelect",
     variants: SELECT_VARIANTS_DATA,
     props: {
-      ...getCommonProps<BaseSelectProps>("Select", [
-        "name",
-        "aria-label",
-        "isDisabled",
-        "autoFocus",
-      ]),
+      id: createIdProp("Select"),
+      name: createNameProp(),
+      isDisabled: createDisabledProp("Select"),
+      autoFocus: createAutoFocusProp("Select"),
+      "aria-label": createAriaLabelProp("Select"),
       selectedKey: {
         type: "choice",
         editOnly: true,

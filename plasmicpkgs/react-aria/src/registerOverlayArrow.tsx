@@ -8,7 +8,7 @@ import {
   PopoverContext,
   TooltipTriggerStateContext,
 } from "react-aria-components";
-import { arrowDown, COMMON_STYLES } from "./common";
+import { arrowDown, COMMON_STYLES, createIdProp } from "./common";
 import {
   CodeComponentMetaOverrides,
   makeComponentName,
@@ -39,6 +39,7 @@ export function BaseOverlayArrow({
   children,
   plasmicUpdateVariant,
   className,
+  id,
 }: BaseOverlayArrowProps) {
   const popoverContext = React.useContext(PopoverContext);
   const tooltipContext = React.useContext(TooltipTriggerStateContext);
@@ -46,6 +47,7 @@ export function BaseOverlayArrow({
   const overlayArrow = (
     <OverlayArrow
       className={className}
+      id={id}
       style={{ lineHeight: "0", ...COMMON_STYLES }}
     >
       {({ placement }: OverlayArrowRenderProps) =>
@@ -84,6 +86,7 @@ export function registerOverlayArrow(
       styleSections: ["visibility"],
       variants,
       props: {
+        id: createIdProp("Overlay Arrow"),
         children: {
           type: "slot",
           defaultValue: arrowDown,

@@ -5,7 +5,26 @@ import {
   type InputProps,
   useContextProps,
 } from "react-aria-components";
-import { COMMON_STYLES, getCommonProps, resolveAutoComplete } from "./common";
+import {
+  COMMON_STYLES,
+  createIdProp,
+  createPlaceholderProp,
+  resolveAutoComplete,
+  commonInputEventHandlerProps,
+  createDisabledProp,
+  createReadOnlyProp,
+  createRequiredProp,
+  createPatternProp,
+  createInputTypeProp,
+  createAutoCompleteProp,
+  createNameProp,
+  createAutoFocusProp,
+  createInitialValueProp,
+  createMaxLengthProp,
+  createMinLengthProp,
+  createInputModeProp,
+  createAriaLabelProp,
+} from "./common";
 import { PlasmicInputContext, PlasmicTextFieldContext } from "./contexts";
 import {
   CodeComponentMetaOverrides,
@@ -144,36 +163,29 @@ export function registerInput(
         padding: "4px 10px",
       },
       props: {
-        ...getCommonProps<BaseInputProps>("Input", [
-          "name",
-          "disabled",
-          "readOnly",
-          "autoFocus",
-          "aria-label",
-          "required",
-          "placeholder",
-          "value",
-          "maxLength",
-          "minLength",
-          "pattern",
-          "type",
-          "inputMode",
-          "autoComplete",
-          "onChange",
-          "onFocus",
-          "onBlur",
-          "onKeyDown",
-          "onKeyUp",
-          "onCopy",
-          "onCut",
-          "onPaste",
-          "onCompositionStart",
-          "onCompositionEnd",
-          "onCompositionUpdate",
-          "onSelect",
-          "onBeforeInput",
-          "onInput",
-        ]),
+        // Keep id first in the editor
+        id: createIdProp("Input"),
+
+        // Non-event props (explicit to preserve ordering)
+        name: createNameProp(),
+        placeholder: createPlaceholderProp(),
+        value: createInitialValueProp("Input"),
+        type: createInputTypeProp(),
+        autoFocus: createAutoFocusProp("Input"),
+        disabled: createDisabledProp("Input"),
+        readOnly: createReadOnlyProp("Input"),
+        required: createRequiredProp("Input"),
+        pattern: createPatternProp(),
+        inputMode: createInputModeProp(),
+        autoComplete: createAutoCompleteProp(),
+        maxLength: createMaxLengthProp(),
+        minLength: createMinLengthProp(),
+
+        // Accessibility
+        "aria-label": createAriaLabelProp("Input"),
+
+        // Event handlers appended last to avoid disrupting ordering above
+        ...commonInputEventHandlerProps<BaseInputProps>(),
       },
       states: {
         value: {

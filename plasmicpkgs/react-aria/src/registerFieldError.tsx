@@ -7,6 +7,7 @@ import {
   Registerable,
   registerComponentHelper,
 } from "./utils";
+import { createIdProp } from "./common";
 
 interface BaseFieldErrorProps extends FieldErrorProps {
   useBuiltInValidation: boolean;
@@ -115,6 +116,7 @@ export function registerFieldError(
         },
       ],
       props: {
+        id: createIdProp("Field Error"),
         badInput: {
           type: "string",
           description:

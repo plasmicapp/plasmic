@@ -1,6 +1,6 @@
 import React from "react";
 import { Slider, SliderOutput } from "react-aria-components";
-import { COMMON_STYLES } from "./common";
+import { COMMON_STYLES, createIdProp } from "./common";
 import { PlasmicSliderContext } from "./contexts";
 import {
   CodeComponentMetaOverrides,
@@ -62,6 +62,7 @@ export function registerSliderOutput(
       importName: "BaseSliderOutput",
       variants,
       props: {
+        id: createIdProp("Slider Output"),
         children: {
           mergeWithParent: true,
           type: "slot",

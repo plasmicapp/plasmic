@@ -1,7 +1,7 @@
 import { usePlasmicCanvasContext } from "@plasmicapp/host";
 import React from "react";
 import { Dialog, DialogProps } from "react-aria-components";
-import { COMMON_STYLES } from "./common";
+import { COMMON_STYLES, createAriaLabelProp, createIdProp } from "./common";
 import {
   CodeComponentMetaOverrides,
   makeComponentName,
@@ -13,19 +13,19 @@ export interface BaseDialogProps extends DialogProps {
   children: React.ReactNode;
 }
 
-export function BaseDialog({ children, className }: BaseDialogProps) {
+export function BaseDialog({ children, className, ...rest }: BaseDialogProps) {
   const canvasContext = usePlasmicCanvasContext();
 
   if (canvasContext) {
     /* <Dialog> cannot be used in canvas, because while the dialog is open on the canvas, the focus is trapped inside it, so any Studio modals like the Color Picker modal would glitch due to focus jumping back and forth */
     return (
-      <div className={className} style={COMMON_STYLES}>
+      <div id={rest.id} className={className} style={COMMON_STYLES}>
         {children}
       </div>
     );
   } else {
     return (
-      <Dialog className={className} style={COMMON_STYLES}>
+      <Dialog {...rest} className={className} style={COMMON_STYLES}>
         {children}
       </Dialog>
     );
@@ -47,6 +47,8 @@ export function registerDialog(
       importPath: "@plasmicpkgs/react-aria/skinny/registerDialog",
       importName: "BaseDialog",
       props: {
+        id: createIdProp("Dialog"),
+        "aria-label": createAriaLabelProp("Dialog"),
         children: {
           type: "slot",
           mergeWithParent: true,

@@ -2,7 +2,17 @@ import { PlasmicElement } from "@plasmicapp/host";
 import React from "react";
 import type { CheckboxProps } from "react-aria-components";
 import { Checkbox } from "react-aria-components";
-import { COMMON_STYLES, getCommonProps, hasParent } from "./common";
+import {
+  COMMON_STYLES,
+  createAriaLabelProp,
+  createAutoFocusProp,
+  createDisabledProp,
+  createIdProp,
+  createNameProp,
+  createReadOnlyProp,
+  createRequiredProp,
+  hasParent,
+} from "./common";
 import { PlasmicCheckboxGroupContext } from "./contexts";
 import { useOptionsItemId } from "./OptionsItemIdManager";
 import {
@@ -166,14 +176,13 @@ export function registerCheckbox(
       importName: "BaseCheckbox",
       variants,
       props: {
-        ...getCommonProps<BaseCheckboxProps>("checkbox", [
-          "name",
-          "isDisabled",
-          "isReadOnly",
-          "aria-label",
-          "isRequired",
-          "autoFocus",
-        ]),
+        id: createIdProp("Checkbox"),
+        name: createNameProp(),
+        isDisabled: createDisabledProp("Checkbox"),
+        isReadOnly: createReadOnlyProp("Checkbox"),
+        isRequired: createRequiredProp("Checkbox"),
+        autoFocus: createAutoFocusProp("Checkbox"),
+        "aria-label": createAriaLabelProp("Checkbox"),
         children: {
           type: "slot",
           mergeWithParent: true,

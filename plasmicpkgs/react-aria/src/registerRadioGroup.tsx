@@ -1,7 +1,15 @@
 import React, { useCallback } from "react";
 import type { RadioGroupProps } from "react-aria-components";
 import { RadioGroup } from "react-aria-components";
-import { COMMON_STYLES, getCommonProps } from "./common";
+import {
+  COMMON_STYLES,
+  createAriaLabelProp,
+  createDisabledProp,
+  createIdProp,
+  createNameProp,
+  createReadOnlyProp,
+  createRequiredProp,
+} from "./common";
 import { PlasmicRadioGroupContext } from "./contexts";
 import { useIdManager } from "./OptionsItemIdManager";
 import { DESCRIPTION_COMPONENT_NAME } from "./registerDescription";
@@ -87,13 +95,12 @@ export function registerRadioGroup(
       importName: "BaseRadioGroup",
       variants,
       props: {
-        ...getCommonProps<BaseRadioGroupProps>("radio group", [
-          "name",
-          "isDisabled",
-          "isReadOnly",
-          "aria-label",
-          "isRequired",
-        ]),
+        id: createIdProp("Radio Group"),
+        name: createNameProp(),
+        isDisabled: createDisabledProp("Radio Group"),
+        isReadOnly: createReadOnlyProp("Radio Group"),
+        isRequired: createRequiredProp("Radio Group"),
+        "aria-label": createAriaLabelProp("Radio Group"),
         children: {
           type: "slot",
           defaultValue: [

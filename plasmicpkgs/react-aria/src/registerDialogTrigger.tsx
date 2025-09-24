@@ -1,7 +1,7 @@
 import React from "react";
 import { mergeProps, useButton } from "react-aria";
 import { DialogTrigger, DialogTriggerProps } from "react-aria-components";
-import { COMMON_STYLES } from "./common";
+import { COMMON_STYLES, createIdProp } from "./common";
 import { PlasmicDialogTriggerContext } from "./contexts";
 import { BUTTON_COMPONENT_NAME } from "./registerButton";
 import { DIALOG_COMPONENT_NAME } from "./registerDialog";
@@ -21,6 +21,7 @@ import {
 export interface TriggerWrapperProps {
   children?: React.ReactNode;
   className?: string;
+  id?: string;
 }
 
 /*
@@ -32,7 +33,7 @@ export interface TriggerWrapperProps {
   https://github.com/adobe/react-spectrum/discussions/5119#discussioncomment-7084661
 
   */
-export function TriggerWrapper({ children, className }: TriggerWrapperProps) {
+export function TriggerWrapper({ children, className, id }: TriggerWrapperProps) {
   const ref = React.useRef<HTMLDivElement | null>(null);
   const { buttonProps } = useButton({}, ref);
 
@@ -40,6 +41,7 @@ export function TriggerWrapper({ children, className }: TriggerWrapperProps) {
     ref,
     // We expose className to allow user control over the wrapper div's styling.
     className,
+    id,
     style: COMMON_STYLES,
   });
 
@@ -52,6 +54,7 @@ export interface BaseDialogTriggerProps
   trigger?: React.ReactNode;
   dialog?: React.ReactNode;
   className?: string;
+  id?: string;
 }
 
 export function BaseDialogTrigger(props: BaseDialogTriggerProps) {
@@ -73,7 +76,9 @@ export function BaseDialogTrigger(props: BaseDialogTriggerProps) {
     <PlasmicDialogTriggerContext.Provider value={mergedProps}>
       <DialogTrigger {...mergedProps}>
         {trigger && (
-          <TriggerWrapper className={className}>{trigger}</TriggerWrapper>
+          <TriggerWrapper className={className} id={props.id}>
+            {trigger}
+          </TriggerWrapper>
         )}
         {dialog}
       </DialogTrigger>
@@ -94,6 +99,7 @@ export function registerDialogTrigger(
       importPath: "@plasmicpkgs/react-aria/skinny/registerDialogTrigger",
       importName: "BaseDialogTrigger",
       props: {
+        id: createIdProp("Dialog Trigger"),
         trigger: {
           type: "slot",
           mergeWithParent: true,

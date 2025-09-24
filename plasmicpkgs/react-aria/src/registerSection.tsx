@@ -1,6 +1,6 @@
 import React from "react";
 import { Header, Section } from "react-aria-components";
-import { COMMON_STYLES } from "./common";
+import { COMMON_STYLES, createAriaLabelProp } from "./common";
 import { PlasmicListBoxContext } from "./contexts";
 import { BaseListBox } from "./registerListBox";
 import {
@@ -57,6 +57,7 @@ export function registerSection(
         padding: "10px",
       },
       props: {
+        "aria-label": createAriaLabelProp("Section"),
         header: {
           type: "slot",
           mergeWithParent: true,

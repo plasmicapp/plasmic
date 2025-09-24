@@ -5,7 +5,14 @@ import {
   ComboBoxRenderProps,
   ComboBoxStateContext,
 } from "react-aria-components";
-import { arrowDown, COMMON_STYLES, getCommonProps } from "./common";
+import {
+  arrowDown,
+  COMMON_STYLES,
+  createAriaLabelProp,
+  createDisabledProp,
+  createIdProp,
+  createNameProp,
+} from "./common";
 import {
   PlasmicInputContext,
   PlasmicListBoxContext,
@@ -133,11 +140,10 @@ export function registerComboBox(loader?: Registerable) {
     importName: "BaseComboBox",
     variants: COMBOBOX_VARIANTS_DATA,
     props: {
-      ...getCommonProps<BaseComboboxProps>("ComboBox", [
-        "name",
-        "aria-label",
-        "isDisabled",
-      ]),
+      id: createIdProp("ComboBox"),
+      name: createNameProp(),
+      isDisabled: createDisabledProp("ComboBox"),
+      "aria-label": createAriaLabelProp("ComboBox"),
       selectedKey: {
         type: "choice",
         editOnly: true,

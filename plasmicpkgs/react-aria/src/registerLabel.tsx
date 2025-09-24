@@ -1,6 +1,6 @@
 import React from "react";
 import { Label, LabelProps } from "react-aria-components";
-import { COMMON_STYLES } from "./common";
+import { COMMON_STYLES, createAriaLabelProp, createIdProp } from "./common";
 import {
   CodeComponentMetaOverrides,
   extractPlasmicDataProps,
@@ -9,13 +9,18 @@ import {
   registerComponentHelper,
 } from "./utils";
 
-export function BaseLabel({ children, className, ...rest }: LabelProps) {
+export interface BaseLabelProps extends LabelProps {
+}
+
+export function BaseLabel({ children, className, id, "aria-label": ariaLabel, ...rest }: BaseLabelProps) {
+  const dataProps = extractPlasmicDataProps(rest);
   return (
     <Label
-      {...extractPlasmicDataProps(rest)}
+      {...dataProps}
+      id={id}
       className={className}
       style={COMMON_STYLES}
-    >
+      aria-label={ariaLabel}>
       {children}
     </Label>
   );
@@ -38,6 +43,8 @@ export function registerLabel(
         cursor: "pointer",
       },
       props: {
+        id: createIdProp("Label"),
+        "aria-label": createAriaLabelProp("Label"),
         children: {
           type: "slot",
           mergeWithParent: true,

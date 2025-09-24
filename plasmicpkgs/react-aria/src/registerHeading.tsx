@@ -1,7 +1,7 @@
 import React from "react";
 import type { HeadingProps } from "react-aria-components";
 import { Heading } from "react-aria-components";
-import { COMMON_STYLES } from "./common";
+import { COMMON_STYLES, createIdProp } from "./common";
 import {
   CodeComponentMetaOverrides,
   makeComponentName,
@@ -9,7 +9,9 @@ import {
   registerComponentHelper,
 } from "./utils";
 
-export function BaseHeading({ children, ...rest }: HeadingProps) {
+export interface BaseHeadingProps extends HeadingProps {}
+
+export function BaseHeading({ children, ...rest }: BaseHeadingProps) {
   return (
     <Heading {...rest} style={COMMON_STYLES}>
       {children}
@@ -38,6 +40,7 @@ export function registerHeading(
         marginBottom: "10px",
       },
       props: {
+        id: createIdProp("Heading"),
         children: {
           type: "slot",
           mergeWithParent: true,

@@ -1,7 +1,27 @@
 import React, { ReactNode } from "react";
 import type { InputProps, TextFieldProps } from "react-aria-components";
 import { TextField } from "react-aria-components";
-import { COMMON_STYLES, getCommonProps, resolveAutoComplete } from "./common";
+import {
+  COMMON_STYLES,
+  createIdProp,
+  resolveAutoComplete,
+  commonInputEventHandlerProps,
+  createDisabledProp,
+  createReadOnlyProp,
+  createRequiredProp,
+  createPatternProp,
+  createInputTypeProp,
+  createValidationBehaviorProp,
+  createAutoCompleteProp,
+  createOnFocusChangeProp,
+  createNameProp,
+  createAutoFocusProp,
+  createInitialValueProp,
+  createMaxLengthProp,
+  createMinLengthProp,
+  createInputModeProp,
+  createAriaLabelProp,
+} from "./common";
 import { PlasmicTextFieldContext } from "./contexts";
 import { DESCRIPTION_COMPONENT_NAME } from "./registerDescription";
 import { INPUT_COMPONENT_NAME } from "./registerInput";
@@ -80,39 +100,33 @@ export function registerTextField(
       importPath: "@plasmicpkgs/react-aria/skinny/registerTextField",
       importName: "BaseTextField",
       variants,
-      // TODO: Support for validate prop
       props: {
-        ...getCommonProps<BaseTextFieldProps>("Text Field", [
-          "name",
-          "isDisabled",
-          "isReadOnly",
-          "autoFocus",
-          "aria-label",
-          "isRequired",
-          "value",
-          "maxLength",
-          "minLength",
-          "pattern",
-          "type",
-          "inputMode",
-          "validationBehavior",
-          "autoComplete",
-          "onChange",
-          "onFocus",
-          "onBlur",
-          "onFocusChange",
-          "onKeyDown",
-          "onKeyUp",
-          "onCopy",
-          "onCut",
-          "onPaste",
-          "onCompositionStart",
-          "onCompositionEnd",
-          "onCompositionUpdate",
-          "onSelect",
-          "onBeforeInput",
-          "onInput",
-        ]),
+        // Keep id first in the editor
+        id: createIdProp("Text Field"),
+
+        // Non-event props (explicit to preserve ordering)
+        name: createNameProp(),
+        value: createInitialValueProp("Text Field"),
+        type: createInputTypeProp(),
+        autoFocus: createAutoFocusProp("Text Field"),
+        isDisabled: createDisabledProp("Text Field"),
+        isReadOnly: createReadOnlyProp("Text Field"),
+        isRequired: createRequiredProp("Text Field"),
+        maxLength: createMaxLengthProp(),
+        minLength: createMinLengthProp(),
+        inputMode: createInputModeProp(),
+        autoComplete: createAutoCompleteProp(),
+        pattern: createPatternProp(),
+        validationBehavior: createValidationBehaviorProp(),
+
+        // Accessibility
+        "aria-label": createAriaLabelProp("Text Field"),
+
+        // Non-common event handler in Text Field only
+        onFocusChange: createOnFocusChangeProp(),
+
+        // Common event handlers appended last
+        ...commonInputEventHandlerProps<BaseTextFieldProps>(),
         children: {
           type: "slot",
           mergeWithParent: true,

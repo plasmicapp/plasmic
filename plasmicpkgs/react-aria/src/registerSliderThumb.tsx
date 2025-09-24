@@ -5,7 +5,7 @@ import {
   SliderTrack,
   SliderTrackContext,
 } from "react-aria-components";
-import { COMMON_STYLES, getCommonProps } from "./common";
+import { COMMON_STYLES, createAutoFocusProp, createDisabledProp, createNameProp } from "./common";
 import {
   CodeComponentMetaOverrides,
   Registerable,
@@ -39,7 +39,10 @@ export function BaseSliderThumb({
 }: BaseSliderThumbProps) {
   const isStandalone = !React.useContext(SliderTrackContext);
   const thumb = (
-    <SliderThumb {...rest} style={COMMON_STYLES}>
+    <SliderThumb
+      {...rest}
+      style={COMMON_STYLES}
+    >
       {({ isDragging, isHovered, isFocused, isFocusVisible, isDisabled }) =>
         withObservedValues(
           <>{advanced ? children : undefined}</>,
@@ -92,11 +95,9 @@ export function registerSliderThumb(
       },
       variants,
       props: {
-        ...getCommonProps<BaseSliderThumbProps>("slider thumb", [
-          "name",
-          "isDisabled",
-          "autoFocus",
-        ]),
+        name: createNameProp(),
+        isDisabled: createDisabledProp("Slider Thumb"),
+        autoFocus: createAutoFocusProp("Slider Thumb"),
         advanced: {
           type: "boolean",
           displayName: "Advanced",

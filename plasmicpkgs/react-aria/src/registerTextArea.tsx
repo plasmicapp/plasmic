@@ -5,7 +5,22 @@ import {
   TextAreaProps,
   useContextProps,
 } from "react-aria-components";
-import { COMMON_STYLES, getCommonProps } from "./common";
+import {
+  COMMON_STYLES,
+  createIdProp,
+  createPlaceholderProp,
+  commonInputEventHandlerProps,
+  createDisabledProp,
+  createReadOnlyProp,
+  createRequiredProp,
+  createNameProp,
+  createAutoFocusProp,
+  createInitialValueProp,
+  createMaxLengthProp,
+  createMinLengthProp,
+  createInputModeProp,
+  createAriaLabelProp,
+} from "./common";
 import { PlasmicTextFieldContext } from "./contexts";
 import {
   CodeComponentMetaOverrides,
@@ -149,33 +164,20 @@ export function registerTextArea(
       importName: "BaseTextArea",
       variants,
       props: {
-        ...getCommonProps<BaseTextAreaProps>("Text Area", [
-          "name",
-          "disabled",
-          "readOnly",
-          "autoFocus",
-          "aria-label",
-          "required",
-          "placeholder",
-          "value",
-          "maxLength",
-          "minLength",
-          "inputMode",
-          "onChange",
-          "onFocus",
-          "onBlur",
-          "onKeyDown",
-          "onKeyUp",
-          "onCopy",
-          "onCut",
-          "onPaste",
-          "onCompositionStart",
-          "onCompositionEnd",
-          "onCompositionUpdate",
-          "onSelect",
-          "onBeforeInput",
-          "onInput",
-        ]),
+        // Keep id first in the editor
+        id: createIdProp("Text Area"),
+
+        // Non-event props (explicit to preserve ordering)
+        name: createNameProp(),
+        placeholder: createPlaceholderProp(),
+        value: createInitialValueProp("Text Area"),
+        autoFocus: createAutoFocusProp("Text Area"),
+        disabled: createDisabledProp("Text Area"),
+        readOnly: createReadOnlyProp("Text Area"),
+        required: createRequiredProp("Text Area"),
+        maxLength: createMaxLengthProp(),
+        minLength: createMinLengthProp(),
+        inputMode: createInputModeProp(),
         autoResize: {
           type: "boolean",
           displayName: "Auto resize",
@@ -198,6 +200,12 @@ export function registerTextArea(
           hidden: (props) => Boolean(props.autoResize),
           advanced: true,
         },
+
+        // Accessibility
+        "aria-label": createAriaLabelProp("Text Area"),
+
+        // Common event handlers appended last
+        ...commonInputEventHandlerProps<BaseTextAreaProps>(),
       },
       states: {
         value: {

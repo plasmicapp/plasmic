@@ -1,7 +1,7 @@
 import { CodeComponentMeta } from "@plasmicapp/host";
 import React from "react";
 import { Slider, type SliderProps } from "react-aria-components";
-import { COMMON_STYLES, getCommonProps } from "./common";
+import { COMMON_STYLES, createAriaLabelProp, createDisabledProp, createIdProp } from "./common";
 import { PlasmicSliderContext } from "./contexts";
 import { LABEL_COMPONENT_NAME } from "./registerLabel";
 import { registerSliderOutput } from "./registerSliderOutput";
@@ -114,10 +114,9 @@ export function registerSlider(
         width: "300px",
       },
       props: {
-        ...getCommonProps<BaseSliderProps<number[]>>("slider", [
-          "isDisabled",
-          "aria-label",
-        ]),
+        id: createIdProp("Slider"),
+        isDisabled: createDisabledProp("Slider"),
+        "aria-label": createAriaLabelProp("Slider"),
         ...getCommonSliderProps<number[]>(),
         value: {
           type: "array",
@@ -231,10 +230,9 @@ export function registerSlider(
         width: "300px",
       },
       props: {
-        ...getCommonProps<BaseSliderProps<number>>("slider", [
-          "isDisabled",
-          "aria-label",
-        ]),
+        id: createIdProp("Slider"),
+        isDisabled: createDisabledProp("Slider"),
+        "aria-label": createAriaLabelProp("Slider"),
         ...getCommonSliderProps<number>(),
         children: {
           type: "slot",

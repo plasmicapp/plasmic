@@ -1,7 +1,7 @@
 import { usePlasmicCanvasContext } from "@plasmicapp/host";
 import React, { useCallback, useEffect, useState } from "react";
 import { Key, ListBox, ListBoxRenderProps } from "react-aria-components";
-import { COMMON_STYLES } from "./common";
+import { COMMON_STYLES, createAriaLabelProp, createIdProp } from "./common";
 import { PlasmicListBoxContext } from "./contexts";
 import { useIdManager } from "./OptionsItemIdManager";
 import {
@@ -202,6 +202,8 @@ export function registerListBox(
         borderColor: "black",
       },
       props: {
+        id: createIdProp("List Box"),
+        "aria-label": createAriaLabelProp("List Box"),
         children: {
           type: "slot",
           displayName: "List Items",

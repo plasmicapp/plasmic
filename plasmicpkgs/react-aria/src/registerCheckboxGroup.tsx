@@ -1,7 +1,15 @@
 import React, { useCallback } from "react";
 import type { CheckboxGroupProps } from "react-aria-components";
 import { CheckboxGroup } from "react-aria-components";
-import { COMMON_STYLES, getCommonProps } from "./common";
+import {
+  COMMON_STYLES,
+  createAriaLabelProp,
+  createDisabledProp,
+  createIdProp,
+  createNameProp,
+  createReadOnlyProp,
+  createRequiredProp,
+} from "./common";
 import { PlasmicCheckboxGroupContext } from "./contexts";
 import { useIdManager } from "./OptionsItemIdManager";
 import {
@@ -82,13 +90,12 @@ export function registerCheckboxGroup(
       importName: "BaseCheckboxGroup",
       variants,
       props: {
-        ...getCommonProps<BaseCheckboxGroupProps>("checkbox group", [
-          "name",
-          "isDisabled",
-          "isReadOnly",
-          "aria-label",
-          "isRequired",
-        ]),
+        id: createIdProp("Checkbox Group"),
+        name: createNameProp(),
+        isDisabled: createDisabledProp("Checkbox Group"),
+        isReadOnly: createReadOnlyProp("Checkbox Group"),
+        isRequired: createRequiredProp("Checkbox Group"),
+        "aria-label": createAriaLabelProp("Checkbox Group"),
         children: {
           type: "slot",
           defaultValue: [

@@ -1,7 +1,15 @@
 import React from "react";
 import type { SwitchProps } from "react-aria-components";
 import { Switch } from "react-aria-components";
-import { COMMON_STYLES, getCommonProps } from "./common";
+import {
+  COMMON_STYLES,
+  createAriaLabelProp,
+  createAutoFocusProp,
+  createDisabledProp,
+  createIdProp,
+  createNameProp,
+  createReadOnlyProp,
+} from "./common";
 import { DESCRIPTION_COMPONENT_NAME } from "./registerDescription";
 import { LABEL_COMPONENT_NAME } from "./registerLabel";
 import {
@@ -83,13 +91,12 @@ export function registerSwitch(
         padding: 0,
       },
       props: {
-        ...getCommonProps<BaseSwitchProps>("switch", [
-          "name",
-          "isDisabled",
-          "isReadOnly",
-          "autoFocus",
-          "aria-label",
-        ]),
+        id: createIdProp("Switch"),
+        name: createNameProp(),
+        isDisabled: createDisabledProp("Switch"),
+        isReadOnly: createReadOnlyProp("Switch"),
+        autoFocus: createAutoFocusProp("Switch"),
+        "aria-label": createAriaLabelProp("Switch"),
         children: {
           type: "slot",
           mergeWithParent: true,

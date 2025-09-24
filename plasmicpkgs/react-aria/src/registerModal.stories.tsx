@@ -183,3 +183,23 @@ export const SelectedInCanvas: Story = {
     );
   },
 };
+
+// Verifies that `id` is applied to the <Modal> element (not the overlay)
+export const IdOnModal: Story = {
+  args: {
+    isOpen: true,
+    isDismissable: false,
+    id: "modal-root",
+  },
+  play: async () => {
+    const doc = within(document.body);
+    // Anchor inside the rendered Modal content
+    const modalContent = await doc.findByTestId("modal-content");
+    // Walk up to the <Modal> element rendered by react-aria-components
+    const modal = modalContent.closest('[class*="react-aria-Modal"]');
+    if (!modal) {
+      throw new Error("Modal root element not found");
+    }
+    expect(modal).toHaveAttribute("id", "modal-root");
+  },
+};

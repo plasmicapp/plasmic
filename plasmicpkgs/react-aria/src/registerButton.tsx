@@ -3,7 +3,13 @@ import React from "react";
 import { mergeProps, useFocusRing, useHover, useLink } from "react-aria";
 import type { ButtonProps, LinkProps } from "react-aria-components";
 import { Button } from "react-aria-components";
-import { COMMON_STYLES, getCommonProps } from "./common";
+import {
+  COMMON_STYLES,
+  createAriaLabelProp,
+  createAutoFocusProp,
+  createDisabledProp,
+  createIdProp,
+} from "./common";
 import {
   CodeComponentMetaOverrides,
   makeComponentName,
@@ -23,7 +29,7 @@ const BUTTON_VARIANTS = [
 const { variants, withObservedValues } =
   pickAriaComponentVariants(BUTTON_VARIANTS);
 
-type CommonProps = { children: React.ReactNode } & Omit<
+type ButtonCommonProps = { children: React.ReactNode } & Omit<
   ButtonProps,
   "className" | "children"
 > &
@@ -35,7 +41,7 @@ type ButtonSpecificProps = {
 };
 
 export interface BaseButtonProps
-  extends CommonProps,
+  extends ButtonCommonProps,
     LinkSpecificProps,
     ButtonSpecificProps,
     WithVariants<typeof BUTTON_VARIANTS> {
@@ -104,6 +110,8 @@ function LinkButton({
     href,
     className: props.className,
     style: COMMON_STYLES,
+    id: props.id,
+    "aria-label": props["aria-label"],
     ref,
   });
 
@@ -161,11 +169,10 @@ export function registerButton(
         textDecorationLine: "none",
       },
       props: {
-        ...getCommonProps<BaseButtonProps>("button", [
-          "autoFocus",
-          "isDisabled",
-          "aria-label",
-        ]),
+        id: createIdProp("Button"),
+        autoFocus: createAutoFocusProp("Button"),
+        isDisabled: createDisabledProp("Button"),
+        "aria-label": createAriaLabelProp("Button"),
         children: {
           type: "slot",
           mergeWithParent: true,

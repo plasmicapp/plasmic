@@ -7,7 +7,7 @@ import {
   TooltipTriggerStateContext,
 } from "react-aria-components";
 import { TooltipTriggerProps, useTooltipTriggerState } from "react-stately";
-import { COMMON_STYLES, getCommonOverlayProps } from "./common";
+import { COMMON_STYLES, createIdProp, getCommonOverlayProps } from "./common";
 import {
   CodeComponentMetaOverrides,
   PlasmicCanvasProps,
@@ -25,6 +25,7 @@ export interface BaseTooltipProps
   resetClassName?: string;
   trigger?: "focus" | "focus and hover" | undefined;
   className?: string;
+  id?: string;
 }
 
 // In Studio, the tooltip is always controlled because isOpen is attached to the code component's state.
@@ -89,7 +90,8 @@ function ControlledBaseTooltip(props: BaseTooltipProps) {
   // https://github.com/adobe/react-spectrum/blob/988096cf3f1dbd59f274d8c552e9fe7d5dcf4f41/packages/react-aria-components/src/Tooltip.tsx#L89
   // The <FocusableProvider> has been removed, as it handles automatic state updates for the Aria Button.
   const ref = useRef<any>(null);
-  const tooltipId = useId();
+  // Use provided id as the default for useId so it lands on the Tooltip root element
+  const tooltipId = useId(props.id);
 
   const state = useTooltipTriggerState({
     ...props,
@@ -189,6 +191,7 @@ export function registerTooltip(
       importName: "BaseTooltip",
       isAttachment: true,
       props: {
+        id: createIdProp("Tooltip"),
         children: {
           type: "slot",
           mergeWithParent: true,
@@ -243,7 +246,7 @@ export function registerTooltip(
           options: ["focus", "focus and hover"],
           defaultValueHint: "focus and hover",
         },
-        ...getCommonOverlayProps<BaseTooltipProps>("popover", {
+        ...getCommonOverlayProps<BaseTooltipProps>("Tooltip", {
           placement: { defaultValueHint: "top" },
           offset: { defaultValueHint: 0 },
           containerPadding: { defaultValueHint: 12 },

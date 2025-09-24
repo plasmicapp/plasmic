@@ -7,6 +7,7 @@ import {
   Registerable,
   registerComponentHelper,
 } from "./utils";
+import { createIdProp } from "./common";
 
 interface BaseFormProps extends Omit<FormProps, "onSubmit"> {
   onSubmit: (
@@ -60,6 +61,7 @@ export function registerForm(
       importPath: "@plasmicpkgs/react-aria/skinny/registerForm",
       importName: "BaseForm",
       props: {
+        id: createIdProp("Form"),
         children: {
           type: "slot",
           mergeWithParent: true,
