@@ -1,3 +1,5 @@
+pnpm-lock.yaml
+
 .next/
 .venv/
 build/

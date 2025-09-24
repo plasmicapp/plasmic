@@ -10,9 +10,10 @@ const config: KnipConfig = {
     "platform/hosting": {
       entry: ["middleware.ts", "pages/**/*.{ts,tsx}"],
       project: ["**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}"],
-      ignoreDependencies: [
-        "eslint", // used internally in next
-      ],
+    },
+    "platform/mini-cache": {
+      entry: ["src/entry-app.ts"],
+      project: ["**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}"],
     },
     "platform/wab": {
       entry: ["**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}"],
@@ -24,7 +25,6 @@ const config: KnipConfig = {
         "ts-node", // used by scripts
 
         "@types/chrome", // for `window.chrome`
-        "@types/socket.io-client", // for `socket.io-client`
 
         // used by make
         "pegjs",
