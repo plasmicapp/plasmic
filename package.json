@@ -113,6 +113,7 @@
     "packages/react-web-runtime",
     "packages/watcher",
     "plasmicpkgs/airtable",
+    "plasmicpkgs/vanilla-cookieconsent",
     "plasmicpkgs/antd",
     "plasmicpkgs/antd5",
     "plasmicpkgs/chakra-ui",
