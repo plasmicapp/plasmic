@@ -467,7 +467,9 @@ export class StyleMgr {
 
     const allRules: string[] = [];
 
-    const allDepTokens = finalStyleTokensForDep(this.studioCtx.site, site);
+    const allDepTokens = finalStyleTokensForDep(this.studioCtx.site, site, {
+      includeTransitiveDeps: "all",
+    });
     const allDepMixins = allMixins(site, { includeDeps: "all" });
     const allDepImageAssets = allImageAssets(site, { includeDeps: "all" });
     allRules.push(

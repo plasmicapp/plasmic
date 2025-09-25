@@ -29,6 +29,8 @@ describe("Imported token overrides", function () {
     FROM_MAIN_PROJECT_TEXT_2: "Text 2 From Main Project",
     FROM_B_COMP: "From Comp B",
     SLOT_FROM_B_COMP: "Slot from Comp B",
+    PRIMARY_TEXT: "Primary Text",
+    SECONDARY_TEXT: "Secondary Text",
   };
 
   const TOKEN_NAMES = {
@@ -551,6 +553,121 @@ describe("Imported token overrides", function () {
                       "override-base",
                       "Base",
                       "Website"
+                    );
+                  });
+                });
+              })
+              .then(() => {
+                cy.removeCurrentProject();
+              });
+          })
+          .then(() => {
+            cy.removeCurrentProject();
+          });
+      })
+      .then(() => {
+        cy.removeCurrentProject();
+      });
+  });
+
+  it("Should work (A <- B <- C) - only root project (A) overrides are used", function () {
+    // Helper function to assert text styling
+    const assertTextStylingInBothModes = (
+      primaryColor: string,
+      secondaryColor: string,
+      frame: Framed
+    ) => {
+      // Assert primary text color
+      assertTextStyling(
+        TEST_TEXTS.PRIMARY_TEXT,
+        primaryColor,
+        undefined,
+        frame
+      );
+      // Assert secondary text color
+      assertTextStyling(
+        TEST_TEXTS.SECONDARY_TEXT,
+        secondaryColor,
+        undefined,
+        frame
+      );
+
+      cy.withinLiveMode(() => {
+        assertTextStyling(TEST_TEXTS.PRIMARY_TEXT, primaryColor, undefined);
+        assertTextStyling(TEST_TEXTS.SECONDARY_TEXT, secondaryColor, undefined);
+      });
+    };
+
+    cy.setupNewProject({ name: "C Dep" })
+      .then((cDepProjectId) => {
+        cy.withinStudioIframe(() => {
+          // Create C project with secondary token
+          cy.createToken("Color", TOKEN_NAMES.SECONDARY, TEST_COLORS.SECONDARY);
+          cy.publishVersion("New tokens");
+        });
+        cy.setupNewProject({ name: "B Dep" })
+          .then((bDepProjectId) => {
+            cy.withinStudioIframe(() => {
+              // Create B project with primary token and import C
+              cy.createToken("Color", TOKEN_NAMES.PRIMARY, TEST_COLORS.PRIMARY);
+              cy.importProject(cDepProjectId);
+
+              // Override secondary token from C
+              cy.updateToken(
+                "Color",
+                TOKEN_NAMES.SECONDARY,
+                TEST_COLORS.SECONDARY_OVERRIDE,
+                { override: true }
+              );
+
+              // Create component with both primary and secondary tokens
+              cy.createNewComponent("Dep Comp").then((frame) => {
+                // Text with primary token
+                cy.insertFromAddDrawer("Text");
+                cy.getSelectedElt().dblclick({ force: true });
+                frame.enterIntoTplTextBlock("Primary Text");
+                cy.chooseColor({ tokenName: TOKEN_NAMES.PRIMARY });
+
+                // Text with secondary token
+                cy.insertFromAddDrawer("Text");
+                cy.getSelectedElt().dblclick({ force: true });
+                frame.enterIntoTplTextBlock("Secondary Text");
+                cy.chooseColor({ tokenName: TOKEN_NAMES.SECONDARY });
+                // Assert that secondary uses override from B
+                assertTextStylingInBothModes(
+                  TEST_COLORS.PRIMARY,
+                  TEST_COLORS.SECONDARY_OVERRIDE,
+                  frame
+                );
+              });
+              cy.publishVersion("New components with tokens");
+            });
+            cy.setupNewProject({ name: "A Project" })
+              .then(() => {
+                cy.withinStudioIframe(() => {
+                  cy.importProject(bDepProjectId);
+
+                  cy.createNewPage("A Page").then((frame) => {
+                    cy.insertFromAddDrawer("Dep Comp");
+
+                    assertTextStylingInBothModes(
+                      TEST_COLORS.PRIMARY,
+                      TEST_COLORS.SECONDARY,
+                      frame
+                    );
+
+                    // Override primary token from B
+                    cy.updateToken(
+                      "Color",
+                      TOKEN_NAMES.PRIMARY,
+                      TEST_COLORS.PRIMARY_OVERRIDE_BASE,
+                      { override: true }
+                    );
+                    // Assert that primary text uses A's override, secondary uses original from C
+                    assertTextStylingInBothModes(
+                      TEST_COLORS.PRIMARY_OVERRIDE_BASE, // A's override for primary
+                      TEST_COLORS.SECONDARY, // Original from C (not B's override)
+                      frame
                     );
                   });
                 });

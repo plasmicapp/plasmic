@@ -191,9 +191,12 @@ export function siteFinalColorTokens(
  */
 export function finalStyleTokensForDep(
   site: Site,
-  depSite: Site
+  depSite: Site,
+  opts: { includeTransitiveDeps?: DependencyWalkScope } = {}
 ): FinalToken<StyleToken>[] {
-  return depSite.styleTokens.map((t) => toFinalToken(t, site));
+  return styleTokens(depSite, { includeDeps: opts.includeTransitiveDeps }).map(
+    (t) => toFinalToken(t, site)
+  );
 }
 
 /**
