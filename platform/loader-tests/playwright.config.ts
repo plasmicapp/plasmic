@@ -14,7 +14,6 @@ const headless = process.env["PLAYWRIGHT_HEADFUL"] !== "true";
  */
 export default defineConfig({
   testDir: "./src/playwright-tests",
-  fullyParallel: true,
   /* Run tests in files in parallel */
   // fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
