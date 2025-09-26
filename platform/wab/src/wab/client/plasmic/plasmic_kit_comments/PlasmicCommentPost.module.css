@@ -36,29 +36,14 @@
   display: flex;
   position: relative;
   flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
   width: 100%;
   height: auto;
   max-width: 100%;
+  column-gap: 8px;
   min-width: 0;
   padding: 0px;
-}
-.freeBox__sfn9I > :global(.__wab_flex-container) {
-  flex-direction: row;
-  align-items: center;
-  justify-content: flex-start;
-  min-width: 0;
-  margin-left: calc(0px - 8px);
-  width: calc(100% + 8px);
-}
-.freeBox__sfn9I > :global(.__wab_flex-container) > *,
-.freeBox__sfn9I > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.freeBox__sfn9I > :global(.__wab_flex-container) > picture > img,
-.freeBox__sfn9I
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  margin-left: 8px;
 }
 .avatarContainer {
   display: flex;
@@ -212,34 +197,17 @@
   display: flex;
   position: relative;
   flex-direction: row;
+  align-items: stretch;
+  justify-content: flex-start;
   width: 100%;
   height: auto;
   max-width: 100%;
-  min-width: 0;
-  padding: var(--token-YwPV7bN0RvD8) 0px 0px;
-}
-.reactionsContainer > :global(.__wab_flex-container) {
-  flex-direction: row;
-  align-items: stretch;
-  justify-content: flex-start;
   flex-wrap: wrap;
   align-content: center;
+  column-gap: 4px;
+  row-gap: 4px;
   min-width: 0;
-  margin-left: calc(0px - 4px);
-  width: calc(100% + 4px);
-  margin-top: calc(0px - 4px);
-  height: calc(100% + 4px);
-}
-.reactionsContainer > :global(.__wab_flex-container) > *,
-.reactionsContainer > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.reactionsContainer > :global(.__wab_flex-container) > picture > img,
-.reactionsContainer
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  margin-left: 4px;
-  margin-top: 4px;
+  padding: var(--token-YwPV7bN0RvD8) 0px 0px;
 }
 .reactionsContainerisEditing {
   display: none;
@@ -284,7 +252,7 @@
   object-fit: cover;
   height: 1em;
 }
-.svg__qD4K {
+.svg___5Sctc {
   display: flex;
   position: relative;
   object-fit: cover;
@@ -310,7 +278,7 @@
   align-self: flex-start;
   display: flex;
 }
-.svg__qz8Gb {
+.svg__i4He {
   display: flex;
   position: relative;
   object-fit: cover;
@@ -319,7 +287,7 @@
 .texthoverBox {
   color: var(--token-RTPypKCJE4bm);
 }
-.svg___82GjE {
+.svg__uiBuj {
   display: flex;
   position: relative;
   object-fit: cover;

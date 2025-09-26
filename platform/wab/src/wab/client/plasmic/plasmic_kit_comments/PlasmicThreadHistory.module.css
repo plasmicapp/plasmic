@@ -14,29 +14,14 @@
   display: flex;
   position: relative;
   flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
   width: 100%;
   height: auto;
   max-width: 100%;
+  column-gap: 8px;
   min-width: 0;
   padding: 0px;
-}
-.freeBox__sIx5P > :global(.__wab_flex-container) {
-  flex-direction: row;
-  align-items: center;
-  justify-content: flex-start;
-  min-width: 0;
-  margin-left: calc(0px - 8px);
-  width: calc(100% + 8px);
-}
-.freeBox__sIx5P > :global(.__wab_flex-container) > *,
-.freeBox__sIx5P > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.freeBox__sIx5P > :global(.__wab_flex-container) > picture > img,
-.freeBox__sIx5P
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  margin-left: 8px;
 }
 .avatarContainer {
   display: flex;

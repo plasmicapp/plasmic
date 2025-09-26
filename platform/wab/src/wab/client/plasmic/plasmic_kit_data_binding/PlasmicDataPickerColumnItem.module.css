@@ -1,26 +1,15 @@
 .root {
   display: flex;
   flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
   width: 100%;
   position: relative;
   cursor: default;
   height: 52px;
+  column-gap: 4px;
   min-width: 0;
   padding: 8px 8px 8px 16px;
-}
-.root > :global(.__wab_flex-container) {
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  min-width: 0;
-  margin-left: calc(0px - 4px);
-  width: calc(100% + 4px);
-}
-.root > :global(.__wab_flex-container) > *,
-.root > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.root > :global(.__wab_flex-container) > picture > img,
-.root > :global(.__wab_flex-container) > :global(.__wab_slot) > picture > img {
-  margin-left: 4px;
 }
 .rootisSelected {
   background: var(--token-dqEx_KxIoYV);
@@ -35,22 +24,8 @@
   display: flex;
   position: relative;
   width: 100%;
+  column-gap: 4px;
   min-width: 0;
-}
-.freeBox__qdAAo > :global(.__wab_flex-container) {
-  min-width: 0;
-  margin-left: calc(0px - 4px);
-  width: calc(100% + 4px);
-}
-.freeBox__qdAAo > :global(.__wab_flex-container) > *,
-.freeBox__qdAAo > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.freeBox__qdAAo > :global(.__wab_flex-container) > picture > img,
-.freeBox__qdAAo
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  margin-left: 4px;
 }
 .dataPickerValueTypeIcon:global(.__wab_instance) {
   position: relative;

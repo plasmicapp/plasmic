@@ -14,22 +14,20 @@
 import * as React from "react";
 
 import {
-  Flex as Flex__,
-  PlasmicLink as PlasmicLink__,
-  Stack as Stack__,
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  Flex as Flex__,
+  PlasmicLink as PlasmicLink__,
+  StrictProps,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
 import { MarkdownHintRow } from "../../components/comments/MarkdownHintRow"; // plasmic-import: T7mVQBFEWA-V/component
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: BP7V3EkXPURJVwwMyWoHn/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import projectcss from "./plasmic_plasmic_kit_comments.module.css"; // plasmic-import: BP7V3EkXPURJVwwMyWoHn/projectcss
 import sty from "./PlasmicMarkdownHintsPopoverContent.module.css"; // plasmic-import: pTr2lSrGWq8O/css
 
@@ -90,6 +88,8 @@ function PlasmicMarkdownHintsPopoverContent__RenderFunc(props: {
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
+  const styleTokensClassNames = _useStyleTokens();
+
   return (
     <div
       data-plasmic-name={"root"}
@@ -101,9 +101,7 @@ function PlasmicMarkdownHintsPopoverContent__RenderFunc(props: {
         projectcss.root_reset,
         projectcss.plasmic_default_styles,
         projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_css.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
+        styleTokensClassNames,
         sty.root
       )}
     >
@@ -121,11 +119,9 @@ function PlasmicMarkdownHintsPopoverContent__RenderFunc(props: {
         >
           {"Markdown hints"}
         </div>
-        <Stack__
-          as={PlasmicLink__}
+        <PlasmicLink__
           data-plasmic-name={"link"}
           data-plasmic-override={overrides.link}
-          hasGap={true}
           className={classNames(projectcss.all, projectcss.a, sty.link)}
           href={"https://commonmark.org/help/"}
           platform={"react"}
@@ -146,13 +142,11 @@ function PlasmicMarkdownHintsPopoverContent__RenderFunc(props: {
             className={classNames(projectcss.all, sty.svg)}
             role={"img"}
           />
-        </Stack__>
+        </PlasmicLink__>
       </div>
-      <Stack__
-        as={"div"}
+      <div
         data-plasmic-name={"content"}
         data-plasmic-override={overrides.content}
-        hasGap={true}
         className={classNames(projectcss.all, sty.content)}
       >
         <MarkdownHintRow
@@ -162,7 +156,7 @@ function PlasmicMarkdownHintsPopoverContent__RenderFunc(props: {
         <MarkdownHintRow
           className={classNames("__wab_instance", sty.markdownHintRow__yl5A6)}
         />
-      </Stack__>
+      </div>
     </div>
   ) as React.ReactElement | null;
 }

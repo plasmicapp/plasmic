@@ -5,18 +5,8 @@
   width: 160px;
   flex-shrink: 0;
   flex-direction: column;
+  row-gap: 5px;
   border-right: 1px solid var(--token-hoA5qaM-91G);
-}
-.root > :global(.__wab_flex-container) {
-  flex-direction: column;
-  margin-top: calc(0px - 5px);
-  height: calc(100% + 5px);
-}
-.root > :global(.__wab_flex-container) > *,
-.root > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.root > :global(.__wab_flex-container) > picture > img,
-.root > :global(.__wab_flex-container) > :global(.__wab_slot) > picture > img {
-  margin-top: 5px;
 }
 .rootisWide {
   width: 250px;

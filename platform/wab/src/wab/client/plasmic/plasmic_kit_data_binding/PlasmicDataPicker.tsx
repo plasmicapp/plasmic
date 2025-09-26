@@ -14,17 +14,16 @@
 import * as React from "react";
 
 import {
-  Flex as Flex__,
-  PlasmicLink as PlasmicLink__,
-  SingleBooleanChoiceArg,
-  SingleChoiceArg,
-  Stack as Stack__,
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  Flex as Flex__,
   hasVariant,
+  PlasmicLink as PlasmicLink__,
   renderPlasmicSlot,
+  SingleBooleanChoiceArg,
+  SingleChoiceArg,
+  StrictProps,
   useDollarState,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
@@ -37,11 +36,10 @@ import DataPickerGlobalSearchResultsItem from "../../components/sidebar-tabs/Dat
 import DataPickerSelectedItem from "../../components/sidebar-tabs/DataBinding/DataPickerSelectedItem"; // plasmic-import: PZbWryjVVD/component
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
 import Searchbox from "../../components/widgets/Searchbox"; // plasmic-import: po7gr0PX4_gWo/component
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: w2GXN278dkQ2gQTVQnPehW/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import projectcss from "./plasmic_plasmic_kit_data_binding.module.css"; // plasmic-import: w2GXN278dkQ2gQTVQnPehW/projectcss
 import sty from "./PlasmicDataPicker.module.css"; // plasmic-import: cbEBf9RLgx/css
 
@@ -268,6 +266,8 @@ function PlasmicDataPicker__RenderFunc(props: {
     $refs,
   });
 
+  const styleTokensClassNames = _useStyleTokens();
+
   return (
     <div
       data-plasmic-name={"root"}
@@ -279,9 +279,7 @@ function PlasmicDataPicker__RenderFunc(props: {
         projectcss.root_reset,
         projectcss.plasmic_default_styles,
         projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_css.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
+        styleTokensClassNames,
         sty.root,
         {
           [sty.rootcodeEditing]: hasVariant(
@@ -362,9 +360,7 @@ function PlasmicDataPicker__RenderFunc(props: {
             ? "Edit code"
             : "Select data"}
         </div>
-        <Stack__
-          as={"div"}
-          hasGap={true}
+        <div
           className={classNames(projectcss.all, sty.freeBox__kLjUi, {
             [sty.freeBoxadvancedToggle_show__kLjUiKTPb]: hasVariant(
               $state,
@@ -826,7 +822,7 @@ function PlasmicDataPicker__RenderFunc(props: {
           >
             {"Help"}
           </PlasmicLink__>
-        </Stack__>
+        </div>
       </div>
       {(
         hasVariant($state, "empty", "empty")
@@ -1316,11 +1312,9 @@ function PlasmicDataPicker__RenderFunc(props: {
           </div>
         ) : null}
       </div>
-      <Stack__
-        as={"div"}
+      <div
         data-plasmic-name={"footer"}
         data-plasmic-override={overrides.footer}
-        hasGap={true}
         className={classNames(projectcss.all, sty.footer, {
           [sty.footercodeEditing]: hasVariant(
             $state,
@@ -1383,9 +1377,7 @@ function PlasmicDataPicker__RenderFunc(props: {
               ? false
               : true
           ) ? (
-            <Stack__
-              as={"div"}
-              hasGap={true}
+            <div
               className={classNames(projectcss.all, sty.freeBox__ruRlY, {
                 [sty.freeBoxcodeEditing__ruRlYsjavw]: hasVariant(
                   $state,
@@ -1443,9 +1435,7 @@ function PlasmicDataPicker__RenderFunc(props: {
                 </div>
               ) : null}
               {(hasVariant($state, "empty", "empty") ? false : true) ? (
-                <Stack__
-                  as={"div"}
-                  hasGap={true}
+                <div
                   className={classNames(projectcss.all, sty.freeBox__q6R5H, {
                     [sty.freeBoxempty__q6R5H6WvzY]: hasVariant(
                       $state,
@@ -1475,18 +1465,16 @@ function PlasmicDataPicker__RenderFunc(props: {
                     ),
                     value: args.selectedItem,
                   })}
-                </Stack__>
+                </div>
               ) : null}
-            </Stack__>
+            </div>
           ) : null}
           {(
             hasVariant($state, "hasExpectedValues", "hasExpectedValues")
               ? true
               : false
           ) ? (
-            <Stack__
-              as={"div"}
-              hasGap={true}
+            <div
               className={classNames(projectcss.all, sty.freeBox__d7XVv, {
                 [sty.freeBoxcodeEditing__d7XVvSjavw]: hasVariant(
                   $state,
@@ -1543,12 +1531,10 @@ function PlasmicDataPicker__RenderFunc(props: {
                   className: classNames(sty.slotTargetExpectedValues),
                 })}
               </div>
-            </Stack__>
+            </div>
           ) : null}
         </div>
-        <Stack__
-          as={"div"}
-          hasGap={true}
+        <div
           className={classNames(projectcss.all, sty.freeBox__d1Wr2, {
             [sty.freeBoxcodeEditing__d1Wr2Sjavw]: hasVariant(
               $state,
@@ -1748,8 +1734,8 @@ function PlasmicDataPicker__RenderFunc(props: {
           >
             {"Save"}
           </Button>
-        </Stack__>
-      </Stack__>
+        </div>
+      </div>
     </div>
   ) as React.ReactElement | null;
 }

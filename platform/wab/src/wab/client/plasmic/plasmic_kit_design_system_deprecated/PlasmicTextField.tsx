@@ -33,7 +33,6 @@ import Description from "../../components/plexus/Description"; // plasmic-import
 import Label from "../../components/plexus/Label"; // plasmic-import: Hxtf0EKrkmO5/component
 import TextAreaInput from "../../components/plexus/TextAreaInput"; // plasmic-import: 0wwbx9l7LS5I/component
 import TextInput from "../../components/plexus/TextInput"; // plasmic-import: J_e2eE41048e/component
-import { _useStyleTokens as useStyleTokens_plasmic_kit_color_tokens } from "../plasmic_kit_color_tokens/PlasmicStyleTokensProvider"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/styleTokensProvider
 import { _useStyleTokens } from "../plasmic_kit_design_system/PlasmicStyleTokensProvider"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
@@ -354,8 +353,6 @@ function PlasmicTextField__RenderFunc(props: {
   });
 
   const styleTokensClassNames = _useStyleTokens();
-  const styleTokensClassNames_plasmic_kit_color_tokens =
-    useStyleTokens_plasmic_kit_color_tokens();
 
   const [$ccVariants, setDollarCcVariants] = React.useState<
     Record<string, boolean>
@@ -390,7 +387,6 @@ function PlasmicTextField__RenderFunc(props: {
         projectcss.plasmic_default_styles,
         projectcss.plasmic_mixins,
         styleTokensClassNames,
-        styleTokensClassNames_plasmic_kit_color_tokens,
         sty.ariaTextField,
         {
           [sty.ariaTextFieldiconEnd]: hasVariant($state, "iconEnd", "iconEnd"),

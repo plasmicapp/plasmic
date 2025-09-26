@@ -24,9 +24,6 @@
   border-radius: 4px;
   border: 1px solid var(--token-sBh7BFhgAybb);
 }
-.root:hover .inputArea {
-  background: var(--token-11LpBV8ry6Ok);
-}
 .root:focus-within .inputArea {
   outline-width: thin;
   outline-style: solid;

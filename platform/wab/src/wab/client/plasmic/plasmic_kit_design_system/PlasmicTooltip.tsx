@@ -28,7 +28,6 @@ import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
 import { BaseTooltip } from "@plasmicpkgs/react-aria/skinny/registerTooltip";
 import OverlayArrow from "../../components/plexus/OverlayArrow"; // plasmic-import: FRA2fXjcDHo2/component
-import { _useStyleTokens as useStyleTokens_plasmic_kit_color_tokens } from "../plasmic_kit_color_tokens/PlasmicStyleTokensProvider"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/styleTokensProvider
 import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
@@ -141,8 +140,6 @@ function PlasmicTooltip__RenderFunc(props: {
   });
 
   const styleTokensClassNames = _useStyleTokens();
-  const styleTokensClassNames_plasmic_kit_color_tokens =
-    useStyleTokens_plasmic_kit_color_tokens();
 
   return (
     <BaseTooltip
@@ -156,7 +153,6 @@ function PlasmicTooltip__RenderFunc(props: {
         projectcss.plasmic_default_styles,
         projectcss.plasmic_mixins,
         styleTokensClassNames,
-        styleTokensClassNames_plasmic_kit_color_tokens,
         sty.ariaTooltip
       )}
       closeDelay={args.closeDelay}
@@ -175,8 +171,7 @@ function PlasmicTooltip__RenderFunc(props: {
         projectcss.root_reset,
         projectcss.plasmic_default_styles,
         projectcss.plasmic_mixins,
-        styleTokensClassNames,
-        styleTokensClassNames_plasmic_kit_color_tokens
+        styleTokensClassNames
       )}
       tooltipContent={
         <React.Fragment>

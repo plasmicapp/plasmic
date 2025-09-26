@@ -30,23 +30,9 @@
   display: flex;
   position: relative;
   flex-direction: row;
-}
-.freeBox__kLjUi > :global(.__wab_flex-container) {
-  flex-direction: row;
   align-items: stretch;
   justify-content: flex-start;
-  margin-left: calc(0px - 8px);
-  width: calc(100% + 8px);
-}
-.freeBox__kLjUi > :global(.__wab_flex-container) > *,
-.freeBox__kLjUi > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.freeBox__kLjUi > :global(.__wab_flex-container) > picture > img,
-.freeBox__kLjUi
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  margin-left: 8px;
+  column-gap: 8px;
 }
 .stateSwitch {
   cursor: pointer;
@@ -327,26 +313,12 @@
   display: flex;
   position: relative;
   flex-direction: row;
-  background: var(--token-O4S7RMTqZ3);
-  padding: 8px 16px;
-  border-top: 1px solid var(--token-hoA5qaM-91G);
-}
-.footer > :global(.__wab_flex-container) {
-  flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  margin-left: calc(0px - 8px);
-  width: calc(100% + 8px);
-}
-.footer > :global(.__wab_flex-container) > *,
-.footer > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.footer > :global(.__wab_flex-container) > picture > img,
-.footer
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  margin-left: 8px;
+  background: var(--token-O4S7RMTqZ3);
+  column-gap: 8px;
+  padding: 8px 16px;
+  border-top: 1px solid var(--token-hoA5qaM-91G);
 }
 .freeBox__dk33 {
   display: flex;
@@ -362,25 +334,11 @@
 .freeBox__ruRlY {
   display: flex;
   flex-direction: row;
-  width: auto;
-  max-width: 100%;
-}
-.freeBox__ruRlY > :global(.__wab_flex-container) {
-  flex-direction: row;
   align-items: center;
   justify-content: flex-start;
-  margin-left: calc(0px - 8px);
-  width: calc(100% + 8px);
-}
-.freeBox__ruRlY > :global(.__wab_flex-container) > *,
-.freeBox__ruRlY > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.freeBox__ruRlY > :global(.__wab_flex-container) > picture > img,
-.freeBox__ruRlY
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  margin-left: 8px;
+  width: auto;
+  max-width: 100%;
+  column-gap: 8px;
 }
 .freeBoxempty__ruRlY6WvzY {
   display: flex;
@@ -396,32 +354,15 @@
   display: flex;
   position: relative;
   flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
   width: 100%;
   height: auto;
   max-width: 100%;
-  min-width: 0;
-}
-.freeBox__q6R5H > :global(.__wab_flex-container) {
-  flex-direction: row;
-  align-items: center;
-  justify-content: flex-start;
   flex-wrap: wrap;
+  column-gap: 4px;
+  row-gap: 4px;
   min-width: 0;
-  margin-left: calc(0px - 4px);
-  width: calc(100% + 4px);
-  margin-top: calc(0px - 4px);
-  height: calc(100% + 4px);
-}
-.freeBox__q6R5H > :global(.__wab_flex-container) > *,
-.freeBox__q6R5H > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.freeBox__q6R5H > :global(.__wab_flex-container) > picture > img,
-.freeBox__q6R5H
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  margin-left: 4px;
-  margin-top: 4px;
 }
 .dataPickerSelectedItem__iJ5T2:global(.__wab_instance) {
   position: relative;
@@ -433,25 +374,11 @@
   display: flex;
   position: relative;
   flex-direction: row;
-  width: auto;
-  max-width: 100%;
-}
-.freeBox__d7XVv > :global(.__wab_flex-container) {
-  flex-direction: row;
   align-items: center;
   justify-content: flex-start;
-  margin-left: calc(0px - 8px);
-  width: calc(100% + 8px);
-}
-.freeBox__d7XVv > :global(.__wab_flex-container) > *,
-.freeBox__d7XVv > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.freeBox__d7XVv > :global(.__wab_flex-container) > picture > img,
-.freeBox__d7XVv
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  margin-left: 8px;
+  width: auto;
+  max-width: 100%;
+  column-gap: 8px;
 }
 .freeBoxhasExpectedValues__d7XVv8ZNr {
   display: flex;
@@ -481,20 +408,7 @@
 .freeBox__d1Wr2 {
   display: flex;
   position: relative;
-}
-.freeBox__d1Wr2 > :global(.__wab_flex-container) {
-  margin-left: calc(0px - 8px);
-  width: calc(100% + 8px);
-}
-.freeBox__d1Wr2 > :global(.__wab_flex-container) > *,
-.freeBox__d1Wr2 > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.freeBox__d1Wr2 > :global(.__wab_flex-container) > picture > img,
-.freeBox__d1Wr2
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  margin-left: 8px;
+  column-gap: 8px;
 }
 .deleteButton:global(.__wab_instance) {
   position: relative;

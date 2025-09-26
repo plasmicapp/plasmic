@@ -26,9 +26,6 @@
   background: var(--token-iCBCh1BQyu-W);
   box-shadow: none;
 }
-.ariaTextAreatype_soft[data-hovered]:global(.__wab_instance) {
-  background: var(--token-11LpBV8ry6Ok);
-}
 .ariaTextAreatype_plain:global(.__wab_instance) {
   box-shadow: none;
 }

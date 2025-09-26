@@ -2,22 +2,12 @@
   display: flex;
   position: relative;
   flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
   height: auto;
   max-width: 1024%;
   justify-self: flex-start;
-}
-.root > :global(.__wab_flex-container) {
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  margin-top: calc(0px - 8px);
-  height: calc(100% + 8px);
-}
-.root > :global(.__wab_flex-container) > *,
-.root > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.root > :global(.__wab_flex-container) > picture > img,
-.root > :global(.__wab_flex-container) > :global(.__wab_slot) > picture > img {
-  margin-top: 8px;
+  row-gap: 8px;
 }
 .rootuserPrompt {
   margin-left: 32px;
@@ -25,11 +15,11 @@
 .rootrightMargin {
   margin-right: 32px;
 }
-.rootfeedback_submit > :global(.__wab_flex-container) {
+.rootfeedback_submit {
   align-items: flex-end;
   justify-content: center;
 }
-.rootfeedback_submitting > :global(.__wab_flex-container) {
+.rootfeedback_submitting {
   align-items: flex-end;
   justify-content: center;
 }
@@ -169,31 +159,13 @@
   display: flex;
   position: relative;
   flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
   width: 100%;
   height: auto;
   max-width: 100%;
+  row-gap: 8px;
   min-width: 0;
-}
-.feedbackSubmittedContainer > :global(.__wab_flex-container) {
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  min-width: 0;
-  margin-top: calc(0px - 8px);
-  height: calc(100% + 8px);
-}
-.feedbackSubmittedContainer > :global(.__wab_flex-container) > *,
-.feedbackSubmittedContainer
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > *,
-.feedbackSubmittedContainer > :global(.__wab_flex-container) > picture > img,
-.feedbackSubmittedContainer
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  margin-top: 8px;
 }
 .feedbackSubmittedContainerfeedback_submitted {
   display: flex;

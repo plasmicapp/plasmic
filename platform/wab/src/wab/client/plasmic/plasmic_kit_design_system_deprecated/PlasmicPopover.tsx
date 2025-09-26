@@ -31,7 +31,6 @@ import { BaseDialogTrigger } from "@plasmicpkgs/react-aria/skinny/registerDialog
 import { BasePopover } from "@plasmicpkgs/react-aria/skinny/registerPopover";
 import OverlayArrow from "../../components/plexus/OverlayArrow"; // plasmic-import: FRA2fXjcDHo2/component
 import { PlexusButton } from "../../components/plexus/PlexusButton"; // plasmic-import: sbyrU_8SkoWY/component
-import { _useStyleTokens as useStyleTokens_plasmic_kit_color_tokens } from "../plasmic_kit_color_tokens/PlasmicStyleTokensProvider"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/styleTokensProvider
 import { _useStyleTokens } from "../plasmic_kit_design_system/PlasmicStyleTokensProvider"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
@@ -139,8 +138,6 @@ function PlasmicPopover__RenderFunc(props: {
   });
 
   const styleTokensClassNames = _useStyleTokens();
-  const styleTokensClassNames_plasmic_kit_color_tokens =
-    useStyleTokens_plasmic_kit_color_tokens();
 
   return (
     <BaseDialogTrigger
@@ -154,7 +151,6 @@ function PlasmicPopover__RenderFunc(props: {
         projectcss.plasmic_default_styles,
         projectcss.plasmic_mixins,
         styleTokensClassNames,
-        styleTokensClassNames_plasmic_kit_color_tokens,
         sty.ariaDialogTrigger
       )}
       dialog={
@@ -169,8 +165,7 @@ function PlasmicPopover__RenderFunc(props: {
             projectcss.root_reset,
             projectcss.plasmic_default_styles,
             projectcss.plasmic_mixins,
-            styleTokensClassNames,
-            styleTokensClassNames_plasmic_kit_color_tokens
+            styleTokensClassNames
           )}
           shouldFlip={args.shouldFlip}
         >

@@ -30,30 +30,16 @@
 .promptDialog {
   display: flex;
   flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
   width: 512px;
   height: auto;
   max-width: 100%;
   overflow: auto;
   background: #ffffff;
   max-height: 100%;
+  row-gap: 8px;
   padding: 16px;
-}
-.promptDialog > :global(.__wab_flex-container) {
-  flex-direction: column;
-  align-items: stretch;
-  justify-content: flex-start;
-  margin-top: calc(0px - 8px);
-  height: calc(100% + 8px);
-}
-.promptDialog > :global(.__wab_flex-container) > *,
-.promptDialog > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.promptDialog > :global(.__wab_flex-container) > picture > img,
-.promptDialog
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  margin-top: 8px;
 }
 .headerContainer {
   display: flex;
@@ -152,28 +138,13 @@
   display: flex;
   position: relative;
   flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
   width: 100%;
   height: auto;
   max-width: 100%;
+  row-gap: 8px;
   min-width: 0;
-}
-.contents > :global(.__wab_flex-container) {
-  flex-direction: column;
-  align-items: stretch;
-  justify-content: flex-start;
-  min-width: 0;
-  margin-top: calc(0px - 8px);
-  height: calc(100% + 8px);
-}
-.contents > :global(.__wab_flex-container) > *,
-.contents > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.contents > :global(.__wab_flex-container) > picture > img,
-.contents
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  margin-top: 8px;
 }
 .contentsstate_history {
   max-height: 100%;
@@ -217,30 +188,15 @@
   display: flex;
   position: relative;
   flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
   width: 100%;
   height: auto;
   max-width: 100%;
   padding-right: 8px;
   padding-left: 8px;
+  row-gap: 16px;
   min-width: 0;
-}
-.historyContents > :global(.__wab_flex-container) {
-  flex-direction: column;
-  align-items: stretch;
-  justify-content: flex-start;
-  min-width: 0;
-  margin-top: calc(0px - 16px);
-  height: calc(100% + 16px);
-}
-.historyContents > :global(.__wab_flex-container) > *,
-.historyContents > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.historyContents > :global(.__wab_flex-container) > picture > img,
-.historyContents
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  margin-top: 16px;
 }
 .historyContentsstate_history {
   display: flex;
@@ -299,28 +255,13 @@
   display: flex;
   position: relative;
   flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
   width: 100%;
   height: auto;
   max-width: 100%;
+  column-gap: 8px;
   min-width: 0;
-}
-.promptContainer > :global(.__wab_flex-container) {
-  flex-direction: row;
-  align-items: center;
-  justify-content: flex-start;
-  min-width: 0;
-  margin-left: calc(0px - 8px);
-  width: calc(100% + 8px);
-}
-.promptContainer > :global(.__wab_flex-container) > *,
-.promptContainer > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.promptContainer > :global(.__wab_flex-container) > picture > img,
-.promptContainer
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  margin-left: 8px;
 }
 .promptContainerstate_ready {
   display: flex;

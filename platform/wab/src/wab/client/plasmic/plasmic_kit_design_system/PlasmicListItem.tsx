@@ -14,15 +14,15 @@
 import * as React from "react";
 
 import {
-  Flex as Flex__,
-  SingleBooleanChoiceArg,
-  SingleChoiceArg,
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  Flex as Flex__,
   hasVariant,
   renderPlasmicSlot,
+  SingleBooleanChoiceArg,
+  SingleChoiceArg,
+  StrictProps,
   useDollarState,
   useTrigger,
 } from "@plasmicapp/react-web";
@@ -30,7 +30,6 @@ import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
 import IconButton from "../../components/widgets/IconButton"; // plasmic-import: LPry-TF4j22a/component
 import MenuButton from "../../components/widgets/MenuButton"; // plasmic-import: h69wHrrKtL/component
-import { _useStyleTokens as useStyleTokens_plasmic_kit_color_tokens } from "../plasmic_kit_color_tokens/PlasmicStyleTokensProvider"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/styleTokensProvider
 import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
@@ -262,7 +261,6 @@ function PlasmicListItem__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.isHighlighted,
       },
     ],
-
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -278,8 +276,6 @@ function PlasmicListItem__RenderFunc(props: {
   };
 
   const styleTokensClassNames = _useStyleTokens();
-  const styleTokensClassNames_plasmic_kit_color_tokens =
-    useStyleTokens_plasmic_kit_color_tokens();
 
   return (
     <div
@@ -293,7 +289,6 @@ function PlasmicListItem__RenderFunc(props: {
         projectcss.plasmic_default_styles,
         projectcss.plasmic_mixins,
         styleTokensClassNames,
-        styleTokensClassNames_plasmic_kit_color_tokens,
         sty.root,
         {
           [sty.rootcolor_variant]: hasVariant($state, "color", "variant"),
@@ -981,7 +976,6 @@ function PlasmicListItem__RenderFunc(props: {
                   />
                 </IconButton>
               ),
-
               value: args.actions,
               className: classNames(sty.slotTargetActions, {
                 [sty.slotTargetActionscolor_variant]: hasVariant(
@@ -1170,7 +1164,6 @@ const PlasmicDescendants = {
     "menuButton",
     "additional",
   ],
-
   main: [
     "main",
     "dragHandle",
@@ -1183,7 +1176,6 @@ const PlasmicDescendants = {
     "actionsContainer",
     "menuButton",
   ],
-
   dragHandle: ["dragHandle", "svg"],
   svg: ["svg"],
   iconContainer: ["iconContainer"],
@@ -1218,7 +1210,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicListItem__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {

@@ -14,17 +14,18 @@
 import * as React from "react";
 
 import {
-  Flex as Flex__,
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  Flex as Flex__,
+  StrictProps,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
 import CommentPostForm from "../../components/comments/CommentPostForm"; // plasmic-import: qi3Y1X2qZ7/component
 import { CommentsDialogHead } from "../../components/comments/CommentsDialogHead"; // plasmic-import: tccr1SFVw_AY/component
 import { Dialog } from "../../components/widgets/Dialog"; // plasmic-import: en2IIw2C3_aI/component
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: BP7V3EkXPURJVwwMyWoHn/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
@@ -83,6 +84,8 @@ function PlasmicCommentPostFormDialog__RenderFunc(props: {
   const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
+
+  const styleTokensClassNames = _useStyleTokens();
 
   return (
     <Dialog

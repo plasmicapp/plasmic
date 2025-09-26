@@ -14,13 +14,13 @@
 import * as React from "react";
 
 import {
-  Flex as Flex__,
-  SingleBooleanChoiceArg,
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  Flex as Flex__,
   hasVariant,
+  SingleBooleanChoiceArg,
+  StrictProps,
   useDollarState,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
@@ -30,6 +30,7 @@ import CommentPostForm from "../../components/comments/CommentPostForm"; // plas
 import { CommentsDialogHead } from "../../components/comments/CommentsDialogHead"; // plasmic-import: tccr1SFVw_AY/component
 import ThreadComments from "../../components/comments/ThreadComments"; // plasmic-import: QY53tkpvLv/component
 import { Dialog } from "../../components/widgets/Dialog"; // plasmic-import: en2IIw2C3_aI/component
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: BP7V3EkXPURJVwwMyWoHn/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
@@ -113,6 +114,8 @@ function PlasmicThreadCommentsDialog__RenderFunc(props: {
     $queries: {},
     $refs,
   });
+
+  const styleTokensClassNames = _useStyleTokens();
 
   return (
     <Dialog

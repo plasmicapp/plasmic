@@ -27,29 +27,14 @@
   display: flex;
   flex-direction: column;
   position: relative;
+  align-items: flex-start;
+  justify-content: center;
   width: 100%;
+  row-gap: var(--token-YwPV7bN0RvD8);
   min-width: 0;
   border-radius: var(--token-NCc1lDy9R);
   padding: var(--token-8b4HJYZr1yuK) var(--token-XnnXV8YSKg9w);
   border: 1px solid var(--token-JpKJ41ZaDWOC);
-}
-.noCommentsCard > :global(.__wab_flex-container) {
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: center;
-  min-width: 0;
-  margin-top: calc(0px - var(--token-YwPV7bN0RvD8));
-  height: calc(100% + var(--token-YwPV7bN0RvD8));
-}
-.noCommentsCard > :global(.__wab_flex-container) > *,
-.noCommentsCard > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.noCommentsCard > :global(.__wab_flex-container) > picture > img,
-.noCommentsCard
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  margin-top: var(--token-YwPV7bN0RvD8);
 }
 .text {
   position: relative;

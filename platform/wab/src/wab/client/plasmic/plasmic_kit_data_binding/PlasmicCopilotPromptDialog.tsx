@@ -14,29 +14,27 @@
 import * as React from "react";
 
 import {
-  Flex as Flex__,
-  PlasmicImg as PlasmicImg__,
-  SingleChoiceArg,
-  Stack as Stack__,
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  Flex as Flex__,
   hasVariant,
+  PlasmicImg as PlasmicImg__,
+  SingleChoiceArg,
+  StrictProps,
   useDollarState,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
-import CopilotMsg from "../../components/CopilotMsg"; // plasmic-import: CdMYaSGMjG/component
 import { CopilotPromptInput } from "../../components/copilot/CopilotPromptInput"; // plasmic-import: pnV7KLVDUyoz/component
+import CopilotMsg from "../../components/CopilotMsg"; // plasmic-import: CdMYaSGMjG/component
 import IconButton from "../../components/widgets/IconButton"; // plasmic-import: LPry-TF4j22a/component
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: w2GXN278dkQ2gQTVQnPehW/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import sty from "./PlasmicCopilotPromptDialog.module.css"; // plasmic-import: -zGA-erYhCmv/css
 import projectcss from "./plasmic_plasmic_kit_data_binding.module.css"; // plasmic-import: w2GXN278dkQ2gQTVQnPehW/projectcss
+import sty from "./PlasmicCopilotPromptDialog.module.css"; // plasmic-import: -zGA-erYhCmv/css
 
 import HistoryIcon from "../plasmic_kit/PlasmicIcon__History"; // plasmic-import: 6ZOswzsUR/icon
 import CloseSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__CloseSvg"; // plasmic-import: DhvEHyCHT/icon
@@ -154,6 +152,8 @@ function PlasmicCopilotPromptDialog__RenderFunc(props: {
     $refs,
   });
 
+  const styleTokensClassNames = _useStyleTokens();
+
   return (
     <div
       data-plasmic-name={"rootContainer"}
@@ -165,9 +165,7 @@ function PlasmicCopilotPromptDialog__RenderFunc(props: {
         projectcss.root_reset,
         projectcss.plasmic_default_styles,
         projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_css.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
+        styleTokensClassNames,
         sty.rootContainer,
         {
           [sty.rootContainerstate_error]: hasVariant($state, "state", "error"),
@@ -225,11 +223,9 @@ function PlasmicCopilotPromptDialog__RenderFunc(props: {
           [sty.sizerContainertype_ui]: hasVariant($state, "type", "ui"),
         })}
       >
-        <Stack__
-          as={"div"}
+        <div
           data-plasmic-name={"promptDialog"}
           data-plasmic-override={overrides.promptDialog}
-          hasGap={true}
           className={classNames(projectcss.all, sty.promptDialog, {
             [sty.promptDialogstate_historyEmpty]: hasVariant(
               $state,
@@ -363,11 +359,9 @@ function PlasmicCopilotPromptDialog__RenderFunc(props: {
               </IconButton>
             </div>
           </div>
-          <Stack__
-            as={"div"}
+          <div
             data-plasmic-name={"contents"}
             data-plasmic-override={overrides.contents}
-            hasGap={true}
             className={classNames(projectcss.all, sty.contents, {
               [sty.contentsstate_historyEmpty]: hasVariant(
                 $state,
@@ -435,11 +429,9 @@ function PlasmicCopilotPromptDialog__RenderFunc(props: {
                     ? "No data"
                     : "Enter some text"}
                 </div>
-                <Stack__
-                  as={"div"}
+                <div
                   data-plasmic-name={"historyContents"}
                   data-plasmic-override={overrides.historyContents}
-                  hasGap={true}
                   className={classNames(projectcss.all, sty.historyContents, {
                     [sty.historyContentsstate_historyEmpty]: hasVariant(
                       $state,
@@ -489,7 +481,7 @@ function PlasmicCopilotPromptDialog__RenderFunc(props: {
                     )}
                     rightMargin={true}
                   />
-                </Stack__>
+                </div>
                 <div
                   data-plasmic-name={"historyBottomDiv"}
                   data-plasmic-override={overrides.historyBottomDiv}
@@ -593,11 +585,9 @@ function PlasmicCopilotPromptDialog__RenderFunc(props: {
                 </div>
               </div>
             ) : null}
-            <Stack__
-              as={"div"}
+            <div
               data-plasmic-name={"promptContainer"}
               data-plasmic-override={overrides.promptContainer}
-              hasGap={true}
               className={classNames(projectcss.all, sty.promptContainer, {
                 [sty.promptContainerstate_historyEmpty]: hasVariant(
                   $state,
@@ -645,7 +635,7 @@ function PlasmicCopilotPromptDialog__RenderFunc(props: {
                     : undefined
                 }
               />
-            </Stack__>
+            </div>
             {(hasVariant($state, "state", "loading") ? true : false) ? (
               <Icon3Icon
                 className={classNames(projectcss.all, sty.svg__qXcOj, {
@@ -723,8 +713,8 @@ function PlasmicCopilotPromptDialog__RenderFunc(props: {
                 [sty.replystate_ready]: hasVariant($state, "state", "ready"),
               })}
             />
-          </Stack__>
-        </Stack__>
+          </div>
+        </div>
       </div>
     </div>
   ) as React.ReactElement | null;

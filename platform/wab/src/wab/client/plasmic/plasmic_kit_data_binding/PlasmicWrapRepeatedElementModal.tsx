@@ -14,21 +14,19 @@
 import * as React from "react";
 
 import {
-  Flex as Flex__,
-  Stack as Stack__,
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  Flex as Flex__,
+  StrictProps,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
 import WrapRepeatedElementOption from "../../components/sidebar-tabs/DataBinding/WrapRepeatedElementOption"; // plasmic-import: QcDtYmEqee/component
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: w2GXN278dkQ2gQTVQnPehW/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import projectcss from "./plasmic_plasmic_kit_data_binding.module.css"; // plasmic-import: w2GXN278dkQ2gQTVQnPehW/projectcss
 import sty from "./PlasmicWrapRepeatedElementModal.module.css"; // plasmic-import: VDe4OfA0wv/css
 
@@ -90,6 +88,8 @@ function PlasmicWrapRepeatedElementModal__RenderFunc(props: {
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
+  const styleTokensClassNames = _useStyleTokens();
+
   return (
     <div
       data-plasmic-name={"root"}
@@ -101,24 +101,18 @@ function PlasmicWrapRepeatedElementModal__RenderFunc(props: {
         projectcss.root_reset,
         projectcss.plasmic_default_styles,
         projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_css.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
+        styleTokensClassNames,
         sty.root
       )}
     >
-      <Stack__
-        as={"div"}
+      <div
         data-plasmic-name={"modalWrapRepeatedElement"}
         data-plasmic-override={overrides.modalWrapRepeatedElement}
-        hasGap={true}
         className={classNames(projectcss.all, sty.modalWrapRepeatedElement)}
       >
-        <Stack__
-          as={"div"}
+        <div
           data-plasmic-name={"frame28"}
           data-plasmic-override={overrides.frame28}
-          hasGap={true}
           className={classNames(projectcss.all, sty.frame28)}
         >
           <div
@@ -139,12 +133,10 @@ function PlasmicWrapRepeatedElementModal__RenderFunc(props: {
           >
             {"This is a repeated element, how do you want to wrap it?"}
           </div>
-        </Stack__>
-        <Stack__
-          as={"div"}
+        </div>
+        <div
           data-plasmic-name={"frame27"}
           data-plasmic-override={overrides.frame27}
-          hasGap={true}
           className={classNames(projectcss.all, sty.frame27)}
         >
           <WrapRepeatedElementOption
@@ -161,11 +153,9 @@ function PlasmicWrapRepeatedElementModal__RenderFunc(props: {
             )}
             slot={"Wrap all the repeated elements in a single wrapper"}
             wrapRepeatedContainer={
-              <Stack__
-                as={"div"}
+              <div
                 data-plasmic-name={"frame25"}
                 data-plasmic-override={overrides.frame25}
-                hasGap={true}
                 className={classNames(projectcss.all, sty.frame25)}
               >
                 <div
@@ -185,13 +175,13 @@ function PlasmicWrapRepeatedElementModal__RenderFunc(props: {
                   data-plasmic-override={overrides.rectangle18}
                   className={classNames(projectcss.all, sty.rectangle18)}
                 />
-              </Stack__>
+              </div>
             }
           >
             {"Wrap all items"}
           </WrapRepeatedElementOption>
-        </Stack__>
-      </Stack__>
+        </div>
+      </div>
     </div>
   ) as React.ReactElement | null;
 }

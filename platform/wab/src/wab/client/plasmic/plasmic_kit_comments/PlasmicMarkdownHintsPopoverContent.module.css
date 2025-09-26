@@ -27,19 +27,9 @@
   display: flex;
   flex-direction: row;
   position: relative;
-}
-.link > :global(.__wab_flex-container) {
-  flex-direction: row;
   align-items: center;
   justify-content: flex-start;
-  margin-left: calc(0px - var(--token-vhXSTyxt_gU9));
-  width: calc(100% + var(--token-vhXSTyxt_gU9));
-}
-.link > :global(.__wab_flex-container) > *,
-.link > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.link > :global(.__wab_flex-container) > picture > img,
-.link > :global(.__wab_flex-container) > :global(.__wab_slot) > picture > img {
-  margin-left: var(--token-vhXSTyxt_gU9);
+  column-gap: var(--token-vhXSTyxt_gU9);
 }
 .text__mEhd3 {
   position: relative;
@@ -65,24 +55,9 @@
   flex-direction: column;
   position: relative;
   width: 100%;
+  row-gap: 8px;
   min-width: 0;
   padding: 8px 12px 12px;
-}
-.content > :global(.__wab_flex-container) {
-  flex-direction: column;
-  min-width: 0;
-  margin-top: calc(0px - 8px);
-  height: calc(100% + 8px);
-}
-.content > :global(.__wab_flex-container) > *,
-.content > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.content > :global(.__wab_flex-container) > picture > img,
-.content
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  margin-top: 8px;
 }
 .markdownHintRow__ofIdB:global(.__wab_instance) {
   position: relative;
