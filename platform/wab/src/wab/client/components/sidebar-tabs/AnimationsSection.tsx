@@ -101,7 +101,7 @@ export const AnimationsSection = observer(function AnimationsSection(
   const addAnimationLayer = () => {
     // Get available animation sequences
     if (allAnimSequences.length === 0) {
-      // TODO: We can improve this UX by auto-adding a default animation sequence such as a basic Fade In animation.
+      studioCtx.switchLeftTab("animationSequences", { highlight: true });
       notification.warn({
         message: `Please add ${ANIMATION_SEQUENCES_CAP} in your project.`,
       });

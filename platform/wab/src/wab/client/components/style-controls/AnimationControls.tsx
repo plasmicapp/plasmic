@@ -64,7 +64,7 @@ export const AnimationControls = observer(function AnimationControls(
 
       <SidebarSection title="Timing">
         <FullRow>
-          <LabeledItem label="Duration" labelSize="small">
+          <LabeledItem label="Duration">
             <DimTokenSpinner
               value={animation.duration}
               onChange={(val) =>
@@ -78,7 +78,7 @@ export const AnimationControls = observer(function AnimationControls(
           </LabeledItem>
         </FullRow>
         <FullRow>
-          <LabeledItem label="Delay" labelSize="small">
+          <LabeledItem label="Delay">
             <DimTokenSpinner
               value={animation.delay || "0s"}
               onChange={(val) =>
@@ -94,7 +94,7 @@ export const AnimationControls = observer(function AnimationControls(
 
       <SidebarSection title="Easing & Repetition">
         <FullRow>
-          <LabeledItem label="Easing" labelSize="small">
+          <LabeledItem label="Easing">
             <StyleSelect
               value={animation.timingFunction || "ease"}
               onChange={(val) =>
@@ -109,33 +109,27 @@ export const AnimationControls = observer(function AnimationControls(
                 Ease In Out
               </StyleSelect.Option>
               <StyleSelect.Option value="linear">Linear</StyleSelect.Option>
-              <StyleSelect.Option value="cubic-bezier(0.68, -0.55, 0.265, 1.55)">
-                Back
-              </StyleSelect.Option>
             </StyleSelect>
           </LabeledItem>
         </FullRow>
 
         <FullRow>
-          <LabeledItem label="Iteration Count" labelSize="small">
-            <StyleSelect
+          <LabeledItem label="Iteration Count">
+            <DimTokenSpinner
+              min={0}
               value={animation.iterationCount || "1"}
               onChange={(val) =>
                 handleChange(() => (animation.iterationCount = val || "1"))
               }
-              valueSetState={animation.iterationCount ? "isSet" : "isUnset"}
-            >
-              <StyleSelect.Option value="1">1</StyleSelect.Option>
-              <StyleSelect.Option value="2">2</StyleSelect.Option>
-              <StyleSelect.Option value="3">3</StyleSelect.Option>
-              <StyleSelect.Option value="5">5</StyleSelect.Option>
-              <StyleSelect.Option value="infinite">Infinite</StyleSelect.Option>
-            </StyleSelect>
+              allowedUnits={[""]}
+              extraOptions={["infinite"]}
+              studioCtx={studioCtx}
+            />
           </LabeledItem>
         </FullRow>
 
         <FullRow>
-          <LabeledItem label="Direction" labelSize="small">
+          <LabeledItem label="Direction">
             <StyleSelect
               value={animation.direction}
               onChange={(val) =>
