@@ -180,6 +180,7 @@ export interface HostLessComponentInfo {
   videoUrl?: string;
   hidden?: boolean;
   isFake?: boolean;
+  isCustomFunction?: boolean;
   description?: string;
   hiddenOnStore?: boolean;
   onlyShownIn?: "old" | "new";

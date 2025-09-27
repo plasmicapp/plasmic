@@ -40,6 +40,7 @@ import {
   PlasmicOmnibar,
 } from "@/wab/client/plasmic/plasmic_kit_omnibar/PlasmicOmnibar";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { getArenaFrameDesc, getArenaFrames } from "@/wab/shared/Arenas";
 import {
   asyncFilter,
   ensureArray,
@@ -52,6 +53,10 @@ import {
   isCodeComponent,
   isReusableComponent,
 } from "@/wab/shared/core/components";
+import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
+import { isIcon } from "@/wab/shared/core/image-assets";
+import { allComponents } from "@/wab/shared/core/sites";
+import { SlotSelection } from "@/wab/shared/core/slots";
 import {
   DEVFLAGS,
   HostLessPackageInfo,
@@ -59,9 +64,6 @@ import {
   flattenInsertableIconGroups,
   flattenInsertableTemplates,
 } from "@/wab/shared/devflags";
-import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
-import { isIcon } from "@/wab/shared/core/image-assets";
-import { getArenaFrameDesc, getArenaFrames } from "@/wab/shared/Arenas";
 import {
   Arena,
   ArenaFrame,
@@ -71,8 +73,6 @@ import {
   Site,
   TplNode,
 } from "@/wab/shared/model/classes";
-import { allComponents } from "@/wab/shared/core/sites";
-import { SlotSelection } from "@/wab/shared/core/slots";
 import { useCombobox } from "downshift";
 import L from "lodash";
 import { observer } from "mobx-react";

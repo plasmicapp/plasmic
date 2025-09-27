@@ -244,6 +244,7 @@ export default InsertPanel;
 const shouldShowPreview = (group: AddItemGroup): boolean => {
   if (
     group.sectionKey === "Code Libraries" ||
+    group.sectionKey === "Functions" ||
     group.familyKey === "imported-packages"
   ) {
     return false;
@@ -366,7 +367,7 @@ const AddDrawerContent = observer(function AddDrawerContent(props: {
 
       const virtualRows = groupConsecBy(virtualItems, (item, i) =>
         item.type === "item" ? item.group.key : i
-      ).flatMap(([key, group]) => {
+      ).flatMap(([_key, group]) => {
         const chunkSize = shouldShowCompact(group[0]) ? compactPerRow : 1;
         return sliding(group, chunkSize, chunkSize);
       });
@@ -577,7 +578,7 @@ const AddDrawerContent = observer(function AddDrawerContent(props: {
         sections={{
           tabIndex: -1,
           children: Object.entries(allFamilies).map(
-            ([familyKey, groupsInFamily]) => {
+            ([_familyKey, groupsInFamily]) => {
               const allSections = groupBy(
                 groupsInFamily,
                 (group) => group.sectionKey ?? group.key
@@ -799,7 +800,7 @@ const Row = React.memo(function Row(props: {
             </ListSectionHeader>
           );
         } else if (virtualItem.type === "item") {
-          const { item, group, itemIndex } = virtualItem;
+          const { item, itemIndex } = virtualItem;
           const {
             studioCtx,
             onDragStart,
@@ -940,64 +941,68 @@ const getTemplateComponents = memoizeOne(function getTemplateComponent(
   );
 });
 
-const getHostLess = memoizeOne((studioCtx: StudioCtx): AddItemGroup[] => {
-  const hostLessComponentsMeta =
-    studioCtx.appCtx.appConfig.hostLessComponents ??
-    DEVFLAGS.hostLessComponents ??
-    [];
-  return hostLessComponentsMeta
-    .filter(
-      (meta) =>
-        meta.onlyShownIn !== "old" && shouldShowHostLessPackage(studioCtx, meta)
-    )
-    .map<AddItemGroup>((meta) => {
-      const existingDep = ensureArray(meta.projectId).every((projectId) =>
-        studioCtx.site.projectDependencies.find(
-          (dep) => dep.projectId === projectId
-        )
-      );
-      const newVar: AddItemGroup = {
-        hostLessPackageInfo: meta,
-        key: `hostless-packages--${meta.projectId}`,
-        sectionKey: meta.sectionLabel,
-        sectionLabel: meta.sectionLabel,
-        isHeaderLess: meta.isHeaderLess,
-        familyKey: "hostless-packages",
-        label: meta.name,
-        codeName: meta.codeName,
-        codeLink: meta.codeLink,
-        items: meta.items
-          .filter(
-            (item) =>
-              (!item.hidden &&
-                !item.hiddenOnStore &&
-                item.onlyShownIn !== "old") ||
-              DEVFLAGS.showHiddenHostLessComponents
-          )
-          .map((item) => {
-            item = {
-              ...item,
-              displayName: item.displayName,
-            };
-            if (meta.isInstallOnly) {
-              return createInstallOnlyPackage(item, meta);
-            }
-            if (item.isFake) {
-              return createFakeHostLessComponent(
-                item,
-                ensureArray(meta.projectId)
-              );
-            } else {
-              return createAddHostLessComponent(
-                item,
-                ensureArray(meta.projectId)
-              );
-            }
-          }),
-      };
-      return newVar;
-    });
-});
+const getHostLess = memoizeOne(
+  (
+    studioCtx: StudioCtx,
+    projectDependencies: ProjectDependency[]
+  ): AddItemGroup[] => {
+    const hostLessComponentsMeta =
+      studioCtx.appCtx.appConfig.hostLessComponents ??
+      DEVFLAGS.hostLessComponents ??
+      [];
+    return hostLessComponentsMeta
+      .filter(
+        (meta) =>
+          meta.onlyShownIn !== "old" &&
+          shouldShowHostLessPackage(studioCtx, meta)
+      )
+      .map<AddItemGroup>((meta) => {
+        // Filter custom function packages with hiddenWhenInstalled that are installed
+        const isInstalledWithHidden = projectDependencies.some(
+          (dep) =>
+            getLeafProjectIdForHostLessPackageMeta(meta) === dep.projectId &&
+            meta.hiddenWhenInstalled
+        );
+        const newVar: AddItemGroup = {
+          hostLessPackageInfo: meta,
+          key: `hostless-packages--${meta.projectId}`,
+          sectionKey: meta.sectionLabel,
+          sectionLabel: meta.sectionLabel,
+          isHeaderLess: meta.isHeaderLess,
+          familyKey: "hostless-packages",
+          label: meta.name,
+          codeName: meta.codeName,
+          codeLink: meta.codeLink,
+          items: meta.items
+            .filter(
+              (item) =>
+                (!(item.isCustomFunction && isInstalledWithHidden) &&
+                  !item.hidden &&
+                  !item.hiddenOnStore &&
+                  item.onlyShownIn !== "old") ||
+                DEVFLAGS.showHiddenHostLessComponents
+            )
+            .map((item) => {
+              if (meta.isInstallOnly) {
+                return createInstallOnlyPackage(item, meta);
+              }
+              if (item.isFake) {
+                return createFakeHostLessComponent(
+                  item,
+                  ensureArray(meta.projectId)
+                );
+              } else {
+                return createAddHostLessComponent(
+                  item,
+                  ensureArray(meta.projectId)
+                );
+              }
+            }),
+        };
+        return newVar;
+      });
+  }
+);
 
 /**
  * For hostless components and default components. Otherwise it's a built-in insertable.
@@ -1294,7 +1299,10 @@ export function buildAddItemGroups({
               }
 
               // Is this a hostless component entry?
-              for (const hostlessGroup of getHostLess(studioCtx)) {
+              for (const hostlessGroup of getHostLess(
+                studioCtx,
+                projectDependencies
+              )) {
                 if (
                   canInsertHostlessPackage(
                     uiConfig,
@@ -1529,9 +1537,8 @@ export function buildAddItemGroups({
       }),
       (item) => item.label
     ),
-
-    ...(!!hostLessComponentsMeta
-      ? getHostLess(studioCtx)
+    ...(hostLessComponentsMeta
+      ? getHostLess(studioCtx, projectDependencies)
           .filter((group) =>
             canInsertHostlessPackage(
               uiConfig,
@@ -1654,13 +1661,11 @@ export function buildAddItemGroups({
         // Note: useCombobox will do shallow comparisons and get confused when there are 2 identical elements
         // For example, highlightedIndex will be set to the first occurrence, leading to a lot of jumping around
         // By just cloning this, we can keep the items distinct
-        items: [
-          ...recentItems.map((item) => ({
-            ...L.clone(item),
-            // Since not all items have images, remove previewImageUrl to force recents to always show as rows.
-            previewImageUrl: undefined,
-          })),
-        ],
+        items: recentItems.map((item) => ({
+          ...L.clone(item),
+          // Since not all items have images, remove previewImageUrl to force recents to always show as rows.
+          previewImageUrl: undefined,
+        })),
       });
     }
   }

@@ -204,7 +204,7 @@ function mkList(vc: ViewCtx, tag: "ol" | "ul") {
   return list;
 }
 
-export const INSERTABLES: readonly AddItem[] = [
+const INSERTABLES: readonly AddItem[] = [
   {
     type: AddItemType.tpl as const,
     key: AddItemKey.box as const,

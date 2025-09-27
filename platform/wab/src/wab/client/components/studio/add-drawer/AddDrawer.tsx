@@ -691,6 +691,13 @@ export function createFakeHostLessComponent(
           );
         });
       });
+      if (meta.isCustomFunction) {
+        notification.success({
+          message: `Registered ${meta.displayName}`,
+          description: `${meta.displayName} has been registered and is now available in Server Queries`,
+          duration: 3,
+        });
+      }
       return true;
     },
     asyncExtraInfo: async (sc) => {
@@ -712,9 +719,7 @@ async function installHostlessPkgs(sc: StudioCtx, projectIds: string[]) {
     projectIds.includes(dep.projectId)
   );
   if (existingDep && existingDep.length === projectIds.length) {
-    return {
-      deps: existingDep,
-    };
+    return { deps: existingDep };
   }
   const projectDependencies = existingDep;
   const remainingProjectIds = projectIds.filter(
