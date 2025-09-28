@@ -4,8 +4,8 @@ import * as parser from "@babel/parser";
 import traverse, { Node } from "@babel/traverse";
 import { ImportDeclaration } from "@babel/types";
 import L from "lodash";
+import type { Options } from "prettier";
 import * as Prettier from "prettier";
-import { Options } from "prettier";
 import * as ts from "typescript";
 import path from "upath";
 import { getGlobalContextsResourcePath } from "../actions/sync-global-contexts";
@@ -40,12 +40,12 @@ import {
 } from "./file-utils";
 import { assert, flatMap } from "./lang-utils";
 
-export const formatAsLocal = (
+export async function formatAsLocal(
   content: string,
   filePath: string,
   baseDir: string,
-  defaultOpts: Options = {}
-) => {
+  defaultOpts?: Options
+): Promise<string> {
   if (GLOBAL_SETTINGS.skipFormatting) {
     return content;
   }
@@ -56,33 +56,36 @@ export const formatAsLocal = (
   // a better solution, like maybe letting user specify a prettier config
   // file in plasmic.json
   // const opts = resolveConfig.sync(baseDir) || defaultOpts;
-  const opts: Options = { ...defaultOpts, pluginSearchDirs: false };
+  const opts: Options = {
+    trailingComma: "none",
+    ...defaultOpts,
+    pluginSearchDirs: false,
+  };
   opts.filepath = filePath;
 
   // Running Prettier multiple times may actually yield different results!
   // Here we run it twice, just to be safe... :-/
-  const res = Prettier.format(content, opts);
-  const res2 = Prettier.format(res, opts);
+  const res = await Prettier.format(content, opts);
+  const res2 = await Prettier.format(res, opts);
   return res2;
-};
+}
 
-const nodeToFormattedCode = (
+async function nodeToFormattedCode(
   n: Node,
   baseDir: string,
   unformatted?: boolean,
   commentsToRemove?: Set<string>
-) => {
+): Promise<string> {
   const c = generate(n, {
     retainLines: true,
     shouldPrintComment: (c) => !commentsToRemove || !commentsToRemove.has(c),
   }).code;
   return unformatted
     ? c
-    : formatAsLocal(c, "/tmp/x.tsx", baseDir, {
-        trailingComma: "none",
+    : await formatAsLocal(c, "/tmp/x.tsx", baseDir, {
         arrowParens: "avoid",
       });
-};
+}
 
 function findImportSpecifierWithAlias(
   importDecl: ImportDeclaration,
@@ -230,7 +233,7 @@ function filterUnformattedMarker(code: string, changed: boolean) {
  * Given the argument `code` string, for module at `fromPath`, replaces all Plasmic imports
  * for modules found in `compConfigsMap`.
  */
-export function replaceImports(
+export async function replaceImports(
   context: PlasmicContext,
   code: string,
   fromPath: string,
@@ -238,7 +241,7 @@ export function replaceImports(
   removeImportDirective: boolean,
   baseDir: string,
   changed = false
-) {
+): Promise<string> {
   [code, changed] = filterUnformattedMarker(code, changed);
   const file = parser.parse(code, {
     strictMode: true,
@@ -687,7 +690,7 @@ export async function fixAllImportStatements(
   }
 
   try {
-    fixGlobalContextImportStatements(context, fixImportContext, baseDir);
+    await fixGlobalContextImportStatements(context, fixImportContext, baseDir);
   } catch (err) {
     logger.error(
       `Error encountered while fixing imports for global contexts: ${err}`
@@ -696,7 +699,7 @@ export async function fixAllImportStatements(
   }
 
   try {
-    fixImportStatements(
+    await fixImportStatements(
       context,
       fixImportContext,
       baseDir,
@@ -711,7 +714,7 @@ export async function fixAllImportStatements(
   }
 
   try {
-    fixImportStatements(
+    await fixImportStatements(
       context,
       fixImportContext,
       baseDir,
@@ -726,7 +729,7 @@ export async function fixAllImportStatements(
   }
 
   try {
-    fixImportStatements(
+    await fixImportStatements(
       context,
       fixImportContext,
       baseDir,
@@ -813,7 +816,7 @@ async function fixFileImportStatements(
 
   const prevContent = readFileText(filePath).toString();
 
-  const newContent = replaceImports(
+  const newContent = await replaceImports(
     context,
     prevContent,
     srcDirFilePath,
@@ -879,20 +882,23 @@ export const tsxToJsx = (code: string) => {
   return fixPostTranspile(result.outputText);
 };
 
-export function maybeConvertTsxToJsx(
+export async function maybeConvertTsxToJsx(
   fileName: string,
   content: string,
   baseDir: string
-) {
+): Promise<[string, string]> {
   if (fileName.endsWith("tsx")) {
     const jsFileName = stripExtension(fileName) + ".jsx";
-    const jsContent = formatScript(tsxToJsx(content), baseDir);
+    const jsContent = await formatScript(tsxToJsx(content), baseDir);
     return [jsFileName, jsContent];
   }
   return [fileName, content];
 }
 
-export const formatScript = (code: string, baseDir: string) => {
+export async function formatScript(
+  code: string,
+  baseDir: string
+): Promise<string> {
   const file = parser.parse(code, {
     strictMode: true,
     sourceType: "module",
@@ -914,17 +920,17 @@ export const formatScript = (code: string, baseDir: string) => {
     },
   });
 
-  const withmarkers = nodeToFormattedCode(file, baseDir, true);
+  const withmarkers = await nodeToFormattedCode(file, baseDir, true);
   const withNewLines = withmarkers.replace(
     new RegExp(`"${newLineMarker}"`, "g"),
     "\n"
   );
-  return formatAsLocal(withNewLines, "/tmp/x.tsx", baseDir, {
+  return await formatAsLocal(withNewLines, "/tmp/x.tsx", baseDir, {
     printWidth: 80,
     tabWidth: 2,
     useTabs: false,
   });
-};
+}
 
 async function fixGlobalContextImportStatements(
   context: PlasmicContext,
@@ -947,7 +953,7 @@ async function fixGlobalContextImportStatements(
       throw e;
     }
 
-    const newContent = replaceImports(
+    const newContent = await replaceImports(
       context,
       prevContent,
       resourcePath,
@@ -989,7 +995,7 @@ async function fixImportStatements(
       throw e;
     }
 
-    const newContent = replaceImports(
+    const newContent = await replaceImports(
       context,
       prevContent,
       resourcePath,

@@ -33,12 +33,12 @@ export async function syncProjectModule(
       );
     }
     if (context.config.code.lang === "js") {
-      projectMeta.projectModuleBundle.module = formatScript(
+      projectMeta.projectModuleBundle.module = await formatScript(
         tsxToJsx(projectMeta.projectModuleBundle.module),
         baseDir
       );
     }
-    writeFileContent(
+    await writeFileContent(
       context,
       resourcePath,
       projectMeta.projectModuleBundle.module,

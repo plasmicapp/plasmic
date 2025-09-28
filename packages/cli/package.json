@@ -10,10 +10,13 @@
   "bin": {
     "plasmic": "./dist/index.js"
   },
+  "scriptsComments": {
+    "test/wtest": "jest@<30 needs --experimental-vm-modules for ESM compat"
+  },
   "scripts": {
-    "wtest": "jest --colors --watchAll",
-    "test": "jest --colors",
-    "test:debug": "node --inspect-brk node_modules/.bin/jest --runInBand --watch",
+    "wtest": "NODE_OPTIONS=--experimental-vm-modules jest --colors --watchAll",
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest --colors",
+    "test:debug": "node --experimental-vm-modules --inspect-brk node_modules/.bin/jest --runInBand --watch",
     "build": "bash build.sh",
     "plasmic": "ts-node src/index.ts",
     "prepublishOnly": "npm run build"
@@ -40,7 +43,7 @@
     "@types/node": "^22",
     "@types/node-fetch": "^2.6.7",
     "@types/pako": "^1.0.1",
-    "@types/prettier": "^2.0.2",
+    "@types/prettier": "^3.0.0",
     "@types/semver": "^7.3.1",
     "@types/tmp": "^0.2.0",
     "@types/update-notifier": "^4.1.0",
@@ -65,7 +68,7 @@
     "open": "^8.0.9",
     "pako": "^1.0.11",
     "path": "^0.12.7",
-    "prettier": "^2.0.5",
+    "prettier": "^3.6.2",
     "semver": "^7.3.2",
     "socket.io-client": "^4.1.2",
     "tmp": "^0.2.1",

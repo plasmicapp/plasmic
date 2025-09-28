@@ -101,7 +101,7 @@ export async function syncGlobalVariants(
     await writeFileContent(
       context,
       variantConfig.contextFilePath,
-      formatAsLocal(
+      await formatAsLocal(
         bundle.contextModule,
         variantConfig.contextFilePath,
         baseDir
@@ -121,9 +121,10 @@ export async function syncGlobalVariants(
       deletedVariantsFiles.add(deletedGlobalVariant.id);
     }
   }
-  context.config.globalVariants.variantGroups = context.config.globalVariants.variantGroups.filter(
-    (v) => !deletedVariantsFiles.has(v.id)
-  );
+  context.config.globalVariants.variantGroups =
+    context.config.globalVariants.variantGroups.filter(
+      (v) => !deletedVariantsFiles.has(v.id)
+    );
 
   const deletedVariantIds = new Set(deletedGlobalVariants.map((i) => i.id));
   projectLock.fileLocks = projectLock.fileLocks.filter(

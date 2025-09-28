@@ -33,12 +33,12 @@ export async function syncGlobalContexts(
       );
     }
     if (context.config.code.lang === "js") {
-      projectMeta.globalContextBundle.contextModule = formatScript(
+      projectMeta.globalContextBundle.contextModule = await formatScript(
         tsxToJsx(projectMeta.globalContextBundle.contextModule),
         baseDir
       );
     }
-    writeFileContent(
+    await writeFileContent(
       context,
       resourcePath,
       projectMeta.globalContextBundle.contextModule,

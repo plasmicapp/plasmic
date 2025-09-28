@@ -39,7 +39,7 @@ export async function syncStyleTokensProvider(
       );
     }
     if (context.config.code.lang === "js") {
-      projectMeta.styleTokensProviderBundle.module = formatScript(
+      projectMeta.styleTokensProviderBundle.module = await formatScript(
         tsxToJsx(projectMeta.styleTokensProviderBundle.module),
         baseDir
       );
