@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/commerce",
-  "version": "0.0.224",
+  "version": "0.0.225",
   "description": "Plasmic registration calls for commerce components",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -18,7 +18,7 @@
     "analyze": "size-limit --why"
   },
   "devDependencies": {
-    "@plasmicapp/host": "1.0.225",
+    "@plasmicapp/host": "1.0.226",
     "@plasmicapp/query": "0.1.80",
     "@types/debounce": "^1.2.1",
     "@types/js-cookie": "^3.0.1",
