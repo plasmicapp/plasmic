@@ -212,10 +212,7 @@ import {
   withoutNils,
   xor,
 } from "@/wab/shared/common";
-import {
-  CreateChatCompletionRequest,
-  LLMParseResponsesRequest,
-} from "@/wab/shared/copilot/prompt-utils";
+import { CreateChatCompletionRequest } from "@/wab/shared/copilot/prompt-utils";
 import {
   cloneSite,
   fixAppAuthRefs,
@@ -261,6 +258,7 @@ import {
   tryMerge,
 } from "@/wab/shared/site-diffs/merge-core";
 import * as Sentry from "@sentry/node";
+import { LanguageModelRequestMetadata } from "ai";
 import bcrypt from "bcrypt";
 import crypto from "crypto";
 import fs from "fs";
@@ -5998,7 +5996,7 @@ export class DbMgr implements MigrationDbMgr {
     userPrompt: string;
     response: string;
     model: "gpt" | "claude";
-    request: CreateChatCompletionRequest | LLMParseResponsesRequest;
+    request: CreateChatCompletionRequest | LanguageModelRequestMetadata;
   }) {
     await this.checkProjectPerms(projectId, "content", "run copilot");
     const copilotInteraction = this.copilotInteractions().create({
@@ -6022,7 +6020,7 @@ export class DbMgr implements MigrationDbMgr {
     userPrompt: string;
     response: string;
     model: "gpt" | "claude";
-    request: CreateChatCompletionRequest | LLMParseResponsesRequest;
+    request: CreateChatCompletionRequest | LanguageModelRequestMetadata;
   }) {
     const publicCopilotInteraction = this.publicCopilotInteractions().create({
       ...this.stampNew(),

@@ -7,6 +7,7 @@ import { Bundle } from "@/wab/shared/bundles";
 import { Dict } from "@/wab/shared/collections";
 import {
   CopilotUiActions,
+  CopilotUiResponse,
   WholeChatCompletionResponse,
 } from "@/wab/shared/copilot/prompt-utils";
 import { DataSourceType } from "@/wab/shared/data-sources-meta/data-source-registry";
@@ -2047,6 +2048,7 @@ export interface QueryCopilotResponse {
 
 export type QueryCopilotUiResponse = {
   data: CopilotUiActions;
+  response: CopilotUiResponse;
   copilotInteractionId: CopilotInteractionId;
 };
 

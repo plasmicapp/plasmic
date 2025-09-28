@@ -7,6 +7,7 @@ import {
   WorkspaceId,
 } from "@/wab/shared/ApiSchema";
 import { assert, ensureType, mergeSane } from "@/wab/shared/common";
+import { ModelProviderOpts } from "@/wab/shared/copilot/provider";
 import { DEFAULT_DEVFLAG_OVERRIDES } from "@/wab/shared/devflag-overrides";
 import {
   featureTiers,
@@ -409,6 +410,11 @@ const DEFAULT_DEVFLAGS = {
   showCopilot: true,
   allowHtmlPaste: false,
   enableUiCopilot: false,
+  uiCopilotModelProviderOpts: {
+    provider: "OpenAI",
+    modelName: "gpt-4.1",
+    maxTokens: 32000,
+  } as ModelProviderOpts,
 
   hostLessWorkspaceId: undefined as WorkspaceId | undefined,
   manuallyUpdatedHostLessProjectIds: [] as string[],

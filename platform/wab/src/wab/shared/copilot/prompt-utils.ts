@@ -8,7 +8,6 @@ import {
   ChatCompletionCreateParamsNonStreaming,
   ChatCompletionRole,
 } from "openai/resources/chat/completions";
-import { ResponseCreateParamsBase } from "openai/resources/responses/responses";
 import { z } from "zod";
 
 export interface Issue {
@@ -88,8 +87,6 @@ export interface CopilotSqlCodeChainProps {
   goal: string;
 }
 
-export type LLMParseResponsesRequest = ResponseCreateParamsBase;
-
 export interface CopilotUiChainProps {
   goal: string;
   images?: Array<CopilotImage>;
@@ -101,23 +98,29 @@ export interface CopilotUiChainProps {
 const CopilotUiGenerateHtmlActionSchema = z.object({
   name: z.literal("insert-html"),
   data: z.object({
-    html: z.string(),
+    html: z
+      .string()
+      .describe(
+        "Extract the <style> and <body> tag from the HTML document i.e <style></style><body></body> only"
+      ),
   }),
+});
+
+const CopilotUiTokenSchema = z.object({
+  tokenType: z.enum(tokenTypes),
+  name: z
+    .string()
+    .describe(
+      "A unique token name. Make sure it's in the format of existing tokens if available"
+    ),
+  value: z
+    .string()
+    .describe("Token value including unit such as 10px, 1.5rem, #fff123 etc"),
 });
 
 const CopilotUiTokenActionSchema = z.object({
   name: z.literal("add-token"),
-  data: z.object({
-    tokenType: z.enum(tokenTypes),
-    name: z
-      .string()
-      .describe(
-        "A unique token name. Make sure it's in the format of existing tokens if available"
-      ),
-    value: z
-      .string()
-      .describe("Token value including unit such as 10px, 1.5rem, #fff123 etc"),
-  }),
+  data: CopilotUiTokenSchema,
 });
 
 export const CopilotUiActionsSchema = z.object({
@@ -127,3 +130,36 @@ export const CopilotUiActionsSchema = z.object({
 });
 
 export type CopilotUiActions = z.infer<typeof CopilotUiActionsSchema>;
+
+export const CopilotUiResponseSchema = z.object({
+  tokens: z.array(CopilotUiTokenSchema),
+  html: z
+    .string()
+    .describe(
+      "Extract the <style> and <body> tag from the HTML document i.e <style></style><body></body> only"
+    ),
+});
+
+export type CopilotUiResponse = z.infer<typeof CopilotUiResponseSchema>;
+
+// This util function is added for transformation to add the 'data: CopilotUiActions' in the QueryCopilotUiResponse
+// for backward compatability. When the client logic is migrated from QueryCopilotUiResponse.data to QueryCopilotUiResponse.response
+// we can remove this
+export const copilotUiResponseToActions = (
+  copilotUiResponse: CopilotUiResponse
+): CopilotUiActions => {
+  return {
+    actions: [
+      ...copilotUiResponse.tokens.map((token) => ({
+        name: z.literal("add-token").value,
+        data: token,
+      })),
+      {
+        name: z.literal("insert-html").value,
+        data: {
+          html: copilotUiResponse.html,
+        },
+      },
+    ],
+  };
+};
