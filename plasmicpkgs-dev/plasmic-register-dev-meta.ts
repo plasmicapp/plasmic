@@ -51,11 +51,11 @@ export function registerWithDevMeta(loader: NextJsPlasmicComponentLoader, regist
   });
 
   // registerComponent is different from the others.
-  // registerComponent metas may have references to each other, such as
-  // `allowedComponents` or `defaultValue`, but there is no guarantee that
-  // on the ordering of registrations. Therefore, we must first collect all
-  // component names, then call the original registerComponent with knowledge
-  // of all registered components.
+  // registerComponent metas may have references to each other, such as in
+  // `allowedComponents` or `defaultValue`. These references need to be replaced
+  // by their dev names. Since there is no guarantee on ordering of
+  // registrations, we must first collect all component names, then call the
+  // original registerComponent with knowledge of all registered components.
   const componentRegMap: ComponentRegistrationMap = new Map();
   using registerComponent = override(loader, "registerComponent", orig => <T extends React.ComponentType<any>>(component: T, meta: CodeComponentMeta<React.ComponentProps<T>>) => {
     componentRegMap.set(
@@ -76,6 +76,7 @@ export function registerWithDevMeta(loader: NextJsPlasmicComponentLoader, regist
       name: devName,
       displayName: toDevDisplayName(codeComponentMeta.displayName),
       props: replacePropsWithDevNames(meta.props, componentRegMap, new Set()),
+      section: codeComponentMeta.importPath,
     };
     console.debug(`Registering component "${meta.name}" with dev meta:`, devMeta);
     registerComponent.orig(component, devMeta);
