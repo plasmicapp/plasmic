@@ -367,6 +367,33 @@ module.exports = {
         project: ["./platform/wab/tsconfig.json"],
       },
     },
+
+    {
+      files: ["packages/cli/src/**/*.ts", "packages/cli/src/**/*.tsx"],
+      rules: {
+        "no-restricted-properties": [
+          "error",
+          {
+            object: "process",
+            property: "exit",
+            message:
+              "CLI can be used as a library. Please throw Error or HandledError instead.",
+          },
+          {
+            object: "console",
+            message:
+              "Please use `logger` so that consumers of the library can control logging.",
+          },
+        ],
+        "no-restricted-syntax": [
+          "error",
+          {
+            selector:
+              "Identifier[name=/^(existsSync|readFileSync|renameSync|unlinkSync|writeFileSync)$/]",
+          },
+        ],
+      },
+    },
   ],
   plugins: [
     "@typescript-eslint",
