@@ -19,21 +19,6 @@ module.exports = {
     "no-restricted-properties": [
       "error",
       {
-        property: "readFileSync",
-      },
-      {
-        property: "writeFileSync",
-      },
-      {
-        property: "existsSync",
-      },
-      {
-        property: "unlinkSync",
-      },
-      {
-        property: "renameSync",
-      },
-      {
         object: "process",
         property: "exit",
         message:
@@ -48,13 +33,8 @@ module.exports = {
     "no-restricted-syntax": [
       "error",
       {
-        selector: "CallExpression[callee.name='readFileSync']",
-      },
-      {
-        selector: "CallExpression[callee.name='writeFileSync']",
-      },
-      {
-        selector: "CallExpression[callee.name='existsSync']",
+        selector:
+          "Identifier[name=/^(existsSync|readFileSync|renameSync|unlinkSync|writeFileSync)$/]",
       },
     ],
   },

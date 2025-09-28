@@ -32,13 +32,13 @@ export function stripExtension(filename: string, removeComposedPath = false) {
 export async function writeFileContentRaw(
   filePath: string,
   content: string | Buffer,
-  opts?: { force?: boolean; yes?: boolean }
+  opts?: { force?: boolean; yes?: boolean },
 ) {
   opts = opts || {};
   if (existsBuffered(filePath) && !opts.force) {
     const overwrite = await confirmWithUser(
       `File ${filePath} already exists. Do you want to overwrite?`,
-      opts.yes
+      opts.yes,
     );
     if (!overwrite) {
       return;
@@ -59,7 +59,7 @@ export function defaultResourcePath(
   return path.join(
     context.config.defaultPlasmicDir,
     L.snakeCase(projectName),
-    ...subpaths
+    ...subpaths,
   );
 }
 
@@ -72,7 +72,7 @@ export function defaultPublicResourcePath(
     context.config.images.publicDir,
     "plasmic",
     L.snakeCase(project.projectName),
-    ...subpaths
+    ...subpaths,
   );
 }
 
@@ -86,7 +86,7 @@ export function defaultPagePath(
       "platform" | "gatsbyConfig" | "nextjsConfig" | "tanstackConfig"
     >;
   },
-  fileName: string
+  fileName: string,
 ) {
   if (context.config.platform === "nextjs") {
     if (context.config.nextjsConfig?.pagesDir?.endsWith("app")) {
@@ -95,13 +95,13 @@ export function defaultPagePath(
         // convert "/foo/index.tsx" to "/foo/page.tsx"
         return path.join(
           context.config.nextjsConfig.pagesDir,
-          fileName.replace(INDEX_EXT_REGEXP, "/page.$1")
+          fileName.replace(INDEX_EXT_REGEXP, "/page.$1"),
         );
       } else {
         // convert "/foo/bar.tsx" to "/foo/bar/page.tsx"
         return path.join(
           context.config.nextjsConfig.pagesDir,
-          fileName.replace(EXT_REGEXP, "/page.$1")
+          fileName.replace(EXT_REGEXP, "/page.$1"),
         );
       }
     } else {
@@ -121,7 +121,7 @@ export function defaultPagePath(
 
     return path.join(
       context.config.tanstackConfig?.pagesDir || "",
-      renamedFileName
+      renamedFileName,
     );
   } else {
     return fileName;
@@ -171,7 +171,7 @@ export async function writeFileContent(
   context: PlasmicContext,
   srcDirFilePath: string,
   content: string | Buffer,
-  opts: { force?: boolean } = {}
+  opts: { force?: boolean } = {},
 ) {
   const path = makeFilePath(context, srcDirFilePath);
   await writeFileContentRaw(path, content, {
@@ -182,7 +182,7 @@ export async function writeFileContent(
 
 export function readFileContent(
   context: PlasmicContext,
-  srcDirFilePath: string
+  srcDirFilePath: string,
 ) {
   const path = makeFilePath(context, srcDirFilePath);
   return readFileText(path);
@@ -206,11 +206,11 @@ export function makeFilePath(context: PlasmicContext, filePath: string) {
 export function renameFile(
   context: PlasmicContext,
   oldPath: string,
-  newPath: string
+  newPath: string,
 ) {
   renameFileBuffered(
     makeFilePath(context, oldPath),
-    makeFilePath(context, newPath)
+    makeFilePath(context, newPath),
   );
 }
 
@@ -225,7 +225,7 @@ export function renameFile(
  * @returns {Record<string, string[]>}
  **/
 export function buildBaseNameToFiles(
-  context: PlasmicContext
+  context: PlasmicContext,
 ): Record<string, string[]> {
   const srcDir = context.absoluteSrcDir;
   const scriptFileExt = context.config.code.lang === "ts" ? "tsx" : "jsx";
@@ -245,7 +245,7 @@ export function buildBaseNameToFiles(
 export function findSrcDirPath(
   absoluteSrcDir: string,
   expectedPath: string,
-  baseNameToFiles: Record<string, string[]>
+  baseNameToFiles: Record<string, string[]>,
 ): string {
   if (!path.isAbsolute(absoluteSrcDir)) {
     throw new HandledError("Cannot find srcDir. Please check plasmic.json.");
@@ -263,7 +263,7 @@ export function findSrcDirPath(
     return newPath;
   } else {
     throw new HandledError(
-      `Cannot find expected file at ${expectedPath}, and found multiple possible matching files ${baseNameToFiles[fileName]}.  Please update plasmic.config with the real location for ${fileName}.`
+      `Cannot find expected file at ${expectedPath}, and found multiple possible matching files ${baseNameToFiles[fileName]}.  Please update plasmic.config with the real location for ${fileName}.`,
     );
   }
 }
@@ -279,7 +279,7 @@ export function findFile(
   pred: (name: string) => boolean,
   opts: {
     traverseParents?: boolean;
-  }
+  },
 ): string | undefined {
   try {
     const files = fs.readdirSync(dir);
@@ -387,7 +387,7 @@ export function assertAllPathsInRootDir(context: PlasmicContext) {
 
   if (!context.absoluteSrcDir.startsWith(context.rootDir)) {
     throw new HandledError(
-      `"srcDir" in ${CONFIG_FILE_NAME} is outside of ${context.rootDir}`
+      `"srcDir" in ${CONFIG_FILE_NAME} is outside of ${context.rootDir}`,
     );
   }
 
@@ -401,7 +401,7 @@ export function assertAllPathsInRootDir(context: PlasmicContext) {
     const absPath = path.resolve(context.absoluteSrcDir, relPath);
     if (!absPath.startsWith(context.rootDir)) {
       throw new HandledError(
-        `The path "${relPath}" in ${CONFIG_FILE_NAME} is outside of ${context.rootDir}`
+        `The path "${relPath}" in ${CONFIG_FILE_NAME} is outside of ${context.rootDir}`,
       );
     }
   }
@@ -447,16 +447,16 @@ export async function withBufferedFs(f: () => Promise<void>) {
       switch (action.type) {
         case "create":
           fs.mkdirSync(path.dirname(filePath), { recursive: true });
-          // eslint-disable-next-line no-restricted-properties
+          // eslint-disable-next-line no-restricted-syntax
           fs.writeFileSync(filePath, action.content);
           break;
         case "rename":
           fs.mkdirSync(path.dirname(action.newPath), { recursive: true });
-          // eslint-disable-next-line no-restricted-properties
+          // eslint-disable-next-line no-restricted-syntax
           fs.renameSync(filePath, action.newPath);
           break;
         case "delete":
-          // eslint-disable-next-line no-restricted-properties
+          // eslint-disable-next-line no-restricted-syntax
           fs.unlinkSync(filePath);
           break;
       }
@@ -470,7 +470,7 @@ export function writeFileText(path: string, content: string | Buffer) {
   if (buffering) {
     buffer.set(path, { type: "create", content });
   } else {
-    // eslint-disable-next-line no-restricted-properties
+    // eslint-disable-next-line no-restricted-syntax
     fs.writeFileSync(path, content, "utf8");
   }
 }
@@ -483,7 +483,7 @@ export function readFileText(path: string): string {
         case "create":
           return ensureString(action.content);
         case "rename":
-          // eslint-disable-next-line no-restricted-properties
+          // eslint-disable-next-line no-restricted-syntax
           return fs.readFileSync(path, "utf8");
         case "delete":
           throw new HandledError("File does not exists");
@@ -497,7 +497,7 @@ export function readFileText(path: string): string {
     }
   }
 
-  // eslint-disable-next-line no-restricted-properties
+  // eslint-disable-next-line no-restricted-syntax
   return fs.readFileSync(path, "utf8");
 }
 
@@ -534,7 +534,7 @@ export function renameFileBuffered(oldPath: string, newPath: string) {
     renamedFiles.set(newPath, oldPath);
   } else {
     fs.mkdirSync(path.dirname(newPath), { recursive: true });
-    // eslint-disable-next-line no-restricted-properties
+    // eslint-disable-next-line no-restricted-syntax
     fs.renameSync(oldPath, newPath);
   }
 }
@@ -563,7 +563,7 @@ export function deleteFileBuffered(path: string) {
 
     renamedFiles.delete(path);
   } else {
-    // eslint-disable-next-line no-restricted-properties
+    // eslint-disable-next-line no-restricted-syntax
     fs.unlinkSync(path);
   }
 }
@@ -587,6 +587,6 @@ export function existsBuffered(path: string): boolean {
     }
   }
 
-  // eslint-disable-next-line no-restricted-properties
+  // eslint-disable-next-line no-restricted-syntax
   return fs.existsSync(path);
 }
