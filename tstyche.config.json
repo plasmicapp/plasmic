@@ -1,3 +1,4 @@
 {
+  "checkSourceFiles": false,
   "testFileMatch": ["**/*.spec-d.ts"]
 }

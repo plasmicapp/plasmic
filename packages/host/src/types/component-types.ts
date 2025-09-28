@@ -4,6 +4,7 @@ import { ArrayTypeBaseCore, ObjectTypeBaseCore } from "./container-types";
 import {
   DataPickerValueType,
   DataSourceCore,
+  DynamicCore,
   GraphQLCore,
   GraphQLValue,
   RichDataPickerCore,
@@ -373,6 +374,10 @@ export interface RichCustomType<P> extends PropTypeBaseDefault<P, any> {
 
 export type CustomType<P> = RichCustomType<P> | CustomControl<P>;
 
+export interface DynamicType<P>
+  extends PropTypeBase<ComponentControlContext<P>>,
+    DynamicCore<ComponentControlContext<P>, PropType<P>> {}
+
 export type PrimitiveType<P = any> = Extract<
   StringType<P> | BooleanType<P> | NumberType<P> | JSONLikeType<P>,
   string
@@ -391,6 +396,7 @@ export type PropType<P> =
   | EventHandlerType<P>
   | ChoiceType<P>
   | CustomType<P>
+  | DynamicType<P>
   | ImageUrlType<P>
   | SlotType<P>
   | DateStringType<P>

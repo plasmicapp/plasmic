@@ -1,5 +1,5 @@
 import { ChoiceObject, ChoiceOptions, ChoiceValue } from "./types/choice-type";
-import { ComponentControlContext } from "./types/component-types";
+import { ComponentControlContext, DynamicType } from "./types/component-types";
 import { DataPickerValueType, GraphQLValue } from "./types/misc-types";
 import {
   CanvasComponentProps,
@@ -17,6 +17,7 @@ export type {
   ContextDependentConfig,
   ControlExtras,
   DataPickerValueType,
+  DynamicType,
   GraphQLValue,
   InferDataType,
 };

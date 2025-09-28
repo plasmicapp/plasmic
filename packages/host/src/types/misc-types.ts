@@ -31,3 +31,14 @@ export interface GraphQLCore<Ctx extends any[]> {
   method?: string | ContextDependentConfig<Ctx, string>;
   headers?: object | ContextDependentConfig<Ctx, object>;
 }
+
+/**
+ * Dynamic prop/param type that returns different control types based on context
+ */
+export interface DynamicCore<Ctx extends any[], ControlType> {
+  type: "dynamic";
+  /**
+   * Function that takes the context and returns a control type
+   */
+  control: ContextDependentConfig<Ctx, ControlType>;
+}

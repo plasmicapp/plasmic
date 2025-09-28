@@ -1,6 +1,6 @@
 import { ChoiceCore, ChoiceValue } from "./choice-type";
 import { ArrayTypeBaseCore, ObjectTypeBaseCore } from "./container-types";
-import { GraphQLCore, GraphQLValue } from "./misc-types";
+import { DynamicCore, GraphQLCore, GraphQLValue } from "./misc-types";
 import {
   DateRangeStringsCore,
   DateStringCore,
@@ -153,6 +153,10 @@ export type ChoiceType<P, T extends ChoiceValue = ChoiceValue> =
 export type DateStringType = BaseParam & DateStringCore;
 export type DateRangeStringsType = BaseParam & DateRangeStringsCore;
 
+export interface DynamicType<P>
+  extends BaseParam,
+    DynamicCore<FunctionControlContext<ToTuple<P>>, ParamType<P, any>> {}
+
 export type RestrictedType<P, T> = IsAny<T> extends true
   ? AnyTyping<P, T>
   : // Exact primitive types
@@ -178,7 +182,7 @@ export type RestrictedType<P, T> = IsAny<T> extends true
   : // Everything else
     CommonType<P, T>;
 
-export type ParamType<P, T> = RestrictedType<P, T>;
+export type ParamType<P, T> = RestrictedType<P, T> | DynamicType<P>;
 
 export type RequiredParam<P, T> = ParamType<P, T> & {
   isOptional?: false;

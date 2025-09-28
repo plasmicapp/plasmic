@@ -14,16 +14,19 @@ import type {
   DataSourceType,
   DateRangeStringsType,
   DateStringType,
+  DynamicType,
   EventHandlerType,
   ExprEditorType,
   FormValidationRulesType,
   GraphQLType,
   ImageUrlType,
+  InferDataType,
   JSONLikeType,
   MultiChoiceType,
   NumberType,
   ObjectType,
   PlainStringType,
+  PropType,
   RestrictPropType,
   RichDataPickerType,
   RichExprEditorType,
@@ -392,5 +395,149 @@ describe("prop-types type regression tests", () => {
 
     expect<GraphQLType<TestProps>>().type.toBeAssignableWith(gqlStatic);
     expect<GraphQLType<TestProps>>().type.toBeAssignableWith(gqlDynamic);
+  });
+
+  test("DynamicType can return different prop types based on context", () => {
+    interface DynamicTestProps {
+      mode: "text" | "number" | "boolean";
+      value: any;
+    }
+
+    const dynamicProp: DynamicType<DynamicTestProps> = {
+      type: "dynamic",
+      control: (
+        props: DynamicTestProps,
+        _data: InferDataType<DynamicTestProps> | null,
+        _extras: ControlExtras
+      ): PropType<DynamicTestProps> => {
+        switch (props.mode) {
+          case "text":
+            return { type: "string", defaultValueHint: "hello" };
+          case "number":
+            return { type: "number", defaultValueHint: 42 };
+          case "boolean":
+            return { type: "boolean", defaultValueHint: false };
+          default:
+            return "string";
+        }
+      },
+    };
+
+    expect<PropType<DynamicTestProps>>().type.toBeAssignableWith(dynamicProp);
+    expect<ArgType<DynamicTestProps>>().type.toBeAssignableWith(dynamicProp);
+
+    // Test that control function receives proper context
+    const controlFn = dynamicProp.control;
+    const result = controlFn({ mode: "text", value: "test" }, null, {
+      path: [],
+      item: undefined,
+    });
+    expect<PropType<DynamicTestProps>>().type.toBeAssignableWith(result);
+  });
+
+  test("DynamicType control function can access component props and context", () => {
+    interface ContextAwareProps
+      extends CanvasComponentProps<{ items: string[] }> {
+      selectedIndex: number;
+      displayValue: any;
+    }
+
+    const dynamicWithContext: DynamicType<ContextAwareProps> = {
+      type: "dynamic",
+      description: "Dynamic prop that adapts based on context",
+      control: (props, data, extras) => {
+        // Test that we can access props
+        expect<number>().type.toBeAssignableWith(props.selectedIndex);
+
+        // Test that data is properly typed
+        if (data !== null) {
+          expect<string[]>().type.toBeAssignableWith(data.items);
+        }
+
+        // Test that extras has proper structure
+        expect<(string | number)[]>().type.toBeAssignableWith(extras.path);
+        expect<any>().type.toBeAssignableWith(extras.item);
+
+        // Return different types based on context
+        if (data && data.items[props.selectedIndex]) {
+          return {
+            type: "choice",
+            options: data.items,
+            defaultValueHint: data.items[props.selectedIndex],
+          };
+        }
+
+        return { type: "string", defaultValueHint: "" };
+      },
+    };
+
+    expect<PropType<ContextAwareProps>>().type.toBeAssignableWith(
+      dynamicWithContext
+    );
+  });
+
+  test("DynamicType works with nested prop types", () => {
+    interface NestedProps {
+      dataType: "json" | "array" | "primitive";
+      data: any;
+    }
+
+    const nestedDynamic: DynamicType<NestedProps> = {
+      type: "dynamic",
+      control: (props) => {
+        switch (props.dataType) {
+          case "json":
+            return {
+              type: "object",
+              fields: {
+                name: "string",
+                age: "number",
+                active: "boolean",
+              },
+            };
+          case "array":
+            return {
+              type: "array",
+              defaultValue: ["item1", "item2"],
+            };
+          case "primitive":
+          default:
+            return "string";
+        }
+      },
+    };
+
+    expect<PropType<NestedProps>>().type.toBeAssignableWith(nestedDynamic);
+  });
+
+  test("DynamicType respects PropTypeBase properties", () => {
+    interface BaseTestProps {
+      mode: string;
+      value: any;
+    }
+
+    const dynamicWithBase: DynamicType<BaseTestProps> = {
+      type: "dynamic",
+      displayName: "Dynamic Value",
+      description: "A value that changes based on mode",
+      advanced: true,
+      readOnly: false,
+      hidden: (props) => props.mode === "hidden",
+      control: (props) => {
+        return props.mode === "number" ? "number" : "string";
+      },
+    };
+
+    expect<PropType<BaseTestProps>>().type.toBeAssignableWith(dynamicWithBase);
+
+    // Test that hidden function receives correct context
+    if (typeof dynamicWithBase.hidden === "function") {
+      const isHidden = dynamicWithBase.hidden(
+        { mode: "hidden", value: null },
+        null,
+        { path: [], item: undefined }
+      );
+      expect<boolean>().type.toBeAssignableWith(isHidden);
+    }
   });
 });

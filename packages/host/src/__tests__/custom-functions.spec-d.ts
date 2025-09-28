@@ -4,12 +4,15 @@ import type {
   ArrayType,
   BooleanType,
   CustomFunctionMeta,
+  DynamicType,
   FunctionControlContext,
   GraphQLType,
   MultiChoiceType,
   NumberType,
   ObjectType,
+  ParamType,
   PlainStringType,
+  RequiredParam,
   SingleChoiceType,
   StringType,
 } from "../registerFunction";
@@ -293,5 +296,138 @@ describe("custom-function param type regression tests", () => {
 
     expect(minimalValueFunc).type.toBe<MinimalValueType>();
     expect<MinimalValueType>().type.toBeAssignableWith(minimalValueFunc);
+  });
+
+  it("DynamicType works for function parameters", () => {
+    type ProcessArgs = [mode: string, value: any];
+
+    const dynamicParam: DynamicType<ProcessArgs> = {
+      type: "dynamic",
+      name: "value",
+      description: "Dynamic parameter that changes based on mode",
+      control: (
+        args: Partial<ProcessArgs>,
+        _data: any
+      ): ParamType<ProcessArgs, any> => {
+        const [mode] = args;
+        switch (mode) {
+          case "string":
+            return { type: "string", name: "value" };
+          case "number":
+            return { type: "number", name: "value", min: 0, max: 100 };
+          case "boolean":
+            return { type: "boolean", name: "value" };
+          case "object":
+            return { type: "object", name: "value" };
+          default:
+            return { type: "any", name: "value" };
+        }
+      },
+    };
+
+    expect<ParamType<ProcessArgs, any>>().type.toBeAssignableWith(dynamicParam);
+
+    // Test that it can be used as RequiredParam
+    const requiredDynamic: RequiredParam<ProcessArgs, any> = {
+      ...dynamicParam,
+      isOptional: false,
+      isRestParameter: false,
+    };
+    expect<RequiredParam<ProcessArgs, any>>().type.toBeAssignableWith(
+      requiredDynamic
+    );
+  });
+
+  it("DynamicType control function receives proper FunctionControlContext", () => {
+    type TransformArgs = [dataType: string, data: any, options?: object];
+
+    const dynamicOptions: DynamicType<TransformArgs> = {
+      type: "dynamic",
+      name: "options",
+      control: (args, contextData) => {
+        // Test that args is properly typed as Partial
+        expect<Partial<TransformArgs>>().type.toBeAssignableWith(args);
+        const [dataType, _data, _options] = args;
+        expect<string | undefined>().type.toBeAssignableWith(dataType);
+
+        // Test that contextData is available
+        expect<any>().type.toBeAssignableWith(contextData);
+
+        // Return different option types based on dataType
+        if (dataType === "json") {
+          return {
+            type: "object",
+            name: "options",
+          };
+        }
+
+        return {
+          type: "choice",
+          name: "options",
+          options: ["default", "custom"],
+        };
+      },
+    };
+
+    expect<ParamType<TransformArgs, any>>().type.toBeAssignableWith(
+      dynamicOptions
+    );
+  });
+
+  it("DynamicType can return choice types with dynamic options", () => {
+    type SelectArgs = [category: string, selection: string];
+
+    const dynamicChoice: DynamicType<SelectArgs> = {
+      type: "dynamic",
+      name: "selection",
+      control: (args) => {
+        const [category] = args;
+
+        const optionsByCategory: Record<string, string[]> = {
+          colors: ["red", "green", "blue"],
+          sizes: ["small", "medium", "large"],
+          shapes: ["circle", "square", "triangle"],
+        };
+
+        return {
+          type: "choice",
+          name: "selection",
+          options: optionsByCategory[category ?? "colors"] ?? ["none"],
+          multiSelect: false,
+        } satisfies SingleChoiceType<SelectArgs, string>;
+      },
+    };
+
+    expect<ParamType<SelectArgs, any>>().type.toBeAssignableWith(dynamicChoice);
+  });
+
+  it("DynamicType works with CustomFunctionMeta", () => {
+    function processData(mode: string, value: any): any {
+      return value;
+    }
+    const dynamicValueParam: RequiredParam<
+      Parameters<typeof processData>,
+      any
+    > = {
+      type: "dynamic",
+      name: "value",
+      isOptional: false,
+      control: (args) => {
+        const [mode] = args;
+        return mode === "array"
+          ? { type: "array", name: "value" }
+          : { type: "string", name: "value" };
+      },
+    };
+
+    const meta: CustomFunctionMeta<typeof processData> = {
+      name: "processData",
+      importPath: "utils",
+      params: [{ name: "mode", type: "string" }, dynamicValueParam],
+    };
+
+    expect<CustomFunctionMeta<typeof processData>>().type.toBeAssignableWith(
+      meta
+    );
   });
 });

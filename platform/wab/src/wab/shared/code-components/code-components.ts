@@ -1107,7 +1107,7 @@ function typeCheckRegistrations(ctx: SiteCtx) {
                   );
                 }
                 break;
-              // Exaustive list with no checks for now
+              // Exhaustive list with no checks for now
               case "href":
               case "dateString":
               case "dateRangeStrings":
@@ -1121,6 +1121,7 @@ function typeCheckRegistrations(ctx: SiteCtx) {
               case "themeResetClass":
               case "array":
               case "formValidationRules":
+              case "dynamic":
                 break;
             }
           }
