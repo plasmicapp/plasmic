@@ -286,7 +286,7 @@ export class CommentsCtx {
       this.closeNewThreadDialog();
     }
     if (currentOpenedThread && !currentOpenedThread.interacted) {
-      this.handleCloseThreadDialog();
+      this.closeCommentThreadDialog();
     }
   };
 
