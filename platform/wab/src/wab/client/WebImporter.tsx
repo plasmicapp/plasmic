@@ -144,13 +144,10 @@ export async function processWebImporterTree(
             .createImageAsset(assetData.image, assetData.options);
 
           const vs = ensureVariantSetting(assetTpl, []);
-          const assetAttrs = L.assign(
-            {
-              [getTagAttrForImageAsset(asset.type as ImageAssetType)]:
-                new ImageAssetRef({ asset }),
-            },
-            asset.type === ImageAssetType.Picture ? { loading: "lazy" } : {}
-          );
+          const assetAttrs = L.assign({
+            [getTagAttrForImageAsset(asset.type as ImageAssetType)]:
+              new ImageAssetRef({ asset }),
+          });
           L.merge(vs.attrs, assetAttrs);
         }
 
@@ -432,3 +429,7 @@ async function wiTreeToTpl(wiTree: WIElement, vc: ViewCtx, vtm: VariantTplMgr) {
     tplVariantSettingsData,
   };
 }
+
+export const _testOnlyWebImporterUtils = {
+  WI_IMPORTER_HEADER,
+};
