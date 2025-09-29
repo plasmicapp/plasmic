@@ -519,7 +519,7 @@
           "projectId": "aukbrhkegRkQ6KizvhdUPT",
           "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_left_pane/PlasmicLeftExprsSearchPanel.tsx",
           "importSpec": {
-            "modulePath": "wab/client/LeftExprsSearchPanel.tsx"
+            "modulePath": "wab/client/components/sidebar/LeftExprsSearchPanel.tsx"
           },
           "cssFilePath": "wab/client/plasmic/plasmic_kit_left_pane/PlasmicLeftExprsSearchPanel.module.css",
           "scheme": "blackbox",
@@ -532,7 +532,7 @@
           "projectId": "aukbrhkegRkQ6KizvhdUPT",
           "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_left_pane/PlasmicLeftRevisionsPanel.tsx",
           "importSpec": {
-            "modulePath": "wab/client/LeftRevisionsPanel.tsx"
+            "modulePath": "wab/client/components/sidebar/LeftRevisionsPanel.tsx"
           },
           "cssFilePath": "wab/client/plasmic/plasmic_kit_left_pane/PlasmicLeftRevisionsPanel.module.css",
           "scheme": "blackbox",
@@ -1303,11 +1303,6 @@
         }
       ],
       "images": [
-        {
-          "id": "h1Ar4hymw",
-          "name": "Kimmy_Schmidt_icon.jpg",
-          "filePath": "wab/client/plasmic/plasmic_kit_dashboard/images/kimmySchmidtIconJpg.jpeg"
-        },
         {
           "id": "dQeKTjQST",
           "name": "image",
@@ -3330,11 +3325,6 @@
           "moduleFilePath": "wab/client/plasmic/plasmic_kit_design_system/icons/PlasmicIcon__EdgeHandleLeftward.tsx"
         },
         {
-          "id": "cRhITljQuV",
-          "name": "DoubleDotsVerticalSvgIcon",
-          "moduleFilePath": "wab/client/plasmic/plasmic_kit_design_system/icons/PlasmicIcon__DoubleDotsVerticalSvg.tsx"
-        },
-        {
           "id": "eayXbyej4Q",
           "name": "Icon4Icon",
           "moduleFilePath": "wab/client/plasmic/plasmic_kit_design_system/icons/PlasmicIcon__Icon4.tsx"
@@ -3373,6 +3363,11 @@
           "id": "292IBDA68F8r",
           "name": "TriangleFilledIcon",
           "moduleFilePath": "wab/client/plasmic/plasmic_kit_design_system_deprecated/icons/PlasmicIcon__TriangleFilled.tsx"
+        },
+        {
+          "id": "cRhITljQuV",
+          "name": "DoubleDotsVerticalSvgIcon",
+          "moduleFilePath": "wab/client/plasmic/plasmic_kit_design_system/icons/PlasmicIcon__DoubleDotsVerticalSvg.tsx"
         }
       ],
       "images": [
@@ -9483,7 +9478,7 @@
         {
           "id": "aeyQLybWj1P",
           "name": "CheckSvgIcon",
-          "moduleFilePath": "wab/client/plasmic/plasmic_kit_data_binding/icons/PlasmicIcon__CheckSvg.tsx"
+          "moduleFilePath": "wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__CheckSvg.tsx"
         },
         {
           "id": "T7O74SQvscm",

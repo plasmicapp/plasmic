@@ -1,0 +1,6 @@
+/* Custom styles for LeftExprsSearchPanel */
+
+/* Remove the blue divider (::before) from Radio.Button elements */
+.radioGroupNoDivider :global(.ant-radio-button-wrapper)::before {
+  display: none !important;
+}

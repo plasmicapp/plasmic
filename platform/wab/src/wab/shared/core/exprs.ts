@@ -960,6 +960,16 @@ export function getCodeExpressionWithFallbackExpr(
     })()`;
 }
 
+export function isCodeWrappedWithParens(codeExpr: string): boolean {
+  return codeExpr.startsWith("(") && codeExpr.endsWith(")");
+}
+
+export function trimCodeParens(codeExpr: string): string {
+  return isCodeWrappedWithParens(codeExpr)
+    ? codeExpr.slice(1, -1).trim()
+    : codeExpr;
+}
+
 /**
  * Examples of empty `codeExprs`:
  * - ""
@@ -968,7 +978,7 @@ export function getCodeExpressionWithFallbackExpr(
  */
 export function isEmptyCodeExpr(codeExpr: string): boolean {
   let sanitized = codeExpr.trim();
-  while (sanitized.startsWith("(") && sanitized.endsWith(")")) {
+  while (isCodeWrappedWithParens(sanitized)) {
     sanitized = sanitized.slice(1, -1).trim();
   }
   return sanitized === "";

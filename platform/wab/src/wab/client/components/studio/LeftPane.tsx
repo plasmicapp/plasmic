@@ -8,6 +8,7 @@ import { VersionsTab } from "@/wab/client/components/sidebar-tabs/versions-tab";
 import { FindReferencesModal } from "@/wab/client/components/sidebar/FindReferencesModal";
 import { ImageAssetsPanel } from "@/wab/client/components/sidebar/image-asset-controls";
 import LeftComponentsPanel from "@/wab/client/components/sidebar/LeftComponentsPanel";
+import LeftExprsSearchPanel from "@/wab/client/components/sidebar/LeftExprsSearchPanel";
 import LeftGeneralTokensPanel from "@/wab/client/components/sidebar/LeftGeneralTokensPanel";
 import LeftLintIssuesPanel from "@/wab/client/components/sidebar/LeftLintIssuesPanel";
 import LeftProjectSettingsPanel from "@/wab/client/components/sidebar/LeftProjectSettingsPanel";
@@ -200,10 +201,10 @@ const LeftPane = observer(function LeftPane(props: LeftPaneProps) {
                   {DEVFLAGS.showAnimations &&
                     wrapTab("animationSequences", <AnimationSequencesPanel />)}
                   {wrapTab("components", <LeftComponentsPanel />)}
+                  {wrapTab("expressions", <LeftExprsSearchPanel />)}
                   {wrapTab("themes", <DefaultStylesPanel />)}
                   {wrapTab("images", <ImageAssetsPanel />)}
                   {wrapTab("fonts", <UserManagedFontsPanel />)}
-
                   {isLoggedIn &&
                     wrapTab("imports", <ProjectDependenciesPanel />)}
                   {isLoggedIn &&

@@ -605,6 +605,8 @@ function leftTabKeyToLabel(key: LeftTabUiKey) {
       return "Copilot";
     case "figma":
       return "Figma";
+    case "expressions":
+      return "Expressions";
     default:
       unreachable(key);
   }

@@ -7,7 +7,7 @@ import { FullRow } from "@/wab/client/components/sidebar/sidebar-helpers";
 import { IconLinkButton } from "@/wab/client/components/widgets";
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
-import DoubleDotsVertical from "@/wab/client/plasmic/plasmic_kit_design_system/icons/PlasmicIcon__DoubleDotsVerticalsvg";
+import DoubleDotsVerticalSvgIcon from "@/wab/client/plasmic/plasmic_kit_design_system/icons/PlasmicIcon__DoubleDotsVerticalSvg";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { XDraggable } from "@/wab/commons/components/XDraggable";
 import {
@@ -192,7 +192,7 @@ export const ColumnSizeControlDraggables = observer(
                 >
                   {isCanvas && (
                     <Tooltip title="Drag to adjust the size of your columns">
-                      <Icon icon={DoubleDotsVertical} size={12} />
+                      <Icon icon={DoubleDotsVerticalSvgIcon} size={12} />
                     </Tooltip>
                   )}
                 </div>

@@ -14,6 +14,7 @@ import AnimationEnterSvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/
 import BooksvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__BookSvg";
 import ChatDocssvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__ChatDocsSvg";
 import ClocksvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__ClockSvg";
+import CodeSvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__CodeSvg";
 import ComponentsvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__ComponentSvg";
 import ComponentssvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__ComponentsSvg";
 import DevicessvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__DevicesSvg";
@@ -161,6 +162,13 @@ Help
           icon: <ComponentsvgIcon />,
           label: "Components",
           cond: canViewTab("components"),
+        },
+        expressions: {
+          type: "item",
+          tabKey: "expressions",
+          icon: <CodeSvgIcon />,
+          label: "Expressions",
+          cond: canViewTab("expressions"),
         },
         images: {
           type: "item",

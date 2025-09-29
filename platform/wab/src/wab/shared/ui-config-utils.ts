@@ -142,6 +142,7 @@ export const LEFT_TAB_PANEL_KEYS = [
   "lint",
   "copilot",
   "animationSequences",
+  "expressions",
 ] as const;
 
 export type LeftTabKey = (typeof LEFT_TAB_PANEL_KEYS)[number];
@@ -424,6 +425,7 @@ const LEFT_TAB_CONTENT_CREATOR_DEFAULT: Record<LeftTabUiKey, UiAccess> = {
   splits: "writable",
   lint: "writable",
   copilot: "hidden",
+  expressions: "writable",
   figma: "hidden",
   animationSequences: "hidden",
 };

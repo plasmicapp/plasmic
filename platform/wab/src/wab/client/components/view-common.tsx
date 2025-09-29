@@ -22,6 +22,85 @@ import * as ReactDOM from "react-dom";
 
 type EventBase = JQuery.EventBase;
 
+export function truncate(str: string, end: number): string {
+  return str.substring(0, end) + "...";
+}
+
+export function truncateAtWordBoundary(str: string, maxLength: number): string {
+  const normalized = str.replace(/\s+/g, " ").trim();
+
+  if (normalized.length <= maxLength) {
+    return normalized;
+  }
+  // If there's a reasonable space (not too early), truncate there
+  const lastSpace = normalized.lastIndexOf(" ", maxLength);
+  if (lastSpace > maxLength * 0.6) {
+    return truncate(normalized, lastSpace);
+  }
+
+  // Look for other natural boundaries (., _, -, /)
+  const boundaries = [".", "_", "-", "/", "(", "[", "{"];
+  let bestBoundary = -1;
+
+  for (const boundary of boundaries) {
+    const index = normalized.lastIndexOf(boundary, maxLength);
+    if (index > bestBoundary && index > maxLength * 0.5) {
+      bestBoundary = index;
+    }
+  }
+  return truncate(normalized, bestBoundary > 0 ? bestBoundary + 1 : maxLength);
+}
+
+export function getTextWithScrolling(
+  text: string,
+  maxLength: number,
+  matcher?: Matcher
+): string {
+  const normalized = text.replace(/\s+/g, " ").trim();
+
+  if (normalized.length <= maxLength) {
+    return normalized;
+  }
+  if (!matcher || !matcher.hasQuery()) {
+    return truncateAtWordBoundary(normalized, maxLength);
+  }
+
+  const query = matcher._query.toLowerCase();
+  const lowerText = normalized.toLowerCase();
+  const matchIndex = lowerText.indexOf(query);
+
+  // If no match, or match is early enough
+  if (matchIndex === -1 || matchIndex < maxLength - 10) {
+    return truncateAtWordBoundary(normalized, maxLength);
+  }
+
+  // Calculate window to show the match
+  // Try to center the match in the available space
+  const windowSize = maxLength - 3; // Reserve space for "..."
+  const halfWindow = Math.floor(windowSize / 2);
+
+  // Calculate start position to center the match
+  let startPos = Math.max(0, matchIndex - halfWindow);
+  let endPos = startPos + windowSize;
+
+  // Adjust if we're too close to the end
+  if (endPos > normalized.length) {
+    endPos = normalized.length;
+    startPos = Math.max(0, endPos - windowSize);
+  }
+
+  // Build result with ellipsis
+  let result = "";
+  if (startPos > 0) {
+    result = "...";
+  }
+  result += normalized.substring(startPos, endPos);
+  if (endPos < normalized.length) {
+    result += "...";
+  }
+
+  return result;
+}
 export class Matcher {
   _query: /*TWZ*/ string;
   _typeaheadPatternGlobal: /*TWZ*/ RegExp;
@@ -50,6 +129,14 @@ export class Matcher {
       const pat = this._typeaheadPatternGlobal;
       return boldSnippets(text, pat, className);
     }
+  }
+  boldSnippetsWithScrolling(
+    text: string,
+    maxLength: number,
+    className?: string
+  ): React.ReactNode {
+    const scrolledText = getTextWithScrolling(text, maxLength, this);
+    return this.boldSnippets(scrolledText, className);
   }
 }
 

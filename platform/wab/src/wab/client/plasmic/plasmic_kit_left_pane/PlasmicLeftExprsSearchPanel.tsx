@@ -200,7 +200,6 @@ function PlasmicLeftExprsSearchPanel__RenderFunc(props: {
                   })()}
                 </React.Fragment>
               ),
-
               value: args.exprsLabel,
               className: classNames(sty.slotTargetExprsLabel),
             })}
@@ -228,7 +227,6 @@ function PlasmicLeftExprsSearchPanel__RenderFunc(props: {
                   />
                 </IconButton>
               ),
-
               value: args.refreshIcon,
             })}
           </div>
@@ -264,7 +262,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicLeftExprsSearchPanel__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
