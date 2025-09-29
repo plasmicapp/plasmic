@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/vanilla-cookieconsent",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Plasmic cookie consent banner component.",
   "repository": {
     "type": "git",
