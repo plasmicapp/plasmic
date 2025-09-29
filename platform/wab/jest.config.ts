@@ -4,7 +4,6 @@ const config: Config = {
   roots: ["<rootDir>/src", "<rootDir>/tools/webpack"],
   collectCoverageFrom: ["src/**/*.{js,jsx,ts,tsx}", "!src/**/*.d.ts"],
   setupFilesAfterEnv: ["<rootDir>/src/wab/client/test/setupTests.js"],
-  snapshotSerializers: ["enzyme-to-json/serializer"],
   testMatch: [
     "**/__tests__/**/*.{js,jsx,ts,tsx}",
     "**/*.{spec,test}.{js,jsx,ts,tsx}",
@@ -14,7 +13,10 @@ const config: Config = {
     "^.+Entities\\.(js|jsx|mjs|cjs|ts|tsx)$": [
       "babel-jest",
       {
-        plugins: [["@babel/plugin-proposal-decorators", { version: "legacy" }]],
+        plugins: [
+          ["@babel/plugin-proposal-decorators", { version: "legacy" }],
+          ["@babel/plugin-transform-class-properties"],
+        ],
         presets: ["@babel/preset-env", "@babel/preset-typescript"],
       },
     ],
