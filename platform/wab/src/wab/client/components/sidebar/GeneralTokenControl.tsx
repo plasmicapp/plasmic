@@ -47,7 +47,7 @@ const GeneralTokenControl = observer(function GeneralTokenControl(
             <>
               {multiAssetsActions.isSelecting &&
               token instanceof MutableToken ? (
-                <Checkbox isChecked={isSelected} />
+                <Checkbox isChecked={isSelected}> </Checkbox>
               ) : (
                 <TokenDefinedIndicator
                   token={token}
