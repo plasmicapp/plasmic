@@ -8,6 +8,7 @@ import { ExportOpts, ProjectModuleBundle } from "@/wab/shared/codegen/types";
 import { makeGlobalVariantGroupImportTemplate } from "@/wab/shared/codegen/variants";
 import { allGlobalVariantGroups } from "@/wab/shared/core/sites";
 import { Site } from "@/wab/shared/model/classes";
+import { uniqBy } from "lodash";
 import type { SetRequired } from "type-fest";
 
 export function makeProjectModuleBundle(
@@ -16,10 +17,13 @@ export function makeProjectModuleBundle(
   exportOpts: SetRequired<Partial<ExportOpts>, "targetEnv">
 ): ProjectModuleBundle {
   const globalVariantGroups = new Set(
-    allGlobalVariantGroups(site, {
-      includeDeps: "all",
-      excludeEmpty: true,
-    })
+    uniqBy(
+      allGlobalVariantGroups(site, {
+        includeDeps: "all",
+        excludeEmpty: true,
+      }),
+      (vg) => vg.param.variable.name
+    )
   );
 
   const globalVariantImports =

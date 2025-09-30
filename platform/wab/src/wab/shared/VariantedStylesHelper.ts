@@ -53,7 +53,7 @@ export class VariantedStylesHelper {
       isKnownMixin(style) ? style.variantedRs : style.variantedValues
     ) as (VariantedValue | VariantedRuleSet)[];
 
-    return variantedStyle.filter((variantedValue) =>
+    const activeVariantedStyle = variantedStyle.filter((variantedValue) =>
       isAncestorCombo(
         ensure(
           this.activeGlobalVariants,
@@ -62,6 +62,33 @@ export class VariantedStylesHelper {
         variantedValue.variants
       )
     );
+    // If no varianted style is active
+    if (
+      activeVariantedStyle.length > 0 ||
+      // Unsure about whether the fallback is needed for Mixin, so excluding it for now
+      isKnownMixin(style) ||
+      // or if the current context is not a style token
+      !this.activeGlobalVariants ||
+      !isValidComboForToken(this.activeGlobalVariants)
+    ) {
+      return activeVariantedStyle;
+    }
+
+    // fallback to another varianted style that has the same name and same parent name
+    // https://linear.app/plasmic/issue/PLA-12364/unable-to-codegen-with-conflicting-global-variants-in-dependencies#comment-8b536d6c
+    const activeVariant = this.activeGlobalVariants[0];
+    const activeVariantGroup = activeVariant.parent;
+
+    return variantedStyle.filter((variantedValue) => {
+      const variant = variantedValue.variants[0];
+      const variantGroup = variant.parent;
+      return (
+        variant.name === activeVariant.name &&
+        variantGroup?.param.variable.name ===
+          activeVariantGroup?.param.variable.name &&
+        variant.uuid !== activeVariant.uuid
+      );
+    });
   }
 
   private sortedActiveVariantedStyles(style: FinalToken<StyleToken> | Mixin) {
