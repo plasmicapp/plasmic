@@ -490,8 +490,8 @@ const _componentToDeepReferenced = maybeComputedFn(
   }
 );
 
-export const componentsReferecerToPageHref = maybeComputedFn(
-  function componentsReferecerToPageHref(site: Site, page: PageComponent) {
+export const componentsReferencerToPageHref = maybeComputedFn(
+  function componentsReferencerToPageHref(site: Site, page: PageComponent) {
     const isHRefToPage = (expr: Expr | null | undefined): expr is PageHref =>
       isKnownPageHref(expr) && expr.page === page;
 

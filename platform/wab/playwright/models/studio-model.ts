@@ -148,14 +148,18 @@ export class StudioModel extends BaseModel {
     super(page);
   }
 
+  async clearSearchInput() {
+    if (await this.projectNavClearSearchButton.isVisible()) {
+      await this.projectNavClearSearchButton.click();
+    }
+  }
+
   async switchArena(name: string) {
     await expect(this.projectNavButton).toBeVisible({ timeout: 30000 });
 
     await this.projectNavButton.click({ timeout: 10000 });
 
-    if (await this.projectNavClearSearchButton.isVisible()) {
-      await this.projectNavClearSearchButton.click();
-    }
+    await this.clearSearchInput();
 
     await this.projectNavSearchInput.fill(name);
 
@@ -209,6 +213,12 @@ export class StudioModel extends BaseModel {
     await this.page.keyboard.press("Escape");
   }
 
+  async getPropEditorRow(propName: string) {
+    return this.frame
+      .locator(`[data-test-id^="prop-editor-row-"]`)
+      .filter({ hasText: propName });
+  }
+
   async renameSelectionTag(name: string) {
     const selectionTag = this.frame.locator(".node-outline-tag");
     await selectionTag.dblclick({ delay: 100 });
@@ -237,7 +247,8 @@ export class StudioModel extends BaseModel {
     if (await this.expandAllButton.isVisible()) {
       await this.expandAllButton.click();
     }
-    return this.studioFrame.locator('[data-test-id="project-panel"]');
+    await this.clearSearchInput();
+    return this.studioFrame.locator('[id="proj-nav-popover"]');
   }
 
   async createNewPage(name: string) {

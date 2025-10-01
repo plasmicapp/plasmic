@@ -1372,6 +1372,7 @@ export function projectPanel() {
   openProjectPanel();
   cy.wait(200);
   expandAllProjectPanel();
+  cy.get(`[data-test-id="nav-dropdown-clear-search"]`).click({ force: true });
   cy.wait(200);
   return getProjectPanelContents();
 }

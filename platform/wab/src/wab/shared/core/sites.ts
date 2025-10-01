@@ -20,7 +20,7 @@ import {
 } from "@/wab/shared/Variants";
 import {
   componentToReferencers,
-  componentsReferecerToPageHref,
+  componentsReferencerToPageHref,
   findAllDataSourceOpExprForComponent,
   flattenComponent,
 } from "@/wab/shared/cached-selectors";
@@ -86,7 +86,6 @@ import {
   findExprsInComponent,
   findExprsInNode,
   findVariantSettingsUnderTpl,
-  flattenExprs,
   flattenTpls,
   isTplColumns,
   isTplComponent,
@@ -1496,43 +1495,85 @@ export function removeReferencingTypeInstances(
 }
 
 /**
- * Traverse site.components and remove PageHref references to a given
- * page.
+ * Remove PageHref references to a given page
  */
-export function removeReferencingLinks(
+export function removePageLinks(
   site: Site,
   page: PageComponent,
   opts?: {
     convertPageHrefToCode?: boolean;
   }
 ) {
+  replacePageLinks(
+    site,
+    page,
+    opts?.convertPageHrefToCode ? convertHrefExprToCodeExpr : () => null
+  );
+}
+
+/**
+ * Replaces all PageHref references to `fromPage` with PageHref references to `toPage`
+ */
+export function swapPageLinks(
+  site: Site,
+  fromPage: PageComponent,
+  toPage: PageComponent
+) {
+  replacePageLinks(
+    site,
+    fromPage,
+    (_site, _component, oldExpr: PageHref) =>
+      new PageHref({ ...oldExpr, page: toPage })
+  );
+}
+
+/**
+ * Traverse site.components and replace PageHref references with another expr,
+ * or remove it if no replacement is available
+ * @param site
+ * @param page
+ * @param replaceWith a function that returns the new replacement
+ * @returns
+ */
+function replacePageLinks(
+  site: Site,
+  page: PageComponent,
+  replaceWith: (
+    site: Site,
+    component: Component,
+    oldExpr: PageHref
+  ) => PageHref | CustomCode | null
+) {
   const isHRefToPage = (expr: Expr | null | undefined): expr is PageHref =>
     isKnownPageHref(expr) && expr.page === page;
 
-  function getNewExprToReferenceExpr(component: Component, oldExpr: PageHref) {
-    if (opts?.convertPageHrefToCode) {
-      return convertHrefExprToCodeExpr(site, component, oldExpr);
-    }
-    return null;
-  }
+  for (const c of componentsReferencerToPageHref(site, page)) {
+    const getNewExpr = (expr: Expr | null) => {
+      let newExpr = expr;
+      if (isHRefToPage(newExpr)) {
+        newExpr = replaceWith(site, c, newExpr);
+      }
+      if (
+        newExpr &&
+        isFallbackableExpr(newExpr) &&
+        isHRefToPage(newExpr.fallback)
+      ) {
+        newExpr.fallback = replaceWith(site, c, newExpr.fallback);
+      }
+      return newExpr;
+    };
 
-  for (const c of componentsReferecerToPageHref(site, page)) {
-    const removeFromEventHandler = (expr: EventHandler) => {
+    const replaceInEventHandler = (expr: EventHandler) => {
       for (const interaction of expr.interactions) {
         for (const arg of [...interaction.args]) {
-          const argExpr = arg.expr;
-          if (isHRefToPage(argExpr)) {
-            const newExpr = getNewExprToReferenceExpr(c, argExpr);
-            if (newExpr) {
-              arg.expr = newExpr;
-            } else {
-              remove(interaction.args, arg);
+          const newArgExpr = getNewExpr(arg.expr);
+          if (newArgExpr) {
+            arg.expr = newArgExpr;
+            if (isKnownPageHref(newArgExpr)) {
+              interaction.interactionName = `Go to ${newArgExpr.page.name}`;
             }
-          } else if (
-            isFallbackableExpr(argExpr) &&
-            isHRefToPage(argExpr.fallback)
-          ) {
-            argExpr.fallback = getNewExprToReferenceExpr(c, argExpr.fallback);
+          } else {
+            remove(interaction.args, arg);
           }
         }
       }
@@ -1540,17 +1581,11 @@ export function removeReferencingLinks(
 
     // Remove references from component props default values.
     for (const p of c.params) {
-      if (
-        p.defaultExpr &&
-        flattenExprs(p.defaultExpr).some((e) => isHRefToPage(e))
-      ) {
-        p.defaultExpr = null;
+      if (p.defaultExpr) {
+        p.defaultExpr = getNewExpr(p.defaultExpr);
       }
-      if (
-        p.previewExpr &&
-        flattenExprs(p.previewExpr).some((e) => isHRefToPage(e))
-      ) {
-        p.previewExpr = null;
+      if (p.previewExpr) {
+        p.previewExpr = getNewExpr(p.previewExpr);
       }
     }
 
@@ -1563,30 +1598,26 @@ export function removeReferencingLinks(
       for (const vs of tpl.vsettings) {
         for (const [attr, expr] of [...Object.entries(vs.attrs)]) {
           if (isKnownEventHandler(expr)) {
-            removeFromEventHandler(expr);
-          } else if (isHRefToPage(expr) && opts?.convertPageHrefToCode) {
-            const codeExpr = convertHrefExprToCodeExpr(site, c, expr);
-            if (codeExpr) {
-              vs.attrs[attr] = codeExpr;
+            replaceInEventHandler(expr);
+          } else {
+            const newExpr = getNewExpr(expr);
+            if (newExpr) {
+              vs.attrs[attr] = newExpr;
             } else {
               delete vs.attrs[attr];
             }
-          } else if (flattenExprs(expr).some((e) => isHRefToPage(e))) {
-            delete vs.attrs[attr];
           }
         }
         for (const vsArg of [...vs.args]) {
           if (isKnownEventHandler(vsArg.expr)) {
-            removeFromEventHandler(vsArg.expr);
-          } else if (isHRefToPage(vsArg.expr) && opts?.convertPageHrefToCode) {
-            const codeExpr = convertHrefExprToCodeExpr(site, c, vsArg.expr);
-            if (codeExpr) {
-              vsArg.expr = codeExpr;
+            replaceInEventHandler(vsArg.expr);
+          } else {
+            const newExpr = getNewExpr(vsArg.expr);
+            if (newExpr) {
+              vsArg.expr = newExpr;
             } else {
               remove(vs.args, vsArg);
             }
-          } else if (flattenExprs(vsArg.expr).some((e) => isHRefToPage(e))) {
-            remove(vs.args, vsArg);
           }
         }
       }

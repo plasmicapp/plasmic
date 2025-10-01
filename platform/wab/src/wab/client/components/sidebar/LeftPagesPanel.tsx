@@ -14,7 +14,7 @@ import {
 import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { isMixedArena } from "@/wab/shared/Arenas";
 import { FRAME_CAP } from "@/wab/shared/Labels";
-import { componentsReferecerToPageHref } from "@/wab/shared/cached-selectors";
+import { componentsReferencerToPageHref } from "@/wab/shared/cached-selectors";
 import { moveIndex } from "@/wab/shared/common";
 import {
   PageComponent,
@@ -214,7 +214,7 @@ const PageRow = observer(function PageRow(props: {
             await studioCtx.changeObserved(
               () => {
                 return Array.from(
-                  componentsReferecerToPageHref(studioCtx.site, page)
+                  componentsReferencerToPageHref(studioCtx.site, page)
                 );
               },
               ({ success }) => {

@@ -58,7 +58,7 @@ import {
 } from "@/wab/shared/Variants";
 import {
   componentToReferencers,
-  componentsReferecerToPageHref,
+  componentsReferencerToPageHref,
   findComponentsUsingComponentVariant,
   findComponentsUsingGlobalVariant,
   findQueryInvalidationExprWithRefs,
@@ -112,6 +112,7 @@ import {
   getReferencingComponents,
   getResponsiveStrategy,
   getSiteArenas,
+  swapPageLinks,
   visitComponentRefs,
 } from "@/wab/shared/core/sites";
 import {
@@ -1068,6 +1069,15 @@ export class SiteOps {
     );
   }
 
+  async swapPagesLinks(fromPage: PageComponent, toPage: PageComponent) {
+    return await this.studioCtx.changeObserved(
+      () => [...componentsReferencerToPageHref(this.site, fromPage)],
+      ({ success }) => {
+        swapPageLinks(this.studioCtx.site, fromPage, toPage);
+        return success();
+      }
+    );
+  }
   /**
    * Returns true if `fromComponent` instances have successfully been replaced and
    * it's been deleted, and false if the user closed the form
@@ -1647,7 +1657,10 @@ export class SiteOps {
     const isCurrentArena =
       curArena && isPageArena(curArena) && curArena.component === component;
     await this.studioCtx.changeObserved(
-      () => [component, ...componentsReferecerToPageHref(this.site, component)],
+      () => [
+        component,
+        ...componentsReferencerToPageHref(this.site, component),
+      ],
       ({ success }) => {
         this.tplMgr.convertPageToComponent(component);
         toast("Page converted to reusable component.");

@@ -169,16 +169,33 @@ export class LeftPanel extends BaseModel {
   }
 
   async switchToTreeTab() {
-    await this.treeTabButton.click();
+    // Check if the tree tab is already active by looking at the aria-selected attribute
+    const isActive =
+      (await this.treeTabButton.getAttribute("data-state-isselected")) ===
+      "true";
+    if (!isActive) {
+      await this.treeTabButton.click();
+    }
   }
 
   async switchToVersionsTab() {
-    await this.versionsTabButton.click();
+    // Check if the versions tab is already active by looking at the aria-selected attribute
+    const isActive =
+      (await this.versionsTabButton.getAttribute("data-state-isselected")) ===
+      "true";
+    if (!isActive) {
+      await this.versionsTabButton.click();
+    }
   }
 
   async switchToImportsTab() {
     const importsTab = this.frame.locator('button[data-test-tabkey="imports"]');
-    await importsTab.click();
+    // Check if the imports tab is already active by looking at the aria-selected attribute
+    const isActive =
+      (await importsTab.getAttribute("data-state-isselected")) === "true";
+    if (!isActive) {
+      await importsTab.click();
+    }
   }
 
   async selectTreeNode(names: string[]): Promise<Locator> {

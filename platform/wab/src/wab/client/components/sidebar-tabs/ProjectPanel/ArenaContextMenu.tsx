@@ -9,9 +9,10 @@ import {
   isMixedArena,
   isPageArena,
 } from "@/wab/shared/Arenas";
-import { componentsReferecerToPageHref } from "@/wab/shared/cached-selectors";
+import { componentsReferencerToPageHref } from "@/wab/shared/cached-selectors";
 import { assert, spawn } from "@/wab/shared/common";
 import {
+  PageComponent,
   isPageComponent,
   isReusableComponent,
 } from "@/wab/shared/core/components";
@@ -28,7 +29,7 @@ export const deleteArenas = async (
   const allRefs = arenas.flatMap((arena) =>
     isDedicatedArena(arena) && isPageComponent(arena.component)
       ? Array.from(
-          componentsReferecerToPageHref(studioCtx.site, arena.component)
+          componentsReferencerToPageHref(studioCtx.site, arena.component)
         )
       : []
   );
@@ -80,6 +81,12 @@ export function ArenaContextMenu({
     spawn(studioCtx.siteOps().swapComponents(component!, toComp));
   };
 
+  const doReplaceAllLinks = (toPage: PageComponent) => {
+    if (component && isPageComponent(component)) {
+      spawn(studioCtx.siteOps().swapPagesLinks(component, toPage));
+    }
+  };
+
   const componentToReplaceAllInstancesItem = (comp: Component) => {
     return (
       <Menu.Item
@@ -88,6 +95,14 @@ export function ArenaContextMenu({
         onClick={() => doReplaceAllInstances(comp)}
       >
         {comp.name}
+      </Menu.Item>
+    );
+  };
+
+  const pageToReplaceAllLinksItem = (page: PageComponent) => {
+    return (
+      <Menu.Item key={page.uuid} onClick={() => doReplaceAllLinks(page)}>
+        {page.name}
       </Menu.Item>
     );
   };
@@ -108,6 +123,13 @@ export function ArenaContextMenu({
       )
     ),
   ];
+
+  const replaceAllLinksMenuItems = naturalSort(
+    studioCtx.tplMgr().getPageComponents(),
+    (c) => c.name
+  )
+    .filter((c) => c !== component)
+    .map((comp) => pageToReplaceAllLinksItem(comp));
 
   const contentEditorMode = studioCtx.contentEditorMode;
 
@@ -137,6 +159,7 @@ export function ArenaContextMenu({
       isReusableComponent(component) &&
       replaceAllInstancesMenuItems.length !== 0 &&
       !contentEditorMode,
+    replaceAllLinks: component && isPageComponent(component),
   };
 
   const onDuplicate = () =>
@@ -258,6 +281,20 @@ export function ArenaContextMenu({
             {replaceAllInstancesMenuItems}
           </Menu.SubMenu>
         )}
+      {shouldShowItem.replaceAllLinks &&
+        menuSection(
+          "replace",
+          <Menu.SubMenu
+            key="replaceAllLinks"
+            title={
+              <span>
+                <strong>Replace</strong> all links to this page with...
+              </span>
+            }
+          >
+            {replaceAllLinksMenuItems}
+          </Menu.SubMenu>
+        )}
       {menuSection(
         "delete",
         <Menu.Item
@@ -284,7 +321,7 @@ export function ArenaContextMenu({
                       studioCtx.changeObserved(
                         () => [
                           component,
-                          ...componentsReferecerToPageHref(
+                          ...componentsReferencerToPageHref(
                             studioCtx.site,
                             component
                           ),

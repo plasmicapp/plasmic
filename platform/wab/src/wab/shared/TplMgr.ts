@@ -141,7 +141,7 @@ import {
   getReferencingFrames,
   getSiteArenas,
   isFrameRootTplComponent,
-  removeReferencingLinks,
+  removePageLinks,
   removeReferencingTypeInstances,
 } from "@/wab/shared/core/sites";
 import {
@@ -1156,7 +1156,7 @@ export class TplMgr {
   ) {
     for (const comp of comps) {
       if (isPageComponent(comp)) {
-        removeReferencingLinks(this.site(), comp, opts);
+        removePageLinks(this.site(), comp, opts);
       }
       if (isCodeComponent(comp)) {
         removeReferencingTypeInstances(this.site(), comp);
@@ -1578,7 +1578,7 @@ export class TplMgr {
 
   convertPageToComponent(component: Component) {
     if (isPageComponent(component)) {
-      removeReferencingLinks(this.site(), component);
+      removePageLinks(this.site(), component);
     }
     component.pageMeta = undefined;
     component.type = ComponentType.Plain;
