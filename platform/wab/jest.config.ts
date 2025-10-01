@@ -3,7 +3,10 @@ import type { Config } from "jest";
 const config: Config = {
   roots: ["<rootDir>/src", "<rootDir>/tools/webpack"],
   collectCoverageFrom: ["src/**/*.{js,jsx,ts,tsx}", "!src/**/*.d.ts"],
-  setupFilesAfterEnv: ["<rootDir>/src/wab/client/test/setupTests.js"],
+  setupFilesAfterEnv: [
+    "jest-extended/all",
+    "<rootDir>/src/wab/client/test/setupTests.js",
+  ],
   testMatch: [
     "**/__tests__/**/*.{js,jsx,ts,tsx}",
     "**/*.{spec,test}.{js,jsx,ts,tsx}",
