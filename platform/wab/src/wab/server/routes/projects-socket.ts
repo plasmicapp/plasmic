@@ -183,7 +183,7 @@ export class ProjectsSocket {
           this.trackSocket(this.sessionIdToSockets, sessionId, socket);
           logger().info(
             `Subscribing user ${getSocketUserName(
-              ensure(socket.handshake.user, "User should not be undefined")
+              ensure(socket.handshake["user"], "User should not be undefined")
             )} to ${args.projectIds}`
           );
           for (const projectId of args.projectIds) {
