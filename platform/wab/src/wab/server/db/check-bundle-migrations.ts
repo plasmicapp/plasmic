@@ -1,11 +1,9 @@
+import { logger } from "@/wab/server/observability";
+import { arrayEq, ensure, spawn, spawnWrapper } from "@/wab/shared/common";
 import fs from "fs";
 import { last } from "lodash";
 import path from "path";
 import yargs from "yargs";
-// pre-commit cannot understand "@/path" imports
-// eslint-disable-next-line
-import { logger } from "@/wab/server/observability";
-import { arrayEq, ensure, spawn, spawnWrapper } from "@/wab/shared/common";
 
 interface CheckArgs {
   files: string[];

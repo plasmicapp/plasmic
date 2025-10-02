@@ -15,6 +15,10 @@ module.exports = {
   "platform/wab/src/wab/server/bundle-migrations/**/*": [
     "platform/wab/tools/bundle-migration-check.sh",
   ],
+  "platform/wab/src/wab/server/db/check-bundle-migrations.ts": [
+    "platform/wab/tools/bundle-migration-check.sh",
+  ],
+
   "platform/wab/src/wab/server/pkg-mgr/**/*.{json,ts}": [
     "tsx --tsconfig platform/wab/tsconfig.tools.json platform/wab/src/wab/server/pkg-mgr/plume-pkg-mgr.ts check",
   ],
