@@ -227,9 +227,7 @@ describe("tests codegen for global variants", () => {
 
       // Render with no global variants
       {
-        const expectedClasses = [
-          `${baseClass} ${baseClassOverride} ${baseClassDep}`,
-        ];
+        const expectedClasses = [baseClass, baseClassOverride, baseClassDep];
         const unexpectedClasses = [darkClass, neonClass];
 
         const component = render(<Homepage />);
@@ -241,13 +239,14 @@ describe("tests codegen for global variants", () => {
         expect(useStyleTokens.result.current).toEqual(expectedClasses);
         useStyleTokens.unmount();
 
-        const useStyleTokensFromProvider = renderHook(useStyleTokensTester, {
+        const useStyleTokensOtherProj = renderHook(useStyleTokensTester, {
           wrapper: StyleTokensProvider,
         });
-        expect(useStyleTokensFromProvider.result.current).toEqual(
-          expectedClasses
-        );
-        useStyleTokensFromProvider.unmount();
+        expect(useStyleTokensOtherProj.result.current).toEqual([
+          ...expectedClasses,
+          ...expectedOtherProjClasses,
+        ]);
+        useStyleTokensOtherProj.unmount();
       }
 
       // Render with global variant "Theme: undefined"
@@ -255,9 +254,7 @@ describe("tests codegen for global variants", () => {
         "PlasmicGlobalVariant__Theme.js"
       );
       {
-        const expectedClasses = [
-          `${baseClass} ${baseClassOverride} ${baseClassDep}`,
-        ];
+        const expectedClasses = [baseClass, baseClassOverride, baseClassDep];
         const unexpectedClasses = [darkClass, neonClass];
 
         const wrapper = ({ children }: React.PropsWithChildren) => {
@@ -276,22 +273,25 @@ describe("tests codegen for global variants", () => {
         expect(useStyleTokens.result.current).toEqual(expectedClasses);
         useStyleTokens.unmount();
 
-        const useStyleTokensFromProvider = renderHook(useStyleTokensTester, {
+        const useStyleTokensOtherProj = renderHook(useStyleTokensTester, {
           wrapper: ({ children }) =>
             wrapper({
               children: <StyleTokensProvider>{children}</StyleTokensProvider>,
             }),
         });
-        expect(useStyleTokensFromProvider.result.current).toEqual(
-          expectedClasses
-        );
-        useStyleTokensFromProvider.unmount();
+        expect(useStyleTokensOtherProj.result.current).toEqual([
+          ...expectedClasses,
+          ...expectedOtherProjClasses,
+        ]);
+        useStyleTokensOtherProj.unmount();
       }
 
       // Render with global variant "Theme: Dark"
       {
         const expectedClasses = [
-          `${baseClass} ${baseClassOverride} ${baseClassDep}`,
+          baseClass,
+          baseClassOverride,
+          baseClassDep,
           darkClass,
         ];
         const unexpectedClasses = [neonClass];
@@ -312,16 +312,17 @@ describe("tests codegen for global variants", () => {
         expect(useStyleTokens.result.current).toEqual(expectedClasses);
         useStyleTokens.unmount();
 
-        const useStyleTokensFromProvider = renderHook(useStyleTokensTester, {
+        const useStyleTokensOtherProj = renderHook(useStyleTokensTester, {
           wrapper: ({ children }) =>
             wrapper({
               children: <StyleTokensProvider>{children}</StyleTokensProvider>,
             }),
         });
-        expect(useStyleTokensFromProvider.result.current).toEqual(
-          expectedClasses
-        );
-        useStyleTokensFromProvider.unmount();
+        expect(useStyleTokensOtherProj.result.current).toEqual([
+          ...expectedClasses,
+          ...expectedOtherProjClasses,
+        ]);
+        useStyleTokensOtherProj.unmount();
       }
       // Render with global variant "Palette: Neon"
       {
@@ -329,7 +330,9 @@ describe("tests codegen for global variants", () => {
           "PlasmicGlobalVariant__Palette.js"
         );
         const expectedClasses = [
-          `${baseClass} ${baseClassOverride} ${baseClassDep}`,
+          baseClass,
+          baseClassOverride,
+          baseClassDep,
           neonClass,
         ];
         const unexpectedClasses = [darkClass];
@@ -350,16 +353,17 @@ describe("tests codegen for global variants", () => {
         expect(useStyleTokens.result.current).toEqual(expectedClasses);
         useStyleTokens.unmount();
 
-        const useStyleTokensFromProvider = renderHook(useStyleTokensTester, {
+        const useStyleTokensOtherProj = renderHook(useStyleTokensTester, {
           wrapper: ({ children }) =>
             wrapper({
               children: <StyleTokensProvider>{children}</StyleTokensProvider>,
             }),
         });
-        expect(useStyleTokensFromProvider.result.current).toEqual(
-          expectedClasses
-        );
-        useStyleTokensFromProvider.unmount();
+        expect(useStyleTokensOtherProj.result.current).toEqual([
+          ...expectedClasses,
+          ...expectedOtherProjClasses,
+        ]);
+        useStyleTokensOtherProj.unmount();
       }
     });
 
@@ -560,25 +564,34 @@ describe("tests codegen for global variants", () => {
   }
 });
 
+const otherProjData = {
+  base: "otherProjOverrides otherProjTokens",
+  varianted: [],
+};
+const expectedOtherProjClasses = ["otherProjOverrides", "otherProjTokens"];
+
 /**
- * useStyleTokens that returns "no StyleTokensProvider" by default unless
+ * useStyleTokens that returns `expectedOtherProjClasses` only, unless
  * nested in a StyleTokensProvider.
  *
  * This is used to simulate what happens when another project's useStyleTokens
  * is nested under this project's StyleTokensProvider.
+ *
+ * Note: The base value passed to `createUseStyleTokens` is always included in the result because useStyleTokens
+ * merges context values with default project values, rather than using conditional logic.
  */
 const useStyleTokensTester = createUseStyleTokens(
   {
-    base: "no StyleTokensProvider",
+    base: otherProjData.base, // this value is always present in the result of useStyleTokens provider, as the values are merged
     varianted: [],
   },
   () => ({})
 );
 
 describe("useProviderTest", () => {
-  it("returns 'no StyleTokensProvider' by default", () => {
+  it("returns `expectedOtherProjClasses` by default", () => {
     const { unmount, result } = renderHook(useStyleTokensTester);
-    expect(result.current).toEqual(["no StyleTokensProvider"]);
+    expect(result.current).toEqual(expectedOtherProjClasses);
     unmount();
   });
 });

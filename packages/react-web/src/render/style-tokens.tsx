@@ -16,7 +16,10 @@ const StyleTokensContext = React.createContext<ClassName[] | undefined>(
 );
 
 /**
- * All style token data for this project.
+ * All style token data (except overrides) for this project.
+ * This data is used as the default context value.
+ *
+ * We don't include the overrides because the Provider (that wraps the components) decides which project's overrides to apply.
  *
  * Usage:
  *
@@ -25,9 +28,10 @@ const StyleTokensContext = React.createContext<ClassName[] | undefined>(
  * import { usePlatform } from "./PlasmicGlobalVariant__Platform";
  * import { useTheme } from "./PlasmicGlobalVariant__Theme";
  * import projectcss from "./plasmic.module.css";
+ * import depcss from "../dep/plasmic.module.css";
  *
- * const projectStyleTokenData: ProjectStyleTokenData = {
- *   base: projectcss.plasmic_tokens,
+ * const data: ProjectStyleTokenData = {
+ *   base: `${projectcss.plasmic_tokens} ${depcss.plasmic_tokens}`,
  *   varianted: [
  *     {
  *       className: projectcss.global_platform_windows,
@@ -54,7 +58,9 @@ const StyleTokensContext = React.createContext<ClassName[] | undefined>(
  * ```
  */
 interface ProjectStyleTokenData {
-  base: ClassName;
+  // An older version of codegen generated `base: projectcss.plasmic_tokens`
+  // We make `base` optional since projectcss might not have plasmic_tokens
+  base?: ClassName;
   varianted: {
     className: ClassName;
     groupName: string;
@@ -65,14 +71,13 @@ interface ProjectStyleTokenData {
 type UseStyleTokens = () => ClassName[];
 
 /**
- * Returns style tokens. If the context is not available, falls back to the
- * current project's styles.
+ * Creates a useStyleTokens hook for a given project that returns class names for the given project's tokens plus token overrides from StyleTokensProvider if present.
  *
  * Usage:
  * ```
  * // PlasmicStyleTokensProvider.ts
  * export const useStyleTokens = createUseStyleTokens(
- *   projectStyleTokenData,
+ *   data,
  *   useGlobalVariants,
  * );
  *
@@ -102,27 +107,30 @@ export function createUseStyleTokens(
   useGlobalVariants: UseGlobalVariants
 ): UseStyleTokens {
   return () => {
-    const overrides = React.useContext(StyleTokensContext);
+    const ctxClassNames = React.useContext(StyleTokensContext);
     const globalVariants = useGlobalVariants();
     return React.useMemo(() => {
-      if (overrides && overrides.length > 0) {
-        return overrides;
-      } else {
-        return activeTokensClassNames(tokenData, globalVariants);
-      }
-    }, [overrides, globalVariants, tokenData]);
+      // Use a set to deduplicate
+      return Array.from(
+        new Set([
+          ...(ctxClassNames ?? []),
+          ...activeTokensClassNames(tokenData, globalVariants),
+        ])
+      );
+    }, [ctxClassNames, globalVariants]);
   };
 }
 
 /**
- * Creates a StyleTokens context provider for a given project, which includes
- * its tokens, overrides, and all tokens from its dependencies.
+ * Creates a StyleTokensProvider for a given project to allow propagating its overrides to components of other projects.
+ *
+ * To ensure all tokens in the overrides class name resolve properly, the base and varianted class names must be included.
  *
  * Usage:
  * ```
  * // PlasmicStyleTokensProvider.ts
  * export const StyleTokensProvider = createStyleTokensProvider(
- *   projectStyleTokenData,
+ *   { base: `${projectcss.plasmic_tokens_override} ${data.base}`, varianted: data.varianted },
  *   useGlobalVariants,
  * );
  *
@@ -172,5 +180,5 @@ function activeTokensClassNames(
       hasVariant(globalVariants, groupName, variant)
     )
     .map(({ className }) => className);
-  return [tokenData.base, ...varianted];
+  return [...(tokenData.base?.split(" ") ?? []), ...varianted];
 }
