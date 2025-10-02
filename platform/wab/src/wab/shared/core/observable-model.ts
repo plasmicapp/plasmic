@@ -1153,10 +1153,8 @@ export function observeModel(
         return null;
       })
     );
-    if (modelErrors.length > 0) {
-      console.log(modelErrors.join("\n"));
-    }
-    assert(modelErrors.length === 0, "Invariant failed");
+    const errorStr = modelErrors.join("\n");
+    assert(modelErrors.length === 0, `Invariant failed: ${errorStr}`);
 
     instsToCheck.clear();
     isPruning = false;
