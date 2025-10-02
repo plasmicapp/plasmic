@@ -398,6 +398,12 @@ function configureSyncArgs(
         "Write files directly to disk, instead of buffering and only writing if sync completes successfully",
       default: false,
     })
+    .option("preserve-import-extensions", {
+      type: "boolean",
+      describe:
+        "Preserve file extensions in import statements (e.g., './Component.jsx' instead of './Component')",
+      default: false,
+    })
     .option("all-files", {
       type: "boolean",
       describe:

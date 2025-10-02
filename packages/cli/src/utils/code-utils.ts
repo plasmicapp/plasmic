@@ -556,7 +556,7 @@ function makeImportPath(
       result = `./${result}`;
     }
   }
-  if (stripExt) {
+  if (stripExt && !GLOBAL_SETTINGS.preserveImportExtensions) {
     result = stripExtension(result);
   }
 
