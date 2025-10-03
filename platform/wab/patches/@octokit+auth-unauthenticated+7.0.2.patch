@@ -1,0 +1,26 @@
+diff --git a/node_modules/@octokit/auth-unauthenticated/package.json b/node_modules/@octokit/auth-unauthenticated/package.json
+index 2a3b73e..fd7c8d9 100644
+--- a/node_modules/@octokit/auth-unauthenticated/package.json
++++ b/node_modules/@octokit/auth-unauthenticated/package.json
+@@ -44,15 +44,18 @@
+     ".": {
+       "node": {
+         "types": "./dist-types/index.d.ts",
+-        "import": "./dist-node/index.js"
++        "import": "./dist-node/index.js",
++        "default": "./dist-node/index.js"
+       },
+       "browser": {
+         "types": "./dist-types/web.d.ts",
+-        "import": "./dist-web/index.js"
++        "import": "./dist-web/index.js",
++        "default": "./dist-web/index.js"
+       },
+       "default": {
+         "types": "./dist-types/index.d.ts",
+-        "import": "./dist-node/index.js"
++        "import": "./dist-node/index.js",
++        "default": "./dist-node/index.js"
+       }
+     }
+   },

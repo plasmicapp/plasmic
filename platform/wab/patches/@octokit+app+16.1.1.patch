@@ -1,0 +1,26 @@
+diff --git a/node_modules/@octokit/app/package.json b/node_modules/@octokit/app/package.json
+index f5fe313..619d3f5 100644
+--- a/node_modules/@octokit/app/package.json
++++ b/node_modules/@octokit/app/package.json
+@@ -46,15 +46,18 @@
+     ".": {
+       "node": {
+         "types": "./dist-types/index.d.ts",
+-        "import": "./dist-node/index.js"
++        "import": "./dist-node/index.js",
++        "default": "./dist-node/index.js"
+       },
+       "browser": {
+         "types": "./dist-types/index.d.ts",
+-        "import": "./dist-web/index.js"
++        "import": "./dist-web/index.js",
++        "default": "./dist-web/index.js"
+       },
+       "default": {
+         "types": "./dist-types/index.d.ts",
+-        "import": "./dist-node/index.js"
++        "import": "./dist-node/index.js",
++        "default": "./dist-node/index.js"
+       }
+     }
+   },
