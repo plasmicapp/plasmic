@@ -27,10 +27,7 @@ const config: Config = {
     "^(?!.*\\.(js|jsx|mjs|cjs|ts|tsx|css|json)$)":
       "<rootDir>/__mocks__/file-transform.js",
   },
-  transformIgnorePatterns: [
-    ".+\\.(js|jsx|mjs|cjs|ts|tsx)foo$",
-    "XXX/node_modules/(?!(@plasmicapp/react-web/lib/|private-ip|ip-regex|get-port|@chainsafe)).+\\.(js|jsx|mjs|cjs|ts|tsx)$",
-  ],
+  transformIgnorePatterns: [],
   modulePaths: [],
   moduleNameMapper: {
     "^.+\\.(css|sass|scss)$": "identity-obj-proxy",
