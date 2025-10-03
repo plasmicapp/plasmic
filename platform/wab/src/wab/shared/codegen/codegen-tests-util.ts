@@ -1,3 +1,5 @@
+import { Bundler } from "@/wab/shared/bundler";
+import { Bundle } from "@/wab/shared/bundles";
 import {
   exportProjectConfig,
   exportStyleConfig,
@@ -13,7 +15,11 @@ import { jsonClone } from "@/wab/shared/common";
 import { initBuiltinActions } from "@/wab/shared/core/states";
 import { deepTrackComponents } from "@/wab/shared/core/tpls";
 import { DEVFLAGS } from "@/wab/shared/devflags";
-import { Site } from "@/wab/shared/model/classes";
+import {
+  Site,
+  isKnownProjectDependency,
+  isKnownSite,
+} from "@/wab/shared/model/classes";
 import { exec } from "child_process";
 import fs from "fs";
 import path from "path";
@@ -192,4 +198,47 @@ export async function codegen(
   }
 
   return { importFromProject, readFromProject, existsInProject };
+}
+
+/**
+ * Reads all generated files from a directory and concatenates their contents
+ * into a single string for snapshot testing.
+ */
+export function collectSnapshotForDir(dir: string): string {
+  const files = fs.readdirSync(dir).sort();
+  let allFileContents = "";
+  // Append the contents of each file to a string
+  for (const file of files) {
+    const filePath = path.join(dir, file);
+    if (fs.statSync(filePath).isFile()) {
+      const fileContents = fs.readFileSync(filePath, "utf8");
+      allFileContents += `\n--- ${file} ---\n${fileContents}`;
+    }
+  }
+  return allFileContents;
+}
+
+/**
+ * Generates a site object from bundle data of a project with dependencies.
+ */
+export function generateSiteFromBundle(
+  bundleWithDeps: [string, Bundle][]
+): Site {
+  let site: Site | undefined;
+  const bundler = new Bundler();
+
+  for (const bundle of bundleWithDeps as [string, Bundle][]) {
+    const unbundled = bundler.unbundle(bundle[1], bundle[0]);
+    if (isKnownSite(unbundled)) {
+      site = unbundled;
+    } else if (isKnownProjectDependency(unbundled)) {
+      site = unbundled.site;
+    }
+  }
+
+  if (!site) {
+    throw new Error("Could not extract site from bundle");
+  }
+
+  return site;
 }

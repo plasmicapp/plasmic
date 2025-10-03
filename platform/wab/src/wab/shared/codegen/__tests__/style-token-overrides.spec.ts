@@ -1,22 +1,16 @@
 import { Bundle } from "@/wab/shared/bundler";
-import _bundle from "@/wab/shared/codegen/__tests__/bundles/aria-code-components.json";
+import _bundle from "@/wab/shared/codegen/__tests__/bundles/style-token-overrides.json";
 import {
   codegen,
   collectSnapshotForDir,
   generateSiteFromBundle,
 } from "@/wab/shared/codegen/codegen-tests-util";
-import { Site } from "@/wab/shared/model/classes";
 import "core-js";
 import tmp from "tmp";
 
-// This test is used to test codegen for Plasmic projects using code components with different metadata settings.
-// currently the metadata settings we test are:
-// - styleSections: false in root (via DataFetcher Parent component)
-// - styleSections: false in nested root (via DataFetcher Grand Parent component)
-// - styleSections: true in root (via wrapper Plasmic components for react-aria hostless package)
-describe("aria code components example: codegen", () => {
+describe("token overrides: codegen", () => {
   let dir: tmp.DirResult;
-  const site: Site = generateSiteFromBundle(_bundle as [string, Bundle][]);
+  const site = generateSiteFromBundle(_bundle as [string, Bundle][]);
 
   beforeEach(() => {
     dir = tmp.dirSync({ unsafeCleanup: true });
