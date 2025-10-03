@@ -1,11 +1,4 @@
 import {
-  assert,
-  ensure,
-  ensureString,
-  ensureType,
-  uncheckedCast,
-} from "@/wab/shared/common";
-import {
   coalesceErrorsAsync,
   liftErrorsAsync,
   sealedFailableAsync,
@@ -29,14 +22,22 @@ import {
   ApiProjectRepository,
   ExistingGithubRepoRequest,
   GitBranchesResponse,
-  GithubData,
-  GithubOrganization,
   GitRepository,
   GitSyncAction,
+  GithubData,
+  GithubOrganization,
   NewGithubRepoRequest,
   NewGithubRepoResponse,
 } from "@/wab/shared/ApiSchema";
+import {
+  assert,
+  ensure,
+  ensureString,
+  ensureType,
+  uncheckedCast,
+} from "@/wab/shared/common";
 import { Octokit } from "@octokit/core";
+import type { components } from "@octokit/openapi-types";
 import * as Sentry from "@sentry/node";
 import { Request, Response } from "express-serve-static-core";
 import { IFailable } from "ts-failable";
@@ -82,17 +83,21 @@ export async function githubData(req: Request, res: Response) {
   } = await octokit.request("GET /user/installations");
   for (const installation of installations) {
     const installationId = installation.id;
+
+    // https://github.com/github/rest-api-description/issues/5421
+    // Octokit are wrong. We replaced "enterprise" with "organization-full".
+    const installationAccount = installation.account as
+      | components["schemas"]["simple-user"]
+      | components["schemas"]["organization-full"]
+      | null;
     if (
-      installation.account?.type === "Organization" ||
-      installation.account?.login === user.login
+      installationAccount?.type === "Organization" ||
+      installationAccount?.login === user.login
     ) {
       organizations.push({
         installationId,
-        login: ensure(
-          installation.account.login,
-          () => `Already checked login`
-        ),
-        type: ensure(installation.account.type, () => `Already checked type`),
+        login: ensure(installationAccount.login, () => `Already checked login`),
+        type: ensure(installationAccount.type, () => `Already checked type`),
       });
     }
 
