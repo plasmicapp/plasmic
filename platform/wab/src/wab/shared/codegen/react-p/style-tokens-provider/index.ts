@@ -48,6 +48,36 @@ export function makeStyleTokensProviderBundle(
   projectModuleBundle: ProjectModuleBundle,
   exportOpts: SetRequired<Partial<ExportOpts>, "targetEnv">
 ): StyleTokensProviderBundle {
+  const hasStyleTokenOverrides = site.styleTokenOverrides.length > 0;
+
+  // project plasmic_tokens_override
+  const overridesClassName = serializeClassExpr(
+    exportOpts,
+    makePlasmicTokensOverrideClassName(projectId, exportOpts)
+  );
+  // The root project may override tokens,
+  // and the overridden value might reference tokens from the root project.
+  //
+  // Therefore, we need to include all token classes accessible to the root project
+  // so that the dependency can de-ref the overridden values when wrapped by the root's StyleTokensProvider
+  //
+  // We also need to include the variant classes to the Provider,
+  // so that the overrides' varianted values can be applied when the root project's global variant is active
+  const dataWithOverrides = `{ 
+    base: ${wrapInTemplateString(
+      `${embedInTemplateString(overridesClassName)} ${embedInTemplateString(
+        "data.base"
+      )}`
+    )}, 
+    varianted: data.varianted 
+  }`;
+
+  // Generate the import statement based on what's needed
+  const reactWebImports = [
+    makeCreateUseStyleTokensName(),
+    ...(hasStyleTokenOverrides ? [makeCreateStyleTokensProviderName()] : []),
+  ];
+
   const module = `
     /* eslint-disable */
     /* tslint:disable */
@@ -57,7 +87,7 @@ export function makeStyleTokensProviderBundle(
     // Plasmic Project: ${projectId}
     // plasmic-unformatted
   
-    import { ${makeCreateStyleTokensProviderName()}, ${makeCreateUseStyleTokensName()} } from "${getReactWebPackageName(
+    import { ${reactWebImports.join(", ")} } from "${getReactWebPackageName(
     exportOpts
   )}";
 
@@ -93,10 +123,14 @@ export function makeStyleTokensProviderBundle(
       ${makeUseGlobalVariantsName()},
     );
   
-    export const ${makeStyleTokensProviderName()} = ${makeCreateStyleTokensProviderName()}(
-      data,
+    ${
+      hasStyleTokenOverrides
+        ? `export const ${makeStyleTokensProviderName()} = ${makeCreateStyleTokensProviderName()}(
+      ${dataWithOverrides},
       ${makeUseGlobalVariantsName()},
-    );`;
+    );`
+        : ""
+    }`;
 
   return {
     id: projectId,
@@ -123,6 +157,14 @@ function makeCssImport(
     : "";
 }
 
+/**
+ * Returns the token class data that the project's components must use.
+ * This includes the project's own (base / varianted) tokens
+ *
+ * This data is always available to the project's components via `useStyleTokens`
+ * even when its not wrapped by a StyleTokensProvider.
+ *
+ */
 function projectStyleTokenData(
   site: Site,
   projectId: string,
@@ -130,22 +172,12 @@ function projectStyleTokenData(
   exportOpts: SetRequired<Partial<ExportOpts>, "targetEnv">
 ) {
   const depMap = new SiteGenHelper(site, false).objToDepMap();
-  const hasStyleTokenOverrides = site.styleTokenOverrides.length > 0;
   const baseClassNames = [
     // project plasmic_tokens
     serializeClassExpr(
       exportOpts,
       makePlasmicTokensClassName(projectId, exportOpts)
     ),
-    // project plasmic_tokens_override
-    ...(hasStyleTokenOverrides
-      ? [
-          serializeClassExpr(
-            exportOpts,
-            makePlasmicTokensOverrideClassName(projectId, exportOpts)
-          ),
-        ]
-      : []),
     // dependencies plasmic_tokens
     ...cssProjectDependencies.map((dep) =>
       serializeClassExpr(
