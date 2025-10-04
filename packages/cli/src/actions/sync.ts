@@ -74,6 +74,7 @@ export interface SyncArgs extends CommonArgs {
   allFiles?: boolean;
   skipFormatting?: boolean;
   skipBuffering?: boolean;
+  preserveImportExtensions?: boolean;
 }
 
 async function ensureRequiredPackages(
@@ -187,6 +188,10 @@ export async function sync(
 
   if (opts.skipFormatting) {
     GLOBAL_SETTINGS.skipFormatting = true;
+  }
+
+  if (opts.preserveImportExtensions) {
+    GLOBAL_SETTINGS.preserveImportExtensions = true;
   }
 
   const isFirstRun = context.config.projects.length === 0;
