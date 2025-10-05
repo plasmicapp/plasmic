@@ -2,24 +2,25 @@
   Forked from https://github.com/vercel/commerce/tree/main/packages/swell/src
   Changes: Added storeId and publicKey parameters
 */
-// @ts-ignore
-import swell, { init } from "swell-js";
+import swell from "swell-js";
 
-import { CommerceExtraFeatures, Provider } from "@plasmicpkgs/commerce";
-import { SWELL_CHECKOUT_ID_COOKIE } from "./const";
-import { handler as useCart } from "./cart/use-cart";
+import { CommerceExtraFeatures, Fetcher } from "@plasmicpkgs/commerce";
 import { handler as useAddItem } from "./cart/use-add-item";
-import { handler as useUpdateItem } from "./cart/use-update-item";
+import { handler as useCart } from "./cart/use-cart";
 import { handler as useRemoveItem } from "./cart/use-remove-item";
-import { handler as useSearch } from "./product/use-search";
-import { handler as useProduct } from "./product/use-product";
-import { handler as useCategories } from "./site/use-categories";
-import { handler as useBrands } from "./site/use-brands";
+import { handler as useUpdateItem } from "./cart/use-update-item";
+import { SWELL_CHECKOUT_ID_COOKIE } from "./const";
 import fetcher from "./fetcher";
-import { Fetcher } from "@plasmicpkgs/commerce";
+import { handler as useProduct } from "./product/use-product";
+import { handler as useSearch } from "./product/use-search";
+import { handler as useBrands } from "./site/use-brands";
+import { handler as useCategories } from "./site/use-categories";
 
 export const getSwellProvider = (storeId: string, publicKey: string) => {
-  init(storeId, publicKey);
+  // Their types claim `init` is a named export, but examining the JS files in
+  // dist/, you can see it's actually a function on the default export.
+  // @ts-expect-error swell-js types are wrong
+  swell.init(storeId, publicKey);
 
   return {
     locale: "en-us",
