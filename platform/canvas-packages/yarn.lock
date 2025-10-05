@@ -2022,10 +2022,10 @@
     debounce "^1.2.1"
     js-cookie "^3.0.5"
 
-"@plasmicpkgs/commerce-swell@^0.0.234":
-  version "0.0.234"
-  resolved "https://registry.yarnpkg.com/@plasmicpkgs/commerce-swell/-/commerce-swell-0.0.234.tgz#fc915806557bba8926e991f7c2709af0a9c78a25"
-  integrity sha512-LGwfIDVuOqaa1aHcxzNYRAMFEuozRB1hYw+ZZ7sgnXMGj7bJERkK7kRE9ligwZ2IZV2mrrplmzqvVBBc2KqB5Q==
+"@plasmicpkgs/commerce-swell@^0.0.235":
+  version "0.0.235"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/commerce-swell/-/commerce-swell-0.0.235.tgz#68e06c0d14613d9409f05c7aa765841cc893ed99"
+  integrity sha512-/RuAOzPUVA/LUnTuIGY2XatrXP7nB5GyhfyHMo+R7soUTMlEB8bEUyUaNGkFAL50wjklslqFFVCveXhIoHjbEg==
   dependencies:
     "@plasmicpkgs/commerce" "0.0.225"
     "@types/react" "^18.0.27"
