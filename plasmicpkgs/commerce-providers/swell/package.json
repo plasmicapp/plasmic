@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/commerce-swell",
-  "version": "0.0.234",
+  "version": "0.0.235",
   "description": "Plasmic registration calls for swell commerce provider",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
