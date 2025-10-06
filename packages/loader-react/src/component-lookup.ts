@@ -62,11 +62,29 @@ export class ComponentLookup {
   }
 
   /** Returns StyleTokensProvider if the project has style token overrides. */
-  maybeGetStyleTokensProvider(spec: ComponentLookupSpec) {
+  maybeGetStyleTokensProvider(
+    spec: ComponentLookupSpec,
+    styleTokenOverridesProjectId?: string
+  ) {
     const compMeta = getFirstCompMeta(this.bundle.components, spec);
-    const projectMeta = compMeta
-      ? this.bundle.projects.find((x) => x.id === compMeta.projectId)
-      : undefined;
+
+    let projectMeta;
+    if (styleTokenOverridesProjectId) {
+      projectMeta = this.bundle.projects.find(
+        (x) => x.id === styleTokenOverridesProjectId
+      );
+      if (!projectMeta) {
+        console.warn(
+          `styleTokenOverridesProjectId "${styleTokenOverridesProjectId}" not found. Defaulting to root component's project.`
+        );
+      }
+    }
+
+    if (!projectMeta && compMeta?.projectId) {
+      projectMeta = this.bundle.projects.find(
+        (x) => x.id === compMeta.projectId
+      );
+    }
 
     if (
       !projectMeta ||

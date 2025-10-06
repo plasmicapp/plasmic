@@ -90,10 +90,13 @@ export function PlasmicComponent(props: {
       // here because there were no children before the data came in.
       const lookup = loader.getLookup();
       const ReactWebRootProvider = lookup.getRootProvider();
-      const StyleTokensProvider = lookup.maybeGetStyleTokensProvider({
-        name: component,
-        projectId,
-      });
+      const StyleTokensProvider = lookup.maybeGetStyleTokensProvider(
+        {
+          name: component,
+          projectId,
+        },
+        rootContext.styleTokenOverridesProjectId
+      );
       const GlobalContextsProvider = lookup.getGlobalContextsProvider({
         name: component,
         projectId,

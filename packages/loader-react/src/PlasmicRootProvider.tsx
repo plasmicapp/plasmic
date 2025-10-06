@@ -13,6 +13,7 @@ import {
 
 export interface PlasmicRootContextValue extends PlasmicDataSourceContextValue {
   globalVariants?: GlobalVariantSpec[];
+  styleTokenOverridesProjectId?: string;
   globalContextsProps?: Record<string, any>;
   loader: InternalPlasmicComponentLoader;
   variation?: Record<string, string>;
@@ -147,6 +148,14 @@ export function PlasmicRootProvider(
      * Fallback value for React.Suspense boundary
      */
     suspenseFallback?: React.ReactNode;
+
+    /**
+     * When Plasmic loads components from multiple projects, we must choose a style token overrides to use that will apply to all components under the root PlasmicComponent.
+     *
+     * If styleTokenOverridesProjectId is set, all PlasmicComponents and their subtrees will use the specified project's style token overrides.
+     * If styleTokenOverridesProjectId it not set, each PlasmicComponent and its subtree will use the style token overrides of the root PlasmicComponent's project.
+     */
+    styleTokenOverridesProjectId?: string;
   } & PlasmicDataSourceContextValue
 ) {
   const {
@@ -168,6 +177,7 @@ export function PlasmicRootProvider(
     suspenseFallback,
     disableLoadingBoundary,
     disableRootLoadingBoundary,
+    styleTokenOverridesProjectId,
   } = props;
   const loader = (props.loader as any)
     .__internal as InternalPlasmicComponentLoader;
@@ -248,6 +258,7 @@ export function PlasmicRootProvider(
         disableLoadingBoundary,
         "disableLoadingBoundary"
       ),
+      styleTokenOverridesProjectId,
     };
   }, [
     globalVariants,
@@ -264,6 +275,7 @@ export function PlasmicRootProvider(
     authRedirectUri,
     suspenseFallback,
     disableLoadingBoundary,
+    styleTokenOverridesProjectId,
     currentContextValue,
   ]);
 

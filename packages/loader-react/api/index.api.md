@@ -296,6 +296,7 @@ export function PlasmicRootProvider(props: {
     disableLoadingBoundary?: boolean;
     disableRootLoadingBoundary?: boolean;
     suspenseFallback?: React_2.ReactNode;
+    styleTokenOverridesProjectId?: string;
 } & PlasmicDataSourceContextValue): React_2.JSX.Element;
 
 // @public (undocumented)
