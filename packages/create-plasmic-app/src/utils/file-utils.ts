@@ -194,7 +194,8 @@ export async function getPlasmicConfig(
       ? ".plasmic/plasmic.json"
       : isGatsby && isLoader
       ? ".cache/.plasmic/plasmic.json"
-      : undefined
+      : undefined,
+    "Missing platform or scheme"
   );
   const configStr = await fs.readFile(path.join(projectPath, configPath));
   return JSON.parse(configStr.toString());

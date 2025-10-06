@@ -15,11 +15,12 @@
     "test": "TEST_CWD=`pwd` yarn --cwd=../.. test --passWithNoTests",
     "coverage": "TEST_CWD=`pwd` yarn --cwd=../.. test --coverage --passWithNoTests",
     "build": "eslint 'src/**' && tsc",
-    "run-cpa": "yarn build && ts-node run-cpa.ts",
-    "create-plasmic-app": "ts-node src/index.ts",
+    "run-cpa": "yarn build && tsx run-cpa.ts",
+    "create-plasmic-app": "tsx src/index.ts",
     "prepublishOnly": "npm run build"
   },
   "devDependencies": {
+    "tsx": "^4.20.6",
     "@types/findup-sync": "^2.0.2",
     "@types/glob": "^7.1.3",
     "@types/inquirer": "^8.2.5",

@@ -15,8 +15,7 @@
     "watch-css": "postcss src/main.css -w -o assets/main.css -u postcss-cssnext",
     "dev": "webpack-dev-server --config webpack.dev.config.js --open",
     "test": "jest",
-    "watch-test": "jest --watch",
-    "preview-names": "ts-node src/server.ts preview-names"
+    "watch-test": "jest --watch"
   },
   "devDependencies": {
     "@types/lodash": "^4.14.158",
@@ -36,7 +35,6 @@
     "postcss-cli": "^7.1.1",
     "postcss-cssnext": "^3.1.0",
     "source-map-loader": "^1.0.1",
-    "ts-node": "^8.10.2",
     "typedoc": "^0.17.8",
     "typescript": "^4.1.2",
     "webpack": "^5.86.0",

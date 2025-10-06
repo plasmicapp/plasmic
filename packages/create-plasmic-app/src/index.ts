@@ -105,8 +105,8 @@ Sentry.configureScope((scope) => {
 async function maybePrompt<T>(
   question: DistinctQuestion<Record<string, unknown>>
 ): Promise<T> {
-  const name = ensure(question.name);
-  const message = ensure(question.message);
+  const name = ensure(question.name, "Question name required");
+  const message = ensure(question.message, "Question message required");
 
   const cliAnswer = argv[name];
   if (

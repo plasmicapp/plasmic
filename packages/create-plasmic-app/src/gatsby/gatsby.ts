@@ -103,7 +103,7 @@ export const gatsbyStrategy: CPAStrategy = {
       let result = ifTs(jsOrTs, `import path from "path";\n`);
       const pluginConfig = GATSBY_PLUGIN_CONFIG(
         projectId,
-        ensure(projectApiToken),
+        ensure(projectApiToken, "Missing projectApiToken"),
         jsOrTs
       );
       for await (const line of rl) {

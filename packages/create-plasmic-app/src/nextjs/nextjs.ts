@@ -89,7 +89,10 @@ async function generateFilesAppDir(args: GenerateFilesArgs) {
   // ./plasmic-init.ts
   await fs.writeFile(
     path.join(projectPath, `plasmic-init.${jsOrTs}`),
-    makePlasmicInit_app_loader(projectId, ensure(projectApiToken))
+    makePlasmicInit_app_loader(
+      projectId,
+      ensure(projectApiToken, "Missing projectApiToken")
+    )
   );
 
   // ./plasmic-init-client.ts
@@ -123,7 +126,10 @@ async function generateFilesPagesDir(args: GenerateFilesArgs) {
     // ./plasmic-init.ts
     await fs.writeFile(
       path.join(projectPath, `plasmic-init.${jsOrTs}`),
-      makePlasmicInit_pages_loader(projectId, ensure(projectApiToken))
+      makePlasmicInit_pages_loader(
+        projectId,
+        ensure(projectApiToken, "Missing projectApiToken")
+      )
     );
 
     // ./pages/plasmic-host.tsx

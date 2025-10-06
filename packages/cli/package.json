@@ -18,7 +18,7 @@
     "test": "NODE_OPTIONS=--experimental-vm-modules jest --colors",
     "test:debug": "node --experimental-vm-modules --inspect-brk node_modules/.bin/jest --runInBand --watch",
     "build": "bash build.sh",
-    "plasmic": "ts-node src/index.ts",
+    "plasmic": "tsx src/index.ts",
     "prepublishOnly": "npm run build"
   },
   "devDependencies": {
@@ -72,7 +72,7 @@
     "socket.io-client": "^4.1.2",
     "tmp": "^0.2.1",
     "ts-jest": "^29.1.1",
-    "ts-node": "^8.10.2",
+    "tsx": "^4.20.6",
     "typescript": "^5.7.3",
     "typescript-json-schema": "^0.45.0",
     "upath": "^1.2.0",
