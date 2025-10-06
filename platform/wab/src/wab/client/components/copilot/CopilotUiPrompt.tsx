@@ -15,7 +15,7 @@ function CopilotUiPrompt() {
     : undefined;
 
   return (
-    <CopilotPromptDialog<QueryCopilotUiResponse["data"]>
+    <CopilotPromptDialog<QueryCopilotUiResponse["response"]>
       className={"CopilotUiPromptDialog"}
       type={"ui"}
       showImageUpload={true}
@@ -40,19 +40,16 @@ function CopilotUiPrompt() {
           })),
         });
 
-        const response = result.data;
+        const response = result.response;
+        const { tokens, html } = response;
 
         const messageParts: string[] = [];
 
-        const actions = response.actions;
-        const hasHtmlDesign =
-          actions.filter((action) => action.name === "insert-html")?.length > 0;
-        if (hasHtmlDesign) {
+        if (html.trim()) {
           messageParts.push("• A new HTML design snippet is ready to be used");
         }
 
-        const newTokensCount =
-          actions.filter((action) => action.name === "add-token")?.length ?? 0;
+        const newTokensCount = tokens.length;
         if (newTokensCount > 0) {
           messageParts.push(
             `• ${newTokensCount} new token${
@@ -67,45 +64,29 @@ function CopilotUiPrompt() {
           copilotInteractionId: result.copilotInteractionId,
         };
       }}
-      onCopilotApply={async (newValue) => {
-        const copilotUiData = newValue;
-        if (!copilotUiData) {
-          return;
-        }
+      onCopilotApply={async (response) => {
+        const { tokens, html } = response;
 
-        // Collect and apply all 'add-token' actions first so the newly added tokens can be replaced correctly in the insert-html afterwards.
-        const upsertTokens: UpsertTokenReq[] = [];
-        for (const action of copilotUiData.actions) {
-          if (action.name === "add-token") {
-            upsertTokens.push({
-              name: action.data.name,
-              value: action.data.value,
-              type: action.data.tokenType,
-            });
-          }
-        }
         spawn(
           studioCtx.change(({ success }) => {
             spawn(
               (async function () {
+                const upsertTokens: UpsertTokenReq[] = tokens.map((t) => ({
+                  name: t.name,
+                  value: t.value,
+                  type: t.tokenType,
+                }));
                 addOrUpsertTokens(studioCtx.site, upsertTokens);
 
-                for (const action of copilotUiData.actions) {
-                  if (action.name === "insert-html") {
-                    const { wiTree } = await studioCtx.app.withSpinner(
-                      parseHtmlToWebImporterTree(
-                        action.data.html,
-                        studioCtx.site
-                      )
-                    );
-                    if (wiTree) {
-                      await processWebImporterTree(wiTree, {
-                        studioCtx,
-                        insertRelLoc,
-                        cursorClientPt: undefined,
-                      });
-                    }
-                  }
+                const { wiTree } = await studioCtx.app.withSpinner(
+                  parseHtmlToWebImporterTree(html, studioCtx.site)
+                );
+                if (wiTree) {
+                  await processWebImporterTree(wiTree, {
+                    studioCtx,
+                    insertRelLoc,
+                    cursorClientPt: undefined,
+                  });
                 }
               })()
             );
