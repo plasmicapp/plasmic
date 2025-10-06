@@ -205,5 +205,87 @@ describe("WebImporter", () => {
 
       expect(pageViewCtx.focusedTpls()).toEqual([pastedTpl]);
     });
+
+    it("pastes text with font-family and extracts only first font", async () => {
+      pageViewCtx.selectNewTpl(page.tplTree);
+
+      // Create wiTree with text element that has multi-font font-family
+      const wiTree: WIElement = {
+        type: "container",
+        tag: "div",
+        attrs: {
+          __name: "font-test-container",
+        },
+        variantSettings: [
+          {
+            unsanitizedStyles: {},
+            safeStyles: {
+              display: "flex",
+              flexDirection: "column",
+            },
+            unsafeStyles: {},
+            variantCombo: [{ type: "base" }],
+          },
+        ],
+        children: [
+          {
+            type: "text",
+            tag: "span",
+            text: "Text with multiple fonts",
+            variantSettings: [
+              {
+                unsanitizedStyles: {
+                  "font-family": '"Playfair Display", Georgia, serif',
+                },
+                safeStyles: {
+                  fontFamily: "Playfair Display",
+                },
+                unsafeStyles: {},
+                variantCombo: [{ type: "base" }],
+              },
+            ],
+          },
+        ],
+      };
+
+      // Create clipboard data with web importer header
+      const clipboard = getWebImporterDataToClipboard(wiTree);
+
+      expect(
+        await paste({
+          clipboard,
+          studioCtx,
+          cursorClientPt: undefined,
+        })
+      ).toBe(true);
+
+      const rootChildren = Tpls.tplChildren(page.tplTree);
+      expect(rootChildren).toHaveLength(1);
+      const pastedTpl = rootChildren[0];
+
+      // Verify it's a container tpl
+      expect(Tpls.getTagOrComponentName(pastedTpl)).toEqual("div");
+      const pastedTplChildren = Tpls.tplChildren(pastedTpl);
+      expect(pastedTplChildren).toHaveLength(1);
+
+      // Verify the child text tpl
+      const textTpl = pastedTplChildren[0];
+      expect(Tpls.getTagOrComponentName(textTpl)).toEqual("span");
+      expect(Tpls.getTplTextBlockContent(textTpl, pageViewCtx)).toEqual(
+        "Text with multiple fonts"
+      );
+
+      // Verify font-family in variant settings
+      const baseVariantSetting = pageViewCtx
+        .variantTplMgr()
+        .ensureBaseVariantSetting(textTpl);
+
+      // Check that font-family in ruleset values matches the first font only
+      expect(baseVariantSetting.rs.values["font-family"]).toBe(
+        "Playfair Display"
+      );
+
+      expect(pageViewCtx.focusedTpls()).toEqual([pastedTpl]);
+    });
   });
 });

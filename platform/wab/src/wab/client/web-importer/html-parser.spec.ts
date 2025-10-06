@@ -1174,6 +1174,29 @@ describe("fixCSSValue", () => {
   it("ensure camelCase key translation for any key", () => {
     expect(fixCSSValue("z-index", "100")).toEqual({ zIndex: "100" });
   });
+
+  it("extracts first font from font-family values", () => {
+    expect(fixCSSValue("font-family", '"Roboto"')).toEqual({
+      fontFamily: "Roboto",
+    });
+    expect(fixCSSValue("font-family", "'Roboto'")).toEqual({
+      fontFamily: "Roboto",
+    });
+    expect(fixCSSValue("font-family", "Roboto")).toEqual({
+      fontFamily: "Roboto",
+    });
+    expect(fixCSSValue("font-family", '"Arial", sans-serif')).toEqual({
+      fontFamily: "Arial",
+    });
+    expect(fixCSSValue("font-family", "'Times New Roman', serif")).toEqual({
+      fontFamily: "Times New Roman",
+    });
+    expect(
+      fixCSSValue("font-family", "Georgia, 'Times New Roman', serif")
+    ).toEqual({
+      fontFamily: "Georgia",
+    });
+  });
 });
 
 describe("snapshot tests", () => {

@@ -41,6 +41,7 @@ import {
 } from "@/wab/shared/css";
 import { parseScreenSpec } from "@/wab/shared/css-size";
 import { findAllAndMap } from "@/wab/shared/css/css-tree-utils";
+import { splitCssValue } from "@/wab/shared/css/parse";
 import { Site } from "@/wab/shared/model/classes";
 import { VariantGroupType } from "@/wab/shared/Variants";
 import {
@@ -266,6 +267,17 @@ function fixCSSValue(key: string, value: string) {
   if (fixedKey === "boxShadow") {
     return {
       boxShadow: parseCss(fixedValue, { startRule: "boxShadows" }).showCss(),
+    };
+  }
+
+  if (fixedKey === "fontFamily") {
+    // Parse font-family values and extract only the first font name
+    // CSS allows multiple fonts like '"Playfair Display", sans-serif'
+    // but Font Family dropdown in Typography Section expects a single font
+    const fontValues = splitCssValue("fontFamily", fixedValue);
+    const firstFont = fontValues[0].replace(/["']/g, "").trim();
+    return {
+      fontFamily: firstFont,
     };
   }
 

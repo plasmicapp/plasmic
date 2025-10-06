@@ -678,11 +678,13 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                           {
                             "safeStyles": {
                               "color": "white",
+                              "fontFamily": "Arial",
                               "fontWeight": "bold",
                             },
                             "unsafeStyles": {},
                             "unsanitizedStyles": {
                               "color": "white",
+                              "font-family": "Arial,"Helvetica Neue",sans-serif",
                               "font-weight": "bold",
                             },
                             "variantCombo": [
@@ -715,6 +717,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                         },
                         "unsafeStyles": {
                           "color": "white",
+                          "fontFamily": "Arial",
                           "fontWeight": "bold",
                         },
                         "unsanitizedStyles": {
@@ -722,6 +725,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                           "border-radius": "25px",
                           "box-sizing": "border-box",
                           "color": "white",
+                          "font-family": "Arial,"Helvetica Neue",sans-serif",
                           "font-weight": "bold",
                           "margin": "0",
                           "padding": "0.5rem 1rem",
@@ -1152,12 +1156,14 @@ exports[`snapshot tests parse landing page html properly 1`] = `
             },
             "unsafeStyles": {
               "color": "white",
+              "fontFamily": "Helvetica Neue",
               "textAlign": "center",
             },
             "unsanitizedStyles": {
               "background": "radial-gradient(circle at 30% 50%,#667eea 0%,#764ba2 50%,#4a5568 100%)",
               "box-sizing": "border-box",
               "color": "white",
+              "font-family": ""Helvetica Neue",sans-serif",
               "margin": "0",
               "padding": "4rem 0",
               "text-align": "center",
@@ -3780,13 +3786,13 @@ exports[`snapshot tests parse landing page html properly 1`] = `
         },
         "unsafeStyles": {
           "color": "#333",
-          "fontFamily": ""Roboto",sans-serif",
+          "fontFamily": "Roboto",
           "lineHeight": "1.6",
         },
         "unsanitizedStyles": {
           "box-sizing": "border-box",
           "color": "#333",
-          "font-family": ""Roboto",sans-serif",
+          "font-family": ""Roboto","Helvetica Neue",Arial,sans-serif",
           "line-height": "1.6",
           "margin": "0",
           "padding": "0",
