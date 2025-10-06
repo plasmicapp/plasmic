@@ -56,10 +56,6 @@ const config: KnipConfig = {
         "path-browserify",
         "stream-browserify",
         "stream-http",
-
-        // used by react-use?
-        "keyboardjs",
-        "rebound",
       ],
     },
   },
