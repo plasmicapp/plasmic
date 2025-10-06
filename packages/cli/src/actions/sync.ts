@@ -181,7 +181,9 @@ export async function sync(
   // Initially allow for a missing auth. Only require an auth once we need to fetch new or updated API tokens for any
   // projects.
 
-  if (!opts.baseDir) opts.baseDir = process.cwd();
+  if (!opts.baseDir) {
+    opts.baseDir = process.cwd();
+  }
   const baseDir = opts.baseDir;
   let context = await getContext(opts, { enableSkipAuth: true });
 
@@ -456,19 +458,19 @@ async function checkExternalPkgs(
 
 function maybeRenamePathExt(
   context: PlasmicContext,
-  path: string,
-  ext: string,
+  filePath: string,
+  fileExt: string,
   opts?: {
     continueOnFailure?: boolean;
   }
 ) {
-  if (!path) {
-    return path;
+  if (!filePath) {
+    return filePath;
   }
-  const correctPath = `${stripExtension(path, true)}${ext}`;
-  if (path !== correctPath) {
+  const correctPath = `${stripExtension(filePath, true)}${fileExt}`;
+  if (filePath !== correctPath) {
     try {
-      renameFile(context, path, correctPath);
+      renameFile(context, filePath, correctPath);
     } catch (e) {
       if (!opts?.continueOnFailure) {
         throw e;
@@ -522,13 +524,6 @@ async function syncProject(
   externalCssImports: Set<string>,
   metadataDefaults?: Metadata
 ): Promise<void> {
-  const existingProject = context.config.projects.find(
-    (p) => p.projectId === projectId
-  );
-  const existingCompScheme: Array<[string, "blackbox" | "direct"]> = (
-    existingProject?.components || []
-  ).map((c) => [c.id, c.scheme]);
-
   const projectApiToken = ensure(
     projectIdsAndTokens.find((p) => p.projectId === projectId)?.projectApiToken,
     `Could not find the API token for project ${projectId} in list: ${JSON.stringify(

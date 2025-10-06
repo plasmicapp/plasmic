@@ -2,17 +2,17 @@
 import yargs from "yargs";
 import * as auth from "./actions/auth";
 import { ExportArgs, exportProjectsCli } from "./actions/export";
-import { fixImports, FixImportsArgs } from "./actions/fix-imports";
+import { FixImportsArgs, fixImports } from "./actions/fix-imports";
 import { InfoArgs, printProjectInfo } from "./actions/info";
-import { getYargsOption, InitArgs, initPlasmic } from "./actions/init";
+import { InitArgs, getYargsOption, initPlasmic } from "./actions/init";
 import {
+  LocalizationStringsArgs,
   getLocalizationYargs,
   localizationStrings,
-  LocalizationStringsArgs,
 } from "./actions/localization-strings";
 import * as projectToken from "./actions/project-token";
-import { showProjectStatus, StatusArgs } from "./actions/status";
-import { sync, SyncArgs } from "./actions/sync";
+import { StatusArgs, showProjectStatus } from "./actions/status";
+import { SyncArgs, sync } from "./actions/sync";
 import { UploadBundleArgs, uploadJsBundle } from "./actions/upload-bundle";
 import { WatchArgs, watchProjects } from "./actions/watch";
 import { handleError } from "./utils/error";
@@ -110,8 +110,8 @@ yargs
   .command<StatusArgs>(
     "status",
     "Shows the status of local Plasmic projects.",
-    (yargs) =>
-      yargs.option("json", {
+    (yargs2) =>
+      yargs2.option("json", {
         describe: "Output status in JSON format",
         type: "boolean",
         default: false,
@@ -160,8 +160,8 @@ yargs
   .command<InfoArgs>(
     "info",
     "Fetches metadata for projects",
-    (yags) =>
-      yags
+    (yargs2) =>
+      yargs2
         .option("host", {
           describe: "Plasmic host to use",
           type: "string",
@@ -185,8 +185,8 @@ yargs
   .command<UploadBundleArgs>(
     "upload-bundle",
     false,
-    (yargs) =>
-      yargs
+    (yargs2) =>
+      yargs2
         .option("project", {
           alias: "p",
           describe: "ID of Plasmic project to upload the bundle to.",
@@ -246,8 +246,8 @@ yargs
   .command<projectToken.ProjectTokenArgs>(
     "project-token <projectId>",
     "Get projectApiToken for a given project",
-    (yargs) =>
-      yargs
+    (yargs2) =>
+      yargs2
         .positional("projectId", {
           describe: "projectId",
           type: "string",
@@ -262,8 +262,8 @@ yargs
   .command<LocalizationStringsArgs>(
     "localization-strings",
     "Generate localization strings",
-    (yargs) =>
-      yargs
+    (yargs2) =>
+      yargs2
         .option("projects", {
           alias: "p",
           describe:
@@ -310,8 +310,8 @@ yargs
   .command<ExportArgs>(
     "export",
     false,
-    (yargs) =>
-      yargs
+    (yargs2) =>
+      yargs2
         .option("projects", {
           alias: "p",
           describe: "ID of project to export from",

@@ -86,6 +86,9 @@ export interface PlasmicConfig {
   /** Wether we should wrap the pages with the project global contexts or not */
   wrapPagesWithGlobalContexts: boolean;
 
+  /** Whether to preserve js / ts / jsx / tsx file extensions in import statements */
+  preserveJsImportExtensions: boolean;
+
   /** The version of cli when this file was written */
   cliVersion?: string;
 
@@ -493,6 +496,7 @@ export const DEFAULT_CONFIG: PlasmicConfig = {
     variantGroups: [],
   },
   wrapPagesWithGlobalContexts: true,
+  preserveJsImportExtensions: false,
 };
 
 export const DEFAULT_PUBLIC_FILES_CONFIG: ImagesConfig = {
@@ -610,7 +614,7 @@ export function getOrAddProjectConfig(
 ): ProjectConfig {
   let project = context.config.projects.find((p) => p.projectId === projectId);
   if (!project) {
-    project = !!base
+    project = base
       ? L.cloneDeep(base)
       : {
           projectId,
@@ -639,7 +643,7 @@ export function getOrAddProjectLock(
 ): ProjectLock {
   let project = context.lock.projects.find((p) => p.projectId === projectId);
   if (!project) {
-    project = !!base
+    project = base
       ? L.cloneDeep(base)
       : {
           projectId,

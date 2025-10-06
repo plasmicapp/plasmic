@@ -170,6 +170,7 @@ export async function exportProjectsCli(opts: ExportArgs): Promise<void> {
         platform: opts.platform || "react",
         srcDir: "./",
         defaultPlasmicDir: "./",
+        preserveJsImportExtensions: false,
         code: {
           lang: opts.codeLang || "ts",
           scheme: "blackbox",

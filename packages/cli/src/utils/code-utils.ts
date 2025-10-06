@@ -78,7 +78,8 @@ async function nodeToFormattedCode(
 ): Promise<string> {
   const c = generate(n, {
     retainLines: true,
-    shouldPrintComment: (c) => !commentsToRemove || !commentsToRemove.has(c),
+    shouldPrintComment: (comment) =>
+      !commentsToRemove || !commentsToRemove.has(comment),
   }).code;
   return unformatted
     ? c
@@ -205,6 +206,7 @@ function tryParsePlasmicImportSpec(node: ImportDeclaration) {
     return undefined;
   }
   const m = c.value.match(
+    // eslint-disable-next-line no-misleading-character-class
     new RegExp(
       [
         "plasmic-import:\\s+([",
@@ -287,7 +289,7 @@ export async function replaceImports(
         // to name collisions.
         // ensureImportDefaultSpecifier(stmt, compConfig.name);
       }
-      const realPath = makeImportPath(context, fromPath, modulePath, true);
+      const realPath = makeImportPath(context, fromPath, modulePath);
       stmt.source.value = realPath;
     } else if (type === "render") {
       // import of the PP blackbox
@@ -298,8 +300,7 @@ export async function replaceImports(
       const realPath = makeImportPath(
         context,
         fromPath,
-        compConfig.renderModuleFilePath,
-        true
+        compConfig.renderModuleFilePath
       );
       stmt.source.value = realPath;
     } else if (type === "css") {
@@ -311,8 +312,7 @@ export async function replaceImports(
       const realPath = makeImportPath(
         context,
         fromPath,
-        compConfig.cssFilePath,
-        false
+        compConfig.cssFilePath
       );
       stmt.source.value = realPath;
     } else if (type === "globalVariant") {
@@ -324,8 +324,7 @@ export async function replaceImports(
       const realPath = makeImportPath(
         context,
         fromPath,
-        variantConfig.contextFilePath,
-        true
+        variantConfig.contextFilePath
       );
       stmt.source.value = realPath;
     } else if (type === "icon") {
@@ -337,8 +336,7 @@ export async function replaceImports(
       const realPath = makeImportPath(
         context,
         fromPath,
-        iconConfig.moduleFilePath,
-        true
+        iconConfig.moduleFilePath
       );
       stmt.source.value = realPath;
     } else if (type === "picture") {
@@ -346,12 +344,7 @@ export async function replaceImports(
       if (!imageConfig) {
         throwMissingReference(context, "image", uuid, fromPath);
       }
-      const realPath = makeImportPath(
-        context,
-        fromPath,
-        imageConfig.filePath,
-        false
-      );
+      const realPath = makeImportPath(context, fromPath, imageConfig.filePath);
       stmt.source.value = realPath;
     } else if (type === "projectcss") {
       const projectConfig = fixImportContext.projects[uuid];
@@ -361,16 +354,14 @@ export async function replaceImports(
       const realPath = makeImportPath(
         context,
         fromPath,
-        projectConfig.cssFilePath,
-        false
+        projectConfig.cssFilePath
       );
       stmt.source.value = realPath;
     } else if (type === "defaultcss") {
       const realPath = makeImportPath(
         context,
         fromPath,
-        fixImportContext.config.style.defaultStyleCssFilePath,
-        false
+        fixImportContext.config.style.defaultStyleCssFilePath
       );
       stmt.source.value = realPath;
     } else if (type === "codeComponent") {
@@ -384,7 +375,7 @@ export async function replaceImports(
         // Relative path from the project root
         const toPath = path.join(context.rootDir, meta.componentImportPath);
         assert(path.isAbsolute(toPath));
-        const realPath = makeImportPath(context, fromPath, toPath, true, true);
+        const realPath = makeImportPath(context, fromPath, toPath, true);
         stmt.source.value = realPath;
       } else {
         // npm package
@@ -401,7 +392,7 @@ export async function replaceImports(
         // Relative path from the project root
         const toPath = path.join(context.rootDir, meta.helper.importPath);
         assert(path.isAbsolute(toPath));
-        const realPath = makeImportPath(context, fromPath, toPath, true, true);
+        const realPath = makeImportPath(context, fromPath, toPath, true);
         stmt.source.value = realPath;
       } else {
         // npm package
@@ -415,8 +406,7 @@ export async function replaceImports(
       const realPath = makeImportPath(
         context,
         fromPath,
-        projectConfig.globalContextsFilePath,
-        true
+        projectConfig.globalContextsFilePath
       );
       stmt.source.value = realPath;
     } else if (type === "customFunction") {
@@ -430,7 +420,7 @@ export async function replaceImports(
         // Relative path from the project root
         const toPath = path.join(context.rootDir, meta.importPath);
         assert(path.isAbsolute(toPath));
-        const realPath = makeImportPath(context, fromPath, toPath, true, true);
+        const realPath = makeImportPath(context, fromPath, toPath, true);
         stmt.source.value = realPath;
       } else {
         // npm package
@@ -444,8 +434,7 @@ export async function replaceImports(
       const realPath = makeImportPath(
         context,
         fromPath,
-        projectConfig.splitsProviderFilePath,
-        true
+        projectConfig.splitsProviderFilePath
       );
       stmt.source.value = realPath;
     } else if (type === "styleTokensProvider") {
@@ -456,8 +445,7 @@ export async function replaceImports(
       const realPath = makeImportPath(
         context,
         fromPath,
-        projectConfig.styleTokensProviderFilePath,
-        true
+        projectConfig.styleTokensProviderFilePath
       );
       stmt.source.value = realPath;
     } else if (type === "projectModule") {
@@ -468,8 +456,7 @@ export async function replaceImports(
       const realPath = makeImportPath(
         context,
         fromPath,
-        projectConfig.projectModuleFilePath,
-        true
+        projectConfig.projectModuleFilePath
       );
       stmt.source.value = realPath;
     } else if (type === "rscClient") {
@@ -484,12 +471,7 @@ export async function replaceImports(
         );
       }
 
-      stmt.source.value = makeImportPath(
-        context,
-        fromPath,
-        clientModulePath,
-        true
-      );
+      stmt.source.value = makeImportPath(context, fromPath, clientModulePath);
     } else if (type === "rscServer") {
       const compConfig = fixImportContext.components[uuid];
       if (!compConfig) {
@@ -506,12 +488,7 @@ export async function replaceImports(
         `Fixing "rscServer" with "${serverModulePath}" and from "${fromPath}"`
       );
 
-      stmt.source.value = makeImportPath(
-        context,
-        fromPath,
-        serverModulePath,
-        true
-      );
+      stmt.source.value = makeImportPath(context, fromPath, serverModulePath);
     }
   });
 
@@ -543,10 +520,17 @@ function makeImportPath(
   context: PlasmicContext,
   fromPath: string,
   toPath: string,
-  stripExt: boolean,
   forceRelative = false
 ) {
   let result = toPath;
+  const stripExt = context.config.preserveJsImportExtensions
+    ? // Do not strip any extensions if the user has explicitly requested to preserve them
+      false
+    : // Strip extensions only for JavaScript/TypeScript modules
+      [".ts", ".tsx", ".js", ".jsx"].includes(
+        path.extname(toPath).toLowerCase()
+      );
+
   if (forceRelative || isLocalModulePath(toPath)) {
     result = path.relative(
       makeFilePath(context, path.dirname(fromPath)),
@@ -843,7 +827,7 @@ class CompilerOptions {
         curDir = path.join(curDir, "..");
         configPath = path.join(curDir, "tsconfig-transform.json");
       } while (!existsBuffered(configPath));
-      const c = ts.readConfigFile(configPath, (path) => readFileText(path));
+      const c = ts.readConfigFile(configPath, (path2) => readFileText(path2));
       this.opts = ts.convertCompilerOptionsFromJson(
         c.config.compilerOptions,
         "."
@@ -876,7 +860,7 @@ export const tsxToJsx = (code: string) => {
     return str;
   }
 
-  let result = ts.transpileModule(prepForTranspile(code), {
+  const result = ts.transpileModule(prepForTranspile(code), {
     compilerOptions: CompilerOptions.getOpts(),
   });
   return fixPostTranspile(result.outputText);
@@ -909,13 +893,13 @@ export async function formatScript(
     newLineMarker = newLineMarker + "_REALLY";
   }
   traverse(file, {
-    Statement: function (path) {
+    Statement: function (filePath) {
       if (
-        file.program.body.includes(path.node) &&
-        path.node.type !== "ImportDeclaration"
+        file.program.body.includes(filePath.node) &&
+        filePath.node.type !== "ImportDeclaration"
       ) {
-        path.insertBefore(babel.types.stringLiteral(newLineMarker));
-        path.skip();
+        filePath.insertBefore(babel.types.stringLiteral(newLineMarker));
+        filePath.skip();
       }
     },
   });
@@ -938,7 +922,9 @@ async function fixGlobalContextImportStatements(
   baseDir: string
 ) {
   for (const project of context.config.projects) {
-    if (!project.globalContextsFilePath) continue;
+    if (!project.globalContextsFilePath) {
+      continue;
+    }
     const resourcePath = getGlobalContextsResourcePath(context, project);
 
     let prevContent: string;
@@ -976,10 +962,12 @@ async function fixImportStatements(
   fixImportContext: FixImportContext,
   baseDir: string,
   configKey: keyof ProjectConfig,
-  getResourcePath: (context: PlasmicContext, project: ProjectConfig) => string
+  getResourcePath: (ctx: PlasmicContext, project: ProjectConfig) => string
 ) {
   for (const project of context.config.projects) {
-    if (!project[configKey]) continue;
+    if (!project[configKey]) {
+      continue;
+    }
 
     const resourcePath = getResourcePath(context, project);
 

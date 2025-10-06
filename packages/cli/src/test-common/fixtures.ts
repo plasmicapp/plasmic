@@ -36,6 +36,7 @@ export const defaultPlasmicJson: PlasmicConfig = {
     variantGroups: [],
   },
   wrapPagesWithGlobalContexts: true,
+  preserveJsImportExtensions: false,
   cliVersion: "0.1.44",
 };
 export function standardTestSetup(includeDep = true) {
