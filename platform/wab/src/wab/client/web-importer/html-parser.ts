@@ -40,6 +40,7 @@ import {
   ShorthandProperty,
 } from "@/wab/shared/css";
 import { parseScreenSpec } from "@/wab/shared/css-size";
+import { isBorderProp, parseBorderShorthand } from "@/wab/shared/css/border";
 import { findAllAndMap } from "@/wab/shared/css/css-tree-utils";
 import { splitCssValue } from "@/wab/shared/css/parse";
 import { Site } from "@/wab/shared/model/classes";
@@ -246,6 +247,10 @@ function fixCSSValue(key: string, value: string) {
 
   if (shorthandProperties.includes(fixedKey as ShorthandProperty)) {
     return parseShorthandProperties(fixedKey as ShorthandProperty, valueNode);
+  }
+
+  if (isBorderProp(fixedKey)) {
+    return parseBorderShorthand(fixedKey, valueNode);
   }
 
   if (fixedKey === "backgroundColor") {

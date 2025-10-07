@@ -610,9 +610,12 @@ describe("parseHtmlToWebImporterTree", () => {
                 borderTopRightRadius: "4px",
                 borderBottomRightRadius: "4px",
                 borderBottomLeftRadius: "4px",
+                borderTopStyle: "none",
+                borderBottomStyle: "none",
+                borderRightStyle: "none",
+                borderLeftStyle: "none",
               },
               unsafeStyles: {
-                border: "none",
                 color: "white",
               },
               variantCombo: [{ type: "base" }],
@@ -695,6 +698,18 @@ describe("parseHtmlToWebImporterTree", () => {
                 "border-radius": "4px",
               },
               safeStyles: {
+                borderTopStyle: "solid",
+                borderRightStyle: "solid",
+                borderBottomStyle: "solid",
+                borderLeftStyle: "solid",
+                borderTopWidth: "2px",
+                borderRightWidth: "2px",
+                borderBottomWidth: "2px",
+                borderLeftWidth: "2px",
+                borderTopColor: "gray",
+                borderRightColor: "gray",
+                borderBottomColor: "gray",
+                borderLeftColor: "gray",
                 borderTopLeftRadius: "4px",
                 borderTopRightRadius: "4px",
                 borderBottomRightRadius: "4px",
@@ -704,9 +719,7 @@ describe("parseHtmlToWebImporterTree", () => {
                 paddingBottom: "8px",
                 paddingLeft: "8px",
               },
-              unsafeStyles: {
-                border: "2px solid gray",
-              },
+              unsafeStyles: {},
               variantCombo: [{ type: "base" }],
             },
             {
@@ -883,6 +896,91 @@ describe("parseHtmlToWebImporterTree", () => {
               ],
             },
           ],
+        },
+      ],
+      attrs: { style: "width: 100%;", __name: "" },
+    });
+  });
+  it("Parses border mixed properties", async () => {
+    const html = `<!DOCTYPE html>
+      <html lang="en">
+        <head>
+          <style>
+            .mixed-properties {
+              border: 2px solid black;
+              border-top: thick dashed purple;
+              border-color: yellow;
+            }
+          </style>
+        </head>
+        <body>
+        <div>
+        <div class="mixed-properties">Mixed Properties</div>  
+      </div>
+        </body>
+    </html>
+`;
+
+    const { wiTree: rootEl } = await parseHtmlToWebImporterTree(html, site);
+    assert(rootEl, "rootEl should not be null");
+
+    expect(rootEl).toMatchObject<Partial<WIElement>>({
+      type: "container",
+      tag: "div",
+      variantSettings: [
+        {
+          unsanitizedStyles: { width: "100%" },
+          safeStyles: { width: "100%" },
+          unsafeStyles: {},
+          variantCombo: [{ type: "base" }],
+        },
+      ],
+      children: [
+        {
+          type: "container",
+          tag: "div",
+          variantSettings: [],
+          children: [
+            {
+              type: "container",
+              tag: "div",
+              variantSettings: [
+                {
+                  unsanitizedStyles: {
+                    border: "2px solid black",
+                    "border-top": "thick dashed purple",
+                    "border-color": "yellow",
+                  },
+                  safeStyles: {
+                    borderTopStyle: "dashed",
+                    borderRightStyle: "solid",
+                    borderBottomStyle: "solid",
+                    borderLeftStyle: "solid",
+                    borderTopWidth: "5px",
+                    borderRightWidth: "2px",
+                    borderBottomWidth: "2px",
+                    borderLeftWidth: "2px",
+                    borderTopColor: "yellow",
+                    borderRightColor: "yellow",
+                    borderBottomColor: "yellow",
+                    borderLeftColor: "yellow",
+                  },
+                  unsafeStyles: {},
+                  variantCombo: [{ type: "base" }],
+                },
+              ],
+              children: [
+                {
+                  type: "text",
+                  text: "Mixed Properties",
+                  tag: "span",
+                  variantSettings: [],
+                },
+              ],
+              attrs: { class: "mixed-properties", __name: "" },
+            },
+          ],
+          attrs: { __name: "" },
         },
       ],
       attrs: { style: "width: 100%;", __name: "" },

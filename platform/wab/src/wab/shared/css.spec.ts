@@ -1,4 +1,9 @@
-import { expandGapProperty, parseCss } from "@/wab/shared/css";
+import {
+  expandGapProperty,
+  parseCss,
+  parseCssShorthand,
+  showCssShorthand,
+} from "@/wab/shared/css";
 
 describe("parseCss", () => {
   it("parse box-shadow string properly into the 4 lengths + color format", () => {
@@ -215,6 +220,54 @@ describe("expandGapProperty", () => {
         gridRowGap: "var(--grid-row)",
         gridColumnGap: "var(--grid-col)",
       });
+    });
+  });
+  describe("parseCssShorthand & showCssShorthand", () => {
+    it("parses single value", () => {
+      expect(parseCssShorthand("10px")).toEqual([
+        "10px",
+        "10px",
+        "10px",
+        "10px",
+      ]);
+    });
+
+    it("parses two values", () => {
+      expect(parseCssShorthand("10px 20px")).toEqual([
+        "10px",
+        "20px",
+        "10px",
+        "20px",
+      ]);
+    });
+
+    it("parses three values", () => {
+      expect(parseCssShorthand("1px 2px 3px")).toEqual([
+        "1px",
+        "2px",
+        "3px",
+        "2px",
+      ]);
+    });
+
+    it("parses four values", () => {
+      expect(parseCssShorthand("1px 2px 3px 4px")).toEqual([
+        "1px",
+        "2px",
+        "3px",
+        "4px",
+      ]);
+    });
+
+    it("reduces back to shorthand correctly", () => {
+      expect(showCssShorthand(["10px", "10px", "10px", "10px"])).toBe("10px");
+      expect(showCssShorthand(["1px", "2px", "1px", "2px"])).toBe("1px 2px");
+      expect(showCssShorthand(["1px", "2px", "3px", "2px"])).toBe(
+        "1px 2px 3px"
+      );
+      expect(showCssShorthand(["1px", "2px", "3px", "4px"])).toBe(
+        "1px 2px 3px 4px"
+      );
     });
   });
 });

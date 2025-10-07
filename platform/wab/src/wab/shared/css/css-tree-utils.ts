@@ -6,10 +6,10 @@ import {
 import {
   CssNode,
   FunctionNode,
-  generate,
   Raw,
   StringNode,
   Url,
+  generate,
 } from "css-tree";
 /**
  * Splits a collection of CSS nodes by comma operators

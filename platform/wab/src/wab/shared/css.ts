@@ -26,7 +26,7 @@ import {
 } from "@/wab/shared/geom";
 import { RuleSet } from "@/wab/shared/model/classes";
 import CssInitials from "css-initials";
-import { generate, Value } from "css-tree";
+import { Value, generate } from "css-tree";
 import {
   camelCase,
   flatten,
