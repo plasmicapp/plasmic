@@ -1875,6 +1875,11 @@
   dependencies:
     framer-motion "^5.3.0"
 
+"@plasmicpkgs/graphql@^0.0.10":
+  version "0.0.10"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/graphql/-/graphql-0.0.10.tgz#5fc1ad92eead3fce9ededbea9b41a9224ac81f9a"
+  integrity sha512-zyslKN6WwHv6kIPyO+POhnxjV4LumDD+M7h+UpT/CV7xeWeilJgSqFfjTC0OID16YOklotdMSqpG0CzGK4N6TQ==
+
 "@plasmicpkgs/lottie-react@^0.0.219":
   version "0.0.219"
   resolved "https://registry.yarnpkg.com/@plasmicpkgs/lottie-react/-/lottie-react-0.0.219.tgz#5c96ae13772feca8caaeeb36c0845400753c412e"

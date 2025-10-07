@@ -958,10 +958,10 @@ const getHostLess = memoizeOne(
       )
       .map<AddItemGroup>((meta) => {
         // Filter custom function packages with hiddenWhenInstalled that are installed
+        // TODO - update function UI to indicate that it's already installed
+        const leafId = getLeafProjectIdForHostLessPackageMeta(meta);
         const isInstalledWithHidden = projectDependencies.some(
-          (dep) =>
-            getLeafProjectIdForHostLessPackageMeta(meta) === dep.projectId &&
-            meta.hiddenWhenInstalled
+          (dep) => leafId === dep.projectId && meta.hiddenWhenInstalled
         );
         const newVar: AddItemGroup = {
           hostLessPackageInfo: meta,
