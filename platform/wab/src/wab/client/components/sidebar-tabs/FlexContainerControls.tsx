@@ -276,7 +276,6 @@ function FlexContainerControls_(props: FlexContainerControlsProps) {
     styleName: prop,
     tokenType: "Spacing",
     dimOpts: {
-      allowedUnits: ["px"],
       min: 0,
       dragScale: "10",
       value: styling.exp().get(prop),

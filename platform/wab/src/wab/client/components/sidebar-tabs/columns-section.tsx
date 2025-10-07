@@ -263,7 +263,6 @@ export const ColumnsGapControls = observer(function ColumnsGapControls(props: {
           expsProvider={expsProvider}
           dimOpts={{
             min: 0,
-            allowedUnits: ["px"],
             noClear: true,
           }}
           isDisabled={isDisabled}
@@ -274,7 +273,6 @@ export const ColumnsGapControls = observer(function ColumnsGapControls(props: {
           expsProvider={expsProvider}
           dimOpts={{
             min: 0,
-            allowedUnits: ["px"],
             noClear: true,
           }}
           isDisabled={isDisabled || !includeRowGap}
