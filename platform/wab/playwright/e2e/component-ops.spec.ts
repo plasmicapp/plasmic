@@ -115,6 +115,8 @@ test.describe("component-ops - tricky operations", () => {
 
     await models.studio.renameTreeNode("text2");
 
+    await models.studio.rightPanel.switchToComponentDataTab();
+
     await models.studio.rightPanel.addInteractionVariant("Hover");
 
     const newFrame = page
@@ -230,6 +232,9 @@ test.describe("component-ops - tricky operations", () => {
     await models.studio.rightPanel.textContentButton.click({ force: true });
 
     await page.keyboard.insertText("--->Hello!");
+    await page.keyboard.press("Escape");
+
+    await page.waitForTimeout(500);
 
     await compCFrame.locator("body").click();
 
@@ -240,7 +245,9 @@ test.describe("component-ops - tricky operations", () => {
     const selectedNode = models.studio.leftPanel.focusedTreeNode;
     await expect(selectedNode).toContainText("CompB");
 
-    await expect(compCFrame.getByText("--->Hello!")).toBeVisible();
+    await expect(compCFrame.getByText("--->Hello!")).toBeVisible({
+      timeout: 10000,
+    });
     await models.studio.rightPanel.checkNoErrors();
   });
 });

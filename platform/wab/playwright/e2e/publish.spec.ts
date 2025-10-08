@@ -34,10 +34,15 @@ test.describe("publish", () => {
 
     const selectedElt = await models.studio.getSelectedElt();
     await selectedElt.dblclick({ force: true });
-    await page.waitForTimeout(500);
 
-    await page.keyboard.press("Control+a");
+    const isMac = process.platform === "darwin";
+    const cmdKey = isMac ? "Meta" : "Control";
+
+    await page.waitForTimeout(500);
+    await page.keyboard.press(`${cmdKey}+a`);
+    await page.waitForTimeout(100);
     await page.keyboard.type("goodbye");
+    await page.waitForTimeout(100);
     await page.keyboard.press("Escape");
     await page.waitForTimeout(500);
 
@@ -45,7 +50,7 @@ test.describe("publish", () => {
       .locator('text="goodbye"')
       .waitFor({ state: "visible", timeout: 5000 });
 
-    await artboardFrame.locator('body').click();
+    await artboardFrame.locator("body").click();
     await models.studio.waitForSave();
 
     await artboardFrame

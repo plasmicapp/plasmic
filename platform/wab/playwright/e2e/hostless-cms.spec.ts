@@ -202,8 +202,9 @@ test.describe("hostless-cms", () => {
     await page.waitForTimeout(2000);
     await page.keyboard.press("Enter");
     await page.keyboard.press("Enter");
+    await page.waitForTimeout(500);
     const cmsDataFetcherLabel2 = models.studio.leftPanel.frame
-      .locator('.tpltree__nodeLabel__summary:has-text("CMS Data Fetcher")')
+      .locator('.tpltree__label:has-text("CMS Data Fetcher")')
       .first();
     await cmsDataFetcherLabel2.click();
     await page.waitForTimeout(500);

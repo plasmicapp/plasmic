@@ -14,7 +14,7 @@ function getFormValue(expectedFormItems: any[]): string {
 test.describe("simplified", () => {
   let projectId: string;
 
-  test.beforeEach(async ({ apiClient, page }) => {
+  test.beforeEach(async ({ apiClient, page, models }) => {
     projectId = await apiClient.setupProjectWithHostlessPackages({
       hostLessPackagesInfo: {
         name: "antd5",
@@ -22,7 +22,7 @@ test.describe("simplified", () => {
       },
     });
     await page.goto(`/projects/${projectId}`);
-    await page.waitForLoadState("networkidle");
+    await models.studio.waitForFrameToLoad();
   });
 
   test.afterEach(async ({ apiClient }) => {

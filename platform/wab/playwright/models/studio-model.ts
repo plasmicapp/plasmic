@@ -705,7 +705,11 @@ export class StudioModel extends BaseModel {
     await this.publishProjectButton.click();
     await this.versionDescriptionInput.fill(description);
     await this.confirmPublishButton.click();
-    await this.frame.locator(selector).waitFor({ state: "visible" });
+    await this.frame
+      .locator("#publishing-version-spinner-item")
+      .waitFor({ state: "hidden", timeout: 10000 })
+      .catch(() => {});
+    await this.frame.locator(selector).first().waitFor({ state: "visible" });
     await this.page.waitForTimeout(500);
     const countAfter = await this.frame.locator(selector).count();
     expect(countAfter).toBe(countBefore + 1);
@@ -868,6 +872,40 @@ export class StudioModel extends BaseModel {
 
         await this.page.waitForTimeout(500);
       }
+    }
+  }
+
+  async checkSelectedPropNodeAs(expectedType: "default" | "forked") {
+    const selectedNode = this.leftPanel.focusedTreeNode;
+    await selectedNode.click({ button: "right", force: true });
+
+    const revertToItem = this.page.locator("text=/^revert to/i");
+
+    if (expectedType === "default") {
+      await expect(revertToItem).not.toBeVisible();
+    } else {
+      await expect(revertToItem).toBeVisible();
+    }
+
+    await selectedNode.click({ force: true });
+  }
+
+  async clickSelectedTreeNodeContextMenu(menuItem: string) {
+    const selectedNode = this.leftPanel.focusedTreeNode;
+    await selectedNode.click({ button: "right" });
+
+    const contextMenu = this.frame.locator(".ant-dropdown-menu");
+    await contextMenu.waitFor({ state: "visible", timeout: 5000 });
+
+    const menuItemLocator = contextMenu.getByText(menuItem);
+    await menuItemLocator.click();
+  }
+
+  async clearNotifications() {
+    const closeButton = this.frame.locator(".ant-notification-notice-close");
+    const count = await closeButton.count();
+    for (let i = 0; i < count; i++) {
+      await closeButton.first().click();
     }
   }
 }

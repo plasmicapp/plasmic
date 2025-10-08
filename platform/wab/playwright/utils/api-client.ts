@@ -1,3 +1,4 @@
+import playwright from "playwright";
 import { APIRequestContext, Page } from "playwright/test";
 
 export class ApiClient {
@@ -5,6 +6,35 @@ export class ApiClient {
   private dataSourceId: string | undefined = undefined;
 
   constructor(private request: APIRequestContext, private baseUrl: string) {}
+
+  private async withAdminContext<T>(
+    operation: (context: APIRequestContext, token: string) => Promise<T>
+  ): Promise<T> {
+    const adminContext = await playwright.request.newContext({
+      baseURL: this.baseUrl,
+    });
+
+    try {
+      const csrfRes = await adminContext.get(
+        `${this.baseUrl}/api/v1/auth/csrf`
+      );
+      const adminToken = (await csrfRes.json()).csrf;
+
+      await adminContext.post(`${this.baseUrl}/api/v1/auth/login`, {
+        data: { email: "admin@admin.example.com", password: "!53kr3tz!" },
+        headers: { "X-CSRF-Token": adminToken },
+      });
+
+      const csrfRes2 = await adminContext.get(
+        `${this.baseUrl}/api/v1/auth/csrf`
+      );
+      const adminToken2 = (await csrfRes2.json()).csrf;
+
+      return await operation(adminContext, adminToken2);
+    } finally {
+      await adminContext.dispose();
+    }
+  }
 
   async login(email: string, password: string) {
     const csrfRes = await this.request.get(`${this.baseUrl}/api/v1/auth/csrf`);
@@ -18,6 +48,9 @@ export class ApiClient {
       data: { email, password },
       headers: { "X-CSRF-Token": this.token },
     });
+
+    const csrfRes2 = await this.request.get(`${this.baseUrl}/api/v1/auth/csrf`);
+    this.token = (await csrfRes2.json()).csrf;
   }
 
   async logout() {
@@ -333,12 +366,6 @@ export class ApiClient {
       throw Error("X-CSRF-Token is not set");
     }
 
-    const workspaceRes = await this.request.get(
-      `${this.baseUrl}/api/v1/personal-workspace`,
-      { headers: { "X-CSRF-Token": this.token } }
-    );
-    const workspaceId = (await workspaceRes.json()).workspace.id;
-
     const importResponse = await this.request.post(
       `${this.baseUrl}/api/v1/projects/import`,
       {
@@ -347,8 +374,8 @@ export class ApiClient {
         },
         data: {
           data: JSON.stringify(bundle),
-          workspaceId: workspaceId,
           keepProjectIdsAndNames: false,
+          migrationsStrict: true,
           dataSourceReplacement: options?.dataSourceReplacement,
         },
       }
@@ -369,17 +396,39 @@ export class ApiClient {
   }
 
   async getDevFlags() {
-    const response = await this.request.get(`${this.baseUrl}/api/v1/dev-flags`);
-    return response.json();
+    return this.withAdminContext(async (context) => {
+      const response = await context.get(
+        `${this.baseUrl}/api/v1/admin/devflags`
+      );
+      const responseBody = await response.json();
+      return JSON.parse(responseBody.data);
+    });
   }
 
   async upsertDevFlags(devFlags: Record<string, any>) {
-    if (!this.token) {
-      throw Error("X-CSRF-Token is not set");
-    }
-    await this.request.post(`${this.baseUrl}/api/v1/dev-flags`, {
-      data: devFlags,
-      headers: { "X-CSRF-Token": this.token },
+    return this.withAdminContext(async (context, token) => {
+      await context.put(`${this.baseUrl}/api/v1/admin/devflags`, {
+        data: {
+          data: JSON.stringify(devFlags),
+        },
+        headers: { "X-CSRF-Token": token },
+      });
     });
+  }
+
+  async getUserEmailVerificationToken(email: string): Promise<string> {
+    const csrfRes = await this.request.get(`${this.baseUrl}/api/v1/auth/csrf`);
+    const csrf = (await csrfRes.json()).csrf;
+
+    const response = await this.request.get(
+      `${this.baseUrl}/api/v1/auth/getEmailVerificationToken`,
+      {
+        data: { email },
+        headers: { "X-CSRF-Token": csrf },
+      }
+    );
+
+    const responseBody = await response.json();
+    return responseBody.token;
   }
 }

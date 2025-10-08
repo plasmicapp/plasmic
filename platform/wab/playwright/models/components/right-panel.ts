@@ -1,4 +1,4 @@
-import { FrameLocator, Locator, Page } from "playwright/test";
+import { expect, FrameLocator, Locator, Page } from "playwright/test";
 import { modifierKey } from "../../utils/modifier-key";
 import { updateFormValuesInLiveMode } from "../../utils/studio-utils";
 import { BaseModel } from "../BaseModel";
@@ -154,7 +154,7 @@ export class RightPanel extends BaseModel {
     'button[data-test-tabkey="settings"]'
   );
   readonly addInteractionVariantButton: Locator = this.frame.locator(
-    '[data-event="component-arena-add-interaction-variant"]'
+    '[data-event="variantspanel-section-add-variant-to-group"]'
   );
   readonly variantSelectorInput: Locator = this.frame.locator(
     'input[placeholder="e.g. :hover, :focus, :nth-child(odd)"]'
@@ -586,6 +586,8 @@ export class RightPanel extends BaseModel {
 
   async addVariantGroup(groupName: string) {
     await this.addVariantGroupButton.click();
+
+    await this.page.waitForTimeout(500);
 
     const singleOption = this.frame
       .locator(".ant-dropdown-menu")
@@ -1427,5 +1429,32 @@ export class RightPanel extends BaseModel {
     );
 
     return results.every((count) => count > 0);
+  }
+
+  async checkNumberOfStatesInComponent(explicit: number, implicit: number) {
+    await this.switchToComponentDataTab();
+
+    const explicitStateRows = this.frame.locator(
+      '[data-test-type="variable-row"]'
+    );
+    await expect(explicitStateRows).toHaveCount(explicit);
+
+    if (!implicit) {
+      const showExtraContentButton = this.frame.locator(
+        '[data-test-id="variables-section"] [data-test-id="show-extra-content"]'
+      );
+      await expect(showExtraContentButton).not.toBeVisible();
+    } else {
+      // Expand the variables section to show implicit states
+      const showExtraContentButton = this.frame.locator(
+        '[data-test-id="variables-section"] [data-test-id="show-extra-content"]'
+      );
+      await showExtraContentButton.click();
+
+      const implicitStateRows = this.frame.locator(
+        '[data-test-type="implicit-variable-row"]'
+      );
+      await expect(implicitStateRows).toHaveCount(implicit);
+    }
   }
 }

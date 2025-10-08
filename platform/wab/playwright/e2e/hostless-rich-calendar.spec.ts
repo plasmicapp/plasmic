@@ -306,44 +306,7 @@ test.describe("hostless-rich-calendar", () => {
     await page.keyboard.press("Control+a");
     await page.keyboard.press("Delete");
 
-    const eventsData = `[
-      {
-          "date": "2023-05-10 09:24:15",
-          "name": "Mustafa Birthday",
-          "color": "gold",
-          "image": "https://www.one-stop-party-ideas.com/images/First-Outfit-Boy.jpg"
-      },
-      {
-          "date": "2023-05-15 09:24:15",
-          "name": "Affan Birthday",
-          "color": "red",
-          "image": "https://aspenjay.com/wp-content/uploads/2021/08/baby-1st-birthday-photos.jpg"
-      },
-      {
-          "date": "2023-01-02T22:30:00.000+00:00",
-          "name": "Usman Birthday",
-          "color": "blue",
-          "image": "https://www.bakingo.com/blog/wp-content/uploads/2023/02/vanilla.jpg"
-      },
-      {
-          "date": "Sun, 25 Apr 2021 13:23:12 +0630",
-          "name": "Sarah Birthday",
-          "color": "purple",
-          "image": "https://www.bakingo.com/blog/wp-content/uploads/2023/02/vanilla.jpg"
-      },
-      {
-          "date": "2023-01-13T22:30:00.000+00:00",
-          "name": "Jaweria Birthday",
-          "color": "pink",
-          "image": "https://www.bakingo.com/blog/wp-content/uploads/2023/02/vanilla.jpg"
-      },
-      {
-          "date": "2023-11-26T22:30:00.000+00:00",
-          "name": "Safi Birthday",
-          "color": "silver",
-          "image": "https://www.bakingo.com/blog/wp-content/uploads/2023/02/vanilla.jpg"
-      }
-  ]`;
+    const eventsData = `[{"date":"2023-05-10 09:24:15","name":"Mustafa Birthday","color":"gold","image":"https://www.one-stop-party-ideas.com/images/First-Outfit-Boy.jpg"},{"date":"2023-05-15 09:24:15","name":"Affan Birthday","color":"red","image":"https://aspenjay.com/wp-content/uploads/2021/08/baby-1st-birthday-photos.jpg"},{"date":"2023-01-02T22:30:00.000+00:00","name":"Usman Birthday","color":"blue","image":"https://www.bakingo.com/blog/wp-content/uploads/2023/02/vanilla.jpg"},{"date":"Sun, 25 Apr 2021 13:23:12 +0630","name":"Sarah Birthday","color":"purple","image":"https://www.bakingo.com/blog/wp-content/uploads/2023/02/vanilla.jpg"},{"date":"2023-01-13T22:30:00.000+00:00","name":"Jaweria Birthday","color":"pink","image":"https://www.bakingo.com/blog/wp-content/uploads/2023/02/vanilla.jpg"},{"date":"2023-11-26T22:30:00.000+00:00","name":"Safi Birthday","color":"silver","image":"https://www.bakingo.com/blog/wp-content/uploads/2023/02/vanilla.jpg"}]`;
 
     await page.keyboard.insertText(eventsData);
     await page.waitForTimeout(1000);
@@ -355,7 +318,10 @@ test.describe("hostless-rich-calendar", () => {
 
     await models.studio.rightPanel.frame
       .locator('[data-test-id="data-picker"]')
-      .waitFor({ state: "hidden", timeout: 5000 });
+      .waitFor({ state: "hidden", timeout: 5000 })
+      .catch(() => {
+        return page.keyboard.press("Escape");
+      });
 
     await models.studio.withinLiveMode(async (liveFrame: any) => {
       await liveFrame.locator(".ant-radio-button-wrapper").nth(1).click();

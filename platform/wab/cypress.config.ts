@@ -64,6 +64,16 @@ export default defineConfig({
       "cypress/e2e/forms/schema.spec.ts",
       "cypress/e2e/forms/simplified-all-form-items.spec.ts",
       "cypress/e2e/forms/simplified.spec.ts",
+      "cypress/e2e/image-slots.spec.ts",
+      "cypress/e2e/interactions-variants.spec.ts",
+      "cypress/e2e/project-access.spec.ts",
+      "cypress/e2e/signup.spec.ts",
+      "cypress/e2e/stale-bundle.spec.ts",
+      "cypress/e2e/state-management-counter.spec.ts",
+      "cypress/e2e/state-management-dependent.spec.ts",
+      "cypress/e2e/text-slots.spec.ts",
+      "cypress/e2e/variants.spec.ts",
+      "cypress/e2e/virtual-slots.spec.ts",
     ],
     // We've imported your old cypress plugins here.
     // You may want to clean this up later by importing these.
