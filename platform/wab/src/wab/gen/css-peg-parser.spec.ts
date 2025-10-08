@@ -21,7 +21,7 @@ describe("cssPegParser", function () {
     ));
   it("should parse variable refs", () =>
     expect(bgParse("var(--image-hello)")).toEqual(
-      new ImageBackground({ url: "var(--image-hello)" })
+      new ColorFill({ color: "var(--image-hello)" })
     ));
   it("should parse linear gradients", function () {
     expect(bgParse("linear-gradient(90deg, black 50%, #fff 70%)")).toEqual(

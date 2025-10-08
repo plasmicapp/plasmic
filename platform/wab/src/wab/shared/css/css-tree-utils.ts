@@ -209,7 +209,7 @@ export function isDimensionNode(node: CssNode) {
 }
 
 /**
- * Checks if a node represents a dimension value
+ * Checks if a node represents a variable function
  */
 export function isVarFunctionNode(node: CssNode): node is FunctionNode {
   return node.type === "Function" && node.name === "var";

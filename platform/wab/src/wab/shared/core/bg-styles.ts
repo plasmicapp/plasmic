@@ -662,9 +662,6 @@ function parseImageBackground(node: CssNode) {
       return new ImageBackground({ url });
     }
   }
-  if (node.type === "Function" && node.name === "var") {
-    return new ImageBackground({ url: generate(node) });
-  }
 
   return null;
 }

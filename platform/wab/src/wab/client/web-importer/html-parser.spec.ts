@@ -1217,7 +1217,7 @@ describe("fixCSSValue", () => {
 
     const token = "var(--token-abc)";
     expect(fixCSSValue("background", token)).toEqual({
-      background: token,
+      background: `linear-gradient(${token}, ${token})`,
     });
   });
 
