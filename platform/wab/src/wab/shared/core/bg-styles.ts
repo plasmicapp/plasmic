@@ -663,6 +663,16 @@ function parseImageBackground(node: CssNode) {
     }
   }
 
+  const value = generate(node);
+  if (
+    node.type === "Function" &&
+    node.name === "var" &&
+    // Used for image assets ref
+    value.startsWith("var(--image-")
+  ) {
+    return new ImageBackground({ url: generate(node) });
+  }
+
   return null;
 }
 

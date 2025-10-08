@@ -19,10 +19,15 @@ describe("cssPegParser", function () {
     expect(bgParse('url("http://aoeu")')).toEqual(
       new ImageBackground({ url: "http://aoeu" })
     ));
-  it("should parse variable refs", () =>
+  it("should parse variable refs", () => {
     expect(bgParse("var(--image-hello)")).toEqual(
-      new ColorFill({ color: "var(--image-hello)" })
-    ));
+      new ImageBackground({ url: "var(--image-hello)" })
+    );
+
+    expect(bgParse("var(--token-abc)")).toEqual(
+      new ColorFill({ color: "var(--token-abc)" })
+    );
+  });
   it("should parse linear gradients", function () {
     expect(bgParse("linear-gradient(90deg, black 50%, #fff 70%)")).toEqual(
       new LinearGradient({
