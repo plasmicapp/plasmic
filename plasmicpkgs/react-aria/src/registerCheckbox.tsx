@@ -2,6 +2,7 @@ import { PlasmicElement } from "@plasmicapp/host";
 import React from "react";
 import type { CheckboxProps } from "react-aria-components";
 import { Checkbox } from "react-aria-components";
+import { useOptionsItemId } from "./OptionsItemIdManager";
 import {
   COMMON_STYLES,
   createAriaLabelProp,
@@ -14,7 +15,6 @@ import {
   hasParent,
 } from "./common";
 import { PlasmicCheckboxGroupContext } from "./contexts";
-import { useOptionsItemId } from "./OptionsItemIdManager";
 import {
   BaseControlContextData,
   CodeComponentMetaOverrides,
@@ -23,7 +23,11 @@ import {
   makeComponentName,
   registerComponentHelper,
 } from "./utils";
-import { WithVariants, pickAriaComponentVariants } from "./variant-utils";
+import {
+  VariantUpdater,
+  WithVariants,
+  pickAriaComponentVariants,
+} from "./variant-utils";
 
 const CHECKBOX_VARIANTS = [
   "hovered" as const,
@@ -47,8 +51,7 @@ interface BaseCheckboxProps
   children: React.ReactNode;
 }
 
-const { variants, withObservedValues } =
-  pickAriaComponentVariants(CHECKBOX_VARIANTS);
+const { variants } = pickAriaComponentVariants(CHECKBOX_VARIANTS);
 
 export function BaseCheckbox(props: BaseCheckboxProps) {
   const {
@@ -87,22 +90,24 @@ export function BaseCheckbox(props: BaseCheckboxProps) {
           isIndeterminate,
           isSelected,
           isReadOnly,
-        }) =>
-          withObservedValues(
-            children,
-            {
-              hovered: isHovered,
-              pressed: isPressed,
-              focused: isFocused,
-              focusVisible: isFocusVisible,
-              disabled: isDisabled,
-              indeterminate: isIndeterminate,
-              selected: isSelected,
-              readonly: isReadOnly,
-            },
-            plasmicUpdateVariant
-          )
-        }
+        }) => (
+          <>
+            <VariantUpdater
+              changes={{
+                hovered: isHovered,
+                pressed: isPressed,
+                focused: isFocused,
+                focusVisible: isFocusVisible,
+                disabled: isDisabled,
+                indeterminate: isIndeterminate,
+                selected: isSelected,
+                readonly: isReadOnly,
+              }}
+              updateVariant={plasmicUpdateVariant}
+            />
+            {children}
+          </>
+        )}
       </Checkbox>
     </>
   );

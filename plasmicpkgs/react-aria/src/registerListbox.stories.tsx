@@ -1,6 +1,14 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { expect, fn, Mock, userEvent, within } from "@storybook/test";
-import React from "react";
+import {
+  Mock,
+  expect,
+  fn,
+  spyOn,
+  userEvent,
+  waitFor,
+  within,
+} from "@storybook/test";
+import React, { useEffect, useState } from "react";
 import { ListBoxItem } from "react-aria-components";
 import { BaseListBox } from "./registerListBox";
 import { BaseListBoxItem } from "./registerListBoxItem";
@@ -11,6 +19,7 @@ const meta: Meta<typeof BaseListBox> = {
   component: BaseListBox,
   args: {
     onSelectionChange: fn(),
+    "aria-label": "List Box",
   },
   argTypes: {
     selectionMode: {
@@ -46,15 +55,46 @@ export const NoSelection: Story = {
   args: {
     selectionMode: "none",
     children: createListItems(3).map((item) => (
-      <BaseListBoxItem key={item.id} id={item.id}>
+      <BaseListBoxItem key={item.id} id={item.id} textValue={item.textValue}>
         {item.children}
       </BaseListBoxItem>
     )),
   },
+  render: (args) => {
+    // This state is to simulate the plasmicUpdateVariant prop behaviour (which, when called, triggers a state update in PlasmicComponent.tsx files)
+    const [_variant, setVariant] = useState("");
+    const [showListBox, setShowListBox] = useState(false);
+
+    useEffect(() => {
+      // We delay the rendering of the ListBox to wait for the spies to be set up
+      setTimeout(() => {
+        setShowListBox(true);
+      }, 10);
+    }, []);
+
+    if (!showListBox) {
+      return <></>;
+    }
+
+    return (
+      <>
+        <BaseListBox
+          {...args}
+          plasmicUpdateVariant={() => {
+            setVariant("new value");
+          }}
+        />
+      </>
+    );
+  },
   play: async ({ canvasElement, args }) => {
+    const consoleWarnSpy = spyOn(console, "warn");
+    const consoleErrorSpy = spyOn(console, "error");
+
     const canvas = within(canvasElement);
-    const options = await within(canvas.getByRole("listbox")).findAllByRole(
-      "option"
+    const options = await waitFor(
+      () => within(canvas.getByRole("listbox")).findAllByRole("option"),
+      { timeout: 100 }
     );
     expect(options).toHaveLength(3);
     await userEvent.click(options[1]);
@@ -68,6 +108,10 @@ export const NoSelection: Story = {
     options.forEach((option) => {
       expect(option).not.toHaveAttribute("aria-selected");
     });
+
+    // this is to ensure that no warnings or errors are logged during component interaction
+    expect(consoleWarnSpy).not.toHaveBeenCalled();
+    expect(consoleErrorSpy).not.toHaveBeenCalled();
   },
 };
 

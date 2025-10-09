@@ -1,7 +1,12 @@
 import { CodeComponentMeta } from "@plasmicapp/host";
 import React from "react";
 import { Slider, type SliderProps } from "react-aria-components";
-import { COMMON_STYLES, createAriaLabelProp, createDisabledProp, createIdProp } from "./common";
+import {
+  COMMON_STYLES,
+  createAriaLabelProp,
+  createDisabledProp,
+  createIdProp,
+} from "./common";
 import { PlasmicSliderContext } from "./contexts";
 import { LABEL_COMPONENT_NAME } from "./registerLabel";
 import { registerSliderOutput } from "./registerSliderOutput";
@@ -13,14 +18,17 @@ import {
   makeComponentName,
   registerComponentHelper,
 } from "./utils";
-import { WithVariants, pickAriaComponentVariants } from "./variant-utils";
+import {
+  VariantUpdater,
+  WithVariants,
+  pickAriaComponentVariants,
+} from "./variant-utils";
 
 const SLIDER_COMPONENT_NAME = makeComponentName("slider");
 const RANGE_SLIDER_COMPONENT_NAME = makeComponentName("range-slider");
 const SLIDER_VARIANTS = ["disabled" as const];
 
-const { variants, withObservedValues } =
-  pickAriaComponentVariants(SLIDER_VARIANTS);
+const { variants } = pickAriaComponentVariants(SLIDER_VARIANTS);
 
 export interface BaseSliderProps<T extends number | number[]>
   extends SliderProps<T>,
@@ -43,15 +51,17 @@ export function BaseSlider<T extends number | number[]>(
       }}
     >
       <Slider<T> {...rest} style={COMMON_STYLES}>
-        {({ isDisabled }) =>
-          withObservedValues(
-            children,
-            {
-              disabled: isDisabled,
-            },
-            plasmicUpdateVariant
-          )
-        }
+        {({ isDisabled }) => (
+          <>
+            <VariantUpdater
+              changes={{
+                disabled: isDisabled,
+              }}
+              updateVariant={plasmicUpdateVariant}
+            />
+            {children}
+          </>
+        )}
       </Slider>
     </PlasmicSliderContext.Provider>
   );

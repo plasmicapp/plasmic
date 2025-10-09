@@ -2,6 +2,7 @@ import { PlasmicElement } from "@plasmicapp/host";
 import React from "react";
 import type { RadioProps } from "react-aria-components";
 import { Radio, RadioGroup } from "react-aria-components";
+import { useOptionsItemId } from "./OptionsItemIdManager";
 import {
   COMMON_STYLES,
   createAriaLabelProp,
@@ -10,7 +11,6 @@ import {
   createIdProp,
 } from "./common";
 import { PlasmicRadioGroupContext } from "./contexts";
-import { useOptionsItemId } from "./OptionsItemIdManager";
 import { LABEL_COMPONENT_NAME } from "./registerLabel";
 import {
   BaseControlContextData,
@@ -20,7 +20,11 @@ import {
   makeComponentName,
   registerComponentHelper,
 } from "./utils";
-import { WithVariants, pickAriaComponentVariants } from "./variant-utils";
+import {
+  VariantUpdater,
+  WithVariants,
+  pickAriaComponentVariants,
+} from "./variant-utils";
 
 const RADIO_VARIANTS = [
   "selected" as const,
@@ -44,8 +48,7 @@ export interface BaseRadioProps
   children: React.ReactNode;
 }
 
-const { variants, withObservedValues } =
-  pickAriaComponentVariants(RADIO_VARIANTS);
+const { variants } = pickAriaComponentVariants(RADIO_VARIANTS);
 
 export function BaseRadio(props: BaseRadioProps) {
   const {
@@ -82,21 +85,23 @@ export function BaseRadio(props: BaseRadioProps) {
         isSelected,
         isDisabled,
         isReadOnly,
-      }) =>
-        withObservedValues(
-          children,
-          {
-            hovered: isHovered,
-            pressed: isPressed,
-            focused: isFocused,
-            focusVisible: isFocusVisible,
-            selected: isSelected,
-            disabled: isDisabled,
-            readonly: isReadOnly,
-          },
-          plasmicUpdateVariant
-        )
-      }
+      }) => (
+        <>
+          <VariantUpdater
+            changes={{
+              hovered: isHovered,
+              pressed: isPressed,
+              focused: isFocused,
+              focusVisible: isFocusVisible,
+              selected: isSelected,
+              disabled: isDisabled,
+              readonly: isReadOnly,
+            }}
+            updateVariant={plasmicUpdateVariant}
+          />
+          {children}
+        </>
+      )}
     </Radio>
   );
 

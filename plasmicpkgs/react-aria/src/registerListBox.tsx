@@ -1,9 +1,10 @@
 import { usePlasmicCanvasContext } from "@plasmicapp/host";
-import React, { useCallback, useEffect, useState } from "react";
-import { Key, ListBox, ListBoxRenderProps } from "react-aria-components";
+import React, { useEffect, useState } from "react";
+import { mergeProps } from "react-aria";
+import { Key, ListBox } from "react-aria-components";
+import { useIdManager } from "./OptionsItemIdManager";
 import { COMMON_STYLES, createAriaLabelProp, createIdProp } from "./common";
 import { PlasmicListBoxContext } from "./contexts";
-import { useIdManager } from "./OptionsItemIdManager";
 import {
   makeDefaultListBoxItemChildren,
   registerListBoxItem,
@@ -13,20 +14,21 @@ import {
   BaseControlContextDataForLists,
   CodeComponentMetaOverrides,
   HasControlContextData,
-  makeComponentName,
   Registerable,
+  makeComponentName,
   registerComponentHelper,
 } from "./utils";
-import { pickAriaComponentVariants, WithVariants } from "./variant-utils";
+import { WithVariants, pickAriaComponentVariants } from "./variant-utils";
 
 export interface BaseListBoxControlContextData
   extends BaseControlContextDataForLists {
   isStandalone: boolean;
 }
 
-const LISTBOX_VARIANTS = ["focused" as const, "focusVisible" as const];
+const LISTBOX_VARIANTS = ["focused" as const];
 
-const { variants } = pickAriaComponentVariants(LISTBOX_VARIANTS);
+const { variants: LISTBOX_VARIANTS_DATA } =
+  pickAriaComponentVariants(LISTBOX_VARIANTS);
 
 export interface BaseListBoxProps
   extends Omit<
@@ -63,7 +65,6 @@ export function BaseListBox(props: BaseListBoxProps) {
   const {
     setControlContextData: setControlContextData,
     children,
-    className,
     selectedKeys,
     defaultSelectedKeys,
     plasmicUpdateVariant,
@@ -76,6 +77,18 @@ export function BaseListBox(props: BaseListBoxProps) {
 
   const idManager = useIdManager(setIds, context?.idManager);
 
+  const mergedProps = mergeProps(rest, {
+    onFocusChange: (focused: boolean) => {
+      plasmicUpdateVariant?.({ focused });
+    },
+    // `shouldUseVirtualFocus` is not part of the ListBox prop types, but it's passed through to useListBox, which does support it.
+    // In editor, we use virtual focus to prevent the listbox from stealing focus
+    ...(inEditor ? { shouldUseVirtualFocus: true } : {}),
+    style: COMMON_STYLES,
+    selectedKeys: normalizeSelectedKeys(selectedKeys),
+    defaultSelectedKeys: normalizeSelectedKeys(defaultSelectedKeys),
+  });
+
   useEffect(() => {
     setControlContextData?.({
       itemIds: ids,
@@ -83,31 +96,7 @@ export function BaseListBox(props: BaseListBoxProps) {
     });
   }, [ids, isStandalone, setControlContextData]);
 
-  const classNameProp = useCallback(
-    ({ isFocusVisible, isFocused }: ListBoxRenderProps) => {
-      plasmicUpdateVariant?.({
-        focused: isFocused,
-        focusVisible: isFocusVisible,
-      });
-      return className ?? "";
-    },
-    [className, plasmicUpdateVariant]
-  );
-
-  const listbox = (
-    <ListBox
-      selectedKeys={normalizeSelectedKeys(selectedKeys)}
-      defaultSelectedKeys={normalizeSelectedKeys(defaultSelectedKeys)}
-      className={classNameProp}
-      style={COMMON_STYLES}
-      // `shouldUseVirtualFocus` is not part of the ListBox prop types, but it’s passed through to useListBox, which does support it.
-      // In editor, we use virtual focus to prevent the listbox from stealing focus
-      {...(inEditor ? { shouldUseVirtualFocus: true } : {})}
-      {...rest}
-    >
-      {children}
-    </ListBox>
-  );
+  const listbox = <ListBox {...mergedProps}>{children}</ListBox>;
 
   if (isStandalone) {
     return (
@@ -194,7 +183,7 @@ export function registerListBox(
       displayName: "Aria ListBox",
       importPath: "@plasmicpkgs/react-aria/skinny/registerListBox",
       importName: "BaseListBox",
-      variants,
+      variants: LISTBOX_VARIANTS_DATA,
       defaultStyles: {
         width: "250px",
         borderWidth: "1px",

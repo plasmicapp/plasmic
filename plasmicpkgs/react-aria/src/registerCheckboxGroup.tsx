@@ -1,6 +1,7 @@
 import React, { useCallback } from "react";
 import type { CheckboxGroupProps } from "react-aria-components";
 import { CheckboxGroup } from "react-aria-components";
+import { useIdManager } from "./OptionsItemIdManager";
 import {
   COMMON_STYLES,
   createAriaLabelProp,
@@ -11,7 +12,6 @@ import {
   createRequiredProp,
 } from "./common";
 import { PlasmicCheckboxGroupContext } from "./contexts";
-import { useIdManager } from "./OptionsItemIdManager";
 import {
   CHECKBOX_COMPONENT_NAME,
   makeDefaultCheckboxChildren,
@@ -22,11 +22,15 @@ import {
   BaseControlContextDataForLists,
   CodeComponentMetaOverrides,
   HasControlContextData,
-  makeComponentName,
   Registerable,
+  makeComponentName,
   registerComponentHelper,
 } from "./utils";
-import { pickAriaComponentVariants, WithVariants } from "./variant-utils";
+import {
+  VariantUpdater,
+  WithVariants,
+  pickAriaComponentVariants,
+} from "./variant-utils";
 
 const CHECKBOX_GROUP_VARIANTS = ["disabled" as const, "readonly" as const];
 
@@ -37,9 +41,7 @@ export interface BaseCheckboxGroupProps
   children?: React.ReactNode;
 }
 
-const { variants, withObservedValues } = pickAriaComponentVariants(
-  CHECKBOX_GROUP_VARIANTS
-);
+const { variants } = pickAriaComponentVariants(CHECKBOX_GROUP_VARIANTS);
 
 export function BaseCheckboxGroup(props: BaseCheckboxGroupProps) {
   const { children, plasmicUpdateVariant, setControlContextData, ...rest } =
@@ -59,16 +61,18 @@ export function BaseCheckboxGroup(props: BaseCheckboxGroupProps) {
     // PlasmicCheckboxGroupContext is used by BaseCheckbox
     <PlasmicCheckboxGroupContext.Provider value={{ ...rest, idManager }}>
       <CheckboxGroup {...rest} style={COMMON_STYLES}>
-        {({ isDisabled, isReadOnly }) =>
-          withObservedValues(
-            children,
-            {
-              disabled: isDisabled,
-              readonly: isReadOnly,
-            },
-            plasmicUpdateVariant
-          )
-        }
+        {({ isDisabled, isReadOnly }) => (
+          <>
+            <VariantUpdater
+              changes={{
+                disabled: isDisabled,
+                readonly: isReadOnly,
+              }}
+              updateVariant={plasmicUpdateVariant}
+            />
+            {children}
+          </>
+        )}
       </CheckboxGroup>
     </PlasmicCheckboxGroupContext.Provider>
   );

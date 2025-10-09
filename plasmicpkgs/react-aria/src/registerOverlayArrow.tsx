@@ -8,14 +8,18 @@ import {
   PopoverContext,
   TooltipTriggerStateContext,
 } from "react-aria-components";
-import { arrowDown, COMMON_STYLES, createIdProp } from "./common";
+import { COMMON_STYLES, arrowDown, createIdProp } from "./common";
 import {
   CodeComponentMetaOverrides,
-  makeComponentName,
   Registerable,
+  makeComponentName,
   registerComponentHelper,
 } from "./utils";
-import { pickAriaComponentVariants, WithVariants } from "./variant-utils";
+import {
+  VariantUpdater,
+  WithVariants,
+  pickAriaComponentVariants,
+} from "./variant-utils";
 
 const OVERLAY_ARROW_VARIANTS = [
   // We do not offer a placementDown variant, because that's the default placement (an overlay arrow always has [data-placement=bottom] if it's not explicitly set)
@@ -31,9 +35,7 @@ export interface BaseOverlayArrowProps
   className?: string;
 }
 
-const { variants, withObservedValues } = pickAriaComponentVariants(
-  OVERLAY_ARROW_VARIANTS
-);
+const { variants } = pickAriaComponentVariants(OVERLAY_ARROW_VARIANTS);
 
 export function BaseOverlayArrow({
   children,
@@ -50,17 +52,19 @@ export function BaseOverlayArrow({
       id={id}
       style={{ lineHeight: "0", ...COMMON_STYLES }}
     >
-      {({ placement }: OverlayArrowRenderProps) =>
-        withObservedValues(
-          children,
-          {
-            placementTop: placement === "top",
-            placementLeft: placement === "left",
-            placementRight: placement === "right",
-          },
-          plasmicUpdateVariant
-        )
-      }
+      {({ placement }: OverlayArrowRenderProps) => (
+        <>
+          <VariantUpdater
+            changes={{
+              placementTop: placement === "top",
+              placementLeft: placement === "left",
+              placementRight: placement === "right",
+            }}
+            updateVariant={plasmicUpdateVariant}
+          />
+          {children}
+        </>
+      )}
     </OverlayArrow>
   );
   if (isStandalone) {

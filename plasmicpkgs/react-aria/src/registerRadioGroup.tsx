@@ -1,6 +1,7 @@
 import React, { useCallback } from "react";
 import type { RadioGroupProps } from "react-aria-components";
 import { RadioGroup } from "react-aria-components";
+import { useIdManager } from "./OptionsItemIdManager";
 import {
   COMMON_STYLES,
   createAriaLabelProp,
@@ -11,7 +12,6 @@ import {
   createRequiredProp,
 } from "./common";
 import { PlasmicRadioGroupContext } from "./contexts";
-import { useIdManager } from "./OptionsItemIdManager";
 import { DESCRIPTION_COMPONENT_NAME } from "./registerDescription";
 import { LABEL_COMPONENT_NAME } from "./registerLabel";
 import { makeDefaultRadioChildren, registerRadio } from "./registerRadio";
@@ -24,7 +24,11 @@ import {
   makeComponentName,
   registerComponentHelper,
 } from "./utils";
-import { WithVariants, pickAriaComponentVariants } from "./variant-utils";
+import {
+  VariantUpdater,
+  WithVariants,
+  pickAriaComponentVariants,
+} from "./variant-utils";
 
 const RADIO_GROUP_VARIANTS = ["disabled" as const, "readonly" as const];
 
@@ -35,8 +39,7 @@ export interface BaseRadioGroupProps
   children: React.ReactNode;
 }
 
-const { variants, withObservedValues } =
-  pickAriaComponentVariants(RADIO_GROUP_VARIANTS);
+const { variants } = pickAriaComponentVariants(RADIO_GROUP_VARIANTS);
 
 export function BaseRadioGroup(props: BaseRadioGroupProps) {
   const { children, plasmicUpdateVariant, setControlContextData, ...rest } =
@@ -57,16 +60,18 @@ export function BaseRadioGroup(props: BaseRadioGroupProps) {
     // PlasmicRadioGroupContext is used by BaseRadio
     <PlasmicRadioGroupContext.Provider value={{ ...props, idManager }}>
       <RadioGroup {...rest} style={COMMON_STYLES}>
-        {({ isDisabled, isReadOnly }) =>
-          withObservedValues(
-            children,
-            {
-              disabled: isDisabled,
-              readonly: isReadOnly,
-            },
-            plasmicUpdateVariant
-          )
-        }
+        {({ isDisabled, isReadOnly }) => (
+          <>
+            <VariantUpdater
+              changes={{
+                disabled: isDisabled,
+                readonly: isReadOnly,
+              }}
+              updateVariant={plasmicUpdateVariant}
+            />
+            {children}
+          </>
+        )}
       </RadioGroup>
     </PlasmicRadioGroupContext.Provider>
   );

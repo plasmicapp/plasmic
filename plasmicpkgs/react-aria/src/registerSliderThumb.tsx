@@ -5,14 +5,23 @@ import {
   SliderTrack,
   SliderTrackContext,
 } from "react-aria-components";
-import { COMMON_STYLES, createAutoFocusProp, createDisabledProp, createNameProp } from "./common";
+import {
+  COMMON_STYLES,
+  createAutoFocusProp,
+  createDisabledProp,
+  createNameProp,
+} from "./common";
 import {
   CodeComponentMetaOverrides,
   Registerable,
   makeComponentName,
   registerComponentHelper,
 } from "./utils";
-import { WithVariants, pickAriaComponentVariants } from "./variant-utils";
+import {
+  VariantUpdater,
+  WithVariants,
+  pickAriaComponentVariants,
+} from "./variant-utils";
 
 const SLIDER_THUMB_VARIANTS = [
   "dragging" as const,
@@ -22,9 +31,7 @@ const SLIDER_THUMB_VARIANTS = [
   "disabled" as const,
 ];
 
-const { variants, withObservedValues } = pickAriaComponentVariants(
-  SLIDER_THUMB_VARIANTS
-);
+const { variants } = pickAriaComponentVariants(SLIDER_THUMB_VARIANTS);
 export interface BaseSliderThumbProps
   extends React.ComponentProps<typeof SliderThumb>,
     WithVariants<typeof SLIDER_THUMB_VARIANTS> {
@@ -39,23 +46,22 @@ export function BaseSliderThumb({
 }: BaseSliderThumbProps) {
   const isStandalone = !React.useContext(SliderTrackContext);
   const thumb = (
-    <SliderThumb
-      {...rest}
-      style={COMMON_STYLES}
-    >
-      {({ isDragging, isHovered, isFocused, isFocusVisible, isDisabled }) =>
-        withObservedValues(
-          <>{advanced ? children : undefined}</>,
-          {
-            dragging: isDragging,
-            hovered: isHovered,
-            focused: isFocused,
-            focusVisible: isFocusVisible,
-            disabled: isDisabled,
-          },
-          plasmicUpdateVariant
-        )
-      }
+    <SliderThumb {...rest} style={COMMON_STYLES}>
+      {({ isDragging, isHovered, isFocused, isFocusVisible, isDisabled }) => (
+        <>
+          <VariantUpdater
+            changes={{
+              dragging: isDragging,
+              hovered: isHovered,
+              focused: isFocused,
+              focusVisible: isFocusVisible,
+              disabled: isDisabled,
+            }}
+            updateVariant={plasmicUpdateVariant}
+          />
+          {advanced ? children : undefined}
+        </>
+      )}
     </SliderThumb>
   );
 

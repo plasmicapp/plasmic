@@ -2,10 +2,10 @@ import React, { useCallback } from "react";
 import {
   Select,
   SelectProps,
-  SelectRenderProps,
   SelectStateContext,
   SelectValue,
 } from "react-aria-components";
+import { useIdManager } from "./OptionsItemIdManager";
 import {
   COMMON_STYLES,
   arrowDown,
@@ -19,7 +19,6 @@ import {
   PlasmicListBoxContext,
   PlasmicPopoverTriggerContext,
 } from "./contexts";
-import { useIdManager } from "./OptionsItemIdManager";
 import { BUTTON_COMPONENT_NAME } from "./registerButton";
 import { LABEL_COMPONENT_NAME } from "./registerLabel";
 import { LIST_BOX_COMPONENT_NAME } from "./registerListBox";
@@ -34,7 +33,11 @@ import {
   registerComponentHelper,
   useAutoOpen,
 } from "./utils";
-import { WithVariants, pickAriaComponentVariants } from "./variant-utils";
+import {
+  VariantUpdater,
+  WithVariants,
+  pickAriaComponentVariants,
+} from "./variant-utils";
 
 // It cannot be used as a hook like useAutoOpen() within the BaseSelect component
 // because it needs access to SelectStateContext, which is only created in the BaseSelect component's render function.
@@ -86,12 +89,12 @@ export function BaseSelect(props: BaseSelectProps) {
     onSelectionChange,
     onOpenChange,
     isDisabled,
-    className,
     children,
     disabledKeys,
     name,
-    setControlContextData,
+    className,
     plasmicUpdateVariant,
+    setControlContextData,
     plasmicNotifyAutoOpenedContent,
     __plasmic_selection_prop__,
     defaultSelectedKey,
@@ -109,22 +112,6 @@ export function BaseSelect(props: BaseSelectProps) {
 
   const idManager = useIdManager(updateIds);
 
-  const classNameProp = useCallback(
-    ({
-      isDisabled: isDisabled2,
-      isFocusVisible,
-      isFocused,
-    }: SelectRenderProps) => {
-      plasmicUpdateVariant?.({
-        disabled: isDisabled2,
-        focused: isFocused,
-        focusVisible: isFocusVisible,
-      });
-      return className ?? "";
-    },
-    [className, plasmicUpdateVariant]
-  );
-
   return (
     <Select
       defaultSelectedKey={defaultSelectedKey}
@@ -132,33 +119,45 @@ export function BaseSelect(props: BaseSelectProps) {
       onSelectionChange={onSelectionChange}
       onOpenChange={onOpenChange}
       isDisabled={isDisabled}
-      className={classNameProp}
       style={COMMON_STYLES}
+      className={className}
       name={name}
       disabledKeys={disabledKeys}
       aria-label={ariaLabel}
       id={props.id}
       {...extractPlasmicDataProps(props)}
     >
-      <SelectAutoOpen
-        __plasmic_selection_prop__={__plasmic_selection_prop__}
-        plasmicNotifyAutoOpenedContent={plasmicNotifyAutoOpenedContent}
-      />
-      {/* PlasmicPopoverTriggerContext is used by BasePopover */}
-      <PlasmicPopoverTriggerContext.Provider value={true}>
-        {/* PlasmicListBoxContext is used by
-          - BaseListBox
-          - BaseListBoxItem
-          - BaseSection
-        */}
-        <PlasmicListBoxContext.Provider
-          value={{
-            idManager,
-          }}
-        >
-          {children}
-        </PlasmicListBoxContext.Provider>
-      </PlasmicPopoverTriggerContext.Provider>
+      {({ isFocused, isFocusVisible, isDisabled: isDisabled2 }) => (
+        <>
+          <VariantUpdater
+            changes={{
+              focused: isFocused,
+              focusVisible: isFocusVisible,
+              disabled: isDisabled2,
+            }}
+            updateVariant={plasmicUpdateVariant}
+          />
+          <SelectAutoOpen
+            __plasmic_selection_prop__={__plasmic_selection_prop__}
+            plasmicNotifyAutoOpenedContent={plasmicNotifyAutoOpenedContent}
+          />
+          {/* PlasmicPopoverTriggerContext is used by BasePopover */}
+          <PlasmicPopoverTriggerContext.Provider value={true}>
+            {/* PlasmicListBoxContext is used by
+        - BaseListBox
+        - BaseListBoxItem
+        - BaseSection
+      */}
+            <PlasmicListBoxContext.Provider
+              value={{
+                idManager,
+              }}
+            >
+              {children}
+            </PlasmicListBoxContext.Provider>
+          </PlasmicPopoverTriggerContext.Provider>
+        </>
+      )}
     </Select>
   );
 }

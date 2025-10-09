@@ -426,7 +426,7 @@ export const SelectedInCanvas: Story = {
     );
   },
   play: async () => {
-    const consoleWarnSpy = spyOn(console, "warn").mockImplementation(() => {});
+    const consoleWarnSpy = spyOn(console, "warn");
 
     // popovers are rendered outside canvas, so we need to use document.body
     const doc = within(document.body);

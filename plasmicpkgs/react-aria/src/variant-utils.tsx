@@ -82,18 +82,10 @@ export interface WithVariants<T extends AriaVariant[]> {
   plasmicUpdateVariant?: UpdateVariant<T>;
 }
 
-type WithObservedValues<T extends AriaVariant[]> = (
-  children: React.ReactNode,
-  state: Record<ArrayElement<T>, boolean>,
-  updateVariant: UpdateVariant<T>
-) => React.ReactNode;
-
-function ChangesObserver<T extends AriaVariant[]>({
-  children,
+export function VariantUpdater<T extends AriaVariant[]>({
   changes,
   updateVariant,
 }: {
-  children: React.ReactNode;
   changes: Partial<Record<ArrayElement<T>, boolean>>;
   updateVariant?: UpdateVariant<T>;
 }) {
@@ -102,31 +94,17 @@ function ChangesObserver<T extends AriaVariant[]>({
       updateVariant(changes);
     }
   }, [changes, updateVariant]);
-  return children;
-}
-
-function realWithObservedValues<T extends AriaVariant[]>(
-  children: React.ReactNode,
-  changes: Partial<Record<ArrayElement<T>, boolean>>,
-  updateVariant?: UpdateVariant<T>
-) {
-  return (
-    <ChangesObserver changes={changes} updateVariant={updateVariant}>
-      {children}
-    </ChangesObserver>
-  );
+  return null;
 }
 
 export function pickAriaComponentVariants<T extends AriaVariant[]>(
   keys: T
 ): {
   variants: Record<ArrayElement<T>, VariantMeta>;
-  withObservedValues: WithObservedValues<T>;
 } {
   return {
     variants: Object.fromEntries(
       keys.map((key) => [key, ARIA_COMPONENTS_VARIANTS[key]])
     ) as Record<ArrayElement<T>, VariantMeta>,
-    withObservedValues: realWithObservedValues<T>,
   };
 }

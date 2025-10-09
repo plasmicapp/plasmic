@@ -12,11 +12,15 @@ import {
 } from "./common";
 import {
   CodeComponentMetaOverrides,
-  makeComponentName,
   Registerable,
+  makeComponentName,
   registerComponentHelper,
 } from "./utils";
-import { pickAriaComponentVariants, WithVariants } from "./variant-utils";
+import {
+  VariantUpdater,
+  WithVariants,
+  pickAriaComponentVariants,
+} from "./variant-utils";
 
 const BUTTON_VARIANTS = [
   "hovered" as const,
@@ -26,8 +30,7 @@ const BUTTON_VARIANTS = [
   "disabled" as const,
 ];
 
-const { variants, withObservedValues } =
-  pickAriaComponentVariants(BUTTON_VARIANTS);
+const { variants } = pickAriaComponentVariants(BUTTON_VARIANTS);
 
 type ButtonCommonProps = { children: React.ReactNode } & Omit<
   ButtonProps,
@@ -75,19 +78,21 @@ export const BaseButton = React.forwardRef(function BaseButtonInner(
 
     return (
       <Button {...buttonProps}>
-        {({ isHovered, isPressed, isFocused, isFocusVisible, isDisabled }) =>
-          withObservedValues(
-            children,
-            {
-              hovered: isHovered,
-              pressed: isPressed,
-              focused: isFocused,
-              focusVisible: isFocusVisible,
-              disabled: isDisabled,
-            },
-            plasmicUpdateVariant
-          )
-        }
+        {({ isHovered, isPressed, isFocused, isFocusVisible, isDisabled }) => (
+          <>
+            <VariantUpdater
+              changes={{
+                hovered: isHovered,
+                pressed: isPressed,
+                focused: isFocused,
+                focusVisible: isFocusVisible,
+                disabled: isDisabled,
+              }}
+              updateVariant={plasmicUpdateVariant}
+            />
+            {children}
+          </>
+        )}
       </Button>
     );
   }
@@ -124,17 +129,17 @@ function LinkButton({
       data-focus-visible={isFocusVisible || undefined}
       data-disabled={props.isDisabled || undefined}
     >
-      {withObservedValues(
-        children,
-        {
+      <VariantUpdater
+        changes={{
           hovered: isHovered,
           pressed: isPressed,
           focused: isFocused,
           focusVisible: isFocusVisible,
           disabled: !!rest.isDisabled,
-        },
-        plasmicUpdateVariant
-      )}
+        }}
+        updateVariant={plasmicUpdateVariant}
+      />
+      {children}
     </PlasmicLink>
   );
 }

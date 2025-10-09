@@ -3,24 +3,24 @@ import type { InputProps, TextFieldProps } from "react-aria-components";
 import { TextField } from "react-aria-components";
 import {
   COMMON_STYLES,
-  createIdProp,
-  resolveAutoComplete,
   commonInputEventHandlerProps,
-  createDisabledProp,
-  createReadOnlyProp,
-  createRequiredProp,
-  createPatternProp,
-  createInputTypeProp,
-  createValidationBehaviorProp,
+  createAriaLabelProp,
   createAutoCompleteProp,
-  createOnFocusChangeProp,
-  createNameProp,
   createAutoFocusProp,
+  createDisabledProp,
+  createIdProp,
   createInitialValueProp,
+  createInputModeProp,
+  createInputTypeProp,
   createMaxLengthProp,
   createMinLengthProp,
-  createInputModeProp,
-  createAriaLabelProp,
+  createNameProp,
+  createOnFocusChangeProp,
+  createPatternProp,
+  createReadOnlyProp,
+  createRequiredProp,
+  createValidationBehaviorProp,
+  resolveAutoComplete,
 } from "./common";
 import { PlasmicTextFieldContext } from "./contexts";
 import { DESCRIPTION_COMPONENT_NAME } from "./registerDescription";
@@ -32,7 +32,11 @@ import {
   makeComponentName,
   registerComponentHelper,
 } from "./utils";
-import { WithVariants, pickAriaComponentVariants } from "./variant-utils";
+import {
+  VariantUpdater,
+  WithVariants,
+  pickAriaComponentVariants,
+} from "./variant-utils";
 
 const TEXT_FIELD_VARIANTS = ["disabled" as const, "readonly" as const];
 
@@ -47,8 +51,7 @@ export interface BaseTextFieldProps
   children: ReactNode;
 }
 
-const { variants, withObservedValues } =
-  pickAriaComponentVariants(TEXT_FIELD_VARIANTS);
+const { variants } = pickAriaComponentVariants(TEXT_FIELD_VARIANTS);
 
 export function BaseTextField(props: BaseTextFieldProps) {
   const { children, plasmicUpdateVariant, autoComplete, ...rest } = props;
@@ -70,16 +73,18 @@ export function BaseTextField(props: BaseTextFieldProps) {
         {...rest}
         style={COMMON_STYLES}
       >
-        {({ isDisabled, isReadOnly }) =>
-          withObservedValues(
-            children,
-            {
-              disabled: isDisabled,
-              readonly: isReadOnly,
-            },
-            plasmicUpdateVariant
-          )
-        }
+        {({ isDisabled, isReadOnly }) => (
+          <>
+            <VariantUpdater
+              changes={{
+                disabled: isDisabled,
+                readonly: isReadOnly,
+              }}
+              updateVariant={plasmicUpdateVariant}
+            />
+            {children}
+          </>
+        )}
       </TextField>
     </PlasmicTextFieldContext.Provider>
   );

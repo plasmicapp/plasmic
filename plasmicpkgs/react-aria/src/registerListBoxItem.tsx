@@ -1,19 +1,23 @@
 import { PlasmicElement } from "@plasmicapp/host";
 import React from "react";
 import { ListBox, ListBoxItem } from "react-aria-components";
+import { useOptionsItemId } from "./OptionsItemIdManager";
 import { COMMON_STYLES } from "./common";
 import { PlasmicListBoxContext } from "./contexts";
-import { useOptionsItemId } from "./OptionsItemIdManager";
 import { DESCRIPTION_COMPONENT_NAME } from "./registerDescription";
 import { TEXT_COMPONENT_NAME } from "./registerText";
 import {
   CodeComponentMetaOverrides,
   HasControlContextData,
-  makeComponentName,
   Registerable,
+  makeComponentName,
   registerComponentHelper,
 } from "./utils";
-import { pickAriaComponentVariants, WithVariants } from "./variant-utils";
+import {
+  VariantUpdater,
+  WithVariants,
+  pickAriaComponentVariants,
+} from "./variant-utils";
 
 const LIST_BOX_ITEM_VARIANTS = [
   "hovered" as const,
@@ -24,9 +28,7 @@ const LIST_BOX_ITEM_VARIANTS = [
   "disabled" as const,
 ];
 
-const { variants, withObservedValues } = pickAriaComponentVariants(
-  LIST_BOX_ITEM_VARIANTS
-);
+const { variants } = pickAriaComponentVariants(LIST_BOX_ITEM_VARIANTS);
 
 export interface BaseListBoxControlContextData {
   idError?: string;
@@ -37,8 +39,10 @@ export type BaseListBoxItemProps = Omit<
   "id"
 > &
   HasControlContextData<BaseListBoxControlContextData> &
-  WithVariants<typeof LIST_BOX_ITEM_VARIANTS> &
-  { id?: string; children?: React.ReactNode };
+  WithVariants<typeof LIST_BOX_ITEM_VARIANTS> & {
+    id?: string;
+    children?: React.ReactNode;
+  };
 
 export function BaseListBoxItem(props: BaseListBoxItemProps) {
   const { children, setControlContextData, plasmicUpdateVariant, id, ...rest } =
@@ -53,7 +57,10 @@ export function BaseListBoxItem(props: BaseListBoxItemProps) {
    * The registerId, therefore, is the unique id of the listboxitem.
    * It is the id registered with the listbox context, so that it can auto-generate a unique id if it identifies a duplicate.
    */
-  const { registeredId, idError } = useOptionsItemId(id, listboxContext?.idManager);
+  const { registeredId, idError } = useOptionsItemId(
+    id,
+    listboxContext?.idManager
+  );
 
   setControlContextData?.({
     idError,
@@ -73,20 +80,22 @@ export function BaseListBoxItem(props: BaseListBoxItemProps) {
         isFocusVisible,
         isSelected,
         isDisabled,
-      }) =>
-        withObservedValues(
-          children,
-          {
-            hovered: isHovered,
-            pressed: isPressed,
-            focused: isFocused,
-            focusVisible: isFocusVisible,
-            selected: isSelected,
-            disabled: isDisabled,
-          },
-          plasmicUpdateVariant
-        )
-      }
+      }) => (
+        <>
+          <VariantUpdater
+            changes={{
+              hovered: isHovered,
+              pressed: isPressed,
+              focused: isFocused,
+              focusVisible: isFocusVisible,
+              selected: isSelected,
+              disabled: isDisabled,
+            }}
+            updateVariant={plasmicUpdateVariant}
+          />
+          {children}
+        </>
+      )}
     </ListBoxItem>
   );
 

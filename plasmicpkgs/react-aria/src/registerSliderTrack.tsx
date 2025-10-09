@@ -12,13 +12,15 @@ import {
   makeComponentName,
   registerComponentHelper,
 } from "./utils";
-import { WithVariants, pickAriaComponentVariants } from "./variant-utils";
+import {
+  VariantUpdater,
+  WithVariants,
+  pickAriaComponentVariants,
+} from "./variant-utils";
 
 const SLIDER_TRACK_VARIANTS = ["hovered" as const];
 
-const { variants, withObservedValues } = pickAriaComponentVariants(
-  SLIDER_TRACK_VARIANTS
-);
+const { variants } = pickAriaComponentVariants(SLIDER_TRACK_VARIANTS);
 
 export interface BaseSliderTrackProps
   extends React.ComponentProps<typeof SliderTrack>,
@@ -95,33 +97,31 @@ export function BaseSliderTrack(props: BaseSliderTrackProps) {
     <SliderTrack style={{ position: "relative" }} {...rest}>
       {({ state, isHovered }) => (
         <>
-          {withObservedValues(
-            <>
-              <div
-                style={{
-                  width: `${
-                    (!isMultiValue
-                      ? state.getThumbPercent(minIndex)
-                      : state.getThumbPercent(maxIndex) -
-                        state.getThumbPercent(minIndex)) * 100
-                  }%`,
-                  height: "100%",
-                  position: "absolute",
-                  top: 0,
-                  left: !isMultiValue
-                    ? 0
-                    : state.getThumbPercent(minIndex) * 100 + "%",
-                }}
-              >
-                {progressBar}
-              </div>
-              {thumbs}
-            </>,
-            {
+          <VariantUpdater
+            changes={{
               hovered: isHovered,
-            },
-            plasmicUpdateVariant
-          )}
+            }}
+            updateVariant={plasmicUpdateVariant}
+          />
+          <div
+            style={{
+              width: `${
+                (!isMultiValue
+                  ? state.getThumbPercent(minIndex)
+                  : state.getThumbPercent(maxIndex) -
+                    state.getThumbPercent(minIndex)) * 100
+              }%`,
+              height: "100%",
+              position: "absolute",
+              top: 0,
+              left: !isMultiValue
+                ? 0
+                : state.getThumbPercent(minIndex) * 100 + "%",
+            }}
+          >
+            {progressBar}
+          </div>
+          {thumbs}
         </>
       )}
     </SliderTrack>

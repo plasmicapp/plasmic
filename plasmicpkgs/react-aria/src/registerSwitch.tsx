@@ -14,11 +14,15 @@ import { DESCRIPTION_COMPONENT_NAME } from "./registerDescription";
 import { LABEL_COMPONENT_NAME } from "./registerLabel";
 import {
   CodeComponentMetaOverrides,
-  makeComponentName,
   Registerable,
+  makeComponentName,
   registerComponentHelper,
 } from "./utils";
-import { pickAriaComponentVariants, WithVariants } from "./variant-utils";
+import {
+  VariantUpdater,
+  WithVariants,
+  pickAriaComponentVariants,
+} from "./variant-utils";
 
 const SWITCH_VARIANTS = [
   "hovered" as const,
@@ -30,8 +34,7 @@ const SWITCH_VARIANTS = [
   "readonly" as const,
 ];
 
-const { variants, withObservedValues } =
-  pickAriaComponentVariants(SWITCH_VARIANTS);
+const { variants } = pickAriaComponentVariants(SWITCH_VARIANTS);
 
 interface BaseSwitchProps
   extends SwitchProps,
@@ -51,21 +54,23 @@ export function BaseSwitch(props: BaseSwitchProps) {
         isSelected,
         isDisabled,
         isReadOnly,
-      }) =>
-        withObservedValues(
-          children,
-          {
-            hovered: isHovered,
-            pressed: isPressed,
-            focused: isFocused,
-            focusVisible: isFocusVisible,
-            selected: isSelected,
-            disabled: isDisabled,
-            readonly: isReadOnly,
-          },
-          plasmicUpdateVariant
-        )
-      }
+      }) => (
+        <>
+          <VariantUpdater
+            changes={{
+              hovered: isHovered,
+              pressed: isPressed,
+              focused: isFocused,
+              focusVisible: isFocusVisible,
+              selected: isSelected,
+              disabled: isDisabled,
+              readonly: isReadOnly,
+            }}
+            updateVariant={plasmicUpdateVariant}
+          />
+          {children}
+        </>
+      )}
     </Switch>
   );
 }

@@ -2,12 +2,12 @@ import React, { useCallback } from "react";
 import {
   ComboBox,
   ComboBoxProps,
-  ComboBoxRenderProps,
   ComboBoxStateContext,
 } from "react-aria-components";
+import { useIdManager } from "./OptionsItemIdManager";
 import {
-  arrowDown,
   COMMON_STYLES,
+  arrowDown,
   createAriaLabelProp,
   createDisabledProp,
   createIdProp,
@@ -18,7 +18,6 @@ import {
   PlasmicListBoxContext,
   PlasmicPopoverTriggerContext,
 } from "./contexts";
-import { useIdManager } from "./OptionsItemIdManager";
 import { BUTTON_COMPONENT_NAME } from "./registerButton";
 import { INPUT_COMPONENT_NAME } from "./registerInput";
 import { LABEL_COMPONENT_NAME } from "./registerLabel";
@@ -27,13 +26,17 @@ import { POPOVER_COMPONENT_NAME } from "./registerPopover";
 import {
   BaseControlContextDataForLists,
   HasControlContextData,
-  makeComponentName,
   PlasmicCanvasProps,
   Registerable,
+  makeComponentName,
   registerComponentHelper,
   useAutoOpen,
 } from "./utils";
-import { pickAriaComponentVariants, WithVariants } from "./variant-utils";
+import {
+  VariantUpdater,
+  WithVariants,
+  pickAriaComponentVariants,
+} from "./variant-utils";
 
 const COMBOBOX_NAME = makeComponentName("combobox");
 
@@ -78,20 +81,9 @@ export function BaseComboBox(props: BaseComboboxProps) {
     plasmicUpdateVariant,
     __plasmic_selection_prop__,
     plasmicNotifyAutoOpenedContent,
-    className,
     isOpen: _isOpen, // uncontrolled if not selected in canvas/edit mode
     ...rest
   } = props;
-
-  const classNameProp = useCallback(
-    ({ isDisabled }: ComboBoxRenderProps) => {
-      plasmicUpdateVariant?.({
-        disabled: isDisabled,
-      });
-      return className ?? "";
-    },
-    [className, plasmicUpdateVariant]
-  );
 
   const updateIds = useCallback(
     (ids: string[]) => {
@@ -105,29 +97,39 @@ export function BaseComboBox(props: BaseComboboxProps) {
   const idManager = useIdManager(updateIds);
 
   return (
-    <ComboBox className={classNameProp} {...rest} style={COMMON_STYLES}>
-      {/* PlasmicPopoverTriggerContext is used by BasePopover */}
-      <PlasmicPopoverTriggerContext.Provider value={true}>
-        {/* PlasmicListBoxContext is used by
+    <ComboBox {...rest} style={COMMON_STYLES}>
+      {({ isDisabled }) => (
+        <>
+          <VariantUpdater
+            changes={{ disabled: isDisabled }}
+            updateVariant={plasmicUpdateVariant}
+          />
+          {/* PlasmicPopoverTriggerContext is used by BasePopover */}
+          <PlasmicPopoverTriggerContext.Provider value={true}>
+            {/* PlasmicListBoxContext is used by
           - BaseListBox
           - BaseListBoxItem
           - BaseSection
         */}
-        <PlasmicListBoxContext.Provider
-          value={{
-            idManager,
-          }}
-        >
-          {/* PlasmicInputContext is used by BaseInput */}
-          <PlasmicInputContext.Provider value={{ isUncontrolled: true }}>
-            <ComboboxAutoOpen
-              __plasmic_selection_prop__={__plasmic_selection_prop__}
-              plasmicNotifyAutoOpenedContent={plasmicNotifyAutoOpenedContent}
-            />
-            {children}
-          </PlasmicInputContext.Provider>
-        </PlasmicListBoxContext.Provider>
-      </PlasmicPopoverTriggerContext.Provider>
+            <PlasmicListBoxContext.Provider
+              value={{
+                idManager,
+              }}
+            >
+              {/* PlasmicInputContext is used by BaseInput */}
+              <PlasmicInputContext.Provider value={{ isUncontrolled: true }}>
+                <ComboboxAutoOpen
+                  __plasmic_selection_prop__={__plasmic_selection_prop__}
+                  plasmicNotifyAutoOpenedContent={
+                    plasmicNotifyAutoOpenedContent
+                  }
+                />
+                {children}
+              </PlasmicInputContext.Provider>
+            </PlasmicListBoxContext.Provider>
+          </PlasmicPopoverTriggerContext.Provider>
+        </>
+      )}
     </ComboBox>
   );
 }

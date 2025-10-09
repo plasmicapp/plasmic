@@ -1,14 +1,14 @@
 import React from "react";
-import { Header, Section } from "react-aria-components";
+import { Header, ListBoxSection } from "react-aria-components";
 import { COMMON_STYLES, createAriaLabelProp } from "./common";
 import { PlasmicListBoxContext } from "./contexts";
 import { BaseListBox } from "./registerListBox";
 import {
   CodeComponentMetaOverrides,
-  makeComponentName,
   Registerable,
-  registerComponentHelper,
   Styleable,
+  makeComponentName,
+  registerComponentHelper,
 } from "./utils";
 
 export interface BaseSectionProps extends Styleable {
@@ -22,10 +22,10 @@ export function BaseSection(props: BaseSectionProps) {
   const isStandalone = !contextProps;
 
   const section = (
-    <Section {...rest} style={COMMON_STYLES}>
+    <ListBoxSection {...rest} style={COMMON_STYLES}>
       <Header>{header}</Header>
       {items}
-    </Section>
+    </ListBoxSection>
   );
 
   if (isStandalone) {

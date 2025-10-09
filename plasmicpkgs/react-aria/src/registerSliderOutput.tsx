@@ -8,7 +8,11 @@ import {
   makeComponentName,
   registerComponentHelper,
 } from "./utils";
-import { WithVariants, pickAriaComponentVariants } from "./variant-utils";
+import {
+  VariantUpdater,
+  WithVariants,
+  pickAriaComponentVariants,
+} from "./variant-utils";
 
 const SLIDER_OUTPUT_VARIANTS = ["disabled" as const];
 export interface BaseSliderOutputProps
@@ -17,24 +21,24 @@ export interface BaseSliderOutputProps
   children?: React.ReactNode;
 }
 
-const { variants, withObservedValues } = pickAriaComponentVariants(
-  SLIDER_OUTPUT_VARIANTS
-);
+const { variants } = pickAriaComponentVariants(SLIDER_OUTPUT_VARIANTS);
 
 export function BaseSliderOutput(props: BaseSliderOutputProps) {
   const { plasmicUpdateVariant, children, ...rest } = props;
   const isStandalone = !React.useContext(PlasmicSliderContext);
   const sliderOutput = (
     <SliderOutput {...rest} style={COMMON_STYLES}>
-      {({ isDisabled }) =>
-        withObservedValues(
-          children,
-          {
-            disabled: isDisabled,
-          },
-          plasmicUpdateVariant
-        )
-      }
+      {({ isDisabled }) => (
+        <>
+          <VariantUpdater
+            changes={{
+              disabled: isDisabled,
+            }}
+            updateVariant={plasmicUpdateVariant}
+          />
+          {children}
+        </>
+      )}
     </SliderOutput>
   );
 

@@ -1,6 +1,6 @@
 import { PlasmicCanvasContext } from "@plasmicapp/host";
 import type { Meta, StoryObj } from "@storybook/react";
-import { expect, fn, userEvent, waitFor, within } from "@storybook/test";
+import { expect, fn, spyOn, userEvent, waitFor, within } from "@storybook/test";
 import React, { useEffect, useState } from "react";
 import { BaseButton } from "./registerButton";
 import { BaseComboBox } from "./registerComboBox";
@@ -47,20 +47,56 @@ export const Basic: Story = {
     children: (
       <BoilerplateCombobox>
         {createListItems(3).map((item) => (
-          <BaseListBoxItem textValue={item.textValue} id={item.id}>
+          <BaseListBoxItem
+            textValue={item.textValue}
+            id={item.id}
+            key={item.id}
+          >
             {item.children}
           </BaseListBoxItem>
         ))}
       </BoilerplateCombobox>
     ),
   },
+  render: (args) => {
+    // This state is to simulate the plasmicUpdateVariant prop behaviour (which, when called, triggers a state update in PlasmicComponent.tsx files)
+    const [_variant, setVariant] = useState("");
+    const [showCombobox, setShowCombobox] = useState(false);
+
+    useEffect(() => {
+      // We delay the rendering of the Combobox to wait for the spies to be set up
+      setTimeout(() => {
+        setShowCombobox(true);
+      }, 10);
+    }, []);
+
+    if (!showCombobox) {
+      return <></>;
+    }
+
+    return (
+      <>
+        <BaseComboBox
+          {...args}
+          plasmicUpdateVariant={() => {
+            setVariant("new value");
+          }}
+        />
+      </>
+    );
+  },
   play: async ({ canvasElement, args }) => {
+    const consoleWarnSpy = spyOn(console, "warn");
+    const consoleErrorSpy = spyOn(console, "error");
+
     const canvas = within(canvasElement);
     // popovers are rendered outside canvas, so we need to use document.body
     const doc = within(document.body);
 
     // Get the button and input
-    const input = canvas.getByRole("combobox");
+    const input = await waitFor(() => canvas.getByRole("combobox"), {
+      timeout: 100,
+    });
     const button = canvas.getByText("▼");
 
     // Check that listbox is not in the document
@@ -86,6 +122,10 @@ export const Basic: Story = {
     // Check that the onOpenChange and onSelectionChange are called as expected
     expect(args.onOpenChange).toHaveBeenCalledTimes(2);
     expect(args.onSelectionChange).toHaveBeenCalledOnce();
+
+    // this is to ensure that no warnings or errors are logged during component interaction
+    expect(consoleWarnSpy).not.toHaveBeenCalled();
+    expect(consoleErrorSpy).not.toHaveBeenCalled();
   },
 };
 
