@@ -724,6 +724,7 @@ function HostLessPackageForm({
             className="mr-sm"
             htmlType="submit"
             data-test-id="hostless-prompt-submit"
+            disabled={!!initialValue}
           >
             {"Submit (yes I'm sure!)"}
           </Button>
