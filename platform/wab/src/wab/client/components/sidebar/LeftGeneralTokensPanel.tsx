@@ -62,7 +62,7 @@ interface TokenToPanelRowProps {
   item: FinalToken<StyleToken> | InternalFolder<FinalToken<StyleToken>>;
   tokenType: StyleTokenType;
   getTokenValue: (token: FinalToken<StyleToken>) => TokenValue;
-  actions: TokenFolderActions;
+  actions?: TokenFolderActions;
   dep?: ProjectDependency;
 }
 
@@ -330,9 +330,12 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
   const tokenSectionItems = (tokenType: StyleTokenType) => {
     const makeTokensItems = (
       tokens: FinalToken<StyleToken>[],
-      dep?: ProjectDependency
+      dep?: ProjectDependency,
+      isRegistered = false
     ) => {
       tokens = naturalSort(tokens, (token) => getFolderTrimmed(token.name));
+      // dep and registered token folders are not editable
+      const hasActions = !dep && !isRegistered;
       const tokenTree = createFolderTreeStructure(tokens, {
         pathPrefix: tokenType,
         getName: (item) => item.name,
@@ -342,7 +345,7 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
             tokenType,
             getTokenValue,
             dep,
-            actions,
+            actions: hasActions ? actions : undefined,
           }),
       });
       return { items: tokenTree, count: tokens.length };
@@ -371,7 +374,6 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
               ).filter((t) => t.type === tokenType),
               dep
             ),
-            actions,
           };
         })
         .filter((dep) => dep.count > 0);
@@ -385,7 +387,7 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
     );
 
     const items: TokenPanelRow[] = [
-      ...makeTokensItems(normalTokens).items,
+      ...makeTokensItems(normalTokens, undefined, false).items,
       ...(registeredTokens.length > 0
         ? [
             {
@@ -393,8 +395,7 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
               tokenType,
               name: "Registered tokens",
               key: `$${tokenType}-registered-folder`,
-              actions,
-              ...makeTokensItems(registeredTokens),
+              ...makeTokensItems(registeredTokens, undefined, true),
             },
           ]
         : []),

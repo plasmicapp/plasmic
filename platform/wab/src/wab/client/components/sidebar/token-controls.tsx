@@ -78,7 +78,7 @@ export interface TokenFolder {
   key: string;
   items: TokenPanelRow[];
   count: number;
-  actions: TokenFolderActions;
+  actions?: TokenFolderActions;
 }
 
 export interface TokenData {
@@ -449,10 +449,11 @@ export const TokenFolderRow = observer(function TokenFolderRow(
   props: TokenFolderRowProps
 ) {
   const { folder, matcher, indentMultiplier, isOpen, toggleExpand } = props;
-  const { onAddToken, onDeleteFolder, onFolderRenamed } = folder.actions;
+  const { onAddToken, onDeleteFolder, onFolderRenamed } = folder.actions ?? {};
   const studioCtx = useStudioCtx();
-  const readOnly = isTokenPanelReadOnly(studioCtx);
   const [renaming, setRenaming] = React.useState(false);
+
+  const hasMenu = folder.actions && !isTokenPanelReadOnly(studioCtx);
 
   return (
     <RowGroup
@@ -462,21 +463,21 @@ export const TokenFolderRow = observer(function TokenFolderRow(
       }}
       groupSize={folder.count}
       isOpen={isOpen}
-      showActions={!readOnly}
       menu={
-        <FolderContextMenu
-          onAdd={async () => {
-            if (!isOpen) {
-              toggleExpand();
-            }
-            await onAddToken(folder.tokenType, folder.path);
-          }}
-          itemDisplay={"token"}
-          onSelectRename={() => setRenaming(true)}
-          onDelete={() => onDeleteFolder(folder)}
-        />
+        hasMenu ? (
+          <FolderContextMenu
+            onAdd={async () => {
+              if (!isOpen) {
+                toggleExpand();
+              }
+              await onAddToken?.(folder.tokenType, folder.path);
+            }}
+            itemDisplay={"token"}
+            onSelectRename={() => setRenaming(true)}
+            onDelete={() => onDeleteFolder?.(folder)}
+          />
+        ) : undefined
       }
-      actions={<div></div>}
     >
       <EditableLabel
         value={folder.name}
@@ -489,7 +490,7 @@ export const TokenFolderRow = observer(function TokenFolderRow(
           />
         )}
         onEdit={async (newName) => {
-          await onFolderRenamed(folder, newName);
+          await onFolderRenamed?.(folder, newName);
           setRenaming(false);
         }}
         // We need to programmatically trigger editing, because otherwise
