@@ -1,5 +1,8 @@
 import { Logger } from "@/wab/shared/observability/Logger";
-import { Properties } from "@/wab/shared/observability/Properties";
+import {
+  mergeProperties,
+  Properties,
+} from "@/wab/shared/observability/Properties";
 import { context, trace } from "@opentelemetry/api";
 import pino, { Logger as PinoLog } from "pino";
 
@@ -11,7 +14,7 @@ const PINO_LOGGER_LEVEL = process.env.PINO_LOGGER_LEVEL || "debug";
 export class PinoLogger implements Logger {
   private readonly pinoLogger: PinoLog;
 
-  constructor(loggingContext?: Properties) {
+  constructor(private readonly loggingContext?: Properties) {
     this.pinoLogger = pino({
       level: PINO_LOGGER_LEVEL,
       formatters: {
@@ -63,6 +66,6 @@ export class PinoLogger implements Logger {
   }
 
   child(loggingContext: Properties): Logger {
-    return new PinoLogger(loggingContext);
+    return new PinoLogger(mergeProperties(this.loggingContext, loggingContext));
   }
 }

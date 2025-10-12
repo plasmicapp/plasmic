@@ -1,5 +1,8 @@
 import type { TrackOptions } from "@/wab/shared/observability/Analytics";
-import { Properties } from "@/wab/shared/observability/Properties";
+import {
+  mergeProperties,
+  Properties,
+} from "@/wab/shared/observability/Properties";
 
 /**
  * For implementing a stateful Analytics implementation that keeps track of the
@@ -41,7 +44,7 @@ export abstract class BaseAnalytics {
       // 3. sample threshold property (if present)
       this.doTrack(
         eventName,
-        this.mergeEventProperties(
+        mergeProperties(
           eventProperties,
           sampleThreshold
             ? {
@@ -57,8 +60,4 @@ export abstract class BaseAnalytics {
     eventName: string,
     eventProperties?: Properties
   ): void;
-
-  private mergeEventProperties(p1?: Properties, p2?: Properties): Properties {
-    return { ...this.baseEventProperties, ...p1, ...p2 };
-  }
 }
