@@ -75,7 +75,6 @@ import {
   ProjectWebhook,
   ProjectWebhookEvent,
   PromotionCode,
-  PublicCopilotInteraction,
   ResetPassword,
   SignUpAttempt,
   SsoConfig,
@@ -1027,10 +1026,6 @@ export class DbMgr implements MigrationDbMgr {
 
   private copilotInteractions() {
     return this.entMgr.getRepository(CopilotInteraction);
-  }
-
-  private publicCopilotInteractions() {
-    return this.entMgr.getRepository(PublicCopilotInteraction);
   }
 
   private promotioCodes() {
@@ -6009,28 +6004,6 @@ export class DbMgr implements MigrationDbMgr {
     });
     await this.copilotInteractions().save(copilotInteraction);
     return copilotInteraction;
-  }
-
-  async createPublicCopilotInteraction({
-    model,
-    request,
-    response,
-    userPrompt,
-  }: {
-    userPrompt: string;
-    response: string;
-    model: "gpt" | "claude";
-    request: CreateChatCompletionRequest | LanguageModelRequestMetadata;
-  }) {
-    const publicCopilotInteraction = this.publicCopilotInteractions().create({
-      ...this.stampNew(),
-      fullPromptSnapshot: JSON.stringify(request),
-      model,
-      response,
-      userPrompt,
-    });
-    await this.publicCopilotInteractions().save(publicCopilotInteraction);
-    return publicCopilotInteraction;
   }
 
   async saveCopilotFeedback({

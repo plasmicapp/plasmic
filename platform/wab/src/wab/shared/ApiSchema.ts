@@ -56,10 +56,6 @@ export type SsoConfigId = Opaque<string, "SsoConfigId">;
 export type TutorialDbId = Opaque<string, "TutorialDbId">;
 export type DataSourceId = Opaque<string, "DataSourceId">;
 export type CopilotInteractionId = Opaque<string, "CopilotInteractionId">;
-export type PublicCopilotInteractionId = Opaque<
-  string,
-  "PublicCopilotInteractionId"
->;
 export type CommentThreadId = Opaque<string, "CommentThreadId">;
 
 export type MainBranchId = Opaque<string, "MainBranchId">;
