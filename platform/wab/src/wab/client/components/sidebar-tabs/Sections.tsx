@@ -854,7 +854,7 @@ export function getRenderBySection(
         showSection(Section.AnimationsPanel) && (
           <AnimationsSection
             key={`${tpl.uuid}-animations`}
-            expsProvider={sc.props.expsProvider}
+            expsProvider={expsProvider}
           />
         ),
     ],

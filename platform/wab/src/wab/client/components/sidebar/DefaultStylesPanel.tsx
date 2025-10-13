@@ -202,7 +202,7 @@ const DefaultStylesPanel = observer(
           children: mixin && (
             <MixinFormContent
               studioCtx={studioCtx}
-              mixinOrKeyframe={mixin}
+              mixin={mixin}
               panelSelection={
                 tag
                   ? {

@@ -2,7 +2,6 @@ import { SidebarModal } from "@/wab/client/components/sidebar/SidebarModal";
 import { shouldBeDisabled } from "@/wab/client/components/sidebar/sidebar-helpers";
 import { AnimationControls } from "@/wab/client/components/style-controls/AnimationControls";
 import {
-  ExpsProvider,
   StylePanelSection,
   TplExpsProvider,
   useStyleComponent,
@@ -29,7 +28,7 @@ import { observer } from "mobx-react";
 import React from "react";
 
 interface AnimationsSectionProps {
-  expsProvider: ExpsProvider;
+  expsProvider: TplExpsProvider;
   vsh?: VariantedStylesHelper;
 }
 
@@ -44,10 +43,7 @@ export const AnimationsSection = observer(function AnimationsSection(
   // - Otherwise, show merged animations (including inherited from base)
   const targetAnimations = expsProvider.targetRs().animations;
   const hasTargetAnimations = targetAnimations.length > 0;
-  const inheritedAnimations =
-    expsProvider instanceof TplExpsProvider
-      ? expsProvider.effectiveVs().rs.animations
-      : [];
+  const inheritedAnimations = expsProvider.effectiveVs().rs.animations;
 
   const animations = hasTargetAnimations
     ? targetAnimations
@@ -69,12 +65,8 @@ export const AnimationsSection = observer(function AnimationsSection(
     spawn(
       studioCtx.change(({ success }) => {
         const targetRs = expsProvider.targetRs();
-        if (newAnimations.length > 0) {
-          targetRs.animations = [...newAnimations];
-        } else {
-          targetRs.animations = [];
-        }
-
+        // We shallow clone the array here
+        targetRs.animations = [...newAnimations];
         return success();
       })
     );

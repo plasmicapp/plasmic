@@ -1,7 +1,7 @@
 import ListItem from "@/wab/client/components/ListItem";
 import { MenuBuilder } from "@/wab/client/components/menu-builder";
 import { FindReferencesModal } from "@/wab/client/components/sidebar/FindReferencesModal";
-import { MixinFormContent } from "@/wab/client/components/sidebar/MixinControls";
+import { MixinStylePanelSections } from "@/wab/client/components/sidebar/MixinControls";
 import { SidebarModal } from "@/wab/client/components/sidebar/SidebarModal";
 import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
 import {
@@ -14,11 +14,7 @@ import {
   LabeledItem,
 } from "@/wab/client/components/sidebar/sidebar-helpers";
 import { KeyFrameStops } from "@/wab/client/components/style-controls/KeyFrameStops";
-import {
-  SingleRsExpsProvider,
-  mkStyleComponent,
-  providesStyleComponent,
-} from "@/wab/client/components/style-controls/StyleComponent";
+import { SingleRsExpsProvider } from "@/wab/client/components/style-controls/StyleComponent";
 import { Matcher } from "@/wab/client/components/view-common";
 import DimTokenSpinner from "@/wab/client/components/widgets/DimTokenSelector";
 import { Icon } from "@/wab/client/components/widgets/Icon";
@@ -26,6 +22,7 @@ import { SimpleTextbox } from "@/wab/client/components/widgets/SimpleTextbox";
 import AnimationEnterSvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__AnimationEnterSvg";
 import PlasmicLeftAnimationSequencesPanel from "@/wab/client/plasmic/plasmic_kit_left_pane/PlasmicLeftAnimationSequencesPanel";
 import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import { spawn } from "@/wab/shared/common";
 import { isHostLessPackage } from "@/wab/shared/core/sites";
 import {
@@ -66,6 +63,7 @@ const AnimationSequenceEditModal = observer(
     const [selectedKeyframe, setSelectedKeyframe] = React.useState<
       KeyFrame | undefined
     >(sequence.keyframes.length > 0 ? sequence.keyframes[0] : undefined);
+    const vsh = new VariantedStylesHelper(studioCtx.site);
 
     // Create a default keyframe if none exist
     React.useEffect(() => {
@@ -180,21 +178,15 @@ const AnimationSequenceEditModal = observer(
               </FullRow>
             </SidebarSection>
 
-            {providesStyleComponent(
-              mkStyleComponent({
-                expsProvider: new SingleRsExpsProvider(
-                  selectedKeyframe.rs,
-                  studioCtx,
-                  []
-                ),
-              })
-            )(
-              <MixinFormContent
-                studioCtx={studioCtx}
-                mixinOrKeyframe={selectedKeyframe}
-                inheritableTypographyPropsOnly={false}
-              />
-            )}
+            <MixinStylePanelSections
+              studioCtx={studioCtx}
+              expsProvider={
+                new SingleRsExpsProvider(selectedKeyframe.rs, studioCtx, [])
+              }
+              vsh={vsh}
+              inheritableTypographyPropsOnly={false}
+              showVisibility={true}
+            />
           </>
         )}
       </SidebarModal>
