@@ -334,10 +334,16 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
       isRegistered = false
     ) => {
       tokens = naturalSort(tokens, (token) => getFolderTrimmed(token.name));
+      const depPrefix = dep ? `_${dep.name}` : "";
+
+      const regPrefix = tokens.some((t) => t.isRegistered) ? "_registered" : "";
+
+      const pathPrefix = `${tokenType}${depPrefix}${regPrefix}`;
+
       // dep and registered token folders are not editable
       const hasActions = !dep && !isRegistered;
       const tokenTree = createFolderTreeStructure(tokens, {
-        pathPrefix: tokenType,
+        pathPrefix,
         getName: (item) => item.name,
         mapper: (item) =>
           mapToTokenPanelRow({
