@@ -7,14 +7,15 @@ import {
 } from "@/wab/server/db/DbMgr";
 import { User } from "@/wab/server/entities/Entities";
 import "@/wab/server/extensions";
-import { asyncTimed, callsToServerTiming } from "@/wab/server/timing-util";
+import { logError } from "@/wab/server/server-util";
+import { asyncTimed } from "@/wab/server/timing-util";
 import {
   BadRequestError,
   ForbiddenError,
   UnauthorizedError,
 } from "@/wab/shared/ApiErrors/errors";
 import { CmsIdAndToken, ProjectIdAndToken } from "@/wab/shared/ApiSchema";
-import { asyncWrapper, omitNils } from "@/wab/shared/common";
+import { omitNils } from "@/wab/shared/common";
 import { AppRouter } from "@ts-rest/core";
 import { createExpressEndpoints } from "@ts-rest/express";
 import {
@@ -22,13 +23,14 @@ import {
   TsRestExpressOptions,
 } from "@ts-rest/express/src/lib/types";
 import {
-  type IRouter,
   NextFunction,
   Request,
   Response,
+  type IRouter,
 } from "express-serve-static-core";
 import L from "lodash";
 import type { Readable } from "stream";
+import { EntityManager } from "typeorm";
 import { ZodIssue } from "zod";
 
 /**
@@ -71,7 +73,7 @@ export function userDbMgr(
 ) {
   const isSpy = req.cookies["plasmic-spy"] === "true";
   let dbMgr = new DbMgr(
-    req.txMgr,
+    req,
     req.user
       ? normalActor(getUser(req, opts).id, isSpy)
       : req.apiTeam
@@ -146,7 +148,7 @@ export function parseCmsIdsAndTokensHeader(value: any) {
 }
 
 export function superDbMgr(req: CompatRequest) {
-  let dbMgr = new DbMgr(req.txMgr, SUPER_USER);
+  let dbMgr = new DbMgr(req, SUPER_USER);
   if (req.timingStore) {
     dbMgr = timingDbMgr(dbMgr);
   }
@@ -204,7 +206,7 @@ function timingDbMgr(dbMgr: DbMgr) {
   return dbMgr;
 }
 
-export function adminOnly(req: Request, res: Response, next: NextFunction) {
+export function adminOnly(req: Request, _res: Response, next: NextFunction) {
   const user = req.user as User | undefined;
   if (
     user?.email &&
@@ -228,33 +230,139 @@ export function adminOrDevelopmentEnvOnly(
   }
 }
 
-// Used to wrap action routes.
-// Will resolve transaction if succeeed or call next error handler if failed.
+export type TransactionCommit<T> = {
+  type: "commit";
+  commit: T;
+  rollback?: undefined;
+};
+
+export type TransactionRollback<T> = {
+  type: "rollback";
+  commit?: undefined;
+  rollback: T;
+};
+
+function isTransactionRollback<T>(x: unknown): x is TransactionRollback<T> {
+  return (
+    typeof x === "object" && x !== null && "type" in x && x.type === "rollback"
+  );
+}
+
+export type TransactionEnd<TCommit, TRollback> =
+  | TransactionCommit<TCommit>
+  | TransactionRollback<TRollback>;
+
+export function commitTransaction(): TransactionCommit<undefined>;
+export function commitTransaction<T>(data: T): TransactionCommit<T>;
+export function commitTransaction<T>(
+  data?: T
+): TransactionCommit<T | undefined> {
+  return {
+    type: "commit",
+    commit: data as T,
+  };
+}
+
+export function rollbackTransaction(): TransactionRollback<undefined>;
+export function rollbackTransaction<T>(data: T): TransactionRollback<T>;
+export function rollbackTransaction<T>(
+  data?: T
+): TransactionRollback<T | undefined> {
+  return {
+    type: "rollback",
+    rollback: data as T,
+  };
+}
+
+/**
+ * Starts a database transaction that must be committed or rolled back.
+ *
+ * Data in the transaction can be passed outside using `commitTransaction` and
+ * `rollbackTransaction`.
+ */
+export async function startTransaction<TCommit>(
+  req: Request,
+  f: (txMgr: EntityManager) => Promise<TransactionCommit<TCommit>>
+): Promise<TransactionCommit<TCommit>>;
+export async function startTransaction<TRollback>(
+  req: Request,
+  f: (txMgr: EntityManager) => Promise<TransactionRollback<TRollback>>
+): Promise<TransactionRollback<TRollback>>;
+export async function startTransaction<TCommit, TRollback>(
+  req: Request,
+  f: (txMgr: EntityManager) => Promise<TransactionEnd<TCommit, TRollback>>
+): Promise<TransactionEnd<TCommit, TRollback>>;
+export async function startTransaction<TCommit, TRollback>(
+  req: Request,
+  f: (txMgr: EntityManager) => Promise<TransactionEnd<TCommit, TRollback>>
+): Promise<TransactionEnd<TCommit, TRollback>> {
+  // PostgreSQL does NOT support nested transactions.
+  // We shouldn't either, but we fake it for now since we have so many existing
+  // withNext calls.
+  // If we accidentally nest transactions, the inner transaction rollback would
+  // not be propagated to the outer transaction, causing unexpected commits.
+  // TODO: Replace this code with `assert(!req.txMgr)` and delete `txRollback`.
+  if (req.txMgr) {
+    logError(new Error("ALREADY IN NESTED TRANSACTION"));
+    try {
+      const txEnd = await f(req.txMgr);
+      if (isTransactionRollback(txEnd)) {
+        req.txRollback?.();
+      }
+      return txEnd;
+    } catch (err) {
+      req.txRollback?.();
+      throw err;
+    }
+  }
+
+  try {
+    return await req.con.transaction(async (txMgr) => {
+      let nestedRollback = false;
+      req.txMgr = txMgr;
+      req.txRollback = () => {
+        nestedRollback = true;
+      };
+      const result = await f(txMgr);
+      if (isTransactionRollback(result)) {
+        throw result;
+      } else {
+        if (nestedRollback) {
+          throw result;
+        } else {
+          return result;
+        }
+      }
+    });
+  } catch (err) {
+    if (isTransactionRollback<TRollback>(err)) {
+      return err;
+    } else {
+      throw err;
+    }
+  } finally {
+    req.txMgr = undefined;
+  }
+}
+
+/**
+ * Wraps a route handler in a database transaction.
+ * The transaction will automatically commit on resolve or rollback on reject.
+ *
+ * @deprecated use {@link startTransaction} to manually wrap queries
+ */
 export function withNext(
   f: (req: Request, res: Response, next: NextFunction) => Promise<void> | void
 ) {
-  return (req: Request, res: Response, next: NextFunction) => {
-    if (req.timingStore) {
-      // For Plasmic users, let's instrument the DbMgr and track their call durations.
-      // The actual instrumentation happens in userDbMgr(). Here, we intercept req.send()
-      // so we can inject the Server-Timing header before sending.
-      const store = req.timingStore;
-      const _send = res.send;
-      res.send = (...args: any) => {
-        if (!res.headersSent) {
-          res.setHeader("Server-Timing", callsToServerTiming(store.calls));
-        }
-        // Very chatty if activated...
-        // if (store.calls && store.calls.length > 0) {
-        //   console.log(`TIMING: ${req.method} ${req.path}: ${JSON.stringify(serializeCallDurations(store.calls))}`);
-        // }
-        return _send.bind(res)(...args);
-      };
+  return async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      await startTransaction(req, async () => {
+        await f(req, res, next);
+        return commitTransaction();
+      });
+    } catch (error) {
+      next(error);
     }
-    asyncWrapper(f)(req, res, next).then(
-      async () => await req.resolveTransaction(),
-      (err) => next(err)
-    );
   };
 }
 
@@ -266,7 +374,7 @@ export function createTsRestEndpoints<TRouter extends AppRouter>(
 ): void {
   createExpressEndpoints(contract, server, app, {
     // Convert to BadRequestError, let our error middleware handle this
-    requestValidationErrorHandler: (err, req, res, next) => {
+    requestValidationErrorHandler: (err, _req, _res, _next) => {
       function issueMap(issue: ZodIssue) {
         return `${issue.path.join(".")}: ${issue.message}`;
       }

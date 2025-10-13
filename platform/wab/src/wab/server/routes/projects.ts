@@ -44,8 +44,11 @@ import {
 } from "@/wab/server/routes/team-plans";
 import { mkApiTeam } from "@/wab/server/routes/teams";
 import {
+  commitTransaction,
   parseMetadata,
   parseQueryParams,
+  rollbackTransaction,
+  startTransaction,
   superDbMgr,
   userDbMgr,
 } from "@/wab/server/routes/util";
@@ -71,6 +74,7 @@ import {
   DataSourceId,
   ListBranchesResponse,
   MainBranchId,
+  MayTriggerPaywall,
   NewComponentReq,
   NextPublishVersionRequest,
   PkgVersionId,
@@ -80,6 +84,7 @@ import {
   ProjectsRequest,
   ProjectsResponse,
   PublishProjectRequest,
+  PublishProjectResponse,
   ResolveSyncRequest,
   SetSiteInfoReq,
   TryMergeRequest,
@@ -1118,7 +1123,9 @@ async function ensureSchemaIsUpToDate(req: Request) {
     throw e;
   }
 
-  const latestModelVersion = await getCurrentModelVersion(req.txMgr);
+  const latestModelVersion = await getCurrentModelVersion(
+    req.txMgr || req.noTxMgr
+  );
   if (req.body.modelVersion !== latestModelVersion) {
     logger().info(
       `stale model version: ${req.body.modelVersion} !== ${latestModelVersion}`
@@ -1128,7 +1135,6 @@ async function ensureSchemaIsUpToDate(req: Request) {
 }
 
 export async function tryMergeBranch(req: Request, res: Response) {
-  const mgr = userDbMgr(req);
   const { projectId } = req.params;
   const {
     subject,
@@ -1138,188 +1144,195 @@ export async function tryMergeBranch(req: Request, res: Response) {
     description,
     tags,
   } = req.body as TryMergeRequest;
-  const mergeResult = pretend
-    ? await mgr.previewMergeBranch({
-        ...subject,
-        resolution,
-        autoCommitOnToBranch,
-        excludeMergeStepFromResult: true,
-      })
-    : await mgr.tryMergeBranch({
-        ...subject,
-        resolution,
-        autoCommitOnToBranch,
-        description,
-        tags,
-        excludeMergeStepFromResult: true,
-      });
-  // Prevent attempting to serialize MergeStep (not serializable)
-  delete mergeResult["mergeStep"];
-  res.json(
-    ensureType<TryMergeResponse>({
-      ...mergeResult,
-    })
-  );
 
-  await req.resolveTransaction();
+  const { commit } = await startTransaction(req, async () => {
+    const mgr = userDbMgr(req);
+    const mergeResult = pretend
+      ? await mgr.previewMergeBranch({
+          ...subject,
+          resolution,
+          autoCommitOnToBranch,
+          excludeMergeStepFromResult: true,
+        })
+      : await mgr.tryMergeBranch({
+          ...subject,
+          resolution,
+          autoCommitOnToBranch,
+          description,
+          tags,
+          excludeMergeStepFromResult: true,
+        });
+    // Prevent attempting to serialize MergeStep (not serializable)
+    delete mergeResult["mergeStep"];
+    return commitTransaction({ mergeResult });
+  });
+
+  res.json(ensureType<TryMergeResponse>(commit.mergeResult));
 
   if (
-    (mergeResult.status === "can be merged" ||
-      mergeResult.status === "resolution accepted") &&
-    mergeResult.pkgVersion &&
+    (commit.mergeResult.status === "can be merged" ||
+      commit.mergeResult.status === "resolution accepted") &&
+    commit.mergeResult.pkgVersion &&
     !pretend
   ) {
-    await prefillPkgVersion(req, projectId, mergeResult.pkgVersion);
+    await prefillPkgVersion(req, projectId, commit.mergeResult.pkgVersion);
   }
 }
 
 export async function saveProjectRev(req: Request, res: Response) {
-  await ensureSchemaIsUpToDate(req);
+  const { commit } = await startTransaction(req, async () => {
+    // Not sure why, but ensureSchemaIsUpToDate must be in transaction.
+    await ensureSchemaIsUpToDate(req);
 
-  const mgr = userDbMgr(req);
-  const { projectId, branchId } = parseProjectBranchId(
-    req.params.projectBranchId
-  );
+    const mgr = userDbMgr(req);
+    const { projectId, branchId } = parseProjectBranchId(
+      req.params.projectBranchId
+    );
 
-  const project = await mgr.getProjectById(projectId);
+    const project = await mgr.getProjectById(projectId);
 
-  if (project.isMainBranchProtected && !branchId) {
-    throw new BadRequestError();
-  }
+    if (project.isMainBranchProtected && !branchId) {
+      throw new BadRequestError();
+    }
 
-  const mergedBundle: Bundle = await (async () => {
-    if (req.body.incremental) {
-      const rev = await mgr.getLatestProjectRev(projectId, { branchId });
+    const mergedBundle: Bundle = await (async () => {
+      if (req.body.incremental) {
+        const rev = await mgr.getLatestProjectRev(projectId, { branchId });
 
-      if (rev.revision + 1 !== +req.params.revision) {
-        // Don't try to merge the bundles since the revision number is not
-        // compatible (to avoid bundle reference errors that come from
-        // concurrent editing conflicts).
-        throw new ProjectRevisionError(
-          `Tried saving revision ${+req.params.revision}, but expecting ${
-            rev.revision + 1
-          } since latest saved revision is ${rev.revision}`
-        );
-      }
-
-      const bundle = await getMigratedBundle(rev);
-      const latestRevMap = bundle.map;
-      const mergedData = getBundle(req.body, await getLastBundleVersion());
-      const updatedMap = mergedData.map;
-      mergedData.map = { ...latestRevMap };
-      Object.entries(updatedMap).forEach(([iid, partialInst]) => {
-        if (!mergedData.map[iid]) {
-          mergedData.map[iid] = partialInst;
-        } else {
-          assert(
-            mergedData.map[iid].__type === partialInst.__type,
-            `mergedData.map[${iid}] has type ${mergedData.map[iid].__type} but partialInst.__type is ${partialInst.__type}`
+        if (rev.revision + 1 !== +req.params.revision) {
+          // Don't try to merge the bundles since the revision number is not
+          // compatible (to avoid bundle reference errors that come from
+          // concurrent editing conflicts).
+          throw new ProjectRevisionError(
+            `Tried saving revision ${+req.params.revision}, but expecting ${
+              rev.revision + 1
+            } since latest saved revision is ${rev.revision}`
           );
-          Object.assign(mergedData.map[iid], partialInst);
         }
-      });
-      const toDeleteIids: string[] = req.body.toDeleteIids || [];
-      toDeleteIids.forEach((iid) => delete mergedData.map[iid]);
-      try {
-        checkExistingReferences(mergedData);
-      } catch (e) {
-        Sentry.captureException(e);
-        // If there are errors in references, it could be due to dangling
-        // references pointing to invalid external deps after upgrading
-        // a project dependency.  Not sure how they are dangling.  But we
-        // try to remove those unreachable nodes here:
-        removeUnreachableNodesFromBundle(mergedData);
+
+        const bundle = await getMigratedBundle(rev);
+        const latestRevMap = bundle.map;
+        const mergedData = getBundle(req.body, await getLastBundleVersion());
+        const updatedMap = mergedData.map;
+        mergedData.map = { ...latestRevMap };
+        Object.entries(updatedMap).forEach(([iid, partialInst]) => {
+          if (!mergedData.map[iid]) {
+            mergedData.map[iid] = partialInst;
+          } else {
+            assert(
+              mergedData.map[iid].__type === partialInst.__type,
+              `mergedData.map[${iid}] has type ${mergedData.map[iid].__type} but partialInst.__type is ${partialInst.__type}`
+            );
+            Object.assign(mergedData.map[iid], partialInst);
+          }
+        });
+        const toDeleteIids: string[] = req.body.toDeleteIids || [];
+        toDeleteIids.forEach((iid) => delete mergedData.map[iid]);
         try {
           checkExistingReferences(mergedData);
-        } catch (err) {
-          // If there are still errors, then we give up :-/
-          Sentry.captureException(err);
-          throw new UnknownReferencesError();
+        } catch (e) {
+          Sentry.captureException(e);
+          // If there are errors in references, it could be due to dangling
+          // references pointing to invalid external deps after upgrading
+          // a project dependency.  Not sure how they are dangling.  But we
+          // try to remove those unreachable nodes here:
+          removeUnreachableNodesFromBundle(mergedData);
+          try {
+            checkExistingReferences(mergedData);
+          } catch (err) {
+            // If there are still errors, then we give up :-/
+            Sentry.captureException(err);
+            throw new UnknownReferencesError();
+          }
         }
+        try {
+          checkBundleFields(mergedData);
+          checkRefsInBundle(mergedData);
+        } catch (e) {
+          Sentry.captureException(e);
+          throw new BundleTypeError();
+        }
+        return mergedData;
+      } else {
+        const bundle = getBundle(req.body, await getLastBundleVersion());
+        checkBundleFields(bundle);
+        checkRefsInBundle(bundle);
+        return bundle;
       }
-      try {
-        checkBundleFields(mergedData);
-        checkRefsInBundle(mergedData);
-      } catch (e) {
-        Sentry.captureException(e);
-        throw new BundleTypeError();
-      }
-      return mergedData;
-    } else {
-      const bundle = getBundle(req.body, await getLastBundleVersion());
-      checkBundleFields(bundle);
-      checkRefsInBundle(bundle);
-      return bundle;
-    }
-  })();
-
-  await moveBundleAssetsToS3(mergedBundle);
-
-  // Prefer re using the bundle up to this point, so that it won't require running
-  // multiple JSON.stringify()/JSON.parse() on large bundles
-  const data = JSON.stringify(mergedBundle);
-
-  req.promLabels.projectId = projectId;
-  req.analytics.track("Save project", {
-    projectId: project.id,
-    projectName: project.name,
-    revision: +req.params.revision,
-    branchId,
-  });
-
-  const rev = await mgr.saveProjectRev({
-    projectId,
-    data: data,
-    revisionNum: +req.params.revision,
-    branchId,
-  });
-
-  if (req.body.incremental) {
-    const partial = await (async () => {
-      const bundle = getBundle({ data }, await getLastBundleVersion());
-      const partialData = getBundle(req.body, await getLastBundleVersion());
-      bundle.map = pick(bundle.map, Object.keys(partialData.map)) as any;
-      Object.keys(bundle.map).forEach((iid) => {
-        const fields = Object.keys(partialData.map[iid]);
-        bundle.map[iid] = pick(bundle.map[iid], fields) as any;
-      });
-      return JSON.stringify(bundle);
     })();
 
-    const deletedIids: string[] = req.body.toDeleteIids || [];
-    const modifiedComponentIids: string[] =
-      req.body.modifiedComponentIids || [];
+    await moveBundleAssetsToS3(mergedBundle);
 
-    await mgr.savePartialRevision({
-      projectId,
-      revisionNum: +req.params.revision,
-      data: partial,
-      deletedIids: JSON.stringify(deletedIids),
+    // Prefer re using the bundle up to this point, so that it won't require running
+    // multiple JSON.stringify()/JSON.parse() on large bundles
+    const data = JSON.stringify(mergedBundle);
+
+    req.promLabels.projectId = projectId;
+    req.analytics.track("Save project", {
+      projectId: project.id,
+      projectName: project.name,
+      revision: +req.params.revision,
       branchId,
-      projectRevisionId: rev.id,
-      modifiedComponentIids: modifiedComponentIids,
     });
-  } else {
-    // If we're saving the entire bundle, it's better not to save it as an
-    // incremental change, so we just clear the cached partial changes
-    await mgr.clearPartialRevisionsCacheForProject(projectId, branchId);
-  }
 
-  res.json({ rev: omit(rev, "data") });
+    const rev = await mgr.saveProjectRev({
+      projectId,
+      data: data,
+      revisionNum: +req.params.revision,
+      branchId,
+    });
 
-  // We resolve the transaction first before we broadcast the new updates
-  // to other players
-  await req.resolveTransaction();
+    if (req.body.incremental) {
+      const partial = await (async () => {
+        const bundle = getBundle({ data }, await getLastBundleVersion());
+        const partialData = getBundle(req.body, await getLastBundleVersion());
+        bundle.map = pick(bundle.map, Object.keys(partialData.map)) as any;
+        Object.keys(bundle.map).forEach((iid) => {
+          const fields = Object.keys(partialData.map[iid]);
+          bundle.map[iid] = pick(bundle.map[iid], fields) as any;
+        });
+        return JSON.stringify(bundle);
+      })();
+
+      const deletedIids: string[] = req.body.toDeleteIids || [];
+      const modifiedComponentIids: string[] =
+        req.body.modifiedComponentIids || [];
+
+      await mgr.savePartialRevision({
+        projectId,
+        revisionNum: +req.params.revision,
+        data: partial,
+        deletedIids: JSON.stringify(deletedIids),
+        branchId,
+        projectRevisionId: rev.id,
+        modifiedComponentIids: modifiedComponentIids,
+      });
+    } else {
+      // If we're saving the entire bundle, it's better not to save it as an
+      // incremental change, so we just clear the cached partial changes
+      await mgr.clearPartialRevisionsCacheForProject(projectId, branchId);
+    }
+
+    return commitTransaction({
+      project,
+      rev,
+    });
+  });
+
+  res.json({ rev: omit(commit.rev, "data") });
 
   // Broadcast to the new project revision to all listeners
   await broadcastProjectsMessage({
-    room: `projects/${project.id}`,
+    room: `projects/${commit.project.id}`,
     type: "update",
-    message: { projectId: project.id, revisionNum: rev.revision },
+    message: {
+      projectId: commit.project.id,
+      revisionNum: commit.rev.revision,
+    },
   });
 }
 
-export async function getCurrentModelVersion(em: EntityManager) {
+async function getCurrentModelVersion(em: EntityManager) {
   const conn = em.connection;
   const migrator = new MigrationExecutor(conn, em.queryRunner);
   const migrations = await migrator.getExecutedMigrations();
@@ -1418,7 +1431,7 @@ export async function getProjectRev(req: Request, res: Response) {
     dontMigrateProject ? JSON.parse(rev.data) : await getMigratedBundle(rev),
     { dontMigrateBundle: dontMigrateProject }
   );
-  const modelVersion = await getCurrentModelVersion(req.txMgr);
+  const modelVersion = await getCurrentModelVersion(req.txMgr || req.noTxMgr);
   const hostlessDataVersion = (await mgr.getHostlessVersion()).versionCount;
   let owner: User | undefined;
   if (!project.createdById) {
@@ -1568,57 +1581,69 @@ export async function getFullProjectData(req: Request, res: Response) {
 }
 
 export async function updateProject(req: Request, res: Response) {
-  const mgr = userDbMgr(req);
-  const data: SetSiteInfoReq = req.body;
   const projectId = req.params.projectId;
-  const project = await mgr.updateProject(
-    {
-      id: projectId,
-      ...data,
-    },
-    data.regenerateSecretApiToken
-  );
-  const regeneratedSecretApiToken: string | undefined =
-    project.secretApiToken ?? undefined;
+  const data: SetSiteInfoReq = req.body;
 
-  req.promLabels.projectId = project.id;
-  const apiProject = mkApiProject(project);
-  const perms = project.readableByPublic
-    ? (await mgr.getPermissionsForProject(projectId)).filter((perm) => {
-        return (
-          accessLevelRank(perm.accessLevel) >= accessLevelRank("commenter")
-        );
-      })
-    : await mgr.getPermissionsForProject(projectId);
-  const owner = project.createdById
-    ? await mgr.getUserById(project.createdById)
-    : undefined;
-  const latestRevisionSynced = await getLatestRevisionSynced(mgr, projectId);
-  const affectedResourceIds = [
-    createTaggedResourceId("project", project.id),
-    ...(apiProject.teamId
-      ? [createTaggedResourceId("team", apiProject.teamId)]
-      : []),
-  ];
+  const { commit, rollback } = await startTransaction(req, async () => {
+    const mgr = userDbMgr(req);
+    const project = await mgr.updateProject(
+      {
+        id: projectId,
+        ...data,
+      },
+      data.regenerateSecretApiToken
+    );
+    const regeneratedSecretApiToken: string | undefined =
+      project.secretApiToken ?? undefined;
 
-  if (data.workspaceId) {
-    await mgr.moveAppAuthToWorkspace(projectId as ProjectId, data.workspaceId);
-  }
+    req.promLabels.projectId = project.id;
+    const apiProject = mkApiProject(project);
+    const perms = project.readableByPublic
+      ? (await mgr.getPermissionsForProject(projectId)).filter((perm) => {
+          return (
+            accessLevelRank(perm.accessLevel) >= accessLevelRank("commenter")
+          );
+        })
+      : await mgr.getPermissionsForProject(projectId);
+    const owner = project.createdById
+      ? await mgr.getUserById(project.createdById)
+      : undefined;
+    const latestRevisionSynced = await getLatestRevisionSynced(mgr, projectId);
+    const affectedResourceIds = [
+      createTaggedResourceId("project", project.id),
+      ...(apiProject.teamId
+        ? [createTaggedResourceId("team", apiProject.teamId)]
+        : []),
+    ];
 
-  const response: UpdateProjectResponse = {
-    project: apiProject,
-    perms,
-    owner,
-    latestRevisionSynced,
-    regeneratedSecretApiToken,
-  };
+    if (data.workspaceId) {
+      await mgr.moveAppAuthToWorkspace(
+        projectId as ProjectId,
+        data.workspaceId
+      );
+    }
 
-  // Bypass paywall if project is not being moved to a different workspace.
-  if (data.workspaceId) {
-    res.json(await maybeTriggerPaywall(req, affectedResourceIds, {}, response));
-  } else {
-    res.json(passPaywall(response));
-  }
+    const response: UpdateProjectResponse = {
+      project: apiProject,
+      perms,
+      owner,
+      latestRevisionSynced,
+      regeneratedSecretApiToken,
+    };
+
+    // Bypass paywall if project is not being moved to a different workspace.
+    const paywall = data.workspaceId
+      ? await maybeTriggerPaywall(req, affectedResourceIds, {}, response)
+      : passPaywall(response);
+    if (paywall.paywall === "pass") {
+      return commitTransaction(paywall);
+    } else {
+      return rollbackTransaction(paywall);
+    }
+  });
+
+  const response: MayTriggerPaywall<UpdateProjectResponse> = rollback ?? commit;
+  res.json(response);
 }
 
 export async function updateHostUrl(req: Request, res: Response) {
@@ -1897,41 +1922,41 @@ export async function prefillPkgVersion(
 }
 
 export async function publishProject(req: Request, res: Response) {
+  const projectId = req.params.projectId;
   const body = uncheckedCast<PublishProjectRequest>(req.body);
   if (body.version && !semver.valid(body.version)) {
     throw new BadRequestError(
       `Invalid publish version; please use a valid semver version like "1.2.3".`
     );
   }
-  const mgr = userDbMgr(req);
-  const projectId = req.params.projectId;
-  logger().info(`Publishing project ${projectId}...`);
-  const { pkgVersion, usedSiteFeatures } = await mgr.publishProject(
-    projectId,
-    body.version,
-    body.tags,
-    body.description,
-    body.revisionNum,
-    body.hostLessPackage,
-    body.branchId
-  );
-  req.promLabels.projectId = projectId;
-  const project = await mgr.getProjectById(projectId);
-  req.analytics.track("Publish project", {
-    projectId: projectId,
-    projectName: project.name,
-    pkgId: req.params.pkgId,
-  });
-  const affectedResourceIds = [
-    createTaggedResourceId("project", projectId),
-    ...(project.workspace?.teamId
-      ? [createTaggedResourceId("team", project.workspace?.teamId)]
-      : []),
-  ];
 
-  // This ends the request and closes the database connection
-  res.json(
-    await maybeTriggerPaywall(
+  const { commit, rollback } = await startTransaction(req, async () => {
+    const mgr = userDbMgr(req);
+    logger().info(`Publishing project ${projectId}...`);
+    const { pkgVersion, usedSiteFeatures } = await mgr.publishProject(
+      projectId,
+      body.version,
+      body.tags,
+      body.description,
+      body.revisionNum,
+      body.hostLessPackage,
+      body.branchId
+    );
+    req.promLabels.projectId = projectId;
+    const project = await mgr.getProjectById(projectId);
+    req.analytics.track("Publish project", {
+      projectId: projectId,
+      projectName: project.name,
+      pkgId: req.params.pkgId,
+    });
+    const affectedResourceIds = [
+      createTaggedResourceId("project", projectId),
+      ...(project.workspace?.teamId
+        ? [createTaggedResourceId("team", project.workspace?.teamId)]
+        : []),
+    ];
+
+    const paywall = await maybeTriggerPaywall(
       req,
       affectedResourceIds,
       {
@@ -1942,24 +1967,32 @@ export async function publishProject(req: Request, res: Response) {
       {
         verifyMonthlyViews: req.devflags.verifyMonthlyViews,
       }
-    )
-  );
-
-  logger().info(`Publishing project ${projectId}... done`);
-
-  await req.resolveTransaction();
-
-  await prefillPkgVersion(req, projectId, pkgVersion);
-
-  // Broadcast to publish listeners
-  logger().info(
-    `Broadcasting publish event for ${projectId}@${pkgVersion.version}`
-  );
-  await broadcastProjectsMessage({
-    room: `projects/${projectId}`,
-    type: "publish",
-    message: { projectId: projectId, ...omit(pkgVersion, "model") },
+    );
+    if (paywall.paywall === "pass") {
+      return commitTransaction({ paywall, pkgVersion });
+    } else {
+      return rollbackTransaction(paywall);
+    }
   });
+
+  const response: PublishProjectResponse = rollback ?? commit.paywall;
+  res.json(response);
+
+  if (commit) {
+    logger().info(`Publishing project ${projectId}... done`);
+
+    await prefillPkgVersion(req, projectId, commit.pkgVersion);
+
+    // Broadcast to publish listeners
+    logger().info(
+      `Broadcasting publish event for ${projectId}@${commit.pkgVersion.version}`
+    );
+    await broadcastProjectsMessage({
+      room: `projects/${projectId}`,
+      type: "publish",
+      message: { projectId, ...omit(commit.pkgVersion, "model") },
+    });
+  }
 }
 
 export async function getPkgVersionPublishStatus(req: Request, res: Response) {
@@ -2038,39 +2071,43 @@ export async function listPkgVersionsWithoutData(req: Request, res: Response) {
 }
 
 export async function updatePkgVersion(req: Request, res: Response) {
-  const mgr = userDbMgr(req);
   const pkgId = req.params.pkgId;
   const version = req.body.version;
   const branchId = req.body.branchId;
   const rawPkgVersion = req.body.pkg ?? {};
   // Note: The only thing users can modify from API is "tags" and "description" at the moment
   const toMerge = pick(rawPkgVersion, ["tags", "description"]);
-  const oldPkgVersion = await mgr.getPkgVersion(pkgId);
-  const pkgVersion = await mgr.updatePkgVersion(
-    pkgId,
-    version,
-    branchId,
-    toMerge
-  );
-  res.json({ pkg: pkgVersion });
 
-  if (arrayEqIgnoreOrder(oldPkgVersion.tags, pkgVersion.tags)) {
-    return;
-  }
+  const { commit } = await startTransaction(req, async () => {
+    const mgr = userDbMgr(req);
+    const oldPkgVersion = await mgr.getPkgVersion(pkgId);
+    const pkgVersion = await mgr.updatePkgVersion(
+      pkgId,
+      version,
+      branchId,
+      toMerge
+    );
 
-  const projectId = (await mgr.getPkgById(pkgVersion.pkgId)).projectId;
-
-  await req.resolveTransaction();
-
-  // Broadcast to publish listeners
-  logger().info(
-    `Broadcasting publish event for ${projectId}@${pkgVersion.version} because of tags change`
-  );
-  await broadcastProjectsMessage({
-    room: `projects/${projectId}`,
-    type: "publish",
-    message: { projectId: projectId, ...omit(pkgVersion, "model") },
+    return commitTransaction({ oldPkgVersion, pkgVersion });
   });
+
+  res.json({ pkg: commit.pkgVersion });
+
+  if (!arrayEqIgnoreOrder(commit.oldPkgVersion.tags, commit.pkgVersion.tags)) {
+    // Broadcast to publish listeners
+
+    const projectId = (await userDbMgr(req).getPkgById(commit.pkgVersion.pkgId))
+      .projectId;
+
+    logger().info(
+      `Broadcasting publish event for ${projectId}@${commit.pkgVersion.version} because of tags change`
+    );
+    await broadcastProjectsMessage({
+      room: `projects/${projectId}`,
+      type: "publish",
+      message: { projectId: projectId, ...omit(commit.pkgVersion, "model") },
+    });
+  }
 }
 
 function getFormattedStyleConfig(
@@ -2085,64 +2122,65 @@ function getFormattedStyleConfig(
 }
 
 export async function revertToVersion(req: Request, res: Response) {
-  const mgr = userDbMgr(req);
   const projectId = req.params.projectId as ProjectId;
   const { branchId, pkgId, version } = req.body as {
     branchId: BranchId | undefined;
     pkgId: string;
     version: string;
   };
-  assert(
-    (await mgr.getPkgByProjectId(projectId))?.id === pkgId,
-    () => `projectId doesn't match pkgId`
-  );
 
-  const latestRev = await mgr.getLatestProjectRev(projectId, { branchId });
+  const { commit } = await startTransaction(req, async () => {
+    const mgr = userDbMgr(req);
+    assert(
+      (await mgr.getPkgByProjectId(projectId))?.id === pkgId,
+      () => `projectId doesn't match pkgId`
+    );
 
-  const pkgVersion = await mgr.getPkgVersion(pkgId, version, undefined, {
-    branchId,
+    const latestRev = await mgr.getLatestProjectRev(projectId, { branchId });
+
+    const pkgVersion = await mgr.getPkgVersion(pkgId, version, undefined, {
+      branchId,
+    });
+
+    const bundler = new Bundler();
+    const projectDep = await unbundlePkgVersion(mgr, bundler, pkgVersion);
+    const data = bundler.bundle(
+      projectDep.site,
+      pkgVersion.id,
+      await getLastBundleVersion()
+    );
+
+    const project = await mgr.getProjectById(projectId);
+    req.promLabels.projectId = projectId;
+    req.analytics.track("Revert project to version", {
+      projectId: project.id,
+      projectName: project.name,
+      branchId,
+      version,
+    });
+
+    const rev = await mgr.saveProjectRev({
+      projectId,
+      revisionNum: latestRev.revision + 1,
+      data: JSON.stringify(data),
+      branchId,
+    });
+
+    // Update commit graph
+    await mgr.maybeUpdateCommitGraphForProject(projectId, (dag) => {
+      dag.branches[branchId ?? MainBranchId] = pkgVersion.id;
+    });
+
+    return commitTransaction({ rev });
   });
 
-  const bundler = new Bundler();
-  const projectDep = await unbundlePkgVersion(mgr, bundler, pkgVersion);
-  const data = bundler.bundle(
-    projectDep.site,
-    pkgVersion.id,
-    await getLastBundleVersion()
-  );
-
-  const project = await mgr.getProjectById(projectId);
-  req.promLabels.projectId = projectId;
-  req.analytics.track("Revert project to version", {
-    projectId: project.id,
-    projectName: project.name,
-    branchId,
-    version,
-  });
-
-  const rev = await mgr.saveProjectRev({
-    projectId,
-    revisionNum: latestRev.revision + 1,
-    data: JSON.stringify(data),
-    branchId,
-  });
-
-  // Update commit graph
-  await mgr.maybeUpdateCommitGraphForProject(projectId, (dag) => {
-    dag.branches[branchId ?? MainBranchId] = pkgVersion.id;
-  });
-
-  res.json({ rev: omit(rev, "data") });
-
-  // We resolve the transaction first before we broadcast the new updates
-  // to other players
-  await req.resolveTransaction();
+  res.json({ rev: omit(commit.rev, "data") });
 
   // Broadcast to the new project revision to all listeners
   await broadcastProjectsMessage({
     room: `projects/${projectId}`,
     type: "update",
-    message: { projectId: projectId, revisionNum: rev.revision },
+    message: { projectId: projectId, revisionNum: commit.rev.revision },
   });
 }
 
@@ -2555,222 +2593,238 @@ export async function updateProjectMeta(req: Request, res: Response) {
 }
 
 export async function updateProjectData(req: Request, res: Response) {
-  const dbMgr = userDbMgr(req);
-  const suMgr = superDbMgr(req);
   const projectId = req.params.projectId;
 
-  const excludedProjectIds = req.devflags.writeApiExcludedProjectIds;
+  const { commit } = await startTransaction(req, async () => {
+    const dbMgr = userDbMgr(req);
+    const suMgr = superDbMgr(req);
 
-  if (excludedProjectIds.includes(projectId)) {
-    throw new BadRequestError(
-      "This project is blocked from making updates. Please contact support."
-    );
-  }
+    const excludedProjectIds = req.devflags.writeApiExcludedProjectIds;
 
-  const data = req.body as UpdateProjectReq;
-  const branchId = data.branchId
-    ? toOpaque<string, "BranchId">(data.branchId)
-    : undefined;
-
-  const latestRev = await dbMgr.getLatestProjectRev(
-    projectId,
-    branchId
-      ? {
-          branchId,
-        }
-      : undefined
-  );
-
-  const writeApiSizeLimit = req.devflags.writeApiSizeLimit;
-  const oldBundleSize = getSerializedBundleSize(latestRev);
-  const incomingSize = JSON.stringify(data).length;
-  if (oldBundleSize + incomingSize > writeApiSizeLimit) {
-    throw new BadRequestError(
-      "Project data size exceeds the limit. Please contact support."
-    );
-  }
-
-  const oldBundle = await getMigratedBundle(latestRev);
-  const bundler = new Bundler();
-  // Need to use superuser because our API token set probably only has access to leaf project and not dependencies
-  const site = ensureKnownSite(
-    (await unbundleSite(bundler, oldBundle, suMgr, latestRev)).siteOrProjectDep
-  );
-
-  const warnings: { message: string }[] = [];
-
-  type ComponentSummary = {
-    uuid: string;
-    name: string;
-    path: string | undefined;
-  };
-  const result: {
-    newComponents: ComponentSummary[];
-    regeneratedSecretApiToken?: string;
-  } = {
-    newComponents: [],
-  };
-
-  const upsertComponent = (compReq: NewComponentReq, allowUpdate: boolean) => {
-    const tplMgr = new TplMgr({ site });
-
-    // We match with existing component either by normalized name, path, or UUID.
-    const existing = site.components.find(
-      (c) =>
-        toClassName(c.name) === maybe(compReq.name, toClassName) ||
-        (compReq.path && c.pageMeta?.path === compReq.path) ||
-        (compReq.byUuid && c.uuid === compReq.byUuid)
-    );
-    if (existing && !allowUpdate) {
+    if (excludedProjectIds.includes(projectId)) {
       throw new BadRequestError(
-        `Attempted to insert a new component called ${compReq.name} and path ${compReq.path} when an existing component with the same name or path already exists`
+        "This project is blocked from making updates. Please contact support."
       );
     }
 
-    let component: Component;
+    const data = req.body as UpdateProjectReq;
+    const branchId = data.branchId
+      ? toOpaque<string, "BranchId">(data.branchId)
+      : undefined;
 
-    if (existing) {
-      // Leave existing component alone; only update the tplTree.
-      component = existing;
-    } else {
-      const name = tplMgr.getUniqueComponentName(compReq.name);
-      const cloneFrom = compReq.cloneFrom;
-      if (cloneFrom) {
-        const srcComponent = strictFind(site.components, (c) =>
-          "uuid" in cloneFrom
-            ? c.uuid === cloneFrom.uuid
-            : c.name === cloneFrom.name
+    const latestRev = await dbMgr.getLatestProjectRev(
+      projectId,
+      branchId
+        ? {
+            branchId,
+          }
+        : undefined
+    );
+
+    const writeApiSizeLimit = req.devflags.writeApiSizeLimit;
+    const oldBundleSize = getSerializedBundleSize(latestRev);
+    const incomingSize = JSON.stringify(data).length;
+    if (oldBundleSize + incomingSize > writeApiSizeLimit) {
+      throw new BadRequestError(
+        "Project data size exceeds the limit. Please contact support."
+      );
+    }
+
+    const oldBundle = await getMigratedBundle(latestRev);
+    const bundler = new Bundler();
+    // Need to use superuser because our API token set probably only has access to leaf project and not dependencies
+    const site = ensureKnownSite(
+      (await unbundleSite(bundler, oldBundle, suMgr, latestRev))
+        .siteOrProjectDep
+    );
+
+    const warnings: { message: string }[] = [];
+
+    type ComponentSummary = {
+      uuid: string;
+      name: string;
+      path: string | undefined;
+    };
+    const result: {
+      newComponents: ComponentSummary[];
+      regeneratedSecretApiToken?: string;
+    } = {
+      newComponents: [],
+    };
+
+    const upsertComponent = (
+      compReq: NewComponentReq,
+      allowUpdate: boolean
+    ) => {
+      const tplMgr = new TplMgr({ site });
+
+      // We match with existing component either by normalized name, path, or UUID.
+      const existing = site.components.find(
+        (c) =>
+          toClassName(c.name) === maybe(compReq.name, toClassName) ||
+          (compReq.path && c.pageMeta?.path === compReq.path) ||
+          (compReq.byUuid && c.uuid === compReq.byUuid)
+      );
+      if (existing && !allowUpdate) {
+        throw new BadRequestError(
+          `Attempted to insert a new component called ${compReq.name} and path ${compReq.path} when an existing component with the same name or path already exists`
         );
-        ({ component } = tplMgr.cloneComponent(srcComponent, name, true));
-      } else {
-        component = tplMgr.addComponent({
-          type: compReq.path ? ComponentType.Page : ComponentType.Plain,
-          name: name,
-        });
       }
-      if (compReq.path) {
-        assert(isPageComponent(component), "Expected page component");
 
-        tplMgr.changePagePath(component, compReq.path);
+      let component: Component;
 
-        const assignedPath = component.pageMeta.path;
-        if (assignedPath !== compReq.path) {
-          warnings.push({
-            message: `Component ${component.name} was assigned path ${assignedPath} because the requested path ${compReq.path} was already used or invalid.`,
+      if (existing) {
+        // Leave existing component alone; only update the tplTree.
+        component = existing;
+      } else {
+        const name = tplMgr.getUniqueComponentName(compReq.name);
+        const cloneFrom = compReq.cloneFrom;
+        if (cloneFrom) {
+          const srcComponent = strictFind(site.components, (c) =>
+            "uuid" in cloneFrom
+              ? c.uuid === cloneFrom.uuid
+              : c.name === cloneFrom.name
+          );
+          ({ component } = tplMgr.cloneComponent(srcComponent, name, true));
+        } else {
+          component = tplMgr.addComponent({
+            type: compReq.path ? ComponentType.Page : ComponentType.Plain,
+            name: name,
           });
         }
+        if (compReq.path) {
+          assert(isPageComponent(component), "Expected page component");
+
+          tplMgr.changePagePath(component, compReq.path);
+
+          const assignedPath = component.pageMeta.path;
+          if (assignedPath !== compReq.path) {
+            warnings.push({
+              message: `Component ${component.name} was assigned path ${assignedPath} because the requested path ${compReq.path} was already used or invalid.`,
+            });
+          }
+        }
       }
-    }
 
-    // TODO: check for cyclic refs and other possible errors
-    const maybeError = elementSchemaToTpl(site, component, compReq.body, {
-      codeComponentsOnly: false,
-    });
+      // TODO: check for cyclic refs and other possible errors
+      const maybeError = elementSchemaToTpl(site, component, compReq.body, {
+        codeComponentsOnly: false,
+      });
 
-    if (maybeError.result.isError) {
-      throw new BadRequestError(maybeError.result.error.message);
-    }
+      if (maybeError.result.isError) {
+        throw new BadRequestError(maybeError.result.error.message);
+      }
 
-    const { tpl, warnings: componentWarnings } = maybeError.result.value;
-    componentWarnings.forEach((err) =>
-      warnings.push({
-        message: err.message + (err.description ? "\n" + err.description : ""),
-      })
-    );
+      const { tpl, warnings: componentWarnings } = maybeError.result.value;
+      componentWarnings.forEach((err) =>
+        warnings.push({
+          message:
+            err.message + (err.description ? "\n" + err.description : ""),
+        })
+      );
 
-    component.tplTree = tpl;
-    tplMgr.ensureSubtreeCorrectlyNamed(component, component.tplTree);
+      component.tplTree = tpl;
+      tplMgr.ensureSubtreeCorrectlyNamed(component, component.tplTree);
 
-    if (!allowUpdate) {
-      result.newComponents.push({
-        uuid: component.uuid,
-        name: component.name,
-        path: component.pageMeta?.path,
+      if (!allowUpdate) {
+        result.newComponents.push({
+          uuid: component.uuid,
+          name: component.name,
+          path: component.pageMeta?.path,
+        });
+      }
+    };
+
+    if (data.newComponents && data.newComponents.length > 0) {
+      const components = data.newComponents.map((c) => c.name).join(", ");
+      logger().info(`Update project data: Creating components ${components}`);
+      data.newComponents.forEach((c) => {
+        upsertComponent(c, false);
       });
     }
-  };
 
-  if (data.newComponents && data.newComponents.length > 0) {
-    const components = data.newComponents.map((c) => c.name).join(", ");
-    logger().info(`Update project data: Creating components ${components}`);
-    data.newComponents.forEach((c) => {
-      upsertComponent(c, false);
-    });
-  }
+    if (data.updateComponents && data.updateComponents.length > 0) {
+      const components = data.updateComponents.map((c) => c.name).join(", ");
+      logger().info(`Update project data: Updating components ${components}`);
+      data.updateComponents.forEach((c) => {
+        upsertComponent(c, true);
+      });
+    }
 
-  if (data.updateComponents && data.updateComponents.length > 0) {
-    const components = data.updateComponents.map((c) => c.name).join(", ");
-    logger().info(`Update project data: Updating components ${components}`);
-    data.updateComponents.forEach((c) => {
-      upsertComponent(c, true);
-    });
-  }
+    if (data.tokens && data.tokens.length > 0) {
+      const tokens = data.tokens.map((c) => c.name).join(", ");
+      logger().info(`Update project data: Updating tokens ${tokens}`);
+      addOrUpsertTokens(site, data.tokens);
+    } else {
+      logger().info(
+        `Update project data: no tokens to update (body.tokens = ${data.tokens})`
+      );
+    }
 
-  if (data.tokens && data.tokens.length > 0) {
-    const tokens = data.tokens.map((c) => c.name).join(", ");
-    logger().info(`Update project data: Updating tokens ${tokens}`);
-    addOrUpsertTokens(site, data.tokens);
-  } else {
-    logger().info(
-      `Update project data: no tokens to update (body.tokens = ${data.tokens})`
+    if (data.regenerateSecretApiToken) {
+      const project = await dbMgr.updateProject(
+        {
+          id: req.params.projectId,
+        },
+        true /* regenerateSecretApiToken */
+      );
+      result.regeneratedSecretApiToken = project.secretApiToken ?? undefined;
+    }
+
+    const newBundle = bundler.bundle(site, latestRev.id, oldBundle.version);
+
+    assert(
+      isExpectedBundleVersion(newBundle, await getLastBundleVersion()),
+      "Unexpected bundle version " + newBundle.version
     );
-  }
+    checkExistingReferences(newBundle);
+    checkBundleFields(newBundle);
+    checkRefsInBundle(newBundle);
+    assertSiteInvariants(site);
+    // Maybe also assert observable-model invariants?
+    // assertObservabeModelInvariants(site, bundler, projectId);
 
-  if (data.regenerateSecretApiToken) {
-    const project = await dbMgr.updateProject(
-      {
-        id: req.params.projectId,
-      },
-      true /* regenerateSecretApiToken */
-    );
-    result.regeneratedSecretApiToken = project.secretApiToken ?? undefined;
-  }
+    const project = await dbMgr.getProjectById(projectId);
 
-  const newBundle = bundler.bundle(site, latestRev.id, oldBundle.version);
+    const rev = await dbMgr.saveProjectRev({
+      projectId: projectId,
+      data: JSON.stringify(newBundle),
+      revisionNum: latestRev.revision + 1,
+      branchId: branchId,
+    });
 
-  assert(
-    isExpectedBundleVersion(newBundle, await getLastBundleVersion()),
-    "Unexpected bundle version " + newBundle.version
-  );
-  checkExistingReferences(newBundle);
-  checkBundleFields(newBundle);
-  checkRefsInBundle(newBundle);
-  assertSiteInvariants(site);
-  // Maybe also assert observable-model invariants?
-  // assertObservabeModelInvariants(site, bundler, projectId);
+    req.analytics.track("Update project", {
+      projectId: projectId,
+      projectName: project.name,
+      revision: rev.revision,
+    });
 
-  const project = await dbMgr.getProjectById(projectId);
+    await dbMgr.clearPartialRevisionsCacheForProject(projectId);
 
-  const rev = await dbMgr.saveProjectRev({
-    projectId: projectId,
-    data: JSON.stringify(newBundle),
-    revisionNum: latestRev.revision + 1,
-    branchId: branchId,
+    return commitTransaction({ result, warnings, rev });
   });
 
-  req.analytics.track("Update project", {
-    projectId: projectId,
-    projectName: project.name,
-    revision: rev.revision,
-  });
-
-  await dbMgr.clearPartialRevisionsCacheForProject(projectId);
-
-  if (warnings.length > 0) {
+  if (commit.warnings.length > 0) {
     logger().warn(
-      `Update project data - Warnings ${JSON.stringify(warnings, undefined, 2)}`
+      `Update project data - Warnings ${JSON.stringify(
+        commit.warnings,
+        undefined,
+        2
+      )}`
     );
   }
 
-  res.json(warnings.length > 0 ? { warnings, result } : { result });
-
-  await req.resolveTransaction();
+  res.json(
+    commit.warnings.length > 0
+      ? { warnings: commit.warnings, result: commit.result }
+      : { result: commit.result }
+  );
 
   // Broadcast to the new project revision to all listeners
   await broadcastProjectsMessage({
-    room: `projects/${project.id}`,
+    room: `projects/${projectId}`,
     type: "update",
-    message: { projectId: project.id, revisionNum: rev.revision },
+    message: { projectId, revisionNum: commit.rev.revision },
   });
 }
 

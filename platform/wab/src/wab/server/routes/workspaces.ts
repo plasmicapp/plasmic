@@ -5,13 +5,19 @@ import {
   passPaywall,
 } from "@/wab/server/routes/team-plans";
 import { mkApiTeam } from "@/wab/server/routes/teams";
-import { userDbMgr } from "@/wab/server/routes/util";
+import {
+  commitTransaction,
+  rollbackTransaction,
+  startTransaction,
+  userDbMgr,
+} from "@/wab/server/routes/util";
 import {
   ApiTeam,
   ApiWorkspace,
   CreateWorkspaceRequest,
   CreateWorkspaceResponse,
   GetWorkspaceResponse,
+  MayTriggerPaywall,
   UpdateWorkspaceRequest,
   WorkspaceId,
 } from "@/wab/shared/ApiSchema";
@@ -91,56 +97,74 @@ export async function createWorkspace(req: Request, res: Response) {
   const name = rawName || "Untitled workspace";
   const description = rawDescription || "";
 
-  const userMgr = userDbMgr(req);
-  const team = await userMgr.getTeamById(teamId);
-  const workspace = await userMgr.createWorkspace({
-    name,
-    description,
-    teamId,
-  });
-  const apiWorkspace = mkApiWorkspace(workspace);
-  req.analytics.track("Create workspace", {
-    workspaceName: name,
-    workspaceDescription: description,
-    teamId,
-    featureTierId: team.featureTierId,
-  });
-  res.json(
-    await maybeTriggerPaywall<CreateWorkspaceResponse>(
+  const { commit, rollback } = await startTransaction(req, async () => {
+    const userMgr = userDbMgr(req);
+    const team = await userMgr.getTeamById(teamId);
+    const workspace = await userMgr.createWorkspace({
+      name,
+      description,
+      teamId,
+    });
+    const apiWorkspace = mkApiWorkspace(workspace);
+    req.analytics.track("Create workspace", {
+      workspaceName: name,
+      workspaceDescription: description,
+      teamId,
+      featureTierId: team.featureTierId,
+    });
+
+    const paywall = await maybeTriggerPaywall(
       req,
       [createTaggedResourceId("team", teamId)],
       {},
       {
         workspace: apiWorkspace,
       }
-    )
-  );
+    );
+    if (paywall.paywall === "pass") {
+      return commitTransaction(paywall);
+    } else {
+      return rollbackTransaction(paywall);
+    }
+  });
+
+  const response: MayTriggerPaywall<CreateWorkspaceResponse> =
+    rollback ?? commit;
+  res.json(response);
 }
 
 export async function updateWorkspace(req: Request, res: Response) {
-  const userMgr = userDbMgr(req);
-  const args = req.body as UpdateWorkspaceRequest;
-  const workspace = await userMgr.updateWorkspace({
-    workspaceId: req.params.workspaceId as WorkspaceId,
-    ...args,
+  const { commit, rollback } = await startTransaction(req, async () => {
+    const userMgr = userDbMgr(req);
+    const args = req.body as UpdateWorkspaceRequest;
+    const workspace = await userMgr.updateWorkspace({
+      workspaceId: req.params.workspaceId as WorkspaceId,
+      ...args,
+    });
+
+    const apiWorkspace = mkApiWorkspace(workspace);
+    const response: CreateWorkspaceResponse = { workspace: apiWorkspace };
+
+    // Bypass paywall if workspace is not being moved to a different team.
+    const paywall = args.teamId
+      ? await maybeTriggerPaywall(
+          req,
+          [createTaggedResourceId("team", apiWorkspace.team.id)],
+          {},
+          response
+        )
+      : passPaywall(response);
+
+    if (paywall.paywall === "pass") {
+      return commitTransaction(paywall);
+    } else {
+      return rollbackTransaction(paywall);
+    }
   });
 
-  const apiWorkspace = mkApiWorkspace(workspace);
-  const response: CreateWorkspaceResponse = { workspace: apiWorkspace };
-
-  // Bypass paywall if workspace is not being moved to a different team.
-  if (args.teamId) {
-    res.json(
-      await maybeTriggerPaywall(
-        req,
-        [createTaggedResourceId("team", apiWorkspace.team.id)],
-        {},
-        response
-      )
-    );
-  } else {
-    res.json(passPaywall(response));
-  }
+  const response: MayTriggerPaywall<CreateWorkspaceResponse> =
+    rollback ?? commit;
+  res.json(response);
 }
 
 export async function deleteWorkspace(req: Request, res: Response) {

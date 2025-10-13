@@ -22,7 +22,12 @@ import {
   InsertableTemplateTokenResolution,
 } from "@/wab/shared/devflags";
 import { AccessLevel, GrantableAccessLevel } from "@/wab/shared/EntUtil";
-import { PkgVersionInfo, RevInfo, SiteInfo } from "@/wab/shared/SharedApi";
+import {
+  PkgVersionInfo,
+  PkgVersionInfoMeta,
+  RevInfo,
+  SiteInfo,
+} from "@/wab/shared/SharedApi";
 import { ChangeLogEntry, SemVerReleaseType } from "@/wab/shared/site-diffs";
 import {
   DirectConflictPickMap,
@@ -1865,7 +1870,9 @@ export interface PublishProjectRequest {
   waitPrefill: boolean;
 }
 
-export type PublishProjectResponse = MayTriggerPaywall<{ pkg: PkgVersionInfo }>;
+export type PublishProjectResponse = MayTriggerPaywall<{
+  pkg: PkgVersionInfoMeta;
+}>;
 
 export type AppEndUserAccessIdentifier =
   | { externalId: string }

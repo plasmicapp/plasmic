@@ -93,6 +93,7 @@ import {
 } from "@/wab/server/entities/Entities";
 import { logger } from "@/wab/server/observability";
 import { REAL_PLUME_VERSION } from "@/wab/server/pkg-mgr/plume-pkg-mgr";
+import { CompatRequest } from "@/wab/server/routes/util";
 import {
   TutorialType,
   createTutorialDb,
@@ -693,14 +694,25 @@ export const SkipSafeDelete: ProofSafeDelete = toOpaque({
  * Mgr classes.
  */
 export class DbMgr implements MigrationDbMgr {
-  protected readonly entMgr: EntityManager;
+  protected get entMgr(): EntityManager {
+    if (this.entMgrOrReq instanceof EntityManager) {
+      return this.entMgrOrReq;
+    } else {
+      // We dynamically get the EntityManager from the request to avoid a bug
+      // when DbMgr is created before startTransaction. After startTransaction,
+      // txMgr will be set, which needs to be used to ensure we rollback data.
+      return this.entMgrOrReq.txMgr || this.entMgrOrReq.noTxMgr;
+    }
+  }
+  private readonly entMgrOrReq: EntityManager | CompatRequest;
+
   public readonly actor: Actor;
   public readonly projectIdsAndTokens?: ProjectIdAndToken[];
   public readonly cmsIdsAndTokens?: CmsIdAndToken[];
   public readonly teamApiToken?: string;
   public readonly temporaryTeamApiToken?: string;
   constructor(
-    entMgr: EntityManager,
+    entMgrOrReq: EntityManager | CompatRequest,
     actor: Actor,
     public opts?: {
       projectIdsAndTokens?: ProjectIdAndToken[];
@@ -710,9 +722,9 @@ export class DbMgr implements MigrationDbMgr {
       workspaceApiToken?: string;
     }
   ) {
-    this.entMgr = ensure(
-      entMgr,
-      "Please pass an entity manager object to use DbMgr!"
+    this.entMgrOrReq = ensure(
+      entMgrOrReq,
+      "Please pass an entity manager object or request to use DbMgr!"
     );
     this.actor = ensure(actor, "Please pass an actor object to use DbMgr!");
     this.projectIdsAndTokens = opts?.projectIdsAndTokens;

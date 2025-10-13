@@ -18,12 +18,6 @@ export function createRateLimiter({
     windowMs,
     limit,
     message,
-    handler: (req, res, next, options) => {
-      req
-        .resolveTransaction()
-        .catch(() => {})
-        .finally(() => res.status(options.statusCode).send(options.message));
-    },
     skip,
     standardHeaders: true,
     legacyHeaders: false,

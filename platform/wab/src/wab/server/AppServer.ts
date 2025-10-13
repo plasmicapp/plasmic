@@ -272,7 +272,11 @@ import {
   updateWorkspace,
 } from "@/wab/server/routes/workspaces";
 import { logError } from "@/wab/server/server-util";
-import { ASYNC_TIMING } from "@/wab/server/timing-util";
+import {
+  ASYNC_TIMING,
+  callsToServerTiming,
+  serializeCallDurations,
+} from "@/wab/server/timing-util";
 import { TypeormStore } from "@/wab/server/util/TypeormSessionStore";
 import {
   pruneOldBundleBackupsCache,
@@ -522,14 +526,36 @@ function addMiddlewares(
   );
 
   app.use((req, res, next) => {
+    // For Plasmic users, let's instrument the DbMgr and track their call durations.
+    // The actual instrumentation happens in userDbMgr().
     // This is before we've loaded req.devflags - just use the hard-coded default for the core team email domain.
     if (
       isAdminTeamEmail(req.user?.email, DEVFLAGS) ||
       req.path.includes("/server-data") ||
       ROUTES_WITH_TIMING.some((route) => req.path.includes(route))
     ) {
-      req.timingStore = { calls: [], cur: undefined };
+      const timingStore = { calls: [], cur: undefined };
+      req.timingStore = timingStore;
       ASYNC_TIMING.enterWith(req.timingStore);
+
+      // Intercept req.send() so we can inject the Server-Timing header.
+      const _send = res.send;
+      res.send = (...args: any) => {
+        if (!res.headersSent) {
+          res.setHeader(
+            "Server-Timing",
+            callsToServerTiming(timingStore.calls)
+          );
+        }
+        if (timingStore.calls && timingStore.calls.length > 0) {
+          logger().debug("TIMING", {
+            method: req.method,
+            path: req.path,
+            callDurations: serializeCallDurations(timingStore.calls),
+          });
+        }
+        return _send.bind(res)(...args);
+      };
     }
     next();
   });
@@ -578,120 +604,14 @@ function addMiddlewares(
     })
   );
 
-  // TODO I don't know why making this non-async causes node to crash-exit on any
-  //  route error. Leaving it in results in double-reporting the error, but no
-  //  other bad effects seemingly. Some interaction with our end handlers.
+  // Set up basic request configuration without universal transaction
   app.use(
     safeCast<RequestHandler>(async (req, res, next) => {
       req.config = config;
       req.con = connectionPool;
-
+      req.noTxMgr = connectionPool.createEntityManager();
       req.mailer = createMailer();
-      req.activeTransaction = req.con
-        .transaction((txMgr) => {
-          return new Promise((resolve, reject) => {
-            let fulfilled = false;
-
-            req.txMgr = txMgr;
-            req.resolveTransaction = async () => {
-              if (fulfilled) {
-                return;
-              }
-              fulfilled = true;
-              resolve(undefined);
-              await req.activeTransaction;
-            };
-            req.rejectTransaction = async (err) => {
-              if (fulfilled) {
-                return;
-              }
-              fulfilled = true;
-              reject(err);
-              await req.activeTransaction;
-            };
-
-            // The finish event is emitted "when the last segment of the response
-            // headers and body have been handed off to the operating system for
-            // transmission over the network."
-            // https://nodejs.org/dist/latest-v10.x/docs/api/http.html#http_event_finish
-            // This means once the response to the client is out of our hands, we
-            // commit - which can fail:
-            // https://stackoverflow.com/questions/33674370/can-committing-an-transaction-in-postgresql-fail
-            // Thus, our response to the client may be incorrect. This is important
-            // to keep in mind when configuring the database and cluster (e.g. if
-            // you want to use a deferred constraint).
-            //
-            // We currently use this as a fallback. Hopefully we've already
-            // committed in our end handlers. But there may be some routes that do
-            // not end up next-ing into our end handlers (haven't exhaustively
-            // checked).
-            res.on("finish", () => {
-              if (!fulfilled) {
-                logger().warn(
-                  `[${
-                    req.id
-                  }]: connection finished before response fulfilled! ${
-                    req.startTime
-                      ? `${
-                          Number(process.hrtime.bigint() - req.startTime) / 1e6
-                        }ms after request started`
-                      : ""
-                  }`
-                );
-                reject(
-                  new Error(
-                    "Connection finished before response fulfilled - rolling back DB changes!"
-                  )
-                );
-              } else {
-                resolve(undefined);
-              }
-            });
-            // If the connection was terminated without response.end() being called,
-            // the "close" event will fire (e.g. when using the static middleware
-            // below, or I think in some errors) and the "finish" event may or may
-            // not fire. We still need to close the transaction so the connection
-            // can be returned to the pool (which is currently at the default size
-            // of 10). It may be sufficient to just handle "close" and not "finish"
-            // but I'm not sure.
-            //
-            // Again, we are only using this as a fallback. Hopefully we've already
-            // committed in our end handlers.
-            res.on("close", () => {
-              if (!fulfilled) {
-                res.isClosedBeforeFulfilled = true;
-                logger().warn(
-                  `[${req.id}]: connection closed before response fulfilled!  ${
-                    req.startTime
-                      ? `${
-                          Number(process.hrtime.bigint() - req.startTime) / 1e6
-                        }ms after request started`
-                      : ""
-                  }`
-                );
-                reject(
-                  new Error(
-                    "Connection closed before response fulfilled - rolling back DB changes!"
-                  )
-                );
-              } else {
-                resolve(undefined);
-              }
-            });
-            next();
-          });
-        })
-        .catch((err) => {
-          // This can happen for two reasons.  One is that the request
-          // failed with some exception, and the error handler in
-          // withNext() called next(err), and so addEndErrorHandlers
-          // rejected the transaction. The other is the the http connection
-          // is closed before anyone called resolve or reject transaction,
-          // and so the res.on("close") handler above rejected the transaction.
-          // In either case, there is nothing for us to do here, as the
-          // error has already been handled. We are here just to prevent
-          // the error to continue propagating to the top level, uncaught
-        });
+      next();
     })
   );
   app.use(
@@ -809,15 +729,12 @@ export function addCmsPublicRoutes(app: express.Application) {
 
 export function addCmsEditorRoutes(app: express.Application) {
   // CMS API for use by studio to crud; access by usual browser login
-  app.get("/api/v1/cmse/databases", withNext(listDatabases));
+  app.get("/api/v1/cmse/databases", listDatabases);
   app.post("/api/v1/cmse/databases", withNext(createDatabase));
   app.post("/api/v1/cmse/databases/:dbId/clone", withNext(cloneDatabase));
-  app.get(
-    "/api/v1/cmse/databases/:dbId",
-    withNext(getCmsDatabaseAndSecretTokenById)
-  );
-  app.get("/api/v1/cmse/databases-meta/:dbId", withNext(getDatabaseMeta));
-  app.get("/api/v1/cmse/databases-meta", withNext(listDatabasesMeta));
+  app.get("/api/v1/cmse/databases/:dbId", getCmsDatabaseAndSecretTokenById);
+  app.get("/api/v1/cmse/databases-meta/:dbId", getDatabaseMeta);
+  app.get("/api/v1/cmse/databases-meta", listDatabasesMeta);
   app.put("/api/v1/cmse/databases/:dbId", withNext(updateDatabase));
   app.delete("/api/v1/cmse/databases/:dbId", withNext(deleteDatabase));
 
@@ -825,15 +742,15 @@ export function addCmsEditorRoutes(app: express.Application) {
   app.put("/api/v1/cmse/tables/:tableId", withNext(updateTable));
   app.delete("/api/v1/cmse/tables/:tableId", withNext(deleteTable));
 
-  app.get("/api/v1/cmse/tables/:tableId/rows", withNext(listRows));
+  app.get("/api/v1/cmse/tables/:tableId/rows", listRows);
   app.post("/api/v1/cmse/tables/:tableId/rows", withNext(createRows));
   app.post(
     "/api/v1/cmse/tables/:tableId/trigger-webhook",
     withNext(triggerTableWebhooks)
   );
 
-  app.get("/api/v1/cmse/rows/:rowId", withNext(getCmseRow));
-  app.get("/api/v1/cmse/rows/:rowId/revisions", withNext(listRowRevisions));
+  app.get("/api/v1/cmse/rows/:rowId", getCmseRow);
+  app.get("/api/v1/cmse/rows/:rowId/revisions", listRowRevisions);
   app.put("/api/v1/cmse/rows/:rowId", withNext(updateRow));
   app.delete("/api/v1/cmse/rows/:rowId", withNext(deleteRow));
   app.post("/api/v1/cmse/rows/:rowId/clone", withNext(cloneRow));
@@ -841,7 +758,7 @@ export function addCmsEditorRoutes(app: express.Application) {
     "/api/v1/cmse/tables/:tableId/check-unique-fields",
     withNext(checkUniqueFields)
   );
-  app.get("/api/v1/cmse/row-revisions/:revId", withNext(getRowRevision));
+  app.get("/api/v1/cmse/row-revisions/:revId", getRowRevision);
 
   app.post(
     "/api/v1/cmse/file-upload",
@@ -864,14 +781,14 @@ export function addWhiteLabelRoutes(app: express.Application) {
   app.get(
     "/api/v1/wl/:whiteLabelName/users/:externalUserId",
     safeCast<RequestHandler>(authRoutes.teamApiAuth),
-    withNext(getWhiteLabelUser)
+    getWhiteLabelUser
   );
   app.delete(
     "/api/v1/wl/:whiteLabelName/users/:externalUserId",
     safeCast<RequestHandler>(authRoutes.teamApiAuth),
     withNext(deleteWhiteLabelUser)
   );
-  app.get("/api/v1/wl/:whiteLabelName/open", withNext(openJwt));
+  app.get("/api/v1/wl/:whiteLabelName/open", openJwt);
 }
 
 export function addIntegrationsRoutes(app: express.Application) {
@@ -883,11 +800,8 @@ export function addIntegrationsRoutes(app: express.Application) {
 }
 
 export function addDataSourceRoutes(app: express.Application) {
-  app.get("/api/v1/data-source/sources", withNext(listDataSources));
-  app.get(
-    "/api/v1/data-source/sources/:dataSourceId",
-    withNext(getDataSourceById)
-  );
+  app.get("/api/v1/data-source/sources", listDataSources);
+  app.get("/api/v1/data-source/sources/:dataSourceId", getDataSourceById);
   app.post("/api/v1/data-source/sources", withNext(createDataSource));
   app.post(
     "/api/v1/data-source/sources/test",
@@ -904,7 +818,7 @@ export function addDataSourceRoutes(app: express.Application) {
   app.post(
     "/api/v1/data-source/sources/:dataSourceId",
     cors(),
-    withNext(executeDataSourceStudioOperationHandler)
+    executeDataSourceStudioOperationHandler
   );
   app.post(
     "/api/v1/data-source/sources/:dataSourceId/op-id",
@@ -912,7 +826,7 @@ export function addDataSourceRoutes(app: express.Application) {
   );
   app.post(
     "/api/v1/data-source/sources/:dataSourceId/execute-studio",
-    withNext(executeDataSourceOperationHandlerInStudio)
+    executeDataSourceOperationHandlerInStudio
   );
   app.post(
     "/api/v1/data-source/sources/:dataSourceId/allow",
@@ -927,28 +841,28 @@ export function addDataSourceRoutes(app: express.Application) {
 }
 
 export function addAnalyticsRoutes(app: express.Application) {
-  app.get("/api/v1/analytics/team/:teamId", withNext(getAnalyticsForTeam));
+  app.get("/api/v1/analytics/team/:teamId", getAnalyticsForTeam);
   app.get(
     "/api/v1/analytics/team/:teamId/project/:projectId",
-    withNext(getAnalyticsForProject)
+    getAnalyticsForProject
   );
   app.get(
     "/api/v1/analytics/team/:teamId/project/:projectId/meta",
-    withNext(getAnalyticsProjectMeta)
+    getAnalyticsProjectMeta
   );
   app.get(
     "/api/v1/analytics/team/:teamId/billing",
-    withNext(getAnalyticsBillingInfoForTeam)
+    getAnalyticsBillingInfoForTeam
   );
 }
 
 export function addAppAuthRoutes(app: express.Application) {
   // App-auth Oauth
-  app.get("/api/v1/app-auth/code", withNext(issueOauthCode));
+  app.get("/api/v1/app-auth/code", issueOauthCode);
 
   app.get("/api/v1/app-auth/token", cors(), withNext(grantOauthToken));
 
-  app.get("/api/v1/app-auth/userinfo", cors(), withNext(getEndUserByToken));
+  app.get("/api/v1/app-auth/userinfo", cors(), getEndUserByToken);
 
   app.post("/api/v1/app-auth/user", cors(), withNext(upsertEndUser));
 }
@@ -961,11 +875,8 @@ export function addEndUserManagementRoutes(app: express.Application) {
     "/api/v1/end-user/app/:projectId/config",
     withNext(upsertAppAuthConfig)
   );
-  app.get(
-    "/api/v1/end-user/app/:projectId/pub-config",
-    withNext(getAppAuthPubConfig)
-  );
-  app.get("/api/v1/end-user/app/:projectId/config", withNext(getAppAuthConfig));
+  app.get("/api/v1/end-user/app/:projectId/pub-config", getAppAuthPubConfig);
+  app.get("/api/v1/end-user/app/:projectId/config", getAppAuthConfig);
   app.delete(
     "/api/v1/end-user/app/:projectId/config",
     withNext(deleteAppAuthConfig)
@@ -974,7 +885,7 @@ export function addEndUserManagementRoutes(app: express.Application) {
   /**
    * Roles
    */
-  app.get("/api/v1/end-user/app/:projectId/roles", withNext(listRoles));
+  app.get("/api/v1/end-user/app/:projectId/roles", listRoles);
   app.post("/api/v1/end-user/app/:projectId/roles", withNext(createRole));
   app.put(
     "/api/v1/end-user/app/:projectId/roles-orders",
@@ -992,10 +903,7 @@ export function addEndUserManagementRoutes(app: express.Application) {
   /**
    * User access to an app
    */
-  app.get(
-    "/api/v1/end-user/app/:projectId/access-rules",
-    withNext(listAppAccessRules)
-  );
+  app.get("/api/v1/end-user/app/:projectId/access-rules", listAppAccessRules);
   app.post(
     "/api/v1/end-user/app/:projectId/access-rules",
     withNext(createAccessRules)
@@ -1010,7 +918,7 @@ export function addEndUserManagementRoutes(app: express.Application) {
   );
   app.get(
     "/api/v1/end-user/app/:projectId/user-role/:endUserId",
-    withNext(getUserRoleInApp)
+    getUserRoleInApp
   );
 
   /**
@@ -1020,29 +928,23 @@ export function addEndUserManagementRoutes(app: express.Application) {
     "/api/v1/end-user/teams/:teamId/directory",
     withNext(createEndUserDirectory)
   );
-  app.get(
-    "/api/v1/end-user/directories/:directoryId",
-    withNext(getEndUserDirectory)
-  );
+  app.get("/api/v1/end-user/directories/:directoryId", getEndUserDirectory);
   app.put(
     "/api/v1/end-user/directories/:directoryId",
     withNext(updateEndUserDirectory)
   );
   app.get(
     "/api/v1/end-user/directories/:directoryId/apps",
-    withNext(getEndUserDirectoryApps)
+    getEndUserDirectoryApps
   );
-  app.get(
-    "/api/v1/end-user/directories/:directoryId/users",
-    withNext(getDirectoryUsers)
-  );
+  app.get("/api/v1/end-user/directories/:directoryId/users", getDirectoryUsers);
   app.delete(
     "/api/v1/end-user/directories/:directoryId",
     withNext(deleteDirectory)
   );
   app.get(
     "/api/v1/end-user/teams/:teamId/directories",
-    withNext(listTeamEndUserDirectories)
+    listTeamEndUserDirectories
   );
 
   /**
@@ -1066,7 +968,7 @@ export function addEndUserManagementRoutes(app: express.Application) {
    */
   app.get(
     "/api/v1/end-user/directories/:directoryId/groups",
-    withNext(listDirectoryGroups)
+    listDirectoryGroups
   );
   app.post(
     "/api/v1/end-user/directories/:directoryId/groups",
@@ -1086,7 +988,7 @@ export function addEndUserManagementRoutes(app: express.Application) {
    */
   app.get(
     "/api/v1/end-user/app/:projectId/access-registry",
-    withNext(listAppAccessRegistries)
+    listAppAccessRegistries
   );
   app.delete(
     "/api/v1/end-user/app/:projectId/access-registry/:accessId",
@@ -1150,7 +1052,7 @@ export function addCodegenRoutes(app: express.Application) {
     apiAuth,
     withNext(getProjectMeta)
   );
-  app.get("/api/v1/localization/gen-texts", withNext(genTranslatableStrings));
+  app.get("/api/v1/localization/gen-texts", genTranslatableStrings);
 
   // All endpoints under /loader are cors-enabled
   app.get(
@@ -1171,7 +1073,7 @@ export function addCodegenRoutes(app: express.Application) {
     apiAuth,
     withNext(buildLatestLoaderAssets)
   );
-  app.get("/api/v1/loader/chunks", cors(), withNext(getLoaderChunk));
+  app.get("/api/v1/loader/chunks", cors(), getLoaderChunk);
   app.get(
     "/api/v1/loader/html/published/:projectId/:component",
     cors(),
@@ -1188,7 +1090,7 @@ export function addCodegenRoutes(app: express.Application) {
     "/api/v1/loader/html/preview/:projectId/:component",
     cors(),
     apiAuth,
-    withNext(buildLatestLoaderHtml)
+    buildLatestLoaderHtml
   );
   app.get(
     "/api/v1/loader/repr-v2/published/:projectId",
@@ -1206,7 +1108,7 @@ export function addCodegenRoutes(app: express.Application) {
     "/api/v1/loader/repr-v2/preview/:projectId",
     cors(),
     apiAuth,
-    withNext(buildLatestLoaderReprV2)
+    buildLatestLoaderReprV2
   );
   app.get(
     "/api/v1/loader/repr-v3/published/:projectId",
@@ -1234,11 +1136,8 @@ export function addCodegenRoutes(app: express.Application) {
     withNext(prefillPublishedLoader)
   );
 
-  app.get("/static/js/loader-hydrate.js", withNext(getHydrationScript));
-  app.get(
-    "/static/js/loader-hydrate.:hash.js",
-    withNext(getHydrationScriptVersioned)
-  );
+  app.get("/static/js/loader-hydrate.js", getHydrationScript);
+  app.get("/static/js/loader-hydrate.:hash.js", getHydrationScriptVersioned);
 }
 
 export function addMainAppServerRoutes(
@@ -1266,17 +1165,14 @@ export function addMainAppServerRoutes(
   /**
    * Primary app routes.
    */
-  app.get(
-    "/api/v1/error",
-    withNext(() => {
-      throw new Error("Raw test error");
-    })
-  );
+  app.get("/api/v1/error", () => {
+    throw new Error("Raw test error");
+  });
 
   /**
    * Auth Routes
    */
-  app.get("/api/v1/auth/csrf", withNext(authRoutes.csrf));
+  app.get("/api/v1/auth/csrf", authRoutes.csrf);
   app.post(
     "/api/v1/auth/login",
     sensitiveRateLimiter,
@@ -1287,7 +1183,7 @@ export function addMainAppServerRoutes(
     sensitiveRateLimiter,
     withNext(authRoutes.signUp)
   );
-  app.get("/api/v1/auth/self", withNext(authRoutes.self));
+  app.get("/api/v1/auth/self", authRoutes.self);
   app.post("/api/v1/auth/self", withNext(authRoutes.updateSelf));
   app.delete("/api/v1/auth/self", withNext(authRoutes.deleteSelf));
   app.post(
@@ -1318,33 +1214,27 @@ export function addMainAppServerRoutes(
   );
   app.get(
     "/api/v1/auth/getEmailVerificationToken",
-    withNext(authRoutes.getEmailVerificationToken)
+    authRoutes.getEmailVerificationToken
   );
-  app.get("/api/v1/auth/google", withNext(authRoutes.googleLogin));
+  app.get("/api/v1/auth/google", authRoutes.googleLogin);
   app.get(
     "/api/v1/oauth2/google/callback",
     withNext(authRoutes.googleCallback)
   );
-  app.get("/api/v1/auth/sso/test", withNext(authRoutes.isValidSsoEmail));
-  app.get("/api/v1/auth/sso/:tenantId/login", withNext(authRoutes.ssoLogin));
+  app.get("/api/v1/auth/sso/test", authRoutes.isValidSsoEmail);
+  app.get("/api/v1/auth/sso/:tenantId/login", authRoutes.ssoLogin);
   app.get(
     "/api/v1/auth/sso/:tenantId/consume",
     withNext(authRoutes.ssoCallback)
   );
-  app.get("/api/v1/auth/airtable", withNext(authRoutes.airtableLogin));
-  app.get("/api/v1/auth/google-sheets", withNext(authRoutes.googleSheetsLogin));
+  app.get("/api/v1/auth/airtable", authRoutes.airtableLogin);
+  app.get("/api/v1/auth/google-sheets", authRoutes.googleSheetsLogin);
   app.get(
     "/api/v1/oauth2/google-sheets/callback",
-    withNext(authRoutes.googleSheetsCallback)
+    authRoutes.googleSheetsCallback
   );
-  app.get(
-    "/api/v1/oauth2/airtable/callback",
-    withNext(authRoutes.airtableCallback)
-  );
-  app.get(
-    "/api/v1/auth/integrations",
-    withNext(authRoutes.getUserAuthIntegrations)
-  );
+  app.get("/api/v1/oauth2/airtable/callback", authRoutes.airtableCallback);
+  app.get("/api/v1/auth/integrations", authRoutes.getUserAuthIntegrations);
 
   /**
    * Admin Routes
@@ -1376,11 +1266,11 @@ export function addMainAppServerRoutes(
     adminOnly,
     withNext(adminRoutes.updateSelfAdminMode)
   );
-  app.get("/api/v1/admin/users", adminOnly, withNext(adminRoutes.listUsers));
+  app.get("/api/v1/admin/users", adminOnly, adminRoutes.listUsers);
   app.get(
     "/api/v1/admin/feature-tiers",
     adminOnly,
-    withNext(adminRoutes.listAllFeatureTiers)
+    adminRoutes.listAllFeatureTiers
   );
   app.put(
     "/api/v1/admin/feature-tiers",
@@ -1448,15 +1338,11 @@ export function addMainAppServerRoutes(
     adminOnly,
     withNext(adminRoutes.upgradeTeam)
   );
-  app.get(
-    "/api/v1/admin/devflags",
-    adminOnly,
-    withNext(adminRoutes.getDevFlagOverrides)
-  );
+  app.get("/api/v1/admin/devflags", adminOnly, adminRoutes.getDevFlagOverrides);
   app.get(
     "/api/v1/admin/devflags/versions",
     adminOnly,
-    withNext(adminRoutes.getDevFlagVersions)
+    adminRoutes.getDevFlagVersions
   );
   app.put(
     "/api/v1/admin/devflags",
@@ -1468,11 +1354,7 @@ export function addMainAppServerRoutes(
     adminOnly,
     withNext(adminRoutes.upsertSsoConfig)
   );
-  app.get(
-    "/api/v1/admin/get-sso",
-    adminOnly,
-    withNext(adminRoutes.getSsoByTeam)
-  );
+  app.get("/api/v1/admin/get-sso", adminOnly, adminRoutes.getSsoByTeam);
   app.post(
     "/api/v1/admin/create-tutorial-db",
     adminOnly,
@@ -1486,7 +1368,7 @@ export function addMainAppServerRoutes(
   app.get(
     "/api/v1/admin/get-team-by-white-label-name",
     adminOnly,
-    withNext(adminRoutes.getTeamByWhiteLabelName)
+    adminRoutes.getTeamByWhiteLabelName
   );
   app.post(
     "/api/v1/admin/update-team-white-label-info",
@@ -1506,27 +1388,27 @@ export function addMainAppServerRoutes(
   app.get(
     "/api/v1/admin/app-auth-metrics",
     adminOnly,
-    withNext(adminRoutes.getAppAuthMetrics)
+    adminRoutes.getAppAuthMetrics
   );
   app.get(
     "/api/v1/admin/project/:projectId/app-meta",
     adminOnly,
-    withNext(adminRoutes.getProjectAppMeta)
+    adminRoutes.getProjectAppMeta
   );
   app.get(
     `/api/v1/admin/project/:projectId/rev`,
     adminOnly,
-    withNext(adminRoutes.getLatestProjectRevision)
+    adminRoutes.getLatestProjectRevision
   );
   app.post(
     `/api/v1/admin/project/:projectId/rev`,
     adminOnly,
-    withNext(adminRoutes.saveProjectRevisionData)
+    adminRoutes.saveProjectRevisionData
   );
   app.get(
     `/api/v1/admin/pkg-version/data`,
     adminOnly,
-    withNext(adminRoutes.getPkgVersion)
+    adminRoutes.getPkgVersion
   );
   app.post(
     `/api/v1/admin/pkg-version/:pkgVersionId`,
@@ -1537,7 +1419,7 @@ export function addMainAppServerRoutes(
   app.get(
     "/api/v1/admin/teams/:teamId/discourse-info",
     adminOnly,
-    withNext(adminRoutes.getTeamDiscourseInfo)
+    adminRoutes.getTeamDiscourseInfo
   );
   app.put(
     "/api/v1/admin/teams/:teamId/sync-discourse-info",
@@ -1552,32 +1434,29 @@ export function addMainAppServerRoutes(
   app.get(
     "/api/v1/admin/project-branches-metadata/:projectId",
     adminOnly,
-    withNext(adminRoutes.getProjectBranchesMetadata)
+    adminRoutes.getProjectBranchesMetadata
   );
 
   /**
    * Self routes
    */
-  app.get("/api/v1/app-config", withNext(getAppConfig));
+  app.get("/api/v1/app-config", getAppConfig);
   app.get("/api/v1/app-ctx", withNext(getAppCtx));
 
   /**
    * Pkg routes
    */
-  app.get("/api/v1/latest-bundle-version", withNext(getLatestBundleVersion));
+  app.get("/api/v1/latest-bundle-version", getLatestBundleVersion);
   app.get("/api/v1/plume-pkg", withNext(getPlumePkg));
-  app.get("/api/v1/plume-pkg/versions", withNext(getPlumePkgVersionStrings));
-  app.get("/api/v1/plume-pkg/latest", withNext(getLatestPlumePkg));
+  app.get("/api/v1/plume-pkg/versions", getPlumePkgVersionStrings);
+  app.get("/api/v1/plume-pkg/latest", getLatestPlumePkg);
   app.get("/api/v1/pkgs/:pkgId", withNext(getPkgVersion));
-  app.get(
-    "/api/v1/pkgs/projectId/:projectId",
-    withNext(getPkgVersionByProjectId)
-  );
+  app.get("/api/v1/pkgs/projectId/:projectId", getPkgVersionByProjectId);
   app.get(
     "/api/v1/pkgs/:pkgId/versions-without-data",
-    withNext(listPkgVersionsWithoutData)
+    listPkgVersionsWithoutData
   );
-  app.post("/api/v1/pkgs/:pkgId/update-version", withNext(updatePkgVersion));
+  app.post("/api/v1/pkgs/:pkgId/update-version", updatePkgVersion);
 
   /**
    * Project routes
@@ -1608,17 +1487,14 @@ export function addMainAppServerRoutes(
   app.get(
     "/api/v1/projects/:projectId/meta",
     safeCast<RequestHandler>(authRoutes.teamApiUserAuth),
-    withNext(getProjectMeta)
+    getProjectMeta
   );
   app.put(
     "/api/v1/projects/:projectId/meta",
     safeCast<RequestHandler>(authRoutes.teamApiUserAuth),
-    withNext(updateProjectMeta)
+    updateProjectMeta
   );
-  app.get(
-    "/api/v1/projects/:projectId/branches",
-    withNext(listBranchesForProject)
-  );
+  app.get("/api/v1/projects/:projectId/branches", listBranchesForProject);
   app.post(
     "/api/v1/projects/:projectId/branches",
     safeCast<RequestHandler>(authRoutes.teamApiUserAuth),
@@ -1641,35 +1517,28 @@ export function addMainAppServerRoutes(
   app.get("/api/v1/projects/:projectBranchId", withNext(getProjectRev));
   app.get(
     "/api/v1/projects/:projectId/revision-without-data",
-    withNext(getProjectRevWithoutData)
+    getProjectRevWithoutData
   );
-  app.get(
-    "/api/v1/project-data/:projectId",
-    adminOnly,
-    withNext(getFullProjectData)
-  );
-  app.put("/api/v1/projects/:projectId", withNext(updateProject));
+  app.get("/api/v1/project-data/:projectId", adminOnly, getFullProjectData);
+  app.put("/api/v1/projects/:projectId", updateProject);
   app.delete(
     "/api/v1/projects/:projectId",
     safeCast<RequestHandler>(authRoutes.teamApiUserAuth),
     withNext(deleteProject)
   );
-  app.put(
-    "/api/v1/projects/:projectId/revert-to-version",
-    withNext(revertToVersion)
-  );
+  app.put("/api/v1/projects/:projectId/revert-to-version", revertToVersion);
   app.put("/api/v1/projects/:projectId/update-host", withNext(updateHostUrl));
   app.delete("/api/v1/projects/:projectId/perm", withNext(removeSelfPerm));
-  app.get("/api/v1/projects/:projectId/updates", withNext(getModelUpdates));
+  app.get("/api/v1/projects/:projectId/updates", getModelUpdates);
   app.post(
     "/api/v1/projects/:projectId/create-pkg",
     withNext(createPkgByProjectId)
   );
-  app.get("/api/v1/projects/:projectId/pkg", withNext(getPkgByProjectId));
+  app.get("/api/v1/projects/:projectId/pkg", getPkgByProjectId);
   app.post(
     "/api/v1/projects/:projectId/publish",
     safeCast<RequestHandler>(authRoutes.teamApiUserAuth),
-    withNext(publishProject)
+    publishProject
   );
   app.post(
     "/api/v1/projects/:projectId/next-publish-version",
@@ -1677,13 +1546,13 @@ export function addMainAppServerRoutes(
   );
   app.get(
     "/api/v1/projects/:projectId/pkgs/:pkgVersionId/status",
-    withNext(getPkgVersionPublishStatus)
+    getPkgVersionPublishStatus
   );
   app.post(
     "/api/v1/projects/:projectBranchId/revisions/:revision",
-    withNext(saveProjectRev)
+    saveProjectRev
   );
-  app.post("/api/v1/projects/:projectId/merge", withNext(tryMergeBranch));
+  app.post("/api/v1/projects/:projectId/merge", tryMergeBranch);
   app.post(
     "/api/v1/projects/:projectId/code/project-sync-metadata",
     apiAuth,
@@ -1694,7 +1563,7 @@ export function addMainAppServerRoutes(
     cors(),
     safeCast<RequestHandler>(authRoutes.teamApiUserAuth),
     apiAuth,
-    withNext(updateProjectData)
+    updateProjectData
   );
   app.get(
     "/api/v1/projects/:projectId/versions",
@@ -1709,7 +1578,7 @@ export function addMainAppServerRoutes(
   /**
    * Teams / Users routes
    */
-  app.get("/api/v1/users/:userIds", withNext(getUsersById));
+  app.get("/api/v1/users/:userIds", getUsersById);
   app.get(
     "/api/v1/teams",
     safeCast<RequestHandler>(authRoutes.teamApiUserAuth),
@@ -1723,21 +1592,18 @@ export function addMainAppServerRoutes(
   app.get(
     "/api/v1/teams/:teamId",
     safeCast<RequestHandler>(authRoutes.teamApiUserAuth),
-    withNext(teamRoutes.getTeamById)
+    teamRoutes.getTeamById
   );
   app.get(
     "/api/v1/teams/:teamId/meta",
     safeCast<RequestHandler>(authRoutes.teamApiUserAuth),
-    withNext(teamRoutes.getTeamMeta)
+    teamRoutes.getTeamMeta
   );
-  app.get(
-    "/api/v1/teams/:teamId/projects",
-    withNext(teamRoutes.getTeamProjects)
-  );
+  app.get("/api/v1/teams/:teamId/projects", teamRoutes.getTeamProjects);
   app.get(
     "/api/v1/teams/:teamId/workspaces",
     safeCast<RequestHandler>(authRoutes.teamApiUserAuth),
-    withNext(teamRoutes.getTeamWorkspaces)
+    teamRoutes.getTeamWorkspaces
   );
   app.put("/api/v1/teams/:teamId", withNext(teamRoutes.updateTeam));
   app.delete(
@@ -1746,17 +1612,14 @@ export function addMainAppServerRoutes(
     withNext(teamRoutes.deleteTeam)
   );
   app.post("/api/v1/teams/purgeUsers", withNext(teamRoutes.purgeUsersFromTeam));
-  app.post("/api/v1/teams/:teamId/join", withNext(teamRoutes.joinTeam));
+  app.post("/api/v1/teams/:teamId/join", teamRoutes.joinTeam);
   app.post(
     "/api/v1/grant-revoke",
     safeCast<RequestHandler>(authRoutes.teamApiUserAuth),
-    withNext(teamRoutes.changeResourcePermissions)
+    teamRoutes.changeResourcePermissions
   );
-  app.get(
-    "/api/v1/feature-tiers",
-    withNext(teamRoutes.listCurrentFeatureTiers)
-  );
-  app.get("/api/v1/teams/:teamId/tokens", withNext(teamRoutes.listTeamTokens));
+  app.get("/api/v1/feature-tiers", teamRoutes.listCurrentFeatureTiers);
+  app.get("/api/v1/teams/:teamId/tokens", teamRoutes.listTeamTokens);
   app.post(
     "/api/v1/teams/:teamId/tokens",
     withNext(teamRoutes.createTeamToken)
@@ -1776,11 +1639,11 @@ export function addMainAppServerRoutes(
   app.post(
     "/api/v1/workspaces",
     safeCast<RequestHandler>(authRoutes.teamApiUserAuth),
-    withNext(createWorkspace)
+    createWorkspace
   );
-  app.get("/api/v1/workspaces/:workspaceId", withNext(getWorkspace));
-  app.get("/api/v1/personal-workspace", withNext(getPersonalWorkspace));
-  app.put("/api/v1/workspaces/:workspaceId", withNext(updateWorkspace));
+  app.get("/api/v1/workspaces/:workspaceId", getWorkspace);
+  app.get("/api/v1/personal-workspace", getPersonalWorkspace);
+  app.put("/api/v1/workspaces/:workspaceId", updateWorkspace);
   app.delete(
     "/api/v1/workspaces/:workspaceId",
     safeCast<RequestHandler>(authRoutes.teamApiUserAuth),
@@ -1800,7 +1663,7 @@ export function addMainAppServerRoutes(
     "/api/v1/projects/:projectId/trigger-webhook",
     withNext(triggerProjectWebhook)
   );
-  app.get("/api/v1/projects/:projectId/webhooks", withNext(getProjectWebhooks));
+  app.get("/api/v1/projects/:projectId/webhooks", getProjectWebhooks);
   app.post(
     "/api/v1/projects/:projectId/webhooks",
     safeCast<RequestHandler>(authRoutes.teamApiUserAuth),
@@ -1818,14 +1681,14 @@ export function addMainAppServerRoutes(
   );
   app.get(
     "/api/v1/projects/:projectId/webhooks/events",
-    withNext(getProjectWebhookEvents)
+    getProjectWebhookEvents
   );
 
   app.post("/api/v1/fmt-code", withNext(fmtCode));
-  app.get("/api/v1/clip/:clipId", withNext(getClip));
+  app.get("/api/v1/clip/:clipId", getClip);
   app.put("/api/v1/clip/:clipId", withNext(putClip));
 
-  app.get("/api/v1/settings/apitokens", withNext(apiTokenRoutes.listTokens));
+  app.get("/api/v1/settings/apitokens", apiTokenRoutes.listTokens);
   app.put("/api/v1/settings/apitokens", withNext(apiTokenRoutes.createToken));
   app.delete(
     "/api/v1/settings/apitokens/:token",
@@ -1845,28 +1708,28 @@ export function addMainAppServerRoutes(
   /**
    * Fake data for demos and cypress tests.
    */
-  app.get("/api/v1/demodata/tweets", withNext(getFakeTweets));
-  app.get("/api/v1/demodata/tasks", withNext(getFakeTasks));
-  app.get("/api/v1/demodata/plans", withNext(getFakePlans));
-  app.get("/api/v1/demodata/blurbs", withNext(getFakeBlurbs));
-  app.get("/api/v1/demodata/posts", withNext(getFakePosts));
-  app.get("/api/v1/demodata/testimonials", withNext(getFakeTestimonials));
+  app.get("/api/v1/demodata/tweets", getFakeTweets);
+  app.get("/api/v1/demodata/tasks", getFakeTasks);
+  app.get("/api/v1/demodata/plans", getFakePlans);
+  app.get("/api/v1/demodata/blurbs", getFakeBlurbs);
+  app.get("/api/v1/demodata/posts", getFakePosts);
+  app.get("/api/v1/demodata/testimonials", getFakeTestimonials);
 
   /**
    * Discourse SSO
    */
-  app.get("/api/v1/auth/discourse-connect", withNext(discourseConnect));
+  app.get("/api/v1/auth/discourse-connect", discourseConnect);
 
   /**
    * GitHub integration.
    */
   app.post("/api/v1/github/connect", withNext(connectGithubInstallations));
-  app.get("/api/v1/github/data", withNext(githubData));
+  app.get("/api/v1/github/data", githubData);
   app.get(
     "/api/v1/github/detect/:owner/:repo",
     withNext(detectOptionsFromDirectory)
   );
-  app.get("/api/v1/github/branches", withNext(githubBranches));
+  app.get("/api/v1/github/branches", githubBranches);
   app.post("/api/v1/github/repos", withNext(setupNewGithubRepo));
   app.put("/api/v1/github/repos", withNext(setupExistingGithubRepo));
 
@@ -1888,11 +1751,11 @@ export function addMainAppServerRoutes(
   );
   app.get(
     "/api/v1/project_repositories/:projectRepositoryId/latest-run",
-    withNext(getLatestWorkflowRun)
+    getLatestWorkflowRun
   );
   app.get(
     "/api/v1/project_repositories/:projectRepositoryId/runs/:workflowRunId",
-    withNext(getGitWorkflowJob)
+    getGitWorkflowJob
   );
 
   /**
@@ -1906,7 +1769,7 @@ export function addMainAppServerRoutes(
   app.get(
     "/api/v1/hosts",
     safeCast<RequestHandler>(authRoutes.teamApiUserAuth),
-    withNext(getTrustedHostsForSelf)
+    getTrustedHostsForSelf
   );
   app.post(
     "/api/v1/hosts",
@@ -1940,11 +1803,7 @@ export function addMainAppServerRoutes(
   /**
    * Promotion routes
    */
-  app.get(
-    "/api/v1/promo-code/:promoCodeId",
-    cors(),
-    withNext(getPromotionCodeById)
-  );
+  app.get("/api/v1/promo-code/:promoCodeId", cors(), getPromotionCodeById);
 
   /**
    * Analytics
@@ -2000,18 +1859,8 @@ function addEndErrorHandlers(app: express.Application) {
       ) => {
         // Too noisy in CI to print AuthError all the time
         if (!(origErr instanceof AuthError)) {
-          logger().error(
-            `ERROR! ${
-              res.isClosedBeforeFulfilled ? `(before fulfillment)` : ""
-            }; rollback`,
-            origErr
-          );
+          logger().error("ERROR!", origErr);
         }
-        try {
-          // This will rollback the transaction, and reject the promise, so we wrap
-          // this in a try/catch
-          await req.rejectTransaction(origErr);
-        } catch {}
         if (res.headersSent || res.writableEnded) {
           logError(origErr, "Tried to edit closed response");
           return;

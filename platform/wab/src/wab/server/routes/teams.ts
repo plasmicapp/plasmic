@@ -12,7 +12,14 @@ import {
   resetStripeCustomer,
   syncDataWithStripe,
 } from "@/wab/server/routes/team-plans";
-import { getUser, superDbMgr, userDbMgr } from "@/wab/server/routes/util";
+import {
+  commitTransaction,
+  getUser,
+  rollbackTransaction,
+  startTransaction,
+  superDbMgr,
+  userDbMgr,
+} from "@/wab/server/routes/util";
 import { mkApiWorkspace } from "@/wab/server/routes/workspaces";
 import {
   ApiPermission,
@@ -30,6 +37,7 @@ import {
   ListTeamProjectsResponse,
   ListTeamWorkspacesResponse,
   ListTeamsResponse,
+  MayTriggerPaywall,
   PurgeUserFromTeamRequest,
   Revoke,
   TeamId,
@@ -204,148 +212,152 @@ export async function getTeamMeta(req: Request, res: Response) {
 }
 
 export async function changeResourcePermissions(req: Request, res: Response) {
-  const mgr = userDbMgr(req);
-  const { grants, revokes, requireSignUp } = uncheckedCast<GrantRevokeRequest>(
-    req.body
-  );
-  const host = req.config.host;
-  const resourcesById: Record<string, Team | Workspace | Project> = {};
-  const emailsToSend: {
-    email: string;
-    resourceType: ResourceType;
-    resourceName: string;
-    resourceUrl: string;
-  }[] = [];
+  const { commit, rollback } = await startTransaction<
+    MayTriggerPaywall<GrantRevokeResponse>,
+    MayTriggerPaywall<GrantRevokeResponse>
+  >(req, async () => {
+    const mgr = userDbMgr(req);
+    const { grants, revokes, requireSignUp } =
+      uncheckedCast<GrantRevokeRequest>(req.body);
+    const host = req.config.host;
+    const resourcesById: Record<string, Team | Workspace | Project> = {};
+    const emailsToSend: {
+      email: string;
+      resourceType: ResourceType;
+      resourceName: string;
+      resourceUrl: string;
+    }[] = [];
 
-  // Grants
-  const handleGrant = async (
-    type: ResourceType,
-    getId: (r: Grant) => ResourceId | undefined
-  ) => {
-    const grantsById = xGroupBy(grants, getId);
-    for (const [id, toGrant] of grantsById) {
-      // Skip irrelevant grants
-      if (!id) {
-        continue;
+    // Grants
+    const handleGrant = async (
+      type: ResourceType,
+      getId: (r: Grant) => ResourceId | undefined
+    ) => {
+      const grantsById = xGroupBy(grants, getId);
+      for (const [id, toGrant] of grantsById) {
+        // Skip irrelevant grants
+        if (!id) {
+          continue;
+        }
+
+        const taggedResourceId = createTaggedResourceId(type, id);
+
+        const resource =
+          taggedResourceId.type === "project"
+            ? await mgr.getProjectById(taggedResourceId.id)
+            : taggedResourceId.type === "workspace"
+            ? await mgr.getWorkspaceById(taggedResourceId.id)
+            : await mgr.getTeamById(taggedResourceId.id);
+        resourcesById[taggedResourceId.id] = resource;
+        const resourceUrl =
+          taggedResourceId.type === "project"
+            ? createProjectUrl(host, id)
+            : taggedResourceId.type === "workspace"
+            ? createWorkspaceUrl(host, id)
+            : createTeamUrl(host, id);
+
+        for (const { email, accessLevel } of toGrant) {
+          await mgr.grantResourcesPermissionByEmail(
+            pluralizeResourceId(taggedResourceId),
+            email,
+            accessLevel,
+            requireSignUp
+          );
+          req.analytics.track("Share resource", {
+            type,
+            id,
+            name: resource.name,
+            email,
+            accessLevel,
+          });
+
+          // Note: we intentionally do not check whether this is a new permission or
+          // not. We always re-send share emails if the user re-requested sharing with
+          // a user!
+          emailsToSend.push({
+            email: email,
+            resourceType: type,
+            resourceName: resource.name,
+            resourceUrl: resourceUrl,
+          });
+        }
       }
+    };
+    await handleGrant("project", (g) => g.projectId);
+    await handleGrant("workspace", (g) => g.workspaceId);
+    await handleGrant("team", (g) => g.teamId);
 
-      const taggedResourceId = createTaggedResourceId(type, id);
+    // Revokes
+    const handleRevoke = async (
+      type: ResourceType,
+      getId: (r: Revoke) => ResourceId | undefined
+    ) => {
+      const revokesById = xGroupBy(revokes, getId);
+      for (const [id, toRevoke] of revokesById) {
+        // Skip irrelevant revokes
+        if (!id) {
+          continue;
+        }
+        const taggedResourceId = createTaggedResourceId(type, id);
 
-      const resource =
-        taggedResourceId.type === "project"
-          ? await mgr.getProjectById(taggedResourceId.id)
-          : taggedResourceId.type === "workspace"
-          ? await mgr.getWorkspaceById(taggedResourceId.id)
-          : await mgr.getTeamById(taggedResourceId.id);
-      resourcesById[taggedResourceId.id] = resource;
-      const resourceUrl =
-        taggedResourceId.type === "project"
-          ? createProjectUrl(host, id)
-          : taggedResourceId.type === "workspace"
-          ? createWorkspaceUrl(host, id)
-          : createTeamUrl(host, id);
-
-      for (const { email, accessLevel } of toGrant) {
-        await mgr.grantResourcesPermissionByEmail(
+        const resource =
+          taggedResourceId.type === "project"
+            ? await mgr.getProjectById(taggedResourceId.id)
+            : taggedResourceId.type === "workspace"
+            ? await mgr.getWorkspaceById(taggedResourceId.id)
+            : await mgr.getTeamById(taggedResourceId.id);
+        resourcesById[taggedResourceId.id] = resource;
+        const emails = toRevoke.map(({ email }) => email);
+        await mgr.revokeResourcesPermissionsByEmail(
           pluralizeResourceId(taggedResourceId),
-          email,
-          accessLevel,
-          requireSignUp
+          emails
         );
-        req.analytics.track("Share resource", {
-          type,
-          id,
-          name: resource.name,
-          email,
-          accessLevel,
-        });
-
-        // Note: we intentionally do not check whether this is a new permission or
-        // not. We always re-send share emails if the user re-requested sharing with
-        // a user!
-        emailsToSend.push({
-          email: email,
-          resourceType: type,
-          resourceName: resource.name,
-          resourceUrl: resourceUrl,
-        });
       }
+    };
+    await handleRevoke("project", (r) => r.projectId);
+    await handleRevoke("workspace", (r) => r.workspaceId);
+    await handleRevoke("team", (r) => r.teamId);
+
+    // Get the final permissions of affected resources
+    const getUniqueAffectedIds = (
+      getId: (r: Grant | Revoke) => ResourceId | undefined
+    ) => L.uniq(filterFalsy([...grants.map(getId), ...revokes.map(getId)]));
+    const projectIds = getUniqueAffectedIds((x) => x.projectId);
+    const workspaceIds = getUniqueAffectedIds(
+      (x) => x.workspaceId
+    ) as WorkspaceId[];
+    const teamIds = getUniqueAffectedIds((x) => x.teamId) as TeamId[];
+    const perms = [
+      ...(await mgr.getPermissionsForProjects(projectIds)),
+      ...(await mgr.getPermissionsForWorkspaces(workspaceIds)),
+      ...(await mgr.getPermissionsForTeams(teamIds)),
+    ];
+
+    // Bypass paywall if no grants. This is to always allow revoking permissions.
+    const passResponse = { perms };
+    if (grants.length === 0) {
+      return commitTransaction(passPaywall(passResponse));
     }
-  };
-  await handleGrant("project", (g) => g.projectId);
-  await handleGrant("workspace", (g) => g.workspaceId);
-  await handleGrant("team", (g) => g.teamId);
 
-  // Revokes
-  const handleRevoke = async (
-    type: ResourceType,
-    getId: (r: Revoke) => ResourceId | undefined
-  ) => {
-    const revokesById = xGroupBy(revokes, getId);
-    for (const [id, toRevoke] of revokesById) {
-      // Skip irrelevant revokes
-      if (!id) {
-        continue;
-      }
-      const taggedResourceId = createTaggedResourceId(type, id);
-
-      const resource =
-        taggedResourceId.type === "project"
-          ? await mgr.getProjectById(taggedResourceId.id)
-          : taggedResourceId.type === "workspace"
-          ? await mgr.getWorkspaceById(taggedResourceId.id)
-          : await mgr.getTeamById(taggedResourceId.id);
-      resourcesById[taggedResourceId.id] = resource;
-      const emails = toRevoke.map(({ email }) => email);
-      await mgr.revokeResourcesPermissionsByEmail(
-        pluralizeResourceId(taggedResourceId),
-        emails
-      );
-    }
-  };
-  await handleRevoke("project", (r) => r.projectId);
-  await handleRevoke("workspace", (r) => r.workspaceId);
-  await handleRevoke("team", (r) => r.teamId);
-
-  // Get the final permissions of affected resources
-  const getUniqueAffectedIds = (
-    getId: (r: Grant | Revoke) => ResourceId | undefined
-  ) => L.uniq(filterFalsy([...grants.map(getId), ...revokes.map(getId)]));
-  const projectIds = getUniqueAffectedIds((x) => x.projectId);
-  const workspaceIds = getUniqueAffectedIds(
-    (x) => x.workspaceId
-  ) as WorkspaceId[];
-  const teamIds = getUniqueAffectedIds((x) => x.teamId) as TeamId[];
-  const perms = [
-    ...(await mgr.getPermissionsForProjects(projectIds)),
-    ...(await mgr.getPermissionsForWorkspaces(workspaceIds)),
-    ...(await mgr.getPermissionsForTeams(teamIds)),
-  ];
-
-  const affectedResourceIds = [
-    ...L.uniq(
-      filterFalsy([
-        ...projectIds.map(
-          (id) => (resourcesById[id] as Project).workspace?.teamId
-        ),
-        ...workspaceIds.map((id) => (resourcesById[id] as Workspace).teamId),
-        ...teamIds,
-      ])
-    ).map((id) => createTaggedResourceId("team", id)),
-    ...projectIds.map((id) => createTaggedResourceId("project", id)),
-  ];
-
-  // Bypass paywall if no grants. This is to always allow revoking permissions.
-  if (grants.length > 0) {
-    const response = await maybeTriggerPaywall<GrantRevokeResponse>(
+    const affectedResourceIds = [
+      ...L.uniq(
+        filterFalsy([
+          ...projectIds.map(
+            (id) => (resourcesById[id] as Project).workspace?.teamId
+          ),
+          ...workspaceIds.map((id) => (resourcesById[id] as Workspace).teamId),
+          ...teamIds,
+        ])
+      ).map((id) => createTaggedResourceId("team", id)),
+      ...projectIds.map((id) => createTaggedResourceId("project", id)),
+    ];
+    const paywall = await maybeTriggerPaywall<GrantRevokeResponse>(
       req,
       affectedResourceIds,
       {},
-      {
-        perms,
-      }
+      passResponse
     );
-    if (response.paywall == "pass" && !req.apiTeam?.whiteLabelInfo) {
+    if (paywall.paywall == "pass" && !req.apiTeam?.whiteLabelInfo) {
       const promises = emailsToSend.map(
         async (x) =>
           await sendShareEmail(
@@ -360,58 +372,58 @@ export async function changeResourcePermissions(req: Request, res: Response) {
       );
       await Promise.all(promises);
     }
-    res.json(response);
-  } else {
-    res.json(passPaywall<GrantRevokeResponse>({ perms }));
-  }
+    if (paywall.paywall === "pass") {
+      return commitTransaction(paywall);
+    } else {
+      return rollbackTransaction(paywall);
+    }
+  });
+
+  const finalResponse: MayTriggerPaywall<GrantRevokeResponse> =
+    rollback ?? commit;
+  res.json(finalResponse);
 }
 
 export async function joinTeam(req: Request, res: Response) {
-  const mgr = userDbMgr(req);
-  const superMgr = superDbMgr(req);
   const { teamId, inviteId } = uncheckedCast<JoinTeamRequest>(req.body);
-  const team = await superMgr.getTeamById(teamId);
-  if (team.inviteId !== inviteId) {
-    res.json(
-      ensureType<JoinTeamResponse>({
+
+  const { commit, rollback } = await startTransaction<
+    JoinTeamResponse,
+    JoinTeamResponse
+  >(req, async () => {
+    const mgr = userDbMgr(req);
+    const superMgr = superDbMgr(req);
+    const team = await superMgr.getTeamById(teamId);
+    if (team.inviteId !== inviteId) {
+      return rollbackTransaction({
         status: false,
         reason: "Invalid invite link",
-      })
-    );
-    return;
-  }
-  if (!team.defaultAccessLevel) {
-    res.json(
-      ensureType<JoinTeamResponse>({
+      });
+    }
+    if (!team.defaultAccessLevel) {
+      return rollbackTransaction({
         status: false,
         reason: "Invite link is disabled for this team",
-      })
-    );
-    return;
-  }
-  const taggedResourceId = createTaggedResourceId("team", teamId);
-  await mgr.grantTeamPermissionToSelf(team, team.defaultAccessLevel);
-  const response = await maybeTriggerPaywall<{}>(
-    req,
-    [taggedResourceId],
-    {},
-    {}
-  );
-  if (response.paywall === "pass") {
-    res.json(
-      ensureType<JoinTeamResponse>({
+      });
+    }
+    const taggedResourceId = createTaggedResourceId("team", teamId);
+    await mgr.grantTeamPermissionToSelf(team, team.defaultAccessLevel);
+    const response = await maybeTriggerPaywall(req, [taggedResourceId], {}, {});
+    if (response.paywall === "pass") {
+      return commitTransaction({
         status: true,
-      })
-    );
-  } else {
-    res.json(
-      ensureType<JoinTeamResponse>({
+      });
+    } else {
+      return rollbackTransaction({
         status: false,
         reason:
           "Team doesn't have enough seats for a new member, ask team owner to upgrade",
-      })
-    );
-  }
+      });
+    }
+  });
+
+  const response: JoinTeamResponse = rollback ?? commit;
+  res.json(response);
 }
 
 /**

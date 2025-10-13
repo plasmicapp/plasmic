@@ -22,11 +22,17 @@ declare global {
     // eslint-disable-next-line @typescript-eslint/no-empty-interface
     export interface User extends UserEnt {}
     export interface Request {
+      /** TypeORM connection for this request. */
       con: Connection;
-      txMgr: EntityManager;
-      resolveTransaction: () => Promise<void>;
-      rejectTransaction: (err: Error) => Promise<void>;
-      activeTransaction: Promise<any>;
+      /** TypeORM manager when not in transaction. */
+      noTxMgr: EntityManager;
+      /** TypeORM manager when in transaction. */
+      txMgr?: EntityManager;
+      /**
+       * Function that allows current transaction to be rolledback.
+       * @deprecated DO NOT USE
+       */
+      txRollback?: () => void;
       user?: User;
       bundler: Bundler;
       mailer: Mailer;
@@ -43,9 +49,6 @@ declare global {
         projectId?: string;
       };
       analytics: Analytics;
-    }
-    export interface Response {
-      isClosedBeforeFulfilled?: boolean;
     }
   }
 }

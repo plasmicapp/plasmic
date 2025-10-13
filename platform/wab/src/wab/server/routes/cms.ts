@@ -63,7 +63,6 @@ export const publicCmsReadsServer = s.router(publicCmsReadsContract, {
     const useDraft = query.draft === "1";
     const rows = await dbMgr.queryCmsRows(table.id, cmsQuery, { useDraft });
     const metaMap = makeFieldMetaMap(table.schema, cmsQuery.fields);
-    await req.resolveTransaction(); // normally handled by `withNext`
     return {
       status: 200,
       body: {
@@ -81,7 +80,6 @@ export const publicCmsReadsServer = s.router(publicCmsReadsContract, {
     const cmsQuery = query.q || {};
     const useDraft = query.draft === "1";
     const count = await dbMgr.countCmsRows(table.id, cmsQuery, { useDraft });
-    await req.resolveTransaction(); // normally handled by `withNext`
     return {
       status: 200,
       body: {
@@ -93,7 +91,6 @@ export const publicCmsReadsServer = s.router(publicCmsReadsContract, {
     const mgr = userDbMgr(req);
     const database = await mgr.getCmsDatabaseById(params.dbId);
     const apiDatabase = await makeApiDatabase(mgr, database);
-    await req.resolveTransaction(); // normally handled by `withNext`
     return {
       status: 200,
       body: apiDatabase,

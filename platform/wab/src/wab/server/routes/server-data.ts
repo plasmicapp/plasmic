@@ -211,7 +211,7 @@ export function executeDataSourceOperationWithCurrentUserHandler(
     const currentUser = currentUserInfo.appUser;
 
     const userArgs = req.body.userArgs ?? undefined;
-    await req.resolveTransaction();
+
     const data = await withSpan(
       "execute-data-op",
       asyncTimed(`executeDataSourceOperation`, () =>
