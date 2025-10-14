@@ -105,6 +105,7 @@ import {
 } from "@/wab/shared/core/components";
 import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
 import { extractTransitiveDepsFromComponents } from "@/wab/shared/core/project-deps";
+import { siteFinalStyleTokensDirectDeps } from "@/wab/shared/core/site-style-tokens";
 import {
   ensureScreenVariantsOrderOnMatrices,
   getComponentArena,
@@ -128,6 +129,7 @@ import {
   extractMixinUsages,
   extractTokenUsages,
 } from "@/wab/shared/core/styles";
+import { MutableToken, OverrideableToken } from "@/wab/shared/core/tokens";
 import {
   ExprReference,
   findExprsInComponent,
@@ -238,6 +240,16 @@ export class SiteOps {
             }
           }
         }
+
+        // remove varianted style token values from previous active screen variant group
+        siteFinalStyleTokensDirectDeps(this.site).forEach((token) => {
+          if (
+            token instanceof MutableToken ||
+            token instanceof OverrideableToken
+          ) {
+            prevGroup?.variants.forEach((v) => token.removeVariantedValue([v]));
+          }
+        });
 
         for (const arena of getSiteArenas(this.site)) {
           if (isComponentArena(arena)) {
