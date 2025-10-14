@@ -7229,6 +7229,8 @@ export type CopilotType = "ui" | "code" | "sql";
 export type CopilotPrompt = {
   prompt: string;
   images: CopilotImage[];
+  modelProviderOverride?: string;
+  copilotSystemPromptOverride?: string;
 };
 
 export interface CopilotInteraction<T = unknown> {

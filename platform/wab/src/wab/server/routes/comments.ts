@@ -1,5 +1,10 @@
 import { toOpaque } from "@/wab/commons/types";
-import { commitTransaction, getUser, startTransaction, userDbMgr } from "@/wab/server/routes/util";
+import {
+  commitTransaction,
+  getUser,
+  startTransaction,
+  userDbMgr,
+} from "@/wab/server/routes/util";
 import { getUniqueUsersWithCommentAccess } from "@/wab/server/scripts/send-comments-notifications";
 import { broadcastProjectsMessage } from "@/wab/server/socket-util";
 import {
@@ -23,14 +28,35 @@ import { uniq } from "lodash";
 export function addCommentsRoutes(app: express.Application) {
   app.get("/api/v1/comments/:projectBranchId", getCommentsForProject);
   app.post("/api/v1/comments/:projectBranchId", postRootCommentInProject);
-  app.post("/api/v1/comments/:projectBranchId/thread/:threadId", postCommentInThread);
+  app.post(
+    "/api/v1/comments/:projectBranchId/thread/:threadId",
+    postCommentInThread
+  );
   app.put("/api/v1/comments/:projectBranchId/comment/:commentId", editComment);
-  app.put("/api/v1/comments/:projectBranchId/thread/:commentThreadId", editThread);
-  app.delete("/api/v1/comments/:projectBranchId/comment/:commentId", deleteCommentInProject);
-  app.delete("/api/v1/comments/:projectBranchId/thread/:threadId", deleteThreadInProject);
-  app.post("/api/v1/comments/:projectBranchId/comment/:commentId/reactions", addReactionToComment);
-  app.delete("/api/v1/comments/:projectBranchId/reactions/:reactionId", removeReactionFromComment);
-  app.put("/api/v1/comments/:projectBranchId/notification-settings", updateNotificationSettings);
+  app.put(
+    "/api/v1/comments/:projectBranchId/thread/:commentThreadId",
+    editThread
+  );
+  app.delete(
+    "/api/v1/comments/:projectBranchId/comment/:commentId",
+    deleteCommentInProject
+  );
+  app.delete(
+    "/api/v1/comments/:projectBranchId/thread/:threadId",
+    deleteThreadInProject
+  );
+  app.post(
+    "/api/v1/comments/:projectBranchId/comment/:commentId/reactions",
+    addReactionToComment
+  );
+  app.delete(
+    "/api/v1/comments/:projectBranchId/reactions/:reactionId",
+    removeReactionFromComment
+  );
+  app.put(
+    "/api/v1/comments/:projectBranchId/notification-settings",
+    updateNotificationSettings
+  );
 }
 
 async function getCommentsForProject(req: Request, res: Response) {
@@ -288,9 +314,7 @@ async function editThread(req: Request, res: Response) {
 }
 
 async function updateNotificationSettings(req: Request, res: Response) {
-  const { projectId } = parseProjectBranchId(
-    req.params.projectBranchId
-  );
+  const { projectId } = parseProjectBranchId(req.params.projectBranchId);
   const settings: ApiNotificationSettings = req.body;
 
   await startTransaction(req, async () => {

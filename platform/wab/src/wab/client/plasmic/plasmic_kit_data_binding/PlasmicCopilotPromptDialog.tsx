@@ -20,6 +20,7 @@ import {
   Flex as Flex__,
   hasVariant,
   PlasmicImg as PlasmicImg__,
+  SingleBooleanChoiceArg,
   SingleChoiceArg,
   StrictProps,
   useDollarState,
@@ -52,16 +53,18 @@ export type PlasmicCopilotPromptDialog__VariantMembers = {
     | "history"
     | "historyEmpty";
   type: "ui" | "sql" | "code";
+  withAdminOverrides: "withAdminOverrides";
 };
 export type PlasmicCopilotPromptDialog__VariantsArgs = {
   state?: SingleChoiceArg<
     "ready" | "loading" | "error" | "quotaExceeded" | "history" | "historyEmpty"
   >;
   type?: SingleChoiceArg<"ui" | "sql" | "code">;
+  withAdminOverrides?: SingleBooleanChoiceArg<"withAdminOverrides">;
 };
 type VariantPropType = keyof PlasmicCopilotPromptDialog__VariantsArgs;
 export const PlasmicCopilotPromptDialog__VariantProps =
-  new Array<VariantPropType>("state", "type");
+  new Array<VariantPropType>("state", "type", "withAdminOverrides");
 
 export type PlasmicCopilotPromptDialog__ArgsType = {};
 type ArgPropType = keyof PlasmicCopilotPromptDialog__ArgsType;
@@ -84,6 +87,8 @@ export type PlasmicCopilotPromptDialog__OverridesType = {
   historyBottomDiv?: Flex__<"div">;
   onLoadTrigger?: Flex__<typeof PlasmicImg__>;
   promptContainer?: Flex__<"div">;
+  modelProviderOverrideInput?: Flex__<typeof CopilotPromptInput>;
+  systemPromptInput?: Flex__<typeof CopilotPromptInput>;
   promptInput?: Flex__<typeof CopilotPromptInput>;
   errorMessage?: Flex__<"div">;
   quotaExceededMsg?: Flex__<"div">;
@@ -95,6 +100,7 @@ export interface DefaultCopilotPromptDialogProps {
     "ready" | "loading" | "error" | "quotaExceeded" | "history" | "historyEmpty"
   >;
   type?: SingleChoiceArg<"ui" | "sql" | "code">;
+  withAdminOverrides?: SingleBooleanChoiceArg<"withAdminOverrides">;
   className?: string;
 }
 
@@ -141,6 +147,13 @@ function PlasmicCopilotPromptDialog__RenderFunc(props: {
         type: "private",
         variableType: "variant",
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.type,
+      },
+      {
+        path: "withAdminOverrides",
+        type: "private",
+        variableType: "variant",
+        initFunc: ({ $props, $state, $queries, $ctx }) =>
+          $props.withAdminOverrides,
       },
     ],
     [$props, $ctx, $refs]
@@ -192,6 +205,11 @@ function PlasmicCopilotPromptDialog__RenderFunc(props: {
           [sty.rootContainerstate_ready]: hasVariant($state, "state", "ready"),
           [sty.rootContainertype_sql]: hasVariant($state, "type", "sql"),
           [sty.rootContainertype_ui]: hasVariant($state, "type", "ui"),
+          [sty.rootContainerwithAdminOverrides]: hasVariant(
+            $state,
+            "withAdminOverrides",
+            "withAdminOverrides"
+          ),
         }
       )}
     >
@@ -221,6 +239,11 @@ function PlasmicCopilotPromptDialog__RenderFunc(props: {
             hasVariant($state, "state", "ready"),
           [sty.sizerContainertype_sql]: hasVariant($state, "type", "sql"),
           [sty.sizerContainertype_ui]: hasVariant($state, "type", "ui"),
+          [sty.sizerContainerwithAdminOverrides]: hasVariant(
+            $state,
+            "withAdminOverrides",
+            "withAdminOverrides"
+          ),
         })}
       >
         <div
@@ -248,6 +271,11 @@ function PlasmicCopilotPromptDialog__RenderFunc(props: {
               hasVariant($state, "state", "ready"),
             [sty.promptDialogtype_sql]: hasVariant($state, "type", "sql"),
             [sty.promptDialogtype_ui]: hasVariant($state, "type", "ui"),
+            [sty.promptDialogwithAdminOverrides]: hasVariant(
+              $state,
+              "withAdminOverrides",
+              "withAdminOverrides"
+            ),
           })}
         >
           <div
@@ -265,6 +293,11 @@ function PlasmicCopilotPromptDialog__RenderFunc(props: {
                 "ready"
               ),
               [sty.headerContainertype_sql]: hasVariant($state, "type", "sql"),
+              [sty.headerContainerwithAdminOverrides]: hasVariant(
+                $state,
+                "withAdminOverrides",
+                "withAdminOverrides"
+              ),
             })}
           >
             <div
@@ -607,6 +640,89 @@ function PlasmicCopilotPromptDialog__RenderFunc(props: {
               })}
             >
               <CopilotPromptInput
+                data-plasmic-name={"modelProviderOverrideInput"}
+                data-plasmic-override={overrides.modelProviderOverrideInput}
+                className={classNames(
+                  "__wab_instance",
+                  sty.modelProviderOverrideInput,
+                  {
+                    [sty.modelProviderOverrideInputstate_loading]: hasVariant(
+                      $state,
+                      "state",
+                      "loading"
+                    ),
+                    [sty.modelProviderOverrideInputstate_ready]: hasVariant(
+                      $state,
+                      "state",
+                      "ready"
+                    ),
+                    [sty.modelProviderOverrideInputstate_ready_type_ui]:
+                      hasVariant($state, "type", "ui") &&
+                      hasVariant($state, "state", "ready"),
+                    [sty.modelProviderOverrideInputtype_sql]: hasVariant(
+                      $state,
+                      "type",
+                      "sql"
+                    ),
+                    [sty.modelProviderOverrideInputtype_ui]: hasVariant(
+                      $state,
+                      "type",
+                      "ui"
+                    ),
+                    [sty.modelProviderOverrideInputwithAdminOverrides]:
+                      hasVariant(
+                        $state,
+                        "withAdminOverrides",
+                        "withAdminOverrides"
+                      ),
+                  }
+                )}
+                isLoading={
+                  hasVariant($state, "state", "loading") ? true : undefined
+                }
+                placeholder={"Model provider override"}
+              />
+
+              <CopilotPromptInput
+                data-plasmic-name={"systemPromptInput"}
+                data-plasmic-override={overrides.systemPromptInput}
+                className={classNames("__wab_instance", sty.systemPromptInput, {
+                  [sty.systemPromptInputstate_loading]: hasVariant(
+                    $state,
+                    "state",
+                    "loading"
+                  ),
+                  [sty.systemPromptInputstate_ready]: hasVariant(
+                    $state,
+                    "state",
+                    "ready"
+                  ),
+                  [sty.systemPromptInputstate_ready_type_ui]:
+                    hasVariant($state, "type", "ui") &&
+                    hasVariant($state, "state", "ready"),
+                  [sty.systemPromptInputtype_sql]: hasVariant(
+                    $state,
+                    "type",
+                    "sql"
+                  ),
+                  [sty.systemPromptInputtype_ui]: hasVariant(
+                    $state,
+                    "type",
+                    "ui"
+                  ),
+                  [sty.systemPromptInputwithAdminOverrides]: hasVariant(
+                    $state,
+                    "withAdminOverrides",
+                    "withAdminOverrides"
+                  ),
+                })}
+                isLoading={
+                  hasVariant($state, "state", "loading") ? true : undefined
+                }
+                placeholder={"System prompt"}
+              />
+
+              <CopilotPromptInput
                 data-plasmic-name={"promptInput"}
                 data-plasmic-override={overrides.promptInput}
                 className={classNames("__wab_instance", sty.promptInput, {
@@ -623,8 +739,18 @@ function PlasmicCopilotPromptDialog__RenderFunc(props: {
                   [sty.promptInputstate_ready_type_ui]:
                     hasVariant($state, "type", "ui") &&
                     hasVariant($state, "state", "ready"),
+                  [sty.promptInputtype_code]: hasVariant(
+                    $state,
+                    "type",
+                    "code"
+                  ),
                   [sty.promptInputtype_sql]: hasVariant($state, "type", "sql"),
                   [sty.promptInputtype_ui]: hasVariant($state, "type", "ui"),
+                  [sty.promptInputwithAdminOverrides]: hasVariant(
+                    $state,
+                    "withAdminOverrides",
+                    "withAdminOverrides"
+                  ),
                 })}
                 isLoading={
                   hasVariant($state, "state", "loading") ? true : undefined
@@ -634,6 +760,7 @@ function PlasmicCopilotPromptDialog__RenderFunc(props: {
                     ? 'e.g. "Generate a hero section"'
                     : undefined
                 }
+                withAction={true}
               />
             </div>
             {(hasVariant($state, "state", "loading") ? true : false) ? (
@@ -738,6 +865,8 @@ const PlasmicDescendants = {
     "historyBottomDiv",
     "onLoadTrigger",
     "promptContainer",
+    "modelProviderOverrideInput",
+    "systemPromptInput",
     "promptInput",
     "errorMessage",
     "quotaExceededMsg",
@@ -759,6 +888,8 @@ const PlasmicDescendants = {
     "historyBottomDiv",
     "onLoadTrigger",
     "promptContainer",
+    "modelProviderOverrideInput",
+    "systemPromptInput",
     "promptInput",
     "errorMessage",
     "quotaExceededMsg",
@@ -779,6 +910,8 @@ const PlasmicDescendants = {
     "historyBottomDiv",
     "onLoadTrigger",
     "promptContainer",
+    "modelProviderOverrideInput",
+    "systemPromptInput",
     "promptInput",
     "errorMessage",
     "quotaExceededMsg",
@@ -805,6 +938,8 @@ const PlasmicDescendants = {
     "historyBottomDiv",
     "onLoadTrigger",
     "promptContainer",
+    "modelProviderOverrideInput",
+    "systemPromptInput",
     "promptInput",
     "errorMessage",
     "quotaExceededMsg",
@@ -821,7 +956,14 @@ const PlasmicDescendants = {
   historyContents: ["historyContents"],
   historyBottomDiv: ["historyBottomDiv", "onLoadTrigger"],
   onLoadTrigger: ["onLoadTrigger"],
-  promptContainer: ["promptContainer", "promptInput"],
+  promptContainer: [
+    "promptContainer",
+    "modelProviderOverrideInput",
+    "systemPromptInput",
+    "promptInput",
+  ],
+  modelProviderOverrideInput: ["modelProviderOverrideInput"],
+  systemPromptInput: ["systemPromptInput"],
   promptInput: ["promptInput"],
   errorMessage: ["errorMessage"],
   quotaExceededMsg: ["quotaExceededMsg"],
@@ -847,6 +989,8 @@ type NodeDefaultElementType = {
   historyBottomDiv: "div";
   onLoadTrigger: typeof PlasmicImg__;
   promptContainer: "div";
+  modelProviderOverrideInput: typeof CopilotPromptInput;
+  systemPromptInput: typeof CopilotPromptInput;
   promptInput: typeof CopilotPromptInput;
   errorMessage: "div";
   quotaExceededMsg: "div";
@@ -928,6 +1072,8 @@ export const PlasmicCopilotPromptDialog = Object.assign(
     historyBottomDiv: makeNodeComponent("historyBottomDiv"),
     onLoadTrigger: makeNodeComponent("onLoadTrigger"),
     promptContainer: makeNodeComponent("promptContainer"),
+    modelProviderOverrideInput: makeNodeComponent("modelProviderOverrideInput"),
+    systemPromptInput: makeNodeComponent("systemPromptInput"),
     promptInput: makeNodeComponent("promptInput"),
     errorMessage: makeNodeComponent("errorMessage"),
     quotaExceededMsg: makeNodeComponent("quotaExceededMsg"),

@@ -254,13 +254,13 @@
 .promptContainer {
   display: flex;
   position: relative;
-  flex-direction: row;
-  align-items: center;
-  justify-content: flex-start;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
   width: 100%;
   height: auto;
   max-width: 100%;
-  column-gap: 8px;
+  row-gap: 8px;
   min-width: 0;
 }
 .promptContainerstate_ready {
@@ -271,6 +271,18 @@
 }
 .promptContainerstate_historyEmpty {
   display: none;
+}
+.modelProviderOverrideInput:global(.__wab_instance) {
+  display: none;
+}
+.modelProviderOverrideInputwithAdminOverrides:global(.__wab_instance) {
+  display: flex;
+}
+.systemPromptInput:global(.__wab_instance) {
+  display: none;
+}
+.systemPromptInputwithAdminOverrides:global(.__wab_instance) {
+  display: flex;
 }
 .promptInput:global(.__wab_instance) {
   max-width: 100%;

@@ -87,7 +87,7 @@ export interface CopilotSqlCodeChainProps {
   goal: string;
 }
 
-export interface CopilotUiChainProps {
+export interface CopilotUiProps {
   goal: string;
   images?: Array<CopilotImage>;
   tokens?: CopilotToken[];

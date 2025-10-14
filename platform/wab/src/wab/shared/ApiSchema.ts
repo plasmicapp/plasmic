@@ -7,9 +7,11 @@ import { Bundle } from "@/wab/shared/bundles";
 import { Dict } from "@/wab/shared/collections";
 import {
   CopilotUiActions,
+  CopilotUiProps,
   CopilotUiResponse,
   WholeChatCompletionResponse,
 } from "@/wab/shared/copilot/prompt-utils";
+import { ModelProviderOpts } from "@/wab/shared/copilot/provider";
 import { DataSourceType } from "@/wab/shared/data-sources-meta/data-source-registry";
 import {
   LabeledValue,
@@ -2029,12 +2031,12 @@ export type CopilotToken = {
   value: string;
 };
 
-export interface QueryCopilotUiRequest extends QueryCopilotResquestBase {
+export type QueryCopilotUiRequest = {
   type: "ui";
-  images: Array<CopilotImage>;
-  goal: string;
-  tokens?: CopilotToken[];
-}
+  projectId: ProjectId;
+  modelProviderOverride?: ModelProviderOpts;
+  copilotSystemPromptOverride?: string;
+} & CopilotUiProps;
 
 export type QueryCopilotRequest =
   | QueryCopilotChatRequest

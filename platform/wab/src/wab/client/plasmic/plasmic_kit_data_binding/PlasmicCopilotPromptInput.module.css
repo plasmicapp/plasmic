@@ -82,9 +82,14 @@
 .runPromptBtn:global(.__wab_instance) {
   max-width: 100%;
   flex-shrink: 0;
+  display: none;
 }
 .runPromptBtnisLoading:global(.__wab_instance) {
   flex-shrink: 0;
+}
+.runPromptBtnwithAction:global(.__wab_instance) {
+  flex-shrink: 0;
+  display: flex;
 }
 .svg__qv73J {
   display: flex;

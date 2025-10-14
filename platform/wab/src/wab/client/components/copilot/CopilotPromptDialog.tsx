@@ -23,6 +23,7 @@ import {
 import { CopilotImageType, copilotImageTypes } from "@/wab/shared/ApiSchema";
 import { spawn } from "@/wab/shared/common";
 import { asDataUrl, parseDataUrl } from "@/wab/shared/data-urls";
+import { isAdminTeamEmail } from "@/wab/shared/devflag-utils";
 import cn from "classnames";
 import defer = setTimeout;
 
@@ -51,8 +52,11 @@ function CopilotPromptDialog<Response>({
   const [copilotPrompt, setCopilotPrompt] = React.useState<CopilotPrompt>({
     prompt: "",
     images: [],
+    modelProviderOverride: "",
+    copilotSystemPromptOverride: "",
   });
   const studioCtx = useStudioCtx();
+  const appCtx = studioCtx.appCtx;
 
   const promptInputRef: React.Ref<HTMLTextAreaElement> =
     React.useRef<HTMLTextAreaElement>(null);
@@ -120,6 +124,28 @@ function CopilotPromptDialog<Response>({
       promptContainer={{
         style: {
           zIndex: 1,
+        },
+      }}
+      withAdminOverrides={isAdminTeamEmail(
+        appCtx.selfInfo?.email,
+        appCtx.appConfig
+      )}
+      modelProviderOverrideInput={{
+        textAreaInput: {
+          onChange: (value) =>
+            setCopilotPrompt({
+              ...copilotPrompt,
+              modelProviderOverride: value,
+            }),
+        },
+      }}
+      systemPromptInput={{
+        textAreaInput: {
+          onChange: (value) =>
+            setCopilotPrompt({
+              ...copilotPrompt,
+              copilotSystemPromptOverride: value,
+            }),
         },
       }}
       promptInput={{

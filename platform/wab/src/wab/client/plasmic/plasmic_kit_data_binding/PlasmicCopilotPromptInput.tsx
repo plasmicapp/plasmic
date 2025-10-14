@@ -43,14 +43,16 @@ createPlasmicElementProxy;
 export type PlasmicCopilotPromptInput__VariantMembers = {
   showImageUpload: "showImageUpload";
   isLoading: "isLoading";
+  withAction: "withAction";
 };
 export type PlasmicCopilotPromptInput__VariantsArgs = {
   showImageUpload?: SingleBooleanChoiceArg<"showImageUpload">;
   isLoading?: SingleBooleanChoiceArg<"isLoading">;
+  withAction?: SingleBooleanChoiceArg<"withAction">;
 };
 type VariantPropType = keyof PlasmicCopilotPromptInput__VariantsArgs;
 export const PlasmicCopilotPromptInput__VariantProps =
-  new Array<VariantPropType>("showImageUpload", "isLoading");
+  new Array<VariantPropType>("showImageUpload", "isLoading", "withAction");
 
 export type PlasmicCopilotPromptInput__ArgsType = { placeholder?: string };
 type ArgPropType = keyof PlasmicCopilotPromptInput__ArgsType;
@@ -72,6 +74,7 @@ export interface DefaultCopilotPromptInputProps {
   placeholder?: string;
   showImageUpload?: SingleBooleanChoiceArg<"showImageUpload">;
   isLoading?: SingleBooleanChoiceArg<"isLoading">;
+  withAction?: SingleBooleanChoiceArg<"withAction">;
   className?: string;
 }
 
@@ -127,6 +130,12 @@ function PlasmicCopilotPromptInput__RenderFunc(props: {
         type: "private",
         variableType: "variant",
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.isLoading,
+      },
+      {
+        path: "withAction",
+        type: "private",
+        variableType: "variant",
+        initFunc: ({ $props, $state, $queries, $ctx }) => $props.withAction,
       },
     ],
     [$props, $ctx, $refs]
@@ -192,6 +201,11 @@ function PlasmicCopilotPromptInput__RenderFunc(props: {
               $state,
               "showImageUpload",
               "showImageUpload"
+            ),
+            [sty.textAreaInputwithAction]: hasVariant(
+              $state,
+              "withAction",
+              "withAction"
             ),
           })}
           disabled={
@@ -265,6 +279,11 @@ function PlasmicCopilotPromptInput__RenderFunc(props: {
                 $state,
                 "isLoading",
                 "isLoading"
+              ),
+              [sty.runPromptBtnwithAction]: hasVariant(
+                $state,
+                "withAction",
+                "withAction"
               ),
             })}
             disabled={

@@ -4,8 +4,13 @@ import { CopilotPromptDialog } from "@/wab/client/components/copilot/CopilotProm
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { parseHtmlToWebImporterTree } from "@/wab/client/web-importer/html-parser";
 import { addOrUpsertTokens } from "@/wab/commons/StyleToken";
-import { QueryCopilotUiResponse, UpsertTokenReq } from "@/wab/shared/ApiSchema";
+import {
+  QueryCopilotUiRequest,
+  QueryCopilotUiResponse,
+  UpsertTokenReq,
+} from "@/wab/shared/ApiSchema";
 import { spawn } from "@/wab/shared/common";
+import { fixJson } from "@/wab/shared/copilot/internal/fix-json";
 import * as React from "react";
 
 function CopilotUiPrompt() {
@@ -23,11 +28,16 @@ function CopilotUiPrompt() {
       onDialogOpenChange={(isOpen) => {
         studioCtx.openUiCopilotDialog(isOpen);
       }}
-      onCopilotSubmit={async ({ prompt, images }) => {
+      onCopilotSubmit={async ({
+        prompt,
+        images,
+        modelProviderOverride,
+        copilotSystemPromptOverride,
+      }) => {
         const copilotQuery = studioCtx.appCtx.selfInfo
           ? studioCtx.appCtx.api.queryUiCopilot
           : studioCtx.appCtx.api.queryPublicUiCopilot;
-        const result = await copilotQuery({
+        const payload: QueryCopilotUiRequest = {
           type: "ui",
           goal: prompt,
           projectId: studioCtx.siteInfo.id,
@@ -38,7 +48,16 @@ function CopilotUiPrompt() {
             type: t.type,
             value: t.value,
           })),
-        });
+        };
+        if (modelProviderOverride) {
+          payload.modelProviderOverride = JSON.parse(
+            fixJson(modelProviderOverride)
+          );
+        }
+        if (copilotSystemPromptOverride) {
+          payload.copilotSystemPromptOverride = copilotSystemPromptOverride;
+        }
+        const result = await copilotQuery(payload);
 
         const response = result.response;
         const { tokens, html } = response;
