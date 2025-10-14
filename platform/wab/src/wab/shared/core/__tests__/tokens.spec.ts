@@ -94,6 +94,23 @@ describe("tokens", () => {
           );
           expect(overridableToken.override).toBeNull();
         });
+        // Actual usecase: override varianted value against imported breakpoints
+        it("setVariantedValue with same value as another imported varianted value for the same variant - should not create override", () => {
+          overridableToken.setVariantedValue(
+            [variantWebsite],
+            overridableToken.base.variantedValues[0].value
+          );
+          expect(overridableToken.override).toBeNull();
+
+          // set a different value for the same variant, should create override
+          overridableToken.setVariantedValue([variantWebsite], "#123456");
+          expect(overridableToken.override).toBeDefined();
+          expect(overridableToken.override?.value).toBeNull();
+          expect(overridableToken.override?.variantedValues).toHaveLength(1);
+          expect(overridableToken.override?.variantedValues[0].value).toBe(
+            "#123456"
+          );
+        });
         it("setVariantedValue with different value - should create override", () => {
           overridableToken.setVariantedValue([variantDark], "#00FF00");
           expect(overridableToken.override?.variantedValues).toHaveLength(1);

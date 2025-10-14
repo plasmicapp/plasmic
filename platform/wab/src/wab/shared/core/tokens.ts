@@ -55,7 +55,6 @@ export abstract class BaseToken<T extends Token> {
     value: string
   ): void {
     tokenOrOverride.value = value;
-    BaseToken.removeExtraneousValues(tokenOrOverride);
   }
 
   protected static setVariantedValue<T extends Token>(
@@ -76,18 +75,6 @@ export abstract class BaseToken<T extends Token> {
         })
       );
     }
-
-    BaseToken.removeExtraneousValues(tokenOrOverride);
-  }
-
-  protected static removeExtraneousValues<T extends Token>(
-    tokenOrOverride: T | StyleTokenOverride
-  ): void {
-    tokenOrOverride.variantedValues.forEach((v) => {
-      if (v.value === tokenOrOverride.value) {
-        remove(tokenOrOverride.variantedValues, v);
-      }
-    });
   }
 
   protected static removeVariantedValue<T extends Token>(
@@ -108,14 +95,24 @@ export class MutableToken<T extends Token> extends BaseToken<T> {
 
   setValue(value: string): void {
     BaseToken.setValue(this.base, value);
+    this.removeExtraneousValues();
   }
 
   setVariantedValue(variants: Variant[], value: string): void {
     BaseToken.setVariantedValue(this.base, variants, value);
+    this.removeExtraneousValues();
   }
 
   removeVariantedValue(variants: Variant[]): void {
     BaseToken.removeVariantedValue(this.base, variants);
+  }
+
+  private removeExtraneousValues(): void {
+    this.variantedValues.forEach((v) => {
+      if (v.value === this.base.value) {
+        remove(this.base.variantedValues, v);
+      }
+    });
   }
 }
 
@@ -144,13 +141,7 @@ export class OverrideableToken<T extends Token> extends BaseToken<T> {
     }
 
     return [
-      // filter out overridden variants
-      ...this.base.variantedValues.filter(
-        (v) =>
-          !override.variantedValues.find((ov) =>
-            arrayEqIgnoreOrder(v.variants, ov.variants)
-          )
-      ),
+      ...this.base.variantedValues,
       // add overridden variants
       ...override.variantedValues,
     ];
@@ -176,7 +167,15 @@ export class OverrideableToken<T extends Token> extends BaseToken<T> {
         this.removeValue();
       }
       override.variantedValues.forEach((variantedValue) => {
-        if (variantedValue.value === this.value) {
+        const baseValue =
+          // if the global variant for the varianted value is imported (e.g. imported breakpoints), use the imported varianted value as the base value
+          this.base.variantedValues.find((v) =>
+            arrayEqIgnoreOrder(v.variants, variantedValue.variants)
+          )?.value ??
+          // use the overrideable base value
+          this.value;
+
+        if (variantedValue.value === baseValue) {
           this.removeVariantedValue(variantedValue.variants);
         }
       });
