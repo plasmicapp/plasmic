@@ -61,5 +61,6 @@
   "react-aria",
   "rive",
   "fetch",
-  "graphql"
+  "graphql",
+  "vanilla-cookieconsent"
 ]

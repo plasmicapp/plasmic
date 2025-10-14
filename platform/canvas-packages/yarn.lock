@@ -2317,6 +2317,13 @@
     antd "^5.11.5"
     tippy.js "^6.3.7"
 
+"@plasmicpkgs/vanilla-cookieconsent@^0.0.3":
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/vanilla-cookieconsent/-/vanilla-cookieconsent-0.0.3.tgz#7dea4f7fd994bff7aad5e81e487100597324d3e2"
+  integrity sha512-M2675C4RvEcgYPhrWctjqkOwRTtMzYth0zUjeAeCzk7vqFfGDXznWcxPACoxjkTAaHwj2ldw2MGMrY29qUsmTg==
+  dependencies:
+    vanilla-cookieconsent "^3.1.0"
+
 "@popperjs/core@^2.9.0", "@popperjs/core@^2.9.3":
   version "2.11.8"
   resolved "https://registry.yarnpkg.com/@popperjs/core/-/core-2.11.8.tgz#6b79032e760a0899cd4204710beede972a3a185f"
@@ -9517,6 +9524,11 @@ valtio@^1.6.3:
   dependencies:
     proxy-compare "2.3.0"
     use-sync-external-store "1.2.0"
+
+vanilla-cookieconsent@^3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/vanilla-cookieconsent/-/vanilla-cookieconsent-3.1.0.tgz#0f430f4788e9a09e22e795088889b0679a88a263"
+  integrity sha512-/McNRtm/3IXzb9dhqMIcbquoU45SzbN2VB+To4jxEPqMmp7uVniP6BhGLjU8MC7ZCDsNQVOp27fhQTM/ruIXAA==
 
 w3c-keyname@^2.2.0:
   version "2.2.8"

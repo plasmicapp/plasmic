@@ -3,7 +3,7 @@ import { CodeComponentMeta } from "@plasmicapp/host/registerComponent";
 import registerToken from "@plasmicapp/host/registerToken";
 import { CookieConsentProps } from "./types";
 
-const modulePath = "@plasmicpkgs/plasmic-vanilla-cookieconsent";
+const modulePath = "@plasmicpkgs/vanilla-cookieconsent";
 
 export interface Registerable {
   registerToken: typeof registerToken;

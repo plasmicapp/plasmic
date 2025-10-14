@@ -61,4 +61,5 @@ export const fstPartyHostLessComponents = [
   "dayjs",
   "react-aria",
   "rive",
+  "vanilla-cookieconsent",
 ];
