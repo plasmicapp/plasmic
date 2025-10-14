@@ -2317,10 +2317,10 @@
     antd "^5.11.5"
     tippy.js "^6.3.7"
 
-"@plasmicpkgs/vanilla-cookieconsent@^0.0.3":
-  version "0.0.3"
-  resolved "https://registry.yarnpkg.com/@plasmicpkgs/vanilla-cookieconsent/-/vanilla-cookieconsent-0.0.3.tgz#7dea4f7fd994bff7aad5e81e487100597324d3e2"
-  integrity sha512-M2675C4RvEcgYPhrWctjqkOwRTtMzYth0zUjeAeCzk7vqFfGDXznWcxPACoxjkTAaHwj2ldw2MGMrY29qUsmTg==
+"@plasmicpkgs/vanilla-cookieconsent@^0.0.4":
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/vanilla-cookieconsent/-/vanilla-cookieconsent-0.0.4.tgz#b91a2ec6afe360d1f08484f99f93a8dd621ab9da"
+  integrity sha512-KipWjWtAh80TZPCnfbUS/rffHSv80ETEwLgqesOH6Yp/4lCHvE5rWennqW3iwnM5C4uGbTzJaAnbJYQLO4x5XA==
   dependencies:
     vanilla-cookieconsent "^3.1.0"
 
