@@ -49,7 +49,7 @@ import {
 import { computedProjectFlags } from "@/wab/shared/cached-selectors";
 import { arrayRemove } from "@/wab/shared/collections";
 import { cx, ensure, ensureArray, swallow } from "@/wab/shared/common";
-import { BackgroundLayer } from "@/wab/shared/core/bg-styles";
+import { BackgroundLayer, NoneBackground } from "@/wab/shared/core/bg-styles";
 import { getComponentDisplayName } from "@/wab/shared/core/components";
 import { ExprCtx, summarizeExpr, tryExtractLit } from "@/wab/shared/core/exprs";
 import {
@@ -143,7 +143,7 @@ export function getStylePropValue(
       <span>
         <ColorSwatch color={val} />
       </span>
-    ) : parsedBgImg ? (
+    ) : !(parsedBgImg.image instanceof NoneBackground) ? (
       <div
         style={{
           width: 24,
