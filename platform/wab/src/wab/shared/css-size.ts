@@ -1,5 +1,10 @@
 import { check, ensure, precisionRound, unexpected } from "@/wab/shared/common";
-import { cssUnitsChecked, VALID_UNITS } from "@/wab/shared/css";
+import {
+  VALID_UNITS,
+  cssUnitsChecked,
+  isDimCssFunction,
+  validateDimCssFunction,
+} from "@/wab/shared/css";
 
 export type Unit = (typeof cssUnitsChecked)[number] | "fr" | "";
 
@@ -12,6 +17,11 @@ export function ensureUnit(text: string): Unit {
 
 export function isValidUnit(text: string): text is Unit {
   return VALID_UNITS.has(text);
+}
+
+export interface FunctionSize {
+  readonly type: "FunctionSize";
+  readonly value: string;
 }
 
 export interface KeywordSize {
@@ -33,11 +43,13 @@ export interface MinMaxSize {
   readonly max: AtomicSize;
 }
 
-export type Size = AtomicSize | MinMaxSize;
+export type Size = AtomicSize | MinMaxSize | FunctionSize;
 
 export function showSizeCss(size: Size): string {
   switch (size.type) {
     case "KeywordSize":
+      return size.value;
+    case "FunctionSize":
       return size.value;
     case "MinMaxSize":
       return `minmax(${showSizeCss(size.min)}, ${showSizeCss(size.max)})`;
@@ -67,6 +79,22 @@ function tryRawParseNumericSize(text: string) {
     num,
     unit,
   };
+}
+
+export function tryParseMinMaxSize(text: string): MinMaxSize | undefined {
+  const match = /^\s*minmax\s*\(\s*([^,]+)\s*,\s*([^)]+)\)\s*$/.exec(text);
+  if (!match) {
+    return undefined;
+  }
+
+  const [, minText, maxText] = match;
+  const min = tryParseAtomicSize(minText.trim());
+  const max = tryParseAtomicSize(maxText.trim());
+  if (!min || !max) {
+    return undefined;
+  }
+
+  return { type: "MinMaxSize", min, max };
 }
 
 export class ScreenSizeSpec {
@@ -183,6 +211,18 @@ export function tryParseAtomicSize(text: string): AtomicSize | undefined {
   }
 }
 
+export function tryParseSize(text: string): Size | undefined {
+  if (validateDimCssFunction(text).valid) {
+    return { type: "FunctionSize", value: text };
+  }
+  const maybeMinMax = tryParseMinMaxSize(text);
+  if (maybeMinMax) {
+    return maybeMinMax;
+  } else {
+    return tryParseAtomicSize(text);
+  }
+}
+
 export function ensureNumericSize(size: Size): NumericSize {
   return size.type === "NumericSize" ? size : unexpected();
 }
@@ -193,4 +233,18 @@ export function ensureNumericSize(size: Size): NumericSize {
  */
 export function roundCssPct(pct: number) {
   return precisionRound(pct, 4);
+}
+
+/**
+ * Determines if a dimension value is draggable in the UI.
+ *
+ * Returns false CSS dimension functions,
+ * since these cannot be dragged to adjust their values.
+ *
+ */
+export function isDraggableSize(value: string): boolean {
+  if (isDimCssFunction(value)) {
+    return false;
+  }
+  return true;
 }

@@ -3,10 +3,15 @@ import EdgeHandleDownwardIcon from "@/wab/client/plasmic/plasmic_kit_design_syst
 import EdgeHandleLeftwardIcon from "@/wab/client/plasmic/plasmic_kit_design_system/icons/PlasmicIcon__EdgeHandleLeftward";
 import EdgeHandleRightwardIcon from "@/wab/client/plasmic/plasmic_kit_design_system/icons/PlasmicIcon__EdgeHandleRightward";
 import EdgeHandleUpwardIcon from "@/wab/client/plasmic/plasmic_kit_design_system/icons/PlasmicIcon__EdgeHandleUpward";
-import { cx } from "@/wab/shared/common";
 import { XDraggable } from "@/wab/commons/components/XDraggable";
+import { cx } from "@/wab/shared/common";
 import { DEVFLAGS } from "@/wab/shared/devflags";
-import { oppSide, Side, sideEdgeToOrient, standardSides } from "@/wab/shared/geom";
+import {
+  oppSide,
+  Side,
+  sideEdgeToOrient,
+  standardSides,
+} from "@/wab/shared/geom";
 import { clamp, isNil } from "lodash";
 import * as React from "react";
 
@@ -85,6 +90,8 @@ export function SpaceEdgeControls(props: {
   focusedWidth?: number;
   showSquare?: boolean;
   disabledDnd?: boolean;
+  disabledPaddingDragging?: boolean;
+  disabledMarginDragging?: boolean;
 }) {
   const {
     side,
@@ -95,6 +102,8 @@ export function SpaceEdgeControls(props: {
     onDragStop,
     onDoubleClick,
     paddingPxValue,
+    disabledPaddingDragging,
+    disabledMarginDragging,
     marginPxValue,
     draggedEdgeType,
     draggedSide,
@@ -165,7 +174,7 @@ export function SpaceEdgeControls(props: {
           isDragging={draggedSide === side && draggedEdgeType === "margin"}
           innerSpace={innerSpace}
           shouldOffsetKnob={shouldShowResizeSquare}
-          disabledDnd={disabledDnd}
+          disabledDnd={disabledDnd || disabledMarginDragging}
         />
       )}
       {paddingPxValue != null && (
@@ -194,7 +203,7 @@ export function SpaceEdgeControls(props: {
           isDragging={draggedSide === side && draggedEdgeType === "padding"}
           innerSpace={innerSpace}
           shouldOffsetKnob={shouldShowResizeSquare}
-          disabledDnd={disabledDnd}
+          disabledDnd={disabledDnd || disabledPaddingDragging}
         />
       )}
       {sizePxValue != null &&

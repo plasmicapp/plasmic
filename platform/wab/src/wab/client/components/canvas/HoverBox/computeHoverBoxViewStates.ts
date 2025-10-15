@@ -39,7 +39,7 @@ import {
   isTplVariantable,
 } from "@/wab/shared/core/tpls";
 import { ValComponent, ValNode, ValSlot } from "@/wab/shared/core/val-nodes";
-import { NumericSize, tryParseNumericSize } from "@/wab/shared/css-size";
+import { Size, tryParseNumericSize, tryParseSize } from "@/wab/shared/css-size";
 import {
   DefinedIndicatorType,
   computeDefinedIndicator,
@@ -76,9 +76,9 @@ export interface HoverBoxViewDisplayProps {
   tagIcon?: React.ReactNode;
   autoWidth?: boolean;
   autoHeight?: boolean;
-  padding?: Record<Side, NumericSize | undefined>;
+  padding?: Record<Side, Size | undefined>;
   paddingPx?: Record<Side, number>;
-  margin?: Record<Side, NumericSize | undefined>;
+  margin?: Record<Side, Size | undefined>;
   marginPx?: Record<Side, number>;
   edgeControls: Record<Side, SpaceEdgeType[]>;
   containerChildAlignment: Record<Orient, ContainerChildAlignment | undefined>;
@@ -330,10 +330,13 @@ function computeSpacingInfo(
   }
   const sty = getComputedStyle(elt);
   const tokenRefResolver = makeTokenRefResolver(viewCtx.site);
-  const getMaybeNumericSize = (prop: string) => {
+  const getFinalValue = (prop: string) => {
     const val = effectiveExpr.get(prop);
     const resolvedVal = tokenRefResolver(val);
-    const finalVal = resolvedVal ?? val;
+    return resolvedVal ?? val;
+  };
+  const getMaybeNumericSize = (prop: string) => {
+    const finalVal = getFinalValue(prop);
     return finalVal ? tryParseNumericSize(finalVal) : undefined;
   };
   const getMarginPxSize = (side: Side) => {
@@ -359,16 +362,16 @@ function computeSpacingInfo(
 
   return {
     padding: {
-      left: getMaybeNumericSize("padding-left"),
-      top: getMaybeNumericSize("padding-top"),
-      bottom: getMaybeNumericSize("padding-bottom"),
-      right: getMaybeNumericSize("padding-right"),
+      left: tryParseSize(getFinalValue("padding-left")),
+      top: tryParseSize(getFinalValue("padding-top")),
+      bottom: tryParseSize(getFinalValue("padding-bottom")),
+      right: tryParseSize(getFinalValue("padding-right")),
     },
     margin: {
-      left: getMaybeNumericSize("margin-left"),
-      top: getMaybeNumericSize("margin-top"),
-      bottom: getMaybeNumericSize("margin-bottom"),
-      right: getMaybeNumericSize("margin-right"),
+      left: tryParseSize(getFinalValue("margin-left")),
+      top: tryParseSize(getFinalValue("margin-top")),
+      bottom: tryParseSize(getFinalValue("margin-bottom")),
+      right: tryParseSize(getFinalValue("margin-right")),
     },
     paddingPx: {
       left: tryParseNumericSize(sty.paddingLeft)?.num ?? 0,

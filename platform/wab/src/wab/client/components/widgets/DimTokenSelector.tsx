@@ -620,6 +620,12 @@ export const DimTokenSpinner = observer(
                       closeMenu();
                       onEscape && onEscape(e);
                     }
+                  } else if (e.key === "Enter") {
+                    skipChangeOnBlur.current = true;
+                    if (tryOnChange(inputValue, "raw")) {
+                      resetState();
+                      closeMenu();
+                    }
                   } else if (isNumberMode) {
                     (e.nativeEvent as any).preventDownshiftDefault = true;
                     if (e.key === "ArrowUp") {
@@ -630,20 +636,6 @@ export const DimTokenSpinner = observer(
                       e.preventDefault();
                       spin("down", e.shiftKey);
                       resetState();
-                    } else if (e.key === "Enter") {
-                      skipChangeOnBlur.current = true;
-                      tryOnChange(inputValue, "raw");
-                      resetState();
-                      closeMenu();
-                    }
-                  } else if (e.key === "Enter") {
-                    skipChangeOnBlur.current = true;
-                    if (
-                      extraOptions.some((option) => option.value === inputValue)
-                    ) {
-                      tryOnChange(inputValue, "raw");
-                      resetState();
-                      closeMenu();
                     }
                   }
                 },
@@ -1046,49 +1038,61 @@ function useDimValue(opts: DimValueOpts) {
       return true;
     }
 
-    const newValues = shorthand ? css.parseCssShorthand(val) : [val];
-    for (const newValue of newValues) {
-      if (extraOptions.some((it) => it.value === newValue)) {
-        continue;
-      }
-      const parsed = parseCssNumericNew(newValue);
-
-      if (!parsed) {
+    if (css.isDimCssFunction(val)) {
+      const result = css.validateDimCssFunction(val, allowedUnits);
+      if (!result.valid) {
         notification.error({
-          message: `Invalid value "${newValue}"`,
-          description: `Must be a numeric value`,
+          message: `Invalid CSS function "${val}"`,
+          description: result.error,
         });
-
         return false;
       }
+      return true;
+    } else {
+      const newValues = shorthand ? css.parseCssShorthand(val) : [val];
+      for (const newValue of newValues) {
+        if (extraOptions.some((it) => it.value === newValue)) {
+          continue;
+        }
+        const parsed = parseCssNumericNew(newValue);
 
-      const hasValidUnit =
-        allowedUnits.includes(parsed.units) ||
-        (allowedUnits.length === 0 && parsed.units.length === 0);
-      if (!hasValidUnit) {
-        showUnitError(newValue);
-        return false;
+        if (!parsed) {
+          notification.error({
+            message: `Invalid value "${newValue}"`,
+            description: `Must be a numeric value`,
+          });
+
+          return false;
+        }
+
+        const hasValidUnit =
+          allowedUnits.includes(parsed.units) ||
+          (allowedUnits.length === 0 && parsed.units.length === 0);
+        if (!hasValidUnit) {
+          showUnitError(newValue);
+          return false;
+        }
+
+        if (parsed.num > max) {
+          notification.error({
+            message: `Invalid value "${newValue}"`,
+            description: `Must be less than ${max}.`,
+          });
+
+          return false;
+        }
+
+        if (parsed.num < min) {
+          notification.error({
+            message: `Invalid value "${newValue}"`,
+            description: `Must be greater than ${min}.`,
+          });
+
+          return false;
+        }
       }
-
-      if (parsed.num > max) {
-        notification.error({
-          message: `Invalid value "${newValue}"`,
-          description: `Must be less than ${max}.`,
-        });
-
-        return false;
-      }
-
-      if (parsed.num < min) {
-        notification.error({
-          message: `Invalid value "${newValue}"`,
-          description: `Must be greater than ${min}.`,
-        });
-
-        return false;
-      }
+      return true;
     }
-    return true;
   }
 
   function roundValue(val: string) {
@@ -1149,7 +1153,9 @@ function useDimValue(opts: DimValueOpts) {
     }
   }
 
-  const displayValue = css.roundedCssNumeric(value, displayedFractionDigits);
+  const displayValue = css.isDimCssFunction(value)
+    ? value
+    : css.roundedCssNumeric(value, displayedFractionDigits);
 
   function spin(dir: "up" | "down", large?: boolean) {
     if (!value || isNaN(parseFloat(value))) {

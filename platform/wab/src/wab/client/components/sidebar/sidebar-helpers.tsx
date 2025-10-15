@@ -26,7 +26,7 @@ import TriangleBottomIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Tr
 import { PlasmicStyleToggleButtonGroup__VariantsArgs } from "@/wab/client/plasmic/plasmic_kit_style_controls/PlasmicStyleToggleButtonGroup";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { StandardMarkdown } from "@/wab/client/utils/StandardMarkdown";
-import { StyleTokenType } from "@/wab/commons/StyleToken";
+import { StyleTokenType, tryParseTokenRef } from "@/wab/commons/StyleToken";
 import { MaybeWrap } from "@/wab/commons/components/ReactUtil";
 import { XDraggable } from "@/wab/commons/components/XDraggable";
 import { IRuleSetHelpersX } from "@/wab/shared/RuleSetHelpers";
@@ -40,7 +40,9 @@ import {
   spawn,
   withoutNils,
 } from "@/wab/shared/common";
+import { siteFinalStyleTokensAllDeps } from "@/wab/shared/core/site-style-tokens";
 import { parseCssNumericNew, roundedCssNumeric } from "@/wab/shared/css";
+import { isDraggableSize } from "@/wab/shared/css-size";
 import {
   DefinedIndicatorType,
   getTargetBlockingCombo,
@@ -271,9 +273,24 @@ export const DraggableDimLabel = observer(function DraggableDimLabel(props: {
   const exp = props.exp || expsProvider.mergedExp();
   const [init, setInit] = React.useState<string[] | undefined>(undefined);
   const ref = React.useRef<HTMLDivElement | null>(null);
+  const isDraggingDisabled = React.useMemo(() => {
+    let isDisabled = false;
+    styleNames.forEach((styleName) => {
+      const rawValue = exp.get(styleName);
+      const maybeToken = tryParseTokenRef(rawValue, () =>
+        siteFinalStyleTokensAllDeps(studioCtx.site)
+      );
+      if (!isDraggableSize((maybeToken && maybeToken.value) || rawValue)) {
+        isDisabled = true;
+        return;
+      }
+    });
+    return isDisabled;
+  }, [styleNames]);
   return (
     <XDraggable
       useMovement={true}
+      disabled={isDraggingDisabled}
       onStart={() => {
         if (ref.current) {
           ref.current.requestPointerLock();
@@ -337,7 +354,16 @@ export const DraggableDimLabel = observer(function DraggableDimLabel(props: {
         document.exitPointerLock();
       }}
     >
-      <div className={axis === "x" ? "ew-resize" : "ns-resize"} ref={ref}>
+      <div
+        className={
+          isDraggingDisabled
+            ? undefined
+            : axis === "x"
+            ? "ew-resize"
+            : "ns-resize"
+        }
+        ref={ref}
+      >
         {label}
       </div>
     </XDraggable>

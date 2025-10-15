@@ -19,6 +19,7 @@ import {
   ensureUnit,
   showSizeCss,
 } from "@/wab/shared/css-size";
+import { extractDimensionFromNode } from "@/wab/shared/css/css-tree-utils";
 import {
   horizontalSides,
   standardSides,
@@ -26,7 +27,7 @@ import {
 } from "@/wab/shared/geom";
 import { RuleSet } from "@/wab/shared/model/classes";
 import CssInitials from "css-initials";
-import { Value, generate } from "css-tree";
+import { Value, generate, parse, walk } from "css-tree";
 import {
   camelCase,
   flatten,
@@ -290,6 +291,95 @@ export function roundedCssNumeric(x: string, precision: number) {
   });
 }
 
+const dimCssFunctionsChecked = ["calc", "min", "max", "clamp"] as const;
+
+export const dimCssFunctions = dimCssFunctionsChecked as readonly string[];
+
+const DIM_CSS_IDENTIFIER_KEYWORDS = ["auto", "inherit", "initial", "unset"];
+
+const dimCssFunctionsReg = new RegExp(
+  `^(${dimCssFunctions.join("|")})\\s*\\(`,
+  "i"
+);
+
+export function isDimCssFunction(value: string): boolean {
+  const trimmed = value.trim();
+  return dimCssFunctionsReg.test(trimmed);
+}
+
+export type DimCssFunctionValidationResult =
+  | { valid: true }
+  | { valid: false; error: string };
+
+/**
+ * Validates a CSS dimension function (calc, min, max, clamp) and returns detailed error information
+ *
+ * @param value - The CSS value to validate
+ * @param allowedUnits - Optional array of allowed units (e.g., ['px', '%', 'em'])
+ * @returns Validation result with error message if invalid
+ */
+export function validateDimCssFunction(
+  value: string,
+  allowedUnits?: readonly string[]
+): DimCssFunctionValidationResult {
+  if (!isDimCssFunction(value)) {
+    return {
+      valid: false,
+      error: `Not a valid CSS dimension function. Must be one of these: ${dimCssFunctions.join(
+        ", "
+      )}`,
+    };
+  }
+
+  const ast = parse(value, { context: "value" });
+  let error: string | null = null;
+
+  walk(ast, (node) => {
+    switch (node.type) {
+      case "Dimension":
+      case "Percentage":
+      case "Number": {
+        const dim = extractDimensionFromNode(node);
+        if (allowedUnits && !allowedUnits.includes(dim.unit)) {
+          error = `The unit '${
+            dim.unit
+          }' isn't supported here. Please use one of: ${allowedUnits.join(
+            ", "
+          )}`;
+          return walk.break;
+        }
+        return;
+      }
+      case "Identifier": {
+        if (!DIM_CSS_IDENTIFIER_KEYWORDS.includes(node.name.toLowerCase())) {
+          error = `'${
+            node.name
+          }' isn't a valid keyword here. Please use one of: ${DIM_CSS_IDENTIFIER_KEYWORDS.join(
+            ", "
+          )}`;
+          return walk.break;
+        }
+        return;
+      }
+      case "Value":
+      case "Function":
+      case "Operator": {
+        return;
+      }
+      default: {
+        error = `This part of your CSS function isn't valid. Found unexpected '${node.type}'`;
+        return walk.break;
+      }
+    }
+  });
+
+  if (error) {
+    return { valid: false, error };
+  }
+
+  return { valid: true };
+}
+
 export const showCssNumericNew = ({
   num,
   units,
@@ -440,9 +530,23 @@ export function markAllImportant(props: CSSProperties): CSSProperties {
   return mapValues(props, (str) => `${str} !important`) as any;
 }
 
+export function splitCssValueIntoParts(val: string): string[] {
+  const ast = parse(val, { context: "value" }) as Value;
+  const parts: string[] = [];
+
+  for (const node of ast.children) {
+    if (node.type === "WhiteSpace") {
+      continue;
+    }
+    parts.push(generate(node));
+  }
+
+  return parts;
+}
+
 export function parseCssShorthand(val: string) {
   val = val.trim();
-  const vals = val.trim().split(/\s+/);
+  const vals = splitCssValueIntoParts(val);
   if (vals.length === 1) {
     return [vals[0], vals[0], vals[0], vals[0]];
   } else if (vals.length === 2) {

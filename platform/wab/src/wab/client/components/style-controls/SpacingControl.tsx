@@ -28,6 +28,7 @@ import {
 } from "@/wab/shared/css";
 import {
   createNumericSize,
+  isDraggableSize,
   NumericSize,
   parseNumericSize,
   showSizeCss,
@@ -364,6 +365,14 @@ class SpacingControl_ extends StyleComponent<
                           "div"
                         );
                       }
+                      const maybeTokenValue = lazyDerefTokenRefsWithDeps(
+                        numericSize,
+                        this.studioCtx().site,
+                        "Spacing",
+                        vsh
+                      );
+                      const isDraggingDisabled =
+                        !isDraggableSize(maybeTokenValue);
                       return (
                         <Tooltip
                           visible={false}
@@ -378,6 +387,7 @@ class SpacingControl_ extends StyleComponent<
                             >
                               {(initDim, setInitDim) => (
                                 <XDraggable
+                                  disabled={isDraggingDisabled}
                                   onStart={() => {
                                     this.studioCtx().startUnlogged();
                                     this.changeSelectionSingle(side, {
@@ -387,14 +397,7 @@ class SpacingControl_ extends StyleComponent<
                                       justDragged: false,
                                     }));
                                     setInitDim(
-                                      parseNumericSize(
-                                        lazyDerefTokenRefsWithDeps(
-                                          numericSize,
-                                          this.studioCtx().site,
-                                          "Spacing",
-                                          vsh
-                                        )
-                                      )
+                                      parseNumericSize(maybeTokenValue)
                                     );
                                   }}
                                   onDrag={(e) => {
@@ -434,12 +437,12 @@ class SpacingControl_ extends StyleComponent<
                                       [`spacing-control__handle`]: true,
                                       "spacing-control__handle--selected":
                                         this.state.selection.sides.has(side),
-                                      "ew-resize": ["left", "right"].includes(
-                                        side
-                                      ),
-                                      "ns-resize": ["top", "bottom"].includes(
-                                        side
-                                      ),
+                                      "ew-resize":
+                                        ["left", "right"].includes(side) &&
+                                        !isDraggingDisabled,
+                                      "ns-resize":
+                                        ["top", "bottom"].includes(side) &&
+                                        !isDraggingDisabled,
                                     })}
                                     ref={
                                       side === "top"

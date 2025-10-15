@@ -33,7 +33,7 @@ import { sidesAndCorners } from "@/wab/commons/ViewUtil";
 import { cx, ensure, maybe, spawn } from "@/wab/shared/common";
 import { siteFinalStyleTokensAllDeps } from "@/wab/shared/core/site-style-tokens";
 import { parseCssNumericNew } from "@/wab/shared/css";
-import { ensureUnit } from "@/wab/shared/css-size";
+import { ensureUnit, isDraggableSize } from "@/wab/shared/css-size";
 import { isIndicatorExplicitlySet } from "@/wab/shared/defined-indicator";
 import {
   Corner,
@@ -146,6 +146,9 @@ function MeasureControl_(props: MeasureControlProps) {
   const maybeToken = tryParseTokenRef(rawValue, () =>
     siteFinalStyleTokensAllDeps(studioCtx.site)
   );
+  const isDraggingDisabled = !isDraggableSize(
+    (maybeToken && maybeToken.value) || rawValue
+  );
 
   return (
     <WithContextMenu overlay={props.menu}>
@@ -180,6 +183,7 @@ function MeasureControl_(props: MeasureControlProps) {
           data-plasmic-pos-trigger={prop}
         >
           <XDraggable
+            disabled={isDraggingDisabled}
             onStart={async (e) => {
               isDraggingRef.current = true;
               studioCtx.startUnlogged();
@@ -214,8 +218,10 @@ function MeasureControl_(props: MeasureControlProps) {
                 fg: isIndicatorExplicitlySet(indicator),
                 "textbox--unset": !isIndicatorExplicitlySet(indicator),
                 code: true,
-                "ew-resize": ["left", "right"].includes(prop),
-                "ns-resize": ["top", "bottom"].includes(prop),
+                "ew-resize":
+                  ["left", "right"].includes(prop) && !isDraggingDisabled,
+                "ns-resize":
+                  ["top", "bottom"].includes(prop) && !isDraggingDisabled,
                 "no-select": true,
               })}
             >

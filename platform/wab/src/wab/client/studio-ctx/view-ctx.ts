@@ -67,6 +67,7 @@ import {
 import { getRawCode } from "@/wab/shared/core/exprs";
 import { metaSvc } from "@/wab/shared/core/metas";
 import { SQ, Selectable } from "@/wab/shared/core/selection";
+import { makeTokenRefResolver } from "@/wab/shared/core/site-style-tokens";
 import { isTplAttachedToSite } from "@/wab/shared/core/sites";
 import { SlotSelection, isSlotSelection } from "@/wab/shared/core/slots";
 import {
@@ -91,6 +92,7 @@ import {
   isValSelectable,
   tplFromSelectable,
 } from "@/wab/shared/core/vals";
+import { isDraggableSize } from "@/wab/shared/css-size";
 import { DEVFLAGS } from "@/wab/shared/devflags";
 import { CanvasEnv, evalCodeWithEnv } from "@/wab/shared/eval";
 import { Pt, rectsIntersect } from "@/wab/shared/geom";
@@ -1515,12 +1517,41 @@ export class ViewCtx extends WithDbCtx {
     return this._focusedDomElts;
   }
 
-  isFocusedResizable = () => {
+  /**
+   * Checks if the focused element can be resized via dragging.
+   *
+   * Returns true only if:
+   * 1. The Tpl type supports resizing (checked via isTplResizable)
+   * 2. The current dimension values are draggable
+   *
+   */
+  isFocusedResizeDraggable = () => {
     const selectable = this.focusedSelectable();
     if (!selectable || selectable instanceof SlotSelection) {
       return { width: false, height: false };
     }
-    return isTplResizable(selectable.tpl, this.variantTplMgr());
+    const vtm = this.variantTplMgr();
+    const { height, width } = isTplResizable(selectable.tpl, vtm);
+
+    if (!Tpls.isTplVariantable(selectable.tpl)) {
+      return { height, width };
+    }
+
+    const effectiveVs = vtm.effectiveVariantSetting(selectable.tpl);
+    const effectiveExpr = effectiveVs?.rshWithTheme();
+    if (!effectiveExpr) {
+      return { height, width };
+    }
+
+    const tokenRefResolver = makeTokenRefResolver(this.site);
+    const heightVal = effectiveExpr.get("height");
+    const widthVal = effectiveExpr.get("width");
+
+    return {
+      height:
+        height && isDraggableSize(tokenRefResolver(heightVal) || heightVal),
+      width: width && isDraggableSize(tokenRefResolver(widthVal) || widthVal),
+    };
   };
 
   /**

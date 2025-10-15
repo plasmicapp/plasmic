@@ -134,7 +134,11 @@ export function extractColorFromNode(node: CssNode) {
  * @param node The CSS AST node to extract color from
  * @returns Dim instance if found, null otherwise
  */
-export function extractDimensionFromNode(node: CssNode) {
+export function extractDimensionFromNode(
+  node: Extract<CssNode, { type: "Dimension" | "Percentage" | "Number" }>
+): Dim;
+export function extractDimensionFromNode(node: CssNode): Dim | null;
+export function extractDimensionFromNode(node: CssNode): Dim | null {
   switch (node.type) {
     // Dimension nodes represent values with units like 50px, 25em
     case "Dimension":

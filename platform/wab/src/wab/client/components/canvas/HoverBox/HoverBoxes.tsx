@@ -126,7 +126,7 @@ function getObjResizability(
   }
 
   if (viewCtx) {
-    return viewCtx.isFocusedResizable();
+    return viewCtx.isFocusedResizeDraggable();
   }
 
   return { width: false, height: false };
@@ -649,6 +649,12 @@ function HoverBoxInner_({ viewProps }: { viewProps: HoverBoxViewProps }) {
                                   ? state?.paddingPx?.[side] ?? 0
                                   : null
                               }
+                              disabledPaddingDragging={
+                                state?.padding?.[side]?.type === "FunctionSize"
+                              }
+                              disabledMarginDragging={
+                                state?.margin?.[side]?.type === "FunctionSize"
+                              }
                               marginPxValue={
                                 allowMargin
                                   ? state?.marginPx?.[side] ?? 0
@@ -711,14 +717,16 @@ function HoverBoxInner_({ viewProps }: { viewProps: HoverBoxViewProps }) {
                                     studioCtx.isResizeDragging = true;
                                     const initValue =
                                       state?.[`${edgeType}Px`]?.[side2] ?? 0;
+                                    const edgeSide = state?.[edgeType]?.[side2];
                                     setSpacingDragState({
                                       side: side2,
                                       edgeType,
                                       mode: "single",
                                       domElt,
                                       unit:
-                                        state?.[edgeType]?.[side2]?.unit ??
-                                        "px",
+                                        edgeSide?.type === "NumericSize"
+                                          ? edgeSide.unit
+                                          : "px",
                                       tpl: val.tpl,
                                       initValue,
                                       dragDirectionFromZero: undefined,

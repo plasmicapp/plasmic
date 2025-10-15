@@ -233,7 +233,6 @@ import {
   isSizeProp,
   isTplAutoSizable,
   isTplDefaultSized,
-  isTplResizable,
   resetTplSize,
 } from "@/wab/shared/sizingutils";
 import {
@@ -635,7 +634,7 @@ export class ViewOps {
       return;
     }
 
-    const resizable = isTplResizable(tpl, this.viewCtx().variantTplMgr());
+    const resizable = this.viewCtx().isFocusedResizeDraggable();
     if (!resizable[dim]) {
       return;
     }
