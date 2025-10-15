@@ -186,21 +186,21 @@ describe("tests codegen for global variants", () => {
           `--token-${primaryTokenId}`
         )
       ).toEqual(null);
-      // TODO: remove redundant declarations (https://linear.app/plasmic/issue/PLA-12247)
+      // assert that redundant external tokens are not generated for varianted global tokens
       expect(
         findRuleDecl(
           plasmicCss,
           `.${baseClass}.${darkClass}.${darkClass}`,
           `--plasmic-token-${bgTokenName}`
         )
-      ).toEqual(`var(--token-${bgTokenId})`);
+      ).toEqual(null);
       expect(
         findRuleDecl(
           plasmicCss,
           `.${baseClass}.${darkClass}.${darkClass}`,
           `--plasmic-token-${fgTokenName}`
         )
-      ).toEqual(`var(--token-${fgTokenId})`);
+      ).toEqual(null);
     });
 
     it("codegens component CSS with correct variantable tokens", async () => {
@@ -488,21 +488,21 @@ describe("tests codegen for global variants", () => {
           `--token-${fgTokenId}`
         )
       ).toEqual("#FFFFFF");
-      // TODO: remove redundant declarations (https://linear.app/plasmic/issue/PLA-12247)
+      // assert that redundant external tokens are not generated for varianted global tokens
       expect(
         findRuleDecl(
           plasmicCss,
           `.plasmic_tokens.${darkClass}.${darkClass}`,
           `--plasmic-token-${bgTokenName}`
         )
-      ).toEqual(`var(--token-${bgTokenId})`);
+      ).toEqual(null);
       expect(
         findRuleDecl(
           plasmicCss,
           `.plasmic_tokens.${darkClass}.${darkClass}`,
           `--plasmic-token-${fgTokenName}`
         )
-      ).toEqual(`var(--token-${fgTokenId})`);
+      ).toEqual(null);
     });
 
     it("codegens component CSS with correct variantable tokens", async () => {

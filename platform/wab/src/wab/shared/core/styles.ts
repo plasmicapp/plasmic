@@ -2272,6 +2272,9 @@ export const makeCssTokenVarsRuleSets = (
         const vsh = groupedTokenVars[key][0].vsh;
 
         const globalVariants = vsh.globalVariants() ?? [];
+        // Only generate external token once (ie. for base variant) to avoid redundant declarations
+        const shouldGenerateExternalToken =
+          opts.generateExternalToken && vsh.isActiveBaseVariant();
         const nonScreenGlobalVariants = globalVariants.filter(
           (v) => !isScreenVariant(v)
         );
@@ -2301,7 +2304,9 @@ export const makeCssTokenVarsRuleSets = (
           ${groupedTokenVars[key]
             .flatMap((t) => [
               t.varRule,
-              ...(opts.generateExternalToken ? [t.plasmicExternalVarRule] : []),
+              ...(shouldGenerateExternalToken
+                ? [t.plasmicExternalVarRule]
+                : []),
               ...(t.userExternalVarRule ? [t.userExternalVarRule] : []),
             ])
             .join("; ")}
