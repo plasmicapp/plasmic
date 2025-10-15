@@ -213,7 +213,7 @@ export class VariantedStylesHelper {
             rs: new RuleSet({
               values: {},
               mixins: mixin.rs.mixins,
-              animations: [],
+              animations: null,
             }),
           })
         );

@@ -1930,7 +1930,7 @@ export class SiteOps {
           );
           usages.forEach((usage) =>
             removeWhere(
-              usage.animations,
+              usage.animations ?? [],
               (a) => a.sequence === animationSequence
             )
           );

@@ -267,7 +267,7 @@ import {
   isInvisible,
   setTplVisibility,
 } from "@/wab/shared/visibility-utils";
-import { isString, memoize, pickBy, uniqBy } from "lodash";
+import L, { isString, memoize, pickBy, uniqBy } from "lodash";
 import flatten from "lodash/flatten";
 import has from "lodash/has";
 import kebabCase from "lodash/kebabCase";
@@ -2441,10 +2441,14 @@ export class TplMgr {
           ...existingVs.rs.mixins,
           ...newVs.rs.mixins,
         ]);
-        existingVs.rs.animations = uniq([
-          ...existingVs.rs.animations,
-          ...newVs.rs.animations,
-        ]);
+
+        existingVs.rs.animations =
+          L.isNil(existingVs.rs.animations) && L.isNil(newVs.rs.animations)
+            ? null
+            : uniq([
+                ...(existingVs.rs.animations ?? []),
+                ...(newVs.rs.animations ?? []),
+              ]);
         const fromExp = RSH(newVs.rs, tpl);
         const toExp = RSH(existingVs.rs, tpl);
         for (const prop of fromExp.props()) {

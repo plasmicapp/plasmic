@@ -144,7 +144,7 @@ export function resolveNodesToMarkers(
         markers.push(
           new StyleMarker({
             position: rawText.join("").length,
-            rs: new RuleSet({ values: cssRules, mixins: [], animations: [] }),
+            rs: new RuleSet({ values: cssRules, mixins: [], animations: null }),
             length: node.text.length,
           })
         );

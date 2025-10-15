@@ -956,12 +956,12 @@ export const VariantSettingPopoverContent = observer(
             </Tooltip>
           </SourceRow>
         )}
-        {vs.rs.animations.length > 0 && (
+        {vs.rs.animations?.length && (
           <SourceRow
             key={"animations"}
             title={ANIMATIONS_CAP}
             type="target"
-            onClear={() => viewCtx.change(() => (vs.rs.animations = []))}
+            onClear={() => viewCtx.change(() => (vs.rs.animations = null))}
           >
             <Tooltip
               title={vs.rs.animations

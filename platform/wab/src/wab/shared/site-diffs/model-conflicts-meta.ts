@@ -625,9 +625,7 @@ export const modelConflictsMeta: ModelConflictsMeta = {
       conflictType: "merge",
       mergeKeyIsIdentity: true,
     },
-    animations: {
-      arrayType: "atomic",
-    },
+    animations: "contents",
   },
   KeyFrame: {
     percentage: "generic",

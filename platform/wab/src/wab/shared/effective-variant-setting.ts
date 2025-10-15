@@ -3,8 +3,34 @@ import L from "lodash";
 import { computed, isObservable, makeObservable } from "mobx";
 
 import { DeepReadonly, DeepReadonlyArray } from "@/wab/commons/types";
+import {
+  ReadonlyIRuleSetHelpersX,
+  readonlyRSH,
+} from "@/wab/shared/RuleSetHelpers";
+import {
+  getAncestorSlotArg,
+  getAncestorTplSlot,
+  getTplSlotForParam,
+  isSlot,
+  isTypographyNode,
+} from "@/wab/shared/SlotUtils";
+import { $$$ } from "@/wab/shared/TplQuery";
+import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
+import {
+  VariantCombo,
+  isBaseVariant,
+  isGlobalVariant,
+  tryGetVariantSetting,
+} from "@/wab/shared/Variants";
 import { arrayReversed } from "@/wab/shared/collections";
-import { arrayEq, assert, ensure, withoutNils } from "@/wab/shared/common";
+import {
+  arrayEq,
+  arrayEqIgnoreOrder,
+  assert,
+  ensure,
+  isTruthy,
+  withoutNils,
+} from "@/wab/shared/common";
 import { clone } from "@/wab/shared/core/exprs";
 import { SlotSelection } from "@/wab/shared/core/slots";
 import {
@@ -43,9 +69,7 @@ import {
   Arg,
   Component,
   CustomCode,
-  ensureKnownTplComponent,
   Expr,
-  isKnownVariantsRef,
   ObjectPath,
   Param,
   Rep,
@@ -55,33 +79,16 @@ import {
   TplNode,
   Variant,
   VariantSetting,
+  ensureKnownTplComponent,
+  isKnownVariantsRef,
 } from "@/wab/shared/model/classes";
-import {
-  ReadonlyIRuleSetHelpersX,
-  readonlyRSH,
-} from "@/wab/shared/RuleSetHelpers";
 import { makeReadonlySizeAwareExpProxy } from "@/wab/shared/sizingutils";
 import {
-  getAncestorSlotArg,
-  getAncestorTplSlot,
-  getTplSlotForParam,
-  isSlot,
-  isTypographyNode,
-} from "@/wab/shared/SlotUtils";
-import { $$$ } from "@/wab/shared/TplQuery";
-import {
+  VariantComboSorter,
   isAncestorCombo,
   makeVariantComboSorter,
   sortedVariantSettingStack,
-  VariantComboSorter,
 } from "@/wab/shared/variant-sort";
-import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
-import {
-  isBaseVariant,
-  isGlobalVariant,
-  tryGetVariantSetting,
-  VariantCombo,
-} from "@/wab/shared/Variants";
 import {
   getVariantSettingVisibility,
   hasVisibilitySetting,
@@ -228,7 +235,7 @@ export class EffectiveVariantSetting {
         ...this.variantSettings.map((vs) => vs.rs.values)
       ),
       mixins: L.uniq(L.flatten(reversed.map((rs) => rs.mixins))),
-      animations: L.uniq(L.flatten(reversed.map((rs) => rs.animations))),
+      animations: L.uniq(L.flatten(reversed.map((rs) => rs.animations ?? []))),
     });
   }
 
@@ -497,17 +504,24 @@ export class EffectiveVariantSetting {
         } else if (candidate.type === "tpl") {
           if (prop === "animation") {
             // Special handling for animations - look in the variant setting's animations array
-            const vs = variantSettings.find(
-              (variantSetting) => variantSetting.variants === candidate.combo
+            const vs = variantSettings.find((variantSetting) =>
+              arrayEqIgnoreOrder(variantSetting.variants, candidate.combo)
             );
-            if (vs && vs.rs.animations.length > 0) {
+
+            // There are three possible cases here for animations
+            // 1. animations.length exists means we have added an animation in a given variant combo, we want to yield style
+            // 2. animations prop is empty list [] in a given variant combo, we want to yield style to depict animation is overridden to empty state in target variant combo.
+            // 3. animations props is null, refers to no overrides, we don't want to yield style in this case so it can inherit from "otherVariants" source.
+            if (vs && isTruthy(vs.rs.animations)) {
               yield {
                 type: "style" as const,
                 combo: candidate.combo,
-                value: vs.rs.animations
-                  .map((anim: any) => anim.sequence.name)
-                  .join(", "),
+                value:
+                  vs.rs.animations
+                    .map((anim) => anim.sequence.name)
+                    .join(", ") ?? "No animations",
                 prop,
+                animations: vs.rs.animations,
               };
             }
           } else if (candidate.rsh.has(prop)) {

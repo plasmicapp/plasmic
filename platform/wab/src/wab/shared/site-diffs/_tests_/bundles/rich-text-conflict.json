@@ -13,7 +13,7 @@
             },
             "mixins": [],
             "__type": "RuleSet",
-            "animations": []
+            "animations": null
           },
           "udezTfppl5IJ": {
             "name": "Default Typography",
@@ -28,7 +28,7 @@
             "values": {},
             "mixins": [],
             "__type": "RuleSet",
-            "animations": []
+            "animations": null
           },
           "lwH8-kJp-axv": {
             "rs": { "__ref": "tWydOPipcatV" },
@@ -38,7 +38,7 @@
             "values": {},
             "mixins": [],
             "__type": "RuleSet",
-            "animations": []
+            "animations": null
           },
           "sc2BSXQPltFz": {
             "name": "Default \"h1\"",
@@ -58,7 +58,7 @@
             "values": {},
             "mixins": [],
             "__type": "RuleSet",
-            "animations": []
+            "animations": null
           },
           "ZaY9vOB-vBlj": {
             "name": "Default \"h2\"",
@@ -78,7 +78,7 @@
             "values": {},
             "mixins": [],
             "__type": "RuleSet",
-            "animations": []
+            "animations": null
           },
           "gACFPVkYWmcX": {
             "name": "Default \"h3\"",
@@ -98,7 +98,7 @@
             "values": {},
             "mixins": [],
             "__type": "RuleSet",
-            "animations": []
+            "animations": null
           },
           "efF7ADqXToT9": {
             "name": "Default \"h4\"",
@@ -118,7 +118,7 @@
             "values": {},
             "mixins": [],
             "__type": "RuleSet",
-            "animations": []
+            "animations": null
           },
           "BE3kgQxtMBgf": {
             "name": "Default \"h5\"",
@@ -138,7 +138,7 @@
             "values": {},
             "mixins": [],
             "__type": "RuleSet",
-            "animations": []
+            "animations": null
           },
           "zEHgaX72SiRH": {
             "name": "Default \"h6\"",
@@ -158,7 +158,7 @@
             "values": { "color": "#006DA8" },
             "mixins": [],
             "__type": "RuleSet",
-            "animations": []
+            "animations": null
           },
           "Vr4J3FGrMlOo": {
             "name": "Default \"a\"",
@@ -178,7 +178,7 @@
             "values": { "color": "#3291ff" },
             "mixins": [],
             "__type": "RuleSet",
-            "animations": []
+            "animations": null
           },
           "oKOG99SaJDg5": {
             "name": "Default \"a:hover\"",
@@ -198,7 +198,7 @@
             "values": {},
             "mixins": [],
             "__type": "RuleSet",
-            "animations": []
+            "animations": null
           },
           "6gR9M-A2iofi": {
             "name": "Default \"blockquote\"",
@@ -218,7 +218,7 @@
             "values": {},
             "mixins": [],
             "__type": "RuleSet",
-            "animations": []
+            "animations": null
           },
           "7A0nHLDw-I0N": {
             "name": "Default \"code\"",
@@ -238,7 +238,7 @@
             "values": {},
             "mixins": [],
             "__type": "RuleSet",
-            "animations": []
+            "animations": null
           },
           "OgiKXHBV-7TM": {
             "name": "Default \"pre\"",
@@ -258,7 +258,7 @@
             "values": { "position": "relative" },
             "mixins": [],
             "__type": "RuleSet",
-            "animations": []
+            "animations": null
           },
           "ncCcUC3I0Yfh": {
             "name": "Default \"ol\"",
@@ -278,7 +278,7 @@
             "values": { "position": "relative" },
             "mixins": [],
             "__type": "RuleSet",
-            "animations": []
+            "animations": null
           },
           "SdUJPC9k0xPf": {
             "name": "Default \"ul\"",
@@ -849,7 +849,7 @@
             "values": { "display": "flex", "flex-direction": "row" },
             "mixins": [],
             "__type": "RuleSet",
-            "animations": []
+            "animations": null
           },
           "aA60ZqW9wiOR": {
             "name": "arg",
@@ -873,14 +873,14 @@
             "values": { "display": "flex", "flex-direction": "row" },
             "mixins": [],
             "__type": "RuleSet",
-            "animations": []
+            "animations": null
           },
           "n-VdSwku7UwH": { "name": "any", "__type": "AnyType" },
           "E9sn-Z202NUV": {
             "values": {},
             "mixins": [],
             "__type": "RuleSet",
-            "animations": []
+            "animations": null
           },
           "qYKN2lAvzJGV": {
             "uuid": "Q-lNeXDgFp94",
@@ -993,13 +993,13 @@
             },
             "mixins": [],
             "__type": "RuleSet",
-            "animations": []
+            "animations": null
           },
           "RXBTs8uhZci9": {
             "values": {},
             "mixins": [],
             "__type": "RuleSet",
-            "animations": []
+            "animations": null
           },
           "ZrOvYTUnB2eD": {
             "tag": "div",
@@ -1029,7 +1029,7 @@
             "values": { "position": "relative" },
             "mixins": [],
             "__type": "RuleSet",
-            "animations": []
+            "animations": null
           },
           "vxXMrdLVna1D": {
             "markers": [{ "__ref": "mTDTgu7s2OFq" }],
@@ -1075,7 +1075,7 @@
             "values": {},
             "mixins": [],
             "__type": "RuleSet",
-            "animations": []
+            "animations": null
           },
           "Z-iclaORynyJ": {
             "markers": [],
@@ -1100,7 +1100,7 @@
             "values": {},
             "mixins": [],
             "__type": "RuleSet",
-            "animations": []
+            "animations": null
           },
           "o8yKgflgQqtN": {
             "selector": "p",
@@ -1120,7 +1120,7 @@
             "values": {},
             "mixins": [],
             "__type": "RuleSet",
-            "animations": []
+            "animations": null
           },
           "I1jfiYzWCipI": {
             "uuid": "jueyrBSCw_DU",
@@ -1133,7 +1133,7 @@
           }
         },
         "deps": [],
-        "version": "252-add-animations"
+        "version": "253-set-animations-empty-state"
       },
       "projectId": "aH1hFXMTo8YybdGp5ScZNk",
       "version": "0.0.1",
@@ -1164,7 +1164,7 @@
             },
             "mixins": [],
             "__type": "RuleSet",
-            "animations": []
+            "animations": null
           },
           "udezTfppl5IJ": {
             "name": "Default Typography",
@@ -1179,7 +1179,7 @@
             "values": {},
             "mixins": [],
             "__type": "RuleSet",
-            "animations": []
+            "animations": null
           },
           "lwH8-kJp-axv": {
             "rs": { "__ref": "tWydOPipcatV" },
@@ -1189,7 +1189,7 @@
             "values": {},
             "mixins": [],
             "__type": "RuleSet",
-            "animations": []
+            "animations": null
           },
           "sc2BSXQPltFz": {
             "name": "Default \"h1\"",
@@ -1209,7 +1209,7 @@
             "values": {},
             "mixins": [],
             "__type": "RuleSet",
-            "animations": []
+            "animations": null
           },
           "ZaY9vOB-vBlj": {
             "name": "Default \"h2\"",
@@ -1229,7 +1229,7 @@
             "values": {},
             "mixins": [],
             "__type": "RuleSet",
-            "animations": []
+            "animations": null
           },
           "gACFPVkYWmcX": {
             "name": "Default \"h3\"",
@@ -1249,7 +1249,7 @@
             "values": {},
             "mixins": [],
             "__type": "RuleSet",
-            "animations": []
+            "animations": null
           },
           "efF7ADqXToT9": {
             "name": "Default \"h4\"",
@@ -1269,7 +1269,7 @@
             "values": {},
             "mixins": [],
             "__type": "RuleSet",
-            "animations": []
+            "animations": null
           },
           "BE3kgQxtMBgf": {
             "name": "Default \"h5\"",
@@ -1289,7 +1289,7 @@
             "values": {},
             "mixins": [],
             "__type": "RuleSet",
-            "animations": []
+            "animations": null
           },
           "zEHgaX72SiRH": {
             "name": "Default \"h6\"",
@@ -1309,7 +1309,7 @@
             "values": { "color": "#006DA8" },
             "mixins": [],
             "__type": "RuleSet",
-            "animations": []
+            "animations": null
           },
           "Vr4J3FGrMlOo": {
             "name": "Default \"a\"",
@@ -1329,7 +1329,7 @@
             "values": { "color": "#3291ff" },
             "mixins": [],
             "__type": "RuleSet",
-            "animations": []
+            "animations": null
           },
           "oKOG99SaJDg5": {
             "name": "Default \"a:hover\"",
@@ -1349,7 +1349,7 @@
             "values": {},
             "mixins": [],
             "__type": "RuleSet",
-            "animations": []
+            "animations": null
           },
           "6gR9M-A2iofi": {
             "name": "Default \"blockquote\"",
@@ -1369,7 +1369,7 @@
             "values": {},
             "mixins": [],
             "__type": "RuleSet",
-            "animations": []
+            "animations": null
           },
           "7A0nHLDw-I0N": {
             "name": "Default \"code\"",
@@ -1389,7 +1389,7 @@
             "values": {},
             "mixins": [],
             "__type": "RuleSet",
-            "animations": []
+            "animations": null
           },
           "OgiKXHBV-7TM": {
             "name": "Default \"pre\"",
@@ -1409,7 +1409,7 @@
             "values": { "position": "relative" },
             "mixins": [],
             "__type": "RuleSet",
-            "animations": []
+            "animations": null
           },
           "ncCcUC3I0Yfh": {
             "name": "Default \"ol\"",
@@ -1429,7 +1429,7 @@
             "values": { "position": "relative" },
             "mixins": [],
             "__type": "RuleSet",
-            "animations": []
+            "animations": null
           },
           "SdUJPC9k0xPf": {
             "name": "Default \"ul\"",
@@ -2000,7 +2000,7 @@
             "values": { "display": "flex", "flex-direction": "row" },
             "mixins": [],
             "__type": "RuleSet",
-            "animations": []
+            "animations": null
           },
           "aA60ZqW9wiOR": {
             "name": "arg",
@@ -2024,14 +2024,14 @@
             "values": { "display": "flex", "flex-direction": "row" },
             "mixins": [],
             "__type": "RuleSet",
-            "animations": []
+            "animations": null
           },
           "n-VdSwku7UwH": { "name": "any", "__type": "AnyType" },
           "E9sn-Z202NUV": {
             "values": {},
             "mixins": [],
             "__type": "RuleSet",
-            "animations": []
+            "animations": null
           },
           "qYKN2lAvzJGV": {
             "uuid": "Q-lNeXDgFp94",
@@ -2144,13 +2144,13 @@
             },
             "mixins": [],
             "__type": "RuleSet",
-            "animations": []
+            "animations": null
           },
           "RXBTs8uhZci9": {
             "values": {},
             "mixins": [],
             "__type": "RuleSet",
-            "animations": []
+            "animations": null
           },
           "ZrOvYTUnB2eD": {
             "tag": "div",
@@ -2180,7 +2180,7 @@
             "values": { "position": "relative" },
             "mixins": [],
             "__type": "RuleSet",
-            "animations": []
+            "animations": null
           },
           "F0gkXGfBK0Ki": {
             "tag": "a",
@@ -2215,7 +2215,7 @@
             "values": {},
             "mixins": [],
             "__type": "RuleSet",
-            "animations": []
+            "animations": null
           },
           "qPIzRUdjofNl": {
             "selector": "li",
@@ -2235,7 +2235,7 @@
             "values": {},
             "mixins": [],
             "__type": "RuleSet",
-            "animations": []
+            "animations": null
           },
           "o8yKgflgQqtN": {
             "selector": "p",
@@ -2255,7 +2255,7 @@
             "values": {},
             "mixins": [],
             "__type": "RuleSet",
-            "animations": []
+            "animations": null
           },
           "RXFD2UD937z6": { "markers": [], "text": "w/", "__type": "RawText" },
           "-ifRgdKcoygE": {
@@ -2271,7 +2271,7 @@
           }
         },
         "deps": [],
-        "version": "252-add-animations"
+        "version": "253-set-animations-empty-state"
       }
     },
     {
@@ -2286,7 +2286,7 @@
             },
             "mixins": [],
             "__type": "RuleSet",
-            "animations": []
+            "animations": null
           },
           "udezTfppl5IJ": {
             "name": "Default Typography",
@@ -2301,7 +2301,7 @@
             "values": {},
             "mixins": [],
             "__type": "RuleSet",
-            "animations": []
+            "animations": null
           },
           "lwH8-kJp-axv": {
             "rs": { "__ref": "tWydOPipcatV" },
@@ -2311,7 +2311,7 @@
             "values": {},
             "mixins": [],
             "__type": "RuleSet",
-            "animations": []
+            "animations": null
           },
           "sc2BSXQPltFz": {
             "name": "Default \"h1\"",
@@ -2331,7 +2331,7 @@
             "values": {},
             "mixins": [],
             "__type": "RuleSet",
-            "animations": []
+            "animations": null
           },
           "ZaY9vOB-vBlj": {
             "name": "Default \"h2\"",
@@ -2351,7 +2351,7 @@
             "values": {},
             "mixins": [],
             "__type": "RuleSet",
-            "animations": []
+            "animations": null
           },
           "gACFPVkYWmcX": {
             "name": "Default \"h3\"",
@@ -2371,7 +2371,7 @@
             "values": {},
             "mixins": [],
             "__type": "RuleSet",
-            "animations": []
+            "animations": null
           },
           "efF7ADqXToT9": {
             "name": "Default \"h4\"",
@@ -2391,7 +2391,7 @@
             "values": {},
             "mixins": [],
             "__type": "RuleSet",
-            "animations": []
+            "animations": null
           },
           "BE3kgQxtMBgf": {
             "name": "Default \"h5\"",
@@ -2411,7 +2411,7 @@
             "values": {},
             "mixins": [],
             "__type": "RuleSet",
-            "animations": []
+            "animations": null
           },
           "zEHgaX72SiRH": {
             "name": "Default \"h6\"",
@@ -2431,7 +2431,7 @@
             "values": { "color": "#006DA8" },
             "mixins": [],
             "__type": "RuleSet",
-            "animations": []
+            "animations": null
           },
           "Vr4J3FGrMlOo": {
             "name": "Default \"a\"",
@@ -2451,7 +2451,7 @@
             "values": { "color": "#3291ff" },
             "mixins": [],
             "__type": "RuleSet",
-            "animations": []
+            "animations": null
           },
           "oKOG99SaJDg5": {
             "name": "Default \"a:hover\"",
@@ -2471,7 +2471,7 @@
             "values": {},
             "mixins": [],
             "__type": "RuleSet",
-            "animations": []
+            "animations": null
           },
           "6gR9M-A2iofi": {
             "name": "Default \"blockquote\"",
@@ -2491,7 +2491,7 @@
             "values": {},
             "mixins": [],
             "__type": "RuleSet",
-            "animations": []
+            "animations": null
           },
           "7A0nHLDw-I0N": {
             "name": "Default \"code\"",
@@ -2511,7 +2511,7 @@
             "values": {},
             "mixins": [],
             "__type": "RuleSet",
-            "animations": []
+            "animations": null
           },
           "OgiKXHBV-7TM": {
             "name": "Default \"pre\"",
@@ -2531,7 +2531,7 @@
             "values": { "position": "relative" },
             "mixins": [],
             "__type": "RuleSet",
-            "animations": []
+            "animations": null
           },
           "ncCcUC3I0Yfh": {
             "name": "Default \"ol\"",
@@ -2551,7 +2551,7 @@
             "values": { "position": "relative" },
             "mixins": [],
             "__type": "RuleSet",
-            "animations": []
+            "animations": null
           },
           "SdUJPC9k0xPf": {
             "name": "Default \"ul\"",
@@ -3122,7 +3122,7 @@
             "values": { "display": "flex", "flex-direction": "row" },
             "mixins": [],
             "__type": "RuleSet",
-            "animations": []
+            "animations": null
           },
           "aA60ZqW9wiOR": {
             "name": "arg",
@@ -3146,14 +3146,14 @@
             "values": { "display": "flex", "flex-direction": "row" },
             "mixins": [],
             "__type": "RuleSet",
-            "animations": []
+            "animations": null
           },
           "n-VdSwku7UwH": { "name": "any", "__type": "AnyType" },
           "E9sn-Z202NUV": {
             "values": {},
             "mixins": [],
             "__type": "RuleSet",
-            "animations": []
+            "animations": null
           },
           "qYKN2lAvzJGV": {
             "uuid": "Q-lNeXDgFp94",
@@ -3266,13 +3266,13 @@
             },
             "mixins": [],
             "__type": "RuleSet",
-            "animations": []
+            "animations": null
           },
           "RXBTs8uhZci9": {
             "values": {},
             "mixins": [],
             "__type": "RuleSet",
-            "animations": []
+            "animations": null
           },
           "ZrOvYTUnB2eD": {
             "tag": "div",
@@ -3302,7 +3302,7 @@
             "values": { "position": "relative" },
             "mixins": [],
             "__type": "RuleSet",
-            "animations": []
+            "animations": null
           },
           "F0gkXGfBK0Ki": {
             "tag": "a",
@@ -3337,7 +3337,7 @@
             "values": {},
             "mixins": [],
             "__type": "RuleSet",
-            "animations": []
+            "animations": null
           },
           "qPIzRUdjofNl": {
             "selector": "li",
@@ -3357,7 +3357,7 @@
             "values": {},
             "mixins": [],
             "__type": "RuleSet",
-            "animations": []
+            "animations": null
           },
           "o8yKgflgQqtN": {
             "selector": "p",
@@ -3377,7 +3377,7 @@
             "values": {},
             "mixins": [],
             "__type": "RuleSet",
-            "animations": []
+            "animations": null
           },
           "xT2Y8MQrlxcC": {
             "markers": [],
@@ -3397,7 +3397,7 @@
           }
         },
         "deps": [],
-        "version": "252-add-animations"
+        "version": "253-set-animations-empty-state"
       }
     }
   ]

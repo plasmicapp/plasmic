@@ -1802,7 +1802,7 @@ export function createDefaultTheme() {
       rs: new RuleSet({
         values: {},
         mixins: [],
-        animations: [],
+        animations: null,
       }),
     }),
     styles: Object.entries(DEFAULT_THEME_STYLES).map(

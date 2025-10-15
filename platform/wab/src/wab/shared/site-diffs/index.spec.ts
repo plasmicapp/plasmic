@@ -226,7 +226,7 @@ describe("compareSites / calculateSemVer", () => {
           rs: new RuleSet({
             values: { "font-weight": "300" },
             mixins: [],
-            animations: [],
+            animations: null,
           }),
         }),
       ],
@@ -350,7 +350,7 @@ describe("compareSites / calculateSemVer", () => {
         rs: new RuleSet({
           values: {},
           mixins: [],
-          animations: [],
+          animations: null,
         }),
         preview: null,
         uuid: mkShortId(),
@@ -371,7 +371,7 @@ describe("compareSites / calculateSemVer", () => {
       rs: new RuleSet({
         values: {},
         mixins: [],
-        animations: [],
+        animations: null,
       }),
       preview: null,
       uuid: mkShortId(),
@@ -393,7 +393,7 @@ describe("compareSites / calculateSemVer", () => {
         "background-color": "rgb(0, 0, 0)",
       },
       mixins: [],
-      animations: [],
+      animations: null,
     });
     compareCheck("patch", 2);
     return;

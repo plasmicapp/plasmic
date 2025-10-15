@@ -97,7 +97,7 @@ const ThemeInitialStylesPanel = observer(
                       const initialRs = new RuleSet({
                         values: { ...initialStyles },
                         mixins: [],
-                        animations: [],
+                        animations: null,
                       });
                       studioCtx.site.activeTheme!.addItemPrefs[newKey] =
                         initialRs;

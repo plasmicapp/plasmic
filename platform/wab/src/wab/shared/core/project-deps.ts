@@ -1075,7 +1075,9 @@ function upgradeProjectDep(
       );
     }
 
-    if (rs.animations.some((a) => oldToNewAnimationSequences.has(a.sequence))) {
+    if (
+      rs.animations?.some((a) => oldToNewAnimationSequences.has(a.sequence))
+    ) {
       rs.animations = rs.animations.map((animation) => {
         if (oldToNewAnimationSequences.has(animation.sequence)) {
           animation.sequence = getOrCloneNewAnimationSequence(

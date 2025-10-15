@@ -630,7 +630,7 @@ export function isDefaultIgnorableStyleValue(key: string, value: string) {
 
 function isVariantSettingClean(vs: VariantSetting) {
   return (
-    vs.rs.animations.length === 0 &&
+    L.isNil(vs.rs.animations) &&
     vs.rs.mixins.length === 0 &&
     vs.args.length === 0 &&
     L.isEmpty(vs.attrs) &&
@@ -659,7 +659,7 @@ export function isVariantSettingEmpty(vs: VariantSetting) {
 export function clearVariantSetting(vs: VariantSetting) {
   vs.rs.values = {};
   vs.rs.mixins = [];
-  vs.rs.animations = [];
+  vs.rs.animations = null;
   vs.args = [];
   vs.attrs = {};
   vs.dataCond = null;

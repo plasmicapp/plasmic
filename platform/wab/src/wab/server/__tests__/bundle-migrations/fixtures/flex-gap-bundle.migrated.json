@@ -32,7 +32,7 @@
           },
           "mixins": [],
           "__type": "RuleSet",
-          "animations": []
+          "animations": null
         },
         "XvHgaYnpTE1W": {
           "variants": [{ "__ref": "9KeEXdYpyF1T" }],
@@ -49,7 +49,7 @@
           "values": {},
           "mixins": [],
           "__type": "RuleSet",
-          "animations": []
+          "animations": null
         },
         "5x-ap6QcL4nK": {
           "variants": [{ "__ref": "tpm4gCdPsoKI" }],
@@ -245,7 +245,7 @@
           "values": { "display": "flex", "flex-direction": "row" },
           "mixins": [],
           "__type": "RuleSet",
-          "animations": []
+          "animations": null
         },
         "-ejen-2gNlOX": {
           "variants": [{ "__ref": "0UCOYs94cw9w" }],
@@ -492,7 +492,7 @@
           "values": {},
           "mixins": [],
           "__type": "RuleSet",
-          "animations": []
+          "animations": null
         },
         "bzCOpQS17wMk": {
           "variants": [{ "__ref": "wy1glREf6C45" }],
@@ -518,7 +518,7 @@
           "values": { "display": "flex", "flex-direction": "row" },
           "mixins": [],
           "__type": "RuleSet",
-          "animations": []
+          "animations": null
         },
         "3nOUJWLq7wa8": {
           "variants": [{ "__ref": "wy1glREf6C45" }],
@@ -619,7 +619,7 @@
           },
           "mixins": [],
           "__type": "RuleSet",
-          "animations": []
+          "animations": null
         },
         "q52nvGYITTs6": {
           "name": "Default Typography",
@@ -640,7 +640,7 @@
           },
           "mixins": [],
           "__type": "RuleSet",
-          "animations": []
+          "animations": null
         },
         "tg2QNxjkb22s": {
           "name": "Default \"h1\"",
@@ -666,7 +666,7 @@
           },
           "mixins": [],
           "__type": "RuleSet",
-          "animations": []
+          "animations": null
         },
         "lx1VAHai_SW5": {
           "name": "Default \"h2\"",
@@ -686,7 +686,7 @@
           "values": { "color": "#0070f3" },
           "mixins": [],
           "__type": "RuleSet",
-          "animations": []
+          "animations": null
         },
         "geqDXfrlkeCD": {
           "name": "Default \"a\"",
@@ -711,7 +711,7 @@
           },
           "mixins": [],
           "__type": "RuleSet",
-          "animations": []
+          "animations": null
         },
         "OanwR3Y2qHCW": {
           "name": "Default \"h3\"",
@@ -736,7 +736,7 @@
           },
           "mixins": [],
           "__type": "RuleSet",
-          "animations": []
+          "animations": null
         },
         "pRyVCyloJ8KH": {
           "name": "Default \"h4\"",
@@ -779,7 +779,7 @@
           },
           "mixins": [],
           "__type": "RuleSet",
-          "animations": []
+          "animations": null
         },
         "JeiETTM7ya2y": {
           "name": "Default \"code\"",
@@ -805,7 +805,7 @@
           },
           "mixins": [],
           "__type": "RuleSet",
-          "animations": []
+          "animations": null
         },
         "KRhn3zEkc2El": {
           "name": "Default \"blockquote\"",
@@ -848,7 +848,7 @@
           },
           "mixins": [],
           "__type": "RuleSet",
-          "animations": []
+          "animations": null
         },
         "B-ewkMnPZZDJ": {
           "name": "Default \"pre\"",
@@ -877,7 +877,7 @@
           },
           "mixins": [],
           "__type": "RuleSet",
-          "animations": []
+          "animations": null
         },
         "1h2TeR1fextN": {
           "name": "Default \"ul\"",
@@ -906,7 +906,7 @@
           },
           "mixins": [],
           "__type": "RuleSet",
-          "animations": []
+          "animations": null
         },
         "iFgi-bBh8zzh": {
           "name": "Default \"ol\"",
@@ -931,7 +931,7 @@
           },
           "mixins": [],
           "__type": "RuleSet",
-          "animations": []
+          "animations": null
         },
         "oKIEZ_dfhqCy": {
           "name": "Default \"h5\"",
@@ -956,7 +956,7 @@
           },
           "mixins": [],
           "__type": "RuleSet",
-          "animations": []
+          "animations": null
         },
         "PzRt4KuHBP7M": {
           "name": "Default \"h6\"",
@@ -976,7 +976,7 @@
           "values": { "color": "#3291ff" },
           "mixins": [],
           "__type": "RuleSet",
-          "animations": []
+          "animations": null
         },
         "XQt-Q7bNs3fD": {
           "name": "Default \"a:hover\"",
@@ -996,7 +996,7 @@
           "values": {},
           "mixins": [],
           "__type": "RuleSet",
-          "animations": []
+          "animations": null
         },
         "QHDZ63Sb50Gu": {
           "name": "Default \"li\"",
@@ -1016,7 +1016,7 @@
           "values": {},
           "mixins": [],
           "__type": "RuleSet",
-          "animations": []
+          "animations": null
         },
         "WSwyeSH6jOOc": {
           "name": "Default \"p\"",
@@ -1106,7 +1106,7 @@
           "values": {},
           "mixins": [],
           "__type": "RuleSet",
-          "animations": []
+          "animations": null
         },
         "vVWU92ut7z5z": {
           "variants": [{ "__ref": "88tdyd2wH8ws" }],
@@ -1154,7 +1154,7 @@
           "values": {},
           "mixins": [],
           "__type": "RuleSet",
-          "animations": []
+          "animations": null
         },
         "fbZOVUkv8gzu": {
           "variants": [{ "__ref": "88tdyd2wH8ws" }],
@@ -1315,7 +1315,7 @@
             "background": "linear-gradient(#FD7979, #FD7979)"
           },
           "mixins": [{ "__ref": "NP9x6eUwcs54" }],
-          "animations": []
+          "animations": null
         },
         "AS-pCJeWF54v": {
           "__type": "TplTag",
@@ -1358,7 +1358,7 @@
             "align-items": "center"
           },
           "mixins": [],
-          "animations": []
+          "animations": null
         },
         "8VGJOdT4Nd5X": {
           "__type": "TplTag",
@@ -1393,7 +1393,7 @@
             "max-width": "100%"
           },
           "mixins": [],
-          "animations": []
+          "animations": null
         },
         "AIYQJVV80_px": {
           "__type": "RawText",
@@ -1465,7 +1465,7 @@
             "align-items": "center"
           },
           "mixins": [],
-          "animations": []
+          "animations": null
         },
         "ksBTaGuoX9cD": {
           "__type": "RuleSet",
@@ -1476,7 +1476,7 @@
             "max-width": "100%"
           },
           "mixins": [],
-          "animations": []
+          "animations": null
         },
         "y2LPA1BjZWwx": {
           "__type": "TplTag",
@@ -1543,7 +1543,7 @@
             "align-items": "center"
           },
           "mixins": [],
-          "animations": []
+          "animations": null
         },
         "0rMkJ62Yto7i": {
           "__type": "RuleSet",
@@ -1554,7 +1554,7 @@
             "max-width": "100%"
           },
           "mixins": [],
-          "animations": []
+          "animations": null
         },
         "tOVy0fEqNrJ9": {
           "__type": "RawText",
@@ -1663,7 +1663,7 @@
             "align-items": "center"
           },
           "mixins": [],
-          "animations": []
+          "animations": null
         },
         "X-HaOgjJxim_": {
           "__type": "VariantSetting",
@@ -1693,7 +1693,7 @@
             "align-items": "center"
           },
           "mixins": [],
-          "animations": []
+          "animations": null
         },
         "p3t3Y0dXkTwa": {
           "__type": "RuleSet",
@@ -1704,7 +1704,7 @@
             "max-width": "100%"
           },
           "mixins": [],
-          "animations": []
+          "animations": null
         },
         "ukM_AFlR_QfP": {
           "__type": "RuleSet",
@@ -1715,7 +1715,7 @@
             "max-width": "100%"
           },
           "mixins": [],
-          "animations": []
+          "animations": null
         },
         "_XWAuBbq5xy1": {
           "__type": "TplTag",
@@ -1893,7 +1893,7 @@
             "align-items": "center"
           },
           "mixins": [],
-          "animations": []
+          "animations": null
         },
         "rDshVRNjymYS": {
           "__type": "VariantSetting",
@@ -1923,7 +1923,7 @@
             "align-items": "center"
           },
           "mixins": [],
-          "animations": []
+          "animations": null
         },
         "xwxibgMJ87Kr": {
           "__type": "VariantSetting",
@@ -1953,7 +1953,7 @@
             "align-items": "center"
           },
           "mixins": [],
-          "animations": []
+          "animations": null
         },
         "EEbzLNojWSeW": {
           "__type": "VariantSetting",
@@ -1983,7 +1983,7 @@
             "align-items": "center"
           },
           "mixins": [],
-          "animations": []
+          "animations": null
         },
         "3kWvI_zasQU4": {
           "__type": "RuleSet",
@@ -1994,7 +1994,7 @@
             "max-width": "100%"
           },
           "mixins": [],
-          "animations": []
+          "animations": null
         },
         "yx-dfQ7wu1xK": {
           "__type": "RuleSet",
@@ -2005,7 +2005,7 @@
             "max-width": "100%"
           },
           "mixins": [],
-          "animations": []
+          "animations": null
         },
         "oEAxu6ggKzWM": {
           "__type": "RuleSet",
@@ -2016,7 +2016,7 @@
             "max-width": "100%"
           },
           "mixins": [],
-          "animations": []
+          "animations": null
         },
         "VFmb2NoJEIVn": {
           "__type": "RuleSet",
@@ -2027,7 +2027,7 @@
             "max-width": "100%"
           },
           "mixins": [],
-          "animations": []
+          "animations": null
         },
         "xN1s0MLdHVVg": {
           "__type": "RawText",
@@ -2444,7 +2444,7 @@
             "column-gap": "40px"
           },
           "mixins": [],
-          "animations": []
+          "animations": null
         },
         "3_Am3XJvcBDj": {
           "__type": "VariantSetting",
@@ -2474,7 +2474,7 @@
             "align-items": "center"
           },
           "mixins": [],
-          "animations": []
+          "animations": null
         },
         "B0Si5ALSyyz-": {
           "__type": "VariantSetting",
@@ -2504,7 +2504,7 @@
             "align-items": "center"
           },
           "mixins": [],
-          "animations": []
+          "animations": null
         },
         "YHTcr2Xdn5HB": {
           "__type": "VariantSetting",
@@ -2534,7 +2534,7 @@
             "align-items": "center"
           },
           "mixins": [],
-          "animations": []
+          "animations": null
         },
         "CiP9zj2sPEEE": {
           "__type": "VariantSetting",
@@ -2564,7 +2564,7 @@
             "align-items": "center"
           },
           "mixins": [],
-          "animations": []
+          "animations": null
         },
         "2vc6oB6hhDCd": {
           "__type": "VariantSetting",
@@ -2594,7 +2594,7 @@
             "align-items": "center"
           },
           "mixins": [],
-          "animations": []
+          "animations": null
         },
         "lKyAKQZrPt9d": {
           "__type": "VariantSetting",
@@ -2624,7 +2624,7 @@
             "align-items": "center"
           },
           "mixins": [],
-          "animations": []
+          "animations": null
         },
         "uKO8NSrwfOIP": {
           "__type": "VariantSetting",
@@ -2654,7 +2654,7 @@
             "align-items": "center"
           },
           "mixins": [],
-          "animations": []
+          "animations": null
         },
         "XljbP0jEKPf3": {
           "__type": "VariantSetting",
@@ -2684,7 +2684,7 @@
             "align-items": "center"
           },
           "mixins": [],
-          "animations": []
+          "animations": null
         },
         "w7kOHCDvUXi1": {
           "__type": "VariantSetting",
@@ -2714,7 +2714,7 @@
             "align-items": "center"
           },
           "mixins": [],
-          "animations": []
+          "animations": null
         },
         "egrZo32EOth8": {
           "__type": "RuleSet",
@@ -2725,7 +2725,7 @@
             "max-width": "100%"
           },
           "mixins": [],
-          "animations": []
+          "animations": null
         },
         "5kM5H7PcdlMi": {
           "__type": "RawText",
@@ -2741,7 +2741,7 @@
             "max-width": "100%"
           },
           "mixins": [],
-          "animations": []
+          "animations": null
         },
         "xTuX5SiN6tKs": {
           "__type": "RawText",
@@ -2757,7 +2757,7 @@
             "max-width": "100%"
           },
           "mixins": [],
-          "animations": []
+          "animations": null
         },
         "1q7WIOsVRDzR": {
           "__type": "RawText",
@@ -2773,7 +2773,7 @@
             "max-width": "100%"
           },
           "mixins": [],
-          "animations": []
+          "animations": null
         },
         "QuRXW73RvPZn": {
           "__type": "RawText",
@@ -2789,7 +2789,7 @@
             "max-width": "100%"
           },
           "mixins": [],
-          "animations": []
+          "animations": null
         },
         "iwwwwv3JwOxm": {
           "__type": "RawText",
@@ -2805,7 +2805,7 @@
             "max-width": "100%"
           },
           "mixins": [],
-          "animations": []
+          "animations": null
         },
         "DT3aiJMKTFDV": {
           "__type": "RawText",
@@ -2821,7 +2821,7 @@
             "max-width": "100%"
           },
           "mixins": [],
-          "animations": []
+          "animations": null
         },
         "ZWsCETnEvoN4": {
           "__type": "RawText",
@@ -2837,7 +2837,7 @@
             "max-width": "100%"
           },
           "mixins": [],
-          "animations": []
+          "animations": null
         },
         "gluRRgysV7ks": {
           "__type": "RawText",
@@ -2853,7 +2853,7 @@
             "max-width": "100%"
           },
           "mixins": [],
-          "animations": []
+          "animations": null
         },
         "NNN5SbkJY_cz": {
           "__type": "RawText",
@@ -3245,7 +3245,7 @@
             "row-gap": "40px"
           },
           "mixins": [],
-          "animations": []
+          "animations": null
         },
         "2Jv3BRAfWEPs": {
           "__type": "VariantSetting",
@@ -3275,7 +3275,7 @@
             "align-items": "center"
           },
           "mixins": [],
-          "animations": []
+          "animations": null
         },
         "mi9YEg5KOs8O": {
           "__type": "VariantSetting",
@@ -3305,7 +3305,7 @@
             "align-items": "center"
           },
           "mixins": [],
-          "animations": []
+          "animations": null
         },
         "5w-4Lm4DUVbs": {
           "__type": "VariantSetting",
@@ -3335,7 +3335,7 @@
             "align-items": "center"
           },
           "mixins": [],
-          "animations": []
+          "animations": null
         },
         "jcyITo536oc8": {
           "__type": "VariantSetting",
@@ -3365,7 +3365,7 @@
             "align-items": "center"
           },
           "mixins": [],
-          "animations": []
+          "animations": null
         },
         "h8SrRIAr9QZF": {
           "__type": "VariantSetting",
@@ -3395,7 +3395,7 @@
             "align-items": "center"
           },
           "mixins": [],
-          "animations": []
+          "animations": null
         },
         "3PQ7CzHlK9Z2": {
           "__type": "VariantSetting",
@@ -3425,7 +3425,7 @@
             "align-items": "center"
           },
           "mixins": [],
-          "animations": []
+          "animations": null
         },
         "4Xnr3Cg7gsjE": {
           "__type": "VariantSetting",
@@ -3455,7 +3455,7 @@
             "align-items": "center"
           },
           "mixins": [],
-          "animations": []
+          "animations": null
         },
         "2ErpcvAmBzvw": {
           "__type": "VariantSetting",
@@ -3485,7 +3485,7 @@
             "align-items": "center"
           },
           "mixins": [],
-          "animations": []
+          "animations": null
         },
         "NdsN1wgZiK-L": {
           "__type": "VariantSetting",
@@ -3515,7 +3515,7 @@
             "align-items": "center"
           },
           "mixins": [],
-          "animations": []
+          "animations": null
         },
         "4-Rtd2tLSj0F": {
           "__type": "RuleSet",
@@ -3526,7 +3526,7 @@
             "max-width": "100%"
           },
           "mixins": [],
-          "animations": []
+          "animations": null
         },
         "pfqZEpGw42EB": {
           "__type": "RawText",
@@ -3542,7 +3542,7 @@
             "max-width": "100%"
           },
           "mixins": [],
-          "animations": []
+          "animations": null
         },
         "k4Pmvqv6gpi7": {
           "__type": "RawText",
@@ -3558,7 +3558,7 @@
             "max-width": "100%"
           },
           "mixins": [],
-          "animations": []
+          "animations": null
         },
         "X2bCNfhzRHDP": {
           "__type": "RawText",
@@ -3574,7 +3574,7 @@
             "max-width": "100%"
           },
           "mixins": [],
-          "animations": []
+          "animations": null
         },
         "Xm6b5fNaIFna": {
           "__type": "RawText",
@@ -3590,7 +3590,7 @@
             "max-width": "100%"
           },
           "mixins": [],
-          "animations": []
+          "animations": null
         },
         "UgcRmk9SXQ6s": {
           "__type": "RawText",
@@ -3606,7 +3606,7 @@
             "max-width": "100%"
           },
           "mixins": [],
-          "animations": []
+          "animations": null
         },
         "_2sthlBofB56": {
           "__type": "RawText",
@@ -3622,7 +3622,7 @@
             "max-width": "100%"
           },
           "mixins": [],
-          "animations": []
+          "animations": null
         },
         "J1K7z6f4IjPG": {
           "__type": "RawText",
@@ -3638,7 +3638,7 @@
             "max-width": "100%"
           },
           "mixins": [],
-          "animations": []
+          "animations": null
         },
         "N03LoEul4gb4": {
           "__type": "RawText",
@@ -3654,7 +3654,7 @@
             "max-width": "100%"
           },
           "mixins": [],
-          "animations": []
+          "animations": null
         },
         "tNMxdea7QREg": {
           "__type": "RawText",
@@ -4129,7 +4129,7 @@
             "row-gap": "40px"
           },
           "mixins": [],
-          "animations": []
+          "animations": null
         },
         "tHv9P5JvOJNb": {
           "__type": "VariantSetting",
@@ -4159,7 +4159,7 @@
             "align-items": "center"
           },
           "mixins": [],
-          "animations": []
+          "animations": null
         },
         "Ox5LoshLQ6WS": {
           "__type": "VariantSetting",
@@ -4189,7 +4189,7 @@
             "align-items": "center"
           },
           "mixins": [],
-          "animations": []
+          "animations": null
         },
         "7T3c_HdQOZIK": {
           "__type": "VariantSetting",
@@ -4219,7 +4219,7 @@
             "align-items": "center"
           },
           "mixins": [],
-          "animations": []
+          "animations": null
         },
         "w8zJ8hkW3WPM": {
           "__type": "VariantSetting",
@@ -4249,7 +4249,7 @@
             "align-items": "center"
           },
           "mixins": [],
-          "animations": []
+          "animations": null
         },
         "HQCMFPSTKaE-": {
           "__type": "VariantSetting",
@@ -4279,7 +4279,7 @@
             "align-items": "center"
           },
           "mixins": [],
-          "animations": []
+          "animations": null
         },
         "_45AzrIum18x": {
           "__type": "VariantSetting",
@@ -4309,7 +4309,7 @@
             "align-items": "center"
           },
           "mixins": [],
-          "animations": []
+          "animations": null
         },
         "vzlkM9DXduBl": {
           "__type": "VariantSetting",
@@ -4339,7 +4339,7 @@
             "align-items": "center"
           },
           "mixins": [],
-          "animations": []
+          "animations": null
         },
         "wrXXOndIR4S7": {
           "__type": "VariantSetting",
@@ -4369,7 +4369,7 @@
             "align-items": "center"
           },
           "mixins": [],
-          "animations": []
+          "animations": null
         },
         "trvTx_y7YXdd": {
           "__type": "VariantSetting",
@@ -4399,7 +4399,7 @@
             "align-items": "center"
           },
           "mixins": [],
-          "animations": []
+          "animations": null
         },
         "I1m8ESc0tp8f": {
           "__type": "RuleSet",
@@ -4410,7 +4410,7 @@
             "max-width": "100%"
           },
           "mixins": [],
-          "animations": []
+          "animations": null
         },
         "HutXiNdfVvGA": {
           "__type": "RawText",
@@ -4426,7 +4426,7 @@
             "max-width": "100%"
           },
           "mixins": [],
-          "animations": []
+          "animations": null
         },
         "fZ3ajRDnr-eD": {
           "__type": "RawText",
@@ -4442,7 +4442,7 @@
             "max-width": "100%"
           },
           "mixins": [],
-          "animations": []
+          "animations": null
         },
         "sfneqjNPS8Cx": {
           "__type": "RawText",
@@ -4458,7 +4458,7 @@
             "max-width": "100%"
           },
           "mixins": [],
-          "animations": []
+          "animations": null
         },
         "D6kZNnRU9sog": {
           "__type": "RawText",
@@ -4474,7 +4474,7 @@
             "max-width": "100%"
           },
           "mixins": [],
-          "animations": []
+          "animations": null
         },
         "S5J18_ndRNVt": {
           "__type": "RawText",
@@ -4490,7 +4490,7 @@
             "max-width": "100%"
           },
           "mixins": [],
-          "animations": []
+          "animations": null
         },
         "BuFu1VDveFq9": {
           "__type": "RawText",
@@ -4506,7 +4506,7 @@
             "max-width": "100%"
           },
           "mixins": [],
-          "animations": []
+          "animations": null
         },
         "ro8sP3Irl20I": {
           "__type": "RawText",
@@ -4522,7 +4522,7 @@
             "max-width": "100%"
           },
           "mixins": [],
-          "animations": []
+          "animations": null
         },
         "ju0dgA4ET1wD": {
           "__type": "RawText",
@@ -4538,7 +4538,7 @@
             "max-width": "100%"
           },
           "mixins": [],
-          "animations": []
+          "animations": null
         },
         "2ZI_j9vUuNwg": {
           "__type": "RawText",
@@ -4567,7 +4567,7 @@
             "row-gap": "20px"
           },
           "mixins": [],
-          "animations": []
+          "animations": null
         },
         "jpozBEzhGRrN": {
           "__type": "TplTag",
@@ -4679,7 +4679,7 @@
             "column-gap": "20px"
           },
           "mixins": [],
-          "animations": []
+          "animations": null
         },
         "RkgrlNKb6kP8": {
           "__type": "ColumnsConfig",
@@ -4695,7 +4695,7 @@
             "flex-wrap": "wrap"
           },
           "mixins": [],
-          "animations": []
+          "animations": null
         },
         "oWHi97wpPG3B": {
           "__type": "ColumnsConfig",
@@ -4719,7 +4719,7 @@
             "align-items": "center"
           },
           "mixins": [],
-          "animations": []
+          "animations": null
         },
         "GttPNFkzhNZf": {
           "__type": "RuleSet",
@@ -4738,7 +4738,7 @@
             "align-items": "center"
           },
           "mixins": [],
-          "animations": []
+          "animations": null
         },
         "4QTsteaOAOT2": {
           "__type": "TplTag",
@@ -4805,7 +4805,7 @@
             "align-items": "center"
           },
           "mixins": [],
-          "animations": []
+          "animations": null
         },
         "D3I65zTvGBjs": {
           "__type": "RuleSet",
@@ -4824,7 +4824,7 @@
             "align-items": "center"
           },
           "mixins": [],
-          "animations": []
+          "animations": null
         },
         "DkA_9cD4VA8n": {
           "__type": "TplTag",
@@ -4859,7 +4859,7 @@
             "max-width": "100%"
           },
           "mixins": [],
-          "animations": []
+          "animations": null
         },
         "V3JEqlE7xzXD": {
           "__type": "RawText",
@@ -4923,7 +4923,7 @@
             "max-width": "100%"
           },
           "mixins": [],
-          "animations": []
+          "animations": null
         },
         "1CMpBblATiiw": {
           "__type": "RawText",
@@ -4939,7 +4939,7 @@
             "max-width": "100%"
           },
           "mixins": [],
-          "animations": []
+          "animations": null
         },
         "Puql7TAP73z3": {
           "__type": "RawText",
@@ -4979,7 +4979,7 @@
             "max-width": "100%"
           },
           "mixins": [],
-          "animations": []
+          "animations": null
         },
         "jRIw2FWFwy4Q": {
           "__type": "RawText",
@@ -4988,7 +4988,7 @@
         }
       },
       "deps": [],
-      "version": "252-add-animations"
+      "version": "253-set-animations-empty-state"
     }
   ]
 ]

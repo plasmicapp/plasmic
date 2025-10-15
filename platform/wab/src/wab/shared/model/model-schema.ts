@@ -251,7 +251,9 @@ StyleNode
     values: Map[String, String]
     #children: [Rule]
     @WeakRef mixins: [Mixin]
-    animations: [Animation]
+    # In base variant, null and empty array are the same.
+    # In targeted variants, null does not change the base variant and empty array clears the base variant
+    animations: [Animation]?
   Rule
     @Const name: String
     values: [String]

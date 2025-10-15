@@ -28,6 +28,7 @@ const paths = [
   "src/wab/shared/codegen/__tests__/bundles/aria-code-components.json",
   "src/wab/shared/codegen/__tests__/bundles/custom-functions-test.json",
   "src/wab/shared/codegen/__tests__/bundles/global-variant-test.json",
+  "src/wab/shared/codegen/__tests__/bundles/style-token-overrides.json",
   "src/wab/server/pkg-mgr/data/plume-master-pkg.json",
   "src/wab/server/pkg-mgr/data/plexus-master-pkg.json",
   "cypress/bundles/state-management.json",

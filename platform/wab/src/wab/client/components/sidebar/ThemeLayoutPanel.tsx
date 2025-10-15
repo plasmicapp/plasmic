@@ -37,7 +37,7 @@ function ThemeLayoutPanel_(
   const layout =
     theme?.layout ??
     new ThemeLayoutSettings({
-      rs: new RuleSet({ values: {}, mixins: [], animations: [] }),
+      rs: new RuleSet({ values: {}, mixins: [], animations: null }),
     });
   const sc = React.useMemo(() => {
     const baseExpr = new RuleSetHelpers(layout.rs, "div");

@@ -1,6 +1,8 @@
-import { arrayEqIgnoreOrder, ensure } from "@/wab/shared/common";
 import { VariantCombo } from "@/wab/shared/Variants";
+import { arrayEqIgnoreOrder, ensure } from "@/wab/shared/common";
+import { SlotSelection } from "@/wab/shared/core/slots";
 import {
+  Animation,
   Arg,
   Component,
   Expr,
@@ -11,7 +13,6 @@ import {
 } from "@/wab/shared/model/classes";
 import { makeVariantComboSorter } from "@/wab/shared/variant-sort";
 import { TplVisibility } from "@/wab/shared/visibility-utils";
-import { SlotSelection } from "@/wab/shared/core/slots";
 import L from "lodash";
 
 // The stack of variant settings (from lowest priority to highest) and the
@@ -73,6 +74,7 @@ export interface StyleSource {
   value: string;
   prop: string;
   isDerived?: boolean;
+  animations?: Animation[];
 }
 
 export interface AttrSource {

@@ -633,17 +633,22 @@ function deriveCssRuleSetStyles(
     )
   );
   // Process animations
-  if (rs.animations && rs.animations.length > 0) {
-    const animationPropVal = generateAnimationPropValue(rs.animations);
-    if (animationPropVal) {
-      m.set(
-        "animation",
-        resolver
-          ? resolver.tryResolveTokenRefs(animationPropVal)
-          : animationPropVal
-      );
+  if (rs.animations) {
+    if (rs.animations.length > 0) {
+      const animationPropVal = generateAnimationPropValue(rs.animations);
+      if (animationPropVal) {
+        m.set(
+          "animation",
+          resolver
+            ? resolver.tryResolveTokenRefs(animationPropVal)
+            : animationPropVal
+        );
+      }
+    } else {
+      m.set("animation", "none");
     }
   }
+
   Object.entries(makeLayoutAwareRuleSet(rs, forBaseVariant).values).forEach(
     ([name, val]) => {
       if (!isStylePropApplicable(tpl, name)) {
@@ -2558,7 +2563,7 @@ export const cloneRuleSet = (rs: RuleSet) => {
   return new RuleSet({
     values: { ...rs.values },
     mixins: [...rs.mixins],
-    animations: rs.animations.map(cloneAnimation),
+    animations: rs.animations ? rs.animations.map(cloneAnimation) : null,
   });
 };
 
@@ -2570,7 +2575,7 @@ export function mkRuleSet(
   return new RuleSet({
     values: obj.values ?? {},
     mixins: [],
-    animations: [],
+    animations: null,
   });
 }
 
@@ -3017,7 +3022,7 @@ export function extractAnimationSequenceUsages(
   const traverseTpl = (tplRoot: TplNode, component: Component) => {
     for (const [vs, _tpl] of findVariantSettingsUnderTpl(tplRoot)) {
       if (
-        vs.rs.animations.find((anim) => anim.sequence === animationSequence)
+        vs.rs.animations?.find((anim) => anim.sequence === animationSequence)
       ) {
         usages.add(vs.rs);
         usingComponents.add(component);

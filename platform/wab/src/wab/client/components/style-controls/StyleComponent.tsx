@@ -793,9 +793,13 @@ function StylePanelSection_(
           onClick={async () => {
             await studioCtx.changeUnsafe(() => {
               const exp = expsProvider.targetExp();
+              const targetRs = expsProvider.targetRs();
               for (const prop of L.without(styleProps, ...unremovableProps)) {
                 if (exp.has(prop) && expsProvider.isPropRemovable(prop)) {
                   exp.clear(prop);
+                }
+                if (prop === "animation") {
+                  targetRs.animations = null;
                 }
               }
               // apply the default styles props on unset
