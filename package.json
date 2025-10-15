@@ -163,6 +163,7 @@
     "plasmicpkgs/rive",
     "plasmicpkgs/spotify",
     "plasmicpkgs/tiptap",
+    "plasmicpkgs/wordpress",
     "plasmicpkgs-dev"
   ]
 }

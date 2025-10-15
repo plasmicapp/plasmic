@@ -1,7 +1,4 @@
-import registerFunction, {
-  CustomFunctionMeta,
-} from "@plasmicapp/host/registerFunction";
-
+import { CustomFunctionMeta } from "@plasmicapp/host/registerFunction";
 import { QueryOperator, queryOperators } from "./utils";
 
 export async function queryWordpress(
@@ -18,17 +15,20 @@ export async function queryWordpress(
   if (limit) {
     urlParams.append("per_page", limit.toString());
   }
-  const url = new URL(`wp-json/wp/v2/${type}`, wordpressUrl);
+  const urlWithSlash = wordpressUrl.endsWith("/")
+    ? wordpressUrl
+    : `${wordpressUrl}/`;
+  const url = new URL(`wp-json/wp/v2/${type}`, urlWithSlash);
   url.search = urlParams.toString();
 
   const resp = await fetch(url);
   return await resp.json();
 }
 
-const queryWordpressMeta: CustomFunctionMeta<typeof queryWordpress> = {
+export const queryWordpressMeta: CustomFunctionMeta<typeof queryWordpress> = {
   name: "queryWordpress",
   displayName: "Query WordPress",
-  importPath: "@plasmicpkgs/plasmic-wordpress",
+  importPath: "@plasmicpkgs/wordpress",
   params: [
     {
       name: "wordpressUrl",
@@ -57,18 +57,3 @@ const queryWordpressMeta: CustomFunctionMeta<typeof queryWordpress> = {
     },
   ],
 };
-
-export function registerAllCustomFunctions(loader?: { registerFunction: any }) {
-  function _registerFunction<T extends (...args: any[]) => any>(
-    fn: T,
-    meta: CustomFunctionMeta<T>
-  ) {
-    if (loader) {
-      loader.registerFunction(fn, meta);
-    } else {
-      registerFunction(fn, meta);
-    }
-  }
-
-  _registerFunction(queryWordpress, queryWordpressMeta);
-}

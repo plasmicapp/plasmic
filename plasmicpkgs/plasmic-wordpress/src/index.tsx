@@ -11,6 +11,12 @@ import {
   WordpressProviderMeta,
 } from "./wordpress";
 
+// Re-export from @plasmicpkgs/wordpress for backwards compatibility
+export {
+  queryWordpress,
+  registerWordpress as registerAllCustomFunctions,
+} from "@plasmicpkgs/wordpress";
+
 export function registerAll(loader?: {
   registerComponent: typeof registerComponent;
   registerGlobalContext: typeof registerGlobalContext;
@@ -36,5 +42,4 @@ export function registerAll(loader?: {
   _registerComponent(WordpressField, WordpressFieldMeta);
 }
 
-export * from "./custom-functions";
 export * from "./wordpress";

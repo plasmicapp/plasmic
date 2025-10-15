@@ -54,6 +54,7 @@
   },
   "dependencies": {
     "@types/dlv": "^1.1.2",
-    "dlv": "^1.1.3"
+    "dlv": "^1.1.3",
+    "@plasmicpkgs/wordpress": "0.0.1"
   }
 }

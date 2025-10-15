@@ -1,0 +1,8 @@
+{
+  "extends": "../../tsconfig.types.json",
+  "include": ["./src"],
+  "compilerOptions": {
+    "outDir": "./api/tsc",
+    "types": ["node"]
+  }
+}

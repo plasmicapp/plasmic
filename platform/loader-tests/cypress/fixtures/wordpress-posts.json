@@ -1,0 +1,104 @@
+[
+  {
+    "id": 1,
+    "date": "2024-01-15T10:30:00",
+    "date_gmt": "2024-01-15T10:30:00",
+    "guid": { "rendered": "http://example.com/hello-world/" },
+    "modified": "2024-01-15T10:30:00",
+    "modified_gmt": "2024-01-15T10:30:00",
+    "slug": "hello-world",
+    "status": "publish",
+    "type": "post",
+    "link": "http://example.com/hello-world/",
+    "title": { "rendered": "Hello World" },
+    "content": {
+      "rendered": "<p>Welcome to WordPress. This is your first post.</p>\n",
+      "protected": false
+    },
+    "excerpt": {
+      "rendered": "<p>Welcome to WordPress.</p>\n",
+      "protected": false
+    },
+    "author": 1,
+    "featured_media": 0,
+    "comment_status": "open",
+    "ping_status": "open",
+    "sticky": false,
+    "template": "",
+    "format": "standard",
+    "meta": { "footnotes": "" },
+    "categories": [1],
+    "tags": [],
+    "class_list": [
+      "post-1",
+      "post",
+      "type-post",
+      "status-publish",
+      "format-standard",
+      "hentry",
+      "category-uncategorized"
+    ]
+  },
+  {
+    "id": 2,
+    "date": "2024-01-16T14:20:00",
+    "date_gmt": "2024-01-16T14:20:00",
+    "modified": "2024-01-16T14:20:00",
+    "modified_gmt": "2024-01-16T14:20:00",
+    "slug": "getting-started",
+    "status": "publish",
+    "type": "post",
+    "link": "https://example.com/getting-started",
+    "title": {
+      "rendered": "Getting Started with WordPress"
+    },
+    "content": {
+      "rendered": "<p>This guide will help you get started with WordPress development.</p>",
+      "protected": false
+    },
+    "excerpt": {
+      "rendered": "<p>Getting started guide.</p>",
+      "protected": false
+    },
+    "author": 1,
+    "featured_media": 0,
+    "comment_status": "open",
+    "ping_status": "open",
+    "sticky": false,
+    "template": "",
+    "format": "standard",
+    "categories": [1, 2],
+    "tags": [1, 2]
+  },
+  {
+    "id": 3,
+    "date": "2024-01-17T09:15:00",
+    "date_gmt": "2024-01-17T09:15:00",
+    "modified": "2024-01-17T09:15:00",
+    "modified_gmt": "2024-01-17T09:15:00",
+    "slug": "advanced-features",
+    "status": "publish",
+    "type": "post",
+    "link": "https://example.com/advanced-features",
+    "title": {
+      "rendered": "Advanced WordPress Features"
+    },
+    "content": {
+      "rendered": "<p>Learn about advanced WordPress features and customization options.</p>",
+      "protected": false
+    },
+    "excerpt": {
+      "rendered": "<p>Advanced features guide.</p>",
+      "protected": false
+    },
+    "author": 2,
+    "featured_media": 0,
+    "comment_status": "open",
+    "ping_status": "open",
+    "sticky": true,
+    "template": "",
+    "format": "standard",
+    "categories": [2],
+    "tags": [2, 3]
+  }
+]
