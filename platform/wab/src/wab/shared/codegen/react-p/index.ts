@@ -269,8 +269,8 @@ import {
 } from "@/wab/shared/core/style-props";
 import {
   CssVarResolver,
-  makeAnimationKeyframesRules,
   genTokenVarDataWithVariants,
+  makeAnimationKeyframesRules,
   makeBaseRuleNamer,
   makeCssTokenVarsRuleSets,
   makeDefaultStylesRules,
@@ -484,6 +484,8 @@ export function exportProjectConfig(
               // for overrides, we only need varianted values from local global variant groups (i.e. not from depenecies)
               return (
                 !globalVariantGroup ||
+                // We may have varianted overrides for a dependent project's screen variants, but only if that screen variant group is marked as active
+                globalVariantGroup === site.activeScreenVariantGroup ||
                 !siteGenHelper.objToDepMap().get(globalVariantGroup)
               );
             }),
