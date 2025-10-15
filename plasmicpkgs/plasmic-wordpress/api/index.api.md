@@ -6,15 +6,10 @@
 
 import { ComponentMeta } from '@plasmicapp/host';
 import { GlobalContextMeta } from '@plasmicapp/host';
-import type { _QueryOperator } from '@plasmicpkgs/wordpress';
-import { queryWordpress } from '@plasmicpkgs/wordpress';
 import { default as React_2 } from 'react';
 import { ReactNode } from 'react';
-import { registerWordpress as registerAllCustomFunctions } from '@plasmicpkgs/wordpress';
 import registerComponent from '@plasmicapp/host/registerComponent';
 import registerGlobalContext from '@plasmicapp/host/registerGlobalContext';
-
-export { queryWordpress }
 
 // @public (undocumented)
 export function registerAll(loader?: {
@@ -22,7 +17,10 @@ export function registerAll(loader?: {
     registerGlobalContext: typeof registerGlobalContext;
 }): void;
 
-export { registerAllCustomFunctions }
+// @public (undocumented)
+export function registerWordpress(loader?: {
+    registerFunction: any;
+}): void;
 
 // @public (undocumented)
 export function WordpressFetcher({ queryOperator, filterValue, noAutoRepeat, limit, queryType, children, className, noLayout, }: WordpressFetcherProps): React_2.JSX.Element;

@@ -6,14 +6,10 @@ import {
   useSelector,
 } from "@plasmicapp/host";
 import { usePlasmicQueryData } from "@plasmicapp/query";
-import type { _QueryOperator as QueryOperator } from "@plasmicpkgs/wordpress";
-import {
-  _ensure as ensure,
-  _queryOperators as queryOperators,
-  queryWordpress,
-} from "@plasmicpkgs/wordpress";
 import get from "dlv";
 import React, { ReactNode, useContext } from "react";
+import { queryWordpress } from "./query-wordpress";
+import { ensure, queryOperators, type QueryOperator } from "./utils";
 
 const modulePath = "@plasmicpkgs/plasmic-wordpress";
 
