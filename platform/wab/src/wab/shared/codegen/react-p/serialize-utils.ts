@@ -254,23 +254,13 @@ export function makeStylesImports(
     // "import * as name from ...") while CRA >= 5 / Next.js does not support that
     // (requiring "import name from ...").
     const importName = !useCssModules
-      ? opts.platform === "tanstack"
-        ? `${name} from`
-        : ""
+      ? ""
       : opts.platform === "gatsby"
       ? `* as ${name} from`
       : `${name} from`;
 
-    /* Tanstack doesn't support CSS modules in SSR at the moment so the only option
-     * that we have is to import css as a URL.
-     * https://github.com/TanStack/router/issues/3023
-     */
     const importPath = `${stripExtension(path, true)}${
-      useCssModules
-        ? ".module.css"
-        : opts.platform === "tanstack"
-        ? ".css?url"
-        : ".css"
+      useCssModules ? ".module.css" : ".css"
     }`;
     return `import ${importName} "./${importPath}"`;
   };
@@ -279,8 +269,6 @@ export function makeStylesImports(
     ${
       opts.stylesOpts.skipGlobalCssImport
         ? ""
-        : opts.platform === "tanstack"
-        ? `import ${globalStyleCssImportName} from "@plasmicapp/react-web/lib/plasmic.css?url";`
         : `import "@plasmicapp/react-web/lib/plasmic.css";`
     }
     ${
