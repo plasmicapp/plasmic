@@ -2191,10 +2191,10 @@
     "@types/dlv" "^1.1.2"
     dlv "^1.1.3"
 
-"@plasmicpkgs/plasmic-wordpress@^0.0.149":
-  version "0.0.149"
-  resolved "https://registry.yarnpkg.com/@plasmicpkgs/plasmic-wordpress/-/plasmic-wordpress-0.0.149.tgz#80ab8d146ccef0143d5a762880dd50a914d032d0"
-  integrity sha512-25ARynjjUgDr+nhHaQEhf3KXcu2CDUjWJk1+8D1m5VaSnHTW8gkS3ry12myetr27IaMo7WBhtzMsv84uNF13BA==
+"@plasmicpkgs/plasmic-wordpress@^0.0.151":
+  version "0.0.151"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/plasmic-wordpress/-/plasmic-wordpress-0.0.151.tgz#fcd19eb27d81f3e41e6217bd4924cd17c5819de0"
+  integrity sha512-mrY1b3BghbYT77AeGb3ihpjZwpRwf7RqIMnLg8nQbaYjv2YGFB5scI/5yN7iBturEaQgUc9e+7n3RgrkFqn2iA==
   dependencies:
     "@types/dlv" "^1.1.2"
     dlv "^1.1.3"
