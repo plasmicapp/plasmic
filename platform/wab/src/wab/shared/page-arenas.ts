@@ -227,7 +227,10 @@ export function ensureManagedRowForVariantInPageArena(
   // Find a good place to insert this
   const allVariants = [
     ...allComponentVariants(arena.component),
-    ...allGlobalVariants(site, { includeDeps: "direct" }),
+    ...allGlobalVariants(site, {
+      includeDeps: "direct",
+      excludeMediaQuery: true,
+    }),
   ];
   const currentVariantIndexes = arena.matrix.rows.map((r) =>
     allVariants.indexOf(ensureKnownVariant(r.rowKey))

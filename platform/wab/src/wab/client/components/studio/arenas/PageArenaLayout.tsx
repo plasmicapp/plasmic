@@ -8,6 +8,7 @@ import { GridFramesLayout } from "@/wab/client/components/studio/arenas/GridFram
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { spawn } from "@/wab/shared/common";
 import { allComponentVariants } from "@/wab/shared/core/components";
+import { allGlobalVariantGroups } from "@/wab/shared/core/sites";
 import { COMBINATIONS_CAP } from "@/wab/shared/Labels";
 import {
   ArenaFrame,
@@ -15,7 +16,6 @@ import {
   PageArena,
 } from "@/wab/shared/model/classes";
 import { isBaseVariant, isStandaloneVariant } from "@/wab/shared/Variants";
-import { allGlobalVariantGroups } from "@/wab/shared/core/sites";
 import { observer } from "mobx-react";
 import React from "react";
 
@@ -30,6 +30,8 @@ export const PageArenaLayout = observer(function PageArenaLayout(props: {
   const componentVariants = allComponentVariants(component);
   const globalVariants = allGlobalVariantGroups(studioCtx.site, {
     includeDeps: "direct",
+    excludeEmpty: true,
+    excludeInactiveScreenVariants: true,
   });
 
   const allowCombos = componentVariants.length + globalVariants.length > 2;

@@ -71,11 +71,14 @@ export const ComponentArenaLayout = observer(
     const component = arena.component;
 
     const componentVariants = allComponentVariants(component);
-    const globalVariants = allGlobalVariantGroups(studioCtx.site, {
+    const globalVariantGroups = allGlobalVariantGroups(studioCtx.site, {
       includeDeps: "direct",
+      excludeEmpty: true,
+      excludeInactiveScreenVariants: true,
     });
 
-    const allowCombos = componentVariants.length + globalVariants.length > 2;
+    const allowCombos =
+      componentVariants.length + globalVariantGroups.length > 2;
     const framesHeight = maybe(arena.matrix.rows[0]?.cols[0]?.frame, (frame) =>
       getFrameHeight(frame)
     );

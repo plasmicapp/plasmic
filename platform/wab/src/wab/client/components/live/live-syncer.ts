@@ -13,7 +13,7 @@ import { requestIdleCallback } from "@/wab/client/requestidlecallback";
 import { StudioAppUser, StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { safeCallbackify } from "@/wab/commons/control";
 import { getSlotParams } from "@/wab/shared/SlotUtils";
-import { VariantCombo, isScreenVariantGroup } from "@/wab/shared/Variants";
+import { VariantCombo } from "@/wab/shared/Variants";
 import {
   allCodeLibraries,
   allCustomFunctions,
@@ -224,6 +224,7 @@ export function pushPreviewModules(
         {
           includeDeps: "all",
           excludeEmpty: true,
+          excludeInactiveScreenVariants: true,
         }
       );
 
@@ -491,7 +492,8 @@ function createPreviewScript(
   const globalGroups = allGlobalVariantGroups(previewCtx.studioCtx.site, {
     includeDeps: "all",
     excludeEmpty: true,
-  }).filter((vg) => !isScreenVariantGroup(vg));
+    excludeMediaQuery: true,
+  });
   const globalGroupImports = makeGlobalGroupImports(globalGroups, {
     idFileNames: true,
   });

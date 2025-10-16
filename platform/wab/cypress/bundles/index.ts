@@ -1,3 +1,4 @@
+import activeScreenVariantGroupBundle from "./active-screen-variant-group.json";
 import codeLibs from "./code-libs.json";
 import formsBundle from "./forms.json";
 import pageReplacementBundle from "./page-replacement.json";
@@ -12,4 +13,5 @@ export default {
   forms: formsBundle,
   "code-libs": codeLibs,
   "page-replacement": pageReplacementBundle,
+  "active-screen-variant-group": activeScreenVariantGroupBundle,
 };

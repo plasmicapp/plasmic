@@ -127,7 +127,7 @@ test.describe("component-ops - tricky operations", () => {
       .contentFrame()
       .locator("div")
       .filter({
-        hasText: /^CompA800 ✕ 500Base \+ Interactions1180 ✕ 540Combinations$/,
+        hasText: /^CompA800 ✕ 500Base \+ Interactions1180 ✕ 540$/,
       })
       .locator("iframe")
       .nth(2)

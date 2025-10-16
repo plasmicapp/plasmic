@@ -181,6 +181,12 @@ export class StudioModel extends BaseModel {
     return viewportFrame;
   }
 
+  async waitForLiveFrameToLoad() {
+    await this.liveFrame
+      .locator(".live-root-container")
+      .waitFor({ timeout: 120000 });
+  }
+
   async withinLiveMode(fn: (liveFrame: FrameLocator) => Promise<void>) {
     await this.enterLiveModeButton.waitFor({
       state: "visible",

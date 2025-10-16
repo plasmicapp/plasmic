@@ -1,6 +1,9 @@
-import { VariantGroupType, isGlobalVariant } from "@/wab/shared/Variants";
+import {
+  VariantGroupType,
+  isGlobalVariant,
+  isGlobalVariantGroup,
+} from "@/wab/shared/Variants";
 import { flattenComponent } from "@/wab/shared/cached-selectors";
-import { ComponentGenHelper } from "@/wab/shared/codegen/codegen-helpers";
 import {
   makeGlobalVariantIdFileName,
   makeUseClient,
@@ -20,6 +23,7 @@ import {
   toVarName,
 } from "@/wab/shared/codegen/util";
 import { xAddAll } from "@/wab/shared/common";
+import { allGlobalVariantGroups } from "@/wab/shared/core/sites";
 import { plasmicImgAttrStyles } from "@/wab/shared/core/style-props";
 import { createExpandedRuleSetMerger } from "@/wab/shared/core/styles";
 import { isTplTag, isTplVariantable } from "@/wab/shared/core/tpls";
@@ -193,17 +197,16 @@ export function serializeVariantGroupMembersType(vg: VariantGroup) {
 export function extractUsedGlobalVariantsForComponents(
   site: Site,
   components: Component[],
-  usePlasmicImg: boolean,
-  ctx?: ComponentGenHelper
+  usePlasmicImg: boolean
 ) {
   const usedGlobalVariants = new Set<Variant>();
   for (const component of components) {
     xAddAll(
       usedGlobalVariants,
       extractUsedGlobalVariantsForNodes(
-        ctx?.flattenComponent(component) ?? flattenComponent(component),
-        usePlasmicImg,
-        ctx
+        site,
+        flattenComponent(component),
+        usePlasmicImg
       )
     );
   }
@@ -226,11 +229,16 @@ export function extractUsedGlobalVariantsForComponents(
 }
 
 export function extractUsedGlobalVariantsForNodes(
+  site: Site,
   nodes: TplNode[],
-  usePlasmicImg: boolean,
-  ctx?: ComponentGenHelper
+  usePlasmicImg: boolean
 ) {
   const usedGlobalVariants = new Set<Variant>();
+  const siteGlobalVariantGroups = allGlobalVariantGroups(site, {
+    includeDeps: "all",
+    excludeEmpty: true,
+    excludeInactiveScreenVariants: true,
+  });
   for (const node of nodes) {
     if (isTplVariantable(node)) {
       for (const vs of node.vsettings) {
@@ -239,7 +247,13 @@ export function extractUsedGlobalVariantsForNodes(
           node,
           usePlasmicImg
         )) {
-          usedGlobalVariants.add(v);
+          if (
+            v.parent &&
+            isGlobalVariantGroup(v.parent) &&
+            siteGlobalVariantGroups.includes(v.parent)
+          ) {
+            usedGlobalVariants.add(v);
+          }
         }
       }
     }
@@ -250,19 +264,16 @@ export function extractUsedGlobalVariantsForNodes(
 export function getUsedGlobalVariantsForNonCss(
   vs: VariantSetting,
   tpl: TplNode,
-  usePlasmicImg: boolean,
-  ctx?: ComponentGenHelper
+  usePlasmicImg: boolean
 ) {
   return vs.variants.filter((v) => {
     if (isGlobalVariant(v)) {
       const vg = v.parent;
       if (vg && vg.type === "global-screen") {
-        const exp =
-          ctx?.getExpr(tpl, vs) ??
-          createExpandedRuleSetMerger(
-            makeLayoutAwareRuleSet(vs.rs, false),
-            tpl
-          );
+        const exp = createExpandedRuleSetMerger(
+          makeLayoutAwareRuleSet(vs.rs, false),
+          tpl
+        );
         // For GlobalScreen variants, we only add it as used if it contains
         // non-css changes
         if (

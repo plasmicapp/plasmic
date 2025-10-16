@@ -2507,7 +2507,9 @@ export class ViewOps {
       // to prune deleted variants.
       if (Tpls.isTplVariantable(node)) {
         const existingVariants = new Set([
-          ...allGlobalVariants(this.site()),
+          ...allGlobalVariants(this.site(), {
+            excludeInactiveScreenVariants: true,
+          }),
           ...Components.allComponentVariants(clip.component),
         ]);
         node.vsettings = node.vsettings.filter((vs) =>

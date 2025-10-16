@@ -16,6 +16,7 @@ import {
   isGlobalVariant,
   isGlobalVariantGroup,
   isMediaQueryVariantGroup,
+  isScreenVariantGroup,
   mkBaseVariant,
 } from "@/wab/shared/Variants";
 import {
@@ -1828,6 +1829,7 @@ export function allGlobalVariants(
   opts: {
     includeDeps?: DependencyWalkScope;
     excludeMediaQuery?: boolean;
+    excludeInactiveScreenVariants?: boolean;
   } = {}
 ): Variant[] {
   return allGlobalVariantGroups(site, opts).flatMap((vg) => vg.variants);
@@ -1840,6 +1842,7 @@ export function allGlobalVariantGroups(
     excludeEmpty?: boolean;
     excludeHostLessPackages?: boolean;
     excludeMediaQuery?: boolean;
+    excludeInactiveScreenVariants?: boolean;
   } = {}
 ): GlobalVariantGroup[] {
   let res = [...site.globalVariantGroups];
@@ -1858,6 +1861,12 @@ export function allGlobalVariantGroups(
   if (opts.excludeMediaQuery) {
     res = res.filter((vg) => !isMediaQueryVariantGroup(vg));
   }
+  if (opts.excludeInactiveScreenVariants) {
+    res = res.filter(
+      (vg) => !isScreenVariantGroup(vg) || vg === site.activeScreenVariantGroup
+    );
+  }
+
   return res;
 }
 

@@ -1,3 +1,4 @@
+import { ensureValidCombo, isPrivateStyleVariant } from "@/wab/shared/Variants";
 import {
   arrayEqIgnoreOrder,
   filterMapKeys,
@@ -12,7 +13,7 @@ import {
   withoutNils,
 } from "@/wab/shared/common";
 import { allComponentVariants } from "@/wab/shared/core/components";
-import { ensureValidCombo, isPrivateStyleVariant } from "@/wab/shared/Variants";
+import { allGlobalVariants } from "@/wab/shared/core/sites";
 import {
   ArenaFrame,
   Site,
@@ -20,7 +21,6 @@ import {
   Variant,
   VariantGroup,
 } from "@/wab/shared/model/classes";
-import { allGlobalVariants } from "@/wab/shared/core/sites";
 import L from "lodash";
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { computed, observable } from "mobx";
@@ -139,7 +139,10 @@ export class GlobalVariantFrame extends VariantFrame {
 
   private allGlobalVariantsMap = computed(() => {
     return L.keyBy(
-      allGlobalVariants(this.site, { includeDeps: "direct" }),
+      allGlobalVariants(this.site, {
+        includeDeps: "direct",
+        excludeInactiveScreenVariants: true,
+      }),
       (v) => v.uuid
     );
   });

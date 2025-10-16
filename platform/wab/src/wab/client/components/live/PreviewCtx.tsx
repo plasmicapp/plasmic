@@ -11,7 +11,6 @@ import {
   VariantCombo,
   getReferencedVariantGroups,
   isGlobalVariant,
-  isScreenVariant,
 } from "@/wab/shared/Variants";
 import { toVarName } from "@/wab/shared/codegen/util";
 import {
@@ -516,7 +515,8 @@ function getAllVariants(
 
   const globalVariants = allGlobalVariants(studioCtx.site, {
     includeDeps: "all",
-  }).filter((v) => !isScreenVariant(v) && isVariantActive(v, global));
+    excludeMediaQuery: true,
+  }).filter((v) => isVariantActive(v, global));
 
   return [...componentVariants, ...globalVariants];
 }
@@ -676,7 +676,8 @@ export async function getUrlsForLiveMode(
   );
   const global = allGlobalVariants(viewCtx.site, {
     includeDeps: "all",
-  }).filter((v) => !isScreenVariant(v) && pinManager.isActive(v));
+    excludeMediaQuery: true,
+  }).filter((v) => pinManager.isActive(v));
 
   return mkPreviewRoute(studioCtx.siteInfo.id, {
     full,

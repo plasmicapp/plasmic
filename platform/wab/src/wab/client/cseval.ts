@@ -302,9 +302,10 @@ export function buildViewCtxPinMaps(vc: ViewCtx) {
   );
   const globalPins = undefinedToDefault(
     new Map(
-      allGlobalVariants(vc.site, { includeDeps: "direct" }).map((v) =>
-        tuple(v, pinManager.isActive(v))
-      )
+      allGlobalVariants(vc.site, {
+        includeDeps: "direct",
+        excludeInactiveScreenVariants: true,
+      }).map((v) => tuple(v, pinManager.isActive(v)))
     ),
     false
   );

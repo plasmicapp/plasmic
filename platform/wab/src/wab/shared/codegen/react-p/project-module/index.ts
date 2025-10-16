@@ -21,6 +21,7 @@ export function makeProjectModuleBundle(
       allGlobalVariantGroups(site, {
         includeDeps: "all",
         excludeEmpty: true,
+        excludeInactiveScreenVariants: true,
       }),
       (vg) => vg.param.variable.name
     )

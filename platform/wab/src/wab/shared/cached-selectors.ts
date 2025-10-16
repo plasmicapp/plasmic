@@ -230,7 +230,11 @@ export const usedHostLessPkgs = maybeComputedFn(function usedHostLessPkgs(
 
 export const usedGlobalVariantGroups = maybeComputedFn(
   function usedGlobalVariantGroups(site: Site, component: Component) {
-    const groups = allGlobalVariantGroups(site, { includeDeps: "direct" });
+    const groups = allGlobalVariantGroups(site, {
+      includeDeps: "direct",
+      excludeEmpty: true,
+      excludeInactiveScreenVariants: true,
+    });
     return groups.filter((g) => usesVariantGroup(component, g));
   }
 );

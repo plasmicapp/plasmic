@@ -1,6 +1,8 @@
 import { expect, FrameLocator, Locator, Page } from "playwright/test";
+import { testIds } from "../../../src/wab/client/test-helpers/test-ids";
 import { modifierKey } from "../../utils/modifier-key";
 import { updateFormValuesInLiveMode } from "../../utils/studio-utils";
+
 import { BaseModel } from "../BaseModel";
 
 export class RightPanel extends BaseModel {
@@ -94,8 +96,9 @@ export class RightPanel extends BaseModel {
   readonly componentDataTabButton: Locator = this.frame.locator(
     'button[data-test-tabkey="component"]'
   );
-  readonly globalVariantsHeader: Locator =
-    this.frame.getByText("Global Variants");
+  readonly globalVariantsHeader: Locator = this.frame.locator(
+    testIds.globalVariantsHeader.selector
+  );
   readonly responsivenessTabButton: Locator = this.frame
     .locator('div[data-test-class="variants-section"]')
     .nth(1)

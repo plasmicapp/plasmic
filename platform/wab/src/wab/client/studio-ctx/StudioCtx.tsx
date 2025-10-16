@@ -2637,7 +2637,10 @@ export class StudioCtx extends WithDbCtx {
         (v) => v.uuid
       );
       const allGlobalVariantsMap = keyBy(
-        allGlobalVariants(this.site, { includeDeps: "direct" }),
+        allGlobalVariants(this.site, {
+          includeDeps: "direct",
+          excludeInactiveScreenVariants: true,
+        }),
         (v) => v.uuid
       );
 
@@ -2667,7 +2670,10 @@ export class StudioCtx extends WithDbCtx {
       (v) => v.uuid
     );
     const allGlobalVariantsMap = keyBy(
-      allGlobalVariants(this.site, { includeDeps: "direct" }),
+      allGlobalVariants(this.site, {
+        includeDeps: "direct",
+        excludeInactiveScreenVariants: true,
+      }),
       (v) => v.uuid
     );
     const customArenas = this.getSortedMixedArenas();
@@ -6065,7 +6071,10 @@ export class StudioCtx extends WithDbCtx {
   }
 
   ensureGlobalStackFramesHasOnlyValidVariants() {
-    const allVariants = allGlobalVariants(this.site, { includeDeps: "direct" });
+    const allVariants = allGlobalVariants(this.site, {
+      includeDeps: "direct",
+      excludeInactiveScreenVariants: true,
+    });
     for (const vc of this.viewCtxs) {
       vc.globalFrame.keepOnlyVariants(allVariants);
     }

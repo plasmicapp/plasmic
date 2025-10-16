@@ -288,7 +288,9 @@ export function cloneCopyState(
     includeSuperVariants: true,
   });
 
-  const globalVariants = allGlobalVariants(info.site);
+  const globalVariants = allGlobalVariants(info.site, {
+    excludeInactiveScreenVariants: true,
+  });
 
   const nodesToPaste: TplNode[] = [];
 

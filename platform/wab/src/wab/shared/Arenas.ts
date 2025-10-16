@@ -591,7 +591,10 @@ export function getActivatedVariantsForFrame(site: Site, frame: ArenaFrame) {
 
   if (!isEmpty(frame.pinnedGlobalVariants)) {
     const uuidToVariant = keyBy(
-      allGlobalVariants(site, { includeDeps: "direct" }),
+      allGlobalVariants(site, {
+        includeDeps: "direct",
+        excludeInactiveScreenVariants: true,
+      }),
       (v) => v.uuid
     );
     for (const [key, pin] of Object.entries(frame.pinnedGlobalVariants)) {

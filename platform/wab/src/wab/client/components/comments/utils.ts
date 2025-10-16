@@ -88,7 +88,10 @@ export function getCommentThreadWithModelMetadata(
     (v) => v.uuid
   );
   const allGlobalVariantsMap = keyBy(
-    allGlobalVariants(studioCtx.site, { includeDeps: "direct" }),
+    allGlobalVariants(studioCtx.site, {
+      includeDeps: "direct",
+      excludeInactiveScreenVariants: true,
+    }),
     (v) => v.uuid
   );
   const variants = thread.location.variants.reduce(function (

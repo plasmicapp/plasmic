@@ -476,6 +476,7 @@ export class VariantTplMgr {
     const globalPins = this.globalFrame.getPinnedVariants();
     for (const variant of allGlobalVariants(this.site, {
       includeDeps: "direct",
+      excludeInactiveScreenVariants: true,
     })) {
       if (
         this.globalFrame.getTargetVariants().includes(variant) ||
