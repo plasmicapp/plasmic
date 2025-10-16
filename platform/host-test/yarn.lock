@@ -167,19 +167,19 @@
   resolved "https://registry.yarnpkg.com/@nolyfill/is-core-module/-/is-core-module-1.0.39.tgz#3dc35ba0f1e66b403c00b39344f870298ebb1c8e"
   integrity sha512-nn5ozdjYQpUCZlWGuxcJY/KpxkWQs4DcbMCmKojjyrYDEAGy4Ce19NN4v5MduafTwJlbKc99UA8YhSVqq9yPZA==
 
-"@plasmicapp/host@^1.0.226":
-  version "1.0.226"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/host/-/host-1.0.226.tgz#3807c401d2ac3c126d18973684b42db23abeba75"
-  integrity sha512-8tCtx2FqRaPkKREkFbwfuoVmhCmUl/BS7/7sE/xO1IlZXrKWh4qQV4t2iXQLaz4QmectkNaFm38BUjlnnpKYvA==
+"@plasmicapp/host@^1.0.227":
+  version "1.0.227"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/host/-/host-1.0.227.tgz#20f886195afaaf0cc186b7f38beeccd16993a60b"
+  integrity sha512-JbKHfBhqTfeBI7VnBv4oEmFMA5xJGQaXX4/Rs9wMCIpl21YBB0IYZ2gjkk3B1UNynE2RDv7LlGCLqFn6Gtta4A==
   dependencies:
-    "@plasmicapp/query" "0.1.80"
+    "@plasmicapp/query" "0.1.81"
     csstype "^3.1.2"
     window-or-global "^1.0.1"
 
-"@plasmicapp/query@0.1.80":
-  version "0.1.80"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/query/-/query-0.1.80.tgz#264e34431a3392ef5f2ce1e1ba52cf72ab16f159"
-  integrity sha512-mcE6KpbTE6uMhzk/OAeA1n2l2mDfFzQSjFCc+ASp6wBAhHmgGmozFsutgUMttduV20UPR9Nv/23thnOHMuYlaQ==
+"@plasmicapp/query@0.1.81":
+  version "0.1.81"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/query/-/query-0.1.81.tgz#8b4f7873d4d80ab17f120a6a5e452285deb1a30f"
+  integrity sha512-uxretlBcZZ2LunzlFMhHDnlzvR/vZ2xzSmNeF15qFGHlRlCG51u89UXm02TPkg8OmMdXUSgG+XOLsArI57cG9Q==
   dependencies:
     swr "^1.0.0"
 
