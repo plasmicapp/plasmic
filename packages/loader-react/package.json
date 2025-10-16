@@ -1,6 +1,6 @@
 {
   "name": "@plasmicapp/loader-react",
-  "version": "1.0.400",
+  "version": "1.0.401",
   "types": "./dist/index.d.ts",
   "main": "./dist/index.js",
   "module": "./dist/index.esm.js",
@@ -53,12 +53,12 @@
   },
   "dependencies": {
     "@plasmicapp/data-sources-context": "0.1.22",
-    "@plasmicapp/host": "1.0.226",
+    "@plasmicapp/host": "1.0.227",
     "@plasmicapp/loader-core": "1.0.139",
     "@plasmicapp/loader-fetcher": "1.0.56",
     "@plasmicapp/loader-splits": "1.0.65",
-    "@plasmicapp/prepass": "1.0.20",
-    "@plasmicapp/query": "0.1.80",
+    "@plasmicapp/prepass": "1.0.21",
+    "@plasmicapp/query": "0.1.81",
     "pascalcase": "^1.0.0",
     "server-only": "0.0.1"
   },
