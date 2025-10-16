@@ -62,4 +62,5 @@ export const fstPartyHostLessComponents = [
   "react-aria",
   "rive",
   "vanilla-cookieconsent",
+  "wordpress",
 ];

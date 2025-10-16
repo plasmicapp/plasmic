@@ -18,11 +18,6 @@ export function registerAll(loader?: {
 }): void;
 
 // @public (undocumented)
-export function registerWordpress(loader?: {
-    registerFunction: any;
-}): void;
-
-// @public (undocumented)
 export function WordpressFetcher({ queryOperator, filterValue, noAutoRepeat, limit, queryType, children, className, noLayout, }: WordpressFetcherProps): React_2.JSX.Element;
 
 // @public (undocumented)

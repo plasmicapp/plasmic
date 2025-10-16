@@ -46,6 +46,7 @@
   "devDependencies": {
     "@plasmicapp/host": "1.0.226",
     "@plasmicapp/query": "0.1.80",
+    "@plasmicpkgs/wordpress": "0.0.2",
     "@types/react": "^18.0.27",
     "@types/react-dom": "^18.0.10",
     "husky": "^7.0.4",

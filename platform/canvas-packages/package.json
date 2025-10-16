@@ -60,6 +60,7 @@
     "@plasmicpkgs/rive": "^0.0.14",
     "@plasmicpkgs/tiptap": "^0.0.5",
     "@plasmicpkgs/vanilla-cookieconsent": "^0.0.4",
+    "@plasmicpkgs/wordpress": "^0.0.2",
     "@react-aria/focus": "3.20.3",
     "@react-aria/interactions": "3.25.1",
     "@react-aria/overlays": "3.27.1",
@@ -136,8 +137,8 @@
     "typescript": "5.7.3"
   },
   "resolutions": {
-    "@plasmicpkgs/antd/antd": "4.19.3",
-    "@plasmicpkgs/react-slick/antd": "4.19.3",
+    "@plasmicpkgs/antd/antd": "4.19.5",
+    "@plasmicpkgs/react-slick/antd": "4.19.5",
     "rc-util": "^5.44.4",
     "lottie-web": ">=5.13.0"
   },

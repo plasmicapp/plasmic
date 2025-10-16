@@ -2141,6 +2141,11 @@
   dependencies:
     vanilla-cookieconsent "^3.1.0"
 
+"@plasmicpkgs/wordpress@^0.0.2":
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/wordpress/-/wordpress-0.0.2.tgz#4c8459d77a518dc680891e4b6c39ae4b5c034689"
+  integrity sha512-ynILtzpEb/artmyoIBs/0/akAAUrf4daJIQ7kbjzMfpXKgtM4oTdj79Wz2uWWmuel3hqqrVE0/t1yF06oPF0JQ==
+
 "@popperjs/core@^2.9.0":
   version "2.11.8"
   resolved "https://registry.yarnpkg.com/@popperjs/core/-/core-2.11.8.tgz#6b79032e760a0899cd4204710beede972a3a185f"

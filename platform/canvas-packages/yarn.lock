@@ -2324,6 +2324,11 @@
   dependencies:
     vanilla-cookieconsent "^3.1.0"
 
+"@plasmicpkgs/wordpress@^0.0.2":
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/wordpress/-/wordpress-0.0.2.tgz#4c8459d77a518dc680891e4b6c39ae4b5c034689"
+  integrity sha512-ynILtzpEb/artmyoIBs/0/akAAUrf4daJIQ7kbjzMfpXKgtM4oTdj79Wz2uWWmuel3hqqrVE0/t1yF06oPF0JQ==
+
 "@popperjs/core@^2.9.0", "@popperjs/core@^2.9.3":
   version "2.11.8"
   resolved "https://registry.yarnpkg.com/@popperjs/core/-/core-2.11.8.tgz#6b79032e760a0899cd4204710beede972a3a185f"
@@ -4564,10 +4569,10 @@ ansi-styles@^4.0.0, ansi-styles@^4.1.0:
   dependencies:
     color-convert "^2.0.1"
 
-antd@4.19.3, antd@^4.19.5:
-  version "4.19.3"
-  resolved "https://registry.yarnpkg.com/antd/-/antd-4.19.3.tgz#2b6bb938bda9850c797db59c8923f3c8a14a6693"
-  integrity sha512-q4oT2lIM0Fb60MfcdtjH6LFQcmo5MuM27PN3nJMsRG1FeiQ9n+OPFlkQSdtb0ZWFIFjTH3p0W02T6SbB2U7ChQ==
+antd@4.19.5, antd@^4.19.5:
+  version "4.19.5"
+  resolved "https://registry.yarnpkg.com/antd/-/antd-4.19.5.tgz#38d08f3e1391a7a69c2ca76f50968bb12ec2ac93"
+  integrity sha512-C4H/VJqlVO5iMvHZyiV27R8SbPs4jsOKCGPhDXIHUry/RnUCbMmVeQaPRfUIxSI1NbqDflsuQfevPtz1svyIlg==
   dependencies:
     "@ant-design/colors" "^6.0.0"
     "@ant-design/icons" "^4.7.0"
@@ -4585,7 +4590,7 @@ antd@4.19.3, antd@^4.19.5:
     rc-dialog "~8.6.0"
     rc-drawer "~4.4.2"
     rc-dropdown "~3.3.2"
-    rc-field-form "~1.24.0"
+    rc-field-form "~1.25.0"
     rc-image "~5.2.5"
     rc-input "~0.0.1-alpha.5"
     rc-input-number "~7.3.0"
@@ -7857,10 +7862,10 @@ rc-dropdown@~4.1.0:
     classnames "^2.2.6"
     rc-util "^5.17.0"
 
-rc-field-form@~1.24.0:
-  version "1.24.0"
-  resolved "https://registry.yarnpkg.com/rc-field-form/-/rc-field-form-1.24.0.tgz#2510a5c34713831ddcb412d4560be9057fc0dc5e"
-  integrity sha512-5beNBU5gEyi8YRYyqbTWSu5hO0jZQN0AWpY3U7TcllUKrDLcZZdRXuAOpyxJQcttWFs+UAFsbcRAUtnOGBjl7w==
+rc-field-form@~1.25.0:
+  version "1.25.2"
+  resolved "https://registry.yarnpkg.com/rc-field-form/-/rc-field-form-1.25.2.tgz#de418194b7aca2f1b6e0e059edd97b5cf624f68a"
+  integrity sha512-FXGScWibDlwIlKY15T1YOA7VTtMJwqxxXdDjHB56ZNx7wGbE4vK+Fe2zcymyakGZD0ej8NUP5LGr7qBVWaVpUQ==
   dependencies:
     "@babel/runtime" "^7.8.4"
     async-validator "^4.0.2"

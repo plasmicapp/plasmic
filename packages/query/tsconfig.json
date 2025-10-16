@@ -2,6 +2,7 @@
   "extends": "../../tsconfig.types.json",
   "include": ["./src"],
   "compilerOptions": {
-    "outDir": "./api/tsc"
+    "outDir": "./api/tsc",
+    "types": ["node"]
   }
 }

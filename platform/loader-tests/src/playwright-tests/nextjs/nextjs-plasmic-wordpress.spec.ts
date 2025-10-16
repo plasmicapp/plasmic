@@ -7,13 +7,13 @@ import {
 } from "../../nextjs/nextjs-setup";
 import { testWordpressLoader } from "./shared/test-wordpress";
 
-test.describe(`NextJS WordPress`, () => {
+test.describe(`NextJS Plasmic WordPress`, () => {
   let ctx: NextJsContext;
 
   test.beforeAll(async () => {
     ctx = await setupNextJs({
-      bundleFile: "wordpress.json",
-      projectName: "WordPress Project",
+      bundleFile: "plasmic-wordpress.json",
+      projectName: "Plasmic WordPress Project",
       npmRegistry: getEnvVar("NPM_CONFIG_REGISTRY"),
       codegenHost: getEnvVar("WAB_HOST"),
       removeComponentsPage: true,
