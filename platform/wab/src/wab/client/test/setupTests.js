@@ -1,5 +1,6 @@
 import { DEVFLAGS } from "@/wab/shared/devflags";
 import "jest-extended";
+import { TransformStream } from "stream/web";
 import { TextDecoder, TextEncoder } from "util";
 import "whatwg-fetch";
 
@@ -19,6 +20,7 @@ DEVFLAGS.hostUrl = "http://localhost";
 // https://github.com/inrupt/solid-client-authn-js/issues/1676#issuecomment-1617031412
 global.TextEncoder = TextEncoder;
 global.TextDecoder = TextDecoder;
+global.TransformStream = TransformStream;
 
 let objectURLCounter = 0;
 global.URL.createObjectURL = (object) => {

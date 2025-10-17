@@ -106,7 +106,13 @@ const CopilotUiGenerateHtmlActionSchema = z.object({
 });
 
 const CopilotUiTokenSchema = z.object({
-  tokenType: z.enum(tokenTypes),
+  tokenType: z
+    .enum(tokenTypes)
+    .describe(
+      `Type of token. Only ${tokenTypes.join(
+        ", "
+      )} are supported. Length units except FontSize and LineHeight should use Spacing. If a token type is not supported, inline the CSS value instead.`
+    ),
   name: z
     .string()
     .describe(
