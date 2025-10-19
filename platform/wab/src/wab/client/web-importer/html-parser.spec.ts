@@ -131,6 +131,7 @@ describe("parseHtmlToWebImporterTree", () => {
   display: flex;
   margin: 10px;
   color: #0000ff;
+  padding: min(5%, 10px);
 }
 
 .heading {
@@ -176,6 +177,7 @@ describe("parseHtmlToWebImporterTree", () => {
                 display: "flex",
                 "flex-direction": "row",
                 margin: "10px",
+                padding: "min(5%,10px)",
               },
               safeStyles: {
                 display: "flex",
@@ -184,6 +186,10 @@ describe("parseHtmlToWebImporterTree", () => {
                 marginBottom: "10px",
                 marginLeft: "10px",
                 marginRight: "10px",
+                paddingTop: "min(5%,10px)",
+                paddingRight: "min(5%,10px)",
+                paddingBottom: "min(5%,10px)",
+                paddingLeft: "min(5%,10px)",
               },
               unsafeStyles: {},
               variantCombo: [{ type: "base" }],
@@ -1053,29 +1059,60 @@ describe("fixCSSValue", () => {
     expect(fixCSSValue("content", "some text")).toEqual({});
   });
 
-  it("extracts vh term from calc expression when present", () => {
+  it("parses calc expressions as-is", () => {
     const res = fixCSSValue("width", "calc(10px + 2vh + 5vw)");
-    expect(res).toEqual({ width: "2vh" });
+    expect(res).toEqual({ width: "calc(10px + 2vh + 5vw)" });
   });
 
-  it("extracts vw term from calc expression when no vh", () => {
+  it("parses calc expressions with vw", () => {
     const res = fixCSSValue("height", "calc(10px + 3vw)");
-    expect(res).toEqual({ height: "3vw" });
+    expect(res).toEqual({ height: "calc(10px + 3vw)" });
   });
 
-  it("extracts px term from calc expression when no vh or vw", () => {
+  it("parses calc expressions and expands shorthand properties", () => {
     const res = fixCSSValue("margin", "calc(4px + 5rem)");
     expect(res).toEqual({
-      marginTop: "4px",
-      marginRight: "4px",
-      marginBottom: "4px",
-      marginLeft: "4px",
+      marginTop: "calc(4px + 5rem)",
+      marginRight: "calc(4px + 5rem)",
+      marginBottom: "calc(4px + 5rem)",
+      marginLeft: "calc(4px + 5rem)",
     });
   });
 
-  it("falls back to first term when calc has no px/vh/vw", () => {
-    const res = fixCSSValue("height", "calc(5em*2)");
-    expect(res).toEqual({ height: "5em" });
+  it("parses calc expressions with complex nested operations", () => {
+    const res = fixCSSValue("width", "calc((100% - 40px) / 2)");
+    expect(res).toEqual({ width: "calc((100% - 40px) / 2)" });
+  });
+
+  it("parses min() function", () => {
+    const res = fixCSSValue("width", "min(100%, 500px)");
+    expect(res).toEqual({ width: "min(100%, 500px)" });
+  });
+
+  it("parses max() function", () => {
+    const res = fixCSSValue("height", "max(200px, 50vh)");
+    expect(res).toEqual({ height: "max(200px, 50vh)" });
+  });
+
+  it("parses clamp() function", () => {
+    const res = fixCSSValue("font-size", "clamp(12px, 2vw, 24px)");
+    expect(res).toEqual({ fontSize: "clamp(12px, 2vw, 24px)" });
+  });
+
+  it("parses nested calc in min function", () => {
+    const res = fixCSSValue("width", "min(calc(100% - 20px), 800px)");
+    expect(res).toEqual({ width: "min(calc(100% - 20px), 800px)" });
+  });
+
+  it("parses nested calc in clamp function", () => {
+    const res = fixCSSValue("width", "clamp(200px, calc(50% - 20px), 600px)");
+    expect(res).toEqual({ width: "clamp(200px, calc(50% - 20px), 600px)" });
+  });
+
+  it("parses calc expressions with variable", () => {
+    const token = "var(--token-abc)";
+    const res = fixCSSValue("width", `calc(10px + 2vh + ${token})`);
+    expect(res).toEqual({ width: `calc(10px + 2vh + ${token})` });
   });
 
   it("handles env(...) by taking fallback value", () => {

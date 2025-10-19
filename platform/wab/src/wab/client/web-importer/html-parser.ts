@@ -201,23 +201,6 @@ function fixCSSValue(key: string, value: string) {
   }
 
   function getFixedValue() {
-    if (value.startsWith("calc(")) {
-      const combination = value.slice(5, -1);
-      // split all terms of mathematical combination
-      const terms = combination.split(/([+\-*/])/);
-      // get the likely biggest term
-      if (terms.some((term) => term.includes("vh"))) {
-        return terms.find((term) => term.includes("vh"))!.trim();
-      }
-      if (terms.some((term) => term.includes("vw"))) {
-        return terms.find((term) => term.includes("vw"))!.trim();
-      }
-      if (terms.some((term) => term.includes("px"))) {
-        return terms.find((term) => term.includes("px"))!.trim();
-      }
-      return terms[0].trim();
-    }
-
     if (value.startsWith("env(")) {
       const envTerms = value.slice(4, -1).split(/\s*,\s*/);
       return envTerms[1]?.trim();

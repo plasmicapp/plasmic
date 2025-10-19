@@ -839,7 +839,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                   "paddingLeft": "20px",
                   "paddingRight": "20px",
                   "paddingTop": "0",
-                  "width": "100%",
+                  "width": "calc(100% - 20px)",
                 },
                 "unsafeStyles": {},
                 "unsanitizedStyles": {
@@ -851,7 +851,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                   "margin": "0 auto",
                   "max-width": "1200px",
                   "padding": "0 20px",
-                  "width": "100%",
+                  "width": "calc(100% - 20px)",
                 },
                 "variantCombo": [
                   {
@@ -1146,7 +1146,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                   "paddingLeft": "20px",
                   "paddingRight": "20px",
                   "paddingTop": "0",
-                  "width": "100%",
+                  "width": "calc(100% - 20px)",
                 },
                 "unsafeStyles": {},
                 "unsanitizedStyles": {
@@ -1154,7 +1154,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                   "margin": "0 auto",
                   "max-width": "1200px",
                   "padding": "0 20px",
-                  "width": "100%",
+                  "width": "calc(100% - 20px)",
                 },
                 "variantCombo": [
                   {
@@ -1783,7 +1783,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                   "paddingLeft": "20px",
                   "paddingRight": "20px",
                   "paddingTop": "0",
-                  "width": "100%",
+                  "width": "calc(100% - 20px)",
                 },
                 "unsafeStyles": {},
                 "unsanitizedStyles": {
@@ -1791,7 +1791,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                   "margin": "0 auto",
                   "max-width": "1200px",
                   "padding": "0 20px",
-                  "width": "100%",
+                  "width": "calc(100% - 20px)",
                 },
                 "variantCombo": [
                   {
@@ -2134,7 +2134,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                   "paddingLeft": "20px",
                   "paddingRight": "20px",
                   "paddingTop": "0",
-                  "width": "100%",
+                  "width": "calc(100% - 20px)",
                 },
                 "unsafeStyles": {},
                 "unsanitizedStyles": {
@@ -2142,7 +2142,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                   "margin": "0 auto",
                   "max-width": "1200px",
                   "padding": "0 20px",
-                  "width": "100%",
+                  "width": "calc(100% - 20px)",
                 },
                 "variantCombo": [
                   {
@@ -3748,7 +3748,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                   "paddingLeft": "20px",
                   "paddingRight": "20px",
                   "paddingTop": "0",
-                  "width": "100%",
+                  "width": "calc(100% - 20px)",
                 },
                 "unsafeStyles": {},
                 "unsanitizedStyles": {
@@ -3756,7 +3756,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                   "margin": "0 auto",
                   "max-width": "1200px",
                   "padding": "0 20px",
-                  "width": "100%",
+                  "width": "calc(100% - 20px)",
                 },
                 "variantCombo": [
                   {
