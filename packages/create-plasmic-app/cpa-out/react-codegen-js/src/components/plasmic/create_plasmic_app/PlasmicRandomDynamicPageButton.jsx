@@ -16,6 +16,7 @@ import {
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 import Button from "../../Button"; // plasmic-import: TQcvW_pSKi3/component
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: 47tFXWjN2C4NyHFGGpaYQ3/styleTokensProvider
 import "@plasmicapp/react-web/lib/plasmic.css";
 import sty from "./PlasmicRandomDynamicPageButton.module.css"; // plasmic-import: Q23H1_1M_P/css
 
@@ -46,6 +47,7 @@ function PlasmicRandomDynamicPageButton__RenderFunc(props) {
   const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
+  const styleTokensClassNames = _useStyleTokens();
   return (
     <Button
       data-plasmic-name={"root"}

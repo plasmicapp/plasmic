@@ -37,7 +37,7 @@ export const reactStrategy: CPAStrategy = {
     const parentDir = path.dirname(fullProjectPath);
     process.chdir(parentDir);
 
-    const createCommand = `npm create vite@latest ${projectName} --`;
+    const createCommand = `npx create-vite@latest ${projectName} --no-interactive`;
 
     if (!template) {
       template = jsOrTs === "ts" ? "react-ts" : "react";

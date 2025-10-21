@@ -20,6 +20,7 @@ import {
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 import * as pp from "@plasmicapp/react-web";
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: 47tFXWjN2C4NyHFGGpaYQ3/styleTokensProvider
 import "@plasmicapp/react-web/lib/plasmic.css";
 import projectcss from "./plasmic.module.css"; // plasmic-import: 47tFXWjN2C4NyHFGGpaYQ3/projectcss
 import sty from "./PlasmicButton.module.css"; // plasmic-import: TQcvW_pSKi3/css
@@ -122,6 +123,7 @@ function PlasmicButton__RenderFunc(props) {
   const triggers = {
     focusVisibleWithin_root: isRootFocusVisibleWithin
   };
+  const styleTokensClassNames = _useStyleTokens();
   return (
     <button
       data-plasmic-name={"root"}
@@ -134,7 +136,7 @@ function PlasmicButton__RenderFunc(props) {
         projectcss.root_reset,
         projectcss.plasmic_default_styles,
         projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
+        styleTokensClassNames,
         sty.root,
         {
           [sty.root___focusVisibleWithin]: triggers.focusVisibleWithin_root,
