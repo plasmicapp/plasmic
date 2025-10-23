@@ -8,12 +8,16 @@ import { registerAll as registerShopify } from "@plasmicpkgs/commerce-shopify";
 import { registerFetch } from "@plasmicpkgs/fetch";
 import { registerGraphQL } from "@plasmicpkgs/graphql";
 import { registerAll as registerCms } from "@plasmicpkgs/plasmic-cms";
+import { registerAll as registerStrapiComponents } from "@plasmicpkgs/plasmic-strapi";
+import { registerStrapi } from "@plasmicpkgs/strapi";
 import React from "react";
 
 function register() {
   registerFetch(PLASMIC);
   registerGraphQL(PLASMIC);
   registerCms(PLASMIC);
+  registerStrapi(PLASMIC);
+  registerStrapiComponents(PLASMIC);
   registerCommerce(PLASMIC);
   registerShopify(PLASMIC);
 }
@@ -70,7 +74,7 @@ if (useDevNames) {
  * ```
  */
 export function PlasmicClientRootProvider(
-  props: Omit<React.ComponentProps<typeof PlasmicRootProvider>, "loader">
+  props: Omit<React.ComponentProps<typeof PlasmicRootProvider>, "loader">,
 ) {
   return (
     <PlasmicRootProvider loader={PLASMIC} {...props}></PlasmicRootProvider>
