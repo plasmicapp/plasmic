@@ -12,21 +12,34 @@ import {
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import {
   isWIBaseVariantSettings,
+  WIAnimationSequence,
   WIElement,
   WIScreenVariant,
   WIStyleVariant,
   WIVariant,
 } from "@/wab/client/web-importer/types";
 import { unwrap } from "@/wab/commons/failable-utils";
-import { assertNever, withoutNils } from "@/wab/shared/common";
+import { toVarName } from "@/wab/shared/codegen/util";
+import { assertNever, mkShortId, withoutNils } from "@/wab/shared/common";
 import { code } from "@/wab/shared/core/exprs";
 import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
 import { getTagAttrForImageAsset } from "@/wab/shared/core/image-assets";
 import { getResponsiveStrategy } from "@/wab/shared/core/sites";
+import { mkRuleSet } from "@/wab/shared/core/styles";
 import { TplTagType } from "@/wab/shared/core/tpls";
+import { camelCssPropsToKebab } from "@/wab/shared/css";
 import {
+  AnimationProperty,
+  CssAnimation,
+  isAnimationProperty,
+  parseCssAnimationsFromStyles,
+} from "@/wab/shared/css/animations";
+import {
+  Animation,
+  AnimationSequence,
   ImageAssetRef,
   isKnownTplTag,
+  KeyFrame,
   RawText,
   Site,
   TplNode,
@@ -61,11 +74,12 @@ export async function pasteFromWebImporter(
     text.substring(WI_IMPORTER_HEADER.length)
   ) as WIElement;
 
-  return processWebImporterTree(wiTree, pasteArgs);
+  return processWebImporterTree(wiTree, [], pasteArgs);
 }
 
 export async function processWebImporterTree(
   wiTree: WIElement,
+  animationSequences: WIAnimationSequence[],
   { studioCtx, cursorClientPt, insertRelLoc }: PasteArgs
 ): Promise<PasteResult> {
   const viewCtx = ensureViewCtxOrThrowUserError(studioCtx);
@@ -82,12 +96,25 @@ export async function processWebImporterTree(
     handled: true,
     success: unwrap(
       await studioCtx.change(({ success }) => {
+        // Process Animation Sequences (keyframes)
+        wiAnimationSequenceToSiteAnimationSequence(animationSequences, {
+          site: studioCtx.site,
+        });
+
+        // Process tpl tree
         const owningComponent = viewCtx.currentTplComponent().component;
 
         // Process all variant settings data to apply styles
         for (const [tplNode, vsData] of tplVariantSettingsData.entries()) {
           for (const vs of vsData) {
-            const { variantCombo, safeStyles, unsafeStyles } = vs;
+            const { variantCombo, safeStyles, unsafeStyles, wiAnimations } = vs;
+
+            const animations = wiAnimations
+              ? wiAnimationsToSiteAnimations(
+                  wiAnimations,
+                  { site: studioCtx }.site
+                )
+              : null;
 
             // Process style variants by creating private style variants
             const processedVariantCombo = withoutNils(
@@ -132,7 +159,8 @@ export async function processWebImporterTree(
               tplNode,
               processedVariantCombo,
               safeStyles,
-              unsafeStyles
+              unsafeStyles,
+              animations
             );
           }
         }
@@ -168,6 +196,7 @@ type TplVariantSettingsData = {
   variantCombo: WIVariant[];
   safeStyles: Record<string, string>;
   unsafeStyles: Record<string, string>;
+  wiAnimations: CssAnimation[] | null;
 };
 
 function applyVariantStyles(
@@ -175,7 +204,8 @@ function applyVariantStyles(
   tpl: TplNode,
   variantCombo: VariantCombo,
   safeStyles: Record<string, string>,
-  unsafeStyles: Record<string, string>
+  unsafeStyles: Record<string, string>,
+  animations: Animation[] | null
 ) {
   const vs = vtm.ensureVariantSetting(tpl, variantCombo);
   RSH(vs.rs, tpl).merge(safeStyles);
@@ -183,6 +213,8 @@ function applyVariantStyles(
   if (Object.keys(unsafeStyles).length > 0) {
     vs.attrs["style"] = code(JSON.stringify(unsafeStyles));
   }
+
+  vs.rs.animations = animations;
 }
 
 function findMatchingScreenVariant(
@@ -253,6 +285,11 @@ async function wiTreeToTpl(wiTree: WIElement, vc: ViewCtx, vtm: VariantTplMgr) {
       ...defaultStyles,
       ...(baseVariantSetting?.safeStyles || {}),
     };
+    const {
+      animationStyles: baseAnimationStyles,
+      remainingStyles: safeBaseStyles,
+    } = splitStylesByAnimations(baseStyles);
+    const baseAnimations = parseCssAnimationsFromStyles(baseAnimationStyles);
 
     const unsafeBaseStyles = {
       ...(baseVariantSetting?.unsafeStyles || {}),
@@ -263,8 +300,9 @@ async function wiTreeToTpl(wiTree: WIElement, vc: ViewCtx, vtm: VariantTplMgr) {
     // Add base variant
     tplVariantSettings.push({
       variantCombo: [{ type: "base" }],
-      safeStyles: baseStyles,
+      safeStyles: safeBaseStyles,
       unsafeStyles: unsafeBaseStyles,
+      wiAnimations: baseAnimations,
     });
 
     // Process non-base variants
@@ -274,10 +312,15 @@ async function wiTreeToTpl(wiTree: WIElement, vc: ViewCtx, vtm: VariantTplMgr) {
         continue;
       }
 
+      const { animationStyles, remainingStyles: vsSafeStyles } =
+        splitStylesByAnimations(variantSetting.safeStyles);
+      const animations = parseCssAnimationsFromStyles(animationStyles);
+
       const tplVSData: TplVariantSettingsData = {
         variantCombo: [],
-        safeStyles: variantSetting.safeStyles,
+        safeStyles: vsSafeStyles,
         unsafeStyles: { ...unsafeBaseStyles, ...variantSetting.unsafeStyles },
+        wiAnimations: animations,
       };
 
       // Find screen and style variants in combo
@@ -430,6 +473,92 @@ async function wiTreeToTpl(wiTree: WIElement, vc: ViewCtx, vtm: VariantTplMgr) {
   };
 }
 
-export const _testOnlyWebImporterUtils = {
-  WI_IMPORTER_HEADER,
-};
+function wiAnimationSequenceToSiteAnimationSequence(
+  animationSequences: WIAnimationSequence[],
+  opts: { site: Site }
+) {
+  const { site } = opts;
+
+  for (const sequence of animationSequences) {
+    const sequenceVarName = toVarName(sequence.name);
+
+    const existingSequence = site.animationSequences.find(
+      (existing) => toVarName(existing.name) === sequenceVarName
+    );
+
+    // We will skip creating any existing sequence so that it doesn't pollute the list of animation sequences
+    // when user paste the same html multiple times.
+    if (existingSequence) {
+      continue;
+    }
+
+    const keyframes = sequence.keyframes.map((wiKeyframe) => {
+      return new KeyFrame({
+        percentage: wiKeyframe.percentage,
+        // We will only utilize the safe styles here. We need to think about the unsafe styles since we don't have any
+        // better way to display them in MixinControls/AnimationSequenceControls. We can have a new custom style attribute section
+        // to store unsafe styles or arbitrary css. Since it doesn't exist yet.
+        rs: mkRuleSet({ values: camelCssPropsToKebab(wiKeyframe.safeStyles) }),
+      });
+    });
+
+    const newSequence = new AnimationSequence({
+      name: sequence.name,
+      uuid: mkShortId(),
+      keyframes,
+    });
+
+    site.animationSequences.push(newSequence);
+  }
+}
+
+function wiAnimationsToSiteAnimations(
+  wiAnimations: CssAnimation[],
+  opts: { site: Site }
+) {
+  const { site } = opts;
+  const animations: Animation[] = [];
+
+  for (const wiAnim of wiAnimations) {
+    const animationSequence = site.animationSequences.find(
+      (seq) => toVarName(seq.name) === toVarName(wiAnim.name)
+    );
+
+    if (!animationSequence) {
+      continue;
+    }
+
+    animations.push(
+      new Animation({
+        sequence: animationSequence,
+        timingFunction: wiAnim.timingFunction,
+        duration: wiAnim.duration,
+        delay: wiAnim.delay,
+        iterationCount: wiAnim.iterationCount,
+        direction: wiAnim.direction,
+        fillMode: wiAnim.fillMode,
+        playState: wiAnim.playState,
+      })
+    );
+  }
+  return animations;
+}
+
+function splitStylesByAnimations(styles: Record<string, string>): {
+  animationStyles: Record<AnimationProperty, string>;
+  remainingStyles: Record<string, string>;
+} {
+  const remainingStyles: Record<string, string> = {};
+  const animationStyles: Record<string, string> = {};
+
+  // Separate animation properties from other styles
+  for (const [key, value] of Object.entries(styles)) {
+    if (isAnimationProperty(key)) {
+      animationStyles[key] = value;
+    } else {
+      remainingStyles[key] = value;
+    }
+  }
+
+  return { animationStyles, remainingStyles };
+}

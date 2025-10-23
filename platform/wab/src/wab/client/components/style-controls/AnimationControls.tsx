@@ -9,6 +9,13 @@ import { DimTokenSpinner } from "@/wab/client/components/widgets/DimTokenSelecto
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import { ensure, spawn } from "@/wab/shared/common";
 import { allAnimationSequences } from "@/wab/shared/core/sites";
+import {
+  AnimationDirectionKeyword,
+  FillModeKeyword,
+  animationDirectionKeywords,
+  fillModeKeywords,
+  timingFunctionKeywords,
+} from "@/wab/shared/css/animations";
 import { Animation } from "@/wab/shared/model/classes";
 import { observer } from "mobx-react";
 import React from "react";
@@ -102,13 +109,11 @@ export const AnimationControls = observer(function AnimationControls(
               }
               valueSetState={animation.timingFunction ? "isSet" : "isUnset"}
             >
-              <StyleSelect.Option value="ease">Ease</StyleSelect.Option>
-              <StyleSelect.Option value="ease-in">Ease In</StyleSelect.Option>
-              <StyleSelect.Option value="ease-out">Ease Out</StyleSelect.Option>
-              <StyleSelect.Option value="ease-in-out">
-                Ease In Out
-              </StyleSelect.Option>
-              <StyleSelect.Option value="linear">Linear</StyleSelect.Option>
+              {timingFunctionKeywords.map((timingFunction) => (
+                <StyleSelect.Option value={timingFunction}>
+                  {timingFunction}
+                </StyleSelect.Option>
+              ))}
             </StyleSelect>
           </LabeledItem>
         </FullRow>
@@ -136,25 +141,18 @@ export const AnimationControls = observer(function AnimationControls(
                 handleChange(
                   () =>
                     (animation.direction = ensure(
-                      val as
-                        | "normal"
-                        | "reverse"
-                        | "alternate"
-                        | "alternate-reverse",
+                      val as AnimationDirectionKeyword,
                       "Unexpected direction value"
                     ))
                 )
               }
               valueSetState="isSet"
             >
-              <StyleSelect.Option value="normal">Normal</StyleSelect.Option>
-              <StyleSelect.Option value="reverse">Reverse</StyleSelect.Option>
-              <StyleSelect.Option value="alternate">
-                Alternate
-              </StyleSelect.Option>
-              <StyleSelect.Option value="alternate-reverse">
-                Alternate Reverse
-              </StyleSelect.Option>
+              {animationDirectionKeywords.map((direction) => (
+                <StyleSelect.Option value={direction}>
+                  {direction}
+                </StyleSelect.Option>
+              ))}
             </StyleSelect>
           </LabeledItem>
         </FullRow>
@@ -168,17 +166,18 @@ export const AnimationControls = observer(function AnimationControls(
               handleChange(
                 () =>
                   (animation.fillMode = ensure(
-                    val as "none" | "forwards" | "backwards" | "both",
+                    val as FillModeKeyword,
                     "Unexpected fillMode value"
                   ))
               )
             }
             valueSetState={animation.fillMode ? "isSet" : "isUnset"}
           >
-            <StyleSelect.Option value="none">None</StyleSelect.Option>
-            <StyleSelect.Option value="forwards">Forwards</StyleSelect.Option>
-            <StyleSelect.Option value="backwards">Backwards</StyleSelect.Option>
-            <StyleSelect.Option value="both">Both</StyleSelect.Option>
+            {fillModeKeywords.map((fillMode) => (
+              <StyleSelect.Option value={fillMode}>
+                {fillMode}
+              </StyleSelect.Option>
+            ))}
           </StyleSelect>
         </FullRow>
       </SidebarSection>

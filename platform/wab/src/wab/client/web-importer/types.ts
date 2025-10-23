@@ -7,7 +7,9 @@ export interface WIRule {
   specificity: SpecificityWithPosition;
 }
 
-export type WIStyles = Record<string, string>;
+export type WISafeStyles = Record<string, string>;
+export type WIUnsafeStyles = Record<string, string>;
+export type WIUnsanitizedStyles = Record<string, string>;
 
 export interface WIBaseVariant {
   type: "base";
@@ -26,12 +28,12 @@ export interface WIStyleVariant {
 export type WIVariant = WIBaseVariant | WIScreenVariant | WIStyleVariant;
 
 export interface WIVariantSettings {
-  // Unsanitized styles store the raw css styles applied on the element in the html without any transformation
-  unsanitizedStyles: WIStyles;
-  // Css style props/values in correct format supported by Plasmic and that is not considered a site invariant such as color, paddingTop, paddingRight
-  safeStyles: WIStyles;
-  // Css style props/values that is considered a site invariant such as padding,
-  unsafeStyles: WIStyles;
+  /** Unsanitized styles store the raw css styles applied on the element in the html without any transformation */
+  unsanitizedStyles: WIUnsanitizedStyles;
+  /** Css style props/values in correct format supported by Plasmic and that is not considered a site invariant such as color, paddingTop, paddingRight */
+  safeStyles: WISafeStyles;
+  /** Css style props/values that is considered a site invariant such as padding */
+  unsafeStyles: WIUnsafeStyles;
   variantCombo: WIVariant[];
 }
 
@@ -66,6 +68,19 @@ export interface WIComponent extends WIBase {
 }
 
 export type WIElement = WIContainer | WIText | WISVG | WIComponent;
+
+export interface WIKeyFrame {
+  percentage: number;
+  /** Css style props/values in correct format supported by Plasmic and that is not considered a site invariant such as color, paddingTop, paddingRight */
+  safeStyles: WISafeStyles;
+  /** Css style props/values that are not safe. */
+  unsafeStyles: WIUnsafeStyles;
+}
+
+export interface WIAnimationSequence {
+  name: string;
+  keyframes: WIKeyFrame[];
+}
 
 export const getWIVariantKey = (variant: WIVariant) => {
   if (variant.type === "base") {

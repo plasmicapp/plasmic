@@ -146,10 +146,21 @@
           border-radius: 30px;
           font-weight: bold;
           font-size: 1.1rem;
+          animation: fadeIn 0.3s ease;
       }
 
       .cta-button:hover {
           background: #c0392b;
+          animation: none;
+      }
+
+      @keyframes fadeIn {
+          from {
+              opacity: 0;
+          }
+          to {
+              opacity: 100;
+          }
       }
 
       /* Features Section */

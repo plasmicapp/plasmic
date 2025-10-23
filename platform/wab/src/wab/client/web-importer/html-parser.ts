@@ -16,9 +16,14 @@ import {
 import {
   getWIVariantComboKey,
   hasStyleVariant,
+  WIAnimationSequence,
   WIContainer,
   WIElement,
+  WIKeyFrame,
   WIRule,
+  WISafeStyles,
+  WIUnsafeStyles,
+  WIUnsanitizedStyles,
   WIVariant,
   WIVariantSettings,
 } from "@/wab/client/web-importer/types";
@@ -277,7 +282,7 @@ function fixCSSValue(key: string, value: string) {
 function splitStylesBySafety(
   styles: Record<string, string>,
   type?: WIElement["type"]
-) {
+): { safe: WISafeStyles; unsafe: WIUnsafeStyles } {
   const entries = Object.entries(styles);
   // Currently, we do not support adding textStyle properties on container elements in Studio Design such as 'color' on div
   // which can be used to child elements to inherit styles from using 'currentcolor' value. To support such use cases,
@@ -498,36 +503,45 @@ function getVariantSettingsForNode(
   return variantSettings;
 }
 
+function processUnsanitizedStyles(
+  unsanitizedStyles: WIUnsanitizedStyles,
+  type?: WIElement["type"]
+): { safe: WISafeStyles; unsafe: WIUnsafeStyles } {
+  const newStyles = Object.entries(unsanitizedStyles).reduce(
+    (acc, [key, value]) => {
+      return {
+        ...acc,
+        ...fixCSSValue(key, value),
+      };
+    },
+    {}
+  );
+
+  // Handle gap property expansion based on display type
+  if (newStyles["gap"]) {
+    const gapValue = newStyles["gap"];
+
+    const isGridLayout =
+      newStyles["display"] === "grid" || newStyles["display"] === "inline-grid";
+
+    const expandedGapProperties = expandGapProperty(gapValue, isGridLayout);
+
+    delete newStyles["gap"];
+    Object.assign(newStyles, expandedGapProperties);
+  }
+
+  return splitStylesBySafety(newStyles, type);
+}
+
 function sanitizeVariantSettings(
   variantSettings: WIVariantSettings[],
   type?: WIElement["type"]
 ): void {
   for (const variantSetting of variantSettings) {
-    const newStyles = Object.entries(variantSetting.unsanitizedStyles).reduce(
-      (acc, [key, value]) => {
-        return {
-          ...acc,
-          ...fixCSSValue(key, value),
-        };
-      },
-      {}
+    const { safe, unsafe } = processUnsanitizedStyles(
+      variantSetting.unsanitizedStyles,
+      type
     );
-
-    // Handle gap property expansion based on display type
-    if (newStyles["gap"]) {
-      const gapValue = newStyles["gap"];
-
-      const isGridLayout =
-        newStyles["display"] === "grid" ||
-        newStyles["display"] === "inline-grid";
-
-      const expandedGapProperties = expandGapProperty(gapValue, isGridLayout);
-
-      delete newStyles["gap"];
-      Object.assign(newStyles, expandedGapProperties);
-    }
-
-    const { safe, unsafe } = splitStylesBySafety(newStyles, type);
     variantSetting.safeStyles = safe;
     variantSetting.unsafeStyles = unsafe;
   }
@@ -595,30 +609,30 @@ function mergeWIVariantSettings(
   }
 
   // Merge or add new variant settings
-  for (const newVariantSetting of newVariantSettings) {
-    const key = getWIVariantComboKey(newVariantSetting.variantCombo);
-    const existingVariantSetting = variantSettingsMap.get(key);
+  for (const newVs of newVariantSettings) {
+    const key = getWIVariantComboKey(newVs.variantCombo);
+    const existingVs = variantSettingsMap.get(key);
 
-    if (existingVariantSetting) {
-      // Merge styles
+    if (existingVs) {
+      // Merge styles and animations
       const mergedVariantSetting: WIVariantSettings = {
-        ...existingVariantSetting,
+        ...existingVs,
         unsanitizedStyles: {
-          ...existingVariantSetting.unsanitizedStyles,
-          ...newVariantSetting.unsanitizedStyles,
+          ...existingVs.unsanitizedStyles,
+          ...newVs.unsanitizedStyles,
         },
         safeStyles: {
-          ...existingVariantSetting.safeStyles,
-          ...newVariantSetting.safeStyles,
+          ...existingVs.safeStyles,
+          ...newVs.safeStyles,
         },
         unsafeStyles: {
-          ...existingVariantSetting.unsafeStyles,
-          ...newVariantSetting.unsafeStyles,
+          ...existingVs.unsafeStyles,
+          ...newVs.unsafeStyles,
         },
       };
       variantSettingsMap.set(key, mergedVariantSetting);
     } else {
-      variantSettingsMap.set(key, newVariantSetting);
+      variantSettingsMap.set(key, newVs);
     }
   }
 
@@ -962,6 +976,7 @@ export async function parseHtmlToWebImporterTree(
   }
 
   const fontDefinitions: string[] = [];
+  const animationSequences: WIAnimationSequence[] = [];
 
   function extractSelectorsFromPrelude(prelude: CssNode) {
     const selectors: Selector[] = [];
@@ -1035,6 +1050,58 @@ export async function parseHtmlToWebImporterTree(
     fontDefinitions.push(`@font-face {\n${declarations.join("\n")}\n}`);
   }
 
+  function processKeyframesRule(atrule: Atrule): WIAnimationSequence | null {
+    if (!atrule.block || !atrule.prelude) {
+      return null;
+    }
+
+    const sequenceName = generate(atrule.prelude).trim();
+    const keyframes: WIKeyFrame[] = [];
+
+    walk(atrule.block, function (keyframeNode) {
+      if (keyframeNode.type === "Rule") {
+        const selectors = extractSelectorsFromPrelude(keyframeNode.prelude);
+        const declarations = extractDeclarationsFromBlock(keyframeNode.block);
+
+        for (const selector of selectors) {
+          const selectorText = generate(selector).trim();
+          let percentage: number;
+
+          if (selectorText === "from") {
+            percentage = 0;
+          } else if (selectorText === "to") {
+            percentage = 100;
+          } else if (selectorText.endsWith("%")) {
+            percentage = parseFloat(selectorText.replace("%", ""));
+          } else {
+            continue; // Skip invalid selectors
+          }
+
+          const styles: Record<string, string> = {};
+          declarations.forEach((decl) => {
+            styles[decl.property] = generate(decl.value);
+          });
+
+          const { safe, unsafe } = processUnsanitizedStyles(styles);
+
+          keyframes.push({
+            percentage,
+            safeStyles: safe,
+            unsafeStyles: unsafe,
+          });
+        }
+      }
+    });
+
+    // Sort keyframes by percentage
+    keyframes.sort((a, b) => a.percentage - b.percentage);
+
+    return {
+      name: sequenceName,
+      keyframes,
+    };
+  }
+
   walk(parsedStylesheet, function (node) {
     switch (node.type) {
       case "Rule": {
@@ -1049,6 +1116,14 @@ export async function parseHtmlToWebImporterTree(
           // already traversed inside processMediaRule
         } else if (node.name === "font-face") {
           processFontFaceRule(node);
+        } else if (
+          node.name === "keyframes" ||
+          node.name === "-webkit-keyframes"
+        ) {
+          const animationSequence = processKeyframesRule(node);
+          if (animationSequence) {
+            animationSequences.push(animationSequence);
+          }
         }
         return walk.skip;
       }
@@ -1063,7 +1138,7 @@ export async function parseHtmlToWebImporterTree(
   const defaultStyles = window.getComputedStyle(element);
   const wiTree = getElementsWITree(root, defaultStyles, site);
 
-  return { wiTree, fontDefinitions };
+  return { wiTree, fontDefinitions, animationSequences };
 }
 
 export const _testOnlyUtils = { fixCSSValue, renameTokenVarNameToUuid };

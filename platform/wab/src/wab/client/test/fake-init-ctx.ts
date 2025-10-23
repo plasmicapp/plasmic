@@ -10,7 +10,7 @@ import { fakePromisifiedApi } from "@/wab/client/test/FakeApi";
 import { SiteInfo } from "@/wab/shared/SharedApi";
 import { FastBundler } from "@/wab/shared/bundler";
 import { createSite } from "@/wab/shared/core/sites";
-import { DEVFLAGS } from "@/wab/shared/devflags";
+import { DEVFLAGS, DevFlagsType } from "@/wab/shared/devflags";
 import { ArenaFrame, Site } from "@/wab/shared/model/classes";
 import { createMemoryHistory } from "history";
 
@@ -22,7 +22,9 @@ export function fakeApp() {
   return app;
 }
 
-export function fakeAppCtx() {
+export function fakeAppCtx(opts?: {
+  devFlagOverrides?: Partial<DevFlagsType>;
+}) {
   const api = fakePromisifiedApi();
   const app = fakeApp();
   const history = createMemoryHistory();
@@ -31,7 +33,7 @@ export function fakeAppCtx() {
   const appCtx = new AppCtx({
     api,
     app,
-    appConfig: DEVFLAGS,
+    appConfig: { ...DEVFLAGS, ...(opts?.devFlagOverrides || {}) },
     bundler: new FastBundler(),
     history,
     teams: [],
@@ -46,8 +48,11 @@ export function fakeAppCtx() {
   };
 }
 
-export function fakeDbCtx(opts?: { site?: Site }) {
-  const appCtxDeps = fakeAppCtx();
+export function fakeDbCtx(opts?: {
+  site?: Site;
+  devFlagOverrides?: Partial<DevFlagsType>;
+}) {
+  const appCtxDeps = fakeAppCtx({ devFlagOverrides: opts?.devFlagOverrides });
   // @ts-expect-error
   const dbCtx = new DbCtx({
     app: appCtxDeps.app,
@@ -66,7 +71,10 @@ export function fakeDbCtx(opts?: { site?: Site }) {
   };
 }
 
-export function fakeStudioCtx(opts?: { site?: Site }) {
+export function fakeStudioCtx(opts?: {
+  site?: Site;
+  devFlagOverrides?: Partial<DevFlagsType>;
+}) {
   const dbCtxDeps = fakeDbCtx(opts);
   const studioCtx = new StudioCtx({
     dbCtx: dbCtxDeps.dbCtx,

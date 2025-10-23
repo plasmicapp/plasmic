@@ -137,6 +137,7 @@ import {
   parseCss,
   showCssShorthand,
 } from "@/wab/shared/css";
+import { showCssAnimations } from "@/wab/shared/css/animations";
 import { splitCssValue } from "@/wab/shared/css/parse";
 import { imageDataUriToBlob } from "@/wab/shared/data-urls";
 import { ThemeTagSource } from "@/wab/shared/defined-indicator";
@@ -1019,24 +1020,12 @@ export function generateAnimationPropValue(animations: Animation[]) {
     return null;
   }
 
-  // Generate shorthand animation values for each animation
-  const animationValues = animations.map((anim) => {
-    const parts = [
-      anim.duration, // animation-duration (required)
-      anim.timingFunction, // animation-timing-function
-      anim.delay, // animation-delay
-      anim.iterationCount, // animation-iteration-count
-      anim.direction, // animation-direction
-      anim.fillMode, // animation-fill-mode
-      anim.playState, // animation-play-state
-      getAnimationSequenceIdentifier(anim.sequence), // animation-name (required, goes last)
-    ];
-
-    return parts.join(" ");
-  });
-
-  // Return the shorthand animation property with comma-separated values
-  return animationValues.join(", ");
+  return showCssAnimations(
+    animations.map((anim) => ({
+      name: getAnimationSequenceIdentifier(anim.sequence),
+      ...anim,
+    }))
+  );
 }
 
 /**

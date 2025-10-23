@@ -2,6 +2,27 @@
 
 exports[`snapshot tests parse landing page html properly 1`] = `
 {
+  "animationSequences": [
+    {
+      "keyframes": [
+        {
+          "percentage": 0,
+          "safeStyles": {
+            "opacity": "0",
+          },
+          "unsafeStyles": {},
+        },
+        {
+          "percentage": 100,
+          "safeStyles": {
+            "opacity": "100",
+          },
+          "unsafeStyles": {},
+        },
+      ],
+      "name": "fadeIn",
+    },
+  ],
   "fontDefinitions": [
     "@font-face {
 	font-family: "Roboto";
@@ -1074,6 +1095,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                 "variantSettings": [
                   {
                     "safeStyles": {
+                      "animation": "fadeIn 0.3s ease",
                       "background": "linear-gradient(#e74c3c, #e74c3c)",
                       "borderBottomLeftRadius": "30px",
                       "borderBottomRightRadius": "30px",
@@ -1095,6 +1117,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                       "fontWeight": "bold",
                     },
                     "unsanitizedStyles": {
+                      "animation": "fadeIn 0.3s ease",
                       "background": "#e74c3c",
                       "border-radius": "30px",
                       "box-sizing": "border-box",
@@ -1114,10 +1137,12 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                   },
                   {
                     "safeStyles": {
+                      "animation": "none",
                       "background": "linear-gradient(#c0392b, #c0392b)",
                     },
                     "unsafeStyles": {},
                     "unsanitizedStyles": {
+                      "animation": "none",
                       "background": "#c0392b",
                     },
                     "variantCombo": [

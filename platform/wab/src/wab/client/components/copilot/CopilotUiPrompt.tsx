@@ -97,11 +97,12 @@ function CopilotUiPrompt() {
                 }));
                 addOrUpsertTokens(studioCtx.site, upsertTokens);
 
-                const { wiTree } = await studioCtx.app.withSpinner(
-                  parseHtmlToWebImporterTree(html, studioCtx.site)
-                );
+                const { wiTree, animationSequences } =
+                  await studioCtx.app.withSpinner(
+                    parseHtmlToWebImporterTree(html, studioCtx.site)
+                  );
                 if (wiTree) {
-                  await processWebImporterTree(wiTree, {
+                  await processWebImporterTree(wiTree, animationSequences, {
                     studioCtx,
                     insertRelLoc,
                     cursorClientPt: undefined,

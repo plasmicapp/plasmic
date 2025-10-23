@@ -5,7 +5,10 @@ import {
 } from "@/wab/shared/css/colors";
 import {
   CssNode,
+  Dimension,
   FunctionNode,
+  NumberNode,
+  Percentage,
   Raw,
   StringNode,
   Url,
@@ -204,7 +207,9 @@ export function findAllAndMap<T>(
 /**
  * Checks if a node represents a dimension value
  */
-export function isDimensionNode(node: CssNode) {
+export function isDimensionNode(
+  node: CssNode
+): node is Dimension | Percentage | NumberNode {
   return (
     node.type === "Dimension" ||
     node.type === "Percentage" ||

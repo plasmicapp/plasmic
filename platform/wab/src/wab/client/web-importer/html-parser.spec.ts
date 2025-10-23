@@ -1349,3 +1349,184 @@ describe("snapshot tests", () => {
     expect(output).toMatchSnapshot();
   });
 });
+
+describe("keyframes and animations parsing", () => {
+  const site = createSite();
+
+  it("parses basic @keyframes rule with from/to", async () => {
+    const html = `
+      <div class="animated-div">Test</div>
+      <style>
+        @keyframes fadeIn {
+          from { opacity: 0; background: #0000ff; }
+          to { opacity: 1; background: #ff0000;}
+        }
+        .animated-div {
+          animation: fadeIn 2s ease-in-out;
+        }
+      </style>
+    `;
+
+    const { wiTree: rootEl, animationSequences } =
+      await parseHtmlToWebImporterTree(html, site);
+
+    expect(animationSequences).toMatchObject([
+      {
+        name: "fadeIn",
+        keyframes: [
+          {
+            percentage: 0,
+            safeStyles: {
+              opacity: "0",
+              background: "linear-gradient(#0000ff, #0000ff)",
+            },
+            unsafeStyles: {},
+          },
+          {
+            percentage: 100,
+            safeStyles: {
+              opacity: "1",
+              background: "linear-gradient(#ff0000, #ff0000)",
+            },
+            unsafeStyles: {},
+          },
+        ],
+      },
+    ]);
+
+    // Check that animation property is parsed on the element
+    expect(rootEl).toMatchObject<Partial<WIElement>>({
+      type: "container",
+      tag: "div",
+      children: [
+        {
+          type: "container",
+          tag: "div",
+          children: [
+            {
+              type: "text",
+              tag: "span",
+              text: "Test",
+              variantSettings: [],
+            },
+          ],
+          attrs: {},
+          variantSettings: [
+            {
+              unsanitizedStyles: {
+                animation: "fadeIn 2s ease-in-out",
+              },
+              safeStyles: {
+                animation: "fadeIn 2s ease-in-out",
+              },
+              unsafeStyles: {},
+              variantCombo: [{ type: "base" }],
+            },
+          ],
+        },
+      ],
+    });
+  });
+
+  it("parses multiple @keyframes rules", async () => {
+    const html = `
+      <div>Test</div>
+      <style>
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        @-webkit-keyframes slideUp {
+          0% { transform: translateY(20px); }
+          100% { transform: translateY(0); }
+        }
+        
+      </style>
+    `;
+
+    const { animationSequences } = await parseHtmlToWebImporterTree(html, site);
+    expect(animationSequences).toMatchObject([
+      {
+        name: "fadeIn",
+        keyframes: [
+          { percentage: 0, safeStyles: { opacity: "0" }, unsafeStyles: {} },
+          { percentage: 100, safeStyles: { opacity: "1" }, unsafeStyles: {} },
+        ],
+      },
+      {
+        name: "slideUp",
+        keyframes: [
+          { percentage: 0, safeStyles: {}, unsafeStyles: {} },
+          { percentage: 100, safeStyles: {}, unsafeStyles: {} },
+        ],
+      },
+    ]);
+  });
+
+  it("sorts keyframes by percentage", async () => {
+    const html = `
+      <div>Test</div>
+      <style>
+        @keyframes unorderedAnimation {
+          100% { opacity: 1; }
+          25% { opacity: 0.25; }
+          75% { opacity: 0.75; }
+          0% { opacity: 0; }
+          50% { opacity: 0.5; }
+        }
+      </style>
+    `;
+
+    const { animationSequences } = await parseHtmlToWebImporterTree(html, site);
+
+    expect(animationSequences).toMatchObject([
+      {
+        name: "unorderedAnimation",
+        keyframes: [
+          { percentage: 0, safeStyles: { opacity: "0" }, unsafeStyles: {} },
+          { percentage: 25, safeStyles: { opacity: "0.25" }, unsafeStyles: {} },
+          { percentage: 50, safeStyles: { opacity: "0.5" }, unsafeStyles: {} },
+          { percentage: 75, safeStyles: { opacity: "0.75" }, unsafeStyles: {} },
+          { percentage: 100, safeStyles: { opacity: "1" }, unsafeStyles: {} },
+        ],
+      },
+    ]);
+  });
+
+  it("handles empty keyframes gracefully", async () => {
+    const html = `
+      <div>Test</div>
+      <style>
+        @keyframes emptyAnimation {
+          /* no keyframes defined */
+        }
+      </style>
+    `;
+
+    const { animationSequences } = await parseHtmlToWebImporterTree(html, site);
+    expect(animationSequences[0]).toMatchObject({
+      name: "emptyAnimation",
+      keyframes: [],
+    });
+  });
+
+  it("skips invalid keyframe selectors", async () => {
+    const html = `
+      <div>Test</div>
+      <style>
+        @keyframes mixedAnimation {
+          0% { opacity: 0; }
+          invalid { opacity: 0.5; }
+          100% { opacity: 1; }
+        }
+      </style>
+    `;
+
+    const { animationSequences } = await parseHtmlToWebImporterTree(html, site);
+
+    expect(animationSequences[0].keyframes).toEqual([
+      { percentage: 0, safeStyles: { opacity: "0" }, unsafeStyles: {} },
+      { percentage: 100, safeStyles: { opacity: "1" }, unsafeStyles: {} },
+    ]);
+  });
+});

@@ -1,34 +1,47 @@
-import { _testOnlyWebImporterUtils } from "@/wab/client/WebImporter";
 import { ReadableClipboard } from "@/wab/client/clipboard/ReadableClipboard";
 import { paste } from "@/wab/client/clipboard/paste";
 import { multiColorSvgData } from "@/wab/client/clipboard/test/clipboard-test-data";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { fakeStudioCtx } from "@/wab/client/test/fake-init-ctx";
-import { WIElement } from "@/wab/client/web-importer/types";
 import { assert } from "@/wab/shared/common";
 import { ComponentType } from "@/wab/shared/core/components";
 import * as ImageAssets from "@/wab/shared/core/image-assets";
 import * as Tpls from "@/wab/shared/core/tpls";
 import { TplImageTag } from "@/wab/shared/core/tpls";
-import { Component, isKnownCustomCode } from "@/wab/shared/model/classes";
+import {
+  Component,
+  TplNode,
+  isKnownCustomCode,
+} from "@/wab/shared/model/classes";
 
 let studioCtx: StudioCtx;
 let api: ReturnType<typeof fakeStudioCtx>["api"];
 let page: Component;
 let pageViewCtx: ViewCtx;
 
-const { WI_IMPORTER_HEADER } = _testOnlyWebImporterUtils;
-
-function getWebImporterDataToClipboard(wiElement: WIElement) {
+function htmlToClipboard(html: string) {
   return ReadableClipboard.fromData({
-    "text/plain": `${WI_IMPORTER_HEADER}${JSON.stringify(wiElement)}`,
+    "text/plain": html,
   });
+}
+
+function getPastedTpl(pageTplTree: TplNode) {
+  const rootChildren = Tpls.tplChildren(pageTplTree);
+  expect(rootChildren).toHaveLength(1);
+  const containerTpl = rootChildren[0];
+  expect(Tpls.getTagOrComponentName(containerTpl)).toEqual("div");
+  const containerTplChildren = Tpls.tplChildren(containerTpl);
+  const pastedTpl = containerTplChildren[0];
+
+  return { containerTpl, pastedTpl };
 }
 
 describe("WebImporter", () => {
   beforeEach(() => {
-    const studioCtxDeps = fakeStudioCtx();
+    const studioCtxDeps = fakeStudioCtx({
+      devFlagOverrides: { allowHtmlPaste: true },
+    });
     studioCtx = studioCtxDeps.studioCtx;
     api = studioCtxDeps.api;
 
@@ -40,46 +53,10 @@ describe("WebImporter", () => {
 
   describe("pasteFromWebImporter", () => {
     it("pastes simple container with text from web importer", async () => {
+      const htmlStr = `<div>Hello World</div>`;
+      const clipboard = htmlToClipboard(htmlStr);
+
       pageViewCtx.selectNewTpl(page.tplTree);
-
-      // Create simple wiTree test data
-      const wiTree: WIElement = {
-        type: "container",
-        tag: "div",
-        attrs: {
-          __name: "test-container",
-        },
-        variantSettings: [
-          {
-            unsanitizedStyles: {},
-            safeStyles: {
-              display: "flex",
-              flexDirection: "column",
-            },
-            unsafeStyles: {},
-            variantCombo: [{ type: "base" }],
-          },
-        ],
-        children: [
-          {
-            type: "text",
-            tag: "span",
-            text: "Hello World",
-            variantSettings: [
-              {
-                unsanitizedStyles: {},
-                safeStyles: {},
-                unsafeStyles: {},
-                variantCombo: [{ type: "base" }],
-              },
-            ],
-          },
-        ],
-      };
-
-      // Create clipboard data with web importer header
-      const clipboard = getWebImporterDataToClipboard(wiTree);
-
       expect(
         await paste({
           clipboard,
@@ -88,9 +65,7 @@ describe("WebImporter", () => {
         })
       ).toBe(true);
 
-      const rootChildren = Tpls.tplChildren(page.tplTree);
-      expect(rootChildren).toHaveLength(1);
-      const pastedTpl = rootChildren[0];
+      const { containerTpl, pastedTpl } = getPastedTpl(page.tplTree);
 
       // Verify it's a container tpl
       expect(Tpls.getTagOrComponentName(pastedTpl)).toEqual("div");
@@ -103,12 +78,10 @@ describe("WebImporter", () => {
       expect(Tpls.getTplTextBlockContent(textTpl, pageViewCtx)).toEqual(
         "Hello World"
       );
-      expect(pageViewCtx.focusedTpls()).toEqual([pastedTpl]);
+      expect(pageViewCtx.focusedTpls()).toEqual([containerTpl]);
     });
 
     it("pastes SVG from web importer", async () => {
-      pageViewCtx.selectNewTpl(page.tplTree);
-
       const { dataUri, xml: homeSvg } = multiColorSvgData();
 
       // Mock the image upload API
@@ -121,62 +94,18 @@ describe("WebImporter", () => {
         };
       });
 
-      const wiTree: WIElement = {
-        type: "container",
-        tag: "div",
-        variantSettings: [
-          {
-            unsanitizedStyles: {
-              width: "100%",
-            },
-            safeStyles: {
-              width: "100%",
-            },
-            unsafeStyles: {},
-            variantCombo: [
-              {
-                type: "base",
-              },
-            ],
-          },
-        ],
-        children: [
-          {
-            type: "svg",
-            tag: "svg",
-            fillColor: undefined,
-            outerHtml: homeSvg,
-            width: "100px",
-            height: "100px",
-            variantSettings: [
-              {
-                unsanitizedStyles: {},
-                safeStyles: {},
-                unsafeStyles: {},
-                variantCombo: [{ type: "base" }],
-              },
-            ],
-          },
-        ],
-        attrs: {
-          style: "width: 100%;",
-          __name: "",
-        },
-      };
+      const htmlStr = `<div>${homeSvg}</div>`;
 
-      const clipboard = getWebImporterDataToClipboard(wiTree);
-
+      pageViewCtx.selectNewTpl(page.tplTree);
       expect(
         await paste({
-          clipboard,
+          clipboard: htmlToClipboard(htmlStr),
           studioCtx,
           cursorClientPt: undefined,
         })
       ).toBe(true);
 
-      const rootChildren = Tpls.tplChildren(page.tplTree);
-      expect(rootChildren).toHaveLength(1);
-      const pastedTpl = rootChildren[0];
+      const { containerTpl, pastedTpl } = getPastedTpl(page.tplTree);
 
       // Verify it's a container tpl
       expect(Tpls.getTagOrComponentName(pastedTpl)).toEqual("div");
@@ -203,65 +132,24 @@ describe("WebImporter", () => {
       );
       expect(baseVs.attrs.loading.code).toBe('"lazy"');
 
-      expect(pageViewCtx.focusedTpls()).toEqual([pastedTpl]);
+      expect(pageViewCtx.focusedTpls()).toEqual([containerTpl]);
     });
 
     it("pastes text with font-family and extracts only first font", async () => {
+      // Create html with text element that has multi-font font-family
+      const htmlStr = `<style>.text { font-family: "Playfair Display", Georgia, serif; }</style>
+<div class="text">Text with multiple fonts</div>`;
+
       pageViewCtx.selectNewTpl(page.tplTree);
-
-      // Create wiTree with text element that has multi-font font-family
-      const wiTree: WIElement = {
-        type: "container",
-        tag: "div",
-        attrs: {
-          __name: "font-test-container",
-        },
-        variantSettings: [
-          {
-            unsanitizedStyles: {},
-            safeStyles: {
-              display: "flex",
-              flexDirection: "column",
-            },
-            unsafeStyles: {},
-            variantCombo: [{ type: "base" }],
-          },
-        ],
-        children: [
-          {
-            type: "text",
-            tag: "span",
-            text: "Text with multiple fonts",
-            variantSettings: [
-              {
-                unsanitizedStyles: {
-                  "font-family": '"Playfair Display", Georgia, serif',
-                },
-                safeStyles: {
-                  fontFamily: "Playfair Display",
-                },
-                unsafeStyles: {},
-                variantCombo: [{ type: "base" }],
-              },
-            ],
-          },
-        ],
-      };
-
-      // Create clipboard data with web importer header
-      const clipboard = getWebImporterDataToClipboard(wiTree);
-
       expect(
         await paste({
-          clipboard,
+          clipboard: htmlToClipboard(htmlStr),
           studioCtx,
           cursorClientPt: undefined,
         })
       ).toBe(true);
 
-      const rootChildren = Tpls.tplChildren(page.tplTree);
-      expect(rootChildren).toHaveLength(1);
-      const pastedTpl = rootChildren[0];
+      const { containerTpl, pastedTpl } = getPastedTpl(page.tplTree);
 
       // Verify it's a container tpl
       expect(Tpls.getTagOrComponentName(pastedTpl)).toEqual("div");
@@ -285,7 +173,65 @@ describe("WebImporter", () => {
         "Playfair Display"
       );
 
-      expect(pageViewCtx.focusedTpls()).toEqual([pastedTpl]);
+      expect(pageViewCtx.focusedTpls()).toEqual([containerTpl]);
+    });
+
+    it("pastes animations and animation sequences from web importer", async () => {
+      // Create html with text element that has multi-font font-family
+      const htmlStr = `
+<style>
+  @keyframes fadeIn {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+
+.text { animation: fadeIn 1s linear infinite alternate-reverse; }
+.text:hover { animation: none; }
+</style>
+<div class="text">Text with fadeIn animation</div>`;
+
+      pageViewCtx.selectNewTpl(page.tplTree);
+      expect(
+        await paste({
+          clipboard: htmlToClipboard(htmlStr),
+          studioCtx,
+          cursorClientPt: undefined,
+        })
+      ).toBe(true);
+
+      const { containerTpl, pastedTpl } = getPastedTpl(page.tplTree);
+
+      // Verify animation
+      const baseVs = pageViewCtx
+        .variantTplMgr()
+        .ensureBaseVariantSetting(pastedTpl);
+
+      expect(baseVs.rs.animations).toMatchObject([
+        {
+          sequence: {
+            name: "fadeIn",
+          },
+          timingFunction: "linear",
+          duration: "1s",
+          delay: "0s",
+          iterationCount: "infinite",
+          fillMode: "none",
+          direction: "alternate-reverse",
+          playState: "running",
+        },
+      ]);
+
+      const hoverVs = pastedTpl.vsettings.find((vs) =>
+        vs.variants.find((v) => v.selectors?.includes(":hover"))
+      );
+      assert(hoverVs, "Expected Hover VariantSetting to exists, found null");
+      expect(hoverVs.rs.animations).toMatchObject([]);
+
+      expect(pageViewCtx.focusedTpls()).toEqual([containerTpl]);
     });
   });
 });

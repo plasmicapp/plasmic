@@ -1,13 +1,12 @@
 import { PasteArgs, PasteResult } from "@/wab/client/clipboard/common";
 import { parseHtmlToWebImporterTree } from "@/wab/client/web-importer/html-parser";
 import { processWebImporterTree } from "@/wab/client/WebImporter";
-import { DEVFLAGS } from "@/wab/shared/devflags";
 
 export async function pasteFromHtmlImporter(
   text,
   { studioCtx, cursorClientPt, insertRelLoc }: PasteArgs
 ): Promise<PasteResult> {
-  if (!DEVFLAGS.allowHtmlPaste) {
+  if (!studioCtx.appCtx.appConfig.allowHtmlPaste) {
     return {
       handled: false,
     };
@@ -20,7 +19,7 @@ export async function pasteFromHtmlImporter(
     };
   }
 
-  const { wiTree } = await studioCtx.app.withSpinner(
+  const { wiTree, animationSequences } = await studioCtx.app.withSpinner(
     parseHtmlToWebImporterTree(htmlString, studioCtx.site)
   );
 
@@ -30,7 +29,7 @@ export async function pasteFromHtmlImporter(
     };
   }
 
-  return await processWebImporterTree(wiTree, {
+  return await processWebImporterTree(wiTree, animationSequences, {
     studioCtx,
     cursorClientPt,
     insertRelLoc,
