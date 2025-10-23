@@ -77,6 +77,7 @@ import {
   RawText,
   RenderExpr,
   Site,
+  StyleTokenOverride,
   TplComponent,
   TplNode,
   TplSlot,
@@ -4473,6 +4474,203 @@ describe("merging", () => {
     expect(result).toMatchObject({
       status: "merged",
     });
+  });
+
+  it("Resolves style token conflict on varianted values", () => {
+    const result = testMerge({
+      ancestorSite: (() => {
+        // Create ancestor site with no styleTokenOverrides
+        return basicSite();
+      })(),
+      a: (site) => {
+        // Branch: Sets token's varianted value
+        const variant = site.globalVariantGroups[0].variants[0];
+        site.styleTokens[0].variantedValues = [
+          new VariantedValue({
+            variants: [variant],
+            value: "3",
+          }),
+        ];
+      },
+      b: (site) => {
+        // Main branch: Sets token's varianted value
+        const variant = site.globalVariantGroups[0].variants[0];
+        site.styleTokens[0].variantedValues = [
+          new VariantedValue({
+            variants: [variant],
+            value: "4",
+          }),
+        ];
+      },
+      directConflictsPicks: ["right"], // Select main
+    });
+
+    expect(result).toMatchObject({
+      status: "needs-resolution",
+    });
+
+    // After resolution, main's varianted value should be preserved
+    const styleToken = result.mergedSite.styleTokens[0];
+    expect(styleToken).toBeDefined();
+    expect(styleToken.value).toEqual("1");
+    expect(styleToken.variantedValues.length).toBe(1);
+    expect(styleToken.variantedValues[0].value).toBe("4");
+  });
+
+  it("StyleTokenOverride conflicts are non-atomic", () => {
+    const result = testMerge({
+      ancestorSite: (() => {
+        // Create ancestor site with no styleTokenOverrides
+        return basicSite();
+      })(),
+      a: (site) => {
+        // Branch: Creates a style token override
+        const token = site.styleTokens[0];
+        const variant = site.globalVariantGroups[0].variants[0];
+
+        site.styleTokenOverrides.push(
+          new StyleTokenOverride({
+            token,
+            value: "9",
+            variantedValues: [
+              new VariantedValue({
+                value: "99",
+                variants: [variant],
+              }),
+            ],
+          })
+        );
+      },
+      b: (site) => {
+        // Main Branch: Creates an array of style token overrides
+        const token = site.styleTokens[0];
+        site.styleTokenOverrides.push(
+          new StyleTokenOverride({
+            token,
+            value: "11",
+            variantedValues: [],
+          }),
+          new StyleTokenOverride({
+            token: site.styleTokens[1],
+            value: "2000",
+            variantedValues: [],
+          })
+        );
+      },
+      directConflictsPicks: ["left"], // Select branch
+    });
+    expect(result).toMatchObject({
+      status: "needs-resolution",
+    });
+    // The overrides array is merged, for conflicting parts, branch wins.
+
+    expect(result.mergedSite.styleTokenOverrides.length).toBe(2);
+    const override1 = result.mergedSite.styleTokenOverrides[0];
+    expect(override1).toBeDefined();
+    expect(override1.value).toBe("9");
+    expect(override1.variantedValues.length).toBe(1);
+    expect(override1.variantedValues[0].value).toBe("99");
+
+    const override2 = result.mergedSite.styleTokenOverrides[1];
+    expect(override2).toBeDefined();
+    expect(override2.value).toBe("2000");
+    expect(override2.variantedValues.length).toBe(0);
+  });
+
+  it("Resolves styleTokenOverride conflict when main sets value and branch sets varianted value", () => {
+    const result = testMerge({
+      ancestorSite: (() => {
+        // Create ancestor site with no styleTokenOverrides
+        return basicSite();
+      })(),
+      a: (site) => {
+        // Branch: Override same token's base value (no varianted values)
+        const token = site.styleTokens[0];
+        site.styleTokenOverrides.push(
+          new StyleTokenOverride({
+            token: token,
+            value: "20",
+            variantedValues: [],
+          })
+        );
+      },
+      b: (site) => {
+        // Main branch: Override token's varianted value (base is null)
+        const token = site.styleTokens[0];
+        const variant = site.globalVariantGroups[0].variants[0];
+        site.styleTokenOverrides.push(
+          new StyleTokenOverride({
+            token,
+            value: null,
+            variantedValues: [
+              new VariantedValue({
+                value: "10",
+                variants: [variant],
+              }),
+            ],
+          })
+        );
+      },
+      directConflictsPicks: ["left"], // Select branch
+    });
+    expect(result).toMatchObject({
+      status: "needs-resolution",
+    });
+
+    // After resolution, branch's override should be preserved
+    const override = result.mergedSite.styleTokenOverrides[0];
+    expect(override).toBeDefined();
+    expect(override.value).toBe("20");
+    expect(override.variantedValues.length).toBe(0);
+  });
+
+  // TODO: PLA-12361
+  xit("Resolves styleTokenOverride conflict when main sets varianted value and branch sets base value", () => {
+    const result = testMerge({
+      ancestorSite: (() => {
+        // Create ancestor site with no styleTokenOverrides
+        return basicSite();
+      })(),
+      a: (site) => {
+        // Branch: Override same token's base value (no varianted values)
+        const token = site.styleTokens[0];
+        site.styleTokenOverrides.push(
+          new StyleTokenOverride({
+            token: token,
+            value: "20",
+            variantedValues: [],
+          })
+        );
+      },
+      b: (site) => {
+        // Main branch: Override token's varianted value (base is null)
+        const token = site.styleTokens[0];
+        const variant = site.globalVariantGroups[0].variants[0];
+        site.styleTokenOverrides.push(
+          new StyleTokenOverride({
+            token,
+            value: null,
+            variantedValues: [
+              new VariantedValue({
+                value: "10",
+                variants: [variant],
+              }),
+            ],
+          })
+        );
+      },
+      directConflictsPicks: ["right"], // Select main
+    });
+    expect(result).toMatchObject({
+      status: "needs-resolution",
+    });
+
+    // After resolution, main's varianted value should be preserved
+    const override = result.mergedSite.styleTokenOverrides[0];
+    expect(override).toBeDefined();
+    expect(override.value).toBeNull();
+    expect(override.variantedValues.length).toBe(1);
+    expect(override.variantedValues[0].value).toBe("10");
   });
 
   it("Reroot should not delete entire tpl tree", () => {
