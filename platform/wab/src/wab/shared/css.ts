@@ -27,7 +27,7 @@ import {
 } from "@/wab/shared/geom";
 import { RuleSet } from "@/wab/shared/model/classes";
 import CssInitials from "css-initials";
-import { Value, generate, parse, walk } from "css-tree";
+import { CssNode, Value, generate, parse, walk } from "css-tree";
 import {
   camelCase,
   flatten,
@@ -322,16 +322,27 @@ export function validateDimCssFunction(
   value: string,
   allowedUnits?: readonly string[]
 ): DimCssFunctionValidationResult {
+  const invalidFunctionError = `Not a valid CSS dimension function. Must be one of these: ${dimCssFunctions.join(
+    ", "
+  )}`;
   if (!isDimCssFunction(value)) {
     return {
       valid: false,
-      error: `Not a valid CSS dimension function. Must be one of these: ${dimCssFunctions.join(
-        ", "
-      )}`,
+      error: invalidFunctionError,
     };
   }
 
-  const ast = parse(value, { context: "value" });
+  let ast: CssNode;
+  try {
+    // Parsing can fail if the input has incomplete characters or invalid format
+    ast = parse(value, { context: "value" });
+  } catch (e) {
+    return {
+      valid: false,
+      error: e.message ?? "Invalid CSS syntax",
+    };
+  }
+
   let error: string | null = null;
 
   walk(ast, (node) => {
@@ -361,8 +372,24 @@ export function validateDimCssFunction(
         }
         return;
       }
+      case "Function": {
+        const funcName = node.name.toLowerCase();
+
+        // Allow var() function - skip validation of its children
+        if (funcName === "var") {
+          return walk.skip; // Don't walk into var() children
+        }
+
+        // Check if it's a valid dimension function
+        if (!isDimCssFunction(generate(node))) {
+          error = invalidFunctionError;
+          return walk.break;
+        }
+
+        // Nested function is valid, continue walking its children
+        return;
+      }
       case "Value":
-      case "Function":
       case "Operator": {
         return;
       }
@@ -531,7 +558,14 @@ export function markAllImportant(props: CSSProperties): CSSProperties {
 }
 
 export function splitCssValueIntoParts(val: string): string[] {
-  const ast = parse(val, { context: "value" }) as Value;
+  let ast: Value;
+  try {
+    ast = parse(val, { context: "value" }) as Value;
+  } catch (error) {
+    // If parsing fails, treat the entire value as a single part
+    return [val];
+  }
+
   const parts: string[] = [];
 
   for (const node of ast.children) {

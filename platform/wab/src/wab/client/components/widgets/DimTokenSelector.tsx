@@ -1038,61 +1038,58 @@ function useDimValue(opts: DimValueOpts) {
       return true;
     }
 
-    if (css.isDimCssFunction(val)) {
-      const result = css.validateDimCssFunction(val, allowedUnits);
-      if (!result.valid) {
+    const newValues = shorthand ? css.parseCssShorthand(val) : [val];
+    for (const newValue of newValues) {
+      if (css.isDimCssFunction(newValue)) {
+        const result = css.validateDimCssFunction(newValue, allowedUnits);
+        if (!result.valid) {
+          notification.error({
+            message: `Invalid CSS function "${newValue}"`,
+            description: result.error,
+          });
+          return false;
+        }
+        continue;
+      }
+      const parsed = parseCssNumericNew(newValue);
+
+      if (!parsed) {
         notification.error({
-          message: `Invalid CSS function "${val}"`,
-          description: result.error,
+          message: `Invalid value "${newValue}"`,
+          description: `Must be a numeric value`,
         });
+
         return false;
       }
-      return true;
-    } else {
-      const newValues = shorthand ? css.parseCssShorthand(val) : [val];
-      for (const newValue of newValues) {
-        if (extraOptions.some((it) => it.value === newValue)) {
-          continue;
-        }
-        const parsed = parseCssNumericNew(newValue);
 
-        if (!parsed) {
-          notification.error({
-            message: `Invalid value "${newValue}"`,
-            description: `Must be a numeric value`,
-          });
-
-          return false;
-        }
-
-        const hasValidUnit =
-          allowedUnits.includes(parsed.units) ||
-          (allowedUnits.length === 0 && parsed.units.length === 0);
-        if (!hasValidUnit) {
-          showUnitError(newValue);
-          return false;
-        }
-
-        if (parsed.num > max) {
-          notification.error({
-            message: `Invalid value "${newValue}"`,
-            description: `Must be less than ${max}.`,
-          });
-
-          return false;
-        }
-
-        if (parsed.num < min) {
-          notification.error({
-            message: `Invalid value "${newValue}"`,
-            description: `Must be greater than ${min}.`,
-          });
-
-          return false;
-        }
+      const hasValidUnit =
+        allowedUnits.includes(parsed.units) ||
+        (allowedUnits.length === 0 && parsed.units.length === 0);
+      if (!hasValidUnit) {
+        showUnitError(newValue);
+        return false;
       }
-      return true;
+
+      if (parsed.num > max) {
+        notification.error({
+          message: `Invalid value "${newValue}"`,
+          description: `Must be less than ${max}.`,
+        });
+
+        return false;
+      }
+
+      if (parsed.num < min) {
+        notification.error({
+          message: `Invalid value "${newValue}"`,
+          description: `Must be greater than ${min}.`,
+        });
+
+        return false;
+      }
     }
+
+    return true;
   }
 
   function roundValue(val: string) {
