@@ -38,6 +38,7 @@ export async function fetchGraphQL(
 const registerGraphqlFetchParams: CustomFunctionMeta<typeof fetchGraphQL> = {
   name: "fetchGraphQL",
   importPath: "@plasmicpkgs/graphql",
+  displayName: "GraphQL",
   params: [
     {
       name: "url",
