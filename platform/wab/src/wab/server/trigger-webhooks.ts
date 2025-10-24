@@ -1,17 +1,17 @@
 import { unbundlePkgVersion } from "@/wab/server/db/DbBundleLoader";
 import { DbMgr } from "@/wab/server/db/DbMgr";
+import { isIpAddrSafe } from "@/wab/server/util/url";
 import { NotFoundError } from "@/wab/shared/ApiErrors/errors";
 import { ApiProjectWebhook, ProjectId } from "@/wab/shared/ApiSchema";
 import { Bundler } from "@/wab/shared/bundler";
 import { withoutNils } from "@/wab/shared/common";
 import {
-  compareSites,
   ExternalChangeData,
+  compareSites,
   getExternalChangeData,
 } from "@/wab/shared/site-diffs";
 import axios, { AddressFamily, Method } from "axios";
 import dns from "dns";
-import isPrivateIp from "private-ip";
 export async function triggerWebhook(
   mgr: DbMgr,
   projectId: string,
@@ -38,13 +38,13 @@ export async function triggerWebhookOnly(
   // Prevent reaching internal IPs.
   const hostname = new URL(url).hostname;
   const ip = await dns.promises.lookup(hostname);
-  const isPrivate = isPrivateIp(ip.address);
+  const isSafe = isIpAddrSafe(ip.address);
 
   let response: { status: number; data: string };
-  if (isPrivate) {
+  if (!isSafe) {
     response = {
-      status: 500,
-      data: "Hostname resolves to internal IP",
+      status: 400,
+      data: "Invalid URL",
     };
   } else {
     try {

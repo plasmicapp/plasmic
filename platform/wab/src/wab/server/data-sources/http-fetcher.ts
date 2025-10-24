@@ -1,4 +1,5 @@
 import { base64StringToBuffer } from "@/wab/server/data-sources/data-utils";
+import { isUrlSafe } from "@/wab/server/util/url";
 import { DataSourceError } from "@/wab/shared/data-sources-meta/data-sources";
 import { HttpDataSource } from "@/wab/shared/data-sources-meta/http-meta";
 import { isEmpty, isNil, isString } from "lodash";
@@ -22,7 +23,7 @@ export class HttpFetcher {
     params?: Record<string, string>;
     headers?: Record<string, string>;
   }) {
-    const res = await fetch(this.makePath(opts.path, opts.params), {
+    const res = await fetch(await this.makePath(opts.path, opts.params), {
       method: "GET",
       headers: this.makeHeaders(opts.headers),
       timeout: DEFAULT_TIMEOUT,
@@ -36,7 +37,7 @@ export class HttpFetcher {
     params?: Record<string, string>;
     headers?: Record<string, string>;
   }) {
-    const res = await fetch(this.makePath(opts.path, opts.params), {
+    const res = await fetch(await this.makePath(opts.path, opts.params), {
       method: "POST",
       headers: this.makeHeaders(opts.headers),
       body: bodyToFetchBody(opts.body),
@@ -51,7 +52,7 @@ export class HttpFetcher {
     params?: Record<string, string>;
     headers?: Record<string, string>;
   }) {
-    const res = await fetch(this.makePath(opts.path, opts.params), {
+    const res = await fetch(await this.makePath(opts.path, opts.params), {
       method: "PUT",
       headers: this.makeHeaders(opts.headers),
       body: bodyToFetchBody(opts.body),
@@ -65,7 +66,7 @@ export class HttpFetcher {
     params?: Record<string, string>;
     headers?: Record<string, string>;
   }) {
-    const res = await fetch(this.makePath(opts.path, opts.params), {
+    const res = await fetch(await this.makePath(opts.path, opts.params), {
       method: "DELETE",
       headers: this.makeHeaders(opts.headers),
       timeout: DEFAULT_TIMEOUT,
@@ -79,7 +80,7 @@ export class HttpFetcher {
     params?: Record<string, string>;
     headers?: Record<string, string>;
   }) {
-    const res = await fetch(this.makePath(opts.path, opts.params), {
+    const res = await fetch(await this.makePath(opts.path, opts.params), {
       method: "PATCH",
       headers: this.makeHeaders(opts.headers),
       body: bodyToFetchBody(opts.body),
@@ -88,13 +89,19 @@ export class HttpFetcher {
     return processResult(res);
   }
 
-  private makePath(path?: string, params?: Record<string, string>) {
+  private async makePath(path?: string, params?: Record<string, string>) {
     const fixedPath = isNil(path)
       ? ""
       : path.startsWith("/")
       ? path.slice(1)
       : path;
     const url = new URL(this.baseUrl + fixedPath);
+
+    const isSafe = await isUrlSafe(url);
+    if (!isSafe) {
+      throw new DataSourceError("Invalid URL", 400);
+    }
+
     const searchParams = new URLSearchParams(params);
     Array.from(searchParams.entries()).forEach(([k, v]) => {
       url.searchParams.append(k, v);

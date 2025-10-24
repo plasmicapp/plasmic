@@ -1,3 +1,4 @@
+import { isUrlSafe } from "@/wab/server/util/url";
 import { DataSourceError } from "@/wab/shared/data-sources-meta/data-sources";
 import { GraphqlDataSource } from "@/wab/shared/data-sources-meta/graphql-meta";
 import { isEmpty, isString } from "lodash";
@@ -120,7 +121,7 @@ export class GraphqlFetcher {
     variables?: Record<string, string>;
     headers?: Record<string, string>;
   }) {
-    const res = await fetch(this.makePath(), {
+    const res = await fetch(await this.makePath(), {
       method: "POST",
       headers: this.makeHeaders(opts.headers),
       body: JSON.stringify({
@@ -140,8 +141,14 @@ export class GraphqlFetcher {
     return this.query(opts);
   }
 
-  private makePath(params?: Record<string, string>) {
+  private async makePath(params?: Record<string, string>) {
     const url = new URL(this.baseUrl);
+
+    const isSafe = await isUrlSafe(url);
+    if (!isSafe) {
+      throw new DataSourceError("Invalid URL", 400);
+    }
+
     const searchParams = new URLSearchParams(params);
     Array.from(searchParams.entries()).forEach(([k, v]) => {
       url.searchParams.append(k, v);
