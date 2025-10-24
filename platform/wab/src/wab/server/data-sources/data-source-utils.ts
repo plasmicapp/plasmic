@@ -65,14 +65,6 @@ import { isArray, isNil, isString, mapValues } from "lodash";
 import { astMapper, parse, toSql } from "pgsql-ast-parser";
 import { Connection } from "typeorm";
 
-export type ParameterizedArgs = Record<
-  string,
-  {
-    template: string;
-    values: unknown[];
-  }
->;
-
 export async function executeDataSourceOperation(
   dbCon: Connection,
   source: GenericDataSource,
@@ -95,11 +87,19 @@ export async function executeDataSourceOperation(
   if (!opMeta) {
     throw new Error(`Unknown operation ${source.source}.${operation.name}`);
   }
-  logger().debug("Operation", {
-    operation: operation.name,
-    userArgs,
-    fetchArgs,
-  });
+
+  // GenericDataSource is a union of real data sources and a fake data source.
+  // The real data sources have "workspaceId" since they extend from DataSource.
+  if ("workspaceId" in source) {
+    logger().info("executeDataSourceOperation", {
+      source: source.source,
+      sourceId: source.id,
+      sourceName: source.name,
+      sourceWorkspaceId: source.workspaceId,
+      operationName: operation.name,
+      operationRoleId: operation.roleId,
+    });
+  }
   const finalArgs = substituteArgs(
     source,
     opMeta,
