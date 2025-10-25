@@ -1,4 +1,5 @@
 import { BottomModalButtons } from "@/wab/client/components/BottomModal";
+import { shouldShowHostLessPackage } from "@/wab/client/components/omnibar/Omnibar";
 import { StringPropEditor } from "@/wab/client/components/sidebar-tabs/ComponentProps/StringPropEditor";
 import { DataPickerTypesSchema } from "@/wab/client/components/sidebar-tabs/DataBinding/DataPicker";
 import {
@@ -6,11 +7,13 @@ import {
   PropValueEditorContext,
 } from "@/wab/client/components/sidebar-tabs/PropEditorRow";
 import { LabeledItemRow } from "@/wab/client/components/sidebar/sidebar-helpers";
+import { createFakeHostLessComponent } from "@/wab/client/components/studio/add-drawer/AddDrawer";
 import StyleSelect from "@/wab/client/components/style-controls/StyleSelect";
 import Button from "@/wab/client/components/widgets/Button";
 import { Icon } from "@/wab/client/components/widgets/Icon";
+import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
 import SearchIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Search";
-import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { TutorialEventsType } from "@/wab/client/tours/tutorials/tutorials-events";
 import {
   StudioPropType,
@@ -20,16 +23,19 @@ import {
 import {
   cx,
   ensure,
+  ensureArray,
   mkShortId,
   spawn,
   withoutFalsy,
 } from "@/wab/shared/common";
 import { ExprCtx, clone, codeLit } from "@/wab/shared/core/exprs";
+import { DEVFLAGS, HostLessComponentInfo } from "@/wab/shared/devflags";
 import {
   ComponentServerQuery,
   CustomFunctionExpr,
   FunctionArg,
   Interaction,
+  Site,
   TplNode,
   isKnownComponentServerQuery,
   isKnownExpr,
@@ -49,6 +55,7 @@ import {
   getCustomFunctionParams,
   useCustomFunctionOp,
 } from "@/wab/shared/core/custom-functions";
+import { isHostlessPackageInstalledWithHidden } from "@/wab/shared/core/project-deps";
 import type { ServerQueryResult } from "@plasmicapp/react-web/lib/data-sources";
 import useSWR from "swr";
 
@@ -60,207 +67,339 @@ interface CustomFunctionExprDraft extends Partial<CustomFunctionExpr> {
   queryName?: string;
 }
 
-export function ServerQueryOpDraftForm(props: {
-  value?: CustomFunctionExprDraft;
-  onChange: React.Dispatch<React.SetStateAction<CustomFunctionExprDraft>>; // (value: DataSourceOpDraftValue) => void;
-  readOnly?: boolean;
-  env: Record<string, any> | undefined;
-  schema?: DataPickerTypesSchema;
-  isDisabled?: boolean;
-  showQueryName?: boolean;
-  allowedOps?: string[];
-  exprCtx: ExprCtx;
-}) {
-  const {
-    value,
-    isDisabled,
-    onChange,
-    readOnly,
-    env: data,
-    schema,
-    allowedOps,
-    showQueryName,
-    exprCtx,
-  } = props;
-  const studioCtx = useStudioCtx();
-  const availableCustomFunction = allCustomFunctions(studioCtx.site).map(
-    ({ customFunction }) => customFunction
-  );
-  const argsMap = React.useMemo(
-    () => groupBy(value?.args ?? [], (arg) => arg.argType.argName),
-    [value]
-  );
-  const evaluatedArgs = React.useMemo(() => {
-    if (!value || !value.func || !value.args) {
-      return [];
-    }
-    return getCustomFunctionParams(value as CustomFunctionExpr, data, exprCtx);
-  }, [value]);
+interface AvailableCustomFunctionInfo {
+  item: HostLessComponentInfo;
+  projectIds: string[];
+}
 
-  const { dataKey, fetcher, funcParamsValues } = React.useMemo(() => {
-    const func = value?.func;
-    if (!func) {
-      return {
-        dataKey: null,
-        fetcher: null,
-        funcParamsValues: [],
-      };
-    }
-    const registeredMeta = studioCtx
-      .getRegisteredFunctionsMap()
-      .get(customFunctionId(func))?.meta;
+const INSTALLABLE_PREFIX = "install-custom-function-";
 
-    const fnContext = registeredMeta?.fnContext;
-    if (!fnContext) {
+function getAllCustomFunctions(site: Site) {
+  return allCustomFunctions(site).map((fnInfo) => fnInfo.customFunction);
+}
+
+/**
+ * Get all available custom functions from hostless packages that are not yet installed
+ */
+function getAvailableCustomFunctions(
+  studioCtx: StudioCtx
+): AvailableCustomFunctionInfo[] {
+  const hostLessComponentsMeta =
+    studioCtx.appCtx.appConfig.hostLessComponents ??
+    DEVFLAGS.hostLessComponents ??
+    [];
+  const availableCustomFunctions: AvailableCustomFunctionInfo[] = [];
+
+  for (const meta of hostLessComponentsMeta) {
+    const isInstalledWithHidden = isHostlessPackageInstalledWithHidden(
+      meta,
+      studioCtx.site.projectDependencies
+    );
+    // Only show packages that should be visible
+    if (isInstalledWithHidden || !shouldShowHostLessPackage(studioCtx, meta)) {
+      continue;
+    }
+    const projectIds = ensureArray(meta.projectId);
+
+    // Get custom function items from this package
+    for (const item of meta.items) {
+      if (item.isCustomFunction && !item.hidden && !item.hiddenOnStore) {
+        availableCustomFunctions.push({ item, projectIds });
+      }
+    }
+  }
+  return availableCustomFunctions;
+}
+
+export const ServerQueryOpDraftForm = observer(
+  function ServerQueryOpDraftForm(props: {
+    value?: CustomFunctionExprDraft;
+    onChange: React.Dispatch<React.SetStateAction<CustomFunctionExprDraft>>; // (value: DataSourceOpDraftValue) => void;
+    readOnly?: boolean;
+    env: Record<string, any> | undefined;
+    schema?: DataPickerTypesSchema;
+    isDisabled?: boolean;
+    showQueryName?: boolean;
+    allowedOps?: string[];
+    exprCtx: ExprCtx;
+  }) {
+    const {
+      value,
+      isDisabled,
+      onChange,
+      readOnly,
+      env: data,
+      schema,
+      allowedOps,
+      showQueryName,
+      exprCtx,
+    } = props;
+    const studioCtx = useStudioCtx();
+
+    const [isInstalling, setIsInstalling] = React.useState(false);
+    const installableFunctions = React.useMemo(
+      () => getAvailableCustomFunctions(studioCtx),
+      [studioCtx.site.projectDependencies.length]
+    );
+    const availableFunctions = React.useMemo(
+      () => getAllCustomFunctions(studioCtx.site),
+      [studioCtx.site.projectDependencies.length]
+    );
+
+    const argsMap = React.useMemo(
+      () => groupBy(value?.args ?? [], (arg) => arg.argType.argName),
+      [value]
+    );
+    const evaluatedArgs = React.useMemo(() => {
+      if (!value || !value.func || !value.args) {
+        return [];
+      }
+      return getCustomFunctionParams(
+        value as CustomFunctionExpr,
+        data,
+        exprCtx
+      );
+    }, [value]);
+
+    const { dataKey, fetcher, funcParamsValues } = React.useMemo(() => {
+      const func = value?.func;
+      if (!func) {
+        return {
+          dataKey: null,
+          fetcher: null,
+          funcParamsValues: [],
+        };
+      }
+      const registeredMeta = studioCtx
+        .getRegisteredFunctionsMap()
+        .get(customFunctionId(func))?.meta;
+
+      const fnContext = registeredMeta?.fnContext;
+      if (!fnContext) {
+        return {
+          dataKey: null,
+          fetcher: null,
+          funcParamsValues: evaluatedArgs,
+        };
+      }
+
       return {
-        dataKey: null,
-        fetcher: null,
+        ...fnContext(...evaluatedArgs),
         funcParamsValues: evaluatedArgs,
       };
-    }
+    }, [studioCtx, value?.func, evaluatedArgs]);
 
-    return {
-      ...fnContext(...evaluatedArgs),
-      funcParamsValues: evaluatedArgs,
+    const { data: ccContextData } = useSWR(dataKey, fetcher);
+
+    const propValueEditorContext = React.useMemo(() => {
+      return {
+        componentPropValues: funcParamsValues ?? [],
+        ccContextData,
+        exprCtx,
+        schema,
+        env: data,
+      };
+    }, [schema, data, funcParamsValues, exprCtx, ccContextData]);
+
+    React.useEffect(() => {
+      if (availableFunctions.length === 0 && value?.func) {
+        onChange({ ...value, func: undefined, args: [] });
+        return;
+      }
+
+      const firstFunc = availableFunctions[0];
+      if (!value?.func) {
+        onChange({ ...value, func: firstFunc, args: [] });
+      } else {
+        const functionExistsInSite = availableFunctions.some(
+          (fn) => fn.uid === value.func?.uid
+        );
+        if (!functionExistsInSite) {
+          // Selected function was removed, reset to first available function
+          onChange({ ...value, func: firstFunc, args: [] });
+        }
+      }
+    }, [value?.func?.uid, availableFunctions]);
+
+    const groupedCustomFunctions = groupBy(
+      availableFunctions,
+      (fn) => fn.namespace ?? null
+    );
+
+    const handleInstallCustomFunction = async (
+      customFunctionInfo: AvailableCustomFunctionInfo
+    ) => {
+      setIsInstalling(true);
+      try {
+        const { item, projectIds } = customFunctionInfo;
+
+        // Track existing custom function IDs before installation
+        const existingFunctionIds = new Set(
+          getAllCustomFunctions(studioCtx.site).map((fn) => fn.uid)
+        );
+
+        const fakeItem = createFakeHostLessComponent(item, projectIds);
+        await studioCtx.runFakeItem(fakeItem);
+
+        const newFunc = getAllCustomFunctions(studioCtx.site).find(
+          (fn) => !existingFunctionIds.has(fn.uid)
+        );
+
+        if (newFunc) {
+          onChange({ ...value, func: newFunc, args: [] });
+        }
+      } catch (error) {
+        notification.error({
+          message: "Failed to install custom function",
+          description: (error as any).message,
+        });
+      } finally {
+        setIsInstalling(false);
+      }
     };
-  }, [studioCtx, value?.func, evaluatedArgs]);
 
-  const { data: ccContextData } = useSWR(dataKey, fetcher);
+    return (
+      <div id="data-source-modal-draft-section">
+        {showQueryName && (
+          <LabeledItemRow label="Query name">
+            <StringPropEditor
+              value={value?.queryName}
+              onChange={(newName) => onChange({ ...value, queryName: newName })}
+            />
+          </LabeledItemRow>
+        )}
+        <LabeledItemRow label={"Custom function"}>
+          <StyleSelect
+            value={value?.func ? customFunctionId(value.func) : undefined}
+            placeholder={"Select a custom function"}
+            valueSetState={value?.func ? "isSet" : undefined}
+            isDisabled={isDisabled || readOnly || isInstalling}
+            onChange={(id) => {
+              if (value?.func && id === customFunctionId(value.func)) {
+                return;
+              }
 
-  const propValueEditorContext = React.useMemo(() => {
-    return {
-      componentPropValues: funcParamsValues ?? [],
-      ccContextData,
-      exprCtx,
-      schema,
-      env: data,
-    };
-  }, [schema, data, funcParamsValues, exprCtx, ccContextData]);
+              // Check if this is an installable custom function
+              if (id?.startsWith(INSTALLABLE_PREFIX)) {
+                const componentName = id.substring(INSTALLABLE_PREFIX.length);
+                const customFunctionInfo = installableFunctions.find(
+                  (info) => info.item.componentName === componentName
+                );
+                if (customFunctionInfo) {
+                  spawn(handleInstallCustomFunction(customFunctionInfo));
+                }
+                return;
+              }
 
-  React.useEffect(() => {
-    if (availableCustomFunction.length > 0 && !value?.func) {
-      onChange({
-        ...value,
-        func: availableCustomFunction[0],
-        args: [],
-      });
-    }
-  }, [value, availableCustomFunction]);
+              const func = availableFunctions.find(
+                (fn) => customFunctionId(fn) === id
+              );
 
-  const groupedCustomFunctions = groupBy(
-    availableCustomFunction,
-    (fn) => fn.namespace ?? null
-  );
-
-  return (
-    <div id="data-source-modal-draft-section">
-      {showQueryName && (
-        <LabeledItemRow label="Query name">
-          <StringPropEditor
-            value={value?.queryName}
-            onChange={(newName) => onChange({ ...value, queryName: newName })}
-          />
-        </LabeledItemRow>
-      )}
-      <LabeledItemRow label={"Custom function"}>
-        <StyleSelect
-          value={value?.func ? customFunctionId(value.func) : undefined}
-          placeholder={"Select a custom function"}
-          valueSetState={value?.func ? "isSet" : undefined}
-          isDisabled={isDisabled || readOnly}
-          onChange={(id) => {
-            if (value?.func && id === customFunctionId(value.func)) {
-              return;
-            }
-
-            const func = availableCustomFunction.find(
-              (fn) => customFunctionId(fn) === id
-            );
-
-            onChange({
-              ...value,
-              func,
-              args: [],
-            });
-          }}
-        >
-          {Object.keys(groupedCustomFunctions).map((namespace) => {
-            const isNullGroup = namespace === "null";
-            return (
-              <StyleSelect.OptionGroup
-                title={!isNullGroup ? smartHumanize(namespace) : undefined}
-                noTitle={isNullGroup}
-              >
-                {groupedCustomFunctions[namespace].map((fn) => {
-                  const functionId = customFunctionId(fn);
+              onChange({
+                ...value,
+                func,
+                args: [],
+              });
+            }}
+          >
+            {Object.keys(groupedCustomFunctions).map((namespace) => {
+              const isNullGroup = namespace === "null";
+              return (
+                <StyleSelect.OptionGroup
+                  key={namespace}
+                  title={!isNullGroup ? smartHumanize(namespace) : undefined}
+                  noTitle={isNullGroup}
+                >
+                  {groupedCustomFunctions[namespace].map((fn) => {
+                    const functionId = customFunctionId(fn);
+                    return (
+                      <StyleSelect.Option key={fn.uid} value={functionId}>
+                        {fn.displayName ?? smartHumanize(fn.importName)}
+                      </StyleSelect.Option>
+                    );
+                  })}
+                </StyleSelect.OptionGroup>
+              );
+            })}
+            {installableFunctions.length > 0 && (
+              <StyleSelect.OptionGroup title={undefined} noTitle={false}>
+                {installableFunctions.map((info) => {
+                  const itemId = `${INSTALLABLE_PREFIX}${info.item.componentName}`;
                   return (
-                    <StyleSelect.Option key={fn.uid} value={functionId}>
-                      {fn.displayName ?? smartHumanize(fn.importName)}
+                    <StyleSelect.Option key={itemId} value={itemId}>
+                      <Icon
+                        icon={PlusIcon}
+                        style={{ color: "#999", marginRight: 4 }}
+                      />
+                      {info.item.displayName}
                     </StyleSelect.Option>
                   );
                 })}
               </StyleSelect.OptionGroup>
-            );
-          })}
-        </StyleSelect>
-      </LabeledItemRow>
-      {value?.func && (
-        <>
-          {value.func.params.map((param) => {
-            const argLabel = param.displayName ?? smartHumanize(param.argName);
-            const curArg =
-              param.argName in argsMap ? argsMap[param.argName][0] : undefined;
-            const curExpr = curArg?.expr;
-            const propType =
-              studioCtx
-                .getRegisteredFunctionsMap()
-                .get(customFunctionId(value.func!))
-                ?.meta.params?.find((p) => p.name === param.argName) ??
-              wabTypeToPropType(param.type);
+            )}
+          </StyleSelect>
+        </LabeledItemRow>
+        {value?.func && (
+          <>
+            {value.func.params.map((param) => {
+              const argLabel =
+                param.displayName ?? smartHumanize(param.argName);
+              const curArg =
+                param.argName in argsMap
+                  ? argsMap[param.argName][0]
+                  : undefined;
+              const curExpr = curArg?.expr;
+              const propType =
+                studioCtx
+                  .getRegisteredFunctionsMap()
+                  .get(customFunctionId(value.func!))
+                  ?.meta.params?.find((p) => p.name === param.argName) ??
+                wabTypeToPropType(param.type);
 
-            return (
-              <PropValueEditorContext.Provider value={propValueEditorContext}>
-                <InnerPropEditorRow
-                  attr={param.argName}
-                  propType={propType as StudioPropType<any>}
-                  expr={curExpr}
-                  label={argLabel}
-                  valueSetState={curExpr ? "isSet" : undefined}
-                  onChange={(expr) => {
-                    if (expr == null) {
-                      return;
-                    }
-                    const newExpr = isKnownExpr(expr) ? expr : codeLit(expr);
-                    const newArgs = value?.args ?? [];
-                    const changedArg = newArgs.find(
-                      (arg) => arg.argType === curArg?.argType
-                    );
-                    if (changedArg) {
-                      changedArg.expr = newExpr;
-                    } else {
-                      newArgs.push(
-                        new FunctionArg({
-                          uuid: mkShortId(),
-                          expr: newExpr,
-                          argType: param,
-                        })
+              return (
+                <PropValueEditorContext.Provider value={propValueEditorContext}>
+                  <InnerPropEditorRow
+                    attr={param.argName}
+                    propType={propType as StudioPropType<any>}
+                    expr={curExpr}
+                    label={argLabel}
+                    valueSetState={curExpr ? "isSet" : undefined}
+                    onChange={(expr) => {
+                      if (expr == null) {
+                        return;
+                      }
+                      const newExpr = isKnownExpr(expr) ? expr : codeLit(expr);
+                      const newArgs = value?.args ?? [];
+                      const changedArg = newArgs.find(
+                        (arg) => arg.argType === curArg?.argType
                       );
-                    }
+                      if (changedArg) {
+                        changedArg.expr = newExpr;
+                      } else {
+                        newArgs.push(
+                          new FunctionArg({
+                            uuid: mkShortId(),
+                            expr: newExpr,
+                            argType: param,
+                          })
+                        );
+                      }
 
-                    onChange({
-                      ...value,
-                      args: newArgs,
-                    });
-                  }}
-                />
-              </PropValueEditorContext.Provider>
-            );
-          })}
-        </>
-      )}
-    </div>
-  );
-}
+                      onChange({
+                        ...value,
+                        args: newArgs,
+                      });
+                    }}
+                  />
+                </PropValueEditorContext.Provider>
+              );
+            })}
+          </>
+        )}
+      </div>
+    );
+  }
+);
 
 function _ServerQueryOpPreview(props: {
   data?: Partial<ServerQueryResult>;
@@ -390,6 +529,7 @@ export const ServerQueryOpExprFormAndPreview = observer(
       queryName: isKnownComponentServerQuery(parent) ? parent.name : undefined,
       ...(value ? clone(value) : {}),
     }));
+
     const [isExecuting, setIsExecuting] = React.useState(false);
     const [executeQueue, setExecuteQueue] = React.useState<
       CustomFunctionExpr[]

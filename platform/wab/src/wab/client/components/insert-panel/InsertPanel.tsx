@@ -102,6 +102,10 @@ import {
 } from "@/wab/shared/core/components";
 import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
 import { isIcon } from "@/wab/shared/core/image-assets";
+import {
+  getLeafProjectIdForHostLessPackageMeta,
+  isHostlessPackageInstalledWithHidden,
+} from "@/wab/shared/core/project-deps";
 import { isHostLessPackage } from "@/wab/shared/core/sites";
 import { SlotSelection } from "@/wab/shared/core/slots";
 import {
@@ -139,7 +143,7 @@ import { placeholderImgUrl } from "@/wab/shared/urls";
 import { Menu } from "antd";
 import cn from "classnames";
 import { UseComboboxGetItemPropsOptions } from "downshift";
-import L, { groupBy, last, sortBy, uniq } from "lodash";
+import L, { groupBy, sortBy, uniq } from "lodash";
 import memoizeOne from "memoize-one";
 import { observer } from "mobx-react";
 import * as React from "react";
@@ -959,9 +963,9 @@ const getHostLess = memoizeOne(
       .map<AddItemGroup>((meta) => {
         // Filter custom function packages with hiddenWhenInstalled that are installed
         // TODO - update function UI to indicate that it's already installed
-        const leafId = getLeafProjectIdForHostLessPackageMeta(meta);
-        const isInstalledWithHidden = projectDependencies.some(
-          (dep) => leafId === dep.projectId && meta.hiddenWhenInstalled
+        const isInstalledWithHidden = isHostlessPackageInstalledWithHidden(
+          meta,
+          projectDependencies
         );
         const newVar: AddItemGroup = {
           hostLessPackageInfo: meta,
@@ -1010,10 +1014,6 @@ const getHostLess = memoizeOne(
 const insertPanelAliases = createMapFromObject(
   DEVFLAGS.insertPanelContent.aliases
 );
-
-function getLeafProjectIdForHostLessPackageMeta(pkg: HostLessPackageInfo) {
-  return last(ensureArray(pkg.projectId));
-}
 
 function getCodeComponentsGroups(studioCtx: StudioCtx): AddItemGroup[] {
   // All code components with studio UI will receive a dedicated section

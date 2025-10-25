@@ -43,6 +43,7 @@ import {
   assert,
   assignReadonly,
   ensure,
+  ensureArray,
   maybe,
   tuple,
   withoutNils,
@@ -101,6 +102,7 @@ import {
   isTplVariantable,
   replaceTplTreeByEmptyBox,
 } from "@/wab/shared/core/tpls";
+import { HostLessPackageInfo } from "@/wab/shared/devflags";
 import { ensureComponentsObserved } from "@/wab/shared/mobx-util";
 import {
   AnimationSequence,
@@ -147,7 +149,7 @@ import {
   renameParamAndFixExprs,
   renameTplAndFixExprs,
 } from "@/wab/shared/refactoring";
-import { isArray, keys, uniqBy } from "lodash";
+import { isArray, keys, last, uniqBy } from "lodash";
 
 export type DependencyWalkScope = "all" | "direct";
 
@@ -234,6 +236,22 @@ function collectUsedImportableObjectsForTpl(
     }
   );
   collectUsedMixinsForTpl(refs as Set<Mixin>, tpl);
+}
+
+export function getLeafProjectIdForHostLessPackageMeta(
+  pkg: HostLessPackageInfo
+) {
+  return last(ensureArray(pkg.projectId));
+}
+
+export function isHostlessPackageInstalledWithHidden(
+  meta: HostLessPackageInfo,
+  deps: ProjectDependency[]
+) {
+  const leafId = getLeafProjectIdForHostLessPackageMeta(meta);
+  const isInstalledWithHidden =
+    meta.hiddenWhenInstalled && deps.some((dep) => leafId === dep.projectId);
+  return isInstalledWithHidden;
 }
 
 export function extractTransitiveHostLessPackages(site: Site) {
