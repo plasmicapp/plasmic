@@ -2112,6 +2112,13 @@
   dependencies:
     "@rive-app/react-canvas" "^4.18.8"
 
+"@plasmicpkgs/strapi@^0.0.2":
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/strapi/-/strapi-0.0.2.tgz#fded64717f89c3b39bfacbef70d53936172bb0de"
+  integrity sha512-I2u/IXbkhNaD+VXEA6R/2ZtYXn8OhuEmh6aB1cD3DL8kYqommA6pBgGum9sKFq2Duuw2FAn5linEOn5IBHELYg==
+  dependencies:
+    qs "^6.11.0"
+
 "@plasmicpkgs/tiptap@^0.0.6":
   version "0.0.6"
   resolved "https://registry.yarnpkg.com/@plasmicpkgs/tiptap/-/tiptap-0.0.6.tgz#35299166b607c2a9d854e19194cdb32fbd5734f5"

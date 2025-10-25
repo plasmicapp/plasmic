@@ -7,12 +7,12 @@ import {
 } from "../../nextjs/nextjs-setup";
 import { testStrapiLoader } from "./shared/test-strapi";
 
-test.describe(`NextJS Strapi`, () => {
+test.describe(`NextJS Plasmic Strapi`, () => {
   let ctx: NextJsContext;
 
   test.beforeAll(async () => {
     ctx = await setupNextJs({
-      bundleFile: "strapi.json",
+      bundleFile: "plasmic-strapi.json",
       projectName: "Strapi Project",
       npmRegistry: getEnvVar("NPM_CONFIG_REGISTRY"),
       codegenHost: getEnvVar("WAB_HOST"),

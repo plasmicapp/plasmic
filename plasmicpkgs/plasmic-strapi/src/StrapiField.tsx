@@ -1,8 +1,14 @@
 import { ComponentMeta, useSelector } from "@plasmicapp/host";
-import get from "dlv";
+import {
+  _extractDisplayableFields,
+  _getFieldValue,
+  _getMediaAttributes,
+  _isImage,
+  _isStrapiItem,
+  _isStrapiPrimitive,
+} from "@plasmicpkgs/strapi";
 import React from "react";
-import { useStrapiCredentials } from "./StrapiCredentialsProvider";
-import { getAttributes, modulePath } from "./utils";
+import { modulePath } from "./utils";
 
 interface StrapiFieldProps {
   className?: string;
@@ -41,15 +47,7 @@ export function StrapiField({
   }
 
   // Getting only fields that aren't objects
-  const attributes = getAttributes(item);
-  const displayableFields = Object.keys(attributes).filter((field) => {
-    const value = attributes[field];
-    const maybeMime = getAttributes(value?.data)?.mime;
-    return (
-      typeof value !== "object" ||
-      (typeof maybeMime === "string" && maybeMime.startsWith("image"))
-    );
-  });
+  const displayableFields = _extractDisplayableFields(item);
 
   setControlContextData?.({
     fields: displayableFields,
@@ -60,33 +58,38 @@ export function StrapiField({
     return <div>StrapiField must specify a field name.</div>;
   }
 
-  const data = get(attributes, [path]);
-  const maybeMime = getAttributes(data?.data)?.mime;
+  const data = _getFieldValue(item, path);
+  const mediaAttributes = _isStrapiItem(data)
+    ? _getMediaAttributes(data)
+    : null;
 
   setControlContextData?.({
     fields: displayableFields,
-    isImage: typeof maybeMime === "string" && maybeMime.startsWith("image"),
+    isImage: mediaAttributes ? _isImage(mediaAttributes) : false,
   });
 
-  if (!data) {
+  if (data === undefined) {
     return <div>Please specify a valid field name.</div>;
-  } else if (typeof maybeMime === "string" && maybeMime.startsWith("image")) {
-    const creds = useStrapiCredentials();
-    const attrs = getAttributes(data.data);
-    const img_url = attrs.url.startsWith("http")
-      ? attrs.url
-      : creds.host + attrs.url;
-    const img_width = attrs.width;
-    const img_height = attrs.height;
+  } else if (data === null) {
+    return <div className={className}></div>;
+  } else if (mediaAttributes && _isImage(mediaAttributes)) {
+    // URL is already absolute after transformMediaUrls in queryStrapi
     return (
       <img
         className={className}
-        src={img_url}
+        src={mediaAttributes.absoluteUrl}
         width={300}
-        height={(300 * img_height) / img_width}
+        height={(300 * mediaAttributes.height) / mediaAttributes.width}
       />
     );
-  } else {
+  } else if (_isStrapiPrimitive(data)) {
     return <div className={className}>{data}</div>;
+  } else {
+    console.warn("Complex field value:", data);
+    return (
+      <div>
+        Complex field value could not be displayed. See console for details.
+      </div>
+    );
   }
 }

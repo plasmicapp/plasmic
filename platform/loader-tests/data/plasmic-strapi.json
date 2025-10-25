@@ -1,8 +1,8 @@
 [
   [
-    "c30818bb-2f70-4079-bc4d-65eaecf566f6",
+    "6acc467a-ae43-4b00-9fe2-d90e71958278",
     {
-      "root": "63815001",
+      "root": "CdKvHqZylwL6",
       "map": {
         "26311001": {
           "uuid": "OhbtxuWAWZN",
@@ -36,8 +36,8 @@
           "figmaMappings": [],
           "alwaysAutoName": false,
           "trapsFocus": false,
-          "__type": "Component",
-          "updatedAt": null
+          "updatedAt": null,
+          "__type": "Component"
         },
         "26311002": {
           "uuid": "JryfEqNwRw-",
@@ -62,8 +62,8 @@
           "figmaMappings": [],
           "alwaysAutoName": false,
           "trapsFocus": false,
-          "__type": "Component",
-          "updatedAt": null
+          "updatedAt": null,
+          "__type": "Component"
         },
         "26311003": {
           "uuid": "Syd4LLKVYl3",
@@ -92,8 +92,8 @@
           "figmaMappings": [],
           "alwaysAutoName": false,
           "trapsFocus": false,
-          "__type": "Component",
-          "updatedAt": null
+          "updatedAt": null,
+          "__type": "Component"
         },
         "26311004": {
           "name": null,
@@ -127,6 +127,7 @@
         },
         "26311007": {
           "type": { "__ref": "26311026" },
+          "advanced": false,
           "variable": { "__ref": "26311025" },
           "uuid": "01ZcT3FRSo0",
           "enumValues": [],
@@ -143,11 +144,11 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam",
-          "advanced": false
+          "__type": "PropParam"
         },
         "26311008": {
           "type": { "__ref": "26311028" },
+          "advanced": false,
           "variable": { "__ref": "26311027" },
           "uuid": "NJTd9SpbaaH",
           "enumValues": [],
@@ -164,8 +165,7 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam",
-          "advanced": false
+          "__type": "PropParam"
         },
         "26311009": {
           "tag": "div",
@@ -219,11 +219,12 @@
             }
           },
           "variants": {},
-          "__type": "CodeComponentMeta",
-          "refActions": []
+          "refActions": [],
+          "__type": "CodeComponentMeta"
         },
         "26311012": {
           "type": { "__ref": "26311035" },
+          "advanced": false,
           "variable": { "__ref": "26311034" },
           "uuid": "xRGqQIN1-Rv",
           "enumValues": [],
@@ -240,8 +241,7 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam",
-          "advanced": false
+          "__type": "PropParam"
         },
         "26311013": {
           "tag": "div",
@@ -290,17 +290,18 @@
           "helpers": null,
           "defaultSlotContents": {},
           "variants": {},
-          "__type": "CodeComponentMeta",
-          "refActions": []
+          "refActions": [],
+          "__type": "CodeComponentMeta"
         },
         "26311016": {
-          "type": { "__ref": "cvecJliDifJb" },
+          "type": { "__ref": "WGwGSS8z4Lmw" },
+          "advanced": false,
           "variable": { "__ref": "26311038" },
           "uuid": "GDk0TUdChqh",
           "enumValues": [],
           "origin": null,
           "exportType": "External",
-          "defaultExpr": { "__ref": "X89C2CBOm55Z" },
+          "defaultExpr": { "__ref": "Dh4rEKUG6Iq-" },
           "previewExpr": null,
           "propEffect": null,
           "description": null,
@@ -311,11 +312,11 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam",
-          "advanced": false
+          "__type": "PropParam"
         },
         "26311017": {
           "type": { "__ref": "26311042" },
+          "advanced": false,
           "variable": { "__ref": "26311041" },
           "uuid": "TFI-wORIYKI",
           "enumValues": [],
@@ -332,8 +333,7 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam",
-          "advanced": false
+          "__type": "PropParam"
         },
         "26311018": {
           "type": { "__ref": "26311044" },
@@ -403,8 +403,8 @@
           "helpers": null,
           "defaultSlotContents": {},
           "variants": {},
-          "__type": "CodeComponentMeta",
-          "refActions": []
+          "refActions": [],
+          "__type": "CodeComponentMeta"
         },
         "26311022": {
           "variants": [{ "__ref": "60773007" }],
@@ -474,8 +474,8 @@
             "max-width": "100%"
           },
           "mixins": [],
-          "__type": "RuleSet",
-          "animations": null
+          "animations": null,
+          "__type": "RuleSet"
         },
         "26311034": { "name": "path", "uuid": "B-Xpb19HHTr", "__type": "Var" },
         "26311035": {
@@ -531,8 +531,8 @@
         "26311048": {
           "values": {},
           "mixins": [],
-          "__type": "RuleSet",
-          "animations": null
+          "animations": null,
+          "__type": "RuleSet"
         },
         "26311050": {
           "variants": [{ "__ref": "26311010" }],
@@ -548,14 +548,14 @@
         "26311051": {
           "values": { "display": "flex", "flex-direction": "row" },
           "mixins": [],
-          "__type": "RuleSet",
-          "animations": null
+          "animations": null,
+          "__type": "RuleSet"
         },
         "26311061": {
           "values": { "display": "flex", "flex-direction": "row" },
           "mixins": [],
-          "__type": "RuleSet",
-          "animations": null
+          "animations": null,
+          "__type": "RuleSet"
         },
         "26311062": {
           "variants": [{ "__ref": "26311020" }],
@@ -571,20 +571,20 @@
         "26311063": {
           "values": { "display": "flex", "flex-direction": "row" },
           "mixins": [],
-          "__type": "RuleSet",
-          "animations": null
+          "animations": null,
+          "__type": "RuleSet"
         },
         "26311066": {
           "values": {},
           "mixins": [],
-          "__type": "RuleSet",
-          "animations": null
+          "animations": null,
+          "__type": "RuleSet"
         },
         "26311071": {
           "values": {},
           "mixins": [],
-          "__type": "RuleSet",
-          "animations": null
+          "animations": null,
+          "__type": "RuleSet"
         },
         "38798001": {
           "name": "plasmic-strapi",
@@ -608,7 +608,10 @@
           "userManagedFonts": [],
           "globalVariant": { "__ref": "60773007" },
           "styleTokens": [],
+          "styleTokenOverrides": [],
+          "dataTokens": [],
           "mixins": [],
+          "animationSequences": [],
           "themes": [{ "__ref": "60773009" }],
           "activeTheme": { "__ref": "60773009" },
           "imageAssets": [],
@@ -623,10 +626,7 @@
           "pageWrapper": null,
           "customFunctions": [],
           "codeLibraries": [],
-          "__type": "Site",
-          "styleTokenOverrides": [],
-          "dataTokens": [],
-          "animationSequences": []
+          "__type": "Site"
         },
         "60773007": {
           "uuid": "Mq9nYQJp8PE",
@@ -660,17 +660,8 @@
         "60773011": {
           "values": {},
           "mixins": [],
-          "__type": "RuleSet",
-          "animations": null
-        },
-        "63815001": {
-          "uuid": "QYfPwP9ZMr",
-          "pkgId": "2a61e156-9687-4857-8a38-8d563dd204a1",
-          "projectId": "g8jJNUuP95j5yiS7FS8uou",
-          "version": "0.0.28",
-          "name": "Imported Dep",
-          "site": { "__ref": "60773001" },
-          "__type": "ProjectDependency"
+          "animations": null,
+          "__type": "RuleSet"
         },
         "aqcggEWh_gvf": {
           "name": "choice",
@@ -684,6 +675,7 @@
         },
         "72QmkzU8G6hx": {
           "type": { "__ref": "aqcggEWh_gvf" },
+          "advanced": false,
           "variable": { "__ref": "k6Uvya5dPRVY" },
           "uuid": "ZiqaXg08E0yN",
           "enumValues": [],
@@ -700,8 +692,7 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam",
-          "advanced": false
+          "__type": "PropParam"
         },
         "KcpZQjO7B3xK": {
           "name": "choice",
@@ -715,6 +706,7 @@
         },
         "Zo-wdC-VCGMN": {
           "type": { "__ref": "KcpZQjO7B3xK" },
+          "advanced": false,
           "variable": { "__ref": "5PEQGdRIN6SF" },
           "uuid": "HXxy_ULhy9z1",
           "enumValues": [],
@@ -731,8 +723,7 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam",
-          "advanced": false
+          "__type": "PropParam"
         },
         "wGmfUUkgCppa": { "name": "text", "__type": "Text" },
         "xGz56F9JKCme": {
@@ -742,6 +733,7 @@
         },
         "4LLNBmli4lFb": {
           "type": { "__ref": "wGmfUUkgCppa" },
+          "advanced": false,
           "variable": { "__ref": "xGz56F9JKCme" },
           "uuid": "VbaZUyuuVVSc",
           "enumValues": [],
@@ -758,17 +750,16 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam",
-          "advanced": false
+          "__type": "PropParam"
         },
-        "KRnsWkF_Iz__": { "name": "num", "__type": "Num" },
         "QZjHr75o62dp": {
           "name": "limit",
           "uuid": "hhgcWDE1u-ci",
           "__type": "Var"
         },
         "KO_adXwiRcBB": {
-          "type": { "__ref": "KRnsWkF_Iz__" },
+          "type": { "__ref": "3xK1qdXXYF9_" },
+          "advanced": false,
           "variable": { "__ref": "QZjHr75o62dp" },
           "uuid": "F9hs92sgz6u3",
           "enumValues": [],
@@ -779,14 +770,13 @@
           "propEffect": null,
           "description": null,
           "displayName": "Limit",
-          "about": "Maximum n umber of collections to fetch (0 for unlimited).",
+          "about": "Maximum number of collections to fetch (0 for unlimited).",
           "isRepeated": null,
           "isMainContentSlot": false,
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam",
-          "advanced": false
+          "__type": "PropParam"
         },
         "fbQBpp6IptxW": { "name": "bool", "__type": "BoolType" },
         "VXuLVyD1tfhM": {
@@ -801,6 +791,7 @@
         },
         "t7Is0wQdUSSn": {
           "type": { "__ref": "fbQBpp6IptxW" },
+          "advanced": false,
           "variable": { "__ref": "REQ-gs8n69LW" },
           "uuid": "jnsqPIKI4IKj",
           "enumValues": [],
@@ -817,14 +808,23 @@
           "required": false,
           "mergeWithParent": false,
           "isLocalizable": false,
-          "__type": "PropParam",
-          "advanced": false
+          "__type": "PropParam"
         },
-        "cvecJliDifJb": { "name": "text", "__type": "Text" },
-        "X89C2CBOm55Z": {
-          "code": "\"https://strapi-app.plasmic.app\"",
+        "3xK1qdXXYF9_": { "name": "num", "__type": "Num" },
+        "WGwGSS8z4Lmw": { "name": "text", "__type": "Text" },
+        "Dh4rEKUG6Iq-": {
+          "code": "\"https://graceful-belief-d395c347a3.strapiapp.com/\"",
           "fallback": null,
           "__type": "CustomCode"
+        },
+        "CdKvHqZylwL6": {
+          "uuid": "gKzM1R6q_U7w",
+          "pkgId": "47024f6f-1524-4181-b6bf-ead3d0c7ba71",
+          "projectId": "trR6HqKuoJcDJ6ia2gcAPW",
+          "version": "0.1.0",
+          "name": "Imported Dep",
+          "site": { "__ref": "60773001" },
+          "__type": "ProjectDependency"
         }
       },
       "deps": [],
@@ -832,13 +832,13 @@
     }
   ],
   [
-    "d1qKEFY7AR5RyvZh1g1g41",
+    "g8TDzefjTLLyCvLiS9mkWw",
     {
       "root": "31846001",
       "map": {
         "954001": {
           "uuid": "J_4RxmRhiT",
-          "name": "Homepage",
+          "name": "Strapi v4",
           "params": [],
           "states": [],
           "tplTree": { "__ref": "954003" },
@@ -859,8 +859,8 @@
           "figmaMappings": [],
           "alwaysAutoName": false,
           "trapsFocus": false,
-          "__type": "Component",
-          "updatedAt": null
+          "updatedAt": 1761133631509,
+          "__type": "Component"
         },
         "954002": {
           "component": { "__ref": "954001" },
@@ -894,7 +894,7 @@
           "__type": "Variant"
         },
         "954005": {
-          "path": "/",
+          "path": "/v4",
           "params": {},
           "query": {},
           "title": null,
@@ -933,8 +933,8 @@
             "height": "stretch"
           },
           "mixins": [],
-          "__type": "RuleSet",
-          "animations": null
+          "animations": null,
+          "__type": "RuleSet"
         },
         "954011": {
           "frame": { "__ref": "954018" },
@@ -981,14 +981,14 @@
         "954024": {
           "values": {},
           "mixins": [],
-          "__type": "RuleSet",
-          "animations": null
+          "animations": null,
+          "__type": "RuleSet"
         },
         "954026": {
           "name": null,
           "component": {
             "__xref": {
-              "uuid": "c30818bb-2f70-4079-bc4d-65eaecf566f6",
+              "uuid": "6acc467a-ae43-4b00-9fe2-d90e71958278",
               "iid": "26311003"
             }
           },
@@ -1002,12 +1002,12 @@
           "variants": [
             {
               "__xref": {
-                "uuid": "c30818bb-2f70-4079-bc4d-65eaecf566f6",
+                "uuid": "6acc467a-ae43-4b00-9fe2-d90e71958278",
                 "iid": "60773007"
               }
             }
           ],
-          "args": [],
+          "args": [{ "__ref": "Uc2FmCHF7vpK" }],
           "attrs": {},
           "rs": { "__ref": "954028" },
           "dataCond": null,
@@ -1019,14 +1019,14 @@
         "954028": {
           "values": {},
           "mixins": [],
-          "__type": "RuleSet",
-          "animations": null
+          "animations": null,
+          "__type": "RuleSet"
         },
         "954029": {
           "name": null,
           "component": {
             "__xref": {
-              "uuid": "c30818bb-2f70-4079-bc4d-65eaecf566f6",
+              "uuid": "6acc467a-ae43-4b00-9fe2-d90e71958278",
               "iid": "26311001"
             }
           },
@@ -1050,7 +1050,7 @@
         "954031": {
           "param": {
             "__xref": {
-              "uuid": "c30818bb-2f70-4079-bc4d-65eaecf566f6",
+              "uuid": "6acc467a-ae43-4b00-9fe2-d90e71958278",
               "iid": "26311006"
             }
           },
@@ -1071,8 +1071,8 @@
             "position": "relative"
           },
           "mixins": [],
-          "__type": "RuleSet",
-          "animations": null
+          "animations": null,
+          "__type": "RuleSet"
         },
         "954044": {
           "tag": "div",
@@ -1091,7 +1091,7 @@
           "name": null,
           "component": {
             "__xref": {
-              "uuid": "c30818bb-2f70-4079-bc4d-65eaecf566f6",
+              "uuid": "6acc467a-ae43-4b00-9fe2-d90e71958278",
               "iid": "26311002"
             }
           },
@@ -1139,19 +1139,19 @@
             "align-items": "center"
           },
           "mixins": [],
-          "__type": "RuleSet",
-          "animations": null
+          "animations": null,
+          "__type": "RuleSet"
         },
         "954049": {
           "values": { "max-width": "100%" },
           "mixins": [],
-          "__type": "RuleSet",
-          "animations": null
+          "animations": null,
+          "__type": "RuleSet"
         },
         "954063": {
           "param": {
             "__xref": {
-              "uuid": "c30818bb-2f70-4079-bc4d-65eaecf566f6",
+              "uuid": "6acc467a-ae43-4b00-9fe2-d90e71958278",
               "iid": "26311007"
             }
           },
@@ -1167,7 +1167,7 @@
           "name": null,
           "component": {
             "__xref": {
-              "uuid": "c30818bb-2f70-4079-bc4d-65eaecf566f6",
+              "uuid": "6acc467a-ae43-4b00-9fe2-d90e71958278",
               "iid": "26311002"
             }
           },
@@ -1192,13 +1192,13 @@
         "954068": {
           "values": { "max-width": "100%" },
           "mixins": [],
-          "__type": "RuleSet",
-          "animations": null
+          "animations": null,
+          "__type": "RuleSet"
         },
         "954070": {
           "param": {
             "__xref": {
-              "uuid": "c30818bb-2f70-4079-bc4d-65eaecf566f6",
+              "uuid": "6acc467a-ae43-4b00-9fe2-d90e71958278",
               "iid": "26311012"
             }
           },
@@ -1213,7 +1213,7 @@
         "954072": {
           "param": {
             "__xref": {
-              "uuid": "c30818bb-2f70-4079-bc4d-65eaecf566f6",
+              "uuid": "6acc467a-ae43-4b00-9fe2-d90e71958278",
               "iid": "26311012"
             }
           },
@@ -1258,8 +1258,8 @@
             "text-align": "center"
           },
           "mixins": [],
-          "__type": "RuleSet",
-          "animations": null
+          "animations": null,
+          "__type": "RuleSet"
         },
         "2508001": {
           "rows": [{ "__ref": "2508002" }],
@@ -1281,29 +1281,11 @@
           "fallback": null,
           "__type": "CustomCode"
         },
-        "11153003": {
-          "path": [
-            "$ctx",
-            "currentStrapiRestaurantsItem",
-            "attributes",
-            "photo",
-            "data",
-            "attributes",
-            "url"
-          ],
-          "fallback": { "__ref": "11153004" },
-          "__type": "ObjectPath"
-        },
-        "11153004": {
-          "code": "undefined",
-          "fallback": null,
-          "__type": "CustomCode"
-        },
         "25009001": {
           "name": null,
           "component": {
             "__xref": {
-              "uuid": "c30818bb-2f70-4079-bc4d-65eaecf566f6",
+              "uuid": "6acc467a-ae43-4b00-9fe2-d90e71958278",
               "iid": "26311001"
             }
           },
@@ -1327,7 +1309,7 @@
         "25009003": {
           "param": {
             "__xref": {
-              "uuid": "c30818bb-2f70-4079-bc4d-65eaecf566f6",
+              "uuid": "6acc467a-ae43-4b00-9fe2-d90e71958278",
               "iid": "26311006"
             }
           },
@@ -1337,7 +1319,7 @@
         "25009004": {
           "param": {
             "__xref": {
-              "uuid": "c30818bb-2f70-4079-bc4d-65eaecf566f6",
+              "uuid": "6acc467a-ae43-4b00-9fe2-d90e71958278",
               "iid": "26311007"
             }
           },
@@ -1358,8 +1340,8 @@
             "position": "relative"
           },
           "mixins": [],
-          "__type": "RuleSet",
-          "animations": null
+          "animations": null,
+          "__type": "RuleSet"
         },
         "25009006": {
           "tpl": [{ "__ref": "25009018" }],
@@ -1410,27 +1392,35 @@
             "align-items": "center"
           },
           "mixins": [],
-          "__type": "RuleSet",
-          "animations": null
+          "animations": null,
+          "__type": "RuleSet"
         },
         "31846001": {
-          "components": [{ "__ref": "954001" }],
+          "components": [
+            { "__ref": "954001" },
+            { "__ref": "ibhGbIzNEPMM" },
+            { "__ref": "uooV9_0jSS9n" },
+            { "__ref": "LW6k-nA3XmHV" }
+          ],
           "arenas": [],
-          "pageArenas": [{ "__ref": "954002" }],
+          "pageArenas": [{ "__ref": "954002" }, { "__ref": "i2rqyUFiX-5v" }],
           "componentArenas": [],
           "globalVariantGroups": [{ "__ref": "31846003" }],
           "userManagedFonts": [],
           "globalVariant": { "__ref": "31846007" },
           "styleTokens": [],
+          "styleTokenOverrides": [],
+          "dataTokens": [],
           "mixins": [],
+          "animationSequences": [],
           "themes": [{ "__ref": "31846009" }],
           "activeTheme": { "__ref": "31846009" },
           "imageAssets": [],
           "projectDependencies": [
             {
               "__xref": {
-                "uuid": "c30818bb-2f70-4079-bc4d-65eaecf566f6",
-                "iid": "63815001"
+                "uuid": "6acc467a-ae43-4b00-9fe2-d90e71958278",
+                "iid": "CdKvHqZylwL6"
               }
             }
           ],
@@ -1444,10 +1434,7 @@
           "pageWrapper": null,
           "customFunctions": [],
           "codeLibraries": [],
-          "__type": "Site",
-          "styleTokenOverrides": [],
-          "dataTokens": [],
-          "animationSequences": []
+          "__type": "Site"
         },
         "31846003": {
           "type": "global-screen",
@@ -1539,8 +1526,8 @@
             "text-overflow": "clip"
           },
           "mixins": [],
-          "__type": "RuleSet",
-          "animations": null
+          "animations": null,
+          "__type": "RuleSet"
         },
         "31846025": {
           "selector": "h1",
@@ -1566,8 +1553,8 @@
             "line-height": "1"
           },
           "mixins": [],
-          "__type": "RuleSet",
-          "animations": null
+          "animations": null,
+          "__type": "RuleSet"
         },
         "31846034": {
           "selector": "h2",
@@ -1593,8 +1580,8 @@
             "line-height": "1.1"
           },
           "mixins": [],
-          "__type": "RuleSet",
-          "animations": null
+          "animations": null,
+          "__type": "RuleSet"
         },
         "31846043": {
           "selector": "h3",
@@ -1620,8 +1607,8 @@
             "line-height": "1.2"
           },
           "mixins": [],
-          "__type": "RuleSet",
-          "animations": null
+          "animations": null,
+          "__type": "RuleSet"
         },
         "31846052": {
           "selector": "h4",
@@ -1647,8 +1634,8 @@
             "line-height": "1.3"
           },
           "mixins": [],
-          "__type": "RuleSet",
-          "animations": null
+          "animations": null,
+          "__type": "RuleSet"
         },
         "31846061": {
           "selector": "h5",
@@ -1674,8 +1661,8 @@
             "line-height": "1.5"
           },
           "mixins": [],
-          "__type": "RuleSet",
-          "animations": null
+          "animations": null,
+          "__type": "RuleSet"
         },
         "31846070": {
           "selector": "h6",
@@ -1700,8 +1687,8 @@
             "line-height": "1.5"
           },
           "mixins": [],
-          "__type": "RuleSet",
-          "animations": null
+          "animations": null,
+          "__type": "RuleSet"
         },
         "31846078": {
           "selector": "a",
@@ -1720,8 +1707,8 @@
         "31846080": {
           "values": { "color": "#0070f3" },
           "mixins": [],
-          "__type": "RuleSet",
-          "animations": null
+          "animations": null,
+          "__type": "RuleSet"
         },
         "31846082": {
           "selector": "a:hover",
@@ -1740,8 +1727,8 @@
         "31846084": {
           "values": { "color": "#3291ff" },
           "mixins": [],
-          "__type": "RuleSet",
-          "animations": null
+          "animations": null,
+          "__type": "RuleSet"
         },
         "31846086": {
           "selector": "blockquote",
@@ -1766,8 +1753,8 @@
             "padding-left": "10px"
           },
           "mixins": [],
-          "__type": "RuleSet",
-          "animations": null
+          "animations": null,
+          "__type": "RuleSet"
         },
         "31846094": {
           "selector": "code",
@@ -1809,8 +1796,8 @@
             "padding-top": "1px"
           },
           "mixins": [],
-          "__type": "RuleSet",
-          "animations": null
+          "animations": null,
+          "__type": "RuleSet"
         },
         "31846119": {
           "selector": "pre",
@@ -1852,8 +1839,8 @@
             "padding-top": "3px"
           },
           "mixins": [],
-          "__type": "RuleSet",
-          "animations": null
+          "animations": null,
+          "__type": "RuleSet"
         },
         "31846144": {
           "selector": "ol",
@@ -1881,8 +1868,8 @@
             "list-style-type": "decimal"
           },
           "mixins": [],
-          "__type": "RuleSet",
-          "animations": null
+          "animations": null,
+          "__type": "RuleSet"
         },
         "31846155": {
           "selector": "ul",
@@ -1910,8 +1897,8 @@
             "list-style-type": "disc"
           },
           "mixins": [],
-          "__type": "RuleSet",
-          "animations": null
+          "animations": null,
+          "__type": "RuleSet"
         },
         "58341001": {
           "expr": { "__ref": "11153001" },
@@ -1936,7 +1923,7 @@
           "args": [],
           "attrs": {
             "loading": { "__ref": "58341008" },
-            "src": { "__ref": "11153003" }
+            "src": { "__ref": "UJDodTeHAKak" }
           },
           "rs": { "__ref": "58341009" },
           "dataCond": null,
@@ -1958,11 +1945,1105 @@
             "width": "stretch"
           },
           "mixins": [],
-          "__type": "RuleSet",
-          "animations": null
+          "animations": null,
+          "__type": "RuleSet"
+        },
+        "ibhGbIzNEPMM": {
+          "uuid": "OW2vY4Ap-Bpz",
+          "name": "hostless-plasmic-head",
+          "params": [
+            { "__ref": "c4xOd--W0COR" },
+            { "__ref": "w49Q9r-hVXCE" },
+            { "__ref": "XCnuzugOgNHW" },
+            { "__ref": "HCHJcQNaVh2T" }
+          ],
+          "states": [],
+          "tplTree": { "__ref": "pflaeHQJfGsq" },
+          "editableByContentEditor": true,
+          "hiddenFromContentEditor": false,
+          "variants": [{ "__ref": "BXrYCU4FXCwT" }],
+          "variantGroups": [],
+          "pageMeta": null,
+          "codeComponentMeta": { "__ref": "L85bYcunNCZe" },
+          "type": "code",
+          "subComps": [],
+          "superComp": null,
+          "plumeInfo": null,
+          "templateInfo": null,
+          "metadata": {},
+          "dataQueries": [],
+          "serverQueries": [],
+          "figmaMappings": [],
+          "alwaysAutoName": false,
+          "trapsFocus": false,
+          "updatedAt": 1761122513121,
+          "__type": "Component"
+        },
+        "uooV9_0jSS9n": {
+          "uuid": "tXuNIsyOtr-l",
+          "name": "plasmic-data-source-fetcher",
+          "params": [
+            { "__ref": "AcVTemeI-JCw" },
+            { "__ref": "EW_WYlZ3GFoy" },
+            { "__ref": "wZ5hEkEcypRV" },
+            { "__ref": "yL3xpqtBPFiN" },
+            { "__ref": "fsNw4la2VPFb" }
+          ],
+          "states": [],
+          "tplTree": { "__ref": "0VlB0mMSwKiJ" },
+          "editableByContentEditor": true,
+          "hiddenFromContentEditor": false,
+          "variants": [{ "__ref": "FSajapRUc0VM" }],
+          "variantGroups": [],
+          "pageMeta": null,
+          "codeComponentMeta": { "__ref": "CzxTWs5BQFE-" },
+          "type": "code",
+          "subComps": [],
+          "superComp": null,
+          "plumeInfo": null,
+          "templateInfo": null,
+          "metadata": {},
+          "dataQueries": [],
+          "serverQueries": [],
+          "figmaMappings": [],
+          "alwaysAutoName": true,
+          "trapsFocus": false,
+          "updatedAt": 1761122513121,
+          "__type": "Component"
+        },
+        "c4xOd--W0COR": {
+          "type": { "__ref": "L0BITkG4b8d5" },
+          "advanced": false,
+          "variable": { "__ref": "Ei6kS8oEPKXr" },
+          "uuid": "ji5AXsFS2EnU",
+          "enumValues": [],
+          "origin": null,
+          "exportType": "External",
+          "defaultExpr": null,
+          "previewExpr": null,
+          "propEffect": null,
+          "description": null,
+          "displayName": "Title",
+          "about": null,
+          "isRepeated": null,
+          "isMainContentSlot": false,
+          "required": false,
+          "mergeWithParent": false,
+          "isLocalizable": false,
+          "__type": "PropParam"
+        },
+        "w49Q9r-hVXCE": {
+          "type": { "__ref": "LF2ISsPfW3Ug" },
+          "advanced": false,
+          "variable": { "__ref": "jSWvSVxX4XmE" },
+          "uuid": "mG7mMlL3N6Ue",
+          "enumValues": [],
+          "origin": null,
+          "exportType": "External",
+          "defaultExpr": null,
+          "previewExpr": null,
+          "propEffect": null,
+          "description": null,
+          "displayName": "Description",
+          "about": null,
+          "isRepeated": null,
+          "isMainContentSlot": false,
+          "required": false,
+          "mergeWithParent": false,
+          "isLocalizable": false,
+          "__type": "PropParam"
+        },
+        "XCnuzugOgNHW": {
+          "type": { "__ref": "4kaiDvWKjvEr" },
+          "advanced": false,
+          "variable": { "__ref": "hKZCZPJtiIt6" },
+          "uuid": "O9Bde3YvYo9U",
+          "enumValues": [],
+          "origin": null,
+          "exportType": "External",
+          "defaultExpr": null,
+          "previewExpr": null,
+          "propEffect": null,
+          "description": null,
+          "displayName": "Image",
+          "about": null,
+          "isRepeated": null,
+          "isMainContentSlot": false,
+          "required": false,
+          "mergeWithParent": false,
+          "isLocalizable": false,
+          "__type": "PropParam"
+        },
+        "HCHJcQNaVh2T": {
+          "type": { "__ref": "VNb7o-3izrkx" },
+          "advanced": false,
+          "variable": { "__ref": "qlTsrKrDG-Es" },
+          "uuid": "66vGlq3Bn34l",
+          "enumValues": [],
+          "origin": null,
+          "exportType": "External",
+          "defaultExpr": null,
+          "previewExpr": null,
+          "propEffect": null,
+          "description": null,
+          "displayName": "Canonical URL",
+          "about": null,
+          "isRepeated": null,
+          "isMainContentSlot": false,
+          "required": false,
+          "mergeWithParent": false,
+          "isLocalizable": false,
+          "__type": "PropParam"
+        },
+        "pflaeHQJfGsq": {
+          "tag": "div",
+          "name": null,
+          "children": [],
+          "type": "other",
+          "codeGenType": null,
+          "columnsSetting": null,
+          "uuid": "g_ChIme_WNQF",
+          "parent": null,
+          "locked": null,
+          "vsettings": [{ "__ref": "o5AGPYWypNHz" }],
+          "__type": "TplTag"
+        },
+        "BXrYCU4FXCwT": {
+          "uuid": "D5prRV3fnJzC",
+          "name": "base",
+          "selectors": null,
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null,
+          "parent": null,
+          "mediaQuery": null,
+          "description": null,
+          "forTpl": null,
+          "__type": "Variant"
+        },
+        "L85bYcunNCZe": {
+          "importPath": "@plasmicapp/react-web",
+          "defaultExport": false,
+          "displayName": "Page Metadata Override",
+          "importName": "PlasmicHead",
+          "description": "Set page metadata (HTML <head />) to dynamic values.",
+          "section": null,
+          "thumbnailUrl": null,
+          "classNameProp": null,
+          "refProp": null,
+          "defaultStyles": null,
+          "defaultDisplay": null,
+          "isHostLess": true,
+          "isContext": false,
+          "isAttachment": false,
+          "providesData": false,
+          "hasRef": false,
+          "isRepeatable": false,
+          "styleSections": false,
+          "helpers": null,
+          "defaultSlotContents": {},
+          "variants": {},
+          "refActions": [],
+          "__type": "CodeComponentMeta"
+        },
+        "AcVTemeI-JCw": {
+          "type": { "__ref": "HqDjyyv5AniH" },
+          "advanced": false,
+          "variable": { "__ref": "xUEtxB-uOkro" },
+          "uuid": "Lclfiy3hys0B",
+          "enumValues": [],
+          "origin": null,
+          "exportType": "External",
+          "defaultExpr": null,
+          "previewExpr": null,
+          "propEffect": null,
+          "description": null,
+          "displayName": "Data",
+          "about": null,
+          "isRepeated": null,
+          "isMainContentSlot": false,
+          "required": false,
+          "mergeWithParent": false,
+          "isLocalizable": false,
+          "__type": "PropParam"
+        },
+        "EW_WYlZ3GFoy": {
+          "type": { "__ref": "vMJ1ZwHG76EW" },
+          "advanced": false,
+          "variable": { "__ref": "iNgzqzAh2l8H" },
+          "uuid": "mwHi-w44O4Qk",
+          "enumValues": [],
+          "origin": null,
+          "exportType": "External",
+          "defaultExpr": null,
+          "previewExpr": null,
+          "propEffect": null,
+          "description": null,
+          "displayName": "Variable name",
+          "about": null,
+          "isRepeated": null,
+          "isMainContentSlot": false,
+          "required": false,
+          "mergeWithParent": false,
+          "isLocalizable": false,
+          "__type": "PropParam"
+        },
+        "wZ5hEkEcypRV": {
+          "type": { "__ref": "Qt9qoYDRgjNQ" },
+          "tplSlot": { "__ref": "XHbCevaVBenp" },
+          "variable": { "__ref": "H8k_-gE-JlFy" },
+          "uuid": "IZ0GDhl4zs2C",
+          "enumValues": [],
+          "origin": null,
+          "exportType": "External",
+          "defaultExpr": null,
+          "previewExpr": null,
+          "propEffect": null,
+          "description": null,
+          "displayName": null,
+          "about": null,
+          "isRepeated": null,
+          "isMainContentSlot": false,
+          "required": false,
+          "mergeWithParent": false,
+          "isLocalizable": false,
+          "__type": "SlotParam"
+        },
+        "yL3xpqtBPFiN": {
+          "type": { "__ref": "EPpTcdpvkGVh" },
+          "advanced": false,
+          "variable": { "__ref": "eIFbf7FUIVDv" },
+          "uuid": "HrYxan0zTX17",
+          "enumValues": [],
+          "origin": null,
+          "exportType": "External",
+          "defaultExpr": null,
+          "previewExpr": null,
+          "propEffect": null,
+          "description": "Only fetch in batches of this size; for pagination",
+          "displayName": "Page size",
+          "about": "Only fetch in batches of this size; for pagination",
+          "isRepeated": null,
+          "isMainContentSlot": false,
+          "required": false,
+          "mergeWithParent": false,
+          "isLocalizable": false,
+          "__type": "PropParam"
+        },
+        "fsNw4la2VPFb": {
+          "type": { "__ref": "OZFB1BdA4Ih6" },
+          "advanced": false,
+          "variable": { "__ref": "Ag_oyUjUwrzn" },
+          "uuid": "cx9eERemWT4c",
+          "enumValues": [],
+          "origin": null,
+          "exportType": "External",
+          "defaultExpr": null,
+          "previewExpr": null,
+          "propEffect": null,
+          "description": "0-based index of the paginated page to fetch",
+          "displayName": "Page index",
+          "about": "0-based index of the paginated page to fetch",
+          "isRepeated": null,
+          "isMainContentSlot": false,
+          "required": false,
+          "mergeWithParent": false,
+          "isLocalizable": false,
+          "__type": "PropParam"
+        },
+        "0VlB0mMSwKiJ": {
+          "tag": "div",
+          "name": null,
+          "children": [{ "__ref": "XHbCevaVBenp" }],
+          "type": "other",
+          "codeGenType": null,
+          "columnsSetting": null,
+          "uuid": "6wMbHnzoIcQQ",
+          "parent": null,
+          "locked": null,
+          "vsettings": [{ "__ref": "YCE7D2ERMsa0" }],
+          "__type": "TplTag"
+        },
+        "FSajapRUc0VM": {
+          "uuid": "uCYY3rtB0MGj",
+          "name": "base",
+          "selectors": null,
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null,
+          "parent": null,
+          "mediaQuery": null,
+          "description": null,
+          "forTpl": null,
+          "__type": "Variant"
+        },
+        "CzxTWs5BQFE-": {
+          "importPath": "@plasmicapp/react-web/lib/data-sources",
+          "defaultExport": false,
+          "displayName": "Data Fetcher",
+          "importName": "Fetcher",
+          "description": null,
+          "section": null,
+          "thumbnailUrl": null,
+          "classNameProp": null,
+          "refProp": null,
+          "defaultStyles": null,
+          "defaultDisplay": null,
+          "isHostLess": true,
+          "isContext": false,
+          "isAttachment": false,
+          "providesData": false,
+          "hasRef": false,
+          "isRepeatable": true,
+          "styleSections": false,
+          "helpers": null,
+          "defaultSlotContents": {},
+          "variants": {},
+          "refActions": [],
+          "__type": "CodeComponentMeta"
+        },
+        "L0BITkG4b8d5": { "name": "text", "__type": "Text" },
+        "Ei6kS8oEPKXr": {
+          "name": "title",
+          "uuid": "pVoPQz-ztrhx",
+          "__type": "Var"
+        },
+        "LF2ISsPfW3Ug": { "name": "text", "__type": "Text" },
+        "jSWvSVxX4XmE": {
+          "name": "description",
+          "uuid": "w_yUxnBsQpXk",
+          "__type": "Var"
+        },
+        "4kaiDvWKjvEr": { "name": "img", "__type": "Img" },
+        "hKZCZPJtiIt6": {
+          "name": "image",
+          "uuid": "lelqk6XmZZsI",
+          "__type": "Var"
+        },
+        "VNb7o-3izrkx": { "name": "text", "__type": "Text" },
+        "qlTsrKrDG-Es": {
+          "name": "canonical",
+          "uuid": "PJNw5gotIQMv",
+          "__type": "Var"
+        },
+        "o5AGPYWypNHz": {
+          "variants": [{ "__ref": "BXrYCU4FXCwT" }],
+          "args": [],
+          "attrs": {},
+          "rs": { "__ref": "0PxTFohQSRXa" },
+          "dataCond": null,
+          "dataRep": null,
+          "text": null,
+          "columnsConfig": null,
+          "__type": "VariantSetting"
+        },
+        "HqDjyyv5AniH": { "name": "any", "__type": "AnyType" },
+        "xUEtxB-uOkro": {
+          "name": "dataOp",
+          "uuid": "Ahh3en4N-NQ6",
+          "__type": "Var"
+        },
+        "vMJ1ZwHG76EW": { "name": "text", "__type": "Text" },
+        "iNgzqzAh2l8H": {
+          "name": "name",
+          "uuid": "kq54CDObxECF",
+          "__type": "Var"
+        },
+        "Qt9qoYDRgjNQ": {
+          "name": "renderFunc",
+          "params": [{ "__ref": "GIt3ayOuu_da" }],
+          "allowed": [],
+          "allowRootWrapper": null,
+          "__type": "RenderFuncType"
+        },
+        "H8k_-gE-JlFy": {
+          "name": "children",
+          "uuid": "v-OM9Jlb9fax",
+          "__type": "Var"
+        },
+        "EPpTcdpvkGVh": { "name": "num", "__type": "Num" },
+        "eIFbf7FUIVDv": {
+          "name": "pageSize",
+          "uuid": "dkVH-3zmKlLs",
+          "__type": "Var"
+        },
+        "OZFB1BdA4Ih6": { "name": "num", "__type": "Num" },
+        "Ag_oyUjUwrzn": {
+          "name": "pageIndex",
+          "uuid": "sJcWzk3VaVMx",
+          "__type": "Var"
+        },
+        "XHbCevaVBenp": {
+          "param": { "__ref": "wZ5hEkEcypRV" },
+          "defaultContents": [],
+          "uuid": "3Jheivm_vSO9",
+          "parent": { "__ref": "0VlB0mMSwKiJ" },
+          "locked": null,
+          "vsettings": [{ "__ref": "7hmRRKfB_jgp" }],
+          "__type": "TplSlot"
+        },
+        "YCE7D2ERMsa0": {
+          "variants": [{ "__ref": "FSajapRUc0VM" }],
+          "args": [],
+          "attrs": {},
+          "rs": { "__ref": "NCgzYT3GRAsU" },
+          "dataCond": null,
+          "dataRep": null,
+          "text": null,
+          "columnsConfig": null,
+          "__type": "VariantSetting"
+        },
+        "0PxTFohQSRXa": {
+          "values": { "display": "flex", "flex-direction": "row" },
+          "mixins": [],
+          "animations": null,
+          "__type": "RuleSet"
+        },
+        "GIt3ayOuu_da": {
+          "name": "arg",
+          "argName": "$queries",
+          "displayName": null,
+          "type": { "__ref": "jgceqJE8pSoK" },
+          "__type": "ArgType"
+        },
+        "7hmRRKfB_jgp": {
+          "variants": [{ "__ref": "FSajapRUc0VM" }],
+          "args": [],
+          "attrs": {},
+          "rs": { "__ref": "ckDliiIH33Tj" },
+          "dataCond": null,
+          "dataRep": null,
+          "text": null,
+          "columnsConfig": null,
+          "__type": "VariantSetting"
+        },
+        "NCgzYT3GRAsU": {
+          "values": { "display": "flex", "flex-direction": "row" },
+          "mixins": [],
+          "animations": null,
+          "__type": "RuleSet"
+        },
+        "jgceqJE8pSoK": { "name": "any", "__type": "AnyType" },
+        "ckDliiIH33Tj": {
+          "values": {},
+          "mixins": [],
+          "animations": null,
+          "__type": "RuleSet"
+        },
+        "Uc2FmCHF7vpK": {
+          "param": {
+            "__xref": {
+              "uuid": "6acc467a-ae43-4b00-9fe2-d90e71958278",
+              "iid": "26311016"
+            }
+          },
+          "expr": { "__ref": "hbajE3dAzxne" },
+          "__type": "Arg"
+        },
+        "UJDodTeHAKak": {
+          "code": "($ctx.currentStrapiRestaurantsItem.attributes.photo.data.attributes.url)",
+          "fallback": { "__ref": "Cr4DHCDnVA2F" },
+          "__type": "CustomCode"
+        },
+        "Cr4DHCDnVA2F": {
+          "code": "undefined",
+          "fallback": null,
+          "__type": "CustomCode"
+        },
+        "LW6k-nA3XmHV": {
+          "uuid": "kedSwlw3uuVa",
+          "name": "Strapi v5",
+          "params": [],
+          "states": [],
+          "tplTree": { "__ref": "mfDqODMlhwBD" },
+          "editableByContentEditor": false,
+          "hiddenFromContentEditor": false,
+          "variants": [{ "__ref": "U61idb-NssmS" }],
+          "variantGroups": [],
+          "pageMeta": { "__ref": "nLgRuny8hxcD" },
+          "codeComponentMeta": null,
+          "type": "page",
+          "subComps": [],
+          "superComp": null,
+          "plumeInfo": null,
+          "templateInfo": null,
+          "metadata": {},
+          "dataQueries": [],
+          "serverQueries": [],
+          "figmaMappings": [],
+          "alwaysAutoName": false,
+          "trapsFocus": false,
+          "updatedAt": 1761133684101,
+          "__type": "Component"
+        },
+        "i2rqyUFiX-5v": {
+          "component": { "__ref": "LW6k-nA3XmHV" },
+          "matrix": { "__ref": "NNlNhHJ26Zk_" },
+          "customMatrix": { "__ref": "p_NnGgZ80mOV" },
+          "__type": "PageArena"
+        },
+        "mfDqODMlhwBD": {
+          "tag": "div",
+          "name": null,
+          "children": [
+            { "__ref": "4WbkAOxLrgHs" },
+            { "__ref": "bZM7hqpKbhcR" }
+          ],
+          "type": "other",
+          "codeGenType": null,
+          "columnsSetting": null,
+          "uuid": "RDXMMznc83U_",
+          "parent": null,
+          "locked": null,
+          "vsettings": [{ "__ref": "v1BW_fG1f8CX" }],
+          "__type": "TplTag"
+        },
+        "U61idb-NssmS": {
+          "uuid": "XLfCs78GKMnM",
+          "name": "base",
+          "selectors": null,
+          "codeComponentName": null,
+          "codeComponentVariantKeys": null,
+          "parent": null,
+          "mediaQuery": null,
+          "description": null,
+          "forTpl": null,
+          "__type": "Variant"
+        },
+        "nLgRuny8hxcD": {
+          "path": "/v5",
+          "params": {},
+          "query": {},
+          "title": null,
+          "description": "",
+          "canonical": null,
+          "roleId": null,
+          "openGraphImage": null,
+          "__type": "PageMeta"
+        },
+        "NNlNhHJ26Zk_": {
+          "rows": [{ "__ref": "HENbn-QjQE4b" }],
+          "__type": "ArenaFrameGrid"
+        },
+        "p_NnGgZ80mOV": {
+          "rows": [{ "__ref": "wWZ5KTxi8CU2" }],
+          "__type": "ArenaFrameGrid"
+        },
+        "4WbkAOxLrgHs": {
+          "name": null,
+          "component": {
+            "__xref": {
+              "uuid": "6acc467a-ae43-4b00-9fe2-d90e71958278",
+              "iid": "26311001"
+            }
+          },
+          "uuid": "QSquF9mNdEep",
+          "parent": { "__ref": "mfDqODMlhwBD" },
+          "locked": null,
+          "vsettings": [{ "__ref": "-4LmRXP1UGe3" }],
+          "__type": "TplComponent"
+        },
+        "bZM7hqpKbhcR": {
+          "name": null,
+          "component": {
+            "__xref": {
+              "uuid": "6acc467a-ae43-4b00-9fe2-d90e71958278",
+              "iid": "26311001"
+            }
+          },
+          "uuid": "1kvNyGG6SecT",
+          "parent": { "__ref": "mfDqODMlhwBD" },
+          "locked": null,
+          "vsettings": [{ "__ref": "dDIXdIeBwKvs" }],
+          "__type": "TplComponent"
+        },
+        "v1BW_fG1f8CX": {
+          "variants": [{ "__ref": "U61idb-NssmS" }],
+          "args": [],
+          "attrs": {},
+          "rs": { "__ref": "h0ZPpPyHkuX6" },
+          "dataCond": null,
+          "dataRep": null,
+          "text": null,
+          "columnsConfig": null,
+          "__type": "VariantSetting"
+        },
+        "HENbn-QjQE4b": {
+          "cols": [{ "__ref": "U8bmbZD33cKT" }],
+          "rowKey": { "__ref": "U61idb-NssmS" },
+          "__type": "ArenaFrameRow"
+        },
+        "wWZ5KTxi8CU2": {
+          "cols": [],
+          "rowKey": null,
+          "__type": "ArenaFrameRow"
+        },
+        "-4LmRXP1UGe3": {
+          "variants": [{ "__ref": "U61idb-NssmS" }],
+          "args": [{ "__ref": "GQVp1ug-9nWz" }, { "__ref": "ZFJjnsSHo2WW" }],
+          "attrs": {},
+          "rs": { "__ref": "rVSnzZaabwnY" },
+          "dataCond": null,
+          "dataRep": null,
+          "text": null,
+          "columnsConfig": null,
+          "__type": "VariantSetting"
+        },
+        "dDIXdIeBwKvs": {
+          "variants": [{ "__ref": "U61idb-NssmS" }],
+          "args": [{ "__ref": "aa-sfmVp0Ycq" }, { "__ref": "wdJRo74z0PCF" }],
+          "attrs": {},
+          "rs": { "__ref": "dMscNX_hkbBB" },
+          "dataCond": null,
+          "dataRep": null,
+          "text": null,
+          "columnsConfig": null,
+          "__type": "VariantSetting"
+        },
+        "h0ZPpPyHkuX6": {
+          "values": {
+            "display": "flex",
+            "flex-direction": "column",
+            "position": "relative",
+            "width": "stretch",
+            "height": "stretch"
+          },
+          "mixins": [],
+          "animations": null,
+          "__type": "RuleSet"
+        },
+        "U8bmbZD33cKT": {
+          "frame": { "__ref": "gZdJkqmy-Ox8" },
+          "cellKey": null,
+          "__type": "ArenaFrameCell"
+        },
+        "GQVp1ug-9nWz": {
+          "param": {
+            "__xref": {
+              "uuid": "6acc467a-ae43-4b00-9fe2-d90e71958278",
+              "iid": "26311006"
+            }
+          },
+          "expr": { "__ref": "ok7mDjdsE-5k" },
+          "__type": "Arg"
+        },
+        "ZFJjnsSHo2WW": {
+          "param": {
+            "__xref": {
+              "uuid": "6acc467a-ae43-4b00-9fe2-d90e71958278",
+              "iid": "26311007"
+            }
+          },
+          "expr": { "__ref": "oixxEGa32ufM" },
+          "__type": "Arg"
+        },
+        "rVSnzZaabwnY": {
+          "values": {
+            "padding-top": "8px",
+            "padding-right": "8px",
+            "padding-bottom": "8px",
+            "padding-left": "8px",
+            "display": "grid",
+            "grid-template-columns": "1fr 1fr 1fr 1fr",
+            "grid-row-gap": "8px",
+            "grid-column-gap": "8px",
+            "max-width": "100%",
+            "position": "relative"
+          },
+          "mixins": [],
+          "animations": null,
+          "__type": "RuleSet"
+        },
+        "aa-sfmVp0Ycq": {
+          "param": {
+            "__xref": {
+              "uuid": "6acc467a-ae43-4b00-9fe2-d90e71958278",
+              "iid": "26311006"
+            }
+          },
+          "expr": { "__ref": "LgiUff8rpVnC" },
+          "__type": "Arg"
+        },
+        "wdJRo74z0PCF": {
+          "param": {
+            "__xref": {
+              "uuid": "6acc467a-ae43-4b00-9fe2-d90e71958278",
+              "iid": "26311007"
+            }
+          },
+          "expr": { "__ref": "KfknGlUnYtRJ" },
+          "__type": "Arg"
+        },
+        "dMscNX_hkbBB": {
+          "values": {
+            "padding-top": "8px",
+            "padding-right": "8px",
+            "padding-bottom": "8px",
+            "padding-left": "8px",
+            "display": "grid",
+            "grid-template-columns": "1fr 1fr 1fr 1fr",
+            "grid-row-gap": "8px",
+            "grid-column-gap": "8px",
+            "max-width": "100%",
+            "position": "relative"
+          },
+          "mixins": [],
+          "animations": null,
+          "__type": "RuleSet"
+        },
+        "gZdJkqmy-Ox8": {
+          "uuid": "-zRfinDjVdjP",
+          "width": 1366,
+          "height": 768,
+          "container": { "__ref": "1m9JjRZrnp5H" },
+          "lang": "English",
+          "pinnedVariants": {},
+          "targetVariants": [{ "__ref": "U61idb-NssmS" }],
+          "pinnedGlobalVariants": {},
+          "targetGlobalVariants": [],
+          "viewMode": "stretch",
+          "bgColor": null,
+          "name": "",
+          "top": null,
+          "left": null,
+          "__type": "ArenaFrame"
+        },
+        "ok7mDjdsE-5k": {
+          "tpl": [{ "__ref": "7yz_WId06GM2" }],
+          "__type": "RenderExpr"
+        },
+        "oixxEGa32ufM": {
+          "code": "\"restaurants\"",
+          "fallback": null,
+          "__type": "CustomCode"
+        },
+        "LgiUff8rpVnC": {
+          "tpl": [{ "__ref": "CVlIAMa6MF8w" }],
+          "__type": "RenderExpr"
+        },
+        "KfknGlUnYtRJ": {
+          "code": "\"restaurants\"",
+          "fallback": null,
+          "__type": "CustomCode"
+        },
+        "1m9JjRZrnp5H": {
+          "name": null,
+          "component": { "__ref": "LW6k-nA3XmHV" },
+          "uuid": "mgdUOfAJGCOj",
+          "parent": null,
+          "locked": null,
+          "vsettings": [{ "__ref": "hnaiKHYy-TWv" }],
+          "__type": "TplComponent"
+        },
+        "7yz_WId06GM2": {
+          "tag": "div",
+          "name": null,
+          "children": [
+            { "__ref": "gSYIJPfRV-rj" },
+            { "__ref": "r8zhSjumUIIz" }
+          ],
+          "type": "other",
+          "codeGenType": null,
+          "columnsSetting": null,
+          "uuid": "Vh0dQqF4lvl_",
+          "parent": { "__ref": "4WbkAOxLrgHs" },
+          "locked": null,
+          "vsettings": [{ "__ref": "bc6-7rSTLF2m" }],
+          "__type": "TplTag"
+        },
+        "CVlIAMa6MF8w": {
+          "tag": "div",
+          "name": null,
+          "children": [
+            { "__ref": "ifngOrwRay87" },
+            { "__ref": "YK5euW0nWscs" }
+          ],
+          "type": "other",
+          "codeGenType": null,
+          "columnsSetting": null,
+          "uuid": "8dyyebjbvEq5",
+          "parent": { "__ref": "bZM7hqpKbhcR" },
+          "locked": null,
+          "vsettings": [{ "__ref": "rmpkPeY5UFMT" }],
+          "__type": "TplTag"
+        },
+        "hnaiKHYy-TWv": {
+          "variants": [{ "__ref": "31846007" }],
+          "args": [],
+          "attrs": {},
+          "rs": { "__ref": "UbRqYzTgu1h_" },
+          "dataCond": null,
+          "dataRep": null,
+          "text": null,
+          "columnsConfig": null,
+          "__type": "VariantSetting"
+        },
+        "gSYIJPfRV-rj": {
+          "name": null,
+          "component": {
+            "__xref": {
+              "uuid": "6acc467a-ae43-4b00-9fe2-d90e71958278",
+              "iid": "26311002"
+            }
+          },
+          "uuid": "jd134fNUyrqU",
+          "parent": { "__ref": "7yz_WId06GM2" },
+          "locked": null,
+          "vsettings": [{ "__ref": "F8FpChfwnddE" }],
+          "__type": "TplComponent"
+        },
+        "r8zhSjumUIIz": {
+          "name": null,
+          "component": {
+            "__xref": {
+              "uuid": "6acc467a-ae43-4b00-9fe2-d90e71958278",
+              "iid": "26311002"
+            }
+          },
+          "uuid": "6gM7eJw5qjEN",
+          "parent": { "__ref": "7yz_WId06GM2" },
+          "locked": null,
+          "vsettings": [{ "__ref": "HzS1-l-pgMgs" }],
+          "__type": "TplComponent"
+        },
+        "bc6-7rSTLF2m": {
+          "variants": [{ "__ref": "U61idb-NssmS" }],
+          "args": [],
+          "attrs": {},
+          "rs": { "__ref": "t3UA-v1US0D-" },
+          "dataCond": null,
+          "dataRep": null,
+          "text": null,
+          "columnsConfig": null,
+          "__type": "VariantSetting"
+        },
+        "ifngOrwRay87": {
+          "tag": "div",
+          "name": null,
+          "children": [],
+          "type": "text",
+          "codeGenType": null,
+          "columnsSetting": null,
+          "uuid": "v_bmV2FFqOgn",
+          "parent": { "__ref": "CVlIAMa6MF8w" },
+          "locked": null,
+          "vsettings": [{ "__ref": "K4KrVMzT3I-K" }],
+          "__type": "TplTag"
+        },
+        "YK5euW0nWscs": {
+          "tag": "img",
+          "name": null,
+          "children": [],
+          "type": "image",
+          "codeGenType": null,
+          "columnsSetting": null,
+          "uuid": "ZjzjaiXGAcvN",
+          "parent": { "__ref": "CVlIAMa6MF8w" },
+          "locked": null,
+          "vsettings": [{ "__ref": "kH1uURHOTtbz" }],
+          "__type": "TplTag"
+        },
+        "rmpkPeY5UFMT": {
+          "variants": [{ "__ref": "U61idb-NssmS" }],
+          "args": [],
+          "attrs": {},
+          "rs": { "__ref": "fb6aoQ5f-snx" },
+          "dataCond": null,
+          "dataRep": null,
+          "text": null,
+          "columnsConfig": null,
+          "__type": "VariantSetting"
+        },
+        "UbRqYzTgu1h_": {
+          "values": {},
+          "mixins": [],
+          "animations": null,
+          "__type": "RuleSet"
+        },
+        "F8FpChfwnddE": {
+          "variants": [{ "__ref": "U61idb-NssmS" }],
+          "args": [{ "__ref": "YguNls62Iy6q" }],
+          "attrs": {},
+          "rs": { "__ref": "cFugK12Nyahq" },
+          "dataCond": null,
+          "dataRep": null,
+          "text": null,
+          "columnsConfig": null,
+          "__type": "VariantSetting"
+        },
+        "HzS1-l-pgMgs": {
+          "variants": [{ "__ref": "U61idb-NssmS" }],
+          "args": [{ "__ref": "2JcDS1VYxswB" }],
+          "attrs": {},
+          "rs": { "__ref": "Q7E9pJzFAOIU" },
+          "dataCond": null,
+          "dataRep": null,
+          "text": null,
+          "columnsConfig": null,
+          "__type": "VariantSetting"
+        },
+        "t3UA-v1US0D-": {
+          "values": {
+            "display": "flex",
+            "flex-direction": "column",
+            "position": "relative",
+            "width": "stretch",
+            "height": "wrap",
+            "max-width": "100%",
+            "padding-left": "8px",
+            "padding-right": "8px",
+            "padding-bottom": "8px",
+            "padding-top": "8px",
+            "justify-content": "flex-start",
+            "align-items": "center"
+          },
+          "mixins": [],
+          "animations": null,
+          "__type": "RuleSet"
+        },
+        "K4KrVMzT3I-K": {
+          "variants": [{ "__ref": "U61idb-NssmS" }],
+          "args": [],
+          "attrs": {},
+          "rs": { "__ref": "tkmYnHiaDHrT" },
+          "dataCond": null,
+          "dataRep": null,
+          "text": { "__ref": "3UaJN2EehGvy" },
+          "columnsConfig": null,
+          "__type": "VariantSetting"
+        },
+        "kH1uURHOTtbz": {
+          "variants": [{ "__ref": "U61idb-NssmS" }],
+          "args": [],
+          "attrs": {
+            "loading": { "__ref": "8qRJ80Y79dS6" },
+            "src": { "__ref": "G2IBYX9ovc-2" }
+          },
+          "rs": { "__ref": "WycCR7DlYV64" },
+          "dataCond": null,
+          "dataRep": null,
+          "text": null,
+          "columnsConfig": null,
+          "__type": "VariantSetting"
+        },
+        "fb6aoQ5f-snx": {
+          "values": {
+            "display": "flex",
+            "flex-direction": "column",
+            "position": "relative",
+            "width": "stretch",
+            "height": "wrap",
+            "max-width": "100%",
+            "padding-left": "8px",
+            "padding-right": "8px",
+            "padding-bottom": "8px",
+            "padding-top": "8px",
+            "justify-content": "flex-start",
+            "align-items": "center"
+          },
+          "mixins": [],
+          "animations": null,
+          "__type": "RuleSet"
+        },
+        "YguNls62Iy6q": {
+          "param": {
+            "__xref": {
+              "uuid": "6acc467a-ae43-4b00-9fe2-d90e71958278",
+              "iid": "26311012"
+            }
+          },
+          "expr": { "__ref": "QbeCYHMCCP_X" },
+          "__type": "Arg"
+        },
+        "cFugK12Nyahq": {
+          "values": { "max-width": "100%" },
+          "mixins": [],
+          "animations": null,
+          "__type": "RuleSet"
+        },
+        "2JcDS1VYxswB": {
+          "param": {
+            "__xref": {
+              "uuid": "6acc467a-ae43-4b00-9fe2-d90e71958278",
+              "iid": "26311012"
+            }
+          },
+          "expr": { "__ref": "si-XFOlNWYHQ" },
+          "__type": "Arg"
+        },
+        "Q7E9pJzFAOIU": {
+          "values": { "max-width": "100%" },
+          "mixins": [],
+          "animations": null,
+          "__type": "RuleSet"
+        },
+        "tkmYnHiaDHrT": {
+          "values": {
+            "position": "relative",
+            "width": "stretch",
+            "height": "wrap",
+            "max-width": "800px",
+            "text-align": "center"
+          },
+          "mixins": [],
+          "animations": null,
+          "__type": "RuleSet"
+        },
+        "8qRJ80Y79dS6": {
+          "code": "\"lazy\"",
+          "fallback": null,
+          "__type": "CustomCode"
+        },
+        "WycCR7DlYV64": {
+          "values": {
+            "position": "relative",
+            "object-fit": "cover",
+            "max-width": "100%",
+            "width": "stretch"
+          },
+          "mixins": [],
+          "animations": null,
+          "__type": "RuleSet"
+        },
+        "QbeCYHMCCP_X": {
+          "code": "\"name\"",
+          "fallback": null,
+          "__type": "CustomCode"
+        },
+        "si-XFOlNWYHQ": {
+          "code": "\"photo\"",
+          "fallback": null,
+          "__type": "CustomCode"
+        },
+        "G2IBYX9ovc-2": {
+          "code": "($ctx.currentStrapiRestaurantsItem.photo.url)",
+          "fallback": { "__ref": "2B_nldW8JQ4q" },
+          "__type": "CustomCode"
+        },
+        "2B_nldW8JQ4q": {
+          "code": "undefined",
+          "fallback": null,
+          "__type": "CustomCode"
+        },
+        "3UaJN2EehGvy": {
+          "expr": { "__ref": "c_UYtKOh5mww" },
+          "html": false,
+          "__type": "ExprText"
+        },
+        "c_UYtKOh5mww": {
+          "code": "($ctx.currentStrapiRestaurantsItem.name)",
+          "fallback": { "__ref": "Cb2lptcl-Tmx" },
+          "__type": "CustomCode"
+        },
+        "Cb2lptcl-Tmx": {
+          "code": "\"Enter some text\"",
+          "fallback": null,
+          "__type": "CustomCode"
+        },
+        "hbajE3dAzxne": {
+          "text": ["https://plasmic-loader-test.test"],
+          "__type": "TemplatedString"
         }
       },
-      "deps": ["c30818bb-2f70-4079-bc4d-65eaecf566f6"],
+      "deps": ["6acc467a-ae43-4b00-9fe2-d90e71958278"],
       "version": "253-set-animations-empty-state"
     }
   ]

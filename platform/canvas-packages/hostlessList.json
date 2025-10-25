@@ -63,5 +63,6 @@
   "fetch",
   "graphql",
   "vanilla-cookieconsent",
-  "wordpress"
+  "wordpress",
+  "strapi"
 ]

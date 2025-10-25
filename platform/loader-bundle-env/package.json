@@ -58,6 +58,7 @@
     "@plasmicpkgs/react-twitter-widgets": "^0.0.226",
     "@plasmicpkgs/react-youtube": "^7.13.232",
     "@plasmicpkgs/rive": "^0.0.15",
+    "@plasmicpkgs/strapi": "^0.0.2",
     "@plasmicpkgs/tiptap": "^0.0.6",
     "@plasmicpkgs/vanilla-cookieconsent": "^0.0.5",
     "@plasmicpkgs/wordpress": "^0.0.3",

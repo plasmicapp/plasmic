@@ -1,11 +1,15 @@
 import { ComponentMeta, DataProvider, repeatedElement } from "@plasmicapp/host";
 import { usePlasmicQueryData } from "@plasmicapp/query";
+import {
+  _extractFilterableFields,
+  _getId,
+  _queryParameters,
+  queryStrapi,
+} from "@plasmicpkgs/strapi";
 import { pascalCase } from "change-case";
-import get from "dlv";
 import React, { ReactNode } from "react";
-import { queryStrapi } from "./custom-functions";
 import { useStrapiCredentials } from "./StrapiCredentialsProvider";
-import { filterFields, modulePath, queryParameters, uniq } from "./utils";
+import { modulePath } from "./utils";
 
 const makeDataProviderName = (collection: string) =>
   `currentStrapi${pascalCase(collection)}Item`;
@@ -68,7 +72,7 @@ export const strapiCollectionMeta: ComponentMeta<StrapiCollectionProps> = {
       displayName: "Filter Parameter",
       description: "Field Parameter filter by",
       options: () => {
-        return queryParameters.map((item: any) => ({
+        return _queryParameters.map((item: any) => ({
           label: item?.label,
           value: item?.value,
         }));
@@ -120,6 +124,10 @@ export function StrapiCollection({
     return <div>Please specify a host.</div>;
   }
 
+  if (!name) {
+    return <div>Please specify a collection.</div>;
+  }
+
   const cacheKey = JSON.stringify({
     host,
     token,
@@ -129,11 +137,11 @@ export function StrapiCollection({
     filterParameter,
   });
 
-  const data = usePlasmicQueryData<any[] | null>(cacheKey, async () =>
+  const resp = usePlasmicQueryData(cacheKey, async () =>
     queryStrapi(host, token, name, filterField, filterValue, filterParameter)
   );
 
-  if (!data?.data) {
+  if (!resp?.data) {
     return (
       <div>
         Please configure the Strapi provider with a valid host and token.
@@ -141,16 +149,14 @@ export function StrapiCollection({
     );
   }
 
-  if (!get(data.data, ["data"])) {
+  if (!resp.data?.data) {
     return <div>Please specify a valid collection.</div>;
   }
 
-  const collectionData = get(data.data, ["data"]) as any[];
-
-  const filteredFields = filterFields(collectionData);
+  const collectionData = resp.data.data;
 
   setControlContextData?.({
-    strapiFields: uniq(filteredFields ?? []),
+    strapiFields: _extractFilterableFields(collectionData ?? []),
   });
   if (filterParameter && !filterValue && !filterField) {
     return <div>Please specify a Filter Field and a Filter Value</div>;
@@ -183,7 +189,7 @@ export function StrapiCollection({
     ? children
     : collection.map((item, index) => (
         <DataProvider
-          key={item.documentId ?? item.id}
+          key={_getId(item)}
           name={"strapiItem"}
           data={item}
           hidden={true}

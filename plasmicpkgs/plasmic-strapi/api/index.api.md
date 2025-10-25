@@ -5,7 +5,6 @@
 ```ts
 
 import { ComponentMeta } from '@plasmicapp/host';
-import { CustomFunctionMeta } from '@plasmicapp/host/registerFunction';
 import { GlobalContextMeta } from '@plasmicapp/host';
 import { default as React_2 } from 'react';
 import { ReactNode } from 'react';
@@ -13,20 +12,9 @@ import registerComponent from '@plasmicapp/host/registerComponent';
 import registerGlobalContext from '@plasmicapp/host/registerGlobalContext';
 
 // @public (undocumented)
-export function queryStrapi(host: string, token: string | undefined, collection: string | undefined, filterField?: string, filterValue?: string, filterParameter?: string): Promise<any>;
-
-// @public (undocumented)
-export const queryStrapiMeta: CustomFunctionMeta<typeof queryStrapi>;
-
-// @public (undocumented)
 export function registerAll(loader?: {
     registerComponent: typeof registerComponent;
     registerGlobalContext: typeof registerGlobalContext;
-}): void;
-
-// @public (undocumented)
-export function registerAllCustomFunctions(loader?: {
-    registerFunction: any;
 }): void;
 
 // @public (undocumented)

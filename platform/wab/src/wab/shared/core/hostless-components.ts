@@ -63,4 +63,5 @@ export const fstPartyHostLessComponents = [
   "rive",
   "vanilla-cookieconsent",
   "wordpress",
+  "strapi",
 ];
