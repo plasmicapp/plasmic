@@ -24,6 +24,7 @@ import {
   extractDimensionFromNode,
   extractUrlFromNode,
   findAndMap,
+  isDimCssFunction,
   isDimensionNode,
   isLinearGradientFunction,
   isRadialGradientFunction,
@@ -527,25 +528,59 @@ export class Stop {
 }
 
 export class Dim {
-  constructor(public value: number, public unit: string) {}
+  constructor(public value: string, public unit: string = "") {}
+
+  /**
+   * Returns true if this Dim represents a CSS function (calc, min, max, clamp)
+   */
+  isCssFunction(): boolean {
+    return isDimCssFunction(this.value);
+  }
+
+  /**
+   * Returns the numeric value if this is a simple dimension, throws otherwise
+   */
+  getNumericValue(): number {
+    const parsed = parseFloat(this.value);
+    assert(
+      !isNaN(parsed),
+      `Cannot parse numeric value from Dim: ${this.value}`
+    );
+    return parsed;
+  }
+
   showCss() {
+    if (this.isCssFunction()) {
+      return this.value;
+    }
     return `${this.value}${this.unit}`;
   }
+
   setValue(v: string) {
-    const parsed = parseCssNumericNew(v);
-    if (parsed !== undefined) {
-      this.value = parsed.num;
-      this.unit = parsed.units;
+    if (isDimCssFunction(v)) {
+      this.value = v.trim();
+      this.unit = "";
     } else {
-      ensure(parsed);
+      const { num, units } = ensure(
+        parseCssNumericNew(v),
+        "Unexpected undefined css numeric value"
+      );
+      this.value = `${num}`;
+      this.unit = units;
     }
   }
+
   static fromCss(value: string) {
+    const trimmedValue = value.trim();
+
+    if (isDimCssFunction(trimmedValue)) {
+      return new Dim(trimmedValue);
+    }
     const { num, units } = ensure(
       parseCssNumericNew(value),
       "Unexpected undefined css numeric value"
     );
-    return new Dim(num, units);
+    return new Dim(`${num}`, units);
   }
 }
 
@@ -634,7 +669,7 @@ function parseBoxShadow(shadowNodes: CssNode[]) {
   }
 
   while (dims.length < 4) {
-    dims.push(new Dim(0, "px"));
+    dims.push(new Dim("0", "px"));
   }
 
   if (!color) {
@@ -786,8 +821,8 @@ function parseLinearGradient(node: CssNode) {
     // Check if this group contains an angle (first dimension with 'deg' unit)
     for (const groupNode of group) {
       const angleDim = extractDimensionFromNode(groupNode);
-      if (angleDim?.unit === "deg") {
-        angle = angleDim.value;
+      if (angleDim?.unit === "deg" && !angleDim.isCssFunction()) {
+        angle = angleDim.getNumericValue();
         isAngleGroup = true;
         break;
       }
@@ -866,7 +901,8 @@ function parseRadialGradient(node: CssNode): RadialGradient | null {
         continue;
       }
       const dim = extractDimensionFromNode(currNode);
-      if (dim) {
+      // Don't allow CSS functions in radial gradient size
+      if (dim && !dim.isCssFunction()) {
         if (!rx) {
           rx = dim;
         } else if (!ry) {
@@ -879,7 +915,8 @@ function parseRadialGradient(node: CssNode): RadialGradient | null {
     const posDims: Dim[] = [];
     for (const currNode of positionNodes) {
       const dim = extractDimensionFromNode(currNode);
-      if (dim) {
+      // Don't allow CSS functions in radial gradient positions
+      if (dim && !dim.isCssFunction()) {
         posDims.push(dim);
       }
 
@@ -887,14 +924,14 @@ function parseRadialGradient(node: CssNode): RadialGradient | null {
         switch (currNode.name) {
           case "left":
           case "top":
-            posDims.push(new Dim(0, "%"));
+            posDims.push(new Dim("0", "%"));
             break;
           case "center":
-            posDims.push(new Dim(50, "%"));
+            posDims.push(new Dim("50", "%"));
             break;
           case "right":
           case "bottom":
-            posDims.push(new Dim(100, "%"));
+            posDims.push(new Dim("100", "%"));
             break;
         }
       }
@@ -913,10 +950,10 @@ function parseRadialGradient(node: CssNode): RadialGradient | null {
 
   return new RadialGradient({
     repeating,
-    cx: cx ?? new Dim(50, "%"),
-    cy: cy ?? new Dim(50, "%"),
-    rx: rx ?? new Dim(50, "%"),
-    ry: ry ?? new Dim(50, "%"),
+    cx: cx ?? new Dim("50", "%"),
+    cy: cy ?? new Dim("50", "%"),
+    rx: rx ?? new Dim("50", "%"),
+    ry: ry ?? new Dim("50", "%"),
     stops,
     sizeKeyword,
   });
@@ -943,7 +980,12 @@ function parseStop(nodes: CssNode[]) {
   const dim = findAndMap(nodes, extractDimensionFromNode);
 
   if (color) {
-    return new Stop(color, dim ?? new Dim(0, STOP_DIM_MISSING_IDENTIFIER));
+    return new Stop(
+      color,
+      dim && !dim.isCssFunction()
+        ? dim
+        : new Dim("0", STOP_DIM_MISSING_IDENTIFIER)
+    );
   }
 
   return null;
@@ -998,18 +1040,18 @@ function linearlyInterpolateMissingStopDimensions(stops: Stop[]) {
   const anchors: Anchor[] = [];
 
   if (stops[0].dim.unit === STOP_DIM_MISSING_IDENTIFIER) {
-    stops[0].dim = new Dim(0, "%");
+    stops[0].dim = new Dim("0", "%");
   }
 
   const lastIdx = stops.length - 1;
   if (stops[lastIdx].dim.unit === STOP_DIM_MISSING_IDENTIFIER) {
-    stops[lastIdx].dim = new Dim(100, "%");
+    stops[lastIdx].dim = new Dim("100", "%");
   }
 
   // collect Anchor values where dim value exists
   stops.forEach((s, i) => {
-    if (s.dim.unit !== STOP_DIM_MISSING_IDENTIFIER) {
-      anchors.push({ idx: i, pos: s.dim.value });
+    if (s.dim.unit !== STOP_DIM_MISSING_IDENTIFIER && !s.dim.isCssFunction()) {
+      anchors.push({ idx: i, pos: s.dim.getNumericValue() });
     }
   });
 
@@ -1030,7 +1072,7 @@ function linearlyInterpolateMissingStopDimensions(stops: Stop[]) {
 
       // Lerp function for linear interpolation
       const pos = anchor1.pos + (anchor2.pos - anchor1.pos) * amount;
-      stops[anchor1.idx + itemNumber].dim = new Dim(pos, "%");
+      stops[anchor1.idx + itemNumber].dim = new Dim(`${pos}`, "%");
     }
   }
 }

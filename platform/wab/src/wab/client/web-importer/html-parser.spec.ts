@@ -1276,6 +1276,14 @@ describe("fixCSSValue", () => {
     ).toEqual({
       boxShadow: "5px 10px 15px 20px rgba(0,0,0,0.5)",
     });
+    expect(
+      fixCSSValue(
+        "box-shadow",
+        "calc(100% - 5px) 10px 15px calc(20% - 20px) rgba(0,0,0,0.5)"
+      )
+    ).toEqual({
+      boxShadow: "calc(100% - 5px) 10px 15px calc(20% - 20px) rgba(0,0,0,0.5)",
+    });
 
     // convert multiple box shadow properly
     expect(

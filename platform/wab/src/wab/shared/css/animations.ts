@@ -143,6 +143,8 @@ export function parseCssAnimation(value: string): CssAnimation | null {
       else if (identifierName === "infinite") {
         iterationCount = identifierName;
       }
+    } else if (node.type === "Function") {
+      // Timing functions like cubic-bezier() or steps() not supported yet.
     } else if (isDimensionNode(node)) {
       const nodeValue = generate(node);
 
@@ -162,8 +164,6 @@ export function parseCssAnimation(value: string): CssAnimation | null {
         // Iteration count
         iterationCount = nodeValue;
       }
-    } else if (node.type === "Function") {
-      // Timing functions like cubic-bezier() or steps() not supported yet.
     }
   }
 

@@ -1398,12 +1398,12 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                     "variantSettings": [
                       {
                         "safeStyles": {
-                          "background": "radial-gradient(ellipse 50% 50% at 0% 0%, #ffffff 0%, #f8f9fa 100%)",
+                          "background": "radial-gradient(ellipse 50% 50% at 0% 0%, #ffffff 0%, #f8f9fa 100%) 0% 0% / min(100%,500px) min(80%,400px)",
                           "borderBottomLeftRadius": "10px",
                           "borderBottomRightRadius": "10px",
                           "borderTopLeftRadius": "10px",
                           "borderTopRightRadius": "10px",
-                          "boxShadow": "0 5px 15px 0px rgba(0,0,0,0.1)",
+                          "boxShadow": "0 5px min(15px,10%) 0px rgba(0,0,0,0.1)",
                           "marginBottom": "0",
                           "marginLeft": "0",
                           "marginRight": "0",
@@ -1420,9 +1420,9 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                           "textAlign": "center",
                         },
                         "unsanitizedStyles": {
-                          "background": "radial-gradient(circle at top left,#ffffff 0%,#f8f9fa 100%)",
+                          "background": "radial-gradient(circle at top left,#ffffff 0%,#f8f9fa 100%)/min(100%,500px) min(80%,400px)",
                           "border-radius": "10px",
-                          "box-shadow": "0 5px 15px rgba(0,0,0,0.1)",
+                          "box-shadow": "0 5px min(15px,10%) rgba(0,0,0,0.1)",
                           "box-sizing": "border-box",
                           "flex": "1",
                           "margin": "0",
@@ -1555,12 +1555,12 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                     "variantSettings": [
                       {
                         "safeStyles": {
-                          "background": "radial-gradient(ellipse 50% 50% at 0% 0%, #ffffff 0%, #f8f9fa 100%)",
+                          "background": "radial-gradient(ellipse 50% 50% at 0% 0%, #ffffff 0%, #f8f9fa 100%) 0% 0% / min(100%,500px) min(80%,400px)",
                           "borderBottomLeftRadius": "10px",
                           "borderBottomRightRadius": "10px",
                           "borderTopLeftRadius": "10px",
                           "borderTopRightRadius": "10px",
-                          "boxShadow": "0 5px 15px 0px rgba(0,0,0,0.1)",
+                          "boxShadow": "0 5px min(15px,10%) 0px rgba(0,0,0,0.1)",
                           "marginBottom": "0",
                           "marginLeft": "0",
                           "marginRight": "0",
@@ -1577,9 +1577,9 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                           "textAlign": "center",
                         },
                         "unsanitizedStyles": {
-                          "background": "radial-gradient(circle at top left,#ffffff 0%,#f8f9fa 100%)",
+                          "background": "radial-gradient(circle at top left,#ffffff 0%,#f8f9fa 100%)/min(100%,500px) min(80%,400px)",
                           "border-radius": "10px",
-                          "box-shadow": "0 5px 15px rgba(0,0,0,0.1)",
+                          "box-shadow": "0 5px min(15px,10%) rgba(0,0,0,0.1)",
                           "box-sizing": "border-box",
                           "flex": "1",
                           "margin": "0",
@@ -1712,12 +1712,12 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                     "variantSettings": [
                       {
                         "safeStyles": {
-                          "background": "radial-gradient(ellipse 50% 50% at 0% 0%, #ffffff 0%, #f8f9fa 100%)",
+                          "background": "radial-gradient(ellipse 50% 50% at 0% 0%, #ffffff 0%, #f8f9fa 100%) 0% 0% / min(100%,500px) min(80%,400px)",
                           "borderBottomLeftRadius": "10px",
                           "borderBottomRightRadius": "10px",
                           "borderTopLeftRadius": "10px",
                           "borderTopRightRadius": "10px",
-                          "boxShadow": "0 5px 15px 0px rgba(0,0,0,0.1)",
+                          "boxShadow": "0 5px min(15px,10%) 0px rgba(0,0,0,0.1)",
                           "marginBottom": "0",
                           "marginLeft": "0",
                           "marginRight": "0",
@@ -1734,9 +1734,9 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                           "textAlign": "center",
                         },
                         "unsanitizedStyles": {
-                          "background": "radial-gradient(circle at top left,#ffffff 0%,#f8f9fa 100%)",
+                          "background": "radial-gradient(circle at top left,#ffffff 0%,#f8f9fa 100%)/min(100%,500px) min(80%,400px)",
                           "border-radius": "10px",
-                          "box-shadow": "0 5px 15px rgba(0,0,0,0.1)",
+                          "box-shadow": "0 5px min(15px,10%) rgba(0,0,0,0.1)",
                           "box-sizing": "border-box",
                           "flex": "1",
                           "margin": "0",

@@ -1,10 +1,9 @@
 import { check, ensure, precisionRound, unexpected } from "@/wab/shared/common";
+import { VALID_UNITS, cssUnitsChecked } from "@/wab/shared/css";
 import {
-  VALID_UNITS,
-  cssUnitsChecked,
   isDimCssFunction,
   validateDimCssFunction,
-} from "@/wab/shared/css";
+} from "@/wab/shared/css/css-tree-utils";
 
 export type Unit = (typeof cssUnitsChecked)[number] | "fr" | "";
 

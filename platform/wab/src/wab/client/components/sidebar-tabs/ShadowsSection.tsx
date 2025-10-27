@@ -88,10 +88,10 @@ class _ShadowsPanelSection extends StyleComponent<
     const addShadowLayer = () => {
       const layer = new BoxShadow({
         inset: false,
-        x: new Dim(0, "px"),
-        y: new Dim(4, "px"),
-        blur: new Dim(16, "px"),
-        spread: new Dim(0, "px"),
+        x: new Dim("0", "px"),
+        y: new Dim("4", "px"),
+        blur: new Dim("16", "px"),
+        spread: new Dim("0", "px"),
         color: "rgba(0,0,0,0.2)",
       });
 

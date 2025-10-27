@@ -56,6 +56,10 @@ import {
   isValidUnit,
   showSizeCss,
 } from "@/wab/shared/css-size";
+import {
+  isDimCssFunction,
+  validateDimCssFunction,
+} from "@/wab/shared/css/css-tree-utils";
 import { StyleToken } from "@/wab/shared/model/classes";
 import { naturalSort } from "@/wab/shared/sort";
 import { canCreateAlias } from "@/wab/shared/ui-config-utils";
@@ -1005,6 +1009,7 @@ export interface DimValueOpts {
   fractionDigits?: number;
   displayedFractionDigits?: number;
   vsh?: VariantedStylesHelper;
+  dimsFunctionAllowed?: boolean;
 }
 
 function useDimValue(opts: DimValueOpts) {
@@ -1020,6 +1025,7 @@ function useDimValue(opts: DimValueOpts) {
     delta = 1,
     fractionDigits = 3,
     displayedFractionDigits = 3,
+    dimsFunctionAllowed = true,
   } = opts;
 
   const allowedUnitsSet = new Set(allowedUnits);
@@ -1040,8 +1046,8 @@ function useDimValue(opts: DimValueOpts) {
 
     const newValues = shorthand ? css.parseCssShorthand(val) : [val];
     for (const newValue of newValues) {
-      if (css.isDimCssFunction(newValue)) {
-        const result = css.validateDimCssFunction(newValue, allowedUnits);
+      if (dimsFunctionAllowed && isDimCssFunction(newValue)) {
+        const result = validateDimCssFunction(newValue, allowedUnits);
         if (!result.valid) {
           notification.error({
             message: `Invalid CSS function "${newValue}"`,
@@ -1150,7 +1156,7 @@ function useDimValue(opts: DimValueOpts) {
     }
   }
 
-  const displayValue = css.isDimCssFunction(value)
+  const displayValue = isDimCssFunction(value)
     ? value
     : css.roundedCssNumeric(value, displayedFractionDigits);
 

@@ -267,4 +267,32 @@ describe("parseBorderShorthand", () => {
     });
     expect(result).toEqual(fixCSSValue("border", testValue));
   });
+
+  it("should support calc() in border width", () => {
+    const testValue = "calc(1px + 2px) solid red";
+    const testValueNode = getTestValueNode(testValue);
+    const result = parseBorderShorthand("border", testValueNode);
+    expect(result.borderTopWidth).toBe("calc(1px + 2px)");
+  });
+
+  it("should support min() in border width", () => {
+    const testValue = "min(5px, 10px) dashed blue";
+    const testValueNode = getTestValueNode(testValue);
+    const result = parseBorderShorthand("border", testValueNode);
+    expect(result.borderTopWidth).toBe("min(5px,10px)");
+  });
+
+  it("should support max() in border width", () => {
+    const testValue = "max(2px, 5px) dotted green";
+    const testValueNode = getTestValueNode(testValue);
+    const result = parseBorderShorthand("border", testValueNode);
+    expect(result.borderTopWidth).toBe("max(2px,5px)");
+  });
+
+  it("should support clamp() in border width", () => {
+    const testValue = "clamp(1px, 3px, 5px) solid black";
+    const testValueNode = getTestValueNode(testValue);
+    const result = parseBorderShorthand("border", testValueNode);
+    expect(result.borderTopWidth).toBe("clamp(1px,3px,5px)");
+  });
 });

@@ -19,7 +19,6 @@ import {
   ensureUnit,
   showSizeCss,
 } from "@/wab/shared/css-size";
-import { extractDimensionFromNode } from "@/wab/shared/css/css-tree-utils";
 import {
   horizontalSides,
   standardSides,
@@ -27,7 +26,7 @@ import {
 } from "@/wab/shared/geom";
 import { RuleSet } from "@/wab/shared/model/classes";
 import CssInitials from "css-initials";
-import { CssNode, Value, generate, parse, walk } from "css-tree";
+import { Value, generate, parse } from "css-tree";
 import {
   camelCase,
   flatten,
@@ -289,122 +288,6 @@ export function roundedCssNumeric(x: string, precision: number) {
     num: +parsed.num.toFixed(precision),
     units: parsed.units,
   });
-}
-
-const dimCssFunctionsChecked = ["calc", "min", "max", "clamp"] as const;
-
-export const dimCssFunctions = dimCssFunctionsChecked as readonly string[];
-
-const DIM_CSS_IDENTIFIER_KEYWORDS = ["auto", "inherit", "initial", "unset"];
-
-const dimCssFunctionsReg = new RegExp(
-  `^(${dimCssFunctions.join("|")})\\s*\\(`,
-  "i"
-);
-
-export function isDimCssFunction(value: string): boolean {
-  const trimmed = value.trim();
-  return dimCssFunctionsReg.test(trimmed);
-}
-
-export type DimCssFunctionValidationResult =
-  | { valid: true }
-  | { valid: false; error: string };
-
-/**
- * Validates a CSS dimension function (calc, min, max, clamp) and returns detailed error information
- *
- * @param value - The CSS value to validate
- * @param allowedUnits - Optional array of allowed units (e.g., ['px', '%', 'em'])
- * @returns Validation result with error message if invalid
- */
-export function validateDimCssFunction(
-  value: string,
-  allowedUnits?: readonly string[]
-): DimCssFunctionValidationResult {
-  const invalidFunctionError = `Not a valid CSS dimension function. Must be one of these: ${dimCssFunctions.join(
-    ", "
-  )}`;
-  if (!isDimCssFunction(value)) {
-    return {
-      valid: false,
-      error: invalidFunctionError,
-    };
-  }
-
-  let ast: CssNode;
-  try {
-    // Parsing can fail if the input has incomplete characters or invalid format
-    ast = parse(value, { context: "value" });
-  } catch (e) {
-    return {
-      valid: false,
-      error: e.message ?? "Invalid CSS syntax",
-    };
-  }
-
-  let error: string | null = null;
-
-  walk(ast, (node) => {
-    switch (node.type) {
-      case "Dimension":
-      case "Percentage":
-      case "Number": {
-        const dim = extractDimensionFromNode(node);
-        if (allowedUnits && !allowedUnits.includes(dim.unit)) {
-          error = `The unit '${
-            dim.unit
-          }' isn't supported here. Please use one of: ${allowedUnits.join(
-            ", "
-          )}`;
-          return walk.break;
-        }
-        return;
-      }
-      case "Identifier": {
-        if (!DIM_CSS_IDENTIFIER_KEYWORDS.includes(node.name.toLowerCase())) {
-          error = `'${
-            node.name
-          }' isn't a valid keyword here. Please use one of: ${DIM_CSS_IDENTIFIER_KEYWORDS.join(
-            ", "
-          )}`;
-          return walk.break;
-        }
-        return;
-      }
-      case "Function": {
-        const funcName = node.name.toLowerCase();
-
-        // Allow var() function - skip validation of its children
-        if (funcName === "var") {
-          return walk.skip; // Don't walk into var() children
-        }
-
-        // Check if it's a valid dimension function
-        if (!isDimCssFunction(generate(node))) {
-          error = invalidFunctionError;
-          return walk.break;
-        }
-
-        // Nested function is valid, continue walking its children
-        return;
-      }
-      case "Value":
-      case "Operator": {
-        return;
-      }
-      default: {
-        error = `This part of your CSS function isn't valid. Found unexpected '${node.type}'`;
-        return walk.break;
-      }
-    }
-  });
-
-  if (error) {
-    return { valid: false, error };
-  }
-
-  return { valid: true };
 }
 
 export const showCssNumericNew = ({

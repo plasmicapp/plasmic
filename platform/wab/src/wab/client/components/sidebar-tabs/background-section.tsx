@@ -456,6 +456,7 @@ const BackgroundLayerPanel = observer(function BackgroundLayerPanel({
               });
             }}
             allowedUnits={["deg"]}
+            dimsFunctionAllowed={false}
           />
           <div
             className={"ml-sm mr-sm overflow-hidden"}
@@ -501,6 +502,7 @@ const BackgroundLayerPanel = observer(function BackgroundLayerPanel({
           onChange={onChange}
           allowedUnits={["%"]}
           noClear={true}
+          dimsFunctionAllowed={false}
         />
       );
     };
@@ -511,17 +513,17 @@ const BackgroundLayerPanel = observer(function BackgroundLayerPanel({
             <UnloggedDragCatcher sc={studioCtx}>
               <EllipseControl
                 ellipse={{
-                  cx: rad.cx.value,
-                  cy: rad.cy.value,
-                  rx: rad.rx.value,
-                  ry: rad.ry.value,
+                  cx: rad.cx.getNumericValue(),
+                  cy: rad.cy.getNumericValue(),
+                  rx: rad.rx.getNumericValue(),
+                  ry: rad.ry.getNumericValue(),
                 }}
                 onChange={({ cx, cy, rx, ry }) => {
                   return updateImg(rad, () => {
-                    rad.cx.value = cx;
-                    rad.cy.value = cy;
-                    rad.rx.value = rx;
-                    return (rad.ry.value = ry);
+                    rad.cx.value = `${cx}`;
+                    rad.cy.value = `${cy}`;
+                    rad.rx.value = `${rx}`;
+                    return (rad.ry.value = `${ry}`);
                   });
                 }}
               />

@@ -34,8 +34,8 @@ describe("cssPegParser", function () {
         repeating: false,
         angle: 90,
         stops: tuple(
-          new Stop("black", new Dim(50, "%")),
-          new Stop("#fff", new Dim(70, "%"))
+          new Stop("black", new Dim("50", "%")),
+          new Stop("#fff", new Dim("70", "%"))
         ),
       })
     );
@@ -43,7 +43,7 @@ describe("cssPegParser", function () {
       new LinearGradient({
         repeating: false,
         angle: 30,
-        stops: [new Stop("#fff", new Dim(50, "%"))],
+        stops: [new Stop("#fff", new Dim("50", "%"))],
       })
     );
     expect(
@@ -53,8 +53,8 @@ describe("cssPegParser", function () {
         repeating: true,
         angle: 90,
         stops: tuple(
-          new Stop("black", new Dim(50, "%")),
-          new Stop("#fff", new Dim(70, "%"))
+          new Stop("black", new Dim("50", "%")),
+          new Stop("#fff", new Dim("70", "%"))
         ),
       })
     );
@@ -62,7 +62,7 @@ describe("cssPegParser", function () {
       new LinearGradient({
         repeating: false,
         angle: 10,
-        stops: [new Stop("rgb(0,0,0)", new Dim(50, "%"))],
+        stops: [new Stop("rgb(0,0,0)", new Dim("50", "%"))],
       })
     );
     return expect(
@@ -71,7 +71,7 @@ describe("cssPegParser", function () {
       new LinearGradient({
         repeating: true,
         angle: 90,
-        stops: [new Stop("rgba(255,255,255,.1)", new Dim(50, "%"))],
+        stops: [new Stop("rgba(255,255,255,.1)", new Dim("50", "%"))],
       })
     );
   });

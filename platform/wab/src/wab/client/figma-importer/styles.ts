@@ -16,8 +16,8 @@ import {
   getLayoutParent,
   hasChildren,
   isDefaultFrameMixin,
-  rgbaToString,
   rgbToString,
+  rgbaToString,
   transformToMatrix,
   truncateNumber,
 } from "@/wab/client/figma-importer/utils";
@@ -29,20 +29,20 @@ import {
   Dim,
   ImageBackground,
   LinearGradient,
-  mkBackgroundLayer as mkBackgroundLayerWithDefaults,
   NoneBackground,
   RadialGradient,
   Stop,
+  mkBackgroundLayer as mkBackgroundLayerWithDefaults,
 } from "@/wab/shared/core/bg-styles";
 import { mkImageAssetRef } from "@/wab/shared/core/image-assets";
 import { ImageAsset } from "@/wab/shared/model/classes";
 import { omit } from "lodash";
 import { CSSProperties } from "react";
 import {
+  Matrix,
   applyToPoint,
   compose,
   inverse,
-  Matrix,
   rotate,
 } from "transformation-matrix";
 
@@ -661,7 +661,7 @@ const styleForGeometryMixin = (
                 new Stop(
                   rgbaToString(color),
                   new Dim(
-                    truncateNumber((position * scale + offset) * 100),
+                    `${truncateNumber((position * scale + offset) * 100)}`,
                     "%"
                   )
                 )
@@ -686,13 +686,13 @@ const styleForGeometryMixin = (
                     ({ color, position }) =>
                       new Stop(
                         rgbaToString(color),
-                        new Dim(truncateNumber(position * 100), "%")
+                        new Dim(`${truncateNumber(position * 100)}`, "%")
                       )
                   ),
-                  cx: new Dim(50, "%"),
-                  cy: new Dim(50, "%"),
-                  rx: new Dim(50, "%"),
-                  ry: new Dim(50, "%"),
+                  cx: new Dim("50", "%"),
+                  cy: new Dim("50", "%"),
+                  rx: new Dim("50", "%"),
+                  ry: new Dim("50", "%"),
                 })
               ).showCss(),
             };
