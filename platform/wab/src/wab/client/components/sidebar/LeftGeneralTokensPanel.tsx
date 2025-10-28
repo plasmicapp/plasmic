@@ -32,6 +32,7 @@ import {
   tokenTypes,
 } from "@/wab/commons/StyleToken";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
+import { isScreenVariant } from "@/wab/shared/Variants";
 import { ensure, spawn, unexpected, unreachable } from "@/wab/shared/common";
 import {
   finalStyleTokensForDep,
@@ -289,9 +290,15 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
     [vsh]
   );
 
-  const contextGlobalVariants = allGlobalVariants(studioCtx.site, {
-    excludeMediaQuery: true,
+  const availableTargets = allGlobalVariants(studioCtx.site, {
+    includeDeps: "direct",
+    excludeInactiveScreenVariants: true,
   });
+
+  const [screenGlobalVariants, contextGlobalVariants] = partition(
+    availableTargets,
+    (v) => isScreenVariant(v)
+  );
 
   const handleGlobalVariantChange = (variantId) => {
     if (variantId === "base") {
@@ -299,17 +306,10 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
       setIsTargeting(false);
     } else {
       const globalVariants = [
-        contextGlobalVariants.some((v) => v.uuid === variantId)
-          ? ensure(
-              contextGlobalVariants.find((v) => v.uuid === variantId),
-              () => `Picked unknown screen variant`
-            )
-          : ensure(
-              studioCtx.site.activeScreenVariantGroup?.variants.find(
-                (v) => v.uuid === variantId
-              ),
-              () => `Picked unknown global variant`
-            ),
+        ensure(
+          availableTargets.find((v) => v.uuid === variantId),
+          () => `Picked unknown global variant`
+        ),
       ];
       setVsh(
         new VariantedStylesHelper(
@@ -448,6 +448,22 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
       };
     });
 
+    // Reset vsh if the currently selected variant has been deleted
+    React.useEffect(() => {
+      const selectedVariants = vsh?.globalVariants();
+      if (!selectedVariants || selectedVariants.length === 0) {
+        return;
+      }
+      const hasDeletedVariant = selectedVariants.some(
+        (selectedVariant) =>
+          !availableTargets.some((v) => v.uuid === selectedVariant.uuid)
+      );
+      if (hasDeletedVariant) {
+        setVsh(undefined);
+        setIsTargeting(false);
+      }
+    }, [vsh, JSON.stringify(availableTargets.map((t) => t.uuid).sort())]);
+
     return (
       <MultiAssetsActions
         type="token"
@@ -541,6 +557,7 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
         }}
         isTargeting={isTargeting}
         globalVariantSelect={{
+          value: vsh?.globalVariants()?.[0]?.uuid ?? "base",
           onChange: (e) => handleGlobalVariantChange(e),
           "data-test-id": "global-variant-select",
           children: (
