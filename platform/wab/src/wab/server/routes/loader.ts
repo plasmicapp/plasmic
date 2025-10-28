@@ -127,7 +127,22 @@ export async function buildPublishedLoaderAssets(req: Request, res: Response) {
   });
 
   req.promLabels.projectId = projectIdSpecs.join(",");
-  redirectToCacheableResource(res, `/api/v1/loader/code/versioned?${query}`);
+
+  const destination = `/api/v1/loader/code/versioned?${query}`;
+
+  // Special case for FXReplay nRGmCYqvZMnYyNtcGY29Aw - return 200 with redirect URL
+  // https://linear.app/plasmic/issue/PLA-12576
+  const fxreplayProjectId = "nRGmCYqvZMnYyNtcGY29Aw";
+  const isFxreplayProject = projectIdSpecs.some(
+    (spec) => parseProjectIdSpec(spec).projectId === fxreplayProjectId
+  );
+
+  if (isFxreplayProject) {
+    res.status(200).json({ redirectUrl: destination });
+    return;
+  }
+
+  redirectToCacheableResource(res, destination);
 }
 
 export function makeCacheableVersionedLoaderQuery({
