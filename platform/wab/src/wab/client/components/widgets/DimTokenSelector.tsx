@@ -626,7 +626,13 @@ export const DimTokenSpinner = observer(
                     }
                   } else if (e.key === "Enter") {
                     skipChangeOnBlur.current = true;
-                    if (tryOnChange(inputValue, "raw")) {
+                    const isValidInput =
+                      isNumberMode ||
+                      isDimCssFunction(inputValue) ||
+                      extraOptions.some(
+                        (option) => option.value === inputValue
+                      );
+                    if (isValidInput && tryOnChange(inputValue, "raw")) {
                       resetState();
                       closeMenu();
                     }
