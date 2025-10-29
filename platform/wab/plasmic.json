@@ -1391,8 +1391,8 @@
       "globalContextsFilePath": "",
       "splitsProviderFilePath": "",
       "customFunctions": [],
-      "styleTokensProviderFilePath": "",
-      "projectModuleFilePath": ""
+      "styleTokensProviderFilePath": "wab/client/plasmic/plasmic_kit_share_dialog/PlasmicStyleTokensProvider.tsx",
+      "projectModuleFilePath": "wab/client/plasmic/plasmic_kit_share_dialog/plasmic.tsx"
     },
     {
       "projectId": "aaggSgVS8yYsAwQffVQB4p",
@@ -11797,9 +11797,10 @@
     ]
   },
   "wrapPagesWithGlobalContexts": true,
+  "preserveJsImportExtensions": false,
   "postSyncCommands": [
     "git ls-files -m | xargs pre-commit run prettier --files"
   ],
-  "cliVersion": "0.1.342",
-  "$schema": "https://unpkg.com/@plasmicapp/cli@0.1.342/dist/plasmic.schema.json"
+  "cliVersion": "0.1.348",
+  "$schema": "https://unpkg.com/@plasmicapp/cli@0.1.348/dist/plasmic.schema.json"
 }

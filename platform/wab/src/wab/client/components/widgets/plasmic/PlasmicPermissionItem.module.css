@@ -1,50 +1,26 @@
 .root {
   display: flex;
   flex-direction: row;
-  position: relative;
-}
-.root > :global(.__wab_flex-container) {
-  flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  margin-left: calc(0px - 8px);
-  width: calc(100% + 8px);
-}
-.root > :global(.__wab_flex-container) > *,
-.root > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.root > :global(.__wab_flex-container) > picture > img,
-.root > :global(.__wab_flex-container) > :global(.__wab_slot) > picture > img {
-  margin-left: 8px;
+  position: relative;
+  column-gap: 8px;
 }
 .freeBox {
   display: flex;
   flex-direction: row;
   position: relative;
+  align-items: center;
+  justify-content: center;
   align-self: auto;
   width: auto;
   height: auto;
   flex-grow: 0;
   flex-shrink: 1;
   flex-basis: auto;
+  column-gap: 8px;
 }
-.freeBox > :global(.__wab_flex-container) {
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  margin-left: calc(0px - 8px);
-  width: calc(100% + 8px);
-}
-.freeBox > :global(.__wab_flex-container) > *,
-.freeBox > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.freeBox > :global(.__wab_flex-container) > picture > img,
-.freeBox
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  margin-left: 8px;
-}
-.root:hover .freeBox > :global(.__wab_flex-container) {
+.root:hover .freeBox {
   align-items: center;
 }
 .owner {

@@ -19,7 +19,6 @@ import {
   PlasmicLink as PlasmicLink__,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
-  Stack as Stack__,
   StrictProps,
   classNames,
   createPlasmicElementProxy,
@@ -32,6 +31,7 @@ import {
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
+import { _useStyleTokens } from "../../../plasmic/plasmic_kit_share_dialog/PlasmicStyleTokensProvider"; // plasmic-import: kA1Hysr5ZeimtATHTDJz5B/styleTokensProvider
 import ListSectionSeparator from "../../ListSectionSeparator"; // plasmic-import: uG5_fPM0sK/component
 import ActionMenuButton from "../ActionMenuButton"; // plasmic-import: VNi6NC2QOI/component
 import Button from "../Button"; // plasmic-import: SEF-sRmSoqV5c/component
@@ -43,8 +43,6 @@ import PermissionItem from "./PermissionItem"; // plasmic-import: GFrmKeyhlA/com
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_color_tokens_css from "../../../plasmic/plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import plasmic_plasmic_kit_design_system_css from "../../../plasmic/PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import projectcss from "../../../plasmic/PP__plasmickit_share_dialog.module.css"; // plasmic-import: kA1Hysr5ZeimtATHTDJz5B/projectcss
 import sty from "./PlasmicShareDialogContent.module.css"; // plasmic-import: cWsnP3_PIix/css
 
@@ -237,6 +235,8 @@ function PlasmicShareDialogContent__RenderFunc(props: {
     $refs,
   });
 
+  const styleTokensClassNames = _useStyleTokens();
+
   return (
     <div
       data-plasmic-name={"root"}
@@ -248,9 +248,7 @@ function PlasmicShareDialogContent__RenderFunc(props: {
         projectcss.root_reset,
         projectcss.plasmic_default_styles,
         projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_css.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
+        styleTokensClassNames,
         sty.root,
         {
           [sty.rootresourceType_project]: hasVariant(
@@ -288,9 +286,7 @@ function PlasmicShareDialogContent__RenderFunc(props: {
         }
       )}
     >
-      <Stack__
-        as={"div"}
-        hasGap={true}
+      <div
         className={classNames(projectcss.all, sty.freeBox__nnT7R, {
           [sty.freeBoxpermsCascade_showWorkspace__nnT7RGxhbk]: hasVariant(
             $state,
@@ -426,9 +422,7 @@ function PlasmicShareDialogContent__RenderFunc(props: {
             ? true
             : true
         ) ? (
-          <Stack__
-            as={"div"}
-            hasGap={true}
+          <div
             className={classNames(projectcss.all, sty.freeBox__yn7Fa, {
               [sty.freeBoxnoShareByLink__yn7FadsUq5]: hasVariant(
                 $state,
@@ -467,9 +461,7 @@ function PlasmicShareDialogContent__RenderFunc(props: {
               ),
             })}
           >
-            <Stack__
-              as={"div"}
-              hasGap={true}
+            <div
               className={classNames(projectcss.all, sty.freeBox__hbZwy, {
                 [sty.freeBoxpermsCascade_showTeam__hbZwy57XP]: hasVariant(
                   $state,
@@ -661,7 +653,7 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                   </div>
                 </Button>
               ) : null}
-            </Stack__>
+            </div>
             {(
               hasVariant($state, "resourceType", "workspace")
                 ? false
@@ -669,9 +661,7 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                 ? false
                 : true
             ) ? (
-              <Stack__
-                as={"div"}
-                hasGap={true}
+              <div
                 className={classNames(projectcss.all, sty.freeBox__fdzf5, {
                   [sty.freeBoxpermsCascade_showWorkspace__fdzf5Gxhbk]:
                     hasVariant($state, "permsCascade", "showWorkspace"),
@@ -729,7 +719,7 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                   )}
                 >
                   {hasVariant($state, "resourceType", "team")
-                    ? "Anyone with the link join the organization as"
+                    ? "Anyone with the link can join the organization as"
                     : "Any Plasmic user with the link is a"}
                 </div>
                 <Select
@@ -778,15 +768,13 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                     {"viewer"}
                   </Select__Option>
                 </Select>
-              </Stack__>
+              </div>
             ) : null}
-          </Stack__>
+          </div>
         ) : null}
-        <Stack__
-          as={"div"}
+        <div
           data-plasmic-name={"byInviteTab"}
           data-plasmic-override={overrides.byInviteTab}
-          hasGap={true}
           className={classNames(projectcss.all, sty.byInviteTab, {
             [sty.byInviteTabpermsCascade_showWorkspace]: hasVariant(
               $state,
@@ -835,9 +823,7 @@ function PlasmicShareDialogContent__RenderFunc(props: {
             ),
           })}
         >
-          <Stack__
-            as={"div"}
-            hasGap={true}
+          <div
             className={classNames(projectcss.all, sty.freeBox___1IUsx, {
               [sty.freeBoxpermsCascade_showTeam___1IUsx57XP]: hasVariant(
                 $state,
@@ -866,9 +852,7 @@ function PlasmicShareDialogContent__RenderFunc(props: {
               ),
             })}
           >
-            <Stack__
-              as={"div"}
-              hasGap={true}
+            <div
               className={classNames(projectcss.all, sty.freeBox__vTye, {
                 [sty.freeBoxpermsCascade_showTeam__vTye57XP]: hasVariant(
                   $state,
@@ -959,9 +943,7 @@ function PlasmicShareDialogContent__RenderFunc(props: {
               >
                 {"as"}
               </div>
-              <Stack__
-                as={"div"}
-                hasGap={true}
+              <div
                 className={classNames(projectcss.all, sty.freeBox__elohb, {
                   [sty.freeBoxstate_noPermToShare__elohBgPB]: hasVariant(
                     $state,
@@ -1036,8 +1018,8 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                     {"viewer"}
                   </Select__Option>
                 </Select>
-              </Stack__>
-            </Stack__>
+              </div>
+            </div>
             <div
               className={classNames(projectcss.all, sty.freeBox___0VjOi, {
                 [sty.freeBoxresourceType_project___0VjOIwbkdw]: hasVariant(
@@ -1090,7 +1072,7 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                   : "Invite"}
               </Button>
             </div>
-          </Stack__>
+          </div>
           {(
             hasVariant($state, "state", "noPermToShare")
               ? true
@@ -1275,11 +1257,9 @@ function PlasmicShareDialogContent__RenderFunc(props: {
             )}
           />
 
-          <Stack__
-            as={"div"}
+          <div
             data-plasmic-name={"permsContainer"}
             data-plasmic-override={overrides.permsContainer}
-            hasGap={true}
             className={classNames(projectcss.all, sty.permsContainer, {
               [sty.permsContainerresourceType_project]: hasVariant(
                 $state,
@@ -1604,8 +1584,8 @@ function PlasmicShareDialogContent__RenderFunc(props: {
               ),
               value: args.existingPermItems,
             })}
-          </Stack__>
-        </Stack__>
+          </div>
+        </div>
         <div
           className={classNames(projectcss.all, sty.freeBox__auHu, {
             [sty.freeBoxresourceType_project__auHuwbkdw]: hasVariant(
@@ -1673,9 +1653,7 @@ function PlasmicShareDialogContent__RenderFunc(props: {
               ),
             })}
           >
-            <Stack__
-              as={"div"}
-              hasGap={true}
+            <div
               className={classNames(projectcss.all, sty.freeBox__vlUi4, {
                 [sty.freeBoxpermsCascade_showWorkspace__vlUi4Gxhbk]: hasVariant(
                   $state,
@@ -1722,10 +1700,10 @@ function PlasmicShareDialogContent__RenderFunc(props: {
                 )}
               >
                 {hasVariant($state, "resourceType", "team")
-                  ? "Anyone with the link join the team as"
+                  ? "Anyone with the link can join the team as"
                   : "Everyone else"}
               </div>
-            </Stack__>
+            </div>
             <Select
               data-plasmic-name={"everyoneElseDropdown"}
               data-plasmic-override={overrides.everyoneElseDropdown}
@@ -1778,7 +1756,7 @@ function PlasmicShareDialogContent__RenderFunc(props: {
             </Select>
           </div>
         ) : null}
-      </Stack__>
+      </div>
     </div>
   ) as React.ReactElement | null;
 }
@@ -1868,7 +1846,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicShareDialogContent__VariantsArgs;
     args?: PlasmicShareDialogContent__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicShareDialogContent__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicShareDialogContent__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicShareDialogContent__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

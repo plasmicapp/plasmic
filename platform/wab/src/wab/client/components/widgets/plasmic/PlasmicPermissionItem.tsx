@@ -18,7 +18,6 @@ import {
   PlasmicIcon as PlasmicIcon__,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
-  Stack as Stack__,
   StrictProps,
   classNames,
   createPlasmicElementProxy,
@@ -32,14 +31,13 @@ import {
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
+import { _useStyleTokens } from "../../../plasmic/plasmic_kit_share_dialog/PlasmicStyleTokensProvider"; // plasmic-import: kA1Hysr5ZeimtATHTDJz5B/styleTokensProvider
 import IconButton from "../IconButton"; // plasmic-import: LPry-TF4j22a/component
 import Select from "../Select"; // plasmic-import: j_4IQyOWK2b/component
 import Select__Option from "../Select__Option"; // plasmic-import: rr-LWdMni2G/component
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_color_tokens_css from "../../../plasmic/plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import plasmic_plasmic_kit_design_system_css from "../../../plasmic/PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import projectcss from "../../../plasmic/PP__plasmickit_share_dialog.module.css"; // plasmic-import: kA1Hysr5ZeimtATHTDJz5B/projectcss
 import sty from "./PlasmicPermissionItem.module.css"; // plasmic-import: GFrmKeyhlA/css
 
@@ -155,22 +153,20 @@ function PlasmicPermissionItem__RenderFunc(props: {
     hover_root: isRootHover,
   };
 
+  const styleTokensClassNames = _useStyleTokens();
+
   return (
-    <Stack__
-      as={"div"}
+    <div
       data-plasmic-name={"root"}
       data-plasmic-override={overrides.root}
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
-      hasGap={true}
       className={classNames(
         projectcss.all,
         projectcss.root_reset,
         projectcss.plasmic_default_styles,
         projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_css.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
+        styleTokensClassNames,
         sty.root,
         {
           [sty.rootloading]: hasVariant($state, "loading", "loading"),
@@ -183,11 +179,9 @@ function PlasmicPermissionItem__RenderFunc(props: {
         defaultContents: "yang@plasmic.app",
         value: args.email,
       })}
-      <Stack__
-        as={"div"}
+      <div
         data-plasmic-name={"freeBox"}
         data-plasmic-override={overrides.freeBox}
-        hasGap={true}
         className={classNames(projectcss.all, sty.freeBox, {
           [sty.freeBoxloading]: hasVariant($state, "loading", "loading"),
           [sty.freeBoxrole_owner]: hasVariant($state, "role", "owner"),
@@ -305,8 +299,8 @@ function PlasmicPermissionItem__RenderFunc(props: {
             </Select__Option>
           </Select>
         ) : null}
-      </Stack__>
-    </Stack__>
+      </div>
+    </div>
   ) as React.ReactElement | null;
 }
 
@@ -339,7 +333,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicPermissionItem__VariantsArgs;
     args?: PlasmicPermissionItem__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicPermissionItem__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicPermissionItem__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicPermissionItem__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props
