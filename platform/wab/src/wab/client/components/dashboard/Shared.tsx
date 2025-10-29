@@ -88,6 +88,7 @@ function Shared_(props: SharedProps, ref: HTMLElementRefOf<"button">) {
           onCancel={() => setModal(false)}
           modalRender={() => (
             <ShareDialogContent
+              className="ant-modal-content"
               resource={resource}
               perms={perms}
               closeDialog={() => setModal(false)}

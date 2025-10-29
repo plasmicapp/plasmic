@@ -25,6 +25,7 @@ function ShareButton(props: ShareButtonProps) {
           onCancel={() => setModal(false)}
           modalRender={() => (
             <ShareDialogContent
+              className="ant-modal-content"
               resource={resource}
               perms={perms}
               closeDialog={() => setModal(false)}
