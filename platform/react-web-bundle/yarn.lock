@@ -355,10 +355,10 @@
   dependencies:
     unfetch "^4.2.0"
 
-"@plasmicapp/loader-splits@1.0.65":
-  version "1.0.65"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/loader-splits/-/loader-splits-1.0.65.tgz#c167efe15b46c2505abdd4d13f45926c99d11e99"
-  integrity sha512-kU+5Ky157i9JUu5cSCp+yIohQKF2lGNr4mQcaV7SHpE7aexQ4WDIr36kyZehwh4EcFTIHHc3H2g+DzAt64AIDA==
+"@plasmicapp/loader-splits@1.0.66":
+  version "1.0.66"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/loader-splits/-/loader-splits-1.0.66.tgz#740271689b2137cc7f67bf41eaf112aca86f0319"
+  integrity sha512-gWY7HnmB9ZbmfHxAl6UhN8taY5jkhTNNmbVARbSCwmHdrn5gaDzGDUDVEPVA5MPonPxg+8eB6Dutv8oqf58N7g==
   dependencies:
     json-logic-js "^2.0.2"
 
@@ -395,16 +395,16 @@
   resolved "https://registry.yarnpkg.com/@plasmicapp/react-ssr-prepass/-/react-ssr-prepass-2.0.9.tgz#1cfdd8d4c0e90fd4fed7d7204f70c44914871d31"
   integrity sha512-HO932uH/Y4otaDmjwzJbCLlokxNAdtU9VhDVUZUuVbzh0DhWaNyn/MINCu1oeZ4a6MIjdXFIm/U2VaxNxHYdsw==
 
-"@plasmicapp/react-web@^0.2.405":
-  version "0.2.405"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/react-web/-/react-web-0.2.405.tgz#3c70bf9756be6abeaccdf210d1c8ada79c949cef"
-  integrity sha512-YS3lM5BGdB6aoirc30ZFFOE8nSKJBj1bN0xyp0SrtbrrwErtKek0GxUx9aHvAIXqLaUQyY1eHiOAOy4RidwmrQ==
+"@plasmicapp/react-web@^0.2.406":
+  version "0.2.406"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/react-web/-/react-web-0.2.406.tgz#559d2abdc5100ef95db361dc05426508cce753cc"
+  integrity sha512-YeeOJluC4yGxBaN8Mn1PABMdGWP1nBcuIS237yXyyaHdMKqZajLbXIbHG6End9ijD+EUasANoYzPo+yk81j9ew==
   dependencies:
     "@plasmicapp/auth-react" "0.0.24"
     "@plasmicapp/data-sources" "0.1.191"
     "@plasmicapp/data-sources-context" "0.1.22"
     "@plasmicapp/host" "1.0.227"
-    "@plasmicapp/loader-splits" "1.0.65"
+    "@plasmicapp/loader-splits" "1.0.66"
     "@plasmicapp/nextjs-app-router" "1.0.19"
     "@plasmicapp/prepass" "1.0.21"
     "@plasmicapp/query" "0.1.81"
