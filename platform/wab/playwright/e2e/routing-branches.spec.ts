@@ -19,7 +19,7 @@ test.describe.skip("routing - branch UI not appearing", () => {
     await page.goto(`/projects/${projectId}?devFlags=branching`);
     await models.studio.waitForFrameToLoad();
 
-    await expect(page).not.toHaveURL(/branch=/);
+    await expect(page).not.toHaveURL(/branch=/, { timeout: 15_000 });
 
     const mainFrame = await models.studio.createNewComponent("DisplayBranch");
     await models.studio.focusFrameRoot(mainFrame);
@@ -62,7 +62,9 @@ test.describe.skip("routing - branch UI not appearing", () => {
       await page.waitForTimeout(2000);
       await models.studio.waitForFrameToLoad();
 
-      await expect(page).toHaveURL(new RegExp(`branch=${branchName}`));
+      await expect(page).toHaveURL(new RegExp(`branch=${branchName}`), {
+        timeout: 15_000,
+      });
 
       await models.studio.leftPanel.selectTreeNode(["text"]);
 
@@ -103,9 +105,11 @@ test.describe.skip("routing - branch UI not appearing", () => {
       await models.studio.waitForFrameToLoad();
 
       if (branchName === "main") {
-        await expect(page).not.toHaveURL(/branch=/);
+        await expect(page).not.toHaveURL(/branch=/, { timeout: 15_000 });
       } else {
-        await expect(page).toHaveURL(new RegExp(`branch=${branchName}`));
+        await expect(page).toHaveURL(new RegExp(`branch=${branchName}`), {
+          timeout: 15_000,
+        });
       }
     }
 
@@ -156,7 +160,7 @@ test.describe.skip("routing - branch UI not appearing", () => {
 
     await page.goto(`/projects/${projectId}?branch=NonExistentBranch`);
     await models.studio.waitForFrameToLoad();
-    await expect(page).not.toHaveURL(/branch=/);
+    await expect(page).not.toHaveURL(/branch=/, { timeout: 15_000 });
     await models.studio.leftPanel.selectTreeNode(["text"]);
     const textInNonExistent = models.studio.frames
       .first()

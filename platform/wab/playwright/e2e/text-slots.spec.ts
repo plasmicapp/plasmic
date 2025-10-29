@@ -110,9 +110,13 @@ test.describe("text-slots", () => {
 
     if (!isLeftPanelVisible) {
       await models.studio.leftPanel.switchToTreeTab();
+      await page.waitForTimeout(500);
     }
-    await models.studio.leftPanel.frame
-      .getByText(`Slot: "children"`)
+
+    await models.studio.focusFrameRoot(artboardFrame);
+
+    await models.studio.leftPanel.treeLabels
+      .filter({ hasText: `Slot: "children"` })
       .nth(1)
       .click();
     await models.studio.leftPanel.frame.getByText(`"Enter some text"`).click();

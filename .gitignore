@@ -42,3 +42,4 @@ storybook-static/
 dist/
 # Playwright test results
 test-results/
+playwright-report/

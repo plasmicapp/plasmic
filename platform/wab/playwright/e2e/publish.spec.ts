@@ -27,6 +27,7 @@ test.describe("publish", () => {
 
     await models.studio.insertTextNodeWithContent("hello");
     await models.studio.waitStudioLoaded();
+    await models.studio.waitForSave();
     await models.studio.publishVersion("first version");
 
     await models.studio.leftPanel.switchToTreeTab();

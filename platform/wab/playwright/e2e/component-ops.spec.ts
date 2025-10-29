@@ -119,20 +119,10 @@ test.describe("component-ops - tricky operations", () => {
 
     await models.studio.rightPanel.addInteractionVariant("Hover");
 
-    const newFrame = page
-      .locator("iframe")
-      .first()
-      .contentFrame()
-      .locator("iframe")
-      .contentFrame()
-      .locator("div")
-      .filter({
-        hasText: /^CompA800 ✕ 500Base \+ Interactions1180 ✕ 540$/,
-      })
-      .locator("iframe")
-      .nth(2)
-      .contentFrame();
-    await newFrame.locator("body").click();
+    const frameCount = await models.studio.frames.count();
+    const newFrame = models.studio.frames.nth(frameCount - 1);
+    await newFrame.waitFor({ state: "visible", timeout: 10000 });
+    await newFrame.contentFrame().locator("body").click();
     await models.studio.leftPanel.selectTreeNode(["vertical stack", "text2"]);
     await models.studio.deleteSelection();
 

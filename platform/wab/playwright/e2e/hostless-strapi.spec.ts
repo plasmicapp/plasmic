@@ -1,47 +1,43 @@
 import { expect } from "@playwright/test";
 import * as fs from "fs";
 import * as path from "path";
-import imageMap from "../../../loader-tests/cypress/fixtures/images/strapi/strapi-image-fixtures";
 import { VERT_CONTAINER_CAP } from "../../src/wab/shared/Labels";
 import { test } from "../fixtures/test";
 
 test.describe("hostless-strapi", () => {
   let projectId: string;
-  const hostLessPackagesInfo = [
-    {
-      name: "strapi",
-      npmPkg: ["@plasmicpkgs/strapi"],
-    },
-    {
-      name: "plasmic-strapi",
-      npmPkg: ["@plasmicpkgs/plasmic-strapi"],
-      deps: ["strapi"],
-    },
-  ];
 
   test.beforeEach(async ({ page }) => {
-    const baseFixturePath = `../../../loader-tests/cypress/fixtures/`;
     await page.route("**/*restaurants*", async (route) => {
-      const fixturePath = path.join(
-        __dirname,
-        baseFixturePath,
-        route.request().url().includes("v5")
-          ? "strapi-v5-restaurants.json"
-          : "strapi-restaurants.json"
-      );
-      const fixtureData = JSON.parse(fs.readFileSync(fixturePath, "utf-8"));
-      await route.fulfill({
-        status: 200,
-        contentType: "application/json",
-        body: JSON.stringify(fixtureData),
-      });
+      if (route.request().url().includes("restaurants-v5")) {
+        const fixturePath = path.join(
+          __dirname,
+          "../../cypress/fixtures/strapi-v5-restaurants.json"
+        );
+        const fixtureData = JSON.parse(fs.readFileSync(fixturePath, "utf-8"));
+        await route.fulfill({
+          status: 200,
+          contentType: "application/json",
+          body: JSON.stringify(fixtureData),
+        });
+      } else {
+        const fixturePath = path.join(
+          __dirname,
+          "../../cypress/fixtures/strapi-restaurants.json"
+        );
+        const fixtureData = JSON.parse(fs.readFileSync(fixturePath, "utf-8"));
+        await route.fulfill({
+          status: 200,
+          contentType: "application/json",
+          body: JSON.stringify(fixtureData),
+        });
+      }
     });
 
     await page.route(/undefined/, async (route) => {
       const fixturePath = path.join(
         __dirname,
-        baseFixturePath,
-        "strapi-error.json"
+        "../../cypress/fixtures/strapi-error.json"
       );
       const fixtureData = JSON.parse(fs.readFileSync(fixturePath, "utf-8"));
       await route.fulfill({
@@ -51,19 +47,36 @@ test.describe("hostless-strapi", () => {
       });
     });
 
-    for (const { url, file } of imageMap) {
+    const imageMap = {
+      "https://res.cloudinary.com/tubone-plasmic/image/upload/v1650939343/Cafe_Coffee_Day_logo_338419f75a.png":
+        "images/strapi/Cafe_Coffee_Day_logo.png",
+      "https://res.cloudinary.com/tubone-plasmic/image/upload/v1650939343/Chili_s_Logo_svg_9b74d95e58.png":
+        "images/strapi/Chili_s_Logo_svg.png",
+      "https://res.cloudinary.com/tubone-plasmic/image/upload/v1650939343/Chipotle_Mexican_Grill_logo_svg_53d34599eb.png":
+        "images/strapi/Chipotle_Mexican_Grill_logo_svg.png",
+      "https://res.cloudinary.com/tubone-plasmic/image/upload/v1650939374/Big_Smoke_Burger_logo_svg_e3ca76d953.png":
+        "images/strapi/Big_Smoke_Burger_logo_svg.png",
+      "https://res.cloudinary.com/tubone-plasmic/image/upload/v1650939343/Burger_King_2020_svg_ac8ab9c5f1.png":
+        "images/strapi/Burger_King_2020_svg.png",
+      "https://res.cloudinary.com/tubone-plasmic/image/upload/v1650939343/Bonchon_Logo_7f7f16bce2.png":
+        "images/strapi/Bonchon_Logo.png",
+      "https://res.cloudinary.com/tubone-plasmic/image/upload/v1650939343/Buffalo_Wild_Wings_logo_vertical_svg_cc56dc61aa.png":
+        "images/strapi/Buffalo_Wild_Wings_logo_vertical_svg.png",
+    };
+
+    for (const [url, imagePath] of Object.entries(imageMap)) {
       await page.route(url, async (route) => {
         const fullImagePath = path.join(
           __dirname,
-          baseFixturePath,
-          "images",
-          "strapi",
-          file
+          "../../cypress/fixtures/",
+          imagePath
         );
         const imageData = fs.readFileSync(fullImagePath);
         await route.fulfill({
           status: 200,
-          contentType: file.endsWith(".png") ? "image/png" : "image/svg+xml",
+          contentType: imagePath.endsWith(".png")
+            ? "image/png"
+            : "image/svg+xml",
           body: imageData,
         });
       });
@@ -83,7 +96,10 @@ test.describe("hostless-strapi", () => {
   test.describe("can put strapi fetcher with strapi field, fetch and show data", () => {
     async function runTest(version: 4 | 5, { apiClient, page, models }: any) {
       projectId = await apiClient.setupProjectWithHostlessPackages({
-        hostLessPackagesInfo,
+        hostLessPackagesInfo: {
+          name: "plasmic-strapi",
+          npmPkg: ["@plasmicpkgs/plasmic-strapi"],
+        },
       });
       await page.goto(`/projects/${projectId}`);
 
@@ -196,7 +212,10 @@ test.describe("hostless-strapi", () => {
   test.describe("can use context to data bind", () => {
     async function runTest(version: 4 | 5, { apiClient, page, models }: any) {
       projectId = await apiClient.setupProjectWithHostlessPackages({
-        hostLessPackagesInfo,
+        hostLessPackagesInfo: {
+          name: "plasmic-strapi",
+          npmPkg: ["@plasmicpkgs/plasmic-strapi"],
+        },
       });
       await page.goto(`/projects/${projectId}`);
 
@@ -221,7 +240,6 @@ test.describe("hostless-strapi", () => {
         "StrapiField must specify a field name"
       );
 
-      // Delete the StrapiField by clicking on it in the canvas
       const strapiFieldWithError = canvasFrame
         .locator("div")
         .filter({

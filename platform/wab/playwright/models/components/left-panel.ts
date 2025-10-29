@@ -70,34 +70,74 @@ export class LeftPanel extends BaseModel {
   }
 
   async insertNode(node: string) {
-    try {
-      await this.addButton.click({ timeout: 10000 });
-    } catch (error) {
-      await this.addButton.click({ force: true });
+    let addButtonClicked = false;
+    for (let attempt = 0; attempt < 3; attempt++) {
+      try {
+        await this.addButton.waitFor({ state: "visible", timeout: 15000 });
+        await this.addButton.click({ timeout: 5000 });
+        addButtonClicked = true;
+        break;
+      } catch (error) {
+        if (attempt === 2) {
+          await this.addButton.click({ force: true });
+          addButtonClicked = true;
+          break;
+        }
+        await this.page.waitForTimeout(300);
+      }
     }
 
-    await this.page.waitForTimeout(500);
+    if (!addButtonClicked) {
+      throw new Error("Failed to click add button");
+    }
+
+    await this.addContainer.waitFor({ state: "visible", timeout: 10000 });
+
+    await this.addSearchInput.waitFor({ state: "visible", timeout: 10000 });
+    await this.page.waitForTimeout(200);
+
     await this.addSearchInput.fill(node);
-    await this.page.waitForTimeout(500);
 
     const item = this.frame
       .locator(`li[data-plasmic-add-item-name="${node}"]`)
       .first();
     await item.waitFor({ state: "visible", timeout: 10000 });
 
-    try {
-      await item.click({ timeout: 10000 });
-    } catch (error) {
-      await item.click({ force: true });
+    await item.scrollIntoViewIfNeeded();
+    await this.page.waitForTimeout(200);
+
+    let itemClicked = false;
+    for (let attempt = 0; attempt < 3; attempt++) {
+      try {
+        await item.click({ timeout: 5000 });
+        itemClicked = true;
+        break;
+      } catch (error) {
+        if (attempt === 2) {
+          await item.click({ force: true });
+          itemClicked = true;
+          break;
+        }
+        await this.page.waitForTimeout(300);
+        await item.scrollIntoViewIfNeeded();
+      }
+    }
+
+    if (!itemClicked) {
+      throw new Error(`Failed to click item "${node}"`);
     }
   }
 
   async setComponentName(name: string) {
     await this.componentNameInput.waitFor({ state: "visible", timeout: 5000 });
     await this.componentNameInput.fill(name);
-    await this.page.waitForTimeout(1000);
+    await this.page.waitForTimeout(300);
 
     await this.componentNameSubmit.waitFor({ state: "visible", timeout: 5000 });
+    await this.componentNameSubmit.waitFor({
+      state: "attached",
+      timeout: 5000,
+    });
     await this.componentNameSubmit.click();
   }
 
@@ -169,7 +209,6 @@ export class LeftPanel extends BaseModel {
   }
 
   async switchToTreeTab() {
-    // Check if the tree tab is already active by looking at the aria-selected attribute
     const isActive =
       (await this.treeTabButton.getAttribute("data-state-isselected")) ===
       "true";
@@ -179,23 +218,23 @@ export class LeftPanel extends BaseModel {
   }
 
   async switchToVersionsTab() {
-    // Check if the versions tab is already active by looking at the aria-selected attribute
     const isActive =
       (await this.versionsTabButton.getAttribute("data-state-isselected")) ===
       "true";
     if (!isActive) {
-      await this.versionsTabButton.click();
+      await this.versionsTabButton.scrollIntoViewIfNeeded();
+      await this.versionsTabButton.click({ force: true });
     }
   }
 
   async switchToImportsTab() {
+    const moreTab = this.frame.locator('[data-test-tabkey="more"]');
+    await moreTab.waitFor({ state: "visible", timeout: 5000 });
+    await moreTab.hover();
+    await this.page.waitForTimeout(500);
+
     const importsTab = this.frame.locator('button[data-test-tabkey="imports"]');
-    // Check if the imports tab is already active by looking at the aria-selected attribute
-    const isActive =
-      (await importsTab.getAttribute("data-state-isselected")) === "true";
-    if (!isActive) {
-      await importsTab.click();
-    }
+    await importsTab.click();
   }
 
   async selectTreeNode(names: string[]): Promise<Locator> {

@@ -58,29 +58,31 @@ test.describe("Active Screen Variants", () => {
 
     await models.studio.rightPanel.switchToComponentDataTab();
     await models.studio.rightPanel.globalVariantsHeader.click();
+    await page.waitForTimeout(500);
     await models.studio.rightPanel.selectVariant("Tablet");
 
     await assertSmallScreenText(artboardFrame);
 
-    await models.studio.rightPanel.switchToComponentDataTab();
-    await models.studio.rightPanel.globalVariantsHeader.click();
     await models.studio.rightPanel.selectVariant("Mobile");
 
     await assertSmallScreenText(artboardFrame);
 
     // Test desktop width in live preview
     await page.goto(`/projects/${projectId}/preview/#width=1600&height=900`);
-    await models.studio.waitForLiveFrameToLoad();
+    await models.studio.waitForFrameToLoad();
+    await page.waitForTimeout(1000);
     await assertDesktopText(models.studio.liveFrame);
 
     // Test tablet width in live preview
     await page.goto(`/projects/${projectId}/preview/#width=1000&height=800`);
-    await models.studio.waitForLiveFrameToLoad();
+    await models.studio.waitForFrameToLoad();
+    await page.waitForTimeout(1000);
     await assertSmallScreenText(models.studio.liveFrame);
 
     // Test mobile width in live preview
     await page.goto(`/projects/${projectId}/preview/#width=500&height=800`);
-    await models.studio.waitForLiveFrameToLoad();
+    await models.studio.waitForFrameToLoad();
+    await page.waitForTimeout(1000);
     await assertSmallScreenText(models.studio.liveFrame);
   });
 });

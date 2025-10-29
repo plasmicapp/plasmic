@@ -1,8 +1,6 @@
 import { expect, FrameLocator, Locator, Page } from "playwright/test";
-import { testIds } from "../../../src/wab/client/test-helpers/test-ids";
 import { modifierKey } from "../../utils/modifier-key";
 import { updateFormValuesInLiveMode } from "../../utils/studio-utils";
-
 import { BaseModel } from "../BaseModel";
 
 export class RightPanel extends BaseModel {
@@ -35,7 +33,7 @@ export class RightPanel extends BaseModel {
     '[data-test-id="close-sidebar-modal"]'
   );
   readonly designTabButton: Locator = this.frame.locator(
-    "button#nav-tab-style"
+    'button[data-test-tabkey="style"]'
   );
   readonly componentNameInput: Locator = this.frame.locator(
     'input[data-test-class="simple-text-box"]'
@@ -96,9 +94,8 @@ export class RightPanel extends BaseModel {
   readonly componentDataTabButton: Locator = this.frame.locator(
     'button[data-test-tabkey="component"]'
   );
-  readonly globalVariantsHeader: Locator = this.frame.locator(
-    testIds.globalVariantsHeader.selector
-  );
+  readonly globalVariantsHeader: Locator =
+    this.frame.getByText("Global Variants");
   readonly responsivenessTabButton: Locator = this.frame
     .locator('div[data-test-class="variants-section"]')
     .nth(1)
@@ -363,8 +360,34 @@ export class RightPanel extends BaseModel {
   async chooseFontSize(fontSize: string) {
     await this.designTabButton.click();
     await this.fontSizeInput.first().click();
-    await this.fontSizeInput.first().fill(fontSize);
-    await this.page.keyboard.press("Enter");
+    await this.page.waitForTimeout(500);
+
+    const isNumeric = /^\d+(\.\d+)?(px|em|rem|%)?$/.test(fontSize);
+
+    if (isNumeric) {
+      await this.fontSizeInput.first().fill(fontSize);
+      await this.page.waitForTimeout(500);
+      await this.page.keyboard.press("Enter");
+    } else {
+      const searchInput = this.frame.locator(
+        'input[placeholder="Search for token"]'
+      );
+      const searchInputVisible = await searchInput
+        .isVisible({ timeout: 1000 })
+        .catch(() => false);
+
+      if (searchInputVisible) {
+        await this.page.waitForTimeout(100);
+        await searchInput.fill(fontSize);
+        await this.page.waitForTimeout(100);
+        await this.page.keyboard.press("Enter");
+        await this.page.waitForTimeout(100);
+      } else {
+        await this.page.keyboard.type(fontSize);
+        await this.page.waitForTimeout(500);
+        await this.page.keyboard.press("Enter");
+      }
+    }
   }
 
   async switchToComponentDataTab() {
@@ -386,7 +409,6 @@ export class RightPanel extends BaseModel {
   }
 
   async selectVariant(variantName: string) {
-    await this.switchToComponentDataTab();
     const variantRow = this.frame
       .locator(`[data-test-class="variant-row"]`)
       .getByText(variantName);
@@ -494,6 +516,7 @@ export class RightPanel extends BaseModel {
 
   async removePropValue(propName: string) {
     const propRow = await this.getPropEditorRow(propName);
+    await propRow.first().waitFor({ state: "visible", timeout: 10000 });
     await propRow.click({ button: "right" });
     await this.frame.getByText(`Remove ${propName} prop`).click();
   }
@@ -521,7 +544,7 @@ export class RightPanel extends BaseModel {
     }
 
     await this.page.keyboard.type(value);
-    await this.page.waitForTimeout(200);
+    await this.page.waitForTimeout(2000);
     await this.page.keyboard.press("Enter");
   }
 
@@ -615,7 +638,9 @@ export class RightPanel extends BaseModel {
   }
 
   async configureProjectAppHost(page: string) {
+    await this.projectMenuButton.waitFor({ state: "visible", timeout: 30000 });
     await this.projectMenuButton.click({ force: true });
+    await this.page.waitForTimeout(500);
     await this.configureProjectButton.click({ force: true });
 
     const plasmicHost = `http://localhost:${
@@ -626,17 +651,11 @@ export class RightPanel extends BaseModel {
     await this.hostUrlInput.fill(plasmicHost);
     await this.hostConfirmButton.click();
 
-    const hostFrame = this.page
-      .locator("iframe")
-      .first()
-      .contentFrame()
-      .locator("iframe")
-      .contentFrame()
-      .locator(
-        `iframe[src^="http://localhost:${
-          process.env.CUSTOM_HOST_PORT || 3000
-        }/${page}"]`
-      );
+    const hostFrame = this.page.locator(
+      `iframe[src^="http://localhost:${
+        process.env.CUSTOM_HOST_PORT || 3000
+      }/${page}"]`
+    );
 
     await hostFrame.waitFor({ timeout: 60000 });
     await this.page.reload({ timeout: 120000 });
@@ -842,10 +861,15 @@ export class RightPanel extends BaseModel {
   async addHtmlAttribute(attr: string, value: string) {
     await this.addHtmlAttributeButton.click();
 
+    await this.page.waitForTimeout(200);
     await this.page.keyboard.type(attr);
+    await this.page.waitForTimeout(200);
     await this.page.keyboard.press("Enter");
-
+    await this.page.waitForTimeout(200);
+    await this.frame.locator(`[data-plasmic-prop="${attr}"]`).click();
+    await this.page.waitForTimeout(200);
     await this.page.keyboard.type(value);
+    await this.page.waitForTimeout(200);
     await this.page.keyboard.press("Enter");
   }
 
@@ -969,6 +993,7 @@ export class RightPanel extends BaseModel {
     }
 
     const select = this.frame.locator(`[data-plasmic-prop="${label}"]`);
+    await expect(select).toBeVisible({ timeout: 10000 });
     await select.click();
 
     const optionWithQuotes = this.frame.locator(`[data-key="'${value}'"]`);
@@ -1096,9 +1121,11 @@ export class RightPanel extends BaseModel {
       await propEditorRow.click({ button: "right" });
       await this.frame.getByText("Use dynamic value").click();
       await this.ensureDataPickerInCustomCodeMode();
+      await this.page.waitForTimeout(200);
       await this.insertMonacoCode(
         state.initialValue != null ? state.initialValue : "undefined"
       );
+      await this.page.waitForTimeout(200);
     } else {
       if (state.variableType === "number") {
         const initValInput = this.frame.locator(

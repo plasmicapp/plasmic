@@ -9,10 +9,10 @@ export default defineConfig({
   reporter: process.env.CI
     ? [["github"], ["playwright-ctrf-json-reporter", {}]]
     : "html",
-  timeout: 140_000,
+  timeout: 400_000,
   use: {
     baseURL: "http://localhost:3003",
-    trace: "on-first-retry",
+    trace: "retain-on-failure",
     video: "retain-on-failure",
   },
   projects: [

@@ -10,6 +10,7 @@ test.describe("image-slots", () => {
       name: "image-slots",
     });
     await page.goto(`/projects/${projectId}`);
+    await page.waitForTimeout(2000);
   });
 
   test.afterEach(async ({ apiClient }) => {
@@ -56,27 +57,41 @@ test.describe("image-slots", () => {
     );
     await page.mouse.up();
 
+    await page.waitForTimeout(500);
+    const imageInWidget = widgetFrame.locator(".__wab_img_instance");
+    await imageInWidget.waitFor({ state: "visible", timeout: 5000 });
+
     const artboardFrame2 = await models.studio.createNewFrame();
 
     await page.keyboard.press("Shift+1");
 
     await models.studio.addNodeToSelectedFrame("Widget", 10, 10);
+    await page.waitForTimeout(300);
     await models.studio.addNodeToSelectedFrame("Widget", 10, 100);
+    await page.waitForTimeout(300);
 
     await models.studio.focusFrameRoot(widgetFrame);
     const widgetCanvas = widgetFrame;
     const widgetRootChildren = widgetCanvas.locator(".__wab_instance > *");
+    await widgetRootChildren.last().waitFor({ state: "visible" });
     await widgetRootChildren.last().click({ force: true });
     await models.studio.convertToSlot();
+    await page.waitForTimeout(300);
 
     await models.studio.focusFrameRoot(artboardFrame2);
 
     await page.keyboard.press("Enter");
+    await page.waitForTimeout(200);
     await page.keyboard.press("Enter");
+    await page.waitForTimeout(200);
     await page.keyboard.press("Enter");
+    await page.waitForTimeout(200);
     await page.keyboard.press("Delete");
+    await page.waitForTimeout(300);
 
-    await models.studio.focusFrameRoot(artboardFrame2);
+    const frame2 = models.studio.getComponentFrameByIndex(1);
+    await models.studio.focusFrameRoot(frame2);
+    await page.waitForTimeout(500);
 
     const artboardCanvas = artboardFrame2.contentFrame();
 
@@ -85,7 +100,15 @@ test.describe("image-slots", () => {
       return artboardRoot.locator("> .__wab_instance").last().locator("> *");
     }
 
-    await getSecondImageSlotContent().click({ force: true });
+    async function selectSecondImageSlotContent() {
+      const slotContent = getSecondImageSlotContent();
+      await slotContent.waitFor({ state: "attached", timeout: 15000 });
+      await slotContent.waitFor({ state: "visible", timeout: 15000 });
+      await slotContent.scrollIntoViewIfNeeded();
+      await slotContent.click({ force: true });
+    }
+
+    await selectSecondImageSlotContent();
     await models.studio.insertTextNodeWithContent("out here");
 
     await page.keyboard.press("Shift+Enter");
@@ -108,22 +131,25 @@ test.describe("image-slots", () => {
     await imageUrlInput.clear();
     await imageUrlInput.fill(imgUrl);
     await page.keyboard.press("Enter");
+    await page.waitForTimeout(500);
 
     await models.studio.focusFrame(artboardFrame2);
-    await page.waitForTimeout(500);
-    await getSecondImageSlotContent().click({ force: true });
+    await page.waitForTimeout(1000);
+    await selectSecondImageSlotContent();
     await page.keyboard.press("Shift+Enter");
 
     await models.studio.leftPanel.switchToTreeTab();
+    await page.waitForTimeout(1000);
     await models.studio.withinLiveMode(async (liveFrame) => {
       const img = liveFrame.locator("img");
+      await img.waitFor({ state: "visible", timeout: 10000 });
       await expect(img).toHaveAttribute("src", imgUrl);
     });
 
     const checkEndState = async () => {
       await page.waitForTimeout(1000);
 
-      await getSecondImageSlotContent().click({ force: true });
+      await selectSecondImageSlotContent();
       await page.keyboard.press("Shift+Enter");
 
       const tag = models.studio.frame
@@ -149,4 +175,3 @@ test.describe("image-slots", () => {
     await checkEndState();
   });
 });
-3;

@@ -38,6 +38,14 @@ export class ApiClient {
 
   async login(email: string, password: string) {
     const csrfRes = await this.request.get(`${this.baseUrl}/api/v1/auth/csrf`);
+
+    if (!csrfRes.ok()) {
+      const errorText = await csrfRes.text();
+      throw new Error(
+        `Failed to get CSRF token: ${csrfRes.status()} ${errorText}`
+      );
+    }
+
     this.token = (await csrfRes.json()).csrf;
 
     if (!this.token) {
@@ -50,6 +58,14 @@ export class ApiClient {
     });
 
     const csrfRes2 = await this.request.get(`${this.baseUrl}/api/v1/auth/csrf`);
+
+    if (!csrfRes2.ok()) {
+      const errorText = await csrfRes2.text();
+      throw new Error(
+        `Failed to refresh CSRF token after login: ${csrfRes2.status()} ${errorText}`
+      );
+    }
+
     this.token = (await csrfRes2.json()).csrf;
   }
 
@@ -204,18 +220,16 @@ export class ApiClient {
   }
 
   async createTutorialDb(type: string) {
-    await this.login("admin@admin.example.com", "!53kr3tz!");
-
-    const csrfRes = await this.request.get(`${this.baseUrl}/api/v1/auth/csrf`);
-    const csrf = (await csrfRes.json()).csrf;
-    const response = await this.request.post(
-      `${this.baseUrl}/api/v1/admin/create-tutorial-db`,
-      {
-        data: { type },
-        headers: { "X-CSRF-Token": csrf },
-      }
-    );
-    return (await response.json()).id;
+    return this.withAdminContext(async (context, token) => {
+      const response = await context.post(
+        `${this.baseUrl}/api/v1/admin/create-tutorial-db`,
+        {
+          data: { type },
+          headers: { "X-CSRF-Token": token },
+        }
+      );
+      return (await response.json()).id;
+    });
   }
 
   async createTutorialDataSource(type: string, dsname: string) {
@@ -250,7 +264,9 @@ export class ApiClient {
         headers: { "X-CSRF-Token": csrf },
       }
     );
-    return (await response.json()).id;
+    const result = await response.json();
+    this.dataSourceId = result.id;
+    return result.id;
   }
 
   async removeProjectAfterTest(
@@ -294,7 +310,7 @@ export class ApiClient {
     return await response.json();
   }
 
-  async createFakeDataSource() {
+  async createFakeDataSource(options?: any) {
     const csrfRes = await this.request.get(`${this.baseUrl}/api/v1/auth/csrf`);
     const csrf = (await csrfRes.json()).csrf;
 
@@ -305,15 +321,17 @@ export class ApiClient {
     const workspaceId = (await workspaceRes.json()).workspace.id;
 
     const fakeDataSourceName = `Fake Data Source ${Date.now()}`;
+    const createDataSourceOptions = options ?? {
+      source: "fake",
+      name: fakeDataSourceName,
+      workspaceId: workspaceId,
+    };
+
     const response = await this.request.post(
       `${this.baseUrl}/api/v1/data-source/sources`,
       {
         headers: { "X-CSRF-Token": csrf },
-        data: {
-          source: "fake",
-          name: fakeDataSourceName,
-          workspaceId: workspaceId,
-        },
+        data: createDataSourceOptions,
       }
     );
 
@@ -343,6 +361,7 @@ export class ApiClient {
   async setupProjectFromTemplate(
     templateNameOrBundle: string | any,
     options?: {
+      keepProjectIdsAndNames?: boolean;
       dataSourceReplacement?: Record<string, string>;
       devFlags?: Record<string, boolean>;
     }
@@ -374,12 +393,19 @@ export class ApiClient {
         },
         data: {
           data: JSON.stringify(bundle),
-          keepProjectIdsAndNames: false,
+          keepProjectIdsAndNames: options?.keepProjectIdsAndNames ?? false,
           migrationsStrict: true,
           dataSourceReplacement: options?.dataSourceReplacement,
         },
       }
     );
+
+    if (!importResponse.ok()) {
+      const errorText = await importResponse.text();
+      throw new Error(
+        `Failed to import template: ${importResponse.status()} ${errorText}`
+      );
+    }
 
     const importData = await importResponse.json();
     const projectId = importData.projectId;
@@ -416,6 +442,20 @@ export class ApiClient {
     });
   }
 
+  async deleteProjectAndRevisions(projectId: string) {
+    return this.withAdminContext(async (context, token) => {
+      await context.delete(
+        `${this.baseUrl}/api/v1/admin/delete-project-and-revisions`,
+        {
+          data: {
+            projectId,
+          },
+          headers: { "X-CSRF-Token": token },
+        }
+      );
+    });
+  }
+
   async getUserEmailVerificationToken(email: string): Promise<string> {
     const csrfRes = await this.request.get(`${this.baseUrl}/api/v1/auth/csrf`);
     const csrf = (await csrfRes.json()).csrf;
@@ -430,5 +470,50 @@ export class ApiClient {
 
     const responseBody = await response.json();
     return responseBody.token;
+  }
+
+  async cloneProject(opts: {
+    projectId: string;
+    name?: string;
+    workspaceId?: string;
+  }): Promise<{ projectId: string; workspaceId: string }> {
+    const { projectId, name, workspaceId } = opts;
+    const csrfRes = await this.request.get(`${this.baseUrl}/api/v1/auth/csrf`);
+    const csrf = (await csrfRes.json()).csrf;
+
+    const response = await this.request.post(
+      `${this.baseUrl}/api/v1/projects/${projectId}/clone`,
+      {
+        data: {
+          name,
+          workspaceId,
+        },
+        headers: { "X-CSRF-Token": csrf },
+      }
+    );
+
+    if (!response.ok()) {
+      const errorText = await response.text();
+      throw new Error(
+        `Failed to clone project ${projectId}: ${response.status()} ${errorText}`
+      );
+    }
+
+    const result = await response.json();
+    return { projectId: result.projectId, workspaceId: result.workspaceId };
+  }
+
+  async makeApiClient(
+    request,
+    context,
+    email = "user2@example.com",
+    password = "!53kr3tz!"
+  ) {
+    const client = new ApiClient(request, "http://localhost:3003");
+    await client.login(email, password);
+    const cookies = await request.storageState();
+
+    await context.addCookies(cookies.cookies);
+    return client;
   }
 }

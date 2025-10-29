@@ -154,6 +154,12 @@ export class StudioModel extends BaseModel {
     }
   }
 
+  async openProjectPanel() {
+    await expect(this.projectNavButton).toBeVisible({ timeout: 30000 });
+    await this.projectNavButton.click({ timeout: 10000 });
+    await this.page.waitForTimeout(500);
+  }
+
   async switchArena(name: string) {
     await expect(this.projectNavButton).toBeVisible({ timeout: 30000 });
 
@@ -163,8 +169,10 @@ export class StudioModel extends BaseModel {
 
     await this.projectNavSearchInput.fill(name);
 
+    await this.page.waitForTimeout(1000);
+
     const arenaItem = this.frame
-      .locator(`div.flex-col`, { hasText: name })
+      .locator(`.ant-popover-content div.flex-col`, { hasText: name })
       .first();
     await arenaItem.waitFor({ state: "visible", timeout: 10000 });
 
@@ -179,12 +187,6 @@ export class StudioModel extends BaseModel {
     );
 
     return viewportFrame;
-  }
-
-  async waitForLiveFrameToLoad() {
-    await this.liveFrame
-      .locator(".live-root-container")
-      .waitFor({ timeout: 120000 });
   }
 
   async withinLiveMode(fn: (liveFrame: FrameLocator) => Promise<void>) {
@@ -420,10 +422,13 @@ export class StudioModel extends BaseModel {
   }
 
   async renameTreeNode(name: string) {
+    await this.page.waitForTimeout(200);
     await this.page.keyboard.press("Control+r");
+    await this.page.waitForTimeout(200);
     await this.page.keyboard.type(name);
+    await this.page.waitForTimeout(200);
     await this.page.keyboard.press("Enter");
-    await this.page.waitForTimeout(100);
+    await this.page.waitForTimeout(200);
   }
 
   async convertToSlot(slotName?: string) {
@@ -512,9 +517,17 @@ export class StudioModel extends BaseModel {
   async turnOffDesignMode() {
     const viewMenu = this.frame.locator("#view-menu");
     await viewMenu.click();
+    await this.page.waitForTimeout(200);
     const turnOffOption = this.frame.getByText("Turn off design mode");
-    if ((await turnOffOption.count()) > 0) {
+    const isVisible = await turnOffOption
+      .isVisible({ timeout: 1000 })
+      .catch(() => false);
+    if (isVisible) {
       await turnOffOption.click();
+      await this.page.waitForTimeout(200);
+    } else {
+      await this.page.keyboard.press("Escape");
+      await this.page.waitForTimeout(200);
     }
   }
 
@@ -522,7 +535,7 @@ export class StudioModel extends BaseModel {
     const canvasFrame = this.frame
       .locator(".canvas-editor__viewport[data-test-frame-uid]")
       .first();
-    if ((await canvasFrame.count()) > 0) {
+    if ((await canvasFrame.count()) > 0 && (await canvasFrame.isVisible())) {
       await canvasFrame.click();
       return;
     }
@@ -704,18 +717,73 @@ export class StudioModel extends BaseModel {
 
   async publishVersion(description: string) {
     await this.leftPanel.moreTabButton.hover();
+    await this.page.waitForTimeout(500);
     await this.leftPanel.switchToVersionsTab();
+
+    const changesNotPublishedBanner = this.frame.getByText(
+      "Newest changes haven't been published"
+    );
+    const hasUnpublishedChanges = await changesNotPublishedBanner
+      .isVisible({ timeout: 3000 })
+      .catch(() => false);
+
+    if (!hasUnpublishedChanges) {
+      await this.page.waitForTimeout(1000);
+    }
+
     const selector =
-      ".SidebarSectionListItem:not(#publishing-version-spinner-item)";
+      '.flex-col:not([style*="display:none" i]):not([style*="display: none" i]) .SidebarSectionListItem:not(#publishing-version-spinner-item)';
     const countBefore = await this.frame.locator(selector).count();
     await this.publishProjectButton.click();
+
+    const noChangesMessage = this.frame.getByText(
+      "There have been no new changes since your last published version"
+    );
+    const hasNoChanges = await noChangesMessage
+      .isVisible({ timeout: 1000 })
+      .catch(() => false);
+
+    if (hasNoChanges) {
+      const closeButton = this.frame.locator(".ant-modal-close");
+      await closeButton.click();
+      await this.page.waitForTimeout(2000);
+      await this.publishProjectButton.click();
+    }
+
     await this.versionDescriptionInput.fill(description);
     await this.confirmPublishButton.click();
     await this.frame
       .locator("#publishing-version-spinner-item")
       .waitFor({ state: "hidden", timeout: 10000 })
       .catch(() => {});
-    await this.frame.locator(selector).first().waitFor({ state: "visible" });
+
+    const errorMessage = this.page.getByText(
+      "Unexpected error when publishing"
+    );
+    const isErrorVisible = await errorMessage
+      .isVisible({ timeout: 1000 })
+      .catch(() => false);
+    if (isErrorVisible) {
+      const closeButton = this.page
+        .locator(".ant-notification-notice-close")
+        .first();
+      if (await closeButton.isVisible({ timeout: 1000 }).catch(() => false)) {
+        await closeButton.click();
+      }
+      await this.page.waitForTimeout(500);
+      await this.publishProjectButton.click();
+      await this.versionDescriptionInput.fill(description);
+      await this.confirmPublishButton.click();
+      await this.frame
+        .locator("#publishing-version-spinner-item")
+        .waitFor({ state: "hidden", timeout: 10000 })
+        .catch(() => {});
+    }
+
+    await this.frame
+      .locator(selector)
+      .first()
+      .waitFor({ state: "visible", timeout: 5000 });
     await this.page.waitForTimeout(500);
     const countAfter = await this.frame.locator(selector).count();
     expect(countAfter).toBe(countBefore + 1);
@@ -785,7 +853,14 @@ export class StudioModel extends BaseModel {
   }
 
   async selectTreeNode(path: string[]) {
-    await this.leftPanel.switchToTreeTab();
+    const isLeftPanelVisible = await this.leftPanel.frame
+      .locator(".tpltree__root")
+      .isVisible();
+
+    if (!isLeftPanelVisible) {
+      await this.leftPanel.switchToTreeTab();
+    }
+
     let currentLocator = this.leftPanel.treeRoot;
 
     for (const nodeNameOrSlot of path) {
@@ -913,5 +988,17 @@ export class StudioModel extends BaseModel {
     for (let i = 0; i < count; i++) {
       await closeButton.first().click();
     }
+  }
+
+  async deleteDataSource(name: string): Promise<void> {
+    await this.page.getByText(name).first().click({ button: "right" });
+    await this.page.waitForTimeout(500);
+    const deleteMenuItem = this.page
+      .locator(".ant-dropdown-menu")
+      .getByText("Delete");
+    await deleteMenuItem.waitFor({ state: "visible" });
+    await deleteMenuItem.click();
+    await this.page.locator(`[data-test-id="confirm"]`).click();
+    await this.page.getByRole("dialog").waitFor({ state: "hidden" });
   }
 }

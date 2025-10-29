@@ -10,9 +10,12 @@ test.describe("dynamic-pages-simplified", () => {
 
     await apiClient.createTutorialDataSource("northwind", dsname);
 
-    await apiClient.login("user2@example.com", "!53kr3tz!");
-    const cookies = await request.storageState();
-    await context.addCookies(cookies.cookies);
+    await apiClient.makeApiClient(
+      request,
+      context,
+      "user2@example.com",
+      "!53kr3tz!"
+    );
 
     projectId = await apiClient.setupNewProject({ name: "dynamic-pages" });
     await page.goto(`/projects/${projectId}`);
