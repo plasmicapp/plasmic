@@ -59,7 +59,6 @@ export interface WISVG extends WIBase {
   outerHtml: string;
   width: string;
   height: string;
-  fillColor?: string;
 }
 
 export interface WIComponent extends WIBase {

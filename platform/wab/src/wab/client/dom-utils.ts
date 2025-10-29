@@ -23,6 +23,7 @@ import { Rect } from "@/wab/shared/geom";
 import {
   clearExplicitColors,
   convertSvgToTextSized,
+  extractAndRemoveColorProperty,
   gatherSvgColors,
   isSVG,
 } from "@/wab/shared/svg-utils";
@@ -477,12 +478,17 @@ export function deriveImageAssetTypeAndUri(
         // No currentcolor reference and only one color, so explicitly rewrite
         clearExplicitColors(svgElt);
       }
+      // Extract explicit color from attribute/style and remove it
+      const explicitColor = extractAndRemoveColorProperty(svgElt);
+
       dataUri = asSvgDataUrl(new XMLSerializer().serializeToString(svgElt));
-      const color = colors.size === 1 ? [...colors.values()][0] : undefined;
+      const color = colors.size === 1 ? [...colors.values()][0] : explicitColor;
       return {
         dataUri,
         type: ImageAssetType.Icon,
-        iconColor: color === "currentcolor" ? undefined : color,
+        // For icons with fill="currentColor", explicit color becomes the iconColor if present
+        // For icons with explicit fill/stroke colors, fill/stroke color is used instead
+        iconColor: color === "currentcolor" ? explicitColor : color,
       };
     } else {
       // Else, this is a multi-colored svg

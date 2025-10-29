@@ -35,7 +35,6 @@ import {
   withoutNils,
   xDifference,
 } from "@/wab/shared/common";
-import { ColorFill } from "@/wab/shared/core/bg-styles";
 import {
   expandGapProperty,
   parseCss,
@@ -819,10 +818,6 @@ function getElementsWITree(
       assert(width, "'width' expected on SVG element but found undefined");
       assert(height, "'height' expected on SVG element but found undefined");
 
-      const fillColor = ColorFill.fromCss(
-        elt.getAttribute("fill") ?? ""
-      )?.color;
-
       const svgVariantSettings = [...variantSettings];
       sanitizeVariantSettings(svgVariantSettings);
 
@@ -832,7 +827,6 @@ function getElementsWITree(
         outerHtml: elt.outerHTML,
         width: `${width.num}${width.units || "px"}`,
         height: `${height.num}${height.units || "px"}`,
-        fillColor: fillColor,
         variantSettings: svgVariantSettings,
       };
     }

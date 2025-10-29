@@ -237,7 +237,6 @@ describe("parseHtmlToWebImporterTree", () => {
               variantSettings: [],
               width: "32px",
               height: "32px",
-              fillColor: "#f3f3f3",
             },
           ],
           variantSettings: [],

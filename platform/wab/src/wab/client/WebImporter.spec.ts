@@ -1,6 +1,9 @@
 import { ReadableClipboard } from "@/wab/client/clipboard/ReadableClipboard";
 import { paste } from "@/wab/client/clipboard/paste";
-import { multiColorSvgData } from "@/wab/client/clipboard/test/clipboard-test-data";
+import {
+  multiColorSvgData,
+  svgData,
+} from "@/wab/client/clipboard/test/clipboard-test-data";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { fakeStudioCtx } from "@/wab/client/test/fake-init-ctx";
@@ -81,7 +84,7 @@ describe("WebImporter", () => {
       expect(pageViewCtx.focusedTpls()).toEqual([containerTpl]);
     });
 
-    it("pastes SVG from web importer", async () => {
+    it("pastes multi-color SVG from web importer as image", async () => {
       const { dataUri, xml: homeSvg } = multiColorSvgData();
 
       // Mock the image upload API
@@ -131,6 +134,39 @@ describe("WebImporter", () => {
         "imgTpl baseVs loading attr should be CustomCode"
       );
       expect(baseVs.attrs.loading.code).toBe('"lazy"');
+
+      expect(pageViewCtx.focusedTpls()).toEqual([containerTpl]);
+    });
+
+    it("pastes single-color SVG from web importer as icon", async () => {
+      const { processedDataUri, xml: iconSvg } = svgData();
+
+      const htmlStr = `<div>${iconSvg}</div>`;
+
+      pageViewCtx.selectNewTpl(page.tplTree);
+      expect(
+        await paste({
+          clipboard: htmlToClipboard(htmlStr),
+          studioCtx,
+          cursorClientPt: undefined,
+        })
+      ).toBe(true);
+
+      const { containerTpl, pastedTpl } = getPastedTpl(page.tplTree);
+
+      // Verify it's a container tpl
+      expect(Tpls.getTagOrComponentName(pastedTpl)).toEqual("div");
+      const pastedTplChildren = Tpls.tplChildren(pastedTpl);
+      expect(pastedTplChildren).toHaveLength(1);
+
+      // Verify the child tpl to be an icon because it's a single-color SVG
+      const iconTpl = pastedTplChildren[0];
+      expect(Tpls.isTplIcon(iconTpl)).toBe(true);
+
+      // Verify it's an icon with the correct dataUri (should have height="1em" and style="fill: currentColor;")
+      expect(
+        ImageAssets.getOnlyAssetRef(iconTpl as TplImageTag)?.dataUri
+      ).toEqual(processedDataUri);
 
       expect(pageViewCtx.focusedTpls()).toEqual([containerTpl]);
     });

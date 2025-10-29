@@ -26,12 +26,15 @@ export function svgData() {
     '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect x="10" y="10" width="80" height="80" /></svg>';
   const dataUri =
     "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj4KICA8cGF0aCBkPSJNMTAgMTBoODB2ODBIMTB6Ii8+Cjwvc3ZnPgo=";
+  const processedDataUri =
+    "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIiBoZWlnaHQ9IjFlbSIgc3R5bGU9ImZpbGw6IGN1cnJlbnRDb2xvcjsiPgogIDxwYXRoIGQ9Ik0xMCAxMGg4MHY4MEgxMHoiLz4KPC9zdmc+";
   const clipboardData = {
     "text/plain": xml,
   };
   return {
     xml,
     dataUri,
+    processedDataUri,
     clipboardData,
     height: 100,
     width: 100,

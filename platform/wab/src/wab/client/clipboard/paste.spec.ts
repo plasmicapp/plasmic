@@ -8,12 +8,12 @@ import {
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { fakeStudioCtx } from "@/wab/client/test/fake-init-ctx";
+import * as Variants from "@/wab/shared/Variants";
 import { ComponentType } from "@/wab/shared/core/components";
 import * as ImageAssets from "@/wab/shared/core/image-assets";
-import * as Variants from "@/wab/shared/Variants";
-import { Component } from "@/wab/shared/model/classes";
 import * as Tpls from "@/wab/shared/core/tpls";
 import { TplImageTag } from "@/wab/shared/core/tpls";
+import { Component } from "@/wab/shared/model/classes";
 
 let studioCtx: StudioCtx;
 let api: ReturnType<typeof fakeStudioCtx>["api"];
@@ -56,7 +56,7 @@ describe("paste", () => {
 
   it("pastes SVG image in plain text as tpl icon", async () => {
     pageViewCtx.selectNewTpl(page.tplTree);
-    const { dataUri, clipboardData } = svgData();
+    const { processedDataUri, clipboardData } = svgData();
     const clipboard = ReadableClipboard.fromData(clipboardData);
 
     expect(
@@ -72,7 +72,7 @@ describe("paste", () => {
     expect(Tpls.isTplIcon(pastedTpl)).toBe(true);
     expect(
       ImageAssets.getOnlyAssetRef(pastedTpl as TplImageTag)?.dataUri
-    ).toEqual(dataUri);
+    ).toEqual(processedDataUri);
     expect(pageViewCtx.focusedTpls()).toEqual([pastedTpl]);
   });
 

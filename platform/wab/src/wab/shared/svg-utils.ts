@@ -1,4 +1,24 @@
 /**
+ * Extracts and removes color from <svg> element in browser's precedence:
+ * 1. inline style color
+ * 2. attribute color
+ * 3. undefined
+ * <svg style="color: 1" color="2"></svg>
+ */
+export function extractAndRemoveColorProperty(svg: SVGSVGElement) {
+  // Extract color from both attribute and inline style
+  const colorFromAttr = svg.attributes.getNamedItem("color")?.value;
+  const colorFromStyle = svg.style.color || undefined;
+
+  // Remove from both places
+  svg.removeAttribute("color");
+  svg.style.removeProperty("color");
+
+  // Inline style takes precedence over attribute
+  return colorFromStyle || colorFromAttr;
+}
+
+/**
  * Mutates the svg element to remove any references to
  * explicit colors, and set to currentColor instead.
  */

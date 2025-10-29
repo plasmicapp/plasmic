@@ -24,7 +24,7 @@ export async function pasteImage(
     handled: true,
     success: unwrap(
       await studioCtx.change(({ success }) => {
-        const asset = studioCtx.siteOps().createImageAsset(image, opts);
+        const asset = studioCtx.siteOps().createImageAsset(imageResult, opts);
         const node = viewCtx.variantTplMgr().mkTplImage({
           asset: asset.asset,
           iconColor: asset.iconColor,

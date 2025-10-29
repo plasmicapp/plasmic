@@ -271,9 +271,6 @@ async function wiTreeToTpl(wiTree: WIElement, vc: ViewCtx, vtm: VariantTplMgr) {
     if (node.type === "svg") {
       defaultStyles["width"] = node.width;
       defaultStyles["height"] = node.height;
-      if (node.fillColor) {
-        defaultStyles["color"] = node.fillColor;
-      }
     }
 
     // Find base variant settings
