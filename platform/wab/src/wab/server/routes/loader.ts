@@ -130,14 +130,14 @@ export async function buildPublishedLoaderAssets(req: Request, res: Response) {
 
   const destination = `/api/v1/loader/code/versioned?${query}`;
 
-  // Special case for FXReplay nRGmCYqvZMnYyNtcGY29Aw - return 200 with redirect URL
-  // https://linear.app/plasmic/issue/PLA-12576
-  const fxreplayProjectId = "nRGmCYqvZMnYyNtcGY29Aw";
-  const isFxreplayProject = projectIdSpecs.some(
-    (spec) => parseProjectIdSpec(spec).projectId === fxreplayProjectId
+  // Special case for projects with Angular polyfills that cause redirects to fail in Safari.
+  // Return 200 with redirect URL - https://linear.app/plasmic/issue/PLA-12576
+  const polyfillProjectId = "nRGmCYqvZMnYyNtcGY29Aw";
+  const isPolyfillProject = projectIdSpecs.some(
+    (spec) => parseProjectIdSpec(spec).projectId === polyfillProjectId
   );
 
-  if (isFxreplayProject) {
+  if (isPolyfillProject) {
     res.status(200).json({ redirectUrl: destination });
     return;
   }

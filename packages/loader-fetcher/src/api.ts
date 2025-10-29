@@ -113,6 +113,7 @@ interface ApiLoaderBundleOutput {
   bundleKey: string | null;
   deferChunksByDefault: boolean;
   disableRootLoadingBoundaryByDefault: boolean;
+  redirectUrl?: string;
 }
 
 export interface LoaderBundleOutput extends ApiLoaderBundleOutput {
@@ -253,17 +254,8 @@ export class Api {
         headers: this.makeGetHeaders(),
       });
 
-      if (resp.status >= 400) {
-        const error = await this.parseJsonResponse(resp);
-        throw new Error(
-          `Error fetching loader data: ${
-            error?.error?.message ?? resp.statusText
-          }`
-        );
-      }
-
       const json = transformApiLoaderBundleOutput(
-        (await this.parseJsonResponse(resp)) as ApiLoaderBundleOutput
+        await this.verifyAndParseJsonResponse(resp)
       );
       this.lastResponse = {
         bundle: json,
@@ -277,16 +269,33 @@ export class Api {
       method: "GET",
       headers: this.makeGetHeaders(),
     });
+
+    let json = await this.verifyAndParseJsonResponse(resp);
+
+    // An Angular polyfill can cause 302 redirects to fail in Safari, due to missing headers.
+    // This 200 response with `redirectUrl` is a workaround for specific projects that need it.
+    if (json.redirectUrl) {
+      const redirectResp = await this.fetch(`${this.host}${json.redirectUrl}`, {
+        method: "GET",
+        headers: this.makeGetHeaders(),
+      });
+      json = await this.verifyAndParseJsonResponse(redirectResp);
+    }
+
+    return transformApiLoaderBundleOutput(json);
+  }
+
+  private async verifyAndParseJsonResponse(
+    resp: Response,
+    errorText = "Error fetching loader data"
+  ) {
     if (resp.status >= 400) {
       const error = await this.parseJsonResponse(resp);
       throw new Error(
-        `Error fetching loader data: ${
-          error?.error?.message ?? resp.statusText
-        }`
+        `${errorText}: ${error?.error?.message ?? resp.statusText}`
       );
     }
-    const json = await this.parseJsonResponse(resp);
-    return transformApiLoaderBundleOutput(json as ApiLoaderBundleOutput);
+    return (await this.parseJsonResponse(resp)) as ApiLoaderBundleOutput;
   }
 
   private async parseJsonResponse(resp: Response) {
