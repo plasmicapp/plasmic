@@ -11,7 +11,6 @@ export interface GenericFetcherProps {
   previewSpinner?: boolean;
   errorDisplay?: ReactNode;
   previewErrorDisplay?: boolean;
-  testData?: any;
   dataName?: string;
   errorName?: string;
   noLayout?: boolean;
@@ -164,17 +163,11 @@ export interface DataFetcherProps extends FetchProps, GenericFetcherProps {
 }
 
 export function DataFetcher(props: DataFetcherProps) {
-  const { url, method, body, headers, queryKey, testData } = props;
+  const { url, method, body, headers, queryKey } = props;
   const fetchProps: FetchProps = { url, method, body, headers };
-  const inEditor = !!usePlasmicCanvasContext();
   const result = usePlasmicQueryData(
     queryKey || JSON.stringify({ type: "DataFetcher", ...fetchProps }),
-    () => {
-      if (inEditor && testData !== undefined) {
-        return testData;
-      }
-      return performFetch(fetchProps);
-    }
+    () => performFetch(fetchProps)
   );
   return <GenericFetcherShell result={result} {...props} />;
 }
@@ -213,12 +206,6 @@ function mkFetchProps(
       description:
         "A globally unique ID for this query, used for invalidating queries",
       invariantable: true,
-    },
-    testData: {
-      type: "object",
-      editOnly: true,
-      advanced: true,
-      description: "Mock data to use when previewing in the editor",
     },
   };
 }
@@ -271,10 +258,8 @@ export interface GraphqlFetcherProps
 }
 
 export function GraphqlFetcher(props: GraphqlFetcherProps) {
-  const { query, url, method, headers, queryKey, varOverrides, testData } =
-    props;
+  const { query, url, method, headers, queryKey, varOverrides } = props;
 
-  const inEditor = !!usePlasmicCanvasContext();
   let fetchProps: FetchProps;
   if (method === "GET") {
     // https://graphql.org/learn/serving-over-http/#get-request-and-parameters
@@ -300,12 +285,7 @@ export function GraphqlFetcher(props: GraphqlFetcherProps) {
 
   const result = usePlasmicQueryData(
     queryKey || JSON.stringify({ type: "GraphqlFetcher", ...fetchProps }),
-    () => {
-      if (inEditor && testData !== undefined) {
-        return testData;
-      }
-      return performFetch(fetchProps);
-    }
+    () => performFetch(fetchProps)
   );
   return <GenericFetcherShell result={result} {...props} />;
 }
