@@ -1,10 +1,10 @@
+import { ColorTokenPopup } from "@/wab/client/components/sidebar/ColorTokenPopup";
 import { FontFamilyTokenEditModal } from "@/wab/client/components/sidebar/FontFamilyTokenEditModal";
 import { GeneralTokenEditModal } from "@/wab/client/components/sidebar/GeneralTokenEditModal";
-import { ColorTokenPopup } from "@/wab/client/components/sidebar/token-controls";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import { MutableToken, OverrideableToken } from "@/wab/shared/core/tokens";
 import { StyleToken } from "@/wab/shared/model/classes";
-import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import { observer } from "mobx-react";
 import * as React from "react";
 

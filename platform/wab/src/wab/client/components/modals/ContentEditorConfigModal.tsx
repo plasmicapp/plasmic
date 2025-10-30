@@ -575,6 +575,8 @@ function leftTabKeyToLabel(key: LeftTabUiKey) {
       return "Components";
     case "tokens":
       return "Style tokens";
+    case "dataTokens":
+      return "Data tokens";
     case "mixins":
       return "Style presets";
     case "animationSequences":

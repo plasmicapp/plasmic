@@ -38,7 +38,7 @@ import L from "lodash";
 import type { Opaque, SetOptional } from "type-fest";
 
 /** A string that can be used as a CSS value. Could be a value or a reference to a token. */
-export type TokenValue = Opaque<string, "TokenValue">;
+export type StyleTokenValue = Opaque<string, "StyleTokenValue">;
 
 /**
  * Resolved CSS value and token.
@@ -47,7 +47,7 @@ export type TokenValue = Opaque<string, "TokenValue">;
  * The token is the last token in the resolution chain.
  */
 export type ResolvedToken = {
-  value: TokenValue;
+  value: StyleTokenValue;
   token: FinalToken<StyleToken>;
 };
 
@@ -382,7 +382,7 @@ export function resolveTokenRef(
   tokens:
     | ReadonlyArray<FinalToken<StyleToken>>
     | ReadonlyMap<string, FinalToken<StyleToken>>,
-  value: TokenValue,
+  value: StyleTokenValue,
   vsh?: VariantedStylesHelper
 ): SetOptional<ResolvedToken, "token"> {
   if (isTokenRef(value)) {
@@ -398,8 +398,8 @@ export function derefTokenRefs(
     | ReadonlyMap<string, FinalToken<StyleToken>>,
   value: string,
   vsh?: VariantedStylesHelper
-): TokenValue {
-  return resolveTokenRef(tokens, value as TokenValue, vsh).value;
+): StyleTokenValue {
+  return resolveTokenRef(tokens, value as StyleTokenValue, vsh).value;
 }
 
 export function derefToken(
@@ -408,7 +408,7 @@ export function derefToken(
     | ReadonlyMap<string, FinalToken<StyleToken>>,
   token: FinalToken<StyleToken>,
   vsh?: VariantedStylesHelper
-): TokenValue {
+): StyleTokenValue {
   return resolveToken(tokens, token, vsh).value;
 }
 
@@ -434,10 +434,10 @@ export function maybeDerefToken(
     | ReadonlyMap<string, FinalToken<StyleToken>>,
   token: FinalToken<StyleToken>,
   vsh?: VariantedStylesHelper
-): TokenValue {
+): StyleTokenValue {
   // If its a token ref and the ref is present in the current project, then don't de-ref it, because the ref in value is known
   if (tryParseTokenRef(token.value, currentTokens)) {
-    return token.value as TokenValue;
+    return token.value as StyleTokenValue;
   } else {
     // The ref in value is not known, so resolve the token to a primitive value
     return resolveToken(oldTokens, token, vsh).value;
@@ -450,9 +450,9 @@ export function lazyDerefTokenRefs(
   tokenType: StyleTokenType,
   opts: { includeDeps?: DependencyWalkScope } = {},
   vsh?: VariantedStylesHelper
-): TokenValue {
+): StyleTokenValue {
   if (!isTokenRef(value)) {
-    return value as TokenValue;
+    return value as StyleTokenValue;
   }
   const tokens = siteFinalStyleTokensOfType(site, tokenType, opts);
   return derefTokenRefs(tokens, value, vsh);
@@ -463,7 +463,7 @@ export function lazyDerefTokenRefsWithDeps(
   site: Site,
   tokenType: StyleTokenType,
   vsh?: VariantedStylesHelper
-): TokenValue {
+): StyleTokenValue {
   return lazyDerefTokenRefs(
     value,
     site,
@@ -521,7 +521,7 @@ export function addOrUpsertTokens(site: Site, tokens: UpsertTokenReq[]) {
             `Token ${token.name} has unexpected type ${token.type}`
           );
         }
-        const newToken = tplMgr.addToken({
+        const newToken = tplMgr.addStyleToken({
           name: token.name,
           tokenType: token.type,
           value: token.value, // Maybe we should assert it's a valid value?

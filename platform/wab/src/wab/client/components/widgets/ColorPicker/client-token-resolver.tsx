@@ -1,6 +1,6 @@
 import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { TokenValue } from "@/wab/commons/StyleToken";
+import { StyleTokenValue } from "@/wab/commons/StyleToken";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import {
   TokenResolver,
@@ -68,7 +68,7 @@ function makeClientTokenResolver(
   return (
     token: FinalToken<StyleToken>,
     vsh?: VariantedStylesHelper
-  ): TokenValue => {
+  ): StyleTokenValue => {
     const { value, token: resolvedToken } = resolver(token, vsh);
     const refVarName = extractReferencedVariable(value);
     if (!refVarName) {
@@ -88,11 +88,11 @@ function makeClientTokenResolver(
 function getCssVariableValue(
   elt: HTMLElement,
   name: string
-): TokenValue | undefined {
+): StyleTokenValue | undefined {
   const win = elt.ownerDocument.defaultView;
   if (!win) {
     return undefined;
   }
   const value = win.getComputedStyle(elt).getPropertyValue(name).trim();
-  return value.length === 0 ? undefined : (value as TokenValue);
+  return value.length === 0 ? undefined : (value as StyleTokenValue);
 }

@@ -45,7 +45,7 @@ export function upsertTokens(site: Site, tokens: Record<string, number>) {
         found.value = "" + tokens[name];
         yield found;
       } else {
-        yield tplMgr.addToken({
+        yield tplMgr.addStyleToken({
           name,
           tokenType: "LineHeight",
           value: (tokens[name] ?? 0) + "",

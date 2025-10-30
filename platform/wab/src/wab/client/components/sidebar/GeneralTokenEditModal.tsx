@@ -1,5 +1,5 @@
 import { SidebarModal } from "@/wab/client/components/sidebar/SidebarModal";
-import { newTokenValueAllowed } from "@/wab/client/components/sidebar/token-controls";
+import { newTokenValueAllowed } from "@/wab/client/components/sidebar/token-utils";
 import { useClientTokenResolver } from "@/wab/client/components/widgets/ColorPicker/client-token-resolver";
 import { DimTokenSpinner } from "@/wab/client/components/widgets/DimTokenSelector";
 import { Icon } from "@/wab/client/components/widgets/Icon";
@@ -58,7 +58,7 @@ export const GeneralTokenEditModal = observer(
               defaultValue={token.name}
               onValueChange={(name) =>
                 studioCtx.changeUnsafe(() => {
-                  studioCtx.tplMgr().renameToken(token.base, name);
+                  studioCtx.tplMgr().renameStyleToken(token.base, name);
                 })
               }
               readOnly={!(token instanceof MutableToken)}

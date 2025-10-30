@@ -582,6 +582,8 @@ const DEFAULT_DEVFLAGS = {
   disablePublicCopilot: false,
   // Show Animation sequences tab and animation section in Design tab
   showAnimations: false,
+  // Show Data Tokens tab in Left Pane
+  dataTokens: false,
 };
 
 Object.assign(DEFAULT_DEVFLAGS, DEFAULT_DEVFLAG_OVERRIDES);
@@ -667,6 +669,7 @@ export function applyPlasmicUserDevFlagOverrides(target: DevFlagsType) {
     cmsUniqueFields: true,
     enableDataQueries: true,
     showAnimations: true,
+    dataTokens: true,
   } as Partial<DevFlagsType>);
 }
 

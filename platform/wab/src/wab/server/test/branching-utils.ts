@@ -123,7 +123,7 @@ export function basicSite(tokens: Record<string, number> = {}) {
   const site = createSite();
   const tplMgr = new TplMgr({ site });
   for (const name of ["x", "y", "z"]) {
-    tplMgr.addToken({
+    tplMgr.addStyleToken({
       name,
       tokenType: "LineHeight",
       value: (tokens[name] ?? 0) + "",

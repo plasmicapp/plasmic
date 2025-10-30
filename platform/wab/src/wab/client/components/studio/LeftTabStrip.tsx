@@ -109,6 +109,7 @@ Issues
 
 Assets
   Tokens
+  Data Tokens
   Mixins
   Components
   Images
@@ -141,6 +142,14 @@ Help
           icon: <DiamondsIcon />,
           label: "Style tokens",
           cond: canViewTab("tokens"),
+        },
+        dataTokens: {
+          type: "item",
+          tabKey: "dataTokens",
+          // TODO: Add a new icon for Data Token
+          icon: <DiamondsIcon />,
+          label: "Data tokens",
+          cond: DEVFLAGS.dataTokens && canViewTab("dataTokens"),
         },
         mixins: {
           type: "item",
@@ -452,7 +461,10 @@ Help
   return (
     <PlasmicLeftTabStrip
       showAvatar
-      activeTab={studioCtx.leftTabKey}
+      // TODO: Add dataTokens variant to PlasmicLeftTabStrip in Plasmic Studio
+      activeTab={
+        studioCtx.leftTabKey === "dataTokens" ? "tokens" : studioCtx.leftTabKey
+      }
       insert={{
         props: {
           onClick: () => {

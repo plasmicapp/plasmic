@@ -3382,7 +3382,7 @@ describe("merging", () => {
       })(),
       a: (site, tplMgr) => {
         site.styleTokens = [];
-        tplMgr.addToken({
+        tplMgr.addStyleToken({
           name: "nonRegistered",
           tokenType: "LineHeight",
           value: "3",
@@ -3413,7 +3413,7 @@ describe("merging", () => {
       },
       b: (site, tplMgr) => {
         site.styleTokens = [];
-        tplMgr.addToken({
+        tplMgr.addStyleToken({
           name: "nonRegistered",
           tokenType: "LineHeight",
           value: "4",

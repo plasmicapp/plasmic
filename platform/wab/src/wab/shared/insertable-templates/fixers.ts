@@ -300,8 +300,8 @@ export function mkInsertableTokenImporter(
 
     const tplMgr = new TplMgr({ site: targetSite });
     const newToken = new MutableToken(
-      tplMgr.addToken({
-        name: tplMgr.getUniqueTokenName(oldToken.name),
+      tplMgr.addStyleToken({
+        name: tplMgr.getUniqueStyleTokenName(oldToken.name),
         tokenType: oldToken.type,
         value: maybeDerefToken(targetTokens, oldTokens, oldToken),
       })

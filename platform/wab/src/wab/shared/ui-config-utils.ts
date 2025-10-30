@@ -38,7 +38,7 @@ export const BASIC_ALIASES = [
   "vstack",
 ] as const;
 
-export const BASIC_ENTITY_ALIASES = ["token"] as const;
+export const BASIC_ENTITY_ALIASES = ["token", "dataToken"] as const;
 
 export function makeNiceAliasName(alias: InsertAlias | CreateAlias) {
   if (alias === "box") {
@@ -129,6 +129,7 @@ export const LEFT_TAB_PANEL_KEYS = [
   "outline",
   "components",
   "tokens",
+  "dataTokens",
   "animationSequences",
   "mixins",
   "fonts",
@@ -412,6 +413,7 @@ const LEFT_TAB_CONTENT_CREATOR_DEFAULT: Record<LeftTabUiKey, UiAccess> = {
   outline: "writable",
   components: "hidden",
   tokens: "hidden",
+  dataTokens: "hidden",
   mixins: "hidden",
   fonts: "hidden",
   themes: "hidden",

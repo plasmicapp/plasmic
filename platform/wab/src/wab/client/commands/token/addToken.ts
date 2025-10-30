@@ -41,7 +41,7 @@ export const addTokenCommand: Command<
   },
   execute: async (studioCtx, { name, tokenType, value }) => {
     return await studioCtx.change(({ success }) => {
-      const token = studioCtx.tplMgr().addToken({
+      const token = studioCtx.tplMgr().addStyleToken({
         name,
         tokenType,
         value,

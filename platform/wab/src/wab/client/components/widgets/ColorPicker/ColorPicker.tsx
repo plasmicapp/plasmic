@@ -1,7 +1,5 @@
-import {
-  ColorTokenPopup,
-  newTokenValueAllowed,
-} from "@/wab/client/components/sidebar/token-controls";
+import { ColorTokenPopup } from "@/wab/client/components/sidebar/ColorTokenPopup";
+import { newTokenValueAllowed } from "@/wab/client/components/sidebar/token-utils";
 import { ColorSwatch } from "@/wab/client/components/style-controls/ColorSwatch";
 import { UnloggedDragCatcher } from "@/wab/client/components/style-controls/UnloggedDragCatcher";
 import Button from "@/wab/client/components/widgets/Button";
@@ -570,7 +568,7 @@ function ColorPicker_({
             hideAddToken={!canCreateToken}
             onAddToken={async () => {
               return sc.changeUnsafe(() => {
-                const newToken = sc.tplMgr().addToken({
+                const newToken = sc.tplMgr().addStyleToken({
                   tokenType: "Color",
                   value: realColor,
                 });

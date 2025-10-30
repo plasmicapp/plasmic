@@ -996,12 +996,12 @@ describe("parseHtmlToWebImporterTree", () => {
 describe("renameTokenVarNameToUuid", () => {
   const site = createSite();
   const tplMgr = new TplMgr({ site });
-  const colorPrimaryToken = tplMgr.addToken({
+  const colorPrimaryToken = tplMgr.addStyleToken({
     tokenType: "Color",
     name: "Brand/Brand",
     value: "#3594F0",
   });
-  const colorPrimaryForegroundToken = tplMgr.addToken({
+  const colorPrimaryForegroundToken = tplMgr.addStyleToken({
     tokenType: "Color",
     name: "Neutral/Neutral",
     value: "#374151",

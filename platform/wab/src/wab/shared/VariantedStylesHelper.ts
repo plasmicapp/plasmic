@@ -1,4 +1,4 @@
-import { TokenValue } from "@/wab/commons/StyleToken";
+import { StyleTokenValue } from "@/wab/commons/StyleToken";
 import { DeepReadonly } from "@/wab/commons/types";
 import { RuleSetHelpers } from "@/wab/shared/RuleSetHelpers";
 import { isValidComboForToken } from "@/wab/shared/Variants";
@@ -144,9 +144,9 @@ export class VariantedStylesHelper {
     );
   }
 
-  getActiveTokenValue(token: FinalToken<StyleToken>): TokenValue {
+  getActiveTokenValue(token: FinalToken<StyleToken>): StyleTokenValue {
     return (this.getVariantedValueWithHighestPriority(token)?.value ??
-      token.value) as TokenValue;
+      token.value) as StyleTokenValue;
   }
 
   canUpdateToken(): boolean {

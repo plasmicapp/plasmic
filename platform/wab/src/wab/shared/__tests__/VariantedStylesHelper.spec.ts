@@ -17,7 +17,7 @@ describe("VariantedStylesHelper", () => {
       );
 
       const token = new MutableToken(
-        tplMgr.addToken({
+        tplMgr.addStyleToken({
           name: "primary",
           tokenType: "Color",
           value: "#FF0000",
@@ -45,7 +45,7 @@ describe("VariantedStylesHelper", () => {
       const vsh = new VariantedStylesHelper(site, [darkThemeVariant]);
 
       const token = new MutableToken(
-        tplMgr.addToken({
+        tplMgr.addStyleToken({
           name: "primary",
           tokenType: "Color",
           value: "#FF0000",
@@ -93,7 +93,7 @@ describe("VariantedStylesHelper", () => {
       const vsh = new VariantedStylesHelper(site, [localDarkVariant]);
 
       const token = new MutableToken(
-        tplMgr.addToken({
+        tplMgr.addStyleToken({
           name: "primary",
           tokenType: "Color",
           value: "#FF0000", // base value
@@ -119,7 +119,7 @@ describe("VariantedStylesHelper", () => {
       const vsh = new VariantedStylesHelper(site, [darkVariant1]);
 
       const token = new MutableToken(
-        tplMgr.addToken({
+        tplMgr.addStyleToken({
           name: "primary",
           tokenType: "Color",
           value: "#FF0000",

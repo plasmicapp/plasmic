@@ -496,7 +496,7 @@ export const DimTokenSpinner = observer(
                     "DimTokenSelector expects to have studioCtx if adding token"
                   )
                     .tplMgr()
-                    .addToken({
+                    .addStyleToken({
                       tokenType: ensure(
                         tokenType,
                         "tokenType must not be null when adding token"

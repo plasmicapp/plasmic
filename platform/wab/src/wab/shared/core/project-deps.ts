@@ -727,9 +727,9 @@ function upgradeProjectDep(
       }
     }
 
-    const tokenName = tplMgr.getUniqueTokenName(oldToken.name);
+    const tokenName = tplMgr.getUniqueStyleTokenName(oldToken.name);
     const clonedToken = new MutableToken(
-      tplMgr.addToken({
+      tplMgr.addStyleToken({
         name: tokenName,
         tokenType: oldToken.type,
         value: derefToken(oldTokens, oldFinalToken),

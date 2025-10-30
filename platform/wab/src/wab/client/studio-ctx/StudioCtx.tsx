@@ -310,6 +310,7 @@ import {
   Component,
   ComponentArena,
   DataSourceTemplate,
+  DataToken,
   ObjInst,
   PageArena,
   ProjectDependency,
@@ -6686,16 +6687,29 @@ export class StudioCtx extends WithDbCtx {
       this.leftTabKey = "components";
     }
   }
-  private _findReferencesToken = observable.box<StyleToken | undefined>(
+  private _findReferencesStyleToken = observable.box<StyleToken | undefined>(
     undefined
   );
-  get findReferencesToken() {
-    return this._findReferencesToken.get();
+  get findReferencesStyleToken() {
+    return this._findReferencesStyleToken.get();
   }
-  set findReferencesToken(c: StyleToken | undefined) {
-    this._findReferencesToken.set(c);
+  set findReferencesStyleToken(c: StyleToken | undefined) {
+    this._findReferencesStyleToken.set(c);
     if (!this.leftTabKey) {
       this.leftTabKey = "tokens";
+    }
+  }
+
+  private _findReferencesDataToken = observable.box<DataToken | undefined>(
+    undefined
+  );
+  get findReferencesDataToken() {
+    return this._findReferencesDataToken.get();
+  }
+  set findReferencesDataToken(c: DataToken | undefined) {
+    this._findReferencesDataToken.set(c);
+    if (!this.leftTabKey) {
+      this.leftTabKey = "dataTokens";
     }
   }
 

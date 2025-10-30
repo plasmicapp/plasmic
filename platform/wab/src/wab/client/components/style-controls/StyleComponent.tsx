@@ -637,7 +637,7 @@ function buildExtractToTokens(
                   return;
                 }
                 await sc.changeUnsafe(() => {
-                  const token = sc.tplMgr().addToken({
+                  const token = sc.tplMgr().addStyleToken({
                     name,
                     tokenType: tokenType,
                   });

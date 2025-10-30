@@ -1,7 +1,7 @@
 import {
   ResolvedToken,
   StyleTokenType,
-  TokenValue,
+  StyleTokenValue,
   extractAllReferencedTokenIds,
   resolveToken,
   tryParseTokenRef,
@@ -72,13 +72,13 @@ export const makeTokenResolver = maybeComputedFn(
 export type TokenValueResolver = (
   token: FinalToken<StyleToken>,
   vsh?: VariantedStylesHelper
-) => TokenValue;
+) => StyleTokenValue;
 export const makeTokenValueResolver = (site: Site): TokenValueResolver => {
   const tokenResolver = makeTokenResolver(site);
   return (
     token: FinalToken<StyleToken>,
     maybeVsh?: VariantedStylesHelper
-  ): TokenValue => {
+  ): StyleTokenValue => {
     return tokenResolver(token, maybeVsh).value;
   };
 };

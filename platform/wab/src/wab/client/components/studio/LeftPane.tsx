@@ -9,6 +9,7 @@ import { FindReferencesModal } from "@/wab/client/components/sidebar/FindReferen
 import { ImageAssetsPanel } from "@/wab/client/components/sidebar/image-asset-controls";
 import LeftComponentsPanel from "@/wab/client/components/sidebar/LeftComponentsPanel";
 import LeftExprsSearchPanel from "@/wab/client/components/sidebar/LeftExprsSearchPanel";
+import LeftGeneralDataTokensPanel from "@/wab/client/components/sidebar/LeftGeneralDataTokensPanel";
 import LeftGeneralTokensPanel from "@/wab/client/components/sidebar/LeftGeneralTokensPanel";
 import LeftLintIssuesPanel from "@/wab/client/components/sidebar/LeftLintIssuesPanel";
 import LeftProjectSettingsPanel from "@/wab/client/components/sidebar/LeftProjectSettingsPanel";
@@ -197,6 +198,8 @@ const LeftPane = observer(function LeftPane(props: LeftPaneProps) {
                   {studioCtx.appCtx.appConfig.copilotTab &&
                     wrapTab("copilot", <CopilotPanel />)}
                   {wrapTab("tokens", <LeftGeneralTokensPanel />)}
+                  {DEVFLAGS.dataTokens &&
+                    wrapTab("dataTokens", <LeftGeneralDataTokensPanel />)}
                   {wrapTab("mixins", <MixinsPanel />)}
                   {DEVFLAGS.showAnimations &&
                     wrapTab("animationSequences", <AnimationSequencesPanel />)}
@@ -225,14 +228,15 @@ const LeftPane = observer(function LeftPane(props: LeftPaneProps) {
           }}
         />
       </DevContainer>
-      {(studioCtx.findReferencesComponent || studioCtx.findReferencesToken) && (
+      {(studioCtx.findReferencesComponent ||
+        studioCtx.findReferencesStyleToken) && (
         <FindReferencesModal
           studioCtx={studioCtx}
           {...getFindReferencesProps(
             studioCtx,
             [
               studioCtx.findReferencesComponent,
-              studioCtx.findReferencesToken,
+              studioCtx.findReferencesStyleToken,
             ].find((x) => x != null) as Component | StyleToken
           )}
         />
@@ -272,7 +276,7 @@ const getFindReferencesProps = (
       usageSummary: extractTokenUsages(studioCtx.site, token)[1],
       onClose: spawnWrapper(async () => {
         await studioCtx.changeUnsafe(
-          () => (studioCtx.findReferencesToken = undefined)
+          () => (studioCtx.findReferencesStyleToken = undefined)
         );
       }),
     }))

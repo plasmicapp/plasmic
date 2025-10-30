@@ -1,5 +1,5 @@
 import { SidebarModal } from "@/wab/client/components/sidebar/SidebarModal";
-import { newTokenValueAllowed } from "@/wab/client/components/sidebar/token-controls";
+import { newTokenValueAllowed } from "@/wab/client/components/sidebar/token-utils";
 import { FontFamilySelector } from "@/wab/client/components/widgets/FontFamilySelector";
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import { SimpleTextbox } from "@/wab/client/components/widgets/SimpleTextbox";
@@ -53,7 +53,7 @@ export const FontFamilyTokenEditModal = observer(
               defaultValue={token.name}
               onValueChange={(name) =>
                 studioCtx.changeUnsafe(() => {
-                  studioCtx.tplMgr().renameToken(token.base, name);
+                  studioCtx.tplMgr().renameStyleToken(token.base, name);
                 })
               }
               readOnly={!(token instanceof MutableToken)}
