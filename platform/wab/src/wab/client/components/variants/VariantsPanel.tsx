@@ -912,6 +912,7 @@ const GlobalVariantRow = observer(function GlobalVariantRow(props: {
       viewCtx={viewCtx}
       pinState={pinState}
       onClick={onClick}
+      isSplitVariant={isSplitsVariant}
       onTarget={onTarget}
       onToggle={onToggle}
       menu={makeVariantMenu({
@@ -935,16 +936,22 @@ const GlobalVariantRow = observer(function GlobalVariantRow(props: {
                 })
               )
           : undefined,
-        onRename: () => ref.current && ref.current.setEditing(true),
+        onRename: !isSplitsVariant
+          ? () => ref.current && ref.current.setEditing(true)
+          : undefined,
       })}
       label={
-        <VariantLabel
-          ref={ref}
-          doubleClickToEdit
-          variant={variant}
-          defaultEditing={defaultEditing}
-          onRenamed={onRenamed}
-        />
+        isSplitsVariant ? (
+          variant.parent?.param.variable.name
+        ) : (
+          <VariantLabel
+            ref={ref}
+            doubleClickToEdit
+            variant={variant}
+            defaultEditing={defaultEditing}
+            onRenamed={onRenamed}
+          />
+        )
       }
       isDragging={isDragging}
       isDraggable={isDraggable}
@@ -1180,6 +1187,7 @@ const GlobalVariantGroupSection = observer(
     group: VariantGroup;
     defaultEditing?: boolean;
     children: React.ReactNode;
+    icon?: React.ReactNode;
     onAddedVariant: (variant: Variant) => void;
     onRename: (name: string) => void;
   }) {
@@ -1190,6 +1198,7 @@ const GlobalVariantGroupSection = observer(
       children,
       onAddedVariant,
       onRename,
+      icon,
     } = props;
 
     const isSplitsGroup = isGlobalVariantGroupUsedInSplits(
@@ -1198,10 +1207,17 @@ const GlobalVariantGroupSection = observer(
     );
 
     const ref = React.useRef<EditableLabelHandles>(null);
+
+    // For split variant groups with only one variant, just render the child row directly
+    if (isSplitsGroup) {
+      return <>{children}</>;
+    }
+
     return (
       <VariantSection
         key={group.uuid}
-        icon={<Icon icon={GlobeIcon} />}
+        icon={icon}
+        showIcon={!!icon}
         title={
           <EditableGroupLabel
             group={group}

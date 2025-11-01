@@ -124,8 +124,8 @@ export function isGlobalVariantGroupUsedInSplits(
   );
 }
 
-export function isVariantUsedInSplits(site: Site, variant: Variant) {
-  return (
-    variant.parent && isGlobalVariantGroupUsedInSplits(site, variant.parent)
-  );
+export function isVariantUsedInSplits(site: Site, variant: Variant): boolean {
+  return variant.parent
+    ? isGlobalVariantGroupUsedInSplits(site, variant.parent)
+    : false;
 }

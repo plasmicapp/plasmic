@@ -12,17 +12,17 @@ import {
 } from "@/wab/client/plasmic/plasmic_kit_variants/PlasmicVariantRow";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { maybe } from "@/wab/shared/common";
 import { VariantPinState } from "@/wab/shared/PinManager";
 import {
   isBaseVariant,
   isVariantSettingEmpty,
   tryGetVariantSetting,
 } from "@/wab/shared/Variants";
+import { maybe } from "@/wab/shared/common";
+import { isTplVariantable, summarizeTpl } from "@/wab/shared/core/tpls";
 import { getEffectiveVariantSetting } from "@/wab/shared/effective-variant-setting";
 import { Variant } from "@/wab/shared/model/classes";
 import { PlumeVariantDef } from "@/wab/shared/plume/plume-registry";
-import { isTplVariantable, summarizeTpl } from "@/wab/shared/core/tpls";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { DraggableProvidedDragHandleProps } from "react-beautiful-dnd";
@@ -38,6 +38,7 @@ interface VariantRowProps {
   style?: React.CSSProperties;
   isReadOnly?: boolean;
   isStandalone?: boolean;
+  isSplitVariant?: boolean;
   isDragging?: boolean;
   isDraggable?: boolean;
   dragHandleProps?: DraggableProvidedDragHandleProps;
@@ -69,6 +70,7 @@ const VariantRow = observer(function VariantRow(props: VariantRowProps) {
   const {
     studioCtx,
     isStandalone,
+    isSplitVariant,
     viewCtx,
     pinState,
     variant,
@@ -102,7 +104,15 @@ const VariantRow = observer(function VariantRow(props: VariantRowProps) {
 
   return (
     <PlasmicVariantRow
-      type={isBase ? "baseVariant" : isStandalone ? "toggle" : undefined}
+      type={
+        isBase
+          ? "baseVariant"
+          : isStandalone
+          ? "toggle"
+          : isSplitVariant
+          ? "splitVariant"
+          : undefined
+      }
       pinState={pinStateToPlasmicPinState(pinState)}
       variantPinButton={{
         onToggle,

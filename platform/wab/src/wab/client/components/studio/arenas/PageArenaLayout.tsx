@@ -9,6 +9,7 @@ import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { spawn } from "@/wab/shared/common";
 import { allComponentVariants } from "@/wab/shared/core/components";
 import { allGlobalVariantGroups } from "@/wab/shared/core/sites";
+import { isVariantUsedInSplits } from "@/wab/shared/core/splits";
 import { COMBINATIONS_CAP } from "@/wab/shared/Labels";
 import {
   ArenaFrame,
@@ -48,6 +49,8 @@ export const PageArenaLayout = observer(function PageArenaLayout(props: {
             return null;
           } else if (isStandaloneVariant(variant)) {
             return variant.name;
+          } else if (isVariantUsedInSplits(studioCtx.site, variant)) {
+            return variant.parent?.param.variable.name ?? variant.name;
           } else {
             return `${variant.parent?.param.variable.name}: ${variant.name}`;
           }

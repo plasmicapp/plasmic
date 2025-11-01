@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -14,19 +14,20 @@
 import * as React from "react";
 
 import {
-  Flex as Flex__,
-  PlasmicIcon as PlasmicIcon__,
-  SingleChoiceArg,
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  Flex as Flex__,
   hasVariant,
+  PlasmicIcon as PlasmicIcon__,
+  SingleChoiceArg,
+  StrictProps,
   useDollarState,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
 import IconButton from "../../components/widgets/IconButton"; // plasmic-import: LPry-TF4j22a/component
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: wT5BWZPEc2fYxyqbTLXMt2/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
@@ -66,7 +67,6 @@ export interface DefaultVariantPinButtonProps {
   pinState?: SingleChoiceArg<
     "pinnedTrue" | "pinnedFalse" | "selected" | "evaluatedTrue"
   >;
-
   className?: string;
 }
 
@@ -109,7 +109,6 @@ function PlasmicVariantPinButton__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.pinState,
       },
     ],
-
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -118,6 +117,8 @@ function PlasmicVariantPinButton__RenderFunc(props: {
     $queries: {},
     $refs,
   });
+
+  const styleTokensClassNames = _useStyleTokens();
 
   return (
     <IconButton
@@ -197,23 +198,23 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicVariantPinButton__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
     variants?: PlasmicVariantPinButton__VariantsArgs;
     args?: PlasmicVariantPinButton__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicVariantPinButton__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicVariantPinButton__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+  } & // Specify variants directly as props
+  Omit<PlasmicVariantPinButton__VariantsArgs, ReservedPropsType> &
+    // Specify args directly as props
+    Omit<PlasmicVariantPinButton__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

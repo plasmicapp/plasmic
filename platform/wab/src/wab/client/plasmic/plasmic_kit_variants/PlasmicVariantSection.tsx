@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -14,16 +14,15 @@
 import * as React from "react";
 
 import {
-  Flex as Flex__,
-  SingleBooleanChoiceArg,
-  SingleChoiceArg,
-  Stack as Stack__,
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  Flex as Flex__,
   hasVariant,
   renderPlasmicSlot,
+  SingleBooleanChoiceArg,
+  SingleChoiceArg,
+  StrictProps,
   useDollarState,
   useTrigger,
 } from "@plasmicapp/react-web";
@@ -33,11 +32,10 @@ import VariantRow from "../../components/variants/VariantRow"; // plasmic-import
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
 import IconButton from "../../components/widgets/IconButton"; // plasmic-import: LPry-TF4j22a/component
 import MenuButton from "../../components/widgets/MenuButton"; // plasmic-import: h69wHrrKtL/component
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: wT5BWZPEc2fYxyqbTLXMt2/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import projectcss from "./plasmic_plasmic_kit_variants.module.css"; // plasmic-import: wT5BWZPEc2fYxyqbTLXMt2/projectcss
 import sty from "./PlasmicVariantSection.module.css"; // plasmic-import: PDpx0GMKsd/css
 
@@ -47,7 +45,6 @@ import PlusIcon from "../plasmic_kit/PlasmicIcon__Plus"; // plasmic-import: -k06
 import VariantGroupIcon from "../plasmic_kit/PlasmicIcon__VariantGroup"; // plasmic-import: pyS6pK4Spx-QF/icon
 import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
 import GripSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__GripSvg"; // plasmic-import: jxIRSIMqs/icon
-import VariantSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__VariantSvg"; // plasmic-import: mSYwardqQ/icon
 
 createPlasmicElementProxy;
 
@@ -75,17 +72,17 @@ export const PlasmicVariantSection__VariantProps = new Array<VariantPropType>(
 );
 
 export type PlasmicVariantSection__ArgsType = {
-  title?: React.ReactNode;
-  children?: React.ReactNode;
   icon?: React.ReactNode;
+  title?: React.ReactNode;
   emptyAddButtonText?: React.ReactNode;
+  children?: React.ReactNode;
 };
 type ArgPropType = keyof PlasmicVariantSection__ArgsType;
 export const PlasmicVariantSection__ArgProps = new Array<ArgPropType>(
-  "title",
-  "children",
   "icon",
-  "emptyAddButtonText"
+  "title",
+  "emptyAddButtonText",
+  "children"
 );
 
 export type PlasmicVariantSection__OverridesType = {
@@ -105,10 +102,10 @@ export type PlasmicVariantSection__OverridesType = {
 };
 
 export interface DefaultVariantSectionProps {
-  title?: React.ReactNode;
-  children?: React.ReactNode;
   icon?: React.ReactNode;
+  title?: React.ReactNode;
   emptyAddButtonText?: React.ReactNode;
+  children?: React.ReactNode;
   isQuiet?: SingleBooleanChoiceArg<"isQuiet">;
   showSettings?: SingleBooleanChoiceArg<"showSettings">;
   hasCodeExpression?: SingleBooleanChoiceArg<"hasCodeExpression">;
@@ -180,7 +177,6 @@ function PlasmicVariantSection__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.showIcon,
       },
     ],
-
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -195,6 +191,8 @@ function PlasmicVariantSection__RenderFunc(props: {
     hover_root: isRootHover,
   };
 
+  const styleTokensClassNames = _useStyleTokens();
+
   return (
     <div
       data-plasmic-name={"root"}
@@ -206,19 +204,15 @@ function PlasmicVariantSection__RenderFunc(props: {
         projectcss.root_reset,
         projectcss.plasmic_default_styles,
         projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_css.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
+        styleTokensClassNames,
         sty.root,
         { [sty.rootisQuiet]: hasVariant($state, "isQuiet", "isQuiet") }
       )}
       data-plasmic-trigger-props={[triggerRootHoverProps]}
     >
-      <Stack__
-        as={"div"}
+      <div
         data-plasmic-name={"header"}
         data-plasmic-override={overrides.header}
-        hasGap={true}
         className={classNames(projectcss.all, sty.header, {
           [sty.headerisQuiet]: hasVariant($state, "isQuiet", "isQuiet"),
           [sty.headershowIcon]: hasVariant($state, "showIcon", "showIcon"),
@@ -262,11 +256,9 @@ function PlasmicVariantSection__RenderFunc(props: {
             }),
           })}
         </div>
-        <Stack__
-          as={"div"}
+        <div
           data-plasmic-name={"labelContainer"}
           data-plasmic-override={overrides.labelContainer}
-          hasGap={true}
           className={classNames(projectcss.all, sty.labelContainer, {
             [sty.labelContainerhasCodeExpression]: hasVariant(
               $state,
@@ -319,7 +311,7 @@ function PlasmicVariantSection__RenderFunc(props: {
                 hasVariant($state, "state", "empty"),
             }),
           })}
-        </Stack__>
+        </div>
         <div
           data-plasmic-name={"actionsContainer"}
           data-plasmic-override={overrides.actionsContainer}
@@ -524,7 +516,7 @@ function PlasmicVariantSection__RenderFunc(props: {
             role={"img"}
           />
         </div>
-      </Stack__>
+      </div>
       {(hasVariant($state, "state", "empty") ? false : true) ? (
         <div
           data-plasmic-name={"body"}
@@ -555,17 +547,10 @@ function PlasmicVariantSection__RenderFunc(props: {
                     "__wab_instance",
                     sty.variantRow___5OoLc
                   )}
-                  icon={
-                    <VariantSvgIcon
-                      className={classNames(projectcss.all, sty.svg__dhNhp)}
-                      role={"img"}
-                    />
-                  }
                 >
                   {"Something"}
                 </VariantRow>
               ),
-
               value: args.children,
             })}
           </div>
@@ -591,7 +576,6 @@ const PlasmicDescendants = {
     "body",
     "variantsContainer",
   ],
-
   header: [
     "header",
     "iconContainer",
@@ -604,7 +588,6 @@ const PlasmicDescendants = {
     "emptyAddButton",
     "dragHandle",
   ],
-
   iconContainer: ["iconContainer"],
   labelContainer: ["labelContainer"],
   actionsContainer: [
@@ -615,7 +598,6 @@ const PlasmicDescendants = {
     "addButton",
     "emptyAddButton",
   ],
-
   menuButton: ["menuButton"],
   settingsButton: ["settingsButton"],
   exprButton: ["exprButton"],
@@ -649,23 +631,23 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicVariantSection__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
     variants?: PlasmicVariantSection__VariantsArgs;
     args?: PlasmicVariantSection__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicVariantSection__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicVariantSection__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+  } & // Specify variants directly as props
+  Omit<PlasmicVariantSection__VariantsArgs, ReservedPropsType> &
+    // Specify args directly as props
+    Omit<PlasmicVariantSection__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

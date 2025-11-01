@@ -3509,8 +3509,8 @@
       "globalContextsFilePath": "",
       "splitsProviderFilePath": "",
       "customFunctions": [],
-      "styleTokensProviderFilePath": "",
-      "projectModuleFilePath": ""
+      "styleTokensProviderFilePath": "wab/client/plasmic/plasmic_kit_variants/PlasmicStyleTokensProvider.tsx",
+      "projectModuleFilePath": "wab/client/plasmic/plasmic_kit_variants/plasmic.tsx"
     },
     {
       "projectId": "gYEVvAzCcLMHDVPvuYxkFh",
@@ -8567,6 +8567,11 @@
           "id": "0dLCQ-imlG_u",
           "name": "EyeExclamationSvgIcon",
           "moduleFilePath": "wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__EyeExclamationSvg.tsx"
+        },
+        {
+          "id": "FZ02NbJQSMul",
+          "name": "SplitSvgIcon",
+          "moduleFilePath": "wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__SplitSvg.tsx"
         }
       ],
       "images": [],

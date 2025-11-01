@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -14,17 +14,16 @@
 import * as React from "react";
 
 import {
-  Flex as Flex__,
-  PlasmicIcon as PlasmicIcon__,
-  SingleBooleanChoiceArg,
-  SingleChoiceArg,
-  Stack as Stack__,
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  Flex as Flex__,
   hasVariant,
+  PlasmicIcon as PlasmicIcon__,
   renderPlasmicSlot,
+  SingleBooleanChoiceArg,
+  SingleChoiceArg,
+  StrictProps,
   useDollarState,
   useTrigger,
 } from "@plasmicapp/react-web";
@@ -34,11 +33,10 @@ import ListItem from "../../components/ListItem"; // plasmic-import: v31d9_ANqk/
 import Indicator from "../../components/style-controls/Indicator"; // plasmic-import: KRNHR6lpj1/component
 import VariantPinButton from "../../components/variants/VariantPinButton"; // plasmic-import: iPC_skyaMh/component
 import IconButton from "../../components/widgets/IconButton"; // plasmic-import: LPry-TF4j22a/component
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: wT5BWZPEc2fYxyqbTLXMt2/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
 import projectcss from "./plasmic_plasmic_kit_variants.module.css"; // plasmic-import: wT5BWZPEc2fYxyqbTLXMt2/projectcss
 import sty from "./PlasmicVariantRow.module.css"; // plasmic-import: ZAqVPmZmi-/css
 
@@ -48,11 +46,12 @@ import BaseSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__BaseSvg"; // pl
 import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
 import CloseSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__CloseSvg"; // plasmic-import: DhvEHyCHT/icon
 import PlusCircleSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__PlusCircleSvg"; // plasmic-import: tPPI666-2/icon
+import SplitSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__SplitSvg"; // plasmic-import: FZ02NbJQSMul/icon
 
 createPlasmicElementProxy;
 
 export type PlasmicVariantRow__VariantMembers = {
-  type: "baseVariant" | "toggle";
+  type: "baseVariant" | "splitVariant" | "toggle";
   pinState: "pinnedTrue" | "selected" | "pinnedFalse" | "evaluatedTrue";
   isIndicated: "isIndicated";
   showAdditionalRow: "showAdditionalRow";
@@ -60,11 +59,10 @@ export type PlasmicVariantRow__VariantMembers = {
   isReadOnly: "isReadOnly";
 };
 export type PlasmicVariantRow__VariantsArgs = {
-  type?: SingleChoiceArg<"baseVariant" | "toggle">;
+  type?: SingleChoiceArg<"baseVariant" | "splitVariant" | "toggle">;
   pinState?: SingleChoiceArg<
     "pinnedTrue" | "selected" | "pinnedFalse" | "evaluatedTrue"
   >;
-
   isIndicated?: SingleBooleanChoiceArg<"isIndicated">;
   showAdditionalRow?: SingleBooleanChoiceArg<"showAdditionalRow">;
   hasCodeExpression?: SingleBooleanChoiceArg<"hasCodeExpression">;
@@ -83,18 +81,17 @@ export const PlasmicVariantRow__VariantProps = new Array<VariantPropType>(
 export type PlasmicVariantRow__ArgsType = {
   children?: React.ReactNode;
   additional?: React.ReactNode;
-  icon?: React.ReactNode;
 };
 type ArgPropType = keyof PlasmicVariantRow__ArgsType;
 export const PlasmicVariantRow__ArgProps = new Array<ArgPropType>(
   "children",
-  "additional",
-  "icon"
+  "additional"
 );
 
 export type PlasmicVariantRow__OverridesType = {
   root?: Flex__<"div">;
   listItem?: Flex__<typeof ListItem>;
+  icon?: Flex__<"svg">;
   recordButton?: Flex__<typeof IconButton>;
   variantPinButton?: Flex__<typeof VariantPinButton>;
   exprButton?: Flex__<typeof IconButton>;
@@ -104,12 +101,10 @@ export type PlasmicVariantRow__OverridesType = {
 export interface DefaultVariantRowProps {
   children?: React.ReactNode;
   additional?: React.ReactNode;
-  icon?: React.ReactNode;
-  type?: SingleChoiceArg<"baseVariant" | "toggle">;
+  type?: SingleChoiceArg<"baseVariant" | "splitVariant" | "toggle">;
   pinState?: SingleChoiceArg<
     "pinnedTrue" | "selected" | "pinnedFalse" | "evaluatedTrue"
   >;
-
   isIndicated?: SingleBooleanChoiceArg<"isIndicated">;
   showAdditionalRow?: SingleBooleanChoiceArg<"showAdditionalRow">;
   hasCodeExpression?: SingleBooleanChoiceArg<"hasCodeExpression">;
@@ -188,7 +183,6 @@ function PlasmicVariantRow__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.isReadOnly,
       },
     ],
-
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -203,6 +197,8 @@ function PlasmicVariantRow__RenderFunc(props: {
     hover_root: isRootHover,
   };
 
+  const styleTokensClassNames = _useStyleTokens();
+
   return (
     <div
       data-plasmic-name={"root"}
@@ -214,9 +210,7 @@ function PlasmicVariantRow__RenderFunc(props: {
         projectcss.root_reset,
         projectcss.plasmic_default_styles,
         projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_css.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
+        styleTokensClassNames,
         sty.root,
         {
           [sty.rootisIndicated]: hasVariant(
@@ -482,6 +476,11 @@ function PlasmicVariantRow__RenderFunc(props: {
                 "type",
                 "baseVariant"
               ),
+              [sty.freeBoxtype_splitVariant__qnsp3UUn]: hasVariant(
+                $state,
+                "type",
+                "splitVariant"
+              ),
               [sty.freeBoxtype_toggle__qnspNLw14]: hasVariant(
                 $state,
                 "type",
@@ -489,16 +488,23 @@ function PlasmicVariantRow__RenderFunc(props: {
               ),
             })}
           >
-            {renderPlasmicSlot({
-              defaultContents: (
-                <BaseSvgIcon
-                  className={classNames(projectcss.all, sty.svg__cFzz8)}
-                  role={"img"}
-                />
-              ),
-
-              value: args.icon,
-            })}
+            <PlasmicIcon__
+              data-plasmic-name={"icon"}
+              data-plasmic-override={overrides.icon}
+              PlasmicIconType={
+                hasVariant($state, "type", "splitVariant")
+                  ? SplitSvgIcon
+                  : BaseSvgIcon
+              }
+              className={classNames(projectcss.all, sty.icon, {
+                [sty.icontype_splitVariant]: hasVariant(
+                  $state,
+                  "type",
+                  "splitVariant"
+                ),
+              })}
+              role={"img"}
+            />
           </div>
         }
         isSelected={
@@ -513,9 +519,7 @@ function PlasmicVariantRow__RenderFunc(props: {
             : undefined
         }
       >
-        <Stack__
-          as={"div"}
-          hasGap={true}
+        <div
           className={classNames(projectcss.all, sty.freeBox__vSe8B, {
             [sty.freeBoxhasCodeExpression__vSe8BezONc]: hasVariant(
               $state,
@@ -570,7 +574,7 @@ function PlasmicVariantRow__RenderFunc(props: {
               ),
             }),
           })}
-        </Stack__>
+        </div>
       </ListItem>
       {(hasVariant($state, "isIndicated", "isIndicated") ? true : false) ? (
         <Indicator
@@ -612,13 +616,20 @@ const PlasmicDescendants = {
   root: [
     "root",
     "listItem",
+    "icon",
     "recordButton",
     "variantPinButton",
     "exprButton",
     "indicator",
   ],
-
-  listItem: ["listItem", "recordButton", "variantPinButton", "exprButton"],
+  listItem: [
+    "listItem",
+    "icon",
+    "recordButton",
+    "variantPinButton",
+    "exprButton",
+  ],
+  icon: ["icon"],
   recordButton: ["recordButton"],
   variantPinButton: ["variantPinButton"],
   exprButton: ["exprButton"],
@@ -630,6 +641,7 @@ type DescendantsType<T extends NodeNameType> =
 type NodeDefaultElementType = {
   root: "div";
   listItem: typeof ListItem;
+  icon: "svg";
   recordButton: typeof IconButton;
   variantPinButton: typeof VariantPinButton;
   exprButton: typeof IconButton;
@@ -641,23 +653,23 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicVariantRow__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
     variants?: PlasmicVariantRow__VariantsArgs;
     args?: PlasmicVariantRow__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicVariantRow__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicVariantRow__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+  } & // Specify variants directly as props
+  Omit<PlasmicVariantRow__VariantsArgs, ReservedPropsType> &
+    // Specify args directly as props
+    Omit<PlasmicVariantRow__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;
@@ -698,6 +710,7 @@ export const PlasmicVariantRow = Object.assign(
   {
     // Helper components rendering sub-elements
     listItem: makeNodeComponent("listItem"),
+    icon: makeNodeComponent("icon"),
     recordButton: makeNodeComponent("recordButton"),
     variantPinButton: makeNodeComponent("variantPinButton"),
     exprButton: makeNodeComponent("exprButton"),

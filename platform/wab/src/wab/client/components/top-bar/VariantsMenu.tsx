@@ -9,39 +9,36 @@ import {
   PlasmicVariantsMenu,
 } from "@/wab/client/plasmic/plasmic_kit_top_bar/PlasmicVariantsMenu";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { ensure, mod, spawn } from "@/wab/shared/common";
 import { VARIANTS_LOWER } from "@/wab/shared/Labels";
 import {
   getAllVariantsForTpl,
+  getVariantLabel,
   isBaseVariant,
   isScreenVariant,
   isStyleOrCodeComponentVariant,
 } from "@/wab/shared/Variants";
+import { ensure, mod, spawn } from "@/wab/shared/common";
+import { Variant } from "@/wab/shared/model/classes";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import defer = setTimeout;
 
-interface PreviewVariantData {
-  name: string;
-  uuid: string;
-}
-
 type VariantGroupData =
   | {
-      name: string;
+      name: undefined;
       type: "standalone";
-      variants: PreviewVariantData[];
+      variants: Variant[];
     }
   | {
       type: "single";
       name: string;
-      variants: PreviewVariantData[];
+      variants: Variant[];
     }
   | {
       type: "multi";
       name: string;
-      variants: PreviewVariantData[];
+      variants: Variant[];
     };
 
 interface VariantsMenuProps extends DefaultVariantsMenuProps {
@@ -73,8 +70,12 @@ function VariantsMenu_({
   const groupedVariants = variantGroupsData
     .map((g) => ({
       ...g,
-      variants: g.variants.filter(
-        (v) => matcher.matches(v.name) || matcher.matches(g.name)
+      variants: g.variants.filter((v) =>
+        g.type === "standalone"
+          ? matcher.matches(v.name)
+          : matcher.matches(v.name) ||
+            matcher.matches(g.name) ||
+            matcher.matches(v.parent?.param.variable.name ?? "")
       ),
     }))
     .filter((g) => g.variants.length !== 0);
@@ -236,7 +237,7 @@ function VariantsMenu_({
     >
       {groupedVariants.map(({ variants, name }) => (
         <Fragment key={name}>
-          <VariantsGroupLabel>{name}</VariantsGroupLabel>
+          {name && <VariantsGroupLabel>{name}</VariantsGroupLabel>}
           {variants.map((variant) => (
             <VariantRow
               ref={getVariantRowRef(variant.uuid)}
@@ -257,7 +258,9 @@ function VariantsMenu_({
               )}
               onMouseLeave={handleRowMouseEnter(-1)}
             >
-              {matcher.boldSnippets(variant.name || "UnnamedVariant")}
+              {matcher.boldSnippets(
+                getVariantLabel(studioCtx.site, variant) || "UnnamedVariant"
+              )}
             </VariantRow>
           ))}
         </Fragment>

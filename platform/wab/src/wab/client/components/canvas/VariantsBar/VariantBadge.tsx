@@ -1,8 +1,8 @@
 import { maybeShowContextMenu } from "@/wab/client/components/ContextMenu";
 import {
-  makeCanvasVariantContextMenu,
   StyleVariantEditor,
   VariantLabel,
+  makeCanvasVariantContextMenu,
 } from "@/wab/client/components/VariantControls";
 import styles from "@/wab/client/components/canvas/VariantsBar/VariantBadge.module.scss";
 import { EditableLabelHandles } from "@/wab/client/components/widgets/EditableLabel";
@@ -13,8 +13,8 @@ import {
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { MaybeWrap } from "@/wab/commons/components/ReactUtil";
 import {
-  isStyleOrCodeComponentVariant,
   StyleVariant,
+  isStyleOrCodeComponentVariant,
 } from "@/wab/shared/Variants";
 import { Component, Variant } from "@/wab/shared/model/classes";
 import { Popover } from "antd";
@@ -112,6 +112,7 @@ const VariantBadge = observer(function VariantBadge_({
           programmaticallyTriggered
           inputBoxClassName={styles.variantLabelInput}
           variant={variant}
+          useGroupNameForSplits
         />
       </MaybeWrap>
     </PlasmicVariantBadge>

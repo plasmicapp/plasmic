@@ -24,6 +24,7 @@ import {
   UNINITIALIZED_VALUE,
   writeable,
 } from "@/wab/shared/core/sites";
+import { isVariantUsedInSplits } from "@/wab/shared/core/splits";
 import { getPseudoSelector, mkRuleSet } from "@/wab/shared/core/styles";
 import { isTplTag, summarizeTplTag } from "@/wab/shared/core/tpls";
 import { parseScreenSpec, ScreenSizeSpec } from "@/wab/shared/css-size";
@@ -976,13 +977,22 @@ export function makeVariantName({
   focusedTag,
   superComp,
   site,
+  useGroupNameForSplits,
 }: {
   variant: Variant;
   focusedTag?: TplTag;
-  includeGroupName?: boolean;
   superComp?: Component;
   site?: Site;
+  useGroupNameForSplits?: boolean;
 }) {
+  // For global variants used in splits, show only the group name
+  if (useGroupNameForSplits && site && isVariantUsedInSplits(site, variant)) {
+    return ensure(
+      getVariantGroupName(variant),
+      "Split variants must have a parent"
+    );
+  }
+
   return (
     (isPrivateStyleVariant(variant)
       ? [
@@ -1103,4 +1113,19 @@ export function findDuplicateComponentVariant(
   return component.variants
     .filter((v) => v !== editingVariant)
     .find((v) => toVariantKey(v) === toVariantKey(editingVariant));
+}
+
+export function getVariantGroupName(variant: Variant) {
+  return variant.parent?.param.variable.name;
+}
+
+export function getVariantLabel(site: Site, variant: Variant): string {
+  if (isVariantUsedInSplits(site, variant)) {
+    return ensure(
+      getVariantGroupName(variant),
+      "Split variant must have a parent"
+    );
+  } else {
+    return variant.name;
+  }
 }

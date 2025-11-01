@@ -48,6 +48,7 @@ type VariantLabelProps = {
   onRenamed?: (name: string) => void;
   defaultEditing?: boolean;
   doubleClickToEdit?: boolean;
+  useGroupNameForSplits?: boolean;
 };
 const VariantLabel_: ForwardRefRenderFunction<
   EditableLabelHandles,
@@ -63,6 +64,7 @@ const VariantLabel_: ForwardRefRenderFunction<
     doubleClickToEdit,
     isRecording,
     programmaticallyTriggered,
+    useGroupNameForSplits,
   }: VariantLabelProps,
   ref: React.Ref<EditableLabelHandles>
 ) => {
@@ -76,6 +78,7 @@ const VariantLabel_: ForwardRefRenderFunction<
       superComp,
       ...(isTplTag(focusedTpl) && { focusedTag: focusedTpl }),
       site: studioCtx.site,
+      useGroupNameForSplits,
     });
   })();
 

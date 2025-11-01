@@ -5,10 +5,13 @@ import {
   PlasmicVariantsComboSelect,
 } from "@/wab/client/plasmic/plasmic_kit_top_bar/PlasmicVariantsComboSelect";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { ensure, xGroupBy } from "@/wab/shared/common";
+import { ensure, partitions, xGroupBy } from "@/wab/shared/common";
+import { isVariantUsedInSplits } from "@/wab/shared/core/splits";
 import {
   getAllVariantsForTpl,
+  getVariantLabel,
   isBaseVariant,
+  isGlobalVariant,
   isPrivateStyleVariant,
   isScreenVariant,
   isStandaloneVariant,
@@ -53,40 +56,48 @@ const VariantsComboSelect = observer(function VariantsComboSelect(
       !isBaseVariant(v)
   );
 
+  const [standaloneVariants, splitVariants, compVariants, globalVariants] =
+    partitions(variants, [
+      (v) => isStandaloneVariant(v),
+      (v) => isVariantUsedInSplits(studioCtx.site, v),
+      (v) => !isGlobalVariant(v),
+    ]);
+
   const currentPreviewComponentData = {
     componentUuid: previewCtx.component.uuid,
-    activeVariants: previewCtx
-      .getVariants()
-      .map((v) => ({ name: v.name, uuid: v.uuid })),
+    activeVariants: previewCtx.getVariants(),
     variantGroups: [
-      ...variants
-        .filter((v) => isStandaloneVariant(v))
-        .map((v) => ({
-          type: "standalone" as const,
-          name: ensure(
-            v.parent,
-            `Variant ${v.name} (uuid ${v.uuid}) has no parent`
-          ).param.variable.name,
-          variants: [
-            {
-              name: v.name,
-              uuid: v.uuid,
-            },
-          ],
-        })),
+      ...standaloneVariants.map((v) => ({
+        name: undefined,
+        type: "standalone" as const,
+        variants: [v],
+      })),
       ...[
-        ...xGroupBy(
-          variants.filter((v) => !isStandaloneVariant(v)),
-          (v) =>
-            ensure(v.parent, `Variant ${v.name} (uuid ${v.uuid}) has no parent`)
+        ...xGroupBy(compVariants, (v) =>
+          ensure(v.parent, `Variant ${v.name} (uuid ${v.uuid}) has no parent`)
         ).entries(),
       ].map(([vg, vs]) => ({
         type: vg.multi ? ("multi" as const) : ("single" as const),
         name: vg.param.variable.name,
-        variants: vs.map((v) => ({
-          uuid: v.uuid,
-          name: v.name,
-        })),
+        variants: vs,
+      })),
+      ...(splitVariants.length > 0
+        ? [
+            {
+              type: "multi" as const,
+              name: "Splits",
+              variants: splitVariants,
+            },
+          ]
+        : []),
+      ...[
+        ...xGroupBy(globalVariants, (v) =>
+          ensure(v.parent, `Variant ${v.name} (uuid ${v.uuid}) has no parent`)
+        ).entries(),
+      ].map(([vg, vs]) => ({
+        type: vg.multi ? ("multi" as const) : ("single" as const),
+        name: vg.param.variable.name,
+        variants: vs,
       })),
     ],
   };
@@ -122,7 +133,9 @@ const VariantsComboSelect = observer(function VariantsComboSelect(
       <PlasmicVariantsComboSelect isOpen={isOpen} {...props}>
         {activeVariants.length === 0
           ? "Base"
-          : activeVariants.map((v) => v.name).join(", ")}
+          : activeVariants
+              .map((v) => getVariantLabel(studioCtx.site, v))
+              .join(", ")}
       </PlasmicVariantsComboSelect>
     </Dropdown>
   );

@@ -6,15 +6,13 @@ import { Matcher } from "@/wab/client/components/view-common";
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import { useRefMap } from "@/wab/client/hooks/useRefMap";
 import PlasmicIcon__Bolt from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Bolt";
+import SplitIcon from "@/wab/client/plasmic/plasmic_kit_left_pane/icons/PlasmicIcon__Icon";
 import {
   DefaultVariantsDrawerProps,
   PlasmicVariantsDrawer,
 } from "@/wab/client/plasmic/plasmic_kit_variants_bar/PlasmicVariantsDrawer";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { mod, partitions, spawn, xGroupBy } from "@/wab/shared/common";
-import { isTplTag } from "@/wab/shared/core/tpls";
 import { VARIANTS_LOWER } from "@/wab/shared/Labels";
-import { Component, isKnownVariant, Variant } from "@/wab/shared/model/classes";
 import {
   getAllVariantsForTpl,
   isCodeComponentVariant,
@@ -26,6 +24,15 @@ import {
   isStyleVariant,
   makeVariantName,
 } from "@/wab/shared/Variants";
+import { mod, partitions, spawn, xGroupBy } from "@/wab/shared/common";
+import { isVariantUsedInSplits } from "@/wab/shared/core/splits";
+import { isTplTag } from "@/wab/shared/core/tpls";
+import {
+  Component,
+  Site,
+  Variant,
+  isKnownVariant,
+} from "@/wab/shared/model/classes";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { Fragment, useEffect, useMemo, useRef, useState } from "react";
@@ -115,6 +122,7 @@ function VariantsDrawer_({
   const [highlightIndex, setHighlightIndex] = useState(0);
 
   const groupedVariants = useGroupedVariants(
+    studioCtx.site,
     filteredVariants,
     shouldShowBase,
     !hideInteractions,
@@ -231,6 +239,7 @@ function VariantsDrawer_({
       variant,
       ...(isTplTag(focusedTpl) && { focusedTag: focusedTpl }),
       site: studioCtx.site,
+      useGroupNameForSplits: true,
     })!;
 
   useEffect(() => {
@@ -311,6 +320,7 @@ function VariantsDrawer_({
 }
 
 function useGroupedVariants(
+  site: Site,
   filteredVariants: Variant[],
   shouldShowBase: boolean,
   shouldShowInteractions: boolean,
@@ -327,12 +337,14 @@ function useGroupedVariants(
     codeComponentVariants,
     compStyleVariants,
     compVariants,
+    splitVariants,
     globalVariants,
   ] = partitions(filteredVariants, [
     isPrivateStyleVariant,
     isCodeComponentVariant,
     isComponentStyleVariant,
     (v) => !isGlobalVariant(v),
+    (v) => isVariantUsedInSplits(site, v),
   ]);
 
   return useMemo(() => {
@@ -389,6 +401,22 @@ function useGroupedVariants(
           compVariants.filter((it) => !isStandaloneVariantGroup(it.parent)),
           (v) => v.parent!
         ).entries(),
+      ].map(([group, variants]) => ({
+        key: group.param.variable.name,
+        groupLabel: group.param.variable.name,
+        variants: variants as Variant[],
+      })),
+      {
+        key: "Splits",
+        groupLabel: (
+          <>
+            Splits
+            <Icon icon={SplitIcon} />
+          </>
+        ),
+        variants: splitVariants,
+      },
+      ...[
         ...xGroupBy(
           globalVariants.filter((v) => shouldShowScreen || !isScreenVariant(v)),
           (v) => v.parent!
