@@ -29,6 +29,7 @@ import {
   getSuperComponentVariantGroupToComponent,
 } from "@/wab/shared/core/components";
 import { allGlobalVariantGroups } from "@/wab/shared/core/sites";
+import { isGlobalVariantGroupUsedInSplits } from "@/wab/shared/core/splits";
 import { isTplCodeComponent } from "@/wab/shared/core/tpls";
 import {
   COMBINATIONS_CAP,
@@ -265,6 +266,11 @@ export const ComponentArenaLayout = observer(
               return null;
             } else if (studioCtx.projectDependencyManager.getOwnerDep(group)) {
               // Can't edit groups not owned by this site
+              return null;
+            } else if (
+              isGlobalVariantGroupUsedInSplits(studioCtx.site, group)
+            ) {
+              // Can't edit groups used by splits
               return null;
             } else if (isScreenVariantGroup(group)) {
               return (
