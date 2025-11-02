@@ -6,6 +6,7 @@ import Select from "@/wab/client/components/widgets/Select";
 import { toOpaque } from "@/wab/commons/types";
 import { PublicStyleSection, TemplateSpec } from "@/wab/shared/ApiSchema";
 import { ensureType, isOneOf, unreachable } from "@/wab/shared/common";
+import { MIXINS_CAP } from "@/wab/shared/Labels";
 import { capitalizeFirst } from "@/wab/shared/strs";
 import {
   BASIC_ALIASES,
@@ -13,9 +14,9 @@ import {
   COMPONENT_ALIASES,
   LEFT_TAB_UI_KEYS,
   LeftTabUiKey,
+  makeNiceAliasName,
   PROJECT_CONFIGS,
   UiConfig,
-  makeNiceAliasName,
 } from "@/wab/shared/ui-config-utils";
 import { Alert, Form, Input } from "antd";
 import { capitalize, omit, uniqBy } from "lodash";
@@ -161,7 +162,10 @@ export function ContentEditorConfigModal(props: {
             <BooleanPreferencesControl
               label="Can edit these sections in the right panel?"
               prefKeys={Object.entries(PublicStyleSection).map(
-                ([label, value]) => ({ value, label })
+                ([label, value]) => ({
+                  value,
+                  label: publicStyleSectionToLabel(value, label),
+                })
               )}
             />
           </Form.Item>
@@ -611,5 +615,17 @@ function leftTabKeyToLabel(key: LeftTabUiKey) {
       return "Expressions";
     default:
       unreachable(key);
+  }
+}
+
+function publicStyleSectionToLabel(
+  section: PublicStyleSection,
+  defaultLabel: string
+) {
+  switch (section) {
+    case PublicStyleSection.Mixins:
+      return MIXINS_CAP;
+    default:
+      return defaultLabel;
   }
 }

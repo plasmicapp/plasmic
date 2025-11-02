@@ -285,7 +285,6 @@ export enum PublicStyleSection {
   HTMLAttributes = "htmlAttributes",
   ElementStates = "elementStates",
   Mixins = "mixins",
-  ArbitrayCssSelectors = "arbitraryCssSelectors",
 
   // component-level features
   States = "states",
