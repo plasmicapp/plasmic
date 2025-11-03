@@ -7,15 +7,7 @@ import * as cssPegParser from "@/wab/gen/cssPegParser";
  * in special ways.
  */
 export function joinCssValues(prop: string | undefined, vals: string[]) {
-  if (prop === "transform") {
-    // transforms are usually space-separated, but we group
-    // transformX/Y/Z together, rotateX/Y/Z together, etc, so if we
-    // see `transformX() transformY() rotateX()` that's actually two
-    // transforms! We're doing the "easy" thing by just joining the
-    // values together with a special sentinel $$$, so the above would
-    // look like `transformX() transformY()$$$rotateX()`.
-    return vals.join("$$$");
-  } else if (isSpaceDelimitedProp(prop)) {
+  if (isSpaceDelimitedProp(prop)) {
     return vals.join(" ");
   } else {
     return vals.join(", ");
@@ -26,9 +18,7 @@ export function joinCssValues(prop: string | undefined, vals: string[]) {
  * Splits a css value stored in RuleSet.values into an array of values.
  */
 export function splitCssValue(prop: string | undefined, val: string): string[] {
-  if (prop === "transform") {
-    return val.split("$$$");
-  } else if (isSpaceDelimitedProp(prop)) {
+  if (isSpaceDelimitedProp(prop)) {
     return cssPegParser.parse(val, { startRule: "spaceSepValues" });
   } else {
     return cssPegParser.parse(val, { startRule: "commaSepValues" });

@@ -351,8 +351,6 @@ export const showCssValues = (name: string, vals: /*TWZ*/ string[]) => {
         return val.startsWith("var(") ? val : `"${val}"`;
       })
       .join(", ");
-  } else if (name === "transform") {
-    return vals.join(" ");
   } else if (["filter", "backdrop-filter"].includes(name)) {
     const values = vals.filter((s) => !s.startsWith("hidden#"));
     return values.length === 0 ? "unset" : values.join(" ");

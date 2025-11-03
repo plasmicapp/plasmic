@@ -251,3 +251,4 @@ platform/wab/src/wab/server/bundle-migrations/250-migrate-flex-gap.ts
 platform/wab/src/wab/server/bundle-migrations/251-add-data-tokens.ts
 platform/wab/src/wab/server/bundle-migrations/252-add-animations.ts
 platform/wab/src/wab/server/bundle-migrations/253-set-animations-empty-state.ts
+platform/wab/src/wab/server/bundle-migrations/254-migrate-transforms.ts

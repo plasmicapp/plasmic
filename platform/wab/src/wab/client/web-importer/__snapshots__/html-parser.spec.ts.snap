@@ -77,7 +77,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
               {
                 "attrs": {
                   "__name": "",
-                  "style": "font-size: 1.8rem; font-weight: bold; color: #fff5cc;",
+                  "style": "font-size: 1.8rem; font-weight: bold; color: #fff5cc; transform: rotate(45deg);",
                 },
                 "children": [
                   {
@@ -153,6 +153,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                       "paddingLeft": "0",
                       "paddingRight": "0",
                       "paddingTop": "0",
+                      "transform": "rotate3d(0, 0, 1, 45deg)",
                     },
                     "unsafeStyles": {
                       "color": "rgb(255, 245, 204)",
@@ -166,6 +167,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                       "font-weight": "bold",
                       "margin": "0",
                       "padding": "0",
+                      "transform": "rotate(45deg)",
                     },
                     "variantCombo": [
                       {
@@ -1138,11 +1140,13 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                     "safeStyles": {
                       "animation": "none",
                       "background": "linear-gradient(#c0392b, #c0392b)",
+                      "transform": "translate3d(0px, 20px, 0px)",
                     },
                     "unsafeStyles": {},
                     "unsanitizedStyles": {
                       "animation": "none",
                       "background": "#c0392b",
+                      "transform": "translateY(20px)",
                     },
                     "variantCombo": [
                       {

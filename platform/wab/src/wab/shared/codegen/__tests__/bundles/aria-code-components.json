@@ -10888,7 +10888,7 @@
             "position": "fixed",
             "top": "10%",
             "left": "50%",
-            "transform": "translateX(-50%)",
+            "transform": "translate3d(-50%, 0px, 0px)",
             "max-width": "300px"
           },
           "mixins": [],
@@ -13734,7 +13734,7 @@
         }
       },
       "deps": [],
-      "version": "253-set-animations-empty-state"
+      "version": "254-migrate-transforms"
     }
   ],
   [
@@ -22743,7 +22743,7 @@
             "color": "var(--token-i3U49r6ROHvf)",
             "filter": "drop-shadow(0px 0px 10px #00000080)",
             "object-fit": "cover",
-            "transform": "translateX(-50%) translateY(0px) translateZ(0px)",
+            "transform": "translate3d(-50%, 0px, 0px)",
             "left": "50%",
             "top": "-11px",
             "position": "absolute"
@@ -22759,7 +22759,7 @@
         },
         "CdkOoAlM7Eks": {
           "values": {
-            "transform": "rotateX(0deg) rotateY(0deg) rotateZ(60deg)$$$translateX(-50%) translateY(0%) translateZ(0px)",
+            "transform": "rotate3d(0, 0, 1, 60deg) translate3d(-50%, 0%, 0px)",
             "bottom": "-16px",
             "left": "50%",
             "top": "auto"
@@ -22770,7 +22770,7 @@
         },
         "34BNEMGkTocr": {
           "values": {
-            "transform": "rotateX(0deg) rotateY(0deg) rotateZ(30deg)$$$translateX(0%) translateY(-50%) translateZ(0px)",
+            "transform": "rotate3d(0, 0, 1, 30deg) translate3d(0%, -50%, 0px)",
             "left": "-14px",
             "top": "50%"
           },
@@ -22780,7 +22780,7 @@
         },
         "gmsqJ5ifoKmN": {
           "values": {
-            "transform": "rotateX(0deg) rotateY(0deg) rotateZ(-30deg)$$$translateX(0px) translateY(-50%) translateZ(0px)",
+            "transform": "rotate3d(0, 0, 1, -30deg) translate3d(0px, -50%, 0px)",
             "right": "-14px",
             "left": "auto",
             "top": "50%"
@@ -25771,7 +25771,7 @@
             "position": "absolute",
             "left": "50%",
             "color": "var(--token-SX0Pi19x0IVO)",
-            "transform": "translateX(-50%) translateY(0px) translateZ(0px)",
+            "transform": "translate3d(-50%, 0px, 0px)",
             "width": "auto",
             "height": "auto",
             "plasmic-display-none": "false",
@@ -25791,7 +25791,7 @@
             "bottom": "auto",
             "left": "50%",
             "top": "10px",
-            "transform": "rotateX(0deg) rotateY(0deg) rotateZ(60deg)$$$translateX(-50%) translateY(0px) translateZ(0px)"
+            "transform": "rotate3d(0, 0, 1, 60deg) translate3d(-50%, 0px, 0px)"
           },
           "mixins": [],
           "__type": "RuleSet",
@@ -25799,7 +25799,7 @@
         },
         "9W3iZxyLQfjw": {
           "values": {
-            "transform": "rotateX(0deg) rotateY(0deg) rotateZ(30deg)$$$translateX(0%) translateY(-50%) translateZ(0px)",
+            "transform": "rotate3d(0, 0, 1, 30deg) translate3d(0%, -50%, 0px)",
             "bottom": "auto",
             "left": "auto",
             "top": "50%",
@@ -25811,7 +25811,7 @@
         },
         "ovx68fHiReBe": {
           "values": {
-            "transform": "rotateX(0deg) rotateY(0deg) rotateZ(-30deg)$$$translateX(0%) translateY(-50%) translateZ(0px)",
+            "transform": "rotate3d(0, 0, 1, -30deg) translate3d(0%, -50%, 0px)",
             "bottom": "auto",
             "left": "6px",
             "top": "50%"
@@ -30034,7 +30034,7 @@
         }
       },
       "deps": ["6880ec08-42f2-424d-9b65-e5a74a1b6baf"],
-      "version": "253-set-animations-empty-state"
+      "version": "254-migrate-transforms"
     }
   ]
 ]

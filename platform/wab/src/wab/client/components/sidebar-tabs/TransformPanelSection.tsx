@@ -1,5 +1,5 @@
-import { shouldBeDisabled } from "@/wab/client/components/sidebar/sidebar-helpers";
 import { SidebarModal } from "@/wab/client/components/sidebar/SidebarModal";
+import { shouldBeDisabled } from "@/wab/client/components/sidebar/sidebar-helpers";
 import {
   ExpsProvider,
   StylePanelSection,
@@ -16,16 +16,13 @@ import { Icon } from "@/wab/client/components/widgets/Icon";
 import GearIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Gear";
 import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
 import { arrayMoveIndex, arrayRemove } from "@/wab/shared/collections";
-import { maybe, spawn, uniqueKey } from "@/wab/shared/common";
+import { assert, spawn, uniqueKey } from "@/wab/shared/common";
 import {
-  defaultTransforms,
-  fromTransformObjToString,
-  fromTransformStringToObj,
+  CssTransform,
+  CssTransforms,
+  defaultCssTransform,
   parseOrigin,
-  parseSelfPerspective,
-  Transform,
-} from "@/wab/shared/core/transform-utils";
-import { joinCssValues, splitCssValue } from "@/wab/shared/css/parse";
+} from "@/wab/shared/css/transforms";
 import { capitalize } from "lodash";
 import { observer } from "mobx-react";
 import React, { useState } from "react";
@@ -39,19 +36,9 @@ export const TransformPanelSection = observer(
     const [isSettingOpen, setIsSettingOpen] = useState<boolean>(false);
     const sc = useStyleComponent();
 
-    const rawTransforms =
-      maybe(exp.getRaw("transform"), (val) =>
-        val === "none" ? [] : splitCssValue("transform", val)
-      ) ?? [];
-    const pureTransforms = rawTransforms.filter(
-      (t) => !t.includes("perspective")
-    );
-    const rawSelfPerspective = rawTransforms.find((t) =>
-      t.includes("perspective")
-    );
-    const selfPerspective =
-      rawSelfPerspective && parseSelfPerspective(rawSelfPerspective);
-    const transforms = pureTransforms.map(fromTransformStringToObj);
+    const cssTransforms = CssTransforms.fromCss(exp.getRaw("transform") ?? "");
+
+    const transforms = cssTransforms.transforms;
 
     const rawTransformOrigin = exp.getRaw("transform-origin");
     const transformOrigin = parseOrigin(rawTransformOrigin);
@@ -75,35 +62,22 @@ export const TransformPanelSection = observer(
       );
     };
 
-    const setsProp = (prop: string, value: string[]) => {
+    const setsProp = (prop: string, value: CssTransforms) => {
       spawn(
         studioCtx.changeUnsafe(() => {
-          exp.set(prop, joinCssValues(prop, value));
+          exp.set(prop, value.showCss());
         })
       );
     };
 
-    const maybeArrayNone = (vals: string[]) => {
-      if (vals.length === 0) {
-        return ["none"];
-      }
-      return vals;
-    };
-
-    const updateTransforms = (newTransforms: Transform[]) => {
-      const rawNewTransforms = newTransforms.map(fromTransformObjToString);
-      if (rawSelfPerspective) {
-        rawNewTransforms.unshift(rawSelfPerspective);
-      }
-      setsProp("transform", maybeArrayNone(rawNewTransforms));
+    const updateTransforms = (newTransforms: CssTransform[]) => {
+      cssTransforms.transforms = newTransforms;
+      setsProp("transform", cssTransforms);
     };
 
     const updateSelfPerspective = (newSelfPerspective: string | undefined) => {
-      const transformString = transforms.map(fromTransformObjToString);
-      if (newSelfPerspective) {
-        transformString.unshift(`perspective(${newSelfPerspective})`);
-      }
-      setsProp("transform", maybeArrayNone(transformString));
+      cssTransforms.perspective = newSelfPerspective;
+      setsProp("transform", cssTransforms);
     };
 
     const updateTransformOrigin = (
@@ -139,7 +113,10 @@ export const TransformPanelSection = observer(
     };
 
     const addTransformation = () => {
-      updateTransforms([defaultTransforms.move, ...transforms]);
+      const newTransform = CssTransform.fromCss(defaultCssTransform.translate);
+      assert(newTransform, "Expected CssTransform, found null");
+
+      updateTransforms([newTransform, ...transforms]);
       setInspect(0);
     };
 
@@ -205,7 +182,7 @@ export const TransformPanelSection = observer(
             onClose={() => setIsSettingOpen(false)}
           >
             <TransformSettingsPanel
-              selfPerspective={selfPerspective}
+              selfPerspective={cssTransforms.perspective}
               studioCtx={studioCtx}
               transformOrigin={transformOrigin}
               backfaceVisibility={backfaceVisibility}
@@ -229,15 +206,14 @@ export const TransformPanelSection = observer(
               }
             }}
           >
-            {transforms.map((transformation: Transform, i: number) => {
-              const { type, X, Y, Z } = transformation;
+            {transforms.map((cssTransform: CssTransform, i: number) => {
               return (
                 <ListBoxItem
-                  key={uniqueKey(transformation)}
+                  key={uniqueKey(cssTransform)}
                   index={i}
                   onRemove={() => {
                     if (!isDisabled) {
-                      arrayRemove(transforms, transformation);
+                      arrayRemove(transforms, cssTransform);
                       updateTransforms(transforms);
                     }
                   }}
@@ -245,12 +221,9 @@ export const TransformPanelSection = observer(
                   mainContent={
                     <div className="labeled-item labeled-item--horizontal--vcenter">
                       <div className="labeled-item__label labeled-item__label--horizontal">
-                        {capitalize(type)}
+                        {capitalize(cssTransform.type)}
                       </div>
-                      <code>
-                        {X},{Y}
-                        {Z ? `,${Z}` : ""}
-                      </code>
+                      <code>{cssTransform.getDisplayText()}</code>
                     </div>
                   }
                 />

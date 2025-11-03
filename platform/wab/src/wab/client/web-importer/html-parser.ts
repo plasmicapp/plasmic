@@ -47,6 +47,7 @@ import { parseScreenSpec } from "@/wab/shared/css-size";
 import { isBorderProp, parseBorderShorthand } from "@/wab/shared/css/border";
 import { findAllAndMap } from "@/wab/shared/css/css-tree-utils";
 import { splitCssValue } from "@/wab/shared/css/parse";
+import { CssTransforms } from "@/wab/shared/css/transforms";
 import { Site } from "@/wab/shared/model/classes";
 import { VariantGroupType } from "@/wab/shared/Variants";
 import {
@@ -270,6 +271,12 @@ function fixCSSValue(key: string, value: string) {
     const firstFont = fontValues[0].replace(/["']/g, "").trim();
     return {
       fontFamily: firstFont,
+    };
+  }
+
+  if (fixedKey === "transform") {
+    return {
+      transform: CssTransforms.fromCss(fixedValue).showCss(),
     };
   }
 

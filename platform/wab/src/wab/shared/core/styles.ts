@@ -129,7 +129,6 @@ import {
   isTplTextBlock,
   tryGetOwnerSite,
 } from "@/wab/shared/core/tpls";
-import { has3dComponent } from "@/wab/shared/core/transform-utils";
 import * as css from "@/wab/shared/css";
 import {
   getCssOverrides,
@@ -140,6 +139,7 @@ import {
 } from "@/wab/shared/css";
 import { showCssAnimations } from "@/wab/shared/css/animations";
 import { splitCssValue } from "@/wab/shared/css/parse";
+import { has3dComponent } from "@/wab/shared/css/transforms";
 import { imageDataUriToBlob } from "@/wab/shared/data-urls";
 import { ThemeTagSource } from "@/wab/shared/defined-indicator";
 import { getProjectFlags } from "@/wab/shared/devflags";
@@ -675,9 +675,7 @@ function deriveCssRuleSetStyles(
   if (
     childPerspective !== "0px" ||
     (effectiveExpr.has("transform") &&
-      splitCssValue("transform", effectiveExpr.get("transform")).some((val) =>
-        has3dComponent(val)
-      ))
+      has3dComponent(effectiveExpr.get("transform")))
   ) {
     m.set("transform-style", "preserve-3d");
   }
@@ -769,9 +767,8 @@ function postProcessStyles(
   // Usually RuleSet.values store valid css values. But for some props,
   // we store special encoding within the css values. So here we make
   // sure we transform them into the proper css values, using showCssValues.
-  // - "transform" is delimited with fake delimiter "###"
   // - filter and backdrop-filter may have "#hidden" tags
-  for (const prop of ["transform", "filter", "backdrop-filter"]) {
+  for (const prop of ["filter", "backdrop-filter"]) {
     if (m.has(prop)) {
       const val = m.get(prop)!;
       m.set(prop, css.showCssValues(prop, splitCssValue(prop, val)));

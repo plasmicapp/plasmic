@@ -3,35 +3,30 @@ import StyleToggleButton from "@/wab/client/components/style-controls/StyleToggl
 import StyleToggleButtonGroup from "@/wab/client/components/style-controls/StyleToggleButtonGroup";
 import DimTokenSpinner from "@/wab/client/components/widgets/DimTokenSelector";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { getSliderConfig } from "@/wab/shared/core/transform-utils";
 import { parseCssNumericNew } from "@/wab/shared/css";
 import {
-  defaultTransforms,
-  fromTransformObjToString,
-  getSliderConfig,
-  Transform,
-  transformAllowedUnits,
-} from "@/wab/shared/core/transform-utils";
+  CssTransform,
+  RotateTransform,
+  ScaleTransform,
+  SkewTransform,
+  TranslateTransform,
+  defaultCssTransform,
+} from "@/wab/shared/css/transforms";
 import { Slider } from "antd";
 import { observer } from "mobx-react";
 import React, { useEffect } from "react";
 
 interface TransformPanelProps {
   studioCtx: StudioCtx;
-  transform: Transform;
-  onChange: (newTransform: Transform) => void;
+  transform: CssTransform;
+  onChange: (newTransform: CssTransform) => void;
 }
 
 export const TransformPanel = observer(function TransformPanel(
   props: TransformPanelProps
 ) {
   const { studioCtx, transform, onChange } = props;
-  const { type, X, Y, Z } = transform;
-  const parsed = {
-    X: X && parseCssNumericNew(X),
-    Y: Y && parseCssNumericNew(Y),
-    Z: Z && parseCssNumericNew(Z),
-  };
-  const axis = ["X", "Y", "Z"];
 
   // ensure that we stop unlogging in case the component is going to unmount
   useEffect(() => {
@@ -45,14 +40,15 @@ export const TransformPanel = observer(function TransformPanel(
         className="pb-sm"
         value={transform.type}
         onChange={(val) => {
-          if (val) {
-            onChange(defaultTransforms[val]);
+          const cssTransform = CssTransform.fromCss(defaultCssTransform[val]);
+          if (cssTransform) {
+            onChange(cssTransform);
           }
         }}
       >
         <StyleToggleButton
           stretched
-          value="move"
+          value="translate"
           label={"Move"}
           showLabel
           children={null}
@@ -89,52 +85,117 @@ export const TransformPanel = observer(function TransformPanel(
           style={{
             width: 30,
             height: 30,
-            transform: fromTransformObjToString(transform),
+            transform: transform.showCss(),
             backgroundColor: "grey",
           }}
         ></div>
       </div>
-      {axis.map((ax) => {
-        if (!parsed[ax]) {
-          return null;
-        }
-        const sliderConfig = getSliderConfig(parsed[ax].units);
-        return (
-          <LabeledItemRow
-            key={`transform-item-${ax}`}
-            className="pb-sm"
-            label={ax}
-            labelSize="small"
-          >
-            <Slider
-              className="mr-lg"
-              style={{ minWidth: 100 }}
-              included={false}
-              value={parsed[ax].num}
-              {...sliderConfig}
-              onChange={(val) => {
-                studioCtx.setIsTransformingObject(true);
-                studioCtx.startUnlogged();
-                transform[ax] = `${val}${parsed[ax].units}`;
-                onChange(transform);
-              }}
-              onAfterChange={() => {
-                studioCtx.setIsTransformingObject(false);
-                studioCtx.stopUnlogged();
-              }}
-            />
-            <DimTokenSpinner
-              value={transform[ax]}
-              onChange={(val) => {
-                transform[ax] = val;
-                onChange(transform);
-              }}
-              noClear
-              allowedUnits={transformAllowedUnits[type]}
-            />
-          </LabeledItemRow>
-        );
-      })}
+      {renderSliders(transform, studioCtx, onChange)}
     </>
   );
 });
+
+function renderSliders(
+  transform: CssTransform,
+  studioCtx: StudioCtx,
+  onChange: (newTransform: CssTransform) => void
+) {
+  if (transform instanceof TranslateTransform) {
+    return renderDimensions(transform, ["X", "Y", "Z"], studioCtx, onChange);
+  }
+  if (transform instanceof RotateTransform) {
+    return renderDimensions(
+      transform,
+      ["X", "Y", "Z", "angle"],
+      studioCtx,
+      onChange
+    );
+  }
+  if (transform instanceof ScaleTransform) {
+    return renderDimensions(transform, ["X", "Y", "Z"], studioCtx, onChange);
+  }
+  if (transform instanceof SkewTransform) {
+    return renderDimensions(transform, ["X", "Y"], studioCtx, onChange);
+  }
+
+  return null;
+}
+
+// Generic helper to render multiple dimensions for a given transform
+function renderDimensions<T extends CssTransform>(
+  transform: T,
+  dimensionKeys: Array<keyof T & string>,
+  studioCtx: StudioCtx,
+  onChange: (newTransform: CssTransform) => void
+) {
+  return dimensionKeys.map((key) => (
+    <DimensionSlider
+      key={key}
+      studioCtx={studioCtx}
+      transform={transform}
+      dimensionKey={key}
+      onChange={onChange}
+    />
+  ));
+}
+
+// Generic dimension slider component that works with any transform type
+function DimensionSlider<T extends CssTransform>(props: {
+  studioCtx: StudioCtx;
+  transform: T;
+  dimensionKey: keyof T & string;
+  onChange: (newTransform: CssTransform) => void;
+}) {
+  const { studioCtx, transform, dimensionKey, onChange } = props;
+  const value = transform[dimensionKey] as string;
+  const allowedUnits = transform.allowedUnits[dimensionKey];
+  const parsed = parseCssNumericNew(value);
+
+  if (!parsed) {
+    return null;
+  }
+
+  const sliderConfig = getSliderConfig(parsed.units ?? "");
+
+  return (
+    <LabeledItemRow
+      key={`transform-item-${dimensionKey}`}
+      className="pb-sm"
+      label={dimensionKey}
+      labelSize="small"
+    >
+      <Slider
+        className="mr-lg"
+        style={{ minWidth: 100 }}
+        included={false}
+        value={parsed.num ?? 0}
+        {...sliderConfig}
+        onChange={(val) => {
+          studioCtx.setIsTransformingObject(true);
+          studioCtx.startUnlogged();
+          const newTransform = transform.clone({
+            [dimensionKey]: `${val}${parsed.units ?? ""}`,
+          });
+          onChange(newTransform);
+        }}
+        onAfterChange={() => {
+          studioCtx.setIsTransformingObject(false);
+          studioCtx.stopUnlogged();
+        }}
+      />
+      <DimTokenSpinner
+        value={value}
+        onChange={(val) => {
+          if (val) {
+            const newTransform = transform.clone({
+              [dimensionKey]: val,
+            });
+            onChange(newTransform);
+          }
+        }}
+        noClear
+        allowedUnits={allowedUnits}
+      />
+    </LabeledItemRow>
+  );
+}

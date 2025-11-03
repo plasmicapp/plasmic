@@ -90,6 +90,7 @@ const paths = [
   "src/wab/server/__tests__/bundle-migrations/fixtures/duplicate-variants.migrated.json",
   "src/wab/server/__tests__/bundle-migrations/fixtures/merge-duplicate-variants.migrated.json",
   "src/wab/server/__tests__/bundle-migrations/fixtures/flex-gap-bundle.migrated.json",
+  "src/wab/server/__tests__/bundle-migrations/fixtures/transform-format-migration.json",
 ];
 
 async function migrate() {
