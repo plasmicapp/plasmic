@@ -83,8 +83,14 @@ export const makeTokenValueResolver = (site: Site): TokenValueResolver => {
   };
 };
 
+/** Token resolver that takes a string token reference and returns the resolved value. */
+export type TokenRefResolver = (
+  maybeRef: string,
+  vsh?: VariantedStylesHelper
+) => StyleTokenValue | undefined;
+
 export const makeTokenRefResolver = maybeComputedFn(
-  function makeTokenRefResolver(site: Site) {
+  function makeTokenRefResolver(site: Site): TokenRefResolver {
     const tokenResolver = makeTokenValueResolver(site);
     const allTokens = siteFinalStyleTokensAllDepsDict(site);
     return (maybeRef: string, vsh?: VariantedStylesHelper) => {

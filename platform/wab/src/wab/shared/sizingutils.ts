@@ -1,57 +1,32 @@
-import { assert, ensure } from "@/wab/shared/common";
 import { isTokenRef } from "@/wab/commons/StyleToken";
 import {
+  IRuleSetHelpersX,
+  RSH,
+  ReadonlyIRuleSetHelpersX,
+  getCssDefault,
+} from "@/wab/shared/RuleSetHelpers";
+import { $$$ } from "@/wab/shared/TplQuery";
+import { VariantTplMgr } from "@/wab/shared/VariantTplMgr";
+import {
+  VariantCombo,
+  ensureValidCombo,
+  getGlobalVariants,
+  isBaseVariant,
+  tryGetBaseVariantSetting,
+} from "@/wab/shared/Variants";
+import { ComponentGenHelper } from "@/wab/shared/codegen/codegen-helpers";
+import { assert, ensure, replaceObj } from "@/wab/shared/common";
+import {
+  PageComponent,
   getEffectiveVariantSettingOfDeepRootElement,
   isPageComponent,
-  PageComponent,
 } from "@/wab/shared/core/components";
-import { parseCssNumericNew } from "@/wab/shared/css";
-import { ComponentGenHelper } from "@/wab/shared/codegen/codegen-helpers";
+import { getArenaFrameActiveVariants } from "@/wab/shared/core/sites";
 import {
   CONTENT_LAYOUT_FULL_BLEED,
   CONTENT_LAYOUT_WIDE,
   CONTENT_LAYOUT_WIDTH_OPTIONS,
 } from "@/wab/shared/core/style-props";
-import {
-  getEffectiveVariantSetting,
-  getTplComponentActiveVariantsByVs,
-} from "@/wab/shared/effective-variant-setting";
-import {
-  makeExpandedExp,
-  makeExpProxy,
-  makeReadonlyExpandedExp,
-  makeReadonlyExpProxy,
-} from "@/wab/shared/exprs";
-import {
-  ContainerLayoutType,
-  getRshContainerType,
-} from "@/wab/shared/layoututils";
-import { keyedComputedFn } from "@/wab/shared/mobx-util";
-import {
-  ArenaFrame,
-  Component,
-  isKnownTplTag,
-  TplComponent,
-  TplNode,
-  Variant,
-  VariantSetting,
-} from "@/wab/shared/model/classes";
-import {
-  getCssDefault,
-  IRuleSetHelpersX,
-  ReadonlyIRuleSetHelpersX,
-  RSH,
-} from "@/wab/shared/RuleSetHelpers";
-import { $$$ } from "@/wab/shared/TplQuery";
-import {
-  ensureValidCombo,
-  getGlobalVariants,
-  isBaseVariant,
-  tryGetBaseVariantSetting,
-  VariantCombo,
-} from "@/wab/shared/Variants";
-import { VariantTplMgr } from "@/wab/shared/VariantTplMgr";
-import { getArenaFrameActiveVariants } from "@/wab/shared/core/sites";
 import { createRuleSetMerger, expandRuleSets } from "@/wab/shared/core/styles";
 import {
   isCodeComponentRoot,
@@ -64,6 +39,32 @@ import {
   isTplTextBlock,
   isTplVariantable,
 } from "@/wab/shared/core/tpls";
+import { parseCssNumericNew } from "@/wab/shared/css";
+import {
+  getEffectiveVariantSetting,
+  getTplComponentActiveVariantsByVs,
+} from "@/wab/shared/effective-variant-setting";
+import {
+  makeExpProxy,
+  makeExpandedExp,
+  makeReadonlyExpProxy,
+  makeReadonlyExpandedExp,
+} from "@/wab/shared/exprs";
+import {
+  ContainerLayoutType,
+  getRshContainerType,
+} from "@/wab/shared/layoututils";
+import { keyedComputedFn } from "@/wab/shared/mobx-util";
+import {
+  ArenaFrame,
+  Component,
+  TplComponent,
+  TplNode,
+  Variant,
+  VariantSetting,
+  isKnownTplTag,
+} from "@/wab/shared/model/classes";
+import { Raw, generate, parse, walk } from "css-tree";
 import memoizeOne from "memoize-one";
 
 export function isSizeProp(prop: string): prop is "width" | "height" {
@@ -87,11 +88,27 @@ export function deriveSizeStyleValue(
 }
 
 export function getViewportAwareHeight(val: string): string {
-  if (val.endsWith("vh")) {
-    const numVal = +val.slice(0, val.length - 2);
-    return `calc(var(--viewport-height) * ${numVal / 100})`;
+  let ast;
+  try {
+    ast = parse(val, { context: "value" });
+  } catch {
+    // If parsing fails, fall back to the original value
+    return val;
   }
-  return val;
+
+  walk(ast, {
+    enter(node) {
+      if (node.type === "Dimension" && node.unit === "vh") {
+        const numVal = parseFloat(node.value);
+        replaceObj<Raw>(node, {
+          type: "Raw",
+          value: `calc(var(--viewport-height) * ${numVal} / 100)`,
+        });
+      }
+    },
+  });
+
+  return generate(ast);
 }
 
 export function isSpecialSizeVal(val: string) {

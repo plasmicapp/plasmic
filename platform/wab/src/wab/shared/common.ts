@@ -5,6 +5,7 @@ import customParseFormat from "dayjs/plugin/customParseFormat";
 import * as Immutable from "immutable";
 import type { MemoizedFunction } from "lodash";
 import {
+  Truthy,
   assignIn,
   assignWith,
   camelCase,
@@ -31,7 +32,6 @@ import {
   reverse,
   split,
   takeWhile,
-  Truthy,
   uniqBy,
   uniqueId,
   upperFirst,
@@ -42,9 +42,9 @@ import { nanoid } from "nanoid";
 import { Key } from "react";
 import ShortUuid, { constants } from "short-uuid";
 import {
-  v4 as Uuidv4,
   validate as UuidValidate,
   version as UuidVersion,
+  v4 as Uuidv4,
 } from "uuid";
 
 const reAll = require("regexp.execall");
@@ -862,8 +862,9 @@ export function replaceMap<K, V>(target: Map<K, V>, source: Map<K, V>) {
 
 /**
  * Replaces content of x with content of y.
+ * Returns x mutated to have the shape of y, typed as T.
  */
-export function replaceObj(x: any, y: any) {
+export function replaceObj<T extends object = any>(x: any, y: T): T {
   for (const key of Object.keys(x)) {
     if (!(key in y)) {
       delete x[key];
@@ -872,6 +873,7 @@ export function replaceObj(x: any, y: any) {
   for (const key of Object.keys(y)) {
     x[key] = y[key];
   }
+  return x as T;
 }
 
 export function strictZip<T, U>(

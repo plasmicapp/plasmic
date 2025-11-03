@@ -88,6 +88,7 @@ import {
 } from "@/wab/shared/core/image-assets";
 import { walkDependencyTree } from "@/wab/shared/core/project-deps";
 import {
+  TokenRefResolver,
   makeTokenRefResolver,
   siteFinalStyleTokensAllDepsDict,
   siteFinalStyleTokensDirectDeps,
@@ -698,6 +699,7 @@ function deriveCssRuleSetStyles(
   postProcessStyles(m, {
     isStudio: ctx.isStudio,
     whitespaceNormal: opts.whitespaceNormal,
+    tokenRefResolver: ctx.siteHelper.makeTokenRefResolver(),
   });
 
   return m;
@@ -721,12 +723,21 @@ function preNormalizeWhitespace(val: string) {
   return val;
 }
 
+type PostProcessStylesOpts = {
+  whitespaceNormal?: boolean;
+} & (
+  | {
+      isStudio: true;
+      tokenRefResolver: TokenRefResolver;
+    }
+  | {
+      isStudio?: false;
+    }
+);
+
 function postProcessStyles(
   m: Map<string, string>,
-  opts: {
-    isStudio?: boolean;
-    whitespaceNormal?: boolean;
-  }
+  opts: PostProcessStylesOpts
 ) {
   if (m.has("background")) {
     deriveBackgroundStyles(
@@ -788,7 +799,9 @@ function postProcessStyles(
   if (opts.isStudio) {
     ["height", "min-height"].forEach((prop) => {
       if (m.has(prop)) {
-        m.set(prop, getViewportAwareHeight(m.get(prop)!));
+        const val = m.get(prop)!;
+        const resolvedVal = opts.tokenRefResolver(val) ?? val;
+        m.set(prop, getViewportAwareHeight(resolvedVal));
       }
     });
   }
@@ -1127,6 +1140,7 @@ function hasOutlineStyle(m: Map<string, string>) {
 function showSelectorRuleSet(
   ruleName: string,
   srs: SelectorRuleSet,
+  tokenRefResolver: TokenRefResolver,
   resolver?: CssVarResolver,
   isStudio?: boolean
 ) {
@@ -1153,7 +1167,10 @@ function showSelectorRuleSet(
     m.set("outline", "none");
   }
 
-  postProcessStyles(m, { isStudio });
+  postProcessStyles(
+    m,
+    isStudio ? { isStudio: true, tokenRefResolver } : { isStudio: false }
+  );
 
   const ruleContent = showStyles(m);
   return ruleContent ? `${ruleName} { ${ruleContent} }` : undefined;
@@ -1270,6 +1287,7 @@ function showClassPropRuleSets(
           const rule = showSelectorRuleSet(
             makeRuleName(arg.expr, sty),
             sty,
+            makeTokenRefResolver(site),
             opts?.resolver,
             opts?.isStudio
           );
