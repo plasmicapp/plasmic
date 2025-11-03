@@ -2,8 +2,8 @@ import { useMultiAssetsActions } from "@/wab/client/components/sidebar/MultiAsse
 import { Matcher } from "@/wab/client/components/view-common";
 import Checkbox from "@/wab/client/components/widgets/Checkbox";
 import PlasmicGeneralTokenControl from "@/wab/client/plasmic/plasmic_kit_left_pane/PlasmicGeneralTokenControl";
-import { DataTokenValue } from "@/wab/commons/DataToken";
-import { FinalToken } from "@/wab/shared/core/tokens";
+import { DataTokenValue, getDataTokenType } from "@/wab/commons/DataToken";
+import { FinalToken, MutableToken } from "@/wab/shared/core/tokens";
 import { getFolderDisplayName } from "@/wab/shared/folders/folders-util";
 import { DataToken } from "@/wab/shared/model/classes";
 import { Tooltip } from "antd";
@@ -31,19 +31,34 @@ const GeneralDataTokenControl = observer(function GeneralTokenControl(
 
   const tokenName = getFolderDisplayName(token.name);
 
+  const displayValue = React.useMemo(() => {
+    const type = getDataTokenType(tokenValue);
+    if (type === "code") {
+      return "";
+    } else if (type === "string") {
+      const parsed = JSON.parse(tokenValue);
+      // For strings that are too long, we only show the first few characters
+      return tokenValue.length > 15 ? `${parsed.slice(0, 15)}...` : parsed;
+    } else {
+      // For numbers, show as-is (they're typically short)
+      return tokenValue;
+    }
+  }, [tokenValue]);
+
   return (
     <Tooltip title={tokenName} mouseEnterDelay={0.5}>
       <PlasmicGeneralTokenControl
-        value={matcher.boldSnippets(tokenValue)}
+        value={matcher.boldSnippets(displayValue)}
         rowItem={{
           style,
           menu,
           onClick,
           icon: (
             <>
-              {multiAssetsActions.isSelecting && (
-                <Checkbox isChecked={isSelected}> </Checkbox>
-              )}
+              {multiAssetsActions.isSelecting &&
+                token instanceof MutableToken && (
+                  <Checkbox isChecked={isSelected}> </Checkbox>
+                )}
             </>
           ),
         }}

@@ -3,23 +3,24 @@ import { FinalToken, MutableToken } from "@/wab/shared/core/tokens";
 import { DataToken } from "@/wab/shared/model/classes";
 import type { Opaque } from "type-fest";
 
-export type DataTokenType = "number" | "string" | "any";
+export type DataTokenType = "number" | "string" | "code";
 export type DataTokenValue = Opaque<string, "DataTokenValue">;
 
 /**
  * Determine the type of a data token based on its value
  */
 export function getDataTokenType(value: string): DataTokenType {
-  let type: string;
   try {
     const parsed = JSON.parse(value);
-    type = typeof parsed;
+    const type = typeof parsed;
     if (type === "string" || type === "number") {
       return type;
     }
-    return "any";
+    // Objects, arrays, null (valid JSON) are also considered code expressions
+    return "code";
   } catch (e) {
-    return "any";
+    // Invalid JSON means it's a code expression (e.g. `a + b`)
+    return "code";
   }
 }
 
@@ -27,22 +28,35 @@ export const dataTypes: Record<
   DataTokenType,
   { label: string; defaultValue: any; defaultSerializedValue: string }
 > = {
+  string: {
+    label: "Text",
+    defaultValue: "",
+    defaultSerializedValue: '""',
+  },
   number: {
     label: "Number",
     defaultValue: 0,
     defaultSerializedValue: "0",
   },
-  string: {
-    label: "String",
-    defaultValue: "",
-    defaultSerializedValue: '""',
-  },
-  any: {
-    label: "Any Data",
-    defaultValue: null,
-    defaultSerializedValue: "null",
+  code: {
+    label: "Code Expression",
+    defaultValue: undefined,
+    defaultSerializedValue: "(undefined)",
   },
 };
+
+/**
+ * Sort data token categories in canonical order (string, number, any)
+ * Uses the key order from dataTypes as the source of truth
+ */
+export function sortDataTokenCategories(
+  categories: DataTokenType[]
+): DataTokenType[] {
+  const canonicalOrder = Object.keys(dataTypes) as DataTokenType[];
+  return categories.sort(
+    (a, b) => canonicalOrder.indexOf(a) - canonicalOrder.indexOf(b)
+  );
+}
 
 /**
  * Create a new DataToken

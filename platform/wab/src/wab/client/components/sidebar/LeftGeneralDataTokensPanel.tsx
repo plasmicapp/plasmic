@@ -5,6 +5,7 @@ import {
   useTreeData,
 } from "@/wab/client/components/grouping/VirtualTree";
 import { promptDeleteFolder } from "@/wab/client/components/modals/folderDeletionModal";
+import { DataTokenEditModal } from "@/wab/client/components/sidebar/DataTokenEditModal";
 import DataTokenRow from "@/wab/client/components/sidebar/DataTokenRow";
 import DataTokenTypeHeader from "@/wab/client/components/sidebar/DataTokenTypeHeader";
 import MultiAssetsActions from "@/wab/client/components/sidebar/MultiAssetsActions";
@@ -23,11 +24,19 @@ import {
   DataTokenValue,
   dataTypes,
   getDataTokenType,
+  sortDataTokenCategories,
 } from "@/wab/commons/DataToken";
-import { ensure, spawn, unexpected, unreachable } from "@/wab/shared/common";
+import {
+  ensure,
+  partitions,
+  spawn,
+  unexpected,
+  unreachable,
+} from "@/wab/shared/common";
 import {
   finalDataTokensForDep,
   siteFinalDataTokens,
+  siteFinalDataTokensDirectDeps,
 } from "@/wab/shared/core/site-data-tokens";
 import { isHostLessPackage } from "@/wab/shared/core/sites";
 import {
@@ -45,7 +54,7 @@ import {
 } from "@/wab/shared/folders/folders-util";
 import { DataToken, ProjectDependency } from "@/wab/shared/model/classes";
 import { naturalSort } from "@/wab/shared/sort";
-import { debounce, groupBy, partition } from "lodash";
+import { debounce, groupBy } from "lodash";
 import { observer } from "mobx-react";
 import * as React from "react";
 
@@ -275,8 +284,9 @@ const LeftGeneralDataTokensPanel = observer(
       [setEditToken]
     );
 
-    const tokensByCategory = groupBy(siteFinalDataTokens(studioCtx.site), (t) =>
-      getDataTokenType(t.value)
+    const tokensByCategory = groupBy(
+      siteFinalDataTokensDirectDeps(studioCtx.site),
+      (t) => getDataTokenType(t.value)
     );
 
     const tokenSectionItems = (category: DataTokenType) => {
@@ -334,15 +344,13 @@ const LeftGeneralDataTokensPanel = observer(
           .filter((dep) => dep.count > 0);
       };
 
-      const tokens = tokensByCategory[category] ?? [];
-
-      const [normalTokens, registeredTokens] = partition(
-        tokens,
-        (t) => !t.isRegistered
+      const [registeredTokens, localTokens] = partitions(
+        tokensByCategory[category] ?? [],
+        [(t) => t.isRegistered, (t) => t instanceof MutableToken]
       );
 
       const items: DataTokenPanelRow[] = [
-        ...makeTokensItems(normalTokens, undefined, false).items,
+        ...makeTokensItems(localTokens, undefined, false).items,
         ...(registeredTokens.length > 0
           ? [
               {
@@ -384,9 +392,9 @@ const LeftGeneralDataTokensPanel = observer(
         })
         .map((t) => t.uuid);
 
-      const availableCategories = Object.keys(
-        tokensByCategory
-      ) as DataTokenType[];
+      const availableCategories = sortDataTokenCategories(
+        Object.keys(tokensByCategory) as DataTokenType[]
+      );
 
       const items = availableCategories.map((category): DataTokenPanelRow => {
         return {
@@ -439,10 +447,10 @@ const LeftGeneralDataTokensPanel = observer(
       );
     };
 
-    const treeItems = React.useMemo((): DataTokenPanelRow[] => {
-      const availableCategories = Object.keys(
-        tokensByCategory
-      ) as DataTokenType[];
+    const treeItems: DataTokenPanelRow[] = React.useMemo(() => {
+      const availableCategories = sortDataTokenCategories(
+        Object.keys(tokensByCategory) as DataTokenType[]
+      );
       return availableCategories.map((cat) => {
         const { items: section, count } = tokenSectionItems(cat);
         return {
@@ -500,7 +508,17 @@ const LeftGeneralDataTokensPanel = observer(
           }}
         />
 
-        {/* TODO: Add DataTokenEditModal similar to TokenEditModal */}
+        {editToken && (
+          <DataTokenEditModal
+            token={editToken.base}
+            studioCtx={studioCtx}
+            defaultEditingName={editToken.base === justAdded}
+            onClose={() => {
+              setEditToken(undefined);
+              setJustAdded(undefined);
+            }}
+          />
+        )}
       </>
     );
   }

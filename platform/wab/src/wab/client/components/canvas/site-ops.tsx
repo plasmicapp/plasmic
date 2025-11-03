@@ -155,6 +155,7 @@ import {
   ComponentDataQuery,
   ComponentServerQuery,
   ComponentVariantGroup,
+  DataToken,
   GlobalVariantGroup,
   ImageAsset,
   Mixin,
@@ -1848,6 +1849,20 @@ export class SiteOps {
     );
 
     return true;
+  }
+
+  async tryDeleteDataTokens(tokens: DataToken[]) {
+    await this.studioCtx.changeObserved(
+      // PLA-12625: Add using components in the array here
+      () => [],
+      ({ success }) => {
+        tokens.forEach((token) => {
+          // PLA-12625: Flatten usages before deletion
+          arrayRemove(this.site.dataTokens, token);
+        });
+        return success();
+      }
+    );
   }
 
   async tryDeleteMixins(mixins: Mixin[]) {

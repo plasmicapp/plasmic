@@ -15,22 +15,23 @@ describe("getDataTokenType", () => {
     expect(getDataTokenType('""')).toBe("string");
   });
 
-  test("should return 'any' type for complex JSON types (objects, arrays, booleans, null)", () => {
-    expect(getDataTokenType("true")).toBe("any");
-    expect(getDataTokenType("false")).toBe("any");
-    expect(getDataTokenType("null")).toBe("any");
-    expect(getDataTokenType('{"key": "value"}')).toBe("any");
-    expect(getDataTokenType("[1, 2, 3]")).toBe("any");
-    expect(getDataTokenType('{"nested": {"key": 123}}')).toBe("any");
+  test("should return 'code' type for complex JSON types (objects, arrays, booleans, null)", () => {
+    expect(getDataTokenType("true")).toBe("code");
+    expect(getDataTokenType("false")).toBe("code");
+    expect(getDataTokenType("null")).toBe("code");
+    expect(getDataTokenType('{"key": "value"}')).toBe("code");
+    expect(getDataTokenType("[1, 2, 3]")).toBe("code");
+    expect(getDataTokenType('{"nested": {"key": 123}}')).toBe("code");
   });
 
-  test("should return 'any' type for plain text and invalid JSON inputs", () => {
-    expect(getDataTokenType("hello")).toBe("any");
-    expect(getDataTokenType("hello world")).toBe("any");
-    expect(getDataTokenType("123A")).toBe("any");
-    expect(getDataTokenType("")).toBe("any");
-    expect(getDataTokenType("NaN")).toBe("any");
-    expect(getDataTokenType("undefined")).toBe("any");
-    expect(getDataTokenType("Infinity")).toBe("any");
+  test("should return 'code' type for code expressions, plain text and invalid JSON inputs", () => {
+    expect(getDataTokenType("2+3")).toBe("code");
+    expect(getDataTokenType("hello")).toBe("code");
+    expect(getDataTokenType("hello world")).toBe("code");
+    expect(getDataTokenType("123A")).toBe("code");
+    expect(getDataTokenType("")).toBe("code");
+    expect(getDataTokenType("NaN")).toBe("code");
+    expect(getDataTokenType("undefined")).toBe("code");
+    expect(getDataTokenType("Infinity")).toBe("code");
   });
 });

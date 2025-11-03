@@ -79,8 +79,7 @@ const DataTokenRow = observer(function _DataTokenRow(props: {
             <Menu.Item
               key="delete"
               onClick={async () => {
-                // TODO: Token deletion
-                // await studioCtx.siteOps().tryDeleteDataTokens([token.base]);
+                await studioCtx.siteOps().tryDeleteDataTokens([token.base]);
               }}
             >
               Delete

@@ -13,6 +13,7 @@ type SimpleTextboxProps = React.ComponentProps<"input"> & {
   selectAllOnFocus?: boolean;
   fontSize?: PlasmicTextbox__VariantsArgs["fontSize"];
   fontStyle?: PlasmicTextbox__VariantsArgs["fontStyle"];
+  styleType?: PlasmicTextbox__VariantsArgs["styleType"];
 };
 
 export const SimpleTextbox = React.forwardRef(function SimpleTextbox(
@@ -30,6 +31,7 @@ export const SimpleTextbox = React.forwardRef(function SimpleTextbox(
     onKeyPress,
     fontSize,
     fontStyle,
+    styleType,
     ...restInputProps
   } = props;
 
@@ -55,6 +57,7 @@ export const SimpleTextbox = React.forwardRef(function SimpleTextbox(
       variants={{
         fontSize: fontSize,
         fontStyle: fontStyle,
+        styleType,
       }}
       root={{ className }}
       textbox={{

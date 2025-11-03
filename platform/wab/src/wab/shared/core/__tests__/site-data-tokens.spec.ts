@@ -247,7 +247,7 @@ describe("siteDataTokens helper functions", () => {
       expect(stringTokens).toHaveLength(1);
       expect(stringTokens[0].name).toBe("mainStringToken");
 
-      const genericTokens = siteFinalDataTokensOfType(mainSite, "any");
+      const genericTokens = siteFinalDataTokensOfType(mainSite, "code");
       expect(genericTokens).toHaveLength(1);
       expect(genericTokens[0].name).toBe("mainArrayToken");
     });
@@ -262,7 +262,7 @@ describe("siteDataTokens helper functions", () => {
         "directDepNumberToken",
       ]);
 
-      const genericTokens = siteFinalDataTokensOfType(mainSite, "any", {
+      const genericTokens = siteFinalDataTokensOfType(mainSite, "code", {
         includeDeps: "direct",
       });
       expect(genericTokens).toHaveLength(2);
@@ -292,7 +292,7 @@ describe("siteDataTokens helper functions", () => {
         "deepTransitiveStringToken",
       ]);
 
-      const genericTokens = siteFinalDataTokensOfType(mainSite, "any", {
+      const genericTokens = siteFinalDataTokensOfType(mainSite, "code", {
         includeDeps: "all",
       });
       expect(genericTokens).toHaveLength(3);
