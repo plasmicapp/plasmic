@@ -110,6 +110,7 @@ import {
   isKnownTplNode,
   isKnownTplRef,
   isKnownTplTag,
+  Mixin,
   ObjectPath,
   Param,
   RawText,
@@ -133,7 +134,10 @@ import { readClipboardPlasmicData } from "@/wab/client/clipboard/common";
 import {
   FrameClip,
   isStyleClip,
+  isTplClip,
+  isTplsClip,
   PasteStyleProps,
+  StyleClip,
   TplClip,
 } from "@/wab/client/clipboard/local";
 import { closestTaggedNonTextDomElt } from "@/wab/client/components/canvas/studio-canvas-util";
@@ -2221,8 +2225,11 @@ export class ViewOps {
     }
   }
 
-  copyStyle(tpl?: TplNode, cssProps?: string[]) {
-    tpl = tpl || this.viewCtx().focusedTpl() || undefined;
+  /**
+   * Extract style clip from TPL node. Used for copying styles directly (Cmd+Option+C),
+   * and when pasting styles from a TplClip.
+   */
+  copyStyleHelper(tpl?: TplNode, cssProps?: string[]): StyleClip | undefined {
     if (
       !Tpls.isTplTag(tpl) &&
       !(Tpls.isTplComponent(tpl) && isCodeComponent(tpl.component))
@@ -2230,21 +2237,30 @@ export class ViewOps {
       return;
     }
 
-    const exp = this.viewCtx()
-      .variantTplMgr()
-      .effectiveVariantSetting(tpl)
-      .rsh();
+    const vs = this.viewCtx().variantTplMgr().effectiveVariantSetting(tpl);
+    const exp = vs.rshWithoutMixins();
+    // const vs2 = this.viewCtx().variantTplMgr().ensureCurrentVariantSetting(tpl);
 
     const styleProps = cssProps || defaultCopyableStyleNames;
     const props = Object.fromEntries(
       common.withoutNilTuples(styleProps.map((p) => tuple(p, exp.getRaw(p))))
     );
-    console.log("Copied styles", props);
-    // TODO: also copy mixins
-    this.clipboard().copy({
+    const mixinUuids = vs.rs.mixins.map((m) => m.uuid);
+    return {
       type: "style",
       cssProps: props,
-    });
+      mixinUuids,
+    };
+  }
+
+  copyStyle(tpl?: TplNode, cssProps?: string[]) {
+    tpl = tpl || this.viewCtx().focusedTpl() || undefined;
+    const clip = this.copyStyleHelper(tpl, cssProps);
+
+    console.log("Copied styles", clip?.cssProps);
+    if (clip) {
+      this.clipboard().copy(clip);
+    }
   }
 
   async getPasteStylePropsFromClipboard(
@@ -2262,13 +2278,34 @@ export class ViewOps {
 
     // Fall back to local clipboard
     if (!this.clipboard().isSet()) {
+      notification.info({ message: "No styles available to paste" });
       return;
     }
     const clip = this.clipboard().paste();
-    if (!isStyleClip(clip)) {
+
+    let styleClip: StyleClip | undefined;
+    const tplClip = isTplClip(clip)
+      ? clip
+      : isTplsClip(clip) && clip.length > 0
+      ? clip[0]
+      : undefined;
+
+    if (isStyleClip(clip)) {
+      styleClip = clip;
+    } else if (tplClip) {
+      styleClip = this.copyStyleHelper(tplClip.node);
+      if (!styleClip) {
+        notification.warn({
+          message: "Cannot extract styles from this element",
+        });
+        return;
+      }
+    } else {
+      notification.info({ message: "No styles available to paste" });
       return;
     }
-    return { clip, targetTpl, cssProps };
+
+    return { clip: styleClip, targetTpl, cssProps };
   }
 
   pasteStyleClip(props: PasteStyleProps | undefined): boolean {
@@ -2288,17 +2325,32 @@ export class ViewOps {
       return false;
     }
 
-    const exp = RSH(
-      this.viewCtx().variantTplMgr().ensureCurrentVariantSetting(targetTpl).rs,
-      targetTpl
-    );
+    const vs = this.viewCtx()
+      .variantTplMgr()
+      .ensureCurrentVariantSetting(targetTpl);
+    const exp = RSH(vs.rs, targetTpl);
 
     const propsToCopy = cssProps
       ? L.pick(clip.cssProps, cssProps)
       : clip.cssProps;
-    console.log("Pasting styles", propsToCopy);
+
     for (const [prop, val] of Object.entries(propsToCopy)) {
       exp.set(prop, val);
+    }
+
+    // Resolve UUIDs to Mixin instances
+    if (clip.mixinUuids?.length) {
+      const site = this.viewCtx().site;
+      const mixinsToAdd = clip.mixinUuids
+        .map((uuid) => site.mixins.find((m) => m.uuid === uuid))
+        .filter((m): m is Mixin => m !== undefined);
+
+      if (mixinsToAdd.length > 0) {
+        vs.rs.mixins = L.uniqBy(
+          [...vs.rs.mixins, ...mixinsToAdd],
+          (m) => m.name
+        );
+      }
     }
     return true;
   }

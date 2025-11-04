@@ -14,6 +14,7 @@ import { ArenaFrame, Component, TplNode } from "@/wab/shared/model/classes";
 export interface StyleClip {
   type: "style";
   cssProps: Record<string, string>;
+  mixinUuids?: string[];
 }
 
 export interface PasteStyleProps {
@@ -64,6 +65,7 @@ export function cloneClip(x: Clippable): Clippable {
     return {
       type: "style",
       cssProps: { ...x.cssProps },
+      mixinUuids: x.mixinUuids ? [...x.mixinUuids] : undefined,
     };
   } else if (isTplClip(x)) {
     return {
@@ -96,6 +98,7 @@ export class LocalClipboard {
     this._contents = clip;
     if (isStyleClip(clip)) {
       // Use navigator.clipboard API, since we don't have access to a real ClipboardEvent
+      // cloneClip already converted mixins to UUIDs, so we can serialize directly
       writeClipboardPlasmicData(JSON.stringify(clip));
     }
   }

@@ -204,10 +204,11 @@ export class EffectiveVariantSetting {
     opts: {
       includeTheme?: boolean;
       includeSlot?: boolean;
-    } = { includeTheme: true, includeSlot: false }
+      includeMixins?: boolean;
+    } = { includeTheme: true, includeSlot: false, includeMixins: true }
   ): ReadonlyIRuleSetHelpersX {
     const rulesets = this.getEffectiveRuleSets(opts);
-    const expanded = expandRuleSets(rulesets);
+    const expanded = opts.includeMixins ? expandRuleSets(rulesets) : rulesets;
     return makeReadonlySizeAwareExpProxy(
       createRuleSetMerger(expanded, this.tpl),
       this.tpl
@@ -224,6 +225,14 @@ export class EffectiveVariantSetting {
 
   rshWithThemeSlot = () => {
     return this._rsh({ includeTheme: true, includeSlot: true });
+  };
+
+  rshWithoutMixins = () => {
+    return this._rsh({
+      includeTheme: false,
+      includeSlot: false,
+      includeMixins: false,
+    });
   };
 
   get rs(): RuleSet {
@@ -243,7 +252,8 @@ export class EffectiveVariantSetting {
     opts: {
       includeTheme?: boolean;
       includeSlot?: boolean;
-    } = { includeTheme: true, includeSlot: false }
+      includeMixins?: boolean;
+    } = { includeTheme: true, includeSlot: false, includeMixins: true }
   ): DeepReadonlyArray<RuleSet> {
     const site = this.site;
     const vsettings = this.variantSettings;
@@ -311,7 +321,16 @@ export class EffectiveVariantSetting {
 
     // Finally, the styles set directly on this node are highest precedence
     for (const vs of vsettings) {
-      rss.push(makeLayoutAwareRuleSet(vs.rs, isBaseVariant(vs.variants)));
+      const rs = makeLayoutAwareRuleSet(vs.rs, isBaseVariant(vs.variants));
+      rss.push(
+        opts.includeMixins
+          ? rs
+          : new RuleSet({
+              values: rs.values,
+              mixins: [],
+              animations: rs.animations,
+            })
+      );
     }
 
     return rss;
