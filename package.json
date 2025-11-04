@@ -117,6 +117,7 @@
     "plasmicpkgs/antd5",
     "plasmicpkgs/chakra-ui",
     "plasmicpkgs/commerce-providers/*",
+    "plasmicpkgs/contentful",
     "plasmicpkgs/dnd-kit",
     "plasmicpkgs/fetch",
     "plasmicpkgs/framer-motion",

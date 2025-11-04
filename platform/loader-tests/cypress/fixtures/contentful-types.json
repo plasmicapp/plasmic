@@ -1,0 +1,438 @@
+{
+  "sys": {
+    "type": "Array"
+  },
+  "total": 5,
+  "skip": 0,
+  "limit": 100,
+  "items": [
+    {
+      "sys": {
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "9m2edd1birqe"
+          }
+        },
+        "id": "pageBlogPost",
+        "type": "ContentType",
+        "createdAt": "2025-10-17T06:58:52.751Z",
+        "updatedAt": "2025-10-17T06:58:52.751Z",
+        "environment": {
+          "sys": {
+            "id": "master",
+            "type": "Link",
+            "linkType": "Environment"
+          }
+        },
+        "revision": 1
+      },
+      "displayField": "internalName",
+      "name": "📄 page - Blog post",
+      "description": "To create individual blog posts",
+      "fields": [
+        {
+          "id": "internalName",
+          "name": "Internal name",
+          "type": "Symbol",
+          "localized": false,
+          "required": true,
+          "disabled": false,
+          "omitted": false
+        },
+        {
+          "id": "seoFields",
+          "name": "SEO fields",
+          "type": "Link",
+          "localized": false,
+          "required": false,
+          "disabled": false,
+          "omitted": false,
+          "linkType": "Entry",
+          "validations": [
+            {
+              "linkContentType": ["componentSeo"]
+            }
+          ]
+        },
+        {
+          "id": "slug",
+          "name": "Slug",
+          "type": "Symbol",
+          "localized": false,
+          "required": true,
+          "disabled": false,
+          "omitted": false
+        },
+        {
+          "id": "author",
+          "name": "Author",
+          "type": "Link",
+          "localized": false,
+          "required": false,
+          "disabled": false,
+          "omitted": false,
+          "linkType": "Entry",
+          "validations": [
+            {
+              "linkContentType": ["componentAuthor"]
+            }
+          ]
+        },
+        {
+          "id": "publishedDate",
+          "name": "Published date",
+          "type": "Date",
+          "localized": false,
+          "required": true,
+          "disabled": false,
+          "omitted": false
+        },
+        {
+          "id": "title",
+          "name": "Title",
+          "type": "Symbol",
+          "localized": true,
+          "required": true,
+          "disabled": false,
+          "omitted": false
+        },
+        {
+          "id": "shortDescription",
+          "name": "Subtitle",
+          "type": "Text",
+          "localized": true,
+          "required": false,
+          "disabled": false,
+          "omitted": false
+        },
+        {
+          "id": "featuredImage",
+          "name": "Featured image",
+          "type": "Link",
+          "localized": false,
+          "required": true,
+          "disabled": false,
+          "omitted": false,
+          "linkType": "Asset"
+        },
+        {
+          "id": "content",
+          "name": "Content",
+          "type": "RichText",
+          "localized": true,
+          "required": true,
+          "disabled": false,
+          "omitted": false
+        },
+        {
+          "id": "relatedBlogPosts",
+          "name": "Related blog posts",
+          "type": "Array",
+          "localized": false,
+          "required": false,
+          "disabled": false,
+          "omitted": false,
+          "items": {
+            "type": "Link",
+            "validations": [
+              {
+                "linkContentType": ["pageBlogPost"]
+              }
+            ],
+            "linkType": "Entry"
+          }
+        }
+      ]
+    },
+    {
+      "sys": {
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "9m2edd1birqe"
+          }
+        },
+        "id": "pageLanding",
+        "type": "ContentType",
+        "createdAt": "2025-10-17T06:58:52.695Z",
+        "updatedAt": "2025-10-17T06:58:52.695Z",
+        "environment": {
+          "sys": {
+            "id": "master",
+            "type": "Link",
+            "linkType": "Environment"
+          }
+        },
+        "revision": 1
+      },
+      "displayField": "internalName",
+      "name": "📄 page - Landing",
+      "description": "To have an entry point for the app (e.g. Homepage)",
+      "fields": [
+        {
+          "id": "internalName",
+          "name": "Internal name",
+          "type": "Symbol",
+          "localized": false,
+          "required": true,
+          "disabled": false,
+          "omitted": false
+        },
+        {
+          "id": "seoFields",
+          "name": "SEO fields",
+          "type": "Link",
+          "localized": false,
+          "required": false,
+          "disabled": false,
+          "omitted": false,
+          "linkType": "Entry",
+          "validations": [
+            {
+              "linkContentType": ["componentSeo"]
+            }
+          ]
+        },
+        {
+          "id": "featuredBlogPost",
+          "name": "Featured blog post",
+          "type": "Link",
+          "localized": false,
+          "required": false,
+          "disabled": false,
+          "omitted": false,
+          "linkType": "Entry",
+          "validations": [
+            {
+              "linkContentType": ["pageBlogPost"]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "sys": {
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "9m2edd1birqe"
+          }
+        },
+        "id": "componentAuthor",
+        "type": "ContentType",
+        "createdAt": "2025-10-17T06:58:52.646Z",
+        "updatedAt": "2025-10-17T06:58:52.646Z",
+        "environment": {
+          "sys": {
+            "id": "master",
+            "type": "Link",
+            "linkType": "Environment"
+          }
+        },
+        "revision": 1
+      },
+      "displayField": "internalName",
+      "name": "💎 component - Author",
+      "description": "To have author-related properties",
+      "fields": [
+        {
+          "id": "internalName",
+          "name": "Internal name",
+          "type": "Symbol",
+          "localized": false,
+          "required": true,
+          "disabled": false,
+          "omitted": false
+        },
+        {
+          "id": "name",
+          "name": "Name",
+          "type": "Symbol",
+          "localized": false,
+          "required": true,
+          "disabled": false,
+          "omitted": false
+        },
+        {
+          "id": "avatar",
+          "name": "Avatar",
+          "type": "Link",
+          "localized": false,
+          "required": false,
+          "disabled": false,
+          "omitted": false,
+          "linkType": "Asset"
+        }
+      ]
+    },
+    {
+      "sys": {
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "9m2edd1birqe"
+          }
+        },
+        "id": "componentSeo",
+        "type": "ContentType",
+        "createdAt": "2025-10-17T06:58:52.636Z",
+        "updatedAt": "2025-10-17T06:58:52.636Z",
+        "environment": {
+          "sys": {
+            "id": "master",
+            "type": "Link",
+            "linkType": "Environment"
+          }
+        },
+        "revision": 1
+      },
+      "displayField": "internalName",
+      "name": "💎 component - SEO",
+      "description": "To have SEO-related properties to the pages we render",
+      "fields": [
+        {
+          "id": "internalName",
+          "name": "Internal name",
+          "type": "Symbol",
+          "localized": false,
+          "required": true,
+          "disabled": false,
+          "omitted": false
+        },
+        {
+          "id": "pageTitle",
+          "name": "Page title",
+          "type": "Symbol",
+          "localized": true,
+          "required": true,
+          "disabled": false,
+          "omitted": false
+        },
+        {
+          "id": "pageDescription",
+          "name": "Page description",
+          "type": "Text",
+          "localized": true,
+          "required": false,
+          "disabled": false,
+          "omitted": false
+        },
+        {
+          "id": "canonicalUrl",
+          "name": "Canonical URL",
+          "type": "Symbol",
+          "localized": false,
+          "required": false,
+          "disabled": false,
+          "omitted": false
+        },
+        {
+          "id": "nofollow",
+          "name": "nofollow",
+          "type": "Boolean",
+          "localized": false,
+          "required": true,
+          "disabled": false,
+          "omitted": false
+        },
+        {
+          "id": "noindex",
+          "name": "noindex",
+          "type": "Boolean",
+          "localized": false,
+          "required": true,
+          "disabled": false,
+          "omitted": false
+        },
+        {
+          "id": "shareImages",
+          "name": "Share images",
+          "type": "Array",
+          "localized": false,
+          "required": false,
+          "disabled": false,
+          "omitted": false,
+          "items": {
+            "type": "Link",
+            "validations": [
+              {
+                "linkMimetypeGroup": ["image"]
+              }
+            ],
+            "linkType": "Asset"
+          }
+        }
+      ]
+    },
+    {
+      "sys": {
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "9m2edd1birqe"
+          }
+        },
+        "id": "componentRichImage",
+        "type": "ContentType",
+        "createdAt": "2025-10-17T06:58:52.631Z",
+        "updatedAt": "2025-10-17T06:58:52.631Z",
+        "environment": {
+          "sys": {
+            "id": "master",
+            "type": "Link",
+            "linkType": "Environment"
+          }
+        },
+        "revision": 1
+      },
+      "displayField": "internalName",
+      "name": "💎 component - Rich image",
+      "description": "To describe an image used in rich text fields",
+      "fields": [
+        {
+          "id": "internalName",
+          "name": "Internal name",
+          "type": "Symbol",
+          "localized": false,
+          "required": true,
+          "disabled": false,
+          "omitted": false
+        },
+        {
+          "id": "image",
+          "name": "Image",
+          "type": "Link",
+          "localized": false,
+          "required": true,
+          "disabled": false,
+          "omitted": false,
+          "linkType": "Asset"
+        },
+        {
+          "id": "caption",
+          "name": "Caption",
+          "type": "Symbol",
+          "localized": true,
+          "required": false,
+          "disabled": false,
+          "omitted": false
+        },
+        {
+          "id": "fullWidth",
+          "name": "Full width",
+          "type": "Boolean",
+          "localized": false,
+          "required": false,
+          "disabled": false,
+          "omitted": false
+        }
+      ]
+    }
+  ]
+}

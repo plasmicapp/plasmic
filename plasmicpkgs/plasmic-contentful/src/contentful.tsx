@@ -78,6 +78,12 @@ export function ContentfulCredentialsProvider({
   );
 }
 
+interface ContentfulControlContextData {
+  types?: { name: string; id: string }[];
+  fields?: string[];
+  queryOptions?: [];
+}
+
 interface ContentfulFetcherProps {
   contentType: string;
   children?: ReactNode;
@@ -91,11 +97,7 @@ interface ContentfulFetcherProps {
   filterValue?: string | number;
   noAutoRepeat?: boolean;
   noLayout?: boolean;
-  setControlContextData?: (data: {
-    types?: { name: string; id: string }[];
-    fields?: string[];
-    queryOptions?: [];
-  }) => void;
+  setControlContextData?: (data: ContentfulControlContextData) => void;
 }
 
 export const ContentfulFetcherMeta: ComponentMeta<ContentfulFetcherProps> = {
@@ -396,6 +398,9 @@ export function ContentfulFetcher({
       });
     }
 
+    // Track processed fields to avoid following circular references
+    const processedFields = new Set<string>();
+
     const denormalizeField = (fieldValue: any) => {
       if (Array.isArray(fieldValue)) {
         const updatedArray: any[] = fieldValue.map((arrayItem) => {
@@ -427,10 +432,16 @@ export function ContentfulFetcher({
         ) {
           const fieldId = fieldValue.sys.id;
           if (entryMap[fieldId]) {
-            fieldValue = {
-              ...fieldValue,
-              fields: denormalizeItem(entryMap[fieldId]).fields,
-            };
+            if (processedFields.has(fieldId)) {
+              console.warn(
+                `Circular reference detected for Entry ID: ${fieldId}.`
+              );
+            } else {
+              fieldValue = {
+                ...fieldValue,
+                fields: denormalizeItem(entryMap[fieldId]).fields,
+              };
+            }
           } else {
             console.log(`Entry not found for ID: ${fieldId}`);
           }
@@ -449,10 +460,20 @@ export function ContentfulFetcher({
     };
 
     const denormalizeItem = (item: any) => {
+      const itemId = item.sys?.id;
+      if (itemId) {
+        processedFields.add(itemId);
+      }
+
       const updatedFields: { [fieldName: string]: unknown | unknown[] } = {};
       for (const fieldName in item.fields) {
         updatedFields[fieldName] = denormalizeField(item.fields[fieldName]);
       }
+
+      if (itemId) {
+        processedFields.delete(itemId);
+      }
+
       return {
         ...item,
         fields: updatedFields ?? undefined,
@@ -516,7 +537,6 @@ export function ContentfulFetcher({
           </DataProvider>
         ));
   }
-
   return (
     <DataProvider name="contentfulItems" data={fixedData?.items}>
       {noLayout ? (
