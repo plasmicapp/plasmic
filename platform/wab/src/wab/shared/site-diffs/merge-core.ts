@@ -1217,8 +1217,7 @@ export function getDirectConflicts({
               break;
             default: {
               let hasConflict: boolean;
-              // TODO Do we need to handle duplicates?!
-              // They must all be arrays; if any are nil, then no conflicts!
+
               if (
                 (ancVal === undefined || Array.isArray(ancVal)) &&
                 Array.isArray(leftVal) &&

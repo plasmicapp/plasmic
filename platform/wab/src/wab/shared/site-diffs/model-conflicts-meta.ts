@@ -110,7 +110,7 @@ export type FieldConflictDescriptorMeta<
       conflictType: "contents";
       excludeFromClone: (v: Cls[P]) => boolean;
     }
-  | (Cls[P] extends Array<infer E>
+  | (NonNullable<Cls[P]> extends Array<infer E>
       ?
           | { arrayType: "atomic" }
           | ({
@@ -168,6 +168,9 @@ export type FieldConflictDescriptorMeta<
                     }
                 ))
             ))
+          | "generic"
+          | "contents"
+          | "special"
       : "generic" | "contents" | "special");
 
 const immutableClass = <T>() =>
@@ -625,7 +628,9 @@ export const modelConflictsMeta: ModelConflictsMeta = {
       conflictType: "merge",
       mergeKeyIsIdentity: true,
     },
-    animations: "contents",
+    animations: {
+      arrayType: "atomic",
+    },
   },
   KeyFrame: {
     percentage: "generic",
