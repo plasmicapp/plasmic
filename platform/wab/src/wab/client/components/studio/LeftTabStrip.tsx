@@ -10,7 +10,6 @@ import SlackIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Slack";
 import TreeIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Tree";
 import WandIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Wand";
 import KeyboardIcon from "@/wab/client/plasmic/plasmic_kit_design_system/PlasmicIcon__Keyboard";
-import AnimationEnterSvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__AnimationEnterSvg";
 import BooksvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__BookSvg";
 import ChatDocssvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__ChatDocsSvg";
 import ClocksvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__ClockSvg";
@@ -24,6 +23,7 @@ import FigmasvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIc
 import FontFamily2SvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__FontFamily2Svg";
 import HelpCirclesvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__HelpCircleSvg";
 import HelpsvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__HelpSvg";
+import KeyframesIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__Keyframes";
 import MessagesvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__MessageSvg";
 import Paintbrush2SvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__Paintbrush2Svg";
 import PhotosvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__PhotoSvg";
@@ -161,7 +161,7 @@ Help
         animationSequences: {
           type: "item",
           tabKey: "animationSequences",
-          icon: <AnimationEnterSvgIcon />,
+          icon: <KeyframesIcon />,
           label: ANIMATION_SEQUENCES_CAP,
           cond: DEVFLAGS.showAnimations && canViewTab("animationSequences"),
         },

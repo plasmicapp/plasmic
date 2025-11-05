@@ -8572,6 +8572,16 @@
           "id": "FZ02NbJQSMul",
           "name": "SplitSvgIcon",
           "moduleFilePath": "wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__SplitSvg.tsx"
+        },
+        {
+          "id": "3uG2UacgWO72",
+          "name": "KeyframesIcon",
+          "moduleFilePath": "wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__Keyframes.tsx"
+        },
+        {
+          "id": "cwzVqeEJxaW1",
+          "name": "KeyframesFilledIcon",
+          "moduleFilePath": "wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__KeyframesFilled.tsx"
         }
       ],
       "images": [],
