@@ -116,6 +116,7 @@
     "plasmicpkgs/antd",
     "plasmicpkgs/antd5",
     "plasmicpkgs/chakra-ui",
+    "plasmicpkgs/cms",
     "plasmicpkgs/commerce-providers/*",
     "plasmicpkgs/contentful",
     "plasmicpkgs/dnd-kit",
