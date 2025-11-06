@@ -954,6 +954,92 @@ describe("DbMgr.CMS", () => {
       expect((await db1().getCmsRowById(p1.id)).draftData).toBeNull();
       expect((await db1().getCmsRowById(p2.id)).draftData).toBeNull();
     }));
+
+  it("can archive tables", () =>
+    withDb(async (sudo, [user1], [db1]) => {
+      const { workspace } = await getTeamAndWorkspace(db1());
+      const database = await db1().createCmsDatabase({
+        name: "my db",
+        workspaceId: workspace.id,
+      });
+
+      // Create table, which will be archived later
+      const table1 = await db1().createCmsTable({
+        databaseId: database.id,
+        identifier: "products",
+        name: "Products",
+        schema: {
+          fields: [
+            {
+              identifier: "name",
+              name: "Name",
+              type: CmsMetaType.TEXT,
+              helperText: "",
+              required: false,
+              hidden: false,
+              localized: false,
+              unique: false,
+              defaultValueByLocale: {},
+            },
+          ],
+        },
+      });
+      await expect(
+        db1().getCmsTableByIdentifier(database.id, "products")
+      ).resolves.toMatchObject({
+        id: table1.id,
+      });
+
+      // Create new table with same identifier
+      const table2 = await db1().createCmsTable({
+        databaseId: database.id,
+        identifier: "products",
+        name: "Products V2",
+        schema: {
+          fields: [
+            {
+              identifier: "name",
+              name: "Name",
+              type: CmsMetaType.TEXT,
+              helperText: "",
+              required: false,
+              hidden: false,
+              localized: false,
+              unique: false,
+              defaultValueByLocale: {},
+            },
+          ],
+        },
+      });
+
+      // getCmsTableByIdentifier only returns the oldest table if multiple
+      // tables have the same identifier
+      await expect(
+        db1().getCmsTableByIdentifier(database.id, "products")
+      ).resolves.toMatchObject({
+        id: table1.id,
+      });
+
+      // Archive the table, now getCmsTableByIdentifier returns the new table
+      await db1().updateCmsTable(table1.id, { isArchived: true });
+      await expect(
+        db1().getCmsTableByIdentifier(database.id, "products")
+      ).resolves.toMatchObject({
+        id: table2.id,
+      });
+
+      // Verify the archived table is not returned in list operation
+      const tablesWithoutArchived = await db1().listCmsTables(database.id);
+      expect(tablesWithoutArchived.length).toEqual(1);
+      expect(tablesWithoutArchived[0].id).toEqual(table2.id);
+
+      // Verify the archived table is returned with includeArchived
+      const tablesWithArchived = await db1().listCmsTables(database.id, true);
+      expect(tablesWithArchived.length).toEqual(2);
+      expect(new Set(tablesWithArchived.map((t) => t.id))).toEqual(
+        new Set([table1.id, table2.id])
+      );
+    }));
 });
 
 describe("DbMgr", () => {

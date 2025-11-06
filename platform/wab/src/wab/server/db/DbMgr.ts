@@ -7086,16 +7086,26 @@ export class DbMgr implements MigrationDbMgr {
     return table;
   }
 
+  /**
+   * Gets CMS table by table identifier.
+   *
+   * Note that table identifiers are not currently enforced to be unique.
+   * For consistency, we always return the most oldest table that has not been
+   * deleted nor archived.
+   */
   async getCmsTableByIdentifier(dbId: CmsDatabaseId, identifier: string) {
     await this.checkCmsDatabasePerms(dbId, "viewer");
     return ensureFound(
       await this.cmsTables()
         .createQueryBuilder("t")
         .innerJoin("t.database", "d")
-        .where(
-          "d.deletedAt is null AND t.deletedAt is null AND d.id = :dbId AND t.identifier = :identifier"
-        )
+        .where("d.deletedAt IS NULL")
+        .andWhere("t.deletedAt IS NULL")
+        .andWhere("t.isArchived IS NOT TRUE")
+        .andWhere("d.id = :dbId")
+        .andWhere("t.identifier = :identifier")
         .setParameters({ dbId, identifier })
+        .orderBy("t.createdAt", "ASC")
         .getOne(),
       `Table for database ${dbId} and identifier ${identifier}`
     );
