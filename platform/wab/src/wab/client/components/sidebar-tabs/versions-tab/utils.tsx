@@ -12,7 +12,7 @@ import {
   PkgVersionInfoMeta,
 } from "@/wab/shared/SharedApi";
 import { FastBundler } from "@/wab/shared/bundler";
-import { getBundle } from "@/wab/shared/bundles";
+import { getBundle, parseBundle } from "@/wab/shared/bundles";
 import { unbundleProjectDependencyRevision } from "@/wab/shared/core/tagged-unbundle";
 import { ChangeLogEntry, compareSites } from "@/wab/shared/site-diffs";
 import { filterUsefulDiffs } from "@/wab/shared/site-diffs/filter-useful-diffs";
@@ -102,7 +102,10 @@ const getRevisionDiffs = async (
 
   const revertSite = unbundleProjectDependencyRevision(
     revertBundler,
-    getBundle(revertRev, studioCtx.appCtx.lastBundleVersion),
+    getBundle(
+      revertRev,
+      parseBundle(revertRev).version ?? studioCtx.appCtx.lastBundleVersion
+    ),
     revertDepPkgs
   ).site;
   const latestSite = unbundleProjectDependencyRevision(

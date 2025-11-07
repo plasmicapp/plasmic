@@ -182,7 +182,7 @@ import {
   checkBundleFields,
   checkRefsInBundle,
 } from "@/wab/shared/bundler";
-import { UnsafeBundle, getBundle } from "@/wab/shared/bundles";
+import { UnsafeBundle, getBundle, parseBundle } from "@/wab/shared/bundles";
 import {
   allCodeLibraries,
   allCustomFunctions,
@@ -5771,7 +5771,10 @@ export class StudioCtx extends WithDbCtx {
             );
           return {
             rev,
-            bundle: getBundle(rev, this.appCtx.lastBundleVersion),
+            bundle: getBundle(
+              rev,
+              parseBundle(rev).version ?? this.appCtx.lastBundleVersion
+            ),
             depPkgs: _depPkgs,
             revisionNum: rev.revision,
           };
