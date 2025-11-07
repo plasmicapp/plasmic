@@ -231,6 +231,7 @@ function buildPlasmicComponentMenuItems(
                 slug: component.name,
                 branchName: MainBranchId,
                 branchVersion: "latest",
+                branchRevision: undefined,
                 arenaType: "component",
                 arenaUuidOrNameOrPath: component.uuid,
               })

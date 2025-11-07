@@ -4,7 +4,10 @@ import type {
   ServerSessionsInfo,
   UpdatePlayerViewRequest,
 } from "@/wab/shared/ApiSchema";
-import type { PkgVersionInfoMeta } from "@/wab/shared/SharedApi";
+import type {
+  MinimalRevisionInfo,
+  PkgVersionInfoMeta,
+} from "@/wab/shared/SharedApi";
 
 type MessageHandler<T> = (data: T) => unknown | Promise<unknown>;
 
@@ -30,7 +33,10 @@ export type ServerToClientEvents = {
   disconnect: MessageHandler<{}>;
   initServerInfo: MessageHandler<InitServerInfo>;
   commentsUpdate: MessageHandler<{}>;
-  update: MessageHandler<{ projectId: string; revisionNum: number }>;
+  update: MessageHandler<{
+    projectId: string;
+    rev: MinimalRevisionInfo;
+  }>;
   players: MessageHandler<ServerSessionsInfo>;
   error: MessageHandler<string>;
   publish: MessageHandler<PkgVersionInfoMeta & { projectId: string }>;

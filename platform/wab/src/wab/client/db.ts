@@ -1,7 +1,9 @@
 import { BundlingSiteApi } from "@/wab/client/api";
 import { AppCtx } from "@/wab/client/app-ctx";
 import { App } from "@/wab/client/components/top-view";
+import type { ProjectRevision } from "@/wab/server/entities/Entities";
 import { ApiBranch } from "@/wab/shared/ApiSchema";
+import { isPkgVersionInfoMeta, isProjectRevision } from "@/wab/shared/EntUtil";
 import { PkgVersionInfoMeta, SiteInfo } from "@/wab/shared/SharedApi";
 import { TplMgr } from "@/wab/shared/TplMgr";
 import { maybe } from "@/wab/shared/common";
@@ -43,9 +45,9 @@ export class DbCtx {
   /** Branch, or undefined for main branch. */
   private _branchInfo: IObservableValue<ApiBranch | undefined> =
     observable.box(undefined);
-  /** Pkg version, or undefined for latest version. */
-  private _pkgVersionInfoMeta: IObservableValue<
-    PkgVersionInfoMeta | undefined
+  /** Project Revision, Pkg version or undefined for latest revision. */
+  private _projectVersionInfo: IObservableValue<
+    ProjectRevision | PkgVersionInfoMeta | undefined
   > = observable.box(undefined);
 
   constructor(private readonly args: DbCtxArgs) {
@@ -78,9 +80,21 @@ export class DbCtx {
   get branchInfo() {
     return this._branchInfo.get();
   }
-  get pkgVersionInfoMeta() {
-    return this._pkgVersionInfoMeta.get();
+
+  get projectVersionInfo() {
+    return this._projectVersionInfo.get();
   }
+
+  get revisionInfo(): ProjectRevision | undefined {
+    const info = this._projectVersionInfo.get();
+    return info && isProjectRevision(info) ? info : undefined;
+  }
+
+  get pkgVersionInfoMeta(): PkgVersionInfoMeta | undefined {
+    const info = this._projectVersionInfo.get();
+    return info && isPkgVersionInfoMeta(info) ? info : undefined;
+  }
+
   get modelVersion() {
     return this.args.modelVersion;
   }
@@ -108,11 +122,11 @@ export class DbCtx {
   setSite(
     site: Site,
     branch: ApiBranch | undefined,
-    pkgVersionInfoMeta: PkgVersionInfoMeta | undefined
+    projectVersion: PkgVersionInfoMeta | ProjectRevision | undefined
   ) {
     this._site.set(site);
     this._branchInfo.set(branch);
-    this._pkgVersionInfoMeta.set(pkgVersionInfoMeta);
+    this._projectVersionInfo.set(projectVersion);
 
     if (this._recorder) {
       this._recorder.dispose();

@@ -1,0 +1,99 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  width: 100%;
+  height: auto;
+  justify-content: flex-start;
+  align-items: center;
+  justify-self: flex-start;
+  padding-left: 16px;
+  padding-right: 16px;
+  min-width: 0;
+}
+.separatorLine {
+  display: flex;
+  height: 0px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-width: 0;
+  flex-shrink: 0;
+  padding: 0px;
+  border-bottom: 1px solid #e7e7e7;
+}
+.freeBox__i2Yzw {
+  background: #ffffff;
+  width: auto;
+  height: auto;
+  display: flex;
+  position: relative;
+  flex-direction: row;
+  column-gap: 10px;
+  align-items: center;
+  justify-content: center;
+  padding-left: 4px;
+  padding-right: 4px;
+  left: auto;
+  top: auto;
+  border-radius: 3px;
+  border: 1px solid var(--token-wYC23OmDKq8S);
+}
+.freeBox__oQdia {
+  display: flex;
+  position: relative;
+  padding-right: 0px;
+  flex-direction: row;
+}
+.slotTargetChildren {
+  font-family: "Inter", sans-serif;
+  font-size: 10px;
+  font-weight: 400;
+  font-style: normal;
+  color: var(--token-DlB9CLEHEK7G);
+  text-align: left;
+  text-transform: none;
+  line-height: 16px;
+  letter-spacing: 0em;
+  white-space: pre-wrap;
+  user-select: text;
+}
+.slotTargetChildren > :global(.__wab_text),
+.slotTargetChildren > :global(.__wab_expr_html_text),
+.slotTargetChildren > :global(.__wab_slot-string-wrapper),
+.slotTargetChildren > :global(.__wab_slot) > :global(.__wab_text),
+.slotTargetChildren > :global(.__wab_slot) > :global(.__wab_expr_html_text),
+.slotTargetChildren
+  > :global(.__wab_slot)
+  > :global(.__wab_slot-string-wrapper),
+.slotTargetChildren
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_text),
+.slotTargetChildren
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_expr_html_text),
+.slotTargetChildren
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_slot-string-wrapper),
+.slotTargetChildren
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_text),
+.slotTargetChildren
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_expr_html_text),
+.slotTargetChildren
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_slot-string-wrapper) {
+  text-decoration-line: none;
+  text-overflow: clip;
+}

@@ -216,7 +216,8 @@ const LeftPane = observer(function LeftPane(props: LeftPaneProps) {
                       <VersionsTab
                         useVersionsCTA={useVersionsCTA}
                         dismissVersionsCTA={() => setDismissVersionsCTA(true)}
-                      />
+                      />,
+                      true
                     )}
                   {wrapTab("settings", <LeftProjectSettingsPanel />)}
                   {wrapTab("splits", <LeftSplitsPanel />)}

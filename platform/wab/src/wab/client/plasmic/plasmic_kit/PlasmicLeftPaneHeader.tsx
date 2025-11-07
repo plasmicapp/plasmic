@@ -30,10 +30,7 @@ import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 import TextWithInfo from "../../components/TextWithInfo"; // plasmic-import: -EsDm7v023/component
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
 import ExpandButton from "../../components/widgets/ExpandButton"; // plasmic-import: JJhv0MV9DH/component
-import { _useStyleTokens as useStyleTokens_plasmic_kit_color_tokens } from "../plasmic_kit_color_tokens/PlasmicStyleTokensProvider"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/styleTokensProvider
-import { _useStyleTokens as useStyleTokens_plasmic_kit_design_system } from "../plasmic_kit_design_system/PlasmicStyleTokensProvider"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/styleTokensProvider
 import { _useStyleTokens } from "../plasmic_kit_left_pane/PlasmicStyleTokensProvider"; // plasmic-import: aukbrhkegRkQ6KizvhdUPT/styleTokensProvider
-import { _useStyleTokens as useStyleTokens_plasmic_kit_style_controls } from "../plasmic_kit_style_controls/PlasmicStyleTokensProvider"; // plasmic-import: gYEVvAzCcLMHDVPvuYxkFh/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
@@ -52,6 +49,7 @@ export type PlasmicLeftPaneHeader__VariantMembers = {
   expandState: "expanded" | "collapsed";
   hasTitleActions: "hasTitleActions";
   noDescription: "noDescription";
+  borderless: "borderless";
 };
 export type PlasmicLeftPaneHeader__VariantsArgs = {
   noActions?: SingleBooleanChoiceArg<"noActions">;
@@ -60,6 +58,7 @@ export type PlasmicLeftPaneHeader__VariantsArgs = {
   expandState?: SingleChoiceArg<"expanded" | "collapsed">;
   hasTitleActions?: SingleBooleanChoiceArg<"hasTitleActions">;
   noDescription?: SingleBooleanChoiceArg<"noDescription">;
+  borderless?: SingleBooleanChoiceArg<"borderless">;
 };
 type VariantPropType = keyof PlasmicLeftPaneHeader__VariantsArgs;
 export const PlasmicLeftPaneHeader__VariantProps = new Array<VariantPropType>(
@@ -68,25 +67,26 @@ export const PlasmicLeftPaneHeader__VariantProps = new Array<VariantPropType>(
   "compact",
   "expandState",
   "hasTitleActions",
-  "noDescription"
+  "noDescription",
+  "borderless"
 );
 
 export type PlasmicLeftPaneHeader__ArgsType = {
   title?: React.ReactNode;
+  titleActions?: React.ReactNode;
   description?: React.ReactNode;
-  actions?: React.ReactNode;
   alert?: React.ReactNode;
   compactTitle?: React.ReactNode;
-  titleActions?: React.ReactNode;
+  actions?: React.ReactNode;
 };
 type ArgPropType = keyof PlasmicLeftPaneHeader__ArgsType;
 export const PlasmicLeftPaneHeader__ArgProps = new Array<ArgPropType>(
   "title",
+  "titleActions",
   "description",
-  "actions",
   "alert",
   "compactTitle",
-  "titleActions"
+  "actions"
 );
 
 export type PlasmicLeftPaneHeader__OverridesType = {
@@ -102,17 +102,18 @@ export type PlasmicLeftPaneHeader__OverridesType = {
 
 export interface DefaultLeftPaneHeaderProps {
   title?: React.ReactNode;
+  titleActions?: React.ReactNode;
   description?: React.ReactNode;
-  actions?: React.ReactNode;
   alert?: React.ReactNode;
   compactTitle?: React.ReactNode;
-  titleActions?: React.ReactNode;
+  actions?: React.ReactNode;
   noActions?: SingleBooleanChoiceArg<"noActions">;
   showAlert?: SingleBooleanChoiceArg<"showAlert">;
   compact?: SingleBooleanChoiceArg<"compact">;
   expandState?: SingleChoiceArg<"expanded" | "collapsed">;
   hasTitleActions?: SingleBooleanChoiceArg<"hasTitleActions">;
   noDescription?: SingleBooleanChoiceArg<"noDescription">;
+  borderless?: SingleBooleanChoiceArg<"borderless">;
   className?: string;
 }
 
@@ -185,6 +186,12 @@ function PlasmicLeftPaneHeader__RenderFunc(props: {
         variableType: "variant",
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.noDescription,
       },
+      {
+        path: "borderless",
+        type: "private",
+        variableType: "variant",
+        initFunc: ({ $props, $state, $queries, $ctx }) => $props.borderless,
+      },
     ],
     [$props, $ctx, $refs]
   );
@@ -196,12 +203,6 @@ function PlasmicLeftPaneHeader__RenderFunc(props: {
   });
 
   const styleTokensClassNames = _useStyleTokens();
-  const styleTokensClassNames_plasmic_kit_design_system =
-    useStyleTokens_plasmic_kit_design_system();
-  const styleTokensClassNames_plasmic_kit_color_tokens =
-    useStyleTokens_plasmic_kit_color_tokens();
-  const styleTokensClassNames_plasmic_kit_style_controls =
-    useStyleTokens_plasmic_kit_style_controls();
 
   return (
     <div
@@ -215,11 +216,13 @@ function PlasmicLeftPaneHeader__RenderFunc(props: {
         projectcss.plasmic_default_styles,
         projectcss.plasmic_mixins,
         styleTokensClassNames,
-        styleTokensClassNames_plasmic_kit_design_system,
-        styleTokensClassNames_plasmic_kit_color_tokens,
-        styleTokensClassNames_plasmic_kit_style_controls,
         sty.header,
         {
+          [sty.headerborderless]: hasVariant(
+            $state,
+            "borderless",
+            "borderless"
+          ),
           [sty.headercompact]: hasVariant($state, "compact", "compact"),
           [sty.headercompact_expandState_collapsed]:
             hasVariant($state, "compact", "compact") &&
@@ -517,7 +520,15 @@ function PlasmicLeftPaneHeader__RenderFunc(props: {
                 value: args.compactTitle,
               })
             : null}
-          <div className={classNames(projectcss.all, sty.freeBox___1SjU4)}>
+          <div
+            className={classNames(projectcss.all, sty.freeBox___1SjU4, {
+              [sty.freeBoxborderless___1SjU4Vrr0L]: hasVariant(
+                $state,
+                "borderless",
+                "borderless"
+              ),
+            })}
+          >
             {renderPlasmicSlot({
               defaultContents: (
                 <Button

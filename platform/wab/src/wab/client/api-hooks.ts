@@ -1,8 +1,8 @@
 import { apiKey, invalidationKey } from "@/wab/client/api";
 import { AppCtx } from "@/wab/client/app-ctx";
 import { useAppCtx } from "@/wab/client/contexts/AppContexts";
-import { withoutNils } from "@/wab/shared/common";
 import { BranchId, ProjectId } from "@/wab/shared/ApiSchema";
+import { withoutNils } from "@/wab/shared/common";
 import { keyBy } from "lodash";
 import useSWR from "swr";
 
@@ -59,6 +59,20 @@ export async function getProjectReleases(
   } else {
     return [];
   }
+}
+
+export async function listUnpublishedProjectRevisions(
+  appCtx: AppCtx,
+  projectId: ProjectId,
+  branchId: BranchId | undefined,
+  revisionNumGt?: number
+) {
+  const res = await appCtx.api.listUnpublishedProjectRevisions(
+    projectId,
+    branchId ?? undefined,
+    revisionNumGt
+  );
+  return res?.revisions || [];
 }
 
 export function useUsersMap(

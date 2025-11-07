@@ -10,6 +10,9 @@
   width: 100%;
   min-width: 0;
 }
+.headerborderless {
+  border-bottom-width: 0px;
+}
 .freeBox__rhIgq {
   display: flex;
   position: relative;
@@ -177,6 +180,9 @@
   max-width: 100%;
   column-gap: 4px;
   min-width: 0;
+}
+.freeBoxborderless___1SjU4Vrr0L {
+  justify-content: space-between;
 }
 .svg__xTd68 {
   display: flex;

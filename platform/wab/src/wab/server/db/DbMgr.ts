@@ -3080,7 +3080,7 @@ export class DbMgr implements MigrationDbMgr {
             pkgVersions.find((_pkgVersion) => _pkgVersion.id === version),
             `Couldn't find pkgVersion with ID ${version}`
           );
-          return this.getProjectRevisionById(
+          return this.getProjectRevision(
             projectId,
             pkgVersion.revisionId,
             branchId
@@ -3208,22 +3208,100 @@ export class DbMgr implements MigrationDbMgr {
     return await this.projectRevs().find({ select: ["id"] });
   }
 
-  async getProjectRevById(id: string) {
-    this.checkSuperUser();
-    return ensureFound(
-      await this.projectRevs().findOne(id),
-      `Project revision ${id}`
-    );
-  }
-
   async tryGetProjectRevById(projectId: string, revId: string) {
     await this.checkProjectPerms(projectId, "viewer", "get");
     return await this.projectRevs().findOne({ id: revId });
   }
 
-  async listProjectRevs(projectId: string) {
-    await this.checkProjectPerms(projectId, "viewer", "get");
-    return await this.projectRevs().find({ where: { projectId } });
+  async getProjectRevision(
+    projectId: string,
+    revisionNumOrId: number | string,
+    branchId?: BranchId
+  ) {
+    await this.checkProjectPerms(projectId, "viewer", "get revision for");
+
+    const isRevisionId = typeof revisionNumOrId === "string";
+    const conditionalWhereClause = isRevisionId
+      ? `id=:revisionNumOrId`
+      : `revision=:revisionNumOrId`;
+
+    return ensureFound<ProjectRevision>(
+      await getOneOrFailIfTooMany(
+        this.projectRevs()
+          .createQueryBuilder("rev")
+          .where(
+            `${conditionalWhereClause} AND "projectId"=:projectId AND (:branchId::text is null AND "branchId" is null OR "branchId" = :branchId::text)`,
+            {
+              projectId,
+              branchId,
+              revisionNumOrId,
+            }
+          )
+          .printSql()
+      ),
+      `Project revision with id ${projectId}, branch ID ${branchId}, and ${
+        isRevisionId ? "revision id" : "revision"
+      } ${revisionNumOrId}`
+    );
+  }
+
+  async listProjectRevisions(
+    projectId: string,
+    opts: {
+      includeData?: boolean;
+      branchId?: BranchId;
+      createdAtGt?: Date;
+      revisionNumGt?: number;
+      limit?: number;
+    } = {}
+  ) {
+    await this.checkProjectPerms(
+      projectId,
+      "viewer",
+      "list revisions for project"
+    );
+    const { branchId, createdAtGt, includeData, revisionNumGt, limit } = opts;
+    const columns = this.entMgr.connection
+      .getMetadata(ProjectRevision)
+      .columns.map((c) => `rev.${c.databaseName}`);
+
+    if (!includeData) {
+      arrayRemove(columns, "rev.data");
+    }
+
+    const qb = this.projectRevs()
+      .createQueryBuilder("rev")
+      .select(columns)
+      .leftJoinAndSelect("rev.createdBy", "createdBy")
+      .where(
+        `"projectId" = :projectId AND (:branchId::text is null AND "branchId" is null OR "branchId" = :branchId::text)`,
+        {
+          projectId,
+          branchId,
+        }
+      );
+    if (createdAtGt) {
+      qb.andWhere(`"rev"."createdAt" > :createdAtGt`, {
+        createdAtGt,
+      });
+    }
+    if (revisionNumGt !== undefined) {
+      qb.andWhere(`"rev"."revision" > :revisionNumGt`, {
+        revisionNumGt,
+      });
+    }
+    qb.orderBy("rev.revision", "DESC");
+    if (limit !== undefined) {
+      qb.limit(limit);
+    }
+    return await qb.getMany();
+  }
+
+  async deleteRevision(rev: ProjectRevision) {
+    this.checkSuperUser();
+    // XXX: ensure not already deleted?
+    Object.assign(rev, this.stampDelete());
+    await this.entMgr.save(rev);
   }
 
   async listLatestProjectAndBranchRevisions(
@@ -3331,19 +3409,33 @@ export class DbMgr implements MigrationDbMgr {
   }
 
   /**
-   * Creates a new revision with the same data as the argument `revisionNum`.
+   * Creates a new revision with the same data as the argument `revisionNum` or `revisionId`.
    */
-  async revertProjectRev(projectId: string, revisionNum: number) {
+  async revertProjectRev(
+    projectId: string,
+    revisionNumOrId: number | string,
+    branchId?: BranchId
+  ) {
     await this.checkProjectPerms(
       projectId,
       "editor",
       "revert project revision"
     );
-    const rev = await this.getProjectRevision(projectId, revisionNum);
-    const latest = await this.getLatestProjectRev(projectId);
+
+    const rev = await this.getProjectRevision(
+      projectId,
+      revisionNumOrId,
+      branchId
+    );
+
+    const latest = await this.getLatestProjectRev(projectId, {
+      branchId,
+      revisionNumOnly: true,
+    });
     const newRev = await this.saveProjectRev({
       projectId,
       data: rev.data,
+      branchId,
       revisionNum: latest.revision + 1,
     });
     return newRev;
@@ -3777,61 +3869,6 @@ export class DbMgr implements MigrationDbMgr {
       .where(`"projectRevId" = :projectRevId`)
       .setParameter("projectRevId", projectRevId)
       .execute();
-  }
-
-  async getProjectRevisionById(
-    projectId: string,
-    revisionId: string,
-    branchId?: string
-  ) {
-    await this.checkProjectPerms(projectId, "viewer", "get revision for");
-    return ensureFound<ProjectRevision>(
-      await getOneOrFailIfTooMany(
-        this.projectRevs()
-          .createQueryBuilder("rev")
-          .where(
-            `id=:revisionId AND "projectId"=:projectId AND (:branchId::text is null AND "branchId" is null OR "branchId" = :branchId::text)`,
-            {
-              revisionId,
-              projectId,
-              branchId,
-            }
-          )
-          .printSql()
-      ),
-      `Project revision with id ${projectId} and revision id ${revisionId}`
-    );
-  }
-
-  async getProjectRevision(
-    projectId: string,
-    revisionNum: number,
-    branchId?: BranchId
-  ) {
-    await this.checkProjectPerms(projectId, "viewer", "get revision for");
-    return ensureFound<ProjectRevision>(
-      await getOneOrFailIfTooMany(
-        this.projectRevs()
-          .createQueryBuilder("rev")
-          .where(
-            `"projectId" = :projectId AND revision=:revisionNum AND (:branchId::text is null AND "branchId" is null OR "branchId" = :branchId::text)`,
-            {
-              projectId,
-              branchId,
-              revisionNum,
-            }
-          )
-          .printSql()
-      ),
-      `Project revision with id ${projectId}, branch ID ${branchId}, and revision ${revisionNum}`
-    );
-  }
-
-  async deleteRevision(rev: ProjectRevision) {
-    this.checkSuperUser();
-    // XXX: ensure not already deleted?
-    Object.assign(rev, this.stampDelete());
-    await this.entMgr.save(rev);
   }
 
   /**
@@ -4307,6 +4344,7 @@ export class DbMgr implements MigrationDbMgr {
       }${tag ? ", tag=" + tag : ""}`
     );
   }
+
   async tryGetPkgVersion(
     pkgId: string,
     versionRange?: string,

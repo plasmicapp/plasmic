@@ -32,9 +32,6 @@ import LeftSearchPanel from "../../components/studio/LeftSearchPanel"; // plasmi
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
 import Select from "../../components/widgets/Select"; // plasmic-import: j_4IQyOWK2b/component
 import Select__Option from "../../components/widgets/Select__Option"; // plasmic-import: rr-LWdMni2G/component
-import { _useStyleTokens as useStyleTokens_plasmic_kit_color_tokens } from "../plasmic_kit_color_tokens/PlasmicStyleTokensProvider"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/styleTokensProvider
-import { _useStyleTokens as useStyleTokens_plasmic_kit_design_system } from "../plasmic_kit_design_system/PlasmicStyleTokensProvider"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/styleTokensProvider
-import { _useStyleTokens as useStyleTokens_plasmic_kit_style_controls } from "../plasmic_kit_style_controls/PlasmicStyleTokensProvider"; // plasmic-import: gYEVvAzCcLMHDVPvuYxkFh/styleTokensProvider
 import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: aukbrhkegRkQ6KizvhdUPT/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
@@ -134,12 +131,6 @@ function PlasmicLeftGeneralDataTokensPanel__RenderFunc(props: {
   });
 
   const styleTokensClassNames = _useStyleTokens();
-  const styleTokensClassNames_plasmic_kit_design_system =
-    useStyleTokens_plasmic_kit_design_system();
-  const styleTokensClassNames_plasmic_kit_color_tokens =
-    useStyleTokens_plasmic_kit_color_tokens();
-  const styleTokensClassNames_plasmic_kit_style_controls =
-    useStyleTokens_plasmic_kit_style_controls();
 
   return (
     <div
@@ -153,9 +144,6 @@ function PlasmicLeftGeneralDataTokensPanel__RenderFunc(props: {
         projectcss.plasmic_default_styles,
         projectcss.plasmic_mixins,
         styleTokensClassNames,
-        styleTokensClassNames_plasmic_kit_design_system,
-        styleTokensClassNames_plasmic_kit_color_tokens,
-        styleTokensClassNames_plasmic_kit_style_controls,
         sty.root,
         {
           [sty.rootisTargeting]: hasVariant(

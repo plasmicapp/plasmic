@@ -731,8 +731,7 @@ export class StudioModel extends BaseModel {
       await this.page.waitForTimeout(1000);
     }
 
-    const selector =
-      '.flex-col:not([style*="display:none" i]):not([style*="display: none" i]) .SidebarSectionListItem:not(#publishing-version-spinner-item)';
+    const selector = '[data-test-id="publish-version-item"]';
     const countBefore = await this.frame.locator(selector).count();
     await this.publishProjectButton.click();
 

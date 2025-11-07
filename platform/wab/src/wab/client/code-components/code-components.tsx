@@ -579,7 +579,7 @@ export async function maybeConvertToHostLessProject(studioCtx: StudioCtx) {
             (await studioCtx.getProjectReleases())[0],
             "No latest version found"
           );
-          await studioCtx.revertToVersion(latestVersion);
+          await studioCtx.revertTo(latestVersion);
           return;
         }
       }

@@ -16,6 +16,7 @@ import * as React from "react";
 import {
   Flex as Flex__,
   SingleBooleanChoiceArg,
+  SingleChoiceArg,
   StrictProps,
   classNames,
   createPlasmicElementProxy,
@@ -25,13 +26,12 @@ import {
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
+import ListSeperator from "../../components/sidebar/ListSeperator"; // plasmic-import: 3J9TqoTau-2m/component
+import VersionsListItem from "../../components/sidebar/VersionsListItem"; // plasmic-import: Of6596-KMlOa/component
 import LeftPaneHeader from "../../components/studio/LeftPaneHeader"; // plasmic-import: XLa52PvduIy/component
 import LeftSearchPanel from "../../components/studio/LeftSearchPanel"; // plasmic-import: TqAPn0srTq/component
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
-import { _useStyleTokens as useStyleTokens_plasmic_kit_color_tokens } from "../plasmic_kit_color_tokens/PlasmicStyleTokensProvider"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/styleTokensProvider
-import { _useStyleTokens as useStyleTokens_plasmic_kit_design_system } from "../plasmic_kit_design_system/PlasmicStyleTokensProvider"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/styleTokensProvider
 import { _useStyleTokens } from "../plasmic_kit_left_pane/PlasmicStyleTokensProvider"; // plasmic-import: aukbrhkegRkQ6KizvhdUPT/styleTokensProvider
-import { _useStyleTokens as useStyleTokens_plasmic_kit_style_controls } from "../plasmic_kit_style_controls/PlasmicStyleTokensProvider"; // plasmic-import: gYEVvAzCcLMHDVPvuYxkFh/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
@@ -39,19 +39,22 @@ import projectcss from "../PP__plasmickit_left_pane.module.css"; // plasmic-impo
 import sty from "./PlasmicLeftVersionsPanel.module.css"; // plasmic-import: YldGgVsq6N/css
 
 import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
+import FilterSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__FilterSvg"; // plasmic-import: Tur0nARlL/icon
 import StampSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__StampSvg"; // plasmic-import: F2ZajSMKM/icon
 
 createPlasmicElementProxy;
 
 export type PlasmicLeftVersionsPanel__VariantMembers = {
   showAlert: "showAlert";
+  list: "revisions" | "versions" | "all";
 };
 export type PlasmicLeftVersionsPanel__VariantsArgs = {
   showAlert?: SingleBooleanChoiceArg<"showAlert">;
+  list?: SingleChoiceArg<"revisions" | "versions" | "all">;
 };
 type VariantPropType = keyof PlasmicLeftVersionsPanel__VariantsArgs;
 export const PlasmicLeftVersionsPanel__VariantProps =
-  new Array<VariantPropType>("showAlert");
+  new Array<VariantPropType>("showAlert", "list");
 
 export type PlasmicLeftVersionsPanel__ArgsType = {};
 type ArgPropType = keyof PlasmicLeftVersionsPanel__ArgsType;
@@ -62,11 +65,15 @@ export type PlasmicLeftVersionsPanel__OverridesType = {
   leftSearchPanel?: Flex__<typeof LeftSearchPanel>;
   versionsHeader?: Flex__<typeof LeftPaneHeader>;
   publishButton?: Flex__<typeof Button>;
+  filterButton?: Flex__<typeof Button>;
   content?: Flex__<"div">;
+  revisionsContainer?: Flex__<"div">;
+  versionsContainer?: Flex__<"div">;
 };
 
 export interface DefaultLeftVersionsPanelProps {
   showAlert?: SingleBooleanChoiceArg<"showAlert">;
+  list?: SingleChoiceArg<"revisions" | "versions" | "all">;
   className?: string;
 }
 
@@ -108,6 +115,12 @@ function PlasmicLeftVersionsPanel__RenderFunc(props: {
         variableType: "variant",
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.showAlert,
       },
+      {
+        path: "list",
+        type: "private",
+        variableType: "variant",
+        initFunc: ({ $props, $state, $queries, $ctx }) => $props.list,
+      },
     ],
     [$props, $ctx, $refs]
   );
@@ -119,12 +132,6 @@ function PlasmicLeftVersionsPanel__RenderFunc(props: {
   });
 
   const styleTokensClassNames = _useStyleTokens();
-  const styleTokensClassNames_plasmic_kit_design_system =
-    useStyleTokens_plasmic_kit_design_system();
-  const styleTokensClassNames_plasmic_kit_color_tokens =
-    useStyleTokens_plasmic_kit_color_tokens();
-  const styleTokensClassNames_plasmic_kit_style_controls =
-    useStyleTokens_plasmic_kit_style_controls();
 
   return (
     <div
@@ -138,9 +145,6 @@ function PlasmicLeftVersionsPanel__RenderFunc(props: {
         projectcss.plasmic_default_styles,
         projectcss.plasmic_mixins,
         styleTokensClassNames,
-        styleTokensClassNames_plasmic_kit_design_system,
-        styleTokensClassNames_plasmic_kit_color_tokens,
-        styleTokensClassNames_plasmic_kit_style_controls,
         sty.root,
         { [sty.rootshowAlert]: hasVariant($state, "showAlert", "showAlert") }
       )}
@@ -161,28 +165,52 @@ function PlasmicLeftVersionsPanel__RenderFunc(props: {
         data-plasmic-name={"versionsHeader"}
         data-plasmic-override={overrides.versionsHeader}
         actions={
-          <Button
-            data-plasmic-name={"publishButton"}
-            data-plasmic-override={overrides.publishButton}
-            endIcon={
-              <ChevronDownSvgIcon
-                className={classNames(projectcss.all, sty.svg__mRQha)}
-                role={"img"}
-              />
-            }
-            size={"wide"}
-            startIcon={
-              <StampSvgIcon
-                className={classNames(projectcss.all, sty.svg__g3KFb)}
-                role={"img"}
-              />
-            }
-            type={["secondary"]}
-            withIcons={["startIcon"]}
-          >
-            {"Publish project"}
-          </Button>
+          <div className={classNames(projectcss.all, sty.freeBox__wkEck)}>
+            <Button
+              data-plasmic-name={"publishButton"}
+              data-plasmic-override={overrides.publishButton}
+              endIcon={
+                <ChevronDownSvgIcon
+                  className={classNames(projectcss.all, sty.svg__mRQha)}
+                  role={"img"}
+                />
+              }
+              size={"small"}
+              startIcon={
+                <StampSvgIcon
+                  className={classNames(projectcss.all, sty.svg__g3KFb)}
+                  role={"img"}
+                />
+              }
+              type={["secondary", "bordered"]}
+              withIcons={["startIcon"]}
+            >
+              {"Publish project"}
+            </Button>
+            <Button
+              data-plasmic-name={"filterButton"}
+              data-plasmic-override={overrides.filterButton}
+              endIcon={
+                <FilterSvgIcon
+                  className={classNames(projectcss.all, sty.svg__hd6XZ)}
+                  role={"img"}
+                />
+              }
+              size={"small"}
+              startIcon={
+                <StampSvgIcon
+                  className={classNames(projectcss.all, sty.svg__l36Lq)}
+                  role={"img"}
+                />
+              }
+              type={["bordered", "clear"]}
+              withIcons={["endIcon"]}
+            >
+              {"All"}
+            </Button>
+          </div>
         }
+        borderless={true}
         className={classNames("__wab_instance", sty.versionsHeader, {
           [sty.versionsHeadershowAlert]: hasVariant(
             $state,
@@ -191,19 +219,188 @@ function PlasmicLeftVersionsPanel__RenderFunc(props: {
           ),
         })}
         description={
-          "Publishing a version of the project lets you restore it later, lets it be published in your production codebase, and lets other projects import to reuse its components/assets."
+          <div className={classNames(projectcss.all, sty.freeBox__vx2S3)}>
+            <div
+              className={classNames(
+                projectcss.all,
+                projectcss.__wab_text,
+                sty.text__f5Bbe
+              )}
+            >
+              <React.Fragment>
+                <span
+                  className={"plasmic_default__all plasmic_default__span"}
+                  style={{ fontWeight: 500 }}
+                >
+                  {"Autosaved Versions"}
+                </span>
+                <React.Fragment>
+                  {
+                    "\u00a0track changes you make and allows you revert to a previous state of your project. "
+                  }
+                </React.Fragment>
+              </React.Fragment>
+            </div>
+            <div
+              className={classNames(
+                projectcss.all,
+                projectcss.__wab_text,
+                sty.text__huG
+              )}
+            >
+              <React.Fragment>
+                <span
+                  className={"plasmic_default__all plasmic_default__span"}
+                  style={{ fontWeight: 500 }}
+                >
+                  {"Published Versions"}
+                </span>
+                <React.Fragment>
+                  {
+                    " create a permanent snapshot that can be deployed to production and imported by other projects to reuse components and assets."
+                  }
+                </React.Fragment>
+              </React.Fragment>
+            </div>
+          </div>
         }
         showAlert={
           hasVariant($state, "showAlert", "showAlert") ? true : undefined
         }
-        title={"Published Versions"}
+        title={"Version History"}
       />
 
       <div
         data-plasmic-name={"content"}
         data-plasmic-override={overrides.content}
         className={classNames(projectcss.all, sty.content)}
-      />
+      >
+        <ListSeperator
+          className={classNames("__wab_instance", sty.listSeperator__n6Keb, {
+            [sty.listSeperatorlist_versions__n6KebGn82F]: hasVariant(
+              $state,
+              "list",
+              "versions"
+            ),
+          })}
+        >
+          <div
+            className={classNames(
+              projectcss.all,
+              projectcss.__wab_text,
+              sty.text___3Qahe,
+              {
+                [sty.textlist_versions___3QaheGn82F]: hasVariant(
+                  $state,
+                  "list",
+                  "versions"
+                ),
+              }
+            )}
+          >
+            <React.Fragment>
+              <span
+                className={"plasmic_default__all plasmic_default__span"}
+                style={{ color: "var(--token-Z0yiXYDjtUzZ)" }}
+              >
+                {"Autosaved Versions"}
+              </span>
+            </React.Fragment>
+          </div>
+        </ListSeperator>
+        <div
+          data-plasmic-name={"revisionsContainer"}
+          data-plasmic-override={overrides.revisionsContainer}
+          className={classNames(projectcss.all, sty.revisionsContainer, {
+            [sty.revisionsContainerlist_versions]: hasVariant(
+              $state,
+              "list",
+              "versions"
+            ),
+          })}
+        >
+          <VersionsListItem
+            className={classNames(
+              "__wab_instance",
+              sty.versionsListItem__l6Dcq,
+              {
+                [sty.versionsListItemshowAlert__l6DcqM5UUf]: hasVariant(
+                  $state,
+                  "showAlert",
+                  "showAlert"
+                ),
+              }
+            )}
+          />
+
+          <VersionsListItem
+            className={classNames(
+              "__wab_instance",
+              sty.versionsListItem__unWps
+            )}
+          />
+        </div>
+        <ListSeperator
+          className={classNames("__wab_instance", sty.listSeperator___83DeV, {
+            [sty.listSeperatorlist_revisions___83DeVa9Nlu]: hasVariant(
+              $state,
+              "list",
+              "revisions"
+            ),
+          })}
+        >
+          <div
+            className={classNames(
+              projectcss.all,
+              projectcss.__wab_text,
+              sty.text__vHt7M,
+              {
+                [sty.textlist_revisions__vHt7Ma9Nlu]: hasVariant(
+                  $state,
+                  "list",
+                  "revisions"
+                ),
+              }
+            )}
+          >
+            <React.Fragment>
+              <span
+                className={"plasmic_default__all plasmic_default__span"}
+                style={{ color: "var(--token-Z0yiXYDjtUzZ)" }}
+              >
+                {"Published Versions"}
+              </span>
+            </React.Fragment>
+          </div>
+        </ListSeperator>
+        <div
+          data-plasmic-name={"versionsContainer"}
+          data-plasmic-override={overrides.versionsContainer}
+          className={classNames(projectcss.all, sty.versionsContainer, {
+            [sty.versionsContainerlist_revisions]: hasVariant(
+              $state,
+              "list",
+              "revisions"
+            ),
+          })}
+        >
+          <VersionsListItem
+            className={classNames(
+              "__wab_instance",
+              sty.versionsListItem__mEi5A
+            )}
+            publish={true}
+          />
+
+          <VersionsListItem
+            className={classNames(
+              "__wab_instance",
+              sty.versionsListItem__ll5LG
+            )}
+            publish={true}
+          />
+        </div>
+      </div>
     </div>
   ) as React.ReactElement | null;
 }
@@ -214,12 +411,18 @@ const PlasmicDescendants = {
     "leftSearchPanel",
     "versionsHeader",
     "publishButton",
+    "filterButton",
     "content",
+    "revisionsContainer",
+    "versionsContainer",
   ],
   leftSearchPanel: ["leftSearchPanel"],
-  versionsHeader: ["versionsHeader", "publishButton"],
+  versionsHeader: ["versionsHeader", "publishButton", "filterButton"],
   publishButton: ["publishButton"],
-  content: ["content"],
+  filterButton: ["filterButton"],
+  content: ["content", "revisionsContainer", "versionsContainer"],
+  revisionsContainer: ["revisionsContainer"],
+  versionsContainer: ["versionsContainer"],
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -229,7 +432,10 @@ type NodeDefaultElementType = {
   leftSearchPanel: typeof LeftSearchPanel;
   versionsHeader: typeof LeftPaneHeader;
   publishButton: typeof Button;
+  filterButton: typeof Button;
   content: "div";
+  revisionsContainer: "div";
+  versionsContainer: "div";
 };
 
 type ReservedPropsType = "variants" | "args" | "overrides";
@@ -295,7 +501,10 @@ export const PlasmicLeftVersionsPanel = Object.assign(
     leftSearchPanel: makeNodeComponent("leftSearchPanel"),
     versionsHeader: makeNodeComponent("versionsHeader"),
     publishButton: makeNodeComponent("publishButton"),
+    filterButton: makeNodeComponent("filterButton"),
     content: makeNodeComponent("content"),
+    revisionsContainer: makeNodeComponent("revisionsContainer"),
+    versionsContainer: makeNodeComponent("versionsContainer"),
 
     // Metadata about props expected for PlasmicLeftVersionsPanel
     internalVariantProps: PlasmicLeftVersionsPanel__VariantProps,

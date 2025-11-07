@@ -220,6 +220,7 @@ import {
   getProjectMeta,
   getProjectRev,
   getProjectRevWithoutData,
+  getProjectRevision,
   getProjectSyncMetadata,
   importProject,
   latestCodegenVersion,
@@ -227,10 +228,12 @@ import {
   listPkgVersionsWithoutData,
   listProjectVersionsWithoutData,
   listProjects,
+  listUnpublishedProjectRevisions,
   publishProject,
   removeSelfPerm,
   requiredPackages,
   resolveSync,
+  revertProjectToRevision,
   revertToVersion,
   saveProjectRev,
   setMainBranchProtection,
@@ -1451,6 +1454,15 @@ export function addMainAppServerRoutes(
   app.get("/api/v1/plume-pkg/versions", getPlumePkgVersionStrings);
   app.get("/api/v1/plume-pkg/latest", getLatestPlumePkg);
   app.get("/api/v1/pkgs/:pkgId", withNext(getPkgVersion));
+  app.post(
+    "/api/v1/projects/:projectId/revert-to-revision",
+    revertProjectToRevision
+  );
+  app.get(
+    "/api/v1/projects/:projectId/revs/unpublished",
+    listUnpublishedProjectRevisions
+  );
+  app.get("/api/v1/projects/:projectId/revs/:revisionId", getProjectRevision);
   app.get("/api/v1/pkgs/projectId/:projectId", getPkgVersionByProjectId);
   app.get(
     "/api/v1/pkgs/:pkgId/versions-without-data",

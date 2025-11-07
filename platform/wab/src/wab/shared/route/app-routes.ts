@@ -179,6 +179,7 @@ export const APP_ROUTES = {
 
 export const SEARCH_PARAM_BRANCH = "branch";
 export const SEARCH_PARAM_VERSION = "version";
+export const SEARCH_PARAM_REVISION = "revision";
 export const SEARCH_PARAM_ARENA_TYPE = "arena_type";
 export const SEARCH_PARAM_ARENA = "arena";
 export const SEARCH_PARAM_COMMENT = "comment";
@@ -189,6 +190,7 @@ export interface ProjectLocationParams {
   slug: string | undefined;
   branchName: MainBranchId | string;
   branchVersion: typeof latestTag | string;
+  branchRevision: string | undefined;
   arenaType: ArenaType | undefined;
   arenaUuidOrNameOrPath: string | undefined;
   isPreview?: boolean;
@@ -200,6 +202,7 @@ export function mkProjectLocation({
   slug,
   branchName,
   branchVersion,
+  branchRevision,
   arenaType,
   arenaUuidOrNameOrPath,
   threadId,
@@ -213,6 +216,9 @@ export function mkProjectLocation({
   }
   if (branchVersion !== latestTag) {
     searchParams.push([SEARCH_PARAM_VERSION, branchVersion]);
+  }
+  if (branchRevision) {
+    searchParams.push([SEARCH_PARAM_REVISION, branchRevision]);
   }
   if (arenaType) {
     searchParams.push([SEARCH_PARAM_ARENA_TYPE, arenaType]);

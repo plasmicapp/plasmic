@@ -97,7 +97,10 @@ import {
 } from "@/wab/shared/ApiSchema";
 import { parseProjectBranchId } from "@/wab/shared/ApiSchemaUtil";
 import { accessLevelRank } from "@/wab/shared/EntUtil";
-import { PkgVersionInfoMeta } from "@/wab/shared/SharedApi";
+import {
+  MinimalRevisionInfo,
+  PkgVersionInfoMeta,
+} from "@/wab/shared/SharedApi";
 import { TplMgr } from "@/wab/shared/TplMgr";
 import {
   Bundler,
@@ -113,6 +116,7 @@ import {
   getBundle,
   getSerializedBundleSize,
   isExpectedBundleVersion,
+  parseBundle,
 } from "@/wab/shared/bundles";
 import { componentToDeepReferenced } from "@/wab/shared/cached-selectors";
 import { elementSchemaToTpl } from "@/wab/shared/code-components/code-components";
@@ -201,6 +205,22 @@ export function mkApiProject(project: Project): ApiProject {
       ? project.workspace?.contentCreatorConfig
       : null,
     isUserStarter: project.isUserStarter ?? false,
+  };
+}
+
+/**
+ * Extracts consistent revision metadata for broadcasting project updates.
+ * This ensures all broadcast messages contain the same revision fields.
+ */
+export function mkRevisionBroadcastData(
+  rev: ProjectRevision
+): MinimalRevisionInfo {
+  return {
+    createdAt: rev.createdAt,
+    createdById: rev.createdById,
+    id: rev.id,
+    branchId: rev.branchId,
+    revision: rev.revision,
   };
 }
 
@@ -1327,7 +1347,7 @@ export async function saveProjectRev(req: Request, res: Response) {
     type: "update",
     message: {
       projectId: commit.project.id,
-      revisionNum: commit.rev.revision,
+      rev: mkRevisionBroadcastData(commit.rev),
     },
   });
 }
@@ -1414,10 +1434,12 @@ export async function getProjectRev(req: Request, res: Response) {
   const project = await mgr.getProjectById(projectId);
   req.promLabels.projectId = projectId;
   const rev =
-    revisionNum !== undefined
-      ? await mgr.getProjectRevision(project.id, +revisionNum, branchId)
-      : revisionId
-      ? await mgr.getProjectRevisionById(projectId, revisionId, branchId)
+    revisionNum !== undefined || revisionId
+      ? await mgr.getProjectRevision(
+          projectId,
+          revisionNum !== undefined ? +revisionNum : revisionId!,
+          branchId
+        )
       : await mgr.getLatestProjectRev(projectId, { branchId });
   const perms = project.readableByPublic
     ? (await mgr.getPermissionsForProject(projectId)).filter((perm) => {
@@ -1502,7 +1524,7 @@ export async function getProjectRevWithoutData(req: Request, res: Response) {
   req.promLabels.projectId = projectId;
   const rev = omit(
     revisionId
-      ? await mgr.getProjectRevisionById(
+      ? await mgr.getProjectRevision(
           projectId,
           revisionId,
           branchId ? branchId : undefined
@@ -1870,6 +1892,76 @@ export async function getPkgVersion(req: Request, res: Response) {
   });
 }
 
+export async function listUnpublishedProjectRevisions(
+  req: Request,
+  res: Response
+) {
+  const mgr = userDbMgr(req);
+  const projectId = req.params.projectId;
+  const branchId = req.query.branchId
+    ? JSON.parse(req.query.branchId as string)
+    : undefined;
+  const revisionNumGt = req.query.revisionNumGt
+    ? parseInt(req.query.revisionNumGt as string)
+    : undefined;
+
+  const pkg = await mgr.getPkgByProjectId(projectId);
+  const latest = pkg
+    ? await mgr.getPkgVersion(pkg.id, undefined, undefined, {
+        branchId,
+      })
+    : null;
+  const revisions = await mgr.listProjectRevisions(projectId, {
+    branchId,
+    createdAtGt: latest?.createdAt,
+    includeData: false,
+    revisionNumGt,
+    limit: 50,
+  });
+
+  res.json({
+    revisions,
+  });
+}
+
+export async function getProjectRevision(req: Request, res: Response) {
+  const mgr = userDbMgr(req);
+  const revisionId: string = req.params.revisionId;
+  const projectId: string = req.params.projectId;
+
+  const projectRev = ensure(
+    await mgr.tryGetProjectRevById(projectId, revisionId),
+    "Project revision should exist"
+  );
+  const bundle = parseBundle(projectRev);
+  const depPkgs = await loadDepPackages(mgr, bundle);
+
+  res.json({
+    depPkgs,
+    rev: projectRev,
+  });
+}
+
+export async function revertProjectToRevision(req: Request, res: Response) {
+  const mgr = userDbMgr(req);
+  const projectId = req.params.projectId;
+  const revisionId = req.body.revisionId;
+  const branchId = req.body.branchId;
+  const { commit } = await startTransaction(req, async () => {
+    const rev = await mgr.revertProjectRev(projectId, revisionId, branchId);
+    return commitTransaction({ rev });
+  });
+  res.json({ projectId });
+  await broadcastProjectsMessage({
+    room: `projects/${projectId}`,
+    type: "update",
+    message: {
+      projectId,
+      rev: mkRevisionBroadcastData(commit.rev),
+    },
+  });
+}
+
 export async function computeNextProjectVersion(req: Request, res: Response) {
   const mgr = userDbMgr(req);
   const projectId = req.params.projectId;
@@ -2180,7 +2272,10 @@ export async function revertToVersion(req: Request, res: Response) {
   await broadcastProjectsMessage({
     room: `projects/${projectId}`,
     type: "update",
-    message: { projectId: projectId, revisionNum: commit.rev.revision },
+    message: {
+      projectId: projectId,
+      rev: mkRevisionBroadcastData(commit.rev),
+    },
   });
 }
 
@@ -2824,7 +2919,10 @@ export async function updateProjectData(req: Request, res: Response) {
   await broadcastProjectsMessage({
     room: `projects/${projectId}`,
     type: "update",
-    message: { projectId, revisionNum: commit.rev.revision },
+    message: {
+      projectId,
+      rev: mkRevisionBroadcastData(commit.rev),
+    },
   });
 }
 

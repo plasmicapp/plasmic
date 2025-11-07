@@ -2091,8 +2091,7 @@ export function updateAllImports() {
 
 export function publishVersion(description: string) {
   cy.switchToVersionsTab();
-  const selector =
-    ".SidebarSectionListItem:not(#publishing-version-spinner-item)";
+  const selector = '[data-test-id="publish-version-item"]';
   cy.countItems(selector).then((countBefore: number) => {
     cy.contains("Publish project").click();
     cy.getStudioModal().find(`input`).eq(0).type(description);

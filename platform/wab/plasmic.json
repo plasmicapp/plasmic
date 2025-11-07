@@ -153,7 +153,7 @@
           "projectId": "aukbrhkegRkQ6KizvhdUPT",
           "renderModuleFilePath": "wab/client/plasmic/plasmic_kit/PlasmicLeftVersionsPanel.tsx",
           "importSpec": {
-            "modulePath": "wab/client/components/sidebar-tabs/versions-tab.tsx",
+            "modulePath": "wab/client/components/sidebar-tabs/versions-tab/index.tsx",
             "exportName": "VersionsTab"
           },
           "cssFilePath": "wab/client/plasmic/plasmic_kit/PlasmicLeftVersionsPanel.module.css",
@@ -526,15 +526,28 @@
           "componentType": "component"
         },
         {
-          "id": "gk9PlJXwjeDP",
-          "name": "LeftRevisionsPanel",
+          "id": "Of6596-KMlOa",
+          "name": "VersionsListItem",
           "type": "managed",
           "projectId": "aukbrhkegRkQ6KizvhdUPT",
-          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_left_pane/PlasmicLeftRevisionsPanel.tsx",
+          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_left_pane/PlasmicVersionsListItem.tsx",
           "importSpec": {
-            "modulePath": "wab/client/components/sidebar/LeftRevisionsPanel.tsx"
+            "modulePath": "wab/client/components/sidebar/VersionsListItem.tsx"
           },
-          "cssFilePath": "wab/client/plasmic/plasmic_kit_left_pane/PlasmicLeftRevisionsPanel.module.css",
+          "cssFilePath": "wab/client/plasmic/plasmic_kit_left_pane/PlasmicVersionsListItem.module.css",
+          "scheme": "blackbox",
+          "componentType": "component"
+        },
+        {
+          "id": "3J9TqoTau-2m",
+          "name": "ListSeperator",
+          "type": "managed",
+          "projectId": "aukbrhkegRkQ6KizvhdUPT",
+          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_left_pane/PlasmicListSeperator.tsx",
+          "importSpec": {
+            "modulePath": "wab/client/components/sidebar/ListSeperator.tsx"
+          },
+          "cssFilePath": "wab/client/plasmic/plasmic_kit_left_pane/PlasmicListSeperator.module.css",
           "scheme": "blackbox",
           "componentType": "component"
         }

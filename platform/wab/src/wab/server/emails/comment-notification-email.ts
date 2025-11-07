@@ -16,7 +16,7 @@ import {
   fullNameLastAbbreviated,
   getUserEmail,
 } from "@/wab/shared/ApiSchemaUtil";
-import { extractMentionedEmails, REACTIONS } from "@/wab/shared/comments-utils";
+import { REACTIONS, extractMentionedEmails } from "@/wab/shared/comments-utils";
 import { assert } from "@/wab/shared/common";
 import { mkProjectLocation } from "@/wab/shared/route/app-routes";
 import { createProjectUrl } from "@/wab/shared/urls";
@@ -67,6 +67,7 @@ export const getThreadUrl = (
     threadId,
     slug: undefined,
     branchVersion: "latest",
+    branchRevision: undefined,
     arenaType: undefined,
     arenaUuidOrNameOrPath: undefined,
   });

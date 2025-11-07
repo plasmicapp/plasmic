@@ -28,10 +28,7 @@ import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
 import FilterButton from "../../components/widgets/FilterButton"; // plasmic-import: 93uVZfRMCA/component
 import Searchbox from "../../components/widgets/Searchbox"; // plasmic-import: po7gr0PX4_gWo/component
-import { _useStyleTokens as useStyleTokens_plasmic_kit_color_tokens } from "../plasmic_kit_color_tokens/PlasmicStyleTokensProvider"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/styleTokensProvider
-import { _useStyleTokens as useStyleTokens_plasmic_kit_design_system } from "../plasmic_kit_design_system/PlasmicStyleTokensProvider"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/styleTokensProvider
 import { _useStyleTokens } from "../plasmic_kit_left_pane/PlasmicStyleTokensProvider"; // plasmic-import: aukbrhkegRkQ6KizvhdUPT/styleTokensProvider
-import { _useStyleTokens as useStyleTokens_plasmic_kit_style_controls } from "../plasmic_kit_style_controls/PlasmicStyleTokensProvider"; // plasmic-import: gYEVvAzCcLMHDVPvuYxkFh/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
@@ -123,12 +120,6 @@ function PlasmicLeftSearchPanel__RenderFunc(props: {
   });
 
   const styleTokensClassNames = _useStyleTokens();
-  const styleTokensClassNames_plasmic_kit_design_system =
-    useStyleTokens_plasmic_kit_design_system();
-  const styleTokensClassNames_plasmic_kit_color_tokens =
-    useStyleTokens_plasmic_kit_color_tokens();
-  const styleTokensClassNames_plasmic_kit_style_controls =
-    useStyleTokens_plasmic_kit_style_controls();
 
   return (
     <div
@@ -142,9 +133,6 @@ function PlasmicLeftSearchPanel__RenderFunc(props: {
         projectcss.plasmic_default_styles,
         projectcss.plasmic_mixins,
         styleTokensClassNames,
-        styleTokensClassNames_plasmic_kit_design_system,
-        styleTokensClassNames_plasmic_kit_color_tokens,
-        styleTokensClassNames_plasmic_kit_style_controls,
         sty.searchPanel,
         {
           [sty.searchPanelrightOptions_filterControls]: hasVariant(

@@ -1,8 +1,12 @@
 // TODO: add "admin" role to GrantableAccessLevel and AccessLevel (between owner and editor), but do not
 //  allow granting this on workspaces/projects, only on teams.
 
-import type { Project } from "@/wab/server/entities/Entities";
-import { SiteInfo } from "@/wab/shared/SharedApi";
+import type { Project, ProjectRevision } from "@/wab/server/entities/Entities";
+import {
+  MinimalRevisionInfo,
+  PkgVersionInfoMeta,
+  SiteInfo,
+} from "@/wab/shared/SharedApi";
 
 const accessLevelOrderAsc = [
   "blocked",
@@ -45,4 +49,22 @@ export function accessLevelRank(a: AccessLevel) {
 
 export function isUnownedProject(project: SiteInfo | Project) {
   return !project.createdById && project.readableByPublic;
+}
+
+/**
+ * Type guard to check if a value is a PkgVersionInfoMeta
+ */
+export function isPkgVersionInfoMeta(
+  value: PkgVersionInfoMeta | MinimalRevisionInfo
+): value is PkgVersionInfoMeta {
+  return "pkgId" in value;
+}
+
+/**
+ * Type guard to check if a value is a ProjectRevision
+ */
+export function isProjectRevision(
+  value: PkgVersionInfoMeta | MinimalRevisionInfo
+): value is ProjectRevision {
+  return "revision" in value;
 }

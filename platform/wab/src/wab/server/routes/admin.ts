@@ -15,6 +15,7 @@ import {
 import {
   doSafelyDeleteProject,
   mkApiProject,
+  mkRevisionBroadcastData,
 } from "@/wab/server/routes/projects";
 import {
   commitTransaction,
@@ -319,7 +320,10 @@ export async function saveProjectRevisionData(req: Request, res: Response) {
   await broadcastProjectsMessage({
     room: `projects/${projectId}`,
     type: "update",
-    message: { projectId, revisionNum: commit.newRev.revision },
+    message: {
+      projectId,
+      rev: mkRevisionBroadcastData(commit.newRev),
+    },
   });
 }
 

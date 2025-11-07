@@ -11,6 +11,7 @@ import {
   SEARCH_PARAM_ARENA_TYPE,
   SEARCH_PARAM_BRANCH,
   SEARCH_PARAM_COMMENT,
+  SEARCH_PARAM_REVISION,
   SEARCH_PARAM_VERSION,
 } from "@/wab/shared/route/app-routes";
 import { Route, fillRoute } from "@/wab/shared/route/route";
@@ -64,6 +65,7 @@ export function parseProjectLocation(
   const searchParams = new URLSearchParams(location.search);
   let branchName = searchParams.get(SEARCH_PARAM_BRANCH) || MainBranchId;
   const branchVersion = searchParams.get(SEARCH_PARAM_VERSION) || latestTag;
+  const branchRevision = searchParams.get(SEARCH_PARAM_REVISION) || undefined;
   const arenaTypeString = searchParams.get(SEARCH_PARAM_ARENA_TYPE);
   const arenaType = isArenaType(arenaTypeString) ? arenaTypeString : undefined;
   const arenaUuidOrNameOrPath =
@@ -77,6 +79,7 @@ export function parseProjectLocation(
       slug: undefined,
       branchName,
       branchVersion,
+      branchRevision,
       arenaType,
       arenaUuidOrNameOrPath,
       threadId,
@@ -93,6 +96,7 @@ export function parseProjectLocation(
       slug: matchProjectSlug.params.slug,
       branchName,
       branchVersion,
+      branchRevision,
       arenaType,
       arenaUuidOrNameOrPath,
       threadId,
@@ -113,6 +117,7 @@ export function parseProjectLocation(
       projectId: matchProjectPreview.params.projectId,
       slug: undefined,
       arenaType: undefined,
+      branchRevision: undefined,
       branchName,
       branchVersion: latestTag,
       arenaUuidOrNameOrPath: previewPath,

@@ -485,6 +485,7 @@ export function makeTplMenu(
                     slug: tpl.component.name,
                     branchName: MainBranchId,
                     branchVersion: "latest",
+                    branchRevision: undefined,
                     arenaType: "component",
                     arenaUuidOrNameOrPath: tpl.component.uuid,
                   })

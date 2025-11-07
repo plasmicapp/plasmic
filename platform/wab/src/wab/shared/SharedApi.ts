@@ -1,4 +1,5 @@
 import { toOpaque } from "@/wab/commons/types";
+import type { ProjectRevision } from "@/wab/server/entities/Entities";
 import { AuthError } from "@/wab/shared/ApiErrors/errors";
 import {
   AddCommentReactionRequest,
@@ -241,6 +242,7 @@ export interface SiteInfo {
   workspaceTutorialDbs?: ApiDataSource[];
   readableByPublic: boolean;
   isMainBranchProtected: boolean;
+  revisions: ProjectRevision[];
 }
 
 export interface SiteInstInfo {
@@ -261,6 +263,14 @@ export interface PkgInfo {
   id: string;
   name: string;
   projectId;
+}
+
+export interface MinimalRevisionInfo {
+  id: string;
+  revision: number;
+  createdAt: Date;
+  createdById: string | null;
+  branchId?: string | null;
 }
 
 export interface PkgVersionInfoMeta extends ApiEntityBase {
@@ -678,6 +688,39 @@ export abstract class SharedApi {
     return this.get(`/pkgs/${pkgId}`, {
       version: version ?? "latest",
       meta: false,
+      ...(branchId ? { branchId } : {}),
+    });
+  }
+
+  listUnpublishedProjectRevisions(
+    projectId: ProjectId,
+    branchId?: string,
+    revisionNumGt?: number
+  ): Promise<{ revisions: ProjectRevision[] }> {
+    return this.get(`/projects/${projectId}/revs/unpublished`, {
+      ...(branchId ? { branchId } : {}),
+      ...(revisionNumGt !== undefined ? { revisionNumGt } : {}),
+    });
+  }
+
+  getProjectRevision(
+    projectId: ProjectId,
+    revisionId: string
+  ): Promise<{
+    rev: ProjectRevision;
+    depPkgs: PkgVersionInfo[];
+    etag: string;
+  }> {
+    return this.get(`/projects/${projectId}/revs/${revisionId}`);
+  }
+
+  revertProjectToRevision(
+    projectId: ProjectId,
+    revisionId: string,
+    branchId?: string
+  ): Promise<{ projectId: ProjectId }> {
+    return this.post(`/projects/${projectId}/revert-to-revision`, {
+      revisionId,
       ...(branchId ? { branchId } : {}),
     });
   }

@@ -20,6 +20,7 @@ interface LeftPaneHeaderProps {
   hasTitleActions?: boolean;
   noActions?: boolean;
   noDescription?: boolean;
+  borderless?: boolean;
 }
 
 function LeftPaneHeader(props: LeftPaneHeaderProps) {
@@ -38,6 +39,7 @@ function LeftPaneHeader(props: LeftPaneHeaderProps) {
         compactTitle: props.compactTitle,
         titleActions: props.titleActions,
       }}
+      borderless={props.borderless}
       hasTitleActions={props.hasTitleActions}
       expandState={
         props.isExpanded == undefined

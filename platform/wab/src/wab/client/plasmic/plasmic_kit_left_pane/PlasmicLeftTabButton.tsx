@@ -14,23 +14,20 @@
 import * as React from "react";
 
 import {
-  Flex as Flex__,
-  PlasmicIcon as PlasmicIcon__,
-  SingleBooleanChoiceArg,
-  SingleChoiceArg,
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  Flex as Flex__,
   hasVariant,
+  PlasmicIcon as PlasmicIcon__,
   renderPlasmicSlot,
+  SingleBooleanChoiceArg,
+  SingleChoiceArg,
+  StrictProps,
   useDollarState,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
-import { _useStyleTokens as useStyleTokens_plasmic_kit_color_tokens } from "../plasmic_kit_color_tokens/PlasmicStyleTokensProvider"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/styleTokensProvider
-import { _useStyleTokens as useStyleTokens_plasmic_kit_design_system } from "../plasmic_kit_design_system/PlasmicStyleTokensProvider"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/styleTokensProvider
-import { _useStyleTokens as useStyleTokens_plasmic_kit_style_controls } from "../plasmic_kit_style_controls/PlasmicStyleTokensProvider"; // plasmic-import: gYEVvAzCcLMHDVPvuYxkFh/styleTokensProvider
 import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: aukbrhkegRkQ6KizvhdUPT/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
@@ -146,12 +143,6 @@ function PlasmicLeftTabButton__RenderFunc(props: {
   });
 
   const styleTokensClassNames = _useStyleTokens();
-  const styleTokensClassNames_plasmic_kit_design_system =
-    useStyleTokens_plasmic_kit_design_system();
-  const styleTokensClassNames_plasmic_kit_color_tokens =
-    useStyleTokens_plasmic_kit_color_tokens();
-  const styleTokensClassNames_plasmic_kit_style_controls =
-    useStyleTokens_plasmic_kit_style_controls();
 
   return (
     <button
@@ -166,9 +157,6 @@ function PlasmicLeftTabButton__RenderFunc(props: {
         projectcss.plasmic_default_styles,
         projectcss.plasmic_mixins,
         styleTokensClassNames,
-        styleTokensClassNames_plasmic_kit_design_system,
-        styleTokensClassNames_plasmic_kit_color_tokens,
-        styleTokensClassNames_plasmic_kit_style_controls,
         sty.root,
         {
           [sty.roothasLabel]: hasVariant($state, "hasLabel", "hasLabel"),

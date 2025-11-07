@@ -1,12 +1,13 @@
-import { ensureInstance } from "@/wab/shared/common";
+import { PkgVersionInfo } from "@/wab/shared/SharedApi";
 import { Bundle, FastBundler } from "@/wab/shared/bundler";
+import { ensureInstance } from "@/wab/shared/common";
 import {
-  ensureKnownProjectDependency,
-  isKnownSite,
   ProjectDependency,
   Site,
+  ensureKnownProjectDependency,
+  ensureKnownSite,
+  isKnownSite,
 } from "@/wab/shared/model/classes";
-import { PkgVersionInfo } from "@/wab/shared/SharedApi";
 
 export function unbundleSite(
   bundler: FastBundler,
@@ -40,6 +41,18 @@ export function unbundleProjectDependency(
     taggedUnbundle(bundler, pkgInfo.model, pkgInfo.id)
   );
   return { projectDependency, depPkgs };
+}
+
+export function unbundleProjectDependencyRevision(
+  bundler: FastBundler,
+  data: Bundle,
+  depPkgInfos: PkgVersionInfo[]
+) {
+  const depPkgs = depPkgInfos.map(
+    (info) => taggedUnbundle(bundler, info.model, info.id) as ProjectDependency
+  );
+  const site = ensureKnownSite(taggedUnbundle(bundler, data, ""));
+  return { site, depPkgs };
 }
 
 /**
