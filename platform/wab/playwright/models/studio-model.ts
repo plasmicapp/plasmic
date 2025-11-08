@@ -61,7 +61,7 @@ export class StudioModel extends BaseModel {
   );
 
   readonly newDropdownItem = this.frame.locator(".ant-dropdown-menu-item");
-  readonly newPageInput = this.frame.locator('[data-test-id="prompt"]');
+  readonly newArenaInput = this.frame.locator('[data-test-id="prompt"]');
   readonly commentsTab = this.frame.locator(".comments-tab");
   readonly modal = this.frame.locator(".ant-modal");
   readonly confirmButton = this.frame.locator('[data-test-id="confirm"]');
@@ -263,15 +263,30 @@ export class StudioModel extends BaseModel {
     await this.leftPanel.createNewPage(name);
   }
 
+  async createComponentFromNav(name: string) {
+    await this.projectNavButton.click();
+    await this.newDropdownButton.click();
+    const menuItem = await this.newDropdownItem.nth(1);
+    await menuItem.click();
+
+    await this.newArenaInput.waitFor({ state: "visible" });
+    await this.newArenaInput.clear();
+    await this.newArenaInput.fill(name);
+
+    const createButton = this.frame.getByText("Create component");
+    await createButton.waitFor({ state: "visible" });
+    await createButton.click();
+  }
+
   async createNewPageInOwnArena(name: string) {
     await this.projectNavButton.click();
     await this.newDropdownButton.click();
     const menuItem = this.newDropdownItem.first();
     await menuItem.click();
 
-    await this.newPageInput.waitFor({ state: "visible" });
-    await this.newPageInput.clear({ force: true });
-    await this.newPageInput.fill(name, { force: true });
+    await this.newArenaInput.waitFor({ state: "visible" });
+    await this.newArenaInput.clear({ force: true });
+    await this.newArenaInput.fill(name, { force: true });
 
     const createButton = this.frame.getByText("Create page");
     await createButton.waitFor({ state: "visible" });
@@ -290,9 +305,9 @@ export class StudioModel extends BaseModel {
     const menuItem = this.newDropdownItem.first();
     await menuItem.click();
 
-    await this.newPageInput.waitFor({ state: "visible" });
-    await this.newPageInput.clear({ force: true });
-    await this.newPageInput.fill(name, { force: true });
+    await this.newArenaInput.waitFor({ state: "visible" });
+    await this.newArenaInput.clear({ force: true });
+    await this.newArenaInput.fill(name, { force: true });
 
     if (template) {
       await this.frame.getByText(template).click();
@@ -350,10 +365,12 @@ export class StudioModel extends BaseModel {
     await this.commentsTab.waitFor({ timeout: 10000 });
   }
 
+  getCommentPost(threadId: string) {
+    return this.frame.locator(`[data-test-id='comment-post-${threadId}']`);
+  }
+
   async clickCommentPost(threadId: string) {
-    const commentPost = this.frame.locator(
-      `[data-test-id='comment-post-${threadId}']`
-    );
+    const commentPost = this.getCommentPost(threadId);
     await commentPost.click();
 
     await this.commentsTab.waitFor({ timeout: 10000 });
@@ -825,8 +842,7 @@ export class StudioModel extends BaseModel {
 
   async waitForFrameToLoad() {
     await this.page.waitForSelector("iframe.studio-frame", { timeout: 30000 });
-
-    await this.page.waitForTimeout(3000);
+    await this.page.waitForTimeout(1000);
 
     try {
       const overlay = this.page.locator(".rsbuild-error-overlay").first();
@@ -835,6 +851,10 @@ export class StudioModel extends BaseModel {
         await this.page.waitForTimeout(500);
       }
     } catch (e) {}
+
+    await this.frame
+      .locator(".canvas-editor__canvas-container")
+      .waitFor({ timeout: 30000, state: "attached" });
   }
 
   async expectDebugTplTree(_expected: string) {}

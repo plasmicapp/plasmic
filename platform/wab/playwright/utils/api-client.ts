@@ -5,7 +5,19 @@ export class ApiClient {
   private token: string | undefined = undefined;
   private dataSourceId: string | undefined = undefined;
 
-  constructor(private request: APIRequestContext, private baseUrl: string) {}
+  constructor(public request: APIRequestContext, public baseUrl: string) {}
+
+  async getCsrf() {
+    const csrfRes = await this.request.get(`${this.baseUrl}/api/v1/auth/csrf`);
+
+    if (!csrfRes.ok()) {
+      const errorText = await csrfRes.text();
+      throw new Error(
+        `Failed to get CSRF token: ${csrfRes.status()} ${errorText}`
+      );
+    }
+    return (await csrfRes.json()).csrf;
+  }
 
   private async withAdminContext<T>(
     operation: (context: APIRequestContext, token: string) => Promise<T>
@@ -37,16 +49,7 @@ export class ApiClient {
   }
 
   async login(email: string, password: string) {
-    const csrfRes = await this.request.get(`${this.baseUrl}/api/v1/auth/csrf`);
-
-    if (!csrfRes.ok()) {
-      const errorText = await csrfRes.text();
-      throw new Error(
-        `Failed to get CSRF token: ${csrfRes.status()} ${errorText}`
-      );
-    }
-
-    this.token = (await csrfRes.json()).csrf;
+    this.token = await this.getCsrf();
 
     if (!this.token) {
       throw Error("X-CSRF-Token is not set");
@@ -102,6 +105,7 @@ export class ApiClient {
     email: _email = "user2@example.com",
     inviteOnly,
     skipTours: _skipTours = true,
+    workspaceId,
   }: {
     skipVisit?: boolean;
     devFlags?: Record<string, any>;
@@ -109,14 +113,15 @@ export class ApiClient {
     email?: string;
     inviteOnly?: boolean;
     skipTours?: boolean;
+    workspaceId?: string;
   } = {}): Promise<string> {
-    const csrfRes = await this.request.get(`${this.baseUrl}/api/v1/auth/csrf`);
-    const csrf = (await csrfRes.json()).csrf;
+    const csrf = await this.getCsrf();
 
     const res = await this.request.post(`${this.baseUrl}/api/v1/projects`, {
       data: {
         name: name ? `[playwright] ${name}` : undefined,
         devFlags,
+        workspaceId,
       },
       headers: { "X-CSRF-Token": csrf },
     });
@@ -311,8 +316,7 @@ export class ApiClient {
   }
 
   async createFakeDataSource(options?: any) {
-    const csrfRes = await this.request.get(`${this.baseUrl}/api/v1/auth/csrf`);
-    const csrf = (await csrfRes.json()).csrf;
+    const csrf = await this.getCsrf();
 
     const workspaceRes = await this.request.get(
       `${this.baseUrl}/api/v1/personal-workspace`,
@@ -342,10 +346,7 @@ export class ApiClient {
 
   async deleteDataSourceOfCurrentTest() {
     if (this.dataSourceId) {
-      const csrfRes = await this.request.get(
-        `${this.baseUrl}/api/v1/auth/csrf`
-      );
-      const csrf = (await csrfRes.json()).csrf;
+      const csrf = await this.getCsrf();
 
       await this.request.delete(
         `${this.baseUrl}/api/v1/data-source/sources/${this.dataSourceId}`,
@@ -356,6 +357,29 @@ export class ApiClient {
 
       this.dataSourceId = undefined;
     }
+  }
+
+  async grantProjectPermission(
+    projectId: string,
+    userEmail: string,
+    accessLevel: string = "editor"
+  ) {
+    const csrf = await this.getCsrf();
+
+    const res = await this.request.post(`${this.baseUrl}/api/v1/grant-revoke`, {
+      data: {
+        grants: [
+          {
+            email: userEmail,
+            accessLevel: accessLevel,
+            projectId,
+          },
+        ],
+        revokes: [],
+      },
+      headers: { "X-CSRF-Token": csrf },
+    });
+    return await res.json();
   }
 
   async setupProjectFromTemplate(

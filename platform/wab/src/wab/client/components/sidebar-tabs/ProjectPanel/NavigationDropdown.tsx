@@ -65,6 +65,10 @@ import { StandardMarkdown } from "@/wab/client/utils/StandardMarkdown";
 import { valueAsString } from "@/wab/commons/values";
 import { ArenaType, isArenaType } from "@/wab/shared/ApiSchema";
 import { AnyArena, getArenaName } from "@/wab/shared/Arenas";
+import { ARENAS_DESCRIPTION, ARENA_LOWER } from "@/wab/shared/Labels";
+import { tryGetMainContentSlotTarget } from "@/wab/shared/SlotUtils";
+import { addEmptyQuery } from "@/wab/shared/TplMgr";
+import { $$$ } from "@/wab/shared/TplQuery";
 import { getHostLessComponents } from "@/wab/shared/code-components/code-components";
 import { toVarName } from "@/wab/shared/codegen/util";
 import {
@@ -108,7 +112,6 @@ import {
   replaceFolderName,
 } from "@/wab/shared/folders/folders-util";
 import { InsertableTemplateComponentExtraInfo } from "@/wab/shared/insertable-templates/types";
-import { ARENAS_DESCRIPTION, ARENA_LOWER } from "@/wab/shared/Labels";
 import {
   Arena,
   ComponentArena,
@@ -116,9 +119,6 @@ import {
   ObjectPath,
   PageArena,
 } from "@/wab/shared/model/classes";
-import { tryGetMainContentSlotTarget } from "@/wab/shared/SlotUtils";
-import { addEmptyQuery } from "@/wab/shared/TplMgr";
-import { $$$ } from "@/wab/shared/TplQuery";
 import { TableSchema } from "@plasmicapp/data-sources";
 import { executePlasmicDataOp } from "@plasmicapp/react-web/lib/data-sources";
 import { Dropdown, Menu } from "antd";
@@ -863,7 +863,7 @@ function NavigationDropdown_(
         >
           <NavigationDropdownContext.Provider value={contextValue}>
             <ListStack>
-              <div style={{ height: 500 }}>
+              <div style={{ height: 500 }} data-test-id="nav-dropdown-content">
                 <VirtualTree
                   rootNodes={items}
                   renderElement={ArenaTreeRow}

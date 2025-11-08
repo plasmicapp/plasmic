@@ -122,12 +122,11 @@ async function changeTokensTarget(models: any, targetName: string) {
   const overlay = models.studio.frame.locator('[data-plasmic-role="overlay"]');
   await overlay.waitFor({ state: "visible", timeout: 5000 });
 
-  const targetOption = overlay.getByText(targetName);
+  const targetOption = overlay.getByText(targetName, { exact: true });
   await targetOption.waitFor({ state: "visible", timeout: 5000 });
   await targetOption.click();
 
   await overlay.waitFor({ state: "hidden", timeout: 5000 });
-  await models.studio.page.waitForTimeout(500);
 }
 
 async function closeSidebarModal(models: any) {
@@ -192,27 +191,43 @@ async function updateToken(
 
   await changeTokensTarget(models, opts.globalVariant ?? "Base");
 
-  await models.studio.page.waitForTimeout(1000);
+  const variantSelect = models.studio.frame.locator(
+    '[data-test-id="global-variant-select"]'
+  );
+  const expectedValue = opts.globalVariant ?? "Base";
+  await variantSelect
+    .locator(`[title="${expectedValue}"]`)
+    .first()
+    .waitFor({ state: "attached", timeout: 3000 })
+    .catch(() => {
+      // Fallback to a short wait if the title check doesn't work
+      return models.studio.page.waitForTimeout(300);
+    });
 
-  // Get tokenRow AFTER changing target to avoid stale element
+  // Get tokenRow after changing target to avoid stale element
   const tokensPanel = await getTokensPanel(models);
   const tokenRow = tokensPanel.getByText(tokenName).first();
 
   if (opts.override) {
     await tokenRow.click({ button: "right" });
 
-    // Wait for context menu to appear and be fully rendered
-    const contextMenu = models.studio.frame.locator('[role="menu"]');
+    // Wait for context menu and its items to be fully rendered
+    const contextMenu = models.studio.frame.locator('[role="menu"]').last();
     await contextMenu.waitFor({ state: "visible", timeout: 5000 });
-    await models.studio.page.waitForTimeout(500);
 
-    // Look for the override menu item directly within the visible context menu
-    const overrideMenuItem = contextMenu
+    // Wait for menu items to be rendered within the context menu
+    await contextMenu
       .locator('[role="menuitem"]')
-      .filter({ hasText: "Override" })
-      .filter({ hasText: "value" });
+      .first()
+      .waitFor({ state: "visible", timeout: 3000 });
+
+    const overrideMenuItem = contextMenu.getByRole("menuitem", {
+      name: /Override.*value/i,
+    });
+
     await overrideMenuItem.waitFor({ state: "visible", timeout: 5000 });
-    await overrideMenuItem.click();
+    await overrideMenuItem.scrollIntoViewIfNeeded();
+    await overrideMenuItem.click({ timeout: 3000 });
   } else {
     await tokenRow.click();
   }
@@ -228,14 +243,23 @@ async function updateToken(
   const input = modal.locator(
     `.panel-popup-content [data-test-id="${tokenType}-input"]`
   );
+
+  // Wait for input to be ready
+  await input.waitFor({ state: "visible", timeout: 3000 });
+
+  // Clear and fill the input in one operation
   await input.click();
-  await models.studio.page.waitForTimeout(500);
-  await input.fill("");
-  await models.studio.page.waitForTimeout(500);
-  await input.type(`${value}`);
-  await models.studio.page.waitForTimeout(500);
+  await input.fill(value);
+
+  // Verify the value was set
+  await expect(input).toHaveValue(value, { timeout: 2000 });
+
   await models.studio.page.keyboard.press("Enter");
-  await models.studio.page.waitForTimeout(500);
+
+  // Wait for modal to start closing
+  await modal.waitFor({ state: "hidden", timeout: 3000 }).catch(() => {
+    // If modal doesn't close automatically, closeSidebarModal will handle it
+  });
 
   await closeSidebarModal(models);
 }
@@ -283,18 +307,23 @@ async function removeTokenOverride(
   const tokenRow = tokensPanel.getByText(tokenName).first();
   await tokenRow.click({ button: "right" });
 
-  // Wait for context menu to appear
-  const contextMenu = models.studio.frame.locator('[role="menu"]');
+  // Wait for context menu and its items to be fully rendered
+  const contextMenu = models.studio.frame.locator('[role="menu"]').last();
   await contextMenu.waitFor({ state: "visible", timeout: 5000 });
-  await models.studio.page.waitForTimeout(300);
 
-  // Look for the remove menu item directly within the visible context menu
-  const removeMenuItem = contextMenu
+  // Wait for menu items to be rendered
+  await contextMenu
     .locator('[role="menuitem"]')
-    .filter({ hasText: "Remove" })
-    .filter({ hasText: "override" });
+    .first()
+    .waitFor({ state: "visible", timeout: 3000 });
+
+  // Look for the remove menu item
+  const removeMenuItem = contextMenu.getByRole("menuitem", {
+    name: /Remove.*override/i,
+  });
   await removeMenuItem.waitFor({ state: "visible", timeout: 5000 });
-  await removeMenuItem.click();
+  await removeMenuItem.scrollIntoViewIfNeeded();
+  await removeMenuItem.click({ timeout: 3000 });
 }
 
 async function assertTokenIndicator(
@@ -709,9 +738,7 @@ test.describe("Imported token overrides", () => {
 
       await page.waitForTimeout(500);
 
-      await page.goto(`/projects/${dep1ProjectId}`, {
-        waitUntil: "networkidle",
-      });
+      await page.goto(`/projects/${dep1ProjectId}`);
       await models.studio.waitForFrameToLoad();
 
       await models.studio.leftPanel.addComponent("Dep Comp");

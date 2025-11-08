@@ -81,6 +81,7 @@ export const ThreadCommentsDialog = observer(function ThreadCommentsDialog({
             canUpdateHistory: canUpdateThreadHistory,
             threadHistoryStatus: {
               commentThread: selectedThread,
+              "data-test-id": "thread-comment-dialog-history-btn",
             },
           }}
           threadComments={{

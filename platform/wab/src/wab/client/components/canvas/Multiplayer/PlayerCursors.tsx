@@ -1,8 +1,8 @@
 import MultiplayerCursor from "@/wab/client/components/canvas/Multiplayer/MultiplayerCursor";
 import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewportCtx } from "@/wab/client/studio-ctx/ViewportCtx";
-import { Pt } from "@/wab/shared/geom";
 import { getArenaType, getArenaUuidOrName } from "@/wab/shared/Arenas";
+import { Pt } from "@/wab/shared/geom";
 import { observer } from "mobx-react";
 import { PerfectCursor } from "perfect-cursors";
 import * as React from "react";
@@ -76,10 +76,15 @@ const PlayerCursor = observer(function PlayerCursor({
     .scalerToClient(new Pt(cursorData.left, cursorData.top))
     .sub(viewportCtx.clipperBox().topLeft());
 
+  const firstName = playerData.user?.firstName ?? "Anon";
+  const lastName = playerData.user?.lastName ?? "Last";
+  const dataTestId = `${firstName}-${lastName}`.replace(/[^a-zA-Z0-9-]/g, "");
+
   return (
     <AnimatedCursor
       point={pt}
-      userName={playerData.user?.firstName ?? "Anon"}
+      userName={firstName}
+      data-test-id={dataTestId}
       color={color}
     />
   );
@@ -87,8 +92,9 @@ const PlayerCursor = observer(function PlayerCursor({
 
 const AnimatedCursor = observer(function AnimatedCursor(props: {
   point: Pt;
-  userName?: string;
-  color?: string;
+  userName: string;
+  color: string;
+  "data-test-id": string;
 }) {
   const { point, userName, color } = props;
   const rCursor = React.useRef<HTMLDivElement>(null);
@@ -116,6 +122,7 @@ const AnimatedCursor = observer(function AnimatedCursor(props: {
       className="PlayerCursor"
       hexColor={color}
       name={userName}
+      data-test-id={props["data-test-id"]}
     />
   );
 });

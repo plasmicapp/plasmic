@@ -41,11 +41,7 @@ test.describe("comments", () => {
     const threadId = await firstMarker.getAttribute("data-test-id");
     expect(threadId).toBeDefined();
 
-    if (!threadId) {
-      return;
-    }
-
-    const threadIdValue = threadId.replace("comment-marker-", "");
+    const threadIdValue = threadId!.replace("comment-marker-", "");
 
     const url = page.url();
     expect(url).not.toContain(`comment=${threadIdValue}`);

@@ -70,25 +70,10 @@ export class LeftPanel extends BaseModel {
   }
 
   async insertNode(node: string) {
-    let addButtonClicked = false;
-    for (let attempt = 0; attempt < 3; attempt++) {
-      try {
-        await this.addButton.waitFor({ state: "visible", timeout: 15000 });
-        await this.addButton.click({ timeout: 5000 });
-        addButtonClicked = true;
-        break;
-      } catch (error) {
-        if (attempt === 2) {
-          await this.addButton.click({ force: true });
-          addButtonClicked = true;
-          break;
-        }
-        await this.page.waitForTimeout(300);
-      }
-    }
-
-    if (!addButtonClicked) {
-      throw new Error("Failed to click add button");
+    const addMenuOpen = await this.addContainer.isVisible();
+    if (!addMenuOpen) {
+      await this.addButton.click({ timeout: 30000 });
+      await this.page.waitForTimeout(500);
     }
 
     await this.addContainer.waitFor({ state: "visible", timeout: 10000 });
@@ -158,6 +143,21 @@ export class LeftPanel extends BaseModel {
 
   async addNewFrame() {
     await this.insertNode("New scratch artboard");
+  }
+
+  async addAndSelectNewArtboard() {
+    await this.addNewFrame();
+    const artboardFrame = this.page
+      .locator("iframe")
+      .first()
+      .contentFrame()
+      .locator("iframe")
+      .contentFrame()
+      .locator("iframe")
+      .first()
+      .contentFrame();
+    const artboardBody = artboardFrame.locator("body");
+    await artboardBody.click();
   }
 
   async setBreakpointWidth(width: string) {
@@ -241,7 +241,7 @@ export class LeftPanel extends BaseModel {
     for (let i = 0; i < names.length; i++) {
       const name = names[i];
       const label = this.treeLabels.filter({ hasText: name }).first();
-      await label.waitFor();
+      await label.waitFor({ timeout: 5000 });
 
       if (i < names.length - 1) {
         const expander = label.locator(
