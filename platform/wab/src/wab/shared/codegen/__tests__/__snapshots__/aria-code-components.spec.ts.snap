@@ -6084,40 +6084,24 @@ transform: translate3d(-50%, 0px, 0px);
 left: 50%;
 top: -11px;
 position: absolute;
-transform-style: preserve-3d;
 height: 1em;  
-      } 
- .Popover__svg___50Dg * {
-          transform-style: preserve-3d;  
       } 
   .Popover__root__v9B4R[data-placement=top] .Popover__svg___50Dg {
           transform: rotate3d(0, 0, 1, 60deg) translate3d(-50%, 0%, 0px);
 bottom: -16px;
 left: 50%;
-top: auto;
-transform-style: preserve-3d;  
-      } 
-  .Popover__root__v9B4R[data-placement=top] .Popover__svg___50Dg * {
-          transform-style: preserve-3d;  
+top: auto;  
       } 
   .Popover__root__v9B4R[data-placement=right] .Popover__svg___50Dg {
           transform: rotate3d(0, 0, 1, 30deg) translate3d(0%, -50%, 0px);
 left: -14px;
-top: 50%;
-transform-style: preserve-3d;  
-      } 
-  .Popover__root__v9B4R[data-placement=right] .Popover__svg___50Dg * {
-          transform-style: preserve-3d;  
+top: 50%;  
       } 
   .Popover__root__v9B4R[data-placement=left] .Popover__svg___50Dg {
           transform: rotate3d(0, 0, 1, -30deg) translate3d(0px, -50%, 0px);
 right: -14px;
 left: auto;
-top: 50%;
-transform-style: preserve-3d;  
-      } 
-  .Popover__root__v9B4R[data-placement=left] .Popover__svg___50Dg * {
-          transform-style: preserve-3d;  
+top: 50%;  
       } 
  .Popover__slotTargetContent__i5KaR {
           color: var(--token-f1PNVAbV3p2v);  
@@ -7277,42 +7261,26 @@ color: var(--token-SX0Pi19x0IVO);
 transform: translate3d(-50%, 0px, 0px);
 width: auto;
 height: 1em;
-bottom: 1px;
-transform-style: preserve-3d;  
-      } 
- .Tooltip__svg___3Q8Bc * {
-          transform-style: preserve-3d;  
+bottom: 1px;  
       } 
   .Tooltip__ariaTooltip__ry2S4[data-placement=bottom] .Tooltip__svg___3Q8Bc {
           bottom: auto;
 left: 50%;
 top: 10px;
-transform: rotate3d(0, 0, 1, 60deg) translate3d(-50%, 0px, 0px);
-transform-style: preserve-3d;  
-      } 
-  .Tooltip__ariaTooltip__ry2S4[data-placement=bottom] .Tooltip__svg___3Q8Bc * {
-          transform-style: preserve-3d;  
+transform: rotate3d(0, 0, 1, 60deg) translate3d(-50%, 0px, 0px);  
       } 
   .Tooltip__ariaTooltip__ry2S4[data-placement=left] .Tooltip__svg___3Q8Bc {
           transform: rotate3d(0, 0, 1, 30deg) translate3d(0%, -50%, 0px);
 bottom: auto;
 left: auto;
 top: 50%;
-right: 6px;
-transform-style: preserve-3d;  
-      } 
-  .Tooltip__ariaTooltip__ry2S4[data-placement=left] .Tooltip__svg___3Q8Bc * {
-          transform-style: preserve-3d;  
+right: 6px;  
       } 
   .Tooltip__ariaTooltip__ry2S4[data-placement=right] .Tooltip__svg___3Q8Bc {
           transform: rotate3d(0, 0, 1, -30deg) translate3d(0%, -50%, 0px);
 bottom: auto;
 left: 6px;
-top: 50%;
-transform-style: preserve-3d;  
-      } 
-  .Tooltip__ariaTooltip__ry2S4[data-placement=right] .Tooltip__svg___3Q8Bc * {
-          transform-style: preserve-3d;  
+top: 50%;  
       } 
  .Tooltip__freeBox__jXb6 {
           display: flex;
@@ -14853,40 +14821,24 @@ transform: translate3d(-50%, 0px, 0px);
 left: 50%;
 top: -11px;
 position: absolute;
-transform-style: preserve-3d;
 height: 1em;  
-      } 
- .svg * {
-          transform-style: preserve-3d;  
       } 
   .root[data-placement=top] .svg {
           transform: rotate3d(0, 0, 1, 60deg) translate3d(-50%, 0%, 0px);
 bottom: -16px;
 left: 50%;
-top: auto;
-transform-style: preserve-3d;  
-      } 
-  .root[data-placement=top] .svg * {
-          transform-style: preserve-3d;  
+top: auto;  
       } 
   .root[data-placement=right] .svg {
           transform: rotate3d(0, 0, 1, 30deg) translate3d(0%, -50%, 0px);
 left: -14px;
-top: 50%;
-transform-style: preserve-3d;  
-      } 
-  .root[data-placement=right] .svg * {
-          transform-style: preserve-3d;  
+top: 50%;  
       } 
   .root[data-placement=left] .svg {
           transform: rotate3d(0, 0, 1, -30deg) translate3d(0px, -50%, 0px);
 right: -14px;
 left: auto;
-top: 50%;
-transform-style: preserve-3d;  
-      } 
-  .root[data-placement=left] .svg * {
-          transform-style: preserve-3d;  
+top: 50%;  
       } 
  .slotTargetContent {
           color: var(--token-f1PNVAbV3p2v);  
@@ -16110,42 +16062,26 @@ color: var(--token-SX0Pi19x0IVO);
 transform: translate3d(-50%, 0px, 0px);
 width: auto;
 height: 1em;
-bottom: 1px;
-transform-style: preserve-3d;  
-      } 
- .svg * {
-          transform-style: preserve-3d;  
+bottom: 1px;  
       } 
   .ariaTooltip[data-placement=bottom] .svg {
           bottom: auto;
 left: 50%;
 top: 10px;
-transform: rotate3d(0, 0, 1, 60deg) translate3d(-50%, 0px, 0px);
-transform-style: preserve-3d;  
-      } 
-  .ariaTooltip[data-placement=bottom] .svg * {
-          transform-style: preserve-3d;  
+transform: rotate3d(0, 0, 1, 60deg) translate3d(-50%, 0px, 0px);  
       } 
   .ariaTooltip[data-placement=left] .svg {
           transform: rotate3d(0, 0, 1, 30deg) translate3d(0%, -50%, 0px);
 bottom: auto;
 left: auto;
 top: 50%;
-right: 6px;
-transform-style: preserve-3d;  
-      } 
-  .ariaTooltip[data-placement=left] .svg * {
-          transform-style: preserve-3d;  
+right: 6px;  
       } 
   .ariaTooltip[data-placement=right] .svg {
           transform: rotate3d(0, 0, 1, -30deg) translate3d(0%, -50%, 0px);
 bottom: auto;
 left: 6px;
-top: 50%;
-transform-style: preserve-3d;  
-      } 
-  .ariaTooltip[data-placement=right] .svg * {
-          transform-style: preserve-3d;  
+top: 50%;  
       } 
  .freeBox__jXb6 {
           display: flex;

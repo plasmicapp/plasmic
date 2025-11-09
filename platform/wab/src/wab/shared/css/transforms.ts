@@ -1,4 +1,5 @@
 import { withoutNils } from "@/wab/shared/common";
+import { Dim } from "@/wab/shared/core/bg-styles";
 import {
   Angle,
   Length,
@@ -526,6 +527,7 @@ function parseTransformFunction(func: TransformFunction): CssTransform | null {
 export const has3dComponent = (transformVal: string) => {
   const cssTransforms = CssTransforms.fromCss(transformVal);
   if (
+    cssTransforms.perspective &&
     cssTransforms.perspective !== "none" &&
     cssTransforms.perspective !== "0px"
   ) {
@@ -533,12 +535,27 @@ export const has3dComponent = (transformVal: string) => {
   }
 
   return cssTransforms.transforms.some((transform) => {
-    if (transform.type === "skew") {
+    if (transform instanceof SkewTransform) {
       return false;
     }
 
-    // We show all transforms using their 3d transform functions in CssTransform.showCss()
-    return true;
+    if (transform instanceof RotateTransform) {
+      return (
+        Dim.fromCss(transform.angle).value !== "0" &&
+        Dim.fromCss(transform.X).value !== "0" &&
+        Dim.fromCss(transform.Y).value !== "0"
+      );
+    }
+
+    if (transform instanceof TranslateTransform) {
+      return Dim.fromCss(transform.Z).value !== "0";
+    }
+
+    if (transform instanceof ScaleTransform) {
+      return Dim.fromCss(transform.Z).value !== "1";
+    }
+
+    return false;
   });
 };
 

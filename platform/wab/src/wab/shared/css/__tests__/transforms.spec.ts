@@ -6,6 +6,7 @@ import {
   ScaleTransform,
   SkewTransform,
   TranslateTransform,
+  has3dComponent,
   parseOrigin,
 } from "@/wab/shared/css/transforms";
 
@@ -456,6 +457,94 @@ describe("Transform migration utilities", () => {
       expect(_migrationOnlyUtil.migrateTransformsValue(input)).toEqual(
         expected
       );
+    });
+  });
+});
+
+describe("has3dComponent", () => {
+  describe("perspective", () => {
+    it("should return true for non-zero perspective", () => {
+      expect(has3dComponent("perspective(500px)")).toBe(true);
+      expect(has3dComponent("perspective(100px) translateX(10px)")).toBe(true);
+    });
+
+    it("should return false for zero or none perspective", () => {
+      expect(has3dComponent("perspective(0px)")).toBe(false);
+      expect(has3dComponent("perspective(none)")).toBe(false);
+    });
+  });
+
+  describe("translate transforms", () => {
+    it("should return true when Z value is non-zero", () => {
+      expect(has3dComponent("translateZ(10px)")).toBe(true);
+      expect(has3dComponent("translate3d(0px, 0px, 10px)")).toBe(true);
+      expect(has3dComponent("translate3d(5px, 10px, 10%)")).toBe(true);
+    });
+
+    it("should return false when Z value is zero", () => {
+      expect(has3dComponent("translate3d(10px, 20px, 0px)")).toBe(false);
+      expect(has3dComponent("translate3d(10px, 20px, 0%)")).toBe(false);
+    });
+  });
+
+  describe("rotate transforms", () => {
+    it("should return true when angle is non-zero and both X and Y are non-zero", () => {
+      expect(has3dComponent("rotate3d(1, 1, 0, 45deg)")).toBe(true);
+      expect(has3dComponent("rotate3d(0.5, 0.5, 0, 30turn)")).toBe(true);
+      expect(has3dComponent("rotate3d(2, 3, 0, 90rad)")).toBe(true);
+    });
+
+    it("should return false when angle is zero", () => {
+      expect(has3dComponent("rotate3d(1, 1, 0, 0deg)")).toBe(false);
+      expect(has3dComponent("rotate3d(1, 1, 0, 0turn)")).toBe(false);
+      expect(has3dComponent("rotate3d(1, 1, 0, 0rad)")).toBe(false);
+      expect(has3dComponent("rotate3d(1, 1, 0, 0grad)")).toBe(false);
+    });
+
+    it("should return false when X or Y is zero", () => {
+      expect(has3dComponent("rotate3d(0, 1, 0, 45deg)")).toBe(false);
+      expect(has3dComponent("rotate3d(1, 0, 0, 45deg)")).toBe(false);
+    });
+  });
+
+  describe("scale transforms", () => {
+    it("should return true when Z value is not 1", () => {
+      expect(has3dComponent("scale3d(1, 1, 2)")).toBe(true);
+      expect(has3dComponent("scale3d(2, 3, 0.5)")).toBe(true);
+      expect(has3dComponent("scale3d(2, 3, 0)")).toBe(true);
+    });
+
+    it("should return false when Z value is 1", () => {
+      expect(has3dComponent("scale3d(2, 3, 1)")).toBe(false);
+    });
+  });
+
+  describe("skew transforms", () => {
+    it("should always return false for skew transforms", () => {
+      expect(has3dComponent("skew(0deg, 0deg)")).toBe(false);
+      expect(has3dComponent("skew(10deg, 20deg)")).toBe(false);
+      expect(has3dComponent("skew(10rad, 20rad)")).toBe(false);
+    });
+  });
+
+  describe("multiple transforms", () => {
+    it("should return true if any transform has 3D component", () => {
+      expect(
+        has3dComponent("translateX(10px) translateZ(5px) rotate(45deg)")
+      ).toBe(true);
+      expect(has3dComponent("scale(2) scaleZ(0.5) skew(10deg)")).toBe(true);
+      expect(
+        has3dComponent("perspective(500px) translateX(10px) rotate(45deg)")
+      ).toBe(true);
+    });
+
+    it("should return false if no transform has 3D component", () => {
+      expect(has3dComponent("translateX(10px) rotate(45deg) scale(2)")).toBe(
+        false
+      );
+      expect(
+        has3dComponent("translate(10px, 20px) rotateZ(45deg) skew(10deg)")
+      ).toBe(false);
     });
   });
 });
