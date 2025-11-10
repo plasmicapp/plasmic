@@ -1,10 +1,4 @@
-import {
-  useCmsDatabase,
-  useCmsRow,
-  useCmsTable,
-  useMutateRow,
-  useMutateTableRows,
-} from "@/wab/client/components/cms/cms-contexts";
+import { Api } from "@/wab/client/api";
 import { CmsEntryCloneModal } from "@/wab/client/components/cms/CmsEntryCloneModal";
 import { CmsEntryHistory } from "@/wab/client/components/cms/CmsEntryHistory";
 import {
@@ -13,6 +7,13 @@ import {
   renderEntryField,
   renderMaybeLocalizedInput,
 } from "@/wab/client/components/cms/CmsInputs";
+import {
+  useCmsDatabase,
+  useCmsRow,
+  useCmsTable,
+  useMutateRow,
+  useMutateTableRows,
+} from "@/wab/client/components/cms/cms-contexts";
 import { isCmsTextLike } from "@/wab/client/components/cms/utils";
 import { confirm } from "@/wab/client/components/quick-modals";
 import { useApi } from "@/wab/client/contexts/AppContexts";
@@ -20,11 +21,12 @@ import {
   DefaultCmsEntryDetailsProps,
   PlasmicCmsEntryDetails,
 } from "@/wab/client/plasmic/plasmic_kit_cms/PlasmicCmsEntryDetails";
+import { PromisifyMethods } from "@/wab/commons/promisify-methods";
 import { isUniqueViolationError } from "@/wab/shared/ApiErrors/cms-errors";
 import {
   ApiCmsDatabase,
-  ApiCmseRow,
   ApiCmsTable,
+  ApiCmseRow,
   CmsDatabaseId,
   CmsFieldMeta,
   CmsMetaType,
@@ -41,7 +43,7 @@ import { APP_ROUTES } from "@/wab/shared/route/app-routes";
 import { fillRoute } from "@/wab/shared/route/route";
 import { substituteUrlParams } from "@/wab/shared/utils/url-utils";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
-import { Drawer, Form, Menu, message, notification, Tooltip } from "antd";
+import { Drawer, Form, Menu, Tooltip, message, notification } from "antd";
 import { useForm } from "antd/lib/form/Form";
 import { isEqual, isNil, mapValues, pickBy } from "lodash";
 import * as React from "react";
@@ -635,28 +637,13 @@ function CmsEntryDetailsForm_(
                           });
                           await mutateRow();
                           setHasUnpublishedChanges(false);
-                          await message.success({
-                            content: "Your changes have been published.",
-                            duration: 5,
-                          });
-                          const hooks = table.settings?.webhooks?.filter(
-                            (hook) => hook.event === "publish"
+                          spawn(
+                            message.success({
+                              content: "Your changes have been published.",
+                              duration: 5,
+                            })
                           );
-                          if (hooks && hooks.length > 0) {
-                            const hooksResp = await api.triggerCmsTableWebhooks(
-                              table.id,
-                              "publish"
-                            );
-                            const failed = hooksResp.responses.filter(
-                              (r) => r.status !== 200
-                            );
-                            if (failed.length > 0) {
-                              await message.warning({
-                                content: "Some publish hooks failed.",
-                                duration: 5,
-                              });
-                            }
-                          }
+                          await triggerPublishWebhooksAndNotify(api, table);
                         } catch (err) {
                           if (isUniqueViolationError(err)) {
                             handleUniqueFieldChecks(err.violations);
@@ -705,21 +692,27 @@ function CmsEntryDetailsForm_(
                     <Menu.Item
                       key="unpublish"
                       onClick={async () => {
-                        await message.loading({
-                          key: "unpublish-message",
-                          content: "Unpublishing...",
-                        });
+                        spawn(
+                          message.loading({
+                            key: "unpublish-message",
+                            content: `Unpublishing ${entryDisplayName}...`,
+                          })
+                        );
                         await api.updateCmsRow(row.id, {
                           data: null,
                           revision,
                         });
+                        spawn(
+                          message.success({
+                            key: "unpublish-message",
+                            content: `Unpublished ${entryDisplayName}.`,
+                            duration: 5,
+                          })
+                        );
                         await mutateRow();
                         setHasUnpublishedChanges(hasPublishableChanges());
                         await validateFields();
-                        await message.success({
-                          key: "unpublish-message",
-                          content: "Unpublished.",
-                        });
+                        await triggerPublishWebhooksAndNotify(api, table);
                       }}
                       disabled={isSaving || isPublishing}
                     >
@@ -731,22 +724,28 @@ function CmsEntryDetailsForm_(
                       <Menu.Item
                         key="revert"
                         onClick={async () => {
-                          await message.loading({
-                            key: "revert-message",
-                            content: "Reverting...",
-                          });
+                          spawn(
+                            message.loading({
+                              key: "revert-message",
+                              content: `Reverting ${entryDisplayName}...`,
+                            })
+                          );
                           await api.updateCmsRow(row.id, {
                             draftData: null,
                             revision,
                           });
+                          spawn(
+                            message.success({
+                              key: "revert-message",
+                              content: `Reverted ${entryDisplayName}.`,
+                              duration: 5,
+                            })
+                          );
                           await mutateRow();
                           await resetFormByRow();
                           setHasUnpublishedChanges(hasPublishableChanges());
                           await validateFields();
-                          await message.success({
-                            key: "revert-message",
-                            content: "Reverted.",
-                          });
+                          await triggerPublishWebhooksAndNotify(api, table);
                         }}
                         disabled={isSaving}
                       >
@@ -772,7 +771,20 @@ function CmsEntryDetailsForm_(
                       message: `Are you sure you want to delete ${entryDisplayName}?`,
                     });
                     if (confirmed) {
+                      spawn(
+                        message.loading({
+                          key: "delete-message",
+                          content: `Deleting ${entryDisplayName}...`,
+                        })
+                      );
                       await api.deleteCmsRow(row.id);
+                      spawn(
+                        message.success({
+                          key: "delete-message",
+                          content: `Deleted ${entryDisplayName}.`,
+                          duration: 5,
+                        })
+                      );
                       await mutateRow();
                       history.push(
                         fillRoute(APP_ROUTES.cmsModelContent, {
@@ -780,6 +792,7 @@ function CmsEntryDetailsForm_(
                           tableId: table.id,
                         })
                       );
+                      await triggerPublishWebhooksAndNotify(api, table);
                     }
                   }}
                 >
@@ -830,10 +843,12 @@ function CmsEntryDetailsForm_(
         entryDisplayName={entryDisplayName}
         placeholderIdentifier={entryPlaceholder}
         onClone={async (newIdentifier) => {
-          await message.loading({
-            key: "duplicate-message",
-            content: `Duplicating ${entryDisplayName}...`,
-          });
+          spawn(
+            message.loading({
+              key: "duplicate-message",
+              content: `Duplicating ${entryDisplayName}...`,
+            })
+          );
           try {
             setDuplicating(true);
             const clonedRow = await api.cloneCmsRow(row.id, {
@@ -848,10 +863,13 @@ function CmsEntryDetailsForm_(
                 rowId: clonedRow.id,
               })
             );
-            await message.success({
-              key: "duplicate-message",
-              content: `A duplicate of ${entryDisplayName} has been created. You are now viewing the duplicated entry.`,
-            });
+            spawn(
+              message.success({
+                key: "duplicate-message",
+                content: `A duplicate of ${entryDisplayName} has been created. You are now viewing the duplicated entry.`,
+                duration: 5,
+              })
+            );
           } finally {
             setDuplicating(false);
           }
@@ -863,3 +881,35 @@ function CmsEntryDetailsForm_(
 }
 
 const CmsEntryDetailsForm = React.forwardRef(CmsEntryDetailsForm_);
+
+/**
+ * Triggers webhooks and notifies user of success/failure.
+ */
+async function triggerPublishWebhooksAndNotify(
+  api: PromisifyMethods<Api>,
+  table: ApiCmsTable
+): Promise<void> {
+  const hooks = table.settings?.webhooks?.filter(
+    (hook) => hook.event === "publish"
+  );
+  if (!hooks) {
+    return;
+  }
+
+  const hooksResp = await api.triggerCmsTableWebhooks(table.id, "publish");
+  const failures = hooksResp.responses.filter(
+    (r) => r.status < 200 || r.status >= 300
+  );
+  if (failures.length === 0) {
+    spawn(
+      message.success({ content: `Publish webhook(s) succeeded.`, duration: 5 })
+    );
+  } else {
+    spawn(
+      message.error({
+        content: `${failures.length} publish webhook(s) responded with non-2xx response code.`,
+        duration: 5,
+      })
+    );
+  }
+}
