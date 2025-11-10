@@ -16,7 +16,6 @@ import * as React from "react";
 import {
   Flex as Flex__,
   SingleBooleanChoiceArg,
-  Stack as Stack__,
   StrictProps,
   classNames,
   createPlasmicElementProxy,
@@ -27,12 +26,11 @@ import {
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
+import { _useStyleTokens } from "../../../../plasmic/plasmic_kit_continuous_deployment/PlasmicStyleTokensProvider"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/styleTokensProvider
 import WebhookEvent from "../../WebhookEvent"; // plasmic-import: MtBpr4iNob/component
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_design_system_css from "../../../../plasmic/PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import plasmic_plasmic_kit_color_tokens_css from "../../../../plasmic/plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
 import projectcss from "../../../modals/plasmic/plasmic_kit_project_settings/plasmic_plasmic_kit_project_settings.module.css"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/projectcss
 import sty from "./PlasmicWebhooksHistory.module.css"; // plasmic-import: Ynwp30ZgYk/css
 
@@ -115,6 +113,8 @@ function PlasmicWebhooksHistory__RenderFunc(props: {
     $refs,
   });
 
+  const styleTokensClassNames = _useStyleTokens();
+
   return (
     <div
       data-plasmic-name={"root"}
@@ -126,19 +126,15 @@ function PlasmicWebhooksHistory__RenderFunc(props: {
         projectcss.root_reset,
         projectcss.plasmic_default_styles,
         projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_css.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
+        styleTokensClassNames,
         sty.root,
         { [sty.rootloading]: hasVariant($state, "loading", "loading") }
       )}
     >
       {(hasVariant($state, "loading", "loading") ? false : true) ? (
-        <Stack__
-          as={"div"}
+        <div
           data-plasmic-name={"freeBox"}
           data-plasmic-override={overrides.freeBox}
-          hasGap={true}
           className={classNames(projectcss.all, sty.freeBox, {
             [sty.freeBoxloading]: hasVariant($state, "loading", "loading"),
           })}
@@ -199,7 +195,7 @@ function PlasmicWebhooksHistory__RenderFunc(props: {
             ),
             value: args.events,
           })}
-        </Stack__>
+        </div>
       ) : null}
       {(hasVariant($state, "loading", "loading") ? true : false) ? (
         <div
@@ -246,7 +242,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicWebhooksHistory__VariantsArgs;
     args?: PlasmicWebhooksHistory__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicWebhooksHistory__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicWebhooksHistory__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicWebhooksHistory__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

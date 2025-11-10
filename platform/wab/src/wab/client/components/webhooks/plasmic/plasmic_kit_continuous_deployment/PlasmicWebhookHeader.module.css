@@ -1,16 +1,7 @@
 .root {
   display: flex;
   position: relative;
-}
-.root > :global(.__wab_flex-container) {
-  margin-left: calc(0px - 8px);
-  width: calc(100% + 8px);
-}
-.root > :global(.__wab_flex-container) > *,
-.root > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.root > :global(.__wab_flex-container) > picture > img,
-.root > :global(.__wab_flex-container) > :global(.__wab_slot) > picture > img {
-  margin-left: 8px;
+  column-gap: 8px;
 }
 .text {
   position: relative;
@@ -25,26 +16,11 @@
   display: flex;
   position: relative;
   flex-direction: column;
-  width: 100%;
-  min-width: 0;
-}
-.freeBox__ynHvD > :global(.__wab_flex-container) {
-  flex-direction: column;
   align-items: stretch;
   justify-content: flex-start;
+  width: 100%;
+  row-gap: 8px;
   min-width: 0;
-  margin-top: calc(0px - 8px);
-  height: calc(100% + 8px);
-}
-.freeBox__ynHvD > :global(.__wab_flex-container) > *,
-.freeBox__ynHvD > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.freeBox__ynHvD > :global(.__wab_flex-container) > picture > img,
-.freeBox__ynHvD
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  margin-top: 8px;
 }
 .keyInput {
   border-radius: 4px;
@@ -74,25 +50,11 @@
   display: flex;
   position: relative;
   flex-direction: column;
-}
-.freeBox__pVez5 > :global(.__wab_flex-container) {
-  flex-direction: column;
   align-items: stretch;
   justify-content: flex-end;
-  margin-top: calc(0px - 4px);
-  height: calc(100% + 4px);
+  row-gap: 4px;
 }
-.freeBox__pVez5 > :global(.__wab_flex-container) > *,
-.freeBox__pVez5 > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.freeBox__pVez5 > :global(.__wab_flex-container) > picture > img,
-.freeBox__pVez5
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  margin-top: 4px;
-}
-.freeBoxshowAdd_hideDelete__pVez5RbWrKOQpov > :global(.__wab_flex-container) {
+.freeBoxshowAdd_hideDelete__pVez5RbWrKOQpov {
   justify-content: flex-start;
 }
 .addButton:global(.__wab_instance) {

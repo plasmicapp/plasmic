@@ -19,7 +19,6 @@ import {
   PlasmicLink as PlasmicLink__,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
-  Stack as Stack__,
   StrictProps,
   classNames,
   createPlasmicElementProxy,
@@ -35,12 +34,11 @@ import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
 import Checkbox from "../../components/widgets/Checkbox"; // plasmic-import: W-rO7NZqPjZ/component
 import Select from "../../components/widgets/Select"; // plasmic-import: j_4IQyOWK2b/component
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
 import projectcss from "../../components/modals/plasmic/plasmic_kit_project_settings/plasmic_plasmic_kit_project_settings.module.css"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/projectcss
-import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
 import sty from "./PlasmicSubsectionSaveVersion.module.css"; // plasmic-import: 74wUdEnJhwr/css
 
 import ArrowRightSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ArrowRightSvg"; // plasmic-import: 9Jv8jb253/icon
@@ -183,22 +181,20 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
     $refs,
   });
 
+  const styleTokensClassNames = _useStyleTokens();
+
   return (
-    <Stack__
-      as={"div"}
+    <div
       data-plasmic-name={"root"}
       data-plasmic-override={overrides.root}
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
-      hasGap={true}
       className={classNames(
         projectcss.all,
         projectcss.root_reset,
         projectcss.plasmic_default_styles,
         projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_css.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
+        styleTokensClassNames,
         sty.root,
         {
           [sty.rootcollapse]: hasVariant($state, "collapse", "collapse"),
@@ -223,11 +219,7 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
           ),
         })}
       >
-        <Stack__
-          as={"div"}
-          hasGap={true}
-          className={classNames(projectcss.all, sty.freeBox__aHwL)}
-        >
+        <div className={classNames(projectcss.all, sty.freeBox__aHwL)}>
           <div
             className={classNames(projectcss.all, sty.freeBox__oAx16, {
               [sty.freeBoxfailed__oAx165ST]: hasVariant(
@@ -303,7 +295,7 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
           >
             {"Save a new version"}
           </div>
-        </Stack__>
+        </div>
       </div>
       {(
         hasVariant($state, "failed", "failed")
@@ -333,9 +325,7 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
             ),
           })}
         >
-          <Stack__
-            as={"div"}
-            hasGap={true}
+          <div
             className={classNames(projectcss.all, sty.freeBox__oMcN, {
               [sty.freeBoxfailed__oMcN5ST]: hasVariant(
                 $state,
@@ -369,10 +359,8 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
             >
               {"Learn more."}
             </PlasmicLink__>
-          </Stack__>
-          <Stack__
-            as={"div"}
-            hasGap={true}
+          </div>
+          <div
             className={classNames(projectcss.all, sty.freeBox__ks1K7, {
               [sty.freeBoxchangesState_major__ks1K73In4S]: hasVariant(
                 $state,
@@ -391,9 +379,7 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
               ),
             })}
           >
-            <Stack__
-              as={"div"}
-              hasGap={true}
+            <div
               className={classNames(projectcss.all, sty.freeBox__h5G6F, {
                 [sty.freeBoxchangesState_minor__h5G6FRvh4M]: hasVariant(
                   $state,
@@ -416,9 +402,7 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
               >
                 {"Changes"}
               </div>
-              <Stack__
-                as={"div"}
-                hasGap={true}
+              <div
                 className={classNames(projectcss.all, sty.freeBox___0H0Cx, {
                   [sty.freeBoxchangesState_loading___0H0Cxckc3O]: hasVariant(
                     $state,
@@ -604,8 +588,8 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
                     {"Review all changes ->"}
                   </Button>
                 ) : null}
-              </Stack__>
-            </Stack__>
+              </div>
+            </div>
             {(
               hasVariant($state, "changesState", "major")
                 ? true
@@ -615,9 +599,7 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
                 ? true
                 : false
             ) ? (
-              <Stack__
-                as={"div"}
-                hasGap={true}
+              <div
                 className={classNames(projectcss.all, sty.freeBox__zomOs, {
                   [sty.freeBoxchangesState_major__zomOs3In4S]: hasVariant(
                     $state,
@@ -711,7 +693,7 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
                     </div>
                   </Button>
                 </div>
-              </Stack__>
+              </div>
             ) : null}
             {(
               hasVariant($state, "changesState", "major")
@@ -722,9 +704,7 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
                 ? true
                 : false
             ) ? (
-              <Stack__
-                as={"div"}
-                hasGap={true}
+              <div
                 className={classNames(projectcss.all, sty.freeBox__pX75D, {
                   [sty.freeBoxchangesState_major__pX75D3In4S]: hasVariant(
                     $state,
@@ -786,7 +766,7 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
                   rows={2}
                   value={""}
                 />
-              </Stack__>
+              </div>
             ) : null}
             {(
               hasVariant($state, "changesState", "major")
@@ -797,11 +777,9 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
                 ? true
                 : false
             ) ? (
-              <Stack__
-                as={"div"}
+              <div
                 data-plasmic-name={"tagsStack"}
                 data-plasmic-override={overrides.tagsStack}
-                hasGap={true}
                 className={classNames(projectcss.all, sty.tagsStack, {
                   [sty.tagsStackchangesState_major]: hasVariant(
                     $state,
@@ -879,9 +857,9 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
                     "value",
                   ])}
                 />
-              </Stack__>
+              </div>
             ) : null}
-          </Stack__>
+          </div>
         </div>
       ) : null}
       {(
@@ -891,9 +869,7 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
           ? true
           : false
       ) ? (
-        <Stack__
-          as={"div"}
-          hasGap={true}
+        <div
           className={classNames(projectcss.all, sty.freeBox___0V80Z, {
             [sty.freeBoxchangesState_minor___0V80ZRvh4M]: hasVariant(
               $state,
@@ -947,9 +923,9 @@ function PlasmicSubsectionSaveVersion__RenderFunc(props: {
               ),
             }),
           })}
-        </Stack__>
+        </div>
       ) : null}
-    </Stack__>
+    </div>
   ) as React.ReactElement | null;
 }
 
@@ -1000,7 +976,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicSubsectionSaveVersion__VariantsArgs;
     args?: PlasmicSubsectionSaveVersion__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicSubsectionSaveVersion__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicSubsectionSaveVersion__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicSubsectionSaveVersion__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

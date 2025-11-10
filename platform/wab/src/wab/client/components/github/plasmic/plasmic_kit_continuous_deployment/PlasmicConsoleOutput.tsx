@@ -14,22 +14,22 @@
 import * as React from "react";
 
 import {
-  Flex as Flex__,
-  SingleBooleanChoiceArg,
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  Flex as Flex__,
   hasVariant,
   renderPlasmicSlot,
+  SingleBooleanChoiceArg,
+  StrictProps,
   useDollarState,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
+import { _useStyleTokens } from "../../../../plasmic/plasmic_kit_continuous_deployment/PlasmicStyleTokensProvider"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/styleTokensProvider
+
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_design_system_css from "../../../../plasmic/PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import plasmic_plasmic_kit_color_tokens_css from "../../../../plasmic/plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
 import projectcss from "../../../modals/plasmic/plasmic_kit_project_settings/plasmic_plasmic_kit_project_settings.module.css"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/projectcss
 import sty from "./PlasmicConsoleOutput.module.css"; // plasmic-import: 8dA5vGT9N9E/css
 
@@ -109,6 +109,8 @@ function PlasmicConsoleOutput__RenderFunc(props: {
     $refs,
   });
 
+  const styleTokensClassNames = _useStyleTokens();
+
   return (
     (hasVariant($state, "hidden", "hidden") ? false : true) ? (
       <div
@@ -121,9 +123,7 @@ function PlasmicConsoleOutput__RenderFunc(props: {
           projectcss.root_reset,
           projectcss.plasmic_default_styles,
           projectcss.plasmic_mixins,
-          projectcss.plasmic_tokens,
-          plasmic_plasmic_kit_design_system_css.plasmic_tokens,
-          plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
+          styleTokensClassNames,
           sty.root,
           { [sty.roothidden]: hasVariant($state, "hidden", "hidden") }
         )}
@@ -179,7 +179,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicConsoleOutput__VariantsArgs;
     args?: PlasmicConsoleOutput__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicConsoleOutput__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicConsoleOutput__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicConsoleOutput__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

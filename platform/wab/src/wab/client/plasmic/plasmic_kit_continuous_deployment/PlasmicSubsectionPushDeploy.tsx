@@ -20,7 +20,6 @@ import {
   PlasmicLink as PlasmicLink__,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
-  Stack as Stack__,
   StrictProps,
   classNames,
   createPlasmicElementProxy,
@@ -37,12 +36,11 @@ import Checkbox from "../../components/widgets/Checkbox"; // plasmic-import: W-r
 import ExpandButton from "../../components/widgets/ExpandButton"; // plasmic-import: JJhv0MV9DH/component
 import GitJobStep from "../../components/widgets/GitJobStep"; // plasmic-import: JzpEJAQTjPX/component
 import Select from "../../components/widgets/Select"; // plasmic-import: j_4IQyOWK2b/component
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
 import projectcss from "../../components/modals/plasmic/plasmic_kit_project_settings/plasmic_plasmic_kit_project_settings.module.css"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/projectcss
-import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
 import sty from "./PlasmicSubsectionPushDeploy.module.css"; // plasmic-import: 0HHLsxeAqF8/css
 
 import CheckCircleIcon from "../plasmic_kit/PlasmicIcon__CheckCircle"; // plasmic-import: gU-8UYs9RllyJ/icon
@@ -210,22 +208,20 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
     $refs,
   });
 
+  const styleTokensClassNames = _useStyleTokens();
+
   return (
-    <Stack__
-      as={"div"}
+    <div
       data-plasmic-name={"root"}
       data-plasmic-override={overrides.root}
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
-      hasGap={true}
       className={classNames(
         projectcss.all,
         projectcss.root_reset,
         projectcss.plasmic_default_styles,
         projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_css.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
+        styleTokensClassNames,
         sty.root,
         {
           [sty.rootcollapse]: hasVariant($state, "collapse", "collapse"),
@@ -261,9 +257,7 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
             hasVariant($state, "result", "success"),
         })}
       >
-        <Stack__
-          as={"div"}
-          hasGap={true}
+        <div
           className={classNames(projectcss.all, sty.freeBox__jgbTr, {
             [sty.freeBoxcollapse__jgbTr3BfnV]: hasVariant(
               $state,
@@ -409,10 +403,8 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
               role={"img"}
             />
           ) : null}
-        </Stack__>
-        <Stack__
-          as={"div"}
-          hasGap={true}
+        </div>
+        <div
           className={classNames(projectcss.all, sty.freeBox__pgu3B, {
             [sty.freeBoxview_status__pgu3BWsXz9]: hasVariant(
               $state,
@@ -531,7 +523,7 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
               </div>
             </Button>
           ) : null}
-        </Stack__>
+        </div>
       </div>
       {(
         hasVariant($state, "view", "status")
@@ -554,9 +546,7 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
             ),
           })}
         >
-          <Stack__
-            as={"div"}
-            hasGap={true}
+          <div
             className={classNames(projectcss.all, sty.freeBox__o9AxH, {
               [sty.freeBoxview_setup__o9AxHsMuCj]: hasVariant(
                 $state,
@@ -598,10 +588,8 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
             >
               {"Learn more."}
             </PlasmicLink__>
-          </Stack__>
-          <Stack__
-            as={"div"}
-            hasGap={true}
+          </div>
+          <div
             className={classNames(projectcss.all, sty.freeBox___6XpMr, {
               [sty.freeBoxrepoState_existingLoader___6XpMrBuuMb]: hasVariant(
                 $state,
@@ -610,9 +598,7 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
               ),
             })}
           >
-            <Stack__
-              as={"div"}
-              hasGap={true}
+            <div
               className={classNames(projectcss.all, sty.freeBox__mwi6W, {
                 [sty.freeBoxconnection_connected__mwi6WX7Cr]: hasVariant(
                   $state,
@@ -636,9 +622,7 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
                 ),
               })}
             >
-              <Stack__
-                as={"div"}
-                hasGap={true}
+              <div
                 className={classNames(projectcss.all, sty.freeBox__cVqn, {
                   [sty.freeBoxconnection_error__cVqnkj8F1]: hasVariant(
                     $state,
@@ -714,7 +698,7 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
                     ? "Loading..."
                     : "Not connected"}
                 </PlasmicLink__>
-              </Stack__>
+              </div>
               {(hasVariant($state, "connection", "error") ? true : false) ? (
                 <Button
                   data-plasmic-name={"retryButton"}
@@ -853,7 +837,7 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
                   </div>
                 </Button>
               ) : null}
-            </Stack__>
+            </div>
             {(
               hasVariant($state, "connection", "connected") &&
               hasVariant($state, "repoState", "existingLoader")
@@ -1015,9 +999,7 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
                     ) : null}
                   </div>
                 ) : null}
-                <Stack__
-                  as={"div"}
-                  hasGap={true}
+                <div
                   className={classNames(projectcss.all, sty.freeBox___3TC, {
                     [sty.freeBoxrepoState_existingLoader___3TCBuuMb]:
                       hasVariant($state, "repoState", "existingLoader"),
@@ -1029,9 +1011,7 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
                   {(
                     hasVariant($state, "repoState", "newRepo") ? false : true
                   ) ? (
-                    <Stack__
-                      as={"div"}
-                      hasGap={true}
+                    <div
                       className={classNames(projectcss.all, sty.freeBox__pY6F, {
                         [sty.freeBoxconnection_connected__pY6FX7Cr]: hasVariant(
                           $state,
@@ -1099,7 +1079,7 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
                           "value",
                         ])}
                       />
-                    </Stack__>
+                    </div>
                   ) : null}
                   {(
                     hasVariant($state, "repoState", "existingLoader")
@@ -1108,9 +1088,7 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
                       ? false
                       : true
                   ) ? (
-                    <Stack__
-                      as={"div"}
-                      hasGap={true}
+                    <div
                       className={classNames(
                         projectcss.all,
                         sty.freeBox__nrItu,
@@ -1132,9 +1110,7 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
                         }
                       )}
                     >
-                      <Stack__
-                        as={"div"}
-                        hasGap={true}
+                      <div
                         className={classNames(
                           projectcss.all,
                           sty.freeBox__vUo8Z,
@@ -1188,10 +1164,8 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
                           type={"text"}
                           value={""}
                         />
-                      </Stack__>
-                      <Stack__
-                        as={"div"}
-                        hasGap={true}
+                      </div>
+                      <div
                         className={classNames(
                           projectcss.all,
                           sty.freeBox__futMf
@@ -1221,13 +1195,13 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
                           rows={3}
                           value={""}
                         />
-                      </Stack__>
-                    </Stack__>
+                      </div>
+                    </div>
                   ) : null}
-                </Stack__>
+                </div>
               </div>
             ) : null}
-          </Stack__>
+          </div>
         </div>
       ) : null}
       {(hasVariant($state, "view", "status") ? true : false) ? (
@@ -1246,11 +1220,9 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
               hasVariant($state, "result", "success"),
           })}
         >
-          <Stack__
-            as={"ul"}
+          <ul
             data-plasmic-name={"steps"}
             data-plasmic-override={overrides.steps}
-            hasGap={true}
             className={classNames(projectcss.all, projectcss.ul, sty.steps, {
               [sty.stepsview_status]: hasVariant($state, "view", "status"),
             })}
@@ -1334,7 +1306,7 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
             >
               {"Make pull request"}
             </GitJobStep>
-          </Stack__>
+          </ul>
         </div>
       ) : null}
       {(
@@ -1368,7 +1340,7 @@ function PlasmicSubsectionPushDeploy__RenderFunc(props: {
             : "Enter some text"}
         </div>
       ) : null}
-    </Stack__>
+    </div>
   ) as React.ReactElement | null;
 }
 
@@ -1443,7 +1415,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicSubsectionPushDeploy__VariantsArgs;
     args?: PlasmicSubsectionPushDeploy__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicSubsectionPushDeploy__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicSubsectionPushDeploy__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicSubsectionPushDeploy__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

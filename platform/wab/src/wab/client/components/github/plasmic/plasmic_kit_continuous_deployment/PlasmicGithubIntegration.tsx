@@ -19,7 +19,6 @@ import {
   PlasmicLink as PlasmicLink__,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
-  Stack as Stack__,
   StrictProps,
   classNames,
   createPlasmicElementProxy,
@@ -31,6 +30,7 @@ import {
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
+import { _useStyleTokens } from "../../../../plasmic/plasmic_kit_continuous_deployment/PlasmicStyleTokensProvider"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/styleTokensProvider
 import Button from "../../../widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
 import Select from "../../../widgets/Select"; // plasmic-import: j_4IQyOWK2b/component
 import Switch from "../../../widgets/Switch"; // plasmic-import: b35JDgXpbiF/component
@@ -38,8 +38,6 @@ import ErrorFeedback from "../../ErrorFeedback"; // plasmic-import: 6ztKJ9-EG9Y/
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_design_system_css from "../../../../plasmic/PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import plasmic_plasmic_kit_color_tokens_css from "../../../../plasmic/plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
 import projectcss from "../../../modals/plasmic/plasmic_kit_project_settings/plasmic_plasmic_kit_project_settings.module.css"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/projectcss
 import sty from "./PlasmicGithubIntegration.module.css"; // plasmic-import: FuvSZfvXL5/css
 
@@ -302,22 +300,20 @@ function PlasmicGithubIntegration__RenderFunc(props: {
     $refs,
   });
 
+  const styleTokensClassNames = _useStyleTokens();
+
   return (
-    <Stack__
-      as={"div"}
+    <div
       data-plasmic-name={"root"}
       data-plasmic-override={overrides.root}
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
-      hasGap={true}
       className={classNames(
         projectcss.all,
         projectcss.root_reset,
         projectcss.plasmic_default_styles,
         projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_css.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
+        styleTokensClassNames,
         sty.root,
         {
           [sty.roothide_action]: hasVariant($state, "hide", "action"),
@@ -334,9 +330,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
         }
       )}
     >
-      <Stack__
-        as={"div"}
-        hasGap={true}
+      <div
         className={classNames(projectcss.all, sty.freeBox__w2So6, {
           [sty.freeBoxerrors_name__w2So6NelV0]: hasVariant(
             $state,
@@ -469,11 +463,9 @@ function PlasmicGithubIntegration__RenderFunc(props: {
           </Button>
         </div>
         {(hasVariant($state, "view", "existingRepo") ? false : true) ? (
-          <Stack__
-            as={"div"}
+          <div
             data-plasmic-name={"newBox"}
             data-plasmic-override={overrides.newBox}
-            hasGap={true}
             className={classNames(projectcss.all, sty.newBox, {
               [sty.newBoxerrors_name]: hasVariant($state, "errors", "name"),
               [sty.newBoxhide_action]: hasVariant($state, "hide", "action"),
@@ -489,11 +481,9 @@ function PlasmicGithubIntegration__RenderFunc(props: {
               ),
             })}
           >
-            <Stack__
-              as={"div"}
+            <div
               data-plasmic-name={"orgBox"}
               data-plasmic-override={overrides.orgBox}
-              hasGap={true}
               className={classNames(projectcss.all, sty.orgBox, {
                 [sty.orgBoxloading_githubData]: hasVariant(
                   $state,
@@ -557,10 +547,8 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                 type={"bordered"}
                 value={generateStateValueProp($state, ["org", "value"])}
               />
-            </Stack__>
-            <Stack__
-              as={"div"}
-              hasGap={true}
+            </div>
+            <div
               className={classNames(projectcss.all, sty.freeBox__eK0Co, {
                 [sty.freeBoxhide_action__eK0CoZcgUd]: hasVariant(
                   $state,
@@ -584,9 +572,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                 })}
               />
 
-              <Stack__
-                as={"div"}
-                hasGap={true}
+              <div
                 className={classNames(projectcss.all, sty.freeBox__m8Hum, {
                   [sty.freeBoxhide_action__m8HumZcgUd]: hasVariant(
                     $state,
@@ -658,13 +644,11 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                     {"Adjust GitHub App permissions"}
                   </div>
                 </Button>
-              </Stack__>
-            </Stack__>
-            <Stack__
-              as={"div"}
+              </div>
+            </div>
+            <div
               data-plasmic-name={"nameBox"}
               data-plasmic-override={overrides.nameBox}
-              hasGap={true}
               className={classNames(projectcss.all, sty.nameBox, {
                 [sty.nameBoxerrors_name]: hasVariant($state, "errors", "name"),
                 [sty.nameBoxview_existingRepo]: hasVariant(
@@ -714,11 +698,9 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                 type={"text"}
                 value={""}
               />
-            </Stack__>
+            </div>
             {(hasVariant($state, "errors", "name") ? true : false) ? (
-              <Stack__
-                as={"div"}
-                hasGap={true}
+              <div
                 className={classNames(projectcss.all, sty.freeBox__rQeIv, {
                   [sty.freeBoxerrors_name__rQeIVnelV0]: hasVariant(
                     $state,
@@ -739,11 +721,9 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                   />
                 ) : null}
                 {(hasVariant($state, "errors", "name") ? true : false) ? (
-                  <Stack__
-                    as={"div"}
+                  <div
                     data-plasmic-name={"nameError"}
                     data-plasmic-override={overrides.nameError}
-                    hasGap={true}
                     className={classNames(projectcss.all, sty.nameError, {
                       [sty.nameErrorerrors_name]: hasVariant(
                         $state,
@@ -778,15 +758,13 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                         "There is already a repo with this name on this GitHub organization. Change to something that is not in use."
                       }
                     </div>
-                  </Stack__>
+                  </div>
                 ) : null}
-              </Stack__>
+              </div>
             ) : null}
-            <Stack__
-              as={"div"}
+            <div
               data-plasmic-name={"privateBox"}
               data-plasmic-override={overrides.privateBox}
-              hasGap={true}
               className={classNames(projectcss.all, sty.privateBox, {
                 [sty.privateBoxisPublishingSite]: hasVariant(
                   $state,
@@ -854,7 +832,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                   }}
                 />
               </div>
-            </Stack__>
+            </div>
             {(hasVariant($state, "errors", "name") ? false : false) ? (
               <div
                 className={classNames(projectcss.all, sty.freeBox__nkvAb, {
@@ -866,14 +844,12 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                 })}
               />
             ) : null}
-          </Stack__>
+          </div>
         ) : null}
         {(hasVariant($state, "view", "existingRepo") ? true : false) ? (
-          <Stack__
-            as={"div"}
+          <div
             data-plasmic-name={"existingBox"}
             data-plasmic-override={overrides.existingBox}
-            hasGap={true}
             className={classNames(projectcss.all, sty.existingBox, {
               [sty.existingBoxview_existingRepo]: hasVariant(
                 $state,
@@ -882,11 +858,9 @@ function PlasmicGithubIntegration__RenderFunc(props: {
               ),
             })}
           >
-            <Stack__
-              as={"div"}
+            <div
               data-plasmic-name={"repositoryBox"}
               data-plasmic-override={overrides.repositoryBox}
-              hasGap={true}
               className={classNames(projectcss.all, sty.repositoryBox, {
                 [sty.repositoryBoxview_existingRepo]: hasVariant(
                   $state,
@@ -938,10 +912,8 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                 }}
                 value={generateStateValueProp($state, ["repository", "value"])}
               />
-            </Stack__>
-            <Stack__
-              as={"div"}
-              hasGap={true}
+            </div>
+            <div
               className={classNames(projectcss.all, sty.freeBox__u1Ph5, {
                 [sty.freeBoxview_existingRepo__u1Ph5EHbf9]: hasVariant(
                   $state,
@@ -961,9 +933,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                   })}
                 />
               ) : null}
-              <Stack__
-                as={"div"}
-                hasGap={true}
+              <div
                 className={classNames(projectcss.all, sty.freeBox___49QEf, {
                   [sty.freeBoxview_existingRepo___49QEfeHbf9]: hasVariant(
                     $state,
@@ -1024,13 +994,11 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                     {"Adjust GitHub App permissions"}
                   </div>
                 </Button>
-              </Stack__>
-            </Stack__>
-            <Stack__
-              as={"div"}
+              </div>
+            </div>
+            <div
               data-plasmic-name={"branchBox"}
               data-plasmic-override={overrides.branchBox}
-              hasGap={true}
               className={classNames(projectcss.all, sty.branchBox, {
                 [sty.branchBoxview_existingRepo]: hasVariant(
                   $state,
@@ -1082,12 +1050,10 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                 }}
                 value={generateStateValueProp($state, ["branch", "value"])}
               />
-            </Stack__>
-            <Stack__
-              as={"div"}
+            </div>
+            <div
               data-plasmic-name={"directoryBox"}
               data-plasmic-override={overrides.directoryBox}
-              hasGap={true}
               className={classNames(projectcss.all, sty.directoryBox, {
                 [sty.directoryBoxerrors_name]: hasVariant(
                   $state,
@@ -1145,13 +1111,11 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                 type={"text"}
                 value={""}
               />
-            </Stack__>
+            </div>
             {(hasVariant($state, "errors", "directory") ? true : false) ? (
-              <Stack__
-                as={"div"}
+              <div
                 data-plasmic-name={"directoryError"}
                 data-plasmic-override={overrides.directoryError}
-                hasGap={true}
                 className={classNames(projectcss.all, sty.directoryError, {
                   [sty.directoryErrorerrors_directory]: hasVariant(
                     $state,
@@ -1191,9 +1155,9 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                     "The specified directory does not contain a valid package.json."
                   }
                 </div>
-              </Stack__>
+              </div>
             ) : null}
-          </Stack__>
+          </div>
         ) : null}
         <div
           className={classNames(projectcss.all, sty.freeBox__w6Skl, {
@@ -1205,11 +1169,9 @@ function PlasmicGithubIntegration__RenderFunc(props: {
           })}
         />
 
-        <Stack__
-          as={"div"}
+        <div
           data-plasmic-name={"opts"}
           data-plasmic-override={overrides.opts}
-          hasGap={true}
           className={classNames(projectcss.all, sty.opts, {
             [sty.optshide_action]: hasVariant($state, "hide", "action"),
             [sty.optsview_existingRepo]: hasVariant(
@@ -1219,11 +1181,9 @@ function PlasmicGithubIntegration__RenderFunc(props: {
             ),
           })}
         >
-          <Stack__
-            as={"div"}
+          <div
             data-plasmic-name={"frameworkBox"}
             data-plasmic-override={overrides.frameworkBox}
-            hasGap={true}
             className={classNames(projectcss.all, sty.frameworkBox, {
               [sty.frameworkBoxerrors_directory]: hasVariant(
                 $state,
@@ -1286,12 +1246,10 @@ function PlasmicGithubIntegration__RenderFunc(props: {
               type={"bordered"}
               value={generateStateValueProp($state, ["framework", "value"])}
             />
-          </Stack__>
-          <Stack__
-            as={"div"}
+          </div>
+          <div
             data-plasmic-name={"languageBox"}
             data-plasmic-override={overrides.languageBox}
-            hasGap={true}
             className={classNames(projectcss.all, sty.languageBox, {
               [sty.languageBoxview_existingRepo]: hasVariant(
                 $state,
@@ -1344,12 +1302,10 @@ function PlasmicGithubIntegration__RenderFunc(props: {
               type={"bordered"}
               value={generateStateValueProp($state, ["language", "value"])}
             />
-          </Stack__>
-          <Stack__
-            as={"div"}
+          </div>
+          <div
             data-plasmic-name={"modeBox"}
             data-plasmic-override={overrides.modeBox}
-            hasGap={true}
             className={classNames(projectcss.all, sty.modeBox, {
               [sty.modeBoxisPublishingSite]: hasVariant(
                 $state,
@@ -1363,9 +1319,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
               ),
             })}
           >
-            <Stack__
-              as={"div"}
-              hasGap={true}
+            <div
               className={classNames(projectcss.all, sty.freeBox__gdLb, {
                 [sty.freeBoxisPublishingSite__gdLbqOy2M]: hasVariant(
                   $state,
@@ -1401,7 +1355,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                 className={classNames(projectcss.all, sty.modeInfo)}
                 role={"img"}
               />
-            </Stack__>
+            </div>
             <Select
               data-plasmic-name={"mode"}
               data-plasmic-override={overrides.mode}
@@ -1430,13 +1384,11 @@ function PlasmicGithubIntegration__RenderFunc(props: {
               type={"bordered"}
               value={generateStateValueProp($state, ["mode", "value"])}
             />
-          </Stack__>
+          </div>
           {(hasVariant($state, "hide", "action") ? false : true) ? (
-            <Stack__
-              as={"div"}
+            <div
               data-plasmic-name={"actionBox"}
               data-plasmic-override={overrides.actionBox}
-              hasGap={true}
               className={classNames(projectcss.all, sty.actionBox, {
                 [sty.actionBoxhide_action]: hasVariant(
                   $state,
@@ -1455,9 +1407,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                 ),
               })}
             >
-              <Stack__
-                as={"div"}
-                hasGap={true}
+              <div
                 className={classNames(projectcss.all, sty.freeBox__krCQj, {
                   [sty.freeBoxview_existingRepo__krCQjeHbf9]: hasVariant(
                     $state,
@@ -1488,7 +1438,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                   className={classNames(projectcss.all, sty.actionInfo)}
                   role={"img"}
                 />
-              </Stack__>
+              </div>
               <Select
                 data-plasmic-name={"action"}
                 data-plasmic-override={overrides.action}
@@ -1517,9 +1467,9 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                 type={"bordered"}
                 value={generateStateValueProp($state, ["action", "value"])}
               />
-            </Stack__>
+            </div>
           ) : null}
-        </Stack__>
+        </div>
         {(
           hasVariant($state, "hideGithubPages", "hideGithubPages")
             ? false
@@ -1549,11 +1499,9 @@ function PlasmicGithubIntegration__RenderFunc(props: {
             ? false
             : true
         ) ? (
-          <Stack__
-            as={"div"}
+          <div
             data-plasmic-name={"deployment"}
             data-plasmic-override={overrides.deployment}
-            hasGap={true}
             className={classNames(projectcss.all, sty.deployment, {
               [sty.deploymenterrors_hasPublishSiteError]: hasVariant(
                 $state,
@@ -1593,9 +1541,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
               ),
             })}
           >
-            <Stack__
-              as={"div"}
-              hasGap={true}
+            <div
               className={classNames(projectcss.all, sty.freeBox__xKatJ, {
                 [sty.freeBoxisPublishingSite__xKatJqOy2M]: hasVariant(
                   $state,
@@ -1609,9 +1555,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                 ),
               })}
             >
-              <Stack__
-                as={"div"}
-                hasGap={true}
+              <div
                 className={classNames(projectcss.all, sty.freeBox__uBi71, {
                   [sty.freeBoxerrors_directory__uBi71TUzD]: hasVariant(
                     $state,
@@ -1701,9 +1645,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                 >
                   {"Publish site?"}
                 </div>
-                <Stack__
-                  as={"div"}
-                  hasGap={true}
+                <div
                   className={classNames(projectcss.all, sty.freeBox__kvwzT, {
                     [sty.freeBoxerrors_hasPublishSiteError__kvwzTZx2KI]:
                       hasVariant($state, "errors", "hasPublishSiteError"),
@@ -1801,9 +1743,9 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                       )}
                     />
                   ) : null}
-                </Stack__>
-              </Stack__>
-            </Stack__>
+                </div>
+              </div>
+            </div>
             {(
               hasVariant($state, "errors", "publishSiteWarning") &&
               hasVariant($state, "isPublishingSite", "isPublishingSite")
@@ -1905,9 +1847,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                 ? true
                 : false
             ) ? (
-              <Stack__
-                as={"div"}
-                hasGap={true}
+              <div
                 className={classNames(projectcss.all, sty.freeBox__lofOa, {
                   [sty.freeBoxerrors_publishSiteWarning_isPublishingSite__lofOa2OGsOQOy2M]:
                     hasVariant($state, "errors", "publishSiteWarning") &&
@@ -1919,9 +1859,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                   ),
                 })}
               >
-                <Stack__
-                  as={"div"}
-                  hasGap={true}
+                <div
                   className={classNames(projectcss.all, sty.freeBox__uXh0V, {
                     [sty.freeBoxerrors_publishSiteWarning_isPublishingSite__uXh0V2OGsOQOy2M]:
                       hasVariant($state, "errors", "publishSiteWarning") &&
@@ -1937,9 +1875,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                     ),
                   })}
                 >
-                  <Stack__
-                    as={"div"}
-                    hasGap={true}
+                  <div
                     className={classNames(projectcss.all, sty.freeBox___8QGx, {
                       [sty.freeBoxerrors_directory___8QGxTUzD]: hasVariant(
                         $state,
@@ -2078,7 +2014,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                         {".plasmic.site"}
                       </div>
                     </div>
-                  </Stack__>
+                  </div>
                   {(
                     hasVariant($state, "errors", "hasDomainError")
                       ? true
@@ -2119,7 +2055,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                         : "This subdomain is currently taken."}
                     </ErrorFeedback>
                   ) : null}
-                </Stack__>
+                </div>
                 <div
                   className={classNames(projectcss.all, sty.freeBox__yhpUs, {
                     [sty.freeBoxerrors_hasDomainError__yhpUSdbgyX]: hasVariant(
@@ -2221,11 +2157,11 @@ function PlasmicGithubIntegration__RenderFunc(props: {
                     {"."}
                   </div>
                 </div>
-              </Stack__>
+              </div>
             ) : null}
-          </Stack__>
+          </div>
         ) : null}
-      </Stack__>
+      </div>
       <div
         className={classNames(projectcss.all, sty.freeBox__esjpg, {
           [sty.freeBoxerrors_hasDomainError__esjpgdbgyX]: hasVariant(
@@ -2296,7 +2232,7 @@ function PlasmicGithubIntegration__RenderFunc(props: {
           </div>
         </Button>
       </div>
-    </Stack__>
+    </div>
   ) as React.ReactElement | null;
 }
 
@@ -2488,7 +2424,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicGithubIntegration__VariantsArgs;
     args?: PlasmicGithubIntegration__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicGithubIntegration__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicGithubIntegration__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicGithubIntegration__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

@@ -16,7 +16,6 @@ import * as React from "react";
 import {
   Flex as Flex__,
   SingleBooleanChoiceArg,
-  Stack as Stack__,
   StrictProps,
   classNames,
   createPlasmicElementProxy,
@@ -29,6 +28,7 @@ import {
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
+import { _useStyleTokens } from "../../../../plasmic/plasmic_kit_continuous_deployment/PlasmicStyleTokensProvider"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/styleTokensProvider
 import Checkbox from "../../../widgets/Checkbox"; // plasmic-import: W-rO7NZqPjZ/component
 import MenuButton from "../../../widgets/MenuButton"; // plasmic-import: h69wHrrKtL/component
 import Select from "../../../widgets/Select"; // plasmic-import: j_4IQyOWK2b/component
@@ -37,8 +37,6 @@ import WebhookHeader from "../../WebhookHeader"; // plasmic-import: OkB-fXuJPc/c
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_design_system_css from "../../../../plasmic/PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import plasmic_plasmic_kit_color_tokens_css from "../../../../plasmic/plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
 import projectcss from "../../../modals/plasmic/plasmic_kit_project_settings/plasmic_plasmic_kit_project_settings.module.css"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/projectcss
 import sty from "./PlasmicWebhooksItem.module.css"; // plasmic-import: mSgnlB96I5A/css
 
@@ -69,7 +67,11 @@ export type PlasmicWebhooksItem__OverridesType = {
   svg?: Flex__<"svg">;
   url?: Flex__<"input">;
   menuButton?: Flex__<typeof MenuButton>;
+  expandedContent?: Flex__<"div">;
+  headerField?: Flex__<"div">;
+  payloadField?: Flex__<"div">;
   payload?: Flex__<"textarea">;
+  sendDataField?: Flex__<"div">;
   sendDataInfo?: Flex__<"svg">;
   sendPlasmicDataSwitch?: Flex__<typeof Switch>;
 };
@@ -146,41 +148,43 @@ function PlasmicWebhooksItem__RenderFunc(props: {
     $refs,
   });
 
+  const styleTokensClassNames = _useStyleTokens();
+
   return (
-    <Stack__
-      as={"div"}
+    <div
       data-plasmic-name={"root"}
       data-plasmic-override={overrides.root}
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
-      hasGap={true}
       className={classNames(
         projectcss.all,
         projectcss.root_reset,
         projectcss.plasmic_default_styles,
         projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_css.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
+        styleTokensClassNames,
         sty.root,
         { [sty.rootexpanded]: hasVariant($state, "expanded", "expanded") }
       )}
     >
-      <Stack__
-        as={"div"}
-        hasGap={true}
-        className={classNames(projectcss.all, sty.freeBox__simNc)}
+      <div
+        className={classNames(projectcss.all, sty.freeBox__simNc, {
+          [sty.freeBoxexpanded__simNcaCjOc]: hasVariant(
+            $state,
+            "expanded",
+            "expanded"
+          ),
+        })}
       >
-        <Stack__
-          as={"div"}
-          hasGap={true}
-          className={classNames(projectcss.all, sty.freeBox___0Jy6H)}
+        <div
+          className={classNames(projectcss.all, sty.freeBox___0Jy6H, {
+            [sty.freeBoxexpanded___0Jy6HaCjOc]: hasVariant(
+              $state,
+              "expanded",
+              "expanded"
+            ),
+          })}
         >
-          <Stack__
-            as={"div"}
-            hasGap={true}
-            className={classNames(projectcss.all, sty.freeBox__ptuDx)}
-          >
+          <div className={classNames(projectcss.all, sty.freeBox__ptuDx)}>
             <Checkbox
               data-plasmic-name={"checkbox"}
               data-plasmic-override={overrides.checkbox}
@@ -236,7 +240,7 @@ function PlasmicWebhooksItem__RenderFunc(props: {
               }}
               value={generateStateValueProp($state, ["method", "value"])}
             />
-          </Stack__>
+          </div>
           <input
             data-plasmic-name={"url"}
             data-plasmic-override={overrides.url}
@@ -255,24 +259,24 @@ function PlasmicWebhooksItem__RenderFunc(props: {
             data-plasmic-override={overrides.menuButton}
             className={classNames("__wab_instance", sty.menuButton)}
           />
-        </Stack__>
-      </Stack__>
+        </div>
+      </div>
       {(hasVariant($state, "expanded", "expanded") ? true : false) ? (
-        <Stack__
-          as={"div"}
-          hasGap={true}
-          className={classNames(projectcss.all, sty.freeBox__bbNTg, {
-            [sty.freeBoxexpanded__bbNTgaCjOc]: hasVariant(
+        <div
+          data-plasmic-name={"expandedContent"}
+          data-plasmic-override={overrides.expandedContent}
+          className={classNames(projectcss.all, sty.expandedContent, {
+            [sty.expandedContentexpanded]: hasVariant(
               $state,
               "expanded",
               "expanded"
             ),
           })}
         >
-          <Stack__
-            as={"div"}
-            hasGap={true}
-            className={classNames(projectcss.all, sty.freeBox__wL5I)}
+          <div
+            data-plasmic-name={"headerField"}
+            data-plasmic-override={overrides.headerField}
+            className={classNames(projectcss.all, sty.headerField)}
           >
             {renderPlasmicSlot({
               defaultContents: (
@@ -284,12 +288,12 @@ function PlasmicWebhooksItem__RenderFunc(props: {
               ),
               value: args.headers,
             })}
-          </Stack__>
-          <Stack__
-            as={"div"}
-            hasGap={true}
-            className={classNames(projectcss.all, sty.freeBox__wihbF, {
-              [sty.freeBoxexpanded__wihbFaCjOc]: hasVariant(
+          </div>
+          <div
+            data-plasmic-name={"payloadField"}
+            data-plasmic-override={overrides.payloadField}
+            className={classNames(projectcss.all, sty.payloadField, {
+              [sty.payloadFieldexpanded]: hasVariant(
                 $state,
                 "expanded",
                 "expanded"
@@ -334,23 +338,19 @@ function PlasmicWebhooksItem__RenderFunc(props: {
               rows={5}
               value={""}
             />
-          </Stack__>
-          <Stack__
-            as={"div"}
-            hasGap={true}
-            className={classNames(projectcss.all, sty.freeBox__paNzq, {
-              [sty.freeBoxexpanded__paNzQaCjOc]: hasVariant(
+          </div>
+          <div
+            data-plasmic-name={"sendDataField"}
+            data-plasmic-override={overrides.sendDataField}
+            className={classNames(projectcss.all, sty.sendDataField, {
+              [sty.sendDataFieldexpanded]: hasVariant(
                 $state,
                 "expanded",
                 "expanded"
               ),
             })}
           >
-            <Stack__
-              as={"div"}
-              hasGap={true}
-              className={classNames(projectcss.all, sty.freeBox___5X7VS)}
-            >
+            <div className={classNames(projectcss.all, sty.freeBox___5X7VS)}>
               <div
                 className={classNames(
                   projectcss.all,
@@ -373,7 +373,7 @@ function PlasmicWebhooksItem__RenderFunc(props: {
                 className={classNames(projectcss.all, sty.sendDataInfo)}
                 role={"img"}
               />
-            </Stack__>
+            </div>
             <Switch
               data-plasmic-name={"sendPlasmicDataSwitch"}
               data-plasmic-override={overrides.sendPlasmicDataSwitch}
@@ -405,11 +405,11 @@ function PlasmicWebhooksItem__RenderFunc(props: {
                 }
               }}
             />
-          </Stack__>
-        </Stack__>
+          </div>
+        </div>
       ) : null}
       <div className={classNames(projectcss.all, sty.freeBox__uuv93)} />
-    </Stack__>
+    </div>
   ) as React.ReactElement | null;
 }
 
@@ -421,7 +421,11 @@ const PlasmicDescendants = {
     "svg",
     "url",
     "menuButton",
+    "expandedContent",
+    "headerField",
+    "payloadField",
     "payload",
+    "sendDataField",
     "sendDataInfo",
     "sendPlasmicDataSwitch",
   ],
@@ -430,7 +434,19 @@ const PlasmicDescendants = {
   svg: ["svg"],
   url: ["url"],
   menuButton: ["menuButton"],
+  expandedContent: [
+    "expandedContent",
+    "headerField",
+    "payloadField",
+    "payload",
+    "sendDataField",
+    "sendDataInfo",
+    "sendPlasmicDataSwitch",
+  ],
+  headerField: ["headerField"],
+  payloadField: ["payloadField", "payload"],
   payload: ["payload"],
+  sendDataField: ["sendDataField", "sendDataInfo", "sendPlasmicDataSwitch"],
   sendDataInfo: ["sendDataInfo"],
   sendPlasmicDataSwitch: ["sendPlasmicDataSwitch"],
 } as const;
@@ -444,7 +460,11 @@ type NodeDefaultElementType = {
   svg: "svg";
   url: "input";
   menuButton: typeof MenuButton;
+  expandedContent: "div";
+  headerField: "div";
+  payloadField: "div";
   payload: "textarea";
+  sendDataField: "div";
   sendDataInfo: "svg";
   sendPlasmicDataSwitch: typeof Switch;
 };
@@ -460,7 +480,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicWebhooksItem__VariantsArgs;
     args?: PlasmicWebhooksItem__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicWebhooksItem__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicWebhooksItem__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicWebhooksItem__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props
@@ -514,7 +535,11 @@ export const PlasmicWebhooksItem = Object.assign(
     svg: makeNodeComponent("svg"),
     url: makeNodeComponent("url"),
     menuButton: makeNodeComponent("menuButton"),
+    expandedContent: makeNodeComponent("expandedContent"),
+    headerField: makeNodeComponent("headerField"),
+    payloadField: makeNodeComponent("payloadField"),
     payload: makeNodeComponent("payload"),
+    sendDataField: makeNodeComponent("sendDataField"),
     sendDataInfo: makeNodeComponent("sendDataInfo"),
     sendPlasmicDataSwitch: makeNodeComponent("sendPlasmicDataSwitch"),
 

@@ -446,7 +446,7 @@ export function CmsModelDetails_(
 
   useBeforeUnload(() => {
     return hasChanges();
-  }, "You have unsaved changes, are you sure ?");
+  }, "You have unsaved changes, are you sure?");
 
   function computeFormValidationErrorMessage() {
     const fields: CmsFieldMeta[] = form.getFieldValue(["schema", "fields"]);
@@ -468,7 +468,7 @@ export function CmsModelDetails_(
     <>
       <Prompt
         when={hasChanged}
-        message={"You have unsaved changes, are you sure ?"}
+        message={"You have unsaved changes, are you sure?"}
       />
       <Form
         form={form}
@@ -978,6 +978,9 @@ function WebhookForm(props: {
             )}
           </Form.List>
         }
+        sendDataField={{
+          render: () => null,
+        }}
       />
       <Form.Item hidden name={[...fieldPath, "event"]}>
         <Input hidden />

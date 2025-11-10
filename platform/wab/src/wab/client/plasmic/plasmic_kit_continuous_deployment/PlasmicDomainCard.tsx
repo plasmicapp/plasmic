@@ -17,7 +17,6 @@ import {
   Flex as Flex__,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
-  Stack as Stack__,
   StrictProps,
   classNames,
   createPlasmicElementProxy,
@@ -30,12 +29,11 @@ import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 import ErrorFeedback from "../../components/github/ErrorFeedback"; // plasmic-import: 6ztKJ9-EG9Y/component
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
 import IconButton from "../../components/widgets/IconButton"; // plasmic-import: LPry-TF4j22a/component
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
 import projectcss from "../../components/modals/plasmic/plasmic_kit_project_settings/plasmic_plasmic_kit_project_settings.module.css"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/projectcss
-import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
 import sty from "./PlasmicDomainCard.module.css"; // plasmic-import: eqF_n5a1-6b/css
 
 import CheckCircleSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__CheckCircleSvg"; // plasmic-import: h7sB2KeL-/icon
@@ -151,22 +149,20 @@ function PlasmicDomainCard__RenderFunc(props: {
     $refs,
   });
 
+  const styleTokensClassNames = _useStyleTokens();
+
   return (
-    <Stack__
-      as={"div"}
+    <div
       data-plasmic-name={"root"}
       data-plasmic-override={overrides.root}
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
-      hasGap={true}
       className={classNames(
         projectcss.all,
         projectcss.root_reset,
         projectcss.plasmic_default_styles,
         projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_css.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
+        styleTokensClassNames,
         sty.root,
         {
           [sty.rooterror_apex]: hasVariant($state, "error", "apex"),
@@ -176,9 +172,7 @@ function PlasmicDomainCard__RenderFunc(props: {
         }
       )}
     >
-      <Stack__
-        as={"div"}
-        hasGap={true}
+      <div
         className={classNames(projectcss.all, sty.freeBox___7Vjq, {
           [sty.freeBoxerror_apex_secondary___7VjqWIbN7ZeL6W]:
             hasVariant($state, "secondary", "secondary") &&
@@ -202,11 +196,7 @@ function PlasmicDomainCard__RenderFunc(props: {
         >
           {"Custom domain"}
         </div>
-        <Stack__
-          as={"div"}
-          hasGap={true}
-          className={classNames(projectcss.all, sty.freeBox__iNuFl)}
-        >
+        <div className={classNames(projectcss.all, sty.freeBox__iNuFl)}>
           <div
             data-plasmic-name={"customDomainLabel"}
             data-plasmic-override={overrides.customDomainLabel}
@@ -247,11 +237,9 @@ function PlasmicDomainCard__RenderFunc(props: {
               role={"img"}
             />
           </IconButton>
-        </Stack__>
-      </Stack__>
-      <Stack__
-        as={"div"}
-        hasGap={true}
+        </div>
+      </div>
+      <div
         className={classNames(projectcss.all, sty.freeBox__gsDpH, {
           [sty.freeBoxerror_apex__gsDpHwIbN7]: hasVariant(
             $state,
@@ -345,9 +333,7 @@ function PlasmicDomainCard__RenderFunc(props: {
             )}
           </div>
         </ErrorFeedback>
-        <Stack__
-          as={"div"}
-          hasGap={true}
+        <div
           className={classNames(projectcss.all, sty.freeBox__nPfIi, {
             [sty.freeBoxerror_apex__nPfIiWIbN7]: hasVariant(
               $state,
@@ -387,10 +373,8 @@ function PlasmicDomainCard__RenderFunc(props: {
           >
             {"Correctly configured!"}
           </div>
-        </Stack__>
-        <Stack__
-          as={"div"}
-          hasGap={true}
+        </div>
+        <div
           className={classNames(projectcss.all, sty.freeBox__j4DNt, {
             [sty.freeBoxerror_cname__j4DNtFiouZ]: hasVariant(
               $state,
@@ -473,8 +457,8 @@ function PlasmicDomainCard__RenderFunc(props: {
               {"Remove"}
             </div>
           </Button>
-        </Stack__>
-      </Stack__>
+        </div>
+      </div>
       <div
         className={classNames(projectcss.all, sty.freeBox__v8YX, {
           [sty.freeBoxerror_apex__v8YXWIbN7]: hasVariant(
@@ -535,11 +519,7 @@ function PlasmicDomainCard__RenderFunc(props: {
         >
           {"Set the following records on your DNS provider to continue:"}
         </div>
-        <Stack__
-          as={"div"}
-          hasGap={true}
-          className={classNames(projectcss.all, sty.freeBox__jmREj)}
-        >
+        <div className={classNames(projectcss.all, sty.freeBox__jmREj)}>
           <button
             data-plasmic-name={"cnameTab"}
             data-plasmic-override={overrides.cnameTab}
@@ -594,7 +574,7 @@ function PlasmicDomainCard__RenderFunc(props: {
               </span>
             </React.Fragment>
           </button>
-        </Stack__>
+        </div>
         <div
           className={classNames(projectcss.all, sty.freeBox___7NWq, {
             [sty.freeBoxerror_apex___7NWqWIbN7]: hasVariant(
@@ -807,7 +787,7 @@ function PlasmicDomainCard__RenderFunc(props: {
           </div>
         </div>
       </div>
-    </Stack__>
+    </div>
   ) as React.ReactElement | null;
 }
 
@@ -873,7 +853,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicDomainCard__VariantsArgs;
     args?: PlasmicDomainCard__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicDomainCard__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicDomainCard__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicDomainCard__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

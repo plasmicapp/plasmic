@@ -18,7 +18,6 @@ import {
   PlasmicIcon as PlasmicIcon__,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
-  Stack as Stack__,
   StrictProps,
   classNames,
   createPlasmicElementProxy,
@@ -29,12 +28,11 @@ import {
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
+import { _useStyleTokens } from "../../../../plasmic/plasmic_kit_continuous_deployment/PlasmicStyleTokensProvider"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/styleTokensProvider
 import IconButton from "../../../widgets/IconButton"; // plasmic-import: LPry-TF4j22a/component
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_design_system_css from "../../../../plasmic/PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import plasmic_plasmic_kit_color_tokens_css from "../../../../plasmic/plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
 import projectcss from "../../../modals/plasmic/plasmic_kit_project_settings/plasmic_plasmic_kit_project_settings.module.css"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/projectcss
 import sty from "./PlasmicWebhookEvent.module.css"; // plasmic-import: MtBpr4iNob/css
 
@@ -144,6 +142,8 @@ function PlasmicWebhookEvent__RenderFunc(props: {
     $refs,
   });
 
+  const styleTokensClassNames = _useStyleTokens();
+
   return (
     <div
       data-plasmic-name={"root"}
@@ -155,9 +155,7 @@ function PlasmicWebhookEvent__RenderFunc(props: {
         projectcss.root_reset,
         projectcss.plasmic_default_styles,
         projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_css.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
+        styleTokensClassNames,
         sty.root,
         {
           [sty.rootexpanded]: hasVariant($state, "expanded", "expanded"),
@@ -165,9 +163,7 @@ function PlasmicWebhookEvent__RenderFunc(props: {
         }
       )}
     >
-      <Stack__
-        as={"div"}
-        hasGap={true}
+      <div
         className={classNames(projectcss.all, sty.freeBox__ty2Le, {
           [sty.freeBoxexpanded__ty2Le8Ak7G]: hasVariant(
             $state,
@@ -181,9 +177,7 @@ function PlasmicWebhookEvent__RenderFunc(props: {
           ),
         })}
       >
-        <Stack__
-          as={"div"}
-          hasGap={true}
+        <div
           className={classNames(projectcss.all, sty.freeBox__awMIm, {
             [sty.freeBoxstate_loading__awMIm6DxTv]: hasVariant(
               $state,
@@ -192,9 +186,7 @@ function PlasmicWebhookEvent__RenderFunc(props: {
             ),
           })}
         >
-          <Stack__
-            as={"div"}
-            hasGap={true}
+          <div
             className={classNames(projectcss.all, sty.freeBox__h1XF, {
               [sty.freeBoxstate_loading__h1XF6DxTv]: hasVariant(
                 $state,
@@ -238,7 +230,7 @@ function PlasmicWebhookEvent__RenderFunc(props: {
                   }),
                 })
               : null}
-          </Stack__>
+          </div>
           <div className={classNames(projectcss.all, sty.freeBox__wnEpm)}>
             {renderPlasmicSlot({
               defaultContents: "POST",
@@ -264,7 +256,7 @@ function PlasmicWebhookEvent__RenderFunc(props: {
               }),
             })}
           </div>
-        </Stack__>
+        </div>
         <IconButton
           data-plasmic-name={"viewButton"}
           data-plasmic-override={overrides.viewButton}
@@ -316,11 +308,9 @@ function PlasmicWebhookEvent__RenderFunc(props: {
             role={"img"}
           />
         </IconButton>
-      </Stack__>
+      </div>
       {(hasVariant($state, "expanded", "expanded") ? true : false) ? (
-        <Stack__
-          as={"div"}
-          hasGap={true}
+        <div
           className={classNames(projectcss.all, sty.freeBox___99Mh, {
             [sty.freeBoxexpanded___99Mh8Ak7G]: hasVariant(
               $state,
@@ -351,7 +341,7 @@ function PlasmicWebhookEvent__RenderFunc(props: {
               ),
             }),
           })}
-        </Stack__>
+        </div>
       ) : null}
     </div>
   ) as React.ReactElement | null;
@@ -382,7 +372,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicWebhookEvent__VariantsArgs;
     args?: PlasmicWebhookEvent__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicWebhookEvent__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicWebhookEvent__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicWebhookEvent__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

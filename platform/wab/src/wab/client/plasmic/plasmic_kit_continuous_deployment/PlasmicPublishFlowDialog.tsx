@@ -17,7 +17,6 @@ import {
   Flex as Flex__,
   PlasmicLink as PlasmicLink__,
   SingleChoiceArg,
-  Stack as Stack__,
   StrictProps,
   classNames,
   createPlasmicElementProxy,
@@ -36,12 +35,11 @@ import WebhookEvent from "../../components/webhooks/WebhookEvent"; // plasmic-im
 import WebhooksHistory from "../../components/webhooks/WebhooksHistory"; // plasmic-import: Ynwp30ZgYk/component
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
 import IconButton from "../../components/widgets/IconButton"; // plasmic-import: LPry-TF4j22a/component
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
 import projectcss from "../../components/modals/plasmic/plasmic_kit_project_settings/plasmic_plasmic_kit_project_settings.module.css"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/projectcss
-import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
 import sty from "./PlasmicPublishFlowDialog.module.css"; // plasmic-import: aXXfRDkhD-/css
 
 import PlusIcon from "../plasmic_kit/PlasmicIcon__Plus"; // plasmic-import: -k064DlQ8k8-L/icon
@@ -163,6 +161,8 @@ function PlasmicPublishFlowDialog__RenderFunc(props: {
     $refs,
   });
 
+  const styleTokensClassNames = _useStyleTokens();
+
   return (
     <div
       data-plasmic-name={"root"}
@@ -174,9 +174,7 @@ function PlasmicPublishFlowDialog__RenderFunc(props: {
         projectcss.root_reset,
         projectcss.plasmic_default_styles,
         projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_css.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
+        styleTokensClassNames,
         sty.root,
         {
           [sty.rootpublishState_publishing]: hasVariant(
@@ -221,11 +219,7 @@ function PlasmicPublishFlowDialog__RenderFunc(props: {
             ),
           })}
         >
-          <Stack__
-            as={"div"}
-            hasGap={true}
-            className={classNames(projectcss.all, sty.freeBox___36Jc0)}
-          >
+          <div className={classNames(projectcss.all, sty.freeBox___36Jc0)}>
             <div
               className={classNames(
                 projectcss.all,
@@ -239,7 +233,7 @@ function PlasmicPublishFlowDialog__RenderFunc(props: {
               defaultContents: "Project Acme",
               value: args.projectName,
             })}
-          </Stack__>
+          </div>
           <IconButton
             data-plasmic-name={"dismissButton"}
             data-plasmic-override={overrides.dismissButton}
@@ -285,11 +279,9 @@ function PlasmicPublishFlowDialog__RenderFunc(props: {
             ),
           })}
         >
-          <Stack__
-            as={"div"}
+          <div
             data-plasmic-name={"statusBar"}
             data-plasmic-override={overrides.statusBar}
-            hasGap={true}
             className={classNames(projectcss.all, sty.statusBar, {
               [sty.statusBarview_status]: hasVariant($state, "view", "status"),
               [sty.statusBarview_webhooksHistory]: hasVariant(
@@ -368,7 +360,7 @@ function PlasmicPublishFlowDialog__RenderFunc(props: {
                 {"Destination"}
               </div>
             </div>
-          </Stack__>
+          </div>
         </div>
       </div>
       {(
@@ -443,9 +435,7 @@ function PlasmicPublishFlowDialog__RenderFunc(props: {
           ? false
           : true
       ) ? (
-        <Stack__
-          as={"div"}
-          hasGap={true}
+        <div
           className={classNames(projectcss.all, sty.freeBox__h4IIk, {
             [sty.freeBoxpublishState_publishing__h4IIkPGdW]: hasVariant(
               $state,
@@ -562,11 +552,9 @@ function PlasmicPublishFlowDialog__RenderFunc(props: {
             view={hasVariant($state, "view", "status") ? "status" : undefined}
           />
 
-          <Stack__
-            as={"div"}
+          <div
             data-plasmic-name={"addActionsContainer"}
             data-plasmic-override={overrides.addActionsContainer}
-            hasGap={true}
             className={classNames(projectcss.all, sty.addActionsContainer, {
               [sty.addActionsContainerview_status]: hasVariant(
                 $state,
@@ -586,16 +574,10 @@ function PlasmicPublishFlowDialog__RenderFunc(props: {
             >
               {"Add publish actions"}
             </div>
-            <Stack__
-              as={"div"}
-              hasGap={true}
-              className={classNames(projectcss.all, sty.freeBox__t1Hp1)}
-            >
-              <Stack__
-                as={"div"}
+            <div className={classNames(projectcss.all, sty.freeBox__t1Hp1)}>
+              <div
                 data-plasmic-name={"addWebsitePanel"}
                 data-plasmic-override={overrides.addWebsitePanel}
-                hasGap={true}
                 className={classNames(projectcss.all, sty.addWebsitePanel)}
               >
                 <Button
@@ -630,12 +612,10 @@ function PlasmicPublishFlowDialog__RenderFunc(props: {
                     "Just publish an app or site. Use a custom domain for free. No coding required."
                   }
                 </div>
-              </Stack__>
-              <Stack__
-                as={"div"}
+              </div>
+              <div
                 data-plasmic-name={"addGithubPanel"}
                 data-plasmic-override={overrides.addGithubPanel}
-                hasGap={true}
                 className={classNames(projectcss.all, sty.addGithubPanel)}
               >
                 <Button
@@ -668,12 +648,10 @@ function PlasmicPublishFlowDialog__RenderFunc(props: {
                 >
                   {"Generate a new Next.js / Gatsby / React repo."}
                 </div>
-              </Stack__>
-              <Stack__
-                as={"div"}
+              </div>
+              <div
                 data-plasmic-name={"addWebhooksPanel"}
                 data-plasmic-override={overrides.addWebhooksPanel}
-                hasGap={true}
                 className={classNames(projectcss.all, sty.addWebhooksPanel)}
               >
                 <Button
@@ -713,10 +691,10 @@ function PlasmicPublishFlowDialog__RenderFunc(props: {
                     "Trigger a build in Vercel, Netlify, Jenkins, or any other CI/CD pipeline. You should first [add Plasmic to your codebase]."
                   }
                 </div>
-              </Stack__>
-            </Stack__>
-          </Stack__>
-        </Stack__>
+              </div>
+            </div>
+          </div>
+        </div>
       ) : null}
       {(hasVariant($state, "view", "reviewChanges") ? true : false) ? (
         <div
@@ -818,9 +796,7 @@ function PlasmicPublishFlowDialog__RenderFunc(props: {
           />
         </div>
       ) : null}
-      <Stack__
-        as={"div"}
-        hasGap={true}
+      <div
         className={classNames(projectcss.all, sty.freeBox___11T7Q, {
           [sty.freeBoxpublishState_failure___11T7QSpbXn]: hasVariant(
             $state,
@@ -849,9 +825,7 @@ function PlasmicPublishFlowDialog__RenderFunc(props: {
           ),
         })}
       >
-        <Stack__
-          as={"div"}
-          hasGap={true}
+        <div
           className={classNames(projectcss.all, sty.freeBox__koqOo, {
             [sty.freeBoxview_reviewChanges__koqOoG8ZSd]: hasVariant(
               $state,
@@ -1031,7 +1005,7 @@ function PlasmicPublishFlowDialog__RenderFunc(props: {
               </div>
             </Button>
           ) : null}
-        </Stack__>
+        </div>
         {(
           hasVariant($state, "view", "webhooksHistory")
             ? false
@@ -1047,9 +1021,7 @@ function PlasmicPublishFlowDialog__RenderFunc(props: {
             ? true
             : false
         ) ? (
-          <Stack__
-            as={"div"}
-            hasGap={true}
+          <div
             className={classNames(projectcss.all, sty.freeBox___0MvLu, {
               [sty.freeBoxpublishState_failure___0MvLuSpbXn]: hasVariant(
                 $state,
@@ -1170,9 +1142,9 @@ function PlasmicPublishFlowDialog__RenderFunc(props: {
                 {"See more ->"}
               </div>
             </Button>
-          </Stack__>
+          </div>
         ) : null}
-      </Stack__>
+      </div>
     </div>
   ) as React.ReactElement | null;
 }
@@ -1285,7 +1257,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicPublishFlowDialog__VariantsArgs;
     args?: PlasmicPublishFlowDialog__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicPublishFlowDialog__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicPublishFlowDialog__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicPublishFlowDialog__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

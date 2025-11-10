@@ -19,7 +19,6 @@ import {
   PlasmicLink as PlasmicLink__,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
-  Stack as Stack__,
   StrictProps,
   classNames,
   createPlasmicElementProxy,
@@ -37,12 +36,11 @@ import Checkbox from "../../components/widgets/Checkbox"; // plasmic-import: W-r
 import ExpandButton from "../../components/widgets/ExpandButton"; // plasmic-import: JJhv0MV9DH/component
 import GitJobStep from "../../components/widgets/GitJobStep"; // plasmic-import: JzpEJAQTjPX/component
 import Select from "../../components/widgets/Select"; // plasmic-import: j_4IQyOWK2b/component
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
 import projectcss from "../../components/modals/plasmic/plasmic_kit_project_settings/plasmic_plasmic_kit_project_settings.module.css"; // plasmic-import: fpbcKyXdMTvY59T4C5fjcC/projectcss
-import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
 import sty from "./PlasmicSubsectionPlasmicHosting.module.css"; // plasmic-import: aeDQsBfp-eA/css
 
 import CloseIcon from "../plasmic_kit/PlasmicIcon__Close"; // plasmic-import: hy7vKrgdAZwW4/icon
@@ -171,22 +169,20 @@ function PlasmicSubsectionPlasmicHosting__RenderFunc(props: {
     $refs,
   });
 
+  const styleTokensClassNames = _useStyleTokens();
+
   return (
-    <Stack__
-      as={"div"}
+    <div
       data-plasmic-name={"root"}
       data-plasmic-override={overrides.root}
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
-      hasGap={true}
       className={classNames(
         projectcss.all,
         projectcss.root_reset,
         projectcss.plasmic_default_styles,
         projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_css.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
+        styleTokensClassNames,
         sty.root,
         { [sty.rootcollapse]: hasVariant($state, "collapse", "collapse") }
       )}
@@ -202,9 +198,7 @@ function PlasmicSubsectionPlasmicHosting__RenderFunc(props: {
           ),
         })}
       >
-        <Stack__
-          as={"div"}
-          hasGap={true}
+        <div
           className={classNames(projectcss.all, sty.freeBox__qZ5J8, {
             [sty.freeBoxcollapse__qZ5J8ShwF8]: hasVariant(
               $state,
@@ -283,12 +277,8 @@ function PlasmicSubsectionPlasmicHosting__RenderFunc(props: {
               role={"img"}
             />
           ) : null}
-        </Stack__>
-        <Stack__
-          as={"div"}
-          hasGap={true}
-          className={classNames(projectcss.all, sty.freeBox__pzVnq)}
-        >
+        </div>
+        <div className={classNames(projectcss.all, sty.freeBox__pzVnq)}>
           <Button
             data-plasmic-name={"removeButton"}
             data-plasmic-override={overrides.removeButton}
@@ -353,7 +343,7 @@ function PlasmicSubsectionPlasmicHosting__RenderFunc(props: {
               </div>
             </Button>
           ) : null}
-        </Stack__>
+        </div>
       </div>
       {(
         hasVariant($state, "view", "status")
@@ -376,9 +366,7 @@ function PlasmicSubsectionPlasmicHosting__RenderFunc(props: {
             ),
           })}
         >
-          <Stack__
-            as={"div"}
-            hasGap={true}
+          <div
             className={classNames(projectcss.all, sty.freeBox__ndh, {
               [sty.freeBoxview_status__ndh2JIHl]: hasVariant(
                 $state,
@@ -415,11 +403,9 @@ function PlasmicSubsectionPlasmicHosting__RenderFunc(props: {
             >
               {"Learn more."}
             </PlasmicLink__>
-            <Stack__
-              as={"div"}
+            <div
               data-plasmic-name={"warning"}
               data-plasmic-override={overrides.warning}
-              hasGap={true}
               className={classNames(projectcss.all, sty.warning)}
             >
               <div
@@ -478,16 +464,10 @@ function PlasmicSubsectionPlasmicHosting__RenderFunc(props: {
                   {"Review all changes ->"}
                 </Button>
               ) : null}
-            </Stack__>
-          </Stack__>
-          <Stack__
-            as={"div"}
-            hasGap={true}
-            className={classNames(projectcss.all, sty.freeBox__usSde)}
-          >
-            <Stack__
-              as={"div"}
-              hasGap={true}
+            </div>
+          </div>
+          <div className={classNames(projectcss.all, sty.freeBox__usSde)}>
+            <div
               className={classNames(projectcss.all, sty.freeBox___9NuEy, {
                 [sty.freeBoxview_status___9NuEy2JIHl]: hasVariant(
                   $state,
@@ -496,9 +476,7 @@ function PlasmicSubsectionPlasmicHosting__RenderFunc(props: {
                 ),
               })}
             >
-              <Stack__
-                as={"div"}
-                hasGap={true}
+              <div
                 className={classNames(projectcss.all, sty.freeBox__whjUu, {
                   [sty.freeBoxview_status__whjUu2JIHl]: hasVariant(
                     $state,
@@ -538,7 +516,7 @@ function PlasmicSubsectionPlasmicHosting__RenderFunc(props: {
                 >
                   {"DOMAIN"}
                 </PlasmicLink__>
-              </Stack__>
+              </div>
               {false ? (
                 <Button
                   data-plasmic-name={"retryButton"}
@@ -624,7 +602,7 @@ function PlasmicSubsectionPlasmicHosting__RenderFunc(props: {
                   {"Configure"}
                 </div>
               </Button>
-            </Stack__>
+            </div>
             {false ? (
               <div className={classNames(projectcss.all, sty.freeBox__av8T2)}>
                 <div className={classNames(projectcss.all, sty.freeBox__ePpd)}>
@@ -678,14 +656,8 @@ function PlasmicSubsectionPlasmicHosting__RenderFunc(props: {
                     />
                   </div>
                 </div>
-                <Stack__
-                  as={"div"}
-                  hasGap={true}
-                  className={classNames(projectcss.all, sty.freeBox__p2Og6)}
-                >
-                  <Stack__
-                    as={"div"}
-                    hasGap={true}
+                <div className={classNames(projectcss.all, sty.freeBox__p2Og6)}>
+                  <div
                     className={classNames(projectcss.all, sty.freeBox__eKj17)}
                   >
                     <div
@@ -729,15 +701,11 @@ function PlasmicSubsectionPlasmicHosting__RenderFunc(props: {
                         "value",
                       ])}
                     />
-                  </Stack__>
-                  <Stack__
-                    as={"div"}
-                    hasGap={true}
+                  </div>
+                  <div
                     className={classNames(projectcss.all, sty.freeBox__fzd2)}
                   >
-                    <Stack__
-                      as={"div"}
-                      hasGap={true}
+                    <div
                       className={classNames(projectcss.all, sty.freeBox__iPgR7)}
                     >
                       <div
@@ -765,10 +733,8 @@ function PlasmicSubsectionPlasmicHosting__RenderFunc(props: {
                         type={"text"}
                         value={""}
                       />
-                    </Stack__>
-                    <Stack__
-                      as={"div"}
-                      hasGap={true}
+                    </div>
+                    <div
                       className={classNames(projectcss.all, sty.freeBox__gakKe)}
                     >
                       <div
@@ -795,12 +761,12 @@ function PlasmicSubsectionPlasmicHosting__RenderFunc(props: {
                         rows={3}
                         value={""}
                       />
-                    </Stack__>
-                  </Stack__>
-                </Stack__>
+                    </div>
+                  </div>
+                </div>
               </div>
             ) : null}
-          </Stack__>
+          </div>
         </div>
       ) : null}
       {(hasVariant($state, "view", "status") ? true : false) ? (
@@ -813,11 +779,9 @@ function PlasmicSubsectionPlasmicHosting__RenderFunc(props: {
             ),
           })}
         >
-          <Stack__
-            as={"ul"}
+          <ul
             data-plasmic-name={"steps"}
             data-plasmic-override={overrides.steps}
-            hasGap={true}
             className={classNames(projectcss.all, projectcss.ul, sty.steps)}
           >
             <GitJobStep
@@ -872,7 +836,7 @@ function PlasmicSubsectionPlasmicHosting__RenderFunc(props: {
             >
               {"Make pull request"}
             </GitJobStep>
-          </Stack__>
+          </ul>
         </div>
       ) : null}
       {false ? (
@@ -888,7 +852,7 @@ function PlasmicSubsectionPlasmicHosting__RenderFunc(props: {
           {"Enter some text"}
         </div>
       ) : null}
-    </Stack__>
+    </div>
   ) as React.ReactElement | null;
 }
 
@@ -969,7 +933,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicSubsectionPlasmicHosting__VariantsArgs;
     args?: PlasmicSubsectionPlasmicHosting__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicSubsectionPlasmicHosting__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicSubsectionPlasmicHosting__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicSubsectionPlasmicHosting__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

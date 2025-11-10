@@ -4332,7 +4332,7 @@
     {
       "projectId": "fpbcKyXdMTvY59T4C5fjcC",
       "projectName": "[PlasmicKit] Continuous Deployment",
-      "version": ">=0.0.0",
+      "version": "latest",
       "cssFilePath": "wab/client/components/modals/plasmic/plasmic_kit_project_settings/plasmic_plasmic_kit_project_settings.module.css",
       "components": [
         {
@@ -4610,8 +4610,8 @@
       "globalContextsFilePath": "",
       "splitsProviderFilePath": "",
       "customFunctions": [],
-      "styleTokensProviderFilePath": "",
-      "projectModuleFilePath": ""
+      "styleTokensProviderFilePath": "wab/client/plasmic/plasmic_kit_continuous_deployment/PlasmicStyleTokensProvider.tsx",
+      "projectModuleFilePath": "wab/client/plasmic/plasmic_kit_continuous_deployment/plasmic.tsx"
     },
     {
       "projectId": "6CrqkTcB6gSAHoA8c8zpNz",

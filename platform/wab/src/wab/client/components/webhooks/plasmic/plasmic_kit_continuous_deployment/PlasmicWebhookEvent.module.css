@@ -13,67 +13,26 @@
 }
 .freeBox__ty2Le {
   display: flex;
-  padding: 8px;
-}
-.freeBox__ty2Le > :global(.__wab_flex-container) {
   justify-content: space-between;
-  margin-left: calc(0px - 8px);
-  width: calc(100% + 8px);
-}
-.freeBox__ty2Le > :global(.__wab_flex-container) > *,
-.freeBox__ty2Le > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.freeBox__ty2Le > :global(.__wab_flex-container) > picture > img,
-.freeBox__ty2Le
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  margin-left: 8px;
+  column-gap: 8px;
+  padding: 8px;
 }
 .freeBox__awMIm {
   display: flex;
   position: relative;
   flex-direction: row;
-  width: 100%;
-  min-width: 0;
-}
-.freeBox__awMIm > :global(.__wab_flex-container) {
-  flex-direction: row;
   align-items: center;
   justify-content: flex-start;
+  width: 100%;
+  column-gap: 8px;
   min-width: 0;
-  margin-left: calc(0px - 8px);
-  width: calc(100% + 8px);
-}
-.freeBox__awMIm > :global(.__wab_flex-container) > *,
-.freeBox__awMIm > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.freeBox__awMIm > :global(.__wab_flex-container) > picture > img,
-.freeBox__awMIm
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  margin-left: 8px;
 }
 .freeBox__h1XF {
   display: flex;
-  width: 36px;
-  flex-shrink: 0;
-}
-.freeBox__h1XF > :global(.__wab_flex-container) {
   align-items: center;
-  margin-left: calc(0px - 4px);
-  width: calc(100% + 4px);
-}
-.freeBox__h1XF > :global(.__wab_flex-container) > *,
-.freeBox__h1XF > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.freeBox__h1XF > :global(.__wab_flex-container) > picture > img,
-.freeBox__h1XF
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  margin-left: 4px;
+  width: 36px;
+  column-gap: 4px;
+  flex-shrink: 0;
 }
 .indicator {
   display: block;
@@ -198,37 +157,15 @@
   display: flex;
   position: relative;
   flex-direction: row;
-}
-.freeBox___99Mh > :global(.__wab_flex-container) {
-  flex-direction: row;
   align-items: stretch;
   justify-content: flex-start;
 }
 .freeBoxexpanded___99Mh8Ak7G {
   display: flex;
   flex-direction: column;
+  row-gap: 10px;
+  column-gap: 0px;
   padding: 10px;
-}
-.freeBoxexpanded___99Mh8Ak7G > :global(.__wab_flex-container) {
-  flex-direction: column;
-  margin-left: calc(0px - 0px);
-  width: calc(100% + 0px);
-  margin-top: calc(0px - 10px);
-  height: calc(100% + 10px);
-}
-.freeBoxexpanded___99Mh8Ak7G > :global(.__wab_flex-container) > *,
-.freeBoxexpanded___99Mh8Ak7G
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > *,
-.freeBoxexpanded___99Mh8Ak7G > :global(.__wab_flex-container) > picture > img,
-.freeBoxexpanded___99Mh8Ak7G
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  margin-left: 0px;
-  margin-top: 10px;
 }
 .slotTargetResponse {
   font-family: "IBM Plex Mono";
