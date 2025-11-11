@@ -47,7 +47,7 @@
   -webkit-transition-duration: 0.5s;
 }
 .svgisExpanded__lV3WgaTp {
-  transform: rotateX(0deg) rotateY(0deg) rotateZ(90deg);
+  transform: rotate3d(0, 0, 1, 90deg);
 }
 .freeBox__cp1Xx {
   display: flex;

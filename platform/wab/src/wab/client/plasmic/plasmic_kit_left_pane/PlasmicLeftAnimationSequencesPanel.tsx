@@ -34,6 +34,7 @@ import sty from "./PlasmicLeftAnimationSequencesPanel.module.css"; // plasmic-im
 
 import PlusIcon from "../plasmic_kit/PlasmicIcon__Plus"; // plasmic-import: -k064DlQ8k8-L/icon
 import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
+import DownloadSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__DownloadSvg"; // plasmic-import: Bu7POPssl/icon
 
 createPlasmicElementProxy;
 
@@ -52,7 +53,10 @@ export type PlasmicLeftAnimationSequencesPanel__OverridesType = {
   root?: Flex__<"div">;
   leftSearchPanel?: Flex__<typeof LeftSearchPanel>;
   animationSequencesHeader?: Flex__<typeof LeftPaneHeader>;
+  freeBox?: Flex__<"div">;
   newAnimationSequenceButton?: Flex__<typeof Button>;
+  importAnimationSequenceButton?: Flex__<typeof Button>;
+  text?: Flex__<"div">;
   content?: Flex__<"div">;
 };
 
@@ -118,27 +122,64 @@ function PlasmicLeftAnimationSequencesPanel__RenderFunc(props: {
         data-plasmic-name={"animationSequencesHeader"}
         data-plasmic-override={overrides.animationSequencesHeader}
         actions={
-          <Button
-            data-plasmic-name={"newAnimationSequenceButton"}
-            data-plasmic-override={overrides.newAnimationSequenceButton}
-            endIcon={
-              <ChevronDownSvgIcon
-                className={classNames(projectcss.all, sty.svg__uxN86)}
-                role={"img"}
-              />
-            }
-            size={"wide"}
-            startIcon={
-              <PlusIcon
-                className={classNames(projectcss.all, sty.svg__vTvci)}
-                role={"img"}
-              />
-            }
-            type={["secondary"]}
-            withIcons={["startIcon"]}
+          <div
+            data-plasmic-name={"freeBox"}
+            data-plasmic-override={overrides.freeBox}
+            className={classNames(projectcss.all, sty.freeBox)}
           >
-            {"New animation sequence"}
-          </Button>
+            <Button
+              data-plasmic-name={"newAnimationSequenceButton"}
+              data-plasmic-override={overrides.newAnimationSequenceButton}
+              endIcon={
+                <ChevronDownSvgIcon
+                  className={classNames(projectcss.all, sty.svg__uxN86)}
+                  role={"img"}
+                />
+              }
+              size={"wide"}
+              startIcon={
+                <PlusIcon
+                  className={classNames(projectcss.all, sty.svg__vTvci)}
+                  role={"img"}
+                />
+              }
+              type={["secondary"]}
+              withIcons={["startIcon"]}
+            >
+              {"New animation sequence"}
+            </Button>
+            <Button
+              data-plasmic-name={"importAnimationSequenceButton"}
+              data-plasmic-override={overrides.importAnimationSequenceButton}
+              endIcon={
+                <ChevronDownSvgIcon
+                  className={classNames(projectcss.all, sty.svg__bq139)}
+                  role={"img"}
+                />
+              }
+              size={"wide"}
+              startIcon={
+                <DownloadSvgIcon
+                  className={classNames(projectcss.all, sty.svg__xjmAq)}
+                  role={"img"}
+                />
+              }
+              type={["primary"]}
+              withIcons={["startIcon"]}
+            >
+              <div
+                data-plasmic-name={"text"}
+                data-plasmic-override={overrides.text}
+                className={classNames(
+                  projectcss.all,
+                  projectcss.__wab_text,
+                  sty.text
+                )}
+              >
+                {"Import preset animations"}
+              </div>
+            </Button>
+          </div>
         }
         className={classNames("__wab_instance", sty.animationSequencesHeader)}
         description={
@@ -161,15 +202,29 @@ const PlasmicDescendants = {
     "root",
     "leftSearchPanel",
     "animationSequencesHeader",
+    "freeBox",
     "newAnimationSequenceButton",
+    "importAnimationSequenceButton",
+    "text",
     "content",
   ],
   leftSearchPanel: ["leftSearchPanel"],
   animationSequencesHeader: [
     "animationSequencesHeader",
+    "freeBox",
     "newAnimationSequenceButton",
+    "importAnimationSequenceButton",
+    "text",
+  ],
+  freeBox: [
+    "freeBox",
+    "newAnimationSequenceButton",
+    "importAnimationSequenceButton",
+    "text",
   ],
   newAnimationSequenceButton: ["newAnimationSequenceButton"],
+  importAnimationSequenceButton: ["importAnimationSequenceButton", "text"],
+  text: ["text"],
   content: ["content"],
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
@@ -179,7 +234,10 @@ type NodeDefaultElementType = {
   root: "div";
   leftSearchPanel: typeof LeftSearchPanel;
   animationSequencesHeader: typeof LeftPaneHeader;
+  freeBox: "div";
   newAnimationSequenceButton: typeof Button;
+  importAnimationSequenceButton: typeof Button;
+  text: "div";
   content: "div";
 };
 
@@ -194,11 +252,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicLeftAnimationSequencesPanel__VariantsArgs;
     args?: PlasmicLeftAnimationSequencesPanel__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<
-    // Specify variants directly as props
-    PlasmicLeftAnimationSequencesPanel__VariantsArgs,
-    ReservedPropsType
-  > &
+  } & // Specify variants directly as props
+  Omit<PlasmicLeftAnimationSequencesPanel__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicLeftAnimationSequencesPanel__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props
@@ -250,7 +305,12 @@ export const PlasmicLeftAnimationSequencesPanel = Object.assign(
     // Helper components rendering sub-elements
     leftSearchPanel: makeNodeComponent("leftSearchPanel"),
     animationSequencesHeader: makeNodeComponent("animationSequencesHeader"),
+    freeBox: makeNodeComponent("freeBox"),
     newAnimationSequenceButton: makeNodeComponent("newAnimationSequenceButton"),
+    importAnimationSequenceButton: makeNodeComponent(
+      "importAnimationSequenceButton"
+    ),
+    text: makeNodeComponent("text"),
     content: makeNodeComponent("content"),
 
     // Metadata about props expected for PlasmicLeftAnimationSequencesPanel

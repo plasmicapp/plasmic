@@ -1,3 +1,4 @@
+import { showError } from "@/wab/client/ErrorNotifications";
 import ListItem from "@/wab/client/components/ListItem";
 import { MenuBuilder } from "@/wab/client/components/menu-builder";
 import { FindReferencesModal } from "@/wab/client/components/sidebar/FindReferencesModal";
@@ -29,6 +30,7 @@ import {
   extractAnimationSequenceUsages,
   mkRuleSet,
 } from "@/wab/shared/core/styles";
+import { DEVFLAGS } from "@/wab/shared/devflags";
 import {
   AnimationSequence,
   KeyFrame,
@@ -277,6 +279,16 @@ export const AnimationSequencesPanel = observer(
       });
     };
 
+    const importPresetAnimationSequences = async () => {
+      try {
+        await studioCtx.projectDependencyManager.addByProjectId(
+          DEVFLAGS.presetAnimationsProjectId
+        );
+      } catch (e) {
+        showError(e, { title: "Error importing preset animations." });
+      }
+    };
+
     const onDuplicate = (sequence: AnimationSequence) => {
       spawn(
         studioCtx.change(({ success }) => {
@@ -357,6 +369,13 @@ export const AnimationSequencesPanel = observer(
       studioCtx.site.animationSequences
     );
 
+    const showImportPresetAnimationsButton =
+      !readOnly &&
+      DEVFLAGS.presetAnimationsProjectId &&
+      !studioCtx.projectDependencyManager.containsProjectId(
+        DEVFLAGS.presetAnimationsProjectId
+      );
+
     return (
       <>
         <PlasmicLeftAnimationSequencesPanel
@@ -374,6 +393,13 @@ export const AnimationSequencesPanel = observer(
               : {
                   onClick: () => addSequence(),
                 }
+          }
+          importAnimationSequenceButton={
+            showImportPresetAnimationsButton
+              ? {
+                  onClick: () => importPresetAnimationSequences(),
+                }
+              : { render: () => null }
           }
           content={
             <VirtualGroupedList

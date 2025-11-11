@@ -206,6 +206,19 @@ export class ProjectDependencyManager {
   }
 
   /**
+   * Checks if a project is already imported as a dependency by projectId.
+   * This will return true if any version of the project is imported.
+   *
+   * @param projectId - The project ID to check
+   * @returns true if the project is already imported, false otherwise
+   */
+  public containsProjectId(projectId: string): boolean {
+    return this._sc.site.projectDependencies.some(
+      (d) => d.projectId === projectId
+    );
+  }
+
+  /**
    * Look for the package in the full dependency tree and return
    * the version we're currently using.
    * @param pkgId

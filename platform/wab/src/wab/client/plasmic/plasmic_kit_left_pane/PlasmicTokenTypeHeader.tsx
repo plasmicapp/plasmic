@@ -269,7 +269,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicTokenTypeHeader__VariantsArgs;
     args?: PlasmicTokenTypeHeader__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicTokenTypeHeader__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicTokenTypeHeader__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicTokenTypeHeader__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

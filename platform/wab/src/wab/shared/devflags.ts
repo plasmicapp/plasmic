@@ -582,6 +582,8 @@ const DEFAULT_DEVFLAGS = {
   disablePublicCopilot: false,
   // Show Animation sequences tab and animation section in Design tab
   showAnimations: false,
+  // Preset animations importable project id
+  presetAnimationsProjectId: "",
   // Show Data Tokens tab in Left Pane
   dataTokens: false,
 };
