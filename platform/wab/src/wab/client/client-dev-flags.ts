@@ -3,9 +3,9 @@ import { getPlasmicStudioArgs } from "@/wab/client/frame-ctx/plasmic-studio-args
 import { assert, withoutNils } from "@/wab/shared/common";
 import { dbg } from "@/wab/shared/dbg";
 import {
-  applyDevFlagOverrides,
   DEVFLAGS,
   DevFlagsType,
+  applyDevFlagOverrides,
 } from "@/wab/shared/devflags";
 import { isPlainObject } from "lodash";
 
@@ -32,8 +32,9 @@ export function getClientDevFlagOverrides(): DevFlagsType {
             ? true
             : v === "false"
             ? false
-            : !isNaN(parseInt(v))
-            ? parseInt(v)
+            : // Using equals check because Number([]) returns 0 otherwise it returns NaN
+            String(Number(v)) === v
+            ? Number(v)
             : v,
         ];
       })
