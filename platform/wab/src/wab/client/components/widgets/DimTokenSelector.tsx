@@ -57,9 +57,11 @@ import {
   showSizeCss,
 } from "@/wab/shared/css-size";
 import {
+  checkAllowedUnits,
   isDimCssFunction,
   validateDimCssFunction,
 } from "@/wab/shared/css/css-tree-utils";
+import { LengthUnit } from "@/wab/shared/css/types";
 import { StyleToken } from "@/wab/shared/model/classes";
 import { naturalSort } from "@/wab/shared/sort";
 import { canCreateAlias } from "@/wab/shared/ui-config-utils";
@@ -296,6 +298,8 @@ export const DimTokenSpinner = observer(
       }));
     };
 
+    const resolver = useClientTokenResolver();
+
     const makeTokenOptions = (): (
       | AddTokenItem
       | EditTokenItem
@@ -322,12 +326,17 @@ export const DimTokenSpinner = observer(
           ) && // the token is editable
           ({ type: "edit-token", token: selectedToken } as const),
 
-        // show tokens that match name or value
+        // show tokens that match name or value and have allowed units
         ...naturalSort(
           tokens
             .filter(
               (t) =>
-                (t.value && matcher.matches(t.value)) || matcher.matches(t.name)
+                ((t.value && matcher.matches(t.value)) ||
+                  matcher.matches(t.name)) &&
+                checkAllowedUnits(
+                  resolver(t, vsh),
+                  allowedUnits as LengthUnit[]
+                )
             )
             .map((token) => ({ type: "token", token } as const)),
           (item) => item.token.name
@@ -488,7 +497,7 @@ export const DimTokenSpinner = observer(
                     : tokenTypeDefaults(
                         ensure(
                           tokenType,
-                          "tokenType must not be nullwhen adding token"
+                          "tokenType must not be null when adding token"
                         )
                       );
                   const _newToken = ensure(
@@ -529,8 +538,6 @@ export const DimTokenSpinner = observer(
       offset: 5,
       isOpen: isOpen,
     });
-
-    const resolver = useClientTokenResolver();
 
     useOnContainerScroll({
       ref: rootRef,

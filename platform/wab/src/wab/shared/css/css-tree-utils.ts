@@ -3,6 +3,7 @@ import {
   CSS_NAMED_COLORS_IDENTIFIERS,
   isColorFunction,
 } from "@/wab/shared/css/colors";
+import { LengthUnit } from "@/wab/shared/css/types";
 import {
   CssNode,
   Dimension,
@@ -382,4 +383,46 @@ export function validateDimCssFunction(
   }
 
   return { valid: true };
+}
+
+/**
+ * Checks if a dimension value contains only allowed units.
+ *
+ * @param value The CSS dimension value to check
+ * @param allowedUnits Array of allowed unit strings
+ * @returns true if all units in the value are allowed, false otherwise
+ */
+export function checkAllowedUnits(
+  value: string,
+  allowedUnits: LengthUnit[]
+): boolean {
+  if (!value || value.trim().length === 0) {
+    return true;
+  }
+
+  let ast: CssNode;
+  try {
+    ast = parse(value, { context: "value" });
+  } catch (e) {
+    return false;
+  }
+
+  let isValid = true;
+
+  walk(ast, (node) => {
+    if (
+      node.type === "Dimension" ||
+      node.type === "Percentage" ||
+      node.type === "Number"
+    ) {
+      const dim = extractDimensionFromNode(node);
+      if (!allowedUnits.includes(dim.unit as LengthUnit)) {
+        isValid = false;
+        return walk.break;
+      }
+    }
+    return;
+  });
+
+  return isValid;
 }
