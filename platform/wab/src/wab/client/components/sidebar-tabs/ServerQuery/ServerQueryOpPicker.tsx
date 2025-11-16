@@ -5,6 +5,7 @@ import { DataPickerTypesSchema } from "@/wab/client/components/sidebar-tabs/Data
 import {
   InnerPropEditorRow,
   PropValueEditorContext,
+  PropValueEditorContextData,
 } from "@/wab/client/components/sidebar-tabs/PropEditorRow";
 import { LabeledItemRow } from "@/wab/client/components/sidebar/sidebar-helpers";
 import { createFakeHostLessComponent } from "@/wab/client/components/studio/add-drawer/AddDrawer";
@@ -130,7 +131,6 @@ export const ServerQueryOpDraftForm = observer(
       readOnly,
       env: data,
       schema,
-      allowedOps,
       showQueryName,
       exprCtx,
     } = props;
@@ -191,15 +191,16 @@ export const ServerQueryOpDraftForm = observer(
 
     const { data: ccContextData } = useSWR(dataKey, fetcher);
 
-    const propValueEditorContext = React.useMemo(() => {
-      return {
-        componentPropValues: funcParamsValues ?? [],
-        ccContextData,
-        exprCtx,
-        schema,
-        env: data,
-      };
-    }, [schema, data, funcParamsValues, exprCtx, ccContextData]);
+    const propValueEditorContext =
+      React.useMemo<PropValueEditorContextData>(() => {
+        return {
+          componentPropValues: funcParamsValues ?? [],
+          ccContextData,
+          exprCtx,
+          schema,
+          env: data,
+        };
+      }, [schema, data, funcParamsValues, exprCtx, ccContextData]);
 
     React.useEffect(() => {
       if (availableFunctions.length === 0 && value?.func) {

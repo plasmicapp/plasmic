@@ -19,6 +19,7 @@ import { InvalidationEditor } from "@/wab/client/components/sidebar-tabs/Compone
 import { MultiSelectEnumPropEditor } from "@/wab/client/components/sidebar-tabs/ComponentProps/MultiSelectEnumPropEditor";
 import { NumPropEditor } from "@/wab/client/components/sidebar-tabs/ComponentProps/NumPropEditor";
 import { ObjectPropEditor } from "@/wab/client/components/sidebar-tabs/ComponentProps/ObjectPropEditor";
+import { QueryBuilderPropEditor } from "@/wab/client/components/sidebar-tabs/ComponentProps/QueryBuilderPropEditor";
 import { RichTextPropEditor } from "@/wab/client/components/sidebar-tabs/ComponentProps/RichTextPropEditor";
 import { TemplatedStringPropEditor } from "@/wab/client/components/sidebar-tabs/ComponentProps/StringPropEditor";
 import {
@@ -126,6 +127,7 @@ import {
 import { typesEqual } from "@/wab/shared/model/model-util";
 import { smartHumanize } from "@/wab/shared/strs";
 import { ComponentContextConfig } from "@plasmicapp/host";
+import type { RulesLogic } from "json-logic-js";
 import L, { isNil, isNumber } from "lodash";
 import { observer } from "mobx-react";
 import React from "react";
@@ -1129,6 +1131,19 @@ const PropValueEditor_ = (
         />
       );
     }
+  } else if (
+    isPlainObjectPropType(propType) &&
+    propType.type === "queryBuilder"
+  ) {
+    const config = _getContextDependentValue(propType.config);
+    return (
+      <QueryBuilderPropEditor
+        config={config}
+        value={value as RulesLogic}
+        onChange={(newTree) => onChange(codeLit(newTree))}
+        disabled={disabled || readOnly}
+      />
+    );
   } else if (getPropTypeType(propType) === "richText") {
     return (
       <RichTextPropEditor

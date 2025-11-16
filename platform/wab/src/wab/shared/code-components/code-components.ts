@@ -225,6 +225,7 @@ import type {
   PropTypeBaseDefault,
 } from "@plasmicapp/host/dist/prop-types";
 import { RefActionRegistration } from "@plasmicapp/host/registerComponent";
+import type { Config } from "@react-awesome-query-builder/antd";
 import {
   assign,
   clone,
@@ -251,7 +252,7 @@ import {
   failableAsync,
   mapMultiple,
 } from "ts-failable";
-import type { Opaque } from "type-fest";
+import type { Opaque, PartialDeep } from "type-fest";
 
 export type VariablePropType<P> = PropTypeBaseDefault<P, VarRef> & {
   type: "variable";
@@ -437,6 +438,11 @@ export type FormDataConnectionPropType<P> = PropTypeBase<
   type: "formDataConnection";
 };
 
+export type QueryBuilderPropType<P> = PropTypeBaseDefault<P, any> & {
+  type: "queryBuilder";
+  config: ComponentContextConfig<P, PartialDeep<Config>>;
+};
+
 export type AnyPropType<P> = PropTypeBaseDefault<P, any> & {
   type: "any";
 };
@@ -467,6 +473,7 @@ export type StudioPropType<P> =
   | TargetPropType<P>
   | ControlModePropType<P>
   | FormDataConnectionPropType<P>
+  | QueryBuilderPropType<P>
   | DynamicPropType<P>;
 
 type ExtractType<T> = T extends { type: string }
@@ -4199,6 +4206,7 @@ export function propTypeToWabType(
             case "variantGroup":
             case "dataSelector":
             case "dataSourceOp":
+            case "queryBuilder":
             case "customFunctionOp":
             case "functionArgs":
             case "varRef":
@@ -4701,6 +4709,7 @@ async function upsertRegisteredFunctions(
             "null",
             "array",
             "void",
+            "queryBuilder",
           ].some((t) => t === type)
         ) {
           return true;

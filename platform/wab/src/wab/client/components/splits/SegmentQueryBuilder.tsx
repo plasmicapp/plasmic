@@ -3,16 +3,15 @@ import {
   AwesomeBuilder,
   QueryBuilderConfig,
 } from "@/wab/client/components/QueryBuilder/QueryBuilderConfig";
+import { getEmptyTree } from "@/wab/client/components/QueryBuilder/query-builder-utils";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { TraitMeta, TraitRegistration } from "@plasmicapp/host";
 import {
   Config,
   Field,
   ImmutableTree,
-  JsonGroup,
-  JsonItem,
-  Query,
   Utils as QbUtils,
+  Query,
 } from "@react-awesome-query-builder/antd";
 import * as React from "react";
 
@@ -29,41 +28,6 @@ const baseConfig = {
     } as Field,
   },
 } as Config;
-
-function getFirstAvailableField(config: Config) {
-  const firstField = config.fields?.[Object.keys(config.fields)[0]] as
-    | Field
-    | undefined;
-
-  return firstField?.fieldName;
-}
-
-function getEmptyTree() {
-  const group: JsonGroup = {
-    id: QbUtils.uuid(),
-    type: "group",
-    properties: {
-      conjunction: "AND",
-    },
-  };
-
-  const child = {
-    id: QbUtils.uuid(),
-    type: "rule",
-    properties: {
-      field: getFirstAvailableField(baseConfig),
-      operator: null,
-      value: [],
-      valueSrc: [],
-    },
-  } as JsonItem & { id: string };
-
-  group.children1 = {
-    [child.id]: child,
-  };
-
-  return group;
-}
 
 interface SegmentQueryBuilderProps {
   saveLogic: (logic: any) => void;
@@ -123,7 +87,7 @@ function SegmentQueryBuilder_(
   }>({
     tree:
       QbUtils.loadFromJsonLogic(logic, config) ??
-      QbUtils.loadTree(getEmptyTree()),
+      QbUtils.loadTree(getEmptyTree(config, { appendFirstField: true })),
     config,
   });
   const handleChange = (_tree, _config) => {

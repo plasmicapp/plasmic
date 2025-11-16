@@ -175,7 +175,7 @@ export interface ControlExtras {
   item?: any; // used for objects and array types
 }
 
-interface PropEditorContextData {
+export interface PropValueEditorContextData {
   componentPropValues: Record<string, any> | any[];
   ccContextData: any;
   invalidArg?: InvalidArgMeta;
@@ -188,7 +188,7 @@ interface PropEditorContextData {
 }
 
 export const PropValueEditorContext =
-  React.createContext<PropEditorContextData>({
+  React.createContext<PropValueEditorContextData>({
     componentPropValues: {},
     ccContextData: {},
     env: undefined,

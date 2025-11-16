@@ -612,15 +612,10 @@ body.qb-dragging {
   // Vertical padding ****************************************************************/
 
   .group-or-rule-container {
-    // margin-top: 10px;
     margin-bottom: 10px;
-    padding-right: 10px;
 
-    &:first-child {
-      margin-top: 0px !important;
-    }
     &:last-child {
-      margin-bottom: 0px !important;
+      margin-bottom: 0px;
     }
   }
   .group--children {
