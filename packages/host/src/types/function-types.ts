@@ -7,6 +7,7 @@ import {
   NumberTypeBaseCore,
   RichBooleanCore,
 } from "./primitive-types";
+import { QueryBuilderCore } from "./query-builder-types";
 import {
   CommonTypeBase,
   ContextDependentConfig,
@@ -89,6 +90,9 @@ export type ObjectType<P> = BaseParam &
 
 export type ArrayType<P> = BaseParam &
   ArrayTypeBaseCore<FunctionControlContext<P>, AnyTyping<P, any>>;
+
+export type QueryBuilderType<P> = BaseParam &
+  QueryBuilderCore<FunctionControlContext<P>>;
 
 export interface PlainAnyType extends BaseParam {
   type: "any";
@@ -182,7 +186,10 @@ export type RestrictedType<P, T> = IsAny<T> extends true
   : // Everything else
     CommonType<P, T>;
 
-export type ParamType<P, T> = RestrictedType<P, T> | DynamicType<P>;
+export type ParamType<P, T> =
+  | RestrictedType<P, T>
+  | DynamicType<P>
+  | QueryBuilderType<P>;
 
 export type RequiredParam<P, T> = ParamType<P, T> & {
   isOptional?: false;
