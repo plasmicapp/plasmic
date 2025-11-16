@@ -18,19 +18,13 @@ import { animated, useTransition } from "react-spring";
 import { usePrevious } from "react-use";
 import ResizeObserver from "resize-observer-polyfill";
 
-let nextId = 0;
-
-function genId() {
-  return nextId++;
-}
-
 interface Store {
   state: SidebarModalContextState;
   dispatch: React.Dispatch<Action>;
 }
 
 interface SidebarModalStackFrame {
-  id: number;
+  id: string;
   onClose?: () => void;
   element: HTMLDivElement;
   persistOnInteractOutside?: boolean;
@@ -55,13 +49,53 @@ interface PushAction {
 }
 interface PopAction {
   type: "pop";
-  frameId: number;
+  frameId: string;
 }
 interface PopAllAction {
   type: "popAll";
 }
 
 type Action = PushAction | PopAction | PopAllAction;
+
+function sidebarModalReducer(
+  state: SidebarModalContextState,
+  action: Action
+): SidebarModalContextState {
+  switch (action.type) {
+    case "push": {
+      const existing = state.stack.find((f) => f.id === action.frame.id);
+      if (existing) {
+        return {
+          ...state,
+          stack: state.stack.map((f) => (f === existing ? action.frame : f)),
+        };
+      } else {
+        return {
+          ...state,
+          stack: [...state.stack, action.frame],
+        };
+      }
+    }
+    case "pop": {
+      const popped = state.stack.find((f) => f.id === action.frameId);
+      if (popped) {
+        popped.onClose?.();
+        return {
+          ...state,
+          stack: state.stack.filter((f) => f.id !== action.frameId),
+        };
+      }
+      return state;
+    }
+    case "popAll": {
+      if (state.stack.length > 0) {
+        arrayReversed(state.stack).forEach((frame) => frame.onClose?.());
+        return { ...state, stack: [] };
+      }
+      return state;
+    }
+  }
+}
 
 /**
  * A root component that "collects" modals into nestable screens. You should
@@ -76,56 +110,10 @@ export function SidebarModalProvider(props: {
   containerSelector?: string;
   children?: React.ReactNode;
 }) {
-  const [state, setState] = React.useState(
-    () =>
-      ({
-        containerSelector: props.containerSelector ?? ".app-container",
-        stack: [],
-      } as SidebarModalContextState)
-  );
-
-  const dispatch = React.useCallback(
-    (action: Action) => {
-      setState((_state) => {
-        if (action.type === "push") {
-          const existing = _state.stack.find((f) => f.id === action.frame.id);
-          if (existing) {
-            return {
-              ..._state,
-              stack: _state.stack.map((f) =>
-                f === existing ? action.frame : f
-              ),
-            };
-          } else {
-            return {
-              ..._state,
-              stack: [..._state.stack, action.frame],
-            };
-          }
-        } else if (action.type === "pop") {
-          const popped = _state.stack.find((f) => f.id === action.frameId);
-          if (popped) {
-            popped.onClose && popped.onClose();
-            return {
-              ..._state,
-              stack: _state.stack.filter((f) => f.id !== action.frameId),
-            };
-          }
-        } else if (action.type === "popAll") {
-          if (_state.stack.length > 0) {
-            for (const frame of arrayReversed(_state.stack)) {
-              frame.onClose && frame.onClose();
-            }
-
-            return { ..._state, stack: [] };
-          }
-        }
-
-        return _state;
-      });
-    },
-    [setState]
-  );
+  const [state, dispatch] = React.useReducer(sidebarModalReducer, {
+    containerSelector: props.containerSelector ?? ".app-container",
+    stack: [],
+  } as SidebarModalContextState);
 
   const store = React.useMemo(() => ({ state, dispatch }), [state, dispatch]);
   return (
@@ -147,26 +135,21 @@ export function SidebarModal(
   const { show, children, ...restProps } = props;
 
   // The same modal will always have the same frameId.
-  const [frameId] = React.useState(genId());
-  if (show) {
-    return (
-      <SidebarModalInternal frameId={frameId} {...restProps}>
-        {children}
-      </SidebarModalInternal>
-    );
-  } else {
-    return null;
-  }
+  const frameId = React.useId();
+  return show ? (
+    <SidebarModalInternal frameId={frameId} {...restProps}>
+      {children}
+    </SidebarModalInternal>
+  ) : null;
 }
 
 const SidebarModalInternal = observer(function SidebarModalInternal(props: {
-  frameId: number;
+  frameId: string;
   title?: React.ReactNode;
   children?: React.ReactNode;
   onClose?: () => void;
   dismissOnEnter?: boolean;
   persistOnInteractOutside?: boolean;
-  hideTitleSection?: boolean;
   hideCloseIcon?: boolean;
 }) {
   // This component doesn't actually render anything; instead,
@@ -181,7 +164,6 @@ const SidebarModalInternal = observer(function SidebarModalInternal(props: {
     onClose,
     dismissOnEnter,
     persistOnInteractOutside,
-    hideTitleSection,
     hideCloseIcon,
   } = props;
 
@@ -242,12 +224,7 @@ const SidebarModalInternal = observer(function SidebarModalInternal(props: {
           }
         }}
       >
-        <div
-          className="panel-popup-title"
-          style={{
-            display: hideTitleSection ? "none" : undefined,
-          }}
-        >
+        <div className="panel-popup-title">
           {frame?.element !== state.stack[0]?.element && (
             <IconButton
               type="seamless"
@@ -344,20 +321,17 @@ function SidebarModalShell() {
   useInteractOutsideWithCommonExceptions({
     ref: popupRef,
     onInteractOutside: () => {
-      if (lastFrame?.persistOnInteractOutside) {
-        return;
+      if (lastFrame && !lastFrame?.persistOnInteractOutside) {
+        dispatch({ type: "pop", frameId: lastFrame.id });
       }
-
-      dispatch({ type: "popAll" });
     },
   });
 
   React.useEffect(() => {
     const onHide = () => {
-      if (lastFrame?.persistOnInteractOutside) {
-        return;
+      if (!lastFrame?.persistOnInteractOutside) {
+        dispatch({ type: "popAll" });
       }
-      dispatch({ type: "popAll" });
     };
     document.addEventListener(plasmicIFrameMouseDownEvent, onHide);
     return () => {
