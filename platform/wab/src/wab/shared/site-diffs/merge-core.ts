@@ -103,6 +103,7 @@ import isEqual from "lodash/isEqual";
 // keeping these imports last seems to make sure everything works properly
 import {
   fixDuplicatedCodeComponents,
+  fixPageArenaFramesOrderingAndScreenVariants,
   fixPagePaths,
   fixSwappedTplComponents,
   fixVirtualSlotArgs,
@@ -1909,6 +1910,8 @@ function runMergeFnAndApplyFixes(
       );
 
       autoReconciliations.push(...fixPagePaths(mergedSite));
+
+      fixPageArenaFramesOrderingAndScreenVariants(mergedSite);
     });
   });
 

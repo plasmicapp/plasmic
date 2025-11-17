@@ -538,9 +538,13 @@ export const modelConflictsMeta: ModelConflictsMeta = {
   },
   ArenaFrameRow: {
     cols: {
-      arrayType: "ordered",
+      arrayType: "unordered",
       conflictType: "merge",
-      mergeKeyIsIdentity: true,
+      mergeKey: "frame.uuid",
+      handleUpdatedValues: (cells, parent, bundler) =>
+        shallowCloneArrayValuesAndAddToBundle(cells, parent, bundler, [
+          classes.ArenaFrameCell,
+        ]),
     },
     rowKey: "generic",
   },

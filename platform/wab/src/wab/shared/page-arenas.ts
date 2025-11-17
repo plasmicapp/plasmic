@@ -319,6 +319,8 @@ export function reorderPageArenaCols(site: Site) {
       ]).map((it, i) =>
         // If the frame has been moved,
         // we create a new cell to invalidate the canvas frame rendering
+        // Note: New cell instances can disrupt merge ordering, so reorderPageArenaCols is called
+        // again after merge (via fixPageArenaFramesOrderingAndScreenVariants) to restore proper order
         it.frame === originalCols[i].frame
           ? it
           : new ArenaFrameCell({

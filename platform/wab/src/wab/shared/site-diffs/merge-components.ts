@@ -1,3 +1,4 @@
+import { ensureActivatedScreenVariantsForArena } from "@/wab/shared/Arenas";
 import {
   fillVirtualSlotContents,
   getSlotArgs,
@@ -74,6 +75,7 @@ import {
 import { meta } from "@/wab/shared/model/classes-metas";
 import { Field } from "@/wab/shared/model/model-meta";
 import { assertSameInstType } from "@/wab/shared/model/model-tree-util";
+import { reorderPageArenaCols } from "@/wab/shared/page-arenas";
 import {
   AutoReconciliation,
   DirectConflict,
@@ -2104,4 +2106,22 @@ export function inferUpdatedComponents(
   });
 
   return new Set(updatedComponents.map((component) => component.uuid));
+}
+
+/**
+ * Fixes page arena frame ordering and screen variants after a merge operation.
+ *
+ * During merge, ArenaFrameRow.cols are merged as unordered arrays, which can disrupt
+ * the proper column ordering based on responsive strategy.
+ *
+ * This function:
+ * 1. Reorders page arena columns according to the site's responsive strategy (mobile-first
+ *    or desktop-first)
+ * 2. Ensures screen variants are properly activated for all page arenas
+ */
+export function fixPageArenaFramesOrderingAndScreenVariants(mergedSite: Site) {
+  reorderPageArenaCols(mergedSite);
+  mergedSite.pageArenas.forEach((arena) => {
+    ensureActivatedScreenVariantsForArena(mergedSite, arena);
+  });
 }
