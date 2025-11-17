@@ -1,7 +1,8 @@
-import { expect } from "@playwright/test";
-import { test } from "../fixtures/test";
+import { expect, Page } from "@playwright/test";
+import { PageModels, test } from "../fixtures/test";
+import { goToProject } from "../utils/studio-utils";
 
-async function initialSetup(models: any, page: any) {
+async function initialSetup(models: PageModels, page: Page) {
   await models.studio.leftPanel.insertNode("hostless-tiptap");
 
   const contentHtmlProp =
@@ -86,7 +87,7 @@ test.describe("hostless-tiptap", () => {
         },
       ],
     });
-    await page.goto(`/projects/${projectId}`);
+    await goToProject(page, `/projects/${projectId}`);
   });
 
   test.afterEach(async ({ apiClient }) => {

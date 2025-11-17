@@ -1,20 +1,14 @@
-import { expect } from "@playwright/test";
+import { expect, Page } from "@playwright/test";
 import { v4 } from "uuid";
-import { test } from "../../fixtures/test";
+import { PageModels, test } from "../../fixtures/test";
+import { goToProject, waitForFrameToLoad } from "../../utils/studio-utils";
 
 test.describe("HTTP Data Source", () => {
   let projectId: string;
   let dataSourceName: string;
-  let origDevFlags: any;
 
   test.beforeEach(async ({ apiClient, page }) => {
     dataSourceName = `HTTP ${v4()}`;
-
-    origDevFlags = await apiClient.getDevFlags();
-    await apiClient.upsertDevFlags({
-      ...origDevFlags,
-      plexus: false,
-    });
 
     await apiClient.createFakeDataSource({
       source: "http",
@@ -31,7 +25,7 @@ test.describe("HTTP Data Source", () => {
       name: "HTTP Data Source",
     });
 
-    await page.goto(`/projects/${projectId}`);
+    await goToProject(page, `/projects/${projectId}`);
   });
 
   test.afterEach(async ({ apiClient }) => {
@@ -40,17 +34,9 @@ test.describe("HTTP Data Source", () => {
     if (projectId) {
       await apiClient.removeProject(projectId);
     }
-
-    if (origDevFlags) {
-      await apiClient.upsertDevFlags(origDevFlags);
-    }
   });
 
   test("http basic queries", async ({ models, page }) => {
-    await models.studio.waitForFrameToLoad();
-
-    await page.waitForTimeout(5000);
-
     const USER_NAME = "Leanne Graham";
 
     await models.studio.createNewPageInOwnArena("Homepage");
@@ -88,7 +74,7 @@ test.describe("HTTP Data Source", () => {
       .locator(".ant-modal")
       .waitFor({ state: "hidden", timeout: 10000 });
 
-    await models.studio.waitForFrameToLoad();
+    await waitForFrameToLoad(page);
 
     await models.studio.rightPanel.switchToDesignTab();
 
@@ -100,13 +86,7 @@ test.describe("HTTP Data Source", () => {
 
     await models.studio.useDynamicValueButton.click();
 
-    selectPathInDataPicker(models, page, [
-      "query",
-      "data",
-      "response",
-      "0",
-      "name",
-    ]);
+    selectPathInDataPicker(models, ["query", "data", "response", "0", "name"]);
 
     const designFrame = models.studio.getComponentFrameByIndex(0);
     await expect(designFrame.getByText(USER_NAME)).toBeVisible({
@@ -192,7 +172,11 @@ test.describe("HTTP Data Source", () => {
   });
 });
 
-async function pickDataSource(dataSourceName, models, page) {
+async function pickDataSource(
+  dataSourceName: string,
+  models: PageModels,
+  page: Page
+) {
   const pickButton = models.studio.rightPanel.frame.locator(
     "#data-source-modal-pick-integration-btn"
   );
@@ -224,7 +208,12 @@ async function pickDataSource(dataSourceName, models, page) {
   await confirmButton.click();
 }
 
-async function setDataPlasmicProp(prop, value, page, models) {
+async function setDataPlasmicProp(
+  prop: string,
+  value: string,
+  page: Page,
+  models: PageModels
+) {
   const pathField = models.studio.rightPanel.frame.locator(
     `[data-plasmic-prop="${prop}"]`
   );
@@ -238,7 +227,10 @@ async function setDataPlasmicProp(prop, value, page, models) {
   await page.keyboard.type(value);
 }
 
-async function selectPathInDataPicker(models, page, path) {
+async function selectPathInDataPicker(
+  models: PageModels,
+  path: string | string[]
+) {
   const dataPicker = models.studio.rightPanel.frame.locator(
     '[data-test-id="data-picker"]'
   );
@@ -256,17 +248,25 @@ async function selectPathInDataPicker(models, page, path) {
   await models.studio.rightPanel.dataPickerSaveButton.click();
 }
 
-async function bindTextContentToObjectPath(models, page, path) {
+async function bindTextContentToObjectPath(
+  models: PageModels,
+  page: Page,
+  path: string | string[]
+) {
   await models.studio.rightPanel.frame
     .locator(`[data-test-id="text-content"] label`)
     .click({ button: "right" });
   await models.studio.useDynamicValueButton.click();
   await page.waitForTimeout(500);
-  await selectPathInDataPicker(models, page, path);
+  await selectPathInDataPicker(models, path);
   await page.waitForTimeout(500);
 }
 
-async function bindTextContentToCustomCode(models, page, code) {
+async function bindTextContentToCustomCode(
+  models: PageModels,
+  page: Page,
+  code: string
+) {
   await models.studio.rightPanel.frame
     .locator(`[data-test-id="text-content"] label`)
     .click({ button: "right" });
@@ -295,13 +295,9 @@ async function bindTextContentToCustomCode(models, page, code) {
   await page.keyboard.press("Backspace");
   await page.waitForTimeout(100);
   await page.keyboard.insertText(code);
+  await page.waitForTimeout(100);
 
-  await page.waitForTimeout(100);
-  await models.studio.rightPanel.frame
-    .locator('[data-test-id="data-picker"]')
-    .getByRole("button", { name: "Save" })
-    .click();
-  await page.waitForTimeout(100);
+  await models.studio.rightPanel.saveDataPicker();
 }
 
 interface InteractionConfig {
@@ -320,8 +316,8 @@ const updateVariableOperations: Record<string, number> = {
 };
 
 async function addInteraction(
-  models,
-  page,
+  models: PageModels,
+  page: Page,
   eventHandler: string,
   interactions: InteractionConfig[]
 ) {

@@ -2,13 +2,14 @@ import { expect } from "@playwright/test";
 import { VERT_CONTAINER_CAP } from "../../src/wab/shared/Labels";
 import { test } from "../fixtures/test";
 import { setSelection } from "../utils/set-selection";
+import { goToProject } from "../utils/studio-utils";
 
 test.describe("data-binding", () => {
   let projectId: string;
 
   test.beforeEach(async ({ apiClient, page }) => {
     projectId = await apiClient.setupNewProject({ name: "data-binding" });
-    await page.goto(`/projects/${projectId}`);
+    await goToProject(page, `/projects/${projectId}`);
   });
 
   test.afterEach(async ({ apiClient }) => {
@@ -54,10 +55,7 @@ test.describe("data-binding", () => {
       .locator('[data-test-id="data-picker"]')
       .getByText("linkProp")
       .click();
-    await models.studio.rightPanel.frame
-      .locator('[data-test-id="data-picker"]')
-      .getByRole("button", { name: "Save" })
-      .click();
+    await models.studio.rightPanel.saveDataPicker();
 
     await models.studio.focusFrameRoot(framed);
     await models.studio.leftPanel.switchToTreeTab();
@@ -162,10 +160,7 @@ test.describe("data-binding", () => {
       .locator('[data-test-id="data-picker"]')
       .getByText("linkProp")
       .click();
-    await models.studio.rightPanel.frame
-      .locator('[data-test-id="data-picker"]')
-      .getByRole("button", { name: "Save" })
-      .click();
+    await models.studio.rightPanel.saveDataPicker();
 
     await models.studio.leftPanel.switchToTreeTab();
     await models.studio.leftPanel.frame
@@ -206,9 +201,7 @@ test.describe("data-binding", () => {
     );
     await page.waitForTimeout(100);
 
-    await models.studio.rightPanel.frame
-      .getByRole("button", { name: "Save" })
-      .click();
+    await models.studio.rightPanel.saveDataPicker();
 
     const visibilityChoices = models.studio.frame.locator(
       '[data-test-id="visibility-choices"]'
@@ -320,10 +313,7 @@ test.describe("data-binding", () => {
       .locator('[data-test-id="data-picker"]')
       .getByText("linkProp")
       .click();
-    await models.studio.rightPanel.frame
-      .locator('[data-test-id="data-picker"]')
-      .getByRole("button", { name: "Save" })
-      .click();
+    await models.studio.rightPanel.saveDataPicker();
 
     await models.studio.focusFrameRoot(framed);
     await models.studio.leftPanel.frame

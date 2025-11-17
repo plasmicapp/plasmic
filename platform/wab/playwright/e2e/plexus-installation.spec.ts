@@ -1,7 +1,8 @@
 import { expect, Locator, Page } from "@playwright/test";
 import { kebabCase, startCase } from "lodash";
 import { testIds } from "../../src/wab/client/test-helpers/test-ids";
-import { test } from "../fixtures/test";
+import { PageModels, test } from "../fixtures/test";
+import { goToProject, waitForFrameToLoad } from "../utils/studio-utils";
 
 export const PLEXUS_INSERTABLES = [
   { name: "button", dependencies: [] },
@@ -62,12 +63,12 @@ function escapeRegExp(value: string) {
 test.describe("Plexus Installation", () => {
   let projectId: string;
 
-  test.beforeEach(async ({ apiClient, page, models }) => {
+  test.beforeEach(async ({ apiClient, page }) => {
     projectId = await apiClient.setupNewProject({
       name: "Plexus Installation Test",
+      devFlags: { plexus: true },
     });
-    await page.goto(`/projects/${projectId}`);
-    await models.studio.waitForFrameToLoad();
+    await goToProject(page, `/projects/${projectId}?plexus=true`);
   });
 
   test.afterEach(async ({ apiClient }) => {
@@ -79,7 +80,7 @@ test.describe("Plexus Installation", () => {
   });
 
   async function getFilteredComponentsInProjectPanel(
-    models: any,
+    models: PageModels,
     page: Page,
     filterQuery: string
   ) {
@@ -94,21 +95,20 @@ test.describe("Plexus Installation", () => {
     return rowLocator;
   }
 
-  async function ensureProjectPanelOpen(models: any, page: Page) {
+  async function ensureProjectPanelOpen(models: PageModels, page: Page) {
     const projectPanel = models.studio.frame.locator(
       testIds.projectPanel.selector
     );
     if (!(await projectPanel.isVisible())) {
-      await models.studio.openProjectPanel();
+      await models.studio.projectNavButton.click({ timeout: 10000 });
       await expect(projectPanel).toBeVisible({ timeout: 15000 });
     }
 
     const expandAllButton = models.studio.frame.locator(
       '[data-test-id="nav-dropdown-expand-all"]'
     );
-    if (await expandAllButton.isVisible()) {
-      await expandAllButton.click();
-    }
+    await expandAllButton.hover({ trial: true });
+    await expandAllButton.click();
 
     const searchInput = projectPanel.locator("input");
     const currentQuery = await searchInput.inputValue();
@@ -121,7 +121,7 @@ test.describe("Plexus Installation", () => {
   }
 
   async function dragInsertableToCanvas(
-    models: any,
+    models: PageModels,
     page: Page,
     insertableName: string,
     targetOffset: { x: number; y: number } = { x: 120, y: 120 }
@@ -200,7 +200,7 @@ test.describe("Plexus Installation", () => {
     });
   }
 
-  async function waitForStudioEval(models: any, page: Page) {
+  async function waitForStudioEval(models: PageModels, page: Page) {
     for (let attempt = 0; attempt < 40; attempt++) {
       try {
         const ready = await models.studio.frame
@@ -225,7 +225,7 @@ test.describe("Plexus Installation", () => {
   }
 
   async function getStudioSiteState(
-    models: any,
+    models: PageModels,
     page: Page
   ): Promise<{
     defaultComponentNames: Record<string, string>;
@@ -239,7 +239,7 @@ test.describe("Plexus Installation", () => {
         site?.defaultComponents ?? {}
       ).map(([key, component]) => [key, (component as any)?.name as string]);
       const projectDependencyIds = (site?.projectDependencies ?? []).map(
-        (dep) => (dep as any)?.projectId as string
+        (dep: any) => dep?.projectId as string
       );
 
       return {
@@ -251,7 +251,7 @@ test.describe("Plexus Installation", () => {
     });
   }
 
-  async function verifyInitialState(models: any, page: Page) {
+  async function verifyInitialState(models: PageModels, page: Page) {
     await verifyProjectPanelState(models, page, {
       arenaCount: 1,
       componentCount: 0,
@@ -259,8 +259,8 @@ test.describe("Plexus Installation", () => {
   }
 
   async function verifyProjectPanelState(
-    models: any,
-    page: any,
+    models: PageModels,
+    page: Page,
     { arenaCount = 2, componentCount = 24 }
   ) {
     const projectPanel = await ensureProjectPanelOpen(models, page);
@@ -277,7 +277,7 @@ test.describe("Plexus Installation", () => {
       models,
     }) => {
       await models.studio.createNewPage("New page");
-      await models.studio.waitForFrameToLoad();
+      await waitForFrameToLoad(page);
 
       await verifyInitialState(models, page);
       const initialState = await getStudioSiteState(models, page);
@@ -345,7 +345,7 @@ test.describe("Plexus Installation", () => {
       models,
     }) => {
       await models.studio.createNewPage("New page");
-      await models.studio.waitForFrameToLoad();
+      await waitForFrameToLoad(page);
 
       await verifyInitialState(models, page);
 
@@ -393,7 +393,7 @@ test.describe("Plexus Installation", () => {
       models,
     }) => {
       await models.studio.createNewPage("New Page");
-      await models.studio.waitForFrameToLoad();
+      await waitForFrameToLoad(page);
 
       await verifyInitialState(models, page);
       const baselineCounts = await getProjectPanelCounts(
@@ -476,7 +476,7 @@ test.describe("Plexus Installation", () => {
   });
 
   test.describe("Installable installations", () => {
-    async function verifyInstallationDialog(models: any) {
+    async function verifyInstallationDialog(models: PageModels) {
       const dialog = models.studio.frame.locator('[role="dialog"] form');
       const checkboxes = dialog.locator('input[type="checkbox"]');
       await expect(checkboxes).toHaveCount(4);
@@ -495,15 +495,22 @@ test.describe("Plexus Installation", () => {
       await expect(enabledCheckboxes).toHaveCount(3);
     }
 
-    async function unflattenInstallation(models: any) {
+    async function unflattenInstallation(models: PageModels) {
       const dialog = models.studio.frame.locator('[role="dialog"] form');
-      await dialog.locator("label").nth(2).click();
+      const checkLabel = dialog.locator("label").nth(2);
+      await checkLabel.click();
+      await checkLabel.locator(".ant-checkbox-checked").waitFor();
     }
 
-    async function beginInstallation(models: any, page: any) {
+    async function beginInstallation(models: PageModels, page: Page) {
       const dialog = models.studio.frame.locator('[role="dialog"] form');
       await dialog.locator('button[type="submit"]').click();
-      await page.waitForTimeout(3000);
+      // This assumes the previous frame had a different name
+      await models.studio.frame
+        .locator(".CanvasFrame__Label--focused")
+        .getByText("Unnamed Component")
+        .waitFor({ state: "visible" });
+      await page.waitForTimeout(1000);
     }
 
     test("can install installable components (flattened)", async ({
@@ -562,7 +569,7 @@ test.describe("Plexus Installation", () => {
       models,
     }) => {
       await models.studio.createNewPage("New Page");
-      await models.studio.waitForFrameToLoad();
+      await waitForFrameToLoad(page);
 
       await verifyInitialState(models, page);
 

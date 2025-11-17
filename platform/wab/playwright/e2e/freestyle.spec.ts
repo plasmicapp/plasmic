@@ -1,5 +1,6 @@
 import { expect } from "@playwright/test";
 import { test } from "../fixtures/test";
+import { goToProject, waitForFrameToLoad } from "../utils/studio-utils";
 import { undoAndRedo } from "../utils/undo-and-redo";
 
 test.describe("freestyle", () => {
@@ -7,7 +8,7 @@ test.describe("freestyle", () => {
 
   test.beforeEach(async ({ apiClient, page }) => {
     projectId = await apiClient.setupNewProject({ name: "freestyle" });
-    await page.goto(`/projects/${projectId}`);
+    await goToProject(page, `/projects/${projectId}`);
   });
 
   test.afterEach(async ({ apiClient }) => {
@@ -20,7 +21,7 @@ test.describe("freestyle", () => {
 
   test("can draw tweet", async ({ page, models }) => {
     await models.studio.leftPanel.addNewFrame();
-    await models.studio.waitForFrameToLoad();
+    await waitForFrameToLoad(page);
 
     await models.studio.frames.first().waitFor({ state: "visible" });
     const framed = models.studio.getComponentFrameByIndex(0);

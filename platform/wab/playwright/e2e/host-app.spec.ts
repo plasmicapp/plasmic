@@ -1,12 +1,13 @@
 import { expect } from "@playwright/test";
 import { test } from "../fixtures/test";
+import { goToProject, waitForFrameToLoad } from "../utils/studio-utils";
 
-test.describe.skip("host-app", () => {
+test.describe("host-app", () => {
   let projectId: string;
 
   test.beforeEach(async ({ apiClient, page }) => {
     projectId = await apiClient.setupNewProject({ name: "host-app" });
-    await page.goto(`/projects/${projectId}`);
+    await goToProject(page, `/projects/${projectId}`);
   });
 
   test.afterEach(async ({ apiClient }) => {
@@ -19,6 +20,7 @@ test.describe.skip("host-app", () => {
 
   test("Should work", async ({ page, models }) => {
     await models.studio.rightPanel.configureProjectAppHost("plasmic-host");
+    await waitForFrameToLoad(page);
 
     await models.studio.leftPanel.addNewFrame();
     const artboardFrame = page
@@ -92,7 +94,9 @@ test.describe.skip("host-app", () => {
     await models.studio.rightPanel.confirmButton.click();
     await models.studio.waitStudioLoaded();
 
-    await models.studio.leftPanel.selectTreeNode(["root", "badge"]);
+    await models.studio.leftPanel.switchToTreeTab();
+    // TODO - Cypress uses ["root", "badge"], figure out discrepancy (another below)
+    await models.studio.leftPanel.selectTreeNode(["free box", "badge"]);
 
     await expect(models.studio.frame.getByText("Plasmician")).toBeVisible();
 
@@ -103,7 +107,9 @@ test.describe.skip("host-app", () => {
       "`Clicks: ${$state.badge.clicks}`"
     );
 
-    const artboardFrameByName = await models.studio.getFramedByName("artboard");
+    // TODO - implement a working version of getFramedByName
+    // const artboardFrameByName = await models.studio.getFramedByName("artboard");
+    const artboardFrameByName = models.studio.getComponentFrameByIndex(0);
     await expect(
       artboardFrameByName.locator("body").getByText("State value: 0")
     ).toBeVisible();
@@ -128,7 +134,7 @@ test.describe.skip("host-app", () => {
 
     await models.studio.rightPanel.checkNoErrors();
 
-    await page.goto(`/projects/${projectId}`);
+    await goToProject(page, `/projects/${projectId}`);
 
     await models.studio.rightPanel.checkNoErrors();
     await models.studio.waitForSave();
@@ -136,14 +142,11 @@ test.describe.skip("host-app", () => {
     await models.studio.rightPanel.configureProjectAppHost(
       "plasmic-host-updated-old-host"
     );
+    await waitForFrameToLoad(page);
 
-    await models.studio.waitStudioLoaded();
+    await models.studio.leftPanel.selectTreeNode(["free box", "badge"]);
 
-    await models.studio.leftPanel.selectTreeNode(["root", "badge"]);
-
-    const artboardFrameByName2 = await models.studio.getFramedByName(
-      "artboard"
-    );
+    const artboardFrameByName2 = models.studio.getComponentFrameByIndex(0);
     await expect(
       artboardFrameByName2.locator("body").getByText("State value: 0")
     ).toBeVisible();
@@ -152,15 +155,21 @@ test.describe.skip("host-app", () => {
     await models.studio.rightPanel.checkNoErrors();
   });
 
-  test("Should accept host URLs with query params", async ({ models }) => {
+  test("Should accept host URLs with query params", async ({
+    page,
+    models,
+  }) => {
     await models.studio.rightPanel.configureProjectAppHost("plasmic-host?");
+    await waitForFrameToLoad(page);
 
     await models.studio.rightPanel.configureProjectAppHost(
       "plasmic-host?foo=bar"
     );
+    await waitForFrameToLoad(page);
 
     await models.studio.rightPanel.configureProjectAppHost(
       "plasmic-host?foo=bar&baz="
     );
+    await waitForFrameToLoad(page);
   });
 });

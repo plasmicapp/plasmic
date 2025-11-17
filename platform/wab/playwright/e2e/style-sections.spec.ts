@@ -1,16 +1,18 @@
 import { expect } from "@playwright/test";
 import { uniq } from "lodash";
 import { test } from "../fixtures/test";
+import { goToProject, waitForFrameToLoad } from "../utils/studio-utils";
 
 test.describe("Style sections", () => {
   let projectId: string;
 
   test.beforeEach(async ({ apiClient, page, models }) => {
     projectId = await apiClient.setupNewProject({ name: "host-app" });
-    await page.goto(`/projects/${projectId}`);
+    await goToProject(page, `/projects/${projectId}`);
     await models.studio.rightPanel.configureProjectAppHost(
       "plasmic-host-style-sections"
     );
+    await waitForFrameToLoad(page);
   });
 
   test.afterEach(async ({ apiClient }) => {
@@ -245,8 +247,7 @@ test.describe("Style sections", () => {
         );
       }
     }
-
-    await models.studio.leftPanel.insertNode(`All`);
+    await models.studio.leftPanel.insertNode("All");
 
     const baseCount = styleSectionsThatAlwaysOccurInStyleableTpl.length + 1 + 1;
     const sectionsThatTranslateTo2All = styleSections.filter((s) =>

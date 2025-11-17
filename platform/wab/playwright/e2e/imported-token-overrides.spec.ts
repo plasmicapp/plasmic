@@ -1,5 +1,7 @@
-import { expect, FrameLocator } from "@playwright/test";
-import { test } from "../fixtures/test";
+import { expect, FrameLocator, Page } from "@playwright/test";
+import { PageModels, test } from "../fixtures/test";
+import { ApiClient } from "../utils/api-client";
+import { goToProject, waitForFrameToLoad } from "../utils/studio-utils";
 
 const TEST_COLORS = {
   PRIMARY: "#ff0000",
@@ -57,7 +59,7 @@ function hexToRgbString(hex: string) {
   return `rgb(${r}, ${g}, ${b})`;
 }
 
-async function switchToStyleTokensTab(models: any) {
+async function switchToStyleTokensTab(page: Page, models: PageModels) {
   const assetsTab = models.studio.frame.locator('[data-test-tabkey="assets"]');
   await assetsTab.waitFor({ state: "visible", timeout: 5000 });
   await assetsTab.hover();
@@ -68,7 +70,7 @@ async function switchToStyleTokensTab(models: any) {
   await tokensTab.waitFor({ state: "visible", timeout: 5000 });
 
   await tokensTab.scrollIntoViewIfNeeded();
-  await models.studio.page.waitForTimeout(200);
+  await page.waitForTimeout(200);
 
   const box = await tokensTab.boundingBox();
   if (!box) {
@@ -88,7 +90,7 @@ async function switchToStyleTokensTab(models: any) {
         break;
       }
       await tokensTab.scrollIntoViewIfNeeded();
-      await models.studio.page.waitForTimeout(300);
+      await page.waitForTimeout(300);
     }
   }
 
@@ -96,10 +98,10 @@ async function switchToStyleTokensTab(models: any) {
     throw new Error("Failed to click tokens tab after 3 attempts");
   }
 
-  await models.studio.page.waitForTimeout(300);
+  await page.waitForTimeout(300);
 }
 
-async function expandAllTokensPanel(models: any) {
+async function expandAllTokensPanel(models: PageModels) {
   const expandButton = models.studio.frame.locator(
     '[data-test-id="tokens-panel-expand-all"]'
   );
@@ -108,11 +110,11 @@ async function expandAllTokensPanel(models: any) {
   }
 }
 
-async function getTokensPanel(models: any) {
+async function getTokensPanel(models: PageModels) {
   return models.studio.frame.locator('[data-test-id="tokens-panel-content"]');
 }
 
-async function changeTokensTarget(models: any, targetName: string) {
+async function changeTokensTarget(models: PageModels, targetName: string) {
   const variantSelect = models.studio.frame.locator(
     '[data-test-id="global-variant-select"]'
   );
@@ -129,15 +131,16 @@ async function changeTokensTarget(models: any, targetName: string) {
   await overlay.waitFor({ state: "hidden", timeout: 5000 });
 }
 
-async function closeSidebarModal(models: any) {
+async function closeSidebarModal(page: Page, models: PageModels) {
   const modal = models.studio.frame.locator("#sidebar-modal");
   if (await modal.isVisible({ timeout: 1000 }).catch(() => false)) {
-    await models.studio.page.keyboard.press("Escape");
+    await page.keyboard.press("Escape");
   }
 }
 
 async function createToken(
-  models: any,
+  page: Page,
+  models: PageModels,
   tokenType: "Color" | "FontSize",
   name: string,
   value: string
@@ -146,7 +149,7 @@ async function createToken(
     .locator('[data-test-id="tokens-panel-content"]')
     .isVisible();
   if (!isTokensPanelVisible) {
-    await switchToStyleTokensTab(models);
+    await switchToStyleTokensTab(page, models);
   }
   const addButton = models.studio.frame.locator(
     `[data-test-id="add-token-button-${tokenType}"]`
@@ -158,7 +161,7 @@ async function createToken(
   const modal = models.studio.frame.locator("#sidebar-modal");
   await modal.waitFor({ state: "visible", timeout: 5000 });
 
-  await models.studio.page.keyboard.type(name);
+  await page.keyboard.type(name);
 
   const input = modal.locator(
     `.panel-popup-content [data-test-id="${tokenType}-input"]`
@@ -166,13 +169,14 @@ async function createToken(
   await input.click();
   await input.fill("");
   await input.type(`${value}`);
-  await models.studio.page.keyboard.press("Enter");
+  await page.keyboard.press("Enter");
 
-  await closeSidebarModal(models);
+  await closeSidebarModal(page, models);
 }
 
 async function updateToken(
-  models: any,
+  page: Page,
+  models: PageModels,
   tokenType: "Color" | "FontSize",
   tokenName: string,
   value: string,
@@ -185,7 +189,7 @@ async function updateToken(
     .locator('[data-test-id="tokens-panel-content"]')
     .isVisible();
   if (!isTokensPanelVisible) {
-    await switchToStyleTokensTab(models);
+    await switchToStyleTokensTab(page, models);
   }
   await expandAllTokensPanel(models);
 
@@ -201,7 +205,7 @@ async function updateToken(
     .waitFor({ state: "attached", timeout: 3000 })
     .catch(() => {
       // Fallback to a short wait if the title check doesn't work
-      return models.studio.page.waitForTimeout(300);
+      return page.waitForTimeout(300);
     });
 
   // Get tokenRow after changing target to avoid stale element
@@ -254,22 +258,22 @@ async function updateToken(
   // Verify the value was set
   await expect(input).toHaveValue(value, { timeout: 2000 });
 
-  await models.studio.page.keyboard.press("Enter");
+  await page.keyboard.press("Enter");
 
   // Wait for modal to start closing
   await modal.waitFor({ state: "hidden", timeout: 3000 }).catch(() => {
     // If modal doesn't close automatically, closeSidebarModal will handle it
   });
 
-  await closeSidebarModal(models);
+  await closeSidebarModal(page, models);
 }
 
-async function deleteToken(models: any, tokenName: string) {
+async function deleteToken(page: Page, models: PageModels, tokenName: string) {
   const isTokensPanelVisible = await models.studio.leftPanel.frame
     .locator('[data-test-id="tokens-panel-content"]')
     .isVisible();
   if (!isTokensPanelVisible) {
-    await switchToStyleTokensTab(models);
+    await switchToStyleTokensTab(page, models);
   }
   await expandAllTokensPanel(models);
 
@@ -289,7 +293,8 @@ async function deleteToken(models: any, tokenName: string) {
 }
 
 async function removeTokenOverride(
-  models: any,
+  page: Page,
+  models: PageModels,
   tokenName: string,
   opts: { globalVariant?: string } = {}
 ) {
@@ -297,7 +302,7 @@ async function removeTokenOverride(
     .locator('[data-test-id="tokens-panel-content"]')
     .isVisible();
   if (!isTokensPanelVisible) {
-    await switchToStyleTokensTab(models);
+    await switchToStyleTokensTab(page, models);
   }
   await expandAllTokensPanel(models);
 
@@ -327,7 +332,8 @@ async function removeTokenOverride(
 }
 
 async function assertTokenIndicator(
-  models: any,
+  page: Page,
+  models: PageModels,
   tokenName: string,
   indicator:
     | "local"
@@ -343,7 +349,7 @@ async function assertTokenIndicator(
     .locator('[data-test-id="tokens-panel-content"]')
     .isVisible();
   if (!isTokensPanelVisible) {
-    await switchToStyleTokensTab(models);
+    await switchToStyleTokensTab(page, models);
   }
   await expandAllTokensPanel(models);
 
@@ -438,7 +444,8 @@ async function assertTokenIndicator(
 }
 
 async function chooseColor(
-  models: any,
+  page: Page,
+  models: PageModels,
   opts: { color?: string; tokenName?: string }
 ) {
   await models.studio.rightPanel.designTabButton.click();
@@ -449,27 +456,28 @@ async function chooseColor(
   await colorSelector.first().click({ force: true });
 
   if (opts?.color) {
-    await models.studio.page.waitForTimeout(100);
-    await models.studio.page.keyboard.type(opts.color);
-    await models.studio.page.waitForTimeout(100);
-    await models.studio.page.keyboard.press("Enter");
-    await models.studio.page.waitForTimeout(100);
+    await page.waitForTimeout(100);
+    await page.keyboard.type(opts.color);
+    await page.waitForTimeout(100);
+    await page.keyboard.press("Enter");
+    await page.waitForTimeout(100);
   } else if (opts?.tokenName) {
     const searchInput = models.studio.frame.locator(
       'input[placeholder="Search for token"]'
     );
-    await models.studio.page.waitForTimeout(100);
+    await page.waitForTimeout(100);
     await searchInput.type(`${opts.tokenName}`);
-    await models.studio.page.waitForTimeout(100);
-    await models.studio.page.keyboard.press("Enter");
-    await models.studio.page.waitForTimeout(100);
+    await page.waitForTimeout(100);
+    await page.keyboard.press("Enter");
+    await page.waitForTimeout(100);
   }
 
-  await closeSidebarModal(models);
+  await closeSidebarModal(page, models);
 }
 
 async function createGlobalVariantGroup(
-  models: any,
+  page: Page,
+  models: PageModels,
   groupName: string,
   variantName: string
 ) {
@@ -479,24 +487,25 @@ async function createGlobalVariantGroup(
     '[data-test-id="add-global-variant-group-button"]'
   );
   await addButton.click();
-  await models.studio.page.waitForTimeout(200);
-  await models.studio.page.keyboard.type(`${groupName}`);
-  await models.studio.page.waitForTimeout(200);
-  await models.studio.page.keyboard.press("Enter");
-  await models.studio.page.waitForTimeout(200);
-  await models.studio.page.keyboard.type(`${variantName}`);
-  await models.studio.page.waitForTimeout(200);
-  await models.studio.page.keyboard.press("Enter");
+  await page.waitForTimeout(200);
+  await page.keyboard.type(`${groupName}`);
+  await page.waitForTimeout(200);
+  await page.keyboard.press("Enter");
+  await page.waitForTimeout(200);
+  await page.keyboard.type(`${variantName}`);
+  await page.waitForTimeout(200);
+  await page.keyboard.press("Enter");
 }
 
 async function selectVariant(
-  models: any,
+  page: Page,
+  models: PageModels,
   groupName: string,
   variantName: string,
   isGlobal: boolean = false
 ) {
   await models.studio.rightPanel.switchToComponentDataTab();
-  await models.studio.page.waitForTimeout(300);
+  await page.waitForTimeout(300);
 
   if (isGlobal) {
     const globalVariantsExpand = models.studio.frame.locator(
@@ -505,7 +514,7 @@ async function selectVariant(
     const isVisible = await globalVariantsExpand.isVisible();
     if (isVisible) {
       await globalVariantsExpand.click();
-      await models.studio.page.waitForTimeout(300);
+      await page.waitForTimeout(300);
     }
   }
 
@@ -516,28 +525,32 @@ async function selectVariant(
     .first();
 
   await variantRow.hover();
-  await models.studio.page.waitForTimeout(200);
+  await page.waitForTimeout(200);
 
   const startButton = variantRow.locator(
     '[data-test-class="variant-record-button-start"]'
   );
   await startButton.click();
-  await models.studio.page.waitForTimeout(300);
+  await page.waitForTimeout(300);
 }
 
-async function resetVariants(models: any) {
+async function resetVariants(page: Page, models: PageModels) {
   const variantsBarTrigger = models.studio.frame.locator(
     '[data-test-id="variants-bar-dropdown-trigger"]'
   );
   await variantsBarTrigger.click();
-  await models.studio.page.waitForTimeout(200);
-  await models.studio.page.keyboard.press("Enter");
-  await models.studio.page.waitForTimeout(200);
-  await models.studio.page.keyboard.press("Escape");
-  await models.studio.page.waitForTimeout(200);
+  await page.waitForTimeout(200);
+  await page.keyboard.press("Enter");
+  await page.waitForTimeout(200);
+  await page.keyboard.press("Escape");
+  await page.waitForTimeout(200);
 }
 
-async function importProject(models: any, projectId: string) {
+async function importProject(
+  page: Page,
+  models: PageModels,
+  projectId: string
+) {
   const isImportedPanelVisible = await models.studio.leftPanel.frame
     .getByText("Imported projects")
     .first()
@@ -548,10 +561,10 @@ async function importProject(models: any, projectId: string) {
     const moreTab = models.studio.frame.locator('[data-test-tabkey="more"]');
     await moreTab.waitFor({ state: "visible", timeout: 5000 });
     await moreTab.hover();
-    await models.studio.page.waitForTimeout(300);
+    await page.waitForTimeout(300);
     await models.studio.leftPanel.switchToImportsTab();
   }
-  await models.studio.page.waitForTimeout(500);
+  await page.waitForTimeout(500);
 
   const selector = ".SidebarSectionListItem";
   const countBefore = await models.studio.frame.locator(selector).count();
@@ -564,32 +577,29 @@ async function importProject(models: any, projectId: string) {
 
   const promptInput = models.studio.frame.locator('[data-test-id="prompt"]');
   await promptInput.waitFor({ state: "visible", timeout: 5000 });
-  await models.studio.page.waitForTimeout(200);
+  await page.waitForTimeout(200);
 
   await promptInput.fill(projectId);
-  await models.studio.page.waitForTimeout(300);
+  await page.waitForTimeout(300);
 
-  await models.studio.page.keyboard.press("Enter");
+  await page.keyboard.press("Enter");
 
   await models.studio.frame
     .locator(selector)
     .nth(countBefore)
     .waitFor({ state: "visible", timeout: 15000 });
 
-  await models.studio.page.waitForTimeout(500);
+  await page.waitForTimeout(500);
 }
 
-async function updateAllImports(models: any) {
+async function updateAllImports(page: Page, models: PageModels) {
   await models.studio.leftPanel.switchToImportsTab();
-  await models.studio.page.waitForTimeout(500);
 
   const checkButton = models.studio.frame.locator(
     '[data-test-id="check-for-updates-btn"]'
   );
   await checkButton.waitFor({ state: "visible", timeout: 5000 });
   await checkButton.click();
-
-  await models.studio.page.waitForTimeout(1000);
 
   const updateButtons = models.studio.frame.locator(
     `.SidebarSectionListItem button svg`
@@ -609,7 +619,7 @@ async function updateAllImports(models: any) {
     const firstButton = updateButtons.first();
     await firstButton.waitFor({ state: "visible", timeout: 5000 });
     await firstButton.scrollIntoViewIfNeeded();
-    await models.studio.page.waitForTimeout(200);
+    await page.waitForTimeout(200);
 
     await firstButton.click();
 
@@ -621,7 +631,7 @@ async function updateAllImports(models: any) {
     await submitButton.click();
 
     await modalContent.waitFor({ state: "hidden", timeout: 10000 });
-    await models.studio.page.waitForTimeout(500);
+    await page.waitForTimeout(500);
 
     const newCount = await updateButtons.count();
     if (newCount >= updatesRemaining) {
@@ -633,11 +643,11 @@ async function updateAllImports(models: any) {
   await expect(updateButtons.first()).not.toBeVisible({ timeout: 5000 });
 }
 
-async function removeAllDependencies(models: any) {
+async function removeAllDependencies(page: Page, models: PageModels) {
   await models.studio.leftPanel.switchToTreeTab();
   await models.studio.leftPanel.switchToImportsTab();
 
-  await models.studio.page.waitForTimeout(500);
+  await page.waitForTimeout(500);
 
   const listItems = models.studio.frame.locator(`.SidebarSectionListItem`);
 
@@ -655,10 +665,10 @@ async function removeAllDependencies(models: any) {
     const firstItem = listItems.first();
     await firstItem.waitFor({ state: "visible", timeout: 5000 });
 
-    await models.studio.page.waitForTimeout(200);
+    await page.waitForTimeout(200);
 
     await firstItem.scrollIntoViewIfNeeded();
-    await models.studio.page.waitForTimeout(100);
+    await page.waitForTimeout(100);
 
     let clickSucceeded = false;
     for (let attempt = 0; attempt < 3; attempt++) {
@@ -670,7 +680,7 @@ async function removeAllDependencies(models: any) {
         if (attempt === 2) {
           throw error;
         }
-        await models.studio.page.waitForTimeout(500);
+        await page.waitForTimeout(500);
       }
     }
 
@@ -695,7 +705,7 @@ async function removeAllDependencies(models: any) {
 
     await modalContent.waitFor({ state: "hidden", timeout: 5000 });
 
-    await models.studio.page.waitForTimeout(500);
+    await page.waitForTimeout(500);
 
     const newCount = await listItems.count();
     if (newCount >= itemsRemaining) {
@@ -710,39 +720,20 @@ async function removeAllDependencies(models: any) {
 }
 
 test.describe("Imported token overrides", () => {
-  let origDevFlags: any;
-
-  test.beforeEach(async ({ apiClient }) => {
-    origDevFlags = await apiClient.getDevFlags();
-    await apiClient.upsertDevFlags({
-      ...origDevFlags,
-      importedTokenOverrides: true,
-    });
-  });
-
-  test.afterEach(async ({ apiClient }) => {
-    if (origDevFlags) {
-      await apiClient.upsertDevFlags(origDevFlags);
-    }
-  });
-
   test.describe("Should work (A <- B, A <- C)", () => {
     async function setupDependencyProjects(
-      page: any,
-      models: any,
-      apiClient: any
+      page: Page,
+      models: PageModels,
+      apiClient: ApiClient
     ) {
       const dep1ProjectId = await apiClient.setupNewProject({
         name: "Dep Project",
       });
 
-      await page.waitForTimeout(500);
-
-      await page.goto(`/projects/${dep1ProjectId}`);
-      await models.studio.waitForFrameToLoad();
+      await goToProject(page, `/projects/${dep1ProjectId}`);
 
       await models.studio.leftPanel.addComponent("Dep Comp");
-      await models.studio.waitForFrameToLoad();
+      await waitForFrameToLoad(page);
 
       await models.studio.createComponentProp({
         propName: "Text",
@@ -750,14 +741,16 @@ test.describe("Imported token overrides", () => {
         defaultValue: TEST_TEXTS.FROM_DEP_COMP,
       });
 
-      await createGlobalVariantGroup(models, "Theme", "Dark");
+      await createGlobalVariantGroup(page, models, "Theme", "Dark");
       await createToken(
+        page,
         models,
         "Color",
         TOKEN_NAMES.PRIMARY,
         TEST_COLORS.PRIMARY
       );
       await createToken(
+        page,
         models,
         "FontSize",
         TOKEN_NAMES.LARGE,
@@ -765,6 +758,7 @@ test.describe("Imported token overrides", () => {
       );
 
       await updateToken(
+        page,
         models,
         "Color",
         TOKEN_NAMES.PRIMARY,
@@ -775,6 +769,7 @@ test.describe("Imported token overrides", () => {
       );
 
       await assertTokenIndicator(
+        page,
         models,
         TOKEN_NAMES.PRIMARY,
         "local-varianted",
@@ -782,6 +777,7 @@ test.describe("Imported token overrides", () => {
         "Dark"
       );
       await assertTokenIndicator(
+        page,
         models,
         TOKEN_NAMES.LARGE,
         "local",
@@ -790,11 +786,11 @@ test.describe("Imported token overrides", () => {
       );
 
       await models.studio.insertTextWithDynamic("$props.text");
-      await chooseColor(models, { tokenName: TOKEN_NAMES.PRIMARY });
+      await chooseColor(page, models, { tokenName: TOKEN_NAMES.PRIMARY });
       await models.studio.rightPanel.chooseFontSize(TOKEN_NAMES.LARGE);
 
       await models.studio.createNewPage("Dep Page");
-      await models.studio.waitForFrameToLoad();
+      await waitForFrameToLoad(page);
 
       await models.studio.leftPanel.switchToTreeTab();
       await models.studio.leftPanel.insertNode("Dep Comp");
@@ -817,12 +813,12 @@ test.describe("Imported token overrides", () => {
       const dep2ProjectId = await apiClient.setupNewProject({
         name: "Dep Project 2",
       });
-      await page.goto(`/projects/${dep2ProjectId}`, {
+      await goToProject(page, `/projects/${dep2ProjectId}`, {
         waitUntil: "domcontentloaded",
       });
-      await models.studio.waitForFrameToLoad();
 
       await createToken(
+        page,
         models,
         "Color",
         TOKEN_NAMES.SECONDARY,
@@ -835,22 +831,21 @@ test.describe("Imported token overrides", () => {
     }
 
     async function setupMainProject(
-      page: any,
-      models: any,
-      apiClient: any,
+      page: Page,
+      models: PageModels,
+      apiClient: ApiClient,
       dep1ProjectId: string,
       dep2ProjectId: string
     ) {
       const mainProjectId = await apiClient.setupNewProject({
         name: "Main Project",
       });
-      await page.goto(`/projects/${mainProjectId}`, {
+      await goToProject(page, `/projects/${mainProjectId}`, {
         waitUntil: "domcontentloaded",
       });
-      await models.studio.waitForFrameToLoad();
 
-      await importProject(models, dep1ProjectId);
-      await importProject(models, dep2ProjectId);
+      await importProject(page, models, dep1ProjectId);
+      await importProject(page, models, dep2ProjectId);
 
       await page.waitForTimeout(1500);
 
@@ -860,10 +855,10 @@ test.describe("Imported token overrides", () => {
       });
 
       await models.studio.createNewPage("New Page");
-      await models.studio.waitForFrameToLoad();
+      await waitForFrameToLoad(page);
 
-      await createGlobalVariantGroup(models, "Platform", "Website");
-      await resetVariants(models);
+      await createGlobalVariantGroup(page, models, "Platform", "Website");
+      await resetVariants(page, models);
 
       await models.studio.leftPanel.insertNode("Dep Comp Parent");
       await models.studio.leftPanel.insertNode("Dep Comp");
@@ -876,7 +871,7 @@ test.describe("Imported token overrides", () => {
       await page.waitForTimeout(200);
       await page.keyboard.press("Escape");
 
-      await chooseColor(models, { tokenName: TOKEN_NAMES.PRIMARY });
+      await chooseColor(page, models, { tokenName: TOKEN_NAMES.PRIMARY });
       await models.studio.rightPanel.chooseFontSize(TOKEN_NAMES.LARGE);
 
       await models.studio.leftPanel.insertNode("Text");
@@ -887,7 +882,7 @@ test.describe("Imported token overrides", () => {
       await page.waitForTimeout(200);
       await page.keyboard.press("Escape");
 
-      await chooseColor(models, { tokenName: TOKEN_NAMES.SECONDARY });
+      await chooseColor(page, models, { tokenName: TOKEN_NAMES.SECONDARY });
 
       return mainProjectId;
     }
@@ -951,10 +946,11 @@ test.describe("Imported token overrides", () => {
         );
       });
 
-      await switchToStyleTokensTab(models);
+      await switchToStyleTokensTab(page, models);
       await expandAllTokensPanel(models);
 
       await assertTokenIndicator(
+        page,
         models,
         TOKEN_NAMES.PRIMARY,
         "override-none",
@@ -962,14 +958,15 @@ test.describe("Imported token overrides", () => {
         "Website"
       );
       await assertTokenIndicator(
+        page,
         models,
         TOKEN_NAMES.LARGE,
         "override-none",
         "Base",
         "Website"
       );
-
       await updateToken(
+        page,
         models,
         "Color",
         TOKEN_NAMES.PRIMARY,
@@ -979,6 +976,7 @@ test.describe("Imported token overrides", () => {
         }
       );
       await updateToken(
+        page,
         models,
         "Color",
         TOKEN_NAMES.SECONDARY,
@@ -989,6 +987,7 @@ test.describe("Imported token overrides", () => {
       );
 
       await assertTokenIndicator(
+        page,
         models,
         TOKEN_NAMES.PRIMARY,
         "override-base",
@@ -997,6 +996,7 @@ test.describe("Imported token overrides", () => {
       );
 
       await updateToken(
+        page,
         models,
         "Color",
         TOKEN_NAMES.PRIMARY,
@@ -1007,6 +1007,7 @@ test.describe("Imported token overrides", () => {
         }
       );
       await assertTokenIndicator(
+        page,
         models,
         TOKEN_NAMES.PRIMARY,
         "override-both",
@@ -1015,6 +1016,7 @@ test.describe("Imported token overrides", () => {
       );
 
       await updateToken(
+        page,
         models,
         "FontSize",
         TOKEN_NAMES.LARGE,
@@ -1025,6 +1027,7 @@ test.describe("Imported token overrides", () => {
         }
       );
       await assertTokenIndicator(
+        page,
         models,
         TOKEN_NAMES.LARGE,
         "override-varianted",
@@ -1033,6 +1036,7 @@ test.describe("Imported token overrides", () => {
       );
 
       await updateToken(
+        page,
         models,
         "FontSize",
         TOKEN_NAMES.LARGE,
@@ -1042,6 +1046,7 @@ test.describe("Imported token overrides", () => {
         }
       );
       await assertTokenIndicator(
+        page,
         models,
         TOKEN_NAMES.LARGE,
         "override-both",
@@ -1056,7 +1061,7 @@ test.describe("Imported token overrides", () => {
         frame
       );
 
-      await selectVariant(models, "Theme", "Dark", true);
+      await selectVariant(page, models, "Theme", "Dark", true);
       await assertTextStyling(
         TEST_TEXTS.FROM_MAIN_PROJECT_TEXT_1,
         TEST_COLORS.PRIMARY_DARK,
@@ -1064,7 +1069,7 @@ test.describe("Imported token overrides", () => {
         frame
       );
 
-      await selectVariant(models, "Platform", "Website", true);
+      await selectVariant(page, models, "Platform", "Website", true);
       await assertTextStyling(
         TEST_TEXTS.FROM_MAIN_PROJECT_TEXT_1,
         TEST_COLORS.PRIMARY_OVERRIDE_VARIANT,
@@ -1072,8 +1077,7 @@ test.describe("Imported token overrides", () => {
         frame
       );
 
-      await page.waitForTimeout(500);
-      await removeAllDependencies(models);
+      await removeAllDependencies(page, models);
       await apiClient.removeProjectAfterTest(
         mainProjectId,
         "user2@example.com",
@@ -1110,10 +1114,11 @@ test.describe("Imported token overrides", () => {
       );
       const frame = models.studio.componentFrame;
 
-      await switchToStyleTokensTab(models);
+      await switchToStyleTokensTab(page, models);
       await expandAllTokensPanel(models);
 
       await updateToken(
+        page,
         models,
         "Color",
         TOKEN_NAMES.PRIMARY,
@@ -1123,6 +1128,7 @@ test.describe("Imported token overrides", () => {
         }
       );
       await updateToken(
+        page,
         models,
         "Color",
         TOKEN_NAMES.SECONDARY,
@@ -1133,6 +1139,7 @@ test.describe("Imported token overrides", () => {
       );
 
       await updateToken(
+        page,
         models,
         "Color",
         TOKEN_NAMES.PRIMARY,
@@ -1144,6 +1151,7 @@ test.describe("Imported token overrides", () => {
       );
 
       await updateToken(
+        page,
         models,
         "FontSize",
         TOKEN_NAMES.LARGE,
@@ -1155,6 +1163,7 @@ test.describe("Imported token overrides", () => {
       );
 
       await updateToken(
+        page,
         models,
         "FontSize",
         TOKEN_NAMES.LARGE,
@@ -1164,10 +1173,11 @@ test.describe("Imported token overrides", () => {
         }
       );
 
-      await resetVariants(models);
+      await resetVariants(page, models);
 
-      await removeTokenOverride(models, TOKEN_NAMES.PRIMARY);
+      await removeTokenOverride(page, models, TOKEN_NAMES.PRIMARY);
       await assertTokenIndicator(
+        page,
         models,
         TOKEN_NAMES.PRIMARY,
         "override-varianted",
@@ -1182,7 +1192,7 @@ test.describe("Imported token overrides", () => {
         frame
       );
 
-      await selectVariant(models, "Platform", "Website", true);
+      await selectVariant(page, models, "Platform", "Website", true);
       await assertTextStyling(
         TEST_TEXTS.FROM_MAIN_PROJECT_TEXT_1,
         TEST_COLORS.PRIMARY_OVERRIDE_VARIANT,
@@ -1190,11 +1200,12 @@ test.describe("Imported token overrides", () => {
         frame
       );
 
-      await removeTokenOverride(models, TOKEN_NAMES.PRIMARY, {
+      await removeTokenOverride(page, models, TOKEN_NAMES.PRIMARY, {
         globalVariant: "Website",
       });
 
       await assertTokenIndicator(
+        page,
         models,
         TOKEN_NAMES.LARGE,
         "override-both",
@@ -1202,6 +1213,7 @@ test.describe("Imported token overrides", () => {
         "Website"
       );
       await assertTokenIndicator(
+        page,
         models,
         TOKEN_NAMES.PRIMARY,
         "override-none",
@@ -1209,6 +1221,7 @@ test.describe("Imported token overrides", () => {
         "Website"
       );
       await assertTokenIndicator(
+        page,
         models,
         TOKEN_NAMES.SECONDARY,
         "override-base",
@@ -1229,6 +1242,7 @@ test.describe("Imported token overrides", () => {
       await page.waitForTimeout(200);
 
       await assertTokenIndicator(
+        page,
         models,
         TOKEN_NAMES.LARGE,
         "override-both",
@@ -1236,6 +1250,7 @@ test.describe("Imported token overrides", () => {
         "Website"
       );
       await assertTokenIndicator(
+        page,
         models,
         TOKEN_NAMES.PRIMARY,
         "override-none",
@@ -1243,6 +1258,7 @@ test.describe("Imported token overrides", () => {
         "Website"
       );
       await assertTokenIndicator(
+        page,
         models,
         TOKEN_NAMES.SECONDARY,
         "override-base",
@@ -1250,23 +1266,22 @@ test.describe("Imported token overrides", () => {
         "Website"
       );
 
-      await page.goto(`/projects/${dep1ProjectId}`, {
+      await goToProject(page, `/projects/${dep1ProjectId}`, {
         waitUntil: "domcontentloaded",
       });
-      await models.studio.waitForFrameToLoad();
       await page.keyboard.press("Escape");
-      await deleteToken(models, TOKEN_NAMES.LARGE);
+      await deleteToken(page, models, TOKEN_NAMES.LARGE);
 
       await page.waitForTimeout(1000);
 
       await models.studio.publishVersion("Delete large token");
 
-      await page.goto(`/projects/${dep2ProjectId}`, {
+      await goToProject(page, `/projects/${dep2ProjectId}`, {
         waitUntil: "domcontentloaded",
       });
-      await models.studio.waitForFrameToLoad();
       await page.keyboard.press("Escape");
       await updateToken(
+        page,
         models,
         "Color",
         TOKEN_NAMES.SECONDARY,
@@ -1277,10 +1292,9 @@ test.describe("Imported token overrides", () => {
 
       await models.studio.publishVersion("Update secondary token");
 
-      await page.goto(`/projects/${mainProjectId}`, {
+      await goToProject(page, `/projects/${mainProjectId}`, {
         waitUntil: "domcontentloaded",
       });
-      await models.studio.waitForFrameToLoad();
 
       for (let i = 0; i < 3; i++) {
         await page.keyboard.press("Escape");
@@ -1288,17 +1302,18 @@ test.describe("Imported token overrides", () => {
       }
 
       await models.studio.switchArena("New Page");
-      await models.studio.waitForFrameToLoad();
+      await waitForFrameToLoad(page);
 
-      await updateAllImports(models);
+      await updateAllImports(page, models);
 
       await page.waitForTimeout(2000);
 
-      await switchToStyleTokensTab(models);
+      await switchToStyleTokensTab(page, models);
       await expandAllTokensPanel(models);
       await page.waitForTimeout(500);
 
       await assertTokenIndicator(
+        page,
         models,
         TOKEN_NAMES.LARGE,
         "local-varianted",
@@ -1306,6 +1321,7 @@ test.describe("Imported token overrides", () => {
         "Website"
       );
       await assertTokenIndicator(
+        page,
         models,
         TOKEN_NAMES.PRIMARY,
         "override-none",
@@ -1313,6 +1329,7 @@ test.describe("Imported token overrides", () => {
         "Website"
       );
       await assertTokenIndicator(
+        page,
         models,
         TOKEN_NAMES.SECONDARY,
         "override-base",
@@ -1320,7 +1337,7 @@ test.describe("Imported token overrides", () => {
         "Website"
       );
 
-      await removeAllDependencies(models);
+      await removeAllDependencies(page, models);
       await apiClient.removeProjectAfterTest(
         mainProjectId,
         "user2@example.com",
@@ -1345,10 +1362,10 @@ test.describe("Imported token overrides", () => {
     apiClient,
   }) => {
     const cDepProjectId = await apiClient.setupNewProject({ name: "C Dep" });
-    await page.goto(`/projects/${cDepProjectId}`);
-    await models.studio.waitForFrameToLoad();
+    await goToProject(page, `/projects/${cDepProjectId}`);
 
     await createToken(
+      page,
       models,
       "Color",
       TOKEN_NAMES.SECONDARY,
@@ -1357,12 +1374,12 @@ test.describe("Imported token overrides", () => {
     await models.studio.publishVersion("New tokens");
 
     const bDepProjectId = await apiClient.setupNewProject({ name: "B Dep" });
-    await page.goto(`/projects/${bDepProjectId}`);
-    await models.studio.waitForFrameToLoad();
+    await goToProject(page, `/projects/${bDepProjectId}`);
 
-    await importProject(models, cDepProjectId);
-    await switchToStyleTokensTab(models);
+    await importProject(page, models, cDepProjectId);
+    await switchToStyleTokensTab(page, models);
     await assertTokenIndicator(
+      page,
       models,
       TOKEN_NAMES.SECONDARY,
       "override-none",
@@ -1370,6 +1387,7 @@ test.describe("Imported token overrides", () => {
     );
 
     await updateToken(
+      page,
       models,
       "Color",
       TOKEN_NAMES.SECONDARY,
@@ -1379,6 +1397,7 @@ test.describe("Imported token overrides", () => {
       }
     );
     await assertTokenIndicator(
+      page,
       models,
       TOKEN_NAMES.SECONDARY,
       "override-base",
@@ -1386,7 +1405,7 @@ test.describe("Imported token overrides", () => {
     );
 
     await models.studio.leftPanel.addComponent("Comp B");
-    await models.studio.waitForFrameToLoad();
+    await waitForFrameToLoad(page);
 
     await models.studio.leftPanel.insertNode("Text");
     await page.waitForTimeout(500);
@@ -1395,7 +1414,7 @@ test.describe("Imported token overrides", () => {
     await page.waitForTimeout(500);
     await page.keyboard.type(TEST_TEXTS.FROM_B_COMP);
     await page.keyboard.press("Escape");
-    await chooseColor(models, { tokenName: TOKEN_NAMES.SECONDARY });
+    await chooseColor(page, models, { tokenName: TOKEN_NAMES.SECONDARY });
 
     await models.studio.leftPanel.insertNode("Text");
     await page.waitForTimeout(500);
@@ -1404,24 +1423,23 @@ test.describe("Imported token overrides", () => {
     await page.waitForTimeout(500);
     await page.keyboard.type(TEST_TEXTS.SLOT_FROM_B_COMP);
     await page.keyboard.press("Escape");
-    await chooseColor(models, { tokenName: TOKEN_NAMES.SECONDARY });
+    await chooseColor(page, models, { tokenName: TOKEN_NAMES.SECONDARY });
     await models.studio.convertToSlot();
     await page.waitForTimeout(1000);
 
     await models.studio.publishVersion("New components using imported tokens");
 
     const aProjectId = await apiClient.setupNewProject({ name: "A Project" });
-    await page.goto(`/projects/${aProjectId}`);
-    await models.studio.waitForFrameToLoad();
+    await goToProject(page, `/projects/${aProjectId}`);
 
-    await importProject(models, bDepProjectId);
-    await importProject(models, cDepProjectId);
+    await importProject(page, models, bDepProjectId);
+    await importProject(page, models, cDepProjectId);
 
     await models.studio.createNewPage("A Page");
-    await models.studio.waitForFrameToLoad();
+    await waitForFrameToLoad(page);
     const aFrame = models.studio.componentFrame;
 
-    await createGlobalVariantGroup(models, "Platform", "Website");
+    await createGlobalVariantGroup(page, models, "Platform", "Website");
     await models.studio.leftPanel.insertNode("Comp B");
     await page.waitForTimeout(500);
 
@@ -1456,6 +1474,7 @@ test.describe("Imported token overrides", () => {
     await page.waitForTimeout(1000);
 
     await assertTokenIndicator(
+      page,
       models,
       TOKEN_NAMES.SECONDARY,
       "override-none",
@@ -1464,6 +1483,7 @@ test.describe("Imported token overrides", () => {
     );
 
     await updateToken(
+      page,
       models,
       "Color",
       TOKEN_NAMES.SECONDARY,
@@ -1480,6 +1500,7 @@ test.describe("Imported token overrides", () => {
       aFrame
     );
     await assertTokenIndicator(
+      page,
       models,
       TOKEN_NAMES.SECONDARY,
       "override-base",
@@ -1510,10 +1531,10 @@ test.describe("Imported token overrides", () => {
     apiClient,
   }) => {
     const cDepProjectId = await apiClient.setupNewProject({ name: "C Dep" });
-    await page.goto(`/projects/${cDepProjectId}`);
-    await models.studio.waitForFrameToLoad();
+    await goToProject(page, `/projects/${cDepProjectId}`);
 
     await createToken(
+      page,
       models,
       "Color",
       TOKEN_NAMES.SECONDARY,
@@ -1522,18 +1543,19 @@ test.describe("Imported token overrides", () => {
     await models.studio.publishVersion("New tokens");
 
     const bDepProjectId = await apiClient.setupNewProject({ name: "B Dep" });
-    await page.goto(`/projects/${bDepProjectId}`);
-    await models.studio.waitForFrameToLoad();
+    await goToProject(page, `/projects/${bDepProjectId}`);
 
     await createToken(
+      page,
       models,
       "Color",
       TOKEN_NAMES.PRIMARY,
       TEST_COLORS.PRIMARY
     );
-    await importProject(models, cDepProjectId);
+    await importProject(page, models, cDepProjectId);
 
     await updateToken(
+      page,
       models,
       "Color",
       TOKEN_NAMES.SECONDARY,
@@ -1544,7 +1566,7 @@ test.describe("Imported token overrides", () => {
     );
 
     await models.studio.leftPanel.addComponent("Dep Comp");
-    await models.studio.waitForFrameToLoad();
+    await waitForFrameToLoad(page);
     const bFrame = models.studio.componentFrame;
 
     await models.studio.leftPanel.insertNode("Text");
@@ -1554,7 +1576,7 @@ test.describe("Imported token overrides", () => {
     await page.waitForTimeout(500);
     await page.keyboard.type("Primary Text");
     await page.keyboard.press("Escape");
-    await chooseColor(models, { tokenName: TOKEN_NAMES.PRIMARY });
+    await chooseColor(page, models, { tokenName: TOKEN_NAMES.PRIMARY });
 
     await models.studio.leftPanel.insertNode("Text");
     await page.waitForTimeout(500);
@@ -1563,7 +1585,7 @@ test.describe("Imported token overrides", () => {
     await page.waitForTimeout(500);
     await page.keyboard.type("Secondary Text");
     await page.keyboard.press("Escape");
-    await chooseColor(models, { tokenName: TOKEN_NAMES.SECONDARY });
+    await chooseColor(page, models, { tokenName: TOKEN_NAMES.SECONDARY });
 
     await assertTextStyling(
       TEST_TEXTS.PRIMARY_TEXT,
@@ -1596,13 +1618,12 @@ test.describe("Imported token overrides", () => {
     await models.studio.publishVersion("New components with tokens");
 
     const aProjectId = await apiClient.setupNewProject({ name: "A Project" });
-    await page.goto(`/projects/${aProjectId}`);
-    await models.studio.waitForFrameToLoad();
+    await goToProject(page, `/projects/${aProjectId}`);
 
-    await importProject(models, bDepProjectId);
+    await importProject(page, models, bDepProjectId);
 
     await models.studio.createNewPage("A Page");
-    await models.studio.waitForFrameToLoad();
+    await waitForFrameToLoad(page);
     const aFrame = models.studio.componentFrame;
 
     await models.studio.leftPanel.insertNode("Dep Comp");
@@ -1637,6 +1658,7 @@ test.describe("Imported token overrides", () => {
     });
 
     await updateToken(
+      page,
       models,
       "Color",
       TOKEN_NAMES.PRIMARY,
@@ -1704,20 +1726,18 @@ test.describe("Imported token overrides", () => {
         },
       ],
     });
-    await page.goto(`/projects/${depProjectId}`);
-    await models.studio.waitForFrameToLoad();
+    await goToProject(page, `/projects/${depProjectId}`);
     await models.studio.publishVersion("New tokens");
 
     const mainProjectId = await apiClient.setupNewProject({
       name: "Main Project",
     });
-    await page.goto(`/projects/${mainProjectId}`);
-    await models.studio.waitForFrameToLoad();
+    await goToProject(page, `/projects/${mainProjectId}`);
 
-    await importProject(models, depProjectId);
+    await importProject(page, models, depProjectId);
 
     await models.studio.createNewPage("Main Page");
-    await models.studio.waitForFrameToLoad();
+    await waitForFrameToLoad(page);
     const frame = models.studio.componentFrame;
 
     await models.studio.leftPanel.insertNode("Text");
@@ -1728,7 +1748,7 @@ test.describe("Imported token overrides", () => {
     await page.keyboard.type(TEST_TEXTS.FROM_MAIN_PROJECT_TEXT_1);
     await page.keyboard.press("Escape");
 
-    await chooseColor(models, { tokenName: TOKEN_NAMES.ANTD });
+    await chooseColor(page, models, { tokenName: TOKEN_NAMES.ANTD });
 
     await assertTextStyling(
       TEST_TEXTS.FROM_MAIN_PROJECT_TEXT_1,
@@ -1747,6 +1767,7 @@ test.describe("Imported token overrides", () => {
     });
 
     await updateToken(
+      page,
       models,
       "Color",
       TOKEN_NAMES.ANTD,

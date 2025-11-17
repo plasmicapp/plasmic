@@ -1,5 +1,6 @@
 import { expect } from "@playwright/test";
 import { test } from "../fixtures/test";
+import { goToProject } from "../utils/studio-utils";
 
 test.describe("hostless-antd5", () => {
   let projectId: string;
@@ -11,7 +12,7 @@ test.describe("hostless-antd5", () => {
         npmPkg: ["@plasmicpkgs/antd5"],
       },
     });
-    await page.goto(`/projects/${projectId}`);
+    await goToProject(page, `/projects/${projectId}`);
   });
 
   test.afterEach(async ({ apiClient }) => {

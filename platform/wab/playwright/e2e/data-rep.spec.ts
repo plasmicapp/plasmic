@@ -1,28 +1,18 @@
 import { expect } from "@playwright/test";
 import { test } from "../fixtures/test";
+import { goToProject } from "../utils/studio-utils";
 
 test.describe("data-rep", () => {
   let projectId: string;
-  let origDevFlags: Record<string, any>;
 
   test.beforeEach(async ({ apiClient, page }) => {
-    origDevFlags = await apiClient.getDevFlags();
-    await apiClient.upsertDevFlags({
-      ...origDevFlags,
-      plexus: false,
-    });
-
     projectId = await apiClient.setupNewProject({
       name: "data-rep",
     });
-    await page.goto(`/projects/${projectId}`);
-    await page.waitForLoadState("networkidle");
+    await goToProject(page, `/projects/${projectId}`);
   });
 
   test.afterEach(async ({ apiClient }) => {
-    if (origDevFlags) {
-      await apiClient.upsertDevFlags(origDevFlags);
-    }
     if (projectId) {
       await apiClient.removeProjectAfterTest(
         projectId,

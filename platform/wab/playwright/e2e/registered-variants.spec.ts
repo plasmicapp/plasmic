@@ -1,15 +1,16 @@
 import type { FrameLocator, Page } from "@playwright/test";
 import { expect } from "@playwright/test";
-import { test } from "../fixtures/test";
+import { PageModels, test } from "../fixtures/test";
 import { switchInteractiveMode } from "../utils/auto-open-utils";
 import { modifierKey } from "../utils/modifier-key";
+import { goToProject, waitForFrameToLoad } from "../utils/studio-utils";
 
 async function createAndSwitchToButtonArena(
   page: Page,
-  models: any
+  models: PageModels
 ): Promise<FrameLocator> {
   await models.studio.createNewPageInOwnArena("Homepage");
-  await models.studio.waitForFrameToLoad();
+  await waitForFrameToLoad(page);
 
   await models.studio.leftPanel.insertNode("plasmic-react-aria-button");
   await page.waitForTimeout(1000);
@@ -18,7 +19,7 @@ async function createAndSwitchToButtonArena(
   await page.waitForTimeout(1000);
 
   await models.studio.frame.getByText("[Open component]").click();
-  await models.studio.waitForFrameToLoad();
+  await waitForFrameToLoad(page);
 
   await models.studio.frames
     .first()
@@ -28,7 +29,7 @@ async function createAndSwitchToButtonArena(
 }
 
 async function waitForVariantFrame(
-  models: any,
+  models: PageModels,
   action: () => Promise<void>
 ): Promise<FrameLocator> {
   const existingCount = await models.studio.frames.count();
@@ -52,7 +53,7 @@ async function waitForVariantFrame(
 
 async function addRegisteredVariantFromVariantsTab(
   page: Page,
-  models: any,
+  models: PageModels,
   variantName: string,
   { expectNewFrame = true }: { expectNewFrame?: boolean } = {}
 ): Promise<FrameLocator | null> {
@@ -89,7 +90,7 @@ async function addRegisteredVariantFromVariantsTab(
 
 async function editRegisteredVariantFromCanvas(
   page: Page,
-  models: any,
+  models: PageModels,
   newVariantName: string
 ) {
   const variantsList = models.studio.frame
@@ -108,7 +109,7 @@ async function editRegisteredVariantFromCanvas(
 
 async function editRegisteredVariantFromVariantsTab(
   page: Page,
-  models: any,
+  models: PageModels,
   existingVariantName: string,
   newVariantName: string
 ) {
@@ -130,7 +131,7 @@ async function editRegisteredVariantFromVariantsTab(
 }
 
 async function deleteRegisteredVariantFromVariantsTab(
-  models: any,
+  models: PageModels,
   variantName: string
 ) {
   await models.studio.rightPanel.switchToComponentDataTab();
@@ -145,25 +146,25 @@ async function deleteRegisteredVariantFromVariantsTab(
     .click();
 }
 
-function getVariantRows(models: any, variantName: string) {
+function getVariantRows(models: PageModels, variantName: string) {
   return models.studio.frame
     .locator('[data-test-class="variant-row"]')
     .filter({ hasText: variantName });
 }
 
-async function expectVariantPresent(models: any, variantName: string) {
+async function expectVariantPresent(models: PageModels, variantName: string) {
   await models.studio.rightPanel.switchToComponentDataTab();
   await expect(getVariantRows(models, variantName).first()).toBeVisible({
     timeout: 15000,
   });
 }
 
-async function expectVariantAbsent(models: any, variantName: string) {
+async function expectVariantAbsent(models: PageModels, variantName: string) {
   await models.studio.rightPanel.switchToComponentDataTab();
   await expect(getVariantRows(models, variantName)).toHaveCount(0);
 }
 
-async function resetVariants(models: any) {
+async function resetVariants(models: PageModels) {
   await models.studio.rightPanel.switchToComponentDataTab();
   const baseVariant = models.studio.frame
     .locator('[data-test-class="variant-row"]')
@@ -182,7 +183,10 @@ async function resetVariants(models: any) {
   }
 }
 
-async function activateRegisteredVariant(models: any, variantName: string) {
+async function activateRegisteredVariant(
+  models: PageModels,
+  variantName: string
+) {
   await models.studio.rightPanel.switchToComponentDataTab();
   const row = models.studio.frame
     .locator('[data-test-class="variants-section"]', {
@@ -207,7 +211,7 @@ test.describe("registered variants", () => {
         },
       ],
     });
-    await page.goto(`/projects/${projectId}`);
+    await goToProject(page, `/projects/${projectId}`);
   });
 
   test.afterEach(async ({ apiClient }) => {

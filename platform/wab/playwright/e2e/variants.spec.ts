@@ -1,11 +1,12 @@
 import { expect } from "@playwright/test";
-import { test } from "../fixtures/test";
+import { PageModels, test } from "../fixtures/test";
+import { goToProject } from "../utils/studio-utils";
 
 test.describe("variants", () => {
   let projectId: string;
   test.beforeEach(async ({ apiClient, page }) => {
     projectId = await apiClient.setupNewProject({ name: "variants" });
-    await page.goto(`/projects/${projectId}`);
+    await goToProject(page, `/projects/${projectId}?plexus=true`);
   });
 
   test.afterEach(async ({ apiClient }) => {
@@ -308,7 +309,7 @@ test.describe("variants", () => {
   });
 });
 
-async function resetVariants(models: any) {
+async function resetVariants(models: PageModels) {
   await models.studio.rightPanel.switchToComponentDataTab();
   const baseVariant = models.studio.frame
     .locator('[data-test-class="variant-row"]')
@@ -326,7 +327,7 @@ async function resetVariants(models: any) {
   }
 }
 async function deselectVariant(
-  models: any,
+  models: PageModels,
   groupName: string,
   variantName: string
 ) {
@@ -343,12 +344,12 @@ async function deselectVariant(
   }
 }
 
-async function chooseFont(models: any, fontName: string) {
+async function chooseFont(models: PageModels, fontName: string) {
   await models.studio.rightPanel.switchToDesignTab();
   await models.studio.rightPanel.fontFamilyInput.click();
   await models.studio.rightPanel.fontFamilyInput.type(fontName);
   await models.studio.rightPanel.fontFamilyInput.press("Enter");
 }
-async function stopRecordingElementVariant(models: any) {
+async function stopRecordingElementVariant(models: PageModels) {
   await models.studio.rightPanel.variantStopRecording.click();
 }

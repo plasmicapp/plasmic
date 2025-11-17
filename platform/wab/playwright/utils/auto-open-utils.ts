@@ -1,4 +1,6 @@
 import { expect, FrameLocator, Page } from "@playwright/test";
+import { PageModels } from "../fixtures/test";
+import { waitForFrameToLoad } from "./studio-utils";
 
 export function getTooltipMeta() {
   return {
@@ -19,11 +21,11 @@ export function getSelectMeta() {
   };
 }
 
-export function getAutoOpenBanner(models: any) {
+export function getAutoOpenBanner(models: PageModels) {
   return models.studio.frame.locator(".banner-bottom");
 }
 
-export async function turnOffAutoOpenMode(models: any) {
+export async function turnOffAutoOpenMode(models: PageModels) {
   const viewMenu = models.studio.frame.locator("#view-menu");
   await viewMenu.click();
   await models.studio.page.waitForTimeout(500);
@@ -31,7 +33,7 @@ export async function turnOffAutoOpenMode(models: any) {
   await models.studio.page.waitForTimeout(500);
 }
 
-export async function turnOnAutoOpenMode(models: any) {
+export async function turnOnAutoOpenMode(models: PageModels) {
   const banner = getAutoOpenBanner(models);
   if (!(await banner.isVisible())) {
     const viewMenu = models.studio.frame.locator("#view-menu");
@@ -42,13 +44,13 @@ export async function turnOnAutoOpenMode(models: any) {
   }
 }
 
-export async function hideAutoOpen(models: any) {
+export async function hideAutoOpen(models: PageModels) {
   const banner = getAutoOpenBanner(models);
   await banner.getByText("Hide").click();
   await models.studio.page.waitForTimeout(500);
 }
 
-export async function switchInteractiveMode(models: any) {
+export async function switchInteractiveMode(models: PageModels) {
   const interactiveSwitch = models.studio.frame.locator(
     '[data-test-id="interactive-switch"]'
   );
@@ -64,7 +66,7 @@ export async function switchInteractiveMode(models: any) {
   try {
     await interactiveSwitch.click({ force: true });
     await models.studio.page.waitForTimeout(500);
-  } catch (e: any) {
+  } catch (e: unknown) {
     const label = models.studio.frame.locator(
       'label:has([data-test-id="interactive-switch"])'
     );
@@ -73,7 +75,7 @@ export async function switchInteractiveMode(models: any) {
   }
 }
 
-export async function setNotRendered(models: any) {
+export async function setNotRendered(models: PageModels) {
   await models.studio.rightPanel.switchToDesignTab();
   await models.studio.rightPanel.frame
     .locator('[data-test-id="visibility-choices"]')
@@ -84,21 +86,24 @@ export async function setNotRendered(models: any) {
     .click();
 }
 
-export async function setDisplayNone(models: any) {
+export async function setDisplayNone(models: PageModels) {
   await models.studio.rightPanel.switchToDesignTab();
   await models.studio.rightPanel.frame
     .locator('[data-plasmic-prop="display-not-visible"]')
     .click();
 }
 
-export async function setVisible(models: any) {
+export async function setVisible(models: PageModels) {
   await models.studio.rightPanel.switchToDesignTab();
   await models.studio.rightPanel.frame
     .locator('[data-plasmic-prop="display-visible"]')
     .click();
 }
 
-export async function setDynamicVisibility(models: any, expression: string) {
+export async function setDynamicVisibility(
+  models: PageModels,
+  expression: string
+) {
   await models.studio.rightPanel.switchToDesignTab();
   await models.studio.frame
     .locator('[data-test-id="visibility-choices"]')
@@ -118,12 +123,11 @@ export async function setDynamicVisibility(models: any, expression: string) {
   await models.studio.page.keyboard.press("Delete");
   await models.studio.page.waitForTimeout(100);
   await models.studio.page.keyboard.type(expression);
-  await models.studio.rightPanel.frame
-    .getByRole("button", { name: "Save" })
-    .click();
+
+  await models.studio.rightPanel.saveDataPicker();
 }
 
-export async function toggleVisiblity(models: any, nodeName: string) {
+export async function toggleVisiblity(models: PageModels, nodeName: string) {
   await models.studio.leftPanel.frame
     .locator(".tpltree__label", { hasText: nodeName })
     .hover();
@@ -166,7 +170,7 @@ export async function checkCcAutoOpen({
   hiddenContent,
   visibleContent,
 }: {
-  models: any;
+  models: PageModels;
   frame: FrameLocator;
   triggerSlotName?: string;
   otherSlotName?: string;
@@ -239,36 +243,36 @@ export async function checkCcAutoOpen({
   await _assertHidden();
 }
 
-export async function createTooltipComponent(models: any) {
+export async function createTooltipComponent(page: Page, models: PageModels) {
   await models.studio.leftPanel.insertNode("plasmic-react-aria-tooltip");
-  await models.studio.waitForFrameToLoad();
+  await waitForFrameToLoad(page);
 
   await models.studio.extractComponentNamed("Tooltip");
 
   await models.studio.frame.getByText("[Open component]").click();
-  await models.studio.waitForFrameToLoad();
+  await waitForFrameToLoad(page);
 
   await models.studio.leftPanel.switchToTreeTab();
-  await models.studio.page.waitForTimeout(1000);
+  await page.waitForTimeout(1000);
 
   const expandAllButton = models.studio.leftPanel.frame.locator(
     'button[class*="expandAllButton"]'
   );
   if ((await expandAllButton.count()) > 0) {
     await expandAllButton.click();
-    await models.studio.page.waitForTimeout(500);
+    await page.waitForTimeout(500);
   }
 
   await models.studio.leftPanel.selectTreeNode(["Slot: Trigger", "Hover me!"]);
   await models.studio.convertToSlot("Tooltip Trigger");
-  await models.studio.page.waitForTimeout(500);
+  await page.waitForTimeout(500);
 
   await models.studio.leftPanel.selectTreeNode([
     "Slot: Tooltip Content",
     "Hello from Tooltip!",
   ]);
   await models.studio.convertToSlot("Tooltip Contents");
-  await models.studio.page.waitForTimeout(500);
+  await page.waitForTimeout(500);
 }
 
 export async function assertModalAutoOpened(
@@ -289,9 +293,9 @@ export async function assertModalHidden(
   ).not.toBeVisible();
 }
 
-export async function insertModalComponent(models: any, page: Page) {
+export async function insertModalComponent(models: PageModels, page: Page) {
   await models.studio.leftPanel.insertNode("plasmic-react-aria-modal");
-  await models.studio.waitForFrameToLoad();
+  await waitForFrameToLoad(page);
 
   const autoOpenBanner = getAutoOpenBanner(models);
   await expect(autoOpenBanner).not.toBeVisible();
@@ -317,17 +321,14 @@ export async function insertModalComponent(models: any, page: Page) {
   await page.waitForTimeout(100);
   await monacoEditor.fill("false");
   await page.waitForTimeout(100);
-  await models.studio.rightPanel.frame
-    .getByRole("button", { name: "Save" })
-    .click();
-  await models.studio.page.keyboard.press("Tab");
-  await models.studio.page.waitForTimeout(500);
 
+  await models.studio.rightPanel.saveDataPicker();
+  // await models.studio.page.keyboard.press("Tab");
   await expect(autoOpenBanner).toBeVisible({ timeout: 10000 });
 }
 
 export async function testElementAutoOpen(
-  models: any,
+  models: PageModels,
   frame: FrameLocator,
   nodeName: string,
   hiddenContent: string,
@@ -374,7 +375,7 @@ export async function testElementAutoOpen(
 type VisibilityType = "notVisible" | "notRendered" | "customExpr";
 
 export async function checkTextAutoOpen(
-  models: any,
+  models: PageModels,
   frame: FrameLocator,
   isAutoOpenable: boolean,
   visibility: VisibilityType,
@@ -397,7 +398,6 @@ export async function checkTextAutoOpen(
   }
 
   if (hasNotRenderedParent) {
-    await models.studio.leftPanel.selectTreeNode("vertical stack");
     await models.studio.leftPanel.selectTreeNode([nodeName]);
     await assertTextAutoOpened();
   } else {
@@ -458,7 +458,7 @@ export async function checkTextAutoOpen(
 }
 
 export async function checkImageAutoOpen(
-  models: any,
+  models: PageModels,
   frame: FrameLocator,
   visibility: VisibilityType,
   nodeName: string
@@ -522,7 +522,7 @@ export async function testAllVisibilities({
   isSlot = false,
   isPlasmicComponent = false,
 }: {
-  models: any;
+  models: PageModels;
   frame: FrameLocator;
   text: string;
   nodeName: string;
@@ -655,7 +655,7 @@ export async function testAllVisibilities({
 }
 
 export async function testAllImageVisbilities(
-  models: any,
+  models: PageModels,
   frame: FrameLocator
 ) {
   await expect(frame.locator("img").first()).toBeAttached();
@@ -691,7 +691,7 @@ export async function checkCcAutoOpenInteractiveMode({
   hiddenContent,
   visibleContent,
 }: {
-  models: any;
+  models: PageModels;
   frame: FrameLocator;
   triggerSlotName?: string;
   otherSlotName?: string;

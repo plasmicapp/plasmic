@@ -1,18 +1,11 @@
 import { expect } from "@playwright/test";
 import { test } from "../../fixtures/test";
+import { goToProject, waitForFrameToLoad } from "../../utils/studio-utils";
 
 test.describe("dynamic-initial-value", () => {
   let projectId: string;
-  let origDevFlags: any;
 
   test.beforeEach(async ({ apiClient, page }) => {
-    origDevFlags = await apiClient.getDevFlags();
-    await apiClient.upsertDevFlags({
-      ...origDevFlags,
-      plexus: false,
-      runningInCypress: true,
-    });
-
     projectId = await apiClient.setupProjectWithHostlessPackages({
       hostLessPackagesInfo: [
         {
@@ -25,13 +18,10 @@ test.describe("dynamic-initial-value", () => {
         runningInCypress: true,
       },
     });
-    await page.goto(`/projects/${projectId}?simplifiedForms=true`);
+    await goToProject(page, `/projects/${projectId}?simplifiedForms=true`);
   });
 
   test.afterEach(async ({ apiClient }) => {
-    if (origDevFlags) {
-      await apiClient.upsertDevFlags(origDevFlags);
-    }
     await apiClient.removeProjectAfterTest(
       projectId,
       "user2@example.com",
@@ -44,7 +34,7 @@ test.describe("dynamic-initial-value", () => {
     page,
   }) => {
     await models.studio.leftPanel.addComponent("Form");
-    await models.studio.waitForFrameToLoad();
+    await waitForFrameToLoad(page);
 
     const outlineButton = (models.studio as any).studioFrame.locator(
       'button[data-test-tabkey="outline"]'

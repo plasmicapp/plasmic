@@ -1,5 +1,6 @@
 import { expect } from "@playwright/test";
 import { test } from "../fixtures/test";
+import { goToProject } from "../utils/studio-utils";
 
 test.describe("routing", () => {
   let projectId: string;
@@ -15,8 +16,7 @@ test.describe("routing", () => {
       name: "routing-arenas",
     });
 
-    await page.goto(`/projects/${projectId}`);
-    await models.studio.waitForFrameToLoad();
+    await goToProject(page, `/projects/${projectId}`);
 
     await expect(page).toHaveURL(
       new RegExp(
@@ -56,9 +56,8 @@ test.describe("routing", () => {
       new RegExp(`/-/FirstArena\\?arena_type=custom&arena=FirstArena`)
     );
 
-    await models.studio.leftPanel.insertNode("New page");
-    await models.studio.leftPanel.setComponentName("My/Page");
-    await page.waitForTimeout(2000);
+    await models.studio.leftPanel.createNewPage("My/Page");
+    await page.waitForTimeout(1000);
 
     await models.studio.leftPanel.addComponent("MyComponent");
     await page.waitForTimeout(1000);
@@ -87,8 +86,7 @@ test.describe("routing", () => {
       new RegExp(`/-/My-Page\\?arena_type=page&arena=`)
     );
 
-    await page.goto(`/projects/${projectId}`);
-    await models.studio.waitForFrameToLoad();
+    await goToProject(page, `/projects/${projectId}`);
 
     await expect(page).toHaveURL(
       new RegExp(`/-/FirstArena\\?arena_type=custom&arena=FirstArena`)
@@ -97,10 +95,10 @@ test.describe("routing", () => {
     const projNavButtonCheck = models.studio.frame.locator("#proj-nav-button");
     await expect(projNavButtonCheck).toContainText("FirstArena");
 
-    await page.goto(
+    await goToProject(
+      page,
       `/projects/${projectId}/-/NonExistentArena?arena_type=arena&arena=NonExistentArena`
     );
-    await models.studio.waitForFrameToLoad();
 
     await expect(page).toHaveURL(
       new RegExp(`/-/FirstArena\\?arena_type=custom&arena=FirstArena`)

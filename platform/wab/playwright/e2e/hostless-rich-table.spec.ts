@@ -2,6 +2,7 @@ import { expect } from "@playwright/test";
 import { readFileSync } from "fs";
 import path from "path";
 import { test } from "../fixtures/test";
+import { goToProject, waitForFrameToLoad } from "../utils/studio-utils";
 
 const queryData = JSON.parse(
   readFileSync(
@@ -34,21 +35,19 @@ test.describe("hostless-rich-components", () => {
   });
 
   test.afterEach(async ({ apiClient }) => {
-    if (projectId) {
-      await apiClient.removeProjectAfterTest(
-        projectId,
-        "user2@example.com",
-        "!53kr3tz!"
-      );
-    }
+    await apiClient.removeProjectAfterTest(
+      projectId,
+      "user2@example.com",
+      "!53kr3tz!"
+    );
   });
 
   test("RichTable works", async ({ page, models }) => {
-    await page.goto(`/projects/${projectId}`);
-    await models.studio.waitForFrameToLoad();
+    await goToProject(page, `/projects/${projectId}`);
+    await waitForFrameToLoad(page);
 
     await models.studio.createNewPageInOwnArena("Homepage");
-    await models.studio.waitForFrameToLoad();
+    await waitForFrameToLoad(page);
     await models.studio.frames
       .first()
       .contentFrame()
@@ -56,7 +55,7 @@ test.describe("hostless-rich-components", () => {
       .waitFor({ state: "visible" });
 
     await models.studio.turnOffDesignMode();
-    await models.studio.waitForFrameToLoad();
+    await waitForFrameToLoad(page);
 
     await models.studio.leftPanel.insertNode("hostless-rich-table");
     await models.studio.rightPanel.frame

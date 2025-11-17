@@ -1,12 +1,13 @@
 import { expect } from "@playwright/test";
 import { test } from "../fixtures/test";
 import { modifierKey } from "../utils/modifier-key";
+import { goToProject } from "../utils/studio-utils";
 
 test.describe("rich-text", () => {
   let projectId: string;
   test.beforeEach(async ({ apiClient, page }) => {
     projectId = await apiClient.setupNewProject({ name: "rich-text" });
-    await page.goto(`/projects/${projectId}`);
+    await goToProject(page, `/projects/${projectId}`);
   });
 
   test.afterEach(async ({ apiClient }) => {

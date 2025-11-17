@@ -1,28 +1,17 @@
 import { expect } from "@playwright/test";
-import { DevFlagsType } from "../../src/wab/shared/devflags";
 import { test } from "../fixtures/test";
+import { goToProject } from "../utils/studio-utils";
 
 test.describe("state-management-dependents", () => {
   let projectId: string;
-  let origDevFlags: DevFlagsType;
 
   test.beforeEach(async ({ apiClient, page }) => {
-    origDevFlags = await apiClient.getDevFlags();
-
-    await apiClient.upsertDevFlags({
-      ...origDevFlags,
-      plexus: false,
-    });
-
     projectId = await apiClient.setupProjectFromTemplate("state-management");
 
-    await page.goto(`/projects/${projectId}`);
+    await goToProject(page, `/projects/${projectId}`);
   });
 
   test.afterEach(async ({ apiClient }) => {
-    if (origDevFlags) {
-      await apiClient.upsertDevFlags(origDevFlags);
-    }
     await apiClient.removeProjectAfterTest(
       projectId,
       "user2@example.com",
@@ -64,9 +53,7 @@ test.describe("state-management-dependents", () => {
     await page.keyboard.insertText(JSON.stringify(options));
     await page.waitForTimeout(100);
 
-    await models.studio.rightPanel.frame
-      .getByRole("button", { name: "Save" })
-      .click();
+    await models.studio.rightPanel.saveDataPicker();
 
     await models.studio.leftPanel.insertNode("Text Input");
 
@@ -89,9 +76,7 @@ test.describe("state-management-dependents", () => {
     await page.keyboard.insertText("$state.select.value");
     await page.waitForTimeout(100);
 
-    await models.studio.rightPanel.frame
-      .getByRole("button", { name: "Save" })
-      .click();
+    await models.studio.rightPanel.saveDataPicker();
 
     await models.studio.leftPanel.insertNode("TextInput");
 
@@ -111,9 +96,7 @@ test.describe("state-management-dependents", () => {
     await page.keyboard.insertText("$state.textInput.value.toUpperCase()");
     await page.waitForTimeout(100);
 
-    await models.studio.rightPanel.frame
-      .getByRole("button", { name: "Save" })
-      .click();
+    await models.studio.rightPanel.saveDataPicker();
 
     await models.studio.rightPanel.checkNumberOfStatesInComponent(0, 3);
 

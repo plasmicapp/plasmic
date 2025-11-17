@@ -1,22 +1,20 @@
 import { v4 } from "uuid";
 import { test } from "../fixtures/test";
+import { waitForFrameToLoad } from "../utils/studio-utils";
 
 test.describe("Signup flow", () => {
   let projectId: string;
 
   test.afterEach(async ({ apiClient }) => {
-    if (projectId) {
-      await apiClient.removeProjectAfterTest(
-        projectId,
-        "user2@example.com",
-        "!53kr3tz!"
-      );
-    }
+    await apiClient.removeProjectAfterTest(
+      projectId,
+      "user2@example.com",
+      "!53kr3tz!"
+    );
   });
 
   test("can sign up (password), take survey, continue to original project href", async ({
     page,
-    models,
     apiClient,
   }) => {
     projectId = await apiClient.setupNewProject({
@@ -112,6 +110,6 @@ test.describe("Signup flow", () => {
       page.getByText("Do this later").click(),
     ]);
 
-    await models.studio.waitForFrameToLoad();
+    await waitForFrameToLoad(page);
   });
 });

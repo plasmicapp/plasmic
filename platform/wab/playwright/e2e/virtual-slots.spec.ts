@@ -4,6 +4,7 @@ import {
   VERT_CONTAINER_CAP,
 } from "../../src/wab/shared/Labels";
 import { test } from "../fixtures/test";
+import { goToProject, waitForFrameToLoad } from "../utils/studio-utils";
 import { undoAndRedo } from "../utils/undo-and-redo";
 
 test.describe("virtual-slots", () => {
@@ -11,7 +12,7 @@ test.describe("virtual-slots", () => {
 
   test.beforeEach(async ({ apiClient, page }) => {
     projectId = await apiClient.setupNewProject({ name: "virtual-slots" });
-    await page.goto(`/projects/${projectId}`);
+    await goToProject(page, `/projects/${projectId}`);
   });
 
   test.afterEach(async ({ apiClient }) => {
@@ -35,9 +36,8 @@ test.describe("virtual-slots", () => {
 
     await expect(models.studio.frame.locator(".hoverbox")).not.toBeVisible();
 
-    await models.studio.leftPanel.insertNode("New component");
-    await models.studio.leftPanel.setComponentName("MyPanel");
-    await models.studio.waitForFrameToLoad();
+    await models.studio.leftPanel.addComponent("MyPanel");
+    await waitForFrameToLoad(page);
 
     await page.keyboard.press("Enter");
     await models.studio.leftPanel.insertNode(HORIZ_CONTAINER_CAP);
@@ -287,7 +287,7 @@ test.describe("virtual-slots", () => {
     });
 
     const checkEndState = async () => {
-      await models.studio.focusFrame(artboardFrame);
+      await models.studio.focusFrameRoot(artboardFrame);
       await expect(artboardFrame.getByText("OMG")).toBeVisible();
       await models.studio.rightPanel.checkNoErrors();
     };

@@ -1,15 +1,17 @@
 import formsBundle from "../../../cypress/bundles/forms.json";
-import { test } from "../../fixtures/test";
-import { checkFormValues, ExpectedFormItem } from "../../utils/studio-utils";
+import { PageModels, test } from "../../fixtures/test";
+import {
+  ExpectedFormItem,
+  checkFormValues,
+  goToProject,
+} from "../../utils/studio-utils";
 
 test.describe("conversion-between-modes", () => {
   let projectId: string;
   let dataSourceId: string;
 
-  async function selectFormInOutline(models: any, _page: any) {
-    const outlineForm = models.studio.leftPanel.studioFrame
-      .locator('text="Form"')
-      .first();
+  async function selectFormInOutline(models: PageModels) {
+    const outlineForm = models.studio.frame.locator('text="Form"').first();
     const formCount = await outlineForm.count();
     if (formCount > 0) {
       await outlineForm.click();
@@ -23,10 +25,6 @@ test.describe("conversion-between-modes", () => {
       dataSourceReplacement: {
         fakeSourceId: dataSourceId,
       },
-      devFlags: {
-        schemaDrivenForms: true,
-        simplifiedForms: true,
-      },
     });
 
     await page.addInitScript(() => {
@@ -38,7 +36,8 @@ test.describe("conversion-between-modes", () => {
       w.DEVFLAGS.simplifiedForms = true;
     });
 
-    await page.goto(
+    await goToProject(
+      page,
       `/projects/${projectId}?schemaDrivenForms=true&simplifiedForms=true`
     );
   });
@@ -52,7 +51,7 @@ test.describe("conversion-between-modes", () => {
     );
   });
 
-  test("simplified <-> advanced mode", async ({ models, page }) => {
+  test("simplified <-> advanced mode", async ({ models }) => {
     const frame = await models.studio.switchArena("Test Conversion 1");
 
     await models.studio.leftPanel.insertNode("plasmic-antd5-form");
@@ -113,7 +112,7 @@ test.describe("conversion-between-modes", () => {
 
     await checkFormValues(expectedFormItems, frame);
 
-    await selectFormInOutline(models, page);
+    await selectFormInOutline(models);
 
     await models.studio.rightPanel.clickDataPlasmicProp(
       "simplified-mode-toggle"
@@ -130,7 +129,7 @@ test.describe("conversion-between-modes", () => {
     await models.studio.rightPanel.checkNoErrors();
   });
 
-  test("advanced <-> simplified mode", async ({ models, page }) => {
+  test("advanced <-> simplified mode", async ({ models }) => {
     const frame = await models.studio.switchArena("Test Conversion 2");
 
     await models.studio.leftPanel.insertNode("plasmic-antd5-form");
@@ -191,7 +190,7 @@ test.describe("conversion-between-modes", () => {
 
     await checkFormValues(expectedFormItems, frame);
 
-    await selectFormInOutline(models, page);
+    await selectFormInOutline(models);
 
     await models.studio.rightPanel.clickDataPlasmicProp(
       "simplified-mode-toggle"
@@ -208,7 +207,7 @@ test.describe("conversion-between-modes", () => {
     await models.studio.rightPanel.checkNoErrors();
   });
 
-  test("schema mode: new entry", async ({ models, page }) => {
+  test("schema mode: new entry", async ({ models }) => {
     const frame = await models.studio.switchArena("Test Conversion 3");
 
     await models.studio.leftPanel.insertNode("plasmic-antd5-form");
@@ -221,7 +220,7 @@ test.describe("conversion-between-modes", () => {
       { name: "age", label: "age", type: "Number" },
     ];
 
-    await selectFormInOutline(models, page);
+    await selectFormInOutline(models);
 
     await checkFormValues(expectedFormItems, frame);
 
@@ -240,7 +239,7 @@ test.describe("conversion-between-modes", () => {
     await models.studio.rightPanel.checkNoErrors();
   });
 
-  test("schema mode: update entry", async ({ models, page }) => {
+  test("schema mode: update entry", async ({ models }) => {
     const frame = await models.studio.switchArena("Test Conversion 4");
 
     await models.studio.leftPanel.insertNode("plasmic-antd5-form");
@@ -251,7 +250,7 @@ test.describe("conversion-between-modes", () => {
       { name: "price", label: "price", type: "Number", value: 2 },
     ];
 
-    await selectFormInOutline(models, page);
+    await selectFormInOutline(models);
 
     await checkFormValues(expectedFormItems, frame);
 
@@ -270,7 +269,7 @@ test.describe("conversion-between-modes", () => {
     await models.studio.rightPanel.checkNoErrors();
   });
 
-  test("conversion keeps dynamic values", async ({ models, page }) => {
+  test("conversion keeps dynamic values", async ({ models }) => {
     const frame = await models.studio.switchArena("Test Conversion 5");
 
     await models.studio.leftPanel.insertNode("plasmic-antd5-form");
@@ -294,7 +293,7 @@ test.describe("conversion-between-modes", () => {
       { name: "active", label: "Active", type: "Checkbox", value: true },
     ];
 
-    await selectFormInOutline(models, page);
+    await selectFormInOutline(models);
 
     await checkFormValues(expectedFormItems, frame);
 
@@ -315,7 +314,6 @@ test.describe("conversion-between-modes", () => {
 
   test("should miss some information when converting to simplified mode", async ({
     models,
-    page,
   }) => {
     const frame = await models.studio.switchArena("Test Conversion 6");
 
@@ -375,7 +373,7 @@ test.describe("conversion-between-modes", () => {
       { name: "rangeValue", label: "Range Value", type: "Number" },
     ];
 
-    await selectFormInOutline(models, page);
+    await selectFormInOutline(models);
 
     await checkFormValues(expectedFormItems, frame);
 
@@ -394,7 +392,7 @@ test.describe("conversion-between-modes", () => {
     await models.studio.rightPanel.checkNoErrors();
   });
 
-  test("convert plume components", async ({ models, page }) => {
+  test("convert plume components", async ({ models }) => {
     const frame = await models.studio.switchArena("Test Conversion 7");
 
     await models.studio.leftPanel.insertNode("plasmic-antd5-form");
@@ -429,7 +427,7 @@ test.describe("conversion-between-modes", () => {
 
     await checkFormValues(expectedFormItems, frame);
 
-    await selectFormInOutline(models, page);
+    await selectFormInOutline(models);
 
     await models.studio.rightPanel.clickDataPlasmicProp(
       "simplified-mode-toggle"

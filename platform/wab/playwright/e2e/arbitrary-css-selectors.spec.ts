@@ -1,7 +1,8 @@
-import { expect, Locator } from "@playwright/test";
+import { expect, Locator, Page } from "@playwright/test";
 import { test } from "../fixtures/test";
 
 import bundles from "../../cypress/bundles";
+import { goToProject } from "../utils/studio-utils";
 
 const BUNDLE_NAME = "state-management";
 
@@ -27,7 +28,7 @@ const checkCssInCanvas = async (
 };
 
 const checkCssInPreview = async (
-  page: any,
+  page: Page,
   cssProp: string,
   cssPropValue: string,
   condition = (_index: number) => true
@@ -48,7 +49,7 @@ test.describe("artbitrary-css-selectors", () => {
   test.beforeEach(async ({ apiClient, page }) => {
     projectId = await apiClient.importProjectFromTemplate(bundles[BUNDLE_NAME]);
 
-    await page.goto(`/projects/${projectId}`);
+    await goToProject(page, `/projects/${projectId}`);
   });
 
   test.afterEach(async ({ apiClient }) => {
@@ -63,7 +64,7 @@ test.describe("artbitrary-css-selectors", () => {
     models,
     page,
   }) => {
-    await models.studio.leftPanel.addPage("Arbitrary CSS Selectors");
+    await models.studio.leftPanel.createNewPage("Arbitrary CSS Selectors");
     const pageFrame = page
       .locator("iframe")
       .first()

@@ -1,5 +1,6 @@
 import { expect } from "@playwright/test";
 import { test } from "../../fixtures/test";
+import { goToProject } from "../../utils/studio-utils";
 
 test.describe("Antd5 progress", () => {
   let projectId: string;
@@ -11,7 +12,7 @@ test.describe("Antd5 progress", () => {
         npmPkg: ["@plasmicpkgs/antd5"],
       },
     });
-    await page.goto(`/projects/${projectId}`);
+    await goToProject(page, `/projects/${projectId}`);
   });
 
   test.afterEach(async ({ apiClient }) => {
@@ -21,8 +22,6 @@ test.describe("Antd5 progress", () => {
   });
 
   test("works", async ({ models, page }) => {
-    await models.studio.waitForFrameToLoad();
-
     await models.studio.createNewPageInOwnArena("Homepage");
 
     const frameCount = await models.studio.frames.count();
@@ -58,10 +57,7 @@ test.describe("Antd5 progress", () => {
       .locator(`[data-test-id="data-picker"]`)
       .getByText("basePercent")
       .click();
-    await models.studio.frame
-      .locator(`[data-test-id="data-picker"]`)
-      .getByRole("button", { name: "Save" })
-      .click();
+    await models.studio.rightPanel.saveDataPicker();
 
     await models.studio.rightPanel.frame
       .locator(`#component-props-section [data-test-id="show-extra-content"]`)
@@ -76,10 +72,7 @@ test.describe("Antd5 progress", () => {
       .locator(`[data-test-id="data-picker"]`)
       .getByText("success")
       .click();
-    await models.studio.frame
-      .locator(`[data-test-id="data-picker"]`)
-      .getByRole("button", { name: "Save" })
-      .click();
+    await models.studio.rightPanel.saveDataPicker();
 
     await models.studio.rightPanel.frame
       .locator(`[data-test-id="prop-editor-row-infoFormat"] label`)

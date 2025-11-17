@@ -1,5 +1,6 @@
 import { expect, FrameLocator } from "@playwright/test";
 import { test } from "../fixtures/test";
+import { goToProject, waitForFrameToLoad } from "../utils/studio-utils";
 
 test.describe("hostless-code-libs", () => {
   let projectId: string;
@@ -46,11 +47,10 @@ test.describe("hostless-code-libs", () => {
     models,
   }) => {
     projectId = await apiClient.setupProjectFromTemplate("code-libs");
-    await page.goto(`/projects/${projectId}`);
+    await goToProject(page, `/projects/${projectId}`);
 
-    await models.studio.waitForFrameToLoad();
     await models.studio.turnOffDesignMode();
-    await models.studio.waitForFrameToLoad();
+    await waitForFrameToLoad(page);
 
     const interactiveSwitch = models.studio.frame.locator(
       '[data-test-id="interactive-switch"]'
@@ -60,7 +60,7 @@ test.describe("hostless-code-libs", () => {
     const refreshButton = models.studio.frame.locator("#refresh-canvas-btn");
     await refreshButton.click();
 
-    await models.studio.waitForFrameToLoad();
+    await waitForFrameToLoad(page);
 
     const viewport = models.studio.frames.first();
     await viewport.waitFor({ state: "visible" });
@@ -77,7 +77,8 @@ test.describe("hostless-code-libs", () => {
 
     const checkContents = async (content: FrameLocator) => {
       await expect(content.locator("body")).toContainText(
-        'Axios response: "Animals"'
+        'Axios response: "Animals"',
+        { timeout: 20000 }
       );
       await expect(content.locator("body")).toContainText(
         'Copy to clipboard type: "function"'

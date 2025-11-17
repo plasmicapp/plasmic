@@ -1,5 +1,6 @@
 import { expect } from "@playwright/test";
 import { test } from "../fixtures/test";
+import { goToProject } from "../utils/studio-utils";
 
 test.describe("Can use stale bundle", () => {
   let projectId: string;
@@ -16,9 +17,7 @@ test.describe("Can use stale bundle", () => {
 
   test("Can migrate stale bundle", async ({ page, models, apiClient }) => {
     projectId = await apiClient.setupProjectFromTemplate("stale-bundle");
-    await page.goto(`/projects/${projectId}?ccStubs=true`);
-
-    await models.studio.waitForFrameToLoad();
+    await goToProject(page, `/projects/${projectId}?ccStubs=true`);
 
     const framesViewport = models.studio.frame.locator(
       ".canvas-editor__frames .canvas-editor__viewport"

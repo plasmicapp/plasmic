@@ -401,6 +401,7 @@ export async function showModalToRefreshCodeComponentProps(
           <Button
             className="mr-sm"
             type="primary"
+            data-test-id="confirm"
             onClick={() => onSubmit(true)}
           >
             Confirm

@@ -188,6 +188,7 @@ export class ApiClient {
           devFlags,
         },
         headers: { "X-CSRF-Token": csrf },
+        timeout: 30000,
       }
     );
 
@@ -387,7 +388,6 @@ export class ApiClient {
     options?: {
       keepProjectIdsAndNames?: boolean;
       dataSourceReplacement?: Record<string, string>;
-      devFlags?: Record<string, boolean>;
     }
   ) {
     let bundle: any;
@@ -430,19 +430,8 @@ export class ApiClient {
         `Failed to import template: ${importResponse.status()} ${errorText}`
       );
     }
-
     const importData = await importResponse.json();
-    const projectId = importData.projectId;
-
-    if (options?.devFlags) {
-      const origDevFlags = await this.getDevFlags();
-      await this.upsertDevFlags({
-        ...origDevFlags,
-        ...options.devFlags,
-      });
-    }
-
-    return projectId;
+    return importData.projectId;
   }
 
   async getDevFlags() {

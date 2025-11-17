@@ -7,6 +7,44 @@ export interface ExpectedFormItem {
   value?: any;
 }
 
+export function getStudioFrame(page: Page): FrameLocator {
+  return page
+    .frameLocator("iframe.studio-frame")
+    .frameLocator("iframe.__wab_studio-frame");
+}
+
+export async function waitForFrameToLoad(page: Page) {
+  await page.waitForSelector("iframe.studio-frame", { timeout: 40000 });
+  await page.waitForTimeout(1000);
+
+  try {
+    const overlay = page.locator(".rsbuild-error-overlay").first();
+    if (await overlay.isVisible({ timeout: 500 })) {
+      await page.keyboard.press("Escape");
+      await page.waitForTimeout(500);
+    }
+  } catch (e) {}
+
+  await getStudioFrame(page)
+    .locator(".canvas-editor__canvas-container")
+    .waitFor({ timeout: 60000, state: "attached" });
+}
+
+/**
+ * Go to a project page and wait for the studio to load
+ */
+export async function goToProject(
+  page: Page,
+  url: string,
+  options?: {
+    timeout?: number;
+    waitUntil?: "load" | "domcontentloaded" | "networkidle" | "commit";
+  }
+) {
+  await page.goto(url, options);
+  await waitForFrameToLoad(page);
+}
+
 export async function getComponentUuid(
   page: Page,
   componentName: string
@@ -69,8 +107,7 @@ export async function updateFormValuesInLiveMode(
     selects?: Record<string, any>;
     radios?: Record<string, any>;
   },
-  root: FrameLocator,
-  _page?: any
+  root: FrameLocator
 ) {
   const { inputs = {}, selects: _selects = {}, radios = {} } = newValues;
 

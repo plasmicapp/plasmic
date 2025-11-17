@@ -2,6 +2,7 @@ import { expect, FrameLocator, Page } from "@playwright/test";
 import { v4 } from "uuid";
 import { test } from "../../fixtures/test";
 import type { StudioModel } from "../../models/studio-model";
+import { goToProject, waitForFrameToLoad } from "../../utils/studio-utils";
 
 const TUTORIAL_DB_TYPE = "northwind";
 const DEFAULT_CUSTOMERS = [
@@ -33,16 +34,9 @@ type InteractionConfig = {
 test.describe("Postgres Data Source", () => {
   let projectId: string;
   let dataSourceName: string;
-  let origDevFlags: any;
 
   test.beforeEach(async ({ apiClient, page, context, request }) => {
     dataSourceName = `TutorialDB ${v4()}`;
-
-    origDevFlags = await apiClient.getDevFlags();
-    await apiClient.upsertDevFlags({
-      ...origDevFlags,
-      plexus: false,
-    });
 
     await apiClient.createTutorialDataSource(TUTORIAL_DB_TYPE, dataSourceName);
 
@@ -54,7 +48,7 @@ test.describe("Postgres Data Source", () => {
       name: "Postgres Data Source",
     });
 
-    await page.goto(`/projects/${projectId}`);
+    await goToProject(page, `/projects/${projectId}`);
   });
 
   test.afterEach(async ({ apiClient }) => {
@@ -62,16 +56,13 @@ test.describe("Postgres Data Source", () => {
     if (projectId) {
       await apiClient.removeProject(projectId);
     }
-    if (origDevFlags) {
-      await apiClient.upsertDevFlags(origDevFlags);
-    }
   });
 
   test("postgres basic queries", async ({ models, page }) => {
     const studio = models.studio;
     const customers = [...DEFAULT_CUSTOMERS];
 
-    await studio.waitForFrameToLoad();
+    await waitForFrameToLoad(page);
     await studio.createNewPageInOwnArena("Homepage");
     const artboardFrame = studio.getComponentFrameByIndex(0);
 
@@ -86,7 +77,7 @@ test.describe("Postgres Data Source", () => {
     });
 
     await studio.turnOffDesignMode();
-    await studio.waitForFrameToLoad();
+    await waitForFrameToLoad(page);
     await expectCustomersInDesign(studio, customers);
 
     const viewMenu = studio.frame.locator("#view-menu");
@@ -95,7 +86,7 @@ test.describe("Postgres Data Source", () => {
     if ((await turnOnOption.count()) > 0) {
       await turnOnOption.click();
     }
-    await studio.waitForFrameToLoad();
+    await waitForFrameToLoad(page);
 
     await studio.focusFrameRoot(artboardFrame);
     await studio.selectRootNode();

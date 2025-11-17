@@ -1,5 +1,6 @@
-import { expect } from "@playwright/test";
-import { test } from "../fixtures/test";
+import { expect, Page } from "@playwright/test";
+import { PageModels, test } from "../fixtures/test";
+import { goToProject } from "../utils/studio-utils";
 
 test.describe("hostless-react-slick slider carousel", () => {
   let projectId: string;
@@ -16,7 +17,7 @@ test.describe("hostless-react-slick slider carousel", () => {
         },
       ],
     });
-    await page.goto(`/projects/${projectId}`);
+    await goToProject(page, `/projects/${projectId}`);
   });
 
   test.afterEach(async ({ apiClient }) => {
@@ -27,7 +28,7 @@ test.describe("hostless-react-slick slider carousel", () => {
     );
   });
 
-  async function assertState(framed: any, page: any, value: string) {
+  async function assertState(framed: any, page: Page, value: string) {
     await page.waitForTimeout(300);
     const canvasFrame = framed.contentFrame();
     await expect(canvasFrame.getByText(value, { exact: true })).toBeVisible({
@@ -36,19 +37,19 @@ test.describe("hostless-react-slick slider carousel", () => {
     await page.waitForTimeout(300);
   }
 
-  async function appendSlide(models: any, page: any) {
+  async function appendSlide(models: PageModels, page: Page) {
     await page.waitForTimeout(300);
     await models.studio.frame.getByText("Append new slide").click();
     await page.waitForTimeout(300);
   }
 
-  async function deleteSlide(models: any, page: any) {
+  async function deleteSlide(models: PageModels, page: Page) {
     await page.waitForTimeout(300);
     await models.studio.frame.getByText("Delete current slide").click();
     await page.waitForTimeout(300);
   }
 
-  async function clickNext(models: any, page: any) {
+  async function clickNext(models: PageModels, page: Page) {
     await page.waitForTimeout(300);
     await models.studio.frame.getByText("Next").click();
     await page.waitForTimeout(300);

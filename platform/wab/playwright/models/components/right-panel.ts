@@ -208,12 +208,6 @@ export class RightPanel extends BaseModel {
   readonly yearOption2020: Locator = this.frame.locator(
     'div[role="option"]:has-text("2020")'
   );
-  readonly notificationWarning: Locator = this.frame.locator(
-    '.ant-notification-notice-warning:has(.ant-notification-notice-message:contains("Unsupported host app detected"))'
-  );
-  readonly notificationCloseButton: Locator = this.frame.locator(
-    ".ant-notification-notice-close"
-  );
 
   readonly addHtmlAttributeButton: Locator = this.frame.locator(
     '[data-test-id="add-html-attribute"]'
@@ -273,7 +267,7 @@ export class RightPanel extends BaseModel {
     return dropdownElement;
   }
 
-  async getStateVariable(stateVar: string): Promise<Locator> {
+  getStateVariable(stateVar: string): Locator {
     const stateVariable = this.frame
       .locator(`[data-test-id="0-${stateVar}"]`)
       .first();
@@ -638,10 +632,8 @@ export class RightPanel extends BaseModel {
   }
 
   async configureProjectAppHost(page: string) {
-    await this.projectMenuButton.waitFor({ state: "visible", timeout: 30000 });
-    await this.projectMenuButton.click({ force: true });
-    await this.page.waitForTimeout(500);
-    await this.configureProjectButton.click({ force: true });
+    await this.projectMenuButton.click({ timeout: 10000 });
+    await this.configureProjectButton.click();
 
     const plasmicHost = `http://localhost:${
       process.env.CUSTOM_HOST_PORT || 3000
@@ -658,7 +650,6 @@ export class RightPanel extends BaseModel {
     );
 
     await hostFrame.waitFor({ timeout: 60000 });
-    await this.page.reload({ timeout: 120000 });
   }
 
   async setWidth(value: string) {
@@ -689,9 +680,14 @@ export class RightPanel extends BaseModel {
   }
 
   async closeNotificationWarning() {
-    await this.notificationWarning
-      .locator(this.notificationCloseButton)
-      .click();
+    await this.frame
+      .locator(".ant-notification-notice-message")
+      .filter({ hasText: "Unsupported host app detected" })
+      .waitFor();
+    await this.frame.locator(".ant-notification-notice-close").click();
+    await this.frame
+      .locator(".ant-notification-topRight")
+      .waitFor({ state: "hidden" });
   }
 
   async addComplexInteraction(
@@ -736,10 +732,8 @@ export class RightPanel extends BaseModel {
 
       if (interaction.args.variable) {
         await this.stateButton.click();
-        await (
-          await this.getStateVariable(interaction.args.variable[0])
-        ).click();
-        await this.windowSaveButton.click();
+        await this.getStateVariable(interaction.args.variable[0]).click();
+        await this.saveDataPicker();
       }
 
       if (interaction.args.operation) {
@@ -1024,8 +1018,8 @@ export class RightPanel extends BaseModel {
     await this.setSelectByLabel(selectName, value);
   }
 
-  async updateFormValuesLiveMode(newValues: any, liveFrame: any) {
-    await updateFormValuesInLiveMode(newValues, liveFrame, this.page);
+  async updateFormValuesLiveMode(newValues: any, liveFrame: FrameLocator) {
+    await updateFormValuesInLiveMode(newValues, liveFrame);
   }
 
   async bindTextContentToCustomCode(code: string) {
@@ -1051,7 +1045,7 @@ export class RightPanel extends BaseModel {
     name: string;
     variableType: string;
     accessType?: string;
-    initialValue?: any;
+    initialValue?: string;
     isInitValDynamicValue?: boolean;
   }) {
     const existingStates = await this.frame
@@ -1301,9 +1295,11 @@ export class RightPanel extends BaseModel {
     await closeBtn.click();
   }
 
-  async closeDataPicker() {
-    const closeBtn = this.frame.locator('[data-test-id="data-picker-close"]');
-    await closeBtn.click();
+  async saveDataPicker() {
+    await this.windowSaveButton.click();
+    await this.frame
+      .locator('[data-test-id="data-picker"]')
+      .waitFor({ state: "detached", timeout: 2000 });
   }
 
   async clickDataPlasmicProp(propName: string) {
@@ -1375,11 +1371,8 @@ export class RightPanel extends BaseModel {
 
     const confirmBtn = this.page.locator('[data-test-id="prompt-submit"]');
     await confirmBtn.first().click();
-    await this.page.waitForTimeout(2000);
-
-    await this.page.waitForTimeout(2000);
     const unsetButton = this.frame.getByRole("button", { name: "unset" });
-    await unsetButton.click();
+    await unsetButton.click({ timeout: 20000 });
     await this.page.waitForTimeout(500);
 
     const tableOption = this.frame.locator(`option[value*="${tableName}"]`);

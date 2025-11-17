@@ -1,12 +1,13 @@
 import { expect, Locator } from "@playwright/test";
 import { test } from "../fixtures/test";
 import { modifierKey } from "../utils/modifier-key";
+import { goToProject } from "../utils/studio-utils";
 
 test.describe("left-panel", () => {
   let projectId: string;
   test.beforeEach(async ({ apiClient, page }) => {
     projectId = await apiClient.setupNewProject({ name: "left-panel" });
-    await page.goto(`/projects/${projectId}`);
+    await goToProject(page, `/projects/${projectId}`);
   });
 
   test.afterEach(async ({ apiClient }) => {
@@ -30,7 +31,13 @@ test.describe("left-panel", () => {
       .locator('[data-test-class="left-panel-indicator"] > div')
       .hover();
 
-    await models.studio.leftPanel.clearAllIndicators();
+    const indicators = models.studio.frame.locator(
+      '[data-test-class="indicator-clear"]'
+    );
+    const count = await indicators.count();
+    for (let i = count - 1; i >= 0; i -= 1) {
+      await indicators.nth(i).click();
+    }
 
     await expect(
       selectedNode.locator('[data-test-class="left-panel-indicator"] > div')

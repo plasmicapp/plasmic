@@ -1,12 +1,13 @@
-import { expect } from "@playwright/test";
-import { test } from "../fixtures/test";
+import { expect, FrameLocator, Page } from "@playwright/test";
+import { PageModels, test } from "../fixtures/test";
+import { goToProject } from "../utils/studio-utils";
 
 test.describe("Right panel", () => {
   let projectId: string;
 
   test.beforeEach(async ({ apiClient, page }) => {
     projectId = await apiClient.setupNewProject({ name: "right-panel" });
-    await page.goto(`/projects/${projectId}`);
+    await goToProject(page, `/projects/${projectId}`);
   });
 
   test.afterEach(async ({ apiClient }) => {
@@ -72,7 +73,11 @@ test.describe("Right panel", () => {
   });
 });
 
-async function testSizeSection(models: any, page: any, artboardFrame: any) {
+async function testSizeSection(
+  models: PageModels,
+  page: Page,
+  artboardFrame: FrameLocator
+) {
   const selectedElt = artboardFrame.locator(".__wab_instance > div").first();
 
   await models.studio.rightPanel.switchToDesignTab();
@@ -162,9 +167,9 @@ async function testSizeSection(models: any, page: any, artboardFrame: any) {
 }
 
 async function testVisibilitySection(
-  models: any,
-  page: any,
-  artboardFrame: any
+  models: PageModels,
+  page: Page,
+  artboardFrame: FrameLocator
 ) {
   const selectedElt = artboardFrame.locator(".__wab_instance > div").first();
 

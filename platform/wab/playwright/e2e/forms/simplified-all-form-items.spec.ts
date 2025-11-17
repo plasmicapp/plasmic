@@ -1,32 +1,26 @@
 import { expect } from "@playwright/test";
 import { cloneDeep } from "lodash";
 import { test } from "../../fixtures/test";
-import { checkFormValues, getFormValue } from "../../utils/studio-utils";
+import {
+  checkFormValues,
+  getFormValue,
+  goToProject,
+} from "../../utils/studio-utils";
 
 test.describe.skip("simplified-all-form-items", () => {
   let projectId: string;
-  let origDevFlags: any;
 
   test.beforeEach(async ({ apiClient, page }) => {
-    origDevFlags = await apiClient.getDevFlags();
-    await apiClient.upsertDevFlags({
-      ...origDevFlags,
-      simplifiedForms: true,
-    });
-
     projectId = await apiClient.setupProjectWithHostlessPackages({
       hostLessPackagesInfo: {
         name: "antd5",
         npmPkg: ["@plasmicpkgs/antd5"],
       },
     });
-    await page.goto(`/projects/${projectId}`);
+    await goToProject(page, `/projects/${projectId}`);
   });
 
   test.afterEach(async ({ apiClient }) => {
-    if (origDevFlags) {
-      await apiClient.upsertDevFlags(origDevFlags);
-    }
     await apiClient.removeProjectAfterTest(
       projectId,
       "user2@example.com",

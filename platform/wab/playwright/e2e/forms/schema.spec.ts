@@ -1,5 +1,9 @@
 import { test } from "../../fixtures/test";
-import { checkFormValues } from "../../utils/studio-utils";
+import {
+  checkFormValues,
+  goToProject,
+  waitForFrameToLoad,
+} from "../../utils/studio-utils";
 import { setSelectByLabel } from "../../utils/testControls";
 
 test.describe("schema", () => {
@@ -21,7 +25,8 @@ test.describe("schema", () => {
       },
     });
 
-    await page.goto(
+    await goToProject(
+      page,
       `/projects/${projectId}?schemaDrivenForms=true&runningInCypress=true`
     );
   });
@@ -37,7 +42,7 @@ test.describe("schema", () => {
 
   test("can use schema forms for new entry", async ({ models, page }) => {
     await models.studio.leftPanel.addComponent("Schema Form");
-    await models.studio.waitForFrameToLoad();
+    await waitForFrameToLoad(page);
     await page.waitForTimeout(2000);
 
     const nestedFrame = page
@@ -127,7 +132,7 @@ test.describe("schema", () => {
 
   test("can use schema forms for update entry", async ({ models, page }) => {
     await models.studio.leftPanel.addComponent("Schema Form");
-    await models.studio.waitForFrameToLoad();
+    await waitForFrameToLoad(page);
     await page.waitForTimeout(2000);
 
     const nestedFrame = page
@@ -220,7 +225,7 @@ test.describe("schema", () => {
 
   test("switching table resets fields/onFinish", async ({ models, page }) => {
     await models.studio.leftPanel.addComponent("Schema Form");
-    await models.studio.waitForFrameToLoad();
+    await waitForFrameToLoad(page);
     await page.waitForTimeout(2000);
 
     const nestedFrame = page

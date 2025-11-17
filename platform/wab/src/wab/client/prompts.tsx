@@ -17,7 +17,7 @@ import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { maybe, nullToUndefined } from "@/wab/shared/common";
 import { isHostLessPackage } from "@/wab/shared/core/sites";
 import { Site } from "@/wab/shared/model/classes";
-import { Form, notification, Select } from "antd";
+import { Form, Select, notification } from "antd";
 import L, { orderBy } from "lodash";
 import React from "react";
 const { Option } = Select;
@@ -122,6 +122,7 @@ export async function promptComponentTemplate(
       style={{
         top: 32,
       }}
+      data-test-id="new-component-modal"
       modalRender={() => (
         <NewComponentModal
           className="ant-modal-content"

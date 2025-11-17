@@ -2,6 +2,7 @@ import { expect } from "@playwright/test";
 import { test } from "../fixtures/test";
 
 import bundles from "../../cypress/bundles";
+import { goToProject } from "../utils/studio-utils";
 
 const BUNDLE_NAME = "state-management";
 
@@ -11,7 +12,7 @@ test.describe.skip("state-management-custom-interactions", () => {
   test.beforeEach(async ({ apiClient, page }) => {
     projectId = await apiClient.importProjectFromTemplate(bundles[BUNDLE_NAME]);
 
-    await page.goto(`/projects/${projectId}`);
+    await goToProject(page, `/projects/${projectId}`);
   });
 
   test.afterEach(async ({ apiClient }) => {

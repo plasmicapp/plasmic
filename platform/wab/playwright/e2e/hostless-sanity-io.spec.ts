@@ -2,6 +2,7 @@ import { expect } from "@playwright/test";
 import * as fs from "fs";
 import * as path from "path";
 import { test } from "../fixtures/test";
+import { goToProject } from "../utils/studio-utils";
 
 test.describe("hostless-sanity-io", () => {
   let projectId: string;
@@ -80,13 +81,11 @@ test.describe("hostless-sanity-io", () => {
   });
 
   test.afterEach(async ({ apiClient }) => {
-    if (projectId) {
-      await apiClient.removeProjectAfterTest(
-        projectId,
-        "user2@example.com",
-        "!53kr3tz!"
-      );
-    }
+    await apiClient.removeProjectAfterTest(
+      projectId,
+      "user2@example.com",
+      "!53kr3tz!"
+    );
   });
 
   test("can put sanity fetcher with sanity field, fetch and show data", async ({
@@ -100,7 +99,7 @@ test.describe("hostless-sanity-io", () => {
         npmPkg: ["@plasmicpkgs/plasmic-sanity-io"],
       },
     });
-    await page.goto(`/projects/${projectId}`);
+    await goToProject(page, `/projects/${projectId}`);
 
     const framed = await models.studio.createNewFrame();
     await models.studio.focusFrameRoot(framed);

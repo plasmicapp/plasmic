@@ -1,5 +1,6 @@
 import { expect } from "@playwright/test";
 import { test } from "../fixtures/test";
+import { goToProject } from "../utils/studio-utils";
 import { undoAndRedo } from "../utils/undo-and-redo";
 
 test.describe("image-slots", () => {
@@ -9,18 +10,15 @@ test.describe("image-slots", () => {
     projectId = await apiClient.setupNewProject({
       name: "image-slots",
     });
-    await page.goto(`/projects/${projectId}`);
-    await page.waitForTimeout(2000);
+    await goToProject(page, `/projects/${projectId}?plexus=true`);
   });
 
   test.afterEach(async ({ apiClient }) => {
-    if (projectId) {
-      await apiClient.removeProjectAfterTest(
-        projectId,
-        "user2@example.com",
-        "!53kr3tz!"
-      );
-    }
+    await apiClient.removeProjectAfterTest(
+      projectId,
+      "user2@example.com",
+      "!53kr3tz!"
+    );
   });
 
   test("can create, override content, edit default content", async ({
@@ -102,7 +100,6 @@ test.describe("image-slots", () => {
 
     async function selectSecondImageSlotContent() {
       const slotContent = getSecondImageSlotContent();
-      await slotContent.waitFor({ state: "attached", timeout: 15000 });
       await slotContent.waitFor({ state: "visible", timeout: 15000 });
       await slotContent.scrollIntoViewIfNeeded();
       await slotContent.click({ force: true });
@@ -117,13 +114,17 @@ test.describe("image-slots", () => {
       .locator(".__wab_img_instance");
     await selectionTag.click({ button: "right", force: true });
     const revertButton = models.studio.frame.getByText("Revert to");
-    await revertButton.waitFor({ state: "visible" });
-    await revertButton.click({ force: true });
+    await revertButton.scrollIntoViewIfNeeded();
+    await revertButton.click();
 
     await models.studio.focusFrameRoot(widgetFrame);
+    await page.waitForTimeout(100);
     await page.keyboard.press("Enter");
+    await page.waitForTimeout(100);
     await page.keyboard.press("Enter");
+    await page.waitForTimeout(100);
     await page.keyboard.press("Enter");
+    await page.waitForTimeout(100);
     const imgUrl = "https://picsum.photos/50/50";
     const imageUrlInput = models.studio.rightPanel.frame.locator(
       '[data-test-id="image-url-input"]'
@@ -133,7 +134,7 @@ test.describe("image-slots", () => {
     await page.keyboard.press("Enter");
     await page.waitForTimeout(500);
 
-    await models.studio.focusFrame(artboardFrame2);
+    await models.studio.focusFrameRoot(artboardFrame2);
     await page.waitForTimeout(1000);
     await selectSecondImageSlotContent();
     await page.keyboard.press("Shift+Enter");

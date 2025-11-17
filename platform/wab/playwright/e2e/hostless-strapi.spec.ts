@@ -1,8 +1,16 @@
-import { expect } from "@playwright/test";
+import { expect, Page } from "@playwright/test";
 import * as fs from "fs";
 import * as path from "path";
 import { VERT_CONTAINER_CAP } from "../../src/wab/shared/Labels";
-import { test } from "../fixtures/test";
+import { PageModels, test } from "../fixtures/test";
+import { ApiClient } from "../utils/api-client";
+import { goToProject } from "../utils/studio-utils";
+
+interface RunTestProps {
+  apiClient: ApiClient;
+  page: Page;
+  models: PageModels;
+}
 
 test.describe("hostless-strapi", () => {
   let projectId: string;
@@ -84,24 +92,25 @@ test.describe("hostless-strapi", () => {
   });
 
   test.afterEach(async ({ apiClient }) => {
-    if (projectId) {
-      await apiClient.removeProjectAfterTest(
-        projectId,
-        "user2@example.com",
-        "!53kr3tz!"
-      );
-    }
+    await apiClient.removeProjectAfterTest(
+      projectId,
+      "user2@example.com",
+      "!53kr3tz!"
+    );
   });
 
   test.describe("can put strapi fetcher with strapi field, fetch and show data", () => {
-    async function runTest(version: 4 | 5, { apiClient, page, models }: any) {
+    async function runTest(
+      version: 4 | 5,
+      { apiClient, page, models }: RunTestProps
+    ) {
       projectId = await apiClient.setupProjectWithHostlessPackages({
         hostLessPackagesInfo: {
           name: "plasmic-strapi",
           npmPkg: ["@plasmicpkgs/plasmic-strapi"],
         },
       });
-      await page.goto(`/projects/${projectId}`);
+      await goToProject(page, `/projects/${projectId}`);
 
       const framed = await models.studio.createNewFrame();
       await models.studio.focusFrameRoot(framed);
@@ -115,7 +124,7 @@ test.describe("hostless-strapi", () => {
         "Please specify a collection."
       );
 
-      await models.studio.withinLiveMode(async (liveFrame: any) => {
+      await models.studio.withinLiveMode(async (liveFrame) => {
         await expect(liveFrame.locator("body")).toContainText(
           "Please specify a collection."
         );
@@ -136,7 +145,7 @@ test.describe("hostless-strapi", () => {
         "StrapiField must specify a field name"
       );
 
-      await models.studio.withinLiveMode(async (liveFrame: any) => {
+      await models.studio.withinLiveMode(async (liveFrame) => {
         await expect(liveFrame.locator("body")).toContainText(
           "StrapiField must specify a field name"
         );
@@ -171,7 +180,7 @@ test.describe("hostless-strapi", () => {
         "Café Coffee Day"
       );
 
-      await models.studio.withinLiveMode(async (liveFrame: any) => {
+      await models.studio.withinLiveMode(async (liveFrame) => {
         await expect(liveFrame.locator("body")).toContainText(
           "Café Coffee Day"
         );
@@ -192,7 +201,7 @@ test.describe("hostless-strapi", () => {
       const canvasImages = canvasFrame.locator("img");
       await expect(canvasImages.first()).toHaveAttribute("src", /.+/);
 
-      await models.studio.withinLiveMode(async (liveFrame: any) => {
+      await models.studio.withinLiveMode(async (liveFrame) => {
         const images = liveFrame.locator(".plasmic_default__div img");
         await expect(images.first()).toHaveAttribute("src", /.+/);
       });
@@ -210,14 +219,17 @@ test.describe("hostless-strapi", () => {
   });
 
   test.describe("can use context to data bind", () => {
-    async function runTest(version: 4 | 5, { apiClient, page, models }: any) {
+    async function runTest(
+      version: 4 | 5,
+      { apiClient, page, models }: RunTestProps
+    ) {
       projectId = await apiClient.setupProjectWithHostlessPackages({
         hostLessPackagesInfo: {
           name: "plasmic-strapi",
           npmPkg: ["@plasmicpkgs/plasmic-strapi"],
         },
       });
-      await page.goto(`/projects/${projectId}`);
+      await goToProject(page, `/projects/${projectId}`);
 
       const framed = await models.studio.createNewFrame();
       await models.studio.focusFrameRoot(framed);
@@ -298,7 +310,7 @@ test.describe("hostless-strapi", () => {
         ]);
       }
 
-      await models.studio.withinLiveMode(async (liveFrame: any) => {
+      await models.studio.withinLiveMode(async (liveFrame) => {
         await expect(liveFrame.locator("body")).toContainText(
           "Café Coffee Day"
         );

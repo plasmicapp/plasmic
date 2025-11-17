@@ -1,8 +1,9 @@
-import { expect, Page } from "@playwright/test";
+import { expect, FrameLocator, Page } from "@playwright/test";
 import * as queryData from "../../../cypress/fixtures/northwind-orders-query.json";
 import { test } from "../../fixtures/test";
+import { goToProject } from "../../utils/studio-utils";
 
-async function setHtmlId(page: Page, rightPanel: any, id: string) {
+async function setHtmlId(page: Page, rightPanel: FrameLocator, id: string) {
   const collapseButton = rightPanel
     .locator('button[data-test-id="collapse"]')
     .first();
@@ -37,7 +38,7 @@ test.describe("Antd5 pagination", () => {
         npmPkg: ["@plasmicpkgs/antd5"],
       },
     });
-    await page.goto(`/projects/${projectId}`);
+    await goToProject(page, `/projects/${projectId}`);
   });
 
   test.afterEach(async ({ apiClient }) => {
@@ -47,8 +48,6 @@ test.describe("Antd5 pagination", () => {
   });
 
   test("works", async ({ models, page }) => {
-    await models.studio.waitForFrameToLoad();
-
     await models.studio.createNewPageInOwnArena("Homepage");
 
     const frameCount = await models.studio.frames.count();
@@ -181,10 +180,7 @@ test.describe("Antd5 pagination", () => {
       .locator(`[data-test-id="data-picker"]`)
       .getByText("currentPage")
       .click();
-    await models.studio.frame
-      .locator(`[data-test-id="data-picker"]`)
-      .getByRole("button", { name: "Save" })
-      .click();
+    await models.studio.rightPanel.saveDataPicker();
 
     await models.studio.leftPanel.insertNode("Text");
     await setHtmlId(
@@ -227,10 +223,7 @@ test.describe("Antd5 pagination", () => {
       .locator(`[data-test-id="data-picker"]`)
       .getByText("pageSize")
       .click();
-    await models.studio.frame
-      .locator(`[data-test-id="data-picker"]`)
-      .getByRole("button", { name: "Save" })
-      .click();
+    await models.studio.rightPanel.saveDataPicker();
 
     await models.studio.leftPanel.insertNode("Text");
     await setHtmlId(
@@ -273,10 +266,7 @@ test.describe("Antd5 pagination", () => {
       .locator(`[data-test-id="data-picker"]`)
       .getByText("startIndex")
       .click();
-    await models.studio.frame
-      .locator(`[data-test-id="data-picker"]`)
-      .getByRole("button", { name: "Save" })
-      .click();
+    await models.studio.rightPanel.saveDataPicker();
 
     await models.studio.leftPanel.insertNode("Text");
     await setHtmlId(
@@ -319,10 +309,7 @@ test.describe("Antd5 pagination", () => {
       .locator(`[data-test-id="data-picker"]`)
       .getByText("endIndex")
       .click();
-    await models.studio.frame
-      .locator(`[data-test-id="data-picker"]`)
-      .getByRole("button", { name: "Save" })
-      .click();
+    await models.studio.rightPanel.saveDataPicker();
 
     await models.studio.leftPanel.insertNode("Vertical stack");
     await setHtmlId(page, models.studio.rightPanel.frame, "northwind-orders");
@@ -378,11 +365,7 @@ const query = ${JSON.stringify(query.data)};
     } else {
       await page.keyboard.type(repeatCode);
     }
-
-    const saveBtn = models.studio.frame
-      .locator(`[data-test-id="data-picker"]`)
-      .getByRole("button", { name: "Save" });
-    await saveBtn.click();
+    await models.studio.rightPanel.saveDataPicker();
 
     const disablePane9 = models.studio.frame.locator(
       ".canvas-editor__disable-right-pane"

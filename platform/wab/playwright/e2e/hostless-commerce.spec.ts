@@ -1,10 +1,11 @@
-import { expect, FrameLocator } from "@playwright/test";
+import { BrowserContext, expect, FrameLocator, Page } from "@playwright/test";
 import {
   cartCookie,
   localCommerceData,
 } from "../../src/wab/client/test-helpers/test-commerce";
 import { VERT_CONTAINER_CAP } from "../../src/wab/shared/Labels";
-import { test } from "../fixtures/test";
+import { PageModels, test } from "../fixtures/test";
+import { goToProject } from "../utils/studio-utils";
 
 test.describe("hostless-commerce", () => {
   let projectId: string;
@@ -46,8 +47,7 @@ test.describe("hostless-commerce", () => {
       ],
     });
 
-    await page.goto(`/projects/${projectId}`);
-    await models.studio.waitForFrameToLoad();
+    await goToProject(page, `/projects/${projectId}`);
 
     await models.studio.leftPanel.switchToTreeTab();
 
@@ -284,8 +284,7 @@ test.describe("hostless-commerce", () => {
       ],
     });
 
-    await page.goto(`/projects/${projectId}`);
-    await models.studio.waitForFrameToLoad();
+    await goToProject(page, `/projects/${projectId}`);
 
     await models.studio.leftPanel.switchToTreeTab();
     await models.studio.leftPanel.createNewPage("Collection Page");
@@ -304,7 +303,7 @@ test.describe("hostless-commerce", () => {
     await models.studio.leftPanel.selectTreeNode(["vertical stack"]);
 
     const collectionFrame = models.studio.getComponentFrameByIndex(0);
-    await models.studio.focusFrame(collectionFrame);
+    await models.studio.focusFrameRoot(collectionFrame);
 
     await models.studio.leftPanel.insertNode(
       "plasmic-commerce-product-collection"
@@ -386,7 +385,7 @@ test.describe("hostless-commerce", () => {
   };
 
   const test_CartComponent_InCanvas = async (
-    models: any,
+    models: PageModels,
     componentName: string,
     value: string,
     tplTreeName?: string
@@ -406,7 +405,11 @@ test.describe("hostless-commerce", () => {
     await expect(textElement).toBeVisible({ timeout: 10000 });
   };
 
-  const test_ProductLink = async (models: any, page: any, index: number) => {
+  const test_ProductLink = async (
+    models: PageModels,
+    page: Page,
+    index: number
+  ) => {
     await models.studio.withinLiveMode(async (liveFrame: FrameLocator) => {
       const clickHereLink = liveFrame.getByText("Click here!").nth(index);
 
@@ -426,8 +429,8 @@ test.describe("hostless-commerce", () => {
   };
 
   const test_ProductComponent_InCanvas = async (
-    models: any,
-    page: any,
+    models: PageModels,
+    page: Page,
     componentName: string,
     value: string,
     tplTreeName?: string
@@ -470,7 +473,7 @@ test.describe("hostless-commerce", () => {
   };
 
   const test_AddToCart_OneProduct = async (
-    context: any,
+    context: BrowserContext,
     liveFrame: FrameLocator,
     index: number
   ) => {
@@ -481,7 +484,7 @@ test.describe("hostless-commerce", () => {
   };
 
   const test_AddToCart_SameProductTwice = async (
-    context: any,
+    context: BrowserContext,
     liveFrame: FrameLocator,
     index: number
   ) => {
@@ -493,7 +496,7 @@ test.describe("hostless-commerce", () => {
   };
 
   const test_AddToCart_DifferentProducts = async (
-    context: any,
+    context: BrowserContext,
     liveFrame: FrameLocator,
     indices: number[]
   ) => {
@@ -513,7 +516,7 @@ test.describe("hostless-commerce", () => {
   };
 
   const test_AddToCart_OneProductModifyingQuantity = async (
-    context: any,
+    context: BrowserContext,
     liveFrame: FrameLocator,
     index: number,
     quantity: number
@@ -534,7 +537,7 @@ test.describe("hostless-commerce", () => {
   };
 
   const test_AddToCart_OneProductDifferentVariants = async (
-    context: any,
+    context: BrowserContext,
     liveFrame: FrameLocator,
     index: number
   ) => {

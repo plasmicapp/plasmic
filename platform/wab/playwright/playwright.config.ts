@@ -11,14 +11,20 @@ export default defineConfig({
     : "html",
   timeout: 400_000,
   use: {
+    actionTimeout: 10_000,
     baseURL: "http://localhost:3003",
     trace: "retain-on-failure",
     video: "retain-on-failure",
   },
   projects: [
     {
+      name: "setup",
+      testMatch: /global-setup\.spec\.ts/,
+    },
+    {
       name: "chromium",
       use: { ...devices["Desktop Chrome"] },
+      dependencies: ["setup"],
     },
   ],
 });

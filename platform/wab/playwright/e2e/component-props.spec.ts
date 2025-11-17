@@ -1,12 +1,13 @@
 import { expect } from "@playwright/test";
 import { test } from "../fixtures/test";
+import { goToProject } from "../utils/studio-utils";
 
 test.describe("component-props", () => {
   let projectId: string;
 
   test.beforeEach(async ({ apiClient, page }) => {
     projectId = await apiClient.setupNewProject({ name: "component-props" });
-    await page.goto(`/projects/${projectId}`);
+    await goToProject(page, `/projects/${projectId}`);
   });
 
   test.afterEach(async ({ apiClient }) => {
@@ -143,7 +144,7 @@ test.describe("component-props", () => {
       componentBody.getByText("numberProp * 10 = NaN")
     ).toBeVisible();
 
-    await models.studio.leftPanel.addPage("Page using component props");
+    await models.studio.leftPanel.createNewPage("Page using component props");
     const pageFrame = page
       .locator("iframe")
       .first()

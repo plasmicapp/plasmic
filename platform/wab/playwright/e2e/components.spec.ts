@@ -4,6 +4,7 @@ import {
   FREE_CONTAINER_LOWER,
 } from "../../src/wab/shared/Labels";
 import { test } from "../fixtures/test";
+import { goToProject } from "../utils/studio-utils";
 import { undoAndRedo } from "../utils/undo-and-redo";
 
 // Test isn't passing even in cypress
@@ -13,7 +14,7 @@ test.describe.skip("components", () => {
 
   test.beforeEach(async ({ apiClient, page }) => {
     projectId = await apiClient.setupNewProject({ name: "components" });
-    await page.goto(`/projects/${projectId}`);
+    await goToProject(page, `/projects/${projectId}`);
   });
 
   test.afterEach(async ({ apiClient }) => {

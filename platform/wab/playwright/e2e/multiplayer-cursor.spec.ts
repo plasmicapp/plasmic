@@ -6,6 +6,7 @@ import {
   testMultiplayer,
   TestUserCredentials,
 } from "../utils/multiplayer-utils";
+import { goToProject, waitForFrameToLoad } from "../utils/studio-utils";
 
 async function getCursor(
   studio: StudioModel,
@@ -53,11 +54,11 @@ testMultiplayer.describe("multiplayer cursors", () => {
       const componentName = "CursorTestComponent";
 
       // Setup: Admin creates component and adds elements
-      await admin.page.goto(`/projects/${projectId}`);
+      await goToProject(admin.page, `/projects/${projectId}`);
       const adminStudio = admin.models.studio;
 
       await adminStudio.createComponentFromNav(componentName);
-      await adminStudio.waitForFrameToLoad();
+      await waitForFrameToLoad(adminStudio.page);
 
       await adminStudio.leftPanel.insertNode("Text");
 
@@ -69,7 +70,7 @@ testMultiplayer.describe("multiplayer cursors", () => {
 
       // Other users join the component
       await forEachAsync([user1, user2], async (session) => {
-        await session.page.goto(`/projects/${projectId}`);
+        await goToProject(session.page, `/projects/${projectId}`);
         await session.models.studio.switchArena(componentName);
       });
 

@@ -1,24 +1,18 @@
 import { expect } from "@playwright/test";
-import { DevFlagsType } from "../../src/wab/shared/devflags";
 import { test } from "../fixtures/test";
+import { goToProject, waitForFrameToLoad } from "../utils/studio-utils";
 
 test.describe("routing", () => {
   let projectId: string;
-  let origDevFlags: DevFlagsType;
 
   test.beforeEach(async ({ apiClient, page }) => {
-    origDevFlags = await apiClient.getDevFlags();
     projectId = await apiClient.setupNewProject({
       name: "routing-branch-versions",
-      devFlags: { branching: true },
     });
-    await page.goto(`/projects/${projectId}?branching=true`);
+    await goToProject(page, `/projects/${projectId}?branching=true`);
   });
 
   test.afterEach(async ({ apiClient }) => {
-    if (origDevFlags) {
-      await apiClient.upsertDevFlags(origDevFlags);
-    }
     await apiClient.removeProjectAfterTest(
       projectId,
       "user2@example.com",
@@ -27,8 +21,6 @@ test.describe("routing", () => {
   });
 
   test("should switch branch versions", async ({ page, models }) => {
-    await models.studio.waitForFrameToLoad();
-
     await expect(page).not.toHaveURL(/branch=/);
     await expect(page).not.toHaveURL(/version=/);
 
@@ -125,7 +117,7 @@ test.describe("routing", () => {
 
       await models.studio.leftPanel.frame.getByText(branchVersion).click();
 
-      await models.studio.waitForFrameToLoad();
+      await waitForFrameToLoad(page);
       await models.studio.focusFrameRoot(framed);
 
       await expect(page).not.toHaveURL(/branch=/);
@@ -165,7 +157,7 @@ test.describe("routing", () => {
     await expect(framed.getByText("Main v2")).toBeVisible();
 
     await models.studio.frame.getByText("Back to current version").click();
-    await models.studio.waitForFrameToLoad();
+    await waitForFrameToLoad(page);
 
     await expect(page).not.toHaveURL(/branch=/);
     await expect(page).not.toHaveURL(/version=/);
@@ -177,8 +169,11 @@ test.describe("routing", () => {
       .click();
     await expect(framed.getByText("Main latest")).toBeVisible();
 
-    await page.goto(`/projects/${projectId}?branching=true&version=0.0.1`);
-    await models.studio.waitForFrameToLoad();
+    await goToProject(
+      page,
+      `/projects/${projectId}?branching=true&version=0.0.1`
+    );
+    await waitForFrameToLoad(page);
     await expect(
       models.studio.frame.getByText("Back to current version")
     ).toBeVisible({ timeout: 30_000 });
@@ -187,10 +182,10 @@ test.describe("routing", () => {
       .click();
     await expect(framed.getByText("Main v1")).toBeVisible();
 
-    await page.goto(
+    await goToProject(
+      page,
       `/projects/${projectId}?branching=true&branch=main&version=0.0.2`
     );
-    await models.studio.waitForFrameToLoad();
     await expect(
       models.studio.frame.getByText("Back to current version")
     ).toBeVisible({ timeout: 30_000 });
@@ -199,10 +194,10 @@ test.describe("routing", () => {
       .click();
     await expect(framed.getByText("Main v2")).toBeVisible();
 
-    await page.goto(
+    await goToProject(
+      page,
       `/projects/${projectId}?branching=true&branch=main&version=0.0.3`
     );
-    await models.studio.waitForFrameToLoad();
     await expect(page).not.toHaveURL(/branch=/);
     await expect(page).not.toHaveURL(/version=/);
     await expect(

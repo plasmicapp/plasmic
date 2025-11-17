@@ -1,9 +1,11 @@
 import { FrameLocator, Page, expect } from "@playwright/test";
-import { test } from "../fixtures/test";
+import { PageModels, test } from "../fixtures/test";
+import { RightPanel } from "../models/components/right-panel";
+import { goToProject } from "../utils/studio-utils";
 
 let isWithinLiveFrame = false;
 let liveFrame: FrameLocator;
-let models: any;
+let models: PageModels;
 let canvasFrame: FrameLocator;
 
 async function showMoreInSidebarModal(rightPanel: any) {
@@ -15,7 +17,7 @@ async function showMoreInSidebarModal(rightPanel: any) {
 }
 
 async function chooseDataPlasmicProp(
-  rightPanel: any,
+  rightPanel: RightPanel,
   prop: string,
   value: string
 ) {
@@ -128,7 +130,7 @@ test.describe("hostless-rich-components", () => {
         },
       ],
     });
-    await page.goto(`/projects/${projectId}`);
+    await goToProject(page, `/projects/${projectId}`);
   });
 
   test.afterEach(async ({ apiClient }) => {

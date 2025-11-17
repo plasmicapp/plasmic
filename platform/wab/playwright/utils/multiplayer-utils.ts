@@ -4,10 +4,9 @@ import {
   BrowserContext,
   Page,
 } from "@playwright/test";
-import { TestFixtures, testModels } from "../fixtures/test";
+import { TestFixtures, makeApiClient, testModels } from "../fixtures/test";
 import { AuthPage } from "../models/auth-page";
 import { StudioModel } from "../models/studio-model";
-import { ApiClient } from "../utils/api-client";
 
 export interface TestUserCredentials {
   firstName: string;
@@ -67,10 +66,7 @@ export async function makeUserFixture(
   const ctx = await args.browser.newContext();
   const page = await ctx.newPage();
 
-  const apiClient = new ApiClient(
-    ctx.request,
-    args.baseURL || "http://localhost:3003"
-  );
+  const apiClient = makeApiClient(ctx.request, args.baseURL);
 
   const user: TestUserFixture = {
     user: credentials,

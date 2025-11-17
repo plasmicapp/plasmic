@@ -5,6 +5,7 @@ import {
   setupMultiplayerProject,
   testMultiplayer,
 } from "../utils/multiplayer-utils";
+import { goToProject, waitForFrameToLoad } from "../utils/studio-utils";
 
 testMultiplayer.describe("multiplayer comments", () => {
   let projectId: string;
@@ -30,11 +31,11 @@ testMultiplayer.describe("multiplayer comments", () => {
       const adminStudio = admin.models.studio;
       const componentName = "CommentComponent";
 
-      await admin.page.goto(`/projects/${projectId}?comments=true`);
+      await goToProject(admin.page, `/projects/${projectId}?comments=true`);
 
       // User 1 adds a component
       await adminStudio.createComponentFromNav(componentName);
-      await adminStudio.waitForFrameToLoad();
+      await waitForFrameToLoad(admin.page);
       await adminStudio.leftPanel.insertNode("Text");
 
       // admin adds comment and waits for marker to appear
@@ -50,7 +51,7 @@ testMultiplayer.describe("multiplayer comments", () => {
 
       // Navigate other users to component
       await forEachAsync([user1, user2], async (session) => {
-        await session.page.goto(`/projects/${projectId}?comments=true`);
+        await goToProject(session.page, `/projects/${projectId}?comments=true`);
         await session.models.studio.switchArena(componentName);
       });
 

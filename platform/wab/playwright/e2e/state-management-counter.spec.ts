@@ -1,21 +1,16 @@
 import { expect } from "@playwright/test";
-import { DevFlagsType } from "../../src/wab/shared/devflags";
 import { test } from "../fixtures/test";
+import { goToProject } from "../utils/studio-utils";
 
 test.describe("state-management-counter", () => {
   let projectId: string;
-  let origDevFlags: DevFlagsType;
 
   test.beforeEach(async ({ apiClient, page }) => {
-    origDevFlags = await apiClient.getDevFlags();
     projectId = await apiClient.setupProjectFromTemplate("state-management");
-    await page.goto(`/projects/${projectId}?plexus=false`);
+    await goToProject(page, `/projects/${projectId}?plexus=false`);
   });
 
   test.afterEach(async ({ apiClient }) => {
-    if (origDevFlags) {
-      await apiClient.upsertDevFlags(origDevFlags);
-    }
     await apiClient.removeProjectAfterTest(
       projectId,
       "user2@example.com",
@@ -73,11 +68,7 @@ test.describe("state-management-counter", () => {
     await page.keyboard.insertText(`"Increment"`);
     await page.waitForTimeout(100);
 
-    await models.studio.rightPanel.frame
-      .getByRole("button", { name: "Save" })
-      .click();
-
-    await page.waitForTimeout(1000);
+    await models.studio.rightPanel.saveDataPicker();
 
     await models.studio.rightPanel.frame
       .locator('[data-test-id="add-interaction"]')
@@ -101,9 +92,7 @@ test.describe("state-management-counter", () => {
     await models.studio.rightPanel.frame
       .locator('[data-test-id="0-count"]')
       .click();
-    await models.studio.rightPanel.frame
-      .getByRole("button", { name: "Save" })
-      .click();
+    await models.studio.rightPanel.saveDataPicker();
 
     await models.studio.rightPanel.frame
       .locator('[data-plasmic-prop="operation"]')
@@ -116,7 +105,7 @@ test.describe("state-management-counter", () => {
       .locator('[data-test-id="close-sidebar-modal"]')
       .click();
 
-    await models.studio.leftPanel.addPage("page");
+    await models.studio.leftPanel.createNewPage("page");
     const pageFrame = models.studio.getComponentFrameByIndex(1);
     await models.studio.focusFrameRoot(pageFrame);
 
@@ -189,11 +178,7 @@ test.describe("state-management-counter", () => {
     await page.keyboard.insertText(`"Reset"`);
     await page.waitForTimeout(100);
 
-    await models.studio.rightPanel.frame
-      .getByRole("button", { name: "Save" })
-      .click();
-
-    await page.waitForTimeout(1000);
+    await models.studio.rightPanel.saveDataPicker();
 
     await models.studio.rightPanel.frame
       .locator('[data-test-id="add-interaction"]')
@@ -217,9 +202,7 @@ test.describe("state-management-counter", () => {
     await models.studio.rightPanel.frame
       .locator('[data-test-id="0-counter → count"]')
       .click();
-    await models.studio.rightPanel.frame
-      .getByRole("button", { name: "Save" })
-      .click();
+    await models.studio.rightPanel.saveDataPicker();
 
     await models.studio.rightPanel.frame
       .locator('[data-plasmic-prop="value"]')
@@ -236,9 +219,7 @@ test.describe("state-management-counter", () => {
     await page.keyboard.insertText(`0`);
     await page.waitForTimeout(100);
 
-    await models.studio.rightPanel.frame
-      .getByRole("button", { name: "Save" })
-      .click();
+    await models.studio.rightPanel.saveDataPicker();
 
     await models.studio.withinLiveMode(async (liveFrame) => {
       await expect(liveFrame.locator("#plasmic-app .__wab_text")).toContainText(

@@ -1,5 +1,6 @@
 import { expect } from "@playwright/test";
 import { test } from "../fixtures/test";
+import { goToProject } from "../utils/studio-utils";
 
 test.describe("dynamic-pages-simplified", () => {
   let projectId: string;
@@ -18,7 +19,7 @@ test.describe("dynamic-pages-simplified", () => {
     );
 
     projectId = await apiClient.setupNewProject({ name: "dynamic-pages" });
-    await page.goto(`/projects/${projectId}`);
+    await goToProject(page, `/projects/${projectId}`);
 
     await page.waitForTimeout(5000);
   });

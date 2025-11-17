@@ -1,4 +1,5 @@
 import { expect, FrameLocator, Locator, Page } from "playwright/test";
+import { waitForFrameToLoad } from "../utils/studio-utils";
 import { BaseModel } from "./BaseModel";
 import { LeftPanel } from "./components/left-panel";
 import { RightPanel } from "./components/right-panel";
@@ -106,7 +107,6 @@ export class StudioModel extends BaseModel {
   readonly frames: Locator = this.frame.locator(
     ".canvas-editor__frames .canvas-editor__viewport[data-test-frame-uid]"
   );
-  readonly frameLabels: Locator = this.frame.locator(".CanvasFrame__Label");
   readonly deslotButton: Locator = this.frame.getByText("De-slot");
   readonly deleteInsteadButton: Locator =
     this.frame.getByText("Delete instead");
@@ -154,12 +154,6 @@ export class StudioModel extends BaseModel {
     }
   }
 
-  async openProjectPanel() {
-    await expect(this.projectNavButton).toBeVisible({ timeout: 30000 });
-    await this.projectNavButton.click({ timeout: 10000 });
-    await this.page.waitForTimeout(500);
-  }
-
   async switchArena(name: string) {
     await expect(this.projectNavButton).toBeVisible({ timeout: 30000 });
 
@@ -180,7 +174,7 @@ export class StudioModel extends BaseModel {
 
     await expect(this.projectNavButton).toBeVisible();
 
-    await this.waitForFrameToLoad();
+    await waitForFrameToLoad(this.page);
 
     const viewportFrame = this.frame.frameLocator(
       ".canvas-editor__viewport[data-test-frame-uid]"
@@ -190,15 +184,14 @@ export class StudioModel extends BaseModel {
   }
 
   async withinLiveMode(fn: (liveFrame: FrameLocator) => Promise<void>) {
-    await this.enterLiveModeButton.waitFor({
-      state: "visible",
-      timeout: 10000,
-    });
     await this.enterLiveModeButton.click();
+    await this.frame
+      .frameLocator(`[data-test-id="live-frame"]`)
+      .locator(".live-root-container")
+      .waitFor({ state: "visible", timeout: 20000 });
 
     await fn(this.liveFrame);
 
-    await this.exitLiveModeButton.waitFor({ state: "visible", timeout: 5000 });
     await this.exitLiveModeButton.click();
     await this.page.waitForTimeout(1000);
   }
@@ -394,21 +387,13 @@ export class StudioModel extends BaseModel {
     return this.frame.locator(`[data-test-id='comment-marker-${id}']`);
   }
 
-  async waitForNewFrame() {
-    await this.canvasEditor.waitFor();
-    const frameCount = await this.frames.count();
-
-    await this.frames.nth(frameCount).waitFor({ timeout: 60000 });
-    const frame = this.frames.nth(frameCount);
-    return frame;
-  }
-
   async createNewFrame() {
+    const framesBefore = await this.frames.count();
     await this.leftPanel.addNewFrame();
-    const frameCount = await this.frames.count();
 
-    await this.frames.nth(frameCount - 1).waitFor({ timeout: 60000 });
-    const frame = this.frames.nth(frameCount - 1);
+    await expect(this.frames).toHaveCount(framesBefore + 1);
+    await this.frames.nth(framesBefore).waitFor({ timeout: 60000 });
+    const frame = this.frames.nth(framesBefore);
     return frame;
   }
 
@@ -418,13 +403,11 @@ export class StudioModel extends BaseModel {
     } else {
       await frame.locator("body").click();
     }
+    // It is possible for Shift+Enter to fail if pressed too quickly after selecting an element
+    // in the artboard. It's difficult to wait on a locator because an artboard or Tpl element
+    // could be selected. It may be more efficient to click the root in the outline tab.
+    await this.page.waitForTimeout(500);
     await this.page.keyboard.press("Shift+Enter");
-    return frame;
-  }
-
-  async focusFrame(frame: Locator | FrameLocator) {
-    await this.focusFrameRoot(frame);
-    return frame;
   }
 
   async waitAllEval() {
@@ -719,19 +702,6 @@ export class StudioModel extends BaseModel {
       .waitFor({ timeout: 120000 });
   }
 
-  async getFramedByName(name: string) {
-    const label = this.frameLabels.filter({ hasText: name }).first();
-    await label.waitFor();
-    const frameContainer = label
-      .locator("..")
-      .locator(".CanvasFrame__Container");
-    const frame = frameContainer.locator(
-      ".canvas-editor__viewport[data-test-frame-uid]"
-    );
-    await frame.waitFor();
-    return frame;
-  }
-
   async publishVersion(description: string) {
     await this.leftPanel.moreTabButton.hover();
     await this.page.waitForTimeout(500);
@@ -809,7 +779,7 @@ export class StudioModel extends BaseModel {
     await this.leftPanel.moreTabButton.hover();
     await this.leftPanel.switchToVersionsTab();
     await this.frame.getByText(version).click();
-    await this.waitForFrameToLoad();
+    await waitForFrameToLoad(this.page);
   }
 
   async revertToVersion(version: string) {
@@ -833,28 +803,11 @@ export class StudioModel extends BaseModel {
 
     await this.frame.getByText("Revert to this version").click();
     await this.revertButton.click();
-    await this.waitForFrameToLoad();
+    await waitForFrameToLoad(this.page);
   }
 
   async backToCurrentVersion() {
     await this.backToCurrentVersionButton.click();
-  }
-
-  async waitForFrameToLoad() {
-    await this.page.waitForSelector("iframe.studio-frame", { timeout: 30000 });
-    await this.page.waitForTimeout(1000);
-
-    try {
-      const overlay = this.page.locator(".rsbuild-error-overlay").first();
-      if (await overlay.isVisible({ timeout: 500 })) {
-        await this.page.keyboard.press("Escape");
-        await this.page.waitForTimeout(500);
-      }
-    } catch (e) {}
-
-    await this.frame
-      .locator(".canvas-editor__canvas-container")
-      .waitFor({ timeout: 30000, state: "attached" });
   }
 
   async expectDebugTplTree(_expected: string) {}
@@ -901,7 +854,7 @@ export class StudioModel extends BaseModel {
   async createNewComponent(name: string) {
     await this.leftPanel.addComponent(name);
     const frame = await this.createNewFrame();
-    await this.waitForFrameToLoad();
+    await waitForFrameToLoad(this.page);
     return frame;
   }
 
@@ -1004,8 +957,8 @@ export class StudioModel extends BaseModel {
   async clearNotifications() {
     const closeButton = this.frame.locator(".ant-notification-notice-close");
     const count = await closeButton.count();
-    for (let i = 0; i < count; i++) {
-      await closeButton.first().click();
+    for (let i = count - 1; i >= 0; i -= 1) {
+      await closeButton.nth(i).click();
     }
   }
 

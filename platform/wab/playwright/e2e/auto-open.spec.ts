@@ -15,37 +15,23 @@ import {
   testAllImageVisbilities,
   testAllVisibilities,
 } from "../utils/auto-open-utils";
+import { goToProject, waitForFrameToLoad } from "../utils/studio-utils";
 
 const pageName = "Homepage";
 
 test.describe("Auto Open", () => {
-  let origDevFlags: any;
   let projectId: string;
 
-  test.beforeEach(async ({ apiClient }) => {
-    origDevFlags = await apiClient.getDevFlags();
-    await apiClient.upsertDevFlags({
-      ...origDevFlags,
-      autoOpen: true,
-      autoOpen2: true,
-    });
-  });
-
   test.afterEach(async ({ apiClient }) => {
-    if (origDevFlags) {
-      await apiClient.upsertDevFlags(origDevFlags);
-    }
-    if (projectId) {
-      await apiClient.removeProjectAfterTest(
-        projectId,
-        "user2@example.com",
-        "!53kr3tz!"
-      );
-    }
+    await apiClient.removeProjectAfterTest(
+      projectId,
+      "user2@example.com",
+      "!53kr3tz!"
+    );
   });
 
   test.describe("Auto Open (Code components)", () => {
-    test.beforeEach(async ({ apiClient, page, models }) => {
+    test.beforeEach(async ({ apiClient, page }) => {
       projectId = await apiClient.setupProjectWithHostlessPackages({
         hostLessPackagesInfo: [
           {
@@ -58,8 +44,7 @@ test.describe("Auto Open", () => {
           },
         ],
       });
-      await page.goto(`/projects/${projectId}`);
-      await models.studio.waitForFrameToLoad();
+      await goToProject(page, `/projects/${projectId}`);
     });
 
     test("auto-opens hidden contents of code components", async ({
@@ -67,7 +52,7 @@ test.describe("Auto Open", () => {
       page,
     }) => {
       await models.studio.createNewPageInOwnArena(pageName);
-      await models.studio.waitForFrameToLoad();
+      await waitForFrameToLoad(page);
       const pageFrame = models.studio.componentFrame;
 
       await models.studio.selectRootNode();
@@ -131,12 +116,13 @@ test.describe("Auto Open", () => {
     });
 
     test("works for Plasmic components with a code component root", async ({
+      page,
       models,
     }) => {
       await models.studio.createNewPageInOwnArena(pageName);
-      await models.studio.waitForFrameToLoad();
+      await waitForFrameToLoad(page);
 
-      await createTooltipComponent(models);
+      await createTooltipComponent(page, models);
 
       const tooltipComponentMeta = {
         otherSlotName: `Slot: "Tooltip Contents"`,
@@ -147,7 +133,7 @@ test.describe("Auto Open", () => {
       };
 
       await models.studio.switchArena(pageName);
-      await models.studio.waitForFrameToLoad();
+      await waitForFrameToLoad(page);
       const pageFrame = models.studio.componentFrame;
       await checkCcAutoOpen({
         models,
@@ -186,7 +172,7 @@ test.describe("Auto Open", () => {
       models,
     }) => {
       await models.studio.createNewPageInOwnArena(pageName);
-      await models.studio.waitForFrameToLoad();
+      await waitForFrameToLoad(page);
       const pageFrame = models.studio.componentFrame;
 
       const modalHiddenContent = "This is a Modal!";
@@ -288,7 +274,7 @@ test.describe("Auto Open", () => {
       models,
     }) => {
       await models.studio.createNewPageInOwnArena(pageName);
-      await models.studio.waitForFrameToLoad();
+      await waitForFrameToLoad(page);
       const pageFrame = models.studio.componentFrame;
       const modalHiddenContent = "This is a Modal!";
 
@@ -327,12 +313,11 @@ test.describe("Auto Open", () => {
   });
 
   test.describe("Auto open (Non-code components/elements)", () => {
-    test.beforeEach(async ({ apiClient, page, models }) => {
+    test.beforeEach(async ({ apiClient, page }) => {
       projectId = await apiClient.setupNewProject({
         name: "auto-open",
       });
-      await page.goto(`/projects/${projectId}`);
-      await models.studio.waitForFrameToLoad();
+      await goToProject(page, `/projects/${projectId}`);
     });
 
     test.describe("auto-opens hidden elements", () => {
@@ -342,7 +327,7 @@ test.describe("Auto Open", () => {
 
         await models.studio.leftPanel.addComponent("Text Component");
 
-        await models.studio.waitForFrameToLoad();
+        await waitForFrameToLoad(page);
 
         const frame = models.studio.getComponentFrameByIndex(0);
         await models.studio.focusFrameRoot(frame);
@@ -363,7 +348,7 @@ test.describe("Auto Open", () => {
         await testAllVisibilities({ models, frame, text, nodeName });
 
         await models.studio.createNewPageInOwnArena(pageName);
-        await models.studio.waitForFrameToLoad();
+        await waitForFrameToLoad(page);
         const pageFrame = models.studio.getComponentFrameByIndex(1);
         await models.studio.leftPanel.insertNode("Text Component");
         await models.studio.renameTreeNode(nodeName);
@@ -376,9 +361,9 @@ test.describe("Auto Open", () => {
         });
       });
 
-      test("works for images", async ({ models }) => {
+      test("works for images", async ({ page, models }) => {
         await models.studio.createNewPageInOwnArena(pageName);
-        await models.studio.waitForFrameToLoad();
+        await waitForFrameToLoad(page);
         const pageFrame = models.studio.componentFrame;
         await models.studio.leftPanel.insertNode("Image");
         await models.studio.renameTreeNode("MyImage");
@@ -389,7 +374,7 @@ test.describe("Auto Open", () => {
         const nodeName = "MySection";
         const text = "Starlight";
         await models.studio.createNewPageInOwnArena(pageName);
-        await models.studio.waitForFrameToLoad();
+        await waitForFrameToLoad(page);
         const pageFrame = models.studio.componentFrame;
         await models.studio.leftPanel.insertNode("Page section");
         await models.studio.renameTreeNode(nodeName);
@@ -409,7 +394,7 @@ test.describe("Auto Open", () => {
         models,
       }) => {
         await models.studio.createNewPageInOwnArena(pageName);
-        await models.studio.waitForFrameToLoad();
+        await waitForFrameToLoad(page);
         const pageFrame = models.studio.componentFrame;
         const parentNodeName = "MyParent";
         const nodeName = "MyText";
@@ -439,7 +424,7 @@ test.describe("Auto Open", () => {
         const nodeName = "MyText";
         const text = "Starlight";
         await models.studio.leftPanel.addComponent("Text Component");
-        await models.studio.waitForFrameToLoad();
+        await waitForFrameToLoad(page);
         await page.waitForTimeout(500);
         const frame = models.studio.componentFrame;
         await models.studio.leftPanel.insertNode("Text");
@@ -466,7 +451,7 @@ test.describe("Auto Open", () => {
         const nodeName = "MyText";
         const text = "Starlight";
         await models.studio.createNewPageInOwnArena(pageName);
-        await models.studio.waitForFrameToLoad();
+        await waitForFrameToLoad(page);
         const pageFrame = models.studio.componentFrame;
 
         await models.studio.selectRootNode();

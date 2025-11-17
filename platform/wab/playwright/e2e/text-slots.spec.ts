@@ -1,8 +1,9 @@
 import { expect } from "@playwright/test";
-import { test } from "../fixtures/test";
+import { PageModels, test } from "../fixtures/test";
+import { goToProject } from "../utils/studio-utils";
 import { undoAndRedo } from "../utils/undo-and-redo";
 
-async function chooseFont(models: any, fontName: string) {
+async function chooseFont(models: PageModels, fontName: string) {
   await models.studio.rightPanel.switchToDesignTab();
   await models.studio.rightPanel.fontFamilyInput.click();
   await models.studio.rightPanel.fontFamilyInput.type(fontName);
@@ -14,7 +15,7 @@ test.describe("text-slots", () => {
 
   test.beforeEach(async ({ apiClient, page }) => {
     projectId = await apiClient.setupNewProject({ name: "text-slots" });
-    await page.goto(`/projects/${projectId}`);
+    await goToProject(page, `/projects/${projectId}`);
   });
 
   test.afterEach(async ({ apiClient }) => {
@@ -34,10 +35,6 @@ test.describe("text-slots", () => {
     await models.studio.leftPanel.insertNode("Text");
 
     const frame2 = await models.studio.createNewFrame();
-
-    const artboardFrame = models.studio
-      .getComponentFrameByIndex(1)
-      .locator("body");
 
     await page.keyboard.press("Shift+1");
 
@@ -60,6 +57,10 @@ test.describe("text-slots", () => {
     await widgetItem.waitFor({ state: "visible", timeout: 10000 });
 
     const sourceBox = await widgetItem.boundingBox();
+
+    const artboardFrame = models.studio
+      .getComponentFrameByIndex(1)
+      .locator("body");
     const targetBox = await artboardFrame.locator(".__wab_root").boundingBox();
 
     await page.mouse.move(
@@ -91,9 +92,13 @@ test.describe("text-slots", () => {
 
     await models.studio.focusFrameRoot(artboardFrame);
 
+    await page.waitForTimeout(100);
     await page.keyboard.press("Enter");
+    await page.waitForTimeout(100);
     await page.keyboard.press("Enter");
+    await page.waitForTimeout(100);
     await page.keyboard.press("Enter");
+    await page.waitForTimeout(100);
     await page.keyboard.press("Enter");
     await page.waitForTimeout(100);
     await page.keyboard.type("Hello");

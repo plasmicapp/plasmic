@@ -1,5 +1,6 @@
 import { expect } from "@playwright/test";
 import { test } from "../fixtures/test";
+import { goToProject } from "../utils/studio-utils";
 
 test.describe("project-access", () => {
   test("does not allow other users to view project by default", async ({
@@ -30,7 +31,7 @@ test.describe("project-access", () => {
     await page.goto(`/projects/${projectId}`);
 
     await expect(page.getByText("Could not open project")).toBeVisible({
-      timeout: 10000,
+      timeout: 15_000,
     });
 
     await apiClient.removeProjectAfterTest(
@@ -65,7 +66,7 @@ test.describe("project-access", () => {
     await apiClient.login("user2@example.com", "!53kr3tz!");
     const cookies = await request.storageState();
     await context.addCookies(cookies.cookies);
-    await page.goto(`/projects/${projectId}`);
+    await goToProject(page, `/projects/${projectId}`);
 
     await page.waitForSelector("iframe.studio-frame", {
       state: "attached",

@@ -1,5 +1,6 @@
 import { expect } from "@playwright/test";
 import { test } from "../fixtures/test";
+import { goToProject } from "../utils/studio-utils";
 
 const PROJECT_IDS = {
   "loading-boundary": "9Vr5YWkf3w7jj6SsTcCEta",
@@ -12,63 +13,8 @@ const TUTORIAL_DB_TYPE = "northwind";
 
 test.describe("Table and form tutorial", () => {
   let clonedProjectId: string;
-  let origDevFlags: any;
 
   test.beforeEach(async ({ apiClient, page }) => {
-    origDevFlags = await apiClient.getDevFlags();
-
-    await apiClient.upsertDevFlags({
-      ...origDevFlags,
-      templateTours: {
-        [PROJECT_IDS.base]: "complete",
-      },
-      hostLessComponents: [
-        {
-          type: "hostless-package",
-          name: "App blocks",
-          sectionLabel: "Basics",
-          hiddenWhenInstalled: true,
-          codeName: "plasmic-rich-components",
-          codeLink:
-            "https://github.com/plasmicapp/plasmic/tree/master/plasmicpkgs/plasmic-rich-components",
-          items: [
-            {
-              type: "hostless-component",
-              componentName: "hostless-rich-table",
-              displayName: "Table",
-              imageUrl: "https://static1.plasmic.app/table.svg",
-              gray: true,
-            },
-            {
-              type: "hostless-component",
-              componentName: "plasmic-antd5-form",
-              displayName: "Form",
-              imageUrl: "https://static1.plasmic.app/form.svg",
-            },
-          ],
-          projectId: [PROJECT_IDS["rich-components"], PROJECT_IDS.antd5],
-        },
-        {
-          type: "hostless-package",
-          name: "Form",
-          sectionLabel: "Basics",
-          hiddenWhenInstalled: true,
-          codeName: "antd5-form",
-          codeLink:
-            "https://github.com/plasmicapp/plasmic/tree/master/plasmicpkgs/plasmic-rich-components",
-          items: [
-            {
-              type: "hostless-component",
-              componentName: "plasmic-antd5-form",
-              displayName: "Form",
-              imageUrl: "https://static1.plasmic.app/form.svg",
-            },
-          ],
-          projectId: PROJECT_IDS.antd5,
-        },
-      ],
-    });
-
     await apiClient.setupProjectFromTemplate("tutorial-app", {
       keepProjectIdsAndNames: true,
       dataSourceReplacement: {
@@ -81,7 +27,7 @@ test.describe("Table and form tutorial", () => {
     });
     clonedProjectId = cloneResult.projectId;
 
-    await page.goto(`/projects/${clonedProjectId}`);
+    await goToProject(page, `/projects/${clonedProjectId}`);
   });
 
   test.afterEach(async ({ apiClient }) => {
@@ -95,10 +41,6 @@ test.describe("Table and form tutorial", () => {
 
     if (PROJECT_IDS.base) {
       await apiClient.deleteProjectAndRevisions(PROJECT_IDS.base);
-    }
-
-    if (origDevFlags) {
-      await apiClient.upsertDevFlags(origDevFlags);
     }
   });
 

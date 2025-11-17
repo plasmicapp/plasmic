@@ -1,5 +1,6 @@
 import { expect, FrameLocator } from "@playwright/test";
 import { test } from "../fixtures/test";
+import { goToProject } from "../utils/studio-utils";
 
 const DESKTOP_TEXT = "This text is visible on Deskop screen size only";
 const SMALL_SCREEN_TEXT =
@@ -15,7 +16,7 @@ test.describe("Active Screen Variants", () => {
     projectId = await apiClient.setupProjectFromTemplate(
       "active-screen-variant-group"
     );
-    await page.goto(`/projects/${projectId}`);
+    await goToProject(page, `/projects/${projectId}`);
   });
 
   test.afterEach(async ({ apiClient }) => {
@@ -68,21 +69,24 @@ test.describe("Active Screen Variants", () => {
     await assertSmallScreenText(artboardFrame);
 
     // Test desktop width in live preview
-    await page.goto(`/projects/${projectId}/preview/#width=1600&height=900`);
-    await models.studio.waitForFrameToLoad();
-    await page.waitForTimeout(1000);
+    await goToProject(
+      page,
+      `/projects/${projectId}/preview/#width=1600&height=900`
+    );
     await assertDesktopText(models.studio.liveFrame);
 
     // Test tablet width in live preview
-    await page.goto(`/projects/${projectId}/preview/#width=1000&height=800`);
-    await models.studio.waitForFrameToLoad();
-    await page.waitForTimeout(1000);
+    await goToProject(
+      page,
+      `/projects/${projectId}/preview/#width=1000&height=800`
+    );
     await assertSmallScreenText(models.studio.liveFrame);
 
     // Test mobile width in live preview
-    await page.goto(`/projects/${projectId}/preview/#width=500&height=800`);
-    await models.studio.waitForFrameToLoad();
-    await page.waitForTimeout(1000);
+    await goToProject(
+      page,
+      `/projects/${projectId}/preview/#width=500&height=800`
+    );
     await assertSmallScreenText(models.studio.liveFrame);
   });
 });

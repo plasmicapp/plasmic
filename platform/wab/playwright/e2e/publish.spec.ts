@@ -1,10 +1,11 @@
 import { test } from "../fixtures/test";
+import { goToProject, waitForFrameToLoad } from "../utils/studio-utils";
 
 test.describe("publish", () => {
   let projectId: string;
   test.beforeEach(async ({ apiClient, page }) => {
     projectId = await apiClient.setupNewProject({ name: "publish" });
-    await page.goto(`/projects/${projectId}`);
+    await goToProject(page, `/projects/${projectId}`);
   });
 
   test.afterEach(async ({ apiClient }) => {
@@ -85,9 +86,8 @@ test.describe("publish", () => {
       .waitFor({ state: "hidden", timeout: 1000 });
 
     await page.reload();
+    await waitForFrameToLoad(page);
     await models.studio.leftPanel.switchToTreeTab();
-    await page.waitForTimeout(200);
-    await models.studio.waitForFrameToLoad();
     const reloadedFrame = models.studio.componentFrame;
     await reloadedFrame
       .locator('text="hello"')

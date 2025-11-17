@@ -1,6 +1,7 @@
-import { expect } from "@playwright/test";
+import { expect, Locator } from "@playwright/test";
 import bundles from "../../cypress/bundles";
 import { test } from "../fixtures/test";
+import { goToProject } from "../utils/studio-utils";
 
 const BUNDLE_NAME = "state-management";
 
@@ -9,7 +10,7 @@ test.describe("interactions-variants", () => {
 
   test.beforeEach(async ({ apiClient, page }) => {
     projectId = await apiClient.importProjectFromTemplate(bundles[BUNDLE_NAME]);
-    await page.goto(`/projects/${projectId}`);
+    await goToProject(page, `/projects/${projectId}`);
   });
 
   test.afterEach(async ({ apiClient }) => {
@@ -461,8 +462,11 @@ test.describe("interactions-variants", () => {
       await expect(liveFrame.locator("body")).toContainText("[]");
       await expect(liveFrame.locator("body")).toContainText("no variant");
 
-      const buttons: { locator: any; operation: string; variants: string[] }[] =
-        [];
+      const buttons: {
+        locator: Locator;
+        operation: string;
+        variants: string[];
+      }[] = [];
 
       for (const vgroup of variantGroups) {
         buttons.push({

@@ -16,9 +16,6 @@ export class LeftPanel extends BaseModel {
 
   readonly addSearchInput: Locator = this.addContainer.locator("input");
 
-  readonly componentNameInput: Locator = this.frame.locator(
-    '[data-test-id="prompt"]'
-  );
   readonly componentNameSubmit: Locator = this.frame.locator(
     '[data-test-id="prompt-submit"]'
   );
@@ -61,9 +58,6 @@ export class LeftPanel extends BaseModel {
   readonly leftPanelIndicator: Locator = this.frame.locator(
     '[data-test-class="left-panel-indicator"] > div'
   );
-  readonly indicatorClear: Locator = this.frame.locator(
-    '[data-test-class="indicator-clear"]'
-  );
 
   constructor(page: Page) {
     super(page);
@@ -75,9 +69,6 @@ export class LeftPanel extends BaseModel {
       await this.addButton.click({ timeout: 30000 });
       await this.page.waitForTimeout(500);
     }
-
-    await this.addContainer.waitFor({ state: "visible", timeout: 10000 });
-
     await this.addSearchInput.waitFor({ state: "visible", timeout: 10000 });
     await this.page.waitForTimeout(200);
 
@@ -98,13 +89,19 @@ export class LeftPanel extends BaseModel {
         itemClicked = true;
         break;
       } catch (error) {
+        console.error(`Failed to insert ${node}:`, error);
+        await this.page.waitForTimeout(300);
+        if (!(await this.addContainer.isVisible())) {
+          // TODO - it is possible for the click to go through but still throw an error,
+          // need to investigate further how this happens.
+          itemClicked = true;
+          break;
+        }
         if (attempt === 2) {
           await item.click({ force: true });
           itemClicked = true;
           break;
         }
-        await this.page.waitForTimeout(300);
-        await item.scrollIntoViewIfNeeded();
       }
     }
 
@@ -114,25 +111,17 @@ export class LeftPanel extends BaseModel {
   }
 
   async setComponentName(name: string) {
-    await this.componentNameInput.waitFor({ state: "visible", timeout: 5000 });
-    await this.componentNameInput.fill(name);
+    const componentNameInput = this.frame.locator('[data-test-id="prompt"]');
+    await componentNameInput.click({ trial: true });
+    await componentNameInput.fill(name);
     await this.page.waitForTimeout(300);
 
-    await this.componentNameSubmit.waitFor({ state: "visible", timeout: 5000 });
-    await this.componentNameSubmit.waitFor({
-      state: "attached",
-      timeout: 5000,
-    });
+    await this.componentNameSubmit.click({ trial: true });
     await this.componentNameSubmit.click();
   }
 
   async addComponent(name: string) {
     await this.insertNode("New component");
-    await this.setComponentName(name);
-  }
-
-  async addPage(name: string) {
-    await this.insertNode("New page");
     await this.setComponentName(name);
   }
 
@@ -223,13 +212,12 @@ export class LeftPanel extends BaseModel {
       "true";
     if (!isActive) {
       await this.versionsTabButton.scrollIntoViewIfNeeded();
-      await this.versionsTabButton.click({ force: true });
+      await this.versionsTabButton.click();
     }
   }
 
   async switchToImportsTab() {
     const moreTab = this.frame.locator('[data-test-tabkey="more"]');
-    await moreTab.waitFor({ state: "visible", timeout: 5000 });
     await moreTab.hover();
     await this.page.waitForTimeout(500);
 
@@ -263,13 +251,5 @@ export class LeftPanel extends BaseModel {
 
   async hoverLeftPanelIndicator() {
     await this.leftPanelIndicator.hover();
-  }
-
-  async clearAllIndicators() {
-    const indicators = this.indicatorClear;
-    const count = await indicators.count();
-    for (let i = 0; i < count; i++) {
-      await indicators.nth(i).click({ force: true });
-    }
   }
 }
