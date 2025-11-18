@@ -525,6 +525,22 @@ function getFixedExpr(
         return null;
       })
       .when([PageHref], (_expr) => null)
+      .when([EventHandler], (_expr) => {
+        for (const interaction of _expr.interactions) {
+          for (const arg of [...interaction.args]) {
+            const fixedExpr = getFixedExpr(ctx, arg.expr, helpers);
+            if (!fixedExpr) {
+              remove(interaction.args, arg);
+            }
+          }
+        }
+        // Remove interactions that have no args left
+        _expr.interactions = _expr.interactions.filter(
+          (interaction) => interaction.args.length > 0
+        );
+        // Return null if no interactions left, otherwise return the fixed handler
+        return _expr.interactions.length > 0 ? _expr : null;
+      })
       .elseUnsafe(() => expr);
   }
 
