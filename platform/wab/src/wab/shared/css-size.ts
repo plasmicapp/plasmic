@@ -1,11 +1,12 @@
 import { check, ensure, precisionRound, unexpected } from "@/wab/shared/common";
-import { VALID_UNITS, cssUnitsChecked } from "@/wab/shared/css";
+import { VALID_UNITS } from "@/wab/shared/css";
 import {
   isDimCssFunction,
   validateDimCssFunction,
 } from "@/wab/shared/css/css-tree-utils";
+import { CSS_UNITS } from "@/wab/shared/css/types";
 
-export type Unit = (typeof cssUnitsChecked)[number] | "fr" | "";
+export type Unit = (typeof CSS_UNITS)[number] | "fr" | "";
 
 export function ensureUnit(text: string): Unit {
   if (isValidUnit(text)) {

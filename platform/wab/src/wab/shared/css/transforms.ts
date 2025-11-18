@@ -38,7 +38,7 @@ export const defaultCssTransform: Record<TransformType, string> = {
  */
 export abstract class CssTransform {
   abstract readonly type: TransformType;
-  abstract readonly allowedUnits: Record<string, string[]>;
+  abstract readonly allowedUnits: Record<string, readonly string[]>;
   abstract showCss(): string;
 
   /**

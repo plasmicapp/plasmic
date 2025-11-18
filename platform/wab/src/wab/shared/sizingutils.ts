@@ -98,7 +98,10 @@ export function getViewportAwareHeight(val: string): string {
 
   walk(ast, {
     enter(node) {
-      if (node.type === "Dimension" && node.unit === "vh") {
+      if (
+        node.type === "Dimension" &&
+        ["vh", "dvh", "svh", "lvh"].includes(node.unit)
+      ) {
         const numVal = parseFloat(node.value);
         replaceObj<Raw>(node, {
           type: "Raw",
@@ -427,6 +430,12 @@ export function isStretchyComponent(
       CONTENT_LAYOUT_WIDE,
       "100vw",
       "100vh",
+      "100dvw",
+      "100dvh",
+      "100svw",
+      "100svh",
+      "100lvw",
+      "100lvh",
     ].includes(val);
   return isStretchy(size.width) || isStretchy(size.minWidth);
 }
@@ -651,7 +660,7 @@ export function getPageComponentSizeType(
   const exp = rootEffectiveVS?.rsh();
   const height = exp?.get("height");
 
-  if (height === "100vh") {
+  if (["100vh", "100dvh", "100svh", "100lvh"].includes(height || "")) {
     return "fixed";
   } else if (height === "wrap") {
     return "wrap";

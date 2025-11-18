@@ -49,7 +49,7 @@ import {
   isTplComponent,
   isTplImage,
 } from "@/wab/shared/core/tpls";
-import { getLengthUnits } from "@/wab/shared/css";
+import { LENGTH_PERCENTAGE_UNITS, LENGTH_UNITS } from "@/wab/shared/css/types";
 import { parseDataUrl, SVG_MEDIA_TYPE } from "@/wab/shared/data-urls";
 import { isContentLayoutTpl } from "@/wab/shared/layoututils";
 import { isKnownImageAssetRef } from "@/wab/shared/model/classes";
@@ -557,9 +557,7 @@ const SizeControl = observer(function SizeRow(props: {
         onChange: (val) => setProp(val),
         min: 0,
         // Cannot specify a root in %
-        allowedUnits: isRoot
-          ? getLengthUnits("px").filter((x) => x !== "%")
-          : getLengthUnits("px"),
+        allowedUnits: isRoot ? LENGTH_UNITS : LENGTH_PERCENTAGE_UNITS,
         hideArrow: true,
       }}
       tokenType={"Spacing"}

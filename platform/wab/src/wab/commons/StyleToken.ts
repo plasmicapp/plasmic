@@ -20,7 +20,11 @@ import {
   MutableToken,
   OverrideableToken,
 } from "@/wab/shared/core/tokens";
-import { getLengthUnits, parseCss } from "@/wab/shared/css";
+import { parseCss } from "@/wab/shared/css";
+import {
+  LENGTH_PERCENTAGE_UNITS,
+  NUMBER_LENGTH_PERCENTAGE_UNITS,
+} from "@/wab/shared/css/types";
 import { DEVFLAGS } from "@/wab/shared/devflags";
 import {
   Mixin,
@@ -124,11 +128,11 @@ export function tokenTypeDimOpts(type: StyleTokenType) {
   switch (type) {
     case "Spacing":
       return {
-        allowedUnits: getLengthUnits("px"),
+        allowedUnits: LENGTH_PERCENTAGE_UNITS,
       };
     case "LineHeight":
       return {
-        allowedUnits: getLengthUnits(""),
+        allowedUnits: NUMBER_LENGTH_PERCENTAGE_UNITS,
         fractionDigits: 2,
         displayedFractionDigits: 2,
         min: 0,
@@ -136,7 +140,7 @@ export function tokenTypeDimOpts(type: StyleTokenType) {
       };
     case "FontSize":
       return {
-        allowedUnits: getLengthUnits("px"),
+        allowedUnits: LENGTH_PERCENTAGE_UNITS,
       };
     case "Opacity":
       return {

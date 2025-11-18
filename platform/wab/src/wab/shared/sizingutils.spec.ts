@@ -81,4 +81,33 @@ describe("getViewportAwareHeight", () => {
       "min(calc(var(--viewport-height) * 100 / 100),calc(var(--viewport-height) * 50 / 100) + 200px)"
     );
   });
+
+  it("should wrap dvh value in calc", () => {
+    const result = getViewportAwareHeight("50dvh");
+    expect(result).toBe("calc(var(--viewport-height) * 50 / 100)");
+  });
+
+  it("should wrap svh value in calc", () => {
+    const result = getViewportAwareHeight("50svh");
+    expect(result).toBe("calc(var(--viewport-height) * 50 / 100)");
+  });
+
+  it("should wrap lvh value in calc", () => {
+    const result = getViewportAwareHeight("50lvh");
+    expect(result).toBe("calc(var(--viewport-height) * 50 / 100)");
+  });
+
+  it("should handle mixed viewport height units (vh, dvh, svh, lvh)", () => {
+    const result = getViewportAwareHeight("calc(100vh + 50dvh - 25svh)");
+    expect(result).toBe(
+      "calc(calc(var(--viewport-height) * 100 / 100) + calc(var(--viewport-height) * 50 / 100) - calc(var(--viewport-height) * 25 / 100))"
+    );
+  });
+
+  it("should not transform viewport width units (vw, dvw, svw, lvw)", () => {
+    expect(getViewportAwareHeight("50vw")).toBe("50vw");
+    expect(getViewportAwareHeight("50dvw")).toBe("50dvw");
+    expect(getViewportAwareHeight("50svw")).toBe("50svw");
+    expect(getViewportAwareHeight("50lvw")).toBe("50lvw");
+  });
 });

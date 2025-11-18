@@ -19,7 +19,7 @@ import {
   CONTENT_LAYOUT_VIEWPORT_GAP_PROP,
   CONTENT_LAYOUT_WIDE_WIDTH_PROP,
 } from "@/wab/shared/core/style-props";
-import { getLengthUnits } from "@/wab/shared/css";
+import { LENGTH_PERCENTAGE_UNITS } from "@/wab/shared/css/types";
 import { makeExpProxy } from "@/wab/shared/exprs";
 import { RuleSet, ThemeLayoutSettings } from "@/wab/shared/model/classes";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
@@ -73,7 +73,7 @@ function ThemeLayoutPanel_(
               styleName={CONTENT_LAYOUT_STANDARD_WIDTH_PROP}
               label="Standard width"
               dimOpts={{
-                allowedUnits: getLengthUnits("px"),
+                allowedUnits: LENGTH_PERCENTAGE_UNITS,
                 min: 0,
               }}
               noExtract
@@ -82,7 +82,7 @@ function ThemeLayoutPanel_(
               styleName={CONTENT_LAYOUT_WIDE_WIDTH_PROP}
               label="Wide width"
               dimOpts={{
-                allowedUnits: getLengthUnits("px"),
+                allowedUnits: LENGTH_PERCENTAGE_UNITS,
                 min: 0,
               }}
               noExtract
@@ -91,7 +91,7 @@ function ThemeLayoutPanel_(
               styleName={CONTENT_LAYOUT_VIEWPORT_GAP_PROP}
               label="Viewport gap"
               dimOpts={{
-                allowedUnits: getLengthUnits("px"),
+                allowedUnits: LENGTH_PERCENTAGE_UNITS,
                 min: 0,
               }}
               noExtract

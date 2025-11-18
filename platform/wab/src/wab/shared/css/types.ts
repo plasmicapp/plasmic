@@ -6,10 +6,32 @@ export const LENGTH_UNITS = [
   "px",
   "em",
   "rem",
+  "ch",
+  "ex",
   "vw",
   "vh",
   "vmin",
   "vmax",
+  "vb",
+  "vi",
+  "dvw",
+  "dvh",
+  "dvmin",
+  "dvmax",
+  "dvb",
+  "dvi",
+  "svw",
+  "svh",
+  "svmin",
+  "svmax",
+  "svb",
+  "svi",
+  "lvw",
+  "lvh",
+  "lvmin",
+  "lvmax",
+  "lvb",
+  "lvi",
   "cm",
   "mm",
   "in",
@@ -35,6 +57,36 @@ export const PERCENTAGE_UNITS = ["%"] as const;
  * Unitless number (no units)
  */
 export const NUMBER_UNITS = [""] as const;
+
+/**
+ * Combined length and percentage units
+ * Used for CSS properties that accept both length and percentage values
+ * Examples: width, height, padding, margin, etc.
+ */
+export const LENGTH_PERCENTAGE_UNITS = [
+  ...LENGTH_UNITS,
+  ...PERCENTAGE_UNITS,
+] as const;
+
+/**
+ * Combined number (unitless) and percentage units
+ * Used for CSS properties like line-height that accept unitless numbers
+ * Examples: "1.5", "150%"
+ */
+export const NUMBER_LENGTH_PERCENTAGE_UNITS = [
+  ...NUMBER_UNITS,
+  ...LENGTH_UNITS,
+  ...PERCENTAGE_UNITS,
+] as const;
+
+/**
+ * All CSS units (length, percentage, and angle)
+ */
+export const CSS_UNITS = [
+  ...LENGTH_UNITS,
+  ...PERCENTAGE_UNITS,
+  ...ANGLE_UNITS,
+] as const;
 
 /**
  * CSS Zero type - unitless numeric value of 0
@@ -101,15 +153,15 @@ export type ValueTypeName =
 export function getAllowedUnitsForType(typeName: ValueTypeName) {
   switch (typeName) {
     case "Length":
-      return [...LENGTH_UNITS];
+      return LENGTH_UNITS;
     case "Percentage":
-      return [...PERCENTAGE_UNITS];
+      return PERCENTAGE_UNITS;
     case "Angle":
-      return [...ANGLE_UNITS];
+      return ANGLE_UNITS;
     case "UnitlessNumber":
-      return [...NUMBER_UNITS];
+      return NUMBER_UNITS;
     case "LengthOrPercentage":
-      return [...LENGTH_UNITS, ...PERCENTAGE_UNITS];
+      return LENGTH_PERCENTAGE_UNITS;
     case "NumberOrPercentage":
       return [...NUMBER_UNITS, ...PERCENTAGE_UNITS];
     default:

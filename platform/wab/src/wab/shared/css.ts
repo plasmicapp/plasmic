@@ -19,6 +19,7 @@ import {
   ensureUnit,
   showSizeCss,
 } from "@/wab/shared/css-size";
+import { CSS_UNITS } from "@/wab/shared/css/types";
 import {
   horizontalSides,
   standardSides,
@@ -359,46 +360,9 @@ export const showCssValues = (name: string, vals: /*TWZ*/ string[]) => {
   }
 };
 
-const lengthCssUnitsChecked = [
-  "ch",
-  "cm",
-  "em",
-  "ex",
-  "in",
-  "mm",
-  "pc",
-  "pt",
-  "px",
-  "rem",
-  "vh",
-  "vw",
-  "vmax",
-  "vmin",
-  "%",
-] as const;
-
-export const lengthCssUnits = lengthCssUnitsChecked as readonly string[];
-
-export function getLengthUnits(defaultUnit: string) {
-  return [...new Set([defaultUnit, ...lengthCssUnits]).values()];
-}
-
-export const cssUnitsChecked = [
-  ...lengthCssUnitsChecked,
-  "deg",
-  "grad",
-  "turn",
-  "rad",
-] as const;
-
-export const cssUnits = cssUnitsChecked as readonly string[];
-
 export const typicalCssLengthUnits = new Set(["px", "%", "em"]);
 
-export const isValidCssValue = (prop: /*TWZ*/ string, val: /*TWZ*/ string) =>
-  // TODO
-  ![...cssUnits].includes(val);
-
+export const VALID_UNITS = new Set([...CSS_UNITS, "fr", ""]);
 export function asValidCssTime(x: string) {
   const res = parseCssNumericNew(x);
   if (!res) {
@@ -522,8 +486,6 @@ export function fontWeightNumber(val: string) {
 export function uniqifyClassName(className: string) {
   return uniq(className.split(/\s+/).filter((s) => s.length > 0)).join(" ");
 }
-
-export const VALID_UNITS = new Set([...cssUnits, "fr", ""]);
 
 export function camelCssPropsToKebab(props: CSSProperties) {
   return Object.fromEntries(

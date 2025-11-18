@@ -47,11 +47,6 @@ import {
 } from "@/wab/shared/core/tokens";
 import * as css from "@/wab/shared/css";
 import {
-  lengthCssUnits,
-  parseCssNumericNew,
-  toShorthandVals,
-} from "@/wab/shared/css";
-import {
   createNumericSize,
   isValidUnit,
   showSizeCss,
@@ -61,7 +56,7 @@ import {
   isDimCssFunction,
   validateDimCssFunction,
 } from "@/wab/shared/css/css-tree-utils";
-import { LengthUnit } from "@/wab/shared/css/types";
+import { LENGTH_PERCENTAGE_UNITS, LengthUnit } from "@/wab/shared/css/types";
 import { StyleToken } from "@/wab/shared/model/classes";
 import { naturalSort } from "@/wab/shared/sort";
 import { canCreateAlias } from "@/wab/shared/ui-config-utils";
@@ -160,7 +155,7 @@ export const DimTokenSpinner = observer(
       value,
       tokenType,
       noClear,
-      allowedUnits = css.lengthCssUnits,
+      allowedUnits = LENGTH_PERCENTAGE_UNITS,
       extraOptions: _extraOptions = [],
       onChange,
       fieldAriaProps,
@@ -200,7 +195,7 @@ export const DimTokenSpinner = observer(
       );
 
     const { displayValue, tryOnChange, spin, values } = useDimValue(props);
-    const shorthandVals = shorthand ? toShorthandVals(values) : values;
+    const shorthandVals = shorthand ? css.toShorthandVals(values) : values;
     const parsedValues = tokens
       ? shorthandVals.map((v) => tryParseTokenRef(v, tokens) || v)
       : shorthandVals;
@@ -258,7 +253,7 @@ export const DimTokenSpinner = observer(
       if (typedInputValue && typedInputValue.length > 0) {
         return [];
       }
-      const parsed = values.map((val) => parseCssNumericNew(val))[0];
+      const parsed = values.map((val) => css.parseCssNumericNew(val))[0];
       if (!parsed || parsed.num === undefined) {
         return [];
       }
@@ -492,7 +487,7 @@ export const DimTokenSpinner = observer(
                   studioCtx,
                   "DimTokenSelector expects to have studioCtx if adding token"
                 ).changeUnsafe(() => {
-                  const startValue = parseCssNumericNew(inputValue)
+                  const startValue = css.parseCssNumericNew(inputValue)
                     ? css.autoUnit(inputValue, [...allowedUnits][0], value)
                     : tokenTypeDefaults(
                         ensure(
@@ -1032,7 +1027,7 @@ function useDimValue(opts: DimValueOpts) {
     extraOptions: _extraOptions = [],
     shorthand,
     noClear,
-    allowedUnits = [...lengthCssUnits],
+    allowedUnits = LENGTH_PERCENTAGE_UNITS,
     min = Number.NEGATIVE_INFINITY,
     max = Infinity,
     delta = 1,
@@ -1070,7 +1065,7 @@ function useDimValue(opts: DimValueOpts) {
         }
         continue;
       }
-      const parsed = parseCssNumericNew(newValue);
+      const parsed = css.parseCssNumericNew(newValue);
 
       if (!parsed) {
         notification.error({
@@ -1112,7 +1107,7 @@ function useDimValue(opts: DimValueOpts) {
   }
 
   function roundValue(val: string) {
-    const parsed = parseCssNumericNew(val);
+    const parsed = css.parseCssNumericNew(val);
     if (parsed) {
       parsed.num = precisionRound(parsed.num, Math.min(fractionDigits, 4));
       return css.showCssNumericNew(parsed);
@@ -1177,7 +1172,7 @@ function useDimValue(opts: DimValueOpts) {
     if (!value || isNaN(parseFloat(value))) {
       return;
     }
-    const curParsed = parseCssNumericNew(value);
+    const curParsed = css.parseCssNumericNew(value);
     const { num, units } = curParsed || {
       num: 0,
       units: preferredUnit,
