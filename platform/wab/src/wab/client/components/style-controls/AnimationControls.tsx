@@ -46,7 +46,7 @@ export const AnimationControls = observer(function AnimationControls(
 
   return (
     <>
-      <SidebarSection title="Animation Sequence">
+      <SidebarSection title="Animation">
         <FullRow>
           <StyleSelect
             value={animation.sequence.uuid}

@@ -16,7 +16,7 @@ import { Icon } from "@/wab/client/components/widgets/Icon";
 import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
 import { makeVariantedStylesHelperFromCurrentCtx } from "@/wab/client/utils/style-utils";
 import { MaybeWrap } from "@/wab/commons/components/ReactUtil";
-import { ANIMATION_SEQUENCES_CAP } from "@/wab/shared/Labels";
+import { ANIMATIONS_LOWER } from "@/wab/shared/Labels";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import { arrayMoveIndex, arrayRemove } from "@/wab/shared/collections";
 import { spawn } from "@/wab/shared/common";
@@ -90,7 +90,7 @@ export const AnimationsSection = observer(function AnimationsSection(
     if (allAnimSequences.length === 0) {
       studioCtx.switchLeftTab("animationSequences", { highlight: true });
       notification.warn({
-        message: `Please add ${ANIMATION_SEQUENCES_CAP} in your project.`,
+        message: `Please add ${ANIMATIONS_LOWER} in your project.`,
       });
       return;
     }

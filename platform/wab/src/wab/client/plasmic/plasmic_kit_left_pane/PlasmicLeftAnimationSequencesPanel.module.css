@@ -16,11 +16,35 @@
 .animationSequencesHeader:global(.__wab_instance) {
   position: relative;
 }
+.text__af2Ee {
+  padding-bottom: 0px;
+}
 .freeBox {
   display: flex;
-  flex-direction: column;
   position: relative;
-  row-gap: 4px;
+  flex-direction: column;
+  align-items: flex-start;
+  row-gap: 16px;
+}
+.svg__xjmAq {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  max-width: 100%;
+  max-height: 100%;
+  width: 16px;
+  height: 16px;
+  color: var(--token-VUsIDivgUss);
+}
+.text___5M3E9 {
+  margin-bottom: 0px;
+}
+.svg__bq139 {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  width: 16px;
+  height: 1em;
 }
 .svg__vTvci {
   display: flex;
@@ -32,25 +56,6 @@
   height: 16px;
 }
 .svg__uxN86 {
-  display: flex;
-  position: relative;
-  object-fit: cover;
-  width: 16px;
-  height: 1em;
-}
-.svg__xjmAq {
-  display: flex;
-  position: relative;
-  object-fit: cover;
-  max-width: 100%;
-  max-height: 100%;
-  width: 16px;
-  height: 16px;
-}
-.text {
-  margin-bottom: 0px;
-}
-.svg__bq139 {
   display: flex;
   position: relative;
   object-fit: cover;

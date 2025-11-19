@@ -15,6 +15,7 @@ import * as React from "react";
 
 import {
   Flex as Flex__,
+  PlasmicLink as PlasmicLink__,
   StrictProps,
   classNames,
   createPlasmicElementProxy,
@@ -53,10 +54,10 @@ export type PlasmicLeftAnimationSequencesPanel__OverridesType = {
   root?: Flex__<"div">;
   leftSearchPanel?: Flex__<typeof LeftSearchPanel>;
   animationSequencesHeader?: Flex__<typeof LeftPaneHeader>;
+  link?: Flex__<"a">;
   freeBox?: Flex__<"div">;
-  newAnimationSequenceButton?: Flex__<typeof Button>;
   importAnimationSequenceButton?: Flex__<typeof Button>;
-  text?: Flex__<"div">;
+  newAnimationSequenceButton?: Flex__<typeof Button>;
   content?: Flex__<"div">;
 };
 
@@ -128,6 +129,38 @@ function PlasmicLeftAnimationSequencesPanel__RenderFunc(props: {
             className={classNames(projectcss.all, sty.freeBox)}
           >
             <Button
+              data-plasmic-name={"importAnimationSequenceButton"}
+              data-plasmic-override={overrides.importAnimationSequenceButton}
+              className={classNames(
+                "__wab_instance",
+                sty.importAnimationSequenceButton
+              )}
+              endIcon={
+                <ChevronDownSvgIcon
+                  className={classNames(projectcss.all, sty.svg__bq139)}
+                  role={"img"}
+                />
+              }
+              startIcon={
+                <DownloadSvgIcon
+                  className={classNames(projectcss.all, sty.svg__xjmAq)}
+                  role={"img"}
+                />
+              }
+              type={["link"]}
+              withIcons={["startIcon"]}
+            >
+              <div
+                className={classNames(
+                  projectcss.all,
+                  projectcss.__wab_text,
+                  sty.text___5M3E9
+                )}
+              >
+                {"Import Plasmic animations"}
+              </div>
+            </Button>
+            <Button
               data-plasmic-name={"newAnimationSequenceButton"}
               data-plasmic-override={overrides.newAnimationSequenceButton}
               endIcon={
@@ -136,7 +169,6 @@ function PlasmicLeftAnimationSequencesPanel__RenderFunc(props: {
                   role={"img"}
                 />
               }
-              size={"wide"}
               startIcon={
                 <PlusIcon
                   className={classNames(projectcss.all, sty.svg__vTvci)}
@@ -146,46 +178,52 @@ function PlasmicLeftAnimationSequencesPanel__RenderFunc(props: {
               type={["secondary"]}
               withIcons={["startIcon"]}
             >
-              {"New animation sequence"}
-            </Button>
-            <Button
-              data-plasmic-name={"importAnimationSequenceButton"}
-              data-plasmic-override={overrides.importAnimationSequenceButton}
-              endIcon={
-                <ChevronDownSvgIcon
-                  className={classNames(projectcss.all, sty.svg__bq139)}
-                  role={"img"}
-                />
-              }
-              size={"wide"}
-              startIcon={
-                <DownloadSvgIcon
-                  className={classNames(projectcss.all, sty.svg__xjmAq)}
-                  role={"img"}
-                />
-              }
-              type={["primary"]}
-              withIcons={["startIcon"]}
-            >
-              <div
-                data-plasmic-name={"text"}
-                data-plasmic-override={overrides.text}
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text
-                )}
-              >
-                {"Import preset animations"}
-              </div>
+              {"New animation"}
             </Button>
           </div>
         }
         className={classNames("__wab_instance", sty.animationSequencesHeader)}
         description={
-          "Animation sequences are bundles of animation keyframe styles that you can link to any animation on element. You might create animation sequences to define consistent styles set of keyframes to be reused in multiple animations."
+          <div
+            className={classNames(
+              projectcss.all,
+              projectcss.__wab_text,
+              sty.text__af2Ee
+            )}
+          >
+            <React.Fragment>
+              <React.Fragment>
+                {
+                  "Create multi-step animations by setting style changes at key moments in time ("
+                }
+              </React.Fragment>
+              {
+                <PlasmicLink__
+                  data-plasmic-name={"link"}
+                  data-plasmic-override={overrides.link}
+                  className={classNames(
+                    projectcss.all,
+                    projectcss.a,
+                    projectcss.__wab_text,
+                    projectcss.plasmic_default__inline,
+                    sty.link
+                  )}
+                  href={
+                    "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@keyframes"
+                  }
+                  platform={"react"}
+                  target={"_blank"}
+                >
+                  {"keyframes"}
+                </PlasmicLink__>
+              }
+              <React.Fragment>
+                {"). Animations can be applied to elements."}
+              </React.Fragment>
+            </React.Fragment>
+          </div>
         }
-        title={"Animation sequences"}
+        title={"Animations"}
       />
 
       <div
@@ -202,29 +240,28 @@ const PlasmicDescendants = {
     "root",
     "leftSearchPanel",
     "animationSequencesHeader",
+    "link",
     "freeBox",
-    "newAnimationSequenceButton",
     "importAnimationSequenceButton",
-    "text",
+    "newAnimationSequenceButton",
     "content",
   ],
   leftSearchPanel: ["leftSearchPanel"],
   animationSequencesHeader: [
     "animationSequencesHeader",
+    "link",
     "freeBox",
-    "newAnimationSequenceButton",
     "importAnimationSequenceButton",
-    "text",
+    "newAnimationSequenceButton",
   ],
+  link: ["link"],
   freeBox: [
     "freeBox",
-    "newAnimationSequenceButton",
     "importAnimationSequenceButton",
-    "text",
+    "newAnimationSequenceButton",
   ],
+  importAnimationSequenceButton: ["importAnimationSequenceButton"],
   newAnimationSequenceButton: ["newAnimationSequenceButton"],
-  importAnimationSequenceButton: ["importAnimationSequenceButton", "text"],
-  text: ["text"],
   content: ["content"],
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
@@ -234,10 +271,10 @@ type NodeDefaultElementType = {
   root: "div";
   leftSearchPanel: typeof LeftSearchPanel;
   animationSequencesHeader: typeof LeftPaneHeader;
+  link: "a";
   freeBox: "div";
-  newAnimationSequenceButton: typeof Button;
   importAnimationSequenceButton: typeof Button;
-  text: "div";
+  newAnimationSequenceButton: typeof Button;
   content: "div";
 };
 
@@ -305,12 +342,12 @@ export const PlasmicLeftAnimationSequencesPanel = Object.assign(
     // Helper components rendering sub-elements
     leftSearchPanel: makeNodeComponent("leftSearchPanel"),
     animationSequencesHeader: makeNodeComponent("animationSequencesHeader"),
+    link: makeNodeComponent("link"),
     freeBox: makeNodeComponent("freeBox"),
-    newAnimationSequenceButton: makeNodeComponent("newAnimationSequenceButton"),
     importAnimationSequenceButton: makeNodeComponent(
       "importAnimationSequenceButton"
     ),
-    text: makeNodeComponent("text"),
+    newAnimationSequenceButton: makeNodeComponent("newAnimationSequenceButton"),
     content: makeNodeComponent("content"),
 
     // Metadata about props expected for PlasmicLeftAnimationSequencesPanel
