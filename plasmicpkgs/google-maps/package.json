@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/plasmic-google-maps",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "Plasmic Google maps components.",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -34,7 +34,7 @@
     }
   ],
   "devDependencies": {
-    "@plasmicapp/host": "1.0.227",
+    "@plasmicapp/host": "1.0.228",
     "@types/react": "^18.0.27",
     "@types/react-dom": "^18.0.10",
     "husky": "^7.0.4",
