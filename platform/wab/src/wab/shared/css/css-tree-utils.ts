@@ -3,7 +3,11 @@ import {
   CSS_NAMED_COLORS_IDENTIFIERS,
   isColorFunction,
 } from "@/wab/shared/css/colors";
-import { LengthUnit } from "@/wab/shared/css/types";
+import {
+  DIM_CSS_FUNCTIONS,
+  LengthUnit,
+  isDimCssFunction,
+} from "@/wab/shared/css/types";
 import {
   CssNode,
   Dimension,
@@ -269,21 +273,7 @@ export function isRadialGradientFunction(node: CssNode): node is FunctionNode {
   );
 }
 
-const dimCssFunctionsChecked = ["calc", "min", "max", "clamp"] as const;
-
-const dimCssFunctions = dimCssFunctionsChecked as readonly string[];
-
 const DIM_CSS_IDENTIFIER_KEYWORDS = ["auto", "inherit", "initial", "unset"];
-
-const dimCssFunctionsReg = new RegExp(
-  `^(${dimCssFunctions.join("|")})\\s*\\(`,
-  "i"
-);
-
-export function isDimCssFunction(value: string): boolean {
-  const trimmed = value.trim();
-  return dimCssFunctionsReg.test(trimmed);
-}
 
 type DimCssFunctionValidationResult =
   | { valid: true }
@@ -300,7 +290,7 @@ export function validateDimCssFunction(
   value: string,
   allowedUnits?: readonly string[]
 ): DimCssFunctionValidationResult {
-  const invalidFunctionError = `Not a valid CSS dimension function. Must be one of these: ${dimCssFunctions.join(
+  const invalidFunctionError = `Not a valid CSS dimension function. Must be one of these: ${DIM_CSS_FUNCTIONS.join(
     ", "
   )}`;
   if (!isDimCssFunction(value)) {

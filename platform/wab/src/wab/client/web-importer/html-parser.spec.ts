@@ -136,6 +136,7 @@ describe("parseHtmlToWebImporterTree", () => {
 
 .heading {
   color: rgb(0,0,255);
+  flex: 1 30px;
 }
 </style>
 <div class="container"><h1 class="heading">Blue Heading 1</h1></div>`;
@@ -161,9 +162,12 @@ describe("parseHtmlToWebImporterTree", () => {
                 {
                   unsanitizedStyles: {
                     color: "rgb(0,0,255)",
+                    flex: "1 30px",
                   },
                   safeStyles: {
                     color: "rgb(0,0,255)",
+                    flexGrow: "1",
+                    flexBasis: "30px",
                   },
                   unsafeStyles: {},
                   variantCombo: [{ type: "base" }],

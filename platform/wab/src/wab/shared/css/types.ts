@@ -1,3 +1,5 @@
+import { parseCssNumericNew } from "@/wab/shared/css";
+
 /**
  * CSS Length units
  * @see https://developer.mozilla.org/en-US/docs/Web/CSS/length
@@ -119,6 +121,13 @@ export type Angle = `${string}${AngleUnit}` | Zero;
 export type UnitlessNumber = string & {};
 
 /**
+ * CSS Dimension Function type - represents CSS functions that return dimension values
+ * Includes: calc(), min(), max(), clamp()
+ * Examples: "calc(100% - 20px)", "min(50vw, 400px)", "clamp(10px, 5vw, 50px)"
+ */
+export type DimCssFunction = string & {};
+
+/**
  * LengthPercentage type - Length | Percentage
  * Used for values that can be either a length or percentage
  * Examples: "10px", "50%", "2rem"
@@ -167,4 +176,42 @@ export function getAllowedUnitsForType(typeName: ValueTypeName) {
     default:
       throw new Error(`Unknown type: ${typeName}`);
   }
+}
+
+export function isUnitlessNumber(value: string): value is UnitlessNumber {
+  const parsed = parseCssNumericNew(value);
+  return parsed !== undefined && parsed.units === "";
+}
+
+export function isLength(value: string): value is Length {
+  if (value === "0") {
+    return true;
+  }
+  const parsed = parseCssNumericNew(value);
+  return (
+    parsed !== undefined && LENGTH_UNITS.includes(parsed.units as LengthUnit)
+  );
+}
+
+export function isPercentage(value: string): value is Percentage {
+  const parsed = parseCssNumericNew(value);
+  return parsed !== undefined && parsed.units === "%";
+}
+
+export function isLengthOrPercentage(
+  value: string
+): value is LengthOrPercentage {
+  return isLength(value) || isPercentage(value);
+}
+
+export const DIM_CSS_FUNCTIONS = ["calc", "min", "max", "clamp"] as const;
+
+const DIM_CSS_FUNCTIONS_REG = new RegExp(
+  `^(${DIM_CSS_FUNCTIONS.join("|")})\\s*\\(`,
+  "i"
+);
+
+export function isDimCssFunction(value: string): value is DimCssFunction {
+  const trimmed = value.trim();
+  return DIM_CSS_FUNCTIONS_REG.test(trimmed);
 }

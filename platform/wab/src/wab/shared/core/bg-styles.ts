@@ -24,7 +24,6 @@ import {
   extractDimensionFromNode,
   extractUrlFromNode,
   findAndMap,
-  isDimCssFunction,
   isDimensionNode,
   isLinearGradientFunction,
   isRadialGradientFunction,
@@ -32,6 +31,7 @@ import {
   splitNodesByOperator,
 } from "@/wab/shared/css/css-tree-utils";
 import { splitCssValue } from "@/wab/shared/css/parse";
+import { isDimCssFunction } from "@/wab/shared/css/types";
 import { CssNode, generate, parse, walk } from "css-tree";
 import { pick } from "lodash";
 import { CSSProperties } from "react";

@@ -46,6 +46,7 @@ import {
 import { parseScreenSpec } from "@/wab/shared/css-size";
 import { isBorderProp, parseBorderShorthand } from "@/wab/shared/css/border";
 import { findAllAndMap } from "@/wab/shared/css/css-tree-utils";
+import { parseFlexShorthand } from "@/wab/shared/css/flex";
 import { splitCssValue } from "@/wab/shared/css/parse";
 import { CssTransforms } from "@/wab/shared/css/transforms";
 import { Site } from "@/wab/shared/model/classes";
@@ -239,6 +240,10 @@ function fixCSSValue(key: string, value: string) {
 
   if (isBorderProp(fixedKey)) {
     return parseBorderShorthand(fixedKey, valueNode);
+  }
+
+  if (fixedKey === "flex") {
+    return parseFlexShorthand(valueNode);
   }
 
   if (fixedKey === "backgroundColor") {

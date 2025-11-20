@@ -53,10 +53,13 @@ import {
 } from "@/wab/shared/css-size";
 import {
   checkAllowedUnits,
-  isDimCssFunction,
   validateDimCssFunction,
 } from "@/wab/shared/css/css-tree-utils";
-import { LENGTH_PERCENTAGE_UNITS, LengthUnit } from "@/wab/shared/css/types";
+import {
+  isDimCssFunction,
+  LENGTH_PERCENTAGE_UNITS,
+  LengthUnit,
+} from "@/wab/shared/css/types";
 import { StyleToken } from "@/wab/shared/model/classes";
 import { naturalSort } from "@/wab/shared/sort";
 import { canCreateAlias } from "@/wab/shared/ui-config-utils";

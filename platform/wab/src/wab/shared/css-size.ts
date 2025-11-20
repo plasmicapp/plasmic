@@ -1,10 +1,7 @@
 import { check, ensure, precisionRound, unexpected } from "@/wab/shared/common";
 import { VALID_UNITS } from "@/wab/shared/css";
-import {
-  isDimCssFunction,
-  validateDimCssFunction,
-} from "@/wab/shared/css/css-tree-utils";
-import { CSS_UNITS } from "@/wab/shared/css/types";
+import { validateDimCssFunction } from "@/wab/shared/css/css-tree-utils";
+import { CSS_UNITS, isDimCssFunction } from "@/wab/shared/css/types";
 
 export type Unit = (typeof CSS_UNITS)[number] | "fr" | "";
 
