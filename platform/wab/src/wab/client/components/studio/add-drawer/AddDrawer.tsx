@@ -13,7 +13,8 @@ import { getPreInsertionProps } from "@/wab/client/components/modals/PreInsertio
 import {
   checkAndNotifyUnsupportedHostVersion,
   checkAndNotifyUnsupportedReactVersion,
-  notifyCodeLibraryInsertion,
+  notifyCodeLibraryInstalled,
+  notifyInstallableSuccess,
 } from "@/wab/client/components/modals/codeComponentModals";
 import {
   getPlumeComponentTemplates,
@@ -47,6 +48,7 @@ import PlumeMarkIcon from "@/wab/client/plasmic/plasmic_kit_design_system/icons/
 import { promptChooseInstallableDependencies } from "@/wab/client/prompts";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
+import { SERVER_QUERY_PLURAL_LOWER } from "@/wab/shared/Labels";
 import { getParentOrSlotSelection } from "@/wab/shared/SlotUtils";
 import { getBaseVariant } from "@/wab/shared/Variants";
 import { usedHostLessPkgs } from "@/wab/shared/cached-selectors";
@@ -682,7 +684,7 @@ export function createFakeHostLessComponent(
           if (!dep.site.hostLessPackageInfo?.name) {
             return;
           }
-          notifyCodeLibraryInsertion(
+          notifyCodeLibraryInstalled(
             dep.site.hostLessPackageInfo.name,
             lib.jsIdentifier,
             typeof sc
@@ -691,12 +693,12 @@ export function createFakeHostLessComponent(
           );
         });
       });
+      console.log("createFakeHostlessComponent", ctx);
       if (meta.isCustomFunction) {
-        notification.success({
-          message: `Registered ${meta.displayName}`,
-          description: `${meta.displayName} has been registered and is now available in Server Queries`,
-          duration: 3,
-        });
+        notifyInstallableSuccess(
+          meta.displayName,
+          `New ${SERVER_QUERY_PLURAL_LOWER} can now be used.`
+        );
       }
       return true;
     },

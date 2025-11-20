@@ -34,6 +34,7 @@ import {
   ANIMATION_SEQUENCES_LOWER,
   DATA_QUERY_LOWER,
   MIXIN_LOWER,
+  SERVER_QUERY_LOWER,
   TOKEN_LOWER,
 } from "@/wab/shared/Labels";
 import { VariantOptionsType } from "@/wab/shared/TplMgr";
@@ -1337,7 +1338,7 @@ export class SiteOps {
       const key = mkUuid();
       notification.error({
         key,
-        message: `Cannot delete server query`,
+        message: `Cannot delete ${SERVER_QUERY_LOWER}`,
         description: (
           <>
             It is referenced in the current component.{" "}

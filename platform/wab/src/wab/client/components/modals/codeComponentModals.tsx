@@ -765,9 +765,13 @@ export function checkAndNotifyUnsupportedHostVersion(requiredVersion?: number) {
   return false;
 }
 
-export function notifyInstallableSuccess(name: string) {
+export function notifyInstallableSuccess(
+  name: string,
+  description?: React.ReactNode
+) {
   notification.success({
     message: <>{name} has successfully been installed!</>,
+    description,
   });
 }
 
@@ -778,22 +782,19 @@ export function notifyInstallableFailure(name: string, errorMessage: string) {
   });
 }
 
-export function notifyCodeLibraryInsertion(
+export function notifyCodeLibraryInstalled(
   name: string,
   jsIdentifier: string,
   type: string
 ) {
-  if (!name) {
-    return;
-  }
   const commonOpts = { duration: 0 };
   switch (type) {
     case "function":
       notification.success({
         message: (
           <>
-            <code>{name}</code> library installed. You can now use this package
-            with the following code snippet:
+            <code>{name}</code> has been successfully installed! You can now use
+            this package with the following code snippet:
             <br />
             <code lang="javascript">$$.{jsIdentifier}()</code>
           </>

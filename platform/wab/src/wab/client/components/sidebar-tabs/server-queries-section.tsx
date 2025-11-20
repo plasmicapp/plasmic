@@ -8,11 +8,15 @@ import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
 import { IconLinkButton } from "@/wab/client/components/widgets";
 import { DataQueriesTooltip } from "@/wab/client/components/widgets/DetailedTooltips";
 import { Icon } from "@/wab/client/components/widgets/Icon";
-import LabeledListItem from "@/wab/client/components/widgets/LabeledListItem";
 import { LabelWithDetailedTooltip } from "@/wab/client/components/widgets/LabelWithDetailedTooltip";
+import LabeledListItem from "@/wab/client/components/widgets/LabeledListItem";
 import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
+import {
+  SERVER_QUERY_LOWER,
+  SERVER_QUERY_PLURAL_CAP,
+} from "@/wab/shared/Labels";
 import { toVarName } from "@/wab/shared/codegen/util";
 import { mkShortId, spawn, uniqueName } from "@/wab/shared/common";
 import { isPageComponent } from "@/wab/shared/core/components";
@@ -83,7 +87,7 @@ const ServerQueryRow = observer(
       return (
         <Menu>
           <Menu.Item onClick={() => openServerQueryModal()}>
-            Configure server query
+            Configure {SERVER_QUERY_LOWER}
           </Menu.Item>
           <Menu.Divider />
           <Menu.Item
@@ -91,7 +95,7 @@ const ServerQueryRow = observer(
               studioCtx.siteOps().removeComponentServerQuery(component, query)
             }
           >
-            Remove server query
+            Remove {SERVER_QUERY_LOWER}
           </Menu.Item>
         </Menu>
       );
@@ -163,7 +167,7 @@ function ServerQueriesSection_(props: {
       id="server-queries-section"
       title={
         <LabelWithDetailedTooltip tooltip={DataQueriesTooltip}>
-          Server queries
+          {SERVER_QUERY_PLURAL_CAP}
         </LabelWithDetailedTooltip>
       }
       emptyBody={component.serverQueries.length === 0}
@@ -171,7 +175,7 @@ function ServerQueriesSection_(props: {
       controls={
         <IconLinkButton
           id="server-queries-add-btn"
-          tooltip={`Add server query to ${componentType}`}
+          tooltip={`Add ${SERVER_QUERY_LOWER} to ${componentType}`}
           onClick={handleAddDataQuery}
         >
           <Icon icon={PlusIcon} />

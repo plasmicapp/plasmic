@@ -1,9 +1,10 @@
-import { ValuePreview } from "@/wab/client/components/sidebar-tabs/data-tab";
 import styles from "@/wab/client/components/sidebar-tabs/ServerQuery/CustomFunctionExprPreview.module.scss";
 import { ServerQueryOpPreview } from "@/wab/client/components/sidebar-tabs/ServerQuery/ServerQueryOpPicker";
+import { ValuePreview } from "@/wab/client/components/sidebar-tabs/data-tab";
 import { Modal } from "@/wab/client/components/widgets/Modal";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { observer } from "@/wab/client/utils/mobx-client-util";
+import { SERVER_QUERY_LOWER } from "@/wab/shared/Labels";
 import { customFunctionId } from "@/wab/shared/code-components/code-components";
 import { ensure } from "@/wab/shared/common";
 import { useCustomFunctionOp } from "@/wab/shared/core/custom-functions";
@@ -26,7 +27,7 @@ export const CustomFunctionExprPreview = observer(
     const functionId = customFunctionId(expr.func);
     const regFunc = ensure(
       studioCtx.getRegisteredFunctionsMap().get(functionId),
-      "Missing registered function for server query"
+      `Missing registered function for ${SERVER_QUERY_LOWER}`
     );
     const result = useCustomFunctionOp(regFunc.function, expr, env, exprCtx);
 

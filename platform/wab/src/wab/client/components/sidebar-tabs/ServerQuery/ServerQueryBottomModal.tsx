@@ -3,6 +3,7 @@ import { DataPickerTypesSchema } from "@/wab/client/components/sidebar-tabs/Data
 import { ServerQueryOpExprFormAndPreview } from "@/wab/client/components/sidebar-tabs/ServerQuery/ServerQueryOpPicker";
 import { extractDataCtx } from "@/wab/client/state-management/interactions-meta";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
+import { SERVER_QUERY_LOWER } from "@/wab/shared/Labels";
 import { ExprCtx } from "@/wab/shared/core/exprs";
 import { EventHandlerKeyType } from "@/wab/shared/core/tpls";
 import {
@@ -62,7 +63,7 @@ export function useServerQueryBottomModals() {
       } & ServerQueryOpExprBottomModalContentProps
     ) => {
       modalActions.open(queryKey, {
-        title: title || `Configure server query`,
+        title: title || `Configure ${SERVER_QUERY_LOWER}`,
         children: <ServerQueryOpExprBottomModalContent {...props} />,
       });
     },

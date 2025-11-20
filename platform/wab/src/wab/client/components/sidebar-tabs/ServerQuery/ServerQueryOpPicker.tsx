@@ -50,6 +50,7 @@ import { useMountedState } from "react-use";
 
 import styles from "@/wab/client/components/sidebar-tabs/ServerQuery/ServerQueryOpPicker.module.scss";
 import { Tab, Tabs } from "@/wab/client/components/widgets";
+import { SERVER_QUERY_LOWER } from "@/wab/shared/Labels";
 import { allCustomFunctions } from "@/wab/shared/cached-selectors";
 import {
   executeCustomFunctionOp,
@@ -424,7 +425,7 @@ function _ServerQueryOpPreview(props: {
       const functionId = customFunctionId(nextOp.func);
       const regFunc = ensure(
         studioCtx.getRegisteredFunctionsMap().get(functionId),
-        "Missing registered function for server query"
+        `Missing registered function for ${SERVER_QUERY_LOWER}`
       );
       try {
         const result = await executeCustomFunctionOp(
