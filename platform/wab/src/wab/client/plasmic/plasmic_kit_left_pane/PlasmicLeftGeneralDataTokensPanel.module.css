@@ -42,48 +42,6 @@
   font-weight: 600;
   font-size: 14px;
 }
-.globalVariantsSelectContainer {
-  display: flex;
-  position: relative;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  column-gap: 4px;
-}
-.text__kBzKi {
-  width: auto;
-  height: auto;
-  max-width: 800px;
-}
-.textisTargeting__kBzKiThhg4 {
-  color: var(--token-WnbI6EOoey2);
-  font-weight: 500;
-}
-.globalVariantSelect:global(.__wab_instance) {
-  position: relative;
-  margin: 0px;
-}
-.svg__fiyZt {
-  position: relative;
-  object-fit: cover;
-  min-width: 16px;
-  min-height: 16px;
-  width: 16px;
-  height: 16px;
-}
-.text__nk0E {
-  position: relative;
-  text-align: left;
-}
-.option:global(.__wab_instance) {
-  max-width: 100%;
-  position: relative;
-}
-.text__soIxL {
-  line-height: 2;
-  padding-right: 0px;
-  margin: 0px;
-}
 .content {
   display: flex;
   position: relative;

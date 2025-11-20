@@ -461,10 +461,6 @@ Help
   return (
     <PlasmicLeftTabStrip
       showAvatar
-      // TODO: Add dataTokens variant to PlasmicLeftTabStrip in Plasmic Studio
-      activeTab={
-        studioCtx.leftTabKey === "dataTokens" ? "tokens" : studioCtx.leftTabKey
-      }
       insert={{
         props: {
           onClick: () => {

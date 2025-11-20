@@ -20,8 +20,6 @@ import {
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
-  generateStateOnChangeProp,
-  generateStateValueProp,
   hasVariant,
   useDollarState,
 } from "@plasmicapp/react-web";
@@ -30,8 +28,6 @@ import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 import LeftPaneHeader from "../../components/studio/LeftPaneHeader"; // plasmic-import: XLa52PvduIy/component
 import LeftSearchPanel from "../../components/studio/LeftSearchPanel"; // plasmic-import: TqAPn0srTq/component
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
-import Select from "../../components/widgets/Select"; // plasmic-import: j_4IQyOWK2b/component
-import Select__Option from "../../components/widgets/Select__Option"; // plasmic-import: rr-LWdMni2G/component
 import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: aukbrhkegRkQ6KizvhdUPT/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
@@ -41,7 +37,6 @@ import sty from "./PlasmicLeftGeneralDataTokensPanel.module.css"; // plasmic-imp
 
 import PlusIcon from "../plasmic_kit/PlasmicIcon__Plus"; // plasmic-import: -k064DlQ8k8-L/icon
 import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
-import PlusSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__PlusSvg"; // plasmic-import: sQKgd2GNr/icon
 
 createPlasmicElementProxy;
 
@@ -65,9 +60,6 @@ export type PlasmicLeftGeneralDataTokensPanel__OverridesType = {
   leftSearchPanel?: Flex__<typeof LeftSearchPanel>;
   leftPaneHeader?: Flex__<typeof LeftPaneHeader>;
   newTokenButton?: Flex__<typeof Button>;
-  globalVariantsSelectContainer?: Flex__<"div">;
-  globalVariantSelect?: Flex__<typeof Select>;
-  option?: Flex__<typeof Select__Option>;
   content?: Flex__<"div">;
 };
 
@@ -113,12 +105,6 @@ function PlasmicLeftGeneralDataTokensPanel__RenderFunc(props: {
         type: "private",
         variableType: "variant",
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.isTargeting,
-      },
-      {
-        path: "globalVariantSelect.value",
-        type: "private",
-        variableType: "text",
-        initFunc: ({ $props, $state, $queries, $ctx }) => "",
       },
     ],
     [$props, $ctx, $refs]
@@ -203,94 +189,7 @@ function PlasmicLeftGeneralDataTokensPanel__RenderFunc(props: {
         description={"Create tokens for code expressions."}
         hasTitleActions={true}
         title={"Data Tokens"}
-        titleActions={
-          <div
-            data-plasmic-name={"globalVariantsSelectContainer"}
-            data-plasmic-override={overrides.globalVariantsSelectContainer}
-            className={classNames(
-              projectcss.all,
-              sty.globalVariantsSelectContainer
-            )}
-          >
-            <div
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.text__kBzKi,
-                {
-                  [sty.textisTargeting__kBzKiThhg4]: hasVariant(
-                    $state,
-                    "isTargeting",
-                    "isTargeting"
-                  ),
-                }
-              )}
-            >
-              {"Target:"}
-            </div>
-            <Select
-              data-plasmic-name={"globalVariantSelect"}
-              data-plasmic-override={overrides.globalVariantSelect}
-              className={classNames("__wab_instance", sty.globalVariantSelect)}
-              icon={
-                <PlusSvgIcon
-                  className={classNames(projectcss.all, sty.svg__fiyZt)}
-                  role={"img"}
-                />
-              }
-              name={""}
-              onChange={async (...eventArgs: any) => {
-                ((...eventArgs) => {
-                  generateStateOnChangeProp($state, [
-                    "globalVariantSelect",
-                    "value",
-                  ])(eventArgs[0]);
-                }).apply(null, eventArgs);
-
-                if (
-                  eventArgs.length > 1 &&
-                  eventArgs[1] &&
-                  eventArgs[1]._plasmic_state_init_
-                ) {
-                  return;
-                }
-              }}
-              placeholder={
-                <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__nk0E
-                  )}
-                >
-                  {"Base"}
-                </div>
-              }
-              size={"tiny"}
-              value={generateStateValueProp($state, [
-                "globalVariantSelect",
-                "value",
-              ])}
-            >
-              <Select__Option
-                data-plasmic-name={"option"}
-                data-plasmic-override={overrides.option}
-                className={classNames("__wab_instance", sty.option)}
-                value={"base"}
-              >
-                <div
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.text__soIxL
-                  )}
-                >
-                  {"Base"}
-                </div>
-              </Select__Option>
-            </Select>
-          </div>
-        }
+        titleActions={null}
       />
 
       <div
@@ -308,27 +207,11 @@ const PlasmicDescendants = {
     "leftSearchPanel",
     "leftPaneHeader",
     "newTokenButton",
-    "globalVariantsSelectContainer",
-    "globalVariantSelect",
-    "option",
     "content",
   ],
   leftSearchPanel: ["leftSearchPanel"],
-  leftPaneHeader: [
-    "leftPaneHeader",
-    "newTokenButton",
-    "globalVariantsSelectContainer",
-    "globalVariantSelect",
-    "option",
-  ],
+  leftPaneHeader: ["leftPaneHeader", "newTokenButton"],
   newTokenButton: ["newTokenButton"],
-  globalVariantsSelectContainer: [
-    "globalVariantsSelectContainer",
-    "globalVariantSelect",
-    "option",
-  ],
-  globalVariantSelect: ["globalVariantSelect", "option"],
-  option: ["option"],
   content: ["content"],
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
@@ -339,9 +222,6 @@ type NodeDefaultElementType = {
   leftSearchPanel: typeof LeftSearchPanel;
   leftPaneHeader: typeof LeftPaneHeader;
   newTokenButton: typeof Button;
-  globalVariantsSelectContainer: "div";
-  globalVariantSelect: typeof Select;
-  option: typeof Select__Option;
   content: "div";
 };
 
@@ -356,7 +236,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicLeftGeneralDataTokensPanel__VariantsArgs;
     args?: PlasmicLeftGeneralDataTokensPanel__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicLeftGeneralDataTokensPanel__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicLeftGeneralDataTokensPanel__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicLeftGeneralDataTokensPanel__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props
@@ -409,11 +290,6 @@ export const PlasmicLeftGeneralDataTokensPanel = Object.assign(
     leftSearchPanel: makeNodeComponent("leftSearchPanel"),
     leftPaneHeader: makeNodeComponent("leftPaneHeader"),
     newTokenButton: makeNodeComponent("newTokenButton"),
-    globalVariantsSelectContainer: makeNodeComponent(
-      "globalVariantsSelectContainer"
-    ),
-    globalVariantSelect: makeNodeComponent("globalVariantSelect"),
-    option: makeNodeComponent("option"),
     content: makeNodeComponent("content"),
 
     // Metadata about props expected for PlasmicLeftGeneralDataTokensPanel

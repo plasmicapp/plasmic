@@ -25,7 +25,7 @@ import {
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
-import { VersionsTab as LeftVersionsPanel } from "../../components/sidebar-tabs/versions-tab"; // plasmic-import: YldGgVsq6N/component
+import { VersionsTab as LeftVersionsPanel } from "../../components/sidebar-tabs/versions-tab/index"; // plasmic-import: YldGgVsq6N/component
 import { AnimationSequencesPanel as LeftAnimationSequencesPanel } from "../../components/sidebar/AnimationSequenceControls"; // plasmic-import: ORzNrJx0uEH6/component
 import LeftComponentsPanel from "../../components/sidebar/LeftComponentsPanel"; // plasmic-import: 7Wsvgu6cRd/component
 import LeftGeneralDataTokensPanel from "../../components/sidebar/LeftGeneralDataTokensPanel"; // plasmic-import: WwK9TyWdjIfT/component
@@ -238,31 +238,6 @@ function PlasmicLeftPane__RenderFunc(props: {
       <LeftTabStrip
         data-plasmic-name={"leftTabStrip"}
         data-plasmic-override={overrides.leftTabStrip}
-        activeTab={
-          hasVariant($state, "type", "lint")
-            ? "lint"
-            : hasVariant($state, "type", "endpoints")
-            ? "endpoints"
-            : hasVariant($state, "type", "splits")
-            ? "splits"
-            : hasVariant($state, "type", "pages")
-            ? "pages"
-            : hasVariant($state, "type", "components")
-            ? "components"
-            : hasVariant($state, "type", "versions")
-            ? "versions"
-            : hasVariant($state, "type", "fonts")
-            ? "fonts"
-            : hasVariant($state, "type", "themes")
-            ? "themes"
-            : hasVariant($state, "type", "images")
-            ? "images"
-            : hasVariant($state, "type", "mixins")
-            ? "mixins"
-            : hasVariant($state, "type", "tokens")
-            ? "tokens"
-            : undefined
-        }
         bottomButtons={
           <LeftTabButton
             data-plasmic-name={"helpGroup"}
@@ -870,7 +845,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicLeftPane__VariantsArgs;
     args?: PlasmicLeftPane__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicLeftPane__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicLeftPane__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicLeftPane__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

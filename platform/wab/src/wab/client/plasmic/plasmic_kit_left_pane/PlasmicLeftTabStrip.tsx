@@ -22,7 +22,6 @@ import {
   PlasmicImg as PlasmicImg__,
   renderPlasmicSlot,
   SingleBooleanChoiceArg,
-  SingleChoiceArg,
   StrictProps,
   useDollarState,
 } from "@plasmicapp/react-web";
@@ -39,88 +38,29 @@ import projectcss from "../PP__plasmickit_left_pane.module.css"; // plasmic-impo
 import sty from "./PlasmicLeftTabStrip.module.css"; // plasmic-import: l7y_rhJyMt2/css
 
 import GearIcon from "../plasmic_kit/PlasmicIcon__Gear"; // plasmic-import: ZmVZmXEc9f_SR/icon
-import MixinIcon from "../plasmic_kit/PlasmicIcon__Mixin"; // plasmic-import: XA82Nhrgqj98Z/icon
 import TreeIcon from "../plasmic_kit/PlasmicIcon__Tree"; // plasmic-import: 4KZjuPY_m0VTb/icon
-import WandIcon from "../plasmic_kit/PlasmicIcon__Wand"; // plasmic-import: vTVU9zQnDPZGl/icon
 import KeyboardIcon from "../plasmic_kit_design_system/PlasmicIcon__Keyboard"; // plasmic-import: tSLSUCy1RH/icon
 import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
-import ClockSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ClockSvg"; // plasmic-import: 9MhqTIkUT/icon
 import ComponentsSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ComponentsSvg"; // plasmic-import: coPzxnFyi/icon
-import ComponentSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ComponentSvg"; // plasmic-import: vJVrKlrDD/icon
-import DevicesSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__DevicesSvg"; // plasmic-import: bbAxEiIwy/icon
-import DiamondsSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__DiamondsSvg"; // plasmic-import: uzBbTcdyE/icon
 import DotsHorizontalCircleSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__DotsHorizontalCircleSvg"; // plasmic-import: xdn8wiJBv/icon
-import DownloadSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__DownloadSvg"; // plasmic-import: Bu7POPssl/icon
 import FigmaSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__FigmaSvg"; // plasmic-import: cReVjwCaJ/icon
-import File2SvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__File2Svg"; // plasmic-import: zldfLXBdc/icon
-import FontFamily2SvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__FontFamily2Svg"; // plasmic-import: mlYvYWbm5/icon
 import HelpCircleSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__HelpCircleSvg"; // plasmic-import: zY-2PPrFT/icon
-import PaintbrushSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__PaintbrushSvg"; // plasmic-import: WPHwb7V6d/icon
-import PhotoSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__PhotoSvg"; // plasmic-import: BzQDBpjA9/icon
-import PlugSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__PlugSvg"; // plasmic-import: s2iV8XTPW/icon
-import Settings2SvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__Settings2Svg"; // plasmic-import: jFYH6BL9T/icon
 import SpeechBubbleSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__SpeechBubbleSvg"; // plasmic-import: nkJ1joJAv/icon
 import UserSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__UserSvg"; // plasmic-import: ejczgMIkT/icon
 import WarningTriangleSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__WarningTriangleSvg"; // plasmic-import: S0L-xosWD/icon
-import IconIcon from "./icons/PlasmicIcon__Icon"; // plasmic-import: CD14l2YUnk/icon
 import image9D5NIfkhj from "./images/image.svg"; // plasmic-import: 9D5nIFKHJ/picture
 
 createPlasmicElementProxy;
 
 export type PlasmicLeftTabStrip__VariantMembers = {
-  activeTab:
-    | "outline"
-    | "tokens"
-    | "mixins"
-    | "components"
-    | "images"
-    | "themes"
-    | "fonts"
-    | "imports"
-    | "versions"
-    | "pages"
-    | "responsiveness"
-    | "settings"
-    | "splits"
-    | "endpoints"
-    | "insert"
-    | "copilot"
-    | "lint"
-    | "expressions"
-    | "animationSequences";
   showAvatar: "showAvatar";
-  withInsertButton: "withInsertButton";
 };
 export type PlasmicLeftTabStrip__VariantsArgs = {
-  activeTab?: SingleChoiceArg<
-    | "outline"
-    | "tokens"
-    | "mixins"
-    | "components"
-    | "images"
-    | "themes"
-    | "fonts"
-    | "imports"
-    | "versions"
-    | "pages"
-    | "responsiveness"
-    | "settings"
-    | "splits"
-    | "endpoints"
-    | "insert"
-    | "copilot"
-    | "lint"
-    | "expressions"
-    | "animationSequences"
-  >;
   showAvatar?: SingleBooleanChoiceArg<"showAvatar">;
-  withInsertButton?: SingleBooleanChoiceArg<"withInsertButton">;
 };
 type VariantPropType = keyof PlasmicLeftTabStrip__VariantsArgs;
 export const PlasmicLeftTabStrip__VariantProps = new Array<VariantPropType>(
-  "activeTab",
-  "showAvatar",
-  "withInsertButton"
+  "showAvatar"
 );
 
 export type PlasmicLeftTabStrip__ArgsType = {
@@ -137,20 +77,6 @@ export type PlasmicLeftTabStrip__OverridesType = {
   root?: Flex__<"div">;
   insert?: Flex__<typeof AddButton>;
   divider?: Flex__<"div">;
-  copilot?: Flex__<typeof LeftTabButton>;
-  tokens?: Flex__<typeof LeftTabButton>;
-  mixins?: Flex__<typeof LeftTabButton>;
-  components?: Flex__<typeof LeftTabButton>;
-  pages?: Flex__<typeof LeftTabButton>;
-  images?: Flex__<typeof LeftTabButton>;
-  themes?: Flex__<typeof LeftTabButton>;
-  fonts?: Flex__<typeof LeftTabButton>;
-  responsiveness?: Flex__<typeof LeftTabButton>;
-  splits?: Flex__<typeof LeftTabButton>;
-  imports?: Flex__<typeof LeftTabButton>;
-  versions?: Flex__<typeof LeftTabButton>;
-  settings?: Flex__<typeof LeftTabButton>;
-  endpoints?: Flex__<typeof LeftTabButton>;
   figma?: Flex__<typeof IconButton>;
   keyboard?: Flex__<typeof IconButton>;
   slack?: Flex__<typeof IconButton>;
@@ -162,29 +88,7 @@ export type PlasmicLeftTabStrip__OverridesType = {
 export interface DefaultLeftTabStripProps {
   buttons?: React.ReactNode;
   bottomButtons?: React.ReactNode;
-  activeTab?: SingleChoiceArg<
-    | "outline"
-    | "tokens"
-    | "mixins"
-    | "components"
-    | "images"
-    | "themes"
-    | "fonts"
-    | "imports"
-    | "versions"
-    | "pages"
-    | "responsiveness"
-    | "settings"
-    | "splits"
-    | "endpoints"
-    | "insert"
-    | "copilot"
-    | "lint"
-    | "expressions"
-    | "animationSequences"
-  >;
   showAvatar?: SingleBooleanChoiceArg<"showAvatar">;
-  withInsertButton?: SingleBooleanChoiceArg<"withInsertButton">;
   className?: string;
 }
 
@@ -221,23 +125,10 @@ function PlasmicLeftTabStrip__RenderFunc(props: {
   const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
-        path: "activeTab",
-        type: "private",
-        variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.activeTab,
-      },
-      {
         path: "showAvatar",
         type: "private",
         variableType: "variant",
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.showAvatar,
-      },
-      {
-        path: "withInsertButton",
-        type: "private",
-        variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) =>
-          $props.withInsertButton,
       },
     ],
     [$props, $ctx, $refs]
@@ -264,56 +155,23 @@ function PlasmicLeftTabStrip__RenderFunc(props: {
         projectcss.plasmic_mixins,
         styleTokensClassNames,
         sty.root,
-        {
-          [sty.rootactiveTab_copilot]: hasVariant(
-            $state,
-            "activeTab",
-            "copilot"
-          ),
-          [sty.rootactiveTab_mixins]: hasVariant($state, "activeTab", "mixins"),
-          [sty.rootactiveTab_outline]: hasVariant(
-            $state,
-            "activeTab",
-            "outline"
-          ),
-          [sty.rootactiveTab_versions]: hasVariant(
-            $state,
-            "activeTab",
-            "versions"
-          ),
-          [sty.rootshowAvatar]: hasVariant($state, "showAvatar", "showAvatar"),
-          [sty.rootwithInsertButton]: hasVariant(
-            $state,
-            "withInsertButton",
-            "withInsertButton"
-          ),
-        }
+        { [sty.rootshowAvatar]: hasVariant($state, "showAvatar", "showAvatar") }
       )}
     >
       <AddButton
         data-plasmic-name={"insert"}
         data-plasmic-override={overrides.insert}
         className={classNames("__wab_instance", sty.insert, {
-          [sty.insertactiveTab_copilot]: hasVariant(
+          [sty.insertshowAvatar]: hasVariant(
             $state,
-            "activeTab",
-            "copilot"
-          ),
-          [sty.insertwithInsertButton]: hasVariant(
-            $state,
-            "withInsertButton",
-            "withInsertButton"
+            "showAvatar",
+            "showAvatar"
           ),
         })}
       />
 
       <div
         className={classNames(projectcss.all, sty.freeBox__s2Zn2, {
-          [sty.freeBoxactiveTab_copilot__s2Zn2NzL96]: hasVariant(
-            $state,
-            "activeTab",
-            "copilot"
-          ),
           [sty.freeBoxshowAvatar__s2Zn29NVfe]: hasVariant(
             $state,
             "showAvatar",
@@ -418,448 +276,7 @@ function PlasmicLeftTabStrip__RenderFunc(props: {
       <div
         data-plasmic-name={"divider"}
         data-plasmic-override={overrides.divider}
-        className={classNames(projectcss.all, sty.divider, {
-          [sty.divideractiveTab_copilot]: hasVariant(
-            $state,
-            "activeTab",
-            "copilot"
-          ),
-          [sty.divideractiveTab_mixins]: hasVariant(
-            $state,
-            "activeTab",
-            "mixins"
-          ),
-          [sty.dividerwithInsertButton]: hasVariant(
-            $state,
-            "withInsertButton",
-            "withInsertButton"
-          ),
-        })}
-      />
-
-      <LeftTabButton
-        data-plasmic-name={"copilot"}
-        data-plasmic-override={overrides.copilot}
-        className={classNames("__wab_instance", sty.copilot, {
-          [sty.copilotactiveTab_copilot]: hasVariant(
-            $state,
-            "activeTab",
-            "copilot"
-          ),
-          [sty.copilotactiveTab_endpoints]: hasVariant(
-            $state,
-            "activeTab",
-            "endpoints"
-          ),
-          [sty.copilotactiveTab_outline]: hasVariant(
-            $state,
-            "activeTab",
-            "outline"
-          ),
-          [sty.copilotshowAvatar]: hasVariant(
-            $state,
-            "showAvatar",
-            "showAvatar"
-          ),
-          [sty.copilotwithInsertButton]: hasVariant(
-            $state,
-            "withInsertButton",
-            "withInsertButton"
-          ),
-        })}
-        icon={
-          <WandIcon
-            className={classNames(projectcss.all, sty.svg__wujwR)}
-            role={"img"}
-          />
-        }
-        isSelected={
-          hasVariant($state, "activeTab", "copilot") ? true : undefined
-        }
-      />
-
-      <LeftTabButton
-        data-plasmic-name={"tokens"}
-        data-plasmic-override={overrides.tokens}
-        className={classNames("__wab_instance", sty.tokens, {
-          [sty.tokensactiveTab_copilot]: hasVariant(
-            $state,
-            "activeTab",
-            "copilot"
-          ),
-          [sty.tokensactiveTab_mixins]: hasVariant(
-            $state,
-            "activeTab",
-            "mixins"
-          ),
-          [sty.tokensactiveTab_tokens]: hasVariant(
-            $state,
-            "activeTab",
-            "tokens"
-          ),
-          [sty.tokenswithInsertButton]: hasVariant(
-            $state,
-            "withInsertButton",
-            "withInsertButton"
-          ),
-        })}
-        icon={
-          <DiamondsSvgIcon
-            className={classNames(projectcss.all, sty.svg__mn5Uf, {
-              [sty.svgactiveTab_tokens__mn5UfdVhrq]: hasVariant(
-                $state,
-                "activeTab",
-                "tokens"
-              ),
-            })}
-            role={"img"}
-          />
-        }
-        isSelected={
-          hasVariant($state, "activeTab", "tokens") ? true : undefined
-        }
-      />
-
-      <LeftTabButton
-        data-plasmic-name={"mixins"}
-        data-plasmic-override={overrides.mixins}
-        className={classNames("__wab_instance", sty.mixins, {
-          [sty.mixinsactiveTab_copilot]: hasVariant(
-            $state,
-            "activeTab",
-            "copilot"
-          ),
-          [sty.mixinsactiveTab_mixins]: hasVariant(
-            $state,
-            "activeTab",
-            "mixins"
-          ),
-        })}
-        icon={
-          <MixinIcon
-            className={classNames(projectcss.all, sty.svg__nxYe)}
-            role={"img"}
-          />
-        }
-        isSelected={
-          hasVariant($state, "activeTab", "mixins") ? true : undefined
-        }
-      />
-
-      <LeftTabButton
-        data-plasmic-name={"components"}
-        data-plasmic-override={overrides.components}
-        className={classNames("__wab_instance", sty.components, {
-          [sty.componentsactiveTab_components]: hasVariant(
-            $state,
-            "activeTab",
-            "components"
-          ),
-          [sty.componentsactiveTab_images]: hasVariant(
-            $state,
-            "activeTab",
-            "images"
-          ),
-          [sty.componentsactiveTab_pages]: hasVariant(
-            $state,
-            "activeTab",
-            "pages"
-          ),
-        })}
-        icon={
-          <ComponentSvgIcon
-            className={classNames(projectcss.all, sty.svg__kca03, {
-              [sty.svgshowAvatar__kca039NVfe]: hasVariant(
-                $state,
-                "showAvatar",
-                "showAvatar"
-              ),
-            })}
-            role={"img"}
-          />
-        }
-        isSelected={
-          hasVariant($state, "activeTab", "components") ? true : undefined
-        }
-      />
-
-      <LeftTabButton
-        data-plasmic-name={"pages"}
-        data-plasmic-override={overrides.pages}
-        className={classNames("__wab_instance", sty.pages, {
-          [sty.pagesactiveTab_components]: hasVariant(
-            $state,
-            "activeTab",
-            "components"
-          ),
-          [sty.pagesactiveTab_images]: hasVariant(
-            $state,
-            "activeTab",
-            "images"
-          ),
-          [sty.pagesactiveTab_pages]: hasVariant($state, "activeTab", "pages"),
-        })}
-        icon={
-          <File2SvgIcon
-            className={classNames(projectcss.all, sty.svg__g5Iby)}
-            role={"img"}
-          />
-        }
-        isSelected={hasVariant($state, "activeTab", "pages") ? true : undefined}
-      />
-
-      <LeftTabButton
-        data-plasmic-name={"images"}
-        data-plasmic-override={overrides.images}
-        className={classNames("__wab_instance", sty.images, {
-          [sty.imagesactiveTab_images]: hasVariant(
-            $state,
-            "activeTab",
-            "images"
-          ),
-          [sty.imagesactiveTab_themes]: hasVariant(
-            $state,
-            "activeTab",
-            "themes"
-          ),
-        })}
-        icon={
-          <PhotoSvgIcon
-            className={classNames(projectcss.all, sty.svg___75XmC, {
-              [sty.svgactiveTab_tokens___75XmCdVhrq]: hasVariant(
-                $state,
-                "activeTab",
-                "tokens"
-              ),
-              [sty.svgshowAvatar___75XmC9NVfe]: hasVariant(
-                $state,
-                "showAvatar",
-                "showAvatar"
-              ),
-            })}
-            role={"img"}
-          />
-        }
-        isSelected={
-          hasVariant($state, "activeTab", "images") ? true : undefined
-        }
-      />
-
-      <LeftTabButton
-        data-plasmic-name={"themes"}
-        data-plasmic-override={overrides.themes}
-        className={classNames("__wab_instance", sty.themes, {
-          [sty.themesactiveTab_fonts]: hasVariant($state, "activeTab", "fonts"),
-          [sty.themesactiveTab_themes]: hasVariant(
-            $state,
-            "activeTab",
-            "themes"
-          ),
-        })}
-        icon={
-          <PaintbrushSvgIcon
-            className={classNames(projectcss.all, sty.svg___15AOq)}
-            role={"img"}
-          />
-        }
-        isSelected={
-          hasVariant($state, "activeTab", "themes") ? true : undefined
-        }
-      />
-
-      <LeftTabButton
-        data-plasmic-name={"fonts"}
-        data-plasmic-override={overrides.fonts}
-        className={classNames("__wab_instance", sty.fonts, {
-          [sty.fontsactiveTab_fonts]: hasVariant($state, "activeTab", "fonts"),
-        })}
-        icon={
-          <FontFamily2SvgIcon
-            className={classNames(projectcss.all, sty.svg__odrDh)}
-            role={"img"}
-          />
-        }
-        isSelected={hasVariant($state, "activeTab", "fonts") ? true : undefined}
-      />
-
-      <LeftTabButton
-        data-plasmic-name={"responsiveness"}
-        data-plasmic-override={overrides.responsiveness}
-        className={classNames("__wab_instance", sty.responsiveness, {
-          [sty.responsivenessactiveTab_fonts]: hasVariant(
-            $state,
-            "activeTab",
-            "fonts"
-          ),
-          [sty.responsivenessactiveTab_pages]: hasVariant(
-            $state,
-            "activeTab",
-            "pages"
-          ),
-          [sty.responsivenessactiveTab_responsiveness]: hasVariant(
-            $state,
-            "activeTab",
-            "responsiveness"
-          ),
-        })}
-        icon={
-          <DevicesSvgIcon
-            className={classNames(projectcss.all, sty.svg__qjH4W)}
-            role={"img"}
-          />
-        }
-        isSelected={
-          hasVariant($state, "activeTab", "responsiveness") ? true : undefined
-        }
-      />
-
-      <LeftTabButton
-        data-plasmic-name={"splits"}
-        data-plasmic-override={overrides.splits}
-        className={classNames("__wab_instance", sty.splits, {
-          [sty.splitsactiveTab_fonts]: hasVariant($state, "activeTab", "fonts"),
-          [sty.splitsactiveTab_pages]: hasVariant($state, "activeTab", "pages"),
-          [sty.splitsactiveTab_responsiveness]: hasVariant(
-            $state,
-            "activeTab",
-            "responsiveness"
-          ),
-          [sty.splitsactiveTab_splits]: hasVariant(
-            $state,
-            "activeTab",
-            "splits"
-          ),
-        })}
-        icon={
-          <IconIcon
-            className={classNames(projectcss.all, sty.svg___2ZAk3)}
-            role={"img"}
-          />
-        }
-        isSelected={
-          hasVariant($state, "activeTab", "splits") ? true : undefined
-        }
-      />
-
-      <LeftTabButton
-        data-plasmic-name={"imports"}
-        data-plasmic-override={overrides.imports}
-        className={classNames("__wab_instance", sty.imports, {
-          [sty.importsactiveTab_fonts]: hasVariant(
-            $state,
-            "activeTab",
-            "fonts"
-          ),
-          [sty.importsactiveTab_imports]: hasVariant(
-            $state,
-            "activeTab",
-            "imports"
-          ),
-          [sty.importsactiveTab_versions]: hasVariant(
-            $state,
-            "activeTab",
-            "versions"
-          ),
-        })}
-        icon={
-          <DownloadSvgIcon
-            className={classNames(projectcss.all, sty.svg__c7UmG)}
-            role={"img"}
-          />
-        }
-        isSelected={
-          hasVariant($state, "activeTab", "imports") ? true : undefined
-        }
-      />
-
-      <LeftTabButton
-        data-plasmic-name={"versions"}
-        data-plasmic-override={overrides.versions}
-        className={classNames("__wab_instance", sty.versions, {
-          [sty.versionsactiveTab_versions]: hasVariant(
-            $state,
-            "activeTab",
-            "versions"
-          ),
-          [sty.versionsshowAvatar]: hasVariant(
-            $state,
-            "showAvatar",
-            "showAvatar"
-          ),
-        })}
-        icon={
-          <ClockSvgIcon
-            className={classNames(projectcss.all, sty.svg__pfWid)}
-            role={"img"}
-          />
-        }
-        isSelected={
-          hasVariant($state, "activeTab", "versions") ? true : undefined
-        }
-      />
-
-      <LeftTabButton
-        data-plasmic-name={"settings"}
-        data-plasmic-override={overrides.settings}
-        className={classNames("__wab_instance", sty.settings, {
-          [sty.settingsactiveTab_settings]: hasVariant(
-            $state,
-            "activeTab",
-            "settings"
-          ),
-        })}
-        icon={
-          <Settings2SvgIcon
-            className={classNames(projectcss.all, sty.svg__kWpBc, {
-              [sty.svgactiveTab_settings__kWpBcpqVqJ]: hasVariant(
-                $state,
-                "activeTab",
-                "settings"
-              ),
-            })}
-            role={"img"}
-          />
-        }
-        isSelected={
-          hasVariant($state, "activeTab", "settings") ? true : undefined
-        }
-      />
-
-      <LeftTabButton
-        data-plasmic-name={"endpoints"}
-        data-plasmic-override={overrides.endpoints}
-        className={classNames("__wab_instance", sty.endpoints, {
-          [sty.endpointsactiveTab_endpoints]: hasVariant(
-            $state,
-            "activeTab",
-            "endpoints"
-          ),
-          [sty.endpointsactiveTab_settings]: hasVariant(
-            $state,
-            "activeTab",
-            "settings"
-          ),
-        })}
-        icon={
-          <PlugSvgIcon
-            className={classNames(projectcss.all, sty.svg__sZo1B, {
-              [sty.svgactiveTab_endpoints__sZo1By0Hm3]: hasVariant(
-                $state,
-                "activeTab",
-                "endpoints"
-              ),
-              [sty.svgactiveTab_settings__sZo1BpqVqJ]: hasVariant(
-                $state,
-                "activeTab",
-                "settings"
-              ),
-            })}
-            role={"img"}
-          />
-        }
-        isSelected={
-          hasVariant($state, "activeTab", "endpoints") ? true : undefined
-        }
+        className={classNames(projectcss.all, sty.divider)}
       />
 
       <div
@@ -895,11 +312,6 @@ function PlasmicLeftTabStrip__RenderFunc(props: {
                 $state,
                 "showAvatar",
                 "showAvatar"
-              ),
-              [sty.svgwithInsertButton__r87Op9Mm6M]: hasVariant(
-                $state,
-                "withInsertButton",
-                "withInsertButton"
               ),
             })}
             role={"img"}
@@ -985,11 +397,6 @@ function PlasmicLeftTabStrip__RenderFunc(props: {
       </div>
       <div
         className={classNames(projectcss.all, sty.freeBox__igmvF, {
-          [sty.freeBoxactiveTab_copilot__igmvFnzL96]: hasVariant(
-            $state,
-            "activeTab",
-            "copilot"
-          ),
           [sty.freeBoxshowAvatar__igmvF9NVfe]: hasVariant(
             $state,
             "showAvatar",
@@ -1001,20 +408,10 @@ function PlasmicLeftTabStrip__RenderFunc(props: {
           data-plasmic-name={"players"}
           data-plasmic-override={overrides.players}
           className={classNames(projectcss.all, sty.players, {
-            [sty.playersactiveTab_copilot]: hasVariant(
-              $state,
-              "activeTab",
-              "copilot"
-            ),
             [sty.playersshowAvatar]: hasVariant(
               $state,
               "showAvatar",
               "showAvatar"
-            ),
-            [sty.playerswithInsertButton]: hasVariant(
-              $state,
-              "withInsertButton",
-              "withInsertButton"
             ),
           })}
         >
@@ -1026,11 +423,6 @@ function PlasmicLeftTabStrip__RenderFunc(props: {
                   $state,
                   "showAvatar",
                   "showAvatar"
-                ),
-                [sty.imgwithInsertButton__fZbIh9Mm6M]: hasVariant(
-                  $state,
-                  "withInsertButton",
-                  "withInsertButton"
                 ),
               })}
               displayHeight={
@@ -1053,11 +445,6 @@ function PlasmicLeftTabStrip__RenderFunc(props: {
                   $state,
                   "showAvatar",
                   "showAvatar"
-                ),
-                [sty.svgwithInsertButton__jFq8B9Mm6M]: hasVariant(
-                  $state,
-                  "withInsertButton",
-                  "withInsertButton"
                 ),
               })}
               role={"img"}
@@ -1115,11 +502,6 @@ function PlasmicLeftTabStrip__RenderFunc(props: {
           data-plasmic-override={overrides.avatar}
           alt={""}
           className={classNames(sty.avatar, {
-            [sty.avataractiveTab_copilot]: hasVariant(
-              $state,
-              "activeTab",
-              "copilot"
-            ),
             [sty.avatarshowAvatar]: hasVariant(
               $state,
               "showAvatar",
@@ -1148,20 +530,6 @@ const PlasmicDescendants = {
     "root",
     "insert",
     "divider",
-    "copilot",
-    "tokens",
-    "mixins",
-    "components",
-    "pages",
-    "images",
-    "themes",
-    "fonts",
-    "responsiveness",
-    "splits",
-    "imports",
-    "versions",
-    "settings",
-    "endpoints",
     "figma",
     "keyboard",
     "slack",
@@ -1171,20 +539,6 @@ const PlasmicDescendants = {
   ],
   insert: ["insert"],
   divider: ["divider"],
-  copilot: ["copilot"],
-  tokens: ["tokens"],
-  mixins: ["mixins"],
-  components: ["components"],
-  pages: ["pages"],
-  images: ["images"],
-  themes: ["themes"],
-  fonts: ["fonts"],
-  responsiveness: ["responsiveness"],
-  splits: ["splits"],
-  imports: ["imports"],
-  versions: ["versions"],
-  settings: ["settings"],
-  endpoints: ["endpoints"],
   figma: ["figma"],
   keyboard: ["keyboard"],
   slack: ["slack"],
@@ -1199,20 +553,6 @@ type NodeDefaultElementType = {
   root: "div";
   insert: typeof AddButton;
   divider: "div";
-  copilot: typeof LeftTabButton;
-  tokens: typeof LeftTabButton;
-  mixins: typeof LeftTabButton;
-  components: typeof LeftTabButton;
-  pages: typeof LeftTabButton;
-  images: typeof LeftTabButton;
-  themes: typeof LeftTabButton;
-  fonts: typeof LeftTabButton;
-  responsiveness: typeof LeftTabButton;
-  splits: typeof LeftTabButton;
-  imports: typeof LeftTabButton;
-  versions: typeof LeftTabButton;
-  settings: typeof LeftTabButton;
-  endpoints: typeof LeftTabButton;
   figma: typeof IconButton;
   keyboard: typeof IconButton;
   slack: typeof IconButton;
@@ -1232,7 +572,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicLeftTabStrip__VariantsArgs;
     args?: PlasmicLeftTabStrip__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicLeftTabStrip__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicLeftTabStrip__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicLeftTabStrip__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props
@@ -1283,20 +624,6 @@ export const PlasmicLeftTabStrip = Object.assign(
     // Helper components rendering sub-elements
     insert: makeNodeComponent("insert"),
     divider: makeNodeComponent("divider"),
-    copilot: makeNodeComponent("copilot"),
-    tokens: makeNodeComponent("tokens"),
-    mixins: makeNodeComponent("mixins"),
-    components: makeNodeComponent("components"),
-    pages: makeNodeComponent("pages"),
-    images: makeNodeComponent("images"),
-    themes: makeNodeComponent("themes"),
-    fonts: makeNodeComponent("fonts"),
-    responsiveness: makeNodeComponent("responsiveness"),
-    splits: makeNodeComponent("splits"),
-    imports: makeNodeComponent("imports"),
-    versions: makeNodeComponent("versions"),
-    settings: makeNodeComponent("settings"),
-    endpoints: makeNodeComponent("endpoints"),
     figma: makeNodeComponent("figma"),
     keyboard: makeNodeComponent("keyboard"),
     slack: makeNodeComponent("slack"),
