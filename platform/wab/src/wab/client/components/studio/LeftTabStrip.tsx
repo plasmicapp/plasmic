@@ -13,7 +13,6 @@ import KeyboardIcon from "@/wab/client/plasmic/plasmic_kit_design_system/Plasmic
 import BooksvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__BookSvg";
 import ChatDocssvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__ChatDocsSvg";
 import ClocksvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__ClockSvg";
-import CodeSvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__CodeSvg";
 import ComponentsvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__ComponentSvg";
 import ComponentssvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__ComponentsSvg";
 import DevicessvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__DevicesSvg";
@@ -27,6 +26,7 @@ import KeyframesIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicI
 import MessagesvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__MessageSvg";
 import Paintbrush2SvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__Paintbrush2Svg";
 import PhotosvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__PhotoSvg";
+import SearchSvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__SearchSvg";
 import WarningTrianglesvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__WarningTriangleSvg";
 import {
   DefaultLeftTabStripProps,
@@ -172,13 +172,6 @@ Help
           label: "Components",
           cond: canViewTab("components"),
         },
-        expressions: {
-          type: "item",
-          tabKey: "expressions",
-          icon: <CodeSvgIcon />,
-          label: "Expressions",
-          cond: canViewTab("expressions"),
-        },
         images: {
           type: "item",
           tabKey: "images",
@@ -254,6 +247,13 @@ Help
           label: "Published versions",
           cond: isLoggedIn && canViewTab("versions"),
           showAlert: props.useVersionsCTA ? "showYellowCircle" : undefined,
+        },
+        expressions: {
+          type: "item",
+          tabKey: "expressions",
+          icon: <SearchSvgIcon />,
+          label: "Expressions",
+          cond: canViewTab("expressions"),
         },
         figma: {
           type: "item",

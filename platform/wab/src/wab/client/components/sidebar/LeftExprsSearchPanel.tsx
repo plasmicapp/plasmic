@@ -11,11 +11,7 @@ import {
   getTextWithScrolling,
   truncate,
 } from "@/wab/client/components/view-common";
-import { Icon } from "@/wab/client/components/widgets/Icon";
-import IconButton from "@/wab/client/components/widgets/IconButton";
-import RefreshSvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__RefreshSvg";
 import { PlasmicLeftExprsSearchPanel } from "@/wab/client/plasmic/plasmic_kit_left_pane/PlasmicLeftExprsSearchPanel";
-import plasmicStyles from "@/wab/client/plasmic/plasmic_kit_left_pane/PlasmicLeftExprsSearchPanel.module.css";
 import {
   RightTabKey,
   StudioCtx,
@@ -92,6 +88,7 @@ interface ExpressionListItemProps {
   item: ExpressionItem;
   studioCtx: StudioCtx;
   matcher?: Matcher;
+  maxChars: number;
 }
 
 function getExprDisplayText(expr?: Expr, text?: RichText): string {
@@ -178,6 +175,7 @@ const ExpressionListItem = observer(function ExpressionListItem({
   item,
   studioCtx,
   matcher,
+  maxChars,
 }: ExpressionListItemProps) {
   const {
     component,
@@ -235,8 +233,8 @@ const ExpressionListItem = observer(function ExpressionListItem({
           style={{ fontSize: "13px", lineHeight: "1.4" }}
         >
           {matcher
-            ? matcher.boldSnippetsWithScrolling(displayText, 36)
-            : getTextWithScrolling(displayText, 36, matcher)}
+            ? matcher.boldSnippetsWithScrolling(displayText, maxChars)
+            : getTextWithScrolling(displayText, maxChars, matcher)}
         </div>
         <div
           className="expression-location mt-xsm text-m dimfg"
@@ -444,6 +442,37 @@ const LeftExprsSearchPanel = observer(function LeftExprsSearchPanel() {
     ExprTypeValue[]
   >(() => getUsedExprTypes(expressions));
 
+  const containerRef = React.useRef<HTMLDivElement>(null);
+  const [maxChars, setMaxChars] = React.useState(36);
+
+  // Use ResizeObserver to dynamically calculate character limit based on content area width
+  React.useEffect(() => {
+    const container = containerRef.current;
+    if (!container) {
+      return;
+    }
+
+    const updateMaxChars = () => {
+      const width = container.offsetWidth;
+      // Estimate character width for font at 13px
+      const charWidth = 7;
+      const availableWidth = Math.max(0, width - 14);
+      const calculatedMaxChars = Math.floor(availableWidth / charWidth);
+      setMaxChars(calculatedMaxChars);
+    };
+    updateMaxChars();
+
+    const resizeObserver = new ResizeObserver(() => {
+      updateMaxChars();
+    });
+
+    resizeObserver.observe(container);
+
+    return () => {
+      resizeObserver.disconnect();
+    };
+  }, []);
+
   const debouncedSearch = useDebounce(searchQuery, 300);
 
   // Create matcher for the search query
@@ -455,11 +484,12 @@ const LeftExprsSearchPanel = observer(function LeftExprsSearchPanel() {
     [debouncedSearch]
   );
 
-  const handleRefresh = () => {
+  // Update expressions when revisionNum changes (site is updated)
+  React.useEffect(() => {
     const newExpressions = collectAllExprs(studioCtx.site);
     setExpressions(newExpressions);
     setSelectedExprTypes(getUsedExprTypes(newExpressions));
-  };
+  }, [studioCtx.dbCtx().revisionNum]);
 
   const filteredExprs = React.useMemo(() => {
     let filtered = expressions;
@@ -620,58 +650,48 @@ const LeftExprsSearchPanel = observer(function LeftExprsSearchPanel() {
       exprsText={`Found ${filteredExprs.length} expression${
         filteredExprs.length !== 1 ? "s" : ""
       }`}
-      refreshIcon={
-        <IconButton
-          type="seamless"
-          onClick={handleRefresh}
-          tooltip="Refresh expressions list"
-        >
-          <Icon
-            size={24}
-            icon={RefreshSvgIcon}
-            className={plasmicStyles.svg__qgd5}
-          />
-        </IconButton>
-      }
       content={
-        filteredExprs.length === 0 ? (
-          <div className="p-m text-center text-secondary">
-            No matching expressions found
-          </div>
-        ) : (
-          <VirtualGroupedList
-            items={virtualItems}
-            renderItem={(item: ExpressionItem, _group) => (
-              <ExpressionListItem
-                item={item}
-                studioCtx={studioCtx}
-                matcher={matcher}
-              />
-            )}
-            itemHeight={50}
-            renderGroupHeader={(groupName: string) => {
-              const groupItem = virtualItems.find(
-                (v) => v.type === "group" && v.group === groupName
-              );
-              const itemCount =
-                groupItem?.type === "group" ? groupItem.items.length : 0;
-              return (
-                <div
-                  style={{
-                    fontSize: "12px",
-                    fontWeight: "500",
-                    padding: "6px 0px",
-                  }}
-                >
-                  {groupName} ({itemCount})
-                </div>
-              );
-            }}
-            headerHeight={28}
-            hideEmptyGroups={true}
-            forceExpandAll={false}
-          />
-        )
+        <div ref={containerRef} className="fill-width fill-height">
+          {filteredExprs.length === 0 ? (
+            <div className="p-m text-center text-secondary">
+              No matching expressions found
+            </div>
+          ) : (
+            <VirtualGroupedList
+              items={virtualItems}
+              renderItem={(item: ExpressionItem, _group) => (
+                <ExpressionListItem
+                  item={item}
+                  studioCtx={studioCtx}
+                  matcher={matcher}
+                  maxChars={maxChars}
+                />
+              )}
+              itemHeight={50}
+              renderGroupHeader={(groupName: string) => {
+                const groupItem = virtualItems.find(
+                  (v) => v.type === "group" && v.group === groupName
+                );
+                const itemCount =
+                  groupItem?.type === "group" ? groupItem.items.length : 0;
+                return (
+                  <div
+                    style={{
+                      fontSize: "12px",
+                      fontWeight: "500",
+                      padding: "6px 0px",
+                    }}
+                  >
+                    {groupName} ({itemCount})
+                  </div>
+                );
+              }}
+              headerHeight={28}
+              hideEmptyGroups={true}
+              forceExpandAll={false}
+            />
+          )}
+        </div>
       }
     />
   );

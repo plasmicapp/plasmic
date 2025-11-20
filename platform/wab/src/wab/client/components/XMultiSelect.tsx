@@ -296,7 +296,11 @@ class _XMultiSelect<Item> extends React.Component<
                         getInputProps({
                           ref: this.inputBox,
                           disabled: isDisabled,
-                          onClick,
+                          onClick: (e: React.MouseEvent) => {
+                            // Always open the menu when clicked, even if already focused
+                            downshift.openMenu();
+                            onClick?.(e);
+                          },
                           onBlur: (e) => {
                             this.setState({ focused: false });
                             if (onBlur) {
