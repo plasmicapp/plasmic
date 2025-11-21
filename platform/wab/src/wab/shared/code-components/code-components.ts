@@ -2679,7 +2679,8 @@ function createCustomFunctionFromRegistration(
         if (existingParam && existingParam.type.name === argType.name) {
           return existingParam;
         }
-        return typeFactory.arg(name, argType);
+
+        return typeFactory.arg(name, argType, undefined);
       }) ?? [],
     isQuery: functionReg.meta.isQuery ?? false,
   });

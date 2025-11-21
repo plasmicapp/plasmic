@@ -648,8 +648,7 @@ Expr
     expr: Expr
     # FunctionArg makes a WeakRef to ArgType, which only works if
     # the FunctionType that owns ArgType is stored in the model.
-    # If not, then use StrongFunctionArg, which owns its
-    # ArgType
+    # If not, then use StrongFunctionArg, which owns its ArgType
     StrongFunctionArg
       argType: ArgType
   CollectionExpr

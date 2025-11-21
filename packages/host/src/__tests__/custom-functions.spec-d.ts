@@ -11,6 +11,8 @@ import type {
   NumberType,
   ObjectType,
   ParamType,
+  PlainBooleanType,
+  PlainNumberType,
   PlainStringType,
   RequiredParam,
   SingleChoiceType,
@@ -427,6 +429,128 @@ describe("custom-function param type regression tests", () => {
     };
 
     expect<CustomFunctionMeta<typeof processData>>().type.toBeAssignableWith(
+      meta
+    );
+  });
+});
+
+describe("custom-function param defaultValue support", () => {
+  it("Primitive types support optional defaultValue", () => {
+    const stringParam = { name: "text", type: "string" } as const;
+    expect<PlainStringType<string>>().type.toBeAssignableWith(stringParam);
+    expect<PlainStringType<string>>().type.toBeAssignableWith({
+      ...stringParam,
+      defaultValue: "Hello",
+    });
+
+    const numberParam = { name: "count", type: "number" } as const;
+    expect<PlainNumberType<number>>().type.toBeAssignableWith(numberParam);
+    expect<PlainNumberType<number>>().type.toBeAssignableWith({
+      ...numberParam,
+      defaultValue: 42,
+    });
+
+    const boolParam = { name: "enabled", type: "boolean" } as const;
+    expect<PlainBooleanType<boolean>>().type.toBeAssignableWith(boolParam);
+    expect<PlainBooleanType<boolean>>().type.toBeAssignableWith({
+      ...boolParam,
+      defaultValue: true,
+    });
+  });
+
+  it("Complex types support optional defaultValue", () => {
+    type TestArgs = [obj: Record<string, any>, arr: any[]];
+
+    const objParam = { name: "options", type: "object" } as const;
+    expect<ObjectType<TestArgs>>().type.toBeAssignableWith(objParam);
+    expect<ObjectType<TestArgs>>().type.toBeAssignableWith({
+      ...objParam,
+      defaultValue: { foo: "bar" },
+    });
+
+    const arrParam = { name: "items", type: "array" } as const;
+    expect<ArrayType<TestArgs>>().type.toBeAssignableWith(arrParam);
+    expect<ArrayType<TestArgs>>().type.toBeAssignableWith({
+      ...arrParam,
+      defaultValue: [1, 2, 3],
+    });
+  });
+
+  it("Choice types support optional defaultValue", () => {
+    type TestArgs = [color: "red" | "blue"];
+
+    // Without default values
+    const single: SingleChoiceType<TestArgs, "red" | "blue"> = {
+      name: "color",
+      type: "choice",
+      options: ["red", "blue"],
+    };
+    expect<
+      SingleChoiceType<TestArgs, "red" | "blue">
+    >().type.toBeAssignableWith(single);
+
+    // With default values
+    const singleWithDefault: SingleChoiceType<TestArgs, "red" | "blue"> = {
+      name: "color",
+      type: "choice",
+      options: ["red", "blue"],
+      defaultValue: "red",
+    };
+    expect<
+      SingleChoiceType<TestArgs, "red" | "blue">
+    >().type.toBeAssignableWith(singleWithDefault);
+
+    const multi: MultiChoiceType<TestArgs, "red" | "blue"> = {
+      name: "colors",
+      type: "choice",
+      multiSelect: true,
+      options: ["red", "blue"],
+      defaultValue: ["red"],
+    };
+    expect<MultiChoiceType<TestArgs, "red" | "blue">>().type.toBeAssignableWith(
+      multi
+    );
+  });
+
+  it("CustomFunctionMeta with defaultValue on params", () => {
+    function greet(name: string, greeting?: string): string {
+      return `${greeting ?? "Hello"}, ${name}!`;
+    }
+
+    const stringParam = { name: "name", type: "string" } as const;
+    const meta: CustomFunctionMeta<typeof greet> = {
+      name: "greet",
+      importPath: "./greet",
+      params: [
+        stringParam,
+        { ...stringParam, name: "greeting", defaultValue: "Hello" },
+      ],
+    };
+
+    expect<CustomFunctionMeta<typeof greet>>().type.toBeAssignableWith(meta);
+  });
+
+  it("CustomFunctionMeta with mixed defaultValues", () => {
+    function calculate(
+      base: number,
+      multiplier?: number,
+      offset?: number
+    ): number {
+      return base * (multiplier ?? 1) + (offset ?? 0);
+    }
+
+    const numParam = { name: "base", type: "number" } as const;
+    const meta: CustomFunctionMeta<typeof calculate> = {
+      name: "calculate",
+      importPath: "./calculate",
+      params: [
+        numParam,
+        { ...numParam, name: "multiplier", defaultValue: 1 },
+        { ...numParam, name: "offset", defaultValue: 0 },
+      ],
+    };
+
+    expect<CustomFunctionMeta<typeof calculate>>().type.toBeAssignableWith(
       meta
     );
   });

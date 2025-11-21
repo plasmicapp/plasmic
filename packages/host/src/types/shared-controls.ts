@@ -28,10 +28,14 @@ export type InferDataType<P> = P extends CanvasComponentProps<infer Data>
   ? Data
   : any;
 
-export interface CommonTypeBase<Ctx extends any[]> {
+export interface CommonTypeBase {
   description?: string;
   helpText?: string;
-  required?: boolean;
+  /**
+   * If true, will hide the prop in a collapsed section; good for props that
+   * should not usually be used.
+   */
+  advanced?: boolean;
   /**
    * If the user has chosen to use a dynamic expression for this prop, provide
    * a hint as to the expected values that the expression should evaluate to.
@@ -40,12 +44,20 @@ export interface CommonTypeBase<Ctx extends any[]> {
    */
   exprHint?: string;
   /**
-   * Function for whether this prop should be hidden in the right panel,
-   * given the current props for this component
-   */
-  hidden?: ContextDependentConfig<Ctx, boolean>;
-  /**
    * If true, does not allow the user to use a dynamic expression for this prop
    */
   disableDynamicValue?: boolean;
+}
+
+export interface Defaultable<Ctx extends any[], T> {
+  /**
+   * Default value to set for this prop when the component is instantiated
+   */
+  defaultValue?: T;
+
+  /**
+   * Specify that default when no prop/param is provided,
+   * so the Plasmic user can see it in the studio UI
+   */
+  defaultValueHint?: T | ContextDependentConfig<Ctx, T | undefined>;
 }

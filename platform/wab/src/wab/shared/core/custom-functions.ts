@@ -2,8 +2,8 @@ import { customFunctionId } from "@/wab/shared/code-components/code-components";
 import { arrayRemove } from "@/wab/shared/collections";
 import { swallow, withoutNils } from "@/wab/shared/common";
 import {
-  clone,
   ExprCtx,
+  clone,
   getRawCode,
   isFallbackSet,
 } from "@/wab/shared/core/exprs";
@@ -12,10 +12,10 @@ import { tryEvalExpr } from "@/wab/shared/eval";
 import {
   CustomFunction,
   CustomFunctionExpr,
-  isKnownCustomFunctionExpr,
-  isKnownEventHandler,
   ProjectDependency,
   TplNode,
+  isKnownCustomFunctionExpr,
+  isKnownEventHandler,
 } from "@/wab/shared/model/classes";
 import {
   executeServerQuery,

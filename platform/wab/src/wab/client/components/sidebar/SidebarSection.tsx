@@ -136,6 +136,7 @@ interface SidebarSectionProps
   tooltip?: ReactNode;
   emptyBody?: boolean;
   zeroBodyPadding?: boolean;
+  zeroHeaderPadding?: boolean;
   noBottomPadding?: boolean;
   maxHeight?: number;
   style?: CSSProperties;
@@ -172,6 +173,7 @@ export function SidebarSection_(
     children,
     emptyBody = false,
     zeroBodyPadding,
+    zeroHeaderPadding,
     noBottomPadding,
     scrollable,
     maxHeight,
@@ -262,6 +264,7 @@ export function SidebarSection_(
           <div
             className={cn(styles.headerRoot, {
               [styles["headerRoot--grid"]]: oneLiner,
+              SidebarSection__Header__ZeroHPadding: zeroHeaderPadding,
             })}
             onClick={(e) => {
               if (onHeaderClick) {

@@ -30,6 +30,7 @@ import {
   CommonTypeBase,
   ContextDependentConfig,
   ControlExtras,
+  Defaultable,
   GenericContext,
   InferDataType,
 } from "./shared-controls";
@@ -45,14 +46,10 @@ export type ComponentContextConfig<Props, R> = ContextDependentConfig<
   R
 >;
 
-export interface PropTypeBase<Ctx extends any[]> extends CommonTypeBase<Ctx> {
+export interface PropTypeBase<Ctx extends any[]> extends CommonTypeBase {
   displayName?: string;
+  required?: boolean;
   readOnly?: boolean | ContextDependentConfig<Ctx, boolean>;
-  /**
-   * If true, will hide the prop in a collapsed section; good for props that
-   * should not usually be used.
-   */
-  advanced?: boolean;
   /**
    * If set to true, the component will be remounted when the prop value is updated.
    * (This behavior only applies to canvas)
@@ -62,20 +59,15 @@ export interface PropTypeBase<Ctx extends any[]> extends CommonTypeBase<Ctx> {
    * If true, the prop can't be overriden in different variants.
    */
   invariantable?: boolean;
+  /**
+   * Function for whether this prop should be hidden in the right panel,
+   * given the current props for this component
+   */
+  hidden?: ContextDependentConfig<Ctx, boolean>;
 }
 
-export interface Defaultable<Ctx extends any[], T> {
-  /**
-   * Default value to set for this prop when the component is instantiated
-   */
-  defaultValue?: T;
-
-  /**
-   * If no prop is given, the component uses a default; specify what
-   * that default is so the Plasmic user can see it in the studio UI
-   */
-  defaultValueHint?: T | ContextDependentConfig<Ctx, T | undefined>;
-
+interface ExtendedDefaultable<Ctx extends any[], T>
+  extends Defaultable<Ctx, T> {
   /**
    * Use a dynamic value expression as the default instead
    */
@@ -112,7 +104,7 @@ export interface Controllable {
 export type PropTypeBaseDefault<P, T> = PropTypeBase<
   ComponentControlContext<P>
 > &
-  Defaultable<ComponentControlContext<P>, T> &
+  ExtendedDefaultable<ComponentControlContext<P>, T> &
   Controllable;
 
 // String types

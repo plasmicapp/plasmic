@@ -11,6 +11,7 @@ import { QueryBuilderCore } from "./query-builder-types";
 import {
   CommonTypeBase,
   ContextDependentConfig,
+  Defaultable,
   GenericContext,
 } from "./shared-controls";
 import { Nullish } from "./type-utils";
@@ -25,21 +26,22 @@ export type FunctionContextConfig<
   R
 > = ContextDependentConfig<FunctionControlContext<Args>, R>;
 
-export interface BaseParam {
+export interface ParamTypeBase extends CommonTypeBase {
   name: string;
-  description?: string;
   isOptional?: boolean;
   isRestParameter?: boolean;
 }
 
-export interface FunctionMeta<Args extends any[] = any>
-  extends CommonTypeBase<FunctionControlContext<Args>> {
+export type ParamTypeBaseDefault<Ctx extends any[], T> = ParamTypeBase &
+  Defaultable<Ctx, T>;
+
+export interface FunctionMeta extends CommonTypeBase {
   name: string;
   rest?: boolean;
 }
 
 export interface PlainStringType<T extends Nullish<string> = string>
-  extends BaseParam {
+  extends ParamTypeBaseDefault<any[], T> {
   type: "string" | `'${T}'`;
 }
 
@@ -52,54 +54,70 @@ export type StringType<P, T extends string = string> =
   | AnyType;
 
 export interface PlainNumberType<T extends Nullish<number> = number>
-  extends BaseParam {
+  extends ParamTypeBaseDefault<any[], T> {
   type: "number" | `${number extends T ? number : T}`;
 }
 
 export type NumberType<P, T extends number = number> =
   | PlainNumberType<T>
-  | (BaseParam & NumberTypeBaseCore<FunctionControlContext<P>>)
+  | (ParamTypeBaseDefault<FunctionControlContext<P>, T> &
+      NumberTypeBaseCore<FunctionControlContext<P>>)
   | ChoiceType<P, T>
   | AnyType;
 
 export interface PlainBooleanType<T extends Nullish<boolean> = boolean>
-  extends BaseParam {
+  extends ParamTypeBaseDefault<any[], T> {
   type: "boolean" | `${boolean extends T ? boolean : T}`;
 }
 
 export type BooleanType<P, T extends boolean = boolean> =
   | PlainBooleanType<T>
-  | (BaseParam & RichBooleanCore)
+  | (ParamTypeBaseDefault<FunctionControlContext<P>, T> & RichBooleanCore)
   | ChoiceType<P, T>
   | AnyType;
 
-export type GraphQLType<P> = BaseParam & GraphQLCore<FunctionControlContext<P>>;
+export type GraphQLType<P> = ParamTypeBaseDefault<
+  FunctionControlContext<P>,
+  any
+> &
+  GraphQLCore<FunctionControlContext<P>>;
 
-export interface PlainNullType extends BaseParam {
+export interface PlainNullType extends ParamTypeBaseDefault<any[], null> {
   type: "null";
 }
 export type NullType = PlainNullType | AnyType;
 
-export interface PlainUndefinedType extends BaseParam {
+export interface PlainUndefinedType
+  extends ParamTypeBaseDefault<any[], undefined> {
   type: "undefined";
 }
 export type UndefinedType = PlainUndefinedType | AnyType;
 
-export type ObjectType<P> = BaseParam &
+export type ObjectType<P> = ParamTypeBaseDefault<
+  FunctionControlContext<P>,
+  Record<string, any>
+> &
   ObjectTypeBaseCore<FunctionControlContext<P>, AnyTyping<P, any>>;
 
-export type ArrayType<P> = BaseParam &
+export type ArrayType<P> = ParamTypeBaseDefault<
+  FunctionControlContext<P>,
+  any[]
+> &
   ArrayTypeBaseCore<FunctionControlContext<P>, AnyTyping<P, any>>;
 
-export type QueryBuilderType<P> = BaseParam &
+export type QueryBuilderType<P> = ParamTypeBaseDefault<
+  FunctionControlContext<P>,
+  any
+> &
   QueryBuilderCore<FunctionControlContext<P>>;
 
-export interface PlainAnyType extends BaseParam {
+export interface PlainAnyType
+  extends ParamTypeBaseDefault<FunctionControlContext<any>, any> {
   type: "any";
 }
 export type AnyType = PlainAnyType;
 
-export interface PlainVoidType extends BaseParam {
+export interface PlainVoidType extends ParamTypeBase {
   type: "void";
 }
 export type VoidType = PlainVoidType | AnyType;
@@ -131,7 +149,8 @@ export type ToTuple<T> = T extends any[] ? T : never;
 export type FunctionChoiceType<
   Args,
   Opt extends ChoiceValue = ChoiceValue
-> = FunctionMeta<ToTuple<Args>> &
+> = FunctionMeta &
+  Defaultable<FunctionControlContext<ToTuple<Args>>, Opt | Opt[]> &
   ChoiceCore<FunctionControlContext<ToTuple<Args>>, Opt>;
 
 export interface SingleChoiceType<P, Opt extends ChoiceValue = ChoiceValue>
@@ -154,11 +173,19 @@ export type ChoiceType<P, T extends ChoiceValue = ChoiceValue> =
   | MultiChoiceType<P, T>
   | CustomChoiceType<P, T>;
 
-export type DateStringType = BaseParam & DateStringCore;
-export type DateRangeStringsType = BaseParam & DateRangeStringsCore;
+export type DateStringType = ParamTypeBaseDefault<
+  FunctionControlContext<string>,
+  string
+> &
+  DateStringCore;
+export type DateRangeStringsType = ParamTypeBaseDefault<
+  FunctionControlContext<[string, string]>,
+  [string, string]
+> &
+  DateRangeStringsCore;
 
 export interface DynamicType<P>
-  extends BaseParam,
+  extends ParamTypeBase,
     DynamicCore<FunctionControlContext<ToTuple<P>>, ParamType<P, any>> {}
 
 export type RestrictedType<P, T> = IsAny<T> extends true
