@@ -29,6 +29,7 @@ const DOLLAR_VARS = [
   "$queries",
   "$state",
   "$steps",
+  "$dataTokens",
   "$$",
 ] as const;
 

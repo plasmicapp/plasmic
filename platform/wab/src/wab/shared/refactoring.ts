@@ -18,16 +18,17 @@ import {
   ComponentDataQuery,
   ComponentServerQuery,
   CustomFunction,
+  DataToken,
   Expr,
   Interaction,
-  isKnownCustomCode,
-  isKnownFunctionExpr,
-  isKnownObjectPath,
-  isKnownVariantsRef,
-  isKnownVarRef,
   Param,
   Site,
   TplNode,
+  isKnownCustomCode,
+  isKnownFunctionExpr,
+  isKnownObjectPath,
+  isKnownVarRef,
+  isKnownVariantsRef,
 } from "@/wab/shared/model/classes";
 
 /**
@@ -70,6 +71,30 @@ export function isQueryUsedInExpr(
     const varName = toVarName(queryName);
     return info.usedDollarVarKeys.$queries.has(varName);
   }
+  return false;
+}
+
+/**
+ * Returns boolean indicating whether `expr` is referencing a data token.
+ */
+export function isDataTokenUsedInExpr(
+  token: DataToken,
+  expr: Expr | null | undefined
+): boolean {
+  if (!expr) {
+    return false;
+  }
+
+  if (Exprs.isRealCodeExpr(expr)) {
+    assert(
+      isKnownCustomCode(expr) || isKnownObjectPath(expr),
+      "Real code expression must be CustomCode or ObjectPath"
+    );
+    const varName = toVarName(token.name);
+    const info = parseExpr(expr);
+    return info.usedDollarVarKeys.$dataTokens.has(varName);
+  }
+
   return false;
 }
 
@@ -364,5 +389,33 @@ export function renameDollarFunctions(
     const oldName = customFunctionId(oldFunction);
     const newName = customFunctionId(newFunction);
     renameObjectInExpr(expr, "$$", "$$", oldName, newName);
+  }
+}
+
+/**
+ * Renames a data token and updates all expressions that reference it.
+ */
+export function renameDataTokenAndFixExprs(
+  site: Site,
+  dataToken: DataToken,
+  newName: string
+) {
+  const oldVarName = toVarName(dataToken.name);
+  const newVarName = toVarName(newName);
+
+  // Find all expressions across all components in the site
+  for (const component of site.components) {
+    const refs = Tpls.findExprsInComponent(component);
+    for (const { expr } of refs) {
+      if (isDataTokenUsedInExpr(dataToken, expr)) {
+        renameObjectInExpr(
+          expr,
+          "$dataTokens",
+          "$dataTokens",
+          oldVarName,
+          newVarName
+        );
+      }
+    }
   }
 }

@@ -12,6 +12,8 @@ import {
   dataTypes,
   getDataTokenType,
 } from "@/wab/commons/DataToken";
+import { componentsReferencingDataToken } from "@/wab/shared/cached-selectors";
+import { customCode, stripParens } from "@/wab/shared/core/exprs";
 import { DataToken } from "@/wab/shared/model/classes";
 import { isNil } from "lodash";
 import { observer } from "mobx-react";
@@ -84,9 +86,15 @@ export const DataTokenEditModal = observer(function DataTokenEditModal(props: {
           <SimpleTextbox
             defaultValue={token.name}
             onValueChange={(name) =>
-              studioCtx.changeUnsafe(() => {
-                studioCtx.tplMgr().renameDataToken(token, name);
-              })
+              studioCtx.changeObserved(
+                () => [
+                  ...componentsReferencingDataToken(studioCtx.site, token),
+                ],
+                ({ success }) => {
+                  studioCtx.tplMgr().renameDataToken(token, name);
+                  return success();
+                }
+              )
             }
             placeholder={"(unnamed token)"}
             autoFocus={defaultEditingName}
@@ -167,12 +175,16 @@ function getDisplayValue(storedValue: string, type: DataTokenType) {
       // If it's not valid JSON, return as-is
     }
   }
-  return storedValue;
+  return stripParens(storedValue);
 }
 
 function getStoredValue(displayValue: string, type: DataTokenType) {
   if (type === "string") {
     return JSON.stringify(displayValue);
+  }
+  if (type === "code") {
+    //  Store the code inside parentheses so `tryEvalExpr` can evaluate it correctly.
+    return customCode(displayValue).code;
   }
   return displayValue;
 }

@@ -1,29 +1,38 @@
 import type { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { arrayReversed } from "@/wab/commons/collections";
+import { $$$ } from "@/wab/shared/TplQuery";
+import {
+  getStyleOrCodeComponentVariantIdentifierName,
+  isGlobalVariant,
+  isGlobalVariantGroup,
+  isStyleOrCodeComponentVariant,
+  tryGetBaseVariantSetting,
+} from "@/wab/shared/Variants";
 import {
   componentToTplComponents,
+  componentsReferencingDataToken,
   deepComponentToReferencers,
   extractComponentVariantSettings,
   extractImageAssetRefsByAttrs,
 } from "@/wab/shared/cached-selectors";
 import {
+  TypeStamped,
   ensure,
   ensureArrayOfInstances,
   tuple,
-  TypeStamped,
   xDifference,
 } from "@/wab/shared/common";
 import { allComponentVariants } from "@/wab/shared/core/components";
 import {
   ChangeNode,
-  mkArrayBeforeSplice,
   ModelChange,
   RecordedChanges,
+  mkArrayBeforeSplice,
 } from "@/wab/shared/core/observable-model";
 import {
   ALWAYS_RESOLVE_MIXIN_PROPS,
-  plasmicImgAttrStyles,
   SIZE_PROPS,
+  plasmicImgAttrStyles,
 } from "@/wab/shared/core/style-props";
 import {
   findVariantSettingsUnderTpl,
@@ -37,8 +46,19 @@ import {
 } from "@/wab/shared/core/tpls";
 import {
   Component,
+  Mixin,
+  ProjectDependency,
+  RuleSet,
+  Site,
+  ThemeLayoutSettings,
+  TplComponent,
+  TplNode,
+  Variant,
+  VariantGroup,
+  VariantSetting,
   isKnownColumnsConfig,
   isKnownComponent,
+  isKnownDataToken,
   isKnownImageAsset,
   isKnownMixin,
   isKnownProjectDependency,
@@ -50,30 +70,12 @@ import {
   isKnownThemeStyle,
   isKnownTplNode,
   isKnownVariant,
-  isKnownVariantedRuleSet,
-  isKnownVariantedValue,
   isKnownVariantGroup,
   isKnownVariantSetting,
-  Mixin,
-  ProjectDependency,
-  RuleSet,
-  Site,
-  ThemeLayoutSettings,
-  TplComponent,
-  TplNode,
-  Variant,
-  VariantGroup,
-  VariantSetting,
+  isKnownVariantedRuleSet,
+  isKnownVariantedValue,
 } from "@/wab/shared/model/classes";
 import { hasSpecialSizeVal } from "@/wab/shared/sizingutils";
-import { $$$ } from "@/wab/shared/TplQuery";
-import {
-  getStyleOrCodeComponentVariantIdentifierName,
-  isGlobalVariant,
-  isGlobalVariantGroup,
-  isStyleOrCodeComponentVariant,
-  tryGetBaseVariantSetting,
-} from "@/wab/shared/Variants";
 import L, { omit } from "lodash";
 
 export enum ChangesType {
@@ -382,6 +384,13 @@ export function summarizeChanges(
     }
   }
 
+  const changedComponentsByDataToken = new Set<Component>();
+  for (const change of changes) {
+    getChangedComponentsByDataToken(studioCtx, change)?.forEach((c) =>
+      changedComponentsByDataToken.add(c)
+    );
+  }
+
   const globalContextChanged = changes.some(
     (change) =>
       change.path &&
@@ -397,7 +406,10 @@ export function summarizeChanges(
     : getDeeplyChangedComponent(
         studioCtx,
         changes,
-        changedComponentsByImageAsset
+        new Set([
+          ...changedComponentsByImageAsset,
+          ...changedComponentsByDataToken,
+        ])
       );
 
   getChangedRuleSetsByMasterComponentRootSizeChange(studioCtx, changes).forEach(
@@ -733,6 +745,36 @@ function getChangedComponentsByImageAsset(
       }
     }
     return updates;
+  }
+  return undefined;
+}
+
+/**
+ * If a DataToken's value has changed, then any component that
+ * references that DataToken in expressions will need to be re-evaluated.
+ */
+function getChangedComponentsByDataToken(
+  studioCtx: StudioCtx,
+  change: ModelChange
+) {
+  const last = change.changeNode;
+  // when data token is edited
+  if (isKnownDataToken(last.inst) && last.field === "value") {
+    return componentsReferencingDataToken(studioCtx.site, last.inst);
+  }
+  // when data token is deleted
+  if (
+    isKnownSite(last.inst) &&
+    last.field === "dataTokens" &&
+    change.type === "array-splice"
+  ) {
+    const changedComponents = new Set<Component>();
+    for (const removedDataToken of change.removed) {
+      componentsReferencingDataToken(studioCtx.site, removedDataToken).forEach(
+        (c) => changedComponents.add(c)
+      );
+    }
+    return changedComponents;
   }
   return undefined;
 }

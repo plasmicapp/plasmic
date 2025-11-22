@@ -255,6 +255,7 @@ import {
 } from "@/wab/shared/page-arenas";
 import { getPlumeEditorPlugin } from "@/wab/shared/plume/plume-registry";
 import {
+  renameDataTokenAndFixExprs,
   renameParamAndFixExprs,
   renameTplAndFixExprs,
 } from "@/wab/shared/refactoring";
@@ -2175,7 +2176,10 @@ export class TplMgr {
 
   renameDataToken(token: DataToken, name: string) {
     if (toVarName(name) !== toVarName(token.name)) {
-      token.name = this.getUniqueDataTokenName(name);
+      const newName = this.getUniqueDataTokenName(name);
+      // Update expressions before renaming the token
+      renameDataTokenAndFixExprs(this.site(), token, newName);
+      token.name = newName;
     } else {
       token.name = name;
     }

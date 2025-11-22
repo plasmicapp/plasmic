@@ -1,6 +1,13 @@
+import { toVarName } from "@/wab/shared/codegen/util";
 import { mkShortId } from "@/wab/shared/common";
+import {
+  finalDataTokensForDep,
+  siteFinalDataTokens,
+} from "@/wab/shared/core/site-data-tokens";
 import { FinalToken, MutableToken } from "@/wab/shared/core/tokens";
-import { DataToken } from "@/wab/shared/model/classes";
+import { tryEvalExpr } from "@/wab/shared/eval";
+import { DataToken, Site } from "@/wab/shared/model/classes";
+import { mkMetaName } from "@plasmicapp/host";
 import type { Opaque } from "type-fest";
 
 export type DataTokenType = "number" | "string" | "code";
@@ -90,4 +97,67 @@ export function isDataTokenEditable(
   token: FinalToken<DataToken>
 ): token is MutableToken<DataToken> {
   return token instanceof MutableToken;
+}
+
+/**
+ * Computes a single data token value from its token definition.
+ */
+export function computeDataTokenValue(
+  token: FinalToken<DataToken>,
+  evalEnv?: Record<string, any>
+): any {
+  const tokenType = getDataTokenType(token.value);
+
+  try {
+    if (tokenType === "code") {
+      // For code tokens, evaluate in the provided environment, or empty object if not provided
+      const env = evalEnv ?? {};
+      const evalResult = tryEvalExpr(token.value, env);
+      return evalResult.val;
+    } else {
+      // For non-code tokens (string, number), parse the JSON value
+      return JSON.parse(token.value);
+    }
+  } catch (e) {
+    // If evaluation or parsing fails, set to undefined
+    return undefined;
+  }
+}
+
+/**
+ * Computes data tokens for a given site and evaluation environment.
+ * Includes both local tokens and imported tokens from project's direct dependencies.
+ *
+ * @param site - The site containing data tokens
+ * @param evalEnv - The environment to use for evaluating code tokens (optional)
+ * @returns A record of data token values keyed by var names, with metadata for labels.
+ *          Returns undefined if no tokens exist.
+ */
+export function computeDataTokens(
+  site: Site,
+  evalEnv?: Record<string, any>
+): Record<string, any> | undefined {
+  const dataTokens: Record<string, any> = {};
+  // Add local data tokens
+  for (const token of siteFinalDataTokens(site)) {
+    const varName = toVarName(token.name);
+    dataTokens[varName] = computeDataTokenValue(token, evalEnv);
+    dataTokens[mkMetaName(varName)] = { label: token.name };
+  }
+
+  // Add data tokens from direct dependencies
+  for (const dep of site.projectDependencies) {
+    for (const token of finalDataTokensForDep(site, dep.site)) {
+      const varName = toVarName(token.name);
+      // Skip imported data tokens if their names conflict with existing ones
+      if (!(varName in dataTokens)) {
+        dataTokens[varName] = computeDataTokenValue(token, evalEnv);
+        dataTokens[mkMetaName(varName)] = {
+          label: `${token.name} (${dep.name})`,
+        };
+      }
+    }
+  }
+
+  return dataTokens;
 }

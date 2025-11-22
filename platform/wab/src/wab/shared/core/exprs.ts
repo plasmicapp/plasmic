@@ -1073,7 +1073,11 @@ export function summarizePath(variablePath: ObjectPath) {
 }
 
 export const flattenedKeys = new Set(["$ctx", "$props", "$state", "$queries"]);
-export const omittedKeysIfEmpty = new Set(["$ctx.params", "$ctx.query"]);
+export const omittedKeysIfEmpty = new Set([
+  "$ctx.params",
+  "$ctx.query",
+  "$dataTokens",
+]);
 export const alwaysOmitKeys = new Set([
   "$state.registerInitFunc",
   "$state.eagerInitializeStates",

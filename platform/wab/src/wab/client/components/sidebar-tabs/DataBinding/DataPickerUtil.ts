@@ -324,6 +324,9 @@ export function prepareEnvForDataPicker(
       }
     }
   }
+  if (fixedData.$dataTokens) {
+    fixedData[mkMetaName("$dataTokens")] = { label: "Data Tokens" };
+  }
   return fixedData;
 }
 
