@@ -1,32 +1,29 @@
 import registerFunction, {
   CustomFunctionMeta,
 } from "@plasmicapp/host/registerFunction";
-
-import { QueryParams, mkApi } from "./api";
+import type { RulesLogic } from "json-logic-js";
+import { mkApi } from "./api";
 import { DEFAULT_HOST } from "./constants";
+import { ApiCmsTable } from "./schema";
+import { mkFieldOptions } from "./util";
+import { cmsTableToQueryBuilderConfig, rulesLogicToCmsWhere } from "./where";
 
 function getCmsHost() {
   return (globalThis as any)["__PLASMIC_CMS_HOST__"] ?? DEFAULT_HOST;
 }
 
-function createTableOptions(
-  _args: unknown[],
-  ctx: { tables: Array<{ identifier: string; name: string }> } | undefined
-): Array<{ value: string; label: string }> {
-  if (!ctx?.tables) {
-    return [];
-  }
-  return ctx.tables.map((table: { identifier: string; name: string }) => ({
-    value: table.identifier,
-    label: table.name,
-  }));
+interface FnContext {
+  tables: ApiCmsTable[];
 }
 
-const sharedTableFnContext = (
+function sharedTableFnContext(
   cmsId?: string,
   cmsPublicToken?: string,
   ..._args: unknown[]
-) => {
+): {
+  dataKey: string;
+  fetcher: () => Promise<FnContext>;
+} {
   if (!cmsId || !cmsPublicToken) {
     return {
       dataKey: "",
@@ -48,45 +45,113 @@ const sharedTableFnContext = (
       return { tables };
     },
   };
-};
+}
 
 // TODO: Handle markdown in descriptions and link to https://docs.plasmic.app/learn/plasmic-cms-api-reference/#find-your-cms-ids-public-token-and-secret-token
 const cmsIdParam = {
   name: "cmsId",
   type: "string",
-  description: "The cms ID",
+  description: "Find the CMS ID on the Plasmic CMS settings page.",
 } as const;
 
 const cmsPublicTokenParam = {
   name: "cmsPublicToken",
   type: "string",
-  description: "The cms public token",
+  description: "Find the Public Token on the Plasmic CMS settings page.",
 } as const;
 
 const tableIdParam = {
   name: "tableId",
   type: "choice",
-  options: createTableOptions,
+  options: (_args: unknown, ctx: FnContext) => {
+    if (!ctx?.tables) {
+      return [];
+    }
+    return ctx.tables.map((table: { identifier: string; name: string }) => ({
+      value: table.identifier,
+      label: table.name,
+    }));
+  },
 } as const;
 
-// TODO: Directly handle the inner params available options
-const paramsParam = {
-  name: "params",
-  type: "object",
-  description:
-    "The parameters to filter the content (e.g., for sorting, limit, offset, advanced queries)",
+const selectParam = {
+  name: "select",
+  type: "choice",
+  multiSelect: true,
+  description: "Fields to fetch. Defaults to all fields.",
+  defaultValueHint: ["Default: *"] as string[],
+  options: (args: { 2?: string | undefined }, ctx: FnContext) => {
+    const tableId = args[2];
+    return mkFieldOptions(ctx.tables, tableId);
+  },
+} as const;
+
+const whereLogicParam = {
+  name: "where",
+  type: "queryBuilder",
+  description: "Filter fetched entries. Defaults to fetch all entries.",
+  config: (args: { 2?: string | undefined }, ctx: FnContext) => {
+    const tableId = args[2];
+    const table = ctx.tables.find((t) => t.identifier === tableId);
+    if (table) {
+      return cmsTableToQueryBuilderConfig(table);
+    } else {
+      return { fields: {} };
+    }
+  },
+} as const;
+
+const orderByParam = {
+  name: "orderBy",
+  type: "choice",
+  description: "Field to order entries by. Defaults to creation order.",
+  options: (args: { 2?: string | undefined }, ctx: FnContext) => {
+    const tableId = args[2];
+    return mkFieldOptions(ctx.tables, tableId);
+  },
+} as const;
+
+const orderDirectionParam = {
+  name: "orderDirection",
+  label: "Direction",
+  type: "choice",
+  options: [
+    {
+      value: "asc",
+      label: "Ascending",
+    },
+    {
+      value: "desc",
+      label: "Descending",
+    },
+  ] as { value: "asc" | "desc"; label: string }[],
+  defaultValueHint: "Default: Ascending",
+} as const;
+
+const limitParam = {
+  name: "limit",
+  type: "number",
+  description: "Maximum number of entries to fetch.",
+} as const;
+
+const offsetParam = {
+  name: "offset",
+  type: "number",
+  description: "Number of entries to skip.",
+  defaultValueHint: 0,
 } as const;
 
 const useDraftParam = {
   name: "useDraft",
   type: "boolean",
-  description: "Whether to use draft data. Defaults to false.",
+  description: "Whether to use draft data.",
+  defaultValueHint: false,
 } as const;
 
 const localeParam = {
   name: "locale",
   type: "string",
-  description: "The locale to use. Defaults to empty string.",
+  description: "The locale to use. Defaults to base locale.",
 } as const;
 
 export async function fetchTables(cmsId: string, cmsPublicToken: string) {
@@ -100,13 +165,22 @@ export async function fetchTables(cmsId: string, cmsPublicToken: string) {
 }
 
 export async function fetchContent(
-  cmsId: string,
-  cmsPublicToken: string,
-  tableId: string,
-  params: QueryParams,
-  useDraft: boolean,
-  locale: string
+  cmsId?: string,
+  cmsPublicToken?: string,
+  tableId?: string,
+  select?: string[],
+  whereLogic?: RulesLogic,
+  orderBy?: string,
+  orderDirection?: "asc" | "desc",
+  limit?: number,
+  offset?: number,
+  useDraft?: boolean,
+  locale?: string
 ) {
+  if (!cmsId || !cmsPublicToken || !tableId) {
+    return [];
+  }
+
   const api = mkApi({
     databaseId: cmsId,
     databaseToken: cmsPublicToken,
@@ -115,16 +189,27 @@ export async function fetchContent(
     locale,
   });
 
-  return api.query(tableId, params);
+  return api.query(tableId, {
+    fields: select,
+    where: rulesLogicToCmsWhere(whereLogic),
+    orderBy,
+    desc: orderDirection === "desc",
+    limit,
+    offset,
+  });
 }
 
 export async function fetchCount(
-  cmsId: string,
-  cmsPublicToken: string,
-  tableId: string,
-  params: QueryParams,
-  useDraft: boolean
+  cmsId?: string,
+  cmsPublicToken?: string,
+  tableId?: string,
+  whereLogic?: RulesLogic,
+  useDraft?: boolean
 ) {
+  if (!cmsId || !cmsPublicToken || !tableId) {
+    return 0;
+  }
+
   const api = mkApi({
     databaseId: cmsId,
     databaseToken: cmsPublicToken,
@@ -132,7 +217,9 @@ export async function fetchCount(
     useDraft,
   });
 
-  return api.count(tableId, params);
+  return api.count(tableId, {
+    where: rulesLogicToCmsWhere(whereLogic),
+  });
 }
 
 export function registerAllCmsFunctions(loader?: { registerFunction: any }) {
@@ -166,7 +253,12 @@ export function registerAllCmsFunctions(loader?: { registerFunction: any }) {
       cmsIdParam,
       cmsPublicTokenParam,
       tableIdParam,
-      paramsParam,
+      selectParam,
+      whereLogicParam,
+      orderByParam,
+      orderDirectionParam,
+      limitParam,
+      offsetParam,
       useDraftParam,
       localeParam,
     ],
@@ -183,7 +275,7 @@ export function registerAllCmsFunctions(loader?: { registerFunction: any }) {
       cmsIdParam,
       cmsPublicTokenParam,
       tableIdParam,
-      paramsParam,
+      whereLogicParam,
       useDraftParam,
     ],
     fnContext: sharedTableFnContext,

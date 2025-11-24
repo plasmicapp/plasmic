@@ -5,7 +5,7 @@
 ```ts
 
 import { ApiCmsRow } from './schema';
-import { ApiCmsTable } from './schema';
+import type { RulesLogic } from 'json-logic-js';
 
 // @public (undocumented)
 export class _API {
@@ -56,21 +56,26 @@ export interface _ApiCmsTable {
 }
 
 // @public (undocumented)
-export interface _CmsBaseType {
+export interface _CmsBaseType<T> {
+    defaultValueByLocale: {
+        [locale: string]: T;
+    };
     // (undocumented)
     helperText: string;
     // (undocumented)
     hidden: boolean;
-    // (undocumented)
     identifier: string;
+    label?: string;
     // (undocumented)
-    name: string;
+    localized: boolean;
     // (undocumented)
     required: boolean;
+    // (undocumented)
+    unique: boolean;
 }
 
 // @public (undocumented)
-export interface _CmsBoolean extends _CmsBaseType {
+export interface _CmsBoolean extends _CmsBaseType<boolean> {
     // (undocumented)
     defaultValue?: boolean;
     // (undocumented)
@@ -78,7 +83,7 @@ export interface _CmsBoolean extends _CmsBaseType {
 }
 
 // @public (undocumented)
-export interface _CmsDateTime extends _CmsBaseType {
+export interface _CmsDateTime extends _CmsBaseType<string> {
     // (undocumented)
     defaultValue?: string;
     // (undocumented)
@@ -86,7 +91,7 @@ export interface _CmsDateTime extends _CmsBaseType {
 }
 
 // @public (undocumented)
-export interface _CmsEnum extends _CmsBaseType {
+export interface _CmsEnum extends _CmsBaseType<string> {
     // (undocumented)
     defaultValue?: string;
     // (undocumented)
@@ -96,10 +101,10 @@ export interface _CmsEnum extends _CmsBaseType {
 }
 
 // @public (undocumented)
-export type _CmsFieldMeta = _CmsText | _CmsLongText | _CmsNumber | _CmsBoolean | _CmsImage | _CmsFile | _CmsDateTime | _CmsRef | _CmsRichText | _CmsEnum;
+export type _CmsFieldMeta = _CmsRef | CmsList | CmsObject | _CmsText | _CmsLongText | _CmsNumber | _CmsBoolean | _CmsImage | _CmsFile | _CmsDateTime | CmsColor | _CmsRichText | _CmsEnum;
 
 // @public (undocumented)
-export interface _CmsFile extends _CmsBaseType {
+export interface _CmsFile extends _CmsBaseType<string> {
     // (undocumented)
     defaultValue?: string;
     // (undocumented)
@@ -107,7 +112,7 @@ export interface _CmsFile extends _CmsBaseType {
 }
 
 // @public (undocumented)
-export interface _CmsImage extends _CmsBaseType {
+export interface _CmsImage extends _CmsBaseType<string> {
     // (undocumented)
     defaultValue?: string;
     // (undocumented)
@@ -115,7 +120,7 @@ export interface _CmsImage extends _CmsBaseType {
 }
 
 // @public (undocumented)
-export interface _CmsLongText extends _CmsBaseType, _CmsTextLike {
+export interface _CmsLongText extends _CmsBaseType<string>, _CmsTextLike {
     // (undocumented)
     type: _CmsMetaType.LONG_TEXT;
 }
@@ -151,7 +156,7 @@ export enum _CmsMetaType {
 }
 
 // @public (undocumented)
-export interface _CmsNumber extends _CmsBaseType {
+export interface _CmsNumber extends _CmsBaseType<number> {
     // (undocumented)
     defaultValue?: number;
     // (undocumented)
@@ -159,7 +164,7 @@ export interface _CmsNumber extends _CmsBaseType {
 }
 
 // @public (undocumented)
-export interface _CmsRef extends _CmsBaseType {
+export interface _CmsRef extends _CmsBaseType<string> {
     // (undocumented)
     defaultValue?: string;
     // (undocumented)
@@ -167,7 +172,7 @@ export interface _CmsRef extends _CmsBaseType {
 }
 
 // @public (undocumented)
-export interface _CmsRichText extends _CmsBaseType {
+export interface _CmsRichText extends _CmsBaseType<string> {
     // (undocumented)
     defaultValue?: string;
     // (undocumented)
@@ -181,7 +186,7 @@ export interface _CmsTableSchema {
 }
 
 // @public (undocumented)
-export interface _CmsText extends _CmsBaseType, _CmsTextLike {
+export interface _CmsText extends _CmsBaseType<string>, _CmsTextLike {
     // (undocumented)
     type: _CmsMetaType.TEXT;
 }
@@ -217,13 +222,13 @@ export interface _DatabaseConfig {
 export const _DEFAULT_HOST = "https://data.plasmic.app";
 
 // @public (undocumented)
-export function fetchContent(cmsId: string, cmsPublicToken: string, tableId: string, params: _QueryParams, useDraft: boolean, locale: string): Promise<ApiCmsRow[]>;
+export function fetchContent(cmsId?: string, cmsPublicToken?: string, tableId?: string, select?: string[], whereLogic?: RulesLogic, orderBy?: string, orderDirection?: "asc" | "desc", limit?: number, offset?: number, useDraft?: boolean, locale?: string): Promise<ApiCmsRow[]>;
 
 // @public (undocumented)
-export function fetchCount(cmsId: string, cmsPublicToken: string, tableId: string, params: _QueryParams, useDraft: boolean): Promise<number>;
+export function fetchCount(cmsId?: string, cmsPublicToken?: string, tableId?: string, whereLogic?: RulesLogic, useDraft?: boolean): Promise<number>;
 
 // @public (undocumented)
-export function fetchTables(cmsId: string, cmsPublicToken: string): Promise<ApiCmsTable[]>;
+export function fetchTables(cmsId: string, cmsPublicToken: string): Promise<_ApiCmsTable[]>;
 
 // @public (undocumented)
 export class _HttpError extends Error {

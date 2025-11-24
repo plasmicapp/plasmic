@@ -103,7 +103,7 @@ export class API {
     try {
       const response = await this.get(`/tables/${table}/query`, {
         q: JSON.stringify(queryParamsToApi(params)),
-        draft: Number(this.useDraftForTable(table) || params.useDraft),
+        draft: Number(this.useDraftForTable(table) ?? params.useDraft),
         locale: this.config.locale,
       });
       return response.rows;
@@ -120,7 +120,7 @@ export class API {
     try {
       const response = await this.get(`/tables/${table}/count`, {
         q: JSON.stringify(queryParamsToApi(params)),
-        draft: Number(this.useDraftForTable(table) || params.useDraft),
+        draft: Number(this.useDraftForTable(table) ?? params.useDraft),
       });
       return response.count;
     } catch (e) {

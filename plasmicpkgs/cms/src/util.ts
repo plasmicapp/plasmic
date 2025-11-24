@@ -38,11 +38,11 @@ export function mkFieldOptions(
   }
   const options = fields.map((f) => ({
     value: f.identifier,
-    label: f.name || f.identifier,
+    label: f.label || f.identifier,
   }));
   if (!options.some((option) => option.value === "_id")) {
     options.push({
-      label: "System-assigned ID",
+      label: "System ID",
       value: "_id",
     });
   }

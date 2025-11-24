@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "@plasmicapp/loader-nextjs": "1.0.445",
+    "@plasmicpkgs/cms": "0.0.3",
     "@plasmicpkgs/commerce": "0.0.228",
     "@plasmicpkgs/commerce-shopify": "0.0.236",
     "@plasmicpkgs/fetch": "0.0.20",
