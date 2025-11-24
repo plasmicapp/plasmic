@@ -28,7 +28,10 @@ import { createMailer } from "@/wab/server/emails/Mailer";
 import { ExpressSession } from "@/wab/server/entities/Entities";
 import "@/wab/server/extensions";
 import { initAnalyticsFactory, logger } from "@/wab/server/observability";
-import { WabPromStats, trackPostgresPool } from "@/wab/server/promstats";
+import {
+  WabPromLiveRequestsGauge,
+  trackPostgresPool,
+} from "@/wab/server/promstats";
 import { createRateLimiter } from "@/wab/server/rate-limit";
 import * as adminRoutes from "@/wab/server/routes/admin";
 import {
@@ -483,22 +486,80 @@ export function addLoggingMiddleware(app: express.Application) {
   });
 }
 
+/**
+ * Handles /metrics route and sets up the live request gauge.
+ *
+ * Call `app.set("name", <app-name>)` to set the `app` label on the gauge.
+ */
+export function addPromMetricsMiddleware(app: express.Application) {
+  const name = app.get("name");
+
+  app.use(
+    safeCast<RequestHandler>(async (req: Request, res, next) => {
+      // Live requests for all routes after this middleware will be tracked.
+      const liveRequestsGauge = new WabPromLiveRequestsGauge(app.get("name"));
+      liveRequestsGauge.onReqStart(req);
+      res.on("finish", () => {
+        liveRequestsGauge.onReqEnd(req, res);
+      });
+
+      // Initialize req.promLabels, used in various routes to add custom labels.
+      req.promLabels = {};
+
+      next();
+    })
+  );
+
+  // Handles /metrics
+  app.use(
+    promMetrics({
+      customLabels: {
+        route: null,
+        projectId: null,
+        // Also keep track of url for codegen, as the set of
+        // urls codegen uses is reasonably small
+        ...(name === "codegen" && {
+          url: null,
+        }),
+      },
+      includeMethod: true,
+      includeStatusCode: true,
+      includePath: true,
+      transformLabels: (labels, req, _res) => {
+        labels.route = req.route?.path;
+        if (name === "codegen") {
+          labels.url = req.originalUrl;
+        }
+        Object.assign(labels, req.promLabels ?? {});
+      },
+      promClient: {
+        collectDefaultMetrics: {},
+      },
+      buckets: [
+        0.05, 0.1, 0.25, 0.5, 1, 2.5, 5, 10, 15, 20, 30, 40, 65, 80, 100, 130,
+        160, 180,
+      ],
+    })
+  );
+}
+
 function addMiddlewares(
   app: express.Application,
-  name: string,
   config: Config,
-  expressSessionMiddleware: express.RequestHandler,
   opts?: {
     skipSession?: boolean;
   }
 ) {
-  const connectionPool = getConnection();
-
+  addPromMetricsMiddleware(app);
   addLoggingMiddleware(app);
   app.use(cookieParser());
 
+  // Our OPTIONS requests return fixed responses that don't depend on other
+  // middleware, so handle them before session middleware and others.
+  addOptionsRoutes(app);
+
   if (!opts?.skipSession) {
-    app.use(expressSessionMiddleware as express.Handler);
+    app.use(makeExpressSessionMiddleware(config));
     app.use(passport.initialize());
     app.use(passport.session());
   } else {
@@ -563,67 +624,17 @@ function addMiddlewares(
     next();
   });
 
-  // Initialize some book-keeping stuff
-  app.use(
-    safeCast<RequestHandler>(async (req: Request, res, next) => {
-      req.statsd = new WabPromStats(name);
-      req.statsd.onReqStart(req);
-      res.on("finish", () => {
-        req.statsd.onReqEnd(req, res);
-      });
-      req.promLabels = {};
-      next();
-    })
-  );
-
-  app.use(
-    promMetrics({
-      customLabels: {
-        route: null,
-        projectId: null,
-        // Also keep track of url for codegen, as the set of
-        // urls codegen uses is reasonably small
-        ...(name === "codegen" && {
-          url: null,
-        }),
-      },
-      includeMethod: true,
-      includeStatusCode: true,
-      includePath: true,
-      transformLabels: (labels, req, _res) => {
-        labels.route = req.route?.path;
-        if (name === "codegen") {
-          labels.url = req.originalUrl;
-        }
-        Object.assign(labels, req.promLabels ?? {});
-      },
-      promClient: {
-        collectDefaultMetrics: {},
-      },
-      buckets: [
-        0.05, 0.1, 0.25, 0.5, 1, 2.5, 5, 10, 15, 20, 30, 40, 65, 80, 100, 130,
-        160, 180,
-      ],
-    })
-  );
-
   // Set up basic request configuration without universal transaction
   app.use(
     safeCast<RequestHandler>(async (req, res, next) => {
+      const connectionPool = getConnection();
       req.config = config;
       req.con = connectionPool;
       req.noTxMgr = connectionPool.createEntityManager();
       req.mailer = createMailer();
+      req.bundler = new Bundler();
       next();
     })
-  );
-  app.use(
-    safeCast<RequestHandler>(
-      async (req: Request, res: Response, next: NextFunction) => {
-        req.bundler = new Bundler();
-        next();
-      }
-    )
   );
   app.use(
     safeCast<ErrorRequestHandler>(
@@ -1923,13 +1934,9 @@ export async function createApp(
     app.enable("trust proxy");
   }
 
-  addOptionsRoutes(app);
-
-  const expressSessionMiddleware = makeExpressSessionMiddleware(config);
-
   addCleanRoutes?.(app);
 
-  addMiddlewares(app, name, config, expressSessionMiddleware, opts);
+  addMiddlewares(app, config, opts);
 
   if (!config.production) {
     addStaticRoutes(app);

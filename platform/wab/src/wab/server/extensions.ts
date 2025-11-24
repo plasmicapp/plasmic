@@ -2,7 +2,6 @@ import { Config } from "@/wab/server/config";
 import { Actor } from "@/wab/server/db/DbMgr";
 import { Mailer } from "@/wab/server/emails/Mailer";
 import { Team, User as UserEnt } from "@/wab/server/entities/Entities";
-import { WabPromStats } from "@/wab/server/promstats";
 import { TimingStore } from "@/wab/server/timing-util";
 import { PlasmicWorkerPool } from "@/wab/server/workers/pool";
 import { ProjectIdAndToken } from "@/wab/shared/ApiSchema";
@@ -41,7 +40,6 @@ declare global {
       config: Config;
       devflags: typeof DEVFLAGS;
       workerpool: PlasmicWorkerPool;
-      statsd: WabPromStats;
       timingStore: TimingStore | undefined;
       startTime?: bigint;
       id?: string;

@@ -11,7 +11,7 @@ const liveRequests = new Gauge({
 
 const recentRequestTags: Record<string, number> = {};
 
-export class WabPromStats {
+export class WabPromLiveRequestsGauge {
   constructor(private name: string) {}
 
   onReqStart(request: Request) {

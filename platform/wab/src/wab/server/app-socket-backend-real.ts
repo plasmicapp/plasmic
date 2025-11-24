@@ -14,21 +14,23 @@
  *
  * Runs on port 3020 or SOCKET_PORT.
  */
-import { addLoggingMiddleware } from "@/wab/server/AppServer";
+import {
+  addLoggingMiddleware,
+  addPromMetricsMiddleware,
+} from "@/wab/server/AppServer";
 import { Config } from "@/wab/server/config";
 import {
   ensureDbConnections,
   maybeMigrateDatabase,
 } from "@/wab/server/db/DbCon";
-import { WabPromStats, trackPostgresPool } from "@/wab/server/promstats";
+import { trackPostgresPool } from "@/wab/server/promstats";
 import { InitSocket } from "@/wab/server/routes/init-socket";
 import { ProjectsSocket } from "@/wab/server/routes/projects-socket";
 import { runExpressApp, setupServerCli } from "@/wab/server/server-common";
 import type { BroadcastPayload } from "@/wab/shared/api/socket";
 import { spawn } from "@/wab/shared/common";
 import { json as bodyParserJson } from "body-parser";
-import express, { Request } from "express";
-import promMetrics from "express-prom-bundle";
+import express from "express";
 import http from "http";
 
 async function run() {
@@ -43,34 +45,10 @@ async function run() {
   app.set("port", process.env["SOCKET_PORT"]);
   app.set("name", "socket-server");
 
+  addPromMetricsMiddleware(app);
   addLoggingMiddleware(app);
 
   app.use(bodyParserJson({ limit: "400mb" }));
-
-  // eslint-disable-next-line @typescript-eslint/no-misused-promises
-  app.use(async (req: Request, res, next) => {
-    req.statsd = new WabPromStats(app.get("name"));
-    req.statsd.onReqStart(req);
-    res.on("finish", () => {
-      req.statsd.onReqEnd(req, res);
-    });
-    next();
-  });
-
-  app.use(
-    promMetrics({
-      includeMethod: true,
-      includeStatusCode: true,
-      includePath: true,
-      promClient: {
-        collectDefaultMetrics: {},
-      },
-      buckets: [
-        0.05, 0.1, 0.25, 0.5, 1, 2.5, 5, 10, 15, 20, 30, 40, 65, 80, 100, 130,
-        160, 180,
-      ],
-    })
-  );
 
   trackPostgresPool(app.get("name"));
   const { attach } = addSocketRoutes(app, config);
