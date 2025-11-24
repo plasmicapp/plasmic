@@ -3,6 +3,10 @@ import { Request, Response } from "express-serve-static-core";
 import { Gauge, Histogram } from "prom-client";
 import { getConnection } from "typeorm";
 
+export const DEFAULT_HISTOGRAM_BUCKETS = [
+  0.05, 0.1, 0.25, 0.5, 1, 2.5, 5, 10, 20, 30, 60, 90, 120, 150, 180,
+];
+
 const liveRequests = new Gauge({
   name: "http_request_live",
   help: "Number of live requests being served",
@@ -58,10 +62,7 @@ const taskDuration = new Histogram({
   name: "task_duration",
   help: "How long something took",
   labelNames: ["task"],
-  buckets: [
-    0.05, 0.1, 0.25, 0.5, 1, 2.5, 5, 10, 15, 20, 30, 40, 65, 80, 100, 130, 160,
-    180,
-  ],
+  buckets: DEFAULT_HISTOGRAM_BUCKETS,
 });
 
 export class WabPromTimer {

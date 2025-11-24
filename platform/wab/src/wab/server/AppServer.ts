@@ -29,6 +29,7 @@ import { ExpressSession } from "@/wab/server/entities/Entities";
 import "@/wab/server/extensions";
 import { initAnalyticsFactory, logger } from "@/wab/server/observability";
 import {
+  DEFAULT_HISTOGRAM_BUCKETS,
   WabPromLiveRequestsGauge,
   trackPostgresPool,
 } from "@/wab/server/promstats";
@@ -499,7 +500,9 @@ export function addPromMetricsMiddleware(app: express.Application) {
       // Live requests for all routes after this middleware will be tracked.
       const liveRequestsGauge = new WabPromLiveRequestsGauge(app.get("name"));
       liveRequestsGauge.onReqStart(req);
-      res.on("finish", () => {
+      // 'close' event is emitted in all HTTP request scenarios
+      // https://nodejs.org/api/http.html#httprequesturl-options-callback
+      res.on("close", () => {
         liveRequestsGauge.onReqEnd(req, res);
       });
 
@@ -535,10 +538,7 @@ export function addPromMetricsMiddleware(app: express.Application) {
       promClient: {
         collectDefaultMetrics: {},
       },
-      buckets: [
-        0.05, 0.1, 0.25, 0.5, 1, 2.5, 5, 10, 15, 20, 30, 40, 65, 80, 100, 130,
-        160, 180,
-      ],
+      buckets: DEFAULT_HISTOGRAM_BUCKETS,
     })
   );
 }
