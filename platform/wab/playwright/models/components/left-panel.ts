@@ -1,4 +1,5 @@
 import { expect, FrameLocator, Locator, Page } from "playwright/test";
+import { test } from "../../fixtures/test";
 import { BaseModel } from "../BaseModel";
 
 export class LeftPanel extends BaseModel {
@@ -36,6 +37,22 @@ export class LeftPanel extends BaseModel {
   readonly componentsTabButton: Locator = this.frame.locator(
     '[data-test-tabkey="components"]'
   );
+  readonly dataTokensTabButton: Locator = this.frame.locator(
+    '[data-test-tabkey="dataTokens"]'
+  );
+
+  readonly newDataTokenButton: Locator = this.frame.locator(
+    '[data-test-id="new-data-token-button"]'
+  );
+  readonly dataTokensPanelContent: Locator = this.frame.locator(
+    '[data-test-id="data-tokens-panel-content"]'
+  );
+
+  readonly sidebarModal: Locator = this.frame.locator('[id="sidebar-modal"]');
+  readonly closeSidebarModalButton: Locator = this.frame.locator(
+    '[data-test-id="close-sidebar-modal"]'
+  );
+
   readonly editComponentButton: Locator =
     this.frame.getByText("Edit component");
   readonly treeTabButton: Locator = this.frame.locator(
@@ -108,6 +125,36 @@ export class LeftPanel extends BaseModel {
     if (!itemClicked) {
       throw new Error(`Failed to click item "${node}"`);
     }
+  }
+
+  async createNewDataToken(name: string, type: string, value: any) {
+    await test.step(`Create data token ${name}: ${type} = ${value}`, async () => {
+      await this.switchToDataTokensTab();
+      await this.newDataTokenButton.click();
+      await this.page.keyboard.type(name);
+      await this.page.keyboard.press("Tab"); // focuses close button, so tab again
+      await this.page.keyboard.press("Tab");
+      await this.page.keyboard.type(type);
+      if (type === "code") {
+        await this.sidebarModal.locator(".code-editor-input").click();
+        await this.sidebarModal.locator(".monaco-editor").waitFor();
+
+        await this.page.keyboard.press("Control+A");
+        await this.page.keyboard.press("Delete");
+        await this.page.keyboard.press("Backspace");
+        await this.page.keyboard.type(value);
+        await this.sidebarModal.locator('[data-test-id="save-code"]').click();
+        await this.sidebarModal
+          .locator(".monaco-editor")
+          .waitFor({ state: "hidden" });
+
+        await this.closeSidebarModalButton.click();
+      } else {
+        await this.page.keyboard.press("Tab");
+        await this.page.keyboard.type(value);
+        await this.page.keyboard.press("Enter");
+      }
+    });
   }
 
   async setComponentName(name: string) {
@@ -195,6 +242,18 @@ export class LeftPanel extends BaseModel {
   async switchToComponentsTab() {
     await this.assetsTabButton.hover();
     await this.componentsTabButton.click();
+  }
+
+  async switchToDataTokensTab() {
+    await this.assetsTabButton.hover();
+    const isActive =
+      (await this.dataTokensTabButton.getAttribute("data-state-isselected")) ===
+      "true";
+    if (!isActive) {
+      await this.dataTokensTabButton.click();
+    } else {
+      await this.addButton.hover(); // to blur the assets tab button
+    }
   }
 
   async switchToTreeTab() {

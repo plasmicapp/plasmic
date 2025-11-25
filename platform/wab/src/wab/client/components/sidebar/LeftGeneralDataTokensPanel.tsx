@@ -485,6 +485,7 @@ const LeftGeneralDataTokensPanel = observer(
       <>
         <PlasmicLeftGeneralDataTokensPanel
           newTokenButton={{
+            "data-test-id": "new-data-token-button",
             onClick: () => spawn(onAddToken("string")),
           }}
           leftSearchPanel={{
