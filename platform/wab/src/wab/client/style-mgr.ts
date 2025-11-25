@@ -76,6 +76,7 @@ import { sortBy } from "lodash";
 
 // @ts-ignore
 import reactWebCss from "!!raw-loader!../gen/static/styles/react-web-css.txt";
+import { walkDependencyTree } from "@/wab/shared/core/project-deps";
 
 export interface UpsertStyleChanges {
   variantSettings?: ReadonlyArray<
@@ -445,10 +446,13 @@ export class StyleMgr {
       allMixins(this.studioCtx.site, { includeDeps: "all" }),
       // We include local themes as well as active themes from our deps,
       // because the user can choose to activate one of those themes instead.
+      // We include transitive deps active theme as well, because the direct dependency might have component, which
+      // could import component from its dependency. Consider the site dependency as CurrSite (A) -> B -> C
+      // If A is using component from B which uses component from C, we would need to include Site C active theme as well.
       [
         ...site.themes,
         ...withoutNils(
-          site.projectDependencies.map((dep) => dep.site.activeTheme)
+          walkDependencyTree(site, "all").map((dep) => dep.site.activeTheme)
         ),
       ],
       site.imageAssets,

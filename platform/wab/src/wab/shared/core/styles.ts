@@ -3,13 +3,11 @@ import {
   getExternalMixinPropVarName,
   getMixinPropVarName,
   getPlasmicExternalTokenVarName,
-  getThemePropVarName,
   getTokenVarName,
   isMixinPropRef,
   isTokenNameValidCssVariable,
   isTokenRef,
   mkMixinPropRef,
-  mkThemePropRef,
   mkTokenRef,
   replaceAllTokenRefs,
   resolveAllTokenRefs,
@@ -118,7 +116,6 @@ import { FinalToken, toFinalToken } from "@/wab/shared/core/tokens";
 import {
   canTagHaveChildren,
   findVariantSettingsUnderTpl,
-  isComponentRoot,
   isTplCodeComponent,
   isTplColumns,
   isTplComponent,
@@ -272,17 +269,6 @@ export class CssVarResolver {
   }
 }
 
-export class CanvasVarResolver {
-  constructor(private site: Site) {}
-  resolveThemeProp(prop: string) {
-    return mkCanvasThemePropRef(this.site, prop);
-  }
-
-  resolveMixinProp(mixin: Mixin, prop: string) {
-    return mkMixinPropRef(mixin, prop, false);
-  }
-}
-
 // The name of the default style rules used in studio.
 export const studioDefaultStylesClassNameBase = "__wab_defaults";
 
@@ -430,15 +416,12 @@ function addFontFamilyFallback(m: Map<string, string>) {
 }
 
 export function mkComponentRootResetRule(
-  site: Site,
   rootClassName: string,
-  resolver?: CssVarResolver
+  resolver: CssVarResolver
 ) {
   const m = new Map<string, string>();
   componentRootResetProps.forEach((prop) => {
-    const val = resolver
-      ? resolver.resolveThemeProp(prop)
-      : mkCanvasThemePropRef(site, prop);
+    const val = resolver.resolveThemeProp(prop);
     if (val) {
       // We only add styles that the user did not remove from the
       // default theme
@@ -552,14 +535,6 @@ export function sourceMatchThemeStyle(s: ThemeStyle, src: ThemeTagSource) {
   return src.selector === s.selector;
 }
 
-function mkCanvasThemePropRef(site: Site, prop: string) {
-  if (shouldOutputThemePropStyle(site.activeTheme, prop)) {
-    return mkThemePropRef(prop);
-  } else {
-    return undefined;
-  }
-}
-
 function shouldOutputThemePropStyle(
   theme: Theme | undefined | null,
   prop: string
@@ -589,7 +564,6 @@ function deriveCssRuleSetStyles(
     whitespaceNormal?: boolean;
   }
 ) {
-  const site = ctx.site;
   const resolver = ctx.resolver;
   const rs = vs.rs;
   const forBaseVariant = isBaseVariant(vs.variants);
@@ -597,21 +571,6 @@ function deriveCssRuleSetStyles(
 
   const m = new Map<string, string>();
 
-  // We always set the theme props on the root tags of components.
-  // We only do this for TplTag and not TplComponent, because a
-  // TplComponent's styles are dictated by TplComponent.component.
-  if (isComponentRoot(tpl) && forBaseVariant && !isTplComponent(tpl)) {
-    nonTypographyThemeableProps.forEach((prop) => {
-      if (isStylePropApplicable(tpl, prop)) {
-        const val = resolver
-          ? resolver.resolveThemeProp(prop)
-          : mkCanvasThemePropRef(site, prop);
-        if (val) {
-          m.set(prop, val);
-        }
-      }
-    });
-  }
   // Mixins are applied indirectly.
   [...rs.mixins].forEach((mixin) =>
     Object.entries(ctx.makeLayoutAwareRuleSet(mixin.rs, false).values).forEach(
@@ -2050,13 +2009,6 @@ export const tryAugmentRulesWithScreenVariant = (
   });
 };
 
-const nonTypographyThemeableProps = [];
-
-export const themeableProps = [
-  ...typographyCssProps,
-  ...nonTypographyThemeableProps,
-];
-
 export const imageBlobUrl = new Map<string, string>();
 
 const genMixinVarsRules = (
@@ -2367,17 +2319,6 @@ export const mkCssVarsRuleForCanvas = (
       generateExternalCssVar: true,
     }
   );
-  // Set the theme if there is an active one.
-  const themeVars = activeTheme
-    ? themeableProps.map((prop) => {
-        const activeThemeValue = getMixinPropVarName(
-          activeTheme.defaultStyle,
-          prop,
-          false
-        );
-        return `${getThemePropVarName(prop)}: var(${activeThemeValue})`;
-      })
-    : [];
 
   const imageVars = assets.map((asset) => {
     let url = "";
@@ -2428,7 +2369,6 @@ export const mkCssVarsRuleForCanvas = (
     }) { ${showStyles(m)} }`;
   });
 
-  const varResolver = new CanvasVarResolver(site);
   const rootResetRules = [
     site,
     ...walkDependencyTree(site, "all").map((dep) => dep.site),
@@ -2439,10 +2379,15 @@ export const mkCssVarsRuleForCanvas = (
         scheme: "css",
       },
     });
+
+    const resolver = new CssVarResolver(tokens, mixins, assets, s.activeTheme, {
+      useCssVariables: true,
+    });
+
     return [
-      mkComponentRootResetRule(s, resetName),
+      mkComponentRootResetRule(resetName, resolver),
       ...(s.activeTheme?.styles ?? []).map((ts) =>
-        mkThemeStyleRule(resetName, varResolver, ts, {
+        mkThemeStyleRule(resetName, resolver, ts, {
           classNameBase: studioDefaultStylesClassNameBase,
           useCssModules: false,
           targetEnv: "canvas",
@@ -2455,7 +2400,7 @@ export const mkCssVarsRuleForCanvas = (
     tokenVarsRules,
     makeLayoutVarsRules(site, rootSelector),
     mixinVarsRules,
-    `${selector} { ${[...themeVars, ...imageVars].join(";")} }`,
+    `${selector} { ${imageVars.join(";")} }`,
     textDefaultTagStyles.join("\n"),
     ...rootResetRules,
   ].join("\n");

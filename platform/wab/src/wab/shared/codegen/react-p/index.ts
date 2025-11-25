@@ -413,7 +413,7 @@ export function exportProjectConfig(
     }
   );
   const rootResetClass = makeRootResetClassName(projectId, exportOpts);
-  const resetRule = mkComponentRootResetRule(site, rootResetClass, resolver);
+  const resetRule = mkComponentRootResetRule(rootResetClass, resolver);
 
   const defaultTagStylesVarsRules = makeMixinVarsRules(
     site,

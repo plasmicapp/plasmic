@@ -308,9 +308,6 @@ export function extractAllReferencedTokenIds(str: string) {
   return [...str.matchAll(RE_TOKENREF_ALL)].map((r) => r[1]);
 }
 
-export const getThemePropVarName = (p: string) => `--mixin-default_${p}`;
-export const mkThemePropRef = (p: string) => `var(${getThemePropVarName(p)})`;
-
 export const getExternalMixinPropVarName = (mixin: Mixin, p: string) =>
   `--plasmic-mixin-${L.kebabCase(mixin.name)}_${p}`;
 
