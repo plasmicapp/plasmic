@@ -1,6 +1,7 @@
 import { useBottomModalActions } from "@/wab/client/components/BottomModal";
 import { DataPickerTypesSchema } from "@/wab/client/components/sidebar-tabs/DataBinding/DataPicker";
 import { ServerQueryOpExprFormAndPreview } from "@/wab/client/components/sidebar-tabs/ServerQuery/ServerQueryOpPicker";
+import { PopoverFrameProvider } from "@/wab/client/components/sidebar/PopoverFrame";
 import { extractDataCtx } from "@/wab/client/state-management/interactions-meta";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { SERVER_QUERY_LOWER } from "@/wab/shared/Labels";
@@ -103,18 +104,20 @@ const ServerQueryOpExprBottomModalContent = observer(
       : undefined;
 
     return (
-      <ServerQueryOpExprFormAndPreview
-        value={value}
-        onSave={wrappedOnSave}
-        onCancel={onCancel}
-        env={env}
-        schema={schema}
-        parent={parent}
-        readOnly={readOnly}
-        allowedOps={allowedOps}
-        exprCtx={exprCtx}
-        interaction={interaction}
-      />
+      <PopoverFrameProvider containerSelector=".bottom-modals">
+        <ServerQueryOpExprFormAndPreview
+          value={value}
+          onSave={wrappedOnSave}
+          onCancel={onCancel}
+          env={env}
+          schema={schema}
+          parent={parent}
+          readOnly={readOnly}
+          allowedOps={allowedOps}
+          exprCtx={exprCtx}
+          interaction={interaction}
+        />
+      </PopoverFrameProvider>
     );
   }
 );

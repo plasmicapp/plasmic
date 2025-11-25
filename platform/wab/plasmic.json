@@ -9500,6 +9500,32 @@
           "cssFilePath": "wab/client/plasmic/plasmic_kit_data_binding/PlasmicCopilotPromptInput.module.css",
           "scheme": "blackbox",
           "componentType": "component"
+        },
+        {
+          "id": "Nuu-c5xv3Sku",
+          "name": "PopoverFrame",
+          "type": "managed",
+          "projectId": "w2GXN278dkQ2gQTVQnPehW",
+          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_data_binding/PlasmicPopoverFrame.tsx",
+          "importSpec": {
+            "modulePath": "wab/client/components/sidebar/PopoverFrame.tsx"
+          },
+          "cssFilePath": "wab/client/plasmic/plasmic_kit_data_binding/PlasmicPopoverFrame.module.css",
+          "scheme": "blackbox",
+          "componentType": "component"
+        },
+        {
+          "id": "_qAXa8aqLB77",
+          "name": "PopoverFrameTitle",
+          "type": "managed",
+          "projectId": "w2GXN278dkQ2gQTVQnPehW",
+          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_data_binding/PlasmicPopoverFrameTitle.tsx",
+          "importSpec": {
+            "modulePath": "wab/client/components/sidebar/PopoverFrameTitle.tsx"
+          },
+          "cssFilePath": "wab/client/plasmic/plasmic_kit_data_binding/PlasmicPopoverFrameTitle.module.css",
+          "scheme": "blackbox",
+          "componentType": "component"
         }
       ],
       "icons": [
@@ -9532,6 +9558,16 @@
           "id": "mPucsZbX6V",
           "name": "Icon5Icon",
           "moduleFilePath": "wab/client/plasmic/plasmic_kit_data_binding/icons/PlasmicIcon__Icon5.tsx"
+        },
+        {
+          "id": "q7EuAkDIhNK0",
+          "name": "CloseIcon",
+          "moduleFilePath": "wab/client/plasmic/plasmic_kit_data_binding/icons/PlasmicIcon__Close.tsx"
+        },
+        {
+          "id": "wG4t1pwzYNjU",
+          "name": "ArrowRightSvgIcon",
+          "moduleFilePath": "wab/client/plasmic/plasmic_kit_data_binding/icons/PlasmicIcon__ArrowRightSvg.tsx"
         }
       ],
       "images": [

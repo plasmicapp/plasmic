@@ -1,3 +1,8 @@
+import { PropValuePath } from "@/wab/client/components/sidebar-tabs/PropEditorRow";
+import {
+  PopoverFrame,
+  useMaybePopoverFrameContext,
+} from "@/wab/client/components/sidebar/PopoverFrame";
 import { SidebarModal } from "@/wab/client/components/sidebar/SidebarModal";
 import { ValueSetState } from "@/wab/client/components/sidebar/sidebar-helpers";
 import { ColorPicker } from "@/wab/client/components/widgets/ColorPicker";
@@ -15,7 +20,7 @@ import Chroma from "@/wab/shared/utils/color-utils";
 import { Tooltip } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
-import { useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 
 type ColorButtonProps = {
   color?: string;
@@ -30,6 +35,11 @@ type ColorButtonProps = {
   disabledTooltip?: React.ReactNode | (() => React.ReactNode);
   vsh?: VariantedStylesHelper;
   "data-plasmic-prop"?: string;
+  /**
+   * Value path for PopoverFrame, used when color picker is opened in component props.
+   * If provided, the color picker will open as a PopoverFrame instead of SidebarModal.
+   */
+  valuePath?: PropValuePath;
 };
 
 function _ColorButton(props: ColorButtonProps) {
@@ -45,9 +55,15 @@ function _ColorButton(props: ColorButtonProps) {
     className,
     disabledTooltip,
     vsh,
+    valuePath,
   } = props;
   const ref = useRef<HTMLElement | null>(null);
+  const buttonRef = useRef<HTMLButtonElement | null>(null);
   const [show, setShow] = useState(false);
+  const popoverFrameContext = useMaybePopoverFrameContext();
+
+  // Only use PopoverFrame when there's an active on with non-empty stack
+  const usePopoverFrame = valuePath && popoverFrameContext?.state.stack.length;
 
   const tokenRef = !!color && isTokenRef(color);
   const appliedToken = color
@@ -59,6 +75,12 @@ function _ColorButton(props: ColorButtonProps) {
 
   const resolver = useClientTokenResolver();
   const realColor = appliedToken ? resolver(appliedToken, vsh) : color ?? "";
+
+  const handleClose = useCallback(() => {
+    setShow(false);
+    // focus on next frame since we are currently in modal's FocusScope
+    setTimeout(() => ref.current?.focus());
+  }, []);
 
   return (
     <>
@@ -80,7 +102,7 @@ function _ColorButton(props: ColorButtonProps) {
         overrides={{
           root: {
             props: {
-              // ref,
+              ref: buttonRef,
               type: "button",
               "data-plasmic-prop": props["data-plasmic-prop"],
               onClick: (e) => {
@@ -107,23 +129,38 @@ function _ColorButton(props: ColorButtonProps) {
         }}
         isDisabled={isDisabled}
       />
-
-      <ColorSidebarPopup
-        color={color}
-        onChange={onChange}
-        show={show}
-        onClose={() => {
-          setShow(false);
-
-          // focus on next frame since we are currently in SidebarModal's FocusScope
-          setTimeout(() => ref.current?.focus());
-        }}
-        popupTitle={popupTitle}
-        derefToken={derefToken}
-        hideTokenPicker={hideTokenPicker}
-        autoFocus={true}
-        vsh={vsh}
-      />
+      {usePopoverFrame ? (
+        <PopoverFrame
+          show={show}
+          title={popupTitle}
+          valuePath={valuePath!}
+          onClose={handleClose}
+          triggerElement={buttonRef.current ?? undefined}
+        >
+          <div className="panel-content">
+            <ColorPicker
+              autoFocus={true}
+              color={color || ""}
+              onChange={onChange}
+              derefToken={derefToken}
+              hideTokenPicker={hideTokenPicker}
+              vsh={vsh}
+            />
+          </div>
+        </PopoverFrame>
+      ) : (
+        <ColorSidebarPopup
+          color={color}
+          onChange={onChange}
+          show={show}
+          onClose={handleClose}
+          popupTitle={popupTitle}
+          derefToken={derefToken}
+          hideTokenPicker={hideTokenPicker}
+          autoFocus={true}
+          vsh={vsh}
+        />
+      )}
     </>
   );
 }

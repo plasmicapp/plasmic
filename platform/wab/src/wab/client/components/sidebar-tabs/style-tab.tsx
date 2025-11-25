@@ -5,19 +5,20 @@ import {
 import { ComponentTab } from "@/wab/client/components/sidebar-tabs/ComponentTab/ComponentTab";
 import { PageTab } from "@/wab/client/components/sidebar-tabs/PageTab/PageTab";
 import {
+  Section,
+  StyleTabFilter,
   canRenderMixins,
   canRenderPrivateStyleVariants,
   getOrderedSectionRender,
-  Section,
-  StyleTabFilter,
 } from "@/wab/client/components/sidebar-tabs/Sections";
-import { NamedPanelHeader } from "@/wab/client/components/sidebar/sidebar-helpers";
+import { PopoverFrameProvider } from "@/wab/client/components/sidebar/PopoverFrame";
 import { SidebarModalProvider } from "@/wab/client/components/sidebar/SidebarModal";
 import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
+import { NamedPanelHeader } from "@/wab/client/components/sidebar/sidebar-helpers";
 import {
+  TplExpsProvider,
   mkStyleComponent,
   providesStyleComponent,
-  TplExpsProvider,
 } from "@/wab/client/components/style-controls/StyleComponent";
 import { makeVariantsController } from "@/wab/client/components/variants/VariantsController";
 import { Icon } from "@/wab/client/components/widgets/Icon";
@@ -26,6 +27,17 @@ import SlotIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Slot";
 import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { isDedicatedArena } from "@/wab/shared/Arenas";
+import { MIXINS_CAP, PRIVATE_STYLE_VARIANTS_CAP } from "@/wab/shared/Labels";
+import {
+  getAncestorTplSlot,
+  isCodeComponentSlot,
+  revertToDefaultSlotContents,
+} from "@/wab/shared/SlotUtils";
+import { $$$ } from "@/wab/shared/TplQuery";
+import {
+  getPrivateStyleVariantsForTag,
+  isBaseVariant,
+} from "@/wab/shared/Variants";
 import { cx, spawn } from "@/wab/shared/common";
 import {
   getComponentDisplayName,
@@ -41,26 +53,15 @@ import {
   isTplTag,
   isTplVariantable,
 } from "@/wab/shared/core/tpls";
-import { MIXINS_CAP, PRIVATE_STYLE_VARIANTS_CAP } from "@/wab/shared/Labels";
 import {
   Component,
-  isKnownRenderExpr,
-  isKnownVirtualRenderExpr,
   TplComponent,
   TplNode,
   TplSlot,
   TplTag,
+  isKnownRenderExpr,
+  isKnownVirtualRenderExpr,
 } from "@/wab/shared/model/classes";
-import {
-  getAncestorTplSlot,
-  isCodeComponentSlot,
-  revertToDefaultSlotContents,
-} from "@/wab/shared/SlotUtils";
-import { $$$ } from "@/wab/shared/TplQuery";
-import {
-  getPrivateStyleVariantsForTag,
-  isBaseVariant,
-} from "@/wab/shared/Variants";
 import { selectionControlsColor } from "@/wab/styles/css-variables";
 import { Alert, Button } from "antd";
 import * as mobx from "mobx";
@@ -208,42 +209,44 @@ export const ComponentOrPageTab = observer(function ComponentOrPageTab(props: {
     !shouldShowPageTab && !isFrameComponent(component);
 
   return (
-    <SidebarModalProvider containerSelector=".canvas-editor__right-pane">
-      <div
-        className={cx({
-          "canvas-editor__right-pane__top": true,
-          "canvas-editor__right-pane__top--with-bottom":
-            isHalf && hasElementPanel,
-        })}
-      >
-        {shouldShowPageTab && (
-          <div
-            className="canvas-editor__right-stack-pane"
-            data-test-id="page-panel"
-          >
-            <PageTab
-              page={component}
-              studioCtx={studioCtx}
-              viewCtx={viewCtx}
-              isHalf={isHalf}
-            />
-          </div>
-        )}
-        {shouldShowComponentTab && (
-          <div
-            className="canvas-editor__right-stack-pane"
-            // data-test-id="component-panel"
-          >
-            <ComponentTab
-              studioCtx={studioCtx}
-              viewCtx={viewCtx}
-              component={component}
-              isHalf={isHalf}
-            />
-          </div>
-        )}
-      </div>
-    </SidebarModalProvider>
+    <PopoverFrameProvider containerSelector=".canvas-editor__right-pane">
+      <SidebarModalProvider containerSelector=".canvas-editor__right-pane">
+        <div
+          className={cx({
+            "canvas-editor__right-pane__top": true,
+            "canvas-editor__right-pane__top--with-bottom":
+              isHalf && hasElementPanel,
+          })}
+        >
+          {shouldShowPageTab && (
+            <div
+              className="canvas-editor__right-stack-pane"
+              data-test-id="page-panel"
+            >
+              <PageTab
+                page={component}
+                studioCtx={studioCtx}
+                viewCtx={viewCtx}
+                isHalf={isHalf}
+              />
+            </div>
+          )}
+          {shouldShowComponentTab && (
+            <div
+              className="canvas-editor__right-stack-pane"
+              // data-test-id="component-panel"
+            >
+              <ComponentTab
+                studioCtx={studioCtx}
+                viewCtx={viewCtx}
+                component={component}
+                isHalf={isHalf}
+              />
+            </div>
+          )}
+        </div>
+      </SidebarModalProvider>
+    </PopoverFrameProvider>
   );
 });
 
@@ -303,35 +306,37 @@ const StyleTabBottomPanel = observer(function StyleTabBottomPanel(props: {
   const currentTarget = useCurrentRecordingTarget();
 
   return (
-    <SidebarModalProvider containerSelector=".style-tab">
-      <div className="canvas-editor__right-pane__bottom style-tab">
-        <div
-          className="canvas-editor__right-pane__bottom__scroll"
-          style={
-            focused
-              ? {
-                  borderLeft:
-                    currentTarget === "baseVariant"
-                      ? "1px solid transparent"
-                      : `1px solid var(${selectionControlsColor})`,
-                }
-              : undefined
-          }
-        >
-          {focused instanceof SlotSelection ? (
-            <SlotSelectionMessage node={focused} viewCtx={viewCtx} />
-          ) : tpl === component.tplTree && isCodeComponent(component) ? (
-            <CodeComponentRootMessage component={component} />
-          ) : isCodeComponent(component) && isTplSlot(tpl) ? (
-            <CodeComponentTplSlotMessage component={component} />
-          ) : tpl ? (
-            <>
-              <StyleTabForTpl viewCtx={viewCtx} tpl={tpl} />
-            </>
-          ) : null}
+    <PopoverFrameProvider containerSelector=".style-tab">
+      <SidebarModalProvider containerSelector=".style-tab">
+        <div className="canvas-editor__right-pane__bottom style-tab">
+          <div
+            className="canvas-editor__right-pane__bottom__scroll"
+            style={
+              focused
+                ? {
+                    borderLeft:
+                      currentTarget === "baseVariant"
+                        ? "1px solid transparent"
+                        : `1px solid var(${selectionControlsColor})`,
+                  }
+                : undefined
+            }
+          >
+            {focused instanceof SlotSelection ? (
+              <SlotSelectionMessage node={focused} viewCtx={viewCtx} />
+            ) : tpl === component.tplTree && isCodeComponent(component) ? (
+              <CodeComponentRootMessage component={component} />
+            ) : isCodeComponent(component) && isTplSlot(tpl) ? (
+              <CodeComponentTplSlotMessage component={component} />
+            ) : tpl ? (
+              <>
+                <StyleTabForTpl viewCtx={viewCtx} tpl={tpl} />
+              </>
+            ) : null}
+          </div>
         </div>
-      </div>
-    </SidebarModalProvider>
+      </SidebarModalProvider>
+    </PopoverFrameProvider>
   );
 });
 

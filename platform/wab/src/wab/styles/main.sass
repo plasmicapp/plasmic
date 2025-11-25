@@ -1384,6 +1384,9 @@ a.btn-link
 .plain-active-context .icon-button--active
   color: $brightfg
 
+.button--active
+  @include outset-button--active
+
 .toggle-button
   display: inline-block
   input
@@ -1633,6 +1636,9 @@ a.btn-link
   cursor: pointer
   &:hover
     background-color: color.adjust($btn-color, $lightness: 5%)
+
+.list-box-item--highlighted
+  @include list-box-item--highlighted
 
 .list-box-item__img
   width: 48px

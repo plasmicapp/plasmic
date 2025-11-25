@@ -97,7 +97,7 @@
   object-fit: cover;
   width: 32px;
   height: 32px;
-  transform: rotateX(0deg) rotateY(0deg) rotateZ(90deg);
+  transform: rotate3d(0, 0, 1, 90deg);
   color: var(--token-qP8a3gYPq7fd);
 }
 .root:focus-within .svg__qv73J {

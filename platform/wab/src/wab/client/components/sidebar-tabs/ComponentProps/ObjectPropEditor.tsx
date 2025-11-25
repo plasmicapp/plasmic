@@ -5,7 +5,7 @@ import {
   PropValueEditorContext,
   usePropValueEditorContext,
 } from "@/wab/client/components/sidebar-tabs/PropEditorRow";
-import { SidebarModal } from "@/wab/client/components/sidebar/SidebarModal";
+import { PopoverFrame } from "@/wab/client/components/sidebar/PopoverFrame";
 import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
 import Button from "@/wab/client/components/widgets/Button";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
@@ -71,9 +71,18 @@ export const ObjectPropEditor = observer(function ObjectPropEditor<
     disabled,
   } = props;
   const sc = useStudioCtx();
-  const [showModal, setShowModal] = React.useState(defaultShowModal);
+  const [showModal, setShowModal] = React.useState(false);
   const keepOpen =
     !!sc.onboardingTourState.flags.keepInspectObjectPropEditorOpen;
+  const buttonRef = React.useRef<HTMLButtonElement>(null);
+  const shouldShowModal = showModal || !!(defaultShowModal && keepOpen);
+
+  // Defer showing modal until the next frame so the button ref is available for positioning
+  React.useEffect(() => {
+    if (defaultShowModal && !showModal) {
+      requestAnimationFrame(() => setShowModal(true));
+    }
+  }, [defaultShowModal]);
 
   const valueEditorCtx = usePropValueEditorContext();
   const exprCtx = valueEditorCtx.exprCtx;
@@ -85,29 +94,29 @@ export const ObjectPropEditor = observer(function ObjectPropEditor<
   } else {
     defaultValue = usePropValueEditorContext().defaultValue ?? {};
   }
+
   return (
     <>
       <Button
+        ref={buttonRef}
         type={
           withoutNils(["leftAligned", buttonType]) as React.ComponentProps<
             typeof Button
           >["type"]
         }
         size="stretch"
-        onClick={() => {
-          setShowModal(true);
-        }}
+        onClick={() => setShowModal(true)}
         disabled={disabled}
         data-plasmic-prop={props["data-plasmic-prop"]}
+        className={shouldShowModal ? "button--active" : undefined}
       >
         {objectNameFunc?.(evaluatedValue, componentPropValues, ccContextData, {
           ...controlExtras,
           item: evaluatedValue,
         }) ?? "Configure..."}
       </Button>
-      <SidebarModal
-        show={showModal || (defaultShowModal && keepOpen)}
-        persistOnInteractOutside={keepOpen}
+      <PopoverFrame
+        show={shouldShowModal}
         title={`Edit ${
           objectNameFunc?.(
             evaluatedValue,
@@ -116,6 +125,7 @@ export const ObjectPropEditor = observer(function ObjectPropEditor<
             controlExtras
           ) ?? "Object"
         }`}
+        valuePath={controlExtras.path}
         onClose={() => {
           setShowModal(false);
           onClose?.();
@@ -123,9 +133,15 @@ export const ObjectPropEditor = observer(function ObjectPropEditor<
             type: TutorialEventsType.ClosedPropEditor,
           });
         }}
+        persistOnInteractOutside={keepOpen}
+        triggerElement={buttonRef.current ?? undefined}
       >
         <div className="pt-xxlg pb-xsm">
-          <SidebarSection id="object-prop-editor-modal" key={modalKey} noBorder>
+          <SidebarSection
+            id="object-prop-editor-popover"
+            key={modalKey}
+            noBorder
+          >
             {(renderMaybeCollapsibleRows) =>
               renderMaybeCollapsibleRows(
                 Object.entries(fields).map(([fieldName, fieldPropType]) => {
@@ -215,7 +231,7 @@ export const ObjectPropEditor = observer(function ObjectPropEditor<
             }
           </SidebarSection>
         </div>
-      </SidebarModal>
+      </PopoverFrame>
     </>
   );
 });

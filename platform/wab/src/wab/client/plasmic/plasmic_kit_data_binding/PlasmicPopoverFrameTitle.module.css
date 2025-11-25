@@ -1,0 +1,55 @@
+.popoverFrameTitle {
+  animation: none;
+  display: flex;
+  width: 100%;
+  height: auto;
+  max-width: 800px;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  min-width: 0;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--token-Ik3bdE1e1Uy);
+}
+.back:global(.__wab_instance) {
+  max-width: 100%;
+  margin-left: -8px;
+}
+.svg__kv0Et {
+  object-fit: cover;
+  width: 16px;
+  height: 16px;
+}
+.svg__sExJz {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  height: 1em;
+}
+.titleWrap {
+  position: relative;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  display: flex;
+  flex-direction: row;
+  min-width: 0;
+}
+.slotTargetTitle {
+  font-weight: 500;
+  font-size: 14px;
+}
+.close:global(.__wab_instance) {
+  max-width: 100%;
+}
+.svg___8TSbt {
+  object-fit: cover;
+  width: 16px;
+  height: 16px;
+}
+.svg__g47Zt {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  height: 1em;
+}

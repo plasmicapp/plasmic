@@ -159,7 +159,7 @@ test.describe("Table and form tutorial", () => {
 
     await frame
       .locator(
-        '#object-prop-editor-modal [data-test-id="prop-editor-row-label"]'
+        '#object-prop-editor-popover [data-test-id="prop-editor-row-label"]'
       )
       .click();
     await page.keyboard.type("Contact Name");
@@ -174,7 +174,7 @@ test.describe("Table and form tutorial", () => {
 
     await frame
       .locator(
-        '#object-prop-editor-modal [data-test-id="prop-editor-row-name"]'
+        '#object-prop-editor-popover [data-test-id="prop-editor-row-name"]'
       )
       .click();
     await page.keyboard.type("contact_name");
@@ -183,7 +183,7 @@ test.describe("Table and form tutorial", () => {
 
     await expect(frame.locator("#tour-popup-form-items-save")).toBeVisible();
     await frame
-      .locator('#sidebar-modal [data-test-id="close-sidebar-modal"]')
+      .locator('#props-popover [data-test-id="close-popover-frame"]')
       .click();
     await page.waitForTimeout(700);
 

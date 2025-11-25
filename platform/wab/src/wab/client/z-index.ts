@@ -3,6 +3,7 @@
 export const zIndex = {
   quickModal: 4000,
   tour: 3000,
+  popoverFrame: 2001,
   rightPaneModal: 2000,
   tourHighlightAboveMenus: 1051,
   dropdownMenu: 1050, // .ant-dropdown (e.g. right-click context menus)

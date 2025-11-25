@@ -48,6 +48,7 @@ import { ValueSetState } from "@/wab/client/components/sidebar/sidebar-helpers";
 import { ColorButton } from "@/wab/client/components/style-controls/ColorButton";
 import { extractDataCtx } from "@/wab/client/state-management/interactions-meta";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { mkTokenRef, tryParseTokenRef } from "@/wab/commons/StyleToken";
 import { unwrap } from "@/wab/commons/failable-utils";
 import { isStandaloneVariantGroup } from "@/wab/shared/Variants";
@@ -132,6 +133,23 @@ import L, { isNil, isNumber } from "lodash";
 import { observer } from "mobx-react";
 import React from "react";
 
+/**
+ * Get an ExprCtx from ViewCtx when editing props in the component sidebar,
+ * and use the provided exprCtx in the server query modal.
+ */
+function getEvalExprCtx(
+  viewCtx: ViewCtx | undefined,
+  exprCtx: ExprCtx | undefined
+): ExprCtx {
+  return viewCtx
+    ? {
+        projectFlags: viewCtx.projectFlags(),
+        component: viewCtx.currentComponent(),
+        inStudio: true,
+      }
+    : exprCtx!;
+}
+
 const PropValueEditor_ = (
   props: {
     propType: StudioPropType<any>;
@@ -162,8 +180,15 @@ const PropValueEditor_ = (
     controlExtras = { path: [] },
     hideDefaultValueHint,
   } = props;
-  const { env, schema, viewCtx, tpl, componentPropValues, ccContextData } =
-    usePropValueEditorContext();
+  const {
+    env,
+    schema,
+    viewCtx,
+    tpl,
+    componentPropValues,
+    ccContextData,
+    exprCtx,
+  } = usePropValueEditorContext();
   const studioCtx = useStudioCtx();
   const litValue = React.useMemo(
     () => (isKnownExpr(value) ? tryExtractJson(value) : value),
@@ -1005,6 +1030,7 @@ const PropValueEditor_ = (
         hideTokenPicker={hackyCast(propType).disableTokens}
         sc={studioCtx}
         data-plasmic-prop={attr}
+        valuePath={controlExtras.path}
       />
     );
   } else if (getPropTypeType(propType) === "array") {
@@ -1012,27 +1038,22 @@ const PropValueEditor_ = (
       isPlainObjectPropType(propType) &&
       propType.type === "array" &&
       propType.itemType &&
-      isTplComponent(tpl) &&
-      viewCtx
+      (viewCtx || exprCtx)
     ) {
-      const exprCtx: ExprCtx = {
-        projectFlags: viewCtx.projectFlags(),
-        component: viewCtx.currentComponent(),
-        inStudio: true,
-      };
+      const evalExprCtx = getEvalExprCtx(viewCtx, exprCtx);
       const userMinimalValue = _getContextDependentValue(
         propType.unstable__minimalValue
       );
       let deseredValue = deserCompositeExprMaybe(value);
 
       let evaluated = isKnownExpr(value)
-        ? tryEvalExpr(getRawCode(value, exprCtx), env ?? {}).val
+        ? tryEvalExpr(getRawCode(value, evalExprCtx), env ?? {}).val
         : value;
       if (userMinimalValue) {
         deseredValue = mergeUserMinimalValueWithCompositeExpr(
           userMinimalValue,
           value,
-          exprCtx,
+          evalExprCtx,
           env ?? {},
           propType.unstable__keyFunc
         );
@@ -1051,7 +1072,12 @@ const PropValueEditor_ = (
           ccContextData={ccContextData}
           componentPropValues={componentPropValues}
           controlExtras={controlExtras}
-          modalKey={`main.${tpl.uid}`}
+          modalKey={
+            // Set key based on Tpl ID for components and controlExtras for server queries
+            viewCtx && isTplComponent(tpl)
+              ? `main.${tpl.uid}.${attr}`
+              : `arr.${controlExtras.path.join(".")}.${attr}`
+          }
           data-plasmic-prop={attr}
           propType={propType}
           disabled={disabled}
@@ -1076,16 +1102,11 @@ const PropValueEditor_ = (
       isPlainObjectPropType(propType) &&
       propType.type === "object" &&
       propType.fields &&
-      viewCtx &&
-      isTplComponent(tpl)
+      (viewCtx || exprCtx)
     ) {
       const evaluated = isKnownExpr(value)
         ? tryEvalExpr(
-            getRawCode(value, {
-              projectFlags: viewCtx.projectFlags(),
-              component: viewCtx.currentComponent(),
-              inStudio: true,
-            }),
+            getRawCode(value, getEvalExprCtx(viewCtx, exprCtx)),
             env ?? {}
           ).val
         : value;
@@ -1101,7 +1122,11 @@ const PropValueEditor_ = (
           }
           evaluatedValue={value === undefined ? defaultValueHint : evaluated}
           fields={propType.fields}
-          modalKey={`main.${tpl.uid}`}
+          modalKey={
+            viewCtx && isTplComponent(tpl)
+              ? `main.${tpl.uid}.${attr}`
+              : `obj.${controlExtras.path.join(".")}.${attr}`
+          }
           objectNameFunc={propType.nameFunc}
           componentPropValues={componentPropValues}
           ccContextData={ccContextData}

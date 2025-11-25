@@ -16,8 +16,7 @@
   width: auto;
   height: var(--token-aDa535tnF);
   max-width: 100%;
-  transform: translateX(-100%) translateY(0px) translateZ(0px) rotateX(0deg)
-    rotateY(0deg) rotateZ(-90deg);
+  transform: translate3d(-100%, 0px, 0px) rotate3d(0, 0, 1, -90deg);
   transform-origin: 100% 0%;
   position: absolute;
   left: 0px;
@@ -37,7 +36,7 @@
   -webkit-transition-duration: 0.2s;
 }
 .svgenvPanel_collapsed__xgwk8Xz9Ol {
-  transform: rotateX(0deg) rotateY(0deg) rotateZ(-90deg);
+  transform: rotate3d(0, 0, 1, -90deg);
 }
 .svg__ckpYw {
   position: relative;

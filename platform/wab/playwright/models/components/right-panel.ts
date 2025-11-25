@@ -949,7 +949,7 @@ export class RightPanel extends BaseModel {
       }
     }
 
-    await this.closeSidebarModal();
+    await this.closePopoverFrame();
   }
 
   async addItemToArrayProp(prop: string, value: Record<string, any>) {
@@ -1292,6 +1292,11 @@ export class RightPanel extends BaseModel {
 
   async closeSidebarModal() {
     const closeBtn = this.frame.locator('[data-test-id="close-sidebar-modal"]');
+    await closeBtn.click();
+  }
+
+  async closePopoverFrame() {
+    const closeBtn = this.frame.locator('[data-test-id="close-popover-frame"]');
     await closeBtn.click();
   }
 

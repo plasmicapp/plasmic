@@ -1,0 +1,21 @@
+.popoverFrame {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  width: 100%;
+  height: auto;
+  justify-content: flex-start;
+  align-items: center;
+  min-width: 0;
+}
+.propTitle:global(.__wab_instance) {
+  animation: none;
+  position: relative;
+}
+.contentWrap {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  width: 100%;
+  min-width: 0;
+}

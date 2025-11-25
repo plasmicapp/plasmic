@@ -551,6 +551,7 @@ interface ListBoxItemProps {
   truncate?: boolean;
   gridThumbnail?: boolean;
   menu?: React.ReactNode | MenuMaker;
+  isHighlighted?: boolean;
   "data-test-id"?: string;
 }
 
@@ -609,6 +610,7 @@ export class ListBoxItem extends React.Component<ListBoxItemProps, {}> {
                     "list-box-item flex-vcenter": true,
                     "list-box-item--top": !!this.props.alignTop,
                     "list-box-item--clickable": !!clickable,
+                    "list-box-item--highlighted": !!this.props.isHighlighted,
                     group: true,
                   })}
                   data-test-id={this.props["data-test-id"]}

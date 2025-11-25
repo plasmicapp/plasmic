@@ -219,7 +219,7 @@ test.describe("hostless-rich-components", () => {
     );
     await checkDarkFgColors(page);
     await models.studio.frame
-      .locator("[data-test-id='back-sidebar-modal']")
+      .locator("[data-test-id='back-popover-frame']")
       .click();
 
     await chooseDataPlasmicProp(models.studio.rightPanel, "scheme", "primary");

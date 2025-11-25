@@ -170,8 +170,10 @@ import { capitalize, isString, keyBy } from "lodash";
 import { observer } from "mobx-react";
 import React, { useMemo } from "react";
 
+export type PropValuePath = (number | string)[];
+
 export interface ControlExtras {
-  path: (number | string)[];
+  path: PropValuePath;
   item?: any; // used for objects and array types
 }
 
