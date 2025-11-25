@@ -5,7 +5,6 @@ import { FallbackEditor } from "@/wab/client/components/sidebar-tabs/ComponentPr
 import {
   getValueSetState,
   LabeledItemRow,
-  shouldBeDisabled,
   ValueSetState,
 } from "@/wab/client/components/sidebar/sidebar-helpers";
 import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
@@ -16,6 +15,10 @@ import {
 } from "@/wab/client/components/style-controls/StyleComponent";
 import StyleSwitch from "@/wab/client/components/style-controls/StyleSwitch";
 import { Typography } from "@/wab/client/components/style-controls/Typography";
+import {
+  makeTplTextMenu,
+  makeTplTextOps,
+} from "@/wab/client/components/tpl-text-ops";
 import { LabelWithDetailedTooltip } from "@/wab/client/components/widgets/LabelWithDetailedTooltip";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
@@ -29,7 +32,6 @@ import {
   ExprCtx,
   extractValueSavedFromDataPicker,
   isFallbackSet,
-  tryExtractJson,
   tryExtractString,
 } from "@/wab/shared/core/exprs";
 import {
@@ -37,14 +39,12 @@ import {
   typographyCssProps,
 } from "@/wab/shared/core/style-props";
 import { getRichTextContent, isTplTextBlock } from "@/wab/shared/core/tpls";
-import { computeDefinedIndicator } from "@/wab/shared/defined-indicator";
 import {
   CustomCode,
   ensureKnownTplTag,
   ExprText,
   isKnownCustomCode,
   isKnownExprText,
-  isKnownRawText,
   ObjectPath,
   RawText,
   RichText,
@@ -56,7 +56,6 @@ import {
   isPlainTextTplSlot,
 } from "@/wab/shared/SlotUtils";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
-import { isBaseVariant } from "@/wab/shared/Variants";
 import { Alert, Menu, Tooltip } from "antd";
 import { observer } from "mobx-react";
 import React from "react";
@@ -220,7 +219,15 @@ const TextContentRow = observer(function TextContentRow(props: {
     return null;
   }
 
-  const effectiveVs = viewCtx.effectiveCurrentVariantSetting(textTpl);
+  const textTplOps = makeTplTextOps(viewCtx, textTpl);
+  const {
+    effectiveVs,
+    indicator,
+    isDisabled,
+    disabledTooltip,
+    actions: { convertToDynamicValue },
+  } = textTplOps;
+
   const text = effectiveVs.text;
   if (!text) {
     return null;
@@ -233,24 +240,7 @@ const TextContentRow = observer(function TextContentRow(props: {
     setShowFallback(true);
   }
 
-  const source = effectiveVs.getTextSource();
-  if (!source) {
-    return null;
-  }
-
-  const indicator = computeDefinedIndicator(
-    viewCtx.site,
-    viewCtx.currentComponent(),
-    source,
-    vtm.getTargetIndicatorComboForNode(expsProvider.tpl)
-  );
   const setState = getValueSetState(indicator);
-
-  const { isDisabled, disabledTooltip } = shouldBeDisabled({
-    props: {},
-    label: "text",
-    indicators: [indicator],
-  });
 
   const onChange = (newValue: RichText | null) => {
     viewCtx.change(() => {
@@ -263,62 +253,20 @@ const TextContentRow = observer(function TextContentRow(props: {
     component: viewCtx.currentComponent(),
     inStudio: true,
   };
-  const allowDynamicValue = !isKnownExprText(text);
-  const applyDynamicValue = () => {
-    onChange(
-      new ExprText({
-        expr: new ObjectPath({
-          path: ["undefined"],
-          fallback:
-            isKnownRawText(text) &&
-            text.markers.length === 0 &&
-            text.text !== "Enter some text"
-              ? codeLit(text.text)
-              : codeLit(""),
-        }),
-        html: false,
-      })
-    );
-    setShowFallback(true);
-    setIsDataPickerVisible(true);
-  };
+  const applyDynamicValue = convertToDynamicValue
+    ? () => {
+        convertToDynamicValue();
+        setShowFallback(true);
+        setIsDataPickerVisible(true);
+      }
+    : undefined;
   const contextMenu = () => {
     return (
       <Menu>
-        {setState === "isSet" &&
-          !isBaseVariant(expsProvider.targetVariantCombo) && (
-            <Menu.Item onClick={() => onChange(null)}>Clear text</Menu.Item>
-          )}
-        {allowDynamicValue && (
-          <Menu.Item key={"customCode"} onClick={applyDynamicValue}>
-            Use dynamic value
-          </Menu.Item>
-        )}
-        {isKnownExprText(text) && (
+        {makeTplTextMenu(textTplOps)}
+        {isKnownExprText(text) && !isFallbackSet(text.expr) && (
           <Menu.Item key={"fallback"} onClick={() => setShowFallback(true)}>
             Change fallback value
-          </Menu.Item>
-        )}
-        {isKnownExprText(text) && (
-          <Menu.Item
-            key={"!customCode"}
-            onClick={() => {
-              const fallbackText =
-                codeExpr && isKnownCustomCode(codeExpr.fallback)
-                  ? tryExtractJson(codeExpr.fallback)
-                  : "";
-              onChange(
-                new RawText({
-                  text:
-                    typeof fallbackText === "string"
-                      ? fallbackText
-                      : "Enter some text",
-                  markers: [],
-                })
-              );
-            }}
-          >
-            Remove dynamic value
           </Menu.Item>
         )}
       </Menu>
@@ -337,11 +285,9 @@ const TextContentRow = observer(function TextContentRow(props: {
         <ContextMenuIndicator
           menu={contextMenu}
           showDynamicValueButton={
-            allowDynamicValue && !studioCtx.contentEditorMode
+            applyDynamicValue && !studioCtx.contentEditorMode
           }
-          onIndicatorClickDefault={() => {
-            applyDynamicValue();
-          }}
+          onIndicatorClickDefault={applyDynamicValue}
           className="qb-custom-widget"
           fullWidth
         >

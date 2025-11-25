@@ -90,7 +90,7 @@ test.describe("simplified", () => {
 
     await models.studio.leftPanel.insertNode("Text");
     await models.studio.rightPanel.bindTextContentToCustomCode(
-      "JSON.stringify($state.submittedData, Object.keys($state.submittedData).sort())"
+      "JSON.stringify($state.submittedData, Object.keys($state.submittedData ?? {}).sort())"
     );
 
     await models.studio.withinLiveMode(async (liveFrame) => {

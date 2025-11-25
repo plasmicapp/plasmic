@@ -1968,19 +1968,11 @@ export function isTplContainer(tplNode: TplNode): tplNode is TplContainerTag {
   return isTplOther(tplNode) && !isAtomicTag(tplNode.tag);
 }
 
-export type TplReated = TplNode;
 export function isTplRepeated(tpl: TplNode): tpl is TplNode {
   return (
     isTplVariantable(tpl) &&
     !!tpl.vsettings.find((vs) => isBaseVariant(vs.variants))?.dataRep
   );
-}
-
-export function tryGetVariantSettingStoringText(
-  tplNode: TplTag,
-  viewCtx: ViewCtx
-) {
-  return viewCtx.variantTplMgr().tryGetTargetVariantSetting(tplNode);
 }
 
 /**
@@ -2023,6 +2015,28 @@ export function getRichTextContent(text: RichText) {
       : pathToString(text.expr.path);
   }
   return undefined;
+}
+
+/**
+ * Converts a RichText element to an empty ExprText.
+ *
+ * If present, sets the original text as the fallback.
+ */
+export function convertTextToDynamic(
+  text: RichText | null | undefined
+): ExprText {
+  return new ExprText({
+    expr: new ObjectPath({
+      path: ["undefined"],
+      fallback:
+        isKnownRawText(text) &&
+        text.markers.length === 0 &&
+        text.text !== "Enter some text"
+          ? Exprs.codeLit(text.text)
+          : undefined,
+    }),
+    html: false,
+  });
 }
 
 /**

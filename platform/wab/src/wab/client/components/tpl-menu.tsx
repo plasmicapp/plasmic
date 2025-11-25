@@ -5,6 +5,10 @@ import {
   MenuBuilder,
   MenuItemContent,
 } from "@/wab/client/components/menu-builder";
+import {
+  makeTplTextMenu,
+  makeTplTextOps,
+} from "@/wab/client/components/tpl-text-ops";
 import { SlotsTooltip } from "@/wab/client/components/widgets/DetailedTooltips";
 import { LabelWithDetailedTooltip } from "@/wab/client/components/widgets/LabelWithDetailedTooltip";
 import { getComboForAction } from "@/wab/client/shortcuts/studio/studio-shortcuts";
@@ -12,6 +16,17 @@ import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { getVisibilityChoicesForTpl } from "@/wab/client/utils/tpl-client-utils";
 import { MainBranchId } from "@/wab/shared/ApiSchema";
 import { isMixedArena } from "@/wab/shared/Arenas";
+import {
+  FRAME_CAP,
+  HORIZ_CONTAINER_CAP,
+  VERT_CONTAINER_CAP,
+} from "@/wab/shared/Labels";
+import {
+  getAncestorSlotArg,
+  isCodeComponentSlot,
+  revertToDefaultSlotContents,
+} from "@/wab/shared/SlotUtils";
+import { $$$ } from "@/wab/shared/TplQuery";
 import {
   asOne,
   ensure,
@@ -28,7 +43,6 @@ import {
   areSiblings,
   canConvertToSlot,
   canToggleVisibility,
-  fixTextChildren,
   hasTextAncestor,
   isCodeComponentRoot,
   isTplColumn,
@@ -42,26 +56,18 @@ import {
   isTplTagOrComponent,
   isTplTextBlock,
   tplChildrenOnly,
-  tryGetVariantSettingStoringText,
 } from "@/wab/shared/core/tpls";
 import { ValComponent } from "@/wab/shared/core/val-nodes";
 import { isAdminTeamEmail } from "@/wab/shared/devflag-utils";
 import {
-  FRAME_CAP,
-  HORIZ_CONTAINER_CAP,
-  VERT_CONTAINER_CAP,
-} from "@/wab/shared/Labels";
-import {
-  getContainerTypeName,
   PositionLayoutType,
+  getContainerTypeName,
 } from "@/wab/shared/layoututils";
 import {
-  isKnownRawText,
+  TplNode,
   isKnownRenderExpr,
   isKnownTplSlot,
   isKnownVirtualRenderExpr,
-  RawText,
-  TplNode,
 } from "@/wab/shared/model/classes";
 import { mkProjectLocation } from "@/wab/shared/route/app-routes";
 import {
@@ -70,18 +76,11 @@ import {
   resetTplSize,
 } from "@/wab/shared/sizingutils";
 import {
-  getAncestorSlotArg,
-  isCodeComponentSlot,
-  revertToDefaultSlotContents,
-} from "@/wab/shared/SlotUtils";
-import { $$$ } from "@/wab/shared/TplQuery";
-import { isBaseVariant } from "@/wab/shared/Variants";
-import {
   clearTplVisibility,
   getVisibilityLabel,
   hasVisibilitySetting,
 } from "@/wab/shared/visibility-utils";
-import { Menu, notification, Tooltip } from "antd";
+import { Menu, Tooltip, notification } from "antd";
 import React from "react";
 
 export function makeSelectableMenu(viewCtx: ViewCtx, node: Selectable) {
@@ -500,62 +499,7 @@ export function makeTplMenu(
     }
 
     if (!forMultipleTpls && isTplTextBlock(tpl)) {
-      pushEdit(
-        <Menu.Item
-          key="edit-text"
-          onClick={() => {
-            const valNode = tryGetValNode();
-            if (!valNode) {
-              notification.warn({
-                message: "Cannot edit text when the text node is invisible",
-              });
-              return;
-            }
-            viewCtx.change(() =>
-              viewCtx.getViewOps().tryEditText({ focusObj: valNode })
-            );
-          }}
-        >
-          <MenuItemContent shortcut={getComboForAction("NAV_CHILD")}>
-            Edit text
-          </MenuItemContent>
-        </Menu.Item>
-      );
-      const vs = tryGetVariantSettingStoringText(tpl, viewCtx);
-      if (vs && vs.text) {
-        if (!isBaseVariant(vs.variants)) {
-          pushEdit(
-            <Menu.Item
-              key="remove-text-override"
-              onClick={() =>
-                viewCtx.change(() => {
-                  vs.text = undefined;
-                })
-              }
-            >
-              Remove text override
-            </Menu.Item>
-          );
-        }
-        pushEdit(
-          <Menu.Item
-            key="remove-text"
-            onClick={() =>
-              viewCtx.change(() => {
-                if (isKnownRawText(vs.text)) {
-                  vs.text.text = "";
-                  vs.text.markers = [];
-                  fixTextChildren(tpl);
-                } else {
-                  vs.text = new RawText({ text: "", markers: [] });
-                }
-              })
-            }
-          >
-            Clear text
-          </Menu.Item>
-        );
-      }
+      pushEdit(makeTplTextMenu(makeTplTextOps(viewCtx, tpl)));
     }
 
     if (!forMultipleTpls && isTplContainer(tpl) && !contentEditorMode) {
