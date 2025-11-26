@@ -44,6 +44,7 @@ import {
   ShorthandProperty,
 } from "@/wab/shared/css";
 import { parseScreenSpec } from "@/wab/shared/css-size";
+import { parseAspectRatioFromValueNode } from "@/wab/shared/css/aspect-ratio";
 import { isBorderProp, parseBorderShorthand } from "@/wab/shared/css/border";
 import { findAllAndMap } from "@/wab/shared/css/css-tree-utils";
 import { parseFlexShorthand } from "@/wab/shared/css/flex";
@@ -244,6 +245,10 @@ function fixCSSValue(key: string, value: string) {
 
   if (fixedKey === "flex") {
     return parseFlexShorthand(valueNode);
+  }
+
+  if (fixedKey === "aspectRatio") {
+    return parseAspectRatioFromValueNode(valueNode);
   }
 
   if (fixedKey === "backgroundColor") {

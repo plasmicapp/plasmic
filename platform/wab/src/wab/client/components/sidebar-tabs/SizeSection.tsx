@@ -49,6 +49,7 @@ import {
   isTplComponent,
   isTplImage,
 } from "@/wab/shared/core/tpls";
+import { parseAspectRatio } from "@/wab/shared/css/aspect-ratio";
 import { LENGTH_PERCENTAGE_UNITS, LENGTH_UNITS } from "@/wab/shared/css/types";
 import { parseDataUrl, SVG_MEDIA_TYPE } from "@/wab/shared/data-urls";
 import { isContentLayoutTpl } from "@/wab/shared/layoututils";
@@ -118,6 +119,7 @@ class SizeSection_ extends StyleComponent<
           "min-height",
           "max-width",
           "max-height",
+          "aspect-ratio",
           "flex-grow",
           "flex-shrink",
           "flex-basis",
@@ -254,6 +256,44 @@ class SizeSection_ extends StyleComponent<
                         extraOptions: ["none"],
                       }}
                       tokenType={"Spacing"}
+                      vsh={vsh}
+                    />
+                  </FullRow>
+                ),
+              },
+              {
+                collapsible: !isSetOrInherited(
+                  getValueSetState(...this.definedIndicators("aspect-ratio"))
+                ),
+                content: (
+                  <FullRow>
+                    <LabeledStyleDimItem
+                      label="Aspect Ratio"
+                      styleName="aspect-ratio"
+                      disabledDragging
+                      dimOpts={{
+                        allowedUnits: [""],
+                        extraOptions: ["auto"],
+                        disableSpin: true,
+                        hideArrow: true,
+                        validate: (val) => {
+                          const result = parseAspectRatio(val);
+                          if ("aspectRatio" in result) {
+                            return { valid: true };
+                          }
+                          return {
+                            valid: false,
+                            error:
+                              'Must be "auto", a decimal (1.5), or fraction (16/9)',
+                          };
+                        },
+                        transform: (val) => {
+                          const result = parseAspectRatio(val);
+                          return "aspectRatio" in result
+                            ? result.aspectRatio
+                            : val;
+                        },
+                      }}
                       vsh={vsh}
                     />
                   </FullRow>

@@ -151,6 +151,7 @@ export const DimTokenSpinner = observer(
       "data-plasmic-prop"?: string;
       onFocus?: () => void;
       onBlur?: () => void;
+      disableSpin?: boolean;
     } & DimValueOpts,
     ref: React.Ref<DimTokenSpinnerRef>
   ) {
@@ -177,6 +178,7 @@ export const DimTokenSpinner = observer(
       placeholder,
       onEscape,
       vsh,
+      disableSpin,
     } = props;
 
     const extraOptions = _extraOptions.map((it) =>
@@ -641,7 +643,7 @@ export const DimTokenSpinner = observer(
                       resetState();
                       closeMenu();
                     }
-                  } else if (isNumberMode) {
+                  } else if (isNumberMode && !disableSpin) {
                     (e.nativeEvent as any).preventDownshiftDefault = true;
                     if (e.key === "ArrowUp") {
                       e.preventDefault();
@@ -1021,6 +1023,18 @@ export interface DimValueOpts {
   displayedFractionDigits?: number;
   vsh?: VariantedStylesHelper;
   dimsFunctionAllowed?: boolean;
+
+  /**
+   * Custom validation function. If provided, overrides default dimension validation.
+   * Return { valid: true } if valid, or { valid: false, error: "message" } if invalid.
+   */
+  validate?: (value: string) => { valid: boolean; error?: string };
+
+  /**
+   * Custom transformation/normalization function.
+   * Applied before saving the value.
+   */
+  transform?: (value: string) => string;
 }
 
 function useDimValue(opts: DimValueOpts) {
@@ -1037,6 +1051,8 @@ function useDimValue(opts: DimValueOpts) {
     fractionDigits = 3,
     displayedFractionDigits = 3,
     dimsFunctionAllowed = true,
+    validate: customValidate,
+    transform: customTransform,
   } = opts;
 
   const allowedUnitsSet = new Set(allowedUnits);
@@ -1053,6 +1069,18 @@ function useDimValue(opts: DimValueOpts) {
   function checkValidValue(val: string) {
     if (extraOptions.some((it) => it.value === val)) {
       return true;
+    }
+
+    if (customValidate) {
+      const result = customValidate(val);
+      if (result.valid) {
+        return true;
+      }
+      notification.error({
+        message: `Invalid value "${val}"`,
+        description: result.error || "Invalid value",
+      });
+      return false;
     }
 
     const newValues = shorthand ? css.parseCssShorthand(val) : [val];
@@ -1136,13 +1164,17 @@ function useDimValue(opts: DimValueOpts) {
     if (!checkValidValue(newValue)) {
       return false;
     }
-    if (shorthand) {
+
+    if (customTransform) {
+      newValue = customTransform(newValue);
+    } else if (shorthand) {
       newValue = css.showCssShorthand(
         css.parseCssShorthand(newValue).map((val) => roundValue(val))
       );
     } else {
       newValue = roundValue(newValue);
     }
+
     onChange(newValue, type);
     return true;
   }

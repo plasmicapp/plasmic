@@ -255,6 +255,7 @@ export const DraggableDimLabel = observer(function DraggableDimLabel(props: {
   max?: number;
   dragScale?: "0.1" | "1" | "10" | "100";
   fractionDigits?: number;
+  disabledDragging?: boolean;
   onChange?: (val: string) => void;
 }) {
   const {
@@ -267,26 +268,29 @@ export const DraggableDimLabel = observer(function DraggableDimLabel(props: {
     max,
     dragScale,
     fractionDigits,
+    disabledDragging,
     onChange,
   } = props;
   const axis = props.axis ?? "x";
   const exp = props.exp || expsProvider.mergedExp();
   const [init, setInit] = React.useState<string[] | undefined>(undefined);
   const ref = React.useRef<HTMLDivElement | null>(null);
-  const isDraggingDisabled = React.useMemo(() => {
-    let isDisabled = false;
-    styleNames.forEach((styleName) => {
-      const rawValue = exp.get(styleName);
-      const maybeToken = tryParseTokenRef(rawValue, () =>
-        siteFinalStyleTokensAllDeps(studioCtx.site)
-      );
-      if (!isDraggableSize((maybeToken && maybeToken.value) || rawValue)) {
-        isDisabled = true;
-        return;
-      }
-    });
-    return isDisabled;
-  }, [styleNames]);
+  const isDraggingDisabled =
+    disabledDragging ||
+    React.useMemo(() => {
+      let isDisabled = false;
+      styleNames.forEach((styleName) => {
+        const rawValue = exp.get(styleName);
+        const maybeToken = tryParseTokenRef(rawValue, () =>
+          siteFinalStyleTokensAllDeps(studioCtx.site)
+        );
+        if (!isDraggableSize((maybeToken && maybeToken.value) || rawValue)) {
+          isDisabled = true;
+          return;
+        }
+      });
+      return isDisabled;
+    }, [styleNames]);
   return (
     <XDraggable
       useMovement={true}
@@ -379,6 +383,7 @@ export const LabeledStyleDimItem = observer(function LabeledStyleDimItem(
       Pick<React.ComponentProps<typeof DraggableDimLabel>, "dragScale">;
     tokenType?: StyleTokenType;
     vsh?: VariantedStylesHelper;
+    disabledDragging?: boolean;
   }
 ) {
   const { labelProps, fieldProps } = useLabel(props);
@@ -388,6 +393,7 @@ export const LabeledStyleDimItem = observer(function LabeledStyleDimItem(
     label,
     tokenType,
     vsh = new VariantedStylesHelper(),
+    disabledDragging,
     ...rest
   } = props;
 
@@ -439,6 +445,7 @@ export const LabeledStyleDimItem = observer(function LabeledStyleDimItem(
         max={dimOpts.max}
         fractionDigits={dimOpts.fractionDigits ?? 0}
         dragScale={dimOpts.dragScale}
+        disabledDragging={disabledDragging}
       />
     ) : (
       label

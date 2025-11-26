@@ -62,6 +62,7 @@ const browserCssInitialsOverrides = {
   "justify-items": "stretch", // was just missing
   "row-gap": "0px", // was just missing
   "column-gap": "0px", // was just missing
+  "aspect-ratio": "auto",
   "user-select": "text",
   "backdrop-filter": "initial",
   "transition-property": "all",
