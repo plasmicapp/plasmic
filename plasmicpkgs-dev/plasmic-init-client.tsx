@@ -8,6 +8,7 @@ import { registerAll as registerCommerce } from "@plasmicpkgs/commerce";
 import { registerAll as registerShopify } from "@plasmicpkgs/commerce-shopify";
 import { registerFetch } from "@plasmicpkgs/fetch";
 import { registerGraphQL } from "@plasmicpkgs/graphql";
+import { registerVideo } from "@plasmicpkgs/plasmic-basic-components";
 import { registerAll as registerPlasmicCmsComponents } from "@plasmicpkgs/plasmic-cms";
 import { registerAll as registerStrapiComponents } from "@plasmicpkgs/plasmic-strapi";
 import { registerStrapi } from "@plasmicpkgs/strapi";
@@ -22,6 +23,7 @@ function register() {
   registerStrapiComponents(PLASMIC);
   registerCommerce(PLASMIC);
   registerShopify(PLASMIC);
+  registerVideo(PLASMIC);
 }
 
 const useDevNames = true; // set true to avoid conflicting with production hostless names

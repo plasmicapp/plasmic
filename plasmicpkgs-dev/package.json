@@ -16,6 +16,7 @@
     "@plasmicpkgs/plasmic-cms": "0.0.295",
     "@plasmicpkgs/plasmic-strapi": "0.1.183",
     "@plasmicpkgs/strapi": "0.0.5",
+    "@plasmicpkgs/plasmic-basic-components": "0.0.258",
     "next": "^15.5.3",
     "react": "^19",
     "react-dom": "^19"

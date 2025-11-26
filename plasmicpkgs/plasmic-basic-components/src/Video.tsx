@@ -1,7 +1,7 @@
 import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
-import React from "react";
+import React, { useImperativeHandle, useRef } from "react";
 
 export type VideoProps = Pick<
   React.ComponentProps<"video">,
@@ -15,9 +15,31 @@ export type VideoProps = Pick<
   | "src"
 >;
 
-export const Video = React.forwardRef<HTMLVideoElement, VideoProps>(
+interface VideoActions {
+  play(): void;
+  pause(): void;
+}
+
+export const Video = React.forwardRef<VideoActions, VideoProps>(
   (props: VideoProps, ref) => {
-    return <video ref={ref} {...props} />;
+    const videoRef = useRef<HTMLVideoElement>(null);
+
+    useImperativeHandle(
+      ref,
+      () => {
+        return {
+          play() {
+            videoRef.current?.play();
+          },
+          pause() {
+            videoRef.current?.pause();
+          },
+        };
+      },
+      []
+    );
+
+    return <video ref={videoRef} {...props} />;
   }
 );
 
@@ -80,6 +102,16 @@ export const videoMeta: ComponentMeta<VideoProps> = {
     height: "hug",
     width: "640px",
     maxWidth: "100%",
+  },
+  refActions: {
+    play: {
+      description: "Play the video",
+      argTypes: [],
+    },
+    pause: {
+      description: "Pause the video",
+      argTypes: [],
+    },
   },
 };
 
