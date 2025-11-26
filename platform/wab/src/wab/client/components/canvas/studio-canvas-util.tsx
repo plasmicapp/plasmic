@@ -1,5 +1,5 @@
-import { getComponentByPath } from "@/wab/client/components/live/PreviewCtx";
 import { PublicLink } from "@/wab/client/components/PublicLink";
+import { getComponentByPath } from "@/wab/client/components/live/PreviewCtx";
 import { LinkButton } from "@/wab/client/components/widgets";
 import * as domMod from "@/wab/client/dom";
 import { Fiber } from "@/wab/client/react-global-hook/fiber";
@@ -10,13 +10,13 @@ import {
 import { ACTIONS_META } from "@/wab/client/state-management/interactions-meta";
 import { RightTabKey, StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { CustomError, delay, hackyCast, unexpected } from "@/wab/shared/common";
 import { isAbsoluteUrl } from "@/wab/commons/urls";
+import { maybePropTypeToDisplayName } from "@/wab/shared/code-components/code-components";
+import { CustomError, delay, hackyCast, unexpected } from "@/wab/shared/common";
 import { PageComponent } from "@/wab/shared/core/components";
 import { InteractionArgLoc, InteractionLoc } from "@/wab/shared/core/exprs";
-import { maybePropTypeToDisplayName } from "@/wab/shared/code-components/code-components";
-import { getMatchingPagePathParams } from "@/wab/shared/utils/url-utils";
 import { getDisplayNameOfEventHandlerKey } from "@/wab/shared/core/tpls";
+import { getMatchingPagePathParams } from "@/wab/shared/utils/url-utils";
 import { notification } from "antd";
 import { when } from "mobx";
 import React from "react";
@@ -268,7 +268,7 @@ export function trapInteractionError(
       }
       await studioCtx.setStudioFocusOnTpl(component, tpl);
       await studioCtx.change(({ success }) => {
-        studioCtx.rightTabKey = RightTabKey.settings;
+        studioCtx.switchRightTab(RightTabKey.settings);
         return success();
       });
       studioCtx.highlightInteractionRequested.dispatch({

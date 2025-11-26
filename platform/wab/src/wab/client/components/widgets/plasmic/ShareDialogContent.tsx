@@ -2,8 +2,8 @@ import TextWithInfo from "@/wab/client/components/TextWithInfo";
 import PermissionsTab from "@/wab/client/components/app-auth/PermissionsTab";
 import { useAppAuthConfig } from "@/wab/client/components/app-auth/app-auth-contexts";
 import {
-  maybeShowPaywall,
   PaywallError,
+  maybeShowPaywall,
 } from "@/wab/client/components/modals/PricingModal";
 import {
   ClickStopper,
@@ -34,7 +34,7 @@ import {
   Revoke,
 } from "@/wab/shared/ApiSchema";
 import { getUserEmail } from "@/wab/shared/ApiSchemaUtil";
-import { accessLevelRank, GrantableAccessLevel } from "@/wab/shared/EntUtil";
+import { GrantableAccessLevel, accessLevelRank } from "@/wab/shared/EntUtil";
 import { ORGANIZATION_LOWER } from "@/wab/shared/Labels";
 import {
   assert,
@@ -122,22 +122,12 @@ function ShareDialogContent(props: ShareDialogContentProps) {
     appCtx.selfInfo,
     perms
   );
-  const teamId =
-    resource.type === "project"
-      ? resource.resource.teamId
-      : resource.type === "workspace"
-      ? resource.resource.team.id
-      : resource.resource.id;
 
   const ownAccessLevelRank = accessLevelRank(ownAccessLevel);
   // Anyone can invite to a resource if they have at least content access
   // but it will require editor access to update invite by link
   const canInvite = ownAccessLevelRank >= accessLevelRank("content");
   const canEdit = ownAccessLevelRank >= accessLevelRank("editor");
-  const canHaveCommenterRole =
-    canEdit &&
-    (appCtx.appConfig.comments ||
-      (teamId && appCtx.appConfig.commentsTeamIds.includes(teamId)));
   const [inviteAccessLevel, setInviteAccessLevel] =
     React.useState<GrantableAccessLevel>(canEdit ? "editor" : "viewer");
   const [email, setEmail] = React.useState("");
@@ -281,7 +271,6 @@ function ShareDialogContent(props: ShareDialogContentProps) {
                 revokes: [],
               });
             }}
-            canHaveCommenterRole={!!canHaveCommenterRole}
             onRevoke={async () => {
               await doGrantRevoke({
                 revokes: [{ email: permEmail }],
@@ -309,13 +298,7 @@ function ShareDialogContent(props: ShareDialogContentProps) {
         onChange: (key) => setInviteAccessLevel(key as GrantableAccessLevel),
         children: [
           <Select.Option value="viewer">{viewerTooltip}</Select.Option>,
-          ...(canHaveCommenterRole
-            ? [
-                <Select.Option value="commenter">
-                  {commenterTooltip}
-                </Select.Option>,
-              ]
-            : []),
+          <Select.Option value="commenter">{commenterTooltip}</Select.Option>,
           <Select.Option
             value="content"
             style={{
@@ -369,14 +352,9 @@ function ShareDialogContent(props: ShareDialogContentProps) {
               onChange: (value) => updateTeam(value as GrantableAccessLevel),
               children: [
                 <Select.Option value="viewer">{viewerTooltip}</Select.Option>,
-                ...(canHaveCommenterRole
-                  ? [
-                      <Select.Option value="commenter">
-                        {commenterTooltip}
-                      </Select.Option>,
-                    ]
-                  : []),
-
+                <Select.Option value="commenter">
+                  {commenterTooltip}
+                </Select.Option>,
                 <Select.Option
                   value="content"
                   style={{

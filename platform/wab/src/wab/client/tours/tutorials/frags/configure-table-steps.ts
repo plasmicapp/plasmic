@@ -23,7 +23,7 @@ const CONFIGURE_TABLE_STEP_FUNC: TutorialStepFunctionality<OnNextCtx> = {
   placement: "left",
   highlightTarget: STUDIO_ELEMENTS_TARGETS.componentPropsData,
   waitFor: async (ctx: OnNextCtx) => {
-    ctx.studioCtx.rightTabKey = RightTabKey.settings;
+    ctx.studioCtx.switchRightTab(RightTabKey.settings);
   },
   advanceOnUserChanges: async (ctx: OnNextCtx) => {
     return isTableLinkedToRightQuery(
@@ -111,7 +111,7 @@ First, let's make the table clickable.
           "missing rich table"
         )
       );
-      ctx.studioCtx.rightTabKey = RightTabKey.settings;
+      ctx.studioCtx.switchRightTab(RightTabKey.settings);
     },
     advanceOnUserChanges: async (ctx: OnNextCtx) => {
       return isTableSelectRowsBy(

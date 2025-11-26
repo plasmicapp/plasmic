@@ -143,15 +143,7 @@ test.describe("hostless-commerce", () => {
       .click();
     await page.waitForTimeout(500);
     await models.studio.leftPanel.insertNode("Text");
-
-    const selectedElt = await models.studio.getSelectedElt();
-    await selectedElt.dblclick({ force: true });
-    await page.waitForTimeout(500);
-    const frameContent = framed.contentFrame();
-    const editingText = frameContent.locator(".__wab_editing");
-    await editingText.waitFor({ state: "visible" });
-    await page.keyboard.type("Click here!");
-    await page.keyboard.press("Escape");
+    await models.studio.editText("Click here!");
 
     await models.studio.focusFrameRoot(framed);
 

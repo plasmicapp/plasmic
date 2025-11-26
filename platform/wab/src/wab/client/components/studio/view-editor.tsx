@@ -1,4 +1,3 @@
-/** @format */
 import { DndAdoptee, DndMarkers, DragMoveManager } from "@/wab/client/Dnd";
 import { DragMoveFrameManager } from "@/wab/client/FreestyleManipulator";
 import { ReadableClipboard } from "@/wab/client/clipboard/ReadableClipboard";
@@ -35,13 +34,10 @@ import InsertPanelWrapper from "@/wab/client/components/insert-panel/InsertPanel
 import { PreviewCtx } from "@/wab/client/components/live/PreviewCtx";
 import { makeFrameSizeMenu } from "@/wab/client/components/menus/FrameSizeMenu";
 import { OmnibarOverlay } from "@/wab/client/components/omnibar/OmnibarOverlay";
-import { SettingsTab } from "@/wab/client/components/sidebar-tabs/SettingsTab";
-import { OldSettingsTab } from "@/wab/client/components/sidebar-tabs/old-settings-tab";
 import {
   ComponentOrPageTab,
   StyleTab,
   StyleTabContext,
-  getFocusedComponentFromViewCtxOrArena,
 } from "@/wab/client/components/sidebar-tabs/style-tab";
 import { FocusedModeToolbar } from "@/wab/client/components/studio/FocusedModeToolbar/FocusedModeToolbar";
 import { GlobalCssVariables } from "@/wab/client/components/studio/GlobalCssVariables";
@@ -91,7 +87,6 @@ import {
   spawn,
   tuple,
   unexpected,
-  withoutNils,
 } from "@/wab/shared/common";
 import { isBaseVariantFrame } from "@/wab/shared/component-arenas";
 import {
@@ -2107,67 +2102,63 @@ const RightPane = observer(function RightPane(props: {
   disabled?: boolean;
 }) {
   const { studioCtx, disabled } = props;
-  const appConfig = studioCtx.appCtx.appConfig;
-  const focusedViewCtx = studioCtx.focusedViewCtx();
+
   const [hover, setHover] = React.useState(false);
-  const showComponentTab = appConfig.rightTabs && !!focusedViewCtx;
-  const showStylingTab =
-    appConfig.rightTabs && focusedViewCtx && !studioCtx.focusedFrame();
-  const showSettingsTab =
-    appConfig.rightTabs && focusedViewCtx && !studioCtx.focusedFrame();
 
-  const focusedComponent = getFocusedComponentFromViewCtxOrArena(
-    studioCtx,
-    focusedViewCtx
-  );
+  const focusedViewCtx = studioCtx.focusedViewCtx();
+  const focusedOrFirstViewCtx = studioCtx.focusedOrFirstViewCtx();
 
-  const tabs = withoutNils([
-    showSettingsTab
-      ? new widgets.Tab({
-          name: "Settings",
-          key: RightTabKey.settings,
-          contents: () => <SettingsTab />,
-        })
-      : null,
-    showStylingTab
-      ? new widgets.Tab({
-          name: "Design",
-          key: RightTabKey.style,
-          contents: () => (
-            <StyleTabContext.Provider
-              value={appConfig.rightTabs ? "style-only" : "all"}
-            >
-              <StyleTab studioCtx={studioCtx} viewCtx={focusedViewCtx} />
-            </StyleTabContext.Provider>
-          ),
-        })
-      : null,
-    DEVFLAGS.demo && focusedViewCtx
-      ? new widgets.Tab({
-          name: "Old Settings",
-          key: RightTabKey["old-settings"],
-          contents: () => <OldSettingsTab viewCtx={focusedViewCtx} />,
-        })
-      : null,
-    !showComponentTab
-      ? null
-      : new widgets.Tab({
-          name: maybe(focusedComponent, isPageComponent)
-            ? "Page data"
-            : "Component data",
-          key: RightTabKey.component,
-          contents: () => (
-            <ComponentOrPageTab
-              studioCtx={studioCtx}
-              viewCtx={focusedViewCtx}
-            />
-          ),
-        }),
-  ]);
+  const tabs: widgets.Tab[] = [];
+
+  // Element tabs are shown if an artboard is focused
+  // and element is selected (not frame)
+  if (focusedViewCtx && !studioCtx.focusedFrame()) {
+    tabs.push(
+      new widgets.Tab({
+        name: "Settings",
+        key: RightTabKey.settings,
+        contents: () => (
+          <StyleTabContext.Provider value={"settings-only"}>
+            <StyleTab studioCtx={studioCtx} viewCtx={focusedViewCtx} />
+          </StyleTabContext.Provider>
+        ),
+      })
+    );
+    tabs.push(
+      new widgets.Tab({
+        name: "Design",
+        key: RightTabKey.style,
+        contents: () => (
+          <StyleTabContext.Provider value={"style-only"}>
+            <StyleTab studioCtx={studioCtx} viewCtx={focusedViewCtx} />
+          </StyleTabContext.Provider>
+        ),
+      })
+    );
+  }
+
+  // Page/component tab is shown if an artboard is focused
+  // or defaults to the first artboard for dedicated arenas.
+  if (focusedOrFirstViewCtx) {
+    tabs.push(
+      new widgets.Tab({
+        name: isPageComponent(focusedOrFirstViewCtx.component)
+          ? "Page data"
+          : "Component data",
+        key: RightTabKey.component,
+        contents: () => (
+          <ComponentOrPageTab
+            studioCtx={studioCtx}
+            viewCtx={focusedOrFirstViewCtx}
+          />
+        ),
+      })
+    );
+  }
 
   React.useEffect(() => {
     if (tabs.length === 1) {
-      studioCtx.rightTabKey = tabs[0].key as RightTabKey;
+      studioCtx.switchRightTab(tabs[0].key as RightTabKey);
     }
   }, [tabs.length]);
 
@@ -2186,30 +2177,26 @@ const RightPane = observer(function RightPane(props: {
       {disabled && !studioCtx.showCommentsPanel && (
         <div className="canvas-editor__disable-right-pane" />
       )}
-      {DEVFLAGS.demo || studioCtx.showComments() || appConfig.rightTabs ? (
-        studioCtx.showCommentsPanel ? (
-          <CommentsTab />
-        ) : (
-          <widgets.Tabs
-            onSwitch={(tabKey: RightTabKey) => {
-              studioCtx.rightTabKey = tabKey;
-              studioCtx.tourActionEvents.dispatch({
-                type: TutorialEventsType.RightTabSwitched,
-                params: {
-                  tabKey,
-                },
-              });
-            }}
-            tabKey={studioCtx.rightTabKey}
-            useDefaultClasses={false}
-            tabBarClassName="hilite-tabs"
-            tabClassName="hilite-tab"
-            activeTabClassName="hilite-tab--active"
-            tabs={tabs}
-          />
-        )
+      {studioCtx.showComments() && studioCtx.showCommentsPanel ? (
+        <CommentsTab />
       ) : (
-        <StyleTab studioCtx={studioCtx} viewCtx={focusedViewCtx} />
+        <widgets.Tabs
+          onSwitch={(tabKey: RightTabKey) => {
+            studioCtx.switchRightTab(tabKey);
+            studioCtx.tourActionEvents.dispatch({
+              type: TutorialEventsType.RightTabSwitched,
+              params: {
+                tabKey,
+              },
+            });
+          }}
+          tabKey={studioCtx.rightTabKey}
+          useDefaultClasses={false}
+          tabBarClassName="hilite-tabs"
+          tabClassName="hilite-tab"
+          activeTabClassName="hilite-tab--active"
+          tabs={tabs}
+        />
       )}
     </DevContainer>
   );

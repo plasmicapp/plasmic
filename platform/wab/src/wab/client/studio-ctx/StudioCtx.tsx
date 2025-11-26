@@ -596,7 +596,6 @@ export function calculateNextVersionKey(studioCtx: StudioCtx) {
 export enum RightTabKey {
   style = "style",
   settings = "settings",
-  "old-settings" = "old-settings",
   comments = "comments",
   component = "component",
 }
@@ -637,12 +636,6 @@ export class StudioCtx extends WithDbCtx {
   private hostLessPkgsFrame: HTMLIFrameElement;
   private hostLessPkgsLock = Promise.resolve();
 
-  //
-  // Currently-displayed tabs on the left and right panels
-  //
-  private _xLeftTabKey: IObservableValue<LeftTabKey | undefined> =
-    observable.box(undefined);
-
   readonly hostPageHtml: Promise<string>;
 
   constructor(args: StudioCtxArgs) {
@@ -660,13 +653,11 @@ export class StudioCtx extends WithDbCtx {
     ({ dbCtx: this._dbCtx } = args);
     this.commentsCtx = new CommentsCtx(this);
 
-    this.rightTabKey = this.appCtx.appConfig.rightTabs
-      ? RightTabKey.settings
-      : RightTabKey.style;
+    this.switchRightTab(RightTabKey.settings);
 
     this.getInitialLeftTabKey()
       .then((key) => {
-        this.leftTabKey = key;
+        this.switchLeftTab(key);
       })
       .catch((e) => console.error(e));
     this.setHostLessPkgs();
@@ -1753,12 +1744,6 @@ export class StudioCtx extends WithDbCtx {
     this._recentArenas.set(arenas);
   }
 
-  get currentComponent() {
-    return isDedicatedArena(this.currentArena)
-      ? this.currentArena.component
-      : undefined;
-  }
-
   private arenaViewStates = observable.map<AnyArena, ArenaViewInfo>();
 
   getCurrentStudioViewportSnapshot(): StudioViewportSnapshot {
@@ -2519,14 +2504,6 @@ export class StudioCtx extends WithDbCtx {
   }) {
     this.setHighLevelFocusOnly(this.tryGetViewCtxForFrame(frame), frame);
 
-    // If this is a stretch frame, then we focus on the root node instead
-    if (frame && frame.viewMode === FrameViewMode.Stretch) {
-      const vc = this.tryGetViewCtxForFrame(frame);
-      if (vc) {
-        vc.setStudioFocusByTpl(frame.container.component.tplTree);
-      }
-    }
-
     if (frame && autoZoom) {
       this.tryZoomToFitFrame(frame, this.zoom);
     }
@@ -2758,21 +2735,6 @@ export class StudioCtx extends WithDbCtx {
     return this.focusedFrame() ?? this.focusedViewCtx()?.arenaFrame();
   }
 
-  get leftTabKey() {
-    return this._xLeftTabKey.get();
-  }
-  set leftTabKey(key: LeftTabKey | undefined) {
-    this._xLeftTabKey.set(key);
-  }
-
-  private _xLastLeftTabKey: LeftTabKey = "outline";
-  get lastLeftTabKey() {
-    return this._xLastLeftTabKey;
-  }
-  set lastLeftTabKey(key: LeftTabKey) {
-    this._xLastLeftTabKey = key;
-  }
-
   private _showCommentsPanel = observable.box(false);
 
   get showCommentsPanel() {
@@ -2806,18 +2768,18 @@ export class StudioCtx extends WithDbCtx {
     this._xLeftPaneWidth.set(width);
   }
 
+  private _xLeftTabKey: IObservableValue<LeftTabKey | undefined> =
+    observable.box(undefined);
+  private lastLeftTabKey: LeftTabKey = "outline";
+  get leftTabKey() {
+    return this._xLeftTabKey.get();
+  }
   private _xRightTabKey = observable.box<RightTabKey | undefined>(undefined);
   private lastElementRightTabKey:
     | Extract<RightTabKey, RightTabKey.style | RightTabKey.settings>
     | undefined;
   get rightTabKey() {
     return this._xRightTabKey.get();
-  }
-  set rightTabKey(key: RightTabKey | undefined) {
-    this._xRightTabKey.set(key);
-    if (key === RightTabKey.style || key === RightTabKey.settings) {
-      this.lastElementRightTabKey = key;
-    }
   }
 
   switchLeftTab(
@@ -2834,14 +2796,21 @@ export class StudioCtx extends WithDbCtx {
         .removeStorageItem(this.leftTabKeyLocalStorageKey())
         .catch((e) => console.error(e));
     }
-    this.leftTabKey = tabKey;
+    this._xLeftTabKey.set(tabKey);
     if (opts?.highlight) {
       this.highlightLeftPanel();
     }
   }
 
+  restoreLastLeftTab() {
+    this.switchLeftTab(this.lastLeftTabKey);
+  }
+
   switchRightTab(tabKey: RightTabKey) {
-    this.rightTabKey = tabKey;
+    this._xRightTabKey.set(tabKey);
+    if (tabKey === RightTabKey.style || tabKey === RightTabKey.settings) {
+      this.lastElementRightTabKey = tabKey;
+    }
   }
 
   switchToTreeTab() {
@@ -3124,24 +3093,12 @@ export class StudioCtx extends WithDbCtx {
   // Comments
   //
   showComments() {
-    const team = this.appCtx
-      .getAllTeams()
-      .find((t) => t.id === this.siteInfo.teamId);
     const accessLevel = getAccessLevelToResource(
       { type: "project", resource: this.siteInfo },
       this.appCtx.selfInfo,
       this.siteInfo.perms
     );
-    return (
-      (this.appCtx.appConfig.comments ||
-        (this.siteInfo.teamId &&
-          this.appCtx.appConfig.commentsTeamIds.includes(
-            this.siteInfo.teamId
-          )) ||
-        (team?.parentTeamId &&
-          this.appCtx.appConfig.commentsTeamIds.includes(team.parentTeamId))) &&
-      accessLevelRank(accessLevel) >= accessLevelRank("commenter")
-    );
+    return accessLevelRank(accessLevel) >= accessLevelRank("commenter");
   }
 
   //
@@ -6814,7 +6771,7 @@ export class StudioCtx extends WithDbCtx {
   set findReferencesComponent(c: Component | undefined) {
     this._findReferencesComponent.set(c);
     if (!this.leftTabKey) {
-      this.leftTabKey = "components";
+      this.switchLeftTab("components");
     }
   }
   private _findReferencesStyleToken = observable.box<StyleToken | undefined>(
@@ -6826,7 +6783,7 @@ export class StudioCtx extends WithDbCtx {
   set findReferencesStyleToken(c: StyleToken | undefined) {
     this._findReferencesStyleToken.set(c);
     if (!this.leftTabKey) {
-      this.leftTabKey = "tokens";
+      this.switchLeftTab("tokens");
     }
   }
 
@@ -6839,7 +6796,7 @@ export class StudioCtx extends WithDbCtx {
   set findReferencesDataToken(c: DataToken | undefined) {
     this._findReferencesDataToken.set(c);
     if (!this.leftTabKey) {
-      this.leftTabKey = "dataTokens";
+      this.switchLeftTab("dataTokens");
     }
   }
 

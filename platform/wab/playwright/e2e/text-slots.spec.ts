@@ -101,9 +101,7 @@ test.describe("text-slots", () => {
     await page.waitForTimeout(100);
     await page.keyboard.press("Enter");
     await page.waitForTimeout(100);
-    await page.keyboard.type("Hello");
-    await page.waitForTimeout(100);
-    await page.keyboard.press("Escape");
+    await models.studio.editText("Hello");
 
     await models.studio.rightPanel.chooseFontSize("24px");
 

@@ -64,9 +64,6 @@ function TeamMemberListItem_(
       ? perm.accessLevel
       : "none";
 
-  const canHaveCommenterRole =
-    appCtx.appConfig.comments ||
-    (teamId && appCtx.appConfig.commentsTeamIds.includes(teamId));
   const noneDesc =
     "'None' means that the user has no team-wide permissions, but may have individual workspace or project permissions. Users with `None` will still count towards your seat count.";
   return (
@@ -143,13 +140,7 @@ function TeamMemberListItem_(
               </TextWithInfo>
             )}
           </Select.Option>,
-          ...(canHaveCommenterRole
-            ? [
-                <Select.Option value="commenter">
-                  {commenterTooltip}
-                </Select.Option>,
-              ]
-            : []),
+          <Select.Option value="commenter">{commenterTooltip}</Select.Option>,
           <Select.Option value="viewer">{viewerTooltip}</Select.Option>,
           <Select.Option
             style={{

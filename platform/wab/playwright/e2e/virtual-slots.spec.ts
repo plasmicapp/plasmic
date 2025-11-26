@@ -90,12 +90,7 @@ test.describe("virtual-slots", () => {
     await models.studio.checkSelectedPropNodeAs("default");
 
     await models.studio.leftPanel.frame.getByText(`"Button"`).nth(1).click();
-    await page.keyboard.press("Enter");
-    await myPanelFrame
-      .locator(".__wab_editing")
-      .waitFor({ state: "visible", timeout: 5000 });
-    await page.keyboard.type("Weird");
-    await page.keyboard.press("Escape");
+    await models.studio.editText("Weird");
     await expect(myPanelFrame.getByText("Weird")).toBeVisible();
 
     await models.studio.leftPanel.frame.getByText(`hstack`).click();
@@ -224,12 +219,7 @@ test.describe("virtual-slots", () => {
     await models.studio.leftPanel.frame.getByText(`button1`).click();
     await models.studio.leftPanel.frame.getByText(`Slot: "children"`).click();
     await models.studio.leftPanel.frame.getByText(`"Button"`).click();
-    await page.keyboard.press("Enter");
-    await artboardFrame
-      .locator(".__wab_editing")
-      .waitFor({ state: "visible", timeout: 5000 });
-    await page.keyboard.type("Howdy");
-    await page.keyboard.press("Escape");
+    await models.studio.editText("Howdy");
     await models.studio.leftPanel.frame.getByText(`Slot: "children"`).click();
     await selectedNode.click({ button: "right", force: true });
     await expect(revertToItem).toBeVisible();
@@ -249,12 +239,7 @@ test.describe("virtual-slots", () => {
 
     await models.studio.leftPanel.frame.getByText(`Slot: "children"`).click();
     await models.studio.leftPanel.frame.getByText(`"Button"`).click();
-    await page.keyboard.press("Enter");
-    await artboardFrame
-      .locator(".__wab_editing")
-      .waitFor({ state: "visible", timeout: 5000 });
-    await page.keyboard.type("OMG");
-    await page.keyboard.press("Escape");
+    await models.studio.editText("OMG");
 
     await models.studio.leftPanel.frame.getByText(`Slot: "hstack 2"`).click();
     await selectedNode.click({ button: "right", force: true });

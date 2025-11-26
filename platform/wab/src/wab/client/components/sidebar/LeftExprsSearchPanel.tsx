@@ -197,9 +197,7 @@ const ExpressionListItem = observer(function ExpressionListItem({
       studioCtx.rightTabKey !== RightTabKey.style &&
       studioCtx.rightTabKey !== RightTabKey.settings
     ) {
-      studioCtx.rightTabKey = studioCtx.appCtx.appConfig.rightTabs
-        ? RightTabKey.settings
-        : RightTabKey.style;
+      studioCtx.switchRightTab(RightTabKey.settings);
     }
 
     await studioCtx.setStudioFocusOnTpl(

@@ -26,7 +26,7 @@ import React from "react";
 import { useLocalStorage } from "react-use";
 
 export const PageTab = observer(function PageTab(props: {
-  viewCtx?: ViewCtx | null;
+  viewCtx: ViewCtx;
   studioCtx: StudioCtx;
   page: PageComponent;
   isHalf?: boolean;
@@ -39,10 +39,6 @@ export const PageTab = observer(function PageTab(props: {
     "PageTab.isExpanded",
     false
   );
-
-  if (!viewCtx) {
-    return null;
-  }
 
   const uiConfig = studioCtx.getCurrentUiConfig();
 
@@ -96,8 +92,8 @@ export const PageTab = observer(function PageTab(props: {
         defaultExtraContentExpanded={isExpanded}
         onExtraContentCollapsed={() => setExpanded(false)}
         onExtraContentExpanded={() => setExpanded(true)}
-        title={appConfig.rightTabs ? undefined : headerTitle}
-        controls={appConfig.rightTabs ? undefined : headerControls}
+        title={undefined}
+        controls={undefined}
       >
         {(renderMaybeCollapsibleRows) => {
           return (
@@ -108,14 +104,12 @@ export const PageTab = observer(function PageTab(props: {
                     isHalf && !!studioCtx.focusedViewCtx()?.focusedTpl(),
                   content: (
                     <>
-                      {appConfig.rightTabs && (
-                        <SidebarSection>
-                          <div className={S.componentTabHeaderContainer}>
-                            {headerTitle}
-                            {headerControls}
-                          </div>
-                        </SidebarSection>
-                      )}
+                      <SidebarSection>
+                        <div className={S.componentTabHeaderContainer}>
+                          {headerTitle}
+                          {headerControls}
+                        </div>
+                      </SidebarSection>
                       {canEdit(PublicStyleSection.PageMeta) && (
                         <>
                           <PageMetaPanel page={page} viewCtx={viewCtx} />

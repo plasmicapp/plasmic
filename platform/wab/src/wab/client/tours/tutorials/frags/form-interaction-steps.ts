@@ -62,7 +62,7 @@ We want an interaction to be triggered when the form is submitted.
         ctx.studioCtx,
         ensure(ctx.studioCtx.onboardingTourState.results.form, "missing form")
       );
-      ctx.studioCtx.rightTabKey = RightTabKey.settings;
+      ctx.studioCtx.switchRightTab(RightTabKey.settings);
       scrollIntoView(STUDIO_ELEMENTS_TARGETS.interactionsSection);
       await sleep(1700);
     },

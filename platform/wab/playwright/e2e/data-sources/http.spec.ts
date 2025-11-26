@@ -46,7 +46,7 @@ test.describe("HTTP Data Source", () => {
     await models.studio.rightPanel.addComponentQuery();
 
     await page.waitForTimeout(1000);
-    pickDataSource(dataSourceName, models, page);
+    await pickDataSource(dataSourceName, models, page);
 
     await page
       .locator(".ant-modal")
@@ -76,6 +76,7 @@ test.describe("HTTP Data Source", () => {
 
     await waitForFrameToLoad(page);
 
+    await models.studio.selectRootNode();
     await models.studio.rightPanel.switchToDesignTab();
 
     await models.studio.leftPanel.insertNode("Heading");

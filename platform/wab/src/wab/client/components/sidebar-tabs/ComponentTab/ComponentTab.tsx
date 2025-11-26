@@ -35,7 +35,7 @@ export interface ComponentTabHandle {
 export const ComponentTab = observer(function ComponentTab(props: {
   component: Component;
   studioCtx: StudioCtx;
-  viewCtx?: ViewCtx | null;
+  viewCtx: ViewCtx;
   isHalf?: boolean;
 }) {
   const { component, studioCtx, viewCtx, isHalf = false } = props;
@@ -48,9 +48,6 @@ export const ComponentTab = observer(function ComponentTab(props: {
   );
   const [showSettings, setShowSettings] = React.useState(false);
 
-  if (!viewCtx) {
-    return null;
-  }
   const uiConfig = studioCtx.getCurrentUiConfig();
 
   const canEdit = (section: PublicStyleSection) => {
@@ -73,7 +70,7 @@ export const ComponentTab = observer(function ComponentTab(props: {
           <LegacyComponentParamsSection
             studioCtx={studioCtx}
             component={component}
-            metaDataOnly={studioCtx.appCtx.appConfig.rightTabs}
+            metaDataOnly
           />
         </SidebarModal>
       )}
@@ -136,6 +133,7 @@ export const ComponentTab = observer(function ComponentTab(props: {
                         <ComponentPropsDefinitionSection
                           studioCtx={studioCtx}
                           component={component}
+                          viewCtx={viewCtx}
                         />
                       )}
                       {canEdit(PublicStyleSection.DataQueries) && (

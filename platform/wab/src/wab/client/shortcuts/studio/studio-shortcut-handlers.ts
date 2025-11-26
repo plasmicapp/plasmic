@@ -228,7 +228,7 @@ export function bindStudioShortcutHandlers(studioCtx: StudioCtx) {
       CLOSE_LEFT_PANEL: async () => {
         return studioCtx.changeUnsafe(() => {
           if (!studioCtx.leftTabKey) {
-            studioCtx.switchLeftTab(studioCtx.lastLeftTabKey);
+            studioCtx.restoreLastLeftTab();
           } else {
             studioCtx.switchLeftTab(undefined);
           }

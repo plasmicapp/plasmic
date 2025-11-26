@@ -1,4 +1,4 @@
-import { expect, FrameLocator, Locator, Page } from "playwright/test";
+import { expect, FrameLocator, Locator, Page, test } from "playwright/test";
 import { waitForFrameToLoad } from "../utils/studio-utils";
 import { BaseModel } from "./BaseModel";
 import { LeftPanel } from "./components/left-panel";
@@ -623,6 +623,40 @@ export class StudioModel extends BaseModel {
     await this.frame.locator(propSelector).click({ button: "right" });
     await this.useDynamicValueButton.click();
     await this.rightPanel.insertMonacoCode(code);
+  }
+
+  /** Edit currently selected text element. */
+  async editText(text: string) {
+    await test.step(`Edit text "${text}"`, async () => {
+      // Start editing
+      await this.page.keyboard.press("Enter");
+
+      // Look through all artboard frames to find the text being edited.
+      await expect
+        .poll(
+          async () => {
+            for (const frame of await this.frames.all()) {
+              const editingTextLocator = frame
+                .contentFrame()
+                .locator(".__wab_editing");
+              if (await editingTextLocator.isVisible()) {
+                return true;
+              }
+            }
+            return false;
+          },
+          {
+            timeout: 5000,
+          }
+        )
+        .toBe(true);
+
+      await this.page.keyboard.type(text);
+
+      // Stop editing
+      await this.page.waitForTimeout(100);
+      await this.page.keyboard.press("Escape");
+    });
   }
 
   async plotText(frame: FrameLocator, x: number, y: number, text: string) {

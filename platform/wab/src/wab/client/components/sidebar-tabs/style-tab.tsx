@@ -191,13 +191,13 @@ export function getFocusedComponentFromViewCtxOrArena(
 
 export const ComponentOrPageTab = observer(function ComponentOrPageTab(props: {
   studioCtx: StudioCtx;
-  viewCtx?: ViewCtx | null;
+  viewCtx: ViewCtx;
   isHalf?: boolean;
 }) {
   const { studioCtx, viewCtx, isHalf } = props;
-  const component = viewCtx?.currentComponent();
-  const focused = viewCtx?.focusedSelectable();
-  const tpl = viewCtx?.focusedTpl(false);
+  const component = viewCtx.currentComponent();
+  const focused = viewCtx.focusedSelectable();
+  const tpl = viewCtx.focusedTpl(false);
   const hasElementPanel =
     (focused || tpl) && component && !isFrameComponent(component);
   if (!component) {
@@ -280,17 +280,11 @@ export const StyleTab = observer(function StyleTab(props: {
     return null;
   }
 
-  return (
-    <>
-      {!studioCtx.contentEditorMode &&
-        !studioCtx.appCtx.appConfig.rightTabs && (
-          <ComponentOrPageTab studioCtx={studioCtx} viewCtx={viewCtx} isHalf />
-        )}
-      {viewCtx && (
-        <StyleTabBottomPanel studioCtx={studioCtx} viewCtx={viewCtx} />
-      )}
-    </>
-  );
+  if (!viewCtx) {
+    return null;
+  }
+
+  return <StyleTabBottomPanel studioCtx={studioCtx} viewCtx={viewCtx} />;
 });
 
 const StyleTabBottomPanel = observer(function StyleTabBottomPanel(props: {

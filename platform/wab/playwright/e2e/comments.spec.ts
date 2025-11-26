@@ -12,7 +12,7 @@ test.describe("comments", () => {
     projectId = await apiClient.setupNewProject({
       name: "comment-navigation",
     });
-    await goToProject(page, `/projects/${projectId}?comments=true`);
+    await goToProject(page, `/projects/${projectId}`);
   });
 
   test.afterEach(async ({ apiClient }) => {
@@ -62,11 +62,9 @@ test.describe("comments", () => {
     const urlAfterClose = page.url();
     expect(urlAfterClose).not.toContain(`comment=${threadIdValue}`);
 
-    await goToProject(
-      page,
-      `projects/${projectId}?comment=${threadIdValue}&comments=true`,
-      { timeout: 10000 }
-    );
+    await goToProject(page, `projects/${projectId}?comment=${threadIdValue}`, {
+      timeout: 10000,
+    });
 
     const finalUrl = page.url();
     expect(finalUrl).toContain(`comment=${threadIdValue}`);
@@ -151,11 +149,9 @@ test.describe("comments", () => {
     const urlAfterClose = page.url();
     expect(urlAfterClose).not.toContain(`comment=${threadIdValue}`);
 
-    await goToProject(
-      page,
-      `projects/${projectId}?comment=${threadIdValue}&comments=true`,
-      { timeout: 10000 }
-    );
+    await goToProject(page, `projects/${projectId}?comment=${threadIdValue}`, {
+      timeout: 10000,
+    });
 
     const finalUrl = page.url();
     const decodedUrl = decodeURIComponent(finalUrl);

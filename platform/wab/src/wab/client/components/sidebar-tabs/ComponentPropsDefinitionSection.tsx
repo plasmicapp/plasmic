@@ -10,6 +10,13 @@ import { LabeledListItem } from "@/wab/client/components/widgets/LabeledListItem
 import { SimpleReorderableList } from "@/wab/client/components/widgets/SimpleReorderableList";
 import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
+import {
+  COMPONENT_PROP_LOWER,
+  COMPONENT_PROP_PLURAL_CAP,
+} from "@/wab/shared/Labels";
+import { getSlotParams } from "@/wab/shared/SlotUtils";
+import { toVarName } from "@/wab/shared/codegen/util";
 import { moveIndex, spawn } from "@/wab/shared/common";
 import {
   canChangeParamExportType,
@@ -21,12 +28,6 @@ import {
   removeComponentParam,
 } from "@/wab/shared/core/components";
 import { ParamExportType } from "@/wab/shared/core/lang";
-import {
-  COMPONENT_PROP_LOWER,
-  COMPONENT_PROP_PLURAL_CAP,
-} from "@/wab/shared/Labels";
-import { getSlotParams } from "@/wab/shared/SlotUtils";
-import { toVarName } from "@/wab/shared/codegen/util";
 import { Component, Param, isKnownPropParam } from "@/wab/shared/model/classes";
 import { Menu } from "antd";
 import { observer } from "mobx-react";
@@ -38,9 +39,10 @@ export const ComponentPropsDefinitionSection = observer(
   function ComponentParamsPanel(props: {
     studioCtx: StudioCtx;
     component: Component;
+    viewCtx: ViewCtx;
     justOneSection?: "variants" | "slots" | "meta";
   }) {
-    const { studioCtx, component } = props;
+    const { studioCtx, component, viewCtx } = props;
     const [showNewParamModal, setShowNewParamModal] = React.useState(false);
 
     const slotParams = getSlotParams(component);
@@ -66,6 +68,7 @@ export const ComponentPropsDefinitionSection = observer(
             <PropsDefinitionSection
               studioCtx={studioCtx}
               component={component}
+              viewCtx={viewCtx}
               params={realParams}
               showType={true}
               showDefault={true}
@@ -89,13 +92,21 @@ export const ComponentPropsDefinitionSection = observer(
 function PropsDefinitionSection(props: {
   studioCtx: StudioCtx;
   component: Component;
+  viewCtx: ViewCtx;
   params: Param[];
   showType?: boolean;
   draggable?: boolean;
   showDefault?: boolean;
 }) {
-  const { studioCtx, component, params, showType, showDefault, draggable } =
-    props;
+  const {
+    studioCtx,
+    component,
+    viewCtx,
+    params,
+    showType,
+    showDefault,
+    draggable,
+  } = props;
   return (
     <div className="mb-xlg">
       <SimpleReorderableList
@@ -117,6 +128,7 @@ function PropsDefinitionSection(props: {
           <PropRow
             studioCtx={studioCtx}
             component={component}
+            viewCtx={viewCtx}
             param={param}
             showType={showType}
             showDefault={showDefault}
@@ -131,6 +143,7 @@ function PropsDefinitionSection(props: {
 const PropRow = observer(function ParamRow(props: {
   studioCtx: StudioCtx;
   component: Component;
+  viewCtx: ViewCtx;
   param: Param;
   children?: React.ReactNode;
   showType?: boolean;
@@ -138,13 +151,12 @@ const PropRow = observer(function ParamRow(props: {
   draggable?: boolean;
   dragHandleProps?: DraggableProvidedDragHandleProps;
 }) {
-  const { studioCtx, component, param, draggable } = props;
+  const { studioCtx, component, viewCtx, param, draggable } = props;
 
-  const viewCtx = studioCtx.focusedViewCtx();
   const maybeState = component.states.find((s) => s.param === param);
-  const env = viewCtx?.getCanvasEnvForTpl(component.tplTree);
+  const env = viewCtx.getCanvasEnvForTpl(component.tplTree);
   const currentValue = maybeState
-    ? viewCtx?.getCanvasStateValue(maybeState)
+    ? viewCtx.getCanvasStateValue(maybeState)
     : env?.$props?.[toVarName(param.variable.name)];
 
   const [showModal, setShowModal] = React.useState(false);
@@ -178,9 +190,7 @@ const PropRow = observer(function ParamRow(props: {
                 disabled={!canRename}
               />
               {isKnownPropParam(param) && param.advanced && (
-                <div className="text-xsm dimfg">
-                  (advanced)
-                </div>
+                <div className="text-xsm dimfg">(advanced)</div>
               )}
             </div>
           }

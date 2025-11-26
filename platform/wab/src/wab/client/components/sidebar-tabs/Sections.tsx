@@ -332,9 +332,6 @@ const styleSections = new Set([
 ]);
 
 const isSectionActive = (section: Section, devflags: DevFlagsType) => {
-  if (section === Section.TextContentOnly) {
-    return devflags.rightTabs;
-  }
   if (section === Section.SlotSettings) {
     return devflags.focusable;
   }
@@ -1025,9 +1022,7 @@ function getOrderedSections(tpl: TplNode, viewCtx: ViewCtx): Set<Section> {
   }
   if (isTypographyNode(tpl)) {
     pushIfNew(Section.Typography);
-    if (viewCtx.appCtx.appConfig.rightTabs) {
-      pushIfNew(Section.TextContentOnly);
-    }
+    pushIfNew(Section.TextContentOnly);
   }
   if (isTplContainer(tpl)) {
     pushIfNew(
@@ -1077,9 +1072,7 @@ function getOrderedSections(tpl: TplNode, viewCtx: ViewCtx): Set<Section> {
   pushIfNew(Section.Image);
   pushIfNew(Section.ListStyle);
   pushIfNew(Section.Typography);
-  if (viewCtx.appCtx.appConfig.rightTabs) {
-    pushIfNew(Section.TextContentOnly);
-  }
+  pushIfNew(Section.TextContentOnly);
   pushIfNew(Section.Layout);
   pushIfNew(Section.Overflow);
   pushIfNew(Section.Background);

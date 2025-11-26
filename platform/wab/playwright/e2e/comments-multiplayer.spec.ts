@@ -31,7 +31,7 @@ testMultiplayer.describe("multiplayer comments", () => {
       const adminStudio = admin.models.studio;
       const componentName = "CommentComponent";
 
-      await goToProject(admin.page, `/projects/${projectId}?comments=true`);
+      await goToProject(admin.page, `/projects/${projectId}`);
 
       // User 1 adds a component
       await adminStudio.createComponentFromNav(componentName);
@@ -51,7 +51,7 @@ testMultiplayer.describe("multiplayer comments", () => {
 
       // Navigate other users to component
       await forEachAsync([user1, user2], async (session) => {
-        await goToProject(session.page, `/projects/${projectId}?comments=true`);
+        await goToProject(session.page, `/projects/${projectId}`);
         await session.models.studio.switchArena(componentName);
       });
 

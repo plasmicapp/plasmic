@@ -1816,7 +1816,7 @@ export class ViewCtx extends WithDbCtx {
     return vs;
   }
 
-  strictComponent() {
+  private strictComponent() {
     return ensure(this.component, `Expected component to exist`);
   }
 
