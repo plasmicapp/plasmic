@@ -2821,23 +2821,39 @@ export function extractTokenUsages(
       usingComponents.add(component);
     };
 
-    for (const [vs, tpl] of findVariantSettingsUnderTpl(tplRoot)) {
-      const exp = createExpandedRuleSetMerger(vs.rs, tpl);
+    /**
+     * Finds token usages in a RuleSet by first expanding all referenced mixins.
+     * This is used for tpls because a tpl's RuleSet may have mixins
+     * applied to it, and tokens can be used indirectly through those mixins.
+     *
+     * Contrast with `findUsagesInRs` which only checks direct RuleSet values.
+     */
+    const findUsageInExpandedRs = (rs: RuleSet, tpl: TplNode) => {
+      const exp = createExpandedRuleSetMerger(rs, tpl);
       for (const prop of exp.props()) {
         const value = exp.getRaw(prop) || undefined;
         if (value) {
           const allTokenRefs = extractAllReferencedTokenIds(value);
           if (allTokenRefs.includes(token.uuid)) {
-            usages.add({ value, type: "rule", prop, rs: vs.rs });
+            usages.add({ value, type: "rule", prop, rs });
             trackComponent();
           }
         }
       }
+    };
+
+    for (const [vs, tpl] of findVariantSettingsUnderTpl(tplRoot)) {
+      findUsageInExpandedRs(vs.rs, tpl);
       if (isTplComponent(tpl)) {
         for (const arg of vs.args) {
           if (isKnownStyleTokenRef(arg.expr) && arg.expr.token === token) {
             trackComponent();
             usages.add({ type: "prop", tpl, vs, arg });
+          } else if (isKnownStyleExpr(arg.expr)) {
+            // Tpl Component props of type "class"
+            for (const style of arg.expr.styles) {
+              findUsageInExpandedRs(style.rs, tpl);
+            }
           } else if (isFallbackableExpr(arg.expr)) {
             const fallback = arg.expr.fallback;
             if (isKnownStyleTokenRef(fallback) && fallback.token === token) {
