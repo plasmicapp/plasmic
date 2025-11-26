@@ -31,7 +31,7 @@
     "@plasmicpkgs/framer-motion": "^0.0.228",
     "@plasmicpkgs/graphql": "^0.0.14",
     "@plasmicpkgs/lottie-react": "^0.0.222",
-    "@plasmicpkgs/plasmic-basic-components": "^0.0.258",
+    "@plasmicpkgs/plasmic-basic-components": "^0.0.259",
     "@plasmicpkgs/plasmic-chakra-ui": "^0.0.60",
     "@plasmicpkgs/plasmic-cms": "^0.0.295",
     "@plasmicpkgs/plasmic-content-stack": "^0.0.184",
