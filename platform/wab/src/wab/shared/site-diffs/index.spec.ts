@@ -1,3 +1,4 @@
+import { mkDataToken } from "@/wab/commons/DataToken";
 import { mkStyleToken, mkTokenRef } from "@/wab/commons/StyleToken";
 import { $$$ } from "@/wab/shared/TplQuery";
 import { ensureBaseVariantSetting } from "@/wab/shared/VariantTplMgr";
@@ -396,6 +397,31 @@ describe("compareSites / calculateSemVer", () => {
       animations: null,
     });
     compareCheck("patch", 2);
+    return;
+  });
+
+  // site.dataTokens
+  it("semver-data-tokens", () => {
+    // - Add new data token
+    nextSite().dataTokens.unshift(
+      mkDataToken({
+        name: "Data Token 1",
+        value: "123",
+      })
+    );
+    compareCheck("minor", 1);
+    // - change data token value
+    nextSite().dataTokens[0].value = "456";
+    compareCheck("patch", 1);
+    // - rename data token
+    nextSite().dataTokens[0].name = "New Data Token 1";
+    compareCheck("major", 1);
+    // - add new data token and delete previous data token
+    nextSite().dataTokens[0] = mkDataToken({
+      name: "Data Token 2",
+      value: "789",
+    });
+    compareCheck("major", 2);
     return;
   });
 

@@ -135,6 +135,9 @@ export function objIcon(obj: SemVerSiteElement, tplIcon?: React.ReactNode) {
     return <Icon className={className} icon={ImageBlockIcon} />;
   } else if (obj.type === "Element") {
     return <span className={className}>{tplIcon}</span>;
+  } else if (obj.type === "Data token") {
+    // Fix the icon in the icon PR https://github.com/plasmicapp/plasmic-internal/pull/1928
+    return <Icon className={className} icon={TokenIcon} />;
   } else {
     return <Icon className={className} icon={ArrowRightIcon} />;
   }

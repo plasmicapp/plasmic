@@ -36,6 +36,7 @@ import {
   CustomCode,
   CustomFunctionExpr,
   DataSourceOpExpr,
+  DataToken,
   EventHandler,
   Expr,
   FunctionArg,
@@ -94,6 +95,7 @@ export type AllowedSemVerSiteElement =
   | Mixin
   | StyleToken
   | StyleTokenOverride
+  | DataToken
   | ImageAsset
   | Split
   | ProjectDependency
@@ -130,6 +132,7 @@ interface SemVerSiteDefaultElement {
     | "Mixin"
     | "Style token"
     | "Style token override"
+    | "Data token"
     | "Image"
     | "Icon"
     | "Element"
@@ -206,6 +209,10 @@ export function maybeMkSemVerSiteElement(
     .when(StyleTokenOverride, (s) => ({
       type: "Style token override" as const,
       name: s.token.name,
+    }))
+    .when(DataToken, (dt) => ({
+      type: "Data token" as const,
+      name: dt.name,
     }))
     .when(ImageAsset, (i) => ({
       type:
@@ -557,6 +564,29 @@ export function compareSites(prev: Site, curr: Site): ChangeLogEntry[] {
         },
         {
           selector: stringifyVariantedValues,
+          ...patchUpdateDiffSpecs,
+        },
+      ],
+      "global",
+      namedEntityDiffSpecs
+    )
+  );
+
+  // site.dataTokens
+  results.push(
+    ...genericCheck(
+      prev,
+      curr,
+      prev.dataTokens,
+      curr.dataTokens,
+      (t) => t.uuid,
+      [
+        {
+          selector: (t) => t.name,
+          ...nameValueDiffSpecs,
+        },
+        {
+          selector: (t) => t.value,
           ...patchUpdateDiffSpecs,
         },
       ],
