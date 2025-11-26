@@ -23,15 +23,6 @@ import React from "react";
 export const getFormattedDate = (data: string | Date) =>
   moment(data).format("MM/DD/YYYY, h:mm A");
 
-export interface VersionsItemData {
-  id: string;
-  sortIndex: number;
-  title: string;
-  tags: string[];
-  release: PkgVersionInfoMeta;
-  user?: ApiUser;
-}
-
 interface ConfirmModalProps {
   title: string;
   onSubmit: (value: boolean) => void;
@@ -184,10 +175,11 @@ const RevertConfirmModal = ({
 };
 
 export const promptVersionRevert = async (
-  data: VersionsItemData,
+  release: PkgVersionInfoMeta,
   releases: PkgVersionInfoMeta[],
   revisions: MinimalRevisionInfo[],
-  studioCtx: StudioCtx
+  studioCtx: StudioCtx,
+  user?: ApiUser | null
 ) => {
   // Find the latest published version to compare against
   const latestRelease = releases[0];
@@ -197,24 +189,23 @@ export const promptVersionRevert = async (
   return showTemporaryPrompt<boolean>((onSubmit, onCancel) => {
     const ModalContent = () => {
       const state = useAsyncStrict(async () => {
-        if (!data.release.revisionId || !latestRevisionId) {
+        if (!release.revisionId || !latestRevisionId) {
           return null;
         }
         return getRevisionDiffs(
-          data.release.revisionId,
+          release.revisionId,
           latestRevisionId,
           studioCtx
         );
-      }, [data.release.revisionId, latestRevisionId, studioCtx]);
+      }, [release.revisionId, latestRevisionId, studioCtx]);
 
       return (
         <RevertConfirmModal
-          title={`Revert to version ${data.release.version}`}
+          title={`Revert to version ${release.version}`}
           description={
             <>
-              You are about to revert to version {data.release.version},
-              originally published by{" "}
-              <UserOnDate user={data.user} date={data.release.createdAt} />.
+              You are about to revert to version {release.version}, originally
+              published by <UserOnDate user={user} date={release.createdAt} />.
             </>
           }
           diffs={state.value ?? null}
