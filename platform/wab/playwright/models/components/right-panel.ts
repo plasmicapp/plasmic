@@ -1,4 +1,4 @@
-import { expect, FrameLocator, Locator, Page } from "playwright/test";
+import { FrameLocator, Locator, Page, expect, test } from "playwright/test";
 import { modifierKey } from "../../utils/modifier-key";
 import { updateFormValuesInLiveMode } from "../../utils/studio-utils";
 import { BaseModel } from "../BaseModel";
@@ -297,27 +297,29 @@ export class RightPanel extends BaseModel {
   }
 
   async insertMonacoCode(code: string) {
-    await this.page.waitForTimeout(1000);
+    await test.step(`insertMonacoCode: ${code}`, async () => {
+      await this.page.waitForTimeout(1000);
 
-    if (await this.monacoSwitchToCodeButton.isVisible()) {
-      await this.monacoSwitchToCodeButton.click();
-    }
+      if (await this.monacoSwitchToCodeButton.isVisible()) {
+        await this.monacoSwitchToCodeButton.click();
+      }
 
-    await this.valueCodeInput.waitFor({ state: "visible" });
-    await this.valueCodeInput.click();
-    await this.valueCodeInput.click({ clickCount: 3 });
-    await this.page.keyboard.press(`${modifierKey}+A`);
-    await this.page.keyboard.press("Delete");
-    await this.page.keyboard.press("Backspace");
+      await this.valueCodeInput.waitFor({ state: "visible" });
+      await this.valueCodeInput.click();
+      await this.valueCodeInput.click({ clickCount: 3 });
+      await this.page.keyboard.press(`${modifierKey}+A`);
+      await this.page.keyboard.press("Delete");
+      await this.page.keyboard.press("Backspace");
 
-    for (const char of code) {
-      await this.page.keyboard.type(char);
-      await this.page.waitForTimeout(5);
-    }
+      for (const char of code) {
+        await this.page.keyboard.type(char);
+        await this.page.waitForTimeout(5);
+      }
 
-    await this.page.waitForTimeout(100);
-    await this.windowSaveButton.click();
-    await this.page.waitForTimeout(100);
+      await this.page.waitForTimeout(100);
+      await this.windowSaveButton.click();
+      await this.page.waitForTimeout(100);
+    });
   }
 
   async insertMonacoCodeFast(code: string) {
