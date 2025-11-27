@@ -22,6 +22,7 @@ import {
   TplExpsProvider,
   useStyleComponent,
 } from "@/wab/client/components/style-controls/StyleComponent";
+import { EditableLabel } from "@/wab/client/components/widgets/EditableLabel";
 import { Icon as IconComponent } from "@/wab/client/components/widgets/Icon";
 import IconButton from "@/wab/client/components/widgets/IconButton";
 import { DimManip } from "@/wab/client/DimManip";
@@ -656,6 +657,7 @@ const FlexGrowControls = observer(function FlexGrowControls(props: {
   ) => {
     const val = prop == "flex-grow" ? exp().get(prop) : getFlexShrinkVal(prop);
     const isNonzero = +val > 0;
+    const strVal = `${+val}`;
 
     return (
       <LabeledStyleSwitchItem
@@ -674,6 +676,38 @@ const FlexGrowControls = observer(function FlexGrowControls(props: {
             })
           );
         }}
+        valueSlot={
+          <EditableLabel
+            value={strVal}
+            labelFactory={({ className, ...restProps }) => (
+              <div
+                className={cn(
+                  { dimfg: +val === 0 || +val === 1 },
+                  "code",
+                  "pointer",
+                  className
+                )}
+                {...restProps}
+              />
+            )}
+            disabled={isDisabled}
+            inputBoxFactory={(inputProps) => (
+              <input {...inputProps} autoFocus type="number" min="0" />
+            )}
+            onEdit={(value) => {
+              const num = parseFloat(value);
+              if (!isNaN(num) && num >= 0) {
+                spawn(
+                  expsProvider.studioCtx.changeUnsafe(() => {
+                    exp().set(prop, String(num));
+                  })
+                );
+                return true;
+              }
+              return false;
+            }}
+          />
+        }
       />
     );
   };

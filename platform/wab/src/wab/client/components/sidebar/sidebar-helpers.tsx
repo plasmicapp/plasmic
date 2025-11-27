@@ -858,9 +858,10 @@ export const LabeledStyleSwitchItem = observer(function LabeledStyleSwitchItem(
     value: boolean;
     onChange: (isSelected: boolean) => void;
     "data-plasmic-prop"?: string;
+    valueSlot?: React.ReactNode;
   }
 ) {
-  const { label, value, onChange, tooltip, ...rest } = props;
+  const { label, value, onChange, tooltip, valueSlot, ...rest } = props;
   const { labelProps, fieldProps } = useLabel(props);
   const sc = useStyleComponent();
   const styleName = ensureArray(props.styleName);
@@ -872,6 +873,22 @@ export const LabeledStyleSwitchItem = observer(function LabeledStyleSwitchItem(
     label: props.label,
     indicators,
   });
+
+  const switchElement = (
+    <StyleSwitch
+      isChecked={value}
+      onChange={onChange}
+      valueSetState={undefined}
+      tooltip={tooltip}
+      isDisabled={isDisabled}
+      disabledTooltip={disabledTooltip}
+      data-plasmic-prop={props["data-plasmic-prop"]}
+      {...fieldProps}
+    >
+      {null}
+    </StyleSwitch>
+  );
+
   return (
     <LabeledStyleItem
       {...rest}
@@ -880,18 +897,14 @@ export const LabeledStyleSwitchItem = observer(function LabeledStyleSwitchItem(
       isDisabled={isDisabled}
       labelAriaProps={labelProps}
     >
-      <StyleSwitch
-        isChecked={value}
-        onChange={onChange}
-        valueSetState={undefined}
-        tooltip={tooltip}
-        isDisabled={isDisabled}
-        disabledTooltip={disabledTooltip}
-        data-plasmic-prop={props["data-plasmic-prop"]}
-        {...fieldProps}
-      >
-        {null}
-      </StyleSwitch>
+      {valueSlot ? (
+        <div className="flex flex-vcenter gap-m fill-width">
+          {switchElement}
+          {valueSlot}
+        </div>
+      ) : (
+        switchElement
+      )}
     </LabeledStyleItem>
   );
 });
