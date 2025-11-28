@@ -15,6 +15,7 @@ import ChatDocssvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/Plasmi
 import ClocksvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__ClockSvg";
 import ComponentsvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__ComponentSvg";
 import ComponentssvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__ComponentsSvg";
+import CurlyBracesIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__CurlyBraces";
 import DevicessvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__DevicesSvg";
 import DotsHorizontalCirclesvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__DotsHorizontalCircleSvg";
 import DownloadsvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__DownloadSvg";
@@ -146,8 +147,7 @@ Help
         dataTokens: {
           type: "item",
           tabKey: "dataTokens",
-          // TODO: Add a new icon for Data Token
-          icon: <DiamondsIcon />,
+          icon: <CurlyBracesIcon />,
           label: "Data tokens",
           cond: DEVFLAGS.dataTokens && canViewTab("dataTokens"),
         },

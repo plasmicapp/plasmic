@@ -5,11 +5,11 @@
 import { classNames } from "@plasmicapp/react-web";
 import React from "react";
 
-export type KeyframesIconProps = React.ComponentProps<"svg"> & {
+export type CurlyBracesIconProps = React.ComponentProps<"svg"> & {
   title?: string;
 };
 
-export function KeyframesIcon(props: KeyframesIconProps) {
+export function CurlyBracesIcon(props: CurlyBracesIconProps) {
   const { className, style, title, ...restProps } = props;
   return (
     <svg
@@ -33,11 +33,9 @@ export function KeyframesIcon(props: KeyframesIconProps) {
       >
         <path
           d={
-            "M9.225 18.412A1.6 1.6 0 0 1 8 19c-.468 0-.914-.214-1.225-.588l-4.361-5.248a1.844 1.844 0 0 1 0-2.328l4.36-5.248A1.6 1.6 0 0 1 8 5c.468 0 .914.214 1.225.588l4.36 5.248a1.844 1.844 0 0 1 0 2.328zM17 5l4.586 5.836a1.844 1.844 0 0 1 0 2.328L17 19"
+            "M7 4a2 2 0 0 0-2 2v3c0 .796-.21 1.559-.586 2.121C4.04 11.684 3.53 12 3 12c.53 0 1.04.316 1.414.879C4.79 13.44 5 14.204 5 15v3a2 2 0 0 0 2 2M17 4a2 2 0 0 1 2 2v3c0 .796.21 1.559.586 2.121.375.563.884.879 1.414.879-.53 0-1.04.316-1.414.879C19.21 13.44 19 14.204 19 15v3a2 2 0 0 1-2 2"
           }
         ></path>
-
-        <path d={"m13 5 4.586 5.836a1.844 1.844 0 0 1 0 2.328L13 19"}></path>
       </g>
 
       <defs>
@@ -49,5 +47,5 @@ export function KeyframesIcon(props: KeyframesIconProps) {
   );
 }
 
-export default KeyframesIcon;
+export default CurlyBracesIcon;
 /* prettier-ignore-end */

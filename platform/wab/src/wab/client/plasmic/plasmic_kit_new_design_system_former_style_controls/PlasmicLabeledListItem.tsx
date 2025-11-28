@@ -31,8 +31,6 @@ import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 import Indicator from "../../components/style-controls/Indicator"; // plasmic-import: KRNHR6lpj1/component
 import IconButton from "../../components/widgets/IconButton"; // plasmic-import: LPry-TF4j22a/component
 import MenuButton from "../../components/widgets/MenuButton"; // plasmic-import: h69wHrrKtL/component
-import { _useStyleTokens as useStyleTokens_plasmic_kit_color_tokens } from "../plasmic_kit_color_tokens/PlasmicStyleTokensProvider"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/styleTokensProvider
-import { _useStyleTokens as useStyleTokens_plasmic_kit_design_system } from "../plasmic_kit_design_system/PlasmicStyleTokensProvider"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/styleTokensProvider
 import { _useStyleTokens } from "../plasmic_kit_style_controls/PlasmicStyleTokensProvider"; // plasmic-import: gYEVvAzCcLMHDVPvuYxkFh/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
@@ -340,10 +338,6 @@ function PlasmicLabeledListItem__RenderFunc(props: {
   });
 
   const styleTokensClassNames = _useStyleTokens();
-  const styleTokensClassNames_plasmic_kit_design_system =
-    useStyleTokens_plasmic_kit_design_system();
-  const styleTokensClassNames_plasmic_kit_color_tokens =
-    useStyleTokens_plasmic_kit_color_tokens();
 
   return (
     <div
@@ -357,8 +351,6 @@ function PlasmicLabeledListItem__RenderFunc(props: {
         projectcss.plasmic_default_styles,
         projectcss.plasmic_mixins,
         styleTokensClassNames,
-        styleTokensClassNames_plasmic_kit_design_system,
-        styleTokensClassNames_plasmic_kit_color_tokens,
         sty.root,
         {
           [sty.rootalignment_center]: hasVariant($state, "alignment", "center"),
@@ -971,7 +963,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicLabeledListItem__VariantsArgs;
     args?: PlasmicLabeledListItem__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicLabeledListItem__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicLabeledListItem__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicLabeledListItem__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

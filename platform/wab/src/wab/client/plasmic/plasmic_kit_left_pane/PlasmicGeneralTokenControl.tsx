@@ -192,7 +192,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicGeneralTokenControl__VariantsArgs;
     args?: PlasmicGeneralTokenControl__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicGeneralTokenControl__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicGeneralTokenControl__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicGeneralTokenControl__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

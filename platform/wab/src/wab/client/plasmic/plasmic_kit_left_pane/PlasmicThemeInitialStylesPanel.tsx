@@ -218,7 +218,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicThemeInitialStylesPanel__VariantsArgs;
     args?: PlasmicThemeInitialStylesPanel__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicThemeInitialStylesPanel__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicThemeInitialStylesPanel__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicThemeInitialStylesPanel__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

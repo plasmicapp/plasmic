@@ -172,7 +172,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicColorTokenControl__VariantsArgs;
     args?: PlasmicColorTokenControl__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicColorTokenControl__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicColorTokenControl__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicColorTokenControl__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

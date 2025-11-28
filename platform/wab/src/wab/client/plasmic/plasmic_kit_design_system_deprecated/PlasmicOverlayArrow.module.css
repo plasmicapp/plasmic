@@ -7,19 +7,16 @@
   color: var(--token-rqQDmopteQdV);
   width: 10px;
   height: 10px;
-  transform: translateX(0px) translateY(3px) translateZ(0px);
+  transform: translate3d(0px, 3px, 0px);
 }
 .root[data-placement="top"] .svg {
-  transform: translateX(0px) translateY(-3px) translateZ(0px) rotateX(0deg)
-    rotateY(0deg) rotateZ(180deg);
+  transform: translate3d(0px, -3px, 0px) rotate3d(0, 0, 1, 180deg);
 }
 .root[data-placement="left"] .svg {
-  transform: translateX(-3px) translateY(0px) translateZ(0px) rotateX(0deg)
-    rotateY(0deg) rotateZ(90deg);
+  transform: translate3d(-3px, 0px, 0px) rotate3d(0, 0, 1, 90deg);
 }
 .root[data-placement="right"] .svg {
-  transform: translateX(3px) translateY(0px) translateZ(0px) rotateX(0deg)
-    rotateY(0deg) rotateZ(-90deg);
+  transform: translate3d(3px, 0px, 0px) rotate3d(0, 0, 1, -90deg);
 }
 .svgdark {
   color: var(--token-7ojREB1C2lcs);

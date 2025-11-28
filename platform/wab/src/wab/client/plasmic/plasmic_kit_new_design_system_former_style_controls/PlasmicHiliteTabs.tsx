@@ -15,18 +15,16 @@ import * as React from "react";
 
 import {
   set as $stateSet,
-  Flex as Flex__,
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  Flex as Flex__,
+  StrictProps,
   useDollarState,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
 import HiliteTabButton from "../../components/widgets/HiliteTabButton"; // plasmic-import: lHRivspQeB/component
-import { _useStyleTokens as useStyleTokens_plasmic_kit_color_tokens } from "../plasmic_kit_color_tokens/PlasmicStyleTokensProvider"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/styleTokensProvider
-import { _useStyleTokens as useStyleTokens_plasmic_kit_design_system } from "../plasmic_kit_design_system/PlasmicStyleTokensProvider"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/styleTokensProvider
 import { _useStyleTokens } from "../plasmic_kit_style_controls/PlasmicStyleTokensProvider"; // plasmic-import: gYEVvAzCcLMHDVPvuYxkFh/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
@@ -122,10 +120,6 @@ function PlasmicHiliteTabs__RenderFunc(props: {
   });
 
   const styleTokensClassNames = _useStyleTokens();
-  const styleTokensClassNames_plasmic_kit_design_system =
-    useStyleTokens_plasmic_kit_design_system();
-  const styleTokensClassNames_plasmic_kit_color_tokens =
-    useStyleTokens_plasmic_kit_color_tokens();
 
   return (
     <div
@@ -139,8 +133,6 @@ function PlasmicHiliteTabs__RenderFunc(props: {
         projectcss.plasmic_default_styles,
         projectcss.plasmic_mixins,
         styleTokensClassNames,
-        styleTokensClassNames_plasmic_kit_design_system,
-        styleTokensClassNames_plasmic_kit_color_tokens,
         sty.root
       )}
       role={"tablist"}
@@ -248,7 +240,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicHiliteTabs__VariantsArgs;
     args?: PlasmicHiliteTabs__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicHiliteTabs__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicHiliteTabs__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicHiliteTabs__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

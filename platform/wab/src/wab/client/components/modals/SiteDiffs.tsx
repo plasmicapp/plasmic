@@ -14,10 +14,11 @@ import TokenIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Token";
 import VariantGroupIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__VariantGroup";
 import TextInputIcon from "@/wab/client/plasmic/plasmic_kit_design_system/PlasmicIcon__TextInput";
 import VariantIcon from "@/wab/client/plasmic/plasmic_kit_design_system/PlasmicIcon__Variant";
+import CurlyBracesIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__CurlyBraces";
 import RocketsvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__RocketSvg";
+import { MIXIN_CAP } from "@/wab/shared/Labels";
 import { ensure, withoutNils, xSetDefault } from "@/wab/shared/common";
 import { SplitType } from "@/wab/shared/core/splits";
-import { MIXIN_CAP } from "@/wab/shared/Labels";
 import type {
   ChangeLogEntry,
   SemVerSiteElement,
@@ -102,6 +103,8 @@ export function getObjClassName(typename: SemVerSiteElement["type"]) {
       return "component-fg";
     case "Style token":
       return "token-fg";
+    case "Data token":
+      return "data-token-fg";
     case "Mixin":
       return "mixin-fg";
     case "Icon":
@@ -136,8 +139,7 @@ export function objIcon(obj: SemVerSiteElement, tplIcon?: React.ReactNode) {
   } else if (obj.type === "Element") {
     return <span className={className}>{tplIcon}</span>;
   } else if (obj.type === "Data token") {
-    // Fix the icon in the icon PR https://github.com/plasmicapp/plasmic-internal/pull/1928
-    return <Icon className={className} icon={TokenIcon} />;
+    return <Icon className={className} icon={CurlyBracesIcon} />;
   } else {
     return <Icon className={className} icon={ArrowRightIcon} />;
   }

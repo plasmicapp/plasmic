@@ -362,7 +362,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicLeftImportsPanel__VariantsArgs;
     args?: PlasmicLeftImportsPanel__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicLeftImportsPanel__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicLeftImportsPanel__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicLeftImportsPanel__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

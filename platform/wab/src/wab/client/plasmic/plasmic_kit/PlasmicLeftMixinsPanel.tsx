@@ -190,7 +190,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicLeftMixinsPanel__VariantsArgs;
     args?: PlasmicLeftMixinsPanel__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicLeftMixinsPanel__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicLeftMixinsPanel__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicLeftMixinsPanel__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

@@ -38,7 +38,7 @@
   -webkit-transition-duration: 0.5s;
 }
 .svgisOpen {
-  transform: rotateX(0deg) rotateY(0deg) rotateZ(90deg);
+  transform: rotate3d(0, 0, 1, 90deg);
 }
 .labelContainer {
   display: flex;

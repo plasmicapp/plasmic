@@ -21,7 +21,7 @@
   object-fit: cover;
   max-width: 100%;
   color: var(--token-UunsGa2Y3t3);
-  transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg);
+  transform: skew(0deg, 0deg);
   transition-property: transform;
   transition-duration: 0.25s;
   height: 16px;
@@ -31,7 +31,7 @@
   -webkit-transition-duration: 0.25s;
 }
 .svgisExpanded {
-  transform: rotateX(0deg) rotateY(0deg) rotateZ(180deg);
+  transform: rotate3d(0, 0, 1, 180deg);
 }
 .root:hover .svg {
   color: var(--token-N3uwCfNqv);

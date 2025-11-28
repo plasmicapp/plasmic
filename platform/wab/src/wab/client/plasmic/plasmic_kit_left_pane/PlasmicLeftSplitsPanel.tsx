@@ -292,7 +292,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicLeftSplitsPanel__VariantsArgs;
     args?: PlasmicLeftSplitsPanel__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicLeftSplitsPanel__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicLeftSplitsPanel__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicLeftSplitsPanel__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props
