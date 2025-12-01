@@ -10,7 +10,7 @@ import {
   UpsertTokenReq,
 } from "@/wab/shared/ApiSchema";
 import { spawn } from "@/wab/shared/common";
-import { fixJson } from "@/wab/shared/copilot/internal/fix-json";
+import { fixJson } from "@/wab/shared/copilot/fix-json";
 import * as React from "react";
 
 function CopilotUiPrompt() {
