@@ -413,15 +413,9 @@ const LeftGeneralDataTokensPanel = observer(
             const selectedTokens = studioCtx.site.dataTokens.filter((t) =>
               selected.includes(t.uuid)
             );
-            await studioCtx.changeUnsafe(() => {
-              for (const token of selectedTokens) {
-                const index = studioCtx.site.dataTokens.indexOf(token);
-                if (index !== -1) {
-                  studioCtx.site.dataTokens.splice(index, 1);
-                }
-              }
-            });
-            return true;
+            return await studioCtx
+              .siteOps()
+              .tryDeleteDataTokens(selectedTokens);
           }}
         >
           <DataTokenControlsContext.Provider

@@ -1,9 +1,13 @@
+import { getArenaFrames } from "@/wab/shared/Arenas";
+import { componentsReferencingDataToken } from "@/wab/shared/cached-selectors";
 import { toVarName } from "@/wab/shared/codegen/util";
-import { mkShortId } from "@/wab/shared/common";
+import { ensure, mkShortId } from "@/wab/shared/common";
+import { isFrameComponent } from "@/wab/shared/core/components";
 import {
   finalDataTokensForDep,
   siteFinalDataTokens,
 } from "@/wab/shared/core/site-data-tokens";
+import { GeneralUsageSummary } from "@/wab/shared/core/sites";
 import { FinalToken, MutableToken } from "@/wab/shared/core/tokens";
 import { tryEvalExpr } from "@/wab/shared/eval";
 import { DataToken, Site } from "@/wab/shared/model/classes";
@@ -103,7 +107,7 @@ export function isDataTokenEditable(
  * Computes a single data token value from its token definition.
  */
 export function computeDataTokenValue(
-  token: FinalToken<DataToken>,
+  token: FinalToken<DataToken> | DataToken,
   evalEnv?: Record<string, any>
 ): any {
   const tokenType = getDataTokenType(token.value);
@@ -160,4 +164,30 @@ export function computeDataTokens(
   }
 
   return dataTokens;
+}
+
+/**
+ * @param site - The site containing the data token
+ * @param dataToken - The data token to extract usages for
+ * @returns A summary of the usages of the data token
+ */
+export function extractDataTokenUsages(
+  site: Site,
+  dataToken: DataToken
+): GeneralUsageSummary {
+  const usingComponents = [...componentsReferencingDataToken(site, dataToken)];
+
+  const arenaFrames = site.arenas.flatMap((arena) => getArenaFrames(arena));
+
+  const usingFrames = usingComponents.filter(isFrameComponent).map((c) =>
+    ensure(
+      arenaFrames.find((frame) => frame.container.component === c),
+      () => `Couldn't find arenaFrame for component ${c.name} (${c.uuid})`
+    )
+  );
+
+  return {
+    components: usingComponents.filter((c) => !isFrameComponent(c)),
+    frames: usingFrames,
+  };
 }

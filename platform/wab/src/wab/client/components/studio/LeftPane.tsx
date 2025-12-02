@@ -27,23 +27,19 @@ import { ListStack } from "@/wab/client/components/widgets/ListStack";
 import { useResizableHandle } from "@/wab/client/hooks/useResizableHandle";
 import ComponentIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Component";
 import TokenIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Token";
+import CurlyBracesIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__CurlyBraces";
 import PlasmicLeftPane from "@/wab/client/plasmic/plasmic_kit_left_pane/PlasmicLeftPane";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { HighlightBlinker } from "@/wab/commons/components/HighlightBlinker";
 import { useSignalListener } from "@/wab/commons/components/use-signal-listener";
 import { XDraggable } from "@/wab/commons/components/XDraggable";
-import {
-  cx,
-  ensure,
-  spawn,
-  spawnWrapper,
-  switchType,
-} from "@/wab/shared/common";
+import { extractDataTokenUsages } from "@/wab/commons/DataToken";
+import { cx, ensure, spawn, switchType } from "@/wab/shared/common";
 import { getComponentDisplayName } from "@/wab/shared/core/components";
 import { extractComponentUsages } from "@/wab/shared/core/sites";
 import { extractTokenUsages } from "@/wab/shared/core/styles";
 import { DEVFLAGS } from "@/wab/shared/devflags";
-import { Component, StyleToken } from "@/wab/shared/model/classes";
+import { Component, DataToken, StyleToken } from "@/wab/shared/model/classes";
 import { LeftTabKey } from "@/wab/shared/ui-config-utils";
 import L from "lodash";
 import { observer } from "mobx-react";
@@ -230,7 +226,8 @@ const LeftPane = observer(function LeftPane(props: LeftPaneProps) {
         />
       </DevContainer>
       {(studioCtx.findReferencesComponent ||
-        studioCtx.findReferencesStyleToken) && (
+        studioCtx.findReferencesStyleToken ||
+        studioCtx.findReferencesDataToken) && (
         <FindReferencesModal
           studioCtx={studioCtx}
           {...getFindReferencesProps(
@@ -238,7 +235,8 @@ const LeftPane = observer(function LeftPane(props: LeftPaneProps) {
             [
               studioCtx.findReferencesComponent,
               studioCtx.findReferencesStyleToken,
-            ].find((x) => x != null) as Component | StyleToken
+              studioCtx.findReferencesDataToken,
+            ].find((x) => x != null) as Component | StyleToken | DataToken
           )}
         />
       )}
@@ -248,7 +246,7 @@ const LeftPane = observer(function LeftPane(props: LeftPaneProps) {
 
 const getFindReferencesProps = (
   studioCtx: StudioCtx,
-  reference: Component | StyleToken
+  reference: Component | StyleToken | DataToken
 ) => {
   return switchType(reference)
     .when(Component, (component) => ({
@@ -260,11 +258,9 @@ const getFindReferencesProps = (
         />
       ),
       usageSummary: extractComponentUsages(studioCtx.site, component),
-      onClose: spawnWrapper(async () => {
-        await studioCtx.changeUnsafe(
-          () => (studioCtx.findReferencesComponent = undefined)
-        );
-      }),
+      onClose: () => {
+        studioCtx.findReferencesComponent = undefined;
+      },
     }))
     .when(StyleToken, (token) => ({
       displayName: token.name,
@@ -275,11 +271,22 @@ const getFindReferencesProps = (
         />
       ),
       usageSummary: extractTokenUsages(studioCtx.site, token)[1],
-      onClose: spawnWrapper(async () => {
-        await studioCtx.changeUnsafe(
-          () => (studioCtx.findReferencesStyleToken = undefined)
-        );
-      }),
+      onClose: () => {
+        studioCtx.findReferencesStyleToken = undefined;
+      },
+    }))
+    .when(DataToken, (token) => ({
+      displayName: token.name,
+      icon: (
+        <Icon
+          icon={CurlyBracesIcon}
+          className="data-token-fg custom-svg-icon--lg monochrome-exempt"
+        />
+      ),
+      usageSummary: extractDataTokenUsages(studioCtx.site, token),
+      onClose: () => {
+        studioCtx.findReferencesDataToken = undefined;
+      },
     }))
     .result();
 };

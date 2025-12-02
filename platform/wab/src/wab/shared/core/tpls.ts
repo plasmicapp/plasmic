@@ -2528,6 +2528,203 @@ export function findExprsInNode(node: TplNode): ExprReference[] {
 }
 
 /**
+ * Recursively searches through an expression to find and replace a nested expression.
+ *
+ * @param expr - The expression to search through.
+ * @param nestedExpr - The expression to replace.
+ * @param newExpr - The new expression to replace the nested expression with.
+ * @param visited - A set of visited expressions to avoid infinite recursion.
+ * @returns True if the expression was found and replaced, false otherwise.
+ */
+export function replaceNestedExprInExpr(
+  expr: Expr,
+  nestedExpr: Expr,
+  newExpr: CustomCode
+): boolean {
+  if (isKnownTemplatedString(expr)) {
+    for (let i = 0; i < expr.text.length; i++) {
+      if (expr.text[i] === nestedExpr) {
+        expr.text[i] = newExpr;
+        return true;
+      }
+    }
+  }
+
+  if (isKnownCustomFunctionExpr(expr)) {
+    for (const arg of expr.args) {
+      if (arg.expr === nestedExpr) {
+        arg.expr = newExpr;
+        return true;
+      }
+      if (replaceNestedExprInExpr(arg.expr, nestedExpr, newExpr)) {
+        return true;
+      }
+    }
+  }
+
+  if (isKnownPageHref(expr)) {
+    for (const [key, value] of Object.entries(expr.query)) {
+      if (value === nestedExpr) {
+        expr.query[key] = newExpr;
+        return true;
+      }
+      if (replaceNestedExprInExpr(value, nestedExpr, newExpr)) {
+        return true;
+      }
+    }
+
+    if (expr.fragment) {
+      if (expr.fragment === nestedExpr) {
+        expr.fragment = newExpr;
+        return true;
+      }
+      if (replaceNestedExprInExpr(expr.fragment, nestedExpr, newExpr)) {
+        return true;
+      }
+    }
+  }
+
+  if (isKnownDataSourceOpExpr(expr)) {
+    if (expr.templates) {
+      for (const [_, template] of Object.entries(expr.templates)) {
+        if (
+          isKnownTemplatedString(template.value) &&
+          replaceNestedExprInExpr(template.value, nestedExpr, newExpr)
+        ) {
+          return true;
+        }
+      }
+    }
+  }
+
+  if (isKnownFunctionExpr(expr)) {
+    if (expr.bodyExpr === nestedExpr) {
+      expr.bodyExpr = newExpr;
+      return true;
+    }
+  }
+
+  if (isKnownEventHandler(expr)) {
+    for (const interaction of expr.interactions) {
+      for (const arg of [...interaction.args]) {
+        if (arg.expr === nestedExpr) {
+          arg.expr = newExpr;
+          return true;
+        }
+        if (replaceNestedExprInExpr(arg.expr, nestedExpr, newExpr)) {
+          return true;
+        }
+      }
+      if (interaction.condExpr === nestedExpr) {
+        interaction.condExpr = newExpr;
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
+/**
+ * Replaces an expression in a component.
+ * Searches through params and queries to find where the expression is stored.
+ * @param component - The component that contains the expression to replace.
+ * @param oldExpr - The expression to replace.
+ * @param newExpr - The new expression to replace the old expression with.
+ * @returns True if the expression was found and replaced, false otherwise.
+ */
+export function replaceExprInComponent(
+  component: Component,
+  oldExpr: Expr,
+  newExpr: CustomCode
+): boolean {
+  // Check params - direct matches and nested
+  for (const param of component.params) {
+    if (param.defaultExpr === oldExpr) {
+      param.defaultExpr = newExpr;
+      return true;
+    }
+    if (
+      param.defaultExpr &&
+      replaceNestedExprInExpr(param.defaultExpr, oldExpr, newExpr)
+    ) {
+      return true;
+    }
+  }
+
+  // Check data queries - direct matches and nested
+  for (const query of component.dataQueries) {
+    if (query.op && replaceNestedExprInExpr(query.op, oldExpr, newExpr)) {
+      return true;
+    }
+  }
+
+  // Check server queries - direct matches and nested
+  for (const query of component.serverQueries) {
+    if (query.op && replaceNestedExprInExpr(query.op, oldExpr, newExpr)) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+/**
+ * Replaces an expression in a node with a new expression.
+ *
+ * @param node - The node that contains the expression to replace.
+ * @param oldExpr - The expression to replace.
+ * @param newExpr - The new expression to replace the old expression with.
+ * @returns True if the expression was found and replaced, false otherwise.
+ */
+export function replaceExprInNode(
+  node: TplNode,
+  oldExpr: Expr,
+  newExpr: CustomCode
+): boolean {
+  for (const vs of node.vsettings) {
+    // Check args
+    for (const arg of vs.args) {
+      if (arg.expr === oldExpr) {
+        arg.expr = newExpr;
+        return true;
+      }
+    }
+
+    // Check attrs (e.g. html attributes, interactions)
+    for (const [attrName, attrExpr] of Object.entries(vs.attrs)) {
+      if (attrExpr === oldExpr) {
+        vs.attrs[attrName] = newExpr;
+        return true;
+      }
+      if (replaceNestedExprInExpr(attrExpr, oldExpr, newExpr)) {
+        return true;
+      }
+    }
+
+    // Check text
+    if (isKnownExprText(vs.text) && vs.text.expr === oldExpr) {
+      vs.text.expr = newExpr;
+      return true;
+    }
+
+    // Conditional visibility expression
+    if (vs.dataCond === oldExpr) {
+      vs.dataCond = newExpr;
+      return true;
+    }
+
+    // Repeat element collection expression
+    if (vs.dataRep?.collection === oldExpr) {
+      vs.dataRep.collection = newExpr;
+      return true;
+    }
+  }
+
+  return false;
+}
+
+/**
  * Returns expressions in `tree - excludeTree` (set difference of nodes
  * in `tree` and nodes in `excludeTree`).
  */

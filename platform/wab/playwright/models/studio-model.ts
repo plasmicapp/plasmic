@@ -12,6 +12,9 @@ export class StudioModel extends BaseModel {
   readonly projectNavClearSearchButton: Locator = this.frame.locator(
     '[data-test-id="nav-dropdown-clear-search"]'
   );
+  readonly interactiveSwitch: Locator = this.frame.locator(
+    '[id="interactive-canvas-switch"]'
+  );
   readonly projectNavSearchInput: Locator = this.frame.locator(
     '[data-test-id="nav-dropdown-search-input"]'
   );

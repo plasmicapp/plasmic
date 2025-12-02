@@ -87,6 +87,9 @@ export const TOKENS_CAP = "Tokens";
 export const TOKEN_CAP = "Token";
 export const TOKEN_LOWER = "token";
 
+export const DATA_TOKEN_CAP = "Data Token";
+export const DATA_TOKEN_LOWER = DATA_TOKEN_CAP.toLowerCase();
+
 export const VARIANTS_CAP = "Variants";
 export const VARIANTS_LOWER = VARIANTS_CAP.toLowerCase();
 

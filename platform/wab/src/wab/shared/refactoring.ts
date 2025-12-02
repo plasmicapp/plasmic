@@ -1,5 +1,6 @@
+import { computeDataTokenValue } from "@/wab/commons/DataToken";
 import { customFunctionId } from "@/wab/shared/code-components/code-components";
-import { toVarName } from "@/wab/shared/codegen/util";
+import { jsLiteral, toVarName } from "@/wab/shared/codegen/util";
 import { assert, isPrefixArray, uniqueName } from "@/wab/shared/common";
 import * as Exprs from "@/wab/shared/core/exprs";
 import {
@@ -17,10 +18,12 @@ import {
   Component,
   ComponentDataQuery,
   ComponentServerQuery,
+  CustomCode,
   CustomFunction,
   DataToken,
   Expr,
   Interaction,
+  ObjectPath,
   Param,
   Site,
   TplNode,
@@ -30,6 +33,7 @@ import {
   isKnownVarRef,
   isKnownVariantsRef,
 } from "@/wab/shared/model/classes";
+import { get, trimStart } from "lodash";
 
 /**
  * Returns boolean indicating whether `expr` is referencing `param`.
@@ -80,7 +84,7 @@ export function isQueryUsedInExpr(
 export function isDataTokenUsedInExpr(
   token: DataToken,
   expr: Expr | null | undefined
-): boolean {
+): expr is CustomCode | ObjectPath {
   if (!expr) {
     return false;
   }
@@ -417,5 +421,80 @@ export function renameDataTokenAndFixExprs(
         );
       }
     }
+  }
+}
+
+/**
+ * Flattens a data token usage by replacing the data token reference with its literal value.
+ * Similar to changeTokenUsage for style tokens, but for data tokens in expressions.
+ */
+export function flattenDataTokenUsage(
+  token: DataToken,
+  exprRef: Tpls.ExprReference,
+  component?: Component
+) {
+  const { expr, node } = exprRef;
+
+  if (!isDataTokenUsedInExpr(token, expr)) {
+    return;
+  }
+
+  const tokenValue = computeDataTokenValue(token);
+  const tokenVarName = toVarName(token.name);
+
+  if (isKnownObjectPath(expr)) {
+    // For ObjectPath expressions, check if it starts with $dataTokens.tokenName
+    if (
+      expr.path.length >= 2 &&
+      expr.path[0] === "$dataTokens" &&
+      expr.path[1] === tokenVarName
+    ) {
+      const propertyPath = expr.path.slice(2);
+      let resolvedValue = tokenValue;
+      if (propertyPath.length > 0) {
+        resolvedValue = get(tokenValue, propertyPath);
+      }
+      const newExpr = Exprs.customCode(jsLiteral(resolvedValue), expr.fallback);
+
+      if (node) {
+        Tpls.replaceExprInNode(node, expr, newExpr);
+      } else if (component) {
+        // If the expr is not associated with a TPL node (e.g. the expr may be in a param or query), try to find where the expression is stored in the component
+        Tpls.replaceExprInComponent(component, expr, newExpr);
+      }
+    }
+  } else {
+    // For CustomCode expressions, replace $dataTokens.tokenName (and nested properties) with literal values
+
+    // Matches
+    // dot notation:$dataTokens.tokenName
+    // square bracket notation: $dataTokens["tokenName"]
+    // nested arrays: $dataTokens.tokenName[0]
+    // or any combination of the above
+    const regexDataToken = `\\$dataTokens(?:(?:\\.(?![A-Za-z_][A-Za-z0-9_]*\\s*\\()\\w+)|\\[(?:"[^"]*"|'[^']*'|\\d+)\\])`;
+
+    // Matches the complete data token with nested properties (e.g. $dataTokens.tokenName.nestedProp)
+    const regexDataTokenWithPath = `${regexDataToken}+`;
+
+    const newCode = expr.code.replace(
+      new RegExp(regexDataTokenWithPath, "g"),
+      (match) => {
+        // The nested property path, e.g. "nestedProp" in "$dataTokens.tokenName.nestedProp"
+        const propertyPath = trimStart(
+          match.replace(new RegExp(regexDataToken), ""),
+          "."
+        );
+        let resolvedValue = tokenValue;
+        if (propertyPath.length > 0) {
+          // If the data token is a JSON object and the usage includes a nested property
+          // (e.g., $dataTokens.tokenName.nestedProp), get the nested property value
+          resolvedValue = get(tokenValue, propertyPath);
+        }
+        return jsLiteral(resolvedValue);
+      }
+    );
+
+    // Replace the data token usage with the literal (flattened) value
+    expr.code = newCode;
   }
 }

@@ -18,6 +18,7 @@ import {
 import { promptComponentTemplate, promptPageName } from "@/wab/client/prompts";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { trackEvent } from "@/wab/client/tracking";
+import { extractDataTokenUsages } from "@/wab/commons/DataToken";
 import { joinReactNodes } from "@/wab/commons/components/ReactUtil";
 import {
   deriveInitFrameSettings,
@@ -33,6 +34,7 @@ import {
 import {
   ANIMATION_SEQUENCES_LOWER,
   DATA_QUERY_LOWER,
+  DATA_TOKEN_LOWER,
   MIXIN_LOWER,
   SERVER_QUERY_LOWER,
   TOKEN_LOWER,
@@ -58,6 +60,7 @@ import {
   removeTplVariantSettingsContaining,
 } from "@/wab/shared/Variants";
 import {
+  cachedExprsInSite,
   componentToReferencers,
   componentsReferencerToPageHref,
   findComponentsUsingComponentVariant,
@@ -181,7 +184,11 @@ import {
   getPlumeEditorPlugin,
   getPlumeVariantDef,
 } from "@/wab/shared/plume/plume-registry";
-import { isQueryUsedInExpr } from "@/wab/shared/refactoring";
+import {
+  flattenDataTokenUsage,
+  isDataTokenUsedInExpr,
+  isQueryUsedInExpr,
+} from "@/wab/shared/refactoring";
 import {
   FrameSize,
   ResponsiveStrategy,
@@ -1853,17 +1860,53 @@ export class SiteOps {
   }
 
   async tryDeleteDataTokens(tokens: DataToken[]) {
+    const tokensUsages = tokens
+      .map((t) => ({
+        usages: extractDataTokenUsages(this.site, t),
+        token: t,
+      }))
+      .filter(({ usages }) =>
+        Object.keys(usages).some((key) => usages[key].length > 0)
+      );
+    if (tokensUsages.length > 0) {
+      const confirmed = await deleteStudioElementConfirm(
+        `Deleting ${DATA_TOKEN_LOWER}`,
+        tokensUsages.map(({ token, usages }) => ({
+          element: token,
+          summary: usages,
+        })),
+        `Are you sure you want to delete it? Deleting the ${DATA_TOKEN_LOWER} will hard code its value at all its usages.`
+      );
+
+      if (!confirmed) {
+        return false;
+      }
+    }
     await this.studioCtx.changeObserved(
-      // PLA-12625: Add using components in the array here
-      () => [],
+      () => {
+        return tokensUsages.flatMap((tokenUsage) => [
+          ...tokenUsage.usages.components,
+          ...tokenUsage.usages.frames.map((f) => f.container.component),
+        ]);
+      },
       ({ success }) => {
         tokens.forEach((token) => {
-          // PLA-12625: Flatten usages before deletion
+          // Find all expressions that use this data token and flatten them
+          for (const { ownerComponent, exprRefs } of cachedExprsInSite(
+            this.site
+          )) {
+            for (const exprRef of exprRefs) {
+              if (isDataTokenUsedInExpr(token, exprRef.expr)) {
+                flattenDataTokenUsage(token, exprRef, ownerComponent);
+              }
+            }
+          }
           arrayRemove(this.site.dataTokens, token);
         });
         return success();
       }
     );
+    return true;
   }
 
   async tryDeleteMixins(mixins: Mixin[]) {

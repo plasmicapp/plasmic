@@ -152,6 +152,10 @@ export interface CanvasEnv {
    */
   $$: Record<string, Function | Record<string, Function>>;
   /**
+   * Data tokens
+   */
+  $dataTokens?: Record<string, any>;
+  /**
    * Other variables (set by dataRep).
    */
   [key: string]: any;

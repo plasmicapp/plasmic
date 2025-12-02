@@ -39,6 +39,7 @@ import {
   GlobalVariantGroupParam,
   ObjectPath,
   Rep,
+  RichText,
   Site,
   StateParam,
   TplNode,
@@ -143,6 +144,7 @@ export function mkVariantSetting({
   styles,
   dataCond,
   dataRep,
+  text,
 }: {
   variants: Variant[];
   args?: Array<Arg>;
@@ -150,6 +152,7 @@ export function mkVariantSetting({
   styles?: Record<string, string>;
   dataCond?: CustomCode | ObjectPath;
   dataRep?: Rep;
+  text?: RichText;
 }) {
   return new VariantSetting({
     variants,
@@ -164,7 +167,7 @@ export function mkVariantSetting({
     ),
     dataCond,
     dataRep,
-    text: undefined,
+    text,
     columnsConfig: undefined,
   });
 }
