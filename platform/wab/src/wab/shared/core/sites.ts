@@ -782,11 +782,8 @@ export function cloneSite(fromSite: Site) {
       })
       .when(PageHref, (pageHref) => {
         pageHref.page = oldToNewComponent.get(pageHref.page) ?? pageHref.page;
-        for (const param of pageHref.page.params) {
-          if (param.defaultExpr) {
-            fixGlobalRefForExpr(param.defaultExpr);
-          }
-        }
+        // pageHref.page.params defaultExprs are fixed separately while
+        // looping over component params
       })
       .when(StyleTokenRef, (tokenRef) => {
         // Either the token has been cloned, or the token belongs to an
