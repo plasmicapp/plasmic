@@ -46,11 +46,11 @@ enum BorderType {
 const borderLineStyles: ReadonlyArray<string> = ["color", "style", "width"];
 const borderRadiusStyles: ReadonlyArray<string> = ["radius"];
 
-const borderStyleProps = borderLineStyles.flatMap((prop) =>
+export const borderStyleProps = borderLineStyles.flatMap((prop) =>
   standardSides.map((side) => `border-${side}-${prop}`)
 );
 
-const borderRadiusStyleProps = standardCorners.map(
+export const borderRadiusStyleProps = standardCorners.map(
   (corner) => `border-${corner}-radius`
 );
 

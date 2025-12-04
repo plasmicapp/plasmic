@@ -46,7 +46,7 @@ export const AnimationControls = observer(function AnimationControls(
 
   return (
     <>
-      <SidebarSection title="Animation">
+      <SidebarSection title="Animation" zeroBodyPadding zeroHeaderPadding>
         <FullRow>
           <StyleSelect
             value={animation.sequence.uuid}
@@ -69,7 +69,7 @@ export const AnimationControls = observer(function AnimationControls(
         </FullRow>
       </SidebarSection>
 
-      <SidebarSection title="Timing">
+      <SidebarSection title="Timing" zeroBodyPadding zeroHeaderPadding>
         <FullRow>
           <LabeledItem label="Duration">
             <DimTokenSpinner
@@ -99,7 +99,11 @@ export const AnimationControls = observer(function AnimationControls(
         </FullRow>
       </SidebarSection>
 
-      <SidebarSection title="Easing & Repetition">
+      <SidebarSection
+        title="Easing & Repetition"
+        zeroBodyPadding
+        zeroHeaderPadding
+      >
         <FullRow>
           <LabeledItem label="Easing">
             <StyleSelect
@@ -158,7 +162,7 @@ export const AnimationControls = observer(function AnimationControls(
         </FullRow>
       </SidebarSection>
 
-      <SidebarSection title="Fill Mode">
+      <SidebarSection title="Fill Mode" zeroBodyPadding zeroHeaderPadding>
         <FullRow>
           <StyleSelect
             value={animation.fillMode || "none"}

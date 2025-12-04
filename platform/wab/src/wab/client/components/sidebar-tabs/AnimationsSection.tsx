@@ -150,7 +150,7 @@ export const AnimationsSection = observer(function AnimationsSection(
               setInspectedAnimation(undefined);
               setIndex(undefined);
             }}
-            title="Animation"
+            title="Apply Animation"
           >
             {inspectedAnimation && index !== undefined && (
               <div className="panel-content">

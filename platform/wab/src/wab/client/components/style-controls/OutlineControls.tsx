@@ -24,7 +24,7 @@ enum OutlineProps {
   color = "outline-color",
 }
 
-const OUTLINE_PROPS = [
+export const outlineStyleProps = [
   OutlineProps.style,
   OutlineProps.width,
   OutlineProps.offset,
@@ -39,7 +39,9 @@ export const OutlinePanelSection = observer(function OutlinePanelSection() {
   const exp = sc.exp();
 
   const [isOpen, setIsOpen] = React.useState(false);
-  const hasOutlineProps = OUTLINE_PROPS.some((prop) => sc.hasTargetProp(prop));
+  const hasOutlineProps = outlineStyleProps.some((prop) =>
+    sc.hasTargetProp(prop)
+  );
   const isVisible = isOpen || hasOutlineProps;
 
   // When editing/creating a Mixin, the focusedViewCtx can be undefined
@@ -52,7 +54,7 @@ export const OutlinePanelSection = observer(function OutlinePanelSection() {
   const onClick = async () => {
     if (isVisible) {
       await studioCtx.change(({ success }) => {
-        OUTLINE_PROPS.forEach((prop) => {
+        outlineStyleProps.forEach((prop) => {
           if (sc.hasTargetProp(prop)) {
             exp.clear(prop);
           }
@@ -70,7 +72,7 @@ export const OutlinePanelSection = observer(function OutlinePanelSection() {
       key={String(isVisible)}
       title="Outline"
       expsProvider={sc.props.expsProvider}
-      styleProps={OUTLINE_PROPS}
+      styleProps={outlineStyleProps}
       onHeaderClick={!isVisible ? onClick : undefined}
       controls={
         <IconLinkButton onClick={onClick}>

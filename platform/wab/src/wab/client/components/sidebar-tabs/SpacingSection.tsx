@@ -19,6 +19,17 @@ import { TplComponent, TplTag } from "@/wab/shared/model/classes";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import * as React from "react";
 
+export const spacingStyleProps = [
+  "padding-left",
+  "padding-right",
+  "padding-top",
+  "padding-bottom",
+  "margin-left",
+  "margin-right",
+  "margin-top",
+  "margin-bottom",
+];
+
 export function SpacingSection({
   expsProvider,
   vsh,
@@ -41,16 +52,7 @@ export function SpacingSection({
   return (
     <StylePanelSection
       title="Spacing"
-      styleProps={[
-        "padding-left",
-        "padding-right",
-        "padding-top",
-        "padding-bottom",
-        "margin-left",
-        "margin-right",
-        "margin-top",
-        "margin-bottom",
-      ]}
+      styleProps={spacingStyleProps}
       expsProvider={expsProvider}
       key={`${showPaddingControls} ${showMarginControls}`}
     >

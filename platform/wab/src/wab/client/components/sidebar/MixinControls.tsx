@@ -19,17 +19,13 @@ import {
   VirtualGroupedList,
 } from "@/wab/client/components/sidebar/VirtualGroupedList";
 import { useDepFilterButton } from "@/wab/client/components/sidebar/left-panel-utils";
-import { FullRow } from "@/wab/client/components/sidebar/sidebar-helpers";
 import {
   BorderPanelSection,
   BorderRadiusSection,
 } from "@/wab/client/components/style-controls/BorderControls";
-import { OpacityControl } from "@/wab/client/components/style-controls/OpacityControl";
 import { OutlinePanelSection } from "@/wab/client/components/style-controls/OutlineControls";
 import {
-  ExpsProvider,
   MixinExpsProvider,
-  StylePanelSection,
   mkStyleComponent,
   providesStyleComponent,
 } from "@/wab/client/components/style-controls/StyleComponent";
@@ -189,6 +185,7 @@ export const MixinFormContent = observer(function MixinFormContent(props: {
     isDefaultTheme,
     isList,
     targetGlobalVariants,
+    warnOnRelativeFontUnits,
   } = props;
 
   const vsh = new VariantedStylesHelper(
@@ -206,57 +203,11 @@ export const MixinFormContent = observer(function MixinFormContent(props: {
     vsh
   );
 
-  return (
-    <MixinStylePanelSections
-      studioCtx={studioCtx}
-      expsProvider={expsProvider}
-      vsh={vsh}
-      panelSelection={panelSelection}
-      inheritableTypographyPropsOnly={inheritableTypographyPropsOnly}
-      isList={isList}
-      previewMixin={mixin}
-    />
-  );
-});
-
-export function MixinStylePanelSections({
-  studioCtx,
-  expsProvider,
-  vsh,
-  panelSelection,
-  inheritableTypographyPropsOnly,
-  isList,
-  warnOnRelativeFontUnits,
-  showVisibility,
-  previewMixin,
-}: {
-  studioCtx: StudioCtx;
-  expsProvider: ExpsProvider;
-  vsh: VariantedStylesHelper;
-  panelSelection?: MixinPanelSelection;
-  inheritableTypographyPropsOnly: boolean;
-  warnOnRelativeFontUnits?: boolean;
-  isList?: boolean;
-  showVisibility?: boolean;
-  previewMixin?: Mixin;
-}) {
   const styleComponent = mkStyleComponent({ expsProvider });
   const s = panelSelection;
 
   return providesStyleComponent(styleComponent)(
     <>
-      {showVisibility && (!s || s.visibility) && (
-        <StylePanelSection
-          expsProvider={expsProvider}
-          styleProps={["opacity"]}
-          title={"Visibility"}
-        >
-          <FullRow>
-            <OpacityControl expsProvider={expsProvider} />
-          </FullRow>
-        </StylePanelSection>
-      )}
-
       {(!s || s.typography) && (
         <TypographySection
           expsProvider={expsProvider}
@@ -314,14 +265,12 @@ export function MixinStylePanelSections({
         <TransformPanelSection expsProvider={expsProvider} />
       )}
 
-      {previewMixin && (
-        <SidebarSection title="Preview">
-          <MixinPreview sc={studioCtx} mixin={previewMixin} vsh={vsh} />
-        </SidebarSection>
-      )}
+      <SidebarSection title="Preview">
+        <MixinPreview sc={studioCtx} mixin={mixin} vsh={vsh} />
+      </SidebarSection>
     </>
   );
-}
+});
 
 function _MixinsPanel() {
   const sc = useStudioCtx();

@@ -70,8 +70,10 @@ function TypographySection_(props: {
   vsh?: VariantedStylesHelper;
   warnOnRelativeUnits?: boolean;
   title?: React.ReactNode;
+  animatableOnly?: boolean;
 }) {
-  const { expsProvider, ancestorSlot, viewCtx, vsh, title } = props;
+  const { expsProvider, ancestorSlot, viewCtx, vsh, title, animatableOnly } =
+    props;
 
   const sc = expsProvider.studioCtx;
   const vc = sc.focusedViewCtx();
@@ -162,6 +164,7 @@ function TypographySection_(props: {
             inheritableOnly={props.inheritableOnly}
             warnOnRelativeUnits={props.warnOnRelativeUnits}
             vsh={vsh}
+            animatableOnly={animatableOnly}
           />
         </>
       )}

@@ -1,8 +1,20 @@
 import { showError } from "@/wab/client/ErrorNotifications";
 import ListItem from "@/wab/client/components/ListItem";
 import { MenuBuilder } from "@/wab/client/components/menu-builder";
+import { EffectsPanelSection } from "@/wab/client/components/sidebar-tabs/EffectsSection";
+import { ShadowsPanelSection } from "@/wab/client/components/sidebar-tabs/ShadowsSection";
+import {
+  SizeSection,
+  sizeStyleProps,
+} from "@/wab/client/components/sidebar-tabs/SizeSection";
+import {
+  SpacingSection,
+  spacingStyleProps,
+} from "@/wab/client/components/sidebar-tabs/SpacingSection";
+import { TransformPanelSection } from "@/wab/client/components/sidebar-tabs/TransformPanelSection";
+import { TypographySection } from "@/wab/client/components/sidebar-tabs/TypographySection";
+import { BackgroundSection } from "@/wab/client/components/sidebar-tabs/background-section";
 import { FindReferencesModal } from "@/wab/client/components/sidebar/FindReferencesModal";
-import { MixinStylePanelSections } from "@/wab/client/components/sidebar/MixinControls";
 import { SidebarModal } from "@/wab/client/components/sidebar/SidebarModal";
 import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
 import {
@@ -14,8 +26,25 @@ import {
   FullRow,
   LabeledItem,
 } from "@/wab/client/components/sidebar/sidebar-helpers";
+import {
+  BorderPanelSection,
+  BorderRadiusSection,
+  borderRadiusStyleProps,
+  borderStyleProps,
+} from "@/wab/client/components/style-controls/BorderControls";
 import { KeyFrameStops } from "@/wab/client/components/style-controls/KeyFrameStops";
-import { SingleRsExpsProvider } from "@/wab/client/components/style-controls/StyleComponent";
+import { OpacityControl } from "@/wab/client/components/style-controls/OpacityControl";
+import {
+  OutlinePanelSection,
+  outlineStyleProps,
+} from "@/wab/client/components/style-controls/OutlineControls";
+import {
+  ExpsProvider,
+  SingleRsExpsProvider,
+  StylePanelSection,
+  mkStyleComponent,
+  providesStyleComponent,
+} from "@/wab/client/components/style-controls/StyleComponent";
 import { Matcher } from "@/wab/client/components/view-common";
 import DimTokenSpinner from "@/wab/client/components/widgets/DimTokenSelector";
 import { Icon } from "@/wab/client/components/widgets/Icon";
@@ -23,6 +52,7 @@ import { SimpleTextbox } from "@/wab/client/components/widgets/SimpleTextbox";
 import AnimationEnterSvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__AnimationEnterSvg";
 import PlasmicLeftAnimationSequencesPanel from "@/wab/client/plasmic/plasmic_kit_left_pane/PlasmicLeftAnimationSequencesPanel";
 import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { isStylePropSet } from "@/wab/client/utils/style-utils";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import { spawn } from "@/wab/shared/common";
 import { isHostLessPackage } from "@/wab/shared/core/sites";
@@ -144,57 +174,158 @@ const AnimationSequenceEditModal = observer(
               }}
             />
           </div>
+          {selectedKeyframe && (
+            <FullRow>
+              <LabeledItem label="Percentage">
+                <DimTokenSpinner
+                  value={`${selectedKeyframe.percentage}%`}
+                  onChange={(val) => {
+                    const numVal = parseFloat(val || "0");
+                    if (!isNaN(numVal) && numVal >= 0 && numVal <= 100) {
+                      spawn(
+                        studioCtx.change(({ success }) => {
+                          selectedKeyframe.percentage = numVal;
+                          // Sort keyframes by percentage to maintain order
+                          sequence.keyframes.sort(
+                            (a, b) => a.percentage - b.percentage
+                          );
+                          return success();
+                        })
+                      );
+                    }
+                  }}
+                  noClear
+                  allowedUnits={["%"]}
+                  extraOptions={["0%", "25%", "50%", "75%", "100%"]}
+                  studioCtx={studioCtx}
+                  min={0}
+                  max={100}
+                />
+              </LabeledItem>
+            </FullRow>
+          )}
         </SidebarSection>
 
         {selectedKeyframe && (
-          <>
-            {/* Keyframe percentage editor */}
-            <SidebarSection>
-              <FullRow>
-                <LabeledItem label="Percentage" labelSize="small">
-                  <DimTokenSpinner
-                    value={`${selectedKeyframe.percentage}%`}
-                    onChange={(val) => {
-                      const numVal = parseFloat(val || "0");
-                      if (!isNaN(numVal) && numVal >= 0 && numVal <= 100) {
-                        spawn(
-                          studioCtx.change(({ success }) => {
-                            selectedKeyframe.percentage = numVal;
-                            // Sort keyframes by percentage to maintain order
-                            sequence.keyframes.sort(
-                              (a, b) => a.percentage - b.percentage
-                            );
-                            return success();
-                          })
-                        );
-                      }
-                    }}
-                    noClear
-                    allowedUnits={["%"]}
-                    extraOptions={["0%", "25%", "50%", "75%", "100%"]}
-                    studioCtx={studioCtx}
-                    min={0}
-                    max={100}
-                  />
-                </LabeledItem>
-              </FullRow>
-            </SidebarSection>
-
-            <MixinStylePanelSections
-              studioCtx={studioCtx}
-              expsProvider={
-                new SingleRsExpsProvider(selectedKeyframe.rs, studioCtx, [])
-              }
-              vsh={vsh}
-              inheritableTypographyPropsOnly={false}
-              showVisibility={true}
-            />
-          </>
+          <AnimationSequenceStylePanelSections
+            expsProvider={
+              new SingleRsExpsProvider(selectedKeyframe.rs, studioCtx, [])
+            }
+            vsh={vsh}
+          />
         )}
       </SidebarModal>
     );
   }
 );
+
+function AnimationSequenceStylePanelSections({
+  expsProvider,
+  vsh,
+}: {
+  expsProvider: ExpsProvider;
+  vsh: VariantedStylesHelper;
+}) {
+  const styleComponent = mkStyleComponent({ expsProvider });
+  const isSet = isStylePropSet(expsProvider);
+
+  return providesStyleComponent(styleComponent)(
+    <SidebarSection zeroBodyPadding>
+      {(renderMaybeCollapsibleRows) => (
+        <>
+          <StylePanelSection
+            key="visibility"
+            expsProvider={expsProvider}
+            styleProps={["opacity"]}
+            title={"Visibility"}
+          >
+            <FullRow>
+              <OpacityControl expsProvider={expsProvider} />
+            </FullRow>
+          </StylePanelSection>
+          <TypographySection
+            key="typography"
+            expsProvider={expsProvider}
+            inheritableOnly={false}
+            vsh={vsh}
+            animatableOnly={true}
+          />
+          <TransformPanelSection key="transform" expsProvider={expsProvider} />
+
+          {renderMaybeCollapsibleRows([
+            {
+              collapsible: !isSet(...sizeStyleProps),
+              content: (
+                <SizeSection
+                  key="sizing"
+                  expsProvider={expsProvider}
+                  vsh={vsh}
+                />
+              ),
+            },
+            {
+              collapsible: !isSet(...spacingStyleProps),
+              content: (
+                <SpacingSection
+                  key="spacing"
+                  expsProvider={expsProvider}
+                  vsh={vsh}
+                />
+              ),
+            },
+            {
+              collapsible: !isSet("background"),
+              content: (
+                <BackgroundSection
+                  key="background"
+                  expsProvider={expsProvider}
+                  vsh={vsh}
+                  animatableOnly={true}
+                />
+              ),
+            },
+            {
+              collapsible: !isSet(
+                ...borderStyleProps,
+                ...borderRadiusStyleProps
+              ),
+              content: (
+                <React.Fragment key="border">
+                  <BorderPanelSection expsProvider={expsProvider} vsh={vsh} />
+                  <BorderRadiusSection expsProvider={expsProvider} vsh={vsh} />
+                </React.Fragment>
+              ),
+            },
+            {
+              collapsible: !isSet(...outlineStyleProps),
+              content: <OutlinePanelSection key="outline" />,
+            },
+            {
+              collapsible: !isSet("box-shadow"),
+              content: (
+                <ShadowsPanelSection
+                  key="shadow"
+                  expsProvider={expsProvider}
+                  vsh={vsh}
+                />
+              ),
+            },
+            {
+              collapsible: !isSet("filter", "backdrop-filter"),
+              content: (
+                <EffectsPanelSection
+                  key="effect"
+                  expsProvider={expsProvider}
+                  animatableOnly={true}
+                />
+              ),
+            },
+          ])}
+        </>
+      )}
+    </SidebarSection>
+  );
+}
 
 const AnimationSequenceRow = observer(function AnimationSequenceRow(
   props: AnimationSequenceRowProps

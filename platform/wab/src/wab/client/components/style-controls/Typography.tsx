@@ -56,6 +56,7 @@ interface TypographyContentProps {
   vsh?: VariantedStylesHelper;
   warnOnRelativeUnits?: boolean;
   readOnly?: boolean;
+  animatableOnly?: boolean;
 }
 
 export const Typography = observer(_Typography);
@@ -90,6 +91,7 @@ function _Typography({
   renderMaybeCollapsibleRows,
   inheritableOnly,
   readOnly,
+  animatableOnly,
   ...props
 }: TypographyContentProps) {
   const sc = useStyleComponent();
@@ -110,18 +112,20 @@ function _Typography({
         vsh={vsh}
         data-test-id="color-selector"
       />
-      <FullRow>
-        <LabeledFontFamilySelector
-          label="Font"
-          styleName="font-family"
-          selectOpts={{
-            onChange: (val) => props.onChange("font-family", val),
-            vsh,
-          }}
-          data-test-id="font-family-selector"
-          isDisabled={readOnly}
-        />
-      </FullRow>
+      {!animatableOnly && (
+        <FullRow>
+          <LabeledFontFamilySelector
+            label="Font"
+            styleName="font-family"
+            selectOpts={{
+              onChange: (val) => props.onChange("font-family", val),
+              vsh,
+            }}
+            data-test-id="font-family-selector"
+            isDisabled={readOnly}
+          />
+        </FullRow>
+      )}
       <FullRow>
         <LabeledStyleSelectItem
           styleName={"font-weight"}
@@ -179,43 +183,48 @@ function _Typography({
           isDisabled={readOnly}
         />
       </FullRow>
-      <FullRow>
-        <LabeledToggleButtonGroup
-          styleName="text-align"
-          label="Align"
-          autoWidth
-          isDisabled={readOnly}
-        >
-          <StyleToggleButton value="left" tooltip="Align left">
-            <Icon icon={AlignLeftIcon} />
-          </StyleToggleButton>
-          <StyleToggleButton value="center" tooltip="Align center">
-            <Icon icon={AlignCenterIcon} />
-          </StyleToggleButton>
-          <StyleToggleButton value="right" tooltip="Align right">
-            <Icon icon={AlignRightIcon} />
-          </StyleToggleButton>
-          <StyleToggleButton value="justify" tooltip="Justify">
-            <Icon icon={JustifyIcon} />
-          </StyleToggleButton>
-        </LabeledToggleButtonGroup>
-      </FullRow>
-      <FullRow>
-        <LabeledToggleButtonGroup
-          styleName="font-style"
-          label="Style"
-          autoWidth
-          isDisabled={readOnly}
-        >
-          <StyleToggleButton value="normal">
-            <Icon icon={ItalicsFalseIcon} />
-          </StyleToggleButton>
-          <StyleToggleButton value="italic">
-            <Icon icon={ItalicsTrueIcon} />
-          </StyleToggleButton>
-        </LabeledToggleButtonGroup>
-      </FullRow>
-      {!inheritableOnly && (
+
+      {!animatableOnly && (
+        <>
+          <FullRow>
+            <LabeledToggleButtonGroup
+              styleName="text-align"
+              label="Align"
+              autoWidth
+              isDisabled={readOnly}
+            >
+              <StyleToggleButton value="left" tooltip="Align left">
+                <Icon icon={AlignLeftIcon} />
+              </StyleToggleButton>
+              <StyleToggleButton value="center" tooltip="Align center">
+                <Icon icon={AlignCenterIcon} />
+              </StyleToggleButton>
+              <StyleToggleButton value="right" tooltip="Align right">
+                <Icon icon={AlignRightIcon} />
+              </StyleToggleButton>
+              <StyleToggleButton value="justify" tooltip="Justify">
+                <Icon icon={JustifyIcon} />
+              </StyleToggleButton>
+            </LabeledToggleButtonGroup>
+          </FullRow>
+          <FullRow>
+            <LabeledToggleButtonGroup
+              styleName="font-style"
+              label="Style"
+              autoWidth
+              isDisabled={readOnly}
+            >
+              <StyleToggleButton value="normal">
+                <Icon icon={ItalicsFalseIcon} />
+              </StyleToggleButton>
+              <StyleToggleButton value="italic">
+                <Icon icon={ItalicsTrueIcon} />
+              </StyleToggleButton>
+            </LabeledToggleButtonGroup>
+          </FullRow>
+        </>
+      )}
+      {!inheritableOnly && !animatableOnly && (
         <FullRow>
           <LabeledToggleButtonGroup
             styleName="text-decoration-line"
@@ -236,157 +245,177 @@ function _Typography({
           </LabeledToggleButtonGroup>
         </FullRow>
       )}
-      {renderMaybeCollapsibleRows([
-        {
-          collapsible: !isSetOrInherited(
-            getValueSetState(
-              ...sc.definedIndicators("line-height", "letter-spacing")
-            )
-          ),
-          content: (
-            <>
-              <FullRow>
-                <LabeledStyleDimItem
-                  styleName={"line-height"}
-                  label={"Line height"}
-                  dimOpts={{
-                    ...tokenTypeDimOpts("LineHeight"),
-                    dragScale: "0.1",
-                  }}
-                  tokenType={"LineHeight"}
-                  vsh={vsh}
-                  isDisabled={readOnly}
-                />
-              </FullRow>
-              <FullRow>
-                <LabeledStyleDimItem
-                  label={"Letter spacing"}
-                  styleName={"letter-spacing"}
-                  dimOpts={{
-                    ...tokenTypeDimOpts("Spacing"),
-                    extraOptions: ["normal"],
-                    dragScale: "1",
-                  }}
-                  isDisabled={readOnly}
-                />
-              </FullRow>
-            </>
-          ),
-        },
-        {
-          collapsible: !isSetOrInherited(
-            getValueSetState(
-              ...sc.definedIndicators("user-select", "text-transform")
-            )
-          ),
-          content: (
-            <>
-              <FullRow>
-                <LabeledStyleSwitchItem
-                  label="Selectable"
-                  styleName="user-select"
-                  value={exp.get("user-select") === "text"}
-                  onChange={(val) => {
-                    props.onChange("user-select", val ? "text" : "none");
-                  }}
-                  isDisabled={readOnly}
-                />
-              </FullRow>
-              <FullRow>
-                <LabeledToggleButtonGroup
-                  label={"Text transform"}
-                  styleName="text-transform"
-                  autoWidth
-                  isDisabled={readOnly}
-                >
-                  <StyleToggleButton value="uppercase">
-                    <Icon icon={UpperIcon} />
-                  </StyleToggleButton>
-                  <StyleToggleButton value="capitalize">
-                    <Icon icon={CapitalizeIcon} />
-                  </StyleToggleButton>
-                  <StyleToggleButton value="lowercase">
-                    <Icon icon={LowerIcon} />
-                  </StyleToggleButton>
-                  <StyleToggleButton value="none">
-                    <Icon icon={CloseIcon} />
-                  </StyleToggleButton>
-                </LabeledToggleButtonGroup>
-              </FullRow>
-            </>
-          ),
-        },
-        {
-          collapsible: !isSetOrInherited(
-            getValueSetState(...sc.definedIndicators("white-space"))
-          ),
-          content: (
-            <>
-              <FullRow>
-                <LabeledStyleSwitchItem
-                  label="Line wrap"
-                  styleName="white-space"
-                  value={exp.get("white-space") !== "nowrap"}
-                  onChange={(val) => {
-                    props.onChange("white-space", val ? "pre-wrap" : "nowrap");
-                    if (val) {
-                      props.unset("text-overflow");
-                      props.unset("overflow");
-                    }
-                  }}
-                  isDisabled={readOnly}
-                />
-              </FullRow>
-
-              <FullRow>
-                <LabeledToggleButtonGroup
-                  label="Overflow"
-                  styleName="text-overflow"
-                  isDisabled={readOnly || exp.get("white-space") !== "nowrap"}
-                  disabledTooltip="Line wrap needs to be turned off to set the text overflow options"
-                  value={
-                    exp.has("text-overflow")
-                      ? exp.get("text-overflow")
-                      : "overflow"
-                  }
-                  onChange={(val) =>
-                    sc.change(() => {
-                      if (val === "overflow") {
+      {/* Show letter spacing and line height controls without collapsable section */}
+      {animatableOnly && (
+        <LetterSpacingLineHeightControls readOnly={readOnly} vsh={vsh} />
+      )}
+      {!animatableOnly &&
+        renderMaybeCollapsibleRows([
+          {
+            collapsible: !isSetOrInherited(
+              getValueSetState(
+                ...sc.definedIndicators("line-height", "letter-spacing")
+              )
+            ),
+            content: (
+              <LetterSpacingLineHeightControls readOnly={readOnly} vsh={vsh} />
+            ),
+          },
+          {
+            collapsible: !isSetOrInherited(
+              getValueSetState(
+                ...sc.definedIndicators("user-select", "text-transform")
+              )
+            ),
+            content: (
+              <>
+                <FullRow>
+                  <LabeledStyleSwitchItem
+                    label="Selectable"
+                    styleName="user-select"
+                    value={exp.get("user-select") === "text"}
+                    onChange={(val) => {
+                      props.onChange("user-select", val ? "text" : "none");
+                    }}
+                    isDisabled={readOnly}
+                  />
+                </FullRow>
+                <FullRow>
+                  <LabeledToggleButtonGroup
+                    label={"Text transform"}
+                    styleName="text-transform"
+                    autoWidth
+                    isDisabled={readOnly}
+                  >
+                    <StyleToggleButton value="uppercase">
+                      <Icon icon={UpperIcon} />
+                    </StyleToggleButton>
+                    <StyleToggleButton value="capitalize">
+                      <Icon icon={CapitalizeIcon} />
+                    </StyleToggleButton>
+                    <StyleToggleButton value="lowercase">
+                      <Icon icon={LowerIcon} />
+                    </StyleToggleButton>
+                    <StyleToggleButton value="none">
+                      <Icon icon={CloseIcon} />
+                    </StyleToggleButton>
+                  </LabeledToggleButtonGroup>
+                </FullRow>
+              </>
+            ),
+          },
+          {
+            collapsible: !isSetOrInherited(
+              getValueSetState(...sc.definedIndicators("white-space"))
+            ),
+            content: (
+              <>
+                <FullRow>
+                  <LabeledStyleSwitchItem
+                    label="Line wrap"
+                    styleName="white-space"
+                    value={exp.get("white-space") !== "nowrap"}
+                    onChange={(val) => {
+                      props.onChange(
+                        "white-space",
+                        val ? "pre-wrap" : "nowrap"
+                      );
+                      if (val) {
                         props.unset("text-overflow");
                         props.unset("overflow");
-                      } else {
-                        props.onChange(
-                          "text-overflow",
-                          ensure(
-                            val,
-                            "Unexpected undefined text-overflow value"
-                          )
-                        );
-                        props.onChange("overflow", "hidden");
                       }
-                    })
-                  }
-                  autoWidth
-                >
-                  <StyleToggleButton value="ellipsis">
-                    <Icon icon={DotsHorizontalIcon} />
-                  </StyleToggleButton>
-                  <StyleToggleButton value="clip">
-                    <Icon icon={ClipIcon} />
-                  </StyleToggleButton>
-                  {/*
+                    }}
+                    isDisabled={readOnly}
+                  />
+                </FullRow>
+
+                <FullRow>
+                  <LabeledToggleButtonGroup
+                    label="Overflow"
+                    styleName="text-overflow"
+                    isDisabled={readOnly || exp.get("white-space") !== "nowrap"}
+                    disabledTooltip="Line wrap needs to be turned off to set the text overflow options"
+                    value={
+                      exp.has("text-overflow")
+                        ? exp.get("text-overflow")
+                        : "overflow"
+                    }
+                    onChange={(val) =>
+                      sc.change(() => {
+                        if (val === "overflow") {
+                          props.unset("text-overflow");
+                          props.unset("overflow");
+                        } else {
+                          props.onChange(
+                            "text-overflow",
+                            ensure(
+                              val,
+                              "Unexpected undefined text-overflow value"
+                            )
+                          );
+                          props.onChange("overflow", "hidden");
+                        }
+                      })
+                    }
+                    autoWidth
+                  >
+                    <StyleToggleButton value="ellipsis">
+                      <Icon icon={DotsHorizontalIcon} />
+                    </StyleToggleButton>
+                    <StyleToggleButton value="clip">
+                      <Icon icon={ClipIcon} />
+                    </StyleToggleButton>
+                    {/*
                     overflow" is not an actual value for text-overflow.
                     rather it's used to signal to unset "text-overflow" and "overflow"
                   */}
-                  <StyleToggleButton value="overflow">
-                    <Icon icon={CloseIcon} />
-                  </StyleToggleButton>
-                </LabeledToggleButtonGroup>
-              </FullRow>
-            </>
-          ),
-        },
-      ])}
+                    <StyleToggleButton value="overflow">
+                      <Icon icon={CloseIcon} />
+                    </StyleToggleButton>
+                  </LabeledToggleButtonGroup>
+                </FullRow>
+              </>
+            ),
+          },
+        ])}
+    </>
+  );
+}
+
+function LetterSpacingLineHeightControls({
+  readOnly,
+  vsh,
+}: {
+  readOnly?: boolean;
+  vsh?: VariantedStylesHelper;
+}) {
+  return (
+    <>
+      <FullRow>
+        <LabeledStyleDimItem
+          styleName={"line-height"}
+          label={"Line height"}
+          dimOpts={{
+            ...tokenTypeDimOpts("LineHeight"),
+            dragScale: "0.1",
+          }}
+          tokenType={"LineHeight"}
+          vsh={vsh}
+          isDisabled={readOnly}
+        />
+      </FullRow>
+      <FullRow>
+        <LabeledStyleDimItem
+          label={"Letter spacing"}
+          styleName={"letter-spacing"}
+          dimOpts={{
+            ...tokenTypeDimOpts("Spacing"),
+            extraOptions: ["normal"],
+            dragScale: "1",
+          }}
+          isDisabled={readOnly}
+        />
+      </FullRow>
     </>
   );
 }

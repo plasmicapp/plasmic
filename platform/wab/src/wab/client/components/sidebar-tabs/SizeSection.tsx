@@ -72,6 +72,18 @@ import React from "react";
 interface SizePanelSectionState {
   showMore: boolean;
 }
+export const sizeStyleProps = [
+  "width",
+  "height",
+  "min-width",
+  "min-height",
+  "max-width",
+  "max-height",
+  "aspect-ratio",
+  "flex-grow",
+  "flex-shrink",
+  "flex-basis",
+];
 
 class SizeSection_ extends StyleComponent<
   StyleComponentProps,
@@ -113,18 +125,7 @@ class SizeSection_ extends StyleComponent<
     return (
       <StylePanelSection
         expsProvider={this.props.expsProvider}
-        styleProps={[
-          "width",
-          "height",
-          "min-width",
-          "min-height",
-          "max-width",
-          "max-height",
-          "aspect-ratio",
-          "flex-grow",
-          "flex-shrink",
-          "flex-basis",
-        ]}
+        styleProps={sizeStyleProps}
         title={"Size"}
         hasMore
         data-test-id="size-section"
