@@ -6,9 +6,12 @@ import {
 import { ExpsProvider } from "@/wab/client/components/style-controls/StyleComponent";
 import StyleSelect from "@/wab/client/components/style-controls/StyleSelect";
 import { DimTokenSpinner } from "@/wab/client/components/widgets/DimTokenSelector";
+import { Icon } from "@/wab/client/components/widgets/Icon";
+import TriangleBottomIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__TriangleBottom";
+import { useUndo } from "@/wab/client/shortcuts/studio/useUndo";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
-import { ensure, spawn } from "@/wab/shared/common";
-import { allAnimationSequences } from "@/wab/shared/core/sites";
+import { cx, ensure, spawn } from "@/wab/shared/common";
+import { walkDependencyTree } from "@/wab/shared/core/project-deps";
 import {
   AnimationDirectionKeyword,
   FillModeKeyword,
@@ -17,8 +20,10 @@ import {
   timingFunctionKeywords,
 } from "@/wab/shared/css/animations";
 import { Animation } from "@/wab/shared/model/classes";
+import { naturalSortByName } from "@/wab/shared/sort";
+import { Select } from "antd";
 import { observer } from "mobx-react";
-import React from "react";
+import React, { useMemo } from "react";
 
 interface AnimationControlsProps {
   expsProvider: ExpsProvider;
@@ -31,9 +36,7 @@ export const AnimationControls = observer(function AnimationControls(
 ) {
   const { animation, expsProvider } = props;
   const { studioCtx } = expsProvider;
-  const allAnimSequences = allAnimationSequences(studioCtx.site, {
-    includeDeps: "direct",
-  });
+  const site = studioCtx.site;
 
   const handleChange = (f: () => void) => {
     spawn(
@@ -44,28 +47,72 @@ export const AnimationControls = observer(function AnimationControls(
     );
   };
 
+  const allAnimationSequencesGroups = useMemo(() => {
+    return [
+      {
+        name: "This project",
+        animationSequences: naturalSortByName(site.animationSequences),
+      },
+      ...naturalSortByName(
+        walkDependencyTree(site, "direct").map((dep) => ({
+          name: studioCtx.projectDependencyManager.getNiceDepName(dep),
+          animationSequences: naturalSortByName(dep.site.animationSequences),
+        }))
+      ),
+    ].filter((g) => g.animationSequences.length > 0);
+  }, [site, studioCtx]);
+
+  const searchUndo = useUndo("");
+
   return (
     <>
       <SidebarSection title="Animation" zeroBodyPadding zeroHeaderPadding>
-        <FullRow>
-          <StyleSelect
+        <FullRow className="labeled-item">
+          <Select
+            className={cx({
+              "flex-fill textboxlike": true,
+            })}
             value={animation.sequence.uuid}
             onChange={(val) => {
-              const sequence = allAnimSequences.find((seq) => seq.uuid === val);
+              const sequence = allAnimationSequencesGroups
+                .flatMap((g) => g.animationSequences)
+                .find((seq) => seq.uuid === val);
               if (sequence) {
                 handleChange(() => {
                   animation.sequence = sequence;
                 });
               }
+              searchUndo.reset();
             }}
-            valueSetState={animation.sequence ? "isSet" : "isUnset"}
-          >
-            {allAnimSequences.map((sequence) => (
-              <StyleSelect.Option key={sequence.uuid} value={sequence.uuid}>
-                {sequence.name}
-              </StyleSelect.Option>
-            ))}
-          </StyleSelect>
+            showSearch
+            searchValue={searchUndo.value}
+            onSearch={searchUndo.push}
+            onInputKeyDown={searchUndo.handleKeyDown}
+            onFocus={() => {
+              searchUndo.reset();
+            }}
+            filterOption={(val, opt) => {
+              if (!opt) {
+                return false;
+              }
+              if ("searchText" in opt && typeof opt.searchText === "string") {
+                return opt.searchText.toLowerCase().includes(val.toLowerCase());
+              }
+              return false;
+            }}
+            suffixIcon={<Icon icon={TriangleBottomIcon} />}
+            optionLabelProp="label"
+            options={allAnimationSequencesGroups.map(
+              ({ name, animationSequences }) => ({
+                label: name,
+                options: animationSequences.map((seq) => ({
+                  label: seq.name,
+                  value: seq.uuid,
+                  searchText: seq.name,
+                })),
+              })
+            )}
+          />
         </FullRow>
       </SidebarSection>
 

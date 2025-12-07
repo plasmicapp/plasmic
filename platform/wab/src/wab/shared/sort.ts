@@ -32,3 +32,7 @@ export function naturalSort<T>(items: T[], sortBy: (item: T) => string): T[] {
     })
     .map((item) => item.item);
 }
+
+export function naturalSortByName<T extends { name: string }>(items: T[]) {
+  return naturalSort(items, (item) => item.name);
+}
