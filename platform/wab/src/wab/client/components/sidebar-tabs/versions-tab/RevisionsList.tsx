@@ -10,6 +10,7 @@ import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ApiUser, MainBranchId } from "@/wab/shared/ApiSchema";
 import { MinimalRevisionInfo } from "@/wab/shared/SharedApi";
 import { spawn } from "@/wab/shared/common";
+import { Tooltip } from "antd";
 import { observer } from "mobx-react";
 import React from "react";
 
@@ -103,7 +104,7 @@ export const RevisionsList = observer(function RevisionsList(
                   }}
                   preventDefault
                 >
-                  {node}
+                  <Tooltip title="Revert to this version">{node}</Tooltip>
                 </ClickStopper>
               ),
               props: {
