@@ -311,6 +311,7 @@ import { InsertableTemplateComponentExtraInfo } from "@/wab/shared/insertable-te
 import { instUtil } from "@/wab/shared/model/InstUtil";
 import * as classes from "@/wab/shared/model/classes";
 import {
+  Animation,
   Arena,
   ArenaChild,
   ArenaFrame,
@@ -321,6 +322,7 @@ import {
   ObjInst,
   PageArena,
   ProjectDependency,
+  RuleSet,
   StyleToken,
   TemplatedString,
   TplComponent,
@@ -2239,6 +2241,9 @@ export class StudioCtx extends WithDbCtx {
     }
   ) {
     try {
+      // Stop any active animation previews before switching arenas
+      this.styleMgr.stopAllAnimationPreviews();
+
       const prevFocusedViewCtx = this.focusedViewCtx();
       const prevArena = this.currentArena;
 
@@ -2962,6 +2967,7 @@ export class StudioCtx extends WithDbCtx {
 
   toggleDevControls() {
     assert(this.previewCtx, "Cannot toggle live mode without a previewCtx.");
+    this.styleMgr.stopAllAnimationPreviews();
     spawn(this.previewCtx.toggleLiveMode());
   }
 
@@ -3158,6 +3164,8 @@ export class StudioCtx extends WithDbCtx {
       return;
     }
 
+    this.styleMgr.stopAllAnimationPreviews();
+
     const newFocusedFrame = setFocusedFrame(
       this.site,
       currentArena,
@@ -3177,6 +3185,7 @@ export class StudioCtx extends WithDbCtx {
     }
 
     this.isInteractiveMode = false;
+    this.styleMgr.stopAllAnimationPreviews();
     currentArena._focusedFrame = null;
 
     ensureActivatedScreenVariantsForArena(this.site, currentArena);
@@ -4709,6 +4718,7 @@ export class StudioCtx extends WithDbCtx {
   // Dealing with generating CSS styles used by all frames
   //
   private styleMgr: StyleMgr;
+  animationChanged = new Signals.Signal();
   styleChanged = new Signals.Signal();
   framesChanged = new Signals.Signal();
   focusReset = new Signals.Signal();
@@ -4751,6 +4761,19 @@ export class StudioCtx extends WithDbCtx {
     upsertStyleSheets: (viewCtx: ViewCtx) => {
       const canvasCtx = viewCtx.canvasCtx;
       this.styleMgr.upsertStyleSheets(canvasCtx.$doc()[0], viewCtx.component);
+    },
+    playAnimationPreview: (
+      tpl: TplNode,
+      rs: RuleSet,
+      animations: Animation[]
+    ) => {
+      return this.styleMgr.playAnimationPreview(tpl, rs, animations);
+    },
+    stopAnimationPreview: (tpl: TplNode, rs: RuleSet) => {
+      this.styleMgr.stopAnimationPreview(tpl, rs);
+    },
+    hasActiveAnimationPreview: (tpl: TplNode, rs: RuleSet) => {
+      return this.styleMgr.hasActiveAnimationPreview(tpl, rs);
     },
   };
 

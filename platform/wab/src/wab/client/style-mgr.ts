@@ -41,7 +41,10 @@ import {
 } from "@/wab/shared/core/sites";
 import {
   CssVarResolver,
+  classNameForRuleSet,
   genCanvasRules,
+  generateAnimationPropValue,
+  generateKeyframesRule,
   makeDefaultStylesRuleBodyFor,
   makeDefaultStylesRules,
   mkCssVarsRuleForCanvas,
@@ -56,9 +59,11 @@ import {
   tplChildren,
 } from "@/wab/shared/core/tpls";
 import {
+  Animation,
   Component,
   Mixin,
   ProjectDependency,
+  RuleSet,
   TplNode,
   VariantSetting,
   isKnownTplTag,
@@ -76,6 +81,7 @@ import { sortBy } from "lodash";
 
 // @ts-ignore
 import reactWebCss from "!!raw-loader!../gen/static/styles/react-web-css.txt";
+import { valOwnerProp } from "@/wab/shared/canvas-constants";
 import { walkDependencyTree } from "@/wab/shared/core/project-deps";
 
 export interface UpsertStyleChanges {
@@ -175,6 +181,23 @@ export class StyleMgr {
 
   private upsertedVSs = new Set<VariantSetting>();
 
+  /**
+   * Tracks active animation previews by composite key (tpl.uuid-rs.uid).
+   * When animations are previewing, the corresponding animation preview rules
+   * will be appended to the component's stylesheet during buildComponentStyleText.
+   * Cleared automatically when animation ends.
+   */
+  private activeAnimationPreviews = new Map<
+    string,
+    {
+      tpl: TplNode;
+      rs: RuleSet;
+      animations: Animation[];
+      /** The valOwner key used to scope the animation CSS selector to the specific frame */
+      frameValOwnerKey: string;
+    }
+  >();
+
   constructor(private studioCtx: StudioCtx) {
     this.defaultStylesRule = [
       ...makeDefaultStylesRules(`${studioDefaultStylesClassNameBase}__`, {
@@ -217,6 +240,9 @@ export class StyleMgr {
           .map((c) => getComponentDisplayName(c))
           .join(", ")}`
     );
+
+    // Clear all active animation previews before resetting styles
+    this.activeAnimationPreviews.clear();
 
     this.updateCssVarsRule();
     this.componentToStyleText = new WeakMap();
@@ -432,9 +458,28 @@ export class StyleMgr {
     ).filter((vs) => isActiveVariantSetting(this.studioCtx.site, vs.vs));
     const existingVersion =
       maybe(this.componentToStyleText.get(component), (x) => x.version) ?? 0;
+
+    let styleText = vsRules.flatMap((x) => x.rules).join("\n");
+
+    // Append temporary animation preview rules if active for this component
+    for (const [
+      _key,
+      animationPreview,
+    ] of this.activeAnimationPreviews.entries()) {
+      const tplComponent = $$$(animationPreview.tpl).tryGetOwningComponent();
+      if (tplComponent === component) {
+        const animationPreviewRules = this.generateAnimationPreviewRules(
+          animationPreview.rs,
+          animationPreview.animations,
+          animationPreview.frameValOwnerKey
+        );
+        styleText += "\n" + animationPreviewRules;
+      }
+    }
+
     this.componentToStyleText.set(component, {
       version: existingVersion + 1,
-      styleText: vsRules.flatMap((x) => x.rules).join("\n"),
+      styleText,
     });
   }
 
@@ -542,6 +587,13 @@ export class StyleMgr {
     const index = vsRules.findIndex((x) => x.vs === vs);
     if (index >= 0) {
       vsRules.splice(index, 1);
+    }
+
+    // Clean up any active animation preview for this tpl/variant setting
+    // to prevent race conditions when elements are deleted during animation playback
+    const key = this.makeAnimationKey(tpl, vs.rs);
+    if (this.activeAnimationPreviews.has(key)) {
+      this.cleanupActiveAnimationPreview(key);
     }
   }
 
@@ -793,6 +845,177 @@ export class StyleMgr {
       );
       return validRefs;
     }
+  }
+
+  /**
+   * Creates a unique key for tracking active animations based on tpl and ruleset.
+   */
+  private makeAnimationKey(tpl: TplNode, rs: RuleSet): string {
+    return `${tpl.uuid}-${rs.uid}`;
+  }
+
+  /**
+   * Check if there is an active animation preview for the given tpl and ruleset.
+   */
+  hasActiveAnimationPreview(tpl: TplNode, rs: RuleSet): boolean {
+    const key = this.makeAnimationKey(tpl, rs);
+    return this.activeAnimationPreviews.has(key);
+  }
+
+  /**
+   * Stop an active animation preview for the given tpl and ruleset.
+   */
+  stopAnimationPreview(tpl: TplNode, rs: RuleSet): void {
+    const key = this.makeAnimationKey(tpl, rs);
+    this.cleanupActiveAnimationPreview(key);
+  }
+
+  /**
+   * Stop all active animation previews. Called during major state transitions
+   * like arena changes, focus mode changes, etc.
+   */
+  stopAllAnimationPreviews(): void {
+    const keys = Array.from(this.activeAnimationPreviews.keys());
+    for (const key of keys) {
+      this.cleanupActiveAnimationPreview(key);
+    }
+  }
+
+  /**
+   * Generate CSS rules for animation preview including @keyframes and animation property.
+   * @param rs The RuleSet containing the animation
+   * @param animations The animations to preview
+   * @param frameValOwnerKey valOwner key to scope the animation to a specific frame.
+   *                 the selector is scoped to elements within that frame
+   *                 to prevent animations from playing in other frames (e.g., different
+   *                 screen variant frames that share the same base variant class).
+   */
+  private generateAnimationPreviewRules(
+    rs: RuleSet,
+    animations: Animation[],
+    frameValOwnerKey: string
+  ): string {
+    const rules: string[] = [];
+
+    // Generate @keyframes rules
+    animations.forEach((anim) => {
+      rules.push(generateKeyframesRule(anim.sequence));
+    });
+
+    // Generate animation property rule with optional frame scoping
+    const animationProp = generateAnimationPropValue(animations);
+    if (animationProp) {
+      const baseSelector = `.${classNameForRuleSet(rs)}`;
+      // Scope the selector to elements within that frame using frameValOwner
+      // This prevents animations from playing in other frames that share the same
+      // base variant class (e.g., when previewing base variant animation, it shouldn't
+      // play in mobile variant frame which also has the base variant class).
+      const selector = `[${valOwnerProp}="${frameValOwnerKey}"] ${baseSelector}`;
+      rules.push(`${selector} { animation: ${animationProp}; }`);
+    }
+
+    return rules.join("\n");
+  }
+
+  /**
+   * Play animation preview on the canvas by temporarily adding animation rules
+   * to the component's stylesheet. The rules are automatically removed when
+   * the animation completes.
+   * @param tpl The TplNode to animate
+   * @param rs The RuleSet (used for generating the CSS selector)
+   * @param animations The animations to preview. This should come from
+   *        getAnimationsFromDefinedIndicatorType() which properly handles
+   *        inherited animations from other variants (e.g., base variant).
+   */
+  async playAnimationPreview(
+    tpl: TplNode,
+    rs: RuleSet,
+    animations: Animation[]
+  ) {
+    const focusedViewCtx = this.studioCtx.focusedViewCtx();
+    if (!focusedViewCtx || animations.length === 0) {
+      return;
+    }
+
+    const component = $$$(tpl).tryGetOwningComponent();
+    if (!component) {
+      return;
+    }
+
+    // Get the valOwner (valKey of the frame's user root) to scope the animation
+    // to this specific frame. This prevents the animation from playing in other
+    // frames that may share the same base variant class.
+    const frameValOwnerKey = ensure(
+      focusedViewCtx.valState().maybeValUserRoot()?.valOwner,
+      "ValOwner must exist"
+    ).key;
+
+    const key = this.makeAnimationKey(tpl, rs);
+
+    // Set the active animation preview in the Map
+    this.activeAnimationPreviews.set(key, {
+      tpl,
+      rs,
+      animations,
+      frameValOwnerKey,
+    });
+
+    // Mark component dirty and rebuild with animation rules
+    this.dirtyComponents.add(component);
+    this.buildDirtyComponentStyleTexts();
+
+    // Immediately update the DOM <style> element for focused viewCtx
+    const document = focusedViewCtx.canvasCtx.doc();
+    this.upsertStyleSheets(document, focusedViewCtx.component);
+    this.studioCtx.animationChanged.dispatch();
+
+    // Listen for animation end to clean up
+    const selector = `.${classNameForRuleSet(rs)}`;
+    const animatedElement = document.querySelector(selector);
+
+    if (animatedElement) {
+      try {
+        await Promise.all(
+          animatedElement.getAnimations().map((animation) => animation.finished)
+        );
+      } catch (error) {
+        // When an animation is cancelled the Promise rejects with AbortError.
+        if (error.name !== "AbortError") {
+          throw error;
+        }
+      }
+
+      this.cleanupActiveAnimationPreview(key);
+    }
+  }
+
+  /**
+   * Stop and clean up the animation preview by clearing the active preview
+   * and regenerating the component stylesheet without animation rules.
+   */
+  private cleanupActiveAnimationPreview(key: string) {
+    const preview = this.activeAnimationPreviews.get(key);
+    if (!preview) {
+      return;
+    }
+
+    const { tpl } = preview;
+    const component = $$$(tpl).tryGetOwningComponent();
+    if (!component) {
+      return;
+    }
+
+    // Clear the active animation preview from the Map
+    this.activeAnimationPreviews.delete(key);
+
+    // Mark component dirty and rebuild style text
+    this.dirtyComponents.add(component);
+    this.buildDirtyComponentStyleTexts();
+
+    // Sync styles for all viewCtx asynchronously
+    this.studioCtx.styleMgrBcast.syncStyles();
+    // Dispatch animationChanged signal so AnimationSection can re-render and update its preview state for active animations
+    this.studioCtx.animationChanged.dispatch();
   }
 }
 

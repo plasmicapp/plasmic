@@ -29,12 +29,13 @@ interface AnimationControlsProps {
   expsProvider: ExpsProvider;
   animation: Animation;
   vsh: VariantedStylesHelper;
+  onUpdated: () => void;
 }
 
 export const AnimationControls = observer(function AnimationControls(
   props: AnimationControlsProps
 ) {
-  const { animation, expsProvider } = props;
+  const { animation, expsProvider, onUpdated } = props;
   const { studioCtx } = expsProvider;
   const site = studioCtx.site;
 
@@ -45,6 +46,8 @@ export const AnimationControls = observer(function AnimationControls(
         return success();
       })
     );
+
+    onUpdated?.();
   };
 
   const allAnimationSequencesGroups = useMemo(() => {

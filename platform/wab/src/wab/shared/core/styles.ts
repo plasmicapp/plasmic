@@ -561,6 +561,7 @@ function deriveCssRuleSetStyles(
   tpl: TplNode,
   vs: VariantSetting,
   opts: {
+    targetEnv: TargetEnv;
     whitespaceNormal?: boolean;
   }
 ) {
@@ -594,7 +595,7 @@ function deriveCssRuleSetStyles(
     )
   );
   // Process animations
-  if (rs.animations) {
+  if (rs.animations && !opts.targetEnv.startsWith("canvas")) {
     if (rs.animations.length > 0) {
       const animationPropVal = generateAnimationPropValue(rs.animations);
       if (animationPropVal) {
@@ -1002,16 +1003,13 @@ export function generateAnimationPropValue(animations: Animation[]) {
  */
 export function makeAnimationKeyframesRules(
   site: Site,
-  opts: {
-    targetEnv: TargetEnv;
-    resolver?: CssVarResolver;
-  }
-): string[] {
+  resolver?: CssVarResolver
+): string {
   const animationSequences = collectUsedAnimationSequences(site);
 
-  return animationSequences.map((sequence) =>
-    generateKeyframesRule(sequence, opts.resolver)
-  );
+  return animationSequences
+    .map((sequence) => generateKeyframesRule(sequence, resolver))
+    .join("\n");
 }
 
 export function hasClassnameOverride(tag?: string) {

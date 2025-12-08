@@ -504,9 +504,7 @@ export function exportProjectConfig(
     site,
     `.${makePlasmicTokensClassName(projectId, exportOpts)}`
   );
-  const animationKeyframesRules = makeAnimationKeyframesRules(site, {
-    targetEnv: exportOpts.targetEnv,
-  }).join("\n");
+  const animationKeyframesRules = makeAnimationKeyframesRules(site);
 
   const splitsProviderBundle = makeSplitsProviderBundle(
     site,
