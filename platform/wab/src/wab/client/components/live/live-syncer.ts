@@ -773,9 +773,13 @@ function swallowAnchorClicks(
   doc: Document,
   onAnchorClick?: (href: string) => void
 ) {
-  doc.body.addEventListener("click", function (e) {
-    absorbLinkClick(e, onAnchorClick);
-  });
+  // Listen in the capture phase so we catch clicks even if a child
+  // component (like a button) calls stopPropagation.
+  doc.body.addEventListener(
+    "click",
+    (e) => absorbLinkClick(e, onAnchorClick),
+    true
+  );
 }
 
 // For the expensive parts of code-gen, we use computedFn to keep a cache of
