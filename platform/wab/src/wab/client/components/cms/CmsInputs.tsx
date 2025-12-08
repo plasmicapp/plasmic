@@ -1,14 +1,16 @@
 import { useRRouteMatch } from "@/wab/client/cli-routes";
+import { PublicLink } from "@/wab/client/components/PublicLink";
+import {
+  UniqueFieldStatus,
+  getRowIdentifierText,
+} from "@/wab/client/components/cms/CmsEntryDetails";
 import {
   useCmsRows,
   useCmsTableMaybe,
 } from "@/wab/client/components/cms/cms-contexts";
-import {
-  getRowIdentifierNode,
-  UniqueFieldStatus,
-} from "@/wab/client/components/cms/CmsEntryDetails";
 import { isCmsTextLike } from "@/wab/client/components/cms/utils";
-import { PublicLink } from "@/wab/client/components/PublicLink";
+import Combobox from "@/wab/client/components/plexus/Combobox";
+import MenuItem from "@/wab/client/components/plexus/MenuItem";
 import { FileUploader, Spinner } from "@/wab/client/components/widgets";
 import Button from "@/wab/client/components/widgets/Button";
 import "@/wab/client/components/widgets/ColorPicker/Pickr.overrides.scss";
@@ -30,6 +32,7 @@ import {
 import { assert, ensure, ensureType } from "@/wab/shared/common";
 import { APP_ROUTES } from "@/wab/shared/route/app-routes";
 import { fillRoute } from "@/wab/shared/route/route";
+import { naturalSort } from "@/wab/shared/sort";
 import { PlasmicImg } from "@plasmicapp/react-web";
 import Pickr from "@simonwep/pickr";
 import "@simonwep/pickr/dist/themes/nano.min.css";
@@ -48,7 +51,7 @@ import TextArea from "antd/lib/input/TextArea";
 import { upperFirst } from "lodash";
 import moment from "moment";
 import * as React from "react";
-import { createContext, ReactElement, ReactNode, useContext } from "react";
+import { ReactElement, ReactNode, createContext, useContext } from "react";
 import { GrNewWindow } from "react-icons/all";
 import { useHistory } from "react-router";
 const LazyRichTextEditor = React.lazy(
@@ -111,31 +114,57 @@ export function CmsRefInput(props: any) {
   const maybeTable = useCmsTableMaybe(database.id, typeMeta.tableId);
   const table = maybeTable?.table;
   const { rows, error } = useCmsRows(database.id, typeMeta.tableId);
+  const isDisabled =
+    disabled || !typeMeta.tableId || error || !maybeTable || !maybeTable.table;
+
+  const placeholder =
+    !typeMeta.tableId || error || (maybeTable && !maybeTable.table)
+      ? "Please configure a model type for this field"
+      : undefined;
+
+  // Convert rows to MenuItem components
+  const menuItems =
+    !typeMeta.tableId || error || !table
+      ? null
+      : naturalSort(
+          (rows ?? []).map((row) => {
+            const { identifier, placeholder: rowPlaceholder } =
+              getRowIdentifierText(table, row);
+            const label = identifier || rowPlaceholder || "Untitled entry";
+            return { label, rowId: row.id };
+          }),
+          (rowData) => rowData.label
+        ).map((rowData) => (
+          <MenuItem
+            key={rowData.rowId}
+            value={rowData.rowId}
+            label={rowData.label}
+          />
+        ));
+
+  // Get the display value for the selected row
+  const selectedRow =
+    table && props.value ? rows?.find((row) => row.id === props.value) : null;
+  const inputDisplayValue =
+    selectedRow && table
+      ? (() => {
+          // TypeScript: table is guaranteed to be defined here due to the check above
+          const { identifier, placeholder: rowPlaceholder } =
+            getRowIdentifierText(table!, selectedRow);
+          return identifier || rowPlaceholder || "Untitled entry";
+        })()
+      : undefined;
+
   return (
-    <Select
-      {...props}
-      type={"bordered"}
-      isDisabled={
-        disabled ||
-        !typeMeta.tableId ||
-        error ||
-        !maybeTable ||
-        !maybeTable.table
-      }
-      placeholder={
-        !typeMeta.tableId || error || (maybeTable && !maybeTable.table)
-          ? "Please configure a model type for this field"
-          : undefined
-      }
-    >
-      {!typeMeta.tableId || error || !table
-        ? null
-        : rows?.map((row) => (
-            <Select.Option value={row.id}>
-              {getRowIdentifierNode(table, row)}
-            </Select.Option>
-          ))}
-    </Select>
+    <Combobox
+      value={props.value}
+      onChange={props.onChange}
+      placeholder={placeholder}
+      disabled={isDisabled}
+      inputDisplayValue={inputDisplayValue}
+      showLabel={false}
+      items={menuItems}
+    />
   );
 }
 

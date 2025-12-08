@@ -2069,6 +2069,58 @@
           "cssFilePath": "wab/client/plasmic/plasmic_kit_design_system/PlasmicTooltip.module.css",
           "scheme": "blackbox",
           "componentType": "component"
+        },
+        {
+          "id": "HuWzUuHGp49C",
+          "name": "MenuItem",
+          "type": "managed",
+          "projectId": "tXkSR39sgCDWSitZxC5xFV",
+          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_design_system/PlasmicMenuItem.tsx",
+          "importSpec": {
+            "modulePath": "wab/client/components/plexus/MenuItem.tsx"
+          },
+          "cssFilePath": "wab/client/plasmic/plasmic_kit_design_system/PlasmicMenuItem.module.css",
+          "scheme": "blackbox",
+          "componentType": "component"
+        },
+        {
+          "id": "YvSNiHRodZSY",
+          "name": "MenuSection",
+          "type": "managed",
+          "projectId": "tXkSR39sgCDWSitZxC5xFV",
+          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_design_system/PlasmicMenuSection.tsx",
+          "importSpec": {
+            "modulePath": "wab/client/components/plexus/MenuSection.tsx"
+          },
+          "cssFilePath": "wab/client/plasmic/plasmic_kit_design_system/PlasmicMenuSection.module.css",
+          "scheme": "blackbox",
+          "componentType": "component"
+        },
+        {
+          "id": "cplpbevCTFb_",
+          "name": "MenuPopover",
+          "type": "managed",
+          "projectId": "tXkSR39sgCDWSitZxC5xFV",
+          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_design_system/PlasmicMenuPopover.tsx",
+          "importSpec": {
+            "modulePath": "wab/client/components/plexus/MenuPopover.tsx"
+          },
+          "cssFilePath": "wab/client/plasmic/plasmic_kit_design_system/PlasmicMenuPopover.module.css",
+          "scheme": "blackbox",
+          "componentType": "component"
+        },
+        {
+          "id": "zIW2sbKF4DAY",
+          "name": "Combobox",
+          "type": "managed",
+          "projectId": "tXkSR39sgCDWSitZxC5xFV",
+          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_design_system/PlasmicCombobox.tsx",
+          "importSpec": {
+            "modulePath": "wab/client/components/plexus/Combobox.tsx"
+          },
+          "cssFilePath": "wab/client/plasmic/plasmic_kit_design_system/PlasmicCombobox.module.css",
+          "scheme": "blackbox",
+          "componentType": "component"
         }
       ],
       "icons": [

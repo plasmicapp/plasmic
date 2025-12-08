@@ -1,0 +1,53 @@
+.ariaComboBox:global(.__wab_instance) {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  row-gap: var(--token-YwPV7bN0RvD8);
+  min-width: 0;
+}
+.ariaComboBox[data-disabled]:global(.__wab_instance) {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+.freeBox {
+  display: flex;
+  flex-direction: row;
+  position: relative;
+  align-items: stretch;
+  justify-content: flex-start;
+}
+.textInput:global(.__wab_instance):global(.__wab_instance) {
+  max-width: 100%;
+}
+.ariaButton:global(.__wab_instance) {
+  box-sizing: border-box;
+  cursor: pointer;
+  object-fit: cover;
+  background: none;
+  position: absolute;
+  right: 0;
+  width: var(--token-CVkj_k5wv-Vl);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: var(--token-CVkj_k5wv-Vl);
+  flex-shrink: 0;
+  border-radius: var(--token-CyMxORMQ0iY7);
+  border: 1px none black;
+}
+.svg {
+  width: var(--token-8b4HJYZr1yuK);
+  height: var(--token-8b4HJYZr1yuK);
+}
+.description:global(.__wab_instance):global(.__wab_instance) {
+  position: relative;
+}
+.text__yToMh {
+  position: relative;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  min-width: 0;
+}

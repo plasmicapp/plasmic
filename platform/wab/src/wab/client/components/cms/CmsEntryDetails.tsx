@@ -76,7 +76,7 @@ function dataToUniqueStatus(
   return uniqueStatus as Dict<UniqueFieldStatus>;
 }
 
-function getRowIdentifierText(
+export function getRowIdentifierText(
   table: ApiCmsTable,
   row: ApiCmseRow,
   formIdentifier?: string
