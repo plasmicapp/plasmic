@@ -2548,19 +2548,22 @@ export class StudioCtx extends WithDbCtx {
         ? [this.currentArena]
         : [];
 
-      const arenaFramePairs = withoutNils(
-        arenasToSearch.map((arena) => {
-          const baseFrame = getArenaFrames(arena).find(
-            (frame) => frame.container.component === component
-          );
+      let match: { arena: AnyArena; frame: ArenaFrame } | undefined;
+      for (const arena of arenasToSearch) {
+        const baseFrame = getArenaFrames(arena).find(
+          (frame) => frame.container.component === component
+        );
+        if (baseFrame) {
           const frame = variants?.length
             ? this.getArenaFrameForSetOfVariants(arena, variants)?.frame
             : baseFrame;
-          return frame ? { arena, frame } : undefined;
-        })
-      );
+          if (frame) {
+            match = { arena, frame };
+            break;
+          }
+        }
+      }
 
-      const match = arenaFramePairs[0];
       if (match) {
         const { arena, frame } = match;
 
