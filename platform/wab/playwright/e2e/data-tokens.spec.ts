@@ -1,4 +1,6 @@
 import { expect } from "@playwright/test";
+import * as fs from "fs";
+import * as pathModule from "path";
 import { test } from "../fixtures/test";
 import { goToProject } from "../utils/studio-utils";
 
@@ -44,8 +46,17 @@ const DATA_TOKENS = [
 test.describe("data-tokens", () => {
   let projectId: string;
   test.beforeEach(async ({ apiClient, page }) => {
-    projectId = await apiClient.setupNewProject({ name: "data-tokens" });
-    await goToProject(page, `/projects/${projectId}?dataTokens=true`);
+    // We need to setup a project with the strapi hostless package to test data tokens created from server queries in one of the below test cases
+    projectId = await apiClient.setupProjectWithHostlessPackages({
+      hostLessPackagesInfo: {
+        name: "strapi",
+        npmPkg: ["@plasmicpkgs/strapi"],
+      },
+    });
+    await goToProject(
+      page,
+      `/projects/${projectId}?dataTokens=true&plexus=true&serverQueries=true`
+    );
   });
 
   test.afterEach(async ({ apiClient }) => {
@@ -56,7 +67,7 @@ test.describe("data-tokens", () => {
     );
   });
 
-  test("Data tokens can be created and used in dynamic values", async ({
+  test("Data tokens can be created from left panel and used in dynamic values", async ({
     models,
   }) => {
     await models.studio.leftPanel.createNewPage("TestPage");
@@ -100,6 +111,267 @@ test.describe("data-tokens", () => {
       // await models.studio.withinLiveMode(async (liveFrame) => {
       // });
     }
+  });
+
+  test.describe("Data tokens can be created by right-clicking user input controls", () => {
+    test("can create data token from text content", async ({
+      models,
+      page,
+    }) => {
+      await models.studio.leftPanel.createNewPage("TestPage");
+
+      await models.studio.leftPanel.insertText();
+      await models.studio.renameTreeNode("welcome-text");
+      // set a static text content
+      await models.studio.rightPanel.textContentButton.click();
+      await models.studio.page.keyboard.insertText("Welcome back!");
+      await models.studio.page.keyboard.press("Escape");
+      const targetElement = models.studio.rightPanel.frame.locator(
+        '[data-test-id="text-content"]'
+      );
+      // right-click on the text content to create a data token
+      await targetElement.locator("label").click({ button: "right" });
+      await models.studio.createDataTokenButton.click();
+      const dataTokenPopover = await models.studio.getDataTokenPopoverForTarget(
+        targetElement
+      );
+
+      const expectedType = "Text";
+      const expectedValue = "Welcome back!";
+      const expectedJsName = "welcomeText";
+      const expectedName = "Welcome text";
+      // the data token name and value should be pre-filled
+      await dataTokenPopover.expectDataToken({
+        expectedName,
+        expectedJsName,
+        expectedType,
+        expectedValue,
+      });
+
+      const newExpectedName = expectedName + " 2";
+      const newExpectedJsName = expectedJsName + "2";
+      await dataTokenPopover.getTitleInput().fill(newExpectedName);
+      await dataTokenPopover.getTitleInput().blur();
+
+      await dataTokenPopover.expectDataToken({
+        expectedName: newExpectedName,
+        expectedJsName: newExpectedJsName,
+        expectedType,
+        expectedValue,
+      });
+
+      await page.waitForTimeout(500);
+      await dataTokenPopover.close();
+
+      await models.studio.leftPanel.assertDataTokenExists("Welcome Text 2");
+    });
+
+    test("can create data token from component props", async ({
+      models,
+      page,
+    }) => {
+      const PROP_INFO = [
+        {
+          displayName: "ARIA label",
+          jsName: "ariaLabel",
+          type: "Text",
+          newTextValue: "Call to action",
+        },
+        {
+          displayName: "Output text",
+          jsName: "outputText",
+          type: "Text",
+          initialValue: "",
+          editDataTokenValue: "output value",
+        },
+        {
+          displayName: "Initial value",
+          jsName: "initialValue",
+          type: "Number",
+          initialValue: "50",
+        },
+        {
+          displayName: "Show label",
+          jsName: "showLabel",
+          type: "Code Expression",
+          initialValue: "true",
+        },
+        {
+          displayName: "Show description",
+          jsName: "showDescription",
+          type: "Code Expression",
+          initialValue: "false",
+        },
+      ];
+      await models.studio.leftPanel.createNewPage("TestPage");
+      await models.studio.leftPanel.insertNode("Slider");
+
+      for (const propInfo of PROP_INFO) {
+        const propRow = await models.studio.rightPanel.frame.locator(
+          `[data-test-id="prop-editor-row-${propInfo.displayName}"]`
+        );
+
+        await propRow.scrollIntoViewIfNeeded();
+
+        const prefilledValue = propInfo.initialValue ?? propInfo.newTextValue;
+        if (propInfo.newTextValue) {
+          await propRow
+            .locator(`[data-plasmic-prop="${propInfo.displayName}"]`)
+            .click();
+          await models.studio.page.keyboard.type(propInfo.newTextValue);
+          await models.studio.page.keyboard.press("Enter");
+        }
+        // right-click on the text content to create a data token
+        await propRow.locator("label").nth(0).click({ button: "right" });
+        await models.studio.createDataTokenButton.click();
+        const dataTokenPopover =
+          await models.studio.getDataTokenPopoverForTarget(propRow);
+
+        // the data token name and value should be pre-filled
+        const isCodeType = propInfo.type === "Code Expression";
+        await dataTokenPopover.expectDataToken({
+          expectedName: propInfo.displayName,
+          expectedType: propInfo.type,
+          expectedValue: prefilledValue,
+          expectedJsName: propInfo.jsName,
+          isCodeType,
+        });
+
+        if (!isCodeType && propInfo.editDataTokenValue) {
+          const input = dataTokenPopover.getValueInput();
+          await input.type(propInfo.editDataTokenValue);
+          await expect(input).toHaveValue(propInfo.editDataTokenValue);
+        }
+
+        const newExpectedName = propInfo.displayName + " 2";
+        const newExpectedJsName = propInfo.jsName + "2";
+        await dataTokenPopover.getTitleInput().fill(newExpectedName);
+        await dataTokenPopover.getTitleInput().blur();
+        await dataTokenPopover.expectDataToken({
+          expectedName: newExpectedName,
+          expectedJsName: newExpectedJsName,
+          expectedType: propInfo.type,
+          expectedValue: propInfo.editDataTokenValue ?? prefilledValue,
+          isCodeType,
+        });
+
+        await page.waitForTimeout(500);
+        await dataTokenPopover.close();
+
+        await models.studio.leftPanel.assertDataTokenExists(newExpectedName);
+      }
+    });
+
+    test("can create data token from server query", async ({
+      models,
+      page,
+    }) => {
+      const mockStrapiHost = "https://mock-strapi-host.com";
+      const mockStrapiCollection = "restaurants";
+      // Mock the specific Strapi restaurants endpoint
+      await page.route(
+        `${mockStrapiHost}/api/${mockStrapiCollection}*`,
+        async (route) => {
+          const fixturePath = pathModule.join(
+            __dirname,
+            "../../cypress/fixtures/strapi-v5-restaurants.json"
+          );
+          const fixtureData = JSON.parse(fs.readFileSync(fixturePath, "utf-8"));
+          await route.fulfill({
+            status: 200,
+            contentType: "application/json",
+            body: JSON.stringify(fixtureData),
+          });
+        }
+      );
+
+      await models.studio.leftPanel.createNewPage("TestPage");
+      await models.studio.rightPanel.clickPageData();
+
+      await models.studio.rightPanel.addServerQueryButton.click();
+      await models.studio.rightPanel.serverQueriesSection
+        .locator(`[data-plasmic-role="labeled-item"]`)
+        .last()
+        .click();
+      const serverQueryModal = models.studio.serverQueryBottomModal;
+      await serverQueryModal.waitFor();
+      const previewResult = serverQueryModal.locator(".code-preview-inner");
+
+      await expect(previewResult).not.toContainText("data: Array(7)");
+      const strapiHostRow = serverQueryModal.locator(
+        `[data-test-id="prop-editor-row-strapiHost"]`
+      );
+      const strapiCollectionRow = serverQueryModal.locator(
+        `[data-test-id="prop-editor-row-collection"]`
+      );
+      const strapiHostInput = strapiHostRow.locator(
+        `[data-plasmic-prop="strapiHost"]`
+      );
+
+      await strapiHostInput.click();
+      await models.studio.page.keyboard.type(mockStrapiHost);
+      await strapiHostInput.click({ button: "right" });
+
+      await models.studio.createDataTokenButton.click();
+      let dataTokenPopover = await models.studio.getDataTokenPopoverForTarget(
+        strapiHostRow
+      );
+
+      const expectedName = "Strapi host";
+      const expectedJsName = "strapiHost";
+      const expectedType = "Text";
+      await dataTokenPopover.expectDataToken({
+        expectedName,
+        expectedJsName,
+        expectedType,
+        expectedValue: mockStrapiHost,
+      });
+      const newExpectedName = expectedName + " 2";
+      const newExpectedJsName = expectedJsName + "2";
+      await dataTokenPopover.getTitleInput().fill(newExpectedName);
+      await dataTokenPopover.getTitleInput().blur();
+      await dataTokenPopover.expectDataToken({
+        expectedName: newExpectedName,
+        expectedJsName: newExpectedJsName,
+        expectedType,
+        expectedValue: mockStrapiHost,
+      });
+      await page.waitForTimeout(500);
+      await dataTokenPopover.close();
+
+      const strapiCollectionInput = strapiCollectionRow.locator(
+        `[data-plasmic-prop="collection"]`
+      );
+      await strapiCollectionInput.click();
+      await page.waitForTimeout(200);
+      await models.studio.page.keyboard.type(mockStrapiCollection);
+      await strapiCollectionInput.click({ button: "right" });
+      await models.studio.createDataTokenButton.click();
+      dataTokenPopover = await models.studio.getDataTokenPopoverForTarget(
+        strapiCollectionRow
+      );
+      await dataTokenPopover.expectDataToken({
+        expectedName: "Collection",
+        expectedType: "Text",
+        expectedValue: mockStrapiCollection,
+        expectedJsName: "collection",
+      });
+      await page.waitForTimeout(500);
+      await dataTokenPopover.close();
+      const strapiCollectionCodeInput =
+        strapiCollectionRow.locator(".code-editor-input");
+      await strapiCollectionCodeInput.waitFor({ state: "visible" });
+      await expect(strapiCollectionCodeInput).toHaveText(
+        `$dataTokens.collection`
+      );
+
+      await serverQueryModal.locator("button").getByText("Execute").click();
+      await expect(previewResult).toContainText("data: Array(7)");
+      await serverQueryModal.locator("button").getByText("Save").click();
+      await serverQueryModal.waitFor({ state: "hidden" });
+      await models.studio.leftPanel.assertDataTokenExists(newExpectedName);
+      await models.studio.leftPanel.assertDataTokenExists("Collection");
+    });
   });
 });
 

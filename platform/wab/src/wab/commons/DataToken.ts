@@ -12,6 +12,7 @@ import { FinalToken, MutableToken } from "@/wab/shared/core/tokens";
 import { tryEvalExpr } from "@/wab/shared/eval";
 import { DataToken, Site } from "@/wab/shared/model/classes";
 import { mkMetaName } from "@plasmicapp/host";
+import { upperFirst } from "lodash";
 import type { Opaque } from "type-fest";
 
 export type DataTokenType = "number" | "string" | "code";
@@ -190,4 +191,11 @@ export function extractDataTokenUsages(
     components: usingComponents.filter((c) => !isFrameComponent(c)),
     frames: usingFrames,
   };
+}
+
+/**
+ * Generates an appropriate name for a data token, created specifically for a prop by right-clicking it
+ */
+export function generateDataTokenName(propName: string) {
+  return upperFirst(propName.replace(/-/g, " "));
 }

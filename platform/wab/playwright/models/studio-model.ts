@@ -64,10 +64,17 @@ export class StudioModel extends BaseModel {
     'input[data-test-id="extract-component-name"]'
   );
 
+  readonly serverQueryBottomModal: Locator = this.frame.locator(
+    '[data-test-id="server-query-bottom-modal"]'
+  );
   readonly newDropdownItem = this.frame.locator(".ant-dropdown-menu-item");
   readonly newArenaInput = this.frame.locator('[data-test-id="prompt"]');
   readonly commentsTab = this.frame.locator(".comments-tab");
   readonly modal = this.frame.locator(".ant-modal");
+  readonly propsPopover = this.frame.locator("#props-popover");
+  readonly closePopoverFrameButton = this.frame.locator(
+    "[data-test-id='close-popover-frame']"
+  );
   readonly confirmButton = this.frame.locator('[data-test-id="confirm"]');
   readonly publishButton: Locator = this.frame.locator("#topbar-publish-btn");
   readonly saveIndicator: Locator = this.frame.locator(
@@ -118,6 +125,8 @@ export class StudioModel extends BaseModel {
   );
   readonly useDynamicValueButton: Locator =
     this.frame.getByText("Use dynamic value");
+  readonly createDataTokenButton: Locator =
+    this.frame.getByText("Create data token");
   readonly componentListItem: Locator = this.frame.locator(
     '[data-test-id^="listitem-component-"]'
   );
@@ -1009,5 +1018,92 @@ export class StudioModel extends BaseModel {
     await deleteMenuItem.click();
     await this.page.locator(`[data-test-id="confirm"]`).click();
     await this.page.getByRole("dialog").waitFor({ state: "hidden" });
+  }
+
+  /**
+   * Helper for interacting with the data token popover (PopoverFrame).
+   * This is used when creating data tokens via right-click context menu.
+   */
+  async getDataTokenPopoverForTarget(targetElement: Locator) {
+    const popover = this.propsPopover;
+    await popover.waitFor({ state: "visible" });
+
+    const titleInput = popover.locator("[class*='propTitle'] input");
+    const contentContainer = popover.locator("[class*='contentWrap']");
+
+    return {
+      getTitleInput: () => titleInput,
+      getTypeButton: () =>
+        contentContainer.locator(`[data-plasmic-role="labeled-item"] button`),
+
+      /**
+       * Get the value input locator (for non-code types)
+       */
+      getValueInput: () =>
+        contentContainer.locator(`[data-plasmic-role="labeled-item"] input`),
+
+      /**
+       * Get the value code editor locator (for code type)
+       */
+      getValueCodeEditor: () =>
+        contentContainer.locator(
+          `[data-plasmic-role="labeled-item"] .code-editor-input`
+        ),
+
+      /**
+       * Check that the popover has the expected title, type, and value
+       */
+      expectDataToken: async (options: {
+        expectedName: string;
+        expectedType: string;
+        expectedValue: string;
+        expectedJsName: string;
+        isCodeType?: boolean;
+      }) => {
+        const {
+          expectedName,
+          expectedType,
+          expectedValue,
+          expectedJsName,
+          isCodeType,
+        } = options;
+
+        await test.step(`Expect data token ${expectedName}: ${expectedType} = ${expectedValue}`, async () => {
+          await expect(titleInput).toHaveValue(expectedName);
+          await expect(
+            contentContainer.locator(
+              `[data-plasmic-role="labeled-item"] button`
+            )
+          ).toHaveText(expectedType);
+          if (isCodeType) {
+            await expect(
+              contentContainer.locator(
+                `[data-plasmic-role="labeled-item"] .code-editor-input`
+              )
+            ).toHaveText(expectedValue);
+          } else {
+            await expect(
+              contentContainer.locator(
+                `[data-plasmic-role="labeled-item"] input`
+              )
+            ).toHaveValue(expectedValue);
+          }
+          await expect(
+            targetElement
+              .locator(".code-editor-input")
+              .getByText(`$dataTokens.${expectedJsName}`)
+          ).toBeVisible();
+        });
+      },
+
+      /**
+       * Close the popover
+       */
+      close: async () => {
+        await popover.waitFor({ state: "visible" });
+        await this.closePopoverFrameButton.click();
+        await popover.waitFor({ state: "hidden" });
+      },
+    };
   }
 }

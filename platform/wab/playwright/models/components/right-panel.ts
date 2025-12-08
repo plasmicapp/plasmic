@@ -14,6 +14,12 @@ export class RightPanel extends BaseModel {
   readonly actionsDropdownButton: Locator = this.frame.locator(
     '[data-plasmic-prop="action-name"]'
   );
+  readonly addServerQueryButton: Locator = this.frame.locator(
+    '[id="server-queries-add-btn"]'
+  );
+  readonly serverQueriesSection: Locator = this.frame.locator(
+    '[id="server-queries-section"]'
+  );
   readonly stateButton: Locator = this.frame.locator(
     '[data-plasmic-prop="variable"]'
   );
@@ -32,6 +38,7 @@ export class RightPanel extends BaseModel {
   readonly closeSidebarButton: Locator = this.frame.locator(
     '[data-test-id="close-sidebar-modal"]'
   );
+  readonly sidebarModal: Locator = this.frame.locator('[id="sidebar-modal"]');
   readonly designTabButton: Locator = this.frame.locator(
     'button[data-test-tabkey="style"]'
   );

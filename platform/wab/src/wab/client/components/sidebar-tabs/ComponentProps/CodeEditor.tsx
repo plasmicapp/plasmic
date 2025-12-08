@@ -1,5 +1,8 @@
 import type { FullCodeEditor } from "@/wab/client/components/coding/FullCodeEditor";
-import { SidebarModal } from "@/wab/client/components/sidebar/SidebarModal";
+import {
+  SidebarModal,
+  useMaybeSidebarModalContext,
+} from "@/wab/client/components/sidebar/SidebarModal";
 import {
   FileUploadLink,
   ObserverLoadable,
@@ -138,7 +141,11 @@ export const CodeEditor = observer(function CodeEditor(props: {
   const [fullscreen, setFullscreen] = React.useState(defaultFullscreen);
   const editor = React.useRef<FullCodeEditor>(null);
   const [draft, setDraft] = React.useState<string>();
-  const CodeModal = fullscreen ? Modal : SidebarModal;
+
+  const sidebarModalContext = useMaybeSidebarModalContext();
+  const useSidebarModal = sidebarModalContext && !fullscreen;
+
+  const CodeModal = useSidebarModal ? SidebarModal : Modal;
   const codeModalRef = React.useRef(CodeModal);
   codeModalRef.current = CodeModal;
   let evaluatedValue: string | null | undefined = "";
@@ -202,17 +209,17 @@ export const CodeEditor = observer(function CodeEditor(props: {
       return true;
     }
   };
-  const modalProps = fullscreen
+  const modalProps = useSidebarModal
     ? {
+        show,
+        onClose: onCancel,
+      }
+    : {
         visible: show,
         width: 1024,
         bodyStyle: { overflowX: "scroll" as any },
         footer: null,
         onCancel,
-      }
-    : {
-        show,
-        onClose: onCancel,
       };
 
   return (

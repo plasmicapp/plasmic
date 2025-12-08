@@ -782,6 +782,26 @@ export function tryExtractJson(_expr: Expr): JsonValue | undefined {
         ? expr.text[0]
         : undefined
     )
+    .when(CompositeExpr, (expr): JsonValue | undefined => {
+      try {
+        const base = jsonParse(expr.hostLiteral);
+        // Only proceed if base is an object or array (not null or primitive)
+        if (typeof base !== "object" || base === null) {
+          return undefined;
+        }
+        // Check if all substitutions can be extracted as JSON
+        for (const [path, subexpr] of Object.entries(expr.substitutions)) {
+          const extracted = tryExtractJson(subexpr);
+          if (extracted === undefined) {
+            return undefined;
+          }
+          set(base, path, extracted);
+        }
+        return base;
+      } catch {
+        return undefined;
+      }
+    })
     .elseUnsafe(() => undefined);
 }
 

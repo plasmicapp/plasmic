@@ -17,6 +17,7 @@ import { PropValueEditor } from "@/wab/client/components/sidebar-tabs/PropValueE
 import WarningIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__WarningTriangleSvg";
 
 import { extractExpectedValues } from "@/wab/client/components/sidebar-tabs/DataBinding/DataPickerUtil";
+import { DataTokenEditModal } from "@/wab/client/components/sidebar/DataTokenEditModal";
 import {
   getValueSetState,
   InvariantablePropTooltip,
@@ -34,6 +35,11 @@ import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { StandardMarkdown } from "@/wab/client/utils/StandardMarkdown";
 import { HighlightBlinker } from "@/wab/commons/components/HighlightBlinker";
+import {
+  DataTokenType,
+  dataTypes,
+  generateDataTokenName,
+} from "@/wab/commons/DataToken";
 import { DeepReadonly } from "@/wab/commons/types";
 import {
   ensurePropTypeToWabType,
@@ -47,6 +53,7 @@ import {
   StudioPropType,
   wabTypeToPropType,
 } from "@/wab/shared/code-components/code-components";
+import { toVarName } from "@/wab/shared/codegen/util";
 import {
   assert,
   ensure,
@@ -116,6 +123,7 @@ import {
   CustomCode,
   CustomFunctionExpr,
   DataSourceOpExpr,
+  DataToken,
   EventHandler,
   Expr,
   FunctionArg,
@@ -651,9 +659,15 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
     getExprTransformationBasedOnPropType(propType);
   const expr = maybeUnwrapExpr(origExpr);
 
+  const exprRef = React.useRef(expr);
+  exprRef.current = expr;
+
   const studioCtx = useStudioCtx();
   const [newParamModalVisible, setNewParamModalVisible] = React.useState(false);
   const [isDataPickerVisible, setIsDataPickerVisible] = React.useState(false);
+  const [editDataToken, setEditDataToken] = React.useState<
+    DataToken | undefined
+  >(undefined);
   const disabledDynamicValue =
     props.disableDynamicValue ??
     (isDynamicValueDisabledInPropType(propType) ||
@@ -663,6 +677,7 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
   );
   const layout = props.layout ?? getPropTypeLayout(propType);
   const wabType = ensurePropTypeToWabType(studioCtx.site, propType);
+  const propTypeType = getPropTypeType(propType);
   const ownerComponent = tpl && $$$(tpl).owningComponent();
   const referencedParam =
     ownerComponent && expr && !disableLinkToProp
@@ -716,14 +731,48 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
   const showDynamicValueButton =
     allowDynamicValue && !studioCtx.contentEditorMode && !isCustomCode;
 
-  function switchToDynamicValue() {
+  function switchToDynamicValue(dataToken?: DataToken) {
+    const currentExpr = exprRef.current;
     const newExpr = new ObjectPath({
-      path: ["undefined"],
-      fallback: expr ? clone(expr) : codeLit(undefined),
+      path: dataToken
+        ? ["$dataTokens", toVarName(dataToken.name)]
+        : ["undefined"],
+      fallback: currentExpr ? clone(currentExpr) : codeLit(undefined),
     });
     onChange(maybeWrapExpr(newExpr));
     setShowFallback(true);
-    setIsDataPickerVisible(true);
+    setIsDataPickerVisible(!dataToken);
+  }
+
+  async function createDataToken() {
+    const currentExpr = exprRef.current;
+    const dataType: DataTokenType =
+      propTypeType === "number" || propTypeType === "string"
+        ? propTypeType
+        : "code";
+    const defaultValue =
+      propTypeType === "boolean"
+        ? "false"
+        : dataTypes[dataType].defaultSerializedValue;
+    const isExprDefined =
+      currentExpr &&
+      !(isKnownCustomCode(currentExpr) && currentExpr.code === "undefined");
+    await studioCtx.change(({ success }) => {
+      let tokenValue = defaultValue;
+      if (isExprDefined) {
+        const extractedJson = tryExtractJson(currentExpr);
+        if (extractedJson !== undefined) {
+          tokenValue = JSON.stringify(extractedJson);
+        }
+      }
+      const token = studioCtx.tplMgr().addDataToken({
+        name: generateDataTokenName(label),
+        value: tokenValue,
+      });
+      switchToDynamicValue(token);
+      setEditDataToken(token);
+      return success();
+    });
   }
 
   const contextMenu = (
@@ -812,6 +861,21 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
             }}
           >
             Use dynamic value
+          </Menu.Item>
+        )}
+      {!readOnly &&
+        allowDynamicValue &&
+        !isCustomCode &&
+        !isExprValuePropType(propType) &&
+        !(isKnownTemplatedString(expr) && hasDynamicParts(expr)) && (
+          <Menu.Item
+            id="create-data-token-btn"
+            key={"customCode"}
+            onClick={() => {
+              void createDataToken();
+            }}
+          >
+            Create data token
           </Menu.Item>
         )}
       {!readOnly &&
@@ -950,212 +1014,229 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
     );
   };
 
-  return (
-    <div className="panel-row" style={{ position: "relative" }}>
-      <div className="flex flex-col fill-width">
-        <PropValueEditorContext.Provider
-          value={{
-            ...currValueEditorCtx,
-            env: canvasEnv,
-            schema,
-            exprCtx,
-          }}
-        >
-          {invalidArg ? (
-            <WarnInvalid message={getInvalidArgErrorMessage(invalidArg)} />
-          ) : invalidVal ? (
-            <WarnInvalid message="Prop value not allowed" />
-          ) : null}
-          <LabeledItemRow
-            data-test-id={`prop-editor-row-${attr ?? label}`}
-            label={
-              <div className={about ? "pointer" : ""}>
-                {isPlainObjectPropType(propType) &&
-                hackyCast(propType).required ? (
-                  <span className="required-prop">{label}</span>
-                ) : (
-                  label
-                )}
-                {about ? (
-                  <InlineIcon>
-                    &thinsp;
-                    <Icon icon={InfoIcon} className="dimfg" />
-                  </InlineIcon>
-                ) : null}
-              </div>
-            }
-            subtitle={subtitle}
-            definedIndicator={definedIndicator}
-            layout={layout}
-            menu={!isMenuEmpty(contextMenu) ? contextMenu : undefined}
-            noMenuButton
-            icon={icon}
-            tooltip={
-              props.tooltip ? (
-                props.tooltip
-              ) : about ? (
-                <>
-                  <strong>{label}</strong>: {about}
-                </>
-              ) : undefined
-            }
-          >
-            <div className="flex-col fill-width flex-align-start">
-              <ContextMenuIndicator
-                menu={!isMenuEmpty(contextMenu) ? contextMenu : undefined}
-                showDynamicValueButton={showDynamicValueButton}
-                tooltip={
-                  isKnownTemplatedString(expr)
-                    ? "Append dynamic value"
-                    : undefined
-                }
-                onIndicatorClickDefault={() => {
-                  switchToDynamicValue();
-                }}
-                className="qb-custom-widget"
-                fullWidth={!isBooleanPropType(propType) || isCustomCode}
-              >
-                {referencedParam && !disableLinkToProp
-                  ? renderEditorForReferencedParam()
-                  : isCustomCode &&
-                    !(isKnownQueryData(wabType) && isQuery(expr)) &&
-                    !disabledDynamicValue
-                  ? renderDataPickerEditorForDynamicValue()
-                  : renderDefaultEditor()}
-              </ContextMenuIndicator>
-              {isPlainObjectPropType(propType) &&
-                "helpText" in propType &&
-                propType.helpText !== undefined && (
-                  <div className="fill-width dimfg gap-xsm">
-                    <StandardMarkdown>
-                      {propType.helpText.trim()}
-                    </StandardMarkdown>
-                  </div>
-                )}
-              {expr && isKnownTemplatedString(expr) && evaluated && (
-                <ValuePreview val={evaluated.val} err={evaluated.err} />
-              )}
-            </div>
-          </LabeledItemRow>
-          {newParamModalVisible && ownerComponent && viewCtx && (
-            <ComponentPropModal
-              studioCtx={studioCtx}
-              suggestedName={label}
-              component={ownerComponent}
-              visible={newParamModalVisible}
-              type={wabType}
-              onFinish={(newParam) => {
-                setNewParamModalVisible(false);
-                if (!newParam) {
-                  return;
-                }
-                viewCtx.change(() => {
-                  newParam.description = "metaProp";
-                  const _expr = new VarRef({
-                    variable: newParam.variable,
-                  });
-                  onChange(_expr);
-                });
-              }}
-            />
-          )}
-          {isPageHref(expr) && (
-            <PageHrefRows
-              expr={expr}
-              exprCtx={exprCtx}
-              canvasEnv={canvasEnv}
-              definedIndicator={definedIndicator}
-              disableLinkToProp={props.disableLinkToProp}
-              disableDynamicValue={props.disableDynamicValue}
-              maybeWrapExpr={maybeWrapExpr}
-              onChange={onChange}
-            />
-          )}
-          {isCustomCode &&
-            !(isKnownQueryData(wabType) && isQuery(expr)) &&
-            allowDynamicValue &&
-            showFallback &&
-            !disableFallback &&
-            viewCtx &&
-            (() => {
-              // If we were displaying a "whole" custom code expression, then now we need to show the fallback.
-              const codeExpr = ensureInstance(expr, CustomCode, ObjectPath);
-              const [fallbackLit, editable] = extractLitFromMaybeRenderable(
-                codeExpr.fallback,
-                viewCtx
-              );
-              return (
-                <FallbackEditor
-                  isSet={isFallbackSet(codeExpr)}
-                  onUnset={() => {
-                    viewCtx.change(() => {
-                      const newExpr = isKnownCustomCode(codeExpr)
-                        ? new CustomCode({
-                            code: codeExpr.code,
-                            fallback: undefined,
-                          })
-                        : new ObjectPath({
-                            path: codeExpr.path,
-                            fallback: undefined,
-                          });
-                      onChange(maybeWrapExpr(newExpr));
-                    });
-                  }}
-                >
-                  <PropValueEditor
-                    attr={attr}
-                    propType={propType}
-                    value={fallbackLit}
-                    label={label}
-                    disabled={!editable}
-                    valueSetState={fallbackLit ? "isSet" : "isUnset"}
-                    component={ownerComponent}
-                    // Don't show default value hint for fallback
-                    hideDefaultValueHint
-                    onChange={(val) => {
-                      if (fallbackLit == null && val == null) {
-                        return;
-                      }
+  const panelRowRef = React.useRef<HTMLDivElement>(null);
 
+  return (
+    <>
+      {editDataToken && (
+        <DataTokenEditModal
+          studioCtx={studioCtx}
+          token={editDataToken}
+          onClose={() => setEditDataToken(undefined)}
+          triggerElement={panelRowRef.current ?? undefined}
+          popoverFrameValuePath={controlExtras.path}
+        />
+      )}
+      <div
+        ref={panelRowRef}
+        className="panel-row"
+        style={{ position: "relative" }}
+      >
+        <div className="flex flex-col fill-width">
+          <PropValueEditorContext.Provider
+            value={{
+              ...currValueEditorCtx,
+              env: canvasEnv,
+              schema,
+              exprCtx,
+            }}
+          >
+            {invalidArg ? (
+              <WarnInvalid message={getInvalidArgErrorMessage(invalidArg)} />
+            ) : invalidVal ? (
+              <WarnInvalid message="Prop value not allowed" />
+            ) : null}
+            <LabeledItemRow
+              data-test-id={`prop-editor-row-${attr ?? label}`}
+              label={
+                <div className={about ? "pointer" : ""}>
+                  {isPlainObjectPropType(propType) &&
+                  hackyCast(propType).required ? (
+                    <span className="required-prop">{label}</span>
+                  ) : (
+                    label
+                  )}
+                  {about ? (
+                    <InlineIcon>
+                      &thinsp;
+                      <Icon icon={InfoIcon} className="dimfg" />
+                    </InlineIcon>
+                  ) : null}
+                </div>
+              }
+              subtitle={subtitle}
+              definedIndicator={definedIndicator}
+              layout={layout}
+              menu={!isMenuEmpty(contextMenu) ? contextMenu : undefined}
+              noMenuButton
+              icon={icon}
+              tooltip={
+                props.tooltip ? (
+                  props.tooltip
+                ) : about ? (
+                  <>
+                    <strong>{label}</strong>: {about}
+                  </>
+                ) : undefined
+              }
+            >
+              <div className="flex-col fill-width flex-align-start">
+                <ContextMenuIndicator
+                  menu={!isMenuEmpty(contextMenu) ? contextMenu : undefined}
+                  showDynamicValueButton={showDynamicValueButton}
+                  tooltip={
+                    isKnownTemplatedString(expr)
+                      ? "Append dynamic value"
+                      : undefined
+                  }
+                  onIndicatorClickDefault={() => {
+                    switchToDynamicValue();
+                  }}
+                  className="qb-custom-widget"
+                  fullWidth={!isBooleanPropType(propType) || isCustomCode}
+                >
+                  {referencedParam && !disableLinkToProp
+                    ? renderEditorForReferencedParam()
+                    : isCustomCode &&
+                      !(isKnownQueryData(wabType) && isQuery(expr)) &&
+                      !disabledDynamicValue
+                    ? renderDataPickerEditorForDynamicValue()
+                    : renderDefaultEditor()}
+                </ContextMenuIndicator>
+                {isPlainObjectPropType(propType) &&
+                  "helpText" in propType &&
+                  propType.helpText !== undefined && (
+                    <div className="fill-width dimfg gap-xsm">
+                      <StandardMarkdown>
+                        {propType.helpText.trim()}
+                      </StandardMarkdown>
+                    </div>
+                  )}
+                {expr && isKnownTemplatedString(expr) && evaluated && (
+                  <ValuePreview val={evaluated.val} err={evaluated.err} />
+                )}
+              </div>
+            </LabeledItemRow>
+            {newParamModalVisible && ownerComponent && viewCtx && (
+              <ComponentPropModal
+                studioCtx={studioCtx}
+                suggestedName={label}
+                component={ownerComponent}
+                visible={newParamModalVisible}
+                type={wabType}
+                onFinish={(newParam) => {
+                  setNewParamModalVisible(false);
+                  if (!newParam) {
+                    return;
+                  }
+                  viewCtx.change(() => {
+                    newParam.description = "metaProp";
+                    const _expr = new VarRef({
+                      variable: newParam.variable,
+                    });
+                    onChange(_expr);
+                  });
+                }}
+              />
+            )}
+            {isPageHref(expr) && (
+              <PageHrefRows
+                expr={expr}
+                exprCtx={exprCtx}
+                canvasEnv={canvasEnv}
+                definedIndicator={definedIndicator}
+                disableLinkToProp={props.disableLinkToProp}
+                disableDynamicValue={props.disableDynamicValue}
+                maybeWrapExpr={maybeWrapExpr}
+                onChange={onChange}
+              />
+            )}
+            {isCustomCode &&
+              !(isKnownQueryData(wabType) && isQuery(expr)) &&
+              allowDynamicValue &&
+              showFallback &&
+              !disableFallback &&
+              viewCtx &&
+              (() => {
+                // If we were displaying a "whole" custom code expression, then now we need to show the fallback.
+                const codeExpr = ensureInstance(expr, CustomCode, ObjectPath);
+                const [fallbackLit, editable] = extractLitFromMaybeRenderable(
+                  codeExpr.fallback,
+                  viewCtx
+                );
+                return (
+                  <FallbackEditor
+                    isSet={isFallbackSet(codeExpr)}
+                    onUnset={() => {
                       viewCtx.change(() => {
-                        const fallbackExpr = updateOrCreateExpr(
-                          expr,
-                          wabType,
-                          val,
-                          tpl,
-                          viewCtx
-                        );
                         const newExpr = isKnownCustomCode(codeExpr)
                           ? new CustomCode({
                               code: codeExpr.code,
-                              fallback: fallbackExpr,
+                              fallback: undefined,
                             })
                           : new ObjectPath({
                               path: codeExpr.path,
-                              fallback: fallbackExpr,
+                              fallback: undefined,
                             });
                         onChange(maybeWrapExpr(newExpr));
                       });
                     }}
-                    onDelete={onDelete}
-                    controlExtras={controlExtras}
-                  />
-                </FallbackEditor>
-              );
-            })()}
-        </PropValueEditorContext.Provider>
-        {shouldHighlight && (
-          <HighlightBlinker
-            doScroll
-            onFinish={() => {
-              if (viewCtx) {
-                viewCtx.highlightParam = undefined;
-              }
-            }}
-          />
-        )}
+                  >
+                    <PropValueEditor
+                      attr={attr}
+                      propType={propType}
+                      value={fallbackLit}
+                      label={label}
+                      disabled={!editable}
+                      valueSetState={fallbackLit ? "isSet" : "isUnset"}
+                      component={ownerComponent}
+                      // Don't show default value hint for fallback
+                      hideDefaultValueHint
+                      onChange={(val) => {
+                        if (fallbackLit == null && val == null) {
+                          return;
+                        }
+
+                        viewCtx.change(() => {
+                          const fallbackExpr = updateOrCreateExpr(
+                            expr,
+                            wabType,
+                            val,
+                            tpl,
+                            viewCtx
+                          );
+                          const newExpr = isKnownCustomCode(codeExpr)
+                            ? new CustomCode({
+                                code: codeExpr.code,
+                                fallback: fallbackExpr,
+                              })
+                            : new ObjectPath({
+                                path: codeExpr.path,
+                                fallback: fallbackExpr,
+                              });
+                          onChange(maybeWrapExpr(newExpr));
+                        });
+                      }}
+                      onDelete={onDelete}
+                      controlExtras={controlExtras}
+                    />
+                  </FallbackEditor>
+                );
+              })()}
+          </PropValueEditorContext.Provider>
+          {shouldHighlight && (
+            <HighlightBlinker
+              doScroll
+              onFinish={() => {
+                if (viewCtx) {
+                  viewCtx.highlightParam = undefined;
+                }
+              }}
+            />
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 

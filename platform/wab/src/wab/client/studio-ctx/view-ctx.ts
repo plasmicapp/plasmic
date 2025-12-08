@@ -100,6 +100,7 @@ import {
   ArenaFrame,
   Component,
   CustomFunction,
+  DataToken,
   Param,
   RawText,
   RichText,
@@ -209,6 +210,7 @@ export class ViewCtx extends WithDbCtx {
   }
 
   _triggerEditingTextDataPicker = observable.box<boolean | null>(null);
+  _triggerCreatingTextDataToken = observable.box<DataToken | null>(null);
   _editingTextContext = observable.box<EditingTextContext | null>(null);
 
   private _xFocusedDomElts = observable.box<(JQuery | null)[]>([], {
@@ -967,6 +969,14 @@ export class ViewCtx extends WithDbCtx {
 
   setTriggerEditingTextDataPicker(x: boolean | null) {
     this._triggerEditingTextDataPicker.set(x);
+  }
+
+  setTriggerCreatingTextDataToken(x: DataToken | null) {
+    this._triggerCreatingTextDataToken.set(x);
+  }
+
+  getTriggerCreatingTextDataToken() {
+    return this._triggerCreatingTextDataToken.get();
   }
 
   setEditingTextContext(x: EditingTextContext | null) {

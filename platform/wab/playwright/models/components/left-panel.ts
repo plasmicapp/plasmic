@@ -127,6 +127,16 @@ export class LeftPanel extends BaseModel {
     }
   }
 
+  async assertDataTokenExists(name: string) {
+    await test.step(`Assert data token ${name} exists`, async () => {
+      await this.switchToDataTokensTab();
+      await this.frame
+        .locator("[class*='DataTokensPanel'] [class*='LeftSearchPanel'] input")
+        .fill(name);
+      await expect(this.dataTokensPanelContent.getByText(name)).toBeVisible();
+    });
+  }
+
   async createNewDataToken(name: string, type: string, value: any) {
     await test.step(`Create data token ${name}: ${type} = ${value}`, async () => {
       await this.switchToDataTokensTab();

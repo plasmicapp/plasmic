@@ -2,6 +2,7 @@ import { MenuItemContent } from "@/wab/client/components/menu-builder";
 import { shouldBeDisabled } from "@/wab/client/components/sidebar/sidebar-helpers";
 import { getComboForAction } from "@/wab/client/shortcuts/studio/studio-shortcuts";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
+import { generateDataTokenName } from "@/wab/commons/DataToken";
 import { isBaseVariant, tryGetVariantSetting } from "@/wab/shared/Variants";
 import { convertTextToDynamic, fixTextChildren } from "@/wab/shared/core/tpls";
 import {
@@ -29,6 +30,8 @@ export interface TplTextOps {
     edit?: () => void;
     /** Converts the RawText to an ExprText. */
     convertToDynamicValue?: () => void;
+    /** Create a data token for the text. */
+    createDataToken?: () => void;
     /** Set to empty RawText. */
     clear?: () => void;
     /** Set to undefined, on non-base variants only. */
@@ -82,6 +85,17 @@ export function makeTplTextOps(viewCtx: ViewCtx, tpl: TplTag): TplTextOps {
                   }
                 : undefined,
 
+            createDataToken: isKnownRawText(targetVsText)
+              ? () => {
+                  viewCtx.change(() => {
+                    const token = viewCtx.tplMgr().addDataToken({
+                      name: tpl.name ? generateDataTokenName(tpl.name) : "Text",
+                      value: JSON.stringify(targetVsText.text),
+                    });
+                    viewCtx.setTriggerCreatingTextDataToken(token);
+                  });
+                }
+              : undefined,
             clear:
               isKnownRawText(targetVsText) &&
               targetVsText.text === "" &&
@@ -119,6 +133,13 @@ export function makeTplTextMenu(ops: TplTextOps) {
         <MenuItemContent shortcut={getComboForAction("NAV_CHILD")}>
           Edit text
         </MenuItemContent>
+      </Menu.Item>
+    );
+  }
+  if (ops.actions.createDataToken) {
+    menuItems.push(
+      <Menu.Item key="create-data-token" onClick={ops.actions.createDataToken}>
+        Create data token
       </Menu.Item>
     );
   }

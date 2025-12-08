@@ -3,6 +3,20 @@ import DataPicker from "@/wab/client/components/sidebar-tabs/DataBinding/DataPic
 import { getExpectedValuesForVariantGroup } from "@/wab/client/components/sidebar-tabs/DataBinding/DataPickerUtil";
 import { ClickStopper } from "@/wab/client/components/widgets";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { zIndex } from "@/wab/client/z-index";
+import {
+  PRIVATE_STYLE_VARIANTS_CAP,
+  VARIANT_GROUP_LOWER,
+} from "@/wab/shared/Labels";
+import {
+  getBaseVariant,
+  isBaseVariant,
+  isCodeComponentVariant,
+  isPrivateStyleVariant,
+  isScreenVariantGroup,
+  isStandaloneVariantGroup,
+  isStyleVariant,
+} from "@/wab/shared/Variants";
 import { ensure, spawn } from "@/wab/shared/common";
 import {
   allCodeComponentVariants,
@@ -14,32 +28,19 @@ import {
   extractValueSavedFromDataPicker,
 } from "@/wab/shared/core/exprs";
 import {
-  getAccessTypeDisplayName,
   STATE_ACCESS_TYPES,
   StateAccessType,
+  getAccessTypeDisplayName,
 } from "@/wab/shared/core/states";
-import {
-  PRIVATE_STYLE_VARIANTS_CAP,
-  VARIANT_GROUP_LOWER,
-} from "@/wab/shared/Labels";
 import {
   Component,
   ComponentVariantGroup,
   CustomCode,
-  isKnownComponentVariantGroup,
-  isKnownObjectPath,
   Variant,
   VariantGroup,
+  isKnownComponentVariantGroup,
+  isKnownObjectPath,
 } from "@/wab/shared/model/classes";
-import {
-  getBaseVariant,
-  isBaseVariant,
-  isCodeComponentVariant,
-  isPrivateStyleVariant,
-  isScreenVariantGroup,
-  isStandaloneVariantGroup,
-  isStyleVariant,
-} from "@/wab/shared/Variants";
 import { Menu, Popover } from "antd";
 import React from "react";
 
@@ -394,6 +395,7 @@ export function VariantDataPicker(props: {
   return (
     <ClickStopper>
       <Popover
+        zIndex={zIndex.dataPicker}
         content={
           <DataPicker
             value={extractValueSavedFromDataPicker(

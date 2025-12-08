@@ -4,6 +4,7 @@ import DataPicker, {
 } from "@/wab/client/components/sidebar-tabs/DataBinding/DataPicker";
 import { RightTabKey } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
+import { zIndex } from "@/wab/client/z-index";
 import { toVarName } from "@/wab/shared/codegen/util";
 import { isNonNil, mkShortId, spawn, uniqueName } from "@/wab/shared/common";
 import { pathToString } from "@/wab/shared/eval/expression-parser";
@@ -108,6 +109,7 @@ export const InternalDataPickerEditor = observer(
 
     return (
       <Popover
+        zIndex={zIndex.dataPicker}
         content={
           <DataPicker
             value={value}

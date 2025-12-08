@@ -1,6 +1,6 @@
 import sty from "@/wab/client/components/BottomModal.module.sass";
-import { ensure } from "@/wab/shared/common";
 import { useConstant } from "@/wab/commons/components/ReactUtil";
+import { ensure } from "@/wab/shared/common";
 import classNames from "classnames";
 import { omit, size } from "lodash";
 import React, { Dispatch, Reducer } from "react";
@@ -134,6 +134,7 @@ const BottomModalContext = React.createContext<BottomModalConfig | undefined>(
 interface BottomModalProps {
   children?: React.ReactNode;
   title?: React.ReactNode;
+  "data-test-id"?: string;
 }
 
 interface BottomModalConfig extends BottomModalProps {
@@ -141,16 +142,16 @@ interface BottomModalConfig extends BottomModalProps {
 }
 
 export function BottomModal(props: BottomModalProps & { modalKey: string }) {
-  const { children, title, modalKey } = props;
+  const { children, title, modalKey, "data-test-id": dataTestId } = props;
   const { dispatch } = useBottomModalsContext();
   const buttonsTunnel = React.useMemo(() => tunnel(), []);
   React.useEffect(() => {
     dispatch({
       type: "push",
       id: modalKey,
-      config: { children, title, buttonsTunnel },
+      config: { children, title, buttonsTunnel, "data-test-id": dataTestId },
     });
-  }, [modalKey, children, title, buttonsTunnel]);
+  }, [modalKey, children, title, buttonsTunnel, dataTestId]);
   React.useEffect(() => {
     return () => dispatch({ type: "pop", id: modalKey });
   }, []);
@@ -229,7 +230,7 @@ function BottomModalInternal(props: {
   canvasHeight: number;
 }) {
   const { config, store, id, canvasHeight } = props;
-  const { title, children } = config;
+  const { title, children, "data-test-id": dataTestId } = config;
   const { state, dispatch } = store;
   const leftDelta = useConstant(() => Math.floor(10 - Math.random() * 20));
   const index = Object.keys(state.modals).indexOf(id);
@@ -250,6 +251,7 @@ function BottomModalInternal(props: {
     <animated.div
       className={sty.ModalRoot}
       style={{ ...animatedStyles, height, left: 100 + leftDelta }}
+      data-test-id={dataTestId}
       onClick={() => {
         if (!isFocused) {
           dispatch({ type: "focus", focusedIndex: index });

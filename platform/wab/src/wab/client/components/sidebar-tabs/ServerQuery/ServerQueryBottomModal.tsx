@@ -5,6 +5,7 @@ import { PopoverFrameProvider } from "@/wab/client/components/sidebar/PopoverFra
 import { extractDataCtx } from "@/wab/client/state-management/interactions-meta";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { SERVER_QUERY_LOWER } from "@/wab/shared/Labels";
+import { toVarName } from "@/wab/shared/codegen/util";
 import { ExprCtx } from "@/wab/shared/core/exprs";
 import { EventHandlerKeyType } from "@/wab/shared/core/tpls";
 import {
@@ -12,19 +13,38 @@ import {
   CustomFunctionExpr,
   Interaction,
   TplNode,
+  isKnownComponentServerQuery,
 } from "@/wab/shared/model/classes";
 import { observer } from "mobx-react";
 import * as React from "react";
+
+/**
+ * Removes a query from the environment's $queries object to avoid circular references.
+ * This is useful when computing the environment for a query's own expression preview.
+ */
+export function omitQueryFromEnv(
+  env: Record<string, any> | undefined,
+  query: ComponentServerQuery | { name: string }
+): Record<string, any> | undefined {
+  if (env?.$queries) {
+    const { $queries, ...restEnv } = env;
+    const currentKey = toVarName(query.name);
+    const { [currentKey]: _omit, ...filteredQueries } = $queries;
+    return { ...restEnv, $queries: filteredQueries };
+  }
+  return env;
+}
 
 interface ServerQueryOpExprBottomModalContentProps {
   value?: CustomFunctionExpr;
   onSave: (expr: CustomFunctionExpr, opExprName?: string) => unknown;
   onCancel: () => unknown;
   readOnly?: boolean;
-  env?: Record<string, any>;
   allowedOps?: string[];
   exprCtx: ExprCtx;
   interaction?: Interaction;
+  // Must pass viewCtx and tpl instead of a static env so the modal can reactively
+  // compute the environment, including newly created data tokens
   viewCtx?: ViewCtx;
   tpl?: TplNode;
   schema?: DataPickerTypesSchema;
@@ -39,6 +59,7 @@ export function useServerQueryBottomModal(queryKey: string) {
     open: (
       props: {
         title?: string;
+        "data-test-id"?: string;
       } & ServerQueryOpExprBottomModalContentProps
     ) => {
       serverQueryModals.open(queryKey, props);
@@ -65,6 +86,7 @@ export function useServerQueryBottomModals() {
     ) => {
       modalActions.open(queryKey, {
         title: title || `Configure ${SERVER_QUERY_LOWER}`,
+        "data-test-id": "server-query-bottom-modal",
         children: <ServerQueryOpExprBottomModalContent {...props} />,
       });
     },
@@ -88,7 +110,6 @@ const ServerQueryOpExprBottomModalContent = observer(
     viewCtx,
     tpl,
     eventHandlerKey,
-    ...rest
   }: ServerQueryOpExprBottomModalContentProps) {
     const wrappedOnSave = React.useCallback(
       (newExpr: CustomFunctionExpr, opExprName?: string) => {
@@ -97,11 +118,23 @@ const ServerQueryOpExprBottomModalContent = observer(
       [onSave]
     );
 
-    const env = rest.env
-      ? rest.env
-      : viewCtx && tpl
-      ? extractDataCtx(viewCtx, tpl, undefined, interaction, eventHandlerKey)
-      : undefined;
+    const env = (() => {
+      const computedEnv =
+        viewCtx && tpl
+          ? extractDataCtx(
+              viewCtx,
+              tpl,
+              undefined,
+              interaction,
+              eventHandlerKey
+            )
+          : undefined;
+      // Exclude the current query from $queries to avoid circular references
+      if (isKnownComponentServerQuery(parent)) {
+        return omitQueryFromEnv(computedEnv, parent);
+      }
+      return computedEnv;
+    })();
 
     return (
       <PopoverFrameProvider containerSelector=".bottom-modals">

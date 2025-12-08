@@ -2659,7 +2659,7 @@ function mapParamTypeToArgType(paramReg: CustomFunctionParam): ArgType["type"] {
   return convertTsToWabType(paramReg.type ?? "string") as ArgType["type"];
 }
 
-function createCustomFunctionFromRegistration(
+export function createCustomFunctionFromRegistration(
   functionReg: CustomFunctionRegistration,
   existingFunction?: CustomFunction
 ) {

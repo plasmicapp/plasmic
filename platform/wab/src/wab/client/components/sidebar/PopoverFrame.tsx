@@ -397,7 +397,7 @@ function PopoverFrameShell() {
         style={{
           position: "fixed",
           inset: 0,
-          zIndex: zIndex.popoverFrame,
+          zIndex: zIndex.popover,
           pointerEvents: "none",
         }}
       >

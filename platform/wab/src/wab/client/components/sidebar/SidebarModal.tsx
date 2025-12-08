@@ -43,6 +43,14 @@ function useSidebarModalContext() {
   );
 }
 
+/**
+ * Hook to check if we're inside a SidebarModal context.
+ * Returns the context if available, or undefined if not.
+ */
+export function useMaybeSidebarModalContext() {
+  return React.useContext(SidebarModalContext);
+}
+
 interface PushAction {
   type: "push";
   frame: SidebarModalStackFrame;
@@ -183,16 +191,17 @@ const SidebarModalInternal = observer(function SidebarModalInternal(props: {
         element,
         persistOnInteractOutside,
       } as SidebarModalStackFrame),
-    [frameId, onClose, element]
+    [frameId, onClose, element, persistOnInteractOutside]
   );
 
-  // We push the modal content whenever it changes
-  React.useEffect(() => {
-    dispatch({ type: "push", frame });
-  }, [frame]);
+  // Use a ref to always have the latest frame
+  const frameRef = React.useRef(frame);
+  frameRef.current = frame;
 
-  // We pop the modal content only when we unmount
   React.useEffect(() => {
+    // We push the modal content when frameId changes
+    dispatch({ type: "push", frame: frameRef.current });
+    // We pop the modal content only when we unmount
     return () => {
       dispatch({ type: "pop", frameId });
     };

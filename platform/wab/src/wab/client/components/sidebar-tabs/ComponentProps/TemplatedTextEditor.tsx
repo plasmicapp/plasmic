@@ -7,6 +7,7 @@ import DataPicker, {
 } from "@/wab/client/components/sidebar-tabs/DataBinding/DataPicker";
 import { PropEditorRef } from "@/wab/client/components/sidebar-tabs/PropEditorRow";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { zIndex } from "@/wab/client/z-index";
 import { useSignalListener } from "@/wab/commons/components/use-signal-listener";
 import { DropFirst } from "@/wab/commons/types";
 import {
@@ -800,6 +801,7 @@ function CodeTag({
 
   return (
     <Popover
+      zIndex={zIndex.dataPicker}
       content={
         <DataPicker
           value={value}

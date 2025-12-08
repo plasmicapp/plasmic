@@ -6,6 +6,7 @@ import DataPicker, {
 import { IconLinkButton } from "@/wab/client/components/widgets";
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import CloseIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Close";
+import { zIndex } from "@/wab/client/z-index";
 import { cx } from "@/wab/shared/common";
 import {
   ExprCtx,
@@ -114,6 +115,7 @@ export function DynamicValueWidget({
 
   return (
     <Popover
+      zIndex={zIndex.dataPicker}
       content={
         <DataPicker
           value={textValue}

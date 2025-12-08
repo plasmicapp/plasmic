@@ -3,7 +3,10 @@ import {
   CustomFunctionExprPreview,
   CustomFunctionExprSummary,
 } from "@/wab/client/components/sidebar-tabs/ServerQuery/CustomFunctionExprPreview";
-import { useServerQueryBottomModal } from "@/wab/client/components/sidebar-tabs/ServerQuery/ServerQueryBottomModal";
+import {
+  omitQueryFromEnv,
+  useServerQueryBottomModal,
+} from "@/wab/client/components/sidebar-tabs/ServerQuery/ServerQueryBottomModal";
 import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
 import { IconLinkButton } from "@/wab/client/components/widgets";
 import { DataQueriesTooltip } from "@/wab/client/components/widgets/DetailedTooltips";
@@ -43,26 +46,19 @@ const ServerQueryRow = observer(
       component,
       inStudio: true,
     };
-    // For some reason calling `omit` tries to read from the query data,
-    // throwing `PlasmicUndefinedDataError`
-    const env = {
-      ...viewCtx.getCanvasEnvForTpl(viewCtx.currentCtxTplRoot(), {
-        forDataRepCollection: true,
-      }),
-    };
-    if (env.$queries) {
-      env.$queries = { ...env.$queries };
-      delete env.$queries[toVarName(query.name)];
-    }
     const schema = viewCtx.customFunctionsSchema();
+    const tpl = viewCtx.currentCtxTplRoot();
 
     const serverQueryModal = useServerQueryBottomModal(query.uuid);
     const openServerQueryModal = () => {
+      // Pass viewCtx and tpl instead of a static env so the modal can reactively
+      // compute the environment, including newly created data tokens
       serverQueryModal.open({
         value: query.op ?? undefined,
         onSave: handleCustomFunctionExprChange,
         onCancel: serverQueryModal.close,
-        env,
+        viewCtx,
+        tpl,
         schema,
         exprCtx,
         parent: query,
@@ -113,7 +109,12 @@ const ServerQueryRow = observer(
               <CustomFunctionExprSummary expr={query.op} />
               <CustomFunctionExprPreview
                 expr={query.op}
-                env={env}
+                env={omitQueryFromEnv(
+                  viewCtx.getCanvasEnvForTpl(tpl, {
+                    forDataRepCollection: true,
+                  }),
+                  query
+                )}
                 title={`Query data results for "${query.name}"`}
                 exprCtx={exprCtx}
               />

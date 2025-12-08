@@ -1,13 +1,15 @@
-import { getProjectFlags } from "@/wab/shared/devflags";
 import {
   ExprCtx,
   asCode,
   code,
+  codeLit,
   customCode,
   getCodeExpressionWithFallback,
+  tryExtractJson,
 } from "@/wab/shared/core/exprs";
-import { CompositeExpr, TemplatedString } from "@/wab/shared/model/classes";
 import { createSite } from "@/wab/shared/core/sites";
+import { getProjectFlags } from "@/wab/shared/devflags";
+import { CompositeExpr, TemplatedString } from "@/wab/shared/model/classes";
 
 describe("asCode", () => {
   const exprCtxFixture: ExprCtx = {
@@ -102,5 +104,63 @@ describe("asCode", () => {
     ).toEqual({
       fields: [{}, { value: 42 }, { value: 42 }],
     });
+  });
+});
+
+describe("tryExtractJson", () => {
+  it("extracts simple object from CompositeExpr with static values", () => {
+    const compositeExpr = new CompositeExpr({
+      hostLiteral: '{"darkMode": null, "fontSize": null}',
+      substitutions: {
+        darkMode: codeLit(false),
+        fontSize: codeLit(13),
+      },
+    });
+
+    const result = tryExtractJson(compositeExpr);
+    expect(result).toEqual({ darkMode: false, fontSize: 13 });
+  });
+
+  it("extracts nested object from CompositeExpr with static values", () => {
+    const compositeExpr = new CompositeExpr({
+      hostLiteral: '{"config": null}',
+      substitutions: {
+        config: new CompositeExpr({
+          hostLiteral: '{"theme": null, "size": null}',
+          substitutions: {
+            theme: codeLit("dark"),
+            size: codeLit(16),
+          },
+        }),
+      },
+    });
+
+    const result = tryExtractJson(compositeExpr);
+    expect(result).toEqual({ config: { theme: "dark", size: 16 } });
+  });
+
+  it("returns undefined for CompositeExpr with dynamic values", () => {
+    const compositeExpr = new CompositeExpr({
+      hostLiteral: '{"value": null}',
+      substitutions: {
+        value: customCode("someVariable"),
+      },
+    });
+
+    const result = tryExtractJson(compositeExpr);
+    expect(result).toBeUndefined();
+  });
+
+  it("returns undefined for CompositeExpr with mixed static and dynamic values", () => {
+    const compositeExpr = new CompositeExpr({
+      hostLiteral: '{"static": null, "dynamic": null}',
+      substitutions: {
+        static: codeLit(42),
+        dynamic: customCode("someVariable"),
+      },
+    });
+
+    const result = tryExtractJson(compositeExpr);
+    expect(result).toBeUndefined();
   });
 });

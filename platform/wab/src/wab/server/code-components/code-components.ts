@@ -11,6 +11,7 @@ import {
   attachRenderableTplSlots,
   compareComponentPropsWithMeta,
   compareComponentStatesWithMeta,
+  createCustomFunctionFromRegistration,
   createStyleTokenFromRegistration,
   customFunctionId,
   extractDefaultSlotContents,
@@ -157,11 +158,12 @@ export async function createSiteForHostlessProject(
     const depComponents = [...(globalThis.__PlasmicComponentRegistry ?? [])];
     const depContexts = [...(globalThis.__PlasmicContextRegistry ?? [])];
     const depTokens = [...(globalThis.__PlasmicTokenRegistry ?? [])];
+    const depFunctions = [...(globalThis.__PlasmicFunctionsRegistry ?? [])];
 
     // Next, load the actual package
     loadServerPackage(hostLessPackageInfo.name);
 
-    // read the registered components/contexts/tokens, filtering out the ones
+    // read the registered components/contexts/tokens/functions, filtering out the ones
     // registered by the dependencies
     const registeredComponents = (
       globalThis.__PlasmicComponentRegistry ?? []
@@ -174,6 +176,10 @@ export async function createSiteForHostlessProject(
     const registeredTokens = (globalThis.__PlasmicTokenRegistry ?? []).filter(
       (x) => !depTokens.includes(x)
     );
+
+    const registeredFunctions = (
+      globalThis.__PlasmicFunctionsRegistry ?? []
+    ).filter((x) => !depFunctions.includes(x));
 
     // create code components
     const componentToMeta = new Map<
@@ -228,6 +234,11 @@ export async function createSiteForHostlessProject(
     for (const tokenReg of registeredTokens) {
       const token = createStyleTokenFromRegistration(tokenReg);
       site.styleTokens.push(token);
+    }
+
+    for (const functionReg of registeredFunctions) {
+      const customFunction = createCustomFunctionFromRegistration(functionReg);
+      site.customFunctions.push(customFunction);
     }
   });
 
