@@ -15,7 +15,6 @@ test.describe("dynamic-initial-value", () => {
       ],
       devFlags: {
         simplifiedForms: true,
-        runningInCypress: true,
       },
     });
     await goToProject(page, `/projects/${projectId}?simplifiedForms=true`);

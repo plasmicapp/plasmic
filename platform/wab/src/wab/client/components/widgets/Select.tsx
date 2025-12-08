@@ -4,15 +4,13 @@ import {
   DefaultSelectProps,
   PlasmicSelect,
 } from "@/wab/client/plasmic/plasmic_kit_design_system/PlasmicSelect";
-import { useTestableSelect } from "@/wab/client/utils/testable-controls";
 import { SelectRef } from "@plasmicapp/react-web";
 import * as React from "react";
 
 type SelectProps = DefaultSelectProps;
 
 function Select_(props: SelectProps, ref: SelectRef) {
-  const { plasmicProps, state } = PlasmicSelect.useBehavior(props, ref);
-  useTestableSelect(props);
+  const { plasmicProps, state: _state } = PlasmicSelect.useBehavior(props, ref);
   return <PlasmicSelect {...plasmicProps} />;
 }
 

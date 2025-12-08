@@ -26,12 +26,8 @@ setup("configure global dev flags", async ({ request, baseURL }) => {
     // state-management-dependent.spec.ts, dynamic-initial-value.spec.ts
     plexus: false,
 
-    // dynamic-initial-value.spec.ts
-    runningInCypress: true,
-
     schemaDrivenForms: true,
     branching: true,
-    comments: true,
 
     // tutorial.spec.ts
     templateTours: {

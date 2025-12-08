@@ -1,5 +1,6 @@
 import { expect } from "@playwright/test";
 import { test } from "../fixtures/test";
+import { modifierKey } from "../utils/key-utils";
 import { goToProject } from "../utils/studio-utils";
 
 test.describe("Can use stale bundle", () => {
@@ -43,12 +44,9 @@ test.describe("Can use stale bundle", () => {
 
     await page.keyboard.press("Enter");
 
-    const isMac = process.platform === "darwin";
-    const cmdKey = isMac ? "Meta" : "Control";
-
     await frameContent.getByText("Button").click();
     await page.waitForTimeout(100);
-    await page.keyboard.press(`${cmdKey}+a`);
+    await page.keyboard.press(`${modifierKey}+a`);
     await page.waitForTimeout(100);
     await page.keyboard.press("Delete");
     await page.waitForTimeout(100);

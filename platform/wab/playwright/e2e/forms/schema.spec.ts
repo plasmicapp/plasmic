@@ -4,7 +4,6 @@ import {
   goToProject,
   waitForFrameToLoad,
 } from "../../utils/studio-utils";
-import { setSelectByLabel } from "../../utils/testControls";
 
 test.describe("schema", () => {
   let projectId: string;
@@ -21,14 +20,10 @@ test.describe("schema", () => {
       ],
       devFlags: {
         schemaDrivenForms: true,
-        runningInCypress: true,
       },
     });
 
-    await goToProject(
-      page,
-      `/projects/${projectId}?schemaDrivenForms=true&runningInCypress=true`
-    );
+    await goToProject(page, `/projects/${projectId}?schemaDrivenForms=true`);
   });
 
   test.afterEach(async ({ apiClient }) => {
@@ -319,11 +314,14 @@ test.describe("schema", () => {
     await dataConfigBtn.click();
     await page.waitForTimeout(3000);
 
-    await setSelectByLabel(
-      models.studio.frame,
-      "dataTablePickerTable",
-      "products"
-    );
+    await models.studio.frame
+      .locator('button:has-text("athletes")')
+      .nth(1)
+      .click();
+    await models.studio.frame
+      .locator(`div[data-key="'products'"]`)
+      .nth(0)
+      .click();
 
     const saveBtn = models.studio.frame.locator('button:has-text("Save")');
     await saveBtn.click();

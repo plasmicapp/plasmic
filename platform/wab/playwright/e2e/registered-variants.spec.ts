@@ -2,7 +2,7 @@ import type { FrameLocator, Page } from "@playwright/test";
 import { expect } from "@playwright/test";
 import { PageModels, test } from "../fixtures/test";
 import { switchInteractiveMode } from "../utils/auto-open-utils";
-import { modifierKey } from "../utils/modifier-key";
+import { modifierKey } from "../utils/key-utils";
 import { goToProject, waitForFrameToLoad } from "../utils/studio-utils";
 
 async function createAndSwitchToButtonArena(

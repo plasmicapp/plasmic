@@ -2,6 +2,7 @@ import { expect } from "@playwright/test";
 import { readFileSync } from "fs";
 import path from "path";
 import { test } from "../fixtures/test";
+import { modifierKey } from "../utils/key-utils";
 import { goToProject, waitForFrameToLoad } from "../utils/studio-utils";
 
 const queryData = JSON.parse(
@@ -102,9 +103,7 @@ test.describe("hostless-rich-components", () => {
       await monacoInput.focus();
       await page.waitForTimeout(200);
 
-      await page.keyboard.press(
-        process.platform === "darwin" ? "Meta+a" : "Control+a"
-      );
+      await page.keyboard.press(`${modifierKey}+a`);
       await page.keyboard.press("Delete");
       await page.waitForTimeout(100);
 

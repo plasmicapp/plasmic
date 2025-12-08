@@ -1,5 +1,6 @@
 import { expect } from "@playwright/test";
 import { test } from "../fixtures/test";
+import { modifierKey } from "../utils/key-utils";
 import { goToProject } from "../utils/studio-utils";
 
 test.describe("hostless-basic-components", () => {
@@ -44,10 +45,7 @@ test.describe("hostless-basic-components", () => {
     await monacoContainer.waitFor({ state: "visible" });
     await monacoContainer.click();
 
-    const isMac = process.platform === "darwin";
-    const cmdKey = isMac ? "Meta" : "Control";
-
-    await page.keyboard.press(`${cmdKey}+a`);
+    await page.keyboard.press(`${modifierKey}+a`);
     await page.keyboard.press("Delete");
 
     await page.keyboard.type(

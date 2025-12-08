@@ -13,7 +13,6 @@ import {
 import { getExportedComponentName } from "@/wab/shared/codegen/react-p/serialize-utils";
 import { getComponentDisplayName } from "@/wab/shared/core/components";
 import { summarizeTpl } from "@/wab/shared/core/tpls";
-import { DEVFLAGS } from "@/wab/shared/devflags";
 import {
   Component,
   isKnownComponent,
@@ -103,9 +102,6 @@ export const mkCanvasErrorBoundary = computedFn(
           ) {
             throw this.state.error;
           }
-          if (DEVFLAGS.runningInCypress) {
-            handleCanvasError(this.state.error);
-          }
 
           const deriveTitle = () => {
             if (isKnownComponent(nodeOrComponent)) {
@@ -166,9 +162,6 @@ export function withErrorDisplayFallback<T>(
   } catch (error: any) {
     if (error?.plasmicType === "PlasmicUndefinedDataError") {
       throw error;
-    }
-    if (DEVFLAGS.runningInCypress) {
-      handleCanvasError(error);
     }
     return react.createElement(mkCanvasErrorDisplay(react), {
       ctx,

@@ -1,4 +1,5 @@
 import { test } from "../fixtures/test";
+import { modifierKey } from "../utils/key-utils";
 import { goToProject, waitForFrameToLoad } from "../utils/studio-utils";
 
 test.describe("publish", () => {
@@ -37,11 +38,8 @@ test.describe("publish", () => {
     const selectedElt = await models.studio.getSelectedElt();
     await selectedElt.dblclick({ force: true });
 
-    const isMac = process.platform === "darwin";
-    const cmdKey = isMac ? "Meta" : "Control";
-
     await page.waitForTimeout(500);
-    await page.keyboard.press(`${cmdKey}+a`);
+    await page.keyboard.press(`${modifierKey}+a`);
     await page.waitForTimeout(100);
     await page.keyboard.type("goodbye");
     await page.waitForTimeout(100);

@@ -1,5 +1,6 @@
 import { expect } from "@playwright/test";
 import { test } from "../fixtures/test";
+import { modifierKey } from "../utils/key-utils";
 import { goToProject } from "../utils/studio-utils";
 
 test.describe("data-rep", () => {
@@ -209,10 +210,7 @@ test.describe("data-rep", () => {
       }
     });
 
-    const isMac = process.platform === "darwin";
-    const cmdKey = isMac ? "Meta" : "Control";
-
-    await page.keyboard.press(`${cmdKey}+k`);
+    await page.keyboard.press(`${modifierKey}+k`);
     await page.waitForTimeout(500);
     await page.keyboard.type("/");
     await page.keyboard.press("Enter");

@@ -1,6 +1,7 @@
 import { expect } from "@playwright/test";
 import { VERT_CONTAINER_CAP } from "../../src/wab/shared/Labels";
 import { test } from "../fixtures/test";
+import { modifierKey } from "../utils/key-utils";
 import { setSelection } from "../utils/set-selection";
 import { goToProject } from "../utils/studio-utils";
 
@@ -90,11 +91,8 @@ test.describe("data-binding", () => {
       .getByRole("combobox")
       .click();
 
-    const isMac = process.platform === "darwin";
-    const cmdKey = isMac ? "Meta" : "Control";
-
     await page.waitForTimeout(100);
-    await page.keyboard.press(`${cmdKey}+a`);
+    await page.keyboard.press(`${modifierKey}+a`);
     await page.waitForTimeout(100);
     await page.keyboard.press("Delete");
     await page.waitForTimeout(100);
@@ -272,9 +270,6 @@ test.describe("data-binding", () => {
 
     const compFrame = models.studio.getComponentFrameByIndex(1);
 
-    const isMac = process.platform === "darwin";
-    const cmdKey = isMac ? "Meta" : "Control";
-
     await models.studio.leftPanel.insertNode("Text");
     await compFrame.locator(".__wab_editor").waitFor({ state: "visible" });
     await compFrame.locator(".__wab_editor").dblclick({ force: true });
@@ -287,7 +282,7 @@ test.describe("data-binding", () => {
     await page.waitForTimeout(500);
     await setSelection(compFrame.getByText("Hello World!"), "World");
     await page.waitForTimeout(300);
-    await page.keyboard.press(`${cmdKey}+k`);
+    await page.keyboard.press(`${modifierKey}+k`);
     await page.waitForTimeout(300);
     await page.keyboard.type("/");
     await page.keyboard.press("Enter");

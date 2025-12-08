@@ -44,7 +44,6 @@ import {
 } from "@/wab/shared/ApiSchema";
 import { assert, asyncWrapper, mkUuid, spawn } from "@/wab/shared/common";
 import { isAdminTeamEmail } from "@/wab/shared/devflag-utils";
-import { DEVFLAGS } from "@/wab/shared/devflags";
 import { LocalizationConfig } from "@/wab/shared/localization";
 import { getAccessLevelToResource } from "@/wab/shared/perms";
 import { APP_ROUTES } from "@/wab/shared/route/app-routes";
@@ -311,12 +310,7 @@ export function TopFrameChrome({
                   rest.dataSourcePicker?.resolve(result);
                 }}
                 onCanceled={() => {
-                  // When running Cypress and window is not focused,
-                  // clicking a select option inside the dialog closes the dialog.
-                  // Suppress this behavior for less painful test development.
-                  if (!DEVFLAGS.runningInCypress) {
-                    rest.dataSourcePicker?.resolve("CANCELED");
-                  }
+                  rest.dataSourcePicker?.resolve("CANCELED");
                 }}
                 project={project}
               />

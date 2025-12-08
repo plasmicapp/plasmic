@@ -1,5 +1,6 @@
 import { expect } from "@playwright/test";
 import { test } from "../fixtures/test";
+import { modifierKey } from "../utils/key-utils";
 import { goToProject } from "../utils/studio-utils";
 
 test.describe("state-management-dependents", () => {
@@ -42,11 +43,8 @@ test.describe("state-management-dependents", () => {
     await codeInput.waitFor({ state: "visible" });
     await codeInput.click();
 
-    const isMac = process.platform === "darwin";
-    const cmdKey = isMac ? "Meta" : "Control";
-
     await page.waitForTimeout(100);
-    await page.keyboard.press(`${cmdKey}+a`);
+    await page.keyboard.press(`${modifierKey}+a`);
     await page.waitForTimeout(100);
     await page.keyboard.press("Delete");
     await page.waitForTimeout(100);
@@ -69,7 +67,7 @@ test.describe("state-management-dependents", () => {
 
     await codeInput.click();
     await page.waitForTimeout(100);
-    await page.keyboard.press(`${cmdKey}+a`);
+    await page.keyboard.press(`${modifierKey}+a`);
     await page.waitForTimeout(100);
     await page.keyboard.press("Delete");
     await page.waitForTimeout(100);
@@ -89,7 +87,7 @@ test.describe("state-management-dependents", () => {
 
     await codeInput.click();
     await page.waitForTimeout(100);
-    await page.keyboard.press(`${cmdKey}+a`);
+    await page.keyboard.press(`${modifierKey}+a`);
     await page.waitForTimeout(100);
     await page.keyboard.press("Delete");
     await page.waitForTimeout(100);

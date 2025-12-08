@@ -1,5 +1,5 @@
 import { FrameLocator, Locator, Page, expect, test } from "playwright/test";
-import { modifierKey } from "../../utils/modifier-key";
+import { modifierKey } from "../../utils/key-utils";
 import { updateFormValuesInLiveMode } from "../../utils/studio-utils";
 import { BaseModel } from "../BaseModel";
 
@@ -338,8 +338,7 @@ export class RightPanel extends BaseModel {
     await this.valueCodeInput.click();
     const currentValue = await this.valueCodeInput.textContent();
     if (currentValue && currentValue.trim() !== "") {
-      const modifier = process.platform === "darwin" ? "Meta" : "Control";
-      await this.page.keyboard.press(`${modifier}+A`);
+      await this.page.keyboard.press(`${modifierKey}+A`);
       await this.page.keyboard.press("Delete");
       await this.page.keyboard.press("Backspace");
     }
@@ -980,21 +979,6 @@ export class RightPanel extends BaseModel {
   }
 
   async setSelectByLabel(label: string, value: string) {
-    const result = await this.page.evaluate(
-      ({ selectName, labelValue }) => {
-        const w = window as any;
-        if (w.dbg?.testControls?.[selectName]?.setByLabel) {
-          return w.dbg.testControls[selectName].setByLabel(labelValue);
-        }
-        return null;
-      },
-      { selectName: label, labelValue: value }
-    );
-
-    if (result !== null) {
-      return;
-    }
-
     const select = this.frame.locator(`[data-plasmic-prop="${label}"]`);
     await expect(select).toBeVisible({ timeout: 10000 });
     await select.click();

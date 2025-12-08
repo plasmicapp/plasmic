@@ -1,5 +1,6 @@
 import { expect, FrameLocator, Page } from "@playwright/test";
 import { PageModels } from "../fixtures/test";
+import { modifierKey } from "./key-utils";
 import { waitForFrameToLoad } from "./studio-utils";
 
 export function getTooltipMeta() {
@@ -115,10 +116,8 @@ export async function setDynamicVisibility(
   await models.studio.rightPanel.frame.getByText("Switch to Code").click();
   await models.studio.rightPanel.frame.locator(".monaco-editor").waitFor();
   await models.studio.page.waitForTimeout(100);
-  const isMac = process.platform === "darwin";
-  const cmdKey = isMac ? "Meta" : "Control";
 
-  await models.studio.page.keyboard.press(`${cmdKey}+a`);
+  await models.studio.page.keyboard.press(`${modifierKey}+a`);
   await models.studio.page.waitForTimeout(100);
   await models.studio.page.keyboard.press("Delete");
   await models.studio.page.waitForTimeout(100);
@@ -309,13 +308,10 @@ export async function insertModalComponent(models: PageModels, page: Page) {
   await models.studio.frame.getByText("Switch to Code").click();
 
   const monacoEditor = models.studio.frame.locator(".monaco-editor textarea");
-  const isMac = process.platform === "darwin";
-  const cmdKey = isMac ? "Meta" : "Control";
 
-  await page.waitForTimeout(100);
   await models.studio.frame.locator(".monaco-editor").click();
   await page.waitForTimeout(100);
-  await page.keyboard.press(`${cmdKey}+a`);
+  await page.keyboard.press(`${modifierKey}+a`);
   await page.waitForTimeout(100);
   await page.keyboard.press("Delete");
   await page.waitForTimeout(100);

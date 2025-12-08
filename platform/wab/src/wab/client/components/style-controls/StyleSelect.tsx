@@ -5,7 +5,6 @@ import {
   DefaultStyleSelectProps,
   PlasmicStyleSelect,
 } from "@/wab/client/plasmic/plasmic_kit_style_controls/PlasmicStyleSelect";
-import { useTestableSelect } from "@/wab/client/utils/testable-controls";
 import { SelectRef } from "@plasmicapp/react-web";
 import { Tooltip } from "antd";
 import * as React from "react";
@@ -17,7 +16,6 @@ interface StyleSelectProps extends DefaultStyleSelectProps {
 
 function StyleSelect_(props: StyleSelectProps, ref: SelectRef) {
   const { plasmicProps } = PlasmicStyleSelect.useBehavior(props, ref);
-  useTestableSelect(props);
   return (
     <PlasmicStyleSelect
       {...plasmicProps}

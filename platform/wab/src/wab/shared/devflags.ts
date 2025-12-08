@@ -426,7 +426,6 @@ const DEFAULT_DEVFLAGS = {
   writeApiExcludedProjectIds: [] as string[],
 
   // Disabled by default
-  runningInCypress: false,
   posthog: true,
   copilotTab: false,
   copilotClaude: false,

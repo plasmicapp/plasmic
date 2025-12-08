@@ -1,6 +1,7 @@
 import { expect, Page } from "@playwright/test";
 import { v4 } from "uuid";
 import { PageModels, test } from "../../fixtures/test";
+import { Keys, typeKeys } from "../../utils/key-utils";
 import { goToProject, waitForFrameToLoad } from "../../utils/studio-utils";
 
 test.describe("HTTP Data Source", () => {
@@ -87,7 +88,13 @@ test.describe("HTTP Data Source", () => {
 
     await models.studio.useDynamicValueButton.click();
 
-    selectPathInDataPicker(models, ["query", "data", "response", "0", "name"]);
+    await selectPathInDataPicker(models, [
+      "query",
+      "data",
+      "response",
+      "0",
+      "name",
+    ]);
 
     const designFrame = models.studio.getComponentFrameByIndex(0);
     await expect(designFrame.getByText(USER_NAME)).toBeVisible({
@@ -221,11 +228,7 @@ async function setDataPlasmicProp(
   await pathField.waitFor({ state: "visible", timeout: 10000 });
   await pathField.click();
 
-  const isMac = process.platform === "darwin";
-  const cmdKey = isMac ? "Meta" : "Control";
-
-  await page.keyboard.press(`${cmdKey}+a`);
-  await page.keyboard.type(value);
+  await typeKeys(page, [Keys.ModA, value], 0);
 }
 
 async function selectPathInDataPicker(
@@ -288,15 +291,7 @@ async function bindTextContentToCustomCode(
   );
   await monacoEditor.click();
 
-  const isMac = process.platform === "darwin";
-  const cmdKey = isMac ? "Meta" : "Control";
-  await page.waitForTimeout(100);
-  await page.keyboard.press(`${cmdKey}+a`);
-  await page.waitForTimeout(100);
-  await page.keyboard.press("Backspace");
-  await page.waitForTimeout(100);
-  await page.keyboard.insertText(code);
-  await page.waitForTimeout(100);
+  await typeKeys(page, [Keys.ModA, Keys.Backspace, code]);
 
   await models.studio.rightPanel.saveDataPicker();
 }
@@ -331,11 +326,7 @@ async function addInteraction(
   await models.studio.rightPanel.addInteractionButton.click();
   await page.waitForTimeout(200);
 
-  await page.keyboard.type(eventHandler);
-  await page.keyboard.press("Enter");
-
-  const isMac = process.platform === "darwin";
-  const cmdKey = isMac ? "Meta" : "Control";
+  await typeKeys(page, [eventHandler, Keys.Enter], 0);
 
   for (
     let interactionIndex = 0;
@@ -427,51 +418,41 @@ async function addInteraction(
           .click();
         await page.waitForTimeout(500);
 
-        for (const [argKey, argConfig] of Object.entries(dsOp.args)) {
+        for (const argKey of Object.keys(dsOp.args)) {
           if (["operation", "resource"].includes(argKey)) {
             continue;
           }
+          const argConfig = dsOp.args[argKey];
 
-          if ((argConfig as any).inputType) {
+          if (argConfig.inputType) {
             const inputTypeBtn = models.studio.rightPanel.frame.locator(
-              `[data-plasmic-prop="${argKey}-${(argConfig as any).inputType}"]`
+              `[data-plasmic-prop="${argKey}-${argConfig.inputType}"]`
             );
             await inputTypeBtn.click();
           }
 
-          if ((argConfig as any).isDynamicValue) {
+          if (argConfig.isDynamicValue) {
             const field = models.studio.rightPanel.frame.locator(
               `[data-plasmic-prop="${argKey}"]`
             );
             await field.click({ button: "right" });
-            await page.waitForTimeout(200);
-            await page.keyboard.press(`${cmdKey}+a`);
-            await page.waitForTimeout(100);
-            await page.keyboard.press("Backspace");
-            await page.waitForTimeout(100);
-            await page.keyboard.type("{{");
+            await typeKeys(page, [Keys.ModA, Keys.Backspace, "{{"]);
             await page.waitForTimeout(1000);
-            await models.studio.rightPanel.insertMonacoCode(
-              (argConfig as any).value
-            );
+            await models.studio.rightPanel.insertMonacoCode(argConfig.value);
             await page.waitForTimeout(500);
           } else {
             const field = models.studio.rightPanel.frame.locator(
               `[data-plasmic-prop="${argKey}"]`
             );
             await field.waitFor({ state: "visible", timeout: 10000 });
-            const clickPosition = (argConfig as any).opts?.clickPosition;
+            const clickPosition = argConfig.opts?.clickPosition;
             if (clickPosition === "right") {
               await field.click({ button: "right" });
             } else {
               await field.click();
             }
             await page.waitForTimeout(200);
-            await page.keyboard.press(`${cmdKey}+a`);
-            await page.waitForTimeout(100);
-            await page.keyboard.press("Backspace");
-            await page.waitForTimeout(100);
-            await page.keyboard.type((argConfig as any).value);
+            await typeKeys(page, [Keys.ModA, Keys.Backspace, argConfig.value]);
             await page.waitForTimeout(2000);
             await page.keyboard.press("Enter");
             await page.waitForTimeout(500);
