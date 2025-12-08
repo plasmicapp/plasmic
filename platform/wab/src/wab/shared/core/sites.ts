@@ -93,7 +93,7 @@ import {
   isTplVariantable,
   tryGetTplOwnerComponent,
 } from "@/wab/shared/core/tpls";
-import { getCssInitial } from "@/wab/shared/css";
+import { camelProp, getCssInitial } from "@/wab/shared/css";
 import { parseScreenSpec } from "@/wab/shared/css-size";
 import { getRshContainerType } from "@/wab/shared/layoututils";
 import { maybeComputedFn } from "@/wab/shared/mobx-util";
@@ -1652,20 +1652,16 @@ export function visitComponentRefs(
   }
 }
 
-export const DEFAULT_THEME_TYPOGRAPHY = {
-  "font-family": "Roboto",
-  "font-size": "16px",
-  "font-weight": "400",
-  color: "#535353",
-  "text-align": "left",
-  "line-height": "1.5",
+const DEFAULT_THEME_TYPOGRAPHY: CSSProperties = {
+  fontFamily: "Roboto",
+  fontSize: "16px",
+  fontWeight: "400",
+  color: "#000000",
+  textAlign: "left",
+  lineHeight: "1.5",
 };
 
 const DEFAULT_STYLE_BUNDLES: Dict<CSSProperties> = {
-  heading: {
-    fontFamily: "Inter",
-    color: "#000000",
-  },
   list: {
     display: "flex",
     flexDirection: "column",
@@ -1699,44 +1695,38 @@ const DEFAULT_STYLE_BUNDLES: Dict<CSSProperties> = {
 
 // These defaults are based in part on the Vercel design system.
 
-export const DEFAULT_THEME_STYLES: Dict<CSSProperties> = {
+const DEFAULT_THEME_STYLES: Dict<CSSProperties> = {
   h1: {
-    ...DEFAULT_STYLE_BUNDLES.heading,
     fontSize: "72px",
     fontWeight: 900,
     letterSpacing: "-4px",
     lineHeight: "1",
   },
   h2: {
-    ...DEFAULT_STYLE_BUNDLES.heading,
     fontSize: "48px",
     fontWeight: 700,
     letterSpacing: "-1px",
     lineHeight: "1.1",
   },
   h3: {
-    ...DEFAULT_STYLE_BUNDLES.heading,
     fontSize: "32px",
     fontWeight: 600,
     letterSpacing: "-0.8px",
     lineHeight: "1.2",
   },
   h4: {
-    ...DEFAULT_STYLE_BUNDLES.heading,
     fontSize: "24px",
     fontWeight: 600,
     letterSpacing: "-0.5px",
     lineHeight: "1.3",
   },
   h5: {
-    ...DEFAULT_STYLE_BUNDLES.heading,
     fontSize: "20px",
     fontWeight: 600,
     letterSpacing: "-0.3px",
     lineHeight: "1.5",
   },
   h6: {
-    ...DEFAULT_STYLE_BUNDLES.heading,
     fontSize: "16px",
     fontWeight: 600,
     lineHeight: "1.5",
@@ -1787,7 +1777,8 @@ export function createDefaultTheme() {
         values: Object.fromEntries(
           typographyCssProps.map((p) => [
             p,
-            DEFAULT_THEME_TYPOGRAPHY[p] || getCssInitial(p, undefined),
+            DEFAULT_THEME_TYPOGRAPHY[camelProp(p)] ||
+              getCssInitial(p, undefined),
           ])
         ),
       }),

@@ -1,12 +1,98 @@
+import {
+  Adoptee,
+  InsertionSpec,
+  calcOffset,
+  insertBySpec,
+} from "@/wab/client/Dnd";
+import { showError } from "@/wab/client/ErrorNotifications";
+import { readClipboardPlasmicData } from "@/wab/client/clipboard/common";
+import {
+  FrameClip,
+  PasteStyleProps,
+  StyleClip,
+  TplClip,
+  isStyleClip,
+  isTplClip,
+  isTplsClip,
+} from "@/wab/client/clipboard/local";
+import { toast } from "@/wab/client/components/Messages";
+import { closestTaggedNonTextDomElt } from "@/wab/client/components/canvas/studio-canvas-util";
+import { promptExtractComponent } from "@/wab/client/components/modals/ExtractComponentModal";
+import { promptWrapInComponent } from "@/wab/client/components/modals/WrapInComponentModal";
+import { reactConfirm } from "@/wab/client/components/quick-modals";
+import { getTreeNodeVisibility } from "@/wab/client/components/sidebar-tabs/OutlineCtx";
+import {
+  ensureTplColumnRs,
+  ensureTplColumnsRs,
+  getScreenVariant,
+  makeTplColumn,
+} from "@/wab/client/components/sidebar-tabs/ResponsiveColumns/tpl-columns-utils";
+import { TargetBlockedTooltip } from "@/wab/client/components/sidebar/sidebar-helpers";
+import { OneShortcutCombo } from "@/wab/client/components/studio/Shortcuts";
+import { createAddTplComponent } from "@/wab/client/components/studio/add-drawer/AddDrawer";
+import { LinkButton } from "@/wab/client/components/widgets";
+import { AddTplItem, WRAPPERS_MAP } from "@/wab/client/definitions/insertables";
 import { getBoundingClientRect, getOffsetPoint } from "@/wab/client/dom";
-import { joinReactNodes } from "@/wab/commons/components/ReactUtil";
+import { getBackgroundImageProps } from "@/wab/client/dom-utils";
+import { FocusHeuristics } from "@/wab/client/focus-heuristics";
+import { renderCantAddMsg } from "@/wab/client/messages/parenting-msgs";
+import {
+  getEventDataForTplComponent,
+  trackInsertItem,
+} from "@/wab/client/observability/events/insert-item";
+import { promptComponentName, promptPageName } from "@/wab/client/prompts";
+import { getComboForAction } from "@/wab/client/shortcuts/studio/studio-shortcuts";
+import { ComponentCtx } from "@/wab/client/studio-ctx/component-ctx";
+import { ViewCtx, ensureBaseRs } from "@/wab/client/studio-ctx/view-ctx";
+import { trackEvent } from "@/wab/client/tracking";
+import {
+  fontWeightOptions,
+  isValidFontWeight,
+} from "@/wab/client/typography-utils";
+import { UndoRecord } from "@/wab/client/undo-log";
+import {
+  canSetDisplayNone,
+  getContainerType,
+} from "@/wab/client/utils/tpl-client-utils";
 import { derefTokenRefs, isTokenRef } from "@/wab/commons/StyleToken";
-import { AddItemKey, WrapItemKey } from "@/wab/shared/add-item-keys";
+import { joinReactNodes } from "@/wab/commons/components/ReactUtil";
 import {
   FrameViewMode,
   isDuplicatableFrame,
   isMixedArena,
 } from "@/wab/shared/Arenas";
+import { FRAME_LOWER } from "@/wab/shared/Labels";
+import {
+  RSH,
+  RuleSetHelpers,
+  hasTypography,
+} from "@/wab/shared/RuleSetHelpers";
+import {
+  getAncestorTplSlot,
+  getParentOrSlotSelection,
+  getSingleTextBlockFromArg,
+  getSlotParams,
+  getTplSlotDescendants,
+  isPlainTextTplSlot,
+  isTextBlockArg,
+} from "@/wab/shared/SlotUtils";
+import { $$$ } from "@/wab/shared/TplQuery";
+import {
+  ComponentCycleUserError,
+  NestedTplSlotsError,
+} from "@/wab/shared/UserError";
+import {
+  VariantCombo,
+  ensureBaseVariantSetting,
+  ensureVariantSetting,
+  isBaseVariant,
+  isGlobalVariant,
+  isPrivateStyleVariant,
+  toVariantKey,
+  tryGetBaseVariantSetting,
+  tryGetPrivateStyleVariant,
+} from "@/wab/shared/Variants";
+import { AddItemKey, WrapItemKey } from "@/wab/shared/add-item-keys";
 import { toVarName } from "@/wab/shared/codegen/util";
 import { arrayRemove } from "@/wab/shared/collections";
 import {
@@ -30,8 +116,8 @@ import {
 } from "@/wab/shared/common";
 import * as Components from "@/wab/shared/core/components";
 import {
-  cloneVariant,
   ComponentType,
+  cloneVariant,
   isCodeComponent,
   isFrameComponent,
   isPageComponent,
@@ -41,14 +127,29 @@ import { codeLit } from "@/wab/shared/core/exprs";
 import { mkImageAssetRef } from "@/wab/shared/core/image-assets";
 import { isTagListContainer } from "@/wab/shared/core/rich-text-util";
 import {
-  isSelectable,
-  Selectable,
-  SelQuery,
   SQ,
+  SelQuery,
+  Selectable,
+  isSelectable,
 } from "@/wab/shared/core/selection";
+import { siteFinalStyleTokensAllDeps } from "@/wab/shared/core/site-style-tokens";
+import {
+  allGlobalVariants,
+  isTplAttachedToSite,
+  writeable,
+} from "@/wab/shared/core/sites";
+import { SlotSelection } from "@/wab/shared/core/slots";
+import {
+  findImplicitStatesOfNodesInTree,
+  findImplicitUsages,
+  getStateDisplayName,
+  isPrivateState,
+  isStateUsedInExpr,
+} from "@/wab/shared/core/states";
 import {
   CONTENT_LAYOUT_FULL_BLEED,
   CONTENT_LAYOUT_WIDTH_OPTIONS,
+  WRAP_AS_PARENT_PROPS,
   contentLayoutChildProps,
   defaultCopyableStyleNames,
   flexChildProps,
@@ -57,8 +158,28 @@ import {
   ignoredConvertablePlainTextProps,
   slotCssProps,
   typographyCssProps,
-  WRAP_AS_PARENT_PROPS,
 } from "@/wab/shared/core/style-props";
+import { px } from "@/wab/shared/core/styles";
+import * as Tpls from "@/wab/shared/core/tpls";
+import {
+  RawTextLike,
+  isTplComponent,
+  isTplVariantable,
+} from "@/wab/shared/core/tpls";
+import * as ValNodes from "@/wab/shared/core/val-nodes";
+import {
+  ValComponent,
+  ValNode,
+  ValSlot,
+  ValTag,
+  isSelectableValNode,
+  slotContentValNode,
+} from "@/wab/shared/core/val-nodes";
+import {
+  asTpl,
+  asTplOrSlotSelection,
+  equivTplOrSlotSelection,
+} from "@/wab/shared/core/vals";
 import {
   getCssInitial,
   parseCssNumericNew,
@@ -71,21 +192,21 @@ import {
 } from "@/wab/shared/defined-indicator";
 import { DEVFLAGS } from "@/wab/shared/devflags";
 import {
-  adaptEffectiveVariantSetting,
   EffectiveVariantSetting,
+  adaptEffectiveVariantSetting,
 } from "@/wab/shared/effective-variant-setting";
 import {
   Box,
-  isStandardSide,
   Pt,
   Rect,
   Side,
+  isStandardSide,
   sideToOrient,
 } from "@/wab/shared/geom";
-import { FRAME_LOWER } from "@/wab/shared/Labels";
 import {
   ContainerLayoutType,
   ContainerType,
+  PositionLayoutType,
   convertSelfContainerType,
   convertToAbsolutePosition,
   convertToRelativePosition,
@@ -93,23 +214,11 @@ import {
   getRshContainerType,
   getRshPositionType,
   isContainerTypeVariantable,
-  PositionLayoutType,
 } from "@/wab/shared/layoututils";
 import {
   ArenaFrame,
   Component,
   CustomCode,
-  ensureKnownEventHandler,
-  isKnownArenaFrame,
-  isKnownEventHandler,
-  isKnownExprText,
-  isKnownImageAssetRef,
-  isKnownNodeMarker,
-  isKnownRenderExpr,
-  isKnownTplComponent,
-  isKnownTplNode,
-  isKnownTplRef,
-  isKnownTplTag,
   Mixin,
   ObjectPath,
   Param,
@@ -123,104 +232,18 @@ import {
   TplTag,
   Variant,
   VariantSetting,
+  ensureKnownEventHandler,
+  isKnownArenaFrame,
+  isKnownEventHandler,
+  isKnownExprText,
+  isKnownImageAssetRef,
+  isKnownNodeMarker,
+  isKnownRenderExpr,
+  isKnownTplComponent,
+  isKnownTplNode,
+  isKnownTplRef,
+  isKnownTplTag,
 } from "@/wab/shared/model/classes";
-import { notification } from "antd";
-import $ from "jquery";
-import L, { clamp, isArray, merge } from "lodash";
-import pluralize from "pluralize";
-import React from "react";
-
-import { readClipboardPlasmicData } from "@/wab/client/clipboard/common";
-import {
-  FrameClip,
-  isStyleClip,
-  isTplClip,
-  isTplsClip,
-  PasteStyleProps,
-  StyleClip,
-  TplClip,
-} from "@/wab/client/clipboard/local";
-import { closestTaggedNonTextDomElt } from "@/wab/client/components/canvas/studio-canvas-util";
-import { toast } from "@/wab/client/components/Messages";
-import { promptExtractComponent } from "@/wab/client/components/modals/ExtractComponentModal";
-import { promptWrapInComponent } from "@/wab/client/components/modals/WrapInComponentModal";
-import { reactConfirm } from "@/wab/client/components/quick-modals";
-import { getTreeNodeVisibility } from "@/wab/client/components/sidebar-tabs/OutlineCtx";
-import {
-  ensureTplColumnRs,
-  ensureTplColumnsRs,
-  getScreenVariant,
-  makeTplColumn,
-} from "@/wab/client/components/sidebar-tabs/ResponsiveColumns/tpl-columns-utils";
-import { TargetBlockedTooltip } from "@/wab/client/components/sidebar/sidebar-helpers";
-import { createAddTplComponent } from "@/wab/client/components/studio/add-drawer/AddDrawer";
-import { OneShortcutCombo } from "@/wab/client/components/studio/Shortcuts";
-import { LinkButton } from "@/wab/client/components/widgets";
-import { AddTplItem, WRAPPERS_MAP } from "@/wab/client/definitions/insertables";
-import {
-  Adoptee,
-  calcOffset,
-  insertBySpec,
-  InsertionSpec,
-} from "@/wab/client/Dnd";
-import { getBackgroundImageProps } from "@/wab/client/dom-utils";
-import { showError } from "@/wab/client/ErrorNotifications";
-import { FocusHeuristics } from "@/wab/client/focus-heuristics";
-import { renderCantAddMsg } from "@/wab/client/messages/parenting-msgs";
-import {
-  getEventDataForTplComponent,
-  trackInsertItem,
-} from "@/wab/client/observability/events/insert-item";
-import { promptComponentName, promptPageName } from "@/wab/client/prompts";
-import { getComboForAction } from "@/wab/client/shortcuts/studio/studio-shortcuts";
-import { ComponentCtx } from "@/wab/client/studio-ctx/component-ctx";
-import { ensureBaseRs, ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { trackEvent } from "@/wab/client/tracking";
-import {
-  fontWeightOptions,
-  isValidFontWeight,
-} from "@/wab/client/typography-utils";
-import { UndoRecord } from "@/wab/client/undo-log";
-import {
-  canSetDisplayNone,
-  getContainerType,
-} from "@/wab/client/utils/tpl-client-utils";
-import { siteFinalStyleTokensAllDeps } from "@/wab/shared/core/site-style-tokens";
-import {
-  allGlobalVariants,
-  DEFAULT_THEME_TYPOGRAPHY,
-  isTplAttachedToSite,
-  writeable,
-} from "@/wab/shared/core/sites";
-import { SlotSelection } from "@/wab/shared/core/slots";
-import {
-  findImplicitStatesOfNodesInTree,
-  findImplicitUsages,
-  getStateDisplayName,
-  isPrivateState,
-  isStateUsedInExpr,
-} from "@/wab/shared/core/states";
-import { px } from "@/wab/shared/core/styles";
-import * as Tpls from "@/wab/shared/core/tpls";
-import {
-  isTplComponent,
-  isTplVariantable,
-  RawTextLike,
-} from "@/wab/shared/core/tpls";
-import * as ValNodes from "@/wab/shared/core/val-nodes";
-import {
-  isSelectableValNode,
-  slotContentValNode,
-  ValComponent,
-  ValNode,
-  ValSlot,
-  ValTag,
-} from "@/wab/shared/core/val-nodes";
-import {
-  asTpl,
-  asTplOrSlotSelection,
-  equivTplOrSlotSelection,
-} from "@/wab/shared/core/vals";
 import {
   canAddChildren,
   canAddChildrenAndWhy,
@@ -229,55 +252,30 @@ import {
   canAddSiblingsAndWhy,
 } from "@/wab/shared/parenting";
 import {
-  hasTypography,
-  RSH,
-  RuleSetHelpers,
-} from "@/wab/shared/RuleSetHelpers";
-import {
   isSizeProp,
   isTplAutoSizable,
   isTplDefaultSized,
   resetTplSize,
 } from "@/wab/shared/sizingutils";
-import {
-  getAncestorTplSlot,
-  getParentOrSlotSelection,
-  getSingleTextBlockFromArg,
-  getSlotParams,
-  getTplSlotDescendants,
-  isPlainTextTplSlot,
-  isTextBlockArg,
-} from "@/wab/shared/SlotUtils";
 import { capitalizeFirst } from "@/wab/shared/strs";
-import { $$$ } from "@/wab/shared/TplQuery";
-import {
-  ComponentCycleUserError,
-  NestedTplSlotsError,
-} from "@/wab/shared/UserError";
 import {
   makeVariantComboSorter,
   sortedVariantSettingStack,
 } from "@/wab/shared/variant-sort";
 import {
-  ensureBaseVariantSetting,
-  ensureVariantSetting,
-  isBaseVariant,
-  isGlobalVariant,
-  isPrivateStyleVariant,
-  toVariantKey,
-  tryGetBaseVariantSetting,
-  tryGetPrivateStyleVariant,
-  VariantCombo,
-} from "@/wab/shared/Variants";
-import {
+  TplVisibility,
   clearTplVisibility,
   getEffectiveTplVisibility,
   getTplVisibilityAsDescendant,
   getVariantSettingVisibility,
   isVisibilityHidden,
   setTplVisibility,
-  TplVisibility,
 } from "@/wab/shared/visibility-utils";
+import { notification } from "antd";
+import $ from "jquery";
+import L, { clamp, isArray, merge } from "lodash";
+import pluralize from "pluralize";
+import React from "react";
 
 export class ViewOps {
   _viewCtx: ViewCtx;
@@ -2044,7 +2042,7 @@ export class ViewOps {
 
         let fontFamily = exp.get("font-family");
         if (fontFamily === "initial") {
-          fontFamily = DEFAULT_THEME_TYPOGRAPHY["font-family"];
+          fontFamily = "Arial";
         }
 
         const spec = this.studioCtx()
@@ -2056,7 +2054,7 @@ export class ViewOps {
 
         let fontWeight = exp.get("font-weight");
         if (fontWeight === "normal") {
-          fontWeight = DEFAULT_THEME_TYPOGRAPHY["font-weight"];
+          fontWeight = "400";
         }
 
         const idx = validWeights.findIndex(

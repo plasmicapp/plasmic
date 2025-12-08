@@ -5,7 +5,9 @@ import { goToProject } from "../../utils/studio-utils";
 
 async function setHtmlId(page: Page, rightPanel: FrameLocator, id: string) {
   const collapseButton = rightPanel
-    .locator('button[data-test-id="collapse"]')
+    .locator(
+      '[data-test-id="html-attributes-section"] button[data-test-id="collapse"]'
+    )
     .first();
   if ((await collapseButton.count()) > 0) {
     const isCollapsed =

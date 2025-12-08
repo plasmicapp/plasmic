@@ -472,7 +472,6 @@ const DEFAULT_DEVFLAGS = {
   previewSteps: false,
 
   // Permanently disabled, just internal tools/scripts.
-  autoInitEmptyThemeStyles: false,
   allowPlasmicTeamEdits: false,
 
   // variant experiments

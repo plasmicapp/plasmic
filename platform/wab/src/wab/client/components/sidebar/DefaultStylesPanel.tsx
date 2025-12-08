@@ -7,17 +7,14 @@ import {
   PlasmicDefaultStylesPanel,
 } from "@/wab/client/plasmic/plasmic_kit_left_pane/PlasmicDefaultStylesPanel";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { RuleSetHelpers } from "@/wab/shared/RuleSetHelpers";
 import { isScreenVariant } from "@/wab/shared/Variants";
 import { ensure, mkShortId } from "@/wab/shared/common";
 import { isTagListContainer } from "@/wab/shared/core/rich-text-util";
-import { DEFAULT_THEME_STYLES } from "@/wab/shared/core/sites";
 import {
   THEMABLE_TAGS,
   getApplicableSelectors,
   mkRuleSet,
 } from "@/wab/shared/core/styles";
-import { DEVFLAGS } from "@/wab/shared/devflags";
 import { Mixin, ThemeStyle, Variant } from "@/wab/shared/model/classes";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { observer } from "mobx-react";
@@ -60,11 +57,6 @@ const DefaultStylesPanel = observer(
       const selector = `${tag}${pseudoClass}`;
       const existing = activeTheme.styles.find((m) => m.selector === selector);
       if (existing) {
-        // If this is empty, and we switch to it, we initialize it!
-        await studioCtx.change<never>(({ success }) => {
-          initializeMixinWithDefaults(existing.style, selector);
-          return success();
-        });
         setMixin(existing.style);
         return;
       }
@@ -78,7 +70,6 @@ const DefaultStylesPanel = observer(
           forTheme: true,
           variantedRs: [],
         });
-        initializeMixinWithDefaults(newMixin, selector);
         activeTheme.styles.push(
           new ThemeStyle({
             selector,
@@ -237,13 +228,5 @@ const DefaultStylesPanel = observer(
     );
   })
 );
-
-function initializeMixinWithDefaults(mixin: Mixin, selector: string) {
-  const defaults = DEFAULT_THEME_STYLES[selector];
-  if (defaults && DEVFLAGS.autoInitEmptyThemeStyles) {
-    const rsh = new RuleSetHelpers(mixin.rs, selector);
-    rsh.merge(defaults);
-  }
-}
 
 export default DefaultStylesPanel;

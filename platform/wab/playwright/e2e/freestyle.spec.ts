@@ -62,7 +62,7 @@ test.describe("freestyle", () => {
 
     await models.studio.plotText(
       framed,
-      textLeft + spanInterval * 2 + 3,
+      textLeft + spanInterval * 2 + 5,
       initY + 10,
       "23m ago"
     );

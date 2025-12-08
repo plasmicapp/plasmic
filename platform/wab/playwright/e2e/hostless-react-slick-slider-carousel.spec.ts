@@ -51,7 +51,7 @@ test.describe("hostless-react-slick slider carousel", () => {
 
   async function clickNext(models: PageModels, page: Page) {
     await page.waitForTimeout(300);
-    await models.studio.frame.getByText("Next").click();
+    await models.studio.frame.getByText("Next slide").click();
     await page.waitForTimeout(300);
   }
 

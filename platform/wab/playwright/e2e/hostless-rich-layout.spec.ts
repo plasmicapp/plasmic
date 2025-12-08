@@ -71,7 +71,7 @@ async function checkDarkFgColors(page?: Page) {
   const color = await menuItem.evaluate(
     (el: Element) => getComputedStyle(el).color
   );
-  expect(color).toBe("rgba(83, 83, 83, 0.65)");
+  expect(color).toBe("rgba(0, 0, 0, 0.65)");
 }
 
 async function checkActiveNavDarkBgPrimary(page?: Page) {
