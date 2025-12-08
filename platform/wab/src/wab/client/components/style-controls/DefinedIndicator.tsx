@@ -1,5 +1,9 @@
 import { MenuBuilder } from "@/wab/client/components/menu-builder";
 import { resolvedBackgroundImageCss } from "@/wab/client/components/sidebar-tabs/background-section";
+import {
+  TplNodeIconWrapper,
+  createNodeIcon,
+} from "@/wab/client/components/sidebar-tabs/tpl-tree";
 import { EditMixinButton } from "@/wab/client/components/sidebar/MixinControls";
 import { ColorSwatch } from "@/wab/client/components/style-controls/ColorSwatch";
 import styles from "@/wab/client/components/style-controls/DefinedIndicator.module.sass";
@@ -16,7 +20,6 @@ import ComponentBaseIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Com
 import DotsVerticalIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__DotsVertical";
 import GlobeIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Globe";
 import MixinIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Mixin";
-import SlotIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Slot";
 import ThemeIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Theme";
 import TokenIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Token";
 import VariantGroupIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__VariantGroup";
@@ -48,24 +51,36 @@ import {
 } from "@/wab/shared/Variants";
 import { computedProjectFlags } from "@/wab/shared/cached-selectors";
 import { arrayRemove } from "@/wab/shared/collections";
-import { cx, ensure, ensureArray, swallow } from "@/wab/shared/common";
+import { cx, ensure, ensureArray, spawn, swallow } from "@/wab/shared/common";
 import { BackgroundLayer, NoneBackground } from "@/wab/shared/core/bg-styles";
-import { getComponentDisplayName } from "@/wab/shared/core/components";
+import {
+  getComponentDisplayName,
+  isCodeComponent,
+} from "@/wab/shared/core/components";
 import { ExprCtx, summarizeExpr, tryExtractLit } from "@/wab/shared/core/exprs";
 import {
   TokenValueResolver,
   siteFinalStyleTokensAllDeps,
 } from "@/wab/shared/core/site-style-tokens";
 import { sourceMatchThemeStyle } from "@/wab/shared/core/styles";
-import { isTplComponent, isTplTag } from "@/wab/shared/core/tpls";
+import {
+  isTplComponent,
+  isTplNamable,
+  isTplTag,
+  summarizeTplNamable,
+  tryGetTplOwnerComponent,
+} from "@/wab/shared/core/tpls";
 import { parseCss } from "@/wab/shared/css";
 import { splitCssValue } from "@/wab/shared/css/parse";
 import {
   DefinedIndicatorType,
+  ParentTplStyleSource,
+  SlotSource,
   VariantSettingSource,
   VariantSettingSourceStack,
   isTargetOverwritten,
 } from "@/wab/shared/defined-indicator";
+import { getEffectiveVariantSetting } from "@/wab/shared/effective-variant-setting";
 import {
   Expr,
   RawText,
@@ -218,6 +233,8 @@ export const SourceValue = observer(function SourceValue(props: {
     component: null,
     inStudio: true,
   };
+  const studioCtx = useStudioCtx();
+
   if (source.type === "theme") {
     if (site.themes.includes(source.theme)) {
       // We're using a theme in this project, so it can be edited.
@@ -363,34 +380,6 @@ export const SourceValue = observer(function SourceValue(props: {
         <code>{showExpr(source.value, exprCtx)}</code>
       </Tooltip>
     );
-  } else if (source.type === "slot") {
-    return (
-      <div className="flex flex-vcenter">
-        <Tooltip title={`${SLOT_CAP}: ${source.param.variable.name}`}>
-          <Icon icon={SlotIcon} className="mr-ch" />
-        </Tooltip>
-        {getStylePropValue(
-          clientTokenResolver,
-          site,
-          source.prop,
-          source.value
-        )}
-      </div>
-    );
-  } else if (source.type === "sel") {
-    return (
-      <div className="flex flex-vcenter">
-        <Tooltip title={`Prop: ${source.sel.slotParam.variable.name}`}>
-          <Icon icon={SlotIcon} className="mr-ch" />
-        </Tooltip>
-        {getStylePropValue(
-          clientTokenResolver,
-          site,
-          source.prop,
-          source.value
-        )}
-      </div>
-    );
   } else if (source.type === "visibility") {
     return (
       <Tooltip title={getVisibilityLabel(source.value)}>
@@ -412,6 +401,38 @@ export const SourceValue = observer(function SourceValue(props: {
           <code>{source.value}</code>
         </div>
       </Tooltip>
+    );
+  } else if (source.type === "parentTplStyle" || source.type === "slot") {
+    const owningComponent = tryGetTplOwnerComponent(source.parentTpl);
+    const isTplFocusable =
+      owningComponent &&
+      studioCtx.tplMgr().isOwnedBySite(owningComponent) &&
+      !isCodeComponent(owningComponent);
+
+    return (
+      <div
+        className={`flex flex-vcenter ${
+          isTplFocusable ? "defined-indicator__edit-button code clickable" : ""
+        }`}
+        onClick={() => {
+          if (isTplFocusable) {
+            spawn(
+              studioCtx.setStudioFocusOnTpl(
+                owningComponent,
+                source.parentTpl,
+                source.activeVariants
+              )
+            );
+          }
+        }}
+      >
+        {getStylePropValue(
+          clientTokenResolver,
+          site,
+          source.prop,
+          source.value
+        )}
+      </div>
     );
   } else {
     // type="style"
@@ -457,6 +478,23 @@ const VariantSourceStack = observer(function VariantSourceStack(props: {
 }) {
   const { stack, targetSource, onShowPopup } = props;
   const studioCtx = useStudioCtx();
+
+  const renderParentTplSourceIcon = (
+    source: ParentTplStyleSource | SlotSource
+  ) => {
+    const effectiveVs = getEffectiveVariantSetting(
+      source.parentTpl,
+      source.activeVariants
+    );
+    const nodeIcon = createNodeIcon(source.parentTpl, effectiveVs);
+
+    return (
+      <TplNodeIconWrapper node={source.parentTpl}>
+        {nodeIcon}
+      </TplNodeIconWrapper>
+    );
+  };
+
   return (
     <div className="defined-indicator__source-stack">
       <div className="defined-indicator__source-stack__line-container">
@@ -468,14 +506,40 @@ const VariantSourceStack = observer(function VariantSourceStack(props: {
             ? source.theme.defaultStyle.name
             : source.type === "themeTag"
             ? `Default "${source.selector}"`
-            : source.type === "sel"
-            ? `${getComponentDisplayName(source.sel.getTpl().component)}.${
-                source.sel.slotParam.variable.name
-              } at ${variantComboName(source.slotCombo)}`
             : source.type === "slot"
-            ? `${SLOT_CAP} "${
-                source.param.variable.name
-              }" at ${variantComboName(source.combo)}`
+            ? `${SLOT_CAP} "${source.param.variable.name}" in ${
+                source.tplComponent
+                  ? getComponentDisplayName(source.tplComponent.component)
+                  : "this component"
+              }`
+            : source.type === "parentTplStyle"
+            ? (() => {
+                const effectiveVs = getEffectiveVariantSetting(
+                  source.parentTpl,
+                  source.activeVariants
+                );
+
+                // Get the tpl name
+                const tplName = isTplNamable(source.parentTpl)
+                  ? `${summarizeTplNamable(
+                      source.parentTpl,
+                      effectiveVs.rsh()
+                    )} `
+                  : "";
+
+                const parts = [`${tplName}`];
+
+                // Add component info if present
+                if (source.tplComponent) {
+                  parts.push(
+                    `in ${getComponentDisplayName(
+                      source.tplComponent.component
+                    )}`
+                  );
+                }
+
+                return parts.join(" ");
+              })()
             : variantComboName(source.combo);
         return (
           <SourceRow
@@ -484,10 +548,8 @@ const VariantSourceStack = observer(function VariantSourceStack(props: {
             icon={
               source.type === "theme" || source.type === "themeTag" ? (
                 <Icon icon={ThemeIcon} />
-              ) : source.type === "slot" ? (
-                <Icon icon={SlotIcon} />
-              ) : source.type === "sel" ? (
-                <Icon icon={SlotIcon} />
+              ) : source.type === "parentTplStyle" || source.type === "slot" ? (
+                renderParentTplSourceIcon(source)
               ) : isBaseVariant(source.combo) ? (
                 <Icon icon={ComponentBaseIcon} />
               ) : source.combo.every((v) => isGlobalVariant(v)) ? (
@@ -573,6 +635,7 @@ export function mergedIndicatorSource(
         "mixin",
         "otherVariants",
         "theme",
+        "parentTplStyle",
       ] as DefinedIndicatorType["source"][]
     ).find((x) => indicators.some((y) => y.source === x));
     return type || "none";
@@ -614,7 +677,7 @@ const PopoverContent = observer(function PopoverContent(props: {
         <VariantSourceStack
           stack={type.stack}
           targetSource={
-            type.source !== "theme" && type.source !== "slot"
+            type.source !== "theme" && type.source !== "parentTplStyle"
               ? type.targetSource
               : undefined
           }
@@ -732,10 +795,10 @@ function DefinedIndicator_(props: {
     ? "overwritten"
     : types.some((_t) => _t.source === "otherVariants")
     ? "otherVariants"
-    : types.some((_t) => _t.source === "slot")
-    ? "slot"
     : types.some((_t) => _t.source === "theme")
     ? "theme"
+    : types.some((_t) => _t.source === "parentTplStyle")
+    ? "parentTplStyle"
     : undefined;
   return (
     <Popover
@@ -784,7 +847,8 @@ function DefinedIndicator_(props: {
               indicatorType === "overwritten",
             [styles["DefinedIndicator--mixin"]]: indicatorType === "mixin",
             [styles["DefinedIndicator--theme"]]: indicatorType === "theme",
-            [styles["DefinedIndicator--slot"]]: indicatorType === "slot",
+            [styles["DefinedIndicator--parentTplStyle"]]:
+              indicatorType === "parentTplStyle",
           })}
         />
       </div>

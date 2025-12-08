@@ -1,6 +1,5 @@
 import { VariantCombo } from "@/wab/shared/Variants";
 import { arrayEqIgnoreOrder, ensure } from "@/wab/shared/common";
-import { SlotSelection } from "@/wab/shared/core/slots";
 import {
   Animation,
   Arg,
@@ -10,6 +9,9 @@ import {
   Param,
   Site,
   Theme,
+  TplComponent,
+  TplNode,
+  TplSlot,
 } from "@/wab/shared/model/classes";
 import { makeVariantComboSorter } from "@/wab/shared/variant-sort";
 import { TplVisibility } from "@/wab/shared/visibility-utils";
@@ -28,9 +30,9 @@ export type VariantSettingSource =
   | AttrSource
   | VisibilitySource
   | SlotSource
-  | SlotSelectionSource
   | TextSource
-  | ColumnsConfigSource;
+  | ColumnsConfigSource
+  | ParentTplStyleSource;
 
 export interface ThemeSource {
   type: "theme";
@@ -90,27 +92,31 @@ export interface TextSource {
   value: string;
 }
 
-export interface SlotSource {
-  type: "slot";
-  combo: VariantCombo;
-  value: string;
-  prop: string;
-  mixin?: Mixin;
-  param: Param;
-}
-
-export interface SlotSelectionSource {
-  type: "sel";
-  value: string;
-  prop: string;
-  sel: SlotSelection;
-  slotCombo: VariantCombo;
-}
-
 export interface ColumnsConfigSource {
   type: "columnsConfig";
   combo: VariantCombo;
   value: string;
+}
+
+export interface ParentTplStyleSource {
+  type: "parentTplStyle";
+  parentTpl: TplNode;
+  prop: string;
+  value: string;
+  activeVariants: VariantCombo;
+  // The TplComponent that brings in the external component containing parentTpl
+  // undefined if parentTpl is in the current component hierarchy
+  tplComponent?: TplComponent;
+}
+
+export interface SlotSource {
+  type: "slot";
+  parentTpl: TplSlot;
+  value: string;
+  prop: string;
+  activeVariants: VariantCombo;
+  tplComponent?: TplComponent;
+  param: Param;
 }
 
 export type DefinedIndicatorType =
@@ -171,8 +177,8 @@ export type DefinedIndicatorType =
       stack: VariantSettingSourceStack;
     }
   | {
-      // Inherited via TplSlot or SlotSelection
-      source: "slot";
+      // Inherited via Parent Tpl Styles (includes slot inheritance)
+      source: "parentTplStyle";
       stack: VariantSettingSourceStack;
     }
   | { source: "none" }
@@ -200,19 +206,23 @@ export const computeDefinedIndicator = (
           s.type !== "theme" &&
           s.type !== "themeTag" &&
           s.type !== "slot" &&
-          s.type !== "sel" &&
+          s.type !== "parentTplStyle" &&
           arrayEqIgnoreOrder(s.combo, currentCombo)
       )
     );
     const lastSource = ensure(L.last(sources), "sources is empty");
     if (lastSource.type === "theme" || lastSource.type === "themeTag") {
       return { source: "theme", theme: lastSource.theme, stack: sources };
-    } else if (lastSource.type === "slot" || lastSource.type === "sel") {
+    } else if (
+      lastSource.type === "parentTplStyle" ||
+      lastSource.type === "slot"
+    ) {
       return {
-        source: "slot",
+        source: "parentTplStyle",
         stack: sources,
       };
     }
+
     if (arrayEqIgnoreOrder(lastSource.combo, currentCombo)) {
       if (lastSource.type === "mixin") {
         return {
@@ -273,7 +283,8 @@ export function getTargetBlockingCombo(types: DefinedIndicatorType[]) {
       lastSource &&
       lastSource.type !== "theme" &&
       lastSource.type !== "themeTag" &&
-      lastSource.type !== "sel"
+      lastSource.type !== "slot" &&
+      lastSource.type !== "parentTplStyle"
     ) {
       return lastSource.combo;
     }

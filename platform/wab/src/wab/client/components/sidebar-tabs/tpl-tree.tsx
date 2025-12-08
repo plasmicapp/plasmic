@@ -550,27 +550,12 @@ const TplTreeNode = observer(function TplTreeNode(props: {
     return outlineCtx.matcher.boldSnippets(label);
   };
 
-  const IconWrapper = ({ children }: { children: React.ReactNode }) => {
-    return (
-      <div
-        className={cx({
-          tpltree__label__icon: true,
-          "tpltree__label__icon--tag": Tpls.isTplTag(item),
-          "tpltree__label__icon--component": Tpls.isTplComponent(item),
-          "tpltree__label__icon--slot": Tpls.isTplSlot(item),
-        })}
-      >
-        {children}
-      </div>
-    );
-  };
-
   const renderRep = () => {
     if (hasRep) {
       return (
-        <IconWrapper>
+        <TplNodeIconWrapper node={item}>
           <RepIcon />
-        </IconWrapper>
+        </TplNodeIconWrapper>
       );
     }
     return null;
@@ -579,9 +564,9 @@ const TplTreeNode = observer(function TplTreeNode(props: {
   const renderInteractive = () => {
     if (hasInteraction) {
       return (
-        <IconWrapper>
+        <TplNodeIconWrapper node={item}>
           <ActionIcon />
-        </IconWrapper>
+        </TplNodeIconWrapper>
       );
     }
     return null;
@@ -901,18 +886,9 @@ const TplTreeNode = observer(function TplTreeNode(props: {
     >
       {renderExpander()}
       <div className="tpltree__label__content">
-        <div
-          className={cx({
-            tpltree__label__icon: true,
-            "tpltree__label__icon--focused": isFocused,
-            "tpltree__label__icon--component": Tpls.isTplComponent(item),
-            "tpltree__label__icon--tag": Tpls.isTplTag(item),
-            "tpltree__label__icon--slot": Tpls.isTplSlot(item),
-            "tpltree__label__icon--prop": item instanceof SlotSelection,
-          })}
-        >
+        <TplNodeIconWrapper isFocused={isFocused} node={item}>
           {icon}
-        </div>
+        </TplNodeIconWrapper>
         {!codeComponentRoot && !codeComponentSlot && (
           <>
             {renderRep()}
@@ -1158,6 +1134,29 @@ function TplTreeNodeLabel(props: {
       {content && (
         <span className="tpltree__nodeLabel__content">{content}</span>
       )}
+    </div>
+  );
+}
+
+export function TplNodeIconWrapper(props: {
+  node: TplNode | SlotSelection;
+  isFocused?: boolean;
+  children?: React.ReactNode;
+}) {
+  const { node, isFocused, children } = props;
+
+  return (
+    <div
+      className={cx({
+        tpltree__label__icon: true,
+        "tpltree__label__icon--focused": isFocused,
+        "tpltree__label__icon--component": Tpls.isTplComponent(node),
+        "tpltree__label__icon--tag": Tpls.isTplTag(node),
+        "tpltree__label__icon--slot": Tpls.isTplSlot(node),
+        "tpltree__label__icon--prop": node instanceof SlotSelection,
+      })}
+    >
+      {children}
     </div>
   );
 }

@@ -32,7 +32,7 @@ import {
   withoutNils,
 } from "@/wab/shared/common";
 import { clone } from "@/wab/shared/core/exprs";
-import { SlotSelection } from "@/wab/shared/core/slots";
+import { inheritableTypographyCssProps } from "@/wab/shared/core/style-props";
 import {
   cloneRuleSet,
   createExpandedRuleSetMerger,
@@ -49,6 +49,8 @@ import {
   fixTextChildren,
   getOwnerSite,
   getRichTextContent,
+  isTplComponent,
+  isTplSlot,
   isTplTag,
   isTplTextBlock,
   reconnectChildren,
@@ -57,7 +59,7 @@ import {
   ArgSource,
   AttrSource,
   ColumnsConfigSource,
-  SlotSelectionSource,
+  ParentTplStyleSource,
   SlotSource,
   ThemeSource,
   ThemeTagSource,
@@ -95,6 +97,40 @@ import {
 } from "@/wab/shared/visibility-utils";
 
 /**
+ * Data structure for parent Tpl style inheritance information.
+ * Contains all fields from ParentTplStyleSource except type, prop, and value,
+ * plus a styleValues record containing all inheritable CSS properties.
+ */
+type ParentTplStyleData = (
+  | Omit<ParentTplStyleSource, "prop" | "value">
+  | Omit<SlotSource, "prop" | "value">
+) & {
+  styleValues: Record<string, string>;
+};
+
+/**
+ * Extracts inheritable typography CSS properties from a RuleSetHelper.
+ * Only returns properties that are set (non-empty values).
+ *
+ * @param rsh - The RuleSetHelper to extract styles from
+ * @returns Record of CSS property names to their values
+ */
+function getInheritableStyles(
+  rsh: ReadonlyIRuleSetHelpersX
+): Record<string, string> {
+  const inheritableValues: Record<string, string> = {};
+  for (const prop of inheritableTypographyCssProps) {
+    if (rsh.has(prop)) {
+      const value = rsh.getRaw(prop);
+      if (value) {
+        inheritableValues[prop] = value;
+      }
+    }
+  }
+  return inheritableValues;
+}
+
+/**
  * A class that helps with reading VariantSettings from a stack of
  * VariantSettings. It will merge things like args or rulse sets across the
  * VariantSettings inheritance.
@@ -122,6 +158,7 @@ export class EffectiveVariantSetting {
         parentSlotVs: computed,
         themeRsh: computed,
         potentialPropSources: computed,
+        parentStyleValues: computed,
       });
     }
 
@@ -203,9 +240,9 @@ export class EffectiveVariantSetting {
   private _rsh(
     opts: {
       includeTheme?: boolean;
-      includeSlot?: boolean;
+      includeParentTpl?: boolean;
       includeMixins?: boolean;
-    } = { includeTheme: true, includeSlot: false, includeMixins: true }
+    } = { includeTheme: true, includeParentTpl: false, includeMixins: true }
   ): ReadonlyIRuleSetHelpersX {
     const rulesets = this.getEffectiveRuleSets(opts);
     const expanded = opts.includeMixins ? expandRuleSets(rulesets) : rulesets;
@@ -216,21 +253,30 @@ export class EffectiveVariantSetting {
   }
 
   rsh = () => {
-    return this._rsh({ includeTheme: false, includeSlot: false });
+    return this._rsh({
+      includeTheme: false,
+      includeParentTpl: false,
+    });
   };
 
   rshWithTheme = () => {
-    return this._rsh({ includeTheme: true, includeSlot: false });
+    return this._rsh({
+      includeTheme: true,
+      includeParentTpl: false,
+    });
   };
 
-  rshWithThemeSlot = () => {
-    return this._rsh({ includeTheme: true, includeSlot: true });
+  rshWithThemeAndParentStyle = () => {
+    return this._rsh({
+      includeTheme: true,
+      includeParentTpl: true,
+    });
   };
 
   rshWithoutMixins = () => {
     return this._rsh({
       includeTheme: false,
-      includeSlot: false,
+      includeParentTpl: false,
       includeMixins: false,
     });
   };
@@ -251,9 +297,9 @@ export class EffectiveVariantSetting {
   private getEffectiveRuleSets(
     opts: {
       includeTheme?: boolean;
-      includeSlot?: boolean;
+      includeParentTpl?: boolean;
       includeMixins?: boolean;
-    } = { includeTheme: true, includeSlot: false, includeMixins: true }
+    } = { includeTheme: true, includeParentTpl: false, includeMixins: true }
   ): DeepReadonlyArray<RuleSet> {
     const site = this.site;
     const vsettings = this.variantSettings;
@@ -261,7 +307,7 @@ export class EffectiveVariantSetting {
     const self = this;
 
     const rss: RuleSet[] = [];
-    // Lowest priority is the theme ruleset
+    // Lowest priority is the theme default style ruleset
     if (opts.includeTheme) {
       const activeTheme = site ? site.activeTheme : undefined;
       if (activeTheme) {
@@ -270,7 +316,22 @@ export class EffectiveVariantSetting {
             self.vsh.getActiveVariantedRuleSet(activeTheme.defaultStyle)
           );
         }
+      }
+    }
 
+    // Next priority is parent Tpl inheritance (CSS inheritance from parent containers)
+    // This now includes slot inheritance as slots are treated as parent Tpls
+    if (opts.includeParentTpl) {
+      const parentTplRuleSet = self.getParentTplRuleSet();
+      if (parentTplRuleSet) {
+        rss.push(parentTplRuleSet);
+      }
+    }
+
+    // Theme tag styles have higher priority than parent Tpl
+    if (opts.includeTheme) {
+      const activeTheme = site ? site.activeTheme : undefined;
+      if (activeTheme) {
         // Default tag style.
         if (isTplTag(tpl)) {
           const tagStyles = L.sortBy(
@@ -283,38 +344,6 @@ export class EffectiveVariantSetting {
           for (const tagStyle of tagStyles) {
             rss.push(self.vsh.getActiveVariantedRuleSet(tagStyle.style));
           }
-        }
-      }
-    }
-
-    if (opts.includeSlot && isTypographyNode(tpl)) {
-      // next priority is the slot styling that we get from css inheritance.
-      // They only apply if this tpl is a descendant of a TplSlot or a
-      // slot arg
-      const parentArgSlotVs = self.parentArgSlotVs;
-      if (parentArgSlotVs) {
-        // We are a descendant of a slot arg, so the ruleset on the
-        // corresponding TplSlot (in a different Component!) will apply
-        for (const rs of parentArgSlotVs.slotVs.getEffectiveRuleSets({
-          includeTheme: false,
-          includeSlot: true,
-        })) {
-          rss.push(rs);
-        }
-      }
-
-      const parentSlotVs = self.parentSlotVs;
-      if (parentSlotVs) {
-        // We are a descendant of a TplSlot, so the ruleset on that
-        // TplSlot (in this Component) will apply.  This has higher
-        // precedence than parentArgSlotVs, because it is lower in the
-        // tree, as `getParentSlotVs` doesn't traverse across ancestor
-        // TplComponents.
-        for (const rs of parentSlotVs.slotVs.getEffectiveRuleSets({
-          includeTheme: false,
-          includeSlot: true,
-        })) {
-          rss.push(rs);
         }
       }
     }
@@ -369,26 +398,15 @@ export class EffectiveVariantSetting {
         yield { type: "theme", rsh: themeRsh } as const;
       }
 
+      // Parent Tpl inheritance has the lowest priority - it's CSS inheritance
+      // which should be overridden by any directly-set styles (themeTag, mixins, etc.)
+      if (isTypographyNode(tpl)) {
+        yield { type: "parentTpl" } as const;
+      }
+
       const themeTagStyles = self.themeTagStyles;
       for (const themeTagStyle of themeTagStyles) {
         yield { type: "themeTag", ...themeTagStyle } as const;
-      }
-
-      if (isTypographyNode(tpl)) {
-        // If this tpl is a descendant of an arg, then that arg slot
-        // may also apply some styling, which we will get via css inheritance
-        const parentArgSlotVs = self.parentArgSlotVs;
-        if (parentArgSlotVs) {
-          yield { type: "parentArgSlotVs", parentArgSlotVs } as const;
-        }
-
-        // If this tpl is a descendant of a TplSlot (which means it is a
-        // default content), then it may also inherit css styles from the
-        // TplSlot.
-        const parentSlotVs = self.parentSlotVs;
-        if (parentSlotVs) {
-          yield { type: "parentSlotVs", parentSlotVs } as const;
-        }
       }
 
       for (const vs of self.variantSettings) {
@@ -425,10 +443,205 @@ export class EffectiveVariantSetting {
     return [...genSources()];
   }
 
+  /**
+   * Cached array of parent Tpl nodes with their computed style values.
+   * Traverses from closest to furthest parent, crossing slot boundaries and
+   * component boundaries as needed (matching the rendered DOM structure).
+   * Extracts inheritable properties from each parent's RuleSet (computed styles
+   * from all sources: direct styles, mixins, themes, etc.).
+   *
+   * Stores the activeVariants used for each parent so the UI can reconstruct
+   * the RSH independently (important for cross-component inheritance).
+   *
+   * This is a MobX computed property, so the parent traversal and style computation
+   * is cached and only re-computed when the parent tree or activeVariants change.
+   */
+  get parentStyleValues(): ParentTplStyleData[] {
+    const result: ParentTplStyleData[] = [];
+
+    /**
+     * Queue item representing a traversal context.
+     * Each item tracks:
+     * - tpl: The node whose parent hierarchy we're exploring
+     * - activeVariants: The variants active in this context (changes across slot boundaries)
+     * - tplComponent: The TplComponent context when traversing through external component's tpls via slots
+     */
+    interface QueueItem {
+      tpl: TplNode;
+      activeVariants: Variant[];
+      tplComponent?: TplComponent;
+    }
+
+    const queue: QueueItem[] = [
+      {
+        tpl: this.tpl,
+        activeVariants: this.activeVariants,
+      },
+    ];
+
+    while (queue.length > 0) {
+      const item = queue.shift()!;
+
+      // Traverse up the direct parent chain collecting inheritable styles from each ancestor.
+      // Stop at TplComponent boundaries since components encapsulate their internal styles and apply root resets.
+      let parent = item.tpl.parent;
+      while (parent && !isTplComponent(parent)) {
+        const effectiveVs = getEffectiveVariantSetting(
+          parent,
+          item.activeVariants
+        );
+
+        if (isTplSlot(parent)) {
+          // If this tpl is a descendant of a TplSlot (which means it is a
+          // default content), then it may also inherit css styles from the
+          // TplSlot.
+          const slotRsh = effectiveVs.rsh();
+          const inheritableValues = getInheritableStyles(slotRsh);
+          if (Object.keys(inheritableValues).length > 0) {
+            result.push({
+              type: "slot",
+              parentTpl: parent,
+              styleValues: inheritableValues,
+              activeVariants: item.activeVariants,
+              param: parent.param,
+            });
+          }
+        } else {
+          const rsh = effectiveVs.rshWithTheme();
+          const inheritableValues = getInheritableStyles(rsh);
+
+          if (Object.keys(inheritableValues).length > 0) {
+            result.push({
+              type: "parentTplStyle",
+              parentTpl: parent,
+              styleValues: inheritableValues,
+              activeVariants: item.activeVariants,
+              tplComponent: item.tplComponent,
+            });
+          }
+        }
+
+        parent = parent.parent;
+      }
+
+      // Check if this tpl is used as slot content (passed into a component's instance slot).
+      // If so, it should inherit styles from the TplSlot or its parent hierarchy.
+      const parentArgSlotVs = getParentArgSlotVs(item.tpl, item.activeVariants);
+      if (parentArgSlotVs) {
+        // Collect styles directly set on the TplSlot element itself. These styles apply to all content passed into this slot.
+        const slotEffectiveVs = getEffectiveVariantSetting(
+          parentArgSlotVs.slot,
+          parentArgSlotVs.slotVs.activeVariants
+        );
+        const slotRsh = slotEffectiveVs.rsh();
+        const slotInheritableValues = getInheritableStyles(slotRsh);
+
+        if (Object.keys(slotInheritableValues).length > 0) {
+          result.push({
+            type: "slot",
+            parentTpl: parentArgSlotVs.slot,
+            styleValues: slotInheritableValues,
+            activeVariants: parentArgSlotVs.slotVs.activeVariants,
+            tplComponent: parentArgSlotVs.tplComponent,
+            param: parentArgSlotVs.arg.param,
+          });
+        }
+
+        // Continue inheritance traversal from the TplSlot's context.
+        // This also handles nested slots (when a slot is itself inside another component's slot).
+        queue.push({
+          tpl: parentArgSlotVs.slot,
+          activeVariants: parentArgSlotVs.slotVs.activeVariants,
+          tplComponent: parentArgSlotVs.tplComponent,
+        });
+      }
+    }
+
+    return result;
+  }
+
+  /**
+   * Gets the parent Tpl that provides an inherited CSS property value.
+   * Only returns a source if the property is inheritable (typography CSS props).
+   * Traverses up the parent chain until it finds a parent with the property set,
+   * stopping at component boundaries.
+   *
+   * Uses the cached parentStyleValues computed property for optimal performance.
+   * Includes the activeVariants that were used for computing the parent's styles,
+   * allowing the UI to reconstruct the RSH independently.
+   *
+   * @param prop - The CSS property to look for
+   * @returns ParentTplStyleSource or SlotSource or SlotSelectionSource if found, undefined otherwise
+   */
+  getInheritableTplStyleSource(
+    prop: string
+  ): ParentTplStyleSource | SlotSource | undefined {
+    // Only inheritable properties can come from parent Tpls
+    if (!inheritableTypographyCssProps.includes(prop)) {
+      return undefined;
+    }
+
+    // Find the closest parent that has this property set
+    // parentStyleValues is ordered from closest to furthest
+    for (const parentStyleValue of this.parentStyleValues) {
+      if (prop in parentStyleValue.styleValues) {
+        const { styleValues, ...rest } = parentStyleValue;
+        const value = styleValues[prop];
+
+        return {
+          ...rest,
+          prop,
+          value,
+        };
+      }
+    }
+
+    return undefined;
+  }
+
+  /**
+   * Creates a RuleSet containing all inheritable CSS properties from parent Tpls.
+   * Walks up the parent chain and merges all style attributes, with closer ancestors
+   * overriding further ones.
+   * Only works for typography nodes and stops at component boundaries.
+   *
+   * Uses the cached parentStyleValues computed property for optimal performance.
+   *
+   * @returns RuleSet with inherited properties, or undefined if none found
+   */
+  private getParentTplRuleSet(): RuleSet | undefined {
+    // Only typography nodes can inherit CSS properties
+    if (!isTypographyNode(this.tpl)) {
+      return undefined;
+    }
+
+    // parentStyleValues is ordered from closest to furthest
+    // Process from furthest to closest (reverse order) so closer parents override
+    // Note: parentStyleValues already contains only inheritable properties
+    const inheritedValues = [...this.parentStyleValues]
+      .reverse()
+      .reduce(
+        (acc, { styleValues }) => Object.assign(acc, styleValues),
+        {} as Record<string, string>
+      );
+
+    // Only return a RuleSet if we found any inherited properties
+    if (Object.keys(inheritedValues).length > 0) {
+      return new RuleSet({
+        values: inheritedValues,
+        mixins: [],
+        animations: [],
+      });
+    }
+
+    return undefined;
+  }
+
   getPropSource(prop: string): Array<VariantSettingSource> | undefined {
     const site = this.site;
     const tpl = this.tpl;
     const variantSettings = this.variantSettings;
+    const self = this;
 
     const potentialSources = this.potentialPropSources;
 
@@ -466,45 +679,14 @@ export class EffectiveVariantSetting {
               prop,
             } as ThemeTagSource;
           }
-        } else if (candidate.type === "parentArgSlotVs") {
-          // parentArgSlotVs corresponds to a TplSlot in a _different_ component,
-          // and this tpl is a descendant of a tree that is passed as an arg to that
-          // TplComponent.  That TplSlot may also have a long lineage of styles,
-          // but we will just show the last one.
-          const lastSource = L.last(
-            candidate.parentArgSlotVs.slotVs.getPropSource(prop) || []
-          );
-          if (lastSource) {
-            if (lastSource.type === "mixin" || lastSource.type === "style") {
-              yield {
-                ...lastSource,
-                sel: new SlotSelection({
-                  tpl: candidate.parentArgSlotVs.tplComponent,
-                  slotParam: candidate.parentArgSlotVs.arg.param,
-                }),
-                slotCombo: lastSource.combo,
-                type: "sel" as const,
-              } as SlotSelectionSource;
-            } else if (lastSource.type === "sel") {
-              yield lastSource;
-            }
-          }
-        } else if (candidate.type === "parentSlotVs") {
-          // If this tpl is a descendant of a TplSlot (which means it is a
-          // default content), then it may also inherit css styles from the
-          // TplSlot.
-          const lastSource = L.last(
-            candidate.parentSlotVs.slotVs.getPropSource(prop) || []
-          );
-          if (lastSource) {
-            if (lastSource.type === "mixin" || lastSource.type === "style") {
-              yield {
-                ...lastSource,
-                param: candidate.parentSlotVs.slot.param,
-                type: "slot" as const,
-              } as SlotSource;
-            } else if (lastSource.type === "sel") {
-              yield lastSource;
+        } else if (candidate.type === "parentTpl") {
+          // This is a marker to check for parent Tpl inheritance
+          // Parent Tpl styles have lower priority than mixins and direct styles
+          // but higher priority than slots
+          if (isTypographyNode(tpl)) {
+            const parentTplSource = self.getInheritableTplStyleSource(prop);
+            if (parentTplSource) {
+              yield parentTplSource;
             }
           }
         } else if (candidate.type === "mixin") {

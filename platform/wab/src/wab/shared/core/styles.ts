@@ -119,6 +119,7 @@ import {
   isTplCodeComponent,
   isTplColumns,
   isTplComponent,
+  isTplContainer,
   isTplIcon,
   isTplPicture,
   isTplSlot,
@@ -386,9 +387,12 @@ function isStylePropApplicable(tpl: TplNode, prop: string) {
       return true;
     } else if (isTplIcon(tpl)) {
       return prop === "color" || !typographyCssProps.includes(prop);
+    } else if (isTplContainer(tpl)) {
+      // containers can set inheritable typography props (for CSS inheritance to children)
+      // but not non-inheritable typography props (text-decoration-line, text-overflow)
+      return !nonInheritableTypographCssProps.includes(prop);
     } else {
-      // all other tags -- containers, images -- can only take
-      // non-typography props
+      // images and other tags can only take non-typography props
       return !typographyCssProps.includes(prop);
     }
   } else if (isTplSlot(tpl)) {

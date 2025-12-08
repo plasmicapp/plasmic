@@ -440,7 +440,7 @@ export const fixTextTplStyles = (
       sourceComp,
       sourceSite
     );
-    const effectiveRsh = effectiveVs.rshWithThemeSlot();
+    const effectiveRsh = effectiveVs.rshWithThemeAndParentStyle();
     for (const prop of effectiveRsh.props()) {
       fixedRsh.set(prop, effectiveRsh.get(prop));
     }

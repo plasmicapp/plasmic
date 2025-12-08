@@ -1251,7 +1251,7 @@ export class TplExpsProvider implements ExpsProvider {
     this.vtm.ensureVariantSetting(this.tpl, this.targetVariantCombo).rs;
   mergedExp = computedFn(
     () => {
-      const effectiveExp = this.effectiveVs().rshWithThemeSlot();
+      const effectiveExp = this.effectiveVs().rshWithThemeAndParentStyle();
       const getTargetExp = this.targetExp;
       const mergedExp = makeMergedExpProxy(effectiveExp, getTargetExp);
       return makeMobxExpProxy(mergedExp);

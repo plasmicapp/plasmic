@@ -100,9 +100,16 @@ export function LabeledItem(props: {
     indicators.length == 1 &&
     indicators[0].source === "setNonVariable" &&
     indicators[0].isDefaultTheme;
+
+  const hasParentTplStyle = indicators.some(
+    (ind) =>
+      ind.source === "theme" &&
+      (ind as any).stack?.some((s: any) => s.type === "parentTplStyle")
+  );
+
   const showIndicator =
     indicators.length > 0 &&
-    !["theme", "none"].includes(mergedSource) &&
+    (!["theme", "none"].includes(mergedSource) || hasParentTplStyle) &&
     !isDefaultTheme;
 
   const hasLabel = typeof label === "string" ? !!label.trim() : !!label;
@@ -1243,7 +1250,7 @@ export function getValueSetState(
   } else if (
     source === "none" ||
     source === "theme" ||
-    source === "slot" ||
+    source === "parentTplStyle" ||
     source === "derived"
   ) {
     return "isUnset";
