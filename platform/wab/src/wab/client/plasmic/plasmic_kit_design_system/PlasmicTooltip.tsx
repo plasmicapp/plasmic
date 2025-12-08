@@ -175,13 +175,26 @@ function PlasmicTooltip__RenderFunc(props: {
       )}
       tooltipContent={
         <React.Fragment>
-          <OverlayArrow
-            data-plasmic-name={"overlayArrow"}
-            data-plasmic-override={overrides.overlayArrow}
-            className={classNames("__wab_instance", sty.overlayArrow)}
-            dark={true}
-          />
-
+          {(() => {
+            try {
+              return $props.showArrow;
+            } catch (e) {
+              if (
+                e instanceof TypeError ||
+                e?.plasmicType === "PlasmicUndefinedDataError"
+              ) {
+                return true;
+              }
+              throw e;
+            }
+          })() ? (
+            <OverlayArrow
+              data-plasmic-name={"overlayArrow"}
+              data-plasmic-override={overrides.overlayArrow}
+              className={classNames("__wab_instance", sty.overlayArrow)}
+              dark={true}
+            />
+          ) : null}
           <div
             data-plasmic-name={"freeBox"}
             data-plasmic-override={overrides.freeBox}
@@ -262,7 +275,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicTooltip__VariantsArgs;
     args?: PlasmicTooltip__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicTooltip__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicTooltip__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicTooltip__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props
