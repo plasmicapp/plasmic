@@ -36,7 +36,7 @@ export const paragraphTags = new Set([
   "span",
 ]);
 
-export const textStylesKeys = new Set<string>([
+const textStylesKeys = new Set<string>([
   "color",
   "fontFamily",
   "fontSize",
@@ -47,12 +47,24 @@ export const textStylesKeys = new Set<string>([
   "textDecorationLine",
 ]);
 
-export const containerStylesKeys = new Set<string>([
+export const layoutStyleKeys = [
+  "display",
+  "flexGrow",
+  "flexShrink",
+  "flexBasis",
+  "flexWrap",
+  "rowGap",
+  "columnGap",
+  "gridRowGap",
+  "gridColumnGap",
+  "justifyContent",
   "alignItems",
+];
+
+const containerStylesKeys = new Set<string>([
+  ...layoutStyleKeys,
   "alignSelf",
   "background",
-  // "backgroundColor",
-  // "backgroundImage",
   "borderBottomColor",
   "borderBottomLeftRadius",
   "borderBottomRightRadius",
@@ -71,16 +83,6 @@ export const containerStylesKeys = new Set<string>([
   "borderTopWidth",
   "boxShadow",
   "cursor",
-  "display",
-  "flexGrow",
-  "flexShrink",
-  "flexBasis",
-  "flexWrap",
-  "rowGap",
-  "columnGap",
-  "gridRowGap",
-  "gridColumnGap",
-  "justifyContent",
   "marginBottom",
   "marginLeft",
   "marginRight",

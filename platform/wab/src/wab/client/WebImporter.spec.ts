@@ -202,7 +202,7 @@ describe("WebImporter", () => {
       // Verify font-family in variant settings
       const baseVariantSetting = pageViewCtx
         .variantTplMgr()
-        .ensureBaseVariantSetting(textTpl);
+        .ensureBaseVariantSetting(pastedTpl);
 
       // Check that font-family in ruleset values matches the first font only
       expect(baseVariantSetting.rs.values["font-family"]).toBe(

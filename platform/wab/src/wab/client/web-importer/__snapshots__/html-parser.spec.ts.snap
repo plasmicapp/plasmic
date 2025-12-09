@@ -118,26 +118,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                     "tag": "span",
                     "text": "StyleHub",
                     "type": "text",
-                    "variantSettings": [
-                      {
-                        "safeStyles": {
-                          "color": "rgb(255, 245, 204)",
-                          "fontSize": "1.8rem",
-                          "fontWeight": "bold",
-                        },
-                        "unsafeStyles": {},
-                        "unsanitizedStyles": {
-                          "color": "rgb(255, 245, 204)",
-                          "font-size": "1.8rem",
-                          "font-weight": "bold",
-                        },
-                        "variantCombo": [
-                          {
-                            "type": "base",
-                          },
-                        ],
-                      },
-                    ],
+                    "variantSettings": [],
                   },
                 ],
                 "tag": "div",
@@ -145,6 +126,9 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                 "variantSettings": [
                   {
                     "safeStyles": {
+                      "color": "rgb(255, 245, 204)",
+                      "fontSize": "1.8rem",
+                      "fontWeight": "bold",
                       "marginBottom": "0",
                       "marginLeft": "0",
                       "marginRight": "0",
@@ -155,11 +139,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                       "paddingTop": "0",
                       "transform": "rotate3d(0, 0, 1, 45deg)",
                     },
-                    "unsafeStyles": {
-                      "color": "rgb(255, 245, 204)",
-                      "fontSize": "1.8rem",
-                      "fontWeight": "bold",
-                    },
+                    "unsafeStyles": {},
                     "unsanitizedStyles": {
                       "box-sizing": "border-box",
                       "color": "rgb(255, 245, 204)",
@@ -198,22 +178,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                             "tag": "span",
                             "text": "Home",
                             "type": "text",
-                            "variantSettings": [
-                              {
-                                "safeStyles": {
-                                  "fontWeight": "500",
-                                },
-                                "unsafeStyles": {},
-                                "unsanitizedStyles": {
-                                  "font-weight": "500",
-                                },
-                                "variantCombo": [
-                                  {
-                                    "type": "base",
-                                  },
-                                ],
-                              },
-                            ],
+                            "variantSettings": [],
                           },
                         ],
                         "tag": "a",
@@ -221,6 +186,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                         "variantSettings": [
                           {
                             "safeStyles": {
+                              "fontWeight": "500",
                               "marginBottom": "0",
                               "marginLeft": "0",
                               "marginRight": "0",
@@ -230,9 +196,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                               "paddingRight": "0",
                               "paddingTop": "0",
                             },
-                            "unsafeStyles": {
-                              "fontWeight": "500",
-                            },
+                            "unsafeStyles": {},
                             "unsanitizedStyles": {
                               "box-sizing": "border-box",
                               "font-weight": "500",
@@ -247,10 +211,10 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                             ],
                           },
                           {
-                            "safeStyles": {},
-                            "unsafeStyles": {
+                            "safeStyles": {
                               "color": "#e74c3c",
                             },
+                            "unsafeStyles": {},
                             "unsanitizedStyles": {
                               "color": "#e74c3c",
                             },
@@ -309,22 +273,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                             "tag": "span",
                             "text": "Features",
                             "type": "text",
-                            "variantSettings": [
-                              {
-                                "safeStyles": {
-                                  "fontWeight": "500",
-                                },
-                                "unsafeStyles": {},
-                                "unsanitizedStyles": {
-                                  "font-weight": "500",
-                                },
-                                "variantCombo": [
-                                  {
-                                    "type": "base",
-                                  },
-                                ],
-                              },
-                            ],
+                            "variantSettings": [],
                           },
                         ],
                         "tag": "a",
@@ -332,6 +281,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                         "variantSettings": [
                           {
                             "safeStyles": {
+                              "fontWeight": "500",
                               "marginBottom": "0",
                               "marginLeft": "0",
                               "marginRight": "0",
@@ -341,9 +291,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                               "paddingRight": "0",
                               "paddingTop": "0",
                             },
-                            "unsafeStyles": {
-                              "fontWeight": "500",
-                            },
+                            "unsafeStyles": {},
                             "unsanitizedStyles": {
                               "box-sizing": "border-box",
                               "font-weight": "500",
@@ -358,10 +306,10 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                             ],
                           },
                           {
-                            "safeStyles": {},
-                            "unsafeStyles": {
+                            "safeStyles": {
                               "color": "#e74c3c",
                             },
+                            "unsafeStyles": {},
                             "unsanitizedStyles": {
                               "color": "#e74c3c",
                             },
@@ -420,22 +368,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                             "tag": "span",
                             "text": "About",
                             "type": "text",
-                            "variantSettings": [
-                              {
-                                "safeStyles": {
-                                  "fontWeight": "500",
-                                },
-                                "unsafeStyles": {},
-                                "unsanitizedStyles": {
-                                  "font-weight": "500",
-                                },
-                                "variantCombo": [
-                                  {
-                                    "type": "base",
-                                  },
-                                ],
-                              },
-                            ],
+                            "variantSettings": [],
                           },
                         ],
                         "tag": "a",
@@ -443,6 +376,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                         "variantSettings": [
                           {
                             "safeStyles": {
+                              "fontWeight": "500",
                               "marginBottom": "0",
                               "marginLeft": "0",
                               "marginRight": "0",
@@ -452,9 +386,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                               "paddingRight": "0",
                               "paddingTop": "0",
                             },
-                            "unsafeStyles": {
-                              "fontWeight": "500",
-                            },
+                            "unsafeStyles": {},
                             "unsanitizedStyles": {
                               "box-sizing": "border-box",
                               "font-weight": "500",
@@ -469,10 +401,10 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                             ],
                           },
                           {
-                            "safeStyles": {},
-                            "unsafeStyles": {
+                            "safeStyles": {
                               "color": "#e74c3c",
                             },
+                            "unsafeStyles": {},
                             "unsanitizedStyles": {
                               "color": "#e74c3c",
                             },
@@ -531,22 +463,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                             "tag": "span",
                             "text": "Contact",
                             "type": "text",
-                            "variantSettings": [
-                              {
-                                "safeStyles": {
-                                  "fontWeight": "500",
-                                },
-                                "unsafeStyles": {},
-                                "unsanitizedStyles": {
-                                  "font-weight": "500",
-                                },
-                                "variantCombo": [
-                                  {
-                                    "type": "base",
-                                  },
-                                ],
-                              },
-                            ],
+                            "variantSettings": [],
                           },
                         ],
                         "tag": "a",
@@ -554,6 +471,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                         "variantSettings": [
                           {
                             "safeStyles": {
+                              "fontWeight": "500",
                               "marginBottom": "0",
                               "marginLeft": "0",
                               "marginRight": "0",
@@ -563,9 +481,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                               "paddingRight": "0",
                               "paddingTop": "0",
                             },
-                            "unsafeStyles": {
-                              "fontWeight": "500",
-                            },
+                            "unsafeStyles": {},
                             "unsanitizedStyles": {
                               "box-sizing": "border-box",
                               "font-weight": "500",
@@ -580,10 +496,10 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                             ],
                           },
                           {
-                            "safeStyles": {},
-                            "unsafeStyles": {
+                            "safeStyles": {
                               "color": "#e74c3c",
                             },
+                            "unsafeStyles": {},
                             "unsanitizedStyles": {
                               "color": "#e74c3c",
                             },
@@ -696,26 +612,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                         "tag": "span",
                         "text": "Contact Us",
                         "type": "text",
-                        "variantSettings": [
-                          {
-                            "safeStyles": {
-                              "color": "white",
-                              "fontFamily": "Arial",
-                              "fontWeight": "bold",
-                            },
-                            "unsafeStyles": {},
-                            "unsanitizedStyles": {
-                              "color": "white",
-                              "font-family": "Arial,"Helvetica Neue",sans-serif",
-                              "font-weight": "bold",
-                            },
-                            "variantCombo": [
-                              {
-                                "type": "base",
-                              },
-                            ],
-                          },
-                        ],
+                        "variantSettings": [],
                       },
                     ],
                     "tag": "a",
@@ -740,6 +637,9 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                           "borderTopRightRadius": "25px",
                           "borderTopStyle": "solid",
                           "borderTopWidth": "1.5px",
+                          "color": "white",
+                          "fontFamily": "Arial",
+                          "fontWeight": "bold",
                           "marginBottom": "0",
                           "marginLeft": "0",
                           "marginRight": "0",
@@ -749,11 +649,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                           "paddingRight": "1rem",
                           "paddingTop": "0.5rem",
                         },
-                        "unsafeStyles": {
-                          "color": "white",
-                          "fontFamily": "Arial",
-                          "fontWeight": "bold",
-                        },
+                        "unsafeStyles": {},
                         "unsanitizedStyles": {
                           "background": "#e74c3c",
                           "border": "solid #c0392b",
@@ -891,6 +787,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
             "safeStyles": {
               "background": "linear-gradient(180deg, #2C3E50 0%, #34495E 100%)",
               "boxShadow": "0 2px 10px 0px rgba(0,0,0,0.1)",
+              "color": "#fff",
               "marginBottom": "0",
               "marginLeft": "0",
               "marginRight": "0",
@@ -903,9 +800,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
               "top": "0",
               "zIndex": "100",
             },
-            "unsafeStyles": {
-              "color": "#fff",
-            },
+            "unsafeStyles": {},
             "unsanitizedStyles": {
               "background": "linear-gradient(#2C3E50,#34495E)",
               "box-shadow": "0 2px 10px rgba(0,0,0,0.1)",
@@ -1069,26 +964,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                     "tag": "span",
                     "text": "Shop Now",
                     "type": "text",
-                    "variantSettings": [
-                      {
-                        "safeStyles": {
-                          "color": "white",
-                          "fontSize": "1.1rem",
-                          "fontWeight": "bold",
-                        },
-                        "unsafeStyles": {},
-                        "unsanitizedStyles": {
-                          "color": "white",
-                          "font-size": "1.1rem",
-                          "font-weight": "bold",
-                        },
-                        "variantCombo": [
-                          {
-                            "type": "base",
-                          },
-                        ],
-                      },
-                    ],
+                    "variantSettings": [],
                   },
                 ],
                 "tag": "a",
@@ -1102,7 +978,10 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                       "borderBottomRightRadius": "30px",
                       "borderTopLeftRadius": "30px",
                       "borderTopRightRadius": "30px",
+                      "color": "white",
                       "display": "inline-block",
+                      "fontSize": "1.1rem",
+                      "fontWeight": "bold",
                       "marginBottom": "0",
                       "marginLeft": "0",
                       "marginRight": "0",
@@ -1112,11 +991,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                       "paddingRight": "2rem",
                       "paddingTop": "1rem",
                     },
-                    "unsafeStyles": {
-                      "color": "white",
-                      "fontSize": "1.1rem",
-                      "fontWeight": "bold",
-                    },
+                    "unsafeStyles": {},
                     "unsanitizedStyles": {
                       "animation": "fadeIn 0.3s ease",
                       "background": "#e74c3c",
@@ -1199,6 +1074,8 @@ exports[`snapshot tests parse landing page html properly 1`] = `
           {
             "safeStyles": {
               "background": "radial-gradient(ellipse 50% 50% at 30% 50%, #667eea 0%, #764ba2 50%, #4a5568 100%)",
+              "color": "white",
+              "fontFamily": "Helvetica Neue",
               "marginBottom": "0",
               "marginLeft": "0",
               "marginRight": "0",
@@ -1207,12 +1084,9 @@ exports[`snapshot tests parse landing page html properly 1`] = `
               "paddingLeft": "0",
               "paddingRight": "0",
               "paddingTop": "4rem",
-            },
-            "unsafeStyles": {
-              "color": "white",
-              "fontFamily": "Helvetica Neue",
               "textAlign": "center",
             },
+            "unsafeStyles": {},
             "unsanitizedStyles": {
               "background": "radial-gradient(circle at 30% 50%,#667eea 0%,#764ba2 50%,#4a5568 100%)",
               "box-sizing": "border-box",
@@ -1342,7 +1216,6 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                               "paddingLeft": "0",
                               "paddingRight": "0",
                               "paddingTop": "0",
-                              "textAlign": "center",
                             },
                             "unsafeStyles": {},
                             "unsanitizedStyles": {
@@ -1352,7 +1225,6 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                               "margin": "0",
                               "margin-bottom": "1rem",
                               "padding": "0",
-                              "text-align": "center",
                             },
                             "variantCombo": [
                               {
@@ -1377,14 +1249,12 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                               "paddingLeft": "0",
                               "paddingRight": "0",
                               "paddingTop": "0",
-                              "textAlign": "center",
                             },
                             "unsafeStyles": {},
                             "unsanitizedStyles": {
                               "box-sizing": "border-box",
                               "margin": "0",
                               "padding": "0",
-                              "text-align": "center",
                             },
                             "variantCombo": [
                               {
@@ -1419,10 +1289,9 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                           "paddingLeft": "2rem",
                           "paddingRight": "2rem",
                           "paddingTop": "2rem",
-                        },
-                        "unsafeStyles": {
                           "textAlign": "center",
                         },
+                        "unsafeStyles": {},
                         "unsanitizedStyles": {
                           "background": "radial-gradient(circle at top left,#ffffff 0%,#f8f9fa 100%)/min(100%,500px) min(80%,400px)",
                           "border-radius": "10px",
@@ -1500,7 +1369,6 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                               "paddingLeft": "0",
                               "paddingRight": "0",
                               "paddingTop": "0",
-                              "textAlign": "center",
                             },
                             "unsafeStyles": {},
                             "unsanitizedStyles": {
@@ -1510,7 +1378,6 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                               "margin": "0",
                               "margin-bottom": "1rem",
                               "padding": "0",
-                              "text-align": "center",
                             },
                             "variantCombo": [
                               {
@@ -1535,14 +1402,12 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                               "paddingLeft": "0",
                               "paddingRight": "0",
                               "paddingTop": "0",
-                              "textAlign": "center",
                             },
                             "unsafeStyles": {},
                             "unsanitizedStyles": {
                               "box-sizing": "border-box",
                               "margin": "0",
                               "padding": "0",
-                              "text-align": "center",
                             },
                             "variantCombo": [
                               {
@@ -1577,10 +1442,9 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                           "paddingLeft": "2rem",
                           "paddingRight": "2rem",
                           "paddingTop": "2rem",
-                        },
-                        "unsafeStyles": {
                           "textAlign": "center",
                         },
+                        "unsafeStyles": {},
                         "unsanitizedStyles": {
                           "background": "radial-gradient(circle at top left,#ffffff 0%,#f8f9fa 100%)/min(100%,500px) min(80%,400px)",
                           "border-radius": "10px",
@@ -1658,7 +1522,6 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                               "paddingLeft": "0",
                               "paddingRight": "0",
                               "paddingTop": "0",
-                              "textAlign": "center",
                             },
                             "unsafeStyles": {},
                             "unsanitizedStyles": {
@@ -1668,7 +1531,6 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                               "margin": "0",
                               "margin-bottom": "1rem",
                               "padding": "0",
-                              "text-align": "center",
                             },
                             "variantCombo": [
                               {
@@ -1693,14 +1555,12 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                               "paddingLeft": "0",
                               "paddingRight": "0",
                               "paddingTop": "0",
-                              "textAlign": "center",
                             },
                             "unsafeStyles": {},
                             "unsanitizedStyles": {
                               "box-sizing": "border-box",
                               "margin": "0",
                               "padding": "0",
-                              "text-align": "center",
                             },
                             "variantCombo": [
                               {
@@ -1735,10 +1595,9 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                           "paddingLeft": "2rem",
                           "paddingRight": "2rem",
                           "paddingTop": "2rem",
-                        },
-                        "unsafeStyles": {
                           "textAlign": "center",
                         },
+                        "unsafeStyles": {},
                         "unsanitizedStyles": {
                           "background": "radial-gradient(circle at top left,#ffffff 0%,#f8f9fa 100%)/min(100%,500px) min(80%,400px)",
                           "border-radius": "10px",
@@ -2007,24 +1866,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                         "tag": "span",
                         "text": "Subscribe",
                         "type": "text",
-                        "variantSettings": [
-                          {
-                            "safeStyles": {
-                              "color": "white",
-                              "fontWeight": "bold",
-                            },
-                            "unsafeStyles": {},
-                            "unsanitizedStyles": {
-                              "color": "white",
-                              "font-weight": "bold",
-                            },
-                            "variantCombo": [
-                              {
-                                "type": "base",
-                              },
-                            ],
-                          },
-                        ],
+                        "variantSettings": [],
                       },
                     ],
                     "tag": "button",
@@ -2041,7 +1883,9 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                           "borderTopLeftRadius": "25px",
                           "borderTopRightRadius": "25px",
                           "borderTopStyle": "none",
+                          "color": "white",
                           "cursor": "pointer",
+                          "fontWeight": "bold",
                           "marginBottom": "0",
                           "marginLeft": "0",
                           "marginRight": "0",
@@ -2051,10 +1895,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                           "paddingRight": "1.5rem",
                           "paddingTop": "0.8rem",
                         },
-                        "unsafeStyles": {
-                          "color": "white",
-                          "fontWeight": "bold",
-                        },
+                        "unsafeStyles": {},
                         "unsanitizedStyles": {
                           "background": "#e74c3c",
                           "border": "none",
@@ -2191,6 +2032,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
           {
             "safeStyles": {
               "background": "radial-gradient(ellipse 50% 50% at 70% 30%, #2c3e50 0%, #34495e 50%, #1a252f 100%)",
+              "color": "white",
               "marginBottom": "0",
               "marginLeft": "0",
               "marginRight": "0",
@@ -2199,11 +2041,9 @@ exports[`snapshot tests parse landing page html properly 1`] = `
               "paddingLeft": "0",
               "paddingRight": "0",
               "paddingTop": "3rem",
-            },
-            "unsafeStyles": {
-              "color": "white",
               "textAlign": "center",
             },
+            "unsafeStyles": {},
             "unsanitizedStyles": {
               "background": "radial-gradient(circle at 70% 30%,#2c3e50 0%,#34495e 50%,#1a252f 100%)",
               "box-sizing": "border-box",
@@ -2304,6 +2144,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                                 "variantSettings": [
                                   {
                                     "safeStyles": {
+                                      "color": "#ccc",
                                       "marginBottom": "0",
                                       "marginLeft": "0",
                                       "marginRight": "0",
@@ -2313,9 +2154,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                                       "paddingRight": "0",
                                       "paddingTop": "0",
                                     },
-                                    "unsafeStyles": {
-                                      "color": "#ccc",
-                                    },
+                                    "unsafeStyles": {},
                                     "unsanitizedStyles": {
                                       "box-sizing": "border-box",
                                       "color": "#ccc",
@@ -2330,10 +2169,10 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                                     ],
                                   },
                                   {
-                                    "safeStyles": {},
-                                    "unsafeStyles": {
+                                    "safeStyles": {
                                       "color": "white",
                                     },
+                                    "unsafeStyles": {},
                                     "unsanitizedStyles": {
                                       "color": "white",
                                     },
@@ -2401,6 +2240,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                                 "variantSettings": [
                                   {
                                     "safeStyles": {
+                                      "color": "#ccc",
                                       "marginBottom": "0",
                                       "marginLeft": "0",
                                       "marginRight": "0",
@@ -2410,9 +2250,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                                       "paddingRight": "0",
                                       "paddingTop": "0",
                                     },
-                                    "unsafeStyles": {
-                                      "color": "#ccc",
-                                    },
+                                    "unsafeStyles": {},
                                     "unsanitizedStyles": {
                                       "box-sizing": "border-box",
                                       "color": "#ccc",
@@ -2427,10 +2265,10 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                                     ],
                                   },
                                   {
-                                    "safeStyles": {},
-                                    "unsafeStyles": {
+                                    "safeStyles": {
                                       "color": "white",
                                     },
+                                    "unsafeStyles": {},
                                     "unsanitizedStyles": {
                                       "color": "white",
                                     },
@@ -2498,6 +2336,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                                 "variantSettings": [
                                   {
                                     "safeStyles": {
+                                      "color": "#ccc",
                                       "marginBottom": "0",
                                       "marginLeft": "0",
                                       "marginRight": "0",
@@ -2507,9 +2346,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                                       "paddingRight": "0",
                                       "paddingTop": "0",
                                     },
-                                    "unsafeStyles": {
-                                      "color": "#ccc",
-                                    },
+                                    "unsafeStyles": {},
                                     "unsanitizedStyles": {
                                       "box-sizing": "border-box",
                                       "color": "#ccc",
@@ -2524,10 +2361,10 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                                     ],
                                   },
                                   {
-                                    "safeStyles": {},
-                                    "unsafeStyles": {
+                                    "safeStyles": {
                                       "color": "white",
                                     },
+                                    "unsafeStyles": {},
                                     "unsanitizedStyles": {
                                       "color": "white",
                                     },
@@ -2595,6 +2432,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                                 "variantSettings": [
                                   {
                                     "safeStyles": {
+                                      "color": "#ccc",
                                       "marginBottom": "0",
                                       "marginLeft": "0",
                                       "marginRight": "0",
@@ -2604,9 +2442,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                                       "paddingRight": "0",
                                       "paddingTop": "0",
                                     },
-                                    "unsafeStyles": {
-                                      "color": "#ccc",
-                                    },
+                                    "unsafeStyles": {},
                                     "unsanitizedStyles": {
                                       "box-sizing": "border-box",
                                       "color": "#ccc",
@@ -2621,10 +2457,10 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                                     ],
                                   },
                                   {
-                                    "safeStyles": {},
-                                    "unsafeStyles": {
+                                    "safeStyles": {
                                       "color": "white",
                                     },
+                                    "unsafeStyles": {},
                                     "unsanitizedStyles": {
                                       "color": "white",
                                     },
@@ -2801,6 +2637,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                                 "variantSettings": [
                                   {
                                     "safeStyles": {
+                                      "color": "#ccc",
                                       "marginBottom": "0",
                                       "marginLeft": "0",
                                       "marginRight": "0",
@@ -2810,9 +2647,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                                       "paddingRight": "0",
                                       "paddingTop": "0",
                                     },
-                                    "unsafeStyles": {
-                                      "color": "#ccc",
-                                    },
+                                    "unsafeStyles": {},
                                     "unsanitizedStyles": {
                                       "box-sizing": "border-box",
                                       "color": "#ccc",
@@ -2827,10 +2662,10 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                                     ],
                                   },
                                   {
-                                    "safeStyles": {},
-                                    "unsafeStyles": {
+                                    "safeStyles": {
                                       "color": "white",
                                     },
+                                    "unsafeStyles": {},
                                     "unsanitizedStyles": {
                                       "color": "white",
                                     },
@@ -2898,6 +2733,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                                 "variantSettings": [
                                   {
                                     "safeStyles": {
+                                      "color": "#ccc",
                                       "marginBottom": "0",
                                       "marginLeft": "0",
                                       "marginRight": "0",
@@ -2907,9 +2743,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                                       "paddingRight": "0",
                                       "paddingTop": "0",
                                     },
-                                    "unsafeStyles": {
-                                      "color": "#ccc",
-                                    },
+                                    "unsafeStyles": {},
                                     "unsanitizedStyles": {
                                       "box-sizing": "border-box",
                                       "color": "#ccc",
@@ -2924,10 +2758,10 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                                     ],
                                   },
                                   {
-                                    "safeStyles": {},
-                                    "unsafeStyles": {
+                                    "safeStyles": {
                                       "color": "white",
                                     },
+                                    "unsafeStyles": {},
                                     "unsanitizedStyles": {
                                       "color": "white",
                                     },
@@ -2995,6 +2829,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                                 "variantSettings": [
                                   {
                                     "safeStyles": {
+                                      "color": "#ccc",
                                       "marginBottom": "0",
                                       "marginLeft": "0",
                                       "marginRight": "0",
@@ -3004,9 +2839,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                                       "paddingRight": "0",
                                       "paddingTop": "0",
                                     },
-                                    "unsafeStyles": {
-                                      "color": "#ccc",
-                                    },
+                                    "unsafeStyles": {},
                                     "unsanitizedStyles": {
                                       "box-sizing": "border-box",
                                       "color": "#ccc",
@@ -3021,10 +2854,10 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                                     ],
                                   },
                                   {
-                                    "safeStyles": {},
-                                    "unsafeStyles": {
+                                    "safeStyles": {
                                       "color": "white",
                                     },
+                                    "unsafeStyles": {},
                                     "unsanitizedStyles": {
                                       "color": "white",
                                     },
@@ -3092,6 +2925,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                                 "variantSettings": [
                                   {
                                     "safeStyles": {
+                                      "color": "#ccc",
                                       "marginBottom": "0",
                                       "marginLeft": "0",
                                       "marginRight": "0",
@@ -3101,9 +2935,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                                       "paddingRight": "0",
                                       "paddingTop": "0",
                                     },
-                                    "unsafeStyles": {
-                                      "color": "#ccc",
-                                    },
+                                    "unsafeStyles": {},
                                     "unsanitizedStyles": {
                                       "box-sizing": "border-box",
                                       "color": "#ccc",
@@ -3118,10 +2950,10 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                                     ],
                                   },
                                   {
-                                    "safeStyles": {},
-                                    "unsafeStyles": {
+                                    "safeStyles": {
                                       "color": "white",
                                     },
+                                    "unsafeStyles": {},
                                     "unsanitizedStyles": {
                                       "color": "white",
                                     },
@@ -3298,6 +3130,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                                 "variantSettings": [
                                   {
                                     "safeStyles": {
+                                      "color": "#ccc",
                                       "marginBottom": "0",
                                       "marginLeft": "0",
                                       "marginRight": "0",
@@ -3307,9 +3140,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                                       "paddingRight": "0",
                                       "paddingTop": "0",
                                     },
-                                    "unsafeStyles": {
-                                      "color": "#ccc",
-                                    },
+                                    "unsafeStyles": {},
                                     "unsanitizedStyles": {
                                       "box-sizing": "border-box",
                                       "color": "#ccc",
@@ -3324,10 +3155,10 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                                     ],
                                   },
                                   {
-                                    "safeStyles": {},
-                                    "unsafeStyles": {
+                                    "safeStyles": {
                                       "color": "white",
                                     },
+                                    "unsafeStyles": {},
                                     "unsanitizedStyles": {
                                       "color": "white",
                                     },
@@ -3395,6 +3226,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                                 "variantSettings": [
                                   {
                                     "safeStyles": {
+                                      "color": "#ccc",
                                       "marginBottom": "0",
                                       "marginLeft": "0",
                                       "marginRight": "0",
@@ -3404,9 +3236,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                                       "paddingRight": "0",
                                       "paddingTop": "0",
                                     },
-                                    "unsafeStyles": {
-                                      "color": "#ccc",
-                                    },
+                                    "unsafeStyles": {},
                                     "unsanitizedStyles": {
                                       "box-sizing": "border-box",
                                       "color": "#ccc",
@@ -3421,10 +3251,10 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                                     ],
                                   },
                                   {
-                                    "safeStyles": {},
-                                    "unsafeStyles": {
+                                    "safeStyles": {
                                       "color": "white",
                                     },
+                                    "unsafeStyles": {},
                                     "unsanitizedStyles": {
                                       "color": "white",
                                     },
@@ -3492,6 +3322,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                                 "variantSettings": [
                                   {
                                     "safeStyles": {
+                                      "color": "#ccc",
                                       "marginBottom": "0",
                                       "marginLeft": "0",
                                       "marginRight": "0",
@@ -3501,9 +3332,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                                       "paddingRight": "0",
                                       "paddingTop": "0",
                                     },
-                                    "unsafeStyles": {
-                                      "color": "#ccc",
-                                    },
+                                    "unsafeStyles": {},
                                     "unsanitizedStyles": {
                                       "box-sizing": "border-box",
                                       "color": "#ccc",
@@ -3518,10 +3347,10 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                                     ],
                                   },
                                   {
-                                    "safeStyles": {},
-                                    "unsafeStyles": {
+                                    "safeStyles": {
                                       "color": "white",
                                     },
+                                    "unsafeStyles": {},
                                     "unsanitizedStyles": {
                                       "color": "white",
                                     },
@@ -3589,6 +3418,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                                 "variantSettings": [
                                   {
                                     "safeStyles": {
+                                      "color": "#ccc",
                                       "marginBottom": "0",
                                       "marginLeft": "0",
                                       "marginRight": "0",
@@ -3598,9 +3428,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                                       "paddingRight": "0",
                                       "paddingTop": "0",
                                     },
-                                    "unsafeStyles": {
-                                      "color": "#ccc",
-                                    },
+                                    "unsafeStyles": {},
                                     "unsanitizedStyles": {
                                       "box-sizing": "border-box",
                                       "color": "#ccc",
@@ -3615,10 +3443,10 @@ exports[`snapshot tests parse landing page html properly 1`] = `
                                     ],
                                   },
                                   {
-                                    "safeStyles": {},
-                                    "unsafeStyles": {
+                                    "safeStyles": {
                                       "color": "white",
                                     },
+                                    "unsafeStyles": {},
                                     "unsanitizedStyles": {
                                       "color": "white",
                                     },
@@ -3808,6 +3636,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
           {
             "safeStyles": {
               "background": "linear-gradient(#1a252f, #1a252f)",
+              "color": "white",
               "marginBottom": "0",
               "marginLeft": "0",
               "marginRight": "0",
@@ -3817,9 +3646,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
               "paddingRight": "0",
               "paddingTop": "3rem",
             },
-            "unsafeStyles": {
-              "color": "white",
-            },
+            "unsafeStyles": {},
             "unsanitizedStyles": {
               "background": "#1a252f",
               "box-sizing": "border-box",
@@ -3841,6 +3668,9 @@ exports[`snapshot tests parse landing page html properly 1`] = `
     "variantSettings": [
       {
         "safeStyles": {
+          "color": "#333",
+          "fontFamily": "Roboto",
+          "lineHeight": "1.6",
           "marginBottom": "0",
           "marginLeft": "0",
           "marginRight": "0",
@@ -3851,11 +3681,7 @@ exports[`snapshot tests parse landing page html properly 1`] = `
           "paddingTop": "0",
           "width": "100%",
         },
-        "unsafeStyles": {
-          "color": "#333",
-          "fontFamily": "Roboto",
-          "lineHeight": "1.6",
-        },
+        "unsafeStyles": {},
         "unsanitizedStyles": {
           "box-sizing": "border-box",
           "color": "#333",
