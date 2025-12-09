@@ -1781,7 +1781,9 @@ export class StudioCtx extends WithDbCtx {
   });
 
   getSortedMixedArenas = computedFn(() => {
-    return this.contentEditorMode ? [] : this.site.arenas;
+    return this.contentEditorMode
+      ? []
+      : naturalSort(this.site.arenas, (arena) => arena.name);
   });
 
   getSortedComponentArenas = computedFn(() => {
