@@ -97,8 +97,15 @@ export function AdminImportProjectsFromProd() {
   const [modalVisible, setModalVisible] = useState(false);
   const ref = React.createRef<HTMLIFrameElement>();
 
+  const isLocalhost = window.location.hostname.includes("localhost");
+
   const onListenProjectsInfo = React.useCallback(
     async (devflags: DevFlagsType, info: ProjectInfo[]) => {
+      // Do not execute code that could change prod data unless in localhost
+      if (!isLocalhost) {
+        return;
+      }
+
       if (devflags.hostLessWorkspaceId) {
         await setupHostlessWorkspace(nonAuthCtx, devflags.hostLessWorkspaceId);
       }
@@ -121,14 +128,13 @@ export function AdminImportProjectsFromProd() {
 
       setModalVisible(false);
     },
-    [nonAuthCtx, ref]
+    [nonAuthCtx, ref, isLocalhost]
   );
 
   useImportFromProdListener(onListenProjectsInfo);
 
-  const showImportFromProd = window.location.hostname.includes("localhost");
   // Don't even show this on prod, just for extra safety
-  if (!showImportFromProd) {
+  if (!isLocalhost) {
     return null;
   }
 
@@ -149,14 +155,7 @@ export function AdminImportProjectsFromProd() {
           ref={ref}
         />
       </Modal>
-      <Button
-        disabled={window.location.hostname.startsWith(
-          "https://studio.plasmic.app"
-        )}
-        onClick={() => setModalVisible((v) => !v)}
-      >
-        Import
-      </Button>
+      <Button onClick={() => setModalVisible((v) => !v)}>Import</Button>
       <p>This will override your current devflags</p>
     </div>
   );
