@@ -132,6 +132,9 @@
   min-width: 0;
 }
 .freeBox__eorQg {
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.25;
   display: flex;
   position: relative;
 }
@@ -150,6 +153,8 @@
   min-width: 0;
 }
 .freeBox___0DSaK {
+  font-size: 12px;
+  line-height: 1.25;
   display: flex;
   position: relative;
 }

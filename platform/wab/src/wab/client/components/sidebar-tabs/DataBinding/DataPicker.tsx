@@ -236,7 +236,9 @@ function DataPicker_(props: DataPickerProps, ref: HTMLElementRefOf<"div">) {
                 ensure(fixedData, "Should only be called if data exists")
               )
             : keyCount + ` item${keyCount === 1 ? "" : "s"}`;
-          if (matcher.matches(key)) {
+
+          // The join matches the format used in DataPickerGlobalSearchResultsItem
+          if (matcher.matches(itemPath.join(" / "))) {
             searchResults.push({
               itemPath: itemPath,
               previewValue: previewValue,

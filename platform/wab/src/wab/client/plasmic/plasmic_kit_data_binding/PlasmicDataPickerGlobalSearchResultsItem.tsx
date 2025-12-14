@@ -56,12 +56,11 @@ export const PlasmicDataPickerGlobalSearchResultsItem__VariantProps =
   new Array<VariantPropType>("variableType");
 
 export type PlasmicDataPickerGlobalSearchResultsItem__ArgsType = {
-  itemName?: React.ReactNode;
-  itemPath?: React.ReactNode;
+  label?: React.ReactNode;
 };
 type ArgPropType = keyof PlasmicDataPickerGlobalSearchResultsItem__ArgsType;
 export const PlasmicDataPickerGlobalSearchResultsItem__ArgProps =
-  new Array<ArgPropType>("itemName", "itemPath");
+  new Array<ArgPropType>("label");
 
 export type PlasmicDataPickerGlobalSearchResultsItem__OverridesType = {
   root?: Flex__<"div">;
@@ -70,8 +69,7 @@ export type PlasmicDataPickerGlobalSearchResultsItem__OverridesType = {
 };
 
 export interface DefaultDataPickerGlobalSearchResultsItemProps {
-  itemName?: React.ReactNode;
-  itemPath?: React.ReactNode;
+  label?: React.ReactNode;
   variableType?: SingleChoiceArg<
     "string" | "number" | "boolean" | "object" | "array" | "undefined" | "func"
   >;
@@ -182,20 +180,9 @@ function PlasmicDataPickerGlobalSearchResultsItem__RenderFunc(props: {
         })}
       >
         {renderPlasmicSlot({
-          defaultContents: "Path / To / Item /",
-          value: args.itemPath,
-          className: classNames(sty.slotTargetItemPath, {
-            [sty.slotTargetItemPathvariableType_string]: hasVariant(
-              $state,
-              "variableType",
-              "string"
-            ),
-          }),
-        })}
-        {renderPlasmicSlot({
-          defaultContents: "Name",
-          value: args.itemName,
-          className: classNames(sty.slotTargetItemName),
+          defaultContents: "Path / To / Item / Name",
+          value: args.label,
+          className: classNames(sty.slotTargetLabel),
         })}
       </div>
       <div
@@ -287,8 +274,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicDataPickerGlobalSearchResultsItem__VariantsArgs;
     args?: PlasmicDataPickerGlobalSearchResultsItem__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<
-    // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<
     PlasmicDataPickerGlobalSearchResultsItem__VariantsArgs,
     ReservedPropsType
   > &

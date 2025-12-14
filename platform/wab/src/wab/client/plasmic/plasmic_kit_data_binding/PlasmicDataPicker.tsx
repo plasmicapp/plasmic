@@ -1192,7 +1192,7 @@ function PlasmicDataPicker__RenderFunc(props: {
                 "__wab_instance",
                 sty.dataPickerGlobalSearchResultsItem__bacC
               )}
-              itemName={
+              label={
                 <div
                   className={classNames(
                     projectcss.all,
@@ -1211,7 +1211,6 @@ function PlasmicDataPicker__RenderFunc(props: {
                   </React.Fragment>
                 </div>
               }
-              itemPath={"Variants / Color /"}
             />
 
             <DataPickerGlobalSearchResultsItem
@@ -1219,7 +1218,7 @@ function PlasmicDataPicker__RenderFunc(props: {
                 "__wab_instance",
                 sty.dataPickerGlobalSearchResultsItem__uTUbR
               )}
-              itemName={
+              label={
                 <div
                   className={classNames(
                     projectcss.all,
@@ -1238,7 +1237,6 @@ function PlasmicDataPicker__RenderFunc(props: {
                   </React.Fragment>
                 </div>
               }
-              itemPath={null}
             />
           </DataPickerGlobalSearchResults>
         ) : null}
@@ -1826,7 +1824,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicDataPicker__VariantsArgs;
     args?: PlasmicDataPicker__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicDataPicker__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicDataPicker__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicDataPicker__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

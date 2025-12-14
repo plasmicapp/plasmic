@@ -31,22 +31,19 @@ function DataPickerGlobalSearchResultsItem_(
     return null;
   }
 
-  const joinedPath = itemPath
+  const label = itemPath
     .slice(
       flatten && itemPath.length > 0 && flattenedKeys.has(itemPath[0] as string)
         ? 1
         : 0,
-      itemPath.length - 1
+      itemPath.length
     )
     .join(" / ");
 
   return (
     <PlasmicDataPickerGlobalSearchResultsItem
       root={{ ref }}
-      itemPath={joinedPath + (joinedPath.length > 0 ? " / " : "")}
-      itemName={matcher.boldSnippets(
-        <div>{itemPath[itemPath.length - 1]}</div>
-      )}
+      label={matcher.boldSnippets(label)}
       variableType={variableType}
       previewValue={previewValue}
       onClick={onClick}

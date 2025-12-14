@@ -16,12 +16,15 @@
   background: var(--token-Ik3bdE1e1Uy);
 }
 .freeBox__x0W5L {
+  font-weight: 500;
   position: relative;
   justify-content: center;
   display: flex;
   flex-direction: row;
 }
 .freeBox___1FNcp {
+  font-size: 11px;
+  line-height: 1.5;
   display: flex;
   position: relative;
 }

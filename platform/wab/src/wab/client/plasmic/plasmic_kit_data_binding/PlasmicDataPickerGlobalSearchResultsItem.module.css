@@ -21,10 +21,7 @@
   max-width: 100%;
   column-gap: 3px;
 }
-.slotTargetItemPath {
-  white-space: pre;
-}
-.slotTargetItemName {
+.slotTargetLabel {
   font-weight: 400;
 }
 .previewValue {

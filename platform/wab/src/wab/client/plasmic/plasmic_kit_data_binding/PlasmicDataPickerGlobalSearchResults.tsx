@@ -124,7 +124,7 @@ function PlasmicDataPickerGlobalSearchResults__RenderFunc(props: {
                   "__wab_instance",
                   sty.dataPickerGlobalSearchResultsItem__b90X7
                 )}
-                itemName={
+                label={
                   <div
                     className={classNames(
                       projectcss.all,
@@ -143,24 +143,6 @@ function PlasmicDataPickerGlobalSearchResults__RenderFunc(props: {
                     </React.Fragment>
                   </div>
                 }
-                itemPath={
-                  <div
-                    className={classNames(
-                      projectcss.all,
-                      projectcss.__wab_text,
-                      sty.text__yyv0A
-                    )}
-                  >
-                    <React.Fragment>
-                      <span
-                        className={"plasmic_default__all plasmic_default__span"}
-                        style={{ fontWeight: 400 }}
-                      >
-                        {"Variants / Colors / Black /"}
-                      </span>
-                    </React.Fragment>
-                  </div>
-                }
               />
 
               <DataPickerGlobalSearchResultsItem
@@ -168,7 +150,7 @@ function PlasmicDataPickerGlobalSearchResults__RenderFunc(props: {
                   "__wab_instance",
                   sty.dataPickerGlobalSearchResultsItem__wkt0L
                 )}
-                itemName={
+                label={
                   <div
                     className={classNames(
                       projectcss.all,
@@ -187,7 +169,6 @@ function PlasmicDataPickerGlobalSearchResults__RenderFunc(props: {
                     </React.Fragment>
                   </div>
                 }
-                itemPath={null}
               />
             </React.Fragment>
           ),
@@ -223,11 +204,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicDataPickerGlobalSearchResults__VariantsArgs;
     args?: PlasmicDataPickerGlobalSearchResults__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<
-    // Specify variants directly as props
-    PlasmicDataPickerGlobalSearchResults__VariantsArgs,
-    ReservedPropsType
-  > &
+  } & // Specify variants directly as props
+  Omit<PlasmicDataPickerGlobalSearchResults__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicDataPickerGlobalSearchResults__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props
