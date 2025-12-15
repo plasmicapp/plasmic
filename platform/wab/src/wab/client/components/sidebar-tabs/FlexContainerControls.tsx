@@ -27,6 +27,7 @@ import { reverseIf } from "@/wab/shared/common";
 import { isCodeComponent } from "@/wab/shared/core/components";
 import { isTplComponent } from "@/wab/shared/core/tpls";
 import { camelProp } from "@/wab/shared/css";
+import { LENGTH_PERCENTAGE_UNITS } from "@/wab/shared/css/types";
 import { DefinedIndicatorType } from "@/wab/shared/defined-indicator";
 import { flexDirToArrangement } from "@/wab/shared/layoututils";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
@@ -288,6 +289,7 @@ function FlexContainerControls_(props: FlexContainerControlsProps) {
           }
         }),
       styleType: "left",
+      allowedUnits: LENGTH_PERCENTAGE_UNITS,
     },
     vsh,
   });

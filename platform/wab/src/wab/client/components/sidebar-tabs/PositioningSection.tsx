@@ -1,13 +1,12 @@
 import {
+  MaybeCollapsibleRowsRenderer,
+  SidebarSection,
+} from "@/wab/client/components/sidebar/SidebarSection";
+import {
   FullRow,
   LabeledStyleDimItem,
   LabeledStyleItemRow,
 } from "@/wab/client/components/sidebar/sidebar-helpers";
-import {
-  MaybeCollapsibleRowsRenderer,
-  SidebarSection,
-} from "@/wab/client/components/sidebar/SidebarSection";
-import { AlignItemsControls } from "@/wab/client/components/style-controls/align-items-controls";
 import {
   PosControls2,
   PosPushButtons,
@@ -21,21 +20,23 @@ import {
 } from "@/wab/client/components/style-controls/StyleComponent";
 import StyleToggleButton from "@/wab/client/components/style-controls/StyleToggleButton";
 import StyleToggleButtonGroup from "@/wab/client/components/style-controls/StyleToggleButtonGroup";
+import { AlignItemsControls } from "@/wab/client/components/style-controls/align-items-controls";
 import { DimTokenSpinner } from "@/wab/client/components/widgets/DimTokenSelector";
 import { LabelWithDetailedTooltip } from "@/wab/client/components/widgets/LabelWithDetailedTooltip";
 import { isStylePropSet } from "@/wab/client/utils/style-utils";
-import { maybe, mapify } from "@/wab/shared/common";
-import { isCodeComponent } from "@/wab/shared/core/components";
-import { standardSides } from "@/wab/shared/geom";
 import {
   Axis,
+  TrackRange,
   parseGridChildAreaCss,
   showGridChildCss,
-  TrackRange,
 } from "@/wab/shared/Grids";
-import { ContainerType } from "@/wab/shared/layoututils";
 import { isBaseVariant } from "@/wab/shared/Variants";
+import { mapify, maybe } from "@/wab/shared/common";
+import { isCodeComponent } from "@/wab/shared/core/components";
 import { isTplComponent } from "@/wab/shared/core/tpls";
+import { LENGTH_PERCENTAGE_UNITS, NUMBER_UNITS } from "@/wab/shared/css/types";
+import { standardSides } from "@/wab/shared/geom";
+import { ContainerType } from "@/wab/shared/layoututils";
 import { produce } from "immer";
 import { observer } from "mobx-react";
 import React from "react";
@@ -278,9 +279,10 @@ const AutoChildSettings = observer(function AutoChildSettings(props: {
                     label="Order"
                     styleName="order"
                     dimOpts={{
-                      allowedUnits: [""],
+                      allowedUnits: NUMBER_UNITS,
                       extraOptions: [],
                       dragScale: "1",
+                      allowFunctions: false,
                     }}
                     labelSize="small"
                   />
@@ -288,9 +290,10 @@ const AutoChildSettings = observer(function AutoChildSettings(props: {
                     label="Z-index"
                     styleName="z-index"
                     dimOpts={{
-                      allowedUnits: [""],
+                      allowedUnits: NUMBER_UNITS,
                       extraOptions: [],
                       dragScale: "1",
+                      allowFunctions: false,
                     }}
                     labelSize="small"
                   />
@@ -306,9 +309,10 @@ const AutoChildSettings = observer(function AutoChildSettings(props: {
                       label="Z-index"
                       styleName="z-index"
                       dimOpts={{
-                        allowedUnits: [""],
+                        allowedUnits: NUMBER_UNITS,
                         extraOptions: [],
                         dragScale: "1",
+                        allowFunctions: false,
                       }}
                       labelSize="small"
                     />
@@ -351,8 +355,9 @@ const FreeChildSettings = observer(function FreeChildSettings({
                   label="Z-index"
                   styleName="z-index"
                   dimOpts={{
-                    allowedUnits: [""],
+                    allowedUnits: NUMBER_UNITS,
                     dragScale: "1",
+                    allowFunctions: false,
                   }}
                   labelSize="small"
                 />
@@ -385,7 +390,8 @@ const FixedChildSettings = observer(function FixedChildSettings({
               <PosControls2
                 expsProvider={expsProvider}
                 dimOpts={{
-                  max: 300, // For fixed elements 300px is plenty of space to set it
+                  max: 300, // For fixed elements 300px is plenty of space to set it,
+                  allowedUnits: LENGTH_PERCENTAGE_UNITS,
                 }}
               />
             </FullRow>
@@ -400,8 +406,9 @@ const FixedChildSettings = observer(function FixedChildSettings({
                   label="Z-index"
                   styleName="z-index"
                   dimOpts={{
-                    allowedUnits: [""],
+                    allowedUnits: NUMBER_UNITS,
                     dragScale: "1",
+                    allowFunctions: false,
                   }}
                   labelSize="small"
                 />
@@ -448,7 +455,8 @@ const GridChildSettings = observer(function GridChildSettings(props: {
                 )
               )
             }
-            allowedUnits={[""]}
+            allowedUnits={NUMBER_UNITS}
+            allowFunctions={false}
           />
         </MiniLabel>
       </div>
@@ -539,9 +547,10 @@ const StickyChildSettings = observer(function StickyChildSettings({
                   label="Z-index"
                   styleName="z-index"
                   dimOpts={{
-                    allowedUnits: [""],
+                    allowedUnits: NUMBER_UNITS,
                     dragScale: "1",
                     min: 1,
+                    allowFunctions: false,
                   }}
                   labelSize="small"
                 />

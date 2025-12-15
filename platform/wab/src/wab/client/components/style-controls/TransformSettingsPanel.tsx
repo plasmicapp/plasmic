@@ -1,12 +1,13 @@
-import { LabeledItemRow } from "@/wab/client/components/sidebar/sidebar-helpers";
 import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
+import { LabeledItemRow } from "@/wab/client/components/sidebar/sidebar-helpers";
 import StyleToggleButton from "@/wab/client/components/style-controls/StyleToggleButton";
 import StyleToggleButtonGroup from "@/wab/client/components/style-controls/StyleToggleButtonGroup";
 import DimTokenSpinner from "@/wab/client/components/widgets/DimTokenSelector";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ensure } from "@/wab/shared/common";
-import { parseCssNumericNew } from "@/wab/shared/css";
 import { getSliderConfig } from "@/wab/shared/core/transform-utils";
+import { parseCssNumericNew } from "@/wab/shared/css";
+import { LENGTH_PERCENTAGE_UNITS, LENGTH_UNITS } from "@/wab/shared/css/types";
 import { Menu, Slider } from "antd";
 import { observer } from "mobx-react";
 import React, { useEffect } from "react";
@@ -146,8 +147,9 @@ export const TransformSettingsPanel = observer(function TransformSettingsPanel(
               }
             }}
             noClear
-            allowedUnits={["%", "px"]}
             hideArrow={true}
+            allowedUnits={LENGTH_PERCENTAGE_UNITS}
+            allowFunctions
           />
         </LabeledItemRow>
         <LabeledItemRow
@@ -186,8 +188,9 @@ export const TransformSettingsPanel = observer(function TransformSettingsPanel(
               }
             }}
             noClear
-            allowedUnits={["%", "px"]}
             hideArrow={true}
+            allowedUnits={LENGTH_PERCENTAGE_UNITS}
+            allowFunctions
           />
         </LabeledItemRow>
         <LabeledItemRow
@@ -233,7 +236,8 @@ export const TransformSettingsPanel = observer(function TransformSettingsPanel(
             value={selfPerspective || "0px"}
             onChange={updateSelfPerspective}
             noClear
-            allowedUnits={["px"]}
+            allowedUnits={LENGTH_UNITS}
+            allowFunctions
           />
         </LabeledItemRow>
       </SidebarSection>
@@ -265,7 +269,8 @@ export const TransformSettingsPanel = observer(function TransformSettingsPanel(
             value={childPerspective || "0px"}
             onChange={updateChildPerspective}
             noClear
-            allowedUnits={["px"]}
+            allowedUnits={LENGTH_UNITS}
+            allowFunctions
           />
         </LabeledItemRow>
         <LabeledItemRow
@@ -304,8 +309,9 @@ export const TransformSettingsPanel = observer(function TransformSettingsPanel(
               }
             }}
             noClear
-            allowedUnits={["%", "px"]}
             hideArrow={true}
+            allowedUnits={LENGTH_PERCENTAGE_UNITS}
+            allowFunctions
           />
         </LabeledItemRow>
         <LabeledItemRow
@@ -344,8 +350,9 @@ export const TransformSettingsPanel = observer(function TransformSettingsPanel(
               }
             }}
             noClear
-            allowedUnits={["%", "px"]}
             hideArrow={true}
+            allowedUnits={LENGTH_PERCENTAGE_UNITS}
+            allowFunctions
           />
         </LabeledItemRow>
       </SidebarSection>

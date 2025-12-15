@@ -56,6 +56,13 @@ export type AngleUnit = (typeof ANGLE_UNITS)[number];
 export const PERCENTAGE_UNITS = ["%"] as const;
 
 /**
+ * CSS Fraction unit (fr)
+ * Used in CSS Grid for flexible track sizing
+ * @see https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Grid_Layout/Basic_Concepts_of_Grid_Layout#the_fr_unit
+ */
+export const FR_UNITS = ["fr"] as const;
+
+/**
  * Unitless number (no units)
  */
 export const NUMBER_UNITS = [""] as const;
@@ -68,6 +75,17 @@ export const NUMBER_UNITS = [""] as const;
 export const LENGTH_PERCENTAGE_UNITS = [
   ...LENGTH_UNITS,
   ...PERCENTAGE_UNITS,
+] as const;
+
+/**
+ * Combined length, percentage, and fr units
+ * Used for CSS Grid properties that accept fr (fraction) units
+ * Examples: "10px", "50%", "1fr", "2rem"
+ */
+export const LENGTH_PERCENTAGE_FR_UNITS = [
+  ...LENGTH_UNITS,
+  ...PERCENTAGE_UNITS,
+  ...FR_UNITS,
 ] as const;
 
 /**

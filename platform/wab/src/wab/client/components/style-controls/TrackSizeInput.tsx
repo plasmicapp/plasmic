@@ -9,6 +9,7 @@ import {
   Size,
   tryParseAtomicSize,
 } from "@/wab/shared/css-size";
+import { LENGTH_PERCENTAGE_FR_UNITS } from "@/wab/shared/css/types";
 import { notification, Switch } from "antd";
 import * as React from "react";
 
@@ -90,7 +91,8 @@ function TrackSizeInput({ size, onChange }: TrackSizeInputProps) {
       <DimTokenSpinner
         onChange={(val) => handleEdit(true, val || "")}
         value={defaultText1}
-        allowedUnits={["px", "%", "fr"]}
+        allowedUnits={LENGTH_PERCENTAGE_FR_UNITS}
+        allowFunctions
       />
       {defaultText2 !== undefined && (
         <>
@@ -99,7 +101,8 @@ function TrackSizeInput({ size, onChange }: TrackSizeInputProps) {
           <DimTokenSpinner
             onChange={(val) => handleEdit(false, val || "")}
             value={defaultText2}
-            allowedUnits={["px", "%", "fr"]}
+            allowedUnits={LENGTH_PERCENTAGE_FR_UNITS}
+            allowFunctions
           />
         </>
       )}

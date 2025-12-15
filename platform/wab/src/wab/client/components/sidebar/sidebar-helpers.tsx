@@ -383,7 +383,7 @@ export const DraggableDimLabel = observer(function DraggableDimLabel(props: {
 
 export const LabeledStyleDimItem = observer(function LabeledStyleDimItem(
   props: Omit<React.ComponentProps<typeof LabeledStyleItem>, "children"> & {
-    dimOpts?: SetOptional<
+    dimOpts: SetOptional<
       Omit<React.ComponentProps<typeof DimTokenSpinner>, "studioCtx">,
       "value" | "onChange"
     > &
@@ -396,7 +396,7 @@ export const LabeledStyleDimItem = observer(function LabeledStyleDimItem(
   const { labelProps, fieldProps } = useLabel(props);
   const sc = useStyleComponent();
   const {
-    dimOpts = {},
+    dimOpts,
     label,
     tokenType,
     vsh = new VariantedStylesHelper(),
@@ -474,8 +474,8 @@ export const LabeledStyleDimItem = observer(function LabeledStyleDimItem(
         value={value}
         onChange={onChange}
         minDropdownWidth={200}
-        {...(dimOpts || {})}
-        noClear={dimOpts?.noClear || valueSetState !== "isSet"}
+        {...dimOpts}
+        noClear={dimOpts.noClear || valueSetState !== "isSet"}
         fieldAriaProps={fieldProps}
         studioCtx={studioCtx}
         tokenType={tokenType}
@@ -495,7 +495,7 @@ export const VerticalLabeledStyleDimItem = observer(
     expsProvider: ExpsProvider;
     styleName: string;
     label: string;
-    dimOpts?: Omit<DimValueOpts, "onChange" | "value">;
+    dimOpts: Omit<DimValueOpts, "onChange" | "value">;
     isDisabled?: boolean;
   }) {
     const { expsProvider, styleName, label } = props;

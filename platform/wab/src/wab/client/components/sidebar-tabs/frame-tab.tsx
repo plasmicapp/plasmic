@@ -11,15 +11,15 @@ import CenterAndPadIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Cent
 import FrameStretchIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__FrameStretch";
 import TriangleBottomIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__TriangleBottom";
 import { ViewComponentProps, ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { ensure, parsePx } from "@/wab/shared/common";
 import { isTokenRef } from "@/wab/commons/StyleToken";
-import { isPageComponent, isPageFrame } from "@/wab/shared/core/components";
 import {
   FrameViewMode,
   getFrameHeight,
   isHeightAutoDerived,
 } from "@/wab/shared/Arenas";
 import { FRAME_CAP } from "@/wab/shared/Labels";
+import { ensure, parsePx } from "@/wab/shared/common";
+import { isPageComponent, isPageFrame } from "@/wab/shared/core/components";
 import { ArenaFrame } from "@/wab/shared/model/classes";
 import { frameSizeGroups } from "@/wab/shared/responsiveness";
 import { getComponentDefaultSize } from "@/wab/shared/sizingutils";
@@ -228,6 +228,7 @@ const FrameSizeSection = observer(function FrameSizeSection(
           value={`${frame.width}px`}
           noClear
           onChange={(val) => changeSize("width", ensure(val, "noClear"))}
+          allowFunctions={false}
         />
       </LabeledItemRow>
       <LabeledItemRow label={"Height"}>
@@ -237,6 +238,7 @@ const FrameSizeSection = observer(function FrameSizeSection(
           value={`${frame.height}px`}
           noClear
           onChange={(val) => changeSize("height", ensure(val, "noClear"))}
+          allowFunctions={false}
         />
       </LabeledItemRow>
       {isHeightAutoDerived(frame) && (
@@ -256,6 +258,7 @@ const FrameSizeSection = observer(function FrameSizeSection(
                 ? "Page height grows based on content. This value is automatically computed."
                 : "In stretch mode, component height grows based on content. This value is automatically computed."
             }
+            allowFunctions={false}
           />
         </LabeledItemRow>
       )}

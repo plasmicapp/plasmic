@@ -60,6 +60,7 @@ import {
   extractAnimationSequenceUsages,
   mkRuleSet,
 } from "@/wab/shared/core/styles";
+import { PERCENTAGE_UNITS } from "@/wab/shared/css/types";
 import { DEVFLAGS } from "@/wab/shared/devflags";
 import {
   AnimationSequence,
@@ -195,11 +196,12 @@ const AnimationSequenceEditModal = observer(
                     }
                   }}
                   noClear
-                  allowedUnits={["%"]}
+                  allowedUnits={PERCENTAGE_UNITS}
                   extraOptions={["0%", "25%", "50%", "75%", "100%"]}
                   studioCtx={studioCtx}
                   min={0}
                   max={100}
+                  allowFunctions={false}
                 />
               </LabeledItem>
             </FullRow>

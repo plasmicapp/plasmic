@@ -13,6 +13,7 @@ import MinusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Minus";
 import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
 import { StandardMarkdown } from "@/wab/client/utils/StandardMarkdown";
 import { isStyleOrCodeComponentVariant } from "@/wab/shared/Variants";
+import { LENGTH_PERCENTAGE_UNITS } from "@/wab/shared/css/types";
 import { Alert } from "antd";
 import { observer } from "mobx-react";
 import React from "react";
@@ -108,6 +109,8 @@ export const OutlinePanelSection = observer(function OutlinePanelSection() {
                 { value: "thick", label: "Thick" },
               ],
               min: 0,
+              allowedUnits: LENGTH_PERCENTAGE_UNITS,
+              allowFunctions: true,
             }}
           />
           <LabeledLineStyleToggleButtonGroupItemRow
@@ -123,6 +126,10 @@ export const OutlinePanelSection = observer(function OutlinePanelSection() {
             label="Offset"
             styleName={[OutlineProps.offset]}
             tokenType={"Spacing"}
+            dimOpts={{
+              allowedUnits: LENGTH_PERCENTAGE_UNITS,
+              allowFunctions: true,
+            }}
           />
         </>
       )}

@@ -80,6 +80,10 @@ import { allMixins } from "@/wab/shared/core/sites";
 import { CssVarResolver } from "@/wab/shared/core/styles";
 import * as css from "@/wab/shared/css";
 import { parseCss } from "@/wab/shared/css";
+import {
+  LENGTH_PERCENTAGE_UNITS,
+  PERCENTAGE_UNITS,
+} from "@/wab/shared/css/types";
 import { isStandardSide, oppSides } from "@/wab/shared/geom";
 import { Site, isKnownImageAsset } from "@/wab/shared/model/classes";
 import { userImgUrl } from "@/wab/shared/urls";
@@ -464,7 +468,7 @@ const BackgroundLayerPanel = observer(function BackgroundLayerPanel({
               });
             }}
             allowedUnits={["deg"]}
-            dimsFunctionAllowed={false}
+            allowFunctions={false}
           />
           <div
             className={"ml-sm mr-sm overflow-hidden"}
@@ -508,9 +512,9 @@ const BackgroundLayerPanel = observer(function BackgroundLayerPanel({
         <DimTokenSpinner
           value={value}
           onChange={onChange}
-          allowedUnits={["%"]}
+          allowedUnits={PERCENTAGE_UNITS}
           noClear={true}
-          dimsFunctionAllowed={false}
+          allowFunctions={false}
         />
       );
     };
@@ -685,9 +689,10 @@ const BackgroundLayerPanel = observer(function BackgroundLayerPanel({
                     })
                   }
                   extraOptions={["auto"]}
-                  allowedUnits={["%", "px", "em"]}
                   minDropdownWidth={200}
                   hideArrow
+                  allowedUnits={LENGTH_PERCENTAGE_UNITS}
+                  allowFunctions
                 />
               </LabeledItem>
               <LabeledItem label="Height" labelSize="small">
@@ -702,9 +707,10 @@ const BackgroundLayerPanel = observer(function BackgroundLayerPanel({
                     })
                   }
                   extraOptions={["auto"]}
-                  allowedUnits={["%", "px", "em"]}
                   minDropdownWidth={200}
                   hideArrow
+                  allowedUnits={LENGTH_PERCENTAGE_UNITS}
+                  allowFunctions
                 />
               </LabeledItem>
             </FullRow>

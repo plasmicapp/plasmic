@@ -55,11 +55,7 @@ import {
   checkAllowedUnits,
   validateDimCssFunction,
 } from "@/wab/shared/css/css-tree-utils";
-import {
-  isDimCssFunction,
-  LENGTH_PERCENTAGE_UNITS,
-  LengthUnit,
-} from "@/wab/shared/css/types";
+import { isDimCssFunction, LengthUnit } from "@/wab/shared/css/types";
 import { StyleToken } from "@/wab/shared/model/classes";
 import { naturalSort } from "@/wab/shared/sort";
 import { canCreateAlias } from "@/wab/shared/ui-config-utils";
@@ -159,7 +155,7 @@ export const DimTokenSpinner = observer(
       value,
       tokenType,
       noClear,
-      allowedUnits = LENGTH_PERCENTAGE_UNITS,
+      allowedUnits,
       extraOptions: _extraOptions = [],
       onChange,
       fieldAriaProps,
@@ -1015,14 +1011,14 @@ export interface DimValueOpts {
   )[];
   shorthand?: boolean;
   noClear?: boolean;
-  allowedUnits?: readonly string[];
+  allowedUnits: readonly string[];
+  allowFunctions: boolean;
   min?: number;
   max?: number;
   delta?: number;
   fractionDigits?: number;
   displayedFractionDigits?: number;
   vsh?: VariantedStylesHelper;
-  dimsFunctionAllowed?: boolean;
 
   /**
    * Custom validation function. If provided, overrides default dimension validation.
@@ -1044,13 +1040,13 @@ function useDimValue(opts: DimValueOpts) {
     extraOptions: _extraOptions = [],
     shorthand,
     noClear,
-    allowedUnits = LENGTH_PERCENTAGE_UNITS,
+    allowedUnits,
+    allowFunctions,
     min = Number.NEGATIVE_INFINITY,
     max = Infinity,
     delta = 1,
     fractionDigits = 3,
     displayedFractionDigits = 3,
-    dimsFunctionAllowed = true,
     validate: customValidate,
     transform: customTransform,
   } = opts;
@@ -1085,7 +1081,7 @@ function useDimValue(opts: DimValueOpts) {
 
     const newValues = shorthand ? css.parseCssShorthand(val) : [val];
     for (const newValue of newValues) {
-      if (dimsFunctionAllowed && isDimCssFunction(newValue)) {
+      if (allowFunctions && isDimCssFunction(newValue)) {
         const result = validateDimCssFunction(newValue, allowedUnits);
         if (!result.valid) {
           notification.error({

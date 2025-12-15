@@ -24,6 +24,7 @@ import { parseCss } from "@/wab/shared/css";
 import {
   LENGTH_PERCENTAGE_UNITS,
   NUMBER_LENGTH_PERCENTAGE_UNITS,
+  NUMBER_UNITS,
 } from "@/wab/shared/css/types";
 import { DEVFLAGS } from "@/wab/shared/devflags";
 import {
@@ -129,10 +130,12 @@ export function tokenTypeDimOpts(type: StyleTokenType) {
     case "Spacing":
       return {
         allowedUnits: LENGTH_PERCENTAGE_UNITS,
+        allowFunctions: true,
       };
     case "LineHeight":
       return {
         allowedUnits: NUMBER_LENGTH_PERCENTAGE_UNITS,
+        allowFunctions: true,
         fractionDigits: 2,
         displayedFractionDigits: 2,
         min: 0,
@@ -141,10 +144,12 @@ export function tokenTypeDimOpts(type: StyleTokenType) {
     case "FontSize":
       return {
         allowedUnits: LENGTH_PERCENTAGE_UNITS,
+        allowFunctions: true,
       };
     case "Opacity":
       return {
-        allowedUnits: [""],
+        allowedUnits: NUMBER_UNITS,
+        allowFunctions: true,
         min: 0,
         max: 1,
         delta: 0.1,

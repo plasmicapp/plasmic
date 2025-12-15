@@ -8,6 +8,7 @@ import {
   SectionSeparator,
 } from "@/wab/client/components/sidebar/sidebar-helpers";
 import { ExpsProvider } from "@/wab/client/components/style-controls/StyleComponent";
+import { LENGTH_PERCENTAGE_UNITS } from "@/wab/shared/css/types";
 import { observer } from "mobx-react";
 import React from "react";
 
@@ -33,7 +34,8 @@ export const ContentLayoutContainerControls = observer(
           styleName="grid-row-gap"
           tokenType={"Spacing"}
           dimOpts={{
-            allowedUnits: ["px"],
+            allowedUnits: LENGTH_PERCENTAGE_UNITS,
+            allowFunctions: true,
             min: 0,
             dragScale: "10",
           }}

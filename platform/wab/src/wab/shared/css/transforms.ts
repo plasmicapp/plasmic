@@ -39,6 +39,7 @@ export const defaultCssTransform: Record<TransformType, string> = {
 export abstract class CssTransform {
   abstract readonly type: TransformType;
   abstract readonly allowedUnits: Record<string, readonly string[]>;
+  abstract readonly allowFunctions: Record<string, boolean>;
   abstract showCss(): string;
 
   /**
@@ -100,6 +101,11 @@ export class TranslateTransform extends CssTransform {
     Y: getAllowedUnitsForType("LengthOrPercentage"),
     Z: getAllowedUnitsForType("LengthOrPercentage"),
   };
+  readonly allowFunctions = {
+    X: true,
+    Y: true,
+    Z: true,
+  };
 
   constructor(
     readonly X: LengthOrPercentage,
@@ -138,6 +144,12 @@ export class RotateTransform extends CssTransform {
     Y: getAllowedUnitsForType("UnitlessNumber"),
     Z: getAllowedUnitsForType("UnitlessNumber"),
     angle: getAllowedUnitsForType("Angle"),
+  };
+  readonly allowFunctions = {
+    X: false,
+    Y: false,
+    Z: false,
+    angle: true,
   };
 
   constructor(
@@ -184,6 +196,11 @@ export class ScaleTransform extends CssTransform {
     Y: getAllowedUnitsForType("UnitlessNumber"),
     Z: getAllowedUnitsForType("UnitlessNumber"),
   };
+  readonly allowFunctions = {
+    X: false,
+    Y: false,
+    Z: false,
+  };
 
   constructor(
     readonly X: UnitlessNumber,
@@ -221,6 +238,10 @@ export class SkewTransform extends CssTransform {
     X: getAllowedUnitsForType("Angle"),
     Y: getAllowedUnitsForType("Angle"),
   };
+  readonly allowFunctions = {
+    X: false,
+    Y: false,
+  };
 
   constructor(readonly X: Angle, readonly Y: Angle) {
     super();
@@ -246,6 +267,9 @@ export class PerspectiveTransform extends CssTransform {
   readonly type = "perspective" as const;
   readonly allowedUnits = {
     X: getAllowedUnitsForType("Length"),
+  };
+  readonly allowFunctions = {
+    X: true,
   };
 
   constructor(readonly X: Length | "none") {

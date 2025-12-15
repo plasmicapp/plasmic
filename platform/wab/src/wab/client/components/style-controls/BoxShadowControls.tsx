@@ -12,6 +12,7 @@ import { ColorPicker } from "@/wab/client/components/widgets/ColorPicker";
 import { DimTokenSpinner } from "@/wab/client/components/widgets/DimTokenSelector";
 import { ensure } from "@/wab/shared/common";
 import { BoxShadow, Dim } from "@/wab/shared/core/bg-styles";
+import { LENGTH_UNITS } from "@/wab/shared/css/types";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import { observer } from "mobx-react";
 import React from "react";
@@ -77,7 +78,8 @@ class _BoxShadowPanel extends StyleComponent<BoxShadowPanelProps> {
                 this.handleChange(() => (shadow.x = Dim.fromCss(val || "0px")))
               }
               noClear
-              allowedUnits={["px"]}
+              allowedUnits={LENGTH_UNITS}
+              allowFunctions
               extraOptions={[]}
               studioCtx={this.studioCtx()}
             />
@@ -89,7 +91,8 @@ class _BoxShadowPanel extends StyleComponent<BoxShadowPanelProps> {
                 this.handleChange(() => (shadow.y = Dim.fromCss(val || "0px")))
               }
               noClear
-              allowedUnits={["px"]}
+              allowedUnits={LENGTH_UNITS}
+              allowFunctions
               extraOptions={[]}
               studioCtx={this.studioCtx()}
             />
@@ -105,7 +108,8 @@ class _BoxShadowPanel extends StyleComponent<BoxShadowPanelProps> {
                 )
               }
               noClear
-              allowedUnits={["px"]}
+              allowedUnits={LENGTH_UNITS}
+              allowFunctions
               extraOptions={[]}
               studioCtx={this.studioCtx()}
             />
@@ -119,7 +123,8 @@ class _BoxShadowPanel extends StyleComponent<BoxShadowPanelProps> {
                 )
               }
               noClear
-              allowedUnits={["px"]}
+              allowedUnits={LENGTH_UNITS}
+              allowFunctions
               extraOptions={[]}
               studioCtx={this.studioCtx()}
             />

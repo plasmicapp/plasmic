@@ -31,6 +31,7 @@ import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { equalColumnDistribution } from "@/wab/shared/columns-utils";
 import { NullOrUndefinedValueError, ensure } from "@/wab/shared/common";
 import { TplColumnTag, TplColumnsTag } from "@/wab/shared/core/tpls";
+import { LENGTH_PERCENTAGE_UNITS, NUMBER_UNITS } from "@/wab/shared/css/types";
 import { computeDefinedIndicator } from "@/wab/shared/defined-indicator";
 import { ColumnsConfig } from "@/wab/shared/model/classes";
 import { Menu } from "antd";
@@ -164,11 +165,12 @@ export const ColumnsPanelSection = observer(function ColumnsPanelSection(
                   }
                 }}
                 noClear
-                allowedUnits={[""]}
+                allowedUnits={NUMBER_UNITS}
                 extraOptions={[]}
                 min={0}
                 max={12}
                 studioCtx={studioCtx}
+                allowFunctions={false}
               />
               <div className={cn("flex justify-end", S.iconsMargin)}>
                 <IconLinkButton
@@ -264,6 +266,8 @@ export const ColumnsGapControls = observer(function ColumnsGapControls(props: {
           dimOpts={{
             min: 0,
             noClear: true,
+            allowedUnits: LENGTH_PERCENTAGE_UNITS,
+            allowFunctions: true,
           }}
           isDisabled={isDisabled}
         />
@@ -274,6 +278,8 @@ export const ColumnsGapControls = observer(function ColumnsGapControls(props: {
           dimOpts={{
             min: 0,
             noClear: true,
+            allowedUnits: LENGTH_PERCENTAGE_UNITS,
+            allowFunctions: true,
           }}
           isDisabled={isDisabled || !includeRowGap}
         />

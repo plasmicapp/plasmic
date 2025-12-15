@@ -8,13 +8,14 @@ import DimTokenSpinner from "@/wab/client/components/widgets/DimTokenSelector";
 import Select from "@/wab/client/components/widgets/Select";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { cx, ensure } from "@/wab/shared/common";
-import { parseCssNumericNew } from "@/wab/shared/css";
 import {
-  defaultFilterEffects,
   FilterEffect,
+  defaultFilterEffects,
   filterEffectEditorConfig,
   getFilterEffectLabel,
 } from "@/wab/shared/core/filter-effect-utils";
+import { parseCssNumericNew } from "@/wab/shared/css";
+import { LENGTH_UNITS } from "@/wab/shared/css/types";
 import { Slider } from "antd";
 import { observer } from "mobx-react";
 import React, { useEffect } from "react";
@@ -117,7 +118,8 @@ const FilterEffectEditor = (props: FilterEffectPanelProps) => {
                   }
                 }}
                 noClear
-                allowedUnits={["px"]}
+                allowedUnits={LENGTH_UNITS}
+                allowFunctions
               />
             </div>
           </FullRow>
@@ -149,7 +151,8 @@ const FilterEffectEditor = (props: FilterEffectPanelProps) => {
                   }
                 }}
                 noClear
-                allowedUnits={["px"]}
+                allowedUnits={LENGTH_UNITS}
+                allowFunctions
               />
             </div>
           </FullRow>
@@ -182,7 +185,8 @@ const FilterEffectEditor = (props: FilterEffectPanelProps) => {
                   }
                 }}
                 noClear
-                allowedUnits={["px"]}
+                allowedUnits={LENGTH_UNITS}
+                allowFunctions
               />
             </div>
           </FullRow>
@@ -235,6 +239,7 @@ const FilterEffectEditor = (props: FilterEffectPanelProps) => {
               }}
               noClear
               allowedUnits={filterEffectEditorConfig[type].allowedUnits}
+              allowFunctions={false}
             />
           </div>
         </FullRow>

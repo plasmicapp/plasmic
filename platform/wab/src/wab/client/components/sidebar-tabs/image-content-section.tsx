@@ -7,8 +7,8 @@ import { TplExpsProvider } from "@/wab/client/components/style-controls/StyleCom
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import ContainIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Contain";
 import CoverIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Cover";
-import { assert, ensure, spawn } from "@/wab/shared/common";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
+import { assert, ensure, spawn } from "@/wab/shared/common";
 import { isTplTagOrComponent } from "@/wab/shared/core/tpls";
 import { Alert, Tooltip } from "antd";
 import { observer } from "mobx-react";
@@ -135,6 +135,7 @@ function _ContentPanelSection(props: ContentPanelSectionProps) {
           noClear: true,
           value: pos.xAlign,
           allowedUnits: ["px", "%"],
+          allowFunctions: true,
           extraOptions: ["left", "center", "right"],
           onChange: (v) =>
             spawn(
@@ -153,6 +154,7 @@ function _ContentPanelSection(props: ContentPanelSectionProps) {
           noClear: true,
           value: pos.yAlign,
           allowedUnits: ["px", "%"],
+          allowFunctions: true,
           extraOptions: ["top", "center", "bottom"],
           onChange: (v) =>
             spawn(

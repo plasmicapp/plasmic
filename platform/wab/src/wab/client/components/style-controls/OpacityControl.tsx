@@ -6,6 +6,7 @@ import {
 import { makeVariantedStylesHelperFromCurrentCtx } from "@/wab/client/utils/style-utils";
 import { isTokenRef } from "@/wab/commons/StyleToken";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
+import { PERCENTAGE_UNITS } from "@/wab/shared/css/types";
 import { observer } from "mobx-react";
 import React from "react";
 
@@ -60,7 +61,8 @@ export const OpacityControl = observer(function OpacityControl(
         min: 0,
         max: 100,
         extraOptions: ["100%", "75%", "50%", "25%", "0%"],
-        allowedUnits: ["%"],
+        allowedUnits: PERCENTAGE_UNITS,
+        allowFunctions: true,
         tooltip: "Opacity",
       }}
       tokenType={"Opacity"}

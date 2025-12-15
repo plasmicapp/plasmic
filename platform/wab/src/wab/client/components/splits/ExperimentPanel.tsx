@@ -13,6 +13,7 @@ import {
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { spawn } from "@/wab/shared/common";
 import { SplitStatus, SplitType } from "@/wab/shared/core/splits";
+import { PERCENTAGE_UNITS } from "@/wab/shared/css/types";
 import { Split, Variant } from "@/wab/shared/model/classes";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { notification } from "antd";
@@ -169,7 +170,8 @@ function ExperimentPanel_(
                 }
               }}
               noClear={true}
-              allowedUnits={["%"]}
+              allowedUnits={PERCENTAGE_UNITS}
+              allowFunctions={false}
             />
           </div>
         ),

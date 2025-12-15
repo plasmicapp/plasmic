@@ -74,6 +74,7 @@ function ThemeLayoutPanel_(
               label="Standard width"
               dimOpts={{
                 allowedUnits: LENGTH_PERCENTAGE_UNITS,
+                allowFunctions: true,
                 min: 0,
               }}
               noExtract
@@ -83,6 +84,7 @@ function ThemeLayoutPanel_(
               label="Wide width"
               dimOpts={{
                 allowedUnits: LENGTH_PERCENTAGE_UNITS,
+                allowFunctions: true,
                 min: 0,
               }}
               noExtract
@@ -92,6 +94,7 @@ function ThemeLayoutPanel_(
               label="Viewport gap"
               dimOpts={{
                 allowedUnits: LENGTH_PERCENTAGE_UNITS,
+                allowFunctions: true,
                 min: 0,
               }}
               noExtract

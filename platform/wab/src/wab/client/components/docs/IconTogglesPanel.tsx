@@ -8,6 +8,7 @@ import {
   PlasmicIconTogglesPanel,
 } from "@/wab/client/plasmic/plasmic_kit_docs_portal/PlasmicIconTogglesPanel";
 import { makeAssetClassName } from "@/wab/shared/codegen/image-assets";
+import { LENGTH_PERCENTAGE_UNITS } from "@/wab/shared/css/types";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { useLocalStorage } from "react-use";
@@ -73,6 +74,8 @@ const IconTogglesPanel = observer(function IconTogglesPanel(
             onChange={(v) => docsCtx.setIconToggle(icon, "width", v)}
             styleType={["bordered"]}
             placeholder="Unset"
+            allowedUnits={LENGTH_PERCENTAGE_UNITS}
+            allowFunctions
           />
         ),
       }}
@@ -84,6 +87,8 @@ const IconTogglesPanel = observer(function IconTogglesPanel(
             onChange={(v) => docsCtx.setIconToggle(icon, "height", v)}
             styleType={["bordered"]}
             placeholder="Unset"
+            allowedUnits={LENGTH_PERCENTAGE_UNITS}
+            allowFunctions
           />
         ),
       }}

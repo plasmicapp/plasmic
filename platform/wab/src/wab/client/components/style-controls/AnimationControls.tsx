@@ -19,6 +19,7 @@ import {
   fillModeKeywords,
   timingFunctionKeywords,
 } from "@/wab/shared/css/animations";
+import { NUMBER_UNITS } from "@/wab/shared/css/types";
 import { Animation } from "@/wab/shared/model/classes";
 import { naturalSortByName } from "@/wab/shared/sort";
 import { Select } from "antd";
@@ -129,6 +130,7 @@ export const AnimationControls = observer(function AnimationControls(
               }
               noClear
               allowedUnits={["s", "ms"]}
+              allowFunctions
               extraOptions={[]}
               studioCtx={studioCtx}
             />
@@ -142,6 +144,7 @@ export const AnimationControls = observer(function AnimationControls(
                 handleChange(() => (animation.delay = val || "0s"))
               }
               allowedUnits={["s", "ms"]}
+              allowFunctions
               extraOptions={[]}
               studioCtx={studioCtx}
             />
@@ -180,9 +183,10 @@ export const AnimationControls = observer(function AnimationControls(
               onChange={(val) =>
                 handleChange(() => (animation.iterationCount = val || "1"))
               }
-              allowedUnits={[""]}
+              allowedUnits={NUMBER_UNITS}
               extraOptions={["infinite"]}
               studioCtx={studioCtx}
+              allowFunctions={false}
             />
           </LabeledItem>
         </FullRow>

@@ -38,6 +38,7 @@ import {
   tryExtractJson,
 } from "@/wab/shared/core/exprs";
 import { isTplCodeComponent } from "@/wab/shared/core/tpls";
+import { PERCENTAGE_UNITS } from "@/wab/shared/css/types";
 import { computeDefinedIndicator } from "@/wab/shared/defined-indicator";
 import { RESET_CAP } from "@/wab/shared/Labels";
 import {
@@ -262,7 +263,8 @@ function VisibilitySection_(props: {
                 max: 100,
                 extraOptions: ["100%", "50%", "0%"],
                 minDropdownWidth: 170,
-                allowedUnits: ["%"],
+                allowedUnits: PERCENTAGE_UNITS,
+                allowFunctions: true,
                 tooltip: "Opacity",
                 className: cn(S.opacityInput),
               }}

@@ -10,6 +10,7 @@ import {
 } from "@/wab/client/components/style-controls/StyleComponent";
 import DimTokenSpinner from "@/wab/client/components/widgets/DimTokenSelector";
 import { spawn } from "@/wab/shared/common";
+import { NUMBER_UNITS } from "@/wab/shared/css/types";
 import { parseGridChildCssProps } from "@/wab/shared/grid-utils";
 import { observer } from "mobx-react";
 import React from "react";
@@ -77,7 +78,8 @@ export const GridChildSection = observer(function GridChildSection(props: {
                 value={gridChildSpec.row.start ?? ""}
                 onChange={handleChange("row", "start")}
                 min={1}
-                allowedUnits={[""]}
+                allowedUnits={NUMBER_UNITS}
+                allowFunctions={false}
               />
               <span>Start</span>
             </div>
@@ -87,7 +89,8 @@ export const GridChildSection = observer(function GridChildSection(props: {
                 onChange={handleChange("row", "end")}
                 min={1}
                 noClear={true}
-                allowedUnits={[""]}
+                allowedUnits={NUMBER_UNITS}
+                allowFunctions={false}
               />
               <span>Span</span>
             </div>
@@ -105,7 +108,8 @@ export const GridChildSection = observer(function GridChildSection(props: {
                 value={gridChildSpec.column.start ?? ""}
                 onChange={handleChange("column", "start")}
                 min={1}
-                allowedUnits={[""]}
+                allowedUnits={NUMBER_UNITS}
+                allowFunctions={false}
               />
               <span>Start</span>
             </div>
@@ -115,7 +119,8 @@ export const GridChildSection = observer(function GridChildSection(props: {
                 onChange={handleChange("column", "end")}
                 min={1}
                 noClear={true}
-                allowedUnits={[""]}
+                allowedUnits={NUMBER_UNITS}
+                allowFunctions={false}
               />
               <span>Span</span>
             </div>

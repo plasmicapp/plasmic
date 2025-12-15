@@ -34,6 +34,7 @@ import { cx, ensure, maybe, spawn } from "@/wab/shared/common";
 import { siteFinalStyleTokensAllDeps } from "@/wab/shared/core/site-style-tokens";
 import { parseCssNumericNew } from "@/wab/shared/css";
 import { ensureUnit, isDraggableSize } from "@/wab/shared/css-size";
+import { LENGTH_PERCENTAGE_UNITS } from "@/wab/shared/css/types";
 import { isIndicatorExplicitlySet } from "@/wab/shared/defined-indicator";
 import {
   Corner,
@@ -279,6 +280,10 @@ function MeasureControl_(props: MeasureControlProps) {
                     onEscape={() => state.close()}
                     data-plasmic-prop={prop}
                     {...(dimOpts || {})}
+                    allowedUnits={
+                      dimOpts?.allowedUnits ?? LENGTH_PERCENTAGE_UNITS
+                    }
+                    allowFunctions={dimOpts?.allowFunctions ?? true}
                   />
                 </FullRow>
               </Popover>

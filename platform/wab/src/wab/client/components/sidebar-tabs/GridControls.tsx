@@ -15,6 +15,11 @@ import { siteFinalStyleTokensAllDeps } from "@/wab/shared/core/site-style-tokens
 import { allImageAssets, allMixins } from "@/wab/shared/core/sites";
 import { CssVarResolver } from "@/wab/shared/core/styles";
 import {
+  LENGTH_PERCENTAGE_FR_UNITS,
+  LENGTH_PERCENTAGE_UNITS,
+  NUMBER_UNITS,
+} from "@/wab/shared/css/types";
+import {
   GRID_DEFAULT_TEMPLATE,
   isFlexibleSize,
   isTrackTemplate,
@@ -108,7 +113,8 @@ export const GridControls = observer(function GridControls(props: {
             }}
             noClear
             extraOptions={[]}
-            allowedUnits={["%", "px", "fr", "em", "vw"]}
+            allowedUnits={LENGTH_PERCENTAGE_FR_UNITS}
+            allowFunctions
             min={1}
             studioCtx={studioCtx}
           />
@@ -131,10 +137,11 @@ export const GridControls = observer(function GridControls(props: {
               });
             }}
             noClear
-            allowedUnits={[""]}
+            allowedUnits={NUMBER_UNITS}
             extraOptions={[]}
             min={1}
             studioCtx={studioCtx}
+            allowFunctions={false}
           />
         </LabeledItemRow>
       )}
@@ -143,7 +150,11 @@ export const GridControls = observer(function GridControls(props: {
           label="Row Height"
           styleName="grid-auto-rows"
           tokenType={"Spacing"}
-          dimOpts={{ min: 1 }}
+          dimOpts={{
+            min: 1,
+            allowedUnits: LENGTH_PERCENTAGE_UNITS,
+            allowFunctions: true,
+          }}
         />
       </FullRow>
       <FullRow>
@@ -151,7 +162,12 @@ export const GridControls = observer(function GridControls(props: {
           label="Row Gap"
           styleName="grid-row-gap"
           tokenType={"Spacing"}
-          dimOpts={{ dragScale: "10", min: 0 }}
+          dimOpts={{
+            dragScale: "10",
+            min: 0,
+            allowedUnits: LENGTH_PERCENTAGE_UNITS,
+            allowFunctions: true,
+          }}
         />
       </FullRow>
       <FullRow>
@@ -159,7 +175,12 @@ export const GridControls = observer(function GridControls(props: {
           label="Col Gap"
           styleName="grid-column-gap"
           tokenType={"Spacing"}
-          dimOpts={{ dragScale: "10", min: 0 }}
+          dimOpts={{
+            dragScale: "10",
+            min: 0,
+            allowedUnits: LENGTH_PERCENTAGE_UNITS,
+            allowFunctions: true,
+          }}
         />
       </FullRow>
     </>

@@ -11,14 +11,15 @@ import { Icon } from "@/wab/client/components/widgets/Icon";
 import MinusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Minus";
 import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { spawn } from "@/wab/shared/common";
 import {
   isReverseValue,
   redistributeColumns,
   updateCurrentTplColumns,
 } from "@/wab/shared/columns-utils";
-import { ColumnsConfig } from "@/wab/shared/model/classes";
+import { spawn } from "@/wab/shared/common";
 import { TplColumnsTag } from "@/wab/shared/core/tpls";
+import { NUMBER_UNITS } from "@/wab/shared/css/types";
+import { ColumnsConfig } from "@/wab/shared/model/classes";
 import cn from "classnames";
 import { clamp } from "lodash";
 import { observer } from "mobx-react";
@@ -115,11 +116,12 @@ export const ColumnsWrapControls = observer(
                   }
                 }}
                 noClear
-                allowedUnits={[""]}
+                allowedUnits={NUMBER_UNITS}
                 extraOptions={[]}
                 min={1}
                 max={tpl.children.length}
                 studioCtx={studioCtx}
+                allowFunctions={false}
               />
               <div className={cn("flex justify-end", S.iconsMargin)}>
                 <IconLinkButton

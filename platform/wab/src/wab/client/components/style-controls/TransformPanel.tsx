@@ -195,6 +195,7 @@ function DimensionSlider<T extends CssTransform>(props: {
         }}
         noClear
         allowedUnits={allowedUnits}
+        allowFunctions={transform.allowFunctions[dimensionKey]}
       />
     </LabeledItemRow>
   );

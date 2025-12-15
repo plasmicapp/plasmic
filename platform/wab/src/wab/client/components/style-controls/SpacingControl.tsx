@@ -33,6 +33,7 @@ import {
   parseNumericSize,
   showSizeCss,
 } from "@/wab/shared/css-size";
+import { LENGTH_PERCENTAGE_UNITS } from "@/wab/shared/css/types";
 import { oppSide, Side, standardSides } from "@/wab/shared/geom";
 import { Popover, Tooltip } from "antd";
 import { TooltipPlacement } from "antd/lib/tooltip";
@@ -521,6 +522,8 @@ class SpacingControl_ extends StyleComponent<
                 extraOptions: this.props.allowAuto ? ["auto"] : [],
                 dragScale: "10",
                 min: spacingStyleProp === "padding" ? 0 : undefined,
+                allowedUnits: LENGTH_PERCENTAGE_UNITS,
+                allowFunctions: true,
               }}
             />
           </Popover>

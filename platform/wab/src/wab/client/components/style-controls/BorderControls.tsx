@@ -26,6 +26,7 @@ import { makeVariantedStylesHelperFromCurrentCtx } from "@/wab/client/utils/styl
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import { ensure, spawn, unanimousVal } from "@/wab/shared/common";
 import { parseCssShorthand, showCssShorthand } from "@/wab/shared/css";
+import { LENGTH_PERCENTAGE_UNITS } from "@/wab/shared/css/types";
 import {
   Corner,
   Side,
@@ -426,6 +427,8 @@ const BorderLineControls = observer(function BorderLineControls(props: {
             shorthand: selectedSides.length === 0,
             dragScale: "1",
             min: 0,
+            allowedUnits: LENGTH_PERCENTAGE_UNITS,
+            allowFunctions: true,
           }}
         />
         <LabeledLineStyleToggleButtonGroupItemRow
@@ -608,6 +611,8 @@ const BorderRadiusControls = observer(function BorderRadiusControls(props: {
             shorthand: isAll,
             dragScale: "1",
             min: 0,
+            allowedUnits: LENGTH_PERCENTAGE_UNITS,
+            allowFunctions: true,
           }}
         />
       </div>
