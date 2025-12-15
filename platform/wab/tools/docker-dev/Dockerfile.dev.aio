@@ -33,14 +33,18 @@ RUN mkdir -p /tmp/.plasmic && \
 # --- Final stage ---
 FROM node:24-alpine
 
-# Create non-root user and prepare env
-RUN addgroup -S plasmic && \
-    adduser -S plasmic -G plasmic && \
+# Delete container default node user
+RUN deluser --remove-home node 2>/dev/null || true && \
+    delgroup node 2>/dev/null || true
+
+# Create non-root user with UID 1000 and GID 1000 and prepare env
+RUN addgroup -g 1000 plasmic && \
+    adduser -u 1000 -G plasmic -S plasmic && \
     apk add --no-cache git jq bash && \
     echo "fs.inotify.max_user_watches=524288" >> /etc/sysctl.conf && \
     sysctl -p && \
-    mkdir -p $HOME && \
-    chown -R plasmic:plasmic $HOME
+    mkdir -p /home/plasmic && \
+    chown -R 1000:1000 /home/plasmic
 
 USER plasmic
 
