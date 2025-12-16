@@ -1,10 +1,10 @@
 import { buttonComponentName, formComponentName } from "../names";
 import { Registerable, registerComponentHelper } from "../utils";
-import { formHelpers, FormWrapperProps, InputType } from "./Form";
+import { FormWrapperProps, InputType, formHelpers } from "./Form";
 import { FormWrapper } from "./SchemaForm";
 import {
-  commonSimplifiedFormArrayItemType,
   COMMON_ACTIONS,
+  commonSimplifiedFormArrayItemType,
 } from "./sharedRegistration";
 
 const colProp = (
@@ -123,13 +123,13 @@ export function registerForm(loader?: Registerable) {
           if (ps.mode !== "simplified") {
             return true;
           }
-          if (!ctx?.schema) {
+          if (!ctx?.schema || Object.keys(ctx.schema).length === 0) {
             // still loading...
             return false;
           }
           if (
             item.fieldId &&
-            ctx.schema.fields.some((f) => f.id === item.fieldId)
+            ctx.schema.fields?.some((f) => f.id === item.fieldId)
           ) {
             return false;
           }
@@ -381,4 +381,4 @@ export function registerForm(loader?: Registerable) {
 export { FormGroup } from "./FormGroup";
 export { FormItemWrapper } from "./FormItem";
 export { FormListWrapper } from "./FormList";
-export { formHelpers, FormWrapper };
+export { FormWrapper, formHelpers };
