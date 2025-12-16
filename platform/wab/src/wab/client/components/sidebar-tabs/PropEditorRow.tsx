@@ -15,6 +15,7 @@ import {
 } from "@/wab/client/components/sidebar-tabs/PageURLParametersSection";
 import { PropValueEditor } from "@/wab/client/components/sidebar-tabs/PropValueEditor";
 import WarningIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__WarningTriangleSvg";
+import { DEVFLAGS } from "@/wab/shared/devflags";
 
 import { extractExpectedValues } from "@/wab/client/components/sidebar-tabs/DataBinding/DataPickerUtil";
 import { DataTokenEditModal } from "@/wab/client/components/sidebar/DataTokenEditModal";
@@ -867,7 +868,8 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
         allowDynamicValue &&
         !isCustomCode &&
         !isExprValuePropType(propType) &&
-        !(isKnownTemplatedString(expr) && hasDynamicParts(expr)) && (
+        !(isKnownTemplatedString(expr) && hasDynamicParts(expr)) &&
+        DEVFLAGS.dataTokens && (
           <Menu.Item
             id="create-data-token-btn"
             key={"customCode"}

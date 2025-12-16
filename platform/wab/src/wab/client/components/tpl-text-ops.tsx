@@ -9,6 +9,7 @@ import {
   DefinedIndicatorType,
   computeDefinedIndicator,
 } from "@/wab/shared/defined-indicator";
+import { DEVFLAGS } from "@/wab/shared/devflags";
 import { EffectiveVariantSetting } from "@/wab/shared/effective-variant-setting";
 import {
   RawText,
@@ -85,17 +86,20 @@ export function makeTplTextOps(viewCtx: ViewCtx, tpl: TplTag): TplTextOps {
                   }
                 : undefined,
 
-            createDataToken: isKnownRawText(targetVsText)
-              ? () => {
-                  viewCtx.change(() => {
-                    const token = viewCtx.tplMgr().addDataToken({
-                      name: tpl.name ? generateDataTokenName(tpl.name) : "Text",
-                      value: JSON.stringify(targetVsText.text),
+            createDataToken:
+              isKnownRawText(targetVsText) && DEVFLAGS.dataTokens
+                ? () => {
+                    viewCtx.change(() => {
+                      const token = viewCtx.tplMgr().addDataToken({
+                        name: tpl.name
+                          ? generateDataTokenName(tpl.name)
+                          : "Text",
+                        value: JSON.stringify(targetVsText.text),
+                      });
+                      viewCtx.setTriggerCreatingTextDataToken(token);
                     });
-                    viewCtx.setTriggerCreatingTextDataToken(token);
-                  });
-                }
-              : undefined,
+                  }
+                : undefined,
             clear:
               isKnownRawText(targetVsText) &&
               targetVsText.text === "" &&
