@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/antd5",
-  "version": "0.0.312",
+  "version": "0.0.313",
   "description": "Plasmic registration calls for antd components",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
