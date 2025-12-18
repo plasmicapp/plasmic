@@ -537,9 +537,17 @@ function getBranchMenuRenderer({
               onClick={async () => {
                 if (
                   await reactConfirm({
-                    title: "Are you sure you want to delete this branch?",
-                    message: "This cannot be undone.",
-                    confirmLabel: "Delete branch",
+                    title: `Delete branch`,
+                    message: (
+                      <>
+                        <p>
+                          Are you sure you want to delete the branch{" "}
+                          <strong>{branch.name}</strong>?
+                        </p>
+                        <p>This action cannot be undone.</p>
+                      </>
+                    ),
+                    confirmLabel: "Delete",
                   })
                 ) {
                   if (studioCtx.dbCtx().branchInfo?.id === branch.id) {
