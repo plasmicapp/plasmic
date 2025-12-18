@@ -306,21 +306,16 @@ function splitStylesBySafety(styles: Record<string, string>): {
 }
 
 function renameTokenVarNameToUuid(value: string, site: Site) {
-  let unmatchedTokenFound = false;
-  const fixedValue = value.replaceAll(
+  return value.replaceAll(
     /var\(--token-([^)]+)\)/g,
-    (_match, tokenIdentifier) => {
+    (match, tokenIdentifier) => {
       const token = findTokenByNameOrUuid(tokenIdentifier, { site });
       if (token) {
         return `var(--token-${token.uuid})`;
       }
-
-      unmatchedTokenFound = true;
-      return "";
+      return match;
     }
   );
-
-  return unmatchedTokenFound ? null : fixedValue;
 }
 
 /**
@@ -427,16 +422,6 @@ function getVariantSettingsForNode(
     }
   }
 
-  // Ensure token values exist in the project
-  for (const [key, value] of Object.entries(processedBaseStyles)) {
-    const fixedValue = renameTokenVarNameToUuid(value, site);
-    if (fixedValue === null) {
-      delete processedBaseStyles[key];
-    } else {
-      processedBaseStyles[key] = fixedValue;
-    }
-  }
-
   // Only create base variant settings if there are meaningful styles
   if (Object.keys(processedBaseStyles).length > 0) {
     const sanitizedStyles = processUnsanitizedStyles(processedBaseStyles);
@@ -465,16 +450,6 @@ function getVariantSettingsForNode(
 
     if (Object.keys(contextStyles).length === 0) {
       continue;
-    }
-
-    // Ensure token values exist in the project
-    for (const [key, value] of Object.entries(contextStyles)) {
-      const fixedValue = renameTokenVarNameToUuid(value, site);
-      if (fixedValue === null) {
-        delete contextStyles[key];
-      } else {
-        contextStyles[key] = fixedValue;
-      }
     }
 
     // Remove styles that are the same as base variant
@@ -653,7 +628,6 @@ function getElementsWITree(
       );
       assert(width, "'width' expected on SVG element but found undefined");
       assert(height, "'height' expected on SVG element but found undefined");
-
       return {
         type: "svg",
         tag,
@@ -711,7 +685,8 @@ export async function parseHtmlToWebImporterTree(
   site: Site
 ) {
   const parser = new DOMParser();
-  const document = parser.parseFromString(htmlString, "text/html");
+  const renamedHtmlString = renameTokenVarNameToUuid(htmlString, site);
+  const document = parser.parseFromString(renamedHtmlString, "text/html");
 
   const root = document.body;
   /* document.body is the root element that translates to a vertical stack and wraps the rest of the design
