@@ -70,7 +70,7 @@ export const AnimationsSection = observer(function AnimationsSection(
         return success();
       })
     );
-    triggerAnimationPreviewOnUpdate();
+    triggerAnimationPreviewOnUpdate(newAnimations);
   };
 
   const maybeCloneInheritedAnimations = () => {
@@ -127,8 +127,8 @@ export const AnimationsSection = observer(function AnimationsSection(
     indicators: sc.definedIndicators("animation"),
   });
 
-  const playAnimations = () => {
-    if (animations.length === 0 || isDisabled || !focusedTpl) {
+  const playAnimations = (previewAnimations: Animation[]) => {
+    if (previewAnimations.length === 0 || isDisabled || !focusedTpl) {
       return;
     }
 
@@ -136,7 +136,7 @@ export const AnimationsSection = observer(function AnimationsSection(
       studioCtx.styleMgrBcast.playAnimationPreview(
         focusedTpl,
         targetRs,
-        animations
+        previewAnimations
       )
     );
   };
@@ -151,12 +151,12 @@ export const AnimationsSection = observer(function AnimationsSection(
     focusedTpl &&
     studioCtx.styleMgrBcast.hasActiveAnimationPreview(focusedTpl, targetRs);
 
-  function triggerAnimationPreviewOnUpdate() {
+  function triggerAnimationPreviewOnUpdate(previewAnimations: Animation[]) {
     if (isAnimationPlaying) {
       stopAnimations();
     }
 
-    playAnimations();
+    playAnimations(previewAnimations);
   }
 
   return (
@@ -187,7 +187,7 @@ export const AnimationsSection = observer(function AnimationsSection(
               ) : (
                 <Tooltip title="Play animation">
                   <IconLinkButton
-                    onClick={playAnimations}
+                    onClick={() => playAnimations(animations)}
                     disabled={isDisabled}
                   >
                     <Icon icon={PlayIcon} />
@@ -226,7 +226,7 @@ export const AnimationsSection = observer(function AnimationsSection(
                   animation={inspectedAnimation}
                   vsh={vsh}
                   onUpdated={() => {
-                    triggerAnimationPreviewOnUpdate();
+                    triggerAnimationPreviewOnUpdate(animations);
                   }}
                 />
               </div>
