@@ -796,7 +796,7 @@ export function addIntegrationsRoutes(app: express.Application) {
   app.post(
     "/api/v1/server-data/sources/:dataSourceId/execute",
     cors(),
-    withNext(executeDataSourceOperationHandler)
+    executeDataSourceOperationHandler
   );
 }
 
