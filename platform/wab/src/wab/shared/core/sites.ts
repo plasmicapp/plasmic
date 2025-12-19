@@ -2070,7 +2070,9 @@ export function getSiteArenas(
   opts?: { noSorting?: boolean }
 ): AnyArena[] {
   return [
-    ...site.arenas,
+    ...(opts?.noSorting
+      ? site.arenas
+      : naturalSort(site.arenas, (it) => it.name)),
     ...(opts?.noSorting
       ? site.pageArenas
       : naturalSort(site.pageArenas, (it) => it.component.name)),
