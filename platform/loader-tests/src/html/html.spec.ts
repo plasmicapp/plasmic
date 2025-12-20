@@ -1,5 +1,4 @@
 /// <reference types="@types/jest" />
-import { getEnvVar } from "../env";
 import { runCypressTest } from "../test-utils";
 import { HtmlContext, setupHtml, teardownHtml } from "./html-setup";
 
@@ -9,7 +8,6 @@ describe("Plasmic Website", () => {
     ctx = await setupHtml({
       bundleFile: "plasmic-kit-website-components_16033.json",
       projectName: "PlasmicWebsite",
-      codegenHost: getEnvVar("WAB_HOST"),
     });
   });
   afterAll(async () => {

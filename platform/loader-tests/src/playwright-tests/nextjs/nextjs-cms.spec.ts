@@ -1,4 +1,5 @@
 import { expect } from "@playwright/test";
+
 import { getEnvVar } from "../../env";
 import { test } from "../../fixtures";
 import {
@@ -18,8 +19,6 @@ test.describe(`NextJS CMS`, () => {
     ctx = await setupNextJs({
       bundleFile: "plasmic-cms.json",
       projectName: "CMS Project",
-      npmRegistry: getEnvVar("NPM_CONFIG_REGISTRY"),
-      codegenHost: getEnvVar("WAB_HOST"),
       removeComponentsPage: true,
       bundleTransformation: (bundle) =>
         bundle

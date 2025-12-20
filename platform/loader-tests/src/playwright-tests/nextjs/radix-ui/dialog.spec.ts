@@ -1,5 +1,5 @@
 import { expect, Page } from "@playwright/test";
-import { getEnvVar, LOADER_NEXTJS_VERSIONS } from "../../../env";
+import { LOADER_NEXTJS_VERSIONS } from "../../../env";
 import { test } from "../../../fixtures";
 import {
   NextJsContext,
@@ -31,8 +31,6 @@ test.describe(`Plasmic Radix UI Dialog`, async () => {
         ctx = await setupNextJs({
           bundleFile: "radix-ui/dialog.json",
           projectName: "Radix UI Dialog",
-          npmRegistry: getEnvVar("NPM_CONFIG_REGISTRY"),
-          codegenHost: getEnvVar("WAB_HOST"),
           removeComponentsPage: true,
           loaderVersion,
           nextVersion,

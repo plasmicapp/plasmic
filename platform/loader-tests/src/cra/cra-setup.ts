@@ -25,16 +25,9 @@ export interface CraContext {
 export async function setupCra(opts: {
   bundleFile: string;
   projectName: string;
-  npmRegistry: string;
-  codegenHost: string;
   template?: string;
 }): Promise<CraContext> {
-  const {
-    bundleFile,
-    projectName,
-    npmRegistry: _npmRegistry,
-    codegenHost: _codegenHost,
-  } = opts;
+  const { bundleFile, projectName } = opts;
   const { projectId, projectToken } = await uploadProject(
     bundleFile,
     projectName
@@ -76,18 +69,34 @@ export async function setupCraServer(
   copySync(templateDir, tmpdir, { recursive: true });
 
   const npmRegistry = getEnvVar("NPM_CONFIG_REGISTRY");
+  const npmCache =
+    getEnvVar("NPM_CONFIG_CACHE") || path.join(tmpdir, ".npm-cache");
+  const npmTmp = path.join(tmpdir, ".npm-tmp");
 
-  await runCommand(`npm install  --registry ${npmRegistry}`, {
-    dir: tmpdir,
-  });
+  await runCommand(
+    `npm install --registry ${npmRegistry} --cache "${npmCache}"`,
+    {
+      dir: tmpdir,
+      env: {
+        npm_config_cache: npmCache,
+        npm_config_tmp: npmTmp,
+      },
+    }
+  );
 
   // Install the latest loader-react
   await runCommand(`npm uninstall @plasmicapp/loader-react`, {
     dir: tmpdir,
   });
   await runCommand(
-    `npm install  --registry ${npmRegistry} @plasmicapp/loader-react@latest`,
-    { dir: tmpdir }
+    `npm install --registry ${npmRegistry} @plasmicapp/loader-react@latest`,
+    {
+      dir: tmpdir,
+      env: {
+        npm_config_cache: npmCache,
+        npm_config_tmp: npmTmp,
+      },
+    }
   );
 
   const codegenHost = getEnvVar("WAB_HOST");

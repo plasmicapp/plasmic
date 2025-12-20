@@ -1,5 +1,4 @@
 /// <reference types="@types/jest" />
-import { getEnvVar } from "../env";
 import { runCypressTest } from "../test-utils";
 import { CraContext, setupCra, teardownCra } from "./cra-setup";
 
@@ -9,8 +8,6 @@ describe("Plasmic Website", () => {
     ctx = await setupCra({
       bundleFile: "plasmic-kit-website-components_16033.json",
       projectName: "PlasmicWebsite",
-      npmRegistry: getEnvVar("NPM_CONFIG_REGISTRY"),
-      codegenHost: getEnvVar("WAB_HOST"),
     });
   });
   afterAll(async () => {

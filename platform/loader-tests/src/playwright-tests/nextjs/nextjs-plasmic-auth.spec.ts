@@ -1,5 +1,4 @@
 import { expect } from "@playwright/test";
-import { getEnvVar } from "../../env";
 import { test } from "../../fixtures";
 import { NextJsContext, teardownNextJs } from "../../nextjs/nextjs-setup";
 import { authNextJsSetup } from "../auth-test-utils";
@@ -15,9 +14,6 @@ test.describe(`Plasmic Auth`, async () => {
         bundleFile,
         template: "plasmic-auth",
         projectName: "Plasmic Auth",
-        npmRegistry: getEnvVar("NPM_CONFIG_REGISTRY"),
-        codegenHost: getEnvVar("WAB_HOST"),
-        wabHost: getEnvVar("WAB_HOST"),
         appAuthOpts: {
           provider: "plasmic-auth",
         },
@@ -61,9 +57,6 @@ test.describe(`Plasmic Auth`, async () => {
         bundleFile,
         template: "plasmic-auth",
         projectName: "Plasmic Auth",
-        npmRegistry: getEnvVar("NPM_CONFIG_REGISTRY"),
-        codegenHost: getEnvVar("WAB_HOST"),
-        wabHost: getEnvVar("WAB_HOST"),
         keepRedirectUri: true,
         appAuthOpts: {
           provider: "plasmic-auth",

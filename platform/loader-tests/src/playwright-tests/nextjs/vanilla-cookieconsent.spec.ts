@@ -1,5 +1,5 @@
 import { expect } from "@playwright/test";
-import { getEnvVar, LOADER_NEXTJS_VERSIONS } from "../../env";
+import { LOADER_NEXTJS_VERSIONS } from "../../env";
 import { test } from "../../fixtures";
 import {
   NextJsContext,
@@ -25,8 +25,6 @@ test.describe(`@plasmicpkgs/vanilla-cookieconsent code components`, async () => 
           // 3. Download the bundle as vanilla-cookieconsent.json and place it in platform/loader-tests/data/
           bundleFile: "vanilla-cookieconsent.json",
           projectName: "Vanilla Cookieconsent Test",
-          npmRegistry: getEnvVar("NPM_CONFIG_REGISTRY"),
-          codegenHost: getEnvVar("WAB_HOST"),
           removeComponentsPage: true,
           loaderVersion,
           nextVersion,

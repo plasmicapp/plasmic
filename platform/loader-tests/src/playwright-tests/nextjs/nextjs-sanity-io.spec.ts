@@ -1,7 +1,7 @@
 import { expect } from "@playwright/test";
 import * as fs from "fs";
 import * as path from "path";
-import { getEnvVar } from "../../env";
+
 import { test } from "../../fixtures";
 import {
   NextJsContext,
@@ -17,8 +17,6 @@ test.describe(`NextJS Sanity.io`, () => {
     ctx = await setupNextJs({
       bundleFile: "plasmic-sanity-io.json",
       projectName: "Sanity Project",
-      npmRegistry: getEnvVar("NPM_CONFIG_REGISTRY"),
-      codegenHost: getEnvVar("WAB_HOST"),
       removeComponentsPage: true,
     });
   });

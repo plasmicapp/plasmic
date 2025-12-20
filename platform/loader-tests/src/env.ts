@@ -2,19 +2,18 @@ import process from "process";
 
 const DEFAULT_ENV = {
   NPM_CONFIG_REGISTRY: "https://registry.npmjs.org",
+  NPM_CONFIG_CACHE: "",
   WAB_HOST: "http://127.0.0.1:3003",
   WAB_USER_EMAIL: "admin@admin.example.com",
   WAB_USER_PASSWORD: "!53kr3tz!",
-};
+} as const;
 
-type EnvVar = keyof typeof DEFAULT_ENV;
+export function getEnvVar(variable: keyof typeof DEFAULT_ENV): string {
+  const value = process.env[variable] ?? DEFAULT_ENV[variable];
 
-export function getEnvVar(variable: EnvVar) {
-  let value = process.env[variable] ?? DEFAULT_ENV[variable];
-  if (variable === "WAB_HOST" || variable === "NPM_CONFIG_REGISTRY") {
-    value = maybeSwapWithDockerLocalhost(value);
-  }
-  return value;
+  return variable === "WAB_HOST" || variable === "NPM_CONFIG_REGISTRY"
+    ? (maybeSwapWithDockerLocalhost(value) as string)
+    : value;
 }
 
 export const LOADER_NEXTJS_VERSIONS = [
@@ -29,8 +28,8 @@ export const LOADER_NEXTJS_VERSIONS_EXHAUSTIVE = [
   { loaderVersion: "^1", nextVersion: "^14" },
 ];
 
-function maybeSwapWithDockerLocalhost(value: string) {
-  if (process.env["WITHIN_DOCKER"]) {
+function maybeSwapWithDockerLocalhost(value: string | undefined) {
+  if (value && process.env["WITHIN_DOCKER"]) {
     return value.replace("localhost", "host.docker.internal");
   }
   return value;

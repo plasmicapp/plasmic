@@ -1,5 +1,5 @@
 import { expect } from "@playwright/test";
-import { getEnvVar } from "../../env";
+
 import { test } from "../../fixtures";
 import {
   NextJsContext,
@@ -18,8 +18,6 @@ test.describe(`NextJS Split`, () => {
     ctx = await setupNextJs({
       bundleFile: "plasmic-split-components.json",
       projectName: "Split Components",
-      npmRegistry: getEnvVar("NPM_CONFIG_REGISTRY"),
-      codegenHost: getEnvVar("WAB_HOST"),
       template: "split",
     });
   });

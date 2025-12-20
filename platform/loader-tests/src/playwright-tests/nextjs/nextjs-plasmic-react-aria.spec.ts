@@ -1,5 +1,5 @@
 import { expect, Locator, Page } from "@playwright/test";
-import { getEnvVar, LOADER_NEXTJS_VERSIONS } from "../../env";
+import { LOADER_NEXTJS_VERSIONS } from "../../env";
 import { test } from "../../fixtures";
 import {
   NextJsContext,
@@ -21,8 +21,6 @@ test.describe(`@plasmicpkgs/react-aria code components`, async () => {
           // The bundle is also uploaded to prod Studio here: https://studio.plasmic.app/projects/9zkDzeeVx9yuu2MYdRNK5C/-/Button-Test?arena_type=page&arena=vK-15KIgmOKG
           bundleFile: "react-aria.json",
           projectName: "Plexus Loader Test",
-          npmRegistry: getEnvVar("NPM_CONFIG_REGISTRY"),
-          codegenHost: getEnvVar("WAB_HOST"),
           removeComponentsPage: true,
           loaderVersion,
           nextVersion,

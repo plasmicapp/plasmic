@@ -1,4 +1,3 @@
-import { getEnvVar } from "../../env";
 import { test } from "../../fixtures";
 import {
   NextJsContext,
@@ -14,8 +13,6 @@ test.describe(`NextJS Strapi`, () => {
     ctx = await setupNextJs({
       bundleFile: "strapi.json",
       projectName: "Strapi Project",
-      npmRegistry: getEnvVar("NPM_CONFIG_REGISTRY"),
-      codegenHost: getEnvVar("WAB_HOST"),
       removeComponentsPage: true,
     });
   });

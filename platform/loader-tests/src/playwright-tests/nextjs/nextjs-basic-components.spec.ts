@@ -1,5 +1,5 @@
 import { expect } from "@playwright/test";
-import { getEnvVar, LOADER_NEXTJS_VERSIONS } from "../../env";
+import { LOADER_NEXTJS_VERSIONS } from "../../env";
 import { test } from "../../fixtures";
 import {
   NextJsContext,
@@ -15,8 +15,6 @@ for (const { loaderVersion, nextVersion } of LOADER_NEXTJS_VERSIONS) {
       ctx = await setupNextJs({
         bundleFile: "plasmic-basic-components-example.json",
         projectName: "Basic Components",
-        npmRegistry: getEnvVar("NPM_CONFIG_REGISTRY"),
-        codegenHost: getEnvVar("WAB_HOST"),
         removeComponentsPage: true,
         loaderVersion,
         nextVersion,

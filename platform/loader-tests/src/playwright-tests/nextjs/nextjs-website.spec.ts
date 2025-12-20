@@ -1,4 +1,4 @@
-import { getEnvVar, LOADER_NEXTJS_VERSIONS_EXHAUSTIVE } from "../../env";
+import { LOADER_NEXTJS_VERSIONS_EXHAUSTIVE } from "../../env";
 import { test } from "../../fixtures";
 import {
   NextJsContext,
@@ -22,8 +22,6 @@ for (const {
       ctx = await setupNextJs({
         bundleFile: "plasmic-kit-website-components_16033.json",
         projectName: "PlasmicWebsite",
-        npmRegistry: getEnvVar("NPM_CONFIG_REGISTRY"),
-        codegenHost: getEnvVar("WAB_HOST"),
         loaderVersion,
         nextVersion,
       });

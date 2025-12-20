@@ -1,6 +1,6 @@
 import { expect } from "@playwright/test";
 import { CraContext, setupCra, teardownCra } from "../../cra/cra-setup";
-import { getEnvVar } from "../../env";
+
 import { test } from "../../fixtures";
 
 const SPLIT_ID = "j7cCxfS-Vu";
@@ -15,8 +15,6 @@ test.describe(`Plasmic CRA`, async () => {
     ctx = await setupCra({
       bundleFile: "plasmic-split-components.json",
       projectName: "Split",
-      npmRegistry: getEnvVar("NPM_CONFIG_REGISTRY"),
-      codegenHost: getEnvVar("WAB_HOST"),
       template: "split",
     });
   });

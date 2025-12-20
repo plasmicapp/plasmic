@@ -26,8 +26,6 @@ export async function prepareTemplate(opts: {
   templateDir: string;
   tmpdir: string;
   removeComponentsPage?: boolean;
-  npmRegistry: string;
-  codegenHost: string;
   nextVersion: string;
   loaderVersion: string;
   projectId: string;
@@ -38,8 +36,6 @@ export async function prepareTemplate(opts: {
     templateDir,
     tmpdir,
     removeComponentsPage,
-    npmRegistry,
-    codegenHost,
     nextVersion,
     loaderVersion,
     projectId,
@@ -47,31 +43,54 @@ export async function prepareTemplate(opts: {
     authRedirectUri,
   } = opts;
 
+  const npmRegistry = getEnvVar("NPM_CONFIG_REGISTRY");
+  const codegenHost = getEnvVar("WAB_HOST");
+  const npmCache =
+    getEnvVar("NPM_CONFIG_CACHE") || path.join(tmpdir, ".npm-cache");
+  const npmTmp = path.join(tmpdir, ".npm-tmp");
+
   copySync(templateDir, tmpdir, { recursive: true });
 
   if (removeComponentsPage) {
     fs.unlinkSync(path.join(tmpdir, "pages/components.tsx"));
   }
 
-  await runCommand(`npm install  --registry ${npmRegistry}`, {
-    dir: tmpdir,
-  });
+  await runCommand(
+    `npm install --registry ${npmRegistry} --cache "${npmCache}"`,
+    {
+      dir: tmpdir,
+      env: {
+        npm_config_cache: npmCache,
+        npm_config_tmp: npmTmp,
+      },
+    }
+  );
 
   // Remove and install the designated next version
-  await runCommand(`npm uninstall next`, { dir: tmpdir });
-  await runCommand(`npm install  next@${nextVersion}`, {
+  await runCommand("npm uninstall next", { dir: tmpdir });
+  await runCommand(`npm install next@${nextVersion} --cache "${npmCache}"`, {
     dir: tmpdir,
+    env: {
+      npm_config_cache: npmCache,
+      npm_config_tmp: npmTmp,
+    },
   });
 
   // Remove and install the designated @plasmicapp/loader-nextjs version
-  await runCommand(`npm uninstall @plasmicapp/loader-nextjs`, {
+  await runCommand("npm uninstall @plasmicapp/loader-nextjs", {
     dir: tmpdir,
   });
   await runCommand(
-    `npm install  --registry ${
+    `npm install --registry ${
       loaderVersion !== "latest" ? "https://registry.npmjs.org" : npmRegistry
-    } @plasmicapp/loader-nextjs@${loaderVersion}`,
-    { dir: tmpdir }
+    } @plasmicapp/loader-nextjs@${loaderVersion} --cache "${npmCache}"`,
+    {
+      dir: tmpdir,
+      env: {
+        npm_config_cache: npmCache,
+        npm_config_tmp: npmTmp,
+      },
+    }
   );
 
   fs.writeFileSync(
@@ -106,8 +125,6 @@ export async function prepareTemplate(opts: {
 export async function setupNextJs(opts: {
   bundleFile: string;
   projectName: string;
-  npmRegistry: string;
-  codegenHost: string;
   removeComponentsPage?: boolean;
   template?: string;
   bundleTransformation?: (value: string) => string;
@@ -120,8 +137,6 @@ export async function setupNextJs(opts: {
   const {
     bundleFile,
     projectName,
-    npmRegistry: _npmRegistry,
-    codegenHost: _codegenHost,
     removeComponentsPage,
     bundleTransformation,
     loaderVersion = "latest",
@@ -214,8 +229,6 @@ export async function setupNextjsServer(
     templateDir,
     tmpdir: dir,
     removeComponentsPage: env.removeComponentsPage,
-    npmRegistry: getEnvVar("NPM_CONFIG_REGISTRY"),
-    codegenHost: getEnvVar("WAB_HOST"),
     nextVersion: env.nextVersion,
     loaderVersion: env.loaderVersion,
     projectId: project.projectId,

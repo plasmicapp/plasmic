@@ -1,5 +1,5 @@
 /// <reference types="@types/jest" />
-import { getEnvVar, LOADER_NEXTJS_VERSIONS } from "../env";
+import { LOADER_NEXTJS_VERSIONS } from "../env";
 import { runCypressTest } from "../test-utils";
 import { NextJsContext, setupNextJs, teardownNextJs } from "./nextjs-setup";
 
@@ -11,8 +11,6 @@ describe.each(LOADER_NEXTJS_VERSIONS)(
       ctx = await setupNextJs({
         bundleFile: "plasmic-antd.json",
         projectName: "Antd project",
-        npmRegistry: getEnvVar("NPM_CONFIG_REGISTRY"),
-        codegenHost: getEnvVar("WAB_HOST"),
         removeComponentsPage: true,
         loaderVersion,
         nextVersion,

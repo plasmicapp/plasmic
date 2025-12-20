@@ -1,5 +1,4 @@
 /// <reference types="@types/jest" />
-import { getEnvVar } from "../env";
 import { runCypressTest } from "../test-utils";
 import { NextJsContext, setupNextJs, teardownNextJs } from "./nextjs-setup";
 
@@ -12,8 +11,6 @@ describe.skip("Plasmic Strapi", () => {
     ctx = await setupNextJs({
       bundleFile: "plasmic-strapi.json",
       projectName: "Strapi Project",
-      npmRegistry: getEnvVar("NPM_CONFIG_REGISTRY"),
-      codegenHost: getEnvVar("WAB_HOST"),
       removeComponentsPage: true,
     });
   });

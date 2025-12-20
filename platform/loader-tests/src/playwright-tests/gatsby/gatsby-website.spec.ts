@@ -1,4 +1,3 @@
-import { getEnvVar } from "../../env";
 import { test } from "../../fixtures";
 import {
   GatsbyContext,
@@ -18,8 +17,6 @@ test.describe(`Gatsby Website`, () => {
     ctx = await setupGatsby({
       bundleFile: "plasmic-kit-website-components_16033.json",
       projectName: "PlasmicWebsite",
-      npmRegistry: getEnvVar("NPM_CONFIG_REGISTRY"),
-      codegenHost: getEnvVar("WAB_HOST"),
     });
   });
 

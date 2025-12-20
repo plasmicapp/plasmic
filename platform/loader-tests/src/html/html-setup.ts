@@ -3,6 +3,7 @@ import { copySync } from "fs-extra";
 import getPort from "get-port";
 import path from "path";
 import tmp from "tmp";
+import { getEnvVar } from "../env";
 import {
   runCommand,
   uploadProject,
@@ -22,9 +23,8 @@ export interface HtmlContext {
 export async function setupHtml(opts: {
   bundleFile: string;
   projectName: string;
-  codegenHost: string;
 }): Promise<HtmlContext> {
-  const { bundleFile, projectName, codegenHost } = opts;
+  const { bundleFile, projectName } = opts;
   const { projectId, projectToken } = await uploadProject(
     bundleFile,
     projectName
@@ -61,7 +61,7 @@ export async function setupHtml(opts: {
     noExit: true,
     env: {
       PORT: `${port}`,
-      WAB_HOST: codegenHost,
+      WAB_HOST: getEnvVar("WAB_HOST"),
       PROJECT_ID: projectId,
       PROJECT_TOKEN: projectToken,
     },

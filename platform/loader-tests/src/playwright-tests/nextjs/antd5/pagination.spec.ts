@@ -1,5 +1,5 @@
 import { expect } from "@playwright/test";
-import { getEnvVar, LOADER_NEXTJS_VERSIONS } from "../../../env";
+import { LOADER_NEXTJS_VERSIONS } from "../../../env";
 import { test } from "../../../fixtures";
 import {
   NextJsContext,
@@ -17,8 +17,6 @@ test.describe(`Plasmic Antd5 Pagination`, async () => {
         ctx = await setupNextJs({
           bundleFile: "antd5/pagination.json",
           projectName: "Antd5 Pagination",
-          npmRegistry: getEnvVar("NPM_CONFIG_REGISTRY"),
-          codegenHost: getEnvVar("WAB_HOST"),
           removeComponentsPage: true,
           loaderVersion,
           nextVersion,

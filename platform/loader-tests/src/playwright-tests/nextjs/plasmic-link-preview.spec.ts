@@ -1,5 +1,5 @@
 import { expect, Page } from "@playwright/test";
-import { getEnvVar, LOADER_NEXTJS_VERSIONS } from "../../env";
+import { LOADER_NEXTJS_VERSIONS } from "../../env";
 import { test } from "../../fixtures";
 import {
   NextJsContext,
@@ -35,8 +35,6 @@ test.describe(`Plasmic Link Preview`, async () => {
         ctx = await setupNextJs({
           bundleFile: "plasmic-link-preview.json",
           projectName: "Plasmic Link Preview",
-          npmRegistry: getEnvVar("NPM_CONFIG_REGISTRY"),
-          codegenHost: getEnvVar("WAB_HOST"),
           removeComponentsPage: true,
           loaderVersion,
           nextVersion,
@@ -108,7 +106,7 @@ test.describe(`Plasmic Link Preview`, async () => {
 
         await page.waitForTimeout(1000);
 
-        // assertNoPreview(page, true);
+        assertNoPreview(page, true);
 
         await page.waitForTimeout(2000);
 
@@ -209,11 +207,11 @@ test.describe(`Plasmic Link Preview`, async () => {
 
         await page.waitForTimeout(1000);
 
-        // assertNoPreview(page, true);
+        assertNoPreview(page, true);
 
         await page.waitForTimeout(2000);
 
-        // assertNoPreview(page);
+        assertNoPreview(page);
         await expect(page.locator(noPreviewSelector)).toBeVisible();
       });
     });

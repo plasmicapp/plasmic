@@ -342,9 +342,6 @@ export type AuthNextJsContext = NextJsContext & {
 export async function authNextJsSetup(opts: {
   bundleFile: string;
   projectName: string;
-  npmRegistry: string;
-  codegenHost: string;
-  wabHost: string;
   removeComponentsPage?: boolean;
   template?: string;
   loaderVersion?: string;
@@ -361,9 +358,6 @@ export async function authNextJsSetup(opts: {
   const {
     bundleFile,
     projectName,
-    npmRegistry,
-    codegenHost,
-    wabHost,
     removeComponentsPage,
     loaderVersion = "latest",
     // TODO: Only works with 12 sine we're running with node 14 for now...
@@ -414,8 +408,6 @@ export async function authNextJsSetup(opts: {
     templateDir,
     tmpdir,
     removeComponentsPage,
-    npmRegistry,
-    codegenHost,
     nextVersion,
     loaderVersion,
     projectId,
@@ -427,7 +419,7 @@ export async function authNextJsSetup(opts: {
     path.join(tmpdir, "auth.config.json"),
     JSON.stringify({
       appSecret: authCtx.appAuthSecret,
-      authHost: wabHost,
+      authHost: getEnvVar("WAB_HOST"),
     })
   );
 

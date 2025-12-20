@@ -12,8 +12,6 @@ describe("Plasmic CMS", () => {
     ctx = await setupNextJs({
       bundleFile: "plasmic-cms.json",
       projectName: "CMS Project",
-      npmRegistry: getEnvVar("NPM_CONFIG_REGISTRY"),
-      codegenHost: getEnvVar("WAB_HOST"),
       removeComponentsPage: true,
       bundleTransformation: (bundle) =>
         bundle

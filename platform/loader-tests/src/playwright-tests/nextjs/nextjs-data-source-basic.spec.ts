@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { getEnvVar } from "../../env";
+
 import {
   NextJsContext,
   setupNextJs,
@@ -12,8 +12,6 @@ test.describe(`Data Source basic`, async () => {
     ctx = await setupNextJs({
       bundleFile: "data-source-basic.json",
       projectName: "Data Source basic",
-      npmRegistry: getEnvVar("NPM_CONFIG_REGISTRY"),
-      codegenHost: getEnvVar("WAB_HOST"),
       removeComponentsPage: true,
       dataSourceReplacement: {
         type: "pokedex",

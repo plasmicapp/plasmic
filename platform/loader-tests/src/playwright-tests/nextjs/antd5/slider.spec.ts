@@ -1,5 +1,5 @@
 import { expect } from "@playwright/test";
-import { getEnvVar, LOADER_NEXTJS_VERSIONS } from "../../../env";
+import { LOADER_NEXTJS_VERSIONS } from "../../../env";
 import { test } from "../../../fixtures";
 import {
   NextJsContext,
@@ -17,8 +17,6 @@ test.describe(`Plasmic Antd5 Slider`, async () => {
         ctx = await setupNextJs({
           bundleFile: "antd5/slider.json",
           projectName: "Antd5 Slider",
-          npmRegistry: getEnvVar("NPM_CONFIG_REGISTRY"),
-          codegenHost: getEnvVar("WAB_HOST"),
           removeComponentsPage: true,
           loaderVersion,
           nextVersion,

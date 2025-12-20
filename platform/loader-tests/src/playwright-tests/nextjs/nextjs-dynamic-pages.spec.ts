@@ -1,5 +1,5 @@
 import { expect } from "@playwright/test";
-import { getEnvVar } from "../../env";
+
 import { test } from "../../fixtures";
 import {
   NextJsContext,
@@ -14,8 +14,6 @@ test.describe(`NextJS Dynamic Pages`, async () => {
     ctx = await setupNextJs({
       bundleFile: "dynamic-pages.json",
       projectName: "Dynamic Pages",
-      npmRegistry: getEnvVar("NPM_CONFIG_REGISTRY"),
-      codegenHost: getEnvVar("WAB_HOST"),
       removeComponentsPage: true,
     });
   });

@@ -1,4 +1,3 @@
-import { getEnvVar } from "../../env";
 import { test } from "../../fixtures";
 import { HtmlContext, setupHtml, teardownHtml } from "../../html/html-setup";
 import { testWebsiteDesktop, testWebsiteMobile } from "../helpers/website";
@@ -10,7 +9,6 @@ test.describe(`HTML Website`, async () => {
     ctx = await setupHtml({
       bundleFile: "plasmic-kit-website-components_16033.json",
       projectName: "PlasmicWebsite",
-      codegenHost: getEnvVar("WAB_HOST"),
     });
   });
 

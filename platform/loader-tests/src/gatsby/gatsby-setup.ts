@@ -25,8 +25,6 @@ export interface GatsbyContext {
 export async function setupGatsby(opts: {
   bundleFile: string;
   projectName: string;
-  npmRegistry: string;
-  codegenHost: string;
   template?: string;
 }): Promise<GatsbyContext> {
   const { bundleFile, projectName } = opts;
@@ -97,35 +95,32 @@ export async function setupGatsbyServer(
   copySync(templateDir, tmpdir, { recursive: true });
 
   const npmRegistry = getEnvVar("NPM_CONFIG_REGISTRY");
-  const isolatedNpmCache = path.join(tmpdir, ".npm-cache");
+  const npmCache =
+    getEnvVar("NPM_CONFIG_CACHE") || path.join(tmpdir, ".npm-cache");
+  const npmTmp = path.join(tmpdir, ".npm-tmp");
 
   await runCommand(
-    `npm install --registry ${npmRegistry} --cache "${isolatedNpmCache}"`,
+    `npm install --registry ${npmRegistry} --cache "${npmCache}"`,
     {
       dir: tmpdir,
       env: {
-        npm_config_cache: isolatedNpmCache,
-        npm_config_tmp: path.join(tmpdir, ".npm-tmp"),
+        npm_config_cache: npmCache,
+        npm_config_tmp: npmTmp,
       },
     }
   );
 
   // Install the latest loader-gatsby
+  await runCommand("npm uninstall @plasmicapp/loader-gatsby", {
+    dir: tmpdir,
+  });
   await runCommand(
-    `npm uninstall @plasmicapp/loader-gatsby --cache "${isolatedNpmCache}"`,
+    `npm install --registry ${npmRegistry} @plasmicapp/loader-gatsby@latest --cache "${npmCache}"`,
     {
       dir: tmpdir,
       env: {
-        npm_config_cache: isolatedNpmCache,
-      },
-    }
-  );
-  await runCommand(
-    `npm install --registry ${npmRegistry} @plasmicapp/loader-gatsby@latest --cache "${isolatedNpmCache}"`,
-    {
-      dir: tmpdir,
-      env: {
-        npm_config_cache: isolatedNpmCache,
+        npm_config_cache: npmCache,
+        npm_config_tmp: npmTmp,
       },
     }
   );

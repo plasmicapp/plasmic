@@ -1,5 +1,4 @@
 import { expect } from "@playwright/test";
-import { getEnvVar } from "../../env";
 import { test } from "../../fixtures";
 import { NextJsContext, teardownNextJs } from "../../nextjs/nextjs-setup";
 import { authNextJsSetup } from "../auth-test-utils";
@@ -14,9 +13,6 @@ test.skip(`PlasmicRootProvider Auth`, async () => {
       bundleFile,
       template: "custom-auth",
       projectName: "Custom Auth",
-      npmRegistry: getEnvVar("NPM_CONFIG_REGISTRY"),
-      codegenHost: getEnvVar("WAB_HOST"),
-      wabHost: getEnvVar("WAB_HOST"),
       appAuthOpts: {
         provider: "custom-auth",
       },

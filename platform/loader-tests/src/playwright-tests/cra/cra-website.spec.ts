@@ -1,5 +1,4 @@
 import { CraContext, setupCra, teardownCra } from "../../cra/cra-setup";
-import { getEnvVar } from "../../env";
 import { test } from "../../fixtures";
 import {
   testWebsiteComponents,
@@ -14,8 +13,6 @@ test.describe(`CRA Website`, () => {
     ctx = await setupCra({
       bundleFile: "plasmic-kit-website-components_16033.json",
       projectName: "PlasmicWebsite",
-      npmRegistry: getEnvVar("NPM_CONFIG_REGISTRY"),
-      codegenHost: getEnvVar("WAB_HOST"),
     });
   });
 
