@@ -50,13 +50,78 @@ import {
   parse as cssParse,
   Declaration,
   generate,
+  List,
   Rule,
   Selector,
   walk,
 } from "css-tree";
 import { camelCase, isElement } from "lodash";
 
-const PSEUDO_SELECTOR_SPLIT_REGEX = /:([\s\S]*)/;
+/**
+ * Splits a CSS selector into base selector and pseudo-selector parts using AST.
+ * Returns null if the selector contains pseudo-elements (::before, ::after, etc.)
+ * which cannot be targeted in the DOM.
+ *
+ * @param selectorNode - The css-tree Selector node to process
+ * @returns Object with baseSelector and pseudoSelector, or null if contains PseudoElementSelector
+ *
+ * Examples:
+ * - ".container .a" → { baseSelector: ".container .a", pseudoSelector: null }
+ * - ".container .a:hover" → { baseSelector: ".container .a", pseudoSelector: "hover" }
+ * - ".container .a:hover h2" → { baseSelector: ".container .a", pseudoSelector: "hover h2" }
+ * - ".container::before" → null
+ * - ".container:hover::before" → null
+ */
+function splitSelectorByPseudo(selectorNode: Selector): {
+  baseSelector: string;
+  pseudoSelector: string | null;
+} | null {
+  const children = selectorNode.children.toArray();
+
+  // If any PseudoElementSelector exists, return null (we don't process pseudo-elements)
+  if (children.some((child) => child.type === "PseudoElementSelector")) {
+    return null;
+  }
+
+  // Find the first PseudoClassSelector
+  const pseudoClassIndex = children.findIndex(
+    (child) => child.type === "PseudoClassSelector"
+  );
+
+  // No pseudo-class found - return full selector as base
+  if (pseudoClassIndex === -1) {
+    return {
+      baseSelector: generate(selectorNode),
+      pseudoSelector: null,
+    };
+  }
+
+  // Split children at the pseudo-class
+  const baseChildren = children.slice(0, pseudoClassIndex);
+  const pseudoChildren = children.slice(pseudoClassIndex);
+
+  // Generate base selector string
+  const baseSelector = generate({
+    type: "Selector",
+    children: new List<CssNode>().fromArray(baseChildren),
+  });
+
+  // Generate pseudo selector string and strip the leading colon
+  // e.g., ":hover h2" → "hover h2"
+  const pseudoSelector = generate({
+    type: "Selector",
+    children: new List<CssNode>().fromArray(pseudoChildren),
+  }).replace(/^:/, "");
+
+  return {
+    baseSelector,
+    pseudoSelector,
+  };
+}
+
+// Delimiter for joining/splitting context strings with pseudo-selectors
+// e.g., "base--hover", "GlobalScreen__768--hover"
+const CONTEXT_PSEUDO_DELIMITER = "--";
 
 export function generateId() {
   return Math.random().toString(36).substr(2, 9);
@@ -355,9 +420,9 @@ function parseContextToVariantCombo(context: string): WIVariant[] {
   const variantCombo: WIVariant[] = [];
 
   if (context.startsWith(`${VariantGroupType.GlobalScreen}__`)) {
-    // Split by : first to separate screen part from pseudo-selector
+    // Split to separate screen part from pseudo-selector
     const [screenPart, pseudoSelector] = context.split(
-      PSEUDO_SELECTOR_SPLIT_REGEX
+      CONTEXT_PSEUDO_DELIMITER
     );
 
     const screenWidth = parseInt(screenPart.split("__")[1], 10);
@@ -372,10 +437,10 @@ function parseContextToVariantCombo(context: string): WIVariant[] {
         selectors: [pseudoSelector],
       });
     }
-  } else if (context.includes(":")) {
-    // In case of (base:hover) we only care about the pseudo selector since we
+  } else if (context.includes(CONTEXT_PSEUDO_DELIMITER)) {
+    // In case of (base--hover) we only care about the pseudo selector since we
     // do not create combination with base variant, it's styles are considered implicitly in all variants.
-    const pseudoSelector = context.split(PSEUDO_SELECTOR_SPLIT_REGEX)[1];
+    const pseudoSelector = context.split(CONTEXT_PSEUDO_DELIMITER)[1];
     if (pseudoSelector) {
       variantCombo.push({
         type: "style",
@@ -712,16 +777,17 @@ export async function parseHtmlToWebImporterTree(
   ) {
     for (const selectorNode of selectors) {
       const selector = generate(selectorNode);
-      // Split selector at first colon to separate base selector from complex pseudo-selectors
-      // Examples: .class:hover -> [".class", "hover"], .product:hover:not(:focus-visible) -> [".product", "hover:not(:focus-visible)"]
-      // Complex pseudo-selectors such as :hover:not(:focus-visible) would be applied as custom css private style variants in Studio.
-      const [baseSelector, pseudoSelector] = selector.split(
-        PSEUDO_SELECTOR_SPLIT_REGEX
-      );
 
-      if (!baseSelector) {
+      // Use AST to split selector into base and pseudo parts
+      // Returns null if selector contains pseudo-elements (::before, ::after, etc.)
+      const parsedSelector = splitSelectorByPseudo(selectorNode);
+
+      // Skip if selector contains pseudo-elements or has no base selector
+      if (!parsedSelector || !parsedSelector.baseSelector) {
         continue;
       }
+
+      const { baseSelector, pseudoSelector } = parsedSelector;
 
       let nodes: NodeListOf<Element>;
       try {
@@ -753,7 +819,7 @@ export async function parseHtmlToWebImporterTree(
         }
 
         const nodeContext = pseudoSelector
-          ? `${context}:${pseudoSelector}`
+          ? `${context}${CONTEXT_PSEUDO_DELIMITER}${pseudoSelector}`
           : context;
         addNodeWIRule(nodeContext, selector, declarations, node);
       }

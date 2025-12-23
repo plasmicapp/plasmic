@@ -540,7 +540,7 @@ describe("parseHtmlToWebImporterTree", () => {
     });
   });
 
-  it("Parse pseudo selectors (hover state)", async () => {
+  it("Parse pseudo selectors (hover state) and ignores pseudo-elements", async () => {
     const html = `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -556,6 +556,26 @@ describe("parseHtmlToWebImporterTree", () => {
         .interactive-button:hover {
             background-color: darkblue;
             color: lightgray;
+        }
+
+        /* These pseudo-elements should be ignored */
+        .interactive-button::before {
+            content: "→ ";
+            color: yellow;
+        }
+
+        .interactive-button::after {
+            content: " ←";
+            color: green;
+        }
+
+        /* Pseudo-class + pseudo-element combinations should also be ignored */
+        .interactive-button:hover::before {
+            color: orange;
+        }
+
+        .interactive-button:hover::after {
+            color: pink;
         }
     </style>
 </head>
