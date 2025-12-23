@@ -1,4 +1,5 @@
 import activeScreenVariantGroupBundle from "./active-screen-variant-group.json";
+import cloneProjectBundle from "./clone-project.json";
 import codeLibs from "./code-libs.json";
 import dataTokensBundle from "./data-tokens.json";
 import formsBundle from "./forms.json";
@@ -10,6 +11,7 @@ export default {
   "state-management": stateManagementBundle,
   "tutorial-app": tutorialAppBundle,
   "stale-bundle": staleMigrationBundle,
+  "clone-project": cloneProjectBundle,
   forms: formsBundle,
   "code-libs": codeLibs,
   "page-replacement": pageReplacementBundle,
