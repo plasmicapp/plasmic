@@ -59,6 +59,6 @@ function getFirstAvailableField(
  * Returns true if the field is a simple primitive type, like "text".
  * Non-simple fields have type like "!group" or "!struct".
  */
-function isSimpleField(x: FieldOrGroup): x is Field {
+export function isSimpleField(x: FieldOrGroup): x is Field {
   return !x.type.startsWith("!");
 }

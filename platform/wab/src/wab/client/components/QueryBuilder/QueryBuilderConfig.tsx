@@ -4,6 +4,7 @@ import { FieldPicker } from "@/wab/client/components/QueryBuilder/Components/Fie
 import { GroupHeader } from "@/wab/client/components/QueryBuilder/Components/GroupHeader";
 import { OperatorPicker } from "@/wab/client/components/QueryBuilder/Components/OperatorPicker";
 import { RowActionsGroup } from "@/wab/client/components/QueryBuilder/Components/RowActionsGroup";
+import { mergeSane } from "@/wab/shared/common";
 import {
   AntdConfig,
   BasicConfig,
@@ -76,7 +77,7 @@ export function createQueryBuilderConfig(
     readonly?: boolean;
   }
 ): Config {
-  const base = L.merge({}, QueryBuilderConfig, {
+  const base = mergeSane({}, QueryBuilderConfig, {
     // Add custom operators.
     // Note an operator like `any_in` doesn't seem easy to build,
     // since react-awesome-query-builder doesn't have a built-in array widget.
@@ -91,7 +92,10 @@ export function createQueryBuilderConfig(
       text: {
         widgets: {
           text: {
-            operators: ["regex"],
+            operators: [
+              ...(QueryBuilderConfig.types.text.widgets.text.operators ?? []),
+              "regex",
+            ],
           },
         },
       },

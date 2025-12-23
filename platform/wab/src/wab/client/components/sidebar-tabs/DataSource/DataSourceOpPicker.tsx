@@ -35,6 +35,10 @@ import { WithContextMenu } from "@/wab/client/components/ContextMenu";
 import ContextMenuIndicator from "@/wab/client/components/ContextMenuIndicator/ContextMenuIndicator";
 import { MenuBuilder } from "@/wab/client/components/menu-builder";
 import { createPortalTunnel } from "@/wab/client/components/portal-tunnel";
+import {
+  DynamicValueWidget,
+  mkUndefinedObjectPath,
+} from "@/wab/client/components/QueryBuilder/Components/DataPickerWidgetFactory";
 import { QueryBuilderConfig } from "@/wab/client/components/QueryBuilder/QueryBuilderConfig";
 import { DataPickerEditor } from "@/wab/client/components/sidebar-tabs/ComponentProps/DataPickerEditor";
 import { EnumPropEditor } from "@/wab/client/components/sidebar-tabs/ComponentProps/EnumPropEditor";
@@ -43,10 +47,6 @@ import { StringPropEditor } from "@/wab/client/components/sidebar-tabs/Component
 import { IndentedRow } from "@/wab/client/components/sidebar-tabs/ComponentPropsSection";
 import { ValuePreview } from "@/wab/client/components/sidebar-tabs/data-tab";
 import { DataPickerTypesSchema } from "@/wab/client/components/sidebar-tabs/DataBinding/DataPicker";
-import {
-  DynamicValueWidget,
-  mkUndefinedObjectPath,
-} from "@/wab/client/components/sidebar-tabs/DataSource/DataPickerWidgetFactory";
 import styles from "@/wab/client/components/sidebar-tabs/DataSource/DataSourceOpPicker.module.scss";
 import DataSourceQueryBuilder from "@/wab/client/components/sidebar-tabs/DataSource/DataSourceQueryBuilder";
 import {
@@ -2875,8 +2875,9 @@ export const JsonWithSchemaEditor = observer(function JsonWithSchemaEditor({
                           } else if (isString(val) && isDynamicValue(val)) {
                             return (
                               <DynamicValueWidget
-                                value={val}
-                                bindings={{ ...allBindings }}
+                                value={
+                                  allBindings[val] ?? mkUndefinedObjectPath()
+                                }
                                 setValue={setExprValue}
                                 data={data}
                                 schema={schema}
@@ -2951,11 +2952,11 @@ export const JsonWithSchemaEditor = observer(function JsonWithSchemaEditor({
         <div className="flex-col fill-width">
           <DynamicValueWidget
             setValue={(expr) => expr && handleCodeChange(expr)}
-            bindings={{
-              ...defaultBindings,
-              ...bindings.current,
-            }}
-            value={ensureString(value)}
+            value={
+              bindings.current[ensureString(value)] ??
+              defaultBindings[ensureString(value)] ??
+              mkUndefinedObjectPath()
+            }
             data={data}
             schema={schema}
             deleteIcon={false}
@@ -3111,11 +3112,11 @@ const JsonArrayWithSchemaEditor = observer(function JsonArrayWithSchemaEditor({
           <div className="flex-col fill-width">
             <DynamicValueWidget
               setValue={(expr) => expr && handleCodeChange(expr)}
-              bindings={{
-                ...defaultBindings,
-                ...bindings.current,
-              }}
-              value={value}
+              value={
+                bindings.current[ensureString(value)] ??
+                defaultBindings[ensureString(value)] ??
+                mkUndefinedObjectPath()
+              }
               data={data}
               schema={schema}
               deleteIcon={false}

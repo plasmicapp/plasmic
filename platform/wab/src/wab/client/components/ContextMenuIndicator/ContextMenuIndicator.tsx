@@ -1,4 +1,4 @@
-import { MenuMaker } from "@/wab/client/components/widgets";
+import { MenuType, useContextMenu } from "@/wab/client/components/ContextMenu";
 import MenuButton from "@/wab/client/components/widgets/MenuButton";
 import {
   DefaultContextMenuIndicatorProps,
@@ -7,7 +7,7 @@ import {
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { Tooltip } from "antd";
 import * as React from "react";
-import { createContext, ReactNode, useState } from "react";
+import { ReactNode, createContext, useState } from "react";
 import * as Signals from "signals";
 
 function createContextMenuContext() {
@@ -25,20 +25,34 @@ export const ContextMenuContext = createContext(createContextMenuContext());
 
 export interface ContextMenuIndicatorProps
   extends DefaultContextMenuIndicatorProps {
+  /**
+   * Tooltip shown when hovering the green dynamic value button.
+   * Defaults to "Use dynamic value".
+   */
   tooltip?: ReactNode;
+  /** Click listener for the green dynamic value button. */
   onIndicatorClickDefault?: () => void;
-  menu?: React.ReactNode | MenuMaker;
+  /** Menu to show on context menu indicator (3 dot icon). */
+  menu?: MenuType;
+  /** Whether to show the menu when right-clicking the children. */
+  showMenuOnRightClick?: boolean;
+  /** Whether to show the green dynamic value button and highlight effect. */
   showDynamicValueButton?: boolean;
   style?: React.CSSProperties;
   className?: string;
 }
 
+/**
+ * Shows a context menu indicator (usually 3 dot icon) and
+ * an optional green dynamic value button and highlight effect.
+ */
 function ContextMenuIndicator_(
   {
     menu,
     onIndicatorClickDefault,
     tooltip = "Use dynamic value",
     showDynamicValueButton = false,
+    showMenuOnRightClick = false,
     style,
     className,
     ...props
@@ -51,10 +65,18 @@ function ContextMenuIndicator_(
   const [ctx] = useState(createContextMenuContext());
   ctx.setOpenTooltip = setOpenTooltip;
   ctx.useDynamicValue = onIndicatorClickDefault ?? (() => {});
+  const contextMenuProps = useContextMenu({
+    menu: showMenuOnRightClick ? menu : undefined,
+  });
   return (
     <ContextMenuContext.Provider value={ctx}>
       <PlasmicContextMenuIndicator
-        root={{ ref, style, className }}
+        root={{
+          ref,
+          style,
+          className,
+          ...contextMenuProps,
+        }}
         {...props}
         contextMenu={
           menu && (

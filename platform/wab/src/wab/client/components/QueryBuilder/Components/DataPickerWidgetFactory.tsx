@@ -14,21 +14,18 @@ import {
   extractValueSavedFromDataPicker,
   summarizeExpr,
 } from "@/wab/shared/core/exprs";
-import { isDynamicValue } from "@/wab/shared/dynamic-bindings";
 import {
   CustomCode,
   ObjectPath,
   TemplatedString,
 } from "@/wab/shared/model/classes";
 import { BaseWidgetProps } from "@react-awesome-query-builder/antd";
-import { Popover } from "antd";
-import { isString } from "lodash";
+import { Menu, Popover } from "antd";
 import * as React from "react";
 
 export interface DataPickerWidgetFactoryProps {
   widgetProps: BaseWidgetProps;
   setValue: (expr: CustomCode | ObjectPath | null | undefined) => void;
-  bindings?: Record<string, CustomCode | ObjectPath | TemplatedString>;
   data: Record<string, any> | undefined;
   schema?: DataPickerTypesSchema;
   originalFactory: (props: BaseWidgetProps) => React.ReactElement;
@@ -42,7 +39,6 @@ export function mkUndefinedObjectPath() {
 export function DataPickerWidgetFactory({
   widgetProps,
   setValue,
-  bindings,
   data,
   schema,
   originalFactory,
@@ -50,43 +46,80 @@ export function DataPickerWidgetFactory({
 }: DataPickerWidgetFactoryProps): React.ReactElement {
   const [defaultOpenDataPicker, setDefaultOpenDataPicker] =
     React.useState(false);
+  const switchToDynamicValue = React.useCallback(() => {
+    setDefaultOpenDataPicker(true);
+    setValue(mkUndefinedObjectPath());
+  }, [setDefaultOpenDataPicker]);
+
   const { value } = widgetProps;
 
-  const control =
-    isString(value) && isDynamicValue(value) ? (
+  const isDynamicValue =
+    value instanceof ObjectPath ||
+    value instanceof CustomCode ||
+    value instanceof TemplatedString;
+
+  let contextMenu: React.ReactNode;
+  let widget: React.ReactNode;
+  if (isDynamicValue) {
+    contextMenu = (
+      <Menu>
+        <Menu.Item
+          id="remove-dynamic-value-btn"
+          key="remove-dynamic-value"
+          onClick={() => {
+            setValue(undefined);
+          }}
+        >
+          Remove dynamic value
+        </Menu.Item>
+      </Menu>
+    );
+    widget = (
       <DynamicValueWidget
         value={value}
         setValue={setValue}
-        bindings={bindings}
         data={data}
         schema={schema}
         defaultOpenDataPicker={defaultOpenDataPicker}
         exprCtx={exprCtx}
       />
-    ) : (
-      <ContextMenuIndicator
-        showDynamicValueButton
-        onIndicatorClickDefault={() => {
-          setDefaultOpenDataPicker(true);
-          setValue(mkUndefinedObjectPath());
-        }}
-        className="qb-custom-widget"
-      >
-        {originalFactory(widgetProps)}
-      </ContextMenuIndicator>
     );
-  return control;
+  } else {
+    contextMenu = (
+      <Menu>
+        <Menu.Item
+          id="use-dynamic-value-btn"
+          key="use-dynamic-value"
+          onClick={switchToDynamicValue}
+        >
+          Use dynamic value
+        </Menu.Item>
+      </Menu>
+    );
+    widget = originalFactory(widgetProps);
+  }
+
+  return (
+    <ContextMenuIndicator
+      className="qb-custom-widget"
+      menu={contextMenu}
+      showMenuOnRightClick
+      showDynamicValueButton={!isDynamicValue}
+      onIndicatorClickDefault={switchToDynamicValue}
+    >
+      {widget}
+    </ContextMenuIndicator>
+  );
 }
 
 type DynamicValueWidgetProps = {
-  value: string;
+  value: ObjectPath | CustomCode | TemplatedString;
   data: Record<string, any> | undefined;
   schema?: DataPickerTypesSchema;
   defaultOpenDataPicker?: boolean;
   deleteIcon?: boolean;
   expectedValues?: string;
   setValue: (newVal: ObjectPath | CustomCode | null | undefined) => void;
-  bindings?: Record<string, ObjectPath | CustomCode | TemplatedString>;
   exprCtx: ExprCtx;
 };
 
@@ -95,7 +128,6 @@ export function DynamicValueWidget({
   schema,
   value,
   setValue,
-  bindings,
   defaultOpenDataPicker,
   deleteIcon = true,
   expectedValues,
@@ -105,13 +137,8 @@ export function DynamicValueWidget({
     defaultOpenDataPicker ?? false
   );
 
-  const realValue =
-    bindings && value && bindings[value]
-      ? bindings[value]
-      : mkUndefinedObjectPath();
-
-  const previewValue = summarizeExpr(realValue, exprCtx);
-  const textValue = extractValueSavedFromDataPicker(realValue, exprCtx);
+  const previewValue = summarizeExpr(value, exprCtx);
+  const textValue = extractValueSavedFromDataPicker(value, exprCtx);
 
   return (
     <Popover

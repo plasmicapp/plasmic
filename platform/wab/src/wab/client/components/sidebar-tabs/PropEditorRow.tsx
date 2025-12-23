@@ -240,6 +240,24 @@ export function isPropShown(
   return true;
 }
 
+/**
+ * By default, we enable the following pointer interactions when possible:
+ * - right-click context menu
+ * - green dynamic value button
+ *
+ * Some prop types have complex controls and implement their own context menu
+ * or pointer interactions. Note that disabling pointer interactions does NOT
+ * disable dynamic values. The prop type may still allow dynamic values via the
+ * context menu indicator (3 dot icon).
+ */
+function enablePointerInteractionsForPropType(
+  propType: StudioPropType<any> | undefined
+) {
+  // Since queryBuilder has individual fields inside that can be dynamic,
+  // users usually doesn't want to set the whole prop as a dynamic value.
+  return getPropTypeType(propType) !== "queryBuilder";
+}
+
 function tryGetTplRawString(expr: Expr) {
   if (isKnownRenderExpr(expr) && expr.tpl.length === 1) {
     const tpl = expr.tpl[0];
@@ -722,6 +740,9 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
     )
   );
 
+  const allowPointerInteractions =
+    enablePointerInteractionsForPropType(propType);
+
   const allowDynamicValue =
     !readOnly &&
     !referencedParam &&
@@ -730,7 +751,10 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
     !isExprValuePropType(propType);
 
   const showDynamicValueButton =
-    allowDynamicValue && !studioCtx.contentEditorMode && !isCustomCode;
+    allowDynamicValue &&
+    allowPointerInteractions &&
+    !studioCtx.contentEditorMode &&
+    !isCustomCode;
 
   function switchToDynamicValue(dataToken?: DataToken) {
     const currentExpr = exprRef.current;
@@ -1069,7 +1093,7 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
               subtitle={subtitle}
               definedIndicator={definedIndicator}
               layout={layout}
-              menu={!isMenuEmpty(contextMenu) ? contextMenu : undefined}
+              menu={allowPointerInteractions && !isMenuEmpty(contextMenu) ? contextMenu : undefined}
               noMenuButton
               icon={icon}
               tooltip={

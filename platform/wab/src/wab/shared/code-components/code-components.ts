@@ -3715,6 +3715,7 @@ export function isExprValuePropType(
   ].includes(type);
 }
 
+/** Whether a prop type should NOT allow dynamic values. */
 export function isDynamicValueDisabledInPropType(
   propType: StudioPropType<any> | undefined
 ) {
