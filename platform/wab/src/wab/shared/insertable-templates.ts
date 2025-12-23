@@ -20,6 +20,7 @@ import {
   ensureValidUnownedTree,
   getInvalidComponentNames,
   makeImageAssetFixer,
+  makeTplAnimationsFixer,
   mkInsertableTokenImporter,
   mkTextTplStyleFixer,
 } from "@/wab/shared/insertable-templates/fixers";
@@ -162,12 +163,15 @@ function getUnownedTreeCloneUtils(
     tokenImporter
   );
 
+  const tplAnimationsFixer = makeTplAnimationsFixer(site);
+
   return {
     componentImporter,
     textTplStyleFixer,
     tplAssetFixer,
     getNewImageAsset,
     tokenImporter,
+    tplAnimationsFixer,
     seenFonts,
   };
 }
@@ -196,6 +200,7 @@ export function cloneInsertableTemplate(
     componentImporter,
     textTplStyleFixer,
     tokenImporter,
+    tplAnimationsFixer,
     seenFonts,
   } = getUnownedTreeCloneUtils(site, info, plumeSite);
 
@@ -241,6 +246,7 @@ export function cloneInsertableTemplate(
     },
     {
       resolveTokens: tokenImporter,
+      tplAnimationsFixer,
       tplAssetFixer,
       fixTextTplStyles: textTplStyleFixer,
       getNewImageAsset,
@@ -279,6 +285,7 @@ export function cloneCopyState(
     componentImporter,
     textTplStyleFixer,
     tokenImporter,
+    tplAnimationsFixer,
     seenFonts,
   } = getUnownedTreeCloneUtils(site, info, plumeSite);
 
@@ -334,6 +341,7 @@ export function cloneCopyState(
         },
         {
           resolveTokens: tokenImporter,
+          tplAnimationsFixer,
           tplAssetFixer,
           fixTextTplStyles: textTplStyleFixer,
           getNewImageAsset,

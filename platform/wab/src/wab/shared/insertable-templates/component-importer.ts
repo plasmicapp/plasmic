@@ -16,6 +16,7 @@ import { flattenTpls, isTplComponent } from "@/wab/shared/core/tpls";
 import {
   ensureValidClonedComponent,
   makeImageAssetFixer,
+  makeTplAnimationsFixer,
 } from "@/wab/shared/insertable-templates/fixers";
 import { ensureHostLessDepComponent } from "@/wab/shared/insertable-templates/inliners";
 import {
@@ -77,6 +78,9 @@ export function mkInsertableComponentImporter(
   );
   const tplMgr = new TplMgr({ site });
 
+  // Create animation sequence importer to fix animation references
+  const tplAnimationsFixer = makeTplAnimationsFixer(site);
+
   const fixupComp = (comp: Component, opts?: CloneOpts) => {
     ensureValidClonedComponent(
       comp,
@@ -87,6 +91,7 @@ export function mkInsertableComponentImporter(
       {
         getNewImageAsset,
         resolveTokens: resolveTreeTokens,
+        tplAnimationsFixer,
         tplAssetFixer,
       }
     );

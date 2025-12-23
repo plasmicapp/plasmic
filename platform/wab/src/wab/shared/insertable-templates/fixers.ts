@@ -26,6 +26,7 @@ import {
 import { code, isFallbackableExpr } from "@/wab/shared/core/exprs";
 import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
 import { mkImageAssetRef } from "@/wab/shared/core/image-assets";
+import { allAnimationSequences } from "@/wab/shared/core/sites";
 import { FinalToken, MutableToken } from "@/wab/shared/core/tokens";
 import {
   TplTextTag,
@@ -45,6 +46,7 @@ import {
 } from "@/wab/shared/insertable-templates/inliners";
 import { TargetVariants } from "@/wab/shared/insertable-templates/types";
 import {
+  AnimationSequence,
   Component,
   CompositeExpr,
   CustomCode,
@@ -461,10 +463,91 @@ export function mkTextTplStyleFixer(sourceComp: Component, sourceSite: Site) {
   };
 }
 
+/**
+ * Creates an importer function that handles AnimationSequence references when
+ * copying/pasting between projects. For each Animation in the tree, it will:
+ * 1. Check if an AnimationSequence with the same name exists in the target site
+ * 2. If found, replace the reference with the existing sequence
+ * 3. If not found, clone the sequence and add it to the target site
+ */
+export function mkAnimationSequenceImporter(targetSite: Site) {
+  const tplMgr = new TplMgr({ site: targetSite });
+
+  // Get all animation sequences from target site
+  const targetAnimationSequences = allAnimationSequences(targetSite, {
+    includeDeps: "direct",
+  });
+
+  // Build a map from normalized name to animation sequence for the target site
+  // We use toVarName(name) to match sequences by name only, ignoring uuid
+  // since the uuid will always be different between projects
+  const targetSequencesByName = new Map<string, AnimationSequence>();
+  for (const seq of targetAnimationSequences) {
+    targetSequencesByName.set(toVarName(seq.name), seq);
+  }
+
+  // Map from source sequence to the new/existing sequence in target site
+  const oldToNewAnimationSequence = new Map<
+    AnimationSequence,
+    AnimationSequence
+  >();
+
+  function getOrAddAnimationSequence(
+    oldSequence: AnimationSequence
+  ): AnimationSequence {
+    // Check if we've already mapped this sequence
+    if (oldToNewAnimationSequence.has(oldSequence)) {
+      return oldToNewAnimationSequence.get(oldSequence)!;
+    }
+
+    // Check if a sequence with the same name exists in the target site
+    const existingSequence = targetSequencesByName.get(
+      toVarName(oldSequence.name)
+    );
+
+    if (existingSequence) {
+      oldToNewAnimationSequence.set(oldSequence, existingSequence);
+      return existingSequence;
+    }
+
+    // Clone the sequence and add it to the target site
+    const newSequence = tplMgr.duplicateAnimationSequence(oldSequence);
+
+    // Update the name map with the new sequence
+    targetSequencesByName.set(toVarName(newSequence.name), newSequence);
+    oldToNewAnimationSequence.set(oldSequence, newSequence);
+
+    return newSequence;
+  }
+
+  return getOrAddAnimationSequence;
+}
+
+export function makeTplAnimationsFixer(site: Site) {
+  const getNewAnimationSequence = mkAnimationSequenceImporter(site);
+
+  /**
+   * Fixes animations in a tpl tree by replacing AnimationSequence references
+   * with sequences that exist in the target site
+   */
+  const tplAnimationsFixer = (tplTree: TplNode) => {
+    for (const [vs, _tpl] of findVariantSettingsUnderTpl(tplTree)) {
+      if (vs.rs.animations && vs.rs.animations.length > 0) {
+        for (const animation of vs.rs.animations) {
+          animation.sequence = getNewAnimationSequence(animation.sequence);
+        }
+      }
+    }
+  };
+
+  return tplAnimationsFixer;
+}
+
 type ValidVariantsFilter = (tpl: TplNode, tv: TargetVariants) => void;
 
 type ContextHelpers = {
   resolveTokens: (tplTree: TplNode) => void;
+  tplAnimationsFixer: (tplTree: TplNode) => void;
   getNewImageAsset: (asset: ImageAsset) => ImageAsset | undefined;
   tplAssetFixer: TplVSettingFixer;
   fixTextTplStyles: TplVSettingFixer;
@@ -701,6 +784,8 @@ function traverseAndFixTree(
   specificFixes: TplVSettingFixer,
   helpers: Omit<ContextHelpers, "fixTextTplStyles">
 ) {
+  // Fix animation sequence references before inlining mixins
+  helpers.tplAnimationsFixer(tplTree);
   inlineMixins(tplTree);
   helpers.resolveTokens(tplTree);
 
