@@ -141,6 +141,7 @@ import {
   OutlineNodeKey,
 } from "@/wab/client/components/sidebar-tabs/OutlineCtx";
 import BoltIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Bolt";
+import { transformDataTokensToDisplay } from "@/wab/shared/eval/expression-parser";
 import { INTERACTIVE_CAP, REPEATED_CAP } from "@/wab/shared/Labels";
 
 function RepIcon() {
@@ -405,7 +406,13 @@ const TplTreeNode = observer(function TplTreeNode(props: {
 
   const getTextContent = computedFn(function getTextContent(n: TplNode) {
     const text = Tpls.getTplTextBlockContent(n, viewCtx);
-    return text ? `"${text}"` : undefined;
+    return text
+      ? `"${transformDataTokensToDisplay(
+          text,
+          viewCtx.site,
+          viewCtx.siteInfo.id
+        )}"`
+      : undefined;
   });
 
   const renderExpander = () => {
@@ -604,7 +611,6 @@ const TplTreeNode = observer(function TplTreeNode(props: {
         { name: "defaultEditing" }
       ).get();
       const itemName = item.name || "";
-
       return (
         <EditableLabel
           labelFactory={(_props) => (

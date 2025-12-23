@@ -71,6 +71,11 @@ export interface StyleTokensProviderBundle {
   module: string;
 }
 
+export interface DataTokensBundle {
+  id: string;
+  module: string;
+}
+
 export interface ProjectModuleBundle {
   id: string;
   module: string;
@@ -90,6 +95,7 @@ export interface ProjectMetaBundle {
   globalContextBundle?: GlobalContextBundle;
   splitsProviderBundle?: SplitsProviderBundle;
   styleTokensProviderBundle?: StyleTokensProviderBundle;
+  dataTokensBundle?: DataTokensBundle;
   projectModuleBundle?: ProjectModuleBundle;
   // A list of files that are exported from the project and *can* be used by the user
   reactWebExportedFiles?: Array<{
@@ -204,6 +210,8 @@ export interface ChecksumBundle {
   splitsProviderChecksum: string;
   // Checksum of project style tokens provider
   styleTokensProviderChecksum: string;
+  // Checksum of project data tokens provider
+  dataTokensChecksum: string;
   // Checksum of project plasmic.ts
   projectModuleChecksum: string;
 }

@@ -23,6 +23,7 @@ import {
 import { toVarName } from "@/wab/shared/codegen/util";
 import { mkShortId, spawn, uniqueName } from "@/wab/shared/common";
 import { isPageComponent } from "@/wab/shared/core/components";
+import { ExprCtx } from "@/wab/shared/core/exprs";
 import {
   Component,
   ComponentServerQuery,
@@ -41,7 +42,7 @@ const ServerQueryRow = observer(
   }) => {
     const { component, query, viewCtx } = props;
     const studioCtx = viewCtx.studioCtx;
-    const exprCtx = {
+    const exprCtx: ExprCtx = {
       projectFlags: studioCtx.projectFlags(),
       component,
       inStudio: true,

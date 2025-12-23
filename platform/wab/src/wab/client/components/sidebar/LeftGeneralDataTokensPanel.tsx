@@ -223,15 +223,7 @@ const LeftGeneralDataTokensPanel = observer(
         );
         if (confirmation) {
           const { tokens } = getFolderTokens([folder]);
-          // TODO: create tryDeleteDataTokens similar to tryDeleteTokens
-          await studioCtx.changeUnsafe(() => {
-            for (const token of tokens) {
-              const index = studioCtx.site.dataTokens.indexOf(token);
-              if (index !== -1) {
-                studioCtx.site.dataTokens.splice(index, 1);
-              }
-            }
-          });
+          await studioCtx.siteOps().tryDeleteDataTokens(tokens);
         }
       },
       [studioCtx]
@@ -247,7 +239,9 @@ const LeftGeneralDataTokensPanel = observer(
           for (const token of tokens) {
             const oldTokenName = token.name;
             const newTokenName = oldTokenName.replace(oldPath, newPath);
-            studioCtx.tplMgr().renameDataToken(token, newTokenName);
+            studioCtx
+              .tplMgr()
+              .renameDataToken(studioCtx.siteInfo.id, token, newTokenName);
           }
         });
         const keyChanges = getFolderKeyChanges(folders, pathData);

@@ -191,6 +191,7 @@ export const TemplatedTextEditor = React.forwardRef<
 
     const [validSqlString, setValidSqlString] = React.useState(true);
     const studioCtx = useStudioCtx();
+    const viewCtx = studioCtx.focusedViewCtx();
 
     const slateContainerRef = React.useRef<HTMLDivElement>(null);
 
@@ -207,27 +208,26 @@ export const TemplatedTextEditor = React.forwardRef<
       [slateContainerRef, editor]
     );
 
+    const exprCtx = React.useMemo(
+      () => ({
+        projectFlags: studioCtx.projectFlags(),
+        component: component ?? null,
+        projectId: viewCtx?.siteInfo.id,
+        inStudio: true,
+      }),
+      [component, studioCtx]
+    );
+
     const value = React.useMemo(
-      () =>
-        parseTemplatedStringToSlateNodes(templatedString, {
-          projectFlags: studioCtx.projectFlags(),
-          component: component ?? null,
-          inStudio: true,
-        }),
-      [templatedString, component, studioCtx]
+      () => parseTemplatedStringToSlateNodes(templatedString, exprCtx),
+      [templatedString, exprCtx]
     );
 
     const isEmptyTextSlateDescendant = (descendants: Descendant[]) => {
       if (descendants.length !== 1) {
         return false;
       }
-      return (
-        getTextFromDescendents(descendants, {
-          projectFlags: studioCtx.projectFlags(),
-          component: component ?? null,
-          inStudio: true,
-        }) === "``"
-      );
+      return getTextFromDescendents(descendants, exprCtx) === "``";
     };
 
     const onSlateChange = React.useCallback(
@@ -267,6 +267,7 @@ export const TemplatedTextEditor = React.forwardRef<
           data,
           schema,
           showExpressionAsPreviewValue,
+          exprCtx,
           prefix,
           disabled
         ),
@@ -307,16 +308,8 @@ export const TemplatedTextEditor = React.forwardRef<
     useLayoutEffect(() => {
       if (
         previousValue.current !== value &&
-        getTextFromDescendents(editor.children, {
-          projectFlags: studioCtx.projectFlags(),
-          component: component ?? null,
-          inStudio: true,
-        }) !==
-          getTextFromDescendents(value, {
-            projectFlags: studioCtx.projectFlags(),
-            component: component ?? null,
-            inStudio: true,
-          })
+        getTextFromDescendents(editor.children, exprCtx) !==
+          getTextFromDescendents(value, exprCtx)
       ) {
         resetNodes(editor, { nodes: value as SlateDescendant[] });
       }
@@ -379,11 +372,7 @@ export const TemplatedTextEditor = React.forwardRef<
                 resetNodes(editor, {
                   nodes: parseTemplatedStringToSlateNodes(
                     interpolatedStringToTemplatedString(str),
-                    {
-                      projectFlags: studioCtx.projectFlags(),
-                      component: component ?? null,
-                      inStudio: true,
-                    }
+                    exprCtx
                   ) as SlateDescendant[],
                 });
               }}
@@ -391,15 +380,7 @@ export const TemplatedTextEditor = React.forwardRef<
               dataSourceSchema={dataSourceSchema}
               currentValue={templatedString?.text
                 .map((v) =>
-                  typeof v === "string"
-                    ? v
-                    : `{{ ${
-                        asCode(v, {
-                          projectFlags: studioCtx.projectFlags(),
-                          component: component ?? null,
-                          inStudio: true,
-                        }).code
-                      } }}`
+                  typeof v === "string" ? v : `{{ ${asCode(v, exprCtx).code} }}`
                 )
                 .join("")}
             />
@@ -525,6 +506,7 @@ function renderElement(
   data: Record<string, any> | undefined,
   schema: DataPickerTypesSchema | undefined,
   showExpressionAsPreviewValue: boolean | undefined,
+  exprCtx: ExprCtx | undefined,
   prefix: string | undefined,
   disabled: boolean | undefined
 ) {
@@ -535,6 +517,7 @@ function renderElement(
           {...(props as any)}
           data={data}
           schema={schema}
+          exprCtx={exprCtx}
           showExpressionAsPreviewValue={showExpressionAsPreviewValue}
           disabled={disabled}
         />

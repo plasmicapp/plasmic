@@ -493,6 +493,17 @@ function filterAndUpdateChecksums(
     currentChecksums.styleTokensProviderChecksum = styleTokensProviderChecksum;
   }
 
+  if (output.projectConfig.dataTokensBundle) {
+    const dataTokensChecksum = md5(
+      output.projectConfig.dataTokensBundle.module
+    );
+    if (previousChecksums.dataTokensChecksum === dataTokensChecksum) {
+      // TODO: handle checksum equal on CLI
+      //output.projectConfig.dataTokensBundle.module = "";
+    }
+    currentChecksums.dataTokensChecksum = dataTokensChecksum;
+  }
+
   if (output.projectConfig.globalContextBundle) {
     const globalContextsChecksum = md5(
       output.projectConfig.globalContextBundle.contextModule

@@ -20,7 +20,7 @@ import { getTplComponentFetchers } from "@/wab/shared/cached-selectors";
 import { toVarName } from "@/wab/shared/codegen/util";
 import { spawn } from "@/wab/shared/common";
 import { isPageComponent } from "@/wab/shared/core/components";
-import { asCode } from "@/wab/shared/core/exprs";
+import { ExprCtx, asCode } from "@/wab/shared/core/exprs";
 import { tryGetTplOwnerComponent } from "@/wab/shared/core/tpls";
 import {
   Component,
@@ -48,7 +48,7 @@ const DataQueryRow = observer(
     viewCtx: ViewCtx;
   }) => {
     const studioCtx = viewCtx.studioCtx;
-    const exprCtx = {
+    const exprCtx: ExprCtx = {
       projectFlags: studioCtx.projectFlags(),
       component,
       inStudio: true,
@@ -234,7 +234,7 @@ const TplFetcherRow = observer(function TplFetcherRow(props: {
 }) {
   const { tpl, viewCtx } = props;
   const component = tryGetTplOwnerComponent(tpl) ?? null;
-  const exprCtx = {
+  const exprCtx: ExprCtx = {
     projectFlags: viewCtx.projectFlags(),
     component,
     inStudio: true,

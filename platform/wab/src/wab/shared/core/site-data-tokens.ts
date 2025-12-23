@@ -1,4 +1,5 @@
 import { DataTokenType, getDataTokenType } from "@/wab/commons/DataToken";
+import { makeShortProjectId, toVarName } from "@/wab/shared/codegen/util";
 import {
   DependencyWalkScope,
   walkDependencyTree,
@@ -84,4 +85,30 @@ export function finalDataTokensForDep(
   depSite: Site
 ): ReadonlyArray<FinalToken<DataToken>> {
   return depSite.dataTokens.map((token) => toFinalToken(token, site));
+}
+
+/**
+ * Maps a short project ID (first 5 chars) to the dependency name.
+ */
+export function findDepNameByShortProjectId(
+  site: Site,
+  shortProjectId: string
+): string | undefined {
+  return walkDependencyTree(site, "all").find((dep) =>
+    dep.projectId.startsWith(shortProjectId)
+  )?.name;
+}
+
+/**
+ * Maps a dependency variable name to its short project ID (first 5 chars).
+ * Returns null if not found.
+ */
+export function findShortProjectIdByDepName(
+  site: Site,
+  depVarName: string
+): string | undefined {
+  const foundDep = walkDependencyTree(site, "all").find(
+    (dep) => toVarName(dep.name) === depVarName
+  );
+  return foundDep ? makeShortProjectId(foundDep.projectId) : undefined;
 }

@@ -186,7 +186,6 @@ import {
 } from "@/wab/shared/plume/plume-registry";
 import {
   flattenDataTokenUsage,
-  isDataTokenUsedInExpr,
   isQueryUsedInExpr,
 } from "@/wab/shared/refactoring";
 import {
@@ -1862,7 +1861,11 @@ export class SiteOps {
   async tryDeleteDataTokens(tokens: DataToken[]) {
     const tokensUsages = tokens
       .map((t) => ({
-        usages: extractDataTokenUsages(this.site, t),
+        usages: extractDataTokenUsages(
+          this.studioCtx.siteInfo.id,
+          this.site,
+          t
+        ),
         token: t,
       }))
       .filter(({ usages }) =>
@@ -1890,15 +1893,14 @@ export class SiteOps {
         ]);
       },
       ({ success }) => {
+        const projectId = this.studioCtx.siteInfo.id;
         tokens.forEach((token) => {
           // Find all expressions that use this data token and flatten them
           for (const { ownerComponent, exprRefs } of cachedExprsInSite(
             this.site
           )) {
             for (const exprRef of exprRefs) {
-              if (isDataTokenUsedInExpr(token, exprRef.expr)) {
-                flattenDataTokenUsage(token, exprRef, ownerComponent);
-              }
+              flattenDataTokenUsage(token, exprRef, projectId, ownerComponent);
             }
           }
           arrayRemove(this.site.dataTokens, token);

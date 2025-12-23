@@ -2,6 +2,15 @@ import { expect, FrameLocator, Locator, Page } from "playwright/test";
 import { test } from "../../fixtures/test";
 import { BaseModel } from "../BaseModel";
 
+export interface TestDataToken {
+  name: string;
+  type: string;
+  value: string;
+  evaluatedValue?: string;
+  depName?: string;
+  nestedPath?: string[];
+}
+
 export class LeftPanel extends BaseModel {
   readonly frame: FrameLocator = this.page
     .frameLocator("iframe.studio-frame")
@@ -16,6 +25,8 @@ export class LeftPanel extends BaseModel {
   );
 
   readonly addSearchInput: Locator = this.addContainer.locator("input");
+
+  readonly leftPane = this.frame.locator(".canvas-editor__left-pane");
 
   readonly componentNameSubmit: Locator = this.frame.locator(
     '[data-test-id="prompt-submit"]'
@@ -137,7 +148,7 @@ export class LeftPanel extends BaseModel {
     });
   }
 
-  async createNewDataToken(name: string, type: string, value: any) {
+  async createNewDataToken({ name, type, value }: TestDataToken) {
     await test.step(`Create data token ${name}: ${type} = ${value}`, async () => {
       await this.switchToDataTokensTab();
       await this.newDataTokenButton.click();

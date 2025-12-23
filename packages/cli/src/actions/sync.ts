@@ -52,6 +52,7 @@ import { checkVersionResolution } from "../utils/resolve-utils";
 import * as semver from "../utils/semver";
 import { confirmWithUser } from "../utils/user-utils";
 import { syncProjectComponents } from "./sync-components";
+import { syncDataTokens } from "./sync-data-tokens";
 import { syncGlobalContexts } from "./sync-global-contexts";
 import { syncGlobalVariants } from "./sync-global-variants";
 import { syncProjectIconAssets } from "./sync-icons";
@@ -788,6 +789,15 @@ async function syncProjectConfig(
   );
 
   await syncStyleTokensProvider(
+    context,
+    projectBundle,
+    projectConfig,
+    projectLock,
+    checksums,
+    baseDir
+  );
+
+  await syncDataTokens(
     context,
     projectBundle,
     projectConfig,

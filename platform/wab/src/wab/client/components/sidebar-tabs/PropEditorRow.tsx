@@ -54,7 +54,7 @@ import {
   StudioPropType,
   wabTypeToPropType,
 } from "@/wab/shared/code-components/code-components";
-import { toVarName } from "@/wab/shared/codegen/util";
+import { makeShortProjectId, toVarName } from "@/wab/shared/codegen/util";
 import {
   assert,
   ensure,
@@ -112,6 +112,7 @@ import {
   DefinedIndicatorType,
 } from "@/wab/shared/defined-indicator";
 import { tryEvalExpr } from "@/wab/shared/eval";
+import { makeDataTokenIdentifier } from "@/wab/shared/eval/expression-parser";
 import { getInputTypeOptions } from "@/wab/shared/html-utils";
 import { RESET_CAP } from "@/wab/shared/Labels";
 import {
@@ -718,6 +719,7 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
   const exprCtx: ExprCtx = {
     projectFlags: studioCtx.projectFlags(),
     component: ownerComponent ?? null,
+    projectId: viewCtx?.siteInfo.id,
     inStudio: true,
   };
 
@@ -758,9 +760,11 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
 
   function switchToDynamicValue(dataToken?: DataToken) {
     const currentExpr = exprRef.current;
+    const shortId = makeShortProjectId(studioCtx.siteInfo.id);
+
     const newExpr = new ObjectPath({
       path: dataToken
-        ? ["$dataTokens", toVarName(dataToken.name)]
+        ? [makeDataTokenIdentifier(shortId, toVarName(dataToken.name))]
         : ["undefined"],
       fallback: currentExpr ? clone(currentExpr) : codeLit(undefined),
     });

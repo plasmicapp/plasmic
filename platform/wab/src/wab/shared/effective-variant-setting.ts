@@ -2,6 +2,7 @@ import L from "lodash";
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { computed, isObservable, makeObservable } from "mobx";
 
+import type { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { DeepReadonly, DeepReadonlyArray } from "@/wab/commons/types";
 import {
   ReadonlyIRuleSetHelpersX,
@@ -365,7 +366,7 @@ export class EffectiveVariantSetting {
     return rss;
   }
 
-  getTextSource(): Array<VariantSettingSource> | undefined {
+  getTextSource(viewCtx: ViewCtx): Array<VariantSettingSource> | undefined {
     const vsettings = this.variantSettings;
     const stack = new Array<VariantSettingSource>();
     for (const vs of vsettings) {
@@ -374,7 +375,7 @@ export class EffectiveVariantSetting {
           type: "text" as const,
           combo: vs.variants,
           value: ensure(
-            getRichTextContent(vs.text),
+            getRichTextContent(vs.text, viewCtx),
             "Unable to get richtext content from text"
           ),
         });

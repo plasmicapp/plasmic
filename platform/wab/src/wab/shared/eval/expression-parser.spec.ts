@@ -1,11 +1,19 @@
+import { makeShortProjectId } from "@/wab/shared/codegen/util";
 import {
   codeUsesGlobalObjects,
   emptyParsedExprInfo,
   parseCodeExpression,
+  parseDataTokenIdentifier,
+  pathToDisplayString,
   pathToString,
   renameObjectKey,
   replaceVarWithProp,
+  transformDataTokenPathToBundle,
+  transformDataTokenPathToDisplay,
+  transformDataTokensInCode,
+  transformDataTokensToDisplay,
 } from "@/wab/shared/eval/expression-parser";
+import { Site } from "@/wab/shared/model/classes";
 
 describe("parseCodeExpression", function () {
   it("should find uses of $props.key", () => {
@@ -300,5 +308,329 @@ describe("codeUsesGlobalObjects", function () {
 
   it("should handle invalid code gracefully", () => {
     expect(codeUsesGlobalObjects("invalid {{ syntax")).toBe(false);
+  });
+});
+
+describe("transformDataTokensInCode", function () {
+  // Use project IDs that produce valid JS identifiers when shortened (first 5 chars)
+  const projectId = "1hbbcw1cMH46M8XARJt5Jt";
+  const shortProjectId = makeShortProjectId(projectId); // "1hbbc"
+  const depProjectId = "rDX1t9nUt4dXzzfHmGhHz1";
+  const depShortId = makeShortProjectId(depProjectId); // "rDX1t"
+
+  const mockSite = {
+    projectDependencies: [
+      {
+        name: "myDep",
+        projectId: depProjectId,
+        site: {
+          projectDependencies: [],
+        },
+      },
+    ],
+  } as unknown as Site;
+
+  it("should transform local token to flat identifier", () => {
+    const code = "$dataTokens.myToken";
+    const result = transformDataTokensInCode(code, mockSite, projectId);
+    expect(result).toBe(`$dataTokens_${shortProjectId}_myToken`);
+  });
+
+  it("should transform dependency token to flat identifier", () => {
+    const code = "$dataTokens.myDep.depToken";
+    const result = transformDataTokensInCode(code, mockSite, projectId);
+    expect(result).toBe(`$dataTokens_${depShortId}_depToken`);
+  });
+
+  it("should not transform dep namespace reference", () => {
+    const code = "$dataTokens.myDep";
+    const result = transformDataTokensInCode(code, mockSite, projectId);
+    expect(result).toBe("$dataTokens.myDep");
+  });
+
+  it("should transform tokens with nested dot notation", () => {
+    // Local
+    const code = "$dataTokens.myToken.a.b.c";
+    const result = transformDataTokensInCode(code, mockSite, projectId);
+    expect(result).toBe(`$dataTokens_${shortProjectId}_myToken.a.b.c`);
+
+    // Dep
+    const depCode = "$dataTokens.myDep.depToken.x.y.z";
+    const depResult = transformDataTokensInCode(depCode, mockSite, projectId);
+    expect(depResult).toBe(`$dataTokens_${depShortId}_depToken.x.y.z`);
+  });
+
+  it("should transform local token with bracket notation", () => {
+    const code = '$dataTokens.myToken["key"]';
+    const result = transformDataTokensInCode(code, mockSite, projectId);
+    expect(result).toBe(`$dataTokens_${shortProjectId}_myToken["key"]`);
+  });
+
+  it("should transform local token with mixed dot and bracket notation", () => {
+    const code = '$dataTokens.myToken.a["b"].c[0]';
+    const result = transformDataTokensInCode(code, mockSite, projectId);
+    expect(result).toBe(`$dataTokens_${shortProjectId}_myToken.a["b"].c[0]`);
+  });
+
+  it("should transform dependency token with mixed notation", () => {
+    const code = '$dataTokens.myDep.depToken.nested["prop"]';
+    const result = transformDataTokensInCode(code, mockSite, projectId);
+    expect(result).toBe(`$dataTokens_${depShortId}_depToken.nested["prop"]`);
+  });
+
+  it("should transform token with nested path in function call", () => {
+    const code = "Object.keys($dataTokens.myToken.nested)";
+    const result = transformDataTokensInCode(code, mockSite, projectId);
+    expect(result).toBe(
+      `Object.keys($dataTokens_${shortProjectId}_myToken.nested)`
+    );
+  });
+
+  it("should transform multiple tokens in function call", () => {
+    const code = "merge($dataTokens.token1, $dataTokens.myDep.token2.data)";
+    const result = transformDataTokensInCode(code, mockSite, projectId);
+    expect(result).toBe(
+      `merge($dataTokens_${shortProjectId}_token1, $dataTokens_${depShortId}_token2.data)`
+    );
+  });
+
+  it("should transform token in complex expression", () => {
+    const code =
+      "($dataTokens.myToken.value || 0) + $dataTokens.myDep.depToken.count";
+    const result = transformDataTokensInCode(code, mockSite, projectId);
+    expect(result).toBe(
+      `($dataTokens_${shortProjectId}_myToken.value || 0) + $dataTokens_${depShortId}_depToken.count`
+    );
+  });
+});
+
+describe("transformDataTokensToDisplay", function () {
+  const projectId = "1hbbcw1cMH46M8XARJt5Jt";
+  const shortProjectId = makeShortProjectId(projectId); // "1hbbc"
+  const depProjectId = "rDX1t9nUt4dXzzfHmGhHz1";
+  const depShortId = makeShortProjectId(depProjectId); // "rDX1t"
+
+  const mockSite = {
+    projectDependencies: [
+      {
+        name: "myDep",
+        projectId: depProjectId,
+        site: {
+          projectDependencies: [],
+        },
+      },
+    ],
+  } as unknown as Site;
+
+  it("should transform local flat identifier to display format", () => {
+    const code = `$dataTokens_${shortProjectId}_myToken`;
+    const result = transformDataTokensToDisplay(code, mockSite, projectId);
+    expect(result).toBe("$dataTokens.myToken");
+  });
+
+  it("should transform dependency flat identifier to display format", () => {
+    const code = `$dataTokens_${depShortId}_depToken`;
+    const result = transformDataTokensToDisplay(code, mockSite, projectId);
+    expect(result).toBe("$dataTokens.myDep.depToken");
+  });
+
+  it("should not transform non-data-token code", () => {
+    const code = "$props.value + $state.count";
+    const result = transformDataTokensToDisplay(code, mockSite, projectId);
+    expect(result).toBe(code);
+  });
+
+  it("should transform local token with nested dot notation", () => {
+    const code = `$dataTokens_${shortProjectId}_myToken.a.b.c`;
+    const result = transformDataTokensToDisplay(code, mockSite, projectId);
+    expect(result).toBe("$dataTokens.myToken.a.b.c");
+  });
+
+  it("should transform dependency token with mixed notation", () => {
+    const code = `$dataTokens_${depShortId}_depToken.nested.prop`;
+    const result = transformDataTokensToDisplay(code, mockSite, projectId);
+    expect(result).toBe("$dataTokens.myDep.depToken.nested.prop");
+  });
+
+  it("should transform token in Object.keys()", () => {
+    const code = `Object.keys($dataTokens_${shortProjectId}_myToken)`;
+    const result = transformDataTokensToDisplay(code, mockSite, projectId);
+    expect(result).toBe("Object.keys($dataTokens.myToken)");
+  });
+
+  it("should transform token in complex expression", () => {
+    const code = `($dataTokens_${shortProjectId}_myToken.value || 0) + $dataTokens_${depShortId}_depToken.count`;
+    const result = transformDataTokensToDisplay(code, mockSite, projectId);
+    expect(result).toBe(
+      "($dataTokens.myToken.value || 0) + $dataTokens.myDep.depToken.count"
+    );
+  });
+});
+
+describe("transformDataTokenPathToBundle", function () {
+  const projectId = "1hbbcw1cMH46M8XARJt5Jt";
+  const shortProjectId = makeShortProjectId(projectId); // "1hbbc"
+  const depProjectId = "rDX1t9nUt4dXzzfHmGhHz1";
+  const depShortId = makeShortProjectId(depProjectId); // "rDX1t"
+
+  const mockSite = {
+    projectDependencies: [
+      {
+        name: "myDep",
+        projectId: depProjectId,
+        site: {
+          projectDependencies: [],
+        },
+      },
+    ],
+  } as unknown as Site;
+
+  it("should transform local token path to storage format", () => {
+    const path = ["$dataTokens", "myToken"];
+    const result = transformDataTokenPathToBundle(path, mockSite, projectId);
+    expect(result).toEqual([`$dataTokens_${shortProjectId}_myToken`]);
+  });
+
+  it("should transform dependency token path to storage format", () => {
+    const path = ["$dataTokens", "myDep", "depToken"];
+    const result = transformDataTokenPathToBundle(path, mockSite, projectId);
+    expect(result).toEqual([`$dataTokens_${depShortId}_depToken`]);
+  });
+
+  it("should not transform non-dataTokens paths", () => {
+    const path = ["$props", "value"];
+    const result = transformDataTokenPathToBundle(path, mockSite, projectId);
+    expect(result).toEqual(path);
+  });
+
+  it("should transform local token path with nested properties", () => {
+    const path = ["$dataTokens", "myToken", "a", "b", "c"];
+    const result = transformDataTokenPathToBundle(path, mockSite, projectId);
+    expect(result).toEqual([
+      `$dataTokens_${shortProjectId}_myToken`,
+      "a",
+      "b",
+      "c",
+    ]);
+  });
+
+  it("should transform dependency token path with numeric indices", () => {
+    const path = ["$dataTokens", "myDep", "depToken", "items", 0];
+    const result = transformDataTokenPathToBundle(path, mockSite, projectId);
+    expect(result).toEqual([`$dataTokens_${depShortId}_depToken`, "items", 0]);
+  });
+
+  it("should not transform dep namespace without token name", () => {
+    const path = ["$dataTokens", "myDep"];
+    const result = transformDataTokenPathToBundle(path, mockSite, projectId);
+    expect(result).toEqual(path);
+  });
+});
+
+describe("transformDataTokenPathToDisplay and pathToDisplayString", function () {
+  const projectId = "1hbbcw1cMH46M8XARJt5Jt";
+  const shortProjectId = makeShortProjectId(projectId); // "1hbbc"
+  const depProjectId = "rDX1t9nUt4dXzzfHmGhHz1";
+  const depShortId = makeShortProjectId(depProjectId); // "rDX1t"
+
+  const mockSite = {
+    projectDependencies: [
+      {
+        name: "myDep",
+        projectId: depProjectId,
+        site: {
+          projectDependencies: [],
+        },
+      },
+    ],
+  } as unknown as Site;
+
+  it("should transform local storage path to display format", () => {
+    const path = [`$dataTokens_${shortProjectId}_myToken`];
+    const result = transformDataTokenPathToDisplay(path, mockSite, projectId);
+    expect(result).toEqual(["$dataTokens", "myToken"]);
+  });
+
+  it("should transform dependency storage path to display format", () => {
+    const path = [`$dataTokens_${depShortId}_depToken`];
+    const result = transformDataTokenPathToDisplay(path, mockSite, projectId);
+    expect(result).toEqual(["$dataTokens", "myDep", "depToken"]);
+  });
+
+  it("should not transform non-token paths", () => {
+    const path = ["$props", "value"];
+    const result = transformDataTokenPathToDisplay(path, mockSite, projectId);
+    expect(result).toEqual(path);
+  });
+
+  it("should transform local token path with nested properties", () => {
+    const path = [`$dataTokens_${shortProjectId}_myToken`, "a", "b", "c"];
+    const result = transformDataTokenPathToDisplay(path, mockSite, projectId);
+    expect(result).toEqual(["$dataTokens", "myToken", "a", "b", "c"]);
+  });
+
+  it("should transform dependency token path with numeric indices", () => {
+    const path = [`$dataTokens_${depShortId}_depToken`, "items", 0];
+    const result = transformDataTokenPathToDisplay(path, mockSite, projectId);
+    expect(result).toEqual(["$dataTokens", "myDep", "depToken", "items", 0]);
+  });
+
+  it("should handle path with only flat identifier", () => {
+    const path = [`$dataTokens_${shortProjectId}_myToken`];
+    const result = transformDataTokenPathToDisplay(path, mockSite, projectId);
+    expect(result).toEqual(["$dataTokens", "myToken"]);
+  });
+
+  it("should preserve complex nested structures", () => {
+    const path = [
+      `$dataTokens_${shortProjectId}_myToken`,
+      "data",
+      "items",
+      0,
+      "value",
+    ];
+    const result = transformDataTokenPathToDisplay(path, mockSite, projectId);
+    expect(result).toEqual([
+      "$dataTokens",
+      "myToken",
+      "data",
+      "items",
+      0,
+      "value",
+    ]);
+  });
+
+  it("should convert local token without nested properties to string", () => {
+    const path = [`$dataTokens_${shortProjectId}_myToken`];
+    const result = pathToDisplayString(path, mockSite, projectId);
+    expect(result).toBe("$dataTokens.myToken");
+  });
+
+  it("should convert local token with nested properties to string", () => {
+    const path = [`$dataTokens_${shortProjectId}_myToken`, "a", "b", 0];
+    const result = pathToDisplayString(path, mockSite, projectId);
+    expect(result).toBe("$dataTokens.myToken.a.b[0]");
+  });
+});
+
+describe("parseDataTokenIdentifier", function () {
+  it("should parse data token identifier with simple name", () => {
+    const result = parseDataTokenIdentifier("$dataTokens_qfp12_name");
+    expect(result).toEqual({
+      identifier: "$dataTokens_qfp12_name",
+      projectShortId: "qfp12",
+      tokenName: "name",
+    });
+  });
+
+  it("should parse data token identifier with underscored name", () => {
+    const result = parseDataTokenIdentifier(
+      "$dataTokens_qfp12_underscored_name"
+    );
+    expect(result).toEqual({
+      identifier: "$dataTokens_qfp12_underscored_name",
+      projectShortId: "qfp12",
+      tokenName: "underscored_name",
+    });
   });
 });

@@ -1026,6 +1026,13 @@ export const createProjectMods = computedFn(
         source: projectOutput.styleTokensProviderBundle.module,
       });
     }
+    if (projectOutput.dataTokensBundle) {
+      mods.push({
+        name: `./${projectOutput.dataTokensBundle.fileName}`,
+        lang: "tsx",
+        source: projectOutput.dataTokensBundle.module,
+      });
+    }
     return mods;
   },
   { name: "createProjectMods", keepAlive: true, equals: comparer.structural }

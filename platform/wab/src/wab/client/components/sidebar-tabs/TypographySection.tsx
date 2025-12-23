@@ -24,7 +24,7 @@ import { LabelWithDetailedTooltip } from "@/wab/client/components/widgets/LabelW
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { MaybeWrap } from "@/wab/commons/components/ReactUtil";
-import { toVarName } from "@/wab/shared/codegen/util";
+import { makeShortProjectId, toVarName } from "@/wab/shared/codegen/util";
 import { assert, cx, ensureInstance } from "@/wab/shared/common";
 import {
   asCode,
@@ -41,6 +41,7 @@ import {
   typographyCssProps,
 } from "@/wab/shared/core/style-props";
 import { getRichTextContent, isTplTextBlock } from "@/wab/shared/core/tpls";
+import { makeDataTokenIdentifier } from "@/wab/shared/eval/expression-parser";
 import {
   CustomCode,
   DataToken,
@@ -273,8 +274,9 @@ const TextContentRow = observer(function TextContentRow(props: {
     inStudio: true,
   };
   const switchToDynamicValue = (dataTokenName: string) => {
+    const shortId = makeShortProjectId(viewCtx.siteInfo.id);
     const newExpr = new ObjectPath({
-      path: ["$dataTokens", toVarName(dataTokenName)],
+      path: [makeDataTokenIdentifier(shortId, toVarName(dataTokenName))],
       fallback: undefined,
     });
     onChange(new ExprText({ expr: newExpr, html: false }));
@@ -502,7 +504,7 @@ const TextEditor = observer(function TextEditor_(props: {
         }
       }}
     >
-      {getRichTextContent(text)}
+      {getRichTextContent(text, viewCtx)}
     </button>
   );
 });

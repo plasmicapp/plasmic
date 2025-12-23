@@ -196,6 +196,8 @@ export interface ProjectConfig {
   splitsProviderFilePath: string;
   /** File location for the project-wide style tokens provider. Relative to srcDir */
   styleTokensProviderFilePath: string;
+  /** File location for the project-wide data tokens provider. Relative to srcDir */
+  dataTokensFilePath: string;
   /** File location for the project-wide plasmic.ts file. Relative to srcDir */
   projectModuleFilePath: string;
 
@@ -242,6 +244,7 @@ export function createProjectConfig(base: {
     globalContextsFilePath: "",
     splitsProviderFilePath: "",
     styleTokensProviderFilePath: "",
+    dataTokensFilePath: "",
     projectModuleFilePath: "",
   };
 }
@@ -372,6 +375,7 @@ export interface FileLock {
     | "globalContexts"
     | "splitsProvider"
     | "styleTokensProvider"
+    | "dataTokens"
     | "projectModule";
   // The checksum value for the file
   checksum: string;
@@ -628,6 +632,7 @@ export function getOrAddProjectConfig(
           globalContextsFilePath: "",
           splitsProviderFilePath: "",
           styleTokensProviderFilePath: "",
+          dataTokensFilePath: "",
           projectModuleFilePath: "",
         };
     context.config.projects.push(project);

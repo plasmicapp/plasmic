@@ -27,6 +27,12 @@ export interface ProjectModuleBundle {
   fileName: string;
 }
 
+export interface DataTokensBundle {
+  id: string;
+  module: string;
+  fileName: string;
+}
+
 export interface ProjectConfig {
   // Project-wide css
   cssFileName: string;
@@ -47,6 +53,7 @@ export interface ProjectConfig {
 
   projectModuleBundle?: ProjectModuleBundle;
   styleTokensProviderBundle?: StyleTokensProviderBundle;
+  dataTokensBundle?: DataTokensBundle;
   globalContextBundle?: GlobalContextBundle;
   splitsProviderBundle?: SplitsProviderBundle;
   reactWebExportedFiles?: Array<{
@@ -76,6 +83,8 @@ export interface ChecksumBundle {
   splitsProviderChecksum: string;
   // Checksum of style tokens provider file
   styleTokensProviderChecksum: string;
+  // Checksum of data tokens provider file
+  dataTokensChecksum: string;
   // Checksum of project.ts file
   projectModuleChecksum: string;
 }
@@ -92,6 +101,7 @@ export function emptyChecksumBundle(): ChecksumBundle {
     globalContextsChecksum: "",
     splitsProviderChecksum: "",
     styleTokensProviderChecksum: "",
+    dataTokensChecksum: "",
     projectModuleChecksum: "",
   };
 }

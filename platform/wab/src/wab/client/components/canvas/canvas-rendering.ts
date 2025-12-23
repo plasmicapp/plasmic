@@ -949,15 +949,15 @@ function useCtxFromInternalComponentProps(
   );
 
   const $globalActions = sub.useGlobalActions?.();
-  const [$dataTokens, setDollarDataTokens] = sub.React.useState(
-    computeDataTokens(viewCtx.site, {})
+  const [evaluatedDataTokens, setEvaluatedDataTokens] = sub.React.useState(
+    computeDataTokens(viewCtx.site, viewCtx.studioCtx.siteInfo.id, {})
   );
 
   sub.React.useEffect(() => {
     const dispose = reaction(
-      () => computeDataTokens(viewCtx.site, {}),
+      () => computeDataTokens(viewCtx.site, viewCtx.studioCtx.siteInfo.id, {}),
       (computedDataTokens) => {
-        setDollarDataTokens(computedDataTokens);
+        setEvaluatedDataTokens(computedDataTokens);
       }
     );
     return () => dispose();
@@ -971,7 +971,8 @@ function useCtxFromInternalComponentProps(
     dataSourcesCtx,
     $globalActions,
     $queries,
-    $dataTokens,
+    ...evaluatedDataTokens?.$dataTokens,
+    dataTokensEnv: evaluatedDataTokens?.pickerEnv,
     ...(viewCtx.studioCtx.siteInfo.hasAppAuth
       ? { currentUser: viewCtx.studioCtx.currentAppUser }
       : {}),
@@ -1909,7 +1910,7 @@ function computeTplComponentArgs(
   ctx: RenderingCtx
 ) {
   const ofCodeComponent = isCodeComponent(tpl.component);
-  const exprCtx = {
+  const exprCtx: ExprCtx = {
     component: ctx.ownerComponent ?? null,
     projectFlags: ctx.projectFlags,
     inStudio: true,
@@ -2625,7 +2626,7 @@ function evalTagAttrExprToString(
   expr: Expr,
   ctx: RenderingCtx
 ): string {
-  const exprCtx = {
+  const exprCtx: ExprCtx = {
     component: ctx.ownerComponent ?? null,
     projectFlags: ctx.projectFlags,
     inStudio: true,

@@ -20,11 +20,13 @@ import {
   mkBaseVariant,
 } from "@/wab/shared/Variants";
 import {
+  cachedExprsInSite,
   componentToReferencers,
   componentsReferencerToPageHref,
   findAllDataSourceOpExprForComponent,
   flattenComponent,
 } from "@/wab/shared/cached-selectors";
+import { makeShortProjectId } from "@/wab/shared/codegen/util";
 import { Dict } from "@/wab/shared/collections";
 import {
   assert,
@@ -95,6 +97,11 @@ import {
 } from "@/wab/shared/core/tpls";
 import { camelProp, getCssInitial } from "@/wab/shared/css";
 import { parseScreenSpec } from "@/wab/shared/css-size";
+import {
+  isPathDataToken,
+  replaceMemberExpression,
+  transformDataTokensInExpr,
+} from "@/wab/shared/eval/expression-parser";
 import { getRshContainerType } from "@/wab/shared/layoututils";
 import { maybeComputedFn } from "@/wab/shared/mobx-util";
 import {
@@ -166,10 +173,12 @@ import {
   isKnownFunctionType,
   isKnownImageAsset,
   isKnownMixin,
+  isKnownObjectPath,
   isKnownPageArena,
   isKnownPageHref,
   isKnownRenderExpr,
   isKnownStrongFunctionArg,
+  isKnownTemplatedString,
   isKnownTplComponent,
   isKnownTplNode,
   isKnownTplRef,
@@ -188,6 +197,7 @@ import {
 } from "@/wab/shared/responsiveness";
 import { naturalSort } from "@/wab/shared/sort";
 import { getMatchingPagePathParams } from "@/wab/shared/utils/url-utils";
+import escapeRegExp from "lodash/escapeRegExp";
 import keys from "lodash/keys";
 import orderBy from "lodash/orderBy";
 import pick from "lodash/pick";
@@ -1184,6 +1194,72 @@ export function cloneSite(fromSite: Site) {
   );
 
   return site;
+}
+
+function replaceDataTokenProjectId(
+  token: string,
+  oldId: string,
+  newId: string
+) {
+  return token.replace(
+    new RegExp(`\\$dataTokens_${escapeRegExp(oldId)}_`, "g"),
+    `$dataTokens_${newId}_`
+  );
+}
+
+export function fixDataTokenProjectRefs(
+  site: Site,
+  oldProjectId: string,
+  newProjectId: string
+) {
+  const oldShortId = makeShortProjectId(oldProjectId);
+  const newShortId = makeShortProjectId(newProjectId);
+
+  const fixExpr = (expr: Expr) => {
+    // Fix ObjectPath expressions (e.g., ["$dataTokens_projId_tokenName", "nestedProp"])
+    if (isKnownObjectPath(expr)) {
+      const path = expr.path;
+      if (isPathDataToken(path) && path[0].includes(oldShortId)) {
+        expr.path[0] = replaceDataTokenProjectId(
+          path[0],
+          oldShortId,
+          newShortId
+        );
+      }
+    } else if (isKnownCustomCode(expr) && expr.code.includes(oldShortId)) {
+      transformDataTokensInExpr(expr, (node, token, nestedProps) => {
+        // Check if this token uses the old project ID
+        if (!token.identifier.includes(oldShortId)) {
+          return;
+        }
+        // Create new identifier with the new project ID
+        const newIdentifier = replaceDataTokenProjectId(
+          token.identifier,
+          oldShortId,
+          newShortId
+        );
+
+        if (node.type === "MemberExpression") {
+          // $dataTokens_oldProjId_name.a.b → $dataTokens_newProjId_name.a.b
+          replaceMemberExpression(node, [newIdentifier, ...nestedProps]);
+        } else if (node.type === "Identifier") {
+          // $dataTokens_oldProjId_name → $dataTokens_newProjId_name
+          node.name = newIdentifier;
+        }
+      });
+    } else if (isKnownTemplatedString(expr)) {
+      expr.text.forEach((part) => {
+        if (isKnownExpr(part)) {
+          fixExpr(part);
+        }
+      });
+    }
+  };
+  cachedExprsInSite(site).forEach(({ exprRefs }) => {
+    exprRefs.forEach((ref) => {
+      fixExpr(ref.expr);
+    });
+  });
 }
 
 export function fixAppAuthRefs(

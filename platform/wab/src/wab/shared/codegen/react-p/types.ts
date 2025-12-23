@@ -80,7 +80,7 @@ export interface SerializerBaseContext {
   replacedHostlessComponentImportPath: Map<Component, string>;
   // Whether the component has server queries that are properly configured
   hasServerQueries: boolean;
-  // Whether the component sould be generated using rsc modules
+  // Whether the component should be generated using rsc modules
   useRSC: boolean;
 }
 
@@ -104,6 +104,7 @@ export type PlasmicImportType =
   | "customFunction"
   | "splitsProvider"
   | "styleTokensProvider"
+  | "dataTokens"
   | "projectModule"
   | "rscClient"
   | "rscServer";

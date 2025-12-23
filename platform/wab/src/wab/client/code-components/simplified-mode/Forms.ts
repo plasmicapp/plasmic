@@ -90,9 +90,13 @@ const getSlotDirectChildren = (tpl: TplComponent, slotName: string) => {
   return isKnownRenderExpr(slotArg.expr) ? slotArg.expr.tpl : [];
 };
 
-const getFirstTextInSlot = (tpl: TplComponent, slotName: string) => {
+const getFirstTextInSlot = (
+  tpl: TplComponent,
+  slotName: string,
+  viewCtx: ViewCtx
+) => {
   for (const child of getSlotDirectChildren(tpl, slotName)) {
-    const maybeText = findFirstTextBlockInBaseVariant(child);
+    const maybeText = findFirstTextBlockInBaseVariant(child, viewCtx);
     if (maybeText) {
       return maybeText;
     }
@@ -100,7 +104,7 @@ const getFirstTextInSlot = (tpl: TplComponent, slotName: string) => {
   return undefined;
 };
 
-const getRadiosInTpl = (tpl: TplComponent) => {
+const getRadiosInTpl = (tpl: TplComponent, viewCtx: ViewCtx) => {
   const options: any[] = [];
   for (const child of getSlotDirectChildren(tpl, "children")) {
     if (
@@ -110,7 +114,7 @@ const getRadiosInTpl = (tpl: TplComponent) => {
       continue;
     }
     const value = getTplComponentArgByParamName(child, "value");
-    const label = getFirstTextInSlot(child, "children");
+    const label = getFirstTextInSlot(child, "children", viewCtx);
     options.push({
       ...(label ? { label } : {}),
       ...(value ? { value: value.expr } : {}),
@@ -119,7 +123,7 @@ const getRadiosInTpl = (tpl: TplComponent) => {
   return options;
 };
 
-const getSelectOptionsInTpl = (tpl: TplComponent) => {
+const getSelectOptionsInTpl = (tpl: TplComponent, viewCtx: ViewCtx) => {
   const options: any[] = [];
   for (const child of getSlotDirectChildren(tpl, "children")) {
     if (!isTplComponent(child)) {
@@ -134,7 +138,7 @@ const getSelectOptionsInTpl = (tpl: TplComponent) => {
 
     if (tplChildInputType === InputType.Option) {
       const value = getTplComponentArgByParamName(child, "value");
-      const label = getFirstTextInSlot(child, "children");
+      const label = getFirstTextInSlot(child, "children", viewCtx);
       options.push({
         type: "option",
         ...(label ? { label } : {}),
@@ -146,19 +150,20 @@ const getSelectOptionsInTpl = (tpl: TplComponent) => {
       }
       const label = getFirstTextInSlot(
         child,
-        tpl.component.plumeInfo ? "title" : "label"
+        tpl.component.plumeInfo ? "title" : "label",
+        viewCtx
       );
       options.push({
         type: "option-group",
         ...(label ? { label } : {}),
-        options: getSelectOptionsInTpl(child),
+        options: getSelectOptionsInTpl(child, viewCtx),
       });
     }
   }
   return options;
 };
 
-function extractFormItemsFromAdvancedMode(tpl: TplComponent) {
+function extractFormItemsFromAdvancedMode(tpl: TplComponent, viewCtx: ViewCtx) {
   const formItems: FormItemProps[] = [];
   let firstButton: TplComponent | undefined = undefined;
 
@@ -185,7 +190,7 @@ function extractFormItemsFromAdvancedMode(tpl: TplComponent) {
         }
         formItem[arg.param.variable.name] = cloneExpr(arg.expr);
       }
-      formItem.label = getFirstTextInSlot(currTpl, "label");
+      formItem.label = getFirstTextInSlot(currTpl, "label", viewCtx);
       for (const child of getSlotDirectChildren(currTpl, "children")) {
         const maybeInputInfo = walkTpls(child, FsmState.FormItem);
         if (maybeInputInfo) {
@@ -225,7 +230,9 @@ function extractFormItemsFromAdvancedMode(tpl: TplComponent) {
           tryExtractJson(useChildrenArg?.expr)
         ) {
           // we need to check the children slot
-          options = serCompositeExprMaybe(getSelectOptionsInTpl(currTpl));
+          options = serCompositeExprMaybe(
+            getSelectOptionsInTpl(currTpl, viewCtx)
+          );
         } else {
           const optionParam = currTpl.component.params.find(
             (p) => p.variable.name === "options"
@@ -254,7 +261,7 @@ function extractFormItemsFromAdvancedMode(tpl: TplComponent) {
           tryExtractJson(useChildrenArg?.expr)
         ) {
           // we need to check the children slot
-          options = serCompositeExprMaybe(getRadiosInTpl(currTpl));
+          options = serCompositeExprMaybe(getRadiosInTpl(currTpl, viewCtx));
         } else {
           const optionParam = currTpl.component.params.find(
             (p) => p.variable.name === "options"
@@ -282,7 +289,7 @@ function extractFormItemsFromAdvancedMode(tpl: TplComponent) {
       } else if (inputType === InputType.Checkbox) {
         return {
           inputType,
-          checkboxLabel: getFirstTextInSlot(currTpl, "children"),
+          checkboxLabel: getFirstTextInSlot(currTpl, "children", viewCtx),
         };
       } else if (inputType !== InputType.Radio) {
         return { inputType };
@@ -297,7 +304,7 @@ function extractFormItemsFromAdvancedMode(tpl: TplComponent) {
       if (inputType === InputType.Checkbox) {
         return {
           inputType,
-          checkboxLabel: getFirstTextInSlot(currTpl, "children"),
+          checkboxLabel: getFirstTextInSlot(currTpl, "children", viewCtx),
         };
       } else if (inputType === InputType.Select) {
         const useSlot = getTplComponentArgByParamName(
@@ -308,7 +315,9 @@ function extractFormItemsFromAdvancedMode(tpl: TplComponent) {
         let options: Expr | undefined | null;
         if (useSlot) {
           // we need to check the children slot
-          options = serCompositeExprMaybe(getSelectOptionsInTpl(currTpl));
+          options = serCompositeExprMaybe(
+            getSelectOptionsInTpl(currTpl, viewCtx)
+          );
         } else {
           const optionParam = currTpl.component.params.find(
             (p) => p.variable.name === "options"
@@ -451,7 +460,7 @@ export function updateFormComponentMode(
 
   if (newMode === "simplified") {
     const { formItems: newFormItems, firstButton } =
-      extractFormItemsFromAdvancedMode(tpl);
+      extractFormItemsFromAdvancedMode(tpl, viewCtx);
     // remove old submit slot
     spawn(
       viewCtx.viewOps.tryDelete({

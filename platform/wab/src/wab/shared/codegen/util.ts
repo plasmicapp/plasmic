@@ -205,3 +205,7 @@ export function wrapInTemplateString(text: string) {
 export function embedInTemplateString(text: string) {
   return "${" + text + "}";
 }
+
+export function makeShortProjectId(projectId: string) {
+  return projectId.slice(0, 5);
+}

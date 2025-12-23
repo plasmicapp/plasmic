@@ -149,6 +149,7 @@ import {
 import { syncGlobalContexts } from "@/wab/shared/core/project-deps";
 import {
   createSite,
+  fixDataTokenProjectRefs,
   getAllOpExprSourceIdsUsedInSite,
   localComponents,
   localIcons,
@@ -449,12 +450,13 @@ export async function doImportProject(
   }
 ): Promise<Project> {
   const depBundles = bundles.slice(0, bundles.length - 1);
-  const [_oldProjectId, siteBundle] = ensure(
+  const [oldProjectId, siteBundle] = ensure(
     last(bundles),
     "Couldn't find last bundle"
   );
   const oldToNewUuid = new Map<string, string>();
   const newPkgVersionById = new Map<string, PkgVersion>();
+  const oldToNewProjectId = new Map<ProjectId, ProjectId>();
 
   const migrateBundle = async (bundle: Bundle) => {
     const migrations = await getMigrationsToExecute(bundle.version);
@@ -555,6 +557,35 @@ export async function doImportProject(
     );
   };
 
+  // Extract project IDs from all bundles and create projects to build
+  // the complete oldToNewProjectId mapping before fixing data token refs.
+  if (!opts?.keepProjectIdsAndNames) {
+    for (const [i, [id, dep]] of depBundles.entries()) {
+      // Extract projectId directly from the bundle structure to avoid unbundling
+      const rootObj = dep.map[dep.root];
+      if (rootObj.__type !== "ProjectDependency") {
+        throw new Error(`Expected ProjectDependency, got ${rootObj.__type}`);
+      }
+      const oldDepProjectId = rootObj.projectId as ProjectId;
+
+      let newProjectId = oldToNewProjectId.get(oldDepProjectId);
+      if (!newProjectId) {
+        const { project } = await mgr.createProject({
+          name: `Imported Dep${depBundles.length > 1 ? ` ${i + 1}` : ""}`,
+        });
+        newProjectId = project.id;
+      }
+      oldToNewProjectId.set(oldDepProjectId, newProjectId);
+    }
+
+    // Add main project mapping
+    const { project: mainProject } = await mgr.createProject({
+      name: opts?.projectName || `Imported Project`,
+    });
+    oldToNewProjectId.set(oldProjectId as ProjectId, mainProject.id);
+  }
+
+  // Process dependencies with complete project ID mapping
   for (const [i, [id, dep]] of depBundles.entries()) {
     fixXrefs(dep);
 
@@ -563,6 +594,9 @@ export async function doImportProject(
     const projectDep = ensureKnownProjectDependency(
       bundler.unbundle(dep, tmpUuid)
     );
+
+    // Store the old project ID before it gets changed
+    const oldDepProjectId = projectDep.projectId as ProjectId;
 
     let pkgVersion: PkgVersion;
     let newBundle: Bundle;
@@ -588,6 +622,12 @@ export async function doImportProject(
       async function getOrCreateProject() {
         if (projectDepExists && opts?.keepProjectIdsAndNames) {
           return mgr.getProjectById(projectDep.projectId);
+        } else if (
+          !opts?.keepProjectIdsAndNames &&
+          oldToNewProjectId.has(oldDepProjectId)
+        ) {
+          // Use the project created in the first pass
+          return mgr.getProjectById(oldToNewProjectId.get(oldDepProjectId)!);
         } else {
           const { project } = await mgr.createProject({
             name: !opts?.keepProjectIdsAndNames
@@ -607,6 +647,13 @@ export async function doImportProject(
       projectDep.pkgId = pkg.id;
       projectDep.projectId = project.id;
       projectDep.version = pkgVersionToUse;
+
+      // Fix data token references for all project ID mappings
+      if (!opts?.keepProjectIdsAndNames) {
+        oldToNewProjectId.forEach((newDepId, oldDepId) => {
+          fixDataTokenProjectRefs(projectDep.site, oldDepId, newDepId);
+        });
+      }
 
       const depSite = bundler.bundle(projectDep.site, tmpUuid, dep.version);
       newBundle = bundler.bundle(projectDep, tmpUuid, dep.version);
@@ -650,18 +697,44 @@ export async function doImportProject(
   fixXrefs(siteBundle);
   await migrateBundle(siteBundle);
 
-  const { project, rev } = await mgr.createProject({
-    name:
-      opts?.keepProjectIdsAndNames && opts?.projectName
-        ? opts.projectName
-        : `Imported Project`,
-    projectId: opts?.keepProjectIdsAndNames ? _oldProjectId : undefined,
-  });
+  let project: Project;
+  let rev: ProjectRevision;
+  const newProjectId = oldToNewProjectId.get(oldProjectId as ProjectId);
+
+  if (!opts?.keepProjectIdsAndNames && newProjectId) {
+    // Use the newly created project
+    project = await mgr.getProjectById(newProjectId);
+    rev = await mgr.getLatestProjectRev(project.id);
+  } else {
+    const result = await mgr.createProject({
+      name:
+        opts?.keepProjectIdsAndNames && opts?.projectName
+          ? opts.projectName
+          : `Imported Project`,
+      projectId: opts?.keepProjectIdsAndNames ? oldProjectId : undefined,
+    });
+    project = result.project;
+    rev = result.rev;
+  }
 
   // Ensure we can unbundle the site
   const unbundledSite = ensureKnownSite(
     bundler.unbundle(siteBundle, project.id)
   );
+
+  // Update data token references for ALL project ID mappings
+  if (!opts?.keepProjectIdsAndNames) {
+    oldToNewProjectId.forEach((newDepId, oldDepId) => {
+      fixDataTokenProjectRefs(unbundledSite, oldDepId, newDepId);
+    });
+    // Re-bundle with the fixed data token references
+    const newBundle = bundler.bundle(
+      unbundledSite,
+      project.id,
+      siteBundle.version
+    );
+    Object.assign(siteBundle, newBundle);
+  }
 
   if (unbundledSite.hostLessPackageInfo) {
     const devflagsStr = (await mgr.tryGetDevFlagOverrides())?.data;
@@ -834,6 +907,23 @@ async function importFullProjectData(
     pkgVersions[0].version = "0.0.0"; // Avoid duplicate versions / ancestor with higher version
   }
 
+  // Create projects for all unique dependency project IDs
+  // so the complete oldToNewProjectId mapping is available before fixing data token refs
+  const uniqueDepProjectIds = new Set(pkgVersions.map((pkg) => pkg.projectId));
+  let depIndex = 1;
+  for (const depProjectId of uniqueDepProjectIds) {
+    if (!oldToNewProjectId.has(depProjectId)) {
+      const { project } = await mgr.createProject({
+        name: `Imported Dep${
+          uniqueDepProjectIds.size > 1 ? ` ${depIndex++}` : ""
+        }`,
+      });
+      oldToNewProjectId.set(depProjectId, project.id);
+      const pkg = await mgr.createPkgByProjectId(project.id);
+      oldProjectIdToNewPkgId.set(depProjectId, pkg.id);
+    }
+  }
+
   // Store dependencies and published versions
   for (const [
     i,
@@ -846,22 +936,23 @@ async function importFullProjectData(
       bundler.unbundle(dep, tmpUuid)
     );
 
-    let newProjectId = oldToNewProjectId.get(depProjectId);
-    let newPkgId = oldProjectIdToNewPkgId.get(depProjectId);
-    let latestRev: number;
-    if (!newProjectId || !newPkgId) {
-      const { project, rev: fstRev } = await mgr.createProject({
-        name: `Imported Dep${pkgVersions.length > 1 ? ` ${i + 1}` : ""}`,
-      });
-      newProjectId = project.id;
-      oldToNewProjectId.set(depProjectId, newProjectId);
-      const pkg = await mgr.createPkgByProjectId(project.id);
-      newPkgId = pkg.id;
-      oldProjectIdToNewPkgId.set(depProjectId, newPkgId);
-      latestRev = fstRev.revision;
-    } else {
-      latestRev = await mgr.getLatestProjectRevNumber(newProjectId);
-    }
+    const newProjectId = ensure(
+      oldToNewProjectId.get(depProjectId),
+      () => `Missing new project ID for ${depProjectId}`
+    );
+    const newPkgId = ensure(
+      oldProjectIdToNewPkgId.get(depProjectId),
+      () => `Missing new pkg ID for ${depProjectId}`
+    );
+
+    // Fix data token references to use the new project IDs for all pkgVersions
+    logger().error(`FIXING ${[...oldToNewProjectId].length}`);
+    oldToNewProjectId.forEach((newDepId, oldDepId) => {
+      logger().error(`FIXING ${oldDepId}, ${newDepId}`);
+      fixDataTokenProjectRefs(projectDep.site, oldDepId, newDepId);
+    });
+
+    const latestRev = await mgr.getLatestProjectRevNumber(newProjectId);
 
     projectDep.pkgId = newPkgId;
     projectDep.projectId = newProjectId;
@@ -938,7 +1029,17 @@ async function importFullProjectData(
     fixXrefs(revBundle);
     // Ensure we can unbundle the site
     await migrateBundle(revBundle);
-    ensureKnownSite(bundler.unbundle(revBundle, mkUuid()));
+    const tmpUuid = mkUuid();
+    const revSite = ensureKnownSite(bundler.unbundle(revBundle, tmpUuid));
+
+    // Fix data token references to use the new project IDs
+    // Pass the full mapping so references to dependencies are also fixed
+    oldToNewProjectId.forEach((newId, oldId) => {
+      fixDataTokenProjectRefs(revSite, oldId, newId);
+    });
+    // Re-bundle with the fixed data token references
+    const fixedRevBundle = bundler.bundle(revSite, tmpUuid, revBundle.version);
+    Object.assign(revBundle, fixedRevBundle);
 
     await mgr.saveProjectRev({
       projectId: newProject.id,

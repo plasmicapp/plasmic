@@ -12,8 +12,9 @@ import {
   PlasmicDataPickerCodeEditorLayout,
 } from "@/wab/client/plasmic/plasmic_kit_data_binding/PlasmicDataPickerCodeEditorLayout";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { isLiteralObjectByName, withoutNils } from "@/wab/shared/common";
+import { isLiteralObjectByName } from "@/wab/shared/common";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
+import L from "lodash";
 import * as React from "react";
 import { ErrorBoundary } from "react-error-boundary";
 
@@ -51,6 +52,9 @@ function DataPickerCodeEditorLayout_(
   const [showEnv, setShowEnv] = React.useState(false);
   const studioCtx = useStudioCtx();
   const runCodeContext = React.useContext(DataPickerRunCodeActionContext);
+
+  const completionData = React.useMemo(() => cleanDataForPreview(data), [data]);
+
   return (
     <PlasmicDataPickerCodeEditorLayout
       root={{ ref }}
@@ -64,6 +68,7 @@ function DataPickerCodeEditorLayout_(
             language={"javascript"}
             defaultValue={defaultValue}
             data={data}
+            completionData={completionData}
             onSave={onSave}
             onChange={(val: string) => setCurrentValue(val)}
             enableMinimap={false}
@@ -104,7 +109,7 @@ function DataPickerCodeEditorLayout_(
           ? "collapsed"
           : undefined
       }
-      env={<EnvPreview data={data} />}
+      env={<EnvPreview previewData={completionData} />}
       envToggleButton={{
         onClick: () => setShowEnv(!showEnv),
       }}
@@ -112,35 +117,33 @@ function DataPickerCodeEditorLayout_(
   );
 }
 
-function EnvPreview(props: { data: Record<string, any>; className?: string }) {
-  const { data, className } = props;
-  const cleaned = React.useMemo(() => cleanDataForPreview(data), [data]);
+function EnvPreview(props: {
+  previewData: Record<string, any>;
+  className?: string;
+}) {
+  const { previewData, className } = props;
   return (
     <div className={className}>
       <ErrorBoundary fallback={renderInspector(undefined)}>
-        {renderInspector(cleaned)}
+        {renderInspector(previewData)}
       </ErrorBoundary>
     </div>
   );
 }
 
-function cleanDataForPreview(data: Record<string, any>) {
-  const rec = (x: any) => {
+function cleanDataForPreview(data: Record<string, any>): Record<string, any> {
+  const rec = (x: any): any => {
     if (!!x && isLiteralObjectByName(x)) {
-      return Object.fromEntries(
-        withoutNils(
-          Object.entries(x).map(([key, val]) => {
-            if (
-              key.startsWith("__plasmic") ||
-              key === "registerInitFunc" ||
-              key === "eagerInitializeStates"
-            ) {
-              return null;
-            }
-            return [key, rec(val)];
-          })
-        )
-      );
+      const filtered = L.omitBy(x, (_val, key) => {
+        return (
+          key.startsWith("__plasmic") ||
+          key.startsWith("$dataTokens_") ||
+          key === "dataTokensEnv" ||
+          key === "registerInitFunc" ||
+          key === "eagerInitializeStates"
+        );
+      });
+      return L.mapValues(filtered, (val) => rec(val));
     }
     return x;
   };

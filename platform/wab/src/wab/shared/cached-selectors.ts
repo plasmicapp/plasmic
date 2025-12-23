@@ -504,15 +504,17 @@ const _componentToDeepReferenced = maybeComputedFn(
  * @returns The set of all components in the site that reference the given data token
  */
 export const componentsReferencingDataToken = maybeComputedFn(
-  function componentsReferencingDataToken(site: Site, token: DataToken) {
+  function componentsReferencingDataToken(
+    projectId: string,
+    site: Site,
+    token: DataToken
+  ) {
     const referencingComponents = new Set<Component>();
 
     for (const component of site.components) {
-      // Check all expressions in the component
       for (const { expr } of findExprsInComponent(component)) {
-        if (isDataTokenUsedInExpr(token, expr)) {
+        if (isDataTokenUsedInExpr(token, expr, projectId)) {
           referencingComponents.add(component);
-          // Found a reference in this component, move to next component
           break;
         }
       }

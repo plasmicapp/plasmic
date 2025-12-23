@@ -758,9 +758,10 @@ function getChangedComponentsByDataToken(
   change: ModelChange
 ) {
   const last = change.changeNode;
+  const { site, siteInfo } = studioCtx;
   // when data token is edited
   if (isKnownDataToken(last.inst) && last.field === "value") {
-    return componentsReferencingDataToken(studioCtx.site, last.inst);
+    return componentsReferencingDataToken(siteInfo.id, site, last.inst);
   }
   // when data token is deleted
   if (
@@ -770,9 +771,11 @@ function getChangedComponentsByDataToken(
   ) {
     const changedComponents = new Set<Component>();
     for (const removedDataToken of change.removed) {
-      componentsReferencingDataToken(studioCtx.site, removedDataToken).forEach(
-        (c) => changedComponents.add(c)
-      );
+      componentsReferencingDataToken(
+        siteInfo.id,
+        site,
+        removedDataToken
+      ).forEach((c) => changedComponents.add(c));
     }
     return changedComponents;
   }

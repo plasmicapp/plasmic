@@ -50,7 +50,7 @@ export function makeTplTextOps(viewCtx: ViewCtx, tpl: TplTag): TplTextOps {
   const indicator = computeDefinedIndicator(
     viewCtx.site,
     viewCtx.currentComponent(),
-    effectiveVs.getTextSource(),
+    effectiveVs.getTextSource(viewCtx),
     targetVariants
   );
   const { isDisabled, disabledTooltip } = shouldBeDisabled({

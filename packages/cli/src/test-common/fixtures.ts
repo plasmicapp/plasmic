@@ -153,6 +153,7 @@ export const project1Config: ProjectConfig = {
   globalContextsFilePath: "",
   splitsProviderFilePath: "",
   styleTokensProviderFilePath: "",
+  dataTokensFilePath: "",
   projectModuleFilePath: "",
 };
 

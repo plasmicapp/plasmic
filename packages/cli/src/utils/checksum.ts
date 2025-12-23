@@ -36,6 +36,9 @@ function getFilesByFileLockAssetId(
     styleTokensProvider: {
       [projectConfig.projectId]: projectConfig.styleTokensProviderFilePath,
     },
+    dataTokens: {
+      [projectConfig.projectId]: projectConfig.dataTokensFilePath,
+    },
     projectModule: {
       [projectConfig.projectId]: projectConfig.projectModuleFilePath,
     },
@@ -53,7 +56,7 @@ export function getChecksums(
   );
 
   const projectLock = context.lock.projects.find(
-    (projectLock) => projectLock.projectId === projectId
+    (lock) => lock.projectId === projectId
   );
 
   if (!projectConfig || !projectLock || opts.allFiles) {
@@ -67,6 +70,7 @@ export function getChecksums(
       globalContextsChecksum: "",
       splitsProviderChecksum: "",
       styleTokensProviderChecksum: "",
+      dataTokensChecksum: "",
       projectModuleChecksum: "",
     };
   }
@@ -210,6 +214,18 @@ export function getChecksums(
       ? splitsProviderChecksums[0].checksum
       : "";
 
+  const dataTokensChecksums = fileLocks
+    .filter(
+      (fileLock) =>
+        fileLock.type === "dataTokens" && fileLock.assetId === projectId
+    )
+    .filter((fileLock) =>
+      checkFile(fileLocations.dataTokens[fileLock.assetId])
+    );
+  assert(dataTokensChecksums.length < 2);
+  const dataTokensChecksum =
+    dataTokensChecksums.length > 0 ? dataTokensChecksums[0].checksum : "";
+
   return {
     imageChecksums,
     iconChecksums,
@@ -220,6 +236,7 @@ export function getChecksums(
     globalContextsChecksum,
     splitsProviderChecksum,
     styleTokensProviderChecksum,
+    dataTokensChecksum,
     projectModuleChecksum,
   };
 }

@@ -7,12 +7,12 @@ import IconButton from "@/wab/client/components/widgets/IconButton";
 import Textbox from "@/wab/client/components/widgets/Textbox";
 import CloseIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Close";
 import { PlasmicSlotProp } from "@/wab/client/plasmic/plasmic_kit_docs_portal/PlasmicSlotProp";
-import { ensure } from "@/wab/shared/common";
 import { isPlainTextTplSlot } from "@/wab/shared/SlotUtils";
 import { tryGetBaseVariantSetting } from "@/wab/shared/Variants";
 import { toVarName } from "@/wab/shared/codegen/util";
-import { TplSlot } from "@/wab/shared/model/classes";
+import { ensure } from "@/wab/shared/common";
 import { getRichTextContent } from "@/wab/shared/core/tpls";
+import { TplSlot } from "@/wab/shared/model/classes";
 import { observer } from "mobx-react";
 import * as React from "react";
 
@@ -34,7 +34,7 @@ const SlotProp = observer(function SlotProp(props: SlotPropProps) {
     <PlasmicSlotProp label={name} isNonText={!isText}>
       {isText && (
         <Textbox
-          placeholder={getDefaultText(slot)}
+          placeholder={getDefaultText(slot, docsCtx)}
           value={value ?? ""}
           onChange={(e) =>
             docsCtx.setComponentToggle(component, param, e.target.value)
@@ -59,10 +59,14 @@ const SlotProp = observer(function SlotProp(props: SlotPropProps) {
   );
 });
 
-function getDefaultText(slot: TplSlot) {
+function getDefaultText(slot: TplSlot, docsCtx: DocsPortalCtx) {
   const textNode = ensureKnownTplTag(slot.defaultContents[0]);
   const vs = ensure(tryGetBaseVariantSetting(textNode));
-  return vs.text ? getRichTextContent(vs.text) : "";
+  const viewCtx = ensure(
+    docsCtx.studioCtx.focusedOrFirstViewCtx(),
+    "Missing viewCtx in docs portal"
+  );
+  return vs.text ? getRichTextContent(vs.text, viewCtx) : "";
 }
 
 export default SlotProp;

@@ -37,7 +37,13 @@ import { arrayEq, ensure, isPrefixArray, sortBy } from "@/wab/shared/common";
 import { flattenedKeys } from "@/wab/shared/core/exprs";
 import { getKeysToFlatForDollarState } from "@/wab/shared/core/states";
 import { DEVFLAGS } from "@/wab/shared/devflags";
-import { pathToString } from "@/wab/shared/eval/expression-parser";
+import {
+  pathToString,
+  transformDataTokenPathToBundle,
+  transformDataTokenPathToDisplay,
+  transformDataTokensInCode,
+  transformDataTokensToDisplay,
+} from "@/wab/shared/eval/expression-parser";
 import { Interaction } from "@/wab/shared/model/classes";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { head, mapValues } from "lodash";
@@ -133,15 +139,37 @@ function DataPicker_(props: DataPickerProps, ref: HTMLElementRefOf<"div">) {
     flatten && viewCtx?.component
       ? getKeysToFlatForDollarState(viewCtx.component)
       : undefined;
+
+  // Transform value from storage format to display format for DataPicker UI
+  const displayValue = React.useMemo(() => {
+    if (!value || !viewCtx) {
+      return value;
+    }
+    if (typeof value === "string") {
+      return transformDataTokensToDisplay(
+        value,
+        viewCtx.site,
+        viewCtx.siteInfo.id
+      );
+    }
+    return transformDataTokenPathToDisplay(
+      value,
+      viewCtx.site,
+      viewCtx.siteInfo.id
+    );
+  }, [value, viewCtx?.site, viewCtx?.siteInfo]);
+
   const [codeEditing, setCodeEditing] = React.useState(
-    !value ? initialMode === "codeEditing" : typeof value === "string"
+    !displayValue
+      ? initialMode === "codeEditing"
+      : typeof displayValue === "string"
   );
   const [query, setQuery] = React.useState("");
   const [draft, setDraft] = React.useState<string | undefined>(
-    typeof value === "string"
-      ? value
-      : typeof value === "object" && value
-      ? pathToString(value)
+    typeof displayValue === "string"
+      ? displayValue
+      : displayValue && typeof displayValue === "object"
+      ? pathToString(displayValue)
       : undefined
   );
   const focusedTpl =
@@ -192,7 +220,7 @@ function DataPicker_(props: DataPickerProps, ref: HTMLElementRefOf<"div">) {
     return initialColumns;
   };
   const [columns, setColumns] = React.useState<Array<Column>>(() =>
-    getFixedInitialColumns(value)
+    getFixedInitialColumns(displayValue)
   );
   const selectedItem = React.useMemo(
     () => getLastSelectedItem(columns),
@@ -240,7 +268,7 @@ function DataPicker_(props: DataPickerProps, ref: HTMLElementRefOf<"div">) {
           // The join matches the format used in DataPickerGlobalSearchResultsItem
           if (matcher.matches(itemPath.join(" / "))) {
             searchResults.push({
-              itemPath: itemPath,
+              itemPath,
               previewValue: previewValue,
               variableType: variableType,
               matcher: matcher,
@@ -350,7 +378,9 @@ function DataPicker_(props: DataPickerProps, ref: HTMLElementRefOf<"div">) {
     : {};
   if (codeEditing || !fixedData) {
     const stringValue =
-      typeof value === "object" && value ? pathToString(value) : value;
+      typeof displayValue === "object" && displayValue
+        ? pathToString(displayValue)
+        : displayValue;
 
     const trySave = (val: string) => {
       if (!checkStrSizeLimit(val)) {
@@ -401,7 +431,16 @@ function DataPicker_(props: DataPickerProps, ref: HTMLElementRefOf<"div">) {
           saveButton={{
             onClick: () => {
               if (editorRef.current && trySave(editorRef.current.getValue())) {
-                onChange(editorRef.current.getValue());
+                const code = editorRef.current.getValue();
+                // Transform data token references from display format to storage format
+                const transformedCode = viewCtx
+                  ? transformDataTokensInCode(
+                      code,
+                      viewCtx.site,
+                      viewCtx.studioCtx.siteInfo.id
+                    )
+                  : code;
+                onChange(transformedCode);
               }
             },
           }}
@@ -468,10 +507,10 @@ function DataPicker_(props: DataPickerProps, ref: HTMLElementRefOf<"div">) {
         withDeleteButton={onDelete !== undefined}
         empty={columns.length === 0}
         items={{ ref: itemsRef }}
-        children={columns.map((_props, idx) => {
+        children={columns.map((colProps, idx) => {
           return (
             <DataPickerColumn
-              {..._props}
+              {...colProps}
               data={fixedData}
               columnIndex={idx}
               isActiveColumn={idx === selectedItem.column && query == ""}
@@ -516,7 +555,15 @@ function DataPicker_(props: DataPickerProps, ref: HTMLElementRefOf<"div">) {
         saveButton={{
           id: "data-picker-save-btn",
           onClick: () => {
-            onChange(currentItemPath);
+            let itemPath = currentItemPath;
+            if (viewCtx) {
+              itemPath = transformDataTokenPathToBundle(
+                itemPath,
+                viewCtx.site,
+                viewCtx.siteInfo.id
+              );
+            }
+            onChange(itemPath);
           },
         }}
         searchbox={{

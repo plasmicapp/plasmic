@@ -1209,7 +1209,7 @@ export class ViewOps {
     const effectiveVs = this.viewCtx().effectiveCurrentVariantSetting(
       textValNode.tpl
     );
-    const source = effectiveVs.getTextSource();
+    const source = effectiveVs.getTextSource(this.viewCtx());
     if (!source) {
       return undefined;
     }

@@ -127,6 +127,12 @@ export async function codegen(
       projectConfig.styleTokensProviderBundle.module
     );
   }
+  if (projectConfig.dataTokensBundle) {
+    fs.writeFileSync(
+      path.join(dir, projectConfig.dataTokensBundle.fileName),
+      projectConfig.dataTokensBundle.module
+    );
+  }
 
   for (const bundle of componentBundles) {
     if (bundle.renderModuleFileName && bundle.renderModule) {

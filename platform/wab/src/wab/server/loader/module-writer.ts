@@ -62,6 +62,17 @@ ${outputs
   )
   .join("\n")}
 ${outputs
+  .map((output) =>
+    output.projectConfig.dataTokensBundle
+      ? `export const datatokens__${toVarName(
+          output.projectConfig.projectId
+        )} = import("./${stripExtension(
+          output.projectConfig.dataTokensBundle.fileName
+        )}");`
+      : ""
+  )
+  .join("\n")}
+${outputs
   .flatMap((output) =>
     output.components.map(
       (comp) =>
@@ -174,6 +185,12 @@ async function writeCodeBundleToDisk(
     await fs.writeFile(
       path.join(dir, output.projectConfig.styleTokensProviderBundle.fileName),
       output.projectConfig.styleTokensProviderBundle.module
+    );
+  }
+  if (output.projectConfig.dataTokensBundle) {
+    await fs.writeFile(
+      path.join(dir, output.projectConfig.dataTokensBundle.fileName),
+      output.projectConfig.dataTokensBundle.module
     );
   }
   if (output.projectConfig.globalContextBundle) {

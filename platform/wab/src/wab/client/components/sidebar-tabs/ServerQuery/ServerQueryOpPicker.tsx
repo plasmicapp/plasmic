@@ -44,6 +44,7 @@ import {
   isKnownExpr,
   Site,
   TplNode,
+  TplTag,
 } from "@/wab/shared/model/classes";
 import { smartHumanize } from "@/wab/shared/strs";
 import { notification } from "antd";
@@ -55,7 +56,7 @@ import { useMountedState } from "react-use";
 import styles from "@/wab/client/components/sidebar-tabs/ServerQuery/ServerQueryOpPicker.module.scss";
 import { Tab, Tabs } from "@/wab/client/components/widgets";
 import { allCustomFunctions } from "@/wab/shared/cached-selectors";
-import { toVarName } from "@/wab/shared/codegen/util";
+import { makeShortProjectId, toVarName } from "@/wab/shared/codegen/util";
 import {
   executeCustomFunctionOp,
   getCustomFunctionParams,
@@ -63,8 +64,9 @@ import {
 } from "@/wab/shared/core/custom-functions";
 import { isHostlessPackageInstalledWithHidden } from "@/wab/shared/core/project-deps";
 import { flattenExprs } from "@/wab/shared/core/tpls";
+import { makeDataTokenIdentifier } from "@/wab/shared/eval/expression-parser";
 import { SERVER_QUERY_LOWER } from "@/wab/shared/Labels";
-import { renameObjectInExpr } from "@/wab/shared/refactoring";
+import { renameDataTokenInExpr } from "@/wab/shared/refactoring";
 import { CustomFunctionMeta } from "@plasmicapp/host";
 import type { ServerQueryResult } from "@plasmicapp/react-web/lib/data-sources";
 import { reaction } from "mobx";
@@ -179,6 +181,7 @@ export const ServerQueryOpDraftForm = observer(
       exprCtx,
     } = props;
     const studioCtx = useStudioCtx();
+    const viewCtx = studioCtx.focusedViewCtx();
 
     const [isInstalling, setIsInstalling] = React.useState(false);
     const installableFunctions = React.useMemo(
@@ -239,17 +242,25 @@ export const ServerQueryOpDraftForm = observer(
     }, [studioCtx, value?.func, evaluatedArgs]);
 
     const { data: ccContextData } = useSWR(dataKey, fetcher);
+    const canvasEnv = viewCtx
+      ? viewCtx.getCanvasEnvForTpl(viewCtx.tplRoot())
+      : undefined;
 
     const propValueEditorContext =
       React.useMemo<PropValueEditorContextData>(() => {
         return {
+          tpl: viewCtx?.tplRoot() as TplTag | undefined,
+          viewCtx,
           componentPropValues: funcParamsValues ?? [],
           ccContextData,
           exprCtx,
           schema,
-          env: data,
+          env: {
+            ...canvasEnv,
+            data,
+          },
         };
-      }, [schema, data, funcParamsValues, exprCtx, ccContextData]);
+      }, [schema, data, canvasEnv, funcParamsValues, exprCtx, ccContextData]);
 
     React.useEffect(() => {
       if (availableFunctions.length === 0) {
@@ -655,15 +666,18 @@ export const ServerQueryOpExprFormAndPreview = observer(
                 renames.forEach(({ oldName, newName }) => {
                   const oldVarName = toVarName(oldName);
                   const newVarName = toVarName(newName);
+                  const shortId = makeShortProjectId(studioCtx.siteInfo.id);
+                  const oldIdentifier = makeDataTokenIdentifier(
+                    shortId,
+                    oldVarName
+                  );
+                  const newIdentifier = makeDataTokenIdentifier(
+                    shortId,
+                    newVarName
+                  );
                   // Rename in all nested expressions to handle nested props
                   allExprs.forEach((expr) => {
-                    renameObjectInExpr(
-                      expr,
-                      "$dataTokens",
-                      "$dataTokens",
-                      oldVarName,
-                      newVarName
-                    );
+                    renameDataTokenInExpr(expr, oldIdentifier, newIdentifier);
                   });
                 });
               });

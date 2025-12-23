@@ -56,6 +56,7 @@ function resolveRichTextToJsx(
       "Expected CustomCode or ObjectPath expr"
     );
     const textCode = getCodeExpressionWithFallback(text.expr, ctx.exprCtx);
+
     const className = serializeClassExpr(
       ctx.exportOpts,
       makeWabHtmlTextClassName(ctx.exportOpts)

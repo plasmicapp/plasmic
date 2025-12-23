@@ -84,7 +84,11 @@ import {
   serializeActionFunction,
 } from "@/wab/shared/core/states";
 import { cloneRuleSet, makeStyleExprClassName } from "@/wab/shared/core/styles";
-import { clone as cloneTpl, cloneType } from "@/wab/shared/core/tpls";
+import {
+  clone as cloneTpl,
+  cloneType,
+  tryGetOwnerSite,
+} from "@/wab/shared/core/tpls";
 import {
   dataSourceTemplateToString,
   exprToDataSourceString,
@@ -99,7 +103,11 @@ import {
   getDynamicSnippetsForJsonExpr,
 } from "@/wab/shared/dynamic-bindings";
 import { tryEvalExpr } from "@/wab/shared/eval";
-import { pathToString } from "@/wab/shared/eval/expression-parser";
+import {
+  pathToString,
+  transformDataTokenPathToDisplay,
+  transformDataTokensToDisplay,
+} from "@/wab/shared/eval/expression-parser";
 import { maybeComputedFn } from "@/wab/shared/mobx-util";
 import { maybeConvertToIife } from "@/wab/shared/parser-utils";
 import { pageHrefPathToCode } from "@/wab/shared/utils/url-utils";
@@ -115,6 +123,7 @@ import L, {
 export interface ExprCtx {
   component: Component | null;
   projectFlags: DevFlagsType;
+  projectId?: string;
   inStudio: boolean | undefined;
 }
 
@@ -123,7 +132,15 @@ export type FallbackableExpr = CustomCode | ObjectPath;
 export const summarizeExpr = (expr: Expr, exprCtx: ExprCtx): string =>
   switchType(expr)
     .when(CustomCode, (customCode: CustomCode) => {
-      return stripParens(customCode.code);
+      let code = stripParens(customCode.code);
+      const { component, projectId } = exprCtx;
+      if (component && projectId && exprCtx.inStudio) {
+        const site = tryGetOwnerSite(component);
+        if (site) {
+          code = transformDataTokensToDisplay(code, site, projectId);
+        }
+      }
+      return code;
     })
     .when(DataSourceOpExpr, (opExpr) => `(${opExpr.opName})`)
     .when(RenderExpr, () => {
@@ -145,6 +162,18 @@ export const summarizeExpr = (expr: Expr, exprCtx: ExprCtx): string =>
         .join(", ")})`;
     })
     .when(ObjectPath, (objPath) => {
+      const { component, projectId } = exprCtx;
+      if (component && projectId && exprCtx.inStudio) {
+        const site = tryGetOwnerSite(component);
+        if (site) {
+          const displayPath = transformDataTokenPathToDisplay(
+            objPath.path,
+            site,
+            projectId
+          );
+          return summarizePathParts(displayPath);
+        }
+      }
       return summarizePath(objPath);
     })
     .when(EventHandler, (_handler) => `(event handler)`)
@@ -156,10 +185,9 @@ export const summarizeExpr = (expr: Expr, exprCtx: ExprCtx): string =>
       StyleTokenRef,
       (_expr) => `(reference to token "${_expr.token.name}")`
     )
-    .when(
-      TemplatedString,
-      (templatedString) => `${asCode(templatedString, exprCtx).code}`
-    )
+    .when(TemplatedString, (templatedString) => {
+      return `${asCode(templatedString, exprCtx).code}`;
+    })
     .when(FunctionExpr, (_expr) => summarizeExpr(_expr.bodyExpr, exprCtx))
     .when(
       TplRef,

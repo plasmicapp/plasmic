@@ -6,11 +6,11 @@ import { ValueSetState } from "@/wab/client/components/sidebar/sidebar-helpers";
 import { useUndo } from "@/wab/client/shortcuts/studio/useUndo";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { asCode } from "@/wab/shared/core/exprs";
+import { asCode, ExprCtx } from "@/wab/shared/core/exprs";
 import {
   Component,
-  TemplatedString,
   isKnownTemplatedString,
+  TemplatedString,
 } from "@/wab/shared/model/classes";
 import { Input, InputRef } from "antd";
 import { default as classNames } from "classnames";
@@ -133,7 +133,7 @@ export const TemplatedStringPropEditor = React.forwardRef<
   );
 
   const studioCtx = useStudioCtx();
-  const exprCtx = {
+  const exprCtx: ExprCtx = {
     projectFlags: studioCtx.projectFlags(),
     component: props.component ?? null,
     inStudio: true,

@@ -7,7 +7,10 @@ import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { zIndex } from "@/wab/client/z-index";
 import { toVarName } from "@/wab/shared/codegen/util";
 import { isNonNil, mkShortId, spawn, uniqueName } from "@/wab/shared/common";
-import { pathToString } from "@/wab/shared/eval/expression-parser";
+import {
+  pathToDisplayString,
+  transformDataTokensToDisplay,
+} from "@/wab/shared/eval/expression-parser";
 import { ComponentDataQuery } from "@/wab/shared/model/classes";
 import { Popover, Tooltip } from "antd";
 import { default as classNames } from "classnames";
@@ -59,7 +62,6 @@ export const InternalDataPickerEditor = observer(
       disabledTooltip,
       hideStateSwitch,
       autoFocus,
-      alwaysShowValuePathAsLabel,
       expectedValues,
       initialMode,
       onAddVariableBtnClick,
@@ -84,9 +86,14 @@ export const InternalDataPickerEditor = observer(
       },
       []
     );
-    const codeExpr =
-      typeof value === "object" && value ? pathToString(value) : value;
-    const evaluatedValue: string | null | undefined = codeExpr;
+    const displayValue =
+      viewCtx && typeof value === "string"
+        ? transformDataTokensToDisplay(value, viewCtx.site, viewCtx.siteInfo.id)
+        : value;
+    const codeExpr: string | (string | number)[] | null | undefined =
+      typeof displayValue === "object" && displayValue && viewCtx
+        ? pathToDisplayString(displayValue, viewCtx.site, viewCtx.siteInfo.id)
+        : displayValue;
 
     // if (codeExpr) {
     //   const evalExpr = data && tryEvalExpr(codeExpr as string, data);
@@ -112,7 +119,7 @@ export const InternalDataPickerEditor = observer(
         zIndex={zIndex.dataPicker}
         content={
           <DataPicker
-            value={value}
+            value={displayValue}
             onChange={(val) => {
               onChange(val);
               setVisible(false);
@@ -187,11 +194,11 @@ export const InternalDataPickerEditor = observer(
           <Tooltip title={isDisabled && disabledTooltip}>
             <span
               className={classNames("text-align-left", {
-                "text-set": evaluatedValue,
-                "text-unset": !evaluatedValue,
+                "text-set": codeExpr,
+                "text-unset": !codeExpr,
               })}
             >
-              {evaluatedValue ?? "unset"}
+              {codeExpr ?? "unset"}
             </span>
           </Tooltip>
         </div>

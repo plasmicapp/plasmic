@@ -181,7 +181,7 @@ function genEmptyStyleTokensMap() {
     props: [],
     global: {
       meta: {
-        source: "plasmic.app" as "plasmic.app",
+        source: "plasmic.app" as const,
       },
     },
   };
@@ -269,7 +269,7 @@ class PlasmicApi {
     });
 
     // Get dependencies
-    if (!!recursive) {
+    if (recursive) {
       const deps = [...getDeps(results.projects)];
       results.dependencies.push(...deps);
     }
@@ -356,6 +356,7 @@ class PlasmicApi {
         globalContextsChecksum: "",
         splitsProviderChecksum: "",
         styleTokensProviderChecksum: "",
+        dataTokensChecksum: "",
         projectModuleChecksum: "",
       } as ChecksumBundle,
       usedNpmPackages: [],
@@ -365,25 +366,25 @@ class PlasmicApi {
   }
 
   async uploadBundle(
-    projectId: string,
-    bundleName: string,
-    bundleJs: string,
-    css: string[],
-    metaJson: string
+    _projectId: string,
+    _bundleName: string,
+    _bundleJs: string,
+    _css: string[],
+    _metaJson: string
   ): Promise<StyleTokensMap> {
     throw new Error("Unimplemented");
   }
 
   async projectStyleTokens(
-    projectId: string,
-    branchName: string
+    _projectId: string,
+    _branchName: string
   ): Promise<StyleTokensMap> {
     throw new Error("Unimplemented");
   }
 
   async projectIcons(
-    projectId: string,
-    branchName: string
+    _projectId: string,
+    _branchName: string
   ): Promise<ProjectIconsResponse> {
     throw new Error("Unimplemented");
   }

@@ -145,7 +145,11 @@ import {
 import * as styles from "@/wab/shared/core/styles";
 import { getCssInitial } from "@/wab/shared/css";
 import { CanvasEnv, evalCodeWithEnv } from "@/wab/shared/eval";
-import { parseExpr, pathToString } from "@/wab/shared/eval/expression-parser";
+import {
+  parseExpr,
+  pathToDisplayString,
+  pathToString,
+} from "@/wab/shared/eval/expression-parser";
 import * as Html from "@/wab/shared/html";
 import {
   FREE_CONTAINER_LOWER,
@@ -1982,18 +1986,21 @@ export function isTplRepeated(tpl: TplNode): tpl is TplNode {
 export function getTplTextBlockContent(tplNode: TplNode, viewCtx: ViewCtx) {
   if (isTplTextBlock(tplNode)) {
     const vs = viewCtx.effectiveCurrentVariantSetting(tplNode);
-    return vs.text ? getRichTextContent(vs.text) : undefined;
+    return vs.text ? getRichTextContent(vs.text, viewCtx) : undefined;
   }
   return undefined;
 }
 
-export function findFirstTextBlockInBaseVariant(tpl: TplNode) {
+export function findFirstTextBlockInBaseVariant(
+  tpl: TplNode,
+  viewCtx: ViewCtx
+) {
   if (isTplTextBlock(tpl)) {
     const baseVs = ensureBaseVariantSetting(tpl);
-    return baseVs.text ? getRichTextContent(baseVs.text) : undefined;
+    return baseVs.text ? getRichTextContent(baseVs.text, viewCtx) : undefined;
   }
   for (const currTpl of flattenTpls(tpl).slice(1)) {
-    const maybeText = findFirstTextBlockInBaseVariant(currTpl);
+    const maybeText = findFirstTextBlockInBaseVariant(currTpl, viewCtx);
     if (maybeText) {
       return maybeText;
     }
@@ -2001,7 +2008,7 @@ export function findFirstTextBlockInBaseVariant(tpl: TplNode) {
   return undefined;
 }
 
-export function getRichTextContent(text: RichText) {
+export function getRichTextContent(text: RichText, viewCtx: ViewCtx) {
   if (isKnownRawText(text)) {
     return text.text;
   }
@@ -2012,7 +2019,7 @@ export function getRichTextContent(text: RichText) {
     );
     return isKnownCustomCode(text.expr)
       ? text.expr.code
-      : pathToString(text.expr.path);
+      : pathToDisplayString(text.expr.path, viewCtx.site, viewCtx.siteInfo.id);
   }
   return undefined;
 }

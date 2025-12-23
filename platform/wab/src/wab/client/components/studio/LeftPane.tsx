@@ -283,7 +283,11 @@ const getFindReferencesProps = (
           className="data-token-fg custom-svg-icon--lg monochrome-exempt"
         />
       ),
-      usageSummary: extractDataTokenUsages(studioCtx.site, token),
+      usageSummary: extractDataTokenUsages(
+        studioCtx.siteInfo.id,
+        studioCtx.site,
+        token
+      ),
       onClose: () => {
         studioCtx.findReferencesDataToken = undefined;
       },

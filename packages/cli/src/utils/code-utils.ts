@@ -8,6 +8,7 @@ import type { Options } from "prettier";
 import * as Prettier from "prettier";
 import * as ts from "typescript";
 import path from "upath";
+import { getDataTokensResourcePath } from "../actions/sync-data-tokens";
 import { getGlobalContextsResourcePath } from "../actions/sync-global-contexts";
 import {
   fixComponentCssReferences,
@@ -180,6 +181,7 @@ type PlasmicImportType =
   | "customFunction"
   | "splitsProvider"
   | "styleTokensProvider"
+  | "dataTokens"
   | "projectModule"
   | "rscClient"
   | "rscServer"
@@ -212,7 +214,7 @@ function tryParsePlasmicImportSpec(node: ImportDeclaration) {
         "plasmic-import:\\s+([",
         ...validJsIdentifierChars,
         "\\.",
-        "]+)(?:\\/(component|css|render|globalVariant|projectcss|defaultcss|icon|picture|jsBundle|codeComponent|globalContext|customFunction|splitsProvider|styleTokensProvider|projectModule|rscClient|rscServer))?",
+        "]+)(?:\\/(component|css|render|globalVariant|projectcss|defaultcss|icon|picture|jsBundle|codeComponent|globalContext|customFunction|splitsProvider|styleTokensProvider|dataTokens|projectModule|rscClient|rscServer))?",
       ].join("")
     )
   );
@@ -446,6 +448,17 @@ export async function replaceImports(
         context,
         fromPath,
         projectConfig.styleTokensProviderFilePath
+      );
+      stmt.source.value = realPath;
+    } else if (type === "dataTokens") {
+      const projectConfig = fixImportContext.projects[uuid];
+      if (!projectConfig) {
+        throwMissingReference(context, "project", uuid, fromPath);
+      }
+      const realPath = makeImportPath(
+        context,
+        fromPath,
+        projectConfig.dataTokensFilePath
       );
       stmt.source.value = realPath;
     } else if (type === "projectModule") {
@@ -714,6 +727,21 @@ export async function fixAllImportStatements(
   } catch (err) {
     logger.error(
       `Error encountered while fixing imports for style tokens provider: ${err}`
+    );
+    lastError = err;
+  }
+
+  try {
+    await fixImportStatements(
+      context,
+      fixImportContext,
+      baseDir,
+      "dataTokensFilePath",
+      getDataTokensResourcePath
+    );
+  } catch (err) {
+    logger.error(
+      `Error encountered while fixing imports for data tokens: ${err}`
     );
     lastError = err;
   }

@@ -105,15 +105,22 @@ export const DataTokenEditModal = observer(function DataTokenEditModal(props: {
       />
       <SimpleTextbox
         defaultValue={token.name}
-        onValueChange={(name) =>
-          studioCtx.changeObserved(
-            () => [...componentsReferencingDataToken(studioCtx.site, token)],
+        onValueChange={(name) => {
+          const projectId = studioCtx.siteInfo.id;
+          return studioCtx.changeObserved(
+            () => [
+              ...componentsReferencingDataToken(
+                projectId,
+                studioCtx.site,
+                token
+              ),
+            ],
             ({ success }) => {
-              studioCtx.tplMgr().renameDataToken(token, name);
+              studioCtx.tplMgr().renameDataToken(projectId, token, name);
               return success();
             }
-          )
-        }
+          );
+        }}
         placeholder={"(unnamed token)"}
         autoFocus={defaultEditingName}
         selectAllOnFocus={true}

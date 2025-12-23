@@ -18,6 +18,7 @@ import {
 } from "../utils/config-utils";
 import { getContext, getCurrentOrDefaultAuth } from "../utils/get-context";
 import { tuple } from "../utils/lang-utils";
+import { DEFAULT_DATA_TOKENS_NAME } from "./sync-data-tokens";
 import { DEFAULT_GLOBAL_CONTEXTS_NAME } from "./sync-global-contexts";
 import { ensureImageAssetContents } from "./sync-images";
 import { DEFAULT_PROJECT_MODULE_NAME } from "./sync-project-module";
@@ -211,6 +212,9 @@ export async function exportProjectsCli(opts: ExportArgs): Promise<void> {
             styleTokensProviderFilePath: bundle.projectConfig
               .styleTokensProviderBundle
               ? `${projectName}/${DEFAULT_STYLE_TOKENS_PROVIDER_NAME}.${extx}`
+              : "",
+            dataTokensFilePath: bundle.projectConfig.dataTokensBundle
+              ? `${projectName}/${DEFAULT_DATA_TOKENS_NAME}.${opts.codeLang}`
               : "",
             projectModuleFilePath: bundle.projectConfig.projectModuleBundle
               ? `${projectName}/${DEFAULT_PROJECT_MODULE_NAME}.${extx}`
