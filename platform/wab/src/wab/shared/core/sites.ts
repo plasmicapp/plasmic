@@ -102,6 +102,7 @@ import {
   replaceMemberExpression,
   transformDataTokensInExpr,
 } from "@/wab/shared/eval/expression-parser";
+import { makeTplAnimationsFixer } from "@/wab/shared/insertable-templates/fixers";
 import { getRshContainerType } from "@/wab/shared/layoututils";
 import { maybeComputedFn } from "@/wab/shared/mobx-util";
 import {
@@ -1036,6 +1037,9 @@ export function cloneSite(fromSite: Site) {
     }
   };
 
+  // Create animation fixer to remap animation sequences
+  const animationsFixer = makeTplAnimationsFixer(site);
+
   // fix following references in each component
   //   - var ref
   //   - global variants
@@ -1043,6 +1047,7 @@ export function cloneSite(fromSite: Site) {
   //   - component ref
   //   - token ref
   //   - mixin ref
+  //   - animation ref
   for (const c of site.components) {
     for (const param of c.params) {
       if (param.defaultExpr) {
@@ -1063,6 +1068,9 @@ export function cloneSite(fromSite: Site) {
     [...componentVsAndTpl].forEach(([_, tpl]) => {
       fixComponentRef(tpl);
     });
+
+    // Fix animation sequence refs
+    animationsFixer(c.tplTree);
 
     if (
       c.pageMeta &&
