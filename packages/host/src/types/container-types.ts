@@ -4,6 +4,13 @@ export interface ObjectTypeBaseCore<Ctx extends any[], Fields> {
   type: "object";
   fields?: Record<string, Fields>;
   nameFunc?: (item: any, ...args: Ctx) => string | undefined;
+  /**
+   * Controls how the object editor is displayed in the UI.
+   * - "popup": Opens a modal/popover to edit the object (default)
+   * - "inline": Renders the object fields directly inline in the property panel
+   * @default "popup"
+   */
+  display?: "inline" | "popup";
 }
 
 export interface ArrayTypeBaseCore<Ctx extends any[], Fields> {

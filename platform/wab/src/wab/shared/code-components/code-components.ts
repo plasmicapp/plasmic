@@ -3756,6 +3756,13 @@ export function getPropTypeLayout(propType: StudioPropType<any> | undefined) {
   ) {
     return getPropTypeLayout(propType.control);
   }
+  if (
+    isPlainObjectPropType(propType) &&
+    propType.type === "object" &&
+    propType.display === "inline"
+  ) {
+    return "vertical";
+  }
   return ["richText"].includes(getPropTypeType(propType) ?? "")
     ? "vertical"
     : "horizontal";

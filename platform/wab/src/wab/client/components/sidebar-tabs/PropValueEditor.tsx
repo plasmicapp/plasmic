@@ -1135,6 +1135,7 @@ const PropValueEditor_ = (
           ccContextData={ccContextData}
           controlExtras={controlExtras}
           propType={propType}
+          display={propType.display}
         />
       );
     } else {

@@ -900,7 +900,7 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
         DEVFLAGS.dataTokens && (
           <Menu.Item
             id="create-data-token-btn"
-            key={"customCode"}
+            key={"create-data-token"}
             onClick={() => {
               void createDataToken();
             }}
