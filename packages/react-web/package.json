@@ -1,6 +1,6 @@
 {
   "name": "@plasmicapp/react-web",
-  "version": "0.2.408",
+  "version": "0.2.409",
   "description": "plasmic library for rendering in the presentational style",
   "main": "dist/index.cjs.js",
   "types": "dist/index.d.ts",
@@ -96,9 +96,9 @@
   },
   "dependencies": {
     "@plasmicapp/auth-react": "0.0.24",
-    "@plasmicapp/data-sources": "0.1.193",
+    "@plasmicapp/data-sources": "0.1.194",
     "@plasmicapp/data-sources-context": "0.1.22",
-    "@plasmicapp/host": "1.0.229",
+    "@plasmicapp/host": "1.0.230",
     "@plasmicapp/loader-splits": "1.0.66",
     "@plasmicapp/nextjs-app-router": "1.0.19",
     "@plasmicapp/prepass": "1.0.21",

@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/strapi",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Plasmic registration for Strapi",
   "repository": {
     "type": "git",
@@ -35,7 +35,7 @@
     "qs": "^6.11.0"
   },
   "devDependencies": {
-    "@plasmicapp/host": "1.0.229",
+    "@plasmicapp/host": "1.0.230",
     "@types/qs": "^6.9.7",
     "typescript": "^5.7.3"
   },

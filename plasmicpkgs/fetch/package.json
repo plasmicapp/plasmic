@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/fetch",
-  "version": "0.0.20",
+  "version": "0.0.21",
   "description": "Plasmic registration call for fetch function",
   "repository": {
     "type": "git",
@@ -31,7 +31,7 @@
     "postpublish": "bash ../../scripts/publish-api-doc-model.sh"
   },
   "devDependencies": {
-    "@plasmicapp/host": "1.0.229",
+    "@plasmicapp/host": "1.0.230",
     "typescript": "^5.7.3"
   },
   "peerDependencies": {
