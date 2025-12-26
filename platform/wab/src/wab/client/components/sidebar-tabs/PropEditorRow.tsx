@@ -15,7 +15,6 @@ import {
 } from "@/wab/client/components/sidebar-tabs/PageURLParametersSection";
 import { PropValueEditor } from "@/wab/client/components/sidebar-tabs/PropValueEditor";
 import WarningIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__WarningTriangleSvg";
-import { DEVFLAGS } from "@/wab/shared/devflags";
 
 import { extractExpectedValues } from "@/wab/client/components/sidebar-tabs/DataBinding/DataPickerUtil";
 import { DataTokenEditModal } from "@/wab/client/components/sidebar/DataTokenEditModal";
@@ -897,7 +896,7 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
         !isCustomCode &&
         !isExprValuePropType(propType) &&
         !(isKnownTemplatedString(expr) && hasDynamicParts(expr)) &&
-        DEVFLAGS.dataTokens && (
+        viewCtx?.studioCtx.showDataTokens() && (
           <Menu.Item
             id="create-data-token-btn"
             key={"create-data-token"}
@@ -1097,7 +1096,11 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
               subtitle={subtitle}
               definedIndicator={definedIndicator}
               layout={layout}
-              menu={allowPointerInteractions && !isMenuEmpty(contextMenu) ? contextMenu : undefined}
+              menu={
+                allowPointerInteractions && !isMenuEmpty(contextMenu)
+                  ? contextMenu
+                  : undefined
+              }
               noMenuButton
               icon={icon}
               tooltip={

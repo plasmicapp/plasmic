@@ -9,7 +9,6 @@ import {
   DefinedIndicatorType,
   computeDefinedIndicator,
 } from "@/wab/shared/defined-indicator";
-import { DEVFLAGS } from "@/wab/shared/devflags";
 import { EffectiveVariantSetting } from "@/wab/shared/effective-variant-setting";
 import {
   RawText,
@@ -87,7 +86,7 @@ export function makeTplTextOps(viewCtx: ViewCtx, tpl: TplTag): TplTextOps {
                 : undefined,
 
             createDataToken:
-              isKnownRawText(targetVsText) && DEVFLAGS.dataTokens
+              isKnownRawText(targetVsText) && viewCtx.studioCtx.showDataTokens()
                 ? () => {
                     viewCtx.change(() => {
                       const token = viewCtx.tplMgr().addDataToken({

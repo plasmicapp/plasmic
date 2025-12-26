@@ -149,7 +149,7 @@ Help
           tabKey: "dataTokens",
           icon: <CurlyBracesIcon />,
           label: "Data tokens",
-          cond: DEVFLAGS.dataTokens && canViewTab("dataTokens"),
+          cond: studioCtx.showDataTokens() && canViewTab("dataTokens"),
         },
         mixins: {
           type: "item",

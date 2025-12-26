@@ -3070,14 +3070,15 @@ export class StudioCtx extends WithDbCtx {
     this._omnibarState.show = true;
     this._omnibarState.includedGroupKeys = ["presets-" + component.uuid];
   }
+  getCurrentTeam(): ApiTeam | undefined {
+    return this.appCtx.getAllTeams().find((t) => t.id === this.siteInfo.teamId);
+  }
 
   //
   // Branching
   //
   showBranching() {
-    const team = this.appCtx
-      .getAllTeams()
-      .find((t) => t.id === this.siteInfo.teamId);
+    const team = this.getCurrentTeam();
     return (
       this.appCtx.appConfig.branching ||
       (this.siteInfo.teamId &&
@@ -3086,6 +3087,20 @@ export class StudioCtx extends WithDbCtx {
         )) ||
       (team?.parentTeamId &&
         this.appCtx.appConfig.branchingTeamIds.includes(team.parentTeamId))
+    );
+  }
+
+  showDataTokens() {
+    if (this.appCtx.appConfig.rscRelease || this.appCtx.appConfig.dataTokens) {
+      return true;
+    }
+
+    const team = this.getCurrentTeam();
+    const teamId = this.siteInfo.teamId;
+    const allowedTeamIds = this.appCtx.appConfig.dataTokenTeamIds;
+    return !!(
+      (teamId && allowedTeamIds.includes(teamId)) ||
+      (team?.parentTeamId && allowedTeamIds.includes(team.parentTeamId))
     );
   }
 

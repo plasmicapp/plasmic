@@ -194,7 +194,7 @@ const LeftPane = observer(function LeftPane(props: LeftPaneProps) {
                   {studioCtx.appCtx.appConfig.copilotTab &&
                     wrapTab("copilot", <CopilotPanel />)}
                   {wrapTab("tokens", <LeftGeneralTokensPanel />)}
-                  {DEVFLAGS.dataTokens &&
+                  {studioCtx.showDataTokens() &&
                     wrapTab("dataTokens", <LeftGeneralDataTokensPanel />)}
                   {wrapTab("mixins", <MixinsPanel />)}
                   {DEVFLAGS.showAnimations &&
