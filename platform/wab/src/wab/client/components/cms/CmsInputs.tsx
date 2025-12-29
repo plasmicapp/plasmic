@@ -14,11 +14,16 @@ import MenuItem from "@/wab/client/components/plexus/MenuItem";
 import { FileUploader, Spinner } from "@/wab/client/components/widgets";
 import Button from "@/wab/client/components/widgets/Button";
 import "@/wab/client/components/widgets/ColorPicker/Pickr.overrides.scss";
+import { EditableLabel } from "@/wab/client/components/widgets/EditableLabel";
 import { Icon } from "@/wab/client/components/widgets/Icon";
+import { IconButton } from "@/wab/client/components/widgets/IconButton";
 import Select from "@/wab/client/components/widgets/Select";
 import { Switch, SwitchProps } from "@/wab/client/components/widgets/Switch";
 import { useAppCtx } from "@/wab/client/contexts/AppContexts";
 import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
+import Trash2Icon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Trash2";
+import ArrowDownSvg from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__ArrowDownSvg";
+import ArrowUpSvg from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__ArrowUpSvg";
 import {
   ApiCmsDatabase,
   CmsDatabaseId,
@@ -39,11 +44,9 @@ import "@simonwep/pickr/dist/themes/nano.min.css";
 import {
   Collapse,
   DatePicker,
-  Dropdown,
   Form,
   Input,
   InputNumber,
-  Menu,
   notification,
 } from "antd";
 import { FormItemProps } from "antd/lib/form";
@@ -52,6 +55,7 @@ import { upperFirst } from "lodash";
 import moment from "moment";
 import * as React from "react";
 import { ReactElement, ReactNode, createContext, useContext } from "react";
+import { useHover } from "react-aria";
 import { GrNewWindow } from "react-icons/all";
 import { useHistory } from "react-router";
 const LazyRichTextEditor = React.lazy(
@@ -168,6 +172,108 @@ export function CmsRefInput(props: any) {
   );
 }
 
+function CmsListItemHeader({
+  index,
+  itemCount,
+  disabled,
+  onMove,
+  onRemove,
+}: {
+  index: number;
+  itemCount: number;
+  disabled: boolean;
+  onMove: (from: number, to: number) => void;
+  onRemove: (index: number) => void;
+}) {
+  const hoverRef = React.useRef<HTMLDivElement>(null);
+  const { hoverProps, isHovered } = useHover({});
+
+  const moveBy = (delta: number) => {
+    onMove(index, index + delta);
+  };
+
+  return (
+    <div
+      ref={hoverRef}
+      {...hoverProps}
+      className="flex flex-vcenter"
+      style={{ maxHeight: "18px" }}
+    >
+      <div className="flex flex-vcenter" style={{ gap: "8px" }}>
+        <EditableLabel
+          value={String(index + 1)}
+          disabled={disabled}
+          onEdit={(newVal) => {
+            const targetIndexOneBased = parseInt(newVal);
+            if (!isNaN(targetIndexOneBased)) {
+              const targetIndex = targetIndexOneBased - 1;
+              if (
+                targetIndex >= 0 &&
+                targetIndex < itemCount &&
+                targetIndex !== index
+              ) {
+                onMove(index, targetIndex);
+              }
+            }
+          }}
+          inputBoxFactory={(inputProps) => (
+            <input
+              {...inputProps}
+              autoFocus
+              type="number"
+              min="1"
+              style={{ width: 50 }}
+            />
+          )}
+        >
+          {`# ${index + 1}`}
+        </EditableLabel>
+        {!disabled && isHovered && itemCount >= 2 && (
+          <div className="flex flex-col">
+            <IconButton
+              size="small"
+              type="clear"
+              onClick={(e) => {
+                e.stopPropagation();
+                moveBy(-1);
+              }}
+              disabled={index === 0}
+            >
+              <Icon icon={ArrowUpSvg} />
+            </IconButton>
+            <IconButton
+              size="small"
+              type="clear"
+              onClick={(e) => {
+                e.stopPropagation();
+                moveBy(1);
+              }}
+              disabled={index === itemCount - 1}
+            >
+              <Icon icon={ArrowDownSvg} />
+            </IconButton>
+          </div>
+        )}
+      </div>
+      {!disabled && isHovered && (
+        <div className="flex flex-vcenter flush-right">
+          <IconButton
+            size="small"
+            type="clear"
+            withRedBackgroundHover
+            onClick={(e) => {
+              e.stopPropagation();
+              onRemove(index);
+            }}
+          >
+            <Icon icon={Trash2Icon} />
+          </IconButton>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export function CmsListInput(props: any) {
   const {
     disabled,
@@ -189,30 +295,61 @@ export function CmsListInput(props: any) {
           <>
             {!disabled && (
               <Form.Item label={label}>
-                <Button
-                  withIcons={"startIcon"}
-                  startIcon={<Icon icon={PlusIcon} />}
-                  onClick={() => {
-                    handles.add(ensureType<{}>({}));
-                  }}
-                  style={{ marginBottom: 8 }}
-                >
-                  Add item
-                </Button>
+                <div style={{ marginBottom: 8, display: "flex", gap: 8 }}>
+                  <Button
+                    withIcons={"startIcon"}
+                    startIcon={<Icon icon={PlusIcon} />}
+                    onClick={() => {
+                      handles.add(ensureType<{}>({}));
+                    }}
+                  >
+                    Add item
+                  </Button>
+                  {items.length > 1 && (
+                    <>
+                      <Button
+                        onClick={() => {
+                          setExpandedKeys(
+                            items.map((item) => String(item.key))
+                          );
+                        }}
+                        type="secondary"
+                      >
+                        Expand all
+                      </Button>
+                      <Button
+                        onClick={() => {
+                          setExpandedKeys([]);
+                        }}
+                        type="secondary"
+                      >
+                        Collapse all
+                      </Button>
+                    </>
+                  )}
+                </div>
                 <Collapse
                   activeKey={expandedKeys}
                   onChange={(keys) => setExpandedKeys(keys)}
                 >
                   {items.map(({ key, name, ...restField }) => {
-                    function moveBy(delta: number) {
-                      handles.move(name, name + delta);
-                    }
                     const subtype: CmsTypeObject = {
                       type: CmsMetaType.OBJECT,
                       fields: typeMeta.fields,
                     };
                     return (
-                      <Collapse.Panel key={key} header={`Item ${name}`}>
+                      <Collapse.Panel
+                        key={key}
+                        header={
+                          <CmsListItemHeader
+                            index={name}
+                            itemCount={items.length}
+                            disabled={disabled}
+                            onMove={handles.move}
+                            onRemove={handles.remove}
+                          />
+                        }
+                      >
                         <ContentEntryFormContext.Provider
                           value={{
                             disabled,
@@ -225,37 +362,6 @@ export function CmsListInput(props: any) {
                           <Form.Item noStyle name={[name]} {...restField}>
                             <CmsObjectInput />
                           </Form.Item>
-                          {!disabled && (
-                            <Form.Item>
-                              <div className={"flex gap-sm"}>
-                                <Button onClick={() => handles.remove(name)}>
-                                  Delete item
-                                </Button>
-                                <Dropdown
-                                  overlay={
-                                    <Menu>
-                                      <Menu.Item
-                                        onClick={() => {
-                                          moveBy(-1);
-                                        }}
-                                      >
-                                        Move up
-                                      </Menu.Item>
-                                      <Menu.Item
-                                        onClick={() => {
-                                          moveBy(1);
-                                        }}
-                                      >
-                                        Move down
-                                      </Menu.Item>
-                                    </Menu>
-                                  }
-                                >
-                                  <Button>More</Button>
-                                </Dropdown>
-                              </div>
-                            </Form.Item>
-                          )}{" "}
                         </ContentEntryFormContext.Provider>
                       </Collapse.Panel>
                     );
