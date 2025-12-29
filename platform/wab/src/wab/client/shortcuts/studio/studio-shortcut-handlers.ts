@@ -196,8 +196,7 @@ export function bindStudioShortcutHandlers(studioCtx: StudioCtx) {
         });
       },
       TOGGLE_UI_COPILOT: async () => {
-        const team = await studioCtx.appCtx.topFrameApi?.getCurrentTeam();
-        if (studioCtx.uiCopilotEnabled(team)) {
+        if (studioCtx.uiCopilotEnabled()) {
           studioCtx.openUiCopilotDialog(!studioCtx.showUiCopilot);
         }
       },

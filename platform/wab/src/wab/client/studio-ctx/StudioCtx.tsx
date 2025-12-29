@@ -2037,7 +2037,7 @@ export class StudioCtx extends WithDbCtx {
     const searchParams = new URLSearchParams(location.search);
     const prompt = searchParams.get(SEARCH_PROMPT);
     if (prompt) {
-      await this.createCopilotPageWithPrompt(prompt);
+      await this.createCopilotPageWithPrompt("Copilot", prompt);
     } else {
       await this.handleRouteChange(location);
     }
@@ -3107,7 +3107,8 @@ export class StudioCtx extends WithDbCtx {
   //
   // Copilot
   //
-  uiCopilotEnabled(team?: ApiTeam) {
+  uiCopilotEnabled() {
+    const team = this.appCtx.teams.find((t) => t.id === this.siteInfo.teamId);
     return (
       // enableUiCopilot flag is false by default and overriden for plasmic users only,
       // we will enable it when we decide to release this feature to all user
@@ -6932,9 +6933,9 @@ export class StudioCtx extends WithDbCtx {
     return this._copilotFeedbackByInteractionId.get(copilotInteractionId);
   }
 
-  async createCopilotPageWithPrompt(prompt: string) {
+  async createCopilotPageWithPrompt(pageName: string, prompt: string) {
     await this.change(({ success }) => {
-      this.addComponent("Copilot", {
+      this.addComponent(pageName, {
         type: ComponentType.Page,
       }) as PageComponent;
 

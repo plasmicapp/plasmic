@@ -650,6 +650,14 @@ function NavigationDropdown_(
             );
             break;
           }
+          case "copilot": {
+            assert(chosenTemplate.prompt, "Copilot prompt is required");
+            await studioCtx.createCopilotPageWithPrompt(
+              chosenTemplate.name,
+              chosenTemplate.prompt
+            );
+            break;
+          }
         }
       }
     }

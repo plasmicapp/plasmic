@@ -1,3 +1,4 @@
+import { CopilotPromptInput } from "@/wab/client/components/copilot/CopilotPromptInput";
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import NewComponentItem from "@/wab/client/components/widgets/NewComponentItem";
 import NewComponentSection from "@/wab/client/components/widgets/NewComponentSection";
@@ -13,15 +14,27 @@ import { InsertableTemplatesItem } from "@/wab/shared/devflags";
 import { APP_ROUTES } from "@/wab/shared/route/app-routes";
 import { Tooltip } from "antd";
 import * as React from "react";
-import { useState } from "react";
 
-type NewPageType = "blank" | "dynamic" | "template";
-export type NewPageInfo = {
-  name: string;
-  type: NewPageType;
-  componentName?: string;
-  projectId?: string;
-};
+export type NewPageInfo =
+  | {
+      name: string;
+      type: "blank";
+    }
+  | {
+      name: string;
+      type: "dynamic";
+    }
+  | {
+      name: string;
+      type: "template";
+      componentName: string;
+      projectId: string;
+    }
+  | {
+      name: string;
+      type: "copilot";
+      prompt: string;
+    };
 
 interface NewPageModalProps
   extends Omit<DefaultNewComponentModalProps, "children"> {
@@ -34,19 +47,15 @@ interface NewPageModalProps
 function NewPageModal(props: NewPageModalProps) {
   const { onSubmit, onCancel, studioCtx, folderPath, ...rest } = props;
 
-  const [type, setType] = useState<NewPageType>("blank");
-  const [componentName, setComponentName] = React.useState<string | undefined>(
-    undefined
-  );
-  const [projectId, setProjectId] = React.useState<string | undefined>(
-    undefined
-  );
-  const [name, setName] = React.useState("");
+  const [pageInfo, setPageInfo] = React.useState<NewPageInfo>({
+    type: "blank",
+    name: "",
+  });
   const nameRef = React.useRef<TextboxRef>(null);
 
   React.useEffect(() => {
     if (folderPath !== undefined) {
-      setName(folderPath);
+      setPageInfo((prev) => ({ ...prev, name: folderPath }));
     }
   }, [folderPath]);
 
@@ -57,6 +66,14 @@ function NewPageModal(props: NewPageModalProps) {
   const showDefaultPageTemplates =
     pageTemplatesGroups.length === 0 ||
     !studioCtx.getCurrentUiConfig().hideDefaultPageTemplates;
+  const uiCopilotEnabled = studioCtx.uiCopilotEnabled();
+
+  const getNewPageName = (defaultName: string) => {
+    return !pageInfo.name ||
+      (pageInfo.type === "template" && pageInfo.name === pageInfo.componentName)
+      ? defaultName
+      : pageInfo.name;
+  };
 
   return (
     <PlasmicNewComponentModal
@@ -64,8 +81,8 @@ function NewPageModal(props: NewPageModalProps) {
         as: "form",
         props: {
           onSubmit: () => {
-            if (name) {
-              onSubmit({ name, type, componentName, projectId });
+            if (pageInfo.name) {
+              onSubmit(pageInfo);
             }
           },
           style: {
@@ -83,15 +100,17 @@ function NewPageModal(props: NewPageModalProps) {
           isDelayedFocus: true,
           "data-test-id": "prompt",
           ref: nameRef,
-          value: name,
-          onChange: (e) => setName(e.target.value),
+          value: pageInfo.name,
+          onChange: (e) =>
+            setPageInfo((prev) => ({ ...prev, name: e.target.value })),
         },
       }}
       submitButton={{
         props: {
           "data-test-id": "prompt-submit",
           htmlType: "submit",
-          disabled: !name,
+          disabled:
+            !pageInfo.name || (pageInfo.type === "copilot" && !pageInfo.prompt),
         },
       }}
       showTemplates={true}
@@ -101,31 +120,48 @@ function NewPageModal(props: NewPageModalProps) {
       {showDefaultPageTemplates && (
         <NewComponentSection title={""}>
           <NewComponentItem
-            isSelected={type === "blank"}
+            isSelected={pageInfo.type === "blank"}
             title="Empty page"
             imgUrl={"https://jovial-poitras-57edb1.netlify.app/blank.png"}
             onClick={() => {
-              const previousName = componentName;
-              setComponentName(undefined);
-              setProjectId(undefined);
-              setType("blank");
-              if (!name || previousName === name) {
-                setName("NewPage");
-              }
+              setPageInfo({ type: "blank", name: getNewPageName("NewPage") });
             }}
           />
           <NewComponentItem
-            isSelected={type === "dynamic"}
+            isSelected={pageInfo.type === "dynamic"}
             title="Dynamic page"
             imgUrl={"https://jovial-poitras-57edb1.netlify.app/blank.png"}
             onClick={() => {
-              const previousName = componentName;
-              setComponentName(undefined);
-              setProjectId(undefined);
-              setType("dynamic");
-              if (!name || previousName === name) {
-                setName("NewPage");
-              }
+              setPageInfo({ type: "dynamic", name: getNewPageName("NewPage") });
+            }}
+          />
+          {uiCopilotEnabled && (
+            <NewComponentItem
+              isSelected={pageInfo.type === "copilot"}
+              title="Copilot page"
+              imgUrl={"https://jovial-poitras-57edb1.netlify.app/blank.png"}
+              onClick={() => {
+                setPageInfo({
+                  type: "copilot",
+                  prompt: pageInfo.type === "copilot" ? pageInfo.prompt : "",
+                  name: getNewPageName("NewPage"),
+                });
+              }}
+            />
+          )}
+        </NewComponentSection>
+      )}
+      {pageInfo.type === "copilot" && (
+        <NewComponentSection title="Copilot Prompt">
+          <CopilotPromptInput
+            showImageUpload={false}
+            textAreaInput={{
+              value: pageInfo.prompt,
+              placeholder: "Describe the page you want to create...",
+              rows: 3,
+              autoFocus: true,
+              onChange: (value) =>
+                setPageInfo((prev) => ({ ...prev, prompt: value ?? "" })),
             }}
           />
         </NewComponentSection>
@@ -144,19 +180,19 @@ function NewPageModal(props: NewPageModalProps) {
               <NewComponentItem
                 key={`page-templates-item-${comp.projectId}-${comp.componentName}`}
                 isSelected={
-                  comp.componentName === componentName &&
-                  comp.projectId === projectId
+                  pageInfo.type === "template" &&
+                  comp.componentName === pageInfo.componentName &&
+                  comp.projectId === pageInfo.projectId
                 }
                 title={comp.displayName || comp.componentName}
                 imgUrl={comp.imageUrl}
                 onClick={() => {
-                  const previousName = componentName;
-                  setComponentName(comp.componentName);
-                  setProjectId(comp.projectId);
-                  setType("template");
-                  if (!name || previousName === name) {
-                    setName(comp.componentName);
-                  }
+                  setPageInfo({
+                    type: "template",
+                    componentName: comp.componentName,
+                    projectId: comp.projectId,
+                    name: getNewPageName(comp.componentName),
+                  });
                   if (nameRef.current) {
                     nameRef.current.focus();
                   }
