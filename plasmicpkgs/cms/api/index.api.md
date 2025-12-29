@@ -243,6 +243,7 @@ export function _mkApi(config: _DatabaseConfig | undefined): _API;
 // @public (undocumented)
 export function _mkFieldOptions(tables: _ApiCmsTable[] | undefined, tableIdentifier: string | undefined, types?: _CmsType[], opts?: {
     includeSystemId?: boolean;
+    includeRefStars?: boolean;
 }): ValueLabelPair[];
 
 // @public (undocumented)

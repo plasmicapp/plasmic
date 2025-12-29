@@ -82,7 +82,9 @@ const selectParam = {
   defaultValueHint: ["Default: *"] as string[],
   options: (args: { 2?: string | undefined }, ctx: FnContext) => {
     const tableId = args[2];
-    return mkFieldOptions(ctx.tables, tableId);
+    return mkFieldOptions(ctx.tables, tableId, undefined, {
+      includeRefStars: true,
+    });
   },
 } as const;
 

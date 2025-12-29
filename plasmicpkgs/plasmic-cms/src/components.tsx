@@ -329,7 +329,9 @@ export const cmsQueryRepeaterMeta: ComponentMeta<CmsQueryRepeaterProps> = {
       description:
         "Fields from the CMS model to include with each row; by default, all fields are included",
       options: ({ table }, ctx) =>
-        mkFieldOptions(ctx?.tables, ctx?.table ?? table),
+        mkFieldOptions(ctx?.tables, ctx?.table ?? table, undefined, {
+          includeRefStars: true,
+        }),
       hidden: (ps) => ps.mode === "count",
     },
     emptyMessage: {
