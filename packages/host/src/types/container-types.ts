@@ -6,11 +6,12 @@ export interface ObjectTypeBaseCore<Ctx extends any[], Fields> {
   nameFunc?: (item: any, ...args: Ctx) => string | undefined;
   /**
    * Controls how the object editor is displayed in the UI.
-   * - "popup": Opens a modal/popover to edit the object (default)
-   * - "inline": Renders the object fields directly inline in the property panel
+   * - "popup":  Displays the object in a popup (default)
+   * - "inline": Displays the object fields inline
+   * - "flatten": Displays the object fields inline at the parent level. The parent label is not displayed.
    * @default "popup"
    */
-  display?: "inline" | "popup";
+  display?: "inline" | "popup" | "flatten";
 }
 
 export interface ArrayTypeBaseCore<Ctx extends any[], Fields> {

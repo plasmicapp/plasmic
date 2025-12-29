@@ -3748,6 +3748,16 @@ export function getPropTypeType(
   }
 }
 
+export function isFlattenedObjectPropType(
+  propType: StudioPropType<any> | undefined
+): propType is ObjectStudioPropType<any> {
+  return (
+    isPlainObjectPropType(propType) &&
+    propType.type === "object" &&
+    propType.display === "flatten"
+  );
+}
+
 export function getPropTypeLayout(propType: StudioPropType<any> | undefined) {
   if (
     isPlainObjectPropType(propType) &&

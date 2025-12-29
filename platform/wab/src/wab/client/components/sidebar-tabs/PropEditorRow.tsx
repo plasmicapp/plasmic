@@ -48,6 +48,7 @@ import {
   isAllowedDefaultExprForPropType,
   isDynamicValueDisabledInPropType,
   isExprValuePropType,
+  isFlattenedObjectPropType,
   isPlainObjectPropType,
   maybePropTypeToAbout,
   StudioPropType,
@@ -695,6 +696,7 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
     expr !== undefined && isFallbackSet(expr) && !disabledDynamicValue
   );
   const layout = props.layout ?? getPropTypeLayout(propType);
+  const isFlattenedObjectProp = isFlattenedObjectPropType(propType);
   const wabType = ensurePropTypeToWabType(studioCtx.site, propType);
   const propTypeType = getPropTypeType(propType);
   const ownerComponent = tpl && $$$(tpl).owningComponent();
@@ -1075,81 +1077,85 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
             ) : invalidVal ? (
               <WarnInvalid message="Prop value not allowed" />
             ) : null}
-            <LabeledItemRow
-              data-test-id={`prop-editor-row-${attr ?? label}`}
-              label={
-                <div className={about ? "pointer" : ""}>
+            {isFlattenedObjectProp ? (
+              renderDefaultEditor()
+            ) : (
+              <LabeledItemRow
+                data-test-id={`prop-editor-row-${attr ?? label}`}
+                label={
+                  <div className={about ? "pointer" : ""}>
+                    {isPlainObjectPropType(propType) &&
+                    hackyCast(propType).required ? (
+                      <span className="required-prop">{label}</span>
+                    ) : (
+                      label
+                    )}
+                    {about ? (
+                      <InlineIcon>
+                        &thinsp;
+                        <Icon icon={InfoIcon} className="dimfg" />
+                      </InlineIcon>
+                    ) : null}
+                  </div>
+                }
+                subtitle={subtitle}
+                definedIndicator={definedIndicator}
+                layout={layout}
+                menu={
+                  allowPointerInteractions && !isMenuEmpty(contextMenu)
+                    ? contextMenu
+                    : undefined
+                }
+                noMenuButton
+                icon={icon}
+                tooltip={
+                  props.tooltip ? (
+                    props.tooltip
+                  ) : about ? (
+                    <>
+                      <strong>{label}</strong>: {about}
+                    </>
+                  ) : undefined
+                }
+              >
+                <div className="flex-col fill-width flex-align-start">
+                  <ContextMenuIndicator
+                    menu={!isMenuEmpty(contextMenu) ? contextMenu : undefined}
+                    showDynamicValueButton={showDynamicValueButton}
+                    tooltip={
+                      isKnownTemplatedString(expr)
+                        ? "Append dynamic value"
+                        : undefined
+                    }
+                    onIndicatorClickDefault={() => {
+                      switchToDynamicValue();
+                    }}
+                    className="qb-custom-widget"
+                    fullWidth={!isBooleanPropType(propType) || isCustomCode}
+                  >
+                    {referencedParam && !disableLinkToProp
+                      ? renderEditorForReferencedParam()
+                      : isCustomCode &&
+                        !(isKnownQueryData(wabType) && isQuery(expr)) &&
+                        !disabledDynamicValue
+                      ? renderDataPickerEditorForDynamicValue()
+                      : renderDefaultEditor()}
+                  </ContextMenuIndicator>
                   {isPlainObjectPropType(propType) &&
-                  hackyCast(propType).required ? (
-                    <span className="required-prop">{label}</span>
-                  ) : (
-                    label
+                    "helpText" in propType &&
+                    propType.helpText !== undefined && (
+                      <div className="fill-width dimfg gap-xsm">
+                        <StandardMarkdown>
+                          {propType.helpText.trim()}
+                        </StandardMarkdown>
+                      </div>
+                    )}
+                  {expr && isKnownTemplatedString(expr) && evaluated && (
+                    <ValuePreview val={evaluated.val} err={evaluated.err} />
                   )}
-                  {about ? (
-                    <InlineIcon>
-                      &thinsp;
-                      <Icon icon={InfoIcon} className="dimfg" />
-                    </InlineIcon>
-                  ) : null}
                 </div>
-              }
-              subtitle={subtitle}
-              definedIndicator={definedIndicator}
-              layout={layout}
-              menu={
-                allowPointerInteractions && !isMenuEmpty(contextMenu)
-                  ? contextMenu
-                  : undefined
-              }
-              noMenuButton
-              icon={icon}
-              tooltip={
-                props.tooltip ? (
-                  props.tooltip
-                ) : about ? (
-                  <>
-                    <strong>{label}</strong>: {about}
-                  </>
-                ) : undefined
-              }
-            >
-              <div className="flex-col fill-width flex-align-start">
-                <ContextMenuIndicator
-                  menu={!isMenuEmpty(contextMenu) ? contextMenu : undefined}
-                  showDynamicValueButton={showDynamicValueButton}
-                  tooltip={
-                    isKnownTemplatedString(expr)
-                      ? "Append dynamic value"
-                      : undefined
-                  }
-                  onIndicatorClickDefault={() => {
-                    switchToDynamicValue();
-                  }}
-                  className="qb-custom-widget"
-                  fullWidth={!isBooleanPropType(propType) || isCustomCode}
-                >
-                  {referencedParam && !disableLinkToProp
-                    ? renderEditorForReferencedParam()
-                    : isCustomCode &&
-                      !(isKnownQueryData(wabType) && isQuery(expr)) &&
-                      !disabledDynamicValue
-                    ? renderDataPickerEditorForDynamicValue()
-                    : renderDefaultEditor()}
-                </ContextMenuIndicator>
-                {isPlainObjectPropType(propType) &&
-                  "helpText" in propType &&
-                  propType.helpText !== undefined && (
-                    <div className="fill-width dimfg gap-xsm">
-                      <StandardMarkdown>
-                        {propType.helpText.trim()}
-                      </StandardMarkdown>
-                    </div>
-                  )}
-                {expr && isKnownTemplatedString(expr) && evaluated && (
-                  <ValuePreview val={evaluated.val} err={evaluated.err} />
-                )}
-              </div>
-            </LabeledItemRow>
+              </LabeledItemRow>
+            )}
             {newParamModalVisible && ownerComponent && viewCtx && (
               <ComponentPropModal
                 studioCtx={studioCtx}
