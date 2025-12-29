@@ -1,22 +1,22 @@
 {
   "name": "plasmicpkgs-dev",
-  "version": "0.0.34",
+  "version": "0.0.35",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "dev-inspect": "NODE_OPTIONS='--inspect' next dev"
   },
   "dependencies": {
-    "@plasmicapp/loader-nextjs": "1.0.446",
+    "@plasmicapp/loader-nextjs": "1.0.447",
     "@plasmicpkgs/cms": "0.0.3",
-    "@plasmicpkgs/commerce": "0.0.229",
-    "@plasmicpkgs/commerce-shopify": "0.0.237",
-    "@plasmicpkgs/fetch": "0.0.21",
-    "@plasmicpkgs/graphql": "0.0.15",
-    "@plasmicpkgs/plasmic-basic-components": "0.0.260",
-    "@plasmicpkgs/plasmic-cms": "0.0.296",
-    "@plasmicpkgs/plasmic-strapi": "0.1.184",
-    "@plasmicpkgs/strapi": "0.0.6",
+    "@plasmicpkgs/commerce": "0.0.230",
+    "@plasmicpkgs/commerce-shopify": "0.0.238",
+    "@plasmicpkgs/fetch": "0.0.22",
+    "@plasmicpkgs/graphql": "0.0.16",
+    "@plasmicpkgs/plasmic-basic-components": "0.0.261",
+    "@plasmicpkgs/plasmic-cms": "0.0.297",
+    "@plasmicpkgs/plasmic-strapi": "0.1.185",
+    "@plasmicpkgs/strapi": "0.0.7",
     "next": "^15.5.3",
     "react": "^19",
     "react-dom": "^19"
