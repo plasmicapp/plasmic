@@ -282,22 +282,21 @@ export const DraggableDimLabel = observer(function DraggableDimLabel(props: {
   const exp = props.exp || expsProvider.mergedExp();
   const [init, setInit] = React.useState<string[] | undefined>(undefined);
   const ref = React.useRef<HTMLDivElement | null>(null);
-  const isDraggingDisabled =
-    disabledDragging ||
-    React.useMemo(() => {
-      let isDisabled = false;
-      styleNames.forEach((styleName) => {
-        const rawValue = exp.get(styleName);
-        const maybeToken = tryParseTokenRef(rawValue, () =>
-          siteFinalStyleTokensAllDeps(studioCtx.site)
-        );
-        if (!isDraggableSize((maybeToken && maybeToken.value) || rawValue)) {
-          isDisabled = true;
-          return;
-        }
-      });
-      return isDisabled;
-    }, [styleNames]);
+  const isDraggingDisabledFromStyles = React.useMemo(() => {
+    let isDisabled = false;
+    styleNames.forEach((styleName) => {
+      const rawValue = exp.get(styleName);
+      const maybeToken = tryParseTokenRef(rawValue, () =>
+        siteFinalStyleTokensAllDeps(studioCtx.site)
+      );
+      if (!isDraggableSize((maybeToken && maybeToken.value) || rawValue)) {
+        isDisabled = true;
+        return;
+      }
+    });
+    return isDisabled;
+  }, [styleNames]);
+  const isDraggingDisabled = disabledDragging || isDraggingDisabledFromStyles;
   return (
     <XDraggable
       useMovement={true}
