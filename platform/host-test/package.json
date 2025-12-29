@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@plasmicapp/host": "^1.0.230",
+    "@plasmicapp/host": "^1.0.231",
     "lodash": "^4.17.21",
     "next": "13.5.11",
     "plasmicapp__host_old": "npm:@plasmicapp/host@1.0.77",
