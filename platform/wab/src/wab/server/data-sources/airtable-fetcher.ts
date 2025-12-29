@@ -511,17 +511,19 @@ export class AirtableFetcher {
     });
     assert(maybeTokenData, "OAuth token should not be undefined");
     this.tokenData = maybeTokenData.token;
-    this.client = new Airtable({ apiKey: this.tokenData.accessToken }).base(
-      this.baseId
-    );
+    this.client = new Airtable({
+      apiKey: this.tokenData.accessToken,
+      noRetryIfRateLimited: true,
+    }).base(this.baseId);
   }
 
   private async tryAndRefresh(req: () => Promise<any>) {
     return tryAndRefresh(req, this.credentials, this.tokenData, (newTokens) => {
       this.tokenData = newTokens;
-      this.client = new Airtable({ apiKey: this.tokenData.accessToken }).base(
-        this.baseId
-      );
+      this.client = new Airtable({
+        apiKey: this.tokenData.accessToken,
+        noRetryIfRateLimited: true,
+      }).base(this.baseId);
     });
   }
 
