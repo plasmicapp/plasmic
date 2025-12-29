@@ -21,7 +21,10 @@ export function mkTableOptions(
 export function mkFieldOptions(
   tables: ApiCmsTable[] | undefined,
   tableIdentifier: string | undefined,
-  types?: CmsType[]
+  types?: CmsType[],
+  opts?: {
+    includeSystemId?: boolean;
+  }
 ): ValueLabelPair[] {
   if (!tables) {
     return [];
@@ -40,7 +43,10 @@ export function mkFieldOptions(
     value: f.identifier,
     label: f.label || f.identifier,
   }));
-  if (!options.some((option) => option.value === "_id")) {
+  if (
+    opts?.includeSystemId &&
+    !options.some((option) => option.value === "_id")
+  ) {
     options.push({
       label: "System ID",
       value: "_id",

@@ -258,13 +258,20 @@ export const cmsQueryRepeaterMeta: ComponentMeta<CmsQueryRepeaterProps> = {
       displayName: "Filter field",
       description: "Field (from model schema) to filter by",
       options: ({ table }, ctx) =>
-        mkFieldOptions(ctx?.tables, ctx?.table ?? table, [
-          CmsMetaType.NUMBER,
-          CmsMetaType.BOOLEAN,
-          CmsMetaType.TEXT,
-          CmsMetaType.LONG_TEXT,
-          CmsMetaType.REF,
-        ]),
+        mkFieldOptions(
+          ctx?.tables,
+          ctx?.table ?? table,
+          [
+            CmsMetaType.NUMBER,
+            CmsMetaType.BOOLEAN,
+            CmsMetaType.TEXT,
+            CmsMetaType.LONG_TEXT,
+            CmsMetaType.REF,
+          ],
+          {
+            includeSystemId: true,
+          }
+        ),
     },
     filterValue: {
       type: "string",
@@ -276,13 +283,20 @@ export const cmsQueryRepeaterMeta: ComponentMeta<CmsQueryRepeaterProps> = {
       displayName: "Order by",
       description: "Field to order by.",
       options: (_, ctx) =>
-        mkFieldOptions(ctx?.tables, ctx?.table, [
-          CmsMetaType.NUMBER,
-          CmsMetaType.BOOLEAN,
-          CmsMetaType.DATE_TIME,
-          CmsMetaType.LONG_TEXT,
-          CmsMetaType.TEXT,
-        ]),
+        mkFieldOptions(
+          ctx?.tables,
+          ctx?.table,
+          [
+            CmsMetaType.NUMBER,
+            CmsMetaType.BOOLEAN,
+            CmsMetaType.DATE_TIME,
+            CmsMetaType.LONG_TEXT,
+            CmsMetaType.TEXT,
+          ],
+          {
+            includeSystemId: true,
+          }
+        ),
       hidden: (ps) => ps.mode === "count",
     },
     desc: {

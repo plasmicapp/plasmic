@@ -241,7 +241,9 @@ export class _HttpError extends Error {
 export function _mkApi(config: _DatabaseConfig | undefined): _API;
 
 // @public (undocumented)
-export function _mkFieldOptions(tables: _ApiCmsTable[] | undefined, tableIdentifier: string | undefined, types?: _CmsType[]): ValueLabelPair[];
+export function _mkFieldOptions(tables: _ApiCmsTable[] | undefined, tableIdentifier: string | undefined, types?: _CmsType[], opts?: {
+    includeSystemId?: boolean;
+}): ValueLabelPair[];
 
 // @public (undocumented)
 export function _mkTableOptions(tables: _ApiCmsTable[] | undefined): ValueLabelPair[];
