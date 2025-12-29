@@ -368,7 +368,8 @@ export function projectCmsData(
   for (const fieldSelection of selection.fields.values()) {
     const field = fieldSelection.field;
     const fieldValue: unknown =
-      rowData?.[locale][field.identifier] ?? rowData?.[""][field.identifier];
+      rowData?.[locale]?.[field.identifier] ??
+      rowData?.[""]?.[field.identifier];
 
     if (fieldValue === null || fieldValue === undefined) {
       continue;
