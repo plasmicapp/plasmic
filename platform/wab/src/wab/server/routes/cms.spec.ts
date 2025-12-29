@@ -650,6 +650,26 @@ describe("CMS public routes", () => {
       ]);
     });
 
+    it("ignores _id field", async () => {
+      const res =
+        await publicApi.tsRestClient.publicCmsReadsContract.queryTable({
+          params: {
+            dbId: database.id,
+            tableIdentifier: table.identifier,
+          },
+          query: {
+            q: JSON.stringify({
+              fields: ["_id", "num"],
+              where: { num: 0 },
+            }),
+          },
+        });
+      const {
+        body: { rows },
+      } = expectStatus(res, 200);
+      expect(rows.map((r) => r.data)).toEqual([{ num: 0 }]);
+    });
+
     it("can return nested fields", async () => {
       const res =
         await publicApi.tsRestClient.publicCmsReadsContract.queryTable({

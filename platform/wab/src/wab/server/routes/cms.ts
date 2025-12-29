@@ -54,9 +54,13 @@ export const publicCmsReadsServer = s.router(publicCmsReadsContract, {
     const tableCache = new CmsTableCache(dbMgr);
     tableCache.fill(table);
 
-    // Defaults to all fields
     const fieldPaths =
-      cmsQuery.fields && cmsQuery.fields.length > 0 ? cmsQuery.fields : ["*"];
+      cmsQuery.fields && cmsQuery.fields.length > 0
+        ? // legacy behavior: don't error on "_id"
+          // "_id" is not a valid field identifier, so we can exclude it here
+          cmsQuery.fields.filter((f) => f !== "_id")
+        : // defaults to all top-level fields
+          ["*"];
 
     // Build a selection tree that helps us figure out what refs to resolve
     const selectionTree = await makeSelectionTree(
