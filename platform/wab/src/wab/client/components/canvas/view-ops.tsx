@@ -7,6 +7,7 @@ import {
 import { showError } from "@/wab/client/ErrorNotifications";
 import { readClipboardPlasmicData } from "@/wab/client/clipboard/common";
 import {
+  AnimationClip,
   FrameClip,
   PasteStyleProps,
   StyleClip,
@@ -134,6 +135,7 @@ import {
 } from "@/wab/shared/core/selection";
 import { siteFinalStyleTokensAllDeps } from "@/wab/shared/core/site-style-tokens";
 import {
+  allAnimationSequences,
   allGlobalVariants,
   isTplAttachedToSite,
   writeable,
@@ -216,6 +218,7 @@ import {
   isContainerTypeVariantable,
 } from "@/wab/shared/layoututils";
 import {
+  Animation,
   ArenaFrame,
   Component,
   CustomCode,
@@ -2244,10 +2247,26 @@ export class ViewOps {
       common.withoutNilTuples(styleProps.map((p) => tuple(p, exp.getRaw(p))))
     );
     const mixinUuids = vs.rs.mixins.map((m) => m.uuid);
+
+    // Copy animations from the ruleset
+    const animations: AnimationClip[] | undefined = vs.rs.animations?.map(
+      (anim) => ({
+        sequenceUuid: anim.sequence.uuid,
+        duration: anim.duration,
+        timingFunction: anim.timingFunction,
+        iterationCount: anim.iterationCount,
+        direction: anim.direction,
+        delay: anim.delay,
+        fillMode: anim.fillMode,
+        playState: anim.playState,
+      })
+    );
+
     return {
       type: "style",
       cssProps: props,
       mixinUuids,
+      animations,
     };
   }
 
@@ -2350,6 +2369,42 @@ export class ViewOps {
         );
       }
     }
+
+    // Resolve animation sequence UUIDs and create Animation instances
+    const site = this.viewCtx().site;
+    const allAnimSequences = allAnimationSequences(site, {
+      includeDeps: "direct",
+    });
+
+    const animationsToAdd = withoutNils(
+      (clip.animations || []).map((animClip) => {
+        const sequence = allAnimSequences.find(
+          (seq) => seq.uuid === animClip.sequenceUuid
+        );
+        if (!sequence) {
+          return undefined;
+        }
+        return new Animation({
+          sequence,
+          duration: animClip.duration,
+          timingFunction: animClip.timingFunction,
+          iterationCount: animClip.iterationCount,
+          direction: animClip.direction,
+          delay: animClip.delay,
+          fillMode: animClip.fillMode,
+          playState: animClip.playState,
+        });
+      })
+    );
+
+    if (animationsToAdd.length > 0) {
+      // Merge new animations with existing ones, deduplicating by sequence
+      vs.rs.animations = L.uniqBy(
+        [...(vs.rs.animations ?? []), ...animationsToAdd],
+        (a) => a.sequence.uuid
+      );
+    }
+
     return true;
   }
 

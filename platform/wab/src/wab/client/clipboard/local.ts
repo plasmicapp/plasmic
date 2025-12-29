@@ -9,12 +9,22 @@ import { cloneArenaFrame } from "@/wab/shared/Arenas";
 import { VariantCombo } from "@/wab/shared/Variants";
 import { ensure } from "@/wab/shared/common";
 import * as Tpls from "@/wab/shared/core/tpls";
-import { ArenaFrame, Component, TplNode } from "@/wab/shared/model/classes";
+import {
+  AnimationParams,
+  ArenaFrame,
+  Component,
+  TplNode,
+} from "@/wab/shared/model/classes";
+
+export type AnimationClip = Omit<AnimationParams, "sequence"> & {
+  sequenceUuid: string;
+};
 
 export interface StyleClip {
   type: "style";
   cssProps: Record<string, string>;
   mixinUuids?: string[];
+  animations?: AnimationClip[];
 }
 
 export interface PasteStyleProps {
@@ -66,6 +76,7 @@ export function cloneClip(x: Clippable): Clippable {
       type: "style",
       cssProps: { ...x.cssProps },
       mixinUuids: x.mixinUuids ? [...x.mixinUuids] : undefined,
+      animations: x.animations?.map((a) => ({ ...a })),
     };
   } else if (isTplClip(x)) {
     return {
