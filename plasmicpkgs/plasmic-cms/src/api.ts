@@ -1,4 +1,8 @@
-import { ApiCmsQuery, ApiCmsRow, ApiCmsTable } from "./schema";
+import {
+  _ApiCmsQuery as ApiCmsQuery,
+  _ApiCmsRow as ApiCmsRow,
+  _ApiCmsTable as ApiCmsTable,
+} from "@plasmicpkgs/cms";
 
 export interface DatabaseConfig {
   host: string;

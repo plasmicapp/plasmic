@@ -4,9 +4,10 @@
 
 ```ts
 
-import { ApiCmsRow as ApiCmsRow_2 } from './schema';
-import { ApiCmsTable as ApiCmsTable_2 } from './schema';
+import { _ApiCmsRow } from '@plasmicpkgs/cms';
+import { _ApiCmsTable } from '@plasmicpkgs/cms';
 import { CanvasComponentProps } from '@plasmicapp/host/registerComponent';
+import { _CmsFieldMeta } from '@plasmicpkgs/cms';
 import { ComponentMeta } from '@plasmicapp/host/registerComponent';
 import { GlobalContextMeta } from '@plasmicapp/host/registerGlobalContext';
 import { default as React_2 } from 'react';
@@ -19,11 +20,11 @@ export class API {
     // (undocumented)
     count(table: string, params?: Pick<QueryParams, "where" | "useDraft">): Promise<number>;
     // (undocumented)
-    fetchTables(): Promise<ApiCmsTable[]>;
+    fetchTables(): Promise<_ApiCmsTable[]>;
     // (undocumented)
     get(endpoint: string, params?: any): Promise<any>;
     // (undocumented)
-    query(table: string, params?: QueryParams): Promise<ApiCmsRow[]>;
+    query(table: string, params?: QueryParams): Promise<_ApiCmsRow[]>;
 }
 
 // @public (undocumented)
@@ -83,15 +84,6 @@ export interface DatabaseConfig {
 }
 
 // @public (undocumented)
-export function fetchContent(cmsId: string, cmsPublicToken: string, tableId: string, params: QueryParams, useDraft: boolean, locale: string): Promise<ApiCmsRow_2[]>;
-
-// @public (undocumented)
-export function fetchCount(cmsId: string, cmsPublicToken: string, tableId: string, params: QueryParams, useDraft: boolean): Promise<number>;
-
-// @public (undocumented)
-export function fetchTables(cmsId: string, cmsPublicToken: string): Promise<ApiCmsTable_2[]>;
-
-// @public (undocumented)
 export class HttpError extends Error {
     constructor(status: number, message: string);
     // (undocumented)
@@ -123,11 +115,6 @@ export interface QueryParams {
 export function registerAll(loader?: {
     registerComponent: typeof registerComponent;
     registerGlobalContext: typeof registerGlobalContext;
-}): void;
-
-// @public (undocumented)
-export function registerAllCustomFunctions(loader?: {
-    registerFunction: any;
 }): void;
 
 // (No @packageDocumentation comment for this package)

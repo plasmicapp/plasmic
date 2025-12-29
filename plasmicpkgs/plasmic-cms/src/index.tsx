@@ -25,9 +25,6 @@ export function registerAll(loader?: {
   registerComponent: typeof registerComponent;
   registerGlobalContext: typeof registerGlobalContext;
 }) {
-  //const registerContext = loader?.registerContext ?? hostRegisterContext;
-  //registerContext(CmsDataProvider, cmsDataProviderMeta);
-
   const _registerComponent = <T extends React.ComponentType<any>>(
     Component: T,
     defaultMeta: ComponentMeta<React.ComponentProps<T>>
@@ -61,4 +58,3 @@ export function registerAll(loader?: {
 
 export * from "./api";
 export * from "./components";
-export * from "./custom-functions";

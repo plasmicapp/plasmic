@@ -41,6 +41,7 @@
     "@types/react": "^18.2.33"
   },
   "dependencies": {
+    "@plasmicpkgs/cms": "0.0.7",
     "dayjs": "^1.10.7"
   },
   "peerDependencies": {

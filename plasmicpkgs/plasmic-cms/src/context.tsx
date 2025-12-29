@@ -4,9 +4,12 @@ import {
   useDataEnv,
   useSelector,
 } from "@plasmicapp/host";
+import {
+  _ApiCmsRow as ApiCmsRow,
+  _ApiCmsTable as ApiCmsTable,
+} from "@plasmicpkgs/cms";
 import React from "react";
 import { DatabaseConfig } from "./api";
-import { ApiCmsRow, ApiCmsTable } from "./schema";
 
 const contextPrefix = "plasmicCms";
 const databaseContextKey = `${contextPrefix}Database`;
@@ -37,7 +40,7 @@ export function makeDatabaseCacheKey(config: DatabaseConfig | undefined) {
   if (!config) {
     return null;
   }
-  const { databaseToken, ...rest } = config;
+  const { databaseToken: _doNotExposeDatabaseToken, ...rest } = config;
   return JSON.stringify(rest);
 }
 
@@ -95,43 +98,6 @@ export function TableSchemaProvider({
       {children}
     </DataProvider>
   );
-}
-
-export function useQueryResults(table?: string) {
-  const env = useDataEnv();
-  const tables = useTables();
-
-  if (!env) {
-    return undefined;
-  }
-
-  if (table) {
-    return {
-      table,
-      rows: (env[mkQueryContextKey(table)] ?? []) as ApiCmsRow[],
-    };
-  }
-  if (!tables) {
-    return undefined;
-  }
-
-  const matchingKeys = getClosestMatchingKeys(env, collectionResultSuffix);
-  for (const key of matchingKeys) {
-    const inferredTable = tables.find(
-      (t) => mkQueryContextKey(t.identifier) === key
-    );
-    if (inferredTable) {
-      return {
-        table: inferredTable.identifier,
-        rows: (env[key] ?? []) as ApiCmsRow[],
-      };
-    }
-  }
-  return undefined;
-}
-
-function getClosestMatchingKeys(env: DataDict, suffix: string) {
-  return [...Object.keys(env).reverse()].filter((k) => k.endsWith(suffix));
 }
 
 function getClosestMatchingKeysBy(
