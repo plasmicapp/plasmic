@@ -3,43 +3,35 @@ import { CmsRow } from "@/wab/server/entities/Entities";
 import { makeApiDatabase } from "@/wab/server/routes/cmse";
 import { userDbMgr } from "@/wab/server/routes/util";
 import {
+  CmsRowCache,
+  CmsTableCache,
   denormalizeCmsData,
+  getRefIds,
   makeFieldMetaMap,
+  makeSelectionTree,
   normalizeCmsData,
   projectCmsData,
+  RootSelection,
 } from "@/wab/server/util/cms-util";
 import { publicCmsReadsContract } from "@/wab/shared/api/cms";
 import {
   ApiCmsTable,
   CmsDatabaseId,
-  CmsFieldMeta,
   CmsRowId,
+  CmsTableId,
   CmsTableSchema,
 } from "@/wab/shared/ApiSchema";
-import { ensure } from "@/wab/shared/common";
+import {
+  ensure,
+  multimap,
+  notNil,
+  setMultimap,
+  unexpected,
+} from "@/wab/shared/common";
 import { initServer } from "@ts-rest/express";
 import { NextFunction } from "express";
 import { Request, Response } from "express-serve-static-core";
 import { differenceBy } from "lodash";
-
-function toApiCmsRow(
-  row: CmsRow,
-  useDraft: boolean,
-  fieldMetaMap: Record<string, CmsFieldMeta>,
-  locale: string
-) {
-  return {
-    id: row.id,
-    createdAt: row.createdAt.toISOString(),
-    updatedAt: row.updatedAt.toISOString(),
-    identifier: row.identifier,
-    data: projectCmsData(
-      (useDraft ? row.draftData ?? row.data : row.data) ?? { "": {} },
-      fieldMetaMap,
-      locale
-    ),
-  };
-}
 
 const s = initServer();
 export const publicCmsReadsServer = s.router(publicCmsReadsContract, {
@@ -53,12 +45,95 @@ export const publicCmsReadsServer = s.router(publicCmsReadsContract, {
     const cmsQuery = query.q || {};
     const locale = fixLocale(query.locale ?? "");
     const useDraft = query.draft === "1";
-    const rows = await dbMgr.queryCmsRows(table.id, cmsQuery, { useDraft });
-    const metaMap = makeFieldMetaMap(table.schema, cmsQuery.fields);
+    const queryOpts = { useDraft };
+    const rows = await dbMgr.queryCmsRows(table.id, cmsQuery, queryOpts);
+
+    const rowCache = new CmsRowCache(dbMgr, queryOpts);
+    rowCache.fill(table.id, rows);
+
+    const tableCache = new CmsTableCache(dbMgr);
+    tableCache.fill(table);
+
+    // Defaults to all fields
+    const fieldPaths =
+      cmsQuery.fields && cmsQuery.fields.length > 0 ? cmsQuery.fields : ["*"];
+
+    // Build a selection tree that helps us figure out what refs to resolve
+    const selectionTree = await makeSelectionTree(
+      tableCache,
+      table,
+      fieldPaths
+    );
+
+    // Resolve refs recursively, storing them in rowCache
+    const resolveNested = async (
+      prevRowIds: Set<CmsRowId>,
+      selection: RootSelection
+    ): Promise<void> => {
+      // Get previous row data, only projecting selected ref fields
+      const refsOnlySelection: RootSelection = {
+        table: selection.table,
+        fields: new Map(
+          [...selection.fields.entries()].filter(
+            ([_fieldPath, fieldSelection]) => fieldSelection.type === "ref"
+          )
+        ),
+      };
+      const prevRowDatas = [...prevRowIds]
+        .map((rowId) => rowCache.getCached(selection.table.id, rowId))
+        .filter(notNil)
+        .map((row) => projectCmsData(row, locale, useDraft, refsOnlySelection));
+      if (prevRowDatas.length === 0) {
+        return;
+      }
+
+      // Collect referenced table/row ID pairs that need to be resolved
+      const nextRowIdsByTable: [CmsTableId, CmsRowId][] = [];
+      const nextRowIdsByFieldPath: [string, CmsRowId][] = [];
+      for (const [fieldPath, fieldSelection] of selection.fields.entries()) {
+        if (fieldSelection.type === "leaf") {
+          continue; // don't resolve leaf fields
+        }
+
+        prevRowDatas
+          .flatMap((rowData) => {
+            const val = rowData[fieldSelection.field.identifier];
+            return getRefIds(val, fieldSelection);
+          })
+          .forEach((id) => {
+            nextRowIdsByTable.push([fieldSelection.table.id, id]);
+            nextRowIdsByFieldPath.push([fieldPath, id]);
+          });
+      }
+
+      // Load referenced rows by table
+      for (const [tableId, rowIds] of multimap(nextRowIdsByTable)) {
+        await rowCache.load(tableId, rowIds);
+      }
+
+      // Resolve next level
+      for (const [fieldPath, rowIds] of setMultimap(nextRowIdsByFieldPath)) {
+        const refSelection = selection.fields.get(fieldPath);
+        if (refSelection?.type === "ref") {
+          await resolveNested(rowIds, refSelection);
+        } else {
+          unexpected();
+        }
+      }
+    };
+    await resolveNested(new Set(rows.map((row) => row.id)), selectionTree);
+
+    // Project data using the selection and rowCache
     return {
       status: 200,
       body: {
-        rows: rows.map((r) => toApiCmsRow(r, useDraft, metaMap, locale)),
+        rows: rows.map((row) => ({
+          id: row.id,
+          createdAt: row.createdAt.toISOString(),
+          updatedAt: row.updatedAt.toISOString(),
+          identifier: row.identifier,
+          data: projectCmsData(row, locale, useDraft, selectionTree, rowCache),
+        })),
       },
     };
   },
@@ -95,7 +170,6 @@ export async function upsertDatabaseTables(req: Request, res: Response) {
   const deleteUnspecified = req.body.deleteUnspecified as boolean;
   const tables: ApiCmsTable[] = req.body.tables;
   const mgr = userDbMgr(req);
-  const database = await mgr.getCmsDatabaseById(databaseId);
   const existingTables = await mgr.listCmsTables(databaseId);
   if (deleteUnspecified) {
     const toDrop = differenceBy(existingTables, tables, (t) => t.identifier);

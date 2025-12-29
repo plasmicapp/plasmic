@@ -1,5 +1,11 @@
+import { DbMgr } from "@/wab/server/db/DbMgr";
 import { CmsTable } from "@/wab/server/entities/Entities";
 import {
+  CmsTableCache,
+  LeafSelection,
+  RefSelection,
+  RootSelection,
+  makeSelectionTree,
   makeSqlCondition,
   traverseSchemaFields,
   typeToPgType,
@@ -8,6 +14,7 @@ import { BadRequestError } from "@/wab/shared/ApiErrors/errors";
 import {
   CmsFieldMeta,
   CmsMetaType,
+  CmsTableId,
   CmsTableSchema,
 } from "@/wab/shared/ApiSchema";
 import { ALLOWED_UNIQUE_TYPES } from "@/wab/shared/cms";
@@ -17,19 +24,21 @@ const createField = (
   type: any,
   fields?: CmsFieldMeta[],
   override?: Partial<CmsFieldMeta>
-): CmsFieldMeta => ({
-  identifier,
-  name: identifier,
-  type,
-  helperText: "",
-  required: false,
-  hidden: false,
-  localized: false,
-  unique: false,
-  defaultValueByLocale: {},
-  fields: fields || [],
-  ...override,
-});
+): CmsFieldMeta => {
+  return {
+    identifier,
+    name: identifier,
+    type,
+    helperText: "",
+    required: false,
+    hidden: false,
+    localized: false,
+    unique: false,
+    defaultValueByLocale: {},
+    fields: fields || [],
+    ...override,
+  };
+};
 
 describe("traverseSchemaFields", () => {
   it("should process all fields in a flat structure", () => {
@@ -171,18 +180,20 @@ describe("typeToPgType", () => {
   });
 });
 
-const TEST_TABLE = new CmsTable();
-TEST_TABLE.schema = {
-  fields: [
-    createField("textField", CmsMetaType.TEXT),
-    createField("numberField", CmsMetaType.NUMBER),
-    createField("booleanField", CmsMetaType.BOOLEAN),
-    createField("datetimeField", CmsMetaType.DATE_TIME),
-    createField("objectField", CmsMetaType.OBJECT, [
-      createField("enumField", CmsMetaType.ENUM),
-    ]),
-  ],
-} as CmsTableSchema;
+const TEST_TABLE = {
+  id: "test-table-id",
+  schema: {
+    fields: [
+      createField("textField", CmsMetaType.TEXT),
+      createField("numberField", CmsMetaType.NUMBER),
+      createField("booleanField", CmsMetaType.BOOLEAN),
+      createField("datetimeField", CmsMetaType.DATE_TIME),
+      createField("objectField", CmsMetaType.OBJECT, [
+        createField("enumField", CmsMetaType.ENUM),
+      ]),
+    ],
+  } as CmsTableSchema,
+} as any;
 
 describe("makeSqlCondition", () => {
   it("considers empty clauses as TRUE", () => {
@@ -581,3 +592,259 @@ describe("makeSqlCondition", () => {
     );
   });
 });
+
+describe("makeSelectionTree", () => {
+  const aNameField = createField("name", CmsMetaType.TEXT);
+  const animalTable: CmsTable = {
+    id: "animal-table-id",
+    identifier: "animal",
+    schema: {
+      fields: [aNameField],
+    },
+  } as Partial<CmsTable> as CmsTable;
+
+  const hNameField = createField("name", CmsMetaType.TEXT);
+  const hAgeField = createField("age", CmsMetaType.NUMBER, [], {
+    hidden: true,
+  });
+  const hFavAnimalField = createField("favoriteAnimal", CmsMetaType.REF, [], {
+    tableId: "animal-table-id" as CmsTableId,
+  });
+  const hBfField = createField("bestFriend", CmsMetaType.REF, [], {
+    tableId: "human-table-id" as CmsTableId,
+  });
+  const hFriendsRefField = createField("ref", CmsMetaType.REF, [], {
+    tableId: "human-table-id" as CmsTableId,
+  });
+  const hFriendsMetadataRelationshipField = createField(
+    "relationship",
+    CmsMetaType.TEXT
+  );
+  const hFriendsMetadataSharedAnimalRefField = createField(
+    "sharedAnimal",
+    CmsMetaType.REF,
+    [],
+    {
+      tableId: "animal-table-id" as CmsTableId,
+    }
+  );
+  const hFriendsMetadataField = createField("metadata", CmsMetaType.OBJECT, [
+    hFriendsMetadataRelationshipField,
+    hFriendsMetadataSharedAnimalRefField,
+  ]);
+  const hFriendsField = createField("friends", CmsMetaType.LIST, [
+    hFriendsRefField,
+    hFriendsMetadataField,
+  ]);
+  const humanTable: CmsTable = {
+    id: "human-table-id",
+    identifier: "human",
+    schema: {
+      fields: [hNameField, hAgeField, hFavAnimalField, hBfField, hFriendsField],
+    },
+  } as Partial<CmsTable> as CmsTable;
+
+  let tableCache: CmsTableCache;
+
+  beforeEach(() => {
+    // We'll fill all data beforehand, let any calls to DbMgr fail
+    tableCache = new CmsTableCache(undefined as unknown as DbMgr);
+    tableCache.fill(animalTable);
+    tableCache.fill(humanTable);
+  });
+
+  it("returns specified fields (including hidden)", async () => {
+    const result = await makeSelectionTree(tableCache, humanTable, [
+      "name",
+      "age",
+    ]);
+    expect(result.table).toBe(humanTable);
+    expectLeaf(result, "name", hNameField);
+    expectLeaf(result, "age", hAgeField);
+  });
+
+  it("returns all fields for *", async () => {
+    const result = await makeSelectionTree(tableCache, animalTable, ["*"]);
+    expect(result.table).toBe(animalTable);
+    expectLeaf(result, "name", aNameField);
+  });
+
+  it("returns all non-hidden fields for *", async () => {
+    const result = await makeSelectionTree(tableCache, humanTable, ["*"]);
+    expect(result.table).toBe(humanTable);
+    expectLeaf(result, "name", hNameField);
+    expect(getSelection(result, "age")).toBeUndefined();
+    expectLeaf(result, "favoriteAnimal", hFavAnimalField);
+    expectLeaf(result, "bestFriend", hBfField);
+    expectLeaf(result, "friends", hFriendsField);
+  });
+
+  it("returns all fields for * with hidden field", async () => {
+    const result = await makeSelectionTree(tableCache, humanTable, [
+      "*",
+      "age",
+    ]);
+    expect(result.table).toBe(humanTable);
+    expectLeaf(result, "name", hNameField);
+    expectLeaf(result, "age", hAgeField);
+    expectLeaf(result, "favoriteAnimal", hFavAnimalField);
+    expectLeaf(result, "bestFriend", hBfField);
+    expectLeaf(result, "friends", hFriendsField);
+  });
+
+  it("allows field made redundant with *", async () => {
+    const result = await makeSelectionTree(tableCache, animalTable, [
+      "*",
+      "name", // redundant
+    ]);
+    expect(result.table).toBe(animalTable);
+    expectLeaf(result, "name", aNameField);
+  });
+
+  it("allows redundant ref fields", async () => {
+    const result = await makeSelectionTree(tableCache, humanTable, [
+      "favoriteAnimal.name",
+      "favoriteAnimal", // redundant
+    ]);
+    expect(result.table).toBe(humanTable);
+    expectRef(result, "favoriteAnimal", animalTable, hFavAnimalField);
+    expectLeaf(result, "favoriteAnimal.name", aNameField);
+  });
+
+  it("allows redundant nested fields", async () => {
+    const result = await makeSelectionTree(tableCache, humanTable, [
+      "friends",
+      "friends.ref", // redundant
+      "friends.metadata", // redundant
+      "friends.metadata.relationship", // redundant
+      "friends.metadata.sharedAnimal", // redundant
+    ]);
+    expect(result.table).toBe(humanTable);
+    expectLeaf(result, "friends", hFriendsField);
+  });
+
+  it("returns only root nested field if subfield not selected", async () => {
+    const result = await makeSelectionTree(tableCache, humanTable, [
+      "friends.metadata.sharedAnimal",
+    ]);
+    expect(result.table).toBe(humanTable);
+    expectLeaf(result, "friends", hFriendsField);
+  });
+
+  it("returns all nested fields for *", async () => {
+    const result = await makeSelectionTree(tableCache, humanTable, [
+      "favoriteAnimal.*",
+      "bestFriend.*",
+      "friends.ref.*",
+      "friends.metadata.sharedAnimal.*",
+    ]);
+    expect(result.table).toBe(humanTable);
+
+    expectRef(result, "favoriteAnimal", animalTable, hFavAnimalField);
+    expectLeaf(result, "favoriteAnimal.name", aNameField);
+
+    expectRef(result, "bestFriend", humanTable, hBfField);
+    expectLeaf(result, "bestFriend.name", hNameField);
+    expectLeaf(result, "bestFriend.favoriteAnimal", hFavAnimalField);
+    expectLeaf(result, "bestFriend.bestFriend", hBfField);
+    expectLeaf(result, "bestFriend.friends", hFriendsField);
+
+    expectRef(result, "friends>ref", humanTable, hFriendsField, ["ref"]);
+    expectLeaf(result, "friends>ref.name", hNameField);
+    expectLeaf(result, "friends>ref.favoriteAnimal", hFavAnimalField);
+    expectLeaf(result, "friends>ref.bestFriend", hBfField);
+    expectLeaf(result, "friends>ref.friends", hFriendsField);
+
+    expectRef(
+      result,
+      "friends>metadata>sharedAnimal",
+      animalTable,
+      hFriendsField,
+      ["metadata", "sharedAnimal"]
+    );
+    expectLeaf(result, "friends>metadata>sharedAnimal.name", aNameField);
+  });
+
+  it("returns ref field nested in list->object", async () => {
+    const result = await makeSelectionTree(tableCache, humanTable, [
+      "friends.metadata.sharedAnimal.name",
+    ]);
+    expect(result.table).toBe(humanTable);
+  });
+
+  it("returns nested fields within maximum depth", async () => {
+    const result = await makeSelectionTree(tableCache, humanTable, [
+      "bestFriend.bestFriend.bestFriend.name",
+      "friends.ref.friends.ref.friends.ref.name",
+    ]);
+    expect(result.table).toBe(humanTable);
+    expectLeaf(result, "bestFriend.bestFriend.bestFriend.name", hNameField);
+    expectLeaf(result, "friends>ref.friends>ref.friends>ref.name", hNameField);
+  });
+
+  it("errors past maximum depth", async () => {
+    await expect(
+      makeSelectionTree(tableCache, humanTable, [
+        "bestFriend.bestFriend.bestFriend.bestFriend.name",
+      ])
+    ).toReject();
+    await expect(
+      makeSelectionTree(tableCache, humanTable, [
+        "friends.ref.friends.ref.friends.ref.friends.ref.name",
+      ])
+    ).toReject();
+  });
+
+  it("errors on invalid field name", async () => {
+    await expect(
+      makeSelectionTree(tableCache, humanTable, ["fakeFieldName"])
+    ).toReject();
+  });
+
+  it("errors on invalid field name in nested field", async () => {
+    await expect(
+      makeSelectionTree(tableCache, humanTable, ["friends.fakeNestedFieldName"])
+    ).toReject();
+  });
+});
+
+function expectLeaf(
+  root: RootSelection,
+  fieldPath: string,
+  field: CmsFieldMeta
+): void {
+  const leaf = getSelection(root, fieldPath);
+  expect(leaf).toEqual({ type: "leaf", field });
+}
+
+function expectRef(
+  root: RootSelection,
+  fieldPath: string,
+  table: CmsTable,
+  field: CmsFieldMeta,
+  nestedFieldPath: string[] = []
+): void {
+  const ref = getSelection(root, fieldPath);
+  expect(ref).toEqual({
+    type: "ref",
+    field,
+    nestedFieldPath,
+    table,
+    fields: expect.any(Map),
+  });
+}
+
+/**
+ * First splits by ".", then splits by ">".
+ * Use ">" to refer to nested refs.
+ */
+function getSelection(
+  root: RootSelection,
+  fieldPath: string
+): LeafSelection | RefSelection {
+  let cur: RootSelection | LeafSelection | RefSelection = root;
+  for (const field of fieldPath.split(".")) {
+    cur = (cur as RootSelection).fields.get(field.replaceAll(">", "."))!;
+  }
+  return cur as LeafSelection | RefSelection;
+}

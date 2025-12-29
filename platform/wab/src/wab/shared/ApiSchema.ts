@@ -1383,6 +1383,13 @@ export type CmsFieldMeta =
   | CmsRichtext
   | CmsEnum;
 
+/** CMS types that have nested fields. */
+export type CmsNestedFieldMeta = CmsList | CmsObject;
+
+export function isNestedFieldType(x: CmsFieldMeta): x is CmsNestedFieldMeta {
+  return x.type === CmsMetaType.LIST || x.type === CmsMetaType.OBJECT;
+}
+
 export type CmsTypeName = CmsFieldMeta["type"];
 
 export type CmsTypeMeta =

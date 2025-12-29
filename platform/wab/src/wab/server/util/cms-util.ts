@@ -1,17 +1,32 @@
-import { CmsTable } from "@/wab/server/entities/Entities";
-import { FilterClause, FilterCond } from "@/wab/shared/api/cms";
+import { DbMgr } from "@/wab/server/db/DbMgr";
+import { CmsRow, CmsTable } from "@/wab/server/entities/Entities";
 import { BadRequestError } from "@/wab/shared/ApiErrors/errors";
 import {
   CmsFieldMeta,
   CmsLocaleSpecificData,
   CmsMetaType,
+  CmsNestedFieldMeta,
+  CmsRef,
   CmsRowData,
+  CmsRowId,
+  CmsTableId,
   CmsTableSchema,
   CmsTypeName,
+  isNestedFieldType,
 } from "@/wab/shared/ApiSchema";
+import { FilterClause, FilterCond } from "@/wab/shared/api/cms";
 import { toVarName } from "@/wab/shared/codegen/util";
 import { Dict } from "@/wab/shared/collections";
-import { withoutNils } from "@/wab/shared/common";
+import {
+  ensure,
+  notNil,
+  pathGet,
+  pathSet,
+  unexpected,
+  withoutNils,
+  xDifference,
+} from "@/wab/shared/common";
+import L from "lodash";
 
 export function traverseSchemaFields(
   fields: CmsFieldMeta[],
@@ -30,42 +45,427 @@ export function traverseSchemaFields(
 
 export type FieldMetaMap = { [key: string]: CmsFieldMeta };
 
-export function makeFieldMetaMap(
-  schema: CmsTableSchema,
-  fields?: string[]
-): FieldMetaMap {
-  const fieldsToUse = schema.fields.filter((f) => {
-    if (fields && fields.length > 0) {
-      // projection specified, so follow it exactly
-      return fields.includes(f.identifier);
-    } else {
-      return !f.hidden;
-    }
-  });
+export function makeFieldMetaMap(schema: CmsTableSchema): FieldMetaMap {
+  const fieldsToUse = schema.fields.filter((f) => !f.hidden);
   return Object.fromEntries(fieldsToUse.map((f) => [f.identifier, f]));
 }
 
-export function projectCmsData(
-  data: CmsRowData,
-  fieldMetaMap: Record<string, CmsFieldMeta>,
-  locale: string
-): CmsLocaleSpecificData {
-  const dataDic = data[locale] ?? data[""];
-  return Object.fromEntries(
-    withoutNils(
-      Object.entries(fieldMetaMap).map(([key, meta]) => {
-        const val = dataDic?.[key] ?? data[""]?.[key];
-        if (
-          val === null ||
-          val === undefined ||
-          !conformsToType(val, meta.type)
-        ) {
-          return undefined;
-        }
-        return [key, val];
-      })
-    )
+const SELECTION_MAX_DEPTH = 3;
+
+/** A ref field with nested fields that references a table. */
+export interface RootSelection {
+  table: CmsTable;
+  /**
+   * Map from dot-separated field path to selection.
+   * - `LeafSelection` means the field is selected
+   * - `RefSelection` means the field AND nested ref fields are selected
+   */
+  fields: Map<string, LeafSelection | RefSelection>;
+}
+
+/** A normal field that does not have nested fields. */
+export interface LeafSelection {
+  type: "leaf";
+  field: CmsFieldMeta;
+}
+
+/** A ref field with nested fields that references a table. */
+export interface RefSelection {
+  type: "ref";
+  /** Root field of previous table to access ref. */
+  field: CmsRef | CmsNestedFieldMeta;
+  /** Nested field path to access ref. Empty if root is ref. */
+  nestedFieldPath: string[];
+  /** Table of ref. */
+  table: CmsTable;
+  /**
+   * Map from dot-separated field path to selection.
+   * - `LeafSelection` means the field is selected
+   * - `RefSelection` means the field AND nested ref fields are selected
+   */
+  fields: Map<string, LeafSelection | RefSelection>;
+}
+
+/**
+ * Builds a tree representing the selected fields.
+ *
+ * Throws BadRequestError on validation errors.
+ */
+export async function makeSelectionTree(
+  tableCache: CmsTableCache,
+  table: CmsTable,
+  fieldPaths: string[]
+): Promise<RootSelection> {
+  const partitionedPaths: PartitionedPath[] = [];
+  for (const fieldPath of fieldPaths) {
+    partitionedPaths.push(
+      await toPartitionedPath(tableCache, table, fieldPath)
+    );
+  }
+
+  return await makeSelectionTreeInternal(
+    tableCache,
+    table,
+    partitionedPaths.filter(notNil),
+    0
   );
+}
+
+/** Recursive function to build selection tree. */
+async function makeSelectionTreeInternal(
+  tableCache: CmsTableCache,
+  table: CmsTable,
+  partitionedPaths: PartitionedPath[],
+  depth: number
+): Promise<RootSelection> {
+  // For each partitioned path, group them either into result or refPaths.
+  const result = new Map<string, LeafSelection | RefSelection>();
+  const refPaths = new Map<
+    string,
+    {
+      refPartition: RefPartition;
+      paths: PartitionedPath[];
+    }
+  >();
+  for (const partitionedPath of partitionedPaths) {
+    const split = shiftPartitionedPath(partitionedPath);
+    if (!Array.isArray(split)) {
+      // If TerminalPartition, set a LeafSelection.
+      const terminalPartition = split;
+      const terminalFields =
+        terminalPartition === "*"
+          ? table.schema.fields.filter((f) => !f.hidden)
+          : [terminalPartition];
+      for (const field of terminalFields) {
+        result.set(field.identifier, { type: "leaf", field });
+      }
+    } else {
+      // If RefPartition, group all paths for that ref and recurse.
+      const [refPartition, restPartitions] = split;
+      let refPath = refPaths.get(refPartition.path);
+      if (!refPath) {
+        refPath = {
+          refPartition,
+          paths: [],
+        };
+        refPaths.set(refPartition.path, refPath);
+      }
+      refPath.paths.push(restPartitions);
+    }
+  }
+
+  // For each RefPartition, recurse and set a RefSelection.
+  for (const [path, { refPartition, paths }] of refPaths.entries()) {
+    const refSelection = await makeSelectionTreeInternal(
+      tableCache,
+      refPartition.table,
+      paths,
+      depth + 1
+    );
+    result.set(path, {
+      type: "ref",
+      field: refPartition.field,
+      nestedFieldPath: refPartition.nestedFieldPath,
+      ...refSelection,
+    });
+  }
+
+  return {
+    table,
+    fields: result,
+  };
+}
+
+type RefPartition = {
+  /** Used for grouping, e.g. "rootNestedField.nestedField.ref" */
+  path: string;
+  field: RefSelection["field"];
+  nestedFieldPath: RefSelection["nestedFieldPath"];
+  table: RefSelection["table"];
+};
+type TerminalPartition = "*" | CmsFieldMeta;
+type PartitionedPath = [...RefPartition[], TerminalPartition];
+
+function isRefPartition(
+  x: RefPartition | TerminalPartition
+): x is RefPartition {
+  return typeof x === "object" && "table" in x;
+}
+
+function shiftPartitionedPath(
+  x: PartitionedPath
+): TerminalPartition | [RefPartition, PartitionedPath] {
+  const [firstPartition, ...restPartitions] = x;
+  if (restPartitions.length === 0) {
+    return firstPartition as TerminalPartition;
+  } else {
+    return [firstPartition as RefPartition, restPartitions as PartitionedPath];
+  }
+}
+
+interface ToPartitionedPathContext {
+  tableCache: CmsTableCache;
+  fieldPath: string;
+  fieldIds: string[];
+}
+
+/**
+ * Partitions a field path by ref into an array of partitions.
+ *
+ * The tail is a TerminalPartition, either a "*" or a single CmsFieldMeta.
+ * It is preceded by 0 or more RefPartitions.
+ *
+ * Nested fields only return the root nested field unless a ref is found.
+ *
+ * Examples:
+ * - "name" => [name]
+ * - "ref" => [ref]
+ * - "ref.name" => [[ref], name]
+ * - "object.name" => [object]
+ * - "list.ref.object.name" => [[list, ref], object]
+ */
+export async function toPartitionedPath(
+  tableCache: CmsTableCache,
+  rootTable: CmsTable,
+  fieldPath: string
+): Promise<PartitionedPath> {
+  const refPartitions: RefPartition[] = [];
+  const fieldIds = fieldPath.split(".");
+  const ctx: ToPartitionedPathContext = {
+    tableCache,
+    fieldPath,
+    fieldIds,
+  };
+
+  let curTable = rootTable;
+  while (fieldIds.length > 0) {
+    const partition = await iterateUntilPartition(ctx, curTable);
+    if (isRefPartition(partition)) {
+      curTable = partition.table;
+      refPartitions.push(partition);
+      if (refPartitions.length > SELECTION_MAX_DEPTH) {
+        throw new BadRequestError(
+          `Validation error for "${fieldPath}": cannot select more than ${SELECTION_MAX_DEPTH} levels deep`
+        );
+      }
+    } else {
+      return [...refPartitions, partition];
+    }
+  }
+
+  // iterateUntilPartition should eventually return TerminalPartition or throw
+  unexpected();
+}
+
+/** Consumes fieldIds until next partition is found, or throw on error. */
+async function iterateUntilPartition(
+  ctx: ToPartitionedPathContext,
+  table: CmsTable
+): Promise<RefPartition | TerminalPartition> {
+  const { tableCache, fieldPath, fieldIds } = ctx;
+
+  const fieldId = ensure(fieldIds.shift(), "missing next fieldId");
+  if (fieldId === "*") {
+    if (fieldIds.length === 0) {
+      return "*";
+    } else {
+      throw new BadRequestError(
+        `Validation error for "${fieldPath}": cannot subfield "*"`
+      );
+    }
+  }
+
+  const fieldMeta = findFieldMetaOrThrow(ctx, table.schema, fieldId);
+
+  if (fieldIds.length === 0) {
+    return fieldMeta;
+  } else if (fieldMeta.type === CmsMetaType.REF) {
+    const refTable = await tableCache.get(fieldMeta.tableId);
+    return {
+      path: fieldId,
+      field: fieldMeta,
+      nestedFieldPath: [],
+      table: refTable,
+    };
+  } else if (isNestedFieldType(fieldMeta)) {
+    return iterateNestedUntilPartition(ctx, fieldMeta);
+  } else {
+    throw new BadRequestError(
+      `Validation error for "${fieldPath}": cannot subfield "${fieldId}"`
+    );
+  }
+}
+
+/** Consumes fieldIds until next partition in nested field is found, or throw on error. */
+async function iterateNestedUntilPartition(
+  ctx: ToPartitionedPathContext,
+  rootFieldMeta: CmsNestedFieldMeta
+): Promise<RefPartition | TerminalPartition> {
+  const { tableCache, fieldPath, fieldIds } = ctx;
+  const nestedFieldPath: string[] = [];
+
+  let curNestedField = rootFieldMeta;
+  while (fieldIds.length > 0) {
+    const fieldId = ensure(fieldIds.shift(), "missing next fieldId");
+    const fieldMeta = findFieldMetaOrThrow(ctx, curNestedField, fieldId);
+
+    if (fieldIds.length === 0) {
+      // no ref found and all subfields validated,
+      // return root nested field as terminal partition
+      return rootFieldMeta;
+    }
+
+    nestedFieldPath.push(fieldId);
+
+    if (fieldMeta.type === CmsMetaType.REF) {
+      return {
+        path: `${rootFieldMeta.identifier}.${nestedFieldPath.join(".")}`,
+        field: rootFieldMeta,
+        nestedFieldPath,
+        table: await tableCache.get(fieldMeta.tableId),
+      };
+    } else if (isNestedFieldType(fieldMeta)) {
+      curNestedField = fieldMeta;
+    } else {
+      throw new BadRequestError(
+        `Validation error for "${fieldPath}": cannot subfield "${fieldId}"`
+      );
+    }
+  }
+
+  unexpected();
+}
+
+function findFieldMetaOrThrow(
+  { fieldIds }: ToPartitionedPathContext,
+  schema: { fields: CmsFieldMeta[] },
+  fieldId: string
+) {
+  const fieldMeta = schema.fields.find((f) => f.identifier === fieldId);
+  if (!fieldMeta) {
+    throw new BadRequestError(
+      `Validation error for "${fieldIds}": cannot find "${fieldId}"`
+    );
+  }
+
+  return fieldMeta;
+}
+
+/**
+ * Projects a CMS row's data based on the table's selection.
+ * Replaces refs with nested row data if the row cache is present.
+ */
+export function projectCmsData(
+  row: CmsRow,
+  locale: string,
+  useDraft: boolean,
+  selection: RootSelection,
+  rowCache?: CmsRowCache
+): CmsLocaleSpecificData {
+  const result: CmsLocaleSpecificData = {};
+  const rowData = useDraft ? row.draftData ?? row.data : row.data;
+
+  for (const fieldSelection of selection.fields.values()) {
+    const field = fieldSelection.field;
+    const fieldValue: unknown =
+      rowData?.[locale][field.identifier] ?? rowData?.[""][field.identifier];
+
+    if (fieldValue === null || fieldValue === undefined) {
+      continue;
+    }
+
+    if (!conformsToType(fieldValue, fieldSelection.field.type)) {
+      continue;
+    }
+
+    result[field.identifier] = fieldValue;
+
+    // Replace refs with nested row data if the row cache is present.
+    // The row cache is needed to get nested rows.
+    if (rowCache && fieldSelection.type === "ref") {
+      // Get all refs and the rows that will replace them.
+      const refs = getRefPathsAndIds(fieldValue, fieldSelection);
+      const refsToReplace = refs
+        .map((ref) => ({
+          path: ref.path,
+          row: rowCache.getCached(fieldSelection.table.id, ref.value),
+        }))
+        .filter((x): x is { path: (string | number)[]; row: CmsRow } =>
+          notNil(x.row)
+        );
+
+      if (refsToReplace.length > 0) {
+        // Deep clone only if there is anything to replace.
+        // This avoids incorrect projections and circular references,
+        // since list/object field data could be shared via the row cache.
+        result[field.identifier] = L.cloneDeep(fieldValue);
+
+        for (const { path: refPath, row: refRow } of refsToReplace) {
+          pathSet(
+            result,
+            [field.identifier, ...refPath],
+            projectCmsData(refRow, locale, useDraft, fieldSelection, rowCache)
+          );
+        }
+      }
+    }
+  }
+
+  return result;
+}
+
+export function getRefIds(
+  value: unknown,
+  refSelection: RefSelection
+): CmsRowId[] {
+  return getRefPathsAndIds(value, refSelection).map((x) => x.value);
+}
+
+function getRefPathsAndIds(
+  value: unknown,
+  refSelection: RefSelection
+): { path: (string | number)[]; value: CmsRowId }[] {
+  return getNestedPathsAndValues(value, refSelection).filter(
+    (x): x is { path: (string | number)[]; value: CmsRowId } =>
+      typeof x.value === "string" && !!x.value
+  );
+}
+
+function getNestedPathsAndValues(
+  value: unknown,
+  refSelection: RefSelection
+): { path: (string | number)[]; value: unknown }[] {
+  switch (refSelection.field.type) {
+    case CmsMetaType.REF:
+      return [
+        {
+          path: [],
+          value,
+        },
+      ];
+    case CmsMetaType.OBJECT:
+      if (typeof value === "object" && value) {
+        return [
+          {
+            path: refSelection.nestedFieldPath,
+            value: pathGet(value, refSelection.nestedFieldPath),
+          },
+        ];
+      } else {
+        return [];
+      }
+    case CmsMetaType.LIST:
+      if (Array.isArray(value)) {
+        return value.map((el, index) => {
+          return {
+            path: [index, ...refSelection.nestedFieldPath],
+            value: pathGet(el, refSelection.nestedFieldPath),
+          };
+        });
+      } else {
+        return [];
+      }
+  }
 }
 
 export function normalizeCmsData(
@@ -367,5 +767,71 @@ function combineSql(clauses: string[], sep: string) {
     return clauses[0];
   } else {
     return clauses.map((c) => `(${c})`).join(sep);
+  }
+}
+
+export class CmsTableCache {
+  private cache = new Map<CmsTableId, CmsTable>();
+
+  constructor(private readonly dbMgr: Pick<DbMgr, "getCmsTableById">) {}
+
+  fill(table: CmsTable): void {
+    this.cache.set(table.id, table);
+  }
+
+  async get(tableId: CmsTableId): Promise<CmsTable> {
+    const cached = this.cache.get(tableId);
+    if (cached) {
+      return cached;
+    }
+
+    const table = await this.dbMgr.getCmsTableById(tableId);
+    this.fill(table);
+    return table;
+  }
+}
+
+export class CmsRowCache {
+  private cache = new Map<CmsTableId, Map<CmsRowId, CmsRow>>();
+
+  constructor(
+    private readonly dbMgr: Pick<DbMgr, "queryCmsRows">,
+    private readonly queryOpts: Parameters<DbMgr["queryCmsRows"]>[2]
+  ) {}
+
+  fill(tableId: CmsTableId, rows: CmsRow[]): void {
+    let cachedRows = this.cache.get(tableId);
+    if (!cachedRows) {
+      cachedRows = new Map();
+      this.cache.set(tableId, cachedRows);
+    }
+
+    for (const row of rows) {
+      cachedRows.set(row.id, row);
+    }
+  }
+
+  async load(tableId: CmsTableId, rowIds: Iterable<CmsRowId>): Promise<void> {
+    let cachedRows = this.cache.get(tableId);
+    if (!cachedRows) {
+      cachedRows = new Map();
+      this.cache.set(tableId, cachedRows);
+    }
+
+    const uncachedRowIds = xDifference(rowIds, cachedRows.keys());
+
+    if (uncachedRowIds.size > 0) {
+      const newRows = await this.dbMgr.queryCmsRows(
+        tableId,
+        { where: { _id: { $in: Array.from(uncachedRowIds) } } },
+        this.queryOpts
+      );
+
+      this.fill(tableId, newRows);
+    }
+  }
+
+  getCached(tableId: CmsTableId, rowId: CmsRowId): CmsRow | undefined {
+    return this.cache.get(tableId)?.get(rowId);
   }
 }

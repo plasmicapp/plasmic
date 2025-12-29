@@ -26,6 +26,7 @@ import {
   chunk as lodashChunk,
   get as lodashGet,
   range as lodashRange,
+  set as lodashSet,
   memoize,
   mergeWith,
   pickBy,
@@ -640,12 +641,27 @@ export const undefinedToDefault = <K, V>(
 export const zeroWidthSpace = "\u200B";
 
 export function multimap<K, V>(pairs: Iterable<[K, V]>): Map<K, V[]> {
-  const map = new Map();
+  const map = new Map<K, V[]>();
   for (const [k, v] of [...pairs]) {
-    if (!map.has(k)) {
-      map.set(k, []);
+    let arr = map.get(k);
+    if (!arr) {
+      arr = [];
+      map.set(k, arr);
     }
-    map.get(k).push(v);
+    arr.push(v);
+  }
+  return map;
+}
+
+export function setMultimap<K, V>(pairs: Iterable<[K, V]>): Map<K, Set<V>> {
+  const map = new Map<K, Set<V>>();
+  for (const [k, v] of [...pairs]) {
+    let set = map.get(k);
+    if (!set) {
+      set = new Set();
+      map.set(k, set);
+    }
+    set.add(v);
   }
   return map;
 }
@@ -2657,8 +2673,17 @@ export function partitionMap<K, V>(
   return partitioned.map((chunk) => new Map(chunk));
 }
 
-export function pathGet(x: any, path: string[]) {
+export function pathGet(x: any, path: (string | number)[]) {
   return path.length === 0 ? x : lodashGet(x, path);
+}
+
+export function pathSet<T extends {} = any>(
+  x: T,
+  path: (string | number)[],
+  value: unknown
+): T {
+  ensure(path.length > 0, "cannot set with empty path");
+  return lodashSet(x, path, value);
 }
 
 export function asyncTimeout(ms: number) {

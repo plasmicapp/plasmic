@@ -23,15 +23,29 @@ describe("CMS public routes", () => {
 
   let user: User;
   let database: CmsDatabase;
+
+  // FizzBuzz data
   let table: CmsTable;
   let dbRows: CmsRow[];
+
+  // Animal data
+  let animalTable: CmsTable;
+  let cat: CmsRow;
+  let dog: CmsRow;
+
+  // Human data
+  let humanTable: CmsTable;
+  let catLover: CmsRow;
+  let animalHater: CmsRow;
+  let dogLover1: CmsRow;
+  let dogLover2: CmsRow;
 
   beforeAll(async () => {
     const {
       dburi,
       con,
       cleanup: cleanupDatabase,
-    } = await createDatabase("unique_test");
+    } = await createDatabase("cms_public_routes");
     await con.transaction(async (em) => {
       const userAndProjects = await seedTestUserAndProjects(
         em,
@@ -55,8 +69,8 @@ describe("CMS public routes", () => {
         workspaceId: workspace.id,
       });
       table = await db.createCmsTable({
-        identifier: "tableIdentifier",
-        name: "tableName",
+        identifier: "fizzbuzz",
+        name: "Fizz Buzz",
         databaseId: database.id,
         schema: {
           fields: [
@@ -158,6 +172,224 @@ describe("CMS public routes", () => {
           };
         })
       );
+
+      // Create animal table
+      animalTable = await db.createCmsTable({
+        identifier: "animal",
+        name: "Animal",
+        databaseId: database.id,
+        schema: {
+          fields: [
+            {
+              identifier: "name",
+              name: "Name",
+              helperText: "",
+              required: false,
+              hidden: false,
+              localized: false,
+              unique: false,
+              type: CmsMetaType.TEXT,
+              defaultValueByLocale: {},
+            },
+          ],
+        },
+      });
+
+      // Create human table without fields since we have self-referential fields
+      humanTable = await db.createCmsTable({
+        identifier: "human",
+        name: "Human",
+        databaseId: database.id,
+        schema: {
+          fields: [],
+        },
+      });
+
+      // Set schema with self-referential fields
+      humanTable = await db.updateCmsTable(humanTable.id, {
+        schema: {
+          fields: [
+            {
+              identifier: "name",
+              name: "Name",
+              helperText: "",
+              required: false,
+              hidden: false,
+              localized: false,
+              unique: false,
+              type: CmsMetaType.TEXT,
+              defaultValueByLocale: {},
+            },
+            {
+              identifier: "age",
+              name: "Age",
+              helperText: "",
+              required: false,
+              hidden: true,
+              localized: false,
+              unique: false,
+              type: CmsMetaType.NUMBER,
+              defaultValueByLocale: {},
+            },
+            {
+              identifier: "favoriteAnimal",
+              name: "Favorite Animal",
+              helperText: "",
+              required: false,
+              hidden: false,
+              localized: false,
+              unique: false,
+              type: CmsMetaType.REF,
+              tableId: animalTable.id,
+              defaultValueByLocale: {},
+            },
+            {
+              identifier: "bestFriend",
+              name: "Best Friend",
+              helperText: "",
+              required: false,
+              hidden: false,
+              localized: false,
+              unique: false,
+              type: CmsMetaType.REF,
+              tableId: humanTable.id,
+              defaultValueByLocale: {},
+            },
+            {
+              identifier: "friends",
+              name: "Friends",
+              helperText: "",
+              required: false,
+              hidden: false,
+              localized: false,
+              unique: false,
+              type: CmsMetaType.LIST,
+              fields: [
+                {
+                  identifier: "ref",
+                  name: "Ref",
+                  helperText: "",
+                  required: false,
+                  hidden: false,
+                  localized: false,
+                  unique: false,
+                  type: CmsMetaType.REF,
+                  tableId: humanTable.id,
+                  defaultValueByLocale: {},
+                },
+              ],
+              defaultValueByLocale: {},
+            },
+          ],
+        },
+      });
+
+      // Create animals
+      cat = await db.createCmsRow(animalTable.id, {
+        identifier: "cat",
+        data: {
+          "": {
+            name: "Cat",
+          },
+        },
+      });
+
+      dog = await db.createCmsRow(animalTable.id, {
+        identifier: "dog",
+        data: {
+          "": {
+            name: "Dog",
+          },
+        },
+      });
+
+      // Create humans without self-referential data initially
+      catLover = await db.createCmsRow(humanTable.id, {
+        identifier: "h1",
+        data: {
+          "": {
+            name: "Cat Lover",
+            age: 50,
+            favoriteAnimal: cat.id,
+          },
+        },
+      });
+
+      animalHater = await db.createCmsRow(humanTable.id, {
+        identifier: "h2",
+        data: {
+          "": {
+            name: "Animal Hater",
+            age: 70,
+            // No favoriteAnimal
+          },
+        },
+      });
+
+      dogLover1 = await db.createCmsRow(humanTable.id, {
+        identifier: "h3",
+        data: {
+          "": {
+            name: "Dog Lover 1",
+            age: 11,
+            favoriteAnimal: dog.id,
+          },
+        },
+      });
+
+      dogLover2 = await db.createCmsRow(humanTable.id, {
+        identifier: "h4",
+        data: {
+          "": {
+            name: "Dog Lover 2",
+            age: 12,
+            favoriteAnimal: dog.id,
+          },
+        },
+      });
+
+      // Update humans to set self-referential data
+      await db.updateCmsRow(catLover.id, {
+        data: {
+          "": {
+            bestFriend: animalHater.id,
+            friends: [{ ref: animalHater.id }, { ref: catLover.id }],
+          },
+        },
+      });
+
+      await db.updateCmsRow(animalHater.id, {
+        data: {
+          "": {
+            bestFriend: dogLover1.id,
+            friends: [
+              { ref: catLover.id },
+              { ref: dogLover1.id },
+              { ref: dogLover2.id },
+              { ref: "non-existent-id" },
+            ],
+          },
+        },
+      });
+
+      await db.updateCmsRow(dogLover1.id, {
+        data: {
+          "": {
+            bestFriend: dogLover2.id,
+            friends: [{ ref: dogLover2.id }],
+          },
+        },
+      });
+
+      // Create cycle: dogLover2 -> dogLover1
+      await db.updateCmsRow(dogLover2.id, {
+        data: {
+          "": {
+            bestFriend: dogLover1.id,
+            friends: [{ ref: dogLover1.id }],
+          },
+        },
+      });
     });
 
     const { host, cleanup: cleanupBackend } = await createBackend(dburi);
@@ -415,6 +647,146 @@ describe("CMS public routes", () => {
         { num: 1, secretNum: 119 },
         { num: 2, secretNum: 118 },
         { num: 3, secretNum: 117 },
+      ]);
+    });
+
+    it("can return nested fields", async () => {
+      const res =
+        await publicApi.tsRestClient.publicCmsReadsContract.queryTable({
+          params: {
+            dbId: database.id,
+            tableIdentifier: humanTable.identifier,
+          },
+          query: {
+            q: JSON.stringify({
+              where: {
+                _id: { $in: [catLover.id, dogLover2.id] },
+              },
+              order: ["name"],
+              fields: [
+                "name",
+                "favoriteAnimal.name",
+                "bestFriend.name",
+                "bestFriend.age",
+                "friends.ref.name",
+
+                "friends.ref.favoriteAnimal.name",
+                "friends.ref.bestFriend.name",
+                "friends.ref.friends.ref.name",
+
+                "bestFriend.favoriteAnimal.name",
+                "bestFriend.bestFriend.name",
+                "bestFriend.friends.ref.name",
+
+                "bestFriend.bestFriend.favoriteAnimal.name",
+                "bestFriend.bestFriend.bestFriend.name",
+                "bestFriend.bestFriend.bestFriend.age",
+                "bestFriend.bestFriend.bestFriend.favoriteAnimal",
+                "bestFriend.bestFriend.bestFriend.bestFriend",
+                "bestFriend.bestFriend.bestFriend.friends",
+              ],
+            }),
+          },
+        });
+      const {
+        body: { rows },
+      } = expectStatus(res, 200);
+      expect(rows.map((r) => r.data)).toEqual([
+        {
+          name: "Cat Lover",
+          favoriteAnimal: {
+            name: "Cat",
+          },
+          bestFriend: {
+            name: "Animal Hater",
+            age: 70,
+            bestFriend: {
+              name: "Dog Lover 1",
+              favoriteAnimal: {
+                name: "Dog",
+              },
+              bestFriend: {
+                name: "Dog Lover 2",
+                age: 12,
+                favoriteAnimal: dog.id,
+                bestFriend: dogLover1.id,
+                friends: [{ ref: dogLover1.id }],
+              },
+            },
+            friends: [
+              { ref: { name: "Cat Lover" } },
+              { ref: { name: "Dog Lover 1" } },
+              { ref: { name: "Dog Lover 2" } },
+              { ref: "non-existent-id" },
+            ],
+          },
+          friends: [
+            {
+              ref: {
+                name: "Animal Hater",
+                bestFriend: {
+                  name: "Dog Lover 1",
+                },
+                friends: [
+                  { ref: { name: "Cat Lover" } },
+                  { ref: { name: "Dog Lover 1" } },
+                  { ref: { name: "Dog Lover 2" } },
+                  { ref: "non-existent-id" },
+                ],
+              },
+            },
+            {
+              ref: {
+                name: "Cat Lover",
+                favoriteAnimal: { name: "Cat" },
+                bestFriend: {
+                  name: "Animal Hater",
+                },
+                friends: [
+                  { ref: { name: "Animal Hater" } },
+                  { ref: { name: "Cat Lover" } },
+                ],
+              },
+            },
+          ],
+        },
+        {
+          name: "Dog Lover 2",
+          favoriteAnimal: {
+            name: "Dog",
+          },
+          bestFriend: {
+            name: "Dog Lover 1",
+            age: 11,
+            favoriteAnimal: {
+              name: "Dog",
+            },
+            bestFriend: {
+              name: "Dog Lover 2",
+              favoriteAnimal: {
+                name: "Dog",
+              },
+              bestFriend: {
+                name: "Dog Lover 1",
+                age: 11,
+                favoriteAnimal: dog.id,
+                bestFriend: dogLover2.id,
+                friends: [{ ref: dogLover2.id }],
+              },
+            },
+            friends: [{ ref: { name: "Dog Lover 2" } }],
+          },
+          friends: [
+            {
+              ref: {
+                name: "Dog Lover 1",
+                favoriteAnimal: { name: "Dog" },
+                bestFriend: { name: "Dog Lover 2" },
+                friends: [{ ref: { name: "Dog Lover 2" } }],
+              },
+            },
+          ],
+        },
       ]);
     });
 
@@ -712,6 +1084,33 @@ describe("CMS public routes", () => {
         },
       });
     });
+    it("responds with 400 if fields nesting is too deep", async () => {
+      const res =
+        await publicApi.tsRestClient.publicCmsReadsContract.queryTable({
+          params: {
+            dbId: database.id,
+            tableIdentifier: humanTable.identifier,
+          },
+          query: {
+            q: JSON.stringify({
+              where: {
+                _id: catLover.id,
+              },
+              fields: [
+                "bestFriend.bestFriend.bestFriend.bestFriend.bestFriend",
+              ],
+            }),
+          },
+        });
+      const {
+        body: { error },
+      } = expectStatus(res, 400);
+      expect(error).toMatchObject({
+        statusCode: 400,
+        message:
+          'Validation error for "bestFriend.bestFriend.bestFriend.bestFriend.bestFriend": cannot select more than 3 levels deep',
+      });
+    });
   });
 
   describe("getDatabase", () => {
@@ -727,10 +1126,24 @@ describe("CMS public routes", () => {
         name: "database",
         tables: [
           expect.objectContaining({
-            name: "tableName",
-            identifier: "tableIdentifier",
+            name: "Fizz Buzz",
+            identifier: "fizzbuzz",
             schema: {
               fields: expect.toBeArrayOfSize(4),
+            },
+          }),
+          expect.objectContaining({
+            name: "Animal",
+            identifier: "animal",
+            schema: {
+              fields: expect.toBeArrayOfSize(1),
+            },
+          }),
+          expect.objectContaining({
+            name: "Human",
+            identifier: "human",
+            schema: {
+              fields: expect.toBeArrayOfSize(5),
             },
           }),
         ],
