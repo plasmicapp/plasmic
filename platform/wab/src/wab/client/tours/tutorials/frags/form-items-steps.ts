@@ -35,7 +35,7 @@ Let's start by adding a "Contact Name" field.
       // cool down after the animation
       await sleep(150);
       // Let's try to zoom to fit the selection so that all the element is visible
-      ctx.studioCtx.tryZoomToFitSelection();
+      await ctx.studioCtx.tryZoomToFitSelection();
       // cool down after the animation
       await sleep(750);
     },

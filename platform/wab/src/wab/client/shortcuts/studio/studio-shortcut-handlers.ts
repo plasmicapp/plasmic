@@ -162,8 +162,8 @@ export function bindStudioShortcutHandlers(studioCtx: StudioCtx) {
         });
       },
       ZOOM_TO_SELECTION: async () => {
-        return studioCtx.changeUnsafe(() => {
-          studioCtx.tryZoomToFitSelection();
+        return studioCtx.changeUnsafe(async () => {
+          await studioCtx.tryZoomToFitSelection();
         });
       },
       FOCUS_FRAME: async () => {

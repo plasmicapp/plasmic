@@ -2227,7 +2227,7 @@ export class StudioCtx extends WithDbCtx {
         focusedViewSet
       );
       if (!skipZoomOnFocus) {
-        this.tryZoomToFitSelection();
+        await this.tryZoomToFitSelection();
       }
     } else {
       this.commentsCtx.closeCommentThreadDialog();
@@ -3896,7 +3896,7 @@ export class StudioCtx extends WithDbCtx {
     );
   }
 
-  tryZoomToFitSelection() {
+  async tryZoomToFitSelection() {
     const focusedFrame = this.focusedFrame();
     if (focusedFrame) {
       this.tryZoomToFitFrame(focusedFrame);
@@ -3907,6 +3907,10 @@ export class StudioCtx extends WithDbCtx {
     if (!vc) {
       return;
     }
+
+    // Trigger evaluation to ensure hidden elements are auto-shown
+    vc.scheduleSync({ eval: true, styles: false, asap: true });
+    await vc.awaitSync();
 
     const $focusedDom = vc.focusedDomElt();
     if (!$focusedDom?.length) {
