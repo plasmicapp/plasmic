@@ -5,6 +5,9 @@
 ```ts
 
 // @public (undocumented)
+export function _denormalizeData(data: any | null): any;
+
+// @public (undocumented)
 export function _ensure<T>(x: T | null | undefined, msg?: string): T;
 
 // @public (undocumented)

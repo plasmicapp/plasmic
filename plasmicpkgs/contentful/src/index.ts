@@ -21,5 +21,6 @@ export function registerContentful(loader?: { registerFunction: any }) {
 export { queryContentful };
 
 // Exports for @plasmicpkgs/plasmic-contentful
+export { denormalizeData as _denormalizeData } from "./query-contentful";
 export type { _Entry } from "./types";
 export { _ensure, _uniq } from "./utils";

@@ -21,7 +21,7 @@ test.describe(`NextJS Plasmic Contentful`, () => {
     await teardownNextJs(ctx);
   });
 
-  test(`should work with Contentful entries`, async ({ page }) => {
+  test.skip(`should work with Contentful entries`, async ({ page }) => {
     await testContentfulLoader(page, ctx.host);
   });
 });

@@ -64,4 +64,5 @@ export const fstPartyHostLessComponents = [
   "vanilla-cookieconsent",
   "wordpress",
   "strapi",
+  "contentful",
 ];

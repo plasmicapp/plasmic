@@ -41,7 +41,7 @@
     }
   ],
   "dependencies": {
-    "@plasmicpkgs/strapi": "0.0.2",
+    "@plasmicpkgs/strapi": "0.0.3",
     "change-case": "^4.1.2"
   },
   "devDependencies": {

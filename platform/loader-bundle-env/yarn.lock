@@ -1873,6 +1873,11 @@
   resolved "https://registry.yarnpkg.com/@plasmicpkgs/fetch/-/fetch-0.0.22.tgz#e8e9169599c49b61bfc0d071cba6dfb248938ae0"
   integrity sha512-X8x1ZZQKRcPcSvPRUdYYTXxQOaJKDzHc0erpfDEac4SsFyOYmBhT1+PNuiHbZF5anaCIMk415axeRJiU8brdMw==
 
+"@plasmicpkgs/contentful@^0.0.2":
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/contentful/-/contentful-0.0.2.tgz#284be1d00645cdc1c9249e640fa0835494dd28e8"
+  integrity sha512-qi404lRteAWC5ucQZt0DUMn57w6kbODzDwg4Yd42glIZHZi6FJoQWjziXzHYyNdLIsXfz1wYvo+q5U+WPGWLJA==
+
 "@plasmicpkgs/framer-motion@^0.0.230":
   version "0.0.230"
   resolved "https://registry.yarnpkg.com/@plasmicpkgs/framer-motion/-/framer-motion-0.0.230.tgz#ed047d6e4ff44f0f2e073e533937527b1f7ee088"

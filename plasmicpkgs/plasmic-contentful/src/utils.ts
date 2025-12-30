@@ -16,5 +16,3 @@ export const searchParameters = [
     label: "Greater than or equal ",
   },
 ];
-
-export const uniq = <T>(xs: Array<T>): T[] => Array.from(new Set(xs));
