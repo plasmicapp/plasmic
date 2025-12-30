@@ -1799,7 +1799,7 @@
   dependencies:
     antd "^4.19.5"
 
-"@plasmicpkgs/cms@0.0.8":
+"@plasmicpkgs/cms@0.0.8", "@plasmicpkgs/cms@^0.0.8":
   version "0.0.8"
   resolved "https://registry.yarnpkg.com/@plasmicpkgs/cms/-/cms-0.0.8.tgz#760b407ee64715394b1bc23e888fae947e89a3ea"
   integrity sha512-CEt+wRa2FAp/zcyRK1IG79mYVg+lhyEzyZ4RN4MWFV2LZ1FhcFptJIiJp3J0qeJn5Y5aKL57kqnVNHBxT6hq/g==

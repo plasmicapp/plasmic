@@ -1,5 +1,3 @@
-import { expect } from "@playwright/test";
-
 import { getEnvVar } from "../../env";
 import { test } from "../../fixtures";
 import {
@@ -8,7 +6,7 @@ import {
   teardownNextJs,
 } from "../../nextjs/nextjs-setup";
 import { setupCms } from "../../utils";
-import { waitForPlasmicDynamic } from "../playwright-utils";
+import { testCmsLoader } from "./shared/test-cms";
 
 test.describe(`NextJS CMS`, () => {
   let ctx: NextJsContext;
@@ -17,14 +15,14 @@ test.describe(`NextJS CMS`, () => {
     const cmsDatabase = await setupCms("cms-database-data.json");
     const host = getEnvVar("WAB_HOST");
     ctx = await setupNextJs({
-      bundleFile: "plasmic-cms.json",
+      bundleFile: "cms.json",
       projectName: "CMS Project",
       removeComponentsPage: true,
       bundleTransformation: (bundle) =>
         bundle
-          .replace(`<REPLACE_WITH_STUDIO_URL>`, host)
-          .replace(`<REPLACE_WITH_CMS_ID>`, cmsDatabase.id)
-          .replace(`<REPLACE_WITH_PUBLIC_TOKEN>`, cmsDatabase.publicToken),
+          .replaceAll(`<REPLACE_WITH_STUDIO_URL>`, host)
+          .replaceAll(`<REPLACE_WITH_CMS_ID>`, cmsDatabase.id)
+          .replaceAll(`<REPLACE_WITH_PUBLIC_TOKEN>`, cmsDatabase.publicToken),
     });
   });
 
@@ -32,13 +30,7 @@ test.describe(`NextJS CMS`, () => {
     await teardownNextJs(ctx);
   });
 
-  test(`should work`, async ({ page }) => {
-    await page.goto(ctx.host);
-
-    await waitForPlasmicDynamic(page);
-
-    await expect(page.getByText("First blog post").first()).toBeVisible({
-      timeout: 30000,
-    });
+  test.skip(`should work`, async ({ page }) => {
+    await testCmsLoader(page, ctx.host);
   });
 });

@@ -21,8 +21,12 @@ export function runCommand(
     output?: "inherit";
   } = {}
 ) {
-  if (!opts.dir) opts.dir = process.cwd();
-  if (!opts.env) opts.env = {};
+  if (!opts.dir) {
+    opts.dir = process.cwd();
+  }
+  if (!opts.env) {
+    opts.env = {};
+  }
   console.log("EXEC", command, opts);
   const result = execa.command(command, {
     cwd: opts.dir,
@@ -172,7 +176,7 @@ export async function setupCms(fileName: string) {
     JSON.stringify(data.table)
   );
 
-  const itens = await apiRequest(
+  await apiRequest(
     "POST",
     `/cms/databases/${cmsDatabase.id}/tables/${table.identifier}/rows?publish=1`,
     {
@@ -191,20 +195,17 @@ export async function waitUntil(
   const start = new Date().getTime();
   const maxTimeout = opts.maxTimeout ?? 300000;
   const timeout = opts.timeout ?? 1000;
-  return new Promise<void>(async (resolve, reject) => {
-    while (true) {
-      const now = new Date().getTime();
-      const ready = await cond();
-      if (ready) {
-        resolve();
-        return;
-      } else if (now >= start + maxTimeout) {
-        reject();
-        return;
-      }
-      await wait(timeout);
+
+  while (true) {
+    const now = new Date().getTime();
+    const ready = await cond();
+    if (ready) {
+      return;
+    } else if (now >= start + maxTimeout) {
+      throw new Error("Timeout exceeded");
     }
-  });
+    await wait(timeout);
+  }
 }
 
 export async function wait(timeMs: number) {
@@ -221,32 +222,29 @@ export async function waitUntilServerUp(
     process?: ExecaChildProcess;
   } = {}
 ) {
-  return new Promise<void>(async (resolve, reject) => {
-    let exitCode: number | null = null;
-    if (opts.process) {
-      // If the process already exit, then quit early
-      opts.process.on("exit", (code) => {
-        exitCode = code;
-      });
-    }
-    await waitUntil(async () => {
-      if (exitCode != null) {
-        return true;
-      }
-      try {
-        await fetch(url);
-        return true;
-      } catch (err) {
-        return false;
-      }
-    }, opts);
+  let exitCode: number | null = null;
+  if (opts.process) {
+    // If the process already exit, then quit early
+    opts.process.on("exit", (code) => {
+      exitCode = code;
+    });
+  }
 
-    if (exitCode == null) {
-      resolve();
-    } else {
-      reject(`Server already exit with code ${exitCode}`);
+  await waitUntil(async () => {
+    if (exitCode != null) {
+      return true;
     }
-  });
+    try {
+      await fetch(url);
+      return true;
+    } catch (err) {
+      return false;
+    }
+  }, opts);
+
+  if (exitCode != null) {
+    throw new Error(`Server already exit with code ${exitCode}`);
+  }
 }
 
 export async function waitUntilServerDown(

@@ -1,12 +1,17 @@
-/// <reference types="@types/jest" />
-import { getEnvVar } from "../env";
-import { runCypressTest } from "../test-utils";
-import { setupCms } from "../utils";
-import { NextJsContext, setupNextJs, teardownNextJs } from "./nextjs-setup";
+import { getEnvVar } from "../../env";
+import { test } from "../../fixtures";
+import {
+  NextJsContext,
+  setupNextJs,
+  teardownNextJs,
+} from "../../nextjs/nextjs-setup";
+import { setupCms } from "../../utils";
+import { testCmsLoader } from "./shared/test-cms";
 
-describe("Plasmic CMS", () => {
+test.describe(`NextJS Plasmic CMS`, () => {
   let ctx: NextJsContext;
-  beforeAll(async () => {
+
+  test.beforeAll(async () => {
     const cmsDatabase = await setupCms("cms-database-data.json");
     const host = getEnvVar("WAB_HOST");
     ctx = await setupNextJs({
@@ -20,15 +25,12 @@ describe("Plasmic CMS", () => {
           .replace(`<REPLACE_WITH_PUBLIC_TOKEN>`, cmsDatabase.publicToken),
     });
   });
-  afterAll(async () => {
+
+  test.afterAll(async () => {
     await teardownNextJs(ctx);
   });
 
-  test("it works", async () => {
-    await runCypressTest({
-      name: `plasmic-cms-nextjs-loader@latest-next@latest`,
-      spec: "./cypress/e2e/plasmic-cms.cy.ts",
-      baseUrl: ctx.host,
-    });
+  test(`should work`, async ({ page }) => {
+    await testCmsLoader(page, ctx.host);
   });
 });

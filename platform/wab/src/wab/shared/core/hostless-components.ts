@@ -65,4 +65,5 @@ export const fstPartyHostLessComponents = [
   "wordpress",
   "strapi",
   "contentful",
+  "cms",
 ];
