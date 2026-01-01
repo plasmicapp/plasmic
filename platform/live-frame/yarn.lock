@@ -98,6 +98,7 @@
   dependencies:
     "@plasmicapp/isomorphic-unfetch" "1.0.3"
 
+
 "@plasmicapp/auth-react@0.0.24":
   version "0.0.24"
   resolved "https://registry.yarnpkg.com/@plasmicapp/auth-react/-/auth-react-0.0.24.tgz#e41659ce17c205ceef08c80410f11fa8a1d7f9c2"
