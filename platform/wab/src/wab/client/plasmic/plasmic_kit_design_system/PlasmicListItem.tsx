@@ -1216,8 +1216,7 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicListItem__VariantsArgs;
     args?: PlasmicListItem__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & // Specify variants directly as props
-  Omit<PlasmicListItem__VariantsArgs, ReservedPropsType> &
+  } & Omit<PlasmicListItem__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
     // Specify args directly as props
     Omit<PlasmicListItem__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

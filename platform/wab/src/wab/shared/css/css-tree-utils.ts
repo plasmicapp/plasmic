@@ -21,6 +21,7 @@ import {
   parse,
   walk,
 } from "css-tree";
+import { regex } from "regex";
 /**
  * Splits a collection of CSS nodes by comma operators
  *
@@ -415,4 +416,62 @@ export function checkAllowedUnits(
   });
 
   return isValid;
+}
+
+/**
+ * Formats CSS dimension functions by adding spaces around operators and after commas.
+ */
+export function formatDimCssFunction(value: string): string {
+  if (!isDimCssFunction(value)) {
+    return value;
+  }
+
+  const operatorSpacingRegex = regex({
+    flags: "g",
+    disable: { n: true },
+  })`
+    # Match what comes BEFORE the operator (lookbehind):
+    # - A number with optional unit (e.g., 10px, 50%, 2)
+    # - OR a closing parenthesis
+    (?<=
+      \d+                 # One or more digits
+      (?:%|[a-z]+)?       # Optional unit (% or letters like px, em, etc.)
+      |                   # OR
+      \)                  # Closing parenthesis
+    )
+
+    # The operator itself (with optional whitespace around it):
+    \s*                   # Optional leading whitespace
+    ([+\-*\/])            # Capture the operator: +, -, *, /
+    \s*                   # Optional trailing whitespace
+
+    # Match what comes AFTER the operator (lookahead):
+    # - A number (possibly negative) with optional decimal and unit
+    # - OR a function name followed by opening paren
+    # - OR an opening parenthesis
+    (?=
+      -?                  # Optional negative sign
+      \d*\.?\d+           # Number (with optional decimal)
+      (?:%|[a-z]+)?       # Optional unit
+      |                   # OR
+      [a-z]+\(            # Function name + opening paren (e.g., min(, calc()
+      |                   # OR
+      \(                  # Opening parenthesis (for grouping)
+    )
+  `;
+
+  return (
+    value
+      // Normalize all whitespace to single spaces first (e.g., "100%  -  20px" => "100% - 20px")
+      .replace(/\s+/g, " ")
+      // Add spaces around operators only between numbers/functions (e.g., "100%-20px" => "100% - 20px")
+      .replace(operatorSpacingRegex, " $1 ")
+      // Add space after commas (e.g., "min(10px,20px)" => "min(10px, 20px)")
+      .replace(/,(\S)/g, ", $1")
+      // Remove spaces after opening parentheses (e.g., "calc( 100%" => "calc(100%")
+      .replace(/\( /g, "(")
+      // Remove spaces before closing parentheses (e.g., "100% )" => "100%)")
+      .replace(/ \)/g, ")")
+      .trim()
+  );
 }

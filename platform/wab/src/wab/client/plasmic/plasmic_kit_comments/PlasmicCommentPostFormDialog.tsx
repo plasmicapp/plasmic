@@ -147,8 +147,7 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicCommentPostFormDialog__VariantsArgs;
     args?: PlasmicCommentPostFormDialog__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & // Specify variants directly as props
-  Omit<PlasmicCommentPostFormDialog__VariantsArgs, ReservedPropsType> &
+  } & Omit<PlasmicCommentPostFormDialog__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
     // Specify args directly as props
     Omit<PlasmicCommentPostFormDialog__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

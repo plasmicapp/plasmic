@@ -169,8 +169,7 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicAddCommentMarker__VariantsArgs;
     args?: PlasmicAddCommentMarker__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & // Specify variants directly as props
-  Omit<PlasmicAddCommentMarker__VariantsArgs, ReservedPropsType> &
+  } & Omit<PlasmicAddCommentMarker__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
     // Specify args directly as props
     Omit<PlasmicAddCommentMarker__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

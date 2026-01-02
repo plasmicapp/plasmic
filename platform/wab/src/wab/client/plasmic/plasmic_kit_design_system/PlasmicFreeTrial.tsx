@@ -296,8 +296,7 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicFreeTrial__VariantsArgs;
     args?: PlasmicFreeTrial__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & // Specify variants directly as props
-  Omit<PlasmicFreeTrial__VariantsArgs, ReservedPropsType> &
+  } & Omit<PlasmicFreeTrial__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
     // Specify args directly as props
     Omit<PlasmicFreeTrial__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

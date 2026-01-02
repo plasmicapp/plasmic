@@ -129,8 +129,7 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicDropdownOverlay__VariantsArgs;
     args?: PlasmicDropdownOverlay__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & // Specify variants directly as props
-  Omit<PlasmicDropdownOverlay__VariantsArgs, ReservedPropsType> &
+  } & Omit<PlasmicDropdownOverlay__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
     // Specify args directly as props
     Omit<PlasmicDropdownOverlay__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

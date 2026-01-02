@@ -273,8 +273,7 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicPopover__VariantsArgs;
     args?: PlasmicPopover__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & // Specify variants directly as props
-  Omit<PlasmicPopover__VariantsArgs, ReservedPropsType> &
+  } & Omit<PlasmicPopover__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
     // Specify args directly as props
     Omit<PlasmicPopover__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

@@ -225,7 +225,7 @@ export function isLengthOrPercentage(
 export const DIM_CSS_FUNCTIONS = ["calc", "min", "max", "clamp"] as const;
 
 const DIM_CSS_FUNCTIONS_REG = new RegExp(
-  `^(${DIM_CSS_FUNCTIONS.join("|")})\\s*\\(`,
+  `^(${DIM_CSS_FUNCTIONS.join("|")})\\(`,
   "i"
 );
 

@@ -119,8 +119,7 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicPanelDivider__VariantsArgs;
     args?: PlasmicPanelDivider__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & // Specify variants directly as props
-  Omit<PlasmicPanelDivider__VariantsArgs, ReservedPropsType> &
+  } & Omit<PlasmicPanelDivider__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
     // Specify args directly as props
     Omit<PlasmicPanelDivider__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

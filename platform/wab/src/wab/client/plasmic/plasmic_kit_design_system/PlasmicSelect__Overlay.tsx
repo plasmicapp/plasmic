@@ -317,8 +317,7 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicSelect__Overlay__VariantsArgs;
     args?: PlasmicSelect__Overlay__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & // Specify variants directly as props
-  Omit<PlasmicSelect__Overlay__VariantsArgs, ReservedPropsType> &
+  } & Omit<PlasmicSelect__Overlay__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
     // Specify args directly as props
     Omit<PlasmicSelect__Overlay__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

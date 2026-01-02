@@ -141,8 +141,7 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicThreadComments__VariantsArgs;
     args?: PlasmicThreadComments__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & // Specify variants directly as props
-  Omit<PlasmicThreadComments__VariantsArgs, ReservedPropsType> &
+  } & Omit<PlasmicThreadComments__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
     // Specify args directly as props
     Omit<PlasmicThreadComments__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

@@ -202,8 +202,7 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicCopilotLikeDislike__VariantsArgs;
     args?: PlasmicCopilotLikeDislike__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & // Specify variants directly as props
-  Omit<PlasmicCopilotLikeDislike__VariantsArgs, ReservedPropsType> &
+  } & Omit<PlasmicCopilotLikeDislike__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
     // Specify args directly as props
     Omit<PlasmicCopilotLikeDislike__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

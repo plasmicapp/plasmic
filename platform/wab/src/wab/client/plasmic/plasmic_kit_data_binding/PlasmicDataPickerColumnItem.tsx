@@ -604,8 +604,7 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicDataPickerColumnItem__VariantsArgs;
     args?: PlasmicDataPickerColumnItem__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & // Specify variants directly as props
-  Omit<PlasmicDataPickerColumnItem__VariantsArgs, ReservedPropsType> &
+  } & Omit<PlasmicDataPickerColumnItem__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
     // Specify args directly as props
     Omit<PlasmicDataPickerColumnItem__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

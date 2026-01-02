@@ -734,8 +734,7 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicTextbox__VariantsArgs;
     args?: PlasmicTextbox__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & // Specify variants directly as props
-  Omit<PlasmicTextbox__VariantsArgs, ReservedPropsType> &
+  } & Omit<PlasmicTextbox__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
     // Specify args directly as props
     Omit<PlasmicTextbox__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

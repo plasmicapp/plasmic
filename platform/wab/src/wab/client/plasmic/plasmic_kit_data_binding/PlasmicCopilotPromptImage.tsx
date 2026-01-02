@@ -173,8 +173,7 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicCopilotPromptImage__VariantsArgs;
     args?: PlasmicCopilotPromptImage__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & // Specify variants directly as props
-  Omit<PlasmicCopilotPromptImage__VariantsArgs, ReservedPropsType> &
+  } & Omit<PlasmicCopilotPromptImage__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
     // Specify args directly as props
     Omit<PlasmicCopilotPromptImage__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

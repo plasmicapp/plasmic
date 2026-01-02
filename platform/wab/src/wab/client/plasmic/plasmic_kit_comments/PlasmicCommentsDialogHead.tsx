@@ -261,8 +261,7 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicCommentsDialogHead__VariantsArgs;
     args?: PlasmicCommentsDialogHead__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & // Specify variants directly as props
-  Omit<PlasmicCommentsDialogHead__VariantsArgs, ReservedPropsType> &
+  } & Omit<PlasmicCommentsDialogHead__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
     // Specify args directly as props
     Omit<PlasmicCommentsDialogHead__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

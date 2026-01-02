@@ -216,8 +216,7 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicCommentsHeader__VariantsArgs;
     args?: PlasmicCommentsHeader__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & // Specify variants directly as props
-  Omit<PlasmicCommentsHeader__VariantsArgs, ReservedPropsType> &
+  } & Omit<PlasmicCommentsHeader__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
     // Specify args directly as props
     Omit<PlasmicCommentsHeader__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

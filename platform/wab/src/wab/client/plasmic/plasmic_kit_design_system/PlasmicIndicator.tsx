@@ -165,8 +165,7 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicIndicator__VariantsArgs;
     args?: PlasmicIndicator__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & // Specify variants directly as props
-  Omit<PlasmicIndicator__VariantsArgs, ReservedPropsType> &
+  } & Omit<PlasmicIndicator__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
     // Specify args directly as props
     Omit<PlasmicIndicator__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

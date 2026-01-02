@@ -53,6 +53,7 @@ import {
 } from "@/wab/shared/css-size";
 import {
   checkAllowedUnits,
+  formatDimCssFunction,
   validateDimCssFunction,
 } from "@/wab/shared/css/css-tree-utils";
 import { isDimCssFunction, LengthUnit } from "@/wab/shared/css/types";
@@ -1081,8 +1082,9 @@ function useDimValue(opts: DimValueOpts) {
 
     const newValues = shorthand ? css.parseCssShorthand(val) : [val];
     for (const newValue of newValues) {
-      if (allowFunctions && isDimCssFunction(newValue)) {
-        const result = validateDimCssFunction(newValue, allowedUnits);
+      const formattedValue = formatDimCssFunction(newValue);
+      if (allowFunctions && isDimCssFunction(formattedValue)) {
+        const result = validateDimCssFunction(formattedValue, allowedUnits);
         if (!result.valid) {
           notification.error({
             message: `Invalid CSS function "${newValue}"`,
@@ -1143,6 +1145,10 @@ function useDimValue(opts: DimValueOpts) {
     }
   }
 
+  const formatFunctionOrRoundValue = (val: string) => {
+    return isDimCssFunction(val) ? formatDimCssFunction(val) : roundValue(val);
+  };
+
   function showUnitError(newValue: string) {
     notification.error({
       message: `Invalid value "${newValue}"`,
@@ -1165,10 +1171,12 @@ function useDimValue(opts: DimValueOpts) {
       newValue = customTransform(newValue);
     } else if (shorthand) {
       newValue = css.showCssShorthand(
-        css.parseCssShorthand(newValue).map((val) => roundValue(val))
+        css
+          .parseCssShorthand(newValue)
+          .map((val) => formatFunctionOrRoundValue(val))
       );
     } else {
-      newValue = roundValue(newValue);
+      newValue = formatFunctionOrRoundValue(newValue);
     }
 
     onChange(newValue, type);
