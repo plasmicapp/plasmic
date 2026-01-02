@@ -242,7 +242,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicCommentsTab__VariantsArgs;
     args?: PlasmicCommentsTab__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicCommentsTab__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicCommentsTab__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicCommentsTab__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

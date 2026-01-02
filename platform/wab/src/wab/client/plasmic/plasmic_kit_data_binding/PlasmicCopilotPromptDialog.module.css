@@ -111,7 +111,7 @@
 .svgstate_historyEmpty__yiwDtWeNsL {
   color: #1b1b18;
 }
-.svg__uadiG {
+.svg___4PfJx {
   display: flex;
   position: relative;
   object-fit: cover;
@@ -128,7 +128,7 @@
   width: 24px;
   height: 24px;
 }
-.svg__b2OKi {
+.svg__iLFo {
   display: flex;
   position: relative;
   object-fit: cover;
@@ -275,13 +275,13 @@
 .modelProviderOverrideInput:global(.__wab_instance) {
   display: none;
 }
-.modelProviderOverrideInputwithAdminOverrides:global(.__wab_instance) {
+.modelProviderOverrideInputwithAdminOverrides_type_ui:global(.__wab_instance) {
   display: flex;
 }
 .systemPromptInput:global(.__wab_instance) {
   display: none;
 }
-.systemPromptInputwithAdminOverrides:global(.__wab_instance) {
+.systemPromptInputwithAdminOverrides_type_ui:global(.__wab_instance) {
   display: flex;
 }
 .promptInput:global(.__wab_instance) {

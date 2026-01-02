@@ -197,7 +197,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicDialog__VariantsArgs;
     args?: PlasmicDialog__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicDialog__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicDialog__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicDialog__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

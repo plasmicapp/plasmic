@@ -176,7 +176,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicReactionButton__VariantsArgs;
     args?: PlasmicReactionButton__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicReactionButton__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicReactionButton__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicReactionButton__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

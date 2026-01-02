@@ -27,6 +27,7 @@
   width: 100%;
   height: auto;
   max-width: 800px;
+  font-size: 14px;
   align-items: center;
   justify-content: space-between;
   min-width: 0;
@@ -36,7 +37,7 @@
 .filterButton:global(.__wab_instance) {
   max-width: 100%;
 }
-.svg__tgBah {
+.svg__dbajD {
   display: flex;
   position: relative;
   object-fit: cover;
@@ -54,7 +55,7 @@
   position: relative;
   align-self: flex-end;
 }
-.svg__curRa {
+.svg__srMe {
   display: flex;
   position: relative;
   object-fit: cover;
@@ -66,7 +67,7 @@
   width: 16px;
   height: 16px;
 }
-.svg__nR7Hh {
+.svg__x53AV {
   display: flex;
   position: relative;
   object-fit: cover;

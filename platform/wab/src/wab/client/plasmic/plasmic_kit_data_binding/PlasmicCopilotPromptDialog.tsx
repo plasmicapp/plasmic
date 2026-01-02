@@ -675,6 +675,12 @@ function PlasmicCopilotPromptDialog__RenderFunc(props: {
                         "withAdminOverrides",
                         "withAdminOverrides"
                       ),
+                    [sty.modelProviderOverrideInputwithAdminOverrides_type_ui]:
+                      hasVariant(
+                        $state,
+                        "withAdminOverrides",
+                        "withAdminOverrides"
+                      ) && hasVariant($state, "type", "ui"),
                   }
                 )}
                 isLoading={
@@ -715,6 +721,12 @@ function PlasmicCopilotPromptDialog__RenderFunc(props: {
                     "withAdminOverrides",
                     "withAdminOverrides"
                   ),
+                  [sty.systemPromptInputwithAdminOverrides_type_ui]:
+                    hasVariant(
+                      $state,
+                      "withAdminOverrides",
+                      "withAdminOverrides"
+                    ) && hasVariant($state, "type", "ui"),
                 })}
                 isLoading={
                   hasVariant($state, "state", "loading") ? true : undefined
@@ -1008,7 +1020,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicCopilotPromptDialog__VariantsArgs;
     args?: PlasmicCopilotPromptDialog__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicCopilotPromptDialog__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicCopilotPromptDialog__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicCopilotPromptDialog__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

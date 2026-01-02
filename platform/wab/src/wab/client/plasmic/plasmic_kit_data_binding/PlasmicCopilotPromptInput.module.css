@@ -19,7 +19,7 @@
   flex-direction: column;
   position: relative;
   width: 100%;
-  background: var(--token-iCBCh1BQyu-W);
+  background: none;
   min-width: 0;
   border-radius: 4px;
   border: 1px solid var(--token-sBh7BFhgAybb);
@@ -73,7 +73,7 @@
   width: 32px;
   height: 32px;
 }
-.svg__nEvvu {
+.svg__ns3Py {
   display: flex;
   position: relative;
   object-fit: cover;
@@ -103,7 +103,7 @@
 .root:focus-within .svg__qv73J {
   outline: none;
 }
-.svg__d3Wga {
+.svg__pjwG1 {
   display: flex;
   position: relative;
   object-fit: cover;

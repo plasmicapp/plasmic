@@ -190,7 +190,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicMarkdownHintRow__VariantsArgs;
     args?: PlasmicMarkdownHintRow__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicMarkdownHintRow__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicMarkdownHintRow__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicMarkdownHintRow__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

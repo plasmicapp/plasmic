@@ -90,7 +90,7 @@ const CommentPostForm = observer(function CommentPostForm(
             props: {
               id: inputElementId,
               rows: 5,
-              type: "soft",
+              autoResize: true,
               "data-test-id": "comment-post-text-area",
             },
           },

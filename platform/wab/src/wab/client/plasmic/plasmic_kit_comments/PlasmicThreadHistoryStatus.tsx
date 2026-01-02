@@ -223,7 +223,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicThreadHistoryStatus__VariantsArgs;
     args?: PlasmicThreadHistoryStatus__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicThreadHistoryStatus__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicThreadHistoryStatus__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicThreadHistoryStatus__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

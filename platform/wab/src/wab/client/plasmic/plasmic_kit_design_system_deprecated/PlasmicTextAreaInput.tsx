@@ -16,6 +16,7 @@ import * as React from "react";
 import {
   Flex as Flex__,
   MultiChoiceArg,
+  SingleBooleanChoiceArg,
   SingleChoiceArg,
   StrictProps,
   classNames,
@@ -47,17 +48,20 @@ export type PlasmicTextAreaInput__VariantMembers = {
   type: "soft" | "plain" | "minimal";
   flat: "top" | "right" | "bottom" | "left";
   padded: "left" | "right";
+  autoResize: "autoResize";
 };
 export type PlasmicTextAreaInput__VariantsArgs = {
   type?: SingleChoiceArg<"soft" | "plain" | "minimal">;
   flat?: MultiChoiceArg<"top" | "right" | "bottom" | "left">;
   padded?: MultiChoiceArg<"left" | "right">;
+  autoResize?: SingleBooleanChoiceArg<"autoResize">;
 };
 type VariantPropType = keyof PlasmicTextAreaInput__VariantsArgs;
 export const PlasmicTextAreaInput__VariantProps = new Array<VariantPropType>(
   "type",
   "flat",
-  "padded"
+  "padded",
+  "autoResize"
 );
 
 export type PlasmicTextAreaInput__ArgsType = {
@@ -114,6 +118,7 @@ export interface DefaultTextAreaInputProps {
   type?: SingleChoiceArg<"soft" | "plain" | "minimal">;
   flat?: MultiChoiceArg<"top" | "right" | "bottom" | "left">;
   padded?: MultiChoiceArg<"left" | "right">;
+  autoResize?: SingleBooleanChoiceArg<"autoResize">;
   className?: string;
 }
 
@@ -178,6 +183,12 @@ function PlasmicTextAreaInput__RenderFunc(props: {
         variableType: "variant",
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.padded,
       },
+      {
+        path: "autoResize",
+        type: "private",
+        variableType: "variant",
+        initFunc: ({ $props, $state, $queries, $ctx }) => $props.autoResize,
+      },
     ],
     [$props, $ctx, $refs]
   );
@@ -214,7 +225,9 @@ function PlasmicTextAreaInput__RenderFunc(props: {
     const child$Props = {
       "aria-label": args.ariaLabel,
       autoFocus: args.autoFocus,
-      autoResize: hasVariant($state, "type", "minimal") ? true : undefined,
+      autoResize: hasVariant($state, "autoResize", "autoResize")
+        ? true
+        : undefined,
       className: classNames(
         "__wab_instance",
         projectcss.root_reset,
@@ -223,6 +236,11 @@ function PlasmicTextAreaInput__RenderFunc(props: {
         styleTokensClassNames,
         sty.ariaTextArea,
         {
+          [sty.ariaTextAreaautoResize]: hasVariant(
+            $state,
+            "autoResize",
+            "autoResize"
+          ),
           [sty.ariaTextAreaflat_bottom]: hasVariant($state, "flat", "bottom"),
           [sty.ariaTextAreaflat_left]: hasVariant($state, "flat", "left"),
           [sty.ariaTextAreaflat_right]: hasVariant($state, "flat", "right"),
@@ -296,7 +314,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicTextAreaInput__VariantsArgs;
     args?: PlasmicTextAreaInput__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicTextAreaInput__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicTextAreaInput__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicTextAreaInput__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

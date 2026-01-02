@@ -190,7 +190,7 @@ function PlasmicCopilotPromptInput__RenderFunc(props: {
         <TextAreaInput
           data-plasmic-name={"textAreaInput"}
           data-plasmic-override={overrides.textAreaInput}
-          autoFocus={true}
+          autoResize={true}
           className={classNames("__wab_instance", sty.textAreaInput, {
             [sty.textAreaInputisLoading]: hasVariant(
               $state,
@@ -211,7 +211,6 @@ function PlasmicCopilotPromptInput__RenderFunc(props: {
           disabled={
             hasVariant($state, "isLoading", "isLoading") ? true : undefined
           }
-          flat={[]}
           onChange={async (...eventArgs: any) => {
             generateStateOnChangeProp($state, ["textAreaInput", "value"]).apply(
               null,
@@ -226,7 +225,19 @@ function PlasmicCopilotPromptInput__RenderFunc(props: {
               return;
             }
           }}
-          placeholder={args.placeholder}
+          placeholder={(() => {
+            try {
+              return $props.placeholder;
+            } catch (e) {
+              if (
+                e instanceof TypeError ||
+                e?.plasmicType === "PlasmicUndefinedDataError"
+              ) {
+                return undefined;
+              }
+              throw e;
+            }
+          })()}
           type={"minimal"}
         />
 
