@@ -319,7 +319,7 @@ export function validateDimCssFunction(
       case "Percentage":
       case "Number": {
         const dim = extractDimensionFromNode(node);
-        if (allowedUnits && !allowedUnits.includes(dim.unit)) {
+        if (allowedUnits && dim.unit && !allowedUnits.includes(dim.unit)) {
           error = `The unit '${
             dim.unit
           }' isn't supported here. Please use one of: ${allowedUnits.join(

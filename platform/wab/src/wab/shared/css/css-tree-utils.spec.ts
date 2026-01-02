@@ -1,4 +1,7 @@
-import { checkAllowedUnits } from "@/wab/shared/css/css-tree-utils";
+import {
+  checkAllowedUnits,
+  validateDimCssFunction,
+} from "@/wab/shared/css/css-tree-utils";
 import { LengthUnit } from "@/wab/shared/css/types";
 
 describe("checkAllowedUnits", () => {
@@ -73,5 +76,65 @@ describe("checkAllowedUnits", () => {
 
   it("should handle empty allowed units array", () => {
     expect(checkAllowedUnits("10px", [] as LengthUnit[])).toBe(false);
+  });
+});
+
+describe("validateDimCssFunction", () => {
+  it("should accept all valid dimension functions (calc, min, max, clamp)", () => {
+    expect(validateDimCssFunction("calc(100px - 20px)")).toEqual({
+      valid: true,
+    });
+    expect(validateDimCssFunction("min(100px, 50%)")).toEqual({ valid: true });
+    expect(validateDimCssFunction("max(10em, 5rem)")).toEqual({ valid: true });
+    expect(validateDimCssFunction("clamp(10px, 50%, 100px)")).toEqual({
+      valid: true,
+    });
+  });
+
+  it("should allow unitless numbers in calc without allowedUnits", () => {
+    expect(validateDimCssFunction("calc(20px * 2)")).toEqual({ valid: true });
+    expect(validateDimCssFunction("calc(100px / 4)")).toEqual({ valid: true });
+    expect(validateDimCssFunction("calc(50% * 1.5)")).toEqual({ valid: true });
+  });
+
+  it("should allow unitless numbers in calc with allowedUnits", () => {
+    expect(validateDimCssFunction("calc(20px * 2)", ["px"])).toEqual({
+      valid: true,
+    });
+    expect(validateDimCssFunction("calc(100px / 4)", ["px"])).toEqual({
+      valid: true,
+    });
+  });
+
+  it("should reject invalid units when allowedUnits is provided", () => {
+    const result = validateDimCssFunction("calc(20px + 10em)", ["px"]);
+    expect(result.valid).toBe(false);
+    if (!result.valid) {
+      expect(result.error).toContain("em");
+      expect(result.error).toContain("isn't supported here");
+    }
+  });
+
+  it("should reject invalid identifiers/keywords", () => {
+    const result = validateDimCssFunction("calc(invalidKeyword + 10px)");
+    expect(result.valid).toBe(false);
+    if (!result.valid) {
+      expect(result.error).toContain("invalidKeyword");
+      expect(result.error).toContain("isn't a valid keyword");
+    }
+  });
+
+  it("should reject non-dimension functions (rgb, var, custom)", () => {
+    const result1 = validateDimCssFunction("rgb(255, 0, 0)");
+    expect(result1.valid).toBe(false);
+    if (!result1.valid) {
+      expect(result1.error).toContain("Not a valid CSS dimension function");
+    }
+
+    const result2 = validateDimCssFunction("customFunc(100px)");
+    expect(result2.valid).toBe(false);
+    if (!result2.valid) {
+      expect(result2.error).toContain("Not a valid CSS dimension function");
+    }
   });
 });

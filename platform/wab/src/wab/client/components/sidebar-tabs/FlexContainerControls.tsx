@@ -290,6 +290,7 @@ function FlexContainerControls_(props: FlexContainerControlsProps) {
         }),
       styleType: "left",
       allowedUnits: LENGTH_PERCENTAGE_UNITS,
+      allowFunctions: true,
     },
     vsh,
   });
