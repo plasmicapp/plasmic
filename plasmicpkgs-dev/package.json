@@ -1,6 +1,6 @@
 {
   "name": "plasmicpkgs-dev",
-  "version": "0.0.37",
+  "version": "0.0.38",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -15,7 +15,7 @@
     "@plasmicpkgs/graphql": "0.0.16",
     "@plasmicpkgs/plasmic-basic-components": "0.0.261",
     "@plasmicpkgs/plasmic-cms": "0.0.298",
-    "@plasmicpkgs/plasmic-strapi": "0.1.186",
+    "@plasmicpkgs/plasmic-strapi": "0.1.187",
     "@plasmicpkgs/strapi": "0.0.7",
     "next": "^15.5.3",
     "react": "^19",
