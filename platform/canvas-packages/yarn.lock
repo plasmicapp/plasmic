@@ -2030,10 +2030,10 @@
     react-hook-form "^7.28.0"
     swr "^1.2.2"
 
-"@plasmicpkgs/contentful@^0.0.3":
-  version "0.0.3"
-  resolved "https://registry.yarnpkg.com/@plasmicpkgs/contentful/-/contentful-0.0.3.tgz#0c9970144d2da72b98818db07d7b0f91cb94790e"
-  integrity sha512-QK1yGcJVpt+U5rAngpc3hVYlCifxTPQfNmU4hLYXnQm1Ld0CQubgJgyh/6n6akJdZAu63Z+Ybh56BOFoQ7VxbQ==
+"@plasmicpkgs/contentful@^0.0.4":
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/contentful/-/contentful-0.0.4.tgz#8d39ab301abf4aa0648b41562dbddce22cfe56aa"
+  integrity sha512-hDaF0trgcr73NOftj8n/t7bBhstmAArV3Yf/JDg/nTarlC5MhUb3RFBMZwfRe63XeCOA5INr+5Mzt/3fX950oA==
 
 "@plasmicpkgs/fetch@^0.0.22":
   version "0.0.22"
@@ -2093,10 +2093,10 @@
     contentstack "^3.15.1"
     dlv "^1.1.3"
 
-"@plasmicpkgs/plasmic-contentful@^0.0.176":
-  version "0.0.176"
-  resolved "https://registry.yarnpkg.com/@plasmicpkgs/plasmic-contentful/-/plasmic-contentful-0.0.176.tgz#5ca65fa538553168da4628e59f7e532bc15102a8"
-  integrity sha512-6/pPFVv/iPzkukP2PoJ1iVYrGYhXxsWp+ydRM35Itf8o89KH0QqIMD2VsBAO+GZBaJ1yQtoPznkU+ZevSX1ZVA==
+"@plasmicpkgs/plasmic-contentful@^0.0.177":
+  version "0.0.177"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/plasmic-contentful/-/plasmic-contentful-0.0.177.tgz#e0fef302faff7513ff32c7d5a93d9dd837dee190"
+  integrity sha512-FfSefrvads58wt6UI2llBqrnOtcF6dtv3+Pqdg1GL2MgtlbZsT9BVHqptSIIMOhB49XSKywfo2vopZxdDWfd+Q==
   dependencies:
     "@contentful/rich-text-html-renderer" "^15.13.1"
     "@contentful/rich-text-react-renderer" "^15.12.1"
@@ -2155,12 +2155,12 @@
     change-case "^4.1.2"
     dlv "^1.1.3"
 
-"@plasmicpkgs/plasmic-strapi@^0.1.186":
-  version "0.1.186"
-  resolved "https://registry.yarnpkg.com/@plasmicpkgs/plasmic-strapi/-/plasmic-strapi-0.1.186.tgz#844e8efda32287027c074e69f33e969f97374cd7"
-  integrity sha512-4xtFnLcSpHKr2mTsp819+S0sJlFqzL262Q2tEkRc+PXEhmQd14SvW64vd/UezW1fy2CBvn7l3p49WdKSnxa9JA==
+"@plasmicpkgs/plasmic-strapi@^0.1.187":
+  version "0.1.187"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/plasmic-strapi/-/plasmic-strapi-0.1.187.tgz#b089dbdd21cc6f3695b420b6cbe8673cecb4f21c"
+  integrity sha512-mj4jTEtOl2WkgBzJKJ467ggVvap/AORr8wsNitKoibO49GO3Nx8pyE+5cwGNH4wk/CAcJDt0e3MqXkr9vpxIGQ==
   dependencies:
-    "@plasmicpkgs/strapi" "0.0.3"
+    "@plasmicpkgs/strapi" "0.0.7"
     change-case "^4.1.2"
 
 "@plasmicpkgs/plasmic-tabs@^0.0.73":
@@ -2283,14 +2283,7 @@
   dependencies:
     "@rive-app/react-canvas" "^4.18.8"
 
-"@plasmicpkgs/strapi@0.0.3":
-  version "0.0.3"
-  resolved "https://registry.yarnpkg.com/@plasmicpkgs/strapi/-/strapi-0.0.3.tgz#9c5a503499c1b9237100690fa58bdac9c2c209e0"
-  integrity sha512-iGKh4Cmycs0XTHnrf6JpzbjCfbKpRphBHAK8X4WCEzdRBJe+TTmZOlqrkIxHNJpcdwppsEwSfLN3HbzrWiuHTQ==
-  dependencies:
-    qs "^6.11.0"
-
-"@plasmicpkgs/strapi@^0.0.7":
+"@plasmicpkgs/strapi@0.0.7", "@plasmicpkgs/strapi@^0.0.7":
   version "0.0.7"
   resolved "https://registry.yarnpkg.com/@plasmicpkgs/strapi/-/strapi-0.0.7.tgz#a6be77d2aad9aaae4dc9255a4e1d28ae697e4d9a"
   integrity sha512-dKt+ESeU3Eyy7xDWqxea05FcI3t6AkDdUbJRhEpH5HzwGJJDo/CtOI34YVdV7UIa/Sp8gJL7BccIFjkI1x7/wg==
