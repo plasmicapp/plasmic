@@ -40,3 +40,5 @@ export function registerAll(loader?: {
   _registerComponent(ContentfulFetcher, ContentfulFetcherMeta);
   _registerComponent(ContentfulField, ContentfulFieldMeta);
 }
+
+export * from "./contentful";
