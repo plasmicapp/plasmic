@@ -63,7 +63,14 @@
     "skipLibCheck": true,
 
     /* Advanced Options */
-    "forceConsistentCasingInFileNames": true /* Disallow inconsistently-cased references to the same file. */
+    "forceConsistentCasingInFileNames": true /* Disallow inconsistently-cased references to the same file. */,
+
+    "paths": {
+      // This package depends on inquirer@7, but we just installed inquirer@12 as a transitive dep.
+      // inquirere@12 which ships with .d.ts files, which tsc automatically finds and uses.
+      // This tells tsc to use @types/inquirer instead.
+      "inquirer": ["../../node_modules/@types/inquirer"]
+    }
   },
   "include": ["src"]
 }
