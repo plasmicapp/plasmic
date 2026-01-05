@@ -8531,6 +8531,49 @@ export var _useGlobalVariants = createUseGlobalVariants({});
   text-transform: inherit; }
     
 
+      :where(.plasmic_default__i) {   font-family: inherit;
+  line-height: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  color: inherit;
+  text-transform: inherit; }
+      :where(.__wab_expr_html_text i) {   white-space: inherit;
+  font-family: inherit;
+  line-height: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  color: inherit;
+  text-transform: inherit; }
+    
+
+      :where(.plasmic_default__em) {   font-family: inherit;
+  line-height: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  color: inherit;
+  text-transform: inherit; }
+      :where(.__wab_expr_html_text em) {   white-space: inherit;
+  font-family: inherit;
+  line-height: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  color: inherit;
+  text-transform: inherit; }
+    
+
+      :where(.plasmic_default__strong) {   font-family: inherit;
+  line-height: inherit;
+  font-size: inherit;
+  color: inherit;
+  text-transform: inherit; }
+      :where(.__wab_expr_html_text strong) {   white-space: inherit;
+  font-family: inherit;
+  line-height: inherit;
+  font-size: inherit;
+  color: inherit;
+  text-transform: inherit; }
+    
+
       :where(.plasmic_default__h1) {   font-size: inherit;
   font-weight: inherit; }
       :where(.__wab_expr_html_text h1) {   white-space: inherit;
@@ -16986,6 +17029,49 @@ export var _useGlobalVariants = createUseGlobalVariants({});
   text-transform: inherit; }
     
 
+      :where(.i) {   font-family: inherit;
+  line-height: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  color: inherit;
+  text-transform: inherit; }
+      :where(.__wab_expr_html_text i) {   white-space: inherit;
+  font-family: inherit;
+  line-height: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  color: inherit;
+  text-transform: inherit; }
+    
+
+      :where(.em) {   font-family: inherit;
+  line-height: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  color: inherit;
+  text-transform: inherit; }
+      :where(.__wab_expr_html_text em) {   white-space: inherit;
+  font-family: inherit;
+  line-height: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  color: inherit;
+  text-transform: inherit; }
+    
+
+      :where(.strong) {   font-family: inherit;
+  line-height: inherit;
+  font-size: inherit;
+  color: inherit;
+  text-transform: inherit; }
+      :where(.__wab_expr_html_text strong) {   white-space: inherit;
+  font-family: inherit;
+  line-height: inherit;
+  font-size: inherit;
+  color: inherit;
+  text-transform: inherit; }
+    
+
       :where(.h1) {   font-size: inherit;
   font-weight: inherit; }
       :where(.__wab_expr_html_text h1) {   white-space: inherit;
@@ -17375,6 +17461,49 @@ column-gap: var(--mixin-SFG6O5da3UHa_column-gap);
   font-size: inherit;
   font-style: inherit;
   font-weight: inherit;
+  color: inherit;
+  text-transform: inherit; }
+    
+
+      :where(.i) {   font-family: inherit;
+  line-height: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  color: inherit;
+  text-transform: inherit; }
+      :where(.__wab_expr_html_text i) {   white-space: inherit;
+  font-family: inherit;
+  line-height: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  color: inherit;
+  text-transform: inherit; }
+    
+
+      :where(.em) {   font-family: inherit;
+  line-height: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  color: inherit;
+  text-transform: inherit; }
+      :where(.__wab_expr_html_text em) {   white-space: inherit;
+  font-family: inherit;
+  line-height: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  color: inherit;
+  text-transform: inherit; }
+    
+
+      :where(.strong) {   font-family: inherit;
+  line-height: inherit;
+  font-size: inherit;
+  color: inherit;
+  text-transform: inherit; }
+      :where(.__wab_expr_html_text strong) {   white-space: inherit;
+  font-family: inherit;
+  line-height: inherit;
+  font-size: inherit;
   color: inherit;
   text-transform: inherit; }
     
