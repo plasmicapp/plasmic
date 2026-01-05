@@ -2093,10 +2093,10 @@
     contentstack "^3.15.1"
     dlv "^1.1.3"
 
-"@plasmicpkgs/plasmic-contentful@^0.0.177":
-  version "0.0.177"
-  resolved "https://registry.yarnpkg.com/@plasmicpkgs/plasmic-contentful/-/plasmic-contentful-0.0.177.tgz#e0fef302faff7513ff32c7d5a93d9dd837dee190"
-  integrity sha512-FfSefrvads58wt6UI2llBqrnOtcF6dtv3+Pqdg1GL2MgtlbZsT9BVHqptSIIMOhB49XSKywfo2vopZxdDWfd+Q==
+"@plasmicpkgs/plasmic-contentful@^0.0.178":
+  version "0.0.178"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/plasmic-contentful/-/plasmic-contentful-0.0.178.tgz#003ef2b2dece665f92f573ec9748b849596055d2"
+  integrity sha512-f0xYg+pcppocuEZ3VDFudK5XC/Zi+TSZt2lUz8XEr6SMHycqLikFUR1YlIwZzGU8331bYdx5uUSublkQQUUeNQ==
   dependencies:
     "@contentful/rich-text-html-renderer" "^15.13.1"
     "@contentful/rich-text-react-renderer" "^15.12.1"
