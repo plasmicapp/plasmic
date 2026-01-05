@@ -128,7 +128,7 @@ export const ContentfulFetcherMeta: ComponentMeta<ContentfulFetcherProps> = {
     },
     contentType: {
       type: "choice",
-      options: (props, ctx) =>
+      options: (_props, ctx) =>
         ctx?.types?.map((type: any) => ({
           label: type?.name,
           value: type?.sys?.id,
@@ -141,7 +141,7 @@ export const ContentfulFetcherMeta: ComponentMeta<ContentfulFetcherProps> = {
       type: "choice",
       displayName: "Filter field",
       description: "Field (from Collection) to filter by.",
-      options: (props, ctx) => ctx?.fields ?? [],
+      options: (_props, ctx) => ctx?.fields ?? [],
       hidden: (props) => !props.contentType,
     },
     searchParameter: {
@@ -149,7 +149,7 @@ export const ContentfulFetcherMeta: ComponentMeta<ContentfulFetcherProps> = {
       displayName: "Search Parameter",
       description:
         "Search Parameter to filter by (see Contentful Content Delivery API documentation for details).",
-      options: (props, ctx) => ctx?.queryOptions ?? [],
+      options: (_props, ctx) => ctx?.queryOptions ?? [],
       hidden: (props) => !props.filterField,
     },
     filterValue: {
@@ -162,7 +162,7 @@ export const ContentfulFetcherMeta: ComponentMeta<ContentfulFetcherProps> = {
       type: "choice",
       displayName: "Order",
       description: "Field that the entries should be ordered by.",
-      options: (props, ctx) => [
+      options: (_props, ctx) => [
         ...(ctx?.fields ?? []),
         "sys.createdAt",
         "sys.updatedAt",
@@ -453,7 +453,7 @@ export const ContentfulFieldMeta: ComponentMeta<ContentfulFieldProps> = {
   props: {
     objectPath: {
       type: "dataSelector",
-      data: (props, ctx) => ctx?.data ?? {},
+      data: (_props, ctx) => ctx?.data ?? {},
       displayName: "Field",
       description: "Field to be displayed.",
     },
