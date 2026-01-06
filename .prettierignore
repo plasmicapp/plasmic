@@ -15,11 +15,8 @@ storybook-static/
 /packages/react-web/lib/**
 /packages/**/api/
 /plasmicpkgs/**/api/
-/platform/loader-tests/data/**/*.json
 /platform/wab/deps/
 /platform/wab/public/static/
-/platform/wab/src/wab/server/__tests__/bundle-migrations/fixtures/
-/platform/wab/src/wab/server/pkg-mgr/data/
 
 # Helm chart templates contain Go template syntax that prettier cannot parse
 /devops/charts/**/templates/**
