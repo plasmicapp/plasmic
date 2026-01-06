@@ -132,8 +132,15 @@ function EnvPreview(props: {
 }
 
 function cleanDataForPreview(data: Record<string, any>): Record<string, any> {
+  const cache = new Map<any, any>();
+
   const rec = (x: any): any => {
     if (!!x && isLiteralObjectByName(x)) {
+      const cleanedX = cache.get(x);
+      if (cleanedX) {
+        return cleanedX;
+      }
+
       const filtered = L.omitBy(x, (_val, key) => {
         return (
           key.startsWith("__plasmic") ||
@@ -143,12 +150,18 @@ function cleanDataForPreview(data: Record<string, any>): Record<string, any> {
           key === "eagerInitializeStates"
         );
       });
-      return L.mapValues(filtered, (val) => rec(val));
+      cache.set(x, filtered);
+      Object.keys(filtered).forEach(
+        (key) => (filtered[key] = rec(filtered[key]))
+      );
+      return filtered;
     }
     return x;
   };
+
   return rec(data);
 }
+export const _testonly = { cleanDataForPreview };
 
 const DataPickerCodeEditorLayout = React.forwardRef(
   DataPickerCodeEditorLayout_
