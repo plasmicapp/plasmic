@@ -14,14 +14,11 @@ RUN apk add --no-cache \
     postgresql-client \
     build-base
 
-# Copy only dependency files first for caching
-COPY package.json yarn.lock ./
-
-# Install deps early for cache
-RUN yarn install --frozen-lockfile --prefer-offline
-
-# Then copy rest of the app
+# Copy all source files first (needed for yarn workspaces)
 COPY . .
+
+# Install all workspace dependencies
+RUN yarn install --frozen-lockfile
 
 # Secrets setup and build tools
 RUN mkdir -p /tmp/.plasmic && \
