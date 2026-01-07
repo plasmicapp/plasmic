@@ -2819,8 +2819,8 @@ export class ViewOps {
     const componentVars = new Set(component.params.map((p) => p.variable));
     const varRefs = Array.from(Components.findVarRefs(newItem));
     varRefs.forEach((varRef) => {
-      if (!componentVars.has(varRef.var) && varRef.arg) {
-        common.removeWhere(varRef.vs.args, (arg) => arg === varRef.arg);
+      if (!componentVars.has(varRef.var)) {
+        varRef.remove();
       }
     });
 

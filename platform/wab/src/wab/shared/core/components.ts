@@ -50,7 +50,6 @@ import { arrayRemove } from "@/wab/shared/collections";
 import {
   arrayEqIgnoreOrder,
   assert,
-  assertNever,
   checkUnique,
   ensure,
   ensureInstance,
@@ -1937,18 +1936,7 @@ export function removeComponentParam(
 function removeComponentParamRefs(tpl: TplNode, param: Param) {
   for (const refInfo of findVarRefs(tpl)) {
     if (refInfo.var === param.variable) {
-      switch (refInfo.type) {
-        /* The above code is a TypeScript switch statement that checks the type of `refInfo` and
-        performs different actions based on the type: */
-        case "tag":
-          delete refInfo.vs.attrs[refInfo.attr];
-          break;
-        case "component":
-          arrayRemove(refInfo.vs.args, refInfo.arg);
-          break;
-        default:
-          assertNever(refInfo);
-      }
+      refInfo.remove();
     }
   }
   // The above code only finds the `VarRef` class, but we could have references inside
@@ -2008,6 +1996,9 @@ export function* findVarRefs(tpl: TplNode) {
             attr,
             expr: subExpr,
             var: subExpr.variable,
+            remove() {
+              delete vs.attrs[attr];
+            },
           };
         }
       }
@@ -2021,6 +2012,9 @@ export function* findVarRefs(tpl: TplNode) {
             arg,
             expr: subExpr,
             var: subExpr.variable,
+            remove() {
+              arrayRemove(vs.args, arg);
+            },
           };
         }
       }
