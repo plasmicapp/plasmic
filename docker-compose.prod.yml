@@ -34,7 +34,6 @@ services:
       jq '(.host = "plasmic-db") | (.password = "'"${DB_PASSWORD:-SEKRET}"'")' /tmp/ormconfig.json > /tmp/ormconfig-new.json && \
       cp /tmp/ormconfig-new.json ormconfig.json && \
       yarn typeorm migration:run && \
-      yarn seed && \
       cd /plasmic && \
       yarn dev
     user: root
