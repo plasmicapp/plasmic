@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/cms",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "Plasmic CMS custom functions",
   "repository": {
     "type": "git",
@@ -32,7 +32,7 @@
     "postpublish": "bash ../../scripts/publish-api-doc-model.sh"
   },
   "devDependencies": {
-    "@plasmicapp/host": "1.0.231",
+    "@plasmicapp/host": "1.0.232",
     "@react-awesome-query-builder/core": "^6.0.0",
     "@types/json-logic-js": "^2.0.0",
     "@types/node": "^17.0.14"
