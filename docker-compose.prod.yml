@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   # Plasmic Host (Canvas Host for Studio)
   plasmic-host:
@@ -32,11 +30,14 @@ services:
       dockerfile: ./platform/wab/tools/docker-dev/Dockerfile.dev.aio
     command:
     - |
-      jq '(.host = "plasmic-db") | (.password //= "${DB_PASSWORD:-SEKRET}")' ormconfig.json > tmp.json && mv tmp.json ormconfig.json && \
+      cp ormconfig.json /tmp/ormconfig.json && \
+      jq '(.host = "plasmic-db") | (.password = "'"${DB_PASSWORD:-SEKRET}"'")' /tmp/ormconfig.json > /tmp/ormconfig-new.json && \
+      cp /tmp/ormconfig-new.json ormconfig.json && \
       yarn typeorm migration:run && \
       yarn seed && \
       cd /plasmic && \
       yarn dev
+    user: root
     volumes:
       - .:/plasmic
       - plasmic_node_modules:/plasmic/node_modules
