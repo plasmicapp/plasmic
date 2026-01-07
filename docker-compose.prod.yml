@@ -67,6 +67,8 @@ services:
       - WAB_DBNAME=plasmic-db
       - WAB_DBPASSWORD=${DB_PASSWORD:-SEKRET}
       - NODE_ENV=production
+      - SESSION_SECRET=${SESSION_SECRET:-plasmic-session-secret-change-me-in-production}
+      - ENCRYPTION_KEY=${ENCRYPTION_KEY:-abcdefghijklmnopqrstuvwxyz123456}
       # Set this to your server IP or domain
       - REACT_APP_DEFAULT_HOST_URL=${HOST_URL:-http://localhost:3005/}
       - REACT_APP_PUBLIC_URL=${PUBLIC_URL:-http://localhost:3003}
