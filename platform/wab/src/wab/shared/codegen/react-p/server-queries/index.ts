@@ -223,26 +223,30 @@ ${customFunctionsAndLibsImport}
 
 ${serializedCustomFunctionsAndLibs}
 
-import { executeServerQuery, mkPlasmicUndefinedServerProxy, ServerQuery } from "${getDataSourcesPackageName()}";
+import { executeServerQuery, mkPlasmicUndefinedServerProxy, ServerQuery, makeQueryCacheKey } from "${getDataSourcesPackageName()}";
 
 export async function executeServerQueries($ctx: any) {
-  const $queries: Record<string, any> = {
-    ${serverQueries
-      .map(
-        (query) => `${toVarName(query.name)}: mkPlasmicUndefinedServerProxy(),`
-      )
-      .join("\n")}
-  };
-
   ${usesSearchParams ? "await $ctx.query;" : ""}
 
   ${serverQueriesDeclaration}
 
+  const queryVarToKey: Record<string, string> = {};
+  const $queries: Record<string, any> = {};
+
+  for (const key of Object.keys(serverQueries)) {
+    const sq = serverQueries[key];
+    const params = sq.execParams();
+    const cacheKey = makeQueryCacheKey(sq.id, params);
+    queryVarToKey[key] = cacheKey;
+    $queries[cacheKey] = mkPlasmicUndefinedServerProxy();
+  }
+
   do {
     await Promise.all(
       Object.keys(serverQueries).map(async (key) => {
-        $queries[key] = await executeServerQuery(serverQueries[key]);
-        if (!$queries[key].data?.isUndefinedServerProxy) {
+        const cacheKey = queryVarToKey[key];
+        $queries[cacheKey] = await executeServerQuery(serverQueries[key]);
+        if (!$queries[cacheKey].data?.isUndefinedServerProxy) {
           delete serverQueries[key];
         }
       })
