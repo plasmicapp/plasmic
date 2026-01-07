@@ -41,7 +41,7 @@ export const _queryParameters: {
 }[];
 
 // @public (undocumented)
-export function queryStrapi(host: string, token: string | undefined, collection: string | undefined, filterField?: string, filterValue?: string, filterParameter?: string): Promise<StrapiQueryResponse | null>;
+export function queryStrapi({ host, token, collection, filterField, filterValue, filterParameter, }: QueryStrapiOpts): Promise<StrapiQueryResponse | null>;
 
 // @public (undocumented)
 export function registerStrapi(loader?: {

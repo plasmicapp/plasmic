@@ -122,19 +122,33 @@ export function denormalizeData(data: any | null): any {
   };
 }
 
-export async function queryContentful(
-  space: string,
-  accessToken: string,
-  environment: string = "master",
-  contentType?: string,
-  filterField?: string,
-  searchParameter?: string,
-  filterValue?: string | number,
-  order?: string,
-  reverseOrder?: boolean,
-  limit?: number,
-  include?: number
-): Promise<any> {
+export interface QueryContentfulOpts {
+  space?: string;
+  accessToken?: string;
+  environment?: string;
+  contentType?: string;
+  filterField?: string;
+  searchParameter?: string;
+  filterValue?: string | number;
+  order?: string;
+  reverseOrder?: boolean;
+  limit?: number;
+  include?: number;
+}
+
+export async function queryContentful({
+  space,
+  accessToken,
+  environment = "master",
+  contentType,
+  filterField,
+  searchParameter,
+  filterValue,
+  order,
+  reverseOrder,
+  limit,
+  include,
+}: ContentfulQueryOptions): Promise<any> {
   if (!space || !accessToken) {
     throw new Error("Space and accessToken are required");
   }
@@ -187,60 +201,56 @@ export const queryContentfulMeta: CustomFunctionMeta<typeof queryContentful> = {
   importPath: modulePath,
   params: [
     {
-      name: "space",
-      type: "string",
-      description: "Contentful space ID",
-    },
-    {
-      name: "accessToken",
-      type: "string",
-      description: "Contentful access token",
-    },
-    {
-      name: "environment",
-      type: "string",
-      description: "Contentful environment (default: master)",
-    },
-    {
-      name: "contentType",
-      type: "string",
-      description: "Content type to query",
-    },
-    {
-      name: "filterField",
-      type: "string",
-      description: "Field to filter by (optional)",
-    },
-    {
-      name: "searchParameter",
-      type: "string",
-      description:
-        "Search parameter for filtering (e.g., [match], [lt], [gte])",
-    },
-    {
-      name: "filterValue",
-      type: "string",
-      description: "Value to filter by",
-    },
-    {
-      name: "order",
-      type: "string",
-      description: "Field to order by (optional)",
-    },
-    {
-      name: "reverseOrder",
-      type: "boolean",
-      description: "Reverse the order",
-    },
-    {
-      name: "limit",
-      type: "number",
-      description: "Limit number of results",
-    },
-    {
-      name: "include",
-      type: "number",
-      description: "Depth of linked items to include (max 10)",
+      name: "opts",
+      type: "object",
+      display: "flatten",
+      fields: {
+        space: {
+          type: "string",
+          description: "Contentful space ID",
+        },
+        accessToken: {
+          type: "string",
+          description: "Contentful access token",
+        },
+        environment: {
+          type: "string",
+          description: "Contentful environment (default: master)",
+        },
+        contentType: {
+          type: "string",
+          description: "Content type to query",
+        },
+        filterField: {
+          type: "string",
+          description: "Field to filter by (optional)",
+        },
+        searchParameter: {
+          type: "string",
+          description:
+            "Search parameter for filtering (e.g., [match], [lt], [gte])",
+        },
+        filterValue: {
+          type: "string",
+          description: "Value to filter by",
+        },
+        order: {
+          type: "string",
+          description: "Field to order by (optional)",
+        },
+        reverseOrder: {
+          type: "boolean",
+          description: "Reverse the order",
+        },
+        limit: {
+          type: "number",
+          description: "Limit number of results",
+        },
+        include: {
+          type: "number",
+          description: "Depth of linked items to include (max 10)",
+        },
+      },
     },
   ],
 };

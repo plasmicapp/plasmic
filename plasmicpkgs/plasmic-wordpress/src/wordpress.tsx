@@ -163,13 +163,13 @@ export function WordpressFetcher({
   const { data } = usePlasmicQueryData<any | null>(
     queryType && wordpressUrl ? cacheKey : null,
     async () => {
-      return queryWordpress(
-        ensure(wordpressUrl, "Wordpress URL must be specified"),
-        ensure(queryType, "Query Type must be specified"),
+      return queryWordpress({
+        wordpressUrl,
+        queryType,
         queryOperator,
         filterValue,
-        limit
-      );
+        limit,
+      });
     }
   );
 

@@ -1,15 +1,18 @@
 import { ContextDependentConfig } from "./shared-controls";
 
-export interface ObjectTypeBaseCore<Ctx extends any[], Fields> {
+export interface ObjectTypeBaseCore<
+  Ctx extends any[],
+  Values,
+  Keys extends string = string
+> {
   type: "object";
-  fields?: Record<string, Fields>;
+  fields?: Record<Keys, Values>;
   nameFunc?: (item: any, ...args: Ctx) => string | undefined;
   /**
-   * Controls how the object editor is displayed in the UI.
-   * - "popup":  Displays the object in a popup (default)
+   * Controls how the object editor is displayed in the UI. If not specified, Plasmic will choose the appropriate display mode.
+   * - "popup":  Displays the object in a popup
    * - "inline": Displays the object fields inline
    * - "flatten": Displays the object fields inline at the parent level. The parent label is not displayed.
-   * @default "popup"
    */
   display?: "inline" | "popup" | "flatten";
 }

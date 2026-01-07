@@ -23,7 +23,7 @@ export const _queryOperators: readonly [{
 }];
 
 // @public (undocumented)
-export function queryWordpress(wordpressUrl: string, type: "pages" | "posts", queryOperator?: _QueryOperator, filterValue?: string, limit?: number): Promise<any>;
+export function queryWordpress({ wordpressUrl, queryType, queryOperator, filterValue, limit, }: QueryWordpressOpts): Promise<any>;
 
 // @public (undocumented)
 export function registerWordpress(loader?: {

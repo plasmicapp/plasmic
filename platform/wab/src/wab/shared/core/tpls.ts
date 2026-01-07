@@ -2629,6 +2629,18 @@ export function replaceNestedExprInExpr(
     }
   }
 
+  if (isKnownCompositeExpr(expr)) {
+    for (const [key, subExpr] of Object.entries(expr.substitutions)) {
+      if (subExpr === nestedExpr) {
+        expr.substitutions[key] = newExpr;
+        return true;
+      }
+      if (replaceNestedExprInExpr(subExpr, nestedExpr, newExpr)) {
+        return true;
+      }
+    }
+  }
+
   return false;
 }
 

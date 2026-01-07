@@ -468,13 +468,13 @@ test.describe("data token usages", () => {
 
       await expect(previewResult).not.toContainText("data: Array(7)");
       const strapiHostRow = serverQueryModal.locator(
-        `[data-test-id="prop-editor-row-strapiHost"]`
+        `[data-test-id="prop-editor-row-host"]`
       );
       const strapiCollectionRow = serverQueryModal.locator(
         `[data-test-id="prop-editor-row-collection"]`
       );
       const strapiHostInput = strapiHostRow.locator(
-        `[data-plasmic-prop="strapiHost"]`
+        `[data-plasmic-prop="host"]`
       );
 
       await strapiHostInput.click();
@@ -486,8 +486,8 @@ test.describe("data token usages", () => {
         strapiHostRow
       );
 
-      const expectedName = "Strapi host";
-      const expectedJsName = "strapiHost";
+      const expectedName = "Host";
+      const expectedJsName = "host";
       const expectedType = "Text";
       await dataTokenPopover.expectDataToken({
         expectedName,

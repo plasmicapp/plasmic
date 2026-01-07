@@ -1,7 +1,7 @@
 import { IconLinkButton } from "@/wab/client/components/widgets";
 import { Icon } from "@/wab/client/components/widgets/Icon";
-import { CHEVRON_BOTTOM_ICON } from "@/wab/client/icons";
 import CloseIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Close";
+import ChevronDownsvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg";
 import { MaybeWrap } from "@/wab/commons/components/ReactUtil";
 import { arrayMoveIndex } from "@/wab/shared/collections";
 import { cx, ensure, ensureHTMLElt, tuple } from "@/wab/shared/common";
@@ -342,7 +342,13 @@ class _XMultiSelect<Item> extends React.Component<
                         })
                       )}{" "}
                       {this.props.showDropdownArrow ? (
-                        <div className="flex-center">{CHEVRON_BOTTOM_ICON}</div>
+                        <div className="xmultiselect-arrow flex-center">
+                          {/* NOTE: We pass an explicit style to Icon so the inline width/height override the default square 16×16 size of the Icon component */}
+                          <Icon
+                            icon={ChevronDownsvgIcon}
+                            style={{ height: 10, width: 16 }}
+                          />
+                        </div>
                       ) : undefined}
                     </div>
                   </div>

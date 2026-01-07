@@ -7,16 +7,30 @@
 import registerFunction from '@plasmicapp/host/registerFunction';
 
 // @public (undocumented)
-export function fetchGraphQL(url: string, method: "GET" | "POST" | "PUT" | "DELETE", headers: Record<string, string>, request: {
-    query: string;
-    variables?: object;
-}, varOverrides?: Record<string, any>): Promise<{
+export function fetchGraphQL({ url, method, headers, request, varOverrides, }: FetchGraphQLOpts): Promise<{
     statusCode: number;
     headers: {
         [k: string]: string;
     };
     body: any;
 }>;
+
+// @public (undocumented)
+export interface FetchGraphQLOpts {
+    // (undocumented)
+    headers?: Record<string, string>;
+    // (undocumented)
+    method?: "GET" | "POST" | "PUT" | "DELETE";
+    // (undocumented)
+    request: {
+        query: string;
+        variables?: object;
+    };
+    // (undocumented)
+    url?: string;
+    // (undocumented)
+    varOverrides?: Record<string, any>;
+}
 
 // @public (undocumented)
 export function registerGraphQL(loader?: Registerable): void;

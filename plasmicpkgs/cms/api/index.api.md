@@ -222,13 +222,13 @@ export interface _DatabaseConfig {
 export const _DEFAULT_HOST = "https://data.plasmic.app";
 
 // @public (undocumented)
-export function fetchContent(cmsId?: string, cmsPublicToken?: string, tableId?: string, select?: string[], whereLogic?: RulesLogic, orderBy?: string, orderDirection?: "asc" | "desc", limit?: number, offset?: number, useDraft?: boolean, locale?: string): Promise<ApiCmsRow[]>;
+export function fetchContent({ cmsId, cmsPublicToken, tableId, select, whereLogic, orderBy, orderDirection, limit, offset, useDraft, locale, }: FetchContentOpts): Promise<ApiCmsRow[]>;
 
 // @public (undocumented)
-export function fetchCount(cmsId?: string, cmsPublicToken?: string, tableId?: string, whereLogic?: RulesLogic, useDraft?: boolean): Promise<number>;
+export function fetchCount({ cmsId, cmsPublicToken, tableId, useDraft, whereLogic, }: FetchCountOpts): Promise<number>;
 
 // @public (undocumented)
-export function fetchTables(cmsId: string, cmsPublicToken: string): Promise<_ApiCmsTable[]>;
+export function fetchTables({ cmsId, cmsPublicToken }: BaseCMSOpts): Promise<_ApiCmsTable[]>;
 
 // @public (undocumented)
 export class _HttpError extends Error {

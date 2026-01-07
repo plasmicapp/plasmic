@@ -53,7 +53,7 @@ export const ObjectPropEditor = observer(function ObjectPropEditor<
   controlExtras: ControlExtras;
   propType: StudioPropType<any>;
   disabled?: boolean;
-  display?: ObjectType<any>["display"];
+  display?: ObjectType<any, any>["display"];
 }) {
   const {
     compositeValue,

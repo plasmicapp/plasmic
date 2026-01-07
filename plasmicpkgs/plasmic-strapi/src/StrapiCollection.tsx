@@ -138,7 +138,14 @@ export function StrapiCollection({
   });
 
   const resp = usePlasmicQueryData(cacheKey, async () =>
-    queryStrapi(host, token, name, filterField, filterValue, filterParameter)
+    queryStrapi({
+      host,
+      token,
+      collection: name,
+      filterField,
+      filterValue,
+      filterParameter,
+    })
   );
 
   if (!resp?.data) {

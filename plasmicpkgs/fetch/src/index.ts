@@ -53,21 +53,19 @@ function maybeParseJSON(json: string) {
   }
 }
 
+export interface FetchOpts {
+  url?: string;
+  method?: HTTPMethod;
+  headers?: Record<string, string>;
+  body?: string | object;
+}
+
 // Don't override the global fetch
-async function wrappedFetch(
-  url: string,
-  method: HTTPMethod,
-  headers: Record<string, string>,
-  body?: string | object
-) {
+async function wrappedFetch({ url, method, headers = {}, body }: FetchOpts) {
   if (!url) {
     throw new Error("Please specify a URL to fetch");
   }
 
-  // Add default headers unless specified
-  if (!headers) {
-    headers = {};
-  }
   const headerNamesLowercase = new Set(
     Object.keys(headers).map((headerName) => headerName.toLowerCase())
   );
@@ -109,21 +107,24 @@ const registerFetchParams: CustomFunctionMeta<typeof wrappedFetch> = {
   displayName: "HTTP Fetch",
   params: [
     {
-      name: "url",
-      type: "string",
-    },
-    {
-      name: "method",
-      type: "choice",
-      options: ["GET", "POST", "PUT", "DELETE"],
-    },
-    {
-      name: "headers",
+      name: "opts",
       type: "object",
-    },
-    {
-      name: "body",
-      type: "object",
+      display: "flatten",
+      fields: {
+        url: {
+          type: "string",
+        },
+        method: {
+          type: "choice",
+          options: ["GET", "POST", "PUT", "DELETE"],
+        },
+        headers: {
+          type: "object",
+        },
+        body: {
+          type: "object",
+        },
+      },
     },
   ],
 };

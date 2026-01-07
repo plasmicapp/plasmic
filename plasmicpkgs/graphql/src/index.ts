@@ -7,16 +7,24 @@ type Registerable = {
   registerFunction: typeof registerFunction;
 };
 
-export async function fetchGraphQL(
-  url: string,
-  method: "GET" | "POST" | "PUT" | "DELETE",
-  headers: Record<string, string>,
-  request: { query: string; variables?: object },
-  varOverrides?: Record<string, any>
-) {
-  url = url ?? "";
-  method = method ?? "POST";
-  request = request ?? { query: "" };
+export interface FetchGraphQLOpts {
+  url?: string;
+  method?: "GET" | "POST" | "PUT" | "DELETE";
+  headers?: Record<string, string>;
+  request: { query: string; variables?: object };
+  varOverrides?: Record<string, any>;
+}
+
+export async function fetchGraphQL({
+  url,
+  method,
+  headers = {},
+  request,
+  varOverrides,
+}: FetchGraphQLOpts) {
+  if (!url || !method || !request) {
+    throw new Error("url, method, and request are required");
+  }
 
   if (method === "GET") {
     // https://graphql.org/learn/serving-over-http/#get-request-and-parameters
@@ -26,11 +34,20 @@ export async function fetchGraphQL(
       "variables",
       JSON.stringify({ ...request.variables, ...varOverrides })
     );
-    return fetch(urlWithQueryParams.toString(), "GET", headers);
+    return fetch({
+      url: urlWithQueryParams.toString(),
+      method: "GET",
+      headers,
+    });
   } else {
-    return fetch(url, method, headers, {
-      query: request.query,
-      variables: { ...request.variables, ...varOverrides },
+    return fetch({
+      url,
+      method,
+      headers,
+      body: {
+        query: request.query,
+        variables: { ...request.variables, ...varOverrides },
+      },
     });
   }
 }
@@ -41,28 +58,30 @@ const registerGraphqlFetchParams: CustomFunctionMeta<typeof fetchGraphQL> = {
   displayName: "GraphQL",
   params: [
     {
-      name: "url",
-      type: "string",
-    },
-    {
-      name: "method",
-      type: "choice",
-      options: ["GET", "POST", "PUT", "DELETE"],
-    },
-    {
-      name: "headers",
+      name: "opts",
       type: "object",
-    },
-    {
-      name: "query",
-      type: "code",
-      lang: "graphql",
-      headers: (params) => params[2],
-      endpoint: (params) => params[0] ?? "",
-    },
-    {
-      name: "varOverrides",
-      type: "object",
+      display: "flatten",
+      fields: {
+        url: {
+          type: "string",
+        },
+        method: {
+          type: "choice",
+          options: ["GET", "POST", "PUT", "DELETE"],
+        },
+        headers: {
+          type: "object",
+        },
+        request: {
+          type: "code",
+          lang: "graphql",
+          headers: ([opts]) => opts?.headers,
+          endpoint: ([opts]) => opts?.url ?? "",
+        },
+        varOverrides: {
+          type: "object",
+        },
+      },
     },
   ],
 };

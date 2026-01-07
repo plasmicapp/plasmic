@@ -23,7 +23,7 @@ export interface _Entry {
 }
 
 // @public (undocumented)
-export function queryContentful(space: string, accessToken: string, environment?: string, contentType?: string, filterField?: string, searchParameter?: string, filterValue?: string | number, order?: string, reverseOrder?: boolean, limit?: number, include?: number): Promise<any>;
+export function queryContentful({ space, accessToken, environment, contentType, filterField, searchParameter, filterValue, order, reverseOrder, limit, include, }: ContentfulQueryOptions): Promise<any>;
 
 // @public (undocumented)
 export function registerContentful(loader?: {

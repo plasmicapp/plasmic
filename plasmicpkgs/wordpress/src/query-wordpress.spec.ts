@@ -26,7 +26,10 @@ describe("queryWordpress", () => {
   });
 
   it("should construct URL for posts without filters", async () => {
-    await queryWordpress("https://example.com", "posts");
+    await queryWordpress({
+      wordpressUrl: "https://example.com",
+      queryType: "posts",
+    });
 
     expect(fetchMock).toHaveBeenCalledWith(
       new URL("https://example.com/wp-json/wp/v2/posts")
@@ -34,7 +37,10 @@ describe("queryWordpress", () => {
   });
 
   it("should construct correct URL for pages without filters", async () => {
-    await queryWordpress("https://example.com", "pages");
+    await queryWordpress({
+      wordpressUrl: "https://example.com",
+      queryType: "pages",
+    });
 
     expect(fetchMock).toHaveBeenCalledWith(
       new URL("https://example.com/wp-json/wp/v2/pages")
@@ -42,7 +48,12 @@ describe("queryWordpress", () => {
   });
 
   it("should add search query parameter when provided", async () => {
-    await queryWordpress("https://example.com", "posts", "search", "test");
+    await queryWordpress({
+      wordpressUrl: "https://example.com",
+      queryType: "posts",
+      queryOperator: "search",
+      filterValue: "test",
+    });
 
     const expectedUrl = new URL("https://example.com/wp-json/wp/v2/posts");
     expectedUrl.searchParams.append("search", "test");
@@ -51,13 +62,11 @@ describe("queryWordpress", () => {
   });
 
   it("should add limit parameter when provided", async () => {
-    await queryWordpress(
-      "https://example.com",
-      "posts",
-      undefined,
-      undefined,
-      2
-    );
+    await queryWordpress({
+      wordpressUrl: "https://example.com",
+      queryType: "posts",
+      limit: 2,
+    });
 
     const expectedUrl = new URL("https://example.com/wp-json/wp/v2/posts");
     expectedUrl.searchParams.append("per_page", "2");
@@ -66,13 +75,13 @@ describe("queryWordpress", () => {
   });
 
   it("should combine query operator, filter value, and limit", async () => {
-    await queryWordpress(
-      "https://example.com",
-      "posts",
-      "slug",
-      "test-slug",
-      10
-    );
+    await queryWordpress({
+      wordpressUrl: "https://example.com",
+      queryType: "posts",
+      queryOperator: "slug",
+      filterValue: "test-slug",
+      limit: 10,
+    });
 
     const expectedUrl = new URL("https://example.com/wp-json/wp/v2/posts");
     expectedUrl.searchParams.append("slug", "test-slug");
@@ -82,13 +91,20 @@ describe("queryWordpress", () => {
   });
 
   it("should return parsed JSON response", async () => {
-    const result = await queryWordpress("https://example.com", "posts");
+    const result = await queryWordpress({
+      wordpressUrl: "https://example.com",
+      queryType: "posts",
+    });
 
     expect(result).toEqual(mockResponseData);
   });
 
   it("should not add query parameters when operator is provided but value is missing", async () => {
-    await queryWordpress("https://example.com", "posts", "search", undefined);
+    await queryWordpress({
+      wordpressUrl: "https://example.com",
+      queryType: "posts",
+      queryOperator: "search",
+    });
 
     expect(fetchMock).toHaveBeenCalledWith(
       new URL("https://example.com/wp-json/wp/v2/posts")

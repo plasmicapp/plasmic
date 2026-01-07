@@ -7,7 +7,7 @@
 import registerFunction from '@plasmicapp/host/registerFunction';
 
 // @public (undocumented)
-function fetch_2(url: string, method: HTTPMethod, headers: Record<string, string>, body?: string | object): Promise<{
+function fetch_2({ url, method, headers, body }: FetchOpts): Promise<{
     statusCode: number;
     headers: {
         [k: string]: string;
@@ -15,6 +15,18 @@ function fetch_2(url: string, method: HTTPMethod, headers: Record<string, string
     body: any;
 }>;
 export { fetch_2 as fetch }
+
+// @public (undocumented)
+export interface FetchOpts {
+    // (undocumented)
+    body?: string | object;
+    // (undocumented)
+    headers?: Record<string, string>;
+    // (undocumented)
+    method?: HTTPMethod;
+    // (undocumented)
+    url?: string;
+}
 
 // @public (undocumented)
 export function registerFetch(loader?: Registerable): void;

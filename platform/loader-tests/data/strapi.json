@@ -1,8 +1,8 @@
 [
   [
-    "b495c637-3134-46e1-8a21-c100fc4d809b",
+    "f63b0b63-47ac-4cf5-8ca3-329a60321d4f",
     {
-      "root": "E9xVmj6qYc0E",
+      "root": "j3FZZnxztF6z",
       "map": {
         "yB0ZLxSQZ0e7": {
           "values": {},
@@ -68,7 +68,7 @@
           "projectDependencies": [],
           "activeScreenVariantGroup": null,
           "flags": {},
-          "hostLessPackageInfo": { "__ref": "jrgcHo-Ppk_R" },
+          "hostLessPackageInfo": { "__ref": "I3rpMBZBiO6x" },
           "globalContexts": [],
           "splits": [],
           "defaultComponents": {},
@@ -84,18 +84,18 @@
           "defaultExport": false,
           "namespace": null,
           "displayName": "Query Strapi",
-          "params": [
-            { "__ref": "TqRK6vp2puNM" },
-            { "__ref": "hCDDgH1ySqwA" },
-            { "__ref": "yCjEftkMp7dQ" },
-            { "__ref": "zZ9PoOsa12ey" },
-            { "__ref": "2CM9KGuvknaZ" },
-            { "__ref": "wVv-XTIFtboF" }
-          ],
+          "params": [{ "__ref": "-mGUaBLmT_uw" }],
           "isQuery": false,
           "__type": "CustomFunction"
         },
-        "jrgcHo-Ppk_R": {
+        "-mGUaBLmT_uw": {
+          "name": "arg",
+          "argName": "opts",
+          "displayName": null,
+          "type": { "__ref": "1Em_Q_vwAUJN" },
+          "__type": "ArgType"
+        },
+        "I3rpMBZBiO6x": {
           "name": "strapi",
           "npmPkg": ["@plasmicpkgs/strapi"],
           "cssImport": [],
@@ -104,68 +104,13 @@
           "minimumReactVersion": null,
           "__type": "HostLessPackageInfo"
         },
-        "TqRK6vp2puNM": {
-          "name": "arg",
-          "argName": "strapiHost",
-          "displayName": null,
-          "type": { "__ref": "4E9SwAzBUdSq" },
-          "__type": "ArgType"
-        },
-        "hCDDgH1ySqwA": {
-          "name": "arg",
-          "argName": "strapiToken",
-          "displayName": null,
-          "type": { "__ref": "YAbjMayanQGt" },
-          "__type": "ArgType"
-        },
-        "yCjEftkMp7dQ": {
-          "name": "arg",
-          "argName": "collection",
-          "displayName": null,
-          "type": { "__ref": "g2fvTaqrnjBf" },
-          "__type": "ArgType"
-        },
-        "zZ9PoOsa12ey": {
-          "name": "arg",
-          "argName": "filterField",
-          "displayName": null,
-          "type": { "__ref": "jLFH5SfzNPIu" },
-          "__type": "ArgType"
-        },
-        "2CM9KGuvknaZ": {
-          "name": "arg",
-          "argName": "filterValue",
-          "displayName": null,
-          "type": { "__ref": "O00lBpKu-bLz" },
-          "__type": "ArgType"
-        },
-        "wVv-XTIFtboF": {
-          "name": "arg",
-          "argName": "filterParameter",
-          "displayName": null,
-          "type": { "__ref": "jHSXBGNnKJYp" },
-          "__type": "ArgType"
-        },
-        "4E9SwAzBUdSq": { "name": "text", "__type": "Text" },
-        "YAbjMayanQGt": { "name": "text", "__type": "Text" },
-        "g2fvTaqrnjBf": { "name": "text", "__type": "Text" },
-        "jLFH5SfzNPIu": {
-          "name": "choice",
-          "options": ["Dynamic options"],
-          "__type": "Choice"
-        },
-        "O00lBpKu-bLz": { "name": "text", "__type": "Text" },
-        "jHSXBGNnKJYp": {
-          "name": "choice",
-          "options": ["Dynamic options"],
-          "__type": "Choice"
-        },
-        "E9xVmj6qYc0E": {
-          "uuid": "I0gp0UGvd9tP",
-          "pkgId": "f3b08986-4c9c-440e-8e32-5a1b3a59da43",
-          "projectId": "9MXQJuCUJDCZnfryCnbK9M",
-          "version": "0.0.2",
-          "name": "Untitled Project",
+        "1Em_Q_vwAUJN": { "name": "any", "__type": "AnyType" },
+        "j3FZZnxztF6z": {
+          "uuid": "WjmWjNsBtjHu",
+          "pkgId": "186f4fdf-c797-43a3-b1f5-89101944d74b",
+          "projectId": "u49Y7MfiBLsPvf2VbVaSnU",
+          "version": "0.0.1",
+          "name": "Imported Dep",
           "site": { "__ref": "RXgtt8CWr1VC" },
           "__type": "ProjectDependency"
         }
@@ -175,7 +120,7 @@
     }
   ],
   [
-    "v2SphPGuxgxvu6R2C3S8mC",
+    "8CFyyWFKuQqBYi4f3qn2DD",
     {
       "root": "ERxv80NdQ8zb",
       "map": {
@@ -266,7 +211,7 @@
           "figmaMappings": [],
           "alwaysAutoName": false,
           "trapsFocus": false,
-          "updatedAt": 1761145578040,
+          "updatedAt": 1767611917189,
           "__type": "Component"
         },
         "igFlY8IBmcqg": {
@@ -1316,8 +1261,8 @@
           "projectDependencies": [
             {
               "__xref": {
-                "uuid": "b495c637-3134-46e1-8a21-c100fc4d809b",
-                "iid": "E9xVmj6qYc0E"
+                "uuid": "f63b0b63-47ac-4cf5-8ca3-329a60321d4f",
+                "iid": "j3FZZnxztF6z"
               }
             }
           ],
@@ -1334,13 +1279,12 @@
           "__type": "Site"
         },
         "lrBzXFcdu7Xh": {
-          "__type": "ComponentServerQuery",
           "uuid": "r4HcIgJv2Qmq",
           "name": "restaurants",
-          "op": { "__ref": "0V7KUsnU4lAp" }
+          "op": { "__ref": "mJdv63LGpPkk" },
+          "__type": "ComponentServerQuery"
         },
         "FbH2PxWtolPH": {
-          "__type": "TplTag",
           "tag": "div",
           "name": null,
           "children": [],
@@ -1350,10 +1294,10 @@
           "uuid": "CiimvXQk58l8",
           "parent": { "__ref": "IIumlVif02CZ" },
           "locked": null,
-          "vsettings": [{ "__ref": "gVzLO83L39-6" }]
+          "vsettings": [{ "__ref": "gVzLO83L39-6" }],
+          "__type": "TplTag"
         },
         "gVzLO83L39-6": {
-          "__type": "VariantSetting",
           "variants": [{ "__ref": "iO6WH4lV3Pym" }],
           "args": [],
           "attrs": {},
@@ -1361,42 +1305,42 @@
           "dataCond": null,
           "dataRep": null,
           "text": { "__ref": "CKGghZuT63Yb" },
-          "columnsConfig": null
+          "columnsConfig": null,
+          "__type": "VariantSetting"
         },
         "CaaFtYW23x5O": {
-          "__type": "RuleSet",
           "values": {},
           "mixins": [],
-          "animations": null
+          "animations": null,
+          "__type": "RuleSet"
         },
         "1IrSdz6dqgKB": {
-          "__type": "Rep",
           "element": { "__ref": "wdkEh-fYvsmc" },
           "index": { "__ref": "Ir6t6Khbx7I-" },
-          "collection": { "__ref": "vZ90fPgUGZOd" }
+          "collection": { "__ref": "vZ90fPgUGZOd" },
+          "__type": "Rep"
         },
         "wdkEh-fYvsmc": {
-          "__type": "Var",
           "name": "currentItem",
-          "uuid": "YiSmultJe0BL"
+          "uuid": "YiSmultJe0BL",
+          "__type": "Var"
         },
         "Ir6t6Khbx7I-": {
-          "__type": "Var",
           "name": "currentIndex",
-          "uuid": "4_Gj9fJdywgN"
+          "uuid": "4_Gj9fJdywgN",
+          "__type": "Var"
         },
         "vZ90fPgUGZOd": {
-          "__type": "ObjectPath",
           "path": ["$queries", "restaurants", "data", "data"],
-          "fallback": { "__ref": "jbKgqU1cXJGI" }
+          "fallback": { "__ref": "jbKgqU1cXJGI" },
+          "__type": "ObjectPath"
         },
         "jbKgqU1cXJGI": {
-          "__type": "CustomCode",
           "code": "([])",
-          "fallback": null
+          "fallback": null,
+          "__type": "CustomCode"
         },
         "IIumlVif02CZ": {
-          "__type": "TplTag",
           "tag": "div",
           "name": null,
           "children": [
@@ -1409,10 +1353,10 @@
           "uuid": "Fq1Qr9JDTOpG",
           "parent": { "__ref": "xpxK74eQNoWI" },
           "locked": null,
-          "vsettings": [{ "__ref": "J6GVnUHr5EDC" }]
+          "vsettings": [{ "__ref": "J6GVnUHr5EDC" }],
+          "__type": "TplTag"
         },
         "J6GVnUHr5EDC": {
-          "__type": "VariantSetting",
           "variants": [{ "__ref": "iO6WH4lV3Pym" }],
           "args": [],
           "attrs": {},
@@ -1420,10 +1364,10 @@
           "dataCond": { "__ref": "UTV_XAUSnE0A" },
           "dataRep": { "__ref": "1IrSdz6dqgKB" },
           "text": null,
-          "columnsConfig": null
+          "columnsConfig": null,
+          "__type": "VariantSetting"
         },
         "spvf9MJtyHPQ": {
-          "__type": "RuleSet",
           "values": {
             "display": "flex",
             "flex-direction": "column",
@@ -1445,15 +1389,15 @@
             "border-left-width": "1px"
           },
           "mixins": [],
-          "animations": null
+          "animations": null,
+          "__type": "RuleSet"
         },
         "UTV_XAUSnE0A": {
-          "__type": "CustomCode",
           "code": "true",
-          "fallback": null
+          "fallback": null,
+          "__type": "CustomCode"
         },
         "7FMBdO8uMVSb": {
-          "__type": "TplTag",
           "tag": "img",
           "name": null,
           "children": [],
@@ -1463,10 +1407,10 @@
           "uuid": "Xc5QxxP9oDbu",
           "parent": { "__ref": "IIumlVif02CZ" },
           "locked": null,
-          "vsettings": [{ "__ref": "M2q2YwqyXfoY" }]
+          "vsettings": [{ "__ref": "M2q2YwqyXfoY" }],
+          "__type": "TplTag"
         },
         "M2q2YwqyXfoY": {
-          "__type": "VariantSetting",
           "variants": [{ "__ref": "iO6WH4lV3Pym" }],
           "args": [],
           "attrs": {
@@ -1477,25 +1421,25 @@
           "dataCond": null,
           "dataRep": null,
           "text": null,
-          "columnsConfig": null
+          "columnsConfig": null,
+          "__type": "VariantSetting"
         },
         "-i9l9dJl6ojN": {
-          "__type": "CustomCode",
           "code": "\"lazy\"",
-          "fallback": null
+          "fallback": null,
+          "__type": "CustomCode"
         },
         "x6EwDGjXUAYD": {
-          "__type": "RuleSet",
           "values": {
             "object-fit": "cover",
             "max-width": "100%",
             "width": "50px"
           },
           "mixins": [],
-          "animations": null
+          "animations": null,
+          "__type": "RuleSet"
         },
         "USkhcO6J5zdN": {
-          "__type": "Component",
           "uuid": "j3JiC_AyU3rd",
           "name": "Strapi v5",
           "params": [],
@@ -1518,16 +1462,16 @@
           "figmaMappings": [],
           "alwaysAutoName": false,
           "trapsFocus": false,
-          "updatedAt": 1761145572585
+          "updatedAt": 1767631399805,
+          "__type": "Component"
         },
         "jDBDP70idiiw": {
-          "__type": "PageArena",
           "component": { "__ref": "USkhcO6J5zdN" },
           "matrix": { "__ref": "Uga08h2qxI-Z" },
-          "customMatrix": { "__ref": "hAQG0PJRIrst" }
+          "customMatrix": { "__ref": "hAQG0PJRIrst" },
+          "__type": "PageArena"
         },
         "TwmW0DbO_-PC": {
-          "__type": "TplTag",
           "tag": "div",
           "name": null,
           "children": [
@@ -1540,10 +1484,10 @@
           "uuid": "a6oe9YKunxYN",
           "parent": null,
           "locked": null,
-          "vsettings": [{ "__ref": "26MGd-wNlqYz" }]
+          "vsettings": [{ "__ref": "26MGd-wNlqYz" }],
+          "__type": "TplTag"
         },
         "SuBgtNPk3IVx": {
-          "__type": "Variant",
           "uuid": "tHSs-0ZvNKll",
           "name": "base",
           "selectors": null,
@@ -1552,10 +1496,10 @@
           "parent": null,
           "mediaQuery": null,
           "description": null,
-          "forTpl": null
+          "forTpl": null,
+          "__type": "Variant"
         },
         "qR2mqsK_3zZV": {
-          "__type": "PageMeta",
           "path": "/v5",
           "params": {},
           "query": {},
@@ -1563,24 +1507,24 @@
           "description": "",
           "canonical": null,
           "roleId": null,
-          "openGraphImage": null
+          "openGraphImage": null,
+          "__type": "PageMeta"
         },
         "5DlB_CE0GWii": {
-          "__type": "ComponentServerQuery",
           "uuid": "6YYkLxTmg1BH",
           "name": "restaurants",
-          "op": { "__ref": "TMtWbKvvCoq8" }
+          "op": { "__ref": "UgEbgeJPOo5O" },
+          "__type": "ComponentServerQuery"
         },
         "Uga08h2qxI-Z": {
-          "__type": "ArenaFrameGrid",
-          "rows": [{ "__ref": "vv2ZdHWxh___" }]
+          "rows": [{ "__ref": "vv2ZdHWxh___" }],
+          "__type": "ArenaFrameGrid"
         },
         "hAQG0PJRIrst": {
-          "__type": "ArenaFrameGrid",
-          "rows": [{ "__ref": "ht-BC1rG_6Pm" }]
+          "rows": [{ "__ref": "ht-BC1rG_6Pm" }],
+          "__type": "ArenaFrameGrid"
         },
         "hYUIBHdtOEcG": {
-          "__type": "TplTag",
           "tag": "div",
           "name": null,
           "children": [
@@ -1593,10 +1537,10 @@
           "uuid": "kYsw1064fosT",
           "parent": { "__ref": "TwmW0DbO_-PC" },
           "locked": null,
-          "vsettings": [{ "__ref": "7KyYU8bPsedX" }]
+          "vsettings": [{ "__ref": "7KyYU8bPsedX" }],
+          "__type": "TplTag"
         },
         "26MGd-wNlqYz": {
-          "__type": "VariantSetting",
           "variants": [{ "__ref": "SuBgtNPk3IVx" }],
           "args": [],
           "attrs": {},
@@ -1604,20 +1548,20 @@
           "dataCond": null,
           "dataRep": null,
           "text": null,
-          "columnsConfig": null
+          "columnsConfig": null,
+          "__type": "VariantSetting"
         },
         "vv2ZdHWxh___": {
-          "__type": "ArenaFrameRow",
           "cols": [{ "__ref": "yZLVbHmN1GT9" }],
-          "rowKey": { "__ref": "SuBgtNPk3IVx" }
+          "rowKey": { "__ref": "SuBgtNPk3IVx" },
+          "__type": "ArenaFrameRow"
         },
         "ht-BC1rG_6Pm": {
-          "__type": "ArenaFrameRow",
           "cols": [],
-          "rowKey": null
+          "rowKey": null,
+          "__type": "ArenaFrameRow"
         },
         "qgcc5sOLgYPm": {
-          "__type": "TplTag",
           "tag": "div",
           "name": null,
           "children": [],
@@ -1627,10 +1571,10 @@
           "uuid": "NkqGR8iUErOe",
           "parent": { "__ref": "hYUIBHdtOEcG" },
           "locked": null,
-          "vsettings": [{ "__ref": "rsvL6-i1qW35" }]
+          "vsettings": [{ "__ref": "rsvL6-i1qW35" }],
+          "__type": "TplTag"
         },
         "RhYVnVfhwJ13": {
-          "__type": "TplTag",
           "tag": "img",
           "name": null,
           "children": [],
@@ -1640,10 +1584,10 @@
           "uuid": "OU13oJh7faCY",
           "parent": { "__ref": "hYUIBHdtOEcG" },
           "locked": null,
-          "vsettings": [{ "__ref": "pyfirbrFe55N" }]
+          "vsettings": [{ "__ref": "pyfirbrFe55N" }],
+          "__type": "TplTag"
         },
         "7KyYU8bPsedX": {
-          "__type": "VariantSetting",
           "variants": [{ "__ref": "SuBgtNPk3IVx" }],
           "args": [],
           "attrs": {},
@@ -1651,10 +1595,10 @@
           "dataCond": { "__ref": "tTlITcoFfSCw" },
           "dataRep": { "__ref": "7brpRmekV5SS" },
           "text": null,
-          "columnsConfig": null
+          "columnsConfig": null,
+          "__type": "VariantSetting"
         },
         "Zkb3V6dQuxOD": {
-          "__type": "RuleSet",
           "values": {
             "display": "flex",
             "flex-direction": "column",
@@ -1665,15 +1609,15 @@
             "align-items": "flex-start"
           },
           "mixins": [],
-          "animations": null
+          "animations": null,
+          "__type": "RuleSet"
         },
         "yZLVbHmN1GT9": {
-          "__type": "ArenaFrameCell",
           "frame": { "__ref": "w1H9Bg_letDi" },
-          "cellKey": null
+          "cellKey": null,
+          "__type": "ArenaFrameCell"
         },
         "rsvL6-i1qW35": {
-          "__type": "VariantSetting",
           "variants": [{ "__ref": "SuBgtNPk3IVx" }],
           "args": [],
           "attrs": {},
@@ -1681,10 +1625,10 @@
           "dataCond": null,
           "dataRep": null,
           "text": { "__ref": "EMTsxzwCmieK" },
-          "columnsConfig": null
+          "columnsConfig": null,
+          "__type": "VariantSetting"
         },
         "pyfirbrFe55N": {
-          "__type": "VariantSetting",
           "variants": [{ "__ref": "SuBgtNPk3IVx" }],
           "args": [],
           "attrs": {
@@ -1695,10 +1639,10 @@
           "dataCond": null,
           "dataRep": null,
           "text": null,
-          "columnsConfig": null
+          "columnsConfig": null,
+          "__type": "VariantSetting"
         },
         "UzvMTwwigtgU": {
-          "__type": "RuleSet",
           "values": {
             "display": "flex",
             "flex-direction": "column",
@@ -1720,21 +1664,21 @@
             "border-left-width": "1px"
           },
           "mixins": [],
-          "animations": null
+          "animations": null,
+          "__type": "RuleSet"
         },
         "tTlITcoFfSCw": {
-          "__type": "CustomCode",
           "code": "true",
-          "fallback": null
+          "fallback": null,
+          "__type": "CustomCode"
         },
         "7brpRmekV5SS": {
-          "__type": "Rep",
           "element": { "__ref": "jw73jPtwzvbg" },
           "index": { "__ref": "Btn-Ow_bw4Yi" },
-          "collection": { "__ref": "BgVppc2r2IvN" }
+          "collection": { "__ref": "BgVppc2r2IvN" },
+          "__type": "Rep"
         },
         "w1H9Bg_letDi": {
-          "__type": "ArenaFrame",
           "uuid": "MJtfpx1N9JzI",
           "width": 1366,
           "height": 768,
@@ -1748,60 +1692,60 @@
           "bgColor": null,
           "name": "",
           "top": null,
-          "left": null
+          "left": null,
+          "__type": "ArenaFrame"
         },
         "4qUT3INTLxel": {
-          "__type": "RuleSet",
           "values": {},
           "mixins": [],
-          "animations": null
+          "animations": null,
+          "__type": "RuleSet"
         },
         "Dvyxujy-Py-v": {
-          "__type": "CustomCode",
           "code": "\"lazy\"",
-          "fallback": null
+          "fallback": null,
+          "__type": "CustomCode"
         },
         "b0FsBkeZkS0P": {
-          "__type": "RuleSet",
           "values": {
             "object-fit": "cover",
             "max-width": "100%",
             "width": "50px"
           },
           "mixins": [],
-          "animations": null
+          "animations": null,
+          "__type": "RuleSet"
         },
         "jw73jPtwzvbg": {
-          "__type": "Var",
           "name": "currentItem",
-          "uuid": "KofDD7et11le"
+          "uuid": "KofDD7et11le",
+          "__type": "Var"
         },
         "Btn-Ow_bw4Yi": {
-          "__type": "Var",
           "name": "currentIndex",
-          "uuid": "8_4kYHCtVJKS"
+          "uuid": "8_4kYHCtVJKS",
+          "__type": "Var"
         },
         "BgVppc2r2IvN": {
-          "__type": "ObjectPath",
           "path": ["$queries", "restaurants", "data", "data"],
-          "fallback": { "__ref": "dNHThQauSQ9b" }
+          "fallback": { "__ref": "dNHThQauSQ9b" },
+          "__type": "ObjectPath"
         },
         "pytr_207TBJU": {
-          "__type": "TplComponent",
           "name": null,
           "component": { "__ref": "USkhcO6J5zdN" },
           "uuid": "vwvNlyggV3yg",
           "parent": null,
           "locked": null,
-          "vsettings": [{ "__ref": "MUkKOUmOPHlO" }]
+          "vsettings": [{ "__ref": "MUkKOUmOPHlO" }],
+          "__type": "TplComponent"
         },
         "dNHThQauSQ9b": {
-          "__type": "CustomCode",
           "code": "([])",
-          "fallback": null
+          "fallback": null,
+          "__type": "CustomCode"
         },
         "MUkKOUmOPHlO": {
-          "__type": "VariantSetting",
           "variants": [{ "__ref": "_WhgzmDLp-6i" }],
           "args": [],
           "attrs": {},
@@ -1809,146 +1753,66 @@
           "dataCond": null,
           "dataRep": null,
           "text": null,
-          "columnsConfig": null
+          "columnsConfig": null,
+          "__type": "VariantSetting"
         },
         "gNyfLdPutZ8K": {
-          "__type": "RuleSet",
           "values": {},
           "mixins": [],
-          "animations": null
+          "animations": null,
+          "__type": "RuleSet"
         },
         "EMTsxzwCmieK": {
-          "__type": "ExprText",
           "expr": { "__ref": "DSardWPzdbDX" },
-          "html": false
+          "html": false,
+          "__type": "ExprText"
         },
         "DSardWPzdbDX": {
-          "__type": "ObjectPath",
           "path": ["currentItem", "name"],
-          "fallback": { "__ref": "82uWOtpyiiWH" }
+          "fallback": { "__ref": "82uWOtpyiiWH" },
+          "__type": "ObjectPath"
         },
         "82uWOtpyiiWH": {
-          "__type": "CustomCode",
           "code": "\"\"",
-          "fallback": null
+          "fallback": null,
+          "__type": "CustomCode"
         },
         "Q7QvnsTaI-4y": {
-          "__type": "CustomCode",
           "code": "(currentItem.photo.absoluteUrl)",
-          "fallback": { "__ref": "ec9J04AjzEMS" }
+          "fallback": { "__ref": "ec9J04AjzEMS" },
+          "__type": "CustomCode"
         },
         "ec9J04AjzEMS": {
-          "__type": "CustomCode",
           "code": "undefined",
-          "fallback": null
+          "fallback": null,
+          "__type": "CustomCode"
         },
         "63NVfjvefVTN": {
-          "__type": "CustomCode",
           "code": "(currentItem.attributes.photo.data.attributes.absoluteUrl)",
-          "fallback": { "__ref": "PfJdbdCux_9I" }
+          "fallback": { "__ref": "PfJdbdCux_9I" },
+          "__type": "CustomCode"
         },
         "PfJdbdCux_9I": {
-          "__type": "CustomCode",
           "code": "undefined",
-          "fallback": null
+          "fallback": null,
+          "__type": "CustomCode"
         },
         "CKGghZuT63Yb": {
-          "__type": "ExprText",
           "expr": { "__ref": "17evExB3-Erb" },
-          "html": false
+          "html": false,
+          "__type": "ExprText"
         },
         "17evExB3-Erb": {
-          "__type": "CustomCode",
           "code": "(currentItem.attributes.name)",
-          "fallback": { "__ref": "N4Bmdv1rXghu" }
+          "fallback": { "__ref": "N4Bmdv1rXghu" },
+          "__type": "CustomCode"
         },
         "N4Bmdv1rXghu": {
-          "__type": "CustomCode",
           "code": "\"\"",
-          "fallback": null
-        },
-        "0V7KUsnU4lAp": {
-          "__type": "CustomFunctionExpr",
-          "func": {
-            "__xref": {
-              "uuid": "b495c637-3134-46e1-8a21-c100fc4d809b",
-              "iid": "pbAFX4GQXo8_"
-            }
-          },
-          "args": [{ "__ref": "XF1KV6kB_big" }, { "__ref": "9b5706bYdhMN" }]
-        },
-        "XF1KV6kB_big": {
-          "__type": "FunctionArg",
-          "uuid": "aNAY9vcS0AQf",
-          "argType": {
-            "__xref": {
-              "uuid": "b495c637-3134-46e1-8a21-c100fc4d809b",
-              "iid": "TqRK6vp2puNM"
-            }
-          },
-          "expr": { "__ref": "92UacOnmBlc2" }
-        },
-        "9b5706bYdhMN": {
-          "__type": "FunctionArg",
-          "uuid": "189tWMPxx0kq",
-          "argType": {
-            "__xref": {
-              "uuid": "b495c637-3134-46e1-8a21-c100fc4d809b",
-              "iid": "yCjEftkMp7dQ"
-            }
-          },
-          "expr": { "__ref": "YbOdZxtp648Z" }
-        },
-        "92UacOnmBlc2": {
-          "__type": "TemplatedString",
-          "text": ["https://plasmic-loader-test.test/"]
-        },
-        "YbOdZxtp648Z": {
-          "__type": "TemplatedString",
-          "text": ["restaurants"]
-        },
-        "TMtWbKvvCoq8": {
-          "__type": "CustomFunctionExpr",
-          "func": {
-            "__xref": {
-              "uuid": "b495c637-3134-46e1-8a21-c100fc4d809b",
-              "iid": "pbAFX4GQXo8_"
-            }
-          },
-          "args": [{ "__ref": "r-XWB_4-g6Ts" }, { "__ref": "nVIa4Q52ZUbC" }]
-        },
-        "r-XWB_4-g6Ts": {
-          "__type": "FunctionArg",
-          "uuid": "ndDO5tnMaD-M",
-          "argType": {
-            "__xref": {
-              "uuid": "b495c637-3134-46e1-8a21-c100fc4d809b",
-              "iid": "TqRK6vp2puNM"
-            }
-          },
-          "expr": { "__ref": "hn0UMlP6JCtQ" }
-        },
-        "nVIa4Q52ZUbC": {
-          "__type": "FunctionArg",
-          "uuid": "SP5QIZLkcTNp",
-          "argType": {
-            "__xref": {
-              "uuid": "b495c637-3134-46e1-8a21-c100fc4d809b",
-              "iid": "yCjEftkMp7dQ"
-            }
-          },
-          "expr": { "__ref": "FQPApx2d24MG" }
-        },
-        "hn0UMlP6JCtQ": {
-          "__type": "TemplatedString",
-          "text": ["https://plasmic-loader-test.test/"]
-        },
-        "FQPApx2d24MG": {
-          "__type": "TemplatedString",
-          "text": ["restaurants"]
+          "fallback": null,
+          "__type": "CustomCode"
         },
         "S1luCWlVgpEf": {
-          "__type": "TplTag",
           "tag": "div",
           "name": null,
           "children": [
@@ -1961,10 +1825,10 @@
           "uuid": "3oloRqo_lpIn",
           "parent": { "__ref": "TwmW0DbO_-PC" },
           "locked": null,
-          "vsettings": [{ "__ref": "AjswF4ftei2O" }]
+          "vsettings": [{ "__ref": "AjswF4ftei2O" }],
+          "__type": "TplTag"
         },
         "jKa9P7SSxCfi": {
-          "__type": "TplTag",
           "tag": "div",
           "name": null,
           "children": [],
@@ -1974,10 +1838,10 @@
           "uuid": "yuCcNIp2kHOg",
           "parent": { "__ref": "S1luCWlVgpEf" },
           "locked": null,
-          "vsettings": [{ "__ref": "85HkSgVUtLZi" }]
+          "vsettings": [{ "__ref": "85HkSgVUtLZi" }],
+          "__type": "TplTag"
         },
         "cIm1qm6-qGDE": {
-          "__type": "TplTag",
           "tag": "img",
           "name": null,
           "children": [],
@@ -1987,10 +1851,10 @@
           "uuid": "6KCkMfE_UTEU",
           "parent": { "__ref": "S1luCWlVgpEf" },
           "locked": null,
-          "vsettings": [{ "__ref": "qobKtfnqEJHx" }]
+          "vsettings": [{ "__ref": "qobKtfnqEJHx" }],
+          "__type": "TplTag"
         },
         "AjswF4ftei2O": {
-          "__type": "VariantSetting",
           "variants": [{ "__ref": "SuBgtNPk3IVx" }],
           "args": [],
           "attrs": {},
@@ -1998,10 +1862,10 @@
           "dataCond": { "__ref": "MXo3i_qq6FUo" },
           "dataRep": { "__ref": "dUN5ygpDyhNt" },
           "text": null,
-          "columnsConfig": null
+          "columnsConfig": null,
+          "__type": "VariantSetting"
         },
         "85HkSgVUtLZi": {
-          "__type": "VariantSetting",
           "variants": [{ "__ref": "SuBgtNPk3IVx" }],
           "args": [],
           "attrs": {},
@@ -2009,10 +1873,10 @@
           "dataCond": null,
           "dataRep": null,
           "text": { "__ref": "HY5Fp6JfGUyx" },
-          "columnsConfig": null
+          "columnsConfig": null,
+          "__type": "VariantSetting"
         },
         "qobKtfnqEJHx": {
-          "__type": "VariantSetting",
           "variants": [{ "__ref": "SuBgtNPk3IVx" }],
           "args": [],
           "attrs": {
@@ -2023,10 +1887,10 @@
           "dataCond": null,
           "dataRep": null,
           "text": null,
-          "columnsConfig": null
+          "columnsConfig": null,
+          "__type": "VariantSetting"
         },
         "cpwOIzd7VKOy": {
-          "__type": "RuleSet",
           "values": {
             "display": "flex",
             "flex-direction": "column",
@@ -2048,87 +1912,87 @@
             "border-left-width": "1px"
           },
           "mixins": [],
-          "animations": null
+          "animations": null,
+          "__type": "RuleSet"
         },
         "MXo3i_qq6FUo": {
-          "__type": "CustomCode",
           "code": "true",
-          "fallback": null
+          "fallback": null,
+          "__type": "CustomCode"
         },
         "dUN5ygpDyhNt": {
-          "__type": "Rep",
           "element": { "__ref": "G6qAhxcNOvdt" },
           "index": { "__ref": "yLnS0aZ2NfWt" },
-          "collection": { "__ref": "HQrEfdEpC_G-" }
+          "collection": { "__ref": "HQrEfdEpC_G-" },
+          "__type": "Rep"
         },
         "jEQwZCPLRQOz": {
-          "__type": "RuleSet",
           "values": {},
           "mixins": [],
-          "animations": null
+          "animations": null,
+          "__type": "RuleSet"
         },
         "HY5Fp6JfGUyx": {
-          "__type": "ExprText",
           "expr": { "__ref": "gTFpwgGlhEVQ" },
-          "html": false
+          "html": false,
+          "__type": "ExprText"
         },
         "K6LBRXthtk5U": {
-          "__type": "CustomCode",
           "code": "\"lazy\"",
-          "fallback": null
+          "fallback": null,
+          "__type": "CustomCode"
         },
         "VU64WRYwrQ-Q": {
-          "__type": "CustomCode",
           "code": "(currentItem.photo.absoluteUrl)",
-          "fallback": { "__ref": "oMIKjurLa-4A" }
+          "fallback": { "__ref": "oMIKjurLa-4A" },
+          "__type": "CustomCode"
         },
         "A7Un7CUtDgq7": {
-          "__type": "RuleSet",
           "values": {
             "object-fit": "cover",
             "max-width": "100%",
             "width": "50px"
           },
           "mixins": [],
-          "animations": null
+          "animations": null,
+          "__type": "RuleSet"
         },
         "G6qAhxcNOvdt": {
-          "__type": "Var",
           "name": "currentItem",
-          "uuid": "hYW9yqD11YX1"
+          "uuid": "hYW9yqD11YX1",
+          "__type": "Var"
         },
         "yLnS0aZ2NfWt": {
-          "__type": "Var",
           "name": "currentIndex",
-          "uuid": "j3eXSB7GooM5"
+          "uuid": "j3eXSB7GooM5",
+          "__type": "Var"
         },
         "HQrEfdEpC_G-": {
-          "__type": "ObjectPath",
           "path": ["$queries", "restaurants", "data", "data"],
-          "fallback": { "__ref": "rf5NbnVhiyQi" }
+          "fallback": { "__ref": "rf5NbnVhiyQi" },
+          "__type": "ObjectPath"
         },
         "gTFpwgGlhEVQ": {
-          "__type": "ObjectPath",
           "path": ["currentItem", "name"],
-          "fallback": { "__ref": "BemhyYxXxl1R" }
+          "fallback": { "__ref": "BemhyYxXxl1R" },
+          "__type": "ObjectPath"
         },
         "oMIKjurLa-4A": {
-          "__type": "CustomCode",
           "code": "undefined",
-          "fallback": null
+          "fallback": null,
+          "__type": "CustomCode"
         },
         "rf5NbnVhiyQi": {
-          "__type": "CustomCode",
           "code": "([])",
-          "fallback": null
+          "fallback": null,
+          "__type": "CustomCode"
         },
         "BemhyYxXxl1R": {
-          "__type": "CustomCode",
           "code": "\"\"",
-          "fallback": null
+          "fallback": null,
+          "__type": "CustomCode"
         },
         "_G08aqbd5GNc": {
-          "__type": "TplTag",
           "tag": "div",
           "name": null,
           "children": [
@@ -2141,10 +2005,10 @@
           "uuid": "3hXaR-2SwqD3",
           "parent": { "__ref": "xpxK74eQNoWI" },
           "locked": null,
-          "vsettings": [{ "__ref": "PWJhEg5FgncQ" }]
+          "vsettings": [{ "__ref": "PWJhEg5FgncQ" }],
+          "__type": "TplTag"
         },
         "pEcfSIv19Reh": {
-          "__type": "TplTag",
           "tag": "div",
           "name": null,
           "children": [],
@@ -2154,10 +2018,10 @@
           "uuid": "ZQW7y7PQlTRf",
           "parent": { "__ref": "_G08aqbd5GNc" },
           "locked": null,
-          "vsettings": [{ "__ref": "-_Xwbd1jWXbG" }]
+          "vsettings": [{ "__ref": "-_Xwbd1jWXbG" }],
+          "__type": "TplTag"
         },
         "tntTDOw8gYDf": {
-          "__type": "TplTag",
           "tag": "img",
           "name": null,
           "children": [],
@@ -2167,10 +2031,10 @@
           "uuid": "92RpBd4Ml3d4",
           "parent": { "__ref": "_G08aqbd5GNc" },
           "locked": null,
-          "vsettings": [{ "__ref": "iGHd0zDYpzO8" }]
+          "vsettings": [{ "__ref": "iGHd0zDYpzO8" }],
+          "__type": "TplTag"
         },
         "PWJhEg5FgncQ": {
-          "__type": "VariantSetting",
           "variants": [{ "__ref": "iO6WH4lV3Pym" }],
           "args": [],
           "attrs": {},
@@ -2178,10 +2042,10 @@
           "dataCond": { "__ref": "5IIQ360C2IDQ" },
           "dataRep": { "__ref": "B6iCwRIKOzS2" },
           "text": null,
-          "columnsConfig": null
+          "columnsConfig": null,
+          "__type": "VariantSetting"
         },
         "-_Xwbd1jWXbG": {
-          "__type": "VariantSetting",
           "variants": [{ "__ref": "iO6WH4lV3Pym" }],
           "args": [],
           "attrs": {},
@@ -2189,10 +2053,10 @@
           "dataCond": null,
           "dataRep": null,
           "text": { "__ref": "51sTxISVhWYX" },
-          "columnsConfig": null
+          "columnsConfig": null,
+          "__type": "VariantSetting"
         },
         "iGHd0zDYpzO8": {
-          "__type": "VariantSetting",
           "variants": [{ "__ref": "iO6WH4lV3Pym" }],
           "args": [],
           "attrs": {
@@ -2203,10 +2067,10 @@
           "dataCond": null,
           "dataRep": null,
           "text": null,
-          "columnsConfig": null
+          "columnsConfig": null,
+          "__type": "VariantSetting"
         },
         "sqVGMkW24iKg": {
-          "__type": "RuleSet",
           "values": {
             "display": "flex",
             "flex-direction": "column",
@@ -2228,87 +2092,159 @@
             "border-left-width": "1px"
           },
           "mixins": [],
-          "animations": null
+          "animations": null,
+          "__type": "RuleSet"
         },
         "5IIQ360C2IDQ": {
-          "__type": "CustomCode",
           "code": "true",
-          "fallback": null
+          "fallback": null,
+          "__type": "CustomCode"
         },
         "B6iCwRIKOzS2": {
-          "__type": "Rep",
           "element": { "__ref": "sbZz_PkWJiTx" },
           "index": { "__ref": "rNsiptufEzKE" },
-          "collection": { "__ref": "WIkZYCmPRRt7" }
+          "collection": { "__ref": "WIkZYCmPRRt7" },
+          "__type": "Rep"
         },
         "2QvmwKPWD5um": {
-          "__type": "RuleSet",
           "values": {},
           "mixins": [],
-          "animations": null
+          "animations": null,
+          "__type": "RuleSet"
         },
         "51sTxISVhWYX": {
-          "__type": "ExprText",
           "expr": { "__ref": "244m8-WEyNoV" },
-          "html": false
+          "html": false,
+          "__type": "ExprText"
         },
         "Jx1qmIjngOZD": {
-          "__type": "CustomCode",
           "code": "\"lazy\"",
-          "fallback": null
+          "fallback": null,
+          "__type": "CustomCode"
         },
         "jnt3jFUI53P4": {
-          "__type": "CustomCode",
           "code": "(currentItem.attributes.photo.data.attributes.absoluteUrl)",
-          "fallback": { "__ref": "y1CWaLfGF-61" }
+          "fallback": { "__ref": "y1CWaLfGF-61" },
+          "__type": "CustomCode"
         },
         "nplY6oxlzjrA": {
-          "__type": "RuleSet",
           "values": {
             "object-fit": "cover",
             "max-width": "100%",
             "width": "50px"
           },
           "mixins": [],
-          "animations": null
+          "animations": null,
+          "__type": "RuleSet"
         },
         "sbZz_PkWJiTx": {
-          "__type": "Var",
           "name": "currentItem",
-          "uuid": "x42dBMe-igXM"
+          "uuid": "x42dBMe-igXM",
+          "__type": "Var"
         },
         "rNsiptufEzKE": {
-          "__type": "Var",
           "name": "currentIndex",
-          "uuid": "FOFuche_sbnR"
+          "uuid": "FOFuche_sbnR",
+          "__type": "Var"
         },
         "WIkZYCmPRRt7": {
-          "__type": "ObjectPath",
           "path": ["$queries", "restaurants", "data", "data"],
-          "fallback": { "__ref": "oGvIApTmHMW-" }
+          "fallback": { "__ref": "oGvIApTmHMW-" },
+          "__type": "ObjectPath"
         },
         "244m8-WEyNoV": {
-          "__type": "CustomCode",
           "code": "(currentItem.attributes.name)",
-          "fallback": { "__ref": "ciBIjJPmNwgF" }
+          "fallback": { "__ref": "ciBIjJPmNwgF" },
+          "__type": "CustomCode"
         },
         "y1CWaLfGF-61": {
-          "__type": "CustomCode",
           "code": "undefined",
-          "fallback": null
+          "fallback": null,
+          "__type": "CustomCode"
         },
         "oGvIApTmHMW-": {
-          "__type": "CustomCode",
           "code": "([])",
-          "fallback": null
+          "fallback": null,
+          "__type": "CustomCode"
         },
         "ciBIjJPmNwgF": {
-          "__type": "CustomCode",
           "code": "\"\"",
-          "fallback": null
-        }
+          "fallback": null,
+          "__type": "CustomCode"
+        },
+        "mJdv63LGpPkk": {
+          "func": {
+            "__xref": {
+              "uuid": "f63b0b63-47ac-4cf5-8ca3-329a60321d4f",
+              "iid": "pbAFX4GQXo8_"
+            }
+          },
+          "args": [{ "__ref": "2k1158KA3KNv" }],
+          "__type": "CustomFunctionExpr"
+        },
+        "2k1158KA3KNv": {
+          "uuid": "IMNWJxSTohDq",
+          "argType": {
+            "__xref": {
+              "uuid": "f63b0b63-47ac-4cf5-8ca3-329a60321d4f",
+              "iid": "-mGUaBLmT_uw"
+            }
+          },
+          "expr": { "__ref": "Y-TcV1s3uk-z" },
+          "__type": "FunctionArg"
+        },
+        "Y-TcV1s3uk-z": {
+          "hostLiteral": "{\"host\":null,\"collection\":null}",
+          "substitutions": {
+            "[\"host\"]": { "__ref": "QFQaO3YkGchb" },
+            "[\"collection\"]": { "__ref": "v5F8TN86xhwM" }
+          },
+          "__type": "CompositeExpr"
+        },
+        "QFQaO3YkGchb": {
+          "text": ["https://plasmic-loader-test.test/"],
+          "__type": "TemplatedString"
+        },
+        "v5F8TN86xhwM": {
+          "text": ["restaurants"],
+          "__type": "TemplatedString"
+        },
+        "UgEbgeJPOo5O": {
+          "__type": "CustomFunctionExpr",
+          "func": {
+            "__xref": {
+              "uuid": "f63b0b63-47ac-4cf5-8ca3-329a60321d4f",
+              "iid": "pbAFX4GQXo8_"
+            }
+          },
+          "args": [{ "__ref": "uoiro8Mt9_9c" }]
+        },
+        "uoiro8Mt9_9c": {
+          "__type": "FunctionArg",
+          "uuid": "uZJOFebCGZp8",
+          "argType": {
+            "__xref": {
+              "uuid": "f63b0b63-47ac-4cf5-8ca3-329a60321d4f",
+              "iid": "-mGUaBLmT_uw"
+            }
+          },
+          "expr": { "__ref": "UeRmeE7yORfo" }
+        },
+        "UeRmeE7yORfo": {
+          "__type": "CompositeExpr",
+          "hostLiteral": "{\"host\":null,\"collection\":null}",
+          "substitutions": {
+            "[\"host\"]": { "__ref": "3MiUAaKUlCNn" },
+            "[\"collection\"]": { "__ref": "-D2MZRj8Lvep" }
+          }
+        },
+        "3MiUAaKUlCNn": {
+          "__type": "TemplatedString",
+          "text": ["https://plasmic-loader-test.test/"]
+        },
+        "-D2MZRj8Lvep": { "__type": "TemplatedString", "text": ["restaurants"] }
       },
-      "deps": ["b495c637-3134-46e1-8a21-c100fc4d809b"],
+      "deps": ["f63b0b63-47ac-4cf5-8ca3-329a60321d4f"],
       "version": "254-migrate-transforms"
     }
   ]

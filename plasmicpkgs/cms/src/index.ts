@@ -16,11 +16,16 @@ interface FnContext {
   tables: ApiCmsTable[];
 }
 
-function sharedTableFnContext(
-  cmsId?: string,
-  cmsPublicToken?: string,
-  ..._args: unknown[]
-): {
+interface BaseCMSOpts {
+  cmsId?: string;
+  cmsPublicToken?: string;
+}
+
+interface CMSTableOpts extends BaseCMSOpts {
+  tableId?: string;
+}
+
+function sharedTableFnContext({ cmsId, cmsPublicToken }: BaseCMSOpts = {}): {
   dataKey: string;
   fetcher: () => Promise<FnContext>;
 } {
@@ -47,21 +52,21 @@ function sharedTableFnContext(
   };
 }
 
-// TODO: Handle markdown in descriptions and link to https://docs.plasmic.app/learn/plasmic-cms-api-reference/#find-your-cms-ids-public-token-and-secret-token
 const cmsIdParam = {
-  name: "cmsId",
   type: "string",
-  description: "Find the CMS ID on the Plasmic CMS settings page.",
+  description: "ID of the CMS.",
+  helpText:
+    "Find the CMS ID on the [Plasmic CMS settings page](https://docs.plasmic.app/learn/plasmic-cms-api-reference/#find-your-cms-ids-public-token-and-secret-token)",
 } as const;
 
 const cmsPublicTokenParam = {
-  name: "cmsPublicToken",
   type: "string",
-  description: "Find the Public Token on the Plasmic CMS settings page.",
+  description: "Public token of the CMS.",
+  helpText:
+    "Find the public token on the [Plasmic CMS settings page](https://docs.plasmic.app/learn/plasmic-cms-api-reference/#find-your-cms-ids-public-token-and-secret-token)",
 } as const;
 
 const tableIdParam = {
-  name: "tableId",
   type: "choice",
   options: (_args: unknown, ctx: FnContext) => {
     if (!ctx?.tables) {
@@ -75,13 +80,12 @@ const tableIdParam = {
 } as const;
 
 const selectParam = {
-  name: "select",
   type: "choice",
   multiSelect: true,
   description: "Fields to fetch. Defaults to all fields.",
   defaultValueHint: ["Default: *"] as string[],
-  options: (args: { 2?: string | undefined }, ctx: FnContext) => {
-    const tableId = args[2];
+  options: ([opts]: [(CMSTableOpts | undefined)?], ctx: FnContext) => {
+    const tableId = opts?.tableId;
     return mkFieldOptions(ctx.tables, tableId, undefined, {
       includeRefStars: true,
     });
@@ -89,11 +93,10 @@ const selectParam = {
 } as const;
 
 const whereLogicParam = {
-  name: "where",
   type: "queryBuilder",
   description: "Filter fetched entries. Defaults to fetch all entries.",
-  config: (args: { 2?: string | undefined }, ctx: FnContext) => {
-    const tableId = args[2];
+  config: ([opts]: [(CMSTableOpts | undefined)?], ctx: FnContext) => {
+    const tableId = opts?.tableId;
     const table = ctx.tables.find((t) => t.identifier === tableId);
     if (table) {
       return cmsTableToQueryBuilderConfig(table);
@@ -104,19 +107,17 @@ const whereLogicParam = {
 } as const;
 
 const orderByParam = {
-  name: "orderBy",
   type: "choice",
   description: "Field to order entries by. Defaults to creation order.",
-  options: (args: { 2?: string | undefined }, ctx: FnContext) => {
-    const tableId = args[2];
+  options: ([opts]: [(CMSTableOpts | undefined)?], ctx: FnContext) => {
+    const tableId = opts?.tableId;
     return mkFieldOptions(ctx.tables, tableId, undefined, {
-      includeSystemId: true,
+      includeRefStars: true,
     });
   },
 } as const;
 
 const orderDirectionParam = {
-  name: "orderDirection",
   label: "Direction",
   type: "choice",
   options: [
@@ -133,32 +134,32 @@ const orderDirectionParam = {
 } as const;
 
 const limitParam = {
-  name: "limit",
   type: "number",
   description: "Maximum number of entries to fetch.",
 } as const;
 
 const offsetParam = {
-  name: "offset",
   type: "number",
   description: "Number of entries to skip.",
   defaultValueHint: 0,
 } as const;
 
 const useDraftParam = {
-  name: "useDraft",
   type: "boolean",
   description: "Whether to use draft data.",
   defaultValueHint: false,
 } as const;
 
 const localeParam = {
-  name: "locale",
   type: "string",
   description: "The locale to use. Defaults to base locale.",
 } as const;
 
-export async function fetchTables(cmsId: string, cmsPublicToken: string) {
+export async function fetchTables({ cmsId, cmsPublicToken }: BaseCMSOpts) {
+  if (!cmsId || !cmsPublicToken) {
+    return [];
+  }
+
   const api = mkApi({
     databaseId: cmsId,
     databaseToken: cmsPublicToken,
@@ -168,19 +169,30 @@ export async function fetchTables(cmsId: string, cmsPublicToken: string) {
   return api.fetchTables();
 }
 
-export async function fetchContent(
-  cmsId?: string,
-  cmsPublicToken?: string,
-  tableId?: string,
-  select?: string[],
-  whereLogic?: RulesLogic,
-  orderBy?: string,
-  orderDirection?: "asc" | "desc",
-  limit?: number,
-  offset?: number,
-  useDraft?: boolean,
-  locale?: string
-) {
+interface FetchContentOpts extends CMSTableOpts {
+  select?: string[];
+  whereLogic?: RulesLogic;
+  orderBy?: string;
+  orderDirection?: "asc" | "desc";
+  limit?: number;
+  offset?: number;
+  useDraft?: boolean;
+  locale?: string;
+}
+
+export async function fetchContent({
+  cmsId,
+  cmsPublicToken,
+  tableId,
+  select,
+  whereLogic,
+  orderBy,
+  orderDirection,
+  limit,
+  offset,
+  useDraft,
+  locale,
+}: FetchContentOpts) {
   if (!cmsId || !cmsPublicToken || !tableId) {
     return [];
   }
@@ -203,13 +215,18 @@ export async function fetchContent(
   });
 }
 
-export async function fetchCount(
-  cmsId?: string,
-  cmsPublicToken?: string,
-  tableId?: string,
-  whereLogic?: RulesLogic,
-  useDraft?: boolean
-) {
+interface FetchCountOpts extends CMSTableOpts {
+  whereLogic?: RulesLogic;
+  useDraft?: boolean;
+}
+
+export async function fetchCount({
+  cmsId,
+  cmsPublicToken,
+  tableId,
+  useDraft,
+  whereLogic,
+}: FetchCountOpts) {
   if (!cmsId || !cmsPublicToken || !tableId) {
     return 0;
   }
@@ -244,7 +261,17 @@ export function registerAllCmsFunctions(loader?: { registerFunction: any }) {
     displayName: "Fetch Plasmic CMS Tables",
     description: "Fetches table metadata from Plasmic CMS",
     importPath: "@plasmicpkgs/cms",
-    params: [cmsIdParam, cmsPublicTokenParam],
+    params: [
+      {
+        type: "object",
+        display: "flatten",
+        name: "Opts",
+        fields: {
+          cmsId: cmsIdParam,
+          cmsPublicToken: cmsPublicTokenParam,
+        },
+      },
+    ],
   });
 
   _registerFunction(fetchContent, {
@@ -254,17 +281,24 @@ export function registerAllCmsFunctions(loader?: { registerFunction: any }) {
     description: "Fetch content from a Plasmic CMS table",
     importPath: "@plasmicpkgs/cms",
     params: [
-      cmsIdParam,
-      cmsPublicTokenParam,
-      tableIdParam,
-      selectParam,
-      whereLogicParam,
-      orderByParam,
-      orderDirectionParam,
-      limitParam,
-      offsetParam,
-      useDraftParam,
-      localeParam,
+      {
+        type: "object",
+        display: "flatten",
+        name: "Opts",
+        fields: {
+          cmsId: cmsIdParam,
+          cmsPublicToken: cmsPublicTokenParam,
+          tableId: tableIdParam,
+          select: selectParam,
+          whereLogic: whereLogicParam,
+          orderBy: orderByParam,
+          orderDirection: orderDirectionParam,
+          limit: limitParam,
+          offset: offsetParam,
+          useDraft: useDraftParam,
+          locale: localeParam,
+        },
+      },
     ],
     fnContext: sharedTableFnContext,
   });
@@ -276,11 +310,18 @@ export function registerAllCmsFunctions(loader?: { registerFunction: any }) {
     description: "Fetch the count of entries from a Plasmic CMS table",
     importPath: "@plasmicpkgs/cms",
     params: [
-      cmsIdParam,
-      cmsPublicTokenParam,
-      tableIdParam,
-      whereLogicParam,
-      useDraftParam,
+      {
+        type: "object",
+        display: "flatten",
+        name: "Opts",
+        fields: {
+          cmsId: cmsIdParam,
+          cmsPublicToken: cmsPublicTokenParam,
+          tableId: tableIdParam,
+          whereLogic: whereLogicParam,
+          useDraft: useDraftParam,
+        },
+      },
     ],
     fnContext: sharedTableFnContext,
   });
