@@ -37,22 +37,6 @@ services:
       cd /plasmic && \
       yarn dev
     user: root
-    volumes:
-      - .:/plasmic
-      - plasmic_node_modules:/plasmic/node_modules
-      - plasmic_wab_node_modules:/plasmic/platform/wab/node_modules
-      - plasmic_sub_node_modules:/plasmic/platform/sub/node_modules
-      - plasmic_canvas_node_modules:/plasmic/platform/canvas-packages/node_modules
-      - plasmic_live_frame_node_modules:/plasmic/platform/live-frame/node_modules
-      - plasmic_react_web_bundle_node_modules:/plasmic/platform/react-web-bundle/node_modules
-      - plasmic_loader_bundle_env_node_modules:/plasmic/platform/loader-bundle-env/node_modules
-      - plasmic_loader_html_hydrate_node_modules:/plasmic/platform/loader-html-hydrate/node_modules
-      - plasmic_public:/plasmic/platform/wab/public
-      - plasmic_wab_client:/plasmic/platform/wab/src/wab/client
-      - plasmic_wab_gen:/plasmic/platform/wab/src/wab/gen
-      - plasmic_wab_shared_model:/plasmic/platform/wab/src/wab/shared/model
-      - plasmic_generated_styles:/plasmic/platform/wab/src/wab/styles
-      - plasmic_playwright_cache:/home/plasmic/.cache/ms-playwright
     ports:
       - "3003:3003"
       - "3004:3004"
@@ -76,17 +60,3 @@ services:
 
 volumes:
   postgres_data:
-  plasmic_node_modules:
-  plasmic_wab_node_modules:
-  plasmic_sub_node_modules:
-  plasmic_canvas_node_modules:
-  plasmic_live_frame_node_modules:
-  plasmic_react_web_bundle_node_modules:
-  plasmic_loader_bundle_env_node_modules:
-  plasmic_loader_html_hydrate_node_modules:
-  plasmic_playwright_cache:
-  plasmic_generated_styles:
-  plasmic_public:
-  plasmic_wab_client:
-  plasmic_wab_gen:
-  plasmic_wab_shared_model:
