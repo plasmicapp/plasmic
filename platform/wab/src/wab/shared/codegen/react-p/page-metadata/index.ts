@@ -84,14 +84,10 @@ export function serializePageMetadata(
     return "";
   }
 
-  const title = L.isString(page.pageMeta?.title) ? page.pageMeta?.title : "";
-  const description = L.isString(page.pageMeta?.description)
-    ? page.pageMeta?.description
-    : "";
+  const title = flattenMetadataValueToString(page.pageMeta?.title);
+  const description = flattenMetadataValueToString(page.pageMeta?.description);
   const ogImageSrc = getOgImageLink(ctx, page.pageMeta?.openGraphImage) || "";
-  const canonical = L.isString(page.pageMeta?.canonical)
-    ? page.pageMeta?.canonical
-    : "";
+  const canonical = flattenMetadataValueToString(page.pageMeta?.canonical);
 
   const pageMetadata = JSON.stringify(
     { title, description, ogImageSrc, canonical },
@@ -142,7 +138,7 @@ export function renderPageHead(
   const shouldRenderHead = title || description || ogImageSrc || canonical;
 
   // Skip <Head> generation for Next.js App Router (uses generateMetadata instead)
-  const isAppRouter = ctx.exportOpts.platformOptions?.nextjs?.appDir === true;
+  const isAppRouter = !!ctx.exportOpts.platformOptions?.nextjs?.appDir;
 
   if (!shouldRenderHead || ctx.exportOpts.skipHead || isAppRouter) {
     return "";
@@ -275,11 +271,10 @@ export function makePageMetadataOutput(
   }
   return {
     path: pageMeta.path as string,
-    description: L.isString(pageMeta.description)
-      ? pageMeta.description
-      : undefined,
-    title: L.isString(pageMeta.title) ? pageMeta.title : undefined,
-    canonical: L.isString(pageMeta.canonical) ? pageMeta.canonical : undefined,
+    description:
+      flattenMetadataValueToString(pageMeta.description) || undefined,
+    title: flattenMetadataValueToString(pageMeta.title) || undefined,
+    canonical: flattenMetadataValueToString(pageMeta.canonical) || undefined,
     openGraphImageUrl: getOgImageLink(ctx, pageMeta.openGraphImage),
   };
 }
@@ -302,6 +297,21 @@ function serializeMetadataValue(
     return stripParens(asCode(value, ctx.exprCtx).code);
   }
   return undefined;
+}
+
+function flattenMetadataValueToString(
+  value: string | any | null | undefined
+): string {
+  if (!value) {
+    return "";
+  }
+  if (L.isString(value)) {
+    return value;
+  }
+  if (isKnownTemplatedString(value)) {
+    return value.text.filter((val) => L.isString(val)).join("");
+  }
+  return "";
 }
 
 /**
