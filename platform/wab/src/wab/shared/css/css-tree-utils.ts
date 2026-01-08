@@ -428,7 +428,6 @@ export function formatDimCssFunction(value: string): string {
 
   const operatorSpacingRegex = regex({
     flags: "g",
-    disable: { n: true },
   })`
     # Match what comes BEFORE the operator (lookbehind):
     # - A number with optional unit (e.g., 10px, 50%, 2)
@@ -442,7 +441,7 @@ export function formatDimCssFunction(value: string): string {
 
     # The operator itself (with optional whitespace around it):
     \s*                   # Optional leading whitespace
-    ([+\-*\/])            # Capture the operator: +, -, *, /
+    (?<operator>[+\-*\/]) # Capture the operator: +, -, *, /
     \s*                   # Optional trailing whitespace
 
     # Match what comes AFTER the operator (lookahead):
@@ -465,7 +464,7 @@ export function formatDimCssFunction(value: string): string {
       // Normalize all whitespace to single spaces first (e.g., "100%  -  20px" => "100% - 20px")
       .replace(/\s+/g, " ")
       // Add spaces around operators only between numbers/functions (e.g., "100%-20px" => "100% - 20px")
-      .replace(operatorSpacingRegex, " $1 ")
+      .replace(operatorSpacingRegex, " $<operator> ")
       // Add space after commas (e.g., "min(10px,20px)" => "min(10px, 20px)")
       .replace(/,(\S)/g, ", $1")
       // Remove spaces after opening parentheses (e.g., "calc( 100%" => "calc(100%")
