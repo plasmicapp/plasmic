@@ -65,6 +65,7 @@ import {
   ensureArray,
   ensureInstance,
   hackyCast,
+  last,
   maybe,
   mkShortId,
   only,
@@ -854,6 +855,13 @@ export function hasDynamicParts(text: TemplatedString) {
   return !text.text.every((part) => typeof part === "string");
 }
 
+export function hasOnlyDynamicValues(expr: TemplatedString) {
+  const hasNonEmptyStatic = expr.text.some(
+    (x) => typeof x === "string" && x !== ""
+  );
+  return !hasNonEmptyStatic && hasDynamicParts(expr);
+}
+
 /**
  * Returns numbers and strings as strings, undefined for everything else.
  */
@@ -1351,9 +1359,42 @@ export function mkTemplatedStringOfOneDynExpr(expr: CustomCode | ObjectPath) {
   });
 }
 
+export function convertExprToTemplatedString(
+  expr: Expr | null | undefined
+): TemplatedString | null {
+  if (!expr) {
+    return null;
+  }
+  if (isKnownTemplatedString(expr)) {
+    return expr;
+  }
+  if (isKnownObjectPath(expr) || isKnownCustomCode(expr)) {
+    return mkTemplatedStringOfOneDynExpr(expr);
+  }
+  return null;
+}
+
+export function convertTemplatedStringToExpr(
+  value: TemplatedString | string | null | undefined
+): Expr | undefined {
+  if (value == null) {
+    return undefined;
+  }
+  if (isKnownExpr(value)) {
+    return value;
+  }
+  return codeLit(value);
+}
+
 export function getSingleDynExprFromTemplatedString(expr: TemplatedString) {
   const single = only(expr.text.filter((x) => x !== ""));
   const typed = ensureInstance(single, CustomCode, ObjectPath);
+  return typed;
+}
+
+export function getLastDynExprFromTemplatedString(expr: TemplatedString) {
+  const lastExpr = last(expr.text.filter((x) => x !== ""));
+  const typed = ensureInstance(lastExpr, CustomCode, ObjectPath);
   return typed;
 }
 

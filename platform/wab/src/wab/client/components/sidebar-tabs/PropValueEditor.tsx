@@ -1264,6 +1264,13 @@ const PropValueEditor_ = (
       />
     );
   } else {
+    // Extract control type from string propType if available
+    const stringControl =
+      isPlainObjectPropType(propType) &&
+      propType.type === "string" &&
+      propType.control
+        ? propType.control
+        : undefined;
     return (
       <TemplatedStringPropEditor
         data={env}
@@ -1279,6 +1286,7 @@ const PropValueEditor_ = (
         valueSetState={valueSetState}
         ref={ref}
         component={component}
+        control={stringControl}
       />
     );
   }

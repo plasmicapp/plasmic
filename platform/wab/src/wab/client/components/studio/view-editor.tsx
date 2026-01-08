@@ -94,6 +94,7 @@ import {
   isFrameComponent,
   isPageComponent,
 } from "@/wab/shared/core/components";
+import { ExprCtx } from "@/wab/shared/core/exprs";
 import { getSiteArenas } from "@/wab/shared/core/sites";
 import {
   canConvertToSlot,
@@ -1864,7 +1865,13 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
   };
 
   render() {
-    const { studioCtx } = this.props;
+    const { studioCtx, viewCtx } = this.props;
+
+    const exprCtx: ExprCtx = {
+      projectFlags: studioCtx.projectFlags(),
+      component: viewCtx?.component ?? null,
+      inStudio: true,
+    };
 
     const watchedPlayer = studioCtx.watchPlayerId
       ? studioCtx.multiplayerCtx.getPlayerDataById(studioCtx.watchPlayerId)
@@ -1876,10 +1883,10 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
 
     return (
       <div className="canvas-editor">
-        {this.viewCtx()?.autoOpenedUuid && (
+        {viewCtx?.autoOpenedUuid && (
           <AutoOpenBanner
             onHide={() => {
-              this.viewCtx()!.forceCloseAutoOpen();
+              viewCtx.forceCloseAutoOpen();
             }}
             className="banner-bottom"
           />
@@ -2074,7 +2081,7 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
         {studioCtx.isDraggingObject() &&
           !this.dragState &&
           createPortal(<div className="drag-guard" />, document.body)}
-        {studioCtx.showPageSettings && (
+        {viewCtx && studioCtx.showPageSettings && (
           <TopModal
             onClose={() =>
               studioCtx.changeUnsafe(
@@ -2082,7 +2089,11 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
               )
             }
           >
-            <PageSettings page={studioCtx.showPageSettings} />
+            <PageSettings
+              page={studioCtx.showPageSettings}
+              viewCtx={viewCtx}
+              exprCtx={exprCtx}
+            />
           </TopModal>
         )}
         <BottomModals

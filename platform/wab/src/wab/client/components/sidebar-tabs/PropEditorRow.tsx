@@ -86,7 +86,9 @@ import {
   ExprCtx,
   extractReferencedParam,
   extractValueSavedFromDataPicker,
+  getLastDynExprFromTemplatedString,
   hasDynamicParts,
+  hasOnlyDynamicValues,
   isAllowedDefaultExpr,
   isDynamicExpr,
   isFallbackSet,
@@ -763,14 +765,25 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
     const currentExpr = exprRef.current;
     const shortId = makeShortProjectId(studioCtx.siteInfo.id);
 
+    const shouldSetFallback =
+      currentExpr &&
+      (propTypeType !== "string" ||
+        (isKnownTemplatedString(currentExpr) && !hasDynamicParts(currentExpr)));
+
     const newExpr = new ObjectPath({
       path: dataToken
         ? [makeDataTokenIdentifier(shortId, toVarName(dataToken.name))]
         : ["undefined"],
-      fallback: currentExpr ? clone(currentExpr) : codeLit(undefined),
+      fallback: shouldSetFallback
+        ? currentExpr
+          ? clone(currentExpr)
+          : codeLit(undefined)
+        : undefined,
     });
     onChange(maybeWrapExpr(newExpr));
-    setShowFallback(true);
+    if (shouldSetFallback) {
+      setShowFallback(true);
+    }
     setIsDataPickerVisible(!dataToken);
   }
 
@@ -921,7 +934,8 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
         )}
       {!readOnly &&
         !referencedParam &&
-        isCustomCode &&
+        (isCustomCode ||
+          (isKnownTemplatedString(expr) && hasDynamicParts(expr))) &&
         !isExprValuePropType(propType) && (
           <Menu.Item
             key={"!customCode"}
@@ -968,7 +982,11 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
   const renderDataPickerEditorForDynamicValue = () => {
     // displaying a "whole" custom code expression.
     // Template literals are not here, since they still display a string editor and can have mixed text and expressions.
-    const codeExpr = ensureInstance(expr, CustomCode, ObjectPath);
+    // However, we need to handle TemplatedStrings with dynamic expressions (from page meta fields or when clicking the dynamic value caret)
+    const codeExpr =
+      isKnownTemplatedString(expr) && hasDynamicParts(expr)
+        ? getLastDynExprFromTemplatedString(expr)
+        : ensureInstance(expr, CustomCode, ObjectPath);
     return (
       <DataPickerEditor
         viewCtx={viewCtx}
@@ -1135,7 +1153,9 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
                   >
                     {referencedParam && !disableLinkToProp
                       ? renderEditorForReferencedParam()
-                      : isCustomCode &&
+                      : (isCustomCode ||
+                          (isKnownTemplatedString(expr) &&
+                            hasOnlyDynamicValues(expr))) &&
                         !(isKnownQueryData(wabType) && isQuery(expr)) &&
                         !disabledDynamicValue
                       ? renderDataPickerEditorForDynamicValue()

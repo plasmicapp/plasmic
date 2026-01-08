@@ -4357,47 +4357,58 @@
     },
     {
       "projectId": "6BCq4vMow1yqGKFdcP68Rz",
-      "version": "2.0.1",
+      "version": "4.0.0",
       "dependencies": {
-        "tXkSR39sgCDWSitZxC5xFV": "75.3.1",
-        "oT38tGyqov9SPWHpf3Y2Rf": "5.1.0",
-        "95xp9cYcv7HrNWpFWWhbcv": "2.2.6",
-        "sDniSX4oPUZFyk2sXXb3nh": "6.0.1"
+        "tXkSR39sgCDWSitZxC5xFV": "91.3.13",
+        "oT38tGyqov9SPWHpf3Y2Rf": "6.0.0",
+        "95xp9cYcv7HrNWpFWWhbcv": "2.3.0",
+        "sDniSX4oPUZFyk2sXXb3nh": "6.1.1",
+        "gmeH6XgPaBtkt51HunAo4g": "18.29.0"
       },
       "lang": "ts",
       "fileLocks": [
         {
           "type": "globalVariant",
           "assetId": "n2dxsui6xhqx",
-          "checksum": "846317a2523543b31b053c986a1bc3c9"
+          "checksum": "cbb4fd80c230e8f7c5017346e2541337"
         },
         {
           "type": "renderModule",
           "assetId": "jTLog2H3DE",
-          "checksum": "67077e7fd0483e62d626621fa736e376"
+          "checksum": "15710b613c19747d77ae93d0ec1fb5a4"
         },
         {
           "type": "cssRules",
           "assetId": "jTLog2H3DE",
-          "checksum": "67077e7fd0483e62d626621fa736e376"
+          "checksum": "15710b613c19747d77ae93d0ec1fb5a4"
         },
         {
           "type": "renderModule",
           "assetId": "ntKkcfMNg2s",
-          "checksum": "0d39634b0dc31f6f9b02d39a3129cae2"
+          "checksum": "fd6b42013abdee0fd62e67e475cdcb11"
         },
         {
           "type": "cssRules",
           "assetId": "ntKkcfMNg2s",
-          "checksum": "0d39634b0dc31f6f9b02d39a3129cae2"
+          "checksum": "fd6b42013abdee0fd62e67e475cdcb11"
         },
         {
           "assetId": "6BCq4vMow1yqGKFdcP68Rz",
           "type": "projectCss",
-          "checksum": "bb42e4b19574d4b22511186ec0e0ae4b"
+          "checksum": "d3127517e632d361279302e7e073975f"
+        },
+        {
+          "assetId": "6BCq4vMow1yqGKFdcP68Rz",
+          "checksum": "a0fa7b536fbdecd80cb8de01e0feb9d7",
+          "type": "projectModule"
+        },
+        {
+          "assetId": "6BCq4vMow1yqGKFdcP68Rz",
+          "checksum": "9e459547611b7c6291e6561046e55a01",
+          "type": "styleTokensProvider"
         }
       ],
-      "codegenVersion": "0.0.1"
+      "codegenVersion": "0.0.2"
     },
     {
       "projectId": "oermwjefjidrRRHcrxyCjQ",

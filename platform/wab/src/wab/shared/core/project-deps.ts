@@ -133,7 +133,6 @@ import {
   isKnownArenaFrame,
   isKnownComponent,
   isKnownEventHandler,
-  isKnownImageAsset,
   isKnownImageAssetRef,
   isKnownPageHref,
   isKnownRenderExpr,
@@ -1409,10 +1408,10 @@ function upgradeProjectDep(
   const fixComponent = (component: Component) => {
     if (isPageComponent(component)) {
       // Fix page og:image asset
-      if (isKnownImageAsset(component.pageMeta.openGraphImage)) {
-        component.pageMeta.openGraphImage = getOrCloneNewAsset(
+      if (isKnownImageAssetRef(component.pageMeta.openGraphImage)) {
+        component.pageMeta.openGraphImage.asset = getOrCloneNewAsset(
           tplMgr,
-          component.pageMeta.openGraphImage,
+          component.pageMeta.openGraphImage.asset,
           oldToNewAsset
         );
       }

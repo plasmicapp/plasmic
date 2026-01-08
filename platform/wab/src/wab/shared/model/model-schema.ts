@@ -378,11 +378,11 @@ PageMeta
   params: Map[String,String]
   # Key-value pairs for page URL query parameters.
   query: Map[String,String]
-  title: String?
-  description: String
-  canonical: String?
+  title: String? | TemplatedString?
+  description: String | TemplatedString
+  canonical: String? | TemplatedString?
   roleId: String?
-  @WeakRef openGraphImage: ImageAsset? | String?
+  openGraphImage: String? | ImageAssetRef? | TemplatedString?
 ComponentDataQuery
   @Const uuid: String
   name: String

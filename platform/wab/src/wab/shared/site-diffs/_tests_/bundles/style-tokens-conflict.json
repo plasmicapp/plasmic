@@ -1227,7 +1227,7 @@
           }
         },
         "deps": [],
-        "version": "254-migrate-transforms"
+        "version": "255-wrap-page-meta-og-image-in-ref"
       },
       "projectId": "jktPeioPm3Q1RvAsGWDSCe",
       "version": "3.0.0",
@@ -2491,7 +2491,7 @@
           }
         },
         "deps": [],
-        "version": "254-migrate-transforms"
+        "version": "255-wrap-page-meta-og-image-in-ref"
       }
     },
     {
@@ -3711,7 +3711,7 @@
           }
         },
         "deps": [],
-        "version": "254-migrate-transforms"
+        "version": "255-wrap-page-meta-og-image-in-ref"
       }
     }
   ]

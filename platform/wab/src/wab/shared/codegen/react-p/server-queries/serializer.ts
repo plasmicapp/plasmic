@@ -14,6 +14,29 @@ import { groupBy } from "lodash";
 
 export const SERVER_QUERIES_VAR_NAME = "$serverQueries";
 
+export const MK_PATH_FROM_ROUTE_AND_PARAMS_SER = `
+function mkPathFromRouteAndParams(
+  route: string,
+  params: Record<string, string | string[] | undefined>
+) {
+  if (!params) {
+    return route;
+  }
+  let path = route;
+  for (const [key, value] of Object.entries(params)) {
+    if (typeof value === "string") {
+      path = path.replace(\`[\${key}]\`, value);
+    } else if (Array.isArray(value)) {
+      if (path.includes(\`[[...\${key}]]\`)) {
+        path = path.replace(\`[[...\${key}]]\`, value.join("/"));
+      } else if (path.includes(\`[...\${key}]\`)) {
+        path = path.replace(\`[...\${key}]\`, value.join("/"));
+      }
+    }
+  }
+  return path;
+}`;
+
 export function makePlasmicServerRscComponentName(component: Component) {
   return `Plasmic${getExportedComponentName(component)}Server`;
 }

@@ -1520,7 +1520,7 @@
           }
         },
         "deps": [],
-        "version": "254-migrate-transforms"
+        "version": "255-wrap-page-meta-og-image-in-ref"
       },
       "projectId": "wHtfg2nLs5zqybWknqMXbm",
       "version": "6.0.0",
@@ -3045,7 +3045,7 @@
           }
         },
         "deps": [],
-        "version": "254-migrate-transforms"
+        "version": "255-wrap-page-meta-og-image-in-ref"
       },
       "projectId": "wHtfg2nLs5zqybWknqMXbm",
       "version": "4.1.0",
@@ -4539,7 +4539,7 @@
           }
         },
         "deps": ["a1a67f8a-ec8a-402a-87da-eb8b7ebf18e8"],
-        "version": "254-migrate-transforms"
+        "version": "255-wrap-page-meta-og-image-in-ref"
       },
       "projectId": "uGrWS46cRJ2qquYfzAsaTw",
       "version": "6.1.0",
@@ -6479,7 +6479,7 @@
           }
         },
         "deps": ["e59019e7-b245-4e0c-b862-91a12b98b3c5"],
-        "version": "254-migrate-transforms"
+        "version": "255-wrap-page-meta-og-image-in-ref"
       },
       "projectId": "uGrWS46cRJ2qquYfzAsaTw",
       "version": "6.2.0",
@@ -8514,7 +8514,7 @@
           }
         },
         "deps": ["e59019e7-b245-4e0c-b862-91a12b98b3c5"],
-        "version": "254-migrate-transforms"
+        "version": "255-wrap-page-meta-og-image-in-ref"
       }
     },
     {
@@ -10442,7 +10442,7 @@
           }
         },
         "deps": ["e59019e7-b245-4e0c-b862-91a12b98b3c5"],
-        "version": "254-migrate-transforms"
+        "version": "255-wrap-page-meta-og-image-in-ref"
       }
     }
   ]

@@ -173,6 +173,7 @@ import {
   isKnownExprText,
   isKnownFunctionType,
   isKnownImageAsset,
+  isKnownImageAssetRef,
   isKnownMixin,
   isKnownObjectPath,
   isKnownPageArena,
@@ -1075,9 +1076,11 @@ export function cloneSite(fromSite: Site) {
     if (
       c.pageMeta &&
       c.pageMeta.openGraphImage &&
-      isKnownImageAsset(c.pageMeta.openGraphImage)
+      isKnownImageAssetRef(c.pageMeta.openGraphImage)
     ) {
-      c.pageMeta.openGraphImage = getNewImageAsset(c.pageMeta.openGraphImage);
+      c.pageMeta.openGraphImage.asset = getNewImageAsset(
+        c.pageMeta.openGraphImage.asset
+      );
     }
   }
 

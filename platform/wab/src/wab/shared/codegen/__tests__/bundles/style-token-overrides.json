@@ -1381,7 +1381,7 @@
         }
       },
       "deps": [],
-      "version": "254-migrate-transforms"
+      "version": "255-wrap-page-meta-og-image-in-ref"
     }
   ],
   [
@@ -3050,7 +3050,7 @@
         }
       },
       "deps": ["2b5455af-45b3-4999-b7eb-85dc3849e157"],
-      "version": "254-migrate-transforms"
+      "version": "255-wrap-page-meta-og-image-in-ref"
     }
   ]
 ]

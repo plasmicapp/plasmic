@@ -114,6 +114,7 @@ export interface TemplatedStringPropEditorProps {
   viewCtx?: ViewCtx;
   showExpressionAsPreviewValue?: boolean;
   component?: Component;
+  control?: "default" | "large" | "multiLine";
 }
 
 export const TemplatedStringPropEditor = React.forwardRef<
@@ -167,20 +168,15 @@ export const TemplatedStringPropEditor = React.forwardRef<
       defer(() => submitVal(draft));
     }
   });
-  // Check if the current value has newlines to determine multiLine mode
-  const hasNewLines = React.useMemo(() => {
-    if (!curValue) {
-      return false;
-    }
-    if (isKnownTemplatedString(curValue)) {
-      return curValue.text.some(
-        (t) => typeof t === "string" && t.includes("\n")
-      );
-    }
-    return typeof curValue === "string" && curValue.includes("\n");
-  }, [curValue]);
 
-  const multiLineAllowed = !!props.component;
+  const multiLineAllowed = !!props.component || props.control === "multiLine";
+  // For textarea control, use "always" mode to show as multiline by default
+  const multiLineMode =
+    props.control === "multiLine"
+      ? "always"
+      : multiLineAllowed
+      ? "allowed"
+      : undefined;
 
   return !isKnownTemplatedString(props.value) &&
     (!props.data || props.disabled) ? (
@@ -205,7 +201,7 @@ export const TemplatedStringPropEditor = React.forwardRef<
       schema={props.schema}
       component={props.component}
       placeholder={props.defaultValueHint ?? "unset"}
-      multiLine={multiLineAllowed ? "allowed" : undefined}
+      multiLine={multiLineMode}
       onKeyDown={(e) => {
         // On Shift+Enter let Slate insert a newline if allowed
         if (multiLineAllowed && e.key === "Enter" && e.shiftKey) {
@@ -216,6 +212,10 @@ export const TemplatedStringPropEditor = React.forwardRef<
         }
 
         if (e.key === "Enter" && ref.current?.isFocused() && !e.shiftKey) {
+          if (props.control === "multiLine") {
+            // Let the editor handle the Enter key
+            return;
+          }
           submitVal(draft ?? "");
           e.preventDefault();
           e.stopPropagation();

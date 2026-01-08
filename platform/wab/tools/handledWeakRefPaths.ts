@@ -64,7 +64,6 @@ export const handledWeakRefPaths: Path[] = [
   [["ComponentVariantSplitContent", "component"], "Component"],
   [["ComponentSwapSplitContent", "fromComponent"], "Component"],
   [["ComponentSwapSplitContent", "toComponent"], "Component"],
-  [["PageMeta", "openGraphImage"], "ImageAsset"],
   [["RuleSet", "values"], "ImageAsset"],
   [["RuleSet", "values"], "StyleToken"],
   [["RuleSet", "mixins"], "Mixin"],

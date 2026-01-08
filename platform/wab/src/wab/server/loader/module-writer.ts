@@ -147,6 +147,13 @@ async function writeCodeBundleToDisk(
         comp.rscMetadata!.serverQueriesExecFunc.module
       );
     }
+
+    if (comp.rscMetadata?.generateMetadataFunc) {
+      await fs.writeFile(
+        path.join(dir, comp.rscMetadata!.generateMetadataFunc.fileName),
+        comp.rscMetadata!.generateMetadataFunc.module
+      );
+    }
   }
 
   for (const icon of output.iconAssets) {

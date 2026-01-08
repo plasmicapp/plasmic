@@ -66,7 +66,7 @@ import {
   ensureKnownTplTag,
   ensureKnownVirtualRenderExpr,
   ExprText,
-  ImageAsset,
+  ImageAssetRef,
   isKnownTplComponent,
   isKnownTplSlot,
   isKnownTplTag,
@@ -1041,13 +1041,17 @@ describe("merging", () => {
           (leftSubject = ensure(
             site.components.find((c) => c.type === ComponentType.Page),
             ""
-          ) as PageComponent).pageMeta.openGraphImage = site.imageAssets[0];
+          ) as PageComponent).pageMeta.openGraphImage = new ImageAssetRef({
+            asset: site.imageAssets[0],
+          });
         },
         b: (site) => {
           (rightSubject = ensure(
             site.components.find((c) => c.type === ComponentType.Page),
             ""
-          ) as PageComponent).pageMeta.openGraphImage = site.imageAssets[1];
+          ) as PageComponent).pageMeta.openGraphImage = new ImageAssetRef({
+            asset: site.imageAssets[1],
+          });
         },
         directConflictsPicks: ["right"],
       }))
@@ -1067,7 +1071,7 @@ describe("merging", () => {
         ""
       ) as PageComponent
     ).pageMeta.openGraphImage;
-    expect((resSubject as ImageAsset).name).toBe("image 2");
+    expect((resSubject as ImageAssetRef).asset.name).toBe("image 2");
   });
 
   describe("maps", () => {

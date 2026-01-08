@@ -5103,13 +5103,40 @@ export class StudioCtx extends WithDbCtx {
     });
   };
 
-  tryChangePageMeta = async (page: Component, key: "title", value: string) => {
+  tryChangePageMeta = async (
+    page: Component,
+    key: "title" | "canonical",
+    value: string | classes.TemplatedString | null
+  ) => {
     return this.changeUnsafe(() => {
       if (!page.pageMeta) {
         return;
       }
-
       page.pageMeta[key] = value;
+    });
+  };
+
+  tryChangePageMetaDescription = async (
+    page: Component,
+    value: string | classes.TemplatedString
+  ) => {
+    return this.changeUnsafe(() => {
+      if (!page.pageMeta) {
+        return;
+      }
+      page.pageMeta.description = value;
+    });
+  };
+
+  tryChangePageMetaImage = async (
+    page: Component,
+    value: string | classes.ImageAssetRef | classes.TemplatedString | null
+  ) => {
+    return this.changeUnsafe(() => {
+      if (!page.pageMeta) {
+        return;
+      }
+      page.pageMeta.openGraphImage = value;
     });
   };
 

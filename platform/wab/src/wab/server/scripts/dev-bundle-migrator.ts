@@ -28,6 +28,7 @@ const paths = [
   "src/wab/shared/codegen/__tests__/bundles/aria-code-components.json",
   "src/wab/shared/codegen/__tests__/bundles/custom-functions-test.json",
   "src/wab/shared/codegen/__tests__/bundles/data-tokens.json",
+  "src/wab/shared/codegen/__tests__/bundles/data-tokens-page-meta.json",
   "src/wab/shared/codegen/__tests__/bundles/global-variant-test.json",
   "src/wab/shared/codegen/__tests__/bundles/style-token-overrides.json",
   "src/wab/server/pkg-mgr/data/plume-master-pkg.json",
@@ -96,6 +97,7 @@ const paths = [
   "src/wab/server/__tests__/bundle-migrations/fixtures/merge-duplicate-variants.migrated.json",
   "src/wab/server/__tests__/bundle-migrations/fixtures/flex-gap-bundle.migrated.json",
   "src/wab/server/__tests__/bundle-migrations/fixtures/transform-format-migration.migrated.json",
+  "src/wab/server/__tests__/bundle-migrations/fixtures/page-meta-image-ref.migrated.json",
 ];
 
 async function migrate() {

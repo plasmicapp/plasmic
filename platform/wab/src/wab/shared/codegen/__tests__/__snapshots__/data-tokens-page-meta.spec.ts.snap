@@ -1,0 +1,93 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`data tokens: page meta codegen should codegen correct metadata with data tokens 1`] = `
+"
+/**
+ * Platform-agnostic page metadata type.
+ * Structurally compatible with Next.js Metadata and other meta frameworks.
+ */
+type PlasmicPageMetadata = {
+  title?: string;
+  description?: string;
+  openGraph?: {
+    title?: string;
+    description?: string;
+    images?: string[];
+  };
+  twitter?: {
+    card?: "summary" | "summary_large_image";
+    title?: string;
+    description?: string;
+    images?: string[];
+  };
+  alternates?: {
+    canonical?: string;
+  };
+};
+import { executeServerQueries } from "./__loader_rsc_Seo";
+
+import { pageText as $dataTokens_3UYiE_pageText, pageCanonical as $dataTokens_3UYiE_pageCanonical, pageImage as $dataTokens_3UYiE_pageImage } from "./plasmic-data-tokens"; // plasmic-import: 3UYiEMfU3twU4iYSx86cub/dataTokens
+
+const $$ = {};
+
+function mkPathFromRouteAndParams(
+  route: string,
+  params: Record<string, string | string[] | undefined>
+) {
+  if (!params) {
+    return route;
+  }
+  let path = route;
+  for (const [key, value] of Object.entries(params)) {
+    if (typeof value === "string") {
+      path = path.replace(\`[\${key}]\`, value);
+    } else if (Array.isArray(value)) {
+      if (path.includes(\`[[...\${key}]]\`)) {
+        path = path.replace(\`[[...\${key}]]\`, value.join("/"));
+      } else if (path.includes(\`[...\${key}]\`)) {
+        path = path.replace(\`[...\${key}]\`, value.join("/"));
+      }
+    }
+  }
+  return path;
+}
+
+type ParamsRecord = Record<string, string | string[] | undefined>;
+type GenerateMetadataProps = {
+  params: Promise<ParamsRecord> | ParamsRecord;
+  query: Promise<ParamsRecord> | ParamsRecord;
+};
+
+export async function generateMetadata(props: GenerateMetadataProps): Promise<PlasmicPageMetadata> {
+  const { params, query } = props;
+
+  const pageRoute = "/seo";
+  const pageParams = (await params) ?? {};
+  const pagePath = mkPathFromRouteAndParams(pageRoute, pageParams);
+
+  const $ctx = {
+    pageRoute,
+    pagePath,
+    params: pageParams,
+    query: (await query) ?? {},
+  };
+  const $queries = await executeServerQueries($ctx);
+  return {
+    title: $ctx.pagePath,
+    description: \`\${ $dataTokens_3UYiE_pageText } - in a templated string\`,
+    openGraph: {
+      title: $ctx.pagePath,
+      description: \`\${ $dataTokens_3UYiE_pageText } - in a templated string\`,
+      images: [$dataTokens_3UYiE_pageImage],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: $ctx.pagePath,
+      description: \`\${ $dataTokens_3UYiE_pageText } - in a templated string\`,
+      images: [$dataTokens_3UYiE_pageImage],
+    },
+    alternates: { canonical: $dataTokens_3UYiE_pageCanonical.url },
+  };
+}
+"
+`;

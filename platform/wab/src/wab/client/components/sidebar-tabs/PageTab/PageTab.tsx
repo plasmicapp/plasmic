@@ -20,6 +20,7 @@ import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { PublicStyleSection } from "@/wab/shared/ApiSchema";
 import { PageComponent } from "@/wab/shared/core/components";
+import { ExprCtx } from "@/wab/shared/core/exprs";
 import { canEditStyleSection } from "@/wab/shared/ui-config-utils";
 import { observer } from "mobx-react";
 import React from "react";
@@ -33,6 +34,13 @@ export const PageTab = observer(function PageTab(props: {
 }) {
   const { studioCtx, page, viewCtx, isHalf = false } = props;
 
+  const focusedOrFirstViewCtx = studioCtx.focusedOrFirstViewCtx();
+  const exprCtx: ExprCtx = {
+    projectFlags: studioCtx.projectFlags(),
+    component: focusedOrFirstViewCtx?.component ?? null,
+    inStudio: true,
+  };
+
   const appConfig = studioCtx.appCtx.appConfig;
   const [showSettings, setShowSettings] = React.useState(false);
   const [isExpanded, setExpanded] = useLocalStorage(
@@ -41,6 +49,9 @@ export const PageTab = observer(function PageTab(props: {
   );
 
   const uiConfig = studioCtx.getCurrentUiConfig();
+
+  const env: Record<string, any> =
+    viewCtx.getCanvasEnvForTpl(page.tplTree) ?? {};
 
   const canEdit = (section: PublicStyleSection) => {
     return canEditStyleSection(uiConfig, section, {
@@ -82,7 +93,7 @@ export const PageTab = observer(function PageTab(props: {
     <>
       {showSettings && (
         <TopModal title="Page Settings" onClose={() => setShowSettings(false)}>
-          <PageSettings page={page} />
+          <PageSettings page={page} viewCtx={viewCtx} exprCtx={exprCtx} />
         </TopModal>
       )}
       <SidebarSection
@@ -112,7 +123,11 @@ export const PageTab = observer(function PageTab(props: {
                       </SidebarSection>
                       {canEdit(PublicStyleSection.PageMeta) && (
                         <>
-                          <PageMetaPanel page={page} viewCtx={viewCtx} />
+                          <PageMetaPanel
+                            page={page}
+                            viewCtx={viewCtx}
+                            env={env}
+                          />
                           <PageURLParametersSection page={page} />
                           <PageMinRoleSection page={page} />
                         </>

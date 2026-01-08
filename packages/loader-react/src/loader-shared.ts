@@ -235,6 +235,8 @@ export type FetchPagesOpts = {
   includeDynamicPages?: boolean;
 };
 
+type ParamsRecord = Record<string, string | string[] | undefined>;
+
 export const SUBSTITUTED_COMPONENTS: Record<
   string,
   React.ComponentType<any>
@@ -909,29 +911,63 @@ export class PlasmicComponentLoader {
     return this.__internal.clearCache();
   }
 
+  getExecFuncModule(
+    renderData: ComponentRenderData,
+    fileNameKey:
+      | "serverQueriesExecFuncFileName"
+      | "generateMetadataFuncFileName"
+  ) {
+    if (renderData.entryCompMetas.length === 0) {
+      return undefined;
+    }
+
+    const fileName = renderData.entryCompMetas[0][fileNameKey];
+
+    if (!fileName) {
+      return undefined;
+    }
+    return this.__internal.loadServerQueriesModule(fileName);
+  }
+
   async unstable__getServerQueriesData(
     renderData: ComponentRenderData,
     $ctx: Record<string, any>
   ) {
-    if (renderData.entryCompMetas.length === 0) {
-      return {};
-    }
-
-    const fileName = renderData.entryCompMetas[0].serverQueriesExecFuncFileName;
-
-    if (!fileName) {
-      return {};
-    }
-
-    const module = this.__internal.loadServerQueriesModule(fileName);
-    const { executeServerQueries } = module;
+    const module = this.getExecFuncModule(
+      renderData,
+      "serverQueriesExecFuncFileName"
+    );
 
     try {
-      const $serverQueries = await executeServerQueries($ctx);
+      const $serverQueries = await module?.executeServerQueries($ctx);
       return $serverQueries;
     } catch (err) {
       console.error("Error executing server queries function", err);
       return {};
+    }
+  }
+
+  async unstable__generateMetadata(
+    renderData: ComponentRenderData,
+    props: {
+      params: Promise<ParamsRecord> | ParamsRecord;
+      query: Promise<ParamsRecord> | ParamsRecord;
+    }
+  ) {
+    const module = this.getExecFuncModule(
+      renderData,
+      "generateMetadataFuncFileName"
+    );
+    const fallback = renderData.entryCompMetas[0]?.pageMetadata || {};
+    if (!module) {
+      return fallback;
+    }
+
+    try {
+      const metadata = await module.generateMetadata(props);
+      return metadata;
+    } catch (err) {
+      return fallback;
     }
   }
 }

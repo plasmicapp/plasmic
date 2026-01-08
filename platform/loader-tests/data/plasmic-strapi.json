@@ -828,7 +828,7 @@
         }
       },
       "deps": [],
-      "version": "254-migrate-transforms"
+      "version": "255-wrap-page-meta-og-image-in-ref"
     }
   ],
   [
@@ -3044,7 +3044,7 @@
         }
       },
       "deps": ["6acc467a-ae43-4b00-9fe2-d90e71958278"],
-      "version": "254-migrate-transforms"
+      "version": "255-wrap-page-meta-og-image-in-ref"
     }
   ]
 ]

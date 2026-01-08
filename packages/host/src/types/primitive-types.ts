@@ -25,7 +25,7 @@ export interface SliderNumberCore<Ctx extends any[]>
 
 export interface PlainStringCore {
   type: "string";
-  control?: "default" | "large";
+  control?: "default" | "large" | "multiLine";
   isLocalizable?: boolean;
 }
 

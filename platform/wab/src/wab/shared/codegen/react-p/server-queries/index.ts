@@ -1,12 +1,14 @@
 import { customFunctionId } from "@/wab/shared/code-components/code-components";
 import { serializeCustomFunctionsAndLibs } from "@/wab/shared/codegen/react-p/custom-functions";
 import { getDataSourcesPackageName } from "@/wab/shared/codegen/react-p/data-sources";
+import { serializeGenerateMetadataFunction } from "@/wab/shared/codegen/react-p/page-metadata";
 import {
   makeDefaultExternalPropsName,
   makePlasmicComponentName,
   makeTaggedPlasmicImport,
 } from "@/wab/shared/codegen/react-p/serialize-utils";
 import {
+  MK_PATH_FROM_ROUTE_AND_PARAMS_SER,
   SERVER_QUERIES_VAR_NAME,
   makeComponentTypeImport,
   makeLoaderServerFunctionFileName,
@@ -30,6 +32,8 @@ export function getRscMetadata(
     return undefined;
   }
 
+  const generateMetadataFunc = serializeGenerateMetadataFunction(ctx);
+
   return {
     pageWrappers: {
       server: {
@@ -42,6 +46,7 @@ export function getRscMetadata(
       },
     },
     serverQueriesExecFunc: serializeServerQueriesFetchFunction(ctx),
+    generateMetadataFunc,
   };
 }
 
@@ -57,8 +62,6 @@ function serializeServerQueriesServerWrapper(
   const componentPropsName = `${componentName}Props`;
   const clientComponentName = makePlasmicClientRscComponentName(component);
   const genPropsName = makeDefaultExternalPropsName(component);
-  const { module: executeServerQueriesModule } =
-    serializeServerQueriesFetchFunction(ctx);
 
   return `
 /* eslint-disable */
@@ -76,29 +79,10 @@ ${makeTaggedPlasmicImport(
   "rscClient"
 )}
 
-${executeServerQueriesModule}
-
-function mkPathFromRouteAndParams(
-  route: string,
-  params: Record<string, string | string[] | undefined>
-) {
-  if (!params) {
-    return route;
-  }
-  let path = route;
-  for (const [key, value] of Object.entries(params)) {
-    if (typeof value === "string") {
-      path = path.replace(\`[\${key}]\`, value);
-    } else if (Array.isArray(value)) {
-      if (path.includes(\`[[...\${key}]]\`)) {
-        path = path.replace(\`[[...\${key}]]\`, value.join("/"));
-      } else if (path.includes(\`[...\${key}]\`)) {
-        path = path.replace(\`[...\${key}]\`, value.join("/"));
-      }
-    }
-  }
-  return path;
-}
+import { executeServerQueries } from "./${makeLoaderServerFunctionFileName(
+    component
+  ).replace(".tsx", "")}";
+${MK_PATH_FROM_ROUTE_AND_PARAMS_SER}
 
 type ${componentPropsName} = ${genPropsName} & {
   params?: Promise<Record<string, string | string[] | undefined>>;

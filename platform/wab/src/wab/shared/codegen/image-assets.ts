@@ -44,7 +44,6 @@ import {
   Mixin,
   Site,
   TplNode,
-  isKnownImageAsset,
   isKnownImageAssetRef,
   isKnownVarRef,
 } from "@/wab/shared/model/classes";
@@ -146,9 +145,9 @@ export function extractUsedPictureAssetsForComponents(
     }
     if (
       isPageComponent(component) &&
-      isKnownImageAsset(component.pageMeta.openGraphImage)
+      isKnownImageAssetRef(component.pageMeta.openGraphImage)
     ) {
-      assets.add(component.pageMeta.openGraphImage);
+      assets.add(component.pageMeta.openGraphImage.asset);
     }
   }
   return assets;

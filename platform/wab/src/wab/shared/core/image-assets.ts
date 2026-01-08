@@ -16,10 +16,10 @@ import { isFallbackSet, isRealCodeExpr } from "@/wab/shared/core/exprs";
 import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
 import { DefaultStyle } from "@/wab/shared/core/styles";
 import {
+  TplImageTag,
   findVariantSettingsUnderTpl,
   isTplComponent,
   isTplImage,
-  TplImageTag,
 } from "@/wab/shared/core/tpls";
 import { joinCssValues, splitCssValue } from "@/wab/shared/css/parse";
 import {
@@ -27,7 +27,6 @@ import {
   Arg,
   Component,
   ImageAsset,
-  isKnownImageAssetRef,
   Mixin,
   PageMeta,
   Param,
@@ -35,6 +34,7 @@ import {
   TplComponent,
   TplNode,
   VariantSetting,
+  isKnownImageAssetRef,
 } from "@/wab/shared/model/classes";
 import L from "lodash";
 
@@ -214,7 +214,9 @@ export function extractImageAssetUsages(
   }
 
   for (const page of site.components.filter(isPageComponent)) {
-    if (page.pageMeta.openGraphImage === asset) {
+    // Check if openGraphImage references this asset (unwrap ImageAssetRef)
+    const ogImage = page.pageMeta.openGraphImage;
+    if (isKnownImageAssetRef(ogImage) && ogImage.asset === asset) {
       usages.push({
         type: "page-meta",
         pageMeta: page.pageMeta,

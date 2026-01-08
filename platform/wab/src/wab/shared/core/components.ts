@@ -125,6 +125,8 @@ import {
   FigmaComponentMapping,
   GlobalVariantGroup,
   GlobalVariantGroupParam,
+  ImageAsset,
+  ImageAssetRef,
   NameArg,
   NamedState,
   ObjectPath,
@@ -141,6 +143,7 @@ import {
   State,
   StateChangeHandlerParam,
   StateParam,
+  TemplatedString,
   TplComponent,
   TplNode,
   TplTag,
@@ -163,6 +166,7 @@ import {
   isKnownEventHandler,
   isKnownFunctionArg,
   isKnownFunctionType,
+  isKnownImageAsset,
   isKnownNamedState,
   isKnownObjectPath,
   isKnownPageHref,
@@ -502,6 +506,27 @@ export function cloneCodeComponentMeta(
     : null;
 }
 
+function clonePageMetaExpr<
+  T extends
+    | string
+    | TemplatedString
+    | ImageAssetRef
+    | ImageAsset
+    | Expr
+    | null
+    | undefined
+>(metaValue: T): T {
+  if (!metaValue || typeof metaValue === "string") {
+    return metaValue;
+  }
+  if (isKnownImageAsset(metaValue as any)) {
+    // ImageAsset is WeakRef, so we don't clone it
+    return metaValue;
+  }
+  // Clone TemplatedString, ImageAssetRef, and other Expr types
+  return cloneExpr(metaValue as any) as T;
+}
+
 export function clonePageMeta<T extends PageMeta | null | undefined>(
   pageMeta: T
 ): T {
@@ -510,10 +535,10 @@ export function clonePageMeta<T extends PageMeta | null | undefined>(
         path: pageMeta.path,
         params: pageMeta.params,
         query: pageMeta.query,
-        title: pageMeta.title,
-        description: pageMeta.description,
-        openGraphImage: pageMeta.openGraphImage,
-        canonical: pageMeta.canonical,
+        title: clonePageMetaExpr(pageMeta.title),
+        description: clonePageMetaExpr(pageMeta.description),
+        openGraphImage: clonePageMetaExpr(pageMeta.openGraphImage),
+        canonical: clonePageMetaExpr(pageMeta.canonical),
         roleId: pageMeta.roleId,
       }) as T)
     : pageMeta;
