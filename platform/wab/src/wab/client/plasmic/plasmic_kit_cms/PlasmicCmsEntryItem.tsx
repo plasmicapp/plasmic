@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -14,24 +14,24 @@
 import * as React from "react";
 
 import {
-  Flex as Flex__,
-  SingleBooleanChoiceArg,
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  Flex as Flex__,
   hasVariant,
   renderPlasmicSlot,
+  SingleBooleanChoiceArg,
+  StrictProps,
   useDollarState,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: ieacQ3Z46z4gwo1FnaB5vY/styleTokensProvider
+
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import sty from "./PlasmicCmsEntryItem.module.css"; // plasmic-import: girCdMST6R/css
 import projectcss from "./plasmic_plasmic_kit_cms.module.css"; // plasmic-import: ieacQ3Z46z4gwo1FnaB5vY/projectcss
+import sty from "./PlasmicCmsEntryItem.module.css"; // plasmic-import: girCdMST6R/css
 
 import PencilSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__PencilSvg"; // plasmic-import: 540duoJvb/icon
 
@@ -119,7 +119,6 @@ function PlasmicCmsEntryItem__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.hasDraft,
       },
     ],
-
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -128,6 +127,8 @@ function PlasmicCmsEntryItem__RenderFunc(props: {
     $queries: {},
     $refs,
   });
+
+  const styleTokensClassNames = _useStyleTokens();
 
   return (
     <div
@@ -140,9 +141,7 @@ function PlasmicCmsEntryItem__RenderFunc(props: {
         projectcss.root_reset,
         projectcss.plasmic_default_styles,
         projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_css.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
+        styleTokensClassNames,
         sty.root,
         { [sty.rootisActive]: hasVariant($state, "isActive", "isActive") }
       )}
@@ -232,23 +231,23 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicCmsEntryItem__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
     variants?: PlasmicCmsEntryItem__VariantsArgs;
     args?: PlasmicCmsEntryItem__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicCmsEntryItem__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicCmsEntryItem__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+  } & // Specify variants directly as props
+  Omit<PlasmicCmsEntryItem__VariantsArgs, ReservedPropsType> &
+    // Specify args directly as props
+    Omit<PlasmicCmsEntryItem__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

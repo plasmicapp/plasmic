@@ -50,23 +50,14 @@
 .right {
   display: flex;
   position: relative;
-}
-.right > :global(.__wab_flex-container) {
   align-items: center;
   justify-content: flex-start;
-  margin-left: calc(0px - 8px);
-  width: calc(100% + 8px);
-}
-.right > :global(.__wab_flex-container) > *,
-.right > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.right > :global(.__wab_flex-container) > picture > img,
-.right > :global(.__wab_flex-container) > :global(.__wab_slot) > picture > img {
-  margin-left: 8px;
+  column-gap: 8px;
 }
 .duplicateButton:global(.__wab_instance) {
   position: relative;
 }
-.svg__ovXR {
+.svg__add11 {
   display: flex;
   position: relative;
   object-fit: cover;
@@ -75,7 +66,7 @@
 .text__luZtw {
   height: auto;
 }
-.svg___9N6F {
+.svg___0RyI5 {
   display: flex;
   position: relative;
   object-fit: cover;
@@ -84,13 +75,13 @@
 .saveButton:global(.__wab_instance) {
   position: relative;
 }
-.svg__dBzwB {
+.svg___9Mewo {
   display: flex;
   position: relative;
   object-fit: cover;
   height: 1em;
 }
-.svg__rlUn6 {
+.svg__yMuaK {
   display: flex;
   position: relative;
   object-fit: cover;

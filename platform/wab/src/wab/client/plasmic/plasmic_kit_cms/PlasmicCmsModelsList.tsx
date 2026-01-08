@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -14,30 +14,28 @@
 import * as React from "react";
 
 import {
-  Flex as Flex__,
-  SingleBooleanChoiceArg,
-  Stack as Stack__,
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  Flex as Flex__,
   hasVariant,
   renderPlasmicSlot,
+  SingleBooleanChoiceArg,
+  StrictProps,
   useDollarState,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
-import ListSection from "../../components/ListSection"; // plasmic-import: znioE83CPU/component
 import CmsModelItem from "../../components/cms/CmsModelItem"; // plasmic-import: FpZFUfiTA6/component
+import ListSection from "../../components/ListSection"; // plasmic-import: znioE83CPU/component
 import IconButton from "../../components/widgets/IconButton"; // plasmic-import: LPry-TF4j22a/component
 import Searchbox from "../../components/widgets/Searchbox"; // plasmic-import: po7gr0PX4_gWo/component
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: ieacQ3Z46z4gwo1FnaB5vY/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import sty from "./PlasmicCmsModelsList.module.css"; // plasmic-import: M3aa84scyXT/css
 import projectcss from "./plasmic_plasmic_kit_cms.module.css"; // plasmic-import: ieacQ3Z46z4gwo1FnaB5vY/projectcss
+import sty from "./PlasmicCmsModelsList.module.css"; // plasmic-import: M3aa84scyXT/css
 
 createPlasmicElementProxy;
 
@@ -136,7 +134,6 @@ function PlasmicCmsModelsList__RenderFunc(props: {
           $props.hasArchivedModels,
       },
     ],
-
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -145,6 +142,8 @@ function PlasmicCmsModelsList__RenderFunc(props: {
     $queries: {},
     $refs,
   });
+
+  const styleTokensClassNames = _useStyleTokens();
 
   return (
     <div
@@ -157,9 +156,7 @@ function PlasmicCmsModelsList__RenderFunc(props: {
         projectcss.root_reset,
         projectcss.plasmic_default_styles,
         projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_css.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
+        styleTokensClassNames,
         sty.root,
         {
           [sty.roothasArchivedModels]: hasVariant(
@@ -176,9 +173,7 @@ function PlasmicCmsModelsList__RenderFunc(props: {
         }
       )}
     >
-      <Stack__
-        as={"div"}
-        hasGap={true}
+      <div
         className={classNames(projectcss.all, sty.freeBox__dprWy, {
           [sty.freeBoxhasArchivedModels__dprWyIc983]: hasVariant(
             $state,
@@ -255,9 +250,7 @@ function PlasmicCmsModelsList__RenderFunc(props: {
           />
         </div>
         {(hasVariant($state, "isEmpty", "isEmpty") ? false : true) ? (
-          <Stack__
-            as={"div"}
-            hasGap={true}
+          <div
             className={classNames(projectcss.all, sty.freeBox__tBrpA, {
               [sty.freeBoxisEmpty__tBrpA6X5Ho]: hasVariant(
                 $state,
@@ -284,10 +277,9 @@ function PlasmicCmsModelsList__RenderFunc(props: {
                   />
                 </React.Fragment>
               ),
-
               value: args.children,
             })}
-          </Stack__>
+          </div>
         ) : null}
         <div
           className={classNames(
@@ -305,7 +297,7 @@ function PlasmicCmsModelsList__RenderFunc(props: {
         >
           {"No models have been created."}
         </div>
-      </Stack__>
+      </div>
       {(
         hasVariant($state, "hasArchivedModels", "hasArchivedModels")
           ? true
@@ -340,9 +332,7 @@ function PlasmicCmsModelsList__RenderFunc(props: {
             </div>
           }
         >
-          <Stack__
-            as={"div"}
-            hasGap={true}
+          <div
             className={classNames(projectcss.all, sty.freeBox___0Dez, {
               [sty.freeBoxisEmpty___0Dez6X5Ho]: hasVariant(
                 $state,
@@ -357,9 +347,7 @@ function PlasmicCmsModelsList__RenderFunc(props: {
             })}
           >
             {(hasVariant($state, "isEmpty", "isEmpty") ? false : true) ? (
-              <Stack__
-                as={"div"}
-                hasGap={true}
+              <div
                 className={classNames(projectcss.all, sty.freeBox__rIsR7, {
                   [sty.freeBoxisEmpty__rIsR76X5Ho]: hasVariant(
                     $state,
@@ -386,10 +374,9 @@ function PlasmicCmsModelsList__RenderFunc(props: {
                       />
                     </React.Fragment>
                   ),
-
                   value: args.archivedModels,
                 })}
-              </Stack__>
+              </div>
             ) : null}
             <div
               className={classNames(
@@ -407,7 +394,7 @@ function PlasmicCmsModelsList__RenderFunc(props: {
             >
               {"No models have been created."}
             </div>
-          </Stack__>
+          </div>
         </ListSection>
       ) : null}
     </div>
@@ -435,23 +422,23 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicCmsModelsList__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
     variants?: PlasmicCmsModelsList__VariantsArgs;
     args?: PlasmicCmsModelsList__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicCmsModelsList__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicCmsModelsList__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+  } & // Specify variants directly as props
+  Omit<PlasmicCmsModelsList__VariantsArgs, ReservedPropsType> &
+    // Specify args directly as props
+    Omit<PlasmicCmsModelsList__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

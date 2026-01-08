@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -14,26 +14,24 @@
 import * as React from "react";
 
 import {
-  Flex as Flex__,
-  PlasmicIcon as PlasmicIcon__,
-  PlasmicLink as PlasmicLink__,
-  Stack as Stack__,
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  Flex as Flex__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicLink as PlasmicLink__,
+  StrictProps,
   useTrigger,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
 import InlineEditable from "../../components/InlineEditable"; // plasmic-import: btpz7A3thO/component
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: ieacQ3Z46z4gwo1FnaB5vY/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import sty from "./PlasmicCmsTopBar.module.css"; // plasmic-import: FxC1c7NZtR/css
 import projectcss from "./plasmic_plasmic_kit_cms.module.css"; // plasmic-import: ieacQ3Z46z4gwo1FnaB5vY/projectcss
+import sty from "./PlasmicCmsTopBar.module.css"; // plasmic-import: FxC1c7NZtR/css
 
 import MarkFullColorIcon from "../plasmic_kit_design_system/PlasmicIcon__MarkFullColor"; // plasmic-import: l_n_OBLJg/icon
 import Icon3Icon from "./icons/PlasmicIcon__Icon3"; // plasmic-import: G_dU2TC5Bu/icon
@@ -99,6 +97,8 @@ function PlasmicCmsTopBar__RenderFunc(props: {
     hover_svg: isSvgHover,
   };
 
+  const styleTokensClassNames = _useStyleTokens();
+
   return (
     <div
       data-plasmic-name={"root"}
@@ -110,17 +110,13 @@ function PlasmicCmsTopBar__RenderFunc(props: {
         projectcss.root_reset,
         projectcss.plasmic_default_styles,
         projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_css.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
+        styleTokensClassNames,
         sty.root
       )}
     >
-      <Stack__
-        as={"div"}
+      <div
         data-plasmic-name={"left"}
         data-plasmic-override={overrides.left}
-        hasGap={true}
         className={classNames(projectcss.all, sty.left)}
       >
         <PlasmicLink__
@@ -156,7 +152,7 @@ function PlasmicCmsTopBar__RenderFunc(props: {
             {"Some CMS"}
           </div>
         </InlineEditable>
-      </Stack__>
+      </div>
       <div
         data-plasmic-name={"middle"}
         data-plasmic-override={overrides.middle}
@@ -183,7 +179,6 @@ const PlasmicDescendants = {
     "middle",
     "right",
   ],
-
   left: ["left", "link", "svg", "cmsName", "cmsNameValue"],
   link: ["link", "svg"],
   svg: ["svg"],
@@ -211,23 +206,23 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicCmsTopBar__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
     variants?: PlasmicCmsTopBar__VariantsArgs;
     args?: PlasmicCmsTopBar__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicCmsTopBar__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicCmsTopBar__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+  } & // Specify variants directly as props
+  Omit<PlasmicCmsTopBar__VariantsArgs, ReservedPropsType> &
+    // Specify args directly as props
+    Omit<PlasmicCmsTopBar__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

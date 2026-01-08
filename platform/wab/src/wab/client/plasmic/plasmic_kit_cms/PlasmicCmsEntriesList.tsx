@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -14,15 +14,14 @@
 import * as React from "react";
 
 import {
-  Flex as Flex__,
-  SingleBooleanChoiceArg,
-  Stack as Stack__,
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  Flex as Flex__,
   hasVariant,
   renderPlasmicSlot,
+  SingleBooleanChoiceArg,
+  StrictProps,
   useDollarState,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
@@ -30,13 +29,14 @@ import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 import CmsEntryItem from "../../components/cms/CmsEntryItem"; // plasmic-import: girCdMST6R/component
 import IconButton from "../../components/widgets/IconButton"; // plasmic-import: LPry-TF4j22a/component
 import Searchbox from "../../components/widgets/Searchbox"; // plasmic-import: po7gr0PX4_gWo/component
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: ieacQ3Z46z4gwo1FnaB5vY/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import sty from "./PlasmicCmsEntriesList.module.css"; // plasmic-import: k2vc2stl18/css
 import projectcss from "./plasmic_plasmic_kit_cms.module.css"; // plasmic-import: ieacQ3Z46z4gwo1FnaB5vY/projectcss
+import sty from "./PlasmicCmsEntriesList.module.css"; // plasmic-import: k2vc2stl18/css
+
+import SortSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__SortSvg"; // plasmic-import: tzSml-ZqphbQ/icon
 
 createPlasmicElementProxy;
 
@@ -65,6 +65,8 @@ export type PlasmicCmsEntriesList__OverridesType = {
   root?: Flex__<"div">;
   addButton?: Flex__<typeof IconButton>;
   searchInput?: Flex__<typeof Searchbox>;
+  sortButton?: Flex__<typeof IconButton>;
+  svg?: Flex__<"svg">;
   text?: Flex__<"div">;
 };
 
@@ -114,7 +116,6 @@ function PlasmicCmsEntriesList__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.isEmpty,
       },
     ],
-
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -124,27 +125,33 @@ function PlasmicCmsEntriesList__RenderFunc(props: {
     $refs,
   });
 
+  const styleTokensClassNames = _useStyleTokens();
+
   return (
-    <Stack__
-      as={"div"}
+    <div
       data-plasmic-name={"root"}
       data-plasmic-override={overrides.root}
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
-      hasGap={true}
       className={classNames(
         projectcss.all,
         projectcss.root_reset,
         projectcss.plasmic_default_styles,
         projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_css.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
+        styleTokensClassNames,
         sty.root,
         { [sty.rootisEmpty]: hasVariant($state, "isEmpty", "isEmpty") }
       )}
     >
-      <div className={classNames(projectcss.all, sty.freeBox___7Bhda)}>
+      <div
+        className={classNames(projectcss.all, sty.freeBox___7Bhda, {
+          [sty.freeBoxisEmpty___7BhdaGHc56]: hasVariant(
+            $state,
+            "isEmpty",
+            "isEmpty"
+          ),
+        })}
+      >
         <div className={classNames(projectcss.all, sty.freeBox___0Ic4Y)}>
           {renderPlasmicSlot({
             defaultContents: "FAQs",
@@ -155,7 +162,9 @@ function PlasmicCmsEntriesList__RenderFunc(props: {
         <IconButton
           data-plasmic-name={"addButton"}
           data-plasmic-override={overrides.addButton}
-          className={classNames("__wab_instance", sty.addButton)}
+          className={classNames("__wab_instance", sty.addButton, {
+            [sty.addButtonisEmpty]: hasVariant($state, "isEmpty", "isEmpty"),
+          })}
           withBackgroundHover={true}
         />
       </div>
@@ -166,11 +175,25 @@ function PlasmicCmsEntriesList__RenderFunc(props: {
           className={classNames("__wab_instance", sty.searchInput)}
           placeholder={"Filter..."}
         />
+
+        <IconButton
+          data-plasmic-name={"sortButton"}
+          data-plasmic-override={overrides.sortButton}
+          className={classNames("__wab_instance", sty.sortButton, {
+            [sty.sortButtonisEmpty]: hasVariant($state, "isEmpty", "isEmpty"),
+          })}
+          withBackgroundHover={true}
+        >
+          <SortSvgIcon
+            data-plasmic-name={"svg"}
+            data-plasmic-override={overrides.svg}
+            className={classNames(projectcss.all, sty.svg)}
+            role={"img"}
+          />
+        </IconButton>
       </div>
       {(hasVariant($state, "isEmpty", "isEmpty") ? false : true) ? (
-        <Stack__
-          as={"div"}
-          hasGap={true}
+        <div
           className={classNames(projectcss.all, sty.freeBox__zdChF, {
             [sty.freeBoxisEmpty__zdChFgHc56]: hasVariant(
               $state,
@@ -197,10 +220,9 @@ function PlasmicCmsEntriesList__RenderFunc(props: {
                 />
               </React.Fragment>
             ),
-
             value: args.children,
           })}
-        </Stack__>
+        </div>
       ) : null}
       <div
         data-plasmic-name={"text"}
@@ -211,14 +233,16 @@ function PlasmicCmsEntriesList__RenderFunc(props: {
       >
         {"No entries have been created yet."}
       </div>
-    </Stack__>
+    </div>
   ) as React.ReactElement | null;
 }
 
 const PlasmicDescendants = {
-  root: ["root", "addButton", "searchInput", "text"],
+  root: ["root", "addButton", "searchInput", "sortButton", "svg", "text"],
   addButton: ["addButton"],
   searchInput: ["searchInput"],
+  sortButton: ["sortButton", "svg"],
+  svg: ["svg"],
   text: ["text"],
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
@@ -228,6 +252,8 @@ type NodeDefaultElementType = {
   root: "div";
   addButton: typeof IconButton;
   searchInput: typeof Searchbox;
+  sortButton: typeof IconButton;
+  svg: "svg";
   text: "div";
 };
 
@@ -236,23 +262,23 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicCmsEntriesList__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
     variants?: PlasmicCmsEntriesList__VariantsArgs;
     args?: PlasmicCmsEntriesList__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicCmsEntriesList__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicCmsEntriesList__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+  } & // Specify variants directly as props
+  Omit<PlasmicCmsEntriesList__VariantsArgs, ReservedPropsType> &
+    // Specify args directly as props
+    Omit<PlasmicCmsEntriesList__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;
@@ -294,6 +320,8 @@ export const PlasmicCmsEntriesList = Object.assign(
     // Helper components rendering sub-elements
     addButton: makeNodeComponent("addButton"),
     searchInput: makeNodeComponent("searchInput"),
+    sortButton: makeNodeComponent("sortButton"),
+    svg: makeNodeComponent("svg"),
     text: makeNodeComponent("text"),
 
     // Metadata about props expected for PlasmicCmsEntriesList

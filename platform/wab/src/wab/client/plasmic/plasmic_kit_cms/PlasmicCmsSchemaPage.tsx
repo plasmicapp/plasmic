@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -14,13 +14,13 @@
 import * as React from "react";
 
 import {
-  Flex as Flex__,
-  SingleBooleanChoiceArg,
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  Flex as Flex__,
   hasVariant,
+  SingleBooleanChoiceArg,
+  StrictProps,
   useDollarState,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
@@ -28,13 +28,12 @@ import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 import CmsModelDetails from "../../components/cms/CmsModelDetails"; // plasmic-import: pLQf-lY112u/component
 import CmsModelItem from "../../components/cms/CmsModelItem"; // plasmic-import: FpZFUfiTA6/component
 import CmsModelsList from "../../components/cms/CmsModelsList"; // plasmic-import: M3aa84scyXT/component
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: ieacQ3Z46z4gwo1FnaB5vY/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import sty from "./PlasmicCmsSchemaPage.module.css"; // plasmic-import: y1ZiXuS8BD/css
 import projectcss from "./plasmic_plasmic_kit_cms.module.css"; // plasmic-import: ieacQ3Z46z4gwo1FnaB5vY/projectcss
+import sty from "./PlasmicCmsSchemaPage.module.css"; // plasmic-import: y1ZiXuS8BD/css
 
 createPlasmicElementProxy;
 
@@ -103,7 +102,6 @@ function PlasmicCmsSchemaPage__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.noModels,
       },
     ],
-
     [$props, $ctx, $refs]
   );
   const $state = useDollarState(stateSpecs, {
@@ -112,6 +110,8 @@ function PlasmicCmsSchemaPage__RenderFunc(props: {
     $queries: {},
     $refs,
   });
+
+  const styleTokensClassNames = _useStyleTokens();
 
   return (
     <div
@@ -124,9 +124,7 @@ function PlasmicCmsSchemaPage__RenderFunc(props: {
         projectcss.root_reset,
         projectcss.plasmic_default_styles,
         projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_css.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
+        styleTokensClassNames,
         sty.root
       )}
     >
@@ -188,23 +186,23 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicCmsSchemaPage__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
     variants?: PlasmicCmsSchemaPage__VariantsArgs;
     args?: PlasmicCmsSchemaPage__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicCmsSchemaPage__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicCmsSchemaPage__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+  } & // Specify variants directly as props
+  Omit<PlasmicCmsSchemaPage__VariantsArgs, ReservedPropsType> &
+    // Specify args directly as props
+    Omit<PlasmicCmsSchemaPage__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

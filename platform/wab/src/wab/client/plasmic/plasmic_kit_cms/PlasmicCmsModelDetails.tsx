@@ -1,6 +1,6 @@
-// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /* prettier-ignore-start */
 
 /** @jsxRuntime classic */
@@ -14,26 +14,24 @@
 import * as React from "react";
 
 import {
-  Flex as Flex__,
-  Stack as Stack__,
-  StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  Flex as Flex__,
   renderPlasmicSlot,
+  StrictProps,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
 import InlineEditable from "../../components/InlineEditable"; // plasmic-import: btpz7A3thO/component
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
 import MenuButton from "../../components/widgets/MenuButton"; // plasmic-import: h69wHrrKtL/component
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: ieacQ3Z46z4gwo1FnaB5vY/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
-import plasmic_plasmic_kit_design_system_css from "../PP__plasmickit_design_system.module.css"; // plasmic-import: tXkSR39sgCDWSitZxC5xFV/projectcss
-import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_tokens/plasmic_plasmic_kit_q_4_color_tokens.module.css"; // plasmic-import: 95xp9cYcv7HrNWpFWWhbcv/projectcss
-import sty from "./PlasmicCmsModelDetails.module.css"; // plasmic-import: pLQf-lY112u/css
 import projectcss from "./plasmic_plasmic_kit_cms.module.css"; // plasmic-import: ieacQ3Z46z4gwo1FnaB5vY/projectcss
+import sty from "./PlasmicCmsModelDetails.module.css"; // plasmic-import: pLQf-lY112u/css
 
 createPlasmicElementProxy;
 
@@ -43,9 +41,7 @@ type VariantPropType = keyof PlasmicCmsModelDetails__VariantsArgs;
 export const PlasmicCmsModelDetails__VariantProps =
   new Array<VariantPropType>();
 
-export type PlasmicCmsModelDetails__ArgsType = {
-  children?: React.ReactNode;
-};
+export type PlasmicCmsModelDetails__ArgsType = { children?: React.ReactNode };
 type ArgPropType = keyof PlasmicCmsModelDetails__ArgsType;
 export const PlasmicCmsModelDetails__ArgProps = new Array<ArgPropType>(
   "children"
@@ -97,6 +93,8 @@ function PlasmicCmsModelDetails__RenderFunc(props: {
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
+  const styleTokensClassNames = _useStyleTokens();
+
   return (
     <div
       data-plasmic-name={"root"}
@@ -108,9 +106,7 @@ function PlasmicCmsModelDetails__RenderFunc(props: {
         projectcss.root_reset,
         projectcss.plasmic_default_styles,
         projectcss.plasmic_mixins,
-        projectcss.plasmic_tokens,
-        plasmic_plasmic_kit_design_system_css.plasmic_tokens,
-        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
+        styleTokensClassNames,
         sty.root
       )}
     >
@@ -149,11 +145,9 @@ function PlasmicCmsModelDetails__RenderFunc(props: {
             {"Model schema"}
           </div>
         </div>
-        <Stack__
-          as={"div"}
+        <div
           data-plasmic-name={"right"}
           data-plasmic-override={overrides.right}
-          hasGap={true}
           className={classNames(projectcss.all, sty.right)}
         >
           <Button
@@ -170,7 +164,7 @@ function PlasmicCmsModelDetails__RenderFunc(props: {
             data-plasmic-override={overrides.menuButton}
             className={classNames("__wab_instance", sty.menuButton)}
           />
-        </Stack__>
+        </div>
       </div>
       <div className={classNames(projectcss.all, sty.freeBox__qDko6)}>
         <div className={classNames(projectcss.all, sty.freeBox__lCBih)}>
@@ -195,7 +189,6 @@ const PlasmicDescendants = {
     "saveButton",
     "menuButton",
   ],
-
   left: ["left", "modelName", "modelNameValue", "text"],
   modelName: ["modelName", "modelNameValue"],
   modelNameValue: ["modelNameValue"],
@@ -223,23 +216,23 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicCmsModelDetails__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> =
   // Explicitly specify variants, args, and overrides as objects
   {
     variants?: PlasmicCmsModelDetails__VariantsArgs;
     args?: PlasmicCmsModelDetails__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicCmsModelDetails__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
-    /* Specify args directly as props*/ Omit<
-      PlasmicCmsModelDetails__ArgsType,
-      ReservedPropsType
-    > &
-    /* Specify overrides for each element directly as props*/ Omit<
+  } & // Specify variants directly as props
+  Omit<PlasmicCmsModelDetails__VariantsArgs, ReservedPropsType> &
+    // Specify args directly as props
+    Omit<PlasmicCmsModelDetails__ArgsType, ReservedPropsType> &
+    // Specify overrides for each element directly as props
+    Omit<
       NodeOverridesType<T>,
       ReservedPropsType | VariantPropType | ArgPropType
     > &
-    /* Specify props for the root element*/ Omit<
+    // Specify props for the root element
+    Omit<
       Partial<React.ComponentProps<NodeDefaultElementType[T]>>,
       ReservedPropsType | VariantPropType | ArgPropType | DescendantsType<T>
     >;

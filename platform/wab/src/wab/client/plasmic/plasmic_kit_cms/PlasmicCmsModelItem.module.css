@@ -4,24 +4,13 @@
   position: relative;
   width: 100%;
   height: 36px;
+  justify-content: center;
+  align-items: center;
   cursor: pointer;
+  column-gap: 4px;
   min-width: 0;
   border-radius: 6px;
   padding: 0.5rem;
-}
-.root > :global(.__wab_flex-container) {
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  min-width: 0;
-  margin-left: calc(0px - 4px);
-  width: calc(100% + 4px);
-}
-.root > :global(.__wab_flex-container) > *,
-.root > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.root > :global(.__wab_flex-container) > picture > img,
-.root > :global(.__wab_flex-container) > :global(.__wab_slot) > picture > img {
-  margin-left: 4px;
 }
 .rootisActive {
   background: var(--token-bV4cCeIniS6);

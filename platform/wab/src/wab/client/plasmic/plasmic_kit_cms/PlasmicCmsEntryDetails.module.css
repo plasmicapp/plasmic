@@ -33,7 +33,7 @@
   font-size: 14px;
   font-weight: 500;
 }
-.svg__elaeO {
+.svg__p0Jtt {
   position: relative;
   object-fit: cover;
   left: auto;
@@ -51,17 +51,7 @@
   display: flex;
   position: relative;
   flex-direction: row;
-}
-.right > :global(.__wab_flex-container) {
-  flex-direction: row;
-  margin-left: calc(0px - 8px);
-  width: calc(100% + 8px);
-}
-.right > :global(.__wab_flex-container) > *,
-.right > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.right > :global(.__wab_flex-container) > picture > img,
-.right > :global(.__wab_flex-container) > :global(.__wab_slot) > picture > img {
-  margin-left: 8px;
+  column-gap: 8px;
 }
 .historyButton:global(.__wab_instance) {
   max-width: 100%;
@@ -77,7 +67,7 @@
 .text__hLvhX {
   color: var(--token-fVn5vRhXJxQ);
 }
-.svg__gKon5 {
+.svg__x3PvG {
   display: flex;
   position: relative;
   object-fit: cover;
@@ -97,7 +87,7 @@
 .text___8Mqz6 {
   color: var(--token-fVn5vRhXJxQ);
 }
-.svg__zW5U {
+.svg___5TdI {
   display: flex;
   position: relative;
   object-fit: cover;
@@ -107,13 +97,13 @@
   max-width: 100%;
   position: relative;
 }
-.svg__ckufM {
+.svg__gS7Pw {
   display: flex;
   position: relative;
   object-fit: cover;
   height: 1em;
 }
-.svg___4Eybx {
+.svg___42Mpk {
   display: flex;
   position: relative;
   object-fit: cover;

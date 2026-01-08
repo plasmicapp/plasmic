@@ -2,19 +2,9 @@
   display: flex;
   position: relative;
   flex-direction: column;
+  row-gap: 8px;
   padding: 0.75rem;
   border-right: 1px solid var(--token-hoA5qaM-91G);
-}
-.root > :global(.__wab_flex-container) {
-  flex-direction: column;
-  margin-top: calc(0px - 8px);
-  height: calc(100% + 8px);
-}
-.root > :global(.__wab_flex-container) > *,
-.root > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.root > :global(.__wab_flex-container) > picture > img,
-.root > :global(.__wab_flex-container) > :global(.__wab_slot) > picture > img {
-  margin-top: 8px;
 }
 .freeBox___7Bhda {
   display: flex;
@@ -41,13 +31,13 @@
   position: relative;
   margin-left: auto;
 }
-.svg__hsBeT {
+.svg__cpJ1M {
   display: flex;
   position: relative;
   object-fit: cover;
   height: 1em;
 }
-.svg__yCx0 {
+.svg___9ChP6 {
   display: flex;
   position: relative;
   object-fit: cover;
@@ -57,7 +47,7 @@
   display: flex;
   position: relative;
   flex-direction: row;
-  align-items: stretch;
+  align-items: center;
   justify-content: flex-start;
   width: 100%;
   height: auto;
@@ -68,26 +58,28 @@
   max-width: 100%;
   position: relative;
 }
+.sortButton:global(.__wab_instance) {
+  max-width: 100%;
+  margin-left: auto;
+}
+.svg {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  height: 1em;
+}
+.svg___1UfG5 {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  height: 1em;
+}
 .freeBox__zdChF {
   display: flex;
   position: relative;
   flex-direction: column;
   overflow: auto;
-}
-.freeBox__zdChF > :global(.__wab_flex-container) {
-  flex-direction: column;
-  margin-top: calc(0px - 4px);
-  height: calc(100% + 4px);
-}
-.freeBox__zdChF > :global(.__wab_flex-container) > *,
-.freeBox__zdChF > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
-.freeBox__zdChF > :global(.__wab_flex-container) > picture > img,
-.freeBox__zdChF
-  > :global(.__wab_flex-container)
-  > :global(.__wab_slot)
-  > picture
-  > img {
-  margin-top: 4px;
+  row-gap: 4px;
 }
 .cmsEntryItem__gdUiu:global(.__wab_instance) {
   max-width: 100%;
