@@ -1,3 +1,5 @@
+version: "3.8"
+
 services:
   # Plasmic Host (Canvas Host for Studio)
   plasmic-host:
