@@ -21,7 +21,7 @@ import {
   ExprCtx,
   asCode,
   codeLit,
-  convertExprToTemplatedString,
+  convertExprToStringOrTemplatedString,
   convertTemplatedStringToExpr,
   createExprForDataPickerValue,
   extractValueSavedFromDataPicker,
@@ -287,7 +287,7 @@ const PageSettings = observer(function PageSettings({
               propType={{ type: "string", defaultValueHint: "Title" }}
               expr={title}
               onChange={(expr) => {
-                const newTitle = convertExprToTemplatedString(expr);
+                const newTitle = convertExprToStringOrTemplatedString(expr);
                 spawn(sc.tryChangePageMeta(page, "title", newTitle));
               }}
               viewCtx={viewCtx}
@@ -308,7 +308,8 @@ const PageSettings = observer(function PageSettings({
               }}
               expr={description}
               onChange={(expr) => {
-                const newDesc = convertExprToTemplatedString(expr) ?? "";
+                const newDesc =
+                  convertExprToStringOrTemplatedString(expr) ?? "";
                 spawn(sc.tryChangePageMetaDescription(page, newDesc));
               }}
               viewCtx={viewCtx}
@@ -328,7 +329,7 @@ const PageSettings = observer(function PageSettings({
               propType={{ type: "string", defaultValueHint: "Canonical URL" }}
               expr={canonical}
               onChange={(expr) => {
-                const newCanonical = convertExprToTemplatedString(expr);
+                const newCanonical = convertExprToStringOrTemplatedString(expr);
                 spawn(sc.tryChangePageMeta(page, "canonical", newCanonical));
               }}
               viewCtx={viewCtx}

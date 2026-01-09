@@ -3,6 +3,7 @@ import {
   asCode,
   code,
   codeLit,
+  convertExprToStringOrTemplatedString,
   customCode,
   deserCompositeExpr,
   deserCompositeExprMaybe,
@@ -303,5 +304,69 @@ describe("serCompositeExprMaybe/deserCompositeExprMaybe/deserCompositeExpr", () 
         },
       ]);
     });
+  });
+});
+
+describe("convertExprToStringOrTemplatedString", () => {
+  it("returns null for null or undefined input", () => {
+    expect(convertExprToStringOrTemplatedString(null)).toBeNull();
+    expect(convertExprToStringOrTemplatedString(undefined)).toBeNull();
+  });
+
+  it("returns TemplatedString for TemplatedString with dynamic parts", () => {
+    const customCodeString = new TemplatedString({
+      text: ["Hello ", customCode("name"), "!"],
+    });
+    const codeResult = convertExprToStringOrTemplatedString(customCodeString);
+    expect(codeResult).toBe(customCodeString);
+
+    const objectPath = new ObjectPath({
+      path: ["user", "name"],
+      fallback: null,
+    });
+    const objectPathString = new TemplatedString({
+      text: ["Hello ", objectPath, "!"],
+    });
+    const pathResult = convertExprToStringOrTemplatedString(objectPathString);
+    expect(pathResult).toBe(objectPathString);
+  });
+
+  it("returns string for TemplatedString without dynamic parts", () => {
+    const texts = [
+      ["Hello", " ", "World"],
+      ["", "Hello World", ""],
+      ["Hello World"],
+    ];
+    for (const text of texts) {
+      const result = convertExprToStringOrTemplatedString(
+        new TemplatedString({ text })
+      );
+      expect(result).toBe("Hello World");
+    }
+  });
+
+  it("returns TemplatedString for ObjectPath", () => {
+    const objectPath = new ObjectPath({
+      path: ["user", "name"],
+      fallback: null,
+    });
+    const result = convertExprToStringOrTemplatedString(objectPath);
+    expect((result as TemplatedString).text).toEqual(["", objectPath, ""]);
+  });
+
+  it("returns TemplatedString for CustomCode", () => {
+    const customCodeExpr = customCode("user.name");
+    const result = convertExprToStringOrTemplatedString(customCodeExpr);
+    expect(result).toBeInstanceOf(TemplatedString);
+    expect((result as TemplatedString).text).toEqual(["", customCodeExpr, ""]);
+  });
+
+  it("returns null for other expr types", () => {
+    const otherExpr = new CompositeExpr({
+      hostLiteral: '{"value": "test"}',
+      substitutions: {},
+    });
+    const result = convertExprToStringOrTemplatedString(otherExpr);
+    expect(result).toBeNull();
   });
 });

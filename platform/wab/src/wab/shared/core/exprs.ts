@@ -1359,14 +1359,14 @@ export function mkTemplatedStringOfOneDynExpr(expr: CustomCode | ObjectPath) {
   });
 }
 
-export function convertExprToTemplatedString(
+export function convertExprToStringOrTemplatedString(
   expr: Expr | null | undefined
-): TemplatedString | null {
+): TemplatedString | string | null {
   if (!expr) {
     return null;
   }
   if (isKnownTemplatedString(expr)) {
-    return expr;
+    return hasDynamicParts(expr) ? expr : expr.text.join("");
   }
   if (isKnownObjectPath(expr) || isKnownCustomCode(expr)) {
     return mkTemplatedStringOfOneDynExpr(expr);

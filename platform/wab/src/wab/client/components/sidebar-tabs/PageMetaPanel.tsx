@@ -7,7 +7,7 @@ import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { spawn } from "@/wab/shared/common";
 import { PageComponent } from "@/wab/shared/core/components";
 import {
-  convertExprToTemplatedString,
+  convertExprToStringOrTemplatedString,
   convertTemplatedStringToExpr,
 } from "@/wab/shared/core/exprs";
 import { Expr, TplTag } from "@/wab/shared/model/classes";
@@ -46,7 +46,7 @@ const PageMetaPanel = observer(function PageMetaPanel(props: {
         propType={{ type: "string", defaultValueHint: "Title" }}
         expr={titleExpr}
         onChange={(expr: Expr | undefined) => {
-          const newTitle = convertExprToTemplatedString(expr);
+          const newTitle = convertExprToStringOrTemplatedString(expr);
           spawn(sc.tryChangePageMeta(page, "title", newTitle));
         }}
         viewCtx={viewCtx}
