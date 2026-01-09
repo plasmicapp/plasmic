@@ -227,12 +227,9 @@ const PopoverFrameInternal = observer(function PopoverFrameInternal(
   // content is a child of the parent component. We render to an unattached
   // element, and PopoverFrameShell attaches it to the DOM tree.
   return ReactDOM.createPortal(
-    // FocusScope keeps keyboard focus (via TAB) within
-    // the popover, so you cannot tab out of the popover. However,
-    // if persistOnInteractOutside is true, this is a long-lived popover,
-    // so we allow the focus to travel outside of the popover as well
     <ModalScope
       className="flex-col"
+      containFocus={false}
       allowKeyCombos={[
         STUDIO_SHORTCUTS.UNDO.combos,
         STUDIO_SHORTCUTS.REDO.combos,

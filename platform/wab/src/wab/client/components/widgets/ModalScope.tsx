@@ -9,6 +9,7 @@ export type ModalScopeProps = Omit<
   "tabIndex" | "onKeyDown" | "onKeyUp" | "onKeyPress"
 > & {
   allowKeyCombos?: string[] | string[][];
+  containFocus?: boolean;
 };
 
 /**
@@ -16,9 +17,9 @@ export type ModalScopeProps = Omit<
  *
  * This component adds a wrapping <div> that trap focus and key events.
  */
-export function ModalScope(props: ModalScopeProps) {
+export function ModalScope({ containFocus = true, ...props }: ModalScopeProps) {
   return (
-    <FocusScope contain autoFocus restoreFocus>
+    <FocusScope contain={containFocus} autoFocus restoreFocus>
       <ModalScopeInternal {...props} />
     </FocusScope>
   );
