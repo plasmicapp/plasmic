@@ -55,7 +55,10 @@ services:
       - SESSION_SECRET=${SESSION_SECRET:-plasmic-session-secret-change-me-in-production}
       - ENCRYPTION_KEY=${ENCRYPTION_KEY:-abcdefghijklmnopqrstuvwxyz123456}
       - HOST=${PUBLIC_URL:-http://localhost:3003}
-      # Set this to your server IP or domain
+      # Set this to your server IP or domain (used by rsbuild)
+      - PUBLIC_URL=${PUBLIC_URL:-http://localhost:3003}
+      - DEFAULT_HOST_URL=${HOST_URL:-http://localhost:3005/}
+      # Set this to your server IP or domain (used by React app)
       - REACT_APP_DEFAULT_HOST_URL=${HOST_URL:-http://localhost:3005/}
       - REACT_APP_PUBLIC_URL=${PUBLIC_URL:-http://localhost:3003}
     restart: unless-stopped
