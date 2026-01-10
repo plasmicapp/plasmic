@@ -24,8 +24,16 @@ RUN yarn install --frozen-lockfile
 RUN mkdir -p /tmp/.plasmic && \
     cp platform/wab/tools/docker-dev/secrets.json /tmp/.plasmic/secrets.json && \
     yarn setup && \
-    yarn setup:canvas-packages && \
-    yarn cache clean
+    yarn setup:canvas-packages
+
+# Install dependencies for all sub-packages used by dev server
+RUN cd platform/sub && yarn --frozen-lockfile && \
+    cd ../react-web-bundle && yarn --frozen-lockfile && \
+    cd ../live-frame && yarn --frozen-lockfile && \
+    cd ../loader-html-hydrate && yarn --frozen-lockfile
+
+# Clean yarn cache to reduce image size
+RUN yarn cache clean
 
 # --- Final stage ---
 FROM node:24-alpine
