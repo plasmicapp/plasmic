@@ -28,6 +28,7 @@ RUN mkdir -p /tmp/.plasmic && \
 
 # Install dependencies for all sub-packages used by dev server
 RUN cd platform/sub && yarn --frozen-lockfile && \
+    cd ../canvas-packages && yarn --frozen-lockfile && \
     cd ../react-web-bundle && yarn --frozen-lockfile && \
     cd ../live-frame && yarn --frozen-lockfile && \
     cd ../loader-html-hydrate && yarn --frozen-lockfile
