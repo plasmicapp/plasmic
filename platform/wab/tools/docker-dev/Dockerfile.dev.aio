@@ -47,6 +47,9 @@ WORKDIR /plasmic/platform/wab
 COPY --chown=plasmic:plasmic --from=builder /plasmic /plasmic
 COPY --chown=plasmic:plasmic --from=builder /tmp/.plasmic /home/plasmic/.plasmic
 
+# Fix git ownership check issue (required for rsbuild config)
+RUN git config --global --add safe.directory /plasmic
+
 EXPOSE 3003 3004 3005
 
 ENTRYPOINT ["sh", "-c"]

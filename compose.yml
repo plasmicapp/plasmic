@@ -51,7 +51,7 @@ services:
       - DATABASE_URI=postgres://wab:${DB_PASSWORD:-SEKRET}@plasmic-db:5432/wab
       - WAB_DBNAME=plasmic-db
       - WAB_DBPASSWORD=${DB_PASSWORD:-SEKRET}
-      - NODE_ENV=production
+      - NODE_ENV=development
       - SESSION_SECRET=${SESSION_SECRET:-plasmic-session-secret-change-me-in-production}
       - ENCRYPTION_KEY=${ENCRYPTION_KEY:-abcdefghijklmnopqrstuvwxyz123456}
       - HOST=${PUBLIC_URL:-http://localhost:3003}
