@@ -15,9 +15,11 @@ const PLUGIN_NAME = "StudioHtmlPlugin";
  */
 export class StudioHtmlPlugin implements RspackPluginInstance {
   commitHash: string;
+  useHttps: boolean;
 
-  constructor(commitHash: string) {
+  constructor(commitHash: string, useHttps: boolean = true) {
     this.commitHash = commitHash;
+    this.useHttps = useHttps;
   }
   apply(compiler: Compiler) {
     compiler.hooks.compilation.tap(PLUGIN_NAME, (compilation) => {
@@ -52,13 +54,16 @@ export class StudioHtmlPlugin implements RspackPluginInstance {
             `<script id="ReactDevToolsScript" crossorigin="anonymous"></script>` // Replaced in studio.js
           );
 
-          // Allow our instrumentation to run when the host URL uses HTTP
-          root
-            .querySelector("head")
-            .insertAdjacentHTML(
-              "afterbegin",
-              `<meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">`
-            );
+          // Only add upgrade-insecure-requests when using HTTPS
+          // This allows self-hosted deployments to work over HTTP
+          if (this.useHttps) {
+            root
+              .querySelector("head")
+              .insertAdjacentHTML(
+                "afterbegin",
+                `<meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">`
+              );
+          }
 
           // Add our own <base> to direct all requests to the main origin.
           root.querySelector("head").insertAdjacentHTML(

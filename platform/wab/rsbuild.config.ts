@@ -30,11 +30,13 @@ const backendPort: number = process.env.BACKEND_PORT
   : 3004;
 const publicUrl: string =
   process.env.PUBLIC_URL ?? (isProd ? homepage : `http://localhost:${port}`);
+const useHttps: boolean = publicUrl.startsWith("https://");
 
 console.log(`Starting rsbuild...
 - commitHash: ${commitHash}
 - buildEnv: ${buildEnv}
 - publicUrl: ${publicUrl}
+- useHttps: ${useHttps}
 - port: ${port}
 - backendPort: ${backendPort}
 `);
@@ -261,7 +263,7 @@ export default defineConfig({
               : undefined
           )
         ),
-        new StudioHtmlPlugin(commitHash),
+        new StudioHtmlPlugin(commitHash, useHttps),
       ],
     },
   },
