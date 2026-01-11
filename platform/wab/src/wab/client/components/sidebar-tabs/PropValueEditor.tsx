@@ -1165,10 +1165,11 @@ const PropValueEditor_ = (
     propType.type === "queryBuilder"
   ) {
     const config = _getContextDependentValue(propType.config);
-    if (!config) {
+    const fields = config?.fields;
+    if (!fields || Object.keys(fields).length === 0) {
       // QueryBuilder validates the value against the config's fields,
       // so make sure the config is loaded before rendering.
-      return null;
+      return <span className="dimfg">No data available to filter.</span>;
     }
     return (
       <QueryBuilderPropEditor
