@@ -133,6 +133,11 @@ export default defineConfig({
   },
   server: {
     port,
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type, Authorization",
+    },
     proxy: {
       "/api": {
         target: `http://localhost:${backendPort}`,
