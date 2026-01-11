@@ -722,6 +722,18 @@ export function cloneSite(fromSite: Site) {
     );
   });
 
+  // Style Token overrides have weak refs to the tokens they're overriding.
+  // When the site is cloned, the overrides of registered (local) tokens continue to point to the token from the original site.
+  // They must be updated to point to the cloned token instead.
+  site.styleTokenOverrides.forEach((override) => {
+    const oldToken = override.token;
+    const newToken = oldToNewToken.get(oldToken);
+    if (newToken) {
+      // override.token is a weak ref to a local (registered) token. Update the ref to point to the cloned token.
+      override.token = newToken;
+    }
+  });
+
   // fix token ref from mixin
   site.mixins.forEach((mixin) => fixRefsForMixin(mixin));
   // fix token ref from theme
