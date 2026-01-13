@@ -6,8 +6,18 @@ import { ButtonProps } from "@react-awesome-query-builder/antd";
 import Button, { ButtonType } from "antd/lib/button";
 import React from "react";
 
+// This component is used as a custom action button in our RAQB implementation
+// The primary purpose for using a custom action button is design system consistency - we want use icon sets that are consistent with the Studio
+// This code mirrors (and modifies) the RAQB default action button code https://github.com/ukrbublik/react-awesome-query-builder/blob/aea340c077060ef82926469009a66d4082277e7b/packages/antd/modules/widgets/core/Button.jsx
 export function ActionButton(props: React.Attributes & ButtonProps) {
   const { type, onClick, label, readonly } = props;
+
+  const hideLabelsFor = {
+    addSubRuleSimple: true,
+    delGroup: true,
+    delRuleGroup: true,
+    delRule: true,
+  };
 
   const typeToIcon = {
     addRule: <Icon icon={PlussvgIcon} />,
@@ -32,7 +42,7 @@ export function ActionButton(props: React.Attributes & ButtonProps) {
     // delRuleGroup: "danger",
   };
 
-  const btnLabel = type === "addRuleGroup" ? "" : label;
+  const btnLabel = hideLabelsFor[type] ? "" : label;
   const buttonType = typeToType[type as keyof typeof typeToType] as ButtonType;
 
   return (

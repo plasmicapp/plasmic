@@ -47,7 +47,7 @@ function filterRow(row: Record<string, any>, filters?: Filters): boolean {
     } else if ("!!" in logic) {
       return !!evaluateLogic(logic["!!"] as FiltersLogic);
     } else if ("in" in logic) {
-      const fieldName = logic.in[1]["var"];
+      const fieldName = logic.in[1]?.["var"];
       const value = logic.in[0];
       if (!isString(value) || !isString(row[fieldName])) {
         return false;

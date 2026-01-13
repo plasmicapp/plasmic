@@ -21,6 +21,7 @@ import {
 } from "@/wab/shared/model/classes";
 import {
   Config,
+  ConfigContext,
   ImmutableTree,
   Utils as QbUtils,
   Query,
@@ -83,7 +84,8 @@ function QueryBuilderPropEditor_(
       types.map((type) => {
         const originalFactory = ensure(
           baseConfig.widgets[type]["factory"] as (
-            props: WidgetProps
+            props: WidgetProps,
+            context?: ConfigContext
           ) => React.ReactElement,
           () => `missing base widget: ${type}`
         );
@@ -92,7 +94,10 @@ function QueryBuilderPropEditor_(
           dynamicType,
           {
             type: dynamicType,
-            factory: (widgetProps: WidgetProps | undefined) => {
+            factory: (
+              widgetProps: WidgetProps | undefined,
+              context: ConfigContext | undefined
+            ) => {
               if (!widgetProps) {
                 return <></>;
               }
@@ -100,7 +105,9 @@ function QueryBuilderPropEditor_(
                 <DataPickerWidgetFactoryWithContext
                   widgetProps={widgetProps}
                   setValue={widgetProps.setValue}
-                  originalFactory={originalFactory}
+                  renderOriginalWidget={() =>
+                    originalFactory(widgetProps, context)
+                  }
                 />
               );
             },
@@ -207,18 +214,18 @@ export const QueryBuilderPropEditor = React.forwardRef(QueryBuilderPropEditor_);
 function DataPickerWidgetFactoryWithContext({
   widgetProps,
   setValue,
-  originalFactory,
+  renderOriginalWidget,
 }: {
   widgetProps: WidgetProps;
   setValue: (expr: CustomCode | ObjectPath | null | undefined) => void;
-  originalFactory: (props: WidgetProps) => React.ReactElement;
+  renderOriginalWidget: () => React.ReactElement;
 }): React.ReactElement {
   const { env, schema, exprCtx } = usePropValueEditorContext();
   return (
     <DataPickerWidgetFactory
       widgetProps={widgetProps}
       setValue={setValue}
-      originalFactory={originalFactory}
+      renderOriginalWidget={renderOriginalWidget}
       data={env}
       schema={schema}
       exprCtx={ensure(exprCtx, "exprCtx missing")}

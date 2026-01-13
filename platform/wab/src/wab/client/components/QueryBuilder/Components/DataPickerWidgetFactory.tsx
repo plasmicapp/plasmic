@@ -19,16 +19,16 @@ import {
   ObjectPath,
   TemplatedString,
 } from "@/wab/shared/model/classes";
-import { BaseWidgetProps } from "@react-awesome-query-builder/antd";
+import { WidgetProps } from "@react-awesome-query-builder/antd";
 import { Menu, Popover } from "antd";
 import * as React from "react";
 
 export interface DataPickerWidgetFactoryProps {
-  widgetProps: BaseWidgetProps;
+  widgetProps: WidgetProps;
   setValue: (expr: CustomCode | ObjectPath | null | undefined) => void;
   data: Record<string, any> | undefined;
   schema?: DataPickerTypesSchema;
-  originalFactory: (props: BaseWidgetProps) => React.ReactElement;
+  renderOriginalWidget: () => React.ReactElement;
   exprCtx: ExprCtx;
 }
 
@@ -41,7 +41,7 @@ export function DataPickerWidgetFactory({
   setValue,
   data,
   schema,
-  originalFactory,
+  renderOriginalWidget,
   exprCtx,
 }: DataPickerWidgetFactoryProps): React.ReactElement {
   const [defaultOpenDataPicker, setDefaultOpenDataPicker] =
@@ -96,7 +96,7 @@ export function DataPickerWidgetFactory({
         </Menu.Item>
       </Menu>
     );
-    widget = originalFactory(widgetProps);
+    widget = renderOriginalWidget();
   }
 
   return (

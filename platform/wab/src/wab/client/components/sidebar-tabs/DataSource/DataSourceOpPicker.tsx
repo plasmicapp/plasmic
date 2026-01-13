@@ -2923,15 +2923,18 @@ export const JsonWithSchemaEditor = observer(function JsonWithSchemaEditor({
                                 }}
                                 className="qb-custom-widget"
                               >
-                                {configWidgets[fieldType].factory({
-                                  config: { ...QueryBuilderConfig },
-                                  setValue: setExprValue,
-                                  value: val,
-                                  customProps: {
-                                    "data-plasmic-prop": fieldName,
-                                  },
-                                  ...field.fieldSettings,
-                                })}
+                                {configWidgets[fieldType].factory(
+                                  {
+                                    config: { ...QueryBuilderConfig },
+                                    setValue: setExprValue,
+                                    value: val,
+                                    customProps: {
+                                      "data-plasmic-prop": fieldName,
+                                    },
+                                    ...field.fieldSettings,
+                                  } as any,
+                                  QueryBuilderConfig.ctx
+                                )}
                               </ContextMenuIndicator>
                             );
                           }

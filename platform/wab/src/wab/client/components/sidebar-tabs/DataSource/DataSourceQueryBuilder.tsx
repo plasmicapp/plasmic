@@ -20,14 +20,15 @@ import {
   isKnownTemplatedString,
 } from "@/wab/shared/model/classes";
 import {
-  BaseWidgetProps,
   Config,
+  ConfigContext,
   Fields,
   ImmutableTree,
   JsonTree,
   Utils as QbUtils,
   Query,
   TextWidgetProps,
+  WidgetProps,
 } from "@react-awesome-query-builder/antd";
 import cn from "classnames";
 import { isNil, isString, merge, pick } from "lodash";
@@ -143,7 +144,7 @@ function DataSourceQueryBuilder_(
             `${widgetType}-custom`,
             {
               type: `${widgetType}-custom`,
-              factory: (widgetProps: BaseWidgetProps) => {
+              factory: (widgetProps: WidgetProps, context?: ConfigContext) => {
                 const bindingId = widgetProps.value;
                 const realValue =
                   typeof bindingId === "string" &&
@@ -166,19 +167,22 @@ function DataSourceQueryBuilder_(
                   };
                   widgetProps.setValue(binding);
                 };
+                const widgetPropsWithRealValue = {
+                  ...widgetProps,
+                  value: realValue,
+                };
                 return (
                   <DataPickerWidgetFactory
-                    widgetProps={{
-                      ...widgetProps,
-                      value: realValue,
-                    }}
+                    widgetProps={widgetPropsWithRealValue}
                     setValue={setValue}
                     data={curData.current}
                     schema={schema}
-                    originalFactory={ensure(
-                      baseConfig.widgets[widgetType]["factory"],
-                      () => `No factory for widget: ${widgetType}`
-                    )}
+                    renderOriginalWidget={() =>
+                      ensure(
+                        baseConfig.widgets[widgetType].factory,
+                        () => `No factory for widget: ${widgetType}`
+                      )(widgetPropsWithRealValue as any, context)
+                    }
                     exprCtx={exprCtx}
                   />
                 );
