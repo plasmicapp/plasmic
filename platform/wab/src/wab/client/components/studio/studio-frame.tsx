@@ -43,23 +43,8 @@ import { useEffect } from "react";
 
 const whitelistedHosts = [
   "https://studio.plasmic.app",
-  "https://plasmic.dev",
-  "https://host.plasmic.dev",
-  "https://code-components.plasmic.site",
   "https://plasmic.app",
   "https://host.plasmicdev.com",
-  "https://staging.plasmic.app",
-  "https://staging-host.plasmic.app",
-
-  // RAF POC
-  "https://raf-poc.plasmic.site",
-
-  // Hydrogen starter demo for the Hydrogen team
-  "https://plasmic-hydrogen-starter-demo.herokuapp.com",
-
-  // Remove when this ticket is done:
-  // https://app.shortcut.com/plasmic/story/36383/allow-setting-trusted-host-for-whole-organization
-  "https://website-git-benjaminflores-brand-2274-homepage-a-3a7667-scaleai.vercel.app",
 ];
 
 export function StudioFrame({

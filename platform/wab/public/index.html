@@ -40,10 +40,7 @@
       const isProd =
         "isProd" in window
           ? window.isProd
-          : window.origin === "https://studio.plasmic.app" ||
-            window.origin === "https://plasmic.dev" ||
-            window.origin === "https://host.plasmic.dev" ||
-            window.origin === "https://staging.plasmic.app";
+          : window.origin === "https://studio.plasmic.app";
       window.isProd = isProd;
     </script>
 

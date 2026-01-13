@@ -527,7 +527,7 @@ const DEFAULT_DEVFLAGS = {
   // domain, then this allows us to recognize it as the top frame
   // Hard-coding this for now as db-based flag overrides are
   // not yet loaded when it is needed.
-  topFrameUrls: ["https://studio.plsmc.dev"] as string[],
+  topFrameUrls: [] as string[],
 
   defaultContentCreatorConfig: {
     styleSectionVisibilities: {
