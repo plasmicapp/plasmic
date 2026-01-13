@@ -1,9 +1,18 @@
-import { betweenInclusive, ensureString } from "@/wab/shared/common";
-import { NumericSize, Size, autoSize, showSizeCss } from "@/wab/shared/css-size";
 import { RSH } from "@/wab/shared/RuleSetHelpers";
 import { $$$ } from "@/wab/shared/TplQuery";
-import { VariantCombo, ensureVariantSetting } from "@/wab/shared/Variants";
+import {
+  VariantCombo,
+  ensureVariantSetting,
+  isPrivateStyleVariant,
+} from "@/wab/shared/Variants";
+import { betweenInclusive, ensureString } from "@/wab/shared/common";
 import { gridChildProps } from "@/wab/shared/core/style-props";
+import {
+  NumericSize,
+  Size,
+  autoSize,
+  showSizeCss,
+} from "@/wab/shared/css-size";
 import { convertToRelativePosition } from "@/wab/shared/layoututils";
 import { TplNode, TplTag } from "@/wab/shared/model/classes";
 import * as L from "lodash";
@@ -153,14 +162,15 @@ export function showGridChildCss(child: Child): CSSProperties {
   };
 }
 
-export function convertToGridChildren(
-  parent: TplNode,
-  variantCombo: VariantCombo
-) {
+function convertToGridChildren(parent: TplNode, variantCombo: VariantCombo) {
+  // Filter out private style variants as they are specific to their forTpl
+  // and should not be applied to children
+  const filteredCombo = variantCombo.filter((v) => !isPrivateStyleVariant(v));
+
   const tags = $$$(parent).children().toArrayOfTplNodes() as TplTag[];
 
   tags.forEach((tag) => {
-    const rs = ensureVariantSetting(tag, variantCombo).rs;
+    const rs = ensureVariantSetting(tag, filteredCombo).rs;
     const childRsh = RSH(rs, tag);
     convertToRelativePosition(childRsh, childRsh);
   });
