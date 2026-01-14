@@ -62,6 +62,8 @@ function serializeServerQueriesServerWrapper(
   const componentPropsName = `${componentName}Props`;
   const clientComponentName = makePlasmicClientRscComponentName(component);
   const genPropsName = makeDefaultExternalPropsName(component);
+  const { module: executeServerQueriesModule } =
+    serializeServerQueriesFetchFunction(ctx);
 
   return `
 /* eslint-disable */
@@ -79,9 +81,8 @@ ${makeTaggedPlasmicImport(
   "rscClient"
 )}
 
-import { executeServerQueries } from "./${makeLoaderServerFunctionFileName(
-    component
-  ).replace(".tsx", "")}";
+${executeServerQueriesModule}
+
 ${MK_PATH_FROM_ROUTE_AND_PARAMS_SER}
 
 type ${componentPropsName} = ${genPropsName} & {
