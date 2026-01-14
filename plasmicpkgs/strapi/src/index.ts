@@ -1,7 +1,7 @@
 import registerFunction, {
   CustomFunctionMeta,
 } from "@plasmicapp/host/registerFunction";
-import { queryStrapi, queryStrapiMeta } from "./query-strapi";
+import { _queryStrapi, queryStrapi, queryStrapiMeta } from "./query-strapi";
 
 export function registerStrapi(loader?: { registerFunction: any }) {
   function _registerFunction<T extends (...args: any[]) => any>(
@@ -18,7 +18,11 @@ export function registerStrapi(loader?: { registerFunction: any }) {
   _registerFunction(queryStrapi, queryStrapiMeta);
 }
 
-export { queryStrapi };
+export {
+  // used by @plasmicpkgs/plasmic-strapi
+  _queryStrapi,
+  queryStrapi,
+};
 
 // used by @plasmicpkgs/plasmic-strapi
 export {

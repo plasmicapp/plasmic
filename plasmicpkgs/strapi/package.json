@@ -36,6 +36,8 @@
   },
   "devDependencies": {
     "@plasmicapp/host": "1.0.233",
+    "@react-awesome-query-builder/core": "^6.6.15",
+    "@types/json-logic-js": "^2.0.8",
     "@types/qs": "^6.9.7",
     "typescript": "^5.7.3"
   },

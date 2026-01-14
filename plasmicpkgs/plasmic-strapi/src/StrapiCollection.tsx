@@ -4,7 +4,7 @@ import {
   _extractFilterableFields,
   _getId,
   _queryParameters,
-  queryStrapi,
+  _queryStrapi,
 } from "@plasmicpkgs/strapi";
 import { pascalCase } from "change-case";
 import React, { ReactNode } from "react";
@@ -138,7 +138,7 @@ export function StrapiCollection({
   });
 
   const resp = usePlasmicQueryData(cacheKey, async () =>
-    queryStrapi({
+    _queryStrapi({
       host,
       token,
       collection: name,

@@ -4,6 +4,8 @@
 
 ```ts
 
+import type { RulesLogic } from 'json-logic-js';
+
 // @internal
 export function _extractDisplayableFields(items: StrapiItem | StrapiItem[]): string[];
 
@@ -40,8 +42,11 @@ export const _queryParameters: {
     label: string;
 }[];
 
-// @public (undocumented)
-export function queryStrapi({ host, token, collection, filterField, filterValue, filterParameter, }: QueryStrapiOpts): Promise<StrapiQueryResponse | null>;
+// @public
+export function queryStrapi({ host, token, collection, filterLogic, }: QueryStrapiOpts): Promise<StrapiQueryResponse | null>;
+
+// @public @deprecated
+export function _queryStrapi({ host, token, collection, filterLogic, filterField, filterValue, filterParameter, }: QueryStrapiOpts & StrapiQueryOldFilterProps): Promise<StrapiQueryResponse | null>;
 
 // @public (undocumented)
 export function registerStrapi(loader?: {
