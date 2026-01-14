@@ -4,6 +4,7 @@
 
 ```ts
 
+import { Cache as Cache_2 } from 'swr';
 import { Fetcher } from 'swr';
 import { Key } from 'swr';
 import { PropsWithChildren } from 'react';
@@ -41,9 +42,10 @@ export function PlasmicPrepassContext(props: PropsWithChildren<{
 
 // @public (undocumented)
 export function PlasmicQueryDataProvider(props: {
-    suspense?: boolean;
     children: React_2.ReactNode;
+    suspense?: boolean;
     prefetchedCache?: Record<string, any>;
+    provider?: () => Cache_2;
 }): React_2.JSX.Element;
 
 export { SWRResponse }

@@ -1,5 +1,6 @@
 import React, { PropsWithChildren } from "react";
 import useSWR, {
+  Cache,
   Fetcher,
   Key,
   SWRConfig,
@@ -154,11 +155,12 @@ export function useMutablePlasmicQueryData<T, E>(
 }
 
 export function PlasmicQueryDataProvider(props: {
-  suspense?: boolean;
   children: React.ReactNode;
+  suspense?: boolean;
   prefetchedCache?: Record<string, any>;
+  provider?: () => Cache;
 }) {
-  const { children, suspense, prefetchedCache } = props;
+  const { children, suspense, prefetchedCache, provider } = props;
   const prepass = React.useContext(PrepassContext);
   if (prepass) {
     // If we're in prepass, then there's already a wrappign SWRConfig;
@@ -170,6 +172,7 @@ export function PlasmicQueryDataProvider(props: {
         value={{
           fallback: prefetchedCache ?? {},
           suspense,
+          provider,
         }}
       >
         {children}
