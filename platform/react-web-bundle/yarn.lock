@@ -314,37 +314,37 @@
   dependencies:
     "@plasmicapp/isomorphic-unfetch" "1.0.3"
 
-"@plasmicapp/auth-react@0.0.24":
-  version "0.0.24"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/auth-react/-/auth-react-0.0.24.tgz#e41659ce17c205ceef08c80410f11fa8a1d7f9c2"
-  integrity sha512-Vms29IJ+eSmcWCUWr9JNHlCdTZqNJnkQjbl6LWVjEJGpippf9GyESg7mPZBPbq2bVH18NpwDP9Kax9fIbXZqZw==
+"@plasmicapp/auth-react@0.0.25":
+  version "0.0.25"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/auth-react/-/auth-react-0.0.25.tgz#7e9f74be58a8251d2a786dfbc03a52b8732faae0"
+  integrity sha512-F0SPQQJP4vFhnAq3slOU8C8Ewciah9m891ly406RZdBOu/9tIPR51rkJDTBZq0uX1lSw+IpdVRFmOtBd3fYIyg==
   dependencies:
     "@plasmicapp/auth-api" "0.0.17"
     "@plasmicapp/isomorphic-unfetch" "1.0.3"
-    "@plasmicapp/query" "0.1.81"
+    "@plasmicapp/query" "0.1.82"
 
 "@plasmicapp/data-sources-context@0.1.22", "@plasmicapp/data-sources-context@^0.1.22":
   version "0.1.22"
   resolved "https://registry.yarnpkg.com/@plasmicapp/data-sources-context/-/data-sources-context-0.1.22.tgz#03ee66b603df6bea52ff0f4708a6cd019e57c73a"
   integrity sha512-FxXHCZj/pVysamgBhbeVKP14xTfilQI+2peZixrY09gKCz+C2iVqKZCKuwhuXodFdMfCveiMSzWg8Hqz9xJRqQ==
 
-"@plasmicapp/data-sources@0.1.197":
-  version "0.1.197"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/data-sources/-/data-sources-0.1.197.tgz#435acbe94d99956ca68de95e5b49e304179df680"
-  integrity sha512-jceYEIMLwm4ZRyK6F4jlQC10PfbWIO8D+7GqBo+1079ISyTvZ6sZNnbMxNsFJXu8PaKE4KCvNETV33iJOvFEjA==
+"@plasmicapp/data-sources@0.1.198":
+  version "0.1.198"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/data-sources/-/data-sources-0.1.198.tgz#19efc5f67061b748ef2c39885c474d5a83bb3f15"
+  integrity sha512-fzO2Z6YFHlvaVgF1CnWc4RyUzsIorUdZNq78Gec5IU6+GCfbnv9dAeag64ypBAdrwWiW7Gum5EynOPuGmxjidw==
   dependencies:
     "@plasmicapp/data-sources-context" "0.1.22"
-    "@plasmicapp/host" "1.0.233"
+    "@plasmicapp/host" "1.0.234"
     "@plasmicapp/isomorphic-unfetch" "1.0.3"
-    "@plasmicapp/query" "0.1.81"
+    "@plasmicapp/query" "0.1.82"
     fast-stringify "^2.0.0"
 
-"@plasmicapp/host@1.0.233":
-  version "1.0.233"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/host/-/host-1.0.233.tgz#e520fe79b4ca8fc7fab0dabc53689d68a48e37d2"
-  integrity sha512-u/3llyD2o7GPoU8eSiVB889fSodQ9Lyvqt6an1pU2Ehj5qIgiVx6hzyc8h2TeT/WPZgx9i+M6+Oy3gyRQj6YyA==
+"@plasmicapp/host@1.0.234":
+  version "1.0.234"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/host/-/host-1.0.234.tgz#cf85db5bc45fb62a41f38bba3b3908678e9456dd"
+  integrity sha512-vjsfxgayZbyMIl7cWJ8ge9AFyH4Z0KqzOsAnbt4BO8tJGYpHNQFhnJNhNYmeGCMD9RhJ4j6QIgLqUJimimIhZg==
   dependencies:
-    "@plasmicapp/query" "0.1.81"
+    "@plasmicapp/query" "0.1.82"
     csstype "^3.1.2"
     window-or-global "^1.0.1"
 
@@ -362,31 +362,31 @@
   dependencies:
     json-logic-js "^2.0.2"
 
-"@plasmicapp/nextjs-app-router@1.0.19":
-  version "1.0.19"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/nextjs-app-router/-/nextjs-app-router-1.0.19.tgz#faecb28e9e529edb970f448327f8c6ca3d380b95"
-  integrity sha512-LV87y2PXWYVqMrcGY/3wcIenfbpqucGLNbPb9Mop/U9txYZPmBC/MrlxYJHRb1dXoS1OMXQITw8mZ0nDMbZ7RQ==
+"@plasmicapp/nextjs-app-router@1.0.20":
+  version "1.0.20"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/nextjs-app-router/-/nextjs-app-router-1.0.20.tgz#19893c05802e56fd250b4ca77543ed671b983725"
+  integrity sha512-EbehVtNpz8dR88M+82APkUIqMtAPtpVmWnjJO9oI21LW2FiuHWfk01U1VQ+mshsM9Jh6FBWjYkgGDgcHq7a/sg==
   dependencies:
-    "@plasmicapp/prepass" "1.0.21"
-    "@plasmicapp/query" "0.1.81"
+    "@plasmicapp/prepass" "1.0.22"
+    "@plasmicapp/query" "0.1.82"
     cross-port-killer "1.4.0"
     cross-spawn "^7.0.3"
     get-port "^7.0.0"
     node-html-parser "^6.1.5"
     yargs "^17.7.2"
 
-"@plasmicapp/prepass@1.0.21":
-  version "1.0.21"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/prepass/-/prepass-1.0.21.tgz#c89e7069075da2e1bb033f1bb4d3ab3234f97d14"
-  integrity sha512-qjhwyNDGvfqHP3Ci3hUAb0nG+F6LXkk9SxNXuDKsrozJXylnRka8uSDBRhWUTH7yR5dSpOHJp39gD/IQrADBvA==
+"@plasmicapp/prepass@1.0.22":
+  version "1.0.22"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/prepass/-/prepass-1.0.22.tgz#467b88659624e25641dec9b3f30f5c2318a01065"
+  integrity sha512-HttYN9dNgJbJiQgyqivRLCBELtHSScPgbvaKtfQq4LEYOXNm+DxWsli0M/7HEcZFJnsz0xm0hTC55z0p/r+H6g==
   dependencies:
-    "@plasmicapp/query" "0.1.81"
+    "@plasmicapp/query" "0.1.82"
     "@plasmicapp/react-ssr-prepass" "^2.0.9"
 
-"@plasmicapp/query@0.1.81":
-  version "0.1.81"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/query/-/query-0.1.81.tgz#8b4f7873d4d80ab17f120a6a5e452285deb1a30f"
-  integrity sha512-uxretlBcZZ2LunzlFMhHDnlzvR/vZ2xzSmNeF15qFGHlRlCG51u89UXm02TPkg8OmMdXUSgG+XOLsArI57cG9Q==
+"@plasmicapp/query@0.1.82":
+  version "0.1.82"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/query/-/query-0.1.82.tgz#2963ea0d98a7cedccae319955c5abcc35da31173"
+  integrity sha512-YwADtepa/tqyIc38/SUWFVYwXM+6hGAPn3Dpl4yDC1XXPLzRjGq6rcwJSBONab0yhAjszn/NAUQ4NCkhqKyqeg==
   dependencies:
     swr "^1.0.0"
 
@@ -395,19 +395,19 @@
   resolved "https://registry.yarnpkg.com/@plasmicapp/react-ssr-prepass/-/react-ssr-prepass-2.0.9.tgz#1cfdd8d4c0e90fd4fed7d7204f70c44914871d31"
   integrity sha512-HO932uH/Y4otaDmjwzJbCLlokxNAdtU9VhDVUZUuVbzh0DhWaNyn/MINCu1oeZ4a6MIjdXFIm/U2VaxNxHYdsw==
 
-"@plasmicapp/react-web@^0.2.412":
-  version "0.2.412"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/react-web/-/react-web-0.2.412.tgz#442a0efb671cc218f5d74f9a908fd2a6f0cc69ed"
-  integrity sha512-FEpZNj8X/EFs5hbigaPuzGqW/fU5FIhmIPaiB/W6c1SUMWPCrIeSSdK9aY8SER9PvmoktlI/xQjlIxCBi1Vusw==
+"@plasmicapp/react-web@^0.2.413":
+  version "0.2.413"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/react-web/-/react-web-0.2.413.tgz#a47ad71e591fd23ec387f008485767c7b6a941e0"
+  integrity sha512-qc3wjAmuAbPwpva6GS5gm8ozEYjUztxyiAVUDrfYeW/iRE0+uCN8J3vgRIhOCUV2xpXse82jy+d2WRcnvuFN0w==
   dependencies:
-    "@plasmicapp/auth-react" "0.0.24"
-    "@plasmicapp/data-sources" "0.1.197"
+    "@plasmicapp/auth-react" "0.0.25"
+    "@plasmicapp/data-sources" "0.1.198"
     "@plasmicapp/data-sources-context" "0.1.22"
-    "@plasmicapp/host" "1.0.233"
+    "@plasmicapp/host" "1.0.234"
     "@plasmicapp/loader-splits" "1.0.67"
-    "@plasmicapp/nextjs-app-router" "1.0.19"
-    "@plasmicapp/prepass" "1.0.21"
-    "@plasmicapp/query" "0.1.81"
+    "@plasmicapp/nextjs-app-router" "1.0.20"
+    "@plasmicapp/prepass" "1.0.22"
+    "@plasmicapp/query" "0.1.82"
     "@react-aria/checkbox" "^3.15.5"
     "@react-aria/focus" "^3.20.3"
     "@react-aria/interactions" "^3.25.1"
