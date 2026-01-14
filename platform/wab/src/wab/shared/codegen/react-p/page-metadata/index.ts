@@ -1,10 +1,9 @@
-import { serializeCustomFunctionsAndLibs } from "@/wab/shared/codegen/react-p/custom-functions";
 import { generateDataTokenImports } from "@/wab/shared/codegen/react-p/data-tokens/imports";
 import {
-  getExportedComponentName,
   makePlasmicComponentName,
   makeTanStackHeadOptionsExportName,
 } from "@/wab/shared/codegen/react-p/serialize-utils";
+import { serializeServerQueriesFetchFunction } from "@/wab/shared/codegen/react-p/server-queries";
 import { MK_PATH_FROM_ROUTE_AND_PARAMS_SER } from "@/wab/shared/codegen/react-p/server-queries/serializer";
 import { SerializerBaseContext } from "@/wab/shared/codegen/react-p/types";
 import { PageMetadata } from "@/wab/shared/codegen/types";
@@ -478,24 +477,16 @@ export const metadata: PlasmicPageMetadata = ${metadataObject};
     };
   }
 
-  // Generate dynamic generateMetadata function
-  const { customFunctionsAndLibsImport, serializedCustomFunctionsAndLibs } =
-    serializeCustomFunctionsAndLibs(ctx);
-
-  const serverQueriesImport = `import { executeServerQueries } from "./__loader_rsc_${getExportedComponentName(
-    component
-  )}";`;
+  const { module: executeServerQueriesModule } =
+    serializeServerQueriesFetchFunction(ctx);
 
   // Get data token imports for metadata expressions
   const dataTokenImports = getDataTokenImportsForPageMeta(ctx, pageMeta);
 
   const module = `
-${getMetadataTypeDefinition()}
-${serverQueriesImport}
-${customFunctionsAndLibsImport}
 ${dataTokenImports}
-
-${serializedCustomFunctionsAndLibs}
+${executeServerQueriesModule}
+${getMetadataTypeDefinition()}
 ${MK_PATH_FROM_ROUTE_AND_PARAMS_SER}
 
 type ParamsRecord = Record<string, string | string[] | undefined>;

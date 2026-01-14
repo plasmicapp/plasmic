@@ -2,6 +2,7 @@ import { makeShortProjectId } from "@/wab/shared/codegen/util";
 import {
   codeUsesGlobalObjects,
   emptyParsedExprInfo,
+  extractDataTokenIdentifiers,
   parseCodeExpression,
   parseDataTokenIdentifier,
   pathToDisplayString,
@@ -13,7 +14,14 @@ import {
   transformDataTokensInCode,
   transformDataTokensToDisplay,
 } from "@/wab/shared/eval/expression-parser";
-import { Site } from "@/wab/shared/model/classes";
+import {
+  CompositeExpr,
+  CustomCode,
+  FunctionExpr,
+  ObjectPath,
+  Site,
+  TemplatedString,
+} from "@/wab/shared/model/classes";
 
 describe("parseCodeExpression", function () {
   it("should find uses of $props.key", () => {
@@ -632,5 +640,129 @@ describe("parseDataTokenIdentifier", function () {
       projectShortId: "qfp12",
       tokenName: "underscored_name",
     });
+  });
+});
+
+describe("extractDataTokenIdentifiers", function () {
+  it("should extract identifier from ObjectPath", () => {
+    const objectPath = new ObjectPath({
+      path: ["$dataTokens_abc12_token1", "nested", "prop"],
+      fallback: null,
+    });
+    const result = extractDataTokenIdentifiers(objectPath);
+    expect(result).toEqual(["$dataTokens_abc12_token1"]);
+  });
+
+  it("should extract identifier from CustomCode", () => {
+    const customCode = new CustomCode({
+      code: "($dataTokens_abc12_token1 + $dataTokens_xyz99_token2)",
+      fallback: null,
+    });
+    const result = extractDataTokenIdentifiers(customCode);
+    expect(result).toEqual([
+      "$dataTokens_abc12_token1",
+      "$dataTokens_xyz99_token2",
+    ]);
+  });
+
+  it("should extract from mixed CustomCode with member expressions", () => {
+    const customCode = new CustomCode({
+      code: "($dataTokens_abc12_token.nested.prop + $dataTokens_xyz99_token[0])",
+      fallback: null,
+    });
+    const result = extractDataTokenIdentifiers(customCode);
+    expect(result).toEqual([
+      "$dataTokens_abc12_token",
+      "$dataTokens_xyz99_token",
+    ]);
+  });
+
+  it("should extract identifiers from TemplatedString", () => {
+    const objectPath = new ObjectPath({
+      path: ["$dataTokens_abc12_token1"],
+      fallback: null,
+    });
+    const templatedString = new TemplatedString({
+      text: ["Hello ", objectPath, " world"],
+    });
+    const result = extractDataTokenIdentifiers(templatedString);
+    expect(result).toEqual(["$dataTokens_abc12_token1"]);
+  });
+
+  it("should extract identifiers from CompositeExpr", () => {
+    const objectPath1 = new ObjectPath({
+      path: ["$dataTokens_abc12_token1"],
+      fallback: null,
+    });
+    const objectPath2 = new ObjectPath({
+      path: ["$dataTokens_xyz99_token2", "data"],
+      fallback: null,
+    });
+    const composite = new CompositeExpr({
+      hostLiteral: "{sub1}{sub2}",
+      substitutions: { sub1: objectPath1, sub2: objectPath2 },
+    });
+    const result = extractDataTokenIdentifiers(composite);
+    expect(result).toEqual([
+      "$dataTokens_xyz99_token2",
+      "$dataTokens_abc12_token1",
+    ]);
+  });
+
+  it("should handle deeply nested composite expressions", () => {
+    const innerObjectPath = new ObjectPath({
+      path: ["$dataTokens_level3_token"],
+      fallback: null,
+    });
+    const innerCustomCode = new CustomCode({
+      code: "($dataTokens_level2_tokenA)",
+      fallback: null,
+    });
+    const innerComposite = new CompositeExpr({
+      hostLiteral: "{inner}",
+      substitutions: { inner: innerObjectPath },
+    });
+    const middleComposite = new CompositeExpr({
+      hostLiteral: "Middle: {code}{comp}",
+      substitutions: { code: innerCustomCode, comp: innerComposite },
+    });
+    const outerObjectPath = new ObjectPath({
+      path: ["$dataTokens_level1_token"],
+      fallback: null,
+    });
+    const nonTokenPath = new ObjectPath({
+      path: ["$state", "value"],
+      fallback: null,
+    });
+    const outerComposite = new CompositeExpr({
+      hostLiteral: "Outer: {{outer}} {{middle}} {{nonToken}}",
+      substitutions: {
+        outer: outerObjectPath,
+        middle: middleComposite,
+        nonToken: nonTokenPath,
+      },
+    });
+    const result = extractDataTokenIdentifiers(outerComposite);
+    expect(result).toEqual([
+      "$dataTokens_level3_token",
+      "$dataTokens_level2_tokenA",
+      "$dataTokens_level1_token",
+    ]);
+  });
+
+  it("should extract identifiers from FunctionExpr", () => {
+    const bodyExpr = new CustomCode({
+      code: "($dataTokens_abc12_token1.value + $dataTokens_xyz99_token2)",
+      fallback: null,
+    });
+    const functionExpr = new FunctionExpr({
+      bodyExpr,
+      argNames: ["arg1", "arg2"],
+    });
+    const result = extractDataTokenIdentifiers(functionExpr);
+    expect(result).toEqual([
+      "$dataTokens_abc12_token1",
+      "$dataTokens_xyz99_token2",
+    ]);
   });
 });

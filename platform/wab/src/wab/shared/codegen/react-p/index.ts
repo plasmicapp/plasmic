@@ -879,7 +879,7 @@ ${
   ctx.usesComponentLevelQueries ||
   ctx.hasServerQueries
     ? `import { executePlasmicDataOp, usePlasmicDataOp, usePlasmicInvalidate${
-        ctx.hasServerQueries ? `, usePlasmicServerQuery` : ""
+        ctx.hasServerQueries ? `, usePlasmicServerQuery, makeQueryCacheKey` : ""
       } } from "${getDataSourcesPackageName()}";`
     : ""
 }

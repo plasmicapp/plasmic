@@ -2,6 +2,53 @@
 
 exports[`data tokens: page meta codegen should codegen correct metadata with data tokens 1`] = `
 "
+import { pageText as $dataTokens_3UYiE_pageText, pageCanonical as $dataTokens_3UYiE_pageCanonical, pageImage as $dataTokens_3UYiE_pageImage } from "./plasmic-data-tokens"; // plasmic-import: 3UYiEMfU3twU4iYSx86cub/dataTokens
+
+
+
+const $$ = {};
+
+
+
+import { executeServerQuery, mkPlasmicUndefinedServerProxy, ServerQuery, makeQueryCacheKey } from "@plasmicapp/react-web/lib/data-sources";
+
+export async function executeServerQueries($ctx: any) {
+  
+
+  
+    const serverQueries: Record<string, ServerQuery<(typeof $$)[keyof typeof $$]>> = {
+    
+    };
+  
+
+  const queryVarToKey: Record<string, string> = {};
+  const $queries: Record<string, any> = {};
+
+  for (const key of Object.keys(serverQueries)) {
+    const sq = serverQueries[key];
+    const params = sq.execParams();
+    const cacheKey = makeQueryCacheKey(sq.id, params);
+    queryVarToKey[key] = cacheKey;
+    $queries[cacheKey] = mkPlasmicUndefinedServerProxy();
+  }
+
+  do {
+    await Promise.all(
+      Object.keys(serverQueries).map(async (key) => {
+        const cacheKey = queryVarToKey[key];
+        $queries[cacheKey] = (await executeServerQuery(serverQueries[key])).data;
+        if (!$queries[cacheKey]?.isUndefinedServerProxy) {
+          delete serverQueries[key];
+        }
+      })
+    );
+  } while (
+    Object.values($queries).some((value) => value?.isUndefinedServerProxy)
+  );
+
+  return $queries;
+}
+
 /**
  * Platform-agnostic page metadata type.
  * Structurally compatible with Next.js Metadata and other meta frameworks.
@@ -24,11 +71,6 @@ type PlasmicPageMetadata = {
     canonical?: string;
   };
 };
-import { executeServerQueries } from "./__loader_rsc_Seo";
-
-import { pageText as $dataTokens_3UYiE_pageText, pageCanonical as $dataTokens_3UYiE_pageCanonical, pageImage as $dataTokens_3UYiE_pageImage } from "./plasmic-data-tokens"; // plasmic-import: 3UYiEMfU3twU4iYSx86cub/dataTokens
-
-const $$ = {};
 
 function mkPathFromRouteAndParams(
   route: string,

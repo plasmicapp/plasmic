@@ -6,6 +6,7 @@ import {
 import {
   arrayEq,
   filterFalsy,
+  switchType,
   unexpected,
   xDifference,
   xUnion,
@@ -22,11 +23,14 @@ import {
 import { DEVFLAGS } from "@/wab/shared/devflags";
 import { ENABLED_GLOBALS } from "@/wab/shared/eval";
 import {
+  CompositeExpr,
   CustomCode,
   Expr,
+  FunctionExpr,
   ObjectPath,
   Site,
   TemplatedString,
+  isKnownCompositeExpr,
   isKnownCustomCode,
   isKnownExpr,
   isKnownFunctionExpr,
@@ -529,6 +533,27 @@ export function isPathDataToken(
   return typeof path[0] === "string" && path[0].startsWith("$dataTokens_");
 }
 
+/**
+ * All possible expressions that can contain data tokens
+ * TODO - encode this to the model schema
+ */
+type DataTokenExpr =
+  | CustomCode
+  | ObjectPath
+  | TemplatedString
+  | CompositeExpr
+  | FunctionExpr;
+
+export function isDataTokenExpr(expr: Expr): expr is DataTokenExpr {
+  return (
+    isKnownCustomCode(expr) ||
+    isKnownObjectPath(expr) ||
+    isKnownTemplatedString(expr) ||
+    isKnownCompositeExpr(expr) ||
+    isKnownFunctionExpr(expr)
+  );
+}
+
 export function parseObjectPath(obj: ObjectPath): ParsedExprInfo {
   const info = emptyParsedExprInfo();
   if (typeof obj.path[0] === "string") {
@@ -718,6 +743,46 @@ export function transformDataTokens(
   const newCode = generateCode(ast);
   // Re-wrap if original code was wrapped in parens
   return isCodeWrappedWithParens(code) ? `(${newCode})` : newCode;
+}
+
+export function extractDataTokenIdentifiers(expr: DataTokenExpr): string[] {
+  const identifiers: string[] = [];
+  const stack = [expr];
+
+  while (true) {
+    const curExpr = stack.pop();
+    if (!curExpr) {
+      break;
+    }
+    switchType(curExpr)
+      .when(ObjectPath, (objectPath) => {
+        if (isPathDataToken(objectPath.path)) {
+          identifiers.push(objectPath.path[0]);
+        }
+      })
+      .when(CustomCode, (customCode) =>
+        extractDataTokenIdentifiersFromCode(customCode.code).forEach((id) =>
+          identifiers.push(id)
+        )
+      )
+      .when(CompositeExpr, (composite) => {
+        stack.push(
+          ...Object.values(composite.substitutions).filter(isDataTokenExpr)
+        );
+      })
+      .when(TemplatedString, (templated) => {
+        stack.push(...templated.text.filter(isKnownExpr));
+      })
+      .when(FunctionExpr, (func) => {
+        const ctx = { component: null, projectFlags: DEVFLAGS, inStudio: true };
+        const code = asCode(func, ctx).code;
+        extractDataTokenIdentifiersFromCode(code).forEach((id) =>
+          identifiers.push(id)
+        );
+      })
+      .result();
+  }
+  return identifiers;
 }
 
 export function extractDataTokenIdentifiersFromCode(code: string): string[] {

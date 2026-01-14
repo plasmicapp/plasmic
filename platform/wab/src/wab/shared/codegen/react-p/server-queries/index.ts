@@ -1,6 +1,7 @@
 import { customFunctionId } from "@/wab/shared/code-components/code-components";
 import { serializeCustomFunctionsAndLibs } from "@/wab/shared/codegen/react-p/custom-functions";
 import { getDataSourcesPackageName } from "@/wab/shared/codegen/react-p/data-sources";
+import { generateDataTokenImports } from "@/wab/shared/codegen/react-p/data-tokens/imports";
 import { serializeGenerateMetadataFunction } from "@/wab/shared/codegen/react-p/page-metadata";
 import {
   makeDefaultExternalPropsName,
@@ -24,6 +25,11 @@ import { ComponentExportOutput, ExportOpts } from "@/wab/shared/codegen/types";
 import { toVarName } from "@/wab/shared/codegen/util";
 import { assert } from "@/wab/shared/common";
 import { isPageComponent } from "@/wab/shared/core/components";
+import {
+  extractDataTokenIdentifiers,
+  isDataTokenExpr,
+} from "@/wab/shared/eval/expression-parser";
+import { ComponentServerQuery } from "@/wab/shared/model/classes";
 
 export function getRscMetadata(
   ctx: SerializerBaseContext
@@ -32,6 +38,7 @@ export function getRscMetadata(
     return undefined;
   }
 
+  const serverQueriesExecFunc = serializeServerQueriesFetchFunction(ctx);
   const generateMetadataFunc = serializeGenerateMetadataFunction(ctx);
 
   return {
@@ -45,7 +52,7 @@ export function getRscMetadata(
         fileName: makePlasmicClientRscComponentFileName(ctx.component),
       },
     },
-    serverQueriesExecFunc: serializeServerQueriesFetchFunction(ctx),
+    serverQueriesExecFunc,
     generateMetadataFunc,
   };
 }
@@ -140,6 +147,28 @@ export function ${componentName}(props: ${defaultPropsName}) {
 `;
 }
 
+/**
+ * Extract data token identifiers from server query expressions
+ */
+function getDataTokensFromServerQueries(
+  queries: ComponentServerQuery[]
+): Set<string> {
+  const tokenIdentifiers = new Set<string>();
+  const serverQueries = queries.filter(isServerQueryWithOperation);
+
+  for (const query of serverQueries) {
+    for (const { expr } of query.op.args) {
+      if (isDataTokenExpr(expr)) {
+        extractDataTokenIdentifiers(expr).forEach((token) =>
+          tokenIdentifiers.add(token)
+        );
+      }
+    }
+  }
+
+  return tokenIdentifiers;
+}
+
 export function serializeUseDollarServerQueries(ctx: SerializerBaseContext) {
   // We don't need to generate this hook if we don't have server queries
   if (!ctx.hasServerQueries) {
@@ -160,14 +189,19 @@ function useDollarServerQueries(
   return {
     ${serverQueries
       .map(
-        (query) => `${toVarName(query.name)}: usePlasmicServerQuery({
-        id: "${customFunctionId(query.op.func)}",
-        fn: $$.${query.op.func.importName},
-        execParams: () => [${serializeServerQueryCustomFunctionArgs(
+        (query) => `${toVarName(query.name)}: (() => {
+        const queryId = "${customFunctionId(query.op.func)}";
+        const queryParams = [${serializeServerQueryCustomFunctionArgs(
           query.op,
           ctx.exprCtx
-        )}],
-        }, fallbackDataObject?.["${toVarName(query.name)}"]?.data),`
+        )}];
+        const cacheKey = makeQueryCacheKey(queryId, queryParams);
+        return usePlasmicServerQuery({
+          id: queryId,
+          fn: $$.${query.op.func.importName},
+          execParams: () => queryParams,
+        }, fallbackDataObject?.[cacheKey]?.data);
+      })(),`
       )
       .join("\n")}
   };
@@ -175,13 +209,25 @@ function useDollarServerQueries(
 `;
 }
 
-function serializeServerQueriesFetchFunction(ctx: SerializerBaseContext) {
+export function serializeServerQueriesFetchFunction(
+  ctx: SerializerBaseContext
+) {
   const serverQueries = ctx.component.serverQueries.filter(
     isServerQueryWithOperation
   );
 
   const { customFunctionsAndLibsImport, serializedCustomFunctionsAndLibs } =
     serializeCustomFunctionsAndLibs(ctx);
+
+  const tokenIdentifiers = getDataTokensFromServerQueries(
+    ctx.component.serverQueries
+  );
+  const dataTokenImports = generateDataTokenImports(
+    tokenIdentifiers,
+    ctx.site,
+    ctx.projectConfig.projectId,
+    ctx.exportOpts
+  );
 
   const serverQueriesDeclaration = `
     const serverQueries: Record<string, ServerQuery<(typeof $$)[keyof typeof $$]>> = {
@@ -207,6 +253,8 @@ function serializeServerQueriesFetchFunction(ctx: SerializerBaseContext) {
 ${customFunctionsAndLibsImport}
 
 ${serializedCustomFunctionsAndLibs}
+
+${dataTokenImports}
 
 import { executeServerQuery, mkPlasmicUndefinedServerProxy, ServerQuery, makeQueryCacheKey } from "${getDataSourcesPackageName()}";
 
