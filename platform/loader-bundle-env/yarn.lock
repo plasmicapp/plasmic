@@ -1993,12 +1993,12 @@
     change-case "^4.1.2"
     dlv "^1.1.3"
 
-"@plasmicpkgs/plasmic-strapi@^0.1.189":
-  version "0.1.189"
-  resolved "https://registry.yarnpkg.com/@plasmicpkgs/plasmic-strapi/-/plasmic-strapi-0.1.189.tgz#3ff4689834808cd2c38d8c6ae2aa3f14a218a107"
-  integrity sha512-0y3J6vLKDpPJfHA6ViGM5SLKiUvJuIAru9iap1ujcyy2+SU53fWtfqXLRuNcjAekNyfMaEdTLftjucdliwyRWQ==
+"@plasmicpkgs/plasmic-strapi@^0.1.190":
+  version "0.1.190"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/plasmic-strapi/-/plasmic-strapi-0.1.190.tgz#a0e885b6ad1060b29f0974cbb39055cbf1734b37"
+  integrity sha512-75bg2g2+ucaS1dwKRb3vCETyPy/DsbH83/M+fnvsd8j9SwV5XKf/xN9/SPc2A6HgketOPjj2L4V+Gtii7JCxbg==
   dependencies:
-    "@plasmicpkgs/strapi" "0.0.9"
+    "@plasmicpkgs/strapi" "0.0.10"
     change-case "^4.1.2"
 
 "@plasmicpkgs/plasmic-tabs@^0.0.75":
@@ -2121,10 +2121,10 @@
   dependencies:
     "@rive-app/react-canvas" "^4.18.8"
 
-"@plasmicpkgs/strapi@0.0.9", "@plasmicpkgs/strapi@^0.0.9":
-  version "0.0.9"
-  resolved "https://registry.yarnpkg.com/@plasmicpkgs/strapi/-/strapi-0.0.9.tgz#2ca31e05c035941009634eec1b1b34cdc272b71b"
-  integrity sha512-UCcbxo0dNLdPX2C34MG8f15jSdQi43c9S/YoS27a41HdSF0M9tWITIF3hbZHq9JSHENQRcyKklugWXv+G2/wAQ==
+"@plasmicpkgs/strapi@0.0.10", "@plasmicpkgs/strapi@^0.0.10":
+  version "0.0.10"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/strapi/-/strapi-0.0.10.tgz#1c08f2e8bbe7a98757ffa07f0c2b975f42878a20"
+  integrity sha512-Qe4lb+V9nZFbxL4s/0whbE6Qer8dBTk5xqaOsWwV9tRKOEiVntWcaDIvR4vuYEtrsnqU3BJQwsKUTbl/cv757Q==
   dependencies:
     qs "^6.11.0"
 
