@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/plasmic-contentful",
-  "version": "0.0.181",
+  "version": "0.0.182",
   "description": "Plasmic Contentful components.",
   "repository": {
     "type": "git",
@@ -42,9 +42,9 @@
     }
   ],
   "devDependencies": {
-    "@plasmicapp/host": "1.0.233",
-    "@plasmicapp/query": "0.1.81",
-    "@plasmicpkgs/contentful": "0.0.6",
+    "@plasmicapp/host": "1.0.234",
+    "@plasmicapp/query": "0.1.82",
+    "@plasmicpkgs/contentful": "0.0.7",
     "@types/dlv": "^1.1.2",
     "@types/react": "^18.0.27",
     "@types/react-dom": "^18.0.10",
