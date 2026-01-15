@@ -23,14 +23,11 @@ import {
 import { DEVFLAGS } from "@/wab/shared/devflags";
 import { ENABLED_GLOBALS } from "@/wab/shared/eval";
 import {
-  CompositeExpr,
   CustomCode,
   Expr,
-  FunctionExpr,
   ObjectPath,
   Site,
   TemplatedString,
-  isKnownCompositeExpr,
   isKnownCustomCode,
   isKnownExpr,
   isKnownFunctionExpr,
@@ -534,24 +531,15 @@ export function isPathDataToken(
 }
 
 /**
- * All possible expressions that can contain data tokens
+ * All possible expressions that can contain data tokens. CompositeExpr, TemplatedString,
+ * FunctionExpr can contain data tokens, but the sub-Exprs referencing tokens are always
+ * flatteded with flattenExprs.
  * TODO - encode this to the model schema
  */
-type DataTokenExpr =
-  | CustomCode
-  | ObjectPath
-  | TemplatedString
-  | CompositeExpr
-  | FunctionExpr;
+type DataTokenExpr = CustomCode | ObjectPath;
 
 export function isDataTokenExpr(expr: Expr): expr is DataTokenExpr {
-  return (
-    isKnownCustomCode(expr) ||
-    isKnownObjectPath(expr) ||
-    isKnownTemplatedString(expr) ||
-    isKnownCompositeExpr(expr) ||
-    isKnownFunctionExpr(expr)
-  );
+  return isKnownCustomCode(expr) || isKnownObjectPath(expr);
 }
 
 export function parseObjectPath(obj: ObjectPath): ParsedExprInfo {
@@ -746,43 +734,14 @@ export function transformDataTokens(
 }
 
 export function extractDataTokenIdentifiers(expr: DataTokenExpr): string[] {
-  const identifiers: string[] = [];
-  const stack = [expr];
-
-  while (true) {
-    const curExpr = stack.pop();
-    if (!curExpr) {
-      break;
-    }
-    switchType(curExpr)
-      .when(ObjectPath, (objectPath) => {
-        if (isPathDataToken(objectPath.path)) {
-          identifiers.push(objectPath.path[0]);
-        }
-      })
-      .when(CustomCode, (customCode) =>
-        extractDataTokenIdentifiersFromCode(customCode.code).forEach((id) =>
-          identifiers.push(id)
-        )
-      )
-      .when(CompositeExpr, (composite) => {
-        stack.push(
-          ...Object.values(composite.substitutions).filter(isDataTokenExpr)
-        );
-      })
-      .when(TemplatedString, (templated) => {
-        stack.push(...templated.text.filter(isKnownExpr));
-      })
-      .when(FunctionExpr, (func) => {
-        const ctx = { component: null, projectFlags: DEVFLAGS, inStudio: true };
-        const code = asCode(func, ctx).code;
-        extractDataTokenIdentifiersFromCode(code).forEach((id) =>
-          identifiers.push(id)
-        );
-      })
-      .result();
-  }
-  return identifiers;
+  return switchType(expr)
+    .when(ObjectPath, (objectPath) =>
+      isPathDataToken(objectPath.path) ? [objectPath.path[0]] : []
+    )
+    .when(CustomCode, (customCode) =>
+      extractDataTokenIdentifiersFromCode(customCode.code)
+    )
+    .result();
 }
 
 export function extractDataTokenIdentifiersFromCode(code: string): string[] {

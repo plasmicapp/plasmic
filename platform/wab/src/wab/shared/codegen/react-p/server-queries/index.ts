@@ -25,6 +25,7 @@ import { ComponentExportOutput, ExportOpts } from "@/wab/shared/codegen/types";
 import { toVarName } from "@/wab/shared/codegen/util";
 import { assert } from "@/wab/shared/common";
 import { isPageComponent } from "@/wab/shared/core/components";
+import { flattenExprs } from "@/wab/shared/core/tpls";
 import {
   extractDataTokenIdentifiers,
   isDataTokenExpr,
@@ -158,20 +159,15 @@ export function ${componentName}(props: ${defaultPropsName}) {
 function getDataTokensFromServerQueries(
   queries: ComponentServerQuery[]
 ): Set<string> {
-  const tokenIdentifiers = new Set<string>();
-  const serverQueries = queries.filter(isServerQueryWithOperation);
-
-  for (const query of serverQueries) {
-    for (const { expr } of query.op.args) {
-      if (isDataTokenExpr(expr)) {
-        extractDataTokenIdentifiers(expr).forEach((token) =>
-          tokenIdentifiers.add(token)
-        );
-      }
-    }
-  }
-
-  return tokenIdentifiers;
+  // Flatten all server query arg Exprs and extract their data token references
+  return new Set(
+    queries
+      .filter(isServerQueryWithOperation)
+      .flatMap((query) => query.op.args)
+      .flatMap(flattenExprs)
+      .filter(isDataTokenExpr)
+      .flatMap(extractDataTokenIdentifiers)
+  );
 }
 
 export function serializeUseDollarServerQueries(ctx: SerializerBaseContext) {
