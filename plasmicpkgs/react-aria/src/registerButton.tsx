@@ -56,9 +56,9 @@ export const BaseButton = React.forwardRef(function BaseButtonInner(
   props: BaseButtonProps,
   ref: React.Ref<HTMLButtonElement | HTMLAnchorElement>
 ) {
-  const { href } = props;
+  const { href, isDisabled: disabled } = props;
 
-  if (href) {
+  if (href && !disabled) {
     return (
       <LinkButton
         props={props}
