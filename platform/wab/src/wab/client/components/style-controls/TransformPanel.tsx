@@ -3,8 +3,8 @@ import StyleToggleButton from "@/wab/client/components/style-controls/StyleToggl
 import StyleToggleButtonGroup from "@/wab/client/components/style-controls/StyleToggleButtonGroup";
 import DimTokenSpinner from "@/wab/client/components/widgets/DimTokenSelector";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { Dim } from "@/wab/shared/core/bg-styles";
 import { getSliderConfig } from "@/wab/shared/core/transform-utils";
-import { parseCssNumericNew } from "@/wab/shared/css";
 import {
   CssTransform,
   RotateTransform,
@@ -149,13 +149,9 @@ function DimensionSlider<T extends CssTransform>(props: {
   const { studioCtx, transform, dimensionKey, onChange } = props;
   const value = transform[dimensionKey] as string;
   const allowedUnits = transform.allowedUnits[dimensionKey];
-  const parsed = parseCssNumericNew(value);
 
-  if (!parsed) {
-    return null;
-  }
-
-  const sliderConfig = getSliderConfig(parsed.units ?? "");
+  const dim = Dim.fromCss(value);
+  const sliderConfig = !dim.isCssFunction() ? getSliderConfig(dim.unit) : null;
 
   return (
     <LabeledItemRow
@@ -164,25 +160,27 @@ function DimensionSlider<T extends CssTransform>(props: {
       label={dimensionKey}
       labelSize="small"
     >
-      <Slider
-        className="mr-lg"
-        style={{ minWidth: 100 }}
-        included={false}
-        value={parsed.num ?? 0}
-        {...sliderConfig}
-        onChange={(val) => {
-          studioCtx.setIsTransformingObject(true);
-          studioCtx.startUnlogged();
-          const newTransform = transform.clone({
-            [dimensionKey]: `${val}${parsed.units ?? ""}`,
-          });
-          onChange(newTransform);
-        }}
-        onAfterChange={() => {
-          studioCtx.setIsTransformingObject(false);
-          studioCtx.stopUnlogged();
-        }}
-      />
+      {sliderConfig && (
+        <Slider
+          className="mr-lg"
+          style={{ minWidth: 100 }}
+          included={false}
+          value={dim.getNumericValue()}
+          {...sliderConfig}
+          onChange={(val) => {
+            studioCtx.setIsTransformingObject(true);
+            studioCtx.startUnlogged();
+            const newTransform = transform.clone({
+              [dimensionKey]: `${val}${dim.unit}`,
+            });
+            onChange(newTransform);
+          }}
+          onAfterChange={() => {
+            studioCtx.setIsTransformingObject(false);
+            studioCtx.stopUnlogged();
+          }}
+        />
+      )}
       <DimTokenSpinner
         value={value}
         onChange={(val) => {
