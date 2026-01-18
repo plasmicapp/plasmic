@@ -21,7 +21,14 @@ import {
   mkDefinePluginOptsForEnv,
 } from "./tools/webpack/mkDefinePluginOptsForEnv";
 
-const commitHash = execSync("git rev-parse HEAD").toString().slice(0, 6);
+const commitHash = (() => {
+  try {
+    return execSync("git rev-parse HEAD").toString().trim().slice(0, 6);
+  } catch {
+    // Fallback if git is not available (e.g., in Docker)
+    return process.env.COMMIT_HASH || "dev";
+  }
+})();
 const buildEnv = process.env.NODE_ENV ?? "production";
 const isProd = buildEnv === "production";
 const port: number = process.env.PORT ? +process.env.PORT : 3003;
