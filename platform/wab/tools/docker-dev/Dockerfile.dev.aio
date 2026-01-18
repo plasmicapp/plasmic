@@ -27,11 +27,11 @@ RUN mkdir -p /tmp/.plasmic && \
     yarn setup:canvas-packages
 
 # Install dependencies for all sub-packages used by dev server
-RUN cd platform/sub && yarn --frozen-lockfile && \
-    cd ../canvas-packages && yarn --frozen-lockfile && \
-    cd ../react-web-bundle && yarn --frozen-lockfile && \
-    cd ../live-frame && yarn --frozen-lockfile && \
-    cd ../loader-html-hydrate && yarn --frozen-lockfile
+RUN cd platform/sub && yarn && \
+    cd ../canvas-packages && yarn && \
+    cd ../react-web-bundle && yarn && \
+    cd ../live-frame && yarn && \
+    cd ../loader-html-hydrate && yarn
 
 # Clean yarn cache to reduce image size
 RUN yarn cache clean
