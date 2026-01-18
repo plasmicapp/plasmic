@@ -31,6 +31,8 @@ services:
     command:
     - |
       git config --global --add safe.directory /plasmic && \
+      chmod +x /plasmic/platform/wab/tools/docker-dev/ensure-db.sh && \
+      /plasmic/platform/wab/tools/docker-dev/ensure-db.sh && \
       cp ormconfig.json /tmp/ormconfig.json && \
       jq '(.host = "plasmic-db") | (.password = "'"${DB_PASSWORD:-SEKRET}"'")' /tmp/ormconfig.json > /tmp/ormconfig-new.json && \
       cp /tmp/ormconfig-new.json ormconfig.json && \
@@ -51,6 +53,9 @@ services:
       - DATABASE_URI=postgres://wab:${DB_PASSWORD:-SEKRET}@plasmic-db:5432/wab
       - WAB_DBNAME=plasmic-db
       - WAB_DBPASSWORD=${DB_PASSWORD:-SEKRET}
+      - DB_HOST=plasmic-db
+      - DB_PASSWORD=${DB_PASSWORD:-SEKRET}
+      - POSTGRES_PASSWORD=${DB_PASSWORD:-SEKRET}
       - NODE_ENV=development
       - SESSION_SECRET=${SESSION_SECRET:-plasmic-session-secret-change-me-in-production}
       - ENCRYPTION_KEY=${ENCRYPTION_KEY:-abcdefghijklmnopqrstuvwxyz123456}

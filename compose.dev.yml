@@ -32,6 +32,8 @@ services:
       dockerfile: ./platform/wab/tools/docker-dev/Dockerfile.dev.aio
     command: # Override the default dockerfile startup command here for debugging purpose
     - |
+      chmod +x /plasmic/platform/wab/tools/docker-dev/ensure-db.sh && \
+      /plasmic/platform/wab/tools/docker-dev/ensure-db.sh && \
       jq '(.host = "plasmic-db") | (.password //= "SEKRET")' ormconfig.json > tmp.json && mv tmp.json ormconfig.json && \
       yarn typeorm migration:run && \
       yarn seed && \
@@ -73,6 +75,9 @@ services:
       - DATABASE_URI=postgres://wab:SEKRET@plasmic-db:5432/wab
       - WAB_DBNAME=plasmic-db
       - WAB_DBPASSWORD=SEKRET
+      - DB_HOST=plasmic-db
+      - DB_PASSWORD=SEKRET
+      - POSTGRES_PASSWORD=SEKRET
       - NODE_ENV=development
       - REACT_APP_DEFAULT_HOST_URL=http://localhost:3005/
       # This environment variable makes file watching more reliable.

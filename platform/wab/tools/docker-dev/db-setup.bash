@@ -2,7 +2,7 @@
 
 set -o errexit -o nounset
 
-PGPASSWORD="SEKRET"
+PGPASSWORD="${DB_PASSWORD:-SEKRET}"
 cat > ~/.pgpass << EOF
 localhost:5432:*:wab:$PGPASSWORD
 localhost:5432:*:cypress:$PGPASSWORD
@@ -11,11 +11,35 @@ localhost:5432:*:supertdbwab:$PGPASSWORD
 EOF
 chmod 600 ~/.pgpass
 
-# createdb are missing on some platforms, like Macports postgresql4-server.
-psql -U postgres -c "create user wab password '$PGPASSWORD';"                                   # no special permissions
-psql -U postgres -c "create user cypress password '$PGPASSWORD';"                               # no special permissions
-psql -U postgres -c "create user superwab password '$PGPASSWORD' createdb createrole in group wab;" # let create tables and users
-psql -U postgres -c "create user supertdbwab password '$PGPASSWORD' createdb createrole in group wab;"       # let create tables and users
-psql -U postgres -c 'create database wab owner wab;'
+# Helper function to create user if not exists
+create_user_if_not_exists() {
+    local username=$1
+    local password=$2
+    local options=${3:-""}
+
+    psql -U postgres -tc "SELECT 1 FROM pg_roles WHERE rolname='$username'" | grep -q 1 || \
+        psql -U postgres -c "CREATE USER $username WITH PASSWORD '$password' $options;"
+}
+
+# Helper function to create database if not exists
+create_db_if_not_exists() {
+    local dbname=$1
+    local owner=$2
+
+    psql -U postgres -tc "SELECT 1 FROM pg_database WHERE datname='$dbname'" | grep -q 1 || \
+        psql -U postgres -c "CREATE DATABASE $dbname OWNER $owner;"
+}
+
+# Create users (idempotent - won't fail if they exist)
+create_user_if_not_exists "wab" "$PGPASSWORD"
+create_user_if_not_exists "cypress" "$PGPASSWORD"
+create_user_if_not_exists "superwab" "$PGPASSWORD" "CREATEDB CREATEROLE IN GROUP wab"
+create_user_if_not_exists "supertdbwab" "$PGPASSWORD" "CREATEDB CREATEROLE IN GROUP wab"
+
+# Create database (idempotent)
+create_db_if_not_exists "wab" "wab"
+
 # Needed for generate_uuid_v4, used in some migrations.
-psql -U postgres -c 'create extension if not exists "uuid-ossp";'
+psql -U postgres -d wab -c 'CREATE EXTENSION IF NOT EXISTS "uuid-ossp";'
+
+echo "Database setup completed successfully!"

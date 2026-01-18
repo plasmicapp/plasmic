@@ -42,7 +42,7 @@ FROM node:24-alpine
 # Create non-root user and prepare env
 RUN addgroup -S plasmic && \
     adduser -S plasmic -G plasmic && \
-    apk add --no-cache git jq bash && \
+    apk add --no-cache git jq bash postgresql-client && \
     echo "fs.inotify.max_user_watches=524288" >> /etc/sysctl.conf && \
     sysctl -p && \
     mkdir -p $HOME && \
@@ -62,7 +62,9 @@ RUN git config --global --add safe.directory /plasmic
 EXPOSE 3003 3004 3005
 
 ENTRYPOINT ["sh", "-c"]
-CMD [" jq '(.host = \"plasmic-db\") | (.password //= \"SEKRET\")' ormconfig.json > tmp.json && mv tmp.json ormconfig.json && \
+CMD ["chmod +x /plasmic/platform/wab/tools/docker-dev/ensure-db.sh && \
+    /plasmic/platform/wab/tools/docker-dev/ensure-db.sh && \
+    jq '(.host = \"plasmic-db\") | (.password //= \"SEKRET\")' ormconfig.json > tmp.json && mv tmp.json ormconfig.json && \
     yarn typeorm migration:run && \
     yarn seed && \
     cd /plasmic && \
