@@ -2027,7 +2027,19 @@ export function makeExpressSessionMiddleware(config: Config) {
     // https, so that we can set secure cookies above.
     proxy: true,
     resave: false,
-    saveUninitialized: true,
+    // saveUninitialized (true by default) forces new session
+    // creation and sends Set-Cookie response header, even if the
+    // session was not modified.
+    // We set saveUninitialized: false to avoid:
+    //  1) creating unnecessary sessions
+    //  2) sending Set-Cookie response header, which makes responses
+    //     uncacheable for some CDNs
+    // The above is mainly relevant for API endpoints that originate
+    // from our CLI or SDKs, where CSRF protection is disabled.
+    // Normal web app usage is unaffected (a new session will be
+    // created on the first visit), since lusca.csrf will immediately
+    // set a CSRF token in the session.
+    saveUninitialized: false,
     secret: config.sessionSecret,
     store: new TypeormStore({
       // Don't clean up expired sessions for now till we figure out
