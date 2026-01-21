@@ -1,6 +1,7 @@
+import { PopoverFrameProvider } from "@/wab/client/components/sidebar/PopoverFrame";
 import sty from "@/wab/client/components/studio/TopModal.module.css";
-import React from "react";
 import { Modal } from "@/wab/client/components/widgets/Modal";
+import React from "react";
 
 export function TopModal(props: {
   children?: React.ReactNode;
@@ -26,7 +27,9 @@ export function TopModal(props: {
       }}
       afterClose={onClose}
     >
-      {children}
+      <PopoverFrameProvider containerSelector={".ant-modal-content"}>
+        {children}
+      </PopoverFrameProvider>
     </Modal>
   );
 }
