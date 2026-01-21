@@ -101,7 +101,8 @@
     "@ant-design/pro-components/antd": "^5.0.0",
     "@ant-design/pro-table/antd": "^5.0.0",
     "@ant-design/pro-list/antd": "^5.0.0",
-    "rc-util": "^5.44.4"
+    "rc-util": "^5.44.4",
+    "lottie-web": ">=5.13.0"
   },
   "devDependencies": {
     "patch-package": "^8.0.0",
