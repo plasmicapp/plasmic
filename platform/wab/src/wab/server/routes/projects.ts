@@ -1385,12 +1385,18 @@ export async function saveProjectRev(req: Request, res: Response) {
     const data = JSON.stringify(mergedBundle);
 
     req.promLabels.projectId = projectId;
-    req.analytics.track("Save project", {
-      projectId: project.id,
-      projectName: project.name,
-      revision: +req.params.revision,
-      branchId,
-    });
+    req.analytics.track(
+      "Save project",
+      {
+        projectId: project.id,
+        projectName: project.name,
+        revision: +req.params.revision,
+        branchId,
+      },
+      {
+        sampleThreshold: 0.1,
+      }
+    );
 
     const rev = await mgr.saveProjectRev({
       projectId,
