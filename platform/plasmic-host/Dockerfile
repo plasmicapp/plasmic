@@ -30,5 +30,5 @@ COPY --from=builder /app/serve.json ./serve.json
 # Expose port
 EXPOSE 3000
 
-# Serve the static files
-CMD ["serve", "-s", "dist", "-l", "3000", "--cors"]
+# Serve the static files with config
+CMD ["serve", "-s", "dist", "-l", "3000", "-c", "serve.json"]
