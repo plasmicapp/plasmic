@@ -207,9 +207,7 @@ import {
   deleteProject,
   fmtCode,
   genCode,
-  genIcons,
   genStyleConfig,
-  genStyleTokens,
   getFullProjectData,
   getLatestBundleVersion,
   getLatestPlumePkg,
@@ -336,7 +334,6 @@ const isCsrfFreeRoute = (pathname: string, config: Config) => {
     pathname.includes("/code/") ||
     pathname.includes("/api/v1/loader/code") ||
     pathname.includes("/api/v1/loader/chunks") ||
-    pathname.includes("/jsbundle") ||
     pathname.includes("/api/v1/loader/") ||
     pathname.includes("/api/v1/server-data/") ||
     pathname.includes("/api/v1/wl/") ||
@@ -1037,16 +1034,6 @@ export function addCodegenRoutes(app: express.Application) {
     "/api/v1/projects/:projectId/code/components",
     apiAuth,
     withNext(genCode)
-  );
-  app.post(
-    "/api/v1/projects/:projectId/code/tokens",
-    apiAuth,
-    withNext(genStyleTokens)
-  );
-  app.post(
-    "/api/v1/projects/:projectId/code/icons",
-    apiAuth,
-    withNext(genIcons)
   );
   app.post(
     "/api/v1/projects/:projectId/code/meta",

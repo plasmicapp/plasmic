@@ -13,7 +13,6 @@ import {
 import * as projectToken from "./actions/project-token";
 import { StatusArgs, showProjectStatus } from "./actions/status";
 import { SyncArgs, sync } from "./actions/sync";
-import { UploadBundleArgs, uploadJsBundle } from "./actions/upload-bundle";
 import { WatchArgs, watchProjects } from "./actions/watch";
 import { handleError } from "./utils/error";
 
@@ -181,67 +180,6 @@ yargs
     (argv) => {
       handleError(printProjectInfo(argv));
     }
-  )
-  .command<UploadBundleArgs>(
-    "upload-bundle",
-    false,
-    (yargs2) =>
-      yargs2
-        .option("project", {
-          alias: "p",
-          describe: "ID of Plasmic project to upload the bundle to.",
-          type: "string",
-        })
-        .option("bundleName", {
-          describe: "Name of the bundle",
-          type: "string",
-        })
-        .option("bundleJsFile", {
-          describe: "Path of the bundled Javascript file in AMD format",
-          type: "string",
-        })
-        .option("cssFiles", {
-          describe: "Path of the bundled css files to load",
-          type: "array",
-          default: [],
-        })
-        .option("metaJsonFile", {
-          describe:
-            "Path of the meta data file (in JSON format) describing the component",
-          type: "string",
-        })
-        .option("extraPropMetaJsonFile", {
-          describe:
-            "Path of the extra meta data file (in JSON format) describing the component's additional controlled properties and initial properties",
-          type: "string",
-        })
-        .option("pkgVersion", {
-          describe:
-            "version of the package to include in the generated package.json",
-          type: "string",
-          default: "latest",
-        })
-        .option("genModulePath", {
-          describe:
-            "the path of include when generating import statement and generate package.json for. Default to bundleName.",
-          type: "string",
-        })
-        .option("themeProviderWrapper", {
-          describe: "the wrapper that inject theme to the bundle.",
-          type: "string",
-        })
-        .option("themeModuleFile", {
-          describe:
-            "the typescript file that contains and exports the implementation of themeProviderWrapper. Used for code generation. It must be specified together with themeProviderWrapper.",
-          type: "string",
-        })
-        .option("genCssPaths", {
-          describe:
-            "the list of css paths to import in generate code whenever a component in this bundle is used",
-          type: "array",
-          default: [],
-        }),
-    (argv) => handleError(uploadJsBundle(argv))
   )
   .command<projectToken.ProjectTokenArgs>(
     "project-token <projectId>",

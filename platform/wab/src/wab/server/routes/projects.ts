@@ -120,12 +120,8 @@ import {
 } from "@/wab/shared/bundles";
 import { componentToDeepReferenced } from "@/wab/shared/cached-selectors";
 import { elementSchemaToTpl } from "@/wab/shared/code-components/code-components";
-import {
-  exportIconAsset,
-  extractUsedIconAssetsForComponents,
-} from "@/wab/shared/codegen/image-assets";
+import { extractUsedIconAssetsForComponents } from "@/wab/shared/codegen/image-assets";
 import { exportStyleConfig } from "@/wab/shared/codegen/react-p";
-import { exportStyleTokens } from "@/wab/shared/codegen/style-tokens";
 import { ExportOpts } from "@/wab/shared/codegen/types";
 import { toClassName } from "@/wab/shared/codegen/util";
 import { Dict, mkIdMap } from "@/wab/shared/collections";
@@ -2510,18 +2506,6 @@ async function doResolveSync(
   return result;
 }
 
-function doGenIcons(site: Site, iconIds?: string[]) {
-  //If iconIds is empty/not-specified, return everything
-  const iconAssets = localIcons(site)
-    .filter((x) => !iconIds || iconIds.includes(x.uuid))
-    .map((x) => {
-      const output = exportIconAsset(x);
-      output.module = Prettier.format(output.module, { parser: "typescript" });
-      return output;
-    });
-  return iconAssets;
-}
-
 export async function resolveSync(req: Request, res: Response) {
   // Resolve performs its own auth checks using the project API tokens inside
   // body.projects.
@@ -2659,47 +2643,6 @@ export async function genCode(req: Request, res: Response) {
     })),
     checksums,
   });
-}
-
-export async function genStyleTokens(req: Request, res: Response) {
-  const mgr = userDbMgr(req);
-  const projectId = req.params.projectId;
-  const branchName = req.query.branchName;
-  const resolvedVersion =
-    req.body.versionRange === "latest" && req.query.branchName
-      ? branchName === "main"
-        ? "latest"
-        : branchName
-      : req.body.versionRange;
-  const { site } = await mgr.tryGetPkgVersionByProjectVersionOrTag(
-    req.bundler,
-    projectId,
-    resolvedVersion
-  );
-  req.promLabels.projectId = projectId;
-
-  res.json(exportStyleTokens(projectId, site));
-}
-
-export async function genIcons(req: Request, res: Response) {
-  const mgr = userDbMgr(req);
-  const projectId = req.params.projectId;
-  const branchName = req.query.branchName;
-  const resolvedVersion =
-    req.body.versionRange === "latest" && req.query.branchName
-      ? branchName === "main"
-        ? "latest"
-        : branchName
-      : req.body.versionRange;
-  const { version, site } = await mgr.tryGetPkgVersionByProjectVersionOrTag(
-    req.bundler,
-    projectId,
-    resolvedVersion
-  );
-  req.promLabels.projectId = projectId;
-
-  const iconAssets = doGenIcons(site, req.body.iconIds);
-  res.json({ version, icons: iconAssets });
 }
 
 export async function fmtCode(req: Request, res: Response) {

@@ -97,7 +97,6 @@ export type PlasmicImportType =
   | "defaultcss"
   | "icon"
   | "picture"
-  | "jsBundle"
   | "codeComponent"
   | "codeComponentHelper"
   | "globalContext"

@@ -148,11 +148,6 @@ export interface ImagesConfig {
   publicUrlPrefix?: string;
 }
 
-export interface JsBundleThemeConfig {
-  themeFilePath: string;
-  bundleName: string;
-}
-
 export interface CodeComponentConfig {
   id: string;
   name: string;
@@ -203,7 +198,6 @@ export interface ProjectConfig {
 
   // Code-component-related fields can be treated as optional not to be shown
   // to the users nor appear to be missing in the documentation.
-  jsBundleThemes?: JsBundleThemeConfig[];
   codeComponents?: CodeComponentConfig[];
   customFunctions?: CustomFunctionConfig[];
 

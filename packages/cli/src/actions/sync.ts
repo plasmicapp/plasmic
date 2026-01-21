@@ -757,10 +757,6 @@ async function syncProjectConfig(
     checksum: checksums.projectCssChecksum,
   });
 
-  if (projectConfig.jsBundleThemes?.length === 0) {
-    delete projectConfig.jsBundleThemes;
-  }
-
   await syncGlobalContexts(
     context,
     projectBundle,

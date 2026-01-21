@@ -174,7 +174,6 @@ type PlasmicImportType =
   | "defaultcss"
   | "icon"
   | "picture"
-  | "jsBundle"
   | "codeComponent"
   | "codeComponentHelper"
   | "globalContext"
@@ -214,7 +213,7 @@ function tryParsePlasmicImportSpec(node: ImportDeclaration) {
         "plasmic-import:\\s+([",
         ...validJsIdentifierChars,
         "\\.",
-        "]+)(?:\\/(component|css|render|globalVariant|projectcss|defaultcss|icon|picture|jsBundle|codeComponent|globalContext|customFunction|splitsProvider|styleTokensProvider|dataTokens|projectModule|rscClient|rscServer))?",
+        "]+)(?:\\/(component|css|render|globalVariant|projectcss|defaultcss|icon|picture|codeComponent|globalContext|customFunction|splitsProvider|styleTokensProvider|dataTokens|projectModule|rscClient|rscServer))?",
       ].join("")
     )
   );

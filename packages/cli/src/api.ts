@@ -81,12 +81,6 @@ export interface ProjectModuleBundle {
   module: string;
 }
 
-export interface JsBundleTheme {
-  themeFileName: string;
-  themeModule: string;
-  bundleName: string;
-}
-
 export interface ProjectMetaBundle {
   projectId: string;
   projectName: string;
@@ -418,63 +412,6 @@ export class PlasmicApi {
       }
     );
     return result.data as string;
-  }
-
-  async uploadBundle(
-    projectId: string,
-    bundleName: string,
-    bundleJs: string,
-    css: string[],
-    metaJson: string,
-    genModulePath: string | undefined,
-    genCssPaths: string[],
-    pkgVersion: string | undefined,
-    extraPropMetaJson: string | undefined,
-    themeProviderWrapper: string | undefined,
-    themeModule: string | undefined
-  ): Promise<StyleTokensMap> {
-    const result = await this.post(
-      `${this.apiHost}/api/v1/projects/${projectId}/jsbundle/upload`,
-      {
-        projectId,
-        bundleName,
-        bundleJs,
-        css,
-        metaJson,
-        genModulePath,
-        genCssPaths,
-        pkgVersion,
-        extraPropMetaJson,
-        themeProviderWrapper,
-        themeModule,
-      }
-    );
-    return result.data as StyleTokensMap;
-  }
-
-  async projectStyleTokens(
-    projectId: string,
-    branchName: string,
-    versionRange?: string
-  ): Promise<StyleTokensMap> {
-    const result = await this.post(
-      `${this.apiHost}/api/v1/projects/${projectId}/code/tokens?branchName=${branchName}`,
-      { versionRange }
-    );
-    return result.data as StyleTokensMap;
-  }
-
-  async projectIcons(
-    projectId: string,
-    branchName: string,
-    versionRange?: string,
-    iconIds?: string[]
-  ): Promise<ProjectIconsResponse> {
-    const result = await this.post(
-      `${this.apiHost}/api/v1/projects/${projectId}/code/icons?branchName=${branchName}`,
-      { versionRange, iconIds }
-    );
-    return result.data as ProjectIconsResponse;
   }
 
   connectSocket(): ReturnType<typeof socketio> {

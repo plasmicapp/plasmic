@@ -6651,7 +6651,6 @@ export class StudioCtx extends WithDbCtx {
     const _styleChanges = summaryToStyleChanges(summary);
     if (_styleChanges) {
       this.styleMgr.upsertStyles(_styleChanges);
-      // themeSnapshotChanged = this.jsBundleMgr.updateAllThemeSnapshot();
 
       if (_styleChanges.updatedDeps) {
         for (const dep of _styleChanges.updatedDeps) {
