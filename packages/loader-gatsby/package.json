@@ -1,6 +1,6 @@
 {
   "name": "@plasmicapp/loader-gatsby",
-  "version": "1.0.412",
+  "version": "1.0.413",
   "types": "./dist/index.d.ts",
   "main": "./dist/index.js",
   "exports": {
@@ -63,8 +63,8 @@
     "gatsby": "^5.11.0"
   },
   "dependencies": {
-    "@plasmicapp/loader-core": "1.0.141",
-    "@plasmicapp/loader-react": "1.0.409",
+    "@plasmicapp/loader-core": "1.0.142",
+    "@plasmicapp/loader-react": "1.0.410",
     "@plasmicapp/watcher": "1.0.84",
     "lodash": "^4.17.21"
   }
