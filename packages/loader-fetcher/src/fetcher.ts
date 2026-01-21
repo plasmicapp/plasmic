@@ -14,7 +14,12 @@ export interface FetcherOptions {
     };
   };
   preview?: boolean;
+  /** Fallback for apiHost and cdnHost. */
   host?: string;
+  /** Used for fetching/previewing unpublished content. */
+  apiHost?: string;
+  /** Used for fetching published content. */
+  cdnHost?: string;
   /**
    * @deprecated use i18n.keyScheme instead
    */
@@ -40,6 +45,8 @@ export class PlasmicModulesFetcher {
     this.api = new Api({
       projects: opts.projects,
       host: opts.host,
+      apiHost: opts.apiHost,
+      cdnHost: opts.cdnHost,
       nativeFetch: opts.nativeFetch,
       manualRedirect: opts.manualRedirect,
     });

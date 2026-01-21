@@ -158,7 +158,8 @@ export function transformApiLoaderBundleOutput(
 }
 
 export class Api {
-  private host: string;
+  private readonly apiHost: string;
+  private readonly cdnHost: string;
   private fetch: typeof globalThis.fetch;
 
   private lastResponse:
@@ -172,11 +173,15 @@ export class Api {
     private opts: {
       projects: { id: string; token: string }[];
       host?: string;
+      apiHost?: string;
+      cdnHost?: string;
       nativeFetch?: boolean;
       manualRedirect?: boolean;
     }
   ) {
-    this.host = opts.host ?? "https://codegen.plasmic.app";
+    this.apiHost =
+      opts.apiHost ?? opts.host ?? "https://codegen-origin.plasmic.app";
+    this.cdnHost = opts.cdnHost ?? opts.host ?? "https://codegen.plasmic.app";
     this.fetch = (
       opts.nativeFetch && globalThis.fetch ? globalThis.fetch : unfetch
     ).bind(globalThis);
@@ -211,9 +216,10 @@ export class Api {
       ...(opts.skipHead ? [["skipHead", "true"]] : []),
     ]).toString();
 
-    const url = `${this.host}/api/v1/loader/code/${
-      preview ? "preview" : "published"
-    }?${query}`;
+    const host = preview ? this.apiHost : this.cdnHost;
+    const url = preview
+      ? `${host}/api/v1/loader/code/preview?${query}`
+      : `${host}/api/v1/loader/code/published?${query}`;
 
     // We only expect a redirect when we're dealing with published mode, as there should be
     // a stable set of versions to be used. As in browser, we could receive a opaque response
@@ -250,7 +256,7 @@ export class Api {
         return this.lastResponse.bundle;
       }
 
-      const resp = await this.fetch(`${this.host}${nextLocation}`, {
+      const resp = await this.fetch(`${host}${nextLocation}`, {
         method: "GET",
         headers: this.makeGetHeaders(),
       });
@@ -276,7 +282,7 @@ export class Api {
     // An Angular polyfill can cause 302 redirects to fail in Safari, due to missing headers.
     // This 200 response with `redirectUrl` is a workaround for specific projects that need it.
     if (json.redirectUrl) {
-      const redirectResp = await this.fetch(`${this.host}${json.redirectUrl}`, {
+      const redirectResp = await this.fetch(`${host}${json.redirectUrl}`, {
         method: "GET",
         headers: this.makeGetHeaders(),
       });
@@ -310,25 +316,14 @@ export class Api {
     }
   }
 
-  async fetchHtmlData(opts: {
+  /** @deprecated */
+  async fetchHtmlData(_opts: {
     projectId: string;
     component: string;
     hydrate?: boolean;
     embedHydrate?: boolean;
-  }) {
-    const { projectId, component, embedHydrate, hydrate } = opts;
-    const query = new URLSearchParams([
-      ["projectId", projectId],
-      ["component", component],
-      ["embedHydrate", embedHydrate ? "1" : "0"],
-      ["hydrate", hydrate ? "1" : "0"],
-    ]).toString();
-    const resp = await this.fetch(`${this.host}/api/v1/loader/html?${query}`, {
-      method: "GET",
-      headers: this.makeGetHeaders(),
-    });
-    const json = await resp.json();
-    return json as LoaderHtmlOutput;
+  }): Promise<LoaderHtmlOutput> {
+    throw new Error("deprecated");
   }
 
   private makeGetHeaders() {
@@ -348,7 +343,7 @@ export class Api {
   }
 
   getChunksUrl(bundle: LoaderBundleOutput, modules: CodeModule[]) {
-    return `${this.host}/api/v1/loader/chunks?bundleKey=${encodeURIComponent(
+    return `${this.cdnHost}/api/v1/loader/chunks?bundleKey=${encodeURIComponent(
       bundle.bundleKey ?? "null"
     )}&fileName=${encodeURIComponent(
       modules

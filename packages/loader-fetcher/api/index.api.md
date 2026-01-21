@@ -12,11 +12,13 @@ export class Api {
             token: string;
         }[];
         host?: string;
+        apiHost?: string;
+        cdnHost?: string;
         nativeFetch?: boolean;
         manualRedirect?: boolean;
     });
-    // (undocumented)
-    fetchHtmlData(opts: {
+    // @deprecated (undocumented)
+    fetchHtmlData(_opts: {
         projectId: string;
         component: string;
         hydrate?: boolean;
@@ -106,9 +108,10 @@ export interface ExperimentSlice extends Slice {
 
 // @public (undocumented)
 export interface FetcherOptions {
+    apiHost?: string;
     // (undocumented)
     cache?: LoaderBundleCache;
-    // (undocumented)
+    cdnHost?: string;
     host?: string;
     // (undocumented)
     i18n?: {

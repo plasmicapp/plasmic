@@ -54,7 +54,12 @@ export interface InitOptions {
     };
   };
   preview?: boolean;
+  /** Fallback for apiHost and cdnHost. */
   host?: string;
+  /** Used for fetching/previewing unpublished content. */
+  apiHost?: string;
+  /** Used for fetching published content. */
+  cdnHost?: string;
   onClientSideFetch?: "warn" | "error";
   i18n?: {
     keyScheme: "content" | "hash" | "path";

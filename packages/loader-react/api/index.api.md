@@ -145,9 +145,10 @@ export function hydrateFromElement(loader: PlasmicComponentLoader, target: HTMLE
 // @public (undocumented)
 export interface InitOptions {
     alwaysFresh?: boolean;
+    apiHost?: string;
     // (undocumented)
     cache?: LoaderBundleCache;
-    // (undocumented)
+    cdnHost?: string;
     host?: string;
     // (undocumented)
     i18n?: {

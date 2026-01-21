@@ -68,9 +68,10 @@ export const convertBundlesToComponentRenderData: (bundles: LoaderBundleOutput_2
 // @public (undocumented)
 export interface InitOptions {
     alwaysFresh?: boolean;
+    apiHost?: string;
     // (undocumented)
     cache?: LoaderBundleCache;
-    // (undocumented)
+    cdnHost?: string;
     host?: string;
     // (undocumented)
     i18n?: {
