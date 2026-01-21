@@ -316,9 +316,8 @@ const csrfFreeStaticRoutes = [
   "/api/v1/plume-pkg/versions",
   "/api/v1/localization/gen-texts",
   "/api/v1/hosting-hit",
-  "/api/v1/socket/",
-  "/api/v1/init-token/",
-  "/api/v1/promo-code/",
+  "/api/v1/socket",
+  "/api/v1/init-token",
 
   // csrf-free routes to the socket server routes, if socket server
   // is not running and the routes are mounted on this server
@@ -331,14 +330,14 @@ const isCsrfFreeRoute = (pathname: string, config: Config) => {
   return (
     csrfFreeStaticRoutes.includes(pathname) ||
     pathname.includes("/api/v1/clip/") ||
-    pathname.includes("/code/") ||
-    pathname.includes("/api/v1/loader/code") ||
-    pathname.includes("/api/v1/loader/chunks") ||
+    pathname.includes("/api/v1/code/") ||
     pathname.includes("/api/v1/loader/") ||
+    pathname.includes("/api/v1/promo-code/") ||
     pathname.includes("/api/v1/server-data/") ||
     pathname.includes("/api/v1/wl/") ||
     pathname.includes("/api/v1/cms/") ||
     pathname.match("/api/v1/projects/[^/]+$") ||
+    pathname.match("/api/v1/projects/[^/]+/code/") ||
     pathname.match("/api/v1/auth/sso/.*/consume") ||
     pathname.includes("/api/v1/app-auth/user") ||
     pathname.includes("/api/v1/app-auth/userinfo") ||
