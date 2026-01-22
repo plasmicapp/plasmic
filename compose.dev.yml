@@ -32,6 +32,7 @@ services:
       dockerfile: ./platform/wab/tools/docker-dev/Dockerfile.dev.aio
     command: # Override the default dockerfile startup command here for debugging purpose
     - |
+      git config --global --add safe.directory /plasmic && \
       chmod +x /plasmic/platform/wab/tools/docker-dev/ensure-db.sh && \
       /plasmic/platform/wab/tools/docker-dev/ensure-db.sh && \
       jq '(.host = "plasmic-db") | (.password //= "SEKRET")' ormconfig.json > tmp.json && mv tmp.json ormconfig.json && \
