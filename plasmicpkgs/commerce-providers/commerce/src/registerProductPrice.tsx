@@ -1,5 +1,5 @@
 import registerComponent, {
-  ComponentMeta,
+  CodeComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import React from "react";
 import { useFormContext } from "react-hook-form";
@@ -12,7 +12,7 @@ interface ProductPriceProps {
   className: string;
 }
 
-export const productPriceMeta: ComponentMeta<ProductPriceProps> = {
+export const productPriceMeta: CodeComponentMeta<ProductPriceProps> = {
   name: "plasmic-commerce-product-price",
   displayName: "Product Price",
   props: {},
@@ -41,7 +41,7 @@ export function ProductPriceComponent(props: ProductPriceProps) {
 
 export function registerProductPrice(
   loader?: Registerable,
-  customProductPriceMeta?: ComponentMeta<ProductPriceProps>
+  customProductPriceMeta?: CodeComponentMeta<ProductPriceProps>
 ) {
   const doRegisterComponent: typeof registerComponent = (...args) =>
     loader ? loader.registerComponent(...args) : registerComponent(...args);

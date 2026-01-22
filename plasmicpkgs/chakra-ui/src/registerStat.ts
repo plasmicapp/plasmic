@@ -5,13 +5,13 @@ import {
   StatNumberProps,
   StatProps,
 } from "@chakra-ui/react";
-import { ComponentMeta } from "@plasmicapp/host/registerComponent";
+import { type CodeComponentMeta } from "@plasmicapp/host/registerComponent";
 import {
   getComponentNameAndImportMeta,
   getPlasmicComponentName,
 } from "./utils";
 
-export const statMeta: ComponentMeta<StatProps> = {
+export const statMeta: CodeComponentMeta<StatProps> = {
   ...getComponentNameAndImportMeta("Stat"),
   props: {
     children: {
@@ -53,7 +53,7 @@ export const statMeta: ComponentMeta<StatProps> = {
   },
 };
 
-export const statHelpTextMeta: ComponentMeta<StatHelpTextProps> = {
+export const statHelpTextMeta: CodeComponentMeta<StatHelpTextProps> = {
   ...getComponentNameAndImportMeta("StatHelpText", "Stat"),
   props: {
     children: {
@@ -68,7 +68,7 @@ export const statHelpTextMeta: ComponentMeta<StatHelpTextProps> = {
   },
 };
 
-export const statArrowMeta: ComponentMeta<StatArrowProps> = {
+export const statArrowMeta: CodeComponentMeta<StatArrowProps> = {
   ...getComponentNameAndImportMeta("StatArrow", "Stat"),
   props: {
     type: {
@@ -78,7 +78,7 @@ export const statArrowMeta: ComponentMeta<StatArrowProps> = {
   },
 };
 
-export const statNumberMeta: ComponentMeta<StatNumberProps> = {
+export const statNumberMeta: CodeComponentMeta<StatNumberProps> = {
   ...getComponentNameAndImportMeta("StatNumber", "Stat"),
   props: {
     children: {
@@ -93,7 +93,7 @@ export const statNumberMeta: ComponentMeta<StatNumberProps> = {
   },
 };
 
-export const statLabelMeta: ComponentMeta<StatLabelProps> = {
+export const statLabelMeta: CodeComponentMeta<StatLabelProps> = {
   ...getComponentNameAndImportMeta("StatLabel", "Stat"),
   props: {
     children: {

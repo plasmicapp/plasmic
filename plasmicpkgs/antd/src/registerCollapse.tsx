@@ -1,17 +1,17 @@
 import registerComponent, {
-  ComponentMeta,
+  CodeComponentMeta,
 } from "@plasmicapp/host/registerComponent";
-import type {
-  CollapsePanelProps,
-  CollapseProps as AntdCollapseProps,
-} from "antd/es/collapse";
 import { Collapse as AntdCollapse } from "antd";
+import type {
+  CollapseProps as AntdCollapseProps,
+  CollapsePanelProps,
+} from "antd/es/collapse";
 import React from "react";
 import { traverseReactEltTree } from "./customControls";
 import { Registerable } from "./registerable";
 export const CollapsePanel = AntdCollapse.Panel;
 
-export const collapstePanelMeta: ComponentMeta<CollapsePanelProps> = {
+export const collapstePanelMeta: CodeComponentMeta<CollapsePanelProps> = {
   name: "AntdCollapsePanel",
   displayName: "Antd Collapse Panel",
   props: {
@@ -66,7 +66,7 @@ export const collapstePanelMeta: ComponentMeta<CollapsePanelProps> = {
 
 export function registerCollapsePanel(
   loader?: Registerable,
-  customCollapsePanelMeta?: ComponentMeta<CollapsePanelProps>
+  customCollapsePanelMeta?: CodeComponentMeta<CollapsePanelProps>
 ) {
   const doRegisterComponent: typeof registerComponent = (...args) =>
     loader ? loader.registerComponent(...args) : registerComponent(...args);
@@ -92,7 +92,7 @@ function getOptions(componentProps: CollapseProps) {
   return Array.from(options.keys());
 }
 
-export const collapsteMeta: ComponentMeta<CollapseProps> = {
+export const collapsteMeta: CodeComponentMeta<CollapseProps> = {
   name: "AntdCollapse",
   displayName: "Antd Collapse",
   props: {
@@ -194,7 +194,7 @@ export function Collapse(props: CollapseProps) {
 
 export function registerCollapse(
   loader?: Registerable,
-  customCollapseMeta?: ComponentMeta<CollapseProps>
+  customCollapseMeta?: CodeComponentMeta<CollapseProps>
 ) {
   const doRegisterComponent: typeof registerComponent = (...args) =>
     loader ? loader.registerComponent(...args) : registerComponent(...args);

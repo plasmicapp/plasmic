@@ -1,8 +1,8 @@
 import { ToastProps } from "@chakra-ui/react";
-import { ComponentMeta } from "@plasmicapp/host/registerComponent";
+import { type CodeComponentMeta } from "@plasmicapp/host/registerComponent";
 import { getComponentNameAndImportMeta } from "./utils";
 
-export const toastMeta: ComponentMeta<ToastProps> = {
+export const toastMeta: CodeComponentMeta<ToastProps> = {
   ...getComponentNameAndImportMeta("Toast"),
   props: {
     title: {

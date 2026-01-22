@@ -1,4 +1,4 @@
-import { CodeComponentMeta } from "@plasmicapp/host";
+import { type CodeComponentMeta } from "@plasmicapp/host/registerComponent";
 import React, { useMemo } from "react";
 import { Slider, SliderThumbProps, SliderTrack } from "react-aria-components";
 import flattenChildren from "react-keyed-flatten-children";

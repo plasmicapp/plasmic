@@ -5,13 +5,13 @@ import {
   TabProps,
   TabsProps,
 } from "@chakra-ui/react";
-import { ComponentMeta } from "@plasmicapp/host/registerComponent";
+import { type CodeComponentMeta } from "@plasmicapp/host/registerComponent";
 import {
   getComponentNameAndImportMeta,
   getPlasmicComponentName,
 } from "./utils";
 
-export const tabListMeta: ComponentMeta<TabListProps> = {
+export const tabListMeta: CodeComponentMeta<TabListProps> = {
   ...getComponentNameAndImportMeta("TabList", "Tabs"),
   props: {
     children: {
@@ -21,7 +21,7 @@ export const tabListMeta: ComponentMeta<TabListProps> = {
   },
 };
 
-export const tabsMeta: ComponentMeta<TabsProps> = {
+export const tabsMeta: CodeComponentMeta<TabsProps> = {
   ...getComponentNameAndImportMeta("Tabs"),
   props: {
     align: {
@@ -169,7 +169,7 @@ export const tabsMeta: ComponentMeta<TabsProps> = {
   },
 };
 
-export const tabMeta: ComponentMeta<TabProps> = {
+export const tabMeta: CodeComponentMeta<TabProps> = {
   ...getComponentNameAndImportMeta("Tab", "TabList"),
   props: {
     id: "string",
@@ -185,7 +185,7 @@ export const tabMeta: ComponentMeta<TabProps> = {
   },
 };
 
-export const tabPanelsMeta: ComponentMeta<TabPanelsProps> = {
+export const tabPanelsMeta: CodeComponentMeta<TabPanelsProps> = {
   ...getComponentNameAndImportMeta("TabPanels", "Tabs"),
   props: {
     children: {
@@ -195,7 +195,7 @@ export const tabPanelsMeta: ComponentMeta<TabPanelsProps> = {
   },
 };
 
-export const tabPanelMeta: ComponentMeta<TabPanelProps> = {
+export const tabPanelMeta: CodeComponentMeta<TabPanelProps> = {
   ...getComponentNameAndImportMeta("TabPanel", "TabPanels"),
   props: {
     children: {

@@ -100,7 +100,7 @@ module.exports = {
       "error",
       {
         name: "@plasmicapp/host",
-        importNames: ["registerComponent"],
+        importNames: ["registerComponent", "CodeComponentMeta"],
         message:
           "Please import from @plasmicapp/host/registerComponent instead",
       },

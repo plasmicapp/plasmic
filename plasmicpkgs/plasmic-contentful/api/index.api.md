@@ -4,8 +4,8 @@
 
 ```ts
 
-import { ComponentMeta } from '@plasmicapp/host';
-import { GlobalContextMeta } from '@plasmicapp/host';
+import { CodeComponentMeta } from '@plasmicapp/host/registerComponent';
+import { GlobalContextMeta } from '@plasmicapp/host/registerGlobalContext';
 import { default as React_2 } from 'react';
 import { ReactNode } from 'react';
 import registerComponent from '@plasmicapp/host/registerComponent';
@@ -21,13 +21,13 @@ export const ContentfulCredentialsProviderMeta: GlobalContextMeta<ContentfulCred
 export function ContentfulFetcher({ filterField, filterValue, searchParameter, noAutoRepeat, contentType, children, className, order, reverseOrder, limit, include, noLayout, setControlContextData, }: ContentfulFetcherProps): React_2.JSX.Element;
 
 // @public (undocumented)
-export const ContentfulFetcherMeta: ComponentMeta<ContentfulFetcherProps>;
+export const ContentfulFetcherMeta: CodeComponentMeta<ContentfulFetcherProps>;
 
 // @public (undocumented)
 export function ContentfulField({ className, objectPath, setControlContextData, }: ContentfulFieldProps): React_2.JSX.Element;
 
 // @public (undocumented)
-export const ContentfulFieldMeta: ComponentMeta<ContentfulFieldProps>;
+export const ContentfulFieldMeta: CodeComponentMeta<ContentfulFieldProps>;
 
 // @public (undocumented)
 export function registerAll(loader?: {

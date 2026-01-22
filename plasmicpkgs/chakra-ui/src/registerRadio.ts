@@ -1,11 +1,11 @@
 import { RadioGroupProps, RadioProps } from "@chakra-ui/react";
-import { ComponentMeta } from "@plasmicapp/host/registerComponent";
+import { type CodeComponentMeta } from "@plasmicapp/host/registerComponent";
 import {
   getComponentNameAndImportMeta,
   getPlasmicComponentName,
 } from "./utils";
 
-export const radioGroupMeta: ComponentMeta<RadioGroupProps> = {
+export const radioGroupMeta: CodeComponentMeta<RadioGroupProps> = {
   ...getComponentNameAndImportMeta("RadioGroup"),
   props: {
     value: {
@@ -57,7 +57,7 @@ export const radioGroupMeta: ComponentMeta<RadioGroupProps> = {
   },
 };
 
-export const radioMeta: ComponentMeta<RadioProps> = {
+export const radioMeta: CodeComponentMeta<RadioProps> = {
   ...getComponentNameAndImportMeta("Radio", "RadioGroup"),
   props: {
     value: {

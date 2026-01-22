@@ -1,5 +1,5 @@
 import registerComponent, {
-  ComponentMeta,
+  CodeComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import { Input as AntdInput } from "antd";
 import type {
@@ -21,7 +21,7 @@ function sortObjectKeys<T extends Record<string, any>>(obj: T): T {
   return Object.fromEntries(Object.entries(obj).sort()) as T;
 }
 
-type PropSpec<T> = ComponentMeta<T>["props"];
+type PropSpec<T> = CodeComponentMeta<T>["props"];
 
 function sortProps<T>(props: PropSpec<T>): PropSpec<T> {
   return sortObjectKeys(props);
@@ -52,7 +52,7 @@ export const inputHelpers = {
   },
 };
 
-export const inputMeta: ComponentMeta<InputProps> = {
+export const inputMeta: CodeComponentMeta<InputProps> = {
   name: "AntdInput",
   displayName: "Antd Input",
   props: sortProps<InputProps>({
@@ -143,14 +143,14 @@ export const inputMeta: ComponentMeta<InputProps> = {
 
 export function registerInput(
   loader?: Registerable,
-  customInputMeta?: ComponentMeta<InputProps>
+  customInputMeta?: CodeComponentMeta<InputProps>
 ) {
   const doRegisterComponent: typeof registerComponent = (...args) =>
     loader ? loader.registerComponent(...args) : registerComponent(...args);
   doRegisterComponent(Input, customInputMeta ?? inputMeta);
 }
 
-export const inputTextAreaMeta: ComponentMeta<TextAreaProps> = {
+export const inputTextAreaMeta: CodeComponentMeta<TextAreaProps> = {
   name: "AntdInputTextArea",
   displayName: "Antd Input Text Area",
   props: sortProps<TextAreaProps>({
@@ -225,14 +225,14 @@ export const inputTextAreaMeta: ComponentMeta<TextAreaProps> = {
 
 export function registerInputTextArea(
   loader?: Registerable,
-  customInputTextAreaMeta?: ComponentMeta<TextAreaProps>
+  customInputTextAreaMeta?: CodeComponentMeta<TextAreaProps>
 ) {
   const doRegisterComponent: typeof registerComponent = (...args) =>
     loader ? loader.registerComponent(...args) : registerComponent(...args);
   doRegisterComponent(TextArea, customInputTextAreaMeta ?? inputTextAreaMeta);
 }
 
-export const inputSearchMeta: ComponentMeta<SearchProps> = {
+export const inputSearchMeta: CodeComponentMeta<SearchProps> = {
   name: "AntdInputSearch",
   displayName: "Antd Input Search",
   props: sortProps<SearchProps>({
@@ -328,14 +328,14 @@ export const inputSearchMeta: ComponentMeta<SearchProps> = {
 
 export function registerInputSearch(
   loader?: Registerable,
-  customInputSearchMeta?: ComponentMeta<SearchProps>
+  customInputSearchMeta?: CodeComponentMeta<SearchProps>
 ) {
   const doRegisterComponent: typeof registerComponent = (...args) =>
     loader ? loader.registerComponent(...args) : registerComponent(...args);
   doRegisterComponent(Search, customInputSearchMeta ?? inputSearchMeta);
 }
 
-export const inputPasswordMeta: ComponentMeta<PasswordProps> = {
+export const inputPasswordMeta: CodeComponentMeta<PasswordProps> = {
   name: "AntdInputPassword",
   displayName: "Antd Input Password",
   props: sortProps<PasswordProps>({
@@ -427,14 +427,14 @@ export const inputPasswordMeta: ComponentMeta<PasswordProps> = {
 
 export function registerInputPassword(
   loader?: Registerable,
-  customInputPasswordMeta?: ComponentMeta<PasswordProps>
+  customInputPasswordMeta?: CodeComponentMeta<PasswordProps>
 ) {
   const doRegisterComponent: typeof registerComponent = (...args) =>
     loader ? loader.registerComponent(...args) : registerComponent(...args);
   doRegisterComponent(Password, customInputPasswordMeta ?? inputPasswordMeta);
 }
 
-export const inputGroupMeta: ComponentMeta<GroupProps> = {
+export const inputGroupMeta: CodeComponentMeta<GroupProps> = {
   name: "AntdInputGroup",
   displayName: "Antd Input Group",
   props: {
@@ -471,7 +471,7 @@ export const inputGroupMeta: ComponentMeta<GroupProps> = {
 
 export function registerInputGroup(
   loader?: Registerable,
-  customInputGroupMeta?: ComponentMeta<GroupProps>
+  customInputGroupMeta?: CodeComponentMeta<GroupProps>
 ) {
   const doRegisterComponent: typeof registerComponent = (...args) =>
     loader ? loader.registerComponent(...args) : registerComponent(...args);

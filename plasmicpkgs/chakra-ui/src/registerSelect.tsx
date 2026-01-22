@@ -1,12 +1,12 @@
 import { SelectProps } from "@chakra-ui/react";
-import { ComponentMeta } from "@plasmicapp/host/registerComponent";
+import { type CodeComponentMeta } from "@plasmicapp/host/registerComponent";
 import React from "react";
 import {
   getComponentNameAndImportMeta,
   getPlasmicComponentName,
 } from "./utils";
 
-export const selectMeta: ComponentMeta<SelectProps> = {
+export const selectMeta: CodeComponentMeta<SelectProps> = {
   ...getComponentNameAndImportMeta("Select"),
   props: {
     size: {
@@ -91,7 +91,7 @@ export function Option(props: OptionProps) {
   );
 }
 
-export const optionMeta: ComponentMeta<OptionProps> = {
+export const optionMeta: CodeComponentMeta<OptionProps> = {
   ...getComponentNameAndImportMeta("Option", "Select", {
     importPath: "@plasmicpkgs/plasmic-chakra-ui",
   }),

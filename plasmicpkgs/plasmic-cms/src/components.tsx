@@ -1,7 +1,7 @@
 import { repeatedElement, usePlasmicCanvasContext } from "@plasmicapp/host";
 import {
   CanvasComponentProps,
-  ComponentMeta,
+  CodeComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import { GlobalContextMeta } from "@plasmicapp/host/registerGlobalContext";
 import { usePlasmicQueryData } from "@plasmicapp/query";
@@ -196,7 +196,7 @@ interface CmsQueryRepeaterProps
   mode?: "rows" | "count";
 }
 
-export const cmsQueryRepeaterMeta: ComponentMeta<CmsQueryRepeaterProps> = {
+export const cmsQueryRepeaterMeta: CodeComponentMeta<CmsQueryRepeaterProps> = {
   name: `${componentPrefix}-query-repeater`,
   displayName: "CMS Data Fetcher",
   description:
@@ -506,7 +506,7 @@ interface CmsRowFieldProps extends CanvasComponentProps<RowContextData> {
   themeResetClassName?: string;
 }
 
-export const cmsRowFieldMeta: ComponentMeta<CmsRowFieldProps> = {
+export const cmsRowFieldMeta: CodeComponentMeta<CmsRowFieldProps> = {
   name: `${componentPrefix}-row-field`,
   displayName: "CMS Entry Field",
   importName: "CmsRowField",
@@ -706,7 +706,7 @@ interface CmsCountProps extends CanvasComponentProps<RowContextData> {
   className?: string;
 }
 
-export const cmsCountFieldMeta: ComponentMeta<CmsCountProps> = {
+export const cmsCountFieldMeta: CodeComponentMeta<CmsCountProps> = {
   name: `${componentPrefix}-count`,
   displayName: "CMS Entries Count",
   importName: "CmsCount",
@@ -834,7 +834,7 @@ interface CmsRowLinkProps extends CanvasComponentProps<RowContextData> {
   suffix?: string;
 }
 
-export const cmsRowLinkMeta: ComponentMeta<CmsRowLinkProps> = {
+export const cmsRowLinkMeta: CodeComponentMeta<CmsRowLinkProps> = {
   name: `${componentPrefix}-row-link`,
   displayName: "CMS Entry Link",
   importName: "CmsRowLink",
@@ -955,7 +955,7 @@ interface CmsRowImageProps extends CanvasComponentProps<RowContextData> {
   children: React.ReactNode;
 }
 
-export const cmsRowImageMeta: ComponentMeta<CmsRowImageProps> = {
+export const cmsRowImageMeta: CodeComponentMeta<CmsRowImageProps> = {
   name: `${componentPrefix}-row-image`,
   displayName: "CMS Entry Image",
   importName: "CmsRowImage",
@@ -1060,7 +1060,7 @@ interface CmsRowFieldValueProps extends CanvasComponentProps<RowContextData> {
   children: React.ReactNode;
 }
 
-export const cmsRowFieldValueMeta: ComponentMeta<CmsRowFieldValueProps> = {
+export const cmsRowFieldValueMeta: CodeComponentMeta<CmsRowFieldValueProps> = {
   name: `${componentPrefix}-row-value`,
   displayName: "CMS Entry Value",
   importName: "CmsRowFieldValue",

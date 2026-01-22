@@ -1,6 +1,6 @@
 import {
-  CloseButtonProps,
   Modal as ChakraUIModal,
+  CloseButtonProps,
   ModalBodyProps,
   ModalContentProps,
   ModalFooterProps,
@@ -8,14 +8,14 @@ import {
   ModalOverlayProps,
   ModalProps,
 } from "@chakra-ui/react";
-import { ComponentMeta } from "@plasmicapp/host/registerComponent";
+import { type CodeComponentMeta } from "@plasmicapp/host/registerComponent";
 import React from "react";
 import {
   getComponentNameAndImportMeta,
   getPlasmicComponentName,
 } from "./utils";
 
-export const modalMeta: ComponentMeta<ModalProps> = {
+export const modalMeta: CodeComponentMeta<ModalProps> = {
   ...getComponentNameAndImportMeta("Modal"),
   props: {
     isOpen: {
@@ -68,14 +68,14 @@ export function Modal(props: ModalProps) {
     </ChakraUIModal>
   );
 }
-export const modalOverlayMeta: ComponentMeta<ModalOverlayProps> = {
+export const modalOverlayMeta: CodeComponentMeta<ModalOverlayProps> = {
   ...getComponentNameAndImportMeta("ModalOverlay", "Modal"),
   props: {
     children: "slot",
   },
 };
 
-export const modalContentMeta: ComponentMeta<ModalContentProps> = {
+export const modalContentMeta: CodeComponentMeta<ModalContentProps> = {
   ...getComponentNameAndImportMeta("ModalContent", "Modal"),
   props: {
     children: {
@@ -104,7 +104,7 @@ export const modalContentMeta: ComponentMeta<ModalContentProps> = {
   },
 };
 
-export const modalHeaderMeta: ComponentMeta<ModalHeaderProps> = {
+export const modalHeaderMeta: CodeComponentMeta<ModalHeaderProps> = {
   ...getComponentNameAndImportMeta("ModalHeader", "ModalContent"),
   props: {
     children: {
@@ -127,7 +127,7 @@ const LOREM_IPSUM_TEXT = `
   software like Aldus PageMaker including versions of Lorem Ipsum.
 `;
 
-export const modalBodyMeta: ComponentMeta<ModalBodyProps> = {
+export const modalBodyMeta: CodeComponentMeta<ModalBodyProps> = {
   ...getComponentNameAndImportMeta("ModalBody", "ModalContent"),
   props: {
     children: {
@@ -140,7 +140,7 @@ export const modalBodyMeta: ComponentMeta<ModalBodyProps> = {
   },
 };
 
-export const modalFooterMeta: ComponentMeta<ModalFooterProps> = {
+export const modalFooterMeta: CodeComponentMeta<ModalFooterProps> = {
   ...getComponentNameAndImportMeta("ModalFooter", "ModalContent"),
   props: {
     children: {
@@ -153,7 +153,7 @@ export const modalFooterMeta: ComponentMeta<ModalFooterProps> = {
   },
 };
 
-export const modalCloseButtonMeta: ComponentMeta<CloseButtonProps> = {
+export const modalCloseButtonMeta: CodeComponentMeta<CloseButtonProps> = {
   ...getComponentNameAndImportMeta("ModalCloseButton", "ModalContent"),
   props: {
     isDisabled: "boolean",

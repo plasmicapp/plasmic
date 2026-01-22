@@ -1,5 +1,5 @@
 import registerComponent, {
-  ComponentMeta,
+  CodeComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import React from "react";
 import { useProduct } from "./contexts";
@@ -10,7 +10,7 @@ interface ProductTextFieldProps {
   field: string;
 }
 
-export const productTextFieldMeta: ComponentMeta<ProductTextFieldProps> = {
+export const productTextFieldMeta: CodeComponentMeta<ProductTextFieldProps> = {
   name: "plasmic-commerce-product-text-field",
   displayName: "Product Text Field",
   props: {
@@ -53,7 +53,7 @@ export function ProductTextField(props: ProductTextFieldProps) {
 
 export function registerTextField(
   loader?: Registerable,
-  customProductTextFieldMeta?: ComponentMeta<ProductTextFieldProps>
+  customProductTextFieldMeta?: CodeComponentMeta<ProductTextFieldProps>
 ) {
   const doRegisterComponent: typeof registerComponent = (...args) =>
     loader ? loader.registerComponent(...args) : registerComponent(...args);

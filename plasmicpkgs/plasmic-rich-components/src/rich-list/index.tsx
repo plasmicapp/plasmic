@@ -1,4 +1,4 @@
-import { ComponentMeta } from "@plasmicapp/host/registerComponent";
+import { type CodeComponentMeta } from "@plasmicapp/host/registerComponent";
 import {
   commonProps,
   dataProp,
@@ -11,7 +11,7 @@ import { RichList, RichListProps } from "./RichList";
 
 export * from "./RichList";
 export default RichList;
-const richListMeta: ComponentMeta<RichListProps> = {
+const richListMeta: CodeComponentMeta<RichListProps> = {
   name: "hostless-rich-list",
   displayName: "Data List",
   defaultStyles: {

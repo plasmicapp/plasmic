@@ -27,7 +27,7 @@ import {
   isBoolType,
   isNumType,
 } from "@/wab/shared/model/model-util";
-import { CodeComponentMeta } from "@plasmicapp/host";
+import type { CodeComponentMeta } from "@plasmicapp/host/registerComponent";
 import { notification } from "antd";
 import { isArray, isBoolean, isNumber, isObject, isString, omit } from "lodash";
 

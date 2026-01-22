@@ -1,10 +1,10 @@
 import {
-  ComponentMeta,
+  CodeComponentMeta,
   default as registerComponent,
 } from "@plasmicapp/host/registerComponent";
 import {
-  default as registerGlobalContext,
   GlobalContextMeta,
+  default as registerGlobalContext,
 } from "@plasmicapp/host/registerGlobalContext";
 import { default as registerToken } from "@plasmicapp/host/registerToken";
 import React from "react";
@@ -17,7 +17,7 @@ export type Registerable = {
 
 export function makeRegisterComponent<T extends React.ComponentType<any>>(
   component: T,
-  meta: ComponentMeta<React.ComponentProps<T>>
+  meta: CodeComponentMeta<React.ComponentProps<T>>
 ) {
   return function (loader?: Registerable) {
     registerComponentHelper(loader, component, meta);
@@ -40,7 +40,7 @@ export function makeRegisterGlobalContext<T extends React.ComponentType<any>>(
 export function registerComponentHelper<T extends React.ComponentType<any>>(
   loader: Registerable | undefined,
   component: T,
-  meta: ComponentMeta<React.ComponentProps<T>>
+  meta: CodeComponentMeta<React.ComponentProps<T>>
 ) {
   if (loader) {
     loader.registerComponent(component, meta);
@@ -258,7 +258,9 @@ export function set(
   let i;
   for (i = 0; i < keys.length - 1; i++) {
     const key = keys[i];
-    if (isUnsafeKey(key)) return;
+    if (isUnsafeKey(key)) {
+      return;
+    }
     if (!Object.hasOwn(obj, key)) {
       if (!isNaN(Number(keys[i + 1]))) {
         obj[key] = [];

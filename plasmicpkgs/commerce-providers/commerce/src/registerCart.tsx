@@ -1,5 +1,5 @@
 import registerComponent, {
-  ComponentMeta,
+  CodeComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import React from "react";
 import useCart from "./cart/use-cart";
@@ -12,7 +12,7 @@ interface CartProps {
   hideIfIsEmpty?: boolean;
 }
 
-export const cartMeta: ComponentMeta<CartProps> = {
+export const cartMeta: CodeComponentMeta<CartProps> = {
   name: "plasmic-commerce-cart",
   displayName: "Cart",
   description:
@@ -58,7 +58,7 @@ export function CartComponent(props: CartProps) {
 
 export function registerCart(
   loader?: Registerable,
-  customCartMeta?: ComponentMeta<CartProps>
+  customCartMeta?: CodeComponentMeta<CartProps>
 ) {
   const doRegisterComponent: typeof registerComponent = (...args) =>
     loader ? loader.registerComponent(...args) : registerComponent(...args);

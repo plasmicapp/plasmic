@@ -1,6 +1,6 @@
 import { DataProvider, useDataEnv } from "@plasmicapp/host";
 import registerComponent, {
-  ComponentMeta,
+  CodeComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import * as plasmicQuery from "@plasmicapp/query";
 import React, { Suspense, useState } from "react";
@@ -70,7 +70,7 @@ export function LoadingBoundary({
   );
 }
 
-export const loadingBoundaryMeta: ComponentMeta<LoadingBoundaryProps> = {
+export const loadingBoundaryMeta: CodeComponentMeta<LoadingBoundaryProps> = {
   name: "hostless-loading-boundary",
   displayName: "Loading Boundary",
   importName: "LoadingBoundary",
@@ -100,7 +100,7 @@ export const loadingBoundaryMeta: ComponentMeta<LoadingBoundaryProps> = {
 
 export function registerLoadingBoundary(
   loader?: { registerComponent: typeof registerComponent },
-  customLoadingBoundaryMeta?: ComponentMeta<LoadingBoundaryProps>
+  customLoadingBoundaryMeta?: CodeComponentMeta<LoadingBoundaryProps>
 ) {
   if (loader) {
     loader.registerComponent(

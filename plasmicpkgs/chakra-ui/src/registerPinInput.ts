@@ -1,11 +1,11 @@
 import { PinInputFieldProps, PinInputProps } from "@chakra-ui/react";
-import { ComponentMeta } from "@plasmicapp/host/registerComponent";
+import { type CodeComponentMeta } from "@plasmicapp/host/registerComponent";
 import {
   getComponentNameAndImportMeta,
   getPlasmicComponentName,
 } from "./utils";
 
-export const pinInputMeta: ComponentMeta<PinInputProps> = {
+export const pinInputMeta: CodeComponentMeta<PinInputProps> = {
   ...getComponentNameAndImportMeta("PinInput"),
   props: {
     size: {
@@ -79,7 +79,7 @@ export const pinInputMeta: ComponentMeta<PinInputProps> = {
   },
 };
 
-export const pinInputFieldMeta: ComponentMeta<PinInputFieldProps> = {
+export const pinInputFieldMeta: CodeComponentMeta<PinInputFieldProps> = {
   ...getComponentNameAndImportMeta("PinInputField", "PinInput"),
   props: {},
 };

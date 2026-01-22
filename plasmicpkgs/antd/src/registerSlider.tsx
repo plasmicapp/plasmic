@@ -1,5 +1,5 @@
 import registerComponent, {
-  ComponentMeta,
+  CodeComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import { Slider as AntdSlider } from "antd";
 import type { SliderRangeProps, SliderSingleProps } from "antd/es/slider";
@@ -38,7 +38,7 @@ export const Slider = React.forwardRef<unknown, SliderProps>(function Slider(
   return <AntdSlider {...newProps} ref={ref} />;
 });
 
-export const sliderMeta: ComponentMeta<SliderProps> = {
+export const sliderMeta: CodeComponentMeta<SliderProps> = {
   name: "AntdSlider",
   displayName: "Antd Slider",
   props: {
@@ -138,7 +138,7 @@ export const sliderMeta: ComponentMeta<SliderProps> = {
 
 export function registerSlider(
   loader?: Registerable,
-  customSliderMeta?: ComponentMeta<SliderProps>
+  customSliderMeta?: CodeComponentMeta<SliderProps>
 ) {
   const doRegisterComponent: typeof registerComponent = (...args) =>
     loader ? loader.registerComponent(...args) : registerComponent(...args);

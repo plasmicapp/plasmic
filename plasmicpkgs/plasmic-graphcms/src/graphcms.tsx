@@ -1,10 +1,10 @@
 import {
-  ComponentMeta,
   DataProvider,
   GlobalContextMeta,
   repeatedElement,
   useSelector,
 } from "@plasmicapp/host";
+import { CodeComponentMeta } from "@plasmicapp/host/registerComponent";
 import { usePlasmicQueryData } from "@plasmicapp/query";
 import get from "dlv";
 import React, { ReactNode, useContext } from "react";
@@ -79,7 +79,7 @@ interface GraphCMSFetcherProps {
   }) => void;
 }
 
-export const GraphCMSFetcherMeta: ComponentMeta<GraphCMSFetcherProps> = {
+export const GraphCMSFetcherMeta: CodeComponentMeta<GraphCMSFetcherProps> = {
   name: "GraphCMSFetcher",
   displayName: "Hygraph Fetcher",
   importName: "GraphCMSFetcher",
@@ -182,13 +182,13 @@ export function GraphCMSFetcher({
         };
       }
 
-      const data = await fetch(creds.apiUrl, {
+      const res = await fetch(creds.apiUrl, {
         method: "POST",
         headers,
         body: JSON.stringify(query),
       });
 
-      return await data.json();
+      return await res.json();
     }
   );
 
@@ -245,7 +245,7 @@ interface GraphCMSFieldProps {
   setControlContextData?: (data: { data: any }) => void;
   themeClassName?: string;
 }
-export const GraphCMSFieldMeta: ComponentMeta<GraphCMSFieldProps> = {
+export const GraphCMSFieldMeta: CodeComponentMeta<GraphCMSFieldProps> = {
   name: "GraphCMSField",
   displayName: "Hygraph Field",
   importName: "GraphCMSField",

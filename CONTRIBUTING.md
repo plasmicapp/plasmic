@@ -239,7 +239,7 @@ The package must work for both codegen and loader users. This means that the reg
 ```typescript
 export function registerFooBar(
   loader?: { registerComponent: typeof registerComponent },
-  customFooBarMeta?: ComponentMeta<FooBarProps>
+  customFooBarMeta?: CodeComponentMeta<FooBarProps>
 ) {
   if (loader) {
     loader.registerComponent(FooBar, customFooBarMeta ?? FooBarMeta);

@@ -1,16 +1,17 @@
 import {
-  applySelector as _applySelector,
-  ComponentMeta,
-  DataProvider as _DataProvider,
   DataProviderProps,
-  repeatedElement,
   SelectorDict,
+  DataProvider as _DataProvider,
+  applySelector as _applySelector,
   useDataEnv as _useDataEnv,
   useSelector as _useSelector,
   useSelectors as _useSelectors,
+  repeatedElement,
 } from "@plasmicapp/host";
-import registerComponent from "@plasmicapp/host/registerComponent";
-import React, { ComponentProps, createElement, ReactNode } from "react";
+import registerComponent, {
+  CodeComponentMeta,
+} from "@plasmicapp/host/registerComponent";
+import React, { ComponentProps, ReactNode, createElement } from "react";
 
 const thisModule = "@plasmicpkgs/plasmic-basic-components";
 
@@ -174,7 +175,7 @@ export const dynamicRepeaterProps = {
   },
 } as const;
 
-export const dynamicRepeaterMeta: ComponentMeta<DynamicRepeaterProps> = {
+export const dynamicRepeaterMeta: CodeComponentMeta<DynamicRepeaterProps> = {
   name: "hostless-dynamic-repeater",
   displayName: "Dynamic Repeater",
   importName: "DynamicRepeater",
@@ -184,7 +185,7 @@ export const dynamicRepeaterMeta: ComponentMeta<DynamicRepeaterProps> = {
 
 export function registerDynamicRepeater(
   loader?: { registerComponent: typeof registerComponent },
-  customDynamicRepeaterMeta?: ComponentMeta<DynamicRepeaterProps>
+  customDynamicRepeaterMeta?: CodeComponentMeta<DynamicRepeaterProps>
 ) {
   if (loader) {
     loader.registerComponent(
@@ -199,7 +200,7 @@ export function registerDynamicRepeater(
   }
 }
 
-export const dataProviderMeta: ComponentMeta<DataProviderProps> = {
+export const dataProviderMeta: CodeComponentMeta<DataProviderProps> = {
   name: "hostless-data-provider",
   displayName: "Data Provider",
   importName: "DataProvider",
@@ -235,7 +236,7 @@ export const dataProviderMeta: ComponentMeta<DataProviderProps> = {
 
 export function registerDataProvider(
   loader?: { registerComponent: typeof registerComponent },
-  customDataProviderMeta?: ComponentMeta<DataProviderProps>
+  customDataProviderMeta?: CodeComponentMeta<DataProviderProps>
 ) {
   if (loader) {
     loader.registerComponent(
@@ -270,7 +271,7 @@ const dynamicProps = {
 
 // TODO Eventually we'll want to expose all the base HTML properties, but in the nicer way that we do within the studio.
 
-export const dynamicElementMeta: ComponentMeta<CommonDynamicProps> = {
+export const dynamicElementMeta: CodeComponentMeta<CommonDynamicProps> = {
   name: "hostless-dynamic-element",
   displayName: "Dynamic Element",
   importName: "DynamicElement",
@@ -280,7 +281,7 @@ export const dynamicElementMeta: ComponentMeta<CommonDynamicProps> = {
 
 export function registerDynamicElement(
   loader?: { registerComponent: typeof registerComponent },
-  customDynamicElementMeta?: ComponentMeta<CommonDynamicProps>
+  customDynamicElementMeta?: CodeComponentMeta<CommonDynamicProps>
 ) {
   if (loader) {
     loader.registerComponent(
@@ -295,7 +296,7 @@ export function registerDynamicElement(
   }
 }
 
-export const dynamicTextMeta: ComponentMeta<DynamicTextProps> = {
+export const dynamicTextMeta: CodeComponentMeta<DynamicTextProps> = {
   name: "hostless-dynamic-text",
   importName: "DynamicText",
   displayName: "Dynamic Text",
@@ -312,7 +313,7 @@ export const dynamicTextMeta: ComponentMeta<DynamicTextProps> = {
 
 export function registerDynamicText(
   loader?: { registerComponent: typeof registerComponent },
-  customDynamicTextMeta?: ComponentMeta<DynamicTextProps>
+  customDynamicTextMeta?: CodeComponentMeta<DynamicTextProps>
 ) {
   if (loader) {
     loader.registerComponent(
@@ -324,7 +325,7 @@ export function registerDynamicText(
   }
 }
 
-export const dynamicImageMeta: ComponentMeta<DynamicImageProps> = {
+export const dynamicImageMeta: CodeComponentMeta<DynamicImageProps> = {
   name: "hostless-dynamic-image",
   displayName: "Dynamic Image",
   importName: "DynamicImage",
@@ -341,7 +342,7 @@ export const dynamicImageMeta: ComponentMeta<DynamicImageProps> = {
 
 export function registerDynamicImage(
   loader?: { registerComponent: typeof registerComponent },
-  customDynamicImageMeta?: ComponentMeta<DynamicImageProps>
+  customDynamicImageMeta?: CodeComponentMeta<DynamicImageProps>
 ) {
   if (loader) {
     loader.registerComponent(

@@ -1,16 +1,15 @@
 import registerComponent, {
-  ComponentMeta,
+  CodeComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import registerGlobalContext from "@plasmicapp/host/registerGlobalContext";
 import {
-    SanityCredentialsProvider,
-    sanityCredentialsProviderMeta,
-    SanityFetcher,
-    sanityFetcherMeta,
-    SanityField,
-    sanityFieldMeta,
+  SanityCredentialsProvider,
+  sanityCredentialsProviderMeta,
+  SanityFetcher,
+  sanityFetcherMeta,
+  SanityField,
+  sanityFieldMeta,
 } from "./sanity";
-
 
 export function registerAll(loader?: {
   registerComponent: typeof registerComponent;
@@ -18,7 +17,7 @@ export function registerAll(loader?: {
 }) {
   const _registerComponent = <T extends React.ComponentType<any>>(
     Component: T,
-    defaultMeta: ComponentMeta<React.ComponentProps<T>>
+    defaultMeta: CodeComponentMeta<React.ComponentProps<T>>
   ) => {
     if (loader) {
       loader.registerComponent(Component, defaultMeta);
@@ -28,9 +27,15 @@ export function registerAll(loader?: {
   };
 
   if (loader) {
-    loader.registerGlobalContext(SanityCredentialsProvider, sanityCredentialsProviderMeta);
+    loader.registerGlobalContext(
+      SanityCredentialsProvider,
+      sanityCredentialsProviderMeta
+    );
   } else {
-    registerGlobalContext(SanityCredentialsProvider, sanityCredentialsProviderMeta);
+    registerGlobalContext(
+      SanityCredentialsProvider,
+      sanityCredentialsProviderMeta
+    );
   }
 
   _registerComponent(SanityFetcher, sanityFetcherMeta);

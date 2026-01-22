@@ -1,4 +1,5 @@
-import { ComponentMeta, DataProvider, repeatedElement } from "@plasmicapp/host";
+import { DataProvider, repeatedElement } from "@plasmicapp/host";
+import { CodeComponentMeta } from "@plasmicapp/host/registerComponent";
 import { usePlasmicQueryData } from "@plasmicapp/query";
 import {
   _extractFilterableFields,
@@ -27,7 +28,7 @@ interface StrapiCollectionProps {
   setControlContextData?: (data: { strapiFields: string[] }) => void;
 }
 
-export const strapiCollectionMeta: ComponentMeta<StrapiCollectionProps> = {
+export const strapiCollectionMeta: CodeComponentMeta<StrapiCollectionProps> = {
   name: "StrapiCollection",
   displayName: "Strapi Collection",
   importName: "StrapiCollection",

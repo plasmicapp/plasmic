@@ -1,5 +1,5 @@
 import registerComponent, {
-  ComponentMeta,
+  CodeComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import React from "react";
 import { useProduct, useProductMediaContext } from "./contexts";
@@ -14,7 +14,7 @@ interface ProductMediaProps {
   setControlContextData: (data: { inMediaContext: boolean }) => void;
 }
 
-export const productMediaMeta: ComponentMeta<ProductMediaProps> = {
+export const productMediaMeta: CodeComponentMeta<ProductMediaProps> = {
   name: "plasmic-commerce-product-media",
   displayName: "Product Media",
   props: {
@@ -54,7 +54,7 @@ export const ProductMedia = React.forwardRef(
 
 export function registerProductMedia(
   loader?: Registerable,
-  customProductMediaMeta?: ComponentMeta<ProductMediaProps>
+  customProductMediaMeta?: CodeComponentMeta<ProductMediaProps>
 ) {
   const doRegisterComponent: typeof registerComponent = (...args) =>
     loader ? loader.registerComponent(...args) : registerComponent(...args);

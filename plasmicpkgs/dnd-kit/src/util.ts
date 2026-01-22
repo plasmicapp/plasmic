@@ -1,5 +1,5 @@
 import {
-  ComponentMeta,
+  CodeComponentMeta,
   default as registerComponent,
 } from "@plasmicapp/host/registerComponent";
 import { default as registerGlobalContext } from "@plasmicapp/host/registerGlobalContext";
@@ -15,7 +15,7 @@ export type Registerable = {
 export function registerComponentHelper<T extends React.ComponentType<any>>(
   loader: Registerable | undefined,
   component: T,
-  meta: ComponentMeta<React.ComponentProps<T>>
+  meta: CodeComponentMeta<React.ComponentProps<T>>
 ) {
   if (loader) {
     loader.registerComponent(component, meta);

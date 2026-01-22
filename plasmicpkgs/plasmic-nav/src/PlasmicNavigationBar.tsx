@@ -1,6 +1,7 @@
-import { ComponentMeta, PlasmicCanvasContext } from "@plasmicapp/host";
+import { PlasmicCanvasContext } from "@plasmicapp/host";
 import registerComponent, {
   CanvasComponentProps,
+  CodeComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import React from "react";
 
@@ -152,7 +153,7 @@ function minifyCss(input: string) {
     .replace(/\/\*[\s\S]*?\*\/|([^:]|^)\/\/.*$/g, ""); // Remove comments.
 }
 
-export const navigationBarComponentMeta: ComponentMeta<Props> = {
+export const navigationBarComponentMeta: CodeComponentMeta<Props> = {
   name: `hostless-plasmic-navigation-bar`,
   displayName: "Navigation Bar",
   importName: "NavigationBar",
@@ -237,7 +238,9 @@ export const navigationBarComponentMeta: ComponentMeta<Props> = {
 
 export function registerNavigationBar(
   loader?: { registerComponent: typeof registerComponent },
-  customMetaProps?: ComponentMeta<React.ComponentProps<typeof NavigationBar>>
+  customMetaProps?: CodeComponentMeta<
+    React.ComponentProps<typeof NavigationBar>
+  >
 ) {
   if (loader) {
     loader.registerComponent(

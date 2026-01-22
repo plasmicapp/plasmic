@@ -79,7 +79,7 @@ import {
 import { Registerable } from "./registerable";
 
 import registerComponent, {
-  ComponentMeta,
+  CodeComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import {
   accordionButtonMeta,
@@ -207,7 +207,7 @@ export * from "./registerTooltip";
 export function registerAll(loader?: Registerable) {
   const _registerComponent = <T extends React.ComponentType<any>>(
     Component: T,
-    defaultMeta: ComponentMeta<React.ComponentProps<T>>
+    defaultMeta: CodeComponentMeta<React.ComponentProps<T>>
   ) => {
     if (loader) {
       loader.registerComponent(Component, defaultMeta);

@@ -1,5 +1,5 @@
 import {
-  ComponentMeta,
+  CodeComponentMeta,
   JSONLikeType,
 } from "@plasmicapp/host/registerComponent";
 import { capitalize } from "../common";
@@ -42,7 +42,7 @@ function generateNavMenuType(
   } as const;
 }
 
-const richLayoutMeta: ComponentMeta<RichLayoutProps> = {
+const richLayoutMeta: CodeComponentMeta<RichLayoutProps> = {
   name: "hostless-rich-layout",
   displayName: "Rich App Layout",
   props: {

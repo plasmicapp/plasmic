@@ -1,8 +1,8 @@
 import { BadgeProps } from "@chakra-ui/react";
-import { ComponentMeta } from "@plasmicapp/host/registerComponent";
+import { type CodeComponentMeta } from "@plasmicapp/host/registerComponent";
 import { getComponentNameAndImportMeta } from "./utils";
 
-export const badgeMeta: ComponentMeta<BadgeProps> = {
+export const badgeMeta: CodeComponentMeta<BadgeProps> = {
   ...getComponentNameAndImportMeta("Badge"),
   importPath: "@chakra-ui/react",
   props: {

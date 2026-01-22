@@ -3,13 +3,13 @@ import {
   AvatarGroupProps,
   AvatarProps,
 } from "@chakra-ui/react";
-import { ComponentMeta } from "@plasmicapp/host/registerComponent";
+import { type CodeComponentMeta } from "@plasmicapp/host/registerComponent";
 import {
   getComponentNameAndImportMeta,
   getPlasmicComponentName,
 } from "./utils";
 
-export const avatarBadgeMeta: ComponentMeta<AvatarBadgeProps> = {
+export const avatarBadgeMeta: CodeComponentMeta<AvatarBadgeProps> = {
   ...getComponentNameAndImportMeta("AvatarBadge", "Avatar"),
   props: {
     boxSize: {
@@ -24,7 +24,7 @@ export const avatarBadgeMeta: ComponentMeta<AvatarBadgeProps> = {
   },
 };
 
-export const avatarMeta: ComponentMeta<AvatarProps> = {
+export const avatarMeta: CodeComponentMeta<AvatarProps> = {
   ...getComponentNameAndImportMeta("Avatar", "AvatarGroup"),
   props: {
     name: {
@@ -56,7 +56,7 @@ export const avatarMeta: ComponentMeta<AvatarProps> = {
   },
 };
 
-export const avatarGroupMeta: ComponentMeta<AvatarGroupProps> = {
+export const avatarGroupMeta: CodeComponentMeta<AvatarGroupProps> = {
   ...getComponentNameAndImportMeta("AvatarGroup"),
   props: {
     size: {

@@ -4,8 +4,8 @@
 
 ```ts
 
-import { ComponentMeta } from '@plasmicapp/host';
-import { GlobalContextMeta } from '@plasmicapp/host';
+import { CodeComponentMeta } from '@plasmicapp/host/registerComponent';
+import { GlobalContextMeta } from '@plasmicapp/host/registerGlobalContext';
 import { default as React_2 } from 'react';
 import { ReactNode } from 'react';
 import registerComponent from '@plasmicapp/host/registerComponent';
@@ -21,13 +21,13 @@ export function registerAll(loader?: {
 export function WordpressFetcher({ queryOperator, filterValue, noAutoRepeat, limit, queryType, children, className, noLayout, }: WordpressFetcherProps): React_2.JSX.Element;
 
 // @public (undocumented)
-export const WordpressFetcherMeta: ComponentMeta<WordpressFetcherProps>;
+export const WordpressFetcherMeta: CodeComponentMeta<WordpressFetcherProps>;
 
 // @public (undocumented)
 export function WordpressField({ className, field }: WordpressFieldProps): React_2.JSX.Element;
 
 // @public (undocumented)
-export const WordpressFieldMeta: ComponentMeta<WordpressFieldProps>;
+export const WordpressFieldMeta: CodeComponentMeta<WordpressFieldProps>;
 
 // @public (undocumented)
 export function WordpressProvider({ wordpressUrl, children, }: React_2.PropsWithChildren<WordpressProviderProps>): React_2.JSX.Element;

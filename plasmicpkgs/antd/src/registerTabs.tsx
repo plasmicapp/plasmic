@@ -1,16 +1,16 @@
 import registerComponent, {
   ActionProps,
-  ComponentMeta,
+  CodeComponentMeta,
 } from "@plasmicapp/host/registerComponent";
-import { Button, Tabs as AntdTabs } from "antd";
-import type { TabPaneProps, TabsProps as AntdTabsProps } from "antd/es/tabs";
+import { Tabs as AntdTabs, Button } from "antd";
+import type { TabsProps as AntdTabsProps, TabPaneProps } from "antd/es/tabs";
 import React from "react";
 import { traverseReactEltTree } from "./customControls";
 import { Registerable } from "./registerable";
 
 export const TabPane = AntdTabs.TabPane;
 
-export const tabPaneMeta: ComponentMeta<TabPaneProps> = {
+export const tabPaneMeta: CodeComponentMeta<TabPaneProps> = {
   name: "AntdTabPane",
   displayName: "Antd Tab Pane",
   props: {
@@ -66,7 +66,7 @@ export const tabPaneMeta: ComponentMeta<TabPaneProps> = {
 
 export function registerTabPane(
   loader?: Registerable,
-  customTabPaneMeta?: ComponentMeta<TabPaneProps>
+  customTabPaneMeta?: CodeComponentMeta<TabPaneProps>
 ) {
   const doRegisterComponent: typeof registerComponent = (...args) =>
     loader ? loader.registerComponent(...args) : registerComponent(...args);
@@ -158,7 +158,7 @@ function getActiveKeyOptions(props: TabsProps) {
   return Array.from(options.keys());
 }
 
-export const tabsMeta: ComponentMeta<TabsProps> = {
+export const tabsMeta: CodeComponentMeta<TabsProps> = {
   name: "AntdTabs",
   displayName: "Antd Tabs",
   props: {
@@ -378,7 +378,7 @@ export const tabsMeta: ComponentMeta<TabsProps> = {
 
 export function registerTabs(
   loader?: Registerable,
-  customTabsMeta?: ComponentMeta<TabsProps>
+  customTabsMeta?: CodeComponentMeta<TabsProps>
 ) {
   const doRegisterComponent: typeof registerComponent = (...args) =>
     loader ? loader.registerComponent(...args) : registerComponent(...args);

@@ -1,5 +1,5 @@
 import registerComponent, {
-  ComponentMeta,
+  CodeComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import React from "react";
 import { Controller, useFormContext } from "react-hook-form";
@@ -10,7 +10,7 @@ interface ProductQuantityProps {
   children?: React.ReactNode;
 }
 
-export const productQuantityMeta: ComponentMeta<ProductQuantityProps> = {
+export const productQuantityMeta: CodeComponentMeta<ProductQuantityProps> = {
   name: "plasmic-commerce-product-quantity",
   displayName: "Product Quantity",
   props: {
@@ -59,7 +59,7 @@ export function ProductQuantity(props: ProductQuantityProps) {
 
 export function registerProductQuantity(
   loader?: Registerable,
-  customProductQuantityMeta?: ComponentMeta<ProductQuantityProps>
+  customProductQuantityMeta?: CodeComponentMeta<ProductQuantityProps>
 ) {
   const doRegisterComponent: typeof registerComponent = (...args) =>
     loader ? loader.registerComponent(...args) : registerComponent(...args);

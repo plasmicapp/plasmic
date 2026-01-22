@@ -1,5 +1,5 @@
 import registerComponent, {
-  ComponentMeta,
+  CodeComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import React from "react";
 import { useCategoryContext } from "./contexts";
@@ -11,7 +11,7 @@ interface CategoryLinkProps {
   linkDest?: string;
 }
 
-export const categoryLinkMeta: ComponentMeta<CategoryLinkProps> = {
+export const categoryLinkMeta: CodeComponentMeta<CategoryLinkProps> = {
   name: "plasmic-commerce-category-link",
   displayName: "Category Link",
   props: {
@@ -32,14 +32,14 @@ export function CategoryLink(props: CategoryLinkProps) {
 
   const category = useCategoryContext();
 
-  const resolveLink = (linkDest: string | undefined) => {
-    if (!linkDest) {
+  const resolveLink = (link: string | undefined) => {
+    if (!link) {
       return undefined;
     }
     const regex = /{[^}]*}/;
     const regexAll = new RegExp(regex, "g");
-    const matches = linkDest.match(regexAll) ?? [];
-    let resolvedLink = linkDest;
+    const matches = link.match(regexAll) ?? [];
+    let resolvedLink = link;
     for (const match of matches) {
       const field = match.slice(1, -1);
       if (!category || !(field in category)) {
@@ -66,7 +66,7 @@ export function CategoryLink(props: CategoryLinkProps) {
 
 export function registerCategoryLink(
   loader?: Registerable,
-  customCategoryLinkMeta?: ComponentMeta<CategoryLinkProps>
+  customCategoryLinkMeta?: CodeComponentMeta<CategoryLinkProps>
 ) {
   const doRegisterComponent: typeof registerComponent = (...args) =>
     loader ? loader.registerComponent(...args) : registerComponent(...args);

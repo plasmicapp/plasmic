@@ -35,11 +35,9 @@ import {
   Site,
   ensureKnownPropParam,
 } from "@/wab/shared/model/classes";
-import {
-  ComponentMeta,
-  ComponentRegistration,
-  GlobalContextMeta,
-} from "@plasmicapp/host";
+import { ComponentRegistration } from "@plasmicapp/host";
+import { type CodeComponentMeta } from "@plasmicapp/host/registerComponent";
+import { type GlobalContextMeta } from "@plasmicapp/host/registerGlobalContext";
 import path from "path";
 import React from "react";
 import { failable, failableAsync } from "ts-failable";
@@ -184,7 +182,7 @@ export async function createSiteForHostlessProject(
     // create code components
     const componentToMeta = new Map<
       CodeComponent,
-      ComponentMeta<any> | GlobalContextMeta<any>
+      CodeComponentMeta<any> | GlobalContextMeta<any>
     >();
 
     [...registeredComponents, ...registeredContexts].forEach(({ meta }) => {

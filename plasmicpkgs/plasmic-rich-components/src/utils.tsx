@@ -1,10 +1,10 @@
 import {
-  ComponentMeta,
+  CodeComponentMeta,
   default as registerComponent,
 } from "@plasmicapp/host/registerComponent";
 import {
-  default as registerGlobalContext,
   GlobalContextMeta,
+  default as registerGlobalContext,
 } from "@plasmicapp/host/registerGlobalContext";
 import { default as registerToken } from "@plasmicapp/host/registerToken";
 import { parseDate } from "@plasmicpkgs/luxon-parser";
@@ -20,7 +20,7 @@ export type Registerable = {
 
 export function makeRegisterComponent<T extends React.ComponentType<any>>(
   component: T,
-  meta: ComponentMeta<React.ComponentProps<T>>
+  meta: CodeComponentMeta<React.ComponentProps<T>>
 ) {
   return function (loader?: Registerable) {
     registerComponentHelper(loader, component, meta);
@@ -43,7 +43,7 @@ export function makeRegisterGlobalContext<T extends React.ComponentType<any>>(
 export function registerComponentHelper<T extends React.ComponentType<any>>(
   loader: Registerable | undefined,
   component: T,
-  meta: ComponentMeta<React.ComponentProps<T>>
+  meta: CodeComponentMeta<React.ComponentProps<T>>
 ) {
   if (loader) {
     loader.registerComponent(component, meta);
@@ -111,7 +111,9 @@ export function maybe<T, U>(
   x: T | undefined | null,
   f: (y: T) => U
 ): U | undefined {
-  if (x === undefined || x === null) return undefined;
+  if (x === undefined || x === null) {
+    return undefined;
+  }
   return f(x);
 }
 
@@ -122,16 +124,28 @@ export function maybe<T, U>(
  * @returns Returns true for strings in ISO 8601 format
  */
 export function isValidIsoDate(str: string | undefined, extendedOnly = false) {
-  if (!str) return false;
-  if (typeof str !== "string") return false;
-  if (str.includes(" ")) return false; // spaces not supported
+  if (!str) {
+    return false;
+  }
+  if (typeof str !== "string") {
+    return false;
+  }
+  if (str.includes(" ")) {
+    return false;
+  } // spaces not supported
   if (str.length === 10) {
-    if (extendedOnly) return false;
+    if (extendedOnly) {
+      return false;
+    }
     dayjs.extend(customParseFormat);
     return dayjs(str, "YYYY-MM-DD", true).isValid();
   }
-  if (!dayjs(str).isValid()) return false; // should be a valid dayjs date
-  if (isNaN(new Date(str).getTime())) return false; // should be a valid js date
+  if (!dayjs(str).isValid()) {
+    return false;
+  } // should be a valid dayjs date
+  if (isNaN(new Date(str).getTime())) {
+    return false;
+  } // should be a valid js date
   return true;
 }
 
@@ -147,7 +161,9 @@ export function isLikeImage(value: unknown) {
 }
 
 export function isLikeColor(value: unknown) {
-  if (typeof value !== "string") return false;
+  if (typeof value !== "string") {
+    return false;
+  }
 
   const hex =
     /^#?([0-9a-fA-F]{3}([0-9a-fA-F]{3})?|[0-9a-fA-F]{4}([0-9a-fA-F]{4})?)$/;

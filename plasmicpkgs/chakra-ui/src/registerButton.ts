@@ -1,11 +1,11 @@
 import { ButtonGroupProps, ButtonProps } from "@chakra-ui/react";
-import { ComponentMeta } from "@plasmicapp/host/registerComponent";
+import { type CodeComponentMeta } from "@plasmicapp/host/registerComponent";
 import {
   getComponentNameAndImportMeta,
   getPlasmicComponentName,
 } from "./utils";
 
-export const buttonGroupMeta: ComponentMeta<ButtonGroupProps> = {
+export const buttonGroupMeta: CodeComponentMeta<ButtonGroupProps> = {
   ...getComponentNameAndImportMeta("ButtonGroup"),
   props: {
     colorScheme: {
@@ -76,7 +76,7 @@ export const buttonGroupMeta: ComponentMeta<ButtonGroupProps> = {
   },
 };
 
-export const buttonMeta: ComponentMeta<ButtonProps> = {
+export const buttonMeta: CodeComponentMeta<ButtonProps> = {
   ...getComponentNameAndImportMeta("Button", "ButtonGroup"),
   props: {
     size: {

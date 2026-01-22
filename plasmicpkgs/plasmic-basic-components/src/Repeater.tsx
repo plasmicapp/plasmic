@@ -1,9 +1,7 @@
-import {
-  ComponentMeta,
-  DataProvider,
-  registerComponent,
-  repeatedElement,
-} from "@plasmicapp/host";
+import { DataProvider, repeatedElement } from "@plasmicapp/host";
+import registerComponent, {
+  CodeComponentMeta,
+} from "@plasmicapp/host/registerComponent";
 import React from "react";
 
 const thisModule = "@plasmicpkgs/plasmic-basic-components";
@@ -42,7 +40,7 @@ export function Repeater<T>(props: RepeaterProps<T>) {
   );
 }
 
-export const repeaterMeta: ComponentMeta<RepeaterProps<any>> = {
+export const repeaterMeta: CodeComponentMeta<RepeaterProps<any>> = {
   name: `plasmic-repeater`,
   displayName: "Repeater",
   importName: "Repeater",
@@ -78,7 +76,7 @@ export const repeaterMeta: ComponentMeta<RepeaterProps<any>> = {
 
 export function registerRepeater(
   loader?: { registerComponent: typeof registerComponent },
-  customRepeaterMeta?: ComponentMeta<RepeaterProps<any>>
+  customRepeaterMeta?: CodeComponentMeta<RepeaterProps<any>>
 ) {
   if (loader) {
     loader.registerComponent(Repeater, customRepeaterMeta ?? repeaterMeta);

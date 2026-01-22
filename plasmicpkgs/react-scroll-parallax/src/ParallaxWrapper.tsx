@@ -1,6 +1,6 @@
 import { PlasmicCanvasContext } from "@plasmicapp/host";
 import registerComponent, {
-  ComponentMeta,
+  CodeComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import React, { useContext } from "react";
 import { Parallax, ParallaxContext } from "react-scroll-parallax";
@@ -46,7 +46,7 @@ export default function ParallaxWrapper({
  * break it and it wouldn't be clear that the user should also add a
  * `ParallaxProvider`).
  */
-export const deprecated_parallaxWrapperMeta: ComponentMeta<ParallaxWrapperProps> =
+export const deprecated_parallaxWrapperMeta: CodeComponentMeta<ParallaxWrapperProps> =
   {
     name: "hostless-scroll-parallax",
     displayName: "Scroll Parallax",
@@ -85,7 +85,7 @@ export const deprecated_parallaxWrapperMeta: ComponentMeta<ParallaxWrapperProps>
 
 export function deprecated_registerParallaxWrapper(
   loader?: { registerComponent: typeof registerComponent },
-  customParallaxWrapperMeta?: ComponentMeta<ParallaxWrapperProps>
+  customParallaxWrapperMeta?: CodeComponentMeta<ParallaxWrapperProps>
 ) {
   if (loader) {
     loader.registerComponent(
@@ -103,14 +103,14 @@ export function deprecated_registerParallaxWrapper(
 /**
  * The new registration is only setting `isAttachment: true`.
  */
-export const parallaxWrapperMeta: ComponentMeta<ParallaxWrapperProps> = {
+export const parallaxWrapperMeta: CodeComponentMeta<ParallaxWrapperProps> = {
   ...deprecated_parallaxWrapperMeta,
   isAttachment: true,
 };
 
 export function registerParallaxWrapper(
   loader?: { registerComponent: typeof registerComponent },
-  customParallaxWrapperMeta?: ComponentMeta<ParallaxWrapperProps>
+  customParallaxWrapperMeta?: CodeComponentMeta<ParallaxWrapperProps>
 ) {
   if (loader) {
     loader.registerComponent(

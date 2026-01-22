@@ -1,5 +1,5 @@
 import registerComponent, {
-  ComponentMeta,
+  CodeComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import React, { ComponentProps } from "react";
 import ReactParallaxTilt from "react-parallax-tilt";
@@ -18,7 +18,7 @@ export default function Tilt(props: TiltProps) {
   );
 }
 
-const parallaxTiltMeta: ComponentMeta<TiltProps> = {
+const parallaxTiltMeta: CodeComponentMeta<TiltProps> = {
   name: "hostless-parallax-tilt",
   displayName: "Tilt",
   importName: "Tilt",
@@ -186,7 +186,7 @@ const parallaxTiltMeta: ComponentMeta<TiltProps> = {
 
 export function registerTilt(
   loader?: { registerComponent: typeof registerComponent },
-  customTiltMeta?: ComponentMeta<TiltProps>
+  customTiltMeta?: CodeComponentMeta<TiltProps>
 ) {
   if (loader) {
     loader.registerComponent(Tilt, customTiltMeta ?? parallaxTiltMeta);

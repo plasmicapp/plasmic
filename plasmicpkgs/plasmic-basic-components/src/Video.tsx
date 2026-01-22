@@ -1,5 +1,5 @@
 import registerComponent, {
-  ComponentMeta,
+  CodeComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import React, { useImperativeHandle, useRef } from "react";
 
@@ -43,7 +43,7 @@ export const Video = React.forwardRef<VideoActions, VideoProps>(
   }
 );
 
-export const videoMeta: ComponentMeta<VideoProps> = {
+export const videoMeta: CodeComponentMeta<VideoProps> = {
   name: "hostless-html-video",
   importName: "Video",
   displayName: "HTML Video",
@@ -117,7 +117,7 @@ export const videoMeta: ComponentMeta<VideoProps> = {
 
 export function registerVideo(
   loader?: { registerComponent: typeof registerComponent },
-  customVideoMeta?: ComponentMeta<VideoProps>
+  customVideoMeta?: CodeComponentMeta<VideoProps>
 ) {
   if (loader) {
     loader.registerComponent(Video, customVideoMeta ?? videoMeta);

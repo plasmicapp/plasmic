@@ -1,8 +1,8 @@
 import { HighlightProps } from "@chakra-ui/react";
-import { ComponentMeta } from "@plasmicapp/host/registerComponent";
+import { type CodeComponentMeta } from "@plasmicapp/host/registerComponent";
 import { getComponentNameAndImportMeta } from "./utils";
 
-export const highlightMeta: ComponentMeta<HighlightProps> = {
+export const highlightMeta: CodeComponentMeta<HighlightProps> = {
   ...getComponentNameAndImportMeta("Highlight"),
   props: {
     children: {

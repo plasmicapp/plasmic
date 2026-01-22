@@ -1,6 +1,6 @@
 import { DataProvider, repeatedElement } from "@plasmicapp/host";
 import registerComponent, {
-  ComponentMeta,
+  CodeComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import React from "react";
 import {
@@ -38,127 +38,128 @@ interface ProductCollectionProps {
   }) => void;
 }
 
-export const productCollectionMeta: ComponentMeta<ProductCollectionProps> = {
-  name: "plasmic-commerce-product-collection",
-  displayName: "Product Collection",
-  description:
-    "Show a product category. [See commerce tutorial video](https://www.youtube.com/watch?v=1OJ_gXmta2Q)",
-  props: {
-    children: {
-      type: "slot",
-      defaultValue: [
-        {
-          type: "vbox",
-          children: [
-            {
-              type: "component",
-              name: "plasmic-commerce-product-text-field",
-              props: {
-                field: "name",
+export const productCollectionMeta: CodeComponentMeta<ProductCollectionProps> =
+  {
+    name: "plasmic-commerce-product-collection",
+    displayName: "Product Collection",
+    description:
+      "Show a product category. [See commerce tutorial video](https://www.youtube.com/watch?v=1OJ_gXmta2Q)",
+    props: {
+      children: {
+        type: "slot",
+        defaultValue: [
+          {
+            type: "vbox",
+            children: [
+              {
+                type: "component",
+                name: "plasmic-commerce-product-text-field",
+                props: {
+                  field: "name",
+                },
               },
+              {
+                type: "component",
+                name: "plasmic-commerce-product-media",
+              },
+            ],
+            styles: {
+              width: "100%",
+              minWidth: 0,
             },
-            {
-              type: "component",
-              name: "plasmic-commerce-product-media",
-            },
-          ],
-          styles: {
-            width: "100%",
-            minWidth: 0,
           },
+        ],
+      },
+      emptyMessage: {
+        type: "slot",
+        defaultValue: {
+          type: "text",
+          value: "No product found!",
         },
-      ],
-    },
-    emptyMessage: {
-      type: "slot",
-      defaultValue: {
-        type: "text",
-        value: "No product found!",
+      },
+      loadingMessage: {
+        type: "slot",
+        defaultValue: {
+          type: "text",
+          value: "Loading...",
+        },
+      },
+      count: "number",
+      category: {
+        type: "choice",
+        options: (props, ctx) => {
+          return (
+            ctx?.categories.map((category) => ({
+              label: `${"  ".repeat(category.depth ?? 0)}${category.name}`,
+              value: category.id,
+            })) ?? []
+          );
+        },
+        defaultValueHint: (props, ctx) => ctx?.categoryCtx?.name,
+        readOnly: (props, ctx) => !!ctx?.categoryCtx,
+      },
+      includeSubCategories: {
+        type: "boolean",
+        hidden: (props, ctx) => !ctx?.features?.includeSubCategories,
+      },
+      brand: {
+        type: "choice",
+        options: (props, ctx) => {
+          return (
+            ctx?.brands.map((brand: Brand) => ({
+              label: brand.name,
+              value: brand.entityId,
+            })) ?? []
+          );
+        },
+      },
+      search: {
+        type: "string",
+      },
+      sort: {
+        type: "choice",
+        options: [
+          {
+            label: "Trending",
+            value: "trending-desc",
+          },
+          {
+            label: "New Arrivals",
+            value: "latest-desc",
+          },
+          {
+            label: "Price: Low to High",
+            value: "price-asc",
+          },
+          {
+            label: "Price: High to Low",
+            value: "price-desc",
+          },
+        ],
+      },
+      noLayout: {
+        type: "boolean",
+        displayName: "No layout",
+        description: "Do not render a container element.",
+      },
+      noAutoRepeat: {
+        type: "boolean",
+        displayName: "No auto-repeat",
+        description: "Do not automatically repeat children for every category.",
       },
     },
-    loadingMessage: {
-      type: "slot",
-      defaultValue: {
-        type: "text",
-        value: "Loading...",
-      },
+    defaultStyles: {
+      display: "grid",
+      gridTemplateColumns: "1fr 1fr 1fr 1fr",
+      gridRowGap: "8px",
+      gridColumnGap: "8px",
+      padding: "8px",
+      maxWidth: "100%",
     },
-    count: "number",
-    category: {
-      type: "choice",
-      options: (props, ctx) => {
-        return (
-          ctx?.categories.map((category) => ({
-            label: `${"  ".repeat(category.depth ?? 0)}${category.name}`,
-            value: category.id,
-          })) ?? []
-        );
-      },
-      defaultValueHint: (props, ctx) => ctx?.categoryCtx?.name,
-      readOnly: (props, ctx) => !!ctx?.categoryCtx,
-    },
-    includeSubCategories: {
-      type: "boolean",
-      hidden: (props, ctx) => !ctx?.features?.includeSubCategories,
-    },
-    brand: {
-      type: "choice",
-      options: (props, ctx) => {
-        return (
-          ctx?.brands.map((brand: Brand) => ({
-            label: brand.name,
-            value: brand.entityId,
-          })) ?? []
-        );
-      },
-    },
-    search: {
-      type: "string",
-    },
-    sort: {
-      type: "choice",
-      options: [
-        {
-          label: "Trending",
-          value: "trending-desc",
-        },
-        {
-          label: "New Arrivals",
-          value: "latest-desc",
-        },
-        {
-          label: "Price: Low to High",
-          value: "price-asc",
-        },
-        {
-          label: "Price: High to Low",
-          value: "price-desc",
-        },
-      ],
-    },
-    noLayout: {
-      type: "boolean",
-      displayName: "No layout",
-      description: "Do not render a container element.",
-    },
-    noAutoRepeat: {
-      type: "boolean",
-      displayName: "No auto-repeat",
-      description: "Do not automatically repeat children for every category.",
-    },
-  },
-  defaultStyles: {
-    display: "grid",
-    gridTemplateColumns: "1fr 1fr 1fr 1fr",
-    gridRowGap: "8px",
-    gridColumnGap: "8px",
-    padding: "8px",
-    maxWidth: "100%",
-  },
-  importPath: "@plasmicpkgs/commerce",
-  importName: "ProductCollection",
-  providesData: true,
-};
+    importPath: "@plasmicpkgs/commerce",
+    importName: "ProductCollection",
+    providesData: true,
+  };
 
 export function ProductCollection(props: ProductCollectionProps) {
   const {
@@ -233,7 +234,7 @@ export function ProductCollection(props: ProductCollectionProps) {
 
 export function registerProductCollection(
   loader?: Registerable,
-  customProductCollectionMeta?: ComponentMeta<ProductCollectionProps>
+  customProductCollectionMeta?: CodeComponentMeta<ProductCollectionProps>
 ) {
   const doRegisterComponent: typeof registerComponent = (...args) =>
     loader ? loader.registerComponent(...args) : registerComponent(...args);

@@ -1,5 +1,5 @@
 import registerComponent, {
-  ComponentMeta,
+  CodeComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import React from "react";
 import { Controller, useForm, useFormContext } from "react-hook-form";
@@ -10,13 +10,14 @@ interface ProductVariantPickerProps {
   className: string;
 }
 
-export const productVariantPickerMeta: ComponentMeta<ProductVariantPickerProps> = {
-  name: "plasmic-commerce-product-variant-picker",
-  displayName: "Product Variant Picker",
-  props: {},
-  importPath: "@plasmicpkgs/commerce",
-  importName: "ProductVariantPicker",
-};
+export const productVariantPickerMeta: CodeComponentMeta<ProductVariantPickerProps> =
+  {
+    name: "plasmic-commerce-product-variant-picker",
+    displayName: "Product Variant Picker",
+    props: {},
+    importPath: "@plasmicpkgs/commerce",
+    importName: "ProductVariantPicker",
+  };
 
 export function ProductVariantPicker(props: ProductVariantPickerProps) {
   const { className } = props;
@@ -44,7 +45,7 @@ export function ProductVariantPicker(props: ProductVariantPickerProps) {
 
 export function registerProductVariantPicker(
   loader?: Registerable,
-  customProductVariantPickerMeta?: ComponentMeta<ProductVariantPickerProps>
+  customProductVariantPickerMeta?: CodeComponentMeta<ProductVariantPickerProps>
 ) {
   const doRegisterComponent: typeof registerComponent = (...args) =>
     loader ? loader.registerComponent(...args) : registerComponent(...args);

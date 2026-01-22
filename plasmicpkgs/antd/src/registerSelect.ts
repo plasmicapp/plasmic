@@ -1,5 +1,5 @@
 import registerComponent, {
-  ComponentMeta,
+  CodeComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import { Select as AntdSelect } from "antd";
 import React from "react";
@@ -11,7 +11,7 @@ const Option = Select.Option;
 
 type SelectProps = React.ComponentProps<typeof Select>;
 
-export const selectMeta: ComponentMeta<SelectProps> = {
+export const selectMeta: CodeComponentMeta<SelectProps> = {
   name: "AntdSelect",
   displayName: "Antd Select",
   props: {
@@ -166,7 +166,7 @@ export const selectMeta: ComponentMeta<SelectProps> = {
 
 export function registerSelect(
   loader?: Registerable,
-  customSelectMeta?: ComponentMeta<SelectProps>
+  customSelectMeta?: CodeComponentMeta<SelectProps>
 ) {
   const doRegisterComponent: typeof registerComponent = (...args) =>
     loader ? loader.registerComponent(...args) : registerComponent(...args);

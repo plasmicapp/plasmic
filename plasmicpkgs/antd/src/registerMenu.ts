@@ -1,13 +1,13 @@
 import registerComponent, {
-  ComponentMeta,
+  CodeComponentMeta,
 } from "@plasmicapp/host/registerComponent";
+import { Menu as AntdMenu } from "antd";
 import type {
+  MenuDividerProps,
   MenuItemProps,
   MenuProps,
   SubMenuProps,
-  MenuDividerProps,
 } from "antd/es/menu";
-import { Menu as AntdMenu } from "antd";
 import type { MenuItemGroupProps } from "rc-menu";
 import { traverseReactEltTree } from "./customControls";
 import { Registerable } from "./registerable";
@@ -17,7 +17,7 @@ export const MenuItemGroup = Menu.ItemGroup;
 export const MenuItem = Menu.Item;
 export const SubMenu = Menu.SubMenu;
 
-export const menuDividerMeta: ComponentMeta<MenuDividerProps> = {
+export const menuDividerMeta: CodeComponentMeta<MenuDividerProps> = {
   name: "AntdMenuDivider",
   displayName: "Antd Menu Divider",
   props: {
@@ -34,14 +34,14 @@ export const menuDividerMeta: ComponentMeta<MenuDividerProps> = {
 
 export function registerMenuDivider(
   loader?: Registerable,
-  customMenuDividerMeta?: ComponentMeta<MenuDividerProps>
+  customMenuDividerMeta?: CodeComponentMeta<MenuDividerProps>
 ) {
   const doRegisterComponent: typeof registerComponent = (...args) =>
     loader ? loader.registerComponent(...args) : registerComponent(...args);
   doRegisterComponent(MenuDivider, customMenuDividerMeta ?? menuDividerMeta);
 }
 
-export const menuItemMeta: ComponentMeta<MenuItemProps> = {
+export const menuItemMeta: CodeComponentMeta<MenuItemProps> = {
   name: "AntdMenuItem",
   displayName: "Antd Menu Item",
   props: {
@@ -81,14 +81,14 @@ export const menuItemMeta: ComponentMeta<MenuItemProps> = {
 
 export function registerMenuItem(
   loader?: Registerable,
-  customMenuItemMeta?: ComponentMeta<MenuItemProps>
+  customMenuItemMeta?: CodeComponentMeta<MenuItemProps>
 ) {
   const doRegisterComponent: typeof registerComponent = (...args) =>
     loader ? loader.registerComponent(...args) : registerComponent(...args);
   doRegisterComponent(MenuItem, customMenuItemMeta ?? menuItemMeta);
 }
 
-export const menuItemGroupMeta: ComponentMeta<MenuItemGroupProps> = {
+export const menuItemGroupMeta: CodeComponentMeta<MenuItemGroupProps> = {
   name: "AntdMenuItemGroup",
   displayName: "Antd Menu Item Group",
   props: {
@@ -123,7 +123,7 @@ export const menuItemGroupMeta: ComponentMeta<MenuItemGroupProps> = {
 
 export function registerMenuItemGroup(
   loader?: Registerable,
-  customMenuItemGroupMeta?: ComponentMeta<MenuItemProps>
+  customMenuItemGroupMeta?: CodeComponentMeta<MenuItemProps>
 ) {
   const doRegisterComponent: typeof registerComponent = (...args) =>
     loader ? loader.registerComponent(...args) : registerComponent(...args);
@@ -133,7 +133,7 @@ export function registerMenuItemGroup(
   );
 }
 
-export const subMenuMeta: ComponentMeta<SubMenuProps> = {
+export const subMenuMeta: CodeComponentMeta<SubMenuProps> = {
   name: "AntdSubMenu",
   displayName: "Antd SubMenu",
   props: {
@@ -186,7 +186,7 @@ export const subMenuMeta: ComponentMeta<SubMenuProps> = {
 
 export function registerSubMenu(
   loader?: Registerable,
-  customSubMenuMeta?: ComponentMeta<SubMenuProps>
+  customSubMenuMeta?: CodeComponentMeta<SubMenuProps>
 ) {
   const doRegisterComponent: typeof registerComponent = (...args) =>
     loader ? loader.registerComponent(...args) : registerComponent(...args);
@@ -203,7 +203,7 @@ function getOpenKeysOptions(componentProps: MenuProps) {
   return Array.from(options.keys());
 }
 
-export const menuMeta: ComponentMeta<MenuProps> = {
+export const menuMeta: CodeComponentMeta<MenuProps> = {
   name: "AntdMenu",
   displayName: "Antd Menu",
   props: {
@@ -331,7 +331,7 @@ export const menuMeta: ComponentMeta<MenuProps> = {
 
 export function registerMenu(
   loader?: Registerable,
-  customMenuMeta?: ComponentMeta<MenuProps>
+  customMenuMeta?: CodeComponentMeta<MenuProps>
 ) {
   const doRegisterComponent: typeof registerComponent = (...args) =>
     loader ? loader.registerComponent(...args) : registerComponent(...args);

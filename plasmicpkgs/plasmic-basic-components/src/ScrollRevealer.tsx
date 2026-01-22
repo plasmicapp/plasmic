@@ -1,5 +1,5 @@
 import registerComponent, {
-  ComponentMeta,
+  CodeComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import React, {
   ReactNode,
@@ -80,7 +80,7 @@ export function ScrollRevealer({
   );
 }
 
-export const scrollRevealerMeta: ComponentMeta<ScrollRevealerProps> = {
+export const scrollRevealerMeta: CodeComponentMeta<ScrollRevealerProps> = {
   name: "hostless-scroll-revealer",
   importName: "ScrollRevealer",
   displayName: "Scroll Revealer",
@@ -110,7 +110,7 @@ export const scrollRevealerMeta: ComponentMeta<ScrollRevealerProps> = {
 
 export function registerScrollRevealer(
   loader?: { registerComponent: typeof registerComponent },
-  customScrollRevealerMeta?: ComponentMeta<ScrollRevealerProps>
+  customScrollRevealerMeta?: CodeComponentMeta<ScrollRevealerProps>
 ) {
   if (loader) {
     loader.registerComponent(

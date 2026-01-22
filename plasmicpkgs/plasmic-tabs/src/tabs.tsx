@@ -1,14 +1,11 @@
-import {
-  ComponentMeta,
-  DataProvider,
-  usePlasmicCanvasContext,
-} from '@plasmicapp/host';
+import { DataProvider, usePlasmicCanvasContext } from '@plasmicapp/host';
+import { CodeComponentMeta } from '@plasmicapp/host/registerComponent';
 import constate from 'constate';
 import React, {
-  cloneElement,
-  createContext,
   ReactElement,
   ReactNode,
+  cloneElement,
+  createContext,
   useContext,
   useEffect,
   useRef,
@@ -73,7 +70,7 @@ function useTabsContext() {
 }
 const modulePath = '@plasmicpkgs/plasmic-tabs';
 
-export const TabsContainerMeta: ComponentMeta<TabsProviderProps> = {
+export const TabsContainerMeta: CodeComponentMeta<TabsProviderProps> = {
   name: 'hostless-tabs-container',
   displayName: 'Tabs Container',
   importName: 'TabsContainer',
@@ -212,8 +209,8 @@ function ensure<T>(x: T | undefined | null) {
 
 function Helper({
   children,
-  previewKey,
-}: {
+}: // previewKey,
+{
   previewKey?: string;
   children?: ReactNode;
 }) {
@@ -229,7 +226,7 @@ export interface TabUnderlineProps {
   className?: string;
 }
 
-export const TabUnderlineMeta: ComponentMeta<TabUnderlineProps> = {
+export const TabUnderlineMeta: CodeComponentMeta<TabUnderlineProps> = {
   name: 'hostless-tab-underline',
   displayName: 'Tab Underline',
   importName: 'TabUnderline',
@@ -263,7 +260,7 @@ export interface TabButtonProps {
   tabKey?: string;
 }
 
-export const TabButtonMeta: ComponentMeta<TabButtonProps> = {
+export const TabButtonMeta: CodeComponentMeta<TabButtonProps> = {
   name: 'hostless-tab-button',
   isAttachment: true,
   displayName: 'Tab Button',
@@ -324,7 +321,7 @@ export interface TabContentProps {
   className?: string;
 }
 
-export const TabContentMeta: ComponentMeta<TabContentProps> = {
+export const TabContentMeta: CodeComponentMeta<TabContentProps> = {
   name: 'hostless-tab-content',
   isAttachment: true,
   displayName: 'Tab Content',

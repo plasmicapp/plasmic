@@ -1,6 +1,6 @@
 import { usePlasmicCanvasContext } from "@plasmicapp/host";
 import registerComponent, {
-  ComponentMeta,
+  CodeComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import React, { useEffect, useRef } from "react";
 import { ensure, useFirstRender, useId } from "./common";
@@ -101,7 +101,7 @@ function addIdentifierScript(id: string, code: string) {
   ${code}`;
 }
 
-export const embedMeta: ComponentMeta<EmbedProps> = {
+export const embedMeta: CodeComponentMeta<EmbedProps> = {
   name: "hostless-embed",
   displayName: "Embed HTML",
   importName: "Embed",
@@ -128,7 +128,7 @@ export const embedMeta: ComponentMeta<EmbedProps> = {
 
 export function registerEmbed(
   loader?: { registerComponent: typeof registerComponent },
-  customEmbedMeta?: ComponentMeta<EmbedProps>
+  customEmbedMeta?: CodeComponentMeta<EmbedProps>
 ) {
   if (loader) {
     loader.registerComponent(Embed, customEmbedMeta ?? embedMeta);

@@ -1,5 +1,5 @@
 import registerComponent, {
-  ComponentMeta,
+  CodeComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import { Checkbox as AntdCheckbox } from "antd";
 import type { CheckboxProps } from "antd/es/checkbox/Checkbox";
@@ -27,7 +27,7 @@ export const checkboxHelpers = {
   },
 };
 
-export const checkboxMeta: ComponentMeta<CheckboxProps> = {
+export const checkboxMeta: CodeComponentMeta<CheckboxProps> = {
   name: "AntdCheckbox",
   displayName: "Antd Checkbox",
   props: {
@@ -97,7 +97,7 @@ export const checkboxMeta: ComponentMeta<CheckboxProps> = {
 
 export function registerCheckbox(
   loader?: Registerable,
-  customCheckboxMeta?: ComponentMeta<CheckboxProps>
+  customCheckboxMeta?: CodeComponentMeta<CheckboxProps>
 ) {
   const doRegisterComponent: typeof registerComponent = (...args) =>
     loader ? loader.registerComponent(...args) : registerComponent(...args);
@@ -117,7 +117,7 @@ function getGroupOptions(componentProps: CheckboxGroupProps) {
   return Array.from(options.keys());
 }
 
-export const checkboxGroupMeta: ComponentMeta<CheckboxGroupProps> = {
+export const checkboxGroupMeta: CodeComponentMeta<CheckboxGroupProps> = {
   name: "AntdCheckboxGroup",
   displayName: "Antd Checkbox Group",
   props: {
@@ -172,7 +172,7 @@ export const checkboxGroupMeta: ComponentMeta<CheckboxGroupProps> = {
 
 export function registerCheckboxGroup(
   loader?: Registerable,
-  customCheckboxGroupMeta?: ComponentMeta<CheckboxGroupProps>
+  customCheckboxGroupMeta?: CodeComponentMeta<CheckboxGroupProps>
 ) {
   const doRegisterComponent: typeof registerComponent = (...args) =>
     loader ? loader.registerComponent(...args) : registerComponent(...args);

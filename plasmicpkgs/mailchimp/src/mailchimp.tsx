@@ -1,4 +1,4 @@
-import { ComponentMeta } from "@plasmicapp/host";
+import { CodeComponentMeta } from "@plasmicapp/host/registerComponent";
 
 import React from "react";
 
@@ -18,7 +18,7 @@ interface MailchimpSignupFormProps {
   url?: string;
 }
 
-export const MailchimpSignupFormMeta: ComponentMeta<MailchimpSignupFormProps> =
+export const MailchimpSignupFormMeta: CodeComponentMeta<MailchimpSignupFormProps> =
   {
     name: "hostless-mailchimp-signup-form",
     displayName: "Mailchimp Signup Form",

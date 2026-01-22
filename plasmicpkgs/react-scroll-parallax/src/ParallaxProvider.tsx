@@ -1,5 +1,5 @@
 import registerComponent, {
-  ComponentMeta,
+  CodeComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import registerGlobalContext, {
   GlobalContextMeta,
@@ -74,7 +74,7 @@ export function ParallaxProviderWrapper({
 /**
  * @deprecated use `globalParallaxProviderMeta` instead.
  */
-export const parallaxProviderMeta: ComponentMeta<ParallaxProviderProps> = {
+export const parallaxProviderMeta: CodeComponentMeta<ParallaxProviderProps> = {
   name: "hostless-parallax-provider",
   displayName: "Parallax Provider",
   importName: "ParallaxProviderWrapper",
@@ -114,7 +114,7 @@ export const parallaxProviderMeta: ComponentMeta<ParallaxProviderProps> = {
  */
 export function registerParallaxProvider(
   loader?: { registerComponent: typeof registerComponent },
-  customParallaxProviderMeta?: ComponentMeta<ParallaxProviderProps>
+  customParallaxProviderMeta?: CodeComponentMeta<ParallaxProviderProps>
 ) {
   if (loader) {
     loader.registerComponent(

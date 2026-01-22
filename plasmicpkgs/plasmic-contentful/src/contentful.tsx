@@ -1,11 +1,7 @@
 import { documentToHtmlString } from "@contentful/rich-text-html-renderer";
-import {
-  ComponentMeta,
-  DataProvider,
-  GlobalContextMeta,
-  repeatedElement,
-  useSelector,
-} from "@plasmicapp/host";
+import { DataProvider, repeatedElement, useSelector } from "@plasmicapp/host";
+import { CodeComponentMeta } from "@plasmicapp/host/registerComponent";
+import { GlobalContextMeta } from "@plasmicapp/host/registerGlobalContext";
 import { usePlasmicQueryData } from "@plasmicapp/query";
 import {
   _denormalizeData as denormalizeData,
@@ -96,115 +92,116 @@ interface ContentfulFetcherProps {
   setControlContextData?: (data: ContentfulControlContextData) => void;
 }
 
-export const ContentfulFetcherMeta: ComponentMeta<ContentfulFetcherProps> = {
-  name: "ContentfulFetcher",
-  displayName: "Contentful Fetcher",
-  importName: "ContentfulFetcher",
-  importPath: modulePath,
-  providesData: true,
-  description:
-    "Fetches Contentful data and repeats content of children once for every row fetched. ",
-  defaultStyles: {
-    display: "grid",
-    gridTemplateColumns: "1fr 1fr 1fr 1fr",
-    gridRowGap: "8px",
-    gridColumnGap: "8px",
-    padding: "8px",
-    maxWidth: "100%",
-  },
-  props: {
-    children: {
-      type: "slot",
-      defaultValue: {
-        type: "vbox",
-        styles: {
-          padding: "8px",
-        },
-        children: {
-          type: "component",
-          name: "ContentfulField",
+export const ContentfulFetcherMeta: CodeComponentMeta<ContentfulFetcherProps> =
+  {
+    name: "ContentfulFetcher",
+    displayName: "Contentful Fetcher",
+    importName: "ContentfulFetcher",
+    importPath: modulePath,
+    providesData: true,
+    description:
+      "Fetches Contentful data and repeats content of children once for every row fetched. ",
+    defaultStyles: {
+      display: "grid",
+      gridTemplateColumns: "1fr 1fr 1fr 1fr",
+      gridRowGap: "8px",
+      gridColumnGap: "8px",
+      padding: "8px",
+      maxWidth: "100%",
+    },
+    props: {
+      children: {
+        type: "slot",
+        defaultValue: {
+          type: "vbox",
+          styles: {
+            padding: "8px",
+          },
+          children: {
+            type: "component",
+            name: "ContentfulField",
+          },
         },
       },
-    },
-    contentType: {
-      type: "choice",
-      options: (_props, ctx) =>
-        ctx?.types?.map((type: any) => ({
-          label: type?.name,
-          value: type?.sys?.id,
-        })) ?? [],
-      displayName: "Content type",
-      description: "Content type to be queried.",
-    },
+      contentType: {
+        type: "choice",
+        options: (_props, ctx) =>
+          ctx?.types?.map((type: any) => ({
+            label: type?.name,
+            value: type?.sys?.id,
+          })) ?? [],
+        displayName: "Content type",
+        description: "Content type to be queried.",
+      },
 
-    filterField: {
-      type: "choice",
-      displayName: "Filter field",
-      description: "Field (from Collection) to filter by.",
-      options: (_props, ctx) => ctx?.fields ?? [],
-      hidden: (props) => !props.contentType,
+      filterField: {
+        type: "choice",
+        displayName: "Filter field",
+        description: "Field (from Collection) to filter by.",
+        options: (_props, ctx) => ctx?.fields ?? [],
+        hidden: (props) => !props.contentType,
+      },
+      searchParameter: {
+        type: "choice",
+        displayName: "Search Parameter",
+        description:
+          "Search Parameter to filter by (see Contentful Content Delivery API documentation for details).",
+        options: (_props, ctx) => ctx?.queryOptions ?? [],
+        hidden: (props) => !props.filterField,
+      },
+      filterValue: {
+        type: "string",
+        displayName: "Filter value",
+        description: "Value to filter by, should be of filter field type.",
+        hidden: (props) => !props.searchParameter,
+      },
+      order: {
+        type: "choice",
+        displayName: "Order",
+        description: "Field that the entries should be ordered by.",
+        options: (_props, ctx) => [
+          ...(ctx?.fields ?? []),
+          "sys.createdAt",
+          "sys.updatedAt",
+        ],
+        hidden: (props) => !props.contentType,
+      },
+      reverseOrder: {
+        type: "boolean",
+        displayName: "Reverse order",
+        description: "Reverse the order of the entries.",
+        defaultValue: false,
+        hidden: (props) => !props.order,
+      },
+      limit: {
+        type: "number",
+        displayName: "Limit",
+        description: "Limit the number of entries that are returned.",
+      },
+      include: {
+        type: "number",
+        displayName: "Linked items depth",
+        defaultValueHint: 1,
+        description:
+          "When you have related content (e.g. entries with links to image assets) it's possible to include both search results and related data in a single request. Using the include parameter, you can specify the number of levels to resolve.",
+        max: 10,
+        min: 0,
+      },
+      noAutoRepeat: {
+        type: "boolean",
+        displayName: "No auto-repeat",
+        description: "Do not automatically repeat children for every entry.",
+        defaultValue: false,
+      },
+      noLayout: {
+        type: "boolean",
+        displayName: "No layout",
+        description:
+          "When set, Contentful Fetcher will not layout its children; instead, the layout set on its parent element will be used. Useful if you want to set flex gap or control container tag type.",
+        defaultValue: false,
+      },
     },
-    searchParameter: {
-      type: "choice",
-      displayName: "Search Parameter",
-      description:
-        "Search Parameter to filter by (see Contentful Content Delivery API documentation for details).",
-      options: (_props, ctx) => ctx?.queryOptions ?? [],
-      hidden: (props) => !props.filterField,
-    },
-    filterValue: {
-      type: "string",
-      displayName: "Filter value",
-      description: "Value to filter by, should be of filter field type.",
-      hidden: (props) => !props.searchParameter,
-    },
-    order: {
-      type: "choice",
-      displayName: "Order",
-      description: "Field that the entries should be ordered by.",
-      options: (_props, ctx) => [
-        ...(ctx?.fields ?? []),
-        "sys.createdAt",
-        "sys.updatedAt",
-      ],
-      hidden: (props) => !props.contentType,
-    },
-    reverseOrder: {
-      type: "boolean",
-      displayName: "Reverse order",
-      description: "Reverse the order of the entries.",
-      defaultValue: false,
-      hidden: (props) => !props.order,
-    },
-    limit: {
-      type: "number",
-      displayName: "Limit",
-      description: "Limit the number of entries that are returned.",
-    },
-    include: {
-      type: "number",
-      displayName: "Linked items depth",
-      defaultValueHint: 1,
-      description:
-        "When you have related content (e.g. entries with links to image assets) it's possible to include both search results and related data in a single request. Using the include parameter, you can specify the number of levels to resolve.",
-      max: 10,
-      min: 0,
-    },
-    noAutoRepeat: {
-      type: "boolean",
-      displayName: "No auto-repeat",
-      description: "Do not automatically repeat children for every entry.",
-      defaultValue: false,
-    },
-    noLayout: {
-      type: "boolean",
-      displayName: "No layout",
-      description:
-        "When set, Contentful Fetcher will not layout its children; instead, the layout set on its parent element will be used. Useful if you want to set flex gap or control container tag type.",
-      defaultValue: false,
-    },
-  },
-};
+  };
 
 export function ContentfulFetcher({
   filterField,
@@ -445,7 +442,7 @@ interface ContentfulFieldProps {
   setControlContextData?: (data: { data: object }) => void;
 }
 
-export const ContentfulFieldMeta: ComponentMeta<ContentfulFieldProps> = {
+export const ContentfulFieldMeta: CodeComponentMeta<ContentfulFieldProps> = {
   name: "ContentfulField",
   displayName: "Contentful Field",
   importName: "ContentfulField",

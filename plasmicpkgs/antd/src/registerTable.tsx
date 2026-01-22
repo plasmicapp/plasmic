@@ -1,12 +1,9 @@
-import {
-  ComponentMeta,
-  DataProvider,
-  registerComponent,
-  repeatedElement,
-  useSelector,
-} from "@plasmicapp/host";
-import type { SizeType } from "antd/es/config-provider/SizeContext";
+import { DataProvider, repeatedElement, useSelector } from "@plasmicapp/host";
+import registerComponent, {
+  type CodeComponentMeta,
+} from "@plasmicapp/host/registerComponent";
 import { Table } from "antd";
+import type { SizeType } from "antd/es/config-provider/SizeContext";
 import React from "react";
 import { Registerable } from "./registerable";
 
@@ -147,7 +144,7 @@ function capitalize(input: string) {
   return input.charAt(0).toUpperCase() + input.slice(1);
 }
 
-export const tableMeta: ComponentMeta<TableWrapperProps> = {
+export const tableMeta: CodeComponentMeta<TableWrapperProps> = {
   name: "AntdTable",
   displayName: "Antd Table",
   props: {
@@ -187,7 +184,7 @@ export const tableMeta: ComponentMeta<TableWrapperProps> = {
   importName: "TableWrapper",
 };
 
-export const tableColumnMeta: ComponentMeta<TableColumnProps> = {
+export const tableColumnMeta: CodeComponentMeta<TableColumnProps> = {
   name: "AntdTableColumn",
   parentComponentName: "AntdTable",
   providesData: true,
@@ -225,7 +222,7 @@ export const tableColumnMeta: ComponentMeta<TableColumnProps> = {
   importName: "TableColumn",
 };
 
-export const tableValueMeta: ComponentMeta<TableValueProps> = {
+export const tableValueMeta: CodeComponentMeta<TableValueProps> = {
   name: "AntdTableValue",
   parentComponentName: "AntdTableColumn",
   props: {},
@@ -235,7 +232,7 @@ export const tableValueMeta: ComponentMeta<TableValueProps> = {
 
 export function registerTable(
   loader?: Registerable,
-  customMeta?: ComponentMeta<TableWrapperProps>
+  customMeta?: CodeComponentMeta<TableWrapperProps>
 ) {
   const doRegisterComponent: typeof registerComponent = (...args) =>
     loader ? loader.registerComponent(...args) : registerComponent(...args);
@@ -244,7 +241,7 @@ export function registerTable(
 
 export function registerTableColumn(
   loader?: Registerable,
-  customMeta?: ComponentMeta<TableColumnProps>
+  customMeta?: CodeComponentMeta<TableColumnProps>
 ) {
   const doRegisterComponent: typeof registerComponent = (...args) =>
     loader ? loader.registerComponent(...args) : registerComponent(...args);
@@ -253,7 +250,7 @@ export function registerTableColumn(
 
 export function registerTableValue(
   loader?: Registerable,
-  customMeta?: ComponentMeta<TableValueProps>
+  customMeta?: CodeComponentMeta<TableValueProps>
 ) {
   const doRegisterComponent: typeof registerComponent = (...args) =>
     loader ? loader.registerComponent(...args) : registerComponent(...args);

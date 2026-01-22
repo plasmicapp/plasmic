@@ -1,6 +1,6 @@
 import { repeatedElement } from "@plasmicapp/host";
 import registerComponent, {
-  ComponentMeta,
+  CodeComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import React from "react";
 import { ProductMediaProvider, useProduct } from "./contexts";
@@ -14,7 +14,7 @@ interface ProductSliderProps {
   slideSelected?: number;
 }
 
-export const productSliderMeta: ComponentMeta<ProductSliderProps> = {
+export const productSliderMeta: CodeComponentMeta<ProductSliderProps> = {
   name: "plasmic-commerce-product-slider",
   displayName: "Product Slider",
   providesData: true,
@@ -103,7 +103,7 @@ export function ProductSlider(props: ProductSliderProps) {
 
 export function registerProductSlider(
   loader?: Registerable,
-  customProductSliderMeta?: ComponentMeta<ProductSliderProps>
+  customProductSliderMeta?: CodeComponentMeta<ProductSliderProps>
 ) {
   const doRegisterComponent: typeof registerComponent = (...args) =>
     loader ? loader.registerComponent(...args) : registerComponent(...args);

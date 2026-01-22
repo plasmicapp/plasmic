@@ -1,10 +1,10 @@
 import {
-  ComponentMeta,
   DataProvider,
   GlobalContextMeta,
   repeatedElement,
   useSelector,
 } from "@plasmicapp/host";
+import { CodeComponentMeta } from "@plasmicapp/host/registerComponent";
 import { usePlasmicQueryData } from "@plasmicapp/query";
 import get from "dlv";
 import React, { ReactNode, useContext } from "react";
@@ -28,21 +28,22 @@ const CredentialsContext = React.createContext<
   WordpressProviderProps | undefined
 >(undefined);
 
-export const WordpressProviderMeta: GlobalContextMeta<WordpressProviderProps> = {
-  name: "WordpressGraphQLProvider",
-  displayName: "Wordpress GraphQL Provider",
-  description: "The GraphQL API Endpoint of your Wordpress",
-  importName: "WordpressProvider",
-  importPath: modulePath,
-  props: {
-    graphqlEndpoint: {
-      type: "string",
-      displayName: "GraphQL API Endpoint",
-      description: "GraphQL API Endpoint of your Wordpress",
-      defaultValue: "https://demo.wpgraphql.com/graphql",
+export const WordpressProviderMeta: GlobalContextMeta<WordpressProviderProps> =
+  {
+    name: "WordpressGraphQLProvider",
+    displayName: "Wordpress GraphQL Provider",
+    description: "The GraphQL API Endpoint of your Wordpress",
+    importName: "WordpressProvider",
+    importPath: modulePath,
+    props: {
+      graphqlEndpoint: {
+        type: "string",
+        displayName: "GraphQL API Endpoint",
+        description: "GraphQL API Endpoint of your Wordpress",
+        defaultValue: "https://demo.wpgraphql.com/graphql",
+      },
     },
-  },
-};
+  };
 
 export function WordpressProvider({
   graphqlEndpoint,
@@ -64,7 +65,7 @@ interface WordpressFetcherProps {
   setControlContextData?: (data: { endpoint?: string }) => void;
 }
 
-export const WordpressFetcherMeta: ComponentMeta<WordpressFetcherProps> = {
+export const WordpressFetcherMeta: CodeComponentMeta<WordpressFetcherProps> = {
   name: "WordpressGraphQLFetcher",
   displayName: "Wordpress Fetcher",
   importName: "WordpressFetcher",
@@ -136,14 +137,14 @@ export function WordpressFetcher({
     if (!query) {
       return null;
     }
-    const data = await fetch(creds.graphqlEndpoint, {
+    const res = await fetch(creds.graphqlEndpoint, {
       method: "POST",
       body: JSON.stringify(query),
       headers: {
         "Content-Type": "application/json",
       },
     });
-    return await data.json();
+    return await res.json();
   });
 
   setControlContextData?.({
@@ -192,7 +193,7 @@ interface WordpressFieldProps {
   path?: string;
   setControlContextData?: (data: { data: any }) => void;
 }
-export const WordpressFieldMeta: ComponentMeta<WordpressFieldProps> = {
+export const WordpressFieldMeta: CodeComponentMeta<WordpressFieldProps> = {
   name: "WordpressGraphQLField",
   displayName: "Wordpress Field",
   importName: "WordpressField",

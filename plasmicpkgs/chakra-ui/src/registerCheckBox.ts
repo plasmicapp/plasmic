@@ -1,11 +1,11 @@
 import { CheckboxGroupProps, CheckboxProps } from "@chakra-ui/react";
-import { ComponentMeta } from "@plasmicapp/host/registerComponent";
+import { type CodeComponentMeta } from "@plasmicapp/host/registerComponent";
 import {
   getComponentNameAndImportMeta,
   getPlasmicComponentName,
 } from "./utils";
 
-export const checkboxMeta: ComponentMeta<CheckboxProps> = {
+export const checkboxMeta: CodeComponentMeta<CheckboxProps> = {
   ...getComponentNameAndImportMeta("Checkbox", "CheckboxGroup"),
   props: {
     colorScheme: {
@@ -68,7 +68,7 @@ export const checkboxMeta: ComponentMeta<CheckboxProps> = {
   },
 };
 
-export const checkboxGroupMeta: ComponentMeta<CheckboxGroupProps> = {
+export const checkboxGroupMeta: CodeComponentMeta<CheckboxGroupProps> = {
   ...getComponentNameAndImportMeta("CheckboxGroup"),
   props: {
     size: {

@@ -5,13 +5,13 @@ import {
   AccordionPanelProps,
   AccordionProps,
 } from "@chakra-ui/react";
-import { ComponentMeta } from "@plasmicapp/host/registerComponent";
+import { type CodeComponentMeta } from "@plasmicapp/host/registerComponent";
 import {
   getComponentNameAndImportMeta,
   getPlasmicComponentName,
 } from "./utils";
 
-export const accordionMeta: ComponentMeta<AccordionProps> = {
+export const accordionMeta: CodeComponentMeta<AccordionProps> = {
   ...getComponentNameAndImportMeta("Accordion"),
   props: {
     allowMultiple: {
@@ -45,7 +45,7 @@ export const accordionMeta: ComponentMeta<AccordionProps> = {
   },
 };
 
-export const accordionItemMeta: ComponentMeta<AccordionItemProps> = {
+export const accordionItemMeta: CodeComponentMeta<AccordionItemProps> = {
   ...getComponentNameAndImportMeta("AccordionItem", "Accordion"),
   props: {
     id: {
@@ -80,7 +80,7 @@ export const accordionItemMeta: ComponentMeta<AccordionItemProps> = {
   },
 };
 
-export const accordionButtonMeta: ComponentMeta<AccordionButtonProps> = {
+export const accordionButtonMeta: CodeComponentMeta<AccordionButtonProps> = {
   ...getComponentNameAndImportMeta("AccordionButton", "AccordionItem"),
   props: {
     _expanded: {
@@ -110,7 +110,7 @@ export const accordionButtonMeta: ComponentMeta<AccordionButtonProps> = {
   },
 };
 
-export const accordionPanelMeta: ComponentMeta<AccordionPanelProps> = {
+export const accordionPanelMeta: CodeComponentMeta<AccordionPanelProps> = {
   ...getComponentNameAndImportMeta("AccordionPanel", "AccordionItem"),
   props: {
     children: {
@@ -130,7 +130,7 @@ export const accordionPanelMeta: ComponentMeta<AccordionPanelProps> = {
   },
 };
 
-export const accordionIconMeta: ComponentMeta<AccordionIconProps> = {
+export const accordionIconMeta: CodeComponentMeta<AccordionIconProps> = {
   ...getComponentNameAndImportMeta("AccordionIcon", "AccordionButton"),
   props: {},
 };

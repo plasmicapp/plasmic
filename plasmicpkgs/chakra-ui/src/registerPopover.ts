@@ -6,13 +6,13 @@ import {
   PopoverHeaderProps,
   PopoverProps,
 } from "@chakra-ui/react";
-import { ComponentMeta } from "@plasmicapp/host/registerComponent";
+import { type CodeComponentMeta } from "@plasmicapp/host/registerComponent";
 import {
   getComponentNameAndImportMeta,
   getPlasmicComponentName,
 } from "./utils";
 
-export const popoverMeta: ComponentMeta<PopoverProps> = {
+export const popoverMeta: CodeComponentMeta<PopoverProps> = {
   ...getComponentNameAndImportMeta("Popover"),
   props: {
     gutter: {
@@ -73,7 +73,7 @@ export const popoverMeta: ComponentMeta<PopoverProps> = {
   },
 };
 
-export const popoverContentMeta: ComponentMeta<PopoverContentProps> = {
+export const popoverContentMeta: CodeComponentMeta<PopoverContentProps> = {
   ...getComponentNameAndImportMeta("PopoverContent", "Popover"),
   props: {
     children: {
@@ -112,17 +112,18 @@ export const popoverContentMeta: ComponentMeta<PopoverContentProps> = {
   },
 };
 
-export const popoverArrowMeta: ComponentMeta<PopoverArrowProps> = {
+export const popoverArrowMeta: CodeComponentMeta<PopoverArrowProps> = {
   ...getComponentNameAndImportMeta("PopoverArrow", "PopoverContent"),
   props: {},
 };
 
-export const popoverCloseButtonMeta: ComponentMeta<PopoverCloseButtonProps> = {
-  ...getComponentNameAndImportMeta("PopoverCloseButton", "PopoverContent"),
-  props: {},
-};
+export const popoverCloseButtonMeta: CodeComponentMeta<PopoverCloseButtonProps> =
+  {
+    ...getComponentNameAndImportMeta("PopoverCloseButton", "PopoverContent"),
+    props: {},
+  };
 
-export const popoverHeaderMeta: ComponentMeta<PopoverHeaderProps> = {
+export const popoverHeaderMeta: CodeComponentMeta<PopoverHeaderProps> = {
   ...getComponentNameAndImportMeta("PopoverHeader", "PopoverContent"),
   props: {
     children: {
@@ -135,7 +136,7 @@ export const popoverHeaderMeta: ComponentMeta<PopoverHeaderProps> = {
   },
 };
 
-export const popoverBodyMeta: ComponentMeta<PopoverBodyProps> = {
+export const popoverBodyMeta: CodeComponentMeta<PopoverBodyProps> = {
   ...getComponentNameAndImportMeta("PopoverBody", "PopoverContent"),
   props: {
     children: {
@@ -148,7 +149,7 @@ export const popoverBodyMeta: ComponentMeta<PopoverBodyProps> = {
   },
 };
 
-export const popoverTriggerMeta: ComponentMeta<PopoverTriggerProps> = {
+export const popoverTriggerMeta: CodeComponentMeta<PopoverTriggerProps> = {
   ...getComponentNameAndImportMeta("PopoverTrigger", "Popover"),
   props: {
     children: {

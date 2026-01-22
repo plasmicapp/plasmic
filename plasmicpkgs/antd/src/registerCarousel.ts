@@ -1,5 +1,5 @@
 import registerComponent, {
-  ComponentMeta,
+  CodeComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import { Carousel as AntdCarousel } from "antd";
 import type { CarouselProps } from "antd/es/carousel";
@@ -15,7 +15,7 @@ const contentStyle = {
   backgroundColor: "#364d79",
 };
 
-export const carouselMeta: ComponentMeta<CarouselProps> = {
+export const carouselMeta: CodeComponentMeta<CarouselProps> = {
   name: "AntdCarousel",
   displayName: "Antd Carousel",
   props: {
@@ -68,7 +68,7 @@ export const carouselMeta: ComponentMeta<CarouselProps> = {
 
 export function registerCarousel(
   loader?: Registerable,
-  customCarouselMeta?: ComponentMeta<CarouselProps>
+  customCarouselMeta?: CodeComponentMeta<CarouselProps>
 ) {
   const doRegisterComponent: typeof registerComponent = (...args) =>
     loader ? loader.registerComponent(...args) : registerComponent(...args);

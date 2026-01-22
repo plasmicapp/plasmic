@@ -4,13 +4,13 @@ import {
   BreadcrumbProps,
   BreadcrumbSeparatorProps,
 } from "@chakra-ui/react";
-import { ComponentMeta } from "@plasmicapp/host/registerComponent";
+import { type CodeComponentMeta } from "@plasmicapp/host/registerComponent";
 import {
   getComponentNameAndImportMeta,
   getPlasmicComponentName,
 } from "./utils";
 
-export const breadcrumbItemMeta: ComponentMeta<BreadcrumbItemProps> = {
+export const breadcrumbItemMeta: CodeComponentMeta<BreadcrumbItemProps> = {
   ...getComponentNameAndImportMeta("BreadcrumbItem", "Breadcrumb"),
   props: {
     isCurrentPage: {
@@ -45,7 +45,7 @@ export const breadcrumbItemMeta: ComponentMeta<BreadcrumbItemProps> = {
   },
 };
 
-export const breadcrumbLinkMeta: ComponentMeta<BreadcrumbLinkProps> = {
+export const breadcrumbLinkMeta: CodeComponentMeta<BreadcrumbLinkProps> = {
   ...getComponentNameAndImportMeta("BreadcrumbLink", "BreadcrumbItem"),
   props: {
     href: {
@@ -64,7 +64,7 @@ export const breadcrumbLinkMeta: ComponentMeta<BreadcrumbLinkProps> = {
   },
 };
 
-export const breadcrumbMeta: ComponentMeta<BreadcrumbProps> = {
+export const breadcrumbMeta: CodeComponentMeta<BreadcrumbProps> = {
   ...getComponentNameAndImportMeta("Breadcrumb"),
   props: {
     separator: {
@@ -133,15 +133,16 @@ export const breadcrumbMeta: ComponentMeta<BreadcrumbProps> = {
   },
 };
 
-export const breadcrumbSeparatorMeta: ComponentMeta<BreadcrumbSeparatorProps> = {
-  ...getComponentNameAndImportMeta("BreadcrumbSeparator", "Breadcrumb"),
-  props: {
-    children: {
-      type: "slot",
-      defaultValue: {
-        type: "text",
-        value: "/",
+export const breadcrumbSeparatorMeta: CodeComponentMeta<BreadcrumbSeparatorProps> =
+  {
+    ...getComponentNameAndImportMeta("BreadcrumbSeparator", "Breadcrumb"),
+    props: {
+      children: {
+        type: "slot",
+        defaultValue: {
+          type: "text",
+          value: "/",
+        },
       },
     },
-  },
-};
+  };

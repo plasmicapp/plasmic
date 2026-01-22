@@ -1,5 +1,5 @@
 import registerComponent, {
-  ComponentMeta,
+  CodeComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import React from "react";
 import { useFormContext } from "react-hook-form";
@@ -12,7 +12,7 @@ interface AddToCartButtonProps {
   children?: React.ReactNode;
 }
 
-export const addToCartButtonMeta: ComponentMeta<AddToCartButtonProps> = {
+export const addToCartButtonMeta: CodeComponentMeta<AddToCartButtonProps> = {
   name: "plasmic-commerce-add-to-cart-button",
   displayName: "Add To Cart Button",
   props: {
@@ -72,7 +72,7 @@ export function AddToCartButton(props: AddToCartButtonProps) {
 
 export function registerAddToCartButton(
   loader?: Registerable,
-  customAddToCartButtonMeta?: ComponentMeta<AddToCartButtonProps>
+  customAddToCartButtonMeta?: CodeComponentMeta<AddToCartButtonProps>
 ) {
   const doRegisterComponent: typeof registerComponent = (...args) =>
     loader ? loader.registerComponent(...args) : registerComponent(...args);

@@ -1,4 +1,5 @@
-import { ComponentMeta, useSelector } from "@plasmicapp/host";
+import { useSelector } from "@plasmicapp/host";
+import { CodeComponentMeta } from "@plasmicapp/host/registerComponent";
 import {
   _extractDisplayableFields,
   _getFieldValue,
@@ -19,7 +20,7 @@ interface StrapiFieldProps {
   }) => void;
 }
 
-export const strapiFieldMeta: ComponentMeta<StrapiFieldProps> = {
+export const strapiFieldMeta: CodeComponentMeta<StrapiFieldProps> = {
   name: "StrapiField",
   displayName: "Strapi Field",
   importName: "StrapiField",

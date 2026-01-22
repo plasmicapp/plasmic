@@ -1,4 +1,4 @@
-import { ComponentMeta } from "@plasmicapp/host";
+import { CodeComponentMeta } from "@plasmicapp/host/registerComponent";
 import React from "react";
 import { usePlasmicDataOp } from "../hooks/usePlasmicDataOp";
 import { DataOp } from "../types";
@@ -32,7 +32,7 @@ export function Fetcher(props: FetcherProps): React.ReactElement | null {
   return children?.($queries) ?? null;
 }
 
-export const FetcherMeta: ComponentMeta<FetcherProps> = {
+export const FetcherMeta: CodeComponentMeta<FetcherProps> = {
   name: "plasmic-data-source-fetcher",
   displayName: "Data Fetcher",
   props: {

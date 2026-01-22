@@ -1,13 +1,13 @@
 import { usePlasmicCanvasContext } from "@plasmicapp/host";
 import registerComponent, {
   ActionProps,
+  CodeComponentMeta,
   ComponentHelpers,
-  ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import React, {
   ChangeEvent,
-  forwardRef,
   Ref,
+  forwardRef,
   useEffect,
   useRef,
   useState,
@@ -252,7 +252,7 @@ export function registerSlider(loader?: {
   function OutlineMessage() {
     return <div>* To re-arrange slides, use the Outline panel</div>;
   }
-  const sliderMeta: ComponentMeta<SliderProps> = {
+  const sliderMeta: CodeComponentMeta<SliderProps> = {
     name: "hostless-slider",
     displayName: "Slider Carousel",
     importName: "SliderWrapper",

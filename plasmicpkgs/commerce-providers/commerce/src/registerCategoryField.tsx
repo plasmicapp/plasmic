@@ -1,5 +1,5 @@
 import registerComponent, {
-  ComponentMeta,
+  CodeComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import React from "react";
 import { useCategoryContext } from "./contexts";
@@ -9,7 +9,7 @@ interface CategoryFieldProps {
   className?: string;
   field?: string;
 }
-export const categoryFieldMeta: ComponentMeta<CategoryFieldProps> = {
+export const categoryFieldMeta: CodeComponentMeta<CategoryFieldProps> = {
   name: "plasmic-commerce-category-field",
   displayName: "Category Field",
   props: {
@@ -31,14 +31,16 @@ export function CategoryField(props: CategoryFieldProps) {
     return <span>You must set the field prop</span>;
   }
 
-  let data = category ? (category as any)[field] : "Category field placeholder";
+  const data = category
+    ? (category as any)[field]
+    : "Category field placeholder";
 
   return <span className={className}>{data}</span>;
 }
 
 export function registerCategoryField(
   loader?: Registerable,
-  customCategoryFieldMeta?: ComponentMeta<CategoryFieldProps>
+  customCategoryFieldMeta?: CodeComponentMeta<CategoryFieldProps>
 ) {
   const doRegisterComponent: typeof registerComponent = (...args) =>
     loader ? loader.registerComponent(...args) : registerComponent(...args);

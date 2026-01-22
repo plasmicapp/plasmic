@@ -1,15 +1,15 @@
-import React from 'react'
 import registerComponent, {
-  ComponentMeta,
+  CodeComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import registerGlobalContext from "@plasmicapp/host/registerGlobalContext";
+import React from "react";
 import {
   YotpoCredentialsProvider,
   YotpoCredentialsProviderMeta,
-  YotpoReviewsMeta,
   YotpoReviews,
+  YotpoReviewsMeta,
   YotpoStarRating,
-  YotpoStarRatingMeta
+  YotpoStarRatingMeta,
 } from "./yotpo";
 
 export function registerAll(loader?: {
@@ -18,7 +18,7 @@ export function registerAll(loader?: {
 }) {
   const _registerComponent = <T extends React.ComponentType<any>>(
     Component: T,
-    defaultMeta: ComponentMeta<React.ComponentProps<T>>
+    defaultMeta: CodeComponentMeta<React.ComponentProps<T>>
   ) => {
     if (loader) {
       loader.registerComponent(Component, defaultMeta);
@@ -41,7 +41,6 @@ export function registerAll(loader?: {
 
   _registerComponent(YotpoReviews, YotpoReviewsMeta);
   _registerComponent(YotpoStarRating, YotpoStarRatingMeta);
-
 }
 
 export * from "./yotpo";

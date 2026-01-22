@@ -1,5 +1,5 @@
 import registerComponent, {
-  ComponentMeta,
+  CodeComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import React from "react";
 
@@ -47,7 +47,7 @@ export function ConditionGuard({
   return <>{children}</>;
 }
 
-export const conditionGuardMeta: ComponentMeta<ConditionGuardProps> = {
+export const conditionGuardMeta: CodeComponentMeta<ConditionGuardProps> = {
   name: "hostless-condition-guard",
   displayName: "Condition Guard",
   description:
@@ -87,7 +87,7 @@ export const conditionGuardMeta: ComponentMeta<ConditionGuardProps> = {
 
 export function registerConditionGuard(
   loader?: { registerComponent: typeof registerComponent },
-  customConditionGuardMeta?: ComponentMeta<ConditionGuardProps>
+  customConditionGuardMeta?: CodeComponentMeta<ConditionGuardProps>
 ) {
   if (loader) {
     loader.registerComponent(

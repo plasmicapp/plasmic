@@ -4,7 +4,7 @@
 
 ```ts
 
-import { ComponentMeta } from '@plasmicapp/host';
+import { CodeComponentMeta } from '@plasmicapp/host/registerComponent';
 import { PlasmicDataSourceContextValue } from '@plasmicapp/data-sources-context';
 import { default as React_2 } from 'react';
 import { usePlasmicDataConfig } from '@plasmicapp/query';
@@ -63,7 +63,7 @@ export function executeServerQuery<F extends (...args: any[]) => any>(serverQuer
 export function Fetcher(props: FetcherProps): React_2.ReactElement | null;
 
 // @public (undocumented)
-export const FetcherMeta: ComponentMeta<FetcherProps>;
+export const FetcherMeta: CodeComponentMeta<FetcherProps>;
 
 // @public (undocumented)
 export interface FetcherProps extends DataOpConfig {

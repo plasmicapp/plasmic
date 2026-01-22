@@ -1,4 +1,4 @@
-import { ComponentMeta } from "@plasmicapp/host";
+import { CodeComponentMeta } from "@plasmicapp/host/registerComponent";
 
 import { Widget } from "@typeform/embed-react";
 import React from "react";
@@ -18,7 +18,7 @@ interface TypeformProps {
   formId?: string;
 }
 
-export const TypeformMeta: ComponentMeta<TypeformProps> = {
+export const TypeformMeta: CodeComponentMeta<TypeformProps> = {
   name: "hostless-typeform",
   displayName: "Typeform",
   importName: "Typeform",

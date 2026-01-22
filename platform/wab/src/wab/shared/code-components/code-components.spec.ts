@@ -17,7 +17,7 @@ import {
   StateChangeHandlerParam,
   StateParam,
 } from "@/wab/shared/model/classes";
-import type { CodeComponentMeta } from "@plasmicapp/host";
+import type { CodeComponentMeta } from "@plasmicapp/host/registerComponent";
 
 const { findDuplicateAriaParams } = _testonly;
 

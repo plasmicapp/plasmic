@@ -1,25 +1,25 @@
-import registerComponent, {
-  ComponentMeta,
-} from "@plasmicapp/host/registerComponent";
-import React, { Children } from "react";
-import useCart from "./cart/use-cart";
-import usePrice from "./product/use-price";
-import { Registerable } from "./registerable";
 import { DataProvider } from "@plasmicapp/host";
+import registerComponent, {
+  CodeComponentMeta,
+} from "@plasmicapp/host/registerComponent";
+import React from "react";
+import useCart from "./cart/use-cart";
+import { Registerable } from "./registerable";
 
-export const cartProviderMeta: ComponentMeta<React.PropsWithChildren<object>> =
-  {
-    name: "plasmic-commerce-cart-provider",
-    displayName: "Cart Provider",
-    description:
-      "Use this to create bespoke cart UI. Inside Cart Provider, use dynamic values to access cart data.",
-    props: {
-      children: "slot",
-    },
-    providesData: true,
-    importPath: "@plasmicpkgs/commerce",
-    importName: "CartProvider",
-  };
+export const cartProviderMeta: CodeComponentMeta<
+  React.PropsWithChildren<object>
+> = {
+  name: "plasmic-commerce-cart-provider",
+  displayName: "Cart Provider",
+  description:
+    "Use this to create bespoke cart UI. Inside Cart Provider, use dynamic values to access cart data.",
+  props: {
+    children: "slot",
+  },
+  providesData: true,
+  importPath: "@plasmicpkgs/commerce",
+  importName: "CartProvider",
+};
 
 export function CartProvider(props: React.PropsWithChildren<object>) {
   const { data } = useCart();
@@ -32,7 +32,7 @@ export function CartProvider(props: React.PropsWithChildren<object>) {
 
 export function registerCartProvider(
   loader?: Registerable,
-  customCartProviderMeta?: ComponentMeta<React.PropsWithChildren<object>>
+  customCartProviderMeta?: CodeComponentMeta<React.PropsWithChildren<object>>
 ) {
   const doRegisterComponent: typeof registerComponent = (...args) =>
     loader ? loader.registerComponent(...args) : registerComponent(...args);

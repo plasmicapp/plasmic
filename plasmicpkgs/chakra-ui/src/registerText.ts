@@ -1,8 +1,8 @@
 import { TextProps } from "@chakra-ui/react";
-import { ComponentMeta } from "@plasmicapp/host/registerComponent";
+import { type CodeComponentMeta } from "@plasmicapp/host/registerComponent";
 import { getComponentNameAndImportMeta } from "./utils";
 
-export const textMeta: ComponentMeta<TextProps> = {
+export const textMeta: CodeComponentMeta<TextProps> = {
   ...getComponentNameAndImportMeta("Text"),
   props: {
     children: {

@@ -4,7 +4,7 @@ import {
   repeatedElement,
 } from "@plasmicapp/host";
 import registerComponent, {
-  ComponentMeta,
+  CodeComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import React from "react";
 import { CategoryProvider, PrimaryCategoryContext } from "./contexts";
@@ -23,82 +23,83 @@ interface CategoryCollectionProps {
   setControlContextData?: (data: { categories: Category[] }) => void;
 }
 
-export const categoryCollectionMeta: ComponentMeta<CategoryCollectionProps> = {
-  name: "plasmic-commerce-category-collection",
-  displayName: "Category Collection",
-  props: {
-    children: {
-      type: "slot",
-      defaultValue: [
-        {
-          type: "vbox",
-          children: [
-            {
-              type: "component",
-              name: "plasmic-commerce-category-field",
-              props: {
-                field: "name",
+export const categoryCollectionMeta: CodeComponentMeta<CategoryCollectionProps> =
+  {
+    name: "plasmic-commerce-category-collection",
+    displayName: "Category Collection",
+    props: {
+      children: {
+        type: "slot",
+        defaultValue: [
+          {
+            type: "vbox",
+            children: [
+              {
+                type: "component",
+                name: "plasmic-commerce-category-field",
+                props: {
+                  field: "name",
+                },
               },
+              {
+                type: "component",
+                name: "plasmic-commerce-product-collection",
+              },
+            ],
+            styles: {
+              width: "100%",
+              minWidth: 0,
             },
-            {
-              type: "component",
-              name: "plasmic-commerce-product-collection",
-            },
-          ],
-          styles: {
-            width: "100%",
-            minWidth: 0,
           },
+        ],
+      },
+      emptyMessage: {
+        type: "slot",
+        defaultValue: {
+          type: "text",
+          value: "No collection found!",
         },
-      ],
-    },
-    emptyMessage: {
-      type: "slot",
-      defaultValue: {
-        type: "text",
-        value: "No collection found!",
+      },
+      loadingMessage: {
+        type: "slot",
+        defaultValue: {
+          type: "text",
+          value: "Loading...",
+        },
+      },
+      category: {
+        type: "choice",
+        options: (props, ctx) => {
+          return (
+            ctx?.categories.map((category) => ({
+              label: `${"  ".repeat(category.depth ?? 0)}${category.name}`,
+              value: category.id,
+            })) ?? []
+          );
+        },
+      },
+      noLayout: {
+        type: "boolean",
+        displayName: "No layout",
+        description: "Do not render a container element.",
+      },
+      noAutoRepeat: {
+        type: "boolean",
+        displayName: "No auto-repeat",
+        description: "Do not automatically repeat children for every category.",
       },
     },
-    loadingMessage: {
-      type: "slot",
-      defaultValue: {
-        type: "text",
-        value: "Loading...",
-      },
+    defaultStyles: {
+      display: "grid",
+      gridTemplateColumns: "1fr",
+      gridRowGap: "8px",
+      padding: "8px",
+      maxWidth: "100%",
     },
-    category: {
-      type: "choice",
-      options: (props, ctx) => {
-        return (
-          ctx?.categories.map((category) => ({
-            label: `${"  ".repeat(category.depth ?? 0)}${category.name}`,
-            value: category.id,
-          })) ?? []
-        );
-      },
-    },
-    noLayout: {
-      type: "boolean",
-      displayName: "No layout",
-      description: "Do not render a container element.",
-    },
-    noAutoRepeat: {
-      type: "boolean",
-      displayName: "No auto-repeat",
-      description: "Do not automatically repeat children for every category.",
-    },
-  },
-  defaultStyles: {
-    display: "grid",
-    gridTemplateColumns: "1fr",
-    gridRowGap: "8px",
-    padding: "8px",
-    maxWidth: "100%",
-  },
-  importPath: "@plasmicpkgs/commerce",
-  importName: "CategoryCollection",
-  providesData: true,
-};
+    importPath: "@plasmicpkgs/commerce",
+    importName: "CategoryCollection",
+    providesData: true,
+  };
 
 export function CategoryCollection(props: CategoryCollectionProps) {
   const {
@@ -114,10 +115,8 @@ export function CategoryCollection(props: CategoryCollectionProps) {
 
   const inEditor = React.useContext(PlasmicCanvasContext);
 
-  const {
-    data: allCategories,
-    isLoading: isAllCategoriesLoading,
-  } = useCategories();
+  const { data: allCategories, isLoading: isAllCategoriesLoading } =
+    useCategories();
 
   const { data: categories, isLoading } = useCategories({
     categoryId: selectedCategory,
@@ -176,7 +175,7 @@ export function CategoryCollection(props: CategoryCollectionProps) {
 
 export function registerCategoryCollection(
   loader?: Registerable,
-  customCategoryCollectionMeta?: ComponentMeta<CategoryCollectionProps>
+  customCategoryCollectionMeta?: CodeComponentMeta<CategoryCollectionProps>
 ) {
   const doRegisterComponent: typeof registerComponent = (...args) =>
     loader ? loader.registerComponent(...args) : registerComponent(...args);

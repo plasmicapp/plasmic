@@ -1,11 +1,11 @@
 import { Kbd, KbdProps } from "@chakra-ui/react";
 import registerComponent, {
-  ComponentMeta,
+  CodeComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import { Registerable } from "./registerable";
 import { getComponentNameAndImportMeta } from "./utils";
 
-export const kbdMeta: ComponentMeta<KbdProps> = {
+export const kbdMeta: CodeComponentMeta<KbdProps> = {
   ...getComponentNameAndImportMeta("Kbd", undefined, {
     displayName: "Chakra-UI Keyboard Key",
   }),
@@ -24,7 +24,7 @@ export const kbdMeta: ComponentMeta<KbdProps> = {
 
 export function registerKbd(
   loader?: Registerable,
-  customKbdMeta?: ComponentMeta<KbdProps>
+  customKbdMeta?: CodeComponentMeta<KbdProps>
 ) {
   const doRegisterComponent: typeof registerComponent = (...args) =>
     loader ? loader.registerComponent(...args) : registerComponent(...args);

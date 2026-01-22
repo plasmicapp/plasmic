@@ -1,17 +1,16 @@
 import registerComponent, {
-  ComponentMeta,
+  CodeComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import React from "react";
 import YouTubeImpl, { YouTubeProps as YouTubeImplProps } from "react-youtube";
 import type { Options } from "youtube-player/dist/types";
 
 type PlayerVars = Exclude<Options["playerVars"], undefined>;
-export type YouTubeProps = YouTubeImplProps &
-  {
-    [prop in keyof PlayerVars]:
-      | PlayerVars[prop]
-      | (prop extends typeof booleanParams[number] ? boolean : never);
-  } & { mute?: boolean };
+export type YouTubeProps = YouTubeImplProps & {
+  [prop in keyof PlayerVars]:
+    | PlayerVars[prop]
+    | (prop extends (typeof booleanParams)[number] ? boolean : never);
+} & { mute?: boolean };
 const playerParams = [
   "autoplay",
   "cc_load_policy",
@@ -114,7 +113,7 @@ const YouTube = React.forwardRef<YouTubeImpl, YouTubeProps>(
   }
 );
 
-export const youtubeMeta: ComponentMeta<YouTubeProps> = {
+export const youtubeMeta: CodeComponentMeta<YouTubeProps> = {
   name: "hostless-youtube",
   displayName: "YouTube",
   importName: "YouTube",
@@ -225,7 +224,7 @@ export const youtubeMeta: ComponentMeta<YouTubeProps> = {
 
 export function registerYouTube(
   loader?: { registerComponent: typeof registerComponent },
-  customYouTubeMeta?: ComponentMeta<YouTubeProps>
+  customYouTubeMeta?: CodeComponentMeta<YouTubeProps>
 ) {
   if (loader) {
     loader.registerComponent(YouTube, customYouTubeMeta ?? youtubeMeta);

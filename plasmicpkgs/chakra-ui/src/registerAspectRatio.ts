@@ -1,11 +1,11 @@
 import { AspectRatioProps } from "@chakra-ui/react";
-import { ComponentMeta } from "@plasmicapp/host/registerComponent";
+import { type CodeComponentMeta } from "@plasmicapp/host/registerComponent";
 import {
   getComponentNameAndImportMeta,
   getPlasmicComponentName,
 } from "./utils";
 
-export const aspectRatioMeta: ComponentMeta<AspectRatioProps> = {
+export const aspectRatioMeta: CodeComponentMeta<AspectRatioProps> = {
   ...getComponentNameAndImportMeta("AspectRatio"),
   defaultStyles: {
     width: "320px",

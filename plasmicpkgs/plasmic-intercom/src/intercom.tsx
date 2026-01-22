@@ -1,4 +1,4 @@
-import { ComponentMeta } from "@plasmicapp/host";
+import { CodeComponentMeta } from "@plasmicapp/host/registerComponent";
 
 import React from "react";
 import { IntercomProvider as Provider } from "react-use-intercom";
@@ -23,7 +23,7 @@ interface IntercomProviderProps {
   initializeDelay?: number;
   className?: string;
 }
-export const IntercomProviderMeta: ComponentMeta<IntercomProviderProps> = {
+export const IntercomProviderMeta: CodeComponentMeta<IntercomProviderProps> = {
   name: "hostless-intercom",
   displayName: "Intercom Provider",
   importName: "IntercomProvider",

@@ -1,8 +1,8 @@
 import { InputProps } from "@chakra-ui/react";
-import { ComponentMeta } from "@plasmicapp/host/registerComponent";
+import { type CodeComponentMeta } from "@plasmicapp/host/registerComponent";
 import { getComponentNameAndImportMeta } from "./utils";
 
-export const inputMeta: ComponentMeta<InputProps> = {
+export const inputMeta: CodeComponentMeta<InputProps> = {
   ...getComponentNameAndImportMeta("Input"),
   props: {
     size: {

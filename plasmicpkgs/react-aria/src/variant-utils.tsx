@@ -1,4 +1,4 @@
-import { CodeComponentMeta } from "@plasmicapp/host";
+import { type CodeComponentMeta } from "@plasmicapp/host/registerComponent";
 import React from "react";
 
 const ARIA_COMPONENTS_VARIANTS = {

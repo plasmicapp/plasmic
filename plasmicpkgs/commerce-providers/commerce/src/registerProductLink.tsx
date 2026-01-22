@@ -1,5 +1,5 @@
 import registerComponent, {
-  ComponentMeta,
+  CodeComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import React from "react";
 import { useProduct } from "./contexts";
@@ -11,7 +11,7 @@ interface ProductLinkProps {
   linkDest?: string;
 }
 
-export const productLinkMeta: ComponentMeta<ProductLinkProps> = {
+export const productLinkMeta: CodeComponentMeta<ProductLinkProps> = {
   name: "plasmic-commerce-product-link",
   displayName: "Product Link",
   props: {
@@ -32,14 +32,14 @@ export function ProductLink(props: ProductLinkProps) {
 
   const product = useProduct();
 
-  const resolveLink = (linkDest: string | undefined) => {
-    if (!linkDest) {
+  const resolveLink = (link: string | undefined) => {
+    if (!link) {
       return undefined;
     }
     const regex = /{[^}]*}/;
     const regexAll = new RegExp(regex, "g");
-    const matches = linkDest.match(regexAll) ?? [];
-    let resolvedLink = linkDest;
+    const matches = link.match(regexAll) ?? [];
+    let resolvedLink = link;
     for (const match of matches) {
       const field = match.slice(1, -1);
       if (!product || !(field in product)) {
@@ -66,7 +66,7 @@ export function ProductLink(props: ProductLinkProps) {
 
 export function registerProductLink(
   loader?: Registerable,
-  customProductLinkMeta?: ComponentMeta<ProductLinkProps>
+  customProductLinkMeta?: CodeComponentMeta<ProductLinkProps>
 ) {
   const doRegisterComponent: typeof registerComponent = (...args) =>
     loader ? loader.registerComponent(...args) : registerComponent(...args);

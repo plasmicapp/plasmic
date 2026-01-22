@@ -1,5 +1,6 @@
-import { ComponentMeta } from "@plasmicapp/host";
-import registerComponent from "@plasmicapp/host/registerComponent";
+import registerComponent, {
+  CodeComponentMeta,
+} from "@plasmicapp/host/registerComponent";
 import React, { ComponentProps } from "react";
 import { Follow, Timeline, Tweet } from "react-twitter-widgets";
 
@@ -41,9 +42,9 @@ export function TimelineWrapper({
   );
 }
 
-export const timelineWrapper: ComponentMeta<ComponentProps<
-  typeof TimelineWrapper
->> = {
+export const timelineWrapper: CodeComponentMeta<
+  ComponentProps<typeof TimelineWrapper>
+> = {
   name: "hostless-react-twitter-widgets-timeline",
   displayName: "Timeline",
   importName: "TimelineWrapper",
@@ -88,7 +89,9 @@ export const timelineWrapper: ComponentMeta<ComponentProps<
 
 export function registerTimelineWrapper(
   loader?: { registerComponent: typeof registerComponent },
-  customTimelineWrapper?: ComponentMeta<ComponentProps<typeof TimelineWrapper>>
+  customTimelineWrapper?: CodeComponentMeta<
+    ComponentProps<typeof TimelineWrapper>
+  >
 ) {
   if (loader) {
     loader.registerComponent(
@@ -122,9 +125,9 @@ export function TweetWrapper({
   );
 }
 
-export const tweetWrapper: ComponentMeta<ComponentProps<
-  typeof TweetWrapper
->> = {
+export const tweetWrapper: CodeComponentMeta<
+  ComponentProps<typeof TweetWrapper>
+> = {
   name: "hostless-react-twitter-widgets-tweet",
   displayName: "Tweet",
   importName: "TweetWrapper",
@@ -151,7 +154,7 @@ export const tweetWrapper: ComponentMeta<ComponentProps<
 
 export function registerTweetWrapper(
   loader?: { registerComponent: typeof registerComponent },
-  customTweetWrapper?: ComponentMeta<ComponentProps<typeof TweetWrapper>>
+  customTweetWrapper?: CodeComponentMeta<ComponentProps<typeof TweetWrapper>>
 ) {
   if (loader) {
     loader.registerComponent(TweetWrapper, customTweetWrapper ?? tweetWrapper);
@@ -182,9 +185,9 @@ export function FollowWrapper({
   );
 }
 
-export const followWrapper: ComponentMeta<ComponentProps<
-  typeof FollowWrapper
->> = {
+export const followWrapper: CodeComponentMeta<
+  ComponentProps<typeof FollowWrapper>
+> = {
   name: "hostless-react-twitter-widgets-follow",
   displayName: "Follow",
   importName: "FollowWrapper",
@@ -204,7 +207,7 @@ export const followWrapper: ComponentMeta<ComponentProps<
 
 export function registerFollowWrapper(
   loader?: { registerComponent: typeof registerComponent },
-  customFollowWrapper?: ComponentMeta<ComponentProps<typeof FollowWrapper>>
+  customFollowWrapper?: CodeComponentMeta<ComponentProps<typeof FollowWrapper>>
 ) {
   if (loader) {
     loader.registerComponent(

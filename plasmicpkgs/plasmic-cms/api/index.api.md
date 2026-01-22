@@ -8,7 +8,7 @@ import { _ApiCmsRow } from '@plasmicpkgs/cms';
 import { _ApiCmsTable } from '@plasmicpkgs/cms';
 import { CanvasComponentProps } from '@plasmicapp/host/registerComponent';
 import { _CmsFieldMeta } from '@plasmicpkgs/cms';
-import { ComponentMeta } from '@plasmicapp/host/registerComponent';
+import { CodeComponentMeta } from '@plasmicapp/host/registerComponent';
 import { GlobalContextMeta } from '@plasmicapp/host/registerGlobalContext';
 import { default as React_2 } from 'react';
 import registerComponent from '@plasmicapp/host/registerComponent';
@@ -31,7 +31,7 @@ export class API {
 export function CmsCount({ className, table, setControlContextData, ...rest }: CmsCountProps): React_2.JSX.Element | null;
 
 // @public (undocumented)
-export const cmsCountFieldMeta: ComponentMeta<CmsCountProps>;
+export const cmsCountFieldMeta: CodeComponentMeta<CmsCountProps>;
 
 // @public (undocumented)
 export function CmsCredentialsProvider({ children, databaseId, databaseToken, host, locale, useDraft, }: CmsCredentialsProviderProps): React_2.JSX.Element;
@@ -43,31 +43,31 @@ export const cmsCredentialsProviderMeta: GlobalContextMeta<CmsCredentialsProvide
 export function CmsQueryRepeater({ table, children, setControlContextData, mode, where, useDraft, orderBy, desc, limit, offset, emptyMessage, forceEmptyState, loadingMessage, forceLoadingState, noLayout, noAutoRepeat, className, filterField, filterValue, fields, }: CmsQueryRepeaterProps): React_2.JSX.Element;
 
 // @public (undocumented)
-export const cmsQueryRepeaterMeta: ComponentMeta<CmsQueryRepeaterProps>;
+export const cmsQueryRepeaterMeta: CodeComponentMeta<CmsQueryRepeaterProps>;
 
 // @public (undocumented)
 export function CmsRowField({ className, table, field, dateFormat, setControlContextData, usePlasmicTheme, themeResetClassName, ...rest }: CmsRowFieldProps): React_2.JSX.Element | null;
 
 // @public (undocumented)
-export const cmsRowFieldMeta: ComponentMeta<CmsRowFieldProps>;
+export const cmsRowFieldMeta: CodeComponentMeta<CmsRowFieldProps>;
 
 // @public (undocumented)
 export function CmsRowFieldValue({ table, field, valueProp, children, setControlContextData, ...rest }: CmsRowFieldValueProps): React_2.ReactElement | null;
 
 // @public (undocumented)
-export const cmsRowFieldValueMeta: ComponentMeta<CmsRowFieldValueProps>;
+export const cmsRowFieldValueMeta: CodeComponentMeta<CmsRowFieldValueProps>;
 
 // @public (undocumented)
 export function CmsRowImage({ table, field, srcProp, children, setControlContextData, }: CmsRowImageProps): React_2.ReactElement | null;
 
 // @public (undocumented)
-export const cmsRowImageMeta: ComponentMeta<CmsRowImageProps>;
+export const cmsRowImageMeta: CodeComponentMeta<CmsRowImageProps>;
 
 // @public (undocumented)
 export function CmsRowLink({ table, field, hrefProp, children, setControlContextData, prefix, suffix, }: CmsRowLinkProps): React_2.ReactElement | null;
 
 // @public (undocumented)
-export const cmsRowLinkMeta: ComponentMeta<CmsRowLinkProps>;
+export const cmsRowLinkMeta: CodeComponentMeta<CmsRowLinkProps>;
 
 // @public (undocumented)
 export interface DatabaseConfig {

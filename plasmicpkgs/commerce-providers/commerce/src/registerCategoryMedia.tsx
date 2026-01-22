@@ -1,5 +1,5 @@
 import registerComponent, {
-  ComponentMeta,
+  CodeComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import React from "react";
 import { useCategoryContext } from "./contexts";
@@ -10,7 +10,7 @@ interface CategoryMediaProps {
   mediaIndex?: number;
 }
 
-export const categoryMediaMeta: ComponentMeta<CategoryMediaProps> = {
+export const categoryMediaMeta: CodeComponentMeta<CategoryMediaProps> = {
   name: "plasmic-commerce-category-media",
   displayName: "Category Media",
   props: {
@@ -41,7 +41,7 @@ export const CategoryMedia = React.forwardRef(
 
 export function registerCategoryMedia(
   loader?: Registerable,
-  customCategoryMediaMeta?: ComponentMeta<CategoryMediaProps>
+  customCategoryMediaMeta?: CodeComponentMeta<CategoryMediaProps>
 ) {
   const doRegisterComponent: typeof registerComponent = (...args) =>
     loader ? loader.registerComponent(...args) : registerComponent(...args);

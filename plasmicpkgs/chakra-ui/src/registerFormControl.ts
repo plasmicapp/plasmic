@@ -1,16 +1,16 @@
 import {
   FormControlProps,
   FormErrorMessageProps,
-  FormLabelProps,
   FormHelperTextProps,
+  FormLabelProps,
 } from "@chakra-ui/react";
-import { ComponentMeta } from "@plasmicapp/host/registerComponent";
+import { type CodeComponentMeta } from "@plasmicapp/host/registerComponent";
 import {
   getComponentNameAndImportMeta,
   getPlasmicComponentName,
 } from "./utils";
 
-export const formControlMeta: ComponentMeta<FormControlProps> = {
+export const formControlMeta: CodeComponentMeta<FormControlProps> = {
   ...getComponentNameAndImportMeta("FormControl"),
   props: {
     label: "string",
@@ -34,7 +34,7 @@ export const formControlMeta: ComponentMeta<FormControlProps> = {
   },
 };
 
-export const formLabelMeta: ComponentMeta<FormLabelProps> = {
+export const formLabelMeta: CodeComponentMeta<FormLabelProps> = {
   ...getComponentNameAndImportMeta("FormLabel", "FormControl"),
   props: {
     children: {
@@ -51,7 +51,7 @@ export const formLabelMeta: ComponentMeta<FormLabelProps> = {
   },
 };
 
-export const formHelperTextMeta: ComponentMeta<FormHelperTextProps> = {
+export const formHelperTextMeta: CodeComponentMeta<FormHelperTextProps> = {
   ...getComponentNameAndImportMeta("FormHelperText", "FormControl"),
   props: {
     children: {
@@ -64,7 +64,7 @@ export const formHelperTextMeta: ComponentMeta<FormHelperTextProps> = {
   },
 };
 
-export const formErrorMessageMeta: ComponentMeta<FormErrorMessageProps> = {
+export const formErrorMessageMeta: CodeComponentMeta<FormErrorMessageProps> = {
   ...getComponentNameAndImportMeta("FormErrorMessage", "FormControl"),
   props: {
     children: {

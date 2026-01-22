@@ -1,5 +1,7 @@
-import { CodeComponentMeta, PlasmicCanvasContext } from "@plasmicapp/host";
-import registerComponent from "@plasmicapp/host/registerComponent";
+import { PlasmicCanvasContext } from "@plasmicapp/host";
+import registerComponent, {
+  CodeComponentMeta,
+} from "@plasmicapp/host/registerComponent";
 import Lottie, { InteractivityProps } from "lottie-react";
 import React, { useContext } from "react";
 

@@ -26,7 +26,8 @@ import { SelectOptionGroupPlugin } from "@/wab/shared/plume/select-option-group"
 import { SwitchPlugin } from "@/wab/shared/plume/switch";
 import { TextInputPlugin } from "@/wab/shared/plume/text-input";
 import { TriggeredOverlayPlugin } from "@/wab/shared/plume/triggered-overlay";
-import { Action, CodeComponentMeta } from "@plasmicapp/host";
+import { Action } from "@plasmicapp/host";
+import type { CodeComponentMeta } from "@plasmicapp/host/registerComponent";
 import React from "react";
 
 export interface PlumeCanvasPlugin {

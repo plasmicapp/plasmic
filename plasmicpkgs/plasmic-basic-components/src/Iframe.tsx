@@ -1,5 +1,7 @@
-import { ComponentMeta, PlasmicCanvasContext } from "@plasmicapp/host";
-import registerComponent from "@plasmicapp/host/registerComponent";
+import { PlasmicCanvasContext } from "@plasmicapp/host";
+import registerComponent, {
+  CodeComponentMeta,
+} from "@plasmicapp/host/registerComponent";
 import React, { useContext } from "react";
 
 export interface IframeProps {
@@ -59,7 +61,7 @@ export function Iframe({
   );
 }
 
-export const iframeMeta: ComponentMeta<IframeProps> = {
+export const iframeMeta: CodeComponentMeta<IframeProps> = {
   name: "hostless-iframe",
   displayName: "Iframe",
   importName: "Iframe",
@@ -110,7 +112,7 @@ export const iframeMeta: ComponentMeta<IframeProps> = {
 
 export function registerIframe(
   loader?: { registerComponent: typeof registerComponent },
-  customIframeMeta?: ComponentMeta<IframeProps>
+  customIframeMeta?: CodeComponentMeta<IframeProps>
 ) {
   if (loader) {
     loader.registerComponent(Iframe, customIframeMeta ?? iframeMeta);

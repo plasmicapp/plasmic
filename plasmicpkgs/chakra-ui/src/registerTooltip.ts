@@ -1,11 +1,11 @@
 import { TooltipProps } from "@chakra-ui/react";
-import { ComponentMeta } from "@plasmicapp/host/registerComponent";
+import { type CodeComponentMeta } from "@plasmicapp/host/registerComponent";
 import {
   getComponentNameAndImportMeta,
   getPlasmicComponentName,
 } from "./utils";
 
-export const tooltipMeta: ComponentMeta<TooltipProps> = {
+export const tooltipMeta: CodeComponentMeta<TooltipProps> = {
   ...getComponentNameAndImportMeta("Tooltip"),
   props: {
     children: {

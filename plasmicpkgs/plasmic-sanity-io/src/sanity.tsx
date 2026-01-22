@@ -1,10 +1,6 @@
-import {
-  ComponentMeta,
-  DataProvider,
-  GlobalContextMeta,
-  repeatedElement,
-  useSelector,
-} from "@plasmicapp/host";
+import { DataProvider, repeatedElement, useSelector } from "@plasmicapp/host";
+import { type CodeComponentMeta } from "@plasmicapp/host/registerComponent";
+import { type GlobalContextMeta } from "@plasmicapp/host/registerGlobalContext";
 import { usePlasmicQueryData } from "@plasmicapp/query";
 import { createClient } from "@sanity/client";
 import imageUrlBuilder from "@sanity/image-url";
@@ -133,7 +129,7 @@ interface SanityFetcherProps {
   }) => void;
 }
 
-export const sanityFetcherMeta: ComponentMeta<SanityFetcherProps> = {
+export const sanityFetcherMeta: CodeComponentMeta<SanityFetcherProps> = {
   name: "SanityFetcher",
   displayName: "Sanity Fetcher",
   importName: "SanityFetcher",
@@ -413,7 +409,7 @@ export function SanityFetcher({
     return <div className={className}>Loading...</div>;
   }
 
-  let sanityFields = unfilteredData.map((item) => {
+  const sanityFields = unfilteredData.map((item) => {
     const fields = Object.keys(item).filter((field) => {
       const value = get(item, field);
       return (
@@ -533,7 +529,7 @@ interface SanityFieldProps {
   }) => void;
 }
 
-export const sanityFieldMeta: ComponentMeta<SanityFieldProps> = {
+export const sanityFieldMeta: CodeComponentMeta<SanityFieldProps> = {
   name: "SanityField",
   displayName: "Sanity Field",
   importName: "SanityField",

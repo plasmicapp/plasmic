@@ -1,4 +1,5 @@
-import { ComponentMeta, GlobalContextMeta } from "@plasmicapp/host";
+import { CodeComponentMeta } from "@plasmicapp/host/registerComponent";
+import { GlobalContextMeta } from "@plasmicapp/host/registerGlobalContext";
 import { usePlasmicQueryData } from "@plasmicapp/query";
 import isArray from "lodash/isArray";
 import React, { useContext } from "react";
@@ -69,7 +70,7 @@ interface YotpoReviewsProps {
   className?: string;
 }
 
-export const YotpoReviewsMeta: ComponentMeta<YotpoReviewsProps> = {
+export const YotpoReviewsMeta: CodeComponentMeta<YotpoReviewsProps> = {
   name: "hostless-yotpo-star-reviews",
   displayName: "Yotpo Reviews",
   importName: "YotpoReviews",
@@ -194,10 +195,8 @@ export function YotpoReviews({
     return <div> Please enter Product price and Currency</div>;
   }
 
-  const review = Object.values(reviewsData).flatMap((item: any, i: number) =>
-    (isArray(item) ? item : [item]).filter(
-      (review: any) => review.id === reviewId
-    )
+  const review = Object.values(reviewsData).flatMap((item: any) =>
+    (isArray(item) ? item : [item]).filter((r: any) => r.id === reviewId)
   );
 
   const renderedData = reviewData?.response.review.products.map(
@@ -230,7 +229,7 @@ interface YotpoStarRatingProps {
   }) => void;
 }
 
-export const YotpoStarRatingMeta: ComponentMeta<YotpoStarRatingProps> = {
+export const YotpoStarRatingMeta: CodeComponentMeta<YotpoStarRatingProps> = {
   name: "hostless-yotpo-star-rating",
   displayName: "Yotpo Star Rating",
   importName: "YotpoStarRating",
@@ -338,10 +337,8 @@ export function YotpoStarRating({
       </div>
     );
   }
-  const product = Object.values(reviews).flatMap((item: any, i: number) =>
-    (isArray(item) ? item : [item]).filter(
-      (review: any) => review.id === productId
-    )
+  const product = Object.values(reviews).flatMap((item: any) =>
+    (isArray(item) ? item : [item]).filter((r: any) => r.id === productId)
   );
 
   const renderedData = review?.response.review.products.map(

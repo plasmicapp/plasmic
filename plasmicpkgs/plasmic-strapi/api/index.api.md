@@ -4,7 +4,7 @@
 
 ```ts
 
-import { ComponentMeta } from '@plasmicapp/host';
+import { CodeComponentMeta } from '@plasmicapp/host/registerComponent';
 import { GlobalContextMeta } from '@plasmicapp/host';
 import { default as React_2 } from 'react';
 import { ReactNode } from 'react';
@@ -21,7 +21,7 @@ export function registerAll(loader?: {
 export function StrapiCollection({ name, filterParameter, filterValue, filterField, limit, children, className, noLayout, noAutoRepeat, setControlContextData, }: StrapiCollectionProps): React_2.JSX.Element;
 
 // @public (undocumented)
-export const strapiCollectionMeta: ComponentMeta<StrapiCollectionProps>;
+export const strapiCollectionMeta: CodeComponentMeta<StrapiCollectionProps>;
 
 // @public (undocumented)
 export function StrapiCredentialsProvider({ host, token, children, }: React_2.PropsWithChildren<StrapiCredentials>): React_2.JSX.Element;
@@ -33,7 +33,7 @@ export const strapiCredentialsProviderMeta: GlobalContextMeta<StrapiCredentials>
 export function StrapiField({ className, path, setControlContextData, }: StrapiFieldProps): React_2.JSX.Element;
 
 // @public (undocumented)
-export const strapiFieldMeta: ComponentMeta<StrapiFieldProps>;
+export const strapiFieldMeta: CodeComponentMeta<StrapiFieldProps>;
 
 // (No @packageDocumentation comment for this package)
 

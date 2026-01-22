@@ -1,5 +1,5 @@
 import registerComponent, {
-  ComponentMeta,
+  CodeComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import debounce from "debounce";
 import React from "react";
@@ -21,7 +21,7 @@ interface ProductBoxProps {
   }) => void;
 }
 
-export const productBoxMeta: ComponentMeta<ProductBoxProps> = {
+export const productBoxMeta: CodeComponentMeta<ProductBoxProps> = {
   name: "plasmic-commerce-product-box",
   displayName: "Product Box",
   description:
@@ -134,7 +134,7 @@ export function ProductBox(props: ProductBoxProps) {
 
 export function registerProductBox(
   loader?: Registerable,
-  customProductBoxMeta?: ComponentMeta<ProductBoxProps>
+  customProductBoxMeta?: CodeComponentMeta<ProductBoxProps>
 ) {
   const doRegisterComponent: typeof registerComponent = (...args) =>
     loader ? loader.registerComponent(...args) : registerComponent(...args);

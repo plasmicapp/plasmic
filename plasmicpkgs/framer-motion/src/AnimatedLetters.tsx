@@ -1,5 +1,5 @@
 import registerComponent, {
-  ComponentMeta,
+  CodeComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import { motion, Variants } from "framer-motion";
 import React from "react";
@@ -72,7 +72,7 @@ export default function AnimatedLetters({
   );
 }
 
-export const animatedLettersMeta: ComponentMeta<AnimatedLettersProps> = {
+export const animatedLettersMeta: CodeComponentMeta<AnimatedLettersProps> = {
   name: "hostless-animated-letters",
   displayName: "Animated Letters",
   importName: "AnimatedLetters",
@@ -113,7 +113,7 @@ export const animatedLettersMeta: ComponentMeta<AnimatedLettersProps> = {
 
 export function registerAnimatedLetters(
   loader?: { registerComponent: typeof registerComponent },
-  customAnimatedLettersMeta?: ComponentMeta<AnimatedLettersProps>
+  customAnimatedLettersMeta?: CodeComponentMeta<AnimatedLettersProps>
 ) {
   if (loader) {
     loader.registerComponent(

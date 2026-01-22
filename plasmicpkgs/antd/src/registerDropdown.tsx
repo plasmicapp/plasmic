@@ -1,5 +1,5 @@
 import registerComponent, {
-  ComponentMeta,
+  CodeComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import { Dropdown as AntdDropdown } from "antd";
 import type { DropdownButtonProps, DropDownProps } from "antd/es/dropdown";
@@ -23,7 +23,7 @@ export class Dropdown extends React.Component<DropDownProps> {
   }
 }
 
-export const dropdownMeta: ComponentMeta<DropDownProps> = {
+export const dropdownMeta: CodeComponentMeta<DropDownProps> = {
   name: "AntdDropdown",
   displayName: "Antd Dropdown",
   props: {
@@ -88,14 +88,14 @@ export const dropdownMeta: ComponentMeta<DropDownProps> = {
 
 export function registerDropdown(
   loader?: Registerable,
-  customDropdownMeta?: ComponentMeta<DropDownProps>
+  customDropdownMeta?: CodeComponentMeta<DropDownProps>
 ) {
   const doRegisterComponent: typeof registerComponent = (...args) =>
     loader ? loader.registerComponent(...args) : registerComponent(...args);
   doRegisterComponent(Dropdown, customDropdownMeta ?? dropdownMeta);
 }
 
-export const dropdownButtonMeta: ComponentMeta<DropdownButtonProps> = {
+export const dropdownButtonMeta: CodeComponentMeta<DropdownButtonProps> = {
   name: "AntdDropdownButton",
   displayName: "Antd Dropdown Button",
   props: {
@@ -172,7 +172,7 @@ export const dropdownButtonMeta: ComponentMeta<DropdownButtonProps> = {
 
 export function registerDropdownButton(
   loader?: Registerable,
-  customDropdownButtonMeta?: ComponentMeta<DropDownProps>
+  customDropdownButtonMeta?: CodeComponentMeta<DropDownProps>
 ) {
   const doRegisterComponent: typeof registerComponent = (...args) =>
     loader ? loader.registerComponent(...args) : registerComponent(...args);

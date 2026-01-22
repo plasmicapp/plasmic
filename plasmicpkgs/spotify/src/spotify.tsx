@@ -1,4 +1,4 @@
-import { ComponentMeta } from "@plasmicapp/host";
+import { CodeComponentMeta } from "@plasmicapp/host/registerComponent";
 
 import React from "react";
 export function ensure<T>(x: T | null | undefined): T {
@@ -18,7 +18,7 @@ interface SpotifyProps {
   className?: string;
 }
 
-export const SpotifyMeta: ComponentMeta<SpotifyProps> = {
+export const SpotifyMeta: CodeComponentMeta<SpotifyProps> = {
   name: "hostless-spotify",
   displayName: "Spotify",
   importName: "Spotify",

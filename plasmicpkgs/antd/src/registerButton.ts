@@ -1,5 +1,5 @@
 import registerComponent, {
-  ComponentMeta,
+  CodeComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import { Button as AntdButton } from "antd";
 import type { ButtonProps } from "antd/es/button";
@@ -7,7 +7,7 @@ import { Registerable } from "./registerable";
 
 export const Button: typeof AntdButton = AntdButton;
 
-export const buttonMeta: ComponentMeta<ButtonProps> = {
+export const buttonMeta: CodeComponentMeta<ButtonProps> = {
   name: "AntdButton",
   displayName: "Antd Button",
   props: {
@@ -83,7 +83,7 @@ export const buttonMeta: ComponentMeta<ButtonProps> = {
 
 export function registerButton(
   loader?: Registerable,
-  customButtonMeta?: ComponentMeta<ButtonProps>
+  customButtonMeta?: CodeComponentMeta<ButtonProps>
 ) {
   const doRegisterComponent: typeof registerComponent = (...args) =>
     loader ? loader.registerComponent(...args) : registerComponent(...args);

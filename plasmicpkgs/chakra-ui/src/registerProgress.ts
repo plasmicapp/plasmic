@@ -1,8 +1,8 @@
 import { ProgressProps } from "@chakra-ui/react";
-import { ComponentMeta } from "@plasmicapp/host/registerComponent";
+import { type CodeComponentMeta } from "@plasmicapp/host/registerComponent";
 import { getComponentNameAndImportMeta } from "./utils";
 
-export const progressMeta: ComponentMeta<ProgressProps> = {
+export const progressMeta: CodeComponentMeta<ProgressProps> = {
   ...getComponentNameAndImportMeta("Progress"),
   props: {
     colorScheme: {

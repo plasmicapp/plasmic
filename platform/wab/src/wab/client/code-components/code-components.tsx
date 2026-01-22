@@ -70,18 +70,16 @@ import {
   Site,
   TplNode,
 } from "@/wab/shared/model/classes";
-import {
-  ComponentMeta,
-  GlobalContextMeta,
-  PlasmicElement,
-} from "@plasmicapp/host";
+import { PlasmicElement } from "@plasmicapp/host";
+import { type CodeComponentMeta } from "@plasmicapp/host/registerComponent";
+import { type GlobalContextMeta } from "@plasmicapp/host/registerGlobalContext";
 import { notification } from "antd";
 import React from "react";
 import { failable } from "ts-failable";
 
 function onCreateCodeComponent(
   name: string,
-  meta: ComponentMeta<any> | GlobalContextMeta<any>
+  meta: CodeComponentMeta<any> | GlobalContextMeta<any>
 ) {
   // Segment track
   trackEvent("Create code component", {

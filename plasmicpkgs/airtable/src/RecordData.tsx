@@ -6,7 +6,7 @@ import {
 } from "@plasmicapp/host";
 import registerComponent, {
   CanvasComponentProps,
-  ComponentMeta,
+  CodeComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import registerGlobalContext, {
   GlobalContextMeta,
@@ -260,7 +260,7 @@ export function AirtableCredentialsProvider({
 
 const thisModule = "@plasmicpkgs/airtable";
 
-export const airtableRecordMeta: ComponentMeta<AirtableRecordProps> = {
+export const airtableRecordMeta: CodeComponentMeta<AirtableRecordProps> = {
   name: "hostless-airtable-record",
   displayName: "Airtable Record",
   importPath: thisModule,
@@ -289,7 +289,7 @@ export const airtableRecordMeta: ComponentMeta<AirtableRecordProps> = {
 
 export function registerAirtableRecord(
   loader?: { registerComponent: typeof registerComponent },
-  customAirtableRecordMeta?: ComponentMeta<AirtableRecordProps>
+  customAirtableRecordMeta?: CodeComponentMeta<AirtableRecordProps>
 ) {
   if (loader) {
     loader.registerComponent(
@@ -304,26 +304,27 @@ export function registerAirtableRecord(
   }
 }
 
-export const airtableRecordFieldMeta: ComponentMeta<AirtableRecordFieldProps> = {
-  name: "hostless-airtable-record-field",
-  displayName: "Airtable Record Field",
-  importPath: thisModule,
-  importName: "AirtableRecordField",
-  props: {
-    field: {
-      type: "choice",
-      displayName: "Field Name",
-      defaultValueHint: "The first field",
-      options: (_props, data) => {
-        return data ? Object.keys(data) : ["Data unavailable"];
+export const airtableRecordFieldMeta: CodeComponentMeta<AirtableRecordFieldProps> =
+  {
+    name: "hostless-airtable-record-field",
+    displayName: "Airtable Record Field",
+    importPath: thisModule,
+    importName: "AirtableRecordField",
+    props: {
+      field: {
+        type: "choice",
+        displayName: "Field Name",
+        defaultValueHint: "The first field",
+        options: (_props, data) => {
+          return data ? Object.keys(data) : ["Data unavailable"];
+        },
       },
     },
-  },
-};
+  };
 
 export function registerAirtableRecordField(
   loader?: { registerComponent: typeof registerComponent },
-  customAirtableRecordFieldMeta?: ComponentMeta<AirtableRecordFieldProps>
+  customAirtableRecordFieldMeta?: CodeComponentMeta<AirtableRecordFieldProps>
 ) {
   if (loader) {
     loader.registerComponent(
@@ -338,62 +339,64 @@ export function registerAirtableRecordField(
   }
 }
 
-export const airtableCollectionMeta: ComponentMeta<AirtableCollectionProps> = {
-  name: "hostless-airtable-collection",
-  displayName: "Airtable Collection",
-  importPath: thisModule,
-  importName: "AirtableCollection",
-  providesData: true,
-  props: {
-    children: {
-      type: "slot",
-      isRepeated: true,
-      defaultValue: {
-        type: "component",
-        name: "hostless-airtable-record-field",
+export const airtableCollectionMeta: CodeComponentMeta<AirtableCollectionProps> =
+  {
+    name: "hostless-airtable-collection",
+    displayName: "Airtable Collection",
+    importPath: thisModule,
+    importName: "AirtableCollection",
+    providesData: true,
+    props: {
+      children: {
+        type: "slot",
+        isRepeated: true,
+        defaultValue: {
+          type: "component",
+          name: "hostless-airtable-record-field",
+        },
+      },
+      table: {
+        type: "string",
+        displayName: "Table Name",
+        description: "The Airtable table name or ID",
+      },
+      fields: {
+        type: "object",
+        displayName: "Fields",
+        description: "List of strings containing the fields to be included",
+      },
+      maxRecords: {
+        type: "number",
+        displayName: "Max Records",
+        description:
+          "The maximum total number of records that will be returned",
+        defaultValueHint: 100,
+        max: 100,
+        min: 1,
+      },
+      view: {
+        type: "string",
+        displayName: "View",
+        description:
+          "The name or ID of a view in the table. If set, only records from that view will be returned",
+      },
+      sort: {
+        type: "object",
+        displayName: "Sort",
+        description:
+          'A list of Airtable sort objects that specifies how the records will be ordered. Each sort object must have a field key specifying the name of the field to sort on, and an optional direction key that is either "asc" or "desc". The default direction is "asc"',
+      },
+      filterByFormula: {
+        type: "string",
+        displayName: "Filter by Formula",
+        description: "An Airtable formula used to filter records",
       },
     },
-    table: {
-      type: "string",
-      displayName: "Table Name",
-      description: "The Airtable table name or ID",
-    },
-    fields: {
-      type: "object",
-      displayName: "Fields",
-      description: "List of strings containing the fields to be included",
-    },
-    maxRecords: {
-      type: "number",
-      displayName: "Max Records",
-      description: "The maximum total number of records that will be returned",
-      defaultValueHint: 100,
-      max: 100,
-      min: 1,
-    },
-    view: {
-      type: "string",
-      displayName: "View",
-      description:
-        "The name or ID of a view in the table. If set, only records from that view will be returned",
-    },
-    sort: {
-      type: "object",
-      displayName: "Sort",
-      description:
-        'A list of Airtable sort objects that specifies how the records will be ordered. Each sort object must have a field key specifying the name of the field to sort on, and an optional direction key that is either "asc" or "desc". The default direction is "asc"',
-    },
-    filterByFormula: {
-      type: "string",
-      displayName: "Filter by Formula",
-      description: "An Airtable formula used to filter records",
-    },
-  },
-};
+  };
 
 export function registerAirtableCollection(
   loader?: { registerComponent: typeof registerComponent },
-  customAirtableCollectionMeta?: ComponentMeta<AirtableCollectionProps>
+  customAirtableCollectionMeta?: CodeComponentMeta<AirtableCollectionProps>
 ) {
   if (loader) {
     loader.registerComponent(
@@ -408,26 +411,27 @@ export function registerAirtableCollection(
   }
 }
 
-export const airtableCredentialsProviderMeta: GlobalContextMeta<AirtableCredentialsProviderProps> = {
-  name: "hostless-airtable-credentials-provider",
-  displayName: "Airtable Credentials Provider",
-  importPath: thisModule,
-  importName: "AirtableCredentialsProvider",
-  props: {
-    dataSource: {
-      type: "dataSource",
-      dataSource: "airtable",
-      displayName: "Data Source",
-      description: "The Airtable Data Source to use",
+export const airtableCredentialsProviderMeta: GlobalContextMeta<AirtableCredentialsProviderProps> =
+  {
+    name: "hostless-airtable-credentials-provider",
+    displayName: "Airtable Credentials Provider",
+    importPath: thisModule,
+    importName: "AirtableCredentialsProvider",
+    props: {
+      dataSource: {
+        type: "dataSource",
+        dataSource: "airtable",
+        displayName: "Data Source",
+        description: "The Airtable Data Source to use",
+      },
+      host: {
+        type: "string",
+        displayName: "Host",
+        description: "Plasmic Server-Data URL",
+        defaultValueHint: defaultHost,
+      },
     },
-    host: {
-      type: "string",
-      displayName: "Host",
-      description: "Plasmic Server-Data URL",
-      defaultValueHint: defaultHost,
-    },
-  },
-};
+  };
 
 export function registerAirtableCredentialsProvider(
   loader?: { registerGlobalContext: typeof registerGlobalContext },

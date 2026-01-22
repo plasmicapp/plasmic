@@ -1,8 +1,8 @@
 import { CodeProps } from "@chakra-ui/react";
-import { ComponentMeta } from "@plasmicapp/host/registerComponent";
+import { type CodeComponentMeta } from "@plasmicapp/host/registerComponent";
 import { getComponentNameAndImportMeta } from "./utils";
 
-export const codeMeta: ComponentMeta<CodeProps> = {
+export const codeMeta: CodeComponentMeta<CodeProps> = {
   ...getComponentNameAndImportMeta("Code"),
   props: {
     colorScheme: {

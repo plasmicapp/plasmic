@@ -1,12 +1,12 @@
 import registerComponent, {
-  ComponentMeta,
+  CodeComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import { Switch as AntdSwitch } from "antd";
 import type { SwitchProps } from "antd/es/switch";
 import { Registerable } from "./registerable";
 export const Switch: typeof AntdSwitch = AntdSwitch;
 
-export const switchMeta: ComponentMeta<SwitchProps> = {
+export const switchMeta: CodeComponentMeta<SwitchProps> = {
   name: "AntdSwitch",
   displayName: "Antd Switch",
   props: {
@@ -74,7 +74,7 @@ export const switchMeta: ComponentMeta<SwitchProps> = {
 
 export function registerSwitch(
   loader?: Registerable,
-  customSwitchMeta?: ComponentMeta<SwitchProps>
+  customSwitchMeta?: CodeComponentMeta<SwitchProps>
 ) {
   const doRegisterComponent: typeof registerComponent = (...args) =>
     loader ? loader.registerComponent(...args) : registerComponent(...args);

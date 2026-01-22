@@ -1,4 +1,5 @@
-import { ComponentMeta, usePlasmicCanvasContext } from "@plasmicapp/host";
+import { usePlasmicCanvasContext } from "@plasmicapp/host";
+import { CodeComponentMeta } from "@plasmicapp/host/registerComponent";
 
 import React from "react";
 
@@ -26,7 +27,7 @@ interface SoundCloudProps {
   className: string;
 }
 
-export const SoundCloudMeta: ComponentMeta<SoundCloudProps> = {
+export const SoundCloudMeta: CodeComponentMeta<SoundCloudProps> = {
   name: "hostless-soundcloud",
   displayName: "SoundCloud",
   importName: "SoundCloud",

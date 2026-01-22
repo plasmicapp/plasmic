@@ -1,5 +1,5 @@
 import registerComponent, {
-  ComponentMeta,
+  CodeComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import React from "react";
 import {
@@ -54,7 +54,7 @@ export function Reveal({ effect = "fade", className, ...props }: RevealProps) {
   return <Comp className={className} {...props} children={children} />;
 }
 
-export const revealMeta: ComponentMeta<RevealProps> = {
+export const revealMeta: CodeComponentMeta<RevealProps> = {
   name: "hostless-reveal",
   importName: "Reveal",
   displayName: "Reveal",
@@ -100,8 +100,8 @@ export const revealMeta: ComponentMeta<RevealProps> = {
       type: "choice",
       options: (props) => {
         const effect = props.effect || "fade";
-        const maybeAddOptions = (effects: Effect[], options: string[]) =>
-          effects.includes(effect) ? options : [];
+        const maybeAddOptions = (effects_: Effect[], options: string[]) =>
+          effects_.includes(effect) ? options : [];
         return ([] as string[])
           .concat(maybeAddOptions(["flip"], ["horizontal", "vertical"]))
           .concat(
@@ -165,7 +165,7 @@ export const revealMeta: ComponentMeta<RevealProps> = {
 
 export function registerReveal(
   loader?: { registerComponent: typeof registerComponent },
-  customRevealMeta?: ComponentMeta<RevealProps>
+  customRevealMeta?: CodeComponentMeta<RevealProps>
 ) {
   if (loader) {
     loader.registerComponent(Reveal, customRevealMeta ?? revealMeta);

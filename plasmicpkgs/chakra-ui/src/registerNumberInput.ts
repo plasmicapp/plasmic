@@ -5,13 +5,13 @@ import {
   NumberInputProps,
   NumberInputStepperProps,
 } from "@chakra-ui/react";
-import { ComponentMeta } from "@plasmicapp/host/registerComponent";
+import { type CodeComponentMeta } from "@plasmicapp/host/registerComponent";
 import {
   getComponentNameAndImportMeta,
   getPlasmicComponentName,
 } from "./utils";
 
-export const numberInputMeta: ComponentMeta<NumberInputProps> = {
+export const numberInputMeta: CodeComponentMeta<NumberInputProps> = {
   ...getComponentNameAndImportMeta("NumberInput"),
   props: {
     size: {
@@ -90,46 +90,49 @@ export const numberInputMeta: ComponentMeta<NumberInputProps> = {
   },
 };
 
-export const numberInputStepperMeta: ComponentMeta<NumberInputStepperProps> = {
-  ...getComponentNameAndImportMeta("NumberInputStepper", "NumberInput"),
-  props: {
-    children: {
-      type: "slot",
-      allowedComponents: [
-        getPlasmicComponentName("NumberIncrementStepper"),
-        getPlasmicComponentName("NumberDecrementStepper"),
-      ],
-      defaultValue: [
-        {
-          type: "component",
-          name: getPlasmicComponentName("NumberIncrementStepper"),
-        },
-        {
-          type: "component",
-          name: getPlasmicComponentName("NumberDecrementStepper"),
-        },
-      ],
+export const numberInputStepperMeta: CodeComponentMeta<NumberInputStepperProps> =
+  {
+    ...getComponentNameAndImportMeta("NumberInputStepper", "NumberInput"),
+    props: {
+      children: {
+        type: "slot",
+        allowedComponents: [
+          getPlasmicComponentName("NumberIncrementStepper"),
+          getPlasmicComponentName("NumberDecrementStepper"),
+        ],
+        defaultValue: [
+          {
+            type: "component",
+            name: getPlasmicComponentName("NumberIncrementStepper"),
+          },
+          {
+            type: "component",
+            name: getPlasmicComponentName("NumberDecrementStepper"),
+          },
+        ],
+      },
     },
-  },
-};
+  };
 
-export const numberDecrementStepperMeta: ComponentMeta<NumberDecrementStepperProps> = {
-  ...getComponentNameAndImportMeta(
-    "NumberDecrementStepper",
-    "NumberInputStepper"
-  ),
-  props: {},
-};
+export const numberDecrementStepperMeta: CodeComponentMeta<NumberDecrementStepperProps> =
+  {
+    ...getComponentNameAndImportMeta(
+      "NumberDecrementStepper",
+      "NumberInputStepper"
+    ),
+    props: {},
+  };
 
-export const numberIncrementStepperMeta: ComponentMeta<NumberIncrementStepperProps> = {
-  ...getComponentNameAndImportMeta(
-    "NumberIncrementStepper",
-    "NumberInputStepper"
-  ),
-  props: {},
-};
+export const numberIncrementStepperMeta: CodeComponentMeta<NumberIncrementStepperProps> =
+  {
+    ...getComponentNameAndImportMeta(
+      "NumberIncrementStepper",
+      "NumberInputStepper"
+    ),
+    props: {},
+  };
 
-export const numberInputFieldMeta: ComponentMeta<NumberInputFieldProps> = {
+export const numberInputFieldMeta: CodeComponentMeta<NumberInputFieldProps> = {
   ...getComponentNameAndImportMeta("NumberInputField", "NumberInput"),
   props: {},
 };

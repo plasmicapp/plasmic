@@ -1,14 +1,14 @@
 import registerComponent, {
-  ComponentMeta,
+  CodeComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import { Select } from "antd";
-export const Option = Select.Option;
-export const OptGroup = Select.OptGroup;
 import type { OptGroupProps } from "rc-select/es/OptGroup";
 import type { OptionProps } from "rc-select/es/Option";
 import { Registerable } from "./registerable";
+export const Option = Select.Option;
+export const OptGroup = Select.OptGroup;
 
-export const optionMeta: ComponentMeta<OptionProps> = {
+export const optionMeta: CodeComponentMeta<OptionProps> = {
   name: "AntdOption",
   displayName: "Antd Option",
   props: {
@@ -46,14 +46,14 @@ export const optionMeta: ComponentMeta<OptionProps> = {
 
 export function registerOption(
   loader?: Registerable,
-  customOptionMeta?: ComponentMeta<OptionProps>
+  customOptionMeta?: CodeComponentMeta<OptionProps>
 ) {
   const doRegisterComponent: typeof registerComponent = (...args) =>
     loader ? loader.registerComponent(...args) : registerComponent(...args);
   doRegisterComponent(Option, customOptionMeta ?? optionMeta);
 }
 
-export const optGroupMeta: ComponentMeta<OptGroupProps> = {
+export const optGroupMeta: CodeComponentMeta<OptGroupProps> = {
   name: "AntdOptionGroup",
   displayName: "Antd Option Group",
   props: {
@@ -83,7 +83,7 @@ export const optGroupMeta: ComponentMeta<OptGroupProps> = {
 
 export function registerOptGroup(
   loader?: Registerable,
-  customOptGroupMeta?: ComponentMeta<OptGroupProps>
+  customOptGroupMeta?: CodeComponentMeta<OptGroupProps>
 ) {
   const doRegisterComponent: typeof registerComponent = (...args) =>
     loader ? loader.registerComponent(...args) : registerComponent(...args);

@@ -9,13 +9,13 @@ import {
   TableProps,
   TableRowProps,
 } from "@chakra-ui/react";
-import { ComponentMeta } from "@plasmicapp/host/registerComponent";
+import { type CodeComponentMeta } from "@plasmicapp/host/registerComponent";
 import {
   getComponentNameAndImportMeta,
   getPlasmicComponentName,
 } from "./utils";
 
-export const tableMeta: ComponentMeta<TableProps> = {
+export const tableMeta: CodeComponentMeta<TableProps> = {
   ...getComponentNameAndImportMeta("Table", "TableContainer"),
   props: {
     colorScheme: {
@@ -58,7 +58,7 @@ export const tableMeta: ComponentMeta<TableProps> = {
   },
 };
 
-export const tableCaptionMeta: ComponentMeta<TableCaptionProps> = {
+export const tableCaptionMeta: CodeComponentMeta<TableCaptionProps> = {
   ...getComponentNameAndImportMeta("TableCaption", "Table"),
   props: {
     placement: {
@@ -76,7 +76,7 @@ export const tableCaptionMeta: ComponentMeta<TableCaptionProps> = {
   },
 };
 
-export const theadMeta: ComponentMeta<TableHeadProps> = {
+export const theadMeta: CodeComponentMeta<TableHeadProps> = {
   ...getComponentNameAndImportMeta("Thead", "Table"),
   props: {
     children: {
@@ -89,7 +89,7 @@ export const theadMeta: ComponentMeta<TableHeadProps> = {
   },
 };
 
-export const tbodyMeta: ComponentMeta<TableBodyProps> = {
+export const tbodyMeta: CodeComponentMeta<TableBodyProps> = {
   ...getComponentNameAndImportMeta("Tbody", "Table"),
   props: {
     children: {
@@ -102,7 +102,7 @@ export const tbodyMeta: ComponentMeta<TableBodyProps> = {
   },
 };
 
-export const trMeta: ComponentMeta<TableRowProps> = {
+export const trMeta: CodeComponentMeta<TableRowProps> = {
   ...getComponentNameAndImportMeta("Tr", "Table"),
   props: {
     children: {
@@ -115,7 +115,7 @@ export const trMeta: ComponentMeta<TableRowProps> = {
   },
 };
 
-export const tdMeta: ComponentMeta<TableCellProps> = {
+export const tdMeta: CodeComponentMeta<TableCellProps> = {
   ...getComponentNameAndImportMeta("Td", "Tr"),
   props: {
     isNumeric: "boolean",
@@ -129,7 +129,7 @@ export const tdMeta: ComponentMeta<TableCellProps> = {
   },
 };
 
-export const thMeta: ComponentMeta<TableColumnHeaderProps> = {
+export const thMeta: CodeComponentMeta<TableColumnHeaderProps> = {
   ...getComponentNameAndImportMeta("Th", "Tr"),
   props: {
     isNumeric: "boolean",
@@ -143,7 +143,7 @@ export const thMeta: ComponentMeta<TableColumnHeaderProps> = {
   },
 };
 
-export const tableContainerMeta: ComponentMeta<TableContainerProps> = {
+export const tableContainerMeta: CodeComponentMeta<TableContainerProps> = {
   ...getComponentNameAndImportMeta("TableContainer"),
   props: {
     overflowX: {
@@ -263,7 +263,7 @@ export const tableContainerMeta: ComponentMeta<TableContainerProps> = {
   },
 };
 
-export const tfootMeta: ComponentMeta<TableFooterProps> = {
+export const tfootMeta: CodeComponentMeta<TableFooterProps> = {
   ...getComponentNameAndImportMeta("Tfoot", "Table"),
   props: {
     children: {

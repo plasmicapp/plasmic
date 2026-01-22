@@ -1,8 +1,8 @@
 import { SwitchProps } from "@chakra-ui/react";
-import { ComponentMeta } from "@plasmicapp/host/registerComponent";
+import { type CodeComponentMeta } from "@plasmicapp/host/registerComponent";
 import { getComponentNameAndImportMeta } from "./utils";
 
-export const switchMeta: ComponentMeta<SwitchProps> = {
+export const switchMeta: CodeComponentMeta<SwitchProps> = {
   ...getComponentNameAndImportMeta("Switch"),
   props: {
     isChecked: "boolean",

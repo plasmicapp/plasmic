@@ -1,6 +1,6 @@
 import { DataProvider, usePlasmicCanvasContext } from "@plasmicapp/host";
 import registerComponent, {
-  ComponentMeta,
+  CodeComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import { usePlasmicQueryData } from "@plasmicapp/query";
 import React, { ReactNode } from "react";
@@ -17,7 +17,7 @@ export interface GenericFetcherProps {
   className?: string;
 }
 
-type PropMetas<P> = ComponentMeta<P>["props"];
+type PropMetas<P> = CodeComponentMeta<P>["props"];
 
 type CustomError = Error & {
   info: Record<string, any>;
@@ -210,7 +210,7 @@ function mkFetchProps(
   };
 }
 
-export const dataFetcherMeta: ComponentMeta<DataFetcherProps> = {
+export const dataFetcherMeta: CodeComponentMeta<DataFetcherProps> = {
   name: "hostless-plasmic-query-data-fetcher",
   displayName: "HTTP REST API Fetcher",
   importName: "DataFetcher",
@@ -237,7 +237,7 @@ export const dataFetcherMeta: ComponentMeta<DataFetcherProps> = {
 
 export function registerDataFetcher(
   loader?: { registerComponent: typeof registerComponent },
-  customDataFetcherMeta?: ComponentMeta<DataFetcherProps>
+  customDataFetcherMeta?: CodeComponentMeta<DataFetcherProps>
 ) {
   if (loader) {
     loader.registerComponent(
@@ -290,7 +290,7 @@ export function GraphqlFetcher(props: GraphqlFetcherProps) {
   return <GenericFetcherShell result={result} {...props} />;
 }
 
-export const graphqlFetcherMeta: ComponentMeta<GraphqlFetcherProps> = {
+export const graphqlFetcherMeta: CodeComponentMeta<GraphqlFetcherProps> = {
   name: "hostless-plasmic-query-graphql-fetcher",
   displayName: "GraphQL Fetcher",
   importName: "GraphqlFetcher",
@@ -356,7 +356,7 @@ export const graphqlFetcherMeta: ComponentMeta<GraphqlFetcherProps> = {
 
 export function registerGraphqlFetcher(
   loader?: { registerComponent: typeof registerComponent },
-  customDataFetcherMeta?: ComponentMeta<GraphqlFetcherProps>
+  customDataFetcherMeta?: CodeComponentMeta<GraphqlFetcherProps>
 ) {
   if (loader) {
     loader.registerComponent(

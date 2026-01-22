@@ -1,4 +1,7 @@
-import { ComponentMeta, PropType } from "@plasmicapp/host/registerComponent";
+import {
+  CodeComponentMeta,
+  PropType,
+} from "@plasmicapp/host/registerComponent";
 import { Registerable, registerComponentHelper } from "../utils";
 import { SimpleChart, SimpleChartProps } from "./SimpleChart";
 
@@ -10,7 +13,7 @@ const fieldChoice: PropType<SimpleChartProps> = {
   options: (props: SimpleChartProps) =>
     props.data?.[0] ? Object.keys(props.data[0]) : [],
 } as const;
-const simpleChartMeta: ComponentMeta<SimpleChartProps> = {
+const simpleChartMeta: CodeComponentMeta<SimpleChartProps> = {
   name: "hostless-react-chartjs-2-simple-chart",
   displayName: "Chart",
   props: {
