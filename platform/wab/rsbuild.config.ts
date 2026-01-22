@@ -10,9 +10,11 @@ import {
   ProvidePlugin,
   RspackPluginInstance,
 } from "@rspack/core";
-import { execSync } from "child_process";
+import { spawnSync } from "child_process";
+import { existsSync } from "fs";
 import HtmlWebpackPlugin from "html-webpack-plugin";
 import MonacoWebpackPlugin from "monaco-editor-webpack-plugin";
+import path from "path";
 import { homepage } from "./package.json";
 import { StudioHtmlPlugin } from "./tools/webpack/StudioHtmlPlugin";
 import {
@@ -22,12 +24,20 @@ import {
 } from "./tools/webpack/mkDefinePluginOptsForEnv";
 
 const commitHash = (() => {
-  try {
-    return execSync("git rev-parse HEAD").toString().trim().slice(0, 6);
-  } catch {
-    // Fallback if git is not available (e.g., in Docker)
+  // Check if we're in a git repository before trying to get the commit hash
+  // This prevents errors in Docker/CI environments without git history
+  const gitDir = path.resolve(__dirname, "../../.git");
+  if (!existsSync(gitDir)) {
     return process.env.COMMIT_HASH || "dev";
   }
+  const result = spawnSync("git", ["rev-parse", "HEAD"], {
+    cwd: path.resolve(__dirname, "../.."),
+    encoding: "utf-8",
+  });
+  if (result.status === 0 && result.stdout) {
+    return result.stdout.trim().slice(0, 6);
+  }
+  return process.env.COMMIT_HASH || "dev";
 })();
 const buildEnv = process.env.NODE_ENV ?? "production";
 const isProd = buildEnv === "production";
