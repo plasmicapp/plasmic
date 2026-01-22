@@ -16,7 +16,6 @@ import { storageViewAsKey } from "@/wab/client/app-auth/constants";
 import { parseProjectLocation, parseRoute } from "@/wab/client/cli-routes";
 import { LocalClipboard } from "@/wab/client/clipboard/local";
 import { syncCodeComponentsAndHandleErrors } from "@/wab/client/code-components/code-components";
-import { CodeFetchersRegistry } from "@/wab/client/code-fetchers";
 import {
   showForbiddenError,
   showReloadError,
@@ -3540,14 +3539,9 @@ export class StudioCtx extends WithDbCtx {
     window.parent,
     getBuiltinComponentRegistrations()
   );
-  private _codeFetchersRegistry = new CodeFetchersRegistry(window.parent);
 
   get codeComponentsRegistry() {
     return this._ccRegistry;
-  }
-
-  get codeFetchersRegistry() {
-    return this._codeFetchersRegistry;
   }
 
   getRegisteredContextsMap() {

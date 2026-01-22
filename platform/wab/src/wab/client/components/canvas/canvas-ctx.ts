@@ -1,6 +1,5 @@
 /// <reference types="@types/resize-observer-browser" />
 import { handleError, normalizeError } from "@/wab/client/ErrorNotifications";
-import { CodeFetchersRegistry } from "@/wab/client/code-fetchers";
 import { isCanvasOverlay } from "@/wab/client/components/canvas/CanvasFrame";
 import {
   CanvasFrameInfo,
@@ -46,7 +45,6 @@ import {
   ComponentRegistration,
   CustomFunctionRegistration,
 } from "@plasmicapp/host";
-import { FetcherRegistration } from "@plasmicapp/host/dist/fetcher";
 import { notification } from "antd";
 import $ from "jquery";
 import L from "lodash";
@@ -70,7 +68,6 @@ export class CanvasCtx {
    */
   private _index = gCanvasCtxIndex++;
   private ccRegistry: CodeComponentsRegistry;
-  private codeFetchersRegistry: CodeFetchersRegistry;
 
   _$viewport: /*TWZ*/ JQuery<HTMLIFrameElement>;
   _win: /*TWZ*/ typeof window;
@@ -254,7 +251,6 @@ export class CanvasCtx {
       "unhandledrejection",
       (e: PromiseRejectionEvent) => handleCanvasError(e.reason)
     );
-    this.codeFetchersRegistry = new CodeFetchersRegistry(this._win);
     const doc = this._win.document;
     const $doc = (this._$doc = $(doc) as JQuery<HTMLDocument>);
 
@@ -498,14 +494,6 @@ export class CanvasCtx {
 
   getRegisteredCodeComponentsAndContextsMap() {
     return this.ccRegistry.getRegisteredComponentsAndContextsMap();
-  }
-
-  getRegisteredCodeFetchers(): FetcherRegistration[] {
-    return this.codeFetchersRegistry.getRegisteredCodeFetchers();
-  }
-
-  getRegisteredCodeFetchersMap() {
-    return this.codeFetchersRegistry.getRegisteredCodeFetchersMap();
   }
 
   getRegisteredFunctions(): CustomFunctionRegistration[] {
