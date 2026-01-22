@@ -1124,6 +1124,7 @@ export function addCodegenRoutes(app: express.Application) {
   );
 
   app.get("/static/js/loader-hydrate.js", getHydrationScript);
+  app.get("/static/js/loader-hydrate-js", getHydrationScript);
   app.get("/static/js/loader-hydrate.:hash.js", getHydrationScriptVersioned);
 }
 
