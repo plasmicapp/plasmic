@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/plasmic-pigeon-maps",
-  "version": "0.0.67",
+  "version": "0.0.68",
   "description": "Plasmic Pigeon maps components.",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",

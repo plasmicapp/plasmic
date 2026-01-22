@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/plasmic-nav",
-  "version": "0.0.205",
+  "version": "0.0.206",
   "description": "Plasmic mobile navigation menu and registration calls",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

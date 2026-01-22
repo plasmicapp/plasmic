@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/commerce-local",
-  "version": "0.0.233",
+  "version": "0.0.234",
   "description": "Plasmic registration calls for local provider components",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -31,7 +31,7 @@
     "react": ">=16.8.0"
   },
   "dependencies": {
-    "@plasmicpkgs/commerce": "0.0.233",
+    "@plasmicpkgs/commerce": "0.0.234",
     "@types/react": "^18.0.27"
   }
 }

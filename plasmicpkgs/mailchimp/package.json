@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/plasmic-mailchimp",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "description": "Plasmic Mailchimp components.",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",

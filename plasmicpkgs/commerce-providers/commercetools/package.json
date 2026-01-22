@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/commerce-commercetools",
-  "version": "0.0.183",
+  "version": "0.0.184",
   "description": "Plasmic registration calls for commercetools commerce provider",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -35,7 +35,7 @@
   "dependencies": {
     "@commercetools/platform-sdk": "^2.8.0",
     "@commercetools/sdk-client-v2": "^2.2.2",
-    "@plasmicpkgs/commerce": "0.0.233",
+    "@plasmicpkgs/commerce": "0.0.234",
     "@types/react": "^18.0.27",
     "debounce": "^2.0.0",
     "js-cookie": "^3.0.5",

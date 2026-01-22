@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/dnd-kit",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "description": "Plasmic Spotify components.",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",

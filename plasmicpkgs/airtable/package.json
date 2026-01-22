@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/airtable",
-  "version": "0.0.249",
+  "version": "0.0.250",
   "description": "Plasmic registration call for the HTML5 video element",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/plasmic-giphy",
-  "version": "0.0.67",
+  "version": "0.0.68",
   "description": "Plasmic Giphy components.",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",

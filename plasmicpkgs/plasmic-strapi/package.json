@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/plasmic-strapi",
-  "version": "0.1.191",
+  "version": "0.1.192",
   "description": "Plasmic Strapi components.",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",

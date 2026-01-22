@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/plasmic-google-maps",
-  "version": "0.0.14",
+  "version": "0.0.15",
   "description": "Plasmic Google maps components.",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",

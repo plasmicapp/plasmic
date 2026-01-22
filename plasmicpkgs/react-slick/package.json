@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/react-slick",
-  "version": "0.0.256",
+  "version": "0.0.257",
   "description": "Plasmic registration call for the React Slick Slider component",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

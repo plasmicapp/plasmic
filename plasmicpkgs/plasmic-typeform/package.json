@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/plasmic-typeform",
-  "version": "0.0.79",
+  "version": "0.0.80",
   "description": "Plasmic Typeform components.",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",

@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/plasmic-yotpo",
-  "version": "0.0.78",
+  "version": "0.0.79",
   "description": "Plasmic Yotpo components.",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",

@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/react-youtube",
-  "version": "7.13.239",
+  "version": "7.13.240",
   "description": "Plasmic registration call for react-youtube",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

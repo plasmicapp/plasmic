@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/react-twitter-widgets",
-  "version": "0.0.233",
+  "version": "0.0.234",
   "description": "Plasmic registration calls for react-twitter-widgets",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
