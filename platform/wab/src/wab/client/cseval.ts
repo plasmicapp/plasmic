@@ -190,7 +190,7 @@ export abstract class BaseCliSvrEvaluator {
     const sub = vc.canvasCtx.Sub;
     // We need to create a single node and make it rerender after observable
     // changes instead of create several root nodes to avoid unmounting the
-    // canvas (currently `Sub.setPlasmicRootNode` forces the tree to remount)
+    // canvas (currently `Sub.hostUtils.setPlasmicRootNode` forces the tree to remount)
     return sub.React.createElement(() => {
       const forceUpdate = useCanvasForceUpdate(sub, false);
       return mkUseCanvasObserver(sub, vc)(

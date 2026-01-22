@@ -389,7 +389,7 @@ export function __run() {
   document.body.style.overflow = "auto";
 
   ${before}
-  Sub.setPlasmicRootNode(${content});
+  Sub.hostUtils.setPlasmicRootNode(${content});
 
   console.log("RENDERING TOOK", performance.now() - startRenderTime);
   window.postMessage({

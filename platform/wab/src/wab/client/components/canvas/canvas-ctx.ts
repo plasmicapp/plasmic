@@ -713,7 +713,7 @@ export class CanvasCtx {
       children
     );
 
-    this.Sub.setPlasmicRootNode(node);
+    this.Sub.hostUtils.setPlasmicRootNode(node);
   }
   dispose() {
     this._resizeObserver?.disconnect();

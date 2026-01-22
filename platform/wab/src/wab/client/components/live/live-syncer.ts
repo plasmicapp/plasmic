@@ -2,6 +2,7 @@ import {
   absorbLinkClick,
   showCanvasAuthNotification,
 } from "@/wab/client/components/canvas/studio-canvas-util";
+import { SubDeps } from "@/wab/client/components/canvas/subdeps";
 import { PreviewCtx } from "@/wab/client/components/live/PreviewCtx";
 import {
   getLiveFrameClientJs,
@@ -619,7 +620,7 @@ function createPreviewScript(
       export function __run() {
         const startRenderTime = performance.now();
 
-        Sub.setPlasmicRootNode(React.createElement(PlasmicPreviewWrapper, {}));
+        Sub.hostUtils.setPlasmicRootNode(React.createElement(PlasmicPreviewWrapper, {}));
 
         console.log("RENDERING TOOK", performance.now() - startRenderTime);
         window.postMessage({
@@ -661,7 +662,7 @@ function createPreview404(path: string) {
       export function __run() {
         const startRenderTime = performance.now();
 
-        Sub.setPlasmicRootNode(React.createElement(Preview404));
+        Sub.hostUtils.setPlasmicRootNode(React.createElement(Preview404));
 
         console.log("404 PAGE RENDERING TOOK", performance.now() - startRenderTime);
         window.postMessage({
@@ -689,7 +690,7 @@ export function updateModules(doc: Document, modules: CodeModule[]) {
       console.log("oops, error refreshing", err);
 
       const setErrorMessage = (msg) => {
-        window.__Sub.setPlasmicRootNode(
+        window.__Sub.hostUtils.setPlasmicRootNode(
           window.__Sub.React.createElement("div", {}, msg)
         );
       };
@@ -761,7 +762,9 @@ export async function onLoadInjectSystemJS(
   const liveFrameClientJs = await getLiveFrameClientJs();
   scriptExec(frameWindow, liveFrameClientJs);
   swallowAnchorClicks(frameWindow.document, onAnchorClick);
-  (frameWindow as any).__Sub.registerRenderErrorListener((error: Error) => {
+  (
+    frameWindow as unknown as { __Sub: SubDeps }
+  ).__Sub.hostUtils.registerRenderErrorListener((error: Error) => {
     console.error("Live frame render error", error);
     if (captureExceptions) {
       Sentry.captureException(error);

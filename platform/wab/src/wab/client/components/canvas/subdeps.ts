@@ -33,9 +33,12 @@ export type SubDeps = {
   ReactDOMClient?: typeof ReactDOMClient;
   jsxRuntime?: typeof jsxRuntime;
   jsxDevRuntime?: typeof jsxDevRuntime;
-  setPlasmicRootNode: (node: React.ReactElement | null) => void;
+  hostUtils: {
+    setPlasmicRootNode: (node: React.ReactElement | null) => void;
+    setRepeatedElementFn?: (fn: RepeatedElementFnType) => void;
+    registerRenderErrorListener: (listener: (err: Error) => void) => () => void;
+  };
   repeatedElement: RepeatedElementFnType;
-  setRepeatedElementFn?: (fn: RepeatedElementFnType) => void;
   PlasmicCanvasContext?: typeof PlasmicCanvasContext;
   PlasmicQuery?: typeof PlasmicQuery;
   PageParamsProvider: typeof PageParamsProvider;
