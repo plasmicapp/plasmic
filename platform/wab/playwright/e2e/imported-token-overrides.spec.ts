@@ -136,10 +136,10 @@ async function changeTokensTarget(models: PageModels, targetName: string) {
   await overlay.waitFor({ state: "hidden", timeout: 5000 });
 }
 
-async function closeSidebarModal(page: Page, models: PageModels) {
+async function closeSidebarModal(models: PageModels) {
   const modal = models.studio.frame.locator("#sidebar-modal");
   if (await modal.isVisible({ timeout: 1000 }).catch(() => false)) {
-    await page.keyboard.press("Escape");
+    await models.studio.leftPanel.closeSidebarModalButton.click();
   }
 }
 
@@ -176,7 +176,7 @@ async function createToken(
   await input.type(`${value}`);
   await page.keyboard.press("Enter");
 
-  await closeSidebarModal(page, models);
+  await closeSidebarModal(models);
 }
 
 async function updateToken(
@@ -270,7 +270,7 @@ async function updateToken(
     // If modal doesn't close automatically, closeSidebarModal will handle it
   });
 
-  await closeSidebarModal(page, models);
+  await closeSidebarModal(models);
 }
 
 async function deleteToken(page: Page, models: PageModels, tokenName: string) {
@@ -477,7 +477,7 @@ async function chooseColor(
     await page.waitForTimeout(100);
   }
 
-  await closeSidebarModal(page, models);
+  await closeSidebarModal(models);
 }
 
 async function createGlobalVariantGroup(
@@ -549,6 +549,32 @@ async function resetVariants(page: Page, models: PageModels) {
   await page.waitForTimeout(200);
   await page.keyboard.press("Escape");
   await page.waitForTimeout(200);
+}
+
+async function assertTokenClickOpensModal(
+  page: Page,
+  models: PageModels,
+  tokenName: string,
+  shouldOpen: boolean,
+  opts?: { globalVariant?: string }
+) {
+  await changeTokensTarget(models, opts?.globalVariant ?? "Base");
+
+  const tokensPanel = await getTokensPanel(models);
+  const tokenRow = tokensPanel.getByText(tokenName).first();
+
+  await tokenRow.click();
+
+  const modal = models.studio.frame.locator("#sidebar-modal");
+
+  if (shouldOpen) {
+    await expect(modal).toBeVisible({ timeout: 2000 });
+    await closeSidebarModal(models);
+  } else {
+    await expect(modal).not.toBeVisible({ timeout: 2000 });
+  }
+  // Change it back to base
+  await changeTokensTarget(models, "Base");
 }
 
 test.describe("Imported token overrides", () => {
@@ -789,6 +815,7 @@ test.describe("Imported token overrides", () => {
         "Base",
         "Website"
       );
+
       await assertTokenIndicator(
         page,
         models,
@@ -797,6 +824,25 @@ test.describe("Imported token overrides", () => {
         "Base",
         "Website"
       );
+
+      await assertTokenClickOpensModal(
+        page,
+        models,
+        TOKEN_NAMES.PRIMARY,
+        false
+      );
+      await assertTokenClickOpensModal(
+        page,
+        models,
+        TOKEN_NAMES.PRIMARY,
+        false,
+        { globalVariant: "Website" }
+      );
+      await assertTokenClickOpensModal(page, models, TOKEN_NAMES.LARGE, false);
+      await assertTokenClickOpensModal(page, models, TOKEN_NAMES.LARGE, false, {
+        globalVariant: "Website",
+      });
+
       await updateToken(
         page,
         models,
@@ -807,6 +853,7 @@ test.describe("Imported token overrides", () => {
           override: true,
         }
       );
+
       await updateToken(
         page,
         models,
@@ -827,6 +874,15 @@ test.describe("Imported token overrides", () => {
         "Website"
       );
 
+      await assertTokenClickOpensModal(page, models, TOKEN_NAMES.PRIMARY, true);
+      await assertTokenClickOpensModal(
+        page,
+        models,
+        TOKEN_NAMES.PRIMARY,
+        false,
+        { globalVariant: "Website" }
+      );
+
       await updateToken(
         page,
         models,
@@ -838,6 +894,7 @@ test.describe("Imported token overrides", () => {
           override: true,
         }
       );
+
       await assertTokenIndicator(
         page,
         models,
@@ -866,6 +923,19 @@ test.describe("Imported token overrides", () => {
         "Base",
         "Website"
       );
+
+      await assertTokenClickOpensModal(page, models, TOKEN_NAMES.PRIMARY, true);
+      await assertTokenClickOpensModal(
+        page,
+        models,
+        TOKEN_NAMES.PRIMARY,
+        true,
+        { globalVariant: "Website" }
+      );
+      await assertTokenClickOpensModal(page, models, TOKEN_NAMES.LARGE, false);
+      await assertTokenClickOpensModal(page, models, TOKEN_NAMES.LARGE, true, {
+        globalVariant: "Website",
+      });
 
       await updateToken(
         page,

@@ -6,9 +6,9 @@ import {
   tryParseTokenRef,
 } from "@/wab/commons/StyleToken";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
-import { assert } from "@/wab/shared/common";
+import { assert, notNil } from "@/wab/shared/common";
 import { siteFinalStyleTokensOfType } from "@/wab/shared/core/site-style-tokens";
-import { FinalToken } from "@/wab/shared/core/tokens";
+import { FinalToken, MutableToken } from "@/wab/shared/core/tokens";
 import { DataToken, Site, StyleToken, Token } from "@/wab/shared/model/classes";
 import { canCreateAlias } from "@/wab/shared/ui-config-utils";
 import { notification } from "antd";
@@ -137,6 +137,52 @@ export const isTokenPanelReadOnly = (studioCtx: StudioCtx) => {
   return (
     !canCreateToken || studioCtx.getLeftTabPermission("tokens") === "readable"
   );
+};
+
+/**
+ * Type representing the state of a token override indicator.
+ * - "set": Base value has been overridden
+ * - "overriding": Variant-specific override exists
+ * - "inherited": No override, value is inherited
+ * - undefined: No indicator should be shown
+ */
+export type TokenIndicatorType = "set" | "overriding" | "inherited" | undefined;
+
+/**
+ * Computes the indicator type for a token
+ */
+export const getTokenIndicatorType = (
+  token: FinalToken<StyleToken>,
+  vsh = new VariantedStylesHelper()
+): TokenIndicatorType => {
+  if (vsh.isTargetBaseVariant()) {
+    if (token instanceof MutableToken) {
+      return undefined;
+    } else {
+      if (notNil(token.override?.value)) {
+        return "set";
+      } else {
+        return "inherited";
+      }
+    }
+  } else {
+    // if targeting variant
+    const variantedValue = vsh.getVariantedValueWithHighestPriority(token);
+
+    if (token instanceof MutableToken) {
+      return variantedValue ? "overriding" : "inherited";
+    } else {
+      if (
+        token.override &&
+        variantedValue &&
+        token.override.variantedValues.includes(variantedValue)
+      ) {
+        return "overriding";
+      } else {
+        return "inherited";
+      }
+    }
+  }
 };
 
 export const newTokenValueAllowed = (

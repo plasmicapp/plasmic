@@ -1,4 +1,5 @@
 import { useMultiAssetsActions } from "@/wab/client/components/sidebar/MultiAssetsActions";
+import { TokenIndicatorType } from "@/wab/client/components/sidebar/token-utils";
 import { TokenDefinedIndicator } from "@/wab/client/components/style-controls/TokenDefinedIndicator";
 import { Matcher } from "@/wab/client/components/view-common";
 import Checkbox from "@/wab/client/components/widgets/Checkbox";
@@ -21,12 +22,22 @@ interface GeneralTokenControlProps {
   menu: () => React.ReactElement;
   onClick?: () => void;
   vsh?: VariantedStylesHelper;
+  indicatorType?: TokenIndicatorType;
 }
 
 const GeneralTokenControl = observer(function GeneralTokenControl(
   props: GeneralTokenControlProps
 ) {
-  const { style, token, tokenValue, matcher, menu, onClick, vsh } = props;
+  const {
+    style,
+    token,
+    tokenValue,
+    matcher,
+    menu,
+    onClick,
+    vsh,
+    indicatorType,
+  } = props;
   const studioCtx = useStudioCtx();
 
   const multiAssetsActions = useMultiAssetsActions();
@@ -53,6 +64,7 @@ const GeneralTokenControl = observer(function GeneralTokenControl(
                   token={token}
                   vsh={vsh}
                   studioCtx={studioCtx}
+                  indicatorType={indicatorType}
                 />
               )}
             </>

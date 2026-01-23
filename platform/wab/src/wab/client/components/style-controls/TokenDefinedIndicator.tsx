@@ -1,3 +1,4 @@
+import { TokenIndicatorType } from "@/wab/client/components/sidebar/token-utils";
 import {
   getStylePropValue,
   SourceRow,
@@ -9,7 +10,7 @@ import { Icon } from "@/wab/client/components/widgets/Icon";
 import TokenIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Token";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { notNil } from "@/wab/shared/common";
-import { FinalToken, MutableToken } from "@/wab/shared/core/tokens";
+import { FinalToken } from "@/wab/shared/core/tokens";
 import {
   isKnownVariantedValue,
   StyleToken,
@@ -27,54 +28,17 @@ export function TokenDefinedIndicator(props: {
   vsh?: VariantedStylesHelper;
   studioCtx: StudioCtx;
   className?: string;
+  indicatorType: TokenIndicatorType;
 }) {
   const {
     token,
     vsh = new VariantedStylesHelper(),
     studioCtx,
     className,
+    indicatorType,
   } = props;
   const clientTokenResolver = useClientTokenResolver();
 
-  // Base variant:
-  //   OverrideableToken
-  //
-  // Non-base variant:
-  //   MutableToken with varianted value -> "overriding"
-  //   MutableToken without varianted value -> "inherited"
-  //   OverrideableToken with varianted override -> "overriding"
-  //
-  // Otherwise: no indicator
-  const indicatorType = (() => {
-    if (vsh.isTargetBaseVariant()) {
-      if (token instanceof MutableToken) {
-        return undefined;
-      } else {
-        if (notNil(token.override?.value)) {
-          return "set";
-        } else {
-          return "inherited";
-        }
-      }
-    } else {
-      // if targeting variant
-      const variantedValue = vsh.getVariantedValueWithHighestPriority(token);
-
-      if (token instanceof MutableToken) {
-        return variantedValue ? "overriding" : "inherited";
-      } else {
-        if (
-          token.override &&
-          variantedValue &&
-          token.override.variantedValues.includes(variantedValue)
-        ) {
-          return "overriding";
-        } else {
-          return "inherited";
-        }
-      }
-    }
-  })();
   const isEditingNonBaseVariant = !vsh.isTargetBaseVariant();
 
   const valueInheritanceChain: (VariantedValue | { value: string })[] = [];
@@ -105,7 +69,6 @@ export function TokenDefinedIndicator(props: {
                 <div className="defined-indicator__source-stack__line-container__line" />
               </div>
               <SourceRow
-                key={i}
                 title={
                   isKnownVariantedValue(v)
                     ? variantComboName(v.variants)

@@ -6,6 +6,7 @@ import { useMultiAssetsActions } from "@/wab/client/components/sidebar/MultiAsse
 import {
   TOKEN_ROW_HEIGHT,
   getLeftPadding,
+  getTokenIndicatorType,
   isTokenPanelReadOnly,
 } from "@/wab/client/components/sidebar/token-utils";
 import ColorSwatch from "@/wab/client/components/style-controls/ColorSwatch";
@@ -231,12 +232,29 @@ const StyleTokenRow = observer(function _StyleTokenRow(props: {
     }
   }, [multiAssetsActions, token.uuid]);
 
-  const onClickHandler = multiAssetsActions.isSelecting
-    ? onToggle
-    : !tokenPanelReadOnly &&
-      isStyleTokenEditable(token, vsh, studioCtx.getCurrentUiConfig())
-    ? () => onSelect(token)
-    : undefined;
+  const indicatorType = getTokenIndicatorType(token, vsh);
+
+  const onClickHandler = (() => {
+    if (multiAssetsActions.isSelecting) {
+      return onToggle;
+    }
+
+    const isEditable =
+      !tokenPanelReadOnly &&
+      isStyleTokenEditable(token, vsh, studioCtx.getCurrentUiConfig());
+
+    if (!isEditable) {
+      // not editable, clicking should do nothing
+      return undefined;
+    }
+
+    if (token instanceof OverrideableToken && indicatorType === "inherited") {
+      // New overrides can only be created from context menu, so do nothing on direct click
+      return undefined;
+    }
+
+    return () => onSelect(token);
+  })();
 
   return (
     <>
@@ -245,6 +263,7 @@ const StyleTokenRow = observer(function _StyleTokenRow(props: {
           style={{
             height: TOKEN_ROW_HEIGHT,
             paddingLeft: getLeftPadding(indentMultiplier),
+            cursor: onClickHandler ? "pointer" : "default",
           }}
           token={token}
           tokenValue={tokenValue}
@@ -252,6 +271,7 @@ const StyleTokenRow = observer(function _StyleTokenRow(props: {
           menu={overlay}
           onClick={onClickHandler}
           vsh={vsh}
+          indicatorType={indicatorType}
         />
       )}
 
@@ -260,6 +280,7 @@ const StyleTokenRow = observer(function _StyleTokenRow(props: {
           style={{
             height: TOKEN_ROW_HEIGHT,
             paddingLeft: getLeftPadding(indentMultiplier),
+            cursor: onClickHandler ? "pointer" : "default",
           }}
           token={token}
           tokenValue={tokenValue}
@@ -267,6 +288,7 @@ const StyleTokenRow = observer(function _StyleTokenRow(props: {
           matcher={matcher}
           onClick={onClickHandler}
           vsh={vsh}
+          indicatorType={indicatorType}
         />
       )}
     </>
