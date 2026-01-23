@@ -98,6 +98,7 @@ import {
   mkRuleSet,
   parseCssValue,
 } from "@/wab/shared/core/styles";
+import { toFinalToken } from "@/wab/shared/core/tokens";
 import {
   EventHandlerKeyType,
   TplTagType,
@@ -197,7 +198,6 @@ import { getPlumeEditorPlugin } from "@/wab/shared/plume/plume-registry";
 import { canComponentTakeRef } from "@/wab/shared/react-utils";
 import { CodeLibraryRegistration } from "@/wab/shared/register-library";
 import { isValidJsIdentifier } from "@/wab/shared/utils/regex-js-identifier";
-
 import type {
   ChoiceObject,
   ComponentContextConfig,
@@ -4651,13 +4651,20 @@ async function upsertRegisteredTokens(
               }
 
               const removeToken = (token: StyleToken) => {
+                const finalToken = toFinalToken(token, site);
+                if (finalToken.override) {
+                  // Since the token usages will be flattened before deletion, we want to ensure the effective (overridden) value is used. (Varianted values are lost during flattening, so we only copy the value.)
+                  token.value = finalToken.value;
+                  // remove the associated override
+                  arrayRemove(site.styleTokenOverrides, finalToken.override);
+                }
                 const [usages, summary] = extractTokenUsages(site, token);
                 ctx.observeComponents([
                   ...summary.components,
                   ...summary.frames.map((f) => f.container.component),
                 ]);
                 for (const usage of usages) {
-                  changeTokenUsage(site, token, usage, "reset");
+                  changeTokenUsage(site, token, usage, "inline");
                 }
                 arrayRemove(site.styleTokens, token);
               };
