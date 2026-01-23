@@ -238,13 +238,11 @@ export class EffectiveVariantSetting {
   /**
    * RuleSetMerger across VariantSettings.rs
    */
-  private _rsh(
-    opts: {
-      includeTheme?: boolean;
-      includeParentTpl?: boolean;
-      includeMixins?: boolean;
-    } = { includeTheme: true, includeParentTpl: false, includeMixins: true }
-  ): ReadonlyIRuleSetHelpersX {
+  private _rsh(opts: {
+    includeTheme?: boolean;
+    includeParentTpl?: boolean;
+    includeMixins?: boolean;
+  }): ReadonlyIRuleSetHelpersX {
     const rulesets = this.getEffectiveRuleSets(opts);
     const expanded = opts.includeMixins ? expandRuleSets(rulesets) : rulesets;
     return makeReadonlySizeAwareExpProxy(
@@ -257,6 +255,7 @@ export class EffectiveVariantSetting {
     return this._rsh({
       includeTheme: false,
       includeParentTpl: false,
+      includeMixins: true,
     });
   };
 
@@ -264,6 +263,7 @@ export class EffectiveVariantSetting {
     return this._rsh({
       includeTheme: true,
       includeParentTpl: false,
+      includeMixins: true,
     });
   };
 
@@ -271,6 +271,7 @@ export class EffectiveVariantSetting {
     return this._rsh({
       includeTheme: true,
       includeParentTpl: true,
+      includeMixins: true,
     });
   };
 
@@ -295,13 +296,11 @@ export class EffectiveVariantSetting {
     });
   }
 
-  private getEffectiveRuleSets(
-    opts: {
-      includeTheme?: boolean;
-      includeParentTpl?: boolean;
-      includeMixins?: boolean;
-    } = { includeTheme: true, includeParentTpl: false, includeMixins: true }
-  ): DeepReadonlyArray<RuleSet> {
+  private getEffectiveRuleSets(opts: {
+    includeTheme?: boolean;
+    includeParentTpl?: boolean;
+    includeMixins?: boolean;
+  }): DeepReadonlyArray<RuleSet> {
     const site = this.site;
     const vsettings = this.variantSettings;
     const tpl = this.tpl;
