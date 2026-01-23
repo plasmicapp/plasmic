@@ -26,18 +26,22 @@ import {
 const commitHash = (() => {
   // Check if we're in a git repository before trying to get the commit hash
   // This prevents errors in Docker/CI environments without git history
-  const gitDir = path.resolve(__dirname, "../../.git");
-  if (!existsSync(gitDir)) {
+  try {
+    const gitDir = path.resolve(__dirname, "../../.git");
+    if (!existsSync(gitDir)) {
+      return process.env.COMMIT_HASH || "dev";
+    }
+    const result = spawnSync("git", ["rev-parse", "HEAD"], {
+      cwd: path.resolve(__dirname, "../.."),
+      encoding: "utf-8",
+    });
+    if (result.status === 0 && result.stdout) {
+      return result.stdout.trim().slice(0, 6);
+    }
+    return process.env.COMMIT_HASH || "dev";
+  } catch {
     return process.env.COMMIT_HASH || "dev";
   }
-  const result = spawnSync("git", ["rev-parse", "HEAD"], {
-    cwd: path.resolve(__dirname, "../.."),
-    encoding: "utf-8",
-  });
-  if (result.status === 0 && result.stdout) {
-    return result.stdout.trim().slice(0, 6);
-  }
-  return process.env.COMMIT_HASH || "dev";
 })();
 const buildEnv = process.env.NODE_ENV ?? "production";
 const isProd = buildEnv === "production";
