@@ -43,10 +43,8 @@ FROM node:24-alpine
 RUN addgroup -S plasmic && \
     adduser -S plasmic -G plasmic && \
     apk add --no-cache git jq bash postgresql-client && \
-    echo "fs.inotify.max_user_watches=524288" >> /etc/sysctl.conf && \
-    sysctl -p && \
-    mkdir -p $HOME && \
-    chown -R plasmic:plasmic $HOME
+    mkdir -p /home/plasmic && \
+    chown -R plasmic:plasmic /home/plasmic
 
 USER plasmic
 

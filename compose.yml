@@ -54,7 +54,7 @@ services:
         condition: service_started
     environment:
       - DATABASE_URI=postgres://wab:${DB_PASSWORD:-SEKRET}@plasmic-db:5432/wab
-      - WAB_DBNAME=plasmic-db
+      - WAB_DBNAME=wab
       - WAB_DBPASSWORD=${DB_PASSWORD:-SEKRET}
       - DB_HOST=plasmic-db
       - DB_PASSWORD=${DB_PASSWORD:-SEKRET}
