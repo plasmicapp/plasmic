@@ -14,6 +14,7 @@ services:
     restart: always
     environment:
       - POSTGRES_PASSWORD=${DB_PASSWORD:-SEKRET}
+      - DB_PASSWORD=${DB_PASSWORD:-SEKRET}
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./platform/wab/tools/docker-dev/db-setup.bash:/docker-entrypoint-initdb.d/db-setup.sh
