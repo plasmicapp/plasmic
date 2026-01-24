@@ -20,13 +20,14 @@ done
 
 echo "PostgreSQL is ready. Checking user and database..."
 
-# Check if user exists, create if not
+# Check if user exists, create if not, and always update password
 USER_EXISTS=$(PGPASSWORD="$POSTGRES_PASSWORD" psql -h "$DB_HOST" -U postgres -tc "SELECT 1 FROM pg_roles WHERE rolname='$DB_USER'" | tr -d ' ')
 if [ "$USER_EXISTS" != "1" ]; then
     echo "Creating user $DB_USER..."
     PGPASSWORD="$POSTGRES_PASSWORD" psql -h "$DB_HOST" -U postgres -c "CREATE USER $DB_USER WITH PASSWORD '$DB_PASSWORD';"
 else
-    echo "User $DB_USER already exists."
+    echo "User $DB_USER already exists. Updating password..."
+    PGPASSWORD="$POSTGRES_PASSWORD" psql -h "$DB_HOST" -U postgres -c "ALTER USER $DB_USER WITH PASSWORD '$DB_PASSWORD';"
 fi
 
 # Check if database exists, create if not

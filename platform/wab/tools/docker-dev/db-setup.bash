@@ -11,14 +11,19 @@ localhost:5432:*:supertdbwab:$PGPASSWORD
 EOF
 chmod 600 ~/.pgpass
 
-# Helper function to create user if not exists
+# Helper function to create user if not exists, or update password if exists
 create_user_if_not_exists() {
     local username=$1
     local password=$2
     local options=${3:-""}
 
-    psql -U postgres -tc "SELECT 1 FROM pg_roles WHERE rolname='$username'" | grep -q 1 || \
+    if psql -U postgres -tc "SELECT 1 FROM pg_roles WHERE rolname='$username'" | grep -q 1; then
+        echo "User $username exists, updating password..."
+        psql -U postgres -c "ALTER USER $username WITH PASSWORD '$password' $options;"
+    else
+        echo "Creating user $username..."
         psql -U postgres -c "CREATE USER $username WITH PASSWORD '$password' $options;"
+    fi
 }
 
 # Helper function to create database if not exists
