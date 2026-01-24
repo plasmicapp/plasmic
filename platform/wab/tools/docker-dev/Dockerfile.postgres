@@ -1,0 +1,7 @@
+FROM postgres:15
+
+# Copy the database setup script
+COPY platform/wab/tools/docker-dev/db-setup.bash /docker-entrypoint-initdb.d/db-setup.sh
+
+# Ensure the script is executable
+RUN chmod +x /docker-entrypoint-initdb.d/db-setup.sh

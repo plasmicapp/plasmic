@@ -10,14 +10,15 @@ services:
 
   # PostgreSQL database
   plasmic-db:
-    image: postgres:15
+    build:
+      context: .
+      dockerfile: ./platform/wab/tools/docker-dev/Dockerfile.postgres
     restart: always
     environment:
       - POSTGRES_PASSWORD=${DB_PASSWORD:-SEKRET}
       - DB_PASSWORD=${DB_PASSWORD:-SEKRET}
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./platform/wab/tools/docker-dev/db-setup.bash:/docker-entrypoint-initdb.d/db-setup.sh
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 10s
