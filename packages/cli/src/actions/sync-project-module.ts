@@ -22,8 +22,7 @@ export async function syncProjectModule(
   projectMeta: ProjectMetaBundle,
   projectConfig: ProjectConfig,
   projectLock: ProjectLock,
-  checksums: ChecksumBundle,
-  baseDir: string
+  checksums: ChecksumBundle
 ) {
   const resourcePath = getProjectModuleResourcePath(context, projectConfig);
   if (checksums.projectModuleChecksum && projectMeta.projectModuleBundle) {
@@ -34,8 +33,7 @@ export async function syncProjectModule(
     }
     if (context.config.code.lang === "js") {
       projectMeta.projectModuleBundle.module = await formatScript(
-        tsxToJsx(projectMeta.projectModuleBundle.module),
-        baseDir
+        tsxToJsx(projectMeta.projectModuleBundle.module)
       );
     }
     await writeFileContent(
@@ -46,8 +44,9 @@ export async function syncProjectModule(
     );
     projectConfig.projectModuleFilePath = resourcePath;
     const fl = projectLock.fileLocks.find(
-      (fl) =>
-        fl.assetId === projectConfig.projectId && fl.type === "projectModule"
+      (fileLock) =>
+        fileLock.assetId === projectConfig.projectId &&
+        fileLock.type === "projectModule"
     );
     if (fl) {
       fl.checksum = checksums.projectModuleChecksum || "";

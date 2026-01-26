@@ -51,7 +51,9 @@ export interface InitArgs extends CommonArgs {
 export async function initPlasmic(
   opts: InitArgs & { enableSkipAuth?: boolean }
 ) {
-  if (!opts.baseDir) opts.baseDir = process.cwd();
+  if (!opts.baseDir) {
+    opts.baseDir = process.cwd();
+  }
   await getOrStartAuth(opts);
 
   const configFile =
@@ -69,7 +71,7 @@ export async function initPlasmic(
 
   const answers = await deriveInitAnswers(opts);
   const initConfig = createInitConfig(answers);
-  await writeConfig(newConfigFile, initConfig, opts.baseDir);
+  await writeConfig(newConfigFile, initConfig);
 
   if (!process.env.QUIET) {
     logger.info("Successfully created plasmic.json.\n");
@@ -169,7 +171,7 @@ async function deriveInitAnswers(
 ) {
   const plasmicRootDir = opts.config ? path.dirname(opts.config) : opts.baseDir;
 
-  const platform = !!opts.platform
+  const platform = opts.platform
     ? opts.platform
     : detectNextJs()
     ? "nextjs"
@@ -267,7 +269,6 @@ async function deriveInitAnswers(
     pagesDir: getDefaultAnswer("pagesDir", undefined) as any,
     reactRuntime: getDefaultAnswer("reactRuntime", "classic") as any,
   };
-  const prominentAnswers = L.omit(answers, "codeScheme");
 
   if (process.env.QUIET) {
     return answers;

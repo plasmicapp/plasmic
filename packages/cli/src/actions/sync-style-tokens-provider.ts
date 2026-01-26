@@ -22,8 +22,7 @@ export async function syncStyleTokensProvider(
   projectMeta: ProjectMetaBundle,
   projectConfig: ProjectConfig,
   projectLock: ProjectLock,
-  checksums: ChecksumBundle,
-  baseDir: string
+  checksums: ChecksumBundle
 ) {
   const resourcePath = getStyleTokensProviderResourcePath(
     context,
@@ -40,8 +39,7 @@ export async function syncStyleTokensProvider(
     }
     if (context.config.code.lang === "js") {
       projectMeta.styleTokensProviderBundle.module = await formatScript(
-        tsxToJsx(projectMeta.styleTokensProviderBundle.module),
-        baseDir
+        tsxToJsx(projectMeta.styleTokensProviderBundle.module)
       );
     }
     writeFileContent(
@@ -52,9 +50,9 @@ export async function syncStyleTokensProvider(
     );
     projectConfig.styleTokensProviderFilePath = resourcePath;
     const fl = projectLock.fileLocks.find(
-      (fl) =>
-        fl.assetId === projectConfig.projectId &&
-        fl.type === "styleTokensProvider"
+      (fileLock) =>
+        fileLock.assetId === projectConfig.projectId &&
+        fileLock.type === "styleTokensProvider"
     );
     if (fl) {
       fl.checksum = checksums.styleTokensProviderChecksum || "";

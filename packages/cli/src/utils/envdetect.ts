@@ -1,4 +1,5 @@
 import findupSync from "findup-sync";
+import semver from "semver";
 import { getParsedPackageJson } from "./npm-utils";
 
 export function detectTypescript() {
@@ -7,9 +8,13 @@ export function detectTypescript() {
 
 export function detectNextJs() {
   if (
-    findupSync("next.config.js") ||
-    findupSync(".next") ||
-    findupSync("next-env.d.ts")
+    findupSync([
+      "next.config.js",
+      "next.config.ts",
+      "next.config.mjs",
+      ".next/",
+      "next-env.d.ts",
+    ])
   ) {
     return true;
   }
@@ -26,12 +31,44 @@ export function detectNextJs() {
 }
 
 export function detectNextJsAppDir() {
-  const nextConfigPath = findupSync("next.config.js");
-  if (!nextConfigPath) {
+  if (!detectNextJs()) {
     return false;
   }
 
-  return require(nextConfigPath)?.experimental?.appDir || false;
+  const nextConfigPath = findupSync("next.config.js");
+  // Legacy Next.js (<13.4): explicit opt-in
+  if (nextConfigPath && require(nextConfigPath)?.experimental?.appDir) {
+    return true;
+  }
+
+  if (!findupSync("app")) {
+    return false;
+  }
+
+  if (!findupSync("pages")) {
+    return true;
+  }
+
+  // Both app/ and pages/ exist - need to check Next.js version
+  try {
+    const packageJson = getParsedPackageJson();
+    const nextVersion: string | undefined = packageJson.dependencies?.next;
+    if (nextVersion) {
+      if (nextVersion === "latest") {
+        return true;
+      }
+      const coercedVersion = semver.coerce(nextVersion);
+      // For Next.js >= 13.4, app dir is the default
+      if (coercedVersion && semver.gte(coercedVersion, "13.4.0")) {
+        return true;
+      }
+    }
+  } catch {
+    // Can't read package.json - can't determine if App Router is enabled
+    return false;
+  }
+
+  return false;
 }
 
 export function detectGatsby() {
