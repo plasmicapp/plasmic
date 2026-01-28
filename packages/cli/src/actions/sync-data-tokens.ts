@@ -57,13 +57,10 @@ export async function syncDataTokens(
       });
     }
   } else if (!checksums.dataTokensChecksum && !projectMeta.dataTokensBundle) {
-    // Only try to delete if there was a previously configured path
-    if (projectConfig.dataTokensFilePath) {
-      if (fileExists(context, projectConfig.dataTokensFilePath)) {
-        deleteFile(context, projectConfig.dataTokensFilePath);
-      }
-      projectConfig.dataTokensFilePath = "";
+    if (fileExists(context, resourcePath)) {
+      deleteFile(context, resourcePath);
     }
+    projectConfig.dataTokensFilePath = "";
     L.remove(
       projectLock.fileLocks,
       (fl) => fl.assetId === projectConfig.projectId && fl.type === "dataTokens"
