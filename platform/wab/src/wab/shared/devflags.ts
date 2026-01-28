@@ -414,6 +414,13 @@ const DEFAULT_DEVFLAGS = {
     provider: "OpenAI",
     modelName: "gpt-4.1",
     maxTokens: 32000,
+    temperature: 0,
+  } as ModelProviderOpts,
+  chatCopilotModelProviderOpts: {
+    provider: "Anthropic",
+    modelName: "claude-sonnet-4-20250514",
+    maxTokens: 32000,
+    temperature: 0,
   } as ModelProviderOpts,
 
   hostLessWorkspaceId: undefined as WorkspaceId | undefined,

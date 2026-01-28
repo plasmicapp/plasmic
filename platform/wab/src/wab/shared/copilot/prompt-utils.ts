@@ -1,6 +1,7 @@
 import { tokenTypes } from "@/wab/commons/StyleToken";
 import { CopilotImage, CopilotToken } from "@/wab/shared/ApiSchema";
 import { DataSourceSchema } from "@plasmicapp/data-sources";
+import { UIMessage } from "ai";
 import GPT3Tokenizer from "gpt3-tokenizer";
 import OpenAI from "openai";
 import {
@@ -91,6 +92,14 @@ export interface CopilotUiProps {
   goal: string;
   images?: Array<CopilotImage>;
   tokens?: CopilotToken[];
+}
+
+/**
+ * Props for streaming chat with copilot.
+ * Messages should be in UIMessage[] format from @ai-sdk/react useChat hook.
+ */
+export interface CopilotChat {
+  messages: UIMessage[];
 }
 
 // Structured Response schemas
