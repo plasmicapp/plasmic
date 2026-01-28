@@ -1,21 +1,23 @@
+import { XMultiSelect } from "@/wab/client/components/XMultiSelect";
 import { MixinPopup } from "@/wab/client/components/sidebar/MixinControls";
 import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
 import { ApplyMixinsTooltip } from "@/wab/client/components/widgets/DetailedTooltips";
 import { LabelWithDetailedTooltip } from "@/wab/client/components/widgets/LabelWithDetailedTooltip";
-import { XMultiSelect } from "@/wab/client/components/XMultiSelect";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { MaybeWrap } from "@/wab/commons/components/ReactUtil";
+import { MIXINS_CAP, MIXIN_CAP } from "@/wab/shared/Labels";
+import { $$$ } from "@/wab/shared/TplQuery";
+import { tryGetVariantSetting } from "@/wab/shared/Variants";
 import { arrayInsert } from "@/wab/shared/collections";
 import { ensure, removeAt } from "@/wab/shared/common";
 import { allMixins, isEditable } from "@/wab/shared/core/sites";
-import { MIXIN_CAP, MIXINS_CAP } from "@/wab/shared/Labels";
+import { isTplTag, isTplVariantable } from "@/wab/shared/core/tpls";
 import {
-  ensureKnownMixin,
-  isKnownMixin,
   Mixin,
   TplNode,
+  ensureKnownMixin,
+  isKnownMixin,
 } from "@/wab/shared/model/classes";
-import { tryGetVariantSetting } from "@/wab/shared/Variants";
 import { Tooltip } from "antd";
 import L from "lodash";
 import { observer } from "mobx-react";
@@ -41,6 +43,20 @@ export const MixinsSection = observer(function (props: {
     undefined
   );
 
+  const adoptParentContainerStyle = () => {
+    if (isTplTag(tpl)) {
+      const layoutChildren = $$$(tpl)
+        .children()
+        .layoutContent()
+        .toArrayOfTplNodes();
+      for (const child of layoutChildren) {
+        if (isTplVariantable(child)) {
+          viewCtx.getViewOps().adoptParentContainerStyle(child, tpl, {});
+        }
+      }
+    }
+  };
+
   const onMixinEdited = () => {
     viewCtx.change(() => {
       vtm.applyMixin(
@@ -48,6 +64,7 @@ export const MixinsSection = observer(function (props: {
         ensure(editMixin, "Unexpected undefined editMixin"),
         targetCombo
       );
+      adoptParentContainerStyle();
       setEditMixin(undefined);
     });
   };
@@ -129,7 +146,10 @@ export const MixinsSection = observer(function (props: {
         )}
         onSelect={(item) => {
           if (isKnownMixin(item)) {
-            viewCtx.change(() => vtm.applyMixin(tpl, item, targetCombo));
+            viewCtx.change(() => {
+              vtm.applyMixin(tpl, item, targetCombo);
+              adoptParentContainerStyle();
+            });
             return false;
           } else {
             viewCtx.change(() => {
@@ -140,9 +160,10 @@ export const MixinsSection = observer(function (props: {
           }
         }}
         onUnselect={(item) =>
-          viewCtx.change(() =>
-            vtm.removeMixin(tpl, ensureKnownMixin(item), targetCombo)
-          )
+          viewCtx.change(() => {
+            vtm.removeMixin(tpl, ensureKnownMixin(item), targetCombo);
+            adoptParentContainerStyle();
+          })
         }
         focusedItem={editMixin ? editMixin : undefined}
         onFocusItem={(item) => setEditMixin(ensureKnownMixin(item))}

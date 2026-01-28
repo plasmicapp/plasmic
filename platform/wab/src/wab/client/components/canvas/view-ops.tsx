@@ -4291,7 +4291,7 @@ export class ViewOps {
    * Adopts the parent's container style across all variants where the parent's
    * container style is specified.
    */
-  private adoptParentContainerStyle(
+  adoptParentContainerStyle(
     layoutChild: TplNode,
     layoutParent: TplTag,
     opts: { parentOffset?: Pt; forceFree?: boolean; keepFree?: boolean }
