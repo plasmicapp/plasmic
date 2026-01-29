@@ -242,6 +242,7 @@ export const DimTokenSpinner = observer(
     const matcher = new Matcher(typedInputValue ?? "");
     const showCurrentToken = hasParsedToken && typedInputValue === undefined;
     const skipChangeOnBlur = React.useRef(false);
+    const selectOnNextClick = React.useRef(false);
     const [explicitHighlightedIndex, setExplicitHighlightedIndex] =
       React.useState<number | undefined>(undefined);
 
@@ -601,19 +602,24 @@ export const DimTokenSpinner = observer(
                     openMenu();
                   }
                   e.target.select();
+                  selectOnNextClick.current = true;
                   skipChangeOnBlur.current = false;
                   setFocused(true);
+                },
+                onClick: (e) => {
+                  if (selectOnNextClick.current) {
+                    selectOnNextClick.current = false;
+                    const input = e.currentTarget;
+                    // Defer selection to after all event handlers complete
+                    setTimeout(() => {
+                      input.select();
+                    }, 0);
+                  }
                 },
                 onBlur: () => {
                   props.onBlur?.();
                 },
                 onKeyDown: (e) => {
-                  if (
-                    typedInputValue === undefined &&
-                    (e.key === "Backspace" || e.key === "Delete")
-                  ) {
-                    setTypedInputValue("");
-                  }
                   openMenu();
 
                   if (handleKeyDown(e)) {
