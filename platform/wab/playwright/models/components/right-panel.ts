@@ -78,12 +78,19 @@ export class RightPanel extends BaseModel {
   readonly variantsRow: Locator = this.frame.locator(
     'div[data-test-class="variant-row"]'
   );
-  readonly variantStopRecording: Locator = this.frame.locator(
-    '[data-test-class="variant-record-button-stop"]'
-  );
-  readonly variantStopViewing: Locator = this.frame.locator(
-    '[data-test-class="variant-pin-button-deactivate"]'
-  );
+  /**
+   * Toggles off an element variant by clicking on its row.
+   * With the new click behavior, clicking an active variant row
+   * stops recording AND deactivates in one action.
+   * @param selectorText - The text of the variant selector (e.g., ":nth-child(odd)", ":hover")
+   */
+  async toggleOffElementVariant(selectorText: string) {
+    const variantRow = this.frame
+      .locator('[data-test-id="private-style-variants-section"]')
+      .locator('[data-test-class="variant-row"]')
+      .filter({ hasText: selectorText });
+    await variantRow.click();
+  }
   readonly variantsInput: Locator = this.frame
     .locator('div[data-test-class="variant-row"]')
     .locator("div.flex-fill")

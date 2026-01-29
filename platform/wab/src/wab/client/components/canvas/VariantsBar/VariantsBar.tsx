@@ -12,16 +12,25 @@ import PlasmicVariantsBar from "@/wab/client/plasmic/plasmic_kit_variants_bar/Pl
 import { StudioCtx, usePlasmicCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { useSignalListener } from "@/wab/commons/components/use-signal-listener";
-import { isDedicatedArena, isMixedArena } from "@/wab/shared/Arenas";
+import {
+  isDedicatedArena,
+  isMixedArena,
+  isPageArena,
+} from "@/wab/shared/Arenas";
+import {
+  getAllVariantsForTpl,
+  getDisplayVariants,
+  isPrivateStyleVariant,
+  isScreenVariant,
+} from "@/wab/shared/Variants";
 import { ensure } from "@/wab/shared/common";
 import {
   getSuperComponentVariantGroupToComponent,
   isFrameComponent,
 } from "@/wab/shared/core/components";
+import { isTplTag } from "@/wab/shared/core/tpls";
 import { Box } from "@/wab/shared/geom";
-import { isKnownArenaFrame, Variant } from "@/wab/shared/model/classes";
-import { withoutIrrelevantScreenVariants } from "@/wab/shared/PinManager";
-import { getAllVariantsForTpl, isScreenVariant } from "@/wab/shared/Variants";
+import { Variant, isKnownArenaFrame } from "@/wab/shared/model/classes";
 import { Dropdown } from "antd";
 import defer from "lodash/defer";
 import last from "lodash/lodash";
@@ -48,15 +57,17 @@ function useFocusedVariants(viewCtx: ViewCtx) {
     variantsController?.isTargeted(it)
   );
 
-  const currentComponent = viewCtx?.currentComponent();
+  const focusedTpl = viewCtx?.focusedTpl();
+  const frame = viewCtx?.arenaFrame();
 
-  const displayVariants = currentComponent
-    ? withoutIrrelevantScreenVariants({
+  const displayVariants = frame
+    ? getDisplayVariants({
         site: studioCtx.site,
-        component: currentComponent,
-        activeVariants,
-        targetedVariants,
-      })
+        frame,
+        isPageArena: isPageArena(studioCtx.currentArena),
+        focusedTag: focusedTpl && isTplTag(focusedTpl) ? focusedTpl : undefined,
+        includeAllPrivateStyleVariantsForFocusedTag: true,
+      }).map((info) => info.variant)
     : [];
 
   return {
@@ -328,12 +339,16 @@ const VariantsBarInner = observer(function VariantsBarInner_({
   const getVariantToggleHandler = (it: Variant) =>
     variantsController?.canToggleTargeting(it)
       ? () =>
-          viewCtx?.change(() =>
-            variantsController.onTargetVariant(
-              it,
-              !variantsController.isTargeted(it)
-            )
-          )
+          viewCtx?.change(() => {
+            const isCurrentlyTargeted = variantsController.isTargeted(it);
+            if (isCurrentlyTargeted && isPrivateStyleVariant(it)) {
+              // For private style variants, toggling off from the canvas pin
+              // should completely deactivate the variant (not just un-target)
+              variantsController.onToggleVariant(it);
+            } else {
+              variantsController.onTargetVariant(it, !isCurrentlyTargeted);
+            }
+          })
       : undefined;
 
   const handleRecordingButtonClick = () => {
@@ -442,7 +457,9 @@ const VariantsBarInner = observer(function VariantsBarInner_({
               <VariantBadge
                 key={variant.uid}
                 isFocused
-                isUnpinnable={canChangeVariants}
+                isUnpinnable={
+                  !isPrivateStyleVariant(variant) && canChangeVariants
+                }
                 onUnpin={getVariantUnpinHandler(variant)}
                 onToggle={getVariantToggleHandler(variant)}
                 isRecording={targetedVariants.includes(variant)}

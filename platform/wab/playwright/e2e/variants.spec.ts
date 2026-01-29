@@ -195,7 +195,7 @@ test.describe("variants", () => {
 
     await page.keyboard.press("Enter");
     await models.studio.rightPanel.chooseFontSize("48px");
-    await stopRecordingElementVariant(models);
+    await models.studio.rightPanel.toggleOffElementVariant("Placeholder");
 
     await models.studio.leftPanel.switchToTreeTab();
 
@@ -349,7 +349,4 @@ async function chooseFont(models: PageModels, fontName: string) {
   await models.studio.rightPanel.fontFamilyInput.click();
   await models.studio.rightPanel.fontFamilyInput.type(fontName);
   await models.studio.rightPanel.fontFamilyInput.press("Enter");
-}
-async function stopRecordingElementVariant(models: PageModels) {
-  await models.studio.rightPanel.variantStopRecording.click();
 }

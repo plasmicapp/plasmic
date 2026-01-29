@@ -35,6 +35,7 @@ import {
   isPrivateStyleVariant,
   isScreenVariant,
   isStandaloneVariantGroup,
+  partitionVariantsByScope,
 } from "@/wab/shared/Variants";
 import { $State } from "@plasmicapp/react-web";
 import L from "lodash";
@@ -89,10 +90,11 @@ export class PinStateManager {
       }
     }
 
-    const [privates, locals, globals] = partitions(variants, [
-      isPrivateStyleVariant,
-      (v) => !isGlobalVariant(v),
-    ]);
+    const {
+      privateStyleVariants: privates,
+      localVariants: locals,
+      globalVariants: globals,
+    } = partitionVariantsByScope(variants);
 
     // For now, we only allow targeting one component style variant at a time.
     // Since user can specify multiple selectors per style variant, there's not
@@ -266,6 +268,14 @@ export class PinStateManager {
         }
       });
     }
+
+    // Only one private style variant can be active at a time.
+    this.activeNonBaseVariants(state).forEach((v) => {
+      if (isPrivateStyleVariant(v) && v !== variant) {
+        state = this.deactivateVariant(state, v);
+      }
+    });
+
     return state;
   }
 

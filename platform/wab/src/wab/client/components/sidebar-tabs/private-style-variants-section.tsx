@@ -87,19 +87,14 @@ export const PrivateStyleVariantsPanel = observer(
                 viewCtx={viewCtx}
                 pinState={vcontroller.getPinState(variant)}
                 onClick={() =>
-                  studioCtx.changeUnsafe(() =>
-                    vcontroller.onClickVariant(variant)
-                  )
-                }
-                onToggle={() =>
-                  studioCtx.changeUnsafe(() =>
-                    vcontroller.onToggleVariant(variant)
-                  )
-                }
-                onTarget={(target) =>
-                  studioCtx.changeUnsafe(() =>
-                    vcontroller.onTargetVariant(variant, target)
-                  )
+                  studioCtx.changeUnsafe(() => {
+                    // Toggle behavior: if already selected, turn off; otherwise turn on
+                    if (vcontroller.isTargeted(variant)) {
+                      vcontroller.onToggleVariant(variant);
+                    } else {
+                      vcontroller.onClickVariant(variant);
+                    }
+                  })
                 }
                 menu={makeVariantMenu({
                   variant,

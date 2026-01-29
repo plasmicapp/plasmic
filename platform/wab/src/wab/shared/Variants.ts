@@ -341,6 +341,25 @@ export function isGlobalVariantGroup(
 }
 
 /**
+ * Partitions variants into three categories by scope:
+ * - privateStyleVariants: Style variants tied to a specific element (forTpl is set)
+ * - localVariants: Component-level variants (non-global, non-private)
+ * - globalVariants: Site-level variants (screen variants, user-defined globals)
+ */
+export function partitionVariantsByScope(variants: Variant[]) {
+  const privateStyleVariants = variants.filter(isPrivateStyleVariant);
+  const nonPrivateVariants = variants.filter((v) => !isPrivateStyleVariant(v));
+  const globalVariants = nonPrivateVariants.filter(isGlobalVariant);
+  const localVariants = nonPrivateVariants.filter((v) => !isGlobalVariant(v));
+
+  return {
+    privateStyleVariants,
+    localVariants,
+    globalVariants,
+  };
+}
+
+/**
  * Variant groups that are triggered by media queries (and therefore, their CSS changes are rendered via media queries)
  * E.g. Screen variants.
  * @returns true if the variant group is a media query variant group
@@ -909,12 +928,13 @@ export function getDisplayVariants({
   frame,
   isPageArena,
   focusedTag,
+  includeAllPrivateStyleVariantsForFocusedTag = false,
 }: {
   site: Site;
   frame: ArenaFrame;
   isPageArena?: boolean;
-  includeGroupName?: boolean;
   focusedTag?: TplTag;
+  includeAllPrivateStyleVariantsForFocusedTag?: boolean;
 }) {
   const pinManager = new FramePinManager(site, frame);
   const activeVariants = pinManager.activeNonBaseVariants();
@@ -928,6 +948,18 @@ export function getDisplayVariants({
     activeVariants,
     targetedVariants: pinManager.selectedVariants(),
   });
+
+  // If flag is set, add all private style variants for focusedTag
+  if (includeAllPrivateStyleVariantsForFocusedTag && focusedTag) {
+    const privateStyleVariantsForTpl = getPrivateStyleVariantsForTag(
+      frame.container.component,
+      focusedTag
+    );
+    const inactivePrivateVariants = privateStyleVariantsForTpl.filter(
+      (v) => !displayVariants.includes(v)
+    );
+    displayVariants.push(...inactivePrivateVariants);
+  }
 
   return displayVariants.map((variant) => ({
     displayName: makeVariantName({

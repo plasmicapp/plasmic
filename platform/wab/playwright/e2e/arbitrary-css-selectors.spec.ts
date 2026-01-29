@@ -111,10 +111,8 @@ test.describe("artbitrary-css-selectors", () => {
 
     await checkCssInCanvas(pageFrameBody, "font-size", "30px");
 
-    await models.studio.rightPanel.variantStopRecording.click();
-    await checkCssInCanvas(pageFrameBody, "font-size", "30px");
-
-    await models.studio.rightPanel.variantStopViewing.click();
+    // Toggle off the variant (stops recording + deactivates in one action)
+    await models.studio.rightPanel.toggleOffElementVariant(":nth-child(odd)");
     await checkCssInCanvas(pageFrameBody, "font-size", "30px", isOddChild);
 
     await models.studio.rightPanel.addElemetVariantsButton.click();
@@ -135,10 +133,8 @@ test.describe("artbitrary-css-selectors", () => {
 
     await checkCssInCanvas(pageFrameBody, "text-decoration-line", "underline");
 
-    await models.studio.rightPanel.variantStopRecording.click();
-    await checkCssInCanvas(pageFrameBody, "text-decoration-line", "underline");
-
-    await models.studio.rightPanel.variantStopViewing.click();
+    // Toggle off the variant (stops recording + deactivates in one action)
+    await models.studio.rightPanel.toggleOffElementVariant(":first-child");
     await checkCssInCanvas(
       pageFrameBody,
       "text-decoration-line",
@@ -169,14 +165,8 @@ test.describe("artbitrary-css-selectors", () => {
       "Montserrat, sans-serif"
     );
 
-    await models.studio.rightPanel.variantStopRecording.click();
-    await checkCssInCanvas(
-      pageFrameBody,
-      "font-family",
-      "Montserrat, sans-serif"
-    );
-
-    await models.studio.rightPanel.variantStopViewing.click();
+    // Toggle off the variant (stops recording + deactivates in one action)
+    await models.studio.rightPanel.toggleOffElementVariant("Hover");
     await checkCssInCanvas(
       pageFrameBody,
       "font-family",
