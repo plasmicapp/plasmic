@@ -223,7 +223,10 @@ import type {
   PropTypeBase,
   PropTypeBaseDefault,
 } from "@plasmicapp/host/dist/prop-types";
-import type { CodeComponentMeta as CodeComponentRegistrationMeta } from "@plasmicapp/host/registerComponent";
+import type {
+  CodeComponentMeta as CodeComponentRegistrationMeta,
+  ObjectType,
+} from "@plasmicapp/host/registerComponent";
 import { RefActionRegistration } from "@plasmicapp/host/registerComponent";
 import type { Config } from "@react-awesome-query-builder/antd";
 import {
@@ -3757,7 +3760,7 @@ export function getPropTypeType(
 
 export function isFlattenedObjectPropType(
   propType: StudioPropType<any> | undefined
-): propType is ObjectStudioPropType<any> {
+): propType is ObjectType<any> {
   return (
     isPlainObjectPropType(propType) &&
     propType.type === "object" &&

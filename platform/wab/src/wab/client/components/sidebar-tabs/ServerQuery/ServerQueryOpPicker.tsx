@@ -2,11 +2,11 @@ import { BottomModalButtons } from "@/wab/client/components/BottomModal";
 import { shouldShowHostLessPackage } from "@/wab/client/components/omnibar/Omnibar";
 import { StringPropEditor } from "@/wab/client/components/sidebar-tabs/ComponentProps/StringPropEditor";
 import { DataPickerTypesSchema } from "@/wab/client/components/sidebar-tabs/DataBinding/DataPicker";
+import { PropValueEditorContextData } from "@/wab/client/components/sidebar-tabs/PropEditorRow";
 import {
-  InnerPropEditorRow,
-  PropValueEditorContext,
-  PropValueEditorContextData,
-} from "@/wab/client/components/sidebar-tabs/PropEditorRow";
+  getServerQueryParamRowItems,
+  propTypeForParam,
+} from "@/wab/client/components/sidebar-tabs/ServerQuery/ServerQueryParamRow";
 import { LabeledItemRow } from "@/wab/client/components/sidebar/sidebar-helpers";
 import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
 import { createFakeHostLessComponent } from "@/wab/client/components/studio/add-drawer/AddDrawer";
@@ -19,9 +19,8 @@ import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { TutorialEventsType } from "@/wab/client/tours/tutorials/tutorials-events";
 import {
   customFunctionId,
-  isAdvancedProp,
+  getPropTypeDefaultValue,
   StudioPropType,
-  wabTypeToPropType,
 } from "@/wab/shared/code-components/code-components";
 import {
   cx,
@@ -32,16 +31,16 @@ import {
   withoutFalsy,
 } from "@/wab/shared/common";
 import { clone, codeLit, ExprCtx } from "@/wab/shared/core/exprs";
-import { JsonValue } from "@/wab/shared/core/lang";
 import { DEVFLAGS, HostLessComponentInfo } from "@/wab/shared/devflags";
 import {
+  ArgType,
   ComponentServerQuery,
   CustomFunction,
   CustomFunctionExpr,
+  Expr,
   FunctionArg,
   Interaction,
   isKnownComponentServerQuery,
-  isKnownExpr,
   Site,
   TplNode,
   TplTag,
@@ -141,16 +140,19 @@ function mkCustomFunctionArgs(
     const registeredParam = registrationMeta.params?.find(
       (p) => p.name === param.argName
     );
-    if (
-      registeredParam &&
-      "defaultValue" in registeredParam &&
-      registeredParam?.defaultValue != null
-    ) {
+    if (!registeredParam || typeof registeredParam === "string") {
+      continue;
+    }
+
+    const defaultValue = getPropTypeDefaultValue(
+      registeredParam as StudioPropType<any>
+    );
+    if (defaultValue != null) {
       args.push(
         new FunctionArg({
           uuid: mkShortId(),
           argType: param,
-          expr: codeLit(registeredParam.defaultValue as JsonValue),
+          expr: codeLit(defaultValue),
         })
       );
     }
@@ -299,6 +301,29 @@ export const ServerQueryOpDraftForm = observer(
       (fn) => fn.namespace ?? null
     );
 
+    const handlePropEditorRowChange = React.useCallback(
+      (param: ArgType, newExpr: Expr) => {
+        const newArgs = value?.args ?? [];
+        const changedArg = newArgs.find((arg) => arg.argType === param);
+        if (changedArg) {
+          changedArg.expr = newExpr;
+        } else {
+          newArgs.push(
+            new FunctionArg({
+              uuid: mkShortId(),
+              expr: newExpr,
+              argType: param,
+            })
+          );
+        }
+        onChange({
+          ...value,
+          args: newArgs,
+        });
+      },
+      [onChange, value]
+    );
+
     const handleInstallCustomFunction = async (
       customFunctionInfo: AvailableCustomFunctionInfo
     ) => {
@@ -428,67 +453,19 @@ export const ServerQueryOpDraftForm = observer(
           >
             {(renderMaybeCollapsibleRows) =>
               renderMaybeCollapsibleRows(
-                value.func!.params.map((param) => {
-                  const argLabel =
-                    param.displayName ?? smartHumanize(param.argName);
-                  const curArg =
-                    param.argName in argsMap
-                      ? argsMap[param.argName][0]
-                      : undefined;
-                  const curExpr = curArg?.expr;
-                  const propType: StudioPropType<any> =
-                    (studioCtx
-                      .getRegisteredFunctionsMap()
-                      .get(customFunctionId(value.func!))
-                      ?.meta.params?.find(
-                        (p) => p.name === param.argName
-                      ) as StudioPropType<any>) ??
-                    wabTypeToPropType(param.type);
-
-                  return {
-                    collapsible: !!isAdvancedProp(propType, undefined),
-                    content: (
-                      <PropValueEditorContext.Provider
-                        value={propValueEditorContext}
-                      >
-                        <InnerPropEditorRow
-                          attr={param.argName}
-                          propType={propType}
-                          expr={curExpr}
-                          label={argLabel}
-                          valueSetState={curExpr ? "isSet" : undefined}
-                          onChange={(expr) => {
-                            if (expr == null) {
-                              return;
-                            }
-                            const newExpr = isKnownExpr(expr)
-                              ? expr
-                              : codeLit(expr);
-                            const newArgs = value?.args ?? [];
-                            const changedArg = newArgs.find(
-                              (arg) => arg.argType === param
-                            );
-                            if (changedArg) {
-                              changedArg.expr = newExpr;
-                            } else {
-                              newArgs.push(
-                                new FunctionArg({
-                                  uuid: mkShortId(),
-                                  expr: newExpr,
-                                  argType: param,
-                                })
-                              );
-                            }
-
-                            onChange({
-                              ...value,
-                              args: newArgs,
-                            });
-                          }}
-                        />
-                      </PropValueEditorContext.Provider>
-                    ),
-                  };
+                value.func!.params.flatMap((param) => {
+                  const propType = propTypeForParam(
+                    param,
+                    value.func!,
+                    studioCtx
+                  );
+                  return getServerQueryParamRowItems({
+                    param,
+                    argsMap,
+                    propType,
+                    propValueEditorContext,
+                    onParamChange: handlePropEditorRowChange,
+                  });
                 })
               )
             }
