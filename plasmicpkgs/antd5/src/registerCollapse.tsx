@@ -1,8 +1,38 @@
 import type { PropType } from "@plasmicapp/host";
 import { Collapse } from "antd";
 import uniqueId from "lodash/uniqueId";
-import React, { useMemo } from "react";
+import React, { isValidElement, useMemo } from "react";
 import { Registerable, registerComponentHelper } from "./utils";
+
+function useExpandIcon(expandIconProps: ExpandIconProps) {
+  const { expandIcon, rotateCustomExpandIcon, rotationAngle } = expandIconProps;
+
+  if (!expandIcon) {
+    return undefined;
+  }
+
+  return ({ isActive }: { isActive?: boolean }) => {
+    if (!isValidElement(expandIcon)) {
+      // expandIcon may be a string if the slot content has a text node with no styles
+      return expandIcon;
+    }
+    return (
+      //  Wrapped in a div because antd5 automatically applies a .ant-collapse-arrow class on the wrapping div
+      <div>
+        {/* We need to use cloneElement to apply transform directly on the svg, because antd5 applies transition styles on .ant-collapse-arrow > svg for smooth rotation */}
+        {React.cloneElement(expandIcon, {
+          style: {
+            ...expandIcon.props?.style,
+            transform:
+              isActive && rotateCustomExpandIcon
+                ? `rotate(${rotationAngle}deg)`
+                : undefined,
+          },
+        })}
+      </div>
+    );
+  };
+}
 
 export const singleCollapseComponentName = "plasmic-antd5-single-collapse";
 export const accordionComponentName = "plasmic-antd5-collapse";
@@ -12,16 +42,26 @@ type AccordionItemType = NonNullable<
   React.ComponentProps<typeof Collapse>["items"]
 >[number];
 
+type ExpandIconProps = {
+  expandIcon?:
+    | React.ReactElement<{
+        style?: React.CSSProperties;
+      }>
+    // adding string type to account for uncertainty around slot contents (a text node is passed in as a string)
+    | string;
+  rotateCustomExpandIcon?: boolean;
+  rotationAngle?: number;
+};
+
 type SingleCollapseProps = Omit<
   React.ComponentProps<typeof Collapse>,
   "items" | "activeKey" | "defaultActiveKey" | "expandIcon" | "accordion"
 > &
-  AccordionItemType & {
+  AccordionItemType &
+  ExpandIconProps & {
+    disabled?: boolean;
     open?: boolean;
     defaultOpen?: boolean;
-    disabled?: boolean;
-    expandIcon?: React.ReactElement;
-    rotateCustomExpandIcon: boolean;
     children: React.ReactElement;
     label2: React.ReactElement; // For backwards compatibility
   };
@@ -34,14 +74,13 @@ export function AntdAccordion(
   props: Omit<
     React.ComponentProps<typeof Collapse>,
     "items" | "activeKey" | "defaultActiveKey" | "expandIcon" | "accordion"
-  > & {
-    items: { props: { children: React.ReactElement<AccordionItemType>[] } };
-    defaultActiveKey?: string;
-    activeKey?: string;
-    disabled?: boolean;
-    expandIcon?: React.ReactElement;
-    rotateCustomExpandIcon: boolean;
-  }
+  > &
+    ExpandIconProps & {
+      disabled?: boolean;
+      items: { props: { children: React.ReactElement<AccordionItemType>[] } };
+      defaultActiveKey?: string;
+      activeKey?: string;
+    }
 ) {
   const {
     items: itemsRaw,
@@ -51,11 +90,14 @@ export function AntdAccordion(
     collapsible,
     disabled,
     rotateCustomExpandIcon,
+    rotationAngle = 90,
     ...rest
   } = props;
 
   const items: AccordionItemType[] = useMemo(() => {
-    if (!React.isValidElement(itemsRaw) && !Array.isArray(itemsRaw)) return [];
+    if (!React.isValidElement(itemsRaw) && !Array.isArray(itemsRaw)) {
+      return [];
+    }
     return (
       Array.isArray(itemsRaw)
         ? itemsRaw
@@ -64,7 +106,7 @@ export function AntdAccordion(
         : [itemsRaw.props.children]
     )
       .map((currentItem) => {
-        const props = {
+        const currentItemProps = {
           ...currentItem.props,
           id: currentItem.props.id,
           key: currentItem.props.id,
@@ -72,16 +114,22 @@ export function AntdAccordion(
         };
         if (currentItem.props.label) {
           // The old `label` prop takes precedence, delete label2
-          delete (props as any).label2;
+          delete (currentItemProps as any).label2;
         } else {
           // Keep `label2` so the `hidden` function knows it's used
-          props.label = (props as any).label2;
+          currentItemProps.label = (currentItemProps as any).label2;
         }
 
-        return props;
+        return currentItemProps;
       })
       .filter((i) => i != null) as AccordionItemType[];
   }, [itemsRaw]);
+
+  const renderExpandIcon = useExpandIcon({
+    expandIcon,
+    rotateCustomExpandIcon,
+    rotationAngle,
+  });
 
   return (
     <Collapse
@@ -90,21 +138,7 @@ export function AntdAccordion(
       defaultActiveKey={defaultActiveKey}
       activeKey={activeKey}
       collapsible={disabled ? "disabled" : collapsible}
-      expandIcon={
-        expandIcon
-          ? ({ isActive }) => (
-              <div
-                style={
-                  isActive && rotateCustomExpandIcon
-                    ? { transform: "rotate(90deg)" }
-                    : undefined
-                }
-              >
-                {expandIcon}
-              </div>
-            )
-          : undefined
-      }
+      expandIcon={renderExpandIcon}
       {...rest}
     />
   );
@@ -122,9 +156,9 @@ export function AntdSingleCollapse(props: SingleCollapseProps) {
     label2: newLabelProp,
     showArrow,
     extra,
-    forceRender,
     children,
     headerClass,
+    rotationAngle = 90,
     ...rest
   } = props;
 
@@ -143,6 +177,12 @@ export function AntdSingleCollapse(props: SingleCollapseProps) {
     [label, showArrow, extra, children, defaultItemKey, headerClass]
   );
 
+  const renderExpandIcon = useExpandIcon({
+    expandIcon,
+    rotateCustomExpandIcon,
+    rotationAngle,
+  });
+
   return (
     <Collapse
       accordion={false}
@@ -150,21 +190,7 @@ export function AntdSingleCollapse(props: SingleCollapseProps) {
       defaultActiveKey={defaultOpen ? item.key : undefined}
       activeKey={open ? item.key : undefined}
       collapsible={disabled ? "disabled" : collapsible}
-      expandIcon={
-        expandIcon
-          ? ({ isActive }) => (
-              <div
-                style={
-                  isActive && rotateCustomExpandIcon
-                    ? { transform: "rotate(90deg)" }
-                    : undefined
-                }
-              >
-                {expandIcon}
-              </div>
-            )
-          : undefined
-      }
+      expandIcon={renderExpandIcon}
       {...rest}
     />
   );
@@ -205,6 +231,13 @@ const commonAccordionProps: Record<string, PropType<any>> = {
     description: "Enable rotation of custom expand icon when panel is expanded",
     advanced: true,
     hidden: (ps) => !ps.expandIcon,
+  },
+  rotationAngle: {
+    type: "number",
+    description: "Set the rotation angle of the expand icon",
+    advanced: true,
+    defaultValue: 90,
+    hidden: (ps) => !ps.rotateCustomExpandIcon,
   },
   expandIconPosition: {
     type: "choice",
