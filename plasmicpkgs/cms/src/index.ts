@@ -8,8 +8,8 @@ import { ApiCmsTable } from "./schema";
 import { mkFieldOptions } from "./util";
 import { cmsTableToQueryBuilderConfig, rulesLogicToCmsWhere } from "./where";
 
-function getCmsHost() {
-  return (globalThis as any)["__PLASMIC_CMS_HOST__"] ?? DEFAULT_HOST;
+function getCmsHost(hostParam: string | undefined) {
+  return hostParam ?? DEFAULT_HOST;
 }
 
 interface FnContext {
@@ -17,6 +17,7 @@ interface FnContext {
 }
 
 interface BaseCMSOpts {
+  host?: string;
   cmsId?: string;
   cmsPublicToken?: string;
 }
@@ -25,7 +26,11 @@ interface CMSTableOpts extends BaseCMSOpts {
   tableId?: string;
 }
 
-function sharedTableFnContext({ cmsId, cmsPublicToken }: BaseCMSOpts = {}): {
+function sharedTableFnContext({
+  host,
+  cmsId,
+  cmsPublicToken,
+}: BaseCMSOpts = {}): {
   dataKey: string;
   fetcher: () => Promise<FnContext>;
 } {
@@ -44,13 +49,22 @@ function sharedTableFnContext({ cmsId, cmsPublicToken }: BaseCMSOpts = {}): {
       const api = mkApi({
         databaseId: cmsId,
         databaseToken: cmsPublicToken,
-        host: getCmsHost(),
+        host: getCmsHost(host),
       });
       const tables = await api.fetchTables();
       return { tables };
     },
   };
 }
+
+const hostParam = {
+  type: "string",
+  description: "CMS host URL.",
+  helpText:
+    "The Host URL of the CMS. You should not have to modify this for normal usage.",
+  defaultValue: DEFAULT_HOST,
+  advanced: true,
+} as const;
 
 const cmsIdParam = {
   type: "string",
@@ -155,7 +169,11 @@ const localeParam = {
   description: "The locale to use. Defaults to base locale.",
 } as const;
 
-export async function fetchTables({ cmsId, cmsPublicToken }: BaseCMSOpts) {
+export async function fetchTables({
+  host,
+  cmsId,
+  cmsPublicToken,
+}: BaseCMSOpts) {
   if (!cmsId || !cmsPublicToken) {
     return [];
   }
@@ -163,7 +181,7 @@ export async function fetchTables({ cmsId, cmsPublicToken }: BaseCMSOpts) {
   const api = mkApi({
     databaseId: cmsId,
     databaseToken: cmsPublicToken,
-    host: getCmsHost(),
+    host: getCmsHost(host),
   });
 
   return api.fetchTables();
@@ -181,6 +199,7 @@ interface FetchContentOpts extends CMSTableOpts {
 }
 
 export async function fetchContent({
+  host,
   cmsId,
   cmsPublicToken,
   tableId,
@@ -200,7 +219,7 @@ export async function fetchContent({
   const api = mkApi({
     databaseId: cmsId,
     databaseToken: cmsPublicToken,
-    host: getCmsHost(),
+    host: getCmsHost(host),
     useDraft,
     locale,
   });
@@ -221,6 +240,7 @@ interface FetchCountOpts extends CMSTableOpts {
 }
 
 export async function fetchCount({
+  host,
   cmsId,
   cmsPublicToken,
   tableId,
@@ -234,7 +254,7 @@ export async function fetchCount({
   const api = mkApi({
     databaseId: cmsId,
     databaseToken: cmsPublicToken,
-    host: getCmsHost(),
+    host: getCmsHost(host),
     useDraft,
   });
 
@@ -267,6 +287,7 @@ export function registerAllCmsFunctions(loader?: { registerFunction: any }) {
         display: "flatten",
         name: "Opts",
         fields: {
+          host: hostParam,
           cmsId: cmsIdParam,
           cmsPublicToken: cmsPublicTokenParam,
         },
@@ -286,6 +307,7 @@ export function registerAllCmsFunctions(loader?: { registerFunction: any }) {
         display: "flatten",
         name: "Opts",
         fields: {
+          host: hostParam,
           cmsId: cmsIdParam,
           cmsPublicToken: cmsPublicTokenParam,
           tableId: tableIdParam,
@@ -315,6 +337,7 @@ export function registerAllCmsFunctions(loader?: { registerFunction: any }) {
         display: "flatten",
         name: "Opts",
         fields: {
+          host: hostParam,
           cmsId: cmsIdParam,
           cmsPublicToken: cmsPublicTokenParam,
           tableId: tableIdParam,

@@ -30,7 +30,7 @@ test.describe(`NextJS CMS`, () => {
     await teardownNextJs(ctx);
   });
 
-  test.skip(`should work`, async ({ page }) => {
+  test(`should work`, async ({ page }) => {
     await testCmsLoader(page, ctx.host);
   });
 });

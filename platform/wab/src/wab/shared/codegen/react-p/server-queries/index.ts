@@ -199,7 +199,7 @@ function useDollarServerQueries(
         const cacheKey = makeQueryCacheKey(queryId, queryParams);
         return usePlasmicServerQuery({
           id: queryId,
-          fn: $$.${query.op.func.importName},
+          fn: $$.${customFunctionId(query.op.func)},
           execParams: () => queryParams,
         }, fallbackDataObject?.[cacheKey]);
       })(),`
@@ -237,7 +237,7 @@ export function serializeServerQueriesFetchFunction(
         (query) => `
       ${toVarName(query.name)}: {
         id: "${customFunctionId(query.op.func)}",
-        fn: $$.${query.op.func.importName},
+        fn: $$.${customFunctionId(query.op.func)},
         execParams: () => [${serializeServerQueryCustomFunctionArgs(
           query.op,
           ctx.exprCtx
