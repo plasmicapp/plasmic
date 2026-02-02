@@ -219,7 +219,7 @@
     "@plasmicapp/host": "^1.0.234",
     "@plasmicapp/loader-react": "^1.0.410",
     "@plasmicapp/react-web": "^0.2.415",
-    "@plasmicpkgs/antd5": "^0.0.320",
+    "@plasmicpkgs/antd5": "^0.0.321",
     "@plasmicpkgs/commerce-local": "^0.0.234",
     "@plasmicpkgs/plasmic-basic-components": "^0.0.265",
     "@plasmicpkgs/plasmic-embed-css": "^0.1.220",
