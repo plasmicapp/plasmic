@@ -1799,10 +1799,10 @@
   dependencies:
     antd "^4.19.5"
 
-"@plasmicpkgs/cms@0.0.12", "@plasmicpkgs/cms@^0.0.12":
-  version "0.0.12"
-  resolved "https://registry.yarnpkg.com/@plasmicpkgs/cms/-/cms-0.0.12.tgz#d1002167b24ea51ceb6f7995be7c45f387b0bf7e"
-  integrity sha512-Rlq65wKPjpWKCQRkJBQjrRtfHVGLpJ/SstrW6Hw6U6zy1TG+nVQa+Ie8KBN3wYQeGSXRlGeIoRbPfZLUpnWHsg==
+"@plasmicpkgs/cms@0.0.13", "@plasmicpkgs/cms@^0.0.13":
+  version "0.0.13"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/cms/-/cms-0.0.13.tgz#5634e00bc3e8a7f081baa55df97d281a0217ba68"
+  integrity sha512-MdKpuANynpe42fuXjYDhqXwHnQ0qxtDqKd8ZjfVSETmQi1gRsxkFlyp+YNBjn2kGJoeBH+qeLVIWL8JVaojKUw==
 
 "@plasmicpkgs/commerce-commercetools@^0.0.184":
   version "0.0.184"
@@ -1914,12 +1914,12 @@
   dependencies:
     "@chakra-ui/react" "^2.8.1"
 
-"@plasmicpkgs/plasmic-cms@^0.0.303":
-  version "0.0.303"
-  resolved "https://registry.yarnpkg.com/@plasmicpkgs/plasmic-cms/-/plasmic-cms-0.0.303.tgz#f7a9f66467d79a86e5cf57cd1b69b4c5606ddd72"
-  integrity sha512-we0YezGsFBXHl+MI4keU4x7V4iBoIv0al30vJ363B5RrTkB/ARPIiedtiCxpsrIiLenWPYQJiobZPWEmDtJC4g==
+"@plasmicpkgs/plasmic-cms@^0.0.304":
+  version "0.0.304"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/plasmic-cms/-/plasmic-cms-0.0.304.tgz#eb3c53c69930272e8769eba61f292d449a684b58"
+  integrity sha512-Hn/NZBgmlLdk8i8MdYkUuk8qAxS75sqz2qfTrzTO5eRFp0HzJDgQ0me8xPc2ia1Af+bjm8CKM0HJrUebStirqg==
   dependencies:
-    "@plasmicpkgs/cms" "0.0.12"
+    "@plasmicpkgs/cms" "0.0.13"
     dayjs "^1.10.7"
 
 "@plasmicpkgs/plasmic-content-stack@^0.0.190":
