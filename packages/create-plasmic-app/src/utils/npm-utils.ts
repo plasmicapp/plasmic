@@ -98,11 +98,11 @@ function installCommand(
     }
   } else if (mgr === "pnpm") {
     if (opts.global) {
-      return `pnpm install -g ${pkg}`;
+      return `pnpm add -g ${pkg}`;
     } else if (opts.dev) {
-      return `pnpm install --dev --ignore-scripts ${pkg}`;
+      return `pnpm add --save-dev --ignore-scripts ${pkg}`;
     } else {
-      return `pnpm install --ignore-scripts ${pkg}`;
+      return `pnpm add --ignore-scripts ${pkg}`;
     }
   } else {
     if (opts.global) {
