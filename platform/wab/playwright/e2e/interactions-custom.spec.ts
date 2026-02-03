@@ -30,12 +30,7 @@ test.describe.skip("state-management-custom-interactions", () => {
     await models.studio.switchArena("page navigation interactions");
     await models.studio.waitStudioLoaded();
 
-    const contentFrame = page
-      .locator("iframe")
-      .first()
-      .contentFrame()
-      .locator("iframe")
-      .contentFrame()
+    const contentFrame = models.studio.frame
       .locator("iframe")
       .first()
       .contentFrame();
@@ -90,12 +85,7 @@ test.describe.skip("state-management-custom-interactions", () => {
     await models.studio.switchArena("custom function interactions");
     await models.studio.waitStudioLoaded();
 
-    const contentFrame2 = page
-      .locator("iframe")
-      .first()
-      .contentFrame()
-      .locator("iframe")
-      .contentFrame()
+    const contentFrame2 = models.studio.frame
       .locator("iframe")
       .nth(1)
       .contentFrame();

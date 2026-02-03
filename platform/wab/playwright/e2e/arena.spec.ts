@@ -21,6 +21,7 @@ test.describe("arena", () => {
     page,
     models,
   }) => {
+    // Add text to new frame
     await models.studio.leftPanel.addNewFrame();
     const artboardFrame = models.studio.componentFrame;
     const artboardBody = artboardFrame.locator("body");
@@ -29,16 +30,21 @@ test.describe("arena", () => {
 
     await models.studio.leftPanel.insertNode("Text");
 
+    // Extract text as component
     await models.studio.extractComponentNamed("Text Input");
 
+    // Open component frame
     await models.studio.openComponentInNewFrame("Text Input");
     const componentFrame = models.studio.getComponentFrameByIndex(1);
     const componentBody = componentFrame.locator("body");
     await componentBody.click();
+
+    // Update font size
     await models.studio.rightPanel.chooseFontSize("25px");
     await models.studio.rightPanel.switchToComponentDataTab();
     await models.studio.rightPanel.globalVariantsHeader.click();
 
+    // Update font size in mobile variant
     await models.studio.rightPanel.switchToResponsivenessTab();
     await models.studio.leftPanel.breakpointPresetButton.click();
     await models.studio.leftPanel.breakpointDesktopCategory.waitFor({
@@ -51,14 +57,15 @@ test.describe("arena", () => {
     await models.studio.rightPanel.selectVariant("Mobile");
     await models.studio.rightPanel.chooseFontSize("30px");
 
+    // Set artboard width
     await artboardBody.click();
-
     await models.studio.rightPanel.openArtboardSettings();
     await models.studio.rightPanel.artboardSizeWidthInput.clear();
     await models.studio.rightPanel.artboardSizeWidthInput.fill("200px");
     await page.keyboard.press("Enter");
     await models.studio.waitForSave();
 
+    // Assert value in both variants
     await artboardBody.click();
     await artboardBody
       .locator("span")

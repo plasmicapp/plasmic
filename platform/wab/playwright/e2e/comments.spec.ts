@@ -119,11 +119,7 @@ test.describe("comments", () => {
     const threadId = await firstMarker.getAttribute("data-test-id");
     expect(threadId).toBeDefined();
 
-    if (!threadId) {
-      return;
-    }
-
-    const threadIdValue = threadId.replace("comment-marker-", "");
+    const threadIdValue = threadId!.replace("comment-marker-", "");
 
     await models.studio.deleteSelectionWithComments();
 
@@ -165,11 +161,7 @@ test.describe("comments", () => {
     const postId = await firstPost.getAttribute("data-test-id");
     expect(postId).toBeDefined();
 
-    if (!postId) {
-      return;
-    }
-
-    const postIdValue = postId.replace("comment-post-", "");
+    const postIdValue = postId!.replace("comment-post-", "");
 
     await models.studio.clickCommentPost(postIdValue);
     await page.waitForURL(`**/*comment=${postIdValue}*`);

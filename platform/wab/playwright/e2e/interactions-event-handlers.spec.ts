@@ -26,12 +26,7 @@ test.describe("interactions-event-handlers", () => {
     await models.studio.switchArena("invoke event handler interactions");
     await models.studio.waitStudioLoaded();
 
-    const contentFrame = page
-      .locator("iframe")
-      .first()
-      .contentFrame()
-      .locator("iframe")
-      .contentFrame()
+    const contentFrame = models.studio.frame
       .locator("iframe")
       .first()
       .contentFrame();
@@ -61,12 +56,7 @@ test.describe("interactions-event-handlers", () => {
     await models.studio.switchArena("use invoke event handler");
     await models.studio.waitStudioLoaded();
 
-    const contentFrame2 = page
-      .locator("iframe")
-      .first()
-      .contentFrame()
-      .locator("iframe")
-      .contentFrame()
+    const contentFrame2 = models.studio.frame
       .locator("iframe")
       .nth(1)
       .contentFrame();

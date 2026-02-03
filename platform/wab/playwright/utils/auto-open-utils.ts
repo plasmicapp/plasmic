@@ -3,25 +3,6 @@ import { PageModels } from "../fixtures/test";
 import { modifierKey } from "./key-utils";
 import { waitForFrameToLoad } from "./studio-utils";
 
-export function getTooltipMeta() {
-  return {
-    otherSlotName: "Slot: Tooltip Content",
-    triggerSlotName: "Slot: Trigger",
-    hiddenContent: "Hello from Tooltip!",
-    ccDisplayName: "Aria Tooltip",
-    visibleContent: "Hover me",
-  };
-}
-
-export function getSelectMeta() {
-  return {
-    otherSlotName: "children",
-    hiddenContent: "Section Header.",
-    ccDisplayName: "Aria Select",
-    visibleContent: "Select an item",
-  };
-}
-
 export function getAutoOpenBanner(models: PageModels) {
   return models.studio.frame.locator(".banner-bottom");
 }

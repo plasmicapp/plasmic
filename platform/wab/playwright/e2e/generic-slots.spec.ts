@@ -23,23 +23,13 @@ test.describe("generic-slots", () => {
     models,
   }) => {
     await models.studio.leftPanel.addComponent("Widget");
-    const widgetFrame = page
-      .locator("iframe")
-      .first()
-      .contentFrame()
-      .locator("iframe")
-      .contentFrame()
+    const widgetFrame = models.studio.frame
       .locator("iframe")
       .first()
       .contentFrame();
     await models.studio.leftPanel.addNewFrame();
     await models.studio.zoomOut();
-    const artboardFrame = page
-      .locator("iframe")
-      .first()
-      .contentFrame()
-      .locator("iframe")
-      .contentFrame()
+    const artboardFrame = models.studio.frame
       .locator("iframe")
       .nth(1)
       .contentFrame();

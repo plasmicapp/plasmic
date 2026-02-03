@@ -32,7 +32,7 @@ test.describe("dynamic-pages-simplified", () => {
     );
   });
 
-  test("simplified works", async ({ page, models }) => {
+  test("simplified works", async ({ models }) => {
     await models.studio.createNewPageInOwnArenaWithTemplate(
       "Greeter",
       "Dynamic page",
@@ -51,15 +51,7 @@ test.describe("dynamic-pages-simplified", () => {
       }
     );
 
-    const framed = page
-      .locator("iframe")
-      .first()
-      .contentFrame()
-      .locator("iframe")
-      .contentFrame()
-      .locator("iframe")
-      .first()
-      .contentFrame();
+    const framed = models.studio.frame.locator("iframe").first().contentFrame();
 
     await models.studio.rightPanel.clickPageData();
 

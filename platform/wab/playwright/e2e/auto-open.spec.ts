@@ -7,8 +7,6 @@ import {
   checkCcAutoOpenInteractiveMode,
   createTooltipComponent,
   getAutoOpenBanner,
-  getSelectMeta,
-  getTooltipMeta,
   insertModalComponent,
   setNotRendered,
   switchInteractiveMode,
@@ -38,6 +36,7 @@ test.describe("Auto Open", () => {
             name: "react-aria",
             npmPkg: ["@plasmicpkgs/react-aria"],
           },
+          // Using antd5 to verify auto-open works with a global context (PLA-11833)
           {
             name: "antd5",
             npmPkg: ["@plasmicpkgs/antd5"],
@@ -51,6 +50,20 @@ test.describe("Auto Open", () => {
       models,
       page,
     }) => {
+      const tooltipMeta = {
+        otherSlotName: "Slot: Tooltip Content",
+        triggerSlotName: "Slot: Trigger",
+        hiddenContent: "Hello from Tooltip!",
+        ccDisplayName: "Aria Tooltip",
+        visibleContent: "Hover me",
+      };
+      const selectMeta = {
+        otherSlotName: "children",
+        hiddenContent: "Section Header.",
+        ccDisplayName: "Aria Select",
+        visibleContent: "Select an item",
+      };
+
       await models.studio.createNewPageInOwnArena(pageName);
       await waitForFrameToLoad(page);
       const pageFrame = models.studio.componentFrame;
@@ -65,7 +78,7 @@ test.describe("Auto Open", () => {
       await checkCcAutoOpen({
         models,
         frame: pageFrame,
-        ...getTooltipMeta(),
+        ...tooltipMeta,
       });
 
       await models.studio.selectRootNode();
@@ -74,7 +87,7 @@ test.describe("Auto Open", () => {
       await checkCcAutoOpen({
         models,
         frame: pageFrame,
-        ...getSelectMeta(),
+        ...selectMeta,
       });
 
       await models.studio.turnOffDesignMode();
@@ -83,34 +96,34 @@ test.describe("Auto Open", () => {
       await checkCcAutoOpen({
         models,
         frame: focusModeFrame,
-        ...getTooltipMeta(),
+        ...tooltipMeta,
       });
 
       await switchInteractiveMode(models);
       await checkCcAutoOpenInteractiveMode({
         models,
         frame: focusModeFrame,
-        ...getTooltipMeta(),
+        ...tooltipMeta,
       });
 
       await checkCcAutoOpenInteractiveMode({
         models,
         frame: focusModeFrame,
-        ...getSelectMeta(),
+        ...selectMeta,
       });
 
       await models.studio.withinLiveMode(async (liveFrame) => {
         await expect(
-          liveFrame.getByText(getSelectMeta().visibleContent)
+          liveFrame.getByText(selectMeta.visibleContent)
         ).toBeVisible();
         await expect(
-          liveFrame.getByText(getTooltipMeta().visibleContent)
+          liveFrame.getByText(tooltipMeta.visibleContent)
         ).toBeVisible();
         await expect(
-          liveFrame.getByText(getSelectMeta().hiddenContent)
+          liveFrame.getByText(selectMeta.hiddenContent)
         ).not.toBeVisible();
         await expect(
-          liveFrame.getByText(getTooltipMeta().hiddenContent)
+          liveFrame.getByText(tooltipMeta.hiddenContent)
         ).not.toBeVisible();
       });
     });
@@ -119,11 +132,6 @@ test.describe("Auto Open", () => {
       page,
       models,
     }) => {
-      await models.studio.createNewPageInOwnArena(pageName);
-      await waitForFrameToLoad(page);
-
-      await createTooltipComponent(page, models);
-
       const tooltipComponentMeta = {
         otherSlotName: `Slot: "Tooltip Contents"`,
         triggerSlotName: `Slot: "Tooltip Trigger"`,
@@ -131,6 +139,10 @@ test.describe("Auto Open", () => {
         ccDisplayName: "Tooltip",
         visibleContent: "Hover me",
       };
+      await models.studio.createNewPageInOwnArena(pageName);
+      await waitForFrameToLoad(page);
+
+      await createTooltipComponent(page, models);
 
       await models.studio.switchArena(pageName);
       await waitForFrameToLoad(page);
@@ -476,3 +488,51 @@ test.describe("Auto Open", () => {
     });
   });
 });
+
+/* This is an old Cypress auto-open test for auto-open multi-level nesting. It was not converted to Playwright
+ * since it was skipped. If (when?) multi-level auto-open works, this can be used as a reference.
+
+    // TODO: Auto-open currently only works for one level of nesting, so skipping this test
+    xit("works for multiple levels of nesting (Plasmic components with a Plasmic component root with a code component root", function () {
+      cy.withinStudioIframe(() => {
+        cy.createNewPageInOwnArena(pageName).then(() => {
+          function getTooltipMeta() {
+            return {
+              otherSlotName: `Slot: "Tooltip Parent Contents"`,
+              triggerSlotName: `Slot: "Tooltip Parent Trigger"`,
+              hiddenContent: "Hello from Tooltip!",
+              ccDisplayName: "Tooltip Parent",
+              visibleContent: "Hover me",
+            };
+          }
+          cy.justLog("Testing in design mode");
+          createTooltipComponent();
+          cy.switchArena(pageName).then(() => {
+            createTooltipParentComponent();
+          });
+          cy.switchArena(pageName).then((pageFrame) => {
+            cy.selectTreeNode(["Tooltip Parent"]);
+            checkCcAutoOpen({
+              frame: pageFrame,
+              ...getTooltipMeta(),
+            });
+          });
+
+          cy.turnOffDesignMode();
+          cy.focusBaseFrame().then((focusModeFrame) => {
+            cy.justLog("Testing in focus mode");
+            checkCcAutoOpen({
+              frame: focusModeFrame,
+              ...getTooltipMeta(),
+            });
+            cy.switchInteractiveMode();
+            cy.justLog("Testing in interactive mode");
+            checkCcAutoOpenInteractiveMode({
+              frame: focusModeFrame,
+              ...getTooltipMeta(),
+            });
+          });
+        });
+      });
+    });
+*/

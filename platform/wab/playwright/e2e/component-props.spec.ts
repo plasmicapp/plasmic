@@ -68,16 +68,10 @@ test.describe("component-props", () => {
   });
 
   test("can show preview values, default values correctly", async ({
-    page,
     models,
   }) => {
     await models.studio.leftPanel.addComponent("Component with props");
-    const componentFrame = page
-      .locator("iframe")
-      .first()
-      .contentFrame()
-      .locator("iframe")
-      .contentFrame()
+    const componentFrame = models.studio.frame
       .locator("iframe")
       .first()
       .contentFrame();
@@ -145,12 +139,7 @@ test.describe("component-props", () => {
     ).toBeVisible();
 
     await models.studio.leftPanel.createNewPage("Page using component props");
-    const pageFrame = page
-      .locator("iframe")
-      .first()
-      .contentFrame()
-      .locator("iframe")
-      .contentFrame()
+    const pageFrame = models.studio.frame
       .locator("iframe")
       .nth(1)
       .contentFrame();

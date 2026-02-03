@@ -1,3 +1,4 @@
+import { expect } from "playwright/test";
 import { test } from "../fixtures/test";
 
 test.describe("Authentication", () => {
@@ -10,10 +11,16 @@ test.describe("Authentication", () => {
 
     await models.auth.login("user2@example.com", "!53kr3tz!");
 
-    await models.auth.expectLoggedIn();
+    await expect(
+      page.locator('a[href="/projects"]', {
+        hasText: "All projects",
+      })
+    ).toBeVisible();
 
     await models.auth.logout();
 
-    await models.auth.expectLoggedOut();
+    const signInWithGoogleText = page.locator("text=Sign in with Google");
+    await signInWithGoogleText.waitFor({ state: "visible" });
+    await expect(signInWithGoogleText).toBeVisible();
   });
 });

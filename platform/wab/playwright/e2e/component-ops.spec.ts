@@ -22,12 +22,7 @@ test.describe("component-ops - tricky operations", () => {
     models,
   }) => {
     models.studio.leftPanel.addComponent("CompA");
-    const compAFrame: FrameLocator = page
-      .locator("iframe")
-      .first()
-      .contentFrame()
-      .locator("iframe")
-      .contentFrame()
+    const compAFrame: FrameLocator = models.studio.frame
       .locator("div")
       .filter({ hasText: /^CompA800 ✕ 500CompA800 × 500$/ })
       .locator("iframe")
@@ -93,20 +88,12 @@ test.describe("component-ops - tricky operations", () => {
     expect(propCount).toBe(2);
   });
 
-  test("can hide element on hover", async ({ models, page }) => {
+  test("can hide element on hover", async ({ models }) => {
     await models.studio.leftPanel.addComponent("CompA");
 
     await models.studio.leftPanel.editComponentWithName("CompA");
 
-    const frame = page
-      .locator("iframe")
-      .first()
-      .contentFrame()
-      .locator("iframe")
-      .contentFrame()
-      .locator("iframe")
-      .nth(1)
-      .contentFrame();
+    const frame = models.studio.frame.locator("iframe").nth(1).contentFrame();
     await models.studio.leftPanel.switchToTreeTab();
     await frame.locator("body").click();
 
@@ -138,31 +125,16 @@ test.describe("component-ops - tricky operations", () => {
     await models.studio.leftPanel.addComponent("CompB");
     await models.studio.leftPanel.addComponent("CompC");
 
-    const compAFrame = page
-      .locator("iframe")
-      .first()
-      .contentFrame()
-      .locator("iframe")
-      .contentFrame()
+    const compAFrame = models.studio.frame
       .locator(".canvas-editor__viewport")
       .first()
       .contentFrame();
-    const compBFrame = page
-      .locator("iframe")
-      .first()
-      .contentFrame()
-      .locator("iframe")
-      .contentFrame()
+    const compBFrame = models.studio.frame
       .locator(
         "div:nth-child(2) > .CanvasFrame__Container > .canvas-editor__viewport"
       )
       .contentFrame();
-    const compCFrame = page
-      .locator("iframe")
-      .first()
-      .contentFrame()
-      .locator("iframe")
-      .contentFrame()
+    const compCFrame = models.studio.frame
       .locator(
         "div:nth-child(3) > .CanvasFrame__Container > .canvas-editor__viewport"
       )

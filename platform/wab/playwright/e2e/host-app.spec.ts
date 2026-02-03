@@ -23,12 +23,7 @@ test.describe("host-app", () => {
     await waitForFrameToLoad(page);
 
     await models.studio.leftPanel.addNewFrame();
-    const artboardFrame = page
-      .locator("iframe")
-      .first()
-      .contentFrame()
-      .locator("iframe")
-      .contentFrame()
+    const artboardFrame = models.studio.frame
       .locator("iframe")
       .first()
       .contentFrame();

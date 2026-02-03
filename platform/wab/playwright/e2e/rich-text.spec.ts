@@ -20,12 +20,7 @@ test.describe("rich-text", () => {
 
   test("successfully edit text with format", async ({ page, models }) => {
     await models.studio.leftPanel.addNewFrame();
-    const artboardFrame = page
-      .locator("iframe")
-      .first()
-      .contentFrame()
-      .locator("iframe")
-      .contentFrame()
+    const artboardFrame = models.studio.frame
       .locator("iframe")
       .first()
       .contentFrame();

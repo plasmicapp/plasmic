@@ -200,12 +200,7 @@ test.describe("hostless-commerce", () => {
     await test_ProductLink(models, page, 0);
     await test_ProductLink(models, page, 2);
 
-    await page
-      .locator("iframe")
-      .first()
-      .contentFrame()
-      .locator("iframe")
-      .contentFrame()
+    await models.studio.frame
       .locator('[data-test-id="live-frame"]')
       .contentFrame()
       .locator(".product-container")

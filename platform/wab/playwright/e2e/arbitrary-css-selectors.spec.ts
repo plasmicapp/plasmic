@@ -65,12 +65,7 @@ test.describe("artbitrary-css-selectors", () => {
     page,
   }) => {
     await models.studio.leftPanel.createNewPage("Arbitrary CSS Selectors");
-    const pageFrame = page
-      .locator("iframe")
-      .first()
-      .contentFrame()
-      .locator("iframe")
-      .contentFrame()
+    const pageFrame = models.studio.frame
       .locator("div")
       .locator("iframe")
       .contentFrame();

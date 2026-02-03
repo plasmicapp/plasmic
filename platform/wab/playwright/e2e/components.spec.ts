@@ -32,15 +32,7 @@ test.describe.skip("components", () => {
   }) => {
     await models.studio.leftPanel.addNewFrame();
 
-    const framed = page
-      .locator("iframe")
-      .first()
-      .contentFrame()
-      .locator("iframe")
-      .contentFrame()
-      .locator("iframe")
-      .first()
-      .contentFrame();
+    const framed = models.studio.frame.locator("iframe").first().contentFrame();
 
     await models.studio.focusFrameRoot(framed);
     await models.studio.leftPanel.insertNode(FREE_CONTAINER_CAP);
@@ -54,15 +46,7 @@ test.describe.skip("components", () => {
 
     await page.keyboard.press("n");
 
-    const framed2 = page
-      .locator("iframe")
-      .first()
-      .contentFrame()
-      .locator("iframe")
-      .contentFrame()
-      .locator("iframe")
-      .nth(1)
-      .contentFrame();
+    const framed2 = models.studio.frame.locator("iframe").nth(1).contentFrame();
 
     await framed.locator("body").click();
     const rootElt = framed.locator(".__wab_root > *:not(style)");

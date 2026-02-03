@@ -21,12 +21,7 @@ test.describe("dynamic-pages", () => {
 
   test("works", async ({ page, models }) => {
     await models.studio.leftPanel.createNewPage("Index");
-    const indexFrame = page
-      .locator("iframe")
-      .first()
-      .contentFrame()
-      .locator("iframe")
-      .contentFrame()
+    const indexFrame = models.studio.frame
       .locator("iframe")
       .first()
       .contentFrame();
@@ -37,12 +32,7 @@ test.describe("dynamic-pages", () => {
 
     await models.studio.leftPanel.createNewPage("Greeter");
     await page.waitForTimeout(1000);
-    const greeterFrame = page
-      .locator("iframe")
-      .first()
-      .contentFrame()
-      .locator("iframe")
-      .contentFrame()
+    const greeterFrame = models.studio.frame
       .locator("iframe")
       .nth(1)
       .contentFrame();
