@@ -1,7 +1,11 @@
 import registerFunction, {
   CustomFunctionMeta,
 } from "@plasmicapp/host/registerFunction";
-import { queryContentful, queryContentfulMeta } from "./query-contentful";
+import {
+  _queryContentful,
+  queryContentful,
+  queryContentfulMeta,
+} from "./query-contentful";
 
 export function registerContentful(loader?: { registerFunction: any }) {
   function _registerFunction<T extends (...args: any[]) => any>(
@@ -18,7 +22,11 @@ export function registerContentful(loader?: { registerFunction: any }) {
   _registerFunction(queryContentful, queryContentfulMeta);
 }
 
-export { queryContentful };
+export {
+  // Exports for @plasmicpkgs/plasmic-contentful
+  _queryContentful,
+  queryContentful,
+};
 
 // Exports for @plasmicpkgs/plasmic-contentful
 export { denormalizeData as _denormalizeData } from "./query-contentful";

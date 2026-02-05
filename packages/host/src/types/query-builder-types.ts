@@ -62,5 +62,6 @@ interface SimplifiedField {
     | string;
   label?: string;
   defaultValue?: unknown;
+  operators?: readonly string[];
   fieldSettings?: {};
 }

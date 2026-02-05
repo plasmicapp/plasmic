@@ -11,7 +11,8 @@ const _negationOptions = {
 const _negationOptionsArray = Object.values(_negationOptions);
 
 export function GroupHeader(props: Props) {
-  const { conjunctionOptions = {} } = props;
+  const { conjunctionOptions = {}, config } = props;
+  const showNot = config?.settings?.showNot !== false;
 
   const conjunctions = Object.keys(conjunctionOptions).map(
     (key: keyof typeof conjunctionOptions) => {
@@ -27,27 +28,37 @@ export function GroupHeader(props: Props) {
     <div>
       {/* {props?.id} */}
       <span className="group-prefix">and&nbsp;</span>
-      <SelectInput
-        className={`not-selector ${props.not ? "is-active" : "is-inactive"}`}
-        items={_negationOptionsArray}
-        value={
-          props.not
-            ? _negationOptions.dontMatch.key
-            : _negationOptions.match.key
-        }
-        onValueChanged={(value) => {
-          props.setNot(value === _negationOptions.dontMatch.key ? true : false);
-        }}
-        hideArrow={true}
-      />
+      {showNot ? (
+        <SelectInput
+          className={`not-selector ${props.not ? "is-active" : "is-inactive"}`}
+          items={_negationOptionsArray}
+          value={
+            props.not
+              ? _negationOptions.dontMatch.key
+              : _negationOptions.match.key
+          }
+          onValueChanged={(value) => {
+            props.setNot(
+              value === _negationOptions.dontMatch.key ? true : false
+            );
+          }}
+          hideArrow={true}
+        />
+      ) : (
+        <span>Match</span>
+      )}
 
-      <SelectInput
-        className="conjunction-selector"
-        items={conjunctions}
-        value={props.selectedConjunction}
-        onValueChanged={(value) => props.setConjunction(value)}
-        hideArrow={true}
-      />
+      {conjunctions.length > 1 ? (
+        <SelectInput
+          className="conjunction-selector"
+          items={conjunctions}
+          value={props.selectedConjunction}
+          onValueChanged={(value) => props.setConjunction(value)}
+          hideArrow={true}
+        />
+      ) : (
+        <span>{conjunctions[0].label.toLowerCase()}</span>
+      )}
 
       <span>of the following conditions</span>
       {/* <pre>{JSON.stringify(props, null, 2)}</pre> */}

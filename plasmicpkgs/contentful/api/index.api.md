@@ -4,6 +4,8 @@
 
 ```ts
 
+import type { RulesLogic } from 'json-logic-js';
+
 // @public (undocumented)
 export function _denormalizeData(data: any | null): any;
 
@@ -22,8 +24,11 @@ export interface _Entry {
     };
 }
 
-// @public (undocumented)
-export function queryContentful({ space, accessToken, environment, contentType, filterField, searchParameter, filterValue, order, reverseOrder, limit, include, }: ContentfulQueryOptions): Promise<any>;
+// @public
+export function queryContentful({ space, accessToken, environment, contentType, filterLogic, }: QueryContentfulOpts): Promise<any>;
+
+// @public @deprecated
+export function _queryContentful({ space, accessToken, environment, contentType, filterLogic, filterField, searchParameter, filterValue, order, reverseOrder, limit, skip, include, select, locale, }: QueryContentfulOpts & QueryContentfulOldFilterProps): Promise<any>;
 
 // @public (undocumented)
 export function registerContentful(loader?: {

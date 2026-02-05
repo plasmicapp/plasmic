@@ -11,6 +11,7 @@ import {
   Builder,
   BuilderProps,
   Config,
+  CoreConjunctions,
 } from "@react-awesome-query-builder/antd";
 import L from "lodash";
 import React from "react";
@@ -41,6 +42,9 @@ export const QueryBuilderConfig = L.merge({}, AntdConfig, {
   },
 
   settings: {
+    // Show the header even if there is only one conjunction
+    // (by default, RAQB hides it, because its purpose is to allow conjunction selection)
+    forceShowConj: true,
     // Override the react components
     renderField: (props) => (!props ? <></> : <FieldPicker {...props} />),
     renderOperator: (props) => (!props ? <></> : <OperatorPicker {...props} />),
@@ -109,6 +113,13 @@ export function createQueryBuilderConfig(
     // field: { label: "Field" }, // DISALLOW field references
     // func: { label: "Function" }, // DISALLOW functions
   };
+
+  // Override conjunctions manually if provided, because L.merge won't delete keys.
+  // This allows CMS packages to disable OR/NOT operators by omitting them.
+  if (overrideConfig?.conjunctions) {
+    // RAQB types for conjunctions are wrong and always require OR/NOT.
+    base.conjunctions = overrideConfig.conjunctions as CoreConjunctions;
+  }
 
   return L.merge(
     base,

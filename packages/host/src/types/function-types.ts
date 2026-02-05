@@ -26,8 +26,16 @@ export type FunctionContextConfig<
   R
 > = ContextDependentConfig<FunctionControlContext<Args>, R>;
 
-export type TypeBaseDefault<Ctx extends any[], T> = CommonTypeBase &
-  Defaultable<Ctx, T>;
+export interface TypeBaseDefault<Ctx extends any[], T>
+  extends CommonTypeBase,
+    Defaultable<Ctx, T> {
+  displayName?: string;
+  /**
+   * Function for whether this prop should be hidden in the right panel,
+   * given the current props for this component
+   */
+  hidden?: ContextDependentConfig<Ctx, boolean>;
+}
 
 export interface PlainStringType<T extends Nullish<string> = string>
   extends TypeBaseDefault<any[], T> {
