@@ -4,6 +4,8 @@
 
 ```ts
 
+import type { RulesLogic } from 'json-logic-js';
+
 // @public (undocumented)
 export function _ensure<T>(x: T | null | undefined, message?: string): T;
 
@@ -22,8 +24,11 @@ export const _queryOperators: readonly [{
     readonly label: "Filter by author";
 }];
 
-// @public (undocumented)
-export function queryWordpress({ wordpressUrl, queryType, queryOperator, filterValue, limit, }: QueryWordpressOpts): Promise<any>;
+// @public
+export function queryWordpress(opts: QueryWordpressOpts): Promise<QueryWordpressResponse | any>;
+
+// @public @deprecated
+export function _queryWordpress(opts: QueryWordpressOpts & QueryWordpressOldFilterProps): Promise<QueryWordpressResponse>;
 
 // @public (undocumented)
 export function registerWordpress(loader?: {

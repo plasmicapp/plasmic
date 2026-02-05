@@ -16,7 +16,14 @@ describe("queryWordpress", () => {
   beforeEach(() => {
     mockResponseData = [{ id: 1, title: "Post 1", slug: "test-slug" }];
     fetchMock = vi.fn(() =>
-      Promise.resolve({ json: async () => mockResponseData })
+      Promise.resolve({
+        json: async () => mockResponseData,
+        ok: true,
+        headers: new Headers({
+          "X-WP-Total": "1",
+          "X-WP-TotalPages": "1",
+        }),
+      })
     );
     vi.stubGlobal("fetch", fetchMock);
   });
@@ -96,7 +103,13 @@ describe("queryWordpress", () => {
       queryType: "posts",
     });
 
-    expect(result).toEqual(mockResponseData);
+    expect(result).toEqual({
+      items: mockResponseData,
+      total: 1,
+      totalPages: 1,
+      page: 1,
+      perPage: 10,
+    });
   });
 
   it("should not add query parameters when operator is provided but value is missing", async () => {

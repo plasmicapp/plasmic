@@ -2,6 +2,7 @@ import { ActionButton } from "@/wab/client/components/QueryBuilder/Components/Ac
 import { BooleanEditor } from "@/wab/client/components/QueryBuilder/Components/BooleanEditor";
 import { FieldPicker } from "@/wab/client/components/QueryBuilder/Components/FieldPicker";
 import { GroupHeader } from "@/wab/client/components/QueryBuilder/Components/GroupHeader";
+import { MultiSelectEditor } from "@/wab/client/components/QueryBuilder/Components/MultiSelectEditor";
 import { OperatorPicker } from "@/wab/client/components/QueryBuilder/Components/OperatorPicker";
 import { RowActionsGroup } from "@/wab/client/components/QueryBuilder/Components/RowActionsGroup";
 import { mergeSane } from "@/wab/shared/common";
@@ -71,6 +72,9 @@ export const QueryBuilderConfig = L.merge({}, AntdConfig, {
       factory: BooleanEditor,
       // There is only one operator for the boolean values (equals), hide it and show the boolean editor only.
       hideOperator: true,
+    },
+    multiselect: {
+      factory: MultiSelectEditor,
     },
   },
 } as BasicConfig);

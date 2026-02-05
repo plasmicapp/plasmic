@@ -23,3 +23,7 @@ export function ensure<T>(x: T | null | undefined, message?: string): T {
     return x;
   }
 }
+
+export function cleanUrl(url: string): string {
+  return url.replace(/\/$/, "");
+}
