@@ -123,6 +123,7 @@ const registerFetchParams: CustomFunctionMeta<typeof wrappedFetch> = {
         },
         body: {
           type: "object",
+          hidden: ([opts]) => opts?.method === "GET",
         },
       },
     },
