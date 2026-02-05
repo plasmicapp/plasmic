@@ -36,9 +36,7 @@ function WorkspaceDataSources_(
   const [isEditing, setIsEditing] = React.useState<"new" | ApiDataSource>();
   const isAdmin = isAdminTeamEmail(appCtx.selfInfo?.email, appCtx.appConfig);
   const allowNewDataSources =
-    isAdmin ||
-    appCtx.appConfig.enableDataQueries ||
-    !appCtx.appConfig.rscRelease;
+    appCtx.appConfig.enableDataQueries || !appCtx.appConfig.rscRelease;
 
   const showIntegrations = allowNewDataSources || !!dataSources.length;
   return (

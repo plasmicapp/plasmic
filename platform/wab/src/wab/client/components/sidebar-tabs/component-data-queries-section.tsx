@@ -6,7 +6,10 @@ import {
 } from "@/wab/client/components/sidebar-tabs/DataSource/DataSourceOpPicker";
 import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
 import { IconLinkButton } from "@/wab/client/components/widgets";
-import { DataQueriesTooltip } from "@/wab/client/components/widgets/DetailedTooltips";
+import {
+  DataQueriesDeprecatedTooltip,
+  DataQueriesTooltip,
+} from "@/wab/client/components/widgets/DetailedTooltips";
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import { LabelWithDetailedTooltip } from "@/wab/client/components/widgets/LabelWithDetailedTooltip";
 import { LabeledListItem } from "@/wab/client/components/widgets/LabeledListItem";
@@ -158,14 +161,10 @@ const DataQueryRow = observer(
 function ComponentQueriesSection_(props: {
   component: Component;
   viewCtx: ViewCtx;
+  isDeprecated: boolean;
 }) {
-  const { component, viewCtx } = props;
+  const { component, viewCtx, isDeprecated } = props;
   const studioCtx = useStudioCtx();
-  const appCtx = studioCtx.appCtx;
-
-  if (!appCtx.appConfig.enableDataQueries) {
-    return;
-  }
 
   const tplFetchers = getTplComponentFetchers(component);
 
@@ -197,8 +196,13 @@ function ComponentQueriesSection_(props: {
     <SidebarSection
       id="data-queries-section"
       title={
-        <LabelWithDetailedTooltip tooltip={DataQueriesTooltip}>
+        <LabelWithDetailedTooltip
+          tooltip={
+            isDeprecated ? DataQueriesDeprecatedTooltip : DataQueriesTooltip
+          }
+        >
           {DATA_QUERY_PLURAL_CAP}
+          {isDeprecated ? " (DEPRECATED)" : ""}
         </LabelWithDetailedTooltip>
       }
       emptyBody={component.dataQueries.length === 0 && tplFetchers.length === 0}

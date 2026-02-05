@@ -29,8 +29,8 @@ export const DATA_SOURCE_OPERATION_LOWER =
 export const DATA_SOURCE_OPERATION_PLURAL_LOWER =
   DATA_SOURCE_OPERATION_PLURAL_CAP.toLowerCase();
 
-export const SERVER_QUERY_CAP = "Server query";
-export const SERVER_QUERY_PLURAL_CAP = "Server queries";
+export const SERVER_QUERY_CAP = "Data query";
+export const SERVER_QUERY_PLURAL_CAP = "Data queries";
 export const A_SERVER_QUERY_LOWER = "a " + SERVER_QUERY_CAP.toLowerCase();
 export const SERVER_QUERY_LOWER = SERVER_QUERY_CAP.toLowerCase();
 export const SERVER_QUERY_PLURAL_LOWER = SERVER_QUERY_PLURAL_CAP.toLowerCase();

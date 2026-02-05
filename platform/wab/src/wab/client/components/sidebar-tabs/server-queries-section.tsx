@@ -9,7 +9,7 @@ import {
 } from "@/wab/client/components/sidebar-tabs/ServerQuery/ServerQueryBottomModal";
 import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
 import { IconLinkButton } from "@/wab/client/components/widgets";
-import { DataQueriesTooltip } from "@/wab/client/components/widgets/DetailedTooltips";
+import { ServerQueriesTooltip } from "@/wab/client/components/widgets/DetailedTooltips";
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import { LabelWithDetailedTooltip } from "@/wab/client/components/widgets/LabelWithDetailedTooltip";
 import LabeledListItem from "@/wab/client/components/widgets/LabeledListItem";
@@ -168,7 +168,7 @@ function ServerQueriesSection_(props: {
     <SidebarSection
       id="server-queries-section"
       title={
-        <LabelWithDetailedTooltip tooltip={DataQueriesTooltip}>
+        <LabelWithDetailedTooltip tooltip={ServerQueriesTooltip}>
           {SERVER_QUERY_PLURAL_CAP}
         </LabelWithDetailedTooltip>
       }

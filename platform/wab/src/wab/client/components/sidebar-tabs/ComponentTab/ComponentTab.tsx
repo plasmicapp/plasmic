@@ -20,17 +20,12 @@ import PlumeMarkIcon from "@/wab/client/plasmic/plasmic_kit_design_system/icons/
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { PublicStyleSection } from "@/wab/shared/ApiSchema";
-import { Component, Variant, VariantGroup } from "@/wab/shared/model/classes";
+import { Component } from "@/wab/shared/model/classes";
 import { getPlumeEditorPlugin } from "@/wab/shared/plume/plume-registry";
 import { canEditStyleSection } from "@/wab/shared/ui-config-utils";
 import { observer } from "mobx-react";
 import React from "react";
 import { useLocalStorage } from "react-use";
-
-export interface ComponentTabHandle {
-  onVariantAdded: (variant: Variant) => void;
-  onVariantGroupAdded: (group: VariantGroup) => void;
-}
 
 export const ComponentTab = observer(function ComponentTab(props: {
   component: Component;
@@ -39,6 +34,7 @@ export const ComponentTab = observer(function ComponentTab(props: {
   isHalf?: boolean;
 }) {
   const { component, studioCtx, viewCtx, isHalf = false } = props;
+  const appConfig = studioCtx.appCtx.appConfig;
 
   const plugin = getPlumeEditorPlugin(component);
   const variantsPanelRef = React.useRef<VariantsPanelHandle>(null);
@@ -136,12 +132,15 @@ export const ComponentTab = observer(function ComponentTab(props: {
                           viewCtx={viewCtx}
                         />
                       )}
-                      {canEdit(PublicStyleSection.DataQueries) && (
-                        <ComponentDataQueriesSection
-                          component={component}
-                          viewCtx={viewCtx}
-                        />
-                      )}
+                      {canEdit(PublicStyleSection.DataQueries) &&
+                        (!appConfig.rscRelease ||
+                          appConfig.enableDataQueries) && (
+                          <ComponentDataQueriesSection
+                            component={component}
+                            viewCtx={viewCtx}
+                            isDeprecated={appConfig.rscRelease}
+                          />
+                        )}
                       {canEdit(PublicStyleSection.States) && (
                         <VariablesSection
                           component={component}

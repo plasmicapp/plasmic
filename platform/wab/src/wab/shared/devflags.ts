@@ -669,7 +669,6 @@ export function applyPlasmicUserDevFlagOverrides(target: DevFlagsType) {
     allowHtmlPaste: true,
     enableUiCopilot: true,
     cmsUniqueFields: true,
-    enableDataQueries: true,
     showAnimations: true,
     dataTokens: true,
   } as Partial<DevFlagsType>);

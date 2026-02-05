@@ -369,6 +369,40 @@ export function PageQueryParamsTooltip() {
   );
 }
 
+export function ServerQueriesTooltip() {
+  return (
+    <div style={{ paddingBottom: 10 }}>
+      <p>
+        Add <strong>data queries</strong> to get data from a data source such as
+        an API or CMS.
+      </p>
+      <p>
+        <a target={"_blank"} href="https://docs.plasmic.app/learn/integrations">
+          Learn more in the docs
+        </a>
+        .
+      </p>
+    </div>
+  );
+}
+
+export function DataQueriesDeprecatedTooltip() {
+  return (
+    <div style={{ paddingBottom: 10 }}>
+      <p>
+        Old data queries are deprecated. Please use the new data queries in the
+        section above.
+      </p>
+      <p>
+        <a target={"_blank"} href="https://docs.plasmic.app/learn/integrations">
+          Learn more about this change in the docs
+        </a>
+        .
+      </p>
+    </div>
+  );
+}
+
 export function DataQueriesTooltip() {
   return (
     <div style={{ paddingBottom: 10 }}>
