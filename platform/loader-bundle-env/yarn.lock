@@ -1873,10 +1873,10 @@
   resolved "https://registry.yarnpkg.com/@plasmicpkgs/contentful/-/contentful-0.0.8.tgz#5f92841f5b1da8a250973984bca6e83986c14cc0"
   integrity sha512-ja8i2cZvQXJmKrarp/W+s2CATRbd5Bu/IPfCVcpsbxryhCVJ8yVMZV3aU2Wm/VflIgIM76m+1vgPxkwBKq0Ngw==
 
-"@plasmicpkgs/fetch@^0.0.26":
-  version "0.0.26"
-  resolved "https://registry.yarnpkg.com/@plasmicpkgs/fetch/-/fetch-0.0.26.tgz#7da47020ef927a16b765c6d2c254a35f360f935e"
-  integrity sha512-JZElBvE18+fLpo4HbA1iUWa90fqZ8q/6w/y0SuQiEp9EEHRxrrUoBG8uQ9G0akI5M3U98dUDmagnoOSfVxh1og==
+"@plasmicpkgs/fetch@^0.0.27":
+  version "0.0.27"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/fetch/-/fetch-0.0.27.tgz#1aac16b76aed2e55399f7ce40e9138594455ba8e"
+  integrity sha512-ToTAPrx6/htUeunUcVouHKaEJ2YY0PnaWltkEZPfqcVHt1F7Pn2VDjDO0OLmxGARInISAbGud15ZOxsgGVaKEA==
 
 "@plasmicpkgs/framer-motion@^0.0.235":
   version "0.0.235"
@@ -1885,10 +1885,10 @@
   dependencies:
     framer-motion "^5.3.0"
 
-"@plasmicpkgs/graphql@^0.0.20":
-  version "0.0.20"
-  resolved "https://registry.yarnpkg.com/@plasmicpkgs/graphql/-/graphql-0.0.20.tgz#5d274cc6c96faa82d395c9b81c56eb426f967435"
-  integrity sha512-JnJqXyHDsO+25U3bfYXa0Xg/jIJ9Wq8CCna3CQgRTdWEmnXduysnX4XXJWF4q0HVxNNpalYhTRnKwCp1SR4OFA==
+"@plasmicpkgs/graphql@^0.0.21":
+  version "0.0.21"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/graphql/-/graphql-0.0.21.tgz#9d840b5447c093b55adf4bbe8b3ec5659f1b9c86"
+  integrity sha512-g8cBjjJjdxeYxoXw9c3fJYkIQEOwPX7Aj4jwx7ITQxJmLpxQmak/m/9bu3BZqAH0YNYvyUjwKb7c/Y0t56/0IQ==
 
 "@plasmicpkgs/lottie-react@^0.0.229":
   version "0.0.229"
