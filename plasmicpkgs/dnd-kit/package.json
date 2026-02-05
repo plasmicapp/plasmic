@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/dnd-kit",
-  "version": "0.0.13",
+  "version": "0.0.14",
   "description": "Plasmic Spotify components.",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -34,7 +34,7 @@
     }
   ],
   "devDependencies": {
-    "@plasmicapp/host": "1.0.234",
+    "@plasmicapp/host": "1.0.235",
     "@types/react": "^17.0.43",
     "@types/react-dom": "^17.0.14",
     "husky": "^7.0.4",

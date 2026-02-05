@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/plasmic-typeform",
-  "version": "0.0.80",
+  "version": "0.0.81",
   "description": "Plasmic Typeform components.",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -34,7 +34,7 @@
     }
   ],
   "devDependencies": {
-    "@plasmicapp/host": "1.0.234",
+    "@plasmicapp/host": "1.0.235",
     "@types/react": "^18.0.27",
     "@types/react-dom": "^18.0.10",
     "husky": "^7.0.4",
