@@ -1,5 +1,7 @@
 import process from "process";
 
+export const PNPM_CACHE_DIR = "/tmp/.loader-pnpm-store";
+
 const DEFAULT_ENV = {
   NPM_CONFIG_REGISTRY: "https://registry.npmjs.org",
   NPM_CONFIG_CACHE: "",

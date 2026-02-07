@@ -1,6 +1,7 @@
 {
+  "packageManager": "pnpm@10.28.2",
   "dependencies": {
-    "esbuild": "^0.12.24",
+    "esbuild": "^0.24.0",
     "esbuild-register": "^3.0.0",
     "express": "^4.17.1",
     "node-fetch": "^2.6.1"
@@ -8,5 +9,10 @@
   "devDependencies": {
     "@types/express": "^4.17.13",
     "@types/node-fetch": "^2.5.12"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ]
   }
 }

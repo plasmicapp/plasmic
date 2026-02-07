@@ -3,7 +3,7 @@ import { copySync } from "fs-extra";
 import getPort from "get-port";
 import path from "path";
 import tmp from "tmp";
-import { getEnvVar } from "../env";
+import { getEnvVar, PNPM_CACHE_DIR } from "../env";
 import {
   runCommand,
   uploadProject,
@@ -40,19 +40,9 @@ export async function setupHtml(opts: {
   const templateDir = path.resolve(path.join(__dirname, "template"));
   copySync(templateDir, tmpdir, { recursive: true });
 
-  const isolatedCacheDir = path.join(tmpdir, ".yarn-cache");
-  const isolatedYarnDir = path.join(tmpdir, ".yarn");
-
   await runCommand(
-    `yarn install --network-timeout 60000 --cache-folder "${isolatedCacheDir}" --global-folder "${isolatedYarnDir}"`,
-    {
-      dir: tmpdir,
-      env: {
-        YARN_CACHE_FOLDER: isolatedCacheDir,
-        YARN_GLOBAL_FOLDER: isolatedYarnDir,
-        YARN_ENABLE_NETWORK: "1",
-      },
-    }
+    `pnpm install --frozen-lockfile --store-dir "${PNPM_CACHE_DIR}"`,
+    { dir: tmpdir, env: { PNPM_HOME: PNPM_CACHE_DIR } }
   );
 
   const port = await getPort();

@@ -4,7 +4,7 @@ import { copySync } from "fs-extra";
 import getPort from "get-port";
 import path from "path";
 import tmp from "tmp";
-import { getEnvVar } from "../env";
+import { getEnvVar, PNPM_CACHE_DIR } from "../env";
 import { CraEnv, ProjectContext } from "../playwright-tests/setup-utils";
 import {
   runCommand,
@@ -64,39 +64,25 @@ export async function setupCraServer(
   env: CraEnv,
   tmpdir: string
 ) {
+  // Limit concurrency to avoid Verdaccio overload. Reducing CI workers is another option.
+  const pnpmCiFlags = `--store-dir "${PNPM_CACHE_DIR}" --network-concurrency=8 --fetch-retries=5`;
   const template = env.template ?? "template";
   const templateDir = path.resolve(path.join(__dirname, template));
   copySync(templateDir, tmpdir, { recursive: true });
 
   const npmRegistry = getEnvVar("NPM_CONFIG_REGISTRY");
-  const npmCache =
-    getEnvVar("NPM_CONFIG_CACHE") || path.join(tmpdir, ".npm-cache");
-  const npmTmp = path.join(tmpdir, ".npm-tmp");
-
-  await runCommand(
-    `npm install --registry ${npmRegistry} --cache "${npmCache}"`,
-    {
-      dir: tmpdir,
-      env: {
-        npm_config_cache: npmCache,
-        npm_config_tmp: npmTmp,
-      },
-    }
-  );
-
-  // Install the latest loader-react
-  await runCommand(`npm uninstall @plasmicapp/loader-react`, {
+  const pnpmOptions = {
     dir: tmpdir,
-  });
+    env: { PNPM_HOME: PNPM_CACHE_DIR, npm_config_registry: npmRegistry },
+  };
+
   await runCommand(
-    `npm install --registry ${npmRegistry} @plasmicapp/loader-react@latest`,
-    {
-      dir: tmpdir,
-      env: {
-        npm_config_cache: npmCache,
-        npm_config_tmp: npmTmp,
-      },
-    }
+    `pnpm install --frozen-lockfile ${pnpmCiFlags}`,
+    pnpmOptions
+  );
+  await runCommand(
+    `pnpm update @plasmicapp/loader-react --latest ${pnpmCiFlags}`,
+    pnpmOptions
   );
 
   const codegenHost = getEnvVar("WAB_HOST");
@@ -115,7 +101,7 @@ export async function setupCraServer(
 
   const port = await getPort();
 
-  await runCommand(`npm run build`, {
+  await runCommand(`pnpm run build`, {
     dir: tmpdir,
     env: {
       SKIP_PREFLIGHT_CHECK: "true",

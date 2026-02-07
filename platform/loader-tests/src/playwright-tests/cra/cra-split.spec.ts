@@ -11,7 +11,7 @@ test.describe(`Plasmic CRA`, async () => {
   let ctx: CraContext;
   const mainHeaderText = "Split testing page";
 
-  test.beforeEach(async () => {
+  test.beforeAll(async () => {
     ctx = await setupCra({
       bundleFile: "plasmic-split-components.json",
       projectName: "Split",
@@ -19,7 +19,7 @@ test.describe(`Plasmic CRA`, async () => {
     });
   });
 
-  test.afterEach(async () => {
+  test.afterAll(async () => {
     await teardownCra(ctx);
   });
 

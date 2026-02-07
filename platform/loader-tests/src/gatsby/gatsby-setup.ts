@@ -95,34 +95,21 @@ export async function setupGatsbyServer(
   copySync(templateDir, tmpdir, { recursive: true });
 
   const npmRegistry = getEnvVar("NPM_CONFIG_REGISTRY");
-  const npmCache =
-    getEnvVar("NPM_CONFIG_CACHE") || path.join(tmpdir, ".npm-cache");
-  const npmTmp = path.join(tmpdir, ".npm-tmp");
-
-  await runCommand(
-    `npm install --registry ${npmRegistry} --cache "${npmCache}"`,
-    {
-      dir: tmpdir,
-      env: {
-        npm_config_cache: npmCache,
-        npm_config_tmp: npmTmp,
-      },
-    }
-  );
-
-  // Install the latest loader-gatsby
-  await runCommand("npm uninstall @plasmicapp/loader-gatsby", {
+  // Gatsby needs it's own separate cache for some reason, otherwise `pnpm install` fails in CI
+  // TODO -- figure out why Gatsby is special and remove this.
+  const cacheDir = path.join(tmpdir, ".pnpm-cache");
+  const pnpmOptions = {
     dir: tmpdir,
-  });
+    env: { PNPM_HOME: cacheDir, npm_config_registry: npmRegistry },
+  };
+
   await runCommand(
-    `npm install --registry ${npmRegistry} @plasmicapp/loader-gatsby@latest --cache "${npmCache}"`,
-    {
-      dir: tmpdir,
-      env: {
-        npm_config_cache: npmCache,
-        npm_config_tmp: npmTmp,
-      },
-    }
+    `pnpm install --frozen-lockfile --store-dir "${cacheDir}"`,
+    pnpmOptions
+  );
+  await runCommand(
+    `pnpm update @plasmicapp/loader-gatsby --latest --store-dir "${cacheDir}"`,
+    pnpmOptions
   );
 
   const codegenHost = getEnvVar("WAB_HOST");
@@ -139,7 +126,7 @@ export async function setupGatsbyServer(
     })
   );
 
-  await runCommand(`npm run build`, { dir: tmpdir });
+  await runCommand(`pnpm run build`, { dir: tmpdir });
 
   const port = await getPort();
   const server = runCommand(`./node_modules/.bin/gatsby serve --port ${port}`, {
