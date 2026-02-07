@@ -205,7 +205,6 @@ import {
   mkUuid,
   only,
   pairwise,
-  spawn,
   tuple,
   unexpected,
   unreachable,
@@ -2096,11 +2095,9 @@ export class DbMgr implements MigrationDbMgr {
     this.allowAnyone();
     const _bcrypt = await this._getUserBcrypt(userId);
     return new Promise<boolean>((resolve, reject) => {
-      spawn(
-        bcrypt.compare(candidatePassword, _bcrypt, (err, isMatch) => {
-          err ? reject(err) : resolve(isMatch);
-        })
-      );
+      bcrypt.compare(candidatePassword, _bcrypt, (err, isMatch) => {
+        err ? reject(err) : resolve(isMatch);
+      });
     });
   }
 
