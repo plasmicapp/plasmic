@@ -11,7 +11,7 @@ RUN apk add --no-cache make~=4 bubblewrap~=0.11 python3 build-base bash g++ gcc 
 WORKDIR /app/wab
 COPY wab/package.json wab/yarn.lock ./
 COPY wab/patches/ ./patches/
-RUN PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 yarn install --frozen-lockfile --network-timeout 600000 --mutex network --ignore-scripts
+RUN PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 yarn install --frozen-lockfile --network-timeout 600000 --mutex network
 RUN yarn patch-package
 COPY wab/ .
 RUN mkdir -p src/wab/gen && make
@@ -51,9 +51,9 @@ EXPOSE 3004
 WORKDIR /app/wab
 COPY wab/package.json wab/yarn.lock ./
 COPY wab/patches/ ./patches/
-RUN PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 yarn install --production --frozen-lockfile --network-timeout 600000 --mutex network
 COPY wab/ .
 COPY --from=builder /app/wab/ .
+RUN PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 yarn install --production --frozen-lockfile --network-timeout 600000 --mutex network
 
 USER node
 
