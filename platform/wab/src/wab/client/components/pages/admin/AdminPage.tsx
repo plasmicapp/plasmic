@@ -24,8 +24,6 @@ import { downloadBlob, getUploadedFile } from "@/wab/client/dom-utils";
 import { useAsyncStrict } from "@/wab/client/hooks/useAsyncStrict";
 import CheckIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Check";
 import CircleCloseIcon from "@/wab/client/plasmic/plasmic_kit_design_system/icons/PlasmicIcon__CircleClose";
-import { stepsToCypress } from "@/wab/client/tours/tutorials/tutorials-helpers";
-import { STUDIO_ONBOARDING_TUTORIALS } from "@/wab/client/tours/tutorials/tutorials-meta";
 import { ApiFeatureTier, ApiProjectRevision } from "@/wab/shared/ApiSchema";
 import { assert, tryRemove } from "@/wab/shared/common";
 import { DEVFLAGS } from "@/wab/shared/devflags";
@@ -129,7 +127,6 @@ function AdminPageTabs() {
             <div className="flex-col gap-xxxlg">
               <CreateTutorialDb />
               <ResetTutorialDb />
-              <TourCypressTest />
               <DownloadPkgForPkgMgr />
               <DownloadPlumePkg />
               <AdminImportProjectsFromProd />
@@ -812,26 +809,6 @@ function ResetTutorialDb() {
           <Button htmlType="submit">Reset</Button>
         </Form.Item>
       </Form>
-    </div>
-  );
-}
-
-function TourCypressTest() {
-  return (
-    <div>
-      <h2> Get updated tour Cypress test</h2>
-      <Button
-        onClick={async () => {
-          const content = stepsToCypress(STUDIO_ONBOARDING_TUTORIALS.complete);
-          // move content to the clipboard
-          await navigator.clipboard.writeText(content);
-          notification.success({
-            message: "Copied to clipboard!",
-          });
-        }}
-      >
-        Generate
-      </Button>
     </div>
   );
 }

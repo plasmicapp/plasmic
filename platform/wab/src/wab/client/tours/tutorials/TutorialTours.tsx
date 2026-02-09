@@ -1,16 +1,16 @@
+import { reportError } from "@/wab/client/ErrorNotifications";
 import { AppCtx } from "@/wab/client/app-ctx";
-import { reactConfirm } from "@/wab/client/components/quick-modals";
 import { topFrameTourSignals } from "@/wab/client/components/TopFrame/TopFrameChrome";
+import { reactConfirm } from "@/wab/client/components/quick-modals";
 import Button from "@/wab/client/components/widgets/Button";
 import IconButton from "@/wab/client/components/widgets/IconButton";
 import { useApi, useTopFrameApi } from "@/wab/client/contexts/AppContexts";
-import { reportError } from "@/wab/client/ErrorNotifications";
 import { TopFrameApi } from "@/wab/client/frame-ctx/top-frame-api";
 import CloseIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Close";
 import HelpIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Help";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { TopFramePublishTours } from "@/wab/client/tours/tutorials/frags/publish-steps";
 import { TutorialHighlightEffect } from "@/wab/client/tours/tutorials/TutorialHighlightEffect";
+import { TopFramePublishTours } from "@/wab/client/tours/tutorials/frags/publish-steps";
 import { TutorialEvent } from "@/wab/client/tours/tutorials/tutorials-events";
 import { waitElementToBeVisible } from "@/wab/client/tours/tutorials/tutorials-helpers";
 import {
@@ -21,9 +21,9 @@ import { TutorialStateFlags } from "@/wab/client/tours/tutorials/tutorials-types
 import { trackEvent } from "@/wab/client/tracking";
 import { StandardMarkdown } from "@/wab/client/utils/StandardMarkdown";
 import { zIndex } from "@/wab/client/z-index";
-import { mkShortId, spawn, waitUntil } from "@/wab/shared/common";
 import { useSignalListener } from "@/wab/commons/components/use-signal-listener";
 import { ProjectId } from "@/wab/shared/ApiSchema";
+import { mkShortId, spawn, waitUntil } from "@/wab/shared/common";
 import * as Sentry from "@sentry/browser";
 import { notification } from "antd";
 import { observer } from "mobx-react";
@@ -565,8 +565,6 @@ export interface TopFrameTourState {
   run: boolean;
   stepIndex: number;
 }
-
-const PROJECT_TOUR_HOSTING_PREFIX = "tutorial-";
 
 function generateCustomDomain(appCtx: AppCtx, tour: string) {
   const uniqueId = mkShortId().toLowerCase();

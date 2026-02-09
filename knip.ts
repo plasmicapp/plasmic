@@ -19,7 +19,7 @@ const config: KnipConfig = {
       project: ["**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}"],
     },
     "platform/wab": {
-      entry: ["**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}"],
+      entry: ["src/**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}"],
       project: ["**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}"],
       ignoreDependencies: [
         "coffeescript", // used by pegcoffee
@@ -40,22 +40,13 @@ const config: KnipConfig = {
 
         // below deps are not verified to actually be needed
 
+        "buffer", // used by StudioHtmlPlugin.ts?
         "url", // used by route.ts?
 
         // used by jest?
         "@babel/plugin-proposal-decorators",
+        "@babel/preset-env",
         "@babel/preset-typescript",
-
-        // used by cypress?
-        "@sucrase/webpack-loader",
-        "browserify-zlib",
-        "buffer",
-        "https-browserify",
-        "lodash-es",
-        "os-browserify",
-        "path-browserify",
-        "stream-browserify",
-        "stream-http",
       ],
     },
   },

@@ -18,7 +18,7 @@ Overall rough directory structure (please feel free to fill in more):
 ```
 .
 ├── package.json             # shared package.json for client and servers
-│   ├── cypress/             # cypress e2e tests for wab client+server
+│   ├── playwright/          # playwright e2e tests for wab client+server
 │   ├── src/wab/
 │   │   ├── client/          # client-only code (can only be imported by other client code)
 │   │   ├── commons/         # generic code not specific to Plasmic

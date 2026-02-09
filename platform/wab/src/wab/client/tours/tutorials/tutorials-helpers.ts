@@ -9,7 +9,6 @@ import {
 } from "@/wab/client/definitions/insertables";
 import { addGetManyQuery, StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { StudioTutorialStep } from "@/wab/client/tours/tutorials/tutorials-types";
 import { AddItemKey } from "@/wab/shared/add-item-keys";
 import { ensure, ensureArray, waitUntil } from "@/wab/shared/common";
 import { ComponentType, isPageComponent } from "@/wab/shared/core/components";
@@ -953,82 +952,4 @@ export function isFormInitialValuesProperlyLinked(studioCtx: StudioCtx) {
       isKnownObjectPath(initialValuesArg.expr) &&
       isEqual(initialValuesArg.expr.path, ["$state", "table", "selectedRow"])
   );
-}
-
-export function stepsToCypress(steps: StudioTutorialStep[]) {
-  // TODO: outer frame steps
-  // Play with the result to ensure it's working
-
-  return steps
-    .map((step, index) => {
-      const cyTarget = step.highlightTarget ?? step.target;
-      let cypressStep = `// #${step.name} - ${index + 1} / ${steps.length}\n`;
-
-      cypressStep += `cy.get("#tour-popup-${step.name}").should("be.visible");\n`;
-
-      if (step.name === "form-add") {
-        cypressStep += `cy.insertFromAddDrawer("plasmic-antd5-form");\n`;
-      } else if (step.name === "rich-table-add") {
-        cypressStep += `cy.insertFromAddDrawer("hostless-rich-table");\n`;
-      } else if (step.name === "configure-table") {
-        cypressStep += `
-cy.get('${cyTarget}').click();
-cy.get(\`[data-key="'customers'"]\`).click();`;
-      } else if (step.name === "data-query-switch-component-tab") {
-        cypressStep += `cy.switchToDataTab();\n`;
-      } else if (step.name === "configure-table-settings-tab") {
-        cypressStep += `cy.switchToSettingsTab();\n`;
-      } else if (step.name === "configure-table-select-rows") {
-        cypressStep += `
-cy.get('${cyTarget}').click();
-cy.get(\`[data-key="'click'"]\`).click();\n`;
-      } else if (step.name === "form-items-label") {
-        cypressStep += `
-cy.get('${cyTarget}').click();
-cy.justType("Contact Name{enter}");
-`;
-      } else if (step.name === "form-items-name") {
-        cypressStep += `
-cy.get('${cyTarget}').click();
-cy.justType("contact_name{enter}");
-`;
-      } else if (step.name === "form-initial-values-dynamic-value") {
-        cypressStep += `
-cy.get('${cyTarget}').rightclick();
-cy.get("#use-dynamic-value-btn").click();
-`;
-      } else if (step.name === "form-initial-value-data-picker") {
-        cypressStep += `
-cy.get('${cyTarget}').click();
-cy.get("#data-picker-save-btn").click();
-`;
-      } else if (step.name === "form-interaction-use-integration") {
-        cypressStep += `
-cy.get('${cyTarget}').click();
-cy.get('[data-key="dataSourceOp"]').click();
-`;
-      } else if (step.name === "open-publish-modal") {
-        cypressStep += "pressPublishButton();";
-      } else if (step.nextButtonText) {
-        // if there is a next button, click it
-        cypressStep += `cy.get('#tour-primary-btn').click();\n`;
-      } else {
-        cypressStep += `cy.get('${cyTarget}').click();\n`;
-      }
-
-      if (step.name.includes("save")) {
-        cypressStep += `cy.wait(700)\n`;
-      } else if (
-        step.name === "#part3-intro" ||
-        step.name === "form-interaction-use-integration"
-      ) {
-        // part3-intro is here because of sleep(1700) in the waitFor for the step
-        // form-interaction-use-integration is here because of slowness in creating the dataSourceOp
-        cypressStep += `cy.wait(2500)\n`;
-      } else {
-        cypressStep += `cy.wait(300)\n`;
-      }
-      return cypressStep;
-    })
-    .join("\n");
 }
