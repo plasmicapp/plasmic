@@ -141,6 +141,7 @@ import {
   RenderExpr,
   RuleSet,
   Site,
+  SiteParams,
   StrongFunctionArg,
   StyleExpr,
   StyleToken,
@@ -211,11 +212,7 @@ export const writeable = <T extends ObjInst>(
 
 export const UNINITIALIZED_VALUE = "Uninitialized value" as any;
 
-export function createSite({
-  hostLessPackageInfo,
-}: {
-  hostLessPackageInfo?: HostLessPackageInfo;
-} = {}) {
+export function createSite(params: Partial<SiteParams> = {}) {
   const defaultTheme = createDefaultTheme();
 
   const screenGroup = mkScreenVariantGroup();
@@ -241,7 +238,7 @@ export function createSite({
       usePlasmicImg: true,
       useLoadingState: true,
     },
-    hostLessPackageInfo: hostLessPackageInfo ?? null,
+    hostLessPackageInfo: null,
     globalContexts: [],
     splits: [],
     defaultComponents: {},
@@ -249,6 +246,7 @@ export function createSite({
     pageWrapper: null,
     customFunctions: [],
     codeLibraries: [],
+    ...params,
   });
 
   addDummyArena(site);

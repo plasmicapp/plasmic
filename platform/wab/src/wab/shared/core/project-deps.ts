@@ -1629,9 +1629,18 @@ function upgradeProjectDep(
   // fix token ref from tokens
   site.styleTokens.forEach((token) => fixRefsForToken(token));
   // fix token ref from token overrides
-  styleTokenOverridesForDep(site, oldDep.site).forEach((override) =>
-    fixRefsForTokenOverride(override)
-  );
+  site.styleTokenOverrides.forEach((override) => {
+    if (oldToNewToken.has(override.token)) {
+      // Token is from oldDep - fix token refs and variant refs
+      fixRefsForTokenOverride(override);
+    } else {
+      // Token is NOT from oldDep (local registered token) - just fix variant refs
+      override.variantedValues.forEach((v) => fixRefsForVariantedStyle(v));
+      override.variantedValues = override.variantedValues.filter(
+        (v) => v.variants.length > 0
+      );
+    }
+  });
   // fix token ref from mixin
   site.mixins.forEach((mixin) => fixRefsForMixin(mixin));
   // fix token ref from theme

@@ -1,56 +1,17 @@
-import { walkDependencyTree } from "@/wab/shared/core/project-deps";
-import { createDefaultTheme } from "@/wab/shared/core/sites";
+import { mkVariant } from "@/wab/shared/Variants";
+import {
+  upgradeProjectDeps,
+  walkDependencyTree,
+} from "@/wab/shared/core/project-deps";
+import { createSite } from "@/wab/shared/core/sites";
 import {
   ProjectDependency,
-  Site,
-  SiteParams,
+  StyleToken,
+  StyleTokenOverride,
+  VariantedValue,
 } from "@/wab/shared/model/classes";
-import { mkScreenVariantGroup } from "@/wab/shared/SpecialVariants";
-import { mkBaseVariant } from "@/wab/shared/Variants";
 
 describe("walkDependencyTree", () => {
-  function createSite(params: Partial<SiteParams> = {}) {
-    const defaultTheme = createDefaultTheme();
-    const screenGroup = mkScreenVariantGroup();
-
-    // These params don't matter in the below test
-    const defaultSiteParams = {
-      projectDependencies: [],
-      componentArenas: [],
-      pageArenas: [],
-      components: [],
-      arenas: [],
-      globalVariant: mkBaseVariant(),
-      styleTokens: [],
-      styleTokenOverrides: [],
-      dataTokens: [],
-      mixins: [],
-      animationSequences: [],
-      themes: [defaultTheme],
-      activeTheme: defaultTheme,
-      globalVariantGroups: [screenGroup],
-      userManagedFonts: [],
-      imageAssets: [],
-      activeScreenVariantGroup: screenGroup,
-      flags: {
-        usePlasmicImg: true,
-        useLoadingState: true,
-      },
-      hostLessPackageInfo: null,
-      globalContexts: [],
-      splits: [],
-      defaultComponents: {},
-      defaultPageRoleId: null,
-      pageWrapper: null,
-      customFunctions: [],
-      codeLibraries: [],
-    };
-
-    return new Site({
-      ...defaultSiteParams,
-      ...params,
-    });
-  }
   test("scope: direct", () => {
     const core = new ProjectDependency({
       name: "Core",
@@ -319,5 +280,142 @@ describe("walkDependencyTree", () => {
       "Segments",
       "Sections",
     ]);
+  });
+});
+
+describe("upgradeProjectDeps", () => {
+  test("fixes global variant refs in styleTokenOverrides for both dep and local tokens", () => {
+    const depTokenUuid = "gray-2-token-uuid";
+    const variantUuid = "mobile-variant-uuid";
+
+    // Create OLD variant for the old dependency
+    const oldVariant = mkVariant({
+      name: "Mobile",
+      mediaQuery: "(min-width:0px) and (max-width:1000px)",
+    });
+    (oldVariant as any).uuid = variantUuid;
+
+    // Create OLD token for the old dependency
+    const oldDepToken = new StyleToken({
+      name: "Gray 2",
+      type: "Color",
+      uuid: depTokenUuid,
+      value: "#848C8F",
+      variantedValues: [],
+      isRegistered: false,
+      regKey: "gray-2",
+    });
+
+    // Create OLD dependency site with the token and variant
+    const oldDepSite = createSite({
+      styleTokens: [oldDepToken],
+    });
+    oldVariant.parent = oldDepSite.activeScreenVariantGroup!;
+    oldDepSite.activeScreenVariantGroup!.variants.push(oldVariant);
+
+    const oldDep = new ProjectDependency({
+      name: "DesignSystem",
+      pkgId: "design-system-pkg-id",
+      projectId: "design-system-project-id",
+      version: "1.0.0",
+      uuid: "design-system-dep-uuid",
+      site: oldDepSite,
+    });
+
+    // Create NEW variant for the new dependency
+    const newVariant = mkVariant({
+      name: "Mobile",
+      mediaQuery: "(min-width:0px) and (max-width:1000px)",
+    });
+    (newVariant as any).uuid = variantUuid;
+
+    // Create NEW token for the new dependency
+    const newDepToken = new StyleToken({
+      name: "Gray 2",
+      type: "Color",
+      uuid: depTokenUuid,
+      value: "#848C8F",
+      variantedValues: [],
+      isRegistered: false,
+      regKey: "gray-2",
+    });
+
+    // Create NEW dependency site with the token and variant
+    const newDepSite = createSite({
+      styleTokens: [newDepToken],
+    });
+    newVariant.parent = newDepSite.activeScreenVariantGroup!;
+    newDepSite.activeScreenVariantGroup!.variants.push(newVariant);
+
+    const newDep = new ProjectDependency({
+      name: "DesignSystem",
+      pkgId: "design-system-pkg-id",
+      projectId: "design-system-project-id",
+      version: "2.0.0",
+      uuid: "design-system-dep-uuid-v2",
+      site: newDepSite,
+    });
+
+    // Create LOCAL registered token in the main site
+    const localToken = new StyleToken({
+      name: "Primary Color",
+      type: "Color",
+      uuid: "local-primary-token-uuid",
+      value: "#0000FF",
+      variantedValues: [],
+      isRegistered: true,
+      regKey: "primary-color",
+    });
+
+    // Create StyleTokenOverride for DEP token with OLD variant
+    const depTokenOverride = new StyleTokenOverride({
+      token: oldDepToken,
+      value: null,
+      variantedValues: [
+        new VariantedValue({
+          variants: [oldVariant],
+          value: "#848C8F40",
+        }),
+      ],
+    });
+
+    // Create StyleTokenOverride for LOCAL token with OLD variant from dep
+    const localTokenOverride = new StyleTokenOverride({
+      token: localToken,
+      value: null,
+      variantedValues: [
+        new VariantedValue({
+          variants: [oldVariant],
+          value: "#FF0000",
+        }),
+      ],
+    });
+
+    // Create main site with both overrides and old dependency
+    const mainSite = createSite({
+      projectDependencies: [oldDep],
+      styleTokens: [localToken],
+      styleTokenOverrides: [depTokenOverride, localTokenOverride],
+    });
+
+    // Verify initial state: both overrides reference OLD variant
+    expect(mainSite.styleTokenOverrides).toMatchObject([
+      { token: oldDepToken, variantedValues: [{ variants: [oldVariant] }] },
+      { token: localToken, variantedValues: [{ variants: [oldVariant] }] },
+    ]);
+
+    // Upgrade the dependency
+    upgradeProjectDeps(mainSite, [{ oldDep, newDep }]);
+
+    // Verify after upgrade:
+    // - Dep token override: both token and variant updated to NEW
+    // - Local token override: token unchanged, variant updated to NEW
+    expect(mainSite.styleTokenOverrides).toMatchObject([
+      { token: newDepToken, variantedValues: [{ variants: [newVariant] }] },
+      { token: localToken, variantedValues: [{ variants: [newVariant] }] },
+    ]);
+
+    // Verify the dependency was updated
+    expect(mainSite.projectDependencies).toEqual([newDep]);
   });
 });
