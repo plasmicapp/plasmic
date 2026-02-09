@@ -183,6 +183,7 @@ export const SEARCH_PARAM_REVISION = "revision";
 export const SEARCH_PARAM_ARENA_TYPE = "arena_type";
 export const SEARCH_PARAM_ARENA = "arena";
 export const SEARCH_PARAM_COMMENT = "comment";
+export const SEARCH_PARAM_COPILOT_CHAT = "copilot_chat";
 export const SEARCH_PROMPT = "prompt";
 
 export interface ProjectLocationParams {

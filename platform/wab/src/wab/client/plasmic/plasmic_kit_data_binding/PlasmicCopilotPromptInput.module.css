@@ -14,6 +14,74 @@
 .root:focus-within {
   outline: none;
 }
+.freeBox__oqfh7 {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  width: 100%;
+  align-items: flex-start;
+  justify-content: center;
+  row-gap: 8px;
+  min-width: 0;
+}
+.freeBox__zrzJa {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  width: 100%;
+  background: none;
+  min-width: 0;
+  border-radius: 4px;
+  border: 1px solid var(--token-sBh7BFhgAybb);
+}
+.freeBoxwithAdminOverrides__zrzJAiKnp6 {
+  display: flex;
+}
+.root:focus-within .freeBox__zrzJa {
+  outline-color: var(--token-qP8a3gYPq7fd);
+  outline-style: solid;
+  outline-width: thin;
+}
+.modelOverrideInput:global(.__wab_instance):global(.__wab_instance) {
+  max-width: 100%;
+  width: 100%;
+  transform: none;
+  max-height: 100px;
+  min-width: 0;
+}
+.root:focus-within
+  .modelOverrideInput:global(.__wab_instance):global(.__wab_instance) {
+  outline: none;
+}
+.freeBox___7JsOd {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  width: 100%;
+  background: none;
+  min-width: 0;
+  border-radius: 4px;
+  border: 1px solid var(--token-sBh7BFhgAybb);
+}
+.freeBoxwithAdminOverrides___7JsODiKnp6 {
+  display: flex;
+}
+.root:focus-within .freeBox___7JsOd {
+  outline-color: var(--token-qP8a3gYPq7fd);
+  outline-style: solid;
+  outline-width: thin;
+}
+.systemPromptInput:global(.__wab_instance):global(.__wab_instance) {
+  max-width: 100%;
+  width: 100%;
+  transform: none;
+  max-height: 100px;
+  min-width: 0;
+}
+.root:focus-within
+  .systemPromptInput:global(.__wab_instance):global(.__wab_instance) {
+  outline: none;
+}
 .inputArea {
   display: flex;
   flex-direction: column;
@@ -40,7 +108,7 @@
   .textAreaInput:global(.__wab_instance):global(.__wab_instance) {
   outline: none;
 }
-.freeBox {
+.freeBox__ahFq {
   display: flex;
   flex-direction: row;
   position: relative;
@@ -51,7 +119,7 @@
   min-width: 0;
   padding: var(--token-YwPV7bN0RvD8);
 }
-.freeBoxshowImageUpload {
+.freeBoxshowImageUpload__ahFQk6CI {
   justify-content: space-between;
 }
 .imageUploadIcon:global(.__wab_instance) {

@@ -410,6 +410,7 @@ const DEFAULT_DEVFLAGS = {
   showCopilot: true,
   allowHtmlPaste: false,
   enableUiCopilot: false,
+  enableChatCopilot: false,
   uiCopilotModelProviderOpts: {
     provider: "OpenAI",
     modelName: "gpt-4.1",
@@ -668,6 +669,7 @@ export function applyPlasmicUserDevFlagOverrides(target: DevFlagsType) {
     autoOpen2: true,
     allowHtmlPaste: true,
     enableUiCopilot: true,
+    enableChatCopilot: true,
     cmsUniqueFields: true,
     showAnimations: true,
     dataTokens: true,

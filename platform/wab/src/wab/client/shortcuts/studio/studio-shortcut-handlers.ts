@@ -200,6 +200,11 @@ export function bindStudioShortcutHandlers(studioCtx: StudioCtx) {
           studioCtx.openUiCopilotDialog(!studioCtx.showUiCopilot);
         }
       },
+      TOGGLE_COPILOT_CHAT: async () => {
+        if (studioCtx.chatCopilotEnabled()) {
+          await studioCtx.appCtx.topFrameApi?.toggleCopilotChat();
+        }
+      },
       SWITCH_TO_COPILOT_TAB: async () => {
         return (
           studioCtx.appCtx.appConfig.copilotTab &&

@@ -3115,6 +3115,15 @@ export class StudioCtx extends WithDbCtx {
     );
   }
 
+  chatCopilotEnabled() {
+    const team = this.appCtx.teams.find((t) => t.id === this.siteInfo.teamId);
+    return (
+      // enableUiCopilot flag is false by default and overriden for plasmic users only,
+      // we will enable it when we decide to release this feature to all user
+      this.appCtx.appConfig.enableChatCopilot
+    );
+  }
+
   //
   // Comments
   //

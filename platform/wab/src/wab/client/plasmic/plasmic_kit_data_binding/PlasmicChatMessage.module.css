@@ -1,0 +1,54 @@
+.root {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: flex-start;
+  height: auto;
+  justify-self: flex-start;
+  row-gap: 8px;
+  width: 100%;
+  min-width: 0;
+}
+.roottype_user {
+  padding-left: 16px;
+}
+.roottype_assistant {
+  align-items: flex-start;
+  justify-content: flex-start;
+  padding-right: 16px;
+}
+.message {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: flex-start;
+  height: auto;
+  background: #eaf6ff;
+  width: auto;
+  border-radius: 12px;
+  padding: 4px;
+}
+.messagetype_assistant {
+  align-items: flex-start;
+  justify-content: center;
+  background: var(--token-N3uwCfNqv);
+}
+.content {
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+  overflow-y: auto;
+  padding: 8px;
+}
+.slotTargetResponseSlot {
+  text-align: left;
+}
+.slotTargetResponseSlottype_assistant {
+  font-family: "Inter", sans-serif;
+  font-weight: 500;
+  color: var(--token-p-rw5DRJTx);
+}

@@ -15,6 +15,8 @@ export type CopilotPromptInputProps = DefaultCopilotPromptInputProps &
     | "imageUploadContainer"
     | "runPromptBtn"
     | "textAreaInput"
+    | "modelOverrideInput"
+    | "systemPromptInput"
   >;
 
 function CopilotPromptInput_(

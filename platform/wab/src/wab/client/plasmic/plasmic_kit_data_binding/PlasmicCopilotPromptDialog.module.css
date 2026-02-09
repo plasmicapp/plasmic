@@ -251,39 +251,6 @@
   height: 1px;
   flex-shrink: 0;
 }
-.promptContainer {
-  display: flex;
-  position: relative;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: center;
-  width: 100%;
-  height: auto;
-  max-width: 100%;
-  row-gap: 8px;
-  min-width: 0;
-}
-.promptContainerstate_ready {
-  display: flex;
-}
-.promptContainerstate_history {
-  display: none;
-}
-.promptContainerstate_historyEmpty {
-  display: none;
-}
-.modelProviderOverrideInput:global(.__wab_instance) {
-  display: none;
-}
-.modelProviderOverrideInputwithAdminOverrides_type_ui:global(.__wab_instance) {
-  display: flex;
-}
-.systemPromptInput:global(.__wab_instance) {
-  display: none;
-}
-.systemPromptInputwithAdminOverrides_type_ui:global(.__wab_instance) {
-  display: flex;
-}
 .promptInput:global(.__wab_instance) {
   max-width: 100%;
 }

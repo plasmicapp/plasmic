@@ -4024,6 +4024,19 @@ $color-stops-width: 100%
     > *
       pointer-events: auto
 
+.CopilotChatDialogContainer
+  position: absolute
+  top: 3rem
+  right: 4px
+  height: calc(100% - 3rem)
+
+  > section
+    height: 100%
+    // Dialog component in [PlasmicKit] Design system sets max-height to 90vh; for CommentsDialog
+    // !important could be removed when we fix the default max-height in above Dialog.
+    max-height: 100vh !important
+
+.canvas-editor__canvas-container
   .CopilotUiPromptDialog
     z-index: 10
     position: absolute

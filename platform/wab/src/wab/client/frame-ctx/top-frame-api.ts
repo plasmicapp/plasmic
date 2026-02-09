@@ -76,6 +76,7 @@ export interface TopFrameApi {
   setShowAppAuthModal(val: boolean): Promise<void>;
   setOnboardingTour(val: TopFrameTourState): Promise<void>;
   toggleAdminMode(val: boolean): Promise<void>;
+  toggleCopilotChat(): Promise<void>;
 }
 
 export type TopFrameApiArgs<Method extends keyof TopFrameApi> = Parameters<

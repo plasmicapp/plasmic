@@ -121,34 +121,24 @@ function CopilotPromptDialog<Response>({
   return (
     <PlasmicCopilotPromptDialog
       type={type}
-      promptContainer={{
-        style: {
-          zIndex: 1,
-        },
-      }}
-      withAdminOverrides={isAdminTeamEmail(
-        appCtx.selfInfo?.email,
-        appCtx.appConfig
-      )}
-      modelProviderOverrideInput={{
-        textAreaInput: {
+      promptInput={{
+        withAdminOverrides:
+          type === "ui" &&
+          isAdminTeamEmail(appCtx.selfInfo?.email, appCtx.appConfig),
+        modelOverrideInput: {
           onChange: (value) =>
             setCopilotPrompt({
               ...copilotPrompt,
               modelProviderOverride: value,
             }),
         },
-      }}
-      systemPromptInput={{
-        textAreaInput: {
+        systemPromptInput: {
           onChange: (value) =>
             setCopilotPrompt({
               ...copilotPrompt,
               copilotSystemPromptOverride: value,
             }),
         },
-      }}
-      promptInput={{
         imageUploadIcon: {
           render: () =>
             showImageUpload ? (

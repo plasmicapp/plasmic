@@ -1,14 +1,6 @@
 import { AppCtx } from "@/wab/client/app-ctx";
 import { isPlasmicPath, parseRoute } from "@/wab/client/cli-routes";
-import { AppAuthSettingsModal } from "@/wab/client/components/app-auth/AppAuthSettings";
 import { HostConfig } from "@/wab/client/components/HostConfig";
-import { MergeModalWrapper } from "@/wab/client/components/merge/MergeFlow";
-import { ContentEditorConfigModal } from "@/wab/client/components/modals/ContentEditorConfigModal";
-import { EnableLocalizationModal } from "@/wab/client/components/modals/EnableLocalizationModal";
-import {
-  getTiersAndPromptBilling,
-  TopBarPromptBillingArgs,
-} from "@/wab/client/components/modals/PricingModal";
 import { DataSourcePicker } from "@/wab/client/components/TopFrame/DataSourcePicker";
 import CloneProjectModal from "@/wab/client/components/TopFrame/TopBar/CloneProjectModal";
 import CodeModal from "@/wab/client/components/TopFrame/TopBar/CodeModal";
@@ -17,6 +9,15 @@ import PublishFlowDialogWrapper from "@/wab/client/components/TopFrame/TopBar/Pu
 import { showRegenerateSecretTokenModal } from "@/wab/client/components/TopFrame/TopBar/RegenerateSecretTokenModal";
 import ShareModal from "@/wab/client/components/TopFrame/TopBar/ShareModal";
 import UpsellModal from "@/wab/client/components/TopFrame/TopBar/UpsellModal";
+import { AppAuthSettingsModal } from "@/wab/client/components/app-auth/AppAuthSettings";
+import { CopilotChatDialog } from "@/wab/client/components/copilot/CopilotChatDialog";
+import { MergeModalWrapper } from "@/wab/client/components/merge/MergeFlow";
+import { ContentEditorConfigModal } from "@/wab/client/components/modals/ContentEditorConfigModal";
+import { EnableLocalizationModal } from "@/wab/client/components/modals/EnableLocalizationModal";
+import {
+  TopBarPromptBillingArgs,
+  getTiersAndPromptBilling,
+} from "@/wab/client/components/modals/PricingModal";
 import { IconButton } from "@/wab/client/components/widgets/IconButton";
 import {
   TopFrameApi,
@@ -33,8 +34,8 @@ import {
   StudioShortcutAction,
 } from "@/wab/client/shortcuts/studio/studio-shortcuts";
 import {
-  TopFrameTours,
   TopFrameTourState,
+  TopFrameTours,
 } from "@/wab/client/tours/tutorials/TutorialTours";
 import {
   ApiBranch,
@@ -46,7 +47,10 @@ import { assert, asyncWrapper, mkUuid, spawn } from "@/wab/shared/common";
 import { isAdminTeamEmail } from "@/wab/shared/devflag-utils";
 import { LocalizationConfig } from "@/wab/shared/localization";
 import { getAccessLevelToResource } from "@/wab/shared/perms";
-import { APP_ROUTES } from "@/wab/shared/route/app-routes";
+import {
+  APP_ROUTES,
+  SEARCH_PARAM_COPILOT_CHAT,
+} from "@/wab/shared/route/app-routes";
 import { fillRoute } from "@/wab/shared/route/route";
 import { canEditUiConfig } from "@/wab/shared/ui-config-utils";
 import { message, notification } from "antd";
@@ -90,6 +94,7 @@ export interface TopFrameChromeProps {
   showUpsellForm: TopBarPromptBillingArgs | undefined;
   setShowUpsellForm: (_: undefined) => void;
   showAppAuthModal: boolean;
+  showCopilotChatModal: boolean;
   subjectComponentInfo:
     | {
         pathOrComponent: string;
@@ -353,6 +358,12 @@ export function TopFrameChrome({
                 onCancel={() => topFrameApi.setShowAppAuthModal(false)}
               />
             )}
+            {rest.showCopilotChatModal && (
+              <CopilotChatDialog
+                projectId={project.id}
+                onClose={() => topFrameApi.toggleCopilotChat()}
+              />
+            )}
             <React.Suspense fallback={null}>
               <TopFrameTours
                 appCtx={appCtx}
@@ -450,6 +461,11 @@ export function useTopFrameState({
   >(undefined);
   const [showAppAuthModal, setShowAppAuthModal] = React.useState(false);
 
+  const showCopilotChatModal = React.useMemo(() => {
+    const searchParams = new URLSearchParams(history.location.search);
+    return searchParams.get(SEARCH_PARAM_COPILOT_CHAT) === "true";
+  }, [history.location.search]);
+
   const [noComponents, setNoComponents] = React.useState(true);
   const [subjectComponentInfo, setSubjectComponentInfo] = React.useState<{
     pathOrComponent: string;
@@ -546,6 +562,16 @@ export function useTopFrameState({
         setShouldShowRegenerateSecretTokenModal(true),
       setShowUpsellForm: asyncWrapper(setShowUpsellForm),
       setShowAppAuthModal: asyncWrapper(setShowAppAuthModal),
+      toggleCopilotChat: async () => {
+        const queryParams = new URLSearchParams(history.location.search);
+        if (queryParams.get(SEARCH_PARAM_COPILOT_CHAT) === "true") {
+          queryParams.delete(SEARCH_PARAM_COPILOT_CHAT);
+        } else {
+          queryParams.set(SEARCH_PARAM_COPILOT_CHAT, "true");
+        }
+        history.push({ search: queryParams.toString() });
+        forceUpdate();
+      },
       setOnboardingTour: asyncWrapper(setOnboardingTour),
       pickDataSource: async (opts) => {
         return new Promise((resolve) => {
@@ -607,6 +633,7 @@ export function useTopFrameState({
     showUpsellForm,
     setShowUpsellForm,
     showAppAuthModal,
+    showCopilotChatModal,
     defaultPageRoleId,
     setDefaultPageRoleId,
     onboardingTour,
