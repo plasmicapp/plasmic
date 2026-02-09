@@ -244,9 +244,6 @@ export const ServerQueryOpDraftForm = observer(
     }, [studioCtx, value?.func, evaluatedArgs]);
 
     const { data: ccContextData } = useSWR(dataKey, fetcher);
-    const canvasEnv = viewCtx
-      ? viewCtx.getCanvasEnvForTpl(viewCtx.tplRoot())
-      : undefined;
 
     const propValueEditorContext =
       React.useMemo<PropValueEditorContextData>(() => {
@@ -257,12 +254,9 @@ export const ServerQueryOpDraftForm = observer(
           ccContextData,
           exprCtx,
           schema,
-          env: {
-            ...canvasEnv,
-            data,
-          },
+          env: data,
         };
-      }, [schema, data, canvasEnv, funcParamsValues, exprCtx, ccContextData]);
+      }, [schema, data, funcParamsValues, exprCtx, ccContextData]);
 
     React.useEffect(() => {
       if (availableFunctions.length === 0) {
