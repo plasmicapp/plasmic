@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/strapi",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "description": "Plasmic registration for Strapi",
   "repository": {
     "type": "git",
@@ -35,7 +35,7 @@
     "qs": "^6.11.0"
   },
   "devDependencies": {
-    "@plasmicapp/host": "1.0.235",
+    "@plasmicapp/host": "1.0.236",
     "@react-awesome-query-builder/core": "^6.6.15",
     "@types/json-logic-js": "^2.0.8",
     "@types/qs": "^6.9.7",

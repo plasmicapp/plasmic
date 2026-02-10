@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/vanilla-cookieconsent",
-  "version": "0.0.13",
+  "version": "0.0.14",
   "description": "Plasmic cookie consent banner component.",
   "repository": {
     "type": "git",
@@ -31,7 +31,7 @@
     "postpublish": "bash ../../scripts/publish-api-doc-model.sh"
   },
   "devDependencies": {
-    "@plasmicapp/host": "1.0.235",
+    "@plasmicapp/host": "1.0.236",
     "typescript": "^5.7.3"
   },
   "peerDependencies": {
