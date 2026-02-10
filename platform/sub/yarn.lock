@@ -88,19 +88,19 @@
     mkdirp "^1.0.4"
     rimraf "^3.0.2"
 
-"@plasmicapp/host@^1.0.235":
-  version "1.0.235"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/host/-/host-1.0.235.tgz#6d21c183e4c0baf35c6553382e6366517d52114c"
-  integrity sha512-fJombvLPJsZkYHXceCvOh7iMPHZTuyJy4sIzYuMt9CII8WPW4pgn8BfPa8q3HOQFxl06yafddb4iRsZ9xBz1JQ==
+"@plasmicapp/host@^1.0.236":
+  version "1.0.236"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/host/-/host-1.0.236.tgz#44a88701ac97b9f61fa4154a03baaf15648eb1f3"
+  integrity sha512-1smPj7Kf4WiDUCsFyWDUuL+D4Esl61PoPG6OZWI2HJ61QfBGuZGwJKCROgauaiTCU7KxyHNCOUa6sfOOCxxNXA==
   dependencies:
-    "@plasmicapp/query" "0.1.82"
+    "@plasmicapp/query" "0.1.83"
     csstype "^3.1.2"
     window-or-global "^1.0.1"
 
-"@plasmicapp/query@0.1.82":
-  version "0.1.82"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/query/-/query-0.1.82.tgz#2963ea0d98a7cedccae319955c5abcc35da31173"
-  integrity sha512-YwADtepa/tqyIc38/SUWFVYwXM+6hGAPn3Dpl4yDC1XXPLzRjGq6rcwJSBONab0yhAjszn/NAUQ4NCkhqKyqeg==
+"@plasmicapp/query@0.1.83":
+  version "0.1.83"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/query/-/query-0.1.83.tgz#e993c9e36df39c859c337f9c31c5e2bcdcb68f62"
+  integrity sha512-4DnrldAB4QJky/IrdeWIFfgmNZMWhIx9VTU8ijwHPHpfLM5dJERH2NxuvfdZIwVa0nfg7b8gxgindA1AeIPJVA==
   dependencies:
     swr "^1.0.0"
 

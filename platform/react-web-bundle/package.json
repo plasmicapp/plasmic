@@ -1,8 +1,8 @@
 {
   "name": "react-web-bundle",
   "dependencies": {
-    "@plasmicapp/data-sources-context": "^0.1.22",
-    "@plasmicapp/react-web": "^0.2.416"
+    "@plasmicapp/data-sources-context": "^0.1.23",
+    "@plasmicapp/react-web": "^0.2.417"
   },
   "scripts": {
     "build": "NODE_ENV=production rollup -c rollup.config.js",
