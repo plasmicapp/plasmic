@@ -3,7 +3,7 @@
 import fs from "fs";
 import os from "os";
 import path from "path";
-import { detectNextJsAppDir } from "../utils/envdetect";
+import { detectNextJsAppDir, detectNextJsVersion } from "../utils/envdetect";
 
 describe("detectNextJsAppDir", () => {
   let tempDir: string;
@@ -111,5 +111,58 @@ describe("detectNextJsAppDir", () => {
       setupHybridRouterDir("14.0.0-canary.1");
       expect(detectNextJsAppDir()).toBe(true);
     });
+  });
+});
+
+describe("detectNextJsVersion", () => {
+  let tempDir: string;
+  let originalCwd: string;
+
+  beforeEach(() => {
+    originalCwd = process.cwd();
+    tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "envdetect-test-"));
+    console.log("Added temp dir at ", tempDir);
+    process.chdir(tempDir);
+  });
+
+  afterEach(() => {
+    process.chdir(originalCwd);
+    fs.rmSync(tempDir, { recursive: true, force: true });
+  });
+
+  function writePackageJson(deps: Record<string, string>) {
+    fs.writeFileSync(
+      path.join(tempDir, "package.json"),
+      JSON.stringify({ dependencies: deps })
+    );
+  }
+
+  it("returns undefined when no package.json exists", () => {
+    expect(detectNextJsVersion()).toBeUndefined();
+  });
+
+  it("returns undefined when next is not a dependency", () => {
+    writePackageJson({ react: "^18.0.0" });
+    expect(detectNextJsVersion()).toBeUndefined();
+  });
+
+  it("returns major version from exact version", () => {
+    writePackageJson({ next: "14.2.3" });
+    expect(detectNextJsVersion()).toBe("14");
+  });
+
+  it("returns major version from caret range", () => {
+    writePackageJson({ next: "^13.4.0" });
+    expect(detectNextJsVersion()).toBe("13");
+  });
+
+  it("returns major version from tilde range", () => {
+    writePackageJson({ next: "~12.1.0" });
+    expect(detectNextJsVersion()).toBe("12");
+  });
+
+  it("returns major version from prerelease", () => {
+    writePackageJson({ next: "15.0.0-canary.1" });
+    expect(detectNextJsVersion()).toBe("15");
   });
 });

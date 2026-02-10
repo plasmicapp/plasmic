@@ -29,6 +29,7 @@ import {
   getOrAddProjectLock,
   updateConfig,
 } from "../utils/config-utils";
+import { detectNextJsVersion } from "../utils/envdetect";
 import { HandledError } from "../utils/error";
 import {
   assertAllPathsInRootDir,
@@ -545,6 +546,7 @@ async function syncProject(
     branchName,
     {
       platform: context.config.platform,
+      platformVersion: detectNextJsVersion(),
       platformOptions:
         context.config.platform === "nextjs"
           ? {

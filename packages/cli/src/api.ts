@@ -314,6 +314,7 @@ export class PlasmicApi {
     branchName: string,
     opts: {
       platform: string;
+      platformVersion?: string;
       platformOptions: {
         nextjs?: {
           appDir: boolean;
@@ -350,6 +351,7 @@ export class PlasmicApi {
     branchName: string,
     opts: {
       platform: string;
+      platformVersion?: string;
       platformOptions: {
         nextjs?: {
           appDir: boolean;

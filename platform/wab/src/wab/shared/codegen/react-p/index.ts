@@ -1694,6 +1694,14 @@ function serializeTplTag(ctx: SerializerBaseContext, node: TplTag) {
     if (isPageAwarePlatform(ctx.exportOpts.platform)) {
       attrs["component"] = "Link";
     }
+    const nextVersion =
+      ctx.exportOpts.platform === "nextjs"
+        ? ctx.exportOpts.platformVersion
+        : undefined;
+    if (nextVersion) {
+      // pre-v13 Next Link required a nested <a> tag
+      attrs["legacyBehavior"] = jsLiteral(parseInt(nextVersion) < 13);
+    }
   }
 
   const baseVs = node.vsettings.find((vs) => isBaseVariant(vs.variants));

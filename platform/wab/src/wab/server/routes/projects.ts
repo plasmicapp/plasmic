@@ -2571,11 +2571,13 @@ export async function genCode(req: Request, res: Response) {
     req.body.platform === "tanstack"
       ? req.body.platform
       : "react";
+  const platformVersion = req.body.platformVersion;
   const platformOptions = req.body.platformOptions || {};
   const project = await mgr.getProjectById(req.params.projectId);
   req.promLabels.projectId = project.id;
   const exportOpts: ExportOpts = {
     platform,
+    platformVersion,
     platformOptions,
     lang: "ts",
     relPathFromImplToManagedDir: ".",

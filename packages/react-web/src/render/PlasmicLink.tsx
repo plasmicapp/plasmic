@@ -2,6 +2,9 @@ import { usePlasmicLinkMaybe } from "@plasmicapp/host";
 import React from "react";
 import { omit, pick } from "../common";
 
+// These props are used internally by PlasmicLink to determine how to render the link
+const INTERNAL_PROPS = ["component", "platform", "legacyBehavior"] as const;
+
 export const PlasmicLink = React.forwardRef(function PlasmicLink(
   props: any,
   ref: React.Ref<any>
@@ -12,8 +15,9 @@ export const PlasmicLink = React.forwardRef(function PlasmicLink(
     // Just in case, break the cycle
     return <PlasmicLinkInternal {...props} ref={ref} />;
   } else {
-    // Don't pass component/platform props to non-PlasmicLinkInternal
-    return <Link {...omit(props, "component", "platform")} ref={ref} />;
+    // Don't pass internal props (component/platform/legacyBehavior) to non-PlasmicLinkInternal
+    // eslint-disable-next-line react/forbid-elements
+    return <Link {...omit(props, ...INTERNAL_PROPS)} ref={ref} />;
   }
 });
 
@@ -36,35 +40,44 @@ export const PlasmicLinkInternal = React.forwardRef(
       // scroll={false} so that smooth scrolling works
       const isFragment = props.href?.startsWith("#");
 
-      return React.createElement(
-        props.component,
-        {
-          scroll: !isFragment,
-          ...pick(props, ...nextjsProps),
-          legacyBehavior: true,
-        },
-        <a
-          {...omit(props, "component", "platform", ...nextjsProps)}
-          ref={ref}
-        />
-      );
+      // Default to legacy behavior (nested <a> tag) unless legacyBehavior
+      // is explicitly set to false. Older codegen may not set this prop at
+      // all, so we treat undefined as legacy for backwards compatibility.
+      // https://github.com/plasmicapp/plasmic-internal/pull/2203#issuecomment-3877931788
+      if (props.legacyBehavior !== false) {
+        return React.createElement(
+          props.component,
+          {
+            scroll: !isFragment,
+            ...pick(props, ...nextjsProps),
+          },
+          <a {...omit(props, ...INTERNAL_PROPS, ...nextjsProps)} ref={ref} />
+        );
+      }
+
+      // pass props directly to Link (no nested <a>)
+      return React.createElement(props.component, {
+        scroll: !isFragment,
+        ...omit(props, ...INTERNAL_PROPS),
+        ref,
+      });
     }
 
     if (props.platform === "gatsby" && isInternalHref(props.href)) {
       return React.createElement(props.component, {
-        ...omit(props, "component", "platform", "href"),
+        ...omit(props, ...INTERNAL_PROPS, "href"),
         ...{ to: props.href, ref },
       });
     }
 
     if (props.platform === "tanstack" && isInternalHref(props.href)) {
       return React.createElement(props.component, {
-        ...omit(props, "component", "platform", "href"),
+        ...omit(props, ...INTERNAL_PROPS, "href"),
         ...{ to: props.href, ref },
       });
     }
 
-    return <a {...omit(props, "component", "platform")} ref={ref} />;
+    return <a {...omit(props, ...INTERNAL_PROPS)} ref={ref} />;
   }
 );
 

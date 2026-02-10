@@ -278,6 +278,7 @@ interface ExportOpts {
     version?: string;
   }[];
   platform?: PlasmicConfig["platform"];
+  platformVersion?: string;
   imageOpts?: ImagesConfig;
   stylesOpts?: Omit<StyleConfig, "defaultStyleCssFilePath">;
   i18nOpts?: I18NConfig;
@@ -313,6 +314,7 @@ async function exportProjects(api: PlasmicApi, opts: ExportOpts) {
     versionsToSync.map(async (v) => {
       return api.exportProject(v.projectId, v.branchName, {
         platform: opts.platform ?? "react",
+        platformVersion: opts.platformVersion,
         platformOptions: {},
         version: v.version,
         imageOpts: opts.imageOpts ?? {

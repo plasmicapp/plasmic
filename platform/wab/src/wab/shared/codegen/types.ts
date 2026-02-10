@@ -128,6 +128,8 @@ export interface ExportOpts {
 
   // Target platform where generated code will run on
   platform: ExportPlatform;
+  // Major version of the target platform
+  platformVersion?: string;
   // Platform-specific options
   platformOptions?: ExportPlatformOptions;
 
