@@ -252,6 +252,7 @@ export function RichLayout({
                         items: [
                           {
                             key: "logout",
+                            // @ts-expect-error: https://github.com/ant-design/ant-design/issues/47886
                             icon: <LogoutOutlined />,
                             label: "Sign out",
                           },

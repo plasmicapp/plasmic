@@ -30,7 +30,7 @@
   "devDependencies": {
     "@plasmicapp/host": "1.0.235",
     "@types/node": "^17.0.14",
-    "@types/react": "^18.2.33",
+    "@types/react": "^18",
     "tsdx": "^0.14.1",
     "tslib": "^2.3.1"
   },

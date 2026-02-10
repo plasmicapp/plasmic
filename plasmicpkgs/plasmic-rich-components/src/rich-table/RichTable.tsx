@@ -1,8 +1,8 @@
 import { EllipsisOutlined, PlusOutlined } from "@ant-design/icons";
 import { ActionType, ProColumns, ProTable } from "@ant-design/pro-components";
 import {
-  deriveFieldConfigs,
   NormalizedData,
+  deriveFieldConfigs,
   useNormalizedData,
 } from "@plasmicapp/data-sources";
 import { Button, Dropdown } from "antd";
@@ -14,15 +14,15 @@ import React, { ReactNode, useMemo, useRef } from "react";
 import { useIsClient } from "../common";
 import {
   BaseColumnConfig,
-  deriveValueType,
   FieldfulProps,
   RowFunc,
+  deriveValueType,
 } from "../field-mappings";
 import {
+  RowAction,
   deriveKeyOfRow,
   deriveRowKey,
   renderActions,
-  RowAction,
   tagDataArray,
   useSortedFilteredData,
 } from "../field-react-utils";
@@ -191,6 +191,7 @@ export function RichTable(props: RichTableProps) {
               addHref && (
                 <Button
                   key="button"
+                  // @ts-expect-error: https://github.com/ant-design/ant-design/issues/47886
                   icon={<PlusOutlined />}
                   type="primary"
                   href={addHref}
@@ -515,6 +516,7 @@ function ExportMenu(props: { data: NormalizedData | undefined }) {
       }}
     >
       <Button>
+        {/* @ts-expect-error: https://github.com/ant-design/ant-design/issues/47886 */}
         <EllipsisOutlined />
       </Button>
     </Dropdown>

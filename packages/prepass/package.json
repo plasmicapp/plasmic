@@ -20,7 +20,7 @@
     "prepublishOnly": "npm run build"
   },
   "devDependencies": {
-    "@types/react": "^18.2.33"
+    "@types/react": "^18"
   },
   "dependencies": {
     "@plasmicapp/query": "0.1.82",

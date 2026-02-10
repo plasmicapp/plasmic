@@ -1,47 +1,46 @@
-import React, { cloneElement, useEffect, useRef, useState } from "react";
-import type { Key, ReactElement, ReactNode } from "react";
-import { createPortal } from "react-dom";
-import { isElement } from "react-dom/test-utils";
 import {
-  closestCenter,
-  DragOverlay,
   DndContext,
+  DragOverlay,
   KeyboardSensor,
   MouseSensor,
   TouchSensor,
+  closestCenter,
+  defaultDropAnimationSideEffects,
   useSensor,
   useSensors,
-  defaultDropAnimationSideEffects,
 } from "@dnd-kit/core";
 import type {
-  SortingStrategy,
   AnimateLayoutChanges,
   NewIndexGetter,
+  SortingStrategy,
 } from "@dnd-kit/sortable";
 import {
-  arrayMove,
-  useSortable,
   SortableContext,
-  sortableKeyboardCoordinates,
+  arrayMove,
   rectSortingStrategy,
+  sortableKeyboardCoordinates,
+  useSortable,
 } from "@dnd-kit/sortable";
+import type { ReactElement, ReactNode } from "react";
+import React, { cloneElement, useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
+import { isElement } from "react-dom/test-utils";
 
 import { DataProvider, useSelector } from "@plasmicapp/host";
 
 import type {
-  DraggableSyntheticListeners,
   Active,
   Announcements,
   CollisionDetection,
+  DraggableSyntheticListeners,
   DropAnimation,
   KeyboardCoordinateGetter,
-  Modifiers,
   MeasuringConfiguration,
+  Modifiers,
   PointerActivationConstraint,
   ScreenReaderInstructions,
   UniqueIdentifier,
 } from "@dnd-kit/core";
-import type { Transform } from "@dnd-kit/utilities";
 import {
   restrictToFirstScrollableAncestor,
   restrictToHorizontalAxis,
@@ -49,6 +48,7 @@ import {
   restrictToVerticalAxis,
   restrictToWindowEdges,
 } from "@dnd-kit/modifiers";
+import type { Transform } from "@dnd-kit/utilities";
 import { Registerable, registerComponentHelper } from "./util";
 
 export interface ItemProps {
@@ -88,12 +88,9 @@ export const Item = React.memo(
   React.forwardRef<HTMLLIElement, ItemProps>(
     (
       {
-        color,
         dragOverlay,
         dragging,
-        disabled,
         fadeIn,
-        height,
         index,
         listeners,
         renderItem = () => <div />,
@@ -102,8 +99,6 @@ export const Item = React.memo(
         transition,
         transform,
         value,
-        wrapperStyle,
-        ...props
       },
       ref
     ) => {
@@ -169,7 +164,7 @@ export interface SortableProps {
   Container?: any; // To-do: Fix me
   dropAnimation?: DropAnimation | null;
   getNewIndex?: NewIndexGetter;
-  rowKey?: (item: any) => Key;
+  rowKey?: (item: any) => string | number;
   itemCount?: number;
   items?: any[];
   measuring?: MeasuringConfiguration;
@@ -245,7 +240,6 @@ export function Sortable({
   items: initialItems = [],
   measuring,
   modifiers,
-  removable,
   renderItem,
   reorderItems = arrayMove,
   strategy = rectSortingStrategy,
@@ -351,7 +345,7 @@ export function Sortable({
             const reordered = reorderItems(items, activeIndex, overIndex);
             onReorder?.(activeIndex, overIndex, reordered, items);
             if (activeIndex !== overIndex) {
-              setItems((items) => reordered);
+              setItems(() => reordered);
             }
           }
         }}

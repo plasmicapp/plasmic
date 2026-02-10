@@ -59,7 +59,7 @@
   },
   "devDependencies": {
     "@types/lodash": "^4.14.195",
-    "@types/react-dom": "^18.2.14",
+    "@types/react-dom": "^18",
     "gatsby": "^5.11.0"
   },
   "dependencies": {

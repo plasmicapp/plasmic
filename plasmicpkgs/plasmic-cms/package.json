@@ -38,7 +38,7 @@
     "@plasmicapp/host": "1.0.235",
     "@plasmicapp/query": "0.1.82",
     "@types/node": "^17.0.14",
-    "@types/react": "^18.2.33"
+    "@types/react": "^18"
   },
   "dependencies": {
     "@plasmicpkgs/cms": "0.0.14",

@@ -31,7 +31,7 @@
     "@plasmicapp/data-sources": "0.1.200",
     "@plasmicapp/host": "1.0.235",
     "@types/node": "^14.0.26",
-    "@types/react": "^18.2.33",
+    "@types/react": "^18",
     "tsdx": "^0.14.1",
     "tslib": "^2.2.0"
   },

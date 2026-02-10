@@ -51,7 +51,7 @@
     "@rollup/plugin-node-resolve": "^15.1.0",
     "@types/lodash": "^4.14.200",
     "@types/node": "^20.8.9",
-    "@types/react": "^18.2.33",
+    "@types/react": "^18",
     "antd": "^5.4.0",
     "glob": "^8.1.0",
     "rollup": "^3.26.2",
