@@ -138,7 +138,7 @@ export const ComponentTab = observer(function ComponentTab(props: {
                           <ComponentDataQueriesSection
                             component={component}
                             viewCtx={viewCtx}
-                            isDeprecated={appConfig.rscRelease}
+                            isDeprecated={appConfig.serverQueries}
                           />
                         )}
                       {canEdit(PublicStyleSection.States) && (

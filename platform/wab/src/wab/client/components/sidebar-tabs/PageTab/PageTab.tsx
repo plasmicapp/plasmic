@@ -145,7 +145,7 @@ export const PageTab = observer(function PageTab(props: {
                             <ComponentDataQueriesSection
                               component={page}
                               viewCtx={viewCtx}
-                              isDeprecated={appConfig.rscRelease}
+                              isDeprecated={appConfig.serverQueries}
                             />
                           )}
                         </>

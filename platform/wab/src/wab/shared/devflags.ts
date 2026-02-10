@@ -529,7 +529,6 @@ const DEFAULT_DEVFLAGS = {
   debugCmsForms: false,
 
   hiddenDataSources: [] as string[],
-  serverQueries: false,
 
   // Custom top frame URLs; if Studio is loaded from a custom
   // domain, then this allows us to recognize it as the top frame
@@ -578,6 +577,8 @@ const DEFAULT_DEVFLAGS = {
   autoOpen: false,
   autoOpen2: false,
   cmsUniqueFields: false,
+  // Enable new data queries.
+  serverQueries: false,
   // Disable auth and backend integrations for new projects
   rscRelease: false,
   // Overrides rscRelease to allow using integrations in a project.
