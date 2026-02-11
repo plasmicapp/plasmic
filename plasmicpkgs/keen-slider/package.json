@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/plasmic-keen-slider",
-  "version": "0.0.81",
+  "version": "0.0.82",
   "description": "Plasmic Keen slider components.",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -34,7 +34,7 @@
     }
   ],
   "devDependencies": {
-    "@plasmicapp/host": "1.0.236",
+    "@plasmicapp/host": "1.0.237",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "@types/resize-observer-browser": "^0.1.7",
