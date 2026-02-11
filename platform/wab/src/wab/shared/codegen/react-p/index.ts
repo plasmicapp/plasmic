@@ -192,6 +192,7 @@ import {
   serializedKeyValue,
   serializedKeyValueForObject,
   shouldGenVariantSetting,
+  shouldUseLegacyBehavior,
   sortedVSettings,
 } from "@/wab/shared/codegen/react-p/utils";
 import {
@@ -1694,13 +1695,13 @@ function serializeTplTag(ctx: SerializerBaseContext, node: TplTag) {
     if (isPageAwarePlatform(ctx.exportOpts.platform)) {
       attrs["component"] = "Link";
     }
-    const nextVersion =
-      ctx.exportOpts.platform === "nextjs"
-        ? ctx.exportOpts.platformVersion
-        : undefined;
-    if (nextVersion) {
-      // pre-v13 Next Link required a nested <a> tag
-      attrs["legacyBehavior"] = jsLiteral(parseInt(nextVersion) < 13);
+    if (ctx.exportOpts.platform === "nextjs") {
+      const legacyBehavior = shouldUseLegacyBehavior(
+        ctx.exportOpts.platformVersion
+      );
+      if (!legacyBehavior) {
+        attrs["legacyBehavior"] = jsLiteral(false);
+      }
     }
   }
 

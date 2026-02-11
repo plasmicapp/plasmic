@@ -78,8 +78,7 @@ export function detectNextJsVersion(): string | undefined {
     if (!nextVersion) {
       return undefined;
     }
-    const major = semver.coerce(nextVersion)?.major;
-    return major != null ? String(major) : undefined;
+    return nextVersion;
   } catch {
     return undefined;
   }

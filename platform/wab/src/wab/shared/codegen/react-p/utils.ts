@@ -59,6 +59,7 @@ import {
 import { PlumeType } from "@/wab/shared/plume/plume-registry";
 import { sortedVariantSettings } from "@/wab/shared/variant-sort";
 import L from "lodash";
+import semver from "semver";
 
 export function deriveReactHookSpecs(
   component: Component,
@@ -519,4 +520,22 @@ export function makeComponentImportName(
   } else {
     return aliasedName;
   }
+}
+
+/**
+ * Whether to use legacy behavior (nested <a> tag) for Next.js Link component.
+ * - true: use legacy behavior
+ * - false: opt out of legacy behavior
+ */
+export function shouldUseLegacyBehavior(nextVersion?: string): boolean {
+  if (!nextVersion) {
+    // default to legacy for backwards compatibility
+    return true;
+  }
+  const coercedVersion = semver.coerce(nextVersion);
+  return coercedVersion
+    ? // pre-v13 Next Link required a nested <a> tag (legacy behavior)
+      semver.lt(coercedVersion, "13.0.0")
+    : // For non-semver values like "latest" or "*" (in which case coercedVersion will be falsy), assume modern Next.js (>= 13).
+      false;
 }

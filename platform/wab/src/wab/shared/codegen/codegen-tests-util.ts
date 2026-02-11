@@ -31,10 +31,12 @@ export async function codegen(
   site: Site,
   opts: {
     platform: ExportPlatform;
+    platformVersion?: string;
     codegenScheme: CodegenScheme;
     stylesScheme: StylesScheme;
   } = {
     platform: "react",
+    platformVersion: undefined,
     codegenScheme: "blackbox",
     stylesScheme: "css-modules",
   }
@@ -46,6 +48,7 @@ export async function codegen(
   const exportOpts: ExportOpts = {
     lang: "ts",
     platform: opts.platform,
+    platformVersion: opts.platformVersion,
     relPathFromImplToManagedDir: ".",
     relPathFromManagedToImplDir: ".",
     forceAllProps: false,
@@ -193,6 +196,18 @@ export async function codegen(
     await promisify(exec)(
       `ln -s ${path.join(process.cwd(), "node_modules")} node_modules`,
       { cwd: dir }
+    );
+  }
+
+  if (opts.platform === "nextjs") {
+    // Write type declarations for platform-specific modules not available in wab's node_modules
+    fs.writeFileSync(
+      path.join(dir, "externals.d.ts"),
+      [
+        "declare module 'next/link';",
+        "declare module 'next/router';",
+        "declare module 'next/navigation';",
+      ].join("\n")
     );
   }
 

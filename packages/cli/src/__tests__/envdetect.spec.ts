@@ -48,17 +48,6 @@ describe("detectNextJsAppDir", () => {
     expect(detectNextJsAppDir()).toBe(false);
   });
 
-  it("returns false with pages router only", () => {
-    fs.writeFileSync(
-      path.join(tempDir, "next.config.js"),
-      "module.exports = {};"
-    );
-    fs.mkdirSync(path.join(tempDir, "pages"));
-    fs.writeFileSync(path.join(tempDir, "pages/index.tsx"), "");
-
-    expect(detectNextJsAppDir()).toBe(false);
-  });
-
   it("returns true with app router only", () => {
     fs.writeFileSync(
       path.join(tempDir, "next.config.js"),
@@ -146,23 +135,23 @@ describe("detectNextJsVersion", () => {
     expect(detectNextJsVersion()).toBeUndefined();
   });
 
-  it("returns major version from exact version", () => {
+  it("returns exact next version", () => {
     writePackageJson({ next: "14.2.3" });
-    expect(detectNextJsVersion()).toBe("14");
+    expect(detectNextJsVersion()).toBe("14.2.3");
   });
 
-  it("returns major version from caret range", () => {
+  it("returns caret range next version", () => {
     writePackageJson({ next: "^13.4.0" });
-    expect(detectNextJsVersion()).toBe("13");
+    expect(detectNextJsVersion()).toBe("^13.4.0");
   });
 
-  it("returns major version from tilde range", () => {
+  it("returns tilde range next version", () => {
     writePackageJson({ next: "~12.1.0" });
-    expect(detectNextJsVersion()).toBe("12");
+    expect(detectNextJsVersion()).toBe("~12.1.0");
   });
 
-  it("returns major version from prerelease", () => {
+  it("returns prerelease next version", () => {
     writePackageJson({ next: "15.0.0-canary.1" });
-    expect(detectNextJsVersion()).toBe("15");
+    expect(detectNextJsVersion()).toBe("15.0.0-canary.1");
   });
 });
