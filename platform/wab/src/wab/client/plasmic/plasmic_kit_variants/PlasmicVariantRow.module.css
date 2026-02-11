@@ -84,14 +84,24 @@
 .recordButtonisReadOnly:global(.__wab_instance) {
   flex-shrink: 0;
 }
+.recordButtonshowAddAnimation:global(.__wab_instance) {
+  flex-shrink: 0;
+}
+.recordButtonshowAddAnimation_type_baseVariant:global(.__wab_instance) {
+  flex-shrink: 0;
+}
 .root:hover .recordButton:global(.__wab_instance) {
+  flex-shrink: 0;
+}
+.rootpinState_selected:hover
+  .recordButtonpinState_selected:global(.__wab_instance) {
   flex-shrink: 0;
 }
 .rootisReadOnly:hover .recordButtonisReadOnly:global(.__wab_instance) {
   flex-shrink: 0;
   display: none;
 }
-.svg__fzeqg {
+.svg__ct2Fs {
   display: flex;
   position: relative;
   object-fit: cover;
@@ -99,7 +109,7 @@
   height: 16px;
   color: var(--token-Y2CWh0ci95a);
 }
-.svg__wxygf {
+.svg__lyXlx {
   display: flex;
   position: relative;
   object-fit: cover;
@@ -132,6 +142,34 @@
   display: flex;
   position: relative;
   object-fit: cover;
+  height: 1em;
+}
+.addAnimation:global(.__wab_instance):global(.__wab_instance) {
+  max-width: 100%;
+}
+.addAnimationpinState_selected:global(.__wab_instance):global(.__wab_instance) {
+  display: flex;
+}
+.addAnimationshowAddAnimation:global(.__wab_instance):global(.__wab_instance) {
+  display: flex;
+}
+.addAnimationshowAddAnimation_type_baseVariant:global(.__wab_instance):global(
+    .__wab_instance
+  ) {
+  display: flex;
+}
+.rootpinState_selected_isReadOnly:hover
+  .addAnimationpinState_selected_isReadOnly:global(.__wab_instance):global(
+    .__wab_instance
+  ) {
+  display: none;
+}
+.svg__dyTn {
+  position: relative;
+  height: 1em;
+}
+.svg___5NsPa {
+  position: relative;
   height: 1em;
 }
 .indicator:global(.__wab_instance) {

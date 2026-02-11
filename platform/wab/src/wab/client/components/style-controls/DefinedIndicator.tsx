@@ -1020,28 +1020,32 @@ export const VariantSettingPopoverContent = observer(
             </Tooltip>
           </SourceRow>
         )}
-        {vs.rs.animations?.length && (
+        {vs.rs.animations && (
           <SourceRow
             key={"animations"}
             title={ANIMATIONS_CAP}
             type="target"
             onClear={() => viewCtx.change(() => (vs.rs.animations = null))}
           >
-            <Tooltip
-              title={vs.rs.animations
-                .map((animation) => animation.sequence.name)
-                .join(", ")}
-            >
-              <div>
-                {vs.rs.animations.map((animation) => (
-                  <div className="dropdown-pill code">
-                    <span className="dropdown-pill__contents">
-                      {animation.sequence.name}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </Tooltip>
+            {vs.rs.animations.length > 0 ? (
+              <Tooltip
+                title={vs.rs.animations
+                  .map((animation) => animation.sequence.name)
+                  .join(", ")}
+              >
+                <div>
+                  {vs.rs.animations.map((animation) => (
+                    <div className="dropdown-pill code">
+                      <span className="dropdown-pill__contents">
+                        {animation.sequence.name}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </Tooltip>
+            ) : (
+              <span>None</span>
+            )}
           </SourceRow>
         )}
         {exp

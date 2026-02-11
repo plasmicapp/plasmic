@@ -1,10 +1,34 @@
 import { ReplaceKey } from "@/wab/commons/types";
+import { RSH } from "@/wab/shared/RuleSetHelpers";
+import { getAncestorTplSlot, isSlotVar } from "@/wab/shared/SlotUtils";
+import { TplMgr, ensureBaseVariant } from "@/wab/shared/TplMgr";
+import { $$$ } from "@/wab/shared/TplQuery";
+import {
+  VariantCombo,
+  addingBaseToTplWithExistingBase,
+  ensureBaseRuleVariantSetting,
+  ensureValidCombo,
+  getBaseVariant,
+  getImplicitlyActivatedStyleVariants,
+  isBaseVariant,
+  isGlobalVariant,
+  isPrivateStyleVariant,
+  isScreenVariant,
+  isStandaloneVariantGroup,
+  mkVariantSetting,
+  tryGetPrivateStyleVariant,
+  tryGetVariantSetting,
+} from "@/wab/shared/Variants";
 import {
   computedProjectFlags,
   findNonEmptyCombos,
 } from "@/wab/shared/cached-selectors";
 import { toVarName } from "@/wab/shared/codegen/util";
-import { arrayRemove, arrayReversed } from "@/wab/shared/collections";
+import {
+  arrayMoveIndex,
+  arrayRemove,
+  arrayReversed,
+} from "@/wab/shared/collections";
 import {
   arrayEqIgnoreOrder,
   assert,
@@ -19,6 +43,7 @@ import {
   GlobalVariantFrame,
   TransientComponentVariantFrame,
 } from "@/wab/shared/component-frame";
+import { getAnimationsFromDefinedIndicatorType } from "@/wab/shared/core/animations";
 import {
   allComponentVariants,
   getComponentDisplayName,
@@ -32,9 +57,13 @@ import {
   isFrameRootTplComponent,
 } from "@/wab/shared/core/sites";
 import { getAllDefinedStyles } from "@/wab/shared/core/style-props";
+import { cloneAnimation } from "@/wab/shared/core/styles";
 import {
   AttrsSpec,
   ChildSet,
+  MkTplComponentParams,
+  MkTplTagOpts,
+  TplTagType,
   flattenTplsWithoutVirtualDescendants,
   getTplOwnerComponent,
   isTplColumn,
@@ -42,35 +71,30 @@ import {
   isTplContainer,
   isTplVariantable,
   mkSlot,
-  MkTplComponentParams,
   mkTplComponentX,
-  MkTplTagOpts,
   mkTplTagX,
   summarizeTpl,
-  TplTagType,
 } from "@/wab/shared/core/tpls";
 import { PLASMIC_DISPLAY_NONE } from "@/wab/shared/css";
 import {
   ArgSource,
-  computeDefinedIndicator,
   DefinedIndicatorType,
+  computeDefinedIndicator,
 } from "@/wab/shared/defined-indicator";
 import { DEVFLAGS } from "@/wab/shared/devflags";
 import {
-  adaptEffectiveVariantSetting,
   EffectiveVariantSetting,
+  adaptEffectiveVariantSetting,
 } from "@/wab/shared/effective-variant-setting";
 import { CanvasEnv, tryEvalExpr } from "@/wab/shared/eval";
 import { ensureComponentsObserved } from "@/wab/shared/mobx-util";
 import {
+  Animation,
   Arg,
   Component,
   Expr,
   ImageAsset,
   ImageAssetRef,
-  isKnownTplNode,
-  isKnownTplSlot,
-  isKnownVariantsRef,
   Mixin,
   Param,
   RawText,
@@ -78,44 +102,29 @@ import {
   SlotParam,
   TplComponent,
   TplNode,
+  TplTag,
   Var,
   Variant,
   VariantSetting,
+  isKnownTplNode,
+  isKnownTplSlot,
+  isKnownVariantsRef,
 } from "@/wab/shared/model/classes";
-import { RSH } from "@/wab/shared/RuleSetHelpers";
-import { getAncestorTplSlot, isSlotVar } from "@/wab/shared/SlotUtils";
-import { ensureBaseVariant, TplMgr } from "@/wab/shared/TplMgr";
-import { $$$ } from "@/wab/shared/TplQuery";
 import {
   isAncestorScreenVariant,
   makeVariantComboSorter,
   sortedVariantSettingStack,
 } from "@/wab/shared/variant-sort";
 import {
-  addingBaseToTplWithExistingBase,
-  ensureBaseRuleVariantSetting,
-  ensureValidCombo,
-  getBaseVariant,
-  getImplicitlyActivatedStyleVariants,
-  isBaseVariant,
-  isGlobalVariant,
-  isPrivateStyleVariant,
-  isScreenVariant,
-  isStandaloneVariantGroup,
-  mkVariantSetting,
-  tryGetVariantSetting,
-  VariantCombo,
-} from "@/wab/shared/Variants";
-import {
+  TplVisibility,
   getTplVisibilityAsDescendant,
   isInvisible,
   isMaybeVisible,
   setTplVisibility,
-  TplVisibility,
 } from "@/wab/shared/visibility-utils";
 import L from "lodash";
 
-type StylePropOpts = { forVisibility?: boolean };
+type StylePropOpts = { forVisibility?: boolean; excludeBase?: boolean };
 
 /**
  * Tpl tree utility operations for making edits specific to the current
@@ -230,7 +239,8 @@ export class VariantTplMgr {
     }
     if (!opts.ignoreSlotDefaultContent && getAncestorTplSlot(tpl, true)) {
       // slot default content always target only the base variant
-      return [this.getBaseVariantForNode(tpl)];
+      // If excludeBase is true, return empty combo instead
+      return opts.excludeBase ? [] : [this.getBaseVariantForNode(tpl)];
     }
     const currentCombo = this.getVariantComboForStackFrame(frame).filter(
       (v) => {
@@ -331,7 +341,13 @@ export class VariantTplMgr {
         targetCombo = [getBaseVariant(frame.component)];
       }
     }
-    return ensureValidCombo(frame.component, targetCombo);
+
+    const result = ensureValidCombo(frame.component, targetCombo);
+    if (opts.excludeBase) {
+      return result.filter((v) => !isBaseVariant(v));
+    }
+
+    return result;
   }
 
   getVariantComboForStackFrame(frame: ComponentVariantFrame) {
@@ -504,10 +520,11 @@ export class VariantTplMgr {
     });
   }
 
-  getCurrentSharedVariantComboForNode(tpl: TplNode) {
+  getCurrentSharedVariantComboForNode(tpl: TplNode, opts?: StylePropOpts) {
     return this._getTargetVariantComboForNode(tpl, {
       includePrivate: false,
       ignoreSlotDefaultContent: false,
+      ...opts,
     });
   }
 
@@ -996,6 +1013,149 @@ export class VariantTplMgr {
   removeMixin(tpl: TplNode, mixin: Mixin, variantCombo?: VariantCombo) {
     const vs = this.ensureVariantSetting(tpl, variantCombo);
     arrayRemove(vs.rs.mixins, mixin);
+  }
+
+  /**
+   * Gets animations for a tpl at a given variant combo, including inherited animations.
+   */
+  getAnimationInfoForVariantCombo(
+    tpl: TplTag,
+    variantCombo: VariantCombo
+  ): {
+    animations: Animation[];
+    definedIndicator: DefinedIndicatorType;
+    shouldCloneAnimationsFromOtherVariants: boolean;
+  } {
+    const component = ensure(
+      $$$(tpl).tryGetOwningComponent(),
+      "tpl must have owning component"
+    );
+
+    // Compute defined indicator
+    const effectiveVs = this.effectiveVariantSetting(tpl, variantCombo);
+    const sourceStack = effectiveVs.getPropSource("animation");
+    const definedIndicator = computeDefinedIndicator(
+      this.site,
+      component,
+      sourceStack,
+      variantCombo
+    );
+
+    const definedIndicatorAnimations =
+      getAnimationsFromDefinedIndicatorType(definedIndicator);
+
+    const isFromOtherVariants = definedIndicator.source === "otherVariants";
+    const privateStyleVariant = tryGetPrivateStyleVariant(variantCombo);
+
+    // Private style variants only show directly-set animations (not inherited).
+    // Component variants show inherited animations via the defined indicator.
+    const animations = privateStyleVariant
+      ? tryGetVariantSetting(tpl, variantCombo)?.rs.animations ?? []
+      : definedIndicatorAnimations;
+
+    return {
+      animations,
+      definedIndicator,
+      shouldCloneAnimationsFromOtherVariants:
+        isFromOtherVariants && !privateStyleVariant,
+    };
+  }
+
+  /**
+   * Adds an animation to a tpl at a given variant combo.
+   * Handles cloning from otherVariants automatically.
+   */
+  addAnimation(
+    tpl: TplTag,
+    animation: Animation,
+    variantCombo?: VariantCombo
+  ): Animation[] {
+    variantCombo = variantCombo ?? this.getTargetVariantComboForNode(tpl);
+    const vs = this.ensureVariantSetting(tpl, variantCombo);
+
+    const { animations, shouldCloneAnimationsFromOtherVariants } =
+      this.getAnimationInfoForVariantCombo(tpl, variantCombo);
+
+    const baseAnimations = shouldCloneAnimationsFromOtherVariants
+      ? animations.map((anim) => cloneAnimation(anim))
+      : vs.rs.animations ?? [];
+
+    const newAnimations = [...baseAnimations, animation];
+    vs.rs.animations = newAnimations;
+
+    return newAnimations;
+  }
+
+  /**
+   * Removes an animation from a tpl at a given variant combo.
+   * Handles cloning from otherVariants automatically.
+   */
+  removeAnimation(
+    tpl: TplTag,
+    animation: Animation,
+    variantCombo?: VariantCombo
+  ): Animation[] {
+    variantCombo = variantCombo ?? this.getTargetVariantComboForNode(tpl);
+    const vs = this.ensureVariantSetting(tpl, variantCombo);
+
+    const { animations, shouldCloneAnimationsFromOtherVariants } =
+      this.getAnimationInfoForVariantCombo(tpl, variantCombo);
+
+    const filteredAnimations = animations.filter((a) => a !== animation);
+
+    vs.rs.animations = shouldCloneAnimationsFromOtherVariants
+      ? filteredAnimations.map((anim) => cloneAnimation(anim))
+      : filteredAnimations;
+
+    return vs.rs.animations;
+  }
+
+  /**
+   * Reorders animations at a given variant combo.
+   * Handles cloning from otherVariants automatically.
+   */
+  reorderAnimations(
+    tpl: TplTag,
+    fromIndex: number,
+    toIndex: number,
+    variantCombo?: VariantCombo
+  ): Animation[] {
+    variantCombo = variantCombo ?? this.getTargetVariantComboForNode(tpl);
+    const vs = this.ensureVariantSetting(tpl, variantCombo);
+
+    const { animations, shouldCloneAnimationsFromOtherVariants } =
+      this.getAnimationInfoForVariantCombo(tpl, variantCombo);
+
+    const baseAnimations = shouldCloneAnimationsFromOtherVariants
+      ? animations.map((anim) => cloneAnimation(anim))
+      : [...animations];
+
+    const reordered = arrayMoveIndex(baseAnimations, fromIndex, toIndex);
+    vs.rs.animations = reordered;
+
+    return reordered;
+  }
+
+  /**
+   * Ensures animations are cloned for editing if needed.
+   * Returns the animations array that should be used for direct editing.
+   */
+  ensureAnimationsForEditing(
+    tpl: TplTag,
+    variantCombo?: VariantCombo
+  ): Animation[] {
+    variantCombo = variantCombo ?? this.getTargetVariantComboForNode(tpl);
+    const vs = this.ensureVariantSetting(tpl, variantCombo);
+
+    const { animations, shouldCloneAnimationsFromOtherVariants } =
+      this.getAnimationInfoForVariantCombo(tpl, variantCombo);
+
+    if (shouldCloneAnimationsFromOtherVariants) {
+      vs.rs.animations = animations.map((anim) => cloneAnimation(anim));
+      return vs.rs.animations;
+    }
+
+    return animations;
   }
 
   /**

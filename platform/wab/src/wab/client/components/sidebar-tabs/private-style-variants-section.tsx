@@ -1,5 +1,8 @@
 import { StyleOrCodeComponentVariantLabel } from "@/wab/client/components/VariantControls";
+import { BaseVariantRow } from "@/wab/client/components/sidebar-tabs/BaseVariantRow";
+import { VariantAnimations } from "@/wab/client/components/sidebar-tabs/VariantAnimations";
 import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
+import { makeClientPinManager } from "@/wab/client/components/variants/ClientPinManager";
 import VariantRow from "@/wab/client/components/variants/VariantRow";
 import { makeVariantsController } from "@/wab/client/components/variants/VariantsController";
 import { makeVariantMenu } from "@/wab/client/components/variants/variant-menu";
@@ -11,7 +14,10 @@ import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { PRIVATE_STYLE_VARIANTS_CAP } from "@/wab/shared/Labels";
-import { getPrivateStyleVariantsForTag } from "@/wab/shared/Variants";
+import {
+  ensureVariantSetting,
+  getPrivateStyleVariantsForTag,
+} from "@/wab/shared/Variants";
 import { spawn } from "@/wab/shared/common";
 import { TplTag, Variant } from "@/wab/shared/model/classes";
 import { observer } from "mobx-react";
@@ -34,21 +40,38 @@ export const PrivateStyleVariantsPanel = observer(
       return null;
     }
 
-    const vcontroller = makeVariantsController(studioCtx);
+    const vcontroller = makeVariantsController(studioCtx, viewCtx);
     if (!vcontroller) {
       return null;
     }
+
+    const pinManager = makeClientPinManager(viewCtx);
+    const vtm = viewCtx.variantTplMgr();
 
     const addPrivateVariant = () =>
       studioCtx.changeUnsafe(() => {
         const variant = studioCtx
           .tplMgr()
           .createPrivateStyleVariant(component, tpl);
+
+        ensureVariantSetting(tpl, [variant]);
         setEditingVariant(variant);
         vcontroller.onAddedVariant(variant);
       });
 
     const privateStyleVariants = getPrivateStyleVariantsForTag(component, tpl);
+
+    // Get the current component variant combo (excluding private style variants and base variant)
+    // This is needed to properly scope animations for VariantCombo [ComponentVariant, PrivateStyleVariant]
+    const sharedVariantCombo = vtm.getCurrentSharedVariantComboForNode(tpl, {
+      excludeBase: true,
+    });
+
+    // Check if any private style variant for this tpl is currently targeted
+    const targetedVariants = vcontroller.getTargetedVariants();
+    const hasTargetedPrivateVariant = privateStyleVariants.some((v) =>
+      targetedVariants.includes(v)
+    );
 
     return (
       <SidebarSection
@@ -74,64 +97,90 @@ export const PrivateStyleVariantsPanel = observer(
           </IconLinkButton>
         }
       >
-        {privateStyleVariants.length > 0 ? (
-          <div
-            className="pass-through"
-            data-test-id="private-style-variants-section"
-          >
-            {privateStyleVariants.map((variant) => (
-              <VariantRow
-                key={variant.uuid}
-                variant={variant}
-                studioCtx={studioCtx}
-                viewCtx={viewCtx}
-                pinState={vcontroller.getPinState(variant)}
-                onClick={() =>
-                  studioCtx.changeUnsafe(() => {
-                    // Toggle behavior: if already selected, turn off; otherwise turn on
-                    if (vcontroller.isTargeted(variant)) {
-                      vcontroller.onToggleVariant(variant);
-                    } else {
-                      vcontroller.onClickVariant(variant);
-                    }
-                  })
-                }
-                menu={makeVariantMenu({
-                  variant,
-                  component,
-                  onRemove: () =>
-                    spawn(
-                      studioCtx.changeUnsafe(() =>
-                        spawn(
-                          studioCtx.siteOps().removeVariant(component, variant)
+        <div
+          className="pass-through"
+          data-test-id="private-style-variants-section"
+        >
+          {/* Base row - represents the default state (no element state variant selected) */}
+          <BaseVariantRow
+            tpl={tpl}
+            studioCtx={studioCtx}
+            viewCtx={viewCtx}
+            pinState={
+              !hasTargetedPrivateVariant ? "selected-pinned" : undefined
+            }
+            onClick={() =>
+              studioCtx.changeUnsafe(() =>
+                pinManager.removeSelectedVariants(privateStyleVariants)
+              )
+            }
+          />
+
+          {privateStyleVariants.map((variant) => (
+            <VariantAnimations
+              key={variant.uuid}
+              variants={[...sharedVariantCombo, variant]}
+              tpl={tpl}
+              viewCtx={viewCtx}
+            >
+              {({ addAnimationLayer, animationsList }) => (
+                <VariantRow
+                  variant={variant}
+                  studioCtx={studioCtx}
+                  viewCtx={viewCtx}
+                  pinState={vcontroller.getPinState(variant)}
+                  onClick={() =>
+                    studioCtx.changeUnsafe(() => {
+                      // Toggle behavior: if already selected, turn off; otherwise turn on
+                      if (vcontroller.isTargeted(variant)) {
+                        vcontroller.onToggleVariant(variant);
+                      } else {
+                        vcontroller.onClickVariant(variant);
+                      }
+                    })
+                  }
+                  menu={makeVariantMenu({
+                    variant,
+                    component,
+                    onRemove: () =>
+                      spawn(
+                        studioCtx.changeUnsafe(() =>
+                          spawn(
+                            studioCtx
+                              .siteOps()
+                              .removeVariant(component, variant)
+                          )
                         )
-                      )
-                    ),
-                  onCopyTo: (toVariant) =>
-                    spawn(
-                      studioCtx.changeUnsafe(() =>
-                        studioCtx
-                          .tplMgr()
-                          .copyToVariant(component, variant, toVariant)
-                      )
-                    ),
-                })}
-                label={
-                  <StyleOrCodeComponentVariantLabel
-                    variant={variant}
-                    forTag={tpl.tag}
-                    forRoot={tpl === component.tplTree}
-                    component={component}
-                    onBlur={() => {
-                      setEditingVariant(undefined);
-                    }}
-                    defaultEditing={variant === editingVariant}
-                  />
-                }
-              />
-            ))}
-          </div>
-        ) : null}
+                      ),
+                    onCopyTo: (toVariant) =>
+                      spawn(
+                        studioCtx.changeUnsafe(() =>
+                          studioCtx
+                            .tplMgr()
+                            .copyToVariant(component, variant, toVariant)
+                        )
+                      ),
+                  })}
+                  addAnimationLayer={addAnimationLayer}
+                  additional={animationsList}
+                  label={
+                    <StyleOrCodeComponentVariantLabel
+                      variant={variant}
+                      forTag={tpl.tag}
+                      forRoot={tpl === component.tplTree}
+                      component={component}
+                      onBlur={() => {
+                        setEditingVariant(undefined);
+                      }}
+                      defaultEditing={variant === editingVariant}
+                    />
+                  }
+                  hideIcon={true}
+                />
+              )}
+            </VariantAnimations>
+          ))}
+        </div>
       </SidebarSection>
     );
   }

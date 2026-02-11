@@ -995,9 +995,9 @@ export const TplComponentNameSection = observer(TplComponentNameSection_);
 function TplComponentNameSection_(props: {
   tpl: TplComponent;
   viewCtx: ViewCtx;
-  menuOptions: { label: string; onClick: () => void }[];
+  buildMenu: () => React.ReactElement | null;
 }) {
-  const { tpl, viewCtx, menuOptions } = props;
+  const { tpl, viewCtx, buildMenu } = props;
   const studioCtx = viewCtx.studioCtx;
 
   const subtitle =
@@ -1047,7 +1047,7 @@ function TplComponentNameSection_(props: {
         )}
         subtitle={subtitle}
         description={tpl.component.codeComponentMeta?.description ?? undefined}
-        suffix={menuOptions.length > 0 && <ApplyMenu items={menuOptions} />}
+        suffix={<ApplyMenu buildMenu={buildMenu} />}
       />
     </SidebarSection>
   );
@@ -1058,9 +1058,9 @@ export const TplTagNameSection = observer(TplTagNameSection_);
 function TplTagNameSection_(props: {
   tpl: TplTag;
   viewCtx: ViewCtx;
-  menuOptions: { label: string; onClick: () => void }[];
+  buildMenu: () => React.ReactElement | null;
 }) {
-  const { viewCtx, tpl, menuOptions } = props;
+  const { viewCtx, tpl, buildMenu } = props;
   const vtm = viewCtx.variantTplMgr();
   const effectiveVs = vtm.effectiveVariantSetting(tpl);
 
@@ -1081,35 +1081,25 @@ function TplTagNameSection_(props: {
           )
         }
         placeholder={summarizeUnnamedTpl(tpl, effectiveVs.rsh())}
-        suffix={menuOptions.length > 0 && <ApplyMenu items={menuOptions} />}
+        suffix={<ApplyMenu buildMenu={buildMenu} />}
       />
     </SidebarSection>
   );
 }
 
 const ApplyMenu = observer(function ApplyMenu_(props: {
-  items: { label: string; onClick: () => void }[];
+  buildMenu: () => React.ReactElement | null;
 }) {
-  const { items } = props;
+  const { buildMenu } = props;
+  const menu = buildMenu();
+
+  if (!menu) {
+    return null;
+  }
   return (
-    <Dropdown
-      disabled={items.length === 0}
-      overlay={
-        <Menu
-          items={items.map((op, idx) => {
-            return {
-              label: op.label,
-              key: idx,
-              onClick: op.onClick,
-            };
-          })}
-        />
-      }
-      trigger={["click"]}
-    >
+    <Dropdown overlay={menu} trigger={["click"]}>
       <Button
         className="flex-no-shrink"
-        disabled={items.length === 0}
         type={"clear"}
         withIcons={"endIcon"}
         size={"wide"}

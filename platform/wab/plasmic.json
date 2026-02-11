@@ -3581,7 +3581,8 @@
       "splitsProviderFilePath": "",
       "customFunctions": [],
       "styleTokensProviderFilePath": "wab/client/plasmic/plasmic_kit_variants/PlasmicStyleTokensProvider.tsx",
-      "projectModuleFilePath": "wab/client/plasmic/plasmic_kit_variants/plasmic.tsx"
+      "projectModuleFilePath": "wab/client/plasmic/plasmic_kit_variants/plasmic.tsx",
+      "dataTokensFilePath": ""
     },
     {
       "projectId": "gYEVvAzCcLMHDVPvuYxkFh",

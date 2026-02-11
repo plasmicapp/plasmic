@@ -3,12 +3,12 @@ import {
   FullRow,
   LabeledItem,
 } from "@/wab/client/components/sidebar/sidebar-helpers";
-import { ExpsProvider } from "@/wab/client/components/style-controls/StyleComponent";
 import StyleSelect from "@/wab/client/components/style-controls/StyleSelect";
 import { DimTokenSpinner } from "@/wab/client/components/widgets/DimTokenSelector";
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import TriangleBottomIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__TriangleBottom";
 import { useUndo } from "@/wab/client/shortcuts/studio/useUndo";
+import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import { cx, ensure, spawn } from "@/wab/shared/common";
 import { walkDependencyTree } from "@/wab/shared/core/project-deps";
@@ -27,7 +27,7 @@ import { observer } from "mobx-react";
 import React, { useMemo } from "react";
 
 interface AnimationControlsProps {
-  expsProvider: ExpsProvider;
+  studioCtx: StudioCtx;
   animation: Animation;
   vsh: VariantedStylesHelper;
   onUpdated: () => void;
@@ -36,8 +36,7 @@ interface AnimationControlsProps {
 export const AnimationControls = observer(function AnimationControls(
   props: AnimationControlsProps
 ) {
-  const { animation, expsProvider, onUpdated } = props;
-  const { studioCtx } = expsProvider;
+  const { animation, studioCtx, onUpdated } = props;
   const site = studioCtx.site;
 
   const handleChange = (f: () => void) => {

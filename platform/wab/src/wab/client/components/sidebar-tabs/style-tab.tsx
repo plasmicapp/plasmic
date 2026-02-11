@@ -1,3 +1,4 @@
+import { MenuBuilder } from "@/wab/client/components/menu-builder";
 import {
   TplComponentNameSection,
   TplTagNameSection,
@@ -35,6 +36,7 @@ import {
 } from "@/wab/shared/SlotUtils";
 import { $$$ } from "@/wab/shared/TplQuery";
 import {
+  findOrCreatePrivateStyleVariant,
   getPrivateStyleVariantsForTag,
   isBaseVariant,
 } from "@/wab/shared/Variants";
@@ -47,6 +49,7 @@ import {
 } from "@/wab/shared/core/components";
 import { isTplAttachedToSite } from "@/wab/shared/core/sites";
 import { SlotSelection } from "@/wab/shared/core/slots";
+import { getApplicableSelectors } from "@/wab/shared/core/styles";
 import {
   isTplComponent,
   isTplSlot,
@@ -60,10 +63,11 @@ import {
   TplSlot,
   TplTag,
   isKnownRenderExpr,
+  isKnownTplTag,
   isKnownVirtualRenderExpr,
 } from "@/wab/shared/model/classes";
 import { selectionControlsColor } from "@/wab/styles/css-variables";
-import { Alert, Button } from "antd";
+import { Alert, Button, Menu } from "antd";
 import * as mobx from "mobx";
 import { observer } from "mobx-react";
 import * as React from "react";
@@ -71,15 +75,42 @@ import { createContext, useContext } from "react";
 
 export const StyleTabContext = createContext<StyleTabFilter>("all");
 
+/**
+ * Represents a pending animation to be added.
+ * - "base": Animation on the base variant (for "On Load")
+ * - "selector": Animation on a private style variant with the given CSS selector
+ */
+export type NewAnimation =
+  | { type: "base" }
+  | { type: "selector"; cssSelector: string }
+  | null;
+
+interface NewAnimationContextValue {
+  newAnimation: NewAnimation;
+  onAnimationAdded: () => void;
+}
+
+export const NewAnimationContext = createContext<NewAnimationContextValue>({
+  newAnimation: null,
+  onAnimationAdded: () => {},
+});
+
+export function useNewAnimationContext() {
+  return useContext(NewAnimationContext);
+}
+
 const StyleTabForTpl = observer(function _StyleTabForTpl(props: {
   tpl: TplNode;
   viewCtx: ViewCtx;
 }) {
   const { tpl, viewCtx } = props;
+  const studioCtx = viewCtx.studioCtx;
   const styleTabFilter = useContext(StyleTabContext);
   const [showMixins, setShowMixins] = React.useState(isMixinSet(tpl, viewCtx));
   const [showPrivateStyleVariants, setShowPrivateStyleVariants] =
-    React.useState(hasPrivateStyleVariant(tpl, viewCtx));
+    React.useState(shouldShowPrivateStyleVariantsSection(tpl, viewCtx));
+  const [newAnimation, setNewAnimation] = React.useState<NewAnimation>(null);
+  const clearNewAnimation = React.useCallback(() => setNewAnimation(null), []);
   React.useEffect(() => {
     const mixinDisposal = mobx.reaction(
       () => {
@@ -97,7 +128,9 @@ const StyleTabForTpl = observer(function _StyleTabForTpl(props: {
     const privateStyleVariantsDisposal = mobx.reaction(
       () => {
         const curTpl = viewCtx.focusedTpl(false);
-        return !!curTpl && hasPrivateStyleVariant(curTpl, viewCtx);
+        return (
+          !!curTpl && shouldShowPrivateStyleVariantsSection(curTpl, viewCtx)
+        );
       },
       (privateStyleVariantsVisible) =>
         setShowPrivateStyleVariants(privateStyleVariantsVisible),
@@ -121,22 +154,113 @@ const StyleTabForTpl = observer(function _StyleTabForTpl(props: {
   const currentCombo = viewCtx.variantTplMgr().getCurrentVariantCombo();
   const isBase = isBaseVariant(currentCombo);
 
-  const applyMenu: { label: string; onClick: () => void }[] = [];
   const showStyleSections =
     styleTabFilter === "all" || styleTabFilter === "style-only";
-  if (
+
+  const vcontroller = makeVariantsController(studioCtx, viewCtx);
+  // Compute checks for ApplyMenu visibility
+  const canShowAnimations =
+    isTag && canRenderPrivateStyleVariants(tpl, viewCtx) && showStyleSections;
+  const canShowElementVariants =
     canRenderPrivateStyleVariants(tpl, viewCtx) &&
     !showPrivateStyleVariants &&
-    showStyleSections
-  ) {
-    applyMenu.push({
-      label: PRIVATE_STYLE_VARIANTS_CAP,
-      onClick: () => setShowPrivateStyleVariants(true),
-    });
-  }
-  if (canRenderMixins(tpl, viewCtx) && !showMixins && showStyleSections) {
-    applyMenu.push({ label: MIXINS_CAP, onClick: () => setShowMixins(true) });
-  }
+    showStyleSections;
+  const canShowMixins =
+    canRenderMixins(tpl, viewCtx) && !showMixins && showStyleSections;
+
+  const buildApplyMenu = (): React.ReactElement | null => {
+    if (!canShowAnimations && !canShowElementVariants && !canShowMixins) {
+      return null;
+    }
+
+    const builder = new MenuBuilder();
+
+    // Animations submenu (only for TplTag elements)
+    if (canShowAnimations && isKnownTplTag(tpl)) {
+      const component = viewCtx.currentTplComponent().component;
+      const isRoot = tpl === component.tplTree;
+      const applicableSelectors = getApplicableSelectors(tpl.tag, true, isRoot);
+
+      builder.genSub("Animations", (push) => {
+        push(
+          <Menu.Item
+            key="base"
+            onClick={() => {
+              setShowPrivateStyleVariants(true);
+              setNewAnimation({ type: "base" });
+            }}
+          >
+            Base
+          </Menu.Item>
+        );
+
+        // Available selectors (Hover, Pressed, etc.) - each uses a private style variant
+        // Filter out "Not X" selectors as they don't make sense for animations
+        for (const selector of applicableSelectors.filter(
+          (s) => !s.displayName.toLowerCase().startsWith("not ")
+        )) {
+          push(
+            <Menu.Item
+              key={selector.cssSelector}
+              onClick={async () => {
+                await studioCtx.change(({ success }) => {
+                  // Find or create private style variant with this selector
+                  const variant = findOrCreatePrivateStyleVariant(
+                    component,
+                    tpl,
+                    selector.cssSelector,
+                    (selectors) =>
+                      studioCtx
+                        .tplMgr()
+                        .createPrivateStyleVariant(component, tpl, selectors)
+                  );
+                  // Pin the variant to turn on recording for it
+                  vcontroller?.onClickVariant(variant);
+
+                  return success();
+                });
+
+                setShowPrivateStyleVariants(true);
+                setNewAnimation({
+                  type: "selector",
+                  cssSelector: selector.cssSelector,
+                });
+              }}
+            >
+              {selector.displayName}
+            </Menu.Item>
+          );
+        }
+      });
+    }
+
+    // Element variants (existing behavior - shows the section)
+    if (canShowElementVariants) {
+      builder.genSection(undefined, (push) => {
+        push(
+          <Menu.Item
+            key="private-style-variants"
+            onClick={() => setShowPrivateStyleVariants(true)}
+          >
+            {PRIVATE_STYLE_VARIANTS_CAP}
+          </Menu.Item>
+        );
+      });
+    }
+
+    // Mixins (existing behavior)
+    if (canShowMixins) {
+      builder.genSection(undefined, (push) => {
+        push(
+          <Menu.Item key="mixins" onClick={() => setShowMixins(true)}>
+            {MIXINS_CAP}
+          </Menu.Item>
+        );
+      });
+    }
+
+    return builder.build({ menuName: "apply-menu" });
+  };
 
   const orderedSections = getOrderedSectionRender(
     tpl,
@@ -148,8 +272,16 @@ const StyleTabForTpl = observer(function _StyleTabForTpl(props: {
     styleTabFilter
   );
 
+  const newAnimationContextValue = React.useMemo(
+    () => ({
+      newAnimation,
+      onAnimationAdded: clearNewAnimation,
+    }),
+    [newAnimation, clearNewAnimation]
+  );
+
   return providesStyleComponent(sc)(
-    <>
+    <NewAnimationContext.Provider value={newAnimationContextValue}>
       {isTplSlot(tpl) && <TplSlotMessage tpl={tpl} viewCtx={viewCtx} />}
       {ancestorSlot && !isBase && !isCodeComponentSlot(ancestorSlot) && (
         <NonBaseTplSlotDescendantMessage
@@ -161,18 +293,18 @@ const StyleTabForTpl = observer(function _StyleTabForTpl(props: {
         <TplTagNameSection
           viewCtx={viewCtx}
           tpl={tpl as TplTag}
-          menuOptions={applyMenu}
+          buildMenu={buildApplyMenu}
         />
       )}
       {isComponent && (
         <TplComponentNameSection
           viewCtx={viewCtx}
           tpl={tpl as TplComponent}
-          menuOptions={applyMenu}
+          buildMenu={buildApplyMenu}
         />
       )}
       {orderedSections.map((render) => render())}
-    </>
+    </NewAnimationContext.Provider>
   );
 });
 
@@ -544,11 +676,32 @@ function isMixinSet(tpl: TplNode, viewCtx: ViewCtx) {
   return effectiveVs.rs.mixins.length > 0;
 }
 
-function hasPrivateStyleVariant(tpl: TplNode, viewCtx: ViewCtx) {
+/**
+ * Returns true if the Private Style Variants section should be shown.
+ * This is true if:
+ * - There are any private style variants for the tpl, OR
+ * - There are any base variant animations (animations on tpl without private style selectors)
+ */
+function shouldShowPrivateStyleVariantsSection(tpl: TplNode, viewCtx: ViewCtx) {
   if (!isTplTag(tpl)) {
     return false;
   }
+
   const component = viewCtx.currentTplComponent().component;
+
+  // Check for private style variants
   const privateStyleVariants = getPrivateStyleVariantsForTag(component, tpl);
-  return privateStyleVariants.length > 0;
+  if (privateStyleVariants.length > 0) {
+    return true;
+  }
+
+  // Check for base variant animations
+  const vtm = viewCtx.variantTplMgr();
+  const baseVariantCombo = vtm.getCurrentSharedVariantComboForNode(tpl);
+  const { definedIndicator } = vtm.getAnimationInfoForVariantCombo(
+    tpl,
+    baseVariantCombo
+  );
+
+  return definedIndicator.source !== "none";
 }

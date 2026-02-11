@@ -544,6 +544,29 @@ export function getPrivateStyleVariantsForTag(
 }
 
 /**
+ * Finds an existing private style variant with the given selector,
+ * or creates a new one using the provided callback if it doesn't exist.
+ */
+export function findOrCreatePrivateStyleVariant(
+  component: Component,
+  tpl: TplTag,
+  cssSelector: string,
+  createVariant: (selectors: string[]) => Variant
+): Variant {
+  const existing = getPrivateStyleVariantsForTag(component, tpl, [
+    cssSelector,
+  ])[0];
+  if (existing) {
+    return existing;
+  }
+
+  const variant = createVariant([cssSelector]);
+  ensureVariantSetting(tpl, [variant]);
+
+  return variant;
+}
+
+/**
  * Returns true if this variant.selectors has only ::pseudo selectors for the
  * target tpl. If isComponentRoot is true, non private variant is allowed.
  */

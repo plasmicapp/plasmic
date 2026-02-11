@@ -6,14 +6,17 @@ import {
 } from "@/wab/client/components/style-controls/DefinedIndicator";
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import VariantIcon from "@/wab/client/plasmic/plasmic_kit_design_system/PlasmicIcon__Variant";
+import KeyframesIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__Keyframes";
 import {
   PlasmicVariantRow,
   PlasmicVariantRow__OverridesType,
+  PlasmicVariantRow__VariantsArgs,
 } from "@/wab/client/plasmic/plasmic_kit_variants/PlasmicVariantRow";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { VariantPinState } from "@/wab/shared/PinManager";
 import {
+  VariantCombo,
   isBaseVariant,
   isVariantSettingEmpty,
   tryGetVariantSetting,
@@ -23,6 +26,7 @@ import { isTplVariantable, summarizeTpl } from "@/wab/shared/core/tpls";
 import { getEffectiveVariantSetting } from "@/wab/shared/effective-variant-setting";
 import { Variant } from "@/wab/shared/model/classes";
 import { PlumeVariantDef } from "@/wab/shared/plume/plume-registry";
+import { PlusIcon } from "@graphiql/react";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { DraggableProvidedDragHandleProps } from "react-beautiful-dnd";
@@ -30,7 +34,7 @@ import { DraggableProvidedDragHandleProps } from "react-beautiful-dnd";
 interface VariantRowProps {
   studioCtx: StudioCtx;
   viewCtx?: ViewCtx;
-  variant: Variant;
+  variant: Variant | VariantCombo;
   pinState: VariantPinState | undefined;
   label?: React.ReactNode;
   menu?: () => React.ReactElement;
@@ -48,6 +52,10 @@ interface VariantRowProps {
   plumeDef?: PlumeVariantDef;
   hasCodeExpression?: boolean;
   exprButton?: PlasmicVariantRow__OverridesType["exprButton"];
+  addAnimationLayer?: () => void;
+  type?: PlasmicVariantRow__VariantsArgs["type"];
+  additional?: React.ReactNode;
+  hideIcon?: boolean;
 }
 
 export function pinStateToPlasmicPinState(pinState?: VariantPinState) {
@@ -86,6 +94,10 @@ const VariantRow = observer(function VariantRow(props: VariantRowProps) {
     onTarget,
     onToggle,
     plumeDef,
+    addAnimationLayer,
+    additional,
+    hideIcon,
+    type,
     ...rest
   } = props;
 
@@ -98,20 +110,24 @@ const VariantRow = observer(function VariantRow(props: VariantRowProps) {
   const indicatedVs =
     tpl &&
     isTplVariantable(tpl) &&
-    maybe(tryGetVariantSetting(tpl, [variant]), (vs) =>
-      isVariantSettingEmpty(vs) ? undefined : vs
+    maybe(
+      tryGetVariantSetting(tpl, Array.isArray(variant) ? variant : [variant]),
+      (vs) => (isVariantSettingEmpty(vs) ? undefined : vs)
     );
+
+  const hasAnimations = !!addAnimationLayer;
 
   return (
     <PlasmicVariantRow
       type={
-        isBase
+        type ||
+        (isBase
           ? "baseVariant"
           : isStandalone
           ? "toggle"
           : isSplitVariant
           ? "splitVariant"
-          : undefined
+          : undefined)
       }
       pinState={pinStateToPlasmicPinState(pinState)}
       variantPinButton={{
@@ -137,6 +153,12 @@ const VariantRow = observer(function VariantRow(props: VariantRowProps) {
             }
           : { render: () => null }
       }
+      showAddAnimation={hasAnimations}
+      addAnimation={{
+        start: <KeyframesIcon className={"text-xlg dimfg"} />,
+        end: <PlusIcon className={"text-xlg dimfg"} />,
+        ...(addAnimationLayer ? { onClick: addAnimationLayer } : {}),
+      }}
       root={{
         props: {
           ...contextMenuProps,
@@ -147,12 +169,14 @@ const VariantRow = observer(function VariantRow(props: VariantRowProps) {
       }}
       listItem={{
         menu,
-        additional: null,
-        onClick: () => {
+        additional,
+        removeAdditionalRowLeftPadding: true,
+        onClickMain: () => {
           if (!isDragging) {
             onClick && onClick();
           }
         },
+        hideIcon,
         isDraggable,
         isDragging,
         dragHandleProps,

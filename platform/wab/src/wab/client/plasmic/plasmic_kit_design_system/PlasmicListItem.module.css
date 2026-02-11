@@ -8,9 +8,11 @@
   overflow: hidden;
   cursor: pointer;
   min-width: 0;
+  border-left: 2px solid transparent;
 }
 .rootisSelected {
   background: var(--token-dqEx_KxIoYV);
+  border-left-color: var(--token-qP8a3gYPq7fd);
 }
 .rootisFocused {
   box-shadow: 0px 0px 0px 2px #0091ff80;
@@ -24,6 +26,7 @@
 }
 .rootisSelected_color_variant {
   background: var(--token-HKVCQ5ZKovK);
+  border-left-color: var(--token-Le11TVejD2x2);
 }
 .root:hover {
   background: var(--token-bV4cCeIniS6);
@@ -408,4 +411,7 @@
   padding-right: var(--token-NCc1lDy9R);
   min-height: var(--token-aDa535tnF);
   min-width: 0;
+}
+.additionalremoveAdditionalRowLeftPadding {
+  padding-left: 16px;
 }
