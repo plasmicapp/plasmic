@@ -1,6 +1,6 @@
 import { MIGRATION_POOL_NAME } from "@/wab/server/db/DbCon";
 import { Request, Response } from "express-serve-static-core";
-import { Gauge, Histogram } from "prom-client";
+import { Counter, Gauge, Histogram } from "prom-client";
 import { getConnection } from "typeorm";
 
 export const DEFAULT_HISTOGRAM_BUCKETS = [
@@ -56,6 +56,35 @@ export class WabPromLiveRequestsGauge {
   private getReqTags(request: Request) {
     return { path: request.path, app: this.name, url: request.originalUrl };
   }
+}
+
+const requestCount = new Counter({
+  name: "http_request_count",
+  help: "Total number of HTTP requests completed",
+  labelNames: ["endpoint", "pod_name", "response_code"],
+});
+
+export function incHttpRequestCount(opts: {
+  endpoint: string;
+  responseCode: number;
+}) {
+  requestCount.inc({
+    endpoint: opts.endpoint,
+    response_code: String(opts.responseCode),
+  });
+}
+
+export function getTemplatedEndpointFromExpressRoutePath(
+  routePath: unknown
+): string {
+  const raw = typeof routePath === "string" ? routePath : routePath?.toString();
+  if (!raw) {
+    return "unknown";
+  }
+
+  // Express params are typically like "/api/v1/project/:projectId".
+  // We normalize them to "/api/v1/project/{projectId}" for low-cardinality labels.
+  return raw.replace(/\/:([^/]+)/g, "/{$1}");
 }
 
 const taskDuration = new Histogram({

@@ -30,6 +30,8 @@ import { initAnalyticsFactory, logger } from "@/wab/server/observability";
 import {
   DEFAULT_HISTOGRAM_BUCKETS,
   WabPromLiveRequestsGauge,
+  getTemplatedEndpointFromExpressRoutePath,
+  incHttpRequestCount,
   trackPostgresPool,
 } from "@/wab/server/promstats";
 import { createRateLimiter } from "@/wab/server/rate-limit";
@@ -451,6 +453,10 @@ export function addLoggingMiddleware(app: express.Application) {
     const start = Date.now();
     res.on("finish", () => {
       const duration = Date.now() - start;
+      incHttpRequestCount({
+        endpoint: getTemplatedEndpointFromExpressRoutePath(req.route?.path),
+        responseCode: res.statusCode,
+      });
       logger().info(
         `${req.method} ${req.originalUrl} ${res.statusCode} (${duration}ms)`,
         {
