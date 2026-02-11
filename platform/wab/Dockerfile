@@ -39,8 +39,10 @@ RUN yarn install --frozen-lockfile --network-timeout 600000 --mutex file
 COPY loader-html-hydrate/ .
 RUN yarn build
 
+# Copy loader-bundle-env source files and build internal packages
 WORKDIR /app/loader-bundle-env
-COPY loader-bundle-env/ .
+COPY loader-bundle-env/yarn-install-internal-pkgs.sh loader-bundle-env/yarn-build-internal-pkgs.sh ./
+COPY loader-bundle-env/internal_pkgs/ ./internal_pkgs/
 RUN ./yarn-install-internal-pkgs.sh
 RUN ./yarn-build-internal-pkgs.sh
 
