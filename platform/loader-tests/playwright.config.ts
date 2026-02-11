@@ -25,9 +25,18 @@ export default defineConfig({
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: process.env.CI
     ? [["github"], ["playwright-ctrf-json-reporter", {}]]
-    : "html",
+    : [
+        [
+          "html",
+          {
+            host: "127.0.0.1",
+            port: Number(process.env.PLAYWRIGHT_REPORTER_PORT ?? 9323),
+          },
+        ],
+      ],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
+    baseURL: process.env.WAB_HOST ?? "http://localhost:3003",
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: "retain-on-failure",
     video: "retain-on-failure",
