@@ -7,7 +7,7 @@ import * as ph from "@plasmicapp/host";
 import React from "react";
 import { ClientQueryResult } from "./types";
 
-interface PlasmicUndefinedDataErrorPromise extends Promise<any> {
+export interface PlasmicUndefinedDataErrorPromise extends Promise<any> {
   plasmicType: "PlasmicUndefinedDataError";
   message: string;
 }
@@ -20,6 +20,21 @@ export function isPlasmicUndefinedDataErrorPromise(
     typeof x === "object" &&
     x?.plasmicType === "PlasmicUndefinedDataError"
   );
+}
+
+export function tagPlasmicUndefinedDataErrorPromise(
+  promise: Promise<any>
+): void {
+  (promise as PlasmicUndefinedDataErrorPromise).plasmicType =
+    "PlasmicUndefinedDataError";
+  (promise as PlasmicUndefinedDataErrorPromise).message = "Query is not done";
+}
+
+export function untagPlasmicUndefinedDataErrorPromise(
+  promise: Promise<any>
+): void {
+  delete (promise as Partial<PlasmicUndefinedDataErrorPromise>).plasmicType;
+  delete (promise as Partial<PlasmicUndefinedDataErrorPromise>).message;
 }
 
 export function mkUndefinedDataProxy(
@@ -95,6 +110,11 @@ const enableLoadingBoundaryKey = "plasmicInternalEnableLoadingBoundary";
  */
 const PRE_FETCHES = new Map<string, Promise<any>>();
 
+/**
+ * @typeParam T return type of fetcherFn
+ * @typeParam R final result type via resultMapper
+ * @typeParam E error type of fetcherFn
+ */
 export function usePlasmicFetch<T, R, E = any>(
   key: string | null,
   resolvedParams: any,
@@ -107,7 +127,7 @@ export function usePlasmicFetch<T, R, E = any>(
     fallbackData?: T;
     noUndefinedDataProxy?: boolean;
   }
-) {
+): ClientQueryResult<R> {
   const enableLoadingBoundary = !!ph.useDataEnv?.()?.[enableLoadingBoundaryKey];
   const { mutate, cache } = isRSC
     ? ({} as any as Partial<ReturnType<typeof usePlasmicDataConfig>>)

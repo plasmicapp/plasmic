@@ -1,3 +1,7 @@
+export function noopFn() {
+  // noop
+}
+
 export function swallow<T>(f: () => T): T | undefined {
   try {
     return f();
@@ -106,8 +110,12 @@ export function mkIdMap<T extends HasId>(xs: ReadonlyArray<T>): Map<string, T> {
 
 export const mkShortId = () => `${Math.random()}`;
 
+export function notNil<T>(x: T | null | undefined): x is T {
+  return x !== null && x !== undefined;
+}
+
 export function withoutNils<T>(xs: Array<T | undefined | null>): T[] {
-  return xs.filter((x): x is T => x != null);
+  return xs.filter(notNil);
 }
 
 export type Falsey = null | undefined | false | "" | 0 | 0n;
@@ -115,4 +123,68 @@ export type Truthy<T> = T extends Falsey ? never : T;
 
 export function withoutFalsey<T>(xs: Array<T | Falsey>): T[] {
   return xs.filter((x): x is T => !!x);
+}
+
+export function mapRecordEntries<T, K extends string, V1>(
+  callback: (k: K, v1: V1) => T,
+  record1: Record<K, V1>
+): T[];
+export function mapRecordEntries<T, K extends string, V1, V2>(
+  callback: (k: K, v1: V1, v2: V2) => T,
+  record1: Record<K, V1>,
+  record2: Record<K, V2>
+): T[];
+export function mapRecordEntries<T, K extends string, V1, V2, V3>(
+  callback: (k: K, v1: V1, v2: V2, v3: V3) => T,
+  record1: Record<K, V1>,
+  record2: Record<K, V2>,
+  record3: Record<K, V3>
+): T[];
+export function mapRecordEntries<T, K extends string, V1, V2, V3>(
+  callback: (k: K, v1: V1, v2?: V2, v3?: V3) => T,
+  record1: Record<K, V1>,
+  record2?: Record<K, V2>,
+  record3?: Record<K, V3>
+): T[] {
+  return Object.entries(record1).map(([k, v1]) => {
+    const v2 = record2?.[k as K];
+    const v3 = record3?.[k as K];
+    return callback(
+      k as K,
+      v1 as V1,
+      v2 as V2 | undefined,
+      v3 as V3 | undefined
+    );
+  });
+}
+
+export function mapRecords<T, K extends string, V1>(
+  callback: (k: K, v1: V1) => T,
+  record1: Record<K, V1>
+): Record<K, T>;
+export function mapRecords<T, K extends string, V1, V2>(
+  callback: (k: K, v1: V1, v2: V2) => T,
+  record1: Record<K, V1>,
+  record2: Record<K, V2>
+): Record<K, T>;
+export function mapRecords<T, K extends string, V1, V2, V3>(
+  callback: (k: K, v1: V1, v2: V2, v3: V3) => T,
+  record1: Record<K, V1>,
+  record2: Record<K, V2>,
+  record3: Record<K, V3>
+): Record<K, T>;
+export function mapRecords<T, K extends string, V1, V2, V3>(
+  callback: (k: K, v1: V1, v2?: V2, v3?: V3) => T,
+  record1: Record<K, V1>,
+  record2?: Record<K, V2>,
+  record3?: Record<K, V3>
+): Record<K, T> {
+  return Object.fromEntries(
+    mapRecordEntries<[K, T], K, V1, V2, V3>(
+      (k, v1, v2, v3) => [k, callback(k, v1, v2, v3)],
+      record1,
+      record2 as Record<K, V2>,
+      record3 as Record<K, V3>
+    )
+  ) as Record<K, T>;
 }

@@ -2,6 +2,7 @@
   // Common tsconfig used for type checking and generating declaration files.
   // Docs: https://www.typescriptlang.org/tsconfig
   "exclude": [
+    "**/testonly/**",
     "**/__specs__/**",
     "**/__tests__/**",
     "**/*.spec.ts",

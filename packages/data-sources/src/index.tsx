@@ -1,3 +1,21 @@
+export {
+  usePlasmicQueries as unstable_usePlasmicQueries,
+  usePlasmicServerQuery as usePlasmicServerQuery,
+} from "./serverQueries/client";
+export {
+  createDollarQueries as unstable_createDollarQueries,
+  wrapDollarQueriesForMetadata as unstable_wrapDollarQueriesForMetadata,
+} from "./serverQueries/common";
+export { makeQueryCacheKey } from "./serverQueries/makeQueryCacheKey";
+export {
+  executeServerQuery,
+  mkPlasmicUndefinedServerProxy,
+  executePlasmicQueries as unstable_executePlasmicQueries,
+} from "./serverQueries/server";
+export type { PlasmicQuery, PlasmicQueryResult } from "./serverQueries/types";
+
+// exports below are deprecated and will be removed in major version bump
+
 export { usePlasmicDataConfig } from "@plasmicapp/query";
 export { Fetcher, FetcherMeta } from "./components/Fetcher";
 export type { FetcherProps } from "./components/Fetcher";
@@ -15,21 +33,12 @@ export {
   usePlasmicDataOp,
   usePlasmicInvalidate,
 } from "./hooks/usePlasmicDataOp";
-export {
-  makeQueryCacheKey,
-  usePlasmicServerQuery,
-} from "./serverQueries/client";
-export {
-  executeServerQuery,
-  mkPlasmicUndefinedServerProxy,
-} from "./serverQueries/server";
 export type {
   ClientQueryResult,
   DataOp,
   DataSourceSchema,
   ManyRowsResult,
   Pagination,
-  ServerQuery,
   ServerQueryResult,
   SingleRowResult,
   TableFieldSchema,

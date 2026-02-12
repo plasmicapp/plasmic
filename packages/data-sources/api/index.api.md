@@ -56,8 +56,8 @@ export function deriveFieldConfigs<T extends BaseFieldConfig>(specifiedFieldsPar
 // @public (undocumented)
 export function executePlasmicDataOp<T extends SingleRowResult | ManyRowsResult>(op: DataOp, opts?: ExecuteOpts): Promise<T>;
 
-// @public
-export function executeServerQuery<F extends (...args: any[]) => any>(serverQuery: ServerQuery<F>): Promise<ServerQueryResult<ReturnType<F> | {}>>;
+// @public @deprecated
+export function executeServerQuery<F extends (...args: any[]) => any>(query: PlasmicQuery<F>): Promise<ServerQueryResult<ReturnType<F>>>;
 
 // @public (undocumented)
 export function Fetcher(props: FetcherProps): React_2.ReactElement | null;
@@ -81,7 +81,7 @@ export function makeCacheKey(dataOp: DataOp, opts?: {
     userAuthToken?: string | null;
 }): string;
 
-// @public (undocumented)
+// @public
 export function makeQueryCacheKey(id: string, params: any[]): string;
 
 // @public (undocumented)
@@ -96,11 +96,8 @@ export interface ManyRowsResult<T = any> {
     total?: number;
 }
 
-// @public (undocumented)
-export function mkPlasmicUndefinedServerProxy(): {
-    data: {};
-    isLoading: boolean;
-};
+// @public @deprecated (undocumented)
+export function mkPlasmicUndefinedServerProxy<T>(): ServerQueryResult<T>;
 
 // @public (undocumented)
 export function normalizeData(rawData: unknown): NormalizedData | undefined;
@@ -122,13 +119,7 @@ export interface Pagination {
 }
 
 // @public (undocumented)
-export type QueryResult = Partial<ManyRowsResult<any>> & {
-    error?: any;
-    isLoading?: boolean;
-};
-
-// @public (undocumented)
-export interface ServerQuery<F extends (...args: any[]) => Promise<any>> {
+export interface PlasmicQuery<F extends (...args: unknown[]) => Promise<unknown> = (...args: unknown[]) => Promise<unknown>> {
     // (undocumented)
     execParams: () => Parameters<F>;
     // (undocumented)
@@ -138,6 +129,20 @@ export interface ServerQuery<F extends (...args: any[]) => Promise<any>> {
 }
 
 // @public (undocumented)
+export interface PlasmicQueryResult<T = unknown> {
+    data: T;
+    // (undocumented)
+    isLoading: boolean;
+    key: string | null;
+}
+
+// @public (undocumented)
+export type QueryResult = Partial<ManyRowsResult<any>> & {
+    error?: any;
+    isLoading?: boolean;
+};
+
+// @public @deprecated (undocumented)
 export interface ServerQueryResult<T = any> {
     // (undocumented)
     data: T;
@@ -184,6 +189,20 @@ export interface TableSchema {
     schema?: string;
 }
 
+// @public
+export function unstable_createDollarQueries<QueryName extends string>(queryNames: QueryName[]): Record<QueryName, PlasmicQueryResult>;
+
+// @public
+export function unstable_executePlasmicQueries<QueryName extends string>($queries: Record<QueryName, PlasmicQueryResult>, queries: Record<QueryName, PlasmicQuery>): Promise<{
+    [cacheKey: string]: unknown;
+}>;
+
+// @public
+export function unstable_usePlasmicQueries<QueryName extends string>($queries: Record<QueryName, PlasmicQueryResult>, queries: Record<QueryName, PlasmicQuery>): void;
+
+// @public
+export function unstable_wrapDollarQueriesForMetadata<T extends Record<string, PlasmicQueryResult>>($queries: T, ifUndefined?: (promise: PlasmicUndefinedDataErrorPromise) => unknown, ifError?: (err: unknown) => unknown): T;
+
 // @public @deprecated (undocumented)
 export function useDependencyAwareQuery({ $queries, getDataOp, setDollarQueries, name, pageIndex, pageSize, }: DependencyAwareQueryConfig): void;
 
@@ -204,10 +223,14 @@ export function usePlasmicDataOp<T extends SingleRowResult | ManyRowsResult, E =
 // @public
 export function usePlasmicInvalidate(): (invalidatedKeys: string[] | null | undefined) => Promise<any[] | undefined>;
 
-// @public (undocumented)
-export function usePlasmicServerQuery<F extends (...args: any[]) => Promise<any>>(serverQuery: ServerQuery<F>, fallbackData?: ReturnType<F>, opts?: {
+// @public @deprecated (undocumented)
+export function usePlasmicServerQuery<T, F extends (...args: any[]) => Promise<T>>(query: PlasmicQuery<F>, fallbackData?: T, opts?: {
     noUndefinedDataProxy?: boolean;
-}): Partial<ServerQueryResult<ReturnType<F>>>;
+    settledCount?: number;
+    onStarted?: (key: string, promise: Promise<T>) => void;
+    onResolved?: (key: string, data: T) => void;
+    onRejected?: (key: string | null, error: unknown) => void;
+}): Partial<PlasmicQueryResult<T>>;
 
 // (No @packageDocumentation comment for this package)
 

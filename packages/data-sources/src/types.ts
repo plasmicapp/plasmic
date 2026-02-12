@@ -54,12 +54,7 @@ export interface DataOp {
   roleId?: string | null;
 }
 
-export interface ServerQuery<F extends (...args: any[]) => Promise<any>> {
-  fn: F;
-  execParams: () => Parameters<F>;
-  id: string;
-}
-
+/** @deprecated */
 export interface ServerQueryResult<T = any> {
   data: T;
   isLoading: boolean;
