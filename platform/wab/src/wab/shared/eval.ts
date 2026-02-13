@@ -140,9 +140,13 @@ export interface CanvasEnv {
    */
   $state: $State;
   /**
-   * Current query data.
+   * Current query data (old dataQueries).
    */
   $queries: Record<string, any>;
+  /**
+   * Server query data (new server queries).
+   */
+  $q: Record<string, any>;
   /**
    * Mapping from element uuid to its ref
    */

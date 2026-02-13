@@ -290,7 +290,11 @@ import {
   getEffectiveVsVisibility,
   normalizeDisplayValue,
 } from "@/wab/shared/visibility-utils";
-import type { usePlasmicInvalidate } from "@plasmicapp/data-sources";
+import type {
+  ClientQueryResult,
+  PlasmicQueryResult,
+  usePlasmicInvalidate,
+} from "@plasmicapp/data-sources";
 import { DataDict, mkMetaName } from "@plasmicapp/host";
 import { $StateSpec } from "@plasmicapp/react-web";
 import {
@@ -361,6 +365,7 @@ export interface RenderingCtx {
   slate?: SlateRenderNodeOpts;
 
   setDollarQueries: React.Dispatch<React.SetStateAction<Record<string, any>>>;
+  setDollarQ: React.Dispatch<React.SetStateAction<Record<string, any>>>;
 
   plasmicInvalidate: ReturnType<typeof usePlasmicInvalidate> | undefined;
   stateSpecs: $StateSpec<any>[];
@@ -637,7 +642,9 @@ function mkInitFuncFromExpr(
   isForRegisterInitFunc?: boolean
 ) {
   return evalCodeWithEnv(
-    `(({$props, $state, $queries${isForRegisterInitFunc ? ", $ctx" : ""}}) => (
+    `(({$props, $state, $queries, $q${
+      isForRegisterInitFunc ? ", $ctx" : ""
+    }}) => (
       ${getRawCode(initFuncExpr, exprCtx)}
     ))`,
     { ...(env ?? {}) },
@@ -928,6 +935,7 @@ function useCtxFromInternalComponentProps(
   const dataSourcesCtx = sub.dataSourcesContext?.usePlasmicDataSourceContext();
 
   const [$queries, setDollarQueries] = sub.React.useState({});
+  const [$q, setDollarQ] = sub.React.useState({});
 
   const refsRef = sub.React.useRef({});
   const $refs = refsRef.current;
@@ -971,6 +979,7 @@ function useCtxFromInternalComponentProps(
     dataSourcesCtx,
     $globalActions,
     $queries,
+    $q,
     ...evaluatedDataTokens?.$dataTokens,
     dataTokensEnv: evaluatedDataTokens?.pickerEnv,
     ...(viewCtx.studioCtx.siteInfo.hasAppAuth
@@ -1021,7 +1030,7 @@ function useCtxFromInternalComponentProps(
   }));
   const $state = sub.reactWeb.useDollarState(
     stateSpecs,
-    { $props, $queries, $ctx, $refs },
+    { $props, $queries, $q, $ctx, $refs },
     {
       inCanvas: true,
     }
@@ -1055,6 +1064,7 @@ function useCtxFromInternalComponentProps(
     forceValComponentKeysWithDefaultSlotContents:
       viewState.forceValComponentKeysWithDefaultSlotContents,
     setDollarQueries,
+    setDollarQ,
     stateSpecs,
     $ccVariants,
     updateVariant: updateVariant,
@@ -1234,6 +1244,7 @@ function makeEmptyRenderingCtx(viewCtx: ViewCtx, valKey: string): RenderingCtx {
       $ctx: {},
       $props: {},
       $state: {},
+      $q: {},
       $queries: {},
       $refs: {},
       $$: {},
@@ -1244,6 +1255,7 @@ function makeEmptyRenderingCtx(viewCtx: ViewCtx, valKey: string): RenderingCtx {
       $ctx: {},
       $props: {},
       $state: {},
+      $q: {},
       $queries: {},
       $refs: {},
       $$: {},
@@ -1270,6 +1282,7 @@ function makeEmptyRenderingCtx(viewCtx: ViewCtx, valKey: string): RenderingCtx {
     isDraggingObject: viewCtx.studioCtx.isDraggingObject(),
     $stateSnapshot: {},
     setDollarQueries: () => {},
+    setDollarQ: () => {},
     stateSpecs: [],
     plasmicInvalidate: undefined,
     $ccVariants: {},
@@ -3260,6 +3273,7 @@ function renderTplSlot(
           env: {
             ...ctx.env,
             $props: {},
+            $q: {},
             $queries: {},
             $state: {},
           },
@@ -3648,6 +3662,11 @@ function wrapInDataCtxReader(
   );
 }
 
+type DataOrServerQueries = Record<
+  string,
+  ClientQueryResult | PlasmicQueryResult | undefined
+>;
+
 /**
  * We need to create a wrapper for component-level queries because the number
  * of React hooks to be used depend on the number of queries to be made, but
@@ -3691,6 +3710,8 @@ const mkComponentLevelQueryFetcher = computedFn(
                   sub.dataSources?.usePlasmicDataOp(getDataOp(query)),
                 ] as const
             ),
+        ]);
+        const new$Q = Object.fromEntries([
           ...component.serverQueries
             .filter(isServerQueryWithOperation)
             .map((query) => {
@@ -3721,49 +3742,79 @@ const mkComponentLevelQueryFetcher = computedFn(
               ] as const;
             }),
         ]);
-        defer(() => {
-          Object.keys(new$Queries).forEach((k) => {
+        const triggerQueryLoad = (queries: DataOrServerQueries) => {
+          Object.keys(queries).forEach((k) => {
             try {
-              if (new$Queries[k]?.isLoading) {
+              const query = queries[k] as any;
+              if (query?.isLoading) {
                 // Force kickoff all fetches
-                (new$Queries[k] as any).data.value;
+                const data = query.data;
+                if (data && typeof data === "object" && "value" in data) {
+                  data.value;
+                } else {
+                  void data;
+                }
               }
             } catch {
               /* Empty */
             }
           });
+        };
+        defer(() => {
+          triggerQueryLoad(new$Queries);
+          triggerQueryLoad(new$Q);
         });
         // In codegen we update $queries in the render function, but we can't
         // do it here as this is not the `Component` render function, so we
         // update the object itself to delete old queries and add the new ones.
-        let shouldUpdate = false;
-        Object.keys(new$Queries).forEach((k) => {
-          if (!(k in ctx.env.$queries)) {
-            ctx.env.$queries[k] = new$Queries[k];
-            shouldUpdate = true;
-          }
-        });
-        [...Object.keys(ctx.env.$queries)].forEach((k) => {
-          if (!(k in new$Queries)) {
-            delete ctx.env.$queries[k];
-            shouldUpdate = true;
-          }
-        });
-
-        Object.keys(new$Queries).forEach((k) => {
-          if (new$Queries[k] !== ctx.env.$queries[k]) {
-            ctx.env.$queries[k] = new$Queries[k];
-            shouldUpdate = true;
-          }
-        });
+        const updateCtxQueries = (
+          oldQueries: DataOrServerQueries,
+          newQueries: DataOrServerQueries
+        ) => {
+          let shouldUpdate = false;
+          Object.keys(newQueries).forEach((k) => {
+            if (!(k in oldQueries)) {
+              oldQueries[k] = newQueries[k];
+              shouldUpdate = true;
+            }
+          });
+          [...Object.keys(oldQueries)].forEach((k) => {
+            if (!(k in newQueries)) {
+              delete oldQueries[k];
+              shouldUpdate = true;
+            }
+          });
+          Object.keys(newQueries).forEach((k) => {
+            if (newQueries[k] !== oldQueries[k]) {
+              oldQueries[k] = newQueries[k];
+              shouldUpdate = true;
+            }
+          });
+          return shouldUpdate;
+        };
+        const shouldUpdate$Queries = updateCtxQueries(
+          ctx.env.$queries,
+          new$Queries
+        );
+        const shouldUpdate$Q = updateCtxQueries(ctx.env.$q, new$Q);
 
         ctx.env.$state.eagerInitializeStates(ctx.stateSpecs);
 
         sub.React.useLayoutEffect(() => {
-          if (shouldUpdate) {
+          if (shouldUpdate$Queries) {
             ctx.setDollarQueries(new$Queries);
           }
-        }, [shouldUpdate, new$Queries, ctx.env.$queries]);
+          if (shouldUpdate$Q) {
+            ctx.setDollarQ(new$Q);
+          }
+        }, [
+          shouldUpdate$Queries,
+          new$Queries,
+          ctx.env.$queries,
+          shouldUpdate$Q,
+          new$Q,
+          ctx.env.$q,
+        ]);
 
         return renderTplNode(component.tplTree, ctx);
       });

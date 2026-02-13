@@ -72,6 +72,7 @@ export default async function PlasmicLoaderPage({ params }: LoaderPageProps) {
     <PlasmicClientRootProvider
       prefetchedData={componentData}
       prefetchedQueryData={prefetchedQueryData}
+      pageRoute={pageMeta.path}
       pageParams={pageMeta.params}
     >
       <PlasmicComponent component={pageMeta.displayName} />

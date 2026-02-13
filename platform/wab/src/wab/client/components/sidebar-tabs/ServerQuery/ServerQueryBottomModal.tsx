@@ -19,18 +19,18 @@ import { observer } from "mobx-react";
 import * as React from "react";
 
 /**
- * Removes a query from the environment's $queries object to avoid circular references.
+ * Removes a query from the environment's $q object to avoid circular references.
  * This is useful when computing the environment for a query's own expression preview.
  */
 export function omitQueryFromEnv(
   env: Record<string, any> | undefined,
   query: ComponentServerQuery | { name: string }
 ): Record<string, any> | undefined {
-  if (env?.$queries) {
-    const { $queries, ...restEnv } = env;
+  if (env?.$q) {
+    const { $q, ...restEnv } = env;
     const currentKey = toVarName(query.name);
-    const { [currentKey]: _omit, ...filteredQueries } = $queries;
-    return { ...restEnv, $queries: filteredQueries };
+    const { [currentKey]: _omit, ...filteredQueries } = $q;
+    return { ...restEnv, $q: filteredQueries };
   }
   return env;
 }
@@ -129,7 +129,7 @@ const ServerQueryOpExprBottomModalContent = observer(
               eventHandlerKey
             )
           : undefined;
-      // Exclude the current query from $queries to avoid circular references
+      // Exclude the current query from $q to avoid circular references
       if (isKnownComponentServerQuery(parent)) {
         return omitQueryFromEnv(computedEnv, parent);
       }

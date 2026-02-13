@@ -82,6 +82,8 @@ import { optimizeGeneratedCodeForHostlessPackages } from "@/wab/shared/codegen/r
 import {
   makePageMetadataOutput,
   renderPageHead,
+  serializeDynamicMetadataProxies,
+  serializeGenerateDynamicMetadataFunction,
   serializePageMetadata,
   serializeTanStackHead,
 } from "@/wab/shared/codegen/react-p/page-metadata";
@@ -135,6 +137,7 @@ import {
   makeProjectModuleImports,
   makeRenderFuncName,
   makeRootResetClassName,
+  makeServerPageSkeletonPropsName,
   makeStyleTokensClassNames,
   makeStyleTokensProviderImports,
   makeStylesImports,
@@ -151,14 +154,16 @@ import {
   wrapStyleTokensProvider,
 } from "@/wab/shared/codegen/react-p/serialize-utils";
 import {
+  getAppRouterSkeletonImports,
+  getPageRouterSkeletonImports,
   getRscMetadata,
-  serializeUseDollarServerQueries,
+  serializeAppRouterGenerateMetadata,
+  serializeCreateDollarQueries,
+  serializePagesRouterGetStaticProps,
 } from "@/wab/shared/codegen/react-p/server-queries";
 import {
   makePlasmicQueryImports,
   makePlasmicServerRscComponentName,
-  makeServerQueryClientDollarQueryInit,
-  serializeServerQueryEntryType,
 } from "@/wab/shared/codegen/react-p/server-queries/serializer";
 import { isServerQueryWithOperation } from "@/wab/shared/codegen/react-p/server-queries/utils";
 import { makeSplitsProviderBundle } from "@/wab/shared/codegen/react-p/splits";
@@ -187,6 +192,7 @@ import {
   getOrderedExplicitVSettings,
   getPlumePackageName,
   getReactWebPackageName,
+  isPlatformNextJs,
   joinVariantVals,
   makeChildrenStr,
   serializedKeyValue,
@@ -876,12 +882,13 @@ ${
     : ""
 }
 ${
-  ctx.usesDataSourceInteraction ||
-  ctx.usesComponentLevelQueries ||
+  ctx.usesDataSourceInteraction || ctx.usesComponentLevelQueries
+    ? `import { executePlasmicDataOp, usePlasmicDataOp, usePlasmicInvalidate } from "${getDataSourcesPackageName()}";`
+    : ""
+}
+${
   ctx.hasServerQueries
-    ? `import { executePlasmicDataOp, usePlasmicDataOp, usePlasmicInvalidate${
-        ctx.hasServerQueries ? `, usePlasmicServerQuery, makeQueryCacheKey` : ""
-      } } from "${getDataSourcesPackageName()}";`
+    ? `import { unstable_createDollarQueries, unstable_usePlasmicQueries } from "${getDataSourcesPackageName()}";`
     : ""
 }
 ${
@@ -912,7 +919,9 @@ ${iconImports}
 ${makePictureImports(site, component, ctx.exportOpts, "managed")}
 ${makeSuperCompImports(component, ctx.exportOpts)}
 ${customFunctionsAndLibsImport}
-${serializeUseDollarServerQueries(ctx)}
+${isPage ? serializeDynamicMetadataProxies() : ""}
+${isPage ? serializeGenerateDynamicMetadataFunction(ctx) : ""}
+${serializeCreateDollarQueries(ctx)}
 
 ${
   // We make a reference to createPlasmicElementProxy, as in some setups,
@@ -937,8 +946,6 @@ ${serializePlasmicSuperContext(ctx)}
 
 ${initUserCodeWrappers}
 
-${/*serializeQueries(ctx)*/ ""}
-
 ${serializedCustomFunctionsAndLibs}
 
 ${
@@ -956,7 +963,7 @@ ${
 ${
   // We wrap Next.js useRouter() in a try...catch to avoid "next router
   // not mounted" error in extractPlasmicDataQuery.
-  ctx.exportOpts.platform === "nextjs"
+  isPlatformNextJs(ctx)
     ? `function useNextRouter() {
       try {
         return useRouter();
@@ -1178,7 +1185,7 @@ export function nodeJsName(component: Component, node: TplNode) {
 function renderFullViewportStyle(ctx: SerializerBaseContext): string {
   if (
     ctx.exportOpts.platform === "gatsby" ||
-    ctx.exportOpts.platform === "nextjs" ||
+    isPlatformNextJs(ctx) ||
     ctx.exportOpts.platform === "tanstack"
   ) {
     return `
@@ -1215,7 +1222,7 @@ export function renderPage(
 
   const pageContent = `<React.Fragment>
   ${makeChildrenStr([
-    ...(ctx.exportOpts.platform === "nextjs"
+    ...(isPlatformNextJs(ctx)
       ? [`<Head>${renderPageHead(ctx, page)}</Head>`]
       : []),
     renderFullViewportStyle(ctx),
@@ -1252,7 +1259,6 @@ function serializeRenderFunc(
   if (isPageComponent(component)) {
     renderBody = renderPage(ctx, component, renderBody);
   }
-
   if (component.subComps.length > 0) {
     renderBody = `
       <${makePlasmicSuperContextName(
@@ -1326,19 +1332,13 @@ export function serializeComponentLocalVars(ctx: SerializerBaseContext) {
   );
   const superComps = getSuperComponents(component);
   const dataQueries = component.dataQueries.filter((q) => !!q.op);
-  const shouldUseDollarQueries =
-    ctx.usesComponentLevelQueries || ctx.useRSC || ctx.hasServerQueries;
   return `
     const $props = {
       ...args,
       ...variants,
     };
 
-    ${
-      ctx.exportOpts.platform === "nextjs"
-        ? `const __nextRouter = useNextRouter();`
-        : ""
-    }
+    ${isPlatformNextJs(ctx) ? `const __nextRouter = useNextRouter();` : ""}
     ${
       ctx.exportOpts.platform === "tanstack"
         ? `const __tanstackRouter = useTanStackRouter();`
@@ -1347,6 +1347,17 @@ export function serializeComponentLocalVars(ctx: SerializerBaseContext) {
     const $ctx = useDataEnv?.() || {};
     const refsRef = React.useRef({});
     const $refs = refsRef.current;
+
+    ${
+      // Initialize server queries early so state init funcs can access $q.
+      ctx.hasServerQueries
+        ? `
+      const $q = React.useMemo(create$Queries, []);
+      const qs = React.useMemo(() => createQueries($q, $ctx), [$q, $ctx]);
+      unstable_usePlasmicQueries($q, qs);
+      `
+        : ""
+    }
 
     ${serializeGlobalVariantValues(
       ctx.usedGlobalVariantGroups,
@@ -1364,7 +1375,7 @@ export function serializeComponentLocalVars(ctx: SerializerBaseContext) {
     }
 
     ${
-      shouldUseDollarQueries
+      ctx.usesComponentLevelQueries
         ? `let [$queries, setDollarQueries] = React.useState<Record<string, ReturnType<typeof usePlasmicDataOp>>>({});`
         : ""
     }
@@ -1374,8 +1385,8 @@ export function serializeComponentLocalVars(ctx: SerializerBaseContext) {
           (${serializeStateSpecs(component, ctx)})
         , [$props, $ctx, $refs]);
         const $state = useDollarState(stateSpecs, {$props, $ctx, $queries: ${
-          shouldUseDollarQueries ? "$queries" : "{}"
-        }, $refs});`
+          ctx.usesComponentLevelQueries ? "$queries" : "{}"
+        }, $q: ${ctx.hasServerQueries ? "$q" : "{}"}, $refs});`
         : ""
     }
     ${
@@ -1391,16 +1402,15 @@ export function serializeComponentLocalVars(ctx: SerializerBaseContext) {
 
     ${
       // We put this here so the expressions have access to $state
-      shouldUseDollarQueries
+      ctx.usesComponentLevelQueries
         ? `
       const new$Queries: Record<string, ReturnType<typeof usePlasmicDataOp>> = {
-        ${withoutNils([
-          ...dataQueries.map(
+        ${dataQueries
+          .map(
             (q) =>
               `${toVarName(q.name)}: (${serializeComponentLevelQuery(q, ctx)})`
-          ),
-          makeServerQueryClientDollarQueryInit(ctx),
-        ]).join(",\n")}
+          )
+          .join(",\n")}
       };
       if (Object.keys(new$Queries).some(k => new$Queries[k] !== $queries[k])) {
         setDollarQueries(new$Queries);
@@ -1422,6 +1432,14 @@ export function serializeComponentLocalVars(ctx: SerializerBaseContext) {
         : ""
     }
 
+    ${
+      isPageComponent(component) && isPlatformNextJs(ctx)
+        ? `const pageMetadata = generateDynamicMetadata(
+      wrapQueriesWithLoadingProxy(${ctx.hasServerQueries ? "$q" : "{}"}),
+      $ctx
+    );`
+        : ""
+    }
     ${
       component.superComp
         ? `
@@ -1695,7 +1713,7 @@ function serializeTplTag(ctx: SerializerBaseContext, node: TplTag) {
     if (isPageAwarePlatform(ctx.exportOpts.platform)) {
       attrs["component"] = "Link";
     }
-    if (ctx.exportOpts.platform === "nextjs") {
+    if (isPlatformNextJs(ctx)) {
       const legacyBehavior = shouldUseLegacyBehavior(
         ctx.exportOpts.platformVersion
       );
@@ -2385,7 +2403,7 @@ function serializeNodeComponents(ctx: SerializerBaseContext) {
           },`
         }
 
-        ${serializePageMetadata(ctx, component)}
+        ${isPageComponent(component) ? serializePageMetadata(component) : ""}
       }
     );
   `;
@@ -2509,9 +2527,7 @@ export function serializeDefaultExternalProps(
     ["nextjs", "tanstack"].includes(ctx.exportOpts.platform)
   ) {
     return `
-      export interface ${makeDefaultExternalPropsName(component)} {
-        ${ctx.useRSC ? serializeServerQueryEntryType(component) ?? "" : ""}
-      }
+      export interface ${makeDefaultExternalPropsName(component)} {}
     `;
   }
   const root = resolveTplRoot(component.tplTree);
@@ -2572,34 +2588,64 @@ function serializePageAwareSkeletonWrapperTs(
 
   const plasmicModuleImports = [nodeComponentNameImport];
 
-  let content = ctx.useRSC
-      ? `<${rscNodeComponentName} params={params} searchParams={searchParams} />`
-      : `<${nodeComponentName} />`,
+  const isNextJs = isPlatformNextJs(ctx);
+  const isNextJsPage = isPageComponent(component) && isNextJs;
+
+  const pagesRouterGetStaticProps =
+    isNextJsPage && (ctx.hasServerQueries || ctx.usesComponentLevelQueries)
+      ? serializePagesRouterGetStaticProps(nodeComponentName)
+      : undefined;
+
+  const serverQueryComponentParams = ctx.hasServerQueries
+    ? "params={params} searchParams={searchParams} "
+    : "";
+  let content =
+      ctx.useRSC && isNextjsAppDir
+        ? `<${rscNodeComponentName} ${serverQueryComponentParams}/>`
+        : `<${nodeComponentName} />`,
     getStaticProps = "",
-    componentPropsDecl = "",
     componentPropsSig = "",
     tanstackRouteInfo = "";
 
   if (ctx.projectConfig.hasStyleTokenOverrides) {
     content = wrapStyleTokensProvider(content);
   }
-  if (opts.platform === "nextjs") {
+  if (isNextJs) {
     if (isNextjsAppDir) {
-      componentPropsSig = `{ params, searchParams }: {
-params?: Promise<Record<string, string | string[] | undefined>>;
-searchParams?: Promise<Record<string, string | string[] | undefined>>;
-}`;
-      content = `<PageParamsProvider__ params={await params}>
+      const skeletonPropsName = makeServerPageSkeletonPropsName(component);
+      componentPropsSig = `{ params, searchParams }: ${skeletonPropsName}`;
+      getStaticProps = serializeAppRouterGenerateMetadata(ctx);
+      content = `<PageParamsProvider__
+        route="${component.pageMeta?.path ?? ""}"
+        params={await params}
+        query={await searchParams}
+      >
         ${content}
       </PageParamsProvider__>`;
+      plasmicModuleImports.push(
+        "makeAppRouterPageCtx",
+        "generateDynamicMetadata",
+        skeletonPropsName
+      );
+      if (ctx.hasServerQueries) {
+        plasmicModuleImports.push("create$Queries", "createQueries");
+      }
     } else {
-      content = `<PageParamsProvider__
-        route={useRouter()?.pathname}
-        params={useRouter()?.query}
-        query={useRouter()?.query}
-      >
+      let prefetchedCache = "";
+      if (pagesRouterGetStaticProps) {
+        componentPropsSig = `{ queryCache }: { queryCache?: any }`;
+        getStaticProps = pagesRouterGetStaticProps;
+        prefetchedCache = " prefetchedCache={queryCache}";
+      }
+      content = `<PlasmicQueryDataProvider${prefetchedCache}>
+        <PageParamsProvider__
+          route={useRouter()?.pathname}
+          params={useRouter()?.query}
+          query={useRouter()?.query}
+        >
           ${content}
-      </PageParamsProvider__>`;
+        </PageParamsProvider__>
+      </PlasmicQueryDataProvider>`;
     }
   } else if (opts.platform === "gatsby") {
     plasmicModuleImports.push("Head");
@@ -2651,7 +2697,7 @@ searchParams?: Promise<Record<string, string | string[] | undefined>>;
     // By default, ${nodeComponentName} is wrapped by your project's global
     // variant context providers. These wrappers may be moved to
     ${
-      opts.platform === "nextjs"
+      isNextJs
         ? `// Next.js Custom App component
            // (https://nextjs.org/docs/advanced-features/custom-app).`
         : opts.platform === "gatsby"
@@ -2698,10 +2744,10 @@ searchParams?: Promise<Record<string, string | string[] | undefined>>;
     ${makeGlobalGroupImports(globalGroups, opts)}
     ${nodeImport}
     ${
-      isPageComponent(component) &&
-      opts.platform === "nextjs" &&
-      !isNextjsAppDir
-        ? `import { useRouter } from "next/router";`
+      isNextJsPage
+        ? isNextjsAppDir
+          ? getAppRouterSkeletonImports(ctx)
+          : getPageRouterSkeletonImports(ctx)
         : isPageComponent(component) && opts.platform === "gatsby"
         ? `import type { PageProps } from "gatsby";
         export { Head };`
@@ -2713,8 +2759,6 @@ searchParams?: Promise<Record<string, string | string[] | undefined>>;
     ${componentSubstitutionApi}
 
     ${getStaticProps}
-
-    ${componentPropsDecl}
 
     ${tanstackRouteInfo}
 

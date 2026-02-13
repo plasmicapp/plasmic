@@ -1,22 +1,26 @@
 import { customFunctionId } from "@/wab/shared/code-components/code-components";
 import { serializeCustomFunctionsAndLibs } from "@/wab/shared/codegen/react-p/custom-functions";
 import { getDataSourcesPackageName } from "@/wab/shared/codegen/react-p/data-sources";
-import { generateDataTokenImports } from "@/wab/shared/codegen/react-p/data-tokens/imports";
-import { serializeGenerateMetadataFunction } from "@/wab/shared/codegen/react-p/page-metadata";
+import {
+  getDataTokenImportsForPageMeta,
+  serializeGenerateDynamicMetadataFunction,
+  serializeGenerateMetadataFunction,
+} from "@/wab/shared/codegen/react-p/page-metadata";
+import { serializeGeneratePageMetadataBody } from "@/wab/shared/codegen/react-p/page-metadata/serializer";
 import {
   makeDefaultExternalPropsName,
   makePlasmicComponentName,
+  makeServerPageSkeletonPropsName,
   makeTaggedPlasmicImport,
 } from "@/wab/shared/codegen/react-p/serialize-utils";
 import {
-  MK_PATH_FROM_ROUTE_AND_PARAMS_SER,
-  SERVER_QUERIES_VAR_NAME,
   makeComponentTypeImport,
   makeLoaderServerFunctionFileName,
   makePlasmicClientRscComponentFileName,
   makePlasmicClientRscComponentName,
   makePlasmicServerRscComponentFileName,
   makePlasmicServerRscComponentName,
+  serializeMakeAppRouterPageCtx,
   serializeServerQueryCustomFunctionArgs,
 } from "@/wab/shared/codegen/react-p/server-queries/serializer";
 import { isServerQueryWithOperation } from "@/wab/shared/codegen/react-p/server-queries/utils";
@@ -39,7 +43,7 @@ export function getRscMetadata(
     return undefined;
   }
 
-  const serverQueriesExecFunc = serializeServerQueriesFetchFunction(ctx);
+  const serverQueriesExecFunc = serializeServerPageQueriesLoader(ctx);
   const generateMetadataFunc = serializeGenerateMetadataFunction(ctx);
 
   return {
@@ -58,6 +62,18 @@ export function getRscMetadata(
   };
 }
 
+function serializeServerComponentBodyWithQueries() {
+  return `const { params, searchParams, ...rest } = props;
+  const ctx = await makeAppRouterPageCtx({ params, searchParams });
+
+  const serverQueries = create$Queries();
+  const prefetchedCache = await unstable_executePlasmicQueries(
+    serverQueries,
+    createQueries(serverQueries, ctx),
+  );
+`;
+}
+
 function serializeServerQueriesServerWrapper(
   ctx: SerializerBaseContext,
   opts: ExportOpts
@@ -70,8 +86,7 @@ function serializeServerQueriesServerWrapper(
   const componentPropsName = `${componentName}Props`;
   const clientComponentName = makePlasmicClientRscComponentName(component);
   const genPropsName = makeDefaultExternalPropsName(component);
-  const { module: executeServerQueriesModule } =
-    serializeServerQueriesFetchFunction(ctx);
+  const skeletonPropsName = makeServerPageSkeletonPropsName(component);
 
   return `
 /* eslint-disable */
@@ -94,36 +109,23 @@ ${makeTaggedPlasmicImport(
   "rscClient"
 )}
 
-${executeServerQueriesModule}
+${serializeServerPageQueries(ctx)}
 
-${MK_PATH_FROM_ROUTE_AND_PARAMS_SER}
+${serializeMakeAppRouterPageCtx(ctx, skeletonPropsName)}
 
-type ${componentPropsName} = ${genPropsName} & {
-  params?: Promise<Record<string, string | string[] | undefined>>;
-  searchParams?: Promise<Record<string, string | string[] | undefined>>;
-};
+export type ${componentPropsName} = ${genPropsName} & ${skeletonPropsName};
 
 export async function ${componentName}(props: ${componentPropsName}) {
-  const { params, searchParams, ...rest} = props;
+  ${ctx.hasServerQueries ? serializeServerComponentBodyWithQueries() : ""}
 
-  const pageRoute = "${component.pageMeta.path}";
-  const pageParams = (await params) ?? {};
-  const pagePath = mkPathFromRouteAndParams(pageRoute, pageParams);
-
-  const $ctx = {
-    pageRoute,
-    pagePath,
-    params: pageParams,
-    query: searchParams,
-  };
-
-  const ${SERVER_QUERIES_VAR_NAME} = await executeServerQueries($ctx);
-
-  return (
-    <${clientComponentName}
-      {...rest}
-      ${SERVER_QUERIES_VAR_NAME}={${SERVER_QUERIES_VAR_NAME}}
-    />
+  return (${
+    ctx.hasServerQueries
+      ? `
+    <PlasmicQueryDataProvider prefetchedCache={prefetchedCache}>
+      <${clientComponentName} {...rest} />
+    </PlasmicQueryDataProvider>`
+      : `<${clientComponentName} {...props} />`
+  }
   )
 }
   `;
@@ -156,22 +158,20 @@ export function ${componentName}(props: ${defaultPropsName}) {
 /**
  * Extract data token identifiers from server query expressions
  */
-function getDataTokensFromServerQueries(
+export function getDataTokensFromServerQueries(
   queries: ComponentServerQuery[]
 ): Set<string> {
   // Flatten all server query arg Exprs and extract their data token references
-  return new Set(
-    queries
-      .filter(isServerQueryWithOperation)
-      .flatMap((query) => query.op.args)
-      .flatMap(flattenExprs)
-      .filter(isDataTokenExpr)
-      .flatMap(extractDataTokenIdentifiers)
-  );
+  const tokenIdentifiers = queries
+    .filter(isServerQueryWithOperation)
+    .flatMap((query) => query.op.args)
+    .flatMap(flattenExprs)
+    .filter(isDataTokenExpr)
+    .flatMap(extractDataTokenIdentifiers);
+  return new Set(tokenIdentifiers);
 }
 
-export function serializeUseDollarServerQueries(ctx: SerializerBaseContext) {
-  // We don't need to generate this hook if we don't have server queries
+export function serializeCreateDollarQueries(ctx: SerializerBaseContext) {
   if (!ctx.hasServerQueries) {
     return "";
   }
@@ -182,73 +182,50 @@ export function serializeUseDollarServerQueries(ctx: SerializerBaseContext) {
   );
 
   return `
-function useDollarServerQueries(
+export function create$Queries() {
+  return unstable_createDollarQueries([${serverQueries
+    .map((query) => `"${toVarName(query.name)}"`)
+    .join(",")}]);
+}
+
+type QueryName = keyof ReturnType<typeof create$Queries>;
+
+export function createQueries(
+  $q: Record<QueryName, PlasmicQueryResult>,
   $ctx: any,
-  $queries: any,
-  fallbackDataObject: Record<string, any> = {}
 ) {
   return {
     ${serverQueries
-      .map(
-        (query) => `${toVarName(query.name)}: (() => {
-        const queryId = "${customFunctionId(query.op.func)}";
-        const queryParams = [${serializeServerQueryCustomFunctionArgs(
-          query.op,
-          ctx.exprCtx
-        )}];
-        const cacheKey = makeQueryCacheKey(queryId, queryParams);
-        return usePlasmicServerQuery({
-          id: queryId,
-          fn: $$.${customFunctionId(query.op.func)},
-          execParams: () => queryParams,
-        }, fallbackDataObject?.[cacheKey]);
-      })(),`
-      )
-      .join("\n")}
-  };
-}
-`;
+      .map(({ op, name }) => {
+        const namespace = op.func.namespace ? `${op.func.namespace}.` : "";
+        return `${toVarName(name)}: {
+          id: "${customFunctionId(op.func)}",
+          fn: $$.${namespace}${op.func.importName},
+          execParams: () => [
+            ${serializeServerQueryCustomFunctionArgs(op, ctx.exprCtx)}
+          ],
+        }`;
+      })
+      .join(",\n")}
+  } as const;
+};`;
 }
 
-export function serializeServerQueriesFetchFunction(
-  ctx: SerializerBaseContext
-) {
-  const serverQueries = ctx.component.serverQueries.filter(
-    isServerQueryWithOperation
-  );
-
+function serializeServerPageQueries(ctx: SerializerBaseContext) {
+  const { component } = ctx;
   const { customFunctionsAndLibsImport, serializedCustomFunctionsAndLibs } =
     serializeCustomFunctionsAndLibs(ctx);
 
-  const tokenIdentifiers = getDataTokensFromServerQueries(
-    ctx.component.serverQueries
-  );
-  const dataTokenImports = generateDataTokenImports(
-    tokenIdentifiers,
-    ctx.site,
-    ctx.projectConfig.projectId,
-    ctx.exportOpts
+  const dataTokenImports = getDataTokenImportsForPageMeta(
+    ctx,
+    component.pageMeta
   );
 
-  const serverQueriesDeclaration = `
-    const serverQueries: Record<string, ServerQuery<(typeof $$)[keyof typeof $$]>> = {
-    ${serverQueries
-      .map(
-        (query) => `
-      ${toVarName(query.name)}: {
-        id: "${customFunctionId(query.op.func)}",
-        fn: $$.${customFunctionId(query.op.func)},
-        execParams: () => [${serializeServerQueryCustomFunctionArgs(
-          query.op,
-          ctx.exprCtx
-        )}],
-      },`
-      )
-      .join("\n")}
-    };
-  `;
-
-  const usesSearchParams = serverQueriesDeclaration.includes("$ctx.query");
+  const serverQueryImports = ctx.hasServerQueries
+    ? `
+import { unstable_createDollarQueries, unstable_executePlasmicQueries } from "${getDataSourcesPackageName()}";
+import { PlasmicQueryDataProvider } from "@plasmicapp/react-web/lib/query";`
+    : "";
 
   const module = `
 ${customFunctionsAndLibsImport}
@@ -256,45 +233,97 @@ ${customFunctionsAndLibsImport}
 ${serializedCustomFunctionsAndLibs}
 
 ${dataTokenImports}
+${serverQueryImports}
 
-import { executeServerQuery, mkPlasmicUndefinedServerProxy, ServerQuery, makeQueryCacheKey } from "${getDataSourcesPackageName()}";
-
-export async function executeServerQueries($ctx: any) {
-  ${usesSearchParams ? "await $ctx.query;" : ""}
-
-  ${serverQueriesDeclaration}
-
-  const queryVarToKey: Record<string, string> = {};
-  const $queries: Record<string, any> = {};
-
-  for (const key of Object.keys(serverQueries)) {
-    const sq = serverQueries[key];
-    const params = sq.execParams();
-    const cacheKey = makeQueryCacheKey(sq.id, params);
-    queryVarToKey[key] = cacheKey;
-    $queries[cacheKey] = mkPlasmicUndefinedServerProxy();
-  }
-
-  do {
-    await Promise.all(
-      Object.keys(serverQueries).map(async (key) => {
-        const cacheKey = queryVarToKey[key];
-        $queries[cacheKey] = (await executeServerQuery(serverQueries[key])).data;
-        if (!$queries[cacheKey]?.isUndefinedServerProxy) {
-          delete serverQueries[key];
-        }
-      })
-    );
-  } while (
-    Object.values($queries).some((value) => value?.isUndefinedServerProxy)
-  );
-
-  return $queries;
-}
+${serializeGenerateDynamicMetadataFunction(ctx)}
+${serializeCreateDollarQueries(ctx)}
 `;
+  return module;
+}
 
+/**
+ * Serialize a function to execute page queries for the loader.
+ */
+function serializeServerPageQueriesLoader(ctx: SerializerBaseContext) {
+  const executeServerQueriesBody = ctx.hasServerQueries
+    ? `const serverQueries = create$Queries();
+  const prefetchedCache = await unstable_executePlasmicQueries(
+    serverQueries,
+    createQueries(serverQueries, ctx)
+  );
+  return prefetchedCache;`
+    : `return {};`;
+
+  const module = `${serializeServerPageQueries(ctx)}
+export async function executeServerQueries(ctx: any) {
+  ${executeServerQueriesBody}
+}`;
   return {
     module,
     fileName: makeLoaderServerFunctionFileName(ctx.component),
   };
+}
+
+export function getPageRouterSkeletonImports(ctx: SerializerBaseContext) {
+  let imports = `import { useRouter } from "next/router";
+import { PlasmicQueryDataProvider } from "@plasmicapp/react-web/lib/query";`;
+  if (ctx.hasServerQueries || ctx.usesComponentLevelQueries) {
+    imports += `
+import type { GetStaticProps } from "next";
+import { extractPlasmicQueryData } from "@plasmicapp/react-web/lib/prepass";`;
+  }
+  return imports;
+}
+
+export function getAppRouterSkeletonImports({
+  hasServerQueries,
+}: Pick<SerializerBaseContext, "hasServerQueries">) {
+  return `
+${
+  hasServerQueries
+    ? `import { unstable_executePlasmicQueries } from "${getDataSourcesPackageName()}";`
+    : ""
+}
+import type { Metadata, ResolvingMetadata } from "next";`;
+}
+
+/**
+ * Serialize getStaticProps and imports for Next.js Pages Router skeleton.
+ * Uses extractPlasmicQueryData to render the component and extract query data.
+ */
+export function serializePagesRouterGetStaticProps(
+  componentName: string
+): string {
+  const getStaticProps = `
+export const getStaticProps: GetStaticProps = async (context) => {
+  const queryCache = await extractPlasmicQueryData(
+    <${componentName} />
+  );
+  return {
+    props: { queryCache },
+  };
+};
+`;
+
+  return getStaticProps;
+}
+
+/**
+ * Serialize generateMetadata for Next.js App Router skeleton
+ * Uses executeServerQueries to get dynamic data
+ */
+export function serializeAppRouterGenerateMetadata(ctx: SerializerBaseContext) {
+  const { component, hasServerQueries } = ctx;
+  const skeletonPropsName = makeServerPageSkeletonPropsName(component);
+
+  return `
+export async function generateMetadata(
+  { params, searchParams }: ${skeletonPropsName},
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  ${serializeGeneratePageMetadataBody({ hasServerQueries })}
+
+  return { ...(await parent), ...metadata } as unknown as Metadata;
+}
+`;
 }

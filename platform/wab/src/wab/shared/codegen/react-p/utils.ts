@@ -421,6 +421,10 @@ export function getHostPackageName(opts: {
   }
 }
 
+export function isPlatformNextJs(ctx: SerializerBaseContext) {
+  return ctx.exportOpts.platform === "nextjs";
+}
+
 const PLUME_TYPE_TO_PACKAGE_FOLDER: Record<PlumeType, string> = {
   button: "button",
   checkbox: "checkbox",

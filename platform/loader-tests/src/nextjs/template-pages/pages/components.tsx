@@ -3,7 +3,6 @@ import {
   PlasmicComponent,
   PlasmicRootProvider,
 } from "@plasmicapp/loader-nextjs";
-import * as React from "react";
 import { PLASMIC } from "../init";
 
 // Statically fetch the data needed to render Plasmic pages or components.

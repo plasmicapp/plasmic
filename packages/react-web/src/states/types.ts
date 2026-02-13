@@ -4,6 +4,7 @@ export type InitFuncEnv = {
   $props: Record<string, any>;
   $state: Record<string, any>;
   $queries?: Record<string, any>;
+  $q?: Record<string, any>;
   $ctx?: Record<string, any>;
   $refs?: Record<string, any>;
 };

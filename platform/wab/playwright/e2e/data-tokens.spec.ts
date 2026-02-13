@@ -298,11 +298,10 @@ test.describe("data token usages", () => {
       const targetElement = models.studio.rightPanel.frame.locator(
         '[data-test-id="text-content"]'
       );
-      // right-click on the text content to create a data token
-      await targetElement.locator("label").click({ button: "right" });
-      await models.studio.createDataTokenButton.click();
+      await models.studio.createDataTokenForRow(targetElement.locator("label"));
       const dataTokenPopover = await models.studio.getDataTokenPopoverForTarget(
-        targetElement
+        targetElement,
+        { waitForFocus: true }
       );
 
       const expectedType = "Text";
@@ -390,9 +389,9 @@ test.describe("data token usages", () => {
           await models.studio.page.keyboard.type(propInfo.newTextValue);
           await models.studio.page.keyboard.press("Enter");
         }
-        // right-click on the text content to create a data token
-        await propRow.locator("label").nth(0).click({ button: "right" });
-        await models.studio.createDataTokenButton.click();
+        await models.studio.createDataTokenForRow(
+          propRow.locator("label").nth(0)
+        );
         const dataTokenPopover =
           await models.studio.getDataTokenPopoverForTarget(propRow);
 
@@ -479,11 +478,11 @@ test.describe("data token usages", () => {
 
       await strapiHostInput.click();
       await models.studio.page.keyboard.type(mockStrapiHost);
-      await strapiHostInput.click({ button: "right" });
 
-      await models.studio.createDataTokenButton.click();
+      await models.studio.createDataTokenForRow(strapiHostInput);
       let dataTokenPopover = await models.studio.getDataTokenPopoverForTarget(
-        strapiHostRow
+        strapiHostRow,
+        { waitForFocus: true }
       );
 
       const expectedName = "Host";
@@ -514,10 +513,10 @@ test.describe("data token usages", () => {
       await strapiCollectionInput.click();
       await page.waitForTimeout(200);
       await models.studio.page.keyboard.type(mockStrapiCollection);
-      await strapiCollectionInput.click({ button: "right" });
-      await models.studio.createDataTokenButton.click();
+      await models.studio.createDataTokenForRow(strapiCollectionInput);
       dataTokenPopover = await models.studio.getDataTokenPopoverForTarget(
-        strapiCollectionRow
+        strapiCollectionRow,
+        { waitForFocus: true }
       );
       await dataTokenPopover.expectDataToken({
         expectedName: "Collection",

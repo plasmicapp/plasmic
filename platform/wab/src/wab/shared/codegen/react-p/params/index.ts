@@ -8,10 +8,6 @@ import {
   makeVariantPropsName,
   makeVariantsArgTypeName,
 } from "@/wab/shared/codegen/react-p/serialize-utils";
-import {
-  serializeServerQueryArgPropType,
-  serializeServerQueryEntryType,
-} from "@/wab/shared/codegen/react-p/server-queries/serializer";
 import { SerializerBaseContext } from "@/wab/shared/codegen/react-p/types";
 import {
   jsLiteral,
@@ -144,10 +140,8 @@ export function serializeParamsTypeContent(ctx: SerializerBaseContext) {
 }
 
 export function getArgsTypeContent(ctx: SerializerBaseContext) {
-  const argsTypeContent = withoutNils([
-    serializeParamsTypeContent(ctx),
-    serializeServerQueryEntryType(ctx.component),
-  ]).join("\n");
+  const paramsContent = serializeParamsTypeContent(ctx);
+  const argsTypeContent = withoutNils([paramsContent]).join("\n");
 
   return `{${argsTypeContent}}`;
 }
@@ -160,7 +154,6 @@ export function serializeArgsType(ctx: SerializerBaseContext) {
       ? `"${makePlasmicIsPreviewRootComponent()}"`
       : null,
     ...getParamNames(ctx.component, getArgParams(ctx)).map(jsLiteral),
-    serializeServerQueryArgPropType(ctx.component),
   ]).join(", ");
 
   return `

@@ -187,7 +187,9 @@
         },
         "BvXZhJhN9gtD": {
           "name": "cms",
-          "npmPkg": ["@plasmickgs/cms"],
+          "npmPkg": [
+            "@plasmickgs/cms"
+          ],
           "cssImport": [],
           "deps": [],
           "registerCalls": [],
@@ -2160,7 +2162,11 @@
           "__type": "ExprText"
         },
         "7h4xkx9Y6JcW": {
-          "path": ["currentItem", "data", "title"],
+          "path": [
+            "currentItem",
+            "data",
+            "title"
+          ],
           "fallback": {
             "__ref": "AhRPtpK_4zcE"
           },
@@ -2225,7 +2231,11 @@
           "__type": "ExprText"
         },
         "y5-ZsE4Koy1D": {
-          "path": ["currentItem", "data", "author"],
+          "path": [
+            "currentItem",
+            "data",
+            "author"
+          ],
           "fallback": {
             "__ref": "Tw5NZ2HREaRw"
           },
@@ -2345,7 +2355,11 @@
           "__type": "ExprText"
         },
         "R8_sqkvDgnLg": {
-          "path": ["currentItem", "data", "views"],
+          "path": [
+            "currentItem",
+            "data",
+            "views"
+          ],
           "fallback": {
             "__ref": "Iqp4nAl8xMmU"
           },
@@ -2410,7 +2424,11 @@
           "__type": "ExprText"
         },
         "UamrakfSkBfg": {
-          "path": ["currentItem", "data", "creationDate"],
+          "path": [
+            "currentItem",
+            "data",
+            "creationDate"
+          ],
           "fallback": {
             "__ref": "mSq887hjj6kI"
           },
@@ -2475,7 +2493,11 @@
           "__type": "ExprText"
         },
         "KeoHSBktOFGn": {
-          "path": ["currentItem", "data", "message"],
+          "path": [
+            "currentItem",
+            "data",
+            "message"
+          ],
           "fallback": {
             "__ref": "2SRFxG3HxU4E"
           },
@@ -2487,7 +2509,12 @@
           "__type": "CustomCode"
         },
         "_uHQ_pEMEnDd": {
-          "path": ["currentItem", "data", "icon", "url"],
+          "path": [
+            "currentItem",
+            "data",
+            "icon",
+            "url"
+          ],
           "fallback": {
             "__ref": "rgd5mHIhADWy"
           },
@@ -3007,7 +3034,12 @@
           "__type": "CustomCode"
         },
         "Ty0QUyBf1iU8": {
-          "path": ["currentItem", "data", "icon", "url"],
+          "path": [
+            "currentItem",
+            "data",
+            "icon",
+            "url"
+          ],
           "fallback": {
             "__ref": "trIb7dpX-pgN"
           },
@@ -3311,14 +3343,22 @@
           "__type": "ExprText"
         },
         "bZbE5fsUVxEv": {
-          "path": ["currentItem", "data", "title"],
+          "path": [
+            "currentItem",
+            "data",
+            "title"
+          ],
           "fallback": {
             "__ref": "v55R3j2Ibwqq"
           },
           "__type": "ObjectPath"
         },
         "iNEWnT0RoXsn": {
-          "path": ["currentItem", "data", "author"],
+          "path": [
+            "currentItem",
+            "data",
+            "author"
+          ],
           "fallback": {
             "__ref": "CSaJ6Iq1AiXc"
           },
@@ -3355,14 +3395,22 @@
           "__type": "ExprText"
         },
         "ENkb4pJR4tJm": {
-          "path": ["currentItem", "data", "message"],
+          "path": [
+            "currentItem",
+            "data",
+            "message"
+          ],
           "fallback": {
             "__ref": "dSiyYFZKyu8p"
           },
           "__type": "ObjectPath"
         },
         "2id0tI79hg8O": {
-          "path": ["currentItem", "data", "title"],
+          "path": [
+            "currentItem",
+            "data",
+            "title"
+          ],
           "fallback": {
             "__ref": "MszahTOuyDRH"
           },
@@ -3379,14 +3427,22 @@
           "__type": "CustomCode"
         },
         "H6FnkgkXpXOJ": {
-          "path": ["currentItem", "data", "views"],
+          "path": [
+            "currentItem",
+            "data",
+            "views"
+          ],
           "fallback": {
             "__ref": "4DbfhcP56sfR"
           },
           "__type": "ObjectPath"
         },
         "3Sub4-N5pY8g": {
-          "path": ["currentItem", "data", "creationDate"],
+          "path": [
+            "currentItem",
+            "data",
+            "creationDate"
+          ],
           "fallback": {
             "__ref": "I1CNyDMv7WdE"
           },
@@ -3686,7 +3742,12 @@
           "__type": "CustomCode"
         },
         "veGYwVr2_FBC": {
-          "path": ["currentItem", "data", "icon", "url"],
+          "path": [
+            "currentItem",
+            "data",
+            "icon",
+            "url"
+          ],
           "fallback": {
             "__ref": "EbKvyA_ll1ew"
           },
@@ -3824,14 +3885,22 @@
           "__type": "ExprText"
         },
         "wmRUQE5oZ5hw": {
-          "path": ["currentItem", "data", "author"],
+          "path": [
+            "currentItem",
+            "data",
+            "author"
+          ],
           "fallback": {
             "__ref": "3Zor_GofGxg_"
           },
           "__type": "ObjectPath"
         },
         "ULBoLpYzIJ-v": {
-          "path": ["currentItem", "data", "message"],
+          "path": [
+            "currentItem",
+            "data",
+            "message"
+          ],
           "fallback": {
             "__ref": "kPwLOT2QqJsP"
           },
@@ -3915,7 +3984,7 @@
         "SQO63KygM9kS": {
           "__type": "ArgType",
           "name": "arg",
-          "argName": "$queries",
+          "argName": "$q",
           "displayName": null,
           "type": {
             "__ref": "VSW9FyhGzveE"
@@ -3954,7 +4023,11 @@
         },
         "eioQEwczrgC_": {
           "__type": "ObjectPath",
-          "path": ["currentItem", "data", "title"],
+          "path": [
+            "currentItem",
+            "data",
+            "title"
+          ],
           "fallback": {
             "__ref": "Z7rVG5xC7jhh"
           }
@@ -3976,7 +4049,11 @@
         },
         "meMa0Xy901fT": {
           "__type": "ObjectPath",
-          "path": ["$queries", "query1", "data"],
+          "path": [
+            "$q",
+            "query1",
+            "data"
+          ],
           "fallback": {
             "__ref": "gUgPO66aZO1Z"
           }
@@ -4042,17 +4119,23 @@
         },
         "OCk3j2EDv0N7": {
           "__type": "ObjectPath",
-          "path": ["$dataTokens_9LtVA_cmsHost"],
+          "path": [
+            "$dataTokens_9LtVA_cmsHost"
+          ],
           "fallback": null
         },
         "Yey1r1tRs06b": {
           "__type": "ObjectPath",
-          "path": ["$dataTokens_9LtVA_cmsId"],
+          "path": [
+            "$dataTokens_9LtVA_cmsId"
+          ],
           "fallback": null
         },
         "jJFmds7QeLie": {
           "__type": "ObjectPath",
-          "path": ["$dataTokens_9LtVA_cmsPublicToken"],
+          "path": [
+            "$dataTokens_9LtVA_cmsPublicToken"
+          ],
           "fallback": null
         },
         "P-ZE322Hpruz": {
@@ -4072,7 +4155,9 @@
         },
         "oYVBlsP3QuE4": {
           "__type": "TemplatedString",
-          "text": ["pt-BR"]
+          "text": [
+            "pt-BR"
+          ]
         },
         "CrwttMZxnjOA": {
           "__type": "CustomFunctionExpr",
@@ -4130,17 +4215,23 @@
         },
         "1qGRBYQbihga": {
           "__type": "ObjectPath",
-          "path": ["$dataTokens_9LtVA_cmsHost"],
+          "path": [
+            "$dataTokens_9LtVA_cmsHost"
+          ],
           "fallback": null
         },
         "BbtRYNi8Cvm7": {
           "__type": "ObjectPath",
-          "path": ["$dataTokens_9LtVA_cmsId"],
+          "path": [
+            "$dataTokens_9LtVA_cmsId"
+          ],
           "fallback": null
         },
         "5g2QgBCg8Ijn": {
           "__type": "ObjectPath",
-          "path": ["$dataTokens_9LtVA_cmsPublicToken"],
+          "path": [
+            "$dataTokens_9LtVA_cmsPublicToken"
+          ],
           "fallback": null
         },
         "VbPWeF7l0lE3": {
@@ -4160,7 +4251,9 @@
         },
         "H1La68MI-oOY": {
           "__type": "TemplatedString",
-          "text": ["pt-BR"]
+          "text": [
+            "pt-BR"
+          ]
         },
         "VD3QY8D6xCWz": {
           "__type": "CustomFunctionExpr",
@@ -4215,17 +4308,23 @@
         },
         "oVDu3NmV66pa": {
           "__type": "ObjectPath",
-          "path": ["$dataTokens_9LtVA_cmsHost"],
+          "path": [
+            "$dataTokens_9LtVA_cmsHost"
+          ],
           "fallback": null
         },
         "CgM8g0kZ4_rd": {
           "__type": "ObjectPath",
-          "path": ["$dataTokens_9LtVA_cmsId"],
+          "path": [
+            "$dataTokens_9LtVA_cmsId"
+          ],
           "fallback": null
         },
         "v6HDsiYqLBXW": {
           "__type": "ObjectPath",
-          "path": ["$dataTokens_9LtVA_cmsPublicToken"],
+          "path": [
+            "$dataTokens_9LtVA_cmsPublicToken"
+          ],
           "fallback": null
         },
         "hoQRC3D_Z3z9": {
@@ -4245,7 +4344,11 @@
         },
         "ZFwk5EVSa9jO": {
           "__type": "ObjectPath",
-          "path": ["$queries", "query2", "data"],
+          "path": [
+            "$q",
+            "query2",
+            "data"
+          ],
           "fallback": {
             "__ref": "-vStRzAtgPlg"
           }
@@ -4257,7 +4360,7 @@
         },
         "uz2Kixj9D8Px": {
           "__type": "CustomCode",
-          "code": "(!$queries.query2.data?.length)",
+          "code": "(!$q.query2.data?.length)",
           "fallback": {
             "__ref": "qSA0iqStmzGQ"
           }
@@ -4269,7 +4372,11 @@
         },
         "oWcrWAFtjDvn": {
           "__type": "ObjectPath",
-          "path": ["$queries", "query3", "data"],
+          "path": [
+            "$q",
+            "query3",
+            "data"
+          ],
           "fallback": {
             "__ref": "aBXCYPPVq1qQ"
           }
@@ -4281,7 +4388,11 @@
         },
         "PKj3Yz1VsuBy": {
           "__type": "ObjectPath",
-          "path": ["$queries", "query4", "data"],
+          "path": [
+            "$q",
+            "query4",
+            "data"
+          ],
           "fallback": {
             "__ref": "ma3w0F3IdCYv"
           }
@@ -4350,17 +4461,23 @@
         },
         "nAfoQqdMCKA3": {
           "__type": "ObjectPath",
-          "path": ["$dataTokens_9LtVA_cmsHost"],
+          "path": [
+            "$dataTokens_9LtVA_cmsHost"
+          ],
           "fallback": null
         },
         "_jxYgSjehzGp": {
           "__type": "ObjectPath",
-          "path": ["$dataTokens_9LtVA_cmsId"],
+          "path": [
+            "$dataTokens_9LtVA_cmsId"
+          ],
           "fallback": null
         },
         "RLVKIV-DrzQ_": {
           "__type": "ObjectPath",
-          "path": ["$dataTokens_9LtVA_cmsPublicToken"],
+          "path": [
+            "$dataTokens_9LtVA_cmsPublicToken"
+          ],
           "fallback": null
         },
         "W07JTJzPcNpx": {
@@ -4385,10 +4502,14 @@
         },
         "yHWGya25NmDo": {
           "__type": "TemplatedString",
-          "text": ["pt-BR"]
+          "text": [
+            "pt-BR"
+          ]
         }
       },
-      "deps": ["a54405f3-acb8-465f-9956-c9e1122a09bd"],
+      "deps": [
+        "a54405f3-acb8-465f-9956-c9e1122a09bd"
+      ],
       "version": "255-wrap-page-meta-og-image-in-ref"
     }
   ]

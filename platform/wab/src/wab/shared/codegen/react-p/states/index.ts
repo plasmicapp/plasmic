@@ -51,13 +51,13 @@ export function serializeInitFunc(
   }
   const exprCtx = ctx.exprCtx;
   if (!state.tplNode && state.variableType === "variant") {
-    initFunc = `({$props, $state, $queries, $ctx}) => (${
+    initFunc = `({$props, $state, $queries, $q, $ctx}) => (${
       state.param.defaultExpr
         ? getRawCode(state.param.defaultExpr, exprCtx) + " ?? "
         : ""
     } $props.${getStateValuePropName(state)})`;
   } else if (!state.tplNode && state.param.defaultExpr) {
-    initFunc = `({$props, $state, $queries, $ctx}) => (${getRawCode(
+    initFunc = `({$props, $state, $queries, $q, $ctx}) => (${getRawCode(
       state.param.defaultExpr,
       exprCtx
     )})`;
@@ -106,7 +106,7 @@ export function serializeInitFunc(
         [baseVariant],
       ]);
     }
-    initFunc = `({$props, $state, $queries${
+    initFunc = `({$props, $state, $queries, $q${
       !isForRegisterInitFunc ? ", $ctx" : ""
     }}) => (${
       joinVariantVals(exprs, ctx.variantComboChecker, "undefined").value

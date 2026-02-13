@@ -248,6 +248,27 @@ import "@plasmicapp/react-web/lib/plasmic.css";
 import "./plasmic__default_style.css"; // plasmic-import: global/defaultcss
 import "./plasmic.css"; // plasmic-import: 1234567890/projectcss
 import "./PlasmicHomepage.css"; // plasmic-import: lRapkLBf4Fhi/css
+var emptyProxy = new Proxy(function () { return ""; }, {
+    get: function (_, prop) {
+        return prop === Symbol.toPrimitive ? function () { return ""; } : emptyProxy;
+    },
+});
+function wrapQueriesWithLoadingProxy($q) {
+    return new Proxy($q, {
+        get: function (target, queryName) {
+            var query = target[queryName];
+            return !query || query.isLoading || !query.data ? emptyProxy : query;
+        },
+    });
+}
+export function generateDynamicMetadata($q, $ctx) {
+    return {
+        openGraph: {},
+        twitter: {
+            card: "summary",
+        },
+    };
+}
 createPlasmicElementProxy;
 export var PlasmicHomepage__VariantProps = new Array();
 export var PlasmicHomepage__ArgProps = new Array();
@@ -302,13 +323,7 @@ makeNodeComponent("root"), {
     // Metadata about props expected for PlasmicHomepage
     internalVariantProps: PlasmicHomepage__VariantProps,
     internalArgProps: PlasmicHomepage__ArgProps,
-    // Page metadata
-    pageMetadata: {
-        "title": "",
-        "description": "",
-        "ogImageSrc": "",
-        "canonical": ""
-    },
+    pageMetadata: generateDynamicMetadata(wrapQueriesWithLoadingProxy({}), { pagePath: "/", searchParams: {}, params: {} })
 });
 export default PlasmicHomepage;
 /* prettier-ignore-end */
@@ -383,6 +398,7 @@ import {
 
 
 
+
 import DepComp from "./DepComp";  // plasmic-import: u4_D7ezQ-9rk/component
 import { _useGlobalVariants } from "./plasmic.tsx"; // plasmic-import: 1234567890/projectModule
 import { _useStyleTokens } from "./PlasmicStyleTokensProvider.tsx"; // plasmic-import: 1234567890/styleTokensProvider
@@ -397,6 +413,41 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider.tsx"; // plasmic-i
 
 
 
+
+const emptyProxy: any = new Proxy(() => "", {
+  get(_, prop) {
+    return prop === Symbol.toPrimitive ? () => "" : emptyProxy;
+  },
+});
+
+function wrapQueriesWithLoadingProxy($q: any): any {
+  return new Proxy($q, {
+    get(target, queryName) {
+      const query = target[queryName];
+      return !query || query.isLoading || !query.data ? emptyProxy : query;
+    },
+  });
+}
+
+
+export function generateDynamicMetadata($q: any, $ctx: any) {
+  return {
+    
+    
+    openGraph: {
+      
+      
+      
+    },
+    twitter: {
+      card: "summary",
+      
+      
+      
+    },
+    
+  };
+}
 
 
 createPlasmicElementProxy
@@ -430,8 +481,6 @@ p?: Flex__<"p">;
       
       className?: string;
   }
-
-
 
 
 
@@ -480,6 +529,8 @@ const $$ = {};
     const refsRef = React.useRef({});
     const $refs = refsRef.current;
 
+    
+
     const globalVariants = _useGlobalVariants();
 
     
@@ -493,6 +544,7 @@ const $$ = {};
 
     
 
+    
     
 
     
@@ -618,13 +670,10 @@ p: makeNodeComponent("p"),
         
 
         
-    // Page metadata
-    pageMetadata: {
-  "title": "",
-  "description": "",
-  "ogImageSrc": "",
-  "canonical": ""
-},
+    pageMetadata: generateDynamicMetadata(
+      wrapQueriesWithLoadingProxy({}),
+      { pagePath: "/", searchParams: {}, params: {} }
+    )
   
       }
     );
@@ -1442,6 +1491,27 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider.tsx"; // plasmic-i
 import "@plasmicapp/react-web/lib/plasmic.css";
 import projectcss from "./plasmic.module.css"; // plasmic-import: 1234567890/projectcss
 import sty from "./PlasmicHomepage.module.css"; // plasmic-import: lRapkLBf4Fhi/css
+var emptyProxy = new Proxy(function () { return ""; }, {
+    get: function (_, prop) {
+        return prop === Symbol.toPrimitive ? function () { return ""; } : emptyProxy;
+    },
+});
+function wrapQueriesWithLoadingProxy($q) {
+    return new Proxy($q, {
+        get: function (target, queryName) {
+            var query = target[queryName];
+            return !query || query.isLoading || !query.data ? emptyProxy : query;
+        },
+    });
+}
+export function generateDynamicMetadata($q, $ctx) {
+    return {
+        openGraph: {},
+        twitter: {
+            card: "summary",
+        },
+    };
+}
 createPlasmicElementProxy;
 export var PlasmicHomepage__VariantProps = new Array();
 export var PlasmicHomepage__ArgProps = new Array();
@@ -1497,13 +1567,7 @@ makeNodeComponent("root"), {
     // Metadata about props expected for PlasmicHomepage
     internalVariantProps: PlasmicHomepage__VariantProps,
     internalArgProps: PlasmicHomepage__ArgProps,
-    // Page metadata
-    pageMetadata: {
-        "title": "",
-        "description": "",
-        "ogImageSrc": "",
-        "canonical": ""
-    },
+    pageMetadata: generateDynamicMetadata(wrapQueriesWithLoadingProxy({}), { pagePath: "/", searchParams: {}, params: {} })
 });
 export default PlasmicHomepage;
 /* prettier-ignore-end */
@@ -1611,6 +1675,7 @@ import {
 
 
 
+
 import DepComp from "./DepComp";  // plasmic-import: u4_D7ezQ-9rk/component
 import { _useGlobalVariants } from "./plasmic.tsx"; // plasmic-import: 1234567890/projectModule
 import { _useStyleTokens } from "./PlasmicStyleTokensProvider.tsx"; // plasmic-import: 1234567890/styleTokensProvider
@@ -1625,6 +1690,41 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider.tsx"; // plasmic-i
 
 
 
+
+const emptyProxy: any = new Proxy(() => "", {
+  get(_, prop) {
+    return prop === Symbol.toPrimitive ? () => "" : emptyProxy;
+  },
+});
+
+function wrapQueriesWithLoadingProxy($q: any): any {
+  return new Proxy($q, {
+    get(target, queryName) {
+      const query = target[queryName];
+      return !query || query.isLoading || !query.data ? emptyProxy : query;
+    },
+  });
+}
+
+
+export function generateDynamicMetadata($q: any, $ctx: any) {
+  return {
+    
+    
+    openGraph: {
+      
+      
+      
+    },
+    twitter: {
+      card: "summary",
+      
+      
+      
+    },
+    
+  };
+}
 
 
 createPlasmicElementProxy
@@ -1658,8 +1758,6 @@ p?: Flex__<"p">;
       
       className?: string;
   }
-
-
 
 
 
@@ -1708,6 +1806,8 @@ const $$ = {};
     const refsRef = React.useRef({});
     const $refs = refsRef.current;
 
+    
+
     const globalVariants = _useGlobalVariants();
 
     
@@ -1721,6 +1821,7 @@ const $$ = {};
 
     
 
+    
     
 
     
@@ -1846,13 +1947,10 @@ p: makeNodeComponent("p"),
         
 
         
-    // Page metadata
-    pageMetadata: {
-  "title": "",
-  "description": "",
-  "ogImageSrc": "",
-  "canonical": ""
-},
+    pageMetadata: generateDynamicMetadata(
+      wrapQueriesWithLoadingProxy({}),
+      { pagePath: "/", searchParams: {}, params: {} }
+    )
   
       }
     );

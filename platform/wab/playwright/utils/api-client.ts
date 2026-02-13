@@ -1,5 +1,5 @@
 import playwright from "playwright";
-import { APIRequestContext, Page } from "playwright/test";
+import { APIRequestContext, BrowserContext, Page } from "playwright/test";
 
 export class ApiClient {
   private token: string | undefined = undefined;
@@ -517,8 +517,8 @@ export class ApiClient {
   }
 
   async makeApiClient(
-    request,
-    context,
+    request: APIRequestContext,
+    context: BrowserContext,
     email = "user2@example.com",
     password = "!53kr3tz!"
   ) {

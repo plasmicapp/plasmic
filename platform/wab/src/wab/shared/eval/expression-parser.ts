@@ -49,6 +49,7 @@ const DOLLAR_VARS = [
   "$ctx",
   "$props",
   "$queries",
+  "$q",
   "$state",
   "$steps",
   "$dataTokens",

@@ -63,9 +63,7 @@ export function denormalizeData(data: any | null): any {
         const fieldId = fieldValue.sys.id;
         if (entryMap[fieldId]) {
           if (processedFields.has(fieldId)) {
-            console.warn(
-              `Circular reference detected for Entry ID: ${fieldId}.`
-            );
+            console.warn(`Circular ref detected for Entry ID: ${fieldId}.`);
           } else {
             fieldValue = {
               ...fieldValue,
@@ -192,12 +190,10 @@ export async function _queryContentful({
   skip,
   include,
   select,
-  locale,
 }: QueryContentfulOpts & QueryContentfulOldFilterProps): Promise<any> {
   if (!space || !accessToken) {
     throw new Error("Space and accessToken are required");
   }
-
   if (!contentType) {
     return null;
   }
@@ -252,10 +248,6 @@ export async function _queryContentful({
       // The user may pass a comma-separated string as documented in the Contentful API
       searchParams.set("select", select);
     }
-  }
-
-  if (locale) {
-    searchParams.set("locale", locale);
   }
 
   const resp = await fetch(`${BASE_URL}${path}?${searchParams.toString()}`);

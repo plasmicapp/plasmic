@@ -11,7 +11,7 @@ import { PLASMIC } from "../init";
 
 const DATA_HOST = undefined; // __DATA_HOST__
 
-// @ts-ignore
+// @ts-expect-error globalThis
 globalThis["__PLASMIC_DATA_HOST"] = DATA_HOST ?? "http://localhost:3003";
 
 /**

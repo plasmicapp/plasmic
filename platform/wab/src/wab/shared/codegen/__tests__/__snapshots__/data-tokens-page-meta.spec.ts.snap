@@ -3,52 +3,6 @@
 exports[`data tokens: page meta codegen should codegen correct metadata with data tokens 1`] = `
 "
 import { pageText as $dataTokens_3UYiE_pageText, pageCanonical as $dataTokens_3UYiE_pageCanonical, pageImage as $dataTokens_3UYiE_pageImage } from "./plasmic-data-tokens"; // plasmic-import: 3UYiEMfU3twU4iYSx86cub/dataTokens
-
-
-
-const $$ = {};
-
-
-
-import { executeServerQuery, mkPlasmicUndefinedServerProxy, ServerQuery, makeQueryCacheKey } from "@plasmicapp/react-web/lib/data-sources";
-
-export async function executeServerQueries($ctx: any) {
-  
-
-  
-    const serverQueries: Record<string, ServerQuery<(typeof $$)[keyof typeof $$]>> = {
-    
-    };
-  
-
-  const queryVarToKey: Record<string, string> = {};
-  const $queries: Record<string, any> = {};
-
-  for (const key of Object.keys(serverQueries)) {
-    const sq = serverQueries[key];
-    const params = sq.execParams();
-    const cacheKey = makeQueryCacheKey(sq.id, params);
-    queryVarToKey[key] = cacheKey;
-    $queries[cacheKey] = mkPlasmicUndefinedServerProxy();
-  }
-
-  do {
-    await Promise.all(
-      Object.keys(serverQueries).map(async (key) => {
-        const cacheKey = queryVarToKey[key];
-        $queries[cacheKey] = (await executeServerQuery(serverQueries[key])).data;
-        if (!$queries[cacheKey]?.isUndefinedServerProxy) {
-          delete serverQueries[key];
-        }
-      })
-    );
-  } while (
-    Object.values($queries).some((value) => value?.isUndefinedServerProxy)
-  );
-
-  return $queries;
-}
-
 /**
  * Platform-agnostic page metadata type.
  * Structurally compatible with Next.js Metadata and other meta frameworks.
@@ -72,6 +26,9 @@ type PlasmicPageMetadata = {
   };
 };
 
+
+
+
 function mkPathFromRouteAndParams(
   route: string,
   params: Record<string, string | string[] | undefined>
@@ -94,42 +51,44 @@ function mkPathFromRouteAndParams(
   return path;
 }
 
-type ParamsRecord = Record<string, string | string[] | undefined>;
-type GenerateMetadataProps = {
-  params: Promise<ParamsRecord> | ParamsRecord;
-  query: Promise<ParamsRecord> | ParamsRecord;
-};
+export interface GenerateMetadataProps {
+  params?: Promise<Record<string, string | string[] | undefined>>;
+  searchParams?: Promise<Record<string, string | string[] | undefined>>;
+}
 
-export async function generateMetadata(props: GenerateMetadataProps): Promise<PlasmicPageMetadata> {
-  const { params, query } = props;
-
+export async function makeAppRouterPageCtx({ params, searchParams }: GenerateMetadataProps) {
   const pageRoute = "/seo";
   const pageParams = (await params) ?? {};
   const pagePath = mkPathFromRouteAndParams(pageRoute, pageParams);
 
-  const $ctx = {
+  const ctx = {
     pageRoute,
     pagePath,
     params: pageParams,
-    query: (await query) ?? {},
+    query: (await searchParams) ?? {},
   };
-  const $queries = await executeServerQueries($ctx);
-  return {
-    title: $ctx.pagePath,
-    description: \`\${ $dataTokens_3UYiE_pageText } - in a templated string\`,
+  return ctx;
+}
+
+export async function generateMetadata(props: GenerateMetadataProps): Promise<PlasmicPageMetadata> {
+  const { params, searchParams } = props;
+  const metadata: PlasmicPageMetadata = {
+    title: String($ctx.pagePath),
+    description: String(\`\${ $dataTokens_3UYiE_pageText } - in a templated string\`),
     openGraph: {
-      title: $ctx.pagePath,
-      description: \`\${ $dataTokens_3UYiE_pageText } - in a templated string\`,
+      title: String($ctx.pagePath),
+      description: String(\`\${ $dataTokens_3UYiE_pageText } - in a templated string\`),
       images: [$dataTokens_3UYiE_pageImage],
     },
     twitter: {
       card: "summary_large_image",
-      title: $ctx.pagePath,
-      description: \`\${ $dataTokens_3UYiE_pageText } - in a templated string\`,
+      title: String($ctx.pagePath),
+      description: String(\`\${ $dataTokens_3UYiE_pageText } - in a templated string\`),
       images: [$dataTokens_3UYiE_pageImage],
     },
-    alternates: { canonical: $dataTokens_3UYiE_pageCanonical.url },
+    alternates: { canonical: String($dataTokens_3UYiE_pageCanonical.url) },
   };
+  return metadata;
 }
 "
 `;

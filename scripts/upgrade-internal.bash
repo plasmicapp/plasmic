@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -o errexit -o nounset -o
+set -o errexit -o nounset -o pipefail
 
 cd platform
 

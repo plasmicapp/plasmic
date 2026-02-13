@@ -233,7 +233,10 @@ export function ContentfulFetcher({
     creds,
   });
 
-  const baseUrl = "https://cdn.contentful.com";
+  const baseUrl =
+    (typeof process !== "undefined" &&
+      process.env?.NEXT_PUBLIC_CONTENTFUL_BASE_URL) ||
+    "https://cdn.contentful.com";
 
   const { data: contentTypes } = usePlasmicQueryData<any | null>(
     `${cacheKey}/contentTypes`,

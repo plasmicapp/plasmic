@@ -28,7 +28,7 @@ export interface _Entry {
 export function queryContentful({ space, accessToken, environment, contentType, filterLogic, }: QueryContentfulOpts): Promise<any>;
 
 // @public @deprecated
-export function _queryContentful({ space, accessToken, environment, contentType, filterLogic, filterField, searchParameter, filterValue, order, reverseOrder, limit, skip, include, select, locale, }: QueryContentfulOpts & QueryContentfulOldFilterProps): Promise<any>;
+export function _queryContentful({ space, accessToken, environment, contentType, filterLogic, filterField, searchParameter, filterValue, order, reverseOrder, limit, skip, include, select, }: QueryContentfulOpts & QueryContentfulOldFilterProps): Promise<any>;
 
 // @public (undocumented)
 export function registerContentful(loader?: {

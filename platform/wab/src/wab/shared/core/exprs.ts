@@ -1135,7 +1135,13 @@ export function summarizePath(variablePath: ObjectPath) {
   return summarizePathParts(variablePath.path);
 }
 
-export const flattenedKeys = new Set(["$ctx", "$props", "$state", "$queries"]);
+export const flattenedKeys = new Set([
+  "$ctx",
+  "$props",
+  "$state",
+  "$queries",
+  "$q",
+]);
 export const omittedKeysIfEmpty = new Set([
   "$ctx.params",
   "$ctx.query",

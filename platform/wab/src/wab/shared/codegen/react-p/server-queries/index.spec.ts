@@ -2,7 +2,6 @@ import { serializeArgsType } from "@/wab/shared/codegen/react-p/params";
 import {
   makePlasmicClientRscComponentName,
   makePlasmicServerRscComponentName,
-  serializeServerQueryEntryType,
 } from "@/wab/shared/codegen/react-p/server-queries/serializer";
 import { SerializerBaseContext } from "@/wab/shared/codegen/react-p/types";
 import { mkShortId } from "@/wab/shared/common";
@@ -148,23 +147,6 @@ describe("Code generation of server queries", () => {
     });
   });
 
-  describe("serializeServerQueryEntryType", () => {
-    it("should serialize typescript definition of queries result", () => {
-      const { component, componentWithoutQueries } =
-        basicComponentsWithServerQueries();
-
-      expect(serializeServerQueryEntryType(component))
-        .toEqual(`$serverQueries?: {
-query1: Awaited<ReturnType<typeof func1>>;
-query2: Awaited<ReturnType<typeof func2>>;
-query4: Awaited<ReturnType<typeof func4>>;
-query5: Awaited<ReturnType<typeof func5>>;
-};`);
-
-      expect(serializeServerQueryEntryType(componentWithoutQueries)).toBeNull();
-    });
-  });
-
   describe("serializeArgsType", () => {
     it("should serialize server queries as args", () => {
       const { component } = basicComponentsWithServerQueries();
@@ -183,14 +165,9 @@ query5: Awaited<ReturnType<typeof func5>>;
           projectFlags: DEVFLAGS,
         } as SerializerBaseContext)
       ).toEqual(`
-export type PlasmicComponent__ArgsType = {"param1"?: string;\n$serverQueries?: {
-query1: Awaited<ReturnType<typeof func1>>;
-query2: Awaited<ReturnType<typeof func2>>;
-query4: Awaited<ReturnType<typeof func4>>;
-query5: Awaited<ReturnType<typeof func5>>;
-};};
+export type PlasmicComponent__ArgsType = {"param1"?: string;};
 type ArgPropType = keyof PlasmicComponent__ArgsType;
-export const PlasmicComponent__ArgProps = new Array<ArgPropType>("param1", "$serverQueries");
+export const PlasmicComponent__ArgProps = new Array<ArgPropType>("param1");
 `);
     });
   });

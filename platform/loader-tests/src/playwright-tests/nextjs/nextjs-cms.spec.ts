@@ -6,7 +6,7 @@ import {
   teardownNextJs,
 } from "../../nextjs/nextjs-setup";
 import { setupCms } from "../../utils";
-import { testCmsLoader } from "./shared/test-cms";
+import { testCmsLoader } from "./shared/cms-test";
 
 test.describe(`NextJS CMS`, () => {
   let ctx: NextJsContext;

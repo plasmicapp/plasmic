@@ -1109,7 +1109,7 @@ function PlasmicButton__RenderFunc(props) {
                 type: "private",
                 variableType: "variant",
                 initFunc: function (_a) {
-                    var $props = _a.$props, $state = _a.$state, $queries = _a.$queries, $ctx = _a.$ctx;
+                    var $props = _a.$props, $state = _a.$state, $queries = _a.$queries, $q = _a.$q, $ctx = _a.$ctx;
                     return ($props.color);
                 },
             }, {
@@ -1117,7 +1117,7 @@ function PlasmicButton__RenderFunc(props) {
                 type: "private",
                 variableType: "variant",
                 initFunc: function (_a) {
-                    var $props = _a.$props, $state = _a.$state, $queries = _a.$queries, $ctx = _a.$ctx;
+                    var $props = _a.$props, $state = _a.$state, $queries = _a.$queries, $q = _a.$q, $ctx = _a.$ctx;
                     return ($props.size);
                 },
             }, {
@@ -1125,7 +1125,7 @@ function PlasmicButton__RenderFunc(props) {
                 type: "private",
                 variableType: "variant",
                 initFunc: function (_a) {
-                    var $props = _a.$props, $state = _a.$state, $queries = _a.$queries, $ctx = _a.$ctx;
+                    var $props = _a.$props, $state = _a.$state, $queries = _a.$queries, $q = _a.$q, $ctx = _a.$ctx;
                     return ($props.iconStart);
                 },
             }, {
@@ -1133,7 +1133,7 @@ function PlasmicButton__RenderFunc(props) {
                 type: "private",
                 variableType: "variant",
                 initFunc: function (_a) {
-                    var $props = _a.$props, $state = _a.$state, $queries = _a.$queries, $ctx = _a.$ctx;
+                    var $props = _a.$props, $state = _a.$state, $queries = _a.$queries, $q = _a.$q, $ctx = _a.$ctx;
                     return ($props.iconEnd);
                 },
             }, {
@@ -1141,7 +1141,7 @@ function PlasmicButton__RenderFunc(props) {
                 type: "private",
                 variableType: "variant",
                 initFunc: function (_a) {
-                    var $props = _a.$props, $state = _a.$state, $queries = _a.$queries, $ctx = _a.$ctx;
+                    var $props = _a.$props, $state = _a.$state, $queries = _a.$queries, $q = _a.$q, $ctx = _a.$ctx;
                     return ($props.roundedFull);
                 },
             }, {
@@ -1149,7 +1149,7 @@ function PlasmicButton__RenderFunc(props) {
                 type: "private",
                 variableType: "variant",
                 initFunc: function (_a) {
-                    var $props = _a.$props, $state = _a.$state, $queries = _a.$queries, $ctx = _a.$ctx;
+                    var $props = _a.$props, $state = _a.$state, $queries = _a.$queries, $q = _a.$q, $ctx = _a.$ctx;
                     return ($props.type);
                 },
             }, {
@@ -1157,12 +1157,12 @@ function PlasmicButton__RenderFunc(props) {
                 type: "private",
                 variableType: "variant",
                 initFunc: function (_a) {
-                    var $props = _a.$props, $state = _a.$state, $queries = _a.$queries, $ctx = _a.$ctx;
+                    var $props = _a.$props, $state = _a.$state, $queries = _a.$queries, $q = _a.$q, $ctx = _a.$ctx;
                     return ($props.flatSide);
                 },
             }]);
     }, [$props, $ctx, $refs]);
-    var $state = useDollarState(stateSpecs, { $props: $props, $ctx: $ctx, $queries: {}, $refs: $refs });
+    var $state = useDollarState(stateSpecs, { $props: $props, $ctx: $ctx, $queries: {}, $q: {}, $refs: $refs });
     var styleTokensClassNames = _useStyleTokens();
     var _a = React.useState({
         hovered: false,
@@ -1308,6 +1308,7 @@ import {
 
 
 
+
 import { BaseButton } from "@plasmicpkgs/react-aria/skinny/registerButton";
 import { _useGlobalVariants } from "./plasmic.tsx"; // plasmic-import: 1234567890/projectModule
 import { _useStyleTokens } from "./PlasmicStyleTokensProvider.tsx"; // plasmic-import: 1234567890/styleTokensProvider
@@ -1320,6 +1321,8 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider.tsx"; // plasmic-i
   
 import CircleIcon from "./PlasmicIcon__Circle";  // plasmic-import: 4hS9BR4cg9TV/icon
 import ChevronDownIcon from "./PlasmicIcon__ChevronDown";  // plasmic-import: lZo9OmVojh_m/icon
+
+
 
 
 
@@ -1397,8 +1400,6 @@ interactionEffect?: Flex__<"div">;
 
 
 
-
-
 const $$ = {};
 
 
@@ -1449,12 +1450,14 @@ const $$ = {};
     
 
     
+
+    
     const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(() =>
           ([{
       path: "color",
       type: "private",
       variableType: "variant",
-      initFunc: ({$props, $state, $queries, $ctx}) => ( $props.color),
+      initFunc: ({$props, $state, $queries, $q, $ctx}) => ( $props.color),
       
       
       
@@ -1463,7 +1466,7 @@ const $$ = {};
       path: "size",
       type: "private",
       variableType: "variant",
-      initFunc: ({$props, $state, $queries, $ctx}) => ( $props.size),
+      initFunc: ({$props, $state, $queries, $q, $ctx}) => ( $props.size),
       
       
       
@@ -1472,7 +1475,7 @@ const $$ = {};
       path: "iconStart",
       type: "private",
       variableType: "variant",
-      initFunc: ({$props, $state, $queries, $ctx}) => ( $props.iconStart),
+      initFunc: ({$props, $state, $queries, $q, $ctx}) => ( $props.iconStart),
       
       
       
@@ -1481,7 +1484,7 @@ const $$ = {};
       path: "iconEnd",
       type: "private",
       variableType: "variant",
-      initFunc: ({$props, $state, $queries, $ctx}) => ( $props.iconEnd),
+      initFunc: ({$props, $state, $queries, $q, $ctx}) => ( $props.iconEnd),
       
       
       
@@ -1490,7 +1493,7 @@ const $$ = {};
       path: "roundedFull",
       type: "private",
       variableType: "variant",
-      initFunc: ({$props, $state, $queries, $ctx}) => ( $props.roundedFull),
+      initFunc: ({$props, $state, $queries, $q, $ctx}) => ( $props.roundedFull),
       
       
       
@@ -1499,7 +1502,7 @@ const $$ = {};
       path: "type",
       type: "private",
       variableType: "variant",
-      initFunc: ({$props, $state, $queries, $ctx}) => ( $props.type),
+      initFunc: ({$props, $state, $queries, $q, $ctx}) => ( $props.type),
       
       
       
@@ -1508,19 +1511,20 @@ const $$ = {};
       path: "flatSide",
       type: "private",
       variableType: "variant",
-      initFunc: ({$props, $state, $queries, $ctx}) => ( $props.flatSide),
+      initFunc: ({$props, $state, $queries, $q, $ctx}) => ( $props.flatSide),
       
       
       
       
     }])
         , [$props, $ctx, $refs]);
-        const $state = useDollarState(stateSpecs, {$props, $ctx, $queries: {}, $refs});
+        const $state = useDollarState(stateSpecs, {$props, $ctx, $queries: {}, $q: {}, $refs});
     
     
 
     
 
+    
     
 
     
@@ -2690,6 +2694,7 @@ import {
 
 
 
+
 import DataFetcherParent from "./DataFetcherParent";  // plasmic-import: iUkwSJQ7glxH/component
 import { _useGlobalVariants } from "./plasmic.tsx"; // plasmic-import: 1234567890/projectModule
 import { _useStyleTokens } from "./PlasmicStyleTokensProvider.tsx"; // plasmic-import: 1234567890/styleTokensProvider
@@ -2700,6 +2705,8 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider.tsx"; // plasmic-i
     import  "./plasmic.css"; // plasmic-import: 1234567890/projectcss
     import  "./PlasmicDataFetcherGrandParent.css" // plasmic-import: mmv9XMNdJbUm/css
   
+
+
 
 
 
@@ -2735,8 +2742,6 @@ export type PlasmicDataFetcherGrandParent__OverridesType = {
       
       
   }
-
-
 
 
 
@@ -2792,12 +2797,15 @@ const $$ = {};
     
 
     
+
+    
     
     
     
 
     
 
+    
     
 
     
@@ -3054,6 +3062,7 @@ import {
 
 
 
+
 import { Fetcher } from "@plasmicapp/react-web/lib/data-sources";
 import { _useGlobalVariants } from "./plasmic.tsx"; // plasmic-import: 1234567890/projectModule
 import { _useStyleTokens } from "./PlasmicStyleTokensProvider.tsx"; // plasmic-import: 1234567890/styleTokensProvider
@@ -3064,6 +3073,8 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider.tsx"; // plasmic-i
     import  "./plasmic.css"; // plasmic-import: 1234567890/projectcss
     import  "./PlasmicDataFetcherParent.css" // plasmic-import: iUkwSJQ7glxH/css
   
+
+
 
 
 
@@ -3099,8 +3110,6 @@ export type PlasmicDataFetcherParent__OverridesType = {
       
       
   }
-
-
 
 
 
@@ -3156,12 +3165,15 @@ const $$ = {};
     
 
     
+
+    
     
     
     
 
     
 
+    
     
 
     
@@ -3433,6 +3445,7 @@ import {
 
 
 
+
 import { _useGlobalVariants } from "./plasmic.tsx"; // plasmic-import: 1234567890/projectModule
 import { _useStyleTokens } from "./PlasmicStyleTokensProvider.tsx"; // plasmic-import: 1234567890/styleTokensProvider
 
@@ -3442,6 +3455,8 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider.tsx"; // plasmic-i
     import  "./plasmic.css"; // plasmic-import: 1234567890/projectcss
     import  "./PlasmicHelloWorld.css" // plasmic-import: 3khyLeywU1SP/css
   
+
+
 
 
 
@@ -3478,8 +3493,6 @@ text?: Flex__<"div">;
       
       className?: string;
   }
-
-
 
 
 
@@ -3535,12 +3548,15 @@ const $$ = {};
     
 
     
+
+    
     
     
     
 
     
 
+    
     
 
     
@@ -4192,7 +4208,7 @@ function PlasmicModalDialog__RenderFunc(props) {
                 type: "private",
                 variableType: "boolean",
                 initFunc: function (_a) {
-                    var $props = _a.$props, $state = _a.$state, $queries = _a.$queries, $ctx = _a.$ctx;
+                    var $props = _a.$props, $state = _a.$state, $queries = _a.$queries, $q = _a.$q, $ctx = _a.$ctx;
                     return (true);
                 },
                 refName: "ariaModal",
@@ -4201,12 +4217,12 @@ function PlasmicModalDialog__RenderFunc(props) {
                 type: "private",
                 variableType: "variant",
                 initFunc: function (_a) {
-                    var $props = _a.$props, $state = _a.$state, $queries = _a.$queries, $ctx = _a.$ctx;
+                    var $props = _a.$props, $state = _a.$state, $queries = _a.$queries, $q = _a.$q, $ctx = _a.$ctx;
                     return ($props.noTrigger);
                 },
             }]);
     }, [$props, $ctx, $refs]);
-    var $state = useDollarState(stateSpecs, { $props: $props, $ctx: $ctx, $queries: {}, $refs: $refs });
+    var $state = useDollarState(stateSpecs, { $props: $props, $ctx: $ctx, $queries: {}, $q: {}, $refs: $refs });
     var styleTokensClassNames = _useStyleTokens();
     return (createPlasmicElementProxy(BaseDialogTrigger, { "data-plasmic-name": "ariaDialogTrigger", "data-plasmic-override": overrides.ariaDialogTrigger, "data-plasmic-root": true, "data-plasmic-for-node": forNode, dialog: createPlasmicElementProxy(BaseModal, { "data-plasmic-name": "ariaModal", "data-plasmic-override": overrides.ariaModal, className: classNames("__wab_instance", "ModalDialog__ariaModal__eaRon", { "ModalDialog__ariaModalnoTrigger__eaRoneQ53M": hasVariant($state, "noTrigger", "noTrigger") }), defaultOpen: true, isDismissable: args.closeOnBackdropClick, isKeyboardDismissDisabled: args.isKeyboardDismissDisabled, isOpen: generateStateValueProp($state, ["ariaModal", "isOpen"]), modalOverlayClass: classNames({ "pcls_QFOecPzS37aO": true }), onOpenChange: function () {
                 var eventArgs = [];
@@ -4393,6 +4409,7 @@ import {
 
 
 
+
 import { BaseDialogTrigger } from "@plasmicpkgs/react-aria/skinny/registerDialogTrigger";
 import Button from "./Button";  // plasmic-import: D557GwRUy2HJ/component
 import { BaseModal } from "@plasmicpkgs/react-aria/skinny/registerModal";
@@ -4408,6 +4425,8 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider.tsx"; // plasmic-i
   
 import CircleIcon from "./PlasmicIcon__Circle";  // plasmic-import: 4hS9BR4cg9TV/icon
 import ChevronDownIcon from "./PlasmicIcon__ChevronDown";  // plasmic-import: lZo9OmVojh_m/icon
+
+
 
 
 
@@ -4471,8 +4490,6 @@ scrollableContent?: Flex__<"div">;
 
 
 
-
-
 const $$ = {};
 
 
@@ -4525,6 +4542,8 @@ const $$ = {};
     
 
     
+
+    
     const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(() =>
           ([{
       path: "ariaDialogTrigger.isOpen",
@@ -4539,7 +4558,7 @@ const $$ = {};
       path: "ariaModal.isOpen",
       type: "private",
       variableType: "boolean",
-      initFunc: ({$props, $state, $queries, $ctx}) => (true),
+      initFunc: ({$props, $state, $queries, $q, $ctx}) => (true),
       
       
       refName: "ariaModal",
@@ -4548,19 +4567,20 @@ const $$ = {};
       path: "noTrigger",
       type: "private",
       variableType: "variant",
-      initFunc: ({$props, $state, $queries, $ctx}) => ( $props.noTrigger),
+      initFunc: ({$props, $state, $queries, $q, $ctx}) => ( $props.noTrigger),
       
       
       
       
     }])
         , [$props, $ctx, $refs]);
-        const $state = useDollarState(stateSpecs, {$props, $ctx, $queries: {}, $refs});
+        const $state = useDollarState(stateSpecs, {$props, $ctx, $queries: {}, $q: {}, $refs});
     
     
 
     
 
+    
     
 
     
@@ -5051,6 +5071,7 @@ import {
 
 
 
+
 import { BaseOverlayArrow } from "@plasmicpkgs/react-aria/skinny/registerOverlayArrow";
 import { _useGlobalVariants } from "./plasmic.tsx"; // plasmic-import: 1234567890/projectModule
 import { _useStyleTokens } from "./PlasmicStyleTokensProvider.tsx"; // plasmic-import: 1234567890/styleTokensProvider
@@ -5061,6 +5082,8 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider.tsx"; // plasmic-i
     import  "./plasmic.css"; // plasmic-import: 1234567890/projectcss
     import  "./PlasmicMyOverlayArrow.css" // plasmic-import: N_LiHbyjn30l/css
   
+
+
 
 
 
@@ -5097,8 +5120,6 @@ freeBox?: Flex__<"div">;
       
       className?: string;
   }
-
-
 
 
 
@@ -5154,12 +5175,15 @@ const $$ = {};
     
 
     
+
+    
     
     
     
 
     
 
+    
     
 
     
@@ -5493,6 +5517,27 @@ import "@plasmicapp/react-web/lib/plasmic.css";
 import "./plasmic__default_style.css"; // plasmic-import: global/defaultcss
 import "./plasmic.css"; // plasmic-import: 1234567890/projectcss
 import "./PlasmicNewPage.css"; // plasmic-import: TNdRzGmxrYew/css
+var emptyProxy = new Proxy(function () { return ""; }, {
+    get: function (_, prop) {
+        return prop === Symbol.toPrimitive ? function () { return ""; } : emptyProxy;
+    },
+});
+function wrapQueriesWithLoadingProxy($q) {
+    return new Proxy($q, {
+        get: function (target, queryName) {
+            var query = target[queryName];
+            return !query || query.isLoading || !query.data ? emptyProxy : query;
+        },
+    });
+}
+export function generateDynamicMetadata($q, $ctx) {
+    return {
+        openGraph: {},
+        twitter: {
+            card: "summary",
+        },
+    };
+}
 createPlasmicElementProxy;
 export var PlasmicNewPage__VariantProps = new Array();
 export var PlasmicNewPage__ArgProps = new Array();
@@ -5514,7 +5559,7 @@ function PlasmicNewPage__RenderFunc(props) {
                 type: "private",
                 variableType: "boolean",
                 initFunc: function (_a) {
-                    var $props = _a.$props, $state = _a.$state, $queries = _a.$queries, $ctx = _a.$ctx;
+                    var $props = _a.$props, $state = _a.$state, $queries = _a.$queries, $q = _a.$q, $ctx = _a.$ctx;
                     return (undefined);
                 },
             }, {
@@ -5522,12 +5567,12 @@ function PlasmicNewPage__RenderFunc(props) {
                 type: "private",
                 variableType: "boolean",
                 initFunc: function (_a) {
-                    var $props = _a.$props, $state = _a.$state, $queries = _a.$queries, $ctx = _a.$ctx;
+                    var $props = _a.$props, $state = _a.$state, $queries = _a.$queries, $q = _a.$q, $ctx = _a.$ctx;
                     return (undefined);
                 },
             }]);
     }, [$props, $ctx, $refs]);
-    var $state = useDollarState(stateSpecs, { $props: $props, $ctx: $ctx, $queries: {}, $refs: $refs });
+    var $state = useDollarState(stateSpecs, { $props: $props, $ctx: $ctx, $queries: {}, $q: {}, $refs: $refs });
     var styleTokensClassNames = _useStyleTokens();
     return (createPlasmicElementProxy(React.Fragment, null,
         createPlasmicElementProxy("div", { className: "plasmic_page_wrapper" },
@@ -5611,13 +5656,7 @@ makeNodeComponent("root"), {
     // Metadata about props expected for PlasmicNewPage
     internalVariantProps: PlasmicNewPage__VariantProps,
     internalArgProps: PlasmicNewPage__ArgProps,
-    // Page metadata
-    pageMetadata: {
-        "title": "",
-        "description": "",
-        "ogImageSrc": "",
-        "canonical": ""
-    },
+    pageMetadata: generateDynamicMetadata(wrapQueriesWithLoadingProxy({}), { pagePath: "/new-page", searchParams: {}, params: {} })
 });
 export default PlasmicNewPage;
 /* prettier-ignore-end */
@@ -5692,6 +5731,7 @@ import {
 
 
 
+
 import PopoverDialog from "./PopoverDialog";  // plasmic-import: 5gJnBNi_9h0B/component
 import Button from "./Button";  // plasmic-import: D557GwRUy2HJ/component
 import Tooltip from "./Tooltip";  // plasmic-import: pI05-1YiCa_b/component
@@ -5713,6 +5753,41 @@ import ChevronDownIcon from "./PlasmicIcon__ChevronDown";  // plasmic-import: lZ
 
 
 
+
+const emptyProxy: any = new Proxy(() => "", {
+  get(_, prop) {
+    return prop === Symbol.toPrimitive ? () => "" : emptyProxy;
+  },
+});
+
+function wrapQueriesWithLoadingProxy($q: any): any {
+  return new Proxy($q, {
+    get(target, queryName) {
+      const query = target[queryName];
+      return !query || query.isLoading || !query.data ? emptyProxy : query;
+    },
+  });
+}
+
+
+export function generateDynamicMetadata($q: any, $ctx: any) {
+  return {
+    
+    
+    openGraph: {
+      
+      
+      
+    },
+    twitter: {
+      card: "summary",
+      
+      
+      
+    },
+    
+  };
+}
 
 
 createPlasmicElementProxy
@@ -5751,8 +5826,6 @@ helloWorld?: Flex__<typeof HelloWorld>;
       
       className?: string;
   }
-
-
 
 
 
@@ -5808,12 +5881,14 @@ const $$ = {};
     
 
     
+
+    
     const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(() =>
           ([{
       path: "popoverDialog.isOpen",
       type: "private",
       variableType: "boolean",
-      initFunc: ({$props, $state, $queries, $ctx}) => (undefined),
+      initFunc: ({$props, $state, $queries, $q, $ctx}) => (undefined),
       
       
       
@@ -5822,19 +5897,20 @@ const $$ = {};
       path: "modalDialog.isOpen",
       type: "private",
       variableType: "boolean",
-      initFunc: ({$props, $state, $queries, $ctx}) => (undefined),
+      initFunc: ({$props, $state, $queries, $q, $ctx}) => (undefined),
       
       
       
       
     }])
         , [$props, $ctx, $refs]);
-        const $state = useDollarState(stateSpecs, {$props, $ctx, $queries: {}, $refs});
+        const $state = useDollarState(stateSpecs, {$props, $ctx, $queries: {}, $q: {}, $refs});
     
     
 
     
 
+    
     
 
     
@@ -6049,13 +6125,10 @@ helloWorld: makeNodeComponent("helloWorld"),
         
 
         
-    // Page metadata
-    pageMetadata: {
-  "title": "",
-  "description": "",
-  "ogImageSrc": "",
-  "canonical": ""
-},
+    pageMetadata: generateDynamicMetadata(
+      wrapQueriesWithLoadingProxy({}),
+      { pagePath: "/new-page", searchParams: {}, params: {} }
+    )
   
       }
     );
@@ -6319,6 +6392,7 @@ import {
 
 
 
+
 import { BasePopover } from "@plasmicpkgs/react-aria/skinny/registerPopover";
 import { _useGlobalVariants } from "./plasmic.tsx"; // plasmic-import: 1234567890/projectModule
 import { _useStyleTokens } from "./PlasmicStyleTokensProvider.tsx"; // plasmic-import: 1234567890/styleTokensProvider
@@ -6330,6 +6404,8 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider.tsx"; // plasmic-i
     import  "./PlasmicPopover.css" // plasmic-import: 6YHxfeslQ2vo/css
   
 import TriangleFilledIcon from "./PlasmicIcon__TriangleFilled";  // plasmic-import: OXFt6YDTVY2b/icon
+
+
 
 
 
@@ -6373,8 +6449,6 @@ svg?: Flex__<"svg">;
 "showArrow"?: boolean
       className?: string;
   }
-
-
 
 
 
@@ -6432,12 +6506,15 @@ const $$ = {};
     
 
     
+
+    
     
     
     
 
     
 
+    
     
 
     
@@ -6755,13 +6832,13 @@ function PlasmicPopoverDialog__RenderFunc(props) {
                 type: "readonly",
                 variableType: "boolean",
                 initFunc: function (_a) {
-                    var $props = _a.$props, $state = _a.$state, $queries = _a.$queries, $ctx = _a.$ctx;
+                    var $props = _a.$props, $state = _a.$state, $queries = _a.$queries, $q = _a.$q, $ctx = _a.$ctx;
                     return (undefined);
                 },
                 onChangeProp: "onOpenChange",
             }]);
     }, [$props, $ctx, $refs]);
-    var $state = useDollarState(stateSpecs, { $props: $props, $ctx: $ctx, $queries: {}, $refs: $refs });
+    var $state = useDollarState(stateSpecs, { $props: $props, $ctx: $ctx, $queries: {}, $q: {}, $refs: $refs });
     var styleTokensClassNames = _useStyleTokens();
     return (createPlasmicElementProxy(BaseDialogTrigger, { "data-plasmic-name": "ariaDialogTrigger", "data-plasmic-override": overrides.ariaDialogTrigger, "data-plasmic-root": true, "data-plasmic-for-node": forNode, dialog: createPlasmicElementProxy(Popover, { "data-plasmic-name": "popover", "data-plasmic-override": overrides.popover, content: renderPlasmicSlot({
                 defaultContents: createPlasmicElementProxy("div", { className: classNames("plasmic_default__all", "plasmic_default__div", "PopoverDialog__freeBox__tC4Ze") },
@@ -6888,6 +6965,7 @@ import {
 
 
 
+
 import { BaseDialogTrigger } from "@plasmicpkgs/react-aria/skinny/registerDialogTrigger";
 import Button from "./Button";  // plasmic-import: D557GwRUy2HJ/component
 import Popover from "./Popover";  // plasmic-import: 6YHxfeslQ2vo/component
@@ -6902,6 +6980,8 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider.tsx"; // plasmic-i
   
 import CircleIcon from "./PlasmicIcon__Circle";  // plasmic-import: 4hS9BR4cg9TV/icon
 import ChevronDownIcon from "./PlasmicIcon__ChevronDown";  // plasmic-import: lZo9OmVojh_m/icon
+
+
 
 
 
@@ -6949,8 +7029,6 @@ popover?: Flex__<typeof Popover>;
 "content"?: React.ReactNode
       
   }
-
-
 
 
 
@@ -7008,24 +7086,27 @@ const $$ = {};
     
 
     
+
+    
     const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(() =>
           ([{
       path: "ariaDialogTrigger.isOpen",
       type: "readonly",
       variableType: "boolean",
-      initFunc: ({$props, $state, $queries, $ctx}) => (undefined),
+      initFunc: ({$props, $state, $queries, $q, $ctx}) => (undefined),
       
       onChangeProp: "onOpenChange",
       
       
     }])
         , [$props, $ctx, $refs]);
-        const $state = useDollarState(stateSpecs, {$props, $ctx, $queries: {}, $refs});
+        const $state = useDollarState(stateSpecs, {$props, $ctx, $queries: {}, $q: {}, $refs});
     
     
 
     
 
+    
     
 
     
@@ -7404,12 +7485,12 @@ function PlasmicTooltip__RenderFunc(props) {
                 type: "private",
                 variableType: "boolean",
                 initFunc: function (_a) {
-                    var $props = _a.$props, $state = _a.$state, $queries = _a.$queries, $ctx = _a.$ctx;
+                    var $props = _a.$props, $state = _a.$state, $queries = _a.$queries, $q = _a.$q, $ctx = _a.$ctx;
                     return (undefined);
                 },
             }]);
     }, [$props, $ctx, $refs]);
-    var $state = useDollarState(stateSpecs, { $props: $props, $ctx: $ctx, $queries: {}, $refs: $refs });
+    var $state = useDollarState(stateSpecs, { $props: $props, $ctx: $ctx, $queries: {}, $q: {}, $refs: $refs });
     var styleTokensClassNames = _useStyleTokens();
     var _a = React.useState({
         placementTop: false,
@@ -7565,6 +7646,7 @@ import {
 
 
 
+
 import { BaseTooltip } from "@plasmicpkgs/react-aria/skinny/registerTooltip";
 import { _useGlobalVariants } from "./plasmic.tsx"; // plasmic-import: 1234567890/projectModule
 import { _useStyleTokens } from "./PlasmicStyleTokensProvider.tsx"; // plasmic-import: 1234567890/styleTokensProvider
@@ -7576,6 +7658,8 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider.tsx"; // plasmic-i
     import  "./PlasmicTooltip.css" // plasmic-import: pI05-1YiCa_b/css
   
 import TriangleInvertedFilledIcon from "./PlasmicIcon__TriangleInvertedFilled";  // plasmic-import: fCmbgRnChaU7/icon
+
+
 
 
 
@@ -7623,8 +7707,6 @@ svg?: Flex__<"svg">;
 "showArrow"?: boolean
       className?: string;
   }
-
-
 
 
 
@@ -7683,24 +7765,27 @@ const $$ = {};
     
 
     
+
+    
     const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(() =>
           ([{
       path: "ariaTooltip.isOpen",
       type: "private",
       variableType: "boolean",
-      initFunc: ({$props, $state, $queries, $ctx}) => (undefined),
+      initFunc: ({$props, $state, $queries, $q, $ctx}) => (undefined),
       
       
       
       
     }])
         , [$props, $ctx, $refs]);
-        const $state = useDollarState(stateSpecs, {$props, $ctx, $queries: {}, $refs});
+        const $state = useDollarState(stateSpecs, {$props, $ctx, $queries: {}, $q: {}, $refs});
     
     
 
     
 
+    
     
 
     
@@ -9337,7 +9422,7 @@ function PlasmicButton__RenderFunc(props) {
                 type: "private",
                 variableType: "variant",
                 initFunc: function (_a) {
-                    var $props = _a.$props, $state = _a.$state, $queries = _a.$queries, $ctx = _a.$ctx;
+                    var $props = _a.$props, $state = _a.$state, $queries = _a.$queries, $q = _a.$q, $ctx = _a.$ctx;
                     return ($props.color);
                 },
             }, {
@@ -9345,7 +9430,7 @@ function PlasmicButton__RenderFunc(props) {
                 type: "private",
                 variableType: "variant",
                 initFunc: function (_a) {
-                    var $props = _a.$props, $state = _a.$state, $queries = _a.$queries, $ctx = _a.$ctx;
+                    var $props = _a.$props, $state = _a.$state, $queries = _a.$queries, $q = _a.$q, $ctx = _a.$ctx;
                     return ($props.size);
                 },
             }, {
@@ -9353,7 +9438,7 @@ function PlasmicButton__RenderFunc(props) {
                 type: "private",
                 variableType: "variant",
                 initFunc: function (_a) {
-                    var $props = _a.$props, $state = _a.$state, $queries = _a.$queries, $ctx = _a.$ctx;
+                    var $props = _a.$props, $state = _a.$state, $queries = _a.$queries, $q = _a.$q, $ctx = _a.$ctx;
                     return ($props.iconStart);
                 },
             }, {
@@ -9361,7 +9446,7 @@ function PlasmicButton__RenderFunc(props) {
                 type: "private",
                 variableType: "variant",
                 initFunc: function (_a) {
-                    var $props = _a.$props, $state = _a.$state, $queries = _a.$queries, $ctx = _a.$ctx;
+                    var $props = _a.$props, $state = _a.$state, $queries = _a.$queries, $q = _a.$q, $ctx = _a.$ctx;
                     return ($props.iconEnd);
                 },
             }, {
@@ -9369,7 +9454,7 @@ function PlasmicButton__RenderFunc(props) {
                 type: "private",
                 variableType: "variant",
                 initFunc: function (_a) {
-                    var $props = _a.$props, $state = _a.$state, $queries = _a.$queries, $ctx = _a.$ctx;
+                    var $props = _a.$props, $state = _a.$state, $queries = _a.$queries, $q = _a.$q, $ctx = _a.$ctx;
                     return ($props.roundedFull);
                 },
             }, {
@@ -9377,7 +9462,7 @@ function PlasmicButton__RenderFunc(props) {
                 type: "private",
                 variableType: "variant",
                 initFunc: function (_a) {
-                    var $props = _a.$props, $state = _a.$state, $queries = _a.$queries, $ctx = _a.$ctx;
+                    var $props = _a.$props, $state = _a.$state, $queries = _a.$queries, $q = _a.$q, $ctx = _a.$ctx;
                     return ($props.type);
                 },
             }, {
@@ -9385,12 +9470,12 @@ function PlasmicButton__RenderFunc(props) {
                 type: "private",
                 variableType: "variant",
                 initFunc: function (_a) {
-                    var $props = _a.$props, $state = _a.$state, $queries = _a.$queries, $ctx = _a.$ctx;
+                    var $props = _a.$props, $state = _a.$state, $queries = _a.$queries, $q = _a.$q, $ctx = _a.$ctx;
                     return ($props.flatSide);
                 },
             }]);
     }, [$props, $ctx, $refs]);
-    var $state = useDollarState(stateSpecs, { $props: $props, $ctx: $ctx, $queries: {}, $refs: $refs });
+    var $state = useDollarState(stateSpecs, { $props: $props, $ctx: $ctx, $queries: {}, $q: {}, $refs: $refs });
     var styleTokensClassNames = _useStyleTokens();
     var _l = React.useState({
         hovered: false,
@@ -9976,6 +10061,7 @@ import {
 
 
 
+
 import { BaseButton } from "@plasmicpkgs/react-aria/skinny/registerButton";
 import { _useGlobalVariants } from "./plasmic.tsx"; // plasmic-import: 1234567890/projectModule
 import { _useStyleTokens } from "./PlasmicStyleTokensProvider.tsx"; // plasmic-import: 1234567890/styleTokensProvider
@@ -9988,6 +10074,8 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider.tsx"; // plasmic-i
   
 import CircleIcon from "./PlasmicIcon__Circle";  // plasmic-import: 4hS9BR4cg9TV/icon
 import ChevronDownIcon from "./PlasmicIcon__ChevronDown";  // plasmic-import: lZo9OmVojh_m/icon
+
+
 
 
 
@@ -10065,8 +10153,6 @@ interactionEffect?: Flex__<"div">;
 
 
 
-
-
 const $$ = {};
 
 
@@ -10117,12 +10203,14 @@ const $$ = {};
     
 
     
+
+    
     const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(() =>
           ([{
       path: "color",
       type: "private",
       variableType: "variant",
-      initFunc: ({$props, $state, $queries, $ctx}) => ( $props.color),
+      initFunc: ({$props, $state, $queries, $q, $ctx}) => ( $props.color),
       
       
       
@@ -10131,7 +10219,7 @@ const $$ = {};
       path: "size",
       type: "private",
       variableType: "variant",
-      initFunc: ({$props, $state, $queries, $ctx}) => ( $props.size),
+      initFunc: ({$props, $state, $queries, $q, $ctx}) => ( $props.size),
       
       
       
@@ -10140,7 +10228,7 @@ const $$ = {};
       path: "iconStart",
       type: "private",
       variableType: "variant",
-      initFunc: ({$props, $state, $queries, $ctx}) => ( $props.iconStart),
+      initFunc: ({$props, $state, $queries, $q, $ctx}) => ( $props.iconStart),
       
       
       
@@ -10149,7 +10237,7 @@ const $$ = {};
       path: "iconEnd",
       type: "private",
       variableType: "variant",
-      initFunc: ({$props, $state, $queries, $ctx}) => ( $props.iconEnd),
+      initFunc: ({$props, $state, $queries, $q, $ctx}) => ( $props.iconEnd),
       
       
       
@@ -10158,7 +10246,7 @@ const $$ = {};
       path: "roundedFull",
       type: "private",
       variableType: "variant",
-      initFunc: ({$props, $state, $queries, $ctx}) => ( $props.roundedFull),
+      initFunc: ({$props, $state, $queries, $q, $ctx}) => ( $props.roundedFull),
       
       
       
@@ -10167,7 +10255,7 @@ const $$ = {};
       path: "type",
       type: "private",
       variableType: "variant",
-      initFunc: ({$props, $state, $queries, $ctx}) => ( $props.type),
+      initFunc: ({$props, $state, $queries, $q, $ctx}) => ( $props.type),
       
       
       
@@ -10176,19 +10264,20 @@ const $$ = {};
       path: "flatSide",
       type: "private",
       variableType: "variant",
-      initFunc: ({$props, $state, $queries, $ctx}) => ( $props.flatSide),
+      initFunc: ({$props, $state, $queries, $q, $ctx}) => ( $props.flatSide),
       
       
       
       
     }])
         , [$props, $ctx, $refs]);
-        const $state = useDollarState(stateSpecs, {$props, $ctx, $queries: {}, $refs});
+        const $state = useDollarState(stateSpecs, {$props, $ctx, $queries: {}, $q: {}, $refs});
     
     
 
     
 
+    
     
 
     
@@ -11356,6 +11445,7 @@ import {
 
 
 
+
 import DataFetcherParent from "./DataFetcherParent";  // plasmic-import: iUkwSJQ7glxH/component
 import { _useGlobalVariants } from "./plasmic.tsx"; // plasmic-import: 1234567890/projectModule
 import { _useStyleTokens } from "./PlasmicStyleTokensProvider.tsx"; // plasmic-import: 1234567890/styleTokensProvider
@@ -11366,6 +11456,8 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider.tsx"; // plasmic-i
     import projectcss from "./plasmic.module.css"; // plasmic-import: 1234567890/projectcss
     import sty from "./PlasmicDataFetcherGrandParent.module.css" // plasmic-import: mmv9XMNdJbUm/css
   
+
+
 
 
 
@@ -11401,8 +11493,6 @@ export type PlasmicDataFetcherGrandParent__OverridesType = {
       
       
   }
-
-
 
 
 
@@ -11458,12 +11548,15 @@ const $$ = {};
     
 
     
+
+    
     
     
     
 
     
 
+    
     
 
     
@@ -11717,6 +11810,7 @@ import {
 
 
 
+
 import { Fetcher } from "@plasmicapp/react-web/lib/data-sources";
 import { _useGlobalVariants } from "./plasmic.tsx"; // plasmic-import: 1234567890/projectModule
 import { _useStyleTokens } from "./PlasmicStyleTokensProvider.tsx"; // plasmic-import: 1234567890/styleTokensProvider
@@ -11727,6 +11821,8 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider.tsx"; // plasmic-i
     import projectcss from "./plasmic.module.css"; // plasmic-import: 1234567890/projectcss
     import sty from "./PlasmicDataFetcherParent.module.css" // plasmic-import: iUkwSJQ7glxH/css
   
+
+
 
 
 
@@ -11762,8 +11858,6 @@ export type PlasmicDataFetcherParent__OverridesType = {
       
       
   }
-
-
 
 
 
@@ -11819,12 +11913,15 @@ const $$ = {};
     
 
     
+
+    
     
     
     
 
     
 
+    
     
 
     
@@ -12095,6 +12192,7 @@ import {
 
 
 
+
 import { _useGlobalVariants } from "./plasmic.tsx"; // plasmic-import: 1234567890/projectModule
 import { _useStyleTokens } from "./PlasmicStyleTokensProvider.tsx"; // plasmic-import: 1234567890/styleTokensProvider
 
@@ -12104,6 +12202,8 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider.tsx"; // plasmic-i
     import projectcss from "./plasmic.module.css"; // plasmic-import: 1234567890/projectcss
     import sty from "./PlasmicHelloWorld.module.css" // plasmic-import: 3khyLeywU1SP/css
   
+
+
 
 
 
@@ -12140,8 +12240,6 @@ text?: Flex__<"div">;
       
       className?: string;
   }
-
-
 
 
 
@@ -12197,12 +12295,15 @@ const $$ = {};
     
 
     
+
+    
     
     
     
 
     
 
+    
     
 
     
@@ -12745,7 +12846,7 @@ function PlasmicModalDialog__RenderFunc(props) {
                 type: "private",
                 variableType: "boolean",
                 initFunc: function (_a) {
-                    var $props = _a.$props, $state = _a.$state, $queries = _a.$queries, $ctx = _a.$ctx;
+                    var $props = _a.$props, $state = _a.$state, $queries = _a.$queries, $q = _a.$q, $ctx = _a.$ctx;
                     return (true);
                 },
                 refName: "ariaModal",
@@ -12754,12 +12855,12 @@ function PlasmicModalDialog__RenderFunc(props) {
                 type: "private",
                 variableType: "variant",
                 initFunc: function (_a) {
-                    var $props = _a.$props, $state = _a.$state, $queries = _a.$queries, $ctx = _a.$ctx;
+                    var $props = _a.$props, $state = _a.$state, $queries = _a.$queries, $q = _a.$q, $ctx = _a.$ctx;
                     return ($props.noTrigger);
                 },
             }]);
     }, [$props, $ctx, $refs]);
-    var $state = useDollarState(stateSpecs, { $props: $props, $ctx: $ctx, $queries: {}, $refs: $refs });
+    var $state = useDollarState(stateSpecs, { $props: $props, $ctx: $ctx, $queries: {}, $q: {}, $refs: $refs });
     var styleTokensClassNames = _useStyleTokens();
     return (createPlasmicElementProxy(BaseDialogTrigger, { "data-plasmic-name": "ariaDialogTrigger", "data-plasmic-override": overrides.ariaDialogTrigger, "data-plasmic-root": true, "data-plasmic-for-node": forNode, dialog: createPlasmicElementProxy(BaseModal, { "data-plasmic-name": "ariaModal", "data-plasmic-override": overrides.ariaModal, className: classNames("__wab_instance", sty.ariaModal, (_a = {}, _a[sty.ariaModalnoTrigger] = hasVariant($state, "noTrigger", "noTrigger"), _a)), defaultOpen: true, isDismissable: args.closeOnBackdropClick, isKeyboardDismissDisabled: args.isKeyboardDismissDisabled, isOpen: generateStateValueProp($state, ["ariaModal", "isOpen"]), modalOverlayClass: classNames((_b = {}, _b[sty["pcls_QFOecPzS37aO"]] = true, _b)), onOpenChange: function () {
                 var eventArgs = [];
@@ -13055,6 +13156,7 @@ import {
 
 
 
+
 import { BaseDialogTrigger } from "@plasmicpkgs/react-aria/skinny/registerDialogTrigger";
 import Button from "./Button";  // plasmic-import: D557GwRUy2HJ/component
 import { BaseModal } from "@plasmicpkgs/react-aria/skinny/registerModal";
@@ -13070,6 +13172,8 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider.tsx"; // plasmic-i
   
 import CircleIcon from "./PlasmicIcon__Circle";  // plasmic-import: 4hS9BR4cg9TV/icon
 import ChevronDownIcon from "./PlasmicIcon__ChevronDown";  // plasmic-import: lZo9OmVojh_m/icon
+
+
 
 
 
@@ -13133,8 +13237,6 @@ scrollableContent?: Flex__<"div">;
 
 
 
-
-
 const $$ = {};
 
 
@@ -13187,6 +13289,8 @@ const $$ = {};
     
 
     
+
+    
     const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(() =>
           ([{
       path: "ariaDialogTrigger.isOpen",
@@ -13201,7 +13305,7 @@ const $$ = {};
       path: "ariaModal.isOpen",
       type: "private",
       variableType: "boolean",
-      initFunc: ({$props, $state, $queries, $ctx}) => (true),
+      initFunc: ({$props, $state, $queries, $q, $ctx}) => (true),
       
       
       refName: "ariaModal",
@@ -13210,19 +13314,20 @@ const $$ = {};
       path: "noTrigger",
       type: "private",
       variableType: "variant",
-      initFunc: ({$props, $state, $queries, $ctx}) => ( $props.noTrigger),
+      initFunc: ({$props, $state, $queries, $q, $ctx}) => ( $props.noTrigger),
       
       
       
       
     }])
         , [$props, $ctx, $refs]);
-        const $state = useDollarState(stateSpecs, {$props, $ctx, $queries: {}, $refs});
+        const $state = useDollarState(stateSpecs, {$props, $ctx, $queries: {}, $q: {}, $refs});
     
     
 
     
 
+    
     
 
     
@@ -13712,6 +13817,7 @@ import {
 
 
 
+
 import { BaseOverlayArrow } from "@plasmicpkgs/react-aria/skinny/registerOverlayArrow";
 import { _useGlobalVariants } from "./plasmic.tsx"; // plasmic-import: 1234567890/projectModule
 import { _useStyleTokens } from "./PlasmicStyleTokensProvider.tsx"; // plasmic-import: 1234567890/styleTokensProvider
@@ -13722,6 +13828,8 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider.tsx"; // plasmic-i
     import projectcss from "./plasmic.module.css"; // plasmic-import: 1234567890/projectcss
     import sty from "./PlasmicMyOverlayArrow.module.css" // plasmic-import: N_LiHbyjn30l/css
   
+
+
 
 
 
@@ -13758,8 +13866,6 @@ freeBox?: Flex__<"div">;
       
       className?: string;
   }
-
-
 
 
 
@@ -13815,12 +13921,15 @@ const $$ = {};
     
 
     
+
+    
     
     
     
 
     
 
+    
     
 
     
@@ -14019,6 +14128,27 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider.tsx"; // plasmic-i
 import "@plasmicapp/react-web/lib/plasmic.css";
 import projectcss from "./plasmic.module.css"; // plasmic-import: 1234567890/projectcss
 import sty from "./PlasmicNewPage.module.css"; // plasmic-import: TNdRzGmxrYew/css
+var emptyProxy = new Proxy(function () { return ""; }, {
+    get: function (_, prop) {
+        return prop === Symbol.toPrimitive ? function () { return ""; } : emptyProxy;
+    },
+});
+function wrapQueriesWithLoadingProxy($q) {
+    return new Proxy($q, {
+        get: function (target, queryName) {
+            var query = target[queryName];
+            return !query || query.isLoading || !query.data ? emptyProxy : query;
+        },
+    });
+}
+export function generateDynamicMetadata($q, $ctx) {
+    return {
+        openGraph: {},
+        twitter: {
+            card: "summary",
+        },
+    };
+}
 createPlasmicElementProxy;
 export var PlasmicNewPage__VariantProps = new Array();
 export var PlasmicNewPage__ArgProps = new Array();
@@ -14040,7 +14170,7 @@ function PlasmicNewPage__RenderFunc(props) {
                 type: "private",
                 variableType: "boolean",
                 initFunc: function (_a) {
-                    var $props = _a.$props, $state = _a.$state, $queries = _a.$queries, $ctx = _a.$ctx;
+                    var $props = _a.$props, $state = _a.$state, $queries = _a.$queries, $q = _a.$q, $ctx = _a.$ctx;
                     return (undefined);
                 },
             }, {
@@ -14048,12 +14178,12 @@ function PlasmicNewPage__RenderFunc(props) {
                 type: "private",
                 variableType: "boolean",
                 initFunc: function (_a) {
-                    var $props = _a.$props, $state = _a.$state, $queries = _a.$queries, $ctx = _a.$ctx;
+                    var $props = _a.$props, $state = _a.$state, $queries = _a.$queries, $q = _a.$q, $ctx = _a.$ctx;
                     return (undefined);
                 },
             }]);
     }, [$props, $ctx, $refs]);
-    var $state = useDollarState(stateSpecs, { $props: $props, $ctx: $ctx, $queries: {}, $refs: $refs });
+    var $state = useDollarState(stateSpecs, { $props: $props, $ctx: $ctx, $queries: {}, $q: {}, $refs: $refs });
     var styleTokensClassNames = _useStyleTokens();
     return (createPlasmicElementProxy(React.Fragment, null,
         createPlasmicElementProxy("div", { className: projectcss.plasmic_page_wrapper },
@@ -14137,13 +14267,7 @@ makeNodeComponent("root"), {
     // Metadata about props expected for PlasmicNewPage
     internalVariantProps: PlasmicNewPage__VariantProps,
     internalArgProps: PlasmicNewPage__ArgProps,
-    // Page metadata
-    pageMetadata: {
-        "title": "",
-        "description": "",
-        "ogImageSrc": "",
-        "canonical": ""
-    },
+    pageMetadata: generateDynamicMetadata(wrapQueriesWithLoadingProxy({}), { pagePath: "/new-page", searchParams: {}, params: {} })
 });
 export default PlasmicNewPage;
 /* prettier-ignore-end */
@@ -14352,6 +14476,7 @@ import {
 
 
 
+
 import PopoverDialog from "./PopoverDialog";  // plasmic-import: 5gJnBNi_9h0B/component
 import Button from "./Button";  // plasmic-import: D557GwRUy2HJ/component
 import Tooltip from "./Tooltip";  // plasmic-import: pI05-1YiCa_b/component
@@ -14373,6 +14498,41 @@ import ChevronDownIcon from "./PlasmicIcon__ChevronDown";  // plasmic-import: lZ
 
 
 
+
+const emptyProxy: any = new Proxy(() => "", {
+  get(_, prop) {
+    return prop === Symbol.toPrimitive ? () => "" : emptyProxy;
+  },
+});
+
+function wrapQueriesWithLoadingProxy($q: any): any {
+  return new Proxy($q, {
+    get(target, queryName) {
+      const query = target[queryName];
+      return !query || query.isLoading || !query.data ? emptyProxy : query;
+    },
+  });
+}
+
+
+export function generateDynamicMetadata($q: any, $ctx: any) {
+  return {
+    
+    
+    openGraph: {
+      
+      
+      
+    },
+    twitter: {
+      card: "summary",
+      
+      
+      
+    },
+    
+  };
+}
 
 
 createPlasmicElementProxy
@@ -14411,8 +14571,6 @@ helloWorld?: Flex__<typeof HelloWorld>;
       
       className?: string;
   }
-
-
 
 
 
@@ -14468,12 +14626,14 @@ const $$ = {};
     
 
     
+
+    
     const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(() =>
           ([{
       path: "popoverDialog.isOpen",
       type: "private",
       variableType: "boolean",
-      initFunc: ({$props, $state, $queries, $ctx}) => (undefined),
+      initFunc: ({$props, $state, $queries, $q, $ctx}) => (undefined),
       
       
       
@@ -14482,19 +14642,20 @@ const $$ = {};
       path: "modalDialog.isOpen",
       type: "private",
       variableType: "boolean",
-      initFunc: ({$props, $state, $queries, $ctx}) => (undefined),
+      initFunc: ({$props, $state, $queries, $q, $ctx}) => (undefined),
       
       
       
       
     }])
         , [$props, $ctx, $refs]);
-        const $state = useDollarState(stateSpecs, {$props, $ctx, $queries: {}, $refs});
+        const $state = useDollarState(stateSpecs, {$props, $ctx, $queries: {}, $q: {}, $refs});
     
     
 
     
 
+    
     
 
     
@@ -14709,13 +14870,10 @@ helloWorld: makeNodeComponent("helloWorld"),
         
 
         
-    // Page metadata
-    pageMetadata: {
-  "title": "",
-  "description": "",
-  "ogImageSrc": "",
-  "canonical": ""
-},
+    pageMetadata: generateDynamicMetadata(
+      wrapQueriesWithLoadingProxy({}),
+      { pagePath: "/new-page", searchParams: {}, params: {} }
+    )
   
       }
     );
@@ -14978,6 +15136,7 @@ import {
 
 
 
+
 import { BasePopover } from "@plasmicpkgs/react-aria/skinny/registerPopover";
 import { _useGlobalVariants } from "./plasmic.tsx"; // plasmic-import: 1234567890/projectModule
 import { _useStyleTokens } from "./PlasmicStyleTokensProvider.tsx"; // plasmic-import: 1234567890/styleTokensProvider
@@ -14989,6 +15148,8 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider.tsx"; // plasmic-i
     import sty from "./PlasmicPopover.module.css" // plasmic-import: 6YHxfeslQ2vo/css
   
 import TriangleFilledIcon from "./PlasmicIcon__TriangleFilled";  // plasmic-import: OXFt6YDTVY2b/icon
+
+
 
 
 
@@ -15032,8 +15193,6 @@ svg?: Flex__<"svg">;
 "showArrow"?: boolean
       className?: string;
   }
-
-
 
 
 
@@ -15091,12 +15250,15 @@ const $$ = {};
     
 
     
+
+    
     
     
     
 
     
 
+    
     
 
     
@@ -15379,13 +15541,13 @@ function PlasmicPopoverDialog__RenderFunc(props) {
                 type: "readonly",
                 variableType: "boolean",
                 initFunc: function (_a) {
-                    var $props = _a.$props, $state = _a.$state, $queries = _a.$queries, $ctx = _a.$ctx;
+                    var $props = _a.$props, $state = _a.$state, $queries = _a.$queries, $q = _a.$q, $ctx = _a.$ctx;
                     return (undefined);
                 },
                 onChangeProp: "onOpenChange",
             }]);
     }, [$props, $ctx, $refs]);
-    var $state = useDollarState(stateSpecs, { $props: $props, $ctx: $ctx, $queries: {}, $refs: $refs });
+    var $state = useDollarState(stateSpecs, { $props: $props, $ctx: $ctx, $queries: {}, $q: {}, $refs: $refs });
     var styleTokensClassNames = _useStyleTokens();
     return (createPlasmicElementProxy(BaseDialogTrigger, { "data-plasmic-name": "ariaDialogTrigger", "data-plasmic-override": overrides.ariaDialogTrigger, "data-plasmic-root": true, "data-plasmic-for-node": forNode, dialog: createPlasmicElementProxy(Popover, { "data-plasmic-name": "popover", "data-plasmic-override": overrides.popover, content: renderPlasmicSlot({
                 defaultContents: createPlasmicElementProxy("div", { className: classNames(projectcss.all, sty.freeBox__tC4Ze) },
@@ -15546,6 +15708,7 @@ import {
 
 
 
+
 import { BaseDialogTrigger } from "@plasmicpkgs/react-aria/skinny/registerDialogTrigger";
 import Button from "./Button";  // plasmic-import: D557GwRUy2HJ/component
 import Popover from "./Popover";  // plasmic-import: 6YHxfeslQ2vo/component
@@ -15560,6 +15723,8 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider.tsx"; // plasmic-i
   
 import CircleIcon from "./PlasmicIcon__Circle";  // plasmic-import: 4hS9BR4cg9TV/icon
 import ChevronDownIcon from "./PlasmicIcon__ChevronDown";  // plasmic-import: lZo9OmVojh_m/icon
+
+
 
 
 
@@ -15607,8 +15772,6 @@ popover?: Flex__<typeof Popover>;
 "content"?: React.ReactNode
       
   }
-
-
 
 
 
@@ -15666,24 +15829,27 @@ const $$ = {};
     
 
     
+
+    
     const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(() =>
           ([{
       path: "ariaDialogTrigger.isOpen",
       type: "readonly",
       variableType: "boolean",
-      initFunc: ({$props, $state, $queries, $ctx}) => (undefined),
+      initFunc: ({$props, $state, $queries, $q, $ctx}) => (undefined),
       
       onChangeProp: "onOpenChange",
       
       
     }])
         , [$props, $ctx, $refs]);
-        const $state = useDollarState(stateSpecs, {$props, $ctx, $queries: {}, $refs});
+        const $state = useDollarState(stateSpecs, {$props, $ctx, $queries: {}, $q: {}, $refs});
     
     
 
     
 
+    
     
 
     
@@ -15990,12 +16156,12 @@ function PlasmicTooltip__RenderFunc(props) {
                 type: "private",
                 variableType: "boolean",
                 initFunc: function (_a) {
-                    var $props = _a.$props, $state = _a.$state, $queries = _a.$queries, $ctx = _a.$ctx;
+                    var $props = _a.$props, $state = _a.$state, $queries = _a.$queries, $q = _a.$q, $ctx = _a.$ctx;
                     return (undefined);
                 },
             }]);
     }, [$props, $ctx, $refs]);
-    var $state = useDollarState(stateSpecs, { $props: $props, $ctx: $ctx, $queries: {}, $refs: $refs });
+    var $state = useDollarState(stateSpecs, { $props: $props, $ctx: $ctx, $queries: {}, $q: {}, $refs: $refs });
     var styleTokensClassNames = _useStyleTokens();
     var _a = React.useState({
         placementTop: false,
@@ -16223,6 +16389,7 @@ import {
 
 
 
+
 import { BaseTooltip } from "@plasmicpkgs/react-aria/skinny/registerTooltip";
 import { _useGlobalVariants } from "./plasmic.tsx"; // plasmic-import: 1234567890/projectModule
 import { _useStyleTokens } from "./PlasmicStyleTokensProvider.tsx"; // plasmic-import: 1234567890/styleTokensProvider
@@ -16234,6 +16401,8 @@ import { _useStyleTokens } from "./PlasmicStyleTokensProvider.tsx"; // plasmic-i
     import sty from "./PlasmicTooltip.module.css" // plasmic-import: pI05-1YiCa_b/css
   
 import TriangleInvertedFilledIcon from "./PlasmicIcon__TriangleInvertedFilled";  // plasmic-import: fCmbgRnChaU7/icon
+
+
 
 
 
@@ -16281,8 +16450,6 @@ svg?: Flex__<"svg">;
 "showArrow"?: boolean
       className?: string;
   }
-
-
 
 
 
@@ -16341,24 +16508,27 @@ const $$ = {};
     
 
     
+
+    
     const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(() =>
           ([{
       path: "ariaTooltip.isOpen",
       type: "private",
       variableType: "boolean",
-      initFunc: ({$props, $state, $queries, $ctx}) => (undefined),
+      initFunc: ({$props, $state, $queries, $q, $ctx}) => (undefined),
       
       
       
       
     }])
         , [$props, $ctx, $refs]);
-        const $state = useDollarState(stateSpecs, {$props, $ctx, $queries: {}, $refs});
+        const $state = useDollarState(stateSpecs, {$props, $ctx, $queries: {}, $q: {}, $refs});
     
     
 
     
 
+    
     
 
     

@@ -250,10 +250,7 @@ import {
   ${getHostNamedImportsForSkeleton()}
 } from "@plasmicapp/react-web/lib/host";
 ${
-  ctx.usesDataSourceInteraction ||
-  ctx.usesComponentLevelQueries ||
-  ctx.useRSC ||
-  ctx.hasServerQueries
+  ctx.usesDataSourceInteraction || ctx.usesComponentLevelQueries || ctx.useRSC
     ? `import { usePlasmicDataConfig, executePlasmicDataOp, usePlasmicDataOp } from "@plasmicapp/react-web/lib/data-sources";`
     : ""
 }

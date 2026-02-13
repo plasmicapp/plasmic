@@ -1,5 +1,8 @@
 export const _uniq = <T>(xs: Array<T>): T[] => Array.from(new Set(xs));
-export const BASE_URL = "https://cdn.contentful.com";
+export const BASE_URL =
+  (typeof process !== "undefined" &&
+    process.env?.NEXT_PUBLIC_CONTENTFUL_BASE_URL) ||
+  "https://cdn.contentful.com";
 
 export function _ensure<T>(x: T | null | undefined, msg?: string): T {
   if (x === null || x === undefined) {

@@ -145,6 +145,11 @@ export async function uploadProject(
   return { projectId, projectToken, workspaceId };
 }
 
+export async function removeProject(projectId: string) {
+  await apiRequestWithLogin("DELETE", `/projects/${projectId}`);
+  console.log(`Removed project ${projectId}`);
+}
+
 export async function setupCms(fileName: string) {
   const { workspaces } = await apiRequestWithLogin("GET", "/workspaces");
   const workspaceId = workspaces[0].id;

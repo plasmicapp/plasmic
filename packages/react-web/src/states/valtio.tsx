@@ -380,6 +380,7 @@ const envFieldsAreNonNill = (
   $props: env.$props,
   $ctx: env.$ctx ?? {},
   $queries: env.$queries ?? {},
+  $q: env.$q ?? {},
   $refs: env.$refs ?? {},
 });
 
@@ -413,6 +414,7 @@ function extractDollarStateParametersBackwardCompatible(...rest: any[]): {
         $props: rest[0],
         $ctx: rest[1],
         $queries: {},
+        $q: {},
       },
       opts: rest[2],
     };

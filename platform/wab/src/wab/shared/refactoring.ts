@@ -397,7 +397,7 @@ export function renameServerQueryAndFixExprs(
   const newVarName = toVarName(query.name);
   const refs = Tpls.findExprsInComponent(component);
   for (const { expr } of refs) {
-    renameObjectInExpr(expr, "$queries", "$queries", oldVarName, newVarName);
+    renameObjectInExpr(expr, "$q", "$q", oldVarName, newVarName);
   }
 }
 
