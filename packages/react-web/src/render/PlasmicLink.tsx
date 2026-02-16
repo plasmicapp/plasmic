@@ -49,6 +49,7 @@ export const PlasmicLinkInternal = React.forwardRef(
           props.component,
           {
             scroll: !isFragment,
+            legacyBehavior: true,
             ...pick(props, ...nextjsProps),
           },
           <a {...omit(props, ...INTERNAL_PROPS, ...nextjsProps)} ref={ref} />
