@@ -2543,7 +2543,7 @@ export async function requiredPackages(req: Request, res: Response) {
   res.json(requiredPackageVersions);
 }
 
-const _latestCodegenVersion = "0.0.2";
+const _latestCodegenVersion = "0.0.3";
 export async function latestCodegenVersion(req: Request, res: Response) {
   res.json(_latestCodegenVersion);
 }
