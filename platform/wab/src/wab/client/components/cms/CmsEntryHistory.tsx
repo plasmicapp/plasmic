@@ -1,5 +1,7 @@
 import { useUsersMap } from "@/wab/client/api-hooks";
 import { useRRouteMatch } from "@/wab/client/cli-routes";
+import MenuItem from "@/wab/client/components/MenuItem";
+import { renderContentEntryFormFields } from "@/wab/client/components/cms/CmsEntryDetails";
 import {
   useCmsDatabase,
   useCmsRow,
@@ -8,8 +10,6 @@ import {
   useCmsTable,
   useMutateRow,
 } from "@/wab/client/components/cms/cms-contexts";
-import { renderContentEntryFormFields } from "@/wab/client/components/cms/CmsEntryDetails";
-import MenuItem from "@/wab/client/components/MenuItem";
 import { reactConfirm } from "@/wab/client/components/quick-modals";
 import { Spinner } from "@/wab/client/components/widgets";
 import Button from "@/wab/client/components/widgets/Button";
@@ -18,6 +18,7 @@ import { CmsDatabaseId, CmsRowId, CmsTableId } from "@/wab/shared/ApiSchema";
 import { spawn } from "@/wab/shared/common";
 import { APP_ROUTES } from "@/wab/shared/route/app-routes";
 import { fillRoute } from "@/wab/shared/route/route";
+import { formatDateMediumTimeShort } from "@/wab/shared/utils/date-utils";
 import { Form, message } from "antd";
 import React from "react";
 import { Redirect, Route, Switch, useHistory } from "react-router";
@@ -63,7 +64,7 @@ export function CmsEntryHistory(props: {
                     key={revision.id}
                   >
                     <div>
-                      {new Date(revision.createdAt).toLocaleString()}
+                      {formatDateMediumTimeShort(new Date(revision.createdAt))}
                       <div>
                         {revision.isPublished ? (
                           <span style={{ color: "#4b4" }}>Published</span>

@@ -16,12 +16,9 @@ import { getBundle, parseBundle } from "@/wab/shared/bundles";
 import { unbundleProjectDependencyRevision } from "@/wab/shared/core/tagged-unbundle";
 import { ChangeLogEntry, compareSites } from "@/wab/shared/site-diffs";
 import { filterUsefulDiffs } from "@/wab/shared/site-diffs/filter-useful-diffs";
+import { formatDateShortTimeShort } from "@/wab/shared/utils/date-utils";
 import { Alert, Form, Spin, Tooltip } from "antd";
-import moment from "moment";
 import React from "react";
-
-export const getFormattedDate = (data: string | Date) =>
-  moment(data).format("MM/DD/YYYY, h:mm A");
 
 interface ConfirmModalProps {
   title: string;
@@ -205,7 +202,8 @@ export const promptVersionRevert = async (
           description={
             <>
               You are about to revert to version {release.version}, originally
-              published by <UserOnDate user={user} date={release.createdAt} />.
+              published by{" "}
+              <UserOnDate user={user} date={new Date(release.createdAt)} />.
             </>
           }
           diffs={state.value ?? null}
@@ -265,7 +263,11 @@ export const promptRevisionRevert = async (
           description={
             <>
               You are about to go back in time to an autosaved version by{" "}
-              <UserOnDate user={user} date={revertRevision.createdAt} />.
+              <UserOnDate
+                user={user}
+                date={new Date(revertRevision.createdAt)}
+              />
+              .
             </>
           }
           diffs={state.value ?? null}
@@ -286,7 +288,7 @@ export const UserOnDate = function ({
   date,
 }: {
   user?: ApiUser | null;
-  date: string | Date;
+  date: Date;
 }) {
   return (
     <span>
@@ -295,7 +297,7 @@ export const UserOnDate = function ({
       ) : (
         "Unknown User"
       )}{" "}
-      on {getFormattedDate(date)}
+      on {formatDateShortTimeShort(date)}
     </span>
   );
 };

@@ -6,9 +6,10 @@ import {
   DefaultCmsEntryItemProps,
   PlasmicCmsEntryItem,
 } from "@/wab/client/plasmic/plasmic_kit_cms/PlasmicCmsEntryItem";
-import { ApiCmseRow, ApiCmsTable } from "@/wab/shared/ApiSchema";
+import { ApiCmsTable, ApiCmseRow } from "@/wab/shared/ApiSchema";
 import { APP_ROUTES } from "@/wab/shared/route/app-routes";
 import { fillRoute } from "@/wab/shared/route/route";
+import { formatDateMediumTimeShort } from "@/wab/shared/utils/date-utils";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import * as React from "react";
 import { Link } from "react-router-dom";
@@ -17,11 +18,6 @@ export interface CmsEntryItemProps extends DefaultCmsEntryItemProps {
   row: ApiCmseRow;
   table: ApiCmsTable;
 }
-
-const formatter = new Intl.DateTimeFormat([], {
-  dateStyle: "medium",
-  timeStyle: "short",
-});
 
 function CmsEntryItem_(props: CmsEntryItemProps, ref: HTMLElementRefOf<"div">) {
   const { table, row, ...rest } = props;
@@ -41,7 +37,7 @@ function CmsEntryItem_(props: CmsEntryItemProps, ref: HTMLElementRefOf<"div">) {
       }}
       children={getRowIdentifierNode(table, row)}
       isActive={match?.params.rowId === row.id}
-      details={formatter.format(new Date(row.updatedAt))}
+      details={formatDateMediumTimeShort(new Date(row.updatedAt))}
       hasDraft={!!row.draftData}
     />
   );

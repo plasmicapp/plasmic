@@ -2,7 +2,6 @@ import { useUsersMap } from "@/wab/client/api-hooks";
 import { WithContextMenu } from "@/wab/client/components/ContextMenu";
 import { NoItemMessage } from "@/wab/client/components/sidebar-tabs/versions-tab/NoItemMessage";
 import {
-  getFormattedDate,
   promptLoad,
   promptVersionRevert,
 } from "@/wab/client/components/sidebar-tabs/versions-tab/utils";
@@ -13,6 +12,7 @@ import { promptTagsAndDesc } from "@/wab/client/prompts";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ApiUser, BranchId } from "@/wab/shared/ApiSchema";
 import { PkgVersionInfoMeta } from "@/wab/shared/SharedApi";
+import { formatDateShortTimeShort } from "@/wab/shared/utils/date-utils";
 import { Menu, Tag } from "antd";
 import { observer } from "mobx-react";
 import React from "react";
@@ -38,7 +38,8 @@ export const VersionsList = observer(function VersionsList(
     }
     return studioCtx.releases.filter((release) => {
       const title = `${release.version} : ${
-        release.description ?? getFormattedDate(release.createdAt)
+        release.description ??
+        formatDateShortTimeShort(new Date(release.createdAt))
       }`;
       return matcher.matches(title);
     });
@@ -121,7 +122,8 @@ export const VersionsList = observer(function VersionsList(
             : undefined;
         const menu = renderMenu(release, user);
         const title = `${release.version} : ${
-          release.description ?? getFormattedDate(release.createdAt)
+          release.description ??
+          formatDateShortTimeShort(new Date(release.createdAt))
         }`;
 
         return (
