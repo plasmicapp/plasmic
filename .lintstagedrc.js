@@ -10,7 +10,14 @@ module.exports = {
   },
 
   // Terraform files (format on commit)
-  "*.tf": ["terraform fmt -write=true"],
+  "*.tf": (files) => {
+    const path = require("path");
+    const dirs = [...new Set(files.map((f) => path.dirname(f)))];
+    return [
+      "tofu fmt -write=true",
+      ...dirs.map((d) => `tflint --chdir "${d}"`),
+    ];
+  },
 
   "platform/wab/src/wab/server/bundle-migrations/**/*": [
     "platform/wab/tools/bundle-migration-check.sh",
