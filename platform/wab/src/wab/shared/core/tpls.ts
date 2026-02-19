@@ -2780,6 +2780,16 @@ export function findExprsInComponent(component: Component) {
     }
   }
 
+  if (component.pageMeta) {
+    const { title, description, canonical, openGraphImage } =
+      component.pageMeta;
+    for (const field of [title, description, canonical, openGraphImage]) {
+      if (isKnownExpr(field)) {
+        pushExprs(componentExprs, field);
+      }
+    }
+  }
+
   const refs: ExprReference[] = componentExprs.map((expr) => ({
     expr,
   }));

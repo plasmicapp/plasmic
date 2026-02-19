@@ -14,6 +14,7 @@ export default defineConfig({
           {
             host: "127.0.0.1",
             port: Number(process.env.PLAYWRIGHT_REPORTER_PORT ?? 9323),
+            open: process.env.PLAYWRIGHT_REPORTER_OPEN ?? "on-failure",
           },
         ],
       ],

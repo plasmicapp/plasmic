@@ -192,6 +192,10 @@ export class RightPanel extends BaseModel {
     '[data-test-id="default-value-menu-btn"]'
   );
 
+  readonly pagePanel: Locator = this.frame.locator(
+    '[data-test-id="page-panel"]'
+  );
+
   readonly pagePathInput: Locator = this.frame.locator(
     '[data-test-id="page-path"] input'
   );

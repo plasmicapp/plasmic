@@ -81,6 +81,7 @@ export const PageTab = observer(function PageTab(props: {
       canEdit(PublicStyleSection.PageMeta) && (
         <IconButton
           tooltip="Page settings"
+          data-test-id="page-settings-button"
           onClick={() => setShowSettings(true)}
         >
           <Icon icon={GearIcon} />

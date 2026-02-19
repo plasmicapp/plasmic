@@ -39,9 +39,30 @@ test.describe("clone project", () => {
 
     projectId = await apiClient.setupProjectFromTemplate("clone-project");
 
+    const assertDataTokensInPageMeta = async () => {
+      // Assert data tokens in metadata title and description
+      await models.studio.rightPanel.switchToComponentDataTab();
+      const pagePanel = models.studio.rightPanel.pagePanel;
+      await expect(
+        pagePanel.locator(
+          '[data-test-id="prop-editor-row-title"] .value-preview'
+        )
+      ).toHaveText('"test code"');
+      await pagePanel.locator('[data-test-id="page-settings-button"]').click();
+      const descriptionPreview = models.studio.frame.locator(
+        '[data-test-id="prop-editor-row-description"] .value-preview'
+      );
+      await expect(descriptionPreview).toHaveText(
+        '"Description: This is a second dep!"'
+      );
+      await page.keyboard.press("Escape");
+    };
+
     // Verify expected text in original project
     await goToProject(page, `/projects/${projectId}`);
     await models.studio.switchArena("P1");
+
+    await assertDataTokensInPageMeta();
 
     // Assert text in canvas
     const originalCanvas = models.studio.componentFrame;
@@ -81,6 +102,8 @@ test.describe("clone project", () => {
     expect(clonedProjectId).not.toBe(projectId);
 
     await models.studio.switchArena("P1");
+
+    await assertDataTokensInPageMeta();
 
     // Assert text in canvas
     const canvas = models.studio.componentFrame;
