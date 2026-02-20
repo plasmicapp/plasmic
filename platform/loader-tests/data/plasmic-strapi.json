@@ -8,47 +8,23 @@
           "uuid": "OhbtxuWAWZN",
           "name": "StrapiCollection",
           "params": [
-            {
-              "__ref": "26311006"
-            },
-            {
-              "__ref": "26311007"
-            },
-            {
-              "__ref": "26311008"
-            },
-            {
-              "__ref": "72QmkzU8G6hx"
-            },
-            {
-              "__ref": "Zo-wdC-VCGMN"
-            },
-            {
-              "__ref": "4LLNBmli4lFb"
-            },
-            {
-              "__ref": "KO_adXwiRcBB"
-            },
-            {
-              "__ref": "t7Is0wQdUSSn"
-            }
+            { "__ref": "26311006" },
+            { "__ref": "26311007" },
+            { "__ref": "26311008" },
+            { "__ref": "72QmkzU8G6hx" },
+            { "__ref": "Zo-wdC-VCGMN" },
+            { "__ref": "4LLNBmli4lFb" },
+            { "__ref": "KO_adXwiRcBB" },
+            { "__ref": "t7Is0wQdUSSn" }
           ],
           "states": [],
-          "tplTree": {
-            "__ref": "26311009"
-          },
+          "tplTree": { "__ref": "26311009" },
           "editableByContentEditor": false,
           "hiddenFromContentEditor": false,
-          "variants": [
-            {
-              "__ref": "26311010"
-            }
-          ],
+          "variants": [{ "__ref": "26311010" }],
           "variantGroups": [],
           "pageMeta": null,
-          "codeComponentMeta": {
-            "__ref": "26311011"
-          },
+          "codeComponentMeta": { "__ref": "26311011" },
           "type": "code",
           "subComps": [],
           "superComp": null,
@@ -66,27 +42,15 @@
         "26311002": {
           "uuid": "JryfEqNwRw-",
           "name": "StrapiField",
-          "params": [
-            {
-              "__ref": "26311012"
-            }
-          ],
+          "params": [{ "__ref": "26311012" }],
           "states": [],
-          "tplTree": {
-            "__ref": "26311013"
-          },
+          "tplTree": { "__ref": "26311013" },
           "editableByContentEditor": false,
           "hiddenFromContentEditor": false,
-          "variants": [
-            {
-              "__ref": "26311014"
-            }
-          ],
+          "variants": [{ "__ref": "26311014" }],
           "variantGroups": [],
           "pageMeta": null,
-          "codeComponentMeta": {
-            "__ref": "26311015"
-          },
+          "codeComponentMeta": { "__ref": "26311015" },
           "type": "code",
           "subComps": [],
           "superComp": null,
@@ -105,32 +69,18 @@
           "uuid": "Syd4LLKVYl3",
           "name": "StrapiCredentialsProvider",
           "params": [
-            {
-              "__ref": "26311016"
-            },
-            {
-              "__ref": "26311017"
-            },
-            {
-              "__ref": "26311018"
-            }
+            { "__ref": "26311016" },
+            { "__ref": "26311017" },
+            { "__ref": "26311018" }
           ],
           "states": [],
-          "tplTree": {
-            "__ref": "26311019"
-          },
+          "tplTree": { "__ref": "26311019" },
           "editableByContentEditor": false,
           "hiddenFromContentEditor": false,
-          "variants": [
-            {
-              "__ref": "26311020"
-            }
-          ],
+          "variants": [{ "__ref": "26311020" }],
           "variantGroups": [],
           "pageMeta": null,
-          "codeComponentMeta": {
-            "__ref": "26311021"
-          },
+          "codeComponentMeta": { "__ref": "26311021" },
           "type": "code",
           "subComps": [],
           "superComp": null,
@@ -147,29 +97,17 @@
         },
         "26311004": {
           "name": null,
-          "component": {
-            "__ref": "26311003"
-          },
+          "component": { "__ref": "26311003" },
           "uuid": "zwAH7JYD7uy",
           "parent": null,
           "locked": null,
-          "vsettings": [
-            {
-              "__ref": "26311022"
-            }
-          ],
+          "vsettings": [{ "__ref": "26311022" }],
           "__type": "TplComponent"
         },
         "26311006": {
-          "type": {
-            "__ref": "26311024"
-          },
-          "tplSlot": {
-            "__ref": "26311030"
-          },
-          "variable": {
-            "__ref": "26311023"
-          },
+          "type": { "__ref": "26311024" },
+          "tplSlot": { "__ref": "26311030" },
+          "variable": { "__ref": "26311023" },
           "uuid": "PAWGV-kpZB1",
           "enumValues": [],
           "origin": null,
@@ -188,13 +126,9 @@
           "__type": "SlotParam"
         },
         "26311007": {
-          "type": {
-            "__ref": "26311026"
-          },
+          "type": { "__ref": "26311026" },
           "advanced": false,
-          "variable": {
-            "__ref": "26311025"
-          },
+          "variable": { "__ref": "26311025" },
           "uuid": "01ZcT3FRSo0",
           "enumValues": [],
           "origin": null,
@@ -213,20 +147,14 @@
           "__type": "PropParam"
         },
         "26311008": {
-          "type": {
-            "__ref": "26311028"
-          },
+          "type": { "__ref": "26311028" },
           "advanced": false,
-          "variable": {
-            "__ref": "26311027"
-          },
+          "variable": { "__ref": "26311027" },
           "uuid": "NJTd9SpbaaH",
           "enumValues": [],
           "origin": null,
           "exportType": "External",
-          "defaultExpr": {
-            "__ref": "26311029"
-          },
+          "defaultExpr": { "__ref": "26311029" },
           "previewExpr": null,
           "propEffect": null,
           "description": null,
@@ -242,22 +170,14 @@
         "26311009": {
           "tag": "div",
           "name": null,
-          "children": [
-            {
-              "__ref": "26311030"
-            }
-          ],
+          "children": [{ "__ref": "26311030" }],
           "type": "other",
           "codeGenType": null,
           "columnsSetting": null,
           "uuid": "qan3g0c5fjW",
           "parent": null,
           "locked": null,
-          "vsettings": [
-            {
-              "__ref": "26311031"
-            }
-          ],
+          "vsettings": [{ "__ref": "26311031" }],
           "__type": "TplTag"
         },
         "26311010": {
@@ -282,9 +202,7 @@
           "thumbnailUrl": null,
           "classNameProp": null,
           "refProp": null,
-          "defaultStyles": {
-            "__ref": "26311033"
-          },
+          "defaultStyles": { "__ref": "26311033" },
           "defaultDisplay": null,
           "isHostLess": true,
           "isContext": false,
@@ -297,10 +215,7 @@
           "defaultSlotContents": {
             "children": {
               "type": "vbox",
-              "children": {
-                "type": "component",
-                "name": "StrapiField"
-              }
+              "children": { "type": "component", "name": "StrapiField" }
             }
           },
           "variants": {},
@@ -308,13 +223,9 @@
           "__type": "CodeComponentMeta"
         },
         "26311012": {
-          "type": {
-            "__ref": "26311035"
-          },
+          "type": { "__ref": "26311035" },
           "advanced": false,
-          "variable": {
-            "__ref": "26311034"
-          },
+          "variable": { "__ref": "26311034" },
           "uuid": "xRGqQIN1-Rv",
           "enumValues": [],
           "origin": null,
@@ -342,11 +253,7 @@
           "uuid": "Y6irnAI4WjV",
           "parent": null,
           "locked": null,
-          "vsettings": [
-            {
-              "__ref": "26311036"
-            }
-          ],
+          "vsettings": [{ "__ref": "26311036" }],
           "__type": "TplTag"
         },
         "26311014": {
@@ -387,20 +294,14 @@
           "__type": "CodeComponentMeta"
         },
         "26311016": {
-          "type": {
-            "__ref": "WGwGSS8z4Lmw"
-          },
+          "type": { "__ref": "WGwGSS8z4Lmw" },
           "advanced": false,
-          "variable": {
-            "__ref": "26311038"
-          },
+          "variable": { "__ref": "26311038" },
           "uuid": "GDk0TUdChqh",
           "enumValues": [],
           "origin": null,
           "exportType": "External",
-          "defaultExpr": {
-            "__ref": "Dh4rEKUG6Iq-"
-          },
+          "defaultExpr": { "__ref": "Dh4rEKUG6Iq-" },
           "previewExpr": null,
           "propEffect": null,
           "description": null,
@@ -414,13 +315,9 @@
           "__type": "PropParam"
         },
         "26311017": {
-          "type": {
-            "__ref": "26311042"
-          },
+          "type": { "__ref": "26311042" },
           "advanced": false,
-          "variable": {
-            "__ref": "26311041"
-          },
+          "variable": { "__ref": "26311041" },
           "uuid": "TFI-wORIYKI",
           "enumValues": [],
           "origin": null,
@@ -439,15 +336,9 @@
           "__type": "PropParam"
         },
         "26311018": {
-          "type": {
-            "__ref": "26311044"
-          },
-          "tplSlot": {
-            "__ref": "26311045"
-          },
-          "variable": {
-            "__ref": "26311043"
-          },
+          "type": { "__ref": "26311044" },
+          "tplSlot": { "__ref": "26311045" },
+          "variable": { "__ref": "26311043" },
           "uuid": "Im-WUtMTee3",
           "enumValues": [],
           "origin": null,
@@ -468,22 +359,14 @@
         "26311019": {
           "tag": "div",
           "name": null,
-          "children": [
-            {
-              "__ref": "26311045"
-            }
-          ],
+          "children": [{ "__ref": "26311045" }],
           "type": "other",
           "codeGenType": null,
           "columnsSetting": null,
           "uuid": "ANt60wsMazZ",
           "parent": null,
           "locked": null,
-          "vsettings": [
-            {
-              "__ref": "26311046"
-            }
-          ],
+          "vsettings": [{ "__ref": "26311046" }],
           "__type": "TplTag"
         },
         "26311020": {
@@ -524,16 +407,10 @@
           "__type": "CodeComponentMeta"
         },
         "26311022": {
-          "variants": [
-            {
-              "__ref": "60773007"
-            }
-          ],
+          "variants": [{ "__ref": "60773007" }],
           "args": [],
           "attrs": {},
-          "rs": {
-            "__ref": "26311048"
-          },
+          "rs": { "__ref": "26311048" },
           "dataCond": null,
           "dataRep": null,
           "text": null,
@@ -551,57 +428,33 @@
           "allowRootWrapper": null,
           "__type": "RenderableType"
         },
-        "26311025": {
-          "name": "name",
-          "uuid": "6NuQ2KC7XyN",
-          "__type": "Var"
-        },
-        "26311026": {
-          "name": "text",
-          "__type": "Text"
-        },
+        "26311025": { "name": "name", "uuid": "6NuQ2KC7XyN", "__type": "Var" },
+        "26311026": { "name": "text", "__type": "Text" },
         "26311027": {
           "name": "noLayout",
           "uuid": "ylmMHAx8X8o",
           "__type": "Var"
         },
-        "26311028": {
-          "name": "bool",
-          "__type": "BoolType"
-        },
+        "26311028": { "name": "bool", "__type": "BoolType" },
         "26311029": {
           "code": "false",
           "fallback": null,
           "__type": "CustomCode"
         },
         "26311030": {
-          "param": {
-            "__ref": "26311006"
-          },
+          "param": { "__ref": "26311006" },
           "defaultContents": [],
           "uuid": "cYbT7sibExh",
-          "parent": {
-            "__ref": "26311009"
-          },
+          "parent": { "__ref": "26311009" },
           "locked": null,
-          "vsettings": [
-            {
-              "__ref": "26311050"
-            }
-          ],
+          "vsettings": [{ "__ref": "26311050" }],
           "__type": "TplSlot"
         },
         "26311031": {
-          "variants": [
-            {
-              "__ref": "26311010"
-            }
-          ],
+          "variants": [{ "__ref": "26311010" }],
           "args": [],
           "attrs": {},
-          "rs": {
-            "__ref": "26311051"
-          },
+          "rs": { "__ref": "26311051" },
           "dataCond": null,
           "dataRep": null,
           "text": null,
@@ -624,47 +477,26 @@
           "animations": null,
           "__type": "RuleSet"
         },
-        "26311034": {
-          "name": "path",
-          "uuid": "B-Xpb19HHTr",
-          "__type": "Var"
-        },
+        "26311034": { "name": "path", "uuid": "B-Xpb19HHTr", "__type": "Var" },
         "26311035": {
           "name": "choice",
           "options": ["Dynamic options"],
           "__type": "Choice"
         },
         "26311036": {
-          "variants": [
-            {
-              "__ref": "26311014"
-            }
-          ],
+          "variants": [{ "__ref": "26311014" }],
           "args": [],
           "attrs": {},
-          "rs": {
-            "__ref": "26311061"
-          },
+          "rs": { "__ref": "26311061" },
           "dataCond": null,
           "dataRep": null,
           "text": null,
           "columnsConfig": null,
           "__type": "VariantSetting"
         },
-        "26311038": {
-          "name": "host",
-          "uuid": "wFtjh1QB7sn",
-          "__type": "Var"
-        },
-        "26311041": {
-          "name": "token",
-          "uuid": "ji_VHcpvgNa",
-          "__type": "Var"
-        },
-        "26311042": {
-          "name": "text",
-          "__type": "Text"
-        },
+        "26311038": { "name": "host", "uuid": "wFtjh1QB7sn", "__type": "Var" },
+        "26311041": { "name": "token", "uuid": "ji_VHcpvgNa", "__type": "Var" },
+        "26311042": { "name": "text", "__type": "Text" },
         "26311043": {
           "name": "children",
           "uuid": "ndkJrULtRT4",
@@ -677,33 +509,19 @@
           "__type": "RenderableType"
         },
         "26311045": {
-          "param": {
-            "__ref": "26311018"
-          },
+          "param": { "__ref": "26311018" },
           "defaultContents": [],
           "uuid": "gNSkLPupOG4",
-          "parent": {
-            "__ref": "26311019"
-          },
+          "parent": { "__ref": "26311019" },
           "locked": null,
-          "vsettings": [
-            {
-              "__ref": "26311062"
-            }
-          ],
+          "vsettings": [{ "__ref": "26311062" }],
           "__type": "TplSlot"
         },
         "26311046": {
-          "variants": [
-            {
-              "__ref": "26311020"
-            }
-          ],
+          "variants": [{ "__ref": "26311020" }],
           "args": [],
           "attrs": {},
-          "rs": {
-            "__ref": "26311063"
-          },
+          "rs": { "__ref": "26311063" },
           "dataCond": null,
           "dataRep": null,
           "text": null,
@@ -717,16 +535,10 @@
           "__type": "RuleSet"
         },
         "26311050": {
-          "variants": [
-            {
-              "__ref": "26311010"
-            }
-          ],
+          "variants": [{ "__ref": "26311010" }],
           "args": [],
           "attrs": {},
-          "rs": {
-            "__ref": "26311066"
-          },
+          "rs": { "__ref": "26311066" },
           "dataCond": null,
           "dataRep": null,
           "text": null,
@@ -734,34 +546,22 @@
           "__type": "VariantSetting"
         },
         "26311051": {
-          "values": {
-            "display": "flex",
-            "flex-direction": "row"
-          },
+          "values": { "display": "flex", "flex-direction": "row" },
           "mixins": [],
           "animations": null,
           "__type": "RuleSet"
         },
         "26311061": {
-          "values": {
-            "display": "flex",
-            "flex-direction": "row"
-          },
+          "values": { "display": "flex", "flex-direction": "row" },
           "mixins": [],
           "animations": null,
           "__type": "RuleSet"
         },
         "26311062": {
-          "variants": [
-            {
-              "__ref": "26311020"
-            }
-          ],
+          "variants": [{ "__ref": "26311020" }],
           "args": [],
           "attrs": {},
-          "rs": {
-            "__ref": "26311071"
-          },
+          "rs": { "__ref": "26311071" },
           "dataCond": null,
           "dataRep": null,
           "text": null,
@@ -769,10 +569,7 @@
           "__type": "VariantSetting"
         },
         "26311063": {
-          "values": {
-            "display": "flex",
-            "flex-direction": "row"
-          },
+          "values": { "display": "flex", "flex-direction": "row" },
           "mixins": [],
           "animations": null,
           "__type": "RuleSet"
@@ -800,51 +597,29 @@
         },
         "60773001": {
           "components": [
-            {
-              "__ref": "26311001"
-            },
-            {
-              "__ref": "26311002"
-            },
-            {
-              "__ref": "26311003"
-            }
+            { "__ref": "26311001" },
+            { "__ref": "26311002" },
+            { "__ref": "26311003" }
           ],
           "arenas": [],
           "pageArenas": [],
           "componentArenas": [],
           "globalVariantGroups": [],
           "userManagedFonts": [],
-          "globalVariant": {
-            "__ref": "60773007"
-          },
+          "globalVariant": { "__ref": "60773007" },
           "styleTokens": [],
           "styleTokenOverrides": [],
           "dataTokens": [],
           "mixins": [],
           "animationSequences": [],
-          "themes": [
-            {
-              "__ref": "60773009"
-            }
-          ],
-          "activeTheme": {
-            "__ref": "60773009"
-          },
+          "themes": [{ "__ref": "60773009" }],
+          "activeTheme": { "__ref": "60773009" },
           "imageAssets": [],
           "projectDependencies": [],
           "activeScreenVariantGroup": null,
-          "flags": {
-            "usePlasmicImg": true
-          },
-          "hostLessPackageInfo": {
-            "__ref": "38798001"
-          },
-          "globalContexts": [
-            {
-              "__ref": "26311004"
-            }
-          ],
+          "flags": { "usePlasmicImg": true },
+          "hostLessPackageInfo": { "__ref": "38798001" },
+          "globalContexts": [{ "__ref": "26311004" }],
           "splits": [],
           "defaultComponents": {},
           "defaultPageRoleId": null,
@@ -866,9 +641,7 @@
           "__type": "Variant"
         },
         "60773009": {
-          "defaultStyle": {
-            "__ref": "60773010"
-          },
+          "defaultStyle": { "__ref": "60773010" },
           "styles": [],
           "layout": null,
           "addItemPrefs": {},
@@ -877,9 +650,7 @@
         },
         "60773010": {
           "name": "Default Typography",
-          "rs": {
-            "__ref": "60773011"
-          },
+          "rs": { "__ref": "60773011" },
           "preview": null,
           "uuid": "i_fyv6EtvO",
           "forTheme": true,
@@ -903,13 +674,9 @@
           "__type": "Var"
         },
         "72QmkzU8G6hx": {
-          "type": {
-            "__ref": "aqcggEWh_gvf"
-          },
+          "type": { "__ref": "aqcggEWh_gvf" },
           "advanced": false,
-          "variable": {
-            "__ref": "k6Uvya5dPRVY"
-          },
+          "variable": { "__ref": "k6Uvya5dPRVY" },
           "uuid": "ZiqaXg08E0yN",
           "enumValues": [],
           "origin": null,
@@ -938,13 +705,9 @@
           "__type": "Var"
         },
         "Zo-wdC-VCGMN": {
-          "type": {
-            "__ref": "KcpZQjO7B3xK"
-          },
+          "type": { "__ref": "KcpZQjO7B3xK" },
           "advanced": false,
-          "variable": {
-            "__ref": "5PEQGdRIN6SF"
-          },
+          "variable": { "__ref": "5PEQGdRIN6SF" },
           "uuid": "HXxy_ULhy9z1",
           "enumValues": [],
           "origin": null,
@@ -962,23 +725,16 @@
           "isLocalizable": false,
           "__type": "PropParam"
         },
-        "wGmfUUkgCppa": {
-          "name": "text",
-          "__type": "Text"
-        },
+        "wGmfUUkgCppa": { "name": "text", "__type": "Text" },
         "xGz56F9JKCme": {
           "name": "filterValue",
           "uuid": "bwXrZJoFaN42",
           "__type": "Var"
         },
         "4LLNBmli4lFb": {
-          "type": {
-            "__ref": "wGmfUUkgCppa"
-          },
+          "type": { "__ref": "wGmfUUkgCppa" },
           "advanced": false,
-          "variable": {
-            "__ref": "xGz56F9JKCme"
-          },
+          "variable": { "__ref": "xGz56F9JKCme" },
           "uuid": "VbaZUyuuVVSc",
           "enumValues": [],
           "origin": null,
@@ -1002,13 +758,9 @@
           "__type": "Var"
         },
         "KO_adXwiRcBB": {
-          "type": {
-            "__ref": "3xK1qdXXYF9_"
-          },
+          "type": { "__ref": "3xK1qdXXYF9_" },
           "advanced": false,
-          "variable": {
-            "__ref": "QZjHr75o62dp"
-          },
+          "variable": { "__ref": "QZjHr75o62dp" },
           "uuid": "F9hs92sgz6u3",
           "enumValues": [],
           "origin": null,
@@ -1026,10 +778,7 @@
           "isLocalizable": false,
           "__type": "PropParam"
         },
-        "fbQBpp6IptxW": {
-          "name": "bool",
-          "__type": "BoolType"
-        },
+        "fbQBpp6IptxW": { "name": "bool", "__type": "BoolType" },
         "VXuLVyD1tfhM": {
           "code": "false",
           "fallback": null,
@@ -1041,20 +790,14 @@
           "__type": "Var"
         },
         "t7Is0wQdUSSn": {
-          "type": {
-            "__ref": "fbQBpp6IptxW"
-          },
+          "type": { "__ref": "fbQBpp6IptxW" },
           "advanced": false,
-          "variable": {
-            "__ref": "REQ-gs8n69LW"
-          },
+          "variable": { "__ref": "REQ-gs8n69LW" },
           "uuid": "jnsqPIKI4IKj",
           "enumValues": [],
           "origin": null,
           "exportType": "External",
-          "defaultExpr": {
-            "__ref": "VXuLVyD1tfhM"
-          },
+          "defaultExpr": { "__ref": "VXuLVyD1tfhM" },
           "previewExpr": null,
           "propEffect": null,
           "description": null,
@@ -1067,14 +810,8 @@
           "isLocalizable": false,
           "__type": "PropParam"
         },
-        "3xK1qdXXYF9_": {
-          "name": "num",
-          "__type": "Num"
-        },
-        "WGwGSS8z4Lmw": {
-          "name": "text",
-          "__type": "Text"
-        },
+        "3xK1qdXXYF9_": { "name": "num", "__type": "Num" },
+        "WGwGSS8z4Lmw": { "name": "text", "__type": "Text" },
         "Dh4rEKUG6Iq-": {
           "code": "\"https://graceful-belief-d395c347a3.strapiapp.com/\"",
           "fallback": null,
@@ -1086,9 +823,7 @@
           "projectId": "trR6HqKuoJcDJ6ia2gcAPW",
           "version": "0.1.0",
           "name": "Imported Dep",
-          "site": {
-            "__ref": "60773001"
-          },
+          "site": { "__ref": "60773001" },
           "__type": "ProjectDependency"
         }
       },
@@ -1106,20 +841,12 @@
           "name": "Strapi v4",
           "params": [],
           "states": [],
-          "tplTree": {
-            "__ref": "954003"
-          },
+          "tplTree": { "__ref": "954003" },
           "editableByContentEditor": false,
           "hiddenFromContentEditor": false,
-          "variants": [
-            {
-              "__ref": "954004"
-            }
-          ],
+          "variants": [{ "__ref": "954004" }],
           "variantGroups": [],
-          "pageMeta": {
-            "__ref": "954005"
-          },
+          "pageMeta": { "__ref": "954005" },
           "codeComponentMeta": null,
           "type": "page",
           "subComps": [],
@@ -1136,39 +863,22 @@
           "__type": "Component"
         },
         "954002": {
-          "component": {
-            "__ref": "954001"
-          },
-          "matrix": {
-            "__ref": "954006"
-          },
-          "customMatrix": {
-            "__ref": "2508001"
-          },
+          "component": { "__ref": "954001" },
+          "matrix": { "__ref": "954006" },
+          "customMatrix": { "__ref": "2508001" },
           "__type": "PageArena"
         },
         "954003": {
           "tag": "div",
           "name": null,
-          "children": [
-            {
-              "__ref": "954029"
-            },
-            {
-              "__ref": "25009001"
-            }
-          ],
+          "children": [{ "__ref": "954029" }, { "__ref": "25009001" }],
           "type": "other",
           "codeGenType": null,
           "columnsSetting": null,
           "uuid": "GZo1IEGvB",
           "parent": null,
           "locked": null,
-          "vsettings": [
-            {
-              "__ref": "954007"
-            }
-          ],
+          "vsettings": [{ "__ref": "954007" }],
           "__type": "TplTag"
         },
         "954004": {
@@ -1195,24 +905,14 @@
           "__type": "PageMeta"
         },
         "954006": {
-          "rows": [
-            {
-              "__ref": "954009"
-            }
-          ],
+          "rows": [{ "__ref": "954009" }],
           "__type": "ArenaFrameGrid"
         },
         "954007": {
-          "variants": [
-            {
-              "__ref": "954004"
-            }
-          ],
+          "variants": [{ "__ref": "954004" }],
           "args": [],
           "attrs": {},
-          "rs": {
-            "__ref": "954010"
-          },
+          "rs": { "__ref": "954010" },
           "dataCond": null,
           "dataRep": null,
           "text": null,
@@ -1220,14 +920,8 @@
           "__type": "VariantSetting"
         },
         "954009": {
-          "cols": [
-            {
-              "__ref": "954011"
-            }
-          ],
-          "rowKey": {
-            "__ref": "954004"
-          },
+          "cols": [{ "__ref": "954011" }],
+          "rowKey": { "__ref": "954004" },
           "__type": "ArenaFrameRow"
         },
         "954010": {
@@ -1243,9 +937,7 @@
           "__type": "RuleSet"
         },
         "954011": {
-          "frame": {
-            "__ref": "954018"
-          },
+          "frame": { "__ref": "954018" },
           "cellKey": null,
           "__type": "ArenaFrameCell"
         },
@@ -1253,16 +945,10 @@
           "uuid": "W5icQf57hH",
           "width": 1366,
           "height": 768,
-          "container": {
-            "__ref": "954020"
-          },
+          "container": { "__ref": "954020" },
           "lang": "English",
           "pinnedVariants": {},
-          "targetVariants": [
-            {
-              "__ref": "954004"
-            }
-          ],
+          "targetVariants": [{ "__ref": "954004" }],
           "pinnedGlobalVariants": {},
           "targetGlobalVariants": [],
           "viewMode": "stretch",
@@ -1274,30 +960,18 @@
         },
         "954020": {
           "name": null,
-          "component": {
-            "__ref": "954001"
-          },
+          "component": { "__ref": "954001" },
           "uuid": "trLVfbSE2o",
           "parent": null,
           "locked": null,
-          "vsettings": [
-            {
-              "__ref": "954022"
-            }
-          ],
+          "vsettings": [{ "__ref": "954022" }],
           "__type": "TplComponent"
         },
         "954022": {
-          "variants": [
-            {
-              "__ref": "31846007"
-            }
-          ],
+          "variants": [{ "__ref": "31846007" }],
           "args": [],
           "attrs": {},
-          "rs": {
-            "__ref": "954024"
-          },
+          "rs": { "__ref": "954024" },
           "dataCond": null,
           "dataRep": null,
           "text": null,
@@ -1321,11 +995,7 @@
           "uuid": "EgtOWA94N",
           "parent": null,
           "locked": null,
-          "vsettings": [
-            {
-              "__ref": "954027"
-            }
-          ],
+          "vsettings": [{ "__ref": "954027" }],
           "__type": "TplComponent"
         },
         "954027": {
@@ -1337,15 +1007,9 @@
               }
             }
           ],
-          "args": [
-            {
-              "__ref": "Uc2FmCHF7vpK"
-            }
-          ],
+          "args": [{ "__ref": "Uc2FmCHF7vpK" }],
           "attrs": {},
-          "rs": {
-            "__ref": "954028"
-          },
+          "rs": { "__ref": "954028" },
           "dataCond": null,
           "dataRep": null,
           "text": null,
@@ -1367,35 +1031,16 @@
             }
           },
           "uuid": "66jJlKFV-",
-          "parent": {
-            "__ref": "954003"
-          },
+          "parent": { "__ref": "954003" },
           "locked": null,
-          "vsettings": [
-            {
-              "__ref": "954030"
-            }
-          ],
+          "vsettings": [{ "__ref": "954030" }],
           "__type": "TplComponent"
         },
         "954030": {
-          "variants": [
-            {
-              "__ref": "954004"
-            }
-          ],
-          "args": [
-            {
-              "__ref": "954031"
-            },
-            {
-              "__ref": "954063"
-            }
-          ],
+          "variants": [{ "__ref": "954004" }],
+          "args": [{ "__ref": "954031" }, { "__ref": "954063" }],
           "attrs": {},
-          "rs": {
-            "__ref": "954032"
-          },
+          "rs": { "__ref": "954032" },
           "dataCond": null,
           "dataRep": null,
           "text": null,
@@ -1409,9 +1054,7 @@
               "iid": "26311006"
             }
           },
-          "expr": {
-            "__ref": "954066"
-          },
+          "expr": { "__ref": "954066" },
           "__type": "Arg"
         },
         "954032": {
@@ -1434,27 +1077,14 @@
         "954044": {
           "tag": "div",
           "name": null,
-          "children": [
-            {
-              "__ref": "954045"
-            },
-            {
-              "__ref": "954065"
-            }
-          ],
+          "children": [{ "__ref": "954045" }, { "__ref": "954065" }],
           "type": "other",
           "codeGenType": null,
           "columnsSetting": null,
           "uuid": "sTYtmqMNAV",
-          "parent": {
-            "__ref": "954029"
-          },
+          "parent": { "__ref": "954029" },
           "locked": null,
-          "vsettings": [
-            {
-              "__ref": "954046"
-            }
-          ],
+          "vsettings": [{ "__ref": "954046" }],
           "__type": "TplTag"
         },
         "954045": {
@@ -1466,28 +1096,16 @@
             }
           },
           "uuid": "_07l2WD4nr",
-          "parent": {
-            "__ref": "954044"
-          },
+          "parent": { "__ref": "954044" },
           "locked": null,
-          "vsettings": [
-            {
-              "__ref": "954047"
-            }
-          ],
+          "vsettings": [{ "__ref": "954047" }],
           "__type": "TplComponent"
         },
         "954046": {
-          "variants": [
-            {
-              "__ref": "954004"
-            }
-          ],
+          "variants": [{ "__ref": "954004" }],
           "args": [],
           "attrs": {},
-          "rs": {
-            "__ref": "954048"
-          },
+          "rs": { "__ref": "954048" },
           "dataCond": null,
           "dataRep": null,
           "text": null,
@@ -1495,20 +1113,10 @@
           "__type": "VariantSetting"
         },
         "954047": {
-          "variants": [
-            {
-              "__ref": "954004"
-            }
-          ],
-          "args": [
-            {
-              "__ref": "954070"
-            }
-          ],
+          "variants": [{ "__ref": "954004" }],
+          "args": [{ "__ref": "954070" }],
           "attrs": {},
-          "rs": {
-            "__ref": "954049"
-          },
+          "rs": { "__ref": "954049" },
           "dataCond": null,
           "dataRep": null,
           "text": null,
@@ -1535,9 +1143,7 @@
           "__type": "RuleSet"
         },
         "954049": {
-          "values": {
-            "max-width": "100%"
-          },
+          "values": { "max-width": "100%" },
           "mixins": [],
           "animations": null,
           "__type": "RuleSet"
@@ -1549,9 +1155,7 @@
               "iid": "26311007"
             }
           },
-          "expr": {
-            "__ref": "954064"
-          },
+          "expr": { "__ref": "954064" },
           "__type": "Arg"
         },
         "954064": {
@@ -1568,40 +1172,17 @@
             }
           },
           "uuid": "8F9C2vA1iP",
-          "parent": {
-            "__ref": "954044"
-          },
+          "parent": { "__ref": "954044" },
           "locked": null,
-          "vsettings": [
-            {
-              "__ref": "954067"
-            }
-          ],
+          "vsettings": [{ "__ref": "954067" }],
           "__type": "TplComponent"
         },
-        "954066": {
-          "tpl": [
-            {
-              "__ref": "954044"
-            }
-          ],
-          "__type": "RenderExpr"
-        },
+        "954066": { "tpl": [{ "__ref": "954044" }], "__type": "RenderExpr" },
         "954067": {
-          "variants": [
-            {
-              "__ref": "954004"
-            }
-          ],
-          "args": [
-            {
-              "__ref": "954072"
-            }
-          ],
+          "variants": [{ "__ref": "954004" }],
+          "args": [{ "__ref": "954072" }],
           "attrs": {},
-          "rs": {
-            "__ref": "954068"
-          },
+          "rs": { "__ref": "954068" },
           "dataCond": null,
           "dataRep": null,
           "text": null,
@@ -1609,9 +1190,7 @@
           "__type": "VariantSetting"
         },
         "954068": {
-          "values": {
-            "max-width": "100%"
-          },
+          "values": { "max-width": "100%" },
           "mixins": [],
           "animations": null,
           "__type": "RuleSet"
@@ -1623,9 +1202,7 @@
               "iid": "26311012"
             }
           },
-          "expr": {
-            "__ref": "954071"
-          },
+          "expr": { "__ref": "954071" },
           "__type": "Arg"
         },
         "954071": {
@@ -1640,9 +1217,7 @@
               "iid": "26311012"
             }
           },
-          "expr": {
-            "__ref": "954073"
-          },
+          "expr": { "__ref": "954073" },
           "__type": "Arg"
         },
         "954073": {
@@ -1658,33 +1233,19 @@
           "codeGenType": null,
           "columnsSetting": null,
           "uuid": "FffnuBd3_",
-          "parent": {
-            "__ref": "25009018"
-          },
+          "parent": { "__ref": "25009018" },
           "locked": null,
-          "vsettings": [
-            {
-              "__ref": "2335002"
-            }
-          ],
+          "vsettings": [{ "__ref": "2335002" }],
           "__type": "TplTag"
         },
         "2335002": {
-          "variants": [
-            {
-              "__ref": "954004"
-            }
-          ],
+          "variants": [{ "__ref": "954004" }],
           "args": [],
           "attrs": {},
-          "rs": {
-            "__ref": "2335003"
-          },
+          "rs": { "__ref": "2335003" },
           "dataCond": null,
           "dataRep": null,
-          "text": {
-            "__ref": "58341001"
-          },
+          "text": { "__ref": "58341001" },
           "columnsConfig": null,
           "__type": "VariantSetting"
         },
@@ -1701,18 +1262,10 @@
           "__type": "RuleSet"
         },
         "2508001": {
-          "rows": [
-            {
-              "__ref": "2508002"
-            }
-          ],
+          "rows": [{ "__ref": "2508002" }],
           "__type": "ArenaFrameGrid"
         },
-        "2508002": {
-          "cols": [],
-          "rowKey": null,
-          "__type": "ArenaFrameRow"
-        },
+        "2508002": { "cols": [], "rowKey": null, "__type": "ArenaFrameRow" },
         "11153001": {
           "path": [
             "$ctx",
@@ -1720,9 +1273,7 @@
             "attributes",
             "name"
           ],
-          "fallback": {
-            "__ref": "11153002"
-          },
+          "fallback": { "__ref": "11153002" },
           "__type": "ObjectPath"
         },
         "11153002": {
@@ -1739,35 +1290,16 @@
             }
           },
           "uuid": "IWu8QZ3wRo",
-          "parent": {
-            "__ref": "954003"
-          },
+          "parent": { "__ref": "954003" },
           "locked": null,
-          "vsettings": [
-            {
-              "__ref": "25009002"
-            }
-          ],
+          "vsettings": [{ "__ref": "25009002" }],
           "__type": "TplComponent"
         },
         "25009002": {
-          "variants": [
-            {
-              "__ref": "954004"
-            }
-          ],
-          "args": [
-            {
-              "__ref": "25009003"
-            },
-            {
-              "__ref": "25009004"
-            }
-          ],
+          "variants": [{ "__ref": "954004" }],
+          "args": [{ "__ref": "25009003" }, { "__ref": "25009004" }],
           "attrs": {},
-          "rs": {
-            "__ref": "25009005"
-          },
+          "rs": { "__ref": "25009005" },
           "dataCond": null,
           "dataRep": null,
           "text": null,
@@ -1781,9 +1313,7 @@
               "iid": "26311006"
             }
           },
-          "expr": {
-            "__ref": "25009006"
-          },
+          "expr": { "__ref": "25009006" },
           "__type": "Arg"
         },
         "25009004": {
@@ -1793,9 +1323,7 @@
               "iid": "26311007"
             }
           },
-          "expr": {
-            "__ref": "25009007"
-          },
+          "expr": { "__ref": "25009007" },
           "__type": "Arg"
         },
         "25009005": {
@@ -1816,11 +1344,7 @@
           "__type": "RuleSet"
         },
         "25009006": {
-          "tpl": [
-            {
-              "__ref": "25009018"
-            }
-          ],
+          "tpl": [{ "__ref": "25009018" }],
           "__type": "RenderExpr"
         },
         "25009007": {
@@ -1831,40 +1355,21 @@
         "25009018": {
           "tag": "div",
           "name": null,
-          "children": [
-            {
-              "__ref": "2335001"
-            },
-            {
-              "__ref": "58341006"
-            }
-          ],
+          "children": [{ "__ref": "2335001" }, { "__ref": "58341006" }],
           "type": "other",
           "codeGenType": null,
           "columnsSetting": null,
           "uuid": "IO2W0cAu1d",
-          "parent": {
-            "__ref": "25009001"
-          },
+          "parent": { "__ref": "25009001" },
           "locked": null,
-          "vsettings": [
-            {
-              "__ref": "25009021"
-            }
-          ],
+          "vsettings": [{ "__ref": "25009021" }],
           "__type": "TplTag"
         },
         "25009021": {
-          "variants": [
-            {
-              "__ref": "954004"
-            }
-          ],
+          "variants": [{ "__ref": "954004" }],
           "args": [],
           "attrs": {},
-          "rs": {
-            "__ref": "25009024"
-          },
+          "rs": { "__ref": "25009024" },
           "dataCond": null,
           "dataRep": null,
           "text": null,
@@ -1892,51 +1397,24 @@
         },
         "31846001": {
           "components": [
-            {
-              "__ref": "954001"
-            },
-            {
-              "__ref": "ibhGbIzNEPMM"
-            },
-            {
-              "__ref": "uooV9_0jSS9n"
-            },
-            {
-              "__ref": "LW6k-nA3XmHV"
-            }
+            { "__ref": "954001" },
+            { "__ref": "ibhGbIzNEPMM" },
+            { "__ref": "uooV9_0jSS9n" },
+            { "__ref": "LW6k-nA3XmHV" }
           ],
           "arenas": [],
-          "pageArenas": [
-            {
-              "__ref": "954002"
-            },
-            {
-              "__ref": "i2rqyUFiX-5v"
-            }
-          ],
+          "pageArenas": [{ "__ref": "954002" }, { "__ref": "i2rqyUFiX-5v" }],
           "componentArenas": [],
-          "globalVariantGroups": [
-            {
-              "__ref": "31846003"
-            }
-          ],
+          "globalVariantGroups": [{ "__ref": "31846003" }],
           "userManagedFonts": [],
-          "globalVariant": {
-            "__ref": "31846007"
-          },
+          "globalVariant": { "__ref": "31846007" },
           "styleTokens": [],
           "styleTokenOverrides": [],
           "dataTokens": [],
           "mixins": [],
           "animationSequences": [],
-          "themes": [
-            {
-              "__ref": "31846009"
-            }
-          ],
-          "activeTheme": {
-            "__ref": "31846009"
-          },
+          "themes": [{ "__ref": "31846009" }],
+          "activeTheme": { "__ref": "31846009" },
           "imageAssets": [],
           "projectDependencies": [
             {
@@ -1946,18 +1424,10 @@
               }
             }
           ],
-          "activeScreenVariantGroup": {
-            "__ref": "31846003"
-          },
-          "flags": {
-            "usePlasmicImg": true
-          },
+          "activeScreenVariantGroup": { "__ref": "31846003" },
+          "flags": { "usePlasmicImg": true },
           "hostLessPackageInfo": null,
-          "globalContexts": [
-            {
-              "__ref": "954026"
-            }
-          ],
+          "globalContexts": [{ "__ref": "954026" }],
           "splits": [],
           "defaultComponents": {},
           "defaultPageRoleId": null,
@@ -1968,21 +1438,15 @@
         },
         "31846003": {
           "type": "global-screen",
-          "param": {
-            "__ref": "31846004"
-          },
+          "param": { "__ref": "31846004" },
           "uuid": "IwgcwN1AGeJ",
           "variants": [],
           "multi": true,
           "__type": "GlobalVariantGroup"
         },
         "31846004": {
-          "type": {
-            "__ref": "31846006"
-          },
-          "variable": {
-            "__ref": "31846005"
-          },
+          "type": { "__ref": "31846006" },
+          "variable": { "__ref": "31846005" },
           "uuid": "I2Ql7k8XjKV",
           "enumValues": [],
           "origin": null,
@@ -2000,15 +1464,8 @@
           "isLocalizable": false,
           "__type": "GlobalVariantGroupParam"
         },
-        "31846005": {
-          "name": "Screen",
-          "uuid": "yFvCKZX2We",
-          "__type": "Var"
-        },
-        "31846006": {
-          "name": "text",
-          "__type": "Text"
-        },
+        "31846005": { "name": "Screen", "uuid": "yFvCKZX2We", "__type": "Var" },
+        "31846006": { "name": "text", "__type": "Text" },
         "31846007": {
           "uuid": "LBcd9Q_bh_1",
           "name": "base",
@@ -2022,49 +1479,21 @@
           "__type": "Variant"
         },
         "31846009": {
-          "defaultStyle": {
-            "__ref": "31846010"
-          },
+          "defaultStyle": { "__ref": "31846010" },
           "styles": [
-            {
-              "__ref": "31846025"
-            },
-            {
-              "__ref": "31846034"
-            },
-            {
-              "__ref": "31846043"
-            },
-            {
-              "__ref": "31846052"
-            },
-            {
-              "__ref": "31846061"
-            },
-            {
-              "__ref": "31846070"
-            },
-            {
-              "__ref": "31846078"
-            },
-            {
-              "__ref": "31846082"
-            },
-            {
-              "__ref": "31846086"
-            },
-            {
-              "__ref": "31846094"
-            },
-            {
-              "__ref": "31846119"
-            },
-            {
-              "__ref": "31846144"
-            },
-            {
-              "__ref": "31846155"
-            }
+            { "__ref": "31846025" },
+            { "__ref": "31846034" },
+            { "__ref": "31846043" },
+            { "__ref": "31846052" },
+            { "__ref": "31846061" },
+            { "__ref": "31846070" },
+            { "__ref": "31846078" },
+            { "__ref": "31846082" },
+            { "__ref": "31846086" },
+            { "__ref": "31846094" },
+            { "__ref": "31846119" },
+            { "__ref": "31846144" },
+            { "__ref": "31846155" }
           ],
           "layout": null,
           "addItemPrefs": {},
@@ -2073,9 +1502,7 @@
         },
         "31846010": {
           "name": "Default Typography",
-          "rs": {
-            "__ref": "31846011"
-          },
+          "rs": { "__ref": "31846011" },
           "preview": null,
           "uuid": "IC1xm26H2e",
           "forTheme": true,
@@ -2104,16 +1531,12 @@
         },
         "31846025": {
           "selector": "h1",
-          "style": {
-            "__ref": "31846026"
-          },
+          "style": { "__ref": "31846026" },
           "__type": "ThemeStyle"
         },
         "31846026": {
           "name": "Default \"h1\"",
-          "rs": {
-            "__ref": "31846027"
-          },
+          "rs": { "__ref": "31846027" },
           "preview": null,
           "uuid": "MOaIoYcb2L",
           "forTheme": true,
@@ -2135,16 +1558,12 @@
         },
         "31846034": {
           "selector": "h2",
-          "style": {
-            "__ref": "31846035"
-          },
+          "style": { "__ref": "31846035" },
           "__type": "ThemeStyle"
         },
         "31846035": {
           "name": "Default \"h2\"",
-          "rs": {
-            "__ref": "31846036"
-          },
+          "rs": { "__ref": "31846036" },
           "preview": null,
           "uuid": "Z8N9RBJFBh",
           "forTheme": true,
@@ -2166,16 +1585,12 @@
         },
         "31846043": {
           "selector": "h3",
-          "style": {
-            "__ref": "31846044"
-          },
+          "style": { "__ref": "31846044" },
           "__type": "ThemeStyle"
         },
         "31846044": {
           "name": "Default \"h3\"",
-          "rs": {
-            "__ref": "31846045"
-          },
+          "rs": { "__ref": "31846045" },
           "preview": null,
           "uuid": "JhiUTMPTy7",
           "forTheme": true,
@@ -2197,16 +1612,12 @@
         },
         "31846052": {
           "selector": "h4",
-          "style": {
-            "__ref": "31846053"
-          },
+          "style": { "__ref": "31846053" },
           "__type": "ThemeStyle"
         },
         "31846053": {
           "name": "Default \"h4\"",
-          "rs": {
-            "__ref": "31846054"
-          },
+          "rs": { "__ref": "31846054" },
           "preview": null,
           "uuid": "LBtLbx0-Lc",
           "forTheme": true,
@@ -2228,16 +1639,12 @@
         },
         "31846061": {
           "selector": "h5",
-          "style": {
-            "__ref": "31846062"
-          },
+          "style": { "__ref": "31846062" },
           "__type": "ThemeStyle"
         },
         "31846062": {
           "name": "Default \"h5\"",
-          "rs": {
-            "__ref": "31846063"
-          },
+          "rs": { "__ref": "31846063" },
           "preview": null,
           "uuid": "fxQ0GdfjpI",
           "forTheme": true,
@@ -2259,16 +1666,12 @@
         },
         "31846070": {
           "selector": "h6",
-          "style": {
-            "__ref": "31846071"
-          },
+          "style": { "__ref": "31846071" },
           "__type": "ThemeStyle"
         },
         "31846071": {
           "name": "Default \"h6\"",
-          "rs": {
-            "__ref": "31846072"
-          },
+          "rs": { "__ref": "31846072" },
           "preview": null,
           "uuid": "FDUZlDWwEu",
           "forTheme": true,
@@ -2289,16 +1692,12 @@
         },
         "31846078": {
           "selector": "a",
-          "style": {
-            "__ref": "31846079"
-          },
+          "style": { "__ref": "31846079" },
           "__type": "ThemeStyle"
         },
         "31846079": {
           "name": "Default \"a\"",
-          "rs": {
-            "__ref": "31846080"
-          },
+          "rs": { "__ref": "31846080" },
           "preview": null,
           "uuid": "XYlnLc8Cxu",
           "forTheme": true,
@@ -2306,25 +1705,19 @@
           "__type": "Mixin"
         },
         "31846080": {
-          "values": {
-            "color": "#0070f3"
-          },
+          "values": { "color": "#0070f3" },
           "mixins": [],
           "animations": null,
           "__type": "RuleSet"
         },
         "31846082": {
           "selector": "a:hover",
-          "style": {
-            "__ref": "31846083"
-          },
+          "style": { "__ref": "31846083" },
           "__type": "ThemeStyle"
         },
         "31846083": {
           "name": "Default \"a:hover\"",
-          "rs": {
-            "__ref": "31846084"
-          },
+          "rs": { "__ref": "31846084" },
           "preview": null,
           "uuid": "g2rtVzKPd_",
           "forTheme": true,
@@ -2332,25 +1725,19 @@
           "__type": "Mixin"
         },
         "31846084": {
-          "values": {
-            "color": "#3291ff"
-          },
+          "values": { "color": "#3291ff" },
           "mixins": [],
           "animations": null,
           "__type": "RuleSet"
         },
         "31846086": {
           "selector": "blockquote",
-          "style": {
-            "__ref": "31846087"
-          },
+          "style": { "__ref": "31846087" },
           "__type": "ThemeStyle"
         },
         "31846087": {
           "name": "Default \"blockquote\"",
-          "rs": {
-            "__ref": "31846088"
-          },
+          "rs": { "__ref": "31846088" },
           "preview": null,
           "uuid": "06D8qrNeK7",
           "forTheme": true,
@@ -2371,16 +1758,12 @@
         },
         "31846094": {
           "selector": "code",
-          "style": {
-            "__ref": "31846095"
-          },
+          "style": { "__ref": "31846095" },
           "__type": "ThemeStyle"
         },
         "31846095": {
           "name": "Default \"code\"",
-          "rs": {
-            "__ref": "31846096"
-          },
+          "rs": { "__ref": "31846096" },
           "preview": null,
           "uuid": "3oexRdyaEK",
           "forTheme": true,
@@ -2418,16 +1801,12 @@
         },
         "31846119": {
           "selector": "pre",
-          "style": {
-            "__ref": "31846120"
-          },
+          "style": { "__ref": "31846120" },
           "__type": "ThemeStyle"
         },
         "31846120": {
           "name": "Default \"pre\"",
-          "rs": {
-            "__ref": "31846121"
-          },
+          "rs": { "__ref": "31846121" },
           "preview": null,
           "uuid": "MUl06nnO17",
           "forTheme": true,
@@ -2465,16 +1844,12 @@
         },
         "31846144": {
           "selector": "ol",
-          "style": {
-            "__ref": "31846145"
-          },
+          "style": { "__ref": "31846145" },
           "__type": "ThemeStyle"
         },
         "31846145": {
           "name": "Default \"ol\"",
-          "rs": {
-            "__ref": "31846146"
-          },
+          "rs": { "__ref": "31846146" },
           "preview": null,
           "uuid": "WwGMUjTDBe",
           "forTheme": true,
@@ -2498,16 +1873,12 @@
         },
         "31846155": {
           "selector": "ul",
-          "style": {
-            "__ref": "31846156"
-          },
+          "style": { "__ref": "31846156" },
           "__type": "ThemeStyle"
         },
         "31846156": {
           "name": "Default \"ul\"",
-          "rs": {
-            "__ref": "31846157"
-          },
+          "rs": { "__ref": "31846157" },
           "preview": null,
           "uuid": "qRFusbab6G",
           "forTheme": true,
@@ -2530,9 +1901,7 @@
           "__type": "RuleSet"
         },
         "58341001": {
-          "expr": {
-            "__ref": "11153001"
-          },
+          "expr": { "__ref": "11153001" },
           "html": false,
           "__type": "ExprText"
         },
@@ -2544,35 +1913,19 @@
           "codeGenType": null,
           "columnsSetting": null,
           "uuid": "clUK2pt6Dh",
-          "parent": {
-            "__ref": "25009018"
-          },
+          "parent": { "__ref": "25009018" },
           "locked": null,
-          "vsettings": [
-            {
-              "__ref": "58341007"
-            }
-          ],
+          "vsettings": [{ "__ref": "58341007" }],
           "__type": "TplTag"
         },
         "58341007": {
-          "variants": [
-            {
-              "__ref": "954004"
-            }
-          ],
+          "variants": [{ "__ref": "954004" }],
           "args": [],
           "attrs": {
-            "loading": {
-              "__ref": "58341008"
-            },
-            "src": {
-              "__ref": "UJDodTeHAKak"
-            }
+            "loading": { "__ref": "58341008" },
+            "src": { "__ref": "UJDodTeHAKak" }
           },
-          "rs": {
-            "__ref": "58341009"
-          },
+          "rs": { "__ref": "58341009" },
           "dataCond": null,
           "dataRep": null,
           "text": null,
@@ -2599,35 +1952,19 @@
           "uuid": "OW2vY4Ap-Bpz",
           "name": "hostless-plasmic-head",
           "params": [
-            {
-              "__ref": "c4xOd--W0COR"
-            },
-            {
-              "__ref": "w49Q9r-hVXCE"
-            },
-            {
-              "__ref": "XCnuzugOgNHW"
-            },
-            {
-              "__ref": "HCHJcQNaVh2T"
-            }
+            { "__ref": "c4xOd--W0COR" },
+            { "__ref": "w49Q9r-hVXCE" },
+            { "__ref": "XCnuzugOgNHW" },
+            { "__ref": "HCHJcQNaVh2T" }
           ],
           "states": [],
-          "tplTree": {
-            "__ref": "pflaeHQJfGsq"
-          },
+          "tplTree": { "__ref": "pflaeHQJfGsq" },
           "editableByContentEditor": true,
           "hiddenFromContentEditor": false,
-          "variants": [
-            {
-              "__ref": "BXrYCU4FXCwT"
-            }
-          ],
+          "variants": [{ "__ref": "BXrYCU4FXCwT" }],
           "variantGroups": [],
           "pageMeta": null,
-          "codeComponentMeta": {
-            "__ref": "L85bYcunNCZe"
-          },
+          "codeComponentMeta": { "__ref": "L85bYcunNCZe" },
           "type": "code",
           "subComps": [],
           "superComp": null,
@@ -2646,38 +1983,20 @@
           "uuid": "tXuNIsyOtr-l",
           "name": "plasmic-data-source-fetcher",
           "params": [
-            {
-              "__ref": "AcVTemeI-JCw"
-            },
-            {
-              "__ref": "EW_WYlZ3GFoy"
-            },
-            {
-              "__ref": "wZ5hEkEcypRV"
-            },
-            {
-              "__ref": "yL3xpqtBPFiN"
-            },
-            {
-              "__ref": "fsNw4la2VPFb"
-            }
+            { "__ref": "AcVTemeI-JCw" },
+            { "__ref": "EW_WYlZ3GFoy" },
+            { "__ref": "wZ5hEkEcypRV" },
+            { "__ref": "yL3xpqtBPFiN" },
+            { "__ref": "fsNw4la2VPFb" }
           ],
           "states": [],
-          "tplTree": {
-            "__ref": "0VlB0mMSwKiJ"
-          },
+          "tplTree": { "__ref": "0VlB0mMSwKiJ" },
           "editableByContentEditor": true,
           "hiddenFromContentEditor": false,
-          "variants": [
-            {
-              "__ref": "FSajapRUc0VM"
-            }
-          ],
+          "variants": [{ "__ref": "FSajapRUc0VM" }],
           "variantGroups": [],
           "pageMeta": null,
-          "codeComponentMeta": {
-            "__ref": "CzxTWs5BQFE-"
-          },
+          "codeComponentMeta": { "__ref": "CzxTWs5BQFE-" },
           "type": "code",
           "subComps": [],
           "superComp": null,
@@ -2693,13 +2012,9 @@
           "__type": "Component"
         },
         "c4xOd--W0COR": {
-          "type": {
-            "__ref": "L0BITkG4b8d5"
-          },
+          "type": { "__ref": "L0BITkG4b8d5" },
           "advanced": false,
-          "variable": {
-            "__ref": "Ei6kS8oEPKXr"
-          },
+          "variable": { "__ref": "Ei6kS8oEPKXr" },
           "uuid": "ji5AXsFS2EnU",
           "enumValues": [],
           "origin": null,
@@ -2718,13 +2033,9 @@
           "__type": "PropParam"
         },
         "w49Q9r-hVXCE": {
-          "type": {
-            "__ref": "LF2ISsPfW3Ug"
-          },
+          "type": { "__ref": "LF2ISsPfW3Ug" },
           "advanced": false,
-          "variable": {
-            "__ref": "jSWvSVxX4XmE"
-          },
+          "variable": { "__ref": "jSWvSVxX4XmE" },
           "uuid": "mG7mMlL3N6Ue",
           "enumValues": [],
           "origin": null,
@@ -2743,13 +2054,9 @@
           "__type": "PropParam"
         },
         "XCnuzugOgNHW": {
-          "type": {
-            "__ref": "4kaiDvWKjvEr"
-          },
+          "type": { "__ref": "4kaiDvWKjvEr" },
           "advanced": false,
-          "variable": {
-            "__ref": "hKZCZPJtiIt6"
-          },
+          "variable": { "__ref": "hKZCZPJtiIt6" },
           "uuid": "O9Bde3YvYo9U",
           "enumValues": [],
           "origin": null,
@@ -2768,13 +2075,9 @@
           "__type": "PropParam"
         },
         "HCHJcQNaVh2T": {
-          "type": {
-            "__ref": "VNb7o-3izrkx"
-          },
+          "type": { "__ref": "VNb7o-3izrkx" },
           "advanced": false,
-          "variable": {
-            "__ref": "qlTsrKrDG-Es"
-          },
+          "variable": { "__ref": "qlTsrKrDG-Es" },
           "uuid": "66vGlq3Bn34l",
           "enumValues": [],
           "origin": null,
@@ -2802,11 +2105,7 @@
           "uuid": "g_ChIme_WNQF",
           "parent": null,
           "locked": null,
-          "vsettings": [
-            {
-              "__ref": "o5AGPYWypNHz"
-            }
-          ],
+          "vsettings": [{ "__ref": "o5AGPYWypNHz" }],
           "__type": "TplTag"
         },
         "BXrYCU4FXCwT": {
@@ -2847,13 +2146,9 @@
           "__type": "CodeComponentMeta"
         },
         "AcVTemeI-JCw": {
-          "type": {
-            "__ref": "HqDjyyv5AniH"
-          },
+          "type": { "__ref": "HqDjyyv5AniH" },
           "advanced": false,
-          "variable": {
-            "__ref": "xUEtxB-uOkro"
-          },
+          "variable": { "__ref": "xUEtxB-uOkro" },
           "uuid": "Lclfiy3hys0B",
           "enumValues": [],
           "origin": null,
@@ -2872,13 +2167,9 @@
           "__type": "PropParam"
         },
         "EW_WYlZ3GFoy": {
-          "type": {
-            "__ref": "vMJ1ZwHG76EW"
-          },
+          "type": { "__ref": "vMJ1ZwHG76EW" },
           "advanced": false,
-          "variable": {
-            "__ref": "iNgzqzAh2l8H"
-          },
+          "variable": { "__ref": "iNgzqzAh2l8H" },
           "uuid": "mwHi-w44O4Qk",
           "enumValues": [],
           "origin": null,
@@ -2897,15 +2188,9 @@
           "__type": "PropParam"
         },
         "wZ5hEkEcypRV": {
-          "type": {
-            "__ref": "Qt9qoYDRgjNQ"
-          },
-          "tplSlot": {
-            "__ref": "XHbCevaVBenp"
-          },
-          "variable": {
-            "__ref": "H8k_-gE-JlFy"
-          },
+          "type": { "__ref": "Qt9qoYDRgjNQ" },
+          "tplSlot": { "__ref": "XHbCevaVBenp" },
+          "variable": { "__ref": "H8k_-gE-JlFy" },
           "uuid": "IZ0GDhl4zs2C",
           "enumValues": [],
           "origin": null,
@@ -2924,13 +2209,9 @@
           "__type": "SlotParam"
         },
         "yL3xpqtBPFiN": {
-          "type": {
-            "__ref": "EPpTcdpvkGVh"
-          },
+          "type": { "__ref": "EPpTcdpvkGVh" },
           "advanced": false,
-          "variable": {
-            "__ref": "eIFbf7FUIVDv"
-          },
+          "variable": { "__ref": "eIFbf7FUIVDv" },
           "uuid": "HrYxan0zTX17",
           "enumValues": [],
           "origin": null,
@@ -2949,13 +2230,9 @@
           "__type": "PropParam"
         },
         "fsNw4la2VPFb": {
-          "type": {
-            "__ref": "OZFB1BdA4Ih6"
-          },
+          "type": { "__ref": "OZFB1BdA4Ih6" },
           "advanced": false,
-          "variable": {
-            "__ref": "Ag_oyUjUwrzn"
-          },
+          "variable": { "__ref": "Ag_oyUjUwrzn" },
           "uuid": "cx9eERemWT4c",
           "enumValues": [],
           "origin": null,
@@ -2976,22 +2253,14 @@
         "0VlB0mMSwKiJ": {
           "tag": "div",
           "name": null,
-          "children": [
-            {
-              "__ref": "XHbCevaVBenp"
-            }
-          ],
+          "children": [{ "__ref": "XHbCevaVBenp" }],
           "type": "other",
           "codeGenType": null,
           "columnsSetting": null,
           "uuid": "6wMbHnzoIcQQ",
           "parent": null,
           "locked": null,
-          "vsettings": [
-            {
-              "__ref": "YCE7D2ERMsa0"
-            }
-          ],
+          "vsettings": [{ "__ref": "YCE7D2ERMsa0" }],
           "__type": "TplTag"
         },
         "FSajapRUc0VM": {
@@ -3031,72 +2300,48 @@
           "refActions": [],
           "__type": "CodeComponentMeta"
         },
-        "L0BITkG4b8d5": {
-          "name": "text",
-          "__type": "Text"
-        },
+        "L0BITkG4b8d5": { "name": "text", "__type": "Text" },
         "Ei6kS8oEPKXr": {
           "name": "title",
           "uuid": "pVoPQz-ztrhx",
           "__type": "Var"
         },
-        "LF2ISsPfW3Ug": {
-          "name": "text",
-          "__type": "Text"
-        },
+        "LF2ISsPfW3Ug": { "name": "text", "__type": "Text" },
         "jSWvSVxX4XmE": {
           "name": "description",
           "uuid": "w_yUxnBsQpXk",
           "__type": "Var"
         },
-        "4kaiDvWKjvEr": {
-          "name": "img",
-          "__type": "Img"
-        },
+        "4kaiDvWKjvEr": { "name": "img", "__type": "Img" },
         "hKZCZPJtiIt6": {
           "name": "image",
           "uuid": "lelqk6XmZZsI",
           "__type": "Var"
         },
-        "VNb7o-3izrkx": {
-          "name": "text",
-          "__type": "Text"
-        },
+        "VNb7o-3izrkx": { "name": "text", "__type": "Text" },
         "qlTsrKrDG-Es": {
           "name": "canonical",
           "uuid": "PJNw5gotIQMv",
           "__type": "Var"
         },
         "o5AGPYWypNHz": {
-          "variants": [
-            {
-              "__ref": "BXrYCU4FXCwT"
-            }
-          ],
+          "variants": [{ "__ref": "BXrYCU4FXCwT" }],
           "args": [],
           "attrs": {},
-          "rs": {
-            "__ref": "0PxTFohQSRXa"
-          },
+          "rs": { "__ref": "0PxTFohQSRXa" },
           "dataCond": null,
           "dataRep": null,
           "text": null,
           "columnsConfig": null,
           "__type": "VariantSetting"
         },
-        "HqDjyyv5AniH": {
-          "name": "any",
-          "__type": "AnyType"
-        },
+        "HqDjyyv5AniH": { "name": "any", "__type": "AnyType" },
         "xUEtxB-uOkro": {
           "name": "dataOp",
           "uuid": "Ahh3en4N-NQ6",
           "__type": "Var"
         },
-        "vMJ1ZwHG76EW": {
-          "name": "text",
-          "__type": "Text"
-        },
+        "vMJ1ZwHG76EW": { "name": "text", "__type": "Text" },
         "iNgzqzAh2l8H": {
           "name": "name",
           "uuid": "kq54CDObxECF",
@@ -3104,11 +2349,7 @@
         },
         "Qt9qoYDRgjNQ": {
           "name": "renderFunc",
-          "params": [
-            {
-              "__ref": "GIt3ayOuu_da"
-            }
-          ],
+          "params": [{ "__ref": "GIt3ayOuu_da" }],
           "allowed": [],
           "allowRootWrapper": null,
           "__type": "RenderFuncType"
@@ -3118,52 +2359,32 @@
           "uuid": "v-OM9Jlb9fax",
           "__type": "Var"
         },
-        "EPpTcdpvkGVh": {
-          "name": "num",
-          "__type": "Num"
-        },
+        "EPpTcdpvkGVh": { "name": "num", "__type": "Num" },
         "eIFbf7FUIVDv": {
           "name": "pageSize",
           "uuid": "dkVH-3zmKlLs",
           "__type": "Var"
         },
-        "OZFB1BdA4Ih6": {
-          "name": "num",
-          "__type": "Num"
-        },
+        "OZFB1BdA4Ih6": { "name": "num", "__type": "Num" },
         "Ag_oyUjUwrzn": {
           "name": "pageIndex",
           "uuid": "sJcWzk3VaVMx",
           "__type": "Var"
         },
         "XHbCevaVBenp": {
-          "param": {
-            "__ref": "wZ5hEkEcypRV"
-          },
+          "param": { "__ref": "wZ5hEkEcypRV" },
           "defaultContents": [],
           "uuid": "3Jheivm_vSO9",
-          "parent": {
-            "__ref": "0VlB0mMSwKiJ"
-          },
+          "parent": { "__ref": "0VlB0mMSwKiJ" },
           "locked": null,
-          "vsettings": [
-            {
-              "__ref": "7hmRRKfB_jgp"
-            }
-          ],
+          "vsettings": [{ "__ref": "7hmRRKfB_jgp" }],
           "__type": "TplSlot"
         },
         "YCE7D2ERMsa0": {
-          "variants": [
-            {
-              "__ref": "FSajapRUc0VM"
-            }
-          ],
+          "variants": [{ "__ref": "FSajapRUc0VM" }],
           "args": [],
           "attrs": {},
-          "rs": {
-            "__ref": "NCgzYT3GRAsU"
-          },
+          "rs": { "__ref": "NCgzYT3GRAsU" },
           "dataCond": null,
           "dataRep": null,
           "text": null,
@@ -3171,10 +2392,7 @@
           "__type": "VariantSetting"
         },
         "0PxTFohQSRXa": {
-          "values": {
-            "display": "flex",
-            "flex-direction": "row"
-          },
+          "values": { "display": "flex", "flex-direction": "row" },
           "mixins": [],
           "animations": null,
           "__type": "RuleSet"
@@ -3183,22 +2401,14 @@
           "name": "arg",
           "argName": "$queries",
           "displayName": null,
-          "type": {
-            "__ref": "jgceqJE8pSoK"
-          },
+          "type": { "__ref": "jgceqJE8pSoK" },
           "__type": "ArgType"
         },
         "7hmRRKfB_jgp": {
-          "variants": [
-            {
-              "__ref": "FSajapRUc0VM"
-            }
-          ],
+          "variants": [{ "__ref": "FSajapRUc0VM" }],
           "args": [],
           "attrs": {},
-          "rs": {
-            "__ref": "ckDliiIH33Tj"
-          },
+          "rs": { "__ref": "ckDliiIH33Tj" },
           "dataCond": null,
           "dataRep": null,
           "text": null,
@@ -3206,18 +2416,12 @@
           "__type": "VariantSetting"
         },
         "NCgzYT3GRAsU": {
-          "values": {
-            "display": "flex",
-            "flex-direction": "row"
-          },
+          "values": { "display": "flex", "flex-direction": "row" },
           "mixins": [],
           "animations": null,
           "__type": "RuleSet"
         },
-        "jgceqJE8pSoK": {
-          "name": "any",
-          "__type": "AnyType"
-        },
+        "jgceqJE8pSoK": { "name": "any", "__type": "AnyType" },
         "ckDliiIH33Tj": {
           "values": {},
           "mixins": [],
@@ -3231,16 +2435,12 @@
               "iid": "26311016"
             }
           },
-          "expr": {
-            "__ref": "hbajE3dAzxne"
-          },
+          "expr": { "__ref": "hbajE3dAzxne" },
           "__type": "Arg"
         },
         "UJDodTeHAKak": {
           "code": "($ctx.currentStrapiRestaurantsItem.attributes.photo.data.attributes.url)",
-          "fallback": {
-            "__ref": "Cr4DHCDnVA2F"
-          },
+          "fallback": { "__ref": "Cr4DHCDnVA2F" },
           "__type": "CustomCode"
         },
         "Cr4DHCDnVA2F": {
@@ -3253,20 +2453,12 @@
           "name": "Strapi v5",
           "params": [],
           "states": [],
-          "tplTree": {
-            "__ref": "mfDqODMlhwBD"
-          },
+          "tplTree": { "__ref": "mfDqODMlhwBD" },
           "editableByContentEditor": false,
           "hiddenFromContentEditor": false,
-          "variants": [
-            {
-              "__ref": "U61idb-NssmS"
-            }
-          ],
+          "variants": [{ "__ref": "U61idb-NssmS" }],
           "variantGroups": [],
-          "pageMeta": {
-            "__ref": "nLgRuny8hxcD"
-          },
+          "pageMeta": { "__ref": "nLgRuny8hxcD" },
           "codeComponentMeta": null,
           "type": "page",
           "subComps": [],
@@ -3283,27 +2475,17 @@
           "__type": "Component"
         },
         "i2rqyUFiX-5v": {
-          "component": {
-            "__ref": "LW6k-nA3XmHV"
-          },
-          "matrix": {
-            "__ref": "NNlNhHJ26Zk_"
-          },
-          "customMatrix": {
-            "__ref": "p_NnGgZ80mOV"
-          },
+          "component": { "__ref": "LW6k-nA3XmHV" },
+          "matrix": { "__ref": "NNlNhHJ26Zk_" },
+          "customMatrix": { "__ref": "p_NnGgZ80mOV" },
           "__type": "PageArena"
         },
         "mfDqODMlhwBD": {
           "tag": "div",
           "name": null,
           "children": [
-            {
-              "__ref": "4WbkAOxLrgHs"
-            },
-            {
-              "__ref": "bZM7hqpKbhcR"
-            }
+            { "__ref": "4WbkAOxLrgHs" },
+            { "__ref": "bZM7hqpKbhcR" }
           ],
           "type": "other",
           "codeGenType": null,
@@ -3311,11 +2493,7 @@
           "uuid": "RDXMMznc83U_",
           "parent": null,
           "locked": null,
-          "vsettings": [
-            {
-              "__ref": "v1BW_fG1f8CX"
-            }
-          ],
+          "vsettings": [{ "__ref": "v1BW_fG1f8CX" }],
           "__type": "TplTag"
         },
         "U61idb-NssmS": {
@@ -3342,19 +2520,11 @@
           "__type": "PageMeta"
         },
         "NNlNhHJ26Zk_": {
-          "rows": [
-            {
-              "__ref": "HENbn-QjQE4b"
-            }
-          ],
+          "rows": [{ "__ref": "HENbn-QjQE4b" }],
           "__type": "ArenaFrameGrid"
         },
         "p_NnGgZ80mOV": {
-          "rows": [
-            {
-              "__ref": "wWZ5KTxi8CU2"
-            }
-          ],
+          "rows": [{ "__ref": "wWZ5KTxi8CU2" }],
           "__type": "ArenaFrameGrid"
         },
         "4WbkAOxLrgHs": {
@@ -3366,15 +2536,9 @@
             }
           },
           "uuid": "QSquF9mNdEep",
-          "parent": {
-            "__ref": "mfDqODMlhwBD"
-          },
+          "parent": { "__ref": "mfDqODMlhwBD" },
           "locked": null,
-          "vsettings": [
-            {
-              "__ref": "-4LmRXP1UGe3"
-            }
-          ],
+          "vsettings": [{ "__ref": "-4LmRXP1UGe3" }],
           "__type": "TplComponent"
         },
         "bZM7hqpKbhcR": {
@@ -3386,28 +2550,16 @@
             }
           },
           "uuid": "1kvNyGG6SecT",
-          "parent": {
-            "__ref": "mfDqODMlhwBD"
-          },
+          "parent": { "__ref": "mfDqODMlhwBD" },
           "locked": null,
-          "vsettings": [
-            {
-              "__ref": "dDIXdIeBwKvs"
-            }
-          ],
+          "vsettings": [{ "__ref": "dDIXdIeBwKvs" }],
           "__type": "TplComponent"
         },
         "v1BW_fG1f8CX": {
-          "variants": [
-            {
-              "__ref": "U61idb-NssmS"
-            }
-          ],
+          "variants": [{ "__ref": "U61idb-NssmS" }],
           "args": [],
           "attrs": {},
-          "rs": {
-            "__ref": "h0ZPpPyHkuX6"
-          },
+          "rs": { "__ref": "h0ZPpPyHkuX6" },
           "dataCond": null,
           "dataRep": null,
           "text": null,
@@ -3415,14 +2567,8 @@
           "__type": "VariantSetting"
         },
         "HENbn-QjQE4b": {
-          "cols": [
-            {
-              "__ref": "U8bmbZD33cKT"
-            }
-          ],
-          "rowKey": {
-            "__ref": "U61idb-NssmS"
-          },
+          "cols": [{ "__ref": "U8bmbZD33cKT" }],
+          "rowKey": { "__ref": "U61idb-NssmS" },
           "__type": "ArenaFrameRow"
         },
         "wWZ5KTxi8CU2": {
@@ -3431,23 +2577,10 @@
           "__type": "ArenaFrameRow"
         },
         "-4LmRXP1UGe3": {
-          "variants": [
-            {
-              "__ref": "U61idb-NssmS"
-            }
-          ],
-          "args": [
-            {
-              "__ref": "GQVp1ug-9nWz"
-            },
-            {
-              "__ref": "ZFJjnsSHo2WW"
-            }
-          ],
+          "variants": [{ "__ref": "U61idb-NssmS" }],
+          "args": [{ "__ref": "GQVp1ug-9nWz" }, { "__ref": "ZFJjnsSHo2WW" }],
           "attrs": {},
-          "rs": {
-            "__ref": "rVSnzZaabwnY"
-          },
+          "rs": { "__ref": "rVSnzZaabwnY" },
           "dataCond": null,
           "dataRep": null,
           "text": null,
@@ -3455,23 +2588,10 @@
           "__type": "VariantSetting"
         },
         "dDIXdIeBwKvs": {
-          "variants": [
-            {
-              "__ref": "U61idb-NssmS"
-            }
-          ],
-          "args": [
-            {
-              "__ref": "aa-sfmVp0Ycq"
-            },
-            {
-              "__ref": "wdJRo74z0PCF"
-            }
-          ],
+          "variants": [{ "__ref": "U61idb-NssmS" }],
+          "args": [{ "__ref": "aa-sfmVp0Ycq" }, { "__ref": "wdJRo74z0PCF" }],
           "attrs": {},
-          "rs": {
-            "__ref": "dMscNX_hkbBB"
-          },
+          "rs": { "__ref": "dMscNX_hkbBB" },
           "dataCond": null,
           "dataRep": null,
           "text": null,
@@ -3491,9 +2611,7 @@
           "__type": "RuleSet"
         },
         "U8bmbZD33cKT": {
-          "frame": {
-            "__ref": "gZdJkqmy-Ox8"
-          },
+          "frame": { "__ref": "gZdJkqmy-Ox8" },
           "cellKey": null,
           "__type": "ArenaFrameCell"
         },
@@ -3504,9 +2622,7 @@
               "iid": "26311006"
             }
           },
-          "expr": {
-            "__ref": "ok7mDjdsE-5k"
-          },
+          "expr": { "__ref": "ok7mDjdsE-5k" },
           "__type": "Arg"
         },
         "ZFJjnsSHo2WW": {
@@ -3516,9 +2632,7 @@
               "iid": "26311007"
             }
           },
-          "expr": {
-            "__ref": "oixxEGa32ufM"
-          },
+          "expr": { "__ref": "oixxEGa32ufM" },
           "__type": "Arg"
         },
         "rVSnzZaabwnY": {
@@ -3545,9 +2659,7 @@
               "iid": "26311006"
             }
           },
-          "expr": {
-            "__ref": "LgiUff8rpVnC"
-          },
+          "expr": { "__ref": "LgiUff8rpVnC" },
           "__type": "Arg"
         },
         "wdJRo74z0PCF": {
@@ -3557,9 +2669,7 @@
               "iid": "26311007"
             }
           },
-          "expr": {
-            "__ref": "KfknGlUnYtRJ"
-          },
+          "expr": { "__ref": "KfknGlUnYtRJ" },
           "__type": "Arg"
         },
         "dMscNX_hkbBB": {
@@ -3583,16 +2693,10 @@
           "uuid": "-zRfinDjVdjP",
           "width": 1366,
           "height": 768,
-          "container": {
-            "__ref": "1m9JjRZrnp5H"
-          },
+          "container": { "__ref": "1m9JjRZrnp5H" },
           "lang": "English",
           "pinnedVariants": {},
-          "targetVariants": [
-            {
-              "__ref": "U61idb-NssmS"
-            }
-          ],
+          "targetVariants": [{ "__ref": "U61idb-NssmS" }],
           "pinnedGlobalVariants": {},
           "targetGlobalVariants": [],
           "viewMode": "stretch",
@@ -3603,11 +2707,7 @@
           "__type": "ArenaFrame"
         },
         "ok7mDjdsE-5k": {
-          "tpl": [
-            {
-              "__ref": "7yz_WId06GM2"
-            }
-          ],
+          "tpl": [{ "__ref": "7yz_WId06GM2" }],
           "__type": "RenderExpr"
         },
         "oixxEGa32ufM": {
@@ -3616,11 +2716,7 @@
           "__type": "CustomCode"
         },
         "LgiUff8rpVnC": {
-          "tpl": [
-            {
-              "__ref": "CVlIAMa6MF8w"
-            }
-          ],
+          "tpl": [{ "__ref": "CVlIAMa6MF8w" }],
           "__type": "RenderExpr"
         },
         "KfknGlUnYtRJ": {
@@ -3630,82 +2726,50 @@
         },
         "1m9JjRZrnp5H": {
           "name": null,
-          "component": {
-            "__ref": "LW6k-nA3XmHV"
-          },
+          "component": { "__ref": "LW6k-nA3XmHV" },
           "uuid": "mgdUOfAJGCOj",
           "parent": null,
           "locked": null,
-          "vsettings": [
-            {
-              "__ref": "hnaiKHYy-TWv"
-            }
-          ],
+          "vsettings": [{ "__ref": "hnaiKHYy-TWv" }],
           "__type": "TplComponent"
         },
         "7yz_WId06GM2": {
           "tag": "div",
           "name": null,
           "children": [
-            {
-              "__ref": "gSYIJPfRV-rj"
-            },
-            {
-              "__ref": "r8zhSjumUIIz"
-            }
+            { "__ref": "gSYIJPfRV-rj" },
+            { "__ref": "r8zhSjumUIIz" }
           ],
           "type": "other",
           "codeGenType": null,
           "columnsSetting": null,
           "uuid": "Vh0dQqF4lvl_",
-          "parent": {
-            "__ref": "4WbkAOxLrgHs"
-          },
+          "parent": { "__ref": "4WbkAOxLrgHs" },
           "locked": null,
-          "vsettings": [
-            {
-              "__ref": "bc6-7rSTLF2m"
-            }
-          ],
+          "vsettings": [{ "__ref": "bc6-7rSTLF2m" }],
           "__type": "TplTag"
         },
         "CVlIAMa6MF8w": {
           "tag": "div",
           "name": null,
           "children": [
-            {
-              "__ref": "ifngOrwRay87"
-            },
-            {
-              "__ref": "YK5euW0nWscs"
-            }
+            { "__ref": "ifngOrwRay87" },
+            { "__ref": "YK5euW0nWscs" }
           ],
           "type": "other",
           "codeGenType": null,
           "columnsSetting": null,
           "uuid": "8dyyebjbvEq5",
-          "parent": {
-            "__ref": "bZM7hqpKbhcR"
-          },
+          "parent": { "__ref": "bZM7hqpKbhcR" },
           "locked": null,
-          "vsettings": [
-            {
-              "__ref": "rmpkPeY5UFMT"
-            }
-          ],
+          "vsettings": [{ "__ref": "rmpkPeY5UFMT" }],
           "__type": "TplTag"
         },
         "hnaiKHYy-TWv": {
-          "variants": [
-            {
-              "__ref": "31846007"
-            }
-          ],
+          "variants": [{ "__ref": "31846007" }],
           "args": [],
           "attrs": {},
-          "rs": {
-            "__ref": "UbRqYzTgu1h_"
-          },
+          "rs": { "__ref": "UbRqYzTgu1h_" },
           "dataCond": null,
           "dataRep": null,
           "text": null,
@@ -3721,15 +2785,9 @@
             }
           },
           "uuid": "jd134fNUyrqU",
-          "parent": {
-            "__ref": "7yz_WId06GM2"
-          },
+          "parent": { "__ref": "7yz_WId06GM2" },
           "locked": null,
-          "vsettings": [
-            {
-              "__ref": "F8FpChfwnddE"
-            }
-          ],
+          "vsettings": [{ "__ref": "F8FpChfwnddE" }],
           "__type": "TplComponent"
         },
         "r8zhSjumUIIz": {
@@ -3741,28 +2799,16 @@
             }
           },
           "uuid": "6gM7eJw5qjEN",
-          "parent": {
-            "__ref": "7yz_WId06GM2"
-          },
+          "parent": { "__ref": "7yz_WId06GM2" },
           "locked": null,
-          "vsettings": [
-            {
-              "__ref": "HzS1-l-pgMgs"
-            }
-          ],
+          "vsettings": [{ "__ref": "HzS1-l-pgMgs" }],
           "__type": "TplComponent"
         },
         "bc6-7rSTLF2m": {
-          "variants": [
-            {
-              "__ref": "U61idb-NssmS"
-            }
-          ],
+          "variants": [{ "__ref": "U61idb-NssmS" }],
           "args": [],
           "attrs": {},
-          "rs": {
-            "__ref": "t3UA-v1US0D-"
-          },
+          "rs": { "__ref": "t3UA-v1US0D-" },
           "dataCond": null,
           "dataRep": null,
           "text": null,
@@ -3777,15 +2823,9 @@
           "codeGenType": null,
           "columnsSetting": null,
           "uuid": "v_bmV2FFqOgn",
-          "parent": {
-            "__ref": "CVlIAMa6MF8w"
-          },
+          "parent": { "__ref": "CVlIAMa6MF8w" },
           "locked": null,
-          "vsettings": [
-            {
-              "__ref": "K4KrVMzT3I-K"
-            }
-          ],
+          "vsettings": [{ "__ref": "K4KrVMzT3I-K" }],
           "__type": "TplTag"
         },
         "YK5euW0nWscs": {
@@ -3796,28 +2836,16 @@
           "codeGenType": null,
           "columnsSetting": null,
           "uuid": "ZjzjaiXGAcvN",
-          "parent": {
-            "__ref": "CVlIAMa6MF8w"
-          },
+          "parent": { "__ref": "CVlIAMa6MF8w" },
           "locked": null,
-          "vsettings": [
-            {
-              "__ref": "kH1uURHOTtbz"
-            }
-          ],
+          "vsettings": [{ "__ref": "kH1uURHOTtbz" }],
           "__type": "TplTag"
         },
         "rmpkPeY5UFMT": {
-          "variants": [
-            {
-              "__ref": "U61idb-NssmS"
-            }
-          ],
+          "variants": [{ "__ref": "U61idb-NssmS" }],
           "args": [],
           "attrs": {},
-          "rs": {
-            "__ref": "fb6aoQ5f-snx"
-          },
+          "rs": { "__ref": "fb6aoQ5f-snx" },
           "dataCond": null,
           "dataRep": null,
           "text": null,
@@ -3831,20 +2859,10 @@
           "__type": "RuleSet"
         },
         "F8FpChfwnddE": {
-          "variants": [
-            {
-              "__ref": "U61idb-NssmS"
-            }
-          ],
-          "args": [
-            {
-              "__ref": "YguNls62Iy6q"
-            }
-          ],
+          "variants": [{ "__ref": "U61idb-NssmS" }],
+          "args": [{ "__ref": "YguNls62Iy6q" }],
           "attrs": {},
-          "rs": {
-            "__ref": "cFugK12Nyahq"
-          },
+          "rs": { "__ref": "cFugK12Nyahq" },
           "dataCond": null,
           "dataRep": null,
           "text": null,
@@ -3852,20 +2870,10 @@
           "__type": "VariantSetting"
         },
         "HzS1-l-pgMgs": {
-          "variants": [
-            {
-              "__ref": "U61idb-NssmS"
-            }
-          ],
-          "args": [
-            {
-              "__ref": "2JcDS1VYxswB"
-            }
-          ],
+          "variants": [{ "__ref": "U61idb-NssmS" }],
+          "args": [{ "__ref": "2JcDS1VYxswB" }],
           "attrs": {},
-          "rs": {
-            "__ref": "Q7E9pJzFAOIU"
-          },
+          "rs": { "__ref": "Q7E9pJzFAOIU" },
           "dataCond": null,
           "dataRep": null,
           "text": null,
@@ -3892,42 +2900,24 @@
           "__type": "RuleSet"
         },
         "K4KrVMzT3I-K": {
-          "variants": [
-            {
-              "__ref": "U61idb-NssmS"
-            }
-          ],
+          "variants": [{ "__ref": "U61idb-NssmS" }],
           "args": [],
           "attrs": {},
-          "rs": {
-            "__ref": "tkmYnHiaDHrT"
-          },
+          "rs": { "__ref": "tkmYnHiaDHrT" },
           "dataCond": null,
           "dataRep": null,
-          "text": {
-            "__ref": "3UaJN2EehGvy"
-          },
+          "text": { "__ref": "3UaJN2EehGvy" },
           "columnsConfig": null,
           "__type": "VariantSetting"
         },
         "kH1uURHOTtbz": {
-          "variants": [
-            {
-              "__ref": "U61idb-NssmS"
-            }
-          ],
+          "variants": [{ "__ref": "U61idb-NssmS" }],
           "args": [],
           "attrs": {
-            "loading": {
-              "__ref": "8qRJ80Y79dS6"
-            },
-            "src": {
-              "__ref": "G2IBYX9ovc-2"
-            }
+            "loading": { "__ref": "8qRJ80Y79dS6" },
+            "src": { "__ref": "G2IBYX9ovc-2" }
           },
-          "rs": {
-            "__ref": "WycCR7DlYV64"
-          },
+          "rs": { "__ref": "WycCR7DlYV64" },
           "dataCond": null,
           "dataRep": null,
           "text": null,
@@ -3960,15 +2950,11 @@
               "iid": "26311012"
             }
           },
-          "expr": {
-            "__ref": "QbeCYHMCCP_X"
-          },
+          "expr": { "__ref": "QbeCYHMCCP_X" },
           "__type": "Arg"
         },
         "cFugK12Nyahq": {
-          "values": {
-            "max-width": "100%"
-          },
+          "values": { "max-width": "100%" },
           "mixins": [],
           "animations": null,
           "__type": "RuleSet"
@@ -3980,15 +2966,11 @@
               "iid": "26311012"
             }
           },
-          "expr": {
-            "__ref": "si-XFOlNWYHQ"
-          },
+          "expr": { "__ref": "si-XFOlNWYHQ" },
           "__type": "Arg"
         },
         "Q7E9pJzFAOIU": {
-          "values": {
-            "max-width": "100%"
-          },
+          "values": { "max-width": "100%" },
           "mixins": [],
           "animations": null,
           "__type": "RuleSet"
@@ -4033,9 +3015,7 @@
         },
         "G2IBYX9ovc-2": {
           "code": "($ctx.currentStrapiRestaurantsV5Item.photo.url)",
-          "fallback": {
-            "__ref": "2B_nldW8JQ4q"
-          },
+          "fallback": { "__ref": "2B_nldW8JQ4q" },
           "__type": "CustomCode"
         },
         "2B_nldW8JQ4q": {
@@ -4044,17 +3024,13 @@
           "__type": "CustomCode"
         },
         "3UaJN2EehGvy": {
-          "expr": {
-            "__ref": "c_UYtKOh5mww"
-          },
+          "expr": { "__ref": "c_UYtKOh5mww" },
           "html": false,
           "__type": "ExprText"
         },
         "c_UYtKOh5mww": {
           "code": "($ctx.currentStrapiRestaurantsV5Item.name)",
-          "fallback": {
-            "__ref": "Cb2lptcl-Tmx"
-          },
+          "fallback": { "__ref": "Cb2lptcl-Tmx" },
           "__type": "CustomCode"
         },
         "Cb2lptcl-Tmx": {
