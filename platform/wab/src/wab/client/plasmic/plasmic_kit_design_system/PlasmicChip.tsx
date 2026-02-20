@@ -104,13 +104,13 @@ function PlasmicChip__RenderFunc(props: {
         path: "deletable",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.deletable,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.deletable,
       },
       {
         path: "size",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.size,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.size,
       },
     ],
     [$props, $ctx, $refs]
@@ -119,6 +119,7 @@ function PlasmicChip__RenderFunc(props: {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
@@ -215,7 +216,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicChip__VariantsArgs;
     args?: PlasmicChip__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicChip__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicChip__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicChip__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

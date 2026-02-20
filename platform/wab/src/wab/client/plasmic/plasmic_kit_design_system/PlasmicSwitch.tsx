@@ -122,13 +122,13 @@ function PlasmicSwitch__RenderFunc(props: {
         path: "noLabel",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.noLabel,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.noLabel,
       },
       {
         path: "isDisabled",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isDisabled,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.isDisabled,
       },
       {
         path: "isChecked",
@@ -145,6 +145,7 @@ function PlasmicSwitch__RenderFunc(props: {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
@@ -290,7 +291,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicSwitch__VariantsArgs;
     args?: PlasmicSwitch__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicSwitch__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicSwitch__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicSwitch__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

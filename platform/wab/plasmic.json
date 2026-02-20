@@ -3503,7 +3503,7 @@
     {
       "projectId": "wT5BWZPEc2fYxyqbTLXMt2",
       "projectName": "[PlasmicKit] Variants",
-      "version": ">=0.0.0",
+      "version": "fix/variant-row-icons",
       "cssFilePath": "wab/client/plasmic/plasmic_kit_variants/plasmic_plasmic_kit_variants.module.css",
       "components": [
         {
@@ -5766,7 +5766,8 @@
       "splitsProviderFilePath": "",
       "customFunctions": [],
       "styleTokensProviderFilePath": "wab/client/plasmic/plasmic_kit_text_mixins_product/PlasmicStyleTokensProvider.tsx",
-      "projectModuleFilePath": "wab/client/plasmic/plasmic_kit_text_mixins_product/plasmic.tsx"
+      "projectModuleFilePath": "wab/client/plasmic/plasmic_kit_text_mixins_product/plasmic.tsx",
+      "dataTokensFilePath": ""
     },
     {
       "projectId": "oT38tGyqov9SPWHpf3Y2Rf",
@@ -8672,7 +8673,8 @@
       "splitsProviderFilePath": "",
       "customFunctions": [],
       "styleTokensProviderFilePath": "wab/client/plasmic/plasmic_kit_icons/PlasmicStyleTokensProvider.tsx",
-      "projectModuleFilePath": "wab/client/plasmic/plasmic_kit_icons/plasmic.tsx"
+      "projectModuleFilePath": "wab/client/plasmic/plasmic_kit_icons/plasmic.tsx",
+      "dataTokensFilePath": ""
     },
     {
       "projectId": "95xp9cYcv7HrNWpFWWhbcv",
@@ -8708,7 +8710,8 @@
       "splitsProviderFilePath": "",
       "customFunctions": [],
       "styleTokensProviderFilePath": "wab/client/plasmic/plasmic_kit_color_tokens/PlasmicStyleTokensProvider.tsx",
-      "projectModuleFilePath": "wab/client/plasmic/plasmic_kit_color_tokens/plasmic.tsx"
+      "projectModuleFilePath": "wab/client/plasmic/plasmic_kit_color_tokens/plasmic.tsx",
+      "dataTokensFilePath": ""
     },
     {
       "projectId": "sZNLVjiaeNGLXmdsrbRQAX",
@@ -11704,7 +11707,8 @@
       ],
       "customFunctions": [],
       "styleTokensProviderFilePath": "wab/client/plasmic/react_aria/PlasmicStyleTokensProvider.tsx",
-      "projectModuleFilePath": "wab/client/plasmic/react_aria/plasmic.tsx"
+      "projectModuleFilePath": "wab/client/plasmic/react_aria/plasmic.tsx",
+      "dataTokensFilePath": ""
     },
     {
       "projectId": "kTSMroKPFv65RRTb44SCtk",
@@ -11948,6 +11952,6 @@
   "postSyncCommands": [
     "git ls-files -m | xargs pre-commit run prettier --files"
   ],
-  "cliVersion": "0.1.356",
-  "$schema": "https://unpkg.com/@plasmicapp/cli@0.1.356/dist/plasmic.schema.json"
+  "cliVersion": "0.1.358",
+  "$schema": "https://unpkg.com/@plasmicapp/cli@0.1.358/dist/plasmic.schema.json"
 }

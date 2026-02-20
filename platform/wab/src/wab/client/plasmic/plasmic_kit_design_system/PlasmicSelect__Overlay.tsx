@@ -107,7 +107,7 @@ function PlasmicSelect__Overlay__RenderFunc(props: {
         path: "relativePlacement",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) =>
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
           $props.relativePlacement,
       },
     ],
@@ -117,6 +117,7 @@ function PlasmicSelect__Overlay__RenderFunc(props: {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
@@ -317,7 +318,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicSelect__Overlay__VariantsArgs;
     args?: PlasmicSelect__Overlay__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicSelect__Overlay__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicSelect__Overlay__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicSelect__Overlay__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

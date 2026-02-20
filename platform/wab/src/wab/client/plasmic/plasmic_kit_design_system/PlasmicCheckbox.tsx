@@ -138,13 +138,13 @@ function PlasmicCheckbox__RenderFunc(props: {
         path: "noLabel",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.noLabel,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.noLabel,
       },
       {
         path: "isDisabled",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isDisabled,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.isDisabled,
       },
       {
         path: "isChecked",
@@ -158,20 +158,20 @@ function PlasmicCheckbox__RenderFunc(props: {
         path: "isIndeterminate",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) =>
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
           $props.isIndeterminate,
       },
       {
         path: "medium",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.medium,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.medium,
       },
       {
         path: "color",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.color,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.color,
       },
     ],
     [$props, $ctx, $refs]
@@ -180,6 +180,7 @@ function PlasmicCheckbox__RenderFunc(props: {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
@@ -488,7 +489,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicCheckbox__VariantsArgs;
     args?: PlasmicCheckbox__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicCheckbox__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicCheckbox__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicCheckbox__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

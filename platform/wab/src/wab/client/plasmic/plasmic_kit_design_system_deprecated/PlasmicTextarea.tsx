@@ -209,62 +209,63 @@ function PlasmicTextarea__RenderFunc(props: {
         path: "disabled",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.disabled,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.disabled,
       },
       {
         path: "styleType",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.styleType,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.styleType,
       },
       {
         path: "withIcons",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.withIcons,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.withIcons,
       },
       {
         path: "error",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.error,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.error,
       },
       {
         path: "fontSize",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.fontSize,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.fontSize,
       },
       {
         path: "fontStyle",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.fontStyle,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.fontStyle,
       },
       {
         path: "noOutline",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.noOutline,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.noOutline,
       },
       {
         path: "whiteBackground",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) =>
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
           $props.whiteBackground,
       },
       {
         path: "extraPadding",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.extraPadding,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props.extraPadding,
       },
       {
         path: "textarea.value",
         type: "private",
         variableType: "text",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props["value"],
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props["value"],
       },
     ],
     [$props, $ctx, $refs]
@@ -273,6 +274,7 @@ function PlasmicTextarea__RenderFunc(props: {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
@@ -780,7 +782,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicTextarea__VariantsArgs;
     args?: PlasmicTextarea__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicTextarea__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicTextarea__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicTextarea__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

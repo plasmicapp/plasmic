@@ -110,7 +110,8 @@ function PlasmicModal__RenderFunc(props: {
         path: "tintBackground",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.tintBackground,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props.tintBackground,
       },
     ],
     [$props, $ctx, $refs]
@@ -119,6 +120,7 @@ function PlasmicModal__RenderFunc(props: {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
@@ -268,7 +270,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicModal__VariantsArgs;
     args?: PlasmicModal__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicModal__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicModal__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicModal__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

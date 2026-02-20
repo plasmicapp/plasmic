@@ -200,64 +200,65 @@ function PlasmicIconButton__RenderFunc(props: {
         path: "disabled",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.disabled,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.disabled,
       },
       {
         path: "size",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.size,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.size,
       },
       {
         path: "type",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.type,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.type,
       },
       {
         path: "isActive",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isActive,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.isActive,
       },
       {
         path: "showAlert",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.showAlert,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.showAlert,
       },
       {
         path: "withBackgroundHover",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) =>
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
           $props.withBackgroundHover,
       },
       {
         path: "withRedBackgroundHover",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) =>
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
           $props.withRedBackgroundHover,
       },
       {
         path: "withGreenBackgroundHover",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) =>
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
           $props.withGreenBackgroundHover,
       },
       {
         path: "withDropdown",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.withDropdown,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props.withDropdown,
       },
       {
         path: "isLoading",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isLoading,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.isLoading,
       },
     ],
     [$props, $ctx, $refs]
@@ -266,6 +267,7 @@ function PlasmicIconButton__RenderFunc(props: {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
@@ -692,7 +694,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicIconButton__VariantsArgs;
     args?: PlasmicIconButton__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicIconButton__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicIconButton__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicIconButton__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

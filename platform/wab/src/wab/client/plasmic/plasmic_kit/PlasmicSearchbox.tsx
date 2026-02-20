@@ -120,38 +120,39 @@ function PlasmicSearchbox__RenderFunc(props: {
         path: "hasValue",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.hasValue,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.hasValue,
       },
       {
         path: "bordered",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.bordered,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.bordered,
       },
       {
         path: "noOutline",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.noOutline,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.noOutline,
       },
       {
         path: "whiteBackground",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) =>
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
           $props.whiteBackground,
       },
       {
         path: "extraPadding",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.extraPadding,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props.extraPadding,
       },
       {
         path: "medium",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.medium,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.medium,
       },
     ],
     [$props, $ctx, $refs]
@@ -160,6 +161,7 @@ function PlasmicSearchbox__RenderFunc(props: {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
@@ -263,7 +265,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicSearchbox__VariantsArgs;
     args?: PlasmicSearchbox__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicSearchbox__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicSearchbox__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicSearchbox__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

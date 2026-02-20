@@ -112,26 +112,26 @@ function PlasmicMenuButton__RenderFunc(props: {
         path: "stepUp",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.stepUp,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.stepUp,
       },
       {
         path: "withBackgroundHover",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) =>
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
           $props.withBackgroundHover,
       },
       {
         path: "type",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.type,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.type,
       },
       {
         path: "size",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.size,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.size,
       },
     ],
     [$props, $ctx, $refs]
@@ -140,6 +140,7 @@ function PlasmicMenuButton__RenderFunc(props: {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
@@ -222,7 +223,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicMenuButton__VariantsArgs;
     args?: PlasmicMenuButton__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicMenuButton__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicMenuButton__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicMenuButton__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

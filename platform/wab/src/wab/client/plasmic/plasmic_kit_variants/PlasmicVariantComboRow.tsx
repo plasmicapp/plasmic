@@ -113,7 +113,8 @@ function PlasmicVariantComboRow__RenderFunc(props: {
         path: "isIndicated",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isIndicated,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props.isIndicated,
       },
     ],
     [$props, $ctx, $refs]
@@ -122,6 +123,7 @@ function PlasmicVariantComboRow__RenderFunc(props: {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 

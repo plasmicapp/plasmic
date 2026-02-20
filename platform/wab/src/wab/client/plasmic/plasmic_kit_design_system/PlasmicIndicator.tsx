@@ -95,7 +95,7 @@ function PlasmicIndicator__RenderFunc(props: {
         path: "color",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.color,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.color,
       },
     ],
     [$props, $ctx, $refs]
@@ -104,6 +104,7 @@ function PlasmicIndicator__RenderFunc(props: {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
@@ -165,7 +166,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicIndicator__VariantsArgs;
     args?: PlasmicIndicator__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicIndicator__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicIndicator__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicIndicator__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

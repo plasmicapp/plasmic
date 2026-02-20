@@ -94,7 +94,7 @@ function PlasmicListSectionSeparator__RenderFunc(props: {
         path: "center",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.center,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.center,
       },
     ],
     [$props, $ctx, $refs]
@@ -103,6 +103,7 @@ function PlasmicListSectionSeparator__RenderFunc(props: {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
@@ -160,7 +161,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicListSectionSeparator__VariantsArgs;
     args?: PlasmicListSectionSeparator__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicListSectionSeparator__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicListSectionSeparator__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicListSectionSeparator__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

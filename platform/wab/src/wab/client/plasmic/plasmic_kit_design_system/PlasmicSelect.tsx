@@ -171,44 +171,44 @@ function PlasmicSelect__RenderFunc(props: {
         path: "showPlaceholder",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) =>
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
           $props.showPlaceholder,
       },
       {
         path: "isOpen",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isOpen,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.isOpen,
       },
       {
         path: "isDisabled",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isDisabled,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.isDisabled,
       },
       {
         path: "type",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.type,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.type,
       },
       {
         path: "hasIcon",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.hasIcon,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.hasIcon,
       },
       {
         path: "size",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.size,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.size,
       },
       {
         path: "font",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.font,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.font,
       },
       {
         path: "value",
@@ -222,7 +222,7 @@ function PlasmicSelect__RenderFunc(props: {
         path: "textAlign",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.textAlign,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.textAlign,
       },
     ],
     [$props, $ctx, $refs]
@@ -231,6 +231,7 @@ function PlasmicSelect__RenderFunc(props: {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
@@ -738,7 +739,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicSelect__VariantsArgs;
     args?: PlasmicSelect__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicSelect__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicSelect__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicSelect__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

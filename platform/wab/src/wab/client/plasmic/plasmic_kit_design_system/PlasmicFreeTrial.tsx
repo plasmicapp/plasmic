@@ -113,19 +113,20 @@ function PlasmicFreeTrial__RenderFunc(props: {
         path: "topBar",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.topBar,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.topBar,
       },
       {
         path: "accountSection",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.accountSection,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props.accountSection,
       },
       {
         path: "trialEnded",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.trialEnded,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.trialEnded,
       },
     ],
     [$props, $ctx, $refs]
@@ -134,6 +135,7 @@ function PlasmicFreeTrial__RenderFunc(props: {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
@@ -296,7 +298,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicFreeTrial__VariantsArgs;
     args?: PlasmicFreeTrial__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicFreeTrial__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicFreeTrial__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicFreeTrial__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

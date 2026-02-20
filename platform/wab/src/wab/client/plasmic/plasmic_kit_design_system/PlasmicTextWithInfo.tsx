@@ -99,7 +99,7 @@ function PlasmicTextWithInfo__RenderFunc(props: {
         path: "medium",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.medium,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.medium,
       },
     ],
     [$props, $ctx, $refs]
@@ -108,6 +108,7 @@ function PlasmicTextWithInfo__RenderFunc(props: {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
@@ -168,7 +169,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicTextWithInfo__VariantsArgs;
     args?: PlasmicTextWithInfo__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicTextWithInfo__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicTextWithInfo__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicTextWithInfo__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

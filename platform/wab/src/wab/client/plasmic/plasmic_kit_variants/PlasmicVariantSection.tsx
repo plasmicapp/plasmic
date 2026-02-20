@@ -149,32 +149,33 @@ function PlasmicVariantSection__RenderFunc(props: {
         path: "state",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.state,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.state,
       },
       {
         path: "isQuiet",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isQuiet,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.isQuiet,
       },
       {
         path: "showSettings",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.showSettings,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props.showSettings,
       },
       {
         path: "hasCodeExpression",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) =>
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
           $props.hasCodeExpression,
       },
       {
         path: "showIcon",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.showIcon,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.showIcon,
       },
     ],
     [$props, $ctx, $refs]
@@ -183,6 +184,7 @@ function PlasmicVariantSection__RenderFunc(props: {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 

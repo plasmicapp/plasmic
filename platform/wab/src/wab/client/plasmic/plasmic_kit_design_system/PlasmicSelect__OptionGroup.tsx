@@ -113,19 +113,19 @@ function PlasmicSelect__OptionGroup__RenderFunc(props: {
         path: "noTitle",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.noTitle,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.noTitle,
       },
       {
         path: "isFirst",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isFirst,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.isFirst,
       },
       {
         path: "isLast",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isLast,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.isLast,
       },
     ],
     [$props, $ctx, $refs]
@@ -134,6 +134,7 @@ function PlasmicSelect__OptionGroup__RenderFunc(props: {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
@@ -263,7 +264,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicSelect__OptionGroup__VariantsArgs;
     args?: PlasmicSelect__OptionGroup__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicSelect__OptionGroup__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicSelect__OptionGroup__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicSelect__OptionGroup__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

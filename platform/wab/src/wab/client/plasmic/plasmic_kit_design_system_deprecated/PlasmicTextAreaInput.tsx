@@ -158,7 +158,7 @@ function PlasmicTextAreaInput__RenderFunc(props: {
         path: "ariaTextArea.value",
         type: "readonly",
         variableType: "text",
-        initFunc: ({ $props, $state, $queries, $ctx }) =>
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
           $props["defaultValue"],
 
         onChangeProp: "onChange",
@@ -169,25 +169,25 @@ function PlasmicTextAreaInput__RenderFunc(props: {
         path: "type",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.type,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.type,
       },
       {
         path: "flat",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.flat,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.flat,
       },
       {
         path: "padded",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.padded,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.padded,
       },
       {
         path: "autoResize",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.autoResize,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.autoResize,
       },
     ],
     [$props, $ctx, $refs]
@@ -196,6 +196,7 @@ function PlasmicTextAreaInput__RenderFunc(props: {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
@@ -314,7 +315,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicTextAreaInput__VariantsArgs;
     args?: PlasmicTextAreaInput__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicTextAreaInput__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicTextAreaInput__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicTextAreaInput__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

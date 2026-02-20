@@ -316,31 +316,31 @@ function PlasmicTextField__RenderFunc(props: {
         path: "multiLine",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.multiLine,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.multiLine,
       },
       {
         path: "iconStart",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.iconStart,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.iconStart,
       },
       {
         path: "iconEnd",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.iconEnd,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.iconEnd,
       },
       {
         path: "textInput.value",
         type: "private",
         variableType: "text",
-        initFunc: ({ $props, $state, $queries, $ctx }) => undefined,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => undefined,
       },
       {
         path: "textAreaInput.value",
         type: "private",
         variableType: "text",
-        initFunc: ({ $props, $state, $queries, $ctx }) => undefined,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => undefined,
       },
     ],
     [$props, $ctx, $refs]
@@ -349,6 +349,7 @@ function PlasmicTextField__RenderFunc(props: {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
@@ -632,7 +633,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicTextField__VariantsArgs;
     args?: PlasmicTextField__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicTextField__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicTextField__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicTextField__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

@@ -109,19 +109,19 @@ function PlasmicExpandButton__RenderFunc(props: {
         path: "right",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.right,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.right,
       },
       {
         path: "isExpanded",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isExpanded,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.isExpanded,
       },
       {
         path: "size",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.size,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.size,
       },
     ],
     [$props, $ctx, $refs]
@@ -130,6 +130,7 @@ function PlasmicExpandButton__RenderFunc(props: {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
@@ -204,7 +205,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicExpandButton__VariantsArgs;
     args?: PlasmicExpandButton__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicExpandButton__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicExpandButton__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicExpandButton__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

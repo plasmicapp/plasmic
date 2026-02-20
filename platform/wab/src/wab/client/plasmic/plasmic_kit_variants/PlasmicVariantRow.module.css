@@ -90,6 +90,10 @@
 .recordButtonshowAddAnimation_type_baseVariant:global(.__wab_instance) {
   flex-shrink: 0;
 }
+.recordButtonpinState_selected_showAddAnimation:global(.__wab_instance) {
+  flex-shrink: 0;
+  display: none;
+}
 .root:hover .recordButton:global(.__wab_instance) {
   flex-shrink: 0;
 }
@@ -98,6 +102,11 @@
   flex-shrink: 0;
 }
 .rootisReadOnly:hover .recordButtonisReadOnly:global(.__wab_instance) {
+  flex-shrink: 0;
+  display: none;
+}
+.rootshowAddAnimation:hover
+  .recordButtonshowAddAnimation:global(.__wab_instance) {
   flex-shrink: 0;
   display: none;
 }
@@ -118,6 +127,17 @@
 }
 .variantPinButton:global(.__wab_instance):global(.__wab_instance) {
   position: relative;
+}
+.variantPinButtonpinState_selected_showAddAnimation:global(
+    .__wab_instance
+  ):global(.__wab_instance) {
+  display: none;
+}
+.rootshowAddAnimation:hover
+  .variantPinButtonshowAddAnimation:global(.__wab_instance):global(
+    .__wab_instance
+  ) {
+  display: none;
 }
 .exprButton:global(.__wab_instance) {
   max-width: 100%;
@@ -146,9 +166,6 @@
 }
 .addAnimation:global(.__wab_instance):global(.__wab_instance) {
   max-width: 100%;
-}
-.addAnimationpinState_selected:global(.__wab_instance):global(.__wab_instance) {
-  display: flex;
 }
 .addAnimationshowAddAnimation:global(.__wab_instance):global(.__wab_instance) {
   display: flex;

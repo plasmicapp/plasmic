@@ -201,56 +201,57 @@ function PlasmicTextbox__RenderFunc(props: {
         path: "disabled",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.disabled,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.disabled,
       },
       {
         path: "styleType",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.styleType,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.styleType,
       },
       {
         path: "withIcons",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.withIcons,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.withIcons,
       },
       {
         path: "error",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.error,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.error,
       },
       {
         path: "fontSize",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.fontSize,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.fontSize,
       },
       {
         path: "fontStyle",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.fontStyle,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.fontStyle,
       },
       {
         path: "noOutline",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.noOutline,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.noOutline,
       },
       {
         path: "whiteBackground",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) =>
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
           $props.whiteBackground,
       },
       {
         path: "extraPadding",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.extraPadding,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props.extraPadding,
       },
     ],
     [$props, $ctx, $refs]
@@ -259,6 +260,7 @@ function PlasmicTextbox__RenderFunc(props: {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
@@ -734,7 +736,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicTextbox__VariantsArgs;
     args?: PlasmicTextbox__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicTextbox__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicTextbox__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicTextbox__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

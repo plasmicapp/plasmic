@@ -155,45 +155,46 @@ function PlasmicVariantRow__RenderFunc(props: {
         path: "type",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.type,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.type,
       },
       {
         path: "pinState",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.pinState,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.pinState,
       },
       {
         path: "isIndicated",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isIndicated,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props.isIndicated,
       },
       {
         path: "showAdditionalRow",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) =>
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
           $props.showAdditionalRow,
       },
       {
         path: "hasCodeExpression",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) =>
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
           $props.hasCodeExpression,
       },
       {
         path: "isReadOnly",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isReadOnly,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.isReadOnly,
       },
       {
         path: "showAddAnimation",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) =>
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
           $props.showAddAnimation,
       },
     ],
@@ -203,6 +204,7 @@ function PlasmicVariantRow__RenderFunc(props: {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
@@ -247,6 +249,11 @@ function PlasmicVariantRow__RenderFunc(props: {
           [sty.rootpinState_selected_type_baseVariant]:
             hasVariant($state, "pinState", "selected") &&
             hasVariant($state, "type", "baseVariant"),
+          [sty.rootshowAddAnimation]: hasVariant(
+            $state,
+            "showAddAnimation",
+            "showAddAnimation"
+          ),
           [sty.rootshowAddAnimation_type_baseVariant]:
             hasVariant($state, "type", "baseVariant") &&
             hasVariant($state, "showAddAnimation", "showAddAnimation"),
@@ -289,6 +296,9 @@ function PlasmicVariantRow__RenderFunc(props: {
               [sty.freeBoxpinState_selected_isReadOnly__t0Gv2Eu6KmIu48P]:
                 hasVariant($state, "isReadOnly", "isReadOnly") &&
                 hasVariant($state, "pinState", "selected"),
+              [sty.freeBoxpinState_selected_showAddAnimation__t0Gv2Eu6KmNTmg2]:
+                hasVariant($state, "pinState", "selected") &&
+                hasVariant($state, "showAddAnimation", "showAddAnimation"),
               [sty.freeBoxshowAddAnimation__t0Gv2NTmg2]: hasVariant(
                 $state,
                 "showAddAnimation",
@@ -300,10 +310,16 @@ function PlasmicVariantRow__RenderFunc(props: {
             })}
           >
             {(
-              hasVariant($state, "isReadOnly", "isReadOnly") &&
+              hasVariant($state, "showAddAnimation", "showAddAnimation") &&
               triggers.hover_root
                 ? true
+                : hasVariant($state, "isReadOnly", "isReadOnly") &&
+                  triggers.hover_root
+                ? true
                 : triggers.hover_root
+                ? true
+                : hasVariant($state, "pinState", "selected") &&
+                  hasVariant($state, "showAddAnimation", "showAddAnimation")
                 ? true
                 : hasVariant($state, "type", "baseVariant") &&
                   hasVariant($state, "showAddAnimation", "showAddAnimation")
@@ -321,7 +337,11 @@ function PlasmicVariantRow__RenderFunc(props: {
                     role={"img"}
                   />
                 }
-                className={classNames("__wab_instance")}
+                className={classNames("__wab_instance", {
+                  [sty.recordButtonpinState_selected_showAddAnimation]:
+                    hasVariant($state, "pinState", "selected") &&
+                    hasVariant($state, "showAddAnimation", "showAddAnimation"),
+                })}
                 size={"small"}
               >
                 <PlasmicIcon__
@@ -355,12 +375,18 @@ function PlasmicVariantRow__RenderFunc(props: {
               </IconButton>
             ) : null}
             {(
+              hasVariant($state, "showAddAnimation", "showAddAnimation") &&
               triggers.hover_root
+                ? true
+                : triggers.hover_root
                 ? true
                 : hasVariant($state, "type", "baseVariant") &&
                   hasVariant($state, "pinState", "pinnedTrue") &&
                   hasVariant($state, "showAddAnimation", "showAddAnimation")
                 ? false
+                : hasVariant($state, "pinState", "selected") &&
+                  hasVariant($state, "showAddAnimation", "showAddAnimation")
+                ? true
                 : hasVariant($state, "type", "baseVariant") &&
                   hasVariant($state, "showAddAnimation", "showAddAnimation")
                 ? false
@@ -410,6 +436,14 @@ function PlasmicVariantRow__RenderFunc(props: {
                   [sty.variantPinButtonpinState_selected_isReadOnly]:
                     hasVariant($state, "isReadOnly", "isReadOnly") &&
                     hasVariant($state, "pinState", "selected"),
+                  [sty.variantPinButtonpinState_selected_showAddAnimation]:
+                    hasVariant($state, "pinState", "selected") &&
+                    hasVariant($state, "showAddAnimation", "showAddAnimation"),
+                  [sty.variantPinButtonshowAddAnimation]: hasVariant(
+                    $state,
+                    "showAddAnimation",
+                    "showAddAnimation"
+                  ),
                   [sty.variantPinButtonshowAddAnimation_type_baseVariant]:
                     hasVariant($state, "type", "baseVariant") &&
                     hasVariant($state, "showAddAnimation", "showAddAnimation"),
@@ -444,6 +478,9 @@ function PlasmicVariantRow__RenderFunc(props: {
                     "hasCodeExpression",
                     "hasCodeExpression"
                   ),
+                  [sty.exprButtonpinState_selected_showAddAnimation]:
+                    hasVariant($state, "pinState", "selected") &&
+                    hasVariant($state, "showAddAnimation", "showAddAnimation"),
                   [sty.exprButtonshowAddAnimation_type_baseVariant]:
                     hasVariant($state, "type", "baseVariant") &&
                     hasVariant($state, "showAddAnimation", "showAddAnimation"),
@@ -467,8 +504,6 @@ function PlasmicVariantRow__RenderFunc(props: {
                   hasVariant($state, "showAddAnimation", "showAddAnimation")
                 ? true
                 : hasVariant($state, "showAddAnimation", "showAddAnimation")
-                ? true
-                : hasVariant($state, "pinState", "selected")
                 ? true
                 : false
             ) ? (
@@ -550,6 +585,9 @@ function PlasmicVariantRow__RenderFunc(props: {
             "pinState",
             "selected"
           ),
+          [sty.listItempinState_selected_showAddAnimation]:
+            hasVariant($state, "pinState", "selected") &&
+            hasVariant($state, "showAddAnimation", "showAddAnimation"),
           [sty.listItempinState_selected_type_baseVariant]:
             hasVariant($state, "type", "baseVariant") &&
             hasVariant($state, "pinState", "selected"),

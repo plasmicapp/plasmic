@@ -187,88 +187,92 @@ function PlasmicListItem__RenderFunc(props: {
         path: "isSelected",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isSelected,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.isSelected,
       },
       {
         path: "isFocused",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isFocused,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.isFocused,
       },
       {
         path: "showActions",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.showActions,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props.showActions,
       },
       {
         path: "isDragging",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isDragging,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.isDragging,
       },
       {
         path: "isDraggable",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isDraggable,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props.isDraggable,
       },
       {
         path: "showAddendums",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.showAddendums,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props.showAddendums,
       },
       {
         path: "hideIcon",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.hideIcon,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.hideIcon,
       },
       {
         path: "hasMenu",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.hasMenu,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.hasMenu,
       },
       {
         path: "showAdditionalRow",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) =>
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
           $props.showAdditionalRow,
       },
       {
         path: "color",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.color,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.color,
       },
       {
         path: "alwaysShowDragHandle",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) =>
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
           $props.alwaysShowDragHandle,
       },
       {
         path: "hasRightContents",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) =>
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
           $props.hasRightContents,
       },
       {
         path: "isHighlighted",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isHighlighted,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props.isHighlighted,
       },
       {
         path: "removeAdditionalRowLeftPadding",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) =>
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
           $props.removeAdditionalRowLeftPadding,
       },
     ],
@@ -278,6 +282,7 @@ function PlasmicListItem__RenderFunc(props: {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 

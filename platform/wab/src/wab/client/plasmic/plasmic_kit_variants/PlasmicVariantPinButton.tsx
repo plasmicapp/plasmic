@@ -106,7 +106,7 @@ function PlasmicVariantPinButton__RenderFunc(props: {
         path: "pinState",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.pinState,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.pinState,
       },
     ],
     [$props, $ctx, $refs]
@@ -115,6 +115,7 @@ function PlasmicVariantPinButton__RenderFunc(props: {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 

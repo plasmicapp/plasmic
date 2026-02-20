@@ -123,19 +123,21 @@ function PlasmicListSectionHeader__RenderFunc(props: {
         path: "collapseState",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.collapseState,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props.collapseState,
       },
       {
         path: "showActions",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.showActions,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props.showActions,
       },
       {
         path: "showIcon",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.showIcon,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.showIcon,
       },
     ],
     [$props, $ctx, $refs]
@@ -144,6 +146,7 @@ function PlasmicListSectionHeader__RenderFunc(props: {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
@@ -372,7 +375,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicListSectionHeader__VariantsArgs;
     args?: PlasmicListSectionHeader__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicListSectionHeader__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicListSectionHeader__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicListSectionHeader__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

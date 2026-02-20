@@ -124,19 +124,19 @@ function PlasmicInlineEditable__RenderFunc(props: {
         path: "editing",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.editing,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.editing,
       },
       {
         path: "disabled",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.disabled,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.disabled,
       },
       {
         path: "medium",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.medium,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.medium,
       },
     ],
     [$props, $ctx, $refs]
@@ -145,6 +145,7 @@ function PlasmicInlineEditable__RenderFunc(props: {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
@@ -280,7 +281,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicInlineEditable__VariantsArgs;
     args?: PlasmicInlineEditable__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicInlineEditable__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicInlineEditable__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicInlineEditable__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props
