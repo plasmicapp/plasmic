@@ -72,7 +72,6 @@ export function useServerQueryBottomModal(queryKey: string) {
 
 /** For managing multiple query modals or an unknown/dynamic query. */
 export function useServerQueryBottomModals() {
-  // const ctx = useDataSourceOpPickerContext();
   const modalActions = useBottomModalActions();
   return {
     open: (

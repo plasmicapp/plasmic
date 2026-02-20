@@ -16,7 +16,6 @@ import { Icon } from "@/wab/client/components/widgets/Icon";
 import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
 import SearchIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Search";
 import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { TutorialEventsType } from "@/wab/client/tours/tutorials/tutorials-events";
 import {
   customFunctionId,
   getPropTypeDefaultValue,
@@ -684,26 +683,18 @@ export const ServerQueryOpExprFormAndPreview = observer(
     // ).map(([argName, argMeta]) => getArgLabel(argMeta, argName));
 
     const saveOpExpr = async () => {
-      if (isMounted()) {
-        if (missingRequiredArgs.length === 0) {
-          onSave(
-            new CustomFunctionExpr({
-              func: draft.func!,
-              args: draft.args!,
-            }),
-            draft.queryName
-          );
-
-          studioCtx.tourActionEvents.dispatch({
-            type: TutorialEventsType.SaveDataSourceQuery,
-          });
-        } else {
-          notification.error({
-            message: `Missing required fields: ${missingRequiredArgs.join(
-              ", "
-            )}`,
-          });
-        }
+      if (isMounted() && missingRequiredArgs.length === 0) {
+        onSave(
+          new CustomFunctionExpr({
+            func: draft.func!,
+            args: draft.args!,
+          }),
+          draft.queryName
+        );
+      } else {
+        notification.error({
+          message: `Missing required fields: ${missingRequiredArgs.join(", ")}`,
+        });
       }
     };
 

@@ -145,10 +145,7 @@ function ServerQueriesSection_(props: {
           uuid: mkShortId(),
           name: toVarName(
             uniqueName(
-              [
-                ...component.serverQueries.map((q) => q.name),
-                ...component.dataQueries.map((q) => q.name),
-              ],
+              component.serverQueries.map((q) => q.name),
               "query",
               {
                 normalize: toVarName,
