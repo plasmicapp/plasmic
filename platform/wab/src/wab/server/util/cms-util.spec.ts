@@ -238,6 +238,40 @@ describe("makeSqlCondition", () => {
     });
   });
 
+  it("special cases _createdAt field", () => {
+    expect(
+      makeSqlCondition(
+        TEST_TABLE,
+        {
+          _createdAt: "2025-01-01T00:00:00Z",
+        },
+        { useDraft: false }
+      )
+    ).toEqual({
+      condition: `r.createdAt = :val0`,
+      params: {
+        val0: "2025-01-01T00:00:00Z",
+      },
+    });
+  });
+
+  it("special cases _updatedAt field", () => {
+    expect(
+      makeSqlCondition(
+        TEST_TABLE,
+        {
+          _updatedAt: "2025-01-01T00:00:00Z",
+        },
+        { useDraft: false }
+      )
+    ).toEqual({
+      condition: `r.updatedAt = :val0`,
+      params: {
+        val0: "2025-01-01T00:00:00Z",
+      },
+    });
+  });
+
   it("accesses nested nested field", () => {
     expect(
       makeSqlCondition(
