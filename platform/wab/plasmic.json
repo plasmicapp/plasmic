@@ -3503,7 +3503,7 @@
     {
       "projectId": "wT5BWZPEc2fYxyqbTLXMt2",
       "projectName": "[PlasmicKit] Variants",
-      "version": "fix/variant-row-icons",
+      "version": ">=0.0.0",
       "cssFilePath": "wab/client/plasmic/plasmic_kit_variants/plasmic_plasmic_kit_variants.module.css",
       "components": [
         {
