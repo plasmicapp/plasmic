@@ -4,6 +4,7 @@ import * as React from "react";
 import { PageParamsProvider as PageParamsProvider__ } from "@plasmicapp/react-web/lib/host";
 import { PlasmicHomepage } from "../components/plasmic/create_plasmic_app/PlasmicHomepage";
 import { useRouter } from "next/router";
+import { PlasmicQueryDataProvider } from "@plasmicapp/react-web/lib/query";
 
 function Homepage() {
   // Use PlasmicHomepage to render this component as it was
@@ -23,13 +24,15 @@ function Homepage() {
   // Next.js Custom App component
   // (https://nextjs.org/docs/advanced-features/custom-app).
   return (
-    <PageParamsProvider__
-      route={useRouter()?.pathname}
-      params={useRouter()?.query}
-      query={useRouter()?.query}
-    >
-      <PlasmicHomepage />
-    </PageParamsProvider__>
+    <PlasmicQueryDataProvider>
+      <PageParamsProvider__
+        route={useRouter()?.pathname}
+        params={useRouter()?.query}
+        query={useRouter()?.query}
+      >
+        <PlasmicHomepage />
+      </PageParamsProvider__>
+    </PlasmicQueryDataProvider>
   );
 }
 

@@ -101,6 +101,7 @@
       "globalContextsFilePath": "",
       "splitsProviderFilePath": "",
       "styleTokensProviderFilePath": "plasmic/create_plasmic_app/PlasmicStyleTokensProvider.jsx",
+      "dataTokensFilePath": "",
       "projectModuleFilePath": "plasmic/create_plasmic_app/plasmic.jsx",
       "codeComponents": [
         {
@@ -131,6 +132,6 @@
   },
   "wrapPagesWithGlobalContexts": true,
   "preserveJsImportExtensions": false,
-  "cliVersion": "0.1.348",
-  "$schema": "https://unpkg.com/@plasmicapp/cli@0.1.348/dist/plasmic.schema.json"
+  "cliVersion": "0.1.359",
+  "$schema": "https://unpkg.com/@plasmicapp/cli@0.1.359/dist/plasmic.schema.json"
 }

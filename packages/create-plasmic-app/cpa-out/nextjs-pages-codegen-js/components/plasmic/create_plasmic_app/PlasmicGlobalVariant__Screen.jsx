@@ -18,7 +18,7 @@ export function ScreenContextProvider(props) {
 }
 
 export const useScreenVariants = createUseScreenVariants(true, {
-  desktopOnly: "(min-width:768px)",
+  desktopOnly: "(min-width:768px)"
 });
 
 export default ScreenContext;

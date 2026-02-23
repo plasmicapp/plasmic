@@ -16,7 +16,7 @@ export function CheckSvgIcon(props) {
       width={"1em"}
       style={{
         fill: "currentcolor",
-        ...(style || {}),
+        ...(style || {})
       }}
       className={classNames("plasmic-default__svg", className)}
       {...restProps}

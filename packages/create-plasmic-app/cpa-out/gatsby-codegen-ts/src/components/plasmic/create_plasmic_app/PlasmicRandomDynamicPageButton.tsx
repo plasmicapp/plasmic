@@ -62,6 +62,8 @@ import {
 } from "@plasmicapp/react-web/lib/host";
 
 import Button from "../../Button"; // plasmic-import: TQcvW_pSKi3/component
+import { _useGlobalVariants } from "./plasmic"; // plasmic-import: 47tFXWjN2C4NyHFGGpaYQ3/projectModule
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: 47tFXWjN2C4NyHFGGpaYQ3/styleTokensProvider
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
@@ -121,6 +123,8 @@ function PlasmicRandomDynamicPageButton__RenderFunc(props: {
   const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
+
+  const styleTokensClassNames = _useStyleTokens();
 
   return (
     <Button
@@ -199,7 +203,9 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicRandomDynamicPageButton__VariantsArgs;
     args?: PlasmicRandomDynamicPageButton__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicRandomDynamicPageButton__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } &
+    // Specify variants directly as props
+    Omit<PlasmicRandomDynamicPageButton__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicRandomDynamicPageButton__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

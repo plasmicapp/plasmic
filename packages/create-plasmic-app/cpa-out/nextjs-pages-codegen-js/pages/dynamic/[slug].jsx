@@ -4,6 +4,7 @@ import * as React from "react";
 import { PageParamsProvider as PageParamsProvider__ } from "@plasmicapp/react-web/lib/host";
 import { PlasmicDynamicPage } from "../../components/plasmic/create_plasmic_app/PlasmicDynamicPage";
 import { useRouter } from "next/router";
+import { PlasmicQueryDataProvider } from "@plasmicapp/react-web/lib/query";
 
 function DynamicPage() {
   // Use PlasmicDynamicPage to render this component as it was
@@ -23,13 +24,15 @@ function DynamicPage() {
   // Next.js Custom App component
   // (https://nextjs.org/docs/advanced-features/custom-app).
   return (
-    <PageParamsProvider__
-      route={useRouter()?.pathname}
-      params={useRouter()?.query}
-      query={useRouter()?.query}
-    >
-      <PlasmicDynamicPage />
-    </PageParamsProvider__>
+    <PlasmicQueryDataProvider>
+      <PageParamsProvider__
+        route={useRouter()?.pathname}
+        params={useRouter()?.query}
+        query={useRouter()?.query}
+      >
+        <PlasmicDynamicPage />
+      </PageParamsProvider__>
+    </PlasmicQueryDataProvider>
   );
 }
 

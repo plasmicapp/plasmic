@@ -32,7 +32,7 @@ const DynamicSlugIndexRoute = DynamicSlugIndexRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/plasmic-host': typeof PlasmicHostRoute
-  '/dynamic/$slug': typeof DynamicSlugIndexRoute
+  '/dynamic/$slug/': typeof DynamicSlugIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -47,7 +47,7 @@ export interface FileRoutesById {
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/plasmic-host' | '/dynamic/$slug'
+  fullPaths: '/' | '/plasmic-host' | '/dynamic/$slug/'
   fileRoutesByTo: FileRoutesByTo
   to: '/' | '/plasmic-host' | '/dynamic/$slug'
   id: '__root__' | '/' | '/plasmic-host' | '/dynamic/$slug/'
@@ -78,7 +78,7 @@ declare module '@tanstack/react-router' {
     '/dynamic/$slug/': {
       id: '/dynamic/$slug/'
       path: '/dynamic/$slug'
-      fullPath: '/dynamic/$slug'
+      fullPath: '/dynamic/$slug/'
       preLoaderRoute: typeof DynamicSlugIndexRouteImport
       parentRoute: typeof rootRouteImport
     }

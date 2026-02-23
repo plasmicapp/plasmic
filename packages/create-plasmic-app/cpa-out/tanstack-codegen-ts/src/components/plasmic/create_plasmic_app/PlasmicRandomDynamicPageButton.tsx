@@ -59,12 +59,14 @@ import {
 } from "@plasmicapp/react-web/lib/host";
 
 import Button from "../../Button"; // plasmic-import: TQcvW_pSKi3/component
+import { _useGlobalVariants } from "./plasmic"; // plasmic-import: 47tFXWjN2C4NyHFGGpaYQ3/projectModule
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: 47tFXWjN2C4NyHFGGpaYQ3/styleTokensProvider
 
-import globalcss from "@plasmicapp/react-web/lib/plasmic.css?url";
-import defaultcss from "../plasmic__default_style.css?url"; // plasmic-import: global/defaultcss
+import "@plasmicapp/react-web/lib/plasmic.css";
+import "../plasmic__default_style.css"; // plasmic-import: global/defaultcss
 
-import projectcss from "./plasmic.css?url"; // plasmic-import: 47tFXWjN2C4NyHFGGpaYQ3/projectcss
-import sty from "./PlasmicRandomDynamicPageButton.css?url"; // plasmic-import: Q23H1_1M_P/css
+import "./plasmic.css"; // plasmic-import: 47tFXWjN2C4NyHFGGpaYQ3/projectcss
+import "./PlasmicRandomDynamicPageButton.css"; // plasmic-import: Q23H1_1M_P/css
 
 import CheckSvgIcon from "./icons/PlasmicIcon__CheckSvg"; // plasmic-import: gj-_D7n31Ho/icon
 import IconIcon from "./icons/PlasmicIcon__Icon"; // plasmic-import: 6PNxx3YMyDQ/icon
@@ -127,6 +129,8 @@ function PlasmicRandomDynamicPageButton__RenderFunc(props: {
   const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
+
+  const styleTokensClassNames = _useStyleTokens();
 
   return (
     <Button
@@ -208,7 +212,9 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicRandomDynamicPageButton__VariantsArgs;
     args?: PlasmicRandomDynamicPageButton__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicRandomDynamicPageButton__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } &
+    // Specify variants directly as props
+    Omit<PlasmicRandomDynamicPageButton__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicRandomDynamicPageButton__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props
@@ -267,12 +273,7 @@ export const PlasmicRandomDynamicPageButton = Object.assign(
 export const PlasmicRandomDynamicPageButton__HeadOptions = {
   meta: [{ name: "twitter:card", content: "summary" }],
 
-  links: [
-    { rel: "stylesheet", href: globalcss },
-    { rel: "stylesheet", href: defaultcss },
-    { rel: "stylesheet", href: projectcss },
-    { rel: "stylesheet", href: sty }
-  ]
+  links: []
 } as Record<"meta" | "links", Array<Record<string, string>>>;
 
 export default PlasmicRandomDynamicPageButton;

@@ -2,38 +2,42 @@
   "name": "tanstack-codegen-ts",
   "private": true,
   "type": "module",
+  "imports": {
+    "#/*": "./src/*"
+  },
   "scripts": {
     "dev": "vite dev --port 3000",
-    "start": "node .output/server/index.mjs",
     "build": "vite build",
-    "serve": "vite preview",
+    "preview": "vite preview",
     "test": "vitest run"
   },
   "dependencies": {
-    "@plasmicapp/cli": "^0.1.341",
-    "@plasmicapp/react-web": "^0.2.397",
-    "@tailwindcss/vite": "^4.0.6",
-    "@tanstack/react-query": "^5.84.2",
-    "@tanstack/react-router": "^1.130.2",
-    "@tanstack/react-router-devtools": "^1.130.2",
-    "@tanstack/react-router-with-query": "^1.130.2",
-    "@tanstack/react-start": "^1.130.2",
-    "@tanstack/router-plugin": "^1.121.2",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "tailwindcss": "^4.0.6",
-    "vite-tsconfig-paths": "^5.1.4"
+    "@plasmicapp/cli": "^0.1.359",
+    "@plasmicapp/react-web": "^0.2.422",
+    "@tailwindcss/vite": "^4.1.18",
+    "@tanstack/react-devtools": "^0.7.0",
+    "@tanstack/react-query": "^5.90.21",
+    "@tanstack/react-router": "^1.132.0",
+    "@tanstack/react-router-devtools": "^1.132.0",
+    "@tanstack/router-plugin": "^1.132.0",
+    "lucide-react": "^0.545.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "tailwindcss": "^4.1.18"
   },
   "devDependencies": {
+    "@tanstack/devtools-vite": "^0.3.11",
+    "@tanstack/router-plugin": "^1.132.0",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/react": "^16.2.0",
-    "@types/react": "^19.0.8",
-    "@types/react-dom": "^19.0.3",
-    "@vitejs/plugin-react": "^4.3.4",
-    "jsdom": "^26.0.0",
+    "@types/node": "^22.10.2",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "@vitejs/plugin-react": "^5.0.4",
+    "jsdom": "^27.0.0",
     "typescript": "^5.7.2",
-    "vite": "^6.3.5",
-    "vitest": "^3.0.5",
-    "web-vitals": "^4.2.4"
+    "vite": "^7.1.7",
+    "vite-tsconfig-paths": "^5.1.4",
+    "vitest": "^3.0.5"
   }
 }

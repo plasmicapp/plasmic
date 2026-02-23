@@ -59,12 +59,38 @@ import {
 } from "@plasmicapp/react-web/lib/host";
 
 import RandomDynamicPageButton from "../../RandomDynamicPageButton"; // plasmic-import: Q23H1_1M_P/component
+import { _useGlobalVariants } from "./plasmic"; // plasmic-import: 47tFXWjN2C4NyHFGGpaYQ3/projectModule
+import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: 47tFXWjN2C4NyHFGGpaYQ3/styleTokensProvider
 
-import globalcss from "@plasmicapp/react-web/lib/plasmic.css?url";
-import defaultcss from "../plasmic__default_style.css?url"; // plasmic-import: global/defaultcss
+import "@plasmicapp/react-web/lib/plasmic.css";
+import "../plasmic__default_style.css"; // plasmic-import: global/defaultcss
 
-import projectcss from "./plasmic.css?url"; // plasmic-import: 47tFXWjN2C4NyHFGGpaYQ3/projectcss
-import sty from "./PlasmicDynamicPage.css?url"; // plasmic-import: AO44A-w7hh/css
+import "./plasmic.css"; // plasmic-import: 47tFXWjN2C4NyHFGGpaYQ3/projectcss
+import "./PlasmicDynamicPage.css"; // plasmic-import: AO44A-w7hh/css
+
+const emptyProxy: any = new Proxy(() => "", {
+  get(_, prop) {
+    return prop === Symbol.toPrimitive ? () => "" : emptyProxy;
+  }
+});
+
+function wrapQueriesWithLoadingProxy($q: any): any {
+  return new Proxy($q, {
+    get(target, queryName) {
+      const query = target[queryName];
+      return !query || query.isLoading || !query.data ? emptyProxy : query;
+    }
+  });
+}
+
+export function generateDynamicMetadata($q: any, $ctx: any) {
+  return {
+    openGraph: {},
+    twitter: {
+      card: "summary"
+    }
+  };
+}
 
 createPlasmicElementProxy;
 
@@ -124,6 +150,8 @@ function PlasmicDynamicPage__RenderFunc(props: {
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
+  const styleTokensClassNames = _useStyleTokens();
+
   return (
     <React.Fragment>
       <style>{`
@@ -144,7 +172,7 @@ function PlasmicDynamicPage__RenderFunc(props: {
             "root_reset_47tFXWjN2C4NyHFGGpaYQ3",
             "plasmic_default_styles",
             "plasmic_mixins",
-            "plasmic_tokens",
+            styleTokensClassNames,
             "DynamicPage__root__hgzte"
           )}
         >
@@ -225,7 +253,9 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicDynamicPage__VariantsArgs;
     args?: PlasmicDynamicPage__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicDynamicPage__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } &
+    // Specify variants directly as props
+    Omit<PlasmicDynamicPage__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicDynamicPage__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props
@@ -282,25 +312,18 @@ export const PlasmicDynamicPage = Object.assign(
     internalVariantProps: PlasmicDynamicPage__VariantProps,
     internalArgProps: PlasmicDynamicPage__ArgProps,
 
-    // Page metadata
-    pageMetadata: {
-      title: "",
-      description: "",
-      ogImageSrc: "",
-      canonical: ""
-    }
+    pageMetadata: generateDynamicMetadata(wrapQueriesWithLoadingProxy({}), {
+      pagePath: "/dynamic/[slug]",
+      searchParams: {},
+      params: {}
+    })
   }
 );
 
 export const PlasmicDynamicPage__HeadOptions = {
   meta: [{ name: "twitter:card", content: "summary" }],
 
-  links: [
-    { rel: "stylesheet", href: globalcss },
-    { rel: "stylesheet", href: defaultcss },
-    { rel: "stylesheet", href: projectcss },
-    { rel: "stylesheet", href: sty }
-  ]
+  links: []
 } as Record<"meta" | "links", Array<Record<string, string>>>;
 
 export default PlasmicDynamicPage;
