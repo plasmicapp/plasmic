@@ -193,7 +193,7 @@ type QueryName = keyof ReturnType<typeof create$Queries>;
 export function createQueries(
   $q: Record<QueryName, PlasmicQueryResult>,
   $ctx: any,
-) {
+): Record<QueryName, PlasmicQuery> {
   return {
     ${serverQueries
       .map(({ op, name }) => {
@@ -207,7 +207,7 @@ export function createQueries(
         }`;
       })
       .join(",\n")}
-  } as const;
+  };
 };`;
 }
 
@@ -224,6 +224,7 @@ function serializeServerPageQueries(ctx: SerializerBaseContext) {
   const serverQueryImports = ctx.hasServerQueries
     ? `
 import { unstable_createDollarQueries, unstable_executePlasmicQueries } from "${getDataSourcesPackageName()}";
+import type { PlasmicQuery, PlasmicQueryResult } from "${getDataSourcesPackageName()}";
 import { PlasmicQueryDataProvider } from "@plasmicapp/react-web/lib/query";`
     : "";
 
