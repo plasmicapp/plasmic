@@ -672,7 +672,23 @@ export function upsertJQSelector(
 export function downloadBlob(blob: Blob, fileName: string) {
   // Data URL has a size limit. However, object url doesn't.
   const downloadUrl = URL.createObjectURL(blob);
-  downloadFromLink(fileName, downloadUrl);
+  downloadFromLink(fileName, downloadUrl, false);
+  // Note that the URL created by URL.createObjectURL(blob) won't be
+  // released until the document is unloaded or the URL is explicitly
+  // released. So here we release it explicitly.
+  URL.revokeObjectURL(downloadUrl);
+}
+
+function downloadFromLink(name: string, href: string, isExternal: boolean) {
+  const $link = $("<a />").css("display", "none").appendTo("body");
+  $link.attr("href", href);
+  $link.attr("download", name);
+  if (isExternal) {
+    $link.attr("target", "_blank");
+    $link.attr("rel", "noopener noreferrer");
+  }
+  $link[0].click();
+  $link.remove();
 }
 
 const MIME_TO_EXT: Record<string, string> = {
@@ -684,18 +700,6 @@ const MIME_TO_EXT: Record<string, string> = {
   "image/avif": "avif",
   "image/tiff": "tif",
 };
-
-function downloadFromLink(name: string, href: string) {
-  const $link = $("<a />").css("display", "none").appendTo("body");
-  $link.attr("href", href);
-  $link.attr("download", name);
-  $link[0].click();
-  $link.remove();
-  // Note that the URL created by URL.createObjectURL(blob) won't be
-  // released until the document is unloaded or the URL is explicitly
-  // released. So here we release it explicitly.
-  URL.revokeObjectURL(href);
-}
 
 export function downloadImageAsset(asset: ImageAsset) {
   if (!asset.dataUri) {
@@ -710,13 +714,7 @@ export function downloadImageAsset(asset: ImageAsset) {
     downloadBlob(blob, nameWithExt);
   } else {
     // Fallback for external links
-    const $link = $("<a />").css("display", "none").appendTo("body");
-    $link.attr("href", asset.dataUri);
-    $link.attr("download", asset.name);
-    $link.attr("target", "_blank");
-    $link.attr("rel", "noopener noreferrer");
-    $link[0].click();
-    $link.remove();
+    downloadFromLink(asset.name, asset.dataUri, true);
   }
 }
 
