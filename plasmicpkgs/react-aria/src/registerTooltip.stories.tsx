@@ -162,7 +162,7 @@ export const WithoutForwardRefTrigger: Story = {
 
     await userEvent.tab();
     expect(innerFocusableButtons[1]).not.toHaveFocus();
-    expect(args.onOpenChange).toHaveBeenCalledWith(false); //ensure that tooltip is no longer open
+    await waitFor(() => expect(args.onOpenChange).toHaveBeenCalledWith(false)); //ensure that tooltip is no longer open
     await waitFor(() =>
       expect(
         within(document.body).queryByTestId("tooltip-content")
@@ -179,7 +179,7 @@ export const WithoutForwardRefTrigger: Story = {
       ).toBeInTheDocument()
     );
 
-    expect(args.onOpenChange).toHaveBeenCalledWith(true);
+    await waitFor(() => expect(args.onOpenChange).toHaveBeenCalledWith(true)); // ensure the tooltip has opened
 
     await userEvent.unhover(triggerWrapper);
 

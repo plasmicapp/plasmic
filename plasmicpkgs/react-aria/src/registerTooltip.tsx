@@ -60,8 +60,6 @@ function ControlledBaseTooltip(props: BaseTooltipProps) {
   const {
     children,
     isDisabled = false,
-    delay,
-    closeDelay,
     trigger,
     isOpen,
     tooltipContent,
@@ -71,7 +69,6 @@ function ControlledBaseTooltip(props: BaseTooltipProps) {
     crossOffset,
     shouldFlip,
     className,
-    onOpenChange = () => {},
   } = props;
 
   const isCanvasAwareOpen = useIsOpen({
@@ -116,12 +113,9 @@ function ControlledBaseTooltip(props: BaseTooltipProps) {
         // @ts-expect-error <Tooltip> is wrongly typed to not have id prop
         id={tooltipId}
         offset={offset}
-        delay={delay}
-        closeDelay={closeDelay}
         crossOffset={crossOffset}
         shouldFlip={shouldFlip}
         className={resetClassName}
-        onOpenChange={onOpenChange}
         placement={placement}
       >
         {tooltipContent}
@@ -236,9 +230,14 @@ export function registerTooltip(
         },
         closeDelay: {
           type: "number",
-          // Default value is explicitly set to 0 to prevent users from mistakenly thinking the tooltip isn’t closing due to a delay.
-          defaultValue: 0,
-          defaultValueHint: 0,
+          // Default value is explicitly set to 50 to prevent users from mistakenly thinking the tooltip isn’t closing due to a delay.
+          // We don't set it to 0, because when offset=0 and closeDelay=0, entering from the tooltip side causes the
+          // cursor to immediately move from trigger to tooltip content. This fires
+          // onHoverEnd on the trigger and closes the tooltip instantly.
+          // A small closeDelay (>=50ms) allows it to stabilize.
+          defaultValue: 50,
+          defaultValueHint: 50,
+          min: 50,
           description: "The delay (in milliseconds) for the tooltip to close.",
         },
         trigger: {
@@ -258,6 +257,9 @@ export function registerTooltip(
           uncontrolledProp: "defaultOpen",
           description: "Whether the overlay is open by default",
           defaultValueHint: false,
+          // Without a default value, the tooltip starts as uncontrolled and then switches to controlled on first interaction,
+          // which can cause React warnings and unpredictable behavior.
+          defaultValue: false,
           hidden: () => true,
         },
         onOpenChange: {
