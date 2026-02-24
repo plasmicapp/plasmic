@@ -153,7 +153,14 @@ export function generateWelcomePage(
               // Format as an absolute path without the extension name
               const relativeLink = "/" + stripExtension(relativePath);
               if (platform === "nextjs") {
-                return `<li><Link href="${relativeLink}">${pc.name} - ${relativeLink}</Link></li>`;
+                // Replace [param] with dummy values to avoid
+                // Next.js App Router error: "Dynamic href found in <Link>"
+                // https://nextjs.org/docs/messages/app-dir-dynamic-href
+                const href = (pc.path ?? relativeLink).replace(
+                  /\[(\w+)\]/g,
+                  "placeholder"
+                );
+                return `<li><Link href="${href}">${pc.name} - ${pc.path}</Link></li>`;
               } else {
                 return `<li><a style={{ color: "blue" }} href="${relativeLink}">${pc.name} - ${relativeLink}</a></li>`;
               }
