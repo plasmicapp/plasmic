@@ -28,6 +28,7 @@ import { SimpleTextbox } from "@/wab/client/components/widgets/SimpleTextbox";
 import { AddItemType } from "@/wab/client/definitions/insertables";
 import {
   ResizableImage,
+  downloadImageAsset,
   maybeUploadImage,
   readAndSanitizeFileAsImage,
 } from "@/wab/client/dom-utils";
@@ -345,6 +346,13 @@ const ImageAssetControl = observer(function ImageAssetControl(props: {
           Find all references
         </Menu.Item>
       );
+      if (asset.dataUri) {
+        push(
+          <Menu.Item key="download" onClick={() => downloadImageAsset(asset)}>
+            Download image
+          </Menu.Item>
+        );
+      }
       if (editable) {
         if (!multiAssetsActions.isSelecting) {
           push(
