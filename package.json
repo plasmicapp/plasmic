@@ -27,7 +27,7 @@
     "setup-all": "yarn setup && yarn setup:canvas-packages && cd platform/wab && yarn typeorm migration:run && yarn migrate-dev-bundles && yarn plume:dev update",
     "setup:canvas-packages": "cd platform/canvas-packages && for d in internal_pkgs/*; do if [ -d \"$d\" ]; then cd $d && yarn && cd -; fi done && yarn && yarn build",
     "setup:live-frame": "cd platform/live-frame && yarn && yarn build",
-    "setup:loader-bundle-env": "cd platform/loader-bundle-env && for d in internal_pkgs/*; do if [ -d \"$d\" ]; then cd $d && yarn && yarn build && cd -; fi done && yarn",
+    "setup:loader-bundle-env": "cd platform/loader-bundle-env && yarn",
     "setup:loader-html-hydrate": "cd platform/loader-html-hydrate && yarn && yarn build && cp build/* ../wab/public/static/js/",
     "setup:react-web-bundle": "cd platform/react-web-bundle && yarn && yarn build",
     "setup:sub": "cd platform/sub && yarn && yarn build",

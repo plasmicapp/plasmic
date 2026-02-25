@@ -1,7 +1,7 @@
 module.exports = {
   "*.{js,jsx,ts,tsx,cjs,mjs,cts,mts}": ["eslint --fix", "prettier --write"],
   "*.{json,css,less,scss,md,toml,xml,yml,yaml}": ["prettier --write"],
-  "Dockerfile*": ["hadolint --failure-threshold=warning"],
+  "Dockerfile*": ["hadolint --failure-threshold=error"],
 
   // Format HCL/Terragrunt files, but never touch generated *.lock.hcl (excluded via extglob)
   "!(*lock).hcl": (files) => {

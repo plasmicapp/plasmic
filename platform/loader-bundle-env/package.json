@@ -6,6 +6,7 @@
     "rc-util": "Must be ^5.44.4. Earlier versions doesn't support React 19+ by attempting to use findDOMNode from react-dom. https://linear.app/plasmic/issue/PLA-11800/investigate-issue-with-rich-components-table-in-react-19"
   },
   "scripts": {
+    "preinstall": "for d in internal_pkgs/*; do if [ -d \"$d\" ]; then cd $d && yarn && yarn build && cd -; fi done",
     "postinstall": "patch-package"
   },
   "dependencies": {
