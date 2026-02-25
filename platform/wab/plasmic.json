@@ -11952,6 +11952,6 @@
   "postSyncCommands": [
     "git ls-files -m | xargs pre-commit run prettier --files"
   ],
-  "cliVersion": "0.1.358",
-  "$schema": "https://unpkg.com/@plasmicapp/cli@0.1.358/dist/plasmic.schema.json"
+  "cliVersion": "0.1.359",
+  "$schema": "https://unpkg.com/@plasmicapp/cli@0.1.359/dist/plasmic.schema.json"
 }

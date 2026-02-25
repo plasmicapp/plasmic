@@ -4,7 +4,7 @@ import { useForceUpdate } from "@/wab/client/useForceUpdate";
 import { makeVariantedStylesHelperFromCurrentCtx } from "@/wab/client/utils/style-utils";
 import { useSignalListener } from "@/wab/commons/components/use-signal-listener";
 import { ANIMATIONS_LOWER } from "@/wab/shared/Labels";
-import { VariantCombo, tryGetVariantSetting } from "@/wab/shared/Variants";
+import { VariantCombo } from "@/wab/shared/Variants";
 import { spawn } from "@/wab/shared/common";
 import { allAnimationSequences } from "@/wab/shared/core/sites";
 import { Animation, TplTag } from "@/wab/shared/model/classes";
@@ -29,9 +29,6 @@ export function useAnimations(options: UseAnimationsOptions) {
     variants
   );
 
-  const vs = tryGetVariantSetting(tpl, variants);
-  const targetRs = vs?.rs;
-
   const allAnimSequences = allAnimationSequences(studioCtx.site, {
     includeDeps: "direct",
   });
@@ -47,31 +44,23 @@ export function useAnimations(options: UseAnimationsOptions) {
   useSignalListener(studioCtx.animationChanged, forceUpdate, [studioCtx]);
 
   const isAnimationPlaying =
-    focusedTpl &&
-    targetRs &&
-    studioCtx.styleMgrBcast.hasActiveAnimationPreview(focusedTpl, targetRs);
+    focusedTpl && studioCtx.styleMgrBcast.hasActiveAnimationPreview(focusedTpl);
 
   const playAnimations = (previewAnimations: Animation[]) => {
-    if (
-      previewAnimations.length === 0 ||
-      isDisabled ||
-      !focusedTpl ||
-      !targetRs
-    ) {
+    if (previewAnimations.length === 0 || isDisabled || !focusedTpl) {
       return;
     }
     spawn(
       studioCtx.styleMgrBcast.playAnimationPreview(
         focusedTpl,
-        targetRs,
         previewAnimations
       )
     );
   };
 
   const stopAnimations = () => {
-    if (isAnimationPlaying && focusedTpl && targetRs) {
-      studioCtx.styleMgrBcast.stopAnimationPreview(focusedTpl, targetRs);
+    if (isAnimationPlaying && focusedTpl) {
+      studioCtx.styleMgrBcast.stopAnimationPreview(focusedTpl);
     }
   };
 
@@ -119,7 +108,8 @@ export function useAnimations(options: UseAnimationsOptions) {
 
     spawn(
       studioCtx.change(({ success }) => {
-        vtm.removeAnimation(tpl, animation, variants);
+        const tplAnimations = vtm.removeAnimation(tpl, animation, variants);
+        triggerAnimationPreviewOnUpdate(tplAnimations);
         return success();
       })
     );
@@ -157,7 +147,7 @@ export function useAnimations(options: UseAnimationsOptions) {
     inspectedAnimation,
     animations,
     vsh,
-    isAnimationPlaying,
+    isAnimationPlaying: !!isAnimationPlaying,
     addAnimationLayer,
     removeAnimation,
     reorderAnimations,

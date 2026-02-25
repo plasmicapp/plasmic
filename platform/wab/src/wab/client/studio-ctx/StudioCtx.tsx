@@ -321,7 +321,6 @@ import {
   ObjInst,
   PageArena,
   ProjectDependency,
-  RuleSet,
   StyleToken,
   TemplatedString,
   TplComponent,
@@ -4787,18 +4786,14 @@ export class StudioCtx extends WithDbCtx {
       const canvasCtx = viewCtx.canvasCtx;
       this.styleMgr.upsertStyleSheets(canvasCtx.$doc()[0], viewCtx.component);
     },
-    playAnimationPreview: (
-      tpl: TplNode,
-      rs: RuleSet,
-      animations: Animation[]
-    ) => {
-      return this.styleMgr.playAnimationPreview(tpl, rs, animations);
+    playAnimationPreview: (tpl: TplNode, animations: Animation[]) => {
+      return this.styleMgr.playAnimationPreview(tpl, animations);
     },
-    stopAnimationPreview: (tpl: TplNode, rs: RuleSet) => {
-      this.styleMgr.stopAnimationPreview(tpl, rs);
+    stopAnimationPreview: (tpl: TplNode) => {
+      this.styleMgr.stopAnimationPreview(tpl);
     },
-    hasActiveAnimationPreview: (tpl: TplNode, rs: RuleSet) => {
-      return this.styleMgr.hasActiveAnimationPreview(tpl, rs);
+    hasActiveAnimationPreview: (tpl: TplNode) => {
+      return this.styleMgr.hasActiveAnimationPreview(tpl);
     },
   };
 

@@ -57,6 +57,10 @@ export function makeVariantMenu(opts: {
   onChangeAccessType?: (accessType: StateAccessType) => void;
   onEditDynamicValue?: () => void;
   onRemoveDynamicValue?: () => void;
+  previewAnimation?: {
+    type: "play" | "stop";
+    onClick: () => void;
+  };
 }) {
   const {
     variant,
@@ -70,6 +74,7 @@ export function makeVariantMenu(opts: {
     onChangeAccessType,
     onEditDynamicValue,
     onRemoveDynamicValue,
+    previewAnimation,
   } = opts;
   return () => {
     const builder = new MenuBuilder();
@@ -136,6 +141,18 @@ export function makeVariantMenu(opts: {
             onEditDynamicValue,
             onRemoveDynamicValue,
           })
+        );
+      });
+    }
+
+    if (previewAnimation) {
+      builder.genSection(undefined, (push) => {
+        push(
+          <Menu.Item key="preview-animation" onClick={previewAnimation.onClick}>
+            {previewAnimation.type === "play"
+              ? "Play animation"
+              : "Stop animation"}
+          </Menu.Item>
         );
       });
     }

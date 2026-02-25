@@ -42,6 +42,7 @@ import projectcss from "./plasmic_plasmic_kit_variants.module.css"; // plasmic-i
 import sty from "./PlasmicVariantRow.module.css"; // plasmic-import: ZAqVPmZmi-/css
 
 import CodeIcon from "../plasmic_kit/PlasmicIcon__Code"; // plasmic-import: sVrc1aLRLGQtV/icon
+import PlaySvgIcon from "../plasmic_kit/PlasmicIcon__PlaySvg"; // plasmic-import: j39GoLwZnf7-v/icon
 import Recording2Icon from "../plasmic_kit/PlasmicIcon__Recording2"; // plasmic-import: S1b6HroavEOOP/icon
 import BaseSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__BaseSvg"; // plasmic-import: qA39vYT23/icon
 import ChevronDownSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__ChevronDownSvg"; // plasmic-import: xZrB9_0ir/icon
@@ -100,6 +101,8 @@ export type PlasmicVariantRow__OverridesType = {
   recordButton?: Flex__<typeof IconButton>;
   variantPinButton?: Flex__<typeof VariantPinButton>;
   exprButton?: Flex__<typeof IconButton>;
+  previewAnimationContainer?: Flex__<"div">;
+  previewAnimation?: Flex__<typeof PlexusButton>;
   addAnimation?: Flex__<typeof PlexusButton>;
   indicator?: Flex__<typeof Indicator>;
 };
@@ -496,6 +499,98 @@ function PlasmicVariantRow__RenderFunc(props: {
               </IconButton>
             ) : null}
             {(
+              hasVariant($state, "showAddAnimation", "showAddAnimation") &&
+              triggers.hover_root
+                ? true
+                : hasVariant($state, "pinState", "selected") &&
+                  hasVariant($state, "showAddAnimation", "showAddAnimation")
+                ? true
+                : false
+            ) ? (
+              <div
+                data-plasmic-name={"previewAnimationContainer"}
+                data-plasmic-override={overrides.previewAnimationContainer}
+                className={classNames(
+                  projectcss.all,
+                  sty.previewAnimationContainer,
+                  {
+                    [sty.previewAnimationContainerpinState_selected_showAddAnimation]:
+                      hasVariant($state, "pinState", "selected") &&
+                      hasVariant(
+                        $state,
+                        "showAddAnimation",
+                        "showAddAnimation"
+                      ),
+                    [sty.previewAnimationContainershowAddAnimation]: hasVariant(
+                      $state,
+                      "showAddAnimation",
+                      "showAddAnimation"
+                    ),
+                  }
+                )}
+              >
+                <PlexusButton
+                  data-plasmic-name={"previewAnimation"}
+                  data-plasmic-override={overrides.previewAnimation}
+                  className={classNames(
+                    "__wab_instance",
+                    sty.previewAnimation,
+                    {
+                      [sty.previewAnimationpinState_selected]: hasVariant(
+                        $state,
+                        "pinState",
+                        "selected"
+                      ),
+                      [sty.previewAnimationpinState_selected_isReadOnly]:
+                        hasVariant($state, "isReadOnly", "isReadOnly") &&
+                        hasVariant($state, "pinState", "selected"),
+                      [sty.previewAnimationpinState_selected_showAddAnimation]:
+                        hasVariant($state, "pinState", "selected") &&
+                        hasVariant(
+                          $state,
+                          "showAddAnimation",
+                          "showAddAnimation"
+                        ),
+                      [sty.previewAnimationshowAddAnimation]: hasVariant(
+                        $state,
+                        "showAddAnimation",
+                        "showAddAnimation"
+                      ),
+                      [sty.previewAnimationshowAddAnimation_type_baseVariant]:
+                        hasVariant($state, "type", "baseVariant") &&
+                        hasVariant(
+                          $state,
+                          "showAddAnimation",
+                          "showAddAnimation"
+                        ),
+                    }
+                  )}
+                  color={"neutral"}
+                  end={
+                    <PlusSvgIcon
+                      className={classNames(projectcss.all, sty.svg__sGUw)}
+                      role={"img"}
+                    />
+                  }
+                  iconStart={true}
+                  label={null}
+                  start={
+                    <PlaySvgIcon
+                      className={classNames(projectcss.all, sty.svg__edSho, {
+                        [sty.svgshowAddAnimation__edShOnTmg2]: hasVariant(
+                          $state,
+                          "showAddAnimation",
+                          "showAddAnimation"
+                        ),
+                      })}
+                      role={"img"}
+                    />
+                  }
+                  type={"bordered"}
+                />
+              </div>
+            ) : null}
+            {(
               hasVariant($state, "isReadOnly", "isReadOnly") &&
               hasVariant($state, "pinState", "selected") &&
               triggers.hover_root
@@ -769,6 +864,11 @@ function PlasmicVariantRow__RenderFunc(props: {
             [sty.indicatorpinState_selected_type_baseVariant]:
               hasVariant($state, "type", "baseVariant") &&
               hasVariant($state, "pinState", "selected"),
+            [sty.indicatorshowAddAnimation]: hasVariant(
+              $state,
+              "showAddAnimation",
+              "showAddAnimation"
+            ),
             [sty.indicatorshowAdditionalRow]: hasVariant(
               $state,
               "showAdditionalRow",
@@ -795,6 +895,8 @@ const PlasmicDescendants = {
     "recordButton",
     "variantPinButton",
     "exprButton",
+    "previewAnimationContainer",
+    "previewAnimation",
     "addAnimation",
     "indicator",
   ],
@@ -804,12 +906,16 @@ const PlasmicDescendants = {
     "recordButton",
     "variantPinButton",
     "exprButton",
+    "previewAnimationContainer",
+    "previewAnimation",
     "addAnimation",
   ],
   icon: ["icon"],
   recordButton: ["recordButton"],
   variantPinButton: ["variantPinButton"],
   exprButton: ["exprButton"],
+  previewAnimationContainer: ["previewAnimationContainer", "previewAnimation"],
+  previewAnimation: ["previewAnimation"],
   addAnimation: ["addAnimation"],
   indicator: ["indicator"],
 } as const;
@@ -823,6 +929,8 @@ type NodeDefaultElementType = {
   recordButton: typeof IconButton;
   variantPinButton: typeof VariantPinButton;
   exprButton: typeof IconButton;
+  previewAnimationContainer: "div";
+  previewAnimation: typeof PlexusButton;
   addAnimation: typeof PlexusButton;
   indicator: typeof Indicator;
 };
@@ -893,6 +1001,8 @@ export const PlasmicVariantRow = Object.assign(
     recordButton: makeNodeComponent("recordButton"),
     variantPinButton: makeNodeComponent("variantPinButton"),
     exprButton: makeNodeComponent("exprButton"),
+    previewAnimationContainer: makeNodeComponent("previewAnimationContainer"),
+    previewAnimation: makeNodeComponent("previewAnimation"),
     addAnimation: makeNodeComponent("addAnimation"),
     indicator: makeNodeComponent("indicator"),
 

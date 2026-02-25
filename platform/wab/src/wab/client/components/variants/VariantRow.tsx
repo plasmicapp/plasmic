@@ -5,6 +5,7 @@ import {
   VariantSettingPopoverTitle,
 } from "@/wab/client/components/style-controls/DefinedIndicator";
 import { Icon } from "@/wab/client/components/widgets/Icon";
+import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
 import VariantIcon from "@/wab/client/plasmic/plasmic_kit_design_system/PlasmicIcon__Variant";
 import KeyframesIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__Keyframes";
 import {
@@ -26,7 +27,6 @@ import { isTplVariantable, summarizeTpl } from "@/wab/shared/core/tpls";
 import { getEffectiveVariantSetting } from "@/wab/shared/effective-variant-setting";
 import { Variant } from "@/wab/shared/model/classes";
 import { PlumeVariantDef } from "@/wab/shared/plume/plume-registry";
-import { PlusIcon } from "@graphiql/react";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { DraggableProvidedDragHandleProps } from "react-beautiful-dnd";
@@ -56,6 +56,7 @@ interface VariantRowProps {
   type?: PlasmicVariantRow__VariantsArgs["type"];
   additional?: React.ReactNode;
   hideIcon?: boolean;
+  previewAnimationContainer?: PlasmicVariantRow__OverridesType["previewAnimationContainer"];
 }
 
 export function pinStateToPlasmicPinState(pinState?: VariantPinState) {
@@ -98,6 +99,7 @@ const VariantRow = observer(function VariantRow(props: VariantRowProps) {
     additional,
     hideIcon,
     type,
+    previewAnimationContainer,
     ...rest
   } = props;
 
@@ -159,6 +161,7 @@ const VariantRow = observer(function VariantRow(props: VariantRowProps) {
         end: <PlusIcon className={"text-xlg dimfg"} />,
         ...(addAnimationLayer ? { onClick: addAnimationLayer } : {}),
       }}
+      previewAnimationContainer={previewAnimationContainer}
       root={{
         props: {
           ...contextMenuProps,

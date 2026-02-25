@@ -72,6 +72,10 @@
   max-width: 100%;
   min-width: 0;
 }
+.freeBoxshowAddAnimation__t0Gv2NTmg2 {
+  column-gap: 4px;
+  row-gap: 0px;
+}
 .recordButton:global(.__wab_instance) {
   flex-shrink: 0;
 }
@@ -162,6 +166,36 @@
   display: flex;
   position: relative;
   object-fit: cover;
+  height: 1em;
+}
+.previewAnimationContainer {
+  display: flex;
+  flex-direction: row;
+  position: relative;
+  align-items: stretch;
+  justify-content: flex-start;
+}
+.previewAnimationContainerpinState_selected_showAddAnimation {
+  display: flex;
+}
+.rootshowAddAnimation:hover .previewAnimationContainershowAddAnimation {
+  display: flex;
+}
+.previewAnimation:global(.__wab_instance):global(.__wab_instance) {
+  max-width: 100%;
+}
+.rootpinState_selected_isReadOnly:hover
+  .previewAnimationpinState_selected_isReadOnly:global(.__wab_instance):global(
+    .__wab_instance
+  ) {
+  display: none;
+}
+.svg__edSho {
+  position: relative;
+  height: 1em;
+}
+.svg__sGUw {
+  position: relative;
   height: 1em;
 }
 .addAnimation:global(.__wab_instance):global(.__wab_instance) {

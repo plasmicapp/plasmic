@@ -123,7 +123,15 @@ export const PrivateStyleVariantsPanel = observer(
               tpl={tpl}
               viewCtx={viewCtx}
             >
-              {({ addAnimationLayer, animationsList }) => (
+              {({
+                addAnimationLayer,
+                animationsList,
+                animations,
+                isAnimationPlaying,
+                playAnimations,
+                stopAnimations,
+                previewAnimationButton,
+              }) => (
                 <VariantRow
                   variant={variant}
                   studioCtx={studioCtx}
@@ -160,8 +168,23 @@ export const PrivateStyleVariantsPanel = observer(
                             .copyToVariant(component, variant, toVariant)
                         )
                       ),
+                    previewAnimation:
+                      animations.length > 0
+                        ? isAnimationPlaying
+                          ? {
+                              type: "stop",
+                              onClick: () => stopAnimations(),
+                            }
+                          : {
+                              type: "play",
+                              onClick: () => playAnimations(animations),
+                            }
+                        : undefined,
                   })}
                   addAnimationLayer={addAnimationLayer}
+                  previewAnimationContainer={{
+                    children: previewAnimationButton,
+                  }}
                   additional={animationsList}
                   label={
                     <StyleOrCodeComponentVariantLabel
