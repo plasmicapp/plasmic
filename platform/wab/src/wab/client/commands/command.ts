@@ -89,3 +89,15 @@ export const getAvailableCommands = async (
   await processCommands(COMMANDS);
   return commandsList;
 };
+
+export async function findCommandByName(
+  name: string,
+  studioCtx: StudioCtx
+): Promise<Command | undefined> {
+  const availableCommands = await getAvailableCommands(studioCtx);
+  const command = availableCommands.find((c) => {
+    const commandMeta = c.meta({ studioCtx });
+    return commandMeta.name === name;
+  });
+  return command;
+}

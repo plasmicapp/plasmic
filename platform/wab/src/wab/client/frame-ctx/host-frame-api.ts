@@ -49,4 +49,41 @@ export type HostFrameApi = {
   setDefaultPageRoleId(roleId: string | null | undefined): Promise<void>;
   logAsAppUser(appUser: StudioAppUser): Promise<void>;
   handleBranchMerged(): Promise<void>;
+  /** This helps execute an Copilot tool call in the HostFrame where StudioCtx is available */
+  executeCopilotToolCall(
+    toolName: string,
+    toolArgs: Record<string, unknown>
+  ): Promise<CopilotToolCallResult>;
 };
+
+/** Structured error for copilot tool calls — Comlink-serializable. */
+export type CopilotToolCallError = {
+  message: string;
+  type: "TOOL_NOT_FOUND" | "EXECUTION_FAILED" | "TRANSPORT_ERROR";
+};
+
+/** Serializable result of a tool call execution (crosses TopFrame and HostFrame boundary via Comlink) */
+export type CopilotToolCallResult =
+  | {
+      success: true;
+      output: string;
+    }
+  | {
+      success: false;
+      error: CopilotToolCallError;
+    };
+
+/** Convert an unknown caught copilot error value into a human-readable error message. */
+export function serializeCopilotError(err: unknown): string {
+  if (err instanceof Error) {
+    return err.message || err.name || "Unknown error";
+  }
+  if (typeof err === "string") {
+    return err;
+  }
+  try {
+    return JSON.stringify(err);
+  } catch {
+    return String(err);
+  }
+}
