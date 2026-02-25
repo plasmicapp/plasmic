@@ -46,6 +46,9 @@ export function choicePrompt<T>(
 }
 
 export type CommandMeta<Args = unknown> = {
+  // Args were introduced for Omnibar integration to derive UI metadata for
+  // a given arg. This could also come in handy in cases where a tool call would
+  // require human approval so we can show UI for respective args.
   args: { [K in keyof Args]: Prompt<Args[K]> };
   id: string;
   name: string;

@@ -9,6 +9,7 @@ import { resetStateValueCommand } from "@/wab/client/commands/component/resetSta
 import { setEditableByContentEditorCommand } from "@/wab/client/commands/component/settings/setEditableByContentEditor";
 import { setHiddenFromContentEditorCommand } from "@/wab/client/commands/component/settings/setHiddenFromContentEditor";
 import { setTrapFocusCommand } from "@/wab/client/commands/component/settings/setTrapFocus";
+import { insertHtmlCommand } from "@/wab/client/commands/copilot/insertHtml";
 import { renameCommand } from "@/wab/client/commands/element/rename";
 import { switchArenaCommand } from "@/wab/client/commands/navigation/switchArena";
 import { addTokenCommand } from "@/wab/client/commands/token/addToken";
@@ -41,6 +42,9 @@ export const COMMANDS = {
   },
   token: {
     addToken: addTokenCommand,
+  },
+  copilot: {
+    insertHtml: insertHtmlCommand,
   },
 };
 
