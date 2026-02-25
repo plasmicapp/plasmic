@@ -502,9 +502,6 @@ function PlasmicVariantRow__RenderFunc(props: {
               hasVariant($state, "showAddAnimation", "showAddAnimation") &&
               triggers.hover_root
                 ? true
-                : hasVariant($state, "pinState", "selected") &&
-                  hasVariant($state, "showAddAnimation", "showAddAnimation")
-                ? true
                 : false
             ) ? (
               <div

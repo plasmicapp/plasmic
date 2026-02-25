@@ -175,9 +175,6 @@
   align-items: stretch;
   justify-content: flex-start;
 }
-.previewAnimationContainerpinState_selected_showAddAnimation {
-  display: flex;
-}
 .rootshowAddAnimation:hover .previewAnimationContainershowAddAnimation {
   display: flex;
 }
