@@ -265,12 +265,18 @@ export async function executeServerQueries(ctx: any) {
   };
 }
 
-export function getPageRouterSkeletonImports(ctx: SerializerBaseContext) {
+export function getPageRouterSkeletonImports(
+  ctx: SerializerBaseContext,
+  isDynamicRoute: boolean
+) {
   let imports = `import { useRouter } from "next/router";
 import { PlasmicQueryDataProvider } from "@plasmicapp/react-web/lib/query";`;
   if (ctx.hasServerQueries || ctx.usesComponentLevelQueries) {
+    const nextTypes = isDynamicRoute
+      ? "GetStaticPaths, GetStaticProps"
+      : "GetStaticProps";
     imports += `
-import type { GetStaticProps } from "next";
+import type { ${nextTypes} } from "next";
 import { extractPlasmicQueryData } from "@plasmicapp/react-web/lib/prepass";`;
   }
   return imports;
@@ -293,12 +299,18 @@ import type { Metadata, ResolvingMetadata } from "next";`;
  * Uses extractPlasmicQueryData to render the component and extract query data.
  */
 export function serializePagesRouterGetStaticProps(
-  componentName: string
+  componentName: string,
+  pagePath: string
 ): string {
   const getStaticProps = `
 export const getStaticProps: GetStaticProps = async (context) => {
   const queryCache = await extractPlasmicQueryData(
-    <${componentName} />
+    <PageParamsProvider__
+      route={"${pagePath}"}
+      params={context.params}
+    >
+      <${componentName} />
+    </PageParamsProvider__>
   );
   return {
     props: { queryCache },
@@ -307,6 +319,21 @@ export const getStaticProps: GetStaticProps = async (context) => {
 `;
 
   return getStaticProps;
+}
+
+/**
+ * Serialize getStaticPaths for Next.js Pages Router dynamic routes.
+ */
+export function serializePagesRouterGetStaticPaths(): string {
+  return `
+export const getStaticPaths: GetStaticPaths = async () => {
+  console.warn("getStaticPaths was called with an empty paths array. Update this with the set of pages you want to generate statically.");
+  return {
+    paths: [],
+    fallback: "blocking",
+  };
+};
+`;
 }
 
 /**

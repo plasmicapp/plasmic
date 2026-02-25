@@ -159,6 +159,7 @@ import {
   getRscMetadata,
   serializeAppRouterGenerateMetadata,
   serializeCreateDollarQueries,
+  serializePagesRouterGetStaticPaths,
   serializePagesRouterGetStaticProps,
 } from "@/wab/shared/codegen/react-p/server-queries";
 import {
@@ -2591,9 +2592,19 @@ function serializePageAwareSkeletonWrapperTs(
   const isNextJs = isPlatformNextJs(ctx);
   const isNextJsPage = isPageComponent(component) && isNextJs;
 
+  const isDynamicRoute = /\[.+\]/.test(component.pageMeta?.path ?? "");
+
   const pagesRouterGetStaticProps =
     isNextJsPage && (ctx.hasServerQueries || ctx.usesComponentLevelQueries)
-      ? serializePagesRouterGetStaticProps(nodeComponentName)
+      ? serializePagesRouterGetStaticProps(
+          nodeComponentName,
+          component.pageMeta?.path ?? ""
+        )
+      : undefined;
+
+  const pagesRouterGetStaticPaths =
+    pagesRouterGetStaticProps && isDynamicRoute
+      ? serializePagesRouterGetStaticPaths()
       : undefined;
 
   const serverQueryComponentParams = ctx.hasServerQueries
@@ -2603,7 +2614,7 @@ function serializePageAwareSkeletonWrapperTs(
       ctx.useRSC && isNextjsAppDir
         ? `<${rscNodeComponentName} ${serverQueryComponentParams}/>`
         : `<${nodeComponentName} />`,
-    getStaticProps = "",
+    serverExports = "",
     componentPropsSig = "",
     tanstackRouteInfo = "";
 
@@ -2614,7 +2625,7 @@ function serializePageAwareSkeletonWrapperTs(
     if (isNextjsAppDir) {
       const skeletonPropsName = makeServerPageSkeletonPropsName(component);
       componentPropsSig = `{ params, searchParams }: ${skeletonPropsName}`;
-      getStaticProps = serializeAppRouterGenerateMetadata(ctx);
+      serverExports = serializeAppRouterGenerateMetadata(ctx);
       content = `<PageParamsProvider__
         route="${component.pageMeta?.path ?? ""}"
         params={await params}
@@ -2634,7 +2645,10 @@ function serializePageAwareSkeletonWrapperTs(
       let prefetchedCache = "";
       if (pagesRouterGetStaticProps) {
         componentPropsSig = `{ queryCache }: { queryCache?: any }`;
-        getStaticProps = pagesRouterGetStaticProps;
+        serverExports = pagesRouterGetStaticProps;
+        if (pagesRouterGetStaticPaths) {
+          serverExports += pagesRouterGetStaticPaths;
+        }
         prefetchedCache = " prefetchedCache={queryCache}";
       }
       content = `<PlasmicQueryDataProvider${prefetchedCache}>
@@ -2747,7 +2761,7 @@ function serializePageAwareSkeletonWrapperTs(
       isNextJsPage
         ? isNextjsAppDir
           ? getAppRouterSkeletonImports(ctx)
-          : getPageRouterSkeletonImports(ctx)
+          : getPageRouterSkeletonImports(ctx, isDynamicRoute)
         : isPageComponent(component) && opts.platform === "gatsby"
         ? `import type { PageProps } from "gatsby";
         export { Head };`
@@ -2758,7 +2772,7 @@ function serializePageAwareSkeletonWrapperTs(
 
     ${componentSubstitutionApi}
 
-    ${getStaticProps}
+    ${serverExports}
 
     ${tanstackRouteInfo}
 
