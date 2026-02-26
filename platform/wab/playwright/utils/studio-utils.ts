@@ -49,16 +49,24 @@ export async function getComponentUuid(
   page: Page,
   componentName: string
 ): Promise<string | null> {
-  return page.evaluate((name: string) => {
-    const win = window as any;
-    if (win.dbg && win.dbg.studioCtx) {
-      const component = win.dbg.studioCtx.site.components.find(
-        (c: any) => c.name === name
-      );
-      return component?.uuid;
+  for (const frame of page.frames()) {
+    const uuid = await frame
+      .evaluate((name: string) => {
+        const win = window as any;
+        if (win.dbg && win.dbg.studioCtx) {
+          const component = win.dbg.studioCtx.site.components.find(
+            (c: any) => c.name === name
+          );
+          return component?.uuid ?? null;
+        }
+        return null;
+      }, componentName)
+      .catch(() => null);
+    if (uuid) {
+      return uuid;
     }
-    return null;
-  }, componentName);
+  }
+  return null;
 }
 
 function clone<T>(obj: T): T {

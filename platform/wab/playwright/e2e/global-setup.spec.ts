@@ -12,6 +12,7 @@ setup("configure global dev flags", async ({ request, baseURL }) => {
   // Consolidated dev flags from all test files
   const allDevFlags = {
     ...initialFlags,
+
     // auto-open.spec.ts
     autoOpen: true,
     autoOpen2: true,
