@@ -75,15 +75,6 @@ const argv = yargs
       throw new Error(`Loader scheme may only be used with Next.js or Gatsby`);
     }
 
-    if (
-      argv2.appDir &&
-      !(argv2.platform === "nextjs" && argv2.scheme === "loader")
-    ) {
-      throw new Error(
-        `App dir may only be used with Next.js and loader scheme`
-      );
-    }
-
     return true;
   }).argv;
 
@@ -219,32 +210,38 @@ async function run(): Promise<void> {
         })
       : "codegen";
 
-  // TODO: Support nextjs + codegen
   const platformOptions: PlatformOptions = {};
-  // Don't show app dir question until we have better support for app dir.
-  const showAppDirQuestion = false;
-  if (showAppDirQuestion && platform === "nextjs" && scheme === "loader") {
-    platformOptions.nextjs = {
-      appDir: await maybePrompt({
-        name: "appDir",
-        message:
-          "Do you want to use the app/ directory and React Server Components? (see https://beta.nextjs.org/docs/app-directory-roadmap)",
-        type: "list",
-        choices: () => [
-          {
-            name: "No, use pages/ directory",
-            short: "No",
-            value: false,
-          },
-          {
-            name: "Yes, use app/ directory (experimental)",
-            short: "Yes",
-            value: true,
-          },
-        ],
-        default: false,
-      }),
-    };
+  if (platform === "nextjs") {
+    // TODO: re-enable when app dir is released
+    const showAppDirQuestion = false;
+    if (showAppDirQuestion) {
+      platformOptions.nextjs = {
+        appDir: await maybePrompt({
+          name: "appDir",
+          message:
+            "Do you want to use the app/ directory and React Server Components? (see https://nextjs.org/docs/app)",
+          type: "list",
+          choices: () => [
+            {
+              name: "Yes, use app/ directory",
+              short: "Yes",
+              value: true,
+            },
+            {
+              name: "No, use pages/ directory",
+              short: "No",
+              value: false,
+            },
+          ],
+          default: true,
+        }),
+      };
+      // Respect appDir flag for e2e tests
+    } else if (argv["appDir"] !== undefined) {
+      platformOptions.nextjs = {
+        appDir: argv["appDir"],
+      };
+    }
   }
 
   // Get the projectId

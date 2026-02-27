@@ -11,6 +11,7 @@ import {
 import { ensure } from "../utils/lang-utils";
 import { installUpgrade } from "../utils/npm-utils";
 import { CPAStrategy, GenerateFilesArgs } from "../utils/strategy";
+import { makeLayout_app_codegen } from "./templates/app-codegen/layout";
 import { makeCatchallPage_app_loader } from "./templates/app-loader/catchall-page";
 import { makePlasmicHostPage_app_loader } from "./templates/app-loader/plasmic-host";
 import { makePlasmicInit_app_loader } from "./templates/app-loader/plasmic-init";
@@ -81,39 +82,77 @@ export default nextConfig;`
 };
 
 async function generateFilesAppDir(args: GenerateFilesArgs) {
-  const { projectPath, jsOrTs, projectId, projectApiToken } = args;
+  const { projectPath, scheme, jsOrTs, projectId, projectApiToken } = args;
 
   // Delete existing pages
   deleteGlob(path.join(projectPath, "app", "page.*"));
 
-  // ./plasmic-init.ts
-  await fs.writeFile(
-    path.join(projectPath, `plasmic-init.${jsOrTs}`),
-    makePlasmicInit_app_loader(
+  if (scheme === "loader") {
+    // ./plasmic-init.ts
+    await fs.writeFile(
+      path.join(projectPath, `plasmic-init.${jsOrTs}`),
+      makePlasmicInit_app_loader(
+        projectId,
+        ensure(projectApiToken, "Missing projectApiToken")
+      )
+    );
+
+    // ./plasmic-init-client.ts
+    await fs.writeFile(
+      path.join(projectPath, `plasmic-init-client.${jsOrTs}x`),
+      makePlasmicInitClient_app_loader(jsOrTs)
+    );
+
+    // ./app/plasmic-host/page.tsx
+    await fs.mkdir(path.join(projectPath, "app", "plasmic-host"));
+    await fs.writeFile(
+      path.join(projectPath, "app", "plasmic-host", `page.${jsOrTs}x`),
+      makePlasmicHostPage_app_loader()
+    );
+
+    // ./app/[[...catchall]]/page.tsx
+    await fs.mkdir(path.join(projectPath, "app", "[[...catchall]]"));
+    await fs.writeFile(
+      path.join(projectPath, "app", "[[...catchall]]", `page.${jsOrTs}x`),
+      makeCatchallPage_app_loader(jsOrTs)
+    );
+  } else {
+    // ./app/layout.tsx
+    await fs.writeFile(
+      path.join(projectPath, "app", `layout.${jsOrTs}x`),
+      makeLayout_app_codegen(jsOrTs)
+    );
+
+    // ./app/plasmic-host/page.tsx
+    await fs.mkdir(path.join(projectPath, "app", "plasmic-host"));
+    await fs.writeFile(
+      path.join(projectPath, "app", "plasmic-host", `page.${jsOrTs}x`),
+      makePlasmicHostPage_pages_codegen() // plasmic-host page contents are the same as the pages router
+    );
+
+    // This should generate
+    // ./plasmic.json
+    // ./app/page.tsx
+    // ./components/plasmic/**
+    await runCodegenSync({
       projectId,
-      ensure(projectApiToken, "Missing projectApiToken")
-    )
-  );
+      projectApiToken,
+      projectPath,
+    });
 
-  // ./plasmic-init-client.ts
-  await fs.writeFile(
-    path.join(projectPath, `plasmic-init-client.${jsOrTs}x`),
-    makePlasmicInitClient_app_loader(jsOrTs)
-  );
-
-  // ./app/plasmic-host/page.tsx
-  await fs.mkdir(path.join(projectPath, "app", "plasmic-host"));
-  await fs.writeFile(
-    path.join(projectPath, "app", "plasmic-host", `page.${jsOrTs}x`),
-    makePlasmicHostPage_app_loader()
-  );
-
-  // ./app/[[...catchall]]/page.tsx
-  await fs.mkdir(path.join(projectPath, "app", "[[...catchall]]"));
-  await fs.writeFile(
-    path.join(projectPath, "app", "[[...catchall]]", `page.${jsOrTs}x`),
-    makeCatchallPage_app_loader(jsOrTs)
-  );
+    // Make an index (/) page if the project didn't have one.
+    const config = await getPlasmicConfig(projectPath, "nextjs", scheme);
+    const plasmicFiles = L.map(
+      L.flatMap(config.projects, (p) => p.components),
+      (c) => c.importSpec.modulePath
+    );
+    if (!plasmicFiles.find((f) => f.includes("app/page."))) {
+      await fs.writeFile(
+        path.join(projectPath, "app", `page.${jsOrTs}x`),
+        generateWelcomePage(config, "nextjs")
+      );
+    }
+  }
 }
 
 async function generateFilesPagesDir(args: GenerateFilesArgs) {

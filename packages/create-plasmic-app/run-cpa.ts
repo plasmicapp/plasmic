@@ -30,6 +30,12 @@ async function run() {
         scheme,
         typescript,
       });
+      allArgSets.push({
+        platform: "nextjs",
+        appDir: true,
+        scheme,
+        typescript,
+      });
       if (scheme === "codegen") {
         if (typescript) {
           allArgSets.push({
@@ -46,22 +52,15 @@ async function run() {
         });
       }
     });
-
-    allArgSets.push({
-      platform: "nextjs",
-      appDir: true,
-      scheme: "loader", // TODO: support codegen with appDir
-      typescript,
-    });
   });
   const allArgSetNames = allArgSets.map(getProjectName).sort();
 
-  let yargsCommand = yargs.command(
+  const yargsCommand = yargs.command(
     "$0 [arg-sets..]",
     `Runs create-plasmic-app with predefined sets of args for you.
 
 Valid arg sets:\n\tall\n\t${allArgSetNames.join("\n\t")}`,
-    (yargs) => yargs
+    (yargs2) => yargs2
   );
 
   const cliArgSetNames = yargsCommand.strict().argv["arg-sets"] as
