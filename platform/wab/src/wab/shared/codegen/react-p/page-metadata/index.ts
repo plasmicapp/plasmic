@@ -77,12 +77,11 @@ function getOgImageLink(
 }
 
 export function serializePageMetadata(component: Component): string {
+  const pageRoute = component.pageMeta?.path ?? "";
   return `
     pageMetadata: generateDynamicMetadata(
       wrapQueriesWithLoadingProxy({}),
-      { pagePath: "${
-        component.pageMeta?.path ?? ""
-      }", searchParams: {}, params: {} }
+      { pageRoute: "${pageRoute}", pagePath: "${pageRoute}", params: {}, query: {} }
     )
   `;
 }
@@ -393,7 +392,14 @@ export function serializeGenerateDynamicMetadataFunction(
 ) {
   const pageMeta = ctx.component.pageMeta;
   const metaFunction = `
-export function generateDynamicMetadata($q: any, $ctx: any) {
+export type PageCtx = {
+  pageRoute: string;
+  pagePath: string;
+  params: Record<string, string | string[] | undefined>;
+  query: Record<string, string | string[] | undefined>;
+};
+
+export function generateDynamicMetadata($q: any, $ctx: PageCtx) {
   return ${pageMeta ? serializeDynamicMetadataObject(ctx, pageMeta) : "{}"};
 }`;
   return metaFunction;

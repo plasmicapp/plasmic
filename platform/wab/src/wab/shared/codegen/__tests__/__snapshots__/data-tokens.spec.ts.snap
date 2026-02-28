@@ -274,7 +274,7 @@ makeNodeComponent("root"), {
     // Metadata about props expected for PlasmicP1
     internalVariantProps: PlasmicP1__VariantProps,
     internalArgProps: PlasmicP1__ArgProps,
-    pageMetadata: generateDynamicMetadata(wrapQueriesWithLoadingProxy({}), { pagePath: "/p-1", searchParams: {}, params: {} })
+    pageMetadata: generateDynamicMetadata(wrapQueriesWithLoadingProxy({}), { pageRoute: "/p-1", pagePath: "/p-1", params: {}, query: {} })
 });
 export default PlasmicP1;
 /* prettier-ignore-end */
@@ -351,6 +351,7 @@ import {
 
 
 
+
 import { _useGlobalVariants } from "./plasmic.tsx"; // plasmic-import: 1234567890/projectModule
 import { _useStyleTokens } from "./PlasmicStyleTokensProvider.tsx"; // plasmic-import: 1234567890/styleTokensProvider
 import { myText as $dataTokens_1T8AH_myText } from "./plasmic-data-tokens"; // plasmic-import: 1T8AHUHZeUyK1iDkHxrRw6/dataTokens
@@ -384,7 +385,14 @@ function wrapQueriesWithLoadingProxy($q: any): any {
 }
 
 
-export function generateDynamicMetadata($q: any, $ctx: any) {
+export type PageCtx = {
+  pageRoute: string;
+  pagePath: string;
+  params: Record<string, string | string[] | undefined>;
+  query: Record<string, string | string[] | undefined>;
+};
+
+export function generateDynamicMetadata($q: any, $ctx: PageCtx) {
   return {
     
     
@@ -696,7 +704,7 @@ override: makeNodeComponent("override"),
         
     pageMetadata: generateDynamicMetadata(
       wrapQueriesWithLoadingProxy({}),
-      { pagePath: "/p-1", searchParams: {}, params: {} }
+      { pageRoute: "/p-1", pagePath: "/p-1", params: {}, query: {} }
     )
   
       }

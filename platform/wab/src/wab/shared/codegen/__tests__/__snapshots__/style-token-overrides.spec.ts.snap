@@ -323,7 +323,7 @@ makeNodeComponent("root"), {
     // Metadata about props expected for PlasmicHomepage
     internalVariantProps: PlasmicHomepage__VariantProps,
     internalArgProps: PlasmicHomepage__ArgProps,
-    pageMetadata: generateDynamicMetadata(wrapQueriesWithLoadingProxy({}), { pagePath: "/", searchParams: {}, params: {} })
+    pageMetadata: generateDynamicMetadata(wrapQueriesWithLoadingProxy({}), { pageRoute: "/", pagePath: "/", params: {}, query: {} })
 });
 export default PlasmicHomepage;
 /* prettier-ignore-end */
@@ -399,6 +399,7 @@ import {
 
 
 
+
 import DepComp from "./DepComp";  // plasmic-import: u4_D7ezQ-9rk/component
 import { _useGlobalVariants } from "./plasmic.tsx"; // plasmic-import: 1234567890/projectModule
 import { _useStyleTokens } from "./PlasmicStyleTokensProvider.tsx"; // plasmic-import: 1234567890/styleTokensProvider
@@ -430,7 +431,14 @@ function wrapQueriesWithLoadingProxy($q: any): any {
 }
 
 
-export function generateDynamicMetadata($q: any, $ctx: any) {
+export type PageCtx = {
+  pageRoute: string;
+  pagePath: string;
+  params: Record<string, string | string[] | undefined>;
+  query: Record<string, string | string[] | undefined>;
+};
+
+export function generateDynamicMetadata($q: any, $ctx: PageCtx) {
   return {
     
     
@@ -672,7 +680,7 @@ p: makeNodeComponent("p"),
         
     pageMetadata: generateDynamicMetadata(
       wrapQueriesWithLoadingProxy({}),
-      { pagePath: "/", searchParams: {}, params: {} }
+      { pageRoute: "/", pagePath: "/", params: {}, query: {} }
     )
   
       }
@@ -1567,7 +1575,7 @@ makeNodeComponent("root"), {
     // Metadata about props expected for PlasmicHomepage
     internalVariantProps: PlasmicHomepage__VariantProps,
     internalArgProps: PlasmicHomepage__ArgProps,
-    pageMetadata: generateDynamicMetadata(wrapQueriesWithLoadingProxy({}), { pagePath: "/", searchParams: {}, params: {} })
+    pageMetadata: generateDynamicMetadata(wrapQueriesWithLoadingProxy({}), { pageRoute: "/", pagePath: "/", params: {}, query: {} })
 });
 export default PlasmicHomepage;
 /* prettier-ignore-end */
@@ -1676,6 +1684,7 @@ import {
 
 
 
+
 import DepComp from "./DepComp";  // plasmic-import: u4_D7ezQ-9rk/component
 import { _useGlobalVariants } from "./plasmic.tsx"; // plasmic-import: 1234567890/projectModule
 import { _useStyleTokens } from "./PlasmicStyleTokensProvider.tsx"; // plasmic-import: 1234567890/styleTokensProvider
@@ -1707,7 +1716,14 @@ function wrapQueriesWithLoadingProxy($q: any): any {
 }
 
 
-export function generateDynamicMetadata($q: any, $ctx: any) {
+export type PageCtx = {
+  pageRoute: string;
+  pagePath: string;
+  params: Record<string, string | string[] | undefined>;
+  query: Record<string, string | string[] | undefined>;
+};
+
+export function generateDynamicMetadata($q: any, $ctx: PageCtx) {
   return {
     
     
@@ -1949,7 +1965,7 @@ p: makeNodeComponent("p"),
         
     pageMetadata: generateDynamicMetadata(
       wrapQueriesWithLoadingProxy({}),
-      { pagePath: "/", searchParams: {}, params: {} }
+      { pageRoute: "/", pagePath: "/", params: {}, query: {} }
     )
   
       }

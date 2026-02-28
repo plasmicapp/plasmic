@@ -1309,6 +1309,7 @@ import {
 
 
 
+
 import { BaseButton } from "@plasmicpkgs/react-aria/skinny/registerButton";
 import { _useGlobalVariants } from "./plasmic.tsx"; // plasmic-import: 1234567890/projectModule
 import { _useStyleTokens } from "./PlasmicStyleTokensProvider.tsx"; // plasmic-import: 1234567890/styleTokensProvider
@@ -2695,6 +2696,7 @@ import {
 
 
 
+
 import DataFetcherParent from "./DataFetcherParent";  // plasmic-import: iUkwSJQ7glxH/component
 import { _useGlobalVariants } from "./plasmic.tsx"; // plasmic-import: 1234567890/projectModule
 import { _useStyleTokens } from "./PlasmicStyleTokensProvider.tsx"; // plasmic-import: 1234567890/styleTokensProvider
@@ -3057,6 +3059,7 @@ import {
   useGlobalActions,
   
 } from "@plasmicapp/react-web/lib/host";
+
 
 
 
@@ -3439,6 +3442,7 @@ import {
   useGlobalActions,
   
 } from "@plasmicapp/react-web/lib/host";
+
 
 
 
@@ -4410,6 +4414,7 @@ import {
 
 
 
+
 import { BaseDialogTrigger } from "@plasmicpkgs/react-aria/skinny/registerDialogTrigger";
 import Button from "./Button";  // plasmic-import: D557GwRUy2HJ/component
 import { BaseModal } from "@plasmicpkgs/react-aria/skinny/registerModal";
@@ -5072,6 +5077,7 @@ import {
 
 
 
+
 import { BaseOverlayArrow } from "@plasmicpkgs/react-aria/skinny/registerOverlayArrow";
 import { _useGlobalVariants } from "./plasmic.tsx"; // plasmic-import: 1234567890/projectModule
 import { _useStyleTokens } from "./PlasmicStyleTokensProvider.tsx"; // plasmic-import: 1234567890/styleTokensProvider
@@ -5656,7 +5662,7 @@ makeNodeComponent("root"), {
     // Metadata about props expected for PlasmicNewPage
     internalVariantProps: PlasmicNewPage__VariantProps,
     internalArgProps: PlasmicNewPage__ArgProps,
-    pageMetadata: generateDynamicMetadata(wrapQueriesWithLoadingProxy({}), { pagePath: "/new-page", searchParams: {}, params: {} })
+    pageMetadata: generateDynamicMetadata(wrapQueriesWithLoadingProxy({}), { pageRoute: "/new-page", pagePath: "/new-page", params: {}, query: {} })
 });
 export default PlasmicNewPage;
 /* prettier-ignore-end */
@@ -5732,6 +5738,7 @@ import {
 
 
 
+
 import PopoverDialog from "./PopoverDialog";  // plasmic-import: 5gJnBNi_9h0B/component
 import Button from "./Button";  // plasmic-import: D557GwRUy2HJ/component
 import Tooltip from "./Tooltip";  // plasmic-import: pI05-1YiCa_b/component
@@ -5770,7 +5777,14 @@ function wrapQueriesWithLoadingProxy($q: any): any {
 }
 
 
-export function generateDynamicMetadata($q: any, $ctx: any) {
+export type PageCtx = {
+  pageRoute: string;
+  pagePath: string;
+  params: Record<string, string | string[] | undefined>;
+  query: Record<string, string | string[] | undefined>;
+};
+
+export function generateDynamicMetadata($q: any, $ctx: PageCtx) {
   return {
     
     
@@ -6127,7 +6141,7 @@ helloWorld: makeNodeComponent("helloWorld"),
         
     pageMetadata: generateDynamicMetadata(
       wrapQueriesWithLoadingProxy({}),
-      { pagePath: "/new-page", searchParams: {}, params: {} }
+      { pageRoute: "/new-page", pagePath: "/new-page", params: {}, query: {} }
     )
   
       }
@@ -6387,6 +6401,7 @@ import {
   useGlobalActions,
   
 } from "@plasmicapp/react-web/lib/host";
+
 
 
 
@@ -6960,6 +6975,7 @@ import {
   useGlobalActions,
   
 } from "@plasmicapp/react-web/lib/host";
+
 
 
 
@@ -7641,6 +7657,7 @@ import {
   useGlobalActions,
   
 } from "@plasmicapp/react-web/lib/host";
+
 
 
 
@@ -10062,6 +10079,7 @@ import {
 
 
 
+
 import { BaseButton } from "@plasmicpkgs/react-aria/skinny/registerButton";
 import { _useGlobalVariants } from "./plasmic.tsx"; // plasmic-import: 1234567890/projectModule
 import { _useStyleTokens } from "./PlasmicStyleTokensProvider.tsx"; // plasmic-import: 1234567890/styleTokensProvider
@@ -11446,6 +11464,7 @@ import {
 
 
 
+
 import DataFetcherParent from "./DataFetcherParent";  // plasmic-import: iUkwSJQ7glxH/component
 import { _useGlobalVariants } from "./plasmic.tsx"; // plasmic-import: 1234567890/projectModule
 import { _useStyleTokens } from "./PlasmicStyleTokensProvider.tsx"; // plasmic-import: 1234567890/styleTokensProvider
@@ -11805,6 +11824,7 @@ import {
   useGlobalActions,
   
 } from "@plasmicapp/react-web/lib/host";
+
 
 
 
@@ -12186,6 +12206,7 @@ import {
   useGlobalActions,
   
 } from "@plasmicapp/react-web/lib/host";
+
 
 
 
@@ -13157,6 +13178,7 @@ import {
 
 
 
+
 import { BaseDialogTrigger } from "@plasmicpkgs/react-aria/skinny/registerDialogTrigger";
 import Button from "./Button";  // plasmic-import: D557GwRUy2HJ/component
 import { BaseModal } from "@plasmicpkgs/react-aria/skinny/registerModal";
@@ -13818,6 +13840,7 @@ import {
 
 
 
+
 import { BaseOverlayArrow } from "@plasmicpkgs/react-aria/skinny/registerOverlayArrow";
 import { _useGlobalVariants } from "./plasmic.tsx"; // plasmic-import: 1234567890/projectModule
 import { _useStyleTokens } from "./PlasmicStyleTokensProvider.tsx"; // plasmic-import: 1234567890/styleTokensProvider
@@ -14267,7 +14290,7 @@ makeNodeComponent("root"), {
     // Metadata about props expected for PlasmicNewPage
     internalVariantProps: PlasmicNewPage__VariantProps,
     internalArgProps: PlasmicNewPage__ArgProps,
-    pageMetadata: generateDynamicMetadata(wrapQueriesWithLoadingProxy({}), { pagePath: "/new-page", searchParams: {}, params: {} })
+    pageMetadata: generateDynamicMetadata(wrapQueriesWithLoadingProxy({}), { pageRoute: "/new-page", pagePath: "/new-page", params: {}, query: {} })
 });
 export default PlasmicNewPage;
 /* prettier-ignore-end */
@@ -14477,6 +14500,7 @@ import {
 
 
 
+
 import PopoverDialog from "./PopoverDialog";  // plasmic-import: 5gJnBNi_9h0B/component
 import Button from "./Button";  // plasmic-import: D557GwRUy2HJ/component
 import Tooltip from "./Tooltip";  // plasmic-import: pI05-1YiCa_b/component
@@ -14515,7 +14539,14 @@ function wrapQueriesWithLoadingProxy($q: any): any {
 }
 
 
-export function generateDynamicMetadata($q: any, $ctx: any) {
+export type PageCtx = {
+  pageRoute: string;
+  pagePath: string;
+  params: Record<string, string | string[] | undefined>;
+  query: Record<string, string | string[] | undefined>;
+};
+
+export function generateDynamicMetadata($q: any, $ctx: PageCtx) {
   return {
     
     
@@ -14872,7 +14903,7 @@ helloWorld: makeNodeComponent("helloWorld"),
         
     pageMetadata: generateDynamicMetadata(
       wrapQueriesWithLoadingProxy({}),
-      { pagePath: "/new-page", searchParams: {}, params: {} }
+      { pageRoute: "/new-page", pagePath: "/new-page", params: {}, query: {} }
     )
   
       }
@@ -15131,6 +15162,7 @@ import {
   useGlobalActions,
   
 } from "@plasmicapp/react-web/lib/host";
+
 
 
 
@@ -15703,6 +15735,7 @@ import {
   useGlobalActions,
   
 } from "@plasmicapp/react-web/lib/host";
+
 
 
 
@@ -16384,6 +16417,7 @@ import {
   useGlobalActions,
   
 } from "@plasmicapp/react-web/lib/host";
+
 
 
 

@@ -833,6 +833,26 @@ const __wrapUserPromise = globalThis.__PlasmicWrapUserPromise ?? (async (loc, pr
   `
     : "";
 
+  // True when RSC server file exists and can be imported from.
+  // In loader mode, the server file is not generated, so functions are inlined.
+  const useRscServerWrapper = ctx.useRSC && opts.targetEnv !== "loader";
+
+  const rscServerImportIdentifiers = ["generateDynamicMetadata", "PageCtx"];
+  if (ctx.hasServerQueries) {
+    rscServerImportIdentifiers.push("create$Queries", "createQueries");
+  }
+  const rscServerImports =
+    useRscServerWrapper && isPage
+      ? makeTaggedPlasmicImport(
+          rscServerImportIdentifiers,
+          `${
+            opts.relPathFromImplToManagedDir
+          }/${makePlasmicServerRscComponentName(component)}`,
+          component.uuid,
+          "rscServer"
+        )
+      : "";
+
   // We import a lot of things from @plasmicapp/react-web. For components,
   // we append a "__" suffix in case there's any name collision with other
   // components that we may be importing into this file. We don't need
@@ -889,9 +909,12 @@ ${
 }
 ${
   ctx.hasServerQueries
-    ? `import { unstable_createDollarQueries, unstable_usePlasmicQueries } from "${getDataSourcesPackageName()}";`
+    ? `import { ${
+        !useRscServerWrapper ? "unstable_createDollarQueries, " : ""
+      }unstable_usePlasmicQueries } from "${getDataSourcesPackageName()}";`
     : ""
 }
+${rscServerImports}
 ${
   plumeType
     ? `import * as pp from "${getPlumePackageName(opts, plumeType)}";`
@@ -921,8 +944,12 @@ ${makePictureImports(site, component, ctx.exportOpts, "managed")}
 ${makeSuperCompImports(component, ctx.exportOpts)}
 ${customFunctionsAndLibsImport}
 ${isPage ? serializeDynamicMetadataProxies() : ""}
-${isPage ? serializeGenerateDynamicMetadataFunction(ctx) : ""}
-${serializeCreateDollarQueries(ctx)}
+${
+  isPage && !useRscServerWrapper
+    ? serializeGenerateDynamicMetadataFunction(ctx)
+    : ""
+}
+${!useRscServerWrapper ? serializeCreateDollarQueries(ctx) : ""}
 
 ${
   // We make a reference to createPlasmicElementProxy, as in some setups,
@@ -1437,7 +1464,7 @@ export function serializeComponentLocalVars(ctx: SerializerBaseContext) {
       isPageComponent(component) && isPlatformNextJs(ctx)
         ? `const pageMetadata = generateDynamicMetadata(
       wrapQueriesWithLoadingProxy(${ctx.hasServerQueries ? "$q" : "{}"}),
-      $ctx
+      $ctx as PageCtx
     );`
         : ""
     }
