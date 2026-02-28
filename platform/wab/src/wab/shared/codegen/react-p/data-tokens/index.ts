@@ -1,4 +1,5 @@
 import { getDataTokenType } from "@/wab/commons/DataToken";
+import { ProjectId } from "@/wab/shared/ApiSchema";
 import {
   makeDataTokensFileName,
   makePlasmicModulePrelude,
@@ -29,7 +30,7 @@ function serializeDataTokenExport(token: FinalToken<DataToken>): string {
 
 export function makeDataTokensBundle(
   site: Site,
-  projectId: string,
+  projectId: ProjectId,
   exportOpts: SetRequired<Partial<ExportOpts>, "targetEnv">
 ): DataTokensBundle | undefined {
   const localTokens = siteFinalDataTokens(site);

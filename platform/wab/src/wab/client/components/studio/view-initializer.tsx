@@ -7,11 +7,12 @@ import {
   StudioPlaceholder,
 } from "@/wab/client/components/widgets";
 import { useHostFrameCtx } from "@/wab/client/frame-ctx/host-frame-ctx";
+import { ProjectId } from "@/wab/shared/ApiSchema";
 import { observer } from "mobx-react";
 import React from "react";
 
 type ViewInitializerProps = {
-  projectId: string;
+  projectId: ProjectId;
   appCtx: AppCtx;
   onRefreshUi: () => void;
 };

@@ -1,3 +1,4 @@
+import { ProjectId } from "@/wab/shared/ApiSchema";
 import { componentToReferenced } from "@/wab/shared/cached-selectors";
 import {
   ComponentGenHelper,
@@ -601,7 +602,7 @@ function makeComponentPropsTypeName(component: Component) {
 export function exportReactPlainTypical(
   project: Site,
   projectName: string,
-  projectId: string,
+  projectId: ProjectId,
   component: Component,
   extraOpts?: Partial<SerializerBaseContext>
 ) {

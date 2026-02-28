@@ -1,3 +1,4 @@
+import { ProjectId } from "@/wab/shared/ApiSchema";
 import { makeShortProjectId } from "@/wab/shared/codegen/util";
 import { flattenExprs } from "@/wab/shared/core/tpls";
 import {
@@ -321,9 +322,9 @@ describe("codeUsesGlobalObjects", function () {
 
 describe("transformDataTokensInCode", function () {
   // Use project IDs that produce valid JS identifiers when shortened (first 5 chars)
-  const projectId = "1hbbcw1cMH46M8XARJt5Jt";
+  const projectId = "1hbbcw1cMH46M8XARJt5Jt" as ProjectId;
   const shortProjectId = makeShortProjectId(projectId); // "1hbbc"
-  const depProjectId = "rDX1t9nUt4dXzzfHmGhHz1";
+  const depProjectId = "rDX1t9nUt4dXzzfHmGhHz1" as ProjectId;
   const depShortId = makeShortProjectId(depProjectId); // "rDX1t"
 
   const mockSite = {
@@ -413,9 +414,9 @@ describe("transformDataTokensInCode", function () {
 });
 
 describe("transformDataTokensToDisplay", function () {
-  const projectId = "1hbbcw1cMH46M8XARJt5Jt";
+  const projectId = "1hbbcw1cMH46M8XARJt5Jt" as ProjectId;
   const shortProjectId = makeShortProjectId(projectId); // "1hbbc"
-  const depProjectId = "rDX1t9nUt4dXzzfHmGhHz1";
+  const depProjectId = "rDX1t9nUt4dXzzfHmGhHz1" as ProjectId;
   const depShortId = makeShortProjectId(depProjectId); // "rDX1t"
 
   const mockSite = {
@@ -476,9 +477,9 @@ describe("transformDataTokensToDisplay", function () {
 });
 
 describe("transformDataTokenPathToBundle", function () {
-  const projectId = "1hbbcw1cMH46M8XARJt5Jt";
+  const projectId = "1hbbcw1cMH46M8XARJt5Jt" as ProjectId;
   const shortProjectId = makeShortProjectId(projectId); // "1hbbc"
-  const depProjectId = "rDX1t9nUt4dXzzfHmGhHz1";
+  const depProjectId = "rDX1t9nUt4dXzzfHmGhHz1" as ProjectId;
   const depShortId = makeShortProjectId(depProjectId); // "rDX1t"
 
   const mockSite = {
@@ -536,9 +537,9 @@ describe("transformDataTokenPathToBundle", function () {
 });
 
 describe("transformDataTokenPathToDisplay and pathToDisplayString", function () {
-  const projectId = "1hbbcw1cMH46M8XARJt5Jt";
+  const projectId = "1hbbcw1cMH46M8XARJt5Jt" as ProjectId;
   const shortProjectId = makeShortProjectId(projectId); // "1hbbc"
-  const depProjectId = "rDX1t9nUt4dXzzfHmGhHz1";
+  const depProjectId = "rDX1t9nUt4dXzzfHmGhHz1" as ProjectId;
   const depShortId = makeShortProjectId(depProjectId); // "rDX1t"
 
   const mockSite = {

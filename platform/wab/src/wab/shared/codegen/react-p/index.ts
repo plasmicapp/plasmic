@@ -393,7 +393,7 @@ export function exportStyleConfig(
 export function exportProjectConfig(
   site: Site,
   projectName: string,
-  projectId: string,
+  projectId: ProjectId,
   revision: number,
   projectRevId: string,
   version: string,
@@ -3294,7 +3294,7 @@ function conditionalValue(
           isTplComponent(node) && isCodeComponent(node.component),
         source: {
           type: "attr",
-          projectId: ctx.projectConfig.projectId as ProjectId,
+          projectId: ctx.projectConfig.projectId,
           site: ctx.site,
           component: ctx.component,
           tpl: node,

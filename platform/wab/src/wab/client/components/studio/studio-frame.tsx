@@ -51,7 +51,7 @@ export function StudioFrame({
   projectId,
   refreshStudio,
 }: {
-  projectId: string;
+  projectId: ProjectId;
   refreshStudio: () => Promise<void>;
 }) {
   const appCtx = useAppCtx();
@@ -78,9 +78,7 @@ export function StudioFrame({
 
   const fetchBranches = React.useCallback(
     moize(
-      async () =>
-        (await appCtx.api.listBranchesForProject(projectId as ProjectId))
-          .branches,
+      async () => (await appCtx.api.listBranchesForProject(projectId)).branches,
       {
         isPromise: true,
         maxAge: 5 * 60 * 1000,

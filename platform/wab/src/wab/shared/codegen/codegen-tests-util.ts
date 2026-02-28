@@ -1,3 +1,4 @@
+import { ProjectId } from "@/wab/shared/ApiSchema";
 import { Bundler } from "@/wab/shared/bundler";
 import { Bundle } from "@/wab/shared/bundles";
 import {
@@ -43,7 +44,7 @@ export async function codegen(
 ) {
   console.log(`Codegen output dir`, dir, opts);
 
-  const projectId = "1234567890";
+  const projectId = "1234567890" as ProjectId;
 
   const exportOpts: ExportOpts = {
     lang: "ts",

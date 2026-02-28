@@ -1,4 +1,3 @@
-import { ProjectId } from "@/wab/shared/ApiSchema";
 import { makeSerializedClassNameRef } from "@/wab/shared/codegen/react-p/class-names";
 import {
   makeArgPropsName,
@@ -76,7 +75,7 @@ export function serializeArgsDefaultValues(ctx: SerializerBaseContext) {
         localizable: param.isLocalizable,
         source: {
           type: "default-param-expr",
-          projectId: ctx.projectConfig.projectId as ProjectId,
+          projectId: ctx.projectConfig.projectId,
           site: ctx.site,
           component: ctx.component,
           attr: varName,

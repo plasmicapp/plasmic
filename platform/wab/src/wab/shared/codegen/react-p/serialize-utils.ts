@@ -1,3 +1,4 @@
+import { ProjectId } from "@/wab/shared/ApiSchema";
 import { VariantGroupType } from "@/wab/shared/Variants";
 import { CodeComponentWithHelpers } from "@/wab/shared/code-components/code-components";
 import { PlasmicImportType } from "@/wab/shared/codegen/react-p/types";
@@ -115,7 +116,7 @@ export function makeCssProjectImportName(projectName: string) {
  * component via the `themeResetClass` prop when `targetAllTags: true`.
  */
 export function makeRootResetClassName(
-  projectId: string,
+  siteUidString: string,
   opts: SetRequired<Partial<ExportOpts>, "targetEnv">
 ) {
   const useCssModules = opts.stylesOpts?.scheme === "css-modules";
@@ -123,9 +124,9 @@ export function makeRootResetClassName(
     return "root_reset";
   } else {
     if (opts.targetEnv === "loader") {
-      return `${shortPlasmicPrefix}r-${makeShortProjectId(projectId)}`;
+      return `${shortPlasmicPrefix}r-${siteUidString.slice(0, 5)}`;
     } else {
-      return `root_reset_${projectId}`;
+      return `root_reset_${siteUidString}`;
     }
   }
 }
@@ -170,7 +171,7 @@ export function makePlasmicDefaultStylesClassName(
  * ```
  */
 export function makePlasmicTokensClassName(
-  projectId: string,
+  projectId: ProjectId,
   opts: SetRequired<Partial<ExportOpts>, "targetEnv">
 ) {
   const useCssModules = opts?.stylesOpts?.scheme === "css-modules";
@@ -197,7 +198,7 @@ export function makePlasmicTokensClassName(
  * ```
  */
 export function makePlasmicTokensOverrideClassName(
-  projectId: string,
+  projectId: ProjectId,
   opts: SetRequired<Partial<ExportOpts>, "targetEnv">
 ) {
   const useCssModules = opts?.stylesOpts?.scheme === "css-modules";
@@ -296,7 +297,7 @@ export function makeStylesImports(
               (dep) =>
                 `${cssImport(
                   `${makeCssProjectImportName(dep.projectName)}`,
-                  makeProjectCssFileName(dep.projectId, opts)
+                  makeProjectCssFileName(dep.projectId as ProjectId, opts)
                 )} // plasmic-import: ${
                   dep.projectId
                 }/${projectStyleCssImportName}`
@@ -741,7 +742,7 @@ export function makeUseStyleTokensName() {
 }
 
 export function makeProjectModuleFileName(
-  projectId: string,
+  projectId: ProjectId,
   opts: Pick<ExportOpts, "targetEnv">
 ) {
   return opts.targetEnv === "loader" || opts.targetEnv === "preview"
@@ -750,7 +751,7 @@ export function makeProjectModuleFileName(
 }
 
 export function makeStyleTokensProviderFileName(
-  projectId: string,
+  projectId: ProjectId,
   opts: Pick<ExportOpts, "targetEnv">
 ) {
   return opts.targetEnv === "loader" || opts.targetEnv === "preview"
@@ -759,7 +760,7 @@ export function makeStyleTokensProviderFileName(
 }
 
 export function makeDataTokensFileName(
-  projectId: string,
+  projectId: ProjectId,
   opts: Pick<ExportOpts, "targetEnv">
 ) {
   return opts.targetEnv === "loader" || opts.targetEnv === "preview"
@@ -771,7 +772,7 @@ export function makeCssProjectFileName() {
   return `plasmic`;
 }
 
-export function makeCssProjectIdFileName(projectId: string) {
+export function makeCssProjectIdFileName(projectId: ProjectId) {
   return `project_${projectId}`;
 }
 
@@ -784,7 +785,7 @@ export function makeCssFileName(
 }
 
 export function makeProjectCssFileName(
-  projectId: string,
+  projectId: ProjectId,
   exportOpts: Partial<ExportOpts>
 ) {
   return makeCssFileName(

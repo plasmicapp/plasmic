@@ -1,3 +1,4 @@
+import { ProjectId } from "@/wab/shared/ApiSchema";
 import { isValidComboForToken } from "@/wab/shared/Variants";
 import { SiteGenHelper } from "@/wab/shared/codegen/codegen-helpers";
 import {
@@ -44,7 +45,7 @@ import type { SetRequired } from "type-fest";
 
 export function makeStyleTokensProviderBundle(
   site: Site,
-  projectId: string,
+  projectId: ProjectId,
   cssProjectDependencies: CssProjectDependencies,
   projectModuleBundle: ProjectModuleBundle,
   exportOpts: SetRequired<Partial<ExportOpts>, "targetEnv">
@@ -100,7 +101,7 @@ export function makeStyleTokensProviderBundle(
           dep.projectId,
           makeCssProjectImportName(dep.projectName),
           exportOpts,
-          makeProjectCssFileName(dep.projectId, exportOpts)
+          makeProjectCssFileName(dep.projectId as ProjectId, exportOpts)
         )
       )
       .join("\n")}
@@ -161,7 +162,7 @@ function makeCssImport(
  */
 function projectStyleTokenData(
   site: Site,
-  projectId: string,
+  projectId: ProjectId,
   cssProjectDependencies: CssProjectDependencies,
   exportOpts: SetRequired<Partial<ExportOpts>, "targetEnv">
 ) {
@@ -176,7 +177,7 @@ function projectStyleTokenData(
     ...cssProjectDependencies.map((dep) =>
       serializeClassExpr(
         exportOpts,
-        makePlasmicTokensClassName(dep.projectId, exportOpts),
+        makePlasmicTokensClassName(dep.projectId as ProjectId, exportOpts),
         makeCssProjectImportName(dep.projectName)
       )
     ),

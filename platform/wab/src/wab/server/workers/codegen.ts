@@ -9,6 +9,7 @@ import { withSpan } from "@/wab/server/util/apm-util";
 import { md5 } from "@/wab/server/util/hash";
 import { getHostlessPackageNpmVersion } from "@/wab/server/util/hostless-pkg-util";
 import { ensureDevFlags } from "@/wab/server/workers/worker-utils";
+import { ProjectId } from "@/wab/shared/ApiSchema";
 import { Bundler } from "@/wab/shared/bundler";
 import { componentToReferenced } from "@/wab/shared/cached-selectors";
 import {
@@ -223,7 +224,7 @@ export async function doGenCode(
       exportProjectConfig(
         site,
         project.name,
-        projectId,
+        projectId as ProjectId,
         revisionNumber,
         revisionId,
         version,

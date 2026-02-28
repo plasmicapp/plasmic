@@ -1,4 +1,5 @@
 import { computeDataTokenValue } from "@/wab/commons/DataToken";
+import { ProjectId } from "@/wab/shared/ApiSchema";
 import { customFunctionId } from "@/wab/shared/code-components/code-components";
 import {
   jsLiteral,
@@ -95,7 +96,7 @@ export function isQueryUsedInExpr(
 export function isDataTokenUsedInExpr(
   token: DataToken,
   expr: Expr | null | undefined,
-  projectId: string
+  projectId: ProjectId
 ): expr is CustomCode | ObjectPath {
   if (!expr || !Exprs.isRealCodeExprEnsuringType(expr)) {
     return false;
@@ -436,7 +437,7 @@ export function renameDataTokenInExpr(
  * Renames a data token and updates all expressions that reference it.
  */
 export function renameDataTokenAndFixExprs(
-  projectId: string,
+  projectId: ProjectId,
   site: Site,
   dataToken: DataToken,
   newName: string
@@ -474,7 +475,7 @@ function createAstNodeFromValue(value: any): ast.Expression {
 export function flattenDataTokenUsage(
   token: DataToken,
   exprRef: Tpls.ExprReference,
-  projectId: string,
+  projectId: ProjectId,
   component?: Component
 ) {
   const { expr } = exprRef;

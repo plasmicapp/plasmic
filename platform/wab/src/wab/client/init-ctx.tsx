@@ -28,7 +28,7 @@ import * as React from "react";
 export async function loadSiteDbCtx(
   appCtx: AppCtx,
   onRefreshUi: () => void,
-  siteId: string
+  siteId: ProjectId
 ) {
   const baseApi = appCtx.api;
   const { bundler } = appCtx;
@@ -37,9 +37,7 @@ export async function loadSiteDbCtx(
   const match = parseProjectLocation(appCtx.history.location);
   if (match) {
     if (match.branchName !== MainBranchId) {
-      const branches = await appCtx.api.listBranchesForProject(
-        siteId as ProjectId
-      );
+      const branches = await appCtx.api.listBranchesForProject(siteId);
       branch = branches.branches.find((b) => b.name === match.branchName);
     }
   }

@@ -1,3 +1,4 @@
+import { ProjectId } from "@/wab/shared/ApiSchema";
 import {
   VariantGroupType,
   isBaseRuleVariant,
@@ -371,7 +372,10 @@ export function serializeComponentRootResetClasses(
         cssProjectDependencies.map((dep) =>
           serializeClassExpr(
             ctx.exportOpts,
-            makePlasmicTokensClassName(dep.projectId, ctx.exportOpts),
+            makePlasmicTokensClassName(
+              dep.projectId as ProjectId,
+              ctx.exportOpts
+            ),
             makeCssProjectImportName(dep.projectName)
           )
         )

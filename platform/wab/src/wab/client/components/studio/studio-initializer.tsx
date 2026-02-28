@@ -22,6 +22,7 @@ import {
   StudioCtx,
   providesStudioCtx,
 } from "@/wab/client/studio-ctx/StudioCtx";
+import { ProjectId } from "@/wab/shared/ApiSchema";
 import { isUnownedProject } from "@/wab/shared/EntUtil";
 import { spawn } from "@/wab/shared/common";
 import { isHostLessPackage } from "@/wab/shared/core/sites";
@@ -36,7 +37,7 @@ import { Helmet } from "react-helmet";
 import { Route, Switch } from "react-router";
 
 type StudioInitializerProps = {
-  projectId: string;
+  projectId: ProjectId;
   hostFrameCtx: HostFrameCtx;
   appCtx: AppCtx;
   onRefreshUi: () => void;

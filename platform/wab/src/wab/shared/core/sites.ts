@@ -1,5 +1,5 @@
 import { mkTokenRef, replaceAllTokenRefs } from "@/wab/commons/StyleToken";
-import { ArenaType } from "@/wab/shared/ApiSchema";
+import { ArenaType, ProjectId } from "@/wab/shared/ApiSchema";
 import {
   AnyArena,
   cloneArena,
@@ -1230,8 +1230,8 @@ function replaceDataTokenProjectId(
 
 export function fixDataTokenProjectRefs(
   site: Site,
-  oldProjectId: string,
-  newProjectId: string
+  oldProjectId: ProjectId,
+  newProjectId: ProjectId
 ) {
   const oldShortId = makeShortProjectId(oldProjectId);
   const newShortId = makeShortProjectId(newProjectId);

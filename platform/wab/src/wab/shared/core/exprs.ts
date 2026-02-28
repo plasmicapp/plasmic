@@ -54,6 +54,7 @@ import {
     no-this-before-super,
 */
 import { mkTokenRef } from "@/wab/commons/StyleToken";
+import { ProjectId } from "@/wab/shared/ApiSchema";
 import {
   jsLiteral,
   toJsIdentifier,
@@ -124,7 +125,7 @@ import L, {
 export interface ExprCtx {
   component: Component | null;
   projectFlags: DevFlagsType;
-  projectId?: string;
+  projectId?: ProjectId;
   inStudio: boolean | undefined;
 }
 

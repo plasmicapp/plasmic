@@ -1,4 +1,5 @@
 import { StyleTokenType } from "@/wab/commons/StyleToken";
+import { ProjectId } from "@/wab/shared/ApiSchema";
 import {
   FrameViewMode,
   cloneArenaFrame,
@@ -2174,7 +2175,7 @@ export class TplMgr {
     return token;
   }
 
-  renameDataToken(projectId: string, token: DataToken, name: string) {
+  renameDataToken(projectId: ProjectId, token: DataToken, name: string) {
     if (toVarName(name) !== toVarName(token.name)) {
       const newName = this.getUniqueDataTokenName(name);
       // Update expressions before renaming the token

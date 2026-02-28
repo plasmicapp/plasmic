@@ -1,4 +1,5 @@
 import { DeepReadonly } from "@/wab/commons/types";
+import { ProjectId } from "@/wab/shared/ApiSchema";
 import { FramePinManager } from "@/wab/shared/PinManager";
 import { readonlyRSH } from "@/wab/shared/RuleSetHelpers";
 import {
@@ -505,7 +506,7 @@ const _componentToDeepReferenced = maybeComputedFn(
  */
 export const componentsReferencingDataToken = maybeComputedFn(
   function componentsReferencingDataToken(
-    projectId: string,
+    projectId: ProjectId,
     site: Site,
     token: DataToken
   ) {

@@ -1,4 +1,5 @@
 import { DeepReadonly } from "@/wab/commons/types";
+import { ProjectId } from "@/wab/shared/ApiSchema";
 import { assert, strict } from "@/wab/shared/common";
 import {
   isCodeComponent,
@@ -206,6 +207,6 @@ export function embedInTemplateString(text: string) {
   return "${" + text + "}";
 }
 
-export function makeShortProjectId(projectId: string) {
+export function makeShortProjectId(projectId: ProjectId) {
   return projectId.slice(0, 5);
 }

@@ -1,3 +1,4 @@
+import { ProjectId } from "@/wab/shared/ApiSchema";
 import {
   makeDataTokensFileName,
   makeTaggedPlasmicImport,
@@ -22,7 +23,7 @@ import {
 export function generateDataTokenImports(
   tokenIdentifiers: Set<string>,
   site: Site,
-  projectId: string,
+  projectId: ProjectId,
   exportOpts: ExportOpts
 ): string {
   if (tokenIdentifiers.size === 0) {
@@ -58,12 +59,15 @@ export function generateDataTokenImports(
     } else {
       // Dependency tokens - find the dep (including transitive dependencies)
       const dep = allDeps.find(
-        (d) => makeShortProjectId(d.projectId) === projectShortId
+        (d) => makeShortProjectId(d.projectId as ProjectId) === projectShortId
       );
       if (!dep) {
         continue;
       }
-      importPath = makeDataTokensFileName(dep.projectId, exportOpts);
+      importPath = makeDataTokensFileName(
+        dep.projectId as ProjectId,
+        exportOpts
+      );
       tokenProjectId = dep.projectId;
     }
 
@@ -124,7 +128,7 @@ export function getDataTokenIdentifiersFromPageMeta(
 export function makeComponentDataTokenImports(
   component: Component,
   site: Site,
-  projectId: string,
+  projectId: ProjectId,
   exportOpts: ExportOpts
 ): string {
   const tokenIdentifiers = getDataTokenIdentifiersFromExprs(

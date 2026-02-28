@@ -44,15 +44,21 @@ export function makePlasmicClientRscComponentName(component: Component) {
 }
 
 export function makeLoaderServerFunctionFileName(component: Component) {
-  return `__loader_rsc_${getExportedComponentName(component)}.tsx`;
+  return `__loader_rsc_${getExportedComponentName(component)}_${
+    component.uuid
+  }.tsx`;
 }
 
 export function makePlasmicServerRscComponentFileName(component: Component) {
-  return `${makePlasmicServerRscComponentName(component)}.tsx`;
+  return `${makePlasmicServerRscComponentName(component)}_${
+    component.uuid
+  }.tsx`;
 }
 
 export function makePlasmicClientRscComponentFileName(component: Component) {
-  return `${makePlasmicClientRscComponentName(component)}.tsx`;
+  return `${makePlasmicClientRscComponentName(component)}_${
+    component.uuid
+  }.tsx`;
 }
 
 export function makePlasmicQueryImports(ctx: SerializerBaseContext) {

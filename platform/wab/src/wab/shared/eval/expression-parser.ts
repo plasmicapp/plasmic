@@ -1,3 +1,4 @@
+import { ProjectId } from "@/wab/shared/ApiSchema";
 import {
   jsLiteral,
   makeShortProjectId,
@@ -837,7 +838,7 @@ function replaceIdentifierWithMemberExpr(node: ast.Identifier, path: string[]) {
 export function transformDataTokensInCode(
   code: string,
   site: Site,
-  projectId: string
+  projectId: ProjectId
 ): string {
   code = wrapJavaScriptCodeInParens(code);
   const shortProjectId = makeShortProjectId(projectId);
@@ -919,7 +920,7 @@ export function transformDataTokensInCode(
 export function transformDataTokensToDisplay(
   code: string,
   site: Site,
-  currentProjectId: string
+  currentProjectId: ProjectId
 ): string {
   const shortProjectId = makeShortProjectId(currentProjectId);
 
@@ -968,7 +969,7 @@ export function transformDataTokensToDisplay(
 export function transformDataTokenPathToDisplay(
   path: (string | number)[],
   site: Site,
-  projectId: string
+  projectId: ProjectId
 ): (string | number)[] {
   if (path.length === 0 || typeof path[0] !== "string") {
     return path;
@@ -1001,7 +1002,7 @@ export function transformDataTokenPathToDisplay(
 export function pathToDisplayString(
   path: (string | number)[],
   site: Site,
-  projectId: string
+  projectId: ProjectId
 ): string {
   return pathToString(transformDataTokenPathToDisplay(path, site, projectId));
 }
@@ -1018,7 +1019,7 @@ export function pathToDisplayString(
 export function transformDataTokenPathToBundle(
   path: (string | number)[],
   site: Site,
-  projectId: string
+  projectId: ProjectId
 ): (string | number)[] {
   if (path.length < 2 || path[0] !== "$dataTokens") {
     return path;

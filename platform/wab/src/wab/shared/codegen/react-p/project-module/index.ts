@@ -1,3 +1,4 @@
+import { ProjectId } from "@/wab/shared/ApiSchema";
 import { serializeUseGlobalVariants } from "@/wab/shared/codegen/react-p/global-variants";
 import {
   makeCreateUseGlobalVariantsName,
@@ -14,7 +15,7 @@ import type { SetRequired } from "type-fest";
 
 export function makeProjectModuleBundle(
   site: Site,
-  projectId: string,
+  projectId: ProjectId,
   exportOpts: SetRequired<Partial<ExportOpts>, "targetEnv">
 ): ProjectModuleBundle {
   const globalVariantGroups = new Set(

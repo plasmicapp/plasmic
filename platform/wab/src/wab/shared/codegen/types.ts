@@ -1,3 +1,4 @@
+import { ProjectId } from "@/wab/shared/ApiSchema";
 import { FontUsage } from "@/wab/shared/codegen/fonts";
 import { LocalizationKeyScheme } from "@/wab/shared/localization";
 
@@ -39,7 +40,7 @@ export interface ProjectConfig {
   cssRules: string;
   fontUsages: FontUsage[];
 
-  projectId: string;
+  projectId: ProjectId;
   projectName: string;
   teamId?: string;
   indirect: boolean;

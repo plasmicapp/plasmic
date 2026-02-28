@@ -3540,7 +3540,7 @@ export class DbMgr implements MigrationDbMgr {
       : this.getLatestProjectRev(projectId, { branchId }));
     if (pkg) {
       const prevPkgVersionIds = await this.getLatestPkgVersionIds(
-        projectId as ProjectId,
+        projectId,
         branchId,
         pkg.id,
         1

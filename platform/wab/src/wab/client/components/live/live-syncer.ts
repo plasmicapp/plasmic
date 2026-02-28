@@ -13,6 +13,7 @@ import { PlasmicWindowInternals } from "@/wab/client/frame-ctx/windows";
 import { requestIdleCallback } from "@/wab/client/requestidlecallback";
 import { StudioAppUser, StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { safeCallbackify } from "@/wab/commons/control";
+import { ProjectId } from "@/wab/shared/ApiSchema";
 import { getSlotParams } from "@/wab/shared/SlotUtils";
 import { VariantCombo } from "@/wab/shared/Variants";
 import {
@@ -795,7 +796,7 @@ function swallowAnchorClicks(
 export const createProjectOutput = computedFn(
   function createProjectOutput(
     site: Site,
-    projectId: string,
+    projectId: ProjectId,
     projectName: string
   ) {
     const exportOpts: ExportOpts = {
@@ -996,7 +997,7 @@ export function createDepsProjectMods(site: Site): CodeModule[] {
   return walkDependencyTree(site, "all").flatMap((dep) => {
     const depProjectConfig = createProjectOutput(
       dep.site,
-      dep.projectId,
+      dep.projectId as ProjectId,
       dep.name
     );
     return createProjectMods(depProjectConfig);

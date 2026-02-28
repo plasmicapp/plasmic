@@ -1,6 +1,5 @@
 // Important: If we change the generated strings we need to update
 // `resolveRichTextToDummyElt` in `shared/localization.tsx` as well :/
-import { ProjectId } from "@/wab/shared/ApiSchema";
 import { VariantCombo, isBaseVariant } from "@/wab/shared/Variants";
 import { serializeClassExpr } from "@/wab/shared/codegen/react-p/class-names";
 import {
@@ -163,7 +162,7 @@ function serializeLocalizationKey(ctx: SerializerBaseContext, tpl: TplTextTag) {
         genLocalizationString(site, tpl, combo, variantComboSorter, opts),
         {
           type: "text",
-          projectId: ctx.projectConfig.projectId as ProjectId,
+          projectId: ctx.projectConfig.projectId,
           site,
           component,
           tpl,

@@ -476,6 +476,9 @@ export function serializeGenerateMetadataFunction(
   const pageMeta = component.pageMeta;
   const isDynamic = hasDynamicMetadata(pageMeta);
   const propTypeName = "GenerateMetadataProps";
+  const moduleFileName = `__generateMetadata_${makePlasmicComponentName(
+    component
+  )}_${component.uuid}.tsx`;
 
   // Generate static metadata export if no dynamic values
   if (!isDynamic) {
@@ -486,7 +489,7 @@ ${getMetadataTypeDefinition()}
 
 export const metadata: PlasmicPageMetadata = ${metadataObject};
 `,
-      fileName: `__generateMetadata_${makePlasmicComponentName(component)}.tsx`,
+      fileName: moduleFileName,
     };
   }
 
@@ -517,6 +520,6 @@ export async function generateMetadata(props: ${propTypeName}): Promise<PlasmicP
 
   return {
     module,
-    fileName: `__generateMetadata_${makePlasmicComponentName(component)}.tsx`,
+    fileName: moduleFileName,
   };
 }

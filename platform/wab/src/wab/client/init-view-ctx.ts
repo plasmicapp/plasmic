@@ -6,10 +6,11 @@ import {
 } from "@/wab/client/frame-ctx/windows";
 import { loadSiteDbCtx } from "@/wab/client/init-ctx";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { SiteInfo } from "@/wab/shared/SharedApi";
+import { ProjectId } from "@/wab/shared/ApiSchema";
 import { spawn } from "@/wab/shared/common";
 import { observeModel } from "@/wab/shared/core/observable-model";
 import { meta } from "@/wab/shared/model/classes-metas";
+import { SiteInfo } from "@/wab/shared/SharedApi";
 import * as mobx from "mobx";
 
 (window as any).mobx = mobx;
@@ -41,7 +42,7 @@ function createStudioCtx({ dbCtx }: { dbCtx: DbCtx; siteInfo: SiteInfo }) {
 
 export async function initStudioCtx(
   appCtx: AppCtx,
-  siteId: string,
+  siteId: ProjectId,
   onRefreshUi
 ) {
   const dbCtx = await loadSiteDbCtx(appCtx, onRefreshUi, siteId);

@@ -1,3 +1,4 @@
+import { ProjectId } from "@/wab/shared/ApiSchema";
 import { Bundle } from "@/wab/shared/bundler";
 import _bundle from "@/wab/shared/codegen/__tests__/bundles/data-tokens-page-meta.json";
 import { generateSiteFromBundle } from "@/wab/shared/codegen/codegen-tests-util";
@@ -15,7 +16,7 @@ describe("data tokens: page meta codegen", () => {
 
   it("should codegen correct metadata with data tokens", () => {
     // Generate metadata for the "seo" page component which uses data tokens
-    const projectId = "3UYiEMfU3twU4iYSx86cub";
+    const projectId = "3UYiEMfU3twU4iYSx86cub" as ProjectId;
     const platform = "nextjs";
 
     const exportOpts: ExportOpts = {
@@ -90,7 +91,9 @@ describe("data tokens: page meta codegen", () => {
     const metadataOutput = serializeGenerateMetadataFunction(ctx);
 
     expect(metadataOutput).toBeDefined();
-    expect(metadataOutput?.fileName).toBe("__generateMetadata_PlasmicSeo.tsx");
+    expect(metadataOutput?.fileName).toMatch(
+      /^__generateMetadata_PlasmicSeo_[a-zA-Z0-9]{12}\.tsx$/
+    );
 
     // Verify snapshot matches the generated metadata module
     expect(metadataOutput?.module).toMatchSnapshot();
