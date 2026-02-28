@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/plasmic-chakra-ui",
-  "version": "0.0.69",
+  "version": "0.0.70",
   "description": "Plasmic registration calls for chakra ui components.",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -35,7 +35,7 @@
     }
   ],
   "devDependencies": {
-    "@plasmicapp/host": "1.0.237",
+    "@plasmicapp/host": "1.0.238",
     "@rollup/plugin-commonjs": "^25.0.2",
     "@rollup/plugin-json": "^6.0.0",
     "@rollup/plugin-node-resolve": "^15.1.0",

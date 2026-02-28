@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/wordpress",
-  "version": "0.0.14",
+  "version": "0.0.15",
   "description": "Plasmic registration for WordPress",
   "repository": {
     "type": "git",
@@ -32,7 +32,7 @@
     "postpublish": "bash ../../scripts/publish-api-doc-model.sh"
   },
   "devDependencies": {
-    "@plasmicapp/host": "1.0.237",
+    "@plasmicapp/host": "1.0.238",
     "@react-awesome-query-builder/core": "^6.6.15",
     "@types/json-logic-js": "^2.0.8",
     "typescript": "^5.7.3",
