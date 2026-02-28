@@ -2,9 +2,6 @@ import { DndAdoptee, DndMarkers, DragMoveManager } from "@/wab/client/Dnd";
 import { DragMoveFrameManager } from "@/wab/client/FreestyleManipulator";
 import { ReadableClipboard } from "@/wab/client/clipboard/ReadableClipboard";
 import { WritableClipboard } from "@/wab/client/clipboard/WritableClipboard";
-import { PLASMIC_CLIPBOARD_FORMAT } from "@/wab/client/clipboard/common";
-import { LocalClipboardAction } from "@/wab/client/clipboard/local";
-import { paste } from "@/wab/client/clipboard/paste";
 import AutoOpenBanner from "@/wab/client/components/AutoOpenBanner";
 import { BottomModals } from "@/wab/client/components/BottomModal";
 import { maybeShowContextMenu } from "@/wab/client/components/ContextMenu";
@@ -59,7 +56,6 @@ import {
 } from "@/wab/client/definitions/events";
 import { isArrowKey } from "@/wab/client/dom";
 import { getElementBounds, isCanvasIframeEvent } from "@/wab/client/dom-utils";
-import { getCopyState } from "@/wab/client/insertable-templates";
 import { PLATFORM } from "@/wab/client/platform";
 import { bindShortcutHandlers } from "@/wab/client/shortcuts/shortcut-handler";
 import { shouldHandleStudioShortcut } from "@/wab/client/shortcuts/studio/studio-shortcut-handlers";
@@ -68,7 +64,6 @@ import { RightTabKey, StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewportCtx } from "@/wab/client/studio-ctx/ViewportCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { TutorialEventsType } from "@/wab/client/tours/tutorials/tutorials-events";
-import { trackEvent } from "@/wab/client/tracking";
 import {
   getArenaFrames,
   getFrameHeight,
@@ -152,7 +147,6 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
   private canvasScaler = createRef<HTMLDivElement>();
   private onClipperScrollListener: (() => void) | null = null;
   private dragState?: DragState;
-  private cursorClientPt?: Pt;
   private measureToolTargets?: {
     targetDom?: JQuery;
     targetPt?: Pt;
@@ -164,12 +158,6 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
   });
 
   private unbindShortcutHandlers: () => void;
-
-  // clipboardAction keeps track of last clipboard action. It is used in
-  // "paste as sibling" because Clipboard API only lets us know about the
-  // existence of "application/vnd.plasmic.clipboardjson" but does not let
-  // us read data from it.
-  private clipboardAction: LocalClipboardAction = "copy";
 
   constructor(props: ViewEditorProps) {
     super(props);
@@ -300,7 +288,7 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
 
       if (e.clipboardData) {
         e.preventDefault();
-        await this.copy(
+        await this.props.studioCtx.copy(
           WritableClipboard.fromDataTransfer(e.clipboardData),
           vc
         );
@@ -314,7 +302,10 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
 
       if (e.clipboardData) {
         e.preventDefault();
-        await this.cut(WritableClipboard.fromDataTransfer(e.clipboardData), vc);
+        await this.props.studioCtx.cut(
+          WritableClipboard.fromDataTransfer(e.clipboardData),
+          vc
+        );
       }
     });
     this.registerListener("paste", async (e: ClipboardEvent) => {
@@ -324,7 +315,9 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
 
       if (e.clipboardData) {
         e.preventDefault();
-        await this.paste(ReadableClipboard.fromDataTransfer(e.clipboardData));
+        await this.props.studioCtx.paste(
+          ReadableClipboard.fromDataTransfer(e.clipboardData)
+        );
       }
     });
 
@@ -774,7 +767,7 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
           });
         }),
       PASTE_AS_SIBLING: (e: KeyboardEvent) =>
-        this.handleHotkey(e, async () => this.pasteAsSibling()),
+        this.handleHotkey(e, async () => this.props.studioCtx.pasteAsSibling()),
       BOLD: (e) =>
         this.handleHotkey(e, async () =>
           this.props.studioCtx.changeUnsafe(() => this.viewOps().toggleBold())
@@ -901,73 +894,6 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
     return this.handleHotkey(e, f);
   }
 
-  async copy(clipboard: WritableClipboard, viewCtx: ViewCtx) {
-    trackEvent("Copy");
-    const copyObj = viewCtx.viewOps.copy();
-    if (!copyObj) {
-      return;
-    }
-    viewCtx.enforcePastingAsSibling = true;
-    const copyState = getCopyState(viewCtx, copyObj);
-    spawn(viewCtx.appCtx.api.whitelistProjectIdToCopy(copyState.projectId));
-    if (copyState.references.length > 0) {
-      clipboard.setData(copyState);
-    } else {
-      clipboard.setData({ action: "copy" });
-    }
-    this.clipboardAction = "copy";
-  }
-
-  async cut(clipboard: WritableClipboard, viewCtx: ViewCtx) {
-    trackEvent("Cut");
-    const copyObj = await viewCtx.viewOps.cut();
-    if (!copyObj) {
-      return;
-    }
-    const copyState = getCopyState(viewCtx, copyObj);
-    spawn(viewCtx.appCtx.api.whitelistProjectIdToCopy(copyState.projectId));
-    if (copyState.references.length > 0) {
-      clipboard.setData(copyState);
-    } else {
-      clipboard.setData({ action: "cut" });
-    }
-    this.clipboardAction = "cut";
-  }
-
-  async paste(clipboard: ReadableClipboard, as?: "sibling") {
-    trackEvent("Paste");
-    await paste({
-      clipboard: clipboard,
-      studioCtx: this.props.studioCtx,
-      cursorClientPt: this.cursorClientPt,
-      as,
-    });
-  }
-
-  async pasteAsSibling() {
-    const sc = this.props.studioCtx;
-    let clipboard: ReadableClipboard;
-
-    try {
-      const clipboardData = await sc.appCtx.api.readNavigatorClipboard(
-        this.clipboardAction
-      );
-      clipboard = ReadableClipboard.fromData(clipboardData);
-    } catch (e) {
-      console.error(e);
-
-      // If unable to read data from the clipboard, assume that it
-      // contains a paste from Plasmic.
-      clipboard = ReadableClipboard.fromData({
-        [PLASMIC_CLIPBOARD_FORMAT]: JSON.stringify({
-          action: this.clipboardAction,
-        }),
-      });
-    }
-
-    await this.paste(clipboard, "sibling");
-  }
-
   /**
    * The dragenter and dragleave events fire on entering/leaving nested elements
    * in a DOM tree, so we count how deep we are in a nested tree to track
@@ -1027,7 +953,9 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
     this.dndOverlayOpts.visible = false;
     this.dragDepth = 0;
     if (e.dataTransfer) {
-      await this.paste(ReadableClipboard.fromDataTransfer(e.dataTransfer));
+      await this.props.studioCtx.paste(
+        ReadableClipboard.fromDataTransfer(e.dataTransfer)
+      );
     }
   }
 
@@ -1263,7 +1191,7 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
           ensure(vc, () => "Expected vc to exist")
         )
       : new Pt(e.clientX, e.clientY);
-    this.cursorClientPt = clientPt;
+    this.props.studioCtx.setCursorClientPt(clientPt);
 
     if (this.props.studioCtx.dragInsertState()) {
       await this.props.studioCtx.changeUnsafe(() => {

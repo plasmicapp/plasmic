@@ -291,6 +291,10 @@ export const EDIT_SHORTCUT_GROUP = mkShortcutGroup("Edit", {
     combos: "ctrl+c",
     description: "Copy element",
   },
+  CUT: {
+    combos: "ctrl+x",
+    description: "Cut element",
+  },
   COPY_ELEMENT_STYLE: {
     combos: "ctrl+alt+c",
     description: "Copy element style",

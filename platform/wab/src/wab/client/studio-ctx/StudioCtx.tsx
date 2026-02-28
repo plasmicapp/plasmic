@@ -14,7 +14,14 @@ import {
 } from "@/wab/client/api-hooks";
 import { storageViewAsKey } from "@/wab/client/app-auth/constants";
 import { parseProjectLocation, parseRoute } from "@/wab/client/cli-routes";
-import { LocalClipboard } from "@/wab/client/clipboard/local";
+import { ReadableClipboard } from "@/wab/client/clipboard/ReadableClipboard";
+import { WritableClipboard } from "@/wab/client/clipboard/WritableClipboard";
+import { PLASMIC_CLIPBOARD_FORMAT } from "@/wab/client/clipboard/common";
+import {
+  LocalClipboard,
+  LocalClipboardAction,
+} from "@/wab/client/clipboard/local";
+import { paste } from "@/wab/client/clipboard/paste";
 import { syncCodeComponentsAndHandleErrors } from "@/wab/client/code-components/code-components";
 import {
   showForbiddenError,
@@ -78,7 +85,10 @@ import {
   getRootSubReact,
 } from "@/wab/client/frame-ctx/windows";
 import { checkDepPkgHosts } from "@/wab/client/init-ctx";
-import { postInsertableTemplate } from "@/wab/client/insertable-templates";
+import {
+  getCopyState,
+  postInsertableTemplate,
+} from "@/wab/client/insertable-templates";
 import { PLATFORM } from "@/wab/client/platform";
 import { requestIdleCallbackAsync } from "@/wab/client/requestidlecallback";
 import { plasmicExtensionAvailable } from "@/wab/client/screenshot-util";
@@ -3070,6 +3080,90 @@ export class StudioCtx extends WithDbCtx {
   }
   getCurrentTeam(): ApiTeam | undefined {
     return this.appCtx.getAllTeams().find((t) => t.id === this.siteInfo.teamId);
+  }
+
+  //
+  // Copy/paste commands
+  //
+
+  // clipboardAction keeps track of last clipboard action. It is used in
+  // "paste as sibling" because Clipboard API only lets us know about the
+  // existence of "application/vnd.plasmic.clipboardjson" but does not let
+  // us read data from it.
+  private clipboardAction: LocalClipboardAction = "copy";
+
+  private cursorClientPt?: Pt;
+
+  setCursorClientPt(clientPt: Pt) {
+    this.cursorClientPt = clientPt;
+  }
+
+  async copy(clipboard: WritableClipboard, viewCtx: ViewCtx) {
+    trackEvent("Copy");
+    const copyObj = viewCtx.viewOps.copy();
+    if (!copyObj) {
+      return;
+    }
+    viewCtx.enforcePastingAsSibling = true;
+    const copyState = getCopyState(viewCtx, copyObj);
+    spawn(viewCtx.appCtx.api.whitelistProjectIdToCopy(copyState.projectId));
+    if (copyState.references.length > 0) {
+      clipboard.setData(copyState);
+    } else {
+      clipboard.setData({ action: "copy" });
+    }
+    this.clipboardAction = "copy";
+  }
+
+  async cut(clipboard: WritableClipboard, viewCtx: ViewCtx) {
+    trackEvent("Cut");
+    const copyObj = await viewCtx.viewOps.cut();
+    if (!copyObj) {
+      return;
+    }
+    const copyState = getCopyState(viewCtx, copyObj);
+    spawn(viewCtx.appCtx.api.whitelistProjectIdToCopy(copyState.projectId));
+    if (copyState.references.length > 0) {
+      clipboard.setData(copyState);
+    } else {
+      clipboard.setData({ action: "cut" });
+    }
+    this.clipboardAction = "cut";
+  }
+
+  async paste(clipboard: ReadableClipboard, as?: "sibling") {
+    trackEvent("Paste");
+    await paste({
+      clipboard,
+      studioCtx: this,
+      cursorClientPt: this.cursorClientPt,
+      as,
+    });
+  }
+
+  async pasteAsSibling() {
+    const clipboard = await this.readClipboardForPaste();
+    await this.paste(clipboard, "sibling");
+  }
+
+  /**
+   * Read the current clipboard via the navigator API. Fall back to a synthetic marker
+   * so the paste router can fall through to the in-process local clipboard.
+   */
+  async readClipboardForPaste(): Promise<ReadableClipboard> {
+    try {
+      const clipboardData = await this.appCtx.api.readNavigatorClipboard(
+        this.clipboardAction
+      );
+      return ReadableClipboard.fromData(clipboardData);
+    } catch (e) {
+      console.error(e);
+      return ReadableClipboard.fromData({
+        [PLASMIC_CLIPBOARD_FORMAT]: JSON.stringify({
+          action: this.clipboardAction,
+        }),
+      });
+    }
   }
 
   //

@@ -1,4 +1,5 @@
 import { openNewTab } from "@/wab/client/cli-routes";
+import { WritableClipboard } from "@/wab/client/clipboard/WritableClipboard";
 import { isStyleClip } from "@/wab/client/clipboard/local";
 import { makeFrameMenu } from "@/wab/client/components/frame-menu";
 import {
@@ -747,6 +748,63 @@ export function makeTplMenu(
             </Menu.Item>
           );
         }
+        push2(
+          <Menu.Item
+            key="copy"
+            onClick={async () =>
+              viewCtx.studioCtx.copy(
+                WritableClipboard.fromNavigatorClipboard(),
+                viewCtx
+              )
+            }
+          >
+            <MenuItemContent shortcut={getComboForAction("COPY")}>
+              Copy
+            </MenuItemContent>
+          </Menu.Item>
+        );
+        if (tpl.parent && !contentEditorMode) {
+          push2(
+            <Menu.Item
+              key="cut"
+              onClick={async () =>
+                viewCtx.studioCtx.cut(
+                  WritableClipboard.fromNavigatorClipboard(),
+                  viewCtx
+                )
+              }
+            >
+              <MenuItemContent shortcut={getComboForAction("CUT")}>
+                Cut
+              </MenuItemContent>
+            </Menu.Item>
+          );
+        }
+        push2(
+          <Menu.Item
+            key="paste"
+            onClick={async () => {
+              const clipboard = await viewCtx.studioCtx.readClipboardForPaste();
+              await viewCtx.studioCtx.paste(clipboard);
+            }}
+          >
+            <MenuItemContent shortcut={getComboForAction("PASTE")}>
+              Paste
+            </MenuItemContent>
+          </Menu.Item>
+        );
+        push2(
+          <Menu.Item
+            key="paste-as-sibling"
+            onClick={async () => {
+              await viewCtx.studioCtx.pasteAsSibling();
+            }}
+          >
+            <MenuItemContent shortcut={getComboForAction("PASTE_AS_SIBLING")}>
+              Paste as sibling
+            </MenuItemContent>
+          </Menu.Item>
+        );
         if (!contentEditorMode) {
           push2(
             <Menu.Item
