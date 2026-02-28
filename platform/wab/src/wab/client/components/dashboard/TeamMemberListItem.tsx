@@ -23,6 +23,7 @@ import {
   TeamMember,
 } from "@/wab/shared/ApiSchema";
 import { fullName, getUserEmail } from "@/wab/shared/ApiSchemaUtil";
+import { ensure } from "@/wab/shared/common";
 import { GrantableAccessLevel } from "@/wab/shared/EntUtil";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { Menu, Tooltip } from "antd";
@@ -38,6 +39,7 @@ interface TeamMemberListItemProps extends DefaultTeamMemberListItemProps {
   removeUser: (email: string) => Promise<void>;
   disabled?: boolean;
   teamId?: TeamId;
+  perms: ApiPermission[];
 }
 
 function TeamMemberListItem_(
@@ -53,9 +55,15 @@ function TeamMemberListItem_(
     removeUser,
     disabled,
     teamId,
+    perms,
     ...rest
   } = props;
   const appCtx = useAppCtx();
+  const selfInfo = ensure(appCtx.selfInfo, "Unexpected undefined selfInfo");
+
+  const selfPerm = perms.find((p) => p.userId === selfInfo.id);
+  const selfRoleValue = selfPerm ? selfPerm.accessLevel : "none";
+
   const roleValue =
     !!perm &&
     ["owner", "editor", "designer", "content", "commenter", "viewer"].includes(
@@ -92,9 +100,14 @@ function TeamMemberListItem_(
             if (e === "none") {
               await changeRole(user.email);
             } else if (
-              ["editor", "designer", "content", "commenter", "viewer"].includes(
-                e
-              )
+              [
+                "editor",
+                "designer",
+                "content",
+                "commenter",
+                "viewer",
+                "owner",
+              ].includes(e)
             ) {
               await changeRole(user.email, e as GrantableAccessLevel);
             }
@@ -102,9 +115,7 @@ function TeamMemberListItem_(
         },
         children: [
           <Select.Option
-            style={{
-              display: "none",
-            }}
+            style={selfRoleValue === "owner" ? {} : { display: "none" }}
             value="owner"
           >
             Owner

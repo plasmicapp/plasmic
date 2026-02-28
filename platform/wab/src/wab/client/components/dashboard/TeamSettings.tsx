@@ -2,6 +2,7 @@ import {
   getTeamMenuItems,
   TeamMenu,
 } from "@/wab/client/components/dashboard/dashboard-actions";
+import { reactConfirm } from "@/wab/client/components/quick-modals";
 import { Spinner } from "@/wab/client/components/widgets";
 import { useAppCtx } from "@/wab/client/contexts/AppContexts";
 import { useAsyncStrict } from "@/wab/client/hooks/useAsyncStrict";
@@ -65,6 +66,8 @@ function TeamSettings_(props: TeamSettingsProps, ref: HTMLElementRefOf<"div">) {
       )
     : "blocked";
   const readOnly = accessLevelRank(userAccessLevel) < accessLevelRank("editor");
+  const hasOwnership =
+    accessLevelRank(userAccessLevel) >= accessLevelRank("owner");
 
   const teamMenuItems = team ? getTeamMenuItems(appCtx, team) : [];
 
@@ -101,7 +104,7 @@ function TeamSettings_(props: TeamSettingsProps, ref: HTMLElementRefOf<"div">) {
           if (!team) {
             return;
           }
-          await appCtx.api.grantRevoke({
+          let grantRevokeReq = {
             grants: role
               ? [
                   {
@@ -119,7 +122,28 @@ function TeamSettings_(props: TeamSettingsProps, ref: HTMLElementRefOf<"div">) {
                   },
                 ]
               : [],
-          });
+          };
+          if (hasOwnership && role === "owner") {
+            const confirm = await reactConfirm({
+              title: `Transfer ownership`,
+              message: <>Do you want to transfer ownership to this member?</>,
+            });
+            if (!confirm) {
+              return;
+            }
+            grantRevokeReq = {
+              ...grantRevokeReq,
+              grants: [
+                ...grantRevokeReq.grants,
+                {
+                  email: selfInfo.email,
+                  accessLevel: "editor",
+                  teamId: team.id,
+                },
+              ],
+            };
+          }
+          await appCtx.api.grantRevoke(grantRevokeReq);
           refetchData();
         },
         onRemoveUser: async (email: string) => {
