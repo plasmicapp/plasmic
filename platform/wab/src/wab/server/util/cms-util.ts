@@ -600,8 +600,9 @@ export const makeTypedFieldSql = (
   opts: { useDraft?: boolean }
 ) => {
   const dataRef = makeDataRef(opts);
-  if (field === "_id") {
-    return "r.id";
+
+  if (field === "_id" || field === "_createdAt" || field === "_updatedAt") {
+    return `r.${field.replace("_", "")}`;
   }
 
   // Simple field access
