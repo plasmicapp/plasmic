@@ -3,6 +3,7 @@ export function makePlasmicInit_app_loader(
   projectApiToken: string
 ): string {
   return `import { initPlasmicLoader } from "@plasmicapp/loader-nextjs/react-server-conditional";
+import * as NextNavigation from "next/navigation";
 
 export const PLASMIC = initPlasmicLoader({
   projects: [
@@ -17,6 +18,9 @@ export const PLASMIC = initPlasmicLoader({
   // project, allowing you to see your designs without publishing.  Please
   // only use this for development, as this is significantly slower.
   preview: false,
+
+  // Needed for Next.js app router support.
+  nextNavigation: NextNavigation,
 });
 `;
 }

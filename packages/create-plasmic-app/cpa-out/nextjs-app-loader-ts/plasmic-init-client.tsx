@@ -1,8 +1,4 @@
-import { ifTs } from "../../../utils/file-utils";
-import { JsOrTs } from "../../../utils/types";
-
-export function makePlasmicInitClient_app_loader(jsOrTs: JsOrTs): string {
-  return `"use client";
+"use client";
 
 import { PlasmicRootProvider } from "@plasmicapp/loader-nextjs";
 import { PLASMIC } from "@/plasmic-init";
@@ -25,7 +21,7 @@ import { PLASMIC } from "@/plasmic-init";
  *
  * In a Server Component like app/<your-path>/path.tsx, rendering the following would not work:
  *
- * \`\`\`tsx
+ * ```tsx
  * import { PLASMIC } from "@/plasmic-init";
  * import { PlasmicRootProvider } from "plasmicapp/loader-nextjs";
  * export default function MyPage() {
@@ -39,13 +35,13 @@ import { PLASMIC } from "@/plasmic-init";
  *     </PlasmicRootProvider>;
  *   );
  * }
- * \`\`\`
+ * ```
  *
  * Therefore, we define ClientPlasmicRootProvider as a Client Component (this file is marked "use client").
  * ClientPlasmicRootProvider wraps the PlasmicRootProvider and passes in the loader for you,
  * while allowing your Server Component to pass in prefetched data and other serializable props:
  *
- * \`\`\`tsx
+ * ```tsx
  * import { PLASMIC } from "@/plasmic-init";
  * import { ClientPlasmicRootProvider } from "@/plasmic-init-client"; // changed
  * export default function MyPage() {
@@ -58,17 +54,12 @@ import { PLASMIC } from "@/plasmic-init";
  *     </ClientPlasmicRootProvider>;
  *   );
  * }
- * \`\`\`
+ * ```
  */
 export function ClientPlasmicRootProvider(
-  props${ifTs(
-    jsOrTs,
-    ': Omit<React.ComponentProps<typeof PlasmicRootProvider>, "loader">'
-  )}
+  props: Omit<React.ComponentProps<typeof PlasmicRootProvider>, "loader">
 ) {
   return (
     <PlasmicRootProvider loader={PLASMIC} {...props}></PlasmicRootProvider>
   );
-}
-`;
 }

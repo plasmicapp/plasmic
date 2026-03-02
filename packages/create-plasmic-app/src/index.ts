@@ -244,8 +244,6 @@ async function run(): Promise<void> {
     }
   }
 
-  // Get the projectId
-  console.log();
   const projectInput = await maybePrompt<string>({
     name: "projectId",
     message: `If you don't have a project yet, create one by going to https://studio.plasmic.app/starters/blank

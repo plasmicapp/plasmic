@@ -1,31 +1,12 @@
-import { ifTs } from "../../../utils/file-utils";
-import { JsOrTs } from "../../../utils/types";
-
-export function makeCatchallPage_app_loader(jsOrTs: JsOrTs): string {
-  return `import { PLASMIC } from "@/plasmic-init";
+import { PLASMIC } from "@/plasmic-init";
 import { ClientPlasmicRootProvider } from "@/plasmic-init-client";
-import { ${ifTs(
-    jsOrTs,
-    `ComponentRenderData,`
-  )}PlasmicComponent } from "@plasmicapp/loader-nextjs";${ifTs(
-    jsOrTs,
-    `
-import { Metadata, ResolvingMetadata } from "next";`
-  )}
+import { PlasmicComponent } from "@plasmicapp/loader-nextjs";
 import { notFound } from "next/navigation";
 
 // Use revalidate if you want incremental static regeneration
 export const revalidate = 60;
-${ifTs(
-  jsOrTs,
-  `interface Params {
-      catchall: string[] | undefined;
-    }`
-)}
-export async function generateStaticParams()${ifTs(
-    jsOrTs,
-    ": Promise<Params[]>"
-  )} {
+
+export async function generateStaticParams() {
   const pageModules = await PLASMIC.fetchPages();
   return pageModules.map((mod) => {
     const catchall =
@@ -35,20 +16,15 @@ export async function generateStaticParams()${ifTs(
     };
   });
 }
-${ifTs(
-  jsOrTs,
-  `interface LoaderPageProps {
-      params: Promise<Params>;
-    }`
-)}
+
 export async function generateMetadata(
-  { params }${ifTs(jsOrTs, `: LoaderPageProps`)},
-  parent${ifTs(jsOrTs, `: ResolvingMetadata`)}
-)${ifTs(jsOrTs, `: Promise<Metadata>`)} {
+  { params },
+  parent
+) {
   const { componentData } = await getPlasmicData(params);
 
   if (!componentData) {
-    return parent${ifTs(jsOrTs, ` as Promise<Metadata>`)};
+    return parent;
   }
   const pageMeta = componentData.entryCompMetas[0];
   const metadata = await PLASMIC.unstable__generateMetadata(componentData, {
@@ -61,7 +37,7 @@ export async function generateMetadata(
 
 export default async function PlasmicLoaderPage({
   params,
-}${ifTs(jsOrTs, `: LoaderPageProps`)}) {
+}) {
   const { pagePath, componentData } = await getPlasmicData(params);
 
   if (!componentData) {
@@ -90,13 +66,10 @@ export default async function PlasmicLoaderPage({
 }
 
 async function getPlasmicData(
-  params${ifTs(jsOrTs, ": Promise<Params>")}
-)${ifTs(
-    jsOrTs,
-    ": Promise<{ pagePath: string; componentData?: ComponentRenderData }>"
-  )} {
+  params
+) {
   const catchall = (await params).catchall;
-  const pagePath = catchall ? \`/\${catchall.join("/")}\` : "/";
+  const pagePath = catchall ? `/${catchall.join("/")}` : "/";
 
   const componentData = await PLASMIC.maybeFetchComponentData(pagePath);
 
@@ -104,6 +77,4 @@ async function getPlasmicData(
     return { pagePath };
   }
   return { pagePath, componentData };
-}
-`;
 }
