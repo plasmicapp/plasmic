@@ -2,11 +2,13 @@ import { LocalClipboardData, StyleClip } from "@/wab/client/clipboard/local";
 import type { InsertRelLoc } from "@/wab/client/components/canvas/view-ops";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { spawn } from "@/wab/shared/common";
-import type { Pt } from "@/wab/shared/geom";
-import { CopyState } from "@/wab/shared/insertable-templates/types";
 import { FRAME_CAP } from "@/wab/shared/Labels";
 import { UserError } from "@/wab/shared/UserError";
+import { spawn } from "@/wab/shared/common";
+import { Selectable } from "@/wab/shared/core/selection";
+import type { Pt } from "@/wab/shared/geom";
+import { CopyState } from "@/wab/shared/insertable-templates/types";
+import { TplNode } from "@/wab/shared/model/classes";
 import * as Sentry from "@sentry/browser";
 
 /** Plasmic-specific clipboard format. */
@@ -20,6 +22,7 @@ export interface PasteArgs {
   studioCtx: StudioCtx;
   cursorClientPt?: Pt;
   insertRelLoc?: InsertRelLoc;
+  target?: TplNode | Selectable;
 }
 
 /**
@@ -37,7 +40,7 @@ export type PasteResult =
     };
 
 export function ensureViewCtxOrThrowUserError(studioCtx: StudioCtx): ViewCtx {
-  const viewCtx = studioCtx.focusedViewCtx();
+  const viewCtx = studioCtx.focusedOrFirstViewCtx();
   if (viewCtx) {
     return viewCtx;
   } else {

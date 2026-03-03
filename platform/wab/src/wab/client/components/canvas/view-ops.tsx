@@ -5091,13 +5091,12 @@ export class ViewOps {
   }
 }
 
-export const enum InsertRelLoc {
+export enum InsertRelLoc {
   before = "before",
   prepend = "prepend",
   append = "append",
   after = "after",
   wrap = "wrap",
-  freestyle = "freestyle",
 }
 
 const AS_CHILD_LOC = [InsertRelLoc.prepend, InsertRelLoc.append];

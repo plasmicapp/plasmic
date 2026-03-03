@@ -90,7 +90,7 @@ export async function pasteFromWebImporter(
 export async function processWebImporterTree(
   wiTree: WIElement,
   animationSequences: WIAnimationSequence[],
-  { studioCtx, cursorClientPt, insertRelLoc }: PasteArgs
+  { studioCtx, cursorClientPt, insertRelLoc, target }: PasteArgs
 ): Promise<PasteResult> {
   const viewCtx = ensureViewCtxOrThrowUserError(studioCtx);
   const tplMgr = viewCtx.tplMgr();
@@ -190,12 +190,7 @@ export async function processWebImporterTree(
         }
 
         return success(
-          viewCtx.viewOps.pasteNode(
-            tpl,
-            cursorClientPt,
-            undefined,
-            insertRelLoc
-          )
+          viewCtx.viewOps.pasteNode(tpl, cursorClientPt, target, insertRelLoc)
         );
       })
     ),

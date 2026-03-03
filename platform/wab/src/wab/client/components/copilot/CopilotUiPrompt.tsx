@@ -1,23 +1,19 @@
-import { processWebImporterTree } from "@/wab/client/WebImporter";
-import { InsertRelLoc } from "@/wab/client/components/canvas/view-ops";
+import { COMMANDS } from "@/wab/client/commands/command";
 import { CopilotPromptDialog } from "@/wab/client/components/copilot/CopilotPromptDialog";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { parseHtmlToWebImporterTree } from "@/wab/client/web-importer/html-parser";
 import { addOrUpsertTokens } from "@/wab/commons/StyleToken";
 import {
   QueryCopilotUiRequest,
   QueryCopilotUiResponse,
   UpsertTokenReq,
 } from "@/wab/shared/ApiSchema";
-import { spawn } from "@/wab/shared/common";
+import { assert, spawn } from "@/wab/shared/common";
 import { fixJson } from "@/wab/shared/copilot/fix-json";
 import * as React from "react";
 
 function CopilotUiPrompt() {
   const studioCtx = useStudioCtx();
-  const insertRelLoc = studioCtx.focusedViewCtx()?.enforcePastingAsSibling
-    ? InsertRelLoc.after
-    : undefined;
+  const viewCtx = studioCtx.focusedOrFirstViewCtx();
 
   return (
     <CopilotPromptDialog<QueryCopilotUiResponse["response"]>
@@ -85,6 +81,7 @@ function CopilotUiPrompt() {
       }}
       onCopilotApply={async (response) => {
         const { tokens, html } = response;
+        assert(viewCtx, "ViewCtx must be defined");
 
         spawn(
           studioCtx.change(({ success }) => {
@@ -97,17 +94,15 @@ function CopilotUiPrompt() {
                 }));
                 addOrUpsertTokens(studioCtx.site, upsertTokens);
 
-                const { wiTree, animationSequences } =
-                  await studioCtx.app.withSpinner(
-                    parseHtmlToWebImporterTree(html, studioCtx.site)
-                  );
-                if (wiTree) {
-                  await processWebImporterTree(wiTree, animationSequences, {
+                spawn(
+                  COMMANDS.copilot.insertHtml.execute(
                     studioCtx,
-                    insertRelLoc,
-                    cursorClientPt: undefined,
-                  });
-                }
+                    {
+                      html,
+                    },
+                    { viewCtx }
+                  )
+                );
               })()
             );
 

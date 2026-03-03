@@ -1,9 +1,16 @@
 import { processWebImporterTree } from "@/wab/client/WebImporter";
-import { Command, stringPrompt } from "@/wab/client/commands/types";
+import {
+  Command,
+  choicePrompt,
+  stringPrompt,
+} from "@/wab/client/commands/types";
 import { InsertRelLoc } from "@/wab/client/components/canvas/view-ops";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { parseHtmlToWebImporterTree } from "@/wab/client/web-importer/html-parser";
 import { COPILOT_COMMANDS } from "@/wab/shared/copilot/internal/commands";
+import { SlotSelection } from "@/wab/shared/core/slots";
+import { flattenTpls } from "@/wab/shared/core/tpls";
+import { TplNode } from "@/wab/shared/model/classes";
 import { failableAsync } from "ts-failable/src/failable";
 import { z } from "zod";
 
@@ -21,6 +28,15 @@ export const insertHtmlCommand: Command<
     description: COPILOT_COMMANDS.insertHtml.description,
     args: {
       html: stringPrompt({}),
+      targetTplUuid: stringPrompt({ required: false }),
+      insertRelLoc: choicePrompt<InsertRelLoc>({
+        required: false,
+        options: Object.values(InsertRelLoc).map((v) => ({
+          id: v,
+          label: v,
+          value: v,
+        })),
+      }),
     },
   }),
   context: (studioCtx) => {
@@ -30,11 +46,25 @@ export const insertHtmlCommand: Command<
     }
     return [{ viewCtx }];
   },
-  execute: async (studioCtx, { html }, { viewCtx }) => {
+  execute: async (
+    studioCtx,
+    { html, targetTplUuid, insertRelLoc },
+    { viewCtx }
+  ) => {
     return await failableAsync<boolean, never>(async ({ success }) => {
-      const insertRelLoc = viewCtx.enforcePastingAsSibling
-        ? InsertRelLoc.after
-        : undefined;
+      let target: TplNode | SlotSelection | undefined;
+
+      if (targetTplUuid) {
+        const component = viewCtx.currentTplComponent().component;
+        target = flattenTpls(component.tplTree).find(
+          (tpl) => tpl.uuid === targetTplUuid
+        );
+        if (!target) {
+          throw new Error(
+            `Cannot find element for targetTplUuid:${targetTplUuid}`
+          );
+        }
+      }
 
       const { wiTree, animationSequences } = await studioCtx.app.withSpinner(
         parseHtmlToWebImporterTree(html, studioCtx.site)
@@ -47,8 +77,9 @@ export const insertHtmlCommand: Command<
           animationSequences,
           {
             studioCtx,
-            insertRelLoc,
+            insertRelLoc: insertRelLoc as InsertRelLoc,
             cursorClientPt: undefined,
+            target,
           }
         );
 
