@@ -3701,3 +3701,395 @@ exports[`snapshot tests parse landing page html properly 1`] = `
   },
 }
 `;
+
+exports[`snapshot tests parses component page with props and slots correctly 1`] = `
+{
+  "animationSequences": [],
+  "fontDefinitions": [],
+  "wiTree": {
+    "attrs": {
+      "__name": "",
+      "style": "width: 100%;",
+    },
+    "children": [
+      {
+        "attrs": {
+          "__name": "",
+          "class": "dashboard",
+        },
+        "children": [
+          {
+            "attrs": {
+              "__name": "",
+              "class": "notifications",
+            },
+            "children": [
+              {
+                "component": "Alert",
+                "props": {
+                  "message": "Success!",
+                  "type": "success",
+                },
+                "slots": {},
+                "tag": "plasmic-component",
+                "type": "component",
+                "variantSettings": [],
+              },
+            ],
+            "tag": "div",
+            "type": "container",
+            "variantSettings": [],
+          },
+          {
+            "attrs": {
+              "__name": "",
+              "class": "hero-section",
+            },
+            "children": [
+              {
+                "tag": "h1",
+                "text": "Welcome",
+                "type": "text",
+                "variantSettings": [],
+              },
+              {
+                "component": "Button",
+                "props": {
+                  "disabled": false,
+                  "label": "Submit Form",
+                  "variant": "primary",
+                },
+                "slots": {},
+                "tag": "plasmic-component",
+                "type": "component",
+                "variantSettings": [],
+              },
+            ],
+            "tag": "div",
+            "type": "container",
+            "variantSettings": [],
+          },
+          {
+            "attrs": {
+              "__name": "",
+              "class": "contact-form",
+            },
+            "children": [
+              {
+                "attrs": {
+                  "__name": "",
+                },
+                "children": [
+                  {
+                    "tag": "span",
+                    "text": "Full Name:",
+                    "type": "text",
+                    "variantSettings": [],
+                  },
+                ],
+                "tag": "label",
+                "type": "container",
+                "variantSettings": [],
+              },
+              {
+                "component": "TextField",
+                "props": {
+                  "placeholder": "Enter name",
+                  "required": true,
+                  "value": "John Doe",
+                },
+                "slots": {},
+                "tag": "plasmic-component",
+                "type": "component",
+                "variantSettings": [],
+              },
+            ],
+            "tag": "div",
+            "type": "container",
+            "variantSettings": [],
+          },
+          {
+            "component": "Slider",
+            "props": {
+              "max": 100,
+              "min": 0,
+              "value": 50,
+            },
+            "slots": {},
+            "tag": "plasmic-component",
+            "type": "component",
+            "variantSettings": [],
+          },
+          {
+            "component": "Badge",
+            "props": {
+              "color": "red",
+              "count": 5,
+            },
+            "slots": {},
+            "tag": "plasmic-component",
+            "type": "component",
+            "variantSettings": [],
+          },
+          {
+            "attrs": {
+              "__name": "",
+              "class": "profile-section",
+            },
+            "children": [
+              {
+                "component": "UserCard",
+                "props": {
+                  "kebabCase": "kebab value",
+                  "snakeCase": "snake value",
+                  "userData": {
+                    "active": true,
+                    "age": 30,
+                    "contact": {
+                      "email": "alice@example.com",
+                      "phone": "+1234567890",
+                    },
+                    "metadata": null,
+                    "name": "Alice Smith",
+                    "preferences": {
+                      "notifications": true,
+                      "theme": "dark",
+                    },
+                  },
+                },
+                "slots": {},
+                "tag": "plasmic-component",
+                "type": "component",
+                "variantSettings": [],
+              },
+            ],
+            "tag": "div",
+            "type": "container",
+            "variantSettings": [],
+          },
+          {
+            "component": "List",
+            "props": {
+              "config": {
+                "filterable": true,
+                "sortable": true,
+              },
+              "items": [
+                {
+                  "id": 1,
+                  "name": "Product A",
+                  "price": 29.99,
+                },
+                {
+                  "id": 2,
+                  "name": "Product B",
+                  "price": 49.99,
+                },
+              ],
+            },
+            "slots": {
+              "header": [
+                {
+                  "tag": "h2",
+                  "text": "Task List",
+                  "type": "text",
+                  "variantSettings": [],
+                },
+              ],
+            },
+            "tag": "plasmic-component",
+            "type": "component",
+            "variantSettings": [],
+          },
+          {
+            "component": "Card",
+            "props": {
+              "title": "User Stats",
+            },
+            "slots": {
+              "actions": [
+                {
+                  "component": "Button",
+                  "props": {
+                    "disabled": false,
+                    "label": "Add to Cart",
+                    "variant": "primary",
+                  },
+                  "slots": {},
+                  "tag": "plasmic-component",
+                  "type": "component",
+                  "variantSettings": [],
+                },
+                {
+                  "component": "Button",
+                  "props": {
+                    "disabled": false,
+                    "label": "Buy Now",
+                    "variant": "secondary",
+                  },
+                  "slots": {},
+                  "tag": "plasmic-component",
+                  "type": "component",
+                  "variantSettings": [],
+                },
+              ],
+              "children": [
+                {
+                  "tag": "p",
+                  "text": "Total Users: 1,234",
+                  "type": "text",
+                  "variantSettings": [],
+                },
+                {
+                  "tag": "p",
+                  "text": "Active: 567",
+                  "type": "text",
+                  "variantSettings": [],
+                },
+              ],
+            },
+            "tag": "plasmic-component",
+            "type": "component",
+            "variantSettings": [],
+          },
+          {
+            "component": "Modal",
+            "props": {
+              "size": "large",
+              "title": "Confirm Action",
+            },
+            "slots": {
+              "body": [
+                {
+                  "tag": "p",
+                  "text": "Are you sure you want to proceed?",
+                  "type": "text",
+                  "variantSettings": [],
+                },
+              ],
+              "footer": [
+                {
+                  "tag": "span",
+                  "text": "Choose an action:",
+                  "type": "text",
+                  "variantSettings": [],
+                },
+                {
+                  "component": "Button",
+                  "props": {
+                    "disabled": false,
+                    "label": "Cancel",
+                    "variant": "secondary",
+                  },
+                  "slots": {},
+                  "tag": "plasmic-component",
+                  "type": "component",
+                  "variantSettings": [],
+                },
+                {
+                  "component": "Button",
+                  "props": {
+                    "disabled": false,
+                    "label": "Confirm",
+                    "variant": "primary",
+                  },
+                  "slots": {},
+                  "tag": "plasmic-component",
+                  "type": "component",
+                  "variantSettings": [],
+                },
+              ],
+              "header": [
+                {
+                  "tag": "h2",
+                  "text": "Confirm Action",
+                  "type": "text",
+                  "variantSettings": [],
+                },
+              ],
+            },
+            "tag": "plasmic-component",
+            "type": "component",
+            "variantSettings": [],
+          },
+          {
+            "component": "Container",
+            "props": {},
+            "slots": {
+              "children": [],
+            },
+            "tag": "plasmic-component",
+            "type": "component",
+            "variantSettings": [],
+          },
+          {
+            "component": "UserCard",
+            "props": {
+              "userData": {
+                "age": 99,
+                "name": "Conan O'Brien",
+              },
+            },
+            "slots": {},
+            "tag": "plasmic-component",
+            "type": "component",
+            "variantSettings": [],
+          },
+          {
+            "component": "Alert",
+            "props": {
+              "message": "Conan O'Brien says hi",
+            },
+            "slots": {},
+            "tag": "plasmic-component",
+            "type": "component",
+            "variantSettings": [],
+          },
+          {
+            "attrs": {
+              "__name": "",
+              "class": "input-wrapper",
+            },
+            "children": [
+              {
+                "component": "Text Field",
+                "props": {
+                  "value": "spaced name",
+                },
+                "slots": {},
+                "tag": "plasmic-component",
+                "type": "component",
+                "variantSettings": [],
+              },
+            ],
+            "tag": "div",
+            "type": "container",
+            "variantSettings": [],
+          },
+        ],
+        "tag": "div",
+        "type": "container",
+        "variantSettings": [],
+      },
+    ],
+    "tag": "div",
+    "type": "container",
+    "variantSettings": [
+      {
+        "safeStyles": {
+          "width": "100%",
+        },
+        "unsafeStyles": {},
+        "unsanitizedStyles": {
+          "width": "100%",
+        },
+        "variantCombo": [
+          {
+            "type": "base",
+          },
+        ],
+      },
+    ],
+  },
+}
+`;

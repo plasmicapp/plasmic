@@ -3,12 +3,13 @@ import {
   _testOnlyUtils,
   parseHtmlToWebImporterTree,
 } from "@/wab/client/web-importer/html-parser";
+import { createComponentTestSite } from "@/wab/client/web-importer/testonly/utils";
 import { WIElement } from "@/wab/client/web-importer/types";
+import { TplMgr } from "@/wab/shared/TplMgr";
+import { VariantGroupType } from "@/wab/shared/Variants";
 import { toVarName } from "@/wab/shared/codegen/util";
 import { assert } from "@/wab/shared/common";
 import { createSite } from "@/wab/shared/core/sites";
-import { TplMgr } from "@/wab/shared/TplMgr";
-import { VariantGroupType } from "@/wab/shared/Variants";
 import { readFileSync } from "fs";
 import path from "path";
 
@@ -1339,16 +1340,28 @@ describe("fixCSSValue", () => {
 });
 
 describe("snapshot tests", () => {
-  const site = createSite();
+  const site = createComponentTestSite();
 
   it("parse landing page html properly", async () => {
     const landingPageFilePath = path.join(
       __dirname,
-      "test/data/landing-page.html"
+      "testonly/data/landing-page.html"
     );
     const landingPageHtml = readFileSync(landingPageFilePath, "utf8");
 
     const output = await parseHtmlToWebImporterTree(landingPageHtml, site);
+
+    expect(output).toMatchSnapshot();
+  });
+
+  it("parses component page with props and slots correctly", async () => {
+    const fixturePath = path.join(
+      __dirname,
+      "testonly/data/component-page.html"
+    );
+    const html = readFileSync(fixturePath, "utf8");
+
+    const output = await parseHtmlToWebImporterTree(html, site);
 
     expect(output).toMatchSnapshot();
   });

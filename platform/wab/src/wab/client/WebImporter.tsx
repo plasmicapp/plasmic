@@ -19,9 +19,9 @@ import {
   WIVariant,
 } from "@/wab/client/web-importer/types";
 import { unwrap } from "@/wab/commons/failable-utils";
-import { toVarName } from "@/wab/shared/codegen/util";
+import { paramToVarName, toVarName } from "@/wab/shared/codegen/util";
 import { assertNever, mkShortId, withoutNils } from "@/wab/shared/common";
-import { code } from "@/wab/shared/core/exprs";
+import { code, customCode } from "@/wab/shared/core/exprs";
 import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
 import { getTagAttrForImageAsset } from "@/wab/shared/core/image-assets";
 import { getResponsiveStrategy } from "@/wab/shared/core/sites";
@@ -37,6 +37,8 @@ import {
 import {
   Animation,
   AnimationSequence,
+  Component,
+  CustomCode,
   ImageAssetRef,
   isKnownTplTag,
   KeyFrame,
@@ -44,19 +46,27 @@ import {
   Site,
   TplNode,
   TplTag,
+  VariantsRef,
 } from "@/wab/shared/model/classes";
+import {
+  isAnyType,
+  isBoolType,
+  isNumType,
+} from "@/wab/shared/model/model-util";
 import { ResponsiveStrategy } from "@/wab/shared/responsiveness";
 import { RSH } from "@/wab/shared/RuleSetHelpers";
+import { isSlot } from "@/wab/shared/SlotUtils";
 import {
   ensureVariantSetting,
   getBaseVariant,
   getOrderedScreenVariantSpecs,
   getPrivateStyleVariantsForTag,
+  isStandaloneVariantGroup,
   VariantCombo,
   VariantGroupType,
 } from "@/wab/shared/Variants";
 import { VariantTplMgr } from "@/wab/shared/VariantTplMgr";
-import L from "lodash";
+import L, { isArray, isObject } from "lodash";
 
 const WI_IMPORTER_HEADER = "__wab_plasmic_wi_importer;";
 
@@ -404,15 +414,53 @@ async function wiTreeToTpl(wiTree: WIElement, vc: ViewCtx, vtm: VariantTplMgr) {
     }
 
     if (node.type === "component") {
-      const component = site.components.find((c) => c.name === node.component);
-      if (component) {
-        const tplComponent = vtm.mkTplComponentX({
-          component,
-        });
-        collectWIVariantData(node, tplComponent);
-        return tplComponent;
+      const componentName = node.component;
+      const component = site.components.find((c) => c.name === componentName);
+      if (!component) {
+        throw new Error(`Component not found with name ${componentName}`);
       }
-      return null;
+
+      // Build args from props and slots
+      const args: Record<string, any> = {};
+
+      if (node.props) {
+        for (const [propName, propValue] of Object.entries(node.props)) {
+          const componentArg = getComponentArgFromHtmlProp(
+            component,
+            componentName,
+            propName,
+            propValue
+          );
+
+          const [paramName, argValue] = componentArg;
+          args[paramName] = argValue;
+        }
+      }
+
+      if (node.slots) {
+        for (const [slotName, slotChildren] of Object.entries(node.slots)) {
+          const param = component.params.find(
+            (p) => paramToVarName(component, p) === toVarName(slotName)
+          );
+          if (!param) {
+            throw new Error(
+              `Slot ${slotName} doesn't exist in component ${componentName}`
+            );
+          }
+
+          // Recursively convert slot children to TplNodes
+          args[param.variable.name] = withoutNils(
+            await Promise.all(slotChildren.map((child) => rec(child)))
+          );
+        }
+      }
+
+      const tplComponent = vtm.mkTplComponentX({
+        component,
+        args,
+      });
+      collectWIVariantData(node, tplComponent);
+      return tplComponent;
     }
 
     if (node.tag === "img") {
@@ -558,4 +606,102 @@ function splitStylesByAnimations(styles: Record<string, string>): {
   }
 
   return { animationStyles, remainingStyles };
+}
+
+/**
+ * Converts an HTML prop name and value to a component arg for the web importer.
+ *
+ * Throws on invalid prop name, slot params, or type mismatches.
+ */
+function getComponentArgFromHtmlProp(
+  component: Component,
+  componentName: string,
+  propName: string,
+  value: unknown
+): [string, VariantsRef | CustomCode | string | number | boolean] {
+  const name = toVarName(propName);
+  const param = component.params.find(
+    (p) => paramToVarName(component, p) === name
+  );
+
+  if (!param) {
+    throw new Error(`Component "${componentName}" has no prop "${propName}"`);
+  }
+
+  if (isSlot(param)) {
+    throw new Error(
+      `Component "${componentName}" prop "${propName}" is a slot — pass slot content as children, not as a data-prop attribute`
+    );
+  }
+
+  if (value === undefined) {
+    throw new Error(
+      `Component "${componentName}" prop "${propName}" has undefined value`
+    );
+  }
+
+  // Variant group handling
+  const variantGroup = component.variantGroups.find(
+    (group) => group.param === param
+  );
+  if (variantGroup) {
+    if (isStandaloneVariantGroup(variantGroup)) {
+      if (value !== true) {
+        throw new Error(
+          `Component "${componentName}" prop "${propName}" is a standalone variant toggle and expects true, got ${JSON.stringify(
+            value
+          )}`
+        );
+      }
+      return [
+        param.variable.name,
+        new VariantsRef({ variants: [variantGroup.variants[0]] }),
+      ];
+    } else {
+      const variant = variantGroup.variants.find(
+        (v) => toVarName(v.name) === toVarName(`${value}`)
+      );
+      if (!variant) {
+        throw new Error(
+          `Component "${componentName}" prop "${propName}" has no variant matching "${value}"`
+        );
+      }
+      return [param.variable.name, new VariantsRef({ variants: [variant] })];
+    }
+  }
+
+  if (isBoolType(param.type)) {
+    if (typeof value !== "boolean") {
+      throw new Error(
+        `Component "${componentName}" prop "${propName}" expects a boolean but got ${JSON.stringify(
+          value
+        )}`
+      );
+    }
+
+    return [param.variable.name, code(JSON.stringify(value))];
+  }
+
+  if (isNumType(param.type)) {
+    if (typeof value !== "number") {
+      throw new Error(
+        `Component "${componentName}" prop "${propName}" expects a number but got ${JSON.stringify(
+          value
+        )}`
+      );
+    }
+    return [param.variable.name, code(JSON.stringify(value))];
+  }
+
+  // Complex types (object/array/null/any-type) in customCode(JSON.stringify)
+  if (
+    isAnyType(param.type) ||
+    isArray(value) ||
+    isObject(value) ||
+    value === null
+  ) {
+    return [param.variable.name, customCode(JSON.stringify(value))];
+  }
+
+  return [param.variable.name, code(JSON.stringify(value))];
 }

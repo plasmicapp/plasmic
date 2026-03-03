@@ -1,4 +1,5 @@
 import { ALL_CONTAINER_TAGS } from "@/wab/client/components/sidebar-tabs/HTMLAttributesSection";
+import { parseComponent } from "@/wab/client/web-importer/component";
 import {
   BASE_VARIANT,
   ignoredStyles,
@@ -454,8 +455,7 @@ function parseContextToVariantCombo(context: string): WIVariant[] {
 
 function getVariantSettingsForNode(
   node: Node,
-  defaultStyles: CSSStyleDeclaration,
-  site: Site
+  defaultStyles: CSSStyleDeclaration
 ): WIVariantSettings[] {
   ensure(getInternalId(node), "Expected node to have wiID");
 
@@ -626,11 +626,7 @@ function isLikelyEmptyContainer(containerNode: WIContainer) {
   );
 }
 
-function getElementsWITree(
-  node: Node,
-  defaultStyles: CSSStyleDeclaration,
-  site: Site
-) {
+function getElementsWITree(node: Node, defaultStyles: CSSStyleDeclaration) {
   function rec(elt: Node): WIElement | null {
     if (elt.nodeType === Node.TEXT_NODE) {
       const text = (elt.textContent ?? "").trim();
@@ -665,11 +661,7 @@ function getElementsWITree(
       return null;
     }
 
-    const allVariantSettings = getVariantSettingsForNode(
-      elt,
-      defaultStyles,
-      site
-    );
+    const allVariantSettings = getVariantSettingsForNode(elt, defaultStyles);
 
     if ((elt as any).__wi_component) {
       return {
@@ -677,7 +669,13 @@ function getElementsWITree(
         tag,
         component: (elt as any).__wi_component,
         variantSettings: allVariantSettings,
+        props: {},
+        slots: {},
       };
+    }
+
+    if (elt instanceof HTMLElement && tag === "plasmic-component") {
+      return parseComponent(elt, allVariantSettings, rec);
     }
 
     if (tag === "svg") {
@@ -987,7 +985,7 @@ export async function parseHtmlToWebImporterTree(
   const element = document.createElement("div");
   document.body.appendChild(element);
   const defaultStyles = window.getComputedStyle(element);
-  const wiTree = getElementsWITree(root, defaultStyles, site);
+  const wiTree = getElementsWITree(root, defaultStyles);
 
   return { wiTree, fontDefinitions, animationSequences };
 }

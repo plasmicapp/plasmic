@@ -64,6 +64,8 @@ export interface WISVG extends WIBase {
 export interface WIComponent extends WIBase {
   type: "component";
   component: string;
+  props: Record<string, any>;
+  slots: Record<string, WIElement[]>;
 }
 
 export type WIElement = WIContainer | WIText | WISVG | WIComponent;

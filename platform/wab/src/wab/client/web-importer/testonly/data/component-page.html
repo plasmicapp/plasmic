@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard - Component Test Page</title>
+</head>
+<body>
+  <div class="dashboard">
+
+    <!-- String props: Alert with message + type -->
+    <div class="notifications">
+      <plasmic-component data-plasmic-name="Alert" data-props='{"message":"Success!","type":"success"}'></plasmic-component>
+    </div>
+
+    <!-- String prop + boolean prop: Button with label, variant, disabled -->
+    <div class="hero-section">
+      <h1>Welcome</h1>
+      <plasmic-component data-plasmic-name="Button" data-props='{"label":"Submit Form","variant":"primary","disabled":false}'></plasmic-component>
+    </div>
+
+    <!-- Multiple string props + boolean: TextField -->
+    <div class="contact-form">
+      <label>Full Name:</label>
+      <plasmic-component data-plasmic-name="TextField" data-props='{"value":"John Doe","placeholder":"Enter name","required":true}'></plasmic-component>
+    </div>
+
+    <!-- Numeric props: Slider with min, max, value -->
+    <plasmic-component data-plasmic-name="Slider" data-props='{"min":0,"max":100,"value":50}'></plasmic-component>
+
+    <!-- Numeric prop: Badge with count + string color -->
+    <plasmic-component data-plasmic-name="Badge" data-props='{"count":5,"color":"red"}'></plasmic-component>
+
+    <!-- JSON object with nested objects + mixed types -->
+    <div class="profile-section">
+      <plasmic-component data-plasmic-name="UserCard" data-props='{"userData":{"name":"Alice Smith","age":30,"active":true,"metadata":null,"contact":{"email":"alice@example.com","phone":"+1234567890"},"preferences":{"theme":"dark","notifications":true}},"snake_case":"snake value","kebab-case":"kebab value"}'></plasmic-component>
+    </div>
+
+    <!-- JSON array of objects + simple string config -->
+    <plasmic-component data-plasmic-name="List" data-props='{"items":[{"id":1,"name":"Product A","price":29.99},{"id":2,"name":"Product B","price":49.99}],"config":{"sortable":true,"filterable":true}}'>
+      <div slot="header">
+        <h2>Task List</h2>
+      </div>
+    </plasmic-component>
+
+    <!-- Single slot: Card with children -->
+    <plasmic-component data-plasmic-name="Card" data-props='{"title":"User Stats"}'>
+      <div slot="children">
+        <p>Total Users: 1,234</p>
+        <p>Active: 567</p>
+      </div>
+      <!-- Nested components in slot -->
+      <div slot="actions">
+        <plasmic-component data-plasmic-name="Button" data-props='{"label":"Add to Cart","variant":"primary","disabled":false}'></plasmic-component>
+        <plasmic-component data-plasmic-name="Button" data-props='{"label":"Buy Now","variant":"secondary","disabled":false}'></plasmic-component>
+      </div>
+    </plasmic-component>
+
+    <!-- Multiple named slots: Modal with header, body, footer -->
+    <plasmic-component data-plasmic-name="Modal" data-props='{"title":"Confirm Action","size":"large"}'>
+      <div slot="header">
+        <h2>Confirm Action</h2>
+      </div>
+      <div slot="body">
+        <p>Are you sure you want to proceed?</p>
+      </div>
+      <!-- Mixed content in slot: text + components -->
+      <div slot="footer">
+        <span>Choose an action:</span>
+        <plasmic-component data-plasmic-name="Button" data-props='{"label":"Cancel","variant":"secondary","disabled":false}'></plasmic-component>
+        <plasmic-component data-plasmic-name="Button" data-props='{"label":"Confirm","variant":"primary","disabled":false}'></plasmic-component>
+      </div>
+    </plasmic-component>
+
+    <!-- Empty slot: Container with empty children -->
+    <plasmic-component data-plasmic-name="Container">
+      <div slot="children"></div>
+    </plasmic-component>
+
+    <!-- HTML entity decoding: double-quote wrapped attr with &quot;-encoded JSON -->
+    <plasmic-component data-plasmic-name="UserCard"
+      data-props="{&quot;userData&quot;:{&quot;name&quot;:&quot;Conan O&#39;Brien&quot;,&quot;age&quot;:99}}">
+    </plasmic-component>
+
+    <!-- HTML entity decoding: single-quote wrapped attr with &#39; for apostrophes -->
+    <plasmic-component data-plasmic-name="Alert"
+      data-props='{"message":"Conan O&#39;Brien says hi"}'>
+    </plasmic-component>
+
+    <!-- Exact name matching: component name with space -->
+    <div class="input-wrapper">
+      <plasmic-component data-plasmic-name="Text Field" data-props='{"value":"spaced name"}'></plasmic-component>
+    </div>
+
+  </div>
+</body>
+</html>
