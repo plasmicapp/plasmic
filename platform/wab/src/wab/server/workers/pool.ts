@@ -33,11 +33,15 @@ class WorkerPoolWrapper {
   ) {}
 
   exec(method: string, params: any) {
-    return withSpan(`workerpool-exec-${method}`, async () => {
-      return (method === "loader-assets" ? this.loaderPool : this.genericPool)
-        .exec(method, params)
-        .timeout(TIMEOUT_MS);
-    });
+    return withSpan(
+      `workerpool-exec-${method}`,
+      async () => {
+        return (method === "loader-assets" ? this.loaderPool : this.genericPool)
+          .exec(method, params)
+          .timeout(TIMEOUT_MS);
+      },
+      `params: ${JSON.stringify(params)}`
+    );
   }
 }
 
