@@ -1,7 +1,6 @@
 import { ProjectId } from "@/wab/shared/ApiSchema";
 import { Bundle } from "@/wab/shared/bundler";
 import _bundle from "@/wab/shared/codegen/__tests__/bundles/data-tokens-page-meta.json";
-import { generateSiteFromBundle } from "@/wab/shared/codegen/codegen-tests-util";
 import { exportProjectConfig } from "@/wab/shared/codegen/react-p";
 import { serializeGenerateMetadataFunction } from "@/wab/shared/codegen/react-p/page-metadata";
 import { ExportOpts } from "@/wab/shared/codegen/types";
@@ -9,6 +8,7 @@ import { jsonClone } from "@/wab/shared/common";
 import { initBuiltinActions } from "@/wab/shared/core/states";
 import { deepTrackComponents } from "@/wab/shared/core/tpls";
 import { DEVFLAGS } from "@/wab/shared/devflags";
+import { generateSiteFromBundle } from "@/wab/shared/tests/site-tests-utils";
 import "core-js";
 
 describe("data tokens: page meta codegen", () => {

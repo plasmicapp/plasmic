@@ -1,6 +1,4 @@
 import { ProjectId } from "@/wab/shared/ApiSchema";
-import { Bundler } from "@/wab/shared/bundler";
-import { Bundle } from "@/wab/shared/bundles";
 import {
   exportProjectConfig,
   exportStyleConfig,
@@ -16,11 +14,7 @@ import { jsonClone } from "@/wab/shared/common";
 import { initBuiltinActions } from "@/wab/shared/core/states";
 import { deepTrackComponents } from "@/wab/shared/core/tpls";
 import { DEVFLAGS } from "@/wab/shared/devflags";
-import {
-  Site,
-  isKnownProjectDependency,
-  isKnownSite,
-} from "@/wab/shared/model/classes";
+import { Site } from "@/wab/shared/model/classes";
 import { exec } from "child_process";
 import fs from "fs";
 import path from "path";
@@ -238,29 +232,4 @@ export function collectSnapshotForDir(dir: string): string {
     }
   }
   return allFileContents;
-}
-
-/**
- * Generates a site object from bundle data of a project with dependencies.
- */
-export function generateSiteFromBundle(
-  bundleWithDeps: [string, Bundle][]
-): Site {
-  let site: Site | undefined;
-  const bundler = new Bundler();
-
-  for (const bundle of bundleWithDeps as [string, Bundle][]) {
-    const unbundled = bundler.unbundle(bundle[1], bundle[0]);
-    if (isKnownSite(unbundled)) {
-      site = unbundled;
-    } else if (isKnownProjectDependency(unbundled)) {
-      site = unbundled.site;
-    }
-  }
-
-  if (!site) {
-    throw new Error("Could not extract site from bundle");
-  }
-
-  return site;
 }

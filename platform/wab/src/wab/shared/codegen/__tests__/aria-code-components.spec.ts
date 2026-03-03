@@ -3,9 +3,9 @@ import _bundle from "@/wab/shared/codegen/__tests__/bundles/aria-code-components
 import {
   codegen,
   collectSnapshotForDir,
-  generateSiteFromBundle,
 } from "@/wab/shared/codegen/codegen-tests-util";
 import { Site } from "@/wab/shared/model/classes";
+import { generateSiteFromBundle } from "@/wab/shared/tests/site-tests-utils";
 import "core-js";
 import tmp from "tmp";
 

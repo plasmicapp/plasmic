@@ -8700,6 +8700,13 @@
   dependencies:
     "@types/node" "*"
 
+"@types/xml@^1.0.11":
+  version "1.0.11"
+  resolved "https://registry.yarnpkg.com/@types/xml/-/xml-1.0.11.tgz#644eaa2e36d4f9f7baec150ae93de9c1fd6b1c49"
+  integrity sha512-9gktTjxBWoz4+X8ZOS+QRFM2/liMQgBv8Z36wuNnomK5jtXFq4IJa7Az4Hzoy+rYux343NkH9Dq+nzIdejVrjw==
+  dependencies:
+    "@types/node" "*"
+
 "@types/yargs-parser@*":
   version "15.0.0"
   resolved "https://registry.yarnpkg.com/@types/yargs-parser/-/yargs-parser-15.0.0.tgz#cb3f9f741869e20cce330ffbeb9271590483882d"
