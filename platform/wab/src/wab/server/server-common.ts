@@ -40,7 +40,7 @@ export function runExpressApp(
       },
     },
     signals: ["SIGTERM", "SIGINT"], // send this signal to begin graceful shutdown
-    timeout: 125000, // wait this many ms before force closing active conns
+    timeout: 200000, // wait this many ms before force closing active conns
     beforeShutdown: () => {
       logger().info(`Received signal to shut down...`);
       // This has to be greater than the number of seconds defined
