@@ -25,6 +25,7 @@ import {
 } from "@/wab/server/loader/resolve-projects";
 import { logger } from "@/wab/server/observability";
 import { superDbMgr, userDbMgr } from "@/wab/server/routes/util";
+import { withSpan } from "@/wab/server/util/apm-util";
 import { prefillCloudfront } from "@/wab/server/workers/prefill-cloudfront";
 import { BadRequestError, NotFoundError } from "@/wab/shared/ApiErrors/errors";
 import { ProjectId } from "@/wab/shared/ApiSchema";
@@ -597,34 +598,36 @@ async function buildLoader(
 export async function genLoaderHtmlBundleSandboxed(
   args: Parameters<typeof genLoaderHtmlBundle>[0]
 ) {
-  const cmd = `node -r esbuild-register src/wab/server/loader/gen-html-bundle.ts`;
-  const { stdout, stderr, exitCode } =
-    process.env.DISABLE_BWRAP === "1"
-      ? await execa(
-          "node",
-          [...cmd.split(/\s+/g).slice(1), JSON.stringify(args)],
-          { reject: false }
-        )
-      : await execa(
-          `bwrap`,
-          [
-            ...`--clearenv --setenv CODEGEN_HOST ${getCodegenUrl()} --unshare-user --unshare-pid --unshare-ipc --unshare-uts --unshare-cgroup --ro-bind /lib /lib --ro-bind /usr /usr --ro-bind /etc /etc --ro-bind /run /run ${
-              process.env.BWRAP_ARGS || ""
-            } --chdir ${process.cwd()} ${cmd}`.split(/\s+/g),
-            JSON.stringify(args),
-          ],
-          { reject: false }
-        );
-  if (stderr.trim().length > 0 && exitCode === 0) {
-    logger().error(
-      `Sandboxed loader subprocess succeeded with exit code 0 but got unexpected stderr ${stderr}`
-    );
-  } else if (exitCode !== 0) {
-    logger().error(
-      `Sandboxed loader subprocess failed with exit code ${exitCode} with stderr: ${stderr}`
-    );
-  }
-  return { html: stdout };
+  return withSpan("genLoaderHtmlBundleSandboxed", async () => {
+    const cmd = `node -r esbuild-register src/wab/server/loader/gen-html-bundle.ts`;
+    const { stdout, stderr, exitCode } =
+      process.env.DISABLE_BWRAP === "1"
+        ? await execa(
+            "node",
+            [...cmd.split(/\s+/g).slice(1), JSON.stringify(args)],
+            { reject: false }
+          )
+        : await execa(
+            `bwrap`,
+            [
+              ...`--clearenv --setenv CODEGEN_HOST ${getCodegenUrl()} --unshare-user --unshare-pid --unshare-ipc --unshare-uts --unshare-cgroup --ro-bind /lib /lib --ro-bind /usr /usr --ro-bind /etc /etc --ro-bind /run /run ${
+                process.env.BWRAP_ARGS || ""
+              } --chdir ${process.cwd()} ${cmd}`.split(/\s+/g),
+              JSON.stringify(args),
+            ],
+            { reject: false }
+          );
+    if (stderr.trim().length > 0 && exitCode === 0) {
+      logger().error(
+        `Sandboxed loader subprocess succeeded with exit code 0 but got unexpected stderr ${stderr}`
+      );
+    } else if (exitCode !== 0) {
+      logger().error(
+        `Sandboxed loader subprocess failed with exit code ${exitCode} with stderr: ${stderr}`
+      );
+    }
+    return { html: stdout };
+  });
 }
 
 export async function buildVersionedLoaderHtml(req: Request, res: Response) {

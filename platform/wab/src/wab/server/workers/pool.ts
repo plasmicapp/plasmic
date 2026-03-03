@@ -1,4 +1,5 @@
 import { Config } from "@/wab/server/config";
+import { withSpan } from "@/wab/server/util/apm-util";
 import type { workerBuildAssets } from "@/wab/server/workers/build-loader-assets";
 import type { workerGenCode } from "@/wab/server/workers/codegen";
 import type { workerLocalizationStrings } from "@/wab/server/workers/localization-worker";
@@ -32,9 +33,11 @@ class WorkerPoolWrapper {
   ) {}
 
   exec(method: string, params: any) {
-    return (method === "loader-assets" ? this.loaderPool : this.genericPool)
-      .exec(method, params)
-      .timeout(TIMEOUT_MS);
+    return withSpan(`workerpool-exec-${method}`, async () => {
+      return (method === "loader-assets" ? this.loaderPool : this.genericPool)
+        .exec(method, params)
+        .timeout(TIMEOUT_MS);
+    });
   }
 }
 

@@ -7,15 +7,20 @@ export async function withSpan<T>(
   f: () => Promise<T>,
   msg?: string
 ) {
+  const suffix = msg ? `: ${msg}` : "";
+
   const start = new Date().getTime();
+  logger().debug(`span "${name}" started at ${start}${suffix}`);
+
   const promTimer = new WabPromTimer(name);
   const tracer = trace.getTracer("app");
   return tracer.startActiveSpan(name, async (span) => {
     try {
       return await f();
     } finally {
-      const suffix = msg ? `: ${msg}` : "";
-      logger().info(`${name} took ${new Date().getTime() - start}ms${suffix}`);
+      logger().info(
+        `span "${name}" finished in ${new Date().getTime() - start}ms${suffix}`
+      );
       promTimer.end();
       span.end();
     }
