@@ -40,7 +40,6 @@ class WorkerPoolWrapper {
           .exec(method, params)
           .timeout(TIMEOUT_MS);
       },
-      `params: ${JSON.stringify(params)}`
     );
   }
 }
