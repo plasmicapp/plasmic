@@ -129,6 +129,72 @@ describe("loader", () => {
       "no-store, no-cache, must-revalidate, private"
     );
   });
+
+  it("resolves component as HTML", async () => {
+    const redirectRes = await publicApi.getPublishedLoaderHtml(
+      projects[0],
+      "Homepage"
+    );
+    expect(redirectRes.status()).toEqual(302);
+    expect(redirectRes.headers()["location"]).toEqual(
+      `/api/v1/loader/html/versioned/${projects[0].id}@0.0.2/Homepage?cb=20&embedHydrate=0&hydrate=0&componentProps=%7B%7D&globalVariants=%5B%5D&prepass=0`
+    );
+    expect(redirectRes.headers()["cache-control"]).toEqual("s-maxage=30");
+
+    const htmlRes = await publicApi.getPublishedLoaderHtml(
+      projects[0],
+      "Homepage",
+      { followRedirect: true }
+    );
+    expect(htmlRes.status()).toEqual(200);
+    expect(await htmlRes.text()).toInclude("Hello, world!");
+  });
+
+  it("resolves component as HTML with hydration", async () => {
+    const redirectRes = await publicApi.getPublishedLoaderHtml(
+      projects[0],
+      "Homepage?hydrate=1&embedHydrate=1"
+    );
+    expect(redirectRes.status()).toEqual(302);
+    expect(redirectRes.headers()["location"]).toEqual(
+      `/api/v1/loader/html/versioned/${projects[0].id}@0.0.2/Homepage?cb=20&embedHydrate=1&hydrate=1&componentProps=%7B%7D&globalVariants=%5B%5D&prepass=0`
+    );
+    expect(redirectRes.headers()["cache-control"]).toEqual("s-maxage=30");
+
+    const htmlRes = await publicApi.getPublishedLoaderHtml(
+      projects[0],
+      "Homepage?hydrate=1&embedHydrate=1",
+      { followRedirect: true }
+    );
+    expect(htmlRes.status()).toEqual(200);
+    expect(await htmlRes.text()).toInclude("Hello, world!");
+  });
+
+  it("responds 404 if component does not exist", async () => {
+    const redirectRes = await publicApi.getPublishedLoaderHtml(
+      projects[0],
+      "NonExistentComponent"
+    );
+    expect(redirectRes.status()).toEqual(302);
+    expect(redirectRes.headers()["location"]).toEqual(
+      `/api/v1/loader/html/versioned/${projects[0].id}@0.0.2/NonExistentComponent?cb=20&embedHydrate=0&hydrate=0&componentProps=%7B%7D&globalVariants=%5B%5D&prepass=0`
+    );
+    expect(redirectRes.headers()["cache-control"]).toEqual("s-maxage=30");
+
+    const htmlRes = await publicApi.getPublishedLoaderHtml(
+      projects[0],
+      "NonExistentComponent",
+      { followRedirect: true }
+    );
+    expect(htmlRes.status()).toEqual(404);
+    expect(await htmlRes.json()).toEqual({
+      error: {
+        name: "NotFoundError",
+        statusCode: 404,
+        message: `Error: Unable to find components NonExistentComponent (project ${projects[0].id})`,
+      },
+    });
+  });
 });
 
 async function publish(

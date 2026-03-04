@@ -622,9 +622,18 @@ export async function genLoaderHtmlBundleSandboxed(
         `Sandboxed loader subprocess succeeded with exit code 0 but got unexpected stderr ${stderr}`
       );
     } else if (exitCode !== 0) {
+      // This error comes from @plasmicapp/loader-react
+      if (stderr.includes("Unable to find components")) {
+        // Split at the first new line to avoid returning the stack trace.
+        throw new NotFoundError(stderr.split("\n")[0]);
+      }
+
       logger().error(
         `Sandboxed loader subprocess failed with exit code ${exitCode} with stderr: ${stderr}`
       );
+    }
+    if (stdout.length === 0) {
+      throw new Error("Sandboxed loader subprocess returned no HTML");
     }
     return { html: stdout };
   });

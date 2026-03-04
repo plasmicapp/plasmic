@@ -191,6 +191,25 @@ export class PublicApiTester extends ApiTester {
       }
     );
   }
+
+  async getPublishedLoaderHtml(
+    project: Project,
+    component: string,
+    { followRedirect = false }: { followRedirect?: boolean } = {}
+  ): Promise<APIResponse> {
+    const projectToken = `${project.id}:${project.projectApiToken}`;
+    return this.rawReq(
+      "get",
+      `/api/v1/loader/html/published/${project.id}/${component}`,
+      undefined,
+      {
+        headers: {
+          "x-plasmic-api-project-tokens": projectToken,
+        },
+        maxRedirects: followRedirect ? undefined : 0,
+      }
+    );
+  }
 }
 
 /** Expects the ts-rest response to have a status and narrows the type. */

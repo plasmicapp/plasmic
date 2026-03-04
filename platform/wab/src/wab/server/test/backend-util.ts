@@ -128,6 +128,9 @@ export async function createBackend(
     (opts?.preferredPorts ? { port: opts.preferredPorts } : undefined) as any
   );
 
+  process.env.DISABLE_BWRAP = "1";
+  process.env.CODEGEN_HOST = `http://localhost:${port}`;
+
   return await withEnvOverrides(
     {
       BACKEND_PORT: port,
