@@ -171,6 +171,14 @@ export default defineConfig({
     // html plugin so it works with StudioHtmlPlugin.
     htmlPlugin: false,
     rspack: {
+      resolve: {
+        fallback: {
+          // We are using "xml" package in web-exporter for serialization, it imports
+          // stream internally, but we don't need it so we set it to false so we can use
+          // web-exporter functions on the client side.
+          stream: false,
+        },
+      },
       plugins: [
         // For most files, we are appending a commitHash to the file name
         // for caching and cache-busting. Ideally they'd be using a
