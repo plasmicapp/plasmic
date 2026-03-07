@@ -11,7 +11,7 @@
   "dependencies": {
     "@plasmicapp/loader-nextjs": "^1.0.180",
     "@plasmicpkgs/plasmic-cms": "^0.0.121",
-    "next": "12.2.5",
+    "next": "15.5.10",
     "react": "18.2.0",
     "react-dom": "18.2.0"
   },

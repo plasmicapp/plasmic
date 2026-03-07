@@ -22,7 +22,7 @@
     "@types/react-dom": "18.2.6",
     "eslint": "8.43.0",
     "eslint-config-next": "13.4.7",
-    "next": "13.4.7",
+    "next": "16.1.6",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-email": "1.9.4",

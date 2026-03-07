@@ -17,7 +17,7 @@
     "@types/react": "18.0.27",
     "@types/react-dom": "18.0.10",
     "i18next": "^22.4.11",
-    "next": "13.1.5",
+    "next": "16.1.6",
     "next-i18next": "^13.2.2",
     "react": "18.2.0",
     "react-dom": "18.2.0",

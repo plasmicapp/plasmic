@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@plasmicapp/loader-nextjs": "^1.0.397",
-    "next": "14.2.4",
+    "next": "16.1.6",
     "react": "^18",
     "react-dom": "^18"
   },
