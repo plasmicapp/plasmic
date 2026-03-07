@@ -163,6 +163,7 @@ import {
   serializePagesRouterGetStaticProps,
 } from "@/wab/shared/codegen/react-p/server-queries";
 import {
+  makeDataSourcesQueryTypeImports,
   makePlasmicQueryImports,
   makePlasmicServerRscComponentName,
 } from "@/wab/shared/codegen/react-p/server-queries/serializer";
@@ -914,6 +915,7 @@ ${
       }unstable_usePlasmicQueries } from "${getDataSourcesPackageName()}";`
     : ""
 }
+${ctx.hasServerQueries && !ctx.useRSC ? makeDataSourcesQueryTypeImports() : ""}
 ${rscServerImports}
 ${
   plumeType

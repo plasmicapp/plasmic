@@ -1,7 +1,6 @@
 import type {
   ComponentHelpers,
   ComponentHelpers as InternalCodeComponentHelpers,
-  CodeComponentMeta as InternalCodeComponentMeta,
   CustomFunctionMeta as InternalCustomFunctionMeta,
   GlobalContextMeta as InternalGlobalContextMeta,
   StateHelpers,
@@ -12,6 +11,7 @@ import type {
   useSelector,
   useSelectors,
 } from "@plasmicapp/host";
+import type { CodeComponentMeta as InternalCodeComponentMeta } from "@plasmicapp/host/registerComponent";
 import {
   LoaderBundleCache,
   PageMeta,
@@ -918,9 +918,7 @@ export class PlasmicComponentLoader {
 
   getExecFuncModule(
     renderData: ComponentRenderData,
-    fileNameKey:
-      | "serverQueriesExecFuncFileName"
-      | "generateMetadataFuncFileName"
+    fileNameKey: "serverQueriesExecFuncFileName"
   ) {
     if (renderData.entryCompMetas.length === 0) {
       return undefined;
@@ -961,7 +959,7 @@ export class PlasmicComponentLoader {
   ) {
     const module = this.getExecFuncModule(
       renderData,
-      "generateMetadataFuncFileName"
+      "serverQueriesExecFuncFileName"
     );
     const fallback = renderData.entryCompMetas[0]?.pageMetadata || {};
     if (!module) {

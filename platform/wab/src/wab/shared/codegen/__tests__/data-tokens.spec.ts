@@ -1,5 +1,7 @@
+import { ProjectId } from "@/wab/shared/ApiSchema";
 import { Bundle } from "@/wab/shared/bundler";
-import _bundle from "@/wab/shared/codegen/__tests__/bundles/data-tokens.json";
+import dataTokensPageMetaBundle from "@/wab/shared/codegen/__tests__/bundles/data-tokens-page-meta.json";
+import dataTokensBundle from "@/wab/shared/codegen/__tests__/bundles/data-tokens.json";
 import {
   codegen,
   collectSnapshotForDir,
@@ -10,7 +12,6 @@ import tmp from "tmp";
 
 describe("data tokens: codegen", () => {
   let dir: tmp.DirResult;
-  const site = generateSiteFromBundle(_bundle as [string, Bundle][]);
 
   beforeEach(() => {
     dir = tmp.dirSync({ unsafeCleanup: true });
@@ -20,6 +21,7 @@ describe("data tokens: codegen", () => {
   });
 
   it("should codegen correct contents with data tokens", async () => {
+    const site = generateSiteFromBundle(dataTokensBundle as [string, Bundle][]);
     await codegen(dir.name, site, {
       platform: "react",
       codegenScheme: "blackbox",
@@ -27,7 +29,22 @@ describe("data tokens: codegen", () => {
     });
 
     const expectedSnapshot = collectSnapshotForDir(dir.name);
-    // Expect the full contents to match a snapshot or specific string
+    expect(expectedSnapshot).toMatchSnapshot();
+  });
+
+  it("should codegen correct app dir contents with data tokens in metadata", async () => {
+    const site = generateSiteFromBundle(
+      dataTokensPageMetaBundle as [string, Bundle][]
+    );
+    await codegen(dir.name, site, {
+      platform: "nextjs",
+      codegenScheme: "blackbox",
+      stylesScheme: "css",
+      platformOptions: { nextjs: { appDir: true } },
+      projectId: "3UYiEMfU3twU4iYSx86cub" as ProjectId,
+    });
+
+    const expectedSnapshot = collectSnapshotForDir(dir.name);
     expect(expectedSnapshot).toMatchSnapshot();
   });
 });

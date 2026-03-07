@@ -8,6 +8,7 @@ import {
   CodegenScheme,
   ExportOpts,
   ExportPlatform,
+  ExportPlatformOptions,
   StylesScheme,
 } from "@/wab/shared/codegen/types";
 import { jsonClone } from "@/wab/shared/common";
@@ -29,6 +30,8 @@ export async function codegen(
     platformVersion?: string;
     codegenScheme: CodegenScheme;
     stylesScheme: StylesScheme;
+    platformOptions?: ExportPlatformOptions;
+    projectId?: ProjectId;
   } = {
     platform: "react",
     platformVersion: undefined,
@@ -38,12 +41,13 @@ export async function codegen(
 ) {
   console.log(`Codegen output dir`, dir, opts);
 
-  const projectId = "1234567890" as ProjectId;
+  const projectId = opts.projectId ?? ("1234567890" as ProjectId);
 
   const exportOpts: ExportOpts = {
     lang: "ts",
     platform: opts.platform,
     platformVersion: opts.platformVersion,
+    platformOptions: opts.platformOptions,
     relPathFromImplToManagedDir: ".",
     relPathFromManagedToImplDir: ".",
     forceAllProps: false,
@@ -144,6 +148,23 @@ export async function codegen(
       path.join(dir, bundle.skeletonModuleFileName),
       bundle.skeletonModule
     );
+    if (bundle.rscMetadata) {
+      const { pageWrappers, serverQueriesExecFunc } = bundle.rscMetadata;
+      if (serverQueriesExecFunc) {
+        fs.writeFileSync(
+          path.join(dir, serverQueriesExecFunc.fileName),
+          serverQueriesExecFunc.module
+        );
+      }
+      fs.writeFileSync(
+        path.join(dir, pageWrappers.server.fileName),
+        pageWrappers.server.module
+      );
+      fs.writeFileSync(
+        path.join(dir, pageWrappers.client.fileName),
+        pageWrappers.client.module
+      );
+    }
   }
 
   for (const bundle of globalVariantBundles) {
@@ -202,17 +223,20 @@ export async function codegen(
         "declare module 'next/link';",
         "declare module 'next/router';",
         "declare module 'next/navigation';",
+        // Declare types from 'next' used in generated skeletons
+        "declare module 'next' {",
+        "  export type Metadata = Record<string, unknown>;",
+        "  export type ResolvingMetadata = Promise<Metadata>;",
+        "}",
       ].join("\n")
     );
   }
-
   try {
     // Compile ts to js
     await promisify(exec)("node_modules/.bin/tsc", { cwd: dir });
   } catch (err) {
     throw new Error(`Typescript compilation failed: ${err.stdout}`);
   }
-
   return { importFromProject, readFromProject, existsInProject };
 }
 

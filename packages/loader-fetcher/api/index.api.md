@@ -73,8 +73,6 @@ export interface ComponentMeta {
     // (undocumented)
     entry: string;
     // (undocumented)
-    generateMetadataFuncFileName?: string;
-    // (undocumented)
     id: string;
     // (undocumented)
     isCode: boolean;

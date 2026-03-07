@@ -16,7 +16,6 @@ export interface ComponentMeta {
   pageMetadata?: PageMetadata;
   metadata?: Record<string, string>;
   serverQueriesExecFuncFileName?: string;
-  generateMetadataFuncFileName?: string;
 }
 
 export interface PageMeta extends ComponentMeta {

@@ -45,7 +45,6 @@ export interface ComponentMeta {
   pageMetadata?: PageMetadata;
   metadata: { [key: string]: string };
   serverQueriesExecFuncFileName?: string;
-  generateMetadataFuncFileName?: string;
 }
 
 export interface GlobalGroupMeta {
@@ -169,13 +168,6 @@ async function bundleModulesEsbuild(
           withoutNils(
             o.components.map(
               (c) => c.rscMetadata?.serverQueriesExecFunc?.fileName
-            )
-          )
-        ),
-        ...codegenOutputs.flatMap((o) =>
-          withoutNils(
-            o.components.map(
-              (c) => c.rscMetadata?.generateMetadataFunc?.fileName
             )
           )
         ),
@@ -658,11 +650,6 @@ function makeLoaderBundleOutput(
       metadata: compOutput.metadata,
       serverQueriesExecFuncFileName:
         compOutput.rscMetadata?.serverQueriesExecFunc?.fileName.replace(
-          ".tsx",
-          ".js"
-        ),
-      generateMetadataFuncFileName:
-        compOutput.rscMetadata?.generateMetadataFunc?.fileName.replace(
           ".tsx",
           ".js"
         ),

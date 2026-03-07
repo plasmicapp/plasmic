@@ -325,11 +325,6 @@ export interface ComponentExportOutput {
       module: string;
       fileName: string;
     };
-
-    generateMetadataFunc?: {
-      module: string;
-      fileName: string;
-    };
   };
 }
 

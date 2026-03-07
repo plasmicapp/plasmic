@@ -2,21 +2,15 @@ import {
   generateDataTokenImports,
   getDataTokenIdentifiersFromPageMeta,
 } from "@/wab/shared/codegen/react-p/data-tokens/imports";
-import { serializeGeneratePageMetadataBody } from "@/wab/shared/codegen/react-p/page-metadata/serializer";
 import {
   makePlasmicComponentName,
   makeTanStackHeadOptionsExportName,
 } from "@/wab/shared/codegen/react-p/serialize-utils";
-import {
-  getDataTokensFromServerQueries,
-  serializeCreateDollarQueries,
-} from "@/wab/shared/codegen/react-p/server-queries";
-import { serializeMakeAppRouterPageCtx } from "@/wab/shared/codegen/react-p/server-queries/serializer";
+import { getDataTokensFromServerQueries } from "@/wab/shared/codegen/react-p/server-queries";
 import { SerializerBaseContext } from "@/wab/shared/codegen/react-p/types";
 import { isPlatformNextJs } from "@/wab/shared/codegen/react-p/utils";
 import { PageMetadata } from "@/wab/shared/codegen/types";
 import { assert, strict } from "@/wab/shared/common";
-import { isPageComponent } from "@/wab/shared/core/components";
 import { asCode, stripParens } from "@/wab/shared/core/exprs";
 import {
   Component,
@@ -28,21 +22,6 @@ import {
   isKnownTemplatedString,
 } from "@/wab/shared/model/classes";
 import L from "lodash";
-
-/**
- * Check if any PageMeta field contains an Expr
- */
-function hasDynamicMetadata(pageMeta: PageMeta | null | undefined): boolean {
-  if (!pageMeta) {
-    return false;
-  }
-  for (const metaValue of Object.values(pageMeta)) {
-    if (metaValue != null && !L.isString(metaValue) && isKnownExpr(metaValue)) {
-      return true;
-    }
-  }
-  return false;
-}
 
 function getOgImageLink(
   ctx: SerializerBaseContext,
@@ -408,7 +387,7 @@ export function generateDynamicMetadata($q: any, $ctx: PageCtx) {
 /**
  * Platform-agnostic page metadata type, structurally compatible with Next.js Metadata
  */
-function getMetadataTypeDefinition(): string {
+export function getMetadataTypeDefinition(): string {
   return `/**
  * Platform-agnostic page metadata type.
  * Structurally compatible with Next.js Metadata and other meta frameworks.
@@ -461,71 +440,13 @@ function serializeDynamicMetadataObject(
       ${ogImageKeyValue}
     },
     twitter: {
-      card: ${ogImageValue ? '"summary_large_image"' : '"summary"'},
+      card: ${
+        ogImageValue ? '"summary_large_image" as const' : '"summary" as const'
+      },
       ${titleKeyValue}
       ${descriptionKeyValue}
       ${ogImageKeyValue}
     },
     ${canonicalValue ? `alternates: { canonical: ${canonicalValue} },` : ""}
   }`;
-}
-
-export function serializeGenerateMetadataFunction(
-  ctx: SerializerBaseContext
-): { module: string; fileName: string } | undefined {
-  const { component, hasServerQueries } = ctx;
-
-  if (!isPageComponent(component) || !component.pageMeta) {
-    return undefined;
-  }
-
-  const pageMeta = component.pageMeta;
-  const isDynamic = hasDynamicMetadata(pageMeta);
-  const propTypeName = "GenerateMetadataProps";
-  const moduleFileName = `__generateMetadata_${makePlasmicComponentName(
-    component
-  )}_${component.uuid}.tsx`;
-
-  // Generate static metadata export if no dynamic values
-  if (!isDynamic) {
-    const metadataObject = serializeDynamicMetadataObject(ctx, pageMeta);
-    return {
-      module: `
-${getMetadataTypeDefinition()}
-
-export const metadata: PlasmicPageMetadata = ${metadataObject};
-`,
-      fileName: moduleFileName,
-    };
-  }
-
-  // Get data token imports for metadata expressions
-  const dataTokenImports = getDataTokenImportsForPageMeta(ctx, pageMeta);
-
-  const module = `
-${dataTokenImports}
-${getMetadataTypeDefinition()}
-
-${serializeCreateDollarQueries(ctx)}
-
-${serializeMakeAppRouterPageCtx(ctx, propTypeName)}
-
-export async function generateMetadata(props: ${propTypeName}): Promise<PlasmicPageMetadata> {
-  const { params, searchParams } = props;
-  ${
-    ctx.hasServerQueries
-      ? serializeGeneratePageMetadataBody({ hasServerQueries })
-      : `const metadata: PlasmicPageMetadata = ${serializeDynamicMetadataObject(
-          ctx,
-          pageMeta
-        )};`
-  }
-  return metadata;
-}
-`;
-
-  return {
-    module,
-    fileName: moduleFileName,
-  };
 }

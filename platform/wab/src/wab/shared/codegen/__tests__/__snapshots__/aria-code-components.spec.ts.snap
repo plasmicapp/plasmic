@@ -1310,6 +1310,7 @@ import {
 
 
 
+
 import { BaseButton } from "@plasmicpkgs/react-aria/skinny/registerButton";
 import { _useGlobalVariants } from "./plasmic.tsx"; // plasmic-import: 1234567890/projectModule
 import { _useStyleTokens } from "./PlasmicStyleTokensProvider.tsx"; // plasmic-import: 1234567890/styleTokensProvider
@@ -2697,6 +2698,7 @@ import {
 
 
 
+
 import DataFetcherParent from "./DataFetcherParent";  // plasmic-import: iUkwSJQ7glxH/component
 import { _useGlobalVariants } from "./plasmic.tsx"; // plasmic-import: 1234567890/projectModule
 import { _useStyleTokens } from "./PlasmicStyleTokensProvider.tsx"; // plasmic-import: 1234567890/styleTokensProvider
@@ -3059,6 +3061,7 @@ import {
   useGlobalActions,
   
 } from "@plasmicapp/react-web/lib/host";
+
 
 
 
@@ -3442,6 +3445,7 @@ import {
   useGlobalActions,
   
 } from "@plasmicapp/react-web/lib/host";
+
 
 
 
@@ -4415,6 +4419,7 @@ import {
 
 
 
+
 import { BaseDialogTrigger } from "@plasmicpkgs/react-aria/skinny/registerDialogTrigger";
 import Button from "./Button";  // plasmic-import: D557GwRUy2HJ/component
 import { BaseModal } from "@plasmicpkgs/react-aria/skinny/registerModal";
@@ -5071,6 +5076,7 @@ import {
   useGlobalActions,
   
 } from "@plasmicapp/react-web/lib/host";
+
 
 
 
@@ -5739,6 +5745,7 @@ import {
 
 
 
+
 import PopoverDialog from "./PopoverDialog";  // plasmic-import: 5gJnBNi_9h0B/component
 import Button from "./Button";  // plasmic-import: D557GwRUy2HJ/component
 import Tooltip from "./Tooltip";  // plasmic-import: pI05-1YiCa_b/component
@@ -5794,7 +5801,7 @@ export function generateDynamicMetadata($q: any, $ctx: PageCtx) {
       
     },
     twitter: {
-      card: "summary",
+      card: "summary" as const,
       
       
       
@@ -6408,6 +6415,7 @@ import {
 
 
 
+
 import { BasePopover } from "@plasmicpkgs/react-aria/skinny/registerPopover";
 import { _useGlobalVariants } from "./plasmic.tsx"; // plasmic-import: 1234567890/projectModule
 import { _useStyleTokens } from "./PlasmicStyleTokensProvider.tsx"; // plasmic-import: 1234567890/styleTokensProvider
@@ -6975,6 +6983,7 @@ import {
   useGlobalActions,
   
 } from "@plasmicapp/react-web/lib/host";
+
 
 
 
@@ -7657,6 +7666,7 @@ import {
   useGlobalActions,
   
 } from "@plasmicapp/react-web/lib/host";
+
 
 
 
@@ -10080,6 +10090,7 @@ import {
 
 
 
+
 import { BaseButton } from "@plasmicpkgs/react-aria/skinny/registerButton";
 import { _useGlobalVariants } from "./plasmic.tsx"; // plasmic-import: 1234567890/projectModule
 import { _useStyleTokens } from "./PlasmicStyleTokensProvider.tsx"; // plasmic-import: 1234567890/styleTokensProvider
@@ -11465,6 +11476,7 @@ import {
 
 
 
+
 import DataFetcherParent from "./DataFetcherParent";  // plasmic-import: iUkwSJQ7glxH/component
 import { _useGlobalVariants } from "./plasmic.tsx"; // plasmic-import: 1234567890/projectModule
 import { _useStyleTokens } from "./PlasmicStyleTokensProvider.tsx"; // plasmic-import: 1234567890/styleTokensProvider
@@ -11824,6 +11836,7 @@ import {
   useGlobalActions,
   
 } from "@plasmicapp/react-web/lib/host";
+
 
 
 
@@ -12206,6 +12219,7 @@ import {
   useGlobalActions,
   
 } from "@plasmicapp/react-web/lib/host";
+
 
 
 
@@ -13179,6 +13193,7 @@ import {
 
 
 
+
 import { BaseDialogTrigger } from "@plasmicpkgs/react-aria/skinny/registerDialogTrigger";
 import Button from "./Button";  // plasmic-import: D557GwRUy2HJ/component
 import { BaseModal } from "@plasmicpkgs/react-aria/skinny/registerModal";
@@ -13834,6 +13849,7 @@ import {
   useGlobalActions,
   
 } from "@plasmicapp/react-web/lib/host";
+
 
 
 
@@ -14501,6 +14517,7 @@ import {
 
 
 
+
 import PopoverDialog from "./PopoverDialog";  // plasmic-import: 5gJnBNi_9h0B/component
 import Button from "./Button";  // plasmic-import: D557GwRUy2HJ/component
 import Tooltip from "./Tooltip";  // plasmic-import: pI05-1YiCa_b/component
@@ -14556,7 +14573,7 @@ export function generateDynamicMetadata($q: any, $ctx: PageCtx) {
       
     },
     twitter: {
-      card: "summary",
+      card: "summary" as const,
       
       
       
@@ -15169,6 +15186,7 @@ import {
 
 
 
+
 import { BasePopover } from "@plasmicpkgs/react-aria/skinny/registerPopover";
 import { _useGlobalVariants } from "./plasmic.tsx"; // plasmic-import: 1234567890/projectModule
 import { _useStyleTokens } from "./PlasmicStyleTokensProvider.tsx"; // plasmic-import: 1234567890/styleTokensProvider
@@ -15735,6 +15753,7 @@ import {
   useGlobalActions,
   
 } from "@plasmicapp/react-web/lib/host";
+
 
 
 
@@ -16417,6 +16436,7 @@ import {
   useGlobalActions,
   
 } from "@plasmicapp/react-web/lib/host";
+
 
 
 

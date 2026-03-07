@@ -3,8 +3,8 @@ import { serializeCustomFunctionsAndLibs } from "@/wab/shared/codegen/react-p/cu
 import { getDataSourcesPackageName } from "@/wab/shared/codegen/react-p/data-sources";
 import {
   getDataTokenImportsForPageMeta,
+  getMetadataTypeDefinition,
   serializeGenerateDynamicMetadataFunction,
-  serializeGenerateMetadataFunction,
 } from "@/wab/shared/codegen/react-p/page-metadata";
 import { serializeGeneratePageMetadataBody } from "@/wab/shared/codegen/react-p/page-metadata/serializer";
 import {
@@ -15,6 +15,8 @@ import {
 } from "@/wab/shared/codegen/react-p/serialize-utils";
 import {
   makeComponentTypeImport,
+  makeDataSourcesQueryTypeImports,
+  makeDataSourcesServerQueryImports,
   makeLoaderServerFunctionFileName,
   makePlasmicClientRscComponentFileName,
   makePlasmicClientRscComponentName,
@@ -44,7 +46,6 @@ export function getRscMetadata(
   }
 
   const serverQueriesExecFunc = serializeServerPageQueriesLoader(ctx);
-  const generateMetadataFunc = serializeGenerateMetadataFunction(ctx);
 
   return {
     pageWrappers: {
@@ -58,7 +59,6 @@ export function getRscMetadata(
       },
     },
     serverQueriesExecFunc,
-    generateMetadataFunc,
   };
 }
 
@@ -115,7 +115,9 @@ ${serializeMakeAppRouterPageCtx(ctx, skeletonPropsName)}
 
 export type ${componentPropsName} = ${genPropsName} & ${skeletonPropsName};
 
-export async function ${componentName}(props: ${componentPropsName}) {
+export ${
+    ctx.hasServerQueries ? "async " : ""
+  }function ${componentName}(props: ${componentPropsName}) {
   ${ctx.hasServerQueries ? serializeServerComponentBodyWithQueries() : ""}
 
   return (${
@@ -208,7 +210,7 @@ export function createQueries(
       })
       .join(",\n")}
   };
-};`;
+}`;
 }
 
 function serializeServerPageQueries(ctx: SerializerBaseContext) {
@@ -223,8 +225,8 @@ function serializeServerPageQueries(ctx: SerializerBaseContext) {
 
   const serverQueryImports = ctx.hasServerQueries
     ? `
-import { unstable_createDollarQueries, unstable_executePlasmicQueries } from "${getDataSourcesPackageName()}";
-import type { PlasmicQuery, PlasmicQueryResult } from "${getDataSourcesPackageName()}";
+${makeDataSourcesServerQueryImports()}
+${makeDataSourcesQueryTypeImports()}
 import { PlasmicQueryDataProvider } from "@plasmicapp/react-web/lib/query";`
     : "";
 
@@ -243,7 +245,36 @@ ${serializeCreateDollarQueries(ctx)}
 }
 
 /**
+ * Build the generateMetadata section to append to the loader file.
+ * Returns empty string if the component has no page metadata.
+ */
+function serializeLoaderGenerateMetadataSection(
+  ctx: SerializerBaseContext
+): string {
+  const { component, hasServerQueries } = ctx;
+
+  if (!isPageComponent(component) || !component.pageMeta) {
+    return "";
+  }
+  const propTypeName = "GenerateMetadataProps";
+
+  return `
+${getMetadataTypeDefinition()}
+
+${serializeMakeAppRouterPageCtx(ctx, propTypeName)}
+
+export async function generateMetadata(props: ${propTypeName}): Promise<PlasmicPageMetadata> {
+  const { params, searchParams } = props;
+  ${serializeGeneratePageMetadataBody({ hasServerQueries })}
+  return metadata;
+}
+`;
+}
+
+/**
  * Serialize a function to execute page queries for the loader.
+ * Also includes generateMetadata if the component has page metadata,
+ * since both functions share the same imports and helpers.
  */
 function serializeServerPageQueriesLoader(ctx: SerializerBaseContext) {
   const executeServerQueriesBody = ctx.hasServerQueries
@@ -258,7 +289,8 @@ function serializeServerPageQueriesLoader(ctx: SerializerBaseContext) {
   const module = `${serializeServerPageQueries(ctx)}
 export async function executeServerQueries(ctx: any) {
   ${executeServerQueriesBody}
-}`;
+}
+${serializeLoaderGenerateMetadataSection(ctx)}`;
   return {
     module,
     fileName: makeLoaderServerFunctionFileName(ctx.component),

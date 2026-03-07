@@ -21,7 +21,7 @@ function serializeDataTokenExport(token: FinalToken<DataToken>): string {
 
   if (tokenType === "code") {
     const processedCode = stripParensAndMaybeConvertToIife(token.value);
-    return `export const ${varName} = (() => { try { return (${processedCode}); } catch (e) { return undefined; } })();`;
+    return `export const ${varName}: any = (() => { try { return (${processedCode}); } catch (e) { return undefined; } })();`;
   } else {
     const parsedValue = JSON.parse(token.value);
     return `export const ${varName} = ${jsLiteral(parsedValue)};`;

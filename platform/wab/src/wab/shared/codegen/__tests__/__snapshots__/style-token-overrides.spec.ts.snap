@@ -400,6 +400,7 @@ import {
 
 
 
+
 import DepComp from "./DepComp";  // plasmic-import: u4_D7ezQ-9rk/component
 import { _useGlobalVariants } from "./plasmic.tsx"; // plasmic-import: 1234567890/projectModule
 import { _useStyleTokens } from "./PlasmicStyleTokensProvider.tsx"; // plasmic-import: 1234567890/styleTokensProvider
@@ -448,7 +449,7 @@ export function generateDynamicMetadata($q: any, $ctx: PageCtx) {
       
     },
     twitter: {
-      card: "summary",
+      card: "summary" as const,
       
       
       
@@ -1685,6 +1686,7 @@ import {
 
 
 
+
 import DepComp from "./DepComp";  // plasmic-import: u4_D7ezQ-9rk/component
 import { _useGlobalVariants } from "./plasmic.tsx"; // plasmic-import: 1234567890/projectModule
 import { _useStyleTokens } from "./PlasmicStyleTokensProvider.tsx"; // plasmic-import: 1234567890/styleTokensProvider
@@ -1733,7 +1735,7 @@ export function generateDynamicMetadata($q: any, $ctx: PageCtx) {
       
     },
     twitter: {
-      card: "summary",
+      card: "summary" as const,
       
       
       

@@ -1,3 +1,4 @@
+import { getDataSourcesPackageName } from "@/wab/shared/codegen/react-p/data-sources";
 import {
   getExportedComponentName,
   makeDefaultExternalPropsName,
@@ -50,25 +51,26 @@ export function makeLoaderServerFunctionFileName(component: Component) {
 }
 
 export function makePlasmicServerRscComponentFileName(component: Component) {
-  return `${makePlasmicServerRscComponentName(component)}_${
-    component.uuid
-  }.tsx`;
+  return `${makePlasmicServerRscComponentName(component)}.tsx`;
 }
 
 export function makePlasmicClientRscComponentFileName(component: Component) {
-  return `${makePlasmicClientRscComponentName(component)}_${
-    component.uuid
-  }.tsx`;
+  return `${makePlasmicClientRscComponentName(component)}.tsx`;
 }
 
 export function makePlasmicQueryImports(ctx: SerializerBaseContext) {
   if (ctx.useRSC || !ctx.hasServerQueries) {
     return "";
   }
+  return `import { useMutablePlasmicQueryData } from "@plasmicapp/query";`;
+}
 
-  return `import {
-  useMutablePlasmicQueryData,
-} from "@plasmicapp/query";`;
+export function makeDataSourcesQueryTypeImports() {
+  return `import type { PlasmicQuery, PlasmicQueryResult } from "${getDataSourcesPackageName()}";`;
+}
+
+export function makeDataSourcesServerQueryImports() {
+  return `import { unstable_createDollarQueries, unstable_executePlasmicQueries } from "${getDataSourcesPackageName()}";`;
 }
 
 export function serializeServerQueryCustomFunctionArgs(

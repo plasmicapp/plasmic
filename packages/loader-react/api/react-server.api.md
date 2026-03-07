@@ -7,7 +7,7 @@
 /// <reference types="react" />
 
 import { AssetModule } from '@plasmicapp/loader-core';
-import type { CodeComponentMeta as CodeComponentMeta_2 } from '@plasmicapp/host';
+import type { CodeComponentMeta as CodeComponentMeta_2 } from '@plasmicapp/host/registerComponent';
 import { CodeModule } from '@plasmicapp/loader-fetcher';
 import type { ComponentHelpers } from '@plasmicapp/host';
 import { ComponentMeta } from '@plasmicapp/loader-core';
@@ -154,7 +154,7 @@ export class PlasmicComponentLoader {
     // (undocumented)
     getChunksUrl(bundle: LoaderBundleOutput, modules: CodeModule[]): string;
     // (undocumented)
-    getExecFuncModule(renderData: ComponentRenderData, fileNameKey: "serverQueriesExecFuncFileName" | "generateMetadataFuncFileName"): any;
+    getExecFuncModule(renderData: ComponentRenderData, fileNameKey: "serverQueriesExecFuncFileName"): any;
     // (undocumented)
     getExternalVariation(variation: Record<string, string>, filters?: Parameters<typeof getExternalIds>[2]): Record<string, string>;
     maybeFetchComponentData(...specs: ComponentLookupSpec[]): Promise<ComponentRenderData | null>;
