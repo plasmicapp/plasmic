@@ -354,6 +354,7 @@ import { reorderPageArenaCols } from "@/wab/shared/page-arenas";
 import { getAccessLevelToResource } from "@/wab/shared/perms";
 import {
   APP_ROUTES,
+  SEARCH_PARAM_COPILOT_CHAT,
   SEARCH_PROMPT,
   mkProjectLocation,
 } from "@/wab/shared/route/app-routes";
@@ -1943,6 +1944,13 @@ export class StudioCtx extends WithDbCtx {
     replace?: boolean;
     stopWatching?: boolean;
   }) {
+    // Preserve copilot_chat param across arena switches
+    const currentSearchParams = new URLSearchParams(
+      this.appCtx.history.location.search
+    );
+    const copilotChat =
+      currentSearchParams.get(SEARCH_PARAM_COPILOT_CHAT) === "true";
+
     const branchName = branch?.name || MainBranchId;
     const branchVersion = pkgVersionInfoMeta?.version || latestTag;
     if (arena) {
@@ -1967,6 +1975,7 @@ export class StudioCtx extends WithDbCtx {
         slug,
         replace,
         stopWatching,
+        copilotChat,
       });
     } else {
       // Arena could be null/undefined if the project has no arenas (i.e. 0 pages/components)
@@ -1980,6 +1989,7 @@ export class StudioCtx extends WithDbCtx {
         slug: undefined,
         replace,
         stopWatching,
+        copilotChat,
       });
     }
   }
@@ -1999,6 +2009,7 @@ export class StudioCtx extends WithDbCtx {
     slug,
     replace = false,
     stopWatching = true,
+    copilotChat,
   }: {
     branchName: string;
     branchVersion: string;
@@ -2009,6 +2020,7 @@ export class StudioCtx extends WithDbCtx {
     slug: string | undefined;
     replace?: boolean;
     stopWatching?: boolean;
+    copilotChat?: boolean;
   }) {
     if (stopWatching) {
       this.setWatchPlayerId(null);
@@ -2023,6 +2035,7 @@ export class StudioCtx extends WithDbCtx {
       arenaType,
       arenaUuidOrNameOrPath: arenaUuidOrName,
       threadId,
+      copilotChat,
     });
 
     if (replace) {
