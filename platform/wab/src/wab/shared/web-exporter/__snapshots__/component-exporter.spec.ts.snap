@@ -4,20 +4,34 @@ exports[`Component Serialization serialize all components into text representati
 {
   "Button": "<component name="Button">
   <props>
-    <prop name="color" type="enum" options="[&quot;Neutral&quot;,&quot;Muted&quot;,&quot;Success&quot;,&quot;Warning&quot;,&quot;Error/Destructive&quot;]"/>
-    <prop name="size" type="enum" options="[&quot;Extra small&quot;,&quot;Small&quot;,&quot;Large&quot;,&quot;Extra large&quot;]"/>
-    <prop name="disabled" type="boolean"/>
-    <prop name="submitsForm" type="boolean"/>
-    <prop name="resetsForm" type="boolean"/>
-    <prop name="ariaLabel" type="text"/>
-    <prop name="iconStart" type="boolean"/>
-    <prop name="iconEnd" type="boolean"/>
-    <prop name="roundedFull" type="boolean"/>
-    <prop name="type" type="enum" options="[&quot;Soft&quot;,&quot;Bordered&quot;]"/>
-    <prop name="flatSide" type="enum" options="[&quot;Top&quot;,&quot;Right&quot;,&quot;Bottom&quot;,&quot;Left&quot;]"/>
-    <prop name="linkTo" type="href" default="&quot;&quot;"/>
-    <prop name="openLinkInNewTab" type="boolean" default="&quot;false&quot;"/>
+    <prop name="disabled" uuid="rGc6UJcKJEB_" type="boolean"/>
+    <prop name="submitsForm" uuid="uTusQyXwY8hY" type="boolean"/>
+    <prop name="resetsForm" uuid="uZLr-Pave-o6" type="boolean"/>
+    <prop name="ariaLabel" uuid="vl6FeS87INOT" type="text"/>
+    <prop name="onClick" uuid="4QyR83nZjQre" type="func"/>
+    <prop name="linkTo" uuid="DpVhNizcIXTy" type="href" default="&quot;&quot;"/>
+    <prop name="openLinkInNewTab" uuid="yy2_KKU6W4Gr" type="boolean" default="&quot;false&quot;"/>
   </props>
+  <variants>
+    <variant name="Neutral" uuid="sy5AokJJ7g7H" group="color" type="enum"/>
+    <variant name="Muted" uuid="gdLWnA57ufpt" group="color" type="enum"/>
+    <variant name="Success" uuid="4EM17LBKD7cA" group="color" type="enum"/>
+    <variant name="Warning" uuid="rS75iYmeFNPU" group="color" type="enum"/>
+    <variant name="Error/Destructive" uuid="UZpDGjtFbbo-" group="color" type="enum"/>
+    <variant name="Soft" uuid="NzLhyUcNJ56l" group="type" type="enum"/>
+    <variant name="Bordered" uuid="CFlf6CAr5PRq" group="type" type="enum"/>
+    <variant name="Extra small" uuid="RDlJE6wlLaV0" group="size" type="enum"/>
+    <variant name="Small" uuid="1Wus14yXOz6z" group="size" type="enum"/>
+    <variant name="Large" uuid="f0h7JomxhfMB" group="size" type="enum"/>
+    <variant name="Extra large" uuid="IL042y6ZmTqU" group="size" type="enum"/>
+    <variant name="Icon start" uuid="sHwmv6VTmYIE" group="iconStart" type="boolean"/>
+    <variant name="Icon end" uuid="WG_MUEe-AF5Z" group="iconEnd" type="boolean"/>
+    <variant name="Rounded full" uuid="rnbD-4X93Vp0" group="roundedFull" type="boolean"/>
+    <variant name="Top" uuid="LAvN7TnRtX1E" group="flatSide" type="enum"/>
+    <variant name="Right" uuid="F877AcVY27WU" group="flatSide" type="enum"/>
+    <variant name="Bottom" uuid="JG2Gsxo917WB" group="flatSide" type="enum"/>
+    <variant name="Left" uuid="ZDz-CWXMxtWT" group="flatSide" type="enum"/>
+  </variants>
   <base-variant-tpl-tree>
     <plasmic-component id="P4urRFgjF3wU" data-plasmic-name="plasmicReactAriaButton" data-props="{&quot;onPress&quot;:&quot;&quot;,&quot;aria-label&quot;:&quot;&quot;,&quot;submitsForm&quot;:&quot;&quot;,&quot;resetsForm&quot;:&quot;&quot;,&quot;isDisabled&quot;:&quot;&quot;,&quot;href&quot;:&quot;&quot;,&quot;target&quot;:&quot;&quot;}" style="position: relative; background: linear-gradient(var(--token-6R_RCgXDnfCy), var(--token-6R_RCgXDnfCy)); display: flex; cursor: pointer; box-sizing: border-box; min-width: var(--token-J8bgk1cLaZ5G); font-family: var(--token-VRn5eg_X38q7); font-size: var(--token-mdlFAaQL9cZT); line-height: var(--token-bFkpmJG5PZPn); border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; outline-style: none; padding-bottom: 0rem; padding-top: 0rem; padding-right: 0rem; padding-left: 0rem; text-decoration-line: none; border-top-left-radius: var(--token--0yvAvGYfFhX); border-top-right-radius: var(--token--0yvAvGYfFhX); border-bottom-right-radius: var(--token--0yvAvGYfFhX); border-bottom-left-radius: var(--token--0yvAvGYfFhX)">
       <slot name="children">
@@ -454,12 +468,13 @@ exports[`Component Serialization serialize all components into text representati
 ",
   "Checkbox": "<component name="Checkbox">
   <props>
-    <prop name="value" type="text"/>
-    <prop name="autoFocus" type="boolean" default="&quot;false&quot;"/>
-    <prop name="disabled" type="boolean"/>
-    <prop name="ariaLabel" type="text"/>
-    <prop name="isSelected" type="boolean"/>
+    <prop name="value" uuid="5M3y_VU2ATnH" type="text"/>
+    <prop name="autoFocus" uuid="cyB5TH1yboWU" type="boolean" default="&quot;false&quot;"/>
+    <prop name="disabled" uuid="ZZZNU9nH_Dx4" type="boolean"/>
+    <prop name="ariaLabel" uuid="ZAeKaaZ-U1Jk" type="text"/>
   </props>
+  <variants>
+  </variants>
   <base-variant-tpl-tree>
     <plasmic-component id="wSXrGkHnJdlR" data-plasmic-name="plasmicReactAriaCheckbox" data-props="{&quot;value&quot;:&quot;&quot;,&quot;aria-label&quot;:&quot;&quot;,&quot;autoFocus&quot;:&quot;&quot;,&quot;isDisabled&quot;:&quot;&quot;}" style="object-fit: cover; cursor: pointer; flex-direction: row; justify-content: flex-start; align-items: center; display: flex; box-sizing: border-box; color: var(--token-ZX33JwqKe1KQ); font-family: var(--token-VRn5eg_X38q7); font-size: var(--token-mdlFAaQL9cZT); line-height: var(--token-bFkpmJG5PZPn); width: stretch; column-gap: var(--token-J8bgk1cLaZ5G)">
       <slot name="children">
@@ -479,13 +494,14 @@ exports[`Component Serialization serialize all components into text representati
 ",
   "Checkbox Group": "<component name="Checkbox Group">
   <props>
-    <prop name="value" type="any"/>
-    <prop name="showLabel" type="boolean" default="&quot;true&quot;"/>
-    <prop name="showDescription" type="boolean" default="&quot;false&quot;"/>
-    <prop name="disabled" type="boolean"/>
-    <prop name="ariaLabel" type="text"/>
-    <prop name="readOnly" type="boolean"/>
+    <prop name="showLabel" uuid="qwc-fA9gE7__" type="boolean" default="&quot;true&quot;"/>
+    <prop name="showDescription" uuid="o3wioSUu241P" type="boolean" default="&quot;false&quot;"/>
+    <prop name="disabled" uuid="zoHZVX0w9ZYT" type="boolean"/>
+    <prop name="ariaLabel" uuid="vszCw-lldHdk" type="text"/>
+    <prop name="readOnly" uuid="1bmahVfmcwBn" type="boolean"/>
   </props>
+  <variants>
+  </variants>
   <base-variant-tpl-tree>
     <plasmic-component id="EQwO08BkwohB" data-plasmic-name="plasmicReactAriaCheckboxGroup" data-props="{&quot;isDisabled&quot;:&quot;&quot;,&quot;aria-label&quot;:&quot;&quot;,&quot;isReadOnly&quot;:&quot;&quot;}" style="position: relative; display: flex; flex-direction: column; box-sizing: border-box; width: stretch; row-gap: var(--token-iV97hAoHAnKd)">
       <slot name="children">
@@ -529,19 +545,19 @@ exports[`Component Serialization serialize all components into text representati
 ",
   "Combobox": "<component name="Combobox">
   <props>
-    <prop name="isOpen" type="boolean"/>
-    <prop name="value" type="text"/>
-    <prop name="placeholder" type="text" default="&quot;Select an item&quot;"/>
-    <prop name="showLabel" type="boolean" default="&quot;true&quot;"/>
-    <prop name="showDescription" type="boolean" default="&quot;false&quot;"/>
-    <prop name="autoFocus" type="boolean"/>
-    <prop name="inputDisplayValue" type="text"/>
-    <prop name="disabled" type="boolean"/>
-    <prop name="ariaLabel" type="text"/>
-    <prop name="type" type="enum" options="[&quot;Soft&quot;,&quot;Plain&quot;]"/>
-    <prop name="readOnly" type="boolean"/>
-    <prop name="plasmicReactAriaInputValue" type="text"/>
+    <prop name="placeholder" uuid="WGCCv7DDW4ba" type="text" default="&quot;Select an item&quot;"/>
+    <prop name="showLabel" uuid="JFzc1bqUjFHP" type="boolean" default="&quot;true&quot;"/>
+    <prop name="showDescription" uuid="m3anLo71q773" type="boolean" default="&quot;false&quot;"/>
+    <prop name="autoFocus" uuid="2vqnoCRdx06m" type="boolean"/>
+    <prop name="inputDisplayValue" uuid="9pV73n8Oxa80" type="text"/>
+    <prop name="disabled" uuid="0KnYRJRcg__S" type="boolean"/>
+    <prop name="ariaLabel" uuid="KCGAwyRDzjJQ" type="text"/>
+    <prop name="readOnly" uuid="cf0G1VdfjZ0R" type="boolean"/>
   </props>
+  <variants>
+    <variant name="Soft" uuid="tPGQI9ximkgA" group="type" type="enum"/>
+    <variant name="Plain" uuid="gcKc5e0uirg6" group="type" type="enum"/>
+  </variants>
   <base-variant-tpl-tree>
     <plasmic-component id="6toPxJJ_4YJU" data-plasmic-name="plasmicReactAriaCombobox" data-props="{&quot;isDisabled&quot;:&quot;&quot;,&quot;aria-label&quot;:&quot;&quot;}" style="position: relative; display: flex; flex-direction: column; width: stretch; row-gap: var(--token-iV97hAoHAnKd)">
       <slot name="children">
@@ -602,6 +618,8 @@ exports[`Component Serialization serialize all components into text representati
   "Description": "<component name="Description">
   <props>
   </props>
+  <variants>
+  </variants>
   <base-variant-tpl-tree>
     <plasmic-component id="aADoiOmpOnFq" data-plasmic-name="plasmicReactAriaDescription" style="object-fit: cover; box-sizing: border-box; color: var(--token-O7HlhsyUcTLk); font-family: var(--token-VRn5eg_X38q7); font-size: var(--token-mdlFAaQL9cZT); line-height: var(--token-bFkpmJG5PZPn); position: relative">
       <slot name="children">
@@ -617,15 +635,15 @@ exports[`Component Serialization serialize all components into text representati
 ",
   "Drawer": "<component name="Drawer">
   <props>
-    <prop name="isOpen" type="boolean"/>
-    <prop name="plasmicReactAriaModalIsOpen" type="boolean"/>
-    <prop name="closeOnBackdropClick" type="boolean" default="&quot;true&quot;"/>
-    <prop name="noTrigger" type="boolean"/>
-    <prop name="showHeading" type="boolean" default="&quot;true&quot;"/>
-    <prop name="showCancelButton" type="boolean" default="&quot;true&quot;"/>
-    <prop name="showConfirmButton" type="boolean" default="&quot;true&quot;"/>
-    <prop name="isKeyboardDismissDisabled" type="boolean"/>
+    <prop name="closeOnBackdropClick" uuid="hc-vEOR205Vv" type="boolean" default="&quot;true&quot;"/>
+    <prop name="showHeading" uuid="a4Qfztknob2g" type="boolean" default="&quot;true&quot;"/>
+    <prop name="showCancelButton" uuid="1M1Z1hS4a4Da" type="boolean" default="&quot;true&quot;"/>
+    <prop name="showConfirmButton" uuid="eZ8EtV_8mEg3" type="boolean" default="&quot;true&quot;"/>
+    <prop name="isKeyboardDismissDisabled" uuid="r4xxnbDzdJgo" type="boolean"/>
   </props>
+  <variants>
+    <variant name="No trigger" uuid="XcAK-UZkDgAi" group="noTrigger" type="boolean"/>
+  </variants>
   <base-variant-tpl-tree>
     <plasmic-component id="WAQLbjkAZ5OA" data-plasmic-name="plasmicReactAriaDialogTrigger" style="position: relative">
       <slot name="trigger">
@@ -706,13 +724,9 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
 ",
   "Homepage": "<component name="Homepage">
   <props>
-    <prop name="checkboxGroupValue" type="any"/>
-    <prop name="selectIsOpen" type="boolean"/>
-    <prop name="selectValue" type="text"/>
-    <prop name="sliderValue" type="number"/>
-    <prop name="switchIsSelected" type="boolean"/>
-    <prop name="textFieldValue" type="text"/>
   </props>
+  <variants>
+  </variants>
   <base-variant-tpl-tree>
     <div id="_1xwXQlkUArr" style="display: plasmic-content-layout; position: relative; width: stretch; height: stretch; padding-top: 0px; padding-right: 0px; padding-bottom: 0px; padding-left: 0px; align-content: flex-start; justify-items: center">
       <section id="7weorkEjgQjD" style="display: plasmic-content-layout; position: relative; width: plasmic-layout-full-bleed; height: wrap; padding-left: 0px; padding-right: 0px; padding-bottom: 96px; padding-top: 96px; grid-row-gap: 16px; align-content: flex-start; justify-items: center">
@@ -773,9 +787,13 @@ Join our Slack community (icon in bottom left) for help any time.</div>
 ",
   "Label": "<component name="Label">
   <props>
-    <prop name="size" type="enum" options="[&quot;SM&quot;,&quot;LG&quot;]"/>
-    <prop name="requirementIndicator" type="enum" options="[&quot;Optional&quot;,&quot;Required&quot;]"/>
   </props>
+  <variants>
+    <variant name="SM" uuid="Mc-Oh4udbRX7" group="size" type="enum"/>
+    <variant name="LG" uuid="VHb-pUA8lidW" group="size" type="enum"/>
+    <variant name="Optional" uuid="-6wdZI4H74qM" group="requirementIndicator" type="enum"/>
+    <variant name="Required" uuid="Kfk1fRQ40Hgx" group="requirementIndicator" type="enum"/>
+  </variants>
   <base-variant-tpl-tree>
     <plasmic-component id="ZRhv_StjR968" data-plasmic-name="plasmicReactAriaLabel" style="position: relative; color: var(--token-ZX33JwqKe1KQ); font-family: var(--token-VRn5eg_X38q7); font-size: var(--token-mdlFAaQL9cZT); line-height: var(--token-bFkpmJG5PZPn)">
       <slot name="children">
@@ -822,10 +840,12 @@ Join our Slack community (icon in bottom left) for help any time.</div>
 ",
   "Menu Item": "<component name="Menu Item">
   <props>
-    <prop name="value" type="text" default="&quot;&quot;"/>
-    <prop name="label" type="text" default="&quot;Item 1&quot;"/>
-    <prop name="description" type="text"/>
+    <prop name="value" uuid="5GA_wonWg-QW" type="text" default="&quot;&quot;"/>
+    <prop name="label" uuid="DimahhHh84VL" type="text" default="&quot;Item 1&quot;"/>
+    <prop name="description" uuid="dH6W9QY4q1_d" type="text"/>
   </props>
+  <variants>
+  </variants>
   <base-variant-tpl-tree>
     <plasmic-component id="b90U9w7UxwBC" data-plasmic-name="plasmicReactAriaListboxItem" data-props="{&quot;id&quot;:&quot;&quot;,&quot;textValue&quot;:&quot;&quot;}" style="position: relative; cursor: pointer; border-top-left-radius: var(--token--0yvAvGYfFhX); border-top-right-radius: var(--token--0yvAvGYfFhX); border-bottom-right-radius: var(--token--0yvAvGYfFhX); border-bottom-left-radius: var(--token--0yvAvGYfFhX); color: var(--token-ZX33JwqKe1KQ); font-family: var(--token-VRn5eg_X38q7); font-size: var(--token-mdlFAaQL9cZT); line-height: var(--token-bFkpmJG5PZPn); outline-style: none">
       <slot name="children">
@@ -852,10 +872,11 @@ Join our Slack community (icon in bottom left) for help any time.</div>
 ",
   "Menu Popover": "<component name="Menu Popover">
   <props>
-    <prop name="offset" type="number" default="&quot;2&quot;"/>
-    <prop name="ariaListBoxSelectedKeys" type="text"/>
-    <prop name="initialSelectedKey" type="enum" options="[&quot;Dynamic options&quot;]"/>
+    <prop name="offset" uuid="O_XXXSn_5ZBB" type="number" default="&quot;2&quot;"/>
+    <prop name="initialSelectedKey" uuid="HAatoUv1hSxL" type="enum" options="[&quot;Dynamic options&quot;]"/>
   </props>
+  <variants>
+  </variants>
   <base-variant-tpl-tree>
     <plasmic-component id="SWsDzMhdhEVr" data-plasmic-name="plasmicReactAriaPopover" data-props="{&quot;offset&quot;:&quot;&quot;,&quot;shouldFlip&quot;:true,&quot;placement&quot;:&quot;bottom&quot;}" style="padding-top: var(--token--0yvAvGYfFhX); padding-right: var(--token--0yvAvGYfFhX); padding-bottom: var(--token--0yvAvGYfFhX); padding-left: var(--token--0yvAvGYfFhX); width: 300px; box-sizing: border-box; object-fit: cover; background: linear-gradient(var(--token-48p0Jlumb6Of), var(--token-48p0Jlumb6Of)); border-top-left-radius: var(--token-yk7m7bwFJ02R); border-top-right-radius: var(--token-yk7m7bwFJ02R); border-bottom-right-radius: var(--token-yk7m7bwFJ02R); border-bottom-left-radius: var(--token-yk7m7bwFJ02R); position: relative; overflow: auto; box-shadow: 0px 0px 12px 0px #00000040, 0px 0px 0px 0.5px var(--token-lQAqvQ-ZHuDc)">
       <slot name="children">
@@ -892,6 +913,8 @@ Join our Slack community (icon in bottom left) for help any time.</div>
   "Menu Section": "<component name="Menu Section">
   <props>
   </props>
+  <variants>
+  </variants>
   <base-variant-tpl-tree>
     <plasmic-component id="br6BYtjASnDy" data-plasmic-name="plasmicReactAriaListboxSection" style="object-fit: cover; position: relative; color: var(--token-ZX33JwqKe1KQ); font-family: var(--token-VRn5eg_X38q7); font-size: var(--token-mdlFAaQL9cZT); line-height: var(--token-bFkpmJG5PZPn)">
       <slot name="header">
@@ -917,14 +940,14 @@ Join our Slack community (icon in bottom left) for help any time.</div>
 ",
   "Modal": "<component name="Modal">
   <props>
-    <prop name="isOpen" type="boolean"/>
-    <prop name="plasmicReactAriaModalIsOpen" type="boolean"/>
-    <prop name="closeOnBackdropClick" type="boolean" default="&quot;true&quot;"/>
-    <prop name="noTrigger" type="boolean"/>
-    <prop name="showHeader" type="boolean" default="&quot;true&quot;"/>
-    <prop name="showFooter" type="boolean" default="&quot;true&quot;"/>
-    <prop name="isKeyboardDismissDisabled" type="boolean"/>
+    <prop name="closeOnBackdropClick" uuid="LGib3TF0UEVh" type="boolean" default="&quot;true&quot;"/>
+    <prop name="showHeader" uuid="R9m4NRd2yKkF" type="boolean" default="&quot;true&quot;"/>
+    <prop name="showFooter" uuid="OPcm_SNuK-WC" type="boolean" default="&quot;true&quot;"/>
+    <prop name="isKeyboardDismissDisabled" uuid="wSBJUtL_n4l2" type="boolean"/>
   </props>
+  <variants>
+    <variant name="No trigger" uuid="phcL-adiLQWW" group="noTrigger" type="boolean"/>
+  </variants>
   <base-variant-tpl-tree>
     <plasmic-component id="6A5IRex_ZR1p" data-plasmic-name="plasmicReactAriaDialogTrigger" style="position: relative">
       <slot name="trigger">
@@ -992,8 +1015,10 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
 ",
   "Overlay Arrow": "<component name="Overlay Arrow">
   <props>
-    <prop name="dark" type="boolean"/>
   </props>
+  <variants>
+    <variant name="Dark" uuid="8X2l3Su5Ev8K" group="dark" type="boolean"/>
+  </variants>
   <base-variant-tpl-tree>
     <plasmic-component id="4e5blTBKaGaB" data-plasmic-name="plasmicReactAriaOverlayArrow" style="max-width: 100%; object-fit: cover; position: relative">
       <slot name="children">
@@ -1015,12 +1040,13 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
 ",
   "Popover": "<component name="Popover">
   <props>
-    <prop name="isOpen" type="boolean"/>
-    <prop name="shouldFlip" type="boolean" default="&quot;true&quot;"/>
-    <prop name="offset" type="number" default="&quot;12&quot;"/>
-    <prop name="showArrow" type="boolean"/>
-    <prop name="placement" type="enum" options="[&quot;top&quot;,&quot;bottom&quot;,&quot;start&quot;,&quot;end&quot;,&quot;left&quot;,&quot;right&quot;]" default="&quot;bottom&quot;"/>
+    <prop name="shouldFlip" uuid="fAt93jOIn8LV" type="boolean" default="&quot;true&quot;"/>
+    <prop name="offset" uuid="R1ULzdSaZhfB" type="number" default="&quot;12&quot;"/>
+    <prop name="showArrow" uuid="O2WSC2949LCP" type="boolean"/>
+    <prop name="placement" uuid="ouxVEFx2FrBF" type="enum" options="[&quot;top&quot;,&quot;bottom&quot;,&quot;start&quot;,&quot;end&quot;,&quot;left&quot;,&quot;right&quot;]" default="&quot;bottom&quot;"/>
   </props>
+  <variants>
+  </variants>
   <base-variant-tpl-tree>
     <plasmic-component id="HZQuYqG0j_TX" data-plasmic-name="plasmicReactAriaDialogTrigger" style="position: relative">
       <slot name="trigger">
@@ -1065,11 +1091,13 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
 ",
   "Radio": "<component name="Radio">
   <props>
-    <prop name="value" type="text"/>
-    <prop name="autoFocus" type="boolean"/>
-    <prop name="disabled" type="boolean"/>
-    <prop name="ariaLabel" type="text"/>
+    <prop name="value" uuid="SmFTueN3xSrH" type="text"/>
+    <prop name="autoFocus" uuid="5DGZrRr4od2W" type="boolean"/>
+    <prop name="disabled" uuid="xI27rAony9Az" type="boolean"/>
+    <prop name="ariaLabel" uuid="zrCb273OzRLP" type="text"/>
   </props>
+  <variants>
+  </variants>
   <base-variant-tpl-tree>
     <plasmic-component id="MlKoRbZwK2UG" data-plasmic-name="plasmicReactAriaRadioGroupRadio" data-props="{&quot;value&quot;:&quot;&quot;,&quot;autoFocus&quot;:&quot;&quot;,&quot;aria-label&quot;:&quot;&quot;,&quot;isDisabled&quot;:&quot;&quot;}" style="position: relative; display: flex; flex-direction: row; justify-content: flex-start; align-items: center; cursor: pointer; box-sizing: border-box; color: var(--token-ZX33JwqKe1KQ); font-family: var(--token-VRn5eg_X38q7); font-size: var(--token-mdlFAaQL9cZT); line-height: var(--token-bFkpmJG5PZPn); width: stretch; column-gap: var(--token-J8bgk1cLaZ5G)">
       <slot name="children">
@@ -1087,12 +1115,13 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
 ",
   "Radio Group": "<component name="Radio Group">
   <props>
-    <prop name="value" type="any"/>
-    <prop name="showLabel" type="boolean" default="&quot;true&quot;"/>
-    <prop name="showDescription" type="boolean" default="&quot;false&quot;"/>
-    <prop name="disabled" type="boolean"/>
-    <prop name="ariaLabel" type="text"/>
+    <prop name="showLabel" uuid="xjlHDdHCv3IC" type="boolean" default="&quot;true&quot;"/>
+    <prop name="showDescription" uuid="aboABznGlTkv" type="boolean" default="&quot;false&quot;"/>
+    <prop name="disabled" uuid="pNZOMJtGJm2v" type="boolean"/>
+    <prop name="ariaLabel" uuid="g4a-_aqB_-M-" type="text"/>
   </props>
+  <variants>
+  </variants>
   <base-variant-tpl-tree>
     <plasmic-component id="VjDG6dqVYVzS" data-plasmic-name="plasmicReactAriaRadioGroup" data-props="{&quot;aria-label&quot;:&quot;&quot;,&quot;isDisabled&quot;:&quot;&quot;}" style="display: flex; flex-direction: column; width: stretch; row-gap: var(--token-iV97hAoHAnKd)">
       <slot name="children">
@@ -1136,18 +1165,19 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
 ",
   "Range Slider": "<component name="Range Slider">
   <props>
-    <prop name="showLabel" type="boolean" default="&quot;true&quot;"/>
-    <prop name="showOutputText" type="boolean" default="&quot;true&quot;"/>
-    <prop name="showDescription" type="boolean" default="&quot;false&quot;"/>
-    <prop name="outputText" type="text"/>
-    <prop name="minValue" type="number"/>
-    <prop name="maxValue" type="number"/>
-    <prop name="step" type="number"/>
-    <prop name="filled" type="boolean" default="&quot;true&quot;"/>
-    <prop name="disabled" type="boolean"/>
-    <prop name="value" type="any"/>
-    <prop name="ariaLabel" type="text"/>
+    <prop name="showLabel" uuid="eThiVfouUHXO" type="boolean" default="&quot;true&quot;"/>
+    <prop name="showOutputText" uuid="qc8rWYDDQHgJ" type="boolean" default="&quot;true&quot;"/>
+    <prop name="showDescription" uuid="8xGxjcgDiJ-4" type="boolean" default="&quot;false&quot;"/>
+    <prop name="outputText" uuid="lgvHoKWrjWa4" type="text"/>
+    <prop name="minValue" uuid="cBykWVcySj7y" type="number"/>
+    <prop name="maxValue" uuid="-MhKPXg-qerg" type="number"/>
+    <prop name="step" uuid="YtBVPizY9adU" type="number"/>
+    <prop name="filled" uuid="MV6SBguDEY-C" type="boolean" default="&quot;true&quot;"/>
+    <prop name="disabled" uuid="vA2eXNBNpqo8" type="boolean"/>
+    <prop name="ariaLabel" uuid="mtQnjh3gIgbk" type="text"/>
   </props>
+  <variants>
+  </variants>
   <base-variant-tpl-tree>
     <plasmic-component id="ZRpvtB4bErD6" data-plasmic-name="plasmicReactAriaSliderRangeSlider" data-props="{&quot;isDisabled&quot;:&quot;&quot;,&quot;minValue&quot;:&quot;&quot;,&quot;maxValue&quot;:&quot;&quot;,&quot;step&quot;:&quot;&quot;,&quot;aria-label&quot;:&quot;&quot;}" style="width: stretch; display: flex; flex-direction: column; color: var(--token-ZX33JwqKe1KQ); font-family: var(--token-VRn5eg_X38q7); font-size: var(--token-mdlFAaQL9cZT); line-height: var(--token-bFkpmJG5PZPn); min-width: 200px; row-gap: var(--token-50jqnrkhPFjk)">
       <slot name="children">
@@ -1194,15 +1224,16 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
 ",
   "Select": "<component name="Select">
   <props>
-    <prop name="isOpen" type="boolean"/>
-    <prop name="value" type="text"/>
-    <prop name="placeholder" type="text" default="&quot;Select an item&quot;"/>
-    <prop name="showLabel" type="boolean" default="&quot;true&quot;"/>
-    <prop name="showDescription" type="boolean" default="&quot;false&quot;"/>
-    <prop name="disabled" type="boolean"/>
-    <prop name="ariaLabel" type="text"/>
-    <prop name="type" type="enum" options="[&quot;Soft&quot;,&quot;Plain&quot;]"/>
+    <prop name="placeholder" uuid="8BKx3PdkCDQp" type="text" default="&quot;Select an item&quot;"/>
+    <prop name="showLabel" uuid="4hptn8b5fX5C" type="boolean" default="&quot;true&quot;"/>
+    <prop name="showDescription" uuid="U4GCKgGN_3Qh" type="boolean" default="&quot;false&quot;"/>
+    <prop name="disabled" uuid="6jrMyYHerne3" type="boolean"/>
+    <prop name="ariaLabel" uuid="lbgAs4SojKA2" type="text"/>
   </props>
+  <variants>
+    <variant name="Soft" uuid="0bSTNkoe1NSD" group="type" type="enum"/>
+    <variant name="Plain" uuid="AUJGtdMM0Zz4" group="type" type="enum"/>
+  </variants>
   <base-variant-tpl-tree>
     <plasmic-component id="P6ldrdX5EJky" data-plasmic-name="plasmicReactAriaSelect" data-props="{&quot;isDisabled&quot;:&quot;&quot;,&quot;aria-label&quot;:&quot;&quot;}" style="position: relative; display: flex; flex-direction: column; width: stretch; row-gap: var(--token-iV97hAoHAnKd)">
       <slot name="children">
@@ -1266,18 +1297,19 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
 ",
   "Slider": "<component name="Slider">
   <props>
-    <prop name="value" type="number"/>
-    <prop name="showLabel" type="boolean" default="&quot;true&quot;"/>
-    <prop name="showOutputText" type="boolean" default="&quot;true&quot;"/>
-    <prop name="showDescription" type="boolean" default="&quot;false&quot;"/>
-    <prop name="step" type="number"/>
-    <prop name="minValue" type="number"/>
-    <prop name="maxValue" type="number"/>
-    <prop name="outputText" type="text"/>
-    <prop name="filled" type="boolean" default="&quot;true&quot;"/>
-    <prop name="disabled" type="boolean"/>
-    <prop name="ariaLabel" type="text"/>
+    <prop name="showLabel" uuid="1c2qMGZa8f-B" type="boolean" default="&quot;true&quot;"/>
+    <prop name="showOutputText" uuid="FSYlNX1nMrkp" type="boolean" default="&quot;true&quot;"/>
+    <prop name="showDescription" uuid="lXZJgssBlrf2" type="boolean" default="&quot;false&quot;"/>
+    <prop name="step" uuid="i_IwwBNuGNhj" type="number"/>
+    <prop name="minValue" uuid="oMgGref3YFv-" type="number"/>
+    <prop name="maxValue" uuid="_hA-hBLzmg2L" type="number"/>
+    <prop name="outputText" uuid="Q8XQpTvnQnvC" type="text"/>
+    <prop name="filled" uuid="S0rFWzRG2VCx" type="boolean" default="&quot;true&quot;"/>
+    <prop name="disabled" uuid="1DYB7selkyPP" type="boolean"/>
+    <prop name="ariaLabel" uuid="tf9Eo6ah2BL2" type="text"/>
   </props>
+  <variants>
+  </variants>
   <base-variant-tpl-tree>
     <plasmic-component id="QE2I6Xu6adAX" data-plasmic-name="plasmicReactAriaSlider" data-props="{&quot;minValue&quot;:&quot;&quot;,&quot;maxValue&quot;:&quot;&quot;,&quot;step&quot;:&quot;&quot;,&quot;aria-label&quot;:&quot;&quot;,&quot;isDisabled&quot;:&quot;&quot;}" style="position: relative; box-sizing: border-box; min-width: 200px; display: flex; flex-direction: column; color: var(--token-ZX33JwqKe1KQ); font-family: var(--token-VRn5eg_X38q7); font-size: var(--token-mdlFAaQL9cZT); line-height: var(--token-bFkpmJG5PZPn); width: stretch; row-gap: var(--token-50jqnrkhPFjk)">
       <slot name="children">
@@ -1324,9 +1356,11 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
 ",
   "Slider Thumb": "<component name="Slider Thumb">
   <props>
-    <prop name="disabled" type="boolean"/>
-    <prop name="autoFocus" type="boolean"/>
+    <prop name="disabled" uuid="TvAAzKnX34Rb" type="boolean"/>
+    <prop name="autoFocus" uuid="0AhjA8vGkQzp" type="boolean"/>
   </props>
+  <variants>
+  </variants>
   <base-variant-tpl-tree>
     <plasmic-component id="IeCipxoS434j" data-plasmic-name="plasmicReactAriaSliderSliderThumb" data-props="{&quot;isDisabled&quot;:&quot;&quot;,&quot;autoFocus&quot;:&quot;&quot;,&quot;advanced&quot;:false}" style="position: relative; background: linear-gradient(var(--token-48p0Jlumb6Of), var(--token-48p0Jlumb6Of)); border-top-color: var(--token-6R_RCgXDnfCy); border-top-width: 1px; border-top-style: solid; border-right-color: var(--token-6R_RCgXDnfCy); border-right-width: 1px; border-right-style: solid; border-bottom-color: var(--token-6R_RCgXDnfCy); border-bottom-width: 1px; border-bottom-style: solid; border-left-color: var(--token-6R_RCgXDnfCy); border-left-width: 1px; border-left-style: solid; cursor: pointer; box-sizing: border-box; display: flex; height: var(--token-41IdgVnm_uZQ); width: var(--token-41IdgVnm_uZQ); border-top-left-radius: 99px; border-top-right-radius: 99px; border-bottom-right-radius: 99px; border-bottom-left-radius: 99px">
       <slot name="children">
@@ -1337,14 +1371,15 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
 ",
   "Switch": "<component name="Switch">
   <props>
-    <prop name="showLabel" type="boolean" default="&quot;true&quot;"/>
-    <prop name="showDescription" type="boolean" default="&quot;false&quot;"/>
-    <prop name="autoFocus" type="boolean" default="&quot;false&quot;"/>
-    <prop name="isSelected" type="boolean"/>
-    <prop name="disabled" type="boolean" default="&quot;false&quot;"/>
-    <prop name="readOnly" type="boolean"/>
-    <prop name="ariaLabel" type="text"/>
+    <prop name="showLabel" uuid="gQUXbCkz28yG" type="boolean" default="&quot;true&quot;"/>
+    <prop name="showDescription" uuid="vJv1FEm3a4uV" type="boolean" default="&quot;false&quot;"/>
+    <prop name="autoFocus" uuid="Y5FoTAVBd0Aw" type="boolean" default="&quot;false&quot;"/>
+    <prop name="disabled" uuid="R8UPZPSQDD2V" type="boolean" default="&quot;false&quot;"/>
+    <prop name="readOnly" uuid="Vf3BfjNZ-hQk" type="boolean"/>
+    <prop name="ariaLabel" uuid="7ft7dweSwtUq" type="text"/>
   </props>
+  <variants>
+  </variants>
   <base-variant-tpl-tree>
     <plasmic-component id="qOaYUalmx_Mw" data-plasmic-name="plasmicReactAriaSwitch" data-props="{&quot;autoFocus&quot;:&quot;&quot;,&quot;aria-label&quot;:&quot;&quot;,&quot;isDisabled&quot;:&quot;&quot;,&quot;isReadOnly&quot;:&quot;&quot;}" style="object-fit: cover; position: relative; display: flex; box-sizing: border-box; color: var(--token-ZX33JwqKe1KQ); font-family: var(--token-VRn5eg_X38q7); font-size: var(--token-mdlFAaQL9cZT); line-height: var(--token-bFkpmJG5PZPn); width: stretch; flex-direction: column; row-gap: var(--token-iV97hAoHAnKd)">
       <slot name="children">
@@ -1369,23 +1404,22 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
 ",
   "Text Field": "<component name="Text Field">
   <props>
-    <prop name="value" type="text"/>
-    <prop name="placeholder" type="text"/>
-    <prop name="showLabel" type="boolean" default="&quot;true&quot;"/>
-    <prop name="showDescription" type="boolean" default="&quot;false&quot;"/>
-    <prop name="disabled" type="boolean"/>
-    <prop name="readOnly" type="boolean" default="&quot;false&quot;"/>
-    <prop name="autoFocus" type="boolean" default="&quot;false&quot;"/>
-    <prop name="type" type="enum" options="[&quot;text&quot;,&quot;search&quot;,&quot;url&quot;,&quot;tel&quot;,&quot;email&quot;,&quot;password&quot;]"/>
-    <prop name="inputMode" type="enum" options="[&quot;none&quot;,&quot;text&quot;,&quot;tel&quot;,&quot;url&quot;,&quot;email&quot;,&quot;numeric&quot;,&quot;decimal&quot;,&quot;search&quot;]"/>
-    <prop name="autoComplete" type="enum" options="[&quot;on&quot;,&quot;off&quot;,&quot;name&quot;,&quot;honorific-prefix&quot;,&quot;given-name&quot;,&quot;additional-name&quot;,&quot;family-name&quot;,&quot;honorific-suffix&quot;,&quot;nickname&quot;,&quot;email&quot;,&quot;username&quot;,&quot;new-password&quot;,&quot;current-password&quot;,&quot;one-time-code&quot;,&quot;organization-title&quot;,&quot;organization&quot;,&quot;street-address&quot;,&quot;shipping&quot;,&quot;billing&quot;,&quot;address-line1&quot;,&quot;address-line2&quot;,&quot;address-line3&quot;,&quot;address-level4&quot;,&quot;address-level3&quot;,&quot;address-level2&quot;,&quot;address-level1&quot;,&quot;country&quot;,&quot;country-name&quot;,&quot;postal-code&quot;,&quot;cc-name&quot;,&quot;cc-given-name&quot;,&quot;cc-additional-name&quot;,&quot;cc-family-name&quot;,&quot;cc-number&quot;,&quot;cc-exp&quot;,&quot;cc-exp-month&quot;,&quot;cc-exp-year&quot;,&quot;cc-csc&quot;,&quot;cc-type&quot;,&quot;transaction-currency&quot;,&quot;transaction-amount&quot;,&quot;language&quot;,&quot;bday&quot;,&quot;bday-day&quot;,&quot;bday-month&quot;,&quot;bday-year&quot;,&quot;sex&quot;,&quot;tel&quot;,&quot;tel-country-code&quot;,&quot;tel-national&quot;,&quot;tel-area-code&quot;,&quot;tel-local&quot;,&quot;tel-local-suffix&quot;,&quot;tel-local-prefix&quot;,&quot;tel-extension&quot;,&quot;impp&quot;,&quot;url&quot;,&quot;photo&quot;,&quot;webauthn&quot;]"/>
-    <prop name="ariaLabel" type="text"/>
-    <prop name="multiLine" type="boolean"/>
-    <prop name="iconStart" type="boolean"/>
-    <prop name="iconEnd" type="boolean"/>
-    <prop name="textInputValue" type="text"/>
-    <prop name="textAreaInputValue" type="text"/>
+    <prop name="placeholder" uuid="yWb_t303oZc5" type="text"/>
+    <prop name="showLabel" uuid="ybllIUAK7d7d" type="boolean" default="&quot;true&quot;"/>
+    <prop name="showDescription" uuid="isfgFRwwDiZl" type="boolean" default="&quot;false&quot;"/>
+    <prop name="disabled" uuid="2qdYEGZ0liXN" type="boolean"/>
+    <prop name="readOnly" uuid="gJrifp2OPeir" type="boolean" default="&quot;false&quot;"/>
+    <prop name="autoFocus" uuid="HrTtSuXzOIjD" type="boolean" default="&quot;false&quot;"/>
+    <prop name="type" uuid="_7uuP-1qIQpX" type="enum" options="[&quot;text&quot;,&quot;search&quot;,&quot;url&quot;,&quot;tel&quot;,&quot;email&quot;,&quot;password&quot;]"/>
+    <prop name="inputMode" uuid="BQY0K6FisZgm" type="enum" options="[&quot;none&quot;,&quot;text&quot;,&quot;tel&quot;,&quot;url&quot;,&quot;email&quot;,&quot;numeric&quot;,&quot;decimal&quot;,&quot;search&quot;]"/>
+    <prop name="autoComplete" uuid="sx_j2d3PjIVu" type="enum" options="[&quot;on&quot;,&quot;off&quot;,&quot;name&quot;,&quot;honorific-prefix&quot;,&quot;given-name&quot;,&quot;additional-name&quot;,&quot;family-name&quot;,&quot;honorific-suffix&quot;,&quot;nickname&quot;,&quot;email&quot;,&quot;username&quot;,&quot;new-password&quot;,&quot;current-password&quot;,&quot;one-time-code&quot;,&quot;organization-title&quot;,&quot;organization&quot;,&quot;street-address&quot;,&quot;shipping&quot;,&quot;billing&quot;,&quot;address-line1&quot;,&quot;address-line2&quot;,&quot;address-line3&quot;,&quot;address-level4&quot;,&quot;address-level3&quot;,&quot;address-level2&quot;,&quot;address-level1&quot;,&quot;country&quot;,&quot;country-name&quot;,&quot;postal-code&quot;,&quot;cc-name&quot;,&quot;cc-given-name&quot;,&quot;cc-additional-name&quot;,&quot;cc-family-name&quot;,&quot;cc-number&quot;,&quot;cc-exp&quot;,&quot;cc-exp-month&quot;,&quot;cc-exp-year&quot;,&quot;cc-csc&quot;,&quot;cc-type&quot;,&quot;transaction-currency&quot;,&quot;transaction-amount&quot;,&quot;language&quot;,&quot;bday&quot;,&quot;bday-day&quot;,&quot;bday-month&quot;,&quot;bday-year&quot;,&quot;sex&quot;,&quot;tel&quot;,&quot;tel-country-code&quot;,&quot;tel-national&quot;,&quot;tel-area-code&quot;,&quot;tel-local&quot;,&quot;tel-local-suffix&quot;,&quot;tel-local-prefix&quot;,&quot;tel-extension&quot;,&quot;impp&quot;,&quot;url&quot;,&quot;photo&quot;,&quot;webauthn&quot;]"/>
+    <prop name="ariaLabel" uuid="1xESXiUetCDz" type="text"/>
   </props>
+  <variants>
+    <variant name="Multi-line" uuid="ujPUz5-pNQo3" group="multiLine" type="boolean"/>
+    <variant name="Icon start" uuid="Y1wfrLkCK3tp" group="iconStart" type="boolean"/>
+    <variant name="Icon end" uuid="lZuHYDu-P997" group="iconEnd" type="boolean"/>
+  </variants>
   <base-variant-tpl-tree>
     <plasmic-component id="NESDFXPGRUxY" data-plasmic-name="plasmicReactAriaTextField" data-props="{&quot;isDisabled&quot;:&quot;&quot;,&quot;isReadOnly&quot;:&quot;&quot;,&quot;inputMode&quot;:&quot;&quot;,&quot;type&quot;:&quot;&quot;,&quot;aria-label&quot;:&quot;&quot;,&quot;autoFocus&quot;:&quot;&quot;,&quot;autoComplete&quot;:&quot;&quot;}" style="display: flex; flex-direction: column; box-sizing: border-box; width: stretch; position: relative; row-gap: var(--token-iV97hAoHAnKd)">
       <slot name="children">
@@ -1451,19 +1485,25 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
 ",
   "Text Input": "<component name="Text Input">
   <props>
-    <prop name="placeholder" type="text"/>
-    <prop name="value" type="text"/>
-    <prop name="disabled" type="boolean"/>
-    <prop name="readOnly" type="boolean"/>
-    <prop name="autoFocus" type="boolean"/>
-    <prop name="inputType" type="enum" options="[&quot;text&quot;,&quot;search&quot;,&quot;url&quot;,&quot;tel&quot;,&quot;email&quot;,&quot;password&quot;]"/>
-    <prop name="inputMode" type="enum" options="[&quot;none&quot;,&quot;text&quot;,&quot;tel&quot;,&quot;url&quot;,&quot;email&quot;,&quot;numeric&quot;,&quot;decimal&quot;,&quot;search&quot;]"/>
-    <prop name="autoComplete" type="enum" options="[&quot;on&quot;,&quot;off&quot;,&quot;name&quot;,&quot;honorific-prefix&quot;,&quot;given-name&quot;,&quot;additional-name&quot;,&quot;family-name&quot;,&quot;honorific-suffix&quot;,&quot;nickname&quot;,&quot;email&quot;,&quot;username&quot;,&quot;new-password&quot;,&quot;current-password&quot;,&quot;one-time-code&quot;,&quot;organization-title&quot;,&quot;organization&quot;,&quot;street-address&quot;,&quot;shipping&quot;,&quot;billing&quot;,&quot;address-line1&quot;,&quot;address-line2&quot;,&quot;address-line3&quot;,&quot;address-level4&quot;,&quot;address-level3&quot;,&quot;address-level2&quot;,&quot;address-level1&quot;,&quot;country&quot;,&quot;country-name&quot;,&quot;postal-code&quot;,&quot;cc-name&quot;,&quot;cc-given-name&quot;,&quot;cc-additional-name&quot;,&quot;cc-family-name&quot;,&quot;cc-number&quot;,&quot;cc-exp&quot;,&quot;cc-exp-month&quot;,&quot;cc-exp-year&quot;,&quot;cc-csc&quot;,&quot;cc-type&quot;,&quot;transaction-currency&quot;,&quot;transaction-amount&quot;,&quot;language&quot;,&quot;bday&quot;,&quot;bday-day&quot;,&quot;bday-month&quot;,&quot;bday-year&quot;,&quot;sex&quot;,&quot;tel&quot;,&quot;tel-country-code&quot;,&quot;tel-national&quot;,&quot;tel-area-code&quot;,&quot;tel-local&quot;,&quot;tel-local-suffix&quot;,&quot;tel-local-prefix&quot;,&quot;tel-extension&quot;,&quot;impp&quot;,&quot;url&quot;,&quot;photo&quot;,&quot;webauthn&quot;]"/>
-    <prop name="ariaLabel" type="text"/>
-    <prop name="type" type="enum" options="[&quot;Soft&quot;,&quot;Plain&quot;]"/>
-    <prop name="flat" type="enum" options="[&quot;Top&quot;,&quot;Right&quot;,&quot;Bottom&quot;,&quot;Left&quot;]"/>
-    <prop name="padded" type="enum" options="[&quot;Left&quot;,&quot;Right&quot;]"/>
+    <prop name="placeholder" uuid="-5HB3zSTo2dZ" type="text"/>
+    <prop name="disabled" uuid="w3Q2sMnCN4f5" type="boolean"/>
+    <prop name="readOnly" uuid="-s22KgqZw9FU" type="boolean"/>
+    <prop name="autoFocus" uuid="c1CV9gDWtjMp" type="boolean"/>
+    <prop name="inputType" uuid="_GLucYKGNfix" type="enum" options="[&quot;text&quot;,&quot;search&quot;,&quot;url&quot;,&quot;tel&quot;,&quot;email&quot;,&quot;password&quot;]"/>
+    <prop name="inputMode" uuid="L-p-fBdxu7gF" type="enum" options="[&quot;none&quot;,&quot;text&quot;,&quot;tel&quot;,&quot;url&quot;,&quot;email&quot;,&quot;numeric&quot;,&quot;decimal&quot;,&quot;search&quot;]"/>
+    <prop name="autoComplete" uuid="kDIK_agkNyrw" type="enum" options="[&quot;on&quot;,&quot;off&quot;,&quot;name&quot;,&quot;honorific-prefix&quot;,&quot;given-name&quot;,&quot;additional-name&quot;,&quot;family-name&quot;,&quot;honorific-suffix&quot;,&quot;nickname&quot;,&quot;email&quot;,&quot;username&quot;,&quot;new-password&quot;,&quot;current-password&quot;,&quot;one-time-code&quot;,&quot;organization-title&quot;,&quot;organization&quot;,&quot;street-address&quot;,&quot;shipping&quot;,&quot;billing&quot;,&quot;address-line1&quot;,&quot;address-line2&quot;,&quot;address-line3&quot;,&quot;address-level4&quot;,&quot;address-level3&quot;,&quot;address-level2&quot;,&quot;address-level1&quot;,&quot;country&quot;,&quot;country-name&quot;,&quot;postal-code&quot;,&quot;cc-name&quot;,&quot;cc-given-name&quot;,&quot;cc-additional-name&quot;,&quot;cc-family-name&quot;,&quot;cc-number&quot;,&quot;cc-exp&quot;,&quot;cc-exp-month&quot;,&quot;cc-exp-year&quot;,&quot;cc-csc&quot;,&quot;cc-type&quot;,&quot;transaction-currency&quot;,&quot;transaction-amount&quot;,&quot;language&quot;,&quot;bday&quot;,&quot;bday-day&quot;,&quot;bday-month&quot;,&quot;bday-year&quot;,&quot;sex&quot;,&quot;tel&quot;,&quot;tel-country-code&quot;,&quot;tel-national&quot;,&quot;tel-area-code&quot;,&quot;tel-local&quot;,&quot;tel-local-suffix&quot;,&quot;tel-local-prefix&quot;,&quot;tel-extension&quot;,&quot;impp&quot;,&quot;url&quot;,&quot;photo&quot;,&quot;webauthn&quot;]"/>
+    <prop name="ariaLabel" uuid="J4K4kt4q2EaE" type="text"/>
   </props>
+  <variants>
+    <variant name="Soft" uuid="0cXa8u_Fd6-c" group="type" type="enum"/>
+    <variant name="Plain" uuid="9cJ3z_ZYGZvt" group="type" type="enum"/>
+    <variant name="Top" uuid="pUxG-pkjbXcJ" group="flat" type="enum"/>
+    <variant name="Right" uuid="jFOHHIE_LIsW" group="flat" type="enum"/>
+    <variant name="Bottom" uuid="oRa7KNUAvba6" group="flat" type="enum"/>
+    <variant name="Left" uuid="f-jiC3pxjmB0" group="flat" type="enum"/>
+    <variant name="Left" uuid="aIRXAYdM6pXb" group="padded" type="enum"/>
+    <variant name="Right" uuid="t5DeV--6wj_c" group="padded" type="enum"/>
+  </variants>
   <base-variant-tpl-tree>
     <plasmic-component id="PzECf6Nfa4vE" data-plasmic-name="plasmicReactAriaInput" data-props="{&quot;placeholder&quot;:&quot;&quot;,&quot;disabled&quot;:&quot;&quot;,&quot;inputMode&quot;:&quot;&quot;,&quot;readOnly&quot;:&quot;&quot;,&quot;autoFocus&quot;:&quot;&quot;,&quot;aria-label&quot;:&quot;&quot;,&quot;autoComplete&quot;:&quot;&quot;,&quot;type&quot;:&quot;&quot;}" style="padding-top: var(--token--0yvAvGYfFhX); padding-right: var(--token-yk7m7bwFJ02R); padding-bottom: var(--token--0yvAvGYfFhX); padding-left: var(--token-yk7m7bwFJ02R); box-sizing: border-box; border-bottom-left-radius: var(--token--0yvAvGYfFhX); border-bottom-right-radius: var(--token--0yvAvGYfFhX); border-top-right-radius: var(--token--0yvAvGYfFhX); border-top-left-radius: var(--token--0yvAvGYfFhX); box-shadow: inset 0px 0px 0px 1px var(--token-O--cwH0Y8I-6); border-left-style: none; border-bottom-style: none; border-right-style: none; border-top-style: none; color: var(--token-ZX33JwqKe1KQ); font-family: var(--token-VRn5eg_X38q7); font-size: var(--token-mdlFAaQL9cZT); line-height: var(--token-bFkpmJG5PZPn); width: stretch; position: relative; outline-style: none">
     </plasmic-component>
@@ -1530,17 +1570,23 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
 ",
   "TextArea Input": "<component name="TextArea Input">
   <props>
-    <prop name="value" type="text"/>
-    <prop name="placeholder" type="text"/>
-    <prop name="disabled" type="boolean"/>
-    <prop name="readOnly" type="boolean"/>
-    <prop name="autoFocus" type="boolean"/>
-    <prop name="inputMode" type="enum" options="[&quot;none&quot;,&quot;text&quot;,&quot;tel&quot;,&quot;url&quot;,&quot;email&quot;,&quot;numeric&quot;,&quot;decimal&quot;,&quot;search&quot;]"/>
-    <prop name="ariaLabel" type="text"/>
-    <prop name="type" type="enum" options="[&quot;Soft&quot;,&quot;Plain&quot;]"/>
-    <prop name="flat" type="enum" options="[&quot;Top&quot;,&quot;Right&quot;,&quot;Bottom&quot;,&quot;Left&quot;]"/>
-    <prop name="padded" type="enum" options="[&quot;Left&quot;,&quot;Right&quot;]"/>
+    <prop name="placeholder" uuid="Fn-Fedyn4Tgs" type="text"/>
+    <prop name="disabled" uuid="8a5p6LJ3Cm4A" type="boolean"/>
+    <prop name="readOnly" uuid="ZCUopiMUFmDe" type="boolean"/>
+    <prop name="autoFocus" uuid="CAfXrzvtbfzq" type="boolean"/>
+    <prop name="inputMode" uuid="OHZWc7Z9mSmO" type="enum" options="[&quot;none&quot;,&quot;text&quot;,&quot;tel&quot;,&quot;url&quot;,&quot;email&quot;,&quot;numeric&quot;,&quot;decimal&quot;,&quot;search&quot;]"/>
+    <prop name="ariaLabel" uuid="6Go6pans-5xS" type="text"/>
   </props>
+  <variants>
+    <variant name="Soft" uuid="BYaTSYRbp5k-" group="type" type="enum"/>
+    <variant name="Plain" uuid="RVfUSn_4OlZE" group="type" type="enum"/>
+    <variant name="Top" uuid="uub7dYD9Ahd9" group="flat" type="enum"/>
+    <variant name="Right" uuid="YEvyTqML8ybV" group="flat" type="enum"/>
+    <variant name="Bottom" uuid="DoKOv7moJkW2" group="flat" type="enum"/>
+    <variant name="Left" uuid="EDke_10m8Cz5" group="flat" type="enum"/>
+    <variant name="Left" uuid="PscEmlQHZllk" group="padded" type="enum"/>
+    <variant name="Right" uuid="tbJOPfM389OI" group="padded" type="enum"/>
+  </variants>
   <base-variant-tpl-tree>
     <plasmic-component id="yx_4PVCh-WFR" data-plasmic-name="plasmicReactAriaTextarea" data-props="{&quot;placeholder&quot;:&quot;&quot;,&quot;disabled&quot;:&quot;&quot;,&quot;aria-label&quot;:&quot;&quot;,&quot;readOnly&quot;:&quot;&quot;,&quot;autoFocus&quot;:&quot;&quot;,&quot;inputMode&quot;:&quot;&quot;}" style="box-sizing: border-box; object-fit: cover; position: relative; box-shadow: inset 0px 0px 0px 1px var(--token-O--cwH0Y8I-6); font-size: var(--token-mdlFAaQL9cZT); line-height: var(--token-bFkpmJG5PZPn); width: stretch; padding-top: var(--token--0yvAvGYfFhX); padding-bottom: var(--token--0yvAvGYfFhX); padding-right: var(--token-yk7m7bwFJ02R); padding-left: var(--token-yk7m7bwFJ02R); color: var(--token-ZX33JwqKe1KQ); font-family: var(--token-VRn5eg_X38q7); border-top-left-radius: var(--token--0yvAvGYfFhX); border-top-right-radius: var(--token--0yvAvGYfFhX); border-bottom-right-radius: var(--token--0yvAvGYfFhX); border-bottom-left-radius: var(--token--0yvAvGYfFhX); border-top-style: none; border-right-style: none; border-bottom-style: none; border-left-style: none">
     </plasmic-component>
@@ -1607,15 +1653,16 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
 ",
   "Tooltip": "<component name="Tooltip">
   <props>
-    <prop name="isOpen" type="boolean"/>
-    <prop name="openDelay" type="number" default="&quot;0&quot;"/>
-    <prop name="closeDelay" type="number" default="&quot;0&quot;"/>
-    <prop name="placement" type="enum" options="[&quot;top&quot;,&quot;bottom&quot;,&quot;left&quot;,&quot;right&quot;]" default="&quot;top&quot;"/>
-    <prop name="isDisabled" type="boolean"/>
-    <prop name="showArrow" type="boolean" default="&quot;true&quot;"/>
-    <prop name="offset" type="number" default="&quot;10&quot;"/>
-    <prop name="triggerAction" type="enum" options="[&quot;focus&quot;,&quot;focus and hover&quot;]"/>
+    <prop name="openDelay" uuid="oQw6SqSZbh0L" type="number" default="&quot;0&quot;"/>
+    <prop name="closeDelay" uuid="THhWzszjIoAQ" type="number" default="&quot;0&quot;"/>
+    <prop name="placement" uuid="Gmk76MvO46b5" type="enum" options="[&quot;top&quot;,&quot;bottom&quot;,&quot;left&quot;,&quot;right&quot;]" default="&quot;top&quot;"/>
+    <prop name="isDisabled" uuid="yYROXqzOzqcW" type="boolean"/>
+    <prop name="showArrow" uuid="h87co6sSYdoR" type="boolean" default="&quot;true&quot;"/>
+    <prop name="offset" uuid="jwZYrhkYyUOD" type="number" default="&quot;10&quot;"/>
+    <prop name="triggerAction" uuid="LBien6Xm-Qfz" type="enum" options="[&quot;focus&quot;,&quot;focus and hover&quot;]"/>
   </props>
+  <variants>
+  </variants>
   <base-variant-tpl-tree>
     <plasmic-component id="1FRybYqMkhR8" data-plasmic-name="plasmicReactAriaTooltip" data-props="{&quot;delay&quot;:&quot;&quot;,&quot;closeDelay&quot;:&quot;&quot;,&quot;placement&quot;:&quot;&quot;,&quot;isDisabled&quot;:&quot;&quot;,&quot;offset&quot;:&quot;&quot;,&quot;trigger&quot;:&quot;&quot;}" style="box-sizing: border-box; position: relative; color: #FFFFFF">
       <slot name="children">
@@ -1639,11 +1686,13 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
 ",
   "hostless-plasmic-head": "<component name="hostless-plasmic-head">
   <props>
-    <prop name="title" type="text"/>
-    <prop name="description" type="text"/>
-    <prop name="image" type="img"/>
-    <prop name="canonical" type="text"/>
+    <prop name="title" uuid="p5kQHDlpFEfj" type="text"/>
+    <prop name="description" uuid="8dv_Ql-lp9kh" type="text"/>
+    <prop name="image" uuid="bolmtvJR9jc9" type="img"/>
+    <prop name="canonical" uuid="T5eklPW1OMUk" type="text"/>
   </props>
+  <variants>
+  </variants>
   <base-variant-tpl-tree>
     <div id="I5WSi3eZbGYU" style="display: flex; flex-direction: row">
     </div>
@@ -1652,11 +1701,13 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
 ",
   "plasmic-data-source-fetcher": "<component name="plasmic-data-source-fetcher">
   <props>
-    <prop name="dataOp" type="any"/>
-    <prop name="name" type="text"/>
-    <prop name="pageSize" type="number"/>
-    <prop name="pageIndex" type="number"/>
+    <prop name="dataOp" uuid="mWM-wbDjZMJH" type="any"/>
+    <prop name="name" uuid="rU9aeGTC_HJi" type="text"/>
+    <prop name="pageSize" uuid="1aRq4s0zOkxU" type="number"/>
+    <prop name="pageIndex" uuid="bptJn3s4SsMl" type="number"/>
   </props>
+  <variants>
+  </variants>
   <base-variant-tpl-tree>
     <div id="nFqjKfbIuuRb" style="display: flex; flex-direction: row">
       <slot-target name="children" id="P9k7Vhn5ICRU">

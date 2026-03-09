@@ -22,6 +22,7 @@ import {
   Variant,
   isKnownChoice,
   isKnownImageAssetRef,
+  isKnownPropParam,
   isKnownRawText,
   isKnownRenderExpr,
   isKnownStyleTokenRef,
@@ -29,7 +30,6 @@ import {
 import {
   isAnyType,
   isBoolType,
-  isFuncType,
   isNumType,
 } from "@/wab/shared/model/model-util";
 import xml from "xml";
@@ -326,24 +326,22 @@ function buildTplOverride(o: TplOverride): XmlElement {
 }
 
 /**
- * Builds component params (props and variant groups) as <prop> XmlElements.
+ * Builds component props (non-variant params) as <prop> XmlElements.
  */
-function buildComponentParams(component: Component): XmlElement[] {
+function buildComponentProps(component: Component): XmlElement[] {
   return component.params
-    .filter((param) => !isSlot(param) && !isFuncType(param.type))
+    .filter((param) => isKnownPropParam(param))
     .map((param) => {
       const type = getParamType(component, param);
-      const variantGroup = component.variantGroups.find(
-        (group) => group.param === param
-      );
       const propName = paramToVarName(component, param);
 
-      const attrs: XmlAttrs = { name: propName };
+      const attrs: XmlAttrs = {
+        name: propName,
+        uuid: param.uuid,
+      };
 
       let options: string[] | undefined;
-      if (variantGroup && !isStandaloneVariantGroup(variantGroup)) {
-        options = variantGroup.variants.map((v) => v.name);
-      } else if (isKnownChoice(param.type)) {
+      if (isKnownChoice(param.type)) {
         options = param.type.options as string[];
       }
 
@@ -363,6 +361,29 @@ function buildComponentParams(component: Component): XmlElement[] {
 
       return { prop: { _attr: attrs } };
     });
+}
+
+/**
+ * Builds component variant definitions as <variant> XmlElements.
+ * Each variant gets its own entry with the variant's UUID.
+ */
+function buildComponentVariantDefs(component: Component): XmlElement[] {
+  const elements: XmlElement[] = [];
+  for (const variantGroup of component.variantGroups) {
+    const groupName = paramToVarName(component, variantGroup.param);
+    const isStandalone = isStandaloneVariantGroup(variantGroup);
+
+    for (const variant of variantGroup.variants) {
+      const attrs: XmlAttrs = {
+        name: variant.name,
+        uuid: variant.uuid,
+        group: groupName,
+        type: isStandalone ? "boolean" : "enum",
+      };
+      elements.push({ variant: { _attr: attrs } });
+    }
+  }
+  return elements;
 }
 
 /**
@@ -398,9 +419,11 @@ function buildComponentVariants(component: Component): XmlElement | null {
  *
  * <component name="">
  *   <props>
- *     <prop />
- *     <prop />
+ *     <prop name="color" uuid="..." type="text" />
  *   </props>
+ *   <variants>
+ *     <variant name="large" uuid="..." group="size" type="enum" />
+ *   </variants>
  *   <base-variant-tpl-tree>
  *     ... html-parser-representation ...
  *   </base-variant-tpl-tree>
@@ -420,7 +443,8 @@ function buildComponentVariants(component: Component): XmlElement | null {
 export function serializeComponent(component: Component): string {
   const children: XmlElement[] = [
     { _attr: { name: component.name } },
-    { props: buildComponentParams(component) },
+    { props: buildComponentProps(component) },
+    { variants: buildComponentVariantDefs(component) },
   ];
 
   if (component.tplTree) {
