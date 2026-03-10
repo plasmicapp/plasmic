@@ -20,6 +20,8 @@ export class RightPanel extends BaseModel {
   readonly serverQueriesSection: Locator = this.frame.locator(
     '[id="server-queries-section"]'
   );
+  readonly serverQueriesSectionContent: Locator =
+    this.serverQueriesSection.locator(`[class*="SidebarSection__Body"]`);
   readonly stateButton: Locator = this.frame.locator(
     '[data-plasmic-prop="variable"]'
   );

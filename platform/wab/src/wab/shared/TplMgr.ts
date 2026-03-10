@@ -103,6 +103,7 @@ import {
   PageComponent,
   allComponentVariants,
   cloneComponent,
+  cloneComponentServerQuery,
   clonePageMeta,
   cloneVariant,
   extractParamsFromPagePath,
@@ -190,6 +191,7 @@ import {
   isTplVariantable,
   mkTplComponent,
   mkTplTagX,
+  pushExprs,
   reconnectChildren,
   summarizeTpl,
   trackComponentSite,
@@ -198,6 +200,10 @@ import {
 import { ScreenSizeSpec } from "@/wab/shared/css-size";
 import { CONTENT_LAYOUT_INITIALS } from "@/wab/shared/default-styles";
 import { DEVFLAGS } from "@/wab/shared/devflags";
+import {
+  mergeParsedExprInfos,
+  parseExpr,
+} from "@/wab/shared/eval/expression-parser";
 import { Pt, Rect, findSpaceForRectSweepRight } from "@/wab/shared/geom";
 import { ensureComponentsObserved } from "@/wab/shared/mobx-util";
 import { instUtil } from "@/wab/shared/model/InstUtil";
@@ -1791,6 +1797,84 @@ export class TplMgr {
   getUniqueMixinName(name?: string) {
     const existingNames = this.site().mixins.map((t) => t.name);
     return uniqueName(existingNames, name || `Unnamed ${MIXIN_CAP}`, {
+      separator: " ",
+      normalize: toVarName,
+    });
+  }
+
+  duplicateComponentServerQuery(
+    component: Component,
+    query: ComponentServerQuery
+  ) {
+    const cloned = cloneComponentServerQuery(query);
+    cloned.name = this.getUniqueServerQueryName(component, query.name);
+    component.serverQueries.push(cloned);
+    return cloned;
+  }
+
+  /**
+   * Copies a server query from a source component to the target component,
+   * including any server queries it depends on (via $queries/$q references).
+   * Dependencies that already exist on the target component are skipped.
+   */
+  copyServerQueryWithDependencies(
+    targetComponent: Component,
+    sourceComponent: Component,
+    query: ComponentServerQuery
+  ) {
+    const targetQueryNames = new Set(
+      targetComponent.serverQueries.map((q) => toVarName(q.name))
+    );
+
+    const toCopy: ComponentServerQuery[] = [];
+    const visited = new Set<string>();
+    const componentVarRefs: { [varType: string]: Set<string> } = {};
+
+    const collectDependencies = (q: ComponentServerQuery) => {
+      if (visited.has(q.uuid)) {
+        return;
+      }
+      visited.add(q.uuid);
+
+      if (q.op) {
+        const allExprs: Expr[] = [];
+        pushExprs(allExprs, q.op);
+        const info = mergeParsedExprInfos(allExprs.map((e) => parseExpr(e)));
+
+        for (const refName of info.usedDollarVarKeys.$q) {
+          const depQuery = sourceComponent.serverQueries.find(
+            (sq) => toVarName(sq.name) === refName
+          );
+          if (depQuery && !targetQueryNames.has(toVarName(depQuery.name))) {
+            collectDependencies(depQuery);
+          }
+        }
+
+        for (const varType of ["$state", "$props", "$ctx"]) {
+          for (const key of info.usedDollarVarKeys[varType]) {
+            if (!componentVarRefs[varType]) {
+              componentVarRefs[varType] = new Set();
+            }
+            componentVarRefs[varType].add(key);
+          }
+        }
+      }
+
+      toCopy.push(q);
+    };
+
+    collectDependencies(query);
+
+    const copied: ComponentServerQuery[] = [];
+    for (const q of toCopy) {
+      copied.push(this.duplicateComponentServerQuery(targetComponent, q));
+    }
+    return { copied, componentVarRefs };
+  }
+
+  getUniqueServerQueryName(component: Component, name: string) {
+    const existingNames = component.serverQueries.map((q) => q.name);
+    return uniqueName(existingNames, name, {
       separator: " ",
       normalize: toVarName,
     });

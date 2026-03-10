@@ -67,6 +67,18 @@ export class StudioModel extends BaseModel {
   readonly serverQueryBottomModal: Locator = this.frame.locator(
     '[data-test-id="server-query-bottom-modal"]'
   );
+  readonly notification: Locator = this.frame.locator(
+    ".ant-notification-notice"
+  );
+  readonly notificationMessage: Locator = this.frame.locator(
+    ".ant-notification-notice-message"
+  );
+  readonly notificationDescription: Locator = this.frame.locator(
+    ".ant-notification-notice-description"
+  );
+  readonly notificationClose: Locator = this.frame.locator(
+    ".ant-notification-notice-close"
+  );
   readonly newDropdownItem = this.frame.locator(".ant-dropdown-menu-item");
   readonly newArenaInput = this.frame.locator('[data-test-id="prompt"]');
   readonly commentsTab = this.frame.locator(".comments-tab");

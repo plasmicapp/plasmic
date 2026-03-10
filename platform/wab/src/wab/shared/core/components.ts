@@ -556,7 +556,7 @@ export function cloneComponentDataQuery(query: ComponentDataQuery) {
   return cloned;
 }
 
-function cloneComponentServerQuery(query: ComponentServerQuery) {
+export function cloneComponentServerQuery(query: ComponentServerQuery) {
   const cloned = new ComponentServerQuery({
     uuid: mkShortId(),
     name: query.name,

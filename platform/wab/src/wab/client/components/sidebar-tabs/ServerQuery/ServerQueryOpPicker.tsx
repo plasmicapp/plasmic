@@ -356,7 +356,7 @@ export const ServerQueryOpDraftForm = observer(
     return (
       <div id="data-source-modal-draft-section">
         {showQueryName && (
-          <LabeledItemRow label="Query name">
+          <LabeledItemRow label="Query name" data-test-id="query-name">
             <StringPropEditor
               value={value?.queryName}
               onChange={(newName) => onChange({ ...value, queryName: newName })}
