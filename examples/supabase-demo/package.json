@@ -16,7 +16,7 @@
     "@plasmicapp/loader-nextjs": "^1.0.410",
     "@supabase/ssr": "^0.5.2",
     "@supabase/supabase-js": "^2.48.0",
-    "next": "^15.5.10",
+    "next": "^16.1.6",
     "react": "^18",
     "react-dom": "^18"
   },

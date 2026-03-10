@@ -30,7 +30,7 @@
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
-    "@remix-run/dev": "1.17.1",
+    "@remix-run/dev": "1.19.3",
     "@shopify/oxygen-workers-types": "^3.17.2",
     "@shopify/prettier-config": "^1.1.2",
     "@types/eslint": "^8.4.10",
