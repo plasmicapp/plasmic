@@ -589,6 +589,9 @@ function makeDataRef(opts: { useDraft?: boolean }) {
     : `r.data`;
 }
 
+/** Internal fields that can be accessed with preceding underscore. */
+const UNDERSCORE_INTERNAL_FIELDS = ["_id", "_createdAt", "_updatedAt"];
+
 /**
  * Assumes `r` is the alias for the `cms_row` table.
  * Returns a psql expression for the given field.
@@ -600,8 +603,9 @@ export const makeTypedFieldSql = (
   opts: { useDraft?: boolean }
 ) => {
   const dataRef = makeDataRef(opts);
-  if (field === "_id") {
-    return "r.id";
+
+  if (UNDERSCORE_INTERNAL_FIELDS.includes(field)) {
+    return `r.${field.replace("_", "")}`;
   }
 
   // Simple field access

@@ -238,6 +238,32 @@ describe("makeSqlCondition", () => {
     });
   });
 
+  it("special cases _createdAt and _updatedAt fields", () => {
+    expect(
+      makeSqlCondition(
+        TEST_TABLE,
+        {
+          $and: [
+            { _createdAt: { $gt: "2025-01-01T00:00:00Z" } },
+            { _createdAt: { $lt: "2025-12-31T23:59:59Z" } },
+            { _updatedAt: { $ge: "2025-01-01T00:00:00Z" } },
+            { _updatedAt: { $le: "2025-12-31T23:59:59Z" } },
+          ],
+        },
+        { useDraft: false }
+      )
+    ).toEqual({
+      condition:
+        "(r.createdAt > :val0) AND (r.createdAt < :val1) AND (r.updatedAt >= :val2) AND (r.updatedAt <= :val3)",
+      params: {
+        val0: "2025-01-01T00:00:00Z",
+        val1: "2025-12-31T23:59:59Z",
+        val2: "2025-01-01T00:00:00Z",
+        val3: "2025-12-31T23:59:59Z",
+      },
+    });
+  });
+
   it("accesses nested nested field", () => {
     expect(
       makeSqlCondition(
