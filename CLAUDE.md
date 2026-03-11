@@ -1,5 +1,9 @@
 # CLAUDE.md
 
+## Sandbox
+
+You might be in a sandbox. Check out [safehouse.sb](docs/internal/ai/safehouse.sb).
+
 ## Key tools of root directory
 
 This is root directory of the monorepo. Most development will be done in individual packages, but this directory is responsible for some centrally managed concerns:
