@@ -2214,7 +2214,22 @@ export async function getPkgVersionPublishStatus(req: Request, res: Response) {
         },
       }
     );
-    const redirectLocation = redirectRes.headers.get("location");
+
+    let redirectLocation = redirectRes.headers.get("location");
+
+    // Handle special case for polyfill projects that return 200 with JSON body
+    // instead of a redirect (see PLA-12576)
+    if (!redirectLocation && redirectRes.status === 200) {
+      try {
+        const jsonBody = await redirectRes.json();
+        if (jsonBody.redirectUrl) {
+          redirectLocation = jsonBody.redirectUrl;
+        }
+      } catch (e) {
+        // If JSON parsing fails, continue without redirect location
+      }
+    }
+
     if (redirectLocation) {
       try {
         const decodedUri = decodeURIComponent(redirectLocation);
