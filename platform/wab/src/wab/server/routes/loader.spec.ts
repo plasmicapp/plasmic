@@ -1,10 +1,14 @@
 /** @jest-environment node */
+import { getLastBundleVersion } from "@/wab/server/db/BundleMigrator";
 import { ensureDbConnection } from "@/wab/server/db/DbCon";
 import { seedTestUserAndProjects } from "@/wab/server/db/DbInit";
 import { DbMgr, normalActor } from "@/wab/server/db/DbMgr";
 import { Project, User } from "@/wab/server/entities/Entities";
+import { _testonly } from "@/wab/server/routes/loader";
 import { PublicApiTester } from "@/wab/server/test/api-tester";
 import { createBackend, createDatabase } from "@/wab/server/test/backend-util";
+import { Bundler } from "@/wab/shared/bundler";
+import { createSite } from "@/wab/shared/core/sites";
 
 describe("loader", () => {
   let publicApi: PublicApiTester;
@@ -14,6 +18,7 @@ describe("loader", () => {
   let userToken: string;
   let user: User;
   let projects: Project[];
+  let polyfillProject: Project;
 
   beforeAll(async () => {
     const {
@@ -52,6 +57,25 @@ describe("loader", () => {
       expect(await publish(db, projects[2], false)).toEqual("0.0.1");
 
       // projects[3] is never published
+
+      // polyfillProject uses the hardcoded Angular polyfill project ID and has a prefilled version
+      const { project: polyfillProjectObj } = await db.createProject({
+        name: "Angular Polyfill Project",
+        projectId: _testonly.ANGULAR_POLYFILL_PROJECT_ID,
+      });
+      const site = createSite();
+      const siteBundle = new Bundler().bundle(
+        site,
+        "",
+        await getLastBundleVersion()
+      );
+      await db.saveProjectRev({
+        projectId: polyfillProjectObj.id,
+        data: JSON.stringify(siteBundle),
+        revisionNum: 2,
+      });
+      expect(await publish(db, polyfillProjectObj, true)).toEqual("0.0.1");
+      polyfillProject = polyfillProjectObj;
     });
 
     const { host, cleanup: cleanupBackend } = await createBackend(dburi);
@@ -76,6 +100,16 @@ describe("loader", () => {
 
   afterAll(async () => {
     await cleanup();
+  });
+
+  it("resolves polyfill project", async () => {
+    const res = await publicApi.getPublishedLoaderAssets([polyfillProject], {});
+    expect(res.status()).toEqual(200);
+    const body = await res.json();
+    expect(body.redirectUrl).toEqual(
+      `/api/v1/loader/code/versioned?cb=20&platform=react&loaderVersion=0&projectId=${polyfillProject.id}%400.0.1`
+    );
+    expect(res.headers()["cache-control"]).toEqual("s-maxage=30");
   });
 
   it("resolves 1 project", async () => {

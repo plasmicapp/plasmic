@@ -97,6 +97,8 @@ function getLoaderOptions(req: Request) {
   };
 }
 
+const ANGULAR_POLYFILL_PROJECT_ID = "nRGmCYqvZMnYyNtcGY29Aw";
+
 export async function buildPublishedLoaderAssets(req: Request, res: Response) {
   const mgr = userDbMgr(req);
   const {
@@ -133,12 +135,13 @@ export async function buildPublishedLoaderAssets(req: Request, res: Response) {
 
   // Special case for projects with Angular polyfills that cause redirects to fail in Safari.
   // Return 200 with redirect URL - https://linear.app/plasmic/issue/PLA-12576
-  const polyfillProjectId = "nRGmCYqvZMnYyNtcGY29Aw";
+  const polyfillProjectId = ANGULAR_POLYFILL_PROJECT_ID;
   const isPolyfillProject = projectIdSpecs.some(
     (spec) => parseProjectIdSpec(spec).projectId === polyfillProjectId
   );
 
   if (isPolyfillProject) {
+    setAsCacheableRedirect(res);
     res.status(200).json({ redirectUrl: destination });
     return;
   }
@@ -855,9 +858,13 @@ export async function prefillPublishedLoader(req: Request, res: Response) {
 }
 
 function redirectToCacheableResource(res: Response, destination: string) {
-  // We do want to ask cloudfront to cache redirects for us for a short time
-  res.setHeader("Cache-Control", "s-maxage=30");
+  setAsCacheableRedirect(res);
   res.redirect(destination);
+}
+
+function setAsCacheableRedirect(res: Response) {
+  // We ask the CDN to cache redirects for us for a short time
+  res.setHeader("Cache-Control", "s-maxage=30");
 }
 
 function setAsCacheableResource(res: Response, maxAge = 31536000) {
@@ -968,3 +975,7 @@ export function getHydrationScriptVersioned(req: Request, res: Response) {
   res.setHeader("Cache-Control", "maxage=31536000, s-maxage=31536000");
   res.sendFile(path.join(dir, filename));
 }
+
+export const _testonly = {
+  ANGULAR_POLYFILL_PROJECT_ID,
+};
