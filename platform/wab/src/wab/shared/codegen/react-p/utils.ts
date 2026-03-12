@@ -447,18 +447,49 @@ export function getPlumePackageName(opts: ExportOpts, plumeType: PlumeType) {
   return `@plasmicapp/react-web/skinny/dist/plume/${PLUME_TYPE_TO_PACKAGE_FOLDER[plumeType]}`;
 }
 
+/**
+ * Serializes a key-value that should be inserted in a JSX element.
+ *
+ * ```
+ * `<div ${serializedKeyValue("aria-label", "label")} />`
+ * === `<div aria-label={label} />`
+ *
+ * `<div ${serializedKeyValue("onChange", "handler")} />`
+ * === `<div onChange={handler} />`
+ *
+ * `<div ${serializedKeyValue("onСhange", "handler")} />`
+ * === `<div {...{"on\u0421hange": handler}} />`
+ * ```
+ */
 export function serializedKeyValue(key: string, val: string): string {
+  // Heuristic to determine whether a key can be used as a plain JSX attribute.
+  // 1. Must start with [A-Z, a-z, _, $]
+  // 2. Must only have [\w (A-Z, a-z, 0-9, _), -, $]
   if (!key.match(/^[A-Za-z_$]/) || !!key.match(/[^\w-$]/)) {
-    return `{...{${jsLiteral(key)}: ${val}}}`;
+    return `{...{${serializedKeyValueForObject(key, val)}}}`;
   }
   return `${key}={${val}}`;
 }
 
+/**
+ * Serializes a key-value that should be inserted in an object literal.
+ *
+ * ```
+ * `{ ${serializedKeyValueForObject("onChange", "handler")} }`
+ * === `{ onChange: handler }`
+ *
+ * `{ ${serializedKeyValueForObject("onСhange", "handler")} }`
+ * === `{ "on\u0421hange": handler }`
+ * ```
+ */
 export function serializedKeyValueForObject(key: string, val: string): string {
-  if (!key.match(/^[A-Za-z_$]/) || !!key.match(/[^\w-$]/)) {
-    return `"${jsLiteral(key)}": ${val}`;
+  // Heuristic to determine whether a key can be used as an unquoted object key.
+  // 1. Must start with [A-Z, a-z, _, $]
+  // 2. Must only have [\w (A-Z, a-z, 0-9, _), $]
+  if (!key.match(/^[A-Za-z_$]/) || !!key.match(/[^\w$]/)) {
+    return `${jsLiteral(key)}: ${val}`;
   }
-  return `"${key}": ${val}`;
+  return `${key}: ${val}`;
 }
 
 export function buildConditionalDefaultStylesPropArg(
