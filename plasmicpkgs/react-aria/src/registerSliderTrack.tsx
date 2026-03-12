@@ -1,13 +1,13 @@
 import { type CodeComponentMeta } from "@plasmicapp/host/registerComponent";
 import React, { useMemo } from "react";
 import { Slider, SliderThumbProps, SliderTrack } from "react-aria-components";
-import flattenChildren from "react-keyed-flatten-children";
 import { COMMON_STYLES, createIdProp } from "./common";
 import { PlasmicSliderContext } from "./contexts";
 import { BaseSliderThumbProps } from "./registerSliderThumb";
 import {
   CodeComponentMetaOverrides,
   Registerable,
+  flattenChildren,
   isDefined,
   makeComponentName,
   registerComponentHelper,
