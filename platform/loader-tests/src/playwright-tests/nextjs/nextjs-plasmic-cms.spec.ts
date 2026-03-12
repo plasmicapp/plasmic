@@ -6,7 +6,7 @@ import {
   teardownNextJs,
 } from "../../nextjs/nextjs-setup";
 import { setupCms } from "../../utils";
-import { testCmsLoader } from "./shared/cms-test";
+import { testCms } from "./shared/cms-test";
 
 test.describe(`NextJS Plasmic CMS`, () => {
   let ctx: NextJsContext;
@@ -31,6 +31,10 @@ test.describe(`NextJS Plasmic CMS`, () => {
   });
 
   test(`should work`, async ({ page }) => {
-    await testCmsLoader(page, ctx.host);
+    await testCms(page, ctx.host, {
+      // There is no way to use the CMS Data Fetcher's context (which contains the query result) in the title, so we don't check it
+      checkTitle: false,
+      checkSSR: true,
+    });
   });
 });

@@ -14,7 +14,8 @@
     "docker-build": "docker build --no-cache -t loader-tests .",
     "docker-run": "docker run -v $PWD/cypress:/app/cypress --add-host host.docker.internal:host-gateway --rm loader-tests",
     "test-jest": "npx jest --runInBand",
-    "test-playwright": "npx playwright test"
+    "test-playwright": "npx playwright test",
+    "local:playwright-ui": "NPM_CONFIG_REGISTRY=http://localhost:4873 yarn run playwright-ui"
   },
   "devDependencies": {
     "@types/cypress-image-snapshot": "^3.1.6",

@@ -6,7 +6,7 @@ import {
   teardownNextJs,
 } from "../../nextjs/nextjs-setup";
 import { setupCms } from "../../utils";
-import { testCmsLoader } from "./shared/cms-test";
+import { testCms } from "./shared/cms-test";
 
 test.describe(`NextJS CMS`, () => {
   let ctx: NextJsContext;
@@ -31,6 +31,9 @@ test.describe(`NextJS CMS`, () => {
   });
 
   test(`should work`, async ({ page }) => {
-    await testCmsLoader(page, ctx.host);
+    await testCms(page, ctx.host, {
+      checkTitle: true,
+      checkSSR: true,
+    });
   });
 });
