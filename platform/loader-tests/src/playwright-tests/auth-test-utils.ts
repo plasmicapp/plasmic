@@ -360,8 +360,7 @@ export async function authNextJsSetup(opts: {
     projectName,
     removeComponentsPage,
     loaderVersion = "latest",
-    // TODO: Only works with 12 sine we're running with node 14 for now...
-    nextVersion = "^12",
+    nextVersion = "14",
     request,
     appAuthOpts,
     keepRedirectUri,

@@ -6,20 +6,18 @@ import {
   setupNextJs,
   teardownNextJs,
 } from "../../../nextjs/nextjs-setup";
+import { makeEnvName } from "../../setup-utils";
 
 test.describe(`Plasmic Antd5 Progress`, async () => {
   for (const versions of LOADER_NEXTJS_VERSIONS) {
-    const { loaderVersion, nextVersion } = versions;
-
-    test.describe(`loader-nextjs@${loaderVersion}, next@${nextVersion}`, async () => {
+    test.describe(makeEnvName({ type: "nextjs", ...versions }), async () => {
       let ctx: NextJsContext;
       test.beforeEach(async () => {
         ctx = await setupNextJs({
           bundleFile: "antd5/progress.json",
           projectName: "Antd5 Progress",
           removeComponentsPage: true,
-          loaderVersion,
-          nextVersion,
+          ...versions,
         });
       });
 

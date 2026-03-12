@@ -6,20 +6,18 @@ import {
   setupNextJs,
   teardownNextJs,
 } from "../../nextjs/nextjs-setup";
+import { makeEnvName } from "../setup-utils";
 
 test.describe(`Plasmic Code Libraries`, async () => {
   for (const versions of LOADER_NEXTJS_VERSIONS) {
-    const { loaderVersion, nextVersion } = versions;
-
-    test.describe(`loader-nextjs@${loaderVersion}, next@${nextVersion}`, async () => {
+    test.describe(makeEnvName({ type: "nextjs", ...versions }), async () => {
       let ctx: NextJsContext;
       test.beforeEach(async ({ context }) => {
         ctx = await setupNextJs({
           bundleFile: "code-libs.json",
           projectName: "Code Libraries",
           removeComponentsPage: true,
-          loaderVersion,
-          nextVersion,
+          ...versions,
         });
 
         await context.route(

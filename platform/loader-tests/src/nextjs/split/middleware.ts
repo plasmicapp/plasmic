@@ -22,7 +22,14 @@ export async function middleware(req: NextRequest) {
 
   const { pathname, cookies } = getMiddlewareResponse({
     cookies: Object.fromEntries(
-      Array.from(req.cookies.keys()).map((key) => [key, req.cookies.get(key)])
+      "getAll" in req.cookies
+        ? // Next 13+ API
+          (req.cookies as any).getAll().map((c: any) => [c.name, c.value])
+        : // Next 12 API
+          Array.from((req.cookies as any).keys()).map((key: string) => [
+            key,
+            (req.cookies as any).get(key),
+          ])
     ),
     traits: {
       ...(req.nextUrl.searchParams.get("utm_campaign")

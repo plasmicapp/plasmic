@@ -19,20 +19,31 @@ export function getEnvVar(variable: keyof typeof DEFAULT_ENV): string {
 }
 
 export const LOADER_NEXTJS_TEMPLATES = [
-  { template: "template-pages", nextVersion: "^12" },
-  { template: "template-app", nextVersion: "15.5.3" },
+  { loaderVersion: "1", template: "template-pages", nextVersion: "12" },
+  {
+    loaderVersion: "1",
+    template: "template-app",
+    reactVersion: "latest",
+    nextVersion: "15.5.3",
+  },
 ];
 
 export const LOADER_NEXTJS_VERSIONS = [
-  { loaderVersion: "latest", nextVersion: "latest" },
+  { loaderVersion: "latest", reactVersion: "latest", nextVersion: "latest" },
   // Before PlasmicLinkProvider / usePlasmicLink is added
-  { loaderVersion: "1.0.287", nextVersion: "^12" },
+  { loaderVersion: "1.0.287", reactVersion: "18", nextVersion: "12" },
+];
+
+export const LOADER_REACT_VERSIONS = [
+  { reactVersion: "17", loaderReactVersion: "latest" },
+  { reactVersion: "18", loaderReactVersion: "latest" },
 ];
 
 export const LOADER_NEXTJS_VERSIONS_EXHAUSTIVE = [
   ...LOADER_NEXTJS_VERSIONS,
-  { loaderVersion: "^1", nextVersion: "^13" },
-  { loaderVersion: "^1", nextVersion: "^14" },
+  { loaderVersion: "latest", reactVersion: "18", nextVersion: "13" },
+  { loaderVersion: "latest", reactVersion: "18", nextVersion: "14" },
+  { loaderVersion: "latest", reactVersion: "18", nextVersion: "15" },
 ];
 
 function maybeSwapWithDockerLocalhost(value: string | undefined) {

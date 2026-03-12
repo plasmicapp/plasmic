@@ -20,6 +20,7 @@ export interface NextJsEnv {
   type: "nextjs";
   loaderVersion: string;
   nextVersion: string;
+  reactVersion?: string;
   removeComponentsPage?: boolean;
   template?: string;
 }
@@ -30,6 +31,8 @@ export interface GatsbyEnv {
 
 export interface CraEnv {
   type: "cra";
+  reactVersion?: string;
+  loaderReactVersion?: string;
   template?: string;
 }
 
@@ -132,8 +135,15 @@ export async function teardownServer(ctx: ServerContext) {
 
 export function makeEnvName(env: LoaderEnv) {
   if (env.type === "nextjs") {
-    const { loaderVersion, nextVersion } = env;
-    return `loader-nextjs@${loaderVersion}, next@${nextVersion}`;
+    const parts: string[] = [];
+    if (env.template) {
+      parts.push(env.template);
+    }
+    parts.push(`loader-nextjs@${env.loaderVersion}`, `next@${env.nextVersion}`);
+    if (env.reactVersion) {
+      parts.push(`react@${env.reactVersion}`);
+    }
+    return parts.join(", ");
   } else if (env.type === "gatsby") {
     return `loader-gatsby`;
   } else if (env.type === "cra") {

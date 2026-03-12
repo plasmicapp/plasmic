@@ -5,11 +5,15 @@ import {
   setupNextJs,
   teardownNextJs,
 } from "../../nextjs/nextjs-setup";
+import { makeEnvName } from "../setup-utils";
 import { WordpressMockServer } from "./shared/wordpress-mocks";
 import { testWordpressLoader } from "./shared/wordpress-test";
 
-for (const { template, nextVersion } of LOADER_NEXTJS_TEMPLATES) {
-  test.describe(`NextJS WordPress ${template}, next@${nextVersion}`, () => {
+for (const versions of LOADER_NEXTJS_TEMPLATES) {
+  test.describe(`NextJS WordPress ${makeEnvName({
+    type: "nextjs",
+    ...versions,
+  })}`, () => {
     let ctx: NextJsContext;
     let mockServer: WordpressMockServer;
 
@@ -20,8 +24,7 @@ for (const { template, nextVersion } of LOADER_NEXTJS_TEMPLATES) {
       ctx = await setupNextJs({
         bundleFile: "wordpress.json",
         projectName: "WordPress Project",
-        template,
-        nextVersion,
+        ...versions,
         removeComponentsPage: true,
         bundleTransformation: (bundle) =>
           bundle.replaceAll(

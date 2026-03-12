@@ -6,6 +6,7 @@ import {
   setupNextJs,
   teardownNextJs,
 } from "../../../nextjs/nextjs-setup";
+import { makeEnvName } from "../../setup-utils";
 
 async function checkActiveTab(page: Page, activeIndex: number) {
   await expect(page.locator(`#tabs-state`)).toHaveText(`${activeIndex}a`); // default assigned value
@@ -39,17 +40,14 @@ async function checkActiveTab(page: Page, activeIndex: number) {
 
 test.describe(`Plasmic Antd5 Tabs`, async () => {
   for (const versions of LOADER_NEXTJS_VERSIONS) {
-    const { loaderVersion, nextVersion } = versions;
-
-    test.describe(`loader-nextjs@${loaderVersion}, next@${nextVersion}`, async () => {
+    test.describe(makeEnvName({ type: "nextjs", ...versions }), async () => {
       let ctx: NextJsContext;
       test.beforeEach(async () => {
         ctx = await setupNextJs({
           bundleFile: "antd5/tabs.json",
           projectName: "Antd5 Tabs",
           removeComponentsPage: true,
-          loaderVersion,
-          nextVersion,
+          ...versions,
         });
       });
 

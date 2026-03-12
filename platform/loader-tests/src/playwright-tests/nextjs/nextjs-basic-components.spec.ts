@@ -6,9 +6,13 @@ import {
   setupNextJs,
   teardownNextJs,
 } from "../../nextjs/nextjs-setup";
+import { makeEnvName } from "../setup-utils";
 
-for (const { loaderVersion, nextVersion } of LOADER_NEXTJS_VERSIONS) {
-  test.describe(`NextJS Basic Components loader-nextjs@${loaderVersion}, next@${nextVersion}`, () => {
+for (const versions of LOADER_NEXTJS_VERSIONS) {
+  test.describe(`NextJS Basic Components ${makeEnvName({
+    type: "nextjs",
+    ...versions,
+  })}`, () => {
     let ctx: NextJsContext;
 
     test.beforeAll(async () => {
@@ -16,8 +20,7 @@ for (const { loaderVersion, nextVersion } of LOADER_NEXTJS_VERSIONS) {
         bundleFile: "plasmic-basic-components-example.json",
         projectName: "Basic Components",
         removeComponentsPage: true,
-        loaderVersion,
-        nextVersion,
+        ...versions,
       });
     });
 

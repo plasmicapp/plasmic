@@ -6,6 +6,7 @@ import {
   setupNextJs,
   teardownNextJs,
 } from "../../nextjs/nextjs-setup";
+import { makeEnvName } from "../setup-utils";
 
 const loadingSelector = "text=loading preview custom...";
 const noPreviewSelector = "text=No preview custom...";
@@ -27,17 +28,14 @@ async function assertNoPreview(page: Page, loading = false) {
 
 test.describe(`Plasmic Link Preview`, async () => {
   for (const versions of LOADER_NEXTJS_VERSIONS) {
-    const { loaderVersion, nextVersion } = versions;
-
-    test.describe(`loader-nextjs@${loaderVersion}, next@${nextVersion}`, async () => {
+    test.describe(makeEnvName({ type: "nextjs", ...versions }), async () => {
       let ctx: NextJsContext;
       test.beforeEach(async () => {
         ctx = await setupNextJs({
           bundleFile: "plasmic-link-preview.json",
           projectName: "Plasmic Link Preview",
           removeComponentsPage: true,
-          loaderVersion,
-          nextVersion,
+          ...versions,
         });
       });
 

@@ -1,103 +1,107 @@
 import { expect } from "@playwright/test";
 import { CraContext, setupCra, teardownCra } from "../../cra/cra-setup";
-
+import { LOADER_REACT_VERSIONS } from "../../env";
 import { test } from "../../fixtures";
 
 const SPLIT_ID = "j7cCxfS-Vu";
 const SLICE_0_ID = "I4hoVVeME_";
 const SLICE_1_ID = "6z5_V8jUij";
 
-test.describe(`Plasmic CRA`, async () => {
-  let ctx: CraContext;
-  const mainHeaderText = "Split testing page";
+for (const { reactVersion, loaderReactVersion } of LOADER_REACT_VERSIONS) {
+  test.describe(`Plasmic CRA loader-react@${loaderReactVersion}, react@${reactVersion}`, async () => {
+    let ctx: CraContext;
+    const mainHeaderText = "Split testing page";
 
-  test.beforeAll(async () => {
-    ctx = await setupCra({
-      bundleFile: "plasmic-split-components.json",
-      projectName: "Split",
-      template: "split",
-    });
-  });
-
-  test.afterAll(async () => {
-    await teardownCra(ctx);
-  });
-
-  test(`should render root page from plasmic`, async ({ page, context }) => {
-    await context.addCookies([
-      {
-        name: `plasmic:exp.${SPLIT_ID}`,
-        value: SLICE_1_ID,
-        url: ctx.host || "",
-      },
-    ]);
-
-    await page.goto(ctx.host);
-    await expect(page.getByText(mainHeaderText)).toBeVisible({
-      timeout: 10000,
+    test.beforeAll(async () => {
+      ctx = await setupCra({
+        bundleFile: "plasmic-split-components.json",
+        projectName: "Split",
+        template: "split",
+        reactVersion,
+        loaderReactVersion,
+      });
     });
 
-    await expect(page.getByText("active experiment")).toBeVisible();
-    await expect(page.getByText("inactive segment")).toBeVisible();
-    await expect(page.getByText("active schedule")).toBeVisible();
-  });
-
-  test(`should render segment page`, async ({ page, context }) => {
-    await context.addCookies([
-      {
-        name: `plasmic:exp.${SPLIT_ID}`,
-        value: SLICE_1_ID,
-        url: ctx.host || "",
-      },
-    ]);
-
-    await page.goto(`${ctx.host}/segment`);
-    await expect(page.getByText(mainHeaderText)).toBeVisible({
-      timeout: 10000,
+    test.afterAll(async () => {
+      await teardownCra(ctx);
     });
 
-    await expect(page.getByText("active experiment")).toBeVisible();
-    await expect(page.getByText("active segment")).toBeVisible();
-    await expect(page.getByText("active schedule")).toBeVisible();
-  });
+    test(`should render root page from plasmic`, async ({ page, context }) => {
+      await context.addCookies([
+        {
+          name: `plasmic:exp.${SPLIT_ID}`,
+          value: SLICE_1_ID,
+          url: ctx.host || "",
+        },
+      ]);
 
-  test(`should render schedule page`, async ({ page, context }) => {
-    await context.addCookies([
-      {
-        name: `plasmic:exp.${SPLIT_ID}`,
-        value: SLICE_1_ID,
-        url: ctx.host || "",
-      },
-    ]);
+      await page.goto(ctx.host);
+      await expect(page.getByText(mainHeaderText)).toBeVisible({
+        timeout: 10000,
+      });
 
-    await page.goto(`${ctx.host}/schedule`);
-    await expect(page.getByText(mainHeaderText)).toBeVisible({
-      timeout: 10000,
+      await expect(page.getByText("active experiment")).toBeVisible();
+      await expect(page.getByText("inactive segment")).toBeVisible();
+      await expect(page.getByText("active schedule")).toBeVisible();
     });
 
-    await expect(page.getByText("active experiment")).toBeVisible();
-    await expect(page.getByText("inactive schedule")).toBeVisible();
-  });
+    test(`should render segment page`, async ({ page, context }) => {
+      await context.addCookies([
+        {
+          name: `plasmic:exp.${SPLIT_ID}`,
+          value: SLICE_1_ID,
+          url: ctx.host || "",
+        },
+      ]);
 
-  test(`should render experiment based on cookie`, async ({
-    page,
-    context,
-  }) => {
-    await context.addCookies([
-      {
-        name: `plasmic:exp.${SPLIT_ID}`,
-        value: SLICE_0_ID,
-        url: ctx.host || "",
-      },
-    ]);
+      await page.goto(`${ctx.host}/segment`);
+      await expect(page.getByText(mainHeaderText)).toBeVisible({
+        timeout: 10000,
+      });
 
-    await page.goto(ctx.host);
-    await expect(page.getByText(mainHeaderText)).toBeVisible({
-      timeout: 10000,
+      await expect(page.getByText("active experiment")).toBeVisible();
+      await expect(page.getByText("active segment")).toBeVisible();
+      await expect(page.getByText("active schedule")).toBeVisible();
     });
 
-    await expect(page.getByText("inactive experiment")).toBeVisible();
-    await expect(page.getByText("inactive segment")).toBeVisible();
-    await expect(page.getByText("active schedule")).toBeVisible();
+    test(`should render schedule page`, async ({ page, context }) => {
+      await context.addCookies([
+        {
+          name: `plasmic:exp.${SPLIT_ID}`,
+          value: SLICE_1_ID,
+          url: ctx.host || "",
+        },
+      ]);
+
+      await page.goto(`${ctx.host}/schedule`);
+      await expect(page.getByText(mainHeaderText)).toBeVisible({
+        timeout: 10000,
+      });
+
+      await expect(page.getByText("active experiment")).toBeVisible();
+      await expect(page.getByText("inactive schedule")).toBeVisible();
+    });
+
+    test(`should render experiment based on cookie`, async ({
+      page,
+      context,
+    }) => {
+      await context.addCookies([
+        {
+          name: `plasmic:exp.${SPLIT_ID}`,
+          value: SLICE_0_ID,
+          url: ctx.host || "",
+        },
+      ]);
+
+      await page.goto(ctx.host);
+      await expect(page.getByText(mainHeaderText)).toBeVisible({
+        timeout: 10000,
+      });
+
+      await expect(page.getByText("inactive experiment")).toBeVisible();
+      await expect(page.getByText("inactive segment")).toBeVisible();
+      await expect(page.getByText("active schedule")).toBeVisible();
+    });
   });
-});
+}

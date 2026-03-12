@@ -9,20 +9,18 @@ import {
 } from "../../nextjs/nextjs-setup";
 import { ensure } from "../../utils";
 import { waitUntilNoChanges } from "../playwright-utils";
+import { makeEnvName } from "../setup-utils";
 
 test.describe(`Plasmic App Components`, async () => {
   for (const versions of LOADER_NEXTJS_VERSIONS) {
-    const { loaderVersion, nextVersion } = versions;
-
-    test.describe(`loader-nextjs@${loaderVersion}, next@${nextVersion}`, async () => {
+    test.describe(makeEnvName({ type: "nextjs", ...versions }), async () => {
       let ctx: NextJsContext;
       test.beforeEach(async () => {
         ctx = await setupNextJs({
           bundleFile: "plasmic-app-components.json",
           projectName: "App test project",
           removeComponentsPage: true,
-          loaderVersion,
-          nextVersion,
+          ...versions,
         });
       });
 

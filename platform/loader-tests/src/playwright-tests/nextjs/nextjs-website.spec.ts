@@ -10,20 +10,20 @@ import {
   testWebsiteDesktop,
   testWebsiteMobile,
 } from "../helpers/website";
+import { makeEnvName } from "../setup-utils";
 
-for (const {
-  loaderVersion,
-  nextVersion,
-} of LOADER_NEXTJS_VERSIONS_EXHAUSTIVE) {
-  test.describe(`NextJS Website loader-nextjs@${loaderVersion}, next@${nextVersion}`, () => {
+for (const versions of LOADER_NEXTJS_VERSIONS_EXHAUSTIVE) {
+  test.describe(`NextJS Website ${makeEnvName({
+    type: "nextjs",
+    ...versions,
+  })}`, () => {
     let ctx: NextJsContext;
 
     test.beforeAll(async () => {
       ctx = await setupNextJs({
         bundleFile: "plasmic-kit-website-components_16033.json",
         projectName: "PlasmicWebsite",
-        loaderVersion,
-        nextVersion,
+        ...versions,
       });
     });
 

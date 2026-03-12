@@ -6,12 +6,11 @@ import {
   setupNextJs,
   teardownNextJs,
 } from "../../nextjs/nextjs-setup";
+import { makeEnvName } from "../setup-utils";
 
 test.describe(`@plasmicpkgs/vanilla-cookieconsent code components`, async () => {
   for (const versions of LOADER_NEXTJS_VERSIONS) {
-    const { loaderVersion, nextVersion } = versions;
-
-    test.describe(`loader-nextjs@${loaderVersion}, next@${nextVersion}`, async () => {
+    test.describe(makeEnvName({ type: "nextjs", ...versions }), async () => {
       let ctx: NextJsContext;
 
       test.beforeAll(async () => {
@@ -26,8 +25,7 @@ test.describe(`@plasmicpkgs/vanilla-cookieconsent code components`, async () => 
           bundleFile: "vanilla-cookieconsent.json",
           projectName: "Vanilla Cookieconsent Test",
           removeComponentsPage: true,
-          loaderVersion,
-          nextVersion,
+          ...versions,
         });
       });
 

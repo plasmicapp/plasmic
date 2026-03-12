@@ -5,6 +5,7 @@ import {
   setupNextJs,
   teardownNextJs,
 } from "../../nextjs/nextjs-setup";
+import { makeEnvName } from "../setup-utils";
 import { ContentfulMockServer } from "./shared/contentful-mocks";
 import { testContentfulLoader } from "./shared/contentful-test";
 
@@ -13,8 +14,11 @@ import { testContentfulLoader } from "./shared/contentful-test";
  * /blog/[slug] page. Due to Plasmic link pre-fetching, we have to keep the mock server running throughout the
  * test. We only verify the pages are server rendered by asserting that no client queries occur.
  */
-for (const { template, nextVersion } of LOADER_NEXTJS_TEMPLATES) {
-  test.describe(`NextJS Contentful ${template}, next@${nextVersion}`, () => {
+for (const versions of LOADER_NEXTJS_TEMPLATES) {
+  test.describe(`NextJS Contentful ${makeEnvName({
+    type: "nextjs",
+    ...versions,
+  })}`, () => {
     let ctx: NextJsContext;
     let mockServer: ContentfulMockServer;
 
@@ -25,8 +29,7 @@ for (const { template, nextVersion } of LOADER_NEXTJS_TEMPLATES) {
       ctx = await setupNextJs({
         bundleFile: "contentful.json",
         projectName: "Contentful Project",
-        template,
-        nextVersion,
+        ...versions,
         removeComponentsPage: true,
         env: {
           NEXT_PUBLIC_CONTENTFUL_BASE_URL: mockServer.getBaseUrl(),
