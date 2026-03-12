@@ -3930,16 +3930,15 @@
   resolved "https://registry.yarnpkg.com/@plasmicpkgs/plasmic-embed-css/-/plasmic-embed-css-0.1.224.tgz#8fe1adfafb0a78c966fdcb3dd51e79ea1985d8f6"
   integrity sha512-/XcChBdUenT8yDbzK+8intMugl/0m9dkTf2eN89jvKTARD0d0nAWqyDl0tGyd/EeC+cG0cTvtajjo9P7DGQrCg==
 
-"@plasmicpkgs/react-aria@^0.0.170":
-  version "0.0.170"
-  resolved "https://registry.yarnpkg.com/@plasmicpkgs/react-aria/-/react-aria-0.0.170.tgz#7576870fba1e6cf3ab03b4501545a825b6d82966"
-  integrity sha512-xyEMTaONWhAGzPvH3rf3Ftn1hrW/qeesFCPjk/iQ5UIDhQug9T/imSFIOXD1xY1Fn+S+6WvNkzeNaMWvxn/M0Q==
+"@plasmicpkgs/react-aria@^0.0.171":
+  version "0.0.171"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/react-aria/-/react-aria-0.0.171.tgz#2a43322dfd8c3567082fed580cfe4d0e268aacb7"
+  integrity sha512-5fxGiXNz7LmKs1t88vqxuDNMd7CcfRe30Tb+Mcfe6jOgIA4NVMtTsTqndkJojhgwegQjRuSSkEYUGnmlYCqnAA==
   dependencies:
     "@react-aria/i18n" "^3.12.9"
     "@react-aria/utils" "^3.29.0"
     react-aria "^3.40.0"
     react-aria-components "^1.9.0"
-    react-keyed-flatten-children "^3.0.0"
     react-stately "^3.38.0"
 
 "@pmmmwh/react-refresh-webpack-plugin@^0.5.1":
@@ -18414,13 +18413,6 @@ react-keyed-flatten-children@^1.3.0:
   integrity sha512-qB7A6n+NHU0x88qTZGAJw6dsqwI941jcRPBB640c/CyWqjPQQ+YUmXOuzPziuHb7iqplM3xksWAbGYwkQT0tXA==
   dependencies:
     react-is "^16.8.6"
-
-react-keyed-flatten-children@^3.0.0:
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/react-keyed-flatten-children/-/react-keyed-flatten-children-3.2.0.tgz#8d4cf4308a4b8c95686b41ac8cb8974e65755cfc"
-  integrity sha512-KvY8Z4o/438cInm0XUWJemZmj5XhSV9ULlyxRrhHbjU+ShXPScwIY7fkeZOcGpfvfaxVOUj+qGy4uv84Ss4uaA==
-  dependencies:
-    react-is "^18.2.0"
 
 react-markdown@^8.0.1:
   version "8.0.1"
