@@ -130,9 +130,11 @@ export const translationTable = {
   paddingInlineEnd: "paddingRight",
 };
 
+// Keys here must be normalized (camelCase / translated), e.g. "webkitAnimation" not "-webkit-animation".
 export const ignoredStyles = new Set<string>([
   "content",
   "boxSizing",
+  "webkitAnimation",
   "webkitBoxAlign",
   "webkitBoxPack",
   "webkitBoxFlex",

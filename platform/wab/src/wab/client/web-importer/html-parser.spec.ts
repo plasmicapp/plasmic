@@ -1379,6 +1379,7 @@ describe("keyframes and animations parsing", () => {
           to { opacity: 1; background: #ff0000;}
         }
         .animated-div {
+          -webkit-animation: fadeIn 2s ease-in-out;
           animation: fadeIn 2s ease-in-out;
         }
       </style>
@@ -1431,6 +1432,7 @@ describe("keyframes and animations parsing", () => {
           variantSettings: [
             {
               unsanitizedStyles: {
+                "-webkit-animation": "fadeIn 2s ease-in-out",
                 animation: "fadeIn 2s ease-in-out",
               },
               safeStyles: {
@@ -1445,7 +1447,7 @@ describe("keyframes and animations parsing", () => {
     });
   });
 
-  it("parses multiple @keyframes rules", async () => {
+  it("parses @keyframes rules and ignores @-webkit-keyframes", async () => {
     const html = `
       <div>Test</div>
       <style>
@@ -1470,14 +1472,8 @@ describe("keyframes and animations parsing", () => {
           { percentage: 100, safeStyles: { opacity: "1" }, unsafeStyles: {} },
         ],
       },
-      {
-        name: "slideUp",
-        keyframes: [
-          { percentage: 0, safeStyles: {}, unsafeStyles: {} },
-          { percentage: 100, safeStyles: {}, unsafeStyles: {} },
-        ],
-      },
     ]);
+    expect(animationSequences).toHaveLength(1);
   });
 
   it("sorts keyframes by percentage", async () => {

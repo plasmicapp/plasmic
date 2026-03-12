@@ -965,10 +965,7 @@ export async function parseHtmlToWebImporterTree(
           // already traversed inside processMediaRule
         } else if (node.name === "font-face") {
           processFontFaceRule(node);
-        } else if (
-          node.name === "keyframes" ||
-          node.name === "-webkit-keyframes"
-        ) {
+        } else if (node.name === "keyframes") {
           const animationSequence = processKeyframesRule(node);
           if (animationSequence) {
             animationSequences.push(animationSequence);
