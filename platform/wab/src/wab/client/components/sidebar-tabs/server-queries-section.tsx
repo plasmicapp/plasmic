@@ -61,14 +61,13 @@ const ServerQueryRow = observer(
       // Pass viewCtx and tpl instead of a static env so the modal can reactively
       // compute the environment, including newly created data tokens
       serverQueryModal.open({
-        value: query.op ?? undefined,
+        value: query,
         onSave: handleCustomFunctionExprChange,
         onCancel: serverQueryModal.close,
         viewCtx,
         tpl,
         schema,
         exprCtx,
-        parent: query,
       });
     };
 

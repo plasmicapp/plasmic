@@ -1,10 +1,10 @@
+export { usePlasmicQueries as unstable_usePlasmicQueries } from "./serverQueries/client";
 export {
-  usePlasmicQueries as unstable_usePlasmicQueries,
-  usePlasmicServerQuery as usePlasmicServerQuery,
-} from "./serverQueries/client";
-export {
+  StatefulQueryResult as _StatefulQueryResult,
   createDollarQueries as unstable_createDollarQueries,
   wrapDollarQueriesForMetadata as unstable_wrapDollarQueriesForMetadata,
+  type StateListener as _StateListener,
+  type StatefulQueryState as _StatefulQueryState,
 } from "./serverQueries/common";
 export { makeQueryCacheKey } from "./serverQueries/makeQueryCacheKey";
 export {

@@ -357,13 +357,33 @@ export class CanvasCtx {
 
     const hostWin = (DEVFLAGS.artboardEval ? this._win : window) as any;
     const hostVersion = hostWin.__Sub.hostVersion;
+
+    // @plasmicapp/host <1.0.47 don't set hostVersion
+    // and also don't have @plasmicapp/data-sources.
+    let dataSources: SubDeps["dataSources"] = !hostVersion
+      ? undefined
+      : (this._win as any).__PlasmicDataSourcesBundle;
+    // Also need to check usePlasmicDataConfig() as usePlasmicInvalidate() and
+    // unstable_usePlasmicQueries() depend on it, and usePlasmicDataConfig() is
+    // actually re-exported from @plasmicapp/query, so just because
+    // usePlasmicInvalidate() exists doesn't mean usePlasmicDataConfig() exists.
+    // That's because data-sources is provided by react-web, but query is provided
+    // by the user's custom host. This also applies to usePlasmicQueries.
+    if (dataSources && typeof dataSources.usePlasmicDataConfig !== "function") {
+      dataSources = {
+        ...dataSources,
+        usePlasmicDataConfig: undefined,
+        usePlasmicInvalidate: undefined,
+        unstable_usePlasmicQueries: undefined,
+        unstable_createDollarQueries: undefined,
+      };
+    }
+
     this.Sub = {
       ...hostWin.__Sub,
       ...hostWin.__CanvasPkgs,
       reactWeb: (this._win as any).__PlasmicReactWebBundle,
-      dataSources: !hostVersion
-        ? undefined
-        : (this._win as any).__PlasmicDataSourcesBundle,
+      dataSources,
       dataSourcesContext: (this._win as any).__PlasmicDataSourcesContextBundle,
     };
 

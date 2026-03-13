@@ -7,6 +7,7 @@
 import { CodeComponentMeta } from '@plasmicapp/host/registerComponent';
 import { PlasmicDataSourceContextValue } from '@plasmicapp/data-sources-context';
 import { default as React_2 } from 'react';
+import { SWRResponse } from '@plasmicapp/query';
 import { usePlasmicDataConfig } from '@plasmicapp/query';
 
 // @public (undocumented)
@@ -158,6 +159,57 @@ export interface SingleRowResult<T = any> {
     schema: TableSchema;
 }
 
+// @internal (undocumented)
+export class _StatefulQueryResult<T = unknown> implements PlasmicQueryResult<T> {
+    constructor();
+    // (undocumented)
+    addListener(listener: _StateListener<T>): void;
+    // (undocumented)
+    current: _StatefulQueryState<T>;
+    // (undocumented)
+    get data(): T;
+    // (undocumented)
+    getDoneResult(): Promise<PlasmicQueryResult<T> & {
+        current: {
+            state: "done";
+        };
+    }>;
+    // (undocumented)
+    get isLoading(): boolean;
+    // (undocumented)
+    get key(): string | null;
+    // (undocumented)
+    loadingPromise(key: string, promise: Promise<T>): void;
+    rejectPromise(key: string | null, error: unknown): void;
+    // (undocumented)
+    removeListener(listener: _StateListener<T>): void;
+    // (undocumented)
+    reset(): void;
+    resolvePromise(key: string, data: T): void;
+    // (undocumented)
+    settable: SettablePromise<T>;
+}
+
+// @internal (undocumented)
+export type _StatefulQueryState<T = unknown> = {
+    state: "initial";
+    key: null;
+} | {
+    state: "loading";
+    key: string;
+} | {
+    state: "done";
+    key: string;
+    data: T;
+} | {
+    state: "done";
+    key: string | null;
+    error: unknown;
+};
+
+// @internal (undocumented)
+export type _StateListener<T = unknown> = (state: _StatefulQueryState<T>, prevState: _StatefulQueryState<T>) => void;
+
 // @public (undocumented)
 export interface TableFieldSchema {
     // (undocumented)
@@ -198,7 +250,7 @@ export function unstable_executePlasmicQueries<QueryName extends string>($querie
 }>;
 
 // @public
-export function unstable_usePlasmicQueries<QueryName extends string>($queries: Record<QueryName, PlasmicQueryResult>, queries: Record<QueryName, PlasmicQuery>): void;
+export function unstable_usePlasmicQueries<QueryName extends string>($queries: Record<QueryName, PlasmicQueryResult>, queries: Record<QueryName, PlasmicQuery>): Record<QueryName, ReturnType<typeof usePlasmicQuery>>;
 
 // @public
 export function unstable_wrapDollarQueriesForMetadata<T extends Record<string, PlasmicQueryResult>>($queries: T, ifUndefined?: (promise: PlasmicUndefinedDataErrorPromise) => unknown, ifError?: (err: unknown) => unknown): T;
@@ -222,15 +274,6 @@ export function usePlasmicDataOp<T extends SingleRowResult | ManyRowsResult, E =
 
 // @public
 export function usePlasmicInvalidate(): (invalidatedKeys: string[] | null | undefined) => Promise<any[] | undefined>;
-
-// @public @deprecated (undocumented)
-export function usePlasmicServerQuery<T, F extends (...args: any[]) => Promise<T>>(query: PlasmicQuery<F>, fallbackData?: T, opts?: {
-    noUndefinedDataProxy?: boolean;
-    settledCount?: number;
-    onStarted?: (key: string, promise: Promise<T>) => void;
-    onResolved?: (key: string, data: T) => void;
-    onRejected?: (key: string | null, error: unknown) => void;
-}): Partial<PlasmicQueryResult<T>>;
 
 // (No @packageDocumentation comment for this package)
 

@@ -15,6 +15,7 @@ import {
   TplNode,
   isKnownComponentServerQuery,
 } from "@/wab/shared/model/classes";
+import { PlasmicQueryDataProvider } from "@plasmicapp/query";
 import { observer } from "mobx-react";
 import * as React from "react";
 
@@ -36,7 +37,7 @@ export function omitQueryFromEnv(
 }
 
 interface ServerQueryOpExprBottomModalContentProps {
-  value?: CustomFunctionExpr;
+  value: CustomFunctionExpr | ComponentServerQuery | undefined;
   onSave: (expr: CustomFunctionExpr, opExprName?: string) => unknown;
   onCancel: () => unknown;
   readOnly?: boolean;
@@ -48,7 +49,6 @@ interface ServerQueryOpExprBottomModalContentProps {
   viewCtx?: ViewCtx;
   tpl?: TplNode;
   schema?: DataPickerTypesSchema;
-  parent?: ComponentServerQuery | TplNode;
   eventHandlerKey?: EventHandlerKeyType;
 }
 
@@ -102,7 +102,6 @@ const ServerQueryOpExprBottomModalContent = observer(
     onCancel,
     readOnly,
     schema,
-    parent,
     allowedOps,
     interaction,
     exprCtx,
@@ -110,12 +109,17 @@ const ServerQueryOpExprBottomModalContent = observer(
     tpl,
     eventHandlerKey,
   }: ServerQueryOpExprBottomModalContentProps) {
+    const parentQuery = isKnownComponentServerQuery(value) ? value : undefined;
     const wrappedOnSave = React.useCallback(
       (newExpr: CustomFunctionExpr, opExprName?: string) => {
         onSave(newExpr, opExprName);
       },
       [onSave]
     );
+
+    // Server query modal gets its own isolated cache so it doesn't interfere
+    // with the cache in the current canvas.
+    const swrCache = React.useMemo(() => new Map<string, unknown>(), []);
 
     const env = (() => {
       const computedEnv =
@@ -129,26 +133,27 @@ const ServerQueryOpExprBottomModalContent = observer(
             )
           : undefined;
       // Exclude the current query from $q to avoid circular references
-      if (isKnownComponentServerQuery(parent)) {
-        return omitQueryFromEnv(computedEnv, parent);
+      if (parentQuery) {
+        return omitQueryFromEnv(computedEnv, parentQuery);
       }
       return computedEnv;
     })();
 
     return (
       <PopoverFrameProvider containerSelector=".bottom-modals">
-        <ServerQueryOpExprFormAndPreview
-          value={value}
-          onSave={wrappedOnSave}
-          onCancel={onCancel}
-          env={env}
-          schema={schema}
-          parent={parent}
-          readOnly={readOnly}
-          allowedOps={allowedOps}
-          exprCtx={exprCtx}
-          interaction={interaction}
-        />
+        <PlasmicQueryDataProvider provider={() => swrCache}>
+          <ServerQueryOpExprFormAndPreview
+            value={value}
+            onSave={wrappedOnSave}
+            onCancel={onCancel}
+            env={env}
+            schema={schema}
+            readOnly={readOnly}
+            allowedOps={allowedOps}
+            exprCtx={exprCtx}
+            interaction={interaction}
+          />
+        </PlasmicQueryDataProvider>
       </PopoverFrameProvider>
     );
   }

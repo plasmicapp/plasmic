@@ -1,10 +1,10 @@
 import {
+  SWRResponse,
   useMutablePlasmicQueryData,
   usePlasmicDataConfig,
   wrapLoadingFetcher,
 } from "@plasmicapp/query";
 import * as React from "react";
-import { getConfig } from "../common";
 import { mapRecordEntries, mapRecords, noopFn, notNil } from "../utils";
 import {
   StatefulQueryResult,
@@ -17,12 +17,6 @@ import { makeQueryCacheKey } from "./makeQueryCacheKey";
 import { PlasmicQuery, PlasmicQueryResult } from "./types";
 
 const GLOBAL_CACHE = new Map<string, SyncPromise<unknown>>();
-
-type StudioCacheWrapper = <F extends (...args: any[]) => Promise<any>>(
-  id: string,
-  fn: F,
-  ...args: Parameters<F>
-) => Promise<any>;
 
 /**
  * This hook's job is to execute queries and re-render when query state changes.
@@ -68,7 +62,7 @@ type StudioCacheWrapper = <F extends (...args: any[]) => Promise<any>>(
 export function usePlasmicQueries<QueryName extends string>(
   $queries: Record<QueryName, PlasmicQueryResult>,
   queries: Record<QueryName, PlasmicQuery>
-): void {
+): Record<QueryName, ReturnType<typeof usePlasmicQuery>> {
   // Since we codegen components with data fetching and content rendering
   // together, the component will be suspended when query data is not loaded.
   // Therefore, this hook's primary complexity is handling component suspension
@@ -181,18 +175,9 @@ export function usePlasmicQueries<QueryName extends string>(
     [wrappedQueries, $queryStates, settledCount]
   );
 
-  mapRecordEntries(
+  return mapRecords(
     (_queryName, $query, query) => {
-      usePlasmicServerQuery<unknown, (...args: unknown[]) => Promise<unknown>>(
-        query,
-        undefined,
-        {
-          settledCount,
-          onStarted: $query.loadingPromise.bind($query),
-          onResolved: $query.resolvePromise.bind($query),
-          onRejected: $query.rejectPromise.bind($query),
-        }
-      );
+      return usePlasmicQuery($query, query, settledCount);
     },
     $queryStates,
     wrappedQueries
@@ -217,22 +202,8 @@ function wrapQueries<QueryName extends string>(
         return cached.promise;
       }
 
-      // Allow Studio to hook into query execution.
-      const wrapStudioCache: StudioCacheWrapper = getConfig(
-        "EXECUTE_SERVER_QUERY",
-        (
-          _: string,
-          fn: (...args2: unknown[]) => Promise<unknown>,
-          ...args2: unknown[]
-        ) => fn(...args2)
-      );
-
       // Count number of queries loading globally.
-      const promise = wrapLoadingFetcher(wrapStudioCache)(
-        query.id,
-        query.fn,
-        ...args
-      );
+      const promise = wrapLoadingFetcher(query.fn)(...args);
 
       GLOBAL_CACHE.set(cacheKey, new SyncPromise(promise));
       return promise;
@@ -324,32 +295,21 @@ function initPlasmicQueriesSync<QueryName extends string>(
 }
 
 /**
- * @deprecated
- * This export will be deleted before RSC release.
- * TODO: Rename to usePlasmicQuery
- * TODO: Reference $query directly.
  * TODO: Use paramsResult from usePlasmicQueries
  */
-export function usePlasmicServerQuery<
-  T,
-  F extends (...args: any[]) => Promise<T>
->(
+function usePlasmicQuery<T, F extends (...args: any[]) => Promise<T>>(
+  $query: PlasmicQueryResult<T>,
   query: PlasmicQuery<F>,
-  fallbackData?: T,
-  opts?: {
-    noUndefinedDataProxy?: boolean;
-    settledCount?: number;
-    onStarted?: (key: string, promise: Promise<T>) => void;
-    onResolved?: (key: string, data: T) => void;
-    onRejected?: (key: string | null, error: unknown) => void;
-  }
-): Partial<PlasmicQueryResult<T>> {
+  settledCount?: number
+): SWRResponse<T, unknown> {
+  const $queryState = $query as StatefulQueryResult<T>;
+
   // Since query.execParams never changes, we need a way to know when to retry
   // resolving params. The parent can pass in settledCount that increments as
   // queries settle.
   const paramsResult = React.useMemo(() => {
     return resolveParams(query.execParams);
-  }, [query.execParams, opts?.settledCount]);
+  }, [query.execParams, settledCount]);
 
   const { key, fetcher } = React.useMemo((): {
     key: string | null;
@@ -374,7 +334,7 @@ export function usePlasmicServerQuery<
           key: cacheKey,
           fetcher: () => {
             const promise = query.fn(...paramsResult.resolvedParams);
-            opts?.onStarted?.(cacheKey, promise);
+            $queryState.loadingPromise(cacheKey, promise);
             return promise.finally(() => {
               GLOBAL_CACHE.delete(cacheKey);
             });
@@ -392,19 +352,14 @@ export function usePlasmicServerQuery<
     // sometimes before swr had a chance to run the effect.  So we turn off
     // revalidateIfStale here, and just let the user manage invalidation.
     revalidateIfStale: false,
-
-    // TODO: Remove per-hook fallbackData
-    // Only used in older server query implementation.
-    // New implementation should use prefetchedCache instead.
-    fallbackData,
   });
 
   // TODO: needed?
   if (!result.isLoading) {
     if (result.error) {
-      opts?.onRejected?.(key, result.error);
+      $queryState.rejectPromise(key, result.error);
     } else if (key && result.data !== undefined) {
-      opts?.onResolved?.(key, result.data);
+      $queryState.resolvePromise(key, result.data);
     }
   }
 

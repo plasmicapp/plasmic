@@ -1,30 +1,59 @@
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { tryEvalExpr } from "@/wab/shared/eval";
-import { debounce } from "lodash";
+import L, { debounce } from "lodash";
 import React, { useCallback, useEffect, useState } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import {
-  chromeLight,
   InspectorNodeRenderer,
   ObjectInspector,
+  chromeLight,
 } from "react-inspector";
 
 const BASE_FONT_FAMILY = '"Roboto Mono", Consolas, Menlo, monospace';
 const BASE_FONT_SIZE = 12;
 
-export type ErrorInfo = {
-  name: string;
-  message: string;
-};
+/**
+ * Format error in this order:
+ *  {
+ *    name: "Error"
+ *    message: "foo",
+ *    aKey: 1,
+ *    zKey: 2,
+ *    stack: [...]
+ *    cause: { ... }
+ *  }
+ * @param error
+ */
+function formatError(error: Error): Partial<Error> {
+  const formatted = {};
 
-function formatError(error: any): ErrorInfo | undefined {
-  if (!error) {
-    return undefined;
+  const keys = new Set(Object.getOwnPropertyNames(error));
+
+  if (keys.delete("name") || "name" in error) {
+    formatted["name"] = error["name"];
   }
-  const errorName = (typeof error === "object" && error.name) || "Error";
-  const errorMessage =
-    (typeof error === "object" && error.message) || "Invalid code identified";
-  return { name: errorName, message: errorMessage };
+  if (keys.delete("message") || "message" in error) {
+    formatted["message"] = error["message"];
+  }
+
+  const hasStack = keys.delete("stack") || "stack" in error;
+  const hasCause = keys.delete("cause") || "cause" in error;
+
+  for (const key of Array.from(keys).sort()) {
+    formatted[key] = error[key];
+  }
+
+  if (hasStack) {
+    formatted["stack"] = error["stack"];
+  }
+  if (hasCause) {
+    // L.isError handles cross-frame Errors
+    formatted["cause"] = L.isError(error["stack"])
+      ? formatError(error["stack"])
+      : error["stack"];
+  }
+
+  return formatted;
 }
 
 export const CodePreview = function _CodePreview(props: {
@@ -43,51 +72,66 @@ export const CodePreview = function _CodePreview(props: {
   const previewValue =
     evaluated.val instanceof Window ? undefined : evaluated.val;
 
-  const [error, setError] = useState<ErrorInfo | undefined>(undefined);
+  const [error, setError] = useState<Partial<Error> | undefined>(undefined);
 
   const debouncedSetError = useCallback(
-    debounce((err?: ErrorInfo) => {
+    debounce((err: Partial<Error> | undefined) => {
       setError(err);
     }, 500),
     []
   );
 
   useEffect(() => {
+    if (!L.isError(evaluated.err)) {
+      setError(undefined);
+      return;
+    }
+
     const err = formatError(evaluated.err);
     // Clear the error immediately if it's no longer the same as the one currently displayed (which means the displayed error is possibly resolved)
     setError((prev) => (prev?.message !== err?.message ? undefined : prev));
     debouncedSetError(err);
+    return () => {
+      debouncedSetError.cancel();
+    };
   }, [evaluated.err]);
 
   return (
-    <div style={{ position: "absolute" }} className={className}>
-      <ErrorBoundary fallback={renderInspector(undefined)}>
-        {renderInspector(previewValue, error, opts)}
-      </ErrorBoundary>
-    </div>
+    <ValuePreview
+      className={className}
+      val={error ?? previewValue}
+      opts={opts}
+    />
   );
 };
 
+export function ValuePreview({
+  val,
+  className,
+  opts,
+}: {
+  val: any;
+  className?: string;
+  opts?: {
+    expandLevel?: number;
+  };
+}) {
+  return (
+    <div style={{ position: "absolute" }} className={className}>
+      <ErrorBoundary fallback={renderInspector(undefined)}>
+        {renderInspector(val, opts)}
+      </ErrorBoundary>
+    </div>
+  );
+}
+
 export function renderInspector(
   val: any,
-  error?: ErrorInfo,
   opts?: {
     expandLevel?: number;
     nodeRenderer?: InspectorNodeRenderer;
   }
 ) {
-  if (error) {
-    const errorName = (typeof error === "object" && error.name) || "Error";
-    const errorMessage =
-      (typeof error === "object" && error.message) || "Invalid code identified";
-    return (
-      <div className="light-error">
-        <p>
-          {errorName}: {errorMessage}
-        </p>
-      </div>
-    );
-  }
   return (
     <ObjectInspector
       theme={{
@@ -98,7 +142,7 @@ export function renderInspector(
         TREENODE_FONT_FAMILY: BASE_FONT_FAMILY,
         TREENODE_FONT_SIZE: `${BASE_FONT_SIZE}px`,
       }}
-      data={val}
+      data={L.isError(val) ? formatError(val) : val}
       expandLevel={opts?.expandLevel ?? 1}
       nodeRenderer={opts?.nodeRenderer}
     />

@@ -31,6 +31,7 @@ export function createDollarQueries<QueryName extends string>(
   ) as Record<QueryName, StatefulQueryResult>;
 }
 
+/** @internal */
 export type StatefulQueryState<T = unknown> =
   | {
       state: "initial";
@@ -51,11 +52,13 @@ export type StatefulQueryState<T = unknown> =
       error: unknown;
     };
 
+/** @internal */
 export type StateListener<T = unknown> = (
   state: StatefulQueryState<T>,
   prevState: StatefulQueryState<T>
 ) => void;
 
+/** @internal */
 export class StatefulQueryResult<T = unknown> implements PlasmicQueryResult<T> {
   current: StatefulQueryState<T>;
   settable: SettablePromise<T>;

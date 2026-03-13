@@ -1,6 +1,6 @@
 import { isCodeComponent } from "@/wab/shared/core/components";
-import { Component, TplNode } from "@/wab/shared/model/classes";
 import { TplCodeComponent, isTplComponent } from "@/wab/shared/core/tpls";
+import { Component, TplNode } from "@/wab/shared/model/classes";
 import type * as PlasmicDataSourcesContext from "@plasmicapp/data-sources-context";
 import type { ComponentRegistration } from "@plasmicapp/host";
 import type * as ReactWeb from "@plasmicapp/react-web";
@@ -15,7 +15,7 @@ interface Sub {
   React: typeof React;
   ReactDOM: typeof ReactDOM;
   reactWeb: typeof ReactWeb;
-  dataSources?: typeof PlasmicDataSources;
+  dataSources?: Pick<typeof PlasmicDataSources, "Fetcher" | "FetcherMeta">;
   dataSourcesContext: typeof PlasmicDataSourcesContext;
 }
 

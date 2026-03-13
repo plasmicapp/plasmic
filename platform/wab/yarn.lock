@@ -3841,7 +3841,7 @@
     "@plasmicapp/query" "0.1.83"
     "@plasmicapp/react-ssr-prepass" "^2.0.9"
 
-"@plasmicapp/query@0.1.83":
+"@plasmicapp/query@0.1.83", "@plasmicapp/query@^0.1.83":
   version "0.1.83"
   resolved "https://registry.yarnpkg.com/@plasmicapp/query/-/query-0.1.83.tgz#e993c9e36df39c859c337f9c31c5e2bcdcb68f62"
   integrity sha512-4DnrldAB4QJky/IrdeWIFfgmNZMWhIx9VTU8ijwHPHpfLM5dJERH2NxuvfdZIwVa0nfg7b8gxgindA1AeIPJVA==

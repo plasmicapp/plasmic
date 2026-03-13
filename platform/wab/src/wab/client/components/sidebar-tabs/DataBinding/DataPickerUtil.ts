@@ -13,6 +13,10 @@ import {
   isPlumeComponent,
 } from "@/wab/shared/core/components";
 import {
+  StatefulQueryResult,
+  unwrapStatefulQueryResult,
+} from "@/wab/shared/core/custom-functions";
+import {
   alwaysOmitKeys,
   flattenedKeys,
   omittedKeysIfEmpty,
@@ -328,6 +332,18 @@ export function prepareEnvForDataPicker(
   if (dataTokensEnv) {
     fixedData[mkMetaName("$dataTokens")] = { label: "Data Tokens" };
     fixedData.$dataTokens = dataTokensEnv;
+  }
+  // Omit fields from StatefulQueryResult instances in $q.
+  // Only expose the fields in the PlasmicQueryResult interface.
+  if ("$q" in fixedData && fixedData.$q) {
+    fixedData.$q = Object.fromEntries(
+      Object.entries(fixedData.$q as Record<string, any>).map(
+        ([name, query]: [string, StatefulQueryResult]) => [
+          name,
+          unwrapStatefulQueryResult(query),
+        ]
+      )
+    );
   }
   return fixedData;
 }

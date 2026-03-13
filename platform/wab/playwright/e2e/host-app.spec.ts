@@ -138,6 +138,7 @@ test.describe("host-app", () => {
       "plasmic-host-updated-old-host"
     );
     await waitForFrameToLoad(page);
+    await models.studio.waitStudioLoaded();
 
     await models.studio.leftPanel.selectTreeNode(["free box", "badge"]);
 

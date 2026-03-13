@@ -27,7 +27,8 @@ export const richSummarizeVal = function (val) {
     } else {
       return <ValueViewer value={val} />;
     }
-  } else if (val instanceof Error) {
+  } else if (L.isError(val)) {
+    // L.isError handles cross-frame Errors
     return `ERROR: ${val}`;
   } else if (L.isObject(val)) {
     return <ValueViewer value={val} />;

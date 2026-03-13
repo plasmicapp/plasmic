@@ -130,6 +130,7 @@ import {
   ensureType,
   mapEquals,
   maybe,
+  notNil,
   setEquals,
   switchType,
   tuple,
@@ -871,18 +872,9 @@ function useCtxFromInternalComponentProps(
 
   const reactHookSpecs = deriveReactHookSpecs(component, nodeNamer);
 
-  const plasmicInvalidate =
-    !!sub.dataSources?.usePlasmicInvalidate &&
-    // Also need to check usePlasmicDataConfig() as
-    // usePlasmicInvalidate() depends on it, and usePlasmicDataConfig()
-    // is actually re-exported from @plasmicapp/query, so just because
-    // usePlasmicInvalidate() exists doesn't mean
-    // usePlasmicDataConfig() exists. That's because data-sources is
-    // provided bo react-web, but query is provided by the user's
-    // custom host
-    !!sub.dataSources?.usePlasmicDataConfig
-      ? sub.dataSources.usePlasmicInvalidate()
-      : () => {};
+  const plasmicInvalidate = sub.dataSources?.usePlasmicInvalidate
+    ? sub.dataSources.usePlasmicInvalidate()
+    : () => {};
 
   const renderingCtx: RenderingCtx = {
     // renderingCtx could be undefined, if this canvas component has for
@@ -3711,37 +3703,53 @@ const mkComponentLevelQueryFetcher = computedFn(
                 ] as const
             ),
         ]);
-        const new$Q = Object.fromEntries([
-          ...component.serverQueries
-            .filter(isServerQueryWithOperation)
-            .map((query) => {
-              const funcId = customFunctionId(query.op.func);
-              const funcReg = ctx.viewCtx.canvasCtx
-                .getRegisteredFunctionsMap()
-                .get(funcId);
-              if (!funcReg) {
-                return [toVarName(query.name), undefined] as const;
-              }
-              return [
-                toVarName(query.name),
-                sub.dataSources?.usePlasmicServerQuery({
-                  id: funcId,
-                  fn: funcReg.function,
-                  execParams: () =>
-                    getCustomFunctionParams(
-                      query.op,
-                      ctx.env,
-                      {
-                        component,
-                        projectFlags: ctx.projectFlags,
-                        inStudio: true,
-                      },
-                      ctx.viewCtx.canvasCtx.win()
-                    ),
-                }),
-              ] as const;
-            }),
-        ]);
+
+        // Memoize queries similar to codegen output code.
+        // We only depend on ctx because it changes on env/observable changes.
+        const newQ = sub.React.useMemo(
+          () =>
+            Object.fromEntries([
+              ...component.serverQueries
+                .filter(isServerQueryWithOperation)
+                .map((query) => {
+                  const funcId = customFunctionId(query.op.func);
+                  const funcReg = ctx.viewCtx.canvasCtx
+                    .getRegisteredFunctionsMap()
+                    .get(funcId);
+                  if (!funcReg) {
+                    return null;
+                  }
+                  return [
+                    toVarName(query.name),
+                    {
+                      id: funcId,
+                      fn: funcReg.function,
+                      execParams: () =>
+                        getCustomFunctionParams(
+                          query.op,
+                          ctx.env,
+                          {
+                            component,
+                            projectFlags: ctx.projectFlags,
+                            inStudio: true,
+                          },
+                          ctx.viewCtx.canvasCtx.win()
+                        ),
+                    },
+                  ] as const;
+                })
+                .filter(notNil),
+            ]),
+          [ctx]
+        );
+        const new$Q = sub.React.useMemo(
+          (): Record<string, PlasmicQueryResult<unknown>> =>
+            sub.dataSources?.unstable_createDollarQueries?.(
+              Object.keys(newQ)
+            ) ?? {},
+          [Object.keys(newQ).join(",")]
+        );
+        sub.dataSources?.unstable_usePlasmicQueries?.(new$Q, newQ);
         const triggerQueryLoad = (queries: DataOrServerQueries) => {
           Object.keys(queries).forEach((k) => {
             try {
