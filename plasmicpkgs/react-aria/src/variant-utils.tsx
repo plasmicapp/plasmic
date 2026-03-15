@@ -83,21 +83,19 @@ export interface WithVariants<T extends AriaVariant[]> {
 }
 
 export function VariantUpdater<T extends AriaVariant[]>({
-  changes: rawChanges,
+  changes,
   updateVariant,
 }: {
   changes: Partial<Record<ArrayElement<T>, boolean>>;
   updateVariant?: UpdateVariant<T>;
 }) {
-  // Memoize by value: rawChanges is a new object every render (inline literal
-  // in a render prop), which would otherwise cause an infinite update loop.
-  const changes = React.useMemo(() => rawChanges, [JSON.stringify(rawChanges)]);
-
   React.useEffect(() => {
     if (updateVariant) {
       updateVariant(changes);
     }
-  }, [changes, updateVariant]);
+    // Compare by value: changes is a new object every render (inline literal
+    // in a render prop), so we use JSON.stringify to avoid an infinite update loop.
+  }, [JSON.stringify(changes), updateVariant]);
   return null;
 }
 
