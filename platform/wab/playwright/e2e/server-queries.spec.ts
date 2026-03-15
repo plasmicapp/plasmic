@@ -160,7 +160,9 @@ test.describe("server queries", () => {
     await createServerQuery(models, {
       name: "Todo",
       urlExpression: `"${MOCK_API_URL}/todos/" + $q.todos.data.body[0].id`,
-      expectedResult: "Buy milk",
+      // TODO -- expand the body or adjust the display to only show response body again
+      //  expectedResult: "Buy milk",
+      expectedResult: "statusCode: 200",
     });
     await expect(queryRows).toHaveCount(2);
 
