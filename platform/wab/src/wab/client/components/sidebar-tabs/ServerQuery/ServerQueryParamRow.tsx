@@ -2,6 +2,7 @@ import {
   InnerPropEditorRow,
   PropValueEditorContext,
   PropValueEditorContextData,
+  isPropShown,
 } from "@/wab/client/components/sidebar-tabs/PropEditorRow";
 import { MaybeCollapsibleRow } from "@/wab/client/components/sidebar/SidebarSection";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
@@ -121,6 +122,18 @@ export function getServerQueryParamRowItems(opts: {
   const { param, argsMap, propType, propValueEditorContext, onParamChange } =
     opts;
 
+  // Check if the top-level param should be hidden
+  if (
+    !isPropShown(
+      propType,
+      propValueEditorContext.componentPropValues,
+      propValueEditorContext.ccContextData,
+      { path: [param.argName] }
+    )
+  ) {
+    return [];
+  }
+
   // Expand flattened fields into their own rows to support advanced/collapse
   const flattenedFields = isFlattenedObjectPropType(propType)
     ? propType.fields
@@ -131,49 +144,58 @@ export function getServerQueryParamRowItems(opts: {
       param.argName in argsMap ? argsMap[param.argName][0] : undefined;
     const curObj = decomposeObjExpr(curArg?.expr);
 
-    return Object.entries(flattenedFields).map(([fieldName, fieldPropType]) => {
-      const fieldLabel =
-        maybePropTypeToDisplayName(fieldPropType) ?? smartHumanize(fieldName);
-      const fieldValue = curObj[fieldName];
-      // Preserve exprs and wrap plain values in codeLit
-      const fieldExpr = isKnownExpr(fieldValue)
-        ? fieldValue
-        : fieldValue !== undefined
-        ? codeLit(fieldValue)
-        : undefined;
+    return Object.entries(flattenedFields)
+      .filter(([fieldName, fieldPropType]) =>
+        isPropShown(
+          fieldPropType,
+          propValueEditorContext.componentPropValues,
+          propValueEditorContext.ccContextData,
+          { path: [param.argName, fieldName] }
+        )
+      )
+      .map(([fieldName, fieldPropType]) => {
+        const fieldLabel =
+          maybePropTypeToDisplayName(fieldPropType) ?? smartHumanize(fieldName);
+        const fieldValue = curObj[fieldName];
+        // Preserve exprs and wrap plain values in codeLit
+        const fieldExpr = isKnownExpr(fieldValue)
+          ? fieldValue
+          : fieldValue !== undefined
+          ? codeLit(fieldValue)
+          : undefined;
 
-      return {
-        collapsible: !!isAdvancedProp(fieldPropType, undefined),
-        content: (
-          <ServerQueryParamRow
-            attr={fieldName}
-            propType={fieldPropType}
-            expr={fieldExpr}
-            label={fieldLabel}
-            valueSetState={fieldValue !== undefined ? "isSet" : undefined}
-            propValueEditorContext={propValueEditorContext}
-            onChange={(newFieldVal) => {
-              if (newFieldVal == null) {
-                return;
-              }
-              // Re-read the current arg to avoid stale closures
-              const existingArg =
-                param.argName in argsMap
-                  ? argsMap[param.argName][0]
-                  : undefined;
-              const existingObj = decomposeObjExpr(existingArg?.expr);
-              const updatedObj = {
-                ...existingObj,
-                [fieldName]: newFieldVal,
-              };
+        return {
+          collapsible: !!isAdvancedProp(fieldPropType, undefined),
+          content: (
+            <ServerQueryParamRow
+              attr={fieldName}
+              propType={fieldPropType}
+              expr={fieldExpr}
+              label={fieldLabel}
+              valueSetState={fieldValue !== undefined ? "isSet" : undefined}
+              propValueEditorContext={propValueEditorContext}
+              onChange={(newFieldVal) => {
+                if (newFieldVal == null) {
+                  return;
+                }
+                // Re-read the current arg to avoid stale closures
+                const existingArg =
+                  param.argName in argsMap
+                    ? argsMap[param.argName][0]
+                    : undefined;
+                const existingObj = decomposeObjExpr(existingArg?.expr);
+                const updatedObj = {
+                  ...existingObj,
+                  [fieldName]: newFieldVal,
+                };
 
-              const newExpr = clone(serCompositeExprMaybe(updatedObj));
-              onParamChange(param, newExpr);
-            }}
-          />
-        ),
-      };
-    });
+                const newExpr = clone(serCompositeExprMaybe(updatedObj));
+                onParamChange(param, newExpr);
+              }}
+            />
+          ),
+        };
+      });
   }
 
   // Non-flattened params render as a single row
