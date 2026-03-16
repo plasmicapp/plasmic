@@ -19,31 +19,31 @@ export function getEnvVar(variable: keyof typeof DEFAULT_ENV): string {
 }
 
 export const LOADER_NEXTJS_TEMPLATES = [
-  { loaderVersion: "1", template: "template-pages", nextVersion: "12" },
+  { loaderVersion: "latest", template: "template-pages", nextVersion: "^12" },
   {
-    loaderVersion: "1",
+    loaderVersion: "latest",
     template: "template-app",
     reactVersion: "latest",
-    nextVersion: "15.5.3",
+    nextVersion: "^15",
   },
 ];
 
 export const LOADER_NEXTJS_VERSIONS = [
   { loaderVersion: "latest", reactVersion: "latest", nextVersion: "latest" },
   // Before PlasmicLinkProvider / usePlasmicLink is added
-  { loaderVersion: "1.0.287", reactVersion: "18", nextVersion: "12" },
+  { loaderVersion: "1.0.287", reactVersion: "^18", nextVersion: "^12" },
 ];
 
 export const LOADER_REACT_VERSIONS = [
-  { reactVersion: "17", loaderReactVersion: "latest" },
-  { reactVersion: "18", loaderReactVersion: "latest" },
+  { reactVersion: "^17", loaderReactVersion: "latest" },
+  { reactVersion: "^18", loaderReactVersion: "latest" },
 ];
 
 export const LOADER_NEXTJS_VERSIONS_EXHAUSTIVE = [
   ...LOADER_NEXTJS_VERSIONS,
-  { loaderVersion: "latest", reactVersion: "18", nextVersion: "13" },
-  { loaderVersion: "latest", reactVersion: "18", nextVersion: "14" },
-  { loaderVersion: "latest", reactVersion: "18", nextVersion: "15" },
+  { loaderVersion: "latest", reactVersion: "^18", nextVersion: "^13" },
+  { loaderVersion: "latest", reactVersion: "^18", nextVersion: "^14" },
+  { loaderVersion: "latest", reactVersion: "^18", nextVersion: "^15" },
 ];
 
 function maybeSwapWithDockerLocalhost(value: string | undefined) {
