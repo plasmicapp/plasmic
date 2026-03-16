@@ -61,6 +61,8 @@ import {
   useGlobalActions
 } from "@plasmicapp/host";
 
+import { generateDynamicMetadata, PageCtx } from "./PlasmicDynamicPageServer"; // plasmic-import: AO44A-w7hh/rscServer
+
 import RandomDynamicPageButton from "../../RandomDynamicPageButton"; // plasmic-import: Q23H1_1M_P/component
 import { _useGlobalVariants } from "./plasmic"; // plasmic-import: 47tFXWjN2C4NyHFGGpaYQ3/projectModule
 import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: 47tFXWjN2C4NyHFGGpaYQ3/styleTokensProvider
@@ -83,15 +85,6 @@ function wrapQueriesWithLoadingProxy($q: any): any {
       return !query || query.isLoading || !query.data ? emptyProxy : query;
     }
   });
-}
-
-export function generateDynamicMetadata($q: any, $ctx: any) {
-  return {
-    openGraph: {},
-    twitter: {
-      card: "summary"
-    }
-  };
 }
 
 createPlasmicElementProxy;
@@ -155,7 +148,7 @@ function PlasmicDynamicPage__RenderFunc(props: {
 
   const pageMetadata = generateDynamicMetadata(
     wrapQueriesWithLoadingProxy({}),
-    $ctx
+    $ctx as PageCtx
   );
 
   const styleTokensClassNames = _useStyleTokens();
@@ -318,9 +311,10 @@ export const PlasmicDynamicPage = Object.assign(
     internalArgProps: PlasmicDynamicPage__ArgProps,
 
     pageMetadata: generateDynamicMetadata(wrapQueriesWithLoadingProxy({}), {
+      pageRoute: "/dynamic/[slug]",
       pagePath: "/dynamic/[slug]",
-      searchParams: {},
-      params: {}
+      params: {},
+      query: {}
     })
   }
 );

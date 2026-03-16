@@ -18,6 +18,7 @@ import {
   deriveRenderOpts
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/host";
+import { generateDynamicMetadata } from "./PlasmicDynamicPageServer"; // plasmic-import: AO44A-w7hh/rscServer
 import RandomDynamicPageButton from "../../RandomDynamicPageButton"; // plasmic-import: Q23H1_1M_P/component
 import { _useStyleTokens } from "./PlasmicStyleTokensProvider"; // plasmic-import: 47tFXWjN2C4NyHFGGpaYQ3/styleTokensProvider
 import "@plasmicapp/react-web/lib/plasmic.css";
@@ -37,15 +38,6 @@ function wrapQueriesWithLoadingProxy($q) {
       return !query || query.isLoading || !query.data ? emptyProxy : query;
     }
   });
-}
-
-export function generateDynamicMetadata($q, $ctx) {
-  return {
-    openGraph: {},
-    twitter: {
-      card: "summary"
-    }
-  };
 }
 
 createPlasmicElementProxy;
@@ -205,9 +197,10 @@ export const PlasmicDynamicPage = Object.assign(
     internalVariantProps: PlasmicDynamicPage__VariantProps,
     internalArgProps: PlasmicDynamicPage__ArgProps,
     pageMetadata: generateDynamicMetadata(wrapQueriesWithLoadingProxy({}), {
+      pageRoute: "/dynamic/[slug]",
       pagePath: "/dynamic/[slug]",
-      searchParams: {},
-      params: {}
+      params: {},
+      query: {}
     })
   }
 );

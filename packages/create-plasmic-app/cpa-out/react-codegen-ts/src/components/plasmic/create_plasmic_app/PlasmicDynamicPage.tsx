@@ -79,11 +79,18 @@ function wrapQueriesWithLoadingProxy($q: any): any {
   });
 }
 
-export function generateDynamicMetadata($q: any, $ctx: any) {
+export type PageCtx = {
+  pageRoute: string;
+  pagePath: string;
+  params: Record<string, string | string[] | undefined>;
+  query: Record<string, string | string[] | undefined>;
+};
+
+export function generateDynamicMetadata($q: any, $ctx: PageCtx) {
   return {
     openGraph: {},
     twitter: {
-      card: "summary"
+      card: "summary" as const
     }
   };
 }
@@ -292,9 +299,10 @@ export const PlasmicDynamicPage = Object.assign(
     internalArgProps: PlasmicDynamicPage__ArgProps,
 
     pageMetadata: generateDynamicMetadata(wrapQueriesWithLoadingProxy({}), {
+      pageRoute: "/dynamic/[slug]",
       pagePath: "/dynamic/[slug]",
-      searchParams: {},
-      params: {}
+      params: {},
+      query: {}
     })
   }
 );

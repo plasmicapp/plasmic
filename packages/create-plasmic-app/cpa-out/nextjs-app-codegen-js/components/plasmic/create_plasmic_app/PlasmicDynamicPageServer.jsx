@@ -51,6 +51,6 @@ export async function makeAppRouterPageCtx({ params, searchParams }) {
   return ctx;
 }
 
-export async function PlasmicDynamicPageServer(props) {
+export function PlasmicDynamicPageServer(props) {
   return <ClientDynamicPage {...props} />;
 }

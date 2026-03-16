@@ -51,6 +51,6 @@ export async function makeAppRouterPageCtx({ params, searchParams }) {
   return ctx;
 }
 
-export async function PlasmicHomepageServer(props) {
+export function PlasmicHomepageServer(props) {
   return <ClientHomepage {...props} />;
 }

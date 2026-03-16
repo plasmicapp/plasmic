@@ -227,9 +227,10 @@ export const PlasmicHomepage = Object.assign(
     internalVariantProps: PlasmicHomepage__VariantProps,
     internalArgProps: PlasmicHomepage__ArgProps,
     pageMetadata: generateDynamicMetadata(wrapQueriesWithLoadingProxy({}), {
+      pageRoute: "/",
       pagePath: "/",
-      searchParams: {},
-      params: {}
+      params: {},
+      query: {}
     })
   }
 );

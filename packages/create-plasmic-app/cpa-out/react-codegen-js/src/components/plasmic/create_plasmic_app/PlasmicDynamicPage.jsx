@@ -182,9 +182,10 @@ export const PlasmicDynamicPage = Object.assign(
     internalVariantProps: PlasmicDynamicPage__VariantProps,
     internalArgProps: PlasmicDynamicPage__ArgProps,
     pageMetadata: generateDynamicMetadata(wrapQueriesWithLoadingProxy({}), {
+      pageRoute: "/dynamic/[slug]",
       pagePath: "/dynamic/[slug]",
-      searchParams: {},
-      params: {}
+      params: {},
+      query: {}
     })
   }
 );

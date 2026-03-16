@@ -14,11 +14,18 @@ import { ClientHomepage } from "../../../app/page-client"; // plasmic-import: 6u
 
 const $$ = {};
 
-export function generateDynamicMetadata($q: any, $ctx: any) {
+export type PageCtx = {
+  pageRoute: string;
+  pagePath: string;
+  params: Record<string, string | string[] | undefined>;
+  query: Record<string, string | string[] | undefined>;
+};
+
+export function generateDynamicMetadata($q: any, $ctx: PageCtx) {
   return {
     openGraph: {},
     twitter: {
-      card: "summary"
+      card: "summary" as const
     }
   };
 }
@@ -70,6 +77,6 @@ export async function makeAppRouterPageCtx({
 export type PlasmicHomepageServerProps = DefaultHomepageProps &
   HomepageServerSkeletonProps;
 
-export async function PlasmicHomepageServer(props: PlasmicHomepageServerProps) {
+export function PlasmicHomepageServer(props: PlasmicHomepageServerProps) {
   return <ClientHomepage {...props} />;
 }
