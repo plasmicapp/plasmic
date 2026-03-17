@@ -371,6 +371,7 @@ function addSentry(app: express.Application, config: Config) {
   logger().debug(`Initializing Sentry with DSN: ${config.sentryDSN}`);
   Sentry.init({
     dsn: config.sentryDSN,
+    environment: process.env.SENTRY_ENVIRONMENT,
     // We need beforeSend because errors don't necessarily make their way through the Express pipeline - they can be
     // thrown from anywhere, in Express or outside (or from random async event loop iterations).
     async beforeSend(event: Sentry.Event): Promise<Sentry.Event | null> {
