@@ -1,4 +1,3 @@
-import { ServerQueryResult } from "../types";
 import { mapRecordEntries } from "../utils";
 import { resolveParams, StatefulQueryResult } from "./common";
 import { makeQueryCacheKey } from "./makeQueryCacheKey";
@@ -99,74 +98,4 @@ export async function executePlasmicQuery<T>(
       }
     }
   } while (true);
-}
-
-/** @deprecated */
-class PlasmicUndefinedServerError extends Error {
-  plasmicType: "PlasmicUndefinedServerError";
-  constructor(msg?: string) {
-    super(msg);
-    this.plasmicType = "PlasmicUndefinedServerError";
-  }
-}
-
-/** @deprecated */
-function isPlasmicUndefinedServerError(
-  x: any
-): x is PlasmicUndefinedServerError {
-  return (
-    !!x &&
-    typeof x === "object" &&
-    (x as any).plasmicType === "PlasmicUndefinedServerError"
-  );
-}
-
-/** @deprecated */
-export function mkPlasmicUndefinedServerProxy<T>(): ServerQueryResult<T> {
-  return {
-    data: new Proxy(
-      {},
-      {
-        get: (_, prop) => {
-          if (prop === "isUndefinedServerProxy") {
-            return true;
-          } else if (prop === "then") {
-            return undefined;
-          }
-          throw new PlasmicUndefinedServerError("Data is not available yet");
-        },
-      }
-    ) as T,
-    isLoading: true,
-  };
-}
-
-/**
- * Executes a server query, returning either the result of the query or a
- * PlasmicUndefinedServerProxy if the query depends on data that is not yet ready
- * @deprecated
- */
-export async function executeServerQuery<F extends (...args: any[]) => any>(
-  query: PlasmicQuery<F>
-): Promise<ServerQueryResult<ReturnType<F>>> {
-  const resolvedParams = resolveServerParams(query.execParams);
-  if (isPlasmicUndefinedServerError(resolvedParams)) {
-    return mkPlasmicUndefinedServerProxy();
-  }
-  return { data: await query.fn(...resolvedParams), isLoading: false };
-}
-
-/** @deprecated */
-function resolveServerParams<F extends (...args: any[]) => any>(
-  params: () => Parameters<F>
-): Parameters<F> | PlasmicUndefinedServerError {
-  try {
-    return params();
-  } catch (err) {
-    if (isPlasmicUndefinedServerError(err)) {
-      return err;
-    } else {
-      throw err;
-    }
-  }
 }

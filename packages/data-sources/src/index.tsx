@@ -7,11 +7,7 @@ export {
   type StatefulQueryState as _StatefulQueryState,
 } from "./serverQueries/common";
 export { makeQueryCacheKey } from "./serverQueries/makeQueryCacheKey";
-export {
-  executeServerQuery,
-  mkPlasmicUndefinedServerProxy,
-  executePlasmicQueries as unstable_executePlasmicQueries,
-} from "./serverQueries/server";
+export { executePlasmicQueries as unstable_executePlasmicQueries } from "./serverQueries/server";
 export type { PlasmicQuery, PlasmicQueryResult } from "./serverQueries/types";
 
 // exports below are deprecated and will be removed in major version bump
@@ -39,7 +35,6 @@ export type {
   DataSourceSchema,
   ManyRowsResult,
   Pagination,
-  ServerQueryResult,
   SingleRowResult,
   TableFieldSchema,
   TableFieldType,

@@ -227,7 +227,7 @@ export type ResolveParamsResult<Params extends unknown[] = unknown[]> =
 /**
  * Resolves params, returning a result with the following possible states:
  * - "ready" if the evaluated params are available.
- * - "blocked" if we encounter a PlasmicUndefinedServerError promise
+ * - "blocked" if we encounter a PlasmicUndefinedDataErrorPromise
  *     and need to wait for it to resolve before trying to evaluate params again
  * - "error" if we encounter any other error
  */

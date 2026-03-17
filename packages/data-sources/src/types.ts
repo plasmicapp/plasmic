@@ -54,12 +54,6 @@ export interface DataOp {
   roleId?: string | null;
 }
 
-/** @deprecated */
-export interface ServerQueryResult<T = any> {
-  data: T;
-  isLoading: boolean;
-}
-
 /**
  * Represents the result of a client-side query.
  */
