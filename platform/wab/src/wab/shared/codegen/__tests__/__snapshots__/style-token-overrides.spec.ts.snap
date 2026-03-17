@@ -702,6 +702,8 @@ export default PlasmicHomepage;
 // plasmic-unformatted
 import { createUseStyleTokens, createStyleTokensProvider } from "@plasmicapp/react-web";
 import { _useGlobalVariants } from "./plasmic.tsx"; // plasmic-import: 1234567890/projectModule
+import "./plasmic.css"; // plasmic-import: 1234567890/projectcss
+import "./plasmic.css"; // plasmic-import: iGygRUekJWXZgpf4Konyj4/projectcss
 var data = {
     base: "".concat("plasmic_tokens_1234567890", " ").concat("plasmic_tokens_iGygRUekJWXZgpf4Konyj4"),
     varianted: [
@@ -737,9 +739,9 @@ export var StyleTokensProvider = createStyleTokensProvider({
 
     import { _useGlobalVariants } from "./plasmic.tsx"; // plasmic-import: 1234567890/projectModule
   
-    
+    import "./plasmic.css"; // plasmic-import: 1234567890/projectcss
 
-    
+    import "./plasmic.css"; // plasmic-import: iGygRUekJWXZgpf4Konyj4/projectcss
   
     const data = {
     base: \`\${"plasmic_tokens_1234567890"} \${"plasmic_tokens_iGygRUekJWXZgpf4Konyj4"}\`,

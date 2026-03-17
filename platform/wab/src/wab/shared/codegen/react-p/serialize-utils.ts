@@ -291,7 +291,7 @@ export function makeStylesImports(
           )}; // plasmic-import: global/${defaultStyleCssImportName}`
     }
     ${
-      scheme === "plain" && !opts.includeImportedTokens
+      scheme === "plain"
         ? cssProjectDependencies
             .map(
               (dep) =>
@@ -910,6 +910,9 @@ export function makeTaggedPlasmicDefaultImport(
       source.endsWith(".tsx"))
   ) {
     source = `./${source}`;
+  }
+  if (!imports) {
+    return `import "${source}"; // plasmic-import: ${id}/${type}`;
   }
   return `import ${imports} from "${source}"; // plasmic-import: ${id}/${type}`;
 }

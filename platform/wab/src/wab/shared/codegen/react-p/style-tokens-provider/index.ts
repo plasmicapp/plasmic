@@ -140,16 +140,16 @@ function makeCssImport(
   exportOpts: SetRequired<Partial<ExportOpts>, "targetEnv">,
   cssFileName: string
 ) {
-  return exportOpts?.stylesOpts?.scheme === "css-modules"
-    ? makeTaggedPlasmicDefaultImport(
-        exportOpts.platform === "gatsby"
-          ? `* as ${importName}` // gatsby needs star import
-          : importName,
-        cssFileName,
-        projectId,
-        "projectcss"
-      )
-    : "";
+  return makeTaggedPlasmicDefaultImport(
+    exportOpts?.stylesOpts?.scheme === "css-modules"
+      ? exportOpts.platform === "gatsby"
+        ? `* as ${importName}` // gatsby needs star import
+        : importName
+      : "", // No import name for css scheme
+    cssFileName,
+    projectId,
+    "projectcss"
+  );
 }
 
 /**

@@ -752,6 +752,7 @@ export function PlasmicSeoServer(props: PlasmicSeoServerProps) {
 // plasmic-unformatted
 import { createUseStyleTokens } from "@plasmicapp/react-web";
 import { _useGlobalVariants } from "./plasmic.tsx"; // plasmic-import: 3UYiEMfU3twU4iYSx86cub/projectModule
+import "./plasmic.css"; // plasmic-import: 3UYiEMfU3twU4iYSx86cub/projectcss
 var data = {
     base: "".concat("plasmic_tokens_3UYiEMfU3twU4iYSx86cub"),
     varianted: [],
@@ -772,7 +773,7 @@ export var _useStyleTokens = createUseStyleTokens(data, _useGlobalVariants);
 
     import { _useGlobalVariants } from "./plasmic.tsx"; // plasmic-import: 3UYiEMfU3twU4iYSx86cub/projectModule
   
-    
+    import "./plasmic.css"; // plasmic-import: 3UYiEMfU3twU4iYSx86cub/projectcss
 
     
   
@@ -2449,6 +2450,7 @@ export default PlasmicP1;
 // plasmic-unformatted
 import { createUseStyleTokens } from "@plasmicapp/react-web";
 import { _useGlobalVariants } from "./plasmic.tsx"; // plasmic-import: 1234567890/projectModule
+import "./plasmic.css"; // plasmic-import: 1234567890/projectcss
 var data = {
     base: "".concat("plasmic_tokens_1234567890"),
     varianted: [],
@@ -2469,7 +2471,7 @@ export var _useStyleTokens = createUseStyleTokens(data, _useGlobalVariants);
 
     import { _useGlobalVariants } from "./plasmic.tsx"; // plasmic-import: 1234567890/projectModule
   
-    
+    import "./plasmic.css"; // plasmic-import: 1234567890/projectcss
 
     
   

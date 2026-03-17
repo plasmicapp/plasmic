@@ -137,9 +137,10 @@ async function changeTokensTarget(models: PageModels, targetName: string) {
 }
 
 async function closeSidebarModal(models: PageModels) {
-  const modal = models.studio.frame.locator("#sidebar-modal");
+  // Multiple can exist, if you are in a nested sidebar modal. Just select the last.
+  const modal = models.studio.leftPanel.sidebarModal.last();
   if (await modal.isVisible({ timeout: 1000 }).catch(() => false)) {
-    await models.studio.leftPanel.closeSidebarModalButton.click();
+    await models.studio.leftPanel.closeSidebarModalButton.last().click();
   }
 }
 

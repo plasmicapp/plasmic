@@ -1928,17 +1928,27 @@ export function allGlobalVariantGroups(
     excludeHostLessPackages?: boolean;
     excludeMediaQuery?: boolean;
     excludeInactiveScreenVariants?: boolean;
+    includeActiveScreenVariantsFromDeps?: boolean;
   } = {}
 ): GlobalVariantGroup[] {
   let res = [...site.globalVariantGroups];
+  const activeScreenVariantGroups = new Set(
+    site.activeScreenVariantGroup ? [site.activeScreenVariantGroup] : []
+  );
+
   if (opts.includeDeps) {
-    res.push(
-      ...walkDependencyTree(site, opts.includeDeps).flatMap((dep) =>
-        !opts.excludeHostLessPackages || !isHostLessPackage(dep.site)
-          ? dep.site.globalVariantGroups
-          : []
-      )
-    );
+    walkDependencyTree(site, opts.includeDeps).forEach((dep) => {
+      if (
+        opts.includeActiveScreenVariantsFromDeps &&
+        dep.site.activeScreenVariantGroup
+      ) {
+        activeScreenVariantGroups.add(dep.site.activeScreenVariantGroup);
+      }
+
+      if (!opts.excludeHostLessPackages || !isHostLessPackage(dep.site)) {
+        res.push(...dep.site.globalVariantGroups);
+      }
+    });
   }
   if (opts.excludeEmpty) {
     res = res.filter((x) => x.variants.length > 0);
@@ -1948,7 +1958,7 @@ export function allGlobalVariantGroups(
   }
   if (opts.excludeInactiveScreenVariants) {
     res = res.filter(
-      (vg) => !isScreenVariantGroup(vg) || vg === site.activeScreenVariantGroup
+      (vg) => !isScreenVariantGroup(vg) || activeScreenVariantGroups.has(vg)
     );
   }
 

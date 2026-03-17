@@ -475,10 +475,9 @@ export function exportProjectConfig(
 
   const cssTokenVarsRules = makeCssTokenVarsRuleSets(
     site,
-    (exportOpts?.includeImportedTokens
-      ? siteFinalStyleTokensAllDeps(site)
-      : siteFinalStyleTokens(site)
-    ).flatMap((t) => genTokenVarDataWithVariants(t, site)),
+    siteFinalStyleTokens(site).flatMap((t) =>
+      genTokenVarDataWithVariants(t, site)
+    ),
     `.${makePlasmicTokensClassName(projectId, exportOpts)}`,
     {
       generateExternalToken: true,
@@ -487,9 +486,7 @@ export function exportProjectConfig(
   );
 
   const cssTokenOverrideVarsRules =
-    scheme !== "plain" &&
-    !exportOpts?.includeImportedTokens &&
-    hasStyleTokenOverrides
+    scheme !== "plain" && hasStyleTokenOverrides
       ? makeCssTokenVarsRuleSets(
           site,
           site.styleTokenOverrides
