@@ -33,6 +33,7 @@ import {
   withoutFalsy,
 } from "@/wab/shared/common";
 import {
+  CustomFunctionOpArgs,
   StatefulQueryState,
   getCustomFunctionParams,
   useCustomFunctionOp,
@@ -42,7 +43,6 @@ import { isHostlessPackageInstalledWithHidden } from "@/wab/shared/core/project-
 import { flattenExprs } from "@/wab/shared/core/tpls";
 import { DEVFLAGS, HostLessComponentInfo } from "@/wab/shared/devflags";
 import { makeDataTokenIdentifier } from "@/wab/shared/eval/expression-parser";
-import { noopFn } from "@/wab/shared/functions";
 import {
   ArgType,
   ComponentServerQuery,
@@ -79,7 +79,7 @@ interface QueryDraft {
 type ValidQueryDraft = SetRequired<QueryDraft, "fnExpr">;
 
 function isValidQueryDraft(draft: QueryDraft): draft is ValidQueryDraft {
-  return "fnExpr" in draft;
+  return draft.fnExpr !== undefined;
 }
 
 interface AvailableCustomFunctionInfo {
@@ -492,9 +492,15 @@ export const ServerQueryOpDraftForm = observer(
   }
 );
 
-function _ServerQueryOpPreview(props: { queryState: StatefulQueryState }) {
+/** Renders "not executed" UI if queryState is undefined. */
+function _ServerQueryOpPreview(props: {
+  queryState: StatefulQueryState | undefined;
+}) {
   const { queryState } = props;
   const previewValue = React.useMemo(() => {
+    if (!queryState) {
+      return "Not executed"; // this value should never actually be shown
+    }
     switch (queryState.state) {
       case "initial":
       case "loading":
@@ -554,18 +560,23 @@ function _ServerQueryOpPreview(props: { queryState: StatefulQueryState }) {
           new Tab({
             name: "Response",
             key: "response",
-            contents: () => (
-              <React.Suspense>
-                <LazyValuePreview
-                  key={previewCollapseCount}
-                  val={previewValue}
-                  className="code-preview-inner"
-                  opts={{
-                    expandLevel: previewExpand ? 50 : 1,
-                  }}
-                />
-              </React.Suspense>
-            ),
+            contents: () =>
+              !queryState ? (
+                <div className="flex-col fill-width fill-height flex-vcenter flex-hcenter dimfg">
+                  Press Execute to preview results
+                </div>
+              ) : (
+                <React.Suspense>
+                  <LazyValuePreview
+                    key={previewCollapseCount}
+                    val={previewValue}
+                    className="code-preview-inner"
+                    opts={{
+                      expandLevel: previewExpand ? 50 : 1,
+                    }}
+                  />
+                </React.Suspense>
+              ),
           }),
         ])}
       />
@@ -670,20 +681,11 @@ export const ServerQueryOpExprFormAndPreview = observer(
       return () => dispose();
     }, [studioCtx.site.dataTokens, draft.fnExpr?.args]);
 
-    const draftFnId = draft?.fnExpr?.func
-      ? customFunctionId(draft.fnExpr.func)
-      : undefined;
-    const draftFn = draftFnId
-      ? studioCtx.getRegisteredFunctionsMap().get(draftFnId)
-      : undefined;
-    const { queryState, swrResponse } = useCustomFunctionOp(
-      draft.queryName || "untitled",
-      draftFn?.function ?? noopFn,
-      draft.fnExpr,
-      env,
-      exprCtx
-    );
-
+    // Query executes (useCustomFunctionOp) when executeArgs changes.
+    // undefined query will not be run.
+    const [executeArgs, setExecuteArgs] =
+      React.useState<CustomFunctionOpArgs>();
+    const executeResult = useCustomFunctionOp(executeArgs);
     const validDraft = isValidQueryDraft(draft) && draft;
     const saveFnExpr = validDraft
       ? async () => {
@@ -693,9 +695,27 @@ export const ServerQueryOpExprFormAndPreview = observer(
 
     const executeFnExpr = validDraft
       ? () => {
-          spawn(swrResponse.mutate());
+          const registeredFn = studioCtx
+            .getRegisteredFunctionsMap()
+            .get(customFunctionId(validDraft.fnExpr.func));
+          if (registeredFn) {
+            setExecuteArgs({
+              fnId: validDraft.queryName || "untitled",
+              fn: registeredFn.function,
+              expr: clone(validDraft.fnExpr),
+              env,
+              exprCtx,
+            });
+          }
         }
       : undefined;
+
+    // Auto-execute on mount if initial value is valid
+    React.useEffect(() => {
+      if (executeFnExpr) {
+        executeFnExpr();
+      }
+    }, []);
 
     const contents = (
       <div className="fill-height">
@@ -739,7 +759,7 @@ export const ServerQueryOpExprFormAndPreview = observer(
               <Button onClick={onCancel}>Cancel</Button>
             </BottomModalButtons>
           </div>
-          <ServerQueryOpPreview queryState={queryState} />
+          <ServerQueryOpPreview queryState={executeResult?.queryState} />
         </div>
       </div>
     );

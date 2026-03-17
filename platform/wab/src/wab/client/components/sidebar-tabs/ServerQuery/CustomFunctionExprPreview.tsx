@@ -31,13 +31,13 @@ export const CustomFunctionExprPreview = observer(
       studioCtx.getRegisteredFunctionsMap().get(functionId),
       `Missing registered function for ${SERVER_QUERY_LOWER}`
     );
-    const { queryState } = useCustomFunctionOp(
-      functionId,
-      regFunc.function,
+    const { queryState } = useCustomFunctionOp({
+      fnId: functionId,
+      fn: regFunc.function,
       expr,
       env,
-      exprCtx
-    );
+      exprCtx,
+    });
     return (
       <>
         <ValuePreview

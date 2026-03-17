@@ -463,9 +463,10 @@ test.describe("data token usages", () => {
         .click();
       const serverQueryModal = models.studio.serverQueryBottomModal;
       await serverQueryModal.waitFor();
-      const previewResult = serverQueryModal.locator(".code-preview-inner");
+      await expect(serverQueryModal).toContainText(
+        "Press Execute to preview results"
+      );
 
-      await expect(previewResult).not.toContainText("data: Array(7)");
       const strapiHostRow = serverQueryModal.locator(
         `[data-test-id="prop-editor-row-host"]`
       );
@@ -534,7 +535,9 @@ test.describe("data token usages", () => {
       );
 
       await serverQueryModal.locator("button").getByText("Execute").click();
-      await expect(previewResult).toContainText("data: Array(7)");
+      await expect(
+        serverQueryModal.locator(".code-preview-inner")
+      ).toContainText("data: Array(7)");
       await serverQueryModal.locator("button").getByText("Save").click();
       await serverQueryModal.waitFor({ state: "hidden" });
       await models.studio.leftPanel.assertDataTokenExists(newExpectedName);
