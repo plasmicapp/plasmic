@@ -2,6 +2,7 @@ import {
   getTeamMenuItems,
   TeamMenu,
 } from "@/wab/client/components/dashboard/dashboard-actions";
+import { reactConfirm } from "@/wab/client/components/quick-modals";
 import { Spinner } from "@/wab/client/components/widgets";
 import { useAppCtx } from "@/wab/client/contexts/AppContexts";
 import { useAsyncStrict } from "@/wab/client/hooks/useAsyncStrict";
@@ -9,12 +10,13 @@ import {
   DefaultTeamSettingsProps,
   PlasmicTeamSettings,
 } from "@/wab/client/plasmic/plasmic_kit_dashboard/PlasmicTeamSettings";
-import { TeamId } from "@/wab/shared/ApiSchema";
+import { GrantRevokeRequest, TeamId } from "@/wab/shared/ApiSchema";
 import { ensure } from "@/wab/shared/common";
 import { DEVFLAGS } from "@/wab/shared/devflags";
 import { accessLevelRank, GrantableAccessLevel } from "@/wab/shared/EntUtil";
 import { getAccessLevelToResource } from "@/wab/shared/perms";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
+import { notification } from "antd";
 import * as React from "react";
 
 interface TeamSettingsProps extends DefaultTeamSettingsProps {
@@ -65,6 +67,8 @@ function TeamSettings_(props: TeamSettingsProps, ref: HTMLElementRefOf<"div">) {
       )
     : "blocked";
   const readOnly = accessLevelRank(userAccessLevel) < accessLevelRank("editor");
+  const hasOwnership =
+    accessLevelRank(userAccessLevel) >= accessLevelRank("owner");
 
   const teamMenuItems = team ? getTeamMenuItems(appCtx, team) : [];
 
@@ -101,26 +105,57 @@ function TeamSettings_(props: TeamSettingsProps, ref: HTMLElementRefOf<"div">) {
           if (!team) {
             return;
           }
-          await appCtx.api.grantRevoke({
-            grants: role
-              ? [
-                  {
-                    email,
-                    accessLevel: role,
-                    teamId: team.id,
-                  },
-                ]
-              : [],
-            revokes: !role
-              ? [
-                  {
-                    email,
-                    teamId: team.id,
-                  },
-                ]
-              : [],
-          });
-          refetchData();
+
+          async function grantRevoke(req: GrantRevokeRequest) {
+            try {
+              await appCtx.api.grantRevoke(req);
+            } catch (e) {
+              notification.error({
+                message: "Failed to update permissions. Please try again.",
+              });
+            } finally {
+              refetchData();
+            }
+          }
+
+          if (hasOwnership && role === "owner") {
+            // Confirm user is trying to transfer "owner" to another member.
+            const confirm = await reactConfirm({
+              title: `Transfer ownership`,
+              message: (
+                <>
+                  You will lose owner status and become an editor. Transfer
+                  ownership of <strong>{team.name}</strong> to {email}?
+                </>
+              ),
+            });
+            if (!confirm) {
+              return;
+            }
+
+            await grantRevoke({
+              grants: [
+                // Order matters: target must be promoted to "owner" before the actor is
+                // demoted to "editor". The server processes grants sequentially; reversing
+                // the order would cause the second grant to fail because the actor would
+                // no longer have owner-level access.
+                { email, accessLevel: "owner", teamId: team.id },
+                {
+                  email: selfInfo.email,
+                  accessLevel: "editor",
+                  teamId: team.id,
+                },
+              ],
+              revokes: [],
+            });
+          } else {
+            await grantRevoke({
+              grants: role
+                ? [{ email, accessLevel: role, teamId: team.id }]
+                : [],
+              revokes: !role ? [{ email, teamId: team.id }] : [],
+            });
+          }
         },
         onRemoveUser: async (email: string) => {
           if (!team) {

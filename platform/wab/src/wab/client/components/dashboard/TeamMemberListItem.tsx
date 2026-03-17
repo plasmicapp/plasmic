@@ -1,6 +1,5 @@
 import TextWithInfo from "@/wab/client/components/TextWithInfo";
 import { Matcher } from "@/wab/client/components/view-common";
-import { ClickStopper } from "@/wab/client/components/widgets";
 import {
   commenterTooltip,
   contentCreatorTooltip,
@@ -23,7 +22,8 @@ import {
   TeamMember,
 } from "@/wab/shared/ApiSchema";
 import { fullName, getUserEmail } from "@/wab/shared/ApiSchemaUtil";
-import { GrantableAccessLevel } from "@/wab/shared/EntUtil";
+import { ensure } from "@/wab/shared/common";
+import { accessLevelRank, GrantableAccessLevel } from "@/wab/shared/EntUtil";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { Menu, Tooltip } from "antd";
 import moment from "moment";
@@ -38,6 +38,7 @@ interface TeamMemberListItemProps extends DefaultTeamMemberListItemProps {
   removeUser: (email: string) => Promise<void>;
   disabled?: boolean;
   teamId?: TeamId;
+  perms: ApiPermission[];
 }
 
 function TeamMemberListItem_(
@@ -53,9 +54,22 @@ function TeamMemberListItem_(
     removeUser,
     disabled,
     teamId,
+    perms,
     ...rest
   } = props;
   const appCtx = useAppCtx();
+  const selfInfo = ensure(appCtx.selfInfo, "Unexpected undefined selfInfo");
+
+  const selfPerm = perms.find((p) => p.userId === selfInfo.id);
+  const selfRoleValue = selfPerm ? selfPerm.accessLevel : "none";
+
+  const isSelf =
+    user.type === "user"
+      ? user.id === selfInfo.id
+      : user.email === selfInfo.email;
+  const targetRank = perm ? accessLevelRank(perm.accessLevel) : -1;
+  const selfRank = selfPerm ? accessLevelRank(selfPerm.accessLevel) : -1;
+
   const roleValue =
     !!perm &&
     ["owner", "editor", "designer", "content", "commenter", "viewer"].includes(
@@ -86,15 +100,20 @@ function TeamMemberListItem_(
       }`}
       role={{
         value: roleValue,
-        isDisabled: disabled || perm?.accessLevel === "owner",
+        isDisabled: disabled || isSelf || targetRank > selfRank,
         onChange: async (e) => {
           if (e !== roleValue && e !== null) {
             if (e === "none") {
               await changeRole(user.email);
             } else if (
-              ["editor", "designer", "content", "commenter", "viewer"].includes(
-                e
-              )
+              [
+                "editor",
+                "designer",
+                "content",
+                "commenter",
+                "viewer",
+                "owner",
+              ].includes(e)
             ) {
               await changeRole(user.email, e as GrantableAccessLevel);
             }
@@ -102,9 +121,7 @@ function TeamMemberListItem_(
         },
         children: [
           <Select.Option
-            style={{
-              display: "none",
-            }}
+            style={selfRoleValue === "owner" ? {} : { display: "none" }}
             value="owner"
           >
             Owner
@@ -159,9 +176,16 @@ function TeamMemberListItem_(
           ) : null,
       }}
       menuButton={{
-        wrap: (node) => (
-          <ClickStopper preventDefault>{disabled ? null : node}</ClickStopper>
-        ),
+        wrap: (node) =>
+          !disabled &&
+          // Owners may not be removed directly
+          perm?.accessLevel !== "owner" &&
+          // Can always remove self
+          (isSelf ||
+            // Can remove others if editor/developer or higher
+            selfRank >= accessLevelRank("editor"))
+            ? node
+            : null,
         props: {
           menu: (
             <Menu>
@@ -170,14 +194,10 @@ function TeamMemberListItem_(
                   await removeUser(user.email);
                 }}
               >
-                <strong>Remove</strong> member
+                <strong>Remove</strong> {isSelf ? "self" : "member"}
               </Menu.Item>
             </Menu>
           ),
-          style: {
-            visibility:
-              !!perm && perm.accessLevel === "owner" ? "hidden" : "visible",
-          },
         },
       }}
     />

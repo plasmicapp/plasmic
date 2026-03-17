@@ -274,12 +274,15 @@ export async function changeResourcePermissions(req: Request, res: Response) {
           // Note: we intentionally do not check whether this is a new permission or
           // not. We always re-send share emails if the user re-requested sharing with
           // a user!
-          emailsToSend.push({
-            email: email,
-            resourceType: type,
-            resourceName: resource.name,
-            resourceUrl: resourceUrl,
-          });
+          // Skip emailing the actor about their own role change (e.g., self-demotion during ownership transfer)
+          if (email !== getUser(req).email) {
+            emailsToSend.push({
+              email: email,
+              resourceType: type,
+              resourceName: resource.name,
+              resourceUrl: resourceUrl,
+            });
+          }
         }
       }
     };

@@ -1324,6 +1324,60 @@ describe("DbMgr", () => {
         ).toReject();
       }));
 
+    it("designer cannot modify a user who already has higher access", () =>
+      withDb(async (sudo, [user1, user2, user3], [db1, db2, db3], project) => {
+        const { team, workspace } = await getTeamAndWorkspace(db1());
+
+        // Set user2 as designer of team
+        await db1().grantTeamPermissionByEmail(
+          team.id,
+          user2.email,
+          "designer"
+        );
+        // Set user3 as editor of team, workspace, project
+        await db1().grantTeamPermissionByEmail(team.id, user3.email, "editor");
+        await db1().grantWorkspacePermissionByEmail(
+          workspace.id,
+          user3.email,
+          "editor"
+        );
+        await db1().grantProjectPermissionByEmail(
+          project.id,
+          user3.email,
+          "editor"
+        );
+
+        // Designer cannot demote or re-grant an editor (who already has direct permission)
+        await expect(
+          db2().grantProjectPermissionByEmail(
+            project.id,
+            user3.email,
+            "designer"
+          )
+        ).toReject();
+        await expect(
+          db2().grantWorkspacePermissionByEmail(
+            workspace.id,
+            user3.email,
+            "designer"
+          )
+        ).toReject();
+        await expect(
+          db2().grantTeamPermissionByEmail(team.id, user3.email, "designer")
+        ).toReject();
+
+        // Designer cannot revoke an editor (designer lacks editor-level access needed for revoke)
+        await expect(
+          db2().revokeProjectPermissionsByEmails(project.id, [user3.email])
+        ).toReject();
+        await expect(
+          db2().revokeWorkspacePermissionsByEmails(workspace.id, [user3.email])
+        ).toReject();
+        await expect(
+          db2().revokeTeamPermissionsByEmails(team.id, [user3.email])
+        ).toReject();
+      }));
+
     it("editors can grant and revoke, but not on owners", () =>
       withDb(async (sudo, [user1, user2, user3], [db1, db2, db3], project) => {
         const { team, workspace } = await getTeamAndWorkspace(db1());
@@ -1364,9 +1418,16 @@ describe("DbMgr", () => {
           "commenter"
         );
 
-        // Editors can't set permissions on owner
+        // Editors can't demote owners
         await expect(
           db2().grantProjectPermissionByEmail(project.id, user1.email, "editor")
+        ).toReject();
+        await expect(
+          db2().grantProjectPermissionByEmail(
+            project.id,
+            user1.email,
+            "commenter"
+          )
         ).toReject();
 
         // Editors can revoke
@@ -1388,6 +1449,53 @@ describe("DbMgr", () => {
 
         await expect(
           db2().revokeTeamPermissionsByEmails(team.id, [user1.email])
+        ).toReject();
+      }));
+
+    it("owners can demote other owners, but cannot leave a resource owner-less", () =>
+      withDb(async (sudo, [user1, user2, user3], [db1, db2, db3], project) => {
+        const { team, workspace } = await getTeamAndWorkspace(db1());
+
+        // Set user2 as owner of team
+        await db1().grantTeamPermissionByEmail(team.id, user2.email, "owner");
+
+        // Owner can demote another owner
+        await db1().grantProjectPermissionByEmail(
+          project.id,
+          user2.email,
+          "editor"
+        );
+        await db1().grantWorkspacePermissionByEmail(
+          workspace.id,
+          user2.email,
+          "editor"
+        );
+        await db1().grantTeamPermissionByEmail(team.id, user2.email, "editor");
+
+        // Owner cannot demote themselves if they are the last owner
+        await expect(
+          db1().grantTeamPermissionByEmail(team.id, user1.email, "editor")
+        ).toReject();
+      }));
+
+    it("owner can transfer ownership via 2-phase promote then self-demote", () =>
+      withDb(async (sudo, [user1, user2], [db1, db2], project) => {
+        const { team } = await getTeamAndWorkspace(db1());
+
+        // Cannot self-demote when last owner
+        await expect(
+          db1().grantTeamPermissionByEmail(team.id, user1.email, "editor")
+        ).toReject();
+
+        // Phase 1: promote user2 to owner
+        await db1().grantTeamPermissionByEmail(team.id, user2.email, "owner");
+
+        // Phase 2: self-demote is now safe since user2 is also an owner
+        await db1().grantTeamPermissionByEmail(team.id, user1.email, "editor");
+
+        // user2 is now the sole owner and cannot self-demote
+        await expect(
+          db2().grantTeamPermissionByEmail(team.id, user2.email, "editor")
         ).toReject();
       }));
   });
