@@ -2451,47 +2451,51 @@ export class ViewOps {
     if (!Tpls.isTplVariantable(node)) {
       return;
     }
-    const nonGlobalActiveVariants = activeVariants.filter(
-      (v) => !isGlobalVariant(v)
-    );
-    const nonGlobalActiveVsettings = sortedVariantSettingStack(
+    // Use all active variants (including global) so the effective
+    // variant setting matches what the user sees at copy time. This
+    // ensures that copying from e.g. a MobileScreen global variant
+    // pastes the MobileScreen styles into the target, not the base.
+    const allActiveVsettings = sortedVariantSettingStack(
       node.vsettings,
-      nonGlobalActiveVariants,
+      activeVariants,
       makeVariantComboSorter(this.site(), component)
     );
     const effectiveVs = new EffectiveVariantSetting(
       node,
-      nonGlobalActiveVsettings,
+      allActiveVsettings,
       this.site(),
-      nonGlobalActiveVariants
+      activeVariants
     );
 
-    // We handle global and private style variants different from "normal"
-    // ones. If the user copied a TplNode from a component where a component
-    // variant "red" and a global variant "desktop" were active, we want to
-    // copy the styles from "red" and paste as "base" (note there is no "red"
-    // variant here), while we want variant settings from [red, desktop]
-    // to be merged with [desktop] in here.
-    //
-    // The code below filters variant settings that are active when in
-    // combination with any global and private variants, remove nonglobal
-    // variants from them, and then generate a map effectiveVsMap from variant
-    // combos to effective variant settings. We use effective variant
-    // settings to merge variant settings such as [red, desktop] and
-    // [desktop], which will be simply [desktop] in the paste.
+    // A cloned node carries ALL its variant settings, not just the
+    // one the user was viewing. For example, a node with settings for
+    // [base], [MobileScreen], and [Desktop] will have all three after
+    // cloning, even if only MobileScreen was being viewed at copy time.
+
+    // Active variants (both component and global) are flattened into
+    // the target variant setting via effectiveVs above, so the paste
+    // matches what the user sees. Global variant settings are NOT
+    // preserved, they would end up on hidden artboards, not directly visible
+    // to user and cause confusion. Only private style variant settings
+    // are preserved, since they define interactive states for the node.
+
+    // The code below filters variant settings to ensure only private style variants
+    // are preserved. Vsettings with no private style variants become empty
+    // and are skipped. Stripping can cause multiple vsettings to collapse to the same
+    // combo e.g. [red, :hover] and [:hover] both become [:hover] after stripping.
+    // These are merged via EffectiveVariantSetting so the combo-specific overrides
+    // from [red, :hover] are reflected in the pasted [:hover] setting.
     const preservedVSettings = node.vsettings.filter((vs) =>
       vs.variants.every(
         (v) =>
           isGlobalVariant(v) ||
-          nonGlobalActiveVariants.includes(v) ||
+          activeVariants.includes(v) ||
           isPrivateStyleVariant(v)
       )
     );
     preservedVSettings.forEach(
       (vs) =>
-        (vs.variants = vs.variants.filter(
-          (v) => isGlobalVariant(v) || isPrivateStyleVariant(v)
-        ))
+        (vs.variants = vs.variants.filter((v) => isPrivateStyleVariant(v)))
     );
     const effectiveVsMap = new Map<Variant[], EffectiveVariantSetting>();
     for (const vs of preservedVSettings) {
