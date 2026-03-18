@@ -364,10 +364,8 @@ export class SyncPromise<T> {
  */
 class SettablePromise<T> {
   readonly promise: Promise<T>;
-  // @ts-expect-error set in Promise constructor callback
-  private _resolve: (value: T) => void;
-  // @ts-expect-error set in Promise constructor callback
-  private _reject: (error: unknown) => void;
+  private _resolve!: (value: T) => void;
+  private _reject!: (error: unknown) => void;
 
   constructor() {
     this.promise = new Promise((resolve, reject) => {
