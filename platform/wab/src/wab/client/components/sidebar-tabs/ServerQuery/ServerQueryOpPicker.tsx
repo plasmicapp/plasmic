@@ -214,35 +214,56 @@ export const ServerQueryOpDraftForm = observer(
         ?.meta;
     };
 
-    const { dataKey, fetcher, funcParamsValues } = React.useMemo(() => {
+    const evaluatedFnContext = React.useMemo(() => {
       const func = value?.fnExpr?.func;
       if (!func) {
         return {
+          funcId: null,
           dataKey: null,
           fetcher: null,
           funcParamsValues: [],
         };
       }
-      const registeredMeta = studioCtx
-        .getRegisteredFunctionsMap()
-        .get(customFunctionId(func))?.meta;
+      const funcId = customFunctionId(func);
+      const registration = studioCtx.getRegisteredFunctionsMap().get(funcId);
+      const registeredMeta = registration?.meta;
 
       const fnContext = registeredMeta?.fnContext;
       if (!fnContext) {
         return {
+          funcId: null,
           dataKey: null,
           fetcher: null,
           funcParamsValues: evaluatedArgs,
         };
       }
 
-      return {
-        ...fnContext(...evaluatedArgs),
-        funcParamsValues: evaluatedArgs,
-      };
+      try {
+        return {
+          funcId,
+          ...fnContext(...evaluatedArgs),
+          funcParamsValues: evaluatedArgs,
+        };
+      } catch (fnContextError) {
+        console.warn(`Error running fnContext for "${funcId}"`, fnContextError);
+        return {
+          funcId: null,
+          dataKey: null,
+          fetcher: null,
+          funcParamsValues: evaluatedArgs,
+        };
+      }
     }, [studioCtx, value?.fnExpr?.func, evaluatedArgs]);
 
-    const { data: ccContextData } = useSWR(dataKey, fetcher);
+    const { funcId, dataKey, fetcher, funcParamsValues } = evaluatedFnContext;
+    const { data: ccContextData } = useSWR(dataKey, fetcher, {
+      onError: (fnContextFetcherError) => {
+        console.warn(
+          `Error running fetcher in fnContext for "${funcId}"`,
+          fnContextFetcherError
+        );
+      },
+    });
 
     const propValueEditorContext =
       React.useMemo<PropValueEditorContextData>(() => {
