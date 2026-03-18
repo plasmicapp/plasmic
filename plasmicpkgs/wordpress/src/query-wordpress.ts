@@ -262,7 +262,7 @@ export const queryWordpressMeta: CustomFunctionMeta<typeof queryWordpress> = {
           displayName: "Offset",
           description: "Number of items to skip",
           min: 0,
-          hidden: (opts: any) => !!opts.page, // Hide if page is being used
+          hidden: ([opts]) => !!opts?.page, // Hide if page is being used
           defaultValueHint: 0,
         },
 
