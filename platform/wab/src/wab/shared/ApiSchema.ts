@@ -1836,7 +1836,6 @@ export interface GetProjectResponse {
   latestRevisionSynced: number;
   hasAppAuth: boolean;
   appAuthProvider?: AppAuthProvider;
-  workspaceTutorialDbs?: ApiDataSource[];
   isMainBranchProtected: boolean;
 }
 

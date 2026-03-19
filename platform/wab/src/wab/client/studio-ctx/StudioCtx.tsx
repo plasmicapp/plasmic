@@ -1126,7 +1126,6 @@ export class StudioCtx extends WithDbCtx {
       latestRevisionSynced,
       hasAppAuth,
       appAuthProvider,
-      workspaceTutorialDbs,
       isMainBranchProtected,
     } = await this.appCtx.api.getSiteInfo(this.siteInfo.id);
     this.dbCtx().setSiteInfo({
@@ -1136,7 +1135,6 @@ export class StudioCtx extends WithDbCtx {
       latestRevisionSynced,
       hasAppAuth,
       appAuthProvider,
-      workspaceTutorialDbs,
       isMainBranchProtected,
     });
     return this.siteInfo;

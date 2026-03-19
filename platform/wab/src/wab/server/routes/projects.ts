@@ -35,7 +35,7 @@ import {
 import "@/wab/server/extensions";
 import { logger } from "@/wab/server/observability";
 import { REAL_PLUME_VERSION } from "@/wab/server/pkg-mgr/plume-pkg-mgr";
-import { mkApiDataSource } from "@/wab/server/routes/data-source";
+
 import { checkEtagSkippable } from "@/wab/server/routes/loader";
 import { moveBundleAssetsToS3 } from "@/wab/server/routes/moveAssetsToS3";
 import {
@@ -1577,20 +1577,6 @@ export async function getProjectRev(req: Request, res: Response) {
   const hasAppAuth = !!appAuthConfig;
   const appAuthProvider = appAuthConfig?.provider;
 
-  const allowedDataSourceIds = (
-    await mgr.listAllowedDataSourcesForProject(projectId as ProjectId)
-  ).map((ds) => ds.dataSourceId);
-
-  const workspaceTutorialDbs = project.workspaceId
-    ? (await mgr.getWorkspaceTutorialDataSources(project.workspaceId))
-        .filter(
-          (ds) =>
-            ds.source === "tutorialdb" && allowedDataSourceIds.includes(ds.id)
-        )
-
-        .map((ds) => mkApiDataSource(ds))
-    : [];
-
   req.analytics.track("Open project", {
     projectId: project.id,
     projectName: project.name,
@@ -1609,7 +1595,6 @@ export async function getProjectRev(req: Request, res: Response) {
     latestRevisionSynced,
     hasAppAuth,
     appAuthProvider,
-    workspaceTutorialDbs,
     isMainBranchProtected: !!project.isMainBranchProtected,
   });
 }

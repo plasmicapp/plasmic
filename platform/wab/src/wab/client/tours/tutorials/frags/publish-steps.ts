@@ -21,7 +21,6 @@ import { render } from "react-dom";
 import { mutate } from "swr";
 
 export enum TopFramePublishTours {
-  AdminPanelPublish = "admin-panel-publish",
   PortfolioPublish = "portfolio-publish",
 }
 
@@ -163,31 +162,6 @@ export function publishedProjectStep({
   };
 }
 
-const ADMIN_PANEL_PUBLISH_TOUR_OUTRO: TopFrameTutorialStep[] = [
-  publishedProjectStep({
-    content: `
-## You did it! 🎉
-
-The app is now live at <https://{APP_DOMAIN}>.
-
-You've saved the day and shipped a complete customer management app.
-This covered:
-
-- Adding and configuring components
-- Querying a database
-- Updating records with forms
-
-The Customer Operations team can now do a better job keeping customers happy! 🚀
-`,
-  }),
-  TUTORIAL_OUTRO,
-];
-
-export const ADMIN_PANEL_PUBLISH_STEPS: TopFrameTutorialStep[] = [
-  ...BASE_TOPFRAME_PUBLISH_STEPS,
-  ...ADMIN_PANEL_PUBLISH_TOUR_OUTRO,
-];
-
 const PORTFOLIO_PUBLISH_TOUR_OUTRO: TopFrameTutorialStep[] = [
   publishedProjectStep({
     content: `
@@ -235,14 +209,6 @@ export function triggerPublishModalStep({
     placement: "bottom",
   };
 }
-
-export const ADMIN_PANEL_PUBLISH_TRIGGER = triggerPublishModalStep({
-  content: `
-## Part 4: Publishing 🚀
-
-Let's **publish the app** so the Customer Operations team can start using it!`,
-  topFrameTour: TopFramePublishTours.AdminPanelPublish,
-});
 
 export const PORTFOLIO_PUBLISH_TRIGGER = triggerPublishModalStep({
   content: `

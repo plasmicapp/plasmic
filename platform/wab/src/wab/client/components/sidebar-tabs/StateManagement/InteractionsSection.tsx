@@ -5,10 +5,10 @@ import { assert, ensure, spawn, unexpected } from "@/wab/shared/common";
 import {
   Component,
   EventHandler,
-  isKnownEventHandler,
-  isKnownVarRef,
   TplComponent,
   TplTag,
+  isKnownEventHandler,
+  isKnownVarRef,
 } from "@/wab/shared/model/classes";
 import { Popover } from "antd";
 import Select, { RefSelectProps } from "antd/lib/select";
@@ -37,7 +37,6 @@ import { DefaultInteractionsSectionProps } from "@/wab/client/plasmic/plasmic_ki
 import { mkDefaultInteraction } from "@/wab/client/state-management/interactions-meta";
 import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { TutorialEventsType } from "@/wab/client/tours/tutorials/tutorials-events";
 import { ensureBaseVariantSetting } from "@/wab/shared/VariantTplMgr";
 import {
   EventHandlerKeyType,
@@ -110,10 +109,6 @@ function InteractionsSection_(props: InteractionsSectionProps) {
         <AddHandlerFunctionButton
           tpl={tpl}
           onSelect={(eventHandlerKey) => {
-            sc.tourActionEvents.dispatch({
-              type: TutorialEventsType.SelectedHandler,
-            });
-
             handleAdd(eventHandlerKey);
           }}
         />
@@ -272,16 +267,10 @@ const AddHandlerFunctionButton = observer(
           setSearchValue(undefined);
           if (visible) {
             selectRef.current?.focus();
-            sc.tourActionEvents.dispatch({
-              type: TutorialEventsType.AddedInteraction,
-            });
           }
         }}
         overlayClassName="ant-popover--tight"
-        open={
-          showing ||
-          !!sc.onboardingTourState.flags.keepHandlerFunctionOptionsVisible
-        }
+        open={showing}
         placement={"left"}
         destroyTooltipOnHide
         content={

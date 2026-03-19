@@ -125,8 +125,6 @@ function AdminPageTabs() {
           label: "Development",
           children: (
             <div className="flex-col gap-xxxlg">
-              <CreateTutorialDb />
-              <ResetTutorialDb />
               <DownloadPkgForPkgMgr />
               <DownloadPlumePkg />
               <AdminImportProjectsFromProd />
@@ -729,85 +727,6 @@ function ChangeProjectOwner() {
           <Input placeholder="Owner email" type={"email"} />
         </Form.Item>
         <Button htmlType="submit">Update</Button>
-      </Form>
-    </div>
-  );
-}
-
-function CreateTutorialDb() {
-  const nonAuthCtx = useNonAuthCtx();
-  return (
-    <div>
-      <h2>Create a TutorialDB</h2>
-      <p>
-        Enter the name of the tutorialdb directory in src/wab/server/tutorialdb
-      </p>
-      <Form
-        onFinish={async (event) => {
-          try {
-            const type = event.type;
-            console.log("Creating tutorial db", type);
-            const result = await nonAuthCtx.api.createTutorialDb(type);
-            console.log("Created", result);
-            notification.success({
-              message: (
-                <div>
-                  <div>
-                    <strong>Tutorial DB created!</strong>
-                  </div>
-                  <div>TutorialDB ID: {result.id}</div>
-                </div>
-              ),
-              duration: 0,
-            });
-          } catch (e) {
-            notification.error({ message: `${e}` });
-          }
-        }}
-      >
-        <Form.Item name="type" label="Template">
-          <Input placeholder="northwind" />
-        </Form.Item>
-        <Form.Item>
-          <Button htmlType="submit">Create</Button>
-        </Form.Item>
-      </Form>
-    </div>
-  );
-}
-
-function ResetTutorialDb() {
-  const nonAuthCtx = useNonAuthCtx();
-  return (
-    <div>
-      <h2>Reset a TutorialDB</h2>
-      <Form
-        onFinish={async (event) => {
-          try {
-            const { sourceId } = event;
-            console.log("Resetting tutorial db", sourceId);
-            await nonAuthCtx.api.resetTutorialDb(sourceId);
-            notification.success({
-              message: (
-                <div>
-                  <div>
-                    <strong>Tutorial DB reset!</strong>
-                  </div>
-                </div>
-              ),
-              duration: 0,
-            });
-          } catch (e) {
-            notification.error({ message: `${e}` });
-          }
-        }}
-      >
-        <Form.Item name="sourceId" label="Data source ID">
-          <Input />
-        </Form.Item>
-        <Form.Item>
-          <Button htmlType="submit">Reset</Button>
-        </Form.Item>
       </Form>
     </div>
   );

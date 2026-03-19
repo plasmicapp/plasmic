@@ -4002,7 +4002,7 @@ export class DbMgr implements MigrationDbMgr {
     fixDataTokenProjectRefs(clonedSite, fromProject.id, project.id);
 
     const fromAppAuthConfig = await this.getAppAuthConfig(fromProject.id, true);
-    let oldToNewSourceIds: Record<string, string> = {};
+    const oldToNewSourceIds: Record<string, string> = {};
     let oldToNewRoleIds: Record<string, string> = {};
     let reevaluateOpIds = false;
 
@@ -4073,15 +4073,6 @@ export class DbMgr implements MigrationDbMgr {
       }
     }
 
-    if (projectWorkspaceId) {
-      oldToNewSourceIds = (
-        await this.cloneTutorialDbsFromProject(clonedSite, projectWorkspaceId)
-      ).oldToNewSourceIds;
-      if (_.keys(oldToNewSourceIds).length > 0) {
-        reevaluateOpIds = true;
-      }
-    }
-
     // reevaluateOpIds is only used for opIds present in the model, so we check user properties
     // separately
     if (fromAppAuthConfig) {
@@ -4103,7 +4094,6 @@ export class DbMgr implements MigrationDbMgr {
       );
     }
 
-    // By now, cloned site already has the new source ids for the new project (including cloned tutorial dbs)
     const sourceIds = getAllOpExprSourceIdsUsedInSite(clonedSite);
     // Enable each source id independently, so that if one fails, the others still get enabled
     for (const sourceId of sourceIds) {
@@ -6730,27 +6720,6 @@ export class DbMgr implements MigrationDbMgr {
     return await this.dataSources().find({
       workspaceId,
       deletedAt: IsNull(),
-    });
-  }
-
-  async getWorkspaceTutorialDataSources(workspaceId: WorkspaceId) {
-    // We don't check permissions here because we don't want to require permissions
-    // to view the tutorial data sources. That could throw errors by sharing the project.
-    return await this.dataSources().find({
-      // Don't select credentials to reduce processing time, involved in decrypting it
-      select: [
-        "id",
-        "name",
-        "workspaceId",
-        "source",
-        "settings",
-        "createdById",
-      ],
-      where: {
-        workspaceId,
-        source: "tutorialdb",
-        deletedAt: IsNull(),
-      },
     });
   }
 
@@ -10318,51 +10287,6 @@ export class DbMgr implements MigrationDbMgr {
       }),
       `Tutorial DB with id ${id}`
     );
-  }
-
-  async cloneTutorialDbsFromProject(site: Site, workspaceId: WorkspaceId) {
-    const usedSourceIds = getAllOpExprSourceIdsUsedInSite(site);
-
-    const siteDataSources = await Promise.all(
-      usedSourceIds.map(async (id) => {
-        const dataSource = await this.getDataSourceById(id, {
-          // Based on the nature of cloning tutorial db, we will skip the permission check for workspaces here
-          skipPermissionCheck: true,
-        });
-
-        return dataSource;
-      })
-    );
-
-    const siteTutorialDbs = await Promise.all(
-      siteDataSources
-        .filter((ds) => ds.source === "tutorialdb")
-        .map(async (ds) => {
-          const tutorialDbId = ds.credentials.tutorialDbId;
-          const tutorialDb = await this.getTutorialDb(tutorialDbId);
-          return {
-            dataSource: ds,
-            tutorialDb,
-          };
-        })
-    );
-
-    const oldToNewSourceIds: Record<string, string> = {};
-
-    for (const { dataSource, tutorialDb } of siteTutorialDbs) {
-      // We always create a new tutorial db for the workspace so that all opIds
-      // get updated and we don't have to worry about not issuing a new opId
-      const newDataSource = await this.createTutorialDbDataSource(
-        tutorialDb.info.type,
-        workspaceId,
-        dataSource.name
-      );
-      oldToNewSourceIds[dataSource.id] = newDataSource.id;
-    }
-
-    return {
-      oldToNewSourceIds,
-    };
   }
 
   async createTutorialDbDataSource(

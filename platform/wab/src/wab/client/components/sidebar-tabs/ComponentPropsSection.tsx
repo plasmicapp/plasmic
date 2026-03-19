@@ -296,14 +296,7 @@ export const InteractionPropEditor = observer(
         <SidebarModal
           title={modalTitle}
           show={forceOpen || showInteractionModal}
-          persistOnInteractOutside={
-            studioCtx.onboardingTourState.flags.keepInteractionModalOpen
-          }
           onClose={() => {
-            if (studioCtx.onboardingTourState.flags.keepInteractionModalOpen) {
-              return;
-            }
-
             setShowInteractionModal(false);
           }}
         >

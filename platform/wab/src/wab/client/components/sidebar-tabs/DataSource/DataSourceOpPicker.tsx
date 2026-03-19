@@ -102,7 +102,6 @@ import {
   useStudioCtx,
 } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { TutorialEventsType } from "@/wab/client/tours/tutorials/tutorials-events";
 import { MaybeWrap } from "@/wab/commons/components/ReactUtil";
 import { Stated } from "@/wab/commons/components/Stated";
 import { ApiDataSource } from "@/wab/shared/ApiSchema";
@@ -363,9 +362,6 @@ export const DataSourceOpPicker = observer((props: DataSourceOpPickerProps) => {
               allowedOps,
               exprCtx,
               ...rest,
-            });
-            studioCtx.tourActionEvents.dispatch({
-              type: TutorialEventsType.ConfigureDataOperation,
             });
           }}
           data-plasmic-prop="data-source-open-modal-btn"
@@ -956,10 +952,6 @@ const DataSourceOpExprFormAndPreview = observer(
             }),
             draft.queryName
           );
-
-          studioCtx.tourActionEvents.dispatch({
-            type: TutorialEventsType.SaveDataSourceQuery,
-          });
         } else {
           notification.error({
             message: `Missing required fields: ${missingRequiredArgs.join(

@@ -239,7 +239,6 @@ export interface SiteInfo {
   latestRevisionSynced: number;
   hasAppAuth: boolean;
   appAuthProvider?: AppAuthProvider;
-  workspaceTutorialDbs?: ApiDataSource[];
   readableByPublic: boolean;
   isMainBranchProtected: boolean;
   revisions: ProjectRevision[];

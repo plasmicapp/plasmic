@@ -9,7 +9,6 @@ import {
 } from "@/wab/client/components/sidebar-tabs/PropEditorRow";
 import { ListBox, ListBoxItem } from "@/wab/client/components/widgets";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { TutorialEventsType } from "@/wab/client/tours/tutorials/tutorials-events";
 import {
   StudioPropType,
   getPropTypeDefaultValue,
@@ -104,10 +103,6 @@ export const ArrayPropEditor = observer(function ArrayPropEditor<
         }}
         onAdd={() => {
           addNewElement();
-
-          sc.tourActionEvents.dispatch({
-            type: TutorialEventsType.ArrayPropEditorAddItem,
-          });
         }}
         data-test-id={dataPlasmicProp}
         disabled={disabled}
@@ -154,13 +149,6 @@ export const ArrayPropEditor = observer(function ArrayPropEditor<
                     }}
                     buttonType="seamless"
                     onClose={() => {
-                      if (
-                        sc.onboardingTourState.flags
-                          .keepInspectObjectPropEditorOpen
-                      ) {
-                        return;
-                      }
-
                       if (inspect === index) {
                         setInspect(undefined);
                       }

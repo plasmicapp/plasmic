@@ -51,7 +51,6 @@ import {
   getSetOfPinnedVariantsForViewCtx,
   ViewCtx,
 } from "@/wab/client/studio-ctx/view-ctx";
-import { TutorialEventsType } from "@/wab/client/tours/tutorials/tutorials-events";
 import {
   canSetDisplayNone,
   getSlotSelectionDisplayName,
@@ -851,9 +850,6 @@ const TplTreeNode = observer(function TplTreeNode(props: {
               });
             }
           }
-        });
-        viewCtx.studioCtx.tourActionEvents.dispatch({
-          type: TutorialEventsType.ElementFocused,
         });
       }}
       onContextMenu={(e) => {

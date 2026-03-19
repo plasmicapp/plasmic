@@ -7,7 +7,6 @@ import Button from "@/wab/client/components/widgets/Button";
 import { extractDataCtx } from "@/wab/client/state-management/interactions-meta";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { TutorialEventsType } from "@/wab/client/tours/tutorials/tutorials-events";
 import { observer } from "@/wab/client/utils/mobx-client-util";
 import { ExprCtx } from "@/wab/shared/core/exprs";
 import { EventHandlerKeyType } from "@/wab/shared/core/tpls";
@@ -98,9 +97,6 @@ export const CustomFunctionEditor = observer(
               allowedOps,
               exprCtx,
               ...rest,
-            });
-            studioCtx.tourActionEvents.dispatch({
-              type: TutorialEventsType.ConfigureDataOperation,
             });
           }}
           data-plasmic-prop="data-source-open-modal-btn"

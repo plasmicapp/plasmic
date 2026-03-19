@@ -63,7 +63,6 @@ import { STUDIO_SHORTCUTS } from "@/wab/client/shortcuts/studio/studio-shortcuts
 import { RightTabKey, StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewportCtx } from "@/wab/client/studio-ctx/ViewportCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { TutorialEventsType } from "@/wab/client/tours/tutorials/tutorials-events";
 import {
   getArenaFrames,
   getFrameHeight,
@@ -2122,12 +2121,6 @@ const RightPane = observer(function RightPane(props: {
         <widgets.Tabs
           onSwitch={(tabKey: RightTabKey) => {
             studioCtx.switchRightTab(tabKey);
-            studioCtx.tourActionEvents.dispatch({
-              type: TutorialEventsType.RightTabSwitched,
-              params: {
-                tabKey,
-              },
-            });
           }}
           tabKey={studioCtx.rightTabKey}
           useDefaultClasses={false}

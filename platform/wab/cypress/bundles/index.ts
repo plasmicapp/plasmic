@@ -6,10 +6,13 @@ import formsBundle from "./forms.json";
 import pageReplacementBundle from "./page-replacement.json";
 import staleMigrationBundle from "./stale-bundle.json";
 import stateManagementBundle from "./state-management.json";
-import tutorialAppBundle from "./tutorial-app.json";
+
+// https://studio.plasmic.app/projects/8eH4mLFb7TqLYDMGjj5BLd
+import tutorialPortfolioBundle from "./tutorial-portfolio.json";
+
 export default {
   "state-management": stateManagementBundle,
-  "tutorial-app": tutorialAppBundle,
+  "tutorial-portfolio": tutorialPortfolioBundle,
   "stale-bundle": staleMigrationBundle,
   "clone-project": cloneProjectBundle,
   forms: formsBundle,

@@ -7,7 +7,6 @@ import {
   PlasmicWorkspaceDataSources,
 } from "@/wab/client/plasmic/plasmic_kit_dashboard/PlasmicWorkspaceDataSources";
 import { ApiDataSource, WorkspaceId } from "@/wab/shared/ApiSchema";
-import { isAdminTeamEmail } from "@/wab/shared/devflag-utils";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import * as React from "react";
 
@@ -34,7 +33,6 @@ function WorkspaceDataSources_(
   ref: HTMLElementRefOf<"div">
 ) {
   const [isEditing, setIsEditing] = React.useState<"new" | ApiDataSource>();
-  const isAdmin = isAdminTeamEmail(appCtx.selfInfo?.email, appCtx.appConfig);
   const allowNewDataSources =
     appCtx.appConfig.enableDataQueries || !appCtx.appConfig.rscRelease;
 
@@ -48,11 +46,7 @@ function WorkspaceDataSources_(
           sources={{
             render: () =>
               dataSources
-                .filter(
-                  (source) =>
-                    (isAdmin || source.source !== "tutorialdb") &&
-                    matcher.matches(source.name)
-                )
+                .filter((source) => matcher.matches(source.name))
                 .map((source) => (
                   <DataSource
                     appCtx={appCtx}

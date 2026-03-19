@@ -53,7 +53,6 @@ export async function loadSiteDbCtx(
     latestRevisionSynced,
     hasAppAuth,
     appAuthProvider,
-    workspaceTutorialDbs,
     isMainBranchProtected,
   } = await (async () => {
     try {
@@ -79,7 +78,6 @@ export async function loadSiteDbCtx(
   siteInfo.latestRevisionSynced = latestRevisionSynced;
   siteInfo.hasAppAuth = hasAppAuth;
   siteInfo.appAuthProvider = appAuthProvider;
-  siteInfo.workspaceTutorialDbs = workspaceTutorialDbs;
   siteInfo.isMainBranchProtected = isMainBranchProtected;
 
   const bundle = getBundle(rev, appCtx.lastBundleVersion);

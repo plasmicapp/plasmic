@@ -466,7 +466,6 @@ const DEFAULT_DEVFLAGS = {
   splits: true,
   refActions: false,
   multiSelect: false,
-  dataTabTourForUsersBefore: "2023-02-28",
   pageLayout: false,
   mainContentSlots: false,
   insertTemplatesIntoMainContentSlots: false,
@@ -561,8 +560,6 @@ const DEFAULT_DEVFLAGS = {
   // List of email domains that are forbidden from creating new accounts.
   // Existing users from these domains can still log in; this only blocks signup.
   blockedSignupDomains: [] as string[],
-
-  onboardingTours: false,
 
   newProjectModal: false,
 
@@ -659,7 +656,6 @@ export function applyPlasmicUserDevFlagOverrides(target: DevFlagsType) {
     simplifiedScreenVariants: true,
     simplifiedForms: true,
     schemaDrivenForms: true,
-    onboardingTours: true,
     posthog: true,
     linting: true,
     componentThumbnails: false,

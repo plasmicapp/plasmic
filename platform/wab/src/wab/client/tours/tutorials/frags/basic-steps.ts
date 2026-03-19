@@ -5,7 +5,6 @@ import {
 } from "@/wab/client/tours/tutorials/tutorials-events";
 import {
   addTextElement,
-  getFirstChildIfRichLayout,
   sleep,
 } from "@/wab/client/tours/tutorials/tutorials-helpers";
 import { STUDIO_ELEMENTS_TARGETS } from "@/wab/client/tours/tutorials/tutorials-targets";
@@ -14,40 +13,7 @@ import {
   StudioTutorialStep,
   TutorialStepFunctionality,
 } from "@/wab/client/tours/tutorials/tutorials-types";
-import { $$$ } from "@/wab/shared/TplQuery";
 import { notification } from "antd";
-
-/**
- * While preparing the studio for the tour we clean the current page and
- * remove all queries. So that it would be recreated from scratch.
- */
-async function prepareStudioToTour(ctx: OnNextCtx) {
-  const vc = ctx.studioCtx.focusedOrFirstViewCtx();
-  if (vc) {
-    await ctx.studioCtx.change(({ success }) => {
-      const component = vc.arenaFrame().container.component;
-
-      const root = component.tplTree;
-      const pageLayout = getFirstChildIfRichLayout(root);
-      if (pageLayout) {
-        $$$(pageLayout).clear();
-      } else {
-        $$$(root).clear();
-      }
-
-      // We expect that no references to the queries are left
-      ctx.studioCtx
-        .tplMgr()
-        .clearReferencesToRemovedQueries(
-          component.dataQueries.map((q) => q.uuid)
-        );
-      component.dataQueries = [];
-      return success();
-    });
-  }
-  // Remove all antd message notifications
-  notification.destroy();
-}
 
 export function welcomeStepFunc({
   content,
@@ -66,31 +32,6 @@ export function welcomeStepFunc({
     onNext,
   };
 }
-
-export const ADMIN_PANEL_WELCOME_TUTORIAL_STEP: StudioTutorialStep =
-  welcomeStepFunc({
-    content: `
-## Welcome, {FIRST_NAME}!
-
-The Customer Operations team needs your help! 🚨🚨🚨
-
-They need a way to find and update contact info in the customer database.
-
-Your mission: **Build an app to manage customer data, in 5 minutes.**
-
-And learn the basics of building apps in Plasmic along the way!
-
-Ready?
-`,
-    onNext: async (ctx: OnNextCtx) => {
-      await ctx.studioCtx.change(({ success }) => {
-        ctx.studioCtx.turnFocusedModeOn();
-        return success();
-      });
-      await sleep(750);
-      await prepareStudioToTour(ctx);
-    },
-  });
 
 export const PORTFOLIO_WELCOME_TUTORIAL_STEP: StudioTutorialStep =
   welcomeStepFunc({

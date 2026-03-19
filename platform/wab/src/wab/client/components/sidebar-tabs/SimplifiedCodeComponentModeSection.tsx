@@ -3,11 +3,10 @@ import { updateComponentMode } from "@/wab/client/code-components/simplified-mod
 import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
 import StyleSwitch from "@/wab/client/components/style-controls/StyleSwitch";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { TutorialEventsType } from "@/wab/client/tours/tutorials/tutorials-events";
-import { ensure, spawn } from "@/wab/shared/common";
-import { tryExtractJson } from "@/wab/shared/core/exprs";
 import { getTplComponentArg } from "@/wab/shared/TplMgr";
 import { ensureBaseVariantSetting } from "@/wab/shared/Variants";
+import { ensure, spawn } from "@/wab/shared/common";
+import { tryExtractJson } from "@/wab/shared/core/exprs";
 import { Expr, TplComponent } from "@/wab/shared/model/classes";
 import type { CodeComponentMode } from "@plasmicapp/host";
 import { observer } from "mobx-react";
@@ -38,9 +37,6 @@ export const SimplifiedCodeComponentModeSection = observer(function (props: {
 
   const onChange = async (newMode: CodeComponentMode) => {
     await updateComponentMode(tpl, viewCtx, param, newMode);
-    viewCtx.studioCtx.tourActionEvents.dispatch({
-      type: TutorialEventsType.TurnedFormToSimplified,
-    });
   };
   return (
     <SidebarSection title="Component mode" id="component-mode-section">

@@ -177,9 +177,6 @@ export const InternalDataPickerEditor = observer(
         trigger="click"
         visible={!isDisabled && visible}
         onVisibleChange={(_visible) => {
-          if (viewCtx?.studioCtx.onboardingTourState.flags.keepDataPickerOpen) {
-            return;
-          }
           setVisible(_visible);
         }}
         destroyTooltipOnHide={true}

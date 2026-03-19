@@ -1207,18 +1207,6 @@ export class RightPanel extends BaseModel {
           const w = window as any;
           if (w.dbg?.testControls?.dataSource?.setByValue) {
             const dataSourceControl = w.dbg.testControls.dataSource;
-            if (dataSourceControl.options) {
-              for (const option of dataSourceControl.options) {
-                if (
-                  option.value &&
-                  (option.label?.toLowerCase().includes("tutorial") ||
-                    option.label?.toLowerCase().includes("tutorialdb") ||
-                    option.value.includes("tutorial"))
-                ) {
-                  return dataSourceControl.setByValue(option.value);
-                }
-              }
-            }
             if (
               dataSourceControl.options &&
               dataSourceControl.options.length > 0

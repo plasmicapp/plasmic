@@ -10,7 +10,6 @@ import CloseIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Close";
 import HelpIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Help";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { TutorialHighlightEffect } from "@/wab/client/tours/tutorials/TutorialHighlightEffect";
-import { TopFramePublishTours } from "@/wab/client/tours/tutorials/frags/publish-steps";
 import { TutorialEvent } from "@/wab/client/tours/tutorials/tutorials-events";
 import { waitElementToBeVisible } from "@/wab/client/tours/tutorials/tutorials-helpers";
 import {
@@ -568,10 +567,7 @@ export interface TopFrameTourState {
 
 function generateCustomDomain(appCtx: AppCtx, tour: string) {
   const uniqueId = mkShortId().toLowerCase();
-  const tourPrefix =
-    tour === TopFramePublishTours.PortfolioPublish
-      ? "portfolio-"
-      : "admin-panel-";
+  const tourPrefix = "portfolio-";
   return `${tourPrefix}${uniqueId}.${appCtx.appConfig.plasmicHostingSubdomainSuffix}`;
 }
 

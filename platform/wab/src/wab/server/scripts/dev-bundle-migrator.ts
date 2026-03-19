@@ -37,7 +37,7 @@ const paths = [
   "cypress/bundles/code-libs.json",
   "cypress/bundles/data-tokens.json",
   "cypress/bundles/prop-editors.json",
-  "cypress/bundles/tutorial-app.json",
+  "cypress/bundles/tutorial-portfolio.json",
   "cypress/bundles/forms.json",
   "../loader-tests/data/antd5/collapse.json",
   "../loader-tests/data/antd5/date-range-picker.json",

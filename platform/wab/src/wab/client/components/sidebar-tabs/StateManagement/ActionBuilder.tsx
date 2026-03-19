@@ -26,7 +26,6 @@ import {
 } from "@/wab/client/state-management/preview-steps";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { TutorialEventsType } from "@/wab/client/tours/tutorials/tutorials-events";
 import { HighlightBlinker } from "@/wab/commons/components/HighlightBlinker";
 import { combineProps } from "@/wab/commons/components/ReactUtil";
 import {
@@ -36,21 +35,21 @@ import {
   propTypeToWabType,
 } from "@/wab/shared/code-components/code-components";
 import { assert, ensureInstance, spawn } from "@/wab/shared/common";
-import { codeLit, InteractionConditionalMode } from "@/wab/shared/core/exprs";
+import { InteractionConditionalMode, codeLit } from "@/wab/shared/core/exprs";
 import { mkNameArg } from "@/wab/shared/core/lang";
 import { EventHandlerKeyType } from "@/wab/shared/core/tpls";
 import {
   Component,
   CustomCode,
   DataSourceOpExpr,
-  ensureKnownDataSourceOpExpr,
   EventHandler,
   Expr,
   Interaction,
-  isKnownExpr,
   ObjectPath,
   TplComponent,
   TplTag,
+  ensureKnownDataSourceOpExpr,
+  isKnownExpr,
 } from "@/wab/shared/model/classes";
 import { renameInteractionAndFixExprs } from "@/wab/shared/refactoring";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
@@ -172,10 +171,7 @@ function ActionBuilder_(
     <div style={{ position: "relative" }}>
       <PlasmicActionBuilder
         {...rest}
-        isCollapsed={
-          isCollapsed &&
-          !sc.onboardingTourState.flags.keepActionBuilderUncollapsed
-        }
+        isCollapsed={isCollapsed}
         play={{
           render: (ps, Comp) => (
             <Popover
@@ -263,12 +259,6 @@ function ActionBuilder_(
                               interactionsCtx
                             ) ?? newActionMeta.displayName
                           );
-                        }
-
-                        if (val === "dataSourceOp") {
-                          sc.tourActionEvents.dispatch({
-                            type: TutorialEventsType.PickedDataSourceOption,
-                          });
                         }
 
                         return success();
