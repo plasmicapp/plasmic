@@ -1,3 +1,4 @@
+import type { ImageAssetOpts, ResizableImage } from "@/wab/client/dom-utils";
 import { StyleTokenType } from "@/wab/commons/StyleToken";
 import { ProjectId } from "@/wab/shared/ApiSchema";
 import {
@@ -198,6 +199,7 @@ import {
   walkTpls,
 } from "@/wab/shared/core/tpls";
 import { ScreenSizeSpec } from "@/wab/shared/css-size";
+import { parseDataUrlToSvgXml, parseSvgXml } from "@/wab/shared/data-urls";
 import { CONTENT_LAYOUT_INITIALS } from "@/wab/shared/default-styles";
 import { DEVFLAGS } from "@/wab/shared/devflags";
 import {
@@ -268,6 +270,7 @@ import {
 } from "@/wab/shared/refactoring";
 import { FrameSize } from "@/wab/shared/responsiveness";
 import { setPageSizeType } from "@/wab/shared/sizingutils";
+import { removeSvgIds } from "@/wab/shared/svg-utils";
 import { makeComponentSwapper } from "@/wab/shared/swap-components";
 import {
   TplVisibility,
@@ -2015,6 +2018,57 @@ export class TplMgr {
     });
     this.site().imageAssets.push(asset);
     return asset;
+  }
+
+  getOrCreateImageAsset(image: ResizableImage, opts: ImageAssetOpts) {
+    const existing = this.findExistingImageAsset(image.url, opts.type);
+    // If there's already an existing asset, then reuse it
+    if (existing) {
+      return { asset: existing, iconColor: opts.iconColor };
+    }
+    const asset = this.addImageAsset({
+      name: opts.name,
+      type: opts.type,
+      dataUri: image.url,
+      width: image.width,
+      height: image.height,
+      aspectRatio: image.scaledRoundedAspectRatio,
+    });
+
+    return { asset, iconColor: opts.iconColor };
+  }
+
+  private findExistingImageAsset(dataUri: string, type: ImageAssetType) {
+    if (type === ImageAssetType.Picture) {
+      return this.site().imageAssets.find(
+        (asset) => asset.type === type && asset.dataUri === dataUri
+      );
+    } else {
+      // To match SVGs, we do so in an ID-agnostic way.  That's because SVGs can
+      // define global IDs, and so we try to generate a random prefix for those
+      // IDs when we clean them.  Then, when we are matching them back up, we need
+      // to ignore those random IDs.
+      // This is a more expensive search than comparing dataUri directly,
+      // and should only be used when handling new image data (like from pasted
+      // clipboard).  If you expect an exact match already, then just use
+      // TplMgr.addImageAsset() directly.
+      const parseSvg = (uri: string) => {
+        const xml = parseDataUrlToSvgXml(uri);
+        const svg = parseSvgXml(xml);
+        return removeSvgIds(svg.cloneNode(true) as SVGSVGElement);
+      };
+
+      const svg = parseSvg(dataUri);
+      for (const asset of this.site().imageAssets) {
+        if (asset.type === ImageAssetType.Icon && asset.dataUri) {
+          const svg2 = parseSvg(asset.dataUri);
+          if (svg.isEqualNode(svg2)) {
+            return asset;
+          }
+        }
+      }
+      return undefined;
+    }
   }
 
   renameImageAsset(asset: ImageAsset, name: string) {

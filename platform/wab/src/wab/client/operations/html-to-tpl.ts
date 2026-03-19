@@ -1,15 +1,11 @@
-import {
-  ensureViewCtxOrThrowUserError,
-  PasteArgs,
-  PasteResult,
-} from "@/wab/client/clipboard/common";
+import { AppCtx } from "@/wab/client/app-ctx";
 import {
   ImageAssetOpts,
   maybeUploadImage,
   readAndSanitizeSvgXmlAsImage,
   ResizableImage,
 } from "@/wab/client/dom-utils";
-import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
+import { parseHtmlToWebImporterTree } from "@/wab/client/web-importer/html-parser";
 import {
   isWIBaseVariantSettings,
   WIAnimationSequence,
@@ -18,7 +14,6 @@ import {
   WIStyleVariant,
   WIVariant,
 } from "@/wab/client/web-importer/types";
-import { unwrap } from "@/wab/commons/failable-utils";
 import { paramToVarName, toVarName } from "@/wab/shared/codegen/util";
 import { assertNever, mkShortId, withoutNils } from "@/wab/shared/common";
 import { code, customCode } from "@/wab/shared/core/exprs";
@@ -56,6 +51,7 @@ import {
 import { ResponsiveStrategy } from "@/wab/shared/responsiveness";
 import { RSH } from "@/wab/shared/RuleSetHelpers";
 import { isSlot } from "@/wab/shared/SlotUtils";
+import { TplMgr } from "@/wab/shared/TplMgr";
 import {
   ensureVariantSetting,
   getBaseVariant,
@@ -68,132 +64,135 @@ import {
 import { VariantTplMgr } from "@/wab/shared/VariantTplMgr";
 import L, { isArray, isObject } from "lodash";
 
-const WI_IMPORTER_HEADER = "__wab_plasmic_wi_importer;";
-
-export async function pasteFromWebImporter(
-  text,
-  pasteArgs: PasteArgs
-): Promise<PasteResult> {
-  if (!text.startsWith(WI_IMPORTER_HEADER)) {
-    return {
-      handled: false,
-    };
-  }
-
-  const wiTree = JSON.parse(
-    text.substring(WI_IMPORTER_HEADER.length)
-  ) as WIElement;
-
-  return processWebImporterTree(wiTree, [], pasteArgs);
+export interface HtmlToTplResult {
+  /** A tpl tree ready to be inserted */
+  tpl: TplNode;
+  /**
+   * Finalize deferred changes that must happen inside studioCtx.change():
+   * animation sequences, variant styles, and image asset attachment.
+   */
+  finalize: (opts: { component: Component; tplMgr: TplMgr }) => void;
 }
 
-export async function processWebImporterTree(
-  wiTree: WIElement,
-  animationSequences: WIAnimationSequence[],
-  { studioCtx, cursorClientPt, insertRelLoc, target }: PasteArgs
-): Promise<PasteResult> {
-  const viewCtx = ensureViewCtxOrThrowUserError(studioCtx);
-  const tplMgr = viewCtx.tplMgr();
-  const vtm = viewCtx.variantTplMgr();
-  const result = await wiTreeToTpl(wiTree, viewCtx, vtm);
+/**
+ * Convert an HTML string into a TplNode tree with all styles applied.
+ *
+ * @param html - The HTML string to convert.
+ * @param opts - Site, VariantTplMgr, and AppCtx needed for conversion.
+ * @returns `{ tpl, finalize }` where:
+ *   - `tpl` is the fully built TplNode tree.
+ *   - `finalize(opts)` must be called inside `studioCtx.change()` to apply
+ *     animation sequences, variant styles, and image assets to the Site.
+ */
+export async function htmlToTpl(
+  html: string,
+  opts: {
+    site: Site;
+    vtm: VariantTplMgr;
+    appCtx: AppCtx;
+  }
+): Promise<HtmlToTplResult | null> {
+  const { site, vtm, appCtx } = opts;
+
+  const { wiTree, animationSequences } = await parseHtmlToWebImporterTree(
+    html,
+    site
+  );
+
+  if (!wiTree) {
+    return null;
+  }
+
+  const result = await wiTreeToTpl(wiTree, { site, vtm, appCtx });
   if (!result) {
-    return { handled: false };
+    return null;
   }
 
   const { tpl, tplImageAssetMap, tplVariantSettingsData } = result;
 
   return {
-    handled: true,
-    success: unwrap(
-      await studioCtx.change(({ success }) => {
-        // Process Animation Sequences (keyframes)
-        wiAnimationSequenceToSiteAnimationSequence(animationSequences, {
-          site: studioCtx.site,
-        });
+    tpl,
+    finalize: (finalizeOpts) => {
+      // Process Animation Sequences (keyframes)
+      wiAnimationSequenceToSiteAnimationSequence(animationSequences, {
+        site,
+      });
 
-        // Process tpl tree
-        const owningComponent = viewCtx.currentTplComponent().component;
+      const owningComponent = finalizeOpts.component;
 
-        // Process all variant settings data to apply styles
-        for (const [tplNode, vsData] of tplVariantSettingsData.entries()) {
-          for (const vs of vsData) {
-            const { variantCombo, safeStyles, unsafeStyles, wiAnimations } = vs;
+      // Process all variant settings data to apply styles
+      for (const [tplNode, vsData] of tplVariantSettingsData.entries()) {
+        for (const vs of vsData) {
+          const { variantCombo, safeStyles, unsafeStyles, wiAnimations } = vs;
 
-            const animations = wiAnimations
-              ? wiAnimationsToSiteAnimations(
-                  wiAnimations,
-                  { site: studioCtx }.site
-                )
-              : null;
+          const animations = wiAnimations
+            ? wiAnimationsToSiteAnimations(wiAnimations, { site })
+            : null;
 
-            // Process style variants by creating private style variants
-            const processedVariantCombo = withoutNils(
-              variantCombo.map((wiVariant) => {
-                switch (wiVariant.type) {
-                  case "base": {
-                    return getBaseVariant(owningComponent);
-                  }
-                  case VariantGroupType.GlobalScreen: {
-                    return findMatchingScreenVariant(viewCtx.site, wiVariant);
-                  }
-                  case "style": {
-                    // Currently, in HTML parser, we support for private style variants that only works on TplTag i.e
-                    // Element states doesn't apply on TplComponent and TplSlot.
-                    if (!isKnownTplTag(tplNode)) {
-                      return null;
-                    }
-
-                    const selectors = wiVariant.selectors.map((s) => `:${s}`);
-                    const existingPrivateStyleVariant =
-                      getPrivateStyleVariantsForTag(
-                        owningComponent,
-                        tplNode,
-                        selectors
-                      )[0];
-
-                    return (
-                      existingPrivateStyleVariant ||
-                      tplMgr.createPrivateStyleVariant(
-                        owningComponent,
-                        tplNode,
-                        selectors
-                      )
-                    );
-                  }
+          // Process style variants by creating private style variants
+          const processedVariantCombo = withoutNils(
+            variantCombo.map((wiVariant) => {
+              switch (wiVariant.type) {
+                case "base": {
+                  return getBaseVariant(owningComponent);
                 }
-              })
-            );
+                case VariantGroupType.GlobalScreen: {
+                  return findMatchingScreenVariant(site, wiVariant);
+                }
+                case "style": {
+                  // Currently, in HTML parser, we support for private style variants that only works on TplTag i.e
+                  // Element states doesn't apply on TplComponent and TplSlot.
+                  if (!isKnownTplTag(tplNode)) {
+                    return null;
+                  }
 
-            applyVariantStyles(
-              vtm,
-              tplNode,
-              processedVariantCombo,
-              safeStyles,
-              unsafeStyles,
-              animations
-            );
-          }
+                  const selectors = wiVariant.selectors.map((s) => `:${s}`);
+                  const existingPrivateStyleVariant =
+                    getPrivateStyleVariantsForTag(
+                      owningComponent,
+                      tplNode,
+                      selectors
+                    )[0];
+
+                  return (
+                    existingPrivateStyleVariant ||
+                    finalizeOpts.tplMgr.createPrivateStyleVariant(
+                      owningComponent,
+                      tplNode,
+                      selectors
+                    )
+                  );
+                }
+              }
+            })
+          );
+
+          applyVariantStyles(
+            vtm,
+            tplNode,
+            processedVariantCombo,
+            safeStyles,
+            unsafeStyles,
+            animations
+          );
         }
+      }
 
-        // if we have any image/svg tpls we need to create their respective assets and update their attrs accordingly
-        for (const [assetTpl, assetData] of tplImageAssetMap) {
-          const { asset } = studioCtx
-            .siteOps()
-            .createImageAsset(assetData.image, assetData.options);
-
-          const vs = ensureVariantSetting(assetTpl, []);
-          const assetAttrs = L.assign({
-            [getTagAttrForImageAsset(asset.type as ImageAssetType)]:
-              new ImageAssetRef({ asset }),
-          });
-          L.merge(vs.attrs, assetAttrs);
-        }
-
-        return success(
-          viewCtx.viewOps.pasteNode(tpl, cursorClientPt, target, insertRelLoc)
+      // if we have any image/svg tpls we need to create their respective assets and update their attrs accordingly
+      for (const [assetTpl, assetData] of tplImageAssetMap) {
+        const { asset } = finalizeOpts.tplMgr.getOrCreateImageAsset(
+          assetData.image,
+          assetData.options
         );
-      })
-    ),
+
+        const vs = ensureVariantSetting(assetTpl, []);
+        const assetAttrs = L.assign({
+          [getTagAttrForImageAsset(asset.type as ImageAssetType)]:
+            new ImageAssetRef({ asset }),
+        });
+        L.merge(vs.attrs, assetAttrs);
+      }
+    },
   };
 }
 
@@ -253,8 +252,11 @@ function findMatchingScreenVariant(
   return null;
 }
 
-async function wiTreeToTpl(wiTree: WIElement, vc: ViewCtx, vtm: VariantTplMgr) {
-  const site = vc.studioCtx.site;
+async function wiTreeToTpl(
+  wiTree: WIElement,
+  opts: { site: Site; vtm: VariantTplMgr; appCtx: AppCtx }
+) {
+  const { site, vtm, appCtx } = opts;
   const tplImageAssetMap = new Map<
     TplTag,
     {
@@ -373,24 +375,24 @@ async function wiTreeToTpl(wiTree: WIElement, vc: ViewCtx, vtm: VariantTplMgr) {
 
     if (node.type === "svg") {
       const svgImage = await readAndSanitizeSvgXmlAsImage(
-        vc.appCtx,
+        appCtx,
         node.outerHtml
       );
 
       if (svgImage) {
-        const { imageResult, opts } = await maybeUploadImage(
-          vc.appCtx,
+        const { imageResult, opts: imageOpts } = await maybeUploadImage(
+          appCtx,
           svgImage,
           undefined,
           undefined
         );
-        if (!imageResult || !opts) {
+        if (!imageResult || !imageOpts) {
           return null;
         }
 
-        const tpl = vc.variantTplMgr().mkTplImage({
-          type: opts.type,
-          iconColor: opts.iconColor,
+        const tpl = vtm.mkTplImage({
+          type: imageOpts.type,
+          iconColor: imageOpts.iconColor,
         });
         collectWIVariantData(node, tpl);
 
@@ -400,7 +402,7 @@ async function wiTreeToTpl(wiTree: WIElement, vc: ViewCtx, vtm: VariantTplMgr) {
         // creating an asset here would cause a model change to occur.
         tplImageAssetMap.set(tpl, {
           image: imageResult,
-          options: opts,
+          options: imageOpts,
         });
 
         return tpl;

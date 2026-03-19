@@ -1,5 +1,5 @@
-import { findCommandByName } from "@/wab/client/commands/command";
 import { usePreviewCtx } from "@/wab/client/components/live/PreviewCtx";
+import { COPILOT_TOOLS } from "@/wab/client/copilot/tools";
 import {
   CopilotToolCallResult,
   HostFrameApi,
@@ -26,7 +26,6 @@ import React from "react";
 import { mutate as swrMutate } from "swr";
 
 import { useTopFrameApi } from "@/wab/client/contexts/AppContexts";
-import { unwrap } from "@/wab/commons/failable-utils";
 import { LocalizationConfig } from "@/wab/shared/localization";
 
 export interface TopFrameObserverProps {
@@ -168,47 +167,26 @@ export const TopFrameObserver = observer(function _TopFrameObserver({
         toolName: string,
         toolArgs: Record<string, unknown>
       ): Promise<CopilotToolCallResult> {
-        const command = await findCommandByName(toolName, studioCtx);
-        if (!command) {
-          return {
-            success: false,
-            error: {
-              message: `Command with tool name ${toolName} not found.`,
-              type: "TOOL_NOT_FOUND" as const,
-            },
-          };
-        }
+        const copilotTool = COPILOT_TOOLS[toolName];
 
-        // Command will always return a list of context, in case of Copilot commands
-        // we only care about the first context and, it should always have one context
-        // Multiple contexts could exist at type level but, it's mainly required for commands that dynamically
-        // expand themselves over a given list of context.
-        // "changeStateVariableNameCommand" is an example of such command that depends on list of component states.
-        const context = command.context(studioCtx)[0];
-        if (!context) {
+        if (!copilotTool) {
           return {
             success: false,
             error: {
+              message: `Copilot tool "${toolName}" not found.`,
               type: "TOOL_NOT_FOUND",
-              message: `Command with tool name ${toolName} not available in current context`,
             },
           };
         }
-
-        const meta = command.meta({ studioCtx });
 
         try {
-          unwrap(await command.execute(studioCtx, toolArgs, context));
-          return {
-            success: true,
-            output: `Executed ${meta.title} successfully.`,
-          };
+          return await copilotTool.execute(studioCtx, toolArgs);
         } catch (err) {
           return {
             success: false,
             error: {
               message: serializeCopilotError(err),
-              type: "EXECUTION_FAILED" as const,
+              type: "EXECUTION_FAILED",
             },
           };
         }

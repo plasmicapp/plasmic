@@ -107,7 +107,6 @@ import {
   isPlumeComponent,
   removeVariantGroup,
 } from "@/wab/shared/core/components";
-import { ImageAssetType } from "@/wab/shared/core/image-asset-type";
 import { extractTransitiveDepsFromComponents } from "@/wab/shared/core/project-deps";
 import { siteFinalStyleTokensDirectDeps } from "@/wab/shared/core/site-style-tokens";
 import {
@@ -144,11 +143,7 @@ import {
   replaceTplTreeByEmptyBox,
 } from "@/wab/shared/core/tpls";
 import { parseScreenSpec } from "@/wab/shared/css-size";
-import {
-  asSvgDataUrl,
-  parseDataUrlToSvgXml,
-  parseSvgXml,
-} from "@/wab/shared/data-urls";
+import { asSvgDataUrl, parseSvgXml } from "@/wab/shared/data-urls";
 import { Pt } from "@/wab/shared/geom";
 import {
   AnimationSequence,
@@ -195,7 +190,6 @@ import {
 } from "@/wab/shared/responsiveness";
 import { APP_ROUTES } from "@/wab/shared/route/app-routes";
 import { fillRoute } from "@/wab/shared/route/route";
-import { removeSvgIds } from "@/wab/shared/svg-utils";
 import {
   TplVisibility,
   getVariantSettingVisibility,
@@ -782,21 +776,7 @@ export class SiteOps {
   }
 
   createImageAsset(image: ResizableImage, opts: ImageAssetOpts) {
-    const existing = this.findExistingImageAsset(image.url, opts.type);
-    // If there's already an existing asset, then reuse it
-    if (existing) {
-      return { asset: existing, iconColor: opts.iconColor };
-    }
-    const asset = this.tplMgr.addImageAsset({
-      name: opts.name,
-      type: opts.type,
-      dataUri: image.url,
-      width: image.width,
-      height: image.height,
-      aspectRatio: image.scaledRoundedAspectRatio,
-    });
-
-    return { asset, iconColor: opts.iconColor };
+    return this.tplMgr.getOrCreateImageAsset(image, opts);
   }
 
   async createFrameForNewComponent(folderPath?: string) {
@@ -2040,39 +2020,6 @@ export class SiteOps {
     return getSiteArenas(this.site).find((arena) =>
       getArenaFrames(arena).includes(frame)
     );
-  }
-
-  private findExistingImageAsset(dataUri: string, type: ImageAssetType) {
-    if (type === ImageAssetType.Picture) {
-      return this.studioCtx.site.imageAssets.find(
-        (asset) => asset.type === type && asset.dataUri === dataUri
-      );
-    } else {
-      // To match SVGs, we do so in an ID-agnostic way.  That's because SVGs can
-      // define global IDs, and so we try to generate a random prefix for those
-      // IDs when we clean them.  Then, when we are matching them back up, we need
-      // to ignore those random IDs.
-      // This is a more expensive search than comparing dataUri directly,
-      // and should only be used when handling new image data (like from pasted
-      // clipboard).  If you expect an exact match already, then just use
-      // TplMgr.addImageAsset() directly.
-      const parseSvg = (uri: string) => {
-        const xml = parseDataUrlToSvgXml(uri);
-        const svg = parseSvgXml(xml);
-        return removeSvgIds(svg.cloneNode(true) as SVGSVGElement);
-      };
-
-      const svg = parseSvg(dataUri);
-      for (const asset of this.studioCtx.site.imageAssets) {
-        if (asset.type === ImageAssetType.Icon && asset.dataUri) {
-          const svg2 = parseSvg(asset.dataUri);
-          if (svg.isEqualNode(svg2)) {
-            return asset;
-          }
-        }
-      }
-      return undefined;
-    }
   }
 
   private get site() {

@@ -4,7 +4,7 @@ import {
   PlasmicChatMessage,
 } from "@/wab/client/plasmic/plasmic_kit_data_binding/PlasmicChatMessage";
 import { unreachable } from "@/wab/shared/common";
-import { COPILOT_COMMANDS } from "@/wab/shared/copilot/internal/commands";
+import { COPILOT_TOOL_DEFS } from "@/wab/shared/copilot/internal/copilot-tools";
 import { isDataUIPart, isToolUIPart } from "ai";
 import * as React from "react";
 
@@ -35,8 +35,8 @@ export function ChatMessage(props: ChatMessageProps) {
           const toolName = part.type.replace(
             /^tool-/,
             ""
-          ) as keyof typeof COPILOT_COMMANDS;
-          const title = COPILOT_COMMANDS[toolName].title ?? toolName;
+          ) as keyof typeof COPILOT_TOOL_DEFS;
+          const title = COPILOT_TOOL_DEFS[toolName].title ?? toolName;
           const isLoading =
             part.state === "input-streaming" ||
             part.state === "input-available";

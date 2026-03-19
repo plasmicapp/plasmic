@@ -1,16 +1,15 @@
+import { reportError, showError } from "@/wab/client/ErrorNotifications";
+import { ReadableClipboard } from "@/wab/client/clipboard/ReadableClipboard";
 import { PasteArgs } from "@/wab/client/clipboard/common";
 import { pasteImage } from "@/wab/client/clipboard/image";
 import { isStyleClip, pasteLocal } from "@/wab/client/clipboard/local";
-import { ReadableClipboard } from "@/wab/client/clipboard/ReadableClipboard";
 import { pasteRemote } from "@/wab/client/clipboard/remote";
 import { pasteText } from "@/wab/client/clipboard/text";
 import { InsertRelLoc } from "@/wab/client/components/canvas/view-ops";
-import { reportError, showError } from "@/wab/client/ErrorNotifications";
 import { pasteFromFigma } from "@/wab/client/figma";
-import { pasteFromHtmlImporter } from "@/wab/client/HtmlImporter";
 import { isCopyState } from "@/wab/client/insertable-templates";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { pasteFromWebImporter } from "@/wab/client/WebImporter";
+import { pasteFromWebImporter } from "@/wab/client/web-importer/WebImporter";
 import { Pt } from "@/wab/shared/geom";
 import { CopyState } from "@/wab/shared/insertable-templates/types";
 import { notification } from "antd";
@@ -106,11 +105,6 @@ async function pasteRouter(
       if (figmaResult.handled) {
         return figmaResult.success;
       }
-
-      const wiImporterResult = await pasteFromWebImporter(textContent, args);
-      if (wiImporterResult.handled) {
-        return wiImporterResult.success;
-      }
     }
 
     const image = await clipboard.getImage(studioCtx.appCtx);
@@ -122,7 +116,7 @@ async function pasteRouter(
     }
 
     if (textContent) {
-      const htmlImporterResult = await pasteFromHtmlImporter(textContent, args);
+      const htmlImporterResult = await pasteFromWebImporter(textContent, args);
       if (htmlImporterResult.handled) {
         return htmlImporterResult.success;
       }

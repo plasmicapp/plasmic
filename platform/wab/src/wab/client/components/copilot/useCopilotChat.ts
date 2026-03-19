@@ -8,7 +8,7 @@ import {
 } from "@/wab/shared/ApiSchema";
 import { spawn } from "@/wab/shared/common";
 import { fixJson } from "@/wab/shared/copilot/fix-json";
-import { COPILOT_COMMANDS } from "@/wab/shared/copilot/internal/commands";
+import { COPILOT_TOOL_DEFS } from "@/wab/shared/copilot/internal/copilot-tools";
 import { useChat } from "@ai-sdk/react";
 import {
   DefaultChatTransport,
@@ -20,12 +20,12 @@ import * as React from "react";
 import { z } from "zod";
 
 /**
- * Maps COPILOT_COMMANDS to the UITools shape expected by UIMessage.
+ * Maps COPILOT_TOOL_DEFS to the UITools shape expected by UIMessage.
  * This lets useChat<CopilotUIMessage> fully type onToolCall and addToolOutput
  */
 type CopilotUITools = {
-  [K in keyof typeof COPILOT_COMMANDS]: {
-    input: z.infer<(typeof COPILOT_COMMANDS)[K]["inputSchema"]>;
+  [K in keyof typeof COPILOT_TOOL_DEFS]: {
+    input: z.infer<(typeof COPILOT_TOOL_DEFS)[K]["inputSchema"]>;
     output: string;
   };
 };

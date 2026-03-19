@@ -1,19 +1,18 @@
-import { COMMANDS } from "@/wab/client/commands/command";
 import { CopilotPromptDialog } from "@/wab/client/components/copilot/CopilotPromptDialog";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { pasteFromWebImporter } from "@/wab/client/web-importer/WebImporter";
 import { addOrUpsertTokens } from "@/wab/commons/StyleToken";
 import {
   QueryCopilotUiRequest,
   QueryCopilotUiResponse,
   UpsertTokenReq,
 } from "@/wab/shared/ApiSchema";
-import { assert, spawn } from "@/wab/shared/common";
+import { spawn } from "@/wab/shared/common";
 import { fixJson } from "@/wab/shared/copilot/fix-json";
 import * as React from "react";
 
 function CopilotUiPrompt() {
   const studioCtx = useStudioCtx();
-  const viewCtx = studioCtx.focusedOrFirstViewCtx();
 
   return (
     <CopilotPromptDialog<QueryCopilotUiResponse["response"]>
@@ -81,7 +80,6 @@ function CopilotUiPrompt() {
       }}
       onCopilotApply={async (response) => {
         const { tokens, html } = response;
-        assert(viewCtx, "ViewCtx must be defined");
 
         spawn(
           studioCtx.change(({ success }) => {
@@ -94,15 +92,10 @@ function CopilotUiPrompt() {
                 }));
                 addOrUpsertTokens(studioCtx.site, upsertTokens);
 
-                spawn(
-                  COMMANDS.copilot.insertHtml.execute(
-                    studioCtx,
-                    {
-                      html,
-                    },
-                    { viewCtx }
-                  )
-                );
+                await pasteFromWebImporter(html, {
+                  studioCtx,
+                  cursorClientPt: undefined,
+                });
               })()
             );
 
