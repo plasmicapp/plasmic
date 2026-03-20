@@ -12,6 +12,7 @@ import type {
   NumberType,
   ObjectType,
   ParamType,
+  PartialParams,
   PlainBooleanType,
   PlainNumberType,
   PlainStringType,
@@ -21,32 +22,31 @@ import type {
 } from "../registerFunction";
 import type { ContextDependentConfig } from "../types/shared-controls";
 
-// Dummy props context for the generic <P>
-type Ctx = {};
+type NoParams = [];
 
-const stringType: StringType<Ctx, string> = { type: "string" };
-const numberType: NumberType<Ctx, number> = { type: "number" };
-const booleanType: BooleanType<Ctx, boolean> = { type: "boolean" };
-const stringChoiceType: ChoiceType<Ctx, "red" | "blue"> = {
+const stringType: StringType<NoParams> = { type: "string" };
+const numberType: NumberType<NoParams> = { type: "number" };
+const booleanType: BooleanType<NoParams> = { type: "boolean" };
+const stringChoiceType: ChoiceType<NoParams, "red" | "blue"> = {
   type: "choice",
   options: ["red", "blue"],
 };
-const numberChoiceType: ChoiceType<Ctx, 1 | 2 | 3> = {
+const numberChoiceType: ChoiceType<NoParams, 1 | 2 | 3> = {
   type: "choice",
   options: [1, 2, 3],
 };
-const booleanChoiceType: ChoiceType<Ctx, true | false> = {
+const booleanChoiceType: ChoiceType<NoParams, true | false> = {
   type: "choice",
   options: [true, false],
 };
-const multiChoiceType: MultiChoiceType<Ctx, "red" | "blue"> = {
+const multiChoiceType: MultiChoiceType<NoParams, "red" | "blue"> = {
   type: "choice",
   options: ["red", "blue"],
   multiSelect: true,
 };
-const arrayType: ArrayType<Ctx> = { type: "array" };
-const objectType: ObjectType<Ctx, {}> = { type: "object" };
-const arrWithNestedObjectType: ArrayType<Ctx> = {
+const arrayType: ArrayType<NoParams> = { type: "array" };
+const objectType: ObjectType<NoParams> = { type: "object" };
+const arrWithNestedObjectType: ArrayType<NoParams> = {
   type: "array",
   itemType: {
     type: "object",
@@ -58,120 +58,154 @@ const arrWithNestedObjectType: ArrayType<Ctx> = {
   },
 };
 
-const stringParam: ParamType<Ctx, string> = { name: "mystr", ...stringType };
-const numberParam: ParamType<Ctx, number> = { name: "mynum", ...numberType };
-const booleanParam: ParamType<Ctx, boolean> = {
+const stringParam: ParamType<NoParams, string> = {
+  name: "mystr",
+  ...stringType,
+};
+const numberParam: ParamType<NoParams, number> = {
+  name: "mynum",
+  ...numberType,
+};
+const booleanParam: ParamType<NoParams, boolean> = {
   name: "mybool",
   ...booleanType,
 };
-const stringChoiceParam: ParamType<Ctx, "red" | "blue"> = {
+const stringChoiceParam: ParamType<NoParams, "red" | "blue"> = {
   name: "mychoice",
   ...stringChoiceType,
 };
-const numberChoiceParam: ParamType<Ctx, 1 | 2 | 3> = {
+const numberChoiceParam: ParamType<NoParams, 1 | 2 | 3> = {
   name: "mychoice",
   ...numberChoiceType,
 };
-const booleanChoiceParam: ParamType<Ctx, true | false> = {
+const booleanChoiceParam: ParamType<NoParams, true | false> = {
   name: "mychoice",
   ...booleanChoiceType,
 };
-const arrayParam: ParamType<Ctx, any[]> = { name: "myarray", ...arrayType };
-const objectParam: ParamType<Ctx, {}> = { name: "myobject", ...objectType };
-const arrWithNestedObjectParam: ParamType<Ctx, any[]> = {
+const arrayParam: ParamType<NoParams, any[]> = {
+  name: "myarray",
+  ...arrayType,
+};
+const objectParam: ParamType<NoParams, {}> = {
+  name: "myobject",
+  ...objectType,
+};
+const arrWithNestedObjectParam: ParamType<NoParams, any[]> = {
   name: "myarray",
   ...arrWithNestedObjectType,
 };
 
 describe("custom-function primitive type tests", () => {
   it("String type keeps its discriminant", () => {
-    expect<StringType<Ctx, string>>().type.toBeAssignableWith(stringType);
-    expect<StringType<Ctx, string>>().type.not.toBeAssignableWith(numberType);
-    expect<StringType<Ctx, string>>().type.not.toBeAssignableWith(booleanType);
+    expect<StringType<NoParams, string>>().type.toBeAssignableWith(stringType);
+    expect<StringType<NoParams, string>>().type.not.toBeAssignableWith(
+      numberType
+    );
+    expect<StringType<NoParams, string>>().type.not.toBeAssignableWith(
+      booleanType
+    );
 
-    expect<StringType<Ctx, string>>().type.toBeAssignableWith(stringChoiceType); // string choice is a string
+    expect<StringType<NoParams, string>>().type.toBeAssignableWith(
+      stringChoiceType
+    ); // string choice is a string
     // TODO: This assertion should fail because multi select returns a string[]
-    expect<StringType<Ctx, string>>().type.toBeAssignableWith({
+    expect<StringType<NoParams, string>>().type.toBeAssignableWith({
       ...stringChoiceType,
       multiSelect: true,
     });
-    expect<StringType<Ctx, string>>().type.not.toBeAssignableWith(
+    expect<StringType<NoParams, string>>().type.not.toBeAssignableWith(
       numberChoiceType
     );
-    expect<StringType<Ctx, string>>().type.not.toBeAssignableWith(
+    expect<StringType<NoParams, string>>().type.not.toBeAssignableWith(
       booleanChoiceType
     );
   });
 
   it("Number type keeps its discriminant", () => {
-    expect<NumberType<Ctx, number>>().type.toBeAssignableWith(numberType);
-    expect<NumberType<Ctx, number>>().type.not.toBeAssignableWith(stringType);
-    expect<NumberType<Ctx, number>>().type.not.toBeAssignableWith(booleanType);
+    expect<NumberType<NoParams, number>>().type.toBeAssignableWith(numberType);
+    expect<NumberType<NoParams, number>>().type.not.toBeAssignableWith(
+      stringType
+    );
+    expect<NumberType<NoParams, number>>().type.not.toBeAssignableWith(
+      booleanType
+    );
 
-    expect<NumberType<Ctx, number>>().type.toBeAssignableWith(numberChoiceType); // number choice is a number
-    expect<NumberType<Ctx, number>>().type.not.toBeAssignableWith(
+    expect<NumberType<NoParams, number>>().type.toBeAssignableWith(
+      numberChoiceType
+    ); // number choice is a number
+    expect<NumberType<NoParams, number>>().type.not.toBeAssignableWith(
       stringChoiceType
     );
-    expect<NumberType<Ctx, number>>().type.not.toBeAssignableWith(
+    expect<NumberType<NoParams, number>>().type.not.toBeAssignableWith(
       booleanChoiceType
     );
   });
 
   it("Boolean type keeps its discriminant", () => {
-    expect<BooleanType<Ctx, boolean>>().type.toBeAssignableWith(booleanType);
-    expect<BooleanType<Ctx, boolean>>().type.not.toBeAssignableWith(stringType);
-    expect<BooleanType<Ctx, boolean>>().type.not.toBeAssignableWith(numberType);
+    expect<BooleanType<NoParams, boolean>>().type.toBeAssignableWith(
+      booleanType
+    );
+    expect<BooleanType<NoParams, boolean>>().type.not.toBeAssignableWith(
+      stringType
+    );
+    expect<BooleanType<NoParams, boolean>>().type.not.toBeAssignableWith(
+      numberType
+    );
 
-    expect<BooleanType<Ctx, boolean>>().type.toBeAssignableWith(
+    expect<BooleanType<NoParams, boolean>>().type.toBeAssignableWith(
       booleanChoiceType
     ); // boolean choice is a boolean
-    expect<BooleanType<Ctx, boolean>>().type.not.toBeAssignableWith(
+    expect<BooleanType<NoParams, boolean>>().type.not.toBeAssignableWith(
       stringChoiceType
     );
-    expect<BooleanType<Ctx, boolean>>().type.not.toBeAssignableWith(
+    expect<BooleanType<NoParams, boolean>>().type.not.toBeAssignableWith(
       numberChoiceType
     );
   });
 
   it('StringType can be literal "string" or object form', () => {
     const lit = "string" as const;
-    expect<StringType<Ctx>>().type.toBeAssignableWith(lit);
+    expect<StringType<NoParams>>().type.toBeAssignableWith(lit);
 
-    const obj: StringType<Ctx> = stringType;
-    expect<StringType<Ctx>>().type.toBeAssignableWith(obj);
+    const obj: StringType<NoParams> = stringType;
+    expect<StringType<NoParams>>().type.toBeAssignableWith(obj);
   });
 
   it("AnyType allows the bare 'any' discriminant", () => {
-    const anyParam: AnyType = { type: "any" };
-    expect(anyParam).type.toBe<AnyType>();
+    const anyParam: AnyType<NoParams> = { type: "any" };
+    expect(anyParam).type.toBe<AnyType<NoParams>>();
 
     // AnyType is a valid member of every primitive type union
-    expect<StringType<Ctx>>().type.toBeAssignableWith(anyParam);
-    expect<NumberType<Ctx>>().type.toBeAssignableWith(anyParam);
-    expect<BooleanType<Ctx>>().type.toBeAssignableWith(anyParam);
+    expect<StringType<NoParams>>().type.toBeAssignableWith(anyParam);
+    expect<NumberType<NoParams>>().type.toBeAssignableWith(anyParam);
+    expect<BooleanType<NoParams>>().type.toBeAssignableWith(anyParam);
   });
 
   // Choice-based param types
   it("SingleChoiceType requires multiSelect=false|undefined and flat options", () => {
-    const single: SingleChoiceType<Ctx, "red" | "blue"> = {
+    const single: SingleChoiceType<NoParams, "red" | "blue"> = {
       type: "choice",
       options: ["red", "blue"],
       // multiSelect defaults to false
     };
-    expect(single).type.toBe<SingleChoiceType<Ctx, "red" | "blue">>();
+    expect(single).type.toBe<SingleChoiceType<NoParams, "red" | "blue">>();
 
-    expect<SingleChoiceType<Ctx, "red" | "blue">>().type.not.toBeAssignableWith(
-      {
-        ...single,
-        multiSelect: true,
-      }
-    );
+    expect<
+      SingleChoiceType<NoParams, "red" | "blue">
+    >().type.not.toBeAssignableWith({
+      ...single,
+      multiSelect: true,
+    });
   });
 
   it("MultiChoiceType requires multiSelect=true and nested options", () => {
-    expect(multiChoiceType).type.toBe<MultiChoiceType<Ctx, "red" | "blue">>();
+    expect(multiChoiceType).type.toBe<
+      MultiChoiceType<NoParams, "red" | "blue">
+    >();
 
-    expect<MultiChoiceType<Ctx, "red" | "blue">>().type.not.toBeAssignableWith({
+    expect<
+      MultiChoiceType<NoParams, "red" | "blue">
+    >().type.not.toBeAssignableWith({
       ...multiChoiceType,
       multiSelect: false,
     });
@@ -180,91 +214,117 @@ describe("custom-function primitive type tests", () => {
 
 describe("custom-function param type regression tests", () => {
   it("String param keeps its discriminant", () => {
-    expect<ParamType<Ctx, string>>().type.toBeAssignableWith(stringParam);
-    expect<ParamType<Ctx, string>>().type.not.toBeAssignableWith(numberParam);
-    expect<ParamType<Ctx, string>>().type.not.toBeAssignableWith(booleanParam);
+    expect<ParamType<NoParams, string>>().type.toBeAssignableWith(stringParam);
+    expect<ParamType<NoParams, string>>().type.not.toBeAssignableWith(
+      numberParam
+    );
+    expect<ParamType<NoParams, string>>().type.not.toBeAssignableWith(
+      booleanParam
+    );
 
-    expect<ParamType<Ctx, string>>().type.not.toBeAssignableWith(stringType);
-    expect<ParamType<Ctx, string>>().type.not.toBeAssignableWith(
+    expect<ParamType<NoParams, string>>().type.not.toBeAssignableWith(
+      stringType
+    );
+    expect<ParamType<NoParams, string>>().type.not.toBeAssignableWith(
       stringChoiceType
     );
 
-    expect<ParamType<Ctx, string>>().type.toBeAssignableWith(stringChoiceParam); // string choice is a string
+    expect<ParamType<NoParams, string>>().type.toBeAssignableWith(
+      stringChoiceParam
+    ); // string choice is a string
     // TODO: This assertion should fail because multi select returns a string[]
-    expect<ParamType<Ctx, string>>().type.toBeAssignableWith({
+    expect<ParamType<NoParams, string>>().type.toBeAssignableWith({
       ...stringChoiceParam,
       multiSelect: true,
     });
-    expect<ParamType<Ctx, string>>().type.not.toBeAssignableWith(
+    expect<ParamType<NoParams, string>>().type.not.toBeAssignableWith(
       numberChoiceParam
     );
-    expect<ParamType<Ctx, string>>().type.not.toBeAssignableWith(
+    expect<ParamType<NoParams, string>>().type.not.toBeAssignableWith(
       booleanChoiceParam
     );
   });
 
   it("Boolean param keeps its discriminant", () => {
-    expect<ParamType<Ctx, boolean>>().type.toBeAssignableWith(booleanParam);
-    expect<ParamType<Ctx, boolean>>().type.not.toBeAssignableWith(numberParam);
-    expect<ParamType<Ctx, boolean>>().type.not.toBeAssignableWith(stringParam);
+    expect<ParamType<NoParams, boolean>>().type.toBeAssignableWith(
+      booleanParam
+    );
+    expect<ParamType<NoParams, boolean>>().type.not.toBeAssignableWith(
+      numberParam
+    );
+    expect<ParamType<NoParams, boolean>>().type.not.toBeAssignableWith(
+      stringParam
+    );
 
-    expect<ParamType<Ctx, boolean>>().type.not.toBeAssignableWith(booleanType);
-    expect<ParamType<Ctx, boolean>>().type.not.toBeAssignableWith(
+    expect<ParamType<NoParams, boolean>>().type.not.toBeAssignableWith(
+      booleanType
+    );
+    expect<ParamType<NoParams, boolean>>().type.not.toBeAssignableWith(
       booleanChoiceType
     );
 
-    expect<ParamType<Ctx, boolean>>().type.toBeAssignableWith(
+    expect<ParamType<NoParams, boolean>>().type.toBeAssignableWith(
       booleanChoiceParam
     ); // boolean choice is a boolean
     // TODO: This assertion should fail because multi select returns a boolean[]
-    expect<ParamType<Ctx, boolean>>().type.toBeAssignableWith({
+    expect<ParamType<NoParams, boolean>>().type.toBeAssignableWith({
       ...booleanChoiceParam,
       multiSelect: true,
     });
-    expect<ParamType<Ctx, boolean>>().type.not.toBeAssignableWith(
+    expect<ParamType<NoParams, boolean>>().type.not.toBeAssignableWith(
       numberChoiceParam
     );
-    expect<ParamType<Ctx, boolean>>().type.not.toBeAssignableWith(
+    expect<ParamType<NoParams, boolean>>().type.not.toBeAssignableWith(
       stringChoiceParam
     );
   });
 
   it("Number param keeps its discriminant", () => {
-    expect<ParamType<Ctx, number>>().type.toBeAssignableWith(numberParam);
-    expect<ParamType<Ctx, number>>().type.not.toBeAssignableWith(booleanParam);
-    expect<ParamType<Ctx, number>>().type.not.toBeAssignableWith(stringParam);
+    expect<ParamType<NoParams, number>>().type.toBeAssignableWith(numberParam);
+    expect<ParamType<NoParams, number>>().type.not.toBeAssignableWith(
+      booleanParam
+    );
+    expect<ParamType<NoParams, number>>().type.not.toBeAssignableWith(
+      stringParam
+    );
 
-    expect<ParamType<Ctx, number>>().type.not.toBeAssignableWith(numberType);
-    expect<ParamType<Ctx, number>>().type.not.toBeAssignableWith(
+    expect<ParamType<NoParams, number>>().type.not.toBeAssignableWith(
+      numberType
+    );
+    expect<ParamType<NoParams, number>>().type.not.toBeAssignableWith(
       numberChoiceType
     );
 
-    expect<ParamType<Ctx, number>>().type.toBeAssignableWith(numberChoiceParam); // number choice is a number
+    expect<ParamType<NoParams, number>>().type.toBeAssignableWith(
+      numberChoiceParam
+    ); // number choice is a number
     // TODO: This assertion should fail because multi select returns a number[]
-    expect<ParamType<Ctx, number>>().type.toBeAssignableWith({
+    expect<ParamType<NoParams, number>>().type.toBeAssignableWith({
       ...numberChoiceParam,
       multiSelect: true,
     });
-    expect<ParamType<Ctx, number>>().type.not.toBeAssignableWith(
+    expect<ParamType<NoParams, number>>().type.not.toBeAssignableWith(
       booleanChoiceParam
     );
-    expect<ParamType<Ctx, number>>().type.not.toBeAssignableWith(
+    expect<ParamType<NoParams, number>>().type.not.toBeAssignableWith(
       stringChoiceParam
     );
   });
 
   it("Array Param Type and Object Param Type discriminants work", () => {
-    expect<ParamType<Ctx, any[]>>().type.toBeAssignableWith(arrayParam);
+    expect<ParamType<NoParams, any[]>>().type.toBeAssignableWith(arrayParam);
 
-    expect<ParamType<Ctx, {}>>().type.toBeAssignableWith(objectParam);
+    expect<ParamType<NoParams, {}>>().type.toBeAssignableWith(objectParam);
 
     // Wrong discriminant
-    expect<ParamType<Ctx, any[]>>().type.not.toBeAssignableWith(objectParam);
-    expect<ParamType<Ctx, {}>>().type.not.toBeAssignableWith(arrayParam);
+    expect<ParamType<NoParams, any[]>>().type.not.toBeAssignableWith(
+      objectParam
+    );
+    expect<ParamType<NoParams, {}>>().type.not.toBeAssignableWith(arrayParam);
   });
 
   it("Array Param Type with nested objects work", () => {
-    expect<ParamType<Ctx, any[]>>().type.toBeAssignableWith(
+    expect<ParamType<NoParams, any[]>>().type.toBeAssignableWith(
       arrWithNestedObjectParam
     );
   });
@@ -316,9 +376,11 @@ describe("custom-function param type regression tests", () => {
       type: "graphql",
     } as const;
 
-    expect<ParamType<Ctx, GraphQLValue>>().type.toBeAssignableWith(gql);
+    expect<ParamType<NoParams, GraphQLValue>>().type.toBeAssignableWith(gql);
 
-    expect<ParamType<Ctx, GraphQLValue>>().type.not.toBeAssignableWith(notGql);
+    expect<ParamType<NoParams, GraphQLValue>>().type.not.toBeAssignableWith(
+      notGql
+    );
   });
 
   it("GraphQL ContextDependentConfig receives function context as 3-tuple", () => {
@@ -335,7 +397,9 @@ describe("custom-function param type regression tests", () => {
       undefined,
     ];
     expect(testContext).type.toBe<FunctionControlContext<FunctionParams>>();
-    expect(testContext).type.toBe<[Partial<FunctionParams>, any, unknown]>();
+    expect(testContext).type.toBe<
+      [PartialParams<FunctionParams>, any, unknown]
+    >();
 
     const [params, _d, _e] = testContext;
 
@@ -419,10 +483,7 @@ describe("custom-function param type regression tests", () => {
   });
 
   it("ContextDependentConfig works with FunctionControlContext in field mappings (regression)", () => {
-    interface TestFieldfulProps {
-      data?: any;
-      fields?: any[];
-    }
+    type TestFieldfulProps = [data?: any, fields?: any[]];
 
     // ContextDependentConfig expects FunctionControlContext as a tuple
     type MinimalValueType = ContextDependentConfig<
@@ -572,7 +633,7 @@ describe("custom-function param defaultValue support", () => {
       ...stringParam,
       defaultValue: "Hello",
     } as const;
-    expect<PlainStringType<string>>().type.toBeAssignableWith(
+    expect<PlainStringType<NoParams>>().type.toBeAssignableWith(
       stringParamWithDefaultValue
     );
 
@@ -580,7 +641,7 @@ describe("custom-function param defaultValue support", () => {
       ...numberParam,
       defaultValue: 42,
     } as const;
-    expect<PlainNumberType<number>>().type.toBeAssignableWith(
+    expect<PlainNumberType<NoParams>>().type.toBeAssignableWith(
       numberParamWithDefaultValue
     );
 
@@ -588,35 +649,35 @@ describe("custom-function param defaultValue support", () => {
       ...booleanParam,
       defaultValue: true,
     } as const;
-    expect<PlainBooleanType<boolean>>().type.toBeAssignableWith(
+    expect<PlainBooleanType<NoParams>>().type.toBeAssignableWith(
       boolParamWithDefaultValue
     );
   });
 
   it("Primitive types reject wrong defaultValue types", () => {
-    expect<PlainStringType<string>>().type.not.toBeAssignableWith({
+    expect<PlainStringType<NoParams>>().type.not.toBeAssignableWith({
       ...stringType,
       defaultValue: 42,
     });
-    expect<PlainStringType<string>>().type.not.toBeAssignableWith({
+    expect<PlainStringType<NoParams>>().type.not.toBeAssignableWith({
       ...stringType,
       defaultValue: true,
     });
 
-    expect<PlainNumberType<number>>().type.not.toBeAssignableWith({
+    expect<PlainNumberType<NoParams>>().type.not.toBeAssignableWith({
       ...numberType,
       defaultValue: "wrong",
     });
-    expect<PlainNumberType<number>>().type.not.toBeAssignableWith({
+    expect<PlainNumberType<NoParams>>().type.not.toBeAssignableWith({
       ...numberType,
       defaultValue: true,
     });
 
-    expect<PlainBooleanType<boolean>>().type.not.toBeAssignableWith({
+    expect<PlainBooleanType<NoParams>>().type.not.toBeAssignableWith({
       ...booleanType,
       defaultValue: "wrong",
     });
-    expect<PlainBooleanType<boolean>>().type.not.toBeAssignableWith({
+    expect<PlainBooleanType<NoParams>>().type.not.toBeAssignableWith({
       ...booleanType,
       defaultValue: 42,
     });
@@ -655,7 +716,10 @@ describe("custom-function param defaultValue support", () => {
     const meta: CustomFunctionMeta<typeof greet> = {
       name: "greet",
       importPath: "./greet",
-      params: [stringParam, { ...stringParam, defaultValue: "Hello" }],
+      params: [
+        { name: "name", type: "string" },
+        { name: "greeting", type: "string", defaultValue: "Hello" },
+      ],
     };
 
     expect<CustomFunctionMeta<typeof greet>>().type.toBeAssignableWith(meta);
@@ -674,14 +738,46 @@ describe("custom-function param defaultValue support", () => {
       name: "calculate",
       importPath: "./calculate",
       params: [
-        { ...numberType, name: "base" },
-        { ...numberType, name: "multiplier", defaultValue: 1 },
-        { ...numberType, name: "offset", defaultValue: 0 },
+        { name: "base", type: "number" },
+        { name: "multiplier", type: "number", defaultValue: 1 },
+        { name: "offset", type: "number", defaultValue: 0 },
       ],
     };
 
     expect<CustomFunctionMeta<typeof calculate>>().type.toBeAssignableWith(
       meta
     );
+  });
+});
+
+describe("hidden callback receives function params", () => {
+  type FirstParam = string;
+  type SecondParam = { bool: boolean };
+  type Params = [FirstParam, SecondParam];
+
+  it("FirstArg hidden receives function params", () => {
+    const field: StringType<Params, FirstParam> = {
+      type: "string",
+      hidden: (args) => {
+        expect(args).type.toBe<
+          [FirstParam | undefined, SecondParam | undefined]
+        >();
+        return (args[0] ?? "").includes("foo") && args[1]?.bool === true;
+      },
+    };
+    expect<GenericType<Params, FirstParam>>().type.toBeAssignableWith(field);
+  });
+
+  it("SecondArg hidden receives function params", () => {
+    const field: ObjectType<Params, SecondParam> = {
+      type: "object",
+      hidden: (args) => {
+        expect(args).type.toBe<
+          [FirstParam | undefined, SecondParam | undefined]
+        >();
+        return (args[0] ?? "").includes("foo") && args[1]?.bool === true;
+      },
+    };
+    expect<GenericType<Params, SecondParam>>().type.toBeAssignableWith(field);
   });
 });

@@ -17,6 +17,9 @@ export interface ObjectTypeBaseCore<
   display?: "inline" | "popup" | "flatten";
 }
 
+// TODO: ArrayTypeBaseCore should support any type of inner item type.
+// Currently the types suggest the inner item type must be an object.
+
 export interface ArrayTypeBaseCore<Ctx extends any[], Fields> {
   type: "array";
   itemType?: ObjectTypeBaseCore<Ctx, Fields>;

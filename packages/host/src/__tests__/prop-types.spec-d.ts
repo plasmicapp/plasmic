@@ -540,4 +540,29 @@ describe("prop-types type regression tests", () => {
       expect<boolean>().type.toBeAssignableWith(isHidden);
     }
   });
+
+  test("hidden callback receives component props", () => {
+    interface P {
+      str: string;
+      num: number;
+    }
+
+    const strProp: PlainStringType<P> = {
+      type: "string",
+      hidden: (props) => {
+        expect(props).type.toBe<P>();
+        return props.num > 0;
+      },
+    };
+    expect<RestrictPropType<string, P>>().type.toBeAssignableWith(strProp);
+
+    const numProp: NumberType<P> = {
+      type: "number",
+      hidden: (props) => {
+        expect(props).type.toBe<P>();
+        return props.str.length > 0;
+      },
+    };
+    expect<RestrictPropType<number, P>>().type.toBeAssignableWith(numProp);
+  });
 });

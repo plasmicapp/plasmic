@@ -16,15 +16,22 @@ import {
 } from "./shared-controls";
 import { Nullish } from "./type-utils";
 
-export type FunctionControlContext<P> = GenericContext<
-  Partial<P>, // Partial function props
-  any
+/**
+ * `[string, number]` -> `[string | undefined, number | undefined]`
+ */
+export type PartialParams<P extends any[]> = {
+  [K in keyof P]: P[K] | undefined;
+};
+
+export type FunctionControlContext<P extends any[]> = GenericContext<
+  PartialParams<P>, // Function params, each may be undefined
+  any // Data from fnContext
 >;
 
-export type FunctionContextConfig<
-  Args extends any[],
+export type FunctionContextConfig<P extends any[], R> = ContextDependentConfig<
+  FunctionControlContext<P>,
   R
-> = ContextDependentConfig<FunctionControlContext<Args>, R>;
+>;
 
 export interface TypeBaseDefault<Ctx extends any[], T>
   extends CommonTypeBase,
@@ -37,101 +44,115 @@ export interface TypeBaseDefault<Ctx extends any[], T>
   hidden?: ContextDependentConfig<Ctx, boolean>;
 }
 
-export interface PlainStringType<T extends Nullish<string> = string>
-  extends TypeBaseDefault<any[], T> {
+export interface PlainStringType<
+  P extends any[],
+  T extends Nullish<string> = string
+> extends TypeBaseDefault<FunctionControlContext<P>, T> {
   type: "string" | `'${T}'`;
 }
 
-export type StringType<P, T extends string = string> =
+export type StringType<P extends any[], T extends string = string> =
   | "string"
-  | PlainStringType<T>
+  | PlainStringType<P, T>
   | ChoiceType<P, T>
-  | DateStringType
-  | DateRangeStringsType
-  | AnyType;
+  | DateStringType<P>
+  | DateRangeStringsType<P>
+  | AnyType<P>;
 
-export interface PlainNumberType<T extends Nullish<number> = number>
-  extends TypeBaseDefault<any[], T> {
+export interface PlainNumberType<
+  P extends any[],
+  T extends Nullish<number> = number
+> extends TypeBaseDefault<FunctionControlContext<P>, T> {
   type: "number" | `${number extends T ? number : T}`;
 }
 
-export type NumberType<P, T extends number = number> =
-  | PlainNumberType<T>
+export type NumberType<P extends any[], T extends number = number> =
+  | PlainNumberType<P, T>
   | (TypeBaseDefault<FunctionControlContext<P>, T> &
       NumberTypeBaseCore<FunctionControlContext<P>>)
   | ChoiceType<P, T>
-  | AnyType;
+  | AnyType<P>;
 
-export interface PlainBooleanType<T extends Nullish<boolean> = boolean>
-  extends TypeBaseDefault<any[], T> {
+export interface PlainBooleanType<
+  P extends any[],
+  T extends Nullish<boolean> = boolean
+> extends TypeBaseDefault<FunctionControlContext<P>, T> {
   type: "boolean" | `${boolean extends T ? boolean : T}`;
 }
 
-export type BooleanType<P, T extends boolean = boolean> =
-  | PlainBooleanType<T>
+export type BooleanType<P extends any[], T extends boolean = boolean> =
+  | PlainBooleanType<P, T>
   | (TypeBaseDefault<FunctionControlContext<P>, T> & RichBooleanCore)
   | ChoiceType<P, T>
-  | AnyType;
+  | AnyType<P>;
 
-export type GraphQLType<P> = TypeBaseDefault<FunctionControlContext<P>, any> &
+export type GraphQLType<P extends any[]> = TypeBaseDefault<
+  FunctionControlContext<P>,
+  any
+> &
   GraphQLCore<FunctionControlContext<P>>;
 
-export interface PlainNullType extends TypeBaseDefault<any[], null> {
+export interface PlainNullType<P extends any[]>
+  extends TypeBaseDefault<FunctionControlContext<P>, null> {
   type: "null";
 }
-export type NullType = PlainNullType | AnyType;
+export type NullType<P extends any[]> = PlainNullType<P> | AnyType<P>;
 
-export interface PlainUndefinedType extends TypeBaseDefault<any[], undefined> {
+export interface PlainUndefinedType<P extends any[]>
+  extends TypeBaseDefault<FunctionControlContext<P>, undefined> {
   type: "undefined";
 }
-export type UndefinedType = PlainUndefinedType | AnyType;
+export type UndefinedType<P extends any[]> = PlainUndefinedType<P> | AnyType<P>;
 
 export type ExtractObjectKeys<T extends object> = keyof T & string;
 
-export type ObjectType<P, T extends object> = TypeBaseDefault<
-  FunctionControlContext<P>,
-  T
-> &
+export type ObjectType<
+  P extends any[],
+  T extends Record<string, any> = Record<string, any>
+> = TypeBaseDefault<FunctionControlContext<P>, T> &
   ObjectTypeBaseCore<
     FunctionControlContext<P>,
     GenericType<P, any>,
     ExtractObjectKeys<T>
   >;
-export type ArrayType<P> = TypeBaseDefault<FunctionControlContext<P>, any[]> &
+export type ArrayType<
+  P extends any[],
+  T extends any[] = any[]
+> = TypeBaseDefault<FunctionControlContext<P>, T> &
   ArrayTypeBaseCore<FunctionControlContext<P>, GenericType<P, any>>;
 
-export type QueryBuilderType<P> = TypeBaseDefault<
+export type QueryBuilderType<P extends any[]> = TypeBaseDefault<
   FunctionControlContext<P>,
   any
 > &
   QueryBuilderCore<FunctionControlContext<P>>;
 
-export interface PlainAnyType
-  extends TypeBaseDefault<FunctionControlContext<any>, any> {
+export interface PlainAnyType<P extends any[]>
+  extends TypeBaseDefault<FunctionControlContext<P>, any> {
   type: "any";
 }
-export type AnyType = PlainAnyType;
+export type AnyType<P extends any[]> = PlainAnyType<P>;
 
 export interface PlainVoidType extends CommonTypeBase {
   type: "void";
 }
-export type VoidType = PlainVoidType | AnyType;
+export type VoidType<P extends any[]> = PlainVoidType | AnyType<P>;
 
 type IsAny<T> = 0 extends 1 & T ? true : false;
 
-type CommonType<P, T> = T extends GraphQLValue
+type CommonType<P extends any[], T> = T extends GraphQLValue
   ? GraphQLType<P>
   : T extends null
-  ? NullType
+  ? NullType<P>
   : T extends undefined
-  ? UndefinedType
+  ? UndefinedType<P>
   : T extends Array<any>
   ? ArrayType<P>
   : T extends object
   ? ObjectType<P, T>
-  : AnyType;
+  : AnyType<P>;
 
-type AnyTyping<P, T> = T extends string
+type AnyTyping<P extends any[], T> = T extends string
   ? StringType<P, T>
   : T extends number
   ? NumberType<P, T>
@@ -139,50 +160,54 @@ type AnyTyping<P, T> = T extends string
   ? BooleanType<P, T>
   : CommonType<P, T>;
 
-export type ToTuple<T> = T extends any[] ? T : never;
-
 export type ChoiceTypeBase<
-  Args,
+  P extends any[],
   Opt extends ChoiceValue = ChoiceValue
-> = TypeBaseDefault<FunctionControlContext<ToTuple<Args>>, Opt | Opt[]> &
-  ChoiceCore<FunctionControlContext<ToTuple<Args>>, Opt>;
+> = TypeBaseDefault<FunctionControlContext<P>, Opt | Opt[]> &
+  ChoiceCore<FunctionControlContext<P>, Opt>;
 
-export interface SingleChoiceType<P, Opt extends ChoiceValue = ChoiceValue>
-  extends ChoiceTypeBase<P, Opt> {
+export interface SingleChoiceType<
+  P extends any[],
+  Opt extends ChoiceValue = ChoiceValue
+> extends ChoiceTypeBase<P, Opt> {
   multiSelect?: false;
 }
 
-export interface MultiChoiceType<P, Opt extends ChoiceValue = ChoiceValue>
-  extends ChoiceTypeBase<P, Opt> {
+export interface MultiChoiceType<
+  P extends any[],
+  Opt extends ChoiceValue = ChoiceValue
+> extends ChoiceTypeBase<P, Opt> {
   multiSelect: true;
 }
 
-export interface CustomChoiceType<P, Opt extends ChoiceValue = ChoiceValue>
-  extends ChoiceTypeBase<P, Opt> {
-  multiSelect: FunctionContextConfig<ToTuple<P>, boolean>;
+export interface CustomChoiceType<
+  P extends any[],
+  Opt extends ChoiceValue = ChoiceValue
+> extends ChoiceTypeBase<P, Opt> {
+  multiSelect: FunctionContextConfig<P, boolean>;
 }
 
-export type ChoiceType<P, T extends ChoiceValue = ChoiceValue> =
+export type ChoiceType<P extends any[], T extends ChoiceValue = ChoiceValue> =
   | SingleChoiceType<P, T>
   | MultiChoiceType<P, T>
   | CustomChoiceType<P, T>;
 
-export type DateStringType = TypeBaseDefault<
-  FunctionControlContext<string>,
+export type DateStringType<P extends any[]> = TypeBaseDefault<
+  FunctionControlContext<P>,
   string
 > &
   DateStringCore;
-export type DateRangeStringsType = TypeBaseDefault<
-  FunctionControlContext<[string, string]>,
+export type DateRangeStringsType<P extends any[]> = TypeBaseDefault<
+  FunctionControlContext<P>,
   [string, string]
 > &
   DateRangeStringsCore;
 
-export interface DynamicType<P>
+export interface DynamicType<P extends any[]>
   extends CommonTypeBase,
-    DynamicCore<FunctionControlContext<ToTuple<P>>, GenericType<P, any>> {}
+    DynamicCore<FunctionControlContext<P>, GenericType<P, any>> {}
 
-export type RestrictedType<P, T> = IsAny<T> extends true
+export type RestrictedType<P extends any[], T> = IsAny<T> extends true
   ? AnyTyping<P, T>
   : // Exact primitive types
   [T] extends [string]
@@ -207,7 +232,7 @@ export type RestrictedType<P, T> = IsAny<T> extends true
   : // Everything else
     CommonType<P, T>;
 
-export type GenericType<P, T> =
+export type GenericType<P extends any[], T> =
   | RestrictedType<P, T>
   | DynamicType<P>
   | QueryBuilderType<P>;
@@ -216,20 +241,20 @@ export interface ParamTypeBase {
   name: string;
 }
 
-export type ParamType<P, T> = ParamTypeBase & GenericType<P, T>;
+export type ParamType<P extends any[], T> = ParamTypeBase & GenericType<P, T>;
 
-export type RequiredParam<P, T> = ParamTypeBase &
+export type RequiredParam<P extends any[], T> = ParamTypeBase &
   ParamType<P, T> & {
     isOptional?: false;
     isRestParameter?: false;
   };
 
-export type OptionalParam<P, T> = ParamTypeBase &
+export type OptionalParam<P extends any[], T> = ParamTypeBase &
   ParamType<P, T> & {
     isRestParameter?: false;
   };
 
-export type RestParam<P, T> = ParamTypeBase &
+export type RestParam<P extends any[], T> = ParamTypeBase &
   ParamType<P, T> & {
     isOptional?: false;
     isRestParameter: true;
@@ -252,11 +277,17 @@ type OptionalParams<T extends any[]> = T extends [
   ? [...R]
   : [];
 
-type HandleRequiredParams<P, R extends any[]> = R extends [infer H, ...infer T]
+type HandleRequiredParams<P extends any[], R extends any[]> = R extends [
+  infer H,
+  ...infer T
+]
   ? [string | RequiredParam<P, H>, ...HandleRequiredParams<P, T>]
   : [];
 
-type HandleOptionalParams<P, R extends any[]> = R extends [infer H, ...infer T]
+type HandleOptionalParams<P extends any[], R extends any[]> = R extends [
+  infer H,
+  ...infer T
+]
   ?
       | []
       | [
@@ -274,4 +305,6 @@ export type HandleParams<P extends any[]> = [
   ...HandleOptionalParams<P, Required<OptionalParams<P>>>
 ];
 
-export type HandleReturnType<P, T> = VoidType | ParamType<P, T>;
+export type HandleReturnType<P extends any[], T> =
+  | VoidType<P>
+  | ParamType<P, T>;
