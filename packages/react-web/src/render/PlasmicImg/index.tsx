@@ -13,7 +13,7 @@ export interface ImageLoader {
     src: string;
     width?: number;
     quality?: number;
-    format?: "webp";
+    format?: PlasmicImgFormat;
   }) => string;
 }
 
@@ -29,6 +29,8 @@ const IMG_OPTIMIZER_HOST = "https://img.plasmic.app";
 const IMG_SIZES = [16, 32, 48, 64, 96, 128, 256, 384];
 const DEVICE_SIZES = [640, 750, 828, 1080, 1200, 1920, 2048, 3840];
 const ALL_SIZES = [...IMG_SIZES, ...DEVICE_SIZES];
+
+export type PlasmicImgFormat = "avif" | "jpeg" | "png" | "webp";
 
 export interface PlasmicImgProps extends ImgTagProps {
   /**
@@ -95,6 +97,11 @@ export interface PlasmicImgProps extends ImgTagProps {
   quality?: number;
 
   /**
+   * Choose the output image format.
+   */
+  format?: PlasmicImgFormat;
+
+  /**
    * ImageLoader to use for loading different dimensions of the image.
    * If none specified, will not attempt to load different dimensions.
    */
@@ -128,6 +135,7 @@ export const PlasmicImg = React.forwardRef(function PlasmicImg(
     displayMaxWidth,
     displayMaxHeight,
     quality,
+    format,
     loader,
     imgRef,
     style,
@@ -222,8 +230,8 @@ export const PlasmicImg = React.forwardRef(function PlasmicImg(
       ? globalThis.btoa(spacerSvg)
       : Buffer.from(spacerSvg).toString("base64");
 
-  let wrapperStyle: CSSProperties = { ...(style || {}) };
-  let spacerStyle: CSSProperties = {
+  const wrapperStyle: CSSProperties = { ...(style || {}) };
+  const spacerStyle: CSSProperties = {
     ...pick(style || {}, "objectFit", "objectPosition"),
   };
 
@@ -294,6 +302,7 @@ export const PlasmicImg = React.forwardRef(function PlasmicImg(
         sizes,
         src: srcStr,
         quality,
+        format,
         ref: imgRef,
         style: style ? pick(style, "objectFit", "objectPosition") : undefined,
         imgProps,
@@ -309,6 +318,7 @@ function makePicture(opts: {
   sizes?: string;
   src: string;
   quality?: number;
+  format?: PlasmicImgFormat;
   style?: React.CSSProperties;
   className?: string;
   imgProps: ImgTagProps;
@@ -322,6 +332,7 @@ function makePicture(opts: {
     widthDescs,
     src,
     quality,
+    format,
     style,
     className,
     sizes,
@@ -330,7 +341,7 @@ function makePicture(opts: {
   } = opts;
   return (
     <picture className="__wab_picture">
-      {imageLoader && imageLoader.supportsUrl(src) && (
+      {imageLoader && imageLoader.supportsUrl(src) && !format && (
         <source
           type="image/webp"
           srcSet={widthDescs
@@ -356,6 +367,7 @@ function makePicture(opts: {
             ? imageLoader.transformUrl({
                 src,
                 quality,
+                format,
                 width: widthDescs[widthDescs.length - 1].width,
               })
             : src
@@ -368,6 +380,7 @@ function makePicture(opts: {
                     `${imageLoader.transformUrl({
                       src,
                       quality,
+                      format,
                       width: wd.width,
                     })} ${wd.desc}`
                 )

@@ -43,10 +43,30 @@ function _ContentPanelSection(props: ContentPanelSectionProps) {
   const viewCtx = expsProvider.viewCtx;
   const rsh = expsProvider.mergedExp();
   const tpl = expsProvider.tpl;
+  const shouldShowPlasmicImgOptimizationProps =
+    viewCtx.projectFlags().usePlasmicImg && isTplTagOrComponent(tpl);
 
   const pos = ObjectPosition.parse(rsh.get("object-position"));
   return (
     <>
+      {shouldShowPlasmicImgOptimizationProps && (
+        <>
+          <HTMLAttributePropEditor
+            viewCtx={viewCtx}
+            tpl={tpl}
+            expsProvider={expsProvider}
+            attr="quality"
+            about="Set the optimization quality from 0 to 100."
+          />
+          <HTMLAttributePropEditor
+            viewCtx={viewCtx}
+            tpl={tpl}
+            expsProvider={expsProvider}
+            attr="format"
+            about="Choose the output image format."
+          />
+        </>
+      )}
       {shouldShowSizeProps && isTplTagOrComponent(tpl) && (
         <>
           <Alert

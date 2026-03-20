@@ -394,6 +394,24 @@ export const inferPropTypeFromAttr = (
           label: capitalize(op),
         })),
       };
+    } else if (tpl.tag === "img" && attr === "quality") {
+      return {
+        type: "number" as const,
+        min: 0,
+        max: 100,
+        defaultValueHint: 75,
+      };
+    } else if (tpl.tag === "img" && attr === "format") {
+      return {
+        type: "choice" as const,
+        options: [
+          { value: "avif", label: "AVIF" },
+          { value: "jpeg", label: "JPEG" },
+          { value: "png", label: "PNG" },
+          { value: "webp", label: "WebP" },
+        ],
+        defaultValueHint: "webp",
+      };
     } else if (attr === "style") {
       return {
         type: "object" as const,

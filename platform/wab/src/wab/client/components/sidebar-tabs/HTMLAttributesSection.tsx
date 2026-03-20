@@ -318,7 +318,7 @@ function getEditableTagParams(viewCtx: ViewCtx, tpl: TplTag) {
  * These are attrs for which we have special dedicated UI for configuring,
  * and so should never show up in the HTML attrs panel
  */
-const SPECIAL_ATTRS = ["src", "outerHTML"];
+const SPECIAL_ATTRS = ["src", "outerHTML", "quality", "format"];
 
 interface AttrInfo {
   attr: string;
@@ -647,10 +647,11 @@ interface HTMLAttributePropEditorProps {
   expsProvider: TplExpsProvider;
   attr: string;
   onChange?: (newExpr: Expr | undefined) => void;
+  about?: string;
 }
 
 export function HTMLAttributePropEditor(props: HTMLAttributePropEditorProps) {
-  const { viewCtx, tpl, expsProvider, attr, onChange } = props;
+  const { viewCtx, tpl, expsProvider, attr, onChange, about } = props;
   const vtm = viewCtx.variantTplMgr();
   const effectiveVs = expsProvider.effectiveVs();
   const baseVs = vtm.tryGetBaseVariantSetting(tpl);
@@ -662,6 +663,7 @@ export function HTMLAttributePropEditor(props: HTMLAttributePropEditorProps) {
 
   const expr = effectiveVs.attrs[attr];
   const attrSource = effectiveVs.getAttrSource(attr);
+  const propType = inferPropTypeFromAttr(viewCtx, tpl, attr) ?? "string";
   const defined = computeDefinedIndicator(
     viewCtx.site,
     viewCtx.currentComponent(),
@@ -673,9 +675,10 @@ export function HTMLAttributePropEditor(props: HTMLAttributePropEditorProps) {
     <PropEditorRow
       key={attr}
       attr={attr}
-      propType={inferPropTypeFromAttr(viewCtx, tpl, attr) ?? "string"}
+      propType={propType}
       expr={expr}
       label={viewCtx.tagMeta().expandLabel(attr) || attr}
+      about={about}
       definedIndicator={defined}
       onDelete={
         (isTplTag(tpl) && isRequiredAttr(tpl.tag, attr)) ||
@@ -703,9 +706,7 @@ export function HTMLAttributePropEditor(props: HTMLAttributePropEditorProps) {
                 referencedParam &&
                 expr &&
                 isAllowedDefaultExpr(expr) &&
-                isAllowedDefaultExprForPropType(
-                  inferPropTypeFromAttr(viewCtx, tpl, attr) ?? "string"
-                )
+                isAllowedDefaultExprForPropType(propType)
               ) {
                 referencedParam.defaultExpr = clone(expr);
               }
