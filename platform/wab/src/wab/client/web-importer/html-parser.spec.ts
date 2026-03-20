@@ -28,28 +28,15 @@ describe("parseHtmlToWebImporterTree", () => {
     // no @font-face definitions or CSS variables
     expect(fontDefinitions).toEqual([]);
 
-    // root is a container whose first child is the span we provided
+    // root is a fragment whose first child is the span we provided
     expect(rootEl).toMatchObject<Partial<WIElement>>({
-      type: "container",
-      tag: "div",
+      type: "fragment",
       children: [
         {
           type: "text",
           tag: "span",
           text: "plasmic",
           variantSettings: [],
-        },
-      ],
-      variantSettings: [
-        {
-          unsanitizedStyles: {
-            width: "100%",
-          },
-          safeStyles: {
-            width: "100%",
-          },
-          unsafeStyles: {},
-          variantCombo: [{ type: "base" }],
         },
       ],
     });
@@ -62,10 +49,8 @@ describe("parseHtmlToWebImporterTree", () => {
 
     assert(rootEl, "rootEl should not be null");
 
-    expect(rootEl).toMatchObject<WIElement>({
-      type: "container",
-      tag: "div",
-      attrs: {},
+    expect(rootEl).toMatchObject<Partial<WIElement>>({
+      type: "fragment",
       children: [
         {
           type: "container",
@@ -102,18 +87,6 @@ describe("parseHtmlToWebImporterTree", () => {
           ],
         },
       ],
-      variantSettings: [
-        {
-          unsanitizedStyles: {
-            width: "100%",
-          },
-          safeStyles: {
-            width: "100%",
-          },
-          unsafeStyles: {},
-          variantCombo: [{ type: "base" }],
-        },
-      ],
     });
   });
 
@@ -136,10 +109,8 @@ describe("parseHtmlToWebImporterTree", () => {
 
     assert(rootEl, "rootEl should not be null");
 
-    expect(rootEl).toMatchObject<WIElement>({
-      type: "container",
-      tag: "div",
-      attrs: {},
+    expect(rootEl).toMatchObject<Partial<WIElement>>({
+      type: "fragment",
       children: [
         {
           type: "container",
@@ -193,18 +164,6 @@ describe("parseHtmlToWebImporterTree", () => {
           ],
         },
       ],
-      variantSettings: [
-        {
-          unsanitizedStyles: {
-            width: "100%",
-          },
-          safeStyles: {
-            width: "100%",
-          },
-          unsafeStyles: {},
-          variantCombo: [{ type: "base" }],
-        },
-      ],
     });
   });
 
@@ -219,8 +178,7 @@ describe("parseHtmlToWebImporterTree", () => {
     assert(rootEl, "rootEl should not be null");
 
     expect(rootEl).toMatchObject<Partial<WIElement>>({
-      type: "container",
-      tag: "div",
+      type: "fragment",
       children: [
         {
           type: "container",
@@ -239,18 +197,6 @@ describe("parseHtmlToWebImporterTree", () => {
           attrs: {},
         },
       ],
-      variantSettings: [
-        {
-          unsanitizedStyles: {
-            width: "100%",
-          },
-          safeStyles: {
-            width: "100%",
-          },
-          unsafeStyles: {},
-          variantCombo: [{ type: "base" }],
-        },
-      ],
     });
   });
 
@@ -261,8 +207,7 @@ describe("parseHtmlToWebImporterTree", () => {
     assert(rootEl, "rootEl should not be null");
 
     expect(rootEl).toMatchObject<Partial<WIElement>>({
-      type: "container",
-      tag: "div",
+      type: "fragment",
       children: [
         {
           type: "container",
@@ -304,8 +249,7 @@ describe("parseHtmlToWebImporterTree", () => {
     assert(rootEl, "rootEl should not be null");
 
     expect(rootEl).toMatchObject<Partial<WIElement>>({
-      type: "container",
-      tag: "div",
+      type: "fragment",
       children: [
         {
           type: "container",
@@ -1414,8 +1358,7 @@ describe("keyframes and animations parsing", () => {
 
     // Check that animation property is parsed on the element
     expect(rootEl).toMatchObject<Partial<WIElement>>({
-      type: "container",
-      tag: "div",
+      type: "fragment",
       children: [
         {
           type: "container",
@@ -1541,5 +1484,30 @@ describe("keyframes and animations parsing", () => {
       { percentage: 0, safeStyles: { opacity: "0" }, unsafeStyles: {} },
       { percentage: 100, safeStyles: { opacity: "1" }, unsafeStyles: {} },
     ]);
+  });
+
+  it("returns WIFragment when html has no explicit body tag, keeps root when it does", async () => {
+    const fragment = "<p>Hello</p>";
+    const { wiTree: fragmentTree } = await parseHtmlToWebImporterTree(
+      fragment,
+      site
+    );
+    expect(fragmentTree).toMatchObject({
+      type: "fragment",
+      children: [
+        {
+          type: "text",
+          tag: "p",
+          text: "Hello",
+        },
+      ],
+    });
+
+    const fullPage = "<body><p>Hello</p></body>";
+    const { wiTree: fullPageTree } = await parseHtmlToWebImporterTree(
+      fullPage,
+      site
+    );
+    expect(fullPageTree?.type).toEqual("container");
   });
 });

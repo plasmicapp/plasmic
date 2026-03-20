@@ -68,7 +68,13 @@ export interface WIComponent extends WIBase {
   slots: Record<string, WIElement[]>;
 }
 
-export type WIElement = WIContainer | WIText | WISVG | WIComponent;
+/** A fragment is a transparent wrapper — only its children are pasted. */
+export interface WIFragment {
+  type: "fragment";
+  children: WIElement[];
+}
+
+export type WIElement = WIContainer | WIText | WISVG | WIComponent | WIFragment;
 
 export interface WIKeyFrame {
   percentage: number;

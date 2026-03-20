@@ -18,6 +18,7 @@ import {
   WIAnimationSequence,
   WIContainer,
   WIElement,
+  WIFragment,
   WIKeyFrame,
   WIRule,
   WISafeStyles,
@@ -983,6 +984,18 @@ export async function parseHtmlToWebImporterTree(
   document.body.appendChild(element);
   const defaultStyles = window.getComputedStyle(element);
   const wiTree = getElementsWITree(root, defaultStyles);
+
+  // DOMParser always produces a <body> element, even when the input HTML has
+  // no explicit <body> tag. Wrap children in a WIFragment so WebImporter
+  // pastes them directly rather than including the synthetic body wrapper.
+  const hasExplicitBody = htmlString.toLowerCase().includes("<body");
+  if (!hasExplicitBody && wiTree?.type === "container") {
+    const wiFragmentRoot: WIFragment = {
+      type: "fragment",
+      children: wiTree.children,
+    };
+    return { wiTree: wiFragmentRoot, fontDefinitions, animationSequences };
+  }
 
   return { wiTree, fontDefinitions, animationSequences };
 }

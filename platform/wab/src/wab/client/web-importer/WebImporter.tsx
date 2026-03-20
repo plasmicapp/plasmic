@@ -44,12 +44,12 @@ export async function pasteFromWebImporter(
         });
 
         return success(
-          viewCtx.viewOps.pasteNode(
-            result.tpl,
+          viewCtx.viewOps.pasteNodes({
+            nodes: result.tpls,
             cursorClientPt,
-            undefined,
-            insertRelLoc
-          )
+            target: undefined,
+            loc: insertRelLoc,
+          })
         );
       })
     ),

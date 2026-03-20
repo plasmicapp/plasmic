@@ -64,12 +64,12 @@ export const insertHtmlTool = defineCopilotTool(
         });
 
         return success(
-          viewCtx.viewOps.pasteNode(
-            result.tpl,
-            undefined,
+          viewCtx.viewOps.pasteNodes({
+            nodes: result.tpls,
+            cursorClientPt: undefined,
             target,
-            insertRelLoc as InsertRelLoc
-          )
+            loc: insertRelLoc as InsertRelLoc,
+          })
         );
       })
     );

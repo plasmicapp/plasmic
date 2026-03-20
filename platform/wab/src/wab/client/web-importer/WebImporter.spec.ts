@@ -32,12 +32,8 @@ function htmlToClipboard(html: string) {
 function getPastedTpl(pageTplTree: TplNode) {
   const rootChildren = Tpls.tplChildren(pageTplTree);
   expect(rootChildren).toHaveLength(1);
-  const containerTpl = rootChildren[0];
-  expect(Tpls.getTagOrComponentName(containerTpl)).toEqual("div");
-  const containerTplChildren = Tpls.tplChildren(containerTpl);
-  const pastedTpl = containerTplChildren[0];
-
-  return { containerTpl, pastedTpl };
+  const pastedTpl = rootChildren[0];
+  return { pastedTpl };
 }
 
 describe("WebImporter", () => {
@@ -68,7 +64,7 @@ describe("WebImporter", () => {
         })
       ).toBe(true);
 
-      const { containerTpl, pastedTpl } = getPastedTpl(page.tplTree);
+      const { pastedTpl } = getPastedTpl(page.tplTree);
 
       // Verify it's a container tpl
       expect(Tpls.getTagOrComponentName(pastedTpl)).toEqual("div");
@@ -81,7 +77,7 @@ describe("WebImporter", () => {
       expect(Tpls.getTplTextBlockContent(textTpl, pageViewCtx)).toEqual(
         "Hello World"
       );
-      expect(pageViewCtx.focusedTpls()).toEqual([containerTpl]);
+      expect(pageViewCtx.focusedTpls()).toEqual([pastedTpl]);
     });
 
     it("pastes multi-color SVG from web importer as image", async () => {
@@ -108,7 +104,7 @@ describe("WebImporter", () => {
         })
       ).toBe(true);
 
-      const { containerTpl, pastedTpl } = getPastedTpl(page.tplTree);
+      const { pastedTpl } = getPastedTpl(page.tplTree);
 
       // Verify it's a container tpl
       expect(Tpls.getTagOrComponentName(pastedTpl)).toEqual("div");
@@ -135,7 +131,7 @@ describe("WebImporter", () => {
       );
       expect(baseVs.attrs.loading.code).toBe('"lazy"');
 
-      expect(pageViewCtx.focusedTpls()).toEqual([containerTpl]);
+      expect(pageViewCtx.focusedTpls()).toEqual([pastedTpl]);
     });
 
     it("pastes single-color SVG from web importer as icon", async () => {
@@ -152,7 +148,7 @@ describe("WebImporter", () => {
         })
       ).toBe(true);
 
-      const { containerTpl, pastedTpl } = getPastedTpl(page.tplTree);
+      const { pastedTpl } = getPastedTpl(page.tplTree);
 
       // Verify it's a container tpl
       expect(Tpls.getTagOrComponentName(pastedTpl)).toEqual("div");
@@ -168,7 +164,7 @@ describe("WebImporter", () => {
         ImageAssets.getOnlyAssetRef(iconTpl as TplImageTag)?.dataUri
       ).toEqual(processedDataUri);
 
-      expect(pageViewCtx.focusedTpls()).toEqual([containerTpl]);
+      expect(pageViewCtx.focusedTpls()).toEqual([pastedTpl]);
     });
 
     it("pastes text with font-family and extracts only first font", async () => {
@@ -185,7 +181,7 @@ describe("WebImporter", () => {
         })
       ).toBe(true);
 
-      const { containerTpl, pastedTpl } = getPastedTpl(page.tplTree);
+      const { pastedTpl } = getPastedTpl(page.tplTree);
 
       // Verify it's a container tpl
       expect(Tpls.getTagOrComponentName(pastedTpl)).toEqual("div");
@@ -209,7 +205,7 @@ describe("WebImporter", () => {
         "Playfair Display"
       );
 
-      expect(pageViewCtx.focusedTpls()).toEqual([containerTpl]);
+      expect(pageViewCtx.focusedTpls()).toEqual([pastedTpl]);
     });
 
     it("pastes animations and animation sequences from web importer", async () => {
@@ -239,7 +235,7 @@ describe("WebImporter", () => {
         })
       ).toBe(true);
 
-      const { containerTpl, pastedTpl } = getPastedTpl(page.tplTree);
+      const { pastedTpl } = getPastedTpl(page.tplTree);
 
       // Verify animation
       const baseVs = pageViewCtx
@@ -267,7 +263,19 @@ describe("WebImporter", () => {
       assert(hoverVs, "Expected Hover VariantSetting to exists, found null");
       expect(hoverVs.rs.animations).toMatchObject([]);
 
-      expect(pageViewCtx.focusedTpls()).toEqual([containerTpl]);
+      expect(pageViewCtx.focusedTpls()).toEqual([pastedTpl]);
+    });
+
+    it("pastes multiple siblings directly without body wrapper", async () => {
+      const htmlStr = `<h1>First</h1><h2>Second</h2>`;
+      const clipboard = htmlToClipboard(htmlStr);
+      pageViewCtx.selectNewTpl(page.tplTree);
+      await paste({ clipboard, studioCtx, cursorClientPt: undefined });
+
+      const rootChildren = Tpls.tplChildren(page.tplTree);
+      expect(rootChildren).toHaveLength(2);
+      expect(Tpls.getTagOrComponentName(rootChildren[0])).toEqual("h1");
+      expect(Tpls.getTagOrComponentName(rootChildren[1])).toEqual("h2");
     });
   });
 });

@@ -2683,6 +2683,35 @@ export class ViewOps {
     return newTpls;
   }
 
+  /**
+   * Pastes multiple TplNodes as siblings. The first node is inserted at the
+   * given target/loc, and each subsequent node is inserted after the
+   * previously pasted one.
+   */
+  pasteNodes({
+    nodes,
+    cursorClientPt,
+    target,
+    loc,
+  }: {
+    nodes: TplNode[];
+    cursorClientPt?: Pt;
+    target?: TplNode | Selectable;
+    loc?: InsertRelLoc;
+  }) {
+    let curTarget = target;
+    let curLoc = loc;
+    let anyPasted = false;
+    for (const node of nodes) {
+      if (this.pasteNode(node, cursorClientPt, curTarget, curLoc)) {
+        anyPasted = true;
+        curTarget = node;
+        curLoc = InsertRelLoc.after;
+      }
+    }
+    return anyPasted;
+  }
+
   pasteFrameClip(clip: FrameClip, originalFrame?: ArenaFrame) {
     this.studioCtx().siteOps().pasteFrameClip(clip, originalFrame);
   }

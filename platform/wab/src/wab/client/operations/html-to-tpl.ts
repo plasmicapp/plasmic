@@ -10,6 +10,7 @@ import {
   isWIBaseVariantSettings,
   WIAnimationSequence,
   WIElement,
+  WIFragment,
   WIScreenVariant,
   WIStyleVariant,
   WIVariant,
@@ -65,8 +66,8 @@ import { VariantTplMgr } from "@/wab/shared/VariantTplMgr";
 import L, { isArray, isObject } from "lodash";
 
 export interface HtmlToTplResult {
-  /** A tpl tree ready to be inserted */
-  tpl: TplNode;
+  /** Tpl nodes ready to be inserted (multiple when root is a WIFragment) */
+  tpls: TplNode[];
   /**
    * Finalize deferred changes that must happen inside studioCtx.change():
    * animation sequences, variant styles, and image asset attachment.
@@ -79,8 +80,8 @@ export interface HtmlToTplResult {
  *
  * @param html - The HTML string to convert.
  * @param opts - Site, VariantTplMgr, and AppCtx needed for conversion.
- * @returns `{ tpl, finalize }` where:
- *   - `tpl` is the fully built TplNode tree.
+ * @returns `{ tpls, finalize }` where:
+ *   - `tpls` is an array of fully built TplNode trees (multiple when root is a fragment).
  *   - `finalize(opts)` must be called inside `studioCtx.change()` to apply
  *     animation sequences, variant styles, and image assets to the Site.
  */
@@ -108,10 +109,10 @@ export async function htmlToTpl(
     return null;
   }
 
-  const { tpl, tplImageAssetMap, tplVariantSettingsData } = result;
+  const { tpls, tplImageAssetMap, tplVariantSettingsData } = result;
 
   return {
-    tpl,
+    tpls,
     finalize: (finalizeOpts) => {
       // Process Animation Sequences (keyframes)
       wiAnimationSequenceToSiteAnimationSequence(animationSequences, {
@@ -266,7 +267,10 @@ async function wiTreeToTpl(
   >();
   const tplVariantSettingsData = new Map<TplNode, TplVariantSettingsData[]>();
 
-  function collectWIVariantData(node: WIElement, tpl: TplNode) {
+  function collectWIVariantData(
+    node: Exclude<WIElement, WIFragment>,
+    tpl: TplNode
+  ) {
     const defaultStyles: Record<string, string> =
       node.type === "text"
         ? {}
@@ -359,7 +363,7 @@ async function wiTreeToTpl(
     tplVariantSettingsData.set(tpl, tplVariantSettings);
   }
 
-  async function rec(node: WIElement) {
+  async function rec(node: WIElement): Promise<TplNode[]> {
     if (node.type === "text") {
       const tpl = vtm.mkTplTagX(node.tag, {
         type: TplTagType.Text,
@@ -370,7 +374,7 @@ async function wiTreeToTpl(
         text: node.text,
       });
       collectWIVariantData(node, tpl);
-      return tpl;
+      return [tpl];
     }
 
     if (node.type === "svg") {
@@ -387,7 +391,7 @@ async function wiTreeToTpl(
           undefined
         );
         if (!imageResult || !imageOpts) {
-          return null;
+          return [];
         }
 
         const tpl = vtm.mkTplImage({
@@ -405,9 +409,9 @@ async function wiTreeToTpl(
           options: imageOpts,
         });
 
-        return tpl;
+        return [tpl];
       }
-      return null;
+      return [];
     }
 
     if (node.type === "component") {
@@ -446,9 +450,9 @@ async function wiTreeToTpl(
           }
 
           // Recursively convert slot children to TplNodes
-          args[param.variable.name] = withoutNils(
+          args[param.variable.name] = (
             await Promise.all(slotChildren.map((child) => rec(child)))
-          );
+          ).flat();
         }
       }
 
@@ -457,7 +461,14 @@ async function wiTreeToTpl(
         args,
       });
       collectWIVariantData(node, tplComponent);
-      return tplComponent;
+      return [tplComponent];
+    }
+
+    // Fragment expands its children in place
+    if (node.type === "fragment") {
+      return (
+        await Promise.all(node.children.map((child) => rec(child)))
+      ).flat();
     }
 
     if (node.tag === "img") {
@@ -477,7 +488,7 @@ async function wiTreeToTpl(
         type: ImageAssetType.Picture,
       });
       collectWIVariantData(node, tpl);
-      return tpl;
+      return [tpl];
     }
 
     if (node.type === "container") {
@@ -487,29 +498,29 @@ async function wiTreeToTpl(
           name: node.attrs["__name"],
           type: TplTagType.Other,
         },
-        withoutNils(
+        (
           await Promise.all(
             node.children.map(async (child) => await rec(child))
           )
-        )
+        ).flat()
       );
 
       collectWIVariantData(node, tpl);
 
-      return tpl;
+      return [tpl];
     }
 
     assertNever(node);
   }
 
-  const tpl = await rec(wiTree);
+  const tpls = await rec(wiTree);
 
-  if (!tpl) {
+  if (tpls.length === 0) {
     return null;
   }
 
   return {
-    tpl,
+    tpls,
     tplImageAssetMap,
     tplVariantSettingsData,
   };
