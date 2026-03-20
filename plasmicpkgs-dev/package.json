@@ -10,6 +10,7 @@
     "@plasmicapp/loader-nextjs": "1.0.456",
     "@plasmicpkgs/cms": "0.0.17",
     "@plasmicpkgs/commerce": "0.0.238",
+    "@plasmicpkgs/contentful": "0.0.12",
     "@plasmicpkgs/commerce-shopify": "0.0.246",
     "@plasmicpkgs/fetch": "0.0.30",
     "@plasmicpkgs/graphql": "0.0.24",
@@ -17,6 +18,7 @@
     "@plasmicpkgs/plasmic-cms": "0.0.308",
     "@plasmicpkgs/plasmic-strapi": "0.1.196",
     "@plasmicpkgs/strapi": "0.0.15",
+    "@plasmicpkgs/wordpress": "0.0.15",
     "next": "^15.5.9",
     "react": "^19",
     "react-dom": "^19"

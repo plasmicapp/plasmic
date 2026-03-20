@@ -6,24 +6,28 @@ import { PlasmicRootProvider } from "@plasmicapp/loader-nextjs";
 import { registerAllCmsFunctions as registerPlasmicCms } from "@plasmicpkgs/cms";
 import { registerAll as registerCommerce } from "@plasmicpkgs/commerce";
 import { registerAll as registerShopify } from "@plasmicpkgs/commerce-shopify";
+import { registerContentful } from "@plasmicpkgs/contentful";
 import { registerFetch } from "@plasmicpkgs/fetch";
 import { registerGraphQL } from "@plasmicpkgs/graphql";
 import { registerVideo } from "@plasmicpkgs/plasmic-basic-components";
 import { registerAll as registerPlasmicCmsComponents } from "@plasmicpkgs/plasmic-cms";
 import { registerAll as registerStrapiComponents } from "@plasmicpkgs/plasmic-strapi";
 import { registerStrapi } from "@plasmicpkgs/strapi";
+import { registerWordpress } from "@plasmicpkgs/wordpress";
 import React from "react";
 
 function register() {
+  registerCommerce(PLASMIC);
+  registerContentful(PLASMIC);
   registerFetch(PLASMIC);
   registerGraphQL(PLASMIC);
   registerPlasmicCms(PLASMIC);
   registerPlasmicCmsComponents(PLASMIC);
+  registerShopify(PLASMIC);
   registerStrapi(PLASMIC);
   registerStrapiComponents(PLASMIC);
-  registerCommerce(PLASMIC);
-  registerShopify(PLASMIC);
   registerVideo(PLASMIC);
+  registerWordpress(PLASMIC);
 }
 
 const useDevNames = true; // set true to avoid conflicting with production hostless names
