@@ -114,6 +114,7 @@ export function ValuePreview({
   className?: string;
   opts?: {
     expandLevel?: number;
+    expandPaths?: string[];
   };
 }) {
   return (
@@ -129,6 +130,7 @@ export function renderInspector(
   val: any,
   opts?: {
     expandLevel?: number;
+    expandPaths?: string[];
     nodeRenderer?: InspectorNodeRenderer;
   }
 ) {
@@ -143,7 +145,8 @@ export function renderInspector(
         TREENODE_FONT_SIZE: `${BASE_FONT_SIZE}px`,
       }}
       data={L.isError(val) ? formatError(val) : val}
-      expandLevel={opts?.expandLevel ?? 1}
+      expandLevel={opts?.expandPaths ? undefined : opts?.expandLevel ?? 1}
+      expandPaths={opts?.expandPaths}
       nodeRenderer={opts?.nodeRenderer}
     />
   );

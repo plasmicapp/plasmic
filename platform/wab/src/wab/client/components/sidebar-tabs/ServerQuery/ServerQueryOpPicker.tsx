@@ -540,6 +540,25 @@ function _ServerQueryOpPreview(props: {
   const [previewExpand, setPreviewExpand] = React.useState(false);
   const [previewCollapseCount, setPreviewCollapseCount] = React.useState(1);
 
+  const expandOpts = React.useMemo(() => {
+    if (previewExpand) {
+      return { expandLevel: 50 };
+    }
+    if (
+      previewValue !== null &&
+      typeof previewValue === "object" &&
+      "body" in previewValue &&
+      typeof previewValue.body === "object"
+    ) {
+      // Expand body 2 levels for arrays and 1 level for objects
+      const expandPaths = Array.isArray(previewValue.body)
+        ? ["$", "$.body", "$.body.*"]
+        : ["$", "$.body"];
+      return { expandPaths };
+    }
+    return { expandLevel: 1 };
+  }, [previewValue, previewExpand]);
+
   const extraContent = React.useMemo(() => {
     return (
       <div className="flex-row gap-lg fill-height mr-m flex-vcenter">
@@ -592,9 +611,7 @@ function _ServerQueryOpPreview(props: {
                     key={previewCollapseCount}
                     val={previewValue}
                     className="code-preview-inner"
-                    opts={{
-                      expandLevel: previewExpand ? 50 : 1,
-                    }}
+                    opts={expandOpts}
                   />
                 </React.Suspense>
               ),
