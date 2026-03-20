@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/wordpress",
-  "version": "0.0.16",
+  "version": "0.0.17",
   "description": "Plasmic registration for WordPress",
   "repository": {
     "type": "git",
