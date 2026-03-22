@@ -27,6 +27,7 @@ import {
   ServerProvidedData,
   internalSetRegisteredFunction,
 } from "./loader-shared";
+import { reactCurrentDispatcher } from "./react-utils";
 import { swrSerialize } from "./swr-util";
 import {
   getGlobalVariantsFromSplits,
@@ -177,9 +178,7 @@ const FakeReactComponent = class FakeReactComponent {
     // Called before render to set the appropriate values for props, state,
     // context... Use hooks to simulate the class component behavior.
     this.props = props;
-    const dispatcher = (React as any)
-      .__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED.ReactCurrentDispatcher
-      .current;
+    const dispatcher = reactCurrentDispatcher();
     const [state, setState] = dispatcher.useState({});
     this.state = state;
     this.setState = setState;
@@ -239,26 +238,37 @@ export class InternalPrepassPlasmicLoader extends BaseInternalPlasmicComponentLo
             [
               "useCallback",
               "useContext",
+              "useDebugValue",
               "useEffect",
               "useImperativeHandle",
-              "useDebugValue",
-              "useInsertionEffect",
               "useLayoutEffect",
               "useMemo",
-              "useSyncExternalStore",
               "useReducer",
               "useRef",
               "useState",
+
+              // React 18+
+              "useId",
+              "useInsertionEffect",
+              "useSyncExternalStore",
+
+              // React 19+
+              "use",
+              "useActionState",
+              "useEffectEvent",
+              "useOptimistic",
             ].map((hook) => [
               hook,
               (...args: any) => {
-                const dispatcher = (React as any)
-                  .__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED
-                  .ReactCurrentDispatcher.current;
+                const dispatcher = reactCurrentDispatcher() as any;
                 return dispatcher[hook](...args);
               },
             ])
           ),
+
+          // TODO: ensure correct implementation in react-ssr-prepass and
+          //       merge with above array to rely on dispatcher
+          // React 18+
           useDeferredValue: (v) => v,
           useTransition: () => [
             false,
@@ -266,6 +276,7 @@ export class InternalPrepassPlasmicLoader extends BaseInternalPlasmicComponentLo
               f();
             },
           ],
+
           createFactory: (type: any) =>
             React.createElement.bind(null, type) as any,
           Component: FakeReactComponent,

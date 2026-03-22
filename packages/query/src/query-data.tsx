@@ -8,6 +8,7 @@ import useSWR, {
   SWRResponse,
   useSWRConfig,
 } from "swr";
+import { reactCurrentDispatcher } from "./react-utils";
 
 export type { SWRResponse } from "swr";
 
@@ -259,8 +260,7 @@ function isPromiseLike(x: any) {
 }
 
 export function isPlasmicPrepass() {
-  return !!(React as any).__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED
-    ?.ReactCurrentDispatcher?.current?.isPlasmicPrepass;
+  return reactCurrentDispatcher()?.isPlasmicPrepass ?? false;
 }
 
 export type HeadMetadata = {
