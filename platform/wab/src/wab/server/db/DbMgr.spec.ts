@@ -1745,3 +1745,44 @@ describe("DbMgr.user", () => {
     });
   });
 });
+
+describe("DbMgr.project revisions", () => {
+  it("reverts by revision id (string)", async () => {
+    await withDb(async (_sudo, _users, [db1], project) => {
+      const mgr = db1();
+
+      const initialRev = await mgr.getLatestProjectRev(project.id);
+
+      const rev2 = await mgr.saveProjectRev({
+        projectId: project.id,
+        revisionNum: initialRev.revision + 1,
+        data: '{"rev":2}',
+      });
+
+      const reverted = await mgr.revertProjectRev(project.id, initialRev.id);
+      expect(reverted.data).toEqual(initialRev.data);
+      expect(reverted.revision).toEqual(rev2.revision + 1);
+    });
+  });
+
+  it("reverts by revision number (number)", async () => {
+    await withDb(async (_sudo, _users, [db1], project) => {
+      const mgr = db1();
+
+      const initialRev = await mgr.getLatestProjectRev(project.id);
+
+      const rev2 = await mgr.saveProjectRev({
+        projectId: project.id,
+        revisionNum: initialRev.revision + 1,
+        data: '{"rev":2}',
+      });
+
+      const reverted = await mgr.revertProjectRev(
+        project.id,
+        initialRev.revision
+      );
+      expect(reverted.data).toEqual(initialRev.data);
+      expect(reverted.revision).toEqual(rev2.revision + 1);
+    });
+  });
+});

@@ -3228,7 +3228,7 @@ export class DbMgr implements MigrationDbMgr {
         this.projectRevs()
           .createQueryBuilder("rev")
           .where(
-            `${conditionalWhereClause} AND "projectId"=:projectId AND (:branchId::text is null AND "branchId" is null OR "branchId" = :branchId::text)`,
+            `${conditionalWhereClause} AND "projectId"=:projectId AND ((:branchId::text is null AND "branchId" is null) OR "branchId" = :branchId::text)`,
             {
               projectId,
               branchId,

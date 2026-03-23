@@ -678,11 +678,19 @@ function RevertProjectRev() {
       <p>Creates a new revision with data from a specific revision</p>
       <Form
         onFinish={async (event) => {
-          console.log(`Reverting ${event.projectId} to ${event.revision}`);
+          const revision = Number(event.revision);
+          console.log(`Reverting ${event.projectId} to ${revision}`);
+          if (!Number.isSafeInteger(revision)) {
+            notification.error({
+              message: `Invalid revision: ${event.revision}`,
+            });
+            return;
+          }
+
           try {
             await nonAuthCtx.api.revertProjectRevision(
               event.projectId,
-              event.revision
+              revision
             );
             notification.success({ message: "Successfully reverted!" });
           } catch (e) {
