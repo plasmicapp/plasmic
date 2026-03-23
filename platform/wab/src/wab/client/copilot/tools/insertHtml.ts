@@ -5,40 +5,29 @@ import {
   COPILOT_TOOL_DEFS,
   defineCopilotTool,
 } from "@/wab/shared/copilot/internal/copilot-tools";
-import { flattenTpls } from "@/wab/shared/core/tpls";
-import { TplNode } from "@/wab/shared/model/classes";
+import {
+  getComponentByUuid,
+  getTplByUuid,
+  getVariantsByUuids,
+} from "@/wab/shared/copilot/utils";
 
 export const insertHtmlTool = defineCopilotTool(
   COPILOT_TOOL_DEFS.insertHtml,
-  async (studioCtx, { html, targetTplUuid, insertRelLoc }) => {
-    const viewCtx = studioCtx.focusedOrFirstViewCtx();
-    if (!viewCtx) {
-      return {
-        success: false,
-        error: {
-          message: "No active component view",
-          type: "EXECUTION_FAILED",
-        },
-      };
-    }
+  async (
+    studioCtx,
+    { html, componentUuid, tplUuid, insertRelLoc, variantUuids }
+  ) => {
+    const component = getComponentByUuid(studioCtx.site, componentUuid);
+    const target = getTplByUuid(component, tplUuid);
+    const variants = variantUuids?.length
+      ? getVariantsByUuids(variantUuids, {
+          component,
+          tpl: target,
+          site: studioCtx.site,
+        })
+      : undefined;
 
-    const component = viewCtx.currentTplComponent().component;
-
-    let target: TplNode | undefined;
-    if (targetTplUuid) {
-      target = flattenTpls(component.tplTree).find(
-        (tpl) => tpl.uuid === targetTplUuid
-      );
-      if (!target) {
-        return {
-          success: false,
-          error: {
-            message: `Cannot find element for targetTplUuid:${targetTplUuid}`,
-            type: "EXECUTION_FAILED",
-          },
-        };
-      }
-    }
+    const viewCtx = await studioCtx.getViewCtxForComponent(component, variants);
 
     const result = await htmlToTpl(html, {
       site: studioCtx.site,
@@ -47,13 +36,7 @@ export const insertHtmlTool = defineCopilotTool(
     });
 
     if (!result) {
-      return {
-        success: false,
-        error: {
-          message: "Failed to parse HTML snippet",
-          type: "EXECUTION_FAILED",
-        },
-      };
+      throw new Error("Failed to parse HTML snippet");
     }
 
     const pasted = unwrap(
@@ -74,11 +57,8 @@ export const insertHtmlTool = defineCopilotTool(
       })
     );
 
-    return {
-      success: true,
-      output: pasted
-        ? "Inserted HTML successfully."
-        : "HTML was parsed but no elements were inserted.",
-    };
+    return pasted
+      ? "Inserted HTML successfully."
+      : "HTML was parsed but no elements were inserted.";
   }
 );

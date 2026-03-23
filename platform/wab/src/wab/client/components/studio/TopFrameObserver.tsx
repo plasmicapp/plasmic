@@ -180,7 +180,8 @@ export const TopFrameObserver = observer(function _TopFrameObserver({
         }
 
         try {
-          return await copilotTool.execute(studioCtx, toolArgs);
+          const output = await copilotTool.execute(studioCtx, toolArgs);
+          return { success: true, output };
         } catch (err) {
           return {
             success: false,

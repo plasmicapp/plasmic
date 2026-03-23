@@ -2553,17 +2553,24 @@ export class StudioCtx extends WithDbCtx {
     this.setHighLevelFocusOnly(this.tryGetViewCtxForFrame(frame), undefined);
   }
 
-  async setStudioFocusOnTpl(
+  /**
+   * Navigate to the appropriate arena and frame for a given component and
+   * optional variant combo, returning the ViewCtx.
+   *
+   * Handles frame components, mixed arenas, dedicated arenas, focused mode
+   * variant activation, and custom arena variant frames.
+   */
+  async getViewCtxForComponent(
     component: Component,
-    tpl: TplNode,
     variants?: VariantCombo,
-    threadId?: string
-  ) {
+    opts?: { threadId?: string }
+  ): Promise<ViewCtx> {
+    const threadId = opts?.threadId;
+
     // If the current focused ViewCtx is already on the target component and no variant switching is needed
     const currentViewCtx = this.focusedViewCtx();
     if (currentViewCtx?.component === component && !variants) {
-      currentViewCtx.setStudioFocusByTpl(tpl);
-      return;
+      return currentViewCtx;
     }
 
     // when component is a frame (artboard) or we're in a custom arena
@@ -2603,11 +2610,11 @@ export class StudioCtx extends WithDbCtx {
 
         const viewCtx = await this.awaitViewCtxForFrame(frame);
         if (viewCtx) {
-          viewCtx.setStudioFocusByTpl(tpl);
+          return viewCtx;
         }
-        return;
       }
     }
+
     const componentArena = this.getDedicatedArena(component);
     const arena =
       componentArena !== this.currentArena
@@ -2622,56 +2629,71 @@ export class StudioCtx extends WithDbCtx {
           )
         : this.currentArena;
 
-    if (arena) {
-      assert(
-        isPageArena(arena) || isComponentArena(arena),
-        "Current arena should be a page or component arena"
-      );
-      const baseFrame = getComponentArenaBaseFrame(arena);
-      const hasVariants = !!variants?.length;
-      const arenaDetails = hasVariants
-        ? this.getArenaFrameForSetOfVariants(arena, variants) ??
-          this.getComponentFrameForSetOfVariantsInCustomArenas(
-            arena.component,
-            variants
-          )
-        : null;
-      const frame = arenaDetails?.frame ?? baseFrame;
-
-      let viewCtx: ViewCtx | undefined = undefined;
-      if (this.focusedMode) {
-        const vcontroller = makeVariantsController(this);
-        if (vcontroller && variants?.length) {
-          await this.change(
-            ({ success }) => {
-              vcontroller.onActivateCombo(variants);
-              vcontroller.onToggleTargetingOfActiveVariants();
-              return success();
-            },
-            { noUndoRecord: true }
-          );
-        }
-        // In focus mode, there's guaranteed to be only one visible ViewCtx, so always use that.
-        viewCtx = this.focusedOrFirstViewCtx();
-      }
-
-      // switch to custom arena, as awaitViewCtxForFrame cannot create viewCtx for non visible custom arena
-      if (
-        arenaDetails &&
-        arenaDetails?.arena !== arena &&
-        arenaDetails?.arena !== this.currentArena &&
-        isMixedArena(arenaDetails?.arena)
-      ) {
-        await this.change(({ success }) => {
-          this.switchToArena(arenaDetails?.arena, { threadId });
-          return success();
-        });
-      }
-      viewCtx = viewCtx ?? (await this.awaitViewCtxForFrame(frame));
-      if (viewCtx) {
-        viewCtx.setStudioFocusByTpl(tpl);
-      }
+    if (!arena || !(isPageArena(arena) || isComponentArena(arena))) {
+      throw new Error(`No arena found for component "${component.name}".`);
     }
+
+    const baseFrame = getComponentArenaBaseFrame(arena);
+    const hasVariants = !!variants?.length;
+    const arenaDetails = hasVariants
+      ? this.getArenaFrameForSetOfVariants(arena, variants) ??
+        this.getComponentFrameForSetOfVariantsInCustomArenas(
+          arena.component,
+          variants
+        )
+      : null;
+    const frame = arenaDetails?.frame ?? baseFrame;
+
+    let viewCtx: ViewCtx | undefined = undefined;
+    if (this.focusedMode) {
+      const vcontroller = makeVariantsController(this);
+      if (vcontroller && variants?.length) {
+        await this.change(
+          ({ success }) => {
+            vcontroller.onActivateCombo(variants);
+            vcontroller.onToggleTargetingOfActiveVariants();
+            return success();
+          },
+          { noUndoRecord: true }
+        );
+      }
+      // In focus mode, there's guaranteed to be only one visible ViewCtx, so always use that.
+      viewCtx = this.focusedOrFirstViewCtx();
+    }
+
+    // switch to custom arena, as awaitViewCtxForFrame cannot create viewCtx for non visible custom arena
+    if (
+      arenaDetails &&
+      arenaDetails?.arena !== arena &&
+      arenaDetails?.arena !== this.currentArena &&
+      isMixedArena(arenaDetails?.arena)
+    ) {
+      await this.change(({ success }) => {
+        this.switchToArena(arenaDetails?.arena, { threadId });
+        return success();
+      });
+    }
+    viewCtx = viewCtx ?? (await this.awaitViewCtxForFrame(frame));
+
+    if (!viewCtx) {
+      throw new Error(
+        `Could not get ViewCtx for component "${component.name}".`
+      );
+    }
+
+    return viewCtx;
+  }
+
+  async setStudioFocusOnTpl(
+    component: Component,
+    tpl: TplNode,
+    variants?: VariantCombo,
+    threadId?: string
+  ) {
+    const viewCtx = await this.getViewCtxForComponent(component, variants, {
+      threadId,
+    });
+    viewCtx.setStudioFocusByTpl(tpl);
   }
 
   getArenaFrameForSetOfVariants(
