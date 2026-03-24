@@ -13,7 +13,7 @@
     "@plasmicapp/query": "^0.1.28",
     "@sanity/client": "^3.1.0",
     "@sanity/image-url": "^1.0.1",
-    "next": "15.5.14",
+    "next": "16.2.1",
     "react": "17.0.2",
     "react-dom": "17.0.2"
   },

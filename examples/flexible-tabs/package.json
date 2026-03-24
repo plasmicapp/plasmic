@@ -12,7 +12,7 @@
     "@plasmicapp/loader-nextjs": "^1.0.185",
     "constate": "^3.3.2",
     "immer": "^9.0.15",
-    "next": "15.5.14",
+    "next": "16.2.1",
     "react": "18.2.0",
     "react-dom": "18.2.0"
   },
