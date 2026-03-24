@@ -841,17 +841,14 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
       {!readOnly &&
         !referencedParam &&
         expr &&
+        onDelete &&
         ["set", "none", "invariantable", "setNonVariable"].includes(
           definedIndicator.source
         ) &&
         !["functionArgs"].includes(getPropTypeType(propType) ?? "") && (
-          <>
-            {onDelete && (
-              <Menu.Item onClick={() => onDelete()}>
-                {RESET_CAP} <strong>{label}</strong> prop
-              </Menu.Item>
-            )}
-          </>
+          <Menu.Item onClick={onDelete}>
+            {RESET_CAP} <strong>{label}</strong> prop
+          </Menu.Item>
         )}
       {!readOnly &&
         referencedParam &&
@@ -970,7 +967,6 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
         )}
     </Menu>
   );
-
   React.useEffect(() => {
     if (ref.current && shouldHighlight) {
       ref.current.focus();

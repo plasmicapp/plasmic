@@ -706,9 +706,9 @@ export function makeImageMenu({
     }
   });
 
-  return builder.build({
-    menuName: "image-section-menu",
-  });
+  return builder.isEmpty()
+    ? undefined
+    : builder.build({ menuName: "image-section-menu" });
 }
 
 const _ImageSectionForCodeComponent = (props: {

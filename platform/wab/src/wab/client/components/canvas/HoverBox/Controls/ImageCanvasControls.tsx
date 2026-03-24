@@ -6,16 +6,15 @@ import { Icon } from "@/wab/client/components/widgets/Icon";
 import GearIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Gear";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { $$$ } from "@/wab/shared/TplQuery";
+import { TplImageTag } from "@/wab/shared/core/tpls";
 import { computeDefinedIndicator } from "@/wab/shared/defined-indicator";
 import { isKnownVarRef } from "@/wab/shared/model/classes";
-import { TplImageTag } from "@/wab/shared/core/tpls";
 import { observer } from "mobx-react";
 import React from "react";
 
 export const ImageCanvasControls = observer(
   function ImageCanvasControls(props: { viewCtx: ViewCtx; tpl: TplImageTag }) {
     const { viewCtx, tpl } = props;
-    const { studioCtx } = viewCtx;
     const vtm = viewCtx.variantTplMgr();
     const ownerComponent = $$$(tpl).owningComponent();
     const baseVs = vtm.ensureBaseVariantSetting(tpl);
@@ -54,14 +53,16 @@ export const ImageCanvasControls = observer(
       fallback: undefined,
     });
 
-    const menu = React.cloneElement(rawMenu, {
-      onClick: (param) => {
-        if (rawMenu.props.onClick) {
-          rawMenu.props.onClick(param);
-        }
-        setEvent(undefined);
-      },
-    });
+    const menu = rawMenu
+      ? React.cloneElement(rawMenu, {
+          onClick: (param) => {
+            if (rawMenu.props.onClick) {
+              rawMenu.props.onClick(param);
+            }
+            setEvent(undefined);
+          },
+        })
+      : undefined;
 
     return (
       <>
@@ -71,7 +72,7 @@ export const ImageCanvasControls = observer(
         >
           <Icon icon={GearIcon} />
         </IconLinkButton>
-        {event && (
+        {event && menu && (
           <ContextMenu
             pageX={event.pageX}
             pageY={event.pageY}

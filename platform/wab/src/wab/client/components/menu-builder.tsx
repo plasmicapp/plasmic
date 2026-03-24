@@ -93,6 +93,10 @@ export class MenuBuilder {
     this.popStack();
   }
 
+  isEmpty(): boolean {
+    return this.stack.length === 1 && this.curFrame().items.length === 0;
+  }
+
   build(
     opts: {
       onMenuClick?: onMenuClick;
