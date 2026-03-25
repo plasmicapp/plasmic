@@ -3756,21 +3756,21 @@
   resolved "https://registry.yarnpkg.com/@plasmicapp/data-sources-context/-/data-sources-context-0.1.23.tgz#7888d6ba33ba0c02509203368f230fdd431a14dc"
   integrity sha512-F006Wr7s/RD4uCORY9EXYDYKgNUDxhY9qpUgT7a0Nyp9s6rw5qEZbcuMrM8Miy90DK3H5AfSuWaOl1+/pjxKZA==
 
-"@plasmicapp/data-sources@0.1.209", "@plasmicapp/data-sources@^0.1.209":
-  version "0.1.209"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/data-sources/-/data-sources-0.1.209.tgz#a438de5524d75985a4eaaf051654b946e7ea5d91"
-  integrity sha512-2q/8m7lNB6bZVCPrtcHe1TazeB7rxm42GguMst82lGvoFQImNtsfsW8Qq1NAgIuYHY3l25EJ7HVmZqwZI+KFRQ==
+"@plasmicapp/data-sources@1.0.0", "@plasmicapp/data-sources@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/data-sources/-/data-sources-1.0.0.tgz#e5aca06e6f8a43ae9001b64b24e69ddf4b4707c7"
+  integrity sha512-qpa5UyJ7c4WZ7KbVcqtTDHjlWmys+ZTNVZydiUM5yhVpVfRrv2rZKTNsBb6yw742ZUwhmiP/v1moj6AwFU+urg==
   dependencies:
     "@plasmicapp/data-sources-context" "0.1.23"
-    "@plasmicapp/host" "1.0.240"
+    "@plasmicapp/host" "2.0.0"
     "@plasmicapp/isomorphic-unfetch" "1.0.3"
     "@plasmicapp/query" "0.1.84"
     fast-stringify "^2.0.0"
 
-"@plasmicapp/host@1.0.240", "@plasmicapp/host@^1.0.240":
-  version "1.0.240"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/host/-/host-1.0.240.tgz#d5db57f37b9b7a036dc86738d47d150587ed7678"
-  integrity sha512-/A7fcghhWD4BRehRlGwBS7yxVDiAb4pRLkNTEfHawGAOrd+04Y+Sa5K81iAP/ZhlOcTOYK1Xr3k8l2sDmexN8g==
+"@plasmicapp/host@2.0.0", "@plasmicapp/host@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/host/-/host-2.0.0.tgz#5c490eb933203bd5faad0ff6ee62fd22e807f2c4"
+  integrity sha512-xrgCYZUx/xZ5+nhFvvU+9J8u3TrXILTO0TdWgGXl0F/H+Q1Bw/bz4RHZSXzfeQnle4QS/SDEqODw3fW9JIckOA==
   dependencies:
     "@plasmicapp/query" "0.1.84"
     csstype "^3.1.2"
@@ -3783,40 +3783,40 @@
   dependencies:
     unfetch "^4.2.0"
 
-"@plasmicapp/loader-core@1.0.143":
-  version "1.0.143"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/loader-core/-/loader-core-1.0.143.tgz#077c11d51445b8c2b1321190684804429b263320"
-  integrity sha512-2+5cS9w5/CGnUUguQ3UvRlR2abKLz7YdDHT8olx1t28cWF8KUudqidjRh66pJ4VWkKcr3GGEfDV+ASOTz6cGbg==
+"@plasmicapp/loader-core@2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/loader-core/-/loader-core-2.0.0.tgz#6b5acd3ad6e4d7e6755ecffa007263b7765f6b8e"
+  integrity sha512-D32IfOr2P8UcwU5LHXzgED+ST9C0SjRQaEunsGNo5GcOJ7SpITdheKnHXoO8rhq7elzPU3nBBN0AbwYWZg/xcg==
   dependencies:
     "@plasmicapp/isomorphic-unfetch" "1.0.3"
-    "@plasmicapp/loader-fetcher" "1.0.60"
+    "@plasmicapp/loader-fetcher" "2.0.0"
 
-"@plasmicapp/loader-fetcher@1.0.60":
-  version "1.0.60"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/loader-fetcher/-/loader-fetcher-1.0.60.tgz#6e4f755eaad8890fb070b78e67d10bb936ad3ca1"
-  integrity sha512-jf6tSQMEoQhw1WGXixPAYFnxKfSEUh7XWVVLC+XAxwElA60JDxjpIn7+85zXszaNxSOj6z+QW8VXVBKs94KTUQ==
+"@plasmicapp/loader-fetcher@2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/loader-fetcher/-/loader-fetcher-2.0.0.tgz#379caefea6059f6070a469085f5f926d7ca0e83f"
+  integrity sha512-Rbx5RNPRokfy6MSXF0rE7V3BJnw6pwVUCHg3wPSuI4fysHXEC7/WnikF9E+wxLWWOFSmkR8WN6/pFGxcLFbd2A==
   dependencies:
     "@plasmicapp/isomorphic-unfetch" "1.0.3"
 
-"@plasmicapp/loader-react@^1.0.417":
-  version "1.0.417"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/loader-react/-/loader-react-1.0.417.tgz#7bc1c4cd5242b60f3aa870cc0e3455302aa2e8b8"
-  integrity sha512-IZ7joL208P0CC54rdk+dohs7nXQexH3jozZeXfmS3IF6H8p8y5jiJr7ZUdQDhsZ0mVaa3fd8qfC5Pb6CwC73vQ==
+"@plasmicapp/loader-react@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/loader-react/-/loader-react-2.0.0.tgz#2618bf499e52d3afdf1937b640f7d3859f5ed3ab"
+  integrity sha512-1E7V+Cc5C4R/ISmibGFSNv70qWyll9c9ri8WgDQEZZ0ZnHzs8DWliEoi+8mPdlF7U7LnnBpFEziNaGIeIyCgcA==
   dependencies:
     "@plasmicapp/data-sources-context" "0.1.23"
-    "@plasmicapp/host" "1.0.240"
-    "@plasmicapp/loader-core" "1.0.143"
-    "@plasmicapp/loader-fetcher" "1.0.60"
-    "@plasmicapp/loader-splits" "1.0.69"
+    "@plasmicapp/host" "2.0.0"
+    "@plasmicapp/loader-core" "2.0.0"
+    "@plasmicapp/loader-fetcher" "2.0.0"
+    "@plasmicapp/loader-splits" "1.0.70"
     "@plasmicapp/prepass" "1.0.24"
     "@plasmicapp/query" "0.1.84"
     pascalcase "^1.0.0"
     server-only "0.0.1"
 
-"@plasmicapp/loader-splits@1.0.69":
-  version "1.0.69"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/loader-splits/-/loader-splits-1.0.69.tgz#c5a1aec2bac90dc53041949ff502a731c8628df9"
-  integrity sha512-BUKSRWiGIzv8lxXjEMlsndIJYCUWWZCvkpPKnaD9KzmM/e6TyXHN3UqwdkrFzUN3Kk3qef+WtVQG+DD/6dlC8Q==
+"@plasmicapp/loader-splits@1.0.70":
+  version "1.0.70"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/loader-splits/-/loader-splits-1.0.70.tgz#7dd89bd2877f731430f286af579153af0f4003cd"
+  integrity sha512-iS2IIrWmmCgh0qhyaHliTj6D0q4vQebsWEiATLblGaIF4cUyOZO8KAeBG/MWiT8HNyvCE/nimFbwaI7yd2ZfBA==
   dependencies:
     json-logic-js "^2.0.2"
 
@@ -3853,16 +3853,16 @@
   resolved "https://registry.yarnpkg.com/@plasmicapp/react-ssr-prepass/-/react-ssr-prepass-2.0.9.tgz#1cfdd8d4c0e90fd4fed7d7204f70c44914871d31"
   integrity sha512-HO932uH/Y4otaDmjwzJbCLlokxNAdtU9VhDVUZUuVbzh0DhWaNyn/MINCu1oeZ4a6MIjdXFIm/U2VaxNxHYdsw==
 
-"@plasmicapp/react-web@^0.2.430":
-  version "0.2.430"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/react-web/-/react-web-0.2.430.tgz#7c6fe1750122abc3cfd66e7bcf117c0ee0bb03ec"
-  integrity sha512-7gApFZVet5h0f2hq1VZbpe/OAHYOeAupC/Riw9q2IXSD66k2lfBBQdxBI8Y49htE0z0aNF6xs2UhsEk4nDgGAA==
+"@plasmicapp/react-web@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/react-web/-/react-web-1.0.0.tgz#ff40af482f0c08a0dc01c9d90981e252d0b29054"
+  integrity sha512-3INEzOizMS42KQL0KpYOiaG4KkbyA1Z5dwPKlTS+nUeEh7vuSCyTHKDGKxxR8VZ4axDUxED/ZxsnoK7SQflVAA==
   dependencies:
     "@plasmicapp/auth-react" "0.0.27"
-    "@plasmicapp/data-sources" "0.1.209"
+    "@plasmicapp/data-sources" "1.0.0"
     "@plasmicapp/data-sources-context" "0.1.23"
-    "@plasmicapp/host" "1.0.240"
-    "@plasmicapp/loader-splits" "1.0.69"
+    "@plasmicapp/host" "2.0.0"
+    "@plasmicapp/loader-splits" "1.0.70"
     "@plasmicapp/nextjs-app-router" "1.0.22"
     "@plasmicapp/prepass" "1.0.24"
     "@plasmicapp/query" "0.1.84"
@@ -3887,13 +3887,12 @@
     classnames "^2.5.1"
     clone "^2.1.2"
     dlv "^1.1.3"
-    fast-deep-equal "^3.1.3"
     valtio "^1.6.4"
 
-"@plasmicpkgs/antd5@^0.0.336":
-  version "0.0.336"
-  resolved "https://registry.yarnpkg.com/@plasmicpkgs/antd5/-/antd5-0.0.336.tgz#be97447a661c0be309992655abcc5019b940582b"
-  integrity sha512-pg1VcWd4c4V9cbNd8v3NDvGqPSrwruoxf3P7wZf1vCel3utW96iisRheCJF0uG1cqc/gWwniGfaPjt4Sfvf+sQ==
+"@plasmicpkgs/antd5@^0.0.337":
+  version "0.0.337"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/antd5/-/antd5-0.0.337.tgz#6a5ce6f65b1fe62fe226be5fd6c4bde05d159fa1"
+  integrity sha512-4jP/pUfMjeUexx7PhFbKqIDHYlIMDDkGY5y/EYwxZQwKkyzuHj6Oj8J+Ub8itF8G7z9Ac7/O+V5ro6DkOgX45A==
   dependencies:
     antd "^5.12.7"
     classnames "^2.3.2"
@@ -3901,17 +3900,17 @@
     fast-deep-equal "^3.1.3"
     lodash "^4.17.21"
 
-"@plasmicpkgs/commerce-local@^0.0.240":
-  version "0.0.240"
-  resolved "https://registry.yarnpkg.com/@plasmicpkgs/commerce-local/-/commerce-local-0.0.240.tgz#c47df6f517c0d5e14fc1dfc3ac339a3a86c3feea"
-  integrity sha512-CCmNe2QVrQvgkpX8udyS0ZN9F/hEXV6va96YmjAWmkZEHnnQwriq2TfrHm3ZdMSEN2Jf/oo96fE0TwJK72F/XQ==
+"@plasmicpkgs/commerce-local@^0.0.241":
+  version "0.0.241"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/commerce-local/-/commerce-local-0.0.241.tgz#1b06f6b3c1950dd7720b2adcc400caf9a102abb7"
+  integrity sha512-ZnMEfvNOnKayeico8unF/ni5XOf0UHqBgC1so6i8PPWEzf892VEYtR4gscTSbSqAPl2kcFETrm7HrNiX8nBN5A==
   dependencies:
-    "@plasmicpkgs/commerce" "0.0.240"
+    "@plasmicpkgs/commerce" "0.0.241"
 
-"@plasmicpkgs/commerce@0.0.240":
-  version "0.0.240"
-  resolved "https://registry.yarnpkg.com/@plasmicpkgs/commerce/-/commerce-0.0.240.tgz#01d9070ec23264a2bc6f4391bcd91eb2b78c8682"
-  integrity sha512-gQevQKnhx2dUzEC7r69xwU7kxA/CbePgwpGxgyWDS3HTEvm/6Eoy2BozJojcSLdbNyJKTTv8fvdwQu5E8sEkxA==
+"@plasmicpkgs/commerce@0.0.241":
+  version "0.0.241"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/commerce/-/commerce-0.0.241.tgz#71f469ef8257cf54999eb71019c2cbe367a7dfb5"
+  integrity sha512-8VvtIrIKOd+srLQzYcUU3U/LY4f8VVTVGIjnvN9P+iAO7VVYF83Gl30I2+zQL5kXIxiBOspwrVqVbnOJJgrIuA==
   dependencies:
     "@vercel/fetch" "^6.2.0"
     debounce "^1.2.1"
@@ -3920,20 +3919,20 @@
     react-hook-form "^7.28.0"
     swr "^1.2.2"
 
-"@plasmicpkgs/plasmic-basic-components@^0.0.271":
-  version "0.0.271"
-  resolved "https://registry.yarnpkg.com/@plasmicpkgs/plasmic-basic-components/-/plasmic-basic-components-0.0.271.tgz#8463b0a5f570b1c5fb72571a5a4091768f44165c"
-  integrity sha512-/nbx057G+tWbx03kgGirO5qcpGicSusuJ2LH5eMnnraU5Z+bK5NVuVp6ErkVp0XldTtonp4iQGuHgON2zBQ+lg==
+"@plasmicpkgs/plasmic-basic-components@^0.0.272":
+  version "0.0.272"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/plasmic-basic-components/-/plasmic-basic-components-0.0.272.tgz#e52a03040ab81c0f198d36a9946612dc900602fb"
+  integrity sha512-rkJWjH2RBr/Fd/oHvzJ0+P0lGCdoy1RbBf43jV355PxKm7xN8cR7POsBRc0X6i9Y1fKZSeBv0I8uXYrQ0Z1f9Q==
 
-"@plasmicpkgs/plasmic-embed-css@^0.1.226":
-  version "0.1.226"
-  resolved "https://registry.yarnpkg.com/@plasmicpkgs/plasmic-embed-css/-/plasmic-embed-css-0.1.226.tgz#c9a1ad88ef3d3d7533edcb93431d698dda3d3269"
-  integrity sha512-k0UkCUOoXhmfoue0Ris6cneCUoC/yfr2XuGuXii+z1o2fd6eZ6dYTEgsbA+Rqk2H02PP2J2sMFuBHqv5SHZ/+w==
+"@plasmicpkgs/plasmic-embed-css@^0.1.227":
+  version "0.1.227"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/plasmic-embed-css/-/plasmic-embed-css-0.1.227.tgz#61977f33dcf75448ed4b6905cbcfd80e9bf6665f"
+  integrity sha512-dltpUYE1HwsnRrAy8YqNctFx1WzJ7/XprIRj6gEc268iVHbyV3KvefBJVlfyv6V7yC+yHnB5LeplRV93uOG2pA==
 
-"@plasmicpkgs/react-aria@^0.0.174":
-  version "0.0.174"
-  resolved "https://registry.yarnpkg.com/@plasmicpkgs/react-aria/-/react-aria-0.0.174.tgz#64ed0799383993a9e30140437a403c7ec1812d2e"
-  integrity sha512-hlmMCs3VSBofEjOuL1XtWEA30iZx0mo7EvV09VDc1KGBXDriKG7o8Qj/OJ9umMEhv8BpRU9c8338koJlZQZhzQ==
+"@plasmicpkgs/react-aria@^0.0.175":
+  version "0.0.175"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/react-aria/-/react-aria-0.0.175.tgz#463f18e039a5ffbc90c21c1867265e48a6391b5a"
+  integrity sha512-//3enARqSf4KnokjZN7FaUoV7lQA+m+mqU2SRUX005MZM+ctPbUZFMnVQCafZ6mti2jRf1iqOontyOlVPXw2Zw==
   dependencies:
     "@react-aria/i18n" "^3.12.9"
     "@react-aria/utils" "^3.29.0"
