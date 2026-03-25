@@ -32,16 +32,17 @@ import {
   isBoolType,
   isNumType,
 } from "@/wab/shared/model/model-util";
-import xml from "xml";
-
-type XmlElement = xml.XmlObject;
-type XmlAttrs = xml.XmlAttrs;
+import {
+  XmlAttrs,
+  XmlElement,
+  toXml,
+} from "@/wab/shared/web-exporter/xml-utils";
 
 /**
  * Serializes a Tpl tree to indented XML format.
  */
 export function serializeTpl(tpl: TplNode): string {
-  return xml(buildTplNode(tpl), { indent: "  " });
+  return toXml(buildTplNode(tpl));
 }
 
 function buildTplNode(tpl: TplNode): XmlElement {
@@ -460,5 +461,5 @@ export function serializeComponent(component: Component): string {
     children.push(variantElement);
   }
 
-  return xml({ component: children }, { indent: "  " }) + "\n";
+  return toXml({ component: children }) + "\n";
 }

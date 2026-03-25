@@ -14,7 +14,6 @@ import {
   IChangeRecorder,
 } from "@/wab/shared/core/observable-model";
 import { trackComponentRoot, trackComponentSite } from "@/wab/shared/core/tpls";
-import { DEVFLAGS } from "@/wab/shared/devflags";
 import { instUtil } from "@/wab/shared/model/InstUtil";
 import { Component, Site } from "@/wab/shared/model/classes";
 import { meta } from "@/wab/shared/model/classes-metas";
@@ -53,7 +52,7 @@ export class DbCtx {
   constructor(private readonly args: DbCtxArgs) {
     this._siteInfo = observable.box(args.siteInfo);
     this._revisionNum = observable.box(args.revisionNum);
-    this._recorder = DEVFLAGS.noObserve
+    this._recorder = args.appCtx.appConfig.noObserve
       ? new FakeChangeRecorder()
       : this.createRecorder(args.site);
     this._site = observable.box(args.site);

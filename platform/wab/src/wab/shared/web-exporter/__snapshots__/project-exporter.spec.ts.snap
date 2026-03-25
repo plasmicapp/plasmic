@@ -1,0 +1,104 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Project Serialization serialize project with all filters enabled 1`] = `
+"<project>
+  <components>
+    <component name="Homepage" uuid="ypvAo6PBDTFP" type="page" path="/"/>
+    <component name="hostless-plasmic-head" uuid="3Q5tZgoUcjgc" type="code"/>
+    <component name="plasmic-data-source-fetcher" uuid="eG7R2DxKySYs" type="code"/>
+    <component name="Button" uuid="OD5_PLaXT_1t" type="plain"/>
+    <component name="Label" uuid="JVCv_cilvEWB" type="plain"/>
+    <component name="Checkbox" uuid="eTjAMScYpz_5" type="plain"/>
+    <component name="Description" uuid="8ANP8VyLXTfo" type="plain"/>
+    <component name="Checkbox Group" uuid="8weYhId3_t7B" type="plain"/>
+    <component name="Radio" uuid="DhF49R8vE8x5" type="plain"/>
+    <component name="Radio Group" uuid="tNAN12ZT21NW" type="plain"/>
+    <component name="Menu Item" uuid="pzmtbEh09pA0" type="plain"/>
+    <component name="Menu Section" uuid="Fx3lwSohpxtr" type="plain"/>
+    <component name="Menu Popover" uuid="8w0OrLGU6fuW" type="plain"/>
+    <component name="Select" uuid="XFH-QbD_Wj0E" type="plain"/>
+    <component name="Combobox" uuid="m10qGbJjM9JU" type="plain"/>
+    <component name="Switch" uuid="bpAscHZX1liV" type="plain"/>
+    <component name="Text Input" uuid="EceIiqvGOOKH" type="plain"/>
+    <component name="TextArea Input" uuid="WPRFFrib1Q9_" type="plain"/>
+    <component name="Text Field" uuid="M0hmO976FWhA" type="plain"/>
+    <component name="Slider Thumb" uuid="bGKMrtyTL9ht" type="plain"/>
+    <component name="Slider" uuid="O3lbnxqQd9_J" type="plain"/>
+    <component name="Range Slider" uuid="9TpJxmLV-WtC" type="plain"/>
+    <component name="Modal" uuid="JMMmDTbwlNba" type="plain"/>
+    <component name="Overlay Arrow" uuid="1tPqNrfR1BwC" type="plain"/>
+    <component name="Popover" uuid="1QxpUBoAwkD7" type="plain"/>
+    <component name="Drawer" uuid="66fbwz7FPx2e" type="plain"/>
+    <component name="Tooltip" uuid="ASiSVqfHCthg" type="plain"/>
+  </components>
+  <screenBreakpoints>
+    <screenBreakpoint name="Mobile only" uuid="pIBrJnbkAQLL" maxWidth="768"/>
+  </screenBreakpoints>
+  <globalVariantGroups>
+    <group name="Screen" uuid="fYQvF6l9S5H7">
+      <variant name="Mobile only" uuid="pIBrJnbkAQLL"/>
+    </group>
+  </globalVariantGroups>
+  <tokens>
+    <token name="Size-32" uuid="_gnxKR8NG8ND" type="Spacing" value="var(--token-OJSN3W0Myvht)" resolvedValue="2rem"/>
+    <token name="Size-16" uuid="pNP36mHj6x6O" type="Spacing" value="var(--token-0tl2H1TRPHhV)" resolvedValue="1rem"/>
+    <token name="Size-8" uuid="J8bgk1cLaZ5G" type="Spacing" value="var(--token-cfon0PHiXQoL)" resolvedValue="0.5rem"/>
+    <token name="Muted/Muted-Soft-Foreground" uuid="mQy-u9ShBeeM" type="Color" value="var(--token-MGudh00NLP3q)" resolvedValue="#6B7280"/>
+    <token name="Size-4" uuid="iV97hAoHAnKd" type="Spacing" value="var(--token-RuQNZpYm0Yds)" resolvedValue="0.25rem"/>
+    <token name="Size-12" uuid="50jqnrkhPFjk" type="Spacing" value="var(--token-PKf5XaFatup3)" resolvedValue="0.75rem"/>
+    <token name="Size-24" uuid="5Dj8sI4bqV2C" type="Spacing" value="var(--token-ekJK2BNXfyOR)" resolvedValue="1.5rem"/>
+    <token name="Font-LG" uuid="QkMNDbZUI9zH" type="FontSize" value="1.25rem"/>
+    <token name="Basic/Container-Background" uuid="48p0Jlumb6Of" type="Color" value="#FFFFFF"/>
+    <token name="Brand/Brand" uuid="6R_RCgXDnfCy" type="Color" value="var(--token-3kYlE5VFDAO5)" resolvedValue="#2563EB"/>
+    <token name="Sans-serif" uuid="VRn5eg_X38q7" type="FontFamily" value="Inter"/>
+    <token name="Font-MD" uuid="mdlFAaQL9cZT" type="FontSize" value="1rem"/>
+    <token name="Line-height-MD" uuid="bFkpmJG5PZPn" type="LineHeight" value="1.25"/>
+    <token name="Size-6" uuid="-0yvAvGYfFhX" type="Spacing" value="var(--token-c8-rjzKYORFj)" resolvedValue="0.375rem"/>
+    <token name="Neutral/Neutral" uuid="W06EMLry-Nfs" type="Color" value="var(--token-Cn459MKRbWu9)" resolvedValue="#374151"/>
+    <token name="Destructive/Destructive" uuid="HFP4U80F-qYK" type="Color" value="var(--token-u2RgMe-uQAju)" resolvedValue="#DC2626"/>
+    <token name="Muted/Muted" uuid="c3a_UW9vDP9I" type="Color" value="var(--token-MGudh00NLP3q)" resolvedValue="#6B7280"/>
+    <token name="Font-SM" uuid="lD1RduCNRWBr" type="FontSize" value="0.75rem"/>
+    <token name="Line-height-SM" uuid="TeiPG4bVS8s9" type="LineHeight" value="1"/>
+    <token name="Line-height-LG" uuid="nnknQsSF9X4M" type="LineHeight" value="1.4"/>
+    <token name="Size-2" uuid="aR8bR72wtSYZ" type="Spacing" value="var(--token-IUVIp1DHBSFd)" resolvedValue="0.125rem"/>
+    <token name="Success/Success" uuid="KIKkVE5HITTq" type="Color" value="var(--token-8odYYBvkaHVX)" resolvedValue="#16A34A"/>
+    <token name="Warning/Warning" uuid="cpEXg673w3LE" type="Color" value="var(--token-L6pBmIkiSkx4)" resolvedValue="#FACC15"/>
+    <token name="Brand/Brand-Soft" uuid="o3a6NOLIofKT" type="Color" value="var(--token-w7EPkOMSh2Xb)" resolvedValue="#DBEAFE"/>
+    <token name="Neutral/Neutral-Soft" uuid="iwAtTzjIrY52" type="Color" value="var(--token-YTNNB1KtOvN9)" resolvedValue="#E5E7EB"/>
+    <token name="Muted/Muted-Soft" uuid="_Zhqc4oeimE_" type="Color" value="var(--token-NyTb7hfbZNyN)" resolvedValue="#F3F4F6"/>
+    <token name="Success/Success-Soft" uuid="iJ_NxhLUkdWo" type="Color" value="var(--token-Xs2o77o8RCB-)" resolvedValue="#DCFCE7"/>
+    <token name="Warning/Warning-Soft" uuid="996B2a7W81uk" type="Color" value="var(--token-BUYkn0c_BT-J)" resolvedValue="#FEF9C3"/>
+    <token name="Destructive/Destructive-Soft" uuid="YMdR_Biy5WbG" type="Color" value="var(--token-I0_BUYzH206C)" resolvedValue="#FEE2E2"/>
+    <token name="Brand/Brand-Border" uuid="JI5CHdDLi9zk" type="Color" value="var(--token-qsHKKmoi9Z2N)" resolvedValue="#93C5FD"/>
+    <token name="Neutral/Neutral-Border" uuid="XYb5IRzNoqX7" type="Color" value="var(--token-GQQSYIXwL9h_)" resolvedValue="#D1D5DB"/>
+    <token name="Muted/Muted-Border" uuid="lQAqvQ-ZHuDc" type="Color" value="var(--token-YTNNB1KtOvN9)" resolvedValue="#E5E7EB"/>
+    <token name="Success/Success-Border" uuid="-HhbTi7UcSzz" type="Color" value="var(--token-Y7e5ggCd09M6)" resolvedValue="#86EFAC"/>
+    <token name="Warning/Warning-Border" uuid="geOMiPEkmrjm" type="Color" value="var(--token-N2GVB8b4MTkJ)" resolvedValue="#FDE047"/>
+    <token name="Destructive/Destructive-Border" uuid="jYEUNEWo82iM" type="Color" value="var(--token-8XWkpFEFETNw)" resolvedValue="#FCA5A5"/>
+    <token name="Interaction / Hovered" uuid="1mMJ2FOHi_GH" type="Color" value="#0000001A"/>
+    <token name="Interaction / Disabled" uuid="uSzxYmtL19gq" type="Color" value="#FFFFFF40"/>
+    <token name="Interaction / Pressed" uuid="jbqfmQJrnHdW" type="Color" value="#00000033"/>
+    <token name="Size-10" uuid="yk7m7bwFJ02R" type="Spacing" value="var(--token-vINZR3MlEOSB)" resolvedValue="0.625rem"/>
+    <token name="Brand/Brand-Foreground" uuid="8Z9NGJU5I115" type="Color" value="var(--token-M0LHGDR880st)" resolvedValue="#EFF6FF"/>
+    <token name="Neutral/Neutral-Foreground" uuid="jDYABwPNRgB6" type="Color" value="var(--token-w0BmYAdVh1BD)" resolvedValue="#F9FAFB"/>
+    <token name="Muted/Muted-Foreground" uuid="Le_d7m1UzXV7" type="Color" value="var(--token-YTNNB1KtOvN9)" resolvedValue="#E5E7EB"/>
+    <token name="Brand/Brand-Soft-Foreground" uuid="_RWFFiNKNXVv" type="Color" value="var(--token-wXhZBDyFIH77)" resolvedValue="#1E3A8A"/>
+    <token name="Warning/Warning-Foreground" uuid="gUYL2yuOGlk5" type="Color" value="var(--token-IM1QVYeIZBIA)" resolvedValue="#422006"/>
+    <token name="Success/Success-Foreground" uuid="T19iHLx7o2j3" type="Color" value="var(--token-d5rxOApLiBXu)" resolvedValue="#F0FDF4"/>
+    <token name="Destructive/Destructive-Foreground" uuid="KY151bWozx0p" type="Color" value="var(--token-wO2qMySVKYXU)" resolvedValue="#FEF2F2"/>
+    <token name="Neutral/Neutral-Soft-Foreground" uuid="UxJ9eCmT0rvR" type="Color" value="var(--token-ZnueTOHp2Zir)" resolvedValue="#111827"/>
+    <token name="Success/Success-Soft-Foreground" uuid="sanUPHTvHkN8" type="Color" value="var(--token-MD2kb85IOAun)" resolvedValue="#14532D"/>
+    <token name="Warning/Warning-Soft-Foreground" uuid="ykcwO7egWlo9" type="Color" value="var(--token-Work-inyFZuD)" resolvedValue="#713F12"/>
+    <token name="Destructive/Destructive-Soft-Foreground" uuid="kqh85af0nuZn" type="Color" value="var(--token-c1-8q9kxmrq_)" resolvedValue="#7F1D1D"/>
+    <token name="Basic/Text-Primary" uuid="ZX33JwqKe1KQ" type="Color" value="var(--token-4Cdw41zGDm2p)" resolvedValue="#030712"/>
+    <token name="Basic/Text-Secondary" uuid="O7HlhsyUcTLk" type="Color" value="var(--token-MGudh00NLP3q)" resolvedValue="#6B7280"/>
+    <token name="Size-20" uuid="41IdgVnm_uZQ" type="Spacing" value="var(--token-TONjX_YbO9_T)" resolvedValue="1.25rem"/>
+    <token name="Basic/Ring" uuid="6w7DbBUQGdRg" type="Color" value="var(--token-RN6-6smk2YHi)" resolvedValue="#9CA3AF"/>
+    <token name="Basic/Border" uuid="O--cwH0Y8I-6" type="Color" value="var(--token-GQQSYIXwL9h_)" resolvedValue="#D1D5DB"/>
+    <token name="Muted/Muted-Soft-Hover" uuid="vXHzDv-NQvAm" type="Color" value="var(--token-YTNNB1KtOvN9)" resolvedValue="#E5E7EB"/>
+    <token name="Basic/Input-Background" uuid="oYen04JAIf3J" type="Color" value="var(--token-YTNNB1KtOvN9)" resolvedValue="#E5E7EB"/>
+    <token name="Basic/Overlay-Background" uuid="ghoU2mpMJmil" type="Color" value="#0A0A0A80"/>
+    <token name="Basic/Container-Background-Dark" uuid="X4GQ8bRemoGX" type="Color" value="var(--token-c-y4Lbl8pLuG)" resolvedValue="#171717"/>
+  </tokens>
+</project>"
+`;
