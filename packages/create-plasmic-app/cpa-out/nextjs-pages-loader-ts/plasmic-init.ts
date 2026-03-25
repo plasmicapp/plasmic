@@ -7,7 +7,12 @@ export const PLASMIC = initPlasmicLoader({
       token: "7BRFratDxPLMGZHnd2grV5QP6mlHcZ1AK3BJSIeh7xzUlHgWh25XpgXvUaKAqHXFMXQQuzpADqboibF6nqNWQ",
     },
   ],
-
+  platformOptions: {
+    nextjs: {
+      appDir: false,
+    }
+  },
+  
   // By default Plasmic will use the last published version of your project.
   // For development, you can set preview to true, which will use the unpublished
   // project, allowing you to see your designs without publishing.  Please

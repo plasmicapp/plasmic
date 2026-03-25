@@ -1,4 +1,4 @@
-/** Make a cache key for a query */
+/** @internal Make a cache key for a query */
 export function makeQueryCacheKey(id: string, params: any[]) {
   return `${id}:${safeStableStringify(params)}`;
 }

@@ -1,6 +1,6 @@
 {
   "name": "@plasmicapp/loader-gatsby",
-  "version": "1.0.420",
+  "version": "2.0.0-alpha.0",
   "types": "./dist/index.d.ts",
   "main": "./dist/index.js",
   "exports": {
@@ -52,20 +52,20 @@
       "limit": "15 KB"
     }
   ],
-  "peerDependencies": {
-    "gatsby": "^2.0.15 || ^3.0.0 || ^4.0.0 || ^5.0.0",
-    "react": ">=16.8.0",
-    "react-dom": ">=16.8.0"
+  "dependencies": {
+    "@plasmicapp/loader-core": "2.0.0-alpha.0",
+    "@plasmicapp/loader-react": "2.0.0-alpha.0",
+    "@plasmicapp/watcher": "1.0.84",
+    "lodash": "^4.17.21"
   },
   "devDependencies": {
     "@types/lodash": "^4.14.195",
     "@types/react-dom": "^18",
     "gatsby": "^5.11.0"
   },
-  "dependencies": {
-    "@plasmicapp/loader-core": "1.0.143",
-    "@plasmicapp/loader-react": "1.0.417",
-    "@plasmicapp/watcher": "1.0.84",
-    "lodash": "^4.17.21"
+  "peerDependencies": {
+    "gatsby": "^2.0.15 || ^3.0.0 || ^4.0.0 || ^5.0.0",
+    "react": ">=18.0.0",
+    "react-dom": ">=18.0.0"
   }
 }

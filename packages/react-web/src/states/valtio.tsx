@@ -9,6 +9,7 @@ import {
   useSnapshot,
 } from "valtio";
 import { ensure } from "../common";
+import { useIsomorphicLayoutEffect } from "../react-utils";
 import {
   CyclicStatesReferencesError,
   InvalidOperation,
@@ -21,17 +22,10 @@ import {
   getSpecTreeLeaves,
   updateTree,
 } from "./graph";
-import {
-  arrayEq,
-  deepEqual,
-  getStateCells,
-  set,
-  useIsomorphicLayoutEffect,
-} from "./helpers";
+import { arrayEq, deepEqual, getStateCells, isNum, set } from "./helpers";
 import {
   $State,
   $StateSpec,
-  DeprecatedInitFunc,
   DollarStateEnv,
   InitFunc,
   InitFuncEnv,
@@ -43,10 +37,6 @@ import {
   UNINITIALIZED,
 } from "./types";
 import defer = setTimeout;
-
-function isNum(value: string | number | symbol): value is number {
-  return typeof value === "symbol" ? false : !isNaN(+value);
-}
 
 function canProxy(value: any) {
   return typeof value === "object" && value != null;
@@ -199,7 +189,7 @@ function initializeStateValue(
 
   stateAccess.forEach(({ stateCell }) => {
     stateCell.listeners.push(() => {
-      const newValue = invokeInitFuncBackwardsCompatible(
+      const newValue = invokeInitFunc(
         initialStateCell.node.getSpec().initFunc!,
         {
           $state,
@@ -210,13 +200,10 @@ function initializeStateValue(
     });
   });
 
-  const initialValue = invokeInitFuncBackwardsCompatible(
-    initialStateCell.initFunc!,
-    {
-      $state,
-      ...(initialStateCell.overrideEnv ?? $$state.env),
-    }
-  );
+  const initialValue = invokeInitFunc(initialStateCell.initFunc!, {
+    $state,
+    ...(initialStateCell.overrideEnv ?? $$state.env),
+  });
   const initialSpec = initialStateCell.node.getSpec();
 
   // Try to clone initialValue. It can fail if it's a PlasmicUndefinedDataProxy
@@ -421,19 +408,11 @@ function extractDollarStateParametersBackwardCompatible(...rest: any[]): {
   }
 }
 
-function invokeInitFuncBackwardsCompatible<T>(
-  initFunc: InitFunc<T> | DeprecatedInitFunc<T>,
+function invokeInitFunc<T>(
+  initFunc: InitFunc<T>,
   env: NoUndefinedField<InitFuncEnv>
 ) {
-  if (initFunc.length > 1) {
-    return (initFunc as DeprecatedInitFunc<T>)(
-      env.$props,
-      env.$state,
-      env.$ctx
-    );
-  } else {
-    return (initFunc as InitFunc<T>)(env);
-  }
+  return initFunc(env);
 }
 
 export function useDollarState(
@@ -619,13 +598,10 @@ export function useDollarState(
     getStateCells($state, $$state.rootSpecTree).forEach((stateCell) => {
       if (stateCell.initFunc) {
         try {
-          const newInit = invokeInitFuncBackwardsCompatible(
-            stateCell.initFunc,
-            {
-              $state,
-              ...(stateCell.overrideEnv ?? envFieldsAreNonNill(env)),
-            }
-          );
+          const newInit = invokeInitFunc(stateCell.initFunc, {
+            $state,
+            ...(stateCell.overrideEnv ?? envFieldsAreNonNill(env)),
+          });
           if (!deepEqual(newInit, stateCell.initialValue)) {
             resetSpecs.push({ stateCell });
           }

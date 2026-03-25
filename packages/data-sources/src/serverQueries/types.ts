@@ -1,3 +1,4 @@
+/** @internal */
 export interface PlasmicQuery<
   F extends (...args: unknown[]) => Promise<unknown> = (
     ...args: unknown[]
@@ -8,6 +9,7 @@ export interface PlasmicQuery<
   id: string;
 }
 
+/** @internal */
 export interface PlasmicQueryResult<T = unknown> {
   /**
    * Returns the key if params have resolved.

@@ -1,12 +1,15 @@
+/** @deprecated See https://docs.plasmic.app/learn/integrations */
 export interface Pagination {
   pageSize: number;
   pageIndex: number;
 }
 
+/** @deprecated See https://docs.plasmic.app/learn/integrations */
 export interface DataSourceSchema {
   tables: TableSchema[];
 }
 
+/** @deprecated See https://docs.plasmic.app/learn/integrations */
 export interface TableSchema {
   id: string;
   schema?: string;
@@ -14,6 +17,7 @@ export interface TableSchema {
   fields: TableFieldSchema[];
 }
 
+/** @deprecated See https://docs.plasmic.app/learn/integrations */
 export interface TableFieldSchema {
   id: string;
   label?: string;
@@ -23,6 +27,7 @@ export interface TableFieldSchema {
   options?: string[];
 }
 
+/** @deprecated See https://docs.plasmic.app/learn/integrations */
 export type TableFieldType =
   | "string"
   | "boolean"
@@ -33,11 +38,13 @@ export type TableFieldType =
   | "json"
   | "unknown";
 
+/** @deprecated See https://docs.plasmic.app/learn/integrations */
 export interface SingleRowResult<T = any> {
   data: T;
   schema: TableSchema;
 }
 
+/** @deprecated See https://docs.plasmic.app/learn/integrations */
 export interface ManyRowsResult<T = any> {
   data: T[];
   total?: number;
@@ -45,6 +52,7 @@ export interface ManyRowsResult<T = any> {
   paginate?: Pagination;
 }
 
+/** @deprecated See https://docs.plasmic.app/learn/integrations */
 export interface DataOp {
   sourceId: string;
   opId: string;
@@ -56,6 +64,7 @@ export interface DataOp {
 
 /**
  * Represents the result of a client-side query.
+ * @deprecated See https://docs.plasmic.app/learn/integrations
  */
 export interface ClientQueryResult<T = any> {
   /**

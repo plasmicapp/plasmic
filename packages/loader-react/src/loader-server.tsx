@@ -379,7 +379,6 @@ export class InternalPrepassPlasmicLoader extends BaseInternalPlasmicComponentLo
             registerTrait: noop,
             repeatedElement: unreachable,
             stateHelpersKeys: ["initFunc", "onChangeArgsToValue", "onMutate"],
-            unstable_registerFetcher: noop,
             useDataEnv: () =>
               getPrepassContextEnv().readContextValue(FakeDataContext),
             useGlobalActions: () =>

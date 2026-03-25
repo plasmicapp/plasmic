@@ -4,6 +4,7 @@ import { makeQueryCacheKey } from "./makeQueryCacheKey";
 import { PlasmicQuery, PlasmicQueryResult } from "./types";
 
 /**
+ * @internal
  * Executes all queries and returns the query data keyed by cache key.
  *
  * Example codegen:

@@ -1,5 +1,4 @@
 import { initPlasmicLoader } from "@plasmicapp/loader-nextjs/react-server-conditional";
-import * as NextNavigation from "next/navigation";
 
 const host = process.env.NEXT_PUBLIC_HOST;
 const projectId = process.env.NEXT_PUBLIC_PROJECT_ID;
@@ -23,7 +22,4 @@ export const PLASMIC = initPlasmicLoader({
   // project, allowing you to see your designs without publishing.  Please
   // only use this for development, as this is significantly slower.
   preview: true,
-
-  // Needed for Next.js app router support.
-  nextNavigation: NextNavigation,
 });

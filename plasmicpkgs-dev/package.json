@@ -7,7 +7,7 @@
     "dev-inspect": "NODE_OPTIONS='--inspect' next dev"
   },
   "dependencies": {
-    "@plasmicapp/loader-nextjs": "1.0.458",
+    "@plasmicapp/loader-nextjs": "2.0.0-alpha.0",
     "@plasmicpkgs/cms": "0.0.19",
     "@plasmicpkgs/commerce": "0.0.240",
     "@plasmicpkgs/commerce-shopify": "0.0.248",

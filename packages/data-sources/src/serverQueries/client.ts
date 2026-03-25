@@ -19,6 +19,7 @@ import { PlasmicQuery, PlasmicQueryResult } from "./types";
 const GLOBAL_CACHE = new Map<string, SyncPromise<unknown>>();
 
 /**
+ * @internal
  * This hook's job is to execute queries and re-render when query state changes.
  * Data caching can be controlled via @plasmicapp/query.
  *
@@ -295,6 +296,10 @@ function initPlasmicQueriesSync<QueryName extends string>(
 }
 
 /**
+ * @deprecated
+ * This export will be deleted before RSC release.
+ * TODO: Rename to usePlasmicQuery
+ * TODO: Reference $query directly.
  * TODO: Use paramsResult from usePlasmicQueries
  */
 function usePlasmicQuery<T, F extends (...args: any[]) => Promise<T>>(

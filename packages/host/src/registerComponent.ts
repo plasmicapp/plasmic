@@ -358,11 +358,6 @@ export type CodeComponentMode =
   | "simplified"
   | "database-schema-driven";
 
-/**
- * @deprecated use CodeComponentMeta instead
- */
-export type ComponentMeta<P> = CodeComponentMeta<P>;
-
 export interface FunctionParam<P> {
   name: string;
   displayName?: string;

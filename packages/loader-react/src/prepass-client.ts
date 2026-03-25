@@ -1,7 +1,4 @@
-import {
-  extractPlasmicQueryData as internalExtractQueryData,
-  plasmicPrepass as internalPlasmicPrepass,
-} from "@plasmicapp/prepass";
+import { extractPlasmicQueryData as internalExtractQueryData } from "@plasmicapp/prepass";
 
 /**
  * Performs a prepass over Plasmic content, kicking off the necessary
@@ -43,11 +40,4 @@ export function extractPlasmicQueryData(
   element: React.ReactElement
 ): Promise<Record<string, any>> {
   return internalExtractQueryData(element);
-}
-
-/**
- * @deprecated Maintained for backwards compatibility
- */
-export function plasmicPrepass(element: React.ReactElement): Promise<void> {
-  return internalPlasmicPrepass(element);
 }

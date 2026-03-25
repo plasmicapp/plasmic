@@ -1,27 +1,27 @@
 {
   "name": "@plasmicapp/react-web-runtime",
-  "version": "0.0.150",
+  "version": "1.0.0-alpha.0",
   "files": [
     "jsx-runtime",
     "jsx-dev-runtime"
   ],
-  "peerDependencies": {
-    "@plasmicapp/react-web": ">=0.2.49",
-    "react": ">=16.8.0"
-  },
   "scripts": {
     "build": "rollup -c",
     "prepublishOnly": "npm run build"
   },
   "devDependencies": {
-    "@plasmicapp/react-web": "0.2.430",
+    "@plasmicapp/react-web": "1.0.0-alpha.0",
     "@rollup/plugin-commonjs": "^25.0.7",
     "@rollup/plugin-node-resolve": "^15.2.3",
     "@rollup/plugin-replace": "^5.0.4",
     "@types/react": "^18",
-    "react": "^18.2.0",
+    "react": "18.3.1",
     "rollup": "^4.1.4",
     "rollup-plugin-terser": "^7.0.2",
     "rollup-plugin-typescript2": "^0.36.0"
+  },
+  "peerDependencies": {
+    "@plasmicapp/react-web": ">=0.2.49",
+    "react": ">=18.0.0"
   }
 }

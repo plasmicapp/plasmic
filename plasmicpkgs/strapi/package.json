@@ -35,13 +35,13 @@
     "qs": "^6.11.0"
   },
   "devDependencies": {
-    "@plasmicapp/host": "1.0.240",
+    "@plasmicapp/host": "2.0.0-alpha.0",
     "@react-awesome-query-builder/core": "^6.6.15",
     "@types/json-logic-js": "^2.0.8",
     "@types/qs": "^6.9.7",
     "typescript": "^5.7.3"
   },
   "peerDependencies": {
-    "@plasmicapp/host": "^1.0.211"
+    "@plasmicapp/host": ">=1.0.211"
   }
 }

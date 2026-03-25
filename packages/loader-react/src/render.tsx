@@ -1,31 +1,18 @@
 import { extractPlasmicQueryData } from "@plasmicapp/prepass";
 import React from "react";
-import ReactDOM from "react-dom";
-import { renderToString as reactRenderToString } from "react-dom/server";
+import ReactDOMClient from "react-dom/client";
+import ReactDOMServer from "react-dom/server";
 import { ComponentRenderData, PlasmicComponentLoader } from "./loader-shared";
 import { PlasmicComponent } from "./PlasmicComponent";
 import { GlobalVariantSpec, PlasmicRootProvider } from "./PlasmicRootProvider";
 import { ComponentLookupSpec } from "./utils";
 
-export async function renderToElement(
-  loader: PlasmicComponentLoader,
-  target: HTMLElement,
-  lookup: ComponentLookupSpec,
-  opts: {
-    prefetchedData?: ComponentRenderData;
-    componentProps?: any;
-    globalVariants?: GlobalVariantSpec[];
-    prefetchedQueryData?: Record<string, any>;
-    pageParams?: Record<string, any>;
-    pageQuery?: Record<string, any>;
-  } = {}
-) {
-  return new Promise<void>((resolve) => {
-    const element = makeElement(loader, lookup, opts);
-    ReactDOM.render(element, target, () => resolve());
-  });
-}
-
+/**
+ * Renders a Plasmic tree to a string.
+ *
+ * Uses React DOM server API `renderToString`, which is intended to be used for
+ * server-rendered apps.
+ */
 export function renderToString(
   loader: PlasmicComponentLoader,
   lookup: ComponentLookupSpec,
@@ -37,9 +24,14 @@ export function renderToString(
   } = {}
 ) {
   const element = makeElement(loader, lookup, opts);
-  return reactRenderToString(element);
+  return ReactDOMServer.renderToString(element);
 }
 
+/**
+ * Pre-renders a Plasmic tree to extract query data.
+ *
+ * This is intended to be used for server-rendered apps.
+ */
 export async function extractPlasmicQueryDataFromElement(
   loader: PlasmicComponentLoader,
   lookup: ComponentLookupSpec,
@@ -54,7 +46,38 @@ export async function extractPlasmicQueryDataFromElement(
   return extractPlasmicQueryData(element);
 }
 
-export async function hydrateFromElement(
+/**
+ * Renders a Plasmic tree in the target element.
+ *
+ * Uses React DOM client API `createRoot`, which is intended to be used from
+ * client-rendered apps.
+ */
+export function renderToElement(
+  loader: PlasmicComponentLoader,
+  target: HTMLElement,
+  lookup: ComponentLookupSpec,
+  opts: {
+    prefetchedData?: ComponentRenderData;
+    componentProps?: any;
+    globalVariants?: GlobalVariantSpec[];
+    prefetchedQueryData?: Record<string, any>;
+    pageParams?: Record<string, any>;
+    pageQuery?: Record<string, any>;
+  } = {}
+) {
+  const element = makeElement(loader, lookup, opts);
+  const root = ReactDOMClient.createRoot(target);
+  root.render(element);
+  return root;
+}
+
+/**
+ * Hydrates a Plasmic tree in the target element.
+ *
+ * Uses React DOM client API `hydrateRoot`, which is intended to be used from
+ * server-rendered apps.
+ */
+export function hydrateFromElement(
   loader: PlasmicComponentLoader,
   target: HTMLElement,
   lookup: ComponentLookupSpec,
@@ -65,10 +88,8 @@ export async function hydrateFromElement(
     prefetchedQueryData?: Record<string, any>;
   } = {}
 ) {
-  return new Promise<void>((resolve) => {
-    const element = makeElement(loader, lookup, opts);
-    ReactDOM.hydrate(element, target, () => resolve());
-  });
+  const element = makeElement(loader, lookup, opts);
+  return ReactDOMClient.hydrateRoot(target, element);
 }
 
 function makeElement(

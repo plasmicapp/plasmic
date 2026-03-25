@@ -13,7 +13,6 @@ import { FontMeta } from '@plasmicapp/loader-fetcher';
 import { GlobalGroupMeta } from '@plasmicapp/loader-fetcher';
 import { LoaderBundleCache } from '@plasmicapp/loader-fetcher';
 import { LoaderBundleOutput } from '@plasmicapp/loader-fetcher';
-import { LoaderHtmlOutput } from '@plasmicapp/loader-fetcher';
 import { PageMeta } from '@plasmicapp/loader-fetcher';
 import { PageMetadata } from '@plasmicapp/loader-fetcher';
 import { PlasmicModulesFetcher } from '@plasmicapp/loader-fetcher';
@@ -44,24 +43,11 @@ export { LoaderBundleCache }
 
 export { LoaderBundleOutput }
 
-export { LoaderHtmlOutput }
-
 export { PageMeta }
 
 export { PageMetadata }
 
 export { PlasmicModulesFetcher }
-
-// @public @deprecated (undocumented)
-export class PlasmicTracker {
-    constructor(_opts: TrackerOptions);
-    // @deprecated (undocumented)
-    trackConversion(_value?: number): void;
-    // @deprecated (undocumented)
-    trackFetch(): void;
-    // @deprecated (undocumented)
-    trackRender(_opts?: TrackRenderOptions): void;
-}
 
 export { ProjectMeta }
 
@@ -91,14 +77,6 @@ export class Registry {
 export { SegmentSlice }
 
 export { Split }
-
-// @public @deprecated (undocumented)
-export interface TrackRenderOptions {
-    // (undocumented)
-    renderCtx?: TrackerRenderProperties;
-    // (undocumented)
-    variation?: Record<string, string>;
-}
 
 // (No @packageDocumentation comment for this package)
 

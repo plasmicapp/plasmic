@@ -33,7 +33,7 @@ let repeatedElementFn: typeof repeatedElement = (
 
 const root = globalThis as any;
 export const setRepeatedElementFn: (fn: typeof repeatedElement) => void =
-  root?.__Sub?.setRepeatedElementFn ??
+  root?.__Sub?.hostUtils?.setRepeatedElementFn ??
   function (fn: typeof repeatedElement) {
     repeatedElementFn = fn;
   };

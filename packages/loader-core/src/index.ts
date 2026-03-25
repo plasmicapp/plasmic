@@ -8,7 +8,6 @@ export type {
   GlobalGroupMeta,
   LoaderBundleCache,
   LoaderBundleOutput,
-  LoaderHtmlOutput,
   PageMeta,
   PageMetadata,
   ProjectMeta,
@@ -17,5 +16,3 @@ export type {
 } from "@plasmicapp/loader-fetcher";
 export { getBundleSubset } from "./bundles";
 export { Registry } from "./registry";
-export { PlasmicTracker } from "./tracker";
-export type { TrackRenderOptions } from "./tracker";

@@ -1,6 +1,13 @@
 {
   "name": "@plasmicapp/loader-react",
-  "version": "1.0.417",
+  "version": "2.0.0-alpha.0",
+  "description": "Plasmic loader SDK for React",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/plasmicapp/plasmic.git",
+    "directory": "packages/loader-react"
+  },
   "types": "./dist/index.d.ts",
   "main": "./dist/index.js",
   "module": "./dist/index.esm.js",
@@ -53,18 +60,26 @@
   },
   "dependencies": {
     "@plasmicapp/data-sources-context": "0.1.23",
-    "@plasmicapp/host": "1.0.240",
-    "@plasmicapp/loader-core": "1.0.143",
-    "@plasmicapp/loader-fetcher": "1.0.60",
+    "@plasmicapp/host": "2.0.0-alpha.0",
+    "@plasmicapp/loader-core": "2.0.0-alpha.0",
+    "@plasmicapp/loader-fetcher": "2.0.0-alpha.0",
     "@plasmicapp/loader-splits": "1.0.69",
     "@plasmicapp/prepass": "1.0.24",
     "@plasmicapp/query": "0.1.84",
     "pascalcase": "^1.0.0",
     "server-only": "0.0.1"
   },
+  "devDependencies": {
+    "@types/node": "^22",
+    "@types/pascalcase": "^1.0.0",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
+  },
   "peerDependencies": {
-    "react": ">=16.8.0",
-    "react-dom": ">=16.8.0"
+    "react": ">=18.0.0",
+    "react-dom": ">=18.0.0"
   },
   "size-limit": [
     {
@@ -76,13 +91,5 @@
       "limit": "15 KB"
     }
   ],
-  "devDependencies": {
-    "@types/node": "^20.8.9",
-    "@types/pascalcase": "^1.0.0",
-    "@types/react": "^18",
-    "@types/react-dom": "^18",
-    "@types/react-is": "^17.0.3"
-  },
-  "license": "MIT",
   "gitHead": "fa53f7d79f0e26d8b061102fda0c06788da6f8a7"
 }

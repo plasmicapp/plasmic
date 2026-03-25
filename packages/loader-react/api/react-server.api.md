@@ -38,15 +38,11 @@ import { Split } from '@plasmicapp/loader-fetcher';
 import type { StateHelpers } from '@plasmicapp/host';
 import type { StateSpec } from '@plasmicapp/host';
 import type { TokenRegistration } from '@plasmicapp/host';
-import { TrackRenderOptions } from '@plasmicapp/loader-core';
 import type { TraitMeta } from '@plasmicapp/host';
 import type { useDataEnv } from '@plasmicapp/host';
 import type { useMutablePlasmicQueryData } from '@plasmicapp/query';
 import type { useSelector } from '@plasmicapp/host';
 import type { useSelectors } from '@plasmicapp/host';
-
-// @public
-export function __EXPERMIENTAL__extractPlasmicQueryData(element: React.ReactElement, loader: PlasmicComponentLoader): Promise<Record<string, any>>;
 
 export { ComponentMeta }
 
@@ -78,8 +74,6 @@ export interface InitOptions {
         keyScheme: "content" | "hash" | "path";
         tagPrefix?: string;
     };
-    // @deprecated (undocumented)
-    i18nKeyScheme?: "content" | "hash";
     manualRedirect?: boolean;
     nativeFetch?: boolean;
     // (undocumented)
@@ -161,7 +155,6 @@ export class PlasmicComponentLoader {
     // (undocumented)
     maybeFetchComponentData(specs: ComponentLookupSpec[], opts?: FetchComponentDataOpts): Promise<ComponentRenderData | null>;
     registerComponent<T extends React.ComponentType<any>>(component: T, meta: CodeComponentMeta<React.ComponentProps<T>>): void;
-    registerComponent<T extends React.ComponentType<any>>(component: T, name: ComponentLookupSpec): void;
     // (undocumented)
     registerFunction<F extends (...args: any[]) => any>(fn: F, meta: CustomFunctionMeta<F>): void;
     // (undocumented)
@@ -174,8 +167,6 @@ export class PlasmicComponentLoader {
     registerTrait(trait: string, meta: TraitMeta): void;
     setGlobalVariants(globalVariants: GlobalVariantSpec[]): void;
     substituteComponent<P>(component: React.ComponentType<P>, name: ComponentLookupSpec): void;
-    // (undocumented)
-    trackConversion(value?: number): void;
     // (undocumented)
     unstable__generateMetadata(renderData: ComponentRenderData, props: {
         params: Promise<ParamsRecord> | ParamsRecord;

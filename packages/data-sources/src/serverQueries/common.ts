@@ -11,6 +11,7 @@ import { mapRecords, noopFn } from "../utils";
 import { PlasmicQueryResult } from "./types";
 
 /**
+ * @internal
  * Creates a $queries variable that can be used before queries are completed.
  *
  * Each query gets a StatefulQueryResult which implements PlasmicQueryResult.
@@ -251,6 +252,7 @@ export function resolveParams<F extends (...args: any[]) => any>(
 }
 
 /**
+ * @internal
  * Wraps each PlasmicQueryResult so that they return a hardcoded string for
  * undefined/loading and error cases.
  */

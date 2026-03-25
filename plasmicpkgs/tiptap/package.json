@@ -55,8 +55,8 @@
     "test-storybook": "test-storybook"
   },
   "devDependencies": {
-    "@plasmicapp/data-sources": "0.1.209",
-    "@plasmicapp/host": "1.0.240",
+    "@plasmicapp/data-sources": "1.0.0-alpha.0",
+    "@plasmicapp/host": "2.0.0-alpha.0",
     "@rollup/plugin-commonjs": "^11.0.0",
     "@rollup/plugin-json": "^4.0.0",
     "@rollup/plugin-node-resolve": "^9.0.0",

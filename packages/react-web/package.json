@@ -1,6 +1,6 @@
 {
   "name": "@plasmicapp/react-web",
-  "version": "0.2.430",
+  "version": "1.0.0-alpha.0",
   "description": "plasmic library for rendering in the presentational style",
   "main": "dist/index.cjs.js",
   "types": "dist/index.d.ts",
@@ -65,16 +65,6 @@
     },
     "./additional-types-PlasmicImg": {
       "types": "./dist/render/PlasmicImg/index.d.ts"
-    },
-    "./lib/nextjs-app-router": {
-      "types": "./lib/nextjs-app-router/index.d.ts",
-      "import": "./lib/nextjs-app-router/index.js",
-      "require": "./lib/nextjs-app-router/index.cjs.js"
-    },
-    "./lib/nextjs-app-router/react-server": {
-      "types": "./lib/nextjs-app-router/react-server/index.d.ts",
-      "import": "./lib/nextjs-app-router/react-server/index.js",
-      "require": "./lib/nextjs-app-router/react-server/index.cjs.js"
     }
   },
   "files": [
@@ -96,9 +86,9 @@
   },
   "dependencies": {
     "@plasmicapp/auth-react": "0.0.27",
-    "@plasmicapp/data-sources": "0.1.209",
+    "@plasmicapp/data-sources": "1.0.0-alpha.0",
     "@plasmicapp/data-sources-context": "0.1.23",
-    "@plasmicapp/host": "1.0.240",
+    "@plasmicapp/host": "2.0.0-alpha.0",
     "@plasmicapp/loader-splits": "1.0.69",
     "@plasmicapp/nextjs-app-router": "1.0.22",
     "@plasmicapp/prepass": "1.0.24",
@@ -124,7 +114,6 @@
     "classnames": "^2.5.1",
     "clone": "^2.1.2",
     "dlv": "^1.1.3",
-    "fast-deep-equal": "^3.1.3",
     "valtio": "^1.6.4"
   },
   "devDependencies": {
@@ -143,14 +132,14 @@
     "@types/dlv": "^1.1.2",
     "@types/react": "^18",
     "@types/react-dom": "^18",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
     "rollup": "^3.26.1",
     "rollup-plugin-dts": "^5.3.0",
     "rollup-plugin-typescript2": "^0.36.0"
   },
   "peerDependencies": {
-    "react": ">=16.8.0",
-    "react-dom": ">=16.8.0"
+    "react": ">=18.0.0",
+    "react-dom": ">=18.0.0"
   }
 }

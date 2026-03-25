@@ -74,6 +74,7 @@ export async function setupCraServer(
   // Limit concurrency to avoid Verdaccio overload. Reducing CI workers is another option.
   const pnpmCiFlags = `--store-dir "${PNPM_CACHE_DIR}" --network-concurrency=8 --fetch-retries=5`;
   const template = env.template ?? "template";
+  const reactVersion = env.reactVersion ?? "18";
   const templateDir = path.resolve(path.join(__dirname, template));
   copySync(templateDir, tmpdir, { recursive: true });
 
@@ -91,14 +92,12 @@ export async function setupCraServer(
   const updatePackages = [
     `@plasmicapp/loader-react@${env.loaderReactVersion ?? "latest"}`,
   ];
-  if (env.reactVersion) {
-    updatePackages.push(
-      `react@${env.reactVersion}`,
-      `react-dom@${env.reactVersion}`,
-      `@types/react@${env.reactVersion}`,
-      `@types/react-dom@${env.reactVersion}`
-    );
-  }
+  updatePackages.push(
+    `react@${reactVersion}`,
+    `react-dom@${reactVersion}`,
+    `@types/react@${reactVersion}`,
+    `@types/react-dom@${reactVersion}`
+  );
 
   await runCommand(
     `pnpm update ${updatePackages.join(" ")} ${pnpmCiFlags}`,

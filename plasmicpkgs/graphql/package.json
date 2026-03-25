@@ -31,12 +31,12 @@
     "postpublish": "bash ../../scripts/publish-api-doc-model.sh"
   },
   "devDependencies": {
-    "@plasmicapp/host": "1.0.240",
+    "@plasmicapp/host": "2.0.0-alpha.0",
     "@plasmicpkgs/fetch": "0.0.32",
     "typescript": "^5.7.3"
   },
   "peerDependencies": {
-    "@plasmicapp/host": "^1.0.211",
+    "@plasmicapp/host": ">=1.0.211",
     "@plasmicpkgs/fetch": "^0.0.5"
   }
 }

@@ -6,7 +6,6 @@ import {
   DataProvider,
   PlasmicI18NContextValue,
   PlasmicLinkProvider,
-  PlasmicTranslator,
 } from "@plasmicapp/host";
 import { SSRProvider, useIsSSR as useAriaIsSSR } from "@react-aria/ssr";
 import * as React from "react";
@@ -32,10 +31,6 @@ export interface PlasmicRootProviderProps
   platform?: "nextjs" | "gatsby";
   children?: React.ReactNode;
   i18n?: PlasmicI18NContextValue;
-  /**
-   * @deprecated use i18n.translator instead
-   */
-  translator?: PlasmicTranslator;
   Head?: React.ComponentType<any>;
   Link?: React.ComponentType<any>;
   disableLoadingBoundary?: boolean;
@@ -91,9 +86,7 @@ export function PlasmicRootProvider(props: PlasmicRootProviderProps) {
           wrapper={(children_) => <SSRProvider>{children_}</SSRProvider>}
         >
           <PlasmicDataSourceContextProvider value={dataSourceContextValue}>
-            <PlasmicTranslatorContext.Provider
-              value={props.i18n ?? props.translator}
-            >
+            <PlasmicTranslatorContext.Provider value={props.i18n}>
               <PlasmicHeadContext.Provider value={props.Head}>
                 <SafePlasmicLinkProvider
                   Link={props.Link ?? PlasmicLinkInternal}

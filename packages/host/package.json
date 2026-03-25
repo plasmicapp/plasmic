@@ -1,7 +1,12 @@
 {
   "name": "@plasmicapp/host",
-  "version": "1.0.240",
+  "version": "2.0.0-alpha.0",
   "description": "plasmic library for app hosting",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/plasmicapp/plasmic.git",
+    "directory": "packages/host"
+  },
   "main": "dist/index.cjs.js",
   "types": "dist/index.d.ts",
   "module": "dist/host.esm.js",
@@ -55,15 +60,15 @@
     "@types/node": "^20.3.3",
     "@types/react": "^18",
     "@types/react-dom": "^18",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
     "rollup": "^3.26.1",
     "rollup-plugin-banner2": "^1.2.2",
     "rollup-plugin-dts": "^5.3.0",
     "rollup-plugin-typescript2": "^0.36.0"
   },
   "peerDependencies": {
-    "react": ">=16.8.0",
-    "react-dom": ">=16.8.0"
+    "react": ">=18.0.0",
+    "react-dom": ">=18.0.0"
   }
 }

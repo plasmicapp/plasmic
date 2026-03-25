@@ -5,7 +5,6 @@ import { PlasmicQueryDataProvider } from "@plasmicapp/query";
 import * as React from "react";
 import { InternalPlasmicComponentLoader } from "./loader-client";
 import { ComponentRenderData, PlasmicComponentLoader } from "./loader-shared";
-import { REACT_MAJOR_VERSION } from "./react-utils";
 import { MaybeWrap, useForceUpdate } from "./utils";
 import {
   getGlobalVariantsFromSplits,
@@ -280,18 +279,6 @@ export function PlasmicRootProvider(
     currentContextValue,
   ]);
 
-  React.useEffect(() => {
-    loader.trackRender({
-      renderCtx: {
-        // We track the provider as a single entity
-        rootComponentId: "provider",
-        teamIds: loader.getTeamIds(),
-        projectIds: loader.getProjectIds(),
-      },
-      variation: value.variation,
-    });
-  }, [loader, value]);
-
   const shouldDisableRootLoadingBoundary =
     disableRootLoadingBoundary ??
     loader.getBundle().disableRootLoadingBoundaryByDefault;
@@ -315,9 +302,7 @@ export function PlasmicRootProvider(
           query={pageQuery}
         >
           <MaybeWrap
-            cond={
-              !shouldDisableRootLoadingBoundary && REACT_MAJOR_VERSION >= 18
-            }
+            cond={!shouldDisableRootLoadingBoundary}
             wrapper={(contents) => (
               <React.Suspense fallback={suspenseFallback ?? "Loading..."}>
                 {contents}

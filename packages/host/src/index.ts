@@ -1,6 +1,7 @@
 import * as PlasmicQuery from "@plasmicapp/query";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
+import * as ReactDOMClient from "react-dom/client";
 import * as jsxDevRuntime from "react/jsx-dev-runtime";
 import * as jsxRuntime from "react/jsx-runtime";
 import { registerRenderErrorListener, setPlasmicRootNode } from "./canvas-host";
@@ -15,14 +16,10 @@ export * from "./exports";
 const root = globalThis as any;
 
 if (root.__Sub == null) {
-  // Creating a side effect here by logging, so that vite won't
-  // ignore this block for whatever reason. Hiding this for now
-  // as users are complaining; will have to check if this has
-  // been fixed with vite.
-  // console.log("Plasmic: Setting up app host dependencies");
   root.__Sub = {
     React,
     ReactDOM,
+    ReactDOMClient,
     jsxRuntime,
     jsxDevRuntime,
     PlasmicQuery,
@@ -33,14 +30,9 @@ if (root.__Sub == null) {
       registerRenderErrorListener,
       setRepeatedElementFn,
     },
-
-    // For backwards compatibility:
-    setPlasmicRootNode,
-    registerRenderErrorListener,
-    setRepeatedElementFn,
     ...hostModule,
   };
-} else {
+} else if (root.__Sub.hostVersion !== hostVersion) {
   console.warn(
     `Encountered likely duplicate host version: ${root.__Sub.hostVersion} vs ${hostVersion}`
   );

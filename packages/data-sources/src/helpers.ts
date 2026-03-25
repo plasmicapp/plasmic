@@ -7,16 +7,19 @@ import {
 } from "./types";
 import { mkIdMap, withoutNils } from "./utils";
 
+/** @deprecated See https://docs.plasmic.app/learn/integrations */
 export type QueryResult = Partial<ManyRowsResult<any>> & {
   error?: any;
   isLoading?: boolean;
 };
 
+/** @deprecated See https://docs.plasmic.app/learn/integrations */
 export interface NormalizedData {
   data: Record<string, unknown>[];
   schema?: TableSchema;
 }
 
+/** @deprecated See https://docs.plasmic.app/learn/integrations */
 export function normalizeData(rawData: unknown): NormalizedData | undefined {
   if (!rawData) {
     return undefined;
@@ -33,6 +36,7 @@ export function normalizeData(rawData: unknown): NormalizedData | undefined {
   return { data: dataArray, schema };
 }
 
+/** @deprecated See https://docs.plasmic.app/learn/integrations */
 export function useNormalizedData(
   rawData: unknown
 ): NormalizedData | undefined {
@@ -112,6 +116,7 @@ function tryGetSchema(data: any[]): TableSchema | undefined {
   };
 }
 
+/** @deprecated See https://docs.plasmic.app/learn/integrations */
 export type BaseFieldConfig = {
   key?: string;
   fieldId?: string;
@@ -119,6 +124,7 @@ export type BaseFieldConfig = {
 
 const mkShortId = () => `${Math.random()}`;
 
+/** @deprecated See https://docs.plasmic.app/learn/integrations */
 export function deriveFieldConfigs<T extends BaseFieldConfig>(
   specifiedFieldsPartial: Partial<T>[],
   schema: TableSchema | undefined,

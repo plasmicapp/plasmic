@@ -176,21 +176,14 @@ export interface PageParamsProviderProps {
    * Page query params (e.g. { q: "search term" })
    */
   query?: Record<string, string | string[] | undefined>;
-
-  /**
-   * @deprecated Use `route` instead.
-   */
-  path?: string;
 }
 
 export function PageParamsProvider({
   children,
   route,
-  path: deprecatedRoute,
   params = {},
   query = {},
 }: PageParamsProviderProps) {
-  route = route ?? deprecatedRoute;
   params = fixCatchallParams(params);
   const $ctx = useDataEnv() || {};
   const path = route ? mkPathFromRouteAndParams(route, params) : undefined;

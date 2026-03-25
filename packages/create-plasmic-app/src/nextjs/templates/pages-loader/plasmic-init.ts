@@ -11,7 +11,12 @@ export const PLASMIC = initPlasmicLoader({
       token: "${projectApiToken}",
     },
   ],
-
+  platformOptions: {
+    nextjs: {
+      appDir: false,
+    }
+  },
+  
   // By default Plasmic will use the last published version of your project.
   // For development, you can set preview to true, which will use the unpublished
   // project, allowing you to see your designs without publishing.  Please

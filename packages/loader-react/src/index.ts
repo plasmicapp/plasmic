@@ -32,7 +32,7 @@ export type {
   GlobalVariantSpec,
   PlasmicTranslator,
 } from "./PlasmicRootProvider";
-export { extractPlasmicQueryData, plasmicPrepass } from "./prepass-client";
+export { extractPlasmicQueryData } from "./prepass-client";
 export {
   extractPlasmicQueryDataFromElement,
   hydrateFromElement,

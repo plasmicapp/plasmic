@@ -110,9 +110,6 @@ export default [
       "prepass/index": "./src/prepass/index.ts",
       "auth/index": "./src/auth/index.ts",
       "splits/index": "./src/splits/index.ts",
-      "nextjs-app-router/index": "./src/nextjs-app-router/index.ts",
-      "nextjs-app-router/react-server/index":
-        "./src/nextjs-app-router/react-server/index.tsx",
     },
     external,
     output: [
@@ -148,8 +145,6 @@ export default [
             "src/prepass",
             "src/auth",
             "src/splits",
-            "src/nextjs-app-router",
-            "src/nextjs-app-router/react-server",
           ],
           emitDeclarationOnly: true,
         },

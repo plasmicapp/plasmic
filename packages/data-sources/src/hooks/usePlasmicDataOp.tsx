@@ -15,6 +15,7 @@ import {
 } from "../types";
 import { pick } from "../utils";
 
+/** @deprecated See https://docs.plasmic.app/learn/integrations */
 export function makeCacheKey(
   dataOp: DataOp,
   opts?: { paginate?: Pagination; userAuthToken?: string | null }
@@ -31,9 +32,7 @@ export function makeCacheKey(
     : queryDependencies;
 }
 
-/**
- * Returns a function that can be used to invalidate Plasmic query groups.
- */
+/** @deprecated See https://docs.plasmic.app/learn/integrations */
 export function usePlasmicInvalidate() {
   // NOTE: we use `revalidateIfStale: false` with SWR.
   // One quirk of this is that if you supply fallback data to swr,
@@ -122,6 +121,7 @@ function resolveDataOp(dataOp: ResolvableDataOp) {
   }
 }
 
+/** @deprecated See https://docs.plasmic.app/learn/integrations */
 export function usePlasmicDataOp<
   T extends SingleRowResult | ManyRowsResult,
   E = any
@@ -168,6 +168,7 @@ export function usePlasmicDataOp<
   );
 }
 
+/** @deprecated See https://docs.plasmic.app/learn/integrations */
 export function usePlasmicDataMutationOp<
   T extends SingleRowResult | ManyRowsResult
 >(dataOp: ResolvableDataOp) {

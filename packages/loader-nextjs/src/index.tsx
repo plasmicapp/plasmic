@@ -8,6 +8,19 @@ import {
   extractPlasmicQueryData as internalExtractPlasmicQueryData,
 } from "@plasmicapp/loader-react";
 import { IncomingMessage, ServerResponse } from "http";
+import NextHead from "next/head.js";
+import NextLink from "next/link.js";
+import * as NextNavigation from "next/navigation.js";
+import * as NextRouter from "next/router.js";
+import Script from "next/script";
+import * as React from "react";
+import { initPlasmicLoaderWithCache } from "./cache";
+import { wrapRouterContext } from "./mocks";
+import type { ComponentRenderData, InitOptions } from "./shared-exports";
+
+export * from "./shared-exports";
+
+// client-only exports
 export {
   DataCtxReader,
   DataProvider,
@@ -18,7 +31,6 @@ export {
   PlasmicCanvasHost,
   PlasmicComponent,
   PlasmicTranslatorContext,
-  plasmicPrepass,
   repeatedElement,
   useDataEnv,
   usePlasmicCanvasComponentInfo,
@@ -36,25 +48,6 @@ export type {
   PropType,
   TokenRegistration,
 } from "@plasmicapp/loader-react";
-export { ExtractPlasmicQueryData as __EXPERMIENTAL__ExtractPlasmicQueryData } from "@plasmicapp/nextjs-app-router";
-export * from "./shared-exports";
-// NextHead and NextLink must be default imported (`import Pkg`) instead of a namespace import (`import * as Pkg`).
-// Otherwise, there's a Next.js 12 bug when referencing these dependencies due to default import interop.
-// The transpiled CommonJS code would create a `default` field on the package,
-// causing React to think it's an invalid React object:
-// ```
-// const NextHead = __defaultInterop(require('next/head.js'))
-// assert(typeof NextHead === 'object')
-// assert(typeof NextHead.default === 'function')
-// ```
-import NextHead from "next/head.js";
-import NextLink from "next/link.js";
-import * as NextRouter from "next/router.js";
-import Script from "next/script";
-import * as React from "react";
-import { initPlasmicLoaderWithCache } from "./cache";
-import { wrapRouterContext } from "./mocks";
-import type { ComponentRenderData, NextInitOptions } from "./shared-exports";
 
 type ServerRequest = IncomingMessage & {
   cookies: Partial<{
@@ -62,10 +55,8 @@ type ServerRequest = IncomingMessage & {
   }>;
 };
 
-const reactMajorVersion = +React.version.split(".")[0];
-
 function filterCodeFromRenderData(data: ComponentRenderData) {
-  if (reactMajorVersion >= 18 && !!data.bundle.bundleKey) {
+  if (data.bundle.bundleKey) {
     // Keep the entrypoints
     const entrypoints = new Set([
       ...data.entryCompMetas.map((compMeta) => compMeta.entry),
@@ -209,24 +200,22 @@ function parseFetchComponentDataArgs(...args: any[]) {
   return { specs, opts };
 }
 
-export function initPlasmicLoader(opts: NextInitOptions) {
+export function initPlasmicLoader(
+  opts: InitOptions
+): NextJsPlasmicComponentLoader {
   const loader = initPlasmicLoaderWithCache<NextJsPlasmicComponentLoader>(
-    (opts) =>
+    (opts_) =>
       new NextJsPlasmicComponentLoader(
-        new InternalPlasmicComponentLoader(opts)
+        new InternalPlasmicComponentLoader(opts_)
       ),
     opts
   );
   loader.registerModules({
     "next/head": NextHead,
     "next/link": NextLink,
+    "next/navigation": NextNavigation,
     "next/router": NextRouter,
   });
-  if (opts.nextNavigation) {
-    loader.registerModules({
-      "next/navigation": opts.nextNavigation,
-    });
-  }
   return loader;
 }
 
@@ -277,34 +266,17 @@ const PlasmicNextLink = React.forwardRef(function PlasmicNextLink(
   // Basically renders NextLink, except when href is undefined,
   // which freaks out NextLink :-/
   if (props.href) {
-    const {
-      href,
-      replace,
-      scroll,
-      shallow,
-      passHref,
-      prefetch,
-      locale,
-      ...rest
-    } = props;
+    const { href, scroll, ...rest } = props;
     // If this is a fragment identifier link, then we set
     // scroll={false} so that smooth scrolling works
     const isFragment = typeof href === "string" && href.startsWith("#");
-    // We use legacyBehavior, because we don't know which
-    // version of next the user has installed
     return (
       <NextLink
         href={href}
-        replace={replace}
         scroll={scroll != null ? scroll : isFragment ? false : undefined}
-        shallow={shallow}
-        passHref={passHref}
-        prefetch={prefetch}
-        locale={locale}
-        {...({ legacyBehavior: true } as any)}
-      >
-        <a {...rest} ref={ref} />
-      </NextLink>
+        ref={ref}
+        {...rest}
+      />
     );
   } else {
     return <a {...props} href={undefined} ref={ref} />;

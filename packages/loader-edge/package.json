@@ -42,7 +42,7 @@
     "@plasmicapp/loader-splits": "1.0.69"
   },
   "devDependencies": {
-    "@plasmicapp/loader-fetcher": "1.0.60"
+    "@plasmicapp/loader-fetcher": "2.0.0-alpha.0"
   },
   "publishConfig": {
     "access": "public"

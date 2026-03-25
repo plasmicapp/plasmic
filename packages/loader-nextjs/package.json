@@ -1,6 +1,13 @@
 {
-  "version": "1.0.458",
+  "version": "2.0.0-alpha.0",
+  "name": "@plasmicapp/loader-nextjs",
+  "description": "Plasmic loader SDK for Next.js",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/plasmicapp/plasmic.git",
+    "directory": "packages/loader-nextjs"
+  },
   "types": "./dist/index.d.ts",
   "main": "./dist/index.js",
   "module": "./dist/index.esm.js",
@@ -40,7 +47,7 @@
     "edge.d.ts"
   ],
   "engines": {
-    "node": ">=10"
+    "node": ">=18.17"
   },
   "scripts": {
     "build": "yarn build:types && yarn build:index && yarn build:edge && yarn build:react-server",
@@ -57,13 +64,6 @@
     "size": "size-limit",
     "analyze": "size-limit --why"
   },
-  "peerDependencies": {
-    "next": ">=10.1.0",
-    "react": ">=16.8.0",
-    "react-dom": ">=16.8.0"
-  },
-  "name": "@plasmicapp/loader-nextjs",
-  "author": "Chung Wu",
   "size-limit": [
     {
       "path": "dist/index.js",
@@ -74,18 +74,25 @@
       "limit": "15 KB"
     }
   ],
-  "devDependencies": {
-    "@types/react": "^18",
-    "@types/react-dom": "^18",
-    "next": "^13.5.11"
-  },
   "dependencies": {
-    "@plasmicapp/loader-core": "1.0.143",
+    "@plasmicapp/loader-core": "2.0.0-alpha.0",
     "@plasmicapp/loader-edge": "1.0.75",
-    "@plasmicapp/loader-react": "1.0.417",
+    "@plasmicapp/loader-react": "2.0.0-alpha.0",
     "@plasmicapp/nextjs-app-router": "1.0.22",
     "@plasmicapp/watcher": "1.0.84",
     "server-only": "0.0.1"
+  },
+  "devDependencies": {
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "next": "^14",
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
+  },
+  "peerDependencies": {
+    "next": ">=14.0.0",
+    "react": ">=18.2.0",
+    "react-dom": ">=18.2.0"
   },
   "gitHead": "fa53f7d79f0e26d8b061102fda0c06788da6f8a7"
 }

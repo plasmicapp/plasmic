@@ -6,7 +6,6 @@
 
 /// <reference types="node" />
 
-import { ExtractPlasmicQueryData as __EXPERMIENTAL__ExtractPlasmicQueryData } from '@plasmicapp/nextjs-app-router';
 import { CodeComponentMeta } from '@plasmicapp/loader-react';
 import { ComponentLookupSpec } from '@plasmicapp/loader-react';
 import { ComponentMeta } from '@plasmicapp/loader-react/react-server-conditional';
@@ -28,7 +27,6 @@ import { PlasmicCanvasContext } from '@plasmicapp/loader-react';
 import { PlasmicCanvasHost } from '@plasmicapp/loader-react';
 import { PlasmicComponent } from '@plasmicapp/loader-react';
 import { PlasmicComponentLoader } from '@plasmicapp/loader-react';
-import { plasmicPrepass } from '@plasmicapp/loader-react';
 import { PlasmicRootProvider as PlasmicRootProvider_2 } from '@plasmicapp/loader-react';
 import { PlasmicTranslator } from '@plasmicapp/loader-react';
 import { PlasmicTranslatorContext } from '@plasmicapp/loader-react';
@@ -44,8 +42,6 @@ import { usePlasmicComponent } from '@plasmicapp/loader-react';
 import { usePlasmicQueryData } from '@plasmicapp/loader-react';
 import { useSelector } from '@plasmicapp/loader-react';
 import { useSelectors } from '@plasmicapp/loader-react';
-
-export { __EXPERMIENTAL__ExtractPlasmicQueryData }
 
 export { CodeComponentMeta }
 
@@ -76,19 +72,7 @@ export { GlobalContextMeta }
 export { InitOptions }
 
 // @public (undocumented)
-export function initPlasmicLoader(opts: NextInitOptions): NextJsPlasmicComponentLoader;
-
-// @public (undocumented)
-export interface NextInitOptions extends InitOptions {
-    nextNavigation?: {
-        notFound: unknown;
-        redirect: unknown;
-        useParams: unknown;
-        usePathname: unknown;
-        useRouter: unknown;
-        useSearchParams: unknown;
-    };
-}
+export function initPlasmicLoader(opts: InitOptions): NextJsPlasmicComponentLoader;
 
 // @public (undocumented)
 export class NextJsPlasmicComponentLoader extends PlasmicComponentLoader {
@@ -121,8 +105,6 @@ export { PlasmicCanvasContext }
 export { PlasmicCanvasHost }
 
 export { PlasmicComponent }
-
-export { plasmicPrepass }
 
 // @public (undocumented)
 export function PlasmicRootProvider(props: Omit<React_2.ComponentProps<typeof PlasmicRootProvider_2>, "Head"> & {

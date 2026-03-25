@@ -1,5 +1,6 @@
 {
-  "version": "0.1.209",
+  "version": "1.0.0-alpha.0",
+  "name": "@plasmicapp/data-sources",
   "license": "MIT",
   "types": "./dist/index.d.ts",
   "main": "./dist/index.js",
@@ -28,11 +29,6 @@
     "size": "size-limit",
     "analyze": "size-limit --why"
   },
-  "peerDependencies": {
-    "react": ">=16.8.0"
-  },
-  "name": "@plasmicapp/data-sources",
-  "author": "Chung Wu",
   "size-limit": [
     {
       "path": "dist/index.js",
@@ -41,17 +37,18 @@
   ],
   "devDependencies": {
     "@types/react": "^18",
-    "@types/react-dom": "^18",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
+    "react": "^18.3.1",
     "vitest": "3.2.4"
   },
   "dependencies": {
     "@plasmicapp/data-sources-context": "0.1.23",
-    "@plasmicapp/host": "1.0.240",
+    "@plasmicapp/host": "2.0.0-alpha.0",
     "@plasmicapp/isomorphic-unfetch": "1.0.3",
     "@plasmicapp/query": "0.1.84",
     "fast-stringify": "^2.0.0"
+  },
+  "peerDependencies": {
+    "react": ">=18.0.0"
   },
   "publishConfig": {
     "access": "public"

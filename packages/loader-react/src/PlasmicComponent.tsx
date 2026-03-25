@@ -38,7 +38,6 @@ export function PlasmicComponent(props: {
   const {
     loader,
     globalContextsProps,
-    variation,
     userAuthToken,
     isUserLoading,
     authRedirectUri,
@@ -50,27 +49,6 @@ export function PlasmicComponent(props: {
     { name: component, projectId, isCode: false },
     { forceOriginal }
   );
-
-  React.useEffect(() => {
-    if (isRootLoader) {
-      const meta = loader
-        .getLookup()
-        .getComponentMeta({ name: component, projectId });
-
-      if (meta) {
-        loader.trackRender({
-          renderCtx: {
-            rootProjectId: meta.projectId,
-            rootComponentId: meta.id,
-            rootComponentName: component,
-            teamIds: loader.getTeamIds(),
-            projectIds: loader.getProjectIds(),
-          },
-          variation,
-        });
-      }
-    }
-  }, [component, projectId, loader, variation]);
 
   const element = React.useMemo(() => {
     if (!Component) {

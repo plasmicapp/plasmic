@@ -6,7 +6,6 @@ export {
 } from "./canvas-host";
 export * from "./data";
 export { PlasmicElement } from "./element-types";
-export { registerFetcher as unstable_registerFetcher } from "./fetcher";
 export * from "./global-actions";
 export * from "./link";
 export {
@@ -28,7 +27,6 @@ export {
   CodeComponentMeta,
   CodeComponentMode,
   ComponentHelpers,
-  ComponentMeta,
   ComponentRegistration,
   ComponentTemplates,
   StateHelpers,

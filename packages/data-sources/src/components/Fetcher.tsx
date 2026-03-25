@@ -3,18 +3,21 @@ import React from "react";
 import { usePlasmicDataOp } from "../hooks/usePlasmicDataOp";
 import { DataOp } from "../types";
 
+/** @deprecated See https://docs.plasmic.app/learn/integrations */
 export interface DataOpConfig {
   name?: string;
   pageIndex?: number;
   pageSize?: number;
 }
 
+/** @deprecated See https://docs.plasmic.app/learn/integrations */
 export interface FetcherProps extends DataOpConfig {
   dataOp?: DataOp;
   children?: ($queries: Record<string, any>) => React.ReactElement | null;
   queries?: Record<string, any>;
 }
 
+/** @deprecated See https://docs.plasmic.app/learn/integrations */
 export function Fetcher(props: FetcherProps): React.ReactElement | null {
   const { dataOp, children, name, pageIndex, pageSize } = props;
   const data = usePlasmicDataOp(dataOp, {
@@ -32,6 +35,7 @@ export function Fetcher(props: FetcherProps): React.ReactElement | null {
   return children?.($queries) ?? null;
 }
 
+/** @deprecated See https://docs.plasmic.app/learn/integrations */
 export const FetcherMeta: CodeComponentMeta<FetcherProps> = {
   name: "plasmic-data-source-fetcher",
   displayName: "Data Fetcher",

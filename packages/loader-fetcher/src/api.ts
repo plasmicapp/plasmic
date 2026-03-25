@@ -123,10 +123,6 @@ export interface LoaderBundleOutput extends ApiLoaderBundleOutput {
   filteredIds: Record<string, string[]>;
 }
 
-export interface LoaderHtmlOutput {
-  html: string;
-}
-
 export interface CodeModule {
   fileName: string;
   code: string;
@@ -313,16 +309,6 @@ export class Api {
         `Error parsing JSON response: ${err}; status: ${resp.status}; response: ${text}`
       );
     }
-  }
-
-  /** @deprecated */
-  async fetchHtmlData(_opts: {
-    projectId: string;
-    component: string;
-    hydrate?: boolean;
-    embedHydrate?: boolean;
-  }): Promise<LoaderHtmlOutput> {
-    throw new Error("deprecated");
   }
 
   private makeGetHeaders() {

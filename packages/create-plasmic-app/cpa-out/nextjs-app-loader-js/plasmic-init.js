@@ -1,5 +1,4 @@
 import { initPlasmicLoader } from "@plasmicapp/loader-nextjs/react-server-conditional";
-import * as NextNavigation from "next/navigation";
 
 export const PLASMIC = initPlasmicLoader({
   projects: [
@@ -8,13 +7,15 @@ export const PLASMIC = initPlasmicLoader({
       token: "7BRFratDxPLMGZHnd2grV5QP6mlHcZ1AK3BJSIeh7xzUlHgWh25XpgXvUaKAqHXFMXQQuzpADqboibF6nqNWQ",
     },
   ],
+  platformOptions: {
+    nextjs: {
+      appDir: true,
+    },
+  },
 
   // By default Plasmic will use the last published version of your project.
   // For development, you can set preview to true, which will use the unpublished
   // project, allowing you to see your designs without publishing.  Please
   // only use this for development, as this is significantly slower.
   preview: false,
-
-  // Needed for Next.js app router support.
-  nextNavigation: NextNavigation,
 });

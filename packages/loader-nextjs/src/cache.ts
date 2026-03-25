@@ -4,7 +4,6 @@ import type * as Watcher from "@plasmicapp/watcher";
 import { PHASE_PRODUCTION_BUILD } from "next/constants";
 import path from "path";
 import { serverRequire, serverRequireFs } from "./server-require";
-import type { NextInitOptions } from "./shared-exports";
 
 class FileCache {
   constructor(private filePath: string) {}
@@ -42,7 +41,9 @@ class FileCache {
 function hashString(str: string) {
   let h = 0,
     i = 0;
-  for (; i < str.length; h &= h) h = 31 * h + str.charCodeAt(i++);
+  for (; i < str.length; h &= h) {
+    h = 31 * h + str.charCodeAt(i++);
+  }
   return Math.abs(h);
 }
 
@@ -63,10 +64,7 @@ export function initPlasmicLoaderWithCache<
   T extends {
     clearCache(): void;
   }
->(
-  initFn: (opts: InitOptions) => T,
-  { nextNavigation, ...opts }: NextInitOptions
-): T {
+>(initFn: (opts_: InitOptions) => T, opts: InitOptions): T {
   const isBrowser = typeof window !== "undefined";
   const isProd = process.env.NODE_ENV === "production";
   const isBuildPhase = process.env.NEXT_PHASE === PHASE_PRODUCTION_BUILD;
@@ -78,13 +76,10 @@ export function initPlasmicLoaderWithCache<
     platform: "nextjs",
     platformOptions: {
       nextjs: {
-        appDir: !!nextNavigation,
+        appDir: opts.platformOptions?.nextjs?.appDir ?? false,
       },
     },
-    // For Nextjs 12, revalidate may in fact re-use an existing instance
-    // of PlasmicComponentLoader that's already in memory, so we need to
-    // make sure we don't re-use the data cached in memory.
-    // We also enforce this for dev mode, so that we don't have to restart
+    // We enforce this for dev mode, so that we don't have to restart
     // the dev server, in case getStaticProps() re-uses the same PlasmicComponentLoader
     // We also enforce that during build phase, we re-use the data cached in memory
     // to avoid re-fetching the data from Plasmic servers.

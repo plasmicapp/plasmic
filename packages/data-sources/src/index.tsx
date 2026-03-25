@@ -22,7 +22,6 @@ export {
   useNormalizedData,
 } from "./helpers";
 export type { BaseFieldConfig, NormalizedData, QueryResult } from "./helpers";
-export { useDependencyAwareQuery } from "./hooks/useDependencyAwareQuery";
 export {
   makeCacheKey,
   usePlasmicDataMutationOp,

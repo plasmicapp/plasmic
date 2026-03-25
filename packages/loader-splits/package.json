@@ -39,7 +39,7 @@
     }
   ],
   "devDependencies": {
-    "@plasmicapp/loader-fetcher": "1.0.60",
+    "@plasmicapp/loader-fetcher": "2.0.0-alpha.0",
     "@types/json-logic-js": "^1.2.1"
   },
   "dependencies": {

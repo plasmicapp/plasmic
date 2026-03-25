@@ -44,7 +44,7 @@
     }
   ],
   "devDependencies": {
-    "@plasmicapp/host": "1.0.240",
+    "@plasmicapp/host": "2.0.0-alpha.0",
     "@plasmicapp/query": "0.1.84",
     "@plasmicpkgs/wordpress": "0.0.18",
     "@types/react": "^18",

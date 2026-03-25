@@ -21,7 +21,7 @@
     "@plasmicpkgs/commerce": "0.0.240"
   },
   "devDependencies": {
-    "@plasmicapp/host": "1.0.240",
+    "@plasmicapp/host": "2.0.0-alpha.0",
     "@types/js-cookie": "^3.0.1",
     "@types/node": "^14.0.26",
     "@types/react": "^18",
