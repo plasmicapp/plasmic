@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/plasmic-content-stack",
-  "version": "0.0.196",
+  "version": "0.0.197",
   "description": "Plasmic ContentStack components.",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -32,7 +32,7 @@
     }
   ],
   "devDependencies": {
-    "@plasmicapp/host": "2.0.0-alpha.0",
+    "@plasmicapp/host": "2.0.0",
     "@plasmicapp/query": "0.1.84",
     "@types/dlv": "^1.1.2",
     "@types/react": "^18",

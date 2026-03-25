@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/tiptap",
-  "version": "0.0.24",
+  "version": "0.0.25",
   "description": "Tiptap for React",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -55,8 +55,8 @@
     "test-storybook": "test-storybook"
   },
   "devDependencies": {
-    "@plasmicapp/data-sources": "1.0.0-alpha.0",
-    "@plasmicapp/host": "2.0.0-alpha.0",
+    "@plasmicapp/data-sources": "1.0.0",
+    "@plasmicapp/host": "2.0.0",
     "@rollup/plugin-commonjs": "^11.0.0",
     "@rollup/plugin-json": "^4.0.0",
     "@rollup/plugin-node-resolve": "^9.0.0",

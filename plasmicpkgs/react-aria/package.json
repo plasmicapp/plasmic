@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/react-aria",
-  "version": "0.0.174",
+  "version": "0.0.175",
   "description": "Plasmic registration calls for react-aria based components",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -53,7 +53,7 @@
     "react-stately": "^3.38.0"
   },
   "devDependencies": {
-    "@plasmicapp/host": "2.0.0-alpha.0",
+    "@plasmicapp/host": "2.0.0",
     "@rollup/plugin-commonjs": "^11.0.0",
     "@rollup/plugin-json": "^4.0.0",
     "@rollup/plugin-node-resolve": "^9.0.0",
