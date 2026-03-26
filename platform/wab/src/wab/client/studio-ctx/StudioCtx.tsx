@@ -3232,17 +3232,17 @@ export class StudioCtx extends WithDbCtx {
   //
   // Copilot
   //
-  uiCopilotEnabled() {
+  uiCopilotEnabled(): boolean {
     const team = this.appCtx.teams.find((t) => t.id === this.siteInfo.teamId);
     return (
       // enableUiCopilot flag is false by default and overriden for plasmic users only,
       // we will enable it when we decide to release this feature to all user
-      this.appCtx.appConfig.enableUiCopilot || checkIsOrgOnPaidTierOrTrial(team)
+      this.appCtx.appConfig.enableUiCopilot ||
+      (!!team && checkIsOrgOnPaidTierOrTrial(team))
     );
   }
 
   chatCopilotEnabled() {
-    const team = this.appCtx.teams.find((t) => t.id === this.siteInfo.teamId);
     return (
       // enableUiCopilot flag is false by default and overriden for plasmic users only,
       // we will enable it when we decide to release this feature to all user
@@ -7688,8 +7688,8 @@ export function checkIsOrgOnFreeTierOrTrial(team?: ApiTeam) {
   );
 }
 
-export function checkIsOrgOnPaidTierOrTrial(team?: ApiTeam) {
-  return (team?.featureTierId && team?.stripeCustomerId) || team?.onTrial;
+export function checkIsOrgOnPaidTierOrTrial(team: ApiTeam): boolean {
+  return !!(team.featureTierId && team.stripeCustomerId) || team.onTrial;
 }
 
 export function cssPropsForInvertTransform(

@@ -438,7 +438,10 @@ export async function loadAppCtx(
 
   async function getAppCtx(): Promise<AppCtxResponse> {
     if (isHostFrame()) {
-      return { workspaces: [], teams: [], perms: [] };
+      // We fetch the current team from the top frame so that
+      // feature checks like uiCopilotEnabled() can access team from appCtx.
+      const team = await nonAuthCtx.topFrameApi?.getCurrentTeam();
+      return { workspaces: [], teams: team ? [team] : [], perms: [] };
     }
 
     return baseApi.getAppCtx();
