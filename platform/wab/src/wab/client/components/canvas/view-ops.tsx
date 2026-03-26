@@ -161,6 +161,7 @@ import {
   slotCssProps,
   typographyCssProps,
 } from "@/wab/shared/core/style-props";
+import { isValidStylePropForTpl } from "@/wab/shared/core/style-props-tpl";
 import { px } from "@/wab/shared/core/styles";
 import * as Tpls from "@/wab/shared/core/tpls";
 import {
@@ -2352,7 +2353,16 @@ export class ViewOps {
       : clip.cssProps;
 
     for (const [prop, val] of Object.entries(propsToCopy)) {
-      exp.set(prop, val);
+      if (
+        isValidStylePropForTpl(
+          prop,
+          targetTpl,
+          vs,
+          this.viewCtx().studioCtx.codeComponentsRegistry
+        )
+      ) {
+        exp.set(prop, val);
+      }
     }
 
     // Resolve UUIDs to Mixin instances

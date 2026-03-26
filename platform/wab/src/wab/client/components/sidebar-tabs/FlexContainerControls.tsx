@@ -1,17 +1,17 @@
 import { useContextMenu } from "@/wab/client/components/ContextMenu";
 import S from "@/wab/client/components/sidebar-tabs/FlexContainerControls.module.scss";
+import { MaybeCollapsibleRowsRenderer } from "@/wab/client/components/sidebar/SidebarSection";
 import {
   FullRow,
   LabeledStyleDimItem,
   LabeledStyleSwitchItem,
   SectionSeparator,
 } from "@/wab/client/components/sidebar/sidebar-helpers";
-import { MaybeCollapsibleRowsRenderer } from "@/wab/client/components/sidebar/SidebarSection";
 import { DefinedIndicator } from "@/wab/client/components/style-controls/DefinedIndicator";
 import {
-  createStyleContextMenu,
   ExpsProvider,
   TplExpsProvider,
+  createStyleContextMenu,
   useStyleComponent,
 } from "@/wab/client/components/style-controls/StyleComponent";
 import { DropdownTooltip } from "@/wab/client/components/widgets/DropdownTooltip";
@@ -23,14 +23,13 @@ import ChevronUpsvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/Plasm
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { makeVariantedStylesHelperFromCurrentCtx } from "@/wab/client/utils/style-utils";
 import { MaybeWrap } from "@/wab/commons/components/ReactUtil";
+import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import { reverseIf } from "@/wab/shared/common";
-import { isCodeComponent } from "@/wab/shared/core/components";
-import { isTplComponent } from "@/wab/shared/core/tpls";
+import { isGapPropValidForTpl } from "@/wab/shared/core/style-props-tpl";
 import { camelProp } from "@/wab/shared/css";
 import { LENGTH_PERCENTAGE_UNITS } from "@/wab/shared/css/types";
 import { DefinedIndicatorType } from "@/wab/shared/defined-indicator";
 import { flexDirToArrangement } from "@/wab/shared/layoututils";
-import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import { Menu } from "antd";
 import cn from "classnames";
 import { mapKeys, range } from "lodash";
@@ -265,10 +264,21 @@ function FlexContainerControls_(props: FlexContainerControlsProps) {
     vsh = makeVariantedStylesHelperFromCurrentCtx(studioCtx),
   } = props;
 
-  const forCodeComponent =
-    expsProvider instanceof TplExpsProvider &&
-    isTplComponent(expsProvider.tpl) &&
-    isCodeComponent(expsProvider.tpl.component);
+  let showColumnGapControls: boolean;
+  let showRowGapControls: boolean;
+  if (expsProvider instanceof TplExpsProvider) {
+    // If editing tpl, check if allowed.
+    const tpl = expsProvider.tpl;
+    const vs = expsProvider.viewCtx
+      .variantTplMgr()
+      .ensureCurrentVariantSetting(tpl);
+    showColumnGapControls = isGapPropValidForTpl("column-gap", tpl, vs);
+    showRowGapControls = isGapPropValidForTpl("row-gap", tpl, vs);
+  } else {
+    // If editing theme/mixin, always show.
+    showColumnGapControls = true;
+    showRowGapControls = true;
+  }
 
   const { isReverse, isWrap, isWrapReverse, arrangement, alignment } =
     useFlexConfig(expsProvider);
@@ -364,7 +374,7 @@ function FlexContainerControls_(props: FlexContainerControlsProps) {
       <SectionSeparator className="mv-m" />
       {/* Gap fields */}
       {reverseIf(isColumn(arrangement), [
-        (isRow(arrangement) || isWrap) && (
+        showColumnGapControls && (
           <FullRow key="col">
             <LabeledStyleDimItem
               label={"Cols gap"}
@@ -372,7 +382,7 @@ function FlexContainerControls_(props: FlexContainerControlsProps) {
             />
           </FullRow>
         ),
-        (isColumn(arrangement) || isWrap) && (
+        showRowGapControls && (
           <FullRow key="row">
             <LabeledStyleDimItem
               label={"Rows gap"}

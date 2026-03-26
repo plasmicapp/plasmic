@@ -1,15 +1,6 @@
-import { ensureInstance, switchType } from "@/wab/shared/common";
-import { SlotInfo } from "@/wab/shared/eval/val-state";
-import {
-  ensureKnownRenderExpr,
-  Param,
-  TplComponent,
-  TplNode,
-  TplSlot,
-  TplTag,
-} from "@/wab/shared/model/classes";
 import { isSlot } from "@/wab/shared/SlotUtils";
-import { mkBaseVariant } from "@/wab/shared/Variants";
+import { mkBaseVariant, mkVariantSetting } from "@/wab/shared/Variants";
+import { ensureInstance, switchType } from "@/wab/shared/common";
 import { mkTplInlinedText } from "@/wab/shared/core/tpls";
 import {
   ValComponent,
@@ -18,8 +9,21 @@ import {
   ValTag,
   writeableValNode,
 } from "@/wab/shared/core/val-nodes";
+import { SlotInfo } from "@/wab/shared/eval/val-state";
+import {
+  Param,
+  TplComponent,
+  TplNode,
+  TplSlot,
+  TplTag,
+  ensureKnownRenderExpr,
+} from "@/wab/shared/model/classes";
 
 export const TEST_GLOBAL_VARIANT = mkBaseVariant();
+
+export function mkTestVariantSetting(styles: Record<string, string> = {}) {
+  return mkVariantSetting({ variants: [TEST_GLOBAL_VARIANT], styles });
+}
 
 export function mkTplTestText(text: string) {
   return mkTplInlinedText(text, [TEST_GLOBAL_VARIANT]);

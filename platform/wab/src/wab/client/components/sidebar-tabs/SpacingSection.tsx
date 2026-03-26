@@ -5,30 +5,15 @@ import {
   StylePanelSection,
   TplExpsProvider,
 } from "@/wab/client/components/style-controls/StyleComponent";
-import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { PublicStyleSection } from "@/wab/shared/ApiSchema";
-import { isCodeComponent } from "@/wab/shared/core/components";
-import {
-  isComponentRoot,
-  isTplColumn,
-  isTplComponent,
-  isTplSlot,
-  isTplTag,
-} from "@/wab/shared/core/tpls";
-import { TplComponent, TplTag } from "@/wab/shared/model/classes";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
+import {
+  isMarginValidForTpl,
+  isPaddingValidForTpl,
+} from "@/wab/shared/core/style-props-tpl";
+import { isTplComponent, isTplSlot, isTplTag } from "@/wab/shared/core/tpls";
 import * as React from "react";
 
-export const spacingStyleProps = [
-  "padding-left",
-  "padding-right",
-  "padding-top",
-  "padding-bottom",
-  "margin-left",
-  "margin-right",
-  "margin-top",
-  "margin-bottom",
-];
+import { spacingSectionProps } from "@/wab/shared/core/style-props";
 
 export function SpacingSection({
   expsProvider,
@@ -37,22 +22,32 @@ export function SpacingSection({
   expsProvider: ExpsProvider;
   vsh?: VariantedStylesHelper;
 }) {
-  const tpl =
-    expsProvider instanceof TplExpsProvider ? expsProvider.tpl : undefined;
-  const viewCtx =
-    expsProvider instanceof TplExpsProvider ? expsProvider.viewCtx : undefined;
+  let showPaddingControls: boolean;
+  let showMarginControls: boolean;
+  if (expsProvider instanceof TplExpsProvider) {
+    // If editing tpl, check if allowed.
+    const tpl = expsProvider.tpl;
+    const viewCtx = expsProvider.viewCtx;
 
-  if (tpl && (isTplSlot(tpl) || (!isTplTag(tpl) && !isTplComponent(tpl)))) {
-    return null;
+    if (isTplSlot(tpl) || (!isTplTag(tpl) && !isTplComponent(tpl))) {
+      return null;
+    }
+
+    showPaddingControls = isPaddingValidForTpl(
+      tpl,
+      viewCtx.studioCtx.codeComponentsRegistry
+    );
+    showMarginControls = isMarginValidForTpl(tpl);
+  } else {
+    // If editing theme/mixin, always show.
+    showPaddingControls = true;
+    showMarginControls = true;
   }
-
-  const showPaddingControls = shouldShowPadding(viewCtx, tpl);
-  const showMarginControls = shouldShowMargin(tpl);
 
   return (
     <StylePanelSection
       title="Spacing"
-      styleProps={spacingStyleProps}
+      styleProps={spacingSectionProps}
       expsProvider={expsProvider}
       key={`${showPaddingControls} ${showMarginControls}`}
     >
@@ -83,37 +78,4 @@ export function SpacingSection({
       )}
     </StylePanelSection>
   );
-}
-
-function shouldShowPadding(
-  viewCtx: ViewCtx | undefined,
-  tpl: TplTag | TplComponent | undefined
-) {
-  if (!tpl || !viewCtx) {
-    return true;
-  }
-  if (isTplComponent(tpl)) {
-    if (isCodeComponent(tpl.component)) {
-      const enabledSections = viewCtx.getCodeComponentMeta(tpl.component)
-        ?.styleSections as PublicStyleSection[] | undefined | boolean;
-      // By default, padding is enabled for code components, unless the
-      // registration excludes it explicitly from styleSections
-      if (
-        Array.isArray(enabledSections) &&
-        !enabledSections.includes(PublicStyleSection.Spacing)
-      ) {
-        return false;
-      }
-      return true;
-    } else {
-      return false;
-    }
-  } else {
-    return !["img", "svg"].includes(tpl.tag);
-  }
-}
-
-function shouldShowMargin(tpl: TplTag | TplComponent | undefined) {
-  // Margin is for positioning, so it's always shown if styling is allowed
-  return !tpl || (!isComponentRoot(tpl) && !isTplColumn(tpl));
 }

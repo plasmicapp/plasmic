@@ -3,14 +3,8 @@ import ListItem from "@/wab/client/components/ListItem";
 import { MenuBuilder } from "@/wab/client/components/menu-builder";
 import { EffectsPanelSection } from "@/wab/client/components/sidebar-tabs/EffectsSection";
 import { ShadowsPanelSection } from "@/wab/client/components/sidebar-tabs/ShadowsSection";
-import {
-  SizeSection,
-  sizeStyleProps,
-} from "@/wab/client/components/sidebar-tabs/SizeSection";
-import {
-  SpacingSection,
-  spacingStyleProps,
-} from "@/wab/client/components/sidebar-tabs/SpacingSection";
+import { SizeSection } from "@/wab/client/components/sidebar-tabs/SizeSection";
+import { SpacingSection } from "@/wab/client/components/sidebar-tabs/SpacingSection";
 import { TransformPanelSection } from "@/wab/client/components/sidebar-tabs/TransformPanelSection";
 import { TypographySection } from "@/wab/client/components/sidebar-tabs/TypographySection";
 import { BackgroundSection } from "@/wab/client/components/sidebar-tabs/background-section";
@@ -56,6 +50,10 @@ import { isStylePropSet } from "@/wab/client/utils/style-utils";
 import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import { spawn } from "@/wab/shared/common";
 import { isHostLessPackage } from "@/wab/shared/core/sites";
+import {
+  sizeSectionProps,
+  spacingSectionProps,
+} from "@/wab/shared/core/style-props";
 import {
   extractAnimationSequenceUsages,
   mkRuleSet,
@@ -256,7 +254,7 @@ function AnimationSequenceStylePanelSections({
 
           {renderMaybeCollapsibleRows([
             {
-              collapsible: !isSet(...sizeStyleProps),
+              collapsible: !isSet(...sizeSectionProps),
               content: (
                 <SizeSection
                   key="sizing"
@@ -266,7 +264,7 @@ function AnimationSequenceStylePanelSections({
               ),
             },
             {
-              collapsible: !isSet(...spacingStyleProps),
+              collapsible: !isSet(...spacingSectionProps),
               content: (
                 <SpacingSection
                   key="spacing"

@@ -48,7 +48,7 @@ export const EXTRACT_COMPONENT_PROPS = [
   ...GRID_CHILD_PROPS,
 ];
 
-const TRANSFORM_PROPS = [
+export const TRANSFORM_PROPS = [
   "transform",
   "transform-origin",
   "perspective-origin",
@@ -139,6 +139,22 @@ export const inheritableCssProps = [...inheritableTypographyCssProps];
 
 export const imageCssProps = ["object-fit", "object-position"];
 
+export const gridCssProps = [
+  "grid-template-rows",
+  "grid-template-columns",
+  "grid-row-gap",
+  "grid-column-gap",
+  "grid-auto-rows",
+  "grid-auto-columns",
+];
+
+export const gridChildProps = [
+  "grid-row-start",
+  "grid-row-end",
+  "grid-column-start",
+  "grid-column-end",
+];
+
 // css props to reset at component boundaries.
 // We are excluding user-select, as it is often relied upon for global effects
 // like disabling text selection during drag and drop.
@@ -161,6 +177,26 @@ export const defaultCopyableStyleNames = [
   "column-gap",
   "row-gap",
   ...FLEX_CONTAINER_PROPS,
+  "flex-basis",
+  "flex-grow",
+  "flex-shrink",
+  "align-self",
+  "aspect-ratio",
+  ...TRANSITION_PROPS,
+  ...gridCssProps,
+  ...gridChildProps,
+  ...imageCssProps,
+  ...listStyleCssProps,
+  "overflow",
+  "overflow-x",
+  "overflow-y",
+  ...TRANSFORM_PROPS,
+  "z-index",
+  "filter",
+  "backdrop-filter",
+  "visibility",
+  "pointer-events",
+  "mix-blend-mode",
 ];
 const nonExtractableStyleNames = new Set([
   "left",
@@ -176,22 +212,6 @@ const nonResettableStyleNames = new Set([
   "bottom",
   "position",
 ]);
-
-export const gridCssProps = [
-  "grid-template-rows",
-  "grid-template-columns",
-  "grid-row-gap",
-  "grid-column-gap",
-  "grid-auto-rows",
-  "grid-auto-columns",
-];
-
-export const gridChildProps = [
-  "grid-row-start",
-  "grid-row-end",
-  "grid-column-start",
-  "grid-column-end",
-];
 
 export const flexChildProps = ["align-self"];
 
@@ -238,6 +258,25 @@ export const colorProps = [
   "border-bottom-color",
 ];
 
+export const spacingSectionProps = [
+  "padding-left",
+  "padding-right",
+  "padding-top",
+  "padding-bottom",
+  "margin-left",
+  "margin-right",
+  "margin-top",
+  "margin-bottom",
+];
+
+export const sizeSectionProps = [
+  ...SIZE_PROPS,
+  "aspect-ratio",
+  "flex-grow",
+  "flex-shrink",
+  "flex-basis",
+];
+
 export const spacingProps = [
   "left",
   "top",
@@ -245,14 +284,7 @@ export const spacingProps = [
   "bottom",
   "width",
   "height",
-  "margin-left",
-  "margin-right",
-  "margin-top",
-  "margin-bottom",
-  "padding-left",
-  "padding-right",
-  "padding-top",
-  "padding-bottom",
+  ...spacingSectionProps,
   "column-gap",
   "row-gap",
 ];
@@ -287,8 +319,10 @@ export const ALWAYS_RESOLVE_MIXIN_PROPS = ["background"];
  *
  * For now, this simply checks that the style prop is something we can find a
  * CSS initial for. This excludes most shorthand (compound) style props.
+ *
+ * {@link isValidStylePropForTpl} checks validity for the given tpl
  */
-export function isValidStyleProp(prop: string) {
+export function isValidStyleProp(prop: string): boolean {
   return (
     FAKE_CSS_PROPS.includes(prop) ||
     ["-webkit-mask-image", "-webkit-mask-size", "-webkit-mask-repeat"].includes(
