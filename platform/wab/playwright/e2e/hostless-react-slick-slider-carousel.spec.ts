@@ -6,6 +6,7 @@ test.describe("hostless-react-slick slider carousel", () => {
   let projectId: string;
   test.beforeEach(async ({ apiClient, page }) => {
     projectId = await apiClient.setupProjectWithHostlessPackages({
+      name: "react-slick-carousel",
       hostLessPackagesInfo: [
         {
           name: "react-slick",

@@ -129,6 +129,7 @@ test.describe("server queries", () => {
     models,
   }) => {
     projectId = await apiClient.setupProjectWithHostlessPackages({
+      name: "server-queries",
       hostLessPackagesInfo: {
         name: "fetch",
         npmPkg: ["@plasmicpkgs/fetch"],

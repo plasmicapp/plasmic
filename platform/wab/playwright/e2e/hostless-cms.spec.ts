@@ -99,6 +99,7 @@ test.describe("hostless-cms", () => {
     const cmsPublicToken =
       (await page.locator('[data-test-id="publicToken"]').textContent()) || "";
     projectId = await apiClient.setupProjectWithHostlessPackages({
+      name: "cms",
       hostLessPackagesInfo: {
         name: "plasmic-cms",
         npmPkg: ["@plasmicpkgs/plasmic-cms"],

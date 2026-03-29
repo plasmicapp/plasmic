@@ -80,6 +80,7 @@ test.describe("hostless-tiptap", () => {
 
   test.beforeEach(async ({ apiClient, page }) => {
     projectId = await apiClient.setupProjectWithHostlessPackages({
+      name: "tiptap",
       hostLessPackagesInfo: [
         {
           name: "tiptap",

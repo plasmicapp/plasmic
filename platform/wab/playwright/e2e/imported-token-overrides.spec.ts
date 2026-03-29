@@ -1622,6 +1622,7 @@ test.describe("Imported token overrides", () => {
     apiClient,
   }) => {
     const depProjectId = await apiClient.setupProjectWithHostlessPackages({
+      name: "imported-token-overrides",
       hostLessPackagesInfo: [
         {
           name: "antd5",

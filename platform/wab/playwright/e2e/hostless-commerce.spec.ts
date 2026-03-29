@@ -34,6 +34,7 @@ test.describe("hostless-commerce", () => {
     context,
   }) => {
     projectId = await apiClient.setupProjectWithHostlessPackages({
+      name: "commerce",
       hostLessPackagesInfo: [
         {
           name: "commerce",
@@ -258,6 +259,7 @@ test.describe("hostless-commerce", () => {
 
   test("can use context to data bind", async ({ page, apiClient, models }) => {
     projectId = await apiClient.setupProjectWithHostlessPackages({
+      name: "commerce",
       hostLessPackagesInfo: [
         {
           name: "commerce",

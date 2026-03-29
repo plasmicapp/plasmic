@@ -17,6 +17,7 @@ test.describe("Table and form tutorial", () => {
     });
 
     const cloneResult = await apiClient.cloneProject({
+      name: "tutorial-base",
       projectId: PROJECT_IDS.base,
     });
     clonedProjectId = cloneResult.projectId;

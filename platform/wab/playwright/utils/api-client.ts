@@ -109,12 +109,12 @@ export class ApiClient {
   }: {
     skipVisit?: boolean;
     devFlags?: Record<string, any>;
-    name?: string;
+    name: string;
     email?: string;
     inviteOnly?: boolean;
     skipTours?: boolean;
     workspaceId?: string;
-  } = {}): Promise<string> {
+  }): Promise<string> {
     const csrf = await this.getCsrf();
 
     const res = await this.request.post(`${this.baseUrl}/api/v1/projects`, {
@@ -138,9 +138,11 @@ export class ApiClient {
   }
 
   async setupProjectWithHostlessPackages({
+    name,
     hostLessPackagesInfo,
     devFlags = {},
   }: {
+    name: string;
     hostLessPackagesInfo:
       | (Partial<{
           name: string;
@@ -165,6 +167,7 @@ export class ApiClient {
       `${this.baseUrl}/api/v1/projects/create-project-with-hostless-packages`,
       {
         data: {
+          name,
           hostLessPackagesInfo: Array.isArray(hostLessPackagesInfo)
             ? hostLessPackagesInfo.map((info) => ({
                 name: info.name,
@@ -487,7 +490,7 @@ export class ApiClient {
 
   async cloneProject(opts: {
     projectId: string;
-    name?: string;
+    name: string;
     workspaceId?: string;
   }): Promise<{ projectId: string; workspaceId: string }> {
     const { projectId, name, workspaceId } = opts;
@@ -497,10 +500,7 @@ export class ApiClient {
     const response = await this.request.post(
       `${this.baseUrl}/api/v1/projects/${projectId}/clone`,
       {
-        data: {
-          name,
-          workspaceId,
-        },
+        data: { name, workspaceId },
         headers: { "X-CSRF-Token": csrf },
       }
     );

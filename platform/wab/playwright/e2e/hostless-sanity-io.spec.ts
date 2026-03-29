@@ -94,6 +94,7 @@ test.describe("hostless-sanity-io", () => {
     models,
   }) => {
     projectId = await apiClient.setupProjectWithHostlessPackages({
+      name: "sanity-io",
       hostLessPackagesInfo: {
         name: "plasmic-sanity-io",
         npmPkg: ["@plasmicpkgs/plasmic-sanity-io"],

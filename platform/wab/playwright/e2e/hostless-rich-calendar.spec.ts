@@ -66,6 +66,7 @@ test.describe("hostless-rich-calendar", () => {
 
   test.beforeEach(async ({ apiClient }) => {
     projectId = await apiClient.setupProjectWithHostlessPackages({
+      name: "rich-calendar",
       hostLessPackagesInfo: [
         {
           name: "antd5",

@@ -7,6 +7,7 @@ test.describe("hostless-antd", () => {
 
   test.beforeEach(async ({ apiClient, page }) => {
     projectId = await apiClient.setupProjectWithHostlessPackages({
+      name: "antd",
       hostLessPackagesInfo: {
         name: "antd",
         npmPkg: ["@plasmicpkgs/antd"],

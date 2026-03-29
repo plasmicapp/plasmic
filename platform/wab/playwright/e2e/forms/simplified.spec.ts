@@ -20,6 +20,7 @@ test.describe("simplified", () => {
 
   test.beforeEach(async ({ apiClient, page }) => {
     projectId = await apiClient.setupProjectWithHostlessPackages({
+      name: "simplified-forms",
       hostLessPackagesInfo: {
         name: "antd5",
         npmPkg: ["@plasmicpkgs/antd5"],

@@ -31,6 +31,7 @@ test.describe("Auto Open", () => {
   test.describe("Auto Open (Code components)", () => {
     test.beforeEach(async ({ apiClient, page }) => {
       projectId = await apiClient.setupProjectWithHostlessPackages({
+        name: "auto-open",
         hostLessPackagesInfo: [
           {
             name: "react-aria",

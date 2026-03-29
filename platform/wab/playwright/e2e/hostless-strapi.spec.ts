@@ -105,6 +105,7 @@ test.describe("hostless-strapi", () => {
       { apiClient, page, models }: RunTestProps
     ) {
       projectId = await apiClient.setupProjectWithHostlessPackages({
+        name: "strapi",
         hostLessPackagesInfo: {
           name: "plasmic-strapi",
           npmPkg: ["@plasmicpkgs/plasmic-strapi"],
@@ -224,6 +225,7 @@ test.describe("hostless-strapi", () => {
       { apiClient, page, models }: RunTestProps
     ) {
       projectId = await apiClient.setupProjectWithHostlessPackages({
+        name: "strapi",
         hostLessPackagesInfo: {
           name: "plasmic-strapi",
           npmPkg: ["@plasmicpkgs/plasmic-strapi"],

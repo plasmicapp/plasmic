@@ -204,6 +204,7 @@ test.describe("registered variants", () => {
 
   test.beforeEach(async ({ apiClient, page }) => {
     projectId = await apiClient.setupProjectWithHostlessPackages({
+      name: "registered-variants",
       hostLessPackagesInfo: [
         {
           name: "react-aria",

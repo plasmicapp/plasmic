@@ -87,6 +87,7 @@ test.describe("data token usages", () => {
     test.beforeEach(async ({ apiClient, page }) => {
       // We need to setup a project with the strapi hostless package to test data tokens created from server queries in one of the below test cases
       projectId = await apiClient.setupProjectWithHostlessPackages({
+        name: "data-tokens",
         hostLessPackagesInfo: {
           name: "strapi",
           npmPkg: ["@plasmicpkgs/strapi"],

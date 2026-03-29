@@ -35,6 +35,7 @@ test.describe("Antd5 pagination", () => {
 
   test.beforeEach(async ({ apiClient, page }) => {
     projectId = await apiClient.setupProjectWithHostlessPackages({
+      name: "antd5-pagination",
       hostLessPackagesInfo: {
         name: "antd5",
         npmPkg: ["@plasmicpkgs/antd5"],

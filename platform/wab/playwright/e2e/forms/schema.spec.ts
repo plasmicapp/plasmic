@@ -12,6 +12,7 @@ test.describe("schema", () => {
     await apiClient.createFakeDataSource();
 
     projectId = await apiClient.setupProjectWithHostlessPackages({
+      name: "form-schema",
       hostLessPackagesInfo: [
         {
           name: "antd5",

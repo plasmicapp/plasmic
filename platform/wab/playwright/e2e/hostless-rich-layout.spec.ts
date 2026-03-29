@@ -114,6 +114,7 @@ test.describe("hostless-rich-components", () => {
 
   test.beforeEach(async ({ apiClient, page }) => {
     projectId = await apiClient.setupProjectWithHostlessPackages({
+      name: "rich-layout",
       hostLessPackagesInfo: [
         {
           name: "antd5",

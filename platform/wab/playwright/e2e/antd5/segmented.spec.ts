@@ -7,6 +7,7 @@ test.describe("Antd5 segmented", () => {
 
   test.beforeEach(async ({ apiClient, page }) => {
     projectId = await apiClient.setupProjectWithHostlessPackages({
+      name: "antd5-segmented",
       hostLessPackagesInfo: {
         name: "antd5",
         npmPkg: ["@plasmicpkgs/antd5"],

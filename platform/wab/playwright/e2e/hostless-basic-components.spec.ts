@@ -8,6 +8,7 @@ test.describe("hostless-basic-components", () => {
 
   test.beforeEach(async ({ apiClient, page }) => {
     projectId = await apiClient.setupProjectWithHostlessPackages({
+      name: "basic-components",
       hostLessPackagesInfo: {
         name: "plasmic-basic-components",
         npmPkg: ["@plasmicpkgs/plasmic-basic-components"],

@@ -7,6 +7,7 @@ test.describe("dynamic-initial-value", () => {
 
   test.beforeEach(async ({ apiClient, page }) => {
     projectId = await apiClient.setupProjectWithHostlessPackages({
+      name: "dynamic-initial-value",
       hostLessPackagesInfo: [
         {
           name: "antd5",
