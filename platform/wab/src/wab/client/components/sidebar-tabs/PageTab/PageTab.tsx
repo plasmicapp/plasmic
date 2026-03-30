@@ -50,8 +50,7 @@ export const PageTab = observer(function PageTab(props: {
 
   const uiConfig = studioCtx.getCurrentUiConfig();
 
-  const env: Record<string, any> =
-    viewCtx.getCanvasEnvForTpl(page.tplTree) ?? {};
+  const env = viewCtx.getCanvasEnvForTpl(page.tplTree);
 
   const canEdit = (section: PublicStyleSection) => {
     return canEditStyleSection(uiConfig, section, {

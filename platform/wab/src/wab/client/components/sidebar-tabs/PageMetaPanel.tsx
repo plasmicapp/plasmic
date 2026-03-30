@@ -17,7 +17,7 @@ import React from "react";
 const PageMetaPanel = observer(function PageMetaPanel(props: {
   viewCtx: ViewCtx;
   page: PageComponent;
-  env: Record<string, any>;
+  env: Record<string, any> | undefined;
 }) {
   const { page, viewCtx, env } = props;
   const sc = useStudioCtx();

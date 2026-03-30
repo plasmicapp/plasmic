@@ -1049,15 +1049,16 @@ const PropValueEditor_ = (
       );
       let deseredValue = deserCompositeExprMaybe(value);
 
-      let evaluated = isKnownExpr(value)
-        ? tryEvalExpr(getRawCode(value, evalExprCtx), env ?? {}).val
-        : value;
-      if (userMinimalValue) {
+      let evaluated =
+        isKnownExpr(value) && env
+          ? tryEvalExpr(getRawCode(value, evalExprCtx), env).val
+          : value;
+      if (userMinimalValue && env) {
         deseredValue = mergeUserMinimalValueWithCompositeExpr(
           userMinimalValue,
           value,
           evalExprCtx,
-          env ?? {},
+          env,
           propType.unstable__keyFunc
         );
         evaluated = userMinimalValue;
@@ -1107,12 +1108,13 @@ const PropValueEditor_ = (
       propType.fields &&
       (viewCtx || exprCtx)
     ) {
-      const evaluated = isKnownExpr(value)
-        ? tryEvalExpr(
-            getRawCode(value, getEvalExprCtx(viewCtx, exprCtx)),
-            env ?? {}
-          ).val
-        : value;
+      const evaluated =
+        isKnownExpr(value) && env
+          ? tryEvalExpr(
+              getRawCode(value, getEvalExprCtx(viewCtx, exprCtx)),
+              env
+            ).val
+          : value;
       const compositeValue = deserCompositeExprMaybe(value);
       return (
         <ObjectPropEditor

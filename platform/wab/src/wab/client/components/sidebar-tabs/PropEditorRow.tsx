@@ -684,15 +684,18 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
     viewCtx,
   } = currValueEditorCtx;
 
-  const canvasEnv = {
-    ...origCanvasEnv,
-    ...getExtraEnvFromPropType(
-      propType,
-      componentPropValues,
-      ccContextData,
-      controlExtras
-    ),
-  };
+  const extraEnv = getExtraEnvFromPropType(
+    propType,
+    componentPropValues,
+    ccContextData,
+    controlExtras
+  );
+  const canvasEnv = origCanvasEnv
+    ? {
+        ...origCanvasEnv,
+        ...extraEnv,
+      }
+    : undefined;
   const ref = React.useRef<PropEditorRef>(null);
 
   const { maybeUnwrapExpr, maybeWrapExpr } =
@@ -1212,7 +1215,7 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
                 }}
               />
             )}
-            {isPageHref(expr) && (
+            {canvasEnv && isPageHref(expr) && (
               <PageHrefRows
                 expr={expr}
                 exprCtx={exprCtx}

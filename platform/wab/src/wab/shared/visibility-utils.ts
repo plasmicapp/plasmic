@@ -17,6 +17,7 @@ import {
   getCodeExpressionWithFallback,
   isCodeLitVal,
   isRealCodeExpr,
+  isRealCodeExprEnsuringType,
 } from "@/wab/shared/core/exprs";
 import { CONTENT_LAYOUT } from "@/wab/shared/core/style-props";
 import {
@@ -375,16 +376,16 @@ export function isVisibilityHidden(
   getCanvasEnv: () => CanvasEnv | undefined,
   exprCtx: ExprCtx
 ): boolean {
+  const canvasEnv = getCanvasEnv();
   return (
     vis === TplVisibility.NotRendered ||
     vis === TplVisibility.DisplayNone ||
     (vis === TplVisibility.CustomExpr &&
+      !!canvasEnv &&
       isNonNil(dataCond) &&
-      isRealCodeExpr(dataCond) &&
-      !tryEvalExpr(
-        getCodeExpressionWithFallback(dataCond as any, exprCtx),
-        getCanvasEnv() ?? ({} as CanvasEnv)
-      ).val)
+      isRealCodeExprEnsuringType(dataCond) &&
+      !tryEvalExpr(getCodeExpressionWithFallback(dataCond, exprCtx), canvasEnv)
+        .val)
   );
 }
 

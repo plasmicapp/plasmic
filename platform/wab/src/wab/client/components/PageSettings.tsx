@@ -234,10 +234,12 @@ const PageSettings = observer(function PageSettings({
     [page.pageMeta?.canonical]
   );
 
-  const env: Record<string, any> =
-    viewCtx.getCanvasEnvForTpl(page.tplTree) ?? {};
+  const env = viewCtx.getCanvasEnvForTpl(page.tplTree);
 
   const pageMetaEnv = React.useMemo(() => {
+    if (!env) {
+      return undefined;
+    }
     const { $queries, $$: _$, $state: _s, ...rest } = env;
     rest.$queries = {};
     for (const queryName of Object.keys($queries ?? {})) {
@@ -252,7 +254,7 @@ const PageSettings = observer(function PageSettings({
     const desc = pageMeta.description;
     if (typeof desc === "string") {
       return desc.length;
-    } else if (viewCtx && isDynamicExpr(desc)) {
+    } else if (viewCtx && pageMetaEnv && isDynamicExpr(desc)) {
       const evaluated = tryEvalExpr(asCode(desc, exprCtx).code, pageMetaEnv);
       return evaluated?.val?.toString()?.length ?? 0;
     }
@@ -265,7 +267,7 @@ const PageSettings = observer(function PageSettings({
         value={{
           componentPropValues: {},
           ccContextData: {},
-          env: {},
+          env: undefined,
         }}
       >
         <PlasmicPageSettings
