@@ -43,18 +43,10 @@ const VariableRow = observer(
           label={variableRowProps.name}
           onClick={variableRowProps.showVariableConfigModal}
           menu={menu}
-          value={
-            <ValuePreview
-              onClick={variableRowProps.showValueConfigModal}
-              val={variableRowProps.value}
-            />
-          }
+          value={<ValuePreview val={variableRowProps.value} />}
           {...rest}
         >
-          <ValuePreview
-            onClick={variableRowProps.showValueConfigModal}
-            val={variableRowProps.value}
-          />
+          <ValuePreview val={variableRowProps.value} />
         </LabeledListItem>
         {modals}
       </WithContextMenu>

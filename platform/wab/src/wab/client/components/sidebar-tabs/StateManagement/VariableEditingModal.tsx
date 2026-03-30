@@ -2,6 +2,7 @@ import { COMMANDS } from "@/wab/client/commands/command";
 import VariableEditingForm from "@/wab/client/components/sidebar-tabs/StateManagement/VariableEditingForm";
 import { SidebarModal } from "@/wab/client/components/sidebar/SidebarModal";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { VARIABLE_CAP } from "@/wab/shared/Labels";
 import { Component, State } from "@/wab/shared/model/classes";
 import startCase from "lodash/startCase";
@@ -11,6 +12,7 @@ export function VariableEditingModal({
   component,
   onClose,
   show,
+  viewCtx,
   studioCtx,
   state,
   mode = "edit",
@@ -19,26 +21,18 @@ export function VariableEditingModal({
   show: boolean;
   onClose: () => any;
   studioCtx: StudioCtx;
+  viewCtx: ViewCtx;
   component: Component;
   mode?: "new" | "edit";
 }) {
-  const preventCancellingRef = React.useRef(false);
-
-  React.useEffect(() => {
-    preventCancellingRef.current = false;
-  }, [state]);
-
   const onCancel = async () => {
-    if (!state || preventCancellingRef.current) {
+    if (!state) {
       return;
     }
     await COMMANDS.component.removeStateVariable.execute(
       studioCtx,
       {},
-      {
-        state,
-        component,
-      }
+      { state, component }
     );
     onClose();
   };
@@ -60,12 +54,10 @@ export function VariableEditingModal({
         <VariableEditingForm
           state={state}
           studioCtx={studioCtx}
+          viewCtx={viewCtx}
           component={component}
           mode={mode}
-          onConfirm={() => {
-            preventCancellingRef.current = true;
-            onClose();
-          }}
+          onConfirm={onClose}
           onCancel={onCancel}
         />
       )}

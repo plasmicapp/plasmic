@@ -395,6 +395,7 @@ export function VariableEditor(props: {
             state={justAddedState}
             studioCtx={studioCtx}
             component={component}
+            viewCtx={viewCtx}
           />
         </SidebarModal>
       )}

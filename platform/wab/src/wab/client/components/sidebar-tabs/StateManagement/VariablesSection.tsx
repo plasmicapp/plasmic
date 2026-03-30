@@ -25,7 +25,6 @@ import {
 } from "@/wab/shared/core/states";
 import { VARIABLE_PLURAL_CAP } from "@/wab/shared/Labels";
 import { Component, State } from "@/wab/shared/model/classes";
-import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import cn from "classnames";
 import { groupBy } from "lodash";
 import { observer } from "mobx-react";
@@ -64,10 +63,7 @@ export interface VariablesSectionProps extends DefaultVariablesSectionProps {
   viewCtx: ViewCtx;
 }
 
-function VariablesSection_(
-  props: VariablesSectionProps,
-  ref: HTMLElementRefOf<"div">
-) {
+function VariablesSection_(props: VariablesSectionProps) {
   const studioCtx = useStudioCtx();
   const { component, viewCtx } = props;
 
@@ -187,6 +183,7 @@ function VariablesSection_(
         state={newVariable}
         onClose={() => setNewVariable(null)}
         component={component}
+        viewCtx={viewCtx}
       />
     </>
   );

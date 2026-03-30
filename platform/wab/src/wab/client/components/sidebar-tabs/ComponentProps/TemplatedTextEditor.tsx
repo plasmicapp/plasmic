@@ -828,11 +828,11 @@ function CodeTag({
           schema={schema}
         />
       }
-      open={open}
+      visible={open}
       // We want this only so that the popover dismisses on click outside,
       // and doesn't dismiss on pointer leave.
       trigger={"click"}
-      onOpenChange={(newOpen) => {
+      onVisibleChange={(newOpen) => {
         if (!newOpen && preventPopoverClosingRef.current) {
           setOpen(false);
         } else {
