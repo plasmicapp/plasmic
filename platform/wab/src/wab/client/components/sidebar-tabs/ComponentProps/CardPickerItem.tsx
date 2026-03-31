@@ -24,16 +24,12 @@ function CardPickerItem_(
         ref,
         onClick: onClick,
       }}
-      image={{
-        render: (imageProps, Component) => (
-          <Component {...imageProps}>
-            <img
-              src={imgUrl}
-              style={{ width: "100%", height: "100%", objectFit: "cover" }}
-            />
-          </Component>
-        ),
-      }}
+      image={
+        <img
+          src={imgUrl}
+          style={{ width: "100%", height: "100%", objectFit: "cover" }}
+        />
+      }
       {...rest}
     />
   );

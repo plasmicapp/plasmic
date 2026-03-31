@@ -50,59 +50,12 @@
   padding: 8px;
 }
 .items {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  grid-row-gap: 16px;
-  grid-column-gap: 16px;
+  display: flex;
   overflow: visible;
   width: 100%;
   max-width: 1100px;
+  flex-direction: row;
   min-width: 0;
-}
-.cardPickerItem___7PX8D:global(.__wab_instance) {
-  position: relative;
-}
-.img__kuaav {
-  position: relative;
-  object-fit: cover;
-  max-width: 100%;
-  display: inline-block !important;
-}
-.img__kuaav > picture > img {
-  object-fit: cover;
-}
-.img__kuaav > :global(.__wab_img-spacer) > img {
-  object-fit: cover;
-}
-.cardPickerItem__e44Y:global(.__wab_instance) {
-  position: relative;
-}
-.img___6Yped {
-  position: relative;
-  object-fit: cover;
-  max-width: 100%;
-  display: inline-block !important;
-}
-.img___6Yped > picture > img {
-  object-fit: cover;
-}
-.img___6Yped > :global(.__wab_img-spacer) > img {
-  object-fit: cover;
-}
-.cardPickerItem__r8Mvp:global(.__wab_instance) {
-  position: relative;
-}
-.img__oukL {
-  position: relative;
-  object-fit: cover;
-  max-width: 100%;
-  display: inline-block !important;
-}
-.img__oukL > picture > img {
-  object-fit: cover;
-}
-.img__oukL > :global(.__wab_img-spacer) > img {
-  object-fit: cover;
 }
 .cardPickerItem__kadg:global(.__wab_instance) {
   position: relative;
@@ -111,12 +64,41 @@
   position: relative;
   object-fit: cover;
   max-width: 100%;
-  display: inline-block !important;
 }
 .img__u6EpR > picture > img {
   object-fit: cover;
 }
-.img__u6EpR > :global(.__wab_img-spacer) > img {
+.cardPickerItem__snDpd:global(.__wab_instance) {
+  position: relative;
+}
+.img__kKlF {
+  position: relative;
+  object-fit: cover;
+  max-width: 100%;
+}
+.img__kKlF > picture > img {
+  object-fit: cover;
+}
+.cardPickerItem__zba8E:global(.__wab_instance) {
+  position: relative;
+}
+.img__i57Px {
+  position: relative;
+  object-fit: cover;
+  max-width: 100%;
+}
+.img__i57Px > picture > img {
+  object-fit: cover;
+}
+.cardPickerItem__wRqwd:global(.__wab_instance) {
+  position: relative;
+}
+.img__cnMyC {
+  position: relative;
+  object-fit: cover;
+  max-width: 100%;
+}
+.img__cnMyC > picture > img {
   object-fit: cover;
 }
 .cancelButton:global(.__wab_instance) {

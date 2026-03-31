@@ -9864,10 +9864,25 @@
       "images": [],
       "indirect": false,
       "globalContextsFilePath": "",
-      "codeComponents": [],
+      "codeComponents": [
+        {
+          "id": "4a6vLTOYZP",
+          "name": "PlasmicHead",
+          "displayName": "hostless-plasmic-head",
+          "componentImportPath": "@plasmicapp/react-web"
+        },
+        {
+          "id": "wP_AaL4JPK",
+          "name": "Fetcher",
+          "displayName": "plasmic-data-source-fetcher",
+          "componentImportPath": "@plasmicapp/react-web/lib/data-sources"
+        }
+      ],
       "splitsProviderFilePath": "",
-      "styleTokensProviderFilePath": "",
-      "projectModuleFilePath": ""
+      "styleTokensProviderFilePath": "wab/client/plasmic/plasmic_kit_component_props_section/PlasmicStyleTokensProvider.tsx",
+      "projectModuleFilePath": "wab/client/plasmic/plasmic_kit_component_props_section/plasmic.tsx",
+      "dataTokensFilePath": "",
+      "customFunctions": []
     },
     {
       "projectId": "cQnF1HuwK97HkvkrC6uRk2",
