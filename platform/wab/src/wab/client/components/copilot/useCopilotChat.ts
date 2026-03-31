@@ -7,8 +7,8 @@ import {
   QueryCopilotChatUiStreamRequest,
 } from "@/wab/shared/ApiSchema";
 import { spawn } from "@/wab/shared/common";
+import { COPILOT_TOOL_DEFS } from "@/wab/shared/copilot/enterprise/copilot-tools";
 import { fixJson } from "@/wab/shared/copilot/fix-json";
-import { COPILOT_TOOL_DEFS } from "@/wab/shared/copilot/internal/copilot-tools";
 import { useChat } from "@ai-sdk/react";
 import {
   DefaultChatTransport,

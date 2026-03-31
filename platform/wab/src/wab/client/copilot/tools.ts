@@ -1,6 +1,6 @@
 import { insertHtmlTool } from "@/wab/client/copilot/tools/insertHtml";
 import { readTool } from "@/wab/client/copilot/tools/read";
-import { CopilotTool } from "@/wab/shared/copilot/internal/copilot-tools";
+import { CopilotTool } from "@/wab/shared/copilot/enterprise/copilot-tools";
 
 type AnyCopilotTool = CopilotTool<any>;
 

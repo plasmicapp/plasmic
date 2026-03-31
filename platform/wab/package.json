@@ -22,7 +22,6 @@
     "socket-server": "npm run run-ts -- src/wab/server/app-socket-backend-real.ts",
     "build": "rsbuild build",
     "migrate-dev-bundles": "npm run run-ts -- src/wab/server/scripts/dev-bundle-migrator.ts",
-    "db:eval-corpus": "npm run run-ts -- src/wab/server/copilot/internal/sandbox/corpus-eval.ts",
     "db:reset": "bash tools/docker-dev/db-reset.bash",
     "db:setup": "bash tools/docker-dev/db-setup.bash",
     "db:prune": "NODE_OPTIONS='--unhandled-rejections=strict' npm run run-ts -- src/wab/server/db/DbPruner.ts",

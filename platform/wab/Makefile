@@ -1,5 +1,3 @@
-SUBDIRS := $(wildcard src/wab/shared/copilot/internal/.)
-
 all: \
 	src/wab/gen/modelPegParser.js \
 	src/wab/gen/funcTplParser.js \
@@ -15,9 +13,7 @@ all: \
 	src/wab/gen/static/styles/react-web-css.txt \
 	src/wab/gen/static/styles/tinymce-content-css.txt \
 	src/wab/gen/static/styles/prismjs-css.txt \
-	$(SUBDIRS)
-$(SUBDIRS):
-	$(MAKE) -C $@
+
 src/wab/shared/model/classes.ts: src/wab/gen/modelPegParser.js src/wab/shared/model/model-schema.ts tools/gen-models.ts src/wab/shared/model/model-generator.ts
 	yarn gen:models
 src/wab/shared/model/classes-metas.ts: src/wab/gen/modelPegParser.js src/wab/shared/model/model-schema.ts tools/gen-models.ts src/wab/shared/model/model-generator.ts
@@ -59,4 +55,4 @@ src/wab/gen/static/styles/prismjs-css.txt: node_modules/prismjs/themes/prism.min
 # Tolerate missing ../.gitignore since a wab backend docker build does not include parent dirs
 .dockerignore: .gitignore $(wildcard ../.gitignore) tools/bootstrap/gen-dockerignore.js
 	node tools/bootstrap/gen-dockerignore.js > $@
-.PHONY: all $(SUBDIRS)
+.PHONY: all

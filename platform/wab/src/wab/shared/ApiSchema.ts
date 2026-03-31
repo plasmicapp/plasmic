@@ -1993,12 +1993,6 @@ interface QueryCopilotResquestBase {
   useClaude?: boolean;
 }
 
-export interface QueryCopilotChatRequest extends QueryCopilotResquestBase {
-  /** Conversation history */
-  type: "chat";
-  messages: CopilotChatEntry[];
-}
-
 export interface QueryCopilotCodeRequest extends QueryCopilotResquestBase {
   type: "code";
   data: any;
@@ -2052,7 +2046,6 @@ export type QueryCopilotChatUiStreamRequest = {
 } & CopilotChat;
 
 export type QueryCopilotRequest =
-  | QueryCopilotChatRequest
   | QueryCopilotCodeRequest
   | QueryCopilotSqlCodeRequest
   | QueryCopilotDebugRequest;
