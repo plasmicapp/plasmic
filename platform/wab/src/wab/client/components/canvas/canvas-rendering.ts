@@ -180,6 +180,7 @@ import {
 } from "@/wab/shared/core/states";
 import { plasmicImgAttrStyles } from "@/wab/shared/core/style-props";
 import {
+  canvasProjectId,
   classNameForRuleSet,
   defaultStyleClassNames,
   getTriggerableSelectors,
@@ -2387,10 +2388,10 @@ function renderTplTag(
   }
   const classes = uniqifyClassName(
     [
-      ...defaultStyleClassNames(
-        studioDefaultStylesClassNameBase,
-        tag === ctx.sub.reactWeb.PlasmicImg ? "PlasmicImg" : node.tag
-      ),
+      ...defaultStyleClassNames(studioDefaultStylesClassNameBase, {
+        tag: tag === ctx.sub.reactWeb.PlasmicImg ? "PlasmicImg" : node.tag,
+        projectId: canvasProjectId,
+      }),
       ...variantRuleSetClasses,
       ...pseudoVariantClasses,
       isComponentRoot ? ctx.rootClassName : undefined,

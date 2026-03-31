@@ -84,7 +84,10 @@ function resolveRichTextToJsx(
 
   const spanClassName = defaultStyleClassNames(
     makeDefaultStyleClassNameBase(ctx.exportOpts),
-    "span"
+    {
+      tag: "span",
+      projectId: ctx.projectConfig.projectId,
+    }
   ).join(" ");
 
   const children: string[] = [];

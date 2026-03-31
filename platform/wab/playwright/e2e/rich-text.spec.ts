@@ -55,8 +55,12 @@ test.describe("rich-text", () => {
     await models.studio.withinLiveMode(async (liveFrame) => {
       const textElement = liveFrame.locator(".__wab_text");
       const innerHTML = await textElement.innerHTML();
+      const default_span_class = `plasmic_default__all plasmic_default__span plasmic_default__span__${projectId.slice(
+        0,
+        5
+      )}`;
       expect(innerHTML).toBe(
-        '<span class="plasmic_default__all plasmic_default__span" style="font-style: italic;">The </span><span class="plasmic_default__all plasmic_default__span" style="font-style: italic; font-weight: 700;">Blue Moon</span> was there.\n\n...or <span class="plasmic_default__all plasmic_default__span" style="text-decoration-line: underline;">so we thought!</span>'
+        `<span class="${default_span_class}" style="font-style: italic;">The </span><span class="${default_span_class}" style="font-style: italic; font-weight: 700;">Blue Moon</span> was there.\n\n...or <span class="${default_span_class}" style="text-decoration-line: underline;">so we thought!</span>`
       );
     });
 

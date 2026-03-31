@@ -35,10 +35,7 @@ import {
 } from "@/wab/shared/codegen/util";
 import { ensure, tuple, withoutNils } from "@/wab/shared/common";
 import { isTagInline } from "@/wab/shared/core/rich-text-util";
-import {
-  defaultStyleClassNames,
-  hasClassnameOverride,
-} from "@/wab/shared/core/styles";
+import { defaultStyleClassNames } from "@/wab/shared/core/styles";
 import {
   isTplCodeComponent,
   isTplComponent,
@@ -226,17 +223,14 @@ export function serializeClassNames(
     const tag = shouldUsePlasmicImg(node, ctx.projectFlags)
       ? "PlasmicImg"
       : node.tag;
-    const defaultClassnames = useCssModules
-      ? tag === "PlasmicImg"
-        ? []
-        : withoutNils([
-            "all",
-            hasClassnameOverride(node.tag) ? node.tag : undefined,
-          ])
-      : defaultStyleClassNames(
-          makeDefaultStyleClassNameBase(ctx.exportOpts),
-          tag
-        );
+
+    const defaultClassnames = defaultStyleClassNames(
+      useCssModules ? "" : makeDefaultStyleClassNameBase(ctx.exportOpts),
+      {
+        tag,
+        projectId: ctx.projectConfig.projectId,
+      }
+    );
 
     for (const name of defaultClassnames) {
       unconditionalClassExprs.push(serializeClassExpr(ctx.exportOpts, name));

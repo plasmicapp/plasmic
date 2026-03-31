@@ -460,12 +460,15 @@ export function exportProjectConfig(
     }
   );
 
+  const useCssModules = exportOpts?.stylesOpts?.scheme === "css-modules";
   const defaultTagStyles = site.activeTheme?.styles
     .map((s) =>
       mkThemeStyleRule(rootResetClass, resolver, s, {
-        classNameBase: makeDefaultStyleClassNameBase(exportOpts),
-        useCssModules: exportOpts?.stylesOpts?.scheme === "css-modules",
+        classNameBase: useCssModules
+          ? ""
+          : makeDefaultStyleClassNameBase(exportOpts),
         targetEnv: exportOpts.targetEnv,
+        projectId,
       })
     )
     .join("\n");

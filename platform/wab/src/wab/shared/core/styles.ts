@@ -17,6 +17,7 @@ import {
 } from "@/wab/commons/StyleToken";
 import { DeepReadonly, DeepReadonlyArray } from "@/wab/commons/types";
 import * as cssPegParser from "@/wab/gen/cssPegParser";
+import { ProjectId } from "@/wab/shared/ApiSchema";
 import { getArenaFrames } from "@/wab/shared/Arenas";
 import { RSH, RuleSetHelpers, readonlyRSH } from "@/wab/shared/RuleSetHelpers";
 import { isStyledTplSlot } from "@/wab/shared/SlotUtils";
@@ -51,7 +52,7 @@ import {
   makeWabTextClassName,
 } from "@/wab/shared/codegen/react-p/serialize-utils";
 import { TargetEnv } from "@/wab/shared/codegen/types";
-import { toVarName } from "@/wab/shared/codegen/util";
+import { makeShortProjectId, toVarName } from "@/wab/shared/codegen/util";
 import {
   assert,
   capCamelCase,
@@ -273,25 +274,59 @@ export class CssVarResolver {
 // The name of the default style rules used in studio.
 export const studioDefaultStylesClassNameBase = "__wab_defaults";
 
-export const defaultStyleClassNames = (classNameBase: string, tag?: string) => {
+// A fixed projectId used for canvas rendering. The projectId is only used to
+// generate a classNameSuffix that prevents CSS collisions between projects.
+// This collision doesn't occur on canvas because mkCssVarsRuleForCanvas
+// generates CSS vars rules for all sites and their dependencies in a single
+// block, with dependency rules coming after the main site's rules. This
+// deterministic ordering means deps rules win by CSS cascade, so a real
+// per-project suffix isn't needed for canvas. We just need the projectId
+// to keep the logic consistent with codegen mode.
+export const canvasProjectId = "canvas" as ProjectId;
+
+/**
+ * Returns the default style class names for an element, used to apply
+ * base CSS resets (e.g. font-family: inherit) to specific HTML tags.
+ *
+ * The classNameBase controls the naming scheme:
+ *
+ * - CSS-modules (classNameBase = ""):
+ *   Returns bare names like ["all", "p", "p__s59uU"] which are resolved
+ *   as CSS module properties (e.g. projectcss.all, projectcss.p).
+ *
+ * - CSS/loader (classNameBase = "plasmic_default"):
+ *   Returns prefixed names like ["plasmic_default__all", "plasmic_default__p",
+ *   "plasmic_default__p__s59uU"] used as literal class name strings.
+ *
+ * Only tags with CSS overrides (e.g. p, h1, span, a) get tag-specific
+ * classes; generic tags (e.g. div, svg) only get the "all" class.
+ *
+ * The projectId suffix makes tag classes unique per project, preventing
+ * theme style conflicts when multiple projects define different styles
+ * for the same tag (e.g. host project's <p> color vs dependency's <p> color).
+ */
+export const defaultStyleClassNames = (
+  classNameBase: string,
+  opts: {
+    tag?: string;
+    projectId: ProjectId;
+  }
+) => {
+  const { tag, projectId } = opts;
+
   if (tag === "PlasmicImg") {
     return [];
   }
-  if (tag) {
-    return [
-      `${classNameBase}__all`,
-      defaultTagStyleClassName(classNameBase, tag),
-    ];
-  } else {
-    return [`${classNameBase}__all`];
-  }
-};
 
-export const defaultTagStyleClassName = (
-  classNameBase: string,
-  tag: string
-) => {
-  return `${classNameBase}__${tag}`;
+  const classNameSuffix = makeShortProjectId(projectId);
+  const prefix = classNameBase ? `${classNameBase}__` : "";
+
+  const classes = [`${prefix}all`];
+  if (tag && hasClassnameOverride(tag)) {
+    classes.push(`${prefix}${tag}`);
+    classes.push(`${prefix}${tag}__${classNameSuffix}`);
+  }
+  return classes;
 };
 
 export function makeDefaultStylesRules(
@@ -447,11 +482,13 @@ export function mkThemeStyleRule(
   opts: {
     targetEnv: TargetEnv;
     classNameBase: string;
-    useCssModules?: boolean;
+    projectId: ProjectId;
   }
 ) {
   const { selector, style: mixin } = themeStyle;
-  const { classNameBase, useCssModules } = opts;
+  const { classNameBase } = opts;
+  const classNameSuffix = makeShortProjectId(opts.projectId);
+  const prefix = classNameBase ? `${classNameBase}__` : "";
   const m = new Map<string, string>();
   for (const [name, value] of Object.entries(
     makeLayoutAwareRuleSet(mixin.rs, false).values
@@ -464,9 +501,8 @@ export function mkThemeStyleRule(
   const [tag, ...rest] = selector.split(":");
   const pseudo = rest.join(":");
 
-  const defaultTagClassName =
-    // css modules uses `.a` as the default tag name
-    useCssModules ? tag : defaultTagStyleClassName(classNameBase, tag);
+  const defaultTagClassName = `${prefix}${tag}__${classNameSuffix}`;
+
   const pseudoSelector = pseudo ? `:${pseudo}` : "";
 
   addFontFamilyFallback(m);
@@ -2391,8 +2427,8 @@ export const mkCssVarsRuleForCanvas = (
       ...(s.activeTheme?.styles ?? []).map((ts) =>
         mkThemeStyleRule(resetName, resolver, ts, {
           classNameBase: studioDefaultStylesClassNameBase,
-          useCssModules: false,
           targetEnv: "canvas",
+          projectId: canvasProjectId,
         })
       ),
     ];
