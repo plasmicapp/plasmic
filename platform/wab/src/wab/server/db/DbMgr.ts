@@ -7893,7 +7893,7 @@ export class DbMgr implements MigrationDbMgr {
     projectId: ProjectId,
     { name, pkgVersion }: { name: string; pkgVersion: PkgVersion }
   ): Promise<Branch> {
-    await this.checkProjectPerms(projectId, "editor", "create branch");
+    await this.checkProjectPerms(projectId, "content", "create branch");
 
     const allBranches = await this.listBranchesForProject(projectId);
     checkBranchFields({ name }, allBranches);
@@ -7933,7 +7933,7 @@ export class DbMgr implements MigrationDbMgr {
     await this.checkBranchPerms(sourceBranchId, "viewer", "clone branch");
     const sourceBranch = await this.getBranchById(sourceBranchId);
     const projectId = sourceBranch.projectId;
-    await this.checkProjectPerms(projectId, "editor", "create branch");
+    await this.checkProjectPerms(projectId, "content", "create branch");
     const graph = await this.getCommitGraphForProject(projectId);
     const pkgVersionId = graph.branches[sourceBranchId];
     const pkgVersion = await this.getPkgVersionById(pkgVersionId);

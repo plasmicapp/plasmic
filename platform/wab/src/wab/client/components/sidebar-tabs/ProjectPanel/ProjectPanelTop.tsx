@@ -264,10 +264,19 @@ function BranchPanelTop_(
     if (!name) {
       return undefined;
     }
-    const { branch: newBranch } = await api.createBranch(projectId, {
-      name,
-      sourceBranchId: sourceBranchId,
-    });
+    let newBranch: ApiBranch;
+    try {
+      ({ branch: newBranch } = await api.createBranch(projectId, {
+        name,
+        sourceBranchId: sourceBranchId,
+      }));
+    } catch (e) {
+      if (e.name === "ForbiddenError") {
+        showBranchPermissionError("create");
+        return undefined;
+      }
+      throw e;
+    }
     await refresh();
     await studioCtx.switchToBranch(newBranch);
     return newBranch;
@@ -554,7 +563,15 @@ function getBranchMenuRenderer({
                     // Switch to main branch if this was the focused branch
                     await studioCtx.switchToBranch(undefined);
                   }
-                  await api.deleteBranch(projectId, branch.id);
+                  try {
+                    await api.deleteBranch(projectId, branch.id);
+                  } catch (e) {
+                    if (e.name === "ForbiddenError") {
+                      showBranchPermissionError("delete");
+                      return;
+                    }
+                    throw e;
+                  }
                   await refresh();
                 }
               }}
@@ -565,6 +582,13 @@ function getBranchMenuRenderer({
       </Menu>
     );
   };
+}
+
+function showBranchPermissionError(action: "create" | "delete") {
+  notification.error({
+    message: "Permission denied",
+    description: `You do not have permission to ${action} branches in this project.`,
+  });
 }
 
 function mkMatcher(q: string = "") {
