@@ -3216,17 +3216,7 @@ export class StudioCtx extends WithDbCtx {
   }
 
   showDataTokens() {
-    if (this.appCtx.appConfig.rscRelease || this.appCtx.appConfig.dataTokens) {
-      return true;
-    }
-
-    const team = this.getCurrentTeam();
-    const teamId = this.siteInfo.teamId;
-    const allowedTeamIds = this.appCtx.appConfig.dataTokenTeamIds;
-    return !!(
-      (teamId && allowedTeamIds.includes(teamId)) ||
-      (team?.parentTeamId && allowedTeamIds.includes(team.parentTeamId))
-    );
+    return this.appCtx.appConfig.dataTokens;
   }
 
   //

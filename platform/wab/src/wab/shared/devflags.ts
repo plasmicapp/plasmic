@@ -510,7 +510,6 @@ const DEFAULT_DEVFLAGS = {
   branching: false,
   disableBranching: false,
   branchingTeamIds: [] as TeamId[],
-  dataTokenTeamIds: [] as TeamId[],
   commitsOnBranches: false,
   serverPublishProjectIds: [] as ProjectId[],
   focusable: false,
