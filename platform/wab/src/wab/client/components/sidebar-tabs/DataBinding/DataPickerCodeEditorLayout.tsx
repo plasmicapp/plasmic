@@ -2,6 +2,7 @@ import {
   CodePreview,
   renderInspector,
 } from "@/wab/client/components/coding/CodePreview";
+import { DataInspector } from "@/wab/client/components/coding/DataInspector";
 import type { FullCodeEditor } from "@/wab/client/components/coding/FullCodeEditor";
 import {
   DataPickerRunCodeActionContext,
@@ -16,7 +17,6 @@ import { isLiteralObjectByName } from "@/wab/shared/common";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import L from "lodash";
 import * as React from "react";
-import { ErrorBoundary } from "react-error-boundary";
 
 export interface DataPickerCodeEditorLayoutProps
   extends Omit<DefaultDataPickerCodeEditorLayoutProps, "envPanel"> {
@@ -109,25 +109,11 @@ function DataPickerCodeEditorLayout_(
           ? "collapsed"
           : undefined
       }
-      env={<EnvPreview previewData={completionData} />}
+      env={<DataInspector data={completionData} editorRef={editorRef} />}
       envToggleButton={{
         onClick: () => setShowEnv(!showEnv),
       }}
     />
-  );
-}
-
-function EnvPreview(props: {
-  previewData: Record<string, any>;
-  className?: string;
-}) {
-  const { previewData, className } = props;
-  return (
-    <div className={className}>
-      <ErrorBoundary fallback={renderInspector(undefined)}>
-        {renderInspector(previewData)}
-      </ErrorBoundary>
-    </div>
   );
 }
 
@@ -141,13 +127,14 @@ function cleanDataForPreview(data: Record<string, any>): Record<string, any> {
         return cleanedX;
       }
 
-      const filtered = L.omitBy(x, (_val, key) => {
+      const filtered = L.omitBy(x, (val, key) => {
         return (
           key.startsWith("__plasmic") ||
           key.startsWith("$dataTokens_") ||
           key === "dataTokensEnv" ||
           key === "registerInitFunc" ||
-          key === "eagerInitializeStates"
+          key === "eagerInitializeStates" ||
+          (key === "$queries" && L.isEmpty(val)) // $queries is deprecated, we only show it if there are any queries
         );
       });
       cache.set(x, filtered);

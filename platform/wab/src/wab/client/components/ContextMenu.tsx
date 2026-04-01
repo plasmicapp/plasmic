@@ -15,6 +15,10 @@ export type MenuType = React.ReactElement | (() => React.ReactElement);
 
 let contextMenuHandled = false;
 
+export function isContextMenuOpen() {
+  return contextMenuHandled;
+}
+
 /**
  * Generally try to use WithContextMenu when possible since it reliably cleans
  * up on owner unmount.

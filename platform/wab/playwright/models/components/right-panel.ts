@@ -1047,6 +1047,15 @@ export class RightPanel extends BaseModel {
     }
   }
 
+  async ensureDataPickerInDataPickerMode() {
+    const switchToDataPickerButton = this.frame.getByText(
+      "Switch to Data Picker"
+    );
+    if (await switchToDataPickerButton.isVisible()) {
+      await switchToDataPickerButton.click();
+    }
+  }
+
   async addState(state: {
     name: string;
     variableType: string;

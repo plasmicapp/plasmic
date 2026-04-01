@@ -78,6 +78,32 @@ describe("cleanDataForPreview", () => {
     });
   });
 
+  it("should filter out deprecated $queries only if it is empty", () => {
+    const data = {
+      normalKey: "value",
+      $queries: {},
+      nested: {
+        normalNested: "nested value",
+        __plasmicNested: "should be filtered",
+      },
+    };
+
+    const result = cleanDataForPreview(data);
+    expect(result).toEqual({
+      normalKey: "value",
+      nested: { normalNested: "nested value" },
+    });
+
+    data.$queries = { query: {} };
+    expect(cleanDataForPreview(data)).toEqual({
+      normalKey: "value",
+      $queries: {
+        query: {},
+      },
+      nested: { normalNested: "nested value" },
+    });
+  });
+
   it("should clean all references to the same object, not just the first", () => {
     const sharedObj = { value: "keep", __plasmicKey: "should be filtered" };
     const data = {
