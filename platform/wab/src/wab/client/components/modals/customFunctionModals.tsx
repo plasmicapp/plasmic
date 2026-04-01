@@ -247,13 +247,17 @@ export async function updateSiteCustomFunctions(props: {
       exprRefs.forEach((usage) => {
         // Update server queries with remapped functions
         usage.ownerComponent.serverQueries.forEach((q) => {
-          fixCustomFunctionExpr(remappedFunctions, q.op);
+          if (isKnownCustomFunctionExpr(q.op)) {
+            fixCustomFunctionExpr(remappedFunctions, q.op);
+          }
         });
         // Remove from server queries
         removeWhere(
           usage.ownerComponent.serverQueries,
           (serverQuery) =>
-            !!serverQuery.op?.func && removedFunctions.has(serverQuery.op.func)
+            isKnownCustomFunctionExpr(serverQuery.op) &&
+            !!serverQuery.op.func &&
+            removedFunctions.has(serverQuery.op.func)
         );
 
         usage.exprRefs.forEach((ref) => {

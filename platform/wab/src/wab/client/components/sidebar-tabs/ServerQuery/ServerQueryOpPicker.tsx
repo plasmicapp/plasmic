@@ -54,6 +54,7 @@ import {
   Site,
   TplTag,
   isKnownComponentServerQuery,
+  isKnownCustomFunctionExpr,
 } from "@/wab/shared/model/classes";
 import { renameDataTokenInExpr } from "@/wab/shared/refactoring";
 import { smartHumanize } from "@/wab/shared/strs";
@@ -652,7 +653,7 @@ export const ServerQueryOpExprFormAndPreview = observer(
       const op = isKnownComponentServerQuery(value) ? value.op : value;
       return {
         queryName: parentQuery?.name,
-        fnExpr: op ? clone(op) : undefined,
+        fnExpr: op && isKnownCustomFunctionExpr(op) ? clone(op) : undefined,
       };
     });
 

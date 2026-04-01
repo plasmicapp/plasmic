@@ -34,6 +34,7 @@ import {
   Component,
   ComponentServerQuery,
   CustomFunctionExpr,
+  isKnownCustomFunctionExpr,
 } from "@/wab/shared/model/classes";
 import { renameServerQueryAndFixExprs } from "@/wab/shared/refactoring";
 import { Menu, notification } from "antd";
@@ -124,7 +125,7 @@ const ServerQueryRow = observer(
           menu={menu}
           onClick={() => openServerQueryModal()}
         >
-          {query.op ? (
+          {isKnownCustomFunctionExpr(query.op) ? (
             <div className="flex flex-col fill-width">
               <CustomFunctionExprSummary expr={query.op} />
               <CustomFunctionExprPreview

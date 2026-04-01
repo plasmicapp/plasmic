@@ -390,7 +390,7 @@ ComponentDataQuery
 ComponentServerQuery
   @Const uuid: String
   name: String
-  op: CustomFunctionExpr?
+  op: CustomFunctionExpr? | CustomCode?
 CodeComponentHelper
   importPath: String
   importName: String

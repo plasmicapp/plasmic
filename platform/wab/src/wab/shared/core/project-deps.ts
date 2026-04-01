@@ -132,6 +132,7 @@ import {
   VariantedValue,
   isKnownArenaFrame,
   isKnownComponent,
+  isKnownCustomFunctionExpr,
   isKnownEventHandler,
   isKnownImageAssetRef,
   isKnownPageHref,
@@ -1483,7 +1484,7 @@ function upgradeProjectDep(
 
     component.serverQueries.forEach((serverQuery) => {
       const op = serverQuery.op;
-      if (!op) {
+      if (!op || !isKnownCustomFunctionExpr(op)) {
         return;
       }
       serverQuery.op = fixCustomFunctionExpr(oldToNewCustomFunctions, op);
