@@ -135,6 +135,7 @@ function PlasmicButton__RenderFunc(props) {
       className={classNames(
         projectcss.all,
         projectcss.button,
+        projectcss.button__47tFX,
         projectcss.root_reset,
         projectcss.plasmic_default_styles,
         projectcss.plasmic_mixins,

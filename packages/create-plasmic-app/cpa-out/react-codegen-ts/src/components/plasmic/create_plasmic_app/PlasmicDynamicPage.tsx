@@ -177,6 +177,7 @@ function PlasmicDynamicPage__RenderFunc(props: {
               className={classNames(
                 projectcss.all,
                 projectcss.h1,
+                projectcss.h1__47tFX,
                 projectcss.__wab_text,
                 sty.h1
               )}

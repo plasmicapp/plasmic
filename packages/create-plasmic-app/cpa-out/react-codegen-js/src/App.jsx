@@ -1,9 +1,12 @@
 
+import React from "react";
 import Homepage from './components/Homepage';
 
 
 function App() {
-  return (<Homepage />);
+  return (
+    <React.Suspense><Homepage /></React.Suspense>
+  );
 }
 
 export default App;

@@ -106,11 +106,16 @@ export function generateHomePage(
   };
 
   const appjsContents = `
+import React from "react";
 import ${componentName} from './${stripExtension(componentRelativePath)}';
 ${globalContextsImport}
 
 function App() {
-  return (${maybeWrapInGlobalContexts(`<${componentName} />`)});
+  return (
+    ${maybeWrapInGlobalContexts(
+      `<React.Suspense><${componentName} /></React.Suspense>`
+    )}
+  );
 }
 
 export default App;
