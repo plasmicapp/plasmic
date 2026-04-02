@@ -1,3 +1,4 @@
+import { changeStylesTool } from "@/wab/client/copilot/tools/changeStyles";
 import { deleteElementTool } from "@/wab/client/copilot/tools/deleteElement";
 import { insertHtmlTool } from "@/wab/client/copilot/tools/insertHtml";
 import { readTool } from "@/wab/client/copilot/tools/read";
@@ -7,6 +8,7 @@ type AnyCopilotTool = CopilotTool<any>;
 
 export const COPILOT_TOOLS: Record<string, AnyCopilotTool> = {
   [insertHtmlTool.toolName]: insertHtmlTool,
+  [changeStylesTool.toolName]: changeStylesTool,
   [deleteElementTool.toolName]: deleteElementTool,
   [readTool.toolName]: readTool,
 };

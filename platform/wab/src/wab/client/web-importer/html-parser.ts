@@ -548,7 +548,9 @@ function getVariantSettingsForNode(
   return variantSettings;
 }
 
-function processUnsanitizedStyles(unsanitizedStyles: WIUnsanitizedStyles): {
+export function processUnsanitizedStyles(
+  unsanitizedStyles: WIUnsanitizedStyles
+): {
   safe: WISafeStyles;
   unsafe: WIUnsafeStyles;
 } {
