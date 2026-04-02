@@ -955,7 +955,10 @@ function getOrderedSections(tpl: TplNode, viewCtx: ViewCtx): Set<Section> {
     });
   };
 
-  if (isTplCodeComponent(tpl) && !isTplCodeComponentStyleable(viewCtx, tpl)) {
+  if (
+    isTplCodeComponent(tpl) &&
+    !isTplCodeComponentStyleable(viewCtx.studioCtx.codeComponentsRegistry, tpl)
+  ) {
     // This code component explicitly opted out of styles
     pushIfNew(Section.Visibility);
     if (tpl.component.codeComponentMeta.isRepeatable) {
@@ -1167,7 +1170,12 @@ function shouldShowStyleSections(
       // className not being used
       return false;
     }
-    if (!isTplCodeComponentStyleable(viewCtx, tpl)) {
+    if (
+      !isTplCodeComponentStyleable(
+        viewCtx.studioCtx.codeComponentsRegistry,
+        tpl
+      )
+    ) {
       return false;
     }
   }

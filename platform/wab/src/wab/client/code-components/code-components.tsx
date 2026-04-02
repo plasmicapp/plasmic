@@ -27,6 +27,7 @@ import {
   BadPresetSchemaError,
   CodeComponentRegistrationTypeError,
   CodeComponentSyncCallbackFns,
+  CodeComponentsRegistry,
   CyclicComponentReferencesError,
   DuplicateCodeComponentError,
   DuplicatedComponentParamError,
@@ -623,10 +624,13 @@ export function elementSchemaToTplAndLogErrors(
 }
 
 export function isTplCodeComponentStyleable(
-  viewCtx: ViewCtx,
+  ccRegistry: CodeComponentsRegistry,
   tpl: TplCodeComponent
 ) {
-  if (viewCtx.getTplCodeComponentMeta(tpl)?.styleSections === false) {
+  const meta = ccRegistry
+    .getRegisteredCodeComponentsMap()
+    .get(tpl.component.name)?.meta;
+  if (meta?.styleSections === false) {
     // Not styleable if explicitly opted out of styling
     return false;
   }

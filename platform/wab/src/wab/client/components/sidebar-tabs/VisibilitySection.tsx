@@ -73,7 +73,8 @@ function VisibilitySection_(props: {
   const { viewCtx, tpl, expsProvider } = props;
 
   const noStyles =
-    isTplCodeComponent(tpl) && !isTplCodeComponentStyleable(viewCtx, tpl);
+    isTplCodeComponent(tpl) &&
+    !isTplCodeComponentStyleable(viewCtx.studioCtx.codeComponentsRegistry, tpl);
 
   const [isDataPickerVisible, setIsDataPickerVisible] =
     React.useState<boolean>(false);

@@ -1966,7 +1966,7 @@ const TplVisibilityToggle = observer(function TplVisibilityToggle(props: {
         onClick={() => {
           viewCtx.change(() => {
             const newVisibility = !isHidden
-              ? canSetDisplayNone(viewCtx, tpl)
+              ? canSetDisplayNone(viewCtx.studioCtx.codeComponentsRegistry, tpl)
                 ? TplVisibility.DisplayNone
                 : TplVisibility.NotRendered
               : TplVisibility.Visible;

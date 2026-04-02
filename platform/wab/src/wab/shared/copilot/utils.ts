@@ -1,6 +1,20 @@
+import { TplMgr } from "@/wab/shared/TplMgr";
+import { VariantTplMgr } from "@/wab/shared/VariantTplMgr";
 import { VariantCombo, getAllVariantsForTpl } from "@/wab/shared/Variants";
+import { getComponentArenaBaseFrame } from "@/wab/shared/component-arenas";
+import {
+  GlobalVariantFrame,
+  TransientComponentVariantFrame,
+} from "@/wab/shared/component-frame";
+import { getDedicatedArena } from "@/wab/shared/core/sites";
 import { flattenTpls } from "@/wab/shared/core/tpls";
-import { Component, Site, TplNode } from "@/wab/shared/model/classes";
+import {
+  Component,
+  ComponentArena,
+  PageArena,
+  Site,
+  TplNode,
+} from "@/wab/shared/model/classes";
 
 /**
  * Find a component by UUID. Throws if not found.
@@ -64,4 +78,34 @@ export function getVariantsByUuids(
   }
 
   return variants;
+}
+
+/**
+ * Create a VariantTplMgr for a component by looking up its ArenaFrame
+ * from the site's arena structure.
+ *
+ * Uses TransientComponentVariantFrame instead of RootComponentVariantFrame.
+ * RootComponentVariantFrame writes variant changes (targeting, pinning)
+ * back to the ArenaFrame model, which persists and affects the editor UI.
+ * TransientComponentVariantFrame stores variant state in memory only,
+ * so any variant operations through this VariantTplMgr won't mutate
+ * the ArenaFrame's persisted state.
+ */
+export function getComponentArenaAndVariantTplMgr(
+  site: Site,
+  component: Component,
+  tplMgr: TplMgr
+): { vtm: VariantTplMgr; arena: ComponentArena | PageArena } {
+  const arena = getDedicatedArena(site, component);
+  if (!arena) {
+    throw new Error(`Component "${component.name}" has no dedicated arena.`);
+  }
+  const arenaFrame = getComponentArenaBaseFrame(arena);
+  const vtm = new VariantTplMgr(
+    [new TransientComponentVariantFrame(arenaFrame.container)],
+    site,
+    tplMgr,
+    new GlobalVariantFrame(site, arenaFrame)
+  );
+  return { vtm, arena };
 }

@@ -41,6 +41,7 @@ import {
   getEventDataForTplComponent,
   trackInsertItem,
 } from "@/wab/client/observability/events/insert-item";
+import { DeleteTplResult, deleteTpl } from "@/wab/client/operations/delete-tpl";
 import { promptComponentName, promptPageName } from "@/wab/client/prompts";
 import { getComboForAction } from "@/wab/client/shortcuts/studio/studio-shortcuts";
 import { ComponentCtx } from "@/wab/client/studio-ctx/component-ctx";
@@ -228,7 +229,6 @@ import {
   Param,
   RawText,
   RichText,
-  State,
   StyleToken,
   TplComponent,
   TplNode,
@@ -1721,6 +1721,8 @@ export class ViewOps {
 
     const vtm = this.viewCtx().variantTplMgr();
     const currentCombo = vtm.getCurrentVariantCombo();
+    const component = Tpls.tryGetTplOwnerComponent(tpls[0]);
+    assert(component, "tpl must have an owning component");
 
     const isHiding = !forceDelete && !isBaseVariant(currentCombo);
 
@@ -1728,13 +1730,13 @@ export class ViewOps {
       this.change(() => {
         for (const tpl of tpls) {
           if (isTplVariantable(tpl)) {
-            setTplVisibility(
-              tpl,
-              currentCombo,
-              canSetDisplayNone(this.viewCtx(), tpl)
-                ? TplVisibility.DisplayNone
-                : TplVisibility.NotRendered
-            );
+            const visibility = canSetDisplayNone(
+              this.studioCtx().codeComponentsRegistry,
+              tpl
+            )
+              ? TplVisibility.DisplayNone
+              : TplVisibility.NotRendered;
+            setTplVisibility(tpl, currentCombo, visibility);
           }
         }
         const onlyRootSelected = tpls.length === 1 && tpls[0].parent === null;
@@ -1767,112 +1769,6 @@ export class ViewOps {
       });
       return;
     } else {
-      const component = Tpls.tryGetTplOwnerComponent(tpls[0]);
-      if (component) {
-        const removedImplicitStates: State[] = [];
-        for (const tpl of tpls) {
-          if (!component) {
-            continue;
-          }
-          removedImplicitStates.push(
-            ...findImplicitStatesOfNodesInTree(component, tpl)
-          );
-        }
-        for (const state of removedImplicitStates) {
-          const refs = Tpls.findExprsInTree(component.tplTree, tpls).filter(
-            ({ expr }) => isStateUsedInExpr(state, expr)
-          );
-          if (refs.length > 0) {
-            const maybeNode = refs.find((r) => r.node)?.node;
-            const key = common.mkUuid();
-            notification.error({
-              key,
-              message: "Cannot remove element",
-              description: (
-                <>
-                  It contains variable "{getStateDisplayName(state)}" which is
-                  referenced in the current component.{" "}
-                  {maybeNode ? (
-                    <a
-                      onClick={() => {
-                        this.viewCtx().setStudioFocusByTpl(maybeNode);
-                        notification.close(key);
-                      }}
-                    >
-                      [Go to reference]
-                    </a>
-                  ) : null}
-                </>
-              ),
-            });
-            return;
-          }
-          const implicitUsages = findImplicitUsages(this.site(), state);
-          if (implicitUsages.length > 0) {
-            const components = L.uniq(
-              implicitUsages.map((usage) => usage.component)
-            );
-            notification.error({
-              message: "Cannot remove element",
-              description: `It contains variable "${getStateDisplayName(
-                state
-              )}" which is referenced in ${components
-                .map((c) => Components.getComponentDisplayName(c))
-                .join(", ")}.`,
-            });
-            return;
-          }
-        }
-        for (const { expr, node: maybeNode } of Tpls.findExprsInComponent(
-          component
-        )) {
-          if (isKnownTplRef(expr) && tpls.includes(expr.tpl)) {
-            const key = common.mkUuid();
-            notification.error({
-              key,
-              message: "Cannot remove element",
-              description: (
-                <>
-                  It is referenced by another element in an invoke action
-                  element interaction.{" "}
-                  {maybeNode ? (
-                    <a
-                      onClick={() => {
-                        this.viewCtx().setStudioFocusByTpl(maybeNode);
-                        notification.close(key);
-                      }}
-                    >
-                      [Go to reference]
-                    </a>
-                  ) : null}
-                </>
-              ),
-            });
-            return;
-          }
-        }
-      }
-
-      const deleteOneTpl = (tpl: TplNode) => {
-        const parent = tpl.parent;
-        $$$(tpl).remove({ deep: true });
-
-        // Remove list containers when they become empty (i.e., their latest
-        // item is removed).
-        if (
-          Tpls.isTplTag(parent) &&
-          isTagListContainer(parent.tag) &&
-          parent.children.length === 0
-        ) {
-          $$$(parent).remove({ deep: true });
-        }
-
-        // handle tpl columns sizing
-        if (parent && Tpls.isTplColumns(parent)) {
-          redistributeColumnsSizes(parent, this.viewCtx().variantTplMgr());
-        }
-      };
-
       if (!skipCommentsConfirmation) {
         const commentStatsBySubject =
           this.studioCtx().commentsCtx.computedData().commentStatsBySubject;
@@ -1910,22 +1806,51 @@ export class ViewOps {
         }
       }
 
+      let deleteResult: DeleteTplResult | undefined;
       this.change(() => {
         const nextFocus = this.findNearestFocusable(tpls[0], {
           excludeTpls: tpls,
           visibleInCombo: currentCombo,
         });
-        if (nextFocus) {
+
+        deleteResult = deleteTpl(tpls, {
+          component: component!,
+          site: this.site(),
+          vtm,
+        });
+
+        if (deleteResult.result === "deleted" && nextFocus) {
           if (nextFocus instanceof SlotSelection) {
             this.viewCtx().setStudioFocusBySelectable(nextFocus);
           } else {
             this.viewCtx().setStudioFocusByTpl(nextFocus);
           }
         }
-        for (const tpl of tpls) {
-          deleteOneTpl(tpl);
-        }
       });
+
+      if (deleteResult?.result === "error") {
+        const key = common.mkUuid();
+        const refNode = deleteResult.referencingNode;
+        notification.error({
+          key,
+          message: "Cannot remove element",
+          description: (
+            <>
+              {deleteResult.message}{" "}
+              {refNode ? (
+                <a
+                  onClick={() => {
+                    this.viewCtx().setStudioFocusByTpl(refNode);
+                    notification.close(key);
+                  }}
+                >
+                  [Go to reference]
+                </a>
+              ) : null}
+            </>
+          ),
+        });
+      }
     }
   }
 

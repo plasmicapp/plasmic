@@ -10,9 +10,11 @@ import { Bundler } from "@/wab/shared/bundler";
 import * as common from "@/wab/shared/common";
 import { createSite } from "@/wab/shared/core/sites";
 import {
-  createSiteOps,
   createTplMgr,
   createVariantTplMgr,
+} from "@/wab/shared/tests/site-tests-utils";
+import {
+  createSiteOps,
   getFigmaFilesIds,
   getTestFigmaData,
 } from "@/wab/test/figma";
