@@ -189,5 +189,5 @@ function VariablesSection_(props: VariablesSectionProps) {
   );
 }
 
-const VariablesSection = observer(React.forwardRef(VariablesSection_));
+const VariablesSection = observer(VariablesSection_);
 export default VariablesSection;
