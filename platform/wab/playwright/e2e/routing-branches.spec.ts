@@ -82,7 +82,7 @@ test.describe.skip("routing - branch UI not appearing", () => {
         await page.waitForTimeout(500);
       }
 
-      await page.keyboard.press("Control+a");
+      await page.keyboard.press("ControlOrMeta+a");
       await page.keyboard.type(branchName);
       await page.keyboard.press("Escape");
       await page.waitForTimeout(500);

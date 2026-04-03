@@ -25,7 +25,7 @@ async function setHtmlId(page: Page, rightPanel: FrameLocator, id: string) {
     .locator('div.templated-string-input[contenteditable="true"]')
     .nth(2);
   await idField.click();
-  await page.keyboard.press("Control+a");
+  await page.keyboard.press("ControlOrMeta+a");
   await page.keyboard.type(id);
   await page.keyboard.press("Tab");
 }
@@ -334,7 +334,7 @@ test.describe("Antd5 pagination", () => {
     );
     await monacoContainer.click();
 
-    await page.keyboard.press("Control+a");
+    await page.keyboard.press("ControlOrMeta+a");
     await page.keyboard.press("Backspace");
 
     const query = queryData;

@@ -95,7 +95,7 @@ test.describe("dynamic-pages", () => {
     await models.studio.bindTextContentToDynamicValue(["currentItem"]);
 
     await models.studio.leftPanel.selectTreeNode(['"Say hello to [child]"']);
-    await page.keyboard.press("Control+Alt+L");
+    await page.keyboard.press("ControlOrMeta+Alt+L");
     await models.studio.waitForSave();
     await models.studio.bindPropToCustomCode(
       '[data-test-id="prop-editor-row-href"] label',

@@ -182,7 +182,7 @@ test.describe("hostless-sanity-io", () => {
       '[data-plasmic-prop="path"]'
     );
     await pathInput.click();
-    await page.keyboard.press("Control+a");
+    await page.keyboard.press("ControlOrMeta+a");
     await page.keyboard.press("Backspace");
     await page.keyboard.type("poster");
     await page.keyboard.press("Enter");

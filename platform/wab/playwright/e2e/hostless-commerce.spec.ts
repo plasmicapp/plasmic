@@ -301,7 +301,7 @@ test.describe("hostless-commerce", () => {
     await page.keyboard.press("Enter");
     await page.keyboard.press("Enter");
     await page.waitForTimeout(500);
-    await page.keyboard.press("Control+r");
+    await page.keyboard.press("ControlOrMeta+r");
     await page.waitForTimeout(200);
     await page.keyboard.type("Product Container");
     await page.keyboard.press("Enter");
@@ -327,7 +327,7 @@ test.describe("hostless-commerce", () => {
       .click();
     await models.studio.leftPanel.insertNode("Text");
 
-    await page.keyboard.press("Control+r");
+    await page.keyboard.press("ControlOrMeta+r");
     await page.waitForTimeout(200);
     await page.keyboard.type("Product Name");
     await page.keyboard.press("Enter");

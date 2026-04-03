@@ -1139,9 +1139,9 @@ test.describe("Imported token overrides", () => {
         frame
       );
 
-      await page.keyboard.press("Control+z");
+      await page.keyboard.press("ControlOrMeta+z");
       await page.waitForTimeout(200);
-      await page.keyboard.press("Control+y");
+      await page.keyboard.press("ControlOrMeta+y");
       await page.waitForTimeout(200);
 
       await assertTokenIndicator(

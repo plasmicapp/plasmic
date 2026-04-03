@@ -190,7 +190,7 @@ test.describe("data-binding", () => {
     await monacoContainer.waitFor({ state: "visible", timeout: 5000 });
     await monacoContainer.click();
     await page.waitForTimeout(100);
-    await page.keyboard.press("Control+a");
+    await page.keyboard.press("ControlOrMeta+a");
     await page.waitForTimeout(100);
     await page.keyboard.press("Backspace");
     await page.waitForTimeout(100);
@@ -213,7 +213,7 @@ test.describe("data-binding", () => {
     );
     await monacoContainer2.waitFor({ state: "visible", timeout: 5000 });
     await monacoContainer2.click();
-    await page.keyboard.press("Control+a");
+    await page.keyboard.press("ControlOrMeta+a");
     await page.keyboard.press("Backspace");
     await page.keyboard.type('!$props.linkProp.includes("invisible")');
     const saveButton = models.studio.rightPanel.frame

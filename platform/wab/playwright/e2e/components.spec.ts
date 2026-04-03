@@ -128,7 +128,7 @@ ${FREE_CONTAINER_LOWER}
     await expect(selectedElt).toHaveCSS("height", "300px");
 
     await models.studio.focusFrameRoot(framed);
-    await page.keyboard.press("Control+Alt+k");
+    await page.keyboard.press("ControlOrMeta+Alt+k");
     await models.studio.submitPrompt("Funky");
 
     await models.studio.withinLiveMode(async (liveFrame) => {

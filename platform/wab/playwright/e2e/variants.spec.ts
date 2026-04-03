@@ -255,9 +255,9 @@ test.describe("variants", () => {
       frame.locator("span").filter({ hasText: "hello" }).first()
     ).toBeVisible();
 
-    await page.keyboard.press("Control+z");
-    await page.keyboard.press("Control+z");
-    await page.keyboard.press("Control+z");
+    await page.keyboard.press("ControlOrMeta+z");
+    await page.keyboard.press("ControlOrMeta+z");
+    await page.keyboard.press("ControlOrMeta+z");
     await frame
       .locator("span")
       .filter({ hasText: "hello" })
@@ -303,8 +303,8 @@ test.describe("variants", () => {
 
     await checkEndState();
 
-    await page.keyboard.press("Control+z");
-    await page.keyboard.press("Control+y");
+    await page.keyboard.press("ControlOrMeta+z");
+    await page.keyboard.press("ControlOrMeta+y");
     await checkEndState();
   });
 });

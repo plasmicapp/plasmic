@@ -136,7 +136,7 @@ export async function updateFormValuesInLiveMode(
     ) {
       valueToType = valueToType.replace("{selectall}{del}", "");
       await input.click();
-      await input.press("Control+a");
+      await input.press("ControlOrMeta+a");
       await input.press("Delete");
     } else {
       await input.clear();

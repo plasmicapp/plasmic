@@ -136,7 +136,7 @@ test.describe("hostless-strapi", () => {
       );
       await nameInput.click();
 
-      await page.keyboard.press("Control+a");
+      await page.keyboard.press("ControlOrMeta+a");
       await page.keyboard.press("Backspace");
       const collectionName = version === 5 ? "restaurants-v5" : "restaurants";
       await page.keyboard.type(collectionName);
@@ -243,7 +243,7 @@ test.describe("hostless-strapi", () => {
       );
       await nameInput.click();
 
-      await page.keyboard.press("Control+a");
+      await page.keyboard.press("ControlOrMeta+a");
       await page.keyboard.press("Backspace");
       const collectionName = version === 5 ? "restaurants-v5" : "restaurants";
       await page.keyboard.type(collectionName);

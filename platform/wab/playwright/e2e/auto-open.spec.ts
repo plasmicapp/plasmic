@@ -479,7 +479,7 @@ test.describe("Auto Open", () => {
         await page.keyboard.press("Delete");
         await expect(pageFrame.getByText(text)).not.toBeVisible();
         await expect(getAutoOpenBanner(models)).not.toBeVisible();
-        await page.keyboard.press("Control+z");
+        await page.keyboard.press("ControlOrMeta+z");
         await expect(getAutoOpenBanner(models)).toBeVisible();
 
         await models.studio.withinLiveMode(async (liveFrame) => {

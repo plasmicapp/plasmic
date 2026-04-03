@@ -75,7 +75,7 @@ test.describe("Antd5 segmented", () => {
     await textElementInTree.click();
     await page.waitForTimeout(500);
 
-    await page.keyboard.press("Control+r");
+    await page.keyboard.press("ControlOrMeta+r");
     await page.waitForTimeout(500);
     await page.keyboard.type("text-segmented-state");
     await page.keyboard.press("Enter");
@@ -257,7 +257,7 @@ test.describe("Antd5 segmented", () => {
     await textElementInTree.click();
     await page.waitForTimeout(500);
 
-    await page.keyboard.press("Control+r");
+    await page.keyboard.press("ControlOrMeta+r");
     await page.waitForTimeout(500);
     await page.keyboard.type("text-segmented-state");
     await page.keyboard.press("Enter");

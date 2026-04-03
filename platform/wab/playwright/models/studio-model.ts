@@ -251,7 +251,7 @@ export class StudioModel extends BaseModel {
   }
 
   async extractComponentNamed(name: string) {
-    await this.page.keyboard.press("Control+Alt+k");
+    await this.page.keyboard.press("ControlOrMeta+Alt+k");
     await this.extractComponentNameInput.fill(name);
     await this.extractSubmitButton.click();
   }
@@ -445,7 +445,7 @@ export class StudioModel extends BaseModel {
 
   async renameTreeNode(name: string) {
     await this.page.waitForTimeout(200);
-    await this.page.keyboard.press("Control+r");
+    await this.page.keyboard.press("ControlOrMeta+r");
     await this.page.waitForTimeout(200);
     await this.page.keyboard.type(name);
     await this.page.waitForTimeout(200);

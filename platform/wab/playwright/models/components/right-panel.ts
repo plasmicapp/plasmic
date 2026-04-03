@@ -552,7 +552,7 @@ export class RightPanel extends BaseModel {
     await this.page.waitForTimeout(200);
 
     if (opts?.reset) {
-      await this.page.keyboard.press("Control+a");
+      await this.page.keyboard.press("ControlOrMeta+a");
       await this.page.waitForTimeout(100);
       await this.page.keyboard.press("Backspace");
       await this.page.waitForTimeout(100);
@@ -565,7 +565,7 @@ export class RightPanel extends BaseModel {
 
   async setPagePath(path: string) {
     await this.pagePathInput.click();
-    await this.page.keyboard.press("Control+a");
+    await this.page.keyboard.press("ControlOrMeta+a");
     await this.page.keyboard.press("Backspace");
     await this.pagePathInput.fill(path);
     await this.page.keyboard.press("Enter");
@@ -576,7 +576,7 @@ export class RightPanel extends BaseModel {
       `[data-test-id="page-param-${paramName}"] input`
     );
     await pageParamInput.click();
-    await this.page.keyboard.press("Control+a");
+    await this.page.keyboard.press("ControlOrMeta+a");
     await this.page.keyboard.press("Backspace");
     await pageParamInput.fill(value);
     await this.page.keyboard.press("Enter");
@@ -1117,7 +1117,7 @@ export class RightPanel extends BaseModel {
     await nameInput.waitFor({ state: "visible", timeout: 5000 });
 
     await nameInput.click();
-    await this.page.keyboard.press("Control+a");
+    await this.page.keyboard.press("ControlOrMeta+a");
     await this.page.keyboard.press("Delete");
     await nameInput.fill(state.name);
 
