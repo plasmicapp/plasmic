@@ -7,6 +7,8 @@ import {
   Element,
   Node,
   Point,
+  Range,
+  Text,
   Transforms,
 } from "slate";
 import type { ReactEditor } from "slate-react";
@@ -100,6 +102,35 @@ export function resetNodes(
   if (point) {
     Transforms.select(editor, point);
   }
+}
+
+/**
+ * The built-in {@link Editor.marks} doesn't work at the boundary of two texts.
+ *
+ * Take the following example where [1] and [2] are cursor positions.
+ *  <span>Hello [1]</span><bold>[2]world</bold>
+ *
+ * Editor.marks() at both [1] and [2] would return no marks.
+ * marksForToolbar() correctly returns no marks for [1] and bold for [2].
+ */
+export function marksForToolbar(editor: Editor): Omit<Text, "text"> | null {
+  // When the user toggles a mark on the toolbar without typing anything yet,
+  // this might be set.
+  if (editor.marks) {
+    return editor.marks;
+  }
+
+  // Use Editor.marks if there's no selection or it's is a range.
+  if (!editor.selection || Range.isExpanded(editor.selection)) {
+    return Editor.marks(editor);
+  }
+
+  if (!Node.has(editor, editor.selection.anchor.path)) {
+    return Editor.marks(editor);
+  }
+  const [leaf] = Editor.leaf(editor, editor.selection.anchor.path);
+  const { text: _text, ...leafMarks } = leaf;
+  return leafMarks as Omit<Text, "text">;
 }
 
 export const tags = [

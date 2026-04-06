@@ -21,6 +21,7 @@ import type * as jsxDevRuntime from "react/jsx-dev-runtime";
 import type * as jsxRuntime from "react/jsx-runtime";
 import type ResizeObserver from "resize-observer-polyfill";
 import type * as slate from "slate";
+import type * as slateDom from "slate-dom";
 import type * as slateReact from "slate-react";
 import type { SetOptional } from "type-fest";
 
@@ -65,6 +66,7 @@ interface CanvasPkgs {
   ResizeObserver: typeof ResizeObserver;
   GenericErrorBoundary: React.ComponentType<{ className?: string }>;
   slate: typeof slate;
+  slateDom: typeof slateDom;
   slateReact: typeof slateReact;
   localElement?: typeof Element;
   createModal: (

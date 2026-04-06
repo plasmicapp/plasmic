@@ -1,5 +1,9 @@
 import { CustomCssProps } from "@/wab/client/components/canvas/CanvasText";
-import { tags, TplTagElement } from "@/wab/client/components/canvas/slate";
+import {
+  marksForToolbar,
+  tags,
+  TplTagElement,
+} from "@/wab/client/components/canvas/slate";
 import { SidebarModalProvider } from "@/wab/client/components/sidebar/SidebarModal";
 import Button from "@/wab/client/components/widgets/Button";
 import {
@@ -35,7 +39,7 @@ import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { Menu, Popover } from "antd";
 import { observer } from "mobx-react";
 import * as React from "react";
-import { Editor, Range, Text } from "slate";
+import { Editor, Element, Range, Text } from "slate";
 
 type BlockElement = {
   tag: (typeof tags)[number];
@@ -161,12 +165,15 @@ function RichTextToolbar_(
     // Update current block.
     const blockElement = Editor.above(editor, {
       match: (n) =>
-        Editor.isBlock(editor, n) && n.type === "TplTag" && n.tag !== "li",
+        Element.isElement(n) &&
+        Editor.isBlock(editor, n) &&
+        n.type === "TplTag" &&
+        n.tag !== "li",
     })?.[0] as TplTagElement | undefined;
     setBlock(blockElement?.tag);
 
     // Update marks (CSS props in current selection).
-    setMarks(Editor.marks(editor) || {});
+    setMarks(marksForToolbar(editor) ?? {});
   }, [ctx.editor]);
 
   const showBlock = canEditStyleSection(

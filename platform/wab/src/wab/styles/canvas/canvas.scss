@@ -244,8 +244,8 @@ $placeholder-hue: black;
   display: none !important;
 }
 
-:where(.__wab_rich_text p) {
-  margin: 0;
+:where(.__wab_rich_text) {
+  outline: 0;
 }
 
 // The following CSS is required to make `list-style-position: inside` work

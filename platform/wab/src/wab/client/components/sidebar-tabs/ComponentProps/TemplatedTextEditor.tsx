@@ -335,8 +335,8 @@ export const TemplatedTextEditor = React.forwardRef<
         >
           <Slate
             editor={editor}
-            value={value as SlateDescendant[]}
-            onChange={onSlateChange}
+            initialValue={value as SlateDescendant[]}
+            onValueChange={onSlateChange}
           >
             <CustomCaret
               slateContainerRef={slateContainerRef}
@@ -944,7 +944,7 @@ function CustomCaret({
         break;
       } else {
         element = element.children[pathPosition];
-        if (Editor.isVoid(editor, element)) {
+        if (SlateElement.isElement(element) && Editor.isVoid(editor, element)) {
           voidOrNotFoundElement = true;
           break;
         }

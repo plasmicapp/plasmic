@@ -36,9 +36,9 @@
 }
 
 .placeholder {
-  top: 7px;
+  top: 7px !important;
   opacity: 1 !important;
-  color: $sand9;
+  color: $sand9 !important;
   width: initial !important;
   display: inline-block !important;
 }
