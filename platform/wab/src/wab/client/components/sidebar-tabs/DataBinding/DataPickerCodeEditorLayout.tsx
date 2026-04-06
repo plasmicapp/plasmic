@@ -67,8 +67,7 @@ function DataPickerCodeEditorLayout_(
             hideLineNumbers={true}
             language={"javascript"}
             defaultValue={defaultValue}
-            data={data}
-            completionData={completionData}
+            data={completionData}
             onSave={onSave}
             onChange={(val: string) => setCurrentValue(val)}
             enableMinimap={false}

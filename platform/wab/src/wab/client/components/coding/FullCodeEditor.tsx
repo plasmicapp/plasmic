@@ -26,10 +26,6 @@ export interface FullCodeEditorProps {
   onSave?: (val: string) => void;
   onChange?: (val: string) => void;
   data?: Record<string, any>;
-  /**
-   * Optionally specify data for intellisense, defaults to `data`
-   */
-  completionData?: Record<string, any>;
   hideLineNumbers?: boolean;
   enableMinimap?: boolean;
   editorHeight?: number;
@@ -56,7 +52,6 @@ export const FullCodeEditor = React.forwardRef(
       language = "typescript",
       defaultValue,
       data,
-      completionData,
       enableMinimap = true,
       editorHeight,
       hideGlobalSuggestions,
@@ -136,7 +131,7 @@ export const FullCodeEditor = React.forwardRef(
           const dataLanguage =
             language === "javascript" && schema ? "typescript" : language;
 
-          const dataCode = dataObjToCode(completionData ?? data, schema);
+          const dataCode = dataObjToCode(data, schema);
           const envUri = createFilePathWithExtension("env", dataLanguage);
           yield upsertMonacoExtraLib(langDefaults, envUri, dataCode);
           yield upsertMonacoModel(envUri, dataLanguage, dataCode);
