@@ -11,7 +11,11 @@ import { SerializerBaseContext } from "@/wab/shared/codegen/react-p/types";
 import { isPlatformNextJs } from "@/wab/shared/codegen/react-p/utils";
 import { PageMetadata } from "@/wab/shared/codegen/types";
 import { assert, strict } from "@/wab/shared/common";
-import { asCode, stripParens } from "@/wab/shared/core/exprs";
+import {
+  asCode,
+  flattenTemplatedStringToString,
+  stripParens,
+} from "@/wab/shared/core/exprs";
 import {
   Component,
   Expr,
@@ -284,7 +288,7 @@ function flattenMetadataValueToString(
     return value;
   }
   if (isKnownTemplatedString(value)) {
-    return value.text.filter((val) => L.isString(val)).join("");
+    return flattenTemplatedStringToString(value);
   }
   return "";
 }

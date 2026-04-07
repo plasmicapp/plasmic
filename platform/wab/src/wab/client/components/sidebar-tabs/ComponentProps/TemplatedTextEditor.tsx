@@ -29,11 +29,16 @@ import {
   isRealCodeExpr,
   summarizeExpr,
 } from "@/wab/shared/core/exprs";
+import { tryGetOwnerSite } from "@/wab/shared/core/tpls";
 import {
   getDynamicBindings,
   isDynamicValue,
 } from "@/wab/shared/dynamic-bindings";
 import { tryEvalExpr } from "@/wab/shared/eval";
+import {
+  isPathDataToken,
+  pathToDisplayString,
+} from "@/wab/shared/eval/expression-parser";
 import {
   Component,
   CustomCode,
@@ -194,7 +199,14 @@ export const TemplatedTextEditor = React.forwardRef<
     const viewCtx = studioCtx.focusedViewCtx();
 
     const slateContainerRef = React.useRef<HTMLDivElement>(null);
-
+    const ctx = useContext(ContextMenuContext);
+    const insertDynamicValue = React.useCallback(() => {
+      if (!templatedString) {
+        ctx.useDynamicValue();
+      } else {
+        insertCodeTag(editor);
+      }
+    }, [templatedString, editor, ctx]);
     React.useImperativeHandle<PropEditorRef, PropEditorRef>(
       outerRef,
       () => ({
@@ -204,8 +216,9 @@ export const TemplatedTextEditor = React.forwardRef<
         },
         isFocused: () => ReactEditor.isFocused(editor),
         element: slateContainerRef.current,
+        useDynamicValue: insertDynamicValue,
       }),
-      [slateContainerRef, editor]
+      [slateContainerRef, editor, insertDynamicValue]
     );
 
     const exprCtx = React.useMemo(
@@ -301,7 +314,6 @@ export const TemplatedTextEditor = React.forwardRef<
     }, []);
 
     const [moved, setMoved] = useState(false);
-    const ctx = useContext(ContextMenuContext);
 
     const previousValue = React.useRef(value);
     // Slate doesn't support changing the values externally, so we need to keep
@@ -316,14 +328,6 @@ export const TemplatedTextEditor = React.forwardRef<
       }
       previousValue.current = value;
     }, [value, component, studioCtx]);
-
-    const insertDynamicValue = React.useCallback(() => {
-      if (!templatedString) {
-        ctx.useDynamicValue();
-      } else {
-        insertCodeTag(editor);
-      }
-    }, [templatedString, editor, ctx]);
 
     return (
       <div className="flex-col fill-width">
@@ -772,13 +776,29 @@ function CodeTag({
     }
   }, [element, path, editor]);
 
-  let previewValue: any;
-  try {
-    previewValue = data ? tryEvalExpr(element.label, data).val : undefined;
-  } catch {
-    previewValue = undefined;
-  }
-  const codePreviewValue = summarizeExpr(element.jsSnippet, exprCtx);
+  const previewValue = React.useMemo(() => {
+    if (showExpressionAsPreviewValue) {
+      if (
+        isKnownObjectPath(element.jsSnippet) &&
+        isPathDataToken(element.jsSnippet.path) &&
+        exprCtx.component &&
+        exprCtx.projectId &&
+        exprCtx.inStudio
+      ) {
+        const site = tryGetOwnerSite(exprCtx.component);
+        if (site) {
+          return pathToDisplayString(
+            element.jsSnippet.path,
+            site,
+            exprCtx.projectId
+          );
+        }
+      }
+      return summarizeExpr(element.jsSnippet, exprCtx);
+    } else {
+      return data ? tryEvalExpr(element.label, data).val : undefined;
+    }
+  }, [showExpressionAsPreviewValue, element, exprCtx, data]);
 
   const value = extractValueSavedFromDataPicker(element.jsSnippet, exprCtx);
 
@@ -863,7 +883,7 @@ function CodeTag({
         )}
       >
         {children}
-        {`${showExpressionAsPreviewValue ? codePreviewValue : previewValue}`}
+        {previewValue}
       </div>
     </Popover>
   );

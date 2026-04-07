@@ -530,6 +530,7 @@ export function ComponentPropModal(props: {
                   value={defaultExpr}
                   choices={choices}
                   onChange={setDefaultExpr}
+                  disableDynamicValue
                 />
               ),
           },
@@ -547,6 +548,7 @@ export function ComponentPropModal(props: {
                   value={previewExpr}
                   choices={choices}
                   onChange={setPreviewExpr}
+                  disableDynamicValue
                 />
               ),
           },
@@ -667,7 +669,17 @@ const PropValueEditorWithMenu: React.FC<{
   value: Expr | undefined;
   choices: ChoiceOptions;
   onChange: (expr: Expr | undefined) => void;
-}> = ({ attr, label, value, onChange, propType, propTypeData, choices }) => {
+  disableDynamicValue?: boolean;
+}> = ({
+  attr,
+  label,
+  value,
+  onChange,
+  propType,
+  propTypeData,
+  choices,
+  disableDynamicValue,
+}) => {
   const displayVal = exprDisplayVal(value, propTypeData);
 
   return (
@@ -699,6 +711,7 @@ const PropValueEditorWithMenu: React.FC<{
             }
           }}
           propType={propType}
+          disableDynamicValue={disableDynamicValue}
         />
       )}
       <IFrameAwareDropdownMenu

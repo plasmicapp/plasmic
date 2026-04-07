@@ -72,6 +72,9 @@ export class RightPanel extends BaseModel {
   );
   readonly useDynamicValueButton: Locator =
     this.frame.getByText("Use dynamic value");
+  readonly removeDynamicValueButton: Locator = this.frame.getByText(
+    "Remove dynamic value"
+  );
   readonly elementVariantsButton: Locator =
     this.frame.getByText("Element variants");
   readonly addElemetVariantsButton: Locator = this.frame.locator(

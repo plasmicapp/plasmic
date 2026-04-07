@@ -6,10 +6,19 @@ import { ValueSetState } from "@/wab/client/components/sidebar/sidebar-helpers";
 import { useUndo } from "@/wab/client/shortcuts/studio/useUndo";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { asCode, ExprCtx } from "@/wab/shared/core/exprs";
+import {
+  asCode,
+  ExprCtx,
+  flattenTemplatedStringToString,
+  hasDynamicParts,
+} from "@/wab/shared/core/exprs";
 import {
   Component,
+  CustomCode,
+  isKnownCustomCode,
+  isKnownObjectPath,
   isKnownTemplatedString,
+  ObjectPath,
   TemplatedString,
 } from "@/wab/shared/model/classes";
 import { Input, InputRef } from "antd";
@@ -100,9 +109,15 @@ export const StringPropEditor = React.forwardRef<
   );
 });
 
+export type TemplatedStringPropEditorValue =
+  | string
+  | TemplatedString
+  | ObjectPath
+  | CustomCode;
+
 export interface TemplatedStringPropEditorProps {
-  onChange: (value: string | TemplatedString) => void;
-  value: TemplatedString | string | undefined | null;
+  onChange: (value: TemplatedStringPropEditorValue) => void;
+  value: TemplatedStringPropEditorValue | null | undefined;
   disabled?: boolean;
   leftAligned?: boolean;
   valueSetState?: ValueSetState;
@@ -117,6 +132,12 @@ export interface TemplatedStringPropEditorProps {
   control?: "default" | "large" | "multiLine";
 }
 
+/**
+ * Adapter between {@link PropValueEditor} and {@link TemplatedTextEditor}.
+ *
+ * {@link PropValueEditor} types: JsonValue | Expr
+ * {@link TemplatedTextEditor} type: TemplatedString
+ */
 export const TemplatedStringPropEditor = React.forwardRef<
   PropEditorRef,
   TemplatedStringPropEditorProps
@@ -139,28 +160,31 @@ export const TemplatedStringPropEditor = React.forwardRef<
     component: props.component ?? null,
     inStudio: true,
   };
+  const normalizedValue = React.useMemo(
+    () => normalizeToTemplatedString(props.value),
+    [props.value]
+  );
   const {
     value: draft,
     push: setDraft,
     handleKeyDown,
     reset,
-  } = useUndo<TemplatedString | string | undefined>(props.value || undefined);
+  } = useUndo<TemplatedString | undefined>(normalizedValue);
   // Whenever the passed in props.value changes, we reset the state
   React.useEffect(() => {
     reset();
-  }, [props.value]);
-  const curValue = draft === undefined ? props.value : draft;
-  const submitVal = (val: string | TemplatedString) => {
-    if (
-      val !== props.value &&
-      checkStrSizeLimit(
-        isKnownTemplatedString(val) ? asCode(val, exprCtx).code : val
-      )
-    ) {
-      props.onChange(val);
-      reset(val);
-    } else {
+  }, [normalizedValue]);
+  const submitVal = (val: TemplatedString) => {
+    if (templatedStringsEqual(val, normalizedValue, exprCtx)) {
+      // Equal to original value, do nothing.
+      return;
+    } else if (!checkStrSizeLimit(asCode(val, exprCtx).code)) {
+      // String too large, reset to initial value.
       reset();
+    } else {
+      // Good, notify new value to parent and reset to new initial value.
+      props.onChange(simplifyTemplatedString(val));
+      reset(val);
     }
   };
   useUnmount(() => {
@@ -178,18 +202,9 @@ export const TemplatedStringPropEditor = React.forwardRef<
       ? "allowed"
       : undefined;
 
-  return !isKnownTemplatedString(props.value) &&
-    (!props.data || props.disabled) ? (
-    <StringPropEditor {...props} value={props.value} ref={outerRef} />
-  ) : (
+  return (
     <TemplatedTextEditor
-      value={
-        isKnownTemplatedString(curValue)
-          ? curValue
-          : curValue != null
-          ? new TemplatedString({ text: [`${curValue}`] })
-          : undefined
-      }
+      value={draft ?? normalizedValue}
       disabled={props.disabled}
       onChange={(value) => {
         setDraft(value);
@@ -216,7 +231,9 @@ export const TemplatedStringPropEditor = React.forwardRef<
             // Let the editor handle the Enter key
             return;
           }
-          submitVal(draft ?? "");
+          if (draft !== undefined) {
+            submitVal(draft);
+          }
           e.preventDefault();
           e.stopPropagation();
         }
@@ -241,3 +258,57 @@ export const TemplatedStringPropEditor = React.forwardRef<
     />
   );
 });
+
+export function isTemplatedStringEditorValue(
+  x: any
+): x is TemplatedStringPropEditorValue {
+  return (
+    typeof x === "string" ||
+    isKnownTemplatedString(x) ||
+    isKnownObjectPath(x) ||
+    isKnownCustomCode(x)
+  );
+}
+
+function normalizeToTemplatedString(
+  value: TemplatedStringPropEditorValue | null | undefined
+): TemplatedString {
+  if (value == null) {
+    return new TemplatedString({ text: [""] });
+  } else if (isKnownTemplatedString(value)) {
+    return value;
+  } else {
+    return new TemplatedString({ text: ["", value, ""] });
+  }
+}
+
+function simplifyTemplatedString(
+  ts: TemplatedString
+): TemplatedStringPropEditorValue {
+  const nonEmpty = ts.text.filter((p) => p !== "");
+  if (
+    nonEmpty.length === 1 &&
+    (isKnownObjectPath(nonEmpty[0]) || isKnownCustomCode(nonEmpty[0]))
+  ) {
+    return nonEmpty[0];
+  }
+  if (!hasDynamicParts(ts)) {
+    return flattenTemplatedStringToString(ts);
+  }
+  return ts;
+}
+
+/**
+ * Tests equality for TemplatedStrings by comparing JavaScript codegen output.
+ */
+function templatedStringsEqual(
+  a: TemplatedString,
+  b: TemplatedString,
+  exprCtx: ExprCtx
+): boolean {
+  const codeA = asCode(a, exprCtx).code;
+  const codeB = asCode(b, exprCtx).code;
+  return codeA === codeB;
+}
+
+export const _testonly = { simplifyTemplatedString, templatedStringsEqual };

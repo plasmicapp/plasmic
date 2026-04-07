@@ -1,16 +1,29 @@
-import { StringPropEditor } from "@/wab/client/components/sidebar-tabs/ComponentProps/StringPropEditor";
+import {
+  StringPropEditor,
+  isTemplatedStringEditorValue,
+} from "@/wab/client/components/sidebar-tabs/ComponentProps/StringPropEditor";
 import { PropEditorRow } from "@/wab/client/components/sidebar-tabs/PropEditorRow";
 import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
 import { LabeledItemRow } from "@/wab/client/components/sidebar/sidebar-helpers";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { spawn } from "@/wab/shared/common";
+import { spawn, switchType } from "@/wab/shared/common";
 import { PageComponent } from "@/wab/shared/core/components";
 import {
-  convertExprToStringOrTemplatedString,
-  convertTemplatedStringToExpr,
+  codeLit,
+  flattenTemplatedStringToString,
+  hasDynamicParts,
+  mkTemplatedStringOfOneDynExpr,
+  tryExtractJson,
 } from "@/wab/shared/core/exprs";
-import { Expr, TplTag } from "@/wab/shared/model/classes";
+import {
+  CustomCode,
+  Expr,
+  ObjectPath,
+  TemplatedString,
+  TplTag,
+  isKnownExpr,
+} from "@/wab/shared/model/classes";
 import { observer } from "mobx-react";
 import React from "react";
 
@@ -26,7 +39,7 @@ const PageMetaPanel = observer(function PageMetaPanel(props: {
     : undefined;
 
   const titleExpr = React.useMemo(
-    () => convertTemplatedStringToExpr(page.pageMeta?.title),
+    () => convertPageMetaStringToExpr(page.pageMeta?.title),
     [page.pageMeta?.title]
   );
 
@@ -46,7 +59,7 @@ const PageMetaPanel = observer(function PageMetaPanel(props: {
         propType={{ type: "string", defaultValueHint: "Title" }}
         expr={titleExpr}
         onChange={(expr: Expr | undefined) => {
-          const newTitle = convertExprToStringOrTemplatedString(expr);
+          const newTitle = convertExprToPageMetaString(expr);
           spawn(sc.tryChangePageMeta(page, "title", newTitle));
         }}
         viewCtx={viewCtx}
@@ -60,3 +73,56 @@ const PageMetaPanel = observer(function PageMetaPanel(props: {
 });
 
 export default PageMetaPanel;
+
+/**
+ * Page meta values used to be static string, but are now
+ * string | TemplatedString. We keep the static string form
+ * to avoid the complex codegen for dynamic page meta.
+ */
+export type PageMetaString = string | TemplatedString;
+
+/**
+ * PageMetaString is edited via PropEditorRow/TemplatedStringPropEditor.
+ * This converts the onChange value back to PageMetaString.
+ */
+export function convertExprToPageMetaString(
+  value: Expr | null | undefined
+): PageMetaString | null {
+  if (value == null) {
+    return null;
+  } else if (isTemplatedStringEditorValue(value)) {
+    return switchType(value)
+      .when(TemplatedString, (ts) => {
+        return hasDynamicParts(ts) ? ts : flattenTemplatedStringToString(ts);
+      })
+      .when(CustomCode, (codeExpr) => {
+        const maybeStr = tryExtractJson(codeExpr);
+        if (typeof maybeStr === "string") {
+          return maybeStr;
+        }
+        return mkTemplatedStringOfOneDynExpr(codeExpr);
+      })
+      .when(ObjectPath, (objectPath) => {
+        return mkTemplatedStringOfOneDynExpr(objectPath);
+      })
+      .result();
+  } else {
+    return null;
+  }
+}
+
+/**
+ * PageMetaString is edited via PropEditorRow/TemplatedStringPropEditor.
+ * This converts PageMetaString to an accepted value type.
+ */
+export function convertPageMetaStringToExpr(
+  value: PageMetaString | null | undefined
+): Expr | undefined {
+  if (value == null) {
+    return undefined;
+  }
+  if (isKnownExpr(value)) {
+    return value;
+  }
+  return codeLit(value);
+}

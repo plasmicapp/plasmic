@@ -856,13 +856,6 @@ export function hasDynamicParts(text: TemplatedString) {
   return !text.text.every((part) => typeof part === "string");
 }
 
-export function hasOnlyDynamicValues(expr: TemplatedString) {
-  const hasNonEmptyStatic = expr.text.some(
-    (x) => typeof x === "string" && x !== ""
-  );
-  return !hasNonEmptyStatic && hasDynamicParts(expr);
-}
-
 /**
  * Returns numbers and strings as strings, undefined for everything else.
  */
@@ -1366,31 +1359,9 @@ export function mkTemplatedStringOfOneDynExpr(expr: CustomCode | ObjectPath) {
   });
 }
 
-export function convertExprToStringOrTemplatedString(
-  expr: Expr | null | undefined
-): TemplatedString | string | null {
-  if (!expr) {
-    return null;
-  }
-  if (isKnownTemplatedString(expr)) {
-    return hasDynamicParts(expr) ? expr : expr.text.join("");
-  }
-  if (isKnownObjectPath(expr) || isKnownCustomCode(expr)) {
-    return mkTemplatedStringOfOneDynExpr(expr);
-  }
-  return null;
-}
-
-export function convertTemplatedStringToExpr(
-  value: TemplatedString | string | null | undefined
-): Expr | undefined {
-  if (value == null) {
-    return undefined;
-  }
-  if (isKnownExpr(value)) {
-    return value;
-  }
-  return codeLit(value);
+/** Joins all string parts of a TemplatedString, discarding any dynamic expressions. */
+export function flattenTemplatedStringToString(text: TemplatedString): string {
+  return text.text.filter(isString).join("");
 }
 
 export function getSingleDynExprFromTemplatedString(expr: TemplatedString) {

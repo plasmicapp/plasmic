@@ -3730,9 +3730,10 @@ export function isDynamicValueDisabledInPropType(
   propType: StudioPropType<any> | undefined
 ) {
   return (
-    isPlainObjectPropType(propType) &&
-    "disableDynamicValue" in propType &&
-    propType.disableDynamicValue
+    isExprValuePropType(propType) ||
+    (isPlainObjectPropType(propType) &&
+      "disableDynamicValue" in propType &&
+      propType.disableDynamicValue)
   );
 }
 
