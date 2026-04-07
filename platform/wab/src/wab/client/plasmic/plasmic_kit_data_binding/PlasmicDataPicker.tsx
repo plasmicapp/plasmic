@@ -182,78 +182,81 @@ function PlasmicDataPicker__RenderFunc(props: {
         path: "withSearchResult",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) =>
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
           $props.withSearchResult,
       },
       {
         path: "codeEditing",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.codeEditing,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props.codeEditing,
       },
       {
         path: "empty",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.empty,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.empty,
       },
       {
         path: "withUnlink",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.withUnlink,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.withUnlink,
       },
       {
         path: "hasExpectedValues",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) =>
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
           $props.hasExpectedValues,
       },
       {
         path: "withAddQuery",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.withAddQuery,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props.withAddQuery,
       },
       {
         path: "withAddVariable",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) =>
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
           $props.withAddVariable,
       },
       {
         path: "withDeleteButton",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) =>
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
           $props.withDeleteButton,
       },
       {
         path: "withoutStateSwitch",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) =>
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
           $props.withoutStateSwitch,
       },
       {
         path: "copilot",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.copilot,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.copilot,
       },
       {
         path: "advancedToggle",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.advancedToggle,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props.advancedToggle,
       },
       {
         path: "isRunCodeInteraction",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) =>
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
           $props.isRunCodeInteraction,
       },
     ],
@@ -263,6 +266,7 @@ function PlasmicDataPicker__RenderFunc(props: {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
@@ -390,6 +394,7 @@ function PlasmicDataPicker__RenderFunc(props: {
               className={classNames(
                 projectcss.all,
                 projectcss.a,
+                projectcss.a__w2GXN,
                 projectcss.__wab_text,
                 sty.stateSwitch,
                 {
@@ -484,6 +489,7 @@ function PlasmicDataPicker__RenderFunc(props: {
               className={classNames(
                 projectcss.all,
                 projectcss.a,
+                projectcss.a__w2GXN,
                 projectcss.__wab_text,
                 sty.advancedSwitch,
                 {
@@ -579,6 +585,7 @@ function PlasmicDataPicker__RenderFunc(props: {
               className={classNames(
                 projectcss.all,
                 projectcss.a,
+                projectcss.a__w2GXN,
                 projectcss.__wab_text,
                 sty.unlinkButton,
                 {
@@ -638,6 +645,7 @@ function PlasmicDataPicker__RenderFunc(props: {
             className={classNames(
               projectcss.all,
               projectcss.a,
+              projectcss.a__w2GXN,
               projectcss.__wab_text,
               sty.addQueryBtn,
               {
@@ -703,6 +711,7 @@ function PlasmicDataPicker__RenderFunc(props: {
             className={classNames(
               projectcss.all,
               projectcss.a,
+              projectcss.a__w2GXN,
               projectcss.__wab_text,
               sty.addVariableBtn,
               {
@@ -771,6 +780,7 @@ function PlasmicDataPicker__RenderFunc(props: {
             className={classNames(
               projectcss.all,
               projectcss.a,
+              projectcss.a__w2GXN,
               projectcss.__wab_text,
               sty.link,
               {
@@ -1203,7 +1213,9 @@ function PlasmicDataPicker__RenderFunc(props: {
                   <React.Fragment>
                     <React.Fragment>{"Titl"}</React.Fragment>
                     <span
-                      className={"plasmic_default__all plasmic_default__span"}
+                      className={
+                        "plasmic_default__all plasmic_default__span plasmic_default__span__w2GXN"
+                      }
                       style={{ fontWeight: 400 }}
                     >
                       {"e"}
@@ -1229,7 +1241,9 @@ function PlasmicDataPicker__RenderFunc(props: {
                   <React.Fragment>
                     <React.Fragment>{"Titl"}</React.Fragment>
                     <span
-                      className={"plasmic_default__all plasmic_default__span"}
+                      className={
+                        "plasmic_default__all plasmic_default__span plasmic_default__span__w2GXN"
+                      }
                       style={{ fontWeight: 400 }}
                     >
                       {"e"}

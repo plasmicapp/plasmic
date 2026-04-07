@@ -119,6 +119,7 @@ import {
   ensureKnownFunctionType,
   ensureKnownVarRef,
   ensureKnownVariantsRef,
+  isKnownCustomCode,
   isKnownCustomFunctionExpr,
   isKnownDataSourceOpExpr,
   isKnownEventHandler,
@@ -814,8 +815,10 @@ const PropValueEditor_ = (
     propType.type === "customFunctionOp"
   ) {
     assert(
-      isKnownCustomFunctionExpr(value) || value === undefined,
-      "Value is expected to be either a CustomFunctionExpr or undefined"
+      isKnownCustomFunctionExpr(value) ||
+        isKnownCustomCode(value) ||
+        value === undefined,
+      "Value is expected to be either a CustomFunctionExpr, CustomCode, or undefined"
     );
     const allowedOps = _getContextDependentValue(propType.allowedOps);
     return (

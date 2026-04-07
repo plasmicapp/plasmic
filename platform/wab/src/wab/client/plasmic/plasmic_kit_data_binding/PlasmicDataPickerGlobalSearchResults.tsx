@@ -135,7 +135,9 @@ function PlasmicDataPickerGlobalSearchResults__RenderFunc(props: {
                     <React.Fragment>
                       <React.Fragment>{"Titl"}</React.Fragment>
                       <span
-                        className={"plasmic_default__all plasmic_default__span"}
+                        className={
+                          "plasmic_default__all plasmic_default__span plasmic_default__span__w2GXN"
+                        }
                         style={{ fontWeight: 400 }}
                       >
                         {"e"}
@@ -161,7 +163,9 @@ function PlasmicDataPickerGlobalSearchResults__RenderFunc(props: {
                     <React.Fragment>
                       <React.Fragment>{"Titl"}</React.Fragment>
                       <span
-                        className={"plasmic_default__all plasmic_default__span"}
+                        className={
+                          "plasmic_default__all plasmic_default__span plasmic_default__span__w2GXN"
+                        }
                         style={{ fontWeight: 400 }}
                       >
                         {"e"}

@@ -9611,6 +9611,19 @@
           "cssFilePath": "wab/client/plasmic/plasmic_kit_data_binding/PlasmicCopilotChatDialog.module.css",
           "scheme": "blackbox",
           "componentType": "component"
+        },
+        {
+          "id": "Z4n6NebjkHpR",
+          "name": "DataQueryCodeEditorLayout",
+          "type": "managed",
+          "projectId": "w2GXN278dkQ2gQTVQnPehW",
+          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_data_binding/PlasmicDataQueryCodeEditorLayout.tsx",
+          "importSpec": {
+            "modulePath": "wab/client/components/sidebar-tabs/DataBinding/DataQueryCodeEditorLayout.tsx"
+          },
+          "cssFilePath": "wab/client/plasmic/plasmic_kit_data_binding/PlasmicDataQueryCodeEditorLayout.module.css",
+          "scheme": "blackbox",
+          "componentType": "component"
         }
       ],
       "icons": [

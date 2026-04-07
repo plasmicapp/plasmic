@@ -110,13 +110,14 @@ function PlasmicDataPickerColumn__RenderFunc(props: {
         path: "isWide",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isWide,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.isWide,
       },
       {
         path: "previewSteps",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.previewSteps,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props.previewSteps,
       },
     ],
     [$props, $ctx, $refs]
@@ -125,6 +126,7 @@ function PlasmicDataPickerColumn__RenderFunc(props: {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
@@ -278,7 +280,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicDataPickerColumn__VariantsArgs;
     args?: PlasmicDataPickerColumn__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicDataPickerColumn__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicDataPickerColumn__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicDataPickerColumn__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

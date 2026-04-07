@@ -124,19 +124,20 @@ function PlasmicDataPickerColumnItem__RenderFunc(props: {
         path: "variableType",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.variableType,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props.variableType,
       },
       {
         path: "isSelected",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isSelected,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.isSelected,
       },
       {
         path: "step",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.step,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.step,
       },
     ],
     [$props, $ctx, $refs]
@@ -145,6 +146,7 @@ function PlasmicDataPickerColumnItem__RenderFunc(props: {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
@@ -604,7 +606,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicDataPickerColumnItem__VariantsArgs;
     args?: PlasmicDataPickerColumnItem__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicDataPickerColumnItem__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicDataPickerColumnItem__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicDataPickerColumnItem__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

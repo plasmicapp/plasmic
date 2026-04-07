@@ -5,12 +5,12 @@ import { PopoverFrameProvider } from "@/wab/client/components/sidebar/PopoverFra
 import { extractDataCtx } from "@/wab/client/state-management/interactions-meta";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { SERVER_QUERY_LOWER } from "@/wab/shared/Labels";
+import { ServerQueryOp } from "@/wab/shared/codegen/react-p/server-queries/utils";
 import { toVarName } from "@/wab/shared/codegen/util";
 import { ExprCtx } from "@/wab/shared/core/exprs";
 import { EventHandlerKeyType } from "@/wab/shared/core/tpls";
 import {
   ComponentServerQuery,
-  CustomFunctionExpr,
   Interaction,
   TplNode,
   isKnownComponentServerQuery,
@@ -37,8 +37,8 @@ export function omitQueryFromEnv(
 }
 
 interface ServerQueryOpExprBottomModalContentProps {
-  value: CustomFunctionExpr | ComponentServerQuery | undefined;
-  onSave: (expr: CustomFunctionExpr, opExprName?: string) => unknown;
+  value: ServerQueryOp | ComponentServerQuery | undefined;
+  onSave: (expr: ServerQueryOp, opExprName?: string) => unknown;
   onCancel: () => unknown;
   readOnly?: boolean;
   allowedOps?: string[];
@@ -111,7 +111,7 @@ const ServerQueryOpExprBottomModalContent = observer(
   }: ServerQueryOpExprBottomModalContentProps) {
     const parentQuery = isKnownComponentServerQuery(value) ? value : undefined;
     const wrappedOnSave = React.useCallback(
-      (newExpr: CustomFunctionExpr, opExprName?: string) => {
+      (newExpr: ServerQueryOp, opExprName?: string) => {
         onSave(newExpr, opExprName);
       },
       [onSave]

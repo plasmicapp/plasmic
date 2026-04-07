@@ -114,7 +114,10 @@ import {
   makeWabSlotClassName,
   makeWabTextClassName,
 } from "@/wab/shared/codegen/react-p/serialize-utils";
-import { isServerQueryWithOperation } from "@/wab/shared/codegen/react-p/server-queries/utils";
+import {
+  getReferencedQueryNamesInCustomCode,
+  isServerQueryWithOperation,
+} from "@/wab/shared/codegen/react-p/server-queries/utils";
 import { deriveReactHookSpecs } from "@/wab/shared/codegen/react-p/utils";
 import {
   paramToVarName,
@@ -147,7 +150,10 @@ import {
   isCodeComponent,
   isHostLessCodeComponent,
 } from "@/wab/shared/core/components";
-import { getCustomFunctionParams } from "@/wab/shared/core/custom-functions";
+import {
+  buildCustomCodeFn,
+  getCustomFunctionParams,
+} from "@/wab/shared/core/custom-functions";
 import {
   ExprCtx,
   InteractionArgLoc,
@@ -266,7 +272,6 @@ import {
   isKnownDefaultStylesPropType,
   isKnownEventHandler,
   isKnownNamedState,
-  isKnownObjectPath,
   isKnownStateParam,
   isKnownStyleExpr,
   isKnownStyleScopeClassNamePropType,
@@ -2753,23 +2758,6 @@ function adjustFinalAttrs(
   }
 }
 
-function getCondExpr(
-  activeVSettings: VariantSetting[],
-  _ctx: RenderingCtx
-): CustomCode | ObjectPath | null {
-  const condExpr = last(
-    activeVSettings.map((vs) => vs.dataCond).filter(Boolean)
-  );
-  if (condExpr) {
-    assert(
-      isKnownCustomCode(condExpr) || isKnownObjectPath(condExpr),
-      "Unknown dataCond type. Only CustomCode or ObjectPath available in dataCond"
-    );
-    return condExpr;
-  }
-  return null;
-}
-
 function evalDataCondExpr(
   ctx: RenderingCtx,
   effectiveVs: EffectiveVariantSetting
@@ -3713,7 +3701,23 @@ const mkComponentLevelQueryFetcher = computedFn(
               ...component.serverQueries
                 .filter(isServerQueryWithOperation)
                 .map((query) => {
-                  const funcId = customFunctionId(query.op.func);
+                  if (isKnownCustomCode(query.op)) {
+                    const depQueryNames = getReferencedQueryNamesInCustomCode(
+                      query,
+                      component
+                    );
+                    return [
+                      toVarName(query.name),
+                      {
+                        id: `custom:${query.uuid}:${query.op.code}`,
+                        fn: buildCustomCodeFn(query.op.code, ctx.env),
+                        execParams: () =>
+                          depQueryNames.map((n) => ctx.env.$q[n]?.data),
+                      },
+                    ] as const;
+                  }
+                  const op = query.op;
+                  const funcId = customFunctionId(op.func);
                   const funcReg = ctx.viewCtx.canvasCtx
                     .getRegisteredFunctionsMap()
                     .get(funcId);
@@ -3727,7 +3731,7 @@ const mkComponentLevelQueryFetcher = computedFn(
                       fn: funcReg.function,
                       execParams: () =>
                         getCustomFunctionParams(
-                          query.op,
+                          op,
                           ctx.env,
                           {
                             component,

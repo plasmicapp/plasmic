@@ -5,6 +5,7 @@ import {
   useNonAuthCtx,
 } from "@/wab/client/app-ctx";
 import type FullCodeEditor from "@/wab/client/components/coding/FullCodeEditor";
+import LazyFullCodeEditor from "@/wab/client/components/coding/LazyFullCodeEditor";
 import { smartRender } from "@/wab/client/components/pages/admin/admin-util";
 import { AdminBranchingInspector } from "@/wab/client/components/pages/admin/AdminBranchingInspector";
 import {
@@ -411,10 +412,6 @@ function DownloadPkgForPkgMgr() {
   );
 }
 
-const LazyFullCodeEditor = React.lazy(
-  () => import("@/wab/client/components/coding/FullCodeEditor")
-);
-
 function DevFlagControls() {
   const nonAuthCtx = useNonAuthCtx();
   const { data, error, mutate, isLoading } = useSWR(
@@ -465,14 +462,12 @@ function DevFlagControls() {
         {submitError && <p style={{ color: "red" }}>{submitError}</p>}
         <div style={{ height: 1050 }}>
           {!isLoading ? (
-            <React.Suspense fallback={<Spinner />}>
-              <LazyFullCodeEditor
-                language="json"
-                ref={editorRef}
-                defaultValue={data || ""}
-                autoFocus={false}
-              />
-            </React.Suspense>
+            <LazyFullCodeEditor
+              language="json"
+              ref={editorRef}
+              defaultValue={data || ""}
+              autoFocus={false}
+            />
           ) : (
             <Spinner />
           )}
@@ -1078,23 +1073,17 @@ function EditProjectRevBundle() {
             <Form.Item label="Current revision">
               <Input readOnly value={initialRev.revision} />
             </Form.Item>
-            <React.Suspense fallback={<Spinner />}>
-              <div style={{ height: 500 }}>
-                <LazyFullCodeEditor
-                  language="json"
-                  ref={editorRef}
-                  defaultValue={
-                    initialRev.data
-                      ? JSON.stringify(
-                          JSON.parse(initialRev.data),
-                          undefined,
-                          2
-                        )
-                      : ""
-                  }
-                />
-              </div>
-            </React.Suspense>
+            <div style={{ height: 500 }}>
+              <LazyFullCodeEditor
+                language="json"
+                ref={editorRef}
+                defaultValue={
+                  initialRev.data
+                    ? JSON.stringify(JSON.parse(initialRev.data), undefined, 2)
+                    : ""
+                }
+              />
+            </div>
             <Form.Item>
               <Button
                 onClick={async () => {
@@ -1173,19 +1162,17 @@ function EditPkgVersionBundle() {
             <p>
               <code>Version {pkgVersion.version}</code>
             </p>
-            <React.Suspense fallback={<Spinner />}>
-              <div style={{ height: 500 }}>
-                <LazyFullCodeEditor
-                  language="json"
-                  ref={editorRef}
-                  defaultValue={
-                    pkgVersion.model
-                      ? JSON.stringify(pkgVersion.model, undefined, 2)
-                      : ""
-                  }
-                />
-              </div>
-            </React.Suspense>
+            <div style={{ height: 500 }}>
+              <LazyFullCodeEditor
+                language="json"
+                ref={editorRef}
+                defaultValue={
+                  pkgVersion.model
+                    ? JSON.stringify(pkgVersion.model, undefined, 2)
+                    : ""
+                }
+              />
+            </div>
             <Form.Item>
               <Button
                 onClick={async () => {

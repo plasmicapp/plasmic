@@ -112,7 +112,8 @@ function PlasmicDataPickerGlobalSearchResultsItem__RenderFunc(props: {
         path: "variableType",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.variableType,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props.variableType,
       },
     ],
     [$props, $ctx, $refs]
@@ -121,6 +122,7 @@ function PlasmicDataPickerGlobalSearchResultsItem__RenderFunc(props: {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 

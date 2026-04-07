@@ -121,19 +121,20 @@ function PlasmicDataPickerCodeEditorLayout__RenderFunc(props: {
         path: "hidePreview",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.hidePreview,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props.hidePreview,
       },
       {
         path: "envPanel",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.envPanel,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.envPanel,
       },
       {
         path: "copilot",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.copilot,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.copilot,
       },
     ],
     [$props, $ctx, $refs]
@@ -142,6 +143,7 @@ function PlasmicDataPickerCodeEditorLayout__RenderFunc(props: {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
@@ -261,6 +263,7 @@ function PlasmicDataPickerCodeEditorLayout__RenderFunc(props: {
             className={classNames(
               projectcss.all,
               projectcss.button,
+              projectcss.button__w2GXN,
               sty.envToggleButton,
               {
                 [sty.envToggleButtonenvPanel_collapsed]: hasVariant(

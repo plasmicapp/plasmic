@@ -1,20 +1,23 @@
 import {
+  CustomCodePreview,
   CustomFunctionExprPreview,
-  CustomFunctionExprSummary,
-} from "@/wab/client/components/sidebar-tabs/ServerQuery/CustomFunctionExprPreview";
+  ServerQueryOpSummary,
+} from "@/wab/client/components/sidebar-tabs/ServerQuery/QueryResultPreview";
 import { useServerQueryBottomModal } from "@/wab/client/components/sidebar-tabs/ServerQuery/ServerQueryBottomModal";
 import Button from "@/wab/client/components/widgets/Button";
 import { extractDataCtx } from "@/wab/client/state-management/interactions-meta";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { observer } from "@/wab/client/utils/mobx-client-util";
+import { ServerQueryOp } from "@/wab/shared/codegen/react-p/server-queries/utils";
 import { ExprCtx } from "@/wab/shared/core/exprs";
 import { EventHandlerKeyType } from "@/wab/shared/core/tpls";
 import {
   Component,
-  CustomFunctionExpr,
   Interaction,
   TplNode,
+  isKnownCustomCode,
+  isKnownCustomFunctionExpr,
 } from "@/wab/shared/model/classes";
 import * as React from "react";
 
@@ -27,9 +30,9 @@ import * as React from "react";
 type CustomFunctionEditorProps = {
   queryKey: string;
   queryName?: string;
-  value?: CustomFunctionExpr;
+  value?: ServerQueryOp;
   shouldOpenModal?: boolean;
-  onChange: (value: CustomFunctionExpr) => void;
+  onChange: (value: ServerQueryOp) => void;
   onClose?: () => void;
   allowedOps?: string[];
   component?: Component;
@@ -104,11 +107,14 @@ export const CustomFunctionEditor = observer(
           {!value ? (
             "Configure an operation"
           ) : (
-            <CustomFunctionExprSummary expr={value} />
+            <ServerQueryOpSummary expr={value} />
           )}
         </Button>
-        {value && (
+        {value && isKnownCustomFunctionExpr(value) && (
           <CustomFunctionExprPreview expr={value} env={env} exprCtx={exprCtx} />
+        )}
+        {value && isKnownCustomCode(value) && (
+          <CustomCodePreview queryUuid={queryKey} expr={value} env={env} />
         )}
       </div>
     );

@@ -1,8 +1,9 @@
 import { WithContextMenu } from "@/wab/client/components/ContextMenu";
 import {
+  CustomCodePreview,
   CustomFunctionExprPreview,
-  CustomFunctionExprSummary,
-} from "@/wab/client/components/sidebar-tabs/ServerQuery/CustomFunctionExprPreview";
+  ServerQueryOpSummary,
+} from "@/wab/client/components/sidebar-tabs/ServerQuery/QueryResultPreview";
 import {
   omitQueryFromEnv,
   useServerQueryBottomModal,
@@ -23,7 +24,10 @@ import {
   SERVER_QUERY_LOWER,
   SERVER_QUERY_PLURAL_CAP,
 } from "@/wab/shared/Labels";
-import { isServerQueryWithOperation } from "@/wab/shared/codegen/react-p/server-queries/utils";
+import {
+  ServerQueryOp,
+  isServerQueryWithOperation,
+} from "@/wab/shared/codegen/react-p/server-queries/utils";
 import { mkShortId, spawn } from "@/wab/shared/common";
 import {
   getComponentDisplayName,
@@ -33,7 +37,7 @@ import { ExprCtx } from "@/wab/shared/core/exprs";
 import {
   Component,
   ComponentServerQuery,
-  CustomFunctionExpr,
+  isKnownCustomCode,
   isKnownCustomFunctionExpr,
 } from "@/wab/shared/model/classes";
 import { renameServerQueryAndFixExprs } from "@/wab/shared/refactoring";
@@ -73,7 +77,7 @@ const ServerQueryRow = observer(
     };
 
     const handleCustomFunctionExprChange = async (
-      newOp: CustomFunctionExpr,
+      newOp: ServerQueryOp,
       opExprName?: string
     ) => {
       await studioCtx.change(({ success }) => {
@@ -117,6 +121,13 @@ const ServerQueryRow = observer(
         </Menu>
       );
     };
+    const title = `Query data results for "${query.name}"`;
+    const env = omitQueryFromEnv(
+      viewCtx.getCanvasEnvForTpl(tpl, {
+        forDataRepCollection: true,
+      }),
+      query
+    );
 
     return (
       <WithContextMenu overlay={menu}>
@@ -125,20 +136,24 @@ const ServerQueryRow = observer(
           menu={menu}
           onClick={() => openServerQueryModal()}
         >
-          {isKnownCustomFunctionExpr(query.op) ? (
+          {query.op ? (
             <div className="flex flex-col fill-width">
-              <CustomFunctionExprSummary expr={query.op} />
-              <CustomFunctionExprPreview
-                expr={query.op}
-                env={omitQueryFromEnv(
-                  viewCtx.getCanvasEnvForTpl(tpl, {
-                    forDataRepCollection: true,
-                  }),
-                  query
-                )}
-                title={`Query data results for "${query.name}"`}
-                exprCtx={exprCtx}
-              />
+              <ServerQueryOpSummary expr={query.op} />
+              {isKnownCustomFunctionExpr(query.op) ? (
+                <CustomFunctionExprPreview
+                  expr={query.op}
+                  env={env}
+                  title={title}
+                  exprCtx={exprCtx}
+                />
+              ) : isKnownCustomCode(query.op) ? (
+                <CustomCodePreview
+                  queryUuid={query.uuid}
+                  expr={query.op}
+                  env={env}
+                  title={title}
+                />
+              ) : null}
             </div>
           ) : (
             <div className="dimfg">Click to configure...</div>

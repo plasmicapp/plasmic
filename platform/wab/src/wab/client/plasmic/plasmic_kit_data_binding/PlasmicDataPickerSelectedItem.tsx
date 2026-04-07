@@ -95,7 +95,7 @@ function PlasmicDataPickerSelectedItem__RenderFunc(props: {
         path: "lastItem",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.lastItem,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.lastItem,
       },
     ],
     [$props, $ctx, $refs]
@@ -104,6 +104,7 @@ function PlasmicDataPickerSelectedItem__RenderFunc(props: {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
@@ -178,7 +179,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicDataPickerSelectedItem__VariantsArgs;
     args?: PlasmicDataPickerSelectedItem__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicDataPickerSelectedItem__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicDataPickerSelectedItem__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicDataPickerSelectedItem__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

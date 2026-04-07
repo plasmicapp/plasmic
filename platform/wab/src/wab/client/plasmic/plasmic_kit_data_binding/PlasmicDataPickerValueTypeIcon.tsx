@@ -102,13 +102,13 @@ function PlasmicDataPickerValueTypeIcon__RenderFunc(props: {
         path: "isSelected",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isSelected,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.isSelected,
       },
       {
         path: "isHovered",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.isHovered,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.isHovered,
       },
     ],
     [$props, $ctx, $refs]
@@ -117,6 +117,7 @@ function PlasmicDataPickerValueTypeIcon__RenderFunc(props: {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 

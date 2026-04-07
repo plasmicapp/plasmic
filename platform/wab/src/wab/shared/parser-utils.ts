@@ -58,6 +58,18 @@ function hasAwaitExpression(ast: ast.Program): boolean {
   return hasAwait;
 }
 
+export function convertToFunction(code: string) {
+  const ast = parseJsCode(code);
+
+  addImplicitReturnToAst(ast);
+
+  const functionSignature = hasAwaitExpression(ast) ? "async ()" : "()";
+
+  return `${functionSignature} => {
+${writeJs(ast, { indentLevel: 1 })}
+}`;
+}
+
 export function maybeConvertToIife(code: string) {
   if (!isValidJavaScriptCode(code)) {
     return code;
@@ -72,15 +84,7 @@ export function maybeConvertToIife(code: string) {
   }
 
   try {
-    const ast = parseJsCode(code);
-
-    addImplicitReturnToAst(ast);
-
-    const functionSignature = hasAwaitExpression(ast) ? "async ()" : "()";
-
-    return `(${functionSignature} => {
-${writeJs(ast, { indentLevel: 1 })}
-})()`;
+    return `(${convertToFunction(code)})()`;
   } catch (err) {
     console.log("Error: ", err);
     return code;

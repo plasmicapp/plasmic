@@ -116,19 +116,20 @@ function PlasmicCopilotMsg__RenderFunc(props: {
         path: "userPrompt",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.userPrompt,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.userPrompt,
       },
       {
         path: "rightMargin",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.rightMargin,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props.rightMargin,
       },
       {
         path: "feedback",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.feedback,
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) => $props.feedback,
       },
     ],
     [$props, $ctx, $refs]
@@ -137,6 +138,7 @@ function PlasmicCopilotMsg__RenderFunc(props: {
     $props,
     $ctx,
     $queries: {},
+    $q: {},
     $refs,
   });
 
@@ -511,7 +513,8 @@ type NodeComponentProps<T extends NodeNameType> =
     variants?: PlasmicCopilotMsg__VariantsArgs;
     args?: PlasmicCopilotMsg__ArgsType;
     overrides?: NodeOverridesType<T>;
-  } & Omit<PlasmicCopilotMsg__VariantsArgs, ReservedPropsType> & // Specify variants directly as props
+  } & // Specify variants directly as props
+  Omit<PlasmicCopilotMsg__VariantsArgs, ReservedPropsType> &
     // Specify args directly as props
     Omit<PlasmicCopilotMsg__ArgsType, ReservedPropsType> &
     // Specify overrides for each element directly as props

@@ -1,4 +1,41 @@
-import { maybeConvertToIife } from "@/wab/shared/parser-utils";
+import {
+  convertToFunction,
+  maybeConvertToIife,
+} from "@/wab/shared/parser-utils";
+
+describe("convertToFunction", function () {
+  it("should convert a simple statement to a sync function", () => {
+    const code = `let x = 1;`;
+    const result = convertToFunction(code);
+    expect(result).toContain("() => {");
+    expect(result).toContain("return x;");
+    expect(result).not.toContain("async");
+  });
+
+  it("should convert an async statement to an async function", () => {
+    const code = `const result = await fetch("https://example.com");`;
+    const result = convertToFunction(code);
+    expect(result).toContain("async () => {");
+    expect(result).toContain("return result;");
+  });
+
+  it("should add implicit return to the last statement", () => {
+    const code = `const a = 1;\nconst b = 2;\na + b;`;
+    const result = convertToFunction(code);
+    expect(result).toContain("return a + b;");
+  });
+
+  it("should always return a function string, even for simple expressions", () => {
+    const code = `1 + 1`;
+    const result = convertToFunction(code);
+    expect(result).toContain("() => {");
+    expect(result).toContain("return 1 + 1;");
+  });
+
+  it("should throw on invalid code", () => {
+    expect(() => convertToFunction("???")).toThrow();
+  });
+});
 
 describe("maybeConvertToIife", function () {
   it("should preserve valid JS expressions", () => {
