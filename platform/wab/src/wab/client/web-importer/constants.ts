@@ -124,8 +124,6 @@ export const recognizedStylesKeys = new Set<string>([
 ]);
 
 export const translationTable = {
-  rowGap: "flexRowGap",
-  columnGap: "flexColumnGap",
   paddingInlineStart: "paddingLeft",
   paddingInlineEnd: "paddingRight",
 };
