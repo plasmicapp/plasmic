@@ -23,5 +23,15 @@ export const PLASMIC = initPlasmicLoader({
   // only use this for development, as this is significantly slower.
   preview: false,
 });
+
+// Register custom functions here so they are available during SSR.
+// See https://docs.plasmic.app/learn/registering-custom-functions/
+//
+// IMPORTANT for app-router projects: any custom function used by a server
+// query must be registered here, which runs on the server.  Registrations in
+// plasmic-init-client.tsx are only available in the browser and will cause
+// a runtime error if referenced by a server query during SSR.
+//
+// PLASMIC.registerFunction(...);
 `;
 }

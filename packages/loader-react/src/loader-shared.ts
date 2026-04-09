@@ -266,6 +266,50 @@ export function internalSetRegisteredFunction<
   REGISTERED_CUSTOM_FUNCTIONS[customFunctionImportAlias(meta)] = fn;
 }
 
+interface RequiredServerQueryFunction {
+  id: string;
+  name: string;
+  namespace: string | null;
+  alias: string;
+}
+
+/**
+ * Throws a descriptive error if the server-queries module declares functions
+ * that are not present in `REGISTERED_CUSTOM_FUNCTIONS`.
+ *
+ * Generated server-query loader modules export `requiredServerQueryFunctions`
+ * with every user-registered function needed at runtime.  If a function was registered
+ * in `plasmic-init-client.tsx`, it will be missing on the server, causing an opaque
+ * execution failure. This check provides a clear error message before execution.
+ */
+function checkRequiredQueryFunctions(
+  module: any,
+  componentDisplayName?: string
+): void {
+  const required: RequiredServerQueryFunction[] | undefined =
+    module?.requiredServerQueryFunctions;
+
+  const missing = required?.filter(
+    (f) => !REGISTERED_CUSTOM_FUNCTIONS[f.alias]
+  );
+  if (!missing || missing.length === 0) {
+    return;
+  }
+
+  const missingNames = missing
+    .map((f) => (f.namespace ? `${f.namespace}.${f.name}` : f.name))
+    .join(", ");
+  const componentInfo = componentDisplayName
+    ? `\nComponent: ${componentDisplayName}`
+    : "";
+
+  throw new Error(
+    `Missing custom functions for Plasmic data queries: ${missingNames}${componentInfo}\n\n` +
+      `In app-router projects, functions used in SSR'd queries must be registered in\n` +
+      `plasmic-init.ts, not plasmic-init-client.tsx`
+  );
+}
+
 interface BuiltinRegisteredModules {
   react: typeof import("react");
   "react-dom": typeof import("react-dom");
@@ -895,6 +939,11 @@ export class PlasmicComponentLoader {
       "serverQueriesExecFuncFileName"
     );
 
+    checkRequiredQueryFunctions(
+      module,
+      renderData.entryCompMetas[0]?.displayName
+    );
+
     try {
       const $serverQueries = await module?.executeServerQueries($ctx);
       return $serverQueries;
@@ -915,10 +964,13 @@ export class PlasmicComponentLoader {
       renderData,
       "serverQueriesExecFuncFileName"
     );
-    const fallback = renderData.entryCompMetas[0]?.pageMetadata || {};
+    const component = renderData.entryCompMetas[0];
+    const fallback = component?.pageMetadata || {};
     if (!module) {
       return fallback;
     }
+
+    checkRequiredQueryFunctions(module, component?.displayName);
 
     try {
       const metadata = await module.generateMetadata(props);

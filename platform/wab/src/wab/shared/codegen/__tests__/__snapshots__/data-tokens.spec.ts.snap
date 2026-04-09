@@ -1033,6 +1033,7 @@ export async function generateMetadata(props: GenerateMetadataProps): Promise<Pl
   return metadata;
 }
 
+
 --- externals.d.ts ---
 declare module 'next/link';
 declare module 'next/router';

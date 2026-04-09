@@ -1,5 +1,8 @@
 import { customFunctionId } from "@/wab/shared/code-components/code-components";
-import { serializeCustomFunctionsAndLibs } from "@/wab/shared/codegen/react-p/custom-functions";
+import {
+  customFunctionImportAlias,
+  serializeCustomFunctionsAndLibs,
+} from "@/wab/shared/codegen/react-p/custom-functions";
 import { getDataSourcesPackageName } from "@/wab/shared/codegen/react-p/data-sources";
 import {
   getDataTokenImportsForPageMeta,
@@ -34,6 +37,7 @@ import { ComponentExportOutput, ExportOpts } from "@/wab/shared/codegen/types";
 import { toVarName } from "@/wab/shared/codegen/util";
 import { assert } from "@/wab/shared/common";
 import { isPageComponent } from "@/wab/shared/core/components";
+import { isHostLessPackage } from "@/wab/shared/core/sites";
 import { flattenExprs } from "@/wab/shared/core/tpls";
 import {
   extractDataTokenIdentifiers,
@@ -323,7 +327,8 @@ function serializeServerPageQueriesLoader(ctx: SerializerBaseContext) {
 export async function executeServerQueries(ctx: any) {
   ${executeServerQueriesBody}
 }
-${serializeLoaderGenerateMetadataSection(ctx)}`;
+${serializeLoaderGenerateMetadataSection(ctx)}
+${serializeRequiredQueryFunctions(ctx)}`;
   return {
     module,
     fileName: makeLoaderServerFunctionFileName(ctx.component),
@@ -357,6 +362,62 @@ ${
     : ""
 }
 import type { Metadata, ResolvingMetadata } from "next";`;
+}
+
+/**
+ * Serializes `requiredServerQueryFunctions` export for loader. Includes user-registered
+ * custom functions (non-hostless) referenced by queries in this component.
+ *
+ * loader-react reads this in unstable__getServerQueriesData / unstable__generateMetadata
+ * to check that every function is present in REGISTERED_CUSTOM_FUNCTIONS before execution,
+ * and throws a clear error if not.
+ */
+function serializeRequiredQueryFunctions(ctx: SerializerBaseContext): string {
+  const { component, exportOpts, siteCtx } = ctx;
+  if (!exportOpts.useCustomFunctionsStub || exportOpts.isLivePreview) {
+    return "";
+  }
+  const queries = component.serverQueries.filter(isServerQueryWithOperation);
+  if (queries.length === 0) {
+    return "";
+  }
+  const seen = new Set<string>();
+  const userFunctions = queries.flatMap((q) => {
+    if (isKnownCustomCode(q.op)) {
+      return [];
+    }
+    const fn = q.op.func;
+    const id = customFunctionId(fn);
+    if (seen.has(id)) {
+      return [];
+    }
+    const ownerSite = siteCtx.customFunctionToOwnerSite.get(fn);
+    if (!ownerSite || isHostLessPackage(ownerSite)) {
+      return [];
+    }
+    seen.add(id);
+    return [fn];
+  });
+
+  if (userFunctions.length === 0) {
+    return "";
+  }
+
+  const entries = userFunctions
+    .map(
+      (fn) =>
+        `  { id: ${JSON.stringify(
+          customFunctionId(fn)
+        )}, name: ${JSON.stringify(fn.importName)}, namespace: ${JSON.stringify(
+          fn.namespace || null
+        )}, alias: ${JSON.stringify(customFunctionImportAlias(fn))} }`
+    )
+    .join(",\n");
+
+  return `
+export const requiredServerQueryFunctions = [
+${entries}
+];`;
 }
 
 /**
