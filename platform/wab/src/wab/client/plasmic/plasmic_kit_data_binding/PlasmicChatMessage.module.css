@@ -27,12 +27,11 @@
   background: #eaf6ff;
   width: auto;
   border-radius: 12px;
-  padding: 4px;
 }
 .messagetype_assistant {
   align-items: flex-start;
   justify-content: center;
-  background: var(--token-N3uwCfNqv);
+  background: none;
 }
 .content {
   width: auto;
@@ -42,13 +41,12 @@
   flex-direction: column;
   overflow: auto;
   overflow-y: auto;
+  row-gap: 2px;
   padding: 8px;
+}
+.contenttype_assistant {
+  padding: 0px;
 }
 .slotTargetResponseSlot {
   text-align: left;
-}
-.slotTargetResponseSlottype_assistant {
-  font-family: "Inter", sans-serif;
-  font-weight: 500;
-  color: var(--token-p-rw5DRJTx);
 }

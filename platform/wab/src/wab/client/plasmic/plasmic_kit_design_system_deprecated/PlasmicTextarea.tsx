@@ -483,6 +483,7 @@ function PlasmicTextarea__RenderFunc(props: {
         className={classNames(
           projectcss.all,
           projectcss.textarea,
+          projectcss.textarea__tXkSR,
           sty.textarea,
           {
             [sty.textareadisabled]: hasVariant($state, "disabled", "disabled"),

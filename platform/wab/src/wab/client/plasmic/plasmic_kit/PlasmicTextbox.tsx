@@ -466,110 +466,136 @@ function PlasmicTextbox__RenderFunc(props: {
       <input
         data-plasmic-name={"textbox"}
         data-plasmic-override={overrides.textbox}
-        className={classNames(projectcss.all, projectcss.input, sty.textbox, {
-          [sty.textboxdisabled]: hasVariant($state, "disabled", "disabled"),
-          [sty.textboxerror]: hasVariant($state, "error", "error"),
-          [sty.textboxextraPadding]: hasVariant(
-            $state,
-            "extraPadding",
-            "extraPadding"
-          ),
-          [sty.textboxextraPadding_withIcons_withPrefix]:
-            hasVariant($state, "extraPadding", "extraPadding") &&
-            hasVariant($state, "withIcons", "withPrefix"),
-          [sty.textboxfontSize_xlarge]: hasVariant(
-            $state,
-            "fontSize",
-            "xlarge"
-          ),
-          [sty.textboxfontStyle_bold]: hasVariant($state, "fontStyle", "bold"),
-          [sty.textboxnoOutline]: hasVariant($state, "noOutline", "noOutline"),
-          [sty.textboxstyleType_autoheight]: hasVariant(
-            $state,
-            "styleType",
-            "autoheight"
-          ),
-          [sty.textboxstyleType_blue]: hasVariant($state, "styleType", "blue"),
-          [sty.textboxstyleType_bordered]: hasVariant(
-            $state,
-            "styleType",
-            "bordered"
-          ),
-          [sty.textboxstyleType_gray]: hasVariant($state, "styleType", "gray"),
-          [sty.textboxstyleType_green]: hasVariant(
-            $state,
-            "styleType",
-            "green"
-          ),
-          [sty.textboxstyleType_inverted]: hasVariant(
-            $state,
-            "styleType",
-            "inverted"
-          ),
-          [sty.textboxstyleType_medium]: hasVariant(
-            $state,
-            "styleType",
-            "medium"
-          ),
-          [sty.textboxstyleType_medium_withIcons_withPrefix]:
-            hasVariant($state, "styleType", "medium") &&
-            hasVariant($state, "withIcons", "withPrefix"),
-          [sty.textboxstyleType_mono]: hasVariant($state, "styleType", "mono"),
-          [sty.textboxstyleType_purple]: hasVariant(
-            $state,
-            "styleType",
-            "purple"
-          ),
-          [sty.textboxstyleType_rectangular]: hasVariant(
-            $state,
-            "styleType",
-            "rectangular"
-          ),
-          [sty.textboxstyleType_red]: hasVariant($state, "styleType", "red"),
-          [sty.textboxstyleType_right]: hasVariant(
-            $state,
-            "styleType",
-            "right"
-          ),
-          [sty.textboxstyleType_seamless]: hasVariant(
-            $state,
-            "styleType",
-            "seamless"
-          ),
-          [sty.textboxstyleType_topLayout]: hasVariant(
-            $state,
-            "styleType",
-            "topLayout"
-          ),
-          [sty.textboxstyleType_unset]: hasVariant(
-            $state,
-            "styleType",
-            "unset"
-          ),
-          [sty.textboxstyleType_white]: hasVariant(
-            $state,
-            "styleType",
-            "white"
-          ),
-          [sty.textboxwhiteBackground]: hasVariant(
-            $state,
-            "whiteBackground",
-            "whiteBackground"
-          ),
-          [sty.textboxwithIcons_withPrefix]: hasVariant(
-            $state,
-            "withIcons",
-            "withPrefix"
-          ),
-          [sty.textboxwithIcons_withSuffix]: hasVariant(
-            $state,
-            "withIcons",
-            "withSuffix"
-          ),
-          [sty.textboxwithIcons_withSuffix_styleType_medium]:
-            hasVariant($state, "withIcons", "withSuffix") &&
-            hasVariant($state, "styleType", "medium"),
-        })}
+        className={classNames(
+          projectcss.all,
+          projectcss.input,
+          projectcss.input__tXkSR,
+          sty.textbox,
+          {
+            [sty.textboxdisabled]: hasVariant($state, "disabled", "disabled"),
+            [sty.textboxerror]: hasVariant($state, "error", "error"),
+            [sty.textboxextraPadding]: hasVariant(
+              $state,
+              "extraPadding",
+              "extraPadding"
+            ),
+            [sty.textboxextraPadding_withIcons_withPrefix]:
+              hasVariant($state, "extraPadding", "extraPadding") &&
+              hasVariant($state, "withIcons", "withPrefix"),
+            [sty.textboxfontSize_xlarge]: hasVariant(
+              $state,
+              "fontSize",
+              "xlarge"
+            ),
+            [sty.textboxfontStyle_bold]: hasVariant(
+              $state,
+              "fontStyle",
+              "bold"
+            ),
+            [sty.textboxnoOutline]: hasVariant(
+              $state,
+              "noOutline",
+              "noOutline"
+            ),
+            [sty.textboxstyleType_autoheight]: hasVariant(
+              $state,
+              "styleType",
+              "autoheight"
+            ),
+            [sty.textboxstyleType_blue]: hasVariant(
+              $state,
+              "styleType",
+              "blue"
+            ),
+            [sty.textboxstyleType_bordered]: hasVariant(
+              $state,
+              "styleType",
+              "bordered"
+            ),
+            [sty.textboxstyleType_gray]: hasVariant(
+              $state,
+              "styleType",
+              "gray"
+            ),
+            [sty.textboxstyleType_green]: hasVariant(
+              $state,
+              "styleType",
+              "green"
+            ),
+            [sty.textboxstyleType_inverted]: hasVariant(
+              $state,
+              "styleType",
+              "inverted"
+            ),
+            [sty.textboxstyleType_medium]: hasVariant(
+              $state,
+              "styleType",
+              "medium"
+            ),
+            [sty.textboxstyleType_medium_withIcons_withPrefix]:
+              hasVariant($state, "styleType", "medium") &&
+              hasVariant($state, "withIcons", "withPrefix"),
+            [sty.textboxstyleType_mono]: hasVariant(
+              $state,
+              "styleType",
+              "mono"
+            ),
+            [sty.textboxstyleType_purple]: hasVariant(
+              $state,
+              "styleType",
+              "purple"
+            ),
+            [sty.textboxstyleType_rectangular]: hasVariant(
+              $state,
+              "styleType",
+              "rectangular"
+            ),
+            [sty.textboxstyleType_red]: hasVariant($state, "styleType", "red"),
+            [sty.textboxstyleType_right]: hasVariant(
+              $state,
+              "styleType",
+              "right"
+            ),
+            [sty.textboxstyleType_seamless]: hasVariant(
+              $state,
+              "styleType",
+              "seamless"
+            ),
+            [sty.textboxstyleType_topLayout]: hasVariant(
+              $state,
+              "styleType",
+              "topLayout"
+            ),
+            [sty.textboxstyleType_unset]: hasVariant(
+              $state,
+              "styleType",
+              "unset"
+            ),
+            [sty.textboxstyleType_white]: hasVariant(
+              $state,
+              "styleType",
+              "white"
+            ),
+            [sty.textboxwhiteBackground]: hasVariant(
+              $state,
+              "whiteBackground",
+              "whiteBackground"
+            ),
+            [sty.textboxwithIcons_withPrefix]: hasVariant(
+              $state,
+              "withIcons",
+              "withPrefix"
+            ),
+            [sty.textboxwithIcons_withSuffix]: hasVariant(
+              $state,
+              "withIcons",
+              "withSuffix"
+            ),
+            [sty.textboxwithIcons_withSuffix_styleType_medium]:
+              hasVariant($state, "withIcons", "withSuffix") &&
+              hasVariant($state, "styleType", "medium"),
+          }
+        )}
         placeholder={args.placeholder}
         ref={(ref) => {
           $refs["textbox"] = ref;

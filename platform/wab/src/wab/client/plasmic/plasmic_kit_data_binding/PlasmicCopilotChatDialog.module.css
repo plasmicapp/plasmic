@@ -31,7 +31,7 @@
   width: var(--token-1eDPHMktFbaJ);
   height: var(--token-1eDPHMktFbaJ);
 }
-.svg__uzZjy {
+.svg__i1MW5 {
   display: flex;
   position: relative;
   object-fit: cover;
@@ -56,6 +56,8 @@
   align-items: stretch;
   justify-content: flex-start;
   background: var(--token-rqQDmopteQdV);
+  border-bottom-left-radius: var(--token-8b4HJYZr1yuK);
+  border-bottom-right-radius: var(--token-8b4HJYZr1yuK);
   padding: var(--token-O2OprmOFWLju);
   border-top: 1px solid var(--token-sBh7BFhgAybb);
 }

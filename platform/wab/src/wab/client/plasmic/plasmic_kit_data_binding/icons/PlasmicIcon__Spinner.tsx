@@ -5,11 +5,11 @@
 import { classNames } from "@plasmicapp/react-web";
 import React from "react";
 
-export type Icon3IconProps = React.ComponentProps<"svg"> & {
+export type SpinnerIconProps = React.ComponentProps<"svg"> & {
   title?: string;
 };
 
-export function Icon3Icon(props: Icon3IconProps) {
+export function SpinnerIcon(props: SpinnerIconProps) {
   const { className, style, title, ...restProps } = props;
   return (
     <svg
@@ -47,5 +47,5 @@ export function Icon3Icon(props: Icon3IconProps) {
   );
 }
 
-export default Icon3Icon;
+export default SpinnerIcon;
 /* prettier-ignore-end */

@@ -1,0 +1,27 @@
+.root {
+  display: inline-flex;
+  flex-direction: row;
+  position: relative;
+  width: auto;
+  height: auto;
+  justify-content: flex-start;
+  align-items: center;
+  justify-self: flex-start;
+  column-gap: 4px;
+}
+.rootstate_done {
+  color: var(--token-mN0b9x1xxRPK);
+}
+.rootstate_error {
+  color: var(--token-2ziDTor6aAuH);
+}
+.svg {
+  position: relative;
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+.text___7ZkKz {
+  animation: none;
+  white-space: pre;
+}

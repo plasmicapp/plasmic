@@ -15,11 +15,14 @@ import * as React from "react";
 
 import {
   Flex as Flex__,
+  SingleBooleanChoiceArg,
   StrictProps,
   classNames,
   createPlasmicElementProxy,
   deriveRenderOpts,
+  hasVariant,
   renderPlasmicSlot,
+  useDollarState,
 } from "@plasmicapp/react-web";
 import { useDataEnv } from "@plasmicapp/react-web/lib/host";
 
@@ -33,10 +36,16 @@ import sty from "./PlasmicDialog.module.css"; // plasmic-import: en2IIw2C3_aI/cs
 
 createPlasmicElementProxy;
 
-export type PlasmicDialog__VariantMembers = {};
-export type PlasmicDialog__VariantsArgs = {};
+export type PlasmicDialog__VariantMembers = {
+  noBorderRadius: "noBorderRadius";
+};
+export type PlasmicDialog__VariantsArgs = {
+  noBorderRadius?: SingleBooleanChoiceArg<"noBorderRadius">;
+};
 type VariantPropType = keyof PlasmicDialog__VariantsArgs;
-export const PlasmicDialog__VariantProps = new Array<VariantPropType>();
+export const PlasmicDialog__VariantProps = new Array<VariantPropType>(
+  "noBorderRadius"
+);
 
 export type PlasmicDialog__ArgsType = {
   showHeader?: boolean;
@@ -65,6 +74,7 @@ export interface DefaultDialogProps {
   heading?: React.ReactNode;
   content?: React.ReactNode;
   footer?: React.ReactNode;
+  noBorderRadius?: SingleBooleanChoiceArg<"noBorderRadius">;
   className?: string;
 }
 
@@ -101,6 +111,26 @@ function PlasmicDialog__RenderFunc(props: {
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
+  const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
+    () => [
+      {
+        path: "noBorderRadius",
+        type: "private",
+        variableType: "variant",
+        initFunc: ({ $props, $state, $queries, $q, $ctx }) =>
+          $props.noBorderRadius,
+      },
+    ],
+    [$props, $ctx, $refs]
+  );
+  const $state = useDollarState(stateSpecs, {
+    $props,
+    $ctx,
+    $queries: {},
+    $q: {},
+    $refs,
+  });
+
   const styleTokensClassNames = _useStyleTokens();
 
   return (
@@ -115,7 +145,14 @@ function PlasmicDialog__RenderFunc(props: {
         projectcss.plasmic_default_styles,
         projectcss.plasmic_mixins,
         styleTokensClassNames,
-        sty.root
+        sty.root,
+        {
+          [sty.rootnoBorderRadius]: hasVariant(
+            $state,
+            "noBorderRadius",
+            "noBorderRadius"
+          ),
+        }
       )}
     >
       {renderPlasmicSlot({
@@ -124,6 +161,7 @@ function PlasmicDialog__RenderFunc(props: {
             className={classNames(
               projectcss.all,
               projectcss.h3,
+              projectcss.h3__tXkSR,
               projectcss.__wab_text,
               sty.h3__yugkh
             )}

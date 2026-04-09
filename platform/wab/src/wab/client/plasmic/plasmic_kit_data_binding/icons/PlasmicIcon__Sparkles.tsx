@@ -5,11 +5,11 @@
 import { classNames } from "@plasmicapp/react-web";
 import React from "react";
 
-export type Icon2IconProps = React.ComponentProps<"svg"> & {
+export type SparklesIconProps = React.ComponentProps<"svg"> & {
   title?: string;
 };
 
-export function Icon2Icon(props: Icon2IconProps) {
+export function SparklesIcon(props: SparklesIconProps) {
   const { className, style, title, ...restProps } = props;
   return (
     <svg
@@ -37,5 +37,5 @@ export function Icon2Icon(props: Icon2IconProps) {
   );
 }
 
-export default Icon2Icon;
+export default SparklesIcon;
 /* prettier-ignore-end */

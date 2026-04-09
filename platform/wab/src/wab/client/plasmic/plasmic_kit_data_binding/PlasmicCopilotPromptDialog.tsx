@@ -38,7 +38,7 @@ import sty from "./PlasmicCopilotPromptDialog.module.css"; // plasmic-import: -z
 
 import HistoryIcon from "../plasmic_kit/PlasmicIcon__History"; // plasmic-import: 6ZOswzsUR/icon
 import CloseSvgIcon from "../plasmic_kit_icons/icons/PlasmicIcon__CloseSvg"; // plasmic-import: DhvEHyCHT/icon
-import Icon3Icon from "./icons/PlasmicIcon__Icon3"; // plasmic-import: EfDOV4MDLj/icon
+import SpinnerIcon from "./icons/PlasmicIcon__Spinner"; // plasmic-import: EfDOV4MDLj/icon
 import imageUYmVmRYjy from "./images/image.png"; // plasmic-import: UYmVmRYjy/picture
 
 createPlasmicElementProxy;
@@ -619,7 +619,7 @@ function PlasmicCopilotPromptDialog__RenderFunc(props: {
             />
 
             {(hasVariant($state, "state", "loading") ? true : false) ? (
-              <Icon3Icon
+              <SpinnerIcon
                 className={classNames(projectcss.all, sty.svg__qXcOj, {
                   [sty.svgstate_loading__qXcOj4AmlM]: hasVariant(
                     $state,

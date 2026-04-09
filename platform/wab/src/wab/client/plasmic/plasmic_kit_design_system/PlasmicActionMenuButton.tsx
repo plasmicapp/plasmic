@@ -210,6 +210,7 @@ function PlasmicActionMenuButton__RenderFunc(props: {
         className={classNames(
           projectcss.all,
           projectcss.button,
+          projectcss.button__tXkSR,
           sty.actionButton,
           {
             [sty.actionButton___focusVisible]:

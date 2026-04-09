@@ -1,0 +1,43 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  width: 100%;
+  height: auto;
+  justify-content: flex-start;
+  align-items: flex-start;
+  background: var(--token-rqQDmopteQdV);
+  row-gap: 16px;
+  max-width: 800px;
+  max-height: 600px;
+  overflow: auto;
+  min-width: 0;
+}
+.header {
+  display: flex;
+  flex-direction: row;
+  position: relative;
+  align-items: stretch;
+  justify-content: flex-start;
+  column-gap: 16px;
+  width: 100%;
+  min-width: 0;
+  padding: 8px;
+}
+.slotTargetTitle {
+  font-size: 14px;
+  font-weight: 500;
+  white-space: pre;
+}
+.content {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  min-width: 0;
+}
+.messagePartPopoverContentBlock__snGdG:global(.__wab_instance) {
+  position: relative;
+}

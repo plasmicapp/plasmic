@@ -32,6 +32,7 @@ export function CopilotChatDialog({
     <div className="CopilotChatDialogContainer">
       <PlasmicCopilotChatDialog
         {...props}
+        noBorderRadius
         closeBtn={{
           onClick: onClose,
         }}

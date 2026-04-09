@@ -9624,6 +9624,48 @@
           "cssFilePath": "wab/client/plasmic/plasmic_kit_data_binding/PlasmicDataQueryCodeEditorLayout.module.css",
           "scheme": "blackbox",
           "componentType": "component"
+        },
+        {
+          "id": "cdd2zPdEWaRL",
+          "name": "MessagePartPopoverContent",
+          "type": "managed",
+          "projectId": "w2GXN278dkQ2gQTVQnPehW",
+          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_data_binding/PlasmicMessagePartPopoverContent.tsx",
+          "importSpec": {
+            "modulePath": "wab/client/components/copilot/MessagePartPopoverContent.tsx",
+            "exportName": "MessagePartPopoverContent"
+          },
+          "cssFilePath": "wab/client/plasmic/plasmic_kit_data_binding/PlasmicMessagePartPopoverContent.module.css",
+          "scheme": "blackbox",
+          "componentType": "component"
+        },
+        {
+          "id": "1r7jyUeHxY8n",
+          "name": "MessagePartPopoverContentBlock",
+          "type": "managed",
+          "projectId": "w2GXN278dkQ2gQTVQnPehW",
+          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_data_binding/PlasmicMessagePartPopoverContentBlock.tsx",
+          "importSpec": {
+            "modulePath": "wab/client/components/copilot/MessagePartPopoverContentBlock.tsx",
+            "exportName": "MessagePartPopoverContentBlock"
+          },
+          "cssFilePath": "wab/client/plasmic/plasmic_kit_data_binding/PlasmicMessagePartPopoverContentBlock.module.css",
+          "scheme": "blackbox",
+          "componentType": "component"
+        },
+        {
+          "id": "Ht1M6qhEEAnx",
+          "name": "MessagePartLabel",
+          "type": "managed",
+          "projectId": "w2GXN278dkQ2gQTVQnPehW",
+          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_data_binding/PlasmicMessagePartLabel.tsx",
+          "importSpec": {
+            "modulePath": "wab/client/components/copilot/MessagePartLabel.tsx",
+            "exportName": "MessagePartLabel"
+          },
+          "cssFilePath": "wab/client/plasmic/plasmic_kit_data_binding/PlasmicMessagePartLabel.module.css",
+          "scheme": "blackbox",
+          "componentType": "component"
         }
       ],
       "icons": [
@@ -9639,13 +9681,13 @@
         },
         {
           "id": "udef47udLQ",
-          "name": "Icon2Icon",
-          "moduleFilePath": "wab/client/plasmic/plasmic_kit_data_binding/icons/PlasmicIcon__Icon2.tsx"
+          "name": "SparklesIcon",
+          "moduleFilePath": "wab/client/plasmic/plasmic_kit_data_binding/icons/PlasmicIcon__Sparkles.tsx"
         },
         {
           "id": "EfDOV4MDLj",
-          "name": "Icon3Icon",
-          "moduleFilePath": "wab/client/plasmic/plasmic_kit_data_binding/icons/PlasmicIcon__Icon3.tsx"
+          "name": "SpinnerIcon",
+          "moduleFilePath": "wab/client/plasmic/plasmic_kit_data_binding/icons/PlasmicIcon__Spinner.tsx"
         },
         {
           "id": "ZTW8iKylgI",

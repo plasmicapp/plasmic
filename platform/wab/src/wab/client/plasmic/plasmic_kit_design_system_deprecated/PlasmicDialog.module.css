@@ -10,6 +10,9 @@
   border-radius: var(--token-8b4HJYZr1yuK);
   border: 1px solid var(--token-CE-OiWjNhspe);
 }
+.rootnoBorderRadius:global(.__wab_instance) {
+  border-radius: 0px;
+}
 .h3__yugkh {
   width: 100%;
   height: auto;

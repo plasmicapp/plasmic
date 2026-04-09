@@ -134,6 +134,7 @@ function PlasmicChip__RenderFunc(props: {
       className={classNames(
         projectcss.all,
         projectcss.button,
+        projectcss.button__tXkSR,
         projectcss.root_reset,
         projectcss.plasmic_default_styles,
         projectcss.plasmic_mixins,
