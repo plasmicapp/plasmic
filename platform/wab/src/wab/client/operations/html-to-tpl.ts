@@ -416,7 +416,9 @@ async function wiTreeToTpl(
 
     if (node.type === "component") {
       const componentName = node.component;
-      const component = site.components.find((c) => c.name === componentName);
+      const component = site.components.find(
+        (c) => toVarName(c.name) === toVarName(componentName)
+      );
       if (!component) {
         throw new Error(`Component not found with name ${componentName}`);
       }
