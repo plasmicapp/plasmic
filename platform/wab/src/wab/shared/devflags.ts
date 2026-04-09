@@ -455,6 +455,7 @@ const DEFAULT_DEVFLAGS = {
   useLoadingState: false,
   showHiddenHostLessComponents: false,
   ccStubs: false,
+  fnStubs: false,
   workspaces: false,
   noObserve: false,
   plexus: false,
@@ -603,6 +604,7 @@ function normalizeDevFlags(flags: DevFlagsType) {
   if (flags.debug) {
     flags.autoSave = false;
     flags.ccStubs = true;
+    flags.fnStubs = true;
     flags.logToConsole = true;
     flags.enableReactDevTools = true;
   }
