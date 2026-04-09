@@ -1,5 +1,5 @@
 {
-  "version": "2.0.0",
+  "version": "2.0.1",
   "name": "@plasmicapp/loader-nextjs",
   "description": "Plasmic loader SDK for Next.js",
   "license": "MIT",
@@ -77,7 +77,7 @@
   "dependencies": {
     "@plasmicapp/loader-core": "2.0.0",
     "@plasmicapp/loader-edge": "1.0.76",
-    "@plasmicapp/loader-react": "2.0.0",
+    "@plasmicapp/loader-react": "2.0.1",
     "@plasmicapp/nextjs-app-router": "1.0.22",
     "@plasmicapp/watcher": "1.0.84",
     "server-only": "0.0.1"
