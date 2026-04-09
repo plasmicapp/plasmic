@@ -12,6 +12,7 @@ import {
   isTplTextBlock,
   tplChildren,
 } from "@/wab/shared/core/tpls";
+import { normProp } from "@/wab/shared/css";
 import {
   Component,
   Expr,
@@ -20,6 +21,7 @@ import {
   TplSlot,
   TplTag,
   Variant,
+  VariantSetting,
   isKnownChoice,
   isKnownImageAssetRef,
   isKnownPropParam,
@@ -89,17 +91,42 @@ function extractExprValue(expr: Expr): string {
   return "";
 }
 
-function getStyleString(vs: any): string | undefined {
-  if (!vs?.rs?.values) {
-    return undefined;
-  }
-  const styleProps: string[] = [];
-  for (const [prop, value] of Object.entries(vs.rs.values)) {
-    if (value) {
-      styleProps.push(`${prop}: ${value}`);
+function getStylesFromVariantSetting(
+  vs: VariantSetting
+): Record<string, string> {
+  const styles: Record<string, string> = {};
+
+  // Collect safe styles from RuleSet
+  if (vs.rs.values) {
+    for (const [prop, value] of Object.entries(vs.rs.values)) {
+      if (value) {
+        styles[prop] = value as string;
+      }
     }
   }
-  return styleProps.length > 0 ? styleProps.join("; ") : undefined;
+
+  // The style attr could be a dynamic expression (e.g. a code expression
+  // or data binding) instead of a plain JSON object. In that case
+  // tryExtractJson returns undefined, and we skip them.
+  const parsed = tryExtractJson(vs.attrs["style"]);
+  if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) {
+    for (const [prop, value] of Object.entries(parsed)) {
+      if (value) {
+        styles[normProp(prop)] = String(value);
+      }
+    }
+  }
+
+  return styles;
+}
+
+function getStyleString(vs: any): string | undefined {
+  const styles = getStylesFromVariantSetting(vs);
+  const entries = Object.entries(styles);
+  if (entries.length === 0) {
+    return undefined;
+  }
+  return entries.map(([prop, value]) => `${prop}: ${value}`).join("; ");
 }
 
 function buildTplTag(tpl: TplTag): XmlElement {
@@ -283,16 +310,11 @@ function getTplOverrides(
 
   for (const tpl of flattenTpls(component.tplTree)) {
     const vs = tryGetVariantSetting(tpl, [variant]);
-    if (!vs?.rs?.values) {
+    if (!vs) {
       continue;
     }
 
-    const styles: Record<string, string> = {};
-    for (const [prop, value] of Object.entries(vs.rs.values)) {
-      if (value) {
-        styles[prop] = value;
-      }
-    }
+    const styles = getStylesFromVariantSetting(vs);
 
     if (Object.keys(styles).length > 0) {
       overrides.push({

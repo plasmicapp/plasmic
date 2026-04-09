@@ -30,6 +30,7 @@ exports[`Project Serialization serialize project with all filters enabled 1`] = 
     <component name="Popover" uuid="1QxpUBoAwkD7" type="plain"/>
     <component name="Drawer" uuid="66fbwz7FPx2e" type="plain"/>
     <component name="Tooltip" uuid="ASiSVqfHCthg" type="plain"/>
+    <component name="TestComponent" uuid="JqzpTYaVCfc0" type="plain"/>
   </components>
   <screenBreakpoints>
     <screenBreakpoint name="Mobile only" uuid="pIBrJnbkAQLL" maxWidth="768"/>
