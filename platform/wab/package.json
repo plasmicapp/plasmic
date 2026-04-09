@@ -210,7 +210,7 @@
     "@plasmicapp/data-sources": "^1.0.0",
     "@plasmicapp/data-sources-context": "0.1.23",
     "@plasmicapp/host": "^2.0.0",
-    "@plasmicapp/loader-react": "^2.0.0",
+    "@plasmicapp/loader-react": "^2.0.1",
     "@plasmicapp/query": "^0.1.84",
     "@plasmicapp/react-web": "^1.0.0",
     "@plasmicpkgs/antd5": "^0.0.337",
