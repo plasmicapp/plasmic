@@ -9,10 +9,10 @@ import {
   sortedVariantCombos,
 } from "@/wab/shared/variant-sort";
 import {
-  VariantCombo,
   getBaseVariant,
   isPrivateStyleVariant,
   isStyleVariant,
+  VariantCombo,
 } from "@/wab/shared/Variants";
 import L from "lodash";
 
@@ -35,11 +35,13 @@ describe("variant-sort", () => {
   const outline = tplMgr.createVariant(component, typeGroup, "outline");
   const text = tplMgr.createVariant(component, typeGroup, "text");
 
-  const hover = tplMgr.createStyleVariant(component, ["Hover"]);
-  const pressed = tplMgr.createStyleVariant(component, ["Pressed"]);
-  const focused = tplMgr.createStyleVariant(component, ["Focused"]);
-  const focusVisible = tplMgr.createStyleVariant(component, ["Focus Visible"]);
-  const hoverFocused = tplMgr.createStyleVariant(component, [
+  const [hover] = tplMgr.createStyleVariant(component, ["Hover"]);
+  const [pressed] = tplMgr.createStyleVariant(component, ["Pressed"]);
+  const [focused] = tplMgr.createStyleVariant(component, ["Focused"]);
+  const [focusVisible] = tplMgr.createStyleVariant(component, [
+    "Focus Visible",
+  ]);
+  const [hoverFocused] = tplMgr.createStyleVariant(component, [
     "Focused",
     "Hover",
   ]);

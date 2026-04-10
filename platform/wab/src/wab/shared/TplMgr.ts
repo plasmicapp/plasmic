@@ -47,11 +47,13 @@ import {
   isBaseVariant,
   isGlobalVariant,
   isGlobalVariantGroup,
+  isPrivateStyleVariant,
   isScreenVariant,
   isScreenVariantGroup,
   isStandaloneVariant,
   isStandaloneVariantGroup,
   isStyleOrCodeComponentVariant,
+  isStyleVariant,
   isVariantSettingEmpty,
   mkBaseVariant,
   mkComponentVariantGroup,
@@ -662,7 +664,21 @@ export class TplMgr {
     return variant;
   }
 
-  createStyleVariant(component: Component, selectors: string[] = []) {
+  createStyleVariant(
+    component: Component,
+    selectors: string[] = []
+  ): [Variant, boolean] {
+    // Guard against duplicate variants
+    const sortedKey = JSON.stringify([...selectors].sort());
+    const existingVariant = component.variants.find(
+      (v) =>
+        isStyleVariant(v) &&
+        !isPrivateStyleVariant(v) &&
+        JSON.stringify([...(v.selectors ?? [])].sort()) === sortedKey
+    );
+    if (existingVariant) {
+      return [existingVariant, false];
+    }
     const variant = mkVariant({
       name: "",
       selectors,
@@ -673,7 +689,7 @@ export class TplMgr {
     if (arena) {
       ensureManagedFrameForVariantInComponentArena(this.site(), arena, variant);
     }
-    return variant;
+    return [variant, true];
   }
 
   createCodeComponentVariant(

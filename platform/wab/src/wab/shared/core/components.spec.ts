@@ -56,7 +56,7 @@ describe("extractComponent", () => {
   const spicey = tplMgr.createVariant(component, flavorGroup, "spicey");
   const mild = tplMgr.createVariant(component, flavorGroup, "mild");
 
-  const hover = tplMgr.createStyleVariant(component, ["Hover"]);
+  const [hover] = tplMgr.createStyleVariant(component, ["Hover"]);
   const hoverPressed = tplMgr.createCodeComponentVariant(component, "test-cc", [
     "HoverCC",
     "PressedCC",

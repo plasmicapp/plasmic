@@ -1702,8 +1702,13 @@ export class SiteOps {
   }
 
   createStyleVariant(component: Component, selectors?: string[]) {
-    const variant = this.tplMgr.createStyleVariant(component, selectors);
-    this.onVariantAdded(variant);
+    const [variant, isNew] = this.tplMgr.createStyleVariant(
+      component,
+      selectors
+    );
+    if (isNew) {
+      this.onVariantAdded(variant);
+    }
   }
 
   createCodeComponentVariant(
