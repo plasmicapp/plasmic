@@ -13,7 +13,6 @@ describe("conversion-between-modes", function () {
         },
         devFlags: {
           schemaDrivenForms: true,
-          simplifiedForms: true,
         },
       });
     });

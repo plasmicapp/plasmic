@@ -22,9 +22,6 @@ describe("dynamic-initial-value", function () {
           npmPkg: ["@plasmicpkgs/antd5"],
         },
       ],
-      devFlags: {
-        simplifiedForms: true,
-      },
     });
   });
 

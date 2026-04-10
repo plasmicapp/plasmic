@@ -14,11 +14,8 @@ test.describe("dynamic-initial-value", () => {
           npmPkg: ["@plasmicpkgs/antd5"],
         },
       ],
-      devFlags: {
-        simplifiedForms: true,
-      },
     });
-    await goToProject(page, `/projects/${projectId}?simplifiedForms=true`);
+    await goToProject(page, `/projects/${projectId}`);
   });
 
   test.afterEach(async ({ apiClient }) => {

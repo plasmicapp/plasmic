@@ -33,13 +33,9 @@ test.describe("conversion-between-modes", () => {
         w.DEVFLAGS = {};
       }
       w.DEVFLAGS.schemaDrivenForms = true;
-      w.DEVFLAGS.simplifiedForms = true;
     });
 
-    await goToProject(
-      page,
-      `/projects/${projectId}?schemaDrivenForms=true&simplifiedForms=true`
-    );
+    await goToProject(page, `/projects/${projectId}?schemaDrivenForms=true`);
   });
 
   test.afterEach(async ({ apiClient }) => {

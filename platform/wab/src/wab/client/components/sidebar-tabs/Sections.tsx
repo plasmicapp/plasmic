@@ -108,7 +108,7 @@ import {
   resolvesToCodeComponent,
 } from "@/wab/shared/core/tpls";
 import { ValComponent } from "@/wab/shared/core/val-nodes";
-import { DEVFLAGS, DevFlagsType } from "@/wab/shared/devflags";
+import { DevFlagsType } from "@/wab/shared/devflags";
 import { isGridTag } from "@/wab/shared/grid-utils";
 import {
   TplComponent,
@@ -338,9 +338,6 @@ const isSectionActive = (section: Section, devflags: DevFlagsType) => {
   if (section === Section.SlotSettings) {
     return devflags.focusable;
   }
-  if (section === Section.SimplifiedCodeComponentMode) {
-    return devflags.simplifiedForms;
-  }
   return true;
 };
 
@@ -448,8 +445,7 @@ export function getRenderBySection(
       Section.SimplifiedCodeComponentMode,
       () =>
         isComponent &&
-        hasSimplifiedMode(viewCtx, tpl.component) &&
-        DEVFLAGS.simplifiedForms && (
+        hasSimplifiedMode(viewCtx, tpl.component) && (
           <SimplifiedCodeComponentModeSection tpl={tpl} viewCtx={viewCtx} />
         ),
     ],
@@ -978,9 +974,7 @@ function getOrderedSections(tpl: TplNode, viewCtx: ViewCtx): Set<Section> {
   pushIfNew(Section.RepeatingElement);
   pushIfNew(Section.SizeWidthOnly);
 
-  if (viewCtx.appCtx.appConfig.simplifiedForms) {
-    pushIfNew(Section.SimplifiedCodeComponentMode);
-  }
+  pushIfNew(Section.SimplifiedCodeComponentMode);
   // Priority Sections
   if (isTplImage(tpl)) {
     pushIfNew(Section.Image);

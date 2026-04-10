@@ -20,9 +20,6 @@ setup("configure global dev flags", async ({ request, baseURL }) => {
     // imported-token-overrides.spec.ts
     importedTokenOverrides: true,
 
-    // simplified-all-form-items.spec.ts
-    simplifiedForms: true,
-
     // data-rep.spec.ts, http.spec.ts, postgres.spec.ts,
     // state-management-dependent.spec.ts, dynamic-initial-value.spec.ts
     plexus: false,
